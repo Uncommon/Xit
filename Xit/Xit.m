@@ -10,12 +10,15 @@
 
 @implementation Xit
 
-- (id)init
+- (id)initWithContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
 {
-    self = [super init];
+    DLog(@"absoluteURL:%@",absoluteURL);
+    absoluteURL=[absoluteURL URLByDeletingPathExtension];
+    DLog(@"absoluteURL:%@",absoluteURL);
+    self = [super initWithContentsOfURL:absoluteURL ofType:typeName error:outError];
     if (self) {
-        // Add your subclass-specific initialization here.
-        // If an error occurs here, send a [self release] message and return nil.
+        repoURL=absoluteURL;
+        gitCMD=@"/usr/bin/git";  // XXXX
     }
     return self;
 }
@@ -53,6 +56,23 @@
         *outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:unimpErr userInfo:NULL];
     }
     return YES;
+}
+
+- (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError {
+    return true; // XXX
+}
+
+#pragma mark - git commands
+
+
+
+-(NSTask *)createTaskWithArgs:(NSArray *)args
+{
+    NSTask* task = [[NSTask alloc] init];
+    [task setCurrentDirectoryPath:[repoURL path]];
+	[task setLaunchPath:gitCMD];
+	[task setArguments:args];
+    return task;
 }
 
 @end

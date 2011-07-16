@@ -7,11 +7,13 @@
 //
 
 #import <SenTestingKit/SenTestingKit.h>
-
+#import "Xit.h"
+#import "GITBasic+Xit.h"
 
 @interface XitTests : SenTestCase {
 @private
-    
+    NSString *path;
+    Xit *xit;
 }
 
 @end

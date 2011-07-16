@@ -10,6 +10,10 @@
 
 @interface Xit : NSDocument {
 @private
+    NSURL *repoURL;
+    NSString *gitCMD;
 }
+
+-(NSTask *)createTaskWithArgs:(NSArray *)args;
 
 @end
