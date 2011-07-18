@@ -3,10 +3,13 @@
 //  XitTests
 //
 //  Created by glaullon on 7/15/11.
-//  Copyright 2011 VMware, Inc. All rights reserved.
 //
 
 #import "XitTests.h"
+#import "Xit.h"
+#import "GITBasic+Xit.h"
+#import "XTSideBarItem.h"
+#import "XTSideBarDataSource.h"
 
 @implementation XitTests
 
@@ -55,7 +58,7 @@
     NSLog(@"tearDown ok");
 }
 
-- (void)testRepo
+- (void)testXTSideBarDataBranchSource
 {
     if(![xit addFile:@"file1.txt"]){
         STFail(@"add file 'file1.txt'");
@@ -68,6 +71,27 @@
     if(![xit createBranch:@"b1"]){
         STFail(@"Create Branch 'b1'");
     }
+    
+    XTSideBarDataSource *sbds=[[XTSideBarDataSource alloc] init];
+    [sbds setRepo:xit];
+    [sbds reload];
+    
+    id branchs=[sbds outlineView:nil child:XT_BRANCHS ofItem:nil];
+    STAssertTrue((branchs!=nil), @"no branchs FAIL");
+
+    NSInteger nb=[sbds outlineView:nil numberOfChildrenOfItem:branchs];
+    STAssertTrue((nb==2), @"found %d branchs FAIL",nb);
+    
+    bool branchB1Found=false;
+    for (int n=0; n<nb; n++) {
+        id b=[sbds outlineView:nil child:n ofItem:branchs];
+        NSString *bName=[sbds outlineView:nil objectValueForTableColumn:nil byItem:b];
+        if ([bName isEqualToString:@"b1"]) {
+            branchB1Found=YES;
+        }
+    }
+    STAssertTrue(branchB1Found, @"Branch 'b1' Not found");
+
 }
 
 @end

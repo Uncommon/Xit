@@ -3,7 +3,6 @@
 //  Xit
 //
 //  Created by glaullon on 7/15/11.
-//  Copyright 2011 VMware, Inc. All rights reserved.
 //
 
 #import "GITBasic+Xit.h"
@@ -14,19 +13,12 @@
 
 -(bool)initRepo
 {
+    NSError *error = nil;
     bool res=false;
     
-    NSTask* task = [self createTaskWithArgs:[NSArray arrayWithObject:@"init"]];
+    [self exectuteGitWithArgs:[NSArray arrayWithObject:@"init"] error:&error];
     
-	NSPipe* pipe = [NSPipe pipe];
-	[task setStandardOutput:pipe];
-	[task setStandardError:pipe];
-    
-    [task  launch];
-    [task waitUntilExit];
-    int status = [task terminationStatus];
-    
-    if (status == 0)
+    if (error == nil)
         res=true;
     else
         NSLog(@"Task failed.");
@@ -36,24 +28,12 @@
 
 -(bool)createBranch:(NSString *)name
 {
+    NSError *error = nil;
     bool res=NO;
     
-    NSTask* task = [self createTaskWithArgs:[NSArray arrayWithObjects:@"checkout",@"-b",name,nil]];
+    [self exectuteGitWithArgs:[NSArray arrayWithObjects:@"checkout",@"-b",name,nil] error:&error];
     
-	NSPipe* pipe = [NSPipe pipe];
-	[task setStandardOutput:pipe];
-	[task setStandardError:pipe];
-    
-    [task  launch];
-    [task waitUntilExit];
-    int status = [task terminationStatus];
-    
-    NSData *output = [[pipe fileHandleForReading] readDataToEndOfFile];
-    NSString *string = [[[NSString alloc] initWithData: output encoding: NSUTF8StringEncoding] autorelease];
-    
-    NSLog(@"\nstatus=%d\n%@\n", status,string);
-    
-    if (status == 0){
+    if (error == nil){
         res=YES;
     }
     
@@ -62,24 +42,12 @@
 
 -(bool)addFile:(NSString *)file
 {
+    NSError *error = nil;
     bool res=NO;
     
-    NSTask* task = [self createTaskWithArgs:[NSArray arrayWithObjects:@"add",file,nil]];
-    
-	NSPipe* pipe = [NSPipe pipe];
-	[task setStandardOutput:pipe];
-	[task setStandardError:pipe];
-    
-    [task  launch];
-    [task waitUntilExit];
-    int status = [task terminationStatus];
-    
-    NSData *output = [[pipe fileHandleForReading] readDataToEndOfFile];
-    NSString *string = [[[NSString alloc] initWithData: output encoding: NSUTF8StringEncoding] autorelease];
-    
-    NSLog(@"\nstatus=%d\n%@\n", status,string);
-    
-    if (status == 0){
+    [self exectuteGitWithArgs:[NSArray arrayWithObjects:@"add",file,nil] error:&error];
+
+    if (error == nil){
         res=YES;
     }
     
@@ -88,24 +56,12 @@
 
 -(bool)commitWithMessage:(NSString *)message
 {
+    NSError *error = nil;
     bool res=NO;
     
-    NSTask* task = [self createTaskWithArgs:[NSArray arrayWithObjects:@"commit",@"-m",message,nil]];
+    [self exectuteGitWithArgs:[NSArray arrayWithObjects:@"commit",@"-m",message,nil] error:&error];
     
-	NSPipe* pipe = [NSPipe pipe];
-	[task setStandardOutput:pipe];
-	[task setStandardError:pipe];
-    
-    [task  launch];
-    [task waitUntilExit];
-    int status = [task terminationStatus];
-    
-    NSData *output = [[pipe fileHandleForReading] readDataToEndOfFile];
-    NSString *string = [[[NSString alloc] initWithData: output encoding: NSUTF8StringEncoding] autorelease];
-    
-    NSLog(@"\nstatus=%d\n%@\n", status,string);
-    
-    if (status == 0){
+    if (error == nil){
         res=YES;
     }
     

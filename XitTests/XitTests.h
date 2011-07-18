@@ -3,12 +3,11 @@
 //  XitTests
 //
 //  Created by glaullon on 7/15/11.
-//  Copyright 2011 VMware, Inc. All rights reserved.
 //
 
 #import <SenTestingKit/SenTestingKit.h>
-#import "Xit.h"
-#import "GITBasic+Xit.h"
+
+@class Xit;
 
 @interface XitTests : SenTestCase {
 @private

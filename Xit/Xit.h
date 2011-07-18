@@ -3,17 +3,19 @@
 //  Xit
 //
 //  Created by glaullon on 7/15/11.
-//  Copyright 2011 VMware, Inc. All rights reserved.
 //
 
 #import <Cocoa/Cocoa.h>
 
+@class XTSideBarDataSource;
+
 @interface Xit : NSDocument {
+    IBOutlet XTSideBarDataSource *sideBarDS;
 @private
     NSURL *repoURL;
     NSString *gitCMD;
 }
 
--(NSTask *)createTaskWithArgs:(NSArray *)args;
+-(NSData *)exectuteGitWithArgs:(NSArray *)args error:(NSError **)error;
 
 @end

@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C3BC055813D1133000C3CF1A /* GITBasic+Xit.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BC055713D1133000C3CF1A /* GITBasic+Xit.m */; };
+		31F1E87A13D3AC6D00F3B317 /* XTSideBarDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 31F1E87913D3AC6D00F3B317 /* XTSideBarDataSource.m */; };
+		31F1E87F13D3B51200F3B317 /* GITBasic+Xit.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BC055713D1133000C3CF1A /* GITBasic+Xit.m */; };
+		31F1E88313D3DCAC00F3B317 /* XTSideBarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 31F1E88213D3DCAC00F3B317 /* XTSideBarItem.m */; };
 		C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		C3FA470B13D0F8E200AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA470913D0F8E200AC4F9B /* InfoPlist.strings */; };
 		C3FA470E13D0F8E200AC4F9B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA470D13D0F8E200AC4F9B /* main.m */; };
@@ -32,6 +34,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		31F1E87813D3AC6D00F3B317 /* XTSideBarDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XTSideBarDataSource.h; path = Xit/XTSideBarDataSource.h; sourceTree = "<group>"; };
+		31F1E87913D3AC6D00F3B317 /* XTSideBarDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XTSideBarDataSource.m; path = Xit/XTSideBarDataSource.m; sourceTree = "<group>"; };
+		31F1E88113D3DCAC00F3B317 /* XTSideBarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTSideBarItem.h; sourceTree = "<group>"; };
+		31F1E88213D3DCAC00F3B317 /* XTSideBarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTSideBarItem.m; sourceTree = "<group>"; };
 		C3BC055613D1133000C3CF1A /* GITBasic+Xit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GITBasic+Xit.h"; sourceTree = "<group>"; };
 		C3BC055713D1133000C3CF1A /* GITBasic+Xit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GITBasic+Xit.m"; sourceTree = "<group>"; };
 		C3FA46FC13D0F8E200AC4F9B /* Xit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Xit.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -76,9 +82,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		31F1E87713D3AC0E00F3B317 /* DataSources */ = {
+			isa = PBXGroup;
+			children = (
+				31F1E88013D3DC6E00F3B317 /* items */,
+				31F1E87813D3AC6D00F3B317 /* XTSideBarDataSource.h */,
+				31F1E87913D3AC6D00F3B317 /* XTSideBarDataSource.m */,
+			);
+			name = DataSources;
+			sourceTree = "<group>";
+		};
+		31F1E88013D3DC6E00F3B317 /* items */ = {
+			isa = PBXGroup;
+			children = (
+				31F1E88113D3DCAC00F3B317 /* XTSideBarItem.h */,
+				31F1E88213D3DCAC00F3B317 /* XTSideBarItem.m */,
+			);
+			name = items;
+			sourceTree = "<group>";
+		};
 		C3FA46F113D0F8E200AC4F9B = {
 			isa = PBXGroup;
 			children = (
+				31F1E87713D3AC0E00F3B317 /* DataSources */,
 				C3FA470613D0F8E200AC4F9B /* Xit */,
 				C3FA472413D0F8E300AC4F9B /* XitTests */,
 				C3FA46FF13D0F8E200AC4F9B /* Frameworks */,
@@ -205,6 +231,7 @@
 		C3FA46F313D0F8E200AC4F9B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastUpgradeCheck = 0420;
 				ORGANIZATIONNAME = "VMware, Inc.";
 			};
 			buildConfigurationList = C3FA46F613D0F8E200AC4F9B /* Build configuration list for PBXProject "Xit" */;
@@ -271,7 +298,9 @@
 			files = (
 				C3FA470E13D0F8E200AC4F9B /* main.m in Sources */,
 				C3FA471413D0F8E200AC4F9B /* Xit.m in Sources */,
-				C3BC055813D1133000C3CF1A /* GITBasic+Xit.m in Sources */,
+				31F1E87A13D3AC6D00F3B317 /* XTSideBarDataSource.m in Sources */,
+				31F1E87F13D3B51200F3B317 /* GITBasic+Xit.m in Sources */,
+				31F1E88313D3DCAC00F3B317 /* XTSideBarItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -376,6 +405,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_OBJC_GC = required;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Xit/Xit-Prefix.pch";
 				INFOPLIST_FILE = "Xit/Xit-Info.plist";
@@ -391,6 +421,7 @@
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_OBJC_GC = required;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Xit/Xit-Prefix.pch";
 				INFOPLIST_FILE = "Xit/Xit-Info.plist";
@@ -408,6 +439,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_OBJC_GC = required;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "XitTests/XitTests-Prefix.pch";
 				INFOPLIST_FILE = "XitTests/XitTests-Info.plist";
@@ -430,6 +462,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_OBJC_GC = required;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "XitTests/XitTests-Prefix.pch";
 				INFOPLIST_FILE = "XitTests/XitTests-Info.plist";
