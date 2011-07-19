@@ -54,6 +54,27 @@
     STAssertTrue([error code]!=0, @"no error");
 }
 
+- (void)testXTSideBarDataSourceStashes
+{
+    NSString *testFile=[NSString stringWithFormat:@"%@/file1.txt",[[xit fileURL] absoluteString]];
+    NSString *txt=@"other some text";
+    [txt writeToFile:testFile atomically:YES encoding:NSASCIIStringEncoding error:nil];
+
+    if(![xit stash:@"s1"]){
+        STFail(@"stash");
+    }
+    
+    XTSideBarDataSource *sbds=[[XTSideBarDataSource alloc] init];
+    [sbds setRepo:xit];
+    [sbds reload];
+    
+    id remotes=[sbds outlineView:nil child:XT_STASHES ofItem:nil];
+    STAssertTrue((remotes!=nil), @"no stashes");
+    
+    NSInteger nr=[sbds outlineView:nil numberOfChildrenOfItem:remotes];
+    STAssertTrue((nr==1), @"found %d stashes FAIL",nr);
+}
+
 - (void)testXTSideBarDataSourceReomtes
 {
     if(![xit checkout:@"master"]){
@@ -123,7 +144,7 @@
     [sbds reload];
     
     NSInteger nr=[sbds outlineView:nil numberOfChildrenOfItem:nil];
-    STAssertTrue((nr==3), @"found %d roots FAIL",nr);
+    STAssertTrue((nr==4), @"found %d roots FAIL",nr);
     
     // TAGS
     id tags=[sbds outlineView:nil child:XT_TAGS ofItem:nil];

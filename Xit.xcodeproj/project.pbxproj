@@ -99,6 +99,7 @@
 				31F1E87913D3AC6D00F3B317 /* XTSideBarDataSource.m */,
 			);
 			name = DataSources;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		31F1E88013D3DC6E00F3B317 /* items */ = {
@@ -119,7 +120,6 @@
 		C3FA46F113D0F8E200AC4F9B = {
 			isa = PBXGroup;
 			children = (
-				31F1E87713D3AC0E00F3B317 /* DataSources */,
 				C3FA470613D0F8E200AC4F9B /* Xit */,
 				C3FA472413D0F8E300AC4F9B /* XitTests */,
 				C3FA46FF13D0F8E200AC4F9B /* Frameworks */,
@@ -158,6 +158,7 @@
 		C3FA470613D0F8E200AC4F9B /* Xit */ = {
 			isa = PBXGroup;
 			children = (
+				31F1E87713D3AC0E00F3B317 /* DataSources */,
 				C3BC055613D1133000C3CF1A /* GITBasic+Xit.h */,
 				C3BC055713D1133000C3CF1A /* GITBasic+Xit.m */,
 				C3FA471213D0F8E200AC4F9B /* Xit.h */,

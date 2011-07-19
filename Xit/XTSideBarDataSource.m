@@ -21,7 +21,8 @@
         XTSideBarItem *branchs=[[XTSideBarItem alloc] initWithTitle:@"Branchs"];
         XTSideBarItem *tags=[[XTSideBarItem alloc] initWithTitle:@"Tags"];
         XTRemotesItem *remotes=[[XTRemotesItem alloc] initWithTitle:@"Remotes"];
-        roots=[NSArray arrayWithObjects:branchs,tags,remotes,nil];
+        XTSideBarItem *stashes=[[XTSideBarItem alloc] initWithTitle:@"Stashes"];
+        roots=[NSArray arrayWithObjects:branchs,tags,remotes,stashes,nil];
     }
     
     return self;
@@ -33,6 +34,29 @@
 }
 
 -(void)reload
+{
+    [self reloadBrachs];
+    [self reloadstashes];
+}
+
+-(void)reloadstashes
+{
+    NSData *output=[repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"stash",@"list",@"--pretty=%H %gd %gs",nil] error:nil];
+    if(output){
+        NSString *refs = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+        NSScanner *scan = [NSScanner scannerWithString:refs];
+        NSString *commit;
+        NSString *name;
+        while ([scan scanUpToString:@" " intoString:&commit]) {
+            [scan scanUpToString:@"\n" intoString:&name];
+            XTSideBarItem *stashes=[roots objectAtIndex:XT_STASHES];
+            XTSideBarItem *stash=[[XTSideBarItem alloc] initWithTitle:name];
+            [stashes addchildren:stash];
+        }
+    }
+}
+
+-(void)reloadBrachs
 {
     NSData *output=[repo exectuteGitWithArgs:[NSArray arrayWithObject:@"show-ref"] error:nil];
     if(output){

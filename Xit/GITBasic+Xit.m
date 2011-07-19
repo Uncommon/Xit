@@ -24,6 +24,20 @@
     return res;
 }
 
+-(bool)stash:(NSString *)name
+{
+    NSError *error = nil;
+    bool res=NO;
+    
+    [self exectuteGitWithArgs:[NSArray arrayWithObjects:@"stash",@"save",name,nil] error:&error];
+    
+    if (error == nil){
+        res=YES;
+    }
+    
+    return res;
+}
+
 -(bool)createBranch:(NSString *)name
 {
     NSError *error = nil;

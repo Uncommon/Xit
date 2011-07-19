@@ -12,8 +12,9 @@
 
 typedef enum {
     XT_BRANCHS=0,
-    XT_TAGS=1,
-    XT_REMOTES=2
+    XT_TAGS,
+    XT_REMOTES,
+    XT_STASHES
 } XTSideBarRootItems;
 
 @interface XTSideBarDataSource : NSObject <NSOutlineViewDataSource>
@@ -25,5 +26,7 @@ typedef enum {
 
 -(void)setRepo:(Xit *)repo;
 -(void)reload;
+-(void)reloadBrachs;
+-(void)reloadstashes;
 
 @end

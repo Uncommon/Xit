@@ -18,5 +18,6 @@
 -(bool)AddRemote:(NSString *)name withUrl:(NSString *)url;
 -(bool)push:(NSString *)remote;
 -(bool)checkout:(NSString *)branch;
+-(bool)stash:(NSString *)name;
 
 @end
