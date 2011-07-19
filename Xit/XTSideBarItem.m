@@ -41,4 +41,9 @@
     [childrens addObject:child];
 }
 
+-(BOOL)isItemExpandable
+{
+    return [childrens count]>0;
+}
+
 @end

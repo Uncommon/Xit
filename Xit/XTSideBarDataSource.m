@@ -8,6 +8,9 @@
 #import "XTSideBarDataSource.h"
 #import "XTSideBarItem.h"
 #import "Xit.h"
+#import "XTLocalBranchItem.h"
+#import "XTTagItem.h"
+#import "XTRemotesItem.h"
 
 @implementation XTSideBarDataSource
 
@@ -16,7 +19,9 @@
     self = [super init];
     if (self) {
         XTSideBarItem *branchs=[[XTSideBarItem alloc] initWithTitle:@"Branchs"];
-        roots=[NSArray arrayWithObjects:branchs,nil];
+        XTSideBarItem *tags=[[XTSideBarItem alloc] initWithTitle:@"Tags"];
+        XTRemotesItem *remotes=[[XTRemotesItem alloc] initWithTitle:@"Remotes"];
+        roots=[NSArray arrayWithObjects:branchs,tags,remotes,nil];
     }
     
     return self;
@@ -39,8 +44,23 @@
             [scan scanUpToString:@"\n" intoString:&name];
             if([name hasPrefix:@"refs/heads/"]){
                 XTSideBarItem *branchs=[roots objectAtIndex:XT_BRANCHS];
-                XTSideBarItem *branch=[[XTSideBarItem alloc] initWithTitle:[name lastPathComponent]];
+                XTLocalBranchItem *branch=[[XTLocalBranchItem alloc] initWithTitle:[name lastPathComponent]];
                 [branchs addchildren:branch];
+            }else if([name hasPrefix:@"refs/tags/"]){
+                XTSideBarItem *branchs=[roots objectAtIndex:XT_TAGS];
+                XTTagItem *tag=[[XTTagItem alloc] initWithTitle:[name lastPathComponent]];
+                [branchs addchildren:tag];
+            }else if([name hasPrefix:@"refs/remotes/"]){
+                XTRemotesItem *remotes=[roots objectAtIndex:XT_REMOTES];
+                NSString *remoteName=[[name pathComponents] objectAtIndex:2];
+                NSString *branchName=[name lastPathComponent];
+                XTSideBarItem *remote=[remotes getRemote:remoteName];
+                if(remote==nil){
+                    remote=[[XTSideBarItem alloc] initWithTitle:remoteName];
+                    [remotes addchildren:remote];
+                }
+                XTLocalBranchItem *branch=[[XTLocalBranchItem alloc] initWithTitle:branchName];
+                [remote addchildren:branch];
             }
         }
     }
@@ -56,20 +76,23 @@
     }else if([item isKindOfClass:[XTSideBarItem class]]){
         XTSideBarItem *sbItem=(XTSideBarItem *)item;
         res=[sbItem numberOfChildrens];
-    }
-    
+    }    
     return res;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
 {
-    DLog(@"outlineView: %@",outlineView);
-    return true;
+    BOOL res=NO;
+    if([item isKindOfClass:[XTSideBarItem class]]){
+        XTSideBarItem *sbItem=(XTSideBarItem *)item;
+        res=[sbItem isItemExpandable];
+    }
+    return res;
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
 {
-    id res;
+    id res=nil;
     if(item==nil){
         res=[roots objectAtIndex:index];
     }else if([item isKindOfClass:[XTSideBarItem class]]){
@@ -81,12 +104,11 @@
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-    NSString *res;
+    NSString *res=nil;
     if([item isKindOfClass:[XTSideBarItem class]]){
         XTSideBarItem *sbItem=(XTSideBarItem *)item;
         res=[sbItem title];
     }
-    
     return res;
 }
 

@@ -20,8 +20,6 @@
     
     if (error == nil)
         res=true;
-    else
-        NSLog(@"Task failed.");
     
     return res;
 }
@@ -32,6 +30,62 @@
     bool res=NO;
     
     [self exectuteGitWithArgs:[NSArray arrayWithObjects:@"checkout",@"-b",name,nil] error:&error];
+    
+    if (error == nil){
+        res=YES;
+    }
+    
+    return res;
+}
+
+-(bool)push:(NSString *)remote
+{
+    NSError *error = nil;
+    bool res=NO;
+    
+    [self exectuteGitWithArgs:[NSArray arrayWithObjects:@"push",@"--all",@"--force",remote,nil] error:&error];
+    
+    if (error == nil){
+        res=YES;
+    }
+    
+    return res;
+}
+
+-(bool)checkout:(NSString *)branch
+{
+    NSError *error = nil;
+    bool res=NO;
+    
+    [self exectuteGitWithArgs:[NSArray arrayWithObjects:@"checkout",branch,nil] error:&error];
+    
+    if (error == nil){
+        res=YES;
+    }
+    
+    return res;
+}
+
+-(bool)createTag:(NSString *)name withMessage:(NSString *)msg
+{
+    NSError *error = nil;
+    bool res=NO;
+    
+    [self exectuteGitWithArgs:[NSArray arrayWithObjects:@"tag",@"-a",name,@"-m",msg,nil] error:&error];
+    
+    if (error == nil){
+        res=YES;
+    }
+    
+    return res;
+}
+
+-(bool)AddRemote:(NSString *)name withUrl:(NSString *)url
+{
+    NSError *error = nil;
+    bool res=NO;
+    
+    [self exectuteGitWithArgs:[NSArray arrayWithObjects:@"remote",@"add",name,url,nil] error:&error];
     
     if (error == nil){
         res=YES;

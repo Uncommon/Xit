@@ -11,8 +11,13 @@
 
 @interface XitTests : SenTestCase {
 @private
-    NSString *path;
+    NSString *repo;
+    NSString *remoteRepo;
     Xit *xit;
 }
+
+- (Xit *)createRepo:(NSString *)repoName;
+- (void)testXTSideBarDataSourceReomtes;
+- (void)testGitError;
 
 @end

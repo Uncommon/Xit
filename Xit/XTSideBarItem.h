@@ -21,5 +21,6 @@
 - (NSInteger)numberOfChildrens;
 - (id)children:(NSInteger)index;
 - (void)addchildren:(XTSideBarItem *)child;
+-(BOOL)isItemExpandable;
 
 @end

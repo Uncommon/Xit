@@ -12,9 +12,7 @@
 
 - (id)initWithContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
 {
-    DLog(@"absoluteURL:%@",absoluteURL);
     absoluteURL=[absoluteURL URLByDeletingPathExtension];
-    DLog(@"absoluteURL:%@",absoluteURL);
     self = [super initWithContentsOfURL:absoluteURL ofType:typeName error:outError];
     if (self) {
         repoURL=absoluteURL;
@@ -88,9 +86,11 @@
     NSLog(@"**** output = %@",string);
     
     if (status != 0){
-        *error=[NSError errorWithDomain:@"git" 
-                                  code:status 
-                              userInfo:[NSDictionary dictionaryWithObject:string forKey:@"output"]];
+        if (error != NULL) {
+            *error=[NSError errorWithDomain:@"git" 
+                                       code:status 
+                                   userInfo:[NSDictionary dictionaryWithObject:string forKey:@"output"]];
+        }
         output=nil;
     }
     
