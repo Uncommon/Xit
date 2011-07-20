@@ -27,6 +27,6 @@ typedef enum {
 -(void)setRepo:(Xit *)repo;
 -(void)reload;
 -(void)reloadBrachs;
--(void)reloadstashes;
+-(void)reloadStashes;
 
 @end

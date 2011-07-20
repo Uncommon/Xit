@@ -31,15 +31,31 @@
 -(void)setRepo:(Xit *)newRepo
 {
     repo=newRepo;
+    [repo addObserver:self forKeyPath:@"reload" options:NSKeyValueObservingOptionNew context:nil];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if([keyPath isEqualToString:@"reload"]){
+        NSArray *reload=[change objectForKey:NSKeyValueChangeNewKey];
+        for(NSString *path in reload){
+            if([path hasPrefix:@".git/refs/"]){
+                [self reload];
+                continue;
+            }
+        }
+    }
 }
 
 -(void)reload
 {
+    [self willChangeValueForKey:@"reload"];
     [self reloadBrachs];
-    [self reloadstashes];
+    [self reloadStashes];
+    [self didChangeValueForKey:@"reload"];
 }
 
--(void)reloadstashes
+-(void)reloadStashes
 {
     NSData *output=[repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"stash",@"list",@"--pretty=%H %gd %gs",nil] error:nil];
     if(output){

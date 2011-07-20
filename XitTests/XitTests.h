@@ -14,6 +14,7 @@
     NSString *repo;
     NSString *remoteRepo;
     Xit *xit;
+    BOOL reloadDetected;
 }
 
 - (Xit *)createRepo:(NSString *)repoName;

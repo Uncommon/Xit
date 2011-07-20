@@ -54,6 +54,45 @@
     STAssertTrue([error code]!=0, @"no error");
 }
 
+- (void)testXTSideBarDataSourceReload
+{
+    [xit setAutoReload:YES];
+    XTSideBarDataSource *sbds=[[XTSideBarDataSource alloc] init];
+    [sbds setRepo:xit];
+    [sbds addObserver:self forKeyPath:@"reload" options:0 context:nil];
+    
+    [xit start];
+//    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:10.0]];
+
+    reloadDetected=NO;
+    if(![xit createBranch:@"b1"]){
+        STFail(@"Create Branch 'b1'");
+    }
+    
+    int timeOut=0;
+    while (!reloadDetected && (++timeOut<=10))
+    {
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
+        NSLog(@"Polling... (%d)",timeOut);
+    }
+    if(timeOut>10){
+        STFail(@"TimeOut on reload");
+    }
+    
+    id branchs=[sbds outlineView:nil child:XT_BRANCHS ofItem:nil];
+    NSInteger nb=[sbds outlineView:nil numberOfChildrenOfItem:branchs];
+    STAssertTrue((nb==2), @"found %d branchs FAIL",nb);
+    
+    [xit stop];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if([keyPath isEqualToString:@"reload"]){
+        reloadDetected=YES;
+    }
+}
+
 - (void)testXTSideBarDataSourceStashes
 {
     NSString *testFile=[NSString stringWithFormat:@"%@/file1.txt",[[xit fileURL] absoluteString]];
@@ -91,6 +130,7 @@
     
     if(![xit push:@"origin"]){
         STFail(@"push origin");
+        return;
     }
     
     XTSideBarDataSource *sbds=[[XTSideBarDataSource alloc] init];

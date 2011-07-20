@@ -21,6 +21,33 @@
     return self;
 }
 
+-(NSURL *)repoURL
+{
+    return repoURL;
+}
+
+// XXX tmp
+-(void)start
+{
+    [self initializeEventStream];
+}
+
+-(void)stop
+{
+    FSEventStreamStop(stream);
+    FSEventStreamInvalidate(stream);
+}
+
+-(void)setAutoReload:(BOOL)ar
+{
+    autoReload=ar;
+}
+
+-(BOOL)isAutoReload
+{
+    return autoReload;
+}
+
 - (NSString *)windowNibName
 {
     // Override returning the nib file name of the document
@@ -95,6 +122,52 @@
     }
     
     return output;
+}
+
+#pragma mark - monitor file system
+-(void)initializeEventStream
+{
+    NSString *myPath = [[repoURL URLByAppendingPathComponent:@".git"] absoluteString];
+    NSArray *pathsToWatch = [NSArray arrayWithObject:myPath];
+    void *appPointer = (void *)self;
+    FSEventStreamContext context = {0, appPointer, NULL, NULL, NULL};
+    NSTimeInterval latency = 3.0;
+    stream = FSEventStreamCreate(NULL,
+                                 &fsevents_callback,
+                                 &context,
+                                 (CFArrayRef) pathsToWatch,
+	                             kFSEventStreamEventIdSinceNow,
+                                 (CFAbsoluteTime) latency,
+                                 kFSEventStreamCreateFlagUseCFTypes
+                                 );
+    
+    FSEventStreamScheduleWithRunLoop(stream,
+                                     CFRunLoopGetCurrent(),
+                                     kCFRunLoopDefaultMode);
+    FSEventStreamStart(stream);
+}
+
+void fsevents_callback(ConstFSEventStreamRef streamRef,
+                       void *userData,
+                       size_t numEvents,
+                       void *eventPaths,
+                       const FSEventStreamEventFlags eventFlags[],
+                       const FSEventStreamEventId eventIds[])
+{
+    Xit *xit = (Xit *)userData;
+    
+    NSMutableArray *reload=[NSMutableArray arrayWithCapacity:numEvents];
+    for(size_t i=0; i < numEvents; i++){
+        NSString *path=[(NSArray *)eventPaths objectAtIndex:i];
+        NSRange r=[path rangeOfString:@".git" options:NSBackwardsSearch];
+        path=[path substringFromIndex:r.location];
+        [reload addObject:path];
+        NSLog(@"%@",path);
+    }
+    
+    if([xit isAutoReload]){
+        [xit setValue:reload forKey:@"reload"];
+    }
 }
 
 @end
