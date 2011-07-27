@@ -8,21 +8,20 @@
 #import <Cocoa/Cocoa.h>
 
 @class XTSideBarDataSource;
+@class XTHistoryDataSource;
 
 @interface Xit : NSDocument {
     IBOutlet XTSideBarDataSource *sideBarDS;
+    IBOutlet XTHistoryDataSource *historyDS;
 @private
     FSEventStreamRef stream;
     NSURL *repoURL;
     NSString *gitCMD;
-    BOOL autoReload;
     NSArray* reload;
 }
 
 -(NSData *)exectuteGitWithArgs:(NSArray *)args error:(NSError **)error;
 -(void)initializeEventStream;
--(BOOL)isAutoReload;
--(void)setAutoReload:(BOOL)reload;
 -(void)start;
 -(void)stop;
 -(NSURL *)repoURL;

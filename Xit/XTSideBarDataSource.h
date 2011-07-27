@@ -22,6 +22,7 @@ typedef enum {
     @private
     Xit *repo;
     NSArray *roots;
+    NSOutlineView *outline;
 }
 
 -(void)setRepo:(Xit *)repo;

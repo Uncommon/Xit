@@ -32,6 +32,7 @@
 {
     repo=newRepo;
     [repo addObserver:self forKeyPath:@"reload" options:NSKeyValueObservingOptionNew context:nil];
+    [self reload];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -41,7 +42,7 @@
         for(NSString *path in reload){
             if([path hasPrefix:@".git/refs/"]){
                 [self reload];
-                continue;
+                break;
             }
         }
     }
@@ -52,11 +53,14 @@
     [self willChangeValueForKey:@"reload"];
     [self reloadBrachs];
     [self reloadStashes];
+    [outline reloadData];
     [self didChangeValueForKey:@"reload"];
 }
 
 -(void)reloadStashes
 {
+    XTSideBarItem *stashes=[roots objectAtIndex:XT_STASHES];
+    [stashes clean];
     NSData *output=[repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"stash",@"list",@"--pretty=%H %gd %gs",nil] error:nil];
     if(output){
         NSString *refs = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
@@ -65,7 +69,6 @@
         NSString *name;
         while ([scan scanUpToString:@" " intoString:&commit]) {
             [scan scanUpToString:@"\n" intoString:&name];
-            XTSideBarItem *stashes=[roots objectAtIndex:XT_STASHES];
             XTSideBarItem *stash=[[XTSideBarItem alloc] initWithTitle:name];
             [stashes addchildren:stash];
         }
@@ -74,6 +77,13 @@
 
 -(void)reloadBrachs
 {
+    XTSideBarItem *branchs=[roots objectAtIndex:XT_BRANCHS];
+    XTSideBarItem *tags=[roots objectAtIndex:XT_TAGS];
+    XTRemotesItem *remotes=[roots objectAtIndex:XT_REMOTES];
+
+    [branchs clean];
+    [tags clean];
+    [remotes clean];
     NSData *output=[repo exectuteGitWithArgs:[NSArray arrayWithObject:@"show-ref"] error:nil];
     if(output){
         NSString *refs = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
@@ -83,15 +93,12 @@
         while ([scan scanUpToString:@" " intoString:&commit]) {
             [scan scanUpToString:@"\n" intoString:&name];
             if([name hasPrefix:@"refs/heads/"]){
-                XTSideBarItem *branchs=[roots objectAtIndex:XT_BRANCHS];
                 XTLocalBranchItem *branch=[[XTLocalBranchItem alloc] initWithTitle:[name lastPathComponent]];
                 [branchs addchildren:branch];
             }else if([name hasPrefix:@"refs/tags/"]){
-                XTSideBarItem *branchs=[roots objectAtIndex:XT_TAGS];
                 XTTagItem *tag=[[XTTagItem alloc] initWithTitle:[name lastPathComponent]];
-                [branchs addchildren:tag];
+                [tags addchildren:tag];
             }else if([name hasPrefix:@"refs/remotes/"]){
-                XTRemotesItem *remotes=[roots objectAtIndex:XT_REMOTES];
                 NSString *remoteName=[[name pathComponents] objectAtIndex:2];
                 NSString *branchName=[name lastPathComponent];
                 XTSideBarItem *remote=[remotes getRemote:remoteName];
@@ -110,6 +117,7 @@
 
 - (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
 {
+    outline=outlineView;
     NSInteger res=0;
     if(item==nil){
         res=[roots count];

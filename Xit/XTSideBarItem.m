@@ -46,4 +46,9 @@
     return [childrens count]>0;
 }
 
+- (void)clean
+{
+    [childrens removeAllObjects];
+}
+
 @end

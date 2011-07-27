@@ -10,6 +10,17 @@
 
 @implementation Xit
 
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        NSLog(@"[init]");
+        repoURL=[NSURL URLWithString:@"/Users/laullon/xcode/gitx"]; // Default only for test.
+        gitCMD=@"/usr/bin/git";  // XXXX
+    }
+    return self;
+}
+
 - (id)initWithContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
 {
     absoluteURL=[absoluteURL URLByDeletingPathExtension];
@@ -38,16 +49,6 @@
     FSEventStreamInvalidate(stream);
 }
 
--(void)setAutoReload:(BOOL)ar
-{
-    autoReload=ar;
-}
-
--(BOOL)isAutoReload
-{
-    return autoReload;
-}
-
 - (NSString *)windowNibName
 {
     // Override returning the nib file name of the document
@@ -59,6 +60,8 @@
 {
     [super windowControllerDidLoadNib:aController];
     [sideBarDS setRepo:self];
+    [historyDS setRepo:self];
+    [self start];
 }
 
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError {
@@ -91,6 +94,7 @@
 
 -(NSData *)exectuteGitWithArgs:(NSArray *)args error:(NSError **)error
 {
+    NSLog(@"****command = git %@",[args componentsJoinedByString:@" "]);
     NSTask* task = [[NSTask alloc] init];
     [task setCurrentDirectoryPath:[repoURL path]];
 	[task setLaunchPath:gitCMD];
@@ -101,16 +105,22 @@
 	[task setStandardError:pipe];
     
     [task  launch];
-    [task waitUntilExit];
+    NSMutableData *output=[NSMutableData data];
+    int timeOut=0;
+    while ([task isRunning] && (++timeOut<=50))
+    {
+        NSLog(@"Polling... (%d)",timeOut);
+        [output appendData:[[pipe fileHandleForReading] readDataToEndOfFile]];
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:.1]];
+    }
+
     int status = [task terminationStatus];
     
-    NSData *output = [[pipe fileHandleForReading] readDataToEndOfFile];
     
     // Only for debug
     NSString *string = [[NSString alloc] initWithData: output encoding: NSUTF8StringEncoding];
-    NSLog(@"****command = git %@",[args componentsJoinedByString:@" "]);
     NSLog(@"**** status = %d",status);
-    NSLog(@"**** output = %@",string);
+//    NSLog(@"**** output = %@",string);
     
     if (status != 0){
         if (error != NULL) {
@@ -147,6 +157,8 @@
     FSEventStreamStart(stream);
 }
 
+int event=0;
+
 void fsevents_callback(ConstFSEventStreamRef streamRef,
                        void *userData,
                        size_t numEvents,
@@ -155,6 +167,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef,
                        const FSEventStreamEventId eventIds[])
 {
     Xit *xit = (Xit *)userData;
+    event++;
     
     NSMutableArray *reload=[NSMutableArray arrayWithCapacity:numEvents];
     for(size_t i=0; i < numEvents; i++){
@@ -162,12 +175,10 @@ void fsevents_callback(ConstFSEventStreamRef streamRef,
         NSRange r=[path rangeOfString:@".git" options:NSBackwardsSearch];
         path=[path substringFromIndex:r.location];
         [reload addObject:path];
-        NSLog(@"%@",path);
+        NSLog(@"%d\t%@",event,path);
     }
     
-    if([xit isAutoReload]){
-        [xit setValue:reload forKey:@"reload"];
-    }
+    [xit setValue:reload forKey:@"reload"];
 }
 
 @end

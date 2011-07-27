@@ -32,4 +32,9 @@
     [remotes setObject:child forKey:[child title]];
 }
 
+-(void)clean
+{
+    [super clean];
+    [remotes removeAllObjects];
+}
 @end

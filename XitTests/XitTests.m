@@ -56,13 +56,11 @@
 
 - (void)testXTSideBarDataSourceReload
 {
-    [xit setAutoReload:YES];
     XTSideBarDataSource *sbds=[[XTSideBarDataSource alloc] init];
     [sbds setRepo:xit];
     [sbds addObserver:self forKeyPath:@"reload" options:0 context:nil];
     
     [xit start];
-//    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:10.0]];
 
     reloadDetected=NO;
     if(![xit createBranch:@"b1"]){
@@ -107,11 +105,11 @@
     [sbds setRepo:xit];
     [sbds reload];
     
-    id remotes=[sbds outlineView:nil child:XT_STASHES ofItem:nil];
-    STAssertTrue((remotes!=nil), @"no stashes");
+    id stashes=[sbds outlineView:nil child:XT_STASHES ofItem:nil];
+    STAssertTrue((stashes!=nil), @"no stashes");
     
-    NSInteger nr=[sbds outlineView:nil numberOfChildrenOfItem:remotes];
-    STAssertTrue((nr==1), @"found %d stashes FAIL",nr);
+    NSInteger nr=[sbds outlineView:nil numberOfChildrenOfItem:stashes];
+    STAssertTrue((nr==1), @"found %d stashes FAIL - stashes=%@",nr,stashes);
 }
 
 - (void)testXTSideBarDataSourceReomtes
