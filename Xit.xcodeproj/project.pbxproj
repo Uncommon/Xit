@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		3174966513DF896E004C5546 /* XTHistoryDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966413DF896E004C5546 /* XTHistoryDataSource.m */; };
 		3174966813DF8A0C004C5546 /* XTSideBarDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */; };
-		3174966B13DF8F67004C5546 /* XTHistoryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966A13DF8F67004C5546 /* XTHistoryItem.m */; };
+		3174966E13DFF94C004C5546 /* XTHistoryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966D13DFF94C004C5546 /* XTHistoryItem.m */; };
 		31F1E87F13D3B51200F3B317 /* GITBasic+Xit.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BC055713D1133000C3CF1A /* GITBasic+Xit.m */; };
 		31F1E88313D3DCAC00F3B317 /* XTSideBarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 31F1E88213D3DCAC00F3B317 /* XTSideBarItem.m */; };
 		C3D6CF1B13D4B18900D35D4D /* XTLocalBranchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6CF1A13D4B18900D35D4D /* XTLocalBranchItem.m */; };
@@ -42,8 +42,8 @@
 		3174966313DF896E004C5546 /* XTHistoryDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XTHistoryDataSource.h; path = Xit/XTHistoryDataSource.h; sourceTree = "<group>"; };
 		3174966413DF896E004C5546 /* XTHistoryDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XTHistoryDataSource.m; path = Xit/XTHistoryDataSource.m; sourceTree = "<group>"; };
 		3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XTSideBarDataSource.m; path = Xit/XTSideBarDataSource.m; sourceTree = "<group>"; };
-		3174966913DF8F67004C5546 /* XTHistoryItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTHistoryItem.h; sourceTree = "<group>"; };
-		3174966A13DF8F67004C5546 /* XTHistoryItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTHistoryItem.m; sourceTree = "<group>"; };
+		3174966C13DFF94C004C5546 /* XTHistoryItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XTHistoryItem.h; path = Xit/XTHistoryItem.h; sourceTree = "<group>"; };
+		3174966D13DFF94C004C5546 /* XTHistoryItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XTHistoryItem.m; path = Xit/XTHistoryItem.m; sourceTree = "<group>"; };
 		31F1E87813D3AC6D00F3B317 /* XTSideBarDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XTSideBarDataSource.h; path = Xit/XTSideBarDataSource.h; sourceTree = "<group>"; };
 		31F1E88113D3DCAC00F3B317 /* XTSideBarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XTSideBarItem.h; path = Xit/XTSideBarItem.h; sourceTree = "<group>"; };
 		31F1E88213D3DCAC00F3B317 /* XTSideBarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XTSideBarItem.m; path = Xit/XTSideBarItem.m; sourceTree = "<group>"; };
@@ -121,8 +121,8 @@
 				C3D6CF1D13D4B74400D35D4D /* XTTagItem.m */,
 				C3D6CF1F13D4D5B200D35D4D /* XTRemotesItem.h */,
 				C3D6CF2013D4D5B200D35D4D /* XTRemotesItem.m */,
-				3174966913DF8F67004C5546 /* XTHistoryItem.h */,
-				3174966A13DF8F67004C5546 /* XTHistoryItem.m */,
+				3174966C13DFF94C004C5546 /* XTHistoryItem.h */,
+				3174966D13DFF94C004C5546 /* XTHistoryItem.m */,
 			);
 			name = items;
 			sourceTree = "<group>";
@@ -331,7 +331,7 @@
 				C3D6CF2113D4D5B200D35D4D /* XTRemotesItem.m in Sources */,
 				3174966513DF896E004C5546 /* XTHistoryDataSource.m in Sources */,
 				3174966813DF8A0C004C5546 /* XTSideBarDataSource.m in Sources */,
-				3174966B13DF8F67004C5546 /* XTHistoryItem.m in Sources */,
+				3174966E13DFF94C004C5546 /* XTHistoryItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
