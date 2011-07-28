@@ -181,4 +181,10 @@ void fsevents_callback(ConstFSEventStreamRef streamRef,
     [xit setValue:reload forKey:@"reload"];
 }
 
+#pragma mark - temp
+-(IBAction)reload:(id)sender
+{
+    NSLog(@"########## reload ##########");
+    [self setValue:[NSArray arrayWithObjects:@".git/refs/",@".git/logs/",nil] forKey:@"reload"];
+}
 @end

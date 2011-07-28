@@ -17,6 +17,7 @@
     self = [super init];
     if (self) {
         items=[NSMutableArray array];
+        queue = dispatch_queue_create("com.xit.queue.history", DISPATCH_QUEUE_SERIAL);
     }
     
     return self;
@@ -44,28 +45,40 @@
 
 -(void)reload
 {
-    [self willChangeValueForKey:@"reload"];
-    
-    NSData *output=[repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"log",@"--pretty=format:%H %ct %ce %s",@"--topo-order", nil] error:nil];
-    if(output){
-        [items removeAllObjects];
-        NSString *refs = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-        NSScanner *scan = [NSScanner scannerWithString:refs];
-        NSString *commit, *date, *email, *subject;
-        while ([scan scanUpToString:@" " intoString:&commit]) {
-            [scan scanUpToString:@" " intoString:&date];
-            [scan scanUpToString:@" " intoString:&email];
-            [scan scanUpToString:@"\n" intoString:&subject];
-            XTHistoryItem *item=[[XTHistoryItem alloc] init];
-            item.commit=commit;
-            item.date=date;
-            item.email=email;
-            item.subject=subject;
-            [items addObject:item];
+    cancel=YES;
+    dispatch_sync(queue, ^{});
+    cancel=NO;
+    dispatch_async(queue, ^{
+        if(!cancel){
+            NSData *output=[repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"log",@"--pretty=format:%H %ct %ce %s",@"--topo-order", nil] error:nil];
+            if(output){
+                NSMutableArray *newItems=[NSMutableArray array];
+                NSString *refs = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+                NSScanner *scan = [NSScanner scannerWithString:refs];
+                NSString *commit, *date, *email, *subject;
+                while ([scan scanUpToString:@" " intoString:&commit] && !cancel) {
+                    [scan scanUpToString:@" " intoString:&date];
+                    [scan scanUpToString:@" " intoString:&email];
+                    [scan scanUpToString:@"\n" intoString:&subject];
+                    XTHistoryItem *item=[[XTHistoryItem alloc] init];
+                    item.commit=commit;
+                    item.date=date;
+                    item.email=email;
+                    item.subject=subject;
+                    [newItems addObject:item];
+                    if(([newItems count]%100)==0)
+                        NSLog(@"-> %lu",[newItems count]);
+                }
+                if(!cancel)
+                {
+                    [self willChangeValueForKey:@"reload"];
+                    items=newItems;
+                    [table reloadData];
+                    [self didChangeValueForKey:@"reload"];
+                }
+            }
         }
-    }
-    [table reloadData];
-    [self didChangeValueForKey:@"reload"];
+    });
 }
 
 #pragma mark - NSOutlineViewDataSource

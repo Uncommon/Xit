@@ -26,6 +26,9 @@
 -(void)stop;
 -(NSURL *)repoURL;
 
+// XXX TEMP
+-(IBAction)reload:(id)sender;
+
 @end
 
 void fsevents_callback(ConstFSEventStreamRef streamRef,

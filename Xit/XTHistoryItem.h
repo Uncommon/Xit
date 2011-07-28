@@ -12,7 +12,7 @@
 {
     @private
     NSString *commit;
-    NSString *time;
+    NSString *date;
     NSString *email;
     NSString *subject;
 }

@@ -14,11 +14,14 @@
 {
 @private
     Xit *repo;
-    NSMutableArray *items;
+    NSArray *items;
     NSTableView *table;
+    BOOL cancel;
 }
 
 -(void)reload;
 -(void)setRepo:(Xit *)newRepo;
 
 @end
+
+dispatch_queue_t queue;
