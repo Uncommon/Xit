@@ -45,40 +45,36 @@
 
 -(void)reload
 {
-    cancel=YES;
-    dispatch_sync(queue, ^{});
-    cancel=NO;
     dispatch_async(queue, ^{
-        if(!cancel){
-            NSData *output=[repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"log",@"--pretty=format:%H %ct %ce %s",@"--topo-order", nil] error:nil];
-            if(output){
-                NSMutableArray *newItems=[NSMutableArray array];
-                NSString *refs = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-                NSScanner *scan = [NSScanner scannerWithString:refs];
-                NSString *commit, *date, *email, *subject;
-                while ([scan scanUpToString:@" " intoString:&commit] && !cancel) {
-                    [scan scanUpToString:@" " intoString:&date];
-                    [scan scanUpToString:@" " intoString:&email];
-                    [scan scanUpToString:@"\n" intoString:&subject];
-                    XTHistoryItem *item=[[XTHistoryItem alloc] init];
-                    item.commit=commit;
-                    item.date=date;
-                    item.email=email;
-                    item.subject=subject;
-                    [newItems addObject:item];
-                    if(([newItems count]%100)==0)
-                        NSLog(@"-> %lu",[newItems count]);
-                }
-                if(!cancel)
-                {
-                    [self willChangeValueForKey:@"reload"];
-                    items=newItems;
-                    [table reloadData];
-                    [self didChangeValueForKey:@"reload"];
-                }
-            }
-        }
+        NSMutableArray *newItems=[NSMutableArray array];
+        [repo getCommitsWithArgs:[NSArray arrayWithObjects:@"--pretty=format:%H\n%ct\n%ce\n%s",@"--topo-order", nil]
+      enumerateCommitsUsingBlock:^(NSString * line) { 
+          NSArray *comps=[line componentsSeparatedByString:@"\n"]; 
+          XTHistoryItem *item=[[XTHistoryItem alloc] init];
+          if([comps count]==4){
+              item.commit=[comps objectAtIndex:0];
+              item.date=[comps objectAtIndex:1];
+              item.email=[comps objectAtIndex:2];
+              item.subject=[comps objectAtIndex:3];
+              [newItems addObject:item];
+              // put 100 first commints on the table as soon as possible.
+              if([newItems count]==100){
+                  items=[newItems copy];
+                  [table reloadData];
+              }
+          }
+      }
+                           error:nil];
+        NSLog(@"-> %lu",[newItems count]);
+        items=newItems;
+        [table reloadData];
     });
+}
+
+// only for unit test
+-(void)waitUntilReloadEnd
+{
+    dispatch_sync(queue, ^{ });
 }
 
 #pragma mark - NSOutlineViewDataSource

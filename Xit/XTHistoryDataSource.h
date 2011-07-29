@@ -17,11 +17,12 @@
     NSArray *items;
     NSTableView *table;
     BOOL cancel;
+    dispatch_queue_t queue;
 }
 
 -(void)reload;
+-(void)waitUntilReloadEnd;
 -(void)setRepo:(Xit *)newRepo;
 
 @end
 
-dispatch_queue_t queue;

@@ -15,7 +15,8 @@
     self = [super init];
     if (self) {
         NSLog(@"[init]");
-        repoURL=[NSURL URLWithString:@"/Users/laullon/xcode/gitx"]; // Default only for test.
+//        repoURL=[NSURL URLWithString:@"/Users/laullon/xcode/gitx"]; // Default only for test.
+        repoURL=[NSURL URLWithString:@"/Users/laullon/tmp/linux-2.6"]; // Default only for test.
         gitCMD=@"/usr/bin/git";  // XXXX
     }
     return self;
@@ -92,6 +93,62 @@
 
 #pragma mark - git commands
 
+-(void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void(^)(NSString*))block error:(NSError **)error
+{
+    NSMutableArray *args=[NSMutableArray arrayWithArray:logArgs];
+    [args insertObject:@"log" atIndex:0];
+    [args insertObject:@"-z" atIndex:1];
+    NSData *zero = [@"\0" dataUsingEncoding:NSUTF8StringEncoding];
+
+    NSLog(@"****command = git %@",[args componentsJoinedByString:@" "]);
+    NSTask* task = [[NSTask alloc] init];
+    [task setCurrentDirectoryPath:[repoURL path]];
+	[task setLaunchPath:gitCMD];
+	[task setArguments:args];
+    
+	NSPipe* pipe = [NSPipe pipe];
+	[task setStandardOutput:pipe];
+	[task setStandardError:pipe];
+    
+    [task  launch];
+    NSMutableData *output=[NSMutableData data];
+
+    BOOL end=NO;
+    while (!end)
+    {
+        NSData *availableData=[[pipe fileHandleForReading] availableData];
+        [output appendData:availableData];
+
+        end=(([availableData length]==0) && ![task isRunning]);
+        if(end)
+            [output appendData:zero];
+
+        NSRange searchRange=NSMakeRange(0, [output length]);
+        NSRange zeroRange=[output rangeOfData:zero options:0 range:searchRange];
+        while(zeroRange.location!=NSNotFound){
+            NSRange commitRange=NSMakeRange(searchRange.location,(zeroRange.location-searchRange.location));
+            NSData *commit=[output subdataWithRange:commitRange];
+            NSString *str = [[NSString alloc] initWithData:commit encoding:NSUTF8StringEncoding];
+            block(str);
+            searchRange=NSMakeRange(zeroRange.location+1, [output length]-(zeroRange.location+1));
+            zeroRange=[output rangeOfData:zero options:0 range:searchRange];
+        }
+        output=[NSMutableData dataWithData:[output subdataWithRange:searchRange]];
+    }
+    
+    int status = [task terminationStatus];    
+    NSLog(@"**** status = %d",status);
+    
+    if (status != 0){
+        NSString *string = [[NSString alloc] initWithData: output encoding: NSUTF8StringEncoding];
+        if (error != NULL) {
+            *error=[NSError errorWithDomain:@"git" 
+                                       code:status 
+                                   userInfo:[NSDictionary dictionaryWithObject:string forKey:@"output"]];
+        }
+    }
+}
+
 -(NSData *)exectuteGitWithArgs:(NSArray *)args error:(NSError **)error
 {
     NSLog(@"****command = git %@",[args componentsJoinedByString:@" "]);
@@ -105,25 +162,16 @@
 	[task setStandardError:pipe];
     
     [task  launch];
-    NSMutableData *output=[NSMutableData data];
-    int timeOut=0;
-    while ([task isRunning] && (++timeOut<=50))
-    {
-        NSLog(@"Polling... (%d)",timeOut);
-        [output appendData:[[pipe fileHandleForReading] readDataToEndOfFile]];
-        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:.1]];
-    }
-
+    NSData *output=[[pipe fileHandleForReading] readDataToEndOfFile];
+    [task waitUntilExit];
+    
     int status = [task terminationStatus];
-    
-    
-    // Only for debug
-    NSString *string = [[NSString alloc] initWithData: output encoding: NSUTF8StringEncoding];
     NSLog(@"**** status = %d",status);
-//    NSLog(@"**** output = %@",string);
     
     if (status != 0){
         if (error != NULL) {
+            NSString *string = [[NSString alloc] initWithData: output encoding: NSUTF8StringEncoding];
+            NSLog(@"**** output = %@",string);
             *error=[NSError errorWithDomain:@"git" 
                                        code:status 
                                    userInfo:[NSDictionary dictionaryWithObject:string forKey:@"output"]];

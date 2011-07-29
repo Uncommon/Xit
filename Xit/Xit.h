@@ -20,6 +20,7 @@
     NSArray* reload;
 }
 
+-(void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void(^)(NSString*))block error:(NSError **)error;
 -(NSData *)exectuteGitWithArgs:(NSArray *)args error:(NSError **)error;
 -(void)initializeEventStream;
 -(void)start;

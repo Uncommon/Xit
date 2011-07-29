@@ -9,6 +9,7 @@
 #import "Xit.h"
 #import "GITBasic+Xit.h"
 #import "XTSideBarItem.h"
+#import "XTHistoryDataSource.h"
 #import "XTSideBarDataSource.h"
 
 @implementation XitTests
@@ -227,6 +228,33 @@
     }
     STAssertTrue(branchMasterFound, @"Branch 'master' Not found");
     STAssertTrue(branchB1Found, @"Branch 'b1' Not found");
+}
+
+- (void)testXTHistoryDataSource
+{
+    NSInteger nCommits=100;
+    NSFileManager *defaultManager = [NSFileManager defaultManager];
+    for(int n=0;n<nCommits;n++){
+        NSString *testFile=[NSString stringWithFormat:@"%@/file%d.txt",repo,n];
+        NSString *txt=[NSString stringWithFormat:@"some text %d",n];
+        [txt writeToFile:testFile atomically:YES encoding:NSASCIIStringEncoding error:nil];
+        if(![defaultManager fileExistsAtPath:testFile]){
+            STFail(@"testFile NOT Found!!");
+        }
+        if(![xit addFile:testFile]){
+            STFail(@"add file '%@'",testFile);
+        }
+        if(![xit commitWithMessage:[NSString stringWithFormat:@"new %@",testFile]]){
+            STFail(@"Commit with mesage 'new %@'",testFile);
+        }
+    }
+    
+    XTHistoryDataSource *hds=[[XTHistoryDataSource alloc] init];
+    [hds setRepo:xit];
+    [hds waitUntilReloadEnd];
+    
+    NSUInteger nc=[hds numberOfRowsInTableView:nil];
+    STAssertTrue((nc==(nCommits+1)), @"found %d commits",nc);
 }
 
 - (Xit *)createRepo:(NSString *)repoName
