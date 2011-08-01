@@ -26,6 +26,7 @@
 		C3FA472913D0F8E300AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA472713D0F8E300AC4F9B /* InfoPlist.strings */; };
 		C3FA472C13D0F8E300AC4F9B /* XitTests.h in Resources */ = {isa = PBXBuildFile; fileRef = C3FA472B13D0F8E300AC4F9B /* XitTests.h */; };
 		C3FA472E13D0F8E300AC4F9B /* XitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA472D13D0F8E300AC4F9B /* XitTests.m */; };
+		DD00725613E76DFB003B4120 /* Xit.icns in Resources */ = {isa = PBXBuildFile; fileRef = DD00725513E76DFB003B4120 /* Xit.icns */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +76,7 @@
 		C3FA472A13D0F8E300AC4F9B /* XitTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "XitTests-Prefix.pch"; sourceTree = "<group>"; };
 		C3FA472B13D0F8E300AC4F9B /* XitTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XitTests.h; sourceTree = "<group>"; };
 		C3FA472D13D0F8E300AC4F9B /* XitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XitTests.m; sourceTree = "<group>"; };
+		DD00725513E76DFB003B4120 /* Xit.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Xit.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -188,6 +190,7 @@
 				C3FA470C13D0F8E200AC4F9B /* Xit-Prefix.pch */,
 				C3FA470D13D0F8E200AC4F9B /* main.m */,
 				C3FA470F13D0F8E200AC4F9B /* Credits.rtf */,
+				DD00725513E76DFB003B4120 /* Xit.icns */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -287,6 +290,7 @@
 				C3FA471113D0F8E200AC4F9B /* Credits.rtf in Resources */,
 				C3FA471713D0F8E200AC4F9B /* Xit.xib in Resources */,
 				C3FA471A13D0F8E300AC4F9B /* MainMenu.xib in Resources */,
+				DD00725613E76DFB003B4120 /* Xit.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
