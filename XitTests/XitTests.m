@@ -256,14 +256,6 @@
         if(![xit commitWithMessage:[NSString stringWithFormat:@"new %@",testFile]]){
             STFail(@"Commit with mesage 'new %@'",testFile);
         }
-
-        if((n%20)==3){
-            [xit checkout:@"master"];
-            if(![xit merge:bn]){
-                STFail(@"merge Branch");
-            }
-            [xit checkout:bn];
-        }
     }
     
     XTHistoryDataSource *hds=[[XTHistoryDataSource alloc] init];

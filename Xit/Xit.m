@@ -15,7 +15,7 @@
     self = [super init];
     if (self) {
         NSLog(@"[init]");
-        repoURL=[NSURL URLWithString:@"/Users/administrator/xcode/gitx"]; // Default only for test.
+        repoURL=[NSURL URLWithString:@"/Users/laullon/xcode/gitx"]; // Default only for test.
 //        repoURL=[NSURL URLWithString:@"/Users/laullon/tmp/linux-2.6"];
 //        repoURL=[NSURL URLWithString:@"/Users/administrator/tmp/testrepo"];
 
@@ -131,7 +131,8 @@
             NSRange commitRange=NSMakeRange(searchRange.location,(zeroRange.location-searchRange.location));
             NSData *commit=[output subdataWithRange:commitRange];
             NSString *str = [[NSString alloc] initWithData:commit encoding:NSUTF8StringEncoding];
-            block(str);
+            if(str!=nil)
+                block(str);
             searchRange=NSMakeRange(zeroRange.location+1, [output length]-(zeroRange.location+1));
             zeroRange=[output rangeOfData:zero options:0 range:searchRange];
         }

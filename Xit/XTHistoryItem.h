@@ -13,8 +13,7 @@
 {
     @private
     NSString *sha;
-    NSMutableArray *parents;
-    NSMutableArray *childrens;
+    NSArray *parents;
     NSString *date;
     NSString *email;
     NSString *subject;
@@ -22,8 +21,7 @@
 }
 
 @property(assign) NSString *sha;
-@property(assign) NSMutableArray *parents;
-@property(assign) NSMutableArray *childrens;
+@property(assign) NSArray *parents;
 @property(assign) NSString *date;
 @property(assign) NSString *email;
 @property(assign) NSString *subject;

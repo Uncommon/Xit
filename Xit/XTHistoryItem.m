@@ -12,7 +12,6 @@
 
 @synthesize sha;
 @synthesize parents;
-@synthesize childrens;
 @synthesize date;
 @synthesize email;
 @synthesize subject;
@@ -22,8 +21,6 @@
 {
     self = [super init];
     if (self) {
-        [self setParents:[NSMutableArray array]];
-        [self setChildrens:[NSMutableArray array]];
     }
     
     return self;
