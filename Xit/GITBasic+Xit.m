@@ -52,6 +52,20 @@
     return res;
 }
 
+-(bool)merge:(NSString *)name
+{
+    NSError *error = nil;
+    bool res=NO;
+    
+    [self exectuteGitWithArgs:[NSArray arrayWithObjects:@"merge",@"--no-ff",name,nil] error:&error];
+    
+    if (error == nil){
+        res=YES;
+    }
+    
+    return res;
+}
+
 -(bool)push:(NSString *)remote
 {
     NSError *error = nil;

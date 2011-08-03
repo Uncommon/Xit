@@ -9,6 +9,8 @@
 #import "XTHistoryDataSource.h"
 #import "Xit.h"
 #import "XTHistoryItem.h"
+#import "PBGitHistoryGrapher.h"
+#import "PBGitRevisionCell.h"
 
 @implementation XTHistoryDataSource
 
@@ -17,7 +19,7 @@
     self = [super init];
     if (self) {
         items=[NSMutableArray array];
-        queue = dispatch_queue_create("com.xit.queue.history", DISPATCH_QUEUE_SERIAL);
+        queue = dispatch_queue_create("com.xit.queue.history", nil);
     }
     
     return self;
@@ -47,24 +49,48 @@
 {
     dispatch_async(queue, ^{
         NSMutableArray *newItems=[NSMutableArray array];
-        [repo getCommitsWithArgs:[NSArray arrayWithObjects:@"--pretty=format:%H\n%ct\n%ce\n%s",@"--topo-order", nil]
+        NSMutableDictionary *newItemsDict=[NSMutableDictionary dictionary];
+        
+        [repo getCommitsWithArgs:[NSArray arrayWithObjects:@"--pretty=format:%H%n%P%n%ct%n%ce%n%s",@"--reverse",@"--all",@"--topo-order", nil]
       enumerateCommitsUsingBlock:^(NSString * line) { 
+          
           NSArray *comps=[line componentsSeparatedByString:@"\n"]; 
           XTHistoryItem *item=[[XTHistoryItem alloc] init];
-          if([comps count]==4){
-              item.commit=[comps objectAtIndex:0];
-              item.date=[comps objectAtIndex:1];
-              item.email=[comps objectAtIndex:2];
-              item.subject=[comps objectAtIndex:3];
+          if([comps count]==5){
+              item.sha=[comps objectAtIndex:0];
+              item.date=[comps objectAtIndex:2];
+              item.email=[comps objectAtIndex:3];
+              item.subject=[comps objectAtIndex:4];
               [newItems addObject:item];
-              // put 100 first commints on the table as soon as possible.
-              if([newItems count]==100){
-                  items=[newItems copy];
-                  [table reloadData];
+              [newItemsDict setObject:item forKey:item.sha];
+              
+              NSString *fathersStr=[comps objectAtIndex:1];
+              if([fathersStr length]>0){
+                  NSArray *fathers=[[comps objectAtIndex:1] componentsSeparatedByString:@" "];
+                  [fathers enumerateObjectsUsingBlock:^(id patherStr, NSUInteger idx, BOOL *stop) {
+                      XTHistoryItem *pather=[newItemsDict objectForKey:patherStr];
+                      if(pather==nil)
+                          [NSException raise:@"Invalid commint" format:@"pather commit:'%@' is invalid", patherStr];
+                      [[item parents] addObject:pather];
+                      [[pather childrens] addObject:item];
+                  }];
               }
+          }else{
+              [NSException raise:@"Invalid commint" format:@"Line ***\n%@\n*** is invalid", line];
           }
+          
       }
                            error:nil];
+                
+        NSUInteger i = 0;
+        NSUInteger j = [newItems count] - 1;
+        while (i < j) {
+            [newItems exchangeObjectAtIndex:i++ withObjectAtIndex:j--];
+        }
+
+        PBGitHistoryGrapher *grapher=[[PBGitHistoryGrapher alloc] init];
+        [grapher graphCommits:newItems];
+        
         NSLog(@"-> %lu",[newItems count]);
         items=newItems;
         [table reloadData];
@@ -75,13 +101,18 @@
 -(void)waitUntilReloadEnd
 {
     dispatch_sync(queue, ^{ });
+    [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        XTHistoryItem *item=(XTHistoryItem *)obj;
+        NSLog(@"%lu - %@",item.lineInfo.numColumns,item.subject);
+    }];
 }
 
-#pragma mark - NSOutlineViewDataSource
+#pragma mark - NSTableViewDataSource
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
     table=aTableView;
+    [table setDelegate:self];
     return [items count];
 }
 
@@ -89,6 +120,14 @@
 {
     XTHistoryItem *item=[items objectAtIndex:rowIndex];
     return [item valueForKey:aTableColumn.identifier];
+}
+
+#pragma mark - NSTableViewDelegate
+
+- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
+{
+    XTHistoryItem *item=[items objectAtIndex:rowIndex];
+    ((PBGitRevisionCell *)aCell).objectValue=item;
 }
 
 @end

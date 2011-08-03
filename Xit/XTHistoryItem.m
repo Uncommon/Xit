@@ -10,19 +10,27 @@
 
 @implementation XTHistoryItem
 
-@synthesize commit;
+@synthesize sha;
+@synthesize parents;
+@synthesize childrens;
 @synthesize date;
 @synthesize email;
 @synthesize subject;
+@synthesize lineInfo;
 
 - (id)init
 {
     self = [super init];
     if (self) {
-        // Initialization code here.
+        [self setParents:[NSMutableArray array]];
+        [self setChildrens:[NSMutableArray array]];
     }
     
     return self;
 }
 
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [self retain];
+}
 @end

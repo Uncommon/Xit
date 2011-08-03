@@ -32,12 +32,12 @@
     [super tearDown];
     
     NSFileManager *defaultManager = [NSFileManager defaultManager];
-    [defaultManager removeItemAtPath:repo error:nil];
+//    [defaultManager removeItemAtPath:repo error:nil];
     [defaultManager removeItemAtPath:remoteRepo error:nil];
     
-    if([defaultManager fileExistsAtPath:repo]){
-        STFail(@"tearDown %@ FAIL!!",repo);
-    }
+//    if([defaultManager fileExistsAtPath:repo]){
+//        STFail(@"tearDown %@ FAIL!!",repo);
+//    }
     
     if([defaultManager fileExistsAtPath:remoteRepo]){
         STFail(@"tearDown %@ FAIL!!",remoteRepo);
@@ -232,20 +232,37 @@
 
 - (void)testXTHistoryDataSource
 {
-    NSInteger nCommits=100;
+    NSInteger nCommits=60;
     NSFileManager *defaultManager = [NSFileManager defaultManager];
     for(int n=0;n<nCommits;n++){
+        NSString *bn=[NSString stringWithFormat:@"branch_%d",n];
+        if((n%10)==0){
+            [xit checkout:@"master"];
+            if(![xit createBranch:bn]){
+                STFail(@"Create Branch");
+            }
+        }
+
         NSString *testFile=[NSString stringWithFormat:@"%@/file%d.txt",repo,n];
         NSString *txt=[NSString stringWithFormat:@"some text %d",n];
         [txt writeToFile:testFile atomically:YES encoding:NSASCIIStringEncoding error:nil];
+        
         if(![defaultManager fileExistsAtPath:testFile]){
             STFail(@"testFile NOT Found!!");
         }
-        if(![xit addFile:testFile]){
+        if(![xit addFile:[testFile lastPathComponent]]){
             STFail(@"add file '%@'",testFile);
         }
         if(![xit commitWithMessage:[NSString stringWithFormat:@"new %@",testFile]]){
             STFail(@"Commit with mesage 'new %@'",testFile);
+        }
+
+        if((n%20)==3){
+            [xit checkout:@"master"];
+            if(![xit merge:bn]){
+                STFail(@"merge Branch");
+            }
+            [xit checkout:bn];
         }
     }
     
@@ -259,7 +276,12 @@
 
 - (Xit *)createRepo:(NSString *)repoName
 {
+    NSLog(@"[createRepo] repoName=%@",repoName);
     NSFileManager *defaultManager = [NSFileManager defaultManager];
+    
+    if([defaultManager fileExistsAtPath:repoName]){
+        [defaultManager removeItemAtPath:repoName error:nil];
+    }
     [defaultManager createDirectoryAtPath:repoName withIntermediateDirectories:YES attributes:nil error:nil];
     
     NSURL *repoURL=[NSURL URLWithString:[NSString stringWithFormat:@"%@.git",repoName]];

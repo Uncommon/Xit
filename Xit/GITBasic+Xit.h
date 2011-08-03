@@ -19,5 +19,6 @@
 -(bool)push:(NSString *)remote;
 -(bool)checkout:(NSString *)branch;
 -(bool)stash:(NSString *)name;
+-(bool)merge:(NSString *)name;
 
 @end

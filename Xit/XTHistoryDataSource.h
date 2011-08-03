@@ -9,8 +9,9 @@
 #import <Foundation/Foundation.h>
 
 @class Xit;
+@class XTHistoryItem;
 
-@interface XTHistoryDataSource : NSObject <NSTableViewDataSource>
+@interface XTHistoryDataSource : NSObject <NSTableViewDataSource,NSTableViewDelegate>
 {
 @private
     Xit *repo;
@@ -23,6 +24,5 @@
 -(void)reload;
 -(void)waitUntilReloadEnd;
 -(void)setRepo:(Xit *)newRepo;
-
 @end
 

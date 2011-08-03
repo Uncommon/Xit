@@ -15,6 +15,11 @@
 		C3D6CF1B13D4B18900D35D4D /* XTLocalBranchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6CF1A13D4B18900D35D4D /* XTLocalBranchItem.m */; };
 		C3D6CF1E13D4B74400D35D4D /* XTTagItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6CF1D13D4B74400D35D4D /* XTTagItem.m */; };
 		C3D6CF2113D4D5B200D35D4D /* XTRemotesItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6CF2013D4D5B200D35D4D /* XTRemotesItem.m */; };
+		C3D6D31313E8E65700AF50B0 /* PBGitHistoryGrapher.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6D31113E8E65700AF50B0 /* PBGitHistoryGrapher.m */; };
+		C3D6D31613E8E6BC00AF50B0 /* PBGitGrapher.mm in Sources */ = {isa = PBXBuildFile; fileRef = C3D6D31413E8E6BC00AF50B0 /* PBGitGrapher.mm */; };
+		C3D6D31913E8E6E400AF50B0 /* PBGraphCellInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6D31713E8E6E400AF50B0 /* PBGraphCellInfo.m */; };
+		C3D6D31F13E8E7E700AF50B0 /* PBGitLane.mm in Sources */ = {isa = PBXBuildFile; fileRef = C3D6D31D13E8E7E700AF50B0 /* PBGitLane.mm */; };
+		C3D6D32213E91EDC00AF50B0 /* PBGitRevisionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6D32013E91EDC00AF50B0 /* PBGitRevisionCell.m */; };
 		C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		C3FA470B13D0F8E200AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA470913D0F8E200AC4F9B /* InfoPlist.strings */; };
 		C3FA470E13D0F8E200AC4F9B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA470D13D0F8E200AC4F9B /* main.m */; };
@@ -56,6 +61,17 @@
 		C3D6CF1D13D4B74400D35D4D /* XTTagItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XTTagItem.m; path = Xit/XTTagItem.m; sourceTree = "<group>"; };
 		C3D6CF1F13D4D5B200D35D4D /* XTRemotesItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XTRemotesItem.h; path = Xit/XTRemotesItem.h; sourceTree = "<group>"; };
 		C3D6CF2013D4D5B200D35D4D /* XTRemotesItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XTRemotesItem.m; path = Xit/XTRemotesItem.m; sourceTree = "<group>"; };
+		C3D6D31113E8E65700AF50B0 /* PBGitHistoryGrapher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBGitHistoryGrapher.m; sourceTree = "<group>"; };
+		C3D6D31213E8E65700AF50B0 /* PBGitHistoryGrapher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBGitHistoryGrapher.h; sourceTree = "<group>"; };
+		C3D6D31413E8E6BC00AF50B0 /* PBGitGrapher.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PBGitGrapher.mm; sourceTree = "<group>"; };
+		C3D6D31513E8E6BC00AF50B0 /* PBGitGrapher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBGitGrapher.h; sourceTree = "<group>"; };
+		C3D6D31713E8E6E400AF50B0 /* PBGraphCellInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBGraphCellInfo.m; sourceTree = "<group>"; };
+		C3D6D31813E8E6E400AF50B0 /* PBGraphCellInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBGraphCellInfo.h; sourceTree = "<group>"; };
+		C3D6D31B13E8E6FA00AF50B0 /* PBGitGraphLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBGitGraphLine.h; sourceTree = "<group>"; };
+		C3D6D31D13E8E7E700AF50B0 /* PBGitLane.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PBGitLane.mm; sourceTree = "<group>"; };
+		C3D6D31E13E8E7E700AF50B0 /* PBGitLane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBGitLane.h; sourceTree = "<group>"; };
+		C3D6D32013E91EDC00AF50B0 /* PBGitRevisionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBGitRevisionCell.m; sourceTree = "<group>"; };
+		C3D6D32113E91EDC00AF50B0 /* PBGitRevisionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBGitRevisionCell.h; sourceTree = "<group>"; };
 		C3FA46FC13D0F8E200AC4F9B /* Xit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Xit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3FA470013D0F8E200AC4F9B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		C3FA470313D0F8E200AC4F9B /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -129,6 +145,24 @@
 			name = items;
 			sourceTree = "<group>";
 		};
+		C3D6D30F13E8E63A00AF50B0 /* GitX */ = {
+			isa = PBXGroup;
+			children = (
+				C3D6D32013E91EDC00AF50B0 /* PBGitRevisionCell.m */,
+				C3D6D32113E91EDC00AF50B0 /* PBGitRevisionCell.h */,
+				C3D6D31D13E8E7E700AF50B0 /* PBGitLane.mm */,
+				C3D6D31E13E8E7E700AF50B0 /* PBGitLane.h */,
+				C3D6D31B13E8E6FA00AF50B0 /* PBGitGraphLine.h */,
+				C3D6D31713E8E6E400AF50B0 /* PBGraphCellInfo.m */,
+				C3D6D31813E8E6E400AF50B0 /* PBGraphCellInfo.h */,
+				C3D6D31413E8E6BC00AF50B0 /* PBGitGrapher.mm */,
+				C3D6D31513E8E6BC00AF50B0 /* PBGitGrapher.h */,
+				C3D6D31113E8E65700AF50B0 /* PBGitHistoryGrapher.m */,
+				C3D6D31213E8E65700AF50B0 /* PBGitHistoryGrapher.h */,
+			);
+			name = GitX;
+			sourceTree = "<group>";
+		};
 		C3FA46F113D0F8E200AC4F9B = {
 			isa = PBXGroup;
 			children = (
@@ -170,6 +204,7 @@
 		C3FA470613D0F8E200AC4F9B /* Xit */ = {
 			isa = PBXGroup;
 			children = (
+				C3D6D30F13E8E63A00AF50B0 /* GitX */,
 				31F1E87713D3AC0E00F3B317 /* DataSources */,
 				C3BC055613D1133000C3CF1A /* GITBasic+Xit.h */,
 				C3BC055713D1133000C3CF1A /* GITBasic+Xit.m */,
@@ -336,6 +371,11 @@
 				3174966513DF896E004C5546 /* XTHistoryDataSource.m in Sources */,
 				3174966813DF8A0C004C5546 /* XTSideBarDataSource.m in Sources */,
 				3174966E13DFF94C004C5546 /* XTHistoryItem.m in Sources */,
+				C3D6D31313E8E65700AF50B0 /* PBGitHistoryGrapher.m in Sources */,
+				C3D6D31613E8E6BC00AF50B0 /* PBGitGrapher.mm in Sources */,
+				C3D6D31913E8E6E400AF50B0 /* PBGraphCellInfo.m in Sources */,
+				C3D6D31F13E8E7E700AF50B0 /* PBGitLane.mm in Sources */,
+				C3D6D32213E91EDC00AF50B0 /* PBGitRevisionCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
