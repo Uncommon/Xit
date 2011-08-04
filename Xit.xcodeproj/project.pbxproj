@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		311429B913EB60AA00A7DF05 /* XTCommitViewControllerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 311429B613EB600100A7DF05 /* XTCommitViewControllerTest.m */; };
+		313014AC13EB656B0017A2A1 /* XTSideBarDataSorceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */; };
+		313014AF13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 313014AE13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m */; };
 		31355B0813EA139700C33AAB /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31355B0713EA139700C33AAB /* CoreFoundation.framework */; };
 		31355B0E13EA139700C33AAB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 31355B0C13EA139700C33AAB /* InfoPlist.strings */; };
 		31355B1713EA15DD00C33AAB /* html.theme.default.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 31355B0613EA139600C33AAB /* html.theme.default.bundle */; };
@@ -59,6 +62,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		311429B513EB600100A7DF05 /* XTCommitViewControllerTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTCommitViewControllerTest.h; sourceTree = "<group>"; };
+		311429B613EB600100A7DF05 /* XTCommitViewControllerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTCommitViewControllerTest.m; sourceTree = "<group>"; };
+		313014A813EB653F0017A2A1 /* XTSideBarDataSorceTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTSideBarDataSorceTests.h; sourceTree = "<group>"; };
+		313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTSideBarDataSorceTests.m; sourceTree = "<group>"; };
+		313014AD13EB65DB0017A2A1 /* XTHistoryDataSorceTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTHistoryDataSorceTests.h; sourceTree = "<group>"; };
+		313014AE13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTHistoryDataSorceTests.m; sourceTree = "<group>"; };
 		31355B0613EA139600C33AAB /* html.theme.default.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = html.theme.default.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		31355B0713EA139700C33AAB /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		31355B0B13EA139700C33AAB /* html.theme.default-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "html.theme.default-Info.plist"; sourceTree = "<group>"; };
@@ -302,6 +311,12 @@
 			children = (
 				C3FA472B13D0F8E300AC4F9B /* XitTests.h */,
 				C3FA472D13D0F8E300AC4F9B /* XitTests.m */,
+				311429B513EB600100A7DF05 /* XTCommitViewControllerTest.h */,
+				311429B613EB600100A7DF05 /* XTCommitViewControllerTest.m */,
+				313014A813EB653F0017A2A1 /* XTSideBarDataSorceTests.h */,
+				313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */,
+				313014AD13EB65DB0017A2A1 /* XTHistoryDataSorceTests.h */,
+				313014AE13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m */,
 				C3FA472513D0F8E300AC4F9B /* Supporting Files */,
 			);
 			path = XitTests;
@@ -489,6 +504,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3FA472E13D0F8E300AC4F9B /* XitTests.m in Sources */,
+				311429B913EB60AA00A7DF05 /* XTCommitViewControllerTest.m in Sources */,
+				313014AC13EB656B0017A2A1 /* XTSideBarDataSorceTests.m in Sources */,
+				313014AF13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -658,6 +676,7 @@
 				GCC_ENABLE_OBJC_GC = required;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Xit/Xit-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -677,6 +696,7 @@
 				GCC_ENABLE_OBJC_GC = required;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "XitTests/XitTests-Info.plist";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -736,6 +756,7 @@
 				GCC_ENABLE_OBJC_GC = required;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Xit/Xit-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Xit/Xit-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -753,6 +774,7 @@
 				GCC_ENABLE_OBJC_GC = required;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Xit/Xit-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Xit/Xit-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -772,6 +794,7 @@
 				GCC_ENABLE_OBJC_GC = required;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "XitTests/XitTests-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "XitTests/XitTests-Info.plist";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -795,6 +818,7 @@
 				GCC_ENABLE_OBJC_GC = required;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "XitTests/XitTests-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "XitTests/XitTests-Info.plist";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -817,6 +841,7 @@
 				31355B1213EA139700C33AAB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C3FA46F613D0F8E200AC4F9B /* Build configuration list for PBXProject "Xit" */ = {
 			isa = XCConfigurationList;
