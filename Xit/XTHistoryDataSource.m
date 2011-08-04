@@ -14,6 +14,8 @@
 
 @implementation XTHistoryDataSource
 
+@synthesize items;
+
 - (id)init
 {
     self = [super init];
@@ -58,7 +60,12 @@
           XTHistoryItem *item=[[XTHistoryItem alloc] init];
           if([comps count]==5){
               item.sha=[comps objectAtIndex:0];
-              item.parents=[[comps objectAtIndex:1] componentsSeparatedByString:@" "];;
+              NSString *parentsStr=[comps objectAtIndex:1];
+              if(parentsStr.length>0){
+                  item.parents=[parentsStr componentsSeparatedByString:@" "];
+              }else{
+                  item.parents=[NSArray array];
+              }
               item.date=[comps objectAtIndex:2];
               item.email=[comps objectAtIndex:3];
               item.subject=[comps objectAtIndex:4];
@@ -87,7 +94,7 @@
     dispatch_sync(queue, ^{ });
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         XTHistoryItem *item=(XTHistoryItem *)obj;
-        NSLog(@"%lu - %@",item.lineInfo.numColumns,item.subject);
+        NSLog(@"numColumns=%lu - parents=%lu - %@",item.lineInfo.numColumns,item.parents.count,item.subject);
     }];
 }
 

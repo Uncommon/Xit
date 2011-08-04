@@ -21,6 +21,8 @@
     dispatch_queue_t queue;
 }
 
+@property(readonly)NSArray *items;
+
 -(void)reload;
 -(void)waitUntilReloadEnd;
 -(void)setRepo:(Xit *)newRepo;

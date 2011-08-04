@@ -11,6 +11,7 @@
 #import "XTSideBarItem.h"
 #import "XTHistoryDataSource.h"
 #import "XTSideBarDataSource.h"
+#import "XTHistoryItem.h"
 
 @implementation XitTests
 
@@ -44,6 +45,52 @@
     }
     
     NSLog(@"tearDown ok");
+}
+
+-(void)testRootCommitsGraph
+{
+    NSInteger nCommits=15;
+    NSFileManager *defaultManager = [NSFileManager defaultManager];
+    for(int n=0;n<nCommits;n++){
+        NSString *rn=[NSString stringWithFormat:@"refs/heads/root_%d",n];
+        if((n%5)==0){
+            NSData *data=[xit exectuteGitWithArgs:[NSArray arrayWithObjects:@"symbolic-ref",@"HEAD",rn,nil] error:nil];
+            if(data==nil){
+                STFail(@"'%@' error",rn);
+            }
+            data=[xit exectuteGitWithArgs:[NSArray arrayWithObjects:@"rm",@"--cached",@"-r",@".",nil] error:nil];
+            if(data==nil){
+                STFail(@"'%@' error",rn);
+            }
+            data=[xit exectuteGitWithArgs:[NSArray arrayWithObjects:@"clean",@"-f",@"-d",nil] error:nil];
+            if(data==nil){
+                STFail(@"'%@' error",rn);
+            }
+        }
+        
+        NSString *testFile=[NSString stringWithFormat:@"%@/file%d.txt",repo,n];
+        NSString *txt=[NSString stringWithFormat:@"some text %d",n];
+        [txt writeToFile:testFile atomically:YES encoding:NSASCIIStringEncoding error:nil];
+        
+        if(![defaultManager fileExistsAtPath:testFile]){
+            STFail(@"testFile NOT Found!!");
+        }
+        if(![xit addFile:[testFile lastPathComponent]]){
+            STFail(@"add file '%@'",testFile);
+        }
+        if(![xit commitWithMessage:[NSString stringWithFormat:@"new %@",testFile]]){
+            STFail(@"Commit with mesage 'new %@'",testFile);
+        }
+    }
+    
+    XTHistoryDataSource *hds=[[XTHistoryDataSource alloc] init];
+    [hds setRepo:xit];
+    [hds waitUntilReloadEnd];
+    
+    NSArray *items=hds.items;
+    for(XTHistoryItem *item in items){
+        STAssertTrue(item.lineInfo.numColumns<=1,@"incorrect numColumns=%lu",item.lineInfo.numColumns);
+    }
 }
 
 - (void)testGitError
