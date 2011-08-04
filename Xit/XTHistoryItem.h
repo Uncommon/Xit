@@ -13,18 +13,20 @@
 {
     @private
     NSString *sha;
-    NSArray *parents;
+    NSMutableArray *parents;
     NSString *date;
     NSString *email;
     NSString *subject;
 	PBGraphCellInfo *lineInfo;
+    NSUInteger index;
 }
 
 @property(assign) NSString *sha;
-@property(assign) NSArray *parents;
+@property(assign) NSMutableArray *parents;
 @property(assign) NSString *date;
 @property(assign) NSString *email;
 @property(assign) NSString *subject;
 @property(assign) PBGraphCellInfo *lineInfo;
+@property NSUInteger index;
 
 @end

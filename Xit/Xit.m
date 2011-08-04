@@ -18,8 +18,8 @@
     self = [super init];
     if (self) {
         NSLog(@"[init]");
-        repoURL=[NSURL URLWithString:@"/Users/laullon/xcode/gitx"]; // Default only for test.
-//        repoURL=[NSURL URLWithString:@"/Users/laullon/tmp/linux-2.6"];
+//        repoURL=[NSURL URLWithString:@"/Users/laullon/xcode/gitx"]; // Default only for test.
+        repoURL=[NSURL URLWithString:@"/Users/laullon/tmp/linux-2.6"];
 //        repoURL=[NSURL URLWithString:@"/Users/administrator/tmp/testrepo"];
 
         gitCMD=@"/usr/bin/git";  // XXXX

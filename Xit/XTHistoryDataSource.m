@@ -22,6 +22,7 @@
     if (self) {
         items=[NSMutableArray array];
         queue = dispatch_queue_create("com.xit.queue.history", nil);
+        index=[NSMutableDictionary dictionary]; 
     }
     
     return self;
@@ -52,7 +53,7 @@
     dispatch_async(queue, ^{
         NSMutableArray *newItems=[NSMutableArray array];
 
-        [repo getCommitsWithArgs:[NSArray arrayWithObjects:@"--pretty=format:%H%n%P%n%ct%n%ce%n%s",@"--all",@"--topo-order", nil]
+        [repo getCommitsWithArgs:[NSArray arrayWithObjects:@"--pretty=format:%H%n%P%n%ct%n%ce%n%s",@"--reverse",@"--all",@"--topo-order", nil]
       enumerateCommitsUsingBlock:^(NSString * line) { 
           
           NSArray *comps=[line componentsSeparatedByString:@"\n"];
@@ -62,14 +63,22 @@
               item.sha=[comps objectAtIndex:0];
               NSString *parentsStr=[comps objectAtIndex:1];
               if(parentsStr.length>0){
-                  item.parents=[parentsStr componentsSeparatedByString:@" "];
-              }else{
-                  item.parents=[NSArray array];
+                  NSArray *parents=[parentsStr componentsSeparatedByString:@" "];
+                  [parents enumerateObjectsWithOptions:0 usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                      NSString *parentSha=(NSString *)obj;
+                      XTHistoryItem *parent=[index objectForKey:parentSha];
+                      if(parent!=nil){
+                          [item.parents addObject:parent];
+                      }else{
+                          NSLog(@"parent with sha:'%@' not found for commit with sha:'%@' idx=%lu",parentSha,item.sha,item.index);
+                      }
+                  }];
               }
               item.date=[comps objectAtIndex:2];
               item.email=[comps objectAtIndex:3];
               item.subject=[comps objectAtIndex:4];
               [newItems addObject:item];
+              [index setObject:item forKey:item.sha];
           }else{
               [NSException raise:@"Invalid commint" format:@"Line ***\n%@\n*** is invalid", line];
           }
@@ -77,9 +86,17 @@
       }
                            error:nil];
                 
+        NSUInteger i = 0;
+        NSUInteger j = [newItems count] - 1;
+        while (i < j) {
+            [newItems exchangeObjectAtIndex:i++ withObjectAtIndex:j--];
+        }
+        
         PBGitGrapher *grapher = [[PBGitGrapher alloc] init];
         [newItems enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            [grapher decorateCommit:obj];
+            XTHistoryItem *item=(XTHistoryItem *)obj;
+            [grapher decorateCommit:item];
+            item.index=idx;
         }];
 
         NSLog(@"-> %lu",[newItems count]);

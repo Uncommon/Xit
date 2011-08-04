@@ -19,6 +19,7 @@
     NSTableView *table;
     BOOL cancel;
     dispatch_queue_t queue;
+    NSMutableDictionary *index;
 }
 
 @property(readonly)NSArray *items;
