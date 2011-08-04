@@ -32,6 +32,7 @@
 {
     repo=newRepo;
     [repo addObserver:self forKeyPath:@"reload" options:NSKeyValueObservingOptionNew context:nil];
+    [repo addObserver:self forKeyPath:@"selectedCommit" options:NSKeyValueObservingOptionNew context:nil];
     [self reload];
 }
 
@@ -45,6 +46,15 @@
                 break;
             }
         }
+    }else if([keyPath isEqualToString:@"selectedCommit"]){
+        NSString *newSelectedCommit=[change objectForKey:NSKeyValueChangeNewKey];
+        XTHistoryItem *item=[index objectForKey:newSelectedCommit];
+        if(item!=nil){
+            [table selectRowIndexes:[NSIndexSet indexSetWithIndex:item.index] byExtendingSelection:NO];
+            [table scrollRowToVisible:item.index];
+        }else{
+            NSLog(@"commit '%@' not found!!",newSelectedCommit);
+        }
     }
 }
 
@@ -53,7 +63,7 @@
     dispatch_async(queue, ^{
         NSMutableArray *newItems=[NSMutableArray array];
 
-        [repo getCommitsWithArgs:[NSArray arrayWithObjects:@"--pretty=format:%H%n%P%n%ct%n%ce%n%s",@"--reverse",@"--all",@"--topo-order", nil]
+        [repo getCommitsWithArgs:[NSArray arrayWithObjects:@"--pretty=format:%H%n%P%n%ct%n%ce%n%s",@"--reverse",@"--tags",@"--all",@"--topo-order", nil]
       enumerateCommitsUsingBlock:^(NSString * line) { 
           
           NSArray *comps=[line componentsSeparatedByString:@"\n"];

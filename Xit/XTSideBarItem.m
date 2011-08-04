@@ -10,15 +10,24 @@
 
 @implementation XTSideBarItem
 
-- (id)initWithTitle:(NSString *)theTitle
+@synthesize title;
+@synthesize sha;
+
+- (id)initWithTitle:(NSString *)theTitle andSha:(NSString *)theSha
 {
     self = [super init];
     if (self) {
         title=theTitle;
+        sha=theSha;
         childrens=[NSMutableArray array];
     }
     
     return self;
+}
+
+- (id)initWithTitle:(NSString *)theTitle
+{
+    return [self initWithTitle:theTitle andSha:nil];
 }
 
 - (NSString *)title

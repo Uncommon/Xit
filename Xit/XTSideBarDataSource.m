@@ -80,7 +80,7 @@
     XTSideBarItem *branchs=[roots objectAtIndex:XT_BRANCHS];
     XTSideBarItem *tags=[roots objectAtIndex:XT_TAGS];
     XTRemotesItem *remotes=[roots objectAtIndex:XT_REMOTES];
-
+    
     [branchs clean];
     [tags clean];
     [remotes clean];
@@ -93,10 +93,10 @@
         while ([scan scanUpToString:@" " intoString:&commit]) {
             [scan scanUpToString:@"\n" intoString:&name];
             if([name hasPrefix:@"refs/heads/"]){
-                XTLocalBranchItem *branch=[[XTLocalBranchItem alloc] initWithTitle:[name lastPathComponent]];
+                XTLocalBranchItem *branch=[[XTLocalBranchItem alloc] initWithTitle:[name lastPathComponent] andSha:commit];
                 [branchs addchildren:branch];
             }else if([name hasPrefix:@"refs/tags/"]){
-                XTTagItem *tag=[[XTTagItem alloc] initWithTitle:[name lastPathComponent]];
+                XTTagItem *tag=[[XTTagItem alloc] initWithTitle:[name lastPathComponent] andSha:commit];
                 [tags addchildren:tag];
             }else if([name hasPrefix:@"refs/remotes/"]){
                 NSString *remoteName=[[name pathComponents] objectAtIndex:2];
@@ -106,7 +106,7 @@
                     remote=[[XTSideBarItem alloc] initWithTitle:remoteName];
                     [remotes addchildren:remote];
                 }
-                XTLocalBranchItem *branch=[[XTLocalBranchItem alloc] initWithTitle:branchName];
+                XTLocalBranchItem *branch=[[XTLocalBranchItem alloc] initWithTitle:branchName andSha:commit];
                 [remote addchildren:branch];
             }
         }
@@ -118,6 +118,8 @@
 - (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
 {
     outline=outlineView;
+    outlineView.delegate=self;
+    
     NSInteger res=0;
     if(item==nil){
         res=[roots count];
@@ -158,6 +160,16 @@
         res=[sbItem title];
     }
     return res;
+}
+
+#pragma mark - NSOutlineViewDelegate
+
+- (void)outlineViewSelectionDidChange:(NSNotification *)notification
+{
+    XTSideBarItem *item=[outline itemAtRow:outline.selectedRow];
+    NSLog(@"%@",item.sha);
+    if(item.sha!=nil)
+        repo.selectedCommit=item.sha;
 }
 
 @end

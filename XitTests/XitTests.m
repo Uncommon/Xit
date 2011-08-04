@@ -246,7 +246,9 @@
     
     bool tagT1Found=false;
     for (int n=0; n<nt; n++) {
-        id tag=[sbds outlineView:nil child:n ofItem:tags];
+        XTSideBarItem *tag=[sbds outlineView:nil child:n ofItem:tags];
+        STAssertTrue(tag.sha!=Nil, @"Tag '%@' must have sha",tag.title);
+
         BOOL isExpandable=[sbds outlineView:nil isItemExpandable:tag];
         STAssertTrue(isExpandable==NO, @"Tags must be no Expandable");
         
@@ -267,7 +269,9 @@
     bool branchB1Found=false;
     bool branchMasterFound=false;
     for (int n=0; n<nb; n++) {
-        id branch=[sbds outlineView:nil child:n ofItem:branchs];
+        XTSideBarItem *branch=[sbds outlineView:nil child:n ofItem:branchs];
+        STAssertTrue(branch.sha!=Nil, @"Branch '%@' must have sha",branch.title);
+        
         BOOL isExpandable=[sbds outlineView:nil isItemExpandable:branch];
         STAssertTrue(isExpandable==NO, @"Branchs must be no Expandable");
         

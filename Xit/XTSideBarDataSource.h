@@ -17,7 +17,7 @@ typedef enum {
     XT_STASHES
 } XTSideBarRootItems;
 
-@interface XTSideBarDataSource : NSObject <NSOutlineViewDataSource>
+@interface XTSideBarDataSource : NSObject <NSOutlineViewDataSource,NSOutlineViewDelegate>
 {
     @private
     Xit *repo;

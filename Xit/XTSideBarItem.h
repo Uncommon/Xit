@@ -13,11 +13,15 @@
 {
     @private
     NSString *title;
+    NSString *sha;
     NSMutableArray *childrens;
 }
 
+@property(readonly) NSString *title;
+@property(readonly) NSString *sha;
+
+- (id)initWithTitle:(NSString *)theTitle andSha:(NSString *)sha;
 - (id)initWithTitle:(NSString *)theTitle;
-- (NSString *)title;
 - (NSInteger)numberOfChildrens;
 - (id)children:(NSInteger)index;
 - (void)addchildren:(XTSideBarItem *)child;
