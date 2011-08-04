@@ -108,6 +108,13 @@
 
 #pragma mark - NSTableViewDelegate
 
+- (void)tableViewSelectionDidChange:(NSNotification *)aNotification
+{
+    NSLog(@"%@",aNotification);
+    XTHistoryItem *item=[items objectAtIndex:table.selectedRow];
+    repo.selectedCommit=item.sha;
+}
+
 - (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
     XTHistoryItem *item=[items objectAtIndex:rowIndex];

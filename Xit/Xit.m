@@ -7,8 +7,11 @@
 
 #import "Xit.h"
 #import "XTSideBarDataSource.h"
+#import "XTCommitViewController.h"
 
 @implementation Xit
+
+@synthesize selectedCommit;
 
 - (id)init
 {
@@ -64,6 +67,9 @@
     [super windowControllerDidLoadNib:aController];
     [sideBarDS setRepo:self];
     [historyDS setRepo:self];
+    [commitViewController setRepo:self];
+    [[commitViewController view] setFrame:NSMakeRect(0, 0, [commitView frame].size.width, [commitView frame].size.height)];    
+    [commitView addSubview:[commitViewController view]];
     [self start];
 }
 

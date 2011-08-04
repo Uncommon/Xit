@@ -7,9 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		31355B0813EA139700C33AAB /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31355B0713EA139700C33AAB /* CoreFoundation.framework */; };
+		31355B0E13EA139700C33AAB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 31355B0C13EA139700C33AAB /* InfoPlist.strings */; };
+		31355B1713EA15DD00C33AAB /* html.theme.default.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 31355B0613EA139600C33AAB /* html.theme.default.bundle */; };
+		31355B1913EA189200C33AAB /* diff.css in Resources */ = {isa = PBXBuildFile; fileRef = 31355B1813EA189200C33AAB /* diff.css */; };
 		3174966513DF896E004C5546 /* XTHistoryDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966413DF896E004C5546 /* XTHistoryDataSource.m */; };
 		3174966813DF8A0C004C5546 /* XTSideBarDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */; };
 		3174966E13DFF94C004C5546 /* XTHistoryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966D13DFF94C004C5546 /* XTHistoryItem.m */; };
+		31A8939D13E9D5B4008BE0C2 /* XTCommitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 31A8939B13E9D5B4008BE0C2 /* XTCommitViewController.m */; };
+		31A8939E13E9D5B4008BE0C2 /* XTCommitViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31A8939C13E9D5B4008BE0C2 /* XTCommitViewController.xib */; };
+		31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		31F1E87F13D3B51200F3B317 /* GITBasic+Xit.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BC055713D1133000C3CF1A /* GITBasic+Xit.m */; };
 		31F1E88313D3DCAC00F3B317 /* XTSideBarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 31F1E88213D3DCAC00F3B317 /* XTSideBarItem.m */; };
 		C3D6CF1B13D4B18900D35D4D /* XTLocalBranchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6CF1A13D4B18900D35D4D /* XTLocalBranchItem.m */; };
@@ -35,6 +42,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		31355B1513EA13A900C33AAB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C3FA46F313D0F8E200AC4F9B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 31355B0513EA139600C33AAB;
+			remoteInfo = html.theme.default;
+		};
 		C3FA472213D0F8E300AC4F9B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C3FA46F313D0F8E200AC4F9B /* Project object */;
@@ -45,11 +59,21 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		31355B0613EA139600C33AAB /* html.theme.default.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = html.theme.default.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		31355B0713EA139700C33AAB /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		31355B0B13EA139700C33AAB /* html.theme.default-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "html.theme.default-Info.plist"; sourceTree = "<group>"; };
+		31355B0D13EA139700C33AAB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		31355B0F13EA139700C33AAB /* html.theme.default-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "html.theme.default-Prefix.pch"; sourceTree = "<group>"; };
+		31355B1813EA189200C33AAB /* diff.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = diff.css; sourceTree = "<group>"; };
 		3174966313DF896E004C5546 /* XTHistoryDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XTHistoryDataSource.h; path = Xit/XTHistoryDataSource.h; sourceTree = "<group>"; };
 		3174966413DF896E004C5546 /* XTHistoryDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XTHistoryDataSource.m; path = Xit/XTHistoryDataSource.m; sourceTree = "<group>"; };
 		3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XTSideBarDataSource.m; path = Xit/XTSideBarDataSource.m; sourceTree = "<group>"; };
 		3174966C13DFF94C004C5546 /* XTHistoryItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XTHistoryItem.h; path = Xit/XTHistoryItem.h; sourceTree = "<group>"; };
 		3174966D13DFF94C004C5546 /* XTHistoryItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XTHistoryItem.m; path = Xit/XTHistoryItem.m; sourceTree = "<group>"; };
+		31A8939A13E9D5B4008BE0C2 /* XTCommitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTCommitViewController.h; sourceTree = "<group>"; };
+		31A8939B13E9D5B4008BE0C2 /* XTCommitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTCommitViewController.m; sourceTree = "<group>"; };
+		31A8939C13E9D5B4008BE0C2 /* XTCommitViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTCommitViewController.xib; sourceTree = "<group>"; };
+		31A8939F13E9DA5B008BE0C2 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		31F1E87813D3AC6D00F3B317 /* XTSideBarDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XTSideBarDataSource.h; path = Xit/XTSideBarDataSource.h; sourceTree = "<group>"; };
 		31F1E88113D3DCAC00F3B317 /* XTSideBarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XTSideBarItem.h; path = Xit/XTSideBarItem.h; sourceTree = "<group>"; };
 		31F1E88213D3DCAC00F3B317 /* XTSideBarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XTSideBarItem.m; path = Xit/XTSideBarItem.m; sourceTree = "<group>"; };
@@ -96,10 +120,19 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		31355B0313EA139600C33AAB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31355B0813EA139700C33AAB /* CoreFoundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C3FA46F913D0F8E200AC4F9B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */,
 				C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -115,6 +148,35 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		31355B0913EA139700C33AAB /* html.theme.default */ = {
+			isa = PBXGroup;
+			children = (
+				31355B1813EA189200C33AAB /* diff.css */,
+				31355B0A13EA139700C33AAB /* Supporting Files */,
+			);
+			path = html.theme.default;
+			sourceTree = "<group>";
+		};
+		31355B0A13EA139700C33AAB /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				31355B0B13EA139700C33AAB /* html.theme.default-Info.plist */,
+				31355B0C13EA139700C33AAB /* InfoPlist.strings */,
+				31355B0F13EA139700C33AAB /* html.theme.default-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		31A8939813E9D1EA008BE0C2 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				31A8939A13E9D5B4008BE0C2 /* XTCommitViewController.h */,
+				31A8939B13E9D5B4008BE0C2 /* XTCommitViewController.m */,
+				31A8939C13E9D5B4008BE0C2 /* XTCommitViewController.xib */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
 		31F1E87713D3AC0E00F3B317 /* DataSources */ = {
 			isa = PBXGroup;
 			children = (
@@ -168,6 +230,7 @@
 			children = (
 				C3FA470613D0F8E200AC4F9B /* Xit */,
 				C3FA472413D0F8E300AC4F9B /* XitTests */,
+				31355B0913EA139700C33AAB /* html.theme.default */,
 				C3FA46FF13D0F8E200AC4F9B /* Frameworks */,
 				C3FA46FD13D0F8E200AC4F9B /* Products */,
 			);
@@ -178,6 +241,7 @@
 			children = (
 				C3FA46FC13D0F8E200AC4F9B /* Xit.app */,
 				C3FA472013D0F8E300AC4F9B /* XitTests.octest */,
+				31355B0613EA139600C33AAB /* html.theme.default.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -185,7 +249,9 @@
 		C3FA46FF13D0F8E200AC4F9B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				31A8939F13E9DA5B008BE0C2 /* WebKit.framework */,
 				C3FA470013D0F8E200AC4F9B /* Cocoa.framework */,
+				31355B0713EA139700C33AAB /* CoreFoundation.framework */,
 				C3FA470213D0F8E200AC4F9B /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -204,6 +270,7 @@
 		C3FA470613D0F8E200AC4F9B /* Xit */ = {
 			isa = PBXGroup;
 			children = (
+				31A8939813E9D1EA008BE0C2 /* Views */,
 				C3D6D30F13E8E63A00AF50B0 /* GitX */,
 				31F1E87713D3AC0E00F3B317 /* DataSources */,
 				C3BC055613D1133000C3CF1A /* GITBasic+Xit.h */,
@@ -253,6 +320,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		31355B0513EA139600C33AAB /* html.theme.default */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 31355B1313EA139700C33AAB /* Build configuration list for PBXNativeTarget "html.theme.default" */;
+			buildPhases = (
+				31355B0213EA139600C33AAB /* Sources */,
+				31355B0313EA139600C33AAB /* Frameworks */,
+				31355B0413EA139600C33AAB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = html.theme.default;
+			productName = html.theme.default;
+			productReference = 31355B0613EA139600C33AAB /* html.theme.default.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
 		C3FA46FB13D0F8E200AC4F9B /* Xit */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C3FA473113D0F8E300AC4F9B /* Build configuration list for PBXNativeTarget "Xit" */;
@@ -264,6 +348,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				31355B1613EA13A900C33AAB /* PBXTargetDependency */,
 			);
 			name = Xit;
 			productName = Xit;
@@ -312,20 +397,32 @@
 			targets = (
 				C3FA46FB13D0F8E200AC4F9B /* Xit */,
 				C3FA471F13D0F8E300AC4F9B /* XitTests */,
+				31355B0513EA139600C33AAB /* html.theme.default */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		31355B0413EA139600C33AAB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31355B0E13EA139700C33AAB /* InfoPlist.strings in Resources */,
+				31355B1913EA189200C33AAB /* diff.css in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C3FA46FA13D0F8E200AC4F9B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31355B1713EA15DD00C33AAB /* html.theme.default.bundle in Resources */,
 				C3FA470B13D0F8E200AC4F9B /* InfoPlist.strings in Resources */,
 				C3FA471113D0F8E200AC4F9B /* Credits.rtf in Resources */,
 				C3FA471713D0F8E200AC4F9B /* Xit.xib in Resources */,
 				C3FA471A13D0F8E300AC4F9B /* MainMenu.xib in Resources */,
 				DD00725613E76DFB003B4120 /* Xit.icns in Resources */,
+				31A8939E13E9D5B4008BE0C2 /* XTCommitViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -357,6 +454,13 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		31355B0213EA139600C33AAB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C3FA46F813D0F8E200AC4F9B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -376,6 +480,7 @@
 				C3D6D31913E8E6E400AF50B0 /* PBGraphCellInfo.m in Sources */,
 				C3D6D31F13E8E7E700AF50B0 /* PBGitLane.mm in Sources */,
 				C3D6D32213E91EDC00AF50B0 /* PBGitRevisionCell.m in Sources */,
+				31A8939D13E9D5B4008BE0C2 /* XTCommitViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -390,6 +495,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		31355B1613EA13A900C33AAB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 31355B0513EA139600C33AAB /* html.theme.default */;
+			targetProxy = 31355B1513EA13A900C33AAB /* PBXContainerItemProxy */;
+		};
 		C3FA472313D0F8E300AC4F9B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C3FA46FB13D0F8E200AC4F9B /* Xit */;
@@ -398,6 +508,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		31355B0C13EA139700C33AAB /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				31355B0D13EA139700C33AAB /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		C3FA470913D0F8E200AC4F9B /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -441,6 +559,73 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		31355B1013EA139700C33AAB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "html.theme.default/html.theme.default-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				INFOPLIST_FILE = "html.theme.default/html.theme.default-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		31355B1113EA139700C33AAB /* coverage */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "html.theme.default/html.theme.default-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				INFOPLIST_FILE = "html.theme.default/html.theme.default-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = coverage;
+		};
+		31355B1213EA139700C33AAB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "html.theme.default/html.theme.default-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				INFOPLIST_FILE = "html.theme.default/html.theme.default-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
 		C3D6CF2513D4DEE300D35D4D /* coverage */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -624,6 +809,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		31355B1313EA139700C33AAB /* Build configuration list for PBXNativeTarget "html.theme.default" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				31355B1013EA139700C33AAB /* Debug */,
+				31355B1113EA139700C33AAB /* coverage */,
+				31355B1213EA139700C33AAB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		C3FA46F613D0F8E200AC4F9B /* Build configuration list for PBXProject "Xit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
