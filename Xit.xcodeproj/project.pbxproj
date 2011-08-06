@@ -381,7 +381,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0420;
-				ORGANIZATIONNAME = "VMware, Inc.";
+				ORGANIZATIONNAME = "";
 			};
 			buildConfigurationList = C3FA46F613D0F8E200AC4F9B /* Build configuration list for PBXProject "Xit" */;
 			compatibilityVersion = "Xcode 3.2";
