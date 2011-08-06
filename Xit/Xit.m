@@ -12,6 +12,7 @@
 @implementation Xit
 
 @synthesize selectedCommit;
+@synthesize refsIndex;
 
 - (id)init
 {

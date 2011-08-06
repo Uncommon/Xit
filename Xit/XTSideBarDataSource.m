@@ -11,6 +11,7 @@
 #import "XTLocalBranchItem.h"
 #import "XTTagItem.h"
 #import "XTRemotesItem.h"
+#import "NSMutableDictionary+MultiObjectForKey.h"
 
 @implementation XTSideBarDataSource
 
@@ -51,13 +52,15 @@
 -(void)reload
 {
     [self willChangeValueForKey:@"reload"];
-    [self reloadBrachs];
-    [self reloadStashes];
+    NSMutableDictionary *refsIndex=[NSMutableDictionary dictionary];
+    [self reloadBrachs:refsIndex];
+    [self reloadStashes:refsIndex];
+    repo.refsIndex=refsIndex;
     [outline reloadData];
     [self didChangeValueForKey:@"reload"];
 }
 
--(void)reloadStashes
+-(void)reloadStashes:(NSMutableDictionary *)refsIndex
 {
     XTSideBarItem *stashes=[roots objectAtIndex:XT_STASHES];
     [stashes clean];
@@ -71,20 +74,23 @@
             [scan scanUpToString:@"\n" intoString:&name];
             XTSideBarItem *stash=[[XTSideBarItem alloc] initWithTitle:name];
             [stashes addchildren:stash];
+            [refsIndex addObject:stash forKey:commit];
         }
     }
 }
 
--(void)reloadBrachs
+-(void)reloadBrachs:(NSMutableDictionary *)refsIndex
 {
     XTSideBarItem *branchs=[roots objectAtIndex:XT_BRANCHS];
     XTSideBarItem *tags=[roots objectAtIndex:XT_TAGS];
     XTRemotesItem *remotes=[roots objectAtIndex:XT_REMOTES];
     
+    NSMutableDictionary *tagIndex=[NSMutableDictionary dictionary];
+    
     [branchs clean];
     [tags clean];
     [remotes clean];
-    NSData *output=[repo exectuteGitWithArgs:[NSArray arrayWithObject:@"show-ref"] error:nil];
+    NSData *output=[repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"show-ref",@"-d",nil] error:nil];
     if(output){
         NSString *refs = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
         NSScanner *scan = [NSScanner scannerWithString:refs];
@@ -95,9 +101,20 @@
             if([name hasPrefix:@"refs/heads/"]){
                 XTLocalBranchItem *branch=[[XTLocalBranchItem alloc] initWithTitle:[name lastPathComponent] andSha:commit];
                 [branchs addchildren:branch];
+                [refsIndex addObject:branch forKey:branch.sha];
             }else if([name hasPrefix:@"refs/tags/"]){
-                XTTagItem *tag=[[XTTagItem alloc] initWithTitle:[name lastPathComponent] andSha:commit];
-                [tags addchildren:tag];
+                XTTagItem *tag;
+                NSString *tagName=[name lastPathComponent];
+                if([tagName hasSuffix:@"^{}"]){
+                    tagName=[tagName substringToIndex:tagName.length-3];
+                    tag=[tagIndex objectForKey:tagName];
+                    tag.sha=commit;
+                }else {
+                    tag=[[XTTagItem alloc] initWithTitle:tagName andSha:commit];
+                    [tags addchildren:tag];
+                    [tagIndex setObject:tag forKey:tagName];
+                }
+                [refsIndex addObject:tag forKey:tag.sha];
             }else if([name hasPrefix:@"refs/remotes/"]){
                 NSString *remoteName=[[name pathComponents] objectAtIndex:2];
                 NSString *branchName=[name lastPathComponent];
@@ -108,6 +125,7 @@
                 }
                 XTLocalBranchItem *branch=[[XTLocalBranchItem alloc] initWithTitle:branchName andSha:commit];
                 [remote addchildren:branch];
+                [refsIndex addObject:branch forKey:branch.sha];
             }
         }
     }
@@ -167,9 +185,14 @@
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification
 {
     XTSideBarItem *item=[outline itemAtRow:outline.selectedRow];
-    NSLog(@"%@",item.sha);
     if(item.sha!=nil)
         repo.selectedCommit=item.sha;
+}
+
+- (BOOL)outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item
+{
+    XTSideBarItem *i=(XTSideBarItem *)item;
+    return (i.sha!=nil);
 }
 
 @end

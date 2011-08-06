@@ -17,8 +17,8 @@
     NSMutableArray *childrens;
 }
 
-@property(readonly) NSString *title;
-@property(readonly) NSString *sha;
+@property(assign) NSString *title;
+@property(assign) NSString *sha;
 
 - (id)initWithTitle:(NSString *)theTitle andSha:(NSString *)sha;
 - (id)initWithTitle:(NSString *)theTitle;
@@ -27,4 +27,5 @@
 - (void)addchildren:(XTSideBarItem *)child;
 - (BOOL)isItemExpandable;
 - (void)clean;
+- (NSString *)badge;
 @end

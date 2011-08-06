@@ -22,9 +22,11 @@
     NSString *gitCMD;
     NSArray* reload;
     NSString *selectedCommit;
+    NSDictionary *refsIndex;
 }
 
 @property(assign) NSString *selectedCommit;
+@property(assign) NSDictionary *refsIndex;
 
 -(void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void(^)(NSString*))block error:(NSError **)error;
 -(NSData *)exectuteGitWithArgs:(NSArray *)args error:(NSError **)error;

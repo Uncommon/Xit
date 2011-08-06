@@ -20,6 +20,7 @@
 		31A8939D13E9D5B4008BE0C2 /* XTCommitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 31A8939B13E9D5B4008BE0C2 /* XTCommitViewController.m */; };
 		31A8939E13E9D5B4008BE0C2 /* XTCommitViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31A8939C13E9D5B4008BE0C2 /* XTCommitViewController.xib */; };
 		31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
+		31C7C12E13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */; };
 		31F1E87F13D3B51200F3B317 /* GITBasic+Xit.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BC055713D1133000C3CF1A /* GITBasic+Xit.m */; };
 		31F1E88313D3DCAC00F3B317 /* XTSideBarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 31F1E88213D3DCAC00F3B317 /* XTSideBarItem.m */; };
 		C3D6CF1B13D4B18900D35D4D /* XTLocalBranchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6CF1A13D4B18900D35D4D /* XTLocalBranchItem.m */; };
@@ -83,6 +84,8 @@
 		31A8939B13E9D5B4008BE0C2 /* XTCommitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTCommitViewController.m; sourceTree = "<group>"; };
 		31A8939C13E9D5B4008BE0C2 /* XTCommitViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTCommitViewController.xib; sourceTree = "<group>"; };
 		31A8939F13E9DA5B008BE0C2 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		31C7C12C13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+MultiObjectForKey.h"; sourceTree = "<group>"; };
+		31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary+MultiObjectForKey.m"; sourceTree = "<group>"; };
 		31F1E87813D3AC6D00F3B317 /* XTSideBarDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XTSideBarDataSource.h; path = Xit/XTSideBarDataSource.h; sourceTree = "<group>"; };
 		31F1E88113D3DCAC00F3B317 /* XTSideBarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XTSideBarItem.h; path = Xit/XTSideBarItem.h; sourceTree = "<group>"; };
 		31F1E88213D3DCAC00F3B317 /* XTSideBarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XTSideBarItem.m; path = Xit/XTSideBarItem.m; sourceTree = "<group>"; };
@@ -186,6 +189,17 @@
 			name = Views;
 			sourceTree = "<group>";
 		};
+		31C7C12A13EC730500A65FE9 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				31C7C12C13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.h */,
+				31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */,
+				C3BC055613D1133000C3CF1A /* GITBasic+Xit.h */,
+				C3BC055713D1133000C3CF1A /* GITBasic+Xit.m */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
 		31F1E87713D3AC0E00F3B317 /* DataSources */ = {
 			isa = PBXGroup;
 			children = (
@@ -279,11 +293,10 @@
 		C3FA470613D0F8E200AC4F9B /* Xit */ = {
 			isa = PBXGroup;
 			children = (
+				31C7C12A13EC730500A65FE9 /* Utils */,
 				31A8939813E9D1EA008BE0C2 /* Views */,
 				C3D6D30F13E8E63A00AF50B0 /* GitX */,
 				31F1E87713D3AC0E00F3B317 /* DataSources */,
-				C3BC055613D1133000C3CF1A /* GITBasic+Xit.h */,
-				C3BC055713D1133000C3CF1A /* GITBasic+Xit.m */,
 				C3FA471213D0F8E200AC4F9B /* Xit.h */,
 				C3FA471313D0F8E200AC4F9B /* Xit.m */,
 				C3FA471513D0F8E200AC4F9B /* Xit.xib */,
@@ -510,6 +523,7 @@
 				C3D6D31F13E8E7E700AF50B0 /* PBGitLane.mm in Sources */,
 				C3D6D32213E91EDC00AF50B0 /* PBGitRevisionCell.m in Sources */,
 				31A8939D13E9D5B4008BE0C2 /* XTCommitViewController.m in Sources */,
+				31C7C12E13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

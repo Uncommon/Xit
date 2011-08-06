@@ -18,6 +18,6 @@
 }
 
 -(void)setRepo:(Xit *)newRepo;
--(void)loadCommit:(NSString *)sha;
+-(NSString *)loadCommit:(NSString *)sha;
 
 @end

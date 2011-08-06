@@ -35,6 +35,11 @@
     return title;
 }
 
+- (NSString *)badge
+{
+    return self.title;
+}
+
 - (NSInteger)numberOfChildrens
 {
     return (NSInteger)[childrens count];

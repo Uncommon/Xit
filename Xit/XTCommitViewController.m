@@ -7,6 +7,8 @@
 //
 
 #import "XTCommitViewController.h"
+#import "NSMutableDictionary+MultiObjectForKey.h"
+#import "XTSideBarItem.h"
 
 @interface XTCommitViewController (Private)
 
@@ -54,35 +56,55 @@ const NSString *kAuthorKeyDate = @"date";
 }
 
 // defaults write com.yourcompany.programname WebKitDeveloperExtras -bool true
--(void)loadCommit:(NSString *)sha
+-(NSString *)loadCommit:(NSString *)sha
 {
-    NSData *output=[repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"show", @"--numstat", @"--summary", @"--pretty=raw",sha, nil] error:nil];
+    NSString *html;
+    NSData *output=[repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"show", @"-z", @"--numstat", @"--summary", @"--pretty=raw",sha, nil] error:nil];
     if (output != nil){
-        NSString *details = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-        NSArray *headerItems = [self parseHeader:details];
-        NSString *header = [self htmlForHeader:headerItems];
-        
-        // File Stats
-        NSMutableDictionary *stats = [self parseStats:details];
-        
-        // File list
-        output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff-tree", @"--root", @"-r", @"-C90%", @"-M90%", sha,nil] error:nil];
-        NSString *dt = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-        NSString *fileList = [self parseDiffTree:dt withStats:stats];
-        
-        // Diffs list
-        output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff-tree", @"--root", @"--cc", @"-C90%", @"-M90%", sha,nil] error:nil];
-        NSString *d = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-        NSString *diffs = [self parseDiff:d];
-        
-        NSString *html = [NSString stringWithFormat:@"<html><head><link rel='stylesheet' type='text/css' href='diff.css'/></head><body>%@%@<div id='diffs'>%@</div></body></html>",header,fileList,diffs];
-        
-        NSBundle *bundle=[NSBundle mainBundle];
-        NSBundle *theme=[NSBundle bundleWithURL:[bundle URLForResource:@"html.theme.default" withExtension:@"bundle"]];
-        NSURL *themeURL=[[theme bundleURL] URLByAppendingPathComponent:@"Contents/Resources"];
-        
-        [[web mainFrame] loadHTMLString:html baseURL:themeURL];
+        NSString *txt = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+        NSArray *details=[txt componentsSeparatedByString:@"\0"];
+        for(NSString *detail in details) {
+            if([detail hasPrefix:@"tag"]){
+                //TODO: parse tag header
+            }else if([detail hasPrefix:@"commit"]){
+                NSArray *headerItems = [self parseHeader:detail];
+                NSString *header = [self htmlForHeader:headerItems];
+                
+                // File Stats
+                NSMutableDictionary *stats = [self parseStats:detail];
+                
+                // File list
+                output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff-tree", @"--root", @"-r", @"-C90%", @"-M90%", sha,nil] error:nil];
+                NSString *dt = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+                NSString *fileList = [self parseDiffTree:dt withStats:stats];
+                
+                // Diffs list
+                output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff-tree", @"--root", @"--cc", @"-C90%", @"-M90%", sha,nil] error:nil];
+                NSString *d = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+                NSString *diffs = [self parseDiff:d];
+                
+                // Badges
+                NSArray *refs=[repo.refsIndex objectsForKey:sha];
+                NSMutableString *badges=[NSMutableString string];
+                if(refs.count>0){
+                    [badges appendString:@"<div><ul>"];
+                    for(XTSideBarItem *ref in refs){
+                        [badges appendFormat:@"<ul>%@</ul>",[ref badge]];
+                    }
+                    [badges appendString:@"</ul></div>"];
+                }
+                
+                html = [NSString stringWithFormat:@"<html><head><link rel='stylesheet' type='text/css' href='diff.css'/></head><body>%@%@%@<div id='diffs'>%@</div></body></html>",header,badges,fileList,diffs];
+                
+                NSBundle *bundle=[NSBundle mainBundle];
+                NSBundle *theme=[NSBundle bundleWithURL:[bundle URLForResource:@"html.theme.default" withExtension:@"bundle"]];
+                NSURL *themeURL=[[theme bundleURL] URLByAppendingPathComponent:@"Contents/Resources"];
+                
+                [[web mainFrame] loadHTMLString:html baseURL:themeURL];
+            }
+        }
     }
+    return html;
 }
 
 - (NSString *)htmlForHeader:(NSArray *)header
