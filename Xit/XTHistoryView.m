@@ -23,6 +23,42 @@
 
 - (void)viewDidLoad {
     NSLog(@"viewDidLoad");
+    
+    //Sticky row
+    
+    [table setPostsBoundsChangedNotifications:YES];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(tableChanges:)
+                                                 name:NSViewBoundsDidChangeNotification 
+                                               object:nil];
+}
+
+-(void)tableChanges:(NSNotification*)aNotification
+{
+    NSRect b=[[table superview] bounds];
+    NSRange rows=[table rowsInRect:b];
+    NSInteger sel=table.selectedRow;
+    if(stickyRow==nil){
+        NSRect f=[[table headerView] frame];
+        f.origin.y+=f.size.height;
+        stickyRow=[[NSTextField alloc] initWithFrame:f];  
+        [[[table superview] superview] addSubview:stickyRow];
+    }
+
+    if(rows.location>=sel){
+        NSCell *cell=[[table preparedCellAtColumn:0 row:sel] copy];
+        [stickyRow setCell:cell];
+        [stickyRow drawCellInside:cell];
+        [stickyRow setHidden:NO];
+    }else if((rows.location+rows.length)<sel){
+        NSCell *cell=[[table preparedCellAtColumn:0 row:sel] copy];
+        [stickyRow setCell:cell];
+        [stickyRow drawCellInside:cell];
+        [stickyRow setHidden:NO];
+    }else{
+        [stickyRow setHidden:YES];
+    }
 }
 
 - (void)setRepo:(Xit *)newRepo

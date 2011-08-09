@@ -21,12 +21,15 @@
     IBOutlet NSView *commitView;
     IBOutlet NSSplitView *sidebarSplitView;
     IBOutlet NSSplitView *mainSplitView;
+    IBOutlet NSTableView *table;
     @private
     Xit *repo;
+    NSTextField *stickyRow;
 }
 
 - (void)setRepo:(Xit *)newRepo;
 - (void)viewDidLoad;
+-(void)tableChanges:(NSNotification*)aNotification;
 
 -(IBAction)toggleLayout:(id)sender;
 -(IBAction)toggleSideBar:(id)sender;
