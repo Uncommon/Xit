@@ -3,7 +3,6 @@
 //  Xit
 //
 //  Created by German Laullon on 03/08/11.
-//  Copyright 2011 VMware, Inc. All rights reserved.
 //
 
 #import "XTCommitViewController.h"
@@ -175,8 +174,13 @@ const NSString *kAuthorKeyDate = @"date";
 					NSString *name = [line substringWithRange:NSMakeRange(r_name_i.location,(r_email_i.location-r_name_i.location))];
 					NSString *email = [line substringWithRange:NSMakeRange(r_email_i.location+1,((r_email_e.location-1)-r_email_i.location))];
 					
-					NSArray *t=[[line substringFromIndex:r_email_e.location+2] componentsSeparatedByString:@" "];
-					NSDate *date=[NSDate dateWithTimeIntervalSince1970:[[t objectAtIndex:0] doubleValue]];
+					NSDate *date = nil;
+					
+					if ([line length] > r_email_e.location + 2) {
+						NSArray *t = [[line substringFromIndex:r_email_e.location+2] componentsSeparatedByString:@" "];
+						if ([t count] > 0)
+							date = [NSDate dateWithTimeIntervalSince1970:[[t objectAtIndex:0] doubleValue]];
+					}
 					
 					NSDictionary *content = [NSDictionary dictionaryWithObjectsAndKeys:
                                              name, kAuthorKeyName,
