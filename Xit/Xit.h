@@ -7,15 +7,11 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class XTSideBarDataSource;
-@class XTHistoryDataSource;
-@class XTCommitViewController;
+@class XTHistoryView;
 
 @interface Xit : NSDocument {
-    IBOutlet XTSideBarDataSource *sideBarDS;
-    IBOutlet XTHistoryDataSource *historyDS;
-    IBOutlet XTCommitViewController *commitViewController;
-    IBOutlet NSView *commitView;
+    IBOutlet XTHistoryView *historyView;
+    IBOutlet NSTabView *tabs;
 @private
     FSEventStreamRef stream;
     NSURL *repoURL;

@@ -3,7 +3,6 @@
 //  Xit
 //
 //  Created by German Laullon on 05/08/11.
-//  Copyright 2011 VMware, Inc. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
