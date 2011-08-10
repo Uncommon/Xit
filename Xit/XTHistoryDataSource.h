@@ -10,21 +10,21 @@
 @class Xit;
 @class XTHistoryItem;
 
-@interface XTHistoryDataSource : NSObject <NSTableViewDataSource,NSTableViewDelegate>
+@interface XTHistoryDataSource : NSObject <NSTableViewDataSource, NSTableViewDelegate>
 {
-@private
-    Xit *repo;
-    NSArray *items;
-    NSTableView *table;
+    @private
+    Xit * repo;
+    NSArray * items;
+    NSTableView * table;
     BOOL cancel;
     dispatch_queue_t queue;
-    NSMutableDictionary *index;
+    NSMutableDictionary * index;
 }
 
-@property(readonly)NSArray *items;
+@property (readonly) NSArray * items;
 
--(void)reload;
--(void)waitUntilReloadEnd;
--(void)setRepo:(Xit *)newRepo;
+- (void)reload;
+- (void)waitUntilReloadEnd;
+- (void)setRepo:(Xit *)newRepo;
 @end
 

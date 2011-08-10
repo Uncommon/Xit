@@ -11,82 +11,79 @@
 
 @implementation XitTests
 
-- (void)setUp
-{
+- (void) setUp {
     [super setUp];
-    
-    repo=[NSString stringWithFormat:@"%@testrepo",NSTemporaryDirectory()];
-    xit=[self createRepo:repo];
-    
-    remoteRepo=[NSString stringWithFormat:@"%@remotetestrepo",NSTemporaryDirectory()];
+
+    repo = [NSString stringWithFormat:@"%@testrepo", NSTemporaryDirectory()];
+    xit = [self createRepo:repo];
+
+    remoteRepo = [NSString stringWithFormat:@"%@remotetestrepo", NSTemporaryDirectory()];
     [self createRepo:remoteRepo];
-    
+
     NSLog(@"setUp ok");
 }
 
-- (void)tearDown
-{
+- (void) tearDown {
     [super tearDown];
-    
-    NSFileManager *defaultManager = [NSFileManager defaultManager];
+
+    NSFileManager * defaultManager = [NSFileManager defaultManager];
     [defaultManager removeItemAtPath:repo error:nil];
     [defaultManager removeItemAtPath:remoteRepo error:nil];
-    
-    if([defaultManager fileExistsAtPath:repo]){
-        STFail(@"tearDown %@ FAIL!!",repo);
+
+    if ([defaultManager fileExistsAtPath:repo]) {
+        STFail(@"tearDown %@ FAIL!!", repo);
     }
-    
-    if([defaultManager fileExistsAtPath:remoteRepo]){
-        STFail(@"tearDown %@ FAIL!!",remoteRepo);
+
+    if ([defaultManager fileExistsAtPath:remoteRepo]) {
+        STFail(@"tearDown %@ FAIL!!", remoteRepo);
     }
-    
+
     NSLog(@"tearDown ok");
 }
 
-//- (void)testGitError
-//{
-//    NSError *error = nil;    
+// - (void)testGitError
+// {
+//    NSError *error = nil;
 //    [xit exectuteGitWithArgs:[NSArray arrayWithObjects:@"checkout",@"-b",@"b1",nil] error:&error];
 //    [xit exectuteGitWithArgs:[NSArray arrayWithObjects:@"checkout",@"-b",@"b1",nil] error:&error];
 //    STAssertTrue(error!=nil, @"no error");
 //    STAssertTrue([error code]!=0, @"no error");
-//}
+// }
 
-- (Xit *)createRepo:(NSString *)repoName
-{
-    NSLog(@"[createRepo] repoName=%@",repoName);
-    NSFileManager *defaultManager = [NSFileManager defaultManager];
-    
-    if([defaultManager fileExistsAtPath:repoName]){
+- (Xit *) createRepo:(NSString *)repoName {
+    NSLog(@"[createRepo] repoName=%@", repoName);
+    NSFileManager * defaultManager = [NSFileManager defaultManager];
+
+    if ([defaultManager fileExistsAtPath:repoName]) {
         [defaultManager removeItemAtPath:repoName error:nil];
     }
     [defaultManager createDirectoryAtPath:repoName withIntermediateDirectories:YES attributes:nil error:nil];
-    
-    NSURL *repoURL=[NSURL URLWithString:[NSString stringWithFormat:@"%@.git",repoName]];
-    
-    Xit *res=[[Xit alloc] initWithContentsOfURL:repoURL ofType:@"git" error:nil];
-    
-    NSString *testFile=[NSString stringWithFormat:@"%@/file1.txt",repoName];
-    NSString *txt=@"some text";
+
+    NSURL * repoURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@.git", repoName]];
+
+    Xit * res = [[Xit alloc] initWithContentsOfURL:repoURL ofType:@"git" error:nil];
+
+    NSString * testFile = [NSString stringWithFormat:@"%@/file1.txt", repoName];
+    NSString * txt = @"some text";
     [txt writeToFile:testFile atomically:YES encoding:NSASCIIStringEncoding error:nil];
-    
-    if(![defaultManager fileExistsAtPath:testFile]){
+
+    if (![defaultManager fileExistsAtPath:testFile]) {
         STFail(@"testFile NOT Found!!");
     }
-    
-    if(![res initRepo]){
-        STFail(@"initRepo '%@' FAIL!!",repoName);
+
+    if (![res initRepo]) {
+        STFail(@"initRepo '%@' FAIL!!", repoName);
     }
-    
-    if(![defaultManager fileExistsAtPath:[NSString stringWithFormat:@"%@/.git",repoName]]){
-        STFail(@"%@/.git NOT Found!!",repoName);
+
+    if (![defaultManager fileExistsAtPath:[NSString stringWithFormat:@"%@/.git", repoName]]) {
+        STFail(@"%@/.git NOT Found!!", repoName);
     }
-    
-    if(![res addFile:@"file1.txt"]){
+
+    if (![res addFile:@"file1.txt"]) {
         STFail(@"add file 'file1.txt'");
     }
-    
-    if(![res commitWithMessage:@"new file1.txt"]){
+
+    if (![res commitWithMessage:@"new file1.txt"]) {
         STFail(@"Commit with mesage 'new file1.txt'");
     }
 

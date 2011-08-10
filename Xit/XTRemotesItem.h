@@ -9,10 +9,10 @@
 #import "XTSideBarItem.h"
 
 @interface XTRemotesItem : XTSideBarItem {
-@private
-    NSMutableDictionary *remotes;
+    @private
+    NSMutableDictionary * remotes;
 }
 
--(XTSideBarItem *)getRemote:(NSString *)remoteName;
+- (XTSideBarItem *)getRemote:(NSString *)remoteName;
 
 @end

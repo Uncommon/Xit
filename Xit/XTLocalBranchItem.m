@@ -10,8 +10,7 @@
 
 @implementation XTLocalBranchItem
 
--(BOOL)isItemExpandable
-{
+- (BOOL) isItemExpandable {
     return NO;
 }
 @end

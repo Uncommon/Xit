@@ -11,23 +11,23 @@
 @class Xit;
 
 typedef enum {
-    XT_BRANCHS=0,
+    XT_BRANCHS = 0,
     XT_TAGS,
     XT_REMOTES,
     XT_STASHES
 } XTSideBarRootItems;
 
-@interface XTSideBarDataSource : NSObject <NSOutlineViewDataSource,NSOutlineViewDelegate>
+@interface XTSideBarDataSource : NSObject <NSOutlineViewDataSource, NSOutlineViewDelegate>
 {
     @private
-    Xit *repo;
-    NSArray *roots;
-    NSOutlineView *outline;
+    Xit * repo;
+    NSArray * roots;
+    NSOutlineView * outline;
 }
 
--(void)setRepo:(Xit *)repo;
--(void)reload;
--(void)reloadBrachs:(NSMutableDictionary *)refsIndex;
--(void)reloadStashes:(NSMutableDictionary *)refsIndex;
+- (void)setRepo:(Xit *)repo;
+- (void)reload;
+- (void)reloadBrachs:(NSMutableDictionary *)refsIndex;
+- (void)reloadStashes:(NSMutableDictionary *)refsIndex;
 
 @end

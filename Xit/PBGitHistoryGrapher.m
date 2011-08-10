@@ -13,21 +13,19 @@
 @implementation PBGitHistoryGrapher
 
 
-- (id) init
-{
+- (id) init {
     self = [super init];
     if (self) {
         grapher = [[PBGitGrapher alloc] init];
     }
-	return self;
+    return self;
 }
 
 
-- (void)graphCommits:(NSArray *)revList
-{
-	for (XTHistoryItem *commit in revList) {
+- (void) graphCommits:(NSArray *)revList {
+    for (XTHistoryItem * commit in revList) {
         [grapher decorateCommit:commit];
-	}    
+    }
 }
 
 

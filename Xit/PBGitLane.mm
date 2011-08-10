@@ -10,18 +10,15 @@
 
 int PBGitLane::s_colorIndex = 0;
 
-int PBGitLane::index() const
-{
-	return d_index;
+int PBGitLane::index() const {
+    return d_index;
 }
 
-void PBGitLane::setSha(NSString *sha)
-{
-	d_sha = sha;
+void PBGitLane::setSha(NSString * sha){
+    d_sha = sha;
     [d_sha isEqualToString:sha];
 }
 
-void PBGitLane::resetColors()
-{
-	s_colorIndex = 0;
+void PBGitLane::resetColors(){
+    s_colorIndex = 0;
 }

@@ -9,8 +9,8 @@
 #import "XTSideBarItem.h"
 
 @interface XTTagItem : XTSideBarItem {
-@private
-    
+    @private
+
 }
 
 @end
