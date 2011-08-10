@@ -10,9 +10,9 @@
 @class Xit;
 
 @interface XitTests : SenTestCase {
-    NSString * repo;
-    NSString * remoteRepo;
-    Xit * xit;
+    NSString *repo;
+    NSString *remoteRepo;
+    Xit *xit;
     BOOL reloadDetected;
 }
 

@@ -27,7 +27,7 @@ using namespace std;
     return self;
 }
 
-void add_line(struct PBGitGraphLine * lines, int * nLines, int upper, size_t from, size_t to, int index){
+void add_line(struct PBGitGraphLine *lines, int *nLines, int upper, size_t from, size_t to, int index){
     // TODO: put in one thing
     struct PBGitGraphLine a = { upper, from, to, index };
 
@@ -38,18 +38,18 @@ void add_line(struct PBGitGraphLine * lines, int * nLines, int upper, size_t fro
     int i = 0;
     size_t newPos = -1;
 
-    std::list<PBGitLane *> * currentLanes = new std::list<PBGitLane *>;
-    std::list<PBGitLane *> * previousLanes = (std::list<PBGitLane *> *)pl;
-    NSArray * parents = [commit parents];
+    std::list<PBGitLane *> *currentLanes = new std::list<PBGitLane *>;
+    std::list<PBGitLane *> *previousLanes = (std::list<PBGitLane *> *)pl;
+    NSArray *parents = [commit parents];
     NSUInteger nParents = [parents count];
 
     NSUInteger maxLines = (previousLanes->size() + nParents + 2) * 2;
-    struct PBGitGraphLine * lines = (struct PBGitGraphLine *)malloc(sizeof(struct PBGitGraphLine) * maxLines);
+    struct PBGitGraphLine *lines = (struct PBGitGraphLine *)malloc(sizeof(struct PBGitGraphLine) * maxLines);
     int currentLine = 0;
 
-    PBGitLane * currentLane = NULL;
+    PBGitLane *currentLane = NULL;
     BOOL didFirst = NO;
-    NSString * commit_oid = [commit sha];
+    NSString *commit_oid = [commit sha];
 
     // First, iterate over earlier columns and pass through any that don't want this commit
     if (previous != nil) {
@@ -87,8 +87,8 @@ void add_line(struct PBGitGraphLine * lines, int * nLines, int upper, size_t fro
 
     // If we already did the first parent, don't do so again
     if (!didFirst && currentLanes->size() < MAX_LANES && nParents) {
-        XTHistoryItem * parent = [parents objectAtIndex:0];
-        PBGitLane * newLane = new PBGitLane(parent.sha);
+        XTHistoryItem *parent = [parents objectAtIndex:0];
+        PBGitLane *newLane = new PBGitLane(parent.sha);
         currentLanes->push_back(newLane);
         newPos = currentLanes->size();
         add_line(lines, &currentLine, 0, newPos, newPos, newLane->index());
@@ -102,8 +102,8 @@ void add_line(struct PBGitGraphLine * lines, int * nLines, int upper, size_t fro
 
     int parentIndex = 0;
     for (parentIndex = 1; parentIndex < nParents; ++parentIndex) {
-        XTHistoryItem * parent = [parents objectAtIndex:parentIndex];
-        NSString * parentSha = parent.sha;
+        XTHistoryItem *parent = [parents objectAtIndex:parentIndex];
+        NSString *parentSha = parent.sha;
         int i = 0;
         BOOL was_displayed = NO;
         std::list<PBGitLane *>::iterator it = currentLanes->begin();
@@ -123,7 +123,7 @@ void add_line(struct PBGitGraphLine * lines, int * nLines, int upper, size_t fro
 
         // Really add this parent
         addedParent = YES;
-        PBGitLane * newLane = new PBGitLane(parentSha);
+        PBGitLane *newLane = new PBGitLane(parentSha);
         currentLanes->push_back(newLane);
         add_line(lines, &currentLine, 0, currentLanes->size(), newPos, newLane->index());
     }
@@ -148,7 +148,7 @@ void add_line(struct PBGitGraphLine * lines, int * nLines, int upper, size_t fro
 
     // Update the current lane to point to the new parent
     if (currentLane && nParents > 0) {
-        XTHistoryItem * parent = [parents objectAtIndex:0];
+        XTHistoryItem *parent = [parents objectAtIndex:0];
         currentLane->setSha(parent.sha);
     } else {
         currentLanes->remove(currentLane);
@@ -161,7 +161,7 @@ void add_line(struct PBGitGraphLine * lines, int * nLines, int upper, size_t fro
 }
 
 - (void) finalize {
-    std::list<PBGitLane *> * lanes = (std::list<PBGitLane *> *)pl;
+    std::list<PBGitLane *> *lanes = (std::list<PBGitLane *> *)pl;
     std::list<PBGitLane *>::iterator it = lanes->begin();
     for (; it != lanes->end(); ++it) {
         delete *it;

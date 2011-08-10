@@ -94,6 +94,7 @@
 		31F1E87813D3AC6D00F3B317 /* XTSideBarDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = XTSideBarDataSource.h; path = Xit/XTSideBarDataSource.h; sourceTree = "<group>"; tabWidth = 4; };
 		31F1E88113D3DCAC00F3B317 /* XTSideBarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = XTSideBarItem.h; path = Xit/XTSideBarItem.h; sourceTree = "<group>"; tabWidth = 4; };
 		31F1E88213D3DCAC00F3B317 /* XTSideBarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; name = XTSideBarItem.m; path = Xit/XTSideBarItem.m; sourceTree = "<group>"; tabWidth = 4; };
+		C3355E1413F32815008D14B8 /* uncrustify.cfg */ = {isa = PBXFileReference; lastKnownFileType = text; path = uncrustify.cfg; sourceTree = "<group>"; };
 		C3BC055613D1133000C3CF1A /* GITBasic+Xit.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = "GITBasic+Xit.h"; sourceTree = "<group>"; };
 		C3BC055713D1133000C3CF1A /* GITBasic+Xit.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = "GITBasic+Xit.m"; sourceTree = "<group>"; };
 		C3D6CF1913D4B18900D35D4D /* XTLocalBranchItem.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = XTLocalBranchItem.h; path = Xit/XTLocalBranchItem.h; sourceTree = "<group>"; tabWidth = 4; };
@@ -272,6 +273,7 @@
 				31355B0913EA139700C33AAB /* html.theme.default */,
 				C3FA46FF13D0F8E200AC4F9B /* Frameworks */,
 				C3FA46FD13D0F8E200AC4F9B /* Products */,
+				C3355E1413F32815008D14B8 /* uncrustify.cfg */,
 			);
 			sourceTree = "<group>";
 		};
@@ -385,11 +387,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C3FA473113D0F8E300AC4F9B /* Build configuration list for PBXNativeTarget "Xit" */;
 			buildPhases = (
+				C3355E1113F31044008D14B8 /* Run uncrustify Script */,
 				C3FA46F813D0F8E200AC4F9B /* Sources */,
 				C3FA46F913D0F8E200AC4F9B /* Frameworks */,
 				C3FA46FA13D0F8E200AC4F9B /* Resources */,
 				317C19DE13EBD2500003E8E6 /* ShellScript */,
-				C3355E1113F31044008D14B8 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -405,6 +407,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C3FA473413D0F8E300AC4F9B /* Build configuration list for PBXNativeTarget "XitTests" */;
 			buildPhases = (
+				C3355E1313F327D6008D14B8 /* Run uncrustify Script */,
 				C3FA471B13D0F8E300AC4F9B /* Sources */,
 				C3FA471C13D0F8E300AC4F9B /* Frameworks */,
 				C3FA471D13D0F8E300AC4F9B /* Resources */,
@@ -498,18 +501,33 @@
 			shellPath = /bin/sh;
 			shellScript = "KEYWORDS=\"TODO|FIXME|\\?\\?\\?:|\\!\\!\\!:\"\nfind ${SRCROOT} \\( -name \"*.h\" -or -name \"*.m\" \\) -print0 | \\\nxargs -0 egrep --with-filename --line-number --only-matching \"($KEYWORDS).*\\$\" | \\\nperl -p -e \"s/($KEYWORDS)/ warning: \\$1/\"";
 		};
-		C3355E1113F31044008D14B8 /* ShellScript */ = {
+		C3355E1113F31044008D14B8 /* Run uncrustify Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Run uncrustify Script";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if $(which -s uncrustify); then\n    find . -name \"*[mh]\" -exec uncrustify -c uncrustify.cfg --replace --no-backup {} \\;\nelse\n    echo \"warning: uncrustify not found\"\nfi";
+		};
+		C3355E1313F327D6008D14B8 /* Run uncrustify Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run uncrustify Script";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if $(which -s uncrustify); then\nfind . -name \"*[mh]\" -exec uncrustify -c uncrustify.cfg --replace --no-backup {} \\;\nelse\necho \"warning: uncrustify not found\"\nfi";
 		};
 		C3FA471E13D0F8E300AC4F9B /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;

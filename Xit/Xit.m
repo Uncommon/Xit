@@ -60,7 +60,7 @@
     [super windowControllerDidLoadNib:aController];
 
     [historyView loadView];
-    NSTabViewItem * tabView = [tabs tabViewItemAtIndex:0];
+    NSTabViewItem *tabView = [tabs tabViewItemAtIndex:0];
     [[historyView view] setFrame:NSMakeRect(0, 0, [[tabView view] frame].size.width, [[tabView view] frame].size.height)];
     [tabView setView:[historyView view]];
     [historyView setRepo:self];
@@ -97,28 +97,28 @@
 #pragma mark - git commands
 
 - (void) getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^)(NSString *))block error:(NSError **)error {
-    NSMutableArray * args = [NSMutableArray arrayWithArray:logArgs];
+    NSMutableArray *args = [NSMutableArray arrayWithArray:logArgs];
 
     [args insertObject:@"log" atIndex:0];
     [args insertObject:@"-z" atIndex:1];
-    NSData * zero = [@"\0" dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *zero = [@"\0" dataUsingEncoding:NSUTF8StringEncoding];
 
     NSLog(@"****command = git %@", [args componentsJoinedByString:@" "]);
-    NSTask * task = [[NSTask alloc] init];
+    NSTask *task = [[NSTask alloc] init];
     [task setCurrentDirectoryPath:[repoURL path]];
     [task setLaunchPath:gitCMD];
     [task setArguments:args];
 
-    NSPipe * pipe = [NSPipe pipe];
+    NSPipe *pipe = [NSPipe pipe];
     [task setStandardOutput:pipe];
     [task setStandardError:pipe];
 
     [task  launch];
-    NSMutableData * output = [NSMutableData data];
+    NSMutableData *output = [NSMutableData data];
 
     BOOL end = NO;
     while (!end) {
-        NSData * availableData = [[pipe fileHandleForReading] availableData];
+        NSData *availableData = [[pipe fileHandleForReading] availableData];
         [output appendData:availableData];
 
         end = (([availableData length] == 0) && ![task isRunning]);
@@ -129,8 +129,8 @@
         NSRange zeroRange = [output rangeOfData:zero options:0 range:searchRange];
         while (zeroRange.location != NSNotFound) {
             NSRange commitRange = NSMakeRange(searchRange.location, (zeroRange.location - searchRange.location));
-            NSData * commit = [output subdataWithRange:commitRange];
-            NSString * str = [[NSString alloc] initWithData:commit encoding:NSUTF8StringEncoding];
+            NSData *commit = [output subdataWithRange:commitRange];
+            NSString *str = [[NSString alloc] initWithData:commit encoding:NSUTF8StringEncoding];
             if (str != nil)
                 block(str);
             searchRange = NSMakeRange(zeroRange.location + 1, [output length] - (zeroRange.location + 1));
@@ -143,7 +143,7 @@
     NSLog(@"**** status = %d", status);
 
     if (status != 0) {
-        NSString * string = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+        NSString *string = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
         if (error != NULL) {
             *error = [NSError errorWithDomain:@"git"
                                          code:status
@@ -154,17 +154,17 @@
 
 - (NSData *) exectuteGitWithArgs:(NSArray *)args error:(NSError **)error {
     NSLog(@"****command = git %@", [args componentsJoinedByString:@" "]);
-    NSTask * task = [[NSTask alloc] init];
+    NSTask *task = [[NSTask alloc] init];
     [task setCurrentDirectoryPath:[repoURL path]];
     [task setLaunchPath:gitCMD];
     [task setArguments:args];
 
-    NSPipe * pipe = [NSPipe pipe];
+    NSPipe *pipe = [NSPipe pipe];
     [task setStandardOutput:pipe];
     [task setStandardError:pipe];
 
     [task  launch];
-    NSData * output = [[pipe fileHandleForReading] readDataToEndOfFile];
+    NSData *output = [[pipe fileHandleForReading] readDataToEndOfFile];
     [task waitUntilExit];
 
     int status = [task terminationStatus];
@@ -172,7 +172,7 @@
 
     if (status != 0) {
         if (error != NULL) {
-            NSString * string = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+            NSString *string = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
             NSLog(@"**** output = %@", string);
             *error = [NSError errorWithDomain:@"git"
                                          code:status
@@ -186,9 +186,9 @@
 
 #pragma mark - monitor file system
 - (void) initializeEventStream {
-    NSString * myPath = [[repoURL URLByAppendingPathComponent:@".git"] absoluteString];
-    NSArray * pathsToWatch = [NSArray arrayWithObject:myPath];
-    void * appPointer = (void *)self;
+    NSString *myPath = [[repoURL URLByAppendingPathComponent:@".git"] absoluteString];
+    NSArray *pathsToWatch = [NSArray arrayWithObject:myPath];
+    void *appPointer = (void *)self;
     FSEventStreamContext context = { 0, appPointer, NULL, NULL, NULL };
     NSTimeInterval latency = 3.0;
 
@@ -210,18 +210,18 @@
 int event = 0;
 
 void fsevents_callback(ConstFSEventStreamRef streamRef,
-                       void * userData,
+                       void *userData,
                        size_t numEvents,
-                       void * eventPaths,
+                       void *eventPaths,
                        const FSEventStreamEventFlags eventFlags[],
                        const FSEventStreamEventId eventIds[]){
-    Xit * xit = (Xit *)userData;
+    Xit *xit = (Xit *)userData;
 
     event++;
 
-    NSMutableArray * reload = [NSMutableArray arrayWithCapacity:numEvents];
+    NSMutableArray *reload = [NSMutableArray arrayWithCapacity:numEvents];
     for (size_t i = 0; i < numEvents; i++) {
-        NSString * path = [(NSArray *) eventPaths objectAtIndex:i];
+        NSString *path = [(NSArray *) eventPaths objectAtIndex:i];
         NSRange r = [path rangeOfString:@".git" options:NSBackwardsSearch];
         path = [path substringFromIndex:r.location];
         [reload addObject:path];

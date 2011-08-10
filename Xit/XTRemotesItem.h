@@ -10,7 +10,7 @@
 
 @interface XTRemotesItem : XTSideBarItem {
     @private
-    NSMutableDictionary * remotes;
+    NSMutableDictionary *remotes;
 }
 
 - (XTSideBarItem *)getRemote:(NSString *)remoteName;

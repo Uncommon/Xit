@@ -13,12 +13,12 @@
 @interface PBGraphCellInfo : NSObject
 {
     size_t position;
-    struct PBGitGraphLine * lines;
+    struct PBGitGraphLine *lines;
     int nLines;
     size_t numColumns;
 }
 
-@property (assign) struct PBGitGraphLine * lines;
+@property (assign) struct PBGitGraphLine *lines;
 @property (assign) int nLines;
 @property (assign) size_t position, numColumns;
 

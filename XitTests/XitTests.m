@@ -26,7 +26,7 @@
 - (void) tearDown {
     [super tearDown];
 
-    NSFileManager * defaultManager = [NSFileManager defaultManager];
+    NSFileManager *defaultManager = [NSFileManager defaultManager];
     [defaultManager removeItemAtPath:repo error:nil];
     [defaultManager removeItemAtPath:remoteRepo error:nil];
 
@@ -52,19 +52,19 @@
 
 - (Xit *) createRepo:(NSString *)repoName {
     NSLog(@"[createRepo] repoName=%@", repoName);
-    NSFileManager * defaultManager = [NSFileManager defaultManager];
+    NSFileManager *defaultManager = [NSFileManager defaultManager];
 
     if ([defaultManager fileExistsAtPath:repoName]) {
         [defaultManager removeItemAtPath:repoName error:nil];
     }
     [defaultManager createDirectoryAtPath:repoName withIntermediateDirectories:YES attributes:nil error:nil];
 
-    NSURL * repoURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@.git", repoName]];
+    NSURL *repoURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@.git", repoName]];
 
-    Xit * res = [[Xit alloc] initWithContentsOfURL:repoURL ofType:@"git" error:nil];
+    Xit *res = [[Xit alloc] initWithContentsOfURL:repoURL ofType:@"git" error:nil];
 
-    NSString * testFile = [NSString stringWithFormat:@"%@/file1.txt", repoName];
-    NSString * txt = @"some text";
+    NSString *testFile = [NSString stringWithFormat:@"%@/file1.txt", repoName];
+    NSString *txt = @"some text";
     [txt writeToFile:testFile atomically:YES encoding:NSASCIIStringEncoding error:nil];
 
     if (![defaultManager fileExistsAtPath:testFile]) {

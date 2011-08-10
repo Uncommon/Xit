@@ -18,7 +18,7 @@
 }
 
 + (NSArray *) laneColors {
-    static NSArray * laneColors = nil;
+    static NSArray *laneColors = nil;
 
     if (!laneColors)
         laneColors = [NSArray arrayWithObjects:
@@ -41,12 +41,12 @@
     NSPoint source = NSMakePoint(origin.x + columnWidth * from, origin.y + offset);
     NSPoint center = NSMakePoint(origin.x + columnWidth * to, origin.y + r.size.height * 0.5 + 0.5);
 
-    NSArray * laneColors = [PBGitRevisionCell laneColors];
-    NSColor * color = [laneColors objectAtIndex:c % [laneColors count]];
+    NSArray *laneColors = [PBGitRevisionCell laneColors];
+    NSColor *color = [laneColors objectAtIndex:c % [laneColors count]];
 
     [color set];
 
-    NSBezierPath * path = [NSBezierPath bezierPath];
+    NSBezierPath *path = [NSBezierPath bezierPath];
     [path setLineWidth:2];
 
     [path moveToPoint:source];
@@ -69,7 +69,7 @@
     NSRect oval = { columnOrigin.x - 5, columnOrigin.y + r.size.height * 0.5 - 5, 10, 10 };
 
 
-    NSBezierPath * path = [NSBezierPath bezierPathWithOvalInRect:oval];
+    NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:oval];
 
     [[NSColor blackColor] set];
     [path fill];
@@ -101,7 +101,7 @@
     }
     top.y = r.origin.y + (r.size.height - columnHeight) / 2;
 
-    NSBezierPath * path = [NSBezierPath bezierPath];
+    NSBezierPath *path = [NSBezierPath bezierPath];
     // Start at top
     [path moveToPoint:NSMakePoint(top.x, top.y)];
     // Go down
@@ -119,8 +119,8 @@
 }
 
 - (NSMutableDictionary *) attributesForRefLabelSelected:(BOOL)selected {
-    NSMutableDictionary * attributes = [[[NSMutableDictionary alloc] initWithCapacity:2] autorelease];
-    NSMutableParagraphStyle * style = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
+    NSMutableDictionary *attributes = [[[NSMutableDictionary alloc] initWithCapacity:2] autorelease];
+    NSMutableParagraphStyle *style = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
 
     [style setAlignment:NSCenterTextAlignment];
     [attributes setObject:style forKey:NSParagraphStyleAttributeName];
@@ -142,7 +142,7 @@
         NSDivideRect(rect, &ownRect, &rect, pathWidth, NSMinXEdge);
 
         int i;
-        struct PBGitGraphLine * lines = cellInfo.lines;
+        struct PBGitGraphLine *lines = cellInfo.lines;
         for (i = 0; i < cellInfo.nLines; i++) {
             if (lines[i].upper == 0)
                 [self drawLineFromColumn:lines[i].from toColumn:lines[i].to inRect:ownRect offset:ownRect.size.height color:lines[i].colorIndex];

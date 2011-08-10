@@ -11,13 +11,13 @@
 @interface XTSideBarItem : NSObject
 {
     @private
-    NSString * title;
-    NSString * sha;
-    NSMutableArray * childrens;
+    NSString *title;
+    NSString *sha;
+    NSMutableArray *childrens;
 }
 
-@property (assign) NSString * title;
-@property (assign) NSString * sha;
+@property (assign) NSString *title;
+@property (assign) NSString *sha;
 
 - (id)initWithTitle:(NSString *)theTitle andSha:(NSString *)sha;
 - (id)initWithTitle:(NSString *)theTitle;

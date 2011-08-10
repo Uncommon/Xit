@@ -31,12 +31,12 @@
 
 // -parseHeader: returns an array of dictionaries with these keys
 const NSString * kHeaderKeyName = @"name";
-const NSString * kHeaderKeyContent = @"content";
+const NSString *kHeaderKeyContent = @"content";
 
 // Keys for the author/committer dictionary
-const NSString * kAuthorKeyName = @"name";
-const NSString * kAuthorKeyEmail = @"email";
-const NSString * kAuthorKeyDate = @"date";
+const NSString *kAuthorKeyName = @"name";
+const NSString *kAuthorKeyEmail = @"email";
+const NSString *kAuthorKeyDate = @"date";
 
 @implementation XTCommitViewController
 
@@ -47,45 +47,45 @@ const NSString * kAuthorKeyDate = @"date";
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"selectedCommit"]) {
-        NSString * newSelectedCommit = [change objectForKey:NSKeyValueChangeNewKey];
+        NSString *newSelectedCommit = [change objectForKey:NSKeyValueChangeNewKey];
         [self loadCommit:newSelectedCommit];
     }
 }
 
 // defaults write com.yourcompany.programname WebKitDeveloperExtras -bool true
 - (NSString *) loadCommit:(NSString *)sha {
-    NSString * html;
-    NSData * output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"show", @"-z", @"--numstat", @"--summary", @"--pretty=raw", sha, nil] error:nil];
+    NSString *html;
+    NSData *output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"show", @"-z", @"--numstat", @"--summary", @"--pretty=raw", sha, nil] error:nil];
 
     if (output != nil) {
-        NSString * txt = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-        NSArray * details = [txt componentsSeparatedByString:@"\0"];
-        for (NSString * detail in details) {
+        NSString *txt = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+        NSArray *details = [txt componentsSeparatedByString:@"\0"];
+        for (NSString *detail in details) {
             if ([detail hasPrefix:@"tag"]) {
                 // TODO: parse tag header
             } else if ([detail hasPrefix:@"commit"]) {
-                NSArray * headerItems = [self parseHeader:detail];
-                NSString * header = [self htmlForHeader:headerItems];
+                NSArray *headerItems = [self parseHeader:detail];
+                NSString *header = [self htmlForHeader:headerItems];
 
                 // File Stats
-                NSMutableDictionary * stats = [self parseStats:detail];
+                NSMutableDictionary *stats = [self parseStats:detail];
 
                 // File list
                 output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff-tree", @"--root", @"-r", @"-C90%", @"-M90%", sha, nil] error:nil];
-                NSString * dt = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-                NSString * fileList = [self parseDiffTree:dt withStats:stats];
+                NSString *dt = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+                NSString *fileList = [self parseDiffTree:dt withStats:stats];
 
                 // Diffs list
                 output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff-tree", @"--root", @"--cc", @"-C90%", @"-M90%", sha, nil] error:nil];
-                NSString * d = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-                NSString * diffs = [self parseDiff:d];
+                NSString *d = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+                NSString *diffs = [self parseDiff:d];
 
                 // Badges
-                NSArray * refs = [repo.refsIndex objectsForKey:sha];
-                NSMutableString * badges = [NSMutableString string];
+                NSArray *refs = [repo.refsIndex objectsForKey:sha];
+                NSMutableString *badges = [NSMutableString string];
                 if (refs.count > 0) {
                     [badges appendString:@"<div><ul>"];
-                    for (XTSideBarItem * ref in refs) {
+                    for (XTSideBarItem *ref in refs) {
                         [badges appendFormat:@"<ul>%@</ul>", [ref badge]];
                     }
                     [badges appendString:@"</ul></div>"];
@@ -93,9 +93,9 @@ const NSString * kAuthorKeyDate = @"date";
 
                 html = [NSString stringWithFormat:@"<html><head><link rel='stylesheet' type='text/css' href='diff.css'/></head><body>%@%@%@<div id='diffs'>%@</div></body></html>", header, badges, fileList, diffs];
 
-                NSBundle * bundle = [NSBundle mainBundle];
-                NSBundle * theme = [NSBundle bundleWithURL:[bundle URLForResource:@"html.theme.default" withExtension:@"bundle"]];
-                NSURL * themeURL = [[theme bundleURL] URLByAppendingPathComponent:@"Contents/Resources"];
+                NSBundle *bundle = [NSBundle mainBundle];
+                NSBundle *theme = [NSBundle bundleWithURL:[bundle URLForResource:@"html.theme.default" withExtension:@"bundle"]];
+                NSURL *themeURL = [[theme bundleURL] URLByAppendingPathComponent:@"Contents/Resources"];
 
                 [[web mainFrame] loadHTMLString:html baseURL:themeURL];
             }
@@ -105,28 +105,28 @@ const NSString * kAuthorKeyDate = @"date";
 }
 
 - (NSString *) htmlForHeader:(NSArray *)header {
-    NSString * last_mail = @"";
-    NSMutableString * auths = [NSMutableString string];
-    NSMutableString * refs = [NSMutableString string];
-    NSMutableString * subject = [NSMutableString string];
+    NSString *last_mail = @"";
+    NSMutableString *auths = [NSMutableString string];
+    NSMutableString *refs = [NSMutableString string];
+    NSMutableString *subject = [NSMutableString string];
 
-    for (NSDictionary * item in header) {
+    for (NSDictionary *item in header) {
         if ([[item objectForKey:kHeaderKeyName] isEqualToString:@"subject"]) {
             [subject appendString:[NSString stringWithFormat:@"%@<br/>", [self escapeHTML:[item objectForKey:kHeaderKeyContent]]]];
         } else {
             if ([[item objectForKey:kHeaderKeyContent] isKindOfClass:[NSString class]]) {
                 [refs appendString:[NSString stringWithFormat:@"<tr><td>%@</td><td><a href='' onclick='selectCommit(this.innerHTML); return false;'>%@</a></td></tr>", [item objectForKey:kHeaderKeyName], [item objectForKey:kHeaderKeyContent]]];
             } else {            // NSDictionary: author or committer
-                NSDictionary * content = [item objectForKey:kHeaderKeyContent];
-                NSString * email = [content objectForKey:kAuthorKeyEmail];
+                NSDictionary *content = [item objectForKey:kHeaderKeyContent];
+                NSString *email = [content objectForKey:kAuthorKeyEmail];
 
                 if (![email isEqualToString:last_mail]) {
-                    NSString * name = [content objectForKey:kAuthorKeyName];
-                    NSDate * date = [content objectForKey:kAuthorKeyDate];
-                    NSDateFormatter * theDateFormatter = [[NSDateFormatter alloc] init];
+                    NSString *name = [content objectForKey:kAuthorKeyName];
+                    NSDate *date = [content objectForKey:kAuthorKeyDate];
+                    NSDateFormatter *theDateFormatter = [[NSDateFormatter alloc] init];
                     [theDateFormatter setDateStyle:NSDateFormatterMediumStyle];
                     [theDateFormatter setTimeStyle:NSDateFormatterMediumStyle];
-                    NSString * dateString = [theDateFormatter stringForObjectValue:date];
+                    NSString *dateString = [theDateFormatter stringForObjectValue:date];
 
                     [auths appendString:[NSString stringWithFormat:@"<div class='user %@ clearfix'>", [item objectForKey:kHeaderKeyName]]];
                     [auths appendString:[NSString stringWithFormat:@"<p class='name'>%@ <span class='rol'>(%@)</span></p>", name, [item objectForKey:kHeaderKeyName]]];
@@ -141,11 +141,11 @@ const NSString * kAuthorKeyDate = @"date";
 }
 
 - (NSArray *) parseHeader:(NSString *)text {
-    NSMutableArray * result = [NSMutableArray array];
-    NSArray * lines = [text componentsSeparatedByString:@"\n"];
+    NSMutableArray *result = [NSMutableArray array];
+    NSArray *lines = [text componentsSeparatedByString:@"\n"];
     BOOL parsingSubject = NO;
 
-    for (NSString * line in lines) {
+    for (NSString *line in lines) {
         if ([line length] == 0) {
             if (!parsingSubject)
                 parsingSubject = TRUE;
@@ -153,11 +153,11 @@ const NSString * kAuthorKeyDate = @"date";
                 break;
         } else {
             if (parsingSubject) {
-                NSString * trimmedLine = [line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                NSString *trimmedLine = [line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 [result addObject:[NSDictionary dictionaryWithObjectsAndKeys:
                                    @"subject", kHeaderKeyName, trimmedLine, kHeaderKeyContent, nil]];
             } else {
-                NSArray * comps = [line componentsSeparatedByString:@" "];
+                NSArray *comps = [line componentsSeparatedByString:@" "];
                 if ([comps count] == 2) {
                     [result addObject:[NSDictionary dictionaryWithObjectsAndKeys:
                                        [comps objectAtIndex:0], kHeaderKeyName,
@@ -167,22 +167,22 @@ const NSString * kAuthorKeyDate = @"date";
                     NSRange r_email_e = [line rangeOfString:@">"];
                     NSRange r_name_i = [line rangeOfString:@" "];
 
-                    NSString * name = [line substringWithRange:NSMakeRange(r_name_i.location, (r_email_i.location - r_name_i.location))];
-                    NSString * email = [line substringWithRange:NSMakeRange(r_email_i.location + 1, ((r_email_e.location - 1) - r_email_i.location))];
+                    NSString *name = [line substringWithRange:NSMakeRange(r_name_i.location, (r_email_i.location - r_name_i.location))];
+                    NSString *email = [line substringWithRange:NSMakeRange(r_email_i.location + 1, ((r_email_e.location - 1) - r_email_i.location))];
 
-                    NSDate * date = nil;
+                    NSDate *date = nil;
 
                     if ([line length] > r_email_e.location + 2) {
-                        NSArray * t = [[line substringFromIndex:r_email_e.location + 2] componentsSeparatedByString:@" "];
+                        NSArray *t = [[line substringFromIndex:r_email_e.location + 2] componentsSeparatedByString:@" "];
                         if ([t count] > 0)
                             date = [NSDate dateWithTimeIntervalSince1970:[[t objectAtIndex:0] doubleValue]];
                     }
 
-                    NSDictionary * content = [NSDictionary dictionaryWithObjectsAndKeys:
-                                              name, kAuthorKeyName,
-                                              email, kAuthorKeyEmail,
-                                              date, kAuthorKeyDate,
-                                              nil];
+                    NSDictionary *content = [NSDictionary dictionaryWithObjectsAndKeys:
+                                             name, kAuthorKeyName,
+                                             email, kAuthorKeyEmail,
+                                             date, kAuthorKeyDate,
+                                             nil];
                     [result addObject:[NSDictionary dictionaryWithObjectsAndKeys:
                                        [comps objectAtIndex:0], kHeaderKeyName,
                                        content, kHeaderKeyContent,
@@ -196,15 +196,15 @@ const NSString * kAuthorKeyDate = @"date";
 }
 
 - (NSMutableDictionary *) parseStats:(NSString *)txt {
-    NSArray * lines = [txt componentsSeparatedByString:@"\n"];
-    NSMutableDictionary * stats = [NSMutableDictionary dictionary];
+    NSArray *lines = [txt componentsSeparatedByString:@"\n"];
+    NSMutableDictionary *stats = [NSMutableDictionary dictionary];
     int black = 0;
 
-    for (NSString * line in lines) {
+    for (NSString *line in lines) {
         if ([line length] == 0) {
             black++;
         } else if (black == 2) {
-            NSArray * file = [line componentsSeparatedByString:@"\t"];
+            NSArray *file = [line componentsSeparatedByString:@"\t"];
             if ([file count] == 3) {
                 [stats setObject:file forKey:[file objectAtIndex:2]];
             }
@@ -216,7 +216,7 @@ const NSString * kAuthorKeyDate = @"date";
 - (NSString *) escapeHTML:(NSString *)txt {
     if (txt == nil)
         return txt;
-    NSMutableString * newTxt = [NSMutableString stringWithString:txt];
+    NSMutableString *newTxt = [NSMutableString stringWithString:txt];
     [newTxt replaceOccurrencesOfString:@"&" withString:@"&amp;" options:NSLiteralSearch range:NSMakeRange(0, [newTxt length])];
     [newTxt replaceOccurrencesOfString:@"<" withString:@"&lt;" options:NSLiteralSearch range:NSMakeRange(0, [newTxt length])];
     [newTxt replaceOccurrencesOfString:@">" withString:@"&gt;" options:NSLiteralSearch range:NSMakeRange(0, [newTxt length])];
@@ -229,9 +229,9 @@ const NSString * kAuthorKeyDate = @"date";
 - (NSString *) parseDiff:(NSString *)txt {
     txt = [self escapeHTML:txt];
 
-    NSMutableString * res = [NSMutableString string];
-    NSScanner * scan = [NSScanner scannerWithString:txt];
-    NSString * block;
+    NSMutableString *res = [NSMutableString string];
+    NSScanner *scan = [NSScanner scannerWithString:txt];
+    NSString *block;
 
     if (![txt hasPrefix:@"diff --"])
         [scan scanUpToString:@"diff --" intoString:&block];  // move to first diff
@@ -245,9 +245,9 @@ const NSString * kAuthorKeyDate = @"date";
 }
 
 - (NSString *) parseDiffBlock:(NSString *)txt {
-    NSMutableString * res = [NSMutableString string];
-    NSScanner * scan = [NSScanner scannerWithString:txt];
-    NSString * block;
+    NSMutableString *res = [NSMutableString string];
+    NSScanner *scan = [NSScanner scannerWithString:txt];
+    NSString *block;
 
     [scan scanUpToString:@"\n@@" intoString:&block];
     [res appendString:@"<table class='diff'><thead>"];
@@ -269,14 +269,14 @@ const NSString * kAuthorKeyDate = @"date";
 }
 
 - (NSString *) parseBinaryDiff:(NSString *)txt {
-    NSMutableString * res = [NSMutableString string];
-    NSScanner * scan = [NSScanner scannerWithString:txt];
-    NSString * block;
+    NSMutableString *res = [NSMutableString string];
+    NSScanner *scan = [NSScanner scannerWithString:txt];
+    NSString *block;
 
     [scan scanUpToString:@"Binary files" intoString:NULL];
     [scan scanUpToString:@"" intoString:&block];
 
-    NSArray * files = [self getFilesNames:block];
+    NSArray *files = [self getFilesNames:block];
     [res appendString:@"<tr class='images'><td>"];
     [res appendString:[NSString stringWithFormat:@"%@<br/>", [files objectAtIndex:0]]];
     if (![[files objectAtIndex:0] isAbsolutePath]) {
@@ -297,10 +297,10 @@ const NSString * kAuthorKeyDate = @"date";
 }
 
 - (NSString *) parseDiffChunk:(NSString *)txt {
-    NSEnumerator * lines = [[txt componentsSeparatedByString:@"\n"] objectEnumerator];
-    NSMutableString * res = [NSMutableString string];
+    NSEnumerator *lines = [[txt componentsSeparatedByString:@"\n"] objectEnumerator];
+    NSMutableString *res = [NSMutableString string];
 
-    NSString * line;
+    NSString *line;
     int l_line[32]; // FIXME: make dynamic
     int r_line;
 
@@ -312,13 +312,13 @@ const NSString * kAuthorKeyDate = @"date";
         arity++;
 
     NSRange hr = NSMakeRange(arity + 1, [line rangeOfString:@" @@"].location - arity - 1);
-    NSString * header = [line substringWithRange:hr];
+    NSString *header = [line substringWithRange:hr];
 
-    NSArray * pos = [header componentsSeparatedByString:@" "];
-    NSArray * pos_r = [[pos objectAtIndex:arity - 1] componentsSeparatedByString:@","];
+    NSArray *pos = [header componentsSeparatedByString:@" "];
+    NSArray *pos_r = [[pos objectAtIndex:arity - 1] componentsSeparatedByString:@","];
 
     for (int i = 0; i < arity - 1; i++) {
-        NSArray * pos_l = [[pos objectAtIndex:i] componentsSeparatedByString:@","];
+        NSArray *pos_l = [[pos objectAtIndex:i] componentsSeparatedByString:@","];
         l_line[i] = abs([[pos_l objectAtIndex:0] intValue]);
     }
     r_line = [[pos_r objectAtIndex:0] intValue];
@@ -326,7 +326,7 @@ const NSString * kAuthorKeyDate = @"date";
     [res appendString:[NSString stringWithFormat:@"<tr class='header'><td colspan='%d'>%@</td></tr>", arity + 1, line]];
     while ((line = [lines nextObject])) {
         if ([line length] > 0) {
-            NSString * prefix = [line substringToIndex:arity - 1];
+            NSString *prefix = [line substringToIndex:arity - 1];
             if ([prefix rangeOfString:@"-"].location != NSNotFound) {
                 [res appendString:@"<tr class='l'>"];
                 for (int i = 0; i < arity - 1; i++) {
@@ -363,9 +363,9 @@ const NSString * kAuthorKeyDate = @"date";
 }
 
 - (NSArray *) getFilesNames:(NSString *)line {
-    NSString * a = nil;
-    NSString * b = nil;
-    NSScanner * scanner = [NSScanner scannerWithString:line];
+    NSString *a = nil;
+    NSString *b = nil;
+    NSScanner *scanner = [NSScanner scannerWithString:line];
 
     if ([scanner scanString:@"Binary files " intoString:NULL]) {
         [scanner scanUpToString:@" and" intoString:&a];
@@ -385,7 +385,7 @@ const NSString * kAuthorKeyDate = @"date";
 - (NSString *) parseDiffTree:(NSString *)txt withStats:(NSMutableDictionary *)stats {
     NSInteger granTotal = 1;
 
-    for (NSArray * stat in [stats allValues]) {
+    for (NSArray *stat in [stats allValues]) {
         NSInteger add = [[stat objectAtIndex:0] integerValue];
         NSInteger rem = [[stat objectAtIndex:1] integerValue];
         NSInteger tot = add + rem;
@@ -394,23 +394,23 @@ const NSString * kAuthorKeyDate = @"date";
         [stats setObject:[NSArray arrayWithObjects:[NSNumber numberWithInteger:add], [NSNumber numberWithInteger:rem], [NSNumber numberWithInteger:tot], nil] forKey:[stat objectAtIndex:2]];
     }
 
-    NSArray * lines = [txt componentsSeparatedByString:@"\n"];
-    NSMutableString * res = [NSMutableString string];
+    NSArray *lines = [txt componentsSeparatedByString:@"\n"];
+    NSMutableString *res = [NSMutableString string];
     [res appendString:@"<table id='filelist'>"];
-    for (NSString * line in lines) {
+    for (NSString *line in lines) {
         if ([line length] < 98) continue;
         line = [line substringFromIndex:97];
-        NSArray * fileStatus = [line componentsSeparatedByString:@"\t"];
-        NSString * status = [[fileStatus objectAtIndex:0] substringToIndex:1];      // ignore the score
-        NSString * file = [fileStatus objectAtIndex:1];
-        NSString * txt = file;
-        NSString * fileName = file;
+        NSArray *fileStatus = [line componentsSeparatedByString:@"\t"];
+        NSString *status = [[fileStatus objectAtIndex:0] substringToIndex:1];       // ignore the score
+        NSString *file = [fileStatus objectAtIndex:1];
+        NSString *txt = file;
+        NSString *fileName = file;
         if ([status isEqualToString:@"C"] || [status isEqualToString:@"R"]) {
             txt = [NSString stringWithFormat:@"%@ -&gt; %@", file, [fileStatus objectAtIndex:2]];
             fileName = [fileStatus objectAtIndex:2];
         }
 
-        NSArray * stat = [stats objectForKey:fileName];
+        NSArray *stat = [stats objectForKey:fileName];
         NSInteger add = [[stat objectAtIndex:0] integerValue];
         NSInteger rem = [[stat objectAtIndex:1] integerValue];
 
@@ -428,11 +428,11 @@ const NSString * kAuthorKeyDate = @"date";
 }
 
 - (NSString *) parseDiffHeader:(NSString *)txt {
-    NSEnumerator * lines = [[txt componentsSeparatedByString:@"\n"] objectEnumerator];
-    NSMutableString * res = [NSMutableString string];
+    NSEnumerator *lines = [[txt componentsSeparatedByString:@"\n"] objectEnumerator];
+    NSMutableString *res = [NSMutableString string];
 
-    NSString * line = [lines nextObject];
-    NSString * fileName = [self getFileName:line];
+    NSString *line = [lines nextObject];
+    NSString *fileName = [self getFileName:line];
 
     [res appendString:[NSString stringWithFormat:@"<tr id='%@'><td colspan='33'><div style='float:left;'>", fileName]];
     do {
@@ -449,7 +449,7 @@ const NSString * kAuthorKeyDate = @"date";
     if (b.length == 0)
         b = [line rangeOfString:@"--cc "];
 
-    NSString * file = [line substringFromIndex:b.location + b.length];
+    NSString *file = [line substringFromIndex:b.location + b.length];
 
     DLog(@"line=%@", line);
     DLog(@"file=%@", file);
@@ -458,11 +458,11 @@ const NSString * kAuthorKeyDate = @"date";
 }
 
 - (NSString *) mimeTypeForFileName:(NSString *)name {
-    NSString * mimeType = nil;
+    NSString *mimeType = nil;
     NSInteger i = [name rangeOfString:@"." options:NSBackwardsSearch].location;
 
     if (i != NSNotFound) {
-        NSString * ext = [name substringFromIndex:i + 1];
+        NSString *ext = [name substringFromIndex:i + 1];
         CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (CFStringRef)ext, NULL);
         if (UTI) {
             CFStringRef registeredType = UTTypeCopyPreferredTagWithClass(UTI, kUTTagClassMIMEType);
@@ -476,7 +476,7 @@ const NSString * kAuthorKeyDate = @"date";
 }
 
 - (BOOL) isImage:(NSString *)file {
-    NSString * mimeType = [self mimeTypeForFileName:file];
+    NSString *mimeType = [self mimeTypeForFileName:file];
 
     return (mimeType != nil) && ([mimeType rangeOfString:@"image/" options:NSCaseInsensitiveSearch].location != NSNotFound);
 }

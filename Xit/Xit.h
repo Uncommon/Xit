@@ -10,19 +10,19 @@
 @class XTHistoryView;
 
 @interface Xit : NSDocument {
-    IBOutlet XTHistoryView * historyView;
-    IBOutlet NSTabView * tabs;
+    IBOutlet XTHistoryView *historyView;
+    IBOutlet NSTabView *tabs;
     @private
     FSEventStreamRef stream;
-    NSURL * repoURL;
-    NSString * gitCMD;
-    NSArray * reload;
-    NSString * selectedCommit;
-    NSDictionary * refsIndex;
+    NSURL *repoURL;
+    NSString *gitCMD;
+    NSArray *reload;
+    NSString *selectedCommit;
+    NSDictionary *refsIndex;
 }
 
-@property (assign) NSString * selectedCommit;
-@property (assign) NSDictionary * refsIndex;
+@property (assign) NSString *selectedCommit;
+@property (assign) NSDictionary *refsIndex;
 
 - (void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void(^) (NSString *)) block error:(NSError **)error;
 - (NSData *)exectuteGitWithArgs:(NSArray *)args error:(NSError **)error;
@@ -37,8 +37,8 @@
 @end
 
 void fsevents_callback(ConstFSEventStreamRef streamRef,
-                       void * userData,
+                       void *userData,
                        size_t numEvents,
-                       void * eventPaths,
+                       void *eventPaths,
                        const FSEventStreamEventFlags eventFlags[],
                        const FSEventStreamEventId eventIds[]);

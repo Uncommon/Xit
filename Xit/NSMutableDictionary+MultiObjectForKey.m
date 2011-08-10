@@ -10,7 +10,7 @@
 @implementation NSMutableDictionary (NSMutableDictionary_MultiObjectForKey)
 
 - (void) addObject:(id)anObject forKey:(id)aKey {
-    NSMutableArray * array = [self objectForKey:aKey];
+    NSMutableArray *array = [self objectForKey:aKey];
 
     if (array == nil) {
         array = [NSMutableArray array];

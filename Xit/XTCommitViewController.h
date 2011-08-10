@@ -11,9 +11,9 @@
 
 @interface XTCommitViewController : NSViewController
 {
-    IBOutlet WebView * web;
+    IBOutlet WebView *web;
     @private
-    Xit * repo;
+    Xit *repo;
 }
 
 - (void)setRepo:(Xit *)newRepo;

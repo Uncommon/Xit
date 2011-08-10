@@ -12,8 +12,8 @@
 #import "PBGraphCellInfo.h"
 
 @interface PBGitGrapher : NSObject {
-    PBGraphCellInfo * previous;
-    void * pl;
+    PBGraphCellInfo *previous;
+    void *pl;
     int curLane;
 }
 

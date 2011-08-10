@@ -23,7 +23,7 @@
 
 
 - (void) graphCommits:(NSArray *)revList {
-    for (XTHistoryItem * commit in revList) {
+    for (XTHistoryItem *commit in revList) {
         [grapher decorateCommit:commit];
     }
 }

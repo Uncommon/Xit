@@ -20,9 +20,9 @@ typedef enum {
 @interface XTSideBarDataSource : NSObject <NSOutlineViewDataSource, NSOutlineViewDelegate>
 {
     @private
-    Xit * repo;
-    NSArray * roots;
-    NSOutlineView * outline;
+    Xit *repo;
+    NSArray *roots;
+    NSOutlineView *outline;
 }
 
 - (void)setRepo:(Xit *)repo;

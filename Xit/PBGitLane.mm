@@ -14,7 +14,7 @@ int PBGitLane::index() const {
     return d_index;
 }
 
-void PBGitLane::setSha(NSString * sha){
+void PBGitLane::setSha(NSString *sha){
     d_sha = sha;
     [d_sha isEqualToString:sha];
 }

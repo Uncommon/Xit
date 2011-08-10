@@ -16,7 +16,7 @@
 @implementation XTSideBarDataSorceTests
 
 - (void) testXTSideBarDataSourceReload {
-    XTSideBarDataSource * sbds = [[XTSideBarDataSource alloc] init];
+    XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
 
     [sbds setRepo:xit];
     [sbds addObserver:self forKeyPath:@"reload" options:0 context:nil];
@@ -51,8 +51,8 @@
 }
 
 - (void) testXTSideBarDataSourceStashes {
-    NSString * testFile = [NSString stringWithFormat:@"%@/file1.txt", [[xit fileURL] absoluteString]];
-    NSString * txt = @"other some text";
+    NSString *testFile = [NSString stringWithFormat:@"%@/file1.txt", [[xit fileURL] absoluteString]];
+    NSString *txt = @"other some text";
 
     [txt writeToFile:testFile atomically:YES encoding:NSASCIIStringEncoding error:nil];
 
@@ -60,7 +60,7 @@
         STFail(@"stash");
     }
 
-    XTSideBarDataSource * sbds = [[XTSideBarDataSource alloc] init];
+    XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
     [sbds setRepo:xit];
     [sbds reload];
 
@@ -89,7 +89,7 @@
         return;
     }
 
-    XTSideBarDataSource * sbds = [[XTSideBarDataSource alloc] init];
+    XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
     [sbds setRepo:xit];
     [sbds reload];
 
@@ -101,7 +101,7 @@
 
     // BRANCHS
     id remote = [sbds outlineView:nil child:0 ofItem:remotes];
-    NSString * rName = [sbds outlineView:nil objectValueForTableColumn:nil byItem:remote];
+    NSString *rName = [sbds outlineView:nil objectValueForTableColumn:nil byItem:remote];
     STAssertTrue([rName isEqualToString:@"origin"], @"found remote '%@'", rName);
 
     NSInteger nb = [sbds outlineView:nil numberOfChildrenOfItem:remote];
@@ -114,7 +114,7 @@
         BOOL isExpandable = [sbds outlineView:nil isItemExpandable:branch];
         STAssertTrue(isExpandable == NO, @"Branchs must be no Expandable");
 
-        NSString * bName = [sbds outlineView:nil objectValueForTableColumn:nil byItem:branch];
+        NSString *bName = [sbds outlineView:nil objectValueForTableColumn:nil byItem:branch];
         if ([bName isEqualToString:@"master"]) {
             branchMasterFound = YES;
         } else if ([bName isEqualToString:@"b1"]) {
@@ -134,7 +134,7 @@
         STFail(@"Create Tag 't1'");
     }
 
-    XTSideBarDataSource * sbds = [[XTSideBarDataSource alloc] init];
+    XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
     [sbds setRepo:xit];
     [sbds reload];
 
@@ -150,13 +150,13 @@
 
     bool tagT1Found = false;
     for (int n = 0; n < nt; n++) {
-        XTSideBarItem * tag = [sbds outlineView:nil child:n ofItem:tags];
+        XTSideBarItem *tag = [sbds outlineView:nil child:n ofItem:tags];
         STAssertTrue(tag.sha != Nil, @"Tag '%@' must have sha", tag.title);
 
         BOOL isExpandable = [sbds outlineView:nil isItemExpandable:tag];
         STAssertTrue(isExpandable == NO, @"Tags must be no Expandable");
 
-        NSString * bName = [sbds outlineView:nil objectValueForTableColumn:nil byItem:tag];
+        NSString *bName = [sbds outlineView:nil objectValueForTableColumn:nil byItem:tag];
         if ([bName isEqualToString:@"t1"]) {
             tagT1Found = YES;
         }
@@ -173,13 +173,13 @@
     bool branchB1Found = false;
     bool branchMasterFound = false;
     for (int n = 0; n < nb; n++) {
-        XTSideBarItem * branch = [sbds outlineView:nil child:n ofItem:branchs];
+        XTSideBarItem *branch = [sbds outlineView:nil child:n ofItem:branchs];
         STAssertTrue(branch.sha != Nil, @"Branch '%@' must have sha", branch.title);
 
         BOOL isExpandable = [sbds outlineView:nil isItemExpandable:branch];
         STAssertTrue(isExpandable == NO, @"Branchs must be no Expandable");
 
-        NSString * bName = [sbds outlineView:nil objectValueForTableColumn:nil byItem:branch];
+        NSString *bName = [sbds outlineView:nil objectValueForTableColumn:nil byItem:branch];
         if ([bName isEqualToString:@"master"]) {
             branchMasterFound = YES;
         } else if ([bName isEqualToString:@"b1"]) {
