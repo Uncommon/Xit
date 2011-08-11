@@ -8,8 +8,6 @@
 #import <SenTestingKit/SenTestingKit.h>
 #import "XitTests.h"
 
-@class Xit;
-
 @interface XTCommitViewControllerTest : XitTests
 
 @end

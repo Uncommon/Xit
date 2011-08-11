@@ -8,9 +8,11 @@
 #import <Cocoa/Cocoa.h>
 
 @class XTHistoryView;
+@class XTStageViewController;
 
 @interface Xit : NSDocument {
     IBOutlet XTHistoryView *historyView;
+    IBOutlet XTStageViewController *stageView;
     IBOutlet NSTabView *tabs;
     @private
     FSEventStreamRef stream;

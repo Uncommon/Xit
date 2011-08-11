@@ -17,7 +17,7 @@
     self = [super init];
     if (self) {
         NSLog(@"[init]");
-        repoURL = [NSURL URLWithString:@"/Users/administrator/xcode/gitx"]; // Default only for test.
+        repoURL = [NSURL URLWithString:@"/Users/laullon/xcode/Xit"]; // Default only for test.
 //        repoURL=[NSURL URLWithString:@"/Users/laullon/tmp/linux-2.6"];
 //        repoURL=[NSURL URLWithString:@"/Users/administrator/tmp/testrepo"];
 
@@ -60,10 +60,16 @@
     [super windowControllerDidLoadNib:aController];
 
     [historyView loadView];
-    NSTabViewItem *tabView = [tabs tabViewItemAtIndex:0];
-    [[historyView view] setFrame:NSMakeRect(0, 0, [[tabView view] frame].size.width, [[tabView view] frame].size.height)];
-    [tabView setView:[historyView view]];
+    NSTabViewItem *tabViewHistory = [tabs tabViewItemAtIndex:0];
+    [[historyView view] setFrame:NSMakeRect(0, 0, [[historyView view] frame].size.width, [[historyView view] frame].size.height)];
+    [tabViewHistory setView:[historyView view]];
     [historyView setRepo:self];
+
+    [stageView loadView];
+    NSTabViewItem *tabViewStage = [tabs tabViewItemAtIndex:1];
+    [[stageView view] setFrame:NSMakeRect(0, 0, [[stageView view] frame].size.width, [[stageView view] frame].size.height)];
+    [tabViewStage setView:[stageView view]];
+    [stageView setRepo:self];
 
     [self start];
 }
@@ -171,9 +177,9 @@
     NSLog(@"**** status = %d", status);
 
     if (status != 0) {
+        NSString *string = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+        NSLog(@"**** output = %@", string);
         if (error != NULL) {
-            NSString *string = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-            NSLog(@"**** output = %@", string);
             *error = [NSError errorWithDomain:@"git"
                                          code:status
                                      userInfo:[NSDictionary dictionaryWithObject:string forKey:@"output"]];
