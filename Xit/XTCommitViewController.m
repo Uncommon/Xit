@@ -54,7 +54,7 @@ const NSString *kAuthorKeyDate = @"date";
 
 // defaults write com.yourcompany.programname WebKitDeveloperExtras -bool true
 - (NSString *) loadCommit:(NSString *)sha {
-    NSString *html;
+    NSString *html = nil;
     NSData *output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"show", @"-z", @"--numstat", @"--summary", @"--pretty=raw", sha, nil] error:nil];
 
     if (output != nil) {
