@@ -18,11 +18,11 @@
 - (id) init {
     self = [super init];
     if (self) {
-        XTSideBarItem *branchs = [[XTSideBarItem alloc] initWithTitle:@"Branchs"];
+        XTSideBarItem *branches = [[XTSideBarItem alloc] initWithTitle:@"Branches"];
         XTSideBarItem *tags = [[XTSideBarItem alloc] initWithTitle:@"Tags"];
         XTRemotesItem *remotes = [[XTRemotesItem alloc] initWithTitle:@"Remotes"];
         XTSideBarItem *stashes = [[XTSideBarItem alloc] initWithTitle:@"Stashes"];
-        roots = [NSArray arrayWithObjects:branchs, tags, remotes, stashes, nil];
+        roots = [NSArray arrayWithObjects:branches, tags, remotes, stashes, nil];
     }
 
     return self;
@@ -76,13 +76,13 @@
 }
 
 - (void) reloadBrachs:(NSMutableDictionary *)refsIndex {
-    XTSideBarItem *branchs = [roots objectAtIndex:XT_BRANCHS];
+    XTSideBarItem *branches = [roots objectAtIndex:XT_BRANCHES];
     XTSideBarItem *tags = [roots objectAtIndex:XT_TAGS];
     XTRemotesItem *remotes = [roots objectAtIndex:XT_REMOTES];
 
     NSMutableDictionary *tagIndex = [NSMutableDictionary dictionary];
 
-    [branchs clean];
+    [branches clean];
     [tags clean];
     [remotes clean];
     NSData *output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"show-ref", @"-d", nil] error:nil];
@@ -95,7 +95,7 @@
             [scan scanUpToString:@"\n" intoString:&name];
             if ([name hasPrefix:@"refs/heads/"]) {
                 XTLocalBranchItem *branch = [[XTLocalBranchItem alloc] initWithTitle:[name lastPathComponent] andSha:commit];
-                [branchs addchildren:branch];
+                [branches addchildren:branch];
                 [refsIndex addObject:branch forKey:branch.sha];
             } else if ([name hasPrefix:@"refs/tags/"]) {
                 XTTagItem *tag;

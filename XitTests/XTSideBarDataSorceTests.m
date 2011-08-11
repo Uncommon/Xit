@@ -37,9 +37,9 @@
         STFail(@"TimeOut on reload");
     }
 
-    id branchs = [sbds outlineView:nil child:XT_BRANCHS ofItem:nil];
-    NSInteger nb = [sbds outlineView:nil numberOfChildrenOfItem:branchs];
-    STAssertTrue((nb == 2), @"found %d branchs FAIL", nb);
+    id branches = [sbds outlineView:nil child:XT_BRANCHES ofItem:nil];
+    NSInteger nb = [sbds outlineView:nil numberOfChildrenOfItem:branches];
+    STAssertTrue((nb == 2), @"found %d branches FAIL", nb);
 
     [xit stop];
 }
@@ -99,20 +99,20 @@
     NSInteger nr = [sbds outlineView:nil numberOfChildrenOfItem:remotes];
     STAssertTrue((nr == 1), @"found %d remotes FAIL", nr);
 
-    // BRANCHS
+    // BRANCHES
     id remote = [sbds outlineView:nil child:0 ofItem:remotes];
     NSString *rName = [sbds outlineView:nil objectValueForTableColumn:nil byItem:remote];
     STAssertTrue([rName isEqualToString:@"origin"], @"found remote '%@'", rName);
 
     NSInteger nb = [sbds outlineView:nil numberOfChildrenOfItem:remote];
-    STAssertTrue((nb == 2), @"found %d branchs FAIL", nb);
+    STAssertTrue((nb == 2), @"found %d branches FAIL", nb);
 
     bool branchB1Found = false;
     bool branchMasterFound = false;
     for (int n = 0; n < nb; n++) {
         id branch = [sbds outlineView:nil child:n ofItem:remote];
         BOOL isExpandable = [sbds outlineView:nil isItemExpandable:branch];
-        STAssertTrue(isExpandable == NO, @"Branchs must be no Expandable");
+        STAssertTrue(isExpandable == NO, @"Branches must be no Expandable");
 
         NSString *bName = [sbds outlineView:nil objectValueForTableColumn:nil byItem:branch];
         if ([bName isEqualToString:@"master"]) {
@@ -125,7 +125,7 @@
     STAssertTrue(branchB1Found, @"Branch 'b1' Not found");
 }
 
-- (void) testXTSideBarDataSourceBranchsAndTags {
+- (void) testXTSideBarDataSourceBranchesAndTags {
     if (![xit createBranch:@"b1"]) {
         STFail(@"Create Branch 'b1'");
     }
@@ -163,21 +163,21 @@
     }
     STAssertTrue(tagT1Found, @"Tag 't1' Not found");
 
-    // BRANCHS
-    id branchs = [sbds outlineView:nil child:XT_BRANCHS ofItem:nil];
-    STAssertTrue((branchs != nil), @"no branchs FAIL");
+    // BRANCHES
+    id branches = [sbds outlineView:nil child:XT_BRANCHES ofItem:nil];
+    STAssertTrue((branches != nil), @"no branches FAIL");
 
-    NSInteger nb = [sbds outlineView:nil numberOfChildrenOfItem:branchs];
-    STAssertTrue((nb == 2), @"found %d branchs FAIL", nb);
+    NSInteger nb = [sbds outlineView:nil numberOfChildrenOfItem:branches];
+    STAssertTrue((nb == 2), @"found %d branches FAIL", nb);
 
     bool branchB1Found = false;
     bool branchMasterFound = false;
     for (int n = 0; n < nb; n++) {
-        XTSideBarItem *branch = [sbds outlineView:nil child:n ofItem:branchs];
+        XTSideBarItem *branch = [sbds outlineView:nil child:n ofItem:branches];
         STAssertTrue(branch.sha != Nil, @"Branch '%@' must have sha", branch.title);
 
         BOOL isExpandable = [sbds outlineView:nil isItemExpandable:branch];
-        STAssertTrue(isExpandable == NO, @"Branchs must be no Expandable");
+        STAssertTrue(isExpandable == NO, @"Branches must be no Expandable");
 
         NSString *bName = [sbds outlineView:nil objectValueForTableColumn:nil byItem:branch];
         if ([bName isEqualToString:@"master"]) {

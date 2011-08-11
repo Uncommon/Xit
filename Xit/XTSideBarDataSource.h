@@ -11,7 +11,7 @@
 @class Xit;
 
 typedef enum {
-    XT_BRANCHS = 0,
+    XT_BRANCHES = 0,
     XT_TAGS,
     XT_REMOTES,
     XT_STASHES
