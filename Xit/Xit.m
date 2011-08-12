@@ -17,7 +17,7 @@
     self = [super init];
     if (self) {
         NSLog(@"[init]");
-        repoURL = [NSURL URLWithString:@"/Users/laullon/xcode/Xit"]; // Default only for test.
+        repoURL = [NSURL URLWithString:@"/Users/administrator/xcode/Xit"]; // Default only for test.
 //        repoURL=[NSURL URLWithString:@"/Users/laullon/tmp/linux-2.6"];
 //        repoURL=[NSURL URLWithString:@"/Users/administrator/tmp/testrepo"];
 

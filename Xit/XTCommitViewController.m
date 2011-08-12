@@ -8,35 +8,25 @@
 #import "XTCommitViewController.h"
 #import "NSMutableDictionary+MultiObjectForKey.h"
 #import "XTSideBarItem.h"
+#import "XTHTML.h"
+
+// -parseHeader: returns an array of dictionaries with these keys
+const NSString *kHeaderKeyName = @ "name";
+const NSString *kHeaderKeyContent = @ "content";
+
+// Keys for the author/committer dictionary
+const NSString *kAuthorKeyName = @ "name";
+const NSString *kAuthorKeyEmail = @ "email";
+const NSString *kAuthorKeyDate = @ "date";
 
 @interface XTCommitViewController (Private)
 
 - (NSArray *) parseHeader:(NSString *)text;
 - (NSString *) htmlForHeader:(NSArray *)header;
 - (NSMutableDictionary *) parseStats:(NSString *)txt;
-- (NSString *) parseDiff:(NSString *)txt;
-- (BOOL) isImage:(NSString *)file;
-- (NSString *) parseDiffBlock:(NSString *)txt;
-- (NSString *) parseDiffHeader:(NSString *)txt;
-- (NSString *) parseDiffChunk:(NSString *)txt;
-- (NSString *) parseBinaryDiff:(NSString *)txt;
-- (NSArray *) getFilesNames:(NSString *)line;
 - (NSString *) parseDiffTree:(NSString *)txt withStats:(NSMutableDictionary *)stats;
-- (NSString *) escapeHTML:(NSString *)txt;
-- (NSString *) getFileName:(NSString *)line;
-
-- (NSString *) mimeTypeForFileName:(NSString *)name;
 
 @end
-
-// -parseHeader: returns an array of dictionaries with these keys
-const NSString * kHeaderKeyName = @"name";
-const NSString *kHeaderKeyContent = @"content";
-
-// Keys for the author/committer dictionary
-const NSString *kAuthorKeyName = @"name";
-const NSString *kAuthorKeyEmail = @"email";
-const NSString *kAuthorKeyDate = @"date";
 
 @implementation XTCommitViewController
 
@@ -78,7 +68,7 @@ const NSString *kAuthorKeyDate = @"date";
                 // Diffs list
                 output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff-tree", @"--root", @"--cc", @"-C90%", @"-M90%", sha, nil] error:nil];
                 NSString *d = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-                NSString *diffs = [self parseDiff:d];
+                NSString *diffs = [XTHTML parseDiff:d];
 
                 // Badges
                 NSArray *refs = [repo.refsIndex objectsForKey:sha];
@@ -102,42 +92,6 @@ const NSString *kAuthorKeyDate = @"date";
         }
     }
     return html;
-}
-
-- (NSString *) htmlForHeader:(NSArray *)header {
-    NSString *last_mail = @"";
-    NSMutableString *auths = [NSMutableString string];
-    NSMutableString *refs = [NSMutableString string];
-    NSMutableString *subject = [NSMutableString string];
-
-    for (NSDictionary *item in header) {
-        if ([[item objectForKey:kHeaderKeyName] isEqualToString:@"subject"]) {
-            [subject appendString:[NSString stringWithFormat:@"%@<br/>", [self escapeHTML:[item objectForKey:kHeaderKeyContent]]]];
-        } else {
-            if ([[item objectForKey:kHeaderKeyContent] isKindOfClass:[NSString class]]) {
-                [refs appendString:[NSString stringWithFormat:@"<tr><td>%@</td><td><a href='' onclick='selectCommit(this.innerHTML); return false;'>%@</a></td></tr>", [item objectForKey:kHeaderKeyName], [item objectForKey:kHeaderKeyContent]]];
-            } else {            // NSDictionary: author or committer
-                NSDictionary *content = [item objectForKey:kHeaderKeyContent];
-                NSString *email = [content objectForKey:kAuthorKeyEmail];
-
-                if (![email isEqualToString:last_mail]) {
-                    NSString *name = [content objectForKey:kAuthorKeyName];
-                    NSDate *date = [content objectForKey:kAuthorKeyDate];
-                    NSDateFormatter *theDateFormatter = [[NSDateFormatter alloc] init];
-                    [theDateFormatter setDateStyle:NSDateFormatterMediumStyle];
-                    [theDateFormatter setTimeStyle:NSDateFormatterMediumStyle];
-                    NSString *dateString = [theDateFormatter stringForObjectValue:date];
-
-                    [auths appendString:[NSString stringWithFormat:@"<div class='user %@ clearfix'>", [item objectForKey:kHeaderKeyName]]];
-                    [auths appendString:[NSString stringWithFormat:@"<p class='name'>%@ <span class='rol'>(%@)</span></p>", name, [item objectForKey:kHeaderKeyName]]];
-                    [auths appendString:[NSString stringWithFormat:@"<p class='time'>%@</p></div>", dateString]];
-                }
-                last_mail = email;
-            }
-        }
-    }
-
-    return [NSString stringWithFormat:@"<div id='header' class='clearfix'><table class='references'>%@</table><p class='subject'>%@</p>%@</div>", refs, subject, auths];
 }
 
 - (NSArray *) parseHeader:(NSString *)text {
@@ -213,173 +167,40 @@ const NSString *kAuthorKeyDate = @"date";
     return stats;
 }
 
-- (NSString *) escapeHTML:(NSString *)txt {
-    if (txt == nil)
-        return txt;
-    NSMutableString *newTxt = [NSMutableString stringWithString:txt];
-    [newTxt replaceOccurrencesOfString:@"&" withString:@"&amp;" options:NSLiteralSearch range:NSMakeRange(0, [newTxt length])];
-    [newTxt replaceOccurrencesOfString:@"<" withString:@"&lt;" options:NSLiteralSearch range:NSMakeRange(0, [newTxt length])];
-    [newTxt replaceOccurrencesOfString:@">" withString:@"&gt;" options:NSLiteralSearch range:NSMakeRange(0, [newTxt length])];
-    [newTxt replaceOccurrencesOfString:@"\"" withString:@"&quot;" options:NSLiteralSearch range:NSMakeRange(0, [newTxt length])];
-    [newTxt replaceOccurrencesOfString:@"'" withString:@"&apos;" options:NSLiteralSearch range:NSMakeRange(0, [newTxt length])];
+- (NSString *) htmlForHeader:(NSArray *)header {
+    NSString *last_mail = @"";
+    NSMutableString *auths = [NSMutableString string];
+    NSMutableString *refs = [NSMutableString string];
+    NSMutableString *subject = [NSMutableString string];
 
-    return newTxt;
-}
+    for (NSDictionary *item in header) {
+        if ([[item objectForKey:kHeaderKeyName] isEqualToString:@"subject"]) {
+            [subject appendString:[NSString stringWithFormat:@"%@<br/>", [XTHTML escapeHTML:[item objectForKey:kHeaderKeyContent]]]];
+        } else {
+            if ([[item objectForKey:kHeaderKeyContent] isKindOfClass:[NSString class]]) {
+                [refs appendString:[NSString stringWithFormat:@"<tr><td>%@</td><td><a href='' onclick='selectCommit(this.innerHTML); return false;'>%@</a></td></tr>", [item objectForKey:kHeaderKeyName], [item objectForKey:kHeaderKeyContent]]];
+            } else {            // NSDictionary: author or committer
+                NSDictionary *content = [item objectForKey:kHeaderKeyContent];
+                NSString *email = [content objectForKey:kAuthorKeyEmail];
 
-- (NSString *) parseDiff:(NSString *)txt {
-    txt = [self escapeHTML:txt];
+                if (![email isEqualToString:last_mail]) {
+                    NSString *name = [content objectForKey:kAuthorKeyName];
+                    NSDate *date = [content objectForKey:kAuthorKeyDate];
+                    NSDateFormatter *theDateFormatter = [[NSDateFormatter alloc] init];
+                    [theDateFormatter setDateStyle:NSDateFormatterMediumStyle];
+                    [theDateFormatter setTimeStyle:NSDateFormatterMediumStyle];
+                    NSString *dateString = [theDateFormatter stringForObjectValue:date];
 
-    NSMutableString *res = [NSMutableString string];
-    NSScanner *scan = [NSScanner scannerWithString:txt];
-    NSString *block;
-
-    if (![txt hasPrefix:@"diff --"])
-        [scan scanUpToString:@"diff --" intoString:&block];  // move to first diff
-
-    while ([scan scanString:@"diff --" intoString:NULL]) { // is a diff start?
-        [scan scanUpToString:@"\ndiff --" intoString:&block];
-        [res appendString:[self parseDiffBlock:[NSString stringWithFormat:@"diff --%@", block]]];
-    }
-
-    return res;
-}
-
-- (NSString *) parseDiffBlock:(NSString *)txt {
-    NSMutableString *res = [NSMutableString string];
-    NSScanner *scan = [NSScanner scannerWithString:txt];
-    NSString *block;
-
-    [scan scanUpToString:@"\n@@" intoString:&block];
-    [res appendString:@"<table class='diff'><thead>"];
-    [res appendString:[self parseDiffHeader:block]];
-    [res appendString:@"</td></tr></thead><tbody>"];
-
-    if ([block rangeOfString:@"Binary files"].location != NSNotFound) {
-        [res appendString:[self parseBinaryDiff:block]];
-    }
-
-    while ([scan scanString:@"@@" intoString:NULL]) {
-        [scan scanUpToString:@"\n@@" intoString:&block];
-        [res appendString:[self parseDiffChunk:[NSString stringWithFormat:@"@@%@", block]]];
-    }
-
-    [res appendString:@"</tbody></table>"];
-
-    return res;
-}
-
-- (NSString *) parseBinaryDiff:(NSString *)txt {
-    NSMutableString *res = [NSMutableString string];
-    NSScanner *scan = [NSScanner scannerWithString:txt];
-    NSString *block;
-
-    [scan scanUpToString:@"Binary files" intoString:NULL];
-    [scan scanUpToString:@"" intoString:&block];
-
-    NSArray *files = [self getFilesNames:block];
-    [res appendString:@"<tr class='images'><td>"];
-    [res appendString:[NSString stringWithFormat:@"%@<br/>", [files objectAtIndex:0]]];
-    if (![[files objectAtIndex:0] isAbsolutePath]) {
-        if ([self isImage:[files objectAtIndex:0]]) {
-            [res appendString:[NSString stringWithFormat:@"<img src='GitX://{SHA}:/prev/%@'/>", [files objectAtIndex:0]]];
-        }
-    }
-    [res appendString:@"</td><td>=&gt;</td><td>"];
-    [res appendString:[NSString stringWithFormat:@"%@<br/>", [files objectAtIndex:1]]];
-    if (![[files objectAtIndex:1] isAbsolutePath]) {
-        if ([self isImage:[files objectAtIndex:1]]) {
-            [res appendString:[NSString stringWithFormat:@"<img src='GitX://{SHA}:/%@'/>", [files objectAtIndex:1]]];
-        }
-    }
-    [res appendString:@"</td></tr>"];
-
-    return res;
-}
-
-- (NSString *) parseDiffChunk:(NSString *)txt {
-    NSEnumerator *lines = [[txt componentsSeparatedByString:@"\n"] objectEnumerator];
-    NSMutableString *res = [NSMutableString string];
-
-    NSString *line;
-    int l_line[32]; // FIXME: make dynamic
-    int r_line;
-
-    line = [lines nextObject];
-    DLog(@"-=%@=-", line);
-
-    int arity = 0;     /* How many files are merged here? Count the '@'! */
-    while ([line characterAtIndex:arity] == '@')
-        arity++;
-
-    NSRange hr = NSMakeRange(arity + 1, [line rangeOfString:@" @@"].location - arity - 1);
-    NSString *header = [line substringWithRange:hr];
-
-    NSArray *pos = [header componentsSeparatedByString:@" "];
-    NSArray *pos_r = [[pos objectAtIndex:arity - 1] componentsSeparatedByString:@","];
-
-    for (int i = 0; i < arity - 1; i++) {
-        NSArray *pos_l = [[pos objectAtIndex:i] componentsSeparatedByString:@","];
-        l_line[i] = abs([[pos_l objectAtIndex:0] intValue]);
-    }
-    r_line = [[pos_r objectAtIndex:0] intValue];
-
-    [res appendString:[NSString stringWithFormat:@"<tr class='header'><td colspan='%d'>%@</td></tr>", arity + 1, line]];
-    while ((line = [lines nextObject])) {
-        if ([line length] > 0) {
-            NSString *prefix = [line substringToIndex:arity - 1];
-            if ([prefix rangeOfString:@"-"].location != NSNotFound) {
-                [res appendString:@"<tr class='l'>"];
-                for (int i = 0; i < arity - 1; i++) {
-                    if ([prefix characterAtIndex:i] == '-') {
-                        [res appendString:[NSString stringWithFormat:@"<td class='l'>%d</td>", l_line[i]++]];
-                    } else {
-                        [res appendString:@"<td class='l'></td>"];
-                    }
+                    [auths appendString:[NSString stringWithFormat:@"<div class='user %@ clearfix'>", [item objectForKey:kHeaderKeyName]]];
+                    [auths appendString:[NSString stringWithFormat:@"<p class='name'>%@ <span class='rol'>(%@)</span></p>", name, [item objectForKey:kHeaderKeyName]]];
+                    [auths appendString:[NSString stringWithFormat:@"<p class='time'>%@</p></div>", dateString]];
                 }
-                [res appendString:@"<td class='r'></td>"];
-            } else if ([prefix rangeOfString:@"+"].location != NSNotFound) {
-                [res appendString:@"<tr class='r'>"];
-                for (int i = 0; i < arity - 1; i++) {
-                    if ([prefix characterAtIndex:i] == ' ') {
-                        [res appendString:[NSString stringWithFormat:@"<td class='l'>%d</td>", l_line[i]++]];
-                    } else {
-                        [res appendString:@"<td class='l'></td>"];
-                    }
-                }
-                [res appendString:[NSString stringWithFormat:@"<td class='r'>%d</td>", r_line++]];
-            } else {
-                [res appendString:@"<tr>"];
-                for (int i = 0; i < arity - 1; i++) {
-                    [res appendString:[NSString stringWithFormat:@"<td class='l'>%d</td>", l_line[i]++]];
-                }
-                [res appendString:[NSString stringWithFormat:@"<td class='r'>%d</td>", r_line++]];
-            }
-            if (![prefix hasPrefix:@"\\"]) {
-                [res appendString:[NSString stringWithFormat:@"<td class='code'>%@</td></tr>", [line substringFromIndex:arity - 1]]];
+                last_mail = email;
             }
         }
     }
-    return res;
-}
 
-- (NSArray *) getFilesNames:(NSString *)line {
-    NSString *a = nil;
-    NSString *b = nil;
-    NSScanner *scanner = [NSScanner scannerWithString:line];
-
-    if ([scanner scanString:@"Binary files " intoString:NULL]) {
-        [scanner scanUpToString:@" and" intoString:&a];
-        [scanner scanString:@"and" intoString:NULL];
-        [scanner scanUpToString:@" differ" intoString:&b];
-    }
-    if (![a isAbsolutePath]) {
-        a = [a substringFromIndex:2];
-    }
-    if (![b isAbsolutePath]) {
-        b = [b substringFromIndex:2];
-    }
-
-    return [NSArray arrayWithObjects:a, b, nil];
+    return [NSString stringWithFormat:@"<div id='header' class='clearfix'><table class='references'>%@</table><p class='subject'>%@</p>%@</div>", refs, subject, auths];
 }
 
 - (NSString *) parseDiffTree:(NSString *)txt withStats:(NSMutableDictionary *)stats {
@@ -425,60 +246,6 @@ const NSString *kAuthorKeyDate = @"date";
     }
     [res appendString:@"</table>"];
     return res;
-}
-
-- (NSString *) parseDiffHeader:(NSString *)txt {
-    NSEnumerator *lines = [[txt componentsSeparatedByString:@"\n"] objectEnumerator];
-    NSMutableString *res = [NSMutableString string];
-
-    NSString *line = [lines nextObject];
-    NSString *fileName = [self getFileName:line];
-
-    [res appendString:[NSString stringWithFormat:@"<tr id='%@'><td colspan='33'><div style='float:left;'>", fileName]];
-    do {
-        [res appendString:[NSString stringWithFormat:@"<p>%@</p>", line]];
-    } while ((line = [lines nextObject]));
-    [res appendString:@"</div></td></tr>"];
-
-    return res;
-}
-
-- (NSString *) getFileName:(NSString *)line {
-    NSRange b = [line rangeOfString:@"b/"];
-
-    if (b.length == 0)
-        b = [line rangeOfString:@"--cc "];
-
-    NSString *file = [line substringFromIndex:b.location + b.length];
-
-    DLog(@"line=%@", line);
-    DLog(@"file=%@", file);
-
-    return file;
-}
-
-- (NSString *) mimeTypeForFileName:(NSString *)name {
-    NSString *mimeType = nil;
-    NSInteger i = [name rangeOfString:@"." options:NSBackwardsSearch].location;
-
-    if (i != NSNotFound) {
-        NSString *ext = [name substringFromIndex:i + 1];
-        CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (CFStringRef)ext, NULL);
-        if (UTI) {
-            CFStringRef registeredType = UTTypeCopyPreferredTagWithClass(UTI, kUTTagClassMIMEType);
-            if (registeredType) {
-                mimeType = NSMakeCollectable(registeredType);
-            }
-            CFRelease(UTI);
-        }
-    }
-    return mimeType;
-}
-
-- (BOOL) isImage:(NSString *)file {
-    NSString *mimeType = [self mimeTypeForFileName:file];
-
-    return (mimeType != nil) && ([mimeType rangeOfString:@"image/" options:NSCaseInsensitiveSearch].location != NSNotFound);
 }
 
 @end

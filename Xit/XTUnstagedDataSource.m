@@ -61,7 +61,6 @@
      }];
 }
 
-// just for tests
 - (NSArray *) items {
     return items;
 }
