@@ -48,18 +48,6 @@
     NSString *diff = [XTHTML parseDiff:filesStr];
 
     [self showDiff:diff];
-    DOMDocument *dom = [[web mainFrame] DOMDocument];
-    DOMNodeList *headres = [dom getElementsByClassName:@"header"]; // TODO: change class names
-    for (int n = 0; n < headres.length; n++) {
-        DOMHTMLElement *header = (DOMHTMLElement *)[headres item:n];
-        DOMHTMLAnchorElement *link = (DOMHTMLAnchorElement *)[dom createElement:@"a"];
-        link.href = @"yyy";
-        link.innerText = @"zzz";
-        NSLog(@"header: '%@'", [header innerHTML]);
-        NSLog(@"link:   '%@'", [link innerHTML]);
-        [header appendChild:link];
-        NSLog(@"header: '%@'", [header innerHTML]);
-    }
 }
 
 - (void) showDiff:(NSString *)diff {
@@ -70,6 +58,37 @@
     NSURL *themeURL = [[theme bundleURL] URLByAppendingPathComponent:@"Contents/Resources"];
 
     [[web mainFrame] loadHTMLString:html baseURL:themeURL];
+}
+
+#pragma mark - WebFrameLoadDelegate
+
+- (void) webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame {
+    DOMDocument *dom = [[web mainFrame] DOMDocument];
+    DOMNodeList *headres = [dom getElementsByClassName:@"header"]; // TODO: change class names
+
+    for (int n = 0; n < headres.length; n++) {
+        DOMHTMLElement *header = (DOMHTMLElement *)[headres item:n];
+        [[[header children] item:0] appendChild:[self createButtonWithIndex:n title:@"Stage" fromDOM:dom]];
+        [[[header children] item:0] appendChild:[self createButtonWithIndex:n title:@"Discard" fromDOM:dom]];
+    }
+}
+
+- (DOMHTMLElement *) createButtonWithIndex:(int)index title:(NSString *)title fromDOM:(DOMDocument *)dom {
+    DOMHTMLInputElement *bt = (DOMHTMLInputElement *)[dom createElement:@"input"];
+
+    bt.type = @"button";
+    bt.value = title;
+    bt.name = [NSString stringWithFormat:@"%d", index];
+    [bt addEventListener:@"click" listener:self useCapture:YES];
+    return bt;
+}
+
+#pragma mark - DOMEventListener
+
+- (void) handleEvent:(DOMEvent *)evt {
+    DOMHTMLInputElement *bt = (DOMHTMLInputElement *)evt.target;
+
+    NSLog(@"handleEvent: %@ - %@", bt.value, bt.name);
 }
 
 #pragma mark - NSTableViewDelegate

@@ -14,7 +14,7 @@
 @class XTUnstagedDataSource;
 @class XTFileIndexInfo;
 
-@interface XTStageViewController : NSViewController <NSTableViewDelegate>
+@interface XTStageViewController : NSViewController <DOMEventListener, NSTableViewDelegate>
 {
     IBOutlet XTStagedDataSource *stageDS;
     IBOutlet XTUnstagedDataSource *unstageDS;
@@ -30,5 +30,6 @@
 - (void)showStageFile:(XTFileIndexInfo *)file;
 - (void)showUnstageFile:(XTFileIndexInfo *)file;
 - (void)showDiff:(NSString *)diff;
+- (DOMHTMLElement *)createButtonWithIndex:(int)index title:(NSString *)title fromDOM:(DOMDocument *)dom;
 
 @end
