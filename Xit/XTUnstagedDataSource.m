@@ -56,8 +56,10 @@
     files = [filesStr componentsSeparatedByString:@"\n"];
     [files enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
          NSString *file = (NSString *)obj;
-         XTFileIndexInfo *fileInfo = [[XTFileIndexInfo alloc] initWithName:file andStatus:@"?"];
-         [items addObject:fileInfo];
+         if (file.length > 0) {
+             XTFileIndexInfo *fileInfo = [[XTFileIndexInfo alloc] initWithName:file andStatus:@"?"];
+             [items addObject:fileInfo];
+         }
      }];
 }
 

@@ -36,18 +36,22 @@
 
 - (void) showUnstageFile:(XTFileIndexInfo *)file {
     NSData *output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff-files", @"--patch", @"--", file.name, nil] error:nil];
-    NSString *filesStr = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-    NSString *diff = [XTHTML parseDiff:filesStr];
 
-    [self showDiff:diff];
+    actualDiff = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+    stagedFile = NO;
+
+    NSString *diffHTML = [XTHTML parseDiff:actualDiff];
+    [self showDiff:diffHTML];
 }
 
 - (void) showStageFile:(XTFileIndexInfo *)file {
     NSData *output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff-index",  @"--patch", @"--cached", @"HEAD", @"--", file.name, nil] error:nil];
-    NSString *filesStr = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-    NSString *diff = [XTHTML parseDiff:filesStr];
 
-    [self showDiff:diff];
+    actualDiff = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+    stagedFile = YES;
+
+    NSString *diffHTML = [XTHTML parseDiff:actualDiff];
+    [self showDiff:diffHTML];
 }
 
 - (void) showDiff:(NSString *)diff {
@@ -60,6 +64,32 @@
     [[web mainFrame] loadHTMLString:html baseURL:themeURL];
 }
 
+- (void) unstageChunk:(NSInteger)idx {
+
+}
+
+- (void) stageChunk:(NSInteger)idx {
+    [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"apply",  @"--cached", nil]
+                    withStdIn:[self preparePatch:idx]
+                        error:nil];
+
+}
+
+- (void) discardChunk:(NSInteger)idx {
+
+}
+
+- (NSString *) preparePatch:(NSInteger)idx {
+    NSArray *comps = [actualDiff componentsSeparatedByString:@"\n@@"];
+    NSMutableString *patch = [NSMutableString stringWithString:[comps objectAtIndex:0]]; // Header
+
+    [patch appendString:@"\n@@"];
+    [patch appendString:[comps objectAtIndex:(idx + 1)]];
+    [patch appendString:@"\n"];
+    return patch;
+}
+
+
 #pragma mark - WebFrameLoadDelegate
 
 - (void) webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame {
@@ -68,8 +98,12 @@
 
     for (int n = 0; n < headres.length; n++) {
         DOMHTMLElement *header = (DOMHTMLElement *)[headres item:n];
-        [[[header children] item:0] appendChild:[self createButtonWithIndex:n title:@"Stage" fromDOM:dom]];
-        [[[header children] item:0] appendChild:[self createButtonWithIndex:n title:@"Discard" fromDOM:dom]];
+        if (stagedFile) {
+            [[[header children] item:0] appendChild:[self createButtonWithIndex:n title:@"Unstage" fromDOM:dom]];
+        } else {
+            [[[header children] item:0] appendChild:[self createButtonWithIndex:n title:@"Stage" fromDOM:dom]];
+            [[[header children] item:0] appendChild:[self createButtonWithIndex:n title:@"Discard" fromDOM:dom]];
+        }
     }
 }
 
@@ -89,6 +123,13 @@
     DOMHTMLInputElement *bt = (DOMHTMLInputElement *)evt.target;
 
     NSLog(@"handleEvent: %@ - %@", bt.value, bt.name);
+    if ([bt.name isEqualToString:@"Unstage"]) {
+        [self unstageChunk:[bt.value intValue]];
+    } else if ([bt.name isEqualToString:@"Stage"]) {
+        [self stageChunk:[bt.value intValue]];
+    } else if ([bt.name isEqualToString:@"Discard"]) {
+        [self discardChunk:[bt.value intValue]];
+    }
 }
 
 #pragma mark - NSTableViewDelegate
