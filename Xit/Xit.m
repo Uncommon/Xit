@@ -13,6 +13,19 @@
 @synthesize selectedCommit;
 @synthesize refsIndex;
 
++ (NSString *) gitPath
+{
+    NSArray *paths = [NSArray arrayWithObjects:
+					  @"/usr/bin/git",
+					  @"/usr/local/git/bin/git",
+					  nil];
+	
+    for (NSString *path in paths)
+        if ([[NSFileManager defaultManager] fileExistsAtPath:path])
+            return path;
+    return nil;
+}
+
 - (id) init {
     self = [super init];
     if (self) {
@@ -21,7 +34,7 @@
 //        repoURL=[NSURL URLWithString:@"/Users/laullon/tmp/linux-2.6"];
 //        repoURL=[NSURL URLWithString:@"/Users/administrator/tmp/testrepo"];
 
-        gitCMD = @"/usr/bin/git";  // XXXX
+        gitCMD = [Xit gitPath];
     }
     return self;
 }
@@ -31,7 +44,7 @@
     self = [super initWithContentsOfURL:absoluteURL ofType:typeName error:outError];
     if (self) {
         repoURL = absoluteURL;
-        gitCMD = @"/usr/bin/git";  // XXXX
+        gitCMD = [Xit gitPath];
     }
     return self;
 }
