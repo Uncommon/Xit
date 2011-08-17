@@ -17,7 +17,7 @@
     self = [super init];
     if (self) {
         NSLog(@"[init]");
-        repoURL = [NSURL URLWithString:@"/Users/laullon/xcode/Xit"]; // Default only for test.
+        repoURL = [NSURL URLWithString:@"/Users/laullon/xcode/foo"]; // Default only for test.
 //        repoURL=[NSURL URLWithString:@"/Users/laullon/tmp/linux-2.6"];
 //        repoURL=[NSURL URLWithString:@"/Users/administrator/tmp/testrepo"];
 
@@ -170,8 +170,8 @@
     [task setArguments:args];
 
     if (stdIn != nil) {
-        NSLog(@"**** stdin = %lu", stdIn.length);
-//        NSLog(@"**** stdin = %lu\n%@", stdIn.length, stdIn);
+//        NSLog(@"**** stdin = %lu", stdIn.length);
+        NSLog(@"**** stdin = %lu\n%@", stdIn.length, stdIn);
         NSPipe *stdInPipe = [NSPipe pipe];
         [[stdInPipe fileHandleForWriting] writeData:[stdIn dataUsingEncoding:NSUTF8StringEncoding]];
         [[stdInPipe fileHandleForWriting] closeFile];

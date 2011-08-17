@@ -49,8 +49,8 @@
 
     XTStageViewController *svc = [[XTStageViewController alloc] init];
     [svc setRepo:xit];
-    [svc showUnstageFile:[ustgds.items objectAtIndex:0]];
-    [svc stageChunk:2];
+    [svc showUnstageFile:[ustgds.items objectAtIndex:0]]; // click on unstage table
+    [svc stageChunk:2]; // click on stage button
 
     [ustgds reload];
     [ustgds waitUntilReloadEnd];
@@ -63,6 +63,15 @@
 
     nc = [stgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 1), @"found %d commits", nc);
+
+    [svc showStageFile:[stgds.items objectAtIndex:0]]; // click on stage table
+    [svc unstageChunk:0]; // click on unstage button
+
+    [stgds reload];
+    [stgds waitUntilReloadEnd];
+
+    nc = [stgds numberOfRowsInTableView:nil];
+    STAssertTrue((nc == 0), @"found %d commits", nc);
 }
 
 - (void) testXTDataSources {

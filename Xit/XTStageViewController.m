@@ -32,6 +32,13 @@
     [unstageDS setRepo:repo];
 }
 
+- (void) reload {
+    [stageDS reload];
+    [unstageDS reload];
+    [stageTable reloadData];
+    [unstageTable reloadData];
+}
+
 #pragma mark -
 
 - (void) showUnstageFile:(XTFileIndexInfo *)file {
@@ -64,20 +71,27 @@
     [[web mainFrame] loadHTMLString:html baseURL:themeURL];
 }
 
-- (void) unstageChunk:(NSInteger)idx {
+#pragma mark -
 
+- (void) unstageChunk:(NSInteger)idx {
+    [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"apply",  @"--cached", @"--reverse", nil]
+                    withStdIn:[self preparePatch:idx]
+                        error:nil];
+    [self reload];
 }
 
 - (void) stageChunk:(NSInteger)idx {
     [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"apply",  @"--cached", nil]
                     withStdIn:[self preparePatch:idx]
                         error:nil];
-
+    [self reload];
 }
 
 - (void) discardChunk:(NSInteger)idx {
 
 }
+
+#pragma mark -
 
 - (NSString *) preparePatch:(NSInteger)idx {
     NSArray *comps = [actualDiff componentsSeparatedByString:@"\n@@"];
@@ -123,26 +137,30 @@
     DOMHTMLInputElement *bt = (DOMHTMLInputElement *)evt.target;
 
     NSLog(@"handleEvent: %@ - %@", bt.value, bt.name);
-    if ([bt.name isEqualToString:@"Unstage"]) {
-        [self unstageChunk:[bt.value intValue]];
-    } else if ([bt.name isEqualToString:@"Stage"]) {
-        [self stageChunk:[bt.value intValue]];
-    } else if ([bt.name isEqualToString:@"Discard"]) {
-        [self discardChunk:[bt.value intValue]];
+    if ([bt.value isEqualToString:@"Unstage"]) {
+        [self unstageChunk:[bt.name intValue]];
+    } else if ([bt.value isEqualToString:@"Stage"]) {
+        [self stageChunk:[bt.name intValue]];
+    } else if ([bt.value isEqualToString:@"Discard"]) {
+        [self discardChunk:[bt.name intValue]];
     }
 }
 
 #pragma mark - NSTableViewDelegate
 
 - (void) tableViewSelectionDidChange:(NSNotification *)aNotification {
-    NSLog(@"%@", aNotification);
     NSTableView *table = (NSTableView *)aNotification.object;
-    if ([table isEqualTo:stageTable]) {
-        XTFileIndexInfo *item = [[stageDS items] objectAtIndex:table.selectedRow];
-        [self showStageFile:item];
-    } else if ([table isEqualTo:unstageTable]) {
-        XTFileIndexInfo *item = [[unstageDS items] objectAtIndex:table.selectedRow];
-        [self showUnstageFile:item];
+
+    if (table.numberOfSelectedRows > 0) {
+        if ([table isEqualTo:stageTable]) {
+            [unstageTable deselectAll:nil];
+            XTFileIndexInfo *item = [[stageDS items] objectAtIndex:table.selectedRow];
+            [self showStageFile:item];
+        } else if ([table isEqualTo:unstageTable]) {
+            [stageTable deselectAll:nil];
+            XTFileIndexInfo *item = [[unstageDS items] objectAtIndex:table.selectedRow];
+            [self showUnstageFile:item];
+        }
     }
 }
 @end
