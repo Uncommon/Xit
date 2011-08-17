@@ -107,7 +107,7 @@
 
     [args insertObject:@"log" atIndex:0];
     [args insertObject:@"-z" atIndex:1];
-    NSData *zero = [@"\0" dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *zero = [NSData dataWithBytes:"" length:1];
 
     NSLog(@"****command = git %@", [args componentsJoinedByString:@" "]);
     NSTask *task = [[NSTask alloc] init];

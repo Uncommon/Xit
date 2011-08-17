@@ -49,7 +49,8 @@ const NSString *kAuthorKeyDate = @ "date";
 
     if (output != nil) {
         NSString *txt = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-        NSArray *details = [txt componentsSeparatedByString:@"\0"];
+        NSCharacterSet *nulSet = [NSCharacterSet characterSetWithRange:NSMakeRange(0, 1)];
+        NSArray *details = [txt componentsSeparatedByCharactersInSet:nulSet];
         for (NSString *detail in details) {
             if ([detail hasPrefix:@"tag"]) {
                 // TODO: parse tag header
