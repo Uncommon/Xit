@@ -18,9 +18,9 @@
     NSTableView *table;
 }
 
-- (NSArray *)items;
-- (void)reload;
-- (void)waitUntilReloadEnd;
-- (void)setRepo:(Xit *)newRepo;
+- (NSArray *) items;
+- (void) reload;
+- (void) waitUntilReloadEnd;
+- (void) setRepo:(Xit *)newRepo;
 
 @end

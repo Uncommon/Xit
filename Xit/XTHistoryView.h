@@ -25,10 +25,10 @@
     Xit *repo;
 }
 
-- (void)setRepo:(Xit *)newRepo;
-- (void)viewDidLoad;
+- (void) setRepo:(Xit *)newRepo;
+- (void) viewDidLoad;
 
-- (IBAction)toggleLayout:(id)sender;
-- (IBAction)toggleSideBar:(id)sender;
+- (IBAction) toggleLayout:(id)sender;
+- (IBAction) toggleSideBar:(id)sender;
 
 @end

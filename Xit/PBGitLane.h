@@ -18,7 +18,7 @@ public:
 PBGitLane(NSString *sha){
     d_index = s_colorIndex++;
     d_sha = sha;
-    [d_sha isEqualToString : sha];
+    [d_sha isEqualToString:sha];
 }
 
 PBGitLane(){
@@ -26,7 +26,7 @@ PBGitLane(){
 }
 
 bool isCommit(NSString *sha) const {
-    return [d_sha isEqualToString : sha];
+    return [d_sha isEqualToString:sha];
 }
 
 void setSha(NSString *sha);
