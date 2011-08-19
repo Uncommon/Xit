@@ -29,11 +29,6 @@
 - (id) init {
     self = [super init];
     if (self) {
-        NSLog(@"[init]");
-        repoURL = [NSURL URLWithString:@"/Users/laullon/xcode/foo"]; // Default only for test.
-//        repoURL=[NSURL URLWithString:@"/Users/laullon/tmp/linux-2.6"];
-//        repoURL=[NSURL URLWithString:@"/Users/administrator/tmp/testrepo"];
-
         gitCMD = [Xit gitPath];
     }
     return self;
