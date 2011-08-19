@@ -24,6 +24,18 @@
 			<key>NSDocumentClass</key>
 			<string>Xit</string>
 		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>folder</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.directory</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>NSDocumentClass</key>
+			<string>Xit</string>
+		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
