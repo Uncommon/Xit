@@ -555,7 +555,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if $(which -s uncrustify); then\n    find . -name \"*[mh]\" -exec uncrustify -c uncrustify.cfg --replace --no-backup {} \\;\nelse\n    echo \"warning: uncrustify not found\"\nfi";
+			shellScript = "PATH=${PATH}:/usr/local/bin\nif $(which -s uncrustify); then\n    for name in \"*.h\" \"*.pch\"\n    do\n        find . -name $name -exec uncrustify -c uncrustify.cfg --replace --no-backup -l OC+ {} \\;\n    done\n    for name in \"*.m\" \"*.mm\"\n    do\n        find . -name $name -exec uncrustify -c uncrustify.cfg --replace --no-backup {} \\;\n    done\nelse\n    echo \"warning: $(which uncrustify) - ${PATH}\"\nfi";
 		};
 		C3355E1313F327D6008D14B8 /* Run uncrustify Script */ = {
 			isa = PBXShellScriptBuildPhase;

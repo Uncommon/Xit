@@ -13,6 +13,6 @@
     NSMutableDictionary *remotes;
 }
 
-- (XTSideBarItem *)getRemote:(NSString *)remoteName;
+- (XTSideBarItem *) getRemote:(NSString *)remoteName;
 
 @end

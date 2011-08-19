@@ -18,6 +18,6 @@
 @property (assign) NSString *name;
 @property (assign) NSString *status;
 
-- (id)initWithName:(NSString *)theName andStatus:(NSString *)theStatus;
+- (id) initWithName:(NSString *)theName andStatus:(NSString *)theStatus;
 
 @end

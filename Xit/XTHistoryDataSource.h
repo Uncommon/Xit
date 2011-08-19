@@ -23,8 +23,8 @@
 
 @property (readonly) NSArray *items;
 
-- (void)reload;
-- (void)waitUntilReloadEnd;
-- (void)setRepo:(Xit *)newRepo;
+- (void) reload;
+- (void) waitUntilReloadEnd;
+- (void) setRepo:(Xit *)newRepo;
 @end
 

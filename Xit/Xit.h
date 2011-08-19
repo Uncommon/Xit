@@ -26,16 +26,16 @@
 @property (assign) NSString *selectedCommit;
 @property (assign) NSDictionary *refsIndex;
 
-- (void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void(^) (NSString *)) block error:(NSError **)error;
-- (NSData *)exectuteGitWithArgs:(NSArray *)args error:(NSError **)error;
-- (NSData *)exectuteGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error;
-- (void)initializeEventStream;
-- (void)start;
-- (void)stop;
-- (NSURL *)repoURL;
+- (void) getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^)(NSString *))block error:(NSError **)error;
+- (NSData *) exectuteGitWithArgs:(NSArray *)args error:(NSError **)error;
+- (NSData *) exectuteGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error;
+- (void) initializeEventStream;
+- (void) start;
+- (void) stop;
+- (NSURL *) repoURL;
 
 // XXX TEMP
-- (IBAction)reload:(id)sender;
+- (IBAction) reload:(id)sender;
 
 @end
 

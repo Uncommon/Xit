@@ -16,5 +16,5 @@
     BOOL reloadDetected;
 }
 
-- (Xit *)createRepo:(NSString *)repoName;
+- (Xit *) createRepo:(NSString *)repoName;
 @end

@@ -11,13 +11,13 @@
 #import "XTHTML.h"
 
 // -parseHeader: returns an array of dictionaries with these keys
-const NSString *kHeaderKeyName = @ "name";
-const NSString *kHeaderKeyContent = @ "content";
+const NSString *kHeaderKeyName = @"name";
+const NSString *kHeaderKeyContent = @"content";
 
 // Keys for the author/committer dictionary
-const NSString *kAuthorKeyName = @ "name";
-const NSString *kAuthorKeyEmail = @ "email";
-const NSString *kAuthorKeyDate = @ "date";
+const NSString *kAuthorKeyName = @"name";
+const NSString *kAuthorKeyEmail = @"email";
+const NSString *kAuthorKeyDate = @"date";
 
 @interface XTCommitViewController (Private)
 
