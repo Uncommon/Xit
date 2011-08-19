@@ -91,11 +91,13 @@
                         }
                                              error:nil];
 
-                       NSUInteger i = 0;
-                       NSUInteger j = [newItems count] - 1;
-                       while (i < j) {
-                           [newItems exchangeObjectAtIndex:i++ withObjectAtIndex:j--];
-                       }
+					   if ([newItems count] > 0) {
+						   NSUInteger i = 0;
+						   NSUInteger j = [newItems count] - 1;
+						   while (i < j) {
+							   [newItems exchangeObjectAtIndex:i++ withObjectAtIndex:j--];
+						   }
+					   }
 
                        PBGitGrapher *grapher = [[PBGitGrapher alloc] init];
                        [newItems enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
@@ -104,7 +106,7 @@
                             item.index = idx;
                         }];
 
-                       NSLog (@"-> %lu", [newItems count]);
+                       NSLog(@"-> %lu", [newItems count]);
                        items = newItems;
                        [table reloadData];
                    });
