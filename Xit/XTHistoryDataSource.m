@@ -91,13 +91,13 @@
                         }
                                              error:nil];
 
-					   if ([newItems count] > 0) {
-						   NSUInteger i = 0;
-						   NSUInteger j = [newItems count] - 1;
-						   while (i < j) {
-							   [newItems exchangeObjectAtIndex:i++ withObjectAtIndex:j--];
-						   }
-					   }
+                       if ([newItems count] > 0) {
+                           NSUInteger i = 0;
+                           NSUInteger j = [newItems count] - 1;
+                           while (i < j) {
+                               [newItems exchangeObjectAtIndex:i++ withObjectAtIndex:j--];
+                           }
+                       }
 
                        PBGitGrapher *grapher = [[PBGitGrapher alloc] init];
                        [newItems enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {

@@ -13,16 +13,16 @@
 @synthesize selectedCommit;
 @synthesize refsIndex;
 
-+ (NSString *) gitPath
-{
++ (NSString *) gitPath {
     NSArray *paths = [NSArray arrayWithObjects:
-					  @"/usr/bin/git",
-					  @"/usr/local/git/bin/git",
-					  nil];
-	
-    for (NSString *path in paths)
+                      @"/usr/bin/git",
+                      @"/usr/local/git/bin/git",
+                      nil];
+
+    for (NSString *path in paths) {
         if ([[NSFileManager defaultManager] fileExistsAtPath:path])
             return path;
+    }
     return nil;
 }
 
@@ -37,7 +37,7 @@
 - (id) initWithContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError {
     self = [super initWithContentsOfURL:absoluteURL ofType:typeName error:outError];
     if (self) {
-		absoluteURL = [absoluteURL URLByDeletingPathExtension];
+        absoluteURL = [absoluteURL URLByDeletingPathExtension];
         repoURL = absoluteURL;
     }
     return self;
@@ -86,11 +86,11 @@
 #pragma mark - git commands
 
 - (void) getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^)(NSString *))block error:(NSError **)error {
-	if (repoURL == nil) {
-		if (error != NULL)
-			*error = [NSError errorWithDomain:NSOSStatusErrorDomain code:fnfErr userInfo:nil];
-		return;
-	}
+    if (repoURL == nil) {
+        if (error != NULL)
+            *error = [NSError errorWithDomain:NSOSStatusErrorDomain code:fnfErr userInfo:nil];
+        return;
+    }
     NSMutableArray *args = [NSMutableArray arrayWithArray:logArgs];
 
     [args insertObject:@"log" atIndex:0];
@@ -151,8 +151,8 @@
 }
 
 - (NSData *) exectuteGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error {
-	if (repoURL == nil)
-		return nil;
+    if (repoURL == nil)
+        return nil;
     NSLog(@"****command = git %@", [args componentsJoinedByString:@" "]);
     NSTask *task = [[NSTask alloc] init];
     [task setCurrentDirectoryPath:[repoURL path]];
@@ -195,8 +195,8 @@
 
 #pragma mark - monitor file system
 - (void) initializeEventStream {
-	if (repoURL == nil)
-		return;
+    if (repoURL == nil)
+        return;
     NSString *myPath = [[repoURL URLByAppendingPathComponent:@".git"] absoluteString];
     NSArray *pathsToWatch = [NSArray arrayWithObject:myPath];
     void *appPointer = (void *)self;
