@@ -7,7 +7,7 @@
 
 #import "XitTests.h"
 #import "XTRepository.h"
-#import "GITBasic+Xit.h"
+#import "GITBasic+XTRepository.h"
 
 @implementation XitTests
 

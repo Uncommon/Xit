@@ -22,7 +22,7 @@
 }
 
 - (NSString *) windowNibName {
-    return @"Xit";
+    return @"XTDocument";
 }
 
 - (void) windowControllerDidLoadNib:(NSWindowController *)aController {
