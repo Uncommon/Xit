@@ -5,18 +5,11 @@
 //  Created by glaullon on 7/15/11.
 //
 
-#import "Xit.h"
+#import "XTDocument.h"
 #import "XTHistoryView.h"
 #import "XTRepository.h"
 
-@implementation Xit
-
-- (id) init {
-    self = [super init];
-    if (self) {
-    }
-    return self;
-}
+@implementation XTDocument
 
 - (id) initWithContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError {
     self = [super initWithContentsOfURL:absoluteURL ofType:typeName error:outError];

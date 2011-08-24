@@ -45,8 +45,8 @@
 		C3FA470B13D0F8E200AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA470913D0F8E200AC4F9B /* InfoPlist.strings */; };
 		C3FA470E13D0F8E200AC4F9B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA470D13D0F8E200AC4F9B /* main.m */; };
 		C3FA471113D0F8E200AC4F9B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = C3FA470F13D0F8E200AC4F9B /* Credits.rtf */; };
-		C3FA471413D0F8E200AC4F9B /* Xit.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA471313D0F8E200AC4F9B /* Xit.m */; };
-		C3FA471713D0F8E200AC4F9B /* Xit.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3FA471513D0F8E200AC4F9B /* Xit.xib */; };
+		C3FA471413D0F8E200AC4F9B /* XTDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA471313D0F8E200AC4F9B /* XTDocument.m */; };
+		C3FA471713D0F8E200AC4F9B /* XTDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3FA471513D0F8E200AC4F9B /* XTDocument.xib */; };
 		C3FA471A13D0F8E300AC4F9B /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3FA471813D0F8E300AC4F9B /* MainMenu.xib */; };
 		C3FA472113D0F8E300AC4F9B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		C3FA472913D0F8E300AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA472713D0F8E300AC4F9B /* InfoPlist.strings */; };
@@ -147,9 +147,9 @@
 		C3FA470C13D0F8E200AC4F9B /* Xit-Prefix.pch */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = "Xit-Prefix.pch"; sourceTree = "<group>"; tabWidth = 4; };
 		C3FA470D13D0F8E200AC4F9B /* main.m */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; tabWidth = 4; };
 		C3FA471013D0F8E200AC4F9B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		C3FA471213D0F8E200AC4F9B /* Xit.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = Xit.h; sourceTree = "<group>"; tabWidth = 4; };
-		C3FA471313D0F8E200AC4F9B /* Xit.m */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = Xit.m; sourceTree = "<group>"; tabWidth = 4; };
-		C3FA471613D0F8E200AC4F9B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Xit.xib; sourceTree = "<group>"; };
+		C3FA471213D0F8E200AC4F9B /* XTDocument.h */ = {isa = PBXFileReference; indentWidth = 4; path = XTDocument.h; sourceTree = "<group>"; tabWidth = 4; };
+		C3FA471313D0F8E200AC4F9B /* XTDocument.m */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = XTDocument.m; sourceTree = "<group>"; tabWidth = 4; };
+		C3FA471613D0F8E200AC4F9B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/XTDocument.xib; sourceTree = "<group>"; };
 		C3FA471913D0F8E300AC4F9B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		C3FA472013D0F8E300AC4F9B /* XitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3FA472613D0F8E300AC4F9B /* XitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "XitTests-Info.plist"; sourceTree = "<group>"; };
@@ -357,9 +357,9 @@
 				31A8939813E9D1EA008BE0C2 /* Views */,
 				C3D6D30F13E8E63A00AF50B0 /* GitX */,
 				31F1E87713D3AC0E00F3B317 /* DataSources */,
-				C3FA471213D0F8E200AC4F9B /* Xit.h */,
-				C3FA471313D0F8E200AC4F9B /* Xit.m */,
-				C3FA471513D0F8E200AC4F9B /* Xit.xib */,
+				C3FA471213D0F8E200AC4F9B /* XTDocument.h */,
+				C3FA471313D0F8E200AC4F9B /* XTDocument.m */,
+				C3FA471513D0F8E200AC4F9B /* XTDocument.xib */,
 				C358652F14048A3F00060C53 /* XTRepository.h */,
 				C358653014048A3F00060C53 /* XTRepository.m */,
 				C3FA471813D0F8E300AC4F9B /* MainMenu.xib */,
@@ -514,7 +514,7 @@
 				31355B1713EA15DD00C33AAB /* html.theme.default.bundle in Resources */,
 				C3FA470B13D0F8E200AC4F9B /* InfoPlist.strings in Resources */,
 				C3FA471113D0F8E200AC4F9B /* Credits.rtf in Resources */,
-				C3FA471713D0F8E200AC4F9B /* Xit.xib in Resources */,
+				C3FA471713D0F8E200AC4F9B /* XTDocument.xib in Resources */,
 				C3FA471A13D0F8E300AC4F9B /* MainMenu.xib in Resources */,
 				DD00725613E76DFB003B4120 /* Xit.icns in Resources */,
 				31A8939E13E9D5B4008BE0C2 /* XTCommitViewController.xib in Resources */,
@@ -604,7 +604,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3FA470E13D0F8E200AC4F9B /* main.m in Sources */,
-				C3FA471413D0F8E200AC4F9B /* Xit.m in Sources */,
+				C3FA471413D0F8E200AC4F9B /* XTDocument.m in Sources */,
 				31F1E87F13D3B51200F3B317 /* GITBasic+XTRepository.m in Sources */,
 				31F1E88313D3DCAC00F3B317 /* XTSideBarItem.m in Sources */,
 				C3D6CF1B13D4B18900D35D4D /* XTLocalBranchItem.m in Sources */,
@@ -682,12 +682,12 @@
 			name = Credits.rtf;
 			sourceTree = "<group>";
 		};
-		C3FA471513D0F8E200AC4F9B /* Xit.xib */ = {
+		C3FA471513D0F8E200AC4F9B /* XTDocument.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				C3FA471613D0F8E200AC4F9B /* en */,
 			);
-			name = Xit.xib;
+			name = XTDocument.xib;
 			sourceTree = "<group>";
 		};
 		C3FA471813D0F8E300AC4F9B /* MainMenu.xib */ = {

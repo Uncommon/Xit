@@ -11,7 +11,7 @@
 @class XTStageViewController;
 @class XTRepository;
 
-@interface Xit : NSDocument {
+@interface XTDocument : NSDocument {
     IBOutlet XTHistoryView *historyView;
     IBOutlet XTStageViewController *stageView;
     IBOutlet NSTabView *tabs;
@@ -21,6 +21,6 @@
 }
 
 // XXX TEMP
-- (IBAction)reload:(id)sender;
+- (IBAction) reload:(id)sender;
 
 @end
