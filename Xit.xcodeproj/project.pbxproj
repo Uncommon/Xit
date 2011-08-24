@@ -118,7 +118,7 @@
 		C343F91013F4908E009C928A /* XTHTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTHTML.m; sourceTree = "<group>"; };
 		C358652F14048A3F00060C53 /* XTRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRepository.h; sourceTree = "<group>"; };
 		C358653014048A3F00060C53 /* XTRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRepository.m; sourceTree = "<group>"; };
-		C3BC055613D1133000C3CF1A /* GITBasic+Xit.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = "GITBasic+Xit.h"; sourceTree = "<group>"; };
+		C3BC055613D1133000C3CF1A /* GITBasic+XTRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = "GITBasic+XTRepository.h"; sourceTree = "<group>"; };
 		C3BC055713D1133000C3CF1A /* GITBasic+XTRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = "GITBasic+XTRepository.m"; sourceTree = "<group>"; };
 		C3D6CF1913D4B18900D35D4D /* XTLocalBranchItem.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = XTLocalBranchItem.h; path = Xit/XTLocalBranchItem.h; sourceTree = "<group>"; tabWidth = 4; };
 		C3D6CF1A13D4B18900D35D4D /* XTLocalBranchItem.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; name = XTLocalBranchItem.m; path = Xit/XTLocalBranchItem.m; sourceTree = "<group>"; tabWidth = 4; };
@@ -241,7 +241,7 @@
 			children = (
 				31C7C12C13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.h */,
 				31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */,
-				C3BC055613D1133000C3CF1A /* GITBasic+Xit.h */,
+				C3BC055613D1133000C3CF1A /* GITBasic+XTRepository.h */,
 				C3BC055713D1133000C3CF1A /* GITBasic+XTRepository.m */,
 				C343F90F13F4908E009C928A /* XTHTML.h */,
 				C343F91013F4908E009C928A /* XTHTML.m */,

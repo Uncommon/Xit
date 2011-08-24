@@ -6,8 +6,7 @@
 //
 
 #import "XTCommitViewControllerTest.h"
-#import "Xit.h"
-#import "GITBasic+Xit.h"
+#import "GITBasic+XTRepository.h"
 #import "XTSideBarItem.h"
 #import "XTSideBarDataSource.h"
 #import "XTCommitViewController.h"

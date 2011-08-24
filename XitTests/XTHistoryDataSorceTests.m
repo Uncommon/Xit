@@ -6,8 +6,7 @@
 //
 
 #import "XTHistoryDataSorceTests.h"
-#import "Xit.h"
-#import "GITBasic+Xit.h"
+#import "GITBasic+XTRepository.h"
 #import "XTHistoryDataSource.h"
 #import "XTHistoryItem.h"
 

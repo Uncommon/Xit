@@ -9,7 +9,7 @@
 #import "XTStageViewControllerTest.h"
 #import "XTUnstagedDataSource.h"
 #import "XTStagedDataSource.h"
-#import "GITBasic+Xit.h"
+#import "GITBasic+XTRepository.h"
 #import "XTFileIndexInfo.h"
 #import "XTStageViewController.h"
 

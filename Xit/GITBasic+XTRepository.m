@@ -5,7 +5,7 @@
 //  Created by glaullon on 7/15/11.
 //
 
-#import "GITBasic+Xit.h"
+#import "GITBasic+XTRepository.h"
 
 
 @implementation XTRepository (GITBasic_XTRepository)
