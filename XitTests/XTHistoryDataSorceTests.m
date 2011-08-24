@@ -56,9 +56,9 @@
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
          XTHistoryItem *item = (XTHistoryItem *)obj;
          if (idx != (items.count - 1)) {
-             STAssertTrue (item.lineInfo.numColumns == 1, @"%lu - incorrect numColumns=%lu", idx, item.lineInfo.numColumns);
+             STAssertTrue(item.lineInfo.numColumns == 1, @"%lu - incorrect numColumns=%lu", idx, item.lineInfo.numColumns);
          } else {
-             STAssertTrue (item.lineInfo.numColumns == 0, @"%lu - incorrect numColumns=%lu", idx, item.lineInfo.numColumns);
+             STAssertTrue(item.lineInfo.numColumns == 0, @"%lu - incorrect numColumns=%lu", idx, item.lineInfo.numColumns);
          }
      }];
 }

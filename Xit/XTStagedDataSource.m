@@ -59,7 +59,7 @@
 - (void) waitUntilReloadEnd {
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
          XTFileIndexInfo *item = (XTFileIndexInfo *)obj;
-         NSLog (@"%lu - file:'%@' - status:'%@'", idx, item.name, item.status);
+         NSLog(@"%lu - file:'%@' - status:'%@'", idx, item.name, item.status);
      }];
 }
 

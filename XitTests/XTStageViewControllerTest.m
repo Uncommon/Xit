@@ -115,7 +115,7 @@
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
          XTFileIndexInfo *info = obj;
          NSString *status = [expected objectForKey:info.name];
-         STAssertEqualObjects (info.status, status, @"incorrect state file(%lu):%@", idx, info.name);
+         STAssertEqualObjects(info.status, status, @"incorrect state file(%lu):%@", idx, info.name);
      }];
 
     [xit addFile:@"--all"];
@@ -125,7 +125,7 @@
     [stgds waitUntilReloadEnd];
 
     nc = [stgds numberOfRowsInTableView:nil];
-    STAssertTrue ((nc == 5), @"found %d commits", nc);
+    STAssertTrue((nc == 5), @"found %d commits", nc);
 
     expected = [NSDictionary dictionaryWithObjectsAndKeys:
                 @"M", @"file_to_mod.txt",
@@ -139,7 +139,7 @@
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
          XTFileIndexInfo *info = obj;
          NSString *status = [expected objectForKey:info.name];
-         STAssertEqualObjects (info.status, status, @"incorrect state file(%lu):%@", idx, info.name);
+         STAssertEqualObjects(info.status, status, @"incorrect state file(%lu):%@", idx, info.name);
      }];
 }
 

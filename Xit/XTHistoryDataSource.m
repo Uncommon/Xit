@@ -75,7 +75,7 @@
                                          if (parent != nil) {
                                              [item.parents addObject:parent];
                                          } else {
-                                             NSLog (@"parent with sha:'%@' not found for commit with sha:'%@' idx=%lu", parentSha, item.sha, item.index);
+                                             NSLog(@"parent with sha:'%@' not found for commit with sha:'%@' idx=%lu", parentSha, item.sha, item.index);
                                          }
                                      }];
                                 }
@@ -117,7 +117,7 @@
     dispatch_sync(queue, ^{ });
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
          XTHistoryItem *item = (XTHistoryItem *)obj;
-         NSLog (@"numColumns=%lu - parents=%lu - %@", item.lineInfo.numColumns, item.parents.count, item.subject);
+         NSLog(@"numColumns=%lu - parents=%lu - %@", item.lineInfo.numColumns, item.parents.count, item.subject);
      }];
 }
 
