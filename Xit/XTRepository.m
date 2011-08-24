@@ -130,10 +130,10 @@
 
     int status = [task terminationStatus];
     NSLog(@"**** status = %d", status);
-    NSString *string = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-    NSLog(@"**** output = %@", string);
 
     if (status != 0) {
+        NSString *string = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+        NSLog(@"**** output = %@", string);
         if (error != NULL) {
             *error = [NSError errorWithDomain:@"git"
                                          code:status
