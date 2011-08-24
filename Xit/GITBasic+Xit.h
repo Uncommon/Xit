@@ -6,19 +6,19 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Xit.h"
+#import "XTRepository.h"
 
-@interface Xit (GITBasic_Xit)
+@interface XTRepository (GITBasic_XTRepository)
 
-- (bool) initRepo;
-- (bool) createBranch:(NSString *)name;
-- (bool) addFile:(NSString *)file;
-- (bool) commitWithMessage:(NSString *)message;
-- (bool) createTag:(NSString *)name withMessage:(NSString *)msg;
-- (bool) AddRemote:(NSString *)name withUrl:(NSString *)url;
-- (bool) push:(NSString *)remote;
-- (bool) checkout:(NSString *)branch;
-- (bool) stash:(NSString *)name;
-- (bool) merge:(NSString *)name;
+- (bool)initRepo;
+- (bool)createBranch:(NSString *)name;
+- (bool)addFile:(NSString *)file;
+- (bool)commitWithMessage:(NSString *)message;
+- (bool)createTag:(NSString *)name withMessage:(NSString *)msg;
+- (bool)AddRemote:(NSString *)name withUrl:(NSString *)url;
+- (bool)push:(NSString *)remote;
+- (bool)checkout:(NSString *)branch;
+- (bool)stash:(NSString *)name;
+- (bool)merge:(NSString *)name;
 
 @end

@@ -8,7 +8,7 @@
 #import "GITBasic+Xit.h"
 
 
-@implementation Xit (GITBasic_Xit)
+@implementation XTRepository (GITBasic_XTRepository)
 
 
 - (bool) initRepo {

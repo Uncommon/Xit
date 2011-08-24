@@ -7,7 +7,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class Xit;
+@class XTRepository;
 
 @class XTSideBarDataSource;
 @class XTHistoryDataSource;
@@ -22,13 +22,13 @@
     IBOutlet NSSplitView *sidebarSplitView;
     IBOutlet NSSplitView *mainSplitView;
     @private
-    Xit *repo;
+    XTRepository *repo;
 }
 
-- (void) setRepo:(Xit *)newRepo;
-- (void) viewDidLoad;
+- (void)setRepo:(XTRepository *)newRepo;
+- (void)viewDidLoad;
 
-- (IBAction) toggleLayout:(id)sender;
-- (IBAction) toggleSideBar:(id)sender;
+- (IBAction)toggleLayout:(id)sender;
+- (IBAction)toggleSideBar:(id)sender;
 
 @end

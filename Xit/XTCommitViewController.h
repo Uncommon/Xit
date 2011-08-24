@@ -7,16 +7,16 @@
 
 #import <Cocoa/Cocoa.h>
 #import <WebKit/WebKit.h>
-#import "Xit.h"
+#import "XTRepository.h"
 
 @interface XTCommitViewController : NSViewController
 {
     IBOutlet WebView *web;
     @private
-    Xit *repo;
+    XTRepository *repo;
 }
 
-- (void) setRepo:(Xit *)newRepo;
-- (NSString *) loadCommit:(NSString *)sha;
+- (void)setRepo:(XTRepository *)newRepo;
+- (NSString *)loadCommit:(NSString *)sha;
 
 @end

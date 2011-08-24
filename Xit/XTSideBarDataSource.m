@@ -7,7 +7,7 @@
 
 #import "XTSideBarDataSource.h"
 #import "XTSideBarItem.h"
-#import "Xit.h"
+#import "XTRepository.h"
 #import "XTLocalBranchItem.h"
 #import "XTTagItem.h"
 #import "XTRemotesItem.h"
@@ -28,7 +28,7 @@
     return self;
 }
 
-- (void) setRepo:(Xit *)newRepo {
+- (void) setRepo:(XTRepository *)newRepo {
     repo = newRepo;
     [repo addObserver:self forKeyPath:@"reload" options:NSKeyValueObservingOptionNew context:nil];
     [self reload];

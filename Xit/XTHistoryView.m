@@ -6,7 +6,7 @@
 //
 
 #import "XTHistoryView.h"
-#import "Xit.h"
+#import "XTRepository.h"
 #import "XTSideBarDataSource.h"
 #import "XTCommitViewController.h"
 
@@ -25,7 +25,7 @@
     NSLog(@"viewDidLoad");
 }
 
-- (void) setRepo:(Xit *)newRepo {
+- (void) setRepo:(XTRepository *)newRepo {
     repo = newRepo;
     [sideBarDS setRepo:newRepo];
     [historyDS setRepo:newRepo];

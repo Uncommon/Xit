@@ -8,19 +8,19 @@
 
 #import <Foundation/Foundation.h>
 
-@class Xit;
+@class XTRepository;
 
 @interface XTStagedDataSource : NSObject <NSTableViewDataSource>
 {
     @private
-    Xit *repo;
+    XTRepository *repo;
     NSMutableArray *items;
     NSTableView *table;
 }
 
-- (NSArray *) items;
-- (void) reload;
-- (void) waitUntilReloadEnd;
-- (void) setRepo:(Xit *)newRepo;
+- (NSArray *)items;
+- (void)reload;
+- (void)waitUntilReloadEnd;
+- (void)setRepo:(XTRepository *)newRepo;
 
 @end

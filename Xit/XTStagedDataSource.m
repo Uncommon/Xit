@@ -7,7 +7,7 @@
 //
 
 #import "XTStagedDataSource.h"
-#import "Xit.h"
+#import "XTRepository.h"
 #import "XTFileIndexInfo.h"
 @implementation XTStagedDataSource
 
@@ -20,7 +20,7 @@
     return self;
 }
 
-- (void) setRepo:(Xit *)newRepo {
+- (void) setRepo:(XTRepository *)newRepo {
     repo = newRepo;
     //    [repo addObserver:self forKeyPath:@"reload" options:NSKeyValueObservingOptionNew context:nil];
     //    [repo addObserver:self forKeyPath:@"selectedCommit" options:NSKeyValueObservingOptionNew context:nil];

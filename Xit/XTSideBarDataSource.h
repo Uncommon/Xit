@@ -8,7 +8,7 @@
 #import <Cocoa/Cocoa.h>
 #import <Foundation/Foundation.h>
 
-@class Xit;
+@class XTRepository;
 
 typedef enum {
     XT_BRANCHES = 0,
@@ -20,14 +20,14 @@ typedef enum {
 @interface XTSideBarDataSource : NSObject <NSOutlineViewDataSource, NSOutlineViewDelegate>
 {
     @private
-    Xit *repo;
+    XTRepository *repo;
     NSArray *roots;
     NSOutlineView *outline;
 }
 
-- (void) setRepo:(Xit *)repo;
-- (void) reload;
-- (void) reloadBrachs:(NSMutableDictionary *)refsIndex;
-- (void) reloadStashes:(NSMutableDictionary *)refsIndex;
+- (void)setRepo:(XTRepository *)repo;
+- (void)reload;
+- (void)reloadBrachs:(NSMutableDictionary *)refsIndex;
+- (void)reloadStashes:(NSMutableDictionary *)refsIndex;
 
 @end

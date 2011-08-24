@@ -6,7 +6,7 @@
 //
 
 #import "XTHistoryDataSource.h"
-#import "Xit.h"
+#import "XTRepository.h"
 #import "XTHistoryItem.h"
 #import "PBGitHistoryGrapher.h"
 #import "PBGitRevisionCell.h"
@@ -26,7 +26,7 @@
     return self;
 }
 
-- (void) setRepo:(Xit *)newRepo {
+- (void) setRepo:(XTRepository *)newRepo {
     repo = newRepo;
     [repo addObserver:self forKeyPath:@"reload" options:NSKeyValueObservingOptionNew context:nil];
     [repo addObserver:self forKeyPath:@"selectedCommit" options:NSKeyValueObservingOptionNew context:nil];
@@ -106,7 +106,7 @@
                             item.index = idx;
                         }];
 
-                       NSLog(@"-> %lu", [newItems count]);
+                       NSLog (@"-> %lu", [newItems count]);
                        items = newItems;
                        [table reloadData];
                    });

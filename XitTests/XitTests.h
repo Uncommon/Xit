@@ -7,14 +7,14 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 
-@class Xit;
+@class XTRepository;
 
 @interface XitTests : SenTestCase {
     NSString *repo;
     NSString *remoteRepo;
-    Xit *xit;
+    XTRepository *xit;
     BOOL reloadDetected;
 }
 
-- (Xit *) createRepo:(NSString *)repoName;
+- (XTRepository *)createRepo:(NSString *)repoName;
 @end

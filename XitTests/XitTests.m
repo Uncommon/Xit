@@ -6,7 +6,7 @@
 //
 
 #import "XitTests.h"
-#import "Xit.h"
+#import "XTRepository.h"
 #import "GITBasic+Xit.h"
 
 @implementation XitTests
@@ -50,7 +50,7 @@
 //    STAssertTrue([error code]!=0, @"no error");
 // }
 
-- (Xit *) createRepo:(NSString *)repoName {
+- (XTRepository *) createRepo:(NSString *)repoName {
     NSLog(@"[createRepo] repoName=%@", repoName);
     NSFileManager *defaultManager = [NSFileManager defaultManager];
 
@@ -59,9 +59,9 @@
     }
     [defaultManager createDirectoryAtPath:repoName withIntermediateDirectories:YES attributes:nil error:nil];
 
-    NSURL *repoURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@.git", repoName]];
+    NSURL *repoURL = [NSURL URLWithString:repoName];
 
-    Xit *res = [[Xit alloc] initWithContentsOfURL:repoURL ofType:@"git" error:nil];
+    XTRepository *res = [[XTRepository alloc] initWithURL:repoURL];
 
     NSString *testFile = [NSString stringWithFormat:@"%@/file1.txt", repoName];
     NSString *txt = @"some text";

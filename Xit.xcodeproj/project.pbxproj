@@ -29,9 +29,10 @@
 		31C7C12E13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */; };
 		31C7C13313ECC74C00A65FE9 /* XTHistoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 31C7C13113ECC74C00A65FE9 /* XTHistoryView.m */; };
 		31C7C13413ECC74C00A65FE9 /* XTHistoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31C7C13213ECC74C00A65FE9 /* XTHistoryView.xib */; };
-		31F1E87F13D3B51200F3B317 /* GITBasic+Xit.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BC055713D1133000C3CF1A /* GITBasic+Xit.m */; };
+		31F1E87F13D3B51200F3B317 /* GITBasic+XTRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BC055713D1133000C3CF1A /* GITBasic+XTRepository.m */; };
 		31F1E88313D3DCAC00F3B317 /* XTSideBarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 31F1E88213D3DCAC00F3B317 /* XTSideBarItem.m */; };
 		C343F91113F4908E009C928A /* XTHTML.m in Sources */ = {isa = PBXBuildFile; fileRef = C343F91013F4908E009C928A /* XTHTML.m */; };
+		C358653114048A3F00060C53 /* XTRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = C358653014048A3F00060C53 /* XTRepository.m */; };
 		C3D6CF1B13D4B18900D35D4D /* XTLocalBranchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6CF1A13D4B18900D35D4D /* XTLocalBranchItem.m */; };
 		C3D6CF1E13D4B74400D35D4D /* XTTagItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6CF1D13D4B74400D35D4D /* XTTagItem.m */; };
 		C3D6CF2113D4D5B200D35D4D /* XTRemotesItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6CF2013D4D5B200D35D4D /* XTRemotesItem.m */; };
@@ -115,8 +116,10 @@
 		C3355E1413F32815008D14B8 /* uncrustify.cfg */ = {isa = PBXFileReference; lastKnownFileType = text; path = uncrustify.cfg; sourceTree = "<group>"; };
 		C343F90F13F4908E009C928A /* XTHTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTHTML.h; sourceTree = "<group>"; };
 		C343F91013F4908E009C928A /* XTHTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTHTML.m; sourceTree = "<group>"; };
+		C358652F14048A3F00060C53 /* XTRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRepository.h; sourceTree = "<group>"; };
+		C358653014048A3F00060C53 /* XTRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRepository.m; sourceTree = "<group>"; };
 		C3BC055613D1133000C3CF1A /* GITBasic+Xit.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = "GITBasic+Xit.h"; sourceTree = "<group>"; };
-		C3BC055713D1133000C3CF1A /* GITBasic+Xit.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = "GITBasic+Xit.m"; sourceTree = "<group>"; };
+		C3BC055713D1133000C3CF1A /* GITBasic+XTRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = "GITBasic+XTRepository.m"; sourceTree = "<group>"; };
 		C3D6CF1913D4B18900D35D4D /* XTLocalBranchItem.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = XTLocalBranchItem.h; path = Xit/XTLocalBranchItem.h; sourceTree = "<group>"; tabWidth = 4; };
 		C3D6CF1A13D4B18900D35D4D /* XTLocalBranchItem.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; name = XTLocalBranchItem.m; path = Xit/XTLocalBranchItem.m; sourceTree = "<group>"; tabWidth = 4; };
 		C3D6CF1C13D4B74400D35D4D /* XTTagItem.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = XTTagItem.h; path = Xit/XTTagItem.h; sourceTree = "<group>"; tabWidth = 4; };
@@ -239,7 +242,7 @@
 				31C7C12C13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.h */,
 				31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */,
 				C3BC055613D1133000C3CF1A /* GITBasic+Xit.h */,
-				C3BC055713D1133000C3CF1A /* GITBasic+Xit.m */,
+				C3BC055713D1133000C3CF1A /* GITBasic+XTRepository.m */,
 				C343F90F13F4908E009C928A /* XTHTML.h */,
 				C343F91013F4908E009C928A /* XTHTML.m */,
 			);
@@ -357,6 +360,8 @@
 				C3FA471213D0F8E200AC4F9B /* Xit.h */,
 				C3FA471313D0F8E200AC4F9B /* Xit.m */,
 				C3FA471513D0F8E200AC4F9B /* Xit.xib */,
+				C358652F14048A3F00060C53 /* XTRepository.h */,
+				C358653014048A3F00060C53 /* XTRepository.m */,
 				C3FA471813D0F8E300AC4F9B /* MainMenu.xib */,
 				C3FA470713D0F8E200AC4F9B /* Supporting Files */,
 			);
@@ -600,7 +605,7 @@
 			files = (
 				C3FA470E13D0F8E200AC4F9B /* main.m in Sources */,
 				C3FA471413D0F8E200AC4F9B /* Xit.m in Sources */,
-				31F1E87F13D3B51200F3B317 /* GITBasic+Xit.m in Sources */,
+				31F1E87F13D3B51200F3B317 /* GITBasic+XTRepository.m in Sources */,
 				31F1E88313D3DCAC00F3B317 /* XTSideBarItem.m in Sources */,
 				C3D6CF1B13D4B18900D35D4D /* XTLocalBranchItem.m in Sources */,
 				C3D6CF1E13D4B74400D35D4D /* XTTagItem.m in Sources */,
@@ -621,6 +626,7 @@
 				31C666A113F3AEF3000E4073 /* XTStagedDataSource.m in Sources */,
 				31C666A513F3B55A000E4073 /* XTStageViewController.m in Sources */,
 				C343F91113F4908E009C928A /* XTHTML.m in Sources */,
+				C358653114048A3F00060C53 /* XTRepository.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

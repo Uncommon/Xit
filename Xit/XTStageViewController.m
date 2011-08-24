@@ -8,7 +8,7 @@
 
 #import "XTStageViewController.h"
 #import "XTFileIndexInfo.h"
-#import "Xit.h"
+#import "XTRepository.h"
 #import "XTHTML.h"
 
 @implementation XTStageViewController
@@ -26,7 +26,7 @@
     NSLog(@"viewDidLoad");
 }
 
-- (void) setRepo:(Xit *)newRepo {
+- (void) setRepo:(XTRepository *)newRepo {
     repo = newRepo;
     [stageDS setRepo:repo];
     [unstageDS setRepo:repo];

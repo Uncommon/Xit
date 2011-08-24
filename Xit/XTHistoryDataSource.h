@@ -7,13 +7,13 @@
 
 #import <Foundation/Foundation.h>
 
-@class Xit;
+@class XTRepository;
 @class XTHistoryItem;
 
 @interface XTHistoryDataSource : NSObject <NSTableViewDataSource, NSTableViewDelegate>
 {
     @private
-    Xit *repo;
+    XTRepository *repo;
     NSArray *items;
     NSTableView *table;
     BOOL cancel;
@@ -23,8 +23,8 @@
 
 @property (readonly) NSArray *items;
 
-- (void) reload;
-- (void) waitUntilReloadEnd;
-- (void) setRepo:(Xit *)newRepo;
+- (void)reload;
+- (void)waitUntilReloadEnd;
+- (void)setRepo:(XTRepository *)newRepo;
 @end
 

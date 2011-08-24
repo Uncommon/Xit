@@ -30,7 +30,7 @@ const NSString *kAuthorKeyDate = @"date";
 
 @implementation XTCommitViewController
 
-- (void) setRepo:(Xit *)newRepo {
+- (void) setRepo:(XTRepository *)newRepo {
     repo = newRepo;
     [repo addObserver:self forKeyPath:@"selectedCommit" options:NSKeyValueObservingOptionNew context:nil];
 }
