@@ -51,10 +51,15 @@
 }
 
 - (void) testXTSideBarDataSourceStashes {
-    NSString *testFile = [NSString stringWithFormat:@"%@/file1.txt", [[xit fileURL] absoluteString]];
+    NSString *testFile = [NSString stringWithFormat:@"%@/file1.txt", repo];
     NSString *txt = @"other some text";
 
-    [txt writeToFile:testFile atomically:YES encoding:NSASCIIStringEncoding error:nil];
+    NSError *error;
+
+    [txt writeToFile:testFile atomically:YES encoding:NSASCIIStringEncoding error:&error];
+    if (error != nil) {
+        STFail(@"error: %@", error.localizedFailureReason);
+    }
 
     if (![xit stash:@"s1"]) {
         STFail(@"stash");
