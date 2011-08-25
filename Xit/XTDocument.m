@@ -21,6 +21,10 @@
     return self;
 }
 
+- (id)initForURL:(NSURL *)absoluteDocumentURL withContentsOfURL:(NSURL *)absoluteDocumentContentsURL ofType:(NSString *)typeName error:(NSError **)outError {
+    return [self initWithContentsOfURL:absoluteDocumentURL ofType:typeName error:outError];
+}
+
 - (NSString *)windowNibName {
     return @"XTDocument";
 }

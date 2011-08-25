@@ -20,6 +20,7 @@
     dispatch_queue_t queue;
 }
 
+- (id)initWithURL:(NSURL *)url;
 - (void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^)(NSString *))block error:(NSError **)error;
 - (NSData *)exectuteGitWithArgs:(NSArray *)args error:(NSError **)error;
 - (NSData *)exectuteGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error;
