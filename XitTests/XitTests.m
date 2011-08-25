@@ -59,7 +59,7 @@
     }
     [defaultManager createDirectoryAtPath:repoName withIntermediateDirectories:YES attributes:nil error:nil];
 
-    NSURL *repoURL = [NSURL URLWithString:repoName];
+    NSURL *repoURL = [NSURL URLWithString:[NSString stringWithFormat:@"file://localhost%@", repoName]];
 
     XTRepository *res = [[XTRepository alloc] initWithURL:repoURL];
 

@@ -168,7 +168,7 @@
 - (void)initializeEventStream {
     if (repoURL == nil)
         return;
-    NSString *myPath = [[repoURL URLByAppendingPathComponent:@".git"] absoluteString];
+    NSString *myPath = [[repoURL URLByAppendingPathComponent:@".git"] path];
     NSArray *pathsToWatch = [NSArray arrayWithObject:myPath];
     void *appPointer = (void *)self;
     FSEventStreamContext context = { 0, appPointer, NULL, NULL, NULL };
