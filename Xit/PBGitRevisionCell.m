@@ -11,13 +11,13 @@
 @implementation PBGitRevisionCell
 
 
-- (id) initWithCoder:(id)coder {
+- (id)initWithCoder:(id)coder {
     self = [super initWithCoder:coder];
     textCell = [[NSTextFieldCell alloc] initWithCoder:coder];
     return self;
 }
 
-+ (NSArray *) laneColors {
++ (NSArray *)laneColors {
     static NSArray *laneColors = nil;
 
     if (!laneColors)
@@ -33,7 +33,7 @@
     return laneColors;
 }
 
-- (void) drawLineFromColumn:(size_t)from toColumn:(size_t)to inRect:(NSRect)r offset:(CGFloat)offset color:(int)c {
+- (void)drawLineFromColumn:(size_t)from toColumn:(size_t)to inRect:(NSRect)r offset:(CGFloat)offset color:(int)c {
 
     int columnWidth = 10;
     NSPoint origin = r.origin;
@@ -55,11 +55,11 @@
 
 }
 
-- (BOOL) isCurrentCommit {
+- (BOOL)isCurrentCommit {
     return NO;
 }
 
-- (void) drawCircleInRect:(NSRect)r {
+- (void)drawCircleInRect:(NSRect)r {
 
     size_t c = cellInfo.position;
     int columnWidth = 10;
@@ -86,7 +86,7 @@
     [path fill];
 }
 
-- (void) drawTriangleInRect:(NSRect)r sign:(char)sign {
+- (void)drawTriangleInRect:(NSRect)r sign:(char)sign {
     size_t c = cellInfo.position;
     int columnHeight = 10;
     int columnWidth = 8;
@@ -118,7 +118,7 @@
     [path stroke];
 }
 
-- (NSMutableDictionary *) attributesForRefLabelSelected:(BOOL)selected {
+- (NSMutableDictionary *)attributesForRefLabelSelected:(BOOL)selected {
     NSMutableDictionary *attributes = [[[NSMutableDictionary alloc] initWithCapacity:2] autorelease];
     NSMutableParagraphStyle *style = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
 
@@ -132,7 +132,7 @@
     return attributes;
 }
 
-- (void) drawWithFrame:(NSRect)rect inView:(NSView *)view {
+- (void)drawWithFrame:(NSRect)rect inView:(NSView *)view {
     cellInfo = ((XTHistoryItem *)self.objectValue).lineInfo;
 
     if (cellInfo) {
@@ -169,7 +169,7 @@
 //    return [[super objectValue] nonretainedObjectValue];
 // }
 
-- (NSRect) rectAtIndex:(int)index {
+- (NSRect)rectAtIndex:(int)index {
     cellInfo = [self.objectValue lineInfo];
     CGFloat pathWidth = 0;
     if (cellInfo)

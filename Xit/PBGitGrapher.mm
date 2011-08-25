@@ -17,7 +17,7 @@ using namespace std;
 
 #define MAX_LANES 100
 
-- (id) init {
+- (id)init {
     self = [super init];
     if (self) {
         pl = new std::list<PBGitLane *>;
@@ -34,7 +34,7 @@ void add_line(struct PBGitGraphLine *lines, int *nLines, int upper, size_t from,
     lines[(*nLines)++] = a;
 }
 
-- (void) decorateCommit:(XTHistoryItem *)commit {
+- (void)decorateCommit:(XTHistoryItem *)commit {
     int i = 0;
     size_t newPos = -1;
 
@@ -160,7 +160,7 @@ void add_line(struct PBGitGraphLine *lines, int *nLines, int upper, size_t from,
     commit.lineInfo = previous;
 }
 
-- (void) finalize {
+- (void)finalize {
     std::list<PBGitLane *> *lanes = (std::list<PBGitLane *> *)pl;
     std::list<PBGitLane *>::iterator it = lanes->begin();
     for (; it != lanes->end(); ++it) {

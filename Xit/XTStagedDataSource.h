@@ -20,7 +20,6 @@
 
 - (NSArray *)items;
 - (void)reload;
-- (void)waitUntilReloadEnd;
 - (void)setRepo:(XTRepository *)newRepo;
 
 @end

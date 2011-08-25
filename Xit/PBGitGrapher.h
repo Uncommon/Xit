@@ -17,5 +17,5 @@
     int curLane;
 }
 
-- (void) decorateCommit:(XTHistoryItem *)commit;
+- (void)decorateCommit:(XTHistoryItem *)commit;
 @end

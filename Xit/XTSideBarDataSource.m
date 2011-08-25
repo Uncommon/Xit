@@ -15,7 +15,7 @@
 
 @implementation XTSideBarDataSource
 
-- (id) init {
+- (id)init {
     self = [super init];
     if (self) {
         XTSideBarItem *branches = [[XTSideBarItem alloc] initWithTitle:@"Branches"];
@@ -28,25 +28,25 @@
     return self;
 }
 
-- (void) setRepo:(XTRepository *)newRepo {
+- (void)setRepo:(XTRepository *)newRepo {
     repo = newRepo;
     [repo addObserver:self forKeyPath:@"reload" options:NSKeyValueObservingOptionNew context:nil];
     [self reload];
 }
 
-- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"reload"]) {
         NSArray *reload = [change objectForKey:NSKeyValueChangeNewKey];
         for (NSString *path in reload) {
             if ([path hasPrefix:@".git/refs/"]) {
-                [self reload];
+                dispatch_async(repo.queue, ^{ [self reload]; });
                 break;
             }
         }
     }
 }
 
-- (void) reload {
+- (void)reload {
     [self willChangeValueForKey:@"reload"];
     NSMutableDictionary *refsIndex = [NSMutableDictionary dictionary];
     [self reloadBrachs:refsIndex];
@@ -54,9 +54,10 @@
     repo.refsIndex = refsIndex;
     [outline reloadData];
     [self didChangeValueForKey:@"reload"];
+    [outline reloadData];
 }
 
-- (void) reloadStashes:(NSMutableDictionary *)refsIndex {
+- (void)reloadStashes:(NSMutableDictionary *)refsIndex {
     XTSideBarItem *stashes = [roots objectAtIndex:XT_STASHES];
 
     [stashes clean];
@@ -75,7 +76,7 @@
     }
 }
 
-- (void) reloadBrachs:(NSMutableDictionary *)refsIndex {
+- (void)reloadBrachs:(NSMutableDictionary *)refsIndex {
     XTSideBarItem *branches = [roots objectAtIndex:XT_BRANCHES];
     XTSideBarItem *tags = [roots objectAtIndex:XT_TAGS];
     XTRemotesItem *remotes = [roots objectAtIndex:XT_REMOTES];
@@ -128,7 +129,7 @@
 
 #pragma mark - NSOutlineViewDataSource
 
-- (NSInteger) outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item {
+- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item {
     outline = outlineView;
     outlineView.delegate = self;
 
@@ -142,7 +143,7 @@
     return res;
 }
 
-- (BOOL) outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item {
+- (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item {
     BOOL res = NO;
 
     if ([item isKindOfClass:[XTSideBarItem class]]) {
@@ -152,7 +153,7 @@
     return res;
 }
 
-- (id) outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item {
+- (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item {
     id res = nil;
 
     if (item == nil) {
@@ -164,7 +165,7 @@
     return res;
 }
 
-- (id) outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
+- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
     NSString *res = nil;
 
     if ([item isKindOfClass:[XTSideBarItem class]]) {
@@ -176,14 +177,14 @@
 
 #pragma mark - NSOutlineViewDelegate
 
-- (void) outlineViewSelectionDidChange:(NSNotification *)notification {
+- (void)outlineViewSelectionDidChange:(NSNotification *)notification {
     XTSideBarItem *item = [outline itemAtRow:outline.selectedRow];
 
     if (item.sha != nil)
         repo.selectedCommit = item.sha;
 }
 
-- (BOOL) outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item {
+- (BOOL)outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item {
     XTSideBarItem *i = (XTSideBarItem *)item;
 
     return (i.sha != nil);

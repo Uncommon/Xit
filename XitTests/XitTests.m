@@ -11,7 +11,7 @@
 
 @implementation XitTests
 
-- (void) setUp {
+- (void)setUp {
     [super setUp];
 
     repo = [NSString stringWithFormat:@"%@testrepo", NSTemporaryDirectory()];
@@ -23,7 +23,7 @@
     NSLog(@"setUp ok");
 }
 
-- (void) tearDown {
+- (void)tearDown {
     [super tearDown];
 
     NSFileManager *defaultManager = [NSFileManager defaultManager];
@@ -50,7 +50,7 @@
 //    STAssertTrue([error code]!=0, @"no error");
 // }
 
-- (XTRepository *) createRepo:(NSString *)repoName {
+- (XTRepository *)createRepo:(NSString *)repoName {
     NSLog(@"[createRepo] repoName=%@", repoName);
     NSFileManager *defaultManager = [NSFileManager defaultManager];
 

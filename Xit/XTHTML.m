@@ -10,7 +10,7 @@
 
 @implementation XTHTML
 
-+ (NSString *) parseDiff:(NSString *)txt {
++ (NSString *)parseDiff:(NSString *)txt {
     txt = [XTHTML escapeHTML:txt];
 
     NSMutableString *res = [NSMutableString string];
@@ -29,7 +29,7 @@
 }
 
 
-+ (NSString *) parseDiffBlock:(NSString *)txt {
++ (NSString *)parseDiffBlock:(NSString *)txt {
     NSMutableString *res = [NSMutableString string];
     NSScanner *scan = [NSScanner scannerWithString:txt];
     NSString *block;
@@ -53,7 +53,7 @@
     return res;
 }
 
-+ (NSString *) getFileName:(NSString *)line {
++ (NSString *)getFileName:(NSString *)line {
     NSRange b = [line rangeOfString:@"b/"];
 
     if (b.length == 0)
@@ -68,7 +68,7 @@
 }
 
 
-+ (NSString *) parseDiffHeader:(NSString *)txt {
++ (NSString *)parseDiffHeader:(NSString *)txt {
     NSEnumerator *lines = [[txt componentsSeparatedByString:@"\n"] objectEnumerator];
     NSMutableString *res = [NSMutableString string];
 
@@ -84,7 +84,7 @@
     return res;
 }
 
-+ (NSString *) escapeHTML:(NSString *)txt {
++ (NSString *)escapeHTML:(NSString *)txt {
     if (txt == nil)
         return txt;
     NSMutableString *newTxt = [NSMutableString stringWithString:txt];
@@ -98,7 +98,7 @@
 }
 
 
-+ (NSString *) parseBinaryDiff:(NSString *)txt {
++ (NSString *)parseBinaryDiff:(NSString *)txt {
     NSMutableString *res = [NSMutableString string];
     NSScanner *scan = [NSScanner scannerWithString:txt];
     NSString *block;
@@ -126,7 +126,7 @@
     return res;
 }
 
-+ (NSString *) parseDiffChunk:(NSString *)txt {
++ (NSString *)parseDiffChunk:(NSString *)txt {
     NSEnumerator *lines = [[txt componentsSeparatedByString:@"\n"] objectEnumerator];
     NSMutableString *res = [NSMutableString string];
 
@@ -192,13 +192,13 @@
     return res;
 }
 
-+ (BOOL) isImage:(NSString *)file {
++ (BOOL)isImage:(NSString *)file {
     NSString *mimeType = [self mimeTypeForFileName:file];
 
     return (mimeType != nil) && ([mimeType rangeOfString:@"image/" options:NSCaseInsensitiveSearch].location != NSNotFound);
 }
 
-+ (NSArray *) getFilesNames:(NSString *)line {
++ (NSArray *)getFilesNames:(NSString *)line {
     NSString *a = nil;
     NSString *b = nil;
     NSScanner *scanner = [NSScanner scannerWithString:line];
@@ -220,7 +220,7 @@
 
 
 
-+ (NSString *) mimeTypeForFileName:(NSString *)name {
++ (NSString *)mimeTypeForFileName:(NSString *)name {
     NSString *mimeType = nil;
     NSInteger i = [name rangeOfString:@"." options:NSBackwardsSearch].location;
 

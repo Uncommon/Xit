@@ -10,7 +10,7 @@
 
 @implementation XTRemotesItem
 
-- (id) initWithTitle:(NSString *)theTitle {
+- (id)initWithTitle:(NSString *)theTitle {
     self = [super initWithTitle:theTitle];
     if (self) {
         remotes = [NSMutableDictionary dictionary];
@@ -19,16 +19,16 @@
     return self;
 }
 
-- (XTSideBarItem *) getRemote:(NSString *)remoteName {
+- (XTSideBarItem *)getRemote:(NSString *)remoteName {
     return [remotes objectForKey:remoteName];
 }
 
-- (void) addchildren:(XTSideBarItem *)child {
+- (void)addchildren:(XTSideBarItem *)child {
     [super addchildren:child];
     [remotes setObject:child forKey:[child title]];
 }
 
-- (void) clean {
+- (void)clean {
     [super clean];
     [remotes removeAllObjects];
 }

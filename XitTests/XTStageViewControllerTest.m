@@ -15,7 +15,7 @@
 
 @implementation XTStageViewControllerTest
 
-- (void) testXTPartialStage {
+- (void)testXTPartialStage {
     NSString *mv = [NSString stringWithFormat:@"%@/file_to_move.txt", repo];
     NSMutableArray *lines = [NSMutableArray arrayWithCapacity:30];
 
@@ -35,14 +35,14 @@
 
     XTUnstagedDataSource *ustgds = [[XTUnstagedDataSource alloc] init];
     [ustgds setRepo:xit];
-    [ustgds waitUntilReloadEnd];
+    [xit waitUntilReloadEnd];
 
     NSUInteger nc = [ustgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 1), @"found %d commits", nc);
 
     XTStagedDataSource *stgds = [[XTStagedDataSource alloc] init];
     [stgds setRepo:xit];
-    [stgds waitUntilReloadEnd];
+    [xit waitUntilReloadEnd];
 
     nc = [stgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 0), @"found %d commits", nc);
@@ -53,13 +53,13 @@
     [svc stageChunk:2]; // click on stage button
 
     [ustgds reload];
-    [ustgds waitUntilReloadEnd];
+    [xit waitUntilReloadEnd];
 
     nc = [ustgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 1), @"found %d commits", nc);
 
     [stgds reload];
-    [stgds waitUntilReloadEnd];
+    [xit waitUntilReloadEnd];
 
     nc = [stgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 1), @"found %d commits", nc);
@@ -68,13 +68,13 @@
     [svc unstageChunk:0]; // click on unstage button
 
     [stgds reload];
-    [stgds waitUntilReloadEnd];
+    [xit waitUntilReloadEnd];
 
     nc = [stgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 0), @"found %d commits", nc);
 }
 
-- (void) testXTDataSources {
+- (void)testXTDataSources {
     NSString *mod = [NSString stringWithFormat:@"%@/file_to_mod.txt", repo];
     NSString *mv = [NSString stringWithFormat:@"%@/file_to_move.txt", repo];
     NSString *mvd = [NSString stringWithFormat:@"%@/file_moved.txt", repo];
@@ -98,7 +98,7 @@
 
     XTUnstagedDataSource *ustgds = [[XTUnstagedDataSource alloc] init];
     [ustgds setRepo:xit];
-    [ustgds waitUntilReloadEnd];
+    [xit waitUntilReloadEnd];
 
     NSUInteger nc = [ustgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 5), @"found %d commits", nc);
@@ -122,7 +122,7 @@
 
     XTStagedDataSource *stgds = [[XTStagedDataSource alloc] init];
     [stgds setRepo:xit];
-    [stgds waitUntilReloadEnd];
+    [xit waitUntilReloadEnd];
 
     nc = [stgds numberOfRowsInTableView:nil];
     STAssertTrue ((nc == 5), @"found %d commits", nc);

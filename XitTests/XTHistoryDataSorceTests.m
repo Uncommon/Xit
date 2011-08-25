@@ -6,13 +6,14 @@
 //
 
 #import "XTHistoryDataSorceTests.h"
+#import "XTRepository.h"
 #import "GITBasic+XTRepository.h"
 #import "XTHistoryDataSource.h"
 #import "XTHistoryItem.h"
 
 @implementation XTHistoryDataSorceTests
 
-- (void) testRootCommitsGraph {
+- (void)testRootCommitsGraph {
     NSInteger nCommits = 15;
     NSFileManager *defaultManager = [NSFileManager defaultManager];
 
@@ -50,7 +51,7 @@
 
     XTHistoryDataSource *hds = [[XTHistoryDataSource alloc] init];
     [hds setRepo:xit];
-    [hds waitUntilReloadEnd];
+    [xit waitUntilReloadEnd];
 
     NSArray *items = hds.items;
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
@@ -63,7 +64,7 @@
      }];
 }
 
-- (void) testXTHistoryDataSource {
+- (void)testXTHistoryDataSource {
     NSInteger nCommits = 60;
     NSFileManager *defaultManager = [NSFileManager defaultManager];
 
@@ -93,7 +94,7 @@
 
     XTHistoryDataSource *hds = [[XTHistoryDataSource alloc] init];
     [hds setRepo:xit];
-    [hds waitUntilReloadEnd];
+    [xit waitUntilReloadEnd];
 
     NSUInteger nc = [hds numberOfRowsInTableView:nil];
     STAssertTrue((nc == (nCommits + 1)), @"found %d commits", nc);

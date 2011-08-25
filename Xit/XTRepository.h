@@ -17,18 +17,21 @@
     NSDictionary *refsIndex;
     FSEventStreamRef stream;
     NSArray *reload;
+    dispatch_queue_t queue;
 }
 
-- (void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void(^) (NSString *)) block error:(NSError **)error;
+- (void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^)(NSString *))block error:(NSError **)error;
 - (NSData *)exectuteGitWithArgs:(NSArray *)args error:(NSError **)error;
 - (NSData *)exectuteGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error;
 
 - (void)initializeEventStream;
 - (void)start;
 - (void)stop;
+- (void)waitUntilReloadEnd;
 
 @property (assign) NSString *selectedCommit;
 @property (assign) NSDictionary *refsIndex;
+@property (readonly) dispatch_queue_t queue;
 
 @end
 
