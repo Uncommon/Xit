@@ -14,7 +14,7 @@
 - (id)initWithContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError {
     self = [super initWithContentsOfURL:absoluteURL ofType:typeName error:outError];
     if (self) {
-        absoluteURL = [absoluteURL URLByDeletingPathExtension];
+//        absoluteURL = [absoluteURL URLByDeletingPathExtension];
         repoURL = absoluteURL;
         repo = [[XTRepository alloc] initWithURL:repoURL];
         [repo addObserver:self forKeyPath:@"activeTasks" options:NSKeyValueObservingOptionNew context:nil];
