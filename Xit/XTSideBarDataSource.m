@@ -13,6 +13,10 @@
 #import "XTRemotesItem.h"
 #import "NSMutableDictionary+MultiObjectForKey.h"
 
+@interface XTSideBarDataSource ()
+- (void)_reload;
+@end
+
 @implementation XTSideBarDataSource
 
 - (id)init {
@@ -39,7 +43,7 @@
         NSArray *reload = [change objectForKey:NSKeyValueChangeNewKey];
         for (NSString *path in reload) {
             if ([path hasPrefix:@".git/refs/"]) {
-                dispatch_async(repo.queue, ^{ [self reload]; });
+                [self reload];
                 break;
             }
         }
@@ -47,6 +51,10 @@
 }
 
 - (void)reload {
+    dispatch_async(repo.queue, ^{ [self _reload]; });
+}
+
+- (void)_reload {
     [self willChangeValueForKey:@"reload"];
     NSMutableDictionary *refsIndex = [NSMutableDictionary dictionary];
     [self reloadBrachs:refsIndex];
