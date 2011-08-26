@@ -13,6 +13,7 @@
 @synthesize selectedCommit;
 @synthesize refsIndex;
 @synthesize queue;
+@synthesize activeTasks;
 
 + (NSString *)gitPath {
     NSArray *paths = [NSArray arrayWithObjects:
@@ -36,9 +37,22 @@
         NSMutableString *qName = [NSMutableString stringWithString:@"com.xit.queue."];
         [qName appendString:[url path]];
         queue = dispatch_queue_create([qName cStringUsingEncoding:NSASCIIStringEncoding], nil);
+        activeTasks = [NSMutableArray array];
     }
 
     return self;
+}
+
+- (void)addTask:(NSTask *)task {
+    [self willChangeValueForKey:@"activeTasks"];
+    [activeTasks addObject:task];
+    [self didChangeValueForKey:@"activeTasks"];
+}
+
+- (void)removeTask:(NSTask *)task {
+    [self willChangeValueForKey:@"activeTasks"];
+    [activeTasks removeObject:task];
+    [self didChangeValueForKey:@"activeTasks"];
 }
 
 - (void)waitUntilReloadEnd {
@@ -59,6 +73,7 @@
 
     NSLog (@"****command = git %@", [args componentsJoinedByString:@" "]);
     NSTask *task = [[NSTask alloc] init];
+    [self addTask:task];
     [task setCurrentDirectoryPath:[repoURL path]];
     [task setLaunchPath:gitCMD];
     [task setArguments:args];
@@ -104,6 +119,7 @@
                                      userInfo:[NSDictionary dictionaryWithObject:string forKey:@"output"]];
         }
     }
+    [self removeTask:task];
 }
 
 - (NSData *)exectuteGitWithArgs:(NSArray *)args error:(NSError **)error {
@@ -115,6 +131,7 @@
         return nil;
     NSLog(@"****command = git %@", [args componentsJoinedByString:@" "]);
     NSTask *task = [[NSTask alloc] init];
+    [self addTask:task];
     [task setCurrentDirectoryPath:[repoURL path]];
     [task setLaunchPath:gitCMD];
     [task setArguments:args];
@@ -150,7 +167,7 @@
         }
         output = nil;
     }
-
+    [self removeTask:task];
     return output;
 }
 

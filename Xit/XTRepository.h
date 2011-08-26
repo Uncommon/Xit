@@ -18,6 +18,7 @@
     FSEventStreamRef stream;
     NSArray *reload;
     dispatch_queue_t queue;
+    NSMutableArray *activeTasks;
 }
 
 - (id)initWithURL:(NSURL *)url;
@@ -30,9 +31,13 @@
 - (void)stop;
 - (void)waitUntilReloadEnd;
 
+- (void)addTask:(NSTask *)task;
+- (void)removeTask:(NSTask *)task;
+
 @property (assign) NSString *selectedCommit;
 @property (assign) NSDictionary *refsIndex;
 @property (readonly) dispatch_queue_t queue;
+@property (readonly) NSMutableArray *activeTasks;
 
 @end
 

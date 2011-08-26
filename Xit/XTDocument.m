@@ -17,6 +17,7 @@
         absoluteURL = [absoluteURL URLByDeletingPathExtension];
         repoURL = absoluteURL;
         repo = [[XTRepository alloc] initWithURL:repoURL];
+        [repo addObserver:self forKeyPath:@"activeTasks" options:NSKeyValueObservingOptionNew context:nil];
     }
     return self;
 }
@@ -49,6 +50,17 @@
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError {
     return true; // XXX
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if ([keyPath isEqualToString:@"activeTasks"]) {
+        NSMutableArray *tasks = [change objectForKey:NSKeyValueChangeNewKey];
+        if (tasks.count > 0) {
+            [activity startAnimation:tasks];
+        } else {
+            [activity stopAnimation:tasks];
+        }
+    }
 }
 
 

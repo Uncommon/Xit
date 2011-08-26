@@ -15,6 +15,7 @@
     IBOutlet XTHistoryView *historyView;
     IBOutlet XTStageViewController *stageView;
     IBOutlet NSTabView *tabs;
+    IBOutlet NSProgressIndicator *activity;
     @private
     NSURL *repoURL;
     XTRepository *repo;
