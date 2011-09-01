@@ -4,7 +4,8 @@ if $(which -s uncrustify); then
     do
         for file in `find . -name $name`
         do
-            uncrustify -c uncrustify.cfg -l OC+ -f $file | diff --old-line-format="$file:%dn: warning: uncrustify wants to change this: %L" --unchanged-line-format="" $file -
+            uncrustify -c uncrustify.cfg -l OC+ -f $file | diff --old-group-format="$file:%df: warning: uncrustify wants to change this to:
+" --unchanged-line-format="" $file -
         done
     done
     for name in "*.m" "*.mm"
@@ -12,7 +13,8 @@ if $(which -s uncrustify); then
         for file in `find . -name $name`
         do
             # Same as above, but without -l OC+
-            uncrustify -c uncrustify.cfg -f $file | diff --old-line-format="$file:%dn: warning: uncrustify wants to change this: %L" --unchanged-line-format="" $file -
+            uncrustify -c uncrustify.cfg -f $file | diff --old-group-format="$file:%df: warning: uncrustify wants to change this to:
+" --unchanged-line-format="" $file -
         done
     done
 else
