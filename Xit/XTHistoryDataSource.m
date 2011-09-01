@@ -19,7 +19,6 @@
     self = [super init];
     if (self) {
         items = [NSMutableArray array];
-        queue = dispatch_queue_create("com.xit.queue.history", nil);
         index = [NSMutableDictionary dictionary];
     }
 
@@ -55,14 +54,13 @@
 }
 
 - (void)reload {
-    dispatch_async(queue, ^{
+    dispatch_async(repo.queue, ^{
                        NSMutableArray *newItems = [NSMutableArray array];
 
                        [repo    getCommitsWithArgs:[NSArray arrayWithObjects:@"--pretty=format:%H%n%P%n%ct%n%ce%n%s", @"--reverse", @"--tags", @"--all", @"--topo-order", nil]
                         enumerateCommitsUsingBlock:^(NSString * line) {
 
                             NSArray *comps = [line componentsSeparatedByString:@"\n"];
-//          NSLog(@"line: %@",[comps componentsJoinedByString:@" - "]);
                             XTHistoryItem *item = [[XTHistoryItem alloc] init];
                             if ([comps count] == 5) {
                                 item.sha = [comps objectAtIndex:0];
@@ -110,15 +108,6 @@
                        items = newItems;
                        [table reloadData];
                    });
-}
-
-// only for unit test
-- (void)waitUntilReloadEnd {
-    dispatch_sync(queue, ^{ });
-    [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
-         XTHistoryItem *item = (XTHistoryItem *)obj;
-         NSLog(@"numColumns=%lu - parents=%lu - %@", item.lineInfo.numColumns, item.parents.count, item.subject);
-     }];
 }
 
 #pragma mark - NSTableViewDataSource

@@ -35,14 +35,14 @@
 
     XTUnstagedDataSource *ustgds = [[XTUnstagedDataSource alloc] init];
     [ustgds setRepo:xit];
-    [ustgds waitUntilReloadEnd];
+    [xit waitUntilReloadEnd];
 
     NSUInteger nc = [ustgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 1), @"found %d commits", nc);
 
     XTStagedDataSource *stgds = [[XTStagedDataSource alloc] init];
     [stgds setRepo:xit];
-    [stgds waitUntilReloadEnd];
+    [xit waitUntilReloadEnd];
 
     nc = [stgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 0), @"found %d commits", nc);
@@ -53,13 +53,13 @@
     [svc stageChunk:2]; // click on stage button
 
     [ustgds reload];
-    [ustgds waitUntilReloadEnd];
+    [xit waitUntilReloadEnd];
 
     nc = [ustgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 1), @"found %d commits", nc);
 
     [stgds reload];
-    [stgds waitUntilReloadEnd];
+    [xit waitUntilReloadEnd];
 
     nc = [stgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 1), @"found %d commits", nc);
@@ -68,7 +68,7 @@
     [svc unstageChunk:0]; // click on unstage button
 
     [stgds reload];
-    [stgds waitUntilReloadEnd];
+    [xit waitUntilReloadEnd];
 
     nc = [stgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 0), @"found %d commits", nc);
@@ -98,7 +98,7 @@
 
     XTUnstagedDataSource *ustgds = [[XTUnstagedDataSource alloc] init];
     [ustgds setRepo:xit];
-    [ustgds waitUntilReloadEnd];
+    [xit waitUntilReloadEnd];
 
     NSUInteger nc = [ustgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 5), @"found %d commits", nc);
@@ -122,7 +122,7 @@
 
     XTStagedDataSource *stgds = [[XTStagedDataSource alloc] init];
     [stgds setRepo:xit];
-    [stgds waitUntilReloadEnd];
+    [xit waitUntilReloadEnd];
 
     nc = [stgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 5), @"found %d commits", nc);

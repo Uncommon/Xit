@@ -31,36 +31,31 @@
 }
 
 - (void)reload {
-    [items removeAllObjects];
+    dispatch_async(repo.queue, ^{
 
-    NSData *output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff-index", @"--cached", @"HEAD", nil] error:nil];
-    NSString *filesStr = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-    filesStr = [filesStr stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    NSArray *files = [filesStr componentsSeparatedByString:@"\n"];
-    [files enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
-         NSString *file = (NSString *)obj;
-         NSArray *info = [file componentsSeparatedByString:@"\t"];
-         if (info.count > 1) {
-             NSString *name = [info lastObject];
-             NSString *status = [[[info objectAtIndex:0] componentsSeparatedByString:@" "] lastObject];
-             status = [status substringToIndex:1];
-             XTFileIndexInfo *fileInfo = [[XTFileIndexInfo alloc] initWithName:name andStatus:status];
-             [items addObject:fileInfo];
-         }
-     }];
+                       [items removeAllObjects];
+
+                       NSData *output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff-index", @"--cached", @"HEAD", nil] error:nil];
+                       NSString *filesStr = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+                       filesStr = [filesStr stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                       NSArray *files = [filesStr componentsSeparatedByString:@"\n"];
+                       [files enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
+                            NSString *file = (NSString *)obj;
+                            NSArray *info = [file componentsSeparatedByString:@"\t"];
+                            if (info.count > 1) {
+                                NSString *name = [info lastObject];
+                                NSString *status = [[[info objectAtIndex:0] componentsSeparatedByString:@" "] lastObject];
+                                status = [status substringToIndex:1];
+                                XTFileIndexInfo *fileInfo = [[XTFileIndexInfo alloc] initWithName:name andStatus:status];
+                                [items addObject:fileInfo];
+                            }
+                        }];
+                   });
 }
 
 // just for tests
 - (NSArray *)items {
     return items;
-}
-
-// only for unit test
-- (void)waitUntilReloadEnd {
-    [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
-         XTFileIndexInfo *item = (XTFileIndexInfo *)obj;
-         NSLog (@"%lu - file:'%@' - status:'%@'", idx, item.name, item.status);
-     }];
 }
 
 #pragma mark - NSTableViewDataSource

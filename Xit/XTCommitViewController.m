@@ -38,7 +38,7 @@ const NSString *kAuthorKeyDate = @"date";
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"selectedCommit"]) {
         NSString *newSelectedCommit = [change objectForKey:NSKeyValueChangeNewKey];
-        [self loadCommit:newSelectedCommit];
+        dispatch_async(repo.queue, ^{ [self loadCommit:newSelectedCommit]; });
     }
 }
 
@@ -88,7 +88,9 @@ const NSString *kAuthorKeyDate = @"date";
                 NSBundle *theme = [NSBundle bundleWithURL:[bundle URLForResource:@"html.theme.default" withExtension:@"bundle"]];
                 NSURL *themeURL = [[theme bundleURL] URLByAppendingPathComponent:@"Contents/Resources"];
 
-                [[web mainFrame] loadHTMLString:html baseURL:themeURL];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                                   [[web mainFrame] loadHTMLString:html baseURL:themeURL];
+                               });
             }
         }
     }

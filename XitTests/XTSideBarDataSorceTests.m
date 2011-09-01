@@ -7,6 +7,7 @@
 
 #import "XTSideBarDataSorceTests.h"
 #import "XitTests.h"
+#import "XTRepository.h"
 #import "GITBasic+XTRepository.h"
 #import "XTSideBarItem.h"
 #import "XTSideBarDataSource.h"

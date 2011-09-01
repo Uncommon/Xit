@@ -17,14 +17,12 @@
     NSArray *items;
     NSTableView *table;
     BOOL cancel;
-    dispatch_queue_t queue;
     NSMutableDictionary *index;
 }
 
 @property (readonly) NSArray *items;
 
 - (void)reload;
-- (void)waitUntilReloadEnd;
 - (void)setRepo:(XTRepository *)newRepo;
 @end
 
