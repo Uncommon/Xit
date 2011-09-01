@@ -20,6 +20,6 @@
     PBGitGrapher *grapher;
 }
 
-- (void) graphCommits:(NSArray *)revList;
+- (void)graphCommits:(NSArray *)revList;
 
 @end

@@ -21,6 +21,6 @@
 }
 
 // XXX TEMP
-- (IBAction) reload:(id)sender;
+- (IBAction)reload:(id)sender;
 
 @end

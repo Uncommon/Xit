@@ -19,12 +19,12 @@
 @property (assign) NSString *title;
 @property (assign) NSString *sha;
 
-- (id) initWithTitle:(NSString *)theTitle andSha:(NSString *)sha;
-- (id) initWithTitle:(NSString *)theTitle;
-- (NSInteger) numberOfChildrens;
-- (id) children:(NSInteger)index;
-- (void) addchildren:(XTSideBarItem *)child;
-- (BOOL) isItemExpandable;
-- (void) clean;
-- (NSString *) badge;
+- (id)initWithTitle:(NSString *)theTitle andSha:(NSString *)sha;
+- (id)initWithTitle:(NSString *)theTitle;
+- (NSInteger)numberOfChildrens;
+- (id)children:(NSInteger)index;
+- (void)addchildren:(XTSideBarItem *)child;
+- (BOOL)isItemExpandable;
+- (void)clean;
+- (NSString *)badge;
 @end

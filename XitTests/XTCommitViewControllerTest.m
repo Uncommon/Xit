@@ -13,7 +13,7 @@
 
 @implementation XTCommitViewControllerTest
 
-- (void) testCommitWithTag {
+- (void)testCommitWithTag {
     NSString *tagName = @"TagNameTest";
     NSString *tagMsg = @"### message ###";
 

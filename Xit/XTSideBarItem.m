@@ -12,7 +12,7 @@
 @synthesize title;
 @synthesize sha;
 
-- (id) initWithTitle:(NSString *)theTitle andSha:(NSString *)theSha {
+- (id)initWithTitle:(NSString *)theTitle andSha:(NSString *)theSha {
     self = [super init];
     if (self) {
         title = theTitle;
@@ -23,35 +23,35 @@
     return self;
 }
 
-- (id) initWithTitle:(NSString *)theTitle {
+- (id)initWithTitle:(NSString *)theTitle {
     return [self initWithTitle:theTitle andSha:nil];
 }
 
-- (NSString *) title {
+- (NSString *)title {
     return title;
 }
 
-- (NSString *) badge {
+- (NSString *)badge {
     return self.title;
 }
 
-- (NSInteger) numberOfChildrens {
+- (NSInteger)numberOfChildrens {
     return (NSInteger)[childrens count];
 }
 
-- (id) children:(NSInteger)index {
+- (id)children:(NSInteger)index {
     return [childrens objectAtIndex:index];
 }
 
-- (void) addchildren:(XTSideBarItem *)child {
+- (void)addchildren:(XTSideBarItem *)child {
     [childrens addObject:child];
 }
 
-- (BOOL) isItemExpandable {
+- (BOOL)isItemExpandable {
     return [childrens count] > 0;
 }
 
-- (void) clean {
+- (void)clean {
     [childrens removeAllObjects];
 }
 

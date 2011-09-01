@@ -15,7 +15,7 @@
 
 @implementation XTStageViewControllerTest
 
-- (void) testXTPartialStage {
+- (void)testXTPartialStage {
     NSString *mv = [NSString stringWithFormat:@"%@/file_to_move.txt", repo];
     NSMutableArray *lines = [NSMutableArray arrayWithCapacity:30];
 
@@ -74,7 +74,7 @@
     STAssertTrue((nc == 0), @"found %d commits", nc);
 }
 
-- (void) testXTDataSources {
+- (void)testXTDataSources {
     NSString *mod = [NSString stringWithFormat:@"%@/file_to_mod.txt", repo];
     NSString *mv = [NSString stringWithFormat:@"%@/file_to_move.txt", repo];
     NSString *mvd = [NSString stringWithFormat:@"%@/file_moved.txt", repo];

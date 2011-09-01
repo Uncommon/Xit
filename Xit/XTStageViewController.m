@@ -13,26 +13,26 @@
 
 @implementation XTStageViewController
 
-+ (id) viewController {
++ (id)viewController {
     return [[[self alloc] initWithNibName:NSStringFromClass([self class]) bundle:nil] autorelease];
 }
 
-- (void) loadView {
+- (void)loadView {
     [super loadView];
     [self viewDidLoad];
 }
 
-- (void) viewDidLoad {
+- (void)viewDidLoad {
     NSLog(@"viewDidLoad");
 }
 
-- (void) setRepo:(XTRepository *)newRepo {
+- (void)setRepo:(XTRepository *)newRepo {
     repo = newRepo;
     [stageDS setRepo:repo];
     [unstageDS setRepo:repo];
 }
 
-- (void) reload {
+- (void)reload {
     [stageDS reload];
     [unstageDS reload];
     [stageTable reloadData];
@@ -41,7 +41,7 @@
 
 #pragma mark -
 
-- (void) showUnstageFile:(XTFileIndexInfo *)file {
+- (void)showUnstageFile:(XTFileIndexInfo *)file {
     NSData *output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff-files", @"--patch", @"--", file.name, nil] error:nil];
 
     actualDiff = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
@@ -51,7 +51,7 @@
     [self showDiff:diffHTML];
 }
 
-- (void) showStageFile:(XTFileIndexInfo *)file {
+- (void)showStageFile:(XTFileIndexInfo *)file {
     NSData *output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff-index",  @"--patch", @"--cached", @"HEAD", @"--", file.name, nil] error:nil];
 
     actualDiff = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
@@ -61,7 +61,7 @@
     [self showDiff:diffHTML];
 }
 
-- (void) showDiff:(NSString *)diff {
+- (void)showDiff:(NSString *)diff {
     NSString *html = [NSString stringWithFormat:@"<html><head><link rel='stylesheet' type='text/css' href='diff.css'/></head><body><div id='diffs'>%@</div></body></html>", diff];
 
     NSBundle *bundle = [NSBundle mainBundle];
@@ -73,27 +73,27 @@
 
 #pragma mark -
 
-- (void) unstageChunk:(NSInteger)idx {
+- (void)unstageChunk:(NSInteger)idx {
     [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"apply",  @"--cached", @"--reverse", nil]
                     withStdIn:[self preparePatch:idx]
                         error:nil];
     [self reload];
 }
 
-- (void) stageChunk:(NSInteger)idx {
+- (void)stageChunk:(NSInteger)idx {
     [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"apply",  @"--cached", nil]
                     withStdIn:[self preparePatch:idx]
                         error:nil];
     [self reload];
 }
 
-- (void) discardChunk:(NSInteger)idx {
+- (void)discardChunk:(NSInteger)idx {
 
 }
 
 #pragma mark -
 
-- (NSString *) preparePatch:(NSInteger)idx {
+- (NSString *)preparePatch:(NSInteger)idx {
     NSArray *comps = [actualDiff componentsSeparatedByString:@"\n@@"];
     NSMutableString *patch = [NSMutableString stringWithString:[comps objectAtIndex:0]]; // Header
 
@@ -106,7 +106,7 @@
 
 #pragma mark - WebFrameLoadDelegate
 
-- (void) webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame {
+- (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame {
     DOMDocument *dom = [[web mainFrame] DOMDocument];
     DOMNodeList *headres = [dom getElementsByClassName:@"header"]; // TODO: change class names
 
@@ -121,7 +121,7 @@
     }
 }
 
-- (DOMHTMLElement *) createButtonWithIndex:(int)index title:(NSString *)title fromDOM:(DOMDocument *)dom {
+- (DOMHTMLElement *)createButtonWithIndex:(int)index title:(NSString *)title fromDOM:(DOMDocument *)dom {
     DOMHTMLInputElement *bt = (DOMHTMLInputElement *)[dom createElement:@"input"];
 
     bt.type = @"button";
@@ -133,7 +133,7 @@
 
 #pragma mark - DOMEventListener
 
-- (void) handleEvent:(DOMEvent *)evt {
+- (void)handleEvent:(DOMEvent *)evt {
     DOMHTMLInputElement *bt = (DOMHTMLInputElement *)evt.target;
 
     NSLog(@"handleEvent: %@ - %@", bt.value, bt.name);
@@ -148,7 +148,7 @@
 
 #pragma mark - NSTableViewDelegate
 
-- (void) tableViewSelectionDidChange:(NSNotification *)aNotification {
+- (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
     NSTableView *table = (NSTableView *)aNotification.object;
 
     if (table.numberOfSelectedRows > 0) {

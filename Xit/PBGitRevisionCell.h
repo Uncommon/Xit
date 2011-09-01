@@ -15,6 +15,6 @@
     NSTextFieldCell *textCell;
 }
 
-- (NSRect) rectAtIndex:(int)index;
+- (NSRect)rectAtIndex:(int)index;
 
 @end

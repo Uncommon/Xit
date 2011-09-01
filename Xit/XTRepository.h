@@ -18,13 +18,13 @@
     NSArray *reload;
 }
 
-- (void) getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^)(NSString *))block error:(NSError **)error;
-- (NSData *) exectuteGitWithArgs:(NSArray *)args error:(NSError **)error;
-- (NSData *) exectuteGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error;
+- (void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^)(NSString *))block error:(NSError **)error;
+- (NSData *)exectuteGitWithArgs:(NSArray *)args error:(NSError **)error;
+- (NSData *)exectuteGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error;
 
-- (void) initializeEventStream;
-- (void) start;
-- (void) stop;
+- (void)initializeEventStream;
+- (void)start;
+- (void)stop;
 
 @property (assign) NSString *selectedCommit;
 @property (assign) NSDictionary *refsIndex;

@@ -17,7 +17,7 @@
 @synthesize lineInfo;
 @synthesize index;
 
-- (id) init {
+- (id)init {
     self = [super init];
     if (self) {
         self.parents = [NSMutableArray array];
@@ -26,7 +26,7 @@
     return self;
 }
 
-- (id) copyWithZone:(NSZone *)zone {
+- (id)copyWithZone:(NSZone *)zone {
     return [self retain];
 }
 @end

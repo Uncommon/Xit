@@ -14,7 +14,7 @@
 
 @implementation XTSideBarDataSorceTests
 
-- (void) testXTSideBarDataSourceReload {
+- (void)testXTSideBarDataSourceReload {
     XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
 
     [sbds setRepo:xit];
@@ -43,13 +43,13 @@
     [xit stop];
 }
 
-- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"reload"]) {
         reloadDetected = YES;
     }
 }
 
-- (void) testXTSideBarDataSourceStashes {
+- (void)testXTSideBarDataSourceStashes {
     NSString *testFile = [NSString stringWithFormat:@"%@/file1.txt", repo];
     NSString *txt = @"other some text";
 
@@ -75,7 +75,7 @@
     STAssertTrue((nr == 1), @"found %d stashes FAIL - stashes=%@", nr, stashes);
 }
 
-- (void) testXTSideBarDataSourceReomtes {
+- (void)testXTSideBarDataSourceReomtes {
     if (![xit checkout:@"master"]) {
         STFail(@"checkout master");
     }
@@ -129,7 +129,7 @@
     STAssertTrue(branchB1Found, @"Branch 'b1' Not found");
 }
 
-- (void) testXTSideBarDataSourceBranchesAndTags {
+- (void)testXTSideBarDataSourceBranchesAndTags {
     if (![xit createBranch:@"b1"]) {
         STFail(@"Create Branch 'b1'");
     }

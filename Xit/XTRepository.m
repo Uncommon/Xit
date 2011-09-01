@@ -13,7 +13,7 @@
 @synthesize selectedCommit;
 @synthesize refsIndex;
 
-+ (NSString *) gitPath {
++ (NSString *)gitPath {
     NSArray *paths = [NSArray arrayWithObjects:
                       @"/usr/bin/git",
                       @"/usr/local/git/bin/git",
@@ -27,7 +27,7 @@
 }
 
 
-- (id) initWithURL:(NSURL *)url {
+- (id)initWithURL:(NSURL *)url {
     self = [super init];
     if (self) {
         gitCMD = [XTRepository gitPath];
@@ -37,7 +37,7 @@
     return self;
 }
 
-- (void) getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^)(NSString *))block error:(NSError **)error {
+- (void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^)(NSString *))block error:(NSError **)error {
     if (repoURL == nil) {
         if (error != NULL)
             *error = [NSError errorWithDomain:NSOSStatusErrorDomain code:fnfErr userInfo:nil];
@@ -98,11 +98,11 @@
     }
 }
 
-- (NSData *) exectuteGitWithArgs:(NSArray *)args error:(NSError **)error {
+- (NSData *)exectuteGitWithArgs:(NSArray *)args error:(NSError **)error {
     return [self exectuteGitWithArgs:args withStdIn:nil error:error];
 }
 
-- (NSData *) exectuteGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error {
+- (NSData *)exectuteGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error {
     if (repoURL == nil)
         return nil;
     NSLog(@"****command = git %@", [args componentsJoinedByString:@" "]);
@@ -146,17 +146,17 @@
 }
 
 // XXX tmp
-- (void) start {
+- (void)start {
     [self initializeEventStream];
 }
 
-- (void) stop {
+- (void)stop {
     FSEventStreamStop(stream);
     FSEventStreamInvalidate(stream);
 }
 
 #pragma mark - monitor file system
-- (void) initializeEventStream {
+- (void)initializeEventStream {
     if (repoURL == nil)
         return;
     NSString *myPath = [[repoURL URLByAppendingPathComponent:@".git"] absoluteString];

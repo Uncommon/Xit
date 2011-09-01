@@ -12,7 +12,7 @@
 
 @implementation XTHistoryDataSorceTests
 
-- (void) testRootCommitsGraph {
+- (void)testRootCommitsGraph {
     NSInteger nCommits = 15;
     NSFileManager *defaultManager = [NSFileManager defaultManager];
 
@@ -63,7 +63,7 @@
      }];
 }
 
-- (void) testXTHistoryDataSource {
+- (void)testXTHistoryDataSource {
     NSInteger nCommits = 60;
     NSFileManager *defaultManager = [NSFileManager defaultManager];
 

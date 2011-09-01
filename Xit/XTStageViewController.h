@@ -26,17 +26,17 @@
     BOOL stagedFile;
 }
 
-- (void) setRepo:(XTRepository *)newRepo;
-- (void) viewDidLoad;
-- (void) reload;
-- (void) showStageFile:(XTFileIndexInfo *)file;
-- (void) showUnstageFile:(XTFileIndexInfo *)file;
-- (void) unstageChunk:(NSInteger)idx;
-- (void) stageChunk:(NSInteger)idx;
-- (void) discardChunk:(NSInteger)idx;
-- (NSString *) preparePatch:(NSInteger)idx;
+- (void)setRepo:(XTRepository *)newRepo;
+- (void)viewDidLoad;
+- (void)reload;
+- (void)showStageFile:(XTFileIndexInfo *)file;
+- (void)showUnstageFile:(XTFileIndexInfo *)file;
+- (void)unstageChunk:(NSInteger)idx;
+- (void)stageChunk:(NSInteger)idx;
+- (void)discardChunk:(NSInteger)idx;
+- (NSString *)preparePatch:(NSInteger)idx;
 
-- (void) showDiff:(NSString *)diff;
-- (DOMHTMLElement *) createButtonWithIndex:(int)index title:(NSString *)title fromDOM:(DOMDocument *)dom;
+- (void)showDiff:(NSString *)diff;
+- (DOMHTMLElement *)createButtonWithIndex:(int)index title:(NSString *)title fromDOM:(DOMDocument *)dom;
 
 @end

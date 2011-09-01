@@ -21,21 +21,21 @@ const NSString *kAuthorKeyDate = @"date";
 
 @interface XTCommitViewController (Private)
 
-- (NSArray *) parseHeader:(NSString *)text;
-- (NSString *) htmlForHeader:(NSArray *)header;
-- (NSMutableDictionary *) parseStats:(NSString *)txt;
-- (NSString *) parseDiffTree:(NSString *)txt withStats:(NSMutableDictionary *)stats;
+- (NSArray *)parseHeader:(NSString *)text;
+- (NSString *)htmlForHeader:(NSArray *)header;
+- (NSMutableDictionary *)parseStats:(NSString *)txt;
+- (NSString *)parseDiffTree:(NSString *)txt withStats:(NSMutableDictionary *)stats;
 
 @end
 
 @implementation XTCommitViewController
 
-- (void) setRepo:(XTRepository *)newRepo {
+- (void)setRepo:(XTRepository *)newRepo {
     repo = newRepo;
     [repo addObserver:self forKeyPath:@"selectedCommit" options:NSKeyValueObservingOptionNew context:nil];
 }
 
-- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"selectedCommit"]) {
         NSString *newSelectedCommit = [change objectForKey:NSKeyValueChangeNewKey];
         [self loadCommit:newSelectedCommit];
@@ -43,7 +43,7 @@ const NSString *kAuthorKeyDate = @"date";
 }
 
 // defaults write com.yourcompany.programname WebKitDeveloperExtras -bool true
-- (NSString *) loadCommit:(NSString *)sha {
+- (NSString *)loadCommit:(NSString *)sha {
     NSString *html = nil;
     NSData *output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"show", @"-z", @"--numstat", @"--summary", @"--pretty=raw", sha, nil] error:nil];
 
@@ -95,7 +95,7 @@ const NSString *kAuthorKeyDate = @"date";
     return html;
 }
 
-- (NSArray *) parseHeader:(NSString *)text {
+- (NSArray *)parseHeader:(NSString *)text {
     NSMutableArray *result = [NSMutableArray array];
     NSArray *lines = [text componentsSeparatedByString:@"\n"];
     BOOL parsingSubject = NO;
@@ -150,7 +150,7 @@ const NSString *kAuthorKeyDate = @"date";
     return result;
 }
 
-- (NSMutableDictionary *) parseStats:(NSString *)txt {
+- (NSMutableDictionary *)parseStats:(NSString *)txt {
     NSArray *lines = [txt componentsSeparatedByString:@"\n"];
     NSMutableDictionary *stats = [NSMutableDictionary dictionary];
     int black = 0;
@@ -168,7 +168,7 @@ const NSString *kAuthorKeyDate = @"date";
     return stats;
 }
 
-- (NSString *) htmlForHeader:(NSArray *)header {
+- (NSString *)htmlForHeader:(NSArray *)header {
     NSString *last_mail = @"";
     NSMutableString *auths = [NSMutableString string];
     NSMutableString *refs = [NSMutableString string];
@@ -204,7 +204,7 @@ const NSString *kAuthorKeyDate = @"date";
     return [NSString stringWithFormat:@"<div id='header' class='clearfix'><table class='references'>%@</table><p class='subject'>%@</p>%@</div>", refs, subject, auths];
 }
 
-- (NSString *) parseDiffTree:(NSString *)txt withStats:(NSMutableDictionary *)stats {
+- (NSString *)parseDiffTree:(NSString *)txt withStats:(NSMutableDictionary *)stats {
     NSInteger granTotal = 1;
 
     for (NSArray *stat in [stats allValues]) {

@@ -9,7 +9,7 @@
 
 @implementation XTTagItem
 
-- (BOOL) isItemExpandable {
+- (BOOL)isItemExpandable {
     return NO;
 }
 

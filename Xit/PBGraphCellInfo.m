@@ -12,19 +12,19 @@
 
 @synthesize lines, position, numColumns, nLines;
 
-- (id) initWithPosition:(size_t)p andLines:(struct PBGitGraphLine *)l {
+- (id)initWithPosition:(size_t)p andLines:(struct PBGitGraphLine *)l {
     position = p;
     lines = l;
 
     return self;
 }
 
-- (void) setLines:(struct PBGitGraphLine *)l {
+- (void)setLines:(struct PBGitGraphLine *)l {
     free(lines);
     lines = l;
 }
 
-- (void) finalize {
+- (void)finalize {
     free(lines);
     [super finalize];
 }

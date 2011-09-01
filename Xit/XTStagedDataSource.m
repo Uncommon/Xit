@@ -11,7 +11,7 @@
 #import "XTFileIndexInfo.h"
 @implementation XTStagedDataSource
 
-- (id) init {
+- (id)init {
     self = [super init];
     if (self) {
         items = [NSMutableArray array];
@@ -20,17 +20,17 @@
     return self;
 }
 
-- (void) setRepo:(XTRepository *)newRepo {
+- (void)setRepo:(XTRepository *)newRepo {
     repo = newRepo;
     //    [repo addObserver:self forKeyPath:@"reload" options:NSKeyValueObservingOptionNew context:nil];
     //    [repo addObserver:self forKeyPath:@"selectedCommit" options:NSKeyValueObservingOptionNew context:nil];
     [self reload];
 }
 
-- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
 }
 
-- (void) reload {
+- (void)reload {
     [items removeAllObjects];
 
     NSData *output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff-index", @"--cached", @"HEAD", nil] error:nil];
@@ -51,27 +51,27 @@
 }
 
 // just for tests
-- (NSArray *) items {
+- (NSArray *)items {
     return items;
 }
 
 // only for unit test
-- (void) waitUntilReloadEnd {
+- (void)waitUntilReloadEnd {
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
          XTFileIndexInfo *item = (XTFileIndexInfo *)obj;
-         NSLog(@"%lu - file:'%@' - status:'%@'", idx, item.name, item.status);
+         NSLog (@"%lu - file:'%@' - status:'%@'", idx, item.name, item.status);
      }];
 }
 
 #pragma mark - NSTableViewDataSource
 
-- (NSInteger) numberOfRowsInTableView:(NSTableView *)aTableView {
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView {
     table = aTableView;
     //    [table setDelegate:self];
     return [items count];
 }
 
-- (id) tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
+- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
     XTFileIndexInfo *item = [items objectAtIndex:rowIndex];
 
     return [item valueForKey:aTableColumn.identifier];

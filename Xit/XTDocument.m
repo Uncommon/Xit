@@ -11,7 +11,7 @@
 
 @implementation XTDocument
 
-- (id) initWithContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError {
+- (id)initWithContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError {
     self = [super initWithContentsOfURL:absoluteURL ofType:typeName error:outError];
     if (self) {
         absoluteURL = [absoluteURL URLByDeletingPathExtension];
@@ -21,11 +21,11 @@
     return self;
 }
 
-- (NSString *) windowNibName {
+- (NSString *)windowNibName {
     return @"Xit";
 }
 
-- (void) windowControllerDidLoadNib:(NSWindowController *)aController {
+- (void)windowControllerDidLoadNib:(NSWindowController *)aController {
     [super windowControllerDidLoadNib:aController];
 
     [historyView loadView];
@@ -43,13 +43,13 @@
     [repo start];
 }
 
-- (BOOL) readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError {
+- (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError {
     return true; // XXX
 }
 
 
 #pragma mark - temp
-- (IBAction) reload:(id)sender {
+- (IBAction)reload:(id)sender {
     NSLog(@"########## reload ##########");
     [self setValue:[NSArray arrayWithObjects:@".git/refs/", @".git/logs/", nil] forKey:@"reload"];
 }

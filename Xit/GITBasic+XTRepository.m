@@ -11,7 +11,7 @@
 @implementation XTRepository (GITBasic_XTRepository)
 
 
-- (bool) initRepo {
+- (bool)initRepo {
     NSError *error = nil;
     bool res = false;
 
@@ -23,7 +23,7 @@
     return res;
 }
 
-- (bool) stash:(NSString *)name {
+- (bool)stash:(NSString *)name {
     NSError *error = nil;
     bool res = NO;
 
@@ -36,7 +36,7 @@
     return res;
 }
 
-- (bool) createBranch:(NSString *)name {
+- (bool)createBranch:(NSString *)name {
     NSError *error = nil;
     bool res = NO;
 
@@ -49,7 +49,7 @@
     return res;
 }
 
-- (bool) merge:(NSString *)name {
+- (bool)merge:(NSString *)name {
     NSError *error = nil;
     bool res = NO;
 
@@ -62,7 +62,7 @@
     return res;
 }
 
-- (bool) push:(NSString *)remote {
+- (bool)push:(NSString *)remote {
     NSError *error = nil;
     bool res = NO;
 
@@ -75,7 +75,7 @@
     return res;
 }
 
-- (bool) checkout:(NSString *)branch {
+- (bool)checkout:(NSString *)branch {
     NSError *error = nil;
     bool res = NO;
 
@@ -88,7 +88,7 @@
     return res;
 }
 
-- (bool) createTag:(NSString *)name withMessage:(NSString *)msg {
+- (bool)createTag:(NSString *)name withMessage:(NSString *)msg {
     NSError *error = nil;
     bool res = NO;
 
@@ -101,7 +101,7 @@
     return res;
 }
 
-- (bool) AddRemote:(NSString *)name withUrl:(NSString *)url {
+- (bool)AddRemote:(NSString *)name withUrl:(NSString *)url {
     NSError *error = nil;
     bool res = NO;
 
@@ -114,7 +114,7 @@
     return res;
 }
 
-- (bool) addFile:(NSString *)file {
+- (bool)addFile:(NSString *)file {
     NSError *error = nil;
     bool res = NO;
 
@@ -127,7 +127,7 @@
     return res;
 }
 
-- (bool) commitWithMessage:(NSString *)message {
+- (bool)commitWithMessage:(NSString *)message {
     NSError *error = nil;
     bool res = NO;
 

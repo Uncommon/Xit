@@ -15,7 +15,7 @@
 
 @synthesize items;
 
-- (id) init {
+- (id)init {
     self = [super init];
     if (self) {
         items = [NSMutableArray array];
@@ -26,14 +26,14 @@
     return self;
 }
 
-- (void) setRepo:(XTRepository *)newRepo {
+- (void)setRepo:(XTRepository *)newRepo {
     repo = newRepo;
     [repo addObserver:self forKeyPath:@"reload" options:NSKeyValueObservingOptionNew context:nil];
     [repo addObserver:self forKeyPath:@"selectedCommit" options:NSKeyValueObservingOptionNew context:nil];
     [self reload];
 }
 
-- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"reload"]) {
         NSArray *reload = [change objectForKey:NSKeyValueChangeNewKey];
         for (NSString *path in reload) {
@@ -54,7 +54,7 @@
     }
 }
 
-- (void) reload {
+- (void)reload {
     dispatch_async(queue, ^{
                        NSMutableArray *newItems = [NSMutableArray array];
 
@@ -113,7 +113,7 @@
 }
 
 // only for unit test
-- (void) waitUntilReloadEnd {
+- (void)waitUntilReloadEnd {
     dispatch_sync(queue, ^{ });
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
          XTHistoryItem *item = (XTHistoryItem *)obj;
@@ -123,13 +123,13 @@
 
 #pragma mark - NSTableViewDataSource
 
-- (NSInteger) numberOfRowsInTableView:(NSTableView *)aTableView {
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView {
     table = aTableView;
     [table setDelegate:self];
     return [items count];
 }
 
-- (id) tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
+- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
     XTHistoryItem *item = [items objectAtIndex:rowIndex];
 
     return [item valueForKey:aTableColumn.identifier];
@@ -137,13 +137,13 @@
 
 #pragma mark - NSTableViewDelegate
 
-- (void) tableViewSelectionDidChange:(NSNotification *)aNotification {
+- (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
     NSLog(@"%@", aNotification);
     XTHistoryItem *item = [items objectAtIndex:table.selectedRow];
     repo.selectedCommit = item.sha;
 }
 
-- (void) tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
+- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
     XTHistoryItem *item = [items objectAtIndex:rowIndex];
 
     ((PBGitRevisionCell *)aCell).objectValue = item;
