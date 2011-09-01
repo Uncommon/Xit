@@ -3,7 +3,6 @@
 //  Xit
 //
 //  Created by German Laullon on 10/08/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -18,9 +17,9 @@
     NSTableView *table;
 }
 
-- (NSArray *)items;
-- (void)reload;
-- (void)waitUntilReloadEnd;
-- (void)setRepo:(XTRepository *)newRepo;
+- (NSArray *) items;
+- (void) reload;
+- (void) waitUntilReloadEnd;
+- (void) setRepo:(XTRepository *)newRepo;
 
 @end

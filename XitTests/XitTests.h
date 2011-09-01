@@ -16,5 +16,5 @@
     BOOL reloadDetected;
 }
 
-- (XTRepository *)createRepo:(NSString *)repoName;
+- (XTRepository *) createRepo:(NSString *)repoName;
 @end

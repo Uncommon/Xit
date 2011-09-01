@@ -16,7 +16,7 @@
     XTRepository *repo;
 }
 
-- (void)setRepo:(XTRepository *)newRepo;
-- (NSString *)loadCommit:(NSString *)sha;
+- (void) setRepo:(XTRepository *)newRepo;
+- (NSString *) loadCommit:(NSString *)sha;
 
 @end

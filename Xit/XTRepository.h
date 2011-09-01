@@ -3,7 +3,6 @@
 //  Xit
 //
 //  Created by VMware Inc. on 8/23/11.
-//  Copyright 2011 VMware, Inc. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -19,13 +18,13 @@
     NSArray *reload;
 }
 
-- (void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void(^) (NSString *)) block error:(NSError **)error;
-- (NSData *)exectuteGitWithArgs:(NSArray *)args error:(NSError **)error;
-- (NSData *)exectuteGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error;
+- (void) getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^)(NSString *))block error:(NSError **)error;
+- (NSData *) exectuteGitWithArgs:(NSArray *)args error:(NSError **)error;
+- (NSData *) exectuteGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error;
 
-- (void)initializeEventStream;
-- (void)start;
-- (void)stop;
+- (void) initializeEventStream;
+- (void) start;
+- (void) stop;
 
 @property (assign) NSString *selectedCommit;
 @property (assign) NSDictionary *refsIndex;

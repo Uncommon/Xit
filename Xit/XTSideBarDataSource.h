@@ -25,9 +25,9 @@ typedef enum {
     NSOutlineView *outline;
 }
 
-- (void)setRepo:(XTRepository *)repo;
-- (void)reload;
-- (void)reloadBrachs:(NSMutableDictionary *)refsIndex;
-- (void)reloadStashes:(NSMutableDictionary *)refsIndex;
+- (void) setRepo:(XTRepository *)repo;
+- (void) reload;
+- (void) reloadBrachs:(NSMutableDictionary *)refsIndex;
+- (void) reloadStashes:(NSMutableDictionary *)refsIndex;
 
 @end
