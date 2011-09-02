@@ -27,7 +27,7 @@ typedef enum {
 
 - (void)setRepo:(XTRepository *)repo;
 - (void)reload;
-- (void)reloadBrachs:(NSMutableDictionary *)refsIndex;
+- (void)reloadBranches:(NSMutableDictionary *)refsIndex;
 - (void)reloadStashes:(NSMutableDictionary *)refsIndex;
 
 @end

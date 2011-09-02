@@ -57,7 +57,7 @@
 - (void)_reload {
     [self willChangeValueForKey:@"reload"];
     NSMutableDictionary *refsIndex = [NSMutableDictionary dictionary];
-    [self reloadBrachs:refsIndex];
+    [self reloadBranches:refsIndex];
     [self reloadStashes:refsIndex];
     repo.refsIndex = refsIndex;
     [outline reloadData];
@@ -84,7 +84,7 @@
     }
 }
 
-- (void)reloadBrachs:(NSMutableDictionary *)refsIndex {
+- (void)reloadBranches:(NSMutableDictionary *)refsIndex {
     XTSideBarItem *branches = [roots objectAtIndex:XT_BRANCHES];
     XTSideBarItem *tags = [roots objectAtIndex:XT_TAGS];
     XTRemotesItem *remotes = [roots objectAtIndex:XT_REMOTES];
