@@ -195,5 +195,19 @@
     STAssertTrue(branchB1Found, @"Branch 'b1' Not found");
 }
 
+- (void)testGroupItems {
+    if (![xit createBranch:@"b1"]) {
+        STFail(@"Create Branch 'b1'");
+    }
+
+    XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
+    [sbds setRepo:xit];
+    [sbds reload];
+
+    for (NSInteger i = 0; i < [sbds outlineView:nil numberOfChildrenOfItem:nil]; ++i) {
+      id root = [sbds outlineView:nil child:i ofItem:nil];
+      STAssertTrue([sbds outlineView:nil isGroupItem:root], @"item %d should be group", i);
+    }
+}
 
 @end

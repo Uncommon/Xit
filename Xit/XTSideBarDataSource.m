@@ -22,10 +22,10 @@
 - (id)init {
     self = [super init];
     if (self) {
-        XTSideBarItem *branches = [[XTSideBarItem alloc] initWithTitle:@"Branches"];
-        XTSideBarItem *tags = [[XTSideBarItem alloc] initWithTitle:@"Tags"];
-        XTRemotesItem *remotes = [[XTRemotesItem alloc] initWithTitle:@"Remotes"];
-        XTSideBarItem *stashes = [[XTSideBarItem alloc] initWithTitle:@"Stashes"];
+        XTSideBarItem *branches = [[XTSideBarItem alloc] initWithTitle:@"BRANCHES"];
+        XTSideBarItem *tags = [[XTSideBarItem alloc] initWithTitle:@"TAGS"];
+        XTRemotesItem *remotes = [[XTRemotesItem alloc] initWithTitle:@"REMOTES"];
+        XTSideBarItem *stashes = [[XTSideBarItem alloc] initWithTitle:@"STASHES"];
         roots = [NSArray arrayWithObjects:branches, tags, remotes, stashes, nil];
     }
 
@@ -196,6 +196,10 @@
     XTSideBarItem *i = (XTSideBarItem *)item;
 
     return (i.sha != nil);
+}
+
+- (BOOL)outlineView:(NSOutlineView *)outlineView isGroupItem:(id)item {
+    return [roots containsObject:item];
 }
 
 @end
