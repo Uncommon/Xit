@@ -24,7 +24,7 @@
 }
 
 - (void)tearDown {
-    [super tearDown];
+    [xit waitUntilReloadEnd];
 
     NSFileManager *defaultManager = [NSFileManager defaultManager];
     [defaultManager removeItemAtPath:repo error:nil];
@@ -39,6 +39,8 @@
     }
 
     NSLog(@"tearDown ok");
+
+    [super tearDown];
 }
 
 // - (void)testGitError
