@@ -147,7 +147,7 @@
 		C3FA470C13D0F8E200AC4F9B /* Xit-Prefix.pch */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = "Xit-Prefix.pch"; sourceTree = "<group>"; tabWidth = 4; };
 		C3FA470D13D0F8E200AC4F9B /* main.m */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; tabWidth = 4; };
 		C3FA471013D0F8E200AC4F9B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		C3FA471213D0F8E200AC4F9B /* XTDocument.h */ = {isa = PBXFileReference; indentWidth = 4; path = XTDocument.h; sourceTree = "<group>"; tabWidth = 4; };
+		C3FA471213D0F8E200AC4F9B /* XTDocument.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = XTDocument.h; sourceTree = "<group>"; tabWidth = 4; };
 		C3FA471313D0F8E200AC4F9B /* XTDocument.m */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = XTDocument.m; sourceTree = "<group>"; tabWidth = 4; };
 		C3FA471613D0F8E200AC4F9B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/XTDocument.xib; sourceTree = "<group>"; };
 		C3FA471913D0F8E300AC4F9B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -453,7 +453,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C3FA473413D0F8E300AC4F9B /* Build configuration list for PBXNativeTarget "XitTests" */;
 			buildPhases = (
-				C3355E1313F327D6008D14B8 /* Run uncrustify Script */,
 				C3FA471B13D0F8E300AC4F9B /* Sources */,
 				C3FA471C13D0F8E300AC4F9B /* Frameworks */,
 				C3FA471D13D0F8E300AC4F9B /* Resources */,
@@ -561,20 +560,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = ./uncrustify.sh;
-		};
-		C3355E1313F327D6008D14B8 /* Run uncrustify Script */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Run uncrustify Script";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if $(which -s uncrustify); then\nfind . -name \"*[mh]\" -exec uncrustify -c uncrustify.cfg --replace --no-backup {} \\;\nelse\necho \"warning: uncrustify not found\"\nfi";
 		};
 		C3FA471E13D0F8E300AC4F9B /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
