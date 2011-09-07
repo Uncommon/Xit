@@ -85,7 +85,7 @@
         STFail(@"Create Branch 'b1'");
     }
 
-    if (![xit AddRemote:@"origin" withUrl:remoteRepo]) {
+    if (![xit addRemote:@"origin" withUrl:remoteRepo]) {
         STFail(@"add origin '%@'", remoteRepo);
     }
 

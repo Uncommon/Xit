@@ -101,7 +101,7 @@
     return res;
 }
 
-- (bool)AddRemote:(NSString *)name withUrl:(NSString *)url {
+- (bool)addRemote:(NSString *)name withUrl:(NSString *)url {
     NSError *error = nil;
     bool res = NO;
 
