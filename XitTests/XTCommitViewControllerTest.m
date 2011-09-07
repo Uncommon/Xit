@@ -25,10 +25,10 @@
     [sbds setRepo:xit];
 
     id tags = [sbds outlineView:nil child:XT_TAGS ofItem:nil];
-	NSInteger count = [sbds outlineView:nil numberOfChildrenOfItem:tags];
+    NSInteger count = [sbds outlineView:nil numberOfChildrenOfItem:tags];
     STAssertEquals(1L, count, @"");
-	if (count != 1)
-		return;	// abort test
+    if (count != 1)
+        return;  // abort test
     XTSideBarItem *tag = [sbds outlineView:nil child:0 ofItem:tags];
 
     XTCommitViewController *cvc = [[XTCommitViewController alloc] init];

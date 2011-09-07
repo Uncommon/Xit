@@ -205,8 +205,8 @@
     [sbds reload];
 
     for (NSInteger i = 0; i < [sbds outlineView:nil numberOfChildrenOfItem:nil]; ++i) {
-      id root = [sbds outlineView:nil child:i ofItem:nil];
-      STAssertTrue([sbds outlineView:nil isGroupItem:root], @"item %d should be group", i);
+        id root = [sbds outlineView:nil child:i ofItem:nil];
+        STAssertTrue([sbds outlineView:nil isGroupItem:root], @"item %d should be group", i);
     }
 }
 
