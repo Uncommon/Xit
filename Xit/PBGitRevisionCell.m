@@ -8,6 +8,8 @@
 
 #import "PBGitRevisionCell.h"
 
+static const int kColumnWidth = 10;
+
 @implementation PBGitRevisionCell
 
 
@@ -35,11 +37,10 @@
 
 - (void)drawLineFromColumn:(size_t)from toColumn:(size_t)to inRect:(NSRect)r offset:(CGFloat)offset color:(int)c {
 
-    int columnWidth = 10;
     NSPoint origin = r.origin;
 
-    NSPoint source = NSMakePoint(origin.x + columnWidth * from, origin.y + offset);
-    NSPoint center = NSMakePoint(origin.x + columnWidth * to, origin.y + r.size.height * 0.5 + 0.5);
+    NSPoint source = NSMakePoint(origin.x + kColumnWidth * from, origin.y + offset);
+    NSPoint center = NSMakePoint(origin.x + kColumnWidth * to, origin.y + r.size.height * 0.5 + 0.5);
 
     NSArray *laneColors = [PBGitRevisionCell laneColors];
     NSColor *color = [laneColors objectAtIndex:c % [laneColors count]];
@@ -52,7 +53,6 @@
     [path moveToPoint:source];
     [path lineToPoint:center];
     [path stroke];
-
 }
 
 - (BOOL)isCurrentCommit {
@@ -62,9 +62,8 @@
 - (void)drawCircleInRect:(NSRect)r {
 
     size_t c = cellInfo.position;
-    int columnWidth = 10;
     NSPoint origin = r.origin;
-    NSPoint columnOrigin = { origin.x + columnWidth * c, origin.y };
+    NSPoint columnOrigin = { origin.x + kColumnWidth * c, origin.y };
 
     NSRect oval = { columnOrigin.x - 5, columnOrigin.y + r.size.height * 0.5 - 5, 10, 10 };
 
@@ -76,7 +75,7 @@
 
     NSRect smallOval = { columnOrigin.x - 3, columnOrigin.y + r.size.height * 0.5 - 3, 6, 6 };
 
-    if ( [self isCurrentCommit ] ) {
+    if ( [self isCurrentCommit]) {
         [[NSColor colorWithCalibratedRed:0Xfc / 256.0 green:0Xa6 / 256.0 blue:0X4f / 256.0 alpha:1.0] set];
     } else {
         [[NSColor whiteColor] set];
@@ -136,7 +135,7 @@
     cellInfo = ((XTHistoryItem *)self.objectValue).lineInfo;
 
     if (cellInfo) {
-        size_t pathWidth = 10 + 10 * cellInfo.numColumns;
+        size_t pathWidth = 10 + kColumnWidth * cellInfo.numColumns;
 
         NSRect ownRect;
         NSDivideRect(rect, &ownRect, &rect, pathWidth, NSMinXEdge);
@@ -173,7 +172,7 @@
     cellInfo = [self.objectValue lineInfo];
     CGFloat pathWidth = 0;
     if (cellInfo)
-        pathWidth = 10 + 10 * cellInfo.numColumns;
+        pathWidth = 10 + kColumnWidth * cellInfo.numColumns;
     NSRect refRect = NSMakeRect(pathWidth, 0, 1000, 10000);
     return refRect;
 }
