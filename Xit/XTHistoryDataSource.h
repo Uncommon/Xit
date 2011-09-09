@@ -15,7 +15,7 @@
     @private
     XTRepository *repo;
     NSArray *items;
-    NSTableView *table;
+    IBOutlet NSTableView *table;
     BOOL cancel;
     NSMutableDictionary *index;
 }

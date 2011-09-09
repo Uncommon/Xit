@@ -25,6 +25,13 @@
     return self;
 }
 
+- (void)awakeFromNib {
+    // Remove intercell spacing so the history lines will connect
+    NSSize cellSpacing = [table intercellSpacing];
+    cellSpacing.height = 0;
+    [table setIntercellSpacing:cellSpacing];
+}
+
 - (void)setRepo:(XTRepository *)newRepo {
     repo = newRepo;
     [repo addObserver:self forKeyPath:@"reload" options:NSKeyValueObservingOptionNew context:nil];
@@ -113,8 +120,6 @@
 #pragma mark - NSTableViewDataSource
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView {
-    table = aTableView;
-    [table setDelegate:self];
     return [items count];
 }
 
