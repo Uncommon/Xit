@@ -177,20 +177,24 @@
 							<object class="NSButton" id="622063697">
 								<reference key="NSNextResponder" ref="874195480"/>
 								<int key="NSvFlags">268</int>
-								<string key="NSFrame">{{20, 4}, {88, 15}}</string>
+								<string key="NSFrame">{{20, 2}, {31, 19}}</string>
 								<reference key="NSSuperview" ref="874195480"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="969138850"/>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSButtonCell" key="NSCell" id="147717969">
-									<int key="NSCellFlags">67239424</int>
-									<int key="NSCellFlags2">0</int>
-									<string key="NSContents">Hide SideBar</string>
-									<reference key="NSSupport" ref="27"/>
+									<int key="NSCellFlags">-2080244224</int>
+									<int key="NSCellFlags2">134217728</int>
+									<string key="NSContents"/>
+									<reference key="NSSupport" ref="29"/>
 									<reference key="NSControlView" ref="622063697"/>
-									<int key="NSButtonFlags">-939376385</int>
-									<int key="NSButtonFlags2">39</int>
-									<string key="NSAlternateContents">Show Sidebar</string>
+									<int key="NSButtonFlags">-1228128001</int>
+									<int key="NSButtonFlags2">45</int>
+									<object class="NSCustomResource" key="NSNormalImage">
+										<string key="NSClassName">NSImage</string>
+										<string key="NSResourceName">sidebarTemplate</string>
+									</object>
+									<string key="NSAlternateContents"/>
 									<string key="NSKeyEquivalent"/>
 									<int key="NSPeriodicDelay">200</int>
 									<int key="NSPeriodicInterval">25</int>
@@ -404,7 +408,7 @@
 																		<string key="NSFrameSize">{680, 177}</string>
 																		<reference key="NSSuperview" ref="4744271"/>
 																		<reference key="NSWindow"/>
-																		<reference key="NSNextKeyView" ref="93965352"/>
+																		<reference key="NSNextKeyView" ref="25621835"/>
 																		<int key="NSViewLayerContentsRedrawPolicy">2</int>
 																		<bool key="NSEnabled">YES</bool>
 																		<object class="NSTableHeaderView" key="NSHeaderView" id="553526585">
@@ -578,7 +582,7 @@
 														<string key="NSFrameSize">{680, 194}</string>
 														<reference key="NSSuperview" ref="83736380"/>
 														<reference key="NSWindow"/>
-														<reference key="NSNextKeyView" ref="25621835"/>
+														<reference key="NSNextKeyView" ref="4744271"/>
 														<int key="NSViewLayerContentsRedrawPolicy">2</int>
 														<int key="NSsFlags">133680</int>
 														<reference key="NSVScroller" ref="93965352"/>
@@ -605,7 +609,6 @@
 														<string key="NSFrameSize">{680, 194}</string>
 														<reference key="NSSuperview" ref="677488446"/>
 														<reference key="NSWindow"/>
-														<reference key="NSNextKeyView"/>
 														<int key="NSViewLayerContentsRedrawPolicy">2</int>
 														<string key="NSClassName">NSView</string>
 													</object>
@@ -970,6 +973,7 @@
 					<object class="IBObjectRecord">
 						<int key="objectID">27</int>
 						<reference key="object" ref="598566622"/>
+						<array class="NSMutableArray" key="children"/>
 						<reference key="parent" ref="677488446"/>
 					</object>
 					<object class="IBObjectRecord">
@@ -1110,7 +1114,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">73</int>
+			<int key="maxID">75</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1252,5 +1256,9 @@
 		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
+		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
+			<string key="NS.key.0">sidebarTemplate</string>
+			<string key="NS.object.0">{12, 8.8009780953541235}</string>
+		</object>
 	</data>
 </archive>
