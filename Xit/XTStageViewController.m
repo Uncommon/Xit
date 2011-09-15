@@ -13,17 +13,9 @@
 
 @implementation XTStageViewController
 
-+ (id)viewController {
-    return [[[self alloc] initWithNibName:NSStringFromClass([self class]) bundle:nil] autorelease];
-}
-
-- (void)loadView {
-    [super loadView];
-    [self viewDidLoad];
-}
-
-- (void)viewDidLoad {
-    NSLog(@"viewDidLoad");
+- (NSString *)nibName {
+    NSLog(@"nibName: %@ (%@)", [super nibName], [self class]);
+    return NSStringFromClass([self class]);
 }
 
 - (void)setRepo:(XTRepository *)newRepo {

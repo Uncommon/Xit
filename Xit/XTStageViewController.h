@@ -27,7 +27,6 @@
 }
 
 - (void)setRepo:(XTRepository *)newRepo;
-- (void)viewDidLoad;
 - (void)reload;
 - (void)showStageFile:(XTFileIndexInfo *)file;
 - (void)showUnstageFile:(XTFileIndexInfo *)file;

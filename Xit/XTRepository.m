@@ -14,6 +14,7 @@
 @synthesize refsIndex;
 @synthesize queue;
 @synthesize activeTasks;
+@synthesize repoURL;
 
 + (NSString *)gitPath {
     NSArray *paths = [NSArray arrayWithObjects:

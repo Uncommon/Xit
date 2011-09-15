@@ -14,7 +14,9 @@
 {
     @private
     XTRepository *repo;
-    NSMutableArray *roots;
+    NSTreeNode *root;
+    NSMutableDictionary *nodes;
+    NSOutlineView *table;
 }
 
 - (void)setRepo:(XTRepository *)repo;

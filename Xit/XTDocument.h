@@ -10,16 +10,20 @@
 @class XTHistoryView;
 @class XTStageViewController;
 @class XTRepository;
+@class XTFileViewController;
 
 @interface XTDocument : NSDocument {
     IBOutlet XTHistoryView *historyView;
     IBOutlet XTStageViewController *stageView;
+    IBOutlet XTFileViewController *fileListView;
     IBOutlet NSTabView *tabs;
     IBOutlet NSProgressIndicator *activity;
     @private
     NSURL *repoURL;
     XTRepository *repo;
 }
+
+- (void)loadViewController:(NSViewController *)viewController onTab:(NSInteger)tabId;
 
 // XXX TEMP
 - (IBAction)reload:(id)sender;

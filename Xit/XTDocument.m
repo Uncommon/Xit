@@ -8,6 +8,8 @@
 #import "XTDocument.h"
 #import "XTHistoryView.h"
 #import "XTRepository.h"
+#import "XTStageViewController.h"
+#import "XTFileViewController.h"
 
 @implementation XTDocument
 
@@ -33,19 +35,23 @@
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController {
     [super windowControllerDidLoadNib:aController];
 
-    [historyView loadView];
-    NSTabViewItem *tabViewHistory = [tabs tabViewItemAtIndex:0];
-    [[historyView view] setFrame:NSMakeRect(0, 0, [[historyView view] frame].size.width, [[historyView view] frame].size.height)];
-    [tabViewHistory setView:[historyView view]];
-    [historyView setRepo:repo];
+    [self loadViewController:historyView onTab:0];
+    [self loadViewController:stageView onTab:1];
+    [self loadViewController:fileListView onTab:2];
 
-    [stageView loadView];
-    NSTabViewItem *tabViewStage = [tabs tabViewItemAtIndex:1];
-    [[stageView view] setFrame:NSMakeRect(0, 0, [[stageView view] frame].size.width, [[stageView view] frame].size.height)];
-    [tabViewStage setView:[stageView view]];
+    [historyView setRepo:repo];
     [stageView setRepo:repo];
+    [fileListView setRepo:repo];
 
     [repo start];
+}
+
+- (void)loadViewController:(NSViewController *)viewController onTab:(NSInteger)tabId {
+    [viewController loadView];
+    NSTabViewItem *tabView = [tabs tabViewItemAtIndex:tabId];
+    [[viewController view] setFrame:NSMakeRect(0, 0, [[viewController view] frame].size.width, [[viewController view] frame].size.height)];
+    [tabView setView:[viewController view]];
+    NSLog(@"viewController:%@ view:%@", viewController, [viewController view]);
 }
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError {

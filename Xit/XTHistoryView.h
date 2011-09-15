@@ -26,7 +26,6 @@
 }
 
 - (void)setRepo:(XTRepository *)newRepo;
-- (void)viewDidLoad;
 
 - (IBAction)toggleLayout:(id)sender;
 - (IBAction)toggleSideBar:(id)sender;

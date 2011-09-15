@@ -37,6 +37,7 @@
 @property (assign) NSDictionary *refsIndex;
 @property (readonly) dispatch_queue_t queue;
 @property (readonly) NSMutableArray *activeTasks;
+@property (readonly) NSURL *repoURL;
 
 @end
 
