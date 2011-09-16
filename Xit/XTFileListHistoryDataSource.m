@@ -1,18 +1,18 @@
 //
-//  XTHistoryDataSource.m
+//  XTFileListHistoryDataSource.m
 //  Xit
 //
-//  Created by German Laullon on 26/07/11.
+//  Created by German Laullon on 15/09/11.
+//  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "XTHistoryDataSource.h"
+#import "XTFileListHistoryDataSource.h"
 #import "XTRepository.h"
 #import "XTHistoryItem.h"
-#import "PBGitHistoryGrapher.h"
-#import "PBGitRevisionCell.h"
 
-@implementation XTHistoryDataSource
+// TODO: this class is similar to 'XTHistoryDataSource'... refactor both in a future.
 
+@implementation XTFileListHistoryDataSource
 @synthesize items;
 
 - (id)init {
@@ -23,14 +23,6 @@
     }
 
     return self;
-}
-
-// TODO: move this to the view controller
-- (void)awakeFromNib {
-    // Remove intercell spacing so the history lines will connect
-    NSSize cellSpacing = [table intercellSpacing];
-    cellSpacing.height = 0;
-    [table setIntercellSpacing:cellSpacing];
 }
 
 - (void)setRepo:(XTRepository *)newRepo {
@@ -64,30 +56,20 @@
 - (void)reload {
     dispatch_async(repo.queue, ^{
                        NSMutableArray *newItems = [NSMutableArray array];
+                       __block int idx = 0;
 
-                       [repo    getCommitsWithArgs:[NSArray arrayWithObjects:@"--pretty=format:%H%n%P%n%ct%n%ce%n%s", @"--reverse", @"--tags", @"--all", @"--topo-order", nil]
+                       [repo    getCommitsWithArgs:[NSArray arrayWithObjects:@"--pretty=format:%H%n%h%n%ct%n%ce%n%s", @"--tags", @"--all", @"--topo-order", nil]
                         enumerateCommitsUsingBlock:^(NSString * line) {
 
                             NSArray *comps = [line componentsSeparatedByString:@"\n"];
                             XTHistoryItem *item = [[XTHistoryItem alloc] init];
                             if ([comps count] == 5) {
                                 item.sha = [comps objectAtIndex:0];
-                                NSString *parentsStr = [comps objectAtIndex:1];
-                                if (parentsStr.length > 0) {
-                                    NSArray *parents = [parentsStr componentsSeparatedByString:@" "];
-                                    [parents enumerateObjectsWithOptions:0 usingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
-                                         NSString *parentSha = (NSString *)obj;
-                                         XTHistoryItem *parent = [index objectForKey:parentSha];
-                                         if (parent != nil) {
-                                             [item.parents addObject:parent];
-                                         } else {
-                                             NSLog(@"parent with sha:'%@' not found for commit with sha:'%@' idx=%lu", parentSha, item.sha, item.index);
-                                         }
-                                     }];
-                                }
+                                item.shortSha = [comps objectAtIndex:1];
                                 item.date = [comps objectAtIndex:2];
                                 item.email = [comps objectAtIndex:3];
                                 item.subject = [comps objectAtIndex:4];
+                                item.index = idx++;
                                 [newItems addObject:item];
                                 [index setObject:item forKey:item.sha];
                             } else {
@@ -96,21 +78,6 @@
 
                         }
                                              error:nil];
-
-                       if ([newItems count] > 0) {
-                           NSUInteger i = 0;
-                           NSUInteger j = [newItems count] - 1;
-                           while (i < j) {
-                               [newItems exchangeObjectAtIndex:i++ withObjectAtIndex:j--];
-                           }
-                       }
-
-                       PBGitGrapher *grapher = [[PBGitGrapher alloc] init];
-                       [newItems enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
-                            XTHistoryItem *item = (XTHistoryItem *)obj;
-                            [grapher decorateCommit:item];
-                            item.index = idx;
-                        }];
 
                        NSLog (@"-> %lu", [newItems count]);
                        items = newItems;
@@ -127,22 +94,15 @@
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
     XTHistoryItem *item = [items objectAtIndex:rowIndex];
 
-    return [item valueForKey:aTableColumn.identifier];
+    return item.shortSha;
 }
 
-// TODO: move this to the view controller
 #pragma mark - NSTableViewDelegate
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
     NSLog(@"%@", aNotification);
     XTHistoryItem *item = [items objectAtIndex:table.selectedRow];
     repo.selectedCommit = item.sha;
-}
-
-- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
-    XTHistoryItem *item = [items objectAtIndex:rowIndex];
-
-    ((PBGitRevisionCell *)aCell).objectValue = item;
 }
 
 @end

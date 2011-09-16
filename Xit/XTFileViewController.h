@@ -8,15 +8,16 @@
 
 #import <Cocoa/Cocoa.h>
 #import "XTRepository.h"
-#import "XTFileListDataSource.h"
+
+@class XTFileListDataSource;
+@class XTFileListHistoryDataSource;
 
 @interface XTFileViewController : NSViewController <NSOutlineViewDelegate> {
-    XTFileListDataSource *fileListDS;
+    IBOutlet XTFileListDataSource *fileListDS;
+    IBOutlet XTFileListHistoryDataSource *fileListHistoryDS;
     @private
     XTRepository *repo;
 }
-
-@property (assign) IBOutlet XTFileListDataSource *fileListDS;
 
 - (void)setRepo:(XTRepository *)newRepo;
 

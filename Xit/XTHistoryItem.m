@@ -10,6 +10,7 @@
 @implementation XTHistoryItem
 
 @synthesize sha;
+@synthesize shortSha;
 @synthesize parents;
 @synthesize date;
 @synthesize email;

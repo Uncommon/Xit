@@ -9,7 +9,6 @@
 #import "XTFileViewController.h"
 
 @implementation XTFileViewController
-@synthesize fileListDS;
 
 - (NSString *)nibName {
     NSLog(@"nibName: %@ (%@)", [super nibName], [self class ]);
@@ -19,6 +18,7 @@
 - (void)setRepo:(XTRepository *)newRepo {
     repo = newRepo;
     [fileListDS setRepo:repo];
+    [fileListHistoryDS setRepo:repo];
 }
 
 #pragma mark - NSOutlineViewDelegate

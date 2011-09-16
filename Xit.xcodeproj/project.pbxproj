@@ -14,6 +14,7 @@
 		31355B0E13EA139700C33AAB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 31355B0C13EA139700C33AAB /* InfoPlist.strings */; };
 		31355B1713EA15DD00C33AAB /* html.theme.default.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 31355B0613EA139600C33AAB /* html.theme.default.bundle */; };
 		31355B1913EA189200C33AAB /* diff.css in Resources */ = {isa = PBXBuildFile; fileRef = 31355B1813EA189200C33AAB /* diff.css */; };
+		3152B1E61423152700DCA679 /* XTFileListHistoryDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3152B1E51423152700DCA679 /* XTFileListHistoryDataSource.m */; };
 		3174966513DF896E004C5546 /* XTHistoryDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966413DF896E004C5546 /* XTHistoryDataSource.m */; };
 		3174966813DF8A0C004C5546 /* XTSideBarDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */; };
 		3174966E13DFF94C004C5546 /* XTHistoryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966D13DFF94C004C5546 /* XTHistoryItem.m */; };
@@ -89,6 +90,8 @@
 		31355B0D13EA139700C33AAB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		31355B0F13EA139700C33AAB /* html.theme.default-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "html.theme.default-Prefix.pch"; sourceTree = "<group>"; };
 		31355B1813EA189200C33AAB /* diff.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = diff.css; sourceTree = "<group>"; };
+		3152B1E41423152700DCA679 /* XTFileListHistoryDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTFileListHistoryDataSource.h; sourceTree = "<group>"; };
+		3152B1E51423152700DCA679 /* XTFileListHistoryDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTFileListHistoryDataSource.m; sourceTree = "<group>"; };
 		3174966313DF896E004C5546 /* XTHistoryDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = XTHistoryDataSource.h; path = Xit/XTHistoryDataSource.h; sourceTree = "<group>"; tabWidth = 4; };
 		3174966413DF896E004C5546 /* XTHistoryDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; name = XTHistoryDataSource.m; path = Xit/XTHistoryDataSource.m; sourceTree = "<group>"; tabWidth = 4; };
 		3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; name = XTSideBarDataSource.m; path = Xit/XTSideBarDataSource.m; sourceTree = "<group>"; tabWidth = 4; };
@@ -227,6 +230,8 @@
 				31A8235414225F8A00408EDA /* XTFileViewController.h */,
 				31A8235514225F8A00408EDA /* XTFileViewController.m */,
 				31A8235614225F8B00408EDA /* XTFileViewController.xib */,
+				3152B1E41423152700DCA679 /* XTFileListHistoryDataSource.h */,
+				3152B1E51423152700DCA679 /* XTFileListHistoryDataSource.m */,
 			);
 			name = FileView;
 			sourceTree = "<group>";
@@ -641,6 +646,7 @@
 				C358653114048A3F00060C53 /* XTRepository.m in Sources */,
 				3199BAC014207CFB008AAA4F /* XTFileListDataSource.m in Sources */,
 				31A8235714225F8B00408EDA /* XTFileViewController.m in Sources */,
+				3152B1E61423152700DCA679 /* XTFileListHistoryDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

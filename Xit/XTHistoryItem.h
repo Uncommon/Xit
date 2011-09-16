@@ -12,6 +12,7 @@
 {
     @private
     NSString *sha;
+    NSString *shortSha;
     NSMutableArray *parents;
     NSString *date;
     NSString *email;
@@ -21,6 +22,7 @@
 }
 
 @property (assign) NSString *sha;
+@property (assign) NSString *shortSha;
 @property (assign) NSMutableArray *parents;
 @property (assign) NSString *date;
 @property (assign) NSString *email;
