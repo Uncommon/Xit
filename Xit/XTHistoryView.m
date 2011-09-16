@@ -35,8 +35,8 @@
 
 - (IBAction)toggleSideBar:(id)sender {
     // TODO: improve it
-    NSLog(@"toggleSideBar, %lu", ((NSButton *)sender).state);
-    [sidebarSplitView setPosition:(1 - ((NSButton *)sender).state) * 180 ofDividerAtIndex:0 ];
+    const CGFloat newWidth = ([sender state] == NSOnState) ? 180 : 0;
+    [sidebarSplitView setPosition:newWidth ofDividerAtIndex:0 ];
 }
 
 @end
