@@ -561,6 +561,7 @@
 				31A8939E13E9D5B4008BE0C2 /* XTCommitViewController.xib in Resources */,
 				31C7C13413ECC74C00A65FE9 /* XTHistoryView.xib in Resources */,
 				31C666A613F3B55A000E4073 /* XTStageViewController.xib in Resources */,
+				899D010D14216D2C0091DC6F /* sidebarTemplate.png in Resources */,
 				31A8235814225F8B00408EDA /* XTFileViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
