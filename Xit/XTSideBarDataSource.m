@@ -11,6 +11,7 @@
 #import "XTLocalBranchItem.h"
 #import "XTTagItem.h"
 #import "XTRemotesItem.h"
+#import "SidebarTableCellView.h"
 #import "NSMutableDictionary+MultiObjectForKey.h"
 
 @interface XTSideBarDataSource ()
@@ -173,14 +174,20 @@
     return res;
 }
 
-- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
-    NSString *res = nil;
+- (NSView *)outlineView:(NSOutlineView *)outlineView viewForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+    if ([roots containsObject:item]) {
+        NSTableCellView *headerView = [outlineView makeViewWithIdentifier:@"HeaderCell" owner:self];
 
-    if ([item isKindOfClass:[XTSideBarItem class]]) {
-        XTSideBarItem *sbItem = (XTSideBarItem *)item;
-        res = [sbItem title];
+        [headerView.textField setStringValue:[item title]];
+        return headerView;
+    } else {
+        SidebarTableCellView *dataView = (SidebarTableCellView *)[outlineView makeViewWithIdentifier:@"DataCell" owner:self];
+
+        [dataView.textField setStringValue:[item title]];
+        // if ([item isKindOfClass:[XTLocalBranchItem class]])
+        //     [dataView.imageView setImage:[NSImage imageNamed:@"branch"]];
+        return dataView;
     }
-    return res;
 }
 
 #pragma mark - NSOutlineViewDelegate
