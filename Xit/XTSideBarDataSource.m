@@ -184,8 +184,8 @@
         SidebarTableCellView *dataView = (SidebarTableCellView *)[outlineView makeViewWithIdentifier:@"DataCell" owner:self];
 
         [dataView.textField setStringValue:[item title]];
-        // if ([item isKindOfClass:[XTLocalBranchItem class]])
-        //     [dataView.imageView setImage:[NSImage imageNamed:@"branch"]];
+        if ([item isKindOfClass:[XTLocalBranchItem class]])
+            [dataView.imageView setImage:[NSImage imageNamed:@"branch"]];
         return dataView;
     }
 }
