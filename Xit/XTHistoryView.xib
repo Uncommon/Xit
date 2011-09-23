@@ -861,7 +861,7 @@
 										</object>
 										<string key="NSCellIdentifier">_NS:1792</string>
 										<int key="NSAlign">0</int>
-										<int key="NSScale">3</int>
+										<int key="NSScale">0</int>
 										<int key="NSStyle">0</int>
 										<bool key="NSAnimates">NO</bool>
 									</object>

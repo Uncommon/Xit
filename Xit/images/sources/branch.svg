@@ -15,9 +15,9 @@
    version="1.1"
    inkscape:version="0.48.2 r9819"
    sodipodi:docname="branch.svg"
-   inkscape:export-filename="/Users/catmull/Source/local/Xit/Xit/images/branch.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+   inkscape:export-filename="/Users/uncommon/Developer/Xit/Xit/images/branch.png"
+   inkscape:export-xdpi="72"
+   inkscape:export-ydpi="72">
   <defs
      id="defs2987">
     <filter
@@ -62,7 +62,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="22.197802"
-     inkscape:cx="14.960149"
+     inkscape:cx="6.9638618"
      inkscape:cy="8"
      inkscape:current-layer="g3794"
      showgrid="true"
@@ -107,24 +107,24 @@
       <path
          inkscape:connector-curvature="0"
          id="path3773"
-         d="m 11.5,5.5 0,1.5 -5,4.5"
-         style="fill:none;stroke:#1dac15;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         sodipodi:nodetypes="ccc" />
+         d="M 10.5,7 6,11.5"
+         style="fill:none;stroke:#335980;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         sodipodi:nodetypes="cc" />
       <path
          inkscape:connector-curvature="0"
          id="path3771"
-         d="m 4.5,6.5 0,4"
-         style="fill:none;stroke:#2782e5;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 4.5,5.5 0,5"
+         style="fill:none;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          sodipodi:nodetypes="cc" />
       <path
-         transform="translate(1,2)"
+         transform="translate(1,0)"
          d="m 5.5,3.5 a 2,2 0 1 1 -4,0 2,2 0 1 1 4,0 z"
          sodipodi:ry="2"
          sodipodi:rx="2"
          sodipodi:cy="3.5"
          sodipodi:cx="3.5"
          id="path2997"
-         style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         style="fill:white;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          sodipodi:type="arc" />
       <path
          transform="translate(1,9)"
@@ -138,14 +138,14 @@
          d="m 5.5,3.5 c 0,1.1045695 -0.8954305,2 -2,2 -1.1045695,0 -2,-0.8954305 -2,-2 0,-1.1045695 0.8954305,-2 2,-2 1.1045695,0 2,0.8954305 2,2 z" />
       <path
          sodipodi:type="arc"
-         style="fill:#ff9601;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         style="fill:#528fcc;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          id="path3001"
          sodipodi:cx="3.5"
          sodipodi:cy="3.5"
          sodipodi:rx="2"
          sodipodi:ry="2"
          d="m 5.5,3.5 a 2,2 0 1 1 -4,0 2,2 0 1 1 4,0 z"
-         transform="translate(8,0)" />
+         transform="translate(8,2)" />
     </g>
   </g>
 </svg>
