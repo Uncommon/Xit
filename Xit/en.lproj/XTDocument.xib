@@ -63,7 +63,7 @@
 					<bool key="NSToolbarAllowsUserCustomization">NO</bool>
 					<bool key="NSToolbarAutosavesConfiguration">YES</bool>
 					<int key="NSToolbarDisplayMode">1</int>
-					<int key="NSToolbarSizeMode">2</int>
+					<int key="NSToolbarSizeMode">1</int>
 					<object class="NSMutableDictionary" key="NSToolbarIBIdentifiedItems">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
@@ -78,13 +78,14 @@
 								<object class="NSMutableString" key="NSToolbarItemIdentifier">
 									<characters key="NS.bytes">89540DBC-6492-41EC-A660-13F626D71769</characters>
 								</object>
-								<string key="NSToolbarItemLabel">view</string>
-								<string key="NSToolbarItemPaletteLabel">view</string>
+								<string key="NSToolbarItemLabel">View</string>
+								<string key="NSToolbarItemPaletteLabel">View</string>
 								<nil key="NSToolbarItemToolTip"/>
 								<object class="NSSegmentedControl" key="NSToolbarItemView" id="443472690">
-									<nil key="NSNextResponder"/>
+									<reference key="NSNextResponder"/>
 									<int key="NSvFlags">268</int>
-									<string key="NSFrame">{{0, 14}, {203, 25}}</string>
+									<string key="NSFrame">{{0, 14}, {96, 25}}</string>
+									<reference key="NSSuperview"/>
 									<string key="NSReuseIdentifierKey">_NS:1766</string>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSSegmentedCell" key="NSCell" id="728024554">
@@ -100,20 +101,29 @@
 										<object class="NSMutableArray" key="NSSegmentImages">
 											<bool key="EncodedWithXMLCoder">YES</bool>
 											<object class="NSSegmentItem">
-												<double key="NSSegmentItemWidth">65</double>
-												<string key="NSSegmentItemLabel">History</string>
+												<object class="NSCustomResource" key="NSSegmentItemImage">
+													<string key="NSClassName">NSImage</string>
+													<string key="NSResourceName">historyTemplate</string>
+												</object>
+												<string key="NSSegmentItemTooltip">History</string>
 												<bool key="NSSegmentItemSelected">YES</bool>
 												<int key="NSSegmentItemImageScaling">0</int>
 											</object>
 											<object class="NSSegmentItem">
-												<double key="NSSegmentItemWidth">65</double>
-												<string key="NSSegmentItemLabel">Stage</string>
+												<object class="NSCustomResource" key="NSSegmentItemImage">
+													<string key="NSClassName">NSImage</string>
+													<string key="NSResourceName">NSColumnViewTemplate</string>
+												</object>
+												<string key="NSSegmentItemTooltip">Stage</string>
 												<int key="NSSegmentItemTag">1</int>
 												<int key="NSSegmentItemImageScaling">0</int>
 											</object>
 											<object class="NSSegmentItem">
-												<double key="NSSegmentItemWidth">65</double>
-												<string key="NSSegmentItemLabel">Files</string>
+												<object class="NSCustomResource" key="NSSegmentItemImage">
+													<string key="NSClassName">NSImage</string>
+													<string key="NSResourceName">NSPathTemplate</string>
+												</object>
+												<string key="NSSegmentItemTooltip">Files</string>
 												<int key="NSSegmentItemImageScaling">0</int>
 											</object>
 										</object>
@@ -123,8 +133,8 @@
 								<nil key="NSToolbarItemImage"/>
 								<nil key="NSToolbarItemTarget"/>
 								<nil key="NSToolbarItemAction"/>
-								<string key="NSToolbarItemMinSize">{104, 25}</string>
-								<string key="NSToolbarItemMaxSize">{203, 25}</string>
+								<string key="NSToolbarItemMinSize">{94, 25}</string>
+								<string key="NSToolbarItemMaxSize">{96, 25}</string>
 								<bool key="NSToolbarItemEnabled">YES</bool>
 								<bool key="NSToolbarItemAutovalidates">YES</bool>
 								<int key="NSToolbarItemTag">0</int>
@@ -139,10 +149,11 @@
 								<string key="NSToolbarItemPaletteLabel">Activity</string>
 								<nil key="NSToolbarItemToolTip"/>
 								<object class="NSProgressIndicator" key="NSToolbarItemView" id="721195376">
-									<nil key="NSNextResponder"/>
+									<reference key="NSNextResponder"/>
 									<int key="NSvFlags">1292</int>
 									<object class="NSPSMatrix" key="NSDrawMatrix"/>
 									<string key="NSFrame">{{16, 14}, {16, 16}}</string>
+									<reference key="NSSuperview"/>
 									<string key="NSReuseIdentifierKey">_NS:3930</string>
 									<int key="NSpiFlags">20746</int>
 									<double key="NSMaxValue">100</double>
@@ -220,6 +231,7 @@
 							<string key="NSFrameSize">{775, 660}</string>
 							<reference key="NSSuperview" ref="568628114"/>
 							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="594729912"/>
 							<string key="NSReuseIdentifierKey">_NS:461</string>
 							<object class="NSMutableArray" key="NSTabViewItems">
 								<bool key="EncodedWithXMLCoder">YES</bool>
@@ -290,6 +302,7 @@
 												<string key="NSFrame">{{210, 480}, {13, 17}}</string>
 												<reference key="NSSuperview" ref="594729912"/>
 												<reference key="NSWindow"/>
+												<reference key="NSNextKeyView"/>
 												<string key="NSReuseIdentifierKey">_NS:3936</string>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSTextFieldCell" key="NSCell" id="850312354">
@@ -364,7 +377,7 @@
 					<reference key="NSNextKeyView" ref="181621656"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
-				<string key="NSMinSize">{94, 153}</string>
+				<string key="NSMinSize">{94, 157}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -1238,13 +1251,19 @@
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<object class="NSArray" key="dict.sortedKeys">
 				<bool key="EncodedWithXMLCoder">YES</bool>
+				<string>NSColumnViewTemplate</string>
 				<string>NSMenuCheckmark</string>
 				<string>NSMenuMixedState</string>
+				<string>NSPathTemplate</string>
+				<string>historyTemplate</string>
 			</object>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
+				<string>{13, 10}</string>
 				<string>{9, 8}</string>
 				<string>{7, 2}</string>
+				<string>{13, 10}</string>
+				<string>{14, 12}</string>
 			</object>
 		</object>
 	</data>
