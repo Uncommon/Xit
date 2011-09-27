@@ -19,42 +19,7 @@
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
-     id="defs2987">
-    <filter
-       id="filter3983"
-       inkscape:label="Drop shadow"
-       width="1.5"
-       height="1.5"
-       x="-0.25"
-       y="-0.25"
-       color-interpolation-filters="sRGB">
-      <feGaussianBlur
-         id="feGaussianBlur3985"
-         stdDeviation="0.29999999999999999"
-         result="blur"
-         in="SourceAlpha" />
-      <feColorMatrix
-         id="feColorMatrix3987"
-         result="bluralpha"
-         type="matrix"
-         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.6 0 " />
-      <feOffset
-         id="feOffset3989"
-         in="bluralpha"
-         dx="0"
-         dy="0.5"
-         result="offsetBlur" />
-      <feMerge
-         id="feMerge3991">
-        <feMergeNode
-           id="feMergeNode3993"
-           in="offsetBlur" />
-        <feMergeNode
-           id="feMergeNode3995"
-           in="SourceGraphic" />
-      </feMerge>
-    </filter>
-  </defs>
+     id="defs2987" />
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -71,8 +36,8 @@
      inkscape:document-units="px"
      inkscape:window-width="1269"
      inkscape:window-height="827"
-     inkscape:window-x="357"
-     inkscape:window-y="154"
+     inkscape:window-x="116"
+     inkscape:window-y="78"
      inkscape:window-maximized="0"
      showguides="true"
      inkscape:guide-bbox="true">
@@ -104,7 +69,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>

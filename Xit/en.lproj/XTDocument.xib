@@ -84,8 +84,9 @@
 								<object class="NSSegmentedControl" key="NSToolbarItemView" id="443472690">
 									<reference key="NSNextResponder"/>
 									<int key="NSvFlags">268</int>
-									<string key="NSFrame">{{0, 14}, {96, 25}}</string>
+									<string key="NSFrame">{{0, 14}, {91, 25}}</string>
 									<reference key="NSSuperview"/>
+									<reference key="NSNextKeyView"/>
 									<string key="NSReuseIdentifierKey">_NS:1766</string>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSSegmentedCell" key="NSCell" id="728024554">
@@ -112,7 +113,7 @@
 											<object class="NSSegmentItem">
 												<object class="NSCustomResource" key="NSSegmentItemImage">
 													<string key="NSClassName">NSImage</string>
-													<string key="NSResourceName">NSColumnViewTemplate</string>
+													<string key="NSResourceName">stageTemplate</string>
 												</object>
 												<string key="NSSegmentItemTooltip">Stage</string>
 												<int key="NSSegmentItemTag">1</int>
@@ -133,7 +134,7 @@
 								<nil key="NSToolbarItemImage"/>
 								<nil key="NSToolbarItemTarget"/>
 								<nil key="NSToolbarItemAction"/>
-								<string key="NSToolbarItemMinSize">{94, 25}</string>
+								<string key="NSToolbarItemMinSize">{89, 25}</string>
 								<string key="NSToolbarItemMaxSize">{96, 25}</string>
 								<bool key="NSToolbarItemEnabled">YES</bool>
 								<bool key="NSToolbarItemAutovalidates">YES</bool>
@@ -154,6 +155,7 @@
 									<object class="NSPSMatrix" key="NSDrawMatrix"/>
 									<string key="NSFrame">{{16, 14}, {16, 16}}</string>
 									<reference key="NSSuperview"/>
+									<reference key="NSNextKeyView"/>
 									<string key="NSReuseIdentifierKey">_NS:3930</string>
 									<int key="NSpiFlags">20746</int>
 									<double key="NSMaxValue">100</double>
@@ -746,7 +748,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<integer value="0"/>
+					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1251,19 +1253,19 @@
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<object class="NSArray" key="dict.sortedKeys">
 				<bool key="EncodedWithXMLCoder">YES</bool>
-				<string>NSColumnViewTemplate</string>
 				<string>NSMenuCheckmark</string>
 				<string>NSMenuMixedState</string>
 				<string>NSPathTemplate</string>
 				<string>historyTemplate</string>
+				<string>stageTemplate</string>
 			</object>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
-				<string>{13, 10}</string>
 				<string>{9, 8}</string>
 				<string>{7, 2}</string>
 				<string>{13, 10}</string>
-				<string>{14, 12}</string>
+				<string>{9.6010670131135889, 8.8009780953541235}</string>
+				<string>{14, 10}</string>
 			</object>
 		</object>
 	</data>
