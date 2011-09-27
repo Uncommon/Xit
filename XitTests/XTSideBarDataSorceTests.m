@@ -13,6 +13,25 @@
 #import "XTSideBarDataSource.h"
 #import "XTHistoryItem.h"
 
+@interface MockTextField : NSObject {
+    @private
+    NSString *stringValue;
+}
+@property (retain) NSString *stringValue;
+@end
+
+@interface MockCellView : NSObject {
+    @private
+    MockTextField *textField;
+}
+@property (readonly) MockTextField *textField;
+@end
+
+@interface MockSidebarOutlineView : NSObject {
+}
+- (id)makeViewWithIdentifier:(NSString *)identifier owner:(id)owner;
+@end
+
 @implementation XTSideBarDataSorceTests
 
 - (void)testXTSideBarDataSourceReload {
@@ -95,6 +114,7 @@
         return;
     }
 
+    MockSidebarOutlineView *sov = [[MockSidebarOutlineView alloc] init];
     XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
     [sbds setRepo:xit];
     [sbds reload];
@@ -108,7 +128,8 @@
 
     // BRANCHES
     id remote = [sbds outlineView:nil child:0 ofItem:remotes];
-    NSString *rName = [sbds outlineView:nil objectValueForTableColumn:nil byItem:remote];
+    NSTableCellView *remoteView = (NSTableCellView *)[sbds outlineView:(NSOutlineView *)sov viewForTableColumn:nil item:remote];
+    NSString *rName = remoteView.textField.stringValue;
     STAssertTrue([rName isEqualToString:@"origin"], @"found remote '%@'", rName);
 
     NSInteger nb = [sbds outlineView:nil numberOfChildrenOfItem:remote];
@@ -130,6 +151,8 @@
     }
     STAssertTrue(branchMasterFound, @"Branch 'master' Not found");
     STAssertTrue(branchB1Found, @"Branch 'b1' Not found");
+    [sbds release];
+    [sov release];
 }
 
 - (void)testXTSideBarDataSourceBranchesAndTags {
@@ -141,6 +164,7 @@
         STFail(@"Create Tag 't1'");
     }
 
+    MockSidebarOutlineView *sov = [[MockSidebarOutlineView alloc] init];
     XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
     [sbds setRepo:xit];
     [sbds reload];
@@ -164,8 +188,8 @@
         BOOL isExpandable = [sbds outlineView:nil isItemExpandable:tag];
         STAssertTrue(isExpandable == NO, @"Tags must be no Expandable");
 
-        NSString *bName = [sbds outlineView:nil objectValueForTableColumn:nil byItem:tag];
-        if ([bName isEqualToString:@"t1"]) {
+        NSTableCellView *view = (NSTableCellView *)[sbds outlineView:(NSOutlineView *)sov viewForTableColumn:nil item:tag];
+        if ([view.textField.stringValue isEqualToString:@"t1"]) {
             tagT1Found = YES;
         }
     }
@@ -187,7 +211,8 @@
         BOOL isExpandable = [sbds outlineView:nil isItemExpandable:branch];
         STAssertTrue(isExpandable == NO, @"Branches must be no Expandable");
 
-        NSString *bName = [sbds outlineView:nil objectValueForTableColumn:nil byItem:branch];
+        NSTableCellView *branchView = (NSTableCellView *)[sbds outlineView:(NSOutlineView *)sov viewForTableColumn:nil item:branch];
+        NSString *bName = branchView.textField.stringValue;
         if ([bName isEqualToString:@"master"]) {
             branchMasterFound = YES;
         } else if ([bName isEqualToString:@"b1"]) {
@@ -196,6 +221,8 @@
     }
     STAssertTrue(branchMasterFound, @"Branch 'master' Not found");
     STAssertTrue(branchB1Found, @"Branch 'b1' Not found");
+    [sbds release];
+    [sov release];
 }
 
 - (void)testGroupItems {
@@ -211,6 +238,40 @@
         id root = [sbds outlineView:nil child:i ofItem:nil];
         STAssertTrue([sbds outlineView:nil isGroupItem:root], @"item %d should be group", i);
     }
+}
+
+@end
+
+
+@implementation MockTextField
+
+@synthesize stringValue;
+
+@end
+
+
+@implementation MockCellView
+
+@synthesize textField;
+
+- (id)init {
+    if ([super init] == nil)
+        return nil;
+    textField = [[MockTextField alloc] init];
+    return self;
+}
+
+- (id)imageView {
+    return nil;
+}
+
+@end
+
+
+@implementation MockSidebarOutlineView
+
+- (id)makeViewWithIdentifier:(NSString *)identifier owner:(id)owner {
+    return [[[MockCellView alloc] init] autorelease];
 }
 
 @end
