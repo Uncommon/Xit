@@ -962,6 +962,14 @@
 					</object>
 					<int key="connectionID">119</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">sidebarOutline</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="683226822"/>
+					</object>
+					<int key="connectionID">120</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -1398,7 +1406,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">119</int>
+			<int key="maxID">120</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1509,6 +1517,7 @@
 						<string key="historyTable">NSTableView</string>
 						<string key="mainSplitView">NSSplitView</string>
 						<string key="sideBarDS">XTSideBarDataSource</string>
+						<string key="sidebarOutline">NSOutlineView</string>
 						<string key="sidebarSplitView">NSSplitView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -1535,6 +1544,10 @@
 						<object class="IBToOneOutletInfo" key="sideBarDS">
 							<string key="name">sideBarDS</string>
 							<string key="candidateClassName">XTSideBarDataSource</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="sidebarOutline">
+							<string key="name">sidebarOutline</string>
+							<string key="candidateClassName">NSOutlineView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="sidebarSplitView">
 							<string key="name">sidebarSplitView</string>

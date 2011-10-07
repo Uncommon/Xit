@@ -17,6 +17,9 @@
     NSSize cellSpacing = [historyTable intercellSpacing];
     cellSpacing.height = 0;
     [historyTable setIntercellSpacing:cellSpacing];
+
+    // Without this, the first group title moves when you hide its contents
+    [sidebarOutline setFloatsGroupRows:NO];
 }
 
 - (NSString *)nibName {
