@@ -15,6 +15,9 @@
 #import "NSMutableDictionary+MultiObjectForKey.h"
 
 @interface XTSideBarDataSource ()
+{
+    XTSideBarItem *branches, *tags, *remotes, *stashes;
+}
 - (void)_reload;
 @end
 
@@ -23,10 +26,10 @@
 - (id)init {
     self = [super init];
     if (self) {
-        XTSideBarItem *branches = [[XTSideBarItem alloc] initWithTitle:@"BRANCHES"];
-        XTSideBarItem *tags = [[XTSideBarItem alloc] initWithTitle:@"TAGS"];
-        XTRemotesItem *remotes = [[XTRemotesItem alloc] initWithTitle:@"REMOTES"];
-        XTSideBarItem *stashes = [[XTSideBarItem alloc] initWithTitle:@"STASHES"];
+        branches = [[XTSideBarItem alloc] initWithTitle:@"BRANCHES"];
+        tags = [[XTSideBarItem alloc] initWithTitle:@"TAGS"];
+        remotes = [[XTRemotesItem alloc] initWithTitle:@"REMOTES"];
+        stashes = [[XTSideBarItem alloc] initWithTitle:@"STASHES"];
         roots = [NSArray arrayWithObjects:branches, tags, remotes, stashes, nil];
     }
 
@@ -182,10 +185,13 @@
         return headerView;
     } else {
         SidebarTableCellView *dataView = (SidebarTableCellView *)[outlineView makeViewWithIdentifier:@"DataCell" owner:self];
+        id parent = [outlineView parentForItem:item];
 
         [dataView.textField setStringValue:[item title]];
-        if ([item isKindOfClass:[XTLocalBranchItem class]])
+        if (parent == branches)
             [dataView.imageView setImage:[NSImage imageNamed:@"branch"]];
+        else if (parent == remotes)
+            [dataView.imageView setImage:[NSImage imageNamed:NSImageNameNetwork]];
         return dataView;
     }
 }
