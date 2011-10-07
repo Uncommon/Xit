@@ -436,7 +436,7 @@
 																		<string key="NSFrameSize">{703, 177}</string>
 																		<reference key="NSSuperview" ref="4744271"/>
 																		<reference key="NSWindow"/>
-																		<reference key="NSNextKeyView" ref="25621835"/>
+																		<reference key="NSNextKeyView" ref="93965352"/>
 																		<int key="NSViewLayerContentsRedrawPolicy">2</int>
 																		<bool key="NSEnabled">YES</bool>
 																		<object class="NSTableHeaderView" key="NSHeaderView" id="553526585">
@@ -610,7 +610,7 @@
 														<string key="NSFrameSize">{703, 194}</string>
 														<reference key="NSSuperview" ref="83736380"/>
 														<reference key="NSWindow"/>
-														<reference key="NSNextKeyView" ref="4744271"/>
+														<reference key="NSNextKeyView" ref="25621835"/>
 														<int key="NSViewLayerContentsRedrawPolicy">2</int>
 														<int key="NSsFlags">133680</int>
 														<reference key="NSVScroller" ref="93965352"/>
@@ -637,6 +637,7 @@
 														<string key="NSFrameSize">{703, 194}</string>
 														<reference key="NSSuperview" ref="677488446"/>
 														<reference key="NSWindow"/>
+														<reference key="NSNextKeyView"/>
 														<int key="NSViewLayerContentsRedrawPolicy">2</int>
 														<string key="NSClassName">NSView</string>
 													</object>
@@ -952,6 +953,14 @@
 						<reference key="destination" ref="715398906"/>
 					</object>
 					<int key="connectionID">118</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">historyTable</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="781583056"/>
+					</object>
+					<int key="connectionID">119</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1389,7 +1398,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">118</int>
+			<int key="maxID">119</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1497,6 +1506,7 @@
 						<string key="commitView">NSView</string>
 						<string key="commitViewController">XTCommitViewController</string>
 						<string key="historyDS">XTHistoryDataSource</string>
+						<string key="historyTable">NSTableView</string>
 						<string key="mainSplitView">NSSplitView</string>
 						<string key="sideBarDS">XTSideBarDataSource</string>
 						<string key="sidebarSplitView">NSSplitView</string>
@@ -1513,6 +1523,10 @@
 						<object class="IBToOneOutletInfo" key="historyDS">
 							<string key="name">historyDS</string>
 							<string key="candidateClassName">XTHistoryDataSource</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="historyTable">
+							<string key="name">historyTable</string>
+							<string key="candidateClassName">NSTableView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="mainSplitView">
 							<string key="name">mainSplitView</string>

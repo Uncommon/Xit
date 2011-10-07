@@ -25,14 +25,6 @@
     return self;
 }
 
-// TODO: move this to the view controller
-- (void)awakeFromNib {
-    // Remove intercell spacing so the history lines will connect
-    NSSize cellSpacing = [table intercellSpacing];
-    cellSpacing.height = 0;
-    [table setIntercellSpacing:cellSpacing];
-}
-
 - (void)setRepo:(XTRepository *)newRepo {
     repo = newRepo;
     [repo addObserver:self forKeyPath:@"reload" options:NSKeyValueObservingOptionNew context:nil];

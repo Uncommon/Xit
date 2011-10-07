@@ -12,6 +12,13 @@
 
 @implementation XTHistoryView
 
+- (void)awakeFromNib {
+    // Remove intercell spacing so the history lines will connect
+    NSSize cellSpacing = [historyTable intercellSpacing];
+    cellSpacing.height = 0;
+    [historyTable setIntercellSpacing:cellSpacing];
+}
+
 - (NSString *)nibName {
     NSLog(@"nibName: %@ (%@)", [super nibName], [self class]);
     return NSStringFromClass([self class]);

@@ -18,6 +18,7 @@
     IBOutlet XTSideBarDataSource *sideBarDS;
     IBOutlet XTHistoryDataSource *historyDS;
     IBOutlet XTCommitViewController *commitViewController;
+    IBOutlet NSTableView *historyTable;
     IBOutlet NSView *commitView;
     IBOutlet NSSplitView *sidebarSplitView;
     IBOutlet NSSplitView *mainSplitView;
