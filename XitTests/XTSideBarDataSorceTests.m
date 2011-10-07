@@ -37,13 +37,13 @@
 - (void)testXTSideBarDataSourceReload {
     XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
 
-    [sbds setRepo:xit];
+    [sbds setRepo:repository];
     [sbds addObserver:self forKeyPath:@"reload" options:0 context:nil];
 
-    [xit start];
+    [repository start];
 
     reloadDetected = NO;
-    if (![xit createBranch:@"b1"]) {
+    if (![repository createBranch:@"b1"]) {
         STFail(@"Create Branch 'b1'");
     }
 
@@ -60,7 +60,7 @@
     NSInteger nb = [sbds outlineView:nil numberOfChildrenOfItem:branches];
     STAssertTrue((nb == 2), @"found %d branches FAIL", nb);
 
-    [xit stop];
+    [repository stop];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -70,7 +70,7 @@
 }
 
 - (void)testXTSideBarDataSourceStashes {
-    NSString *testFile = [NSString stringWithFormat:@"%@/file1.txt", repo];
+    NSString *testFile = [NSString stringWithFormat:@"%@/file1.txt", repoPath];
     NSString *txt = @"other some text";
 
     NSError *error;
@@ -80,14 +80,14 @@
         STFail(@"error: %@", error.localizedFailureReason);
     }
 
-    if (![xit stash:@"s1"]) {
+    if (![repository stash:@"s1"]) {
         STFail(@"stash");
     }
 
     XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
-    [sbds setRepo:xit];
+    [sbds setRepo:repository];
     [sbds reload];
-    [xit waitUntilReloadEnd];
+    [repository waitUntilReloadEnd];
 
     id stashes = [sbds outlineView:nil child:XT_STASHES ofItem:nil];
     STAssertTrue((stashes != nil), @"no stashes");
@@ -97,28 +97,28 @@
 }
 
 - (void)testXTSideBarDataSourceReomtes {
-    if (![xit checkout:@"master"]) {
+    if (![repository checkout:@"master"]) {
         STFail(@"checkout master");
     }
 
-    if (![xit createBranch:@"b1"]) {
+    if (![repository createBranch:@"b1"]) {
         STFail(@"Create Branch 'b1'");
     }
 
-    if (![xit addRemote:@"origin" withUrl:remoteRepo]) {
-        STFail(@"add origin '%@'", remoteRepo);
+    if (![repository addRemote:@"origin" withUrl:remoteRepoPath]) {
+        STFail(@"add origin '%@'", remoteRepoPath);
     }
 
-    if (![xit push:@"origin"]) {
+    if (![repository push:@"origin"]) {
         STFail(@"push origin");
         return;
     }
 
     MockSidebarOutlineView *sov = [[MockSidebarOutlineView alloc] init];
     XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
-    [sbds setRepo:xit];
+    [sbds setRepo:repository];
     [sbds reload];
-    [xit waitUntilReloadEnd];
+    [repository waitUntilReloadEnd];
 
     id remotes = [sbds outlineView:nil child:XT_REMOTES ofItem:nil];
     STAssertTrue((remotes != nil), @"no remotes");
@@ -156,19 +156,19 @@
 }
 
 - (void)testXTSideBarDataSourceBranchesAndTags {
-    if (![xit createBranch:@"b1"]) {
+    if (![repository createBranch:@"b1"]) {
         STFail(@"Create Branch 'b1'");
     }
 
-    if (![xit createTag:@"t1" withMessage:@"msg"]) {
+    if (![repository createTag:@"t1" withMessage:@"msg"]) {
         STFail(@"Create Tag 't1'");
     }
 
     MockSidebarOutlineView *sov = [[MockSidebarOutlineView alloc] init];
     XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
-    [sbds setRepo:xit];
+    [sbds setRepo:repository];
     [sbds reload];
-    [xit waitUntilReloadEnd];
+    [repository waitUntilReloadEnd];
 
     NSInteger nr = [sbds outlineView:nil numberOfChildrenOfItem:nil];
     STAssertTrue((nr == 4), @"found %d roots FAIL", nr);
@@ -226,12 +226,12 @@
 }
 
 - (void)testGroupItems {
-    if (![xit createBranch:@"b1"]) {
+    if (![repository createBranch:@"b1"]) {
         STFail(@"Create Branch 'b1'");
     }
 
     XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
-    [sbds setRepo:xit];
+    [sbds setRepo:repository];
     [sbds reload];
 
     for (NSInteger i = 0; i < [sbds outlineView:nil numberOfChildrenOfItem:nil]; ++i) {

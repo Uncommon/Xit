@@ -17,13 +17,13 @@
     NSString *tagName = @"TagNameTest";
     NSString *tagMsg = @"### message ###";
 
-    if (![xit createTag:tagName withMessage:tagMsg]) {
+    if (![repository createTag:tagName withMessage:tagMsg]) {
         STFail(@"Create Tag 't1'");
     }
 
     XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
-    [sbds setRepo:xit];
-    [xit waitUntilReloadEnd];
+    [sbds setRepo:repository];
+    [repository waitUntilReloadEnd];
 
     id tags = [sbds outlineView:nil child:XT_TAGS ofItem:nil];
     NSInteger count = [sbds outlineView:nil numberOfChildrenOfItem:tags];
@@ -33,7 +33,7 @@
     XTSideBarItem *tag = [sbds outlineView:nil child:0 ofItem:tags];
 
     XTCommitViewController *cvc = [[XTCommitViewController alloc] init];
-    [cvc setRepo:xit];
+    [cvc setRepo:repository];
     NSString *html = [cvc loadCommit:tag.sha];
     NSRange tagNameRange = [html rangeOfString:tagName];
     STAssertTrue(tagNameRange.location != NSNotFound, @"'%@' not found", tagName);

@@ -14,28 +14,28 @@
 - (void)setUp {
     [super setUp];
 
-    repo = [NSString stringWithFormat:@"%@testrepo", NSTemporaryDirectory()];
-    xit = [self createRepo:repo];
+    repoPath = [NSString stringWithFormat:@"%@testrepo", NSTemporaryDirectory()];
+    repository = [self createRepo:repoPath];
 
-    remoteRepo = [NSString stringWithFormat:@"%@remotetestrepo", NSTemporaryDirectory()];
-    [self createRepo:remoteRepo];
+    remoteRepoPath = [NSString stringWithFormat:@"%@remotetestrepo", NSTemporaryDirectory()];
+    [self createRepo:remoteRepoPath];
 
     NSLog(@"setUp ok");
 }
 
 - (void)tearDown {
-    [xit waitUntilReloadEnd];
+    [repository waitUntilReloadEnd];
 
     NSFileManager *defaultManager = [NSFileManager defaultManager];
-    [defaultManager removeItemAtPath:repo error:nil];
-    [defaultManager removeItemAtPath:remoteRepo error:nil];
+    [defaultManager removeItemAtPath:repoPath error:nil];
+    [defaultManager removeItemAtPath:remoteRepoPath error:nil];
 
-    if ([defaultManager fileExistsAtPath:repo]) {
-        STFail(@"tearDown %@ FAIL!!", repo);
+    if ([defaultManager fileExistsAtPath:repoPath]) {
+        STFail(@"tearDown %@ FAIL!!", repoPath);
     }
 
-    if ([defaultManager fileExistsAtPath:remoteRepo]) {
-        STFail(@"tearDown %@ FAIL!!", remoteRepo);
+    if ([defaultManager fileExistsAtPath:remoteRepoPath]) {
+        STFail(@"tearDown %@ FAIL!!", remoteRepoPath);
     }
 
     NSLog(@"tearDown ok");

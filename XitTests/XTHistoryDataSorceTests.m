@@ -20,38 +20,38 @@
     for (int n = 0; n < nCommits; n++) {
         NSString *rn = [NSString stringWithFormat:@"refs/heads/root_%d", n];
         if ((n % 5) == 0) {
-            NSData *data = [xit exectuteGitWithArgs:[NSArray arrayWithObjects:@"symbolic-ref", @"HEAD", rn, nil] error:nil];
+            NSData *data = [repository exectuteGitWithArgs:[NSArray arrayWithObjects:@"symbolic-ref", @"HEAD", rn, nil] error:nil];
             if (data == nil) {
                 STFail(@"'%@' error", rn);
             }
-            data = [xit exectuteGitWithArgs:[NSArray arrayWithObjects:@"rm", @"--cached", @"-r", @".", nil] error:nil];
+            data = [repository exectuteGitWithArgs:[NSArray arrayWithObjects:@"rm", @"--cached", @"-r", @".", nil] error:nil];
             if (data == nil) {
                 STFail(@"'%@' error", rn);
             }
-            data = [xit exectuteGitWithArgs:[NSArray arrayWithObjects:@"clean", @"-f", @"-d", nil] error:nil];
+            data = [repository exectuteGitWithArgs:[NSArray arrayWithObjects:@"clean", @"-f", @"-d", nil] error:nil];
             if (data == nil) {
                 STFail(@"'%@' error", rn);
             }
         }
 
-        NSString *testFile = [NSString stringWithFormat:@"%@/file%d.txt", repo, n];
+        NSString *testFile = [NSString stringWithFormat:@"%@/file%d.txt", repoPath, n];
         NSString *txt = [NSString stringWithFormat:@"some text %d", n];
         [txt writeToFile:testFile atomically:YES encoding:NSASCIIStringEncoding error:nil];
 
         if (![defaultManager fileExistsAtPath:testFile]) {
             STFail(@"testFile NOT Found!!");
         }
-        if (![xit addFile:[testFile lastPathComponent]]) {
+        if (![repository addFile:[testFile lastPathComponent]]) {
             STFail(@"add file '%@'", testFile);
         }
-        if (![xit commitWithMessage:[NSString stringWithFormat:@"new %@", testFile]]) {
+        if (![repository commitWithMessage:[NSString stringWithFormat:@"new %@", testFile]]) {
             STFail(@"Commit with mesage 'new %@'", testFile);
         }
     }
 
     XTHistoryDataSource *hds = [[XTHistoryDataSource alloc] init];
-    [hds setRepo:xit];
-    [xit waitUntilReloadEnd];
+    [hds setRepo:repository];
+    [repository waitUntilReloadEnd];
 
     NSArray *items = hds.items;
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
@@ -71,30 +71,30 @@
     for (int n = 0; n < nCommits; n++) {
         NSString *bn = [NSString stringWithFormat:@"branch_%d", n];
         if ((n % 10) == 0) {
-            [xit checkout:@"master"];
-            if (![xit createBranch:bn]) {
+            [repository checkout:@"master"];
+            if (![repository createBranch:bn]) {
                 STFail(@"Create Branch");
             }
         }
 
-        NSString *testFile = [NSString stringWithFormat:@"%@/file%d.txt", repo, n];
+        NSString *testFile = [NSString stringWithFormat:@"%@/file%d.txt", repoPath, n];
         NSString *txt = [NSString stringWithFormat:@"some text %d", n];
         [txt writeToFile:testFile atomically:YES encoding:NSASCIIStringEncoding error:nil];
 
         if (![defaultManager fileExistsAtPath:testFile]) {
             STFail(@"testFile NOT Found!!");
         }
-        if (![xit addFile:[testFile lastPathComponent]]) {
+        if (![repository addFile:[testFile lastPathComponent]]) {
             STFail(@"add file '%@'", testFile);
         }
-        if (![xit commitWithMessage:[NSString stringWithFormat:@"new %@", testFile]]) {
+        if (![repository commitWithMessage:[NSString stringWithFormat:@"new %@", testFile]]) {
             STFail(@"Commit with mesage 'new %@'", testFile);
         }
     }
 
     XTHistoryDataSource *hds = [[XTHistoryDataSource alloc] init];
-    [hds setRepo:xit];
-    [xit waitUntilReloadEnd];
+    [hds setRepo:repository];
+    [repository waitUntilReloadEnd];
 
     NSUInteger nc = [hds numberOfRowsInTableView:nil];
     STAssertTrue((nc == (nCommits + 1)), @"found %d commits", nc);

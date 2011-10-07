@@ -10,9 +10,9 @@
 @class XTRepository;
 
 @interface XitTests : SenTestCase {
-    NSString *repo;
-    NSString *remoteRepo;
-    XTRepository *xit;
+    NSString *repoPath;
+    NSString *remoteRepoPath;
+    XTRepository *repository;
     BOOL reloadDetected;
 }
 

@@ -16,7 +16,7 @@
 @implementation XTStageViewControllerTest
 
 - (void)testXTPartialStage {
-    NSString *mv = [NSString stringWithFormat:@"%@/file_to_move.txt", repo];
+    NSString *mv = [NSString stringWithFormat:@"%@/file_to_move.txt", repoPath];
     NSMutableArray *lines = [NSMutableArray arrayWithCapacity:30];
 
     for (int n = 0; n < 30; n++) {
@@ -24,8 +24,8 @@
     }
     [[lines componentsJoinedByString:@"\n"] writeToFile:mv atomically:YES encoding:NSASCIIStringEncoding error:nil];
 
-    [xit addFile:@"--all"];
-    [xit commitWithMessage:@"commit"];
+    [repository addFile:@"--all"];
+    [repository commitWithMessage:@"commit"];
 
     [lines replaceObjectAtIndex:5 withObject:@"new line number 5......."];
     [lines replaceObjectAtIndex:15 withObject:@"new line number 15......."];
@@ -34,32 +34,32 @@
     [[lines componentsJoinedByString:@"\n"] writeToFile:mv atomically:YES encoding:NSASCIIStringEncoding error:nil];
 
     XTUnstagedDataSource *ustgds = [[XTUnstagedDataSource alloc] init];
-    [ustgds setRepo:xit];
-    [xit waitUntilReloadEnd];
+    [ustgds setRepo:repository];
+    [repository waitUntilReloadEnd];
 
     NSUInteger nc = [ustgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 1), @"found %d commits", nc);
 
     XTStagedDataSource *stgds = [[XTStagedDataSource alloc] init];
-    [stgds setRepo:xit];
-    [xit waitUntilReloadEnd];
+    [stgds setRepo:repository];
+    [repository waitUntilReloadEnd];
 
     nc = [stgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 0), @"found %d commits", nc);
 
     XTStageViewController *svc = [[XTStageViewController alloc] init];
-    [svc setRepo:xit];
+    [svc setRepo:repository];
     [svc showUnstageFile:[ustgds.items objectAtIndex:0]]; // click on unstage table
     [svc stageChunk:2]; // click on stage button
 
     [ustgds reload];
-    [xit waitUntilReloadEnd];
+    [repository waitUntilReloadEnd];
 
     nc = [ustgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 1), @"found %d commits", nc);
 
     [stgds reload];
-    [xit waitUntilReloadEnd];
+    [repository waitUntilReloadEnd];
 
     nc = [stgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 1), @"found %d commits", nc);
@@ -68,18 +68,18 @@
     [svc unstageChunk:0]; // click on unstage button
 
     [stgds reload];
-    [xit waitUntilReloadEnd];
+    [repository waitUntilReloadEnd];
 
     nc = [stgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 0), @"found %d commits", nc);
 }
 
 - (void)testXTDataSources {
-    NSString *mod = [NSString stringWithFormat:@"%@/file_to_mod.txt", repo];
-    NSString *mv = [NSString stringWithFormat:@"%@/file_to_move.txt", repo];
-    NSString *mvd = [NSString stringWithFormat:@"%@/file_moved.txt", repo];
-    NSString *rm = [NSString stringWithFormat:@"%@/file_to_rm.txt", repo];
-    NSString *new = [NSString stringWithFormat:@"%@/new_file.txt", repo];
+    NSString *mod = [NSString stringWithFormat:@"%@/file_to_mod.txt", repoPath];
+    NSString *mv = [NSString stringWithFormat:@"%@/file_to_move.txt", repoPath];
+    NSString *mvd = [NSString stringWithFormat:@"%@/file_moved.txt", repoPath];
+    NSString *rm = [NSString stringWithFormat:@"%@/file_to_rm.txt", repoPath];
+    NSString *new = [NSString stringWithFormat:@"%@/new_file.txt", repoPath];
 
     NSString *txt = @"some text";
 
@@ -87,8 +87,8 @@
     [txt writeToFile:mv atomically:YES encoding:NSASCIIStringEncoding error:nil];
     [txt writeToFile:rm atomically:YES encoding:NSASCIIStringEncoding error:nil];
 
-    [xit addFile:@"--all"];
-    [xit commitWithMessage:@"commit"];
+    [repository addFile:@"--all"];
+    [repository commitWithMessage:@"commit"];
 
     txt = @"more text";
     [txt writeToFile:mod atomically:YES encoding:NSASCIIStringEncoding error:nil];
@@ -97,8 +97,8 @@
     [txt writeToFile:new atomically:YES encoding:NSASCIIStringEncoding error:nil];
 
     XTUnstagedDataSource *ustgds = [[XTUnstagedDataSource alloc] init];
-    [ustgds setRepo:xit];
-    [xit waitUntilReloadEnd];
+    [ustgds setRepo:repository];
+    [repository waitUntilReloadEnd];
 
     NSUInteger nc = [ustgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 5), @"found %d commits", nc);
@@ -118,11 +118,11 @@
          STAssertEqualObjects(info.status, status, @"incorrect state file(%lu):%@", idx, info.name);
      }];
 
-    [xit addFile:@"--all"];
+    [repository addFile:@"--all"];
 
     XTStagedDataSource *stgds = [[XTStagedDataSource alloc] init];
-    [stgds setRepo:xit];
-    [xit waitUntilReloadEnd];
+    [stgds setRepo:repository];
+    [repository waitUntilReloadEnd];
 
     nc = [stgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 5), @"found %d commits", nc);
