@@ -142,7 +142,8 @@
         BOOL isExpandable = [sbds outlineView:nil isItemExpandable:branch];
         STAssertTrue(isExpandable == NO, @"Branches must be no Expandable");
 
-        NSString *bName = [sbds outlineView:nil objectValueForTableColumn:nil byItem:branch];
+        NSTableCellView *branchView = (NSTableCellView *)[sbds outlineView:(NSOutlineView *)sov viewForTableColumn:nil item:branch];
+        NSString *bName = branchView.textField.stringValue;
         if ([bName isEqualToString:@"master"]) {
             branchMasterFound = YES;
         } else if ([bName isEqualToString:@"b1"]) {
