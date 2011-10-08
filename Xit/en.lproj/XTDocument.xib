@@ -128,12 +128,13 @@
 												<int key="NSSegmentItemImageScaling">0</int>
 											</object>
 										</object>
+										<int key="NSSegmentStyle">2</int>
 									</object>
 								</object>
 								<nil key="NSToolbarItemImage"/>
 								<nil key="NSToolbarItemTarget"/>
 								<nil key="NSToolbarItemAction"/>
-								<string key="NSToolbarItemMinSize">{89, 23}</string>
+								<string key="NSToolbarItemMinSize">{89, 24}</string>
 								<string key="NSToolbarItemMaxSize">{96, 25}</string>
 								<bool key="NSToolbarItemEnabled">YES</bool>
 								<bool key="NSToolbarItemAutovalidates">YES</bool>
@@ -205,13 +206,13 @@
 							</object>
 						</object>
 					</object>
-					<object class="NSArray" key="NSToolbarIBAllowedItems">
+					<object class="NSMutableArray" key="NSToolbarIBAllowedItems">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<reference ref="910430088"/>
 						<reference ref="816883856"/>
 						<reference ref="494524969"/>
 					</object>
-					<object class="NSArray" key="NSToolbarIBDefaultItems">
+					<object class="NSMutableArray" key="NSToolbarIBDefaultItems">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<reference ref="910430088"/>
 						<reference ref="494524969"/>
@@ -232,6 +233,7 @@
 							<string key="NSFrameSize">{775, 660}</string>
 							<reference key="NSSuperview" ref="568628114"/>
 							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="594729912"/>
 							<string key="NSReuseIdentifierKey">_NS:461</string>
 							<object class="NSMutableArray" key="NSTabViewItems">
 								<bool key="EncodedWithXMLCoder">YES</bool>
@@ -780,7 +782,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">100119</int>
+			<int key="maxID">100120</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1089,8 +1091,10 @@
 							<string>commitView</string>
 							<string>commitViewController</string>
 							<string>historyDS</string>
+							<string>historyTable</string>
 							<string>mainSplitView</string>
 							<string>sideBarDS</string>
+							<string>sidebarOutline</string>
 							<string>sidebarSplitView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -1098,8 +1102,10 @@
 							<string>NSView</string>
 							<string>XTCommitViewController</string>
 							<string>XTHistoryDataSource</string>
+							<string>NSTableView</string>
 							<string>NSSplitView</string>
 							<string>XTSideBarDataSource</string>
+							<string>NSOutlineView</string>
 							<string>NSSplitView</string>
 						</object>
 					</object>
@@ -1110,8 +1116,10 @@
 							<string>commitView</string>
 							<string>commitViewController</string>
 							<string>historyDS</string>
+							<string>historyTable</string>
 							<string>mainSplitView</string>
 							<string>sideBarDS</string>
+							<string>sidebarOutline</string>
 							<string>sidebarSplitView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -1129,12 +1137,20 @@
 								<string key="candidateClassName">XTHistoryDataSource</string>
 							</object>
 							<object class="IBToOneOutletInfo">
+								<string key="name">historyTable</string>
+								<string key="candidateClassName">NSTableView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
 								<string key="name">mainSplitView</string>
 								<string key="candidateClassName">NSSplitView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">sideBarDS</string>
 								<string key="candidateClassName">XTSideBarDataSource</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">sidebarOutline</string>
+								<string key="candidateClassName">NSOutlineView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">sidebarSplitView</string>
