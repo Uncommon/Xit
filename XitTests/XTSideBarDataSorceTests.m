@@ -30,6 +30,7 @@
 @interface MockSidebarOutlineView : NSObject {
 }
 - (id)makeViewWithIdentifier:(NSString *)identifier owner:(id)owner;
+- (id)parentForItem:(id)item;
 @end
 
 @implementation XTSideBarDataSorceTests
@@ -273,6 +274,10 @@
 
 - (id)makeViewWithIdentifier:(NSString *)identifier owner:(id)owner {
     return [[[MockCellView alloc] init] autorelease];
+}
+
+- (id)parentForItem:(id)item {
+    return nil;
 }
 
 @end
