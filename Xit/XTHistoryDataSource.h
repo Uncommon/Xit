@@ -16,7 +16,6 @@
     XTRepository *repo;
     NSArray *items;
     IBOutlet NSTableView *table;
-    BOOL cancel;
     NSMutableDictionary *index;
 }
 
