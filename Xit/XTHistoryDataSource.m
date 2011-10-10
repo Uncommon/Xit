@@ -132,9 +132,11 @@
 }
 
 - (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
-    XTHistoryItem *item = [items objectAtIndex:rowIndex];
+    if ([[aTableColumn identifier] isEqualToString:@"subject"]) {
+        XTHistoryItem *item = [items objectAtIndex:rowIndex];
 
-    ((PBGitRevisionCell *)aCell).objectValue = item;
+        ((PBGitRevisionCell *)aCell).objectValue = item;
+    }
 }
 
 @end
