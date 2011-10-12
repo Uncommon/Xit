@@ -36,6 +36,7 @@
 		31C7C13413ECC74C00A65FE9 /* XTHistoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31C7C13213ECC74C00A65FE9 /* XTHistoryView.xib */; };
 		31F1E87F13D3B51200F3B317 /* GITBasic+XTRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BC055713D1133000C3CF1A /* GITBasic+XTRepository.m */; };
 		31F1E88313D3DCAC00F3B317 /* XTSideBarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 31F1E88213D3DCAC00F3B317 /* XTSideBarItem.m */; };
+		89479D841444A8AC001DD72A /* Merge.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89479D821444A8AC001DD72A /* Merge.xib */; };
 		895DEEF6142CECB7001763FC /* SidebarTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 895DEEF5142CECB7001763FC /* SidebarTableCellView.m */; };
 		895DEF0C142CF84D001763FC /* branch.png in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF0B142CF84D001763FC /* branch.png */; };
 		895DEF1F142D91F8001763FC /* historyTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF1E142D91F8001763FC /* historyTemplate.png */; };
@@ -133,6 +134,7 @@
 		31F1E87813D3AC6D00F3B317 /* XTSideBarDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = XTSideBarDataSource.h; path = Xit/XTSideBarDataSource.h; sourceTree = "<group>"; tabWidth = 4; };
 		31F1E88113D3DCAC00F3B317 /* XTSideBarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = XTSideBarItem.h; path = Xit/XTSideBarItem.h; sourceTree = "<group>"; tabWidth = 4; };
 		31F1E88213D3DCAC00F3B317 /* XTSideBarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; name = XTSideBarItem.m; path = Xit/XTSideBarItem.m; sourceTree = "<group>"; tabWidth = 4; };
+		89479D831444A8AC001DD72A /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = Xit/en.lproj/Merge.xib; sourceTree = "<group>"; };
 		895DEEF4142CECB7001763FC /* SidebarTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SidebarTableCellView.h; path = Xit/SidebarTableCellView.h; sourceTree = "<group>"; };
 		895DEEF5142CECB7001763FC /* SidebarTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SidebarTableCellView.m; path = Xit/SidebarTableCellView.m; sourceTree = "<group>"; };
 		895DEF0B142CF84D001763FC /* branch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = branch.png; sourceTree = "<group>"; };
@@ -420,6 +422,7 @@
 				C3FA471513D0F8E200AC4F9B /* XTDocument.xib */,
 				C358652F14048A3F00060C53 /* XTRepository.h */,
 				C358653014048A3F00060C53 /* XTRepository.m */,
+				89479D821444A8AC001DD72A /* Merge.xib */,
 				C3FA471813D0F8E300AC4F9B /* MainMenu.xib */,
 				899D0106142168830091DC6F /* images */,
 				C3FA470713D0F8E200AC4F9B /* Supporting Files */,
@@ -585,6 +588,7 @@
 				895DEF0C142CF84D001763FC /* branch.png in Resources */,
 				895DEF1F142D91F8001763FC /* historyTemplate.png in Resources */,
 				895DEF221432438D001763FC /* stageTemplate.png in Resources */,
+				89479D841444A8AC001DD72A /* Merge.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -721,6 +725,15 @@
 				31355B0D13EA139700C33AAB /* en */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		89479D821444A8AC001DD72A /* Merge.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				89479D831444A8AC001DD72A /* en */,
+			);
+			name = Merge.xib;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		C3FA470913D0F8E200AC4F9B /* InfoPlist.strings */ = {
