@@ -8,6 +8,7 @@
 #import "XTFileListHistoryDataSource.h"
 #import "XTRepository.h"
 #import "XTHistoryItem.h"
+#import "XTSideBarItem.h"
 
 // TODO: this class is similar to 'XTHistoryDataSource'... refactor both in a future.
 
@@ -92,8 +93,15 @@
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
     XTHistoryItem *item = [items objectAtIndex:rowIndex];
-
-    return item.shortSha;
+    NSArray *refs = [repo.refsIndex objectForKey:item.sha];
+    NSString *refName;
+    if (refs) {
+        XTSideBarItem *ref = [refs objectAtIndex:0];
+        refName = ref.title;
+    } else {
+        refName = item.shortSha;
+    }
+    return refName;
 }
 
 #pragma mark - NSTableViewDelegate
