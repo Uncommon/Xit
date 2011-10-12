@@ -135,11 +135,31 @@
     repo.selectedCommit = item.sha;
 }
 
+// These values came from measuring where the Finder switches styles
+const NSUInteger
+    kFullStyleThreshold = 280,
+    kLongStyleThreshold = 210,
+    kMediumStyleThreshold = 170,
+    kShortStyleThreshold = 150;
+    // kShortestStyleThreshold = 145;
+
 - (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
     if ([[aTableColumn identifier] isEqualToString:@"subject"]) {
         XTHistoryItem *item = [items objectAtIndex:rowIndex];
 
         ((PBGitRevisionCell *)aCell).objectValue = item;
+    } else if ([[aTableColumn identifier] isEqualToString:@"date"]) {
+        // TODO: Shortest style - time for today, date for other days
+        const CGFloat width = [aTableColumn width];
+        NSDateFormatterStyle dateStyle = NSDateFormatterShortStyle;
+
+        if (width > kFullStyleThreshold)
+            dateStyle = NSDateFormatterFullStyle;
+        else if (width > kLongStyleThreshold)
+            dateStyle = NSDateFormatterLongStyle;
+        else if (width > kMediumStyleThreshold)
+            dateStyle = NSDateFormatterMediumStyle;
+        [[aCell formatter] setDateStyle:dateStyle];
     }
 }
 
@@ -147,7 +167,7 @@
 
 @implementation NSDate (RFC2822)
 
-+ (NSDateFormatter*)rfc2822Formatter {
++ (NSDateFormatter *)rfc2822Formatter {
     static NSDateFormatter *formatter = nil;
     if (formatter == nil) {
         formatter = [[NSDateFormatter alloc] init];
@@ -159,7 +179,7 @@
     return formatter;
 }
 
-+ (NSDate*)dateFromRFC2822:(NSString *)rfc2822 {
++ (NSDate *)dateFromRFC2822:(NSString *)rfc2822 {
     NSDateFormatter *formatter = [NSDate rfc2822Formatter];
     return [formatter dateFromString:rfc2822];
 }
