@@ -14,7 +14,7 @@
     NSString *sha;
     NSString *shortSha;
     NSMutableArray *parents;
-    NSString *date;
+    NSDate *date;
     NSString *email;
     NSString *subject;
     PBGraphCellInfo *lineInfo;
@@ -24,7 +24,7 @@
 @property (assign) NSString *sha;
 @property (assign) NSString *shortSha;
 @property (assign) NSMutableArray *parents;
-@property (assign) NSString *date;
+@property (assign) NSDate *date;
 @property (assign) NSString *email;
 @property (assign) NSString *subject;
 @property (assign) PBGraphCellInfo *lineInfo;

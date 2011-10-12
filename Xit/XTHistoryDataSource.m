@@ -11,6 +11,10 @@
 #import "PBGitHistoryGrapher.h"
 #import "PBGitRevisionCell.h"
 
+@interface NSDate (RFC2822)
++ (NSDate *)dateFromRFC2822:(NSString *)rfc2822;
+@end
+
 @implementation XTHistoryDataSource
 
 @synthesize items;
@@ -57,7 +61,7 @@
     dispatch_async(repo.queue, ^{
                        NSMutableArray *newItems = [NSMutableArray array];
 
-                       [repo    getCommitsWithArgs:[NSArray arrayWithObjects:@"--pretty=format:%H%n%P%n%ct%n%ce%n%s", @"--reverse", @"--tags", @"--all", @"--topo-order", nil]
+                       [repo    getCommitsWithArgs:[NSArray arrayWithObjects:@"--pretty=format:%H%n%P%n%cD%n%ce%n%s", @"--reverse", @"--tags", @"--all", @"--topo-order", nil]
                         enumerateCommitsUsingBlock:^(NSString * line) {
 
                             NSArray *comps = [line componentsSeparatedByString:@"\n"];
@@ -77,7 +81,7 @@
                                          }
                                      }];
                                 }
-                                item.date = [comps objectAtIndex:2];
+                                item.date = [NSDate dateFromRFC2822:[comps objectAtIndex:2]];
                                 item.email = [comps objectAtIndex:3];
                                 item.subject = [comps objectAtIndex:4];
                                 [newItems addObject:item];
@@ -137,6 +141,27 @@
 
         ((PBGitRevisionCell *)aCell).objectValue = item;
     }
+}
+
+@end
+
+@implementation NSDate (RFC2822)
+
++ (NSDateFormatter*)rfc2822Formatter {
+    static NSDateFormatter *formatter = nil;
+    if (formatter == nil) {
+        formatter = [[NSDateFormatter alloc] init];
+        NSLocale *enUS = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+        [formatter setLocale:enUS];
+        [enUS release];
+        [formatter setDateFormat:@"EEE, dd MMM yyyy HH:mm:ss ZZ"];
+    }
+    return formatter;
+}
+
++ (NSDate*)dateFromRFC2822:(NSString *)rfc2822 {
+    NSDateFormatter *formatter = [NSDate rfc2822Formatter];
+    return [formatter dateFromString:rfc2822];
 }
 
 @end

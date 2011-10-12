@@ -21,6 +21,7 @@
 			<string>NSViewController</string>
 			<string>NSTextField</string>
 			<string>NSImageCell</string>
+			<string>NSDateFormatter</string>
 			<string>NSTextFieldCell</string>
 			<string>NSButtonCell</string>
 			<string>NSTableColumn</string>
@@ -436,7 +437,7 @@
 																		<string key="NSFrameSize">{703, 177}</string>
 																		<reference key="NSSuperview" ref="4744271"/>
 																		<reference key="NSWindow"/>
-																		<reference key="NSNextKeyView" ref="93965352"/>
+																		<reference key="NSNextKeyView" ref="25621835"/>
 																		<int key="NSViewLayerContentsRedrawPolicy">2</int>
 																		<bool key="NSEnabled">YES</bool>
 																		<object class="NSTableHeaderView" key="NSHeaderView" id="553526585">
@@ -530,9 +531,19 @@
 																				</object>
 																				<object class="NSTextFieldCell" key="NSDataCell" id="492251261">
 																					<int key="NSCellFlags">337772096</int>
-																					<int key="NSCellFlags2">2048</int>
+																					<int key="NSCellFlags2">-2147481600</int>
 																					<string key="NSContents">Text Cell</string>
 																					<reference key="NSSupport" ref="38680702"/>
+																					<object class="NSDateFormatter" key="NSFormatter" id="714177626">
+																						<dictionary class="NSMutableDictionary" key="NS.attributes">
+																							<integer value="2" key="dateStyle"/>
+																							<boolean value="YES" key="doesRelativeDateFormatting"/>
+																							<integer value="1040" key="formatterBehavior"/>
+																							<integer value="1" key="timeStyle"/>
+																						</dictionary>
+																						<string key="NS.format">MMM d, y h:mm a</string>
+																						<bool key="NS.natural">NO</bool>
+																					</object>
 																					<reference key="NSControlView" ref="781583056"/>
 																					<reference key="NSBackgroundColor" ref="608418260"/>
 																					<reference key="NSTextColor" ref="1045463140"/>
@@ -610,7 +621,7 @@
 														<string key="NSFrameSize">{703, 194}</string>
 														<reference key="NSSuperview" ref="83736380"/>
 														<reference key="NSWindow"/>
-														<reference key="NSNextKeyView" ref="25621835"/>
+														<reference key="NSNextKeyView" ref="4744271"/>
 														<int key="NSViewLayerContentsRedrawPolicy">2</int>
 														<int key="NSsFlags">133680</int>
 														<reference key="NSVScroller" ref="93965352"/>
@@ -637,7 +648,6 @@
 														<string key="NSFrameSize">{703, 194}</string>
 														<reference key="NSSuperview" ref="677488446"/>
 														<reference key="NSWindow"/>
-														<reference key="NSNextKeyView"/>
 														<int key="NSViewLayerContentsRedrawPolicy">2</int>
 														<string key="NSClassName">NSView</string>
 													</object>
@@ -1112,6 +1122,9 @@
 					<object class="IBObjectRecord">
 						<int key="objectID">24</int>
 						<reference key="object" ref="492251261"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="714177626"/>
+						</array>
 						<reference key="parent" ref="957576823"/>
 					</object>
 					<object class="IBObjectRecord">
@@ -1335,6 +1348,11 @@
 						<reference key="object" ref="408281117"/>
 						<reference key="parent" ref="957505684"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">121</int>
+						<reference key="object" ref="714177626"/>
+						<reference key="parent" ref="492251261"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -1347,6 +1365,8 @@
 				<string key="111.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="112.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="113.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<integer value="1" key="121.IBDateFormatterBehaviorMetadataKey"/>
+				<string key="121.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="13.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="14.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="15.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1406,7 +1426,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">120</int>
+			<int key="maxID">121</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
