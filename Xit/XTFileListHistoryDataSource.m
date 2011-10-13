@@ -95,6 +95,7 @@
     XTHistoryItem *item = [items objectAtIndex:rowIndex];
     NSArray *refs = [repo.refsIndex objectForKey:item.sha];
     NSString *refName;
+
     if (refs) {
         XTSideBarItem *ref = [refs objectAtIndex:0];
         refName = ref.title;
@@ -102,14 +103,6 @@
         refName = item.shortSha;
     }
     return refName;
-}
-
-#pragma mark - NSTableViewDelegate
-
-- (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
-    NSLog(@"%@", aNotification);
-    XTHistoryItem *item = [items objectAtIndex:table.selectedRow];
-    repo.selectedCommit = item.sha;
 }
 
 @end

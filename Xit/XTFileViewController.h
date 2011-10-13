@@ -11,7 +11,7 @@
 @class XTFileListDataSource;
 @class XTFileListHistoryDataSource;
 
-@interface XTFileViewController : NSViewController <NSOutlineViewDelegate> {
+@interface XTFileViewController : NSViewController <NSOutlineViewDelegate, NSTableViewDelegate> {
     IBOutlet XTFileListDataSource *fileListDS;
     IBOutlet XTFileListHistoryDataSource *fileListHistoryDS;
     @private

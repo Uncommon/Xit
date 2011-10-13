@@ -10,7 +10,7 @@
 @class XTRepository;
 @class XTHistoryItem;
 
-@interface XTFileListHistoryDataSource : NSObject <NSTableViewDataSource, NSTableViewDelegate>
+@interface XTFileListHistoryDataSource : NSObject <NSTableViewDataSource>
 {
     @private
     XTRepository *repo;

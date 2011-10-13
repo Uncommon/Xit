@@ -6,6 +6,7 @@
 //
 
 #import "XTFileViewController.h"
+#import "XTHistoryItem.h"
 
 @implementation XTFileViewController
 
@@ -32,4 +33,24 @@
 
     return cell;
 }
+
+#pragma mark - NSTableViewDelegate
+
+- (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
+    NSLog(@"%@", aNotification);
+    XTHistoryItem *item = [[fileListHistoryDS items] objectAtIndex:((NSTableView *)aNotification.object).selectedRow];
+    repo.selectedCommit = item.sha;
+}
+
+// TODO: bad....
+- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
+    if ([aTableView mouseOverRow] == rowIndex) {
+        NSLog(@"%ld could be highlighted", rowIndex);
+    } else {
+        NSLog(@"%ld shouldn't be highlighted", rowIndex);
+    }
+
+}
+
+
 @end
