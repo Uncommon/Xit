@@ -44,10 +44,13 @@
 
 // TODO: bad....
 - (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
+    NSTextFieldCell *cell = aCell;
     if ([aTableView mouseOverRow] == rowIndex) {
-        NSLog(@"%ld could be highlighted", rowIndex);
+        cell.backgroundColor = [NSColor selectedMenuItemColor];
+        cell.drawsBackground = YES;
     } else {
-        NSLog(@"%ld shouldn't be highlighted", rowIndex);
+        cell.backgroundColor = [NSColor controlBackgroundColor];
+        cell.drawsBackground = NO;
     }
 
 }
