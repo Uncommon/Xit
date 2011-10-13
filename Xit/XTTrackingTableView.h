@@ -7,7 +7,7 @@
 
 #import <AppKit/AppKit.h>
 
-@interface XTTrakingTableView : NSTableView
+@interface XTTrackingTableView : NSTableView
 {
     NSTrackingRectTag trackingTag;
     BOOL mouseOverView;

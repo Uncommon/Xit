@@ -8,9 +8,9 @@
 //
 // TODO: rewirte to call a delegate method only when the mouseOverRow change... remove setNeedsDisplayInRect
 
-#import "XTTrakingTableView.h"
+#import "XTTrackingTableView.h"
 
-@implementation XTTrakingTableView
+@implementation XTTrackingTableView
 
 - (void)awakeFromNib {
     [[self window] setAcceptsMouseMovedEvents:YES];

@@ -43,7 +43,7 @@
 		899D010D14216D2C0091DC6F /* sidebarTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 899D010C14216D2C0091DC6F /* sidebarTemplate.png */; };
 		C343F91113F4908E009C928A /* XTHTML.m in Sources */ = {isa = PBXBuildFile; fileRef = C343F91013F4908E009C928A /* XTHTML.m */; };
 		C358653114048A3F00060C53 /* XTRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = C358653014048A3F00060C53 /* XTRepository.m */; };
-		C38AD99E14465D740016CF46 /* XTTrakingTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = C38AD99D14465D740016CF46 /* XTTrakingTableView.m */; };
+		C38AD99E14465D740016CF46 /* XTTrackingTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = C38AD99D14465D740016CF46 /* XTTrackingTableView.m */; };
 		C3D6CF1B13D4B18900D35D4D /* XTLocalBranchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6CF1A13D4B18900D35D4D /* XTLocalBranchItem.m */; };
 		C3D6CF1E13D4B74400D35D4D /* XTTagItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6CF1D13D4B74400D35D4D /* XTTagItem.m */; };
 		C3D6CF2113D4D5B200D35D4D /* XTRemotesItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6CF2013D4D5B200D35D4D /* XTRemotesItem.m */; };
@@ -144,8 +144,8 @@
 		C343F91013F4908E009C928A /* XTHTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTHTML.m; sourceTree = "<group>"; };
 		C358652F14048A3F00060C53 /* XTRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRepository.h; sourceTree = "<group>"; };
 		C358653014048A3F00060C53 /* XTRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRepository.m; sourceTree = "<group>"; };
-		C38AD99C14465D740016CF46 /* XTTrakingTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTTrakingTableView.h; sourceTree = "<group>"; };
-		C38AD99D14465D740016CF46 /* XTTrakingTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTTrakingTableView.m; sourceTree = "<group>"; };
+		C38AD99C14465D740016CF46 /* XTTrackingTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; path = XTTrackingTableView.h; sourceTree = "<group>"; };
+		C38AD99D14465D740016CF46 /* XTTrackingTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTTrackingTableView.m; sourceTree = "<group>"; };
 		C3BC055613D1133000C3CF1A /* GITBasic+XTRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = "GITBasic+XTRepository.h"; sourceTree = "<group>"; };
 		C3BC055713D1133000C3CF1A /* GITBasic+XTRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = "GITBasic+XTRepository.m"; sourceTree = "<group>"; };
 		C3D6CF1913D4B18900D35D4D /* XTLocalBranchItem.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = XTLocalBranchItem.h; path = Xit/XTLocalBranchItem.h; sourceTree = "<group>"; tabWidth = 4; };
@@ -288,8 +288,8 @@
 				C3BC055713D1133000C3CF1A /* GITBasic+XTRepository.m */,
 				C343F90F13F4908E009C928A /* XTHTML.h */,
 				C343F91013F4908E009C928A /* XTHTML.m */,
-				C38AD99C14465D740016CF46 /* XTTrakingTableView.h */,
-				C38AD99D14465D740016CF46 /* XTTrakingTableView.m */,
+				C38AD99C14465D740016CF46 /* XTTrackingTableView.h */,
+				C38AD99D14465D740016CF46 /* XTTrackingTableView.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -682,7 +682,7 @@
 				31A8235714225F8B00408EDA /* XTFileViewController.m in Sources */,
 				3152B1E61423152700DCA679 /* XTFileListHistoryDataSource.m in Sources */,
 				895DEEF6142CECB7001763FC /* SidebarTableCellView.m in Sources */,
-				C38AD99E14465D740016CF46 /* XTTrakingTableView.m in Sources */,
+				C38AD99E14465D740016CF46 /* XTTrackingTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
