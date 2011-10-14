@@ -16,14 +16,6 @@
 - (id)initWithContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError {
     self = [super initWithContentsOfURL:absoluteURL ofType:typeName error:outError];
     if (self) {
-//        absoluteURL = [absoluteURL URLByDeletingPathExtension];
-        NSURL *gitURL = [absoluteURL URLByAppendingPathComponent:@".git"];
-
-        if (![[NSFileManager defaultManager] fileExistsAtPath:[gitURL path]]) {
-            *outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:-1 userInfo:nil];
-            return self;
-        }
-
         repoURL = absoluteURL;
         repo = [[XTRepository alloc] initWithURL:repoURL];
         [repo addObserver:self forKeyPath:@"activeTasks" options:NSKeyValueObservingOptionNew context:nil];
@@ -62,7 +54,16 @@
 }
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError {
-    return true; // XXX
+    NSURL *gitURL = [absoluteURL URLByAppendingPathComponent:@".git"];
+
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[gitURL path]])
+        return YES;
+
+    if (outError != NULL) {
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"The folder does not contain a Git repository." forKey:NSLocalizedFailureReasonErrorKey];
+        *outError = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileReadUnknownError userInfo:userInfo];
+    }
+    return NO;
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
