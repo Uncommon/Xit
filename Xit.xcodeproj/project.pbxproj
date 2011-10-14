@@ -41,6 +41,7 @@
 		895DEF1F142D91F8001763FC /* historyTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF1E142D91F8001763FC /* historyTemplate.png */; };
 		895DEF221432438D001763FC /* stageTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF211432438D001763FC /* stageTemplate.png */; };
 		899D010D14216D2C0091DC6F /* sidebarTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 899D010C14216D2C0091DC6F /* sidebarTemplate.png */; };
+		89A6EA2814478DA40089B212 /* XTAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A6EA2714478DA40089B212 /* XTAppDelegate.m */; };
 		C343F91113F4908E009C928A /* XTHTML.m in Sources */ = {isa = PBXBuildFile; fileRef = C343F91013F4908E009C928A /* XTHTML.m */; };
 		C358653114048A3F00060C53 /* XTRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = C358653014048A3F00060C53 /* XTRepository.m */; };
 		C3D6CF1B13D4B18900D35D4D /* XTLocalBranchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6CF1A13D4B18900D35D4D /* XTLocalBranchItem.m */; };
@@ -138,6 +139,8 @@
 		895DEF1E142D91F8001763FC /* historyTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = historyTemplate.png; sourceTree = "<group>"; };
 		895DEF211432438D001763FC /* stageTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stageTemplate.png; sourceTree = "<group>"; };
 		899D010C14216D2C0091DC6F /* sidebarTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sidebarTemplate.png; sourceTree = "<group>"; };
+		89A6EA2614478DA40089B212 /* XTAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTAppDelegate.h; sourceTree = "<group>"; };
+		89A6EA2714478DA40089B212 /* XTAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTAppDelegate.m; sourceTree = "<group>"; };
 		C3355E1413F32815008D14B8 /* uncrustify.cfg */ = {isa = PBXFileReference; lastKnownFileType = text; path = uncrustify.cfg; sourceTree = "<group>"; };
 		C343F90F13F4908E009C928A /* XTHTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTHTML.h; sourceTree = "<group>"; };
 		C343F91013F4908E009C928A /* XTHTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTHTML.m; sourceTree = "<group>"; };
@@ -416,6 +419,8 @@
 				C358652F14048A3F00060C53 /* XTRepository.h */,
 				C358653014048A3F00060C53 /* XTRepository.m */,
 				C3FA471813D0F8E300AC4F9B /* MainMenu.xib */,
+				89A6EA2614478DA40089B212 /* XTAppDelegate.h */,
+				89A6EA2714478DA40089B212 /* XTAppDelegate.m */,
 				899D0106142168830091DC6F /* images */,
 				C3FA470713D0F8E200AC4F9B /* Supporting Files */,
 			);
@@ -677,6 +682,7 @@
 				31A8235714225F8B00408EDA /* XTFileViewController.m in Sources */,
 				3152B1E61423152700DCA679 /* XTFileListHistoryDataSource.m in Sources */,
 				895DEEF6142CECB7001763FC /* SidebarTableCellView.m in Sources */,
+				89A6EA2814478DA40089B212 /* XTAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
