@@ -17,6 +17,13 @@
     self = [super initWithContentsOfURL:absoluteURL ofType:typeName error:outError];
     if (self) {
 //        absoluteURL = [absoluteURL URLByDeletingPathExtension];
+        NSURL *gitURL = [absoluteURL URLByAppendingPathComponent:@".git"];
+
+        if (![[NSFileManager defaultManager] fileExistsAtPath:[gitURL path]]) {
+            *outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:-1 userInfo:nil];
+            return self;
+        }
+
         repoURL = absoluteURL;
         repo = [[XTRepository alloc] initWithURL:repoURL];
         [repo addObserver:self forKeyPath:@"activeTasks" options:NSKeyValueObservingOptionNew context:nil];

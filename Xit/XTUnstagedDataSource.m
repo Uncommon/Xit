@@ -32,6 +32,8 @@
 
 - (void)reload {
     [items removeAllObjects];
+    if (repo == nil)
+        return;
 
     dispatch_async(repo.queue, ^{
                        NSData *output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff-files", nil] error:nil];

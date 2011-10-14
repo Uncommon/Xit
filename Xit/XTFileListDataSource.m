@@ -38,7 +38,8 @@
 }
 
 - (void)reload {
-    dispatch_async(repo.queue, ^{ [self _reload]; });
+    if (repo != nil)
+        dispatch_async(repo.queue, ^{ [self _reload]; });
 }
 
 - (void)_reload {

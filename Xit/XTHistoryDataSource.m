@@ -58,6 +58,8 @@
 }
 
 - (void)reload {
+    if (repo == nil)
+        return;
     dispatch_async(repo.queue, ^{
                        NSMutableArray *newItems = [NSMutableArray array];
 
