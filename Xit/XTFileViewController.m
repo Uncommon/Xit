@@ -7,6 +7,7 @@
 
 #import "XTFileViewController.h"
 #import "XTHistoryItem.h"
+#import "XTCommitDetailsViewController.h"
 
 @implementation XTFileViewController
 
@@ -34,6 +35,19 @@
     return cell;
 }
 
+#pragma mark - XTTrackingTableDelegate
+
+- (void)tableView:(XTTrackingTableView *)aTable mouseOverRow:(NSInteger)row {
+    if (row >= 0) {
+        XTHistoryItem *item = [[fileListHistoryDS items] objectAtIndex:row];
+        commitView.sha.stringValue = item.sha;
+        commitView.subject.stringValue = item.subject;
+        [popover showRelativeToRect:[aTable rectOfRow:row] ofView:(NSView *)aTable preferredEdge:NSMinXEdge];
+    } else {
+        [popover close];
+    }
+}
+
 #pragma mark - NSTableViewDelegate
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
@@ -43,17 +57,16 @@
 }
 
 // TODO: bad....
-- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
-    NSTextFieldCell *cell = aCell;
-    if ([aTableView mouseOverRow] == rowIndex) {
-        cell.backgroundColor = [NSColor selectedMenuItemColor];
-        cell.drawsBackground = YES;
-    } else {
-        cell.backgroundColor = [NSColor controlBackgroundColor];
-        cell.drawsBackground = NO;
-    }
-
-}
+//- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
+//    NSTextFieldCell *cell = aCell;
+//    if ([(XTTrackingTableView)aTableView mouseOverRow] == rowIndex) {
+//        cell.backgroundColor = [NSColor selectedMenuItemColor];
+//        cell.drawsBackground = YES;        
+//    } else {
+//        cell.backgroundColor = [NSColor controlBackgroundColor];
+//        cell.drawsBackground = NO;
+//    }
+//}
 
 
 @end

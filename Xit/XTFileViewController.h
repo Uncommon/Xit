@@ -7,15 +7,19 @@
 
 #import <Cocoa/Cocoa.h>
 #import "XTRepository.h"
+#import "XTTrackingTableDelegate.h"
 
 @class XTFileListDataSource;
 @class XTFileListHistoryDataSource;
+@class XTCommitDetailsViewController;
 
-@interface XTFileViewController : NSViewController <NSOutlineViewDelegate, NSTableViewDelegate> {
+@interface XTFileViewController : NSViewController <NSOutlineViewDelegate, NSTableViewDelegate, XTTrackingTableDelegate> {
     IBOutlet XTFileListDataSource *fileListDS;
     IBOutlet XTFileListHistoryDataSource *fileListHistoryDS;
     @private
+    IBOutlet XTCommitDetailsViewController *commitView;
     XTRepository *repo;
+    IBOutlet NSPopover *popover;
 }
 
 - (void)setRepo:(XTRepository *)newRepo;

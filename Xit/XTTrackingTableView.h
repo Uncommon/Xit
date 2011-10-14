@@ -10,8 +10,11 @@
 @interface XTTrackingTableView : NSTableView
 {
     NSTrackingRectTag trackingTag;
-    BOOL mouseOverView;
     NSInteger mouseOverRow;
     NSInteger lastOverRow;
+    NSPoint mouseLocation;
 }
+
+@property NSInteger mouseOverRow;
+
 @end

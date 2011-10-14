@@ -9,13 +9,19 @@
 // TODO: rewirte to call a delegate method only when the mouseOverRow change... remove setNeedsDisplayInRect
 
 #import "XTTrackingTableView.h"
+#import "XTTrackingTableDelegate.h"
+
+@interface XTTrackingTableView (hidden)
+
+- (void)updateMouseOverRow;
+
+@end
 
 @implementation XTTrackingTableView
 
+@synthesize mouseOverRow;
+
 - (void)awakeFromNib {
-    [[self window] setAcceptsMouseMovedEvents:YES];
-    trackingTag = [self addTrackingRect:[self frame] owner:self userData:nil assumeInside:NO];
-    mouseOverView = NO;
     mouseOverRow = -1;
     lastOverRow = -1;
 }
@@ -26,47 +32,54 @@
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent {
-    mouseOverView = YES;
+    [[self window] setAcceptsMouseMovedEvents:YES];
+    [[self window] makeFirstResponder:self];
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent {
-    id myDelegate = [self delegate];
-
-    if (!myDelegate)
-        return;         // No delegate, no need to track the mouse.
-    if (![myDelegate respondsToSelector:@selector(tableView:willDisplayCell:forTableColumn:row:)])
-        return;         // If the delegate doesn't modify the drawing, don't track.
-
-    if (mouseOverView) {
-        mouseOverRow = [self rowAtPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
-
-        if (lastOverRow == mouseOverRow)
-            return;
-        else {
-            [self setNeedsDisplayInRect:[self rectOfRow:lastOverRow]];
-            lastOverRow = mouseOverRow;
-        }
-
-        [self setNeedsDisplayInRect:[self rectOfRow:mouseOverRow]];
-    }
+    mouseLocation = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    [self updateMouseOverRow];
 }
 
 - (void)mouseExited:(NSEvent *)theEvent {
-    mouseOverView = NO;
+    [[self window] setAcceptsMouseMovedEvents:NO];
     [self setNeedsDisplayInRect:[self rectOfRow:mouseOverRow]];
     mouseOverRow = -1;
     lastOverRow = -1;
+    id myDelegate = [self delegate];
+    if ([myDelegate conformsToProtocol:@protocol(XTTrackingTableDelegate)]) {
+        [myDelegate tableView:self mouseOverRow:mouseOverRow];
+        [[self window] makeFirstResponder:self];
+    }
 }
 
-- (NSInteger)mouseOverRow {
-    return mouseOverRow;
+- (NSRect)adjustScroll:(NSRect)proposedVisibleRect {
+    [self removeTrackingRect:trackingTag];
+    trackingTag = [self addTrackingRect:proposedVisibleRect owner:self userData:nil assumeInside:NO];
+    mouseLocation = [self convertPoint:[self.window mouseLocationOutsideOfEventStream] fromView:nil];
+    [self updateMouseOverRow];
+    return proposedVisibleRect;
 }
 
 - (void)viewDidEndLiveResize {
     [super viewDidEndLiveResize];
 
-    [self removeTrackingRect:trackingTag];
     trackingTag = [self addTrackingRect:[self frame] owner:self userData:nil assumeInside:NO];
 }
+
+- (void)updateMouseOverRow {
+    mouseOverRow = [self rowAtPoint:mouseLocation];
+    if (lastOverRow != mouseOverRow) {
+        [self setNeedsDisplayInRect:[self rectOfRow:lastOverRow]];
+        lastOverRow = mouseOverRow;
+        id myDelegate = [self delegate];
+        if ([myDelegate conformsToProtocol:@protocol(XTTrackingTableDelegate)]) {
+            [myDelegate tableView:self mouseOverRow:mouseOverRow];
+            [[self window] makeFirstResponder:self];
+        }
+        [self setNeedsDisplayInRect:[self rectOfRow:mouseOverRow]];
+    }
+}
+
 
 @end
