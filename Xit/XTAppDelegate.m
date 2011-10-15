@@ -34,6 +34,12 @@
     }];
 }
 
+- (BOOL)applicationOpenUntitledFile:(NSApplication *)app {
+    [self openDocument:nil];
+    // Returning YES prevents the app from opening an untitled document on its own.
+    return YES;
+}
+
 - (BOOL)panel:(id)sender validateURL:(NSURL *)url error:(NSError **)outError {
     NSURL *repoURL = [url URLByAppendingPathComponent:@".git" isDirectory:YES];
 
