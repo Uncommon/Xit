@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1070</int>
-		<string key="IBDocument.SystemVersion">11B26</string>
-		<string key="IBDocument.InterfaceBuilderVersion">1617</string>
-		<string key="IBDocument.AppKitVersion">1138</string>
-		<string key="IBDocument.HIToolboxVersion">566.00</string>
+		<string key="IBDocument.SystemVersion">11C74</string>
+		<string key="IBDocument.InterfaceBuilderVersion">1938</string>
+		<string key="IBDocument.AppKitVersion">1138.23</string>
+		<string key="IBDocument.HIToolboxVersion">567.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">1617</string>
+			<string key="NS.object.0">1938</string>
 		</object>
 		<object class="NSArray" key="IBDocument.IntegratedClassDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -32,11 +32,8 @@
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 		</object>
 		<object class="NSMutableDictionary" key="IBDocument.Metadata">
-			<bool key="EncodedWithXMLCoder">YES</bool>
-			<object class="NSArray" key="dict.sortedKeys" id="0">
-				<bool key="EncodedWithXMLCoder">YES</bool>
-			</object>
-			<reference key="dict.values" ref="0"/>
+			<string key="NS.key.0">PluginDependencyRecalculationVersion</string>
+			<integer value="1" key="NS.object.0"/>
 		</object>
 		<object class="NSMutableArray" key="IBDocument.RootObjects" id="580458321">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -134,8 +131,8 @@
 								<nil key="NSToolbarItemImage"/>
 								<nil key="NSToolbarItemTarget"/>
 								<nil key="NSToolbarItemAction"/>
-								<string key="NSToolbarItemMinSize">{89, 24}</string>
-								<string key="NSToolbarItemMaxSize">{96, 25}</string>
+								<string key="NSToolbarItemMinSize">{93, 24}</string>
+								<string key="NSToolbarItemMaxSize">{100, 25}</string>
 								<bool key="NSToolbarItemEnabled">YES</bool>
 								<bool key="NSToolbarItemAutovalidates">YES</bool>
 								<int key="NSToolbarItemTag">0</int>
@@ -206,19 +203,21 @@
 							</object>
 						</object>
 					</object>
-					<object class="NSMutableArray" key="NSToolbarIBAllowedItems">
+					<object class="NSArray" key="NSToolbarIBAllowedItems">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<reference ref="910430088"/>
 						<reference ref="816883856"/>
 						<reference ref="494524969"/>
 					</object>
-					<object class="NSMutableArray" key="NSToolbarIBDefaultItems">
+					<object class="NSArray" key="NSToolbarIBDefaultItems">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<reference ref="910430088"/>
 						<reference ref="494524969"/>
 						<reference ref="816883856"/>
 					</object>
-					<reference key="NSToolbarIBSelectableItems" ref="0"/>
+					<object class="NSArray" key="NSToolbarIBSelectableItems" id="0">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+					</object>
 				</object>
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{94, 86}</string>
@@ -304,6 +303,7 @@
 												<string key="NSFrame">{{210, 480}, {13, 17}}</string>
 												<reference key="NSSuperview" ref="594729912"/>
 												<reference key="NSWindow"/>
+												<reference key="NSNextKeyView"/>
 												<string key="NSReuseIdentifierKey">_NS:3936</string>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSTextFieldCell" key="NSCell" id="850312354">
@@ -398,27 +398,11 @@
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">delegate</string>
-						<reference key="source" ref="275939982"/>
-						<reference key="destination" ref="512844837"/>
-					</object>
-					<int key="connectionID">17</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">window</string>
 						<reference key="source" ref="512844837"/>
 						<reference key="destination" ref="275939982"/>
 					</object>
 					<int key="connectionID">18</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">takeSelectedTabViewItemFromSender:</string>
-						<reference key="source" ref="181621656"/>
-						<reference key="destination" ref="910430088"/>
-					</object>
-					<int key="connectionID">100095</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -459,6 +443,22 @@
 						<reference key="destination" ref="916068304"/>
 					</object>
 					<int key="connectionID">100119</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="275939982"/>
+						<reference key="destination" ref="512844837"/>
+					</object>
+					<int key="connectionID">17</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">takeSelectedTabViewItemFromSender:</string>
+						<reference key="source" ref="181621656"/>
+						<reference key="destination" ref="910430088"/>
+					</object>
+					<int key="connectionID">100095</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -747,7 +747,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<integer value="1"/>
+					<integer value="0"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1277,7 +1277,7 @@
 				<string>{9, 8}</string>
 				<string>{7, 2}</string>
 				<string>{13, 10}</string>
-				<string>{9.6010670131135889, 8.8009780953541235}</string>
+				<string>{128, 128}</string>
 				<string>{14, 10}</string>
 			</object>
 		</object>
