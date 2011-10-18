@@ -20,9 +20,18 @@
     repo = newRepo;
     [fileListDS setRepo:repo];
     [fileListHistoryDS setRepo:repo];
+    [path setURL:[repo repoURL]];
 }
 
 #pragma mark - NSOutlineViewDelegate
+- (void)outlineViewSelectionDidChange:(NSNotification *)notification {
+    NSOutlineView *fileList = (NSOutlineView *)notification.object;
+    NSTreeNode *node = [fileList itemAtRow:fileList.selectedRow];
+    NSString *fileName = (NSString *)node.representedObject;
+    NSURL *url = [NSURL URLWithString:[fileName stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    [filePath setURL:url];
+}
+
 - (NSView *)outlineView:(NSOutlineView *)outlineView viewForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
     NSTableCellView *cell = [outlineView makeViewWithIdentifier:@"fileCell" owner:self];
     NSTreeNode *node = (NSTreeNode *)item;

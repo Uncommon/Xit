@@ -20,6 +20,8 @@
     IBOutlet XTCommitDetailsViewController *commitView;
     XTRepository *repo;
     IBOutlet NSPopover *popover;
+    IBOutlet NSPathControl *path;
+    IBOutlet NSPathControl *filePath;
 }
 
 - (void)setRepo:(XTRepository *)newRepo;
