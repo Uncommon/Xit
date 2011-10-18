@@ -13,7 +13,7 @@
     if (!sha) {
         sha = @"HEAD";
     }
-    NSString *res;
+    NSString *res = nil;
     NSString *obj = [NSString stringWithFormat:@"%@:%@", sha, file];
     NSData *output = [self exectuteGitWithArgs:[NSArray arrayWithObjects:@"show", obj, nil] error:nil];
     if (output) {
