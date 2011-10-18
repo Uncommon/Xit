@@ -8,6 +8,8 @@
 #import "XTFileViewController.h"
 #import "XTHistoryItem.h"
 #import "XTCommitDetailsViewController.h"
+#import "XTRepository+FileVIewCommands.h"
+#import "XTHTML.h"
 
 @implementation XTFileViewController
 
@@ -29,7 +31,18 @@
     NSTreeNode *node = [fileList itemAtRow:fileList.selectedRow];
     NSString *fileName = (NSString *)node.representedObject;
     NSURL *url = [NSURL URLWithString:[fileName stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+
     [filePath setURL:url];
+
+    NSString *file = [repo show:fileName inSha:repo.selectedCommit];
+    NSString *html = [NSString stringWithFormat:@"<html><body><pre id='file'>%@</pre></body></html>", [XTHTML escapeHTML:file]];
+    NSBundle *bundle = [NSBundle mainBundle];
+    NSBundle *theme = [NSBundle bundleWithURL:[bundle URLForResource:@"html.theme.default" withExtension:@"bundle"]];
+    NSURL *themeURL = [[theme bundleURL] URLByAppendingPathComponent:@"Contents/Resources"];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+                       [[web mainFrame] loadHTMLString:html baseURL:themeURL];
+                   });
 }
 
 - (NSView *)outlineView:(NSOutlineView *)outlineView viewForTableColumn:(NSTableColumn *)tableColumn item:(id)item {

@@ -6,6 +6,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <WebKit/WebKit.h>
 #import "XTRepository.h"
 #import "XTTrackingTableDelegate.h"
 
@@ -22,6 +23,7 @@
     IBOutlet NSPopover *popover;
     IBOutlet NSPathControl *path;
     IBOutlet NSPathControl *filePath;
+    IBOutlet WebView *web;
 }
 
 - (void)setRepo:(XTRepository *)newRepo;
