@@ -7,6 +7,9 @@
 
 #import "XTStatusView.h"
 
+NSString *const XTStatusNotification = @"XTStatus";
+NSString *const XTStatusTextKey = @"text";
+
 #define kCornerRadius 4
 
 @interface XTStatusView () {
@@ -15,6 +18,12 @@
 @end
 
 @implementation XTStatusView
+
++ (void)notifyStatus:(NSString *)status forRepository:(XTRepository *)repo {
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:status forKey:XTStatusTextKey];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:XTStatusNotification object:repo userInfo:userInfo];
+}
 
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
@@ -32,6 +41,13 @@
     }
 
     return self;
+}
+
+- (void)setRepo:(XTRepository *)newRepo {
+    if (repo != nil)
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+    repo = newRepo;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateStatus:) name:XTStatusNotification object:repo];
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
@@ -58,6 +74,10 @@
     [framePath stroke];
 
     // TODO: inner shadow effect
+}
+
+- (void)updateStatus:(NSNotification *)note {
+    [label setStringValue:[[note userInfo] objectForKey:XTStatusTextKey]];
 }
 
 @end

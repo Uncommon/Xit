@@ -8,6 +8,7 @@
 #import "XTHistoryDataSource.h"
 #import "XTRepository.h"
 #import "XTHistoryItem.h"
+#import "XTStatusView.h"
 #import "PBGitHistoryGrapher.h"
 #import "PBGitRevisionCell.h"
 
@@ -110,6 +111,7 @@
                             item.index = idx;
                         }];
 
+                       [XTStatusView notifyStatus:[NSString stringWithFormat:@"%d commits loaded", [newItems count]] forRepository:repo];
                        NSLog (@"-> %lu", [newItems count]);
                        items = newItems;
                        [table reloadData];

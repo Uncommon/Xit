@@ -138,8 +138,8 @@
 							<nil key="NSToolbarItemImage"/>
 							<nil key="NSToolbarItemTarget"/>
 							<nil key="NSToolbarItemAction"/>
-							<string key="NSToolbarItemMinSize">{130, 32}</string>
-							<string key="NSToolbarItemMaxSize">{130, 32}</string>
+							<string key="NSToolbarItemMinSize">{230, 32}</string>
+							<string key="NSToolbarItemMaxSize">{230, 32}</string>
 							<bool key="NSToolbarItemEnabled">YES</bool>
 							<bool key="NSToolbarItemAutovalidates">NO</bool>
 							<int key="NSToolbarItemTag">-1</int>
@@ -391,13 +391,39 @@
 				<string key="NSNibName">XTStageViewController</string>
 			</object>
 			<object class="NSViewController" id="916068304"/>
-			<object class="NSCustomView" id="806952266">
+			<object class="NSCustomView" id="24560251">
 				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
+				<array class="NSMutableArray" key="NSSubviews">
+					<object class="NSTextField" id="4960124">
+						<reference key="NSNextResponder" ref="24560251"/>
+						<int key="NSvFlags">266</int>
+						<string key="NSFrame">{{17, 13}, {129, 14}}</string>
+						<reference key="NSSuperview" ref="24560251"/>
+						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
+						<string key="NSReuseIdentifierKey">_NS:3944</string>
+						<bool key="NSEnabled">YES</bool>
+						<object class="NSTextFieldCell" key="NSCell" id="616051182">
+							<int key="NSCellFlags">68288064</int>
+							<int key="NSCellFlags2">138544128</int>
+							<string key="NSContents">Label</string>
+							<object class="NSFont" key="NSSupport">
+								<string key="NSName">LucidaGrande</string>
+								<double key="NSSize">11</double>
+								<int key="NSfFlags">3100</int>
+							</object>
+							<string key="NSCellIdentifier">_NS:3944</string>
+							<reference key="NSControlView" ref="4960124"/>
+							<reference key="NSBackgroundColor" ref="55963892"/>
+							<reference key="NSTextColor" ref="187502001"/>
+						</object>
+					</object>
+				</array>
 				<string key="NSFrameSize">{163, 36}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
-				<reference key="NSNextKeyView"/>
+				<reference key="NSNextKeyView" ref="4960124"/>
 				<string key="NSReuseIdentifierKey">_NS:1192</string>
 				<string key="NSClassName">XTStatusView</string>
 			</object>
@@ -456,7 +482,7 @@
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">statusView</string>
 						<reference key="source" ref="512844837"/>
-						<reference key="destination" ref="806952266"/>
+						<reference key="destination" ref="24560251"/>
 					</object>
 					<int key="connectionID">100128</int>
 				</object>
@@ -483,6 +509,22 @@
 						<reference key="destination" ref="910430088"/>
 					</object>
 					<int key="connectionID">100095</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">label</string>
+						<reference key="source" ref="24560251"/>
+						<reference key="destination" ref="4960124"/>
+					</object>
+					<int key="connectionID">100131</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">document</string>
+						<reference key="source" ref="24560251"/>
+						<reference key="destination" ref="512844837"/>
+					</object>
+					<int key="connectionID">100132</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -699,8 +741,24 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">100127</int>
-						<reference key="object" ref="806952266"/>
+						<reference key="object" ref="24560251"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="4960124"/>
+						</array>
 						<reference key="parent" ref="0"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">100129</int>
+						<reference key="object" ref="4960124"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="616051182"/>
+						</array>
+						<reference key="parent" ref="24560251"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">100130</int>
+						<reference key="object" ref="616051182"/>
+						<reference key="parent" ref="4960124"/>
 					</object>
 				</array>
 			</object>
@@ -746,6 +804,8 @@
 				<string key="100125.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="100125.designableToolbarItemIdentifier">xit.status</string>
 				<string key="100127.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="100129.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="100130.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="5.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="5.IBWindowTemplateEditedContentRect">{{133, 170}, {507, 413}}</string>
 				<string key="6.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -754,7 +814,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">100128</int>
+			<int key="maxID">100132</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1079,6 +1139,17 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">XTStatusView</string>
 					<string key="superclassName">NSView</string>
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">label</string>
+						<string key="NS.object.0">NSTextField</string>
+					</object>
+					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<string key="NS.key.0">label</string>
+						<object class="IBToOneOutletInfo" key="NS.object.0">
+							<string key="name">label</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/XTStatusView.h</string>

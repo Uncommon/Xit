@@ -42,6 +42,7 @@
     [historyView setRepo:repo];
     [stageView setRepo:repo];
     [fileListView setRepo:repo];
+    [statusView setRepo:repo];
 
     [repo start];
 }

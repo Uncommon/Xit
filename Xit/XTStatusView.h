@@ -7,6 +7,17 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface XTStatusView : NSView
+@class XTRepository;
+
+NSString *const XTStatusNotification;
+
+@interface XTStatusView : NSView {
+    IBOutlet NSTextField *label;
+    XTRepository *repo;
+}
+
++ (void)notifyStatus:(NSString *)status forRepository:(XTRepository *)repo;
+
+- (void)setRepo:(XTRepository *)repo;
 
 @end
