@@ -40,6 +40,7 @@
 		895DEF0C142CF84D001763FC /* branch.png in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF0B142CF84D001763FC /* branch.png */; };
 		895DEF1F142D91F8001763FC /* historyTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF1E142D91F8001763FC /* historyTemplate.png */; };
 		895DEF221432438D001763FC /* stageTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF211432438D001763FC /* stageTemplate.png */; };
+		89991CDD144E3FF400097A99 /* XTStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 89991CDC144E3FF400097A99 /* XTStatusView.m */; };
 		899D010D14216D2C0091DC6F /* sidebarTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 899D010C14216D2C0091DC6F /* sidebarTemplate.png */; };
 		89A6EA2814478DA40089B212 /* XTAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A6EA2714478DA40089B212 /* XTAppDelegate.m */; };
 		C343F91113F4908E009C928A /* XTHTML.m in Sources */ = {isa = PBXBuildFile; fileRef = C343F91013F4908E009C928A /* XTHTML.m */; };
@@ -138,6 +139,8 @@
 		895DEF0B142CF84D001763FC /* branch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = branch.png; sourceTree = "<group>"; };
 		895DEF1E142D91F8001763FC /* historyTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = historyTemplate.png; sourceTree = "<group>"; };
 		895DEF211432438D001763FC /* stageTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stageTemplate.png; sourceTree = "<group>"; };
+		89991CDB144E3FF400097A99 /* XTStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTStatusView.h; sourceTree = "<group>"; };
+		89991CDC144E3FF400097A99 /* XTStatusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTStatusView.m; sourceTree = "<group>"; };
 		899D010C14216D2C0091DC6F /* sidebarTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sidebarTemplate.png; sourceTree = "<group>"; };
 		89A6EA2614478DA40089B212 /* XTAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTAppDelegate.h; sourceTree = "<group>"; };
 		89A6EA2714478DA40089B212 /* XTAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTAppDelegate.m; sourceTree = "<group>"; };
@@ -420,6 +423,8 @@
 				C3FA471513D0F8E200AC4F9B /* XTDocument.xib */,
 				C358652F14048A3F00060C53 /* XTRepository.h */,
 				C358653014048A3F00060C53 /* XTRepository.m */,
+				89991CDB144E3FF400097A99 /* XTStatusView.h */,
+				89991CDC144E3FF400097A99 /* XTStatusView.m */,
 				C3FA471813D0F8E300AC4F9B /* MainMenu.xib */,
 				899D0106142168830091DC6F /* images */,
 				C3FA470713D0F8E200AC4F9B /* Supporting Files */,
@@ -683,6 +688,7 @@
 				3152B1E61423152700DCA679 /* XTFileListHistoryDataSource.m in Sources */,
 				895DEEF6142CECB7001763FC /* SidebarTableCellView.m in Sources */,
 				89A6EA2814478DA40089B212 /* XTAppDelegate.m in Sources */,
+				89991CDD144E3FF400097A99 /* XTStatusView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,6 +10,7 @@
 #import "XTRepository.h"
 #import "XTStageViewController.h"
 #import "XTFileViewController.h"
+#import "XTStatusView.h"
 
 @implementation XTDocument
 
@@ -77,6 +78,15 @@
     }
 }
 
+// This works around an Interface Builder/Xcode bug. If you make a toolbar
+// item by dragging in a Custom View, the view's -drawRect never gets called.
+// Instead the xib has a plain toolbar item that is modified at runtime.
+- (void)toolbarWillAddItem:(NSNotification *)notification {
+    NSToolbarItem *item = (NSToolbarItem *)[[notification userInfo] objectForKey:@"item"];
+
+    if ([[item itemIdentifier] isEqualToString:@"xit.status"])
+        [item setView:statusView];
+}
 
 #pragma mark - temp
 - (IBAction)reload:(id)sender {
