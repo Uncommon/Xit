@@ -9,6 +9,7 @@
 
 NSString *const XTStatusNotification = @"XTStatus";
 NSString *const XTStatusTextKey = @"text";
+NSString *const XTStatusOutputKey = @"output";
 
 #define kCornerRadius 4
 
@@ -87,7 +88,15 @@ NSString *const XTStatusTextKey = @"text";
 }
 
 - (void)updateStatus:(NSNotification *)note {
+    NSString *output = [[note userInfo] objectForKey:XTStatusOutputKey];
+
+    if (output != nil)
+        [outputText setString:output];
     [label setStringValue:[[note userInfo] objectForKey:XTStatusTextKey]];
+}
+
+- (void)showOutput:(id)sender {
+    [popover showRelativeToRect:NSZeroRect ofView:sender preferredEdge:NSMinYEdge];
 }
 
 @end

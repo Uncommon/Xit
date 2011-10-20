@@ -13,11 +13,14 @@ NSString *const XTStatusNotification;
 
 @interface XTStatusView : NSView {
     IBOutlet NSTextField *label;
+    IBOutlet NSPopover *popover;
+    IBOutlet NSTextView *outputText;
     XTRepository *repo;
 }
 
 + (void)notifyStatus:(NSString *)status forRepository:(XTRepository *)repo;
 
 - (void)setRepo:(XTRepository *)repo;
+- (IBAction)showOutput:(id)sender;
 
 @end
