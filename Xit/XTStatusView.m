@@ -38,9 +38,19 @@ NSString *const XTStatusTextKey = @"text";
                         [backgroundColor blendedColorWithFraction:0.4 ofColor:white], 0.75,
                         [backgroundColor blendedColorWithFraction:0.3 ofColor:white], 1.0,
                         nil];
+        strokeGradient = [[NSGradient alloc] initWithColorsAndLocations:
+                         [NSColor colorWithDeviceWhite:0.0 alpha:0.43], 0.0,
+                         [NSColor colorWithDeviceWhite:0.0 alpha:0.62], 1.0,
+                          nil];
     }
 
     return self;
+}
+
+- (void)dealloc {
+    [fillGradient release];
+    [strokeGradient release];
+    [super dealloc];
 }
 
 - (void)setRepo:(XTRepository *)newRepo {
@@ -63,15 +73,15 @@ NSString *const XTStatusTextKey = @"text";
 
     [fillGradient drawInBezierPath:path angle:90.0];
 
-    NSRect pathFrameBounds = NSOffsetRect(pathBounds, 0.5, 1.5);
+    NSRect pathFrameBounds = NSOffsetRect(pathBounds, 0, 1);
 
-    --pathFrameBounds.size.width;
     --pathFrameBounds.size.height;
 
     NSBezierPath *framePath = [NSBezierPath bezierPathWithRoundedRect:pathFrameBounds xRadius:kCornerRadius yRadius:kCornerRadius];
 
-    [[NSColor colorWithDeviceWhite:0.0 alpha:0.5] set];
-    [framePath stroke];
+    [framePath appendBezierPathWithRoundedRect:NSInsetRect(pathFrameBounds, 1, 1) xRadius:kCornerRadius - 1 yRadius:kCornerRadius - 1];
+    [framePath setWindingRule:NSEvenOddWindingRule];
+    [strokeGradient drawInBezierPath:framePath angle:90.0];
 
     // TODO: inner shadow effect
 }
