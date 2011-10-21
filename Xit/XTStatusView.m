@@ -20,15 +20,27 @@ NSString *const XTStatusOutputKey = @"output";
 
 @implementation XTStatusView
 
-+ (void)notifyStatus:(NSString *)status forRepository:(XTRepository *)repo {
++ (void)setStatus:(NSString *)status forRepository:(XTRepository *)repo {
     NSDictionary *userInfo = [NSDictionary dictionaryWithObject:status forKey:XTStatusTextKey];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:XTStatusNotification object:repo userInfo:userInfo];
+}
+
++ (void)addOutput:(NSString *)output forRepository:(XTRepository *)repo {
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:output forKey:XTStatusOutputKey];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:XTStatusNotification object:repo userInfo:userInfo];
+}
+
++ (void)finishStatus:(NSString *)status forRepository:(XTRepository *)repo {
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:status, XTStatusTextKey, @"", XTStatusOutputKey, nil];
 
     [[NSNotificationCenter defaultCenter] postNotificationName:XTStatusNotification object:repo userInfo:userInfo];
 }
 
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
-    if (self) {
+    if (self != nil) {
         NSColor *backgroundColor = [NSColor colorWithDeviceHue:212 / 360.0 saturation:0.06 brightness:0.8 alpha:1.0];
         NSColor *white = [NSColor whiteColor];
 
@@ -40,8 +52,8 @@ NSString *const XTStatusOutputKey = @"output";
                         [backgroundColor blendedColorWithFraction:0.3 ofColor:white], 1.0,
                         nil];
         strokeGradient = [[NSGradient alloc] initWithColorsAndLocations:
-                         [NSColor colorWithDeviceWhite:0.0 alpha:0.43], 0.0,
-                         [NSColor colorWithDeviceWhite:0.0 alpha:0.62], 1.0,
+                          [NSColor colorWithDeviceWhite:0.0 alpha:0.43], 0.0,
+                          [NSColor colorWithDeviceWhite:0.0 alpha:0.62], 1.0,
                           nil];
     }
 
@@ -88,11 +100,15 @@ NSString *const XTStatusOutputKey = @"output";
 }
 
 - (void)updateStatus:(NSNotification *)note {
+    NSString *status = [[note userInfo] objectForKey:XTStatusTextKey];
     NSString *output = [[note userInfo] objectForKey:XTStatusOutputKey];
 
-    if (output != nil)
-        [outputText setString:output];
-    [label setStringValue:[[note userInfo] objectForKey:XTStatusTextKey]];
+    if (status != nil)
+        [label setStringValue:status];
+    if (output == nil)
+        [outputText setString:@""];
+    else
+        [[outputText textStorage] appendAttributedString:[[[NSAttributedString alloc] initWithString:output] autorelease]];
 }
 
 - (void)showOutput:(id)sender {

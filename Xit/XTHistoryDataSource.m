@@ -61,11 +61,13 @@
 - (void)reload {
     if (repo == nil)
         return;
+    [XTStatusView setStatus:@"Loading..." forRepository:repo];
     dispatch_async(repo.queue, ^{
                        NSMutableArray *newItems = [NSMutableArray array];
 
                        [repo    getCommitsWithArgs:[NSArray arrayWithObjects:@"--pretty=format:%H%n%P%n%cD%n%ce%n%s", @"--reverse", @"--tags", @"--all", @"--topo-order", nil]
                         enumerateCommitsUsingBlock:^(NSString * line) {
+                            [XTStatusView addOutput:line forRepository:repo];
 
                             NSArray *comps = [line componentsSeparatedByString:@"\n"];
                             XTHistoryItem *item = [[XTHistoryItem alloc] init];
@@ -111,7 +113,7 @@
                             item.index = idx;
                         }];
 
-                       [XTStatusView notifyStatus:[NSString stringWithFormat:@"%d commits loaded", [newItems count]] forRepository:repo];
+                       [XTStatusView finishStatus:[NSString stringWithFormat:@"%d commits loaded", [newItems count]] forRepository:repo];
                        NSLog (@"-> %lu", [newItems count]);
                        items = newItems;
                        [table reloadData];
