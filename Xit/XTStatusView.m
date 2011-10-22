@@ -107,12 +107,18 @@ NSString *const XTStatusOutputKey = @"output";
         [label setStringValue:status];
     if (output == nil)
         [outputText setString:@""];
-    else
-        [[outputText textStorage] appendAttributedString:[[[NSAttributedString alloc] initWithString:output] autorelease]];
+    else {
+        NSFont *fixedFont = [NSFont userFixedPitchFontOfSize:11];
+        NSDictionary *attributes = [NSDictionary dictionaryWithObject:fixedFont forKey:NSFontAttributeName];
+
+        if (![output hasSuffix:@"\n"])
+            output = [output stringByAppendingString:@"\r"];
+        [[outputText textStorage] appendAttributedString:[[[NSAttributedString alloc] initWithString:output attributes:attributes] autorelease]];
+    }
 }
 
 - (void)showOutput:(id)sender {
-    [popover showRelativeToRect:NSZeroRect ofView:sender preferredEdge:NSMinYEdge];
+    [popover showRelativeToRect:NSZeroRect ofView:sender preferredEdge:NSMaxYEdge];
 }
 
 @end
