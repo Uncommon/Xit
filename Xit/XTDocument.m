@@ -85,8 +85,11 @@
 - (void)toolbarWillAddItem:(NSNotification *)notification {
     NSToolbarItem *item = (NSToolbarItem *)[[notification userInfo] objectForKey:@"item"];
 
-    if ([[item itemIdentifier] isEqualToString:@"xit.status"])
+    if ([[item itemIdentifier] isEqualToString:@"xit.status"]) {
+        if (statusView == nil)
+            [NSBundle loadNibNamed:@"XTStatusView" owner:self];
         [item setView:statusView];
+    }
 }
 
 #pragma mark - temp
