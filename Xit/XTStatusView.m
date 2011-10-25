@@ -9,9 +9,12 @@
 
 NSString *const XTStatusNotification = @"XTStatus";
 NSString *const XTStatusTextKey = @"text";
+NSString *const XTStatusCommandKey = @"command";
 NSString *const XTStatusOutputKey = @"output";
 
 #define kCornerRadius 4
+
+static float HeightForText(NSString *text, NSFont *font, float width);
 
 @interface XTStatusView () {
     NSGradient *fillGradient, *strokeGradient;
@@ -20,21 +23,16 @@ NSString *const XTStatusOutputKey = @"output";
 
 @implementation XTStatusView
 
-+ (void)setStatus:(NSString *)status forRepository:(XTRepository *)repo {
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:status forKey:XTStatusTextKey];
++ (void)updateStatus:(NSString *)status command:(NSString *)command output:(NSString *)output forRepository:(XTRepository *)repo {
+    NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:XTStatusNotification object:repo userInfo:userInfo];
-}
-
-+ (void)addOutput:(NSString *)output forRepository:(XTRepository *)repo {
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:output forKey:XTStatusOutputKey];
-
-    [[NSNotificationCenter defaultCenter] postNotificationName:XTStatusNotification object:repo userInfo:userInfo];
-}
-
-+ (void)finishStatus:(NSString *)status forRepository:(XTRepository *)repo {
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:status, XTStatusTextKey, @"", XTStatusOutputKey, nil];
-
+    assert(repo != nil);
+    if (status != nil)
+        [userInfo setObject:status forKey:XTStatusTextKey];
+    if (command != nil)
+        [userInfo setObject:command forKey:XTStatusCommandKey];
+    if (output != nil)
+        [userInfo setObject:output forKey:XTStatusOutputKey];
     [[NSNotificationCenter defaultCenter] postNotificationName:XTStatusNotification object:repo userInfo:userInfo];
 }
 
@@ -101,10 +99,30 @@ NSString *const XTStatusOutputKey = @"output";
 
 - (void)updateStatus:(NSNotification *)note {
     NSString *status = [[note userInfo] objectForKey:XTStatusTextKey];
+    NSString *command = [[note userInfo] objectForKey:XTStatusCommandKey];
     NSString *output = [[note userInfo] objectForKey:XTStatusOutputKey];
 
     if (status != nil)
         [label setStringValue:status];
+    if (command != nil) {
+        NSRect frame = [commandText frame];
+        const float newHeight = HeightForText(command, [commandText font], frame.size.width);
+        const float delta = newHeight - frame.size.height;
+
+        [commandText setStringValue:command];
+        if (delta != 0.0) {
+            NSSize popoverSize = popover.contentSize;
+            NSRect outputFrame = [outputScroll frame];
+
+            frame.size.height = newHeight;
+            frame.origin.y -= delta;
+            [commandText setFrame:frame];
+            outputFrame.size.height -= delta;
+            [outputScroll setFrame:outputFrame];
+            popoverSize.height += delta;
+            popover.contentSize = popoverSize;
+        }
+    }
     if (output == nil)
         [outputText setString:@""];
     else {
@@ -122,3 +140,21 @@ NSString *const XTStatusOutputKey = @"output";
 }
 
 @end
+
+// Adapted from Text Layout Programming Guide sample code.
+static float HeightForText(NSString *text, NSFont *font, float width) {
+    NSTextStorage *storage = [[[NSTextStorage alloc] initWithString:text] autorelease];
+    NSTextContainer *container = [[[NSTextContainer alloc] initWithContainerSize:NSMakeSize(width, FLT_MAX)] autorelease];
+    NSLayoutManager *layout = [[[NSLayoutManager alloc] init] autorelease];
+
+    [layout setTypesetterBehavior:NSTypesetterBehavior_10_2_WithCompatibility];
+    [layout addTextContainer:container];
+    [storage addLayoutManager:layout];
+    [storage addAttribute:NSFontAttributeName value:font range:NSMakeRange(0, [storage length])];
+    [container setLineFragmentPadding:0.0];
+    [layout glyphRangeForTextContainer:container];
+
+    const NSRect rect = [layout usedRectForTextContainer:container];
+
+    return rect.size.height;
+}

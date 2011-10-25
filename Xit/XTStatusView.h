@@ -14,18 +14,17 @@ NSString *const XTStatusNotification;
 @interface XTStatusView : NSView {
     IBOutlet NSTextField *label;
     IBOutlet NSPopover *popover;
+    IBOutlet NSTextField *commandText;
     IBOutlet NSTextView *outputText;
+    IBOutlet NSScrollView *outputScroll;
     XTRepository *repo;
 }
 
-// Changes the status text and clears the output
-+ (void)setStatus:(NSString *)status forRepository:(XTRepository *)repo;
-
-// Appends output text without changing the status text
-+ (void)addOutput:(NSString *)output forRepository:(XTRepository *)repo;
-
-// Changes the status text without clearing the output
-+ (void)finishStatus:(NSString *)status forRepository:(XTRepository *)repo;
+// If status or command is non-nil, the text is updated.
+// If output is nil, the output log is cleared.
+// If output is non-nil, the string is appended to the log.
+// Use output:@"" to leave the log as is.
++ (void)updateStatus:(NSString *)status command:(NSString *)command output:(NSString *)output forRepository:(XTRepository *)repo;
 
 - (void)setRepo:(XTRepository *)repo;
 - (IBAction)showOutput:(id)sender;
