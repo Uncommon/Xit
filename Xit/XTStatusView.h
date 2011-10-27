@@ -7,16 +7,20 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class XTOutputViewController;
 @class XTRepository;
 
 NSString *const XTStatusNotification;
+NSString *const XTStatusTextKey;
+NSString *const XTStatusCommandKey;
+NSString *const XTStatusOutputKey;
 
-@interface XTStatusView : NSView {
+@interface XTStatusView : NSView<NSPopoverDelegate> {
     IBOutlet NSTextField *label;
     IBOutlet NSPopover *popover;
-    IBOutlet NSTextField *commandText;
-    IBOutlet NSTextView *outputText;
-    IBOutlet NSScrollView *outputScroll;
+    IBOutlet NSWindow *detachedWindow;
+    IBOutlet XTOutputViewController *outputController;
+    IBOutlet XTOutputViewController *detachedController;
     XTRepository *repo;
 }
 
