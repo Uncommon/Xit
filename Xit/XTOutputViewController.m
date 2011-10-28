@@ -14,8 +14,7 @@ static float HeightForText(NSString *text, NSFont *font, float width);
 
 @synthesize popover;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *) nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Initialization code here.
@@ -44,7 +43,8 @@ static float HeightForText(NSString *text, NSFont *font, float width);
 
     if (command != nil) {
         NSRect frame = [commandText frame];
-        const float newHeight = HeightForText(command, [commandText font], frame.size.width);
+        NSFont *font = [commandText font];
+        const float newHeight = (font == nil) ? frame.size.height : HeightForText(command, font, frame.size.width);
         const float delta = newHeight - frame.size.height;
 
         [commandText setStringValue:command];

@@ -66,6 +66,7 @@ NSString *const XTStatusOutputKey = @"output";
 - (void)awakeFromNib {
     detachedWindow.title = [NSString stringWithFormat:detachedWindow.title, self.window.title];
     detachedWindow.contentView = detachedController.view;
+    [outputController view];  // make sure the view is loaded
 }
 
 - (void)setRepo:(XTRepository *)newRepo {
@@ -74,6 +75,7 @@ NSString *const XTStatusOutputKey = @"output";
     repo = newRepo;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateStatus:) name:XTStatusNotification object:repo];
     [[NSNotificationCenter defaultCenter] addObserver:detachedController selector:@selector(updateStatus:) name:XTStatusNotification object:repo];
+    [[NSNotificationCenter defaultCenter] addObserver:outputController selector:@selector(updateStatus:) name:XTStatusNotification object:repo];
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
