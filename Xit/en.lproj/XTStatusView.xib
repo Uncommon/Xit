@@ -148,6 +148,7 @@
 					<int key="NSvFlags">256</int>
 					<string key="NSFrameSize">{572, 198}</string>
 					<reference key="NSSuperview"/>
+					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView"/>
 					<string key="NSReuseIdentifierKey">_NS:224</string>
 				</object>

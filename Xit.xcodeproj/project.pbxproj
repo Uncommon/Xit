@@ -433,10 +433,10 @@
 				89991CDB144E3FF400097A99 /* XTStatusView.h */,
 				89991CDC144E3FF400097A99 /* XTStatusView.m */,
 				89794F651452839500E38ACC /* XTStatusView.xib */,
-				C3FA471813D0F8E300AC4F9B /* MainMenu.xib */,
 				89794F891458CC9B00E38ACC /* XTOutputViewController.h */,
 				89794F8A1458CC9B00E38ACC /* XTOutputViewController.m */,
 				89794F8B1458CC9B00E38ACC /* XTOutputViewController.xib */,
+				C3FA471813D0F8E300AC4F9B /* MainMenu.xib */,
 				899D0106142168830091DC6F /* images */,
 				C3FA470713D0F8E200AC4F9B /* Supporting Files */,
 			);

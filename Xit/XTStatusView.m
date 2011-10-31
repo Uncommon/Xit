@@ -65,6 +65,7 @@ NSString *const XTStatusOutputKey = @"output";
 
 - (void)awakeFromNib {
     detachedWindow.title = [NSString stringWithFormat:detachedWindow.title, self.window.title];
+    [detachedWindow setContentSize:[detachedController.view bounds].size];
     detachedWindow.contentView = detachedController.view;
     [outputController view];  // make sure the view is loaded
 }
@@ -111,7 +112,7 @@ NSString *const XTStatusOutputKey = @"output";
         [label setStringValue:status];
 }
 
-- (void)showOutput:(id)sender {
+- (IBAction)showOutput:(id)sender {
     [popover showRelativeToRect:NSZeroRect ofView:sender preferredEdge:NSMaxYEdge];
 }
 
@@ -119,7 +120,8 @@ NSString *const XTStatusOutputKey = @"output";
 
 @implementation XTStatusView (NSPopoverDelegate)
 
-- (NSWindow *)detachableWindowForPopover:(NSPopover *)popover {
+- (NSWindow *)detachableWindowForPopover:(NSPopover *)pop {
+    [detachedWindow setContentSize:[pop contentSize]];
     return detachedWindow;
 }
 

@@ -27,7 +27,7 @@ static float HeightForText(NSString *text, NSFont *font, float width);
     if (popover != nil)
         return popover.contentSize;
     else
-        return [[self.view window] frame].size;
+        return [[[self.view window] contentView] frame].size;
 }
 
 - (void)setOwnerSize:(NSSize)size {
