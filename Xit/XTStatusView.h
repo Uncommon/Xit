@@ -22,6 +22,7 @@ NSString *const XTStatusOutputKey;
     IBOutlet XTOutputViewController *outputController;
     IBOutlet XTOutputViewController *detachedController;
     XTRepository *repo;
+    NSGradient *fillGradient, *strokeGradient;
 }
 
 // If status or command is non-nil, the text is updated.

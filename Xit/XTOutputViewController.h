@@ -13,6 +13,7 @@
     IBOutlet NSTextField *commandText;
     IBOutlet NSTextView *outputText;
     IBOutlet NSScrollView *outputScroll;
+    NSPopover *popover;
 }
 
 @property (assign) NSPopover *popover;

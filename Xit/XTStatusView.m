@@ -15,11 +15,6 @@ NSString *const XTStatusOutputKey = @"output";
 
 #define kCornerRadius 4
 
-@interface XTStatusView () {
-    NSGradient *fillGradient, *strokeGradient;
-}
-@end
-
 @implementation XTStatusView
 
 + (void)updateStatus:(NSString *)status command:(NSString *)command output:(NSString *)output forRepository:(XTRepository *)repo {
