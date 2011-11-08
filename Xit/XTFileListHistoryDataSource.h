@@ -17,9 +17,12 @@
     NSArray *items;
     IBOutlet NSTableView *table;
     NSMutableDictionary *index;
+    BOOL useFile;
 }
 
 @property (readonly) NSArray *items;
+@property (assign) NSString *file;
+@property (assign) BOOL useFile;
 
 - (void)reload;
 - (void)setRepo:(XTRepository *)newRepo;

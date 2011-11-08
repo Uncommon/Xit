@@ -14,6 +14,8 @@
 
 @implementation XTFileListHistoryDataSource
 @synthesize items;
+@synthesize file;
+@synthesize useFile;
 
 - (id)init {
     self = [super init];
@@ -25,6 +27,10 @@
     return self;
 }
 
+- (void)setFile:(NSString *)newFile {
+    file = newFile;
+    [self reload];
+}
 - (void)setRepo:(XTRepository *)newRepo {
     repo = newRepo;
     [repo addObserver:self forKeyPath:@"reload" options:NSKeyValueObservingOptionNew context:nil];
@@ -60,31 +66,38 @@
                        NSMutableArray *newItems = [NSMutableArray array];
                        __block int idx = 0;
 
-                       [repo    getCommitsWithArgs:[NSArray arrayWithObjects:@"--pretty=format:%H%n%h%n%ct%n%ce%n%s", @"--tags", @"--all", @"--topo-order", nil]
-                        enumerateCommitsUsingBlock:^(NSString * line) {
+                       NSMutableArray *args = [NSMutableArray arrayWithArray:[NSArray arrayWithObjects:@"--pretty=format:%H%n%h%n%ct%n%ce%n%s", @"--tags", @"--all", @"--topo-order", nil]];
+                       if (useFile && file) {
+                           [args addObject:file];
+                       }
 
-                            NSArray *comps = [line componentsSeparatedByString:@"\n"];
-                            XTHistoryItem *item = [[XTHistoryItem alloc] init];
-                            if ([comps count] == 5) {
-                                item.sha = [comps objectAtIndex:0];
-                                item.shortSha = [comps objectAtIndex:1];
-                                item.date = [comps objectAtIndex:2];
-                                item.email = [comps objectAtIndex:3];
-                                item.subject = [comps objectAtIndex:4];
-                                item.index = idx++;
-                                [newItems addObject:item];
-                                [index setObject:item forKey:item.sha];
-                            } else {
-                                [NSException raise:@"Invalid commint" format:@"Line ***\n%@\n*** is invalid", line];
+                       if ( !useFile || (useFile && file)) {
+                           [repo    getCommitsWithArgs:args
+                            enumerateCommitsUsingBlock:^(NSString * line) {
+
+                                NSArray *comps = [line componentsSeparatedByString:@"\n"];
+                                XTHistoryItem *item = [[XTHistoryItem alloc] init];
+                                if ([comps count] == 5) {
+                                    item.sha = [comps objectAtIndex:0];
+                                    item.shortSha = [comps objectAtIndex:1];
+                                    item.date = [comps objectAtIndex:2];
+                                    item.email = [comps objectAtIndex:3];
+                                    item.subject = [comps objectAtIndex:4];
+                                    item.index = idx++;
+                                    [newItems addObject:item];
+                                    [index setObject:item forKey:item.sha];
+                                } else {
+                                    [NSException raise:@"Invalid commint" format:@"Line ***\n%@\n*** is invalid", line];
+                                }
+
                             }
-
-                        }
-                                             error:nil];
-
+                                                 error:nil];
+                       }
                        NSLog (@"-> %lu", [newItems count]);
                        items = newItems;
                        [table reloadData];
                    });
+
 }
 
 #pragma mark - NSTableViewDataSource

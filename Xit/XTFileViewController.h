@@ -17,6 +17,7 @@
 @interface XTFileViewController : NSViewController <NSOutlineViewDelegate, NSTableViewDelegate, XTTrackingTableDelegate> {
     IBOutlet XTFileListDataSource *fileListDS;
     IBOutlet XTFileListHistoryDataSource *fileListHistoryDS;
+    IBOutlet XTFileListHistoryDataSource *fileHistoryDS;
     @private
     IBOutlet XTCommitDetailsViewController *commitView;
     XTRepository *repo;
@@ -24,6 +25,7 @@
     IBOutlet NSPathControl *path;
     IBOutlet NSPathControl *filePath;
     IBOutlet WebView *web;
+    NSString *fileName;
 }
 
 - (void)setRepo:(XTRepository *)newRepo;

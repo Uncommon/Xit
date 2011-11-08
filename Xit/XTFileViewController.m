@@ -10,6 +10,8 @@
 #import "XTCommitDetailsViewController.h"
 #import "XTRepository+FileVIewCommands.h"
 #import "XTHTML.h"
+#import "XTFileListHistoryDataSource.h"
+#import "XTTrackingTableView.h"
 
 @implementation XTFileViewController
 
@@ -22,17 +24,14 @@
     repo = newRepo;
     [fileListDS setRepo:repo];
     [fileListHistoryDS setRepo:repo];
+    [fileHistoryDS setRepo:repo];
+    fileHistoryDS.useFile = YES;
     [path setURL:[repo repoURL]];
+    [repo addObserver:self forKeyPath:@"selectedCommit" options:NSKeyValueObservingOptionNew context:nil];
 }
 
-#pragma mark - NSOutlineViewDelegate
-- (void)outlineViewSelectionDidChange:(NSNotification *)notification {
-    NSOutlineView *fileList = (NSOutlineView *)notification.object;
-    NSTreeNode *node = [fileList itemAtRow:fileList.selectedRow];
-    NSString *fileName = (NSString *)node.representedObject;
-    NSURL *url = [NSURL URLWithString:[fileName stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-
-    [filePath setURL:url];
+- (void)reload {
+    if (!fileName) return;
 
     NSString *file = [repo show:fileName inSha:repo.selectedCommit];
     NSString *html = [NSString stringWithFormat:@"<html><body><pre id='file'>%@</pre></body></html>", [XTHTML escapeHTML:file]];
@@ -40,19 +39,39 @@
     NSBundle *theme = [NSBundle bundleWithURL:[bundle URLForResource:@"html.theme.default" withExtension:@"bundle"]];
     NSURL *themeURL = [[theme bundleURL] URLByAppendingPathComponent:@"Contents/Resources"];
 
+    NSURL *url = [NSURL URLWithString:[fileName stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    [filePath setURL:url];
+    fileHistoryDS.file = fileName;
+
     dispatch_async(dispatch_get_main_queue(), ^{
                        [[web mainFrame] loadHTMLString:html baseURL:themeURL];
                    });
+
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if ([keyPath isEqualToString:@"selectedCommit"]) {
+        [self reload];
+    }
+}
+
+#pragma mark - NSOutlineViewDelegate
+- (void)outlineViewSelectionDidChange:(NSNotification *)notification {
+    NSOutlineView *fileList = (NSOutlineView *)notification.object;
+    NSTreeNode *node = [fileList itemAtRow:fileList.selectedRow];
+
+    fileName = (NSString *)node.representedObject;
+    [self reload];
 }
 
 - (NSView *)outlineView:(NSOutlineView *)outlineView viewForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
     NSTableCellView *cell = [outlineView makeViewWithIdentifier:@"fileCell" owner:self];
     NSTreeNode *node = (NSTreeNode *)item;
-    NSString *fileName = (NSString *)node.representedObject;
+    NSString *name = (NSString *)node.representedObject;
 
     // TODO: cache the file icon extending NSTreeNode....
-    cell.imageView.image = [[NSWorkspace sharedWorkspace] iconForFile:[repo.repoURL.path stringByAppendingPathComponent:fileName]];
-    cell.textField.stringValue = [fileName lastPathComponent];
+    cell.imageView.image = [[NSWorkspace sharedWorkspace] iconForFile:[repo.repoURL.path stringByAppendingPathComponent:name]];
+    cell.textField.stringValue = [name lastPathComponent];
 
     return cell;
 }
@@ -61,7 +80,8 @@
 
 - (void)tableView:(XTTrackingTableView *)aTable mouseOverRow:(NSInteger)row {
     if (row >= 0) {
-        XTHistoryItem *item = [[fileListHistoryDS items] objectAtIndex:row];
+        XTFileListHistoryDataSource *ds = [aTable dataSource];
+        XTHistoryItem *item = [[ds items] objectAtIndex:row];
         commitView.sha.stringValue = item.sha;
         commitView.subject.stringValue = item.subject;
         [popover showRelativeToRect:[aTable rectOfRow:row] ofView:(NSView *)aTable preferredEdge:NSMinXEdge];
@@ -74,21 +94,25 @@
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
     NSLog(@"%@", aNotification);
-    XTHistoryItem *item = [[fileListHistoryDS items] objectAtIndex:((NSTableView *)aNotification.object).selectedRow];
-    repo.selectedCommit = item.sha;
+    XTTrackingTableView *aTable = (XTTrackingTableView *)aNotification.object;
+    XTFileListHistoryDataSource *ds = [aTable dataSource];
+    if (aTable.selectedRow > 0) {
+        XTHistoryItem *item = [[ds items] objectAtIndex:aTable.selectedRow];
+        repo.selectedCommit = item.sha;
+    }
 }
 
 // TODO: bad....
-//- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
+// - (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
 //    NSTextFieldCell *cell = aCell;
 //    if ([(XTTrackingTableView)aTableView mouseOverRow] == rowIndex) {
 //        cell.backgroundColor = [NSColor selectedMenuItemColor];
-//        cell.drawsBackground = YES;        
+//        cell.drawsBackground = YES;
 //    } else {
 //        cell.backgroundColor = [NSColor controlBackgroundColor];
 //        cell.drawsBackground = NO;
 //    }
-//}
+// }
 
 
 @end
