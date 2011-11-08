@@ -30,6 +30,8 @@
 }
 
 - (void)reload {
+    if (repo == nil)
+        return;
     dispatch_async(repo.queue, ^{
 
                        [items removeAllObjects];

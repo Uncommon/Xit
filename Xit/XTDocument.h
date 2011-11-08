@@ -11,6 +11,7 @@
 @class XTStageViewController;
 @class XTRepository;
 @class XTFileViewController;
+@class XTStatusView;
 
 @interface XTDocument : NSDocument {
     IBOutlet XTHistoryView *historyView;
@@ -18,6 +19,7 @@
     IBOutlet XTFileViewController *fileListView;
     IBOutlet NSTabView *tabs;
     IBOutlet NSProgressIndicator *activity;
+    IBOutlet XTStatusView *statusView;
     @private
     NSURL *repoURL;
     XTRepository *repo;

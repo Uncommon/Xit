@@ -8,6 +8,7 @@
 #import "XTHistoryDataSource.h"
 #import "XTRepository.h"
 #import "XTHistoryItem.h"
+#import "XTStatusView.h"
 #import "PBGitHistoryGrapher.h"
 #import "PBGitRevisionCell.h"
 
@@ -58,11 +59,16 @@
 }
 
 - (void)reload {
+    if (repo == nil)
+        return;
     dispatch_async(repo.queue, ^{
+                       NSArray *args = [NSArray arrayWithObjects:@"--pretty=format:%H%n%P%n%cD%n%ce%n%s", @"--reverse", @"--tags", @"--all", @"--topo-order", nil];
                        NSMutableArray *newItems = [NSMutableArray array];
 
-                       [repo    getCommitsWithArgs:[NSArray arrayWithObjects:@"--pretty=format:%H%n%P%n%cD%n%ce%n%s", @"--reverse", @"--tags", @"--all", @"--topo-order", nil]
+                       [XTStatusView updateStatus:@"Loading..." command:[args componentsJoinedByString:@" "] output:nil forRepository:repo];
+                       [repo    getCommitsWithArgs:args
                         enumerateCommitsUsingBlock:^(NSString * line) {
+                            [XTStatusView updateStatus:nil command:nil output:line forRepository:repo];
 
                             NSArray *comps = [line componentsSeparatedByString:@"\n"];
                             XTHistoryItem *item = [[XTHistoryItem alloc] init];
@@ -108,6 +114,7 @@
                             item.index = idx;
                         }];
 
+                       [XTStatusView updateStatus:[NSString stringWithFormat:@"%d commits loaded", [newItems count]] command:nil output:@"" forRepository:repo];
                        NSLog (@"-> %lu", [newItems count]);
                        items = newItems;
                        [table reloadData];

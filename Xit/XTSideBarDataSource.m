@@ -35,8 +35,10 @@
 
 - (void)setRepo:(XTRepository *)newRepo {
     repo = newRepo;
-    [repo addObserver:self forKeyPath:@"reload" options:NSKeyValueObservingOptionNew context:nil];
-    [self reload];
+    if (repo != nil) {
+        [repo addObserver:self forKeyPath:@"reload" options:NSKeyValueObservingOptionNew context:nil];
+        [self reload];
+    }
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
