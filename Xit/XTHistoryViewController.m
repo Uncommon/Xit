@@ -5,12 +5,12 @@
 //  Created by German Laullon on 05/08/11.
 //
 
-#import "XTHistoryView.h"
+#import "XTHistoryViewController.h"
 #import "XTRepository.h"
 #import "XTSideBarDataSource.h"
 #import "XTCommitViewController.h"
 
-@implementation XTHistoryView
+@implementation XTHistoryViewController
 
 - (void)awakeFromNib {
     // Remove intercell spacing so the history lines will connect

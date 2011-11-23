@@ -7,14 +7,14 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class XTHistoryView;
+@class XTHistoryViewController;
 @class XTStageViewController;
 @class XTRepository;
 @class XTFileViewController;
 @class XTStatusView;
 
 @interface XTDocument : NSDocument {
-    IBOutlet XTHistoryView *historyView;
+    IBOutlet XTHistoryViewController *historyView;
     IBOutlet XTStageViewController *stageView;
     IBOutlet XTFileViewController *fileListView;
     IBOutlet NSTabView *tabs;

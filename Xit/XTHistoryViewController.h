@@ -13,7 +13,7 @@
 @class XTHistoryDataSource;
 @class XTCommitViewController;
 
-@interface XTHistoryView : NSViewController
+@interface XTHistoryViewController : NSViewController
 {
     IBOutlet XTSideBarDataSource *sideBarDS;
     IBOutlet XTHistoryDataSource *historyDS;

@@ -6,7 +6,7 @@
 //
 
 #import "XTDocument.h"
-#import "XTHistoryView.h"
+#import "XTHistoryViewController.h"
 #import "XTRepository.h"
 #import "XTStageViewController.h"
 #import "XTFileViewController.h"

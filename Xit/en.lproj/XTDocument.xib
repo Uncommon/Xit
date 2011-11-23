@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1070</int>
-		<string key="IBDocument.SystemVersion">11C74</string>
+		<string key="IBDocument.SystemVersion">11D50b</string>
 		<string key="IBDocument.InterfaceBuilderVersion">1938</string>
-		<string key="IBDocument.AppKitVersion">1138.23</string>
-		<string key="IBDocument.HIToolboxVersion">567.00</string>
+		<string key="IBDocument.AppKitVersion">1138.32</string>
+		<string key="IBDocument.HIToolboxVersion">568.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			<string key="NS.object.0">1938</string>
@@ -71,7 +71,6 @@
 								<int key="NSvFlags">268</int>
 								<string key="NSFrame">{{0, 14}, {93, 25}}</string>
 								<reference key="NSSuperview"/>
-								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:1766</string>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSSegmentedCell" key="NSCell" id="728024554">
@@ -158,7 +157,6 @@
 								<object class="NSPSMatrix" key="NSDrawMatrix"/>
 								<string key="NSFrame">{{16, 14}, {16, 16}}</string>
 								<reference key="NSSuperview"/>
-								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:3930</string>
 								<int key="NSpiFlags">20746</int>
 								<double key="NSMaxValue">100</double>
@@ -235,7 +233,7 @@
 							<string key="NSFrameSize">{775, 660}</string>
 							<reference key="NSSuperview" ref="568628114"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="594729912"/>
+							<reference key="NSNextKeyView" ref="915171361"/>
 							<string key="NSReuseIdentifierKey">_NS:461</string>
 							<array class="NSMutableArray" key="NSTabViewItems">
 								<object class="NSTabViewItem" id="741351125">
@@ -249,6 +247,7 @@
 												<int key="NSvFlags">268</int>
 												<string key="NSFrame">{{282, 236}, {13, 17}}</string>
 												<reference key="NSSuperview" ref="325628873"/>
+												<reference key="NSNextKeyView" ref="181621656"/>
 												<string key="NSReuseIdentifierKey">_NS:3936</string>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSTextFieldCell" key="NSCell" id="266173924">
@@ -294,7 +293,7 @@
 								<object class="NSTabViewItem" id="895605117">
 									<string key="NSIdentifier">2</string>
 									<object class="NSView" key="NSView" id="594729912">
-										<reference key="NSNextResponder" ref="181621656"/>
+										<nil key="NSNextResponder"/>
 										<int key="NSvFlags">256</int>
 										<array class="NSMutableArray" key="NSSubviews">
 											<object class="NSTextField" id="365865549">
@@ -302,8 +301,7 @@
 												<int key="NSvFlags">268</int>
 												<string key="NSFrame">{{210, 480}, {13, 17}}</string>
 												<reference key="NSSuperview" ref="594729912"/>
-												<reference key="NSWindow"/>
-												<reference key="NSNextKeyView"/>
+												<reference key="NSNextKeyView" ref="181621656"/>
 												<string key="NSReuseIdentifierKey">_NS:3936</string>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSTextFieldCell" key="NSCell" id="850312354">
@@ -319,8 +317,6 @@
 											</object>
 										</array>
 										<string key="NSFrameSize">{775, 660}</string>
-										<reference key="NSSuperview" ref="181621656"/>
-										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="365865549"/>
 										<string key="NSReuseIdentifierKey">_NS:473</string>
 									</object>
@@ -330,7 +326,7 @@
 								</object>
 								<object class="NSTabViewItem" id="342079532">
 									<object class="NSView" key="NSView" id="915171361">
-										<nil key="NSNextResponder"/>
+										<reference key="NSNextResponder" ref="181621656"/>
 										<int key="NSvFlags">256</int>
 										<array class="NSMutableArray" key="NSSubviews">
 											<object class="NSTextField" id="63863679">
@@ -338,6 +334,8 @@
 												<int key="NSvFlags">268</int>
 												<string key="NSFrame">{{264, 218}, {13, 17}}</string>
 												<reference key="NSSuperview" ref="915171361"/>
+												<reference key="NSWindow"/>
+												<reference key="NSNextKeyView"/>
 												<string key="NSReuseIdentifierKey">_NS:3936</string>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSTextFieldCell" key="NSCell" id="369681635">
@@ -353,6 +351,8 @@
 											</object>
 										</array>
 										<string key="NSFrameSize">{871, 422}</string>
+										<reference key="NSSuperview" ref="181621656"/>
+										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="63863679"/>
 									</object>
 									<string key="NSLabel">files</string>
@@ -360,13 +360,13 @@
 									<reference key="NSTabView" ref="181621656"/>
 								</object>
 							</array>
-							<reference key="NSSelectedTabViewItem" ref="895605117"/>
+							<reference key="NSSelectedTabViewItem" ref="342079532"/>
 							<reference key="NSFont" ref="285813182"/>
 							<int key="NSTvFlags">6</int>
 							<bool key="NSAllowTruncatedLabels">YES</bool>
 							<bool key="NSDrawsBackground">YES</bool>
 							<array class="NSMutableArray" key="NSSubviews">
-								<reference ref="594729912"/>
+								<reference ref="915171361"/>
 							</array>
 						</object>
 					</array>
@@ -384,7 +384,7 @@
 				<string key="NSClassName">NSApplication</string>
 			</object>
 			<object class="NSViewController" id="75445990">
-				<string key="NSNibName">XTHistoryView</string>
+				<string key="NSNibName">XTHistoryViewController</string>
 			</object>
 			<object class="NSViewController" id="319239729">
 				<string key="NSNibName">XTStageViewController</string>
@@ -643,7 +643,7 @@
 						<int key="objectID">100102</int>
 						<reference key="object" ref="75445990"/>
 						<reference key="parent" ref="0"/>
-						<string key="objectName">History View</string>
+						<string key="objectName">History View Controller</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">100106</int>
@@ -710,7 +710,7 @@
 				<string key="100099.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="100100.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="100101.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="100102.CustomClassName">XTHistoryView</string>
+				<string key="100102.CustomClassName">XTHistoryViewController</string>
 				<string key="100102.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="100106.CustomClassName">XTStageViewController</string>
 				<string key="100106.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -828,7 +828,7 @@
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="activity">NSProgressIndicator</string>
 						<string key="fileListView">XTFileViewController</string>
-						<string key="historyView">XTHistoryView</string>
+						<string key="historyView">XTHistoryViewController</string>
 						<string key="stageView">XTStageViewController</string>
 						<string key="statusView">XTStatusView</string>
 						<string key="tabs">NSTabView</string>
@@ -844,7 +844,7 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="historyView">
 							<string key="name">historyView</string>
-							<string key="candidateClassName">XTHistoryView</string>
+							<string key="candidateClassName">XTHistoryViewController</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="stageView">
 							<string key="name">stageView</string>
@@ -933,7 +933,7 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">XTHistoryView</string>
+					<string key="className">XTHistoryViewController</string>
 					<string key="superclassName">NSViewController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="toggleLayout:">id</string>
@@ -995,7 +995,34 @@
 					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/XTHistoryView.h</string>
+						<string key="minorKey">./Classes/XTHistoryViewController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">XTOutputViewController</string>
+					<string key="superclassName">NSViewController</string>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="commandText">NSTextField</string>
+						<string key="outputScroll">NSScrollView</string>
+						<string key="outputText">NSTextView</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="commandText">
+							<string key="name">commandText</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="outputScroll">
+							<string key="name">outputScroll</string>
+							<string key="candidateClassName">NSScrollView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="outputText">
+							<string key="name">outputText</string>
+							<string key="candidateClassName">NSTextView</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/XTOutputViewController.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -1066,18 +1093,28 @@
 						</object>
 					</object>
 					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="detachedController">XTOutputViewController</string>
+						<string key="detachedWindow">NSWindow</string>
 						<string key="label">NSTextField</string>
-						<string key="outputText">NSTextView</string>
+						<string key="outputController">XTOutputViewController</string>
 						<string key="popover">NSPopover</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="detachedController">
+							<string key="name">detachedController</string>
+							<string key="candidateClassName">XTOutputViewController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="detachedWindow">
+							<string key="name">detachedWindow</string>
+							<string key="candidateClassName">NSWindow</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="label">
 							<string key="name">label</string>
 							<string key="candidateClassName">NSTextField</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="outputText">
-							<string key="name">outputText</string>
-							<string key="candidateClassName">NSTextView</string>
+						<object class="IBToOneOutletInfo" key="outputController">
+							<string key="name">outputController</string>
+							<string key="candidateClassName">XTOutputViewController</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="popover">
 							<string key="name">popover</string>
@@ -1112,8 +1149,8 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="NSMenuCheckmark">{9, 8}</string>
-			<string key="NSMenuMixedState">{7, 2}</string>
+			<string key="NSMenuCheckmark">{11, 11}</string>
+			<string key="NSMenuMixedState">{10, 3}</string>
 			<string key="NSPathTemplate">{13, 10}</string>
 			<string key="historyTemplate">{128, 128}</string>
 			<string key="stageTemplate">{128, 128}</string>
