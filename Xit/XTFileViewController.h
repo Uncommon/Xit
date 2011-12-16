@@ -26,8 +26,11 @@
     IBOutlet NSPathControl *filePath;
     IBOutlet WebView *web;
     NSString *fileName;
+    NSPathControl *displayFileMenu;
+    NSPathComponentCell *menuPC;
 }
 
 - (void)setRepo:(XTRepository *)newRepo;
+- (IBAction)displayFileMenu:(id)sender;
 
 @end

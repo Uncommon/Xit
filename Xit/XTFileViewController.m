@@ -13,6 +13,11 @@
 #import "XTFileListHistoryDataSource.h"
 #import "XTTrackingTableView.h"
 
+@interface XTFileViewController (hidden)
+- (NSMenu *)fileMenu;
+- (void)show:(id)sender;
+@end
+
 @implementation XTFileViewController
 
 - (NSString *)nibName {
@@ -30,6 +35,32 @@
     [repo addObserver:self forKeyPath:@"selectedCommit" options:NSKeyValueObservingOptionNew context:nil];
 }
 
+- (IBAction)displayFileMenu:(id)sender {
+    NSPathControl *pc = (NSPathControl *)sender;
+    if (pc.clickedPathComponentCell == menuPC) {
+        NSMenu *menu = [pc.clickedPathComponentCell menu];
+        NSPoint event_location = [[pc window] mouseLocationOutsideOfEventStream];
+        NSPoint local_point = [pc convertPoint:event_location fromView:nil];
+        [menu popUpMenuPositioningItem:[menu.itemArray objectAtIndex:0] atLocation:local_point inView:pc];
+    }
+}
+
+- (void)show:(id)sender {
+    NSMenuItem *item = (NSMenuItem *)sender;
+    [menuPC setStringValue:item.title];
+    [filePath needsLayout];
+    [filePath needsDisplay];
+}
+
+- (NSMenu *)fileMenu {
+    NSMenu *theMenu = [[[NSMenu alloc] initWithTitle:@"Contextual Menu"] autorelease];
+    [[theMenu insertItemWithTitle:@"Source" action:@selector(show:) keyEquivalent:@"" atIndex:0] setTarget:self];
+    [[theMenu insertItemWithTitle:@"Blame" action:@selector(show:) keyEquivalent:@"" atIndex:1] setTarget:self];
+    [[theMenu insertItemWithTitle:@"Diff Local" action:@selector(show:) keyEquivalent:@"" atIndex:2] setTarget:self];
+    [[theMenu insertItemWithTitle:@"Diff HEAD" action:@selector(show:) keyEquivalent:@"" atIndex:3] setTarget:self];
+    return theMenu;
+}
+
 - (void)reload {
     if (!fileName) return;
 
@@ -41,6 +72,13 @@
 
     NSURL *url = [NSURL URLWithString:[fileName stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     [filePath setURL:url];
+
+    NSMutableArray *pathC = [NSMutableArray arrayWithArray:filePath.pathComponentCells];
+    menuPC = [[NSPathComponentCell alloc] initTextCell:@"Source"];
+    [pathC addObject:menuPC];
+    menuPC.menu = [self fileMenu];
+    filePath.pathComponentCells = pathC;
+
     fileHistoryDS.file = fileName;
 
     dispatch_async(dispatch_get_main_queue(), ^{
