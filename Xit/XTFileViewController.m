@@ -13,7 +13,19 @@
 #import "XTFileListHistoryDataSource.h"
 #import "XTTrackingTableView.h"
 
+enum {
+    TRISourceView = 0,
+    TRIBlameView,
+    TRIDiffLocalView,
+    TRIDiffHeadView,
+};
+
+NSString *viewsName[] = {@"Source",@"Blame",@"Diff Local",@"Diff HEAD"};
+NSString *viewsPath[] = {@"dource",@"blame",@"diff",@"diff"};
+
+
 @interface XTFileViewController (hidden)
+- (void)reload;
 - (NSMenu *)fileMenu;
 - (void)show:(id)sender;
 @end
@@ -27,6 +39,7 @@
 
 - (void)setRepo:(XTRepository *)newRepo {
     repo = newRepo;
+    viewMode = TRISourceView;
     [fileListDS setRepo:repo];
     [fileListHistoryDS setRepo:repo];
     [fileHistoryDS setRepo:repo];
@@ -47,25 +60,47 @@
 
 - (void)show:(id)sender {
     NSMenuItem *item = (NSMenuItem *)sender;
-    [menuPC setStringValue:item.title];
-    [filePath needsLayout];
-    [filePath needsDisplay];
+//    [menuPC setStringValue:item.title];
+    viewMode = item.tag;
+    [self reload];
 }
 
 - (NSMenu *)fileMenu {
     NSMenu *theMenu = [[[NSMenu alloc] initWithTitle:@"Contextual Menu"] autorelease];
-    [[theMenu insertItemWithTitle:@"Source" action:@selector(show:) keyEquivalent:@"" atIndex:0] setTarget:self];
-    [[theMenu insertItemWithTitle:@"Blame" action:@selector(show:) keyEquivalent:@"" atIndex:1] setTarget:self];
-    [[theMenu insertItemWithTitle:@"Diff Local" action:@selector(show:) keyEquivalent:@"" atIndex:2] setTarget:self];
-    [[theMenu insertItemWithTitle:@"Diff HEAD" action:@selector(show:) keyEquivalent:@"" atIndex:3] setTarget:self];
+    for (NSInteger idx=TRISourceView; idx <= TRIDiffHeadView ;idx++) {
+        NSMenuItem *i = [theMenu insertItemWithTitle:viewsName[idx] action:@selector(show:) keyEquivalent:@"" atIndex:idx];
+        i.target = self;
+        i.tag = idx;
+    }
     return theMenu;
 }
 
 - (void)reload {
     if (!fileName) return;
 
-    NSString *file = [repo show:fileName inSha:repo.selectedCommit];
-    NSString *html = [NSString stringWithFormat:@"<html><body><pre id='file'>%@</pre></body></html>", [XTHTML escapeHTML:file]];
+    NSString *body;
+    switch (viewMode) {
+        case TRISourceView:
+            body = [NSString stringWithFormat:@"<pre id='file'>%@</pre>", [XTHTML escapeHTML:[repo show:fileName inSha:repo.selectedCommit]]];
+            break;
+
+        case TRIBlameView:
+            body = [XTHTML parseBlame:[repo blame:fileName inSha:repo.selectedCommit]];
+            break;
+
+        case TRIDiffHeadView:
+            body = [XTHTML parseDiff:[repo diffToHead:fileName fromSha:repo.selectedCommit]];
+            break;
+
+        case TRIDiffLocalView:
+            body = [XTHTML parseBlame:[repo diff:fileName fromSha:repo.selectedCommit]];
+            break;
+
+        default:
+            break;
+    }
+    
+    NSString *html = [NSString stringWithFormat:@"<html><body>%@</body></html>", body];
     NSBundle *bundle = [NSBundle mainBundle];
     NSBundle *theme = [NSBundle bundleWithURL:[bundle URLForResource:@"html.theme.default" withExtension:@"bundle"]];
     NSURL *themeURL = [[theme bundleURL] URLByAppendingPathComponent:@"Contents/Resources"];
@@ -74,7 +109,7 @@
     [filePath setURL:url];
 
     NSMutableArray *pathC = [NSMutableArray arrayWithArray:filePath.pathComponentCells];
-    menuPC = [[NSPathComponentCell alloc] initTextCell:@"Source"];
+    menuPC = [[NSPathComponentCell alloc] initTextCell:viewsName[viewMode]];
     [pathC addObject:menuPC];
     menuPC.menu = [self fileMenu];
     filePath.pathComponentCells = pathC;

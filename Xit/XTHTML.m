@@ -10,6 +10,69 @@
 
 @implementation XTHTML
 
++(NSString *)parseBlame:(NSString *)string
+{
+    string=[string stringByReplacingOccurrencesOfString:@"<" withString:@"&lt;"];
+    string=[string stringByReplacingOccurrencesOfString:@">" withString:@"&gt;"];
+    
+    NSArray *lines = [string componentsSeparatedByString:@"\n"];
+    NSString *line;
+    NSMutableDictionary *headers=[NSMutableDictionary dictionary];
+    NSMutableString *res=[NSMutableString string];
+    
+    [res appendString:@"<table class='blocks'>\n"];
+    int i=0;
+    while(i<[lines count]){
+        line=[lines objectAtIndex:i];
+        NSArray *header=[line componentsSeparatedByString:@" "];
+        if([header count]==4){
+            int nLines=[(NSString *)[header objectAtIndex:3] intValue];
+            [res appendFormat:@"<tr class='block l%d'>\n",nLines];
+            line=[lines objectAtIndex:++i];
+            if([[[line componentsSeparatedByString:@" "] objectAtIndex:0] isEqual:@"author"]){
+                NSString *author=line;
+                NSString *summary=nil;
+                while(summary==nil){
+                    line=[lines objectAtIndex:i++];
+                    if([[[line componentsSeparatedByString:@" "] objectAtIndex:0] isEqual:@"summary"]){
+                        summary=line;
+                    }
+                }
+                NSString *block=[NSString stringWithFormat:@"<td><p class='author'>%@</p><p class='summary'>%@</p></td>\n<td>\n",author,summary];
+                [headers setObject:block forKey:[header objectAtIndex:0]];
+            }
+            [res appendString:[headers objectForKey:[header objectAtIndex:0]]];
+            
+            NSMutableString *code=[NSMutableString string];
+            do{
+                line=[lines objectAtIndex:i++];
+            }while([line characterAtIndex:0]!='\t');
+            line=[line stringByReplacingOccurrencesOfString:@"\t" withString:@"&nbsp;&nbsp;&nbsp;&nbsp;"];
+            [code appendString:line];
+            [code appendString:@"\n"];
+            
+            int n;
+            for(n=1;n<nLines;n++){
+                line=[lines objectAtIndex:i++];
+                do{
+                    line=[lines objectAtIndex:i++];
+                }while([line characterAtIndex:0]!='\t');
+                line=[line stringByReplacingOccurrencesOfString:@"\t" withString:@"&nbsp;&nbsp;&nbsp;&nbsp;"];
+                [code appendString:line];
+                [code appendString:@"\n"];
+            }
+            [res appendFormat:@"<pre class='first-line: %@;brush: objc'>%@</pre>",[header objectAtIndex:2],code];
+            [res appendString:@"</td>\n"];
+        }else{
+            break;
+        }
+        [res appendString:@"</tr>\n"];
+    }  
+    [res appendString:@"</table>\n"];
+    return (NSString *)res;
+}
+
+
 + (NSString *)parseDiff:(NSString *)txt {
     txt = [XTHTML escapeHTML:txt];
 

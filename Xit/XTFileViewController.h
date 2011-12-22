@@ -28,6 +28,7 @@
     NSString *fileName;
     NSPathControl *displayFileMenu;
     NSPathComponentCell *menuPC;
+    NSInteger viewMode;
 }
 
 - (void)setRepo:(XTRepository *)newRepo;

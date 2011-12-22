@@ -10,6 +10,7 @@
 
 @interface XTHTML : NSObject
 
++ (NSString *)parseBlame:(NSString *)string;
 + (NSString *)parseDiff:(NSString *)diff;
 + (NSString *)escapeHTML:(NSString *)txt;
 + (NSString *)parseDiffBlock:(NSString *)txt;

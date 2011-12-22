@@ -22,4 +22,30 @@
     return res;
 }
 
+- (NSString *)blame:(NSString *)file inSha:(NSString *)sha {
+    if (!sha) {
+        sha = @"HEAD";
+    }
+    NSString *res = nil;
+    NSData *output = [self exectuteGitWithArgs:[NSArray arrayWithObjects:@"blame", @"-p", file, sha, nil] error:nil];
+    if (output) {
+        res = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+    }
+    return res;
+}
+
+- (NSString *)diffToHead:(NSString *)file fromSha:(NSString *)sha {
+    sha = [NSString stringWithFormat:@"%@..HEAD", sha];
+    return [self diff:file fromSha:sha];
+}
+
+- (NSString *)diff:(NSString *)file fromSha:(NSString *)sha {
+    NSString *res = nil;
+    NSData *output = [self exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff", file, sha, nil] error:nil];
+    if (output) {
+        res = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+    }
+    return res;
+}
+
 @end
