@@ -20,6 +20,10 @@
 
     // Without this, the first group title moves when you hide its contents
     [sidebarOutline setFloatsGroupRows:NO];
+    
+    /* Initialize webInspector. */
+    [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:@"WebKitDeveloperExtras"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (NSString *)nibName {
