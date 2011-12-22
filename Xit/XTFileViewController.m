@@ -93,16 +93,24 @@ NSString *viewsPath[] = {@"dource",@"blame",@"diff",@"diff"};
             break;
 
         case TRIDiffLocalView:
-            body = [XTHTML parseBlame:[repo diff:fileName fromSha:repo.selectedCommit]];
+            body = [XTHTML parseDiff:[repo diff:fileName fromSha:repo.selectedCommit]];
             break;
 
         default:
             break;
     }
     
-    NSString *html = [NSString stringWithFormat:@"<html><body>%@</body></html>", body];
+    NSError *err = nil;
+
     NSBundle *bundle = [NSBundle mainBundle];
     NSBundle *theme = [NSBundle bundleWithURL:[bundle URLForResource:@"html.theme.default" withExtension:@"bundle"]];
+    NSURL *indexUrl = [theme URLForResource:viewsPath[viewMode] withExtension:@"html" subdirectory:@"/"];
+    NSMutableString *html = [NSMutableString stringWithContentsOfURL:indexUrl encoding:NSUTF8StringEncoding error:&err];
+    if(err) {
+        NSLog(@"Error:%@ indexUrl:%@", err, indexUrl);
+        html = [NSMutableString stringWithString:@"##BODY##"];
+    }
+    [html replaceOccurrencesOfString:@"##BODY##" withString:body options:NSCaseInsensitiveSearch range:NSMakeRange(0, [html length])];
     NSURL *themeURL = [[theme bundleURL] URLByAppendingPathComponent:@"Contents/Resources"];
 
     NSURL *url = [NSURL URLWithString:[fileName stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];

@@ -34,6 +34,11 @@
 		31C7C12E13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */; };
 		31C7C13313ECC74C00A65FE9 /* XTHistoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 31C7C13113ECC74C00A65FE9 /* XTHistoryView.m */; };
 		31C7C13413ECC74C00A65FE9 /* XTHistoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31C7C13213ECC74C00A65FE9 /* XTHistoryView.xib */; };
+		31D654A014A2C414006807AB /* blame.css in Resources */ = {isa = PBXBuildFile; fileRef = 31D6549E14A2C414006807AB /* blame.css */; };
+		31D654A114A2C414006807AB /* blame.html in Resources */ = {isa = PBXBuildFile; fileRef = 31D6549F14A2C414006807AB /* blame.html */; };
+		31D654A514A2C723006807AB /* source.html in Resources */ = {isa = PBXBuildFile; fileRef = 31D654A214A2C722006807AB /* source.html */; };
+		31D654A614A2C723006807AB /* source.css in Resources */ = {isa = PBXBuildFile; fileRef = 31D654A314A2C723006807AB /* source.css */; };
+		31D654AD14A2CAF1006807AB /* diff.html in Resources */ = {isa = PBXBuildFile; fileRef = 31D654AA14A2CAF1006807AB /* diff.html */; };
 		31EB0D21144E119E0056EC6F /* XTRepository+FileViewCommands.m in Sources */ = {isa = PBXBuildFile; fileRef = 31EB0D20144E119E0056EC6F /* XTRepository+FileViewCommands.m */; };
 		31F1E87F13D3B51200F3B317 /* GITBasic+XTRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BC055713D1133000C3CF1A /* GITBasic+XTRepository.m */; };
 		31F1E88313D3DCAC00F3B317 /* XTSideBarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 31F1E88213D3DCAC00F3B317 /* XTSideBarItem.m */; };
@@ -138,6 +143,11 @@
 		31C7C13013ECC74C00A65FE9 /* XTHistoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTHistoryView.h; sourceTree = "<group>"; };
 		31C7C13113ECC74C00A65FE9 /* XTHistoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTHistoryView.m; sourceTree = "<group>"; };
 		31C7C13213ECC74C00A65FE9 /* XTHistoryView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTHistoryView.xib; sourceTree = "<group>"; };
+		31D6549E14A2C414006807AB /* blame.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = blame.css; sourceTree = "<group>"; };
+		31D6549F14A2C414006807AB /* blame.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = blame.html; sourceTree = "<group>"; };
+		31D654A214A2C722006807AB /* source.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = source.html; sourceTree = "<group>"; };
+		31D654A314A2C723006807AB /* source.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = source.css; sourceTree = "<group>"; };
+		31D654AA14A2CAF1006807AB /* diff.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = diff.html; sourceTree = "<group>"; };
 		31EB0D1F144E119E0056EC6F /* XTRepository+FileViewCommands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XTRepository+FileViewCommands.h"; sourceTree = "<group>"; };
 		31EB0D20144E119E0056EC6F /* XTRepository+FileViewCommands.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XTRepository+FileViewCommands.m"; sourceTree = "<group>"; };
 		31F1E87813D3AC6D00F3B317 /* XTSideBarDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = XTSideBarDataSource.h; path = Xit/XTSideBarDataSource.h; sourceTree = "<group>"; tabWidth = 4; };
@@ -242,7 +252,12 @@
 		31355B0913EA139700C33AAB /* html.theme.default */ = {
 			isa = PBXGroup;
 			children = (
+				31D654AA14A2CAF1006807AB /* diff.html */,
 				31355B1813EA189200C33AAB /* diff.css */,
+				31D654A214A2C722006807AB /* source.html */,
+				31D654A314A2C723006807AB /* source.css */,
+				31D6549E14A2C414006807AB /* blame.css */,
+				31D6549F14A2C414006807AB /* blame.html */,
 				31355B0A13EA139700C33AAB /* Supporting Files */,
 			);
 			path = html.theme.default;
@@ -600,6 +615,11 @@
 			files = (
 				31355B0E13EA139700C33AAB /* InfoPlist.strings in Resources */,
 				31355B1913EA189200C33AAB /* diff.css in Resources */,
+				31D654A014A2C414006807AB /* blame.css in Resources */,
+				31D654A114A2C414006807AB /* blame.html in Resources */,
+				31D654A514A2C723006807AB /* source.html in Resources */,
+				31D654A614A2C723006807AB /* source.css in Resources */,
+				31D654AD14A2CAF1006807AB /* diff.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

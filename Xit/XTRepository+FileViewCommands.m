@@ -41,7 +41,7 @@
 
 - (NSString *)diff:(NSString *)file fromSha:(NSString *)sha {
     NSString *res = nil;
-    NSData *output = [self exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff", file, sha, nil] error:nil];
+    NSData *output = [self exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff", sha, @"--", file, nil] error:nil];
     if (output) {
         res = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
     }
