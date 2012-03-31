@@ -27,7 +27,9 @@ NSString *const XTStatusOutputKey = @"output";
         [userInfo setObject:command forKey:XTStatusCommandKey];
     if (output != nil)
         [userInfo setObject:output forKey:XTStatusOutputKey];
-    [[NSNotificationCenter defaultCenter] postNotificationName:XTStatusNotification object:repo userInfo:userInfo];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:XTStatusNotification object:repo userInfo:userInfo];
+    });
 }
 
 - (id)initWithFrame:(NSRect)frame {
