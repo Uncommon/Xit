@@ -30,4 +30,9 @@
 // XXX TEMP
 - (IBAction)reload:(id)sender;
 
+- (IBAction)newTag:(id)sender;
+- (IBAction)newBranch:(id)sender;
+- (IBAction)addRemote:(id)sender;
+- (IBAction)checkOutBranch:(id)sender;
+
 @end

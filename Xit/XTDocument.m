@@ -92,6 +92,23 @@
     }
 }
 
+- (IBAction)newTag:(id)sender
+{
+}
+
+- (IBAction)newBranch:(id)sender
+{
+}
+
+- (IBAction)addRemote:(id)sender
+{
+}
+
+- (IBAction)checkOutBranch:(id)sender
+{
+}
+
+
 #pragma mark - temp
 - (IBAction)reload:(id)sender {
     NSLog(@"########## reload ##########");
