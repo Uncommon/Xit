@@ -92,20 +92,26 @@
     }
 }
 
-- (IBAction)newTag:(id)sender
-{
+- (BOOL)validateUserInterfaceItem:(id<NSValidatedUserInterfaceItem>)item {
+    if ([item action] == @selector(checkOutBranch:)) {
+        if ([[[tabs selectedTabViewItem] identifier] isEqual:@"history"])
+            return [historyView selectedBranch] != nil;
+        else
+            return NO;
+    }
+    return [super validateUserInterfaceItem:item];
 }
 
-- (IBAction)newBranch:(id)sender
-{
+- (IBAction)newTag:(id)sender {
 }
 
-- (IBAction)addRemote:(id)sender
-{
+- (IBAction)newBranch:(id)sender {
 }
 
-- (IBAction)checkOutBranch:(id)sender
-{
+- (IBAction)addRemote:(id)sender {
+}
+
+- (IBAction)checkOutBranch:(id)sender {
 }
 
 

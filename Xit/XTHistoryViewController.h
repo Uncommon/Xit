@@ -32,4 +32,6 @@
 - (IBAction)toggleLayout:(id)sender;
 - (IBAction)toggleSideBar:(id)sender;
 
+- (NSString *)selectedBranch;
+
 @end

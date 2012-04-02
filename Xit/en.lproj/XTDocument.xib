@@ -67,10 +67,9 @@
 							<string key="NSToolbarItemPaletteLabel">View</string>
 							<nil key="NSToolbarItemToolTip"/>
 							<object class="NSSegmentedControl" key="NSToolbarItemView" id="443472690">
-								<reference key="NSNextResponder"/>
+								<nil key="NSNextResponder"/>
 								<int key="NSvFlags">268</int>
 								<string key="NSFrame">{{0, 14}, {93, 25}}</string>
-								<reference key="NSSuperview"/>
 								<string key="NSReuseIdentifierKey">_NS:1766</string>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSSegmentedCell" key="NSCell" id="728024554">
@@ -152,11 +151,10 @@
 							<string key="NSToolbarItemPaletteLabel">Activity</string>
 							<nil key="NSToolbarItemToolTip"/>
 							<object class="NSProgressIndicator" key="NSToolbarItemView" id="721195376">
-								<reference key="NSNextResponder"/>
+								<nil key="NSNextResponder"/>
 								<int key="NSvFlags">1292</int>
 								<object class="NSPSMatrix" key="NSDrawMatrix"/>
 								<string key="NSFrame">{{16, 14}, {16, 16}}</string>
-								<reference key="NSSuperview"/>
 								<string key="NSReuseIdentifierKey">_NS:3930</string>
 								<int key="NSpiFlags">20746</int>
 								<double key="NSMaxValue">100</double>
@@ -237,7 +235,7 @@
 							<string key="NSReuseIdentifierKey">_NS:461</string>
 							<array class="NSMutableArray" key="NSTabViewItems">
 								<object class="NSTabViewItem" id="741351125">
-									<string key="NSIdentifier">1</string>
+									<string key="NSIdentifier">history</string>
 									<object class="NSView" key="NSView" id="325628873">
 										<nil key="NSNextResponder"/>
 										<int key="NSvFlags">256</int>
@@ -245,9 +243,9 @@
 											<object class="NSTextField" id="623010594">
 												<reference key="NSNextResponder" ref="325628873"/>
 												<int key="NSvFlags">268</int>
-												<string key="NSFrame">{{282, 236}, {13, 17}}</string>
+												<string key="NSFrame">{{282, 474}, {13, 17}}</string>
 												<reference key="NSSuperview" ref="325628873"/>
-												<reference key="NSNextKeyView" ref="181621656"/>
+												<reference key="NSNextKeyView"/>
 												<string key="NSReuseIdentifierKey">_NS:3936</string>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSTextFieldCell" key="NSCell" id="266173924">
@@ -282,7 +280,7 @@
 												</object>
 											</object>
 										</array>
-										<string key="NSFrameSize">{871, 422}</string>
+										<string key="NSFrameSize">{775, 660}</string>
 										<reference key="NSNextKeyView" ref="623010594"/>
 										<string key="NSReuseIdentifierKey">_NS:463</string>
 									</object>
@@ -291,7 +289,7 @@
 									<reference key="NSTabView" ref="181621656"/>
 								</object>
 								<object class="NSTabViewItem" id="895605117">
-									<string key="NSIdentifier">2</string>
+									<string key="NSIdentifier">stage</string>
 									<object class="NSView" key="NSView" id="594729912">
 										<nil key="NSNextResponder"/>
 										<int key="NSvFlags">256</int>
@@ -301,7 +299,7 @@
 												<int key="NSvFlags">268</int>
 												<string key="NSFrame">{{210, 480}, {13, 17}}</string>
 												<reference key="NSSuperview" ref="594729912"/>
-												<reference key="NSNextKeyView" ref="181621656"/>
+												<reference key="NSNextKeyView"/>
 												<string key="NSReuseIdentifierKey">_NS:3936</string>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSTextFieldCell" key="NSCell" id="850312354">
@@ -325,6 +323,7 @@
 									<reference key="NSTabView" ref="181621656"/>
 								</object>
 								<object class="NSTabViewItem" id="342079532">
+									<string key="NSIdentifier">files</string>
 									<object class="NSView" key="NSView" id="915171361">
 										<reference key="NSNextResponder" ref="181621656"/>
 										<int key="NSvFlags">256</int>
@@ -332,7 +331,7 @@
 											<object class="NSTextField" id="63863679">
 												<reference key="NSNextResponder" ref="915171361"/>
 												<int key="NSvFlags">268</int>
-												<string key="NSFrame">{{264, 218}, {13, 17}}</string>
+												<string key="NSFrame">{{264, 456}, {13, 17}}</string>
 												<reference key="NSSuperview" ref="915171361"/>
 												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView"/>
@@ -350,7 +349,7 @@
 												</object>
 											</object>
 										</array>
-										<string key="NSFrameSize">{871, 422}</string>
+										<string key="NSFrameSize">{775, 660}</string>
 										<reference key="NSSuperview" ref="181621656"/>
 										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="63863679"/>
@@ -814,17 +813,35 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">XTDocument</string>
 					<string key="superclassName">NSDocument</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">reload:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">reload:</string>
-						<object class="IBActionInfo" key="NS.object.0">
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="addRemote:">id</string>
+						<string key="checkOutBranch:">id</string>
+						<string key="newBranch:">id</string>
+						<string key="newTag:">id</string>
+						<string key="reload:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="addRemote:">
+							<string key="name">addRemote:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="checkOutBranch:">
+							<string key="name">checkOutBranch:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="newBranch:">
+							<string key="name">newBranch:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="newTag:">
+							<string key="name">newTag:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="reload:">
 							<string key="name">reload:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-					</object>
+					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="activity">NSProgressIndicator</string>
 						<string key="fileListView">XTFileViewController</string>

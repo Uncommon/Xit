@@ -6,9 +6,10 @@
 //
 
 #import "XTHistoryViewController.h"
+#import "XTCommitViewController.h"
+#import "XTLocalBranchItem.h"
 #import "XTRepository.h"
 #import "XTSideBarDataSource.h"
-#import "XTCommitViewController.h"
 
 @implementation XTHistoryViewController
 
@@ -47,6 +48,16 @@
     // TODO: improve it
     const CGFloat newWidth = ([sender state] == NSOnState) ? 180 : 0;
     [sidebarSplitView setPosition:newWidth ofDividerAtIndex:0 ];
+}
+
+- (NSString *)selectedBranch {
+    id selection = [sidebarOutline itemAtRow:[sidebarOutline selectedRow]];
+
+    if (selection == nil)
+        return nil;
+    if ([selection isKindOfClass:[XTLocalBranchItem class]])
+        return [(XTLocalBranchItem *)selection title];
+    return nil;
 }
 
 @end
