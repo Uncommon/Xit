@@ -22,8 +22,8 @@
 
 - (id)initWithURL:(NSURL *)url;
 - (void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^)(NSString *))block error:(NSError **)error;
-- (NSData *)exectuteGitWithArgs:(NSArray *)args error:(NSError **)error;
-- (NSData *)exectuteGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error;
+- (NSData *)executeGitWithArgs:(NSArray *)args error:(NSError **)error;
+- (NSData *)executeGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error;
 
 - (void)initializeEventStream;
 - (void)start;

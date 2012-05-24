@@ -36,7 +36,7 @@
         return;
 
     dispatch_async(repo.queue, ^{
-                       NSData *output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff-files", nil] error:nil];
+                       NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"diff-files", nil] error:nil];
                        NSString *filesStr = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
                        filesStr = [filesStr stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                        NSArray *files = [filesStr componentsSeparatedByString:@"\n"];
@@ -52,7 +52,7 @@
                             }
                         }];
 
-                       output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"ls-files", @"--others", @"--exclude-standard", nil] error:nil];
+                       output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"ls-files", @"--others", @"--exclude-standard", nil] error:nil];
                        filesStr = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
                        filesStr = [filesStr stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                        files = [filesStr componentsSeparatedByString:@"\n"];

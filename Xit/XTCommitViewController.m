@@ -44,7 +44,7 @@ const NSString *kAuthorKeyDate = @"date";
 
 // defaults write com.yourcompany.programname WebKitDeveloperExtras -bool true
 - (NSString *)loadCommit:(NSString *)sha {
-    NSData *output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"show", @"-z", @"--numstat", @"--summary", @"--pretty=raw", sha, nil] error:nil];
+    NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"show", @"-z", @"--numstat", @"--summary", @"--pretty=raw", sha, nil] error:nil];
 
     if (output == nil)
         return nil;
@@ -65,12 +65,12 @@ const NSString *kAuthorKeyDate = @"date";
             NSMutableDictionary *stats = [self parseStats:detail];
 
             // File list
-            output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff-tree", @"--root", @"-r", @"-C90%", @"-M90%", sha, nil] error:nil];
+            output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"diff-tree", @"--root", @"-r", @"-C90%", @"-M90%", sha, nil] error:nil];
             NSString *dt = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
             NSString *fileList = [self parseDiffTree:dt withStats:stats];
 
             // Diffs list
-            output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff-tree", @"--root", @"--cc", @"-C90%", @"-M90%", sha, nil] error:nil];
+            output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"diff-tree", @"--root", @"--cc", @"-C90%", @"-M90%", sha, nil] error:nil];
             NSString *d = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
             NSString *diffs = [XTHTML parseDiff:d];
 

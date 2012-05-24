@@ -72,7 +72,7 @@
     XTSideBarItem *stashes = [roots objectAtIndex:XT_STASHES];
 
     [stashes clean];
-    NSData *output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"stash", @"list", @"--pretty=%H %gd %gs", nil] error:nil];
+    NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"stash", @"list", @"--pretty=%H %gd %gs", nil] error:nil];
     if (output) {
         NSString *refs = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
         NSScanner *scan = [NSScanner scannerWithString:refs];
@@ -97,7 +97,7 @@
     [branches clean];
     [tags clean];
     [remotes clean];
-    NSData *output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"show-ref", @"-d", nil] error:nil];
+    NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"show-ref", @"-d", nil] error:nil];
     if (output) {
         NSString *refs = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
         NSScanner *scan = [NSScanner scannerWithString:refs];

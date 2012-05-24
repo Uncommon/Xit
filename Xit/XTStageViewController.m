@@ -34,7 +34,7 @@
 
 - (void)showUnstageFile:(XTFileIndexInfo *)file {
     dispatch_async(repo.queue, ^{
-                       NSData *output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff-files", @"--patch", @"--", file.name, nil] error:nil];
+                       NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"diff-files", @"--patch", @"--", file.name, nil] error:nil];
 
                        actualDiff = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
                        stagedFile = NO;
@@ -46,7 +46,7 @@
 
 - (void)showStageFile:(XTFileIndexInfo *)file {
     dispatch_async(repo.queue, ^{
-                       NSData *output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff-index",  @"--patch", @"--cached", @"HEAD", @"--", file.name, nil] error:nil];
+                       NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"diff-index",  @"--patch", @"--cached", @"HEAD", @"--", file.name, nil] error:nil];
 
                        actualDiff = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
                        stagedFile = YES;
@@ -72,7 +72,7 @@
 
 - (void)unstageChunk:(NSInteger)idx {
     dispatch_async(repo.queue, ^{
-                       [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"apply",  @"--cached", @"--reverse", nil]
+                       [repo executeGitWithArgs:[NSArray arrayWithObjects:@"apply",  @"--cached", @"--reverse", nil]
                                        withStdIn:[self preparePatch:idx]
                                            error:nil];
                        [self reload];
@@ -81,7 +81,7 @@
 
 - (void)stageChunk:(NSInteger)idx {
     dispatch_async(repo.queue, ^{
-                       [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"apply",  @"--cached", nil]
+                       [repo executeGitWithArgs:[NSArray arrayWithObjects:@"apply",  @"--cached", nil]
                                        withStdIn:[self preparePatch:idx]
                                            error:nil];
                        [self reload];
