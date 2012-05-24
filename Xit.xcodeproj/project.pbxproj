@@ -383,6 +383,7 @@
 				C3FA46FD13D0F8E200AC4F9B /* Products */,
 				C3355E1413F32815008D14B8 /* uncrustify.cfg */,
 			);
+			indentWidth = 4;
 			sourceTree = "<group>";
 		};
 		C3FA46FD13D0F8E200AC4F9B /* Products */ = {
