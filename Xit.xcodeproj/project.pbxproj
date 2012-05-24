@@ -63,11 +63,11 @@
 		C3FA471413D0F8E200AC4F9B /* XTDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA471313D0F8E200AC4F9B /* XTDocument.m */; };
 		C3FA471713D0F8E200AC4F9B /* XTDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3FA471513D0F8E200AC4F9B /* XTDocument.xib */; };
 		C3FA471A13D0F8E300AC4F9B /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3FA471813D0F8E300AC4F9B /* MainMenu.xib */; };
-		C3FA472113D0F8E300AC4F9B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		C3FA472913D0F8E300AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA472713D0F8E300AC4F9B /* InfoPlist.strings */; };
-		C3FA472C13D0F8E300AC4F9B /* XitTests.h in Resources */ = {isa = PBXBuildFile; fileRef = C3FA472B13D0F8E300AC4F9B /* XitTests.h */; };
 		C3FA472E13D0F8E300AC4F9B /* XitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA472D13D0F8E300AC4F9B /* XitTests.m */; };
 		DD00725613E76DFB003B4120 /* Xit.icns in Resources */ = {isa = PBXBuildFile; fileRef = DD00725513E76DFB003B4120 /* Xit.icns */; };
+		DD592093156EEE64005FBB0F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
+		DD592096156EEF40005FBB0F /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD592095156EEF40005FBB0F /* OCMock.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -196,6 +196,7 @@
 		C3FA472B13D0F8E300AC4F9B /* XitTests.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = XitTests.h; sourceTree = "<group>"; tabWidth = 4; };
 		C3FA472D13D0F8E300AC4F9B /* XitTests.m */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = XitTests.m; sourceTree = "<group>"; tabWidth = 4; };
 		DD00725513E76DFB003B4120 /* Xit.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Xit.icns; sourceTree = "<group>"; };
+		DD592095156EEF40005FBB0F /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCMock.framework; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -220,7 +221,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C3FA472113D0F8E300AC4F9B /* Cocoa.framework in Frameworks */,
+				DD592093156EEE64005FBB0F /* Cocoa.framework in Frameworks */,
+				DD592096156EEF40005FBB0F /* OCMock.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -460,6 +462,7 @@
 		C3FA472413D0F8E300AC4F9B /* XitTests */ = {
 			isa = PBXGroup;
 			children = (
+				DD592095156EEF40005FBB0F /* OCMock.framework */,
 				C3FA472B13D0F8E300AC4F9B /* XitTests.h */,
 				C3FA472D13D0F8E300AC4F9B /* XitTests.m */,
 				311429B513EB600100A7DF05 /* XTCommitViewControllerTest.h */,
@@ -612,7 +615,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3FA472913D0F8E300AC4F9B /* InfoPlist.strings in Resources */,
-				C3FA472C13D0F8E300AC4F9B /* XitTests.h in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -908,7 +910,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Xit.app/Contents/MacOS/Xit";
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_ENABLE_OBJC_GC = required;
@@ -1006,7 +1011,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Xit.app/Contents/MacOS/Xit";
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_ENABLE_OBJC_GC = required;
@@ -1031,7 +1039,10 @@
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Xit.app/Contents/MacOS/Xit";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_ENABLE_OBJC_GC = required;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
