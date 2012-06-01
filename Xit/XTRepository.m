@@ -172,6 +172,16 @@
     return output;
 }
 
+- (NSString *)parseReference:(NSString*)reference {
+    NSError *error = nil;
+    NSArray *args = [NSArray arrayWithObjects:@"rev-parse", @"--verify", nil];
+    NSData *output = [self executeGitWithArgs:args error:&error];
+
+    if (output == nil)
+        return nil;
+    return [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
+}
+
 // XXX tmp
 - (void)start {
     [self initializeEventStream];
