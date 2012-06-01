@@ -12,6 +12,13 @@
 
 @implementation XTStageViewController
 
+- (void)awakeFromNib {
+    [stageTable setTarget:self];
+    [stageTable setDoubleAction:@selector(stagedDoubleClicked:)];
+    [unstageTable setTarget:self];
+    [unstageTable setDoubleAction:@selector(unstagedDoubleClicked:)];
+}
+
 - (NSString *)nibName {
     NSLog(@"nibName: %@ (%@)", [super nibName], [self class]);
     return NSStringFromClass([self class]);
@@ -66,6 +73,44 @@
     dispatch_async(dispatch_get_main_queue(), ^{
                        [[web mainFrame] loadHTMLString:html baseURL:themeURL];
                    });
+}
+
+- (void)stagedDoubleClicked:(id)sender {
+    NSTableView *tableView = (NSTableView*)sender;
+    const NSInteger clickedRow = [tableView clickedRow];
+
+    if (clickedRow == -1)
+        return;
+
+    XTFileIndexInfo *item = [[stageDS items] objectAtIndex:clickedRow];
+
+    dispatch_async(repo.queue, ^{
+        NSArray *args = [NSArray arrayWithObjects:@"reset", @"HEAD", item.name, nil];
+        NSError *error = nil;
+
+        [repo executeGitWithArgs:args error:&error];
+        if (error == nil)
+            [self reload];
+    });
+}
+
+- (void)unstagedDoubleClicked:(id)sender {
+    NSTableView *tableView = (NSTableView*)sender;
+    const NSInteger clickedRow = [tableView clickedRow];
+
+    if (clickedRow == -1)
+        return;
+
+    XTFileIndexInfo *item = [[unstageDS items] objectAtIndex:clickedRow];
+
+    dispatch_async(repo.queue, ^{
+        NSArray *args = [NSArray arrayWithObjects:@"add", item.name, nil];
+        NSError *error = nil;
+
+        [repo executeGitWithArgs:args error:&error];
+        if (error == nil)
+            [self reload];
+    });
 }
 
 #pragma mark -

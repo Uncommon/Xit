@@ -15,10 +15,10 @@
 
 @interface XTStageViewController : NSViewController <DOMEventListener, NSTableViewDelegate>
 {
+    @public
     IBOutlet XTStagedDataSource *stageDS;
     IBOutlet XTUnstagedDataSource *unstageDS;
     IBOutlet WebView *web;
-    @private
     IBOutlet NSTableView *stageTable;
     IBOutlet NSTableView *unstageTable;
     XTRepository *repo;
@@ -37,5 +37,8 @@
 
 - (void)showDiff:(NSString *)diff;
 - (DOMHTMLElement *)createButtonWithIndex:(int)index title:(NSString *)title fromDOM:(DOMDocument *)dom;
+
+- (void)stagedDoubleClicked:(id)sender;
+- (void)unstagedDoubleClicked:(id)sender;
 
 @end

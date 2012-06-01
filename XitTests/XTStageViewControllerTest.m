@@ -12,7 +12,48 @@
 #import "XTFileIndexInfo.h"
 #import "XTStageViewController.h"
 
+#import <OCMock/OCMock.h>
+
 @implementation XTStageViewControllerTest
+
+- (void)testStage {
+    NSString *path1 = [NSString stringWithFormat:@"%@/file1.txt", repoPath];
+    NSString *path2 = [NSString stringWithFormat:@"%@/file2.txt", repoPath];
+    NSError *error = nil;
+
+    [@"text1" writeToFile:path1 atomically:YES encoding:NSASCIIStringEncoding error:&error];
+    STAssertNil(error, @"creating file1");
+    [@"text2" writeToFile:path2 atomically:YES encoding:NSASCIIStringEncoding error:&error];
+    STAssertNil(error, @"creating file2");
+
+    id mockTable = [OCMockObject mockForClass:[NSTableView class]];
+    XTUnstagedDataSource *ustgds = [[XTUnstagedDataSource alloc] init];
+    XTStagedDataSource *stgds = [[XTStagedDataSource alloc] init];
+
+    [ustgds setRepo:repository];
+    [stgds setRepo:repository];
+    [repository waitUntilReloadEnd];
+
+    STAssertEquals([ustgds numberOfRowsInTableView:mockTable], 2L, @"");
+    STAssertEquals([stgds numberOfRowsInTableView:mockTable], 0L, @"");
+
+    XTStageViewController *controller = [[XTStageViewController alloc] init];
+    const NSInteger clickedRow = 0;
+
+    [controller setRepo:repository];
+    controller->unstageDS = ustgds;
+    controller->stageDS = stgds;
+    controller->unstageTable = mockTable;
+
+    [[[mockTable stub] andReturnValue:OCMOCK_VALUE(clickedRow)] clickedRow];
+    [[mockTable stub] reloadData];
+    [controller unstagedDoubleClicked:mockTable];
+    [repository waitUntilReloadEnd];
+
+    STAssertEquals([ustgds numberOfRowsInTableView:mockTable], 1L, @"");
+    STAssertEquals([stgds numberOfRowsInTableView:mockTable], 1L, @"");
+    [mockTable verify];
+}
 
 - (void)testXTPartialStage {
     NSString *mv = [NSString stringWithFormat:@"%@/file_to_move.txt", repoPath];
