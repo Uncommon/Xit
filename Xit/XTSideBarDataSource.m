@@ -81,7 +81,7 @@
         while ([scan scanUpToString:@" " intoString:&commit]) {
             [scan scanUpToString:@"\n" intoString:&name];
             XTSideBarItem *stash = [[XTSideBarItem alloc] initWithTitle:name];
-            [stashes addchildren:stash];
+            [stashes addchild:stash];
             [refsIndex addObject:stash forKey:commit];
         }
     }
@@ -107,7 +107,7 @@
             [scan scanUpToString:@"\n" intoString:&name];
             if ([name hasPrefix:@"refs/heads/"]) {
                 XTLocalBranchItem *branch = [[XTLocalBranchItem alloc] initWithTitle:[name lastPathComponent] andSha:commit];
-                [branches addchildren:branch];
+                [branches addchild:branch];
                 [refsIndex addObject:branch forKey:branch.sha];
             } else if ([name hasPrefix:@"refs/tags/"]) {
                 XTTagItem *tag;
@@ -118,7 +118,7 @@
                     tag.sha = commit;
                 } else {
                     tag = [[XTTagItem alloc] initWithTitle:tagName andSha:commit];
-                    [tags addchildren:tag];
+                    [tags addchild:tag];
                     [tagIndex setObject:tag forKey:tagName];
                 }
                 [refsIndex addObject:tag forKey:tag.sha];
@@ -128,10 +128,10 @@
                 XTSideBarItem *remote = [remotes getRemote:remoteName];
                 if (remote == nil) {
                     remote = [[XTSideBarItem alloc] initWithTitle:remoteName];
-                    [remotes addchildren:remote];
+                    [remotes addchild:remote];
                 }
                 XTLocalBranchItem *branch = [[XTLocalBranchItem alloc] initWithTitle:branchName andSha:commit];
-                [remote addchildren:branch];
+                [remote addchild:branch];
                 [refsIndex addObject:branch forKey:branch.sha];
             }
         }
@@ -149,7 +149,7 @@
         res = [roots count];
     } else if ([item isKindOfClass:[XTSideBarItem class]]) {
         XTSideBarItem *sbItem = (XTSideBarItem *)item;
-        res = [sbItem numberOfChildrens];
+        res = [sbItem numberOfChildren];
     }
     return res;
 }
@@ -171,7 +171,7 @@
         res = [roots objectAtIndex:index];
     } else if ([item isKindOfClass:[XTSideBarItem class]]) {
         XTSideBarItem *sbItem = (XTSideBarItem *)item;
-        res = [sbItem children:index];
+        res = [sbItem childAtIndex:index];
     }
     return res;
 }

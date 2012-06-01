@@ -13,7 +13,7 @@
     @private
     NSString *title;
     NSString *sha;
-    NSMutableArray *childrens;
+    NSMutableArray *children;
 }
 
 @property (assign) NSString *title;
@@ -21,9 +21,9 @@
 
 - (id)initWithTitle:(NSString *)theTitle andSha:(NSString *)sha;
 - (id)initWithTitle:(NSString *)theTitle;
-- (NSInteger)numberOfChildrens;
-- (id)children:(NSInteger)index;
-- (void)addchildren:(XTSideBarItem *)child;
+- (NSInteger)numberOfChildren;
+- (id)childAtIndex:(NSInteger)index;
+- (void)addchild:(XTSideBarItem *)child;
 - (BOOL)isItemExpandable;
 - (void)clean;
 - (NSString *)badge;
