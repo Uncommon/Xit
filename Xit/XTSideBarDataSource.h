@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class XTRepository;
+@class XTLocalBranchItem;
 
 typedef enum {
     XT_BRANCHES = 0,
@@ -29,5 +30,7 @@ typedef enum {
 - (void)reload;
 - (void)reloadBranches:(NSMutableDictionary *)refsIndex;
 - (void)reloadStashes:(NSMutableDictionary *)refsIndex;
+
+- (XTLocalBranchItem *)itemForBranchName:(NSString *)branch;
 
 @end

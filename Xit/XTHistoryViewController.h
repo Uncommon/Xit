@@ -29,9 +29,17 @@
 
 - (void)setRepo:(XTRepository *)newRepo;
 
+- (IBAction)checkOutBranch:(id)sender;
 - (IBAction)toggleLayout:(id)sender;
 - (IBAction)toggleSideBar:(id)sender;
 
 - (NSString *)selectedBranch;
+- (void)selectBranch:(NSString *)branch;
+
+@property (readonly) XTSideBarDataSource *sideBarDS;
+@property (readonly) XTHistoryDataSource *historyDS;
+
+// For testing
+- (id)initWithRepository:(XTRepository *)repository sidebar:(NSOutlineView *)sidebar;
 
 @end

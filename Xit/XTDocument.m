@@ -111,17 +111,6 @@
 - (IBAction)addRemote:(id)sender {
 }
 
-- (IBAction)checkOutBranch:(id)sender {
-    dispatch_async(repo.queue, ^{
-        NSError *error = nil;
-        NSArray *args = [NSArray arrayWithObjects:@"checkout", [historyView selectedBranch], nil];
-
-        [repo exectuteGitWithArgs:args error:&error];
-        if (error != nil)
-            [XTStatusView updateStatus:@"Checkout failed" command:[args componentsJoinedByString:@" "] output:[[error userInfo] valueForKey:@"output"] forRepository:repo];
-    });
-}
-
 
 #pragma mark - temp
 - (IBAction)reload:(id)sender {

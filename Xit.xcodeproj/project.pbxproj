@@ -40,12 +40,14 @@
 		895DEF0C142CF84D001763FC /* branch.png in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF0B142CF84D001763FC /* branch.png */; };
 		895DEF1F142D91F8001763FC /* historyTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF1E142D91F8001763FC /* historyTemplate.png */; };
 		895DEF221432438D001763FC /* stageTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF211432438D001763FC /* stageTemplate.png */; };
+		896B05D015796D2A003B0C24 /* XTHistoryViewControllerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 896B05CF15796D2A003B0C24 /* XTHistoryViewControllerTest.m */; };
 		89794F671452839500E38ACC /* XTStatusView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89794F651452839500E38ACC /* XTStatusView.xib */; };
 		89794F8C1458CC9B00E38ACC /* XTOutputViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89794F8A1458CC9B00E38ACC /* XTOutputViewController.m */; };
 		89794F8D1458CC9B00E38ACC /* XTOutputViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89794F8B1458CC9B00E38ACC /* XTOutputViewController.xib */; };
 		89991CDD144E3FF400097A99 /* XTStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 89991CDC144E3FF400097A99 /* XTStatusView.m */; };
 		899D010D14216D2C0091DC6F /* sidebarTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 899D010C14216D2C0091DC6F /* sidebarTemplate.png */; };
 		89A6EA2814478DA40089B212 /* XTAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A6EA2714478DA40089B212 /* XTAppDelegate.m */; };
+		89BEB8BC157B587600FED57B /* OCMock.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = DD592095156EEF40005FBB0F /* OCMock.framework */; };
 		C343F91113F4908E009C928A /* XTHTML.m in Sources */ = {isa = PBXBuildFile; fileRef = C343F91013F4908E009C928A /* XTHTML.m */; };
 		C358653114048A3F00060C53 /* XTRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = C358653014048A3F00060C53 /* XTRepository.m */; };
 		C3D6CF1B13D4B18900D35D4D /* XTLocalBranchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6CF1A13D4B18900D35D4D /* XTLocalBranchItem.m */; };
@@ -86,6 +88,19 @@
 			remoteInfo = Xit;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		89BEB8BB157B586F00FED57B /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+				89BEB8BC157B587600FED57B /* OCMock.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		311429B513EB600100A7DF05 /* XTCommitViewControllerTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTCommitViewControllerTest.h; sourceTree = "<group>"; };
@@ -142,6 +157,8 @@
 		895DEF0B142CF84D001763FC /* branch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = branch.png; sourceTree = "<group>"; };
 		895DEF1E142D91F8001763FC /* historyTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = historyTemplate.png; sourceTree = "<group>"; };
 		895DEF211432438D001763FC /* stageTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stageTemplate.png; sourceTree = "<group>"; };
+		896B05CE15796D2A003B0C24 /* XTHistoryViewControllerTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTHistoryViewControllerTest.h; sourceTree = "<group>"; };
+		896B05CF15796D2A003B0C24 /* XTHistoryViewControllerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTHistoryViewControllerTest.m; sourceTree = "<group>"; };
 		89794F661452839500E38ACC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/XTStatusView.xib; sourceTree = "<group>"; };
 		89794F891458CC9B00E38ACC /* XTOutputViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTOutputViewController.h; sourceTree = "<group>"; };
 		89794F8A1458CC9B00E38ACC /* XTOutputViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTOutputViewController.m; sourceTree = "<group>"; };
@@ -463,15 +480,17 @@
 			isa = PBXGroup;
 			children = (
 				DD592095156EEF40005FBB0F /* OCMock.framework */,
+				C3FA472513D0F8E300AC4F9B /* Supporting Files */,
 				C3FA472B13D0F8E300AC4F9B /* XitTests.h */,
 				C3FA472D13D0F8E300AC4F9B /* XitTests.m */,
+				896B05CE15796D2A003B0C24 /* XTHistoryViewControllerTest.h */,
+				896B05CF15796D2A003B0C24 /* XTHistoryViewControllerTest.m */,
 				311429B513EB600100A7DF05 /* XTCommitViewControllerTest.h */,
 				311429B613EB600100A7DF05 /* XTCommitViewControllerTest.m */,
 				313014A813EB653F0017A2A1 /* XTSideBarDataSorceTests.h */,
 				313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */,
 				313014AD13EB65DB0017A2A1 /* XTHistoryDataSorceTests.h */,
 				313014AE13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m */,
-				C3FA472513D0F8E300AC4F9B /* Supporting Files */,
 				31C62D9613F2580E00845A9B /* XTStageViewControllerTest.h */,
 				31C62D9713F2580E00845A9B /* XTStageViewControllerTest.m */,
 				3199BABB142079BB008AAA4F /* XTFileListDataSourceTest.h */,
@@ -538,6 +557,7 @@
 				C3FA471C13D0F8E300AC4F9B /* Frameworks */,
 				C3FA471D13D0F8E300AC4F9B /* Resources */,
 				C3FA471E13D0F8E300AC4F9B /* ShellScript */,
+				89BEB8BB157B586F00FED57B /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -719,6 +739,7 @@
 				313014AF13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m in Sources */,
 				31C62D9813F2580E00845A9B /* XTStageViewControllerTest.m in Sources */,
 				3199BABD142079BB008AAA4F /* XTFileListDataSourceTest.m in Sources */,
+				896B05D015796D2A003B0C24 /* XTHistoryViewControllerTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

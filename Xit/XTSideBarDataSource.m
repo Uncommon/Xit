@@ -138,6 +138,18 @@
     }
 }
 
+- (XTLocalBranchItem *)itemForBranchName:(NSString *)branch {
+    XTSideBarItem *branches = [roots objectAtIndex:0];
+
+    for (NSInteger i = 0; i < [branches numberOfChildren]; ++i) {
+        XTLocalBranchItem *branchItem = [branches childAtIndex:i];
+
+        if ([branchItem.title isEqual:branch])
+            return branchItem;
+    }
+    return nil;
+}
+
 #pragma mark - NSOutlineViewDataSource
 
 - (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item {
