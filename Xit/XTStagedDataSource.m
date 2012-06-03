@@ -36,7 +36,7 @@
 
                        [items removeAllObjects];
 
-                       NSData *output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"diff-index", @"--cached", @"HEAD", nil] error:nil];
+                       NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"diff-index", @"--cached", @"HEAD", nil] error:nil];
                        NSString *filesStr = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
                        filesStr = [filesStr stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                        NSArray *files = [filesStr componentsSeparatedByString:@"\n"];

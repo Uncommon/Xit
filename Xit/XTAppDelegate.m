@@ -20,17 +20,23 @@
 }
 
 - (void)openDocument:(id)sender {
-    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    if (openPanel != nil) {
+        [openPanel makeKeyAndOrderFront:self];
+        return;
+    }
 
-    [panel setCanChooseFiles:NO];
-    [panel setCanChooseDirectories:YES];
-    [panel setDelegate:self];
-    [panel beginWithCompletionHandler:^(NSInteger result) {
+    openPanel = [NSOpenPanel openPanel];
+
+    [openPanel setCanChooseFiles:NO];
+    [openPanel setCanChooseDirectories:YES];
+    [openPanel setDelegate:self];
+    [openPanel beginWithCompletionHandler:^(NSInteger result) {
         if (result == NSFileHandlingPanelOKButton) {
-            for (NSURL *url in [panel URLs]) {
+            for (NSURL *url in [openPanel URLs]) {
                 [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:url display:YES completionHandler:NULL];
             }
         }
+        openPanel = nil;
     }];
 }
 

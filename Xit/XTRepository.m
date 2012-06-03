@@ -123,11 +123,11 @@
     [self removeTask:task];
 }
 
-- (NSData *)exectuteGitWithArgs:(NSArray *)args error:(NSError **)error {
-    return [self exectuteGitWithArgs:args withStdIn:nil error:error];
+- (NSData *)executeGitWithArgs:(NSArray *)args error:(NSError **)error {
+    return [self executeGitWithArgs:args withStdIn:nil error:error];
 }
 
-- (NSData *)exectuteGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error {
+- (NSData *)executeGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error {
     if (repoURL == nil)
         return nil;
     NSLog(@"****command = git %@", [args componentsJoinedByString:@" "]);

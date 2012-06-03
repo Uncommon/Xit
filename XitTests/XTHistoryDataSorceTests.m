@@ -20,15 +20,15 @@
     for (int n = 0; n < nCommits; n++) {
         NSString *rn = [NSString stringWithFormat:@"refs/heads/root_%d", n];
         if ((n % 5) == 0) {
-            NSData *data = [repository exectuteGitWithArgs:[NSArray arrayWithObjects:@"symbolic-ref", @"HEAD", rn, nil] error:nil];
+            NSData *data = [repository executeGitWithArgs:[NSArray arrayWithObjects:@"symbolic-ref", @"HEAD", rn, nil] error:nil];
             if (data == nil) {
                 STFail(@"'%@' error", rn);
             }
-            data = [repository exectuteGitWithArgs:[NSArray arrayWithObjects:@"rm", @"--cached", @"-r", @".", nil] error:nil];
+            data = [repository executeGitWithArgs:[NSArray arrayWithObjects:@"rm", @"--cached", @"-r", @".", nil] error:nil];
             if (data == nil) {
                 STFail(@"'%@' error", rn);
             }
-            data = [repository exectuteGitWithArgs:[NSArray arrayWithObjects:@"clean", @"-f", @"-d", nil] error:nil];
+            data = [repository executeGitWithArgs:[NSArray arrayWithObjects:@"clean", @"-f", @"-d", nil] error:nil];
             if (data == nil) {
                 STFail(@"'%@' error", rn);
             }

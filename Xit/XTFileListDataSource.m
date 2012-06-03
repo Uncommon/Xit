@@ -50,7 +50,7 @@
     if (!sha)
         sha = @"HEAD";
 
-    NSData *output = [repo exectuteGitWithArgs:[NSArray arrayWithObjects:@"ls-tree", @"--name-only", @"-r", sha, nil] error:nil];
+    NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"ls-tree", @"--name-only", @"-r", sha, nil] error:nil];
 
     if (output) {
         NSString *ls = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
