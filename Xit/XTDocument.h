@@ -7,31 +7,17 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class XTHistoryViewController;
-@class XTStageViewController;
 @class XTRepository;
-@class XTFileViewController;
-@class XTStatusView;
 
 @interface XTDocument : NSDocument {
-    IBOutlet XTHistoryViewController *historyView;
-    IBOutlet XTStageViewController *stageView;
-    IBOutlet XTFileViewController *fileListView;
-    IBOutlet NSTabView *tabs;
-    IBOutlet NSProgressIndicator *activity;
-    IBOutlet XTStatusView *statusView;
     @private
     NSURL *repoURL;
     XTRepository *repo;
 }
 
-- (void)loadViewController:(NSViewController *)viewController onTab:(NSInteger)tabId;
-
 // XXX TEMP
 - (IBAction)reload:(id)sender;
 
-- (IBAction)newTag:(id)sender;
-- (IBAction)newBranch:(id)sender;
-- (IBAction)addRemote:(id)sender;
+@property (readonly) XTRepository *repository;
 
 @end
