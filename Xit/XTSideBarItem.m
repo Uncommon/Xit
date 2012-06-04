@@ -17,7 +17,7 @@
     if (self) {
         title = theTitle;
         sha = theSha;
-        childrens = [NSMutableArray array];
+        children = [NSMutableArray array];
     }
 
     return self;
@@ -35,24 +35,24 @@
     return self.title;
 }
 
-- (NSInteger)numberOfChildrens {
-    return (NSInteger)[childrens count];
+- (NSInteger)numberOfChildren {
+    return (NSInteger)[children count];
 }
 
-- (id)children:(NSInteger)index {
-    return [childrens objectAtIndex:index];
+- (id)childAtIndex:(NSInteger)index {
+    return [children objectAtIndex:index];
 }
 
-- (void)addchildren:(XTSideBarItem *)child {
-    [childrens addObject:child];
+- (void)addchild:(XTSideBarItem *)child {
+    [children addObject:child];
 }
 
 - (BOOL)isItemExpandable {
-    return [childrens count] > 0;
+    return [children count] > 0;
 }
 
 - (void)clean {
-    [childrens removeAllObjects];
+    [children removeAllObjects];
 }
 
 @end

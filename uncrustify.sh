@@ -2,7 +2,7 @@ PATH=${PATH}:/usr/local/bin
 if $(which -s uncrustify); then
     for name in "*.h" "*.pch"
     do
-        for file in `find . -name $name`
+        for file in `find . -name $name -not -path "*/OCMock.framework/*"`
         do
             uncrustify -c uncrustify.cfg -l OC+ -f $file | diff --old-group-format="$file:%df: warning: uncrustify wants to change this to:
 " --unchanged-line-format="" $file -

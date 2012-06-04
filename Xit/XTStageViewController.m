@@ -118,8 +118,8 @@
 - (void)unstageChunk:(NSInteger)idx {
     dispatch_async(repo.queue, ^{
                        [repo executeGitWithArgs:[NSArray arrayWithObjects:@"apply",  @"--cached", @"--reverse", nil]
-                                       withStdIn:[self preparePatch:idx]
-                                           error:nil];
+                                      withStdIn:[self preparePatch:idx]
+                                          error:nil];
                        [self reload];
                    });
 }
@@ -127,8 +127,8 @@
 - (void)stageChunk:(NSInteger)idx {
     dispatch_async(repo.queue, ^{
                        [repo executeGitWithArgs:[NSArray arrayWithObjects:@"apply",  @"--cached", nil]
-                                       withStdIn:[self preparePatch:idx]
-                                           error:nil];
+                                      withStdIn:[self preparePatch:idx]
+                                          error:nil];
                        [self reload];
                    });
 }

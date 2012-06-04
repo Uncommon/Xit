@@ -23,8 +23,8 @@
     return [remotes objectForKey:remoteName];
 }
 
-- (void)addchildren:(XTSideBarItem *)child {
-    [super addchildren:child];
+- (void)addchild:(XTSideBarItem *)child {
+    [super addchild:child];
     [remotes setObject:child forKey:[child title]];
 }
 

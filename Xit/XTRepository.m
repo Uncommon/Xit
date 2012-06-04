@@ -138,8 +138,11 @@
     [task setArguments:args];
 
     if (stdIn != nil) {
-        //        NSLog(@"**** stdin = %lu", stdIn.length);
+#if 0
+        NSLog(@"**** stdin = %lu", stdIn.length);
+#else
         NSLog(@"**** stdin = %lu\n%@", stdIn.length, stdIn);
+#endif
         NSPipe *stdInPipe = [NSPipe pipe];
         [[stdInPipe fileHandleForWriting] writeData:[stdIn dataUsingEncoding:NSUTF8StringEncoding]];
         [[stdInPipe fileHandleForWriting] closeFile];

@@ -12,6 +12,7 @@
 
 - (bool)initRepo;
 - (bool)createBranch:(NSString *)name;
+- (NSString *)currentBranch;
 - (bool)addFile:(NSString *)file;
 - (bool)commitWithMessage:(NSString *)message;
 - (bool)createTag:(NSString *)name withMessage:(NSString *)msg;

@@ -49,6 +49,23 @@
     return res;
 }
 
+- (NSString *)currentBranch {
+    NSError *error = nil;
+    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObject:@"branch"] error:&error];
+
+    if (output == nil)
+        return nil;
+
+    NSString *outputString = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+    NSArray *lines = [outputString componentsSeparatedByString:@"\n"];
+
+    for (NSString *line in lines) {
+        if ([line hasPrefix:@"*"])
+            return [line substringFromIndex:2];
+    }
+    return nil;
+}
+
 - (bool)merge:(NSString *)name {
     NSError *error = nil;
     bool res = NO;
