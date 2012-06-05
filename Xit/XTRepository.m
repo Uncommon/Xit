@@ -175,9 +175,9 @@
     return output;
 }
 
-- (NSString *)parseReference:(NSString*)reference {
+- (NSString *)parseReference:(NSString *)reference {
     NSError *error = nil;
-    NSArray *args = [NSArray arrayWithObjects:@"rev-parse", @"--verify", nil];
+    NSArray *args = [NSArray arrayWithObjects:@"rev-parse", @"--verify", reference, nil];
     NSData *output = [self executeGitWithArgs:args error:&error];
 
     if (output == nil)

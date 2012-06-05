@@ -24,7 +24,7 @@
 - (void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^)(NSString *))block error:(NSError **)error;
 - (NSData *)executeGitWithArgs:(NSArray *)args error:(NSError **)error;
 - (NSData *)executeGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error;
-- (NSString *)parseReference:(NSString*)reference;
+- (NSString *)parseReference:(NSString *)reference;
 
 - (void)initializeEventStream;
 - (void)start;

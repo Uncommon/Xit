@@ -164,8 +164,7 @@
     [stgds setRepo:repository];
     [repository waitUntilReloadEnd];
 
-    nc = [stgds numberOfRowsInTableView:nil];
-    STAssertTrue((nc == 5), @"found %d commits", nc);
+    STAssertEquals([stgds numberOfRowsInTableView:nil], 5L, @"");
 
     expected = [NSDictionary dictionaryWithObjectsAndKeys:
                 @"M", @"file_to_mod.txt",

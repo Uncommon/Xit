@@ -76,7 +76,7 @@
 }
 
 - (void)stagedDoubleClicked:(id)sender {
-    NSTableView *tableView = (NSTableView*)sender;
+    NSTableView *tableView = (NSTableView *)sender;
     const NSInteger clickedRow = [tableView clickedRow];
 
     if (clickedRow == -1)
@@ -95,7 +95,7 @@
 }
 
 - (void)unstagedDoubleClicked:(id)sender {
-    NSTableView *tableView = (NSTableView*)sender;
+    NSTableView *tableView = (NSTableView *)sender;
     const NSInteger clickedRow = [tableView clickedRow];
 
     if (clickedRow == -1)
