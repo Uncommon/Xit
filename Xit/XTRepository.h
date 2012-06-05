@@ -31,6 +31,7 @@
 - (void)stop;
 - (void)waitUntilReloadEnd;
 
+- (void)executeOffMainThread:(void (^)())block;
 - (void)addTask:(NSTask *)task;
 - (void)removeTask:(NSTask *)task;
 

@@ -33,8 +33,10 @@
 - (void)reload {
     [stageDS reload];
     [unstageDS reload];
-    [stageTable reloadData];
-    [unstageTable reloadData];
+    [repo executeOffMainThread:^{
+        [stageTable reloadData];
+        [unstageTable reloadData];
+    }];
 }
 
 #pragma mark -
@@ -154,10 +156,10 @@
 
 - (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame {
     DOMDocument *dom = [[web mainFrame] DOMDocument];
-    DOMNodeList *headres = [dom getElementsByClassName:@"header"]; // TODO: change class names
+    DOMNodeList *headers = [dom getElementsByClassName:@"header"]; // TODO: change class names
 
-    for (int n = 0; n < headres.length; n++) {
-        DOMHTMLElement *header = (DOMHTMLElement *)[headres item:n];
+    for (int n = 0; n < headers.length; n++) {
+        DOMHTMLElement *header = (DOMHTMLElement *)[headers item:n];
         if (stagedFile) {
             [[[header children] item:0] appendChild:[self createButtonWithIndex:n title:@"Unstage" fromDOM:dom]];
         } else {

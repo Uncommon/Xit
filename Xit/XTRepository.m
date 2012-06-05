@@ -37,11 +37,18 @@
         repoURL = url;
         NSMutableString *qName = [NSMutableString stringWithString:@"com.xit.queue."];
         [qName appendString:[url path]];
-        queue = dispatch_queue_create([qName cStringUsingEncoding:NSASCIIStringEncoding], nil);
+        queue = dispatch_queue_create([qName cStringUsingEncoding:NSASCIIStringEncoding], NULL);
         activeTasks = [NSMutableArray array];
     }
 
     return self;
+}
+
+- (void)executeOffMainThread:(void (^)())block {
+    if ([NSThread isMainThread])
+        dispatch_async(queue, block);
+    else
+        block();
 }
 
 - (void)addTask:(NSTask *)task {
