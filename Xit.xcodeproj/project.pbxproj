@@ -40,7 +40,7 @@
 		895DEEF6142CECB7001763FC /* SidebarTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 895DEEF5142CECB7001763FC /* SidebarTableCellView.m */; };
 		895DEF0C142CF84D001763FC /* branch.png in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF0B142CF84D001763FC /* branch.png */; };
 		895DEF1F142D91F8001763FC /* historyTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF1E142D91F8001763FC /* historyTemplate.png */; };
-		895DEF221432438D001763FC /* stageTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF211432438D001763FC /* stageTemplate.png */; };
+		895DEF221432438D001763FC /* stageTemplate.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF211432438D001763FC /* stageTemplate.pdf */; };
 		896B05D015796D2A003B0C24 /* XTHistoryViewControllerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 896B05CF15796D2A003B0C24 /* XTHistoryViewControllerTest.m */; };
 		89794F671452839500E38ACC /* XTStatusView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89794F651452839500E38ACC /* XTStatusView.xib */; };
 		89794F8C1458CC9B00E38ACC /* XTOutputViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89794F8A1458CC9B00E38ACC /* XTOutputViewController.m */; };
@@ -159,7 +159,7 @@
 		895DEEF5142CECB7001763FC /* SidebarTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SidebarTableCellView.m; path = Xit/SidebarTableCellView.m; sourceTree = "<group>"; };
 		895DEF0B142CF84D001763FC /* branch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = branch.png; sourceTree = "<group>"; };
 		895DEF1E142D91F8001763FC /* historyTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = historyTemplate.png; sourceTree = "<group>"; };
-		895DEF211432438D001763FC /* stageTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stageTemplate.png; sourceTree = "<group>"; };
+		895DEF211432438D001763FC /* stageTemplate.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = stageTemplate.pdf; sourceTree = "<group>"; };
 		896B05CE15796D2A003B0C24 /* XTHistoryViewControllerTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTHistoryViewControllerTest.h; sourceTree = "<group>"; };
 		896B05CF15796D2A003B0C24 /* XTHistoryViewControllerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTHistoryViewControllerTest.m; sourceTree = "<group>"; };
 		89794F661452839500E38ACC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/XTStatusView.xib; sourceTree = "<group>"; };
@@ -371,7 +371,7 @@
 			children = (
 				895DEF0B142CF84D001763FC /* branch.png */,
 				895DEF1E142D91F8001763FC /* historyTemplate.png */,
-				895DEF211432438D001763FC /* stageTemplate.png */,
+				895DEF211432438D001763FC /* stageTemplate.pdf */,
 				899D010C14216D2C0091DC6F /* sidebarTemplate.png */,
 			);
 			path = images;
@@ -629,7 +629,7 @@
 				31A8235814225F8B00408EDA /* XTFileViewController.xib in Resources */,
 				895DEF0C142CF84D001763FC /* branch.png in Resources */,
 				895DEF1F142D91F8001763FC /* historyTemplate.png in Resources */,
-				895DEF221432438D001763FC /* stageTemplate.png in Resources */,
+				895DEF221432438D001763FC /* stageTemplate.pdf in Resources */,
 				89794F671452839500E38ACC /* XTStatusView.xib in Resources */,
 				89794F8D1458CC9B00E38ACC /* XTOutputViewController.xib in Resources */,
 			);
