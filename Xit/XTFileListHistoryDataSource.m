@@ -63,6 +63,13 @@
                         enumerateCommitsUsingBlock:^(NSString * line) {
 
                             NSArray *comps = [line componentsSeparatedByString:@"\n"];
+                            // If Guard Malloc is on, it pollutes the output
+                            if ([[comps objectAtIndex:0] hasPrefix:@"GuardMalloc["]) {
+                                NSMutableArray *filteredComps = [comps mutableCopy];
+                                while ([[filteredComps objectAtIndex:0] hasPrefix:@"GuardMalloc["])
+                                [filteredComps removeObjectAtIndex:0];
+                                comps = filteredComps;
+                            }
                             XTHistoryItem *item = [[XTHistoryItem alloc] init];
                             if ([comps count] == 5) {
                                 item.sha = [comps objectAtIndex:0];

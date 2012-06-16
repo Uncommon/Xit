@@ -68,6 +68,9 @@
                        [XTStatusView updateStatus:@"Loading..." command:[args componentsJoinedByString:@" "] output:nil forRepository:repo];
                        [repo    getCommitsWithArgs:args
                         enumerateCommitsUsingBlock:^(NSString * line) {
+                            // Guard Malloc pollutes the output; skip it
+                            if ([line hasPrefix:@"GuardMalloc[git"])
+                                return;
                             [XTStatusView updateStatus:nil command:nil output:line forRepository:repo];
 
                             NSArray *comps = [line componentsSeparatedByString:@"\n"];
