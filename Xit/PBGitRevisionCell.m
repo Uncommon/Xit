@@ -41,6 +41,7 @@ static const int kColumnWidth = 10;
 
     NSPoint source = NSMakePoint(origin.x + kColumnWidth * from, origin.y + offset);
     NSPoint center = NSMakePoint(origin.x + kColumnWidth * to, origin.y + r.size.height * 0.5 + 0.5);
+    const float direction = center.y > source.y ? 1.0 : -1.0;
 
     NSArray *laneColors = [PBGitRevisionCell laneColors];
     NSColor *color = [laneColors objectAtIndex:c % [laneColors count]];
@@ -51,7 +52,11 @@ static const int kColumnWidth = 10;
     [path setLineWidth:2];
 
     [path moveToPoint:source];
+    [path relativeLineToPoint:NSMakePoint(0.0, direction * 1.0)];
     [path lineToPoint:center];
+    if (from != to)
+        // Particularly for HiDPI, make sure corners have good bevels
+        [path lineToPoint:NSMakePoint(center.x, center.y + direction * 0.5)];
     [path stroke];
 }
 
