@@ -188,7 +188,11 @@ const NSUInteger
 
 + (NSDate *)dateFromRFC2822:(NSString *)rfc2822 {
     NSDateFormatter *formatter = [NSDate rfc2822Formatter];
-    return [formatter dateFromString:rfc2822];
+    __block NSDate *result = nil;
+
+    dispatch_sync(dispatch_get_main_queue(),
+                  ^{ result = [formatter dateFromString:rfc2822]; });
+    return result;
 }
 
 @end

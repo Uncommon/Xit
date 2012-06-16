@@ -63,9 +63,13 @@
     [self reloadBranches:refsIndex];
     [self reloadStashes:refsIndex];
     repo.refsIndex = refsIndex;
-    [outline reloadData];
+    [outline performSelectorOnMainThread:@selector(reloadData)
+                              withObject:nil
+                           waitUntilDone:YES];
     [self didChangeValueForKey:@"reload"];
-    [outline reloadData];
+    [outline performSelectorOnMainThread:@selector(reloadData)
+                              withObject:nil
+                           waitUntilDone:YES];
 }
 
 - (void)reloadStashes:(NSMutableDictionary *)refsIndex {
