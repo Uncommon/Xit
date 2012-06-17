@@ -78,10 +78,10 @@
     return [items count];
 }
 
-- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
+- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)column row:(NSInteger)rowIndex {
     XTFileIndexInfo *item = [items objectAtIndex:rowIndex];
 
-    return [item valueForKey:aTableColumn.identifier];
+    return [item valueForKey:column.identifier];
 }
 
 @end

@@ -16,9 +16,9 @@
 
 @implementation XTStageViewControllerTest
 
-- (void)testStage {
-    NSString *path1 = [NSString stringWithFormat:@"%@/file1.txt", repoPath];
-    NSString *path2 = [NSString stringWithFormat:@"%@/file2.txt", repoPath];
+- (void)testStageUnstage {
+    NSString *path1 = [NSString stringWithFormat:@"%@/fileA.txt", repoPath];
+    NSString *path2 = [NSString stringWithFormat:@"%@/fileB.txt", repoPath];
     NSError *error = nil;
 
     [@"text1" writeToFile:path1 atomically:YES encoding:NSASCIIStringEncoding error:&error];
@@ -26,7 +26,8 @@
     [@"text2" writeToFile:path2 atomically:YES encoding:NSASCIIStringEncoding error:&error];
     STAssertNil(error, @"creating file2");
 
-    id mockTable = [OCMockObject mockForClass:[NSTableView class]];
+    id mockUnstagedTable = [OCMockObject mockForClass:[NSTableView class]];
+    id mockStagedTable = [OCMockObject mockForClass:[NSTableView class]];
     XTUnstagedDataSource *ustgds = [[XTUnstagedDataSource alloc] init];
     XTStagedDataSource *stgds = [[XTStagedDataSource alloc] init];
 
@@ -34,8 +35,8 @@
     [stgds setRepo:repository];
     [repository waitUntilReloadEnd];
 
-    STAssertEquals([ustgds numberOfRowsInTableView:mockTable], 2L, @"");
-    STAssertEquals([stgds numberOfRowsInTableView:mockTable], 0L, @"");
+    STAssertEquals([ustgds numberOfRowsInTableView:mockUnstagedTable], 2L, @"");
+    STAssertEquals([stgds numberOfRowsInTableView:mockStagedTable], 0L, @"");
 
     XTStageViewController *controller = [[XTStageViewController alloc] init];
     const NSInteger clickedRow = 0;
@@ -43,16 +44,37 @@
     [controller setRepo:repository];
     controller->unstageDS = ustgds;
     controller->stageDS = stgds;
-    controller->unstageTable = mockTable;
+    controller->unstageTable = mockUnstagedTable;
 
-    [[[mockTable stub] andReturnValue:OCMOCK_VALUE(clickedRow)] clickedRow];
-    [[mockTable stub] reloadData];
-    [controller unstagedDoubleClicked:mockTable];
+    // Double-click in unstaged list
+    [[[mockUnstagedTable stub] andReturnValue:OCMOCK_VALUE(clickedRow)] clickedRow];
+    [[mockUnstagedTable stub] reloadData];
+    [controller unstagedDoubleClicked:mockUnstagedTable];
     [repository waitUntilReloadEnd];
 
-    STAssertEquals([ustgds numberOfRowsInTableView:mockTable], 1L, @"");
-    STAssertEquals([stgds numberOfRowsInTableView:mockTable], 1L, @"");
-    [mockTable verify];
+    STAssertEquals([ustgds numberOfRowsInTableView:mockUnstagedTable], 1L, @"");
+    STAssertEquals([stgds numberOfRowsInTableView:mockStagedTable], 1L, @"");
+
+    id mockColumn = [OCMockObject mockForClass:[NSTableColumn class]];
+
+    [[[mockColumn expect] andReturn:@"name"] identifier];
+    [[[mockColumn expect] andReturn:@"name"] identifier];
+
+    STAssertEqualObjects([ustgds tableView:mockUnstagedTable objectValueForTableColumn:mockColumn row:0], @"fileB.txt", @"");
+    STAssertEqualObjects([stgds tableView:mockUnstagedTable objectValueForTableColumn:mockColumn row:0], @"fileA.txt", @"");
+
+    // Double-click in staged list
+
+    [[[mockStagedTable stub] andReturnValue:OCMOCK_VALUE(clickedRow)] clickedRow];
+    [[mockStagedTable stub] reloadData];
+    [controller stagedDoubleClicked:mockStagedTable];
+    [repository waitUntilReloadEnd];
+
+    STAssertEquals([ustgds numberOfRowsInTableView:mockUnstagedTable], 2L, @"");
+    STAssertEquals([stgds numberOfRowsInTableView:mockUnstagedTable], 0L, @"");
+
+    [mockUnstagedTable verify];
+    [mockStagedTable verify];
 }
 
 - (void)testXTPartialStage {

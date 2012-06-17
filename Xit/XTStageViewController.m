@@ -87,9 +87,13 @@
     XTFileIndexInfo *item = [[stageDS items] objectAtIndex:clickedRow];
 
     dispatch_async(repo.queue, ^{
-        NSArray *args = [NSArray arrayWithObjects:@"reset", @"HEAD", item.name, nil];
+        NSArray *args;
         NSError *error = nil;
 
+        if ([repo parseReference:@"HEAD"] == nil)
+            args = [NSArray arrayWithObjects:@"rm", @"--cached", item.name, nil];
+        else
+            args = [NSArray arrayWithObjects:@"reset", @"HEAD", item.name, nil];
         [repo executeGitWithArgs:args error:&error];
         if (error == nil)
             [self reload];
