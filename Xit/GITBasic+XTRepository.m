@@ -11,7 +11,7 @@
 @implementation XTRepository (GITBasic_XTRepository)
 
 
-- (bool)initRepo {
+- (bool)initializeRepository {
     NSError *error = nil;
     bool res = false;
 
