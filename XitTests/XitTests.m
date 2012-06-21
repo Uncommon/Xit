@@ -9,12 +9,6 @@
 #import "XTRepository.h"
 #import "GITBasic+XTRepository.h"
 
-@interface XitTests ()
-
-- (void)addInitialRepoContent;
-
-@end
-
 @implementation XitTests
 
 - (void)setUp {

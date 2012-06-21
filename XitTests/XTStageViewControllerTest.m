@@ -16,7 +16,11 @@
 
 @implementation XTStageViewControllerTest
 
-- (void)testStageUnstage {
+- (void)addInitialRepoContent {
+    // Do nothing by default
+}
+
+- (void)doStageUnstage {
     NSString *path1 = [NSString stringWithFormat:@"%@/fileA.txt", repoPath];
     NSString *path2 = [NSString stringWithFormat:@"%@/fileB.txt", repoPath];
     NSError *error = nil;
@@ -77,7 +81,18 @@
     [mockStagedTable verify];
 }
 
+- (void)testStageUnstageWithContent {
+    [super addInitialRepoContent];
+    [self doStageUnstage];
+}
+
+- (void)testStageUnstageWithoutContent {
+    [self doStageUnstage];
+}
+
 - (void)testXTPartialStage {
+    [super addInitialRepoContent];
+
     NSString *mv = [NSString stringWithFormat:@"%@/file_to_move.txt", repoPath];
     NSMutableArray *lines = [NSMutableArray arrayWithCapacity:30];
 
@@ -137,6 +152,8 @@
 }
 
 - (void)testXTDataSources {
+    [super addInitialRepoContent];
+
     NSString *mod = [NSString stringWithFormat:@"%@/file_to_mod.txt", repoPath];
     NSString *mv = [NSString stringWithFormat:@"%@/file_to_move.txt", repoPath];
     NSString *mvd = [NSString stringWithFormat:@"%@/file_moved.txt", repoPath];
