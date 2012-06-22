@@ -1,24 +1,14 @@
 //
-//  XTIndexDataSource.h
+//  XTUnstagedDataSource.h
 //  Xit
 //
-//  Created by German Laullon on 09/08/11.
+//  Created by German Laullon on 10/08/11.
 //
 
-#import <Foundation/Foundation.h>
+#import "XTStagingDataSourceBase.h"
 
-@class XTRepository;
-
-@interface XTUnstagedDataSource : NSObject <NSTableViewDataSource>
+@interface XTUnstagedDataSource : XTStagingDataSourceBase
 {
-    @private
-    XTRepository *repo;
-    NSMutableArray *items;
-    NSTableView *table;
 }
-
-- (NSArray *)items;
-- (void)reload;
-- (void)setRepo:(XTRepository *)newRepo;
 
 @end

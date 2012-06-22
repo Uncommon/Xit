@@ -14,25 +14,6 @@
 
 @implementation XTStagedDataSource
 
-- (id)init {
-    self = [super init];
-    if (self) {
-        items = [NSMutableArray array];
-    }
-
-    return self;
-}
-
-- (void)setRepo:(XTRepository *)newRepo {
-    repo = newRepo;
-    //    [repo addObserver:self forKeyPath:@"reload" options:NSKeyValueObservingOptionNew context:nil];
-    //    [repo addObserver:self forKeyPath:@"selectedCommit" options:NSKeyValueObservingOptionNew context:nil];
-    [self reload];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-}
-
 - (NSString *)parentTree {
     // If there is no HEAD yet, then use the empty tree for comparing the index
     NSString *parentTree = @"HEAD";
@@ -64,25 +45,6 @@
             }
         }];
     }];
-}
-
-// just for tests
-- (NSArray *)items {
-    return items;
-}
-
-#pragma mark - NSTableViewDataSource
-
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView {
-    table = aTableView;
-    //    [table setDelegate:self];
-    return [items count];
-}
-
-- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
-    XTFileIndexInfo *item = [items objectAtIndex:rowIndex];
-
-    return [item valueForKey:aTableColumn.identifier];
 }
 
 @end

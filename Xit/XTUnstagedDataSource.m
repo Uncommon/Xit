@@ -11,25 +11,6 @@
 
 @implementation XTUnstagedDataSource
 
-- (id)init {
-    self = [super init];
-    if (self) {
-        items = [NSMutableArray array];
-    }
-
-    return self;
-}
-
-- (void)setRepo:(XTRepository *)newRepo {
-    repo = newRepo;
-//    [repo addObserver:self forKeyPath:@"reload" options:NSKeyValueObservingOptionNew context:nil];
-//    [repo addObserver:self forKeyPath:@"selectedCommit" options:NSKeyValueObservingOptionNew context:nil];
-    [self reload];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-}
-
 - (void)reload {
     [items removeAllObjects];
     if (repo == nil)
@@ -64,24 +45,6 @@
             }
         }];
     }];
-}
-
-- (NSArray *)items {
-    return items;
-}
-
-#pragma mark - NSTableViewDataSource
-
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView {
-    table = aTableView;
-//    [table setDelegate:self];
-    return [items count];
-}
-
-- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)column row:(NSInteger)rowIndex {
-    XTFileIndexInfo *item = [items objectAtIndex:rowIndex];
-
-    return [item valueForKey:column.identifier];
 }
 
 @end

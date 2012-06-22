@@ -71,6 +71,7 @@
 		DD00725613E76DFB003B4120 /* Xit.icns in Resources */ = {isa = PBXBuildFile; fileRef = DD00725513E76DFB003B4120 /* Xit.icns */; };
 		DD592093156EEE64005FBB0F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		DD592096156EEF40005FBB0F /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD592095156EEF40005FBB0F /* OCMock.framework */; };
+		DDD9E33615953952007EF2F6 /* XTStagingDataSourceBase.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD9E33515953952007EF2F6 /* XTStagingDataSourceBase.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -217,6 +218,8 @@
 		C3FA472D13D0F8E300AC4F9B /* XitTests.m */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = XitTests.m; sourceTree = "<group>"; tabWidth = 4; };
 		DD00725513E76DFB003B4120 /* Xit.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Xit.icns; sourceTree = "<group>"; };
 		DD592095156EEF40005FBB0F /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCMock.framework; sourceTree = SOURCE_ROOT; };
+		DDD9E33315953868007EF2F6 /* XTStagingDataSourceBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTStagingDataSourceBase.h; sourceTree = "<group>"; };
+		DDD9E33515953952007EF2F6 /* XTStagingDataSourceBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTStagingDataSourceBase.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -298,6 +301,8 @@
 		31C62D9A13F25A3600845A9B /* StageView */ = {
 			isa = PBXGroup;
 			children = (
+				DDD9E33315953868007EF2F6 /* XTStagingDataSourceBase.h */,
+				DDD9E33515953952007EF2F6 /* XTStagingDataSourceBase.m */,
 				31C6669F13F3AEF3000E4073 /* XTStagedDataSource.h */,
 				31C666A013F3AEF3000E4073 /* XTStagedDataSource.m */,
 				31C62D9B13F25A5D00845A9B /* XTUnstagedDataSource.h */,
@@ -732,6 +737,7 @@
 				89991CDD144E3FF400097A99 /* XTStatusView.m in Sources */,
 				89794F8C1458CC9B00E38ACC /* XTOutputViewController.m in Sources */,
 				89355423157C128F007AC9CE /* XTDocController.m in Sources */,
+				DDD9E33615953952007EF2F6 /* XTStagingDataSourceBase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
