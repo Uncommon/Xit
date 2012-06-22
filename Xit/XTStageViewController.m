@@ -77,6 +77,10 @@
                    });
 }
 
+- (void)clearDiff {
+    [[web mainFrame] loadHTMLString:@"" baseURL:nil];
+}
+
 - (void)stagedDoubleClicked:(id)sender {
     NSTableView *tableView = (NSTableView *)sender;
     const NSInteger clickedRow = [tableView clickedRow];
@@ -213,6 +217,8 @@
             XTFileIndexInfo *item = [[unstageDS items] objectAtIndex:table.selectedRow];
             [self showUnstageFile:item];
         }
+    } else {
+        [self clearDiff];
     }
 }
 @end
