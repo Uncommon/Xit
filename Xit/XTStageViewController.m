@@ -34,6 +34,7 @@
     [stageDS reload];
     [unstageDS reload];
     [repo executeOffMainThread:^{
+        // Do this in the repo queue so it will happen after the reloads.
         [stageTable reloadData];
         [unstageTable reloadData];
     }];
