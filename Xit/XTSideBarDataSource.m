@@ -54,7 +54,15 @@
 }
 
 - (void)reload {
-    dispatch_async(repo.queue, ^{ [self _reload]; });
+    dispatch_async(repo.queue, ^{
+        [self _reload];
+        if (!self->didInitialExpandGroups) {
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [outline expandItem:nil expandChildren:YES];
+            });
+            self->didInitialExpandGroups = YES;
+        }
+    });
 }
 
 - (void)_reload {

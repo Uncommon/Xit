@@ -12,6 +12,13 @@
 
 @implementation XTStageViewController
 
+- (void)awakeFromNib {
+    [stageTable setTarget:self];
+    [stageTable setDoubleAction:@selector(stagedDoubleClicked:)];
+    [unstageTable setTarget:self];
+    [unstageTable setDoubleAction:@selector(unstagedDoubleClicked:)];
+}
+
 - (NSString *)nibName {
     NSLog(@"nibName: %@ (%@)", [super nibName], [self class]);
     return NSStringFromClass([self class]);
@@ -26,8 +33,10 @@
 - (void)reload {
     [stageDS reload];
     [unstageDS reload];
-    [stageTable reloadData];
-    [unstageTable reloadData];
+    [repo executeOffMainThread:^{
+        [stageTable reloadData];
+        [unstageTable reloadData];
+    }];
 }
 
 #pragma mark -
@@ -66,6 +75,52 @@
     dispatch_async(dispatch_get_main_queue(), ^{
                        [[web mainFrame] loadHTMLString:html baseURL:themeURL];
                    });
+}
+
+- (void)clearDiff {
+    [[web mainFrame] loadHTMLString:@"" baseURL:nil];
+}
+
+- (void)stagedDoubleClicked:(id)sender {
+    NSTableView *tableView = (NSTableView *)sender;
+    const NSInteger clickedRow = [tableView clickedRow];
+
+    if (clickedRow == -1)
+        return;
+
+    XTFileIndexInfo *item = [[stageDS items] objectAtIndex:clickedRow];
+
+    dispatch_async(repo.queue, ^{
+        NSArray *args;
+        NSError *error = nil;
+
+        if ([repo parseReference:@"HEAD"] == nil)
+            args = [NSArray arrayWithObjects:@"rm", @"--cached", item.name, nil];
+        else
+            args = [NSArray arrayWithObjects:@"reset", @"HEAD", item.name, nil];
+        [repo executeGitWithArgs:args error:&error];
+        if (error == nil)
+            [self reload];
+    });
+}
+
+- (void)unstagedDoubleClicked:(id)sender {
+    NSTableView *tableView = (NSTableView *)sender;
+    const NSInteger clickedRow = [tableView clickedRow];
+
+    if (clickedRow == -1)
+        return;
+
+    XTFileIndexInfo *item = [[unstageDS items] objectAtIndex:clickedRow];
+
+    dispatch_async(repo.queue, ^{
+        NSArray *args = [NSArray arrayWithObjects:@"add", item.name, nil];
+        NSError *error = nil;
+
+        [repo executeGitWithArgs:args error:&error];
+        if (error == nil)
+            [self reload];
+    });
 }
 
 #pragma mark -
@@ -109,10 +164,10 @@
 
 - (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame {
     DOMDocument *dom = [[web mainFrame] DOMDocument];
-    DOMNodeList *headres = [dom getElementsByClassName:@"header"]; // TODO: change class names
+    DOMNodeList *headers = [dom getElementsByClassName:@"header"]; // TODO: change class names
 
-    for (int n = 0; n < headres.length; n++) {
-        DOMHTMLElement *header = (DOMHTMLElement *)[headres item:n];
+    for (int n = 0; n < headers.length; n++) {
+        DOMHTMLElement *header = (DOMHTMLElement *)[headers item:n];
         if (stagedFile) {
             [[[header children] item:0] appendChild:[self createButtonWithIndex:n title:@"Unstage" fromDOM:dom]];
         } else {
@@ -162,6 +217,8 @@
             XTFileIndexInfo *item = [[unstageDS items] objectAtIndex:table.selectedRow];
             [self showUnstageFile:item];
         }
+    } else {
+        [self clearDiff];
     }
 }
 @end

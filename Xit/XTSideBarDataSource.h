@@ -24,6 +24,7 @@ typedef enum {
     XTRepository *repo;
     NSArray *roots;
     NSOutlineView *outline;
+    BOOL didInitialExpandGroups;
 }
 
 - (void)setRepo:(XTRepository *)repo;
