@@ -55,7 +55,7 @@
 
 - (void)showStageFile:(XTFileIndexInfo *)file {
     dispatch_async(repo.queue, ^{
-                       NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"diff-index",  @"--patch", @"--cached", @"HEAD", @"--", file.name, nil] error:nil];
+                       NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"diff-index",  @"--patch", @"--cached", [repo parentTree], @"--", file.name, nil] error:nil];
 
                        actualDiff = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
                        stagedFile = YES;

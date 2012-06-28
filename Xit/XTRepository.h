@@ -25,6 +25,7 @@
 - (NSData *)executeGitWithArgs:(NSArray *)args error:(NSError **)error;
 - (NSData *)executeGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error;
 - (NSString *)parseReference:(NSString *)reference;
+- (NSString *)parentTree;
 
 - (void)initializeEventStream;
 - (void)start;

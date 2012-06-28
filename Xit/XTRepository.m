@@ -8,6 +8,9 @@
 
 #import "XTRepository.h"
 
+// An empty tree will always have this hash.
+#define kEmptyTreeHash @"4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+
 @implementation XTRepository
 
 @synthesize selectedCommit;
@@ -193,6 +196,15 @@
     if (output == nil)
         return nil;
     return [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
+}
+
+// Returns kEmptyTreeHash if the repository is empty, otherwise "HEAD"
+- (NSString *)parentTree {
+    NSString *parentTree = @"HEAD";
+
+    if ([self parseReference:parentTree] == nil)
+        parentTree = kEmptyTreeHash;
+    return parentTree;
 }
 
 // XXX tmp

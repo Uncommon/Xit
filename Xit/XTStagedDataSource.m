@@ -9,19 +9,7 @@
 #import "XTRepository.h"
 #import "XTFileIndexInfo.h"
 
-// An empty tree will always have this hash.
-#define kEmptyTreeHash @"4b825dc642cb6eb9a060e54bf8d69288fbee4904"
-
 @implementation XTStagedDataSource
-
-- (NSString *)parentTree {
-    // If there is no HEAD yet, then use the empty tree for comparing the index
-    NSString *parentTree = @"HEAD";
-
-    if ([repo parseReference:parentTree] == nil)
-        parentTree = kEmptyTreeHash;
-    return parentTree;
-}
 
 - (void)reload {
     if (repo == nil)
@@ -29,7 +17,7 @@
     [repo executeOffMainThread:^{
         [items removeAllObjects];
 
-        NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"diff-index", @"--cached", [self parentTree], nil] error:nil];
+        NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"diff-index", @"--cached", [repo parentTree], nil] error:nil];
         NSString *filesStr = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
         filesStr = [filesStr stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         NSArray *files = [filesStr componentsSeparatedByString:@"\n"];
