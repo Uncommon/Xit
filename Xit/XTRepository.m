@@ -73,6 +73,9 @@
             *error = [NSError errorWithDomain:NSOSStatusErrorDomain code:fnfErr userInfo:nil];
         return;
     }
+    if (![self parseReference:@"HEAD"])
+        return;  // There are no commits.
+
     NSMutableArray *args = [NSMutableArray arrayWithArray:logArgs];
 
     [args insertObject:@"log" atIndex:0];
