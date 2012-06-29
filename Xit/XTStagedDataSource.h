@@ -5,20 +5,10 @@
 //  Created by German Laullon on 10/08/11.
 //
 
-#import <Foundation/Foundation.h>
+#import "XTStagingDataSourceBase.h"
 
-@class XTRepository;
-
-@interface XTStagedDataSource : NSObject <NSTableViewDataSource>
+@interface XTStagedDataSource : XTStagingDataSourceBase
 {
-    @private
-    XTRepository *repo;
-    NSMutableArray *items;
-    NSTableView *table;
 }
-
-- (NSArray *)items;
-- (void)reload;
-- (void)setRepo:(XTRepository *)newRepo;
 
 @end

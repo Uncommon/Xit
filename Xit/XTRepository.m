@@ -8,6 +8,9 @@
 
 #import "XTRepository.h"
 
+// An empty tree will always have this hash.
+#define kEmptyTreeHash @"4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+
 @implementation XTRepository
 
 @synthesize selectedCommit;
@@ -37,11 +40,18 @@
         repoURL = url;
         NSMutableString *qName = [NSMutableString stringWithString:@"com.xit.queue."];
         [qName appendString:[url path]];
-        queue = dispatch_queue_create([qName cStringUsingEncoding:NSASCIIStringEncoding], nil);
+        queue = dispatch_queue_create([qName cStringUsingEncoding:NSASCIIStringEncoding], NULL);
         activeTasks = [NSMutableArray array];
     }
 
     return self;
+}
+
+- (void)executeOffMainThread:(void (^)())block {
+    if ([NSThread isMainThread])
+        dispatch_async(queue, block);
+    else
+        block();
 }
 
 - (void)addTask:(NSTask *)task {
@@ -66,6 +76,9 @@
             *error = [NSError errorWithDomain:NSOSStatusErrorDomain code:fnfErr userInfo:nil];
         return;
     }
+    if (![self parseReference:@"HEAD"])
+        return;  // There are no commits.
+
     NSMutableArray *args = [NSMutableArray arrayWithArray:logArgs];
 
     [args insertObject:@"log" atIndex:0];
@@ -173,6 +186,25 @@
     }
     [self removeTask:task];
     return output;
+}
+
+- (NSString *)parseReference:(NSString *)reference {
+    NSError *error = nil;
+    NSArray *args = [NSArray arrayWithObjects:@"rev-parse", @"--verify", reference, nil];
+    NSData *output = [self executeGitWithArgs:args error:&error];
+
+    if (output == nil)
+        return nil;
+    return [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
+}
+
+// Returns kEmptyTreeHash if the repository is empty, otherwise "HEAD"
+- (NSString *)parentTree {
+    NSString *parentTree = @"HEAD";
+
+    if ([self parseReference:parentTree] == nil)
+        parentTree = kEmptyTreeHash;
+    return parentTree;
 }
 
 // XXX tmp

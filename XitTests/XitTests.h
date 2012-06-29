@@ -17,4 +17,6 @@
 }
 
 - (XTRepository *)createRepo:(NSString *)repoName;
+- (void)addInitialRepoContent;
+
 @end

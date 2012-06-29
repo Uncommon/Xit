@@ -24,12 +24,15 @@
 - (void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^)(NSString *))block error:(NSError **)error;
 - (NSData *)executeGitWithArgs:(NSArray *)args error:(NSError **)error;
 - (NSData *)executeGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error;
+- (NSString *)parseReference:(NSString *)reference;
+- (NSString *)parentTree;
 
 - (void)initializeEventStream;
 - (void)start;
 - (void)stop;
 - (void)waitUntilReloadEnd;
 
+- (void)executeOffMainThread:(void (^)())block;
 - (void)addTask:(NSTask *)task;
 - (void)removeTask:(NSTask *)task;
 

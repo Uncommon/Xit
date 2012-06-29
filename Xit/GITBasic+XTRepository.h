@@ -10,7 +10,7 @@
 
 @interface XTRepository (GITBasic_XTRepository)
 
-- (bool)initRepo;
+- (bool)initializeRepository;
 - (bool)createBranch:(NSString *)name;
 - (NSString *)currentBranch;
 - (bool)addFile:(NSString *)file;

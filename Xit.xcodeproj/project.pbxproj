@@ -300,6 +300,8 @@
 		31C62D9A13F25A3600845A9B /* StageView */ = {
 			isa = PBXGroup;
 			children = (
+				DDD9E33315953868007EF2F6 /* XTStagingDataSourceBase.h */,
+				DDD9E33515953952007EF2F6 /* XTStagingDataSourceBase.m */,
 				31C6669F13F3AEF3000E4073 /* XTStagedDataSource.h */,
 				31C666A013F3AEF3000E4073 /* XTStagedDataSource.m */,
 				31C62D9B13F25A5D00845A9B /* XTUnstagedDataSource.h */,
@@ -736,6 +738,7 @@
 				89991CDD144E3FF400097A99 /* XTStatusView.m in Sources */,
 				89794F8C1458CC9B00E38ACC /* XTOutputViewController.m in Sources */,
 				89355423157C128F007AC9CE /* XTDocController.m in Sources */,
+				DDD9E33615953952007EF2F6 /* XTStagingDataSourceBase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
