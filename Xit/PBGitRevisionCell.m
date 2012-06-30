@@ -36,10 +36,10 @@ static const int kColumnWidth = 10;
 
 - (void)drawLineFromColumn:(size_t)from toColumn:(size_t)to inRect:(NSRect)r offset:(CGFloat)offset color:(int)c {
 
-    NSPoint origin = r.origin;
+    const NSPoint origin = r.origin;
 
-    NSPoint source = NSMakePoint(origin.x + kColumnWidth * from, origin.y + offset);
-    NSPoint center = NSMakePoint(origin.x + kColumnWidth * to, origin.y + r.size.height * 0.5 + 0.5);
+    const NSPoint source = NSMakePoint(origin.x + kColumnWidth * from, origin.y + offset);
+    const NSPoint center = NSMakePoint(origin.x + kColumnWidth * to, origin.y + r.size.height * 0.5 + 0.5);
     const float direction = center.y > source.y ? 1.0 : -1.0;
 
     NSArray *laneColors = [PBGitRevisionCell laneColors];
@@ -65,9 +65,9 @@ static const int kColumnWidth = 10;
 
 - (void)drawCircleInRect:(NSRect)r {
 
-    size_t c = cellInfo.position;
-    NSPoint origin = r.origin;
-    NSPoint columnOrigin = { origin.x + kColumnWidth * c, origin.y };
+    const size_t c = cellInfo.position;
+    const NSPoint origin = r.origin;
+    const NSPoint columnOrigin = { origin.x + kColumnWidth * c, origin.y };
 
     NSRect oval = { columnOrigin.x - 5, columnOrigin.y + r.size.height * 0.5 - 5, 10, 10 };
 
@@ -77,7 +77,7 @@ static const int kColumnWidth = 10;
     [[NSColor blackColor] set];
     [path fill];
 
-    NSRect smallOval = { columnOrigin.x - 3, columnOrigin.y + r.size.height * 0.5 - 3, 6, 6 };
+    const NSRect smallOval = { columnOrigin.x - 3, columnOrigin.y + r.size.height * 0.5 - 3, 6, 6 };
 
     if ( [self isCurrentCommit]) {
         [[NSColor colorWithCalibratedRed:0Xfc / 256.0 green:0Xa6 / 256.0 blue:0X4f / 256.0 alpha:1.0] set];
@@ -87,38 +87,6 @@ static const int kColumnWidth = 10;
 
     path = [NSBezierPath bezierPathWithOvalInRect:smallOval];
     [path fill];
-}
-
-- (void)drawTriangleInRect:(NSRect)r sign:(char)sign {
-    size_t c = cellInfo.position;
-    int columnHeight = 10;
-    int columnWidth = 8;
-
-    NSPoint top;
-
-    if (sign == '<')
-        top.x = round(r.origin.x) + 10 * c + 4;
-    else {
-        top.x = round(r.origin.x) + 10 * c - 4;
-        columnWidth *= -1;
-    }
-    top.y = r.origin.y + (r.size.height - columnHeight) / 2;
-
-    NSBezierPath *path = [NSBezierPath bezierPath];
-    // Start at top
-    [path moveToPoint:NSMakePoint(top.x, top.y)];
-    // Go down
-    [path lineToPoint:NSMakePoint(top.x, top.y + columnHeight)];
-    // Go left top
-    [path lineToPoint:NSMakePoint(top.x - columnWidth, top.y + columnHeight / 2)];
-    // Go to top again
-    [path closePath];
-
-    [[NSColor whiteColor] set];
-    [path fill];
-    [[NSColor blackColor] set];
-    [path setLineWidth:2];
-    [path stroke];
 }
 
 - (NSMutableDictionary *)attributesForRefLabelSelected:(BOOL)selected {
@@ -139,7 +107,7 @@ static const int kColumnWidth = 10;
     cellInfo = ((XTHistoryItem *)self.objectValue).lineInfo;
 
     if (cellInfo) {
-        size_t pathWidth = 10 + kColumnWidth * cellInfo.numColumns;
+        const size_t pathWidth = 10 + kColumnWidth * cellInfo.numColumns;
 
         NSRect ownRect;
         NSDivideRect(rect, &ownRect, &rect, pathWidth, NSMinXEdge);

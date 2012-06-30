@@ -9,8 +9,8 @@
 #import <Cocoa/Cocoa.h>
 
 
-#define kCurrentQueueKey @ "kCurrentQueueKey"
-#define kNewCommitsKey   @ "kNewCommitsKey"
+#define kCurrentQueueKey @"kCurrentQueueKey"
+#define kNewCommitsKey   @"kNewCommitsKey"
 
 
 @class PBGitGrapher;
