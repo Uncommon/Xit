@@ -79,7 +79,9 @@
 }
 
 - (void)clearDiff {
-    [[web mainFrame] loadHTMLString:@"" baseURL:nil];
+    dispatch_async(
+            dispatch_get_main_queue(),
+            ^{ [[web mainFrame] loadHTMLString:@"" baseURL:nil]; });
 }
 
 - (void)stagedDoubleClicked:(id)sender {
@@ -91,7 +93,7 @@
 
     XTFileIndexInfo *item = [[stageDS items] objectAtIndex:clickedRow];
 
-    dispatch_async(repo.queue, ^{
+    [repo executeOffMainThread:^{
         NSArray *args;
         NSError *error = nil;
 
@@ -100,9 +102,8 @@
         else
             args = [NSArray arrayWithObjects:@"reset", @"HEAD", item.name, nil];
         [repo executeGitWithArgs:args error:&error];
-        if (error == nil)
-            [self reload];
-    });
+        [self reload];
+    }];
 }
 
 - (void)unstagedDoubleClicked:(id)sender {
