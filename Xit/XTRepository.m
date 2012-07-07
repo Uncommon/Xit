@@ -2,14 +2,10 @@
 //  XTRepository.m
 //  Xit
 //
-//  Created by VMware Inc. on 8/23/11.
 //  Copyright 2011 VMware, Inc. All rights reserved.
 //
 
 #import "XTRepository.h"
-
-// An empty tree will always have this hash.
-#define kEmptyTreeHash @"4b825dc642cb6eb9a060e54bf8d69288fbee4904"
 
 @implementation XTRepository
 
