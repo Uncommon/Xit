@@ -28,10 +28,10 @@
 
     [historyView.sideBarDS setRepo:repository];
     [[mockSidebar expect] setDelegate:historyView.sideBarDS];
-    [[mockSidebar expect] reloadData];
-    [[mockSidebar expect] reloadData];
-    [[mockSidebar expect] reloadData];
-    [[mockSidebar expect] reloadData];
+    [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
+    [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
+    [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
+    [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
 
     [historyView.sideBarDS reload];
     [repository waitUntilReloadEnd];

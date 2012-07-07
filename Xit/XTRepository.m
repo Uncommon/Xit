@@ -67,7 +67,15 @@
 }
 
 - (void)waitUntilReloadEnd {
-    dispatch_sync(queue, ^{ });
+    // Some queued tasks need to also perform tasks on the main thread, so
+    // simply waiting on the queue could cause a deadlock.
+    CFRunLoopRef mainLoop = CFRunLoopGetMain();
+
+    CFRunLoopPerformBlock(
+            mainLoop,
+            kCFRunLoopCommonModes,
+            ^{ dispatch_async(queue, ^{ CFRunLoopStop(mainLoop); }); });
+    CFRunLoopRun();
 }
 
 - (void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^) (NSString *)) block error:(NSError **)error {

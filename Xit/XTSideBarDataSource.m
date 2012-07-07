@@ -57,7 +57,7 @@
     dispatch_async(repo.queue, ^{
         [self _reload];
         if (!self->didInitialExpandGroups) {
-            dispatch_sync(dispatch_get_main_queue(), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
                 [outline expandItem:nil expandChildren:YES];
             });
             self->didInitialExpandGroups = YES;
