@@ -151,7 +151,6 @@ const NSUInteger
     kLongStyleThreshold = 210,
     kMediumStyleThreshold = 170,
     kShortStyleThreshold = 150;
-    // kShortestStyleThreshold = 145;
 
 - (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
     if ([[aTableColumn identifier] isEqualToString:@"subject"]) {
@@ -159,9 +158,9 @@ const NSUInteger
 
         ((PBGitRevisionCell *)aCell).objectValue = item;
     } else if ([[aTableColumn identifier] isEqualToString:@"date"]) {
-        // TODO: Shortest style - time for today, date for other days
         const CGFloat width = [aTableColumn width];
         NSDateFormatterStyle dateStyle = NSDateFormatterShortStyle;
+        NSDateFormatterStyle timeStyle = NSDateFormatterShortStyle;
 
         if (width > kFullStyleThreshold)
             dateStyle = NSDateFormatterFullStyle;
@@ -169,7 +168,15 @@ const NSUInteger
             dateStyle = NSDateFormatterLongStyle;
         else if (width > kMediumStyleThreshold)
             dateStyle = NSDateFormatterMediumStyle;
+        else if (width > kShortStyleThreshold)
+            dateStyle = NSDateFormatterShortStyle;
+        else {
+            dateStyle = NSDateFormatterShortStyle;
+            timeStyle = NSDateFormatterNoStyle;
+        }
+        [[aCell formatter] setDoesRelativeDateFormatting:YES];
         [[aCell formatter] setDateStyle:dateStyle];
+        [[aCell formatter] setTimeStyle:timeStyle];
     }
 }
 
