@@ -25,6 +25,7 @@
     IBOutlet NSSplitView *mainSplitView;
     @private
     XTRepository *repo;
+    NSUInteger savedSidebarWidth;
 }
 
 - (void)setRepo:(XTRepository *)newRepo;

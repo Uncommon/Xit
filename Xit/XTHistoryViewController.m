@@ -27,6 +27,7 @@
     self->repo = repository;
     self->sidebarOutline = sidebar;
     self->sideBarDS = [[XTSideBarDataSource alloc] init];
+    self->savedSidebarWidth = 180;
     return self;
 }
 
@@ -73,8 +74,9 @@
 }
 
 - (IBAction)toggleSideBar:(id)sender {
-    // TODO: improve it
-    const CGFloat newWidth = ([sender state] == NSOnState) ? 180 : 0;
+    const CGFloat newWidth = ([sender state] == NSOnState) ? savedSidebarWidth : 0;
+    if ([sender state] == NSOffState)
+        savedSidebarWidth = [[[sidebarSplitView subviews] objectAtIndex:0] frame].size.width;
     [sidebarSplitView setPosition:newWidth ofDividerAtIndex:0 ];
 }
 
