@@ -9,8 +9,8 @@
 #import "XTRepository.h"
 #import "XTHistoryItem.h"
 #import "XTStatusView.h"
+#import "PBGitGrapher.h"
 #import "PBGitHistoryGrapher.h"
-#import "PBGitRevisionCell.h"
 
 @interface NSDate (RFC2822)
 + (NSDate *)dateFromRFC2822:(NSString *)rfc2822;
@@ -62,66 +62,63 @@
     if (repo == nil)
         return;
     dispatch_async(repo.queue, ^{
-                       NSArray *args = [NSArray arrayWithObjects:@"--pretty=format:%H%n%P%n%cD%n%ce%n%s", @"--reverse", @"--tags", @"--all", @"--topo-order", nil];
-                       NSMutableArray *newItems = [NSMutableArray array];
+        NSArray *args = [NSArray arrayWithObjects:@"--pretty=format:%H%n%P%n%cD%n%ce%n%s", @"--reverse", @"--tags", @"--all", @"--topo-order", nil];
+        NSMutableArray *newItems = [NSMutableArray array];
 
-                       [XTStatusView updateStatus:@"Loading..." command:[args componentsJoinedByString:@" "] output:nil forRepository:repo];
-                       [repo    getCommitsWithArgs:args
-                        enumerateCommitsUsingBlock:^(NSString * line) {
-                            // Guard Malloc pollutes the output; skip it
-                            if ([line hasPrefix:@"GuardMalloc[git"])
-                                return;
-                            [XTStatusView updateStatus:nil command:nil output:line forRepository:repo];
+        [XTStatusView updateStatus:@"Loading..." command:[args componentsJoinedByString:@" "] output:nil forRepository:repo];
+        [repo getCommitsWithArgs:args enumerateCommitsUsingBlock:^(NSString * line) {
+            // Guard Malloc pollutes the output; skip it
+            if ([line hasPrefix:@"GuardMalloc[git"])
+                return;
+            [XTStatusView updateStatus:nil command:nil output:line forRepository:repo];
 
-                            NSArray *comps = [line componentsSeparatedByString:@"\n"];
-                            XTHistoryItem *item = [[XTHistoryItem alloc] init];
-                            if ([comps count] == 5) {
-                                item.sha = [comps objectAtIndex:0];
-                                NSString *parentsStr = [comps objectAtIndex:1];
-                                if (parentsStr.length > 0) {
-                                    NSArray *parents = [parentsStr componentsSeparatedByString:@" "];
-                                    [parents enumerateObjectsWithOptions:0 usingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
-                                         NSString *parentSha = (NSString *)obj;
-                                         XTHistoryItem *parent = [index objectForKey:parentSha];
-                                         if (parent != nil) {
-                                             [item.parents addObject:parent];
-                                         } else {
-                                             NSLog(@"parent with sha:'%@' not found for commit with sha:'%@' idx=%lu", parentSha, item.sha, item.index);
-                                         }
-                                     }];
-                                }
-                                item.date = [NSDate dateFromRFC2822:[comps objectAtIndex:2]];
-                                item.email = [comps objectAtIndex:3];
-                                item.subject = [comps objectAtIndex:4];
-                                [newItems addObject:item];
-                                [index setObject:item forKey:item.sha];
-                            } else {
-                                [NSException raise:@"Invalid commint" format:@"Line ***\n%@\n*** is invalid", line];
-                            }
+            NSArray *comps = [line componentsSeparatedByString:@"\n"];
+            XTHistoryItem *item = [[XTHistoryItem alloc] init];
+            if ([comps count] == 5) {
+                item.sha = [comps objectAtIndex:0];
+                NSString *parentsStr = [comps objectAtIndex:1];
+                if (parentsStr.length > 0) {
+                    NSArray *parents = [parentsStr componentsSeparatedByString:@" "];
+                    [parents enumerateObjectsWithOptions:0 usingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
+                         NSString *parentSha = (NSString *)obj;
+                         XTHistoryItem *parent = [index objectForKey:parentSha];
+                         if (parent != nil) {
+                             [item.parents addObject:parent];
+                         } else {
+                             NSLog(@"parent with sha:'%@' not found for commit with sha:'%@' idx=%lu", parentSha, item.sha, item.index);
+                         }
+                     }];
+                }
+                item.date = [NSDate dateFromRFC2822:[comps objectAtIndex:2]];
+                item.email = [comps objectAtIndex:3];
+                item.subject = [comps objectAtIndex:4];
+                [newItems addObject:item];
+                [index setObject:item forKey:item.sha];
+            } else {
+                [NSException raise:@"Invalid commint" format:@"Line ***\n%@\n*** is invalid", line];
+            }
+        } error:nil];
 
-                        }
-                                             error:nil];
+        if ([newItems count] > 0) {
+           NSUInteger i = 0;
+           NSUInteger j = [newItems count] - 1;
+           while (i < j) {
+               [newItems exchangeObjectAtIndex:i++ withObjectAtIndex:j--];
+           }
+        }
 
-                       if ([newItems count] > 0) {
-                           NSUInteger i = 0;
-                           NSUInteger j = [newItems count] - 1;
-                           while (i < j) {
-                               [newItems exchangeObjectAtIndex:i++ withObjectAtIndex:j--];
-                           }
-                       }
+        PBGitGrapher *grapher = [[PBGitGrapher alloc] init];
+        [newItems enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
+            XTHistoryItem *item = (XTHistoryItem *)obj;
+            [grapher decorateCommit:item];
+            item.index = idx;
+        }];
 
-                       PBGitGrapher *grapher = [[PBGitGrapher alloc] init];
-                       [newItems enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
-                            XTHistoryItem *item = (XTHistoryItem *)obj;
-                            [grapher decorateCommit:item];
-                            item.index = idx;
-                        }];
-
-                       [XTStatusView updateStatus:[NSString stringWithFormat:@"%d commits loaded", [newItems count]] command:nil output:@"" forRepository:repo];
-                       NSLog (@"-> %lu", [newItems count]);
-                       items = newItems;
-                       [table reloadData];
-                   });
+        [XTStatusView updateStatus:[NSString stringWithFormat:@"%d commits loaded", [newItems count]] command:nil output:@"" forRepository:repo];
+        NSLog (@"-> %lu", [newItems count]);
+        items = newItems;
+        [table reloadData];
+        });
 }
 
 #pragma mark - NSTableViewDataSource
@@ -134,50 +131,6 @@
     XTHistoryItem *item = [items objectAtIndex:rowIndex];
 
     return [item valueForKey:aTableColumn.identifier];
-}
-
-// TODO: move this to the view controller
-#pragma mark - NSTableViewDelegate
-
-- (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
-    NSLog(@"%@", aNotification);
-    XTHistoryItem *item = [items objectAtIndex:table.selectedRow];
-    repo.selectedCommit = item.sha;
-}
-
-// These values came from measuring where the Finder switches styles
-const NSUInteger
-    kFullStyleThreshold = 280,
-    kLongStyleThreshold = 210,
-    kMediumStyleThreshold = 170,
-    kShortStyleThreshold = 150;
-
-- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
-    if ([[aTableColumn identifier] isEqualToString:@"subject"]) {
-        XTHistoryItem *item = [items objectAtIndex:rowIndex];
-
-        ((PBGitRevisionCell *)aCell).objectValue = item;
-    } else if ([[aTableColumn identifier] isEqualToString:@"date"]) {
-        const CGFloat width = [aTableColumn width];
-        NSDateFormatterStyle dateStyle = NSDateFormatterShortStyle;
-        NSDateFormatterStyle timeStyle = NSDateFormatterShortStyle;
-
-        if (width > kFullStyleThreshold)
-            dateStyle = NSDateFormatterFullStyle;
-        else if (width > kLongStyleThreshold)
-            dateStyle = NSDateFormatterLongStyle;
-        else if (width > kMediumStyleThreshold)
-            dateStyle = NSDateFormatterMediumStyle;
-        else if (width > kShortStyleThreshold)
-            dateStyle = NSDateFormatterShortStyle;
-        else {
-            dateStyle = NSDateFormatterShortStyle;
-            timeStyle = NSDateFormatterNoStyle;
-        }
-        [[aCell formatter] setDoesRelativeDateFormatting:YES];
-        [[aCell formatter] setDateStyle:dateStyle];
-        [[aCell formatter] setTimeStyle:timeStyle];
-    }
 }
 
 @end
