@@ -20,4 +20,11 @@
     STAssertEqualObjects([repository parentTree], kEmptyTreeHash, @"");
 }
 
+- (void)testHeadRef {
+    [super addInitialRepoContent];
+    // TODO: check that the values are correct
+    STAssertNotNil([repository headRef], @"");
+    STAssertNotNil([repository headSHA], @"");
+}
+
 @end

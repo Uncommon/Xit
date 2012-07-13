@@ -11,6 +11,7 @@
     NSURL *repoURL;
     NSString *gitCMD;
     NSString *selectedCommit;
+    NSString *cachedHeadRef, *cachedHeadSHA;
     NSDictionary *refsIndex;
     FSEventStreamRef stream;
     NSArray *reload;
@@ -24,6 +25,9 @@
 - (NSData *)executeGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error;
 - (NSString *)parseReference:(NSString *)reference;
 - (NSString *)parentTree;
+- (NSString *)headRef;
+- (NSString *)headSHA;
+- (NSString *)shaForRef:(NSString *)ref;
 
 - (void)initializeEventStream;
 - (void)start;
