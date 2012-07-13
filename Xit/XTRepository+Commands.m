@@ -1,14 +1,14 @@
 //
-//  GITBasic+Xit.m
+//  XTRepository+Commands.m
 //  Xit
 //
 //  Created by glaullon on 7/15/11.
 //
 
-#import "GITBasic+XTRepository.h"
+#import "XTRepository+Commands.h"
 
 
-@implementation XTRepository (GITBasic_XTRepository)
+@implementation XTRepository (Commands)
 
 
 - (bool)initializeRepository {

@@ -12,7 +12,7 @@
 #import "XTHistoryViewController.h"
 #import "XTRepository.h"
 #import "XTSideBarDataSource.h"
-#import "GITBasic+XTRepository.h"
+#import "XTRepository+Commands.h"
 #import <OCMock/OCMock.h>
 
 @implementation XTHistoryViewControllerTest

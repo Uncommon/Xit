@@ -1,5 +1,5 @@
 //
-//  GITBasic+Xit.h
+//  XTRepository+Commands.h
 //  Xit
 //
 //  Created by glaullon on 7/15/11.
@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "XTRepository.h"
 
-@interface XTRepository (GITBasic_XTRepository)
+@interface XTRepository (Commands)
 
 - (bool)initializeRepository;
 - (bool)createBranch:(NSString *)name;

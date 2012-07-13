@@ -7,7 +7,7 @@
 
 #import "XTFileListDataSourceTest.h"
 #import "XTHistoryDataSource.h"
-#import "GITBasic+XTRepository.h"
+#import "XTRepository+Commands.h"
 #import "XTFileListDataSource.h"
 #import "XTHistoryItem.h"
 
