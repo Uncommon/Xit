@@ -74,7 +74,7 @@
     CFRunLoopRun();
 }
 
-- (void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^) (NSString *)) block error:(NSError **)error {
+- (void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^)(NSString *))block error:(NSError **)error {
     if (repoURL == nil) {
         if (error != NULL)
             *error = [NSError errorWithDomain:NSOSStatusErrorDomain code:fnfErr userInfo:nil];
@@ -89,7 +89,7 @@
     [args insertObject:@"-z" atIndex:1];
     NSData *zero = [NSData dataWithBytes:"" length:1];
 
-    NSLog (@"****command = git %@", [args componentsJoinedByString:@" "]);
+    NSLog(@"****command = git %@", [args componentsJoinedByString:@" "]);
     NSTask *task = [[NSTask alloc] init];
     [self addTask:task];
     [task setCurrentDirectoryPath:[repoURL path]];
@@ -112,22 +112,22 @@
         if (end)
             [output appendData:zero];
 
-        NSRange searchRange = NSMakeRange (0, [output length]);
+        NSRange searchRange = NSMakeRange(0, [output length]);
         NSRange zeroRange = [output rangeOfData:zero options:0 range:searchRange];
         while (zeroRange.location != NSNotFound) {
-            NSRange commitRange = NSMakeRange (searchRange.location, (zeroRange.location - searchRange.location));
+            NSRange commitRange = NSMakeRange(searchRange.location, (zeroRange.location - searchRange.location));
             NSData *commit = [output subdataWithRange:commitRange];
             NSString *str = [[NSString alloc] initWithData:commit encoding:NSUTF8StringEncoding];
             if (str != nil)
-                block (str);
-            searchRange = NSMakeRange (zeroRange.location + 1, [output length] - (zeroRange.location + 1));
+                block(str);
+            searchRange = NSMakeRange(zeroRange.location + 1, [output length] - (zeroRange.location + 1));
             zeroRange = [output rangeOfData:zero options:0 range:searchRange];
         }
         output = [NSMutableData dataWithData:[output subdataWithRange:searchRange]];
     }
 
     int status = [task terminationStatus];
-    NSLog (@"**** status = %d", status);
+    NSLog(@"**** status = %d", status);
 
     if (status != 0) {
         NSString *string = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
