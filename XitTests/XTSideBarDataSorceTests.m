@@ -110,12 +110,19 @@
         STFail(@"add origin '%@'", remoteRepoPath);
     }
 
-#if 0  // TODO: Can't push to the checked-out branch
+    NSError *error = nil;
+    NSArray *configArgs = [NSArray arrayWithObjects:@"config", @"receive.denyCurrentBranch", @"ignore", nil];
+
+    [remoteRepository executeGitWithArgs:configArgs error:&error];
+    if (error != nil) {
+        STFail(@"Ignore denyCurrentBranch");
+        return;
+    }
+
     if (![repository push:@"origin"]) {
         STFail(@"push origin");
         return;
     }
-#endif
 
     MockSidebarOutlineView *sov = [[MockSidebarOutlineView alloc] init];
     XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];

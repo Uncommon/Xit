@@ -18,7 +18,8 @@
     repository = [self createRepo:repoPath];
 
     remoteRepoPath = [NSString stringWithFormat:@"%@remotetestrepo", NSTemporaryDirectory()];
-    [self createRepo:remoteRepoPath];
+    remoteRepository = [self createRepo:remoteRepoPath];
+
     [self addInitialRepoContent];
 
     NSLog(@"setUp ok");

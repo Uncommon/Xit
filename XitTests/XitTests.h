@@ -12,7 +12,7 @@
 @interface XitTests : SenTestCase {
     NSString *repoPath;
     NSString *remoteRepoPath;
-    XTRepository *repository;
+    XTRepository *repository, *remoteRepository;
     BOOL reloadDetected;
 }
 
