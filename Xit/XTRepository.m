@@ -2,14 +2,9 @@
 //  XTRepository.m
 //  Xit
 //
-//  Created by VMware Inc. on 8/23/11.
-//  Copyright 2011 VMware, Inc. All rights reserved.
-//
 
 #import "XTRepository.h"
-
-// An empty tree will always have this hash.
-#define kEmptyTreeHash @"4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+#import "NSMutableDictionary+MultiObjectForKey.h"
 
 @implementation XTRepository
 
@@ -78,7 +73,7 @@
     CFRunLoopRun();
 }
 
-- (void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^) (NSString *)) block error:(NSError **)error {
+- (void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^)(NSString *))block error:(NSError **)error {
     if (repoURL == nil) {
         if (error != NULL)
             *error = [NSError errorWithDomain:NSOSStatusErrorDomain code:fnfErr userInfo:nil];
@@ -93,7 +88,7 @@
     [args insertObject:@"-z" atIndex:1];
     NSData *zero = [NSData dataWithBytes:"" length:1];
 
-    NSLog (@"****command = git %@", [args componentsJoinedByString:@" "]);
+    NSLog(@"****command = git %@", [args componentsJoinedByString:@" "]);
     NSTask *task = [[NSTask alloc] init];
     [self addTask:task];
     [task setCurrentDirectoryPath:[repoURL path]];
@@ -116,22 +111,22 @@
         if (end)
             [output appendData:zero];
 
-        NSRange searchRange = NSMakeRange (0, [output length]);
+        NSRange searchRange = NSMakeRange(0, [output length]);
         NSRange zeroRange = [output rangeOfData:zero options:0 range:searchRange];
         while (zeroRange.location != NSNotFound) {
-            NSRange commitRange = NSMakeRange (searchRange.location, (zeroRange.location - searchRange.location));
+            NSRange commitRange = NSMakeRange(searchRange.location, (zeroRange.location - searchRange.location));
             NSData *commit = [output subdataWithRange:commitRange];
             NSString *str = [[NSString alloc] initWithData:commit encoding:NSUTF8StringEncoding];
             if (str != nil)
-                block (str);
-            searchRange = NSMakeRange (zeroRange.location + 1, [output length] - (zeroRange.location + 1));
+                block(str);
+            searchRange = NSMakeRange(zeroRange.location + 1, [output length] - (zeroRange.location + 1));
             zeroRange = [output rangeOfData:zero options:0 range:searchRange];
         }
         output = [NSMutableData dataWithData:[output subdataWithRange:searchRange]];
     }
 
     int status = [task terminationStatus];
-    NSLog (@"**** status = %d", status);
+    NSLog(@"**** status = %d", status);
 
     if (status != 0) {
         NSString *string = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
@@ -206,6 +201,20 @@
     return [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
 }
 
+- (NSString *)parseSymbolicReference:(NSString *)reference {
+    NSError *error = nil;
+    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"symbolic-ref", @"-q", reference, nil] error:&error];
+
+    if (output == nil)
+        return nil;
+
+    NSString *ref = [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
+    if ([ref hasPrefix:@"refs/"])
+        return [ref stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+    return nil;
+}
+
 // Returns kEmptyTreeHash if the repository is empty, otherwise "HEAD"
 - (NSString *)parentTree {
     NSString *parentTree = @"HEAD";
@@ -213,6 +222,43 @@
     if ([self parseReference:parentTree] == nil)
         parentTree = kEmptyTreeHash;
     return parentTree;
+}
+
+- (NSString *)shaForRef:(NSString *)ref {
+    if (ref == nil)
+        return nil;
+
+    for (NSString *sha in [refsIndex allKeys])
+        for (NSString *shaRef in [refsIndex objectsForKey:sha])
+            if ([shaRef isEqual:ref])
+                return sha;
+
+    NSArray *args = [NSArray arrayWithObjects:@"rev-list", @"-1", ref, nil];
+    NSError *error = nil;
+    NSData *output = [self executeGitWithArgs:args error:&error];
+
+    if ((error != nil) || ([output length] == 0))
+        return nil;
+
+    return [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
+}
+
+- (NSString *)headRef {
+    if (cachedHeadRef == nil) {
+        NSString *head = [self parseSymbolicReference:@"HEAD"];
+
+        if ([head hasPrefix:@"refs/heads/"])
+            cachedHeadRef = [head retain];
+        else
+            cachedHeadRef = @"HEAD";
+
+        cachedHeadSHA = [self shaForRef:cachedHeadRef];
+    }
+    return cachedHeadRef;
+}
+
+- (NSString *)headSHA {
+    return [self shaForRef:[self headRef]];
 }
 
 // XXX tmp

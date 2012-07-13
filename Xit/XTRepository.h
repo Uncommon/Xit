@@ -2,8 +2,6 @@
 //  XTRepository.h
 //  Xit
 //
-//  Created by VMware Inc. on 8/23/11.
-//
 
 #import <Foundation/Foundation.h>
 
@@ -13,6 +11,7 @@
     NSURL *repoURL;
     NSString *gitCMD;
     NSString *selectedCommit;
+    NSString *cachedHeadRef, *cachedHeadSHA;
     NSDictionary *refsIndex;
     FSEventStreamRef stream;
     NSArray *reload;
@@ -26,6 +25,9 @@
 - (NSData *)executeGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error;
 - (NSString *)parseReference:(NSString *)reference;
 - (NSString *)parentTree;
+- (NSString *)headRef;
+- (NSString *)headSHA;
+- (NSString *)shaForRef:(NSString *)ref;
 
 - (void)initializeEventStream;
 - (void)start;
@@ -43,6 +45,9 @@
 @property (readonly) NSURL *repoURL;
 
 @end
+
+// An empty tree will always have this hash.
+#define kEmptyTreeHash @"4b825dc642cb6eb9a060e54bf8d69288fbee4904"
 
 void fsevents_callback(ConstFSEventStreamRef streamRef,
                        void *userData,
