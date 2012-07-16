@@ -8,6 +8,7 @@
 #import "XTSideBarDataSource.h"
 #import "XTSideBarItem.h"
 #import "XTRepository.h"
+#import "XTRepository+Reading.h"
 #import "XTLocalBranchItem.h"
 #import "XTTagItem.h"
 #import "XTRemotesItem.h"
@@ -84,19 +85,11 @@
     XTSideBarItem *stashes = [roots objectAtIndex:XT_STASHES];
 
     [stashes clean];
-    NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"stash", @"list", @"--pretty=%H %gd %gs", nil] error:nil];
-    if (output) {
-        NSString *refs = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-        NSScanner *scan = [NSScanner scannerWithString:refs];
-        NSString *commit;
-        NSString *name;
-        while ([scan scanUpToString:@" " intoString:&commit]) {
-            [scan scanUpToString:@"\n" intoString:&name];
-            XTSideBarItem *stash = [[XTSideBarItem alloc] initWithTitle:name];
-            [stashes addchild:stash];
-            [refsIndex addObject:stash forKey:commit];
-        }
-    }
+    [repo readStashesWithBlock:^(NSString *commit, NSString *name) {
+        XTSideBarItem *stash = [[XTSideBarItem alloc] initWithTitle:name];
+        [stashes addchild:stash];
+        [refsIndex addObject:stash forKey:commit];
+    }];
 }
 
 - (void)reloadBranches:(NSMutableDictionary *)refsIndex {
