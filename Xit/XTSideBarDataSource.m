@@ -102,45 +102,40 @@
     [branches clean];
     [tags clean];
     [remotes clean];
-    NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"show-ref", @"-d", nil] error:nil];
-    if (output) {
-        NSString *refs = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-        NSScanner *scan = [NSScanner scannerWithString:refs];
-        NSString *commit;
-        NSString *name;
-        while ([scan scanUpToString:@" " intoString:&commit]) {
-            [scan scanUpToString:@"\n" intoString:&name];
-            if ([name hasPrefix:@"refs/heads/"]) {
-                XTLocalBranchItem *branch = [[XTLocalBranchItem alloc] initWithTitle:[name lastPathComponent] andSha:commit];
-                [branches addchild:branch];
-                [refsIndex addObject:branch forKey:branch.sha];
-            } else if ([name hasPrefix:@"refs/tags/"]) {
-                XTTagItem *tag;
-                NSString *tagName = [name lastPathComponent];
-                if ([tagName hasSuffix:@"^{}"]) {
-                    tagName = [tagName substringToIndex:tagName.length - 3];
-                    tag = [tagIndex objectForKey:tagName];
-                    tag.sha = commit;
-                } else {
-                    tag = [[XTTagItem alloc] initWithTitle:tagName andSha:commit];
-                    [tags addchild:tag];
-                    [tagIndex setObject:tag forKey:tagName];
-                }
-                [refsIndex addObject:tag forKey:tag.sha];
-            } else if ([name hasPrefix:@"refs/remotes/"]) {
-                NSString *remoteName = [[name pathComponents] objectAtIndex:2];
-                NSString *branchName = [name lastPathComponent];
-                XTSideBarItem *remote = [remotes getRemote:remoteName];
-                if (remote == nil) {
-                    remote = [[XTSideBarItem alloc] initWithTitle:remoteName];
-                    [remotes addchild:remote];
-                }
-                XTLocalBranchItem *branch = [[XTLocalBranchItem alloc] initWithTitle:branchName andSha:commit];
-                [remote addchild:branch];
-                [refsIndex addObject:branch forKey:branch.sha];
-            }
+
+    void (^localBlock)(NSString *, NSString *) = ^(NSString *name, NSString *commit) {
+        XTLocalBranchItem *branch = [[XTLocalBranchItem alloc] initWithTitle:[name lastPathComponent] andSha:commit];
+        [branches addchild:branch];
+        [refsIndex addObject:branch forKey:branch.sha];
+    };
+
+    void (^remoteBlock)(NSString *, NSString *, NSString *) = ^(NSString *remoteName, NSString *branchName, NSString *commit) {
+        XTSideBarItem *remote = [remotes getRemote:remoteName];
+        if (remote == nil) {
+            remote = [[XTSideBarItem alloc] initWithTitle:remoteName];
+            [remotes addchild:remote];
         }
-    }
+        XTLocalBranchItem *branch = [[XTLocalBranchItem alloc] initWithTitle:branchName andSha:commit];
+        [remote addchild:branch];
+        [refsIndex addObject:branch forKey:branch.sha];
+    };
+
+    void (^tagBlock)(NSString *, NSString *) = ^(NSString *name, NSString *commit) {
+        XTTagItem *tag;
+        NSString *tagName = [name lastPathComponent];
+        if ([tagName hasSuffix:@"^{}"]) {
+            tagName = [tagName substringToIndex:tagName.length - 3];
+            tag = [tagIndex objectForKey:tagName];
+            tag.sha = commit;
+        } else {
+            tag = [[XTTagItem alloc] initWithTitle:tagName andSha:commit];
+            [tags addchild:tag];
+            [tagIndex setObject:tag forKey:tagName];
+        }
+        [refsIndex addObject:tag forKey:tag.sha];
+    };
+
+    [repo readRefsWithLocalBlock:localBlock remoteBlock:remoteBlock tagBlock:tagBlock];
 }
 
 - (XTLocalBranchItem *)itemForBranchName:(NSString *)branch {
