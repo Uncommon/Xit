@@ -11,6 +11,7 @@
 #import "XTHistoryItem.h"
 #import "XTLocalBranchItem.h"
 #import "XTRepository.h"
+#import "XTRepository+Commands.h"
 #import "XTSideBarDataSource.h"
 #import "XTStatusView.h"
 #import "PBGitRevisionCell.h"
@@ -58,11 +59,13 @@
 - (IBAction)checkOutBranch:(id)sender {
     dispatch_async(repo.queue, ^{
         NSError *error = nil;
-        NSArray *args = [NSArray arrayWithObjects:@"checkout", [self selectedBranch], nil];
 
-        [repo executeGitWithArgs:args error:&error];
-        if (error != nil)
+        [repo checkout:[self selectedBranch] error:&error];
+        if (error != nil) {
+            NSArray *args = [NSArray arrayWithObjects:@"checkout", [self selectedBranch], nil];
+
             [XTStatusView updateStatus:@"Checkout failed" command:[args componentsJoinedByString:@" "] output:[[error userInfo] valueForKey:@"output"] forRepository:repo];
+        }
     });
 }
 

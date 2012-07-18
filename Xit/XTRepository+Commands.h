@@ -18,7 +18,7 @@
 - (bool)createTag:(NSString *)name withMessage:(NSString *)msg;
 - (bool)addRemote:(NSString *)name withUrl:(NSString *)url;
 - (bool)push:(NSString *)remote;
-- (bool)checkout:(NSString *)branch;
+- (bool)checkout:(NSString *)branch error:(NSError **)error;
 - (bool)stash:(NSString *)name;
 - (bool)merge:(NSString *)name;
 

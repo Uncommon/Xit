@@ -98,7 +98,7 @@
 }
 
 - (void)testXTSideBarDataSourceReomtes {
-    if (![repository checkout:@"master"]) {
+    if (![repository checkout:@"master" error:NULL]) {
         STFail(@"checkout master");
     }
 

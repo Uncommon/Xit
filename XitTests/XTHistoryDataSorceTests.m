@@ -71,7 +71,7 @@
     for (int n = 0; n < nCommits; n++) {
         NSString *bn = [NSString stringWithFormat:@"branch_%d", n];
         if ((n % 10) == 0) {
-            [repository checkout:@"master"];
+            [repository checkout:@"master" error:NULL];
             if (![repository createBranch:bn]) {
                 STFail(@"Create Branch");
             }

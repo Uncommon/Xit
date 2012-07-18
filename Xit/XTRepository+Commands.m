@@ -92,7 +92,7 @@
     return res;
 }
 
-- (bool)checkout:(NSString *)branch {
+- (bool)checkout:(NSString *)branch error:(NSError **)resultError {
     NSError *error = nil;
     bool res = NO;
 
@@ -101,6 +101,8 @@
     if (error == nil) {
         res = YES;
     }
+    if (resultError != NULL)
+        *resultError = error;
 
     return res;
 }
