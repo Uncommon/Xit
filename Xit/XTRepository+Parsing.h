@@ -10,9 +10,9 @@
 
 @interface XTRepository (Reading)
 
-- (void)readRefsWithLocalBlock:(void (^)(NSString *name, NSString *commit))localBlock
+- (BOOL)readRefsWithLocalBlock:(void (^)(NSString *name, NSString *commit))localBlock
                    remoteBlock:(void (^)(NSString *remoteName, NSString *branchName, NSString *commit))remoteBlock
                       tagBlock:(void (^)(NSString *name, NSString *commit))tagBlock;
-- (void)readStashesWithBlock:(void (^)(NSString *commit, NSString *name))block;
+- (BOOL)readStashesWithBlock:(void (^)(NSString *commit, NSString *name))block;
 
 @end

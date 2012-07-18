@@ -10,12 +10,13 @@
 
 @implementation XTRepository (Reading)
 
-- (void)readRefsWithLocalBlock:(void (^)(NSString *name, NSString *commit))localBlock
+- (BOOL)readRefsWithLocalBlock:(void (^)(NSString *name, NSString *commit))localBlock
                    remoteBlock:(void (^)(NSString *remoteName, NSString *branchName, NSString *commit))remoteBlock
                       tagBlock:(void (^)(NSString *name, NSString *commit))tagBlock {
-    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"show-ref", @"-d", nil] error:nil];
+    NSError *error = nil;
+    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"show-ref", @"-d", nil] error:&error];
 
-    if (output) {
+    if (output != nil) {
         NSString *refs = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
         NSScanner *scan = [NSScanner scannerWithString:refs];
         NSString *commit;
@@ -35,10 +36,12 @@
             }
         }
     }
+    return error == nil;
 }
 
-- (void)readStashesWithBlock:(void (^)(NSString *, NSString *))block {
-    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"stash", @"list", @"--pretty=%H %gd %gs", nil] error:nil];
+- (BOOL)readStashesWithBlock:(void (^)(NSString *, NSString *))block {
+    NSError *error = nil;
+    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"stash", @"list", @"--pretty=%H %gd %gs", nil] error:&error];
 
     if (output != nil) {
         NSString *refs = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
@@ -50,6 +53,7 @@
             block(commit, name);
         }
     }
+    return error == nil;
 }
 
 @end
