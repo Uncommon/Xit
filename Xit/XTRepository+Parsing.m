@@ -1,11 +1,11 @@
 //
-//  XTRepository+Reading.m
+//  XTRepository+Parsing.m
 //  Xit
 //
 //  Created by David Catmull on 7/13/12.
 //
 
-#import "XTRepository+Reading.h"
+#import "XTRepository+Parsing.h"
 
 
 @implementation XTRepository (Reading)

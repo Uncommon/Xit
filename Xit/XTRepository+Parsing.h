@@ -1,5 +1,5 @@
 //
-//  XTRepository+Reading.h
+//  XTRepository+Parsing.h
 //  Xit
 //
 //  Created by David Catmull on 7/13/12.

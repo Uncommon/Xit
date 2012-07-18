@@ -8,7 +8,7 @@
 #import "XTSideBarDataSource.h"
 #import "XTSideBarItem.h"
 #import "XTRepository.h"
-#import "XTRepository+Reading.h"
+#import "XTRepository+Parsing.h"
 #import "XTLocalBranchItem.h"
 #import "XTTagItem.h"
 #import "XTRemotesItem.h"

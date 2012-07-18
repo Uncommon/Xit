@@ -74,7 +74,7 @@
 		DD592096156EEF40005FBB0F /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD592095156EEF40005FBB0F /* OCMock.framework */; };
 		DDD00551158FF551001B055E /* branch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDD00550158FF551001B055E /* branch@2x.png */; };
 		DDD9E33615953952007EF2F6 /* XTStagingDataSourceBase.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD9E33515953952007EF2F6 /* XTStagingDataSourceBase.m */; };
-		DDDA447215B0EA4700DF407B /* XTRepository+Reading.m in Sources */ = {isa = PBXBuildFile; fileRef = DDDA447115B0EA4700DF407B /* XTRepository+Reading.m */; };
+		DDDA447215B0EA4700DF407B /* XTRepository+Parsing.m in Sources */ = {isa = PBXBuildFile; fileRef = DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -130,12 +130,12 @@
 		3199BABB142079BB008AAA4F /* XTFileListDataSourceTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTFileListDataSourceTest.h; sourceTree = "<group>"; };
 		3199BABC142079BB008AAA4F /* XTFileListDataSourceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTFileListDataSourceTest.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3199BABE14207CFB008AAA4F /* XTFileListDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTFileListDataSource.h; sourceTree = "<group>"; };
-		3199BABF14207CFB008AAA4F /* XTFileListDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTFileListDataSource.m; sourceTree = "<group>"; };
+		3199BABF14207CFB008AAA4F /* XTFileListDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTFileListDataSource.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		31A8235414225F8A00408EDA /* XTFileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTFileViewController.h; sourceTree = "<group>"; };
 		31A8235514225F8A00408EDA /* XTFileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTFileViewController.m; sourceTree = "<group>"; };
 		31A8235614225F8B00408EDA /* XTFileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTFileViewController.xib; sourceTree = "<group>"; };
 		31A8939A13E9D5B4008BE0C2 /* XTCommitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = XTCommitViewController.h; sourceTree = "<group>"; tabWidth = 4; };
-		31A8939B13E9D5B4008BE0C2 /* XTCommitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = XTCommitViewController.m; sourceTree = "<group>"; tabWidth = 4; };
+		31A8939B13E9D5B4008BE0C2 /* XTCommitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTCommitViewController.m; sourceTree = "<group>"; tabWidth = 4; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		31A8939C13E9D5B4008BE0C2 /* XTCommitViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTCommitViewController.xib; sourceTree = "<group>"; };
 		31A8939F13E9DA5B008BE0C2 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		31C62D9613F2580E00845A9B /* XTStageViewControllerTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTStageViewControllerTest.h; sourceTree = "<group>"; };
@@ -183,7 +183,7 @@
 		C358652F14048A3F00060C53 /* XTRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRepository.h; sourceTree = "<group>"; };
 		C358653014048A3F00060C53 /* XTRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRepository.m; sourceTree = "<group>"; };
 		C3BC055613D1133000C3CF1A /* XTRepository+Commands.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = "XTRepository+Commands.h"; sourceTree = "<group>"; };
-		C3BC055713D1133000C3CF1A /* XTRepository+Commands.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = "XTRepository+Commands.m"; sourceTree = "<group>"; };
+		C3BC055713D1133000C3CF1A /* XTRepository+Commands.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = "XTRepository+Commands.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		C3D6CF1913D4B18900D35D4D /* XTLocalBranchItem.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = XTLocalBranchItem.h; path = Xit/XTLocalBranchItem.h; sourceTree = "<group>"; tabWidth = 4; };
 		C3D6CF1A13D4B18900D35D4D /* XTLocalBranchItem.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; name = XTLocalBranchItem.m; path = Xit/XTLocalBranchItem.m; sourceTree = "<group>"; tabWidth = 4; };
 		C3D6CF1C13D4B74400D35D4D /* XTTagItem.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = XTTagItem.h; path = Xit/XTTagItem.h; sourceTree = "<group>"; tabWidth = 4; };
@@ -226,8 +226,8 @@
 		DDD00550158FF551001B055E /* branch@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "branch@2x.png"; sourceTree = "<group>"; };
 		DDD9E33315953868007EF2F6 /* XTStagingDataSourceBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTStagingDataSourceBase.h; sourceTree = "<group>"; };
 		DDD9E33515953952007EF2F6 /* XTStagingDataSourceBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTStagingDataSourceBase.m; sourceTree = "<group>"; };
-		DDDA447015B0E97000DF407B /* XTRepository+Reading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XTRepository+Reading.h"; sourceTree = "<group>"; };
-		DDDA447115B0EA4700DF407B /* XTRepository+Reading.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XTRepository+Reading.m"; sourceTree = "<group>"; };
+		DDDA447015B0E97000DF407B /* XTRepository+Parsing.h */ = {isa = PBXFileReference; fileEncoding = 4; path = "XTRepository+Parsing.h"; sourceTree = "<group>"; };
+		DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XTRepository+Parsing.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -468,8 +468,8 @@
 				89355421157C128F007AC9CE /* XTDocController.h */,
 				89355422157C128F007AC9CE /* XTDocController.m */,
 				C358652F14048A3F00060C53 /* XTRepository.h */,
-				DDDA447015B0E97000DF407B /* XTRepository+Reading.h */,
-				DDDA447115B0EA4700DF407B /* XTRepository+Reading.m */,
+				DDDA447015B0E97000DF407B /* XTRepository+Parsing.h */,
+				DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */,
 				C358653014048A3F00060C53 /* XTRepository.m */,
 				89991CDB144E3FF400097A99 /* XTStatusView.h */,
 				89991CDC144E3FF400097A99 /* XTStatusView.m */,
@@ -752,7 +752,7 @@
 				89794F8C1458CC9B00E38ACC /* XTOutputViewController.m in Sources */,
 				89355423157C128F007AC9CE /* XTDocController.m in Sources */,
 				DDD9E33615953952007EF2F6 /* XTStagingDataSourceBase.m in Sources */,
-				DDDA447215B0EA4700DF407B /* XTRepository+Reading.m in Sources */,
+				DDDA447215B0EA4700DF407B /* XTRepository+Parsing.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
