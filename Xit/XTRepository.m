@@ -30,12 +30,12 @@
 
 - (id)initWithURL:(NSURL *)url {
     self = [super init];
-    if (self) {
+    if (self != nil) {
         gitCMD = [XTRepository gitPath];
         repoURL = url;
         NSMutableString *qName = [NSMutableString stringWithString:@"com.xit.queue."];
         [qName appendString:[url path]];
-        queue = dispatch_queue_create([qName cStringUsingEncoding:NSASCIIStringEncoding], NULL);
+        queue = dispatch_queue_create([qName cStringUsingEncoding:NSASCIIStringEncoding], DISPATCH_QUEUE_SERIAL);
         activeTasks = [NSMutableArray array];
     }
 
@@ -61,16 +61,25 @@
     [self didChangeValueForKey:@"activeTasks"];
 }
 
-- (void)waitUntilReloadEnd {
+- (void)waitForQueue {
     // Some queued tasks need to also perform tasks on the main thread, so
     // simply waiting on the queue could cause a deadlock.
-    CFRunLoopRef mainLoop = CFRunLoopGetMain();
+    const CFRunLoopRef loop = CFRunLoopGetCurrent();
+    __block BOOL keepLooping = YES;
 
-    CFRunLoopPerformBlock(
-            mainLoop,
-            kCFRunLoopCommonModes,
-            ^{ dispatch_async(queue, ^{ CFRunLoopStop(mainLoop); }); });
-    CFRunLoopRun();
+    // Loop because something else might quit the run loop.
+    do {
+        CFRunLoopPerformBlock(
+                loop,
+                kCFRunLoopCommonModes,
+                ^{
+                    dispatch_async(queue, ^{
+                        CFRunLoopStop(loop);
+                        keepLooping = NO;
+                    });
+                });
+        CFRunLoopRun();
+    } while (keepLooping);
 }
 
 - (void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^)(NSString *))block error:(NSError **)error {

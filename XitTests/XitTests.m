@@ -26,7 +26,7 @@
 }
 
 - (void)tearDown {
-    [repository waitUntilReloadEnd];
+    [repository waitForQueue];
 
     NSFileManager *defaultManager = [NSFileManager defaultManager];
     [defaultManager removeItemAtPath:repoPath error:nil];

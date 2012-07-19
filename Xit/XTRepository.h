@@ -32,7 +32,7 @@
 - (void)initializeEventStream;
 - (void)start;
 - (void)stop;
-- (void)waitUntilReloadEnd;
+- (void)waitForQueue;
 
 - (void)executeOffMainThread:(void (^)())block;
 - (void)addTask:(NSTask *)task;

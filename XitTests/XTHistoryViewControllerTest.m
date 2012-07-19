@@ -34,7 +34,7 @@
     [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
 
     [historyView.sideBarDS reload];
-    [repository waitUntilReloadEnd];
+    [repository waitForQueue];
 
     // selectBranch
     NSInteger row = 2;
@@ -53,12 +53,12 @@
     [[[mockSidebar expect] andReturn:[historyView.sideBarDS itemForBranchName:@"master"]] itemAtRow:row];
 
     [historyView.sideBarDS outlineView:mockSidebar numberOfChildrenOfItem:nil]; // initialize sidebarDS->outline
-    [repository waitUntilReloadEnd];
+    [repository waitForQueue];
     STAssertEqualObjects([repository currentBranch], @"b1", @"");
     [historyView selectBranch:@"master"];
     STAssertEqualObjects([historyView selectedBranch], @"master", @"");
     [historyView checkOutBranch:nil];
-    [repository waitUntilReloadEnd];
+    [repository waitForQueue];
     STAssertEqualObjects([repository currentBranch], @"master", @"");
 }
 
