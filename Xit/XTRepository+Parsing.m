@@ -39,6 +39,29 @@
     return error == nil;
 }
 
+- (BOOL)readStagedFilesWithBlock:(void (^)(NSString *, NSString *))block {
+    NSError *error = nil;
+    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"diff-index", @"--cached", [self parentTree], nil] error:&error];
+
+    if ((output == nil) || (error != nil))
+        return NO;
+
+    NSString *filesStr = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+    filesStr = [filesStr stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSArray *files = [filesStr componentsSeparatedByString:@"\n"];
+
+    for (NSString *file in files) {
+        NSArray *info = [file componentsSeparatedByString:@"\t"];
+        if (info.count > 1) {
+            NSString *name = [info lastObject];
+            NSString *status = [[[info objectAtIndex:0] componentsSeparatedByString:@" "] lastObject];
+            status = [status substringToIndex:1];
+            block(name, status);
+        }
+    }
+    return YES;
+}
+
 - (BOOL)readStashesWithBlock:(void (^)(NSString *, NSString *))block {
     NSError *error = nil;
     NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"stash", @"list", @"--pretty=%H %gd %gs", nil] error:&error];
