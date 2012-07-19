@@ -115,38 +115,38 @@
 
     XTFileIndexInfo *item = [[unstageDS items] objectAtIndex:clickedRow];
 
-    dispatch_async(repo.queue, ^{
+    [repo executeOffMainThread:^{
         NSArray *args = [NSArray arrayWithObjects:@"add", item.name, nil];
         NSError *error = nil;
 
         [repo executeGitWithArgs:args error:&error];
         if (error == nil)
             [self reload];
-    });
+    }];
 }
 
 #pragma mark -
 
 - (void)unstageChunk:(NSInteger)idx {
-    dispatch_async(repo.queue, ^{
-                       [repo executeGitWithArgs:[NSArray arrayWithObjects:@"apply",  @"--cached", @"--reverse", nil]
-                                      withStdIn:[self preparePatch:idx]
-                                          error:nil];
-                       [self reload];
-                   });
+    [repo executeOffMainThread:^{
+        [repo executeGitWithArgs:[NSArray arrayWithObjects:@"apply",  @"--cached", @"--reverse", nil]
+                       withStdIn:[self preparePatch:idx]
+                           error:nil];
+        [self reload];
+    }];
 }
 
 - (void)stageChunk:(NSInteger)idx {
-    dispatch_async(repo.queue, ^{
-                       [repo executeGitWithArgs:[NSArray arrayWithObjects:@"apply",  @"--cached", nil]
-                                      withStdIn:[self preparePatch:idx]
-                                          error:nil];
-                       [self reload];
-                   });
+    [repo executeOffMainThread:^{
+        [repo executeGitWithArgs:[NSArray arrayWithObjects:@"apply",  @"--cached", nil]
+                       withStdIn:[self preparePatch:idx]
+                           error:nil];
+        [self reload];
+    }];
 }
 
 - (void)discardChunk:(NSInteger)idx {
-
+    // TODO: implement discard
 }
 
 #pragma mark -
