@@ -14,6 +14,7 @@
                    remoteBlock:(void (^)(NSString *remoteName, NSString *branchName, NSString *commit))remoteBlock
                       tagBlock:(void (^)(NSString *name, NSString *commit))tagBlock;
 - (BOOL)readStagedFilesWithBlock:(void (^)(NSString *name, NSString *status))block;
+- (BOOL)readUnstagedFilesWithBlock:(void (^)(NSString *name, NSString *status))block;
 - (BOOL)readStashesWithBlock:(void (^)(NSString *commit, NSString *name))block;
 
 @end

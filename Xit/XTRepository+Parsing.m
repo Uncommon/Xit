@@ -62,6 +62,43 @@
     return YES;
 }
 
+- (BOOL)readUnstagedFilesWithBlock:(void (^)(NSString *, NSString *))block {
+    NSError *error = nil;
+    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"diff-files", nil] error:nil];
+
+    if (error != nil)
+        return NO;
+
+    NSString *filesStr = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+    filesStr = [filesStr stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSArray *files = [filesStr componentsSeparatedByString:@"\n"];
+
+    [files enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
+        NSString *file = (NSString *)obj;
+        NSArray *info = [file componentsSeparatedByString:@"\t"];
+
+        if (info.count > 1) {
+            NSString *name = [info lastObject];
+            NSString *status = [[[info objectAtIndex:0] componentsSeparatedByString:@" "] lastObject];
+
+            status = [status substringToIndex:1];
+            block(name, status);
+        }
+    }];
+
+    output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"ls-files", @"--others", @"--exclude-standard", nil] error:nil];
+    filesStr = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+    filesStr = [filesStr stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    files = [filesStr componentsSeparatedByString:@"\n"];
+    [files enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
+        NSString *file = (NSString *)obj;
+
+        if (file.length > 0)
+            block(file, @"?");
+    }];
+    return YES;
+}
+
 - (BOOL)readStashesWithBlock:(void (^)(NSString *, NSString *))block {
     NSError *error = nil;
     NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"stash", @"list", @"--pretty=%H %gd %gs", nil] error:&error];
