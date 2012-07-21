@@ -6,7 +6,7 @@
 //
 
 #import "XTFileListDataSource.h"
-#import "XTRepository.h"
+#import "XTRepository+Parsing.h"
 
 @interface XTFileListDataSource ()
 - (void)_reload;
@@ -50,28 +50,24 @@
     if (!sha)
         sha = @"HEAD";
 
-    NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"ls-tree", @"--name-only", @"-r", sha, nil] error:nil];
+    NSArray *files = [repo fileNamesForRef:sha];
 
-    if (output) {
-        NSString *ls = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-        ls = [ls stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        NSArray *files = [ls componentsSeparatedByString:@"\n"];
-        for (NSString *file in files) {
-            NSString *path = [file stringByDeletingLastPathComponent];
-//            NSString *fileName = [file lastPathComponent];
-//            NSLog(@"path: '%@' file: '%@'", path, file);
-            NSTreeNode *node = [NSTreeNode treeNodeWithRepresentedObject:file];
-            if (path.length == 0) {
-                [[root mutableChildNodes] addObject:node];
-            } else {
-                NSTreeNode *parentNode = [self findTreeNodeForPath:path];
-                [[parentNode mutableChildNodes] addObject:node];
-            }
+    for (NSString *file in files) {
+        NSString *path = [file stringByDeletingLastPathComponent];
+        NSTreeNode *node = [NSTreeNode treeNodeWithRepresentedObject:file];
+
+        if (path.length == 0) {
+            [[root mutableChildNodes] addObject:node];
+        } else {
+            NSTreeNode *parentNode = [self findTreeNodeForPath:path];
+            [[parentNode mutableChildNodes] addObject:node];
         }
     }
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastPathComponent"
-                                                                   ascending:YES
-                                                                    selector:@selector(localizedCaseInsensitiveCompare:)];
+
+    NSSortDescriptor *sortDescriptor =
+            [[NSSortDescriptor alloc] initWithKey:@"lastPathComponent"
+                                        ascending:YES
+                                         selector:@selector(localizedCaseInsensitiveCompare:)];
     [root sortWithSortDescriptors:[NSArray arrayWithObject:sortDescriptor] recursively:YES];
 
     [table reloadData];

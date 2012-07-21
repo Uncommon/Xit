@@ -116,4 +116,17 @@
     return error == nil;
 }
 
+- (NSArray *)fileNamesForRef:(NSString *)ref {
+    NSError *error = nil;
+    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"ls-tree", @"--name-only", @"-r", ref, nil] error:nil];
+
+    if (error != nil)
+        return nil;
+
+    NSString *ls = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+
+    ls = [ls stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    return [ls componentsSeparatedByString:@"\n"];
+}
+
 @end

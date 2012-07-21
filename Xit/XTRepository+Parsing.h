@@ -17,4 +17,6 @@
 - (BOOL)readUnstagedFilesWithBlock:(void (^)(NSString *name, NSString *status))block;
 - (BOOL)readStashesWithBlock:(void (^)(NSString *commit, NSString *name))block;
 
+- (NSArray *)fileNamesForRef:(NSString *)ref;
+
 @end
