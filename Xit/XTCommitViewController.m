@@ -9,6 +9,7 @@
 #import "NSMutableDictionary+MultiObjectForKey.h"
 #import "XTSideBarItem.h"
 #import "XTHTML.h"
+#import "XTRepository+Parsing.h"
 
 // -parseHeader: returns an array of dictionaries with these keys
 const NSString *kHeaderKeyName = @"name";
@@ -42,22 +43,91 @@ const NSString *kAuthorKeyDate = @"date";
     }
 }
 
+- (NSString *)htmlForHeader:(NSDictionary *)header message:(NSString *)message {
+    NSMutableString *refs = [NSMutableString string];
+
+    void (^addRef)(NSString *, NSString *) = ^(NSString *label, NSString *sha) {
+        [refs appendFormat:@"<tr><td>%@</td><td><a href='' onclick='selectCommit(this.innerHTML); return false;'>%@</a></td></tr>", label, sha];
+    };
+
+    addRef(@"Commit:", [header objectForKey:XTCommitSHAKey]);
+    addRef(@"Tree:", [header objectForKey:XTTreeSHAKey]);
+    for (NSString *parent in [header objectForKey:XTParentSHAsKey])
+        addRef(@"Parent:", parent);
+
+    NSMutableString *auths = [NSMutableString string];
+    void (^addPerson)(NSString *,NSString *, NSString *, NSDate *) = ^(NSString *type, NSString *name, NSString *email, NSDate *date) {
+        [auths appendFormat:@"<div class='user %@ clearfix'>", type];
+        [auths appendFormat:@"<p class='name'>%@ <span class='rol'>(%@)</span></p>",
+                name, email];
+        [auths appendFormat:@"<p class='time'>%@</p></div>",
+                [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterMediumStyle]];
+    };
+
+    NSString *authorName = [header objectForKey:XTAuthorNameKey];
+    NSString *authorEmail = [header objectForKey:XTAuthorEmailKey];
+    NSDate *authorDate = [header objectForKey:XTAuthorDateKey];
+
+    addPerson(@"author", authorName, authorEmail, authorDate);
+
+    NSString *committerName = [header objectForKey:XTCommitterNameKey];
+    NSString *committerEmail = [header objectForKey:XTCommitterEmailKey];
+    NSDate *committerDate = [header objectForKey:XTCommitterDateKey];
+
+    if ((committerName != nil) && (committerEmail != nil) && (committerDate != nil)) {
+        if (![authorName isEqualToString:committerName] ||
+            ![authorEmail isEqualToString:committerEmail] ||
+            ![authorDate isEqual:committerDate])
+            addPerson(@"committer", committerName, committerEmail, committerDate);
+    }
+
+    return [NSString stringWithFormat:@"<div id='header' class='clearfix'><table class='references'>%@</table><p class='subject'>%@</p>%@</div>", refs, message, auths];
+}
+
+- (NSString *)htmlForFiles:(NSArray *)files {
+    return nil;
+}
+
 // defaults write com.yourcompany.programname WebKitDeveloperExtras -bool true
 - (NSString *)loadCommit:(NSString *)sha {
-    NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"show", @"-z", @"--numstat", @"--summary", @"--pretty=raw", sha, nil] error:nil];
+    NSDictionary *header = nil;
+    NSString *message = nil;
+    NSArray *files = nil;
+
+    if (![repo parseCommit:sha intoHeader:&header message:&message files:&files])
+        return nil;
+
+    NSString *headerHTML = [self htmlForHeader:header message:message];
+    NSString *filesHTML = [self htmlForFiles:files];
+
+    NSError *error = nil;
+    NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"diff-tree", @"--root", @"--cc", @"-C90%", @"-M90%", sha, nil] error:&error];
+    NSString *diffString = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+    NSString *diffHTML = [XTHTML parseDiff:diffString];
+
+    NSString *html = [NSString stringWithFormat:@"<html><head><link rel='stylesheet' type='text/css' href='diff.css'/></head><body>%@%@<div id='diffs'>%@</div></body></html>", headerHTML, filesHTML, diffHTML];
+
+    NSBundle *bundle = [NSBundle mainBundle];
+    NSBundle *theme = [NSBundle bundleWithURL:[bundle URLForResource:@"html.theme.default" withExtension:@"bundle"]];
+    NSURL *themeURL = [theme resourceURL];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+                       [[web mainFrame] loadHTMLString:html baseURL:themeURL];
+                   });
+    return html;
+
+    //NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"show", @"-z", @"--numstat", @"--summary", @"--pretty=raw", sha, nil] error:nil];
 
     if (output == nil)
         return nil;
 
-    NSString *html = nil;
+    //NSString *html = nil;
     NSString *txt = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
     NSCharacterSet *nulSet = [NSCharacterSet characterSetWithRange:NSMakeRange(0, 1)];
     NSArray *details = [txt componentsSeparatedByCharactersInSet:nulSet];
 
     for (NSString *detail in details) {
-        if ([detail hasPrefix:@"tag"]) {
-            // TODO: parse tag header
-        } else if ([detail hasPrefix:@"commit"]) {
+        if ([detail hasPrefix:@"commit"]) {
             NSArray *headerItems = [self parseHeader:detail];
             NSString *header = [self htmlForHeader:headerItems];
 

@@ -11,10 +11,7 @@
 #import "XTStatusView.h"
 #import "PBGitGrapher.h"
 #import "PBGitHistoryGrapher.h"
-
-@interface NSDate (RFC2822)
-+ (NSDate *)dateFromRFC2822:(NSString *)rfc2822;
-@end
+#import "NSDate+Extensions.h"
 
 @implementation XTHistoryDataSource
 
@@ -131,31 +128,6 @@
     XTHistoryItem *item = [items objectAtIndex:rowIndex];
 
     return [item valueForKey:aTableColumn.identifier];
-}
-
-@end
-
-@implementation NSDate (RFC2822)
-
-+ (NSDateFormatter *)rfc2822Formatter {
-    static NSDateFormatter *formatter = nil;
-    if (formatter == nil) {
-        formatter = [[NSDateFormatter alloc] init];
-        NSLocale *enUS = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-        [formatter setLocale:enUS];
-        [enUS release];
-        [formatter setDateFormat:@"EEE, dd MMM yyyy HH:mm:ss ZZ"];
-    }
-    return formatter;
-}
-
-+ (NSDate *)dateFromRFC2822:(NSString *)rfc2822 {
-    NSDateFormatter *formatter = [NSDate rfc2822Formatter];
-    __block NSDate *result = nil;
-
-    dispatch_sync(dispatch_get_main_queue(),
-                  ^{ result = [formatter dateFromString:rfc2822]; });
-    return result;
 }
 
 @end

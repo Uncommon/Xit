@@ -6,7 +6,11 @@
 //
 
 #import "XTRepository+Parsing.h"
+#import "NSDate+Extensions.h"
 
+
+NSString *XTHeaderNameKey = @"name";
+NSString *XTHeaderContentKey = @"content";
 
 @implementation XTRepository (Reading)
 
@@ -127,6 +131,114 @@
 
     ls = [ls stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     return [ls componentsSeparatedByString:@"\n"];
+}
+
+NSString *kHeaderFormat = @"--format="
+    "%H%n%T%n%P%n"      // commit, tree, and parent hashes
+    "%d%n"              // ref names
+    "%an%n%ae%n%aD%n"   // author name, email, date
+    "%cn%n%ce%n%cD"     // committer name, email, date
+    "%x00%B";           // message
+
+NSString
+        *XTCommitSHAKey = @"sha",
+        *XTTreeSHAKey = @"tree",
+        *XTParentSHAsKey = @"parents",
+        *XTRefsKey = @"refs",
+        *XTAuthorNameKey = @"authorname",
+        *XTAuthorEmailKey = @"authoremail",
+        *XTAuthorDateKey = @"authordate",
+        *XTCommitterNameKey = @"committername",
+        *XTCommitterEmailKey = @"committeremail",
+        *XTCommitterDateKey = @"committerdate";
+
+- (void)parseDateInArray:(NSMutableArray *)array atIndex:(NSUInteger)index {
+    NSDate *date = [NSDate dateFromRFC2822:[array objectAtIndex:index]];
+
+    [array removeObjectAtIndex:index];
+    [array insertObject:date atIndex:index];
+}
+
+- (BOOL)parseCommit:(NSString *)ref intoHeader:(NSDictionary **)header message:(NSString **)message files:(NSArray **)files {
+    NSAssert(header != NULL, @"NULL header");
+    NSAssert(message != NULL, @"NULL message");
+    NSAssert(files != NULL, @"NULL files");
+
+    NSError *error = nil;
+    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"show", @"-z", @"--summary", @"--name-only", kHeaderFormat, ref, nil] error:&error];
+
+    if (error != nil)
+        return NO;
+
+    NSString *commit = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+    NSArray *sections = [commit componentsSeparatedByString:@"\0"];
+
+    if ([sections count] < 2) {
+        NSLog(@"Commit failed to parse: %@", commit);
+        return NO;
+    }
+
+    NSMutableArray *headerLines = [[[sections objectAtIndex:0] componentsSeparatedByString:@"\n"] mutableCopy];
+    NSString *lastLine = [headerLines lastObject];
+
+    if ([lastLine length] == 0)
+        [headerLines removeObject:lastLine];
+
+    NSArray *headerKeys = [NSArray arrayWithObjects:
+        XTCommitSHAKey,
+        XTTreeSHAKey,
+        XTParentSHAsKey,
+        XTRefsKey,
+        XTAuthorNameKey,
+        XTAuthorEmailKey,
+        XTAuthorDateKey,
+        XTCommitterNameKey,
+        XTCommitterEmailKey,
+        XTCommitterDateKey,
+        nil];
+
+    // Convert refs from a string to a set
+    const NSUInteger refsLineIndex = [headerKeys indexOfObject:XTRefsKey];
+    NSString *refsLine = [headerLines objectAtIndex:refsLineIndex];
+
+    refsLine = [refsLine stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" ()"]];
+
+    NSSet *refs = [NSSet setWithArray:[refsLine componentsSeparatedByString:@", "]];
+
+    [headerLines removeObjectAtIndex:refsLineIndex];
+    [headerLines insertObject:refs atIndex:refsLineIndex];
+
+    // Convert dates to NSDate objects
+    [self parseDateInArray:headerLines atIndex:[headerKeys indexOfObject:XTAuthorDateKey]];
+    [self parseDateInArray:headerLines atIndex:[headerKeys indexOfObject:XTCommitterDateKey]];
+
+    // Convert parents into an array
+    const NSUInteger parentsLineIndex = [headerKeys indexOfObject:XTParentSHAsKey];
+    NSString *parentsString = [headerLines objectAtIndex:parentsLineIndex];
+    NSArray *parents = [parentsString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+
+    [headerLines removeObjectAtIndex:parentsLineIndex];
+    [headerLines insertObject:parents atIndex:parentsLineIndex];
+
+    // Set the output variables
+    NSAssert([headerLines count] == [headerKeys count], @"bad header line count");
+    *header = [NSMutableDictionary dictionaryWithObjects:headerLines forKeys:headerKeys];
+    *message = [sections objectAtIndex:1];
+    *files = [sections subarrayWithRange:NSMakeRange(2, [sections count]-2)];
+
+    // The first file line has newlines at the beginning.
+    NSMutableArray *mutableFiles = [*files mutableCopy];
+    NSString *firstLine = [[mutableFiles objectAtIndex:0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+    [mutableFiles removeObjectAtIndex:0];
+    [mutableFiles insertObject:firstLine atIndex:0];
+
+    // Filter out any blank lines.
+    *files = [mutableFiles filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id obj, NSDictionary *bindings) {
+        return [obj length] > 0;
+    }]];
+
+    return YES;
 }
 
 @end
