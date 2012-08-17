@@ -44,31 +44,28 @@ const NSString *kAuthorKeyDate = @"date";
 }
 
 - (NSString *)htmlForHeader:(NSDictionary *)header message:(NSString *)message {
-    NSMutableString *refs = [NSMutableString string];
+    NSMutableString *table = [NSMutableString stringWithString:@"<td><table class='headercol'>"];
+    NSString *firstLine = message;
+    const NSRange lineEndRange = [message rangeOfCharacterFromSet:[NSCharacterSet newlineCharacterSet]];
 
-    void (^addRef)(NSString *, NSString *) = ^(NSString *label, NSString *sha) {
-        [refs appendFormat:@"<tr><td>%@</td><td><a href='' onclick='selectCommit(this.innerHTML); return false;'>%@</a></td></tr>", label, sha];
+    if (lineEndRange.location != NSNotFound)
+        firstLine = [message substringToIndex:lineEndRange.location];
+
+    void (^addRow)(NSString *, NSString *) = ^(NSString *label, NSString *content) {
+        [table appendFormat:@"<tr><td>%@:</td><td>%@</td></tr>", label, content];
     };
-
-    addRef(@"Commit:", [header objectForKey:XTCommitSHAKey]);
-    addRef(@"Tree:", [header objectForKey:XTTreeSHAKey]);
-    for (NSString *parent in [header objectForKey:XTParentSHAsKey])
-        addRef(@"Parent:", parent);
-
-    NSMutableString *auths = [NSMutableString string];
     void (^addPerson)(NSString *,NSString *, NSString *, NSDate *) = ^(NSString *type, NSString *name, NSString *email, NSDate *date) {
-        [auths appendFormat:@"<div class='user %@ clearfix'>", type];
-        [auths appendFormat:@"<p class='name'>%@ <span class='rol'>(%@)</span></p>",
-                name, email];
-        [auths appendFormat:@"<p class='time'>%@</p></div>",
-                [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterMediumStyle]];
+        addRow(type, [NSString stringWithFormat:@"%@ &lt;%@&gt;", name, email]);
+        addRow(@"Date", [NSDateFormatter localizedStringFromDate:date dateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterMediumStyle]);
     };
+
+    addRow(@"Subject", firstLine);
 
     NSString *authorName = [header objectForKey:XTAuthorNameKey];
     NSString *authorEmail = [header objectForKey:XTAuthorEmailKey];
     NSDate *authorDate = [header objectForKey:XTAuthorDateKey];
 
-    addPerson(@"author", authorName, authorEmail, authorDate);
+    addPerson(@"Author", authorName, authorEmail, authorDate);
 
     NSString *committerName = [header objectForKey:XTCommitterNameKey];
     NSString *committerEmail = [header objectForKey:XTCommitterEmailKey];
@@ -78,10 +75,31 @@ const NSString *kAuthorKeyDate = @"date";
         if (![authorName isEqualToString:committerName] ||
             ![authorEmail isEqualToString:committerEmail] ||
             ![authorDate isEqual:committerDate])
-            addPerson(@"committer", committerName, committerEmail, committerDate);
+            addPerson(@"Committer", committerName, committerEmail, committerDate);
     }
 
-    return [NSString stringWithFormat:@"<div id='header' class='clearfix'><table class='references'>%@</table><p class='subject'>%@</p>%@</div>", refs, message, auths];
+    [table appendString:@"</table></td>"];
+
+    // Second colum: refs and SHAs
+    [table appendString:@"<td><table class='headercol'>"];
+
+    NSSet *refsSet = [header objectForKey:XTRefsKey];
+
+    if ([refsSet count] > 0)
+        // TODO: refs styled as tokens
+        addRow(@"Refs", [[refsSet allObjects] componentsJoinedByString:@" "]);
+    addRow(@"SHA", [header objectForKey:XTCommitSHAKey]);
+
+    NSArray *parents = [header objectForKey:XTParentSHAsKey];
+
+    for (NSString *parent in parents)
+        // TODO: clickable SHA
+        // TODO: parent subject and short SHA
+        addRow(@"Parent", parent);
+
+    [table appendString:@"</table></td>"];
+
+    return [NSString stringWithFormat:@"<table class='header'><tr>%@</tr></table><p class='subject'>%@</p>", table, message];
 }
 
 - (NSString *)htmlForFiles:(NSArray *)files {

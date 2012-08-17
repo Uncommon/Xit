@@ -200,13 +200,16 @@ NSString
     // Convert refs from a string to a set
     const NSUInteger refsLineIndex = [headerKeys indexOfObject:XTRefsKey];
     NSString *refsLine = [headerLines objectAtIndex:refsLineIndex];
+    NSSet *refsSet = nil;
 
     refsLine = [refsLine stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" ()"]];
 
-    NSSet *refs = [NSSet setWithArray:[refsLine componentsSeparatedByString:@", "]];
-
     [headerLines removeObjectAtIndex:refsLineIndex];
-    [headerLines insertObject:refs atIndex:refsLineIndex];
+    if ([refsLine length] == 0)
+        refsSet = [NSSet set];
+    else
+        refsSet = [NSSet setWithArray:[refsLine componentsSeparatedByString:@", "]];
+    [headerLines insertObject:refsSet atIndex:refsLineIndex];
 
     // Convert dates to NSDate objects
     [self parseDateInArray:headerLines atIndex:[headerKeys indexOfObject:XTAuthorDateKey]];

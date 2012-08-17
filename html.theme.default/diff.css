@@ -75,3 +75,28 @@ table.diff .filemerge {
 	width: 98%;
 	margin: auto auto 20px 1%;
 }
+
+table.header {
+    font-family: Helvetica;
+    font-size: 10pt;
+    width: 100%;
+    table-layout: fixed;
+}
+
+table.header td {
+    vertical-align: top;
+}
+
+table.header > tr > td {
+    width: 50%;
+}
+
+table.headercol {
+    width: 100%
+}
+
+table.headercol > tbody > tr > td:first-child {
+    font-weight: bold;
+    text-align: right;
+    color: gray;
+}
