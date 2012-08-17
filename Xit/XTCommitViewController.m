@@ -85,7 +85,14 @@ const NSString *kAuthorKeyDate = @"date";
 }
 
 - (NSString *)htmlForFiles:(NSArray *)files {
-    return nil;
+    NSMutableString *html = [NSMutableString string];
+
+    for (NSString *file in files) {
+        [html appendFormat:@"<p><a class='%@' href='#%@' representedfile='%@'>%@</a></p>",
+                @"M", file, file, file];
+    }
+
+    return html;
 }
 
 // defaults write com.yourcompany.programname WebKitDeveloperExtras -bool true
