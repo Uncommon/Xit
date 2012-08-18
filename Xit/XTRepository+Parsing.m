@@ -134,11 +134,11 @@ NSString *XTHeaderContentKey = @"content";
 }
 
 NSString *kHeaderFormat = @"--format="
-    "%H%n%T%n%P%n"      // commit, tree, and parent hashes
-    "%d%n"              // ref names
-    "%an%n%ae%n%aD%n"   // author name, email, date
-    "%cn%n%ce%n%cD"     // committer name, email, date
-    "%x00%B";           // message
+        "%H%n%T%n%P%n"      // commit, tree, and parent hashes
+        "%d%n"              // ref names
+        "%an%n%ae%n%aD%n"   // author name, email, date
+        "%cn%n%ce%n%cD"     // committer name, email, date
+        "%x00%B%x00";       // message
 
 NSString
         *XTCommitSHAKey = @"sha",
