@@ -244,4 +244,23 @@ NSString
     return YES;
 }
 
+- (BOOL)stageFile:(NSString *)file {
+    NSError *error = nil;
+
+    [self executeGitWithArgs:[NSArray arrayWithObjects:@"add", file, nil] error:&error];
+    return error == nil;
+}
+
+- (BOOL)unstageFile:(NSString *)file {
+    NSArray *args;
+    NSError *error = nil;
+
+    if ([self parseReference:@"HEAD"] == nil)
+        args = [NSArray arrayWithObjects:@"rm", @"--cached", file, nil];
+    else
+        args = [NSArray arrayWithObjects:@"reset", @"HEAD", file, nil];
+    [self executeGitWithArgs:args error:&error];
+    return error == nil;
+}
+
 @end

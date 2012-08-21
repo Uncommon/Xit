@@ -7,7 +7,7 @@
 
 #import "XTStageViewController.h"
 #import "XTFileIndexInfo.h"
-#import "XTRepository.h"
+#import "XTRepository+Parsing.h"
 #import "XTHTML.h"
 
 @implementation XTStageViewController
@@ -94,15 +94,8 @@
     XTFileIndexInfo *item = [[stageDS items] objectAtIndex:clickedRow];
 
     [repo executeOffMainThread:^{
-        NSArray *args;
-        NSError *error = nil;
-
-        if ([repo parseReference:@"HEAD"] == nil)
-            args = [NSArray arrayWithObjects:@"rm", @"--cached", item.name, nil];
-        else
-            args = [NSArray arrayWithObjects:@"reset", @"HEAD", item.name, nil];
-        [repo executeGitWithArgs:args error:&error];
-        [self reload];
+        if ([repo unstageFile:item.name])
+            [self reload];
     }];
 }
 
@@ -116,11 +109,7 @@
     XTFileIndexInfo *item = [[unstageDS items] objectAtIndex:clickedRow];
 
     [repo executeOffMainThread:^{
-        NSArray *args = [NSArray arrayWithObjects:@"add", item.name, nil];
-        NSError *error = nil;
-
-        [repo executeGitWithArgs:args error:&error];
-        if (error == nil)
+        if ([repo stageFile:item.name])
             [self reload];
     }];
 }

@@ -33,6 +33,9 @@ extern NSString
 - (BOOL)readStashesWithBlock:(void (^)(NSString *commit, NSString *name))block;
 - (BOOL)parseCommit:(NSString *)ref intoHeader:(NSDictionary **)header message:(NSString **)message files:(NSArray **)files;
 
+- (BOOL)stageFile:(NSString *)file;
+- (BOOL)unstageFile:(NSString *)file;
+
 - (NSArray *)fileNamesForRef:(NSString *)ref;
 
 @end
