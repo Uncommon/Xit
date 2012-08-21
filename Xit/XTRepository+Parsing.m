@@ -263,4 +263,20 @@ NSString
     return error == nil;
 }
 
+- (NSString *)diffForStagedFile:(NSString *)file {
+    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"diff-index",  @"--patch", @"--cached", [self parentTree], @"--", file, nil] error:nil];
+
+    if (output == nil)
+        return nil;
+    return [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
+}
+
+- (NSString *)diffForUnstagedFile:(NSString *)file {
+    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"diff-files", @"--patch", @"--", file, nil] error:nil];
+
+    if (output == nil)
+        return nil;
+    return [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
+}
+
 @end

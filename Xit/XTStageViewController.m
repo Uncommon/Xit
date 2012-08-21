@@ -43,27 +43,23 @@
 #pragma mark -
 
 - (void)showUnstageFile:(XTFileIndexInfo *)file {
-    dispatch_async(repo.queue, ^{
-                       NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"diff-files", @"--patch", @"--", file.name, nil] error:nil];
+    [repo executeOffMainThread:^{
+        actualDiff = [repo diffForUnstagedFile:file.name];
+        stagedFile = NO;
 
-                       actualDiff = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-                       stagedFile = NO;
-
-                       NSString *diffHTML = [XTHTML parseDiff:actualDiff];
-                       [self showDiff:diffHTML];
-                   });
+        NSString *diffHTML = [XTHTML parseDiff:actualDiff];
+        [self showDiff:diffHTML];
+    }];
 }
 
 - (void)showStageFile:(XTFileIndexInfo *)file {
-    dispatch_async(repo.queue, ^{
-                       NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"diff-index",  @"--patch", @"--cached", [repo parentTree], @"--", file.name, nil] error:nil];
+    [repo executeOffMainThread:^{
+        actualDiff = [repo diffForStagedFile:file.name];
+        stagedFile = YES;
 
-                       actualDiff = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-                       stagedFile = YES;
-
-                       NSString *diffHTML = [XTHTML parseDiff:actualDiff];
-                       [self showDiff:diffHTML];
-                   });
+        NSString *diffHTML = [XTHTML parseDiff:actualDiff];
+        [self showDiff:diffHTML];
+    }];
 }
 
 - (void)showDiff:(NSString *)diff {
