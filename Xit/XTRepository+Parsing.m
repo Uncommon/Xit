@@ -279,4 +279,10 @@ NSString
     return [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
 }
 
+- (NSString *)diffForCommit:(NSString *)sha {
+    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"diff-tree", @"--root", @"--cc", @"-C90%", @"-M90%", sha, nil] error:NULL];
+
+    return [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+}
+
 @end

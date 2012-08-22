@@ -126,8 +126,7 @@ const NSString *kAuthorKeyDate = @"date";
     NSString *filesHTML = [self htmlForFiles:files];
 
     NSError *error = nil;
-    NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"diff-tree", @"--root", @"--cc", @"-C90%", @"-M90%", sha, nil] error:&error];
-    NSString *diffString = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+    NSString *diffString = [repo diffForCommit:sha];
     NSString *diffHTML = [XTHTML parseDiff:diffString];
 
     NSString *html = [NSString stringWithFormat:@"<html><head><link rel='stylesheet' type='text/css' href='diff.css'/></head><body>%@%@<div id='diffs'>%@</div></body></html>", headerHTML, filesHTML, diffHTML];
