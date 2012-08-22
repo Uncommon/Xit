@@ -21,8 +21,12 @@
 
 - (id)initWithURL:(NSURL *)url;
 - (void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^)(NSString *))block error:(NSError **)error;
+
+// Avoid calling these from outside XTRepository. Instead, add methods to
+// +Commands or +Parsing.
 - (NSData *)executeGitWithArgs:(NSArray *)args error:(NSError **)error;
 - (NSData *)executeGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error;
+
 - (NSString *)parseReference:(NSString *)reference;
 - (NSString *)parentTree;
 - (NSString *)headRef;

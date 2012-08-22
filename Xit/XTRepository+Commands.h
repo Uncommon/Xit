@@ -26,4 +26,7 @@
 - (NSString *)diffForUnstagedFile:(NSString *)file;
 - (NSString *)diffForCommit:(NSString *)sha;
 
+- (BOOL)stagePatch:(NSString *)patch;
+- (BOOL)unstagePatch:(NSString *)patch;
+
 @end

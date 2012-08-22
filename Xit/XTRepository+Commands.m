@@ -181,4 +181,22 @@
     return [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
 }
 
+- (BOOL)stagePatch:(NSString *)patch {
+    NSError *error = nil;
+
+    [self executeGitWithArgs:[NSArray arrayWithObjects:@"apply",  @"--cached", nil]
+                   withStdIn:patch
+                       error:&error];
+    return error == nil;
+}
+
+- (BOOL)unstagePatch:(NSString *)patch {
+    NSError *error = nil;
+
+    [self executeGitWithArgs:[NSArray arrayWithObjects:@"apply",  @"--cached", @"--reverse", nil]
+                   withStdIn:patch
+                       error:&error];
+    return error == nil;
+}
+
 @end
