@@ -185,17 +185,17 @@ NSString
         [headerLines removeObject:lastLine];
 
     NSArray *headerKeys = [NSArray arrayWithObjects:
-        XTCommitSHAKey,
-        XTTreeSHAKey,
-        XTParentSHAsKey,
-        XTRefsKey,
-        XTAuthorNameKey,
-        XTAuthorEmailKey,
-        XTAuthorDateKey,
-        XTCommitterNameKey,
-        XTCommitterEmailKey,
-        XTCommitterDateKey,
-        nil];
+            XTCommitSHAKey,
+            XTTreeSHAKey,
+            XTParentSHAsKey,
+            XTRefsKey,
+            XTAuthorNameKey,
+            XTAuthorEmailKey,
+            XTAuthorDateKey,
+            XTCommitterNameKey,
+            XTCommitterEmailKey,
+            XTCommitterDateKey,
+            nil];
 
     // Convert refs from a string to a set
     const NSUInteger refsLineIndex = [headerKeys indexOfObject:XTRefsKey];

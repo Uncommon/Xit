@@ -57,21 +57,21 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
     STAssertTrue([mockRepo parseCommit:@"master" intoHeader:&header message:&message files:&files], @"");
 
     NSDictionary *expectedHeader = [NSDictionary dictionaryWithObjectsAndKeys:
-                    @"e8cab5650bd1ab770d6ef48c47b1fd6bb3094a92", @"sha",
-                    @"bc6eeceec6b97132b5e1755f022f69d5c245b15f", @"tree",
-                    [NSArray arrayWithObject:@"ab60534fdef2a1e8d191e3e113fa33797e774a2b"], @"parents",
-                    [NSSet setWithObjects:@"HEAD", @"testing", @"repo", @"master", nil], @"refs",
-                    @"Marshall Banana", @"authorname",
-                    @"test@example.com", @"authoremail",
-                    [NSDate dateWithString:@"2012-07-20 18:59:31 -0700"], @"authordate",
-                    @"Victoria Terpsichore", @"committername",
-                    @"vt@example.com", @"committeremail",
-                    [NSDate dateWithString:@"2012-07-20 18:59:31 -0700"], @"committerdate",
-                    nil];
+            @"e8cab5650bd1ab770d6ef48c47b1fd6bb3094a92", @"sha",
+            @"bc6eeceec6b97132b5e1755f022f69d5c245b15f", @"tree",
+            [NSArray arrayWithObject:@"ab60534fdef2a1e8d191e3e113fa33797e774a2b"], @"parents",
+            [NSSet setWithObjects:@"HEAD", @"testing", @"repo", @"master", nil], @"refs",
+            @"Marshall Banana", @"authorname",
+            @"test@example.com", @"authoremail",
+            [NSDate dateWithString:@"2012-07-20 18:59:31 -0700"], @"authordate",
+            @"Victoria Terpsichore", @"committername",
+            @"vt@example.com", @"committeremail",
+            [NSDate dateWithString:@"2012-07-20 18:59:31 -0700"], @"committerdate",
+            nil];
     NSArray *expectedFiles = [NSArray arrayWithObjects:
-                    @"Xit/XTFileListDataSource.m",
-                    @"Xit/XTRepository+Parsing.h",
-                    @"Xit/XTRepository+Parsing.m", nil];
+            @"Xit/XTFileListDataSource.m",
+            @"Xit/XTRepository+Parsing.h",
+            @"Xit/XTRepository+Parsing.m", nil];
 
     STAssertEqualObjects(header, expectedHeader, @"mismatched header");
     STAssertEqualObjects(files, expectedFiles, @"mismatched files");

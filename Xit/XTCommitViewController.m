@@ -125,7 +125,6 @@ const NSString *kAuthorKeyDate = @"date";
     NSString *headerHTML = [self htmlForHeader:header message:message];
     NSString *filesHTML = [self htmlForFiles:files];
 
-    NSError *error = nil;
     NSString *diffString = [repo diffForCommit:sha];
     NSString *diffHTML = [XTHTML parseDiff:diffString];
 
