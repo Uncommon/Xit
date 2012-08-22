@@ -140,59 +140,6 @@ const NSString *kAuthorKeyDate = @"date";
                        [[web mainFrame] loadHTMLString:html baseURL:themeURL];
                    });
     return html;
-
-    //NSData *output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"show", @"-z", @"--numstat", @"--summary", @"--pretty=raw", sha, nil] error:nil];
-
-    if (output == nil)
-        return nil;
-
-    //NSString *html = nil;
-    NSString *txt = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-    NSCharacterSet *nulSet = [NSCharacterSet characterSetWithRange:NSMakeRange(0, 1)];
-    NSArray *details = [txt componentsSeparatedByCharactersInSet:nulSet];
-
-    for (NSString *detail in details) {
-        if ([detail hasPrefix:@"commit"]) {
-            NSArray *headerItems = [self parseHeader:detail];
-            NSString *header = [self htmlForHeader:headerItems];
-
-            // File Stats
-            NSMutableDictionary *stats = [self parseStats:detail];
-
-            // File list
-            output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"diff-tree", @"--root", @"-r", @"-C90%", @"-M90%", sha, nil] error:nil];
-            NSString *dt = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-            NSString *fileList = [self parseDiffTree:dt withStats:stats];
-
-            // Diffs list
-            output = [repo executeGitWithArgs:[NSArray arrayWithObjects:@"diff-tree", @"--root", @"--cc", @"-C90%", @"-M90%", sha, nil] error:nil];
-            NSString *d = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-            NSString *diffs = [XTHTML parseDiff:d];
-
-            // Badges
-            NSArray *refs = [repo.refsIndex objectsForKey:sha];
-            NSMutableString *badges = [NSMutableString string];
-            if (refs.count > 0) {
-                [badges appendString:@"<div><ul>"];
-                for (XTSideBarItem *ref in refs) {
-                    [badges appendFormat:@"<ul>%@</ul>", [ref badge]];
-                }
-                [badges appendString:@"</ul></div>"];
-            }
-
-            html = [NSString stringWithFormat:@"<html><head><link rel='stylesheet' type='text/css' href='diff.css'/></head><body>%@%@%@<div id='diffs'>%@</div></body></html>", header, badges, fileList, diffs];
-
-            NSBundle *bundle = [NSBundle mainBundle];
-            NSBundle *theme = [NSBundle bundleWithURL:[bundle URLForResource:@"html.theme.default" withExtension:@"bundle"]];
-            NSURL *themeURL = [[theme bundleURL] URLByAppendingPathComponent:@"Contents/Resources"];
-
-            dispatch_async(dispatch_get_main_queue(), ^{
-                               [[web mainFrame] loadHTMLString:html baseURL:themeURL];
-                           });
-            break;
-        }
-    }
-    return html;
 }
 
 - (NSArray *)parseHeader:(NSString *)text {
