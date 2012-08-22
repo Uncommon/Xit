@@ -7,6 +7,7 @@
 
 #import "XTStageViewController.h"
 #import "XTFileIndexInfo.h"
+#import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
 #import "XTHTML.h"
 

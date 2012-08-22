@@ -36,10 +36,6 @@ extern NSString
 - (BOOL)stageFile:(NSString *)file;
 - (BOOL)unstageFile:(NSString *)file;
 
-- (NSString *)diffForStagedFile:(NSString *)file;
-- (NSString *)diffForUnstagedFile:(NSString *)file;
-- (NSString *)diffForCommit:(NSString *)sha;
-
 - (NSArray *)fileNamesForRef:(NSString *)ref;
 
 @end

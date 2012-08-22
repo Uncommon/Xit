@@ -9,6 +9,7 @@
 #import "NSMutableDictionary+MultiObjectForKey.h"
 #import "XTSideBarItem.h"
 #import "XTHTML.h"
+#import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
 
 // -parseHeader: returns an array of dictionaries with these keys

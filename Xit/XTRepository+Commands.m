@@ -159,4 +159,26 @@
     return res;
 }
 
+- (NSString *)diffForStagedFile:(NSString *)file {
+    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"diff-index",  @"--patch", @"--cached", [self parentTree], @"--", file, nil] error:nil];
+
+    if (output == nil)
+        return nil;
+    return [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
+}
+
+- (NSString *)diffForUnstagedFile:(NSString *)file {
+    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"diff-files", @"--patch", @"--", file, nil] error:nil];
+
+    if (output == nil)
+        return nil;
+    return [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
+}
+
+- (NSString *)diffForCommit:(NSString *)sha {
+    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"diff-tree", @"--root", @"--cc", @"-C90%", @"-M90%", sha, nil] error:NULL];
+
+    return [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+}
+
 @end

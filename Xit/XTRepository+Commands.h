@@ -22,4 +22,8 @@
 - (bool)stash:(NSString *)name;
 - (bool)merge:(NSString *)name;
 
+- (NSString *)diffForStagedFile:(NSString *)file;
+- (NSString *)diffForUnstagedFile:(NSString *)file;
+- (NSString *)diffForCommit:(NSString *)sha;
+
 @end
