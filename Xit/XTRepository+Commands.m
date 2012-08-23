@@ -150,7 +150,7 @@
     NSError *error = nil;
     bool res = NO;
 
-    [self executeGitWithArgs:[NSArray arrayWithObjects:@"commit", @"-m", message, nil] error:&error];
+    [self executeGitWithArgs:[NSArray arrayWithObjects:@"commit", @"-F", @"-", nil] withStdIn:message error:&error];
 
     if (error == nil) {
         res = YES;
