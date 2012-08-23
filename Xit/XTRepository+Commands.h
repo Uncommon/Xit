@@ -10,17 +10,17 @@
 
 @interface XTRepository (Commands)
 
-- (bool)initializeRepository;
-- (bool)createBranch:(NSString *)name;
+- (BOOL)initializeRepository;
+- (BOOL)createBranch:(NSString *)name;
 - (NSString *)currentBranch;
-- (bool)addFile:(NSString *)file;
-- (bool)commitWithMessage:(NSString *)message;
-- (bool)createTag:(NSString *)name withMessage:(NSString *)msg;
-- (bool)addRemote:(NSString *)name withUrl:(NSString *)url;
-- (bool)push:(NSString *)remote;
-- (bool)checkout:(NSString *)branch error:(NSError **)error;
-- (bool)stash:(NSString *)name;
-- (bool)merge:(NSString *)name;
+- (BOOL)addFile:(NSString *)file;
+- (BOOL)commitWithMessage:(NSString *)message;
+- (BOOL)createTag:(NSString *)name withMessage:(NSString *)msg;
+- (BOOL)addRemote:(NSString *)name withUrl:(NSString *)url;
+- (BOOL)push:(NSString *)remote;
+- (BOOL)checkout:(NSString *)branch error:(NSError **)error;
+- (BOOL)stash:(NSString *)name;
+- (BOOL)merge:(NSString *)name;
 
 - (NSString *)diffForStagedFile:(NSString *)file;
 - (NSString *)diffForUnstagedFile:(NSString *)file;

@@ -10,10 +10,9 @@
 
 @implementation XTRepository (Commands)
 
-
-- (bool)initializeRepository {
+- (BOOL)initializeRepository {
     NSError *error = nil;
-    bool res = false;
+    BOOL res = NO;
 
     [self executeGitWithArgs:[NSArray arrayWithObject:@"init"] error:&error];
 
@@ -23,9 +22,9 @@
     return res;
 }
 
-- (bool)stash:(NSString *)name {
+- (BOOL)stash:(NSString *)name {
     NSError *error = nil;
-    bool res = NO;
+    BOOL res = NO;
 
     [self executeGitWithArgs:[NSArray arrayWithObjects:@"stash", @"save", name, nil] error:&error];
 
@@ -36,9 +35,9 @@
     return res;
 }
 
-- (bool)createBranch:(NSString *)name {
+- (BOOL)createBranch:(NSString *)name {
     NSError *error = nil;
-    bool res = NO;
+    BOOL res = NO;
 
     [self executeGitWithArgs:[NSArray arrayWithObjects:@"checkout", @"-b", name, nil] error:&error];
 
@@ -66,9 +65,9 @@
     return nil;
 }
 
-- (bool)merge:(NSString *)name {
+- (BOOL)merge:(NSString *)name {
     NSError *error = nil;
-    bool res = NO;
+    BOOL res = NO;
 
     [self executeGitWithArgs:[NSArray arrayWithObjects:@"merge", @"--no-ff", name, nil] error:&error];
 
@@ -79,9 +78,9 @@
     return res;
 }
 
-- (bool)push:(NSString *)remote {
+- (BOOL)push:(NSString *)remote {
     NSError *error = nil;
-    bool res = NO;
+    BOOL res = NO;
 
     [self executeGitWithArgs:[NSArray arrayWithObjects:@"push", @"--all", @"--force", remote, nil] error:&error];
 
@@ -92,9 +91,9 @@
     return res;
 }
 
-- (bool)checkout:(NSString *)branch error:(NSError **)resultError {
+- (BOOL)checkout:(NSString *)branch error:(NSError **)resultError {
     NSError *error = nil;
-    bool res = NO;
+    BOOL res = NO;
 
     [self executeGitWithArgs:[NSArray arrayWithObjects:@"checkout", branch, nil] error:&error];
 
@@ -107,9 +106,9 @@
     return res;
 }
 
-- (bool)createTag:(NSString *)name withMessage:(NSString *)msg {
+- (BOOL)createTag:(NSString *)name withMessage:(NSString *)msg {
     NSError *error = nil;
-    bool res = NO;
+    BOOL res = NO;
 
     [self executeGitWithArgs:[NSArray arrayWithObjects:@"tag", @"-a", name, @"-m", msg, nil] error:&error];
 
@@ -120,9 +119,9 @@
     return res;
 }
 
-- (bool)addRemote:(NSString *)name withUrl:(NSString *)url {
+- (BOOL)addRemote:(NSString *)name withUrl:(NSString *)url {
     NSError *error = nil;
-    bool res = NO;
+    BOOL res = NO;
 
     [self executeGitWithArgs:[NSArray arrayWithObjects:@"remote", @"add", name, url, nil] error:&error];
 
@@ -133,9 +132,9 @@
     return res;
 }
 
-- (bool)addFile:(NSString *)file {
+- (BOOL)addFile:(NSString *)file {
     NSError *error = nil;
-    bool res = NO;
+    BOOL res = NO;
 
     [self executeGitWithArgs:[NSArray arrayWithObjects:@"add", file, nil] error:&error];
 
@@ -146,9 +145,9 @@
     return res;
 }
 
-- (bool)commitWithMessage:(NSString *)message {
+- (BOOL)commitWithMessage:(NSString *)message {
     NSError *error = nil;
-    bool res = NO;
+    BOOL res = NO;
 
     [self executeGitWithArgs:[NSArray arrayWithObjects:@"commit", @"-F", @"-", nil] withStdIn:message error:&error];
 
