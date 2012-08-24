@@ -251,7 +251,9 @@ NSString *XTErrorOutputKey = @"output";
     if ((error != nil) || ([output length] == 0))
         return nil;
 
-    return [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
+    NSString *outputString = [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
+
+    return [outputString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
 - (NSString *)headRef {
