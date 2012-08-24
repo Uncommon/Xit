@@ -9,6 +9,7 @@
 #import "XTUnstagedDataSource.h"
 #import "XTStagedDataSource.h"
 #import "XTRepository+Commands.h"
+#import "XTRepository+Parsing.h"
 #import "XTFileIndexInfo.h"
 #import "XTStageViewController.h"
 
@@ -219,6 +220,47 @@
          NSString *status = [expected objectForKey:info.name];
          STAssertEqualObjects(info.status, status, @"incorrect state file(%lu):%@", idx, info.name);
      }];
+}
+
+- (void)testCommit {
+    [super addInitialRepoContent];
+
+    NSString *oldHeadSHA = [repository headSHA];
+    XTStageViewController *controller = [[XTStageViewController alloc] init];
+    NSString *testMessage = @"controller test message";
+    NSString *newFileName = @"commitfile.txt";
+    NSString *newFilePath = [NSString stringWithFormat:@"%@/%@", repoPath, newFileName];
+    NSError *error = nil;
+
+    [@"new file" writeToFile:newFilePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    STAssertNil(error, @"");
+    [repository addFile:newFilePath];
+    controller.message = testMessage;
+    [controller setRepo:repository];
+    [controller commit:nil];
+    [repository waitForQueue];
+
+    NSString *newHeadSHA = [repository headSHA];
+    NSDictionary *header = nil;
+    NSString *message = nil;
+    NSArray *files = nil;
+
+    STAssertFalse([oldHeadSHA isEqual:newHeadSHA], @"");
+    STAssertTrue([repository parseCommit:newHeadSHA intoHeader:&header message:&message files:&files], @"");
+
+    STAssertNotNil(header, @"");
+    STAssertNotNil(message, @"");
+    STAssertNotNil(files, @"");
+
+    // Somewhere in there, git appended a \n to the message.
+    message = [message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    STAssertEqualObjects(message, testMessage, @"");
+    STAssertEqualObjects(files, [NSArray arrayWithObject:newFileName], @"");
+
+    NSArray *parents = [header objectForKey:XTParentSHAsKey];
+
+    STAssertEquals([parents count], 1UL, @"");
+    STAssertEqualObjects([parents objectAtIndex:0], oldHeadSHA, @"");
 }
 
 @end

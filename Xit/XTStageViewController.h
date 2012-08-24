@@ -26,6 +26,10 @@
     BOOL stagedFile;
 }
 
+@property (retain) NSString *message;
+
+- (IBAction)commit:(id)sender;
+
 - (void)setRepo:(XTRepository *)newRepo;
 - (void)reload;
 - (void)showStageFile:(XTFileIndexInfo *)file;

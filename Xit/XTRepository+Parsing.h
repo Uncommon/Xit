@@ -36,6 +36,8 @@ extern NSString
 - (BOOL)stageFile:(NSString *)file;
 - (BOOL)unstageFile:(NSString *)file;
 
+- (BOOL)commitWithMessage:(NSString *)message amend:(BOOL)amend outputBlock:(void (^)(NSString *output))outputBlock error:(NSError **)error;
+
 - (NSArray *)fileNamesForRef:(NSString *)ref;
 
 @end

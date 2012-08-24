@@ -6,12 +6,16 @@
 //
 
 #import "XTStageViewController.h"
+#import "XTDocument.h"
 #import "XTFileIndexInfo.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
+#import "XTStatusView.h"
 #import "XTHTML.h"
 
 @implementation XTStageViewController
+
+@synthesize message;
 
 - (void)awakeFromNib {
     [stageTable setTarget:self];
@@ -38,6 +42,36 @@
         // Do this in the repo queue so it will happen after the reloads.
         [stageTable reloadData];
         [unstageTable reloadData];
+    }];
+}
+
+#pragma mark -
+
+- (IBAction)commit:(id)sender {
+    if ([sender respondsToSelector:@selector(setEnabled:)])
+        [sender setEnabled:NO];
+    [repo executeOffMainThread: ^{
+        NSError *error = NULL;
+        void (^outputBlock)(NSString*) = ^(NSString *output) {
+            NSString *headSHA = [[repo headSHA] substringToIndex:7];
+            NSString *status = [NSString stringWithFormat:@"Committed %@", headSHA];
+
+            [XTStatusView updateStatus:status command:@"commit" output:output forRepository:repo];
+        };
+
+        // TODO: amend
+        if (![repo commitWithMessage:self.message amend:NO outputBlock:outputBlock error:&error])
+            if (error != nil)
+                [XTStatusView updateStatus:@"Commit failed" command:@"commit" output:[[error userInfo] valueForKey:XTErrorOutputKey] forRepository:repo];
+        self.message = @"";
+        [self reload];
+        if ([sender respondsToSelector:@selector(setEnabled:)])
+            [sender setEnabled:YES];
+
+        // TODO: Make this automatic
+        XTDocument *doc = [[[[self view] window] windowController] document];
+
+        [doc reload:nil];
     }];
 }
 

@@ -263,4 +263,19 @@ NSString
     return error == nil;
 }
 
+- (BOOL)commitWithMessage:(NSString *)message amend:(BOOL)amend outputBlock:(void (^)(NSString *output))outputBlock error:(NSError **)error {
+    NSArray *args = [NSArray arrayWithObjects:@"commit", @"-F", @"-", nil];
+
+    if (amend)
+        args = [args arrayByAddingObject:@"--amend"];
+
+    NSData *output = [self executeGitWithArgs:args withStdIn:message error:error];
+
+    if (output == nil)
+        return NO;
+    if (outputBlock != NULL)
+        outputBlock([[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease]);
+    return YES;
+}
+
 @end

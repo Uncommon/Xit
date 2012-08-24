@@ -46,6 +46,9 @@
 }
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)column row:(NSInteger)rowIndex {
+    if (rowIndex >= [items count])
+        return nil;
+
     XTFileIndexInfo *item = [items objectAtIndex:rowIndex];
 
     return [item valueForKey:column.identifier];
