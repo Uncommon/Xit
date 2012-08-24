@@ -6,6 +6,8 @@
 #import "XTRepository.h"
 #import "NSMutableDictionary+MultiObjectForKey.h"
 
+NSString *XTErrorOutputKey = @"output";
+
 @implementation XTRepository
 
 @synthesize selectedCommit;
@@ -142,7 +144,7 @@
         if (error != NULL) {
             *error = [NSError errorWithDomain:@"git"
                                          code:status
-                                     userInfo:[NSDictionary dictionaryWithObject:string forKey:@"output"]];
+                                     userInfo:[NSDictionary dictionaryWithObject:string forKey:XTErrorOutputKey]];
         }
     }
     [self removeTask:task];
@@ -192,7 +194,7 @@
         if (error != NULL) {
             *error = [NSError errorWithDomain:@"git"
                                          code:status
-                                     userInfo:[NSDictionary dictionaryWithObject:string forKey:@"output"]];
+                                     userInfo:[NSDictionary dictionaryWithObject:string forKey:XTErrorOutputKey]];
         }
         output = nil;
     }

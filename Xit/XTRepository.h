@@ -5,6 +5,8 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSString *XTErrorOutputKey;
+
 @interface XTRepository : NSObject
 {
     @private

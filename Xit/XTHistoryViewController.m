@@ -64,7 +64,7 @@
         if (error != nil) {
             NSArray *args = [NSArray arrayWithObjects:@"checkout", [self selectedBranch], nil];
 
-            [XTStatusView updateStatus:@"Checkout failed" command:[args componentsJoinedByString:@" "] output:[[error userInfo] valueForKey:@"output"] forRepository:repo];
+            [XTStatusView updateStatus:@"Checkout failed" command:[args componentsJoinedByString:@" "] output:[[error userInfo] valueForKey:XTErrorOutputKey] forRepository:repo];
         }
     });
 }
