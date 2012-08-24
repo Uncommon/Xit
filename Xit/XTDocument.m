@@ -52,6 +52,9 @@
     return NO;
 }
 
+- (void)updateChangeCount:(NSDocumentChangeType)change {
+    // Do nothing. There is no need for an "unsaved" state.
+}
 
 #pragma mark - temp
 - (IBAction)reload:(id)sender {
