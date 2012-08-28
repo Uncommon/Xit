@@ -31,11 +31,6 @@
     XTDocController *controller = [[XTDocController alloc] initWithDocument:self];
 
     [self addWindowController:controller];
-}
-
-- (void)windowControllerDidLoadNib:(NSWindowController *)controller {
-    [super windowControllerDidLoadNib:controller];
-
     [repo start];
 }
 
