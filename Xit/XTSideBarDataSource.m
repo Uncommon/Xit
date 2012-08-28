@@ -37,19 +37,18 @@
 - (void)setRepo:(XTRepository *)newRepo {
     repo = newRepo;
     if (repo != nil) {
-        [repo addObserver:self forKeyPath:@"reload" options:NSKeyValueObservingOptionNew context:nil];
+        [repo addReloadObserver:self selector:@selector(repoChanged:)];
         [self reload];
     }
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"reload"]) {
-        NSArray *reload = [change objectForKey:NSKeyValueChangeNewKey];
-        for (NSString *path in reload) {
-            if ([path hasPrefix:@".git/refs/"]) {
-                [self reload];
-                break;
-            }
+- (void)repoChanged:(NSNotification *)note {
+    NSArray *paths = [[note userInfo] objectForKey:XTPathsKey];
+
+    for (NSString *path in paths) {
+        if ([path hasPrefix:@".git/refs/"]) {
+            [self reload];
+            break;
         }
     }
 }

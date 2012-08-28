@@ -5,7 +5,9 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSString *XTRepositoryChangedNotification;
 extern NSString *XTErrorOutputKey;
+extern NSString *XTPathsKey;
 
 @interface XTRepository : NSObject
 {
@@ -16,7 +18,6 @@ extern NSString *XTErrorOutputKey;
     NSString *cachedHeadRef, *cachedHeadSHA;
     NSDictionary *refsIndex;
     FSEventStreamRef stream;
-    NSArray *reload;
     dispatch_queue_t queue;
     NSMutableArray *activeTasks;
 }
@@ -39,6 +40,8 @@ extern NSString *XTErrorOutputKey;
 - (void)start;
 - (void)stop;
 - (void)waitForQueue;
+- (void)reloadPaths:(NSArray *)paths;
+- (void)addReloadObserver:(id)observer selector:(SEL)selector;
 
 - (void)executeOffMainThread:(void (^)())block;
 - (void)addTask:(NSTask *)task;

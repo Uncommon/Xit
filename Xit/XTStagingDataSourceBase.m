@@ -22,12 +22,13 @@
 
 - (void)setRepo:(XTRepository *)newRepo {
     repo = newRepo;
-//    [repo addObserver:self forKeyPath:@"reload" options:NSKeyValueObservingOptionNew context:nil];
-//    [repo addObserver:self forKeyPath:@"selectedCommit" options:NSKeyValueObservingOptionNew context:nil];
+    [repo addReloadObserver:self selector:@selector(repoChanged:)];
     [self reload];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+- (void)repoChanged:(NSNotification *)note {
+    // TODO: check if the paths really indicate a reload
+    [self reload];
 }
 
 - (void)reload {

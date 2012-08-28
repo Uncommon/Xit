@@ -6,7 +6,9 @@
 #import "XTRepository.h"
 #import "NSMutableDictionary+MultiObjectForKey.h"
 
+NSString *XTRepositoryChangedNotification = @"xtrepochanged";
 NSString *XTErrorOutputKey = @"output";
+NSString *XTPathsKey = @"paths";
 
 @implementation XTRepository
 
@@ -309,6 +311,17 @@ NSString *XTErrorOutputKey = @"output";
     FSEventStreamStart(stream);
 }
 
+- (void)reloadPaths:(NSArray *)paths {
+    NSDictionary *info = [NSDictionary dictionaryWithObject:paths forKey:XTPathsKey];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:XTRepositoryChangedNotification object:self userInfo:info];
+}
+
+// A convenience method for adding to the default notification center.
+- (void)addReloadObserver:(id)observer selector:(SEL)selector {
+    [[NSNotificationCenter defaultCenter] addObserver:observer selector:selector name:XTRepositoryChangedNotification object:self];
+}
+
 int event = 0;
 
 void fsevents_callback(ConstFSEventStreamRef streamRef,
@@ -319,18 +332,19 @@ void fsevents_callback(ConstFSEventStreamRef streamRef,
                        const FSEventStreamEventId eventIds[]){
     XTRepository *repo = (XTRepository *)userData;
 
-    event++;
+    ++event;
 
-    NSMutableArray *reload = [NSMutableArray arrayWithCapacity:numEvents];
+    NSMutableArray *paths = [NSMutableArray arrayWithCapacity:numEvents];
     for (size_t i = 0; i < numEvents; i++) {
         NSString *path = [(NSArray *) eventPaths objectAtIndex:i];
         NSRange r = [path rangeOfString:@".git" options:NSBackwardsSearch];
+
         path = [path substringFromIndex:r.location];
-        [reload addObject:path];
-        NSLog(@"%d\t%@", event, path);
+        [paths addObject:path];
+        NSLog(@"fsevent #%d\t%@", event, path);
     }
 
-    [repo setValue:reload forKey:@"reload"];
+    [repo reloadPaths:paths];
 }
 
 @end

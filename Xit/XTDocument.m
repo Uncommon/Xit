@@ -59,6 +59,6 @@
 #pragma mark - temp
 - (IBAction)reload:(id)sender {
     NSLog(@"########## reload ##########");
-    [repo setValue:[NSArray arrayWithObjects:@".git/refs/", @".git/logs/", nil] forKey:@"reload"];
+    [repo reloadPaths:[NSArray arrayWithObjects:@".git/refs/", @".git/logs/", nil]];
 }
 @end
