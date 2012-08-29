@@ -294,11 +294,11 @@ NSString *XTPathsKey = @"paths";
         return;
     NSString *myPath = [[repoURL URLByAppendingPathComponent:@".git"] path];
     NSArray *pathsToWatch = [NSArray arrayWithObject:myPath];
-    void *appPointer = (void *)self;
-    FSEventStreamContext context = { 0, appPointer, NULL, NULL, NULL };
+    void *repoPointer = (void *)self;
+    FSEventStreamContext context = { 0, repoPointer, NULL, NULL, NULL };
     NSTimeInterval latency = 3.0;
 
-    stream = FSEventStreamCreate(NULL,
+    stream = FSEventStreamCreate(kCFAllocatorDefault,
                                  &fsevents_callback,
                                  &context,
                                  (CFArrayRef)pathsToWatch,

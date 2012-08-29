@@ -28,7 +28,13 @@
 
 - (void)repoChanged:(NSNotification *)note {
     // TODO: check if the paths really indicate a reload
-    [self reload];
+    // Recursion can happen if reloading uses git calls that trigger the file
+    // system notification.
+    if (!reloading) {
+        reloading = YES;
+        [self reload];
+        reloading = NO;
+    }
 }
 
 - (void)reload {

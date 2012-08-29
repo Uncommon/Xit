@@ -19,6 +19,7 @@
             XTFileIndexInfo *fileInfo = [[XTFileIndexInfo alloc] initWithName:name andStatus:status];
             [items addObject:fileInfo];
         }];
+        [table reloadData];
     }];
 }
 

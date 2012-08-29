@@ -15,6 +15,7 @@
     XTRepository *repo;
     NSMutableArray *items;
     NSTableView *table;
+    BOOL reloading;
 }
 
 - (NSArray *)items;

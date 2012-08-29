@@ -16,6 +16,7 @@
     [repo readUnstagedFilesWithBlock:^(NSString *name, NSString *status) {
         [items addObject:[[XTFileIndexInfo alloc] initWithName:name andStatus:status]];
     }];
+    [table reloadData];
 }
 
 @end
