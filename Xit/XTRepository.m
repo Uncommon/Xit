@@ -60,9 +60,11 @@ NSString *XTPathsKey = @"paths";
 }
 
 - (void)removeTask:(NSTask *)task {
-    [self willChangeValueForKey:@"activeTasks"];
-    [activeTasks removeObject:task];
-    [self didChangeValueForKey:@"activeTasks"];
+    if ([activeTasks count] != 0) {
+        [self willChangeValueForKey:@"activeTasks"];
+        [activeTasks removeObject:task];
+        [self didChangeValueForKey:@"activeTasks"];
+    }
 }
 
 - (void)waitForQueue {
