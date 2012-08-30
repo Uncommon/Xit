@@ -440,7 +440,7 @@
 																		<string key="NSFrameSize">{703, 177}</string>
 																		<reference key="NSSuperview" ref="4744271"/>
 																		<reference key="NSWindow"/>
-																		<reference key="NSNextKeyView" ref="25621835"/>
+																		<reference key="NSNextKeyView" ref="93965352"/>
 																		<int key="NSViewLayerContentsRedrawPolicy">2</int>
 																		<bool key="NSEnabled">YES</bool>
 																		<object class="NSTableHeaderView" key="NSHeaderView" id="553526585">
@@ -624,7 +624,7 @@
 														<string key="NSFrameSize">{703, 194}</string>
 														<reference key="NSSuperview" ref="83736380"/>
 														<reference key="NSWindow"/>
-														<reference key="NSNextKeyView" ref="4744271"/>
+														<reference key="NSNextKeyView" ref="25621835"/>
 														<int key="NSViewLayerContentsRedrawPolicy">2</int>
 														<int key="NSsFlags">133680</int>
 														<reference key="NSVScroller" ref="93965352"/>
@@ -651,6 +651,7 @@
 														<string key="NSFrameSize">{703, 194}</string>
 														<reference key="NSSuperview" ref="677488446"/>
 														<reference key="NSWindow"/>
+														<reference key="NSNextKeyView"/>
 														<int key="NSViewLayerContentsRedrawPolicy">2</int>
 														<string key="NSClassName">NSView</string>
 													</object>
@@ -950,7 +951,7 @@
 										</object>
 										<string key="NSCellIdentifier">_NS:1667</string>
 										<reference key="NSControlView" ref="883897339"/>
-										<int key="NSButtonFlags">-2038152961</int>
+										<int key="NSButtonFlags">142885119</int>
 										<int key="NSButtonFlags2">164</int>
 										<string key="NSAlternateContents"/>
 										<string key="NSKeyEquivalent"/>

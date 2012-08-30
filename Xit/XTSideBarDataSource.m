@@ -7,7 +7,7 @@
 
 #import "XTSideBarDataSource.h"
 #import "XTSideBarItem.h"
-#import "XTRepository.h"
+#import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
 #import "XTLocalBranchItem.h"
 #import "XTTagItem.h"
@@ -74,6 +74,7 @@
     [outline performSelectorOnMainThread:@selector(reloadData)
                               withObject:nil
                            waitUntilDone:YES];
+    currentBranch = [repo currentBranch];
     [self didChangeValueForKey:@"reload"];
     [outline performSelectorOnMainThread:@selector(reloadData)
                               withObject:nil
@@ -197,9 +198,10 @@
         SidebarTableCellView *dataView = (SidebarTableCellView *)[outlineView makeViewWithIdentifier:@"DataCell" owner:self];
 
         [dataView.textField setStringValue:[item title]];
-        if ([item isKindOfClass:[XTLocalBranchItem class]])
+        if ([item isKindOfClass:[XTLocalBranchItem class]]) {
             [dataView.imageView setImage:[NSImage imageNamed:@"branch"]];
-        else if ([outlineView parentForItem:item] == [roots objectAtIndex:XT_REMOTES])
+            [dataView.button setHidden:![[item title] isEqualToString:currentBranch]];
+        } else if ([outlineView parentForItem:item] == [roots objectAtIndex:XT_REMOTES])
             [dataView.imageView setImage:[NSImage imageNamed:NSImageNameNetwork]];
         return dataView;
     }
