@@ -51,6 +51,8 @@
             break;
         }
     }
+    currentBranch = [repo currentBranch];
+    [repo executeOffMainThread:^{ [outline reloadData]; }];
 }
 
 - (void)reload {
