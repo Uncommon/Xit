@@ -2,8 +2,7 @@
 //  XTHTML.m
 //  Xit
 //
-//  Created by VMware Inc. on 8/11/11.
-//  Copyright 2011 VMware, Inc. All rights reserved.
+//  Created by German Laullon on 8/11/11.
 //
 
 #import "XTHTML.h"
