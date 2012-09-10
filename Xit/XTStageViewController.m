@@ -6,7 +6,7 @@
 //
 
 #import "XTStageViewController.h"
-#import "XTDocument.h"
+#import "XTDocController.h"
 #import "XTFileIndexInfo.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
@@ -69,9 +69,9 @@
             [sender setEnabled:YES];
 
         // TODO: Make this automatic
-        XTDocument *doc = [[[[self view] window] windowController] document];
+        XTDocController *doc = (XTDocController *)[[[self view] window] windowController];
 
-        [doc reload:nil];
+        [doc refresh:nil];
     }];
 }
 

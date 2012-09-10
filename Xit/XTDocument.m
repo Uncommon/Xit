@@ -51,9 +51,4 @@
     // Do nothing. There is no need for an "unsaved" state.
 }
 
-#pragma mark - temp
-- (IBAction)reload:(id)sender {
-    NSLog(@"########## reload ##########");
-    [repo reloadPaths:[NSArray arrayWithObjects:@".git/refs/", @".git/logs/", nil]];
-}
 @end

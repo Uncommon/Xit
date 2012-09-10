@@ -26,6 +26,7 @@
 
 - (id)initWithDocument:(XTDocument *)doc;
 
+- (IBAction)refresh:(id)sender;
 - (IBAction)newTag:(id)sender;
 - (IBAction)newBranch:(id)sender;
 - (IBAction)addRemote:(id)sender;

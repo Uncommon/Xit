@@ -63,6 +63,10 @@
     }
 }
 
+- (IBAction)refresh:(id)sender {
+    [document.repository reloadPaths:[NSArray arrayWithObjects:@".git/refs/", @".git/logs/", nil]];
+}
+
 - (IBAction)newTag:(id)sender {
 }
 

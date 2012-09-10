@@ -15,9 +15,6 @@
     XTRepository *repo;
 }
 
-// XXX TEMP
-- (IBAction)reload:(id)sender;
-
 @property (readonly) XTRepository *repository;
 
 @end
