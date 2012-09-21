@@ -286,10 +286,10 @@ const NSString *kAuthorKeyDate = @"date";
         [res appendString:[NSString stringWithFormat:@"<a class='%@' href='#%@' representedFile='%@'>%@</a>", status, file, fileName, txt]];
         [res appendString:@"</td><td class='bar'>"];
         [res appendString:@"<div>"];
-        [res appendString:[NSString stringWithFormat:@"<span class='add' style='width:%d%%'></span>", ((add * 100) / granTotal)]];
-        [res appendString:[NSString stringWithFormat:@"<span class='rem' style='width:%d%%'></span>", ((rem * 100) / granTotal)]];
+        [res appendString:[NSString stringWithFormat:@"<span class='add' style='width:%d%%'></span>", (int)((add * 100) / granTotal)]];
+        [res appendString:[NSString stringWithFormat:@"<span class='rem' style='width:%d%%'></span>", (int)((rem * 100) / granTotal)]];
         [res appendString:@"</div>"];
-        [res appendString:[NSString stringWithFormat:@"</td><td class='add'>+ %d</td><td class='rem'>- %d</td></tr>", add, rem]];
+        [res appendString:[NSString stringWithFormat:@"</td><td class='add'>+ %d</td><td class='rem'>- %d</td></tr>", (int)add, (int)rem]];
     }
     [res appendString:@"</table>"];
     return res;

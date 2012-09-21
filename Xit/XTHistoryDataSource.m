@@ -114,7 +114,7 @@
             item.index = idx;
         }];
 
-        [XTStatusView updateStatus:[NSString stringWithFormat:@"%d commits loaded", [newItems count]] command:nil output:@"" forRepository:repo];
+        [XTStatusView updateStatus:[NSString stringWithFormat:@"%d commits loaded", (int)[newItems count]] command:nil output:@"" forRepository:repo];
         NSLog (@"-> %lu", [newItems count]);
         items = newItems;
         [table reloadData];
