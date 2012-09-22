@@ -89,6 +89,7 @@
                          }
                      }];
                 }
+                item.repo = repo;
                 item.date = [NSDate dateFromRFC2822:[comps objectAtIndex:2]];
                 item.email = [comps objectAtIndex:3];
                 item.subject = [comps objectAtIndex:4];

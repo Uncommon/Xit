@@ -9,7 +9,7 @@
 #import "XTSideBarItem.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
-#import "XTLocalBranchItem.h"
+#import "XTRemoteBranchItem.h"
 #import "XTTagItem.h"
 #import "XTRemotesItem.h"
 #import "SidebarTableCellView.h"
@@ -72,6 +72,7 @@
     NSMutableDictionary *refsIndex = [NSMutableDictionary dictionary];
     [self reloadBranches:refsIndex];
     [self reloadStashes:refsIndex];
+    // TODO: Consolidate refsIndex reading and storage into one class.
     repo.refsIndex = refsIndex;
     [outline performSelectorOnMainThread:@selector(reloadData)
                               withObject:nil
@@ -117,7 +118,7 @@
             remote = [[XTSideBarItem alloc] initWithTitle:remoteName];
             [remotes addchild:remote];
         }
-        XTLocalBranchItem *branch = [[XTLocalBranchItem alloc] initWithTitle:branchName andSha:commit];
+        XTRemoteBranchItem *branch = [[XTRemoteBranchItem alloc] initWithTitle:branchName remote:remoteName sha:commit];
         [remote addchild:branch];
         [refsIndex addObject:branch forKey:branch.sha];
     };

@@ -9,8 +9,6 @@
 #import "XTSideBarItem.h"
 
 @interface XTLocalBranchItem : XTSideBarItem {
-    @private
-
 }
 
 @end

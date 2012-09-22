@@ -314,6 +314,12 @@ NSString *XTPathsKey = @"paths";
 }
 
 - (void)reloadPaths:(NSArray *)paths {
+    for (NSString *path in paths)
+        if ([path hasPrefix:@".git/"]) {
+            cachedBranch = nil;
+            break;
+        }
+
     NSDictionary *info = [NSDictionary dictionaryWithObject:paths forKey:XTPathsKey];
 
     [[NSNotificationCenter defaultCenter] postNotificationName:XTRepositoryChangedNotification object:self userInfo:info];

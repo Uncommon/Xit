@@ -6,11 +6,14 @@
 //
 
 #import "PBGitRevisionCell.h"
+#import "XTRefToken.h"
+#import "XTRepository.h"
+#import "XTRemoteBranchItem.h"
+#import "XTSideBarItem.h"
 
 static const int kColumnWidth = 10;
 
 @implementation PBGitRevisionCell
-
 
 - (id)initWithCoder:(id)coder {
     self = [super initWithCoder:coder];
@@ -103,6 +106,8 @@ static const int kColumnWidth = 10;
     return attributes;
 }
 
+#define kSpaceBetweenTokens 5
+
 - (void)drawWithFrame:(NSRect)rect inView:(NSView *)view {
     cellInfo = ((XTHistoryItem *)self.objectValue).lineInfo;
 
@@ -124,21 +129,33 @@ static const int kColumnWidth = 10;
         [self drawCircleInRect:ownRect];
     }
 
-    // Still use this superclass because of hilighting differences
-    // _contents = [self.objectValue subject];
-    // [super drawWithFrame:rect inView:view];
+    XTRepository *repo = [self.objectValue repo];
+    NSArray *refs = [[repo refsIndex] objectForKey:[self.objectValue sha]];
+
+    if ([refs count] > 0) {
+        rect.origin.x += 2;
+        rect.size.width -= 2;
+        for (XTSideBarItem *item in refs) {
+            NSString *text = item.title;
+
+            if ([item isKindOfClass:[XTRemoteBranchItem class]])
+                text = [NSString stringWithFormat:@"%@/%@", [(XTRemoteBranchItem*)item remote], text];
+
+            NSRect tokenRect = { rect.origin,
+                                 { [XTRefToken rectWidthForText:text],
+                                   rect.size.height } };
+            const CGFloat rectAdjust = tokenRect.size.width + kSpaceBetweenTokens;
+
+            [XTRefToken drawTokenForRefType:[XTRefToken typeForItem:item inRepository:repo] text:text rect:tokenRect];
+            rect.origin.x += rectAdjust;
+            rect.size.width -= rectAdjust;
+        }
+    }
+
     [textCell setObjectValue:[self.objectValue subject]];
     [textCell setHighlighted:[self isHighlighted]];
     [textCell drawWithFrame:rect inView:view];
 }
-
-// - (void) setObjectValue: (XTHistoryItem*)object {
-//	[super setObjectValue:[NSValue valueWithNonretainedObject:object]];
-// }
-//
-// - (XTHistoryItem *) objectValue {
-//    return [[super objectValue] nonretainedObjectValue];
-// }
 
 - (NSRect)rectAtIndex:(int)index {
     cellInfo = [self.objectValue lineInfo];

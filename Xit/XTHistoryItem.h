@@ -8,9 +8,12 @@
 #import <Foundation/Foundation.h>
 #import "PBGraphCellInfo.h"
 
+@class XTRepository;
+
 @interface XTHistoryItem : NSObject <NSCopying>
 {
     @private
+    XTRepository *repo;
     NSString *sha;
     NSString *shortSha;
     NSMutableArray *parents;
@@ -21,6 +24,7 @@
     NSUInteger index;
 }
 
+@property (assign) XTRepository *repo;
 @property (assign) NSString *sha;
 @property (assign) NSString *shortSha;
 @property (assign) NSMutableArray *parents;

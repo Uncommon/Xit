@@ -9,6 +9,7 @@
 
 @implementation XTHistoryItem
 
+@synthesize repo;
 @synthesize sha;
 @synthesize shortSha;
 @synthesize parents;

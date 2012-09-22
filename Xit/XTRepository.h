@@ -15,7 +15,7 @@ extern NSString *XTPathsKey;
     NSURL *repoURL;
     NSString *gitCMD;
     NSString *selectedCommit;
-    NSString *cachedHeadRef, *cachedHeadSHA;
+    NSString *cachedHeadRef, *cachedHeadSHA, *cachedBranch;
     NSDictionary *refsIndex;
     FSEventStreamRef stream;
     dispatch_queue_t queue;
