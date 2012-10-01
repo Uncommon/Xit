@@ -139,7 +139,7 @@ static const int kColumnWidth = 10;
             NSString *text = item.title;
 
             if ([item isKindOfClass:[XTRemoteBranchItem class]])
-                text = [NSString stringWithFormat:@"%@/%@", [(XTRemoteBranchItem*)item remote], text];
+                text = [NSString stringWithFormat:@"%@/%@", [(XTRemoteBranchItem *)item remote], text];
 
             NSRect tokenRect = { rect.origin,
                                  { [XTRefToken rectWidthForText:text],
