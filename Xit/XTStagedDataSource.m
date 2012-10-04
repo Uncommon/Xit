@@ -6,10 +6,15 @@
 //
 
 #import "XTStagedDataSource.h"
+#import "XTModDateTracker.h"
 #import "XTRepository+Parsing.h"
 #import "XTFileIndexInfo.h"
 
 @implementation XTStagedDataSource
+
+- (BOOL)shouldReloadForPaths:(NSArray *)paths {
+    return [indexTracker hasDateChanged];
+}
 
 - (void)reload {
     [repo executeOffMainThread:^{

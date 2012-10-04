@@ -78,6 +78,7 @@
 		DDD00551158FF551001B055E /* branch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDD00550158FF551001B055E /* branch@2x.png */; };
 		DDD9E33615953952007EF2F6 /* XTStagingDataSourceBase.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD9E33515953952007EF2F6 /* XTStagingDataSourceBase.m */; };
 		DDDA447215B0EA4700DF407B /* XTRepository+Parsing.m in Sources */ = {isa = PBXBuildFile; fileRef = DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */; };
+		DDE55DDF1613C6C000CCAC03 /* XTModDateTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = DDE55DDE1613C6C000CCAC03 /* XTModDateTracker.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -237,6 +238,8 @@
 		DDD9E33515953952007EF2F6 /* XTStagingDataSourceBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTStagingDataSourceBase.m; sourceTree = "<group>"; };
 		DDDA447015B0E97000DF407B /* XTRepository+Parsing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XTRepository+Parsing.h"; sourceTree = "<group>"; };
 		DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XTRepository+Parsing.m"; sourceTree = "<group>"; };
+		DDE55DDD1613C6C000CCAC03 /* XTModDateTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTModDateTracker.h; sourceTree = "<group>"; };
+		DDE55DDE1613C6C000CCAC03 /* XTModDateTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTModDateTracker.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -346,6 +349,8 @@
 				DDC75B8215D08E8F0087F2D4 /* NSDate+Extensions.m */,
 				DD9C1B8D160239DD0001FE9B /* XTRefToken.h */,
 				DD9C1B8E160239DD0001FE9B /* XTRefToken.m */,
+				DDE55DDD1613C6C000CCAC03 /* XTModDateTracker.h */,
+				DDE55DDE1613C6C000CCAC03 /* XTModDateTracker.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -483,9 +488,9 @@
 				89355421157C128F007AC9CE /* XTDocController.h */,
 				89355422157C128F007AC9CE /* XTDocController.m */,
 				C358652F14048A3F00060C53 /* XTRepository.h */,
+				C358653014048A3F00060C53 /* XTRepository.m */,
 				DDDA447015B0E97000DF407B /* XTRepository+Parsing.h */,
 				DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */,
-				C358653014048A3F00060C53 /* XTRepository.m */,
 				89991CDB144E3FF400097A99 /* XTStatusView.h */,
 				89991CDC144E3FF400097A99 /* XTStatusView.m */,
 				89794F651452839500E38ACC /* XTStatusView.xib */,
@@ -771,6 +776,7 @@
 				DDC75B8315D08E8F0087F2D4 /* NSDate+Extensions.m in Sources */,
 				DD9C1B8F160239DD0001FE9B /* XTRefToken.m in Sources */,
 				DD3AC5B41611215C00238F58 /* XTRemoteBranchItem.m in Sources */,
+				DDE55DDF1613C6C000CCAC03 /* XTModDateTracker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

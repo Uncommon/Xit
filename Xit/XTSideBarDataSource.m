@@ -51,8 +51,7 @@
             break;
         }
     }
-    currentBranch = [repo currentBranch];
-    [repo executeOffMainThread:^{ [outline reloadData]; }];
+    [outline performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
 - (void)reload {

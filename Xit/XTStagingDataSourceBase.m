@@ -6,8 +6,9 @@
 //
 
 #import "XTStagingDataSourceBase.h"
-#import "XTRepository.h"
 #import "XTFileIndexInfo.h"
+#import "XTModDateTracker.h"
+#import "XTRepository.h"
 
 @implementation XTStagingDataSourceBase
 
@@ -23,11 +24,16 @@
 - (void)setRepo:(XTRepository *)newRepo {
     repo = newRepo;
     [repo addReloadObserver:self selector:@selector(repoChanged:)];
+    indexTracker = [[XTModDateTracker alloc] initWithPath:[[repo.repoURL path] stringByAppendingPathComponent:@".git/index"]];
     [self reload];
 }
 
 - (void)repoChanged:(NSNotification *)note {
-    // TODO: check if the paths really indicate a reload
+    NSArray *paths = [[note userInfo] objectForKey:XTPathsKey];
+
+    if (![self shouldReloadForPaths:paths])
+        return;
+
     // Recursion can happen if reloading uses git calls that trigger the file
     // system notification.
     if (!reloading) {
@@ -35,6 +41,10 @@
         [self reload];
         reloading = NO;
     }
+}
+
+- (BOOL)shouldReloadForPaths:(NSArray *)paths {
+    return YES;
 }
 
 - (void)reload {
