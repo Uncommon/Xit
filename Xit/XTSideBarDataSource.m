@@ -206,9 +206,13 @@
         [dataView.textField setStringValue:[item title]];
         if ([item isKindOfClass:[XTLocalBranchItem class]]) {
             [dataView.imageView setImage:[NSImage imageNamed:@"branch"]];
-            [dataView.button setHidden:![[item title] isEqualToString:currentBranch]];
-        } else if ([outlineView parentForItem:item] == [roots objectAtIndex:XT_REMOTES])
-            [dataView.imageView setImage:[NSImage imageNamed:NSImageNameNetwork]];
+            if (![item isKindOfClass:[XTRemoteBranchItem class]])
+                [dataView.button setHidden:![[item title] isEqualToString:currentBranch]];
+        } else {
+            [dataView.button setHidden:YES];
+            if ([outlineView parentForItem:item] == [roots objectAtIndex:XT_REMOTES])
+                [dataView.imageView setImage:[NSImage imageNamed:NSImageNameNetwork]];
+        }
         return dataView;
     }
 }
