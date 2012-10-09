@@ -213,7 +213,7 @@ NSString *XTPathsKey = @"paths";
 
     if (output == nil)
         return nil;
-    return [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
+    return [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
 }
 
 - (NSString *)parseSymbolicReference:(NSString *)reference {
@@ -223,7 +223,7 @@ NSString *XTPathsKey = @"paths";
     if (output == nil)
         return nil;
 
-    NSString *ref = [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
+    NSString *ref = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
     if ([ref hasPrefix:@"refs/"])
         return [ref stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
@@ -255,7 +255,7 @@ NSString *XTPathsKey = @"paths";
     if ((error != nil) || ([output length] == 0))
         return nil;
 
-    NSString *outputString = [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
+    NSString *outputString = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
 
     return [outputString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
@@ -265,7 +265,7 @@ NSString *XTPathsKey = @"paths";
         NSString *head = [self parseSymbolicReference:@"HEAD"];
 
         if ([head hasPrefix:@"refs/heads/"])
-            cachedHeadRef = [head retain];
+            cachedHeadRef = head;
         else
             cachedHeadRef = @"HEAD";
 
@@ -294,14 +294,14 @@ NSString *XTPathsKey = @"paths";
         return;
     NSString *myPath = [[repoURL URLByAppendingPathComponent:@".git"] path];
     NSArray *pathsToWatch = [NSArray arrayWithObject:myPath];
-    void *repoPointer = (void *)self;
+    void *repoPointer = (__bridge void *)self;
     FSEventStreamContext context = { 0, repoPointer, NULL, NULL, NULL };
     NSTimeInterval latency = 3.0;
 
     stream = FSEventStreamCreate(kCFAllocatorDefault,
                                  &fsevents_callback,
                                  &context,
-                                 (CFArrayRef)pathsToWatch,
+                                 (__bridge CFArrayRef)pathsToWatch,
                                  kFSEventStreamEventIdSinceNow,
                                  (CFAbsoluteTime)latency,
                                  kFSEventStreamCreateFlagUseCFTypes
@@ -338,13 +338,13 @@ void fsevents_callback(ConstFSEventStreamRef streamRef,
                        void *eventPaths,
                        const FSEventStreamEventFlags eventFlags[],
                        const FSEventStreamEventId eventIds[]){
-    XTRepository *repo = (XTRepository *)userData;
+    XTRepository *repo = (__bridge XTRepository *)userData;
 
     ++event;
 
     NSMutableArray *paths = [NSMutableArray arrayWithCapacity:numEvents];
     for (size_t i = 0; i < numEvents; i++) {
-        NSString *path = [(NSArray *) eventPaths objectAtIndex:i];
+        NSString *path = [(__bridge NSArray *) eventPaths objectAtIndex:i];
         NSRange r = [path rangeOfString:@".git" options:NSBackwardsSearch];
 
         path = [path substringFromIndex:r.location];

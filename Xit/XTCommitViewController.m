@@ -37,6 +37,10 @@ const NSString *kAuthorKeyDate = @"date";
     [repo addObserver:self forKeyPath:@"selectedCommit" options:NSKeyValueObservingOptionNew context:nil];
 }
 
+- (void)dealloc {
+    [repo removeObserver:self forKeyPath:@"selectedCommit"];
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"selectedCommit"]) {
         NSString *newSelectedCommit = [change objectForKey:NSKeyValueChangeNewKey];
@@ -265,7 +269,7 @@ const NSString *kAuthorKeyDate = @"date";
     NSArray *lines = [txt componentsSeparatedByString:@"\n"];
     NSMutableString *res = [NSMutableString string];
     [res appendString:@"<table id='filelist'>"];
-    for (NSString *line in lines) {
+    for (__strong NSString *line in lines) {
         if ([line length] < 98) continue;
         line = [line substringFromIndex:97];
         NSArray *fileStatus = [line componentsSeparatedByString:@"\t"];

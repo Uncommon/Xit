@@ -18,11 +18,6 @@
     [[self.button cell] setBezelStyle:NSInlineBezelStyle];
 }
 
-- (void)dealloc {
-    self.button = nil;
-    [super dealloc];
-}
-
 // The standard rowSizeStyle does some specific layout for us. To customize
 // layout for our button, we first call super and then modify things
 - (void)viewWillDraw {

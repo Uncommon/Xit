@@ -69,7 +69,7 @@ static float HeightForText(NSString *text, NSFont *font, float width);
 
         if (![output hasSuffix:@"\n"])
             output = [output stringByAppendingString:@"\r"];
-        [[outputText textStorage] appendAttributedString:[[[NSAttributedString alloc] initWithString:output attributes:attributes] autorelease]];
+        [[outputText textStorage] appendAttributedString:[[NSAttributedString alloc] initWithString:output attributes:attributes]];
     }
 }
 
@@ -77,9 +77,9 @@ static float HeightForText(NSString *text, NSFont *font, float width);
 
 // Adapted from Text Layout Programming Guide sample code.
 static float HeightForText(NSString *text, NSFont *font, float width) {
-    NSTextStorage *storage = [[[NSTextStorage alloc] initWithString:text] autorelease];
-    NSTextContainer *container = [[[NSTextContainer alloc] initWithContainerSize:NSMakeSize(width, FLT_MAX)] autorelease];
-    NSLayoutManager *layout = [[[NSLayoutManager alloc] init] autorelease];
+    NSTextStorage *storage = [[NSTextStorage alloc] initWithString:text];
+    NSTextContainer *container = [[NSTextContainer alloc] initWithContainerSize:NSMakeSize(width, FLT_MAX)];
+    NSLayoutManager *layout = [[NSLayoutManager alloc] init];
 
     [layout setTypesetterBehavior:NSTypesetterBehavior_10_2_WithCompatibility];
     [layout addTextContainer:container];

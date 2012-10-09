@@ -47,8 +47,8 @@ extern NSString *XTPathsKey;
 - (void)addTask:(NSTask *)task;
 - (void)removeTask:(NSTask *)task;
 
-@property (assign) NSString *selectedCommit;
-@property (assign) NSDictionary *refsIndex;
+@property (copy) NSString *selectedCommit;
+@property (strong) NSDictionary *refsIndex;
 @property (readonly) dispatch_queue_t queue;
 @property (readonly) NSMutableArray *activeTasks;
 @property (readonly) NSURL *repoURL;

@@ -25,6 +25,10 @@
     return self;
 }
 
+- (void)dealloc {
+    [repo removeObserver:self forKeyPath:@"selectedCommit"];
+}
+
 - (void)setRepo:(XTRepository *)newRepo {
     repo = newRepo;
     [repo addObserver:self forKeyPath:@"selectedCommit" options:NSKeyValueObservingOptionNew context:nil];

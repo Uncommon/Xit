@@ -14,8 +14,8 @@
     NSString *status;
 }
 
-@property (assign) NSString *name;
-@property (assign) NSString *status;
+@property (strong) NSString *name;
+@property (strong) NSString *status;
 
 - (id)initWithName:(NSString *)theName andStatus:(NSString *)theStatus;
 

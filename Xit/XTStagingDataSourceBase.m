@@ -21,6 +21,10 @@
     return self;
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)setRepo:(XTRepository *)newRepo {
     repo = newRepo;
     [repo addReloadObserver:self selector:@selector(repoChanged:)];

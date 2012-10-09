@@ -24,6 +24,11 @@
     return self;
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [repo removeObserver:self forKeyPath:@"selectedCommit"];
+}
+
 - (void)setRepo:(XTRepository *)newRepo {
     repo = newRepo;
     [repo addReloadObserver:self selector:@selector(repoChanged:)];

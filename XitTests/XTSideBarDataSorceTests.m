@@ -17,7 +17,7 @@
     @private
     NSString *stringValue;
 }
-@property (retain) NSString *stringValue;
+@property (strong) NSString *stringValue;
 @end
 
 @interface MockCellView : NSObject {
@@ -162,8 +162,6 @@
     }
     STAssertTrue(branchMasterFound, @"Branch 'master' Not found");
     STAssertTrue(branchB1Found, @"Branch 'b1' Not found");
-    [sbds release];
-    [sov release];
 }
 
 - (void)testXTSideBarDataSourceBranchesAndTags {
@@ -232,8 +230,6 @@
     }
     STAssertTrue(branchMasterFound, @"Branch 'master' Not found");
     STAssertTrue(branchB1Found, @"Branch 'b1' Not found");
-    [sbds release];
-    [sov release];
 }
 
 - (void)testGroupItems {
@@ -276,13 +272,17 @@
     return nil;
 }
 
+- (id)button {
+    return nil;
+}
+
 @end
 
 
 @implementation MockSidebarOutlineView
 
 - (id)makeViewWithIdentifier:(NSString *)identifier owner:(id)owner {
-    return [[[MockCellView alloc] init] autorelease];
+    return [[MockCellView alloc] init];
 }
 
 - (id)parentForItem:(id)item {

@@ -53,6 +53,7 @@
 
     // Double-click in unstaged list
     [[[mockUnstagedTable stub] andReturnValue:OCMOCK_VALUE(clickedRow)] clickedRow];
+    [[mockStagedTable stub] reloadData];
     [[mockUnstagedTable stub] reloadData];
     [controller unstagedDoubleClicked:mockUnstagedTable];
     [repository waitForQueue];
@@ -183,7 +184,7 @@
     NSUInteger nc = [ustgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 5), @"found %d commits", nc);
 
-    __block NSDictionary *expected = [NSDictionary dictionaryWithObjectsAndKeys:
+    NSDictionary *expected = [NSDictionary dictionaryWithObjectsAndKeys:
                                       @"M", @"file_to_mod.txt",
                                       @"D", @"file_to_move.txt",
                                       @"?", @"file_moved.txt",

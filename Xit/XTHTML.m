@@ -225,11 +225,11 @@
 
     if (i != NSNotFound) {
         NSString *ext = [name substringFromIndex:i + 1];
-        CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (CFStringRef)ext, NULL);
+        CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef)ext, NULL);
         if (UTI) {
             CFStringRef registeredType = UTTypeCopyPreferredTagWithClass(UTI, kUTTagClassMIMEType);
             if (registeredType) {
-                mimeType = NSMakeCollectable(registeredType);
+                mimeType = CFBridgingRelease(registeredType);
             }
             CFRelease(UTI);
         }

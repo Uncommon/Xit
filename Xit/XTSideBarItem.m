@@ -27,10 +27,6 @@
     return [self initWithTitle:theTitle andSha:nil];
 }
 
-- (NSString *)title {
-    return title;
-}
-
 - (NSString *)badge {
     return self.title;
 }

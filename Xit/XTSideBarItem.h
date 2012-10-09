@@ -16,8 +16,8 @@
     NSMutableArray *children;
 }
 
-@property (assign) NSString *title;
-@property (assign) NSString *sha;
+@property (strong) NSString *title;
+@property (strong) NSString *sha;
 
 - (id)initWithTitle:(NSString *)theTitle andSha:(NSString *)sha;
 - (id)initWithTitle:(NSString *)theTitle;

@@ -17,7 +17,7 @@
     NSString *txt = @"some text";
 
     for (int n = 0; n < 10; n++) {
-        NSString *file = [NSString stringWithFormat:@"%@/file_%lu.txt", repoPath, n];
+        NSString *file = [NSString stringWithFormat:@"%@/file_%u.txt", repoPath, n];
         [txt writeToFile:file atomically:YES encoding:NSASCIIStringEncoding error:nil];
         [repository addFile:@"--all"];
         [repository commitWithMessage:@"commit"];

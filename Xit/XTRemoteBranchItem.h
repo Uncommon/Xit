@@ -12,7 +12,7 @@
     NSString *remote;
 }
 
-@property (assign) NSString *remote;
+@property (strong) NSString *remote;
 
 - (id)initWithTitle:(NSString *)theTitle remote:(NSString *)remote sha:(NSString *)sha;
 

@@ -97,6 +97,7 @@
     NSError *error = nil;
     BOOL res = NO;
 
+    cachedBranch = nil;
     [self executeGitWithArgs:[NSArray arrayWithObjects:@"checkout", branch, nil] error:&error];
 
     if (error == nil) {
@@ -165,7 +166,7 @@
 
     if (output == nil)
         return nil;
-    return [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
+    return [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
 }
 
 - (NSString *)diffForUnstagedFile:(NSString *)file {
@@ -173,7 +174,7 @@
 
     if (output == nil)
         return nil;
-    return [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease];
+    return [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
 }
 
 - (NSString *)diffForCommit:(NSString *)sha {

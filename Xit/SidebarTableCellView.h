@@ -13,6 +13,6 @@
     NSButton *_button;
 }
 
-@property (retain) IBOutlet NSButton *button;
+@property (strong) IBOutlet NSButton *button;
 
 @end

@@ -16,6 +16,6 @@
     NSPopover *popover;
 }
 
-@property (assign) NSPopover *popover;
+@property (strong) NSPopover *popover;
 
 @end

@@ -274,7 +274,7 @@ NSString
     if (output == nil)
         return NO;
     if (outputBlock != NULL)
-        outputBlock([[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] autorelease]);
+        outputBlock([[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding]);
     return YES;
 }
 

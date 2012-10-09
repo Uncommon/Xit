@@ -14,7 +14,6 @@
         formatter = [[NSDateFormatter alloc] init];
         NSLocale *enUS = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
         [formatter setLocale:enUS];
-        [enUS release];
         [formatter setDateFormat:@"EEE, dd MMM yyyy HH:mm:ss ZZ"];
     }
     return formatter;

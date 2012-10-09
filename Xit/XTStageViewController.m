@@ -10,7 +10,9 @@
 #import "XTFileIndexInfo.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
+#import "XTStagedDataSource.h"
 #import "XTStatusView.h"
+#import "XTUnstagedDataSource.h"
 #import "XTHTML.h"
 
 @implementation XTStageViewController
@@ -48,6 +50,8 @@
 #pragma mark -
 
 - (IBAction)commit:(id)sender {
+    XTDocController *doc = (XTDocController *)[[[self view] window] windowController];
+
     if ([sender respondsToSelector:@selector(setEnabled:)])
         [sender setEnabled:NO];
     [repo executeOffMainThread: ^{
@@ -69,8 +73,6 @@
             [sender setEnabled:YES];
 
         // TODO: Make this automatic
-        XTDocController *doc = (XTDocController *)[[[self view] window] windowController];
-
         [doc refresh:nil];
     }];
 }

@@ -93,8 +93,8 @@ static const int kColumnWidth = 10;
 }
 
 - (NSMutableDictionary *)attributesForRefLabelSelected:(BOOL)selected {
-    NSMutableDictionary *attributes = [[[NSMutableDictionary alloc] initWithCapacity:2] autorelease];
-    NSMutableParagraphStyle *style = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
+    NSMutableDictionary *attributes = [[NSMutableDictionary alloc] initWithCapacity:2];
+    NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
 
     [style setAlignment:NSCenterTextAlignment];
     [attributes setObject:style forKey:NSParagraphStyleAttributeName];

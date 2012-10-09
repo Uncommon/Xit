@@ -9,7 +9,7 @@
 
 @implementation PBGraphCellInfo
 
-@synthesize lines, position, numColumns, nLines;
+@synthesize position, numColumns, nLines;
 
 - (id)initWithPosition:(size_t)p andLines:(struct PBGitGraphLine *)l {
     position = p;
@@ -18,14 +18,17 @@
     return self;
 }
 
+- (struct PBGitGraphLine *)lines {
+    return lines;
+}
+
 - (void)setLines:(struct PBGitGraphLine *)l {
     free(lines);
     lines = l;
 }
 
-- (void)finalize {
+- (void)dealloc {
     free(lines);
-    [super finalize];
 }
 
 @end

@@ -26,7 +26,7 @@
     BOOL stagedFile;
 }
 
-@property (retain) NSString *message;
+@property (strong) NSString *message;
 
 - (IBAction)commit:(id)sender;
 

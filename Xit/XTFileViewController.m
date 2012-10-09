@@ -6,6 +6,8 @@
 //
 
 #import "XTFileViewController.h"
+#import "XTFileListDataSource.h"
+#import "XTFileListHistoryDataSource.h"
 
 @implementation XTFileViewController
 

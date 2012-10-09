@@ -24,14 +24,14 @@
     NSUInteger index;
 }
 
-@property (assign) XTRepository *repo;
-@property (assign) NSString *sha;
-@property (assign) NSString *shortSha;
-@property (assign) NSMutableArray *parents;
-@property (assign) NSDate *date;
-@property (assign) NSString *email;
-@property (assign) NSString *subject;
-@property (assign) PBGraphCellInfo *lineInfo;
+@property (strong) XTRepository *repo;
+@property (strong) NSString *sha;
+@property (strong) NSString *shortSha;
+@property (strong) NSMutableArray *parents;
+@property (strong) NSDate *date;
+@property (strong) NSString *email;
+@property (strong) NSString *subject;
+@property (strong) PBGraphCellInfo *lineInfo;
 @property NSUInteger index;
 
 @end

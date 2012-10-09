@@ -53,7 +53,7 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
     id mockRepo = [OCMockObject partialMockForObject:repository];
     NSArray *args = [NSArray arrayWithObjects:@"show", @"-z", @"--summary", @"--name-only", kHeaderFormat, @"master", nil];
 
-    [[[mockRepo expect] andReturn:outputData] executeGitWithArgs:args error:[OCMArg anyPointer]];
+    [[[mockRepo expect] andReturn:outputData] executeGitWithArgs:args error:[OCMArg setTo:nil]];
     STAssertTrue([mockRepo parseCommit:@"master" intoHeader:&header message:&message files:&files], @"");
 
     NSDictionary *expectedHeader = [NSDictionary dictionaryWithObjectsAndKeys:

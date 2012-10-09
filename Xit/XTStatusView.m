@@ -54,12 +54,6 @@ NSString *const XTStatusOutputKey = @"output";
     return self;
 }
 
-- (void)dealloc {
-    [fillGradient release];
-    [strokeGradient release];
-    [super dealloc];
-}
-
 - (void)awakeFromNib {
     detachedWindow.title = [NSString stringWithFormat:detachedWindow.title, self.window.title];
     [detachedWindow setContentSize:[detachedController.view bounds].size];
