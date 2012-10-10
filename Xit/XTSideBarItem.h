@@ -28,3 +28,8 @@
 - (void)clean;
 - (NSString *)badge;
 @end
+
+@interface XTStashItem : XTSideBarItem {
+}
+
+@end

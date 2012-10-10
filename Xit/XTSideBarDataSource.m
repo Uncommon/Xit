@@ -92,7 +92,7 @@
 
     [stashes clean];
     [repo readStashesWithBlock:^(NSString *commit, NSString *name) {
-        XTSideBarItem *stash = [[XTSideBarItem alloc] initWithTitle:name];
+        XTSideBarItem *stash = [[XTStashItem alloc] initWithTitle:name];
         [stashes addchild:stash];
         [refsIndex addObject:stash forKey:commit];
     }];

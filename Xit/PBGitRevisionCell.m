@@ -13,6 +13,18 @@
 
 static const int kColumnWidth = 10;
 
+@implementation NSString (Words)
+
+- (NSString *)firstWord {
+    NSRange spaceRange = [self rangeOfString:@" "];
+
+    if (spaceRange.location == NSNotFound)
+        return self;
+    return [self substringToIndex:spaceRange.location];
+}
+
+@end
+
 @implementation PBGitRevisionCell
 
 - (id)initWithCoder:(id)coder {
@@ -140,6 +152,8 @@ static const int kColumnWidth = 10;
 
             if ([item isKindOfClass:[XTRemoteBranchItem class]])
                 text = [NSString stringWithFormat:@"%@/%@", [(XTRemoteBranchItem *)item remote], text];
+            if ([item isKindOfClass:[XTStashItem class]])
+                text = [text firstWord];
 
             NSRect tokenRect = { rect.origin,
                                  { [XTRefToken rectWidthForText:text],
