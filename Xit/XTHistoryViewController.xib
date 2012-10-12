@@ -101,13 +101,13 @@
 								<string key="NSFrame">{{59, 3}, {242, 18}}</string>
 								<reference key="NSSuperview" ref="874195480"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="743535934"/>
+								<reference key="NSNextKeyView"/>
 								<bool key="NSEnabled">YES</bool>
 								<int key="NSNumRows">1</int>
 								<int key="NSNumCols">3</int>
 								<array class="NSMutableArray" key="NSCells">
 									<object class="NSButtonCell" id="86423172">
-										<int key="NSCellFlags">67239424</int>
+										<int key="NSCellFlags">-2080244224</int>
 										<int key="NSCellFlags2">134217728</int>
 										<string key="NSContents">All</string>
 										<object class="NSFont" key="NSSupport" id="29">
@@ -116,7 +116,7 @@
 											<int key="NSfFlags">16</int>
 										</object>
 										<reference key="NSControlView" ref="969138850"/>
-										<int key="NSButtonFlags">1219907839</int>
+										<int key="NSButtonFlags">-1229569793</int>
 										<int key="NSButtonFlags2">45</int>
 										<object class="NSFont" key="NSAlternateImage" id="186842982">
 											<string key="NSName">LucidaGrande</string>
@@ -133,7 +133,7 @@
 										<string key="NSContents">Local</string>
 										<reference key="NSSupport" ref="29"/>
 										<reference key="NSControlView" ref="969138850"/>
-										<int key="NSButtonFlags">1219907839</int>
+										<int key="NSButtonFlags">-1229569793</int>
 										<int key="NSButtonFlags2">45</int>
 										<reference key="NSAlternateImage" ref="186842982"/>
 										<string key="NSKeyEquivalent"/>
@@ -146,7 +146,7 @@
 										<string key="NSContents">"master"</string>
 										<reference key="NSSupport" ref="29"/>
 										<reference key="NSControlView" ref="969138850"/>
-										<int key="NSButtonFlags">1219907839</int>
+										<int key="NSButtonFlags">-1229569793</int>
 										<int key="NSButtonFlags2">45</int>
 										<reference key="NSAlternateImage" ref="186842982"/>
 										<string key="NSKeyEquivalent"/>
@@ -156,29 +156,20 @@
 								</array>
 								<string key="NSCellSize">{68, 19}</string>
 								<string key="NSIntercellSpacing">{4, 2}</string>
-								<int key="NSMatrixFlags">-2136465408</int>
+								<int key="NSMatrixFlags">1084760064</int>
 								<string key="NSCellClass">NSActionCell</string>
 								<object class="NSButtonCell" key="NSProtoCell" id="996816055">
 									<int key="NSCellFlags">67239424</int>
 									<int key="NSCellFlags2">134217728</int>
 									<string key="NSContents">1</string>
-									<object class="NSFont" key="NSSupport" id="27">
-										<string key="NSName">LucidaGrande-Bold</string>
-										<double key="NSSize">11</double>
-										<int key="NSfFlags">3357</int>
-									</object>
-									<int key="NSButtonFlags">1219907839</int>
-									<int key="NSButtonFlags2">39</int>
-									<object class="NSFont" key="NSAlternateImage" id="92101120">
-										<string key="NSName">LucidaGrande</string>
-										<double key="NSSize">11</double>
-										<int key="NSfFlags">16</int>
-									</object>
+									<reference key="NSSupport" ref="29"/>
+									<int key="NSButtonFlags">-1229569793</int>
+									<int key="NSButtonFlags2">45</int>
+									<reference key="NSAlternateImage" ref="186842982"/>
 									<int key="NSPeriodicDelay">400</int>
 									<int key="NSPeriodicInterval">75</int>
 								</object>
-								<int key="NSSelectedRow">-1</int>
-								<int key="NSSelectedCol">-1</int>
+								<reference key="NSSelectedCell" ref="86423172"/>
 								<object class="NSColor" key="NSBackgroundColor" id="1066615389">
 									<int key="NSColorSpace">6</int>
 									<string key="NSCatalogName">System</string>
@@ -203,7 +194,11 @@
 									<int key="NSCellFlags">67239424</int>
 									<int key="NSCellFlags2">67108864</int>
 									<string key="NSContents">Vertical</string>
-									<reference key="NSSupport" ref="27"/>
+									<object class="NSFont" key="NSSupport">
+										<string key="NSName">LucidaGrande-Bold</string>
+										<double key="NSSize">11</double>
+										<int key="NSfFlags">3357</int>
+									</object>
 									<reference key="NSControlView" ref="743535934"/>
 									<int key="NSButtonFlags">1208111359</int>
 									<int key="NSButtonFlags2">39</int>
@@ -925,7 +920,11 @@
 										<int key="NSCellFlags">67239488</int>
 										<int key="NSCellFlags2">272631808</int>
 										<string key="NSContents">Row label</string>
-										<reference key="NSSupport" ref="92101120"/>
+										<object class="NSFont" key="NSSupport">
+											<string key="NSName">LucidaGrande</string>
+											<double key="NSSize">11</double>
+											<int key="NSfFlags">16</int>
+										</object>
 										<string key="NSCellIdentifier">_NS:4049</string>
 										<reference key="NSControlView" ref="807409169"/>
 										<reference key="NSBackgroundColor" ref="1066615389"/>
@@ -1430,7 +1429,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">122</int>
+			<int key="maxID">128</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1601,10 +1600,6 @@
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencies">
-			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
-			<real value="1070" key="NS.object.0"/>
-		</object>
-		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
 			<real value="1070" key="NS.object.0"/>
 		</object>
