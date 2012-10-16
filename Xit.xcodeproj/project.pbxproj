@@ -79,6 +79,8 @@
 		DDD9E33615953952007EF2F6 /* XTStagingDataSourceBase.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD9E33515953952007EF2F6 /* XTStagingDataSourceBase.m */; };
 		DDDA447215B0EA4700DF407B /* XTRepository+Parsing.m in Sources */ = {isa = PBXBuildFile; fileRef = DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */; };
 		DDE55DDF1613C6C000CCAC03 /* XTModDateTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = DDE55DDE1613C6C000CCAC03 /* XTModDateTracker.m */; };
+		DDF9BB3A162E29C3004588B6 /* tag.png in Resources */ = {isa = PBXBuildFile; fileRef = DDF9BB38162E29C3004588B6 /* tag.png */; };
+		DDF9BB3B162E29C3004588B6 /* tag@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDF9BB39162E29C3004588B6 /* tag@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -240,6 +242,8 @@
 		DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XTRepository+Parsing.m"; sourceTree = "<group>"; };
 		DDE55DDD1613C6C000CCAC03 /* XTModDateTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTModDateTracker.h; sourceTree = "<group>"; };
 		DDE55DDE1613C6C000CCAC03 /* XTModDateTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTModDateTracker.m; sourceTree = "<group>"; };
+		DDF9BB38162E29C3004588B6 /* tag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tag.png; sourceTree = "<group>"; };
+		DDF9BB39162E29C3004588B6 /* tag@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tag@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -407,6 +411,8 @@
 				895DEF1E142D91F8001763FC /* historyTemplate.pdf */,
 				895DEF211432438D001763FC /* stageTemplate.pdf */,
 				899D010C14216D2C0091DC6F /* sidebarTemplate.png */,
+				DDF9BB38162E29C3004588B6 /* tag.png */,
+				DDF9BB39162E29C3004588B6 /* tag@2x.png */,
 			);
 			path = images;
 			sourceTree = "<group>";
@@ -671,6 +677,8 @@
 				89794F671452839500E38ACC /* XTStatusView.xib in Resources */,
 				89794F8D1458CC9B00E38ACC /* XTOutputViewController.xib in Resources */,
 				DDD00551158FF551001B055E /* branch@2x.png in Resources */,
+				DDF9BB3A162E29C3004588B6 /* tag.png in Resources */,
+				DDF9BB3B162E29C3004588B6 /* tag@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

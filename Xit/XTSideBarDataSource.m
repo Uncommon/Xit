@@ -208,6 +208,8 @@
             [dataView.imageView setImage:[NSImage imageNamed:@"branch"]];
             if (![item isKindOfClass:[XTRemoteBranchItem class]])
                 [dataView.button setHidden:![[item title] isEqualToString:currentBranch]];
+        } else if ([item isKindOfClass:[XTTagItem class]]) {
+            [dataView.imageView setImage:[NSImage imageNamed:@"tag"]];
         } else {
             [dataView.button setHidden:YES];
             if ([outlineView parentForItem:item] == [roots objectAtIndex:XT_REMOTES])
