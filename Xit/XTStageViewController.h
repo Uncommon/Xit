@@ -45,4 +45,6 @@
 - (void)stagedDoubleClicked:(id)sender;
 - (void)unstagedDoubleClicked:(id)sender;
 
+- (NSString *)diffForNewFile:(NSString *)file;
+
 @end

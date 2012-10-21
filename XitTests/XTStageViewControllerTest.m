@@ -6,6 +6,7 @@
 //
 
 #import "XTStageViewControllerTest.h"
+#import "XTHTML.h"
 #import "XTUnstagedDataSource.h"
 #import "XTStagedDataSource.h"
 #import "XTRepository+Commands.h"
@@ -262,6 +263,33 @@
 
     STAssertEquals([parents count], 1UL, @"");
     STAssertEqualObjects([parents objectAtIndex:0], oldHeadSHA, @"");
+}
+
+- (void)testNewFileDiff {
+    NSString *newFileName = @"newfile.txt";
+    NSString *newFilePath = [NSString stringWithFormat:@"%@/%@", repoPath, newFileName];
+    NSError *error = nil;
+
+    [@"line 1\nline 2\nline 3" writeToFile:newFilePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    STAssertNil(error, @"");
+
+    XTStageViewController *svc = [[XTStageViewController alloc] init];
+    [svc setRepo:repository];
+
+    NSString *diff = [svc diffForNewFile:newFileName];
+    STAssertEqualObjects(
+            diff,
+            @"diff --git /dev/null b/newfile.txt\n"
+             "--- /dev/null\n"
+             "+++ b/newfile.txt\n"
+             "@@ -0,0 +1,3 @@\n"
+             "+line 1\n"
+             "+line 2\n"
+             "+line 3\n",
+            @"");
+
+    NSString *html = [XTHTML parseDiff:diff];
+    STAssertNotNil(html, @"");
 }
 
 @end

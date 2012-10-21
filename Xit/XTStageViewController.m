@@ -79,10 +79,43 @@
 
 #pragma mark -
 
+- (NSString *)diffForNewFile:(NSString *)file {
+    NSURL *url = [repo.repoURL URLByAppendingPathComponent:file];
+    NSStringEncoding encoding;
+    NSError *error = nil;
+    NSString *contents = [NSString stringWithContentsOfURL:url usedEncoding:&encoding error:&error];
+    NSUInteger i = 0, lineCount = 0;
+
+    for (; i < [contents length]; ++i)
+        if ([contents characterAtIndex:i] == '\n')
+            ++lineCount;
+    if ([contents characterAtIndex:i-1] != '\n')
+        ++lineCount;
+
+    NSScanner *scanner = [NSScanner scannerWithString:contents];
+    NSString *line;
+    NSMutableString *diff = [NSMutableString stringWithFormat:
+            @"diff --git /dev/null b/%@\n"
+             "--- /dev/null\n"
+             "+++ b/%@\n"
+             "@@ -0,0 +1,%ld @@\n", file, file, lineCount];
+
+    [scanner setCharactersToBeSkipped:nil];
+    while ([scanner scanUpToString:@"\n" intoString:&line]) {
+        [diff appendFormat:@"+%@\n", line];
+        [scanner scanString:@"\n" intoString:NULL];
+    }
+    if ([scanner scanLocation] != [contents length])
+        [diff appendFormat:@"+%@\n\\No newline at end of file\n", [contents substringFromIndex:[scanner scanLocation]+1]];
+    return diff;
+}
+
 - (void)showUnstageFile:(XTFileIndexInfo *)file {
     [repo executeOffMainThread:^{
-        actualDiff = [repo diffForUnstagedFile:file.name];
         stagedFile = NO;
+        actualDiff = [repo diffForUnstagedFile:file.name];
+        if ([actualDiff length] == 0)
+            actualDiff = [self diffForNewFile:file.name];
 
         NSString *diffHTML = [XTHTML parseDiff:actualDiff];
         [self showDiff:diffHTML];
@@ -91,8 +124,8 @@
 
 - (void)showStageFile:(XTFileIndexInfo *)file {
     [repo executeOffMainThread:^{
-        actualDiff = [repo diffForStagedFile:file.name];
         stagedFile = YES;
+        actualDiff = [repo diffForStagedFile:file.name];
 
         NSString *diffHTML = [XTHTML parseDiff:actualDiff];
         [self showDiff:diffHTML];
