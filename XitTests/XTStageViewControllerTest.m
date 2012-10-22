@@ -270,7 +270,7 @@
     NSString *newFilePath = [NSString stringWithFormat:@"%@/%@", repoPath, newFileName];
     NSError *error = nil;
 
-    [@"line 1\nline 2\nline 3" writeToFile:newFilePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    [@"line 1\nline 2\n\nline 4" writeToFile:newFilePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
     STAssertNil(error, @"");
 
     XTStageViewController *svc = [[XTStageViewController alloc] init];
@@ -282,10 +282,11 @@
             @"diff --git /dev/null b/newfile.txt\n"
              "--- /dev/null\n"
              "+++ b/newfile.txt\n"
-             "@@ -0,0 +1,3 @@\n"
+             "@@ -0,0 +1,4 @@\n"
              "+line 1\n"
              "+line 2\n"
-             "+line 3\n",
+             "+\n"
+             "+line 4\n",
             @"");
 
     NSString *html = [XTHTML parseDiff:diff];

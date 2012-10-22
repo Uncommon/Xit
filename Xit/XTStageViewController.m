@@ -101,9 +101,12 @@
              "@@ -0,0 +1,%ld @@\n", file, file, lineCount];
 
     [scanner setCharactersToBeSkipped:nil];
-    while ([scanner scanUpToString:@"\n" intoString:&line]) {
-        [diff appendFormat:@"+%@\n", line];
-        [scanner scanString:@"\n" intoString:NULL];
+    while (![scanner isAtEnd]) {
+        if ([scanner scanUpToString:@"\n" intoString:&line]) {
+            [diff appendFormat:@"+%@\n", line];
+            [scanner scanString:@"\n" intoString:NULL];
+        } else if ([scanner scanString:@"\n" intoString:NULL])
+            [diff appendString:@"+\n"];
     }
     if ([scanner scanLocation] != [contents length])
         [diff appendFormat:@"+%@\n\\No newline at end of file\n", [contents substringFromIndex:[scanner scanLocation]+1]];
