@@ -13,7 +13,7 @@
 @synthesize remote;
 
 - (id)initWithTitle:(NSString *)theTitle remote:(NSString *)remoteName sha:(NSString *)sha {
-    if ([super initWithTitle:theTitle andSha:sha] != nil)
+    if ((self = [super initWithTitle:theTitle andSha:sha]) != nil)
         self.remote = remoteName;
     return self;
 }
