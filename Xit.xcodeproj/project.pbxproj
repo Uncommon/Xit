@@ -70,6 +70,7 @@
 		C3FA472913D0F8E300AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA472713D0F8E300AC4F9B /* InfoPlist.strings */; };
 		C3FA472E13D0F8E300AC4F9B /* XitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA472D13D0F8E300AC4F9B /* XitTests.m */; };
 		DD00725613E76DFB003B4120 /* Xit.icns in Resources */ = {isa = PBXBuildFile; fileRef = DD00725513E76DFB003B4120 /* Xit.icns */; };
+		DD07B07816A5D2A80012AC19 /* XTSideBarOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = DD07B07716A5D2A80012AC19 /* XTSideBarOutlineView.m */; };
 		DD3AC5B41611215C00238F58 /* XTRemoteBranchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3AC5B31611215C00238F58 /* XTRemoteBranchItem.m */; };
 		DD592093156EEE64005FBB0F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		DD592096156EEF40005FBB0F /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD592095156EEF40005FBB0F /* OCMock.framework */; };
@@ -228,6 +229,8 @@
 		C3FA472B13D0F8E300AC4F9B /* XitTests.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = XitTests.h; sourceTree = "<group>"; tabWidth = 4; };
 		C3FA472D13D0F8E300AC4F9B /* XitTests.m */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XitTests.m; sourceTree = "<group>"; tabWidth = 4; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		DD00725513E76DFB003B4120 /* Xit.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Xit.icns; sourceTree = "<group>"; };
+		DD07B07616A5D2A80012AC19 /* XTSideBarOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTSideBarOutlineView.h; sourceTree = "<group>"; };
+		DD07B07716A5D2A80012AC19 /* XTSideBarOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTSideBarOutlineView.m; sourceTree = "<group>"; };
 		DD3AC5B21611215C00238F58 /* XTRemoteBranchItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XTRemoteBranchItem.h; path = Xit/XTRemoteBranchItem.h; sourceTree = "<group>"; };
 		DD3AC5B31611215C00238F58 /* XTRemoteBranchItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XTRemoteBranchItem.m; path = Xit/XTRemoteBranchItem.m; sourceTree = "<group>"; };
 		DD579ADB15D08978007E4AFE /* NSDate+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Extensions.h"; sourceTree = "<group>"; };
@@ -365,6 +368,8 @@
 				31C7C13013ECC74C00A65FE9 /* XTHistoryViewController.h */,
 				31C7C13113ECC74C00A65FE9 /* XTHistoryViewController.m */,
 				31C7C13213ECC74C00A65FE9 /* XTHistoryViewController.xib */,
+				DD07B07616A5D2A80012AC19 /* XTSideBarOutlineView.h */,
+				DD07B07716A5D2A80012AC19 /* XTSideBarOutlineView.m */,
 			);
 			name = HistoryView;
 			sourceTree = "<group>";
@@ -785,6 +790,7 @@
 				DD9C1B8F160239DD0001FE9B /* XTRefToken.m in Sources */,
 				DD3AC5B41611215C00238F58 /* XTRemoteBranchItem.m in Sources */,
 				DDE55DDF1613C6C000CCAC03 /* XTModDateTracker.m in Sources */,
+				DD07B07816A5D2A80012AC19 /* XTSideBarOutlineView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

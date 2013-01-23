@@ -21,6 +21,8 @@
 
 @implementation XTSideBarDataSource
 
+@synthesize roots;
+
 - (id)init {
     self = [super init];
     if (self) {

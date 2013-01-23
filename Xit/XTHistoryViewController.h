@@ -10,6 +10,7 @@
 @class XTRepository;
 
 @class XTSideBarDataSource;
+@class XTSideBarOutlineView;
 @class XTHistoryDataSource;
 @class XTCommitViewController;
 
@@ -19,7 +20,7 @@
     IBOutlet XTHistoryDataSource *historyDS;
     IBOutlet XTCommitViewController *commitViewController;
     IBOutlet NSTableView *historyTable;
-    IBOutlet NSOutlineView *sidebarOutline;
+    IBOutlet XTSideBarOutlineView *sidebarOutline;
     IBOutlet NSView *commitView;
     IBOutlet NSSplitView *sidebarSplitView;
     IBOutlet NSSplitView *mainSplitView;
@@ -31,6 +32,14 @@
 - (void)setRepo:(XTRepository *)newRepo;
 
 - (IBAction)checkOutBranch:(id)sender;
+- (IBAction)renameBranch:(id)sender;
+- (IBAction)deleteBranch:(id)sender;
+- (IBAction)renameTag:(id)sender;
+- (IBAction)deleteTag:(id)sender;
+- (IBAction)renameRemote:(id)sender;
+- (IBAction)deleteRemote:(id)sender;
+- (IBAction)getRemoteInfo:(id)sender;
+
 - (IBAction)toggleLayout:(id)sender;
 - (IBAction)toggleSideBar:(id)sender;
 
@@ -41,6 +50,6 @@
 @property (readonly) XTHistoryDataSource *historyDS;
 
 // For testing
-- (id)initWithRepository:(XTRepository *)repository sidebar:(NSOutlineView *)sidebar;
+- (id)initWithRepository:(XTRepository *)repository sidebar:(XTSideBarOutlineView *)sidebar;
 
 @end

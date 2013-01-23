@@ -10,10 +10,13 @@
 #import "XTHistoryDataSource.h"
 #import "XTHistoryItem.h"
 #import "XTLocalBranchItem.h"
+#import "XTRemotesItem.h"
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
 #import "XTSideBarDataSource.h"
+#import "XTSideBarOutlineView.h"
 #import "XTStatusView.h"
+#import "XTTagItem.h"
 #import "PBGitRevisionCell.h"
 
 @implementation XTHistoryViewController
@@ -21,7 +24,7 @@
 @synthesize sideBarDS;
 @synthesize historyDS;
 
-- (id)initWithRepository:(XTRepository *)repository sidebar:(NSOutlineView *)sidebar {
+- (id)initWithRepository:(XTRepository *)repository sidebar:(XTSideBarOutlineView *)sidebar {
     if ([self init] == nil)
         return nil;
 
@@ -40,6 +43,10 @@
 
     // Without this, the first group title moves when you hide its contents
     [sidebarOutline setFloatsGroupRows:NO];
+
+    NSMenu *menu = [[NSMenu alloc] initWithTitle:@""];
+    [menu addItemWithTitle:@"item" action:NULL keyEquivalent:@""];
+    [sidebarOutline setMenu:menu];
 }
 
 - (NSString *)nibName {
@@ -56,6 +63,33 @@
     [commitView addSubview:[commitViewController view]];
 }
 
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
+    const SEL action = [menuItem action];
+    id item = [sidebarOutline itemAtRow:sidebarOutline.contextMenuRow];
+
+    if ((action == @selector(checkOutBranch:)) ||
+        (action == @selector(renameBranch:)) ||
+        (action == @selector(deleteBranch:))) {
+        if (![item isKindOfClass:[XTLocalBranchItem class]])
+            return NO;
+        if (action == @selector(deleteBranch:)) {
+            // disable if it's the current branch
+        }
+        return YES;
+    }
+    if ((action == @selector(renameTag:)) ||
+        (action == @selector(deleteTag:))) {
+        return [item isKindOfClass:[XTTagItem class]];
+    }
+    if ((action == @selector(renameRemote:)) ||
+        (action == @selector(deleteRemote:)) ||
+        (action == @selector(getRemoteInfo:))) {
+        return [sidebarOutline parentForItem:item] == [sideBarDS.roots objectAtIndex:XT_REMOTES];
+    }
+
+    return NO;
+}
+
 - (IBAction)checkOutBranch:(id)sender {
     dispatch_async(repo.queue, ^{
         NSError *error = nil;
@@ -67,6 +101,27 @@
             [XTStatusView updateStatus:@"Checkout failed" command:[args componentsJoinedByString:@" "] output:[[error userInfo] valueForKey:XTErrorOutputKey] forRepository:repo];
         }
     });
+}
+
+- (IBAction)renameBranch:(id)sender {
+}
+
+- (IBAction)deleteBranch:(id)sender {
+}
+
+- (IBAction)renameTag:(id)sender {
+}
+
+- (IBAction)deleteTag:(id)sender {
+}
+
+- (IBAction)renameRemote:(id)sender {
+}
+
+- (IBAction)deleteRemote:(id)sender {
+}
+
+- (IBAction)getRemoteInfo:(id)sender {
 }
 
 - (IBAction)toggleLayout:(id)sender {

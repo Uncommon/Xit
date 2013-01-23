@@ -35,4 +35,6 @@ typedef enum {
 
 - (XTLocalBranchItem *)itemForBranchName:(NSString *)branch;
 
+@property (readonly) NSArray *roots;
+
 @end
