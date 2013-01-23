@@ -37,7 +37,7 @@
 		31F1E87F13D3B51200F3B317 /* XTRepository+Commands.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BC055713D1133000C3CF1A /* XTRepository+Commands.m */; };
 		31F1E88313D3DCAC00F3B317 /* XTSideBarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 31F1E88213D3DCAC00F3B317 /* XTSideBarItem.m */; };
 		89355423157C128F007AC9CE /* XTDocController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89355422157C128F007AC9CE /* XTDocController.m */; };
-		895DEEF6142CECB7001763FC /* SidebarTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 895DEEF5142CECB7001763FC /* SidebarTableCellView.m */; };
+		895DEEF6142CECB7001763FC /* XTSideBarTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 895DEEF5142CECB7001763FC /* XTSideBarTableCellView.m */; };
 		895DEF0C142CF84D001763FC /* branch.png in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF0B142CF84D001763FC /* branch.png */; };
 		895DEF1F142D91F8001763FC /* historyTemplate.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF1E142D91F8001763FC /* historyTemplate.pdf */; };
 		895DEF221432438D001763FC /* stageTemplate.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF211432438D001763FC /* stageTemplate.pdf */; };
@@ -166,8 +166,8 @@
 		31F1E88213D3DCAC00F3B317 /* XTSideBarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; name = XTSideBarItem.m; path = Xit/XTSideBarItem.m; sourceTree = "<group>"; tabWidth = 4; };
 		89355421157C128F007AC9CE /* XTDocController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTDocController.h; sourceTree = "<group>"; };
 		89355422157C128F007AC9CE /* XTDocController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTDocController.m; sourceTree = "<group>"; };
-		895DEEF4142CECB7001763FC /* SidebarTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SidebarTableCellView.h; path = Xit/SidebarTableCellView.h; sourceTree = "<group>"; };
-		895DEEF5142CECB7001763FC /* SidebarTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SidebarTableCellView.m; path = Xit/SidebarTableCellView.m; sourceTree = "<group>"; };
+		895DEEF4142CECB7001763FC /* XTSideBarTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XTSideBarTableCellView.h; path = Xit/XTSideBarTableCellView.h; sourceTree = "<group>"; };
+		895DEEF5142CECB7001763FC /* XTSideBarTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XTSideBarTableCellView.m; path = Xit/XTSideBarTableCellView.m; sourceTree = "<group>"; };
 		895DEF0B142CF84D001763FC /* branch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = branch.png; sourceTree = "<group>"; };
 		895DEF1E142D91F8001763FC /* historyTemplate.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = historyTemplate.pdf; sourceTree = "<group>"; };
 		895DEF211432438D001763FC /* stageTemplate.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = stageTemplate.pdf; sourceTree = "<group>"; };
@@ -378,8 +378,8 @@
 			isa = PBXGroup;
 			children = (
 				31F1E88013D3DC6E00F3B317 /* items */,
-				895DEEF4142CECB7001763FC /* SidebarTableCellView.h */,
-				895DEEF5142CECB7001763FC /* SidebarTableCellView.m */,
+				895DEEF4142CECB7001763FC /* XTSideBarTableCellView.h */,
+				895DEEF5142CECB7001763FC /* XTSideBarTableCellView.m */,
 				31F1E87813D3AC6D00F3B317 /* XTSideBarDataSource.h */,
 				3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */,
 				3174966313DF896E004C5546 /* XTHistoryDataSource.h */,
@@ -779,7 +779,7 @@
 				3199BAC014207CFB008AAA4F /* XTFileListDataSource.m in Sources */,
 				31A8235714225F8B00408EDA /* XTFileViewController.m in Sources */,
 				3152B1E61423152700DCA679 /* XTFileListHistoryDataSource.m in Sources */,
-				895DEEF6142CECB7001763FC /* SidebarTableCellView.m in Sources */,
+				895DEEF6142CECB7001763FC /* XTSideBarTableCellView.m in Sources */,
 				89A6EA2814478DA40089B212 /* XTAppDelegate.m in Sources */,
 				89991CDD144E3FF400097A99 /* XTStatusView.m in Sources */,
 				89794F8C1458CC9B00E38ACC /* XTOutputViewController.m in Sources */,

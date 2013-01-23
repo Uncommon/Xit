@@ -12,7 +12,7 @@
 #import "XTRemoteBranchItem.h"
 #import "XTTagItem.h"
 #import "XTRemotesItem.h"
-#import "SidebarTableCellView.h"
+#import "XTSideBarTableCellView.h"
 #import "NSMutableDictionary+MultiObjectForKey.h"
 
 @interface XTSideBarDataSource ()
@@ -203,7 +203,7 @@
         [headerView.textField setStringValue:[item title]];
         return headerView;
     } else {
-        SidebarTableCellView *dataView = (SidebarTableCellView *)[outlineView makeViewWithIdentifier:@"DataCell" owner:self];
+        XTSideBarTableCellView *dataView = (XTSideBarTableCellView *)[outlineView makeViewWithIdentifier:@"DataCell" owner:self];
 
         [dataView.textField setStringValue:[item title]];
         if ([item isKindOfClass:[XTLocalBranchItem class]]) {

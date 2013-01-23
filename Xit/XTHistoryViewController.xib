@@ -1668,7 +1668,7 @@
 				<string key="87.userInterfaceItemIdentifier">HeaderCell</string>
 				<string key="88.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="89.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="90.CustomClassName">SidebarTableCellView</string>
+				<string key="90.CustomClassName">XTSideBarTableCellView</string>
 				<string key="90.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="90.userInterfaceItemIdentifier">DataCell</string>
 			</dictionary>
@@ -1686,25 +1686,6 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/PBGitRevisionCell.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">SidebarTableCellView</string>
-					<string key="superclassName">NSTableCellView</string>
-					<object class="NSMutableDictionary" key="outlets">
-						<string key="NS.key.0">button</string>
-						<string key="NS.object.0">NSButton</string>
-					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<string key="NS.key.0">button</string>
-						<object class="IBToOneOutletInfo" key="NS.object.0">
-							<string key="name">button</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/SidebarTableCellView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">

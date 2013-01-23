@@ -1,5 +1,5 @@
 //
-//  SidebarTableCellView.h
+//  XTSideBarTableCellView.h
 //  Xit
 //
 //  Created by David Catmull on 09/23/11.
@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface SidebarTableCellView : NSTableCellView {
+@interface XTSideBarTableCellView : NSTableCellView {
     @private
     NSButton *_button;
 }
