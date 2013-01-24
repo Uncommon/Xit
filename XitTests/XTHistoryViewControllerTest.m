@@ -39,7 +39,7 @@
     // selectBranch
     NSInteger row = 2;
 
-    [[[mockSidebar expect] andReturn:nil] itemAtRow:XT_BRANCHES];
+    [[[mockSidebar expect] andReturn:nil] itemAtRow:XTBranchesGroupIndex];
     [[mockSidebar expect] expandItem:OCMOCK_ANY];
     [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] rowForItem:OCMOCK_ANY];
     [[mockSidebar expect] selectRowIndexes:OCMOCK_ANY byExtendingSelection:NO];

@@ -25,7 +25,7 @@
     [sbds setRepo:repository];
     [repository waitForQueue];
 
-    id tags = [sbds outlineView:nil child:XT_TAGS ofItem:nil];
+    id tags = [sbds outlineView:nil child:XTTagsGroupIndex ofItem:nil];
     NSInteger count = [sbds outlineView:nil numberOfChildrenOfItem:tags];
     STAssertEquals(1L, count, @"");
     if (count != 1)

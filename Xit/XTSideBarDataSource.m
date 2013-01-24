@@ -90,7 +90,7 @@
 }
 
 - (void)reloadStashes:(NSMutableDictionary *)refsIndex {
-    XTSideBarItem *stashes = [roots objectAtIndex:XT_STASHES];
+    XTSideBarItem *stashes = [roots objectAtIndex:XTStashesGroupIndex];
 
     [stashes clean];
     [repo readStashesWithBlock:^(NSString *commit, NSString *name) {
@@ -101,9 +101,9 @@
 }
 
 - (void)reloadBranches:(NSMutableDictionary *)refsIndex {
-    XTSideBarItem *branches = [roots objectAtIndex:XT_BRANCHES];
-    XTSideBarItem *tags = [roots objectAtIndex:XT_TAGS];
-    XTRemotesItem *remotes = [roots objectAtIndex:XT_REMOTES];
+    XTSideBarItem *branches = [roots objectAtIndex:XTBranchesGroupIndex];
+    XTSideBarItem *tags = [roots objectAtIndex:XTTagsGroupIndex];
+    XTRemotesItem *remotes = [roots objectAtIndex:XTRemotesGroupIndex];
 
     NSMutableDictionary *tagIndex = [NSMutableDictionary dictionary];
 
@@ -214,7 +214,7 @@
             [dataView.imageView setImage:[NSImage imageNamed:@"tag"]];
         } else {
             [dataView.button setHidden:YES];
-            if ([outlineView parentForItem:item] == [roots objectAtIndex:XT_REMOTES])
+            if ([outlineView parentForItem:item] == [roots objectAtIndex:XTRemotesGroupIndex])
                 [dataView.imageView setImage:[NSImage imageNamed:NSImageNameNetwork]];
         }
         return dataView;

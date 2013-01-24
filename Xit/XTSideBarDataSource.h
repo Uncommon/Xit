@@ -12,10 +12,10 @@
 @class XTLocalBranchItem;
 
 typedef enum {
-    XT_BRANCHES = 0,
-    XT_TAGS,
-    XT_REMOTES,
-    XT_STASHES
+    XTBranchesGroupIndex = 0,
+    XTTagsGroupIndex,
+    XTRemotesGroupIndex,
+    XTStashesGroupIndex
 } XTSideBarRootItems;
 
 @interface XTSideBarDataSource : NSObject <NSOutlineViewDataSource, NSOutlineViewDelegate>

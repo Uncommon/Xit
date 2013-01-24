@@ -84,7 +84,7 @@
     if ((action == @selector(renameRemote:)) ||
         (action == @selector(deleteRemote:)) ||
         (action == @selector(getRemoteInfo:))) {
-        return [sidebarOutline parentForItem:item] == [sideBarDS.roots objectAtIndex:XT_REMOTES];
+        return [sidebarOutline parentForItem:item] == [sideBarDS.roots objectAtIndex:XTRemotesGroupIndex];
     }
 
     return NO;
@@ -152,7 +152,7 @@
     XTLocalBranchItem *branchItem = [sideBarDS itemForBranchName:branch];
 
     if (branchItem != nil) {
-        [sidebarOutline expandItem:[sidebarOutline itemAtRow:XT_BRANCHES]];
+        [sidebarOutline expandItem:[sidebarOutline itemAtRow:XTBranchesGroupIndex]];
 
         const NSInteger row = [sidebarOutline rowForItem:branchItem];
 

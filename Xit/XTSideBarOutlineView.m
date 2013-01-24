@@ -26,7 +26,7 @@
         menu = branchContextMenu;
     } else if ([item isKindOfClass:[XTTagItem class]]) {
         menu = tagContextMenu;
-    } else if ([self parentForItem:item] == [[controller.sideBarDS roots] objectAtIndex:XT_REMOTES]) {
+    } else if ([self parentForItem:item] == [[controller.sideBarDS roots] objectAtIndex:XTRemotesGroupIndex]) {
         menu = remoteContextMenu;
     }
     [self setMenu:menu];

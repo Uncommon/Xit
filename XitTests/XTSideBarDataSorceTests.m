@@ -57,7 +57,7 @@
         STFail(@"TimeOut on reload");
     }
 
-    id branches = [sbds outlineView:nil child:XT_BRANCHES ofItem:nil];
+    id branches = [sbds outlineView:nil child:XTBranchesGroupIndex ofItem:nil];
     NSInteger nb = [sbds outlineView:nil numberOfChildrenOfItem:branches];
     STAssertTrue((nb == 2), @"found %d branches FAIL", nb);
 
@@ -90,7 +90,7 @@
     [sbds reload];
     [repository waitForQueue];
 
-    id stashes = [sbds outlineView:nil child:XT_STASHES ofItem:nil];
+    id stashes = [sbds outlineView:nil child:XTStashesGroupIndex ofItem:nil];
     STAssertTrue((stashes != nil), @"no stashes");
 
     NSInteger nr = [sbds outlineView:nil numberOfChildrenOfItem:stashes];
@@ -130,7 +130,7 @@
     [sbds reload];
     [repository waitForQueue];
 
-    id remotes = [sbds outlineView:nil child:XT_REMOTES ofItem:nil];
+    id remotes = [sbds outlineView:nil child:XTRemotesGroupIndex ofItem:nil];
     STAssertTrue((remotes != nil), @"no remotes");
 
     NSInteger nr = [sbds outlineView:nil numberOfChildrenOfItem:remotes];
@@ -183,7 +183,7 @@
     STAssertTrue((nr == 4), @"found %d roots FAIL", nr);
 
     // TAGS
-    id tags = [sbds outlineView:nil child:XT_TAGS ofItem:nil];
+    id tags = [sbds outlineView:nil child:XTTagsGroupIndex ofItem:nil];
     STAssertTrue((tags != nil), @"no tags");
 
     NSInteger nt = [sbds outlineView:nil numberOfChildrenOfItem:tags];
@@ -205,7 +205,7 @@
     STAssertTrue(tagT1Found, @"Tag 't1' Not found");
 
     // BRANCHES
-    id branches = [sbds outlineView:nil child:XT_BRANCHES ofItem:nil];
+    id branches = [sbds outlineView:nil child:XTBranchesGroupIndex ofItem:nil];
     STAssertTrue((branches != nil), @"no branches FAIL");
 
     NSInteger nb = [sbds outlineView:nil numberOfChildrenOfItem:branches];
