@@ -6,14 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
-typedef enum {
-    XTRefTypeBranch,
-    XTRefTypeActiveBranch,
-    XTRefTypeRemote,
-    XTRefTypeTag,
-    XTRefTypeUnknown
-} XTRefType;
+#import "XTConstants.h"
 
 @class XTRepository;
 @class XTSideBarItem;

@@ -7,16 +7,10 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Foundation/Foundation.h>
+#import "XTConstants.h"
 
 @class XTRepository;
 @class XTLocalBranchItem;
-
-typedef enum {
-    XTBranchesGroupIndex = 0,
-    XTTagsGroupIndex,
-    XTRemotesGroupIndex,
-    XTStashesGroupIndex
-} XTSideBarRootItems;
 
 @interface XTSideBarDataSource : NSObject <NSOutlineViewDataSource, NSOutlineViewDelegate>
 {
