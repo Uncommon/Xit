@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "XTSideBarItem.h"
+#import "XTConstants.h"
 
 @interface XTSideBarItem : NSObject
 {
@@ -21,12 +21,16 @@
 
 - (id)initWithTitle:(NSString *)theTitle andSha:(NSString *)sha;
 - (id)initWithTitle:(NSString *)theTitle;
+
 - (NSInteger)numberOfChildren;
 - (id)childAtIndex:(NSInteger)index;
 - (void)addchild:(XTSideBarItem *)child;
 - (BOOL)isItemExpandable;
+
 - (void)clean;
 - (NSString *)badge;
+- (XTRefType)refType;
+
 @end
 
 @interface XTStashItem : XTSideBarItem {

@@ -51,6 +51,10 @@
     [children removeAllObjects];
 }
 
+- (XTRefType)refType {
+  return XTRefTypeUnknown;
+}
+
 @end
 
 @implementation XTStashItem

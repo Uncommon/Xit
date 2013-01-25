@@ -14,4 +14,8 @@
     return NO;
 }
 
+- (XTRefType)refType {
+  return XTRefTypeBranch;
+}
+
 @end

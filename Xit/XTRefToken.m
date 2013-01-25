@@ -30,13 +30,13 @@
         case XTRefTypeActiveBranch:
             return [self gradientWithHue:100 saturation:85 active:YES];
 
-        case XTRefTypeRemote:
+        case XTRefTypeRemoteBranch:
             return [self gradientWithHue:150 saturation:15 active:NO];
 
         case XTRefTypeTag:
             return [self gradientWithHue:42 saturation:30 active:NO];
 
-        case XTRefTypeUnknown:
+        default:
             return [self gradientWithHue:0 saturation:0 active:NO];
     }
     return nil;
@@ -56,10 +56,6 @@
 
             return [NSBezierPath bezierPathWithRoundedRect:rect xRadius:radius yRadius:radius];
         }
-
-        case XTRefTypeRemote:
-        case XTRefTypeUnknown:
-            return [NSBezierPath bezierPathWithRect:rect];
 
         case XTRefTypeTag:
         {
@@ -82,6 +78,9 @@
             [path closePath];
             return path;
         }
+
+        default:
+            return [NSBezierPath bezierPathWithRect:rect];
     }
     return nil;
 }
@@ -96,7 +95,7 @@
             hue = 100.0;
             break;
 
-        case XTRefTypeRemote:
+        case XTRefTypeRemoteBranch:
             hue = 150.0;
             break;
 
@@ -104,7 +103,7 @@
             hue = 40.0;
             break;
 
-        case XTRefTypeUnknown:
+        default:
             saturation = 0.0;
             break;
     }
@@ -146,7 +145,7 @@
             nil];
     
     ++rect.origin.y;
-    if (type == XTRefTypeRemote) {
+    if (type == XTRefTypeRemoteBranch) {
         NSMutableAttributedString *attrText = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
         const NSRange slashRange = [text rangeOfString:@"/"];
 
@@ -171,7 +170,7 @@
 + (XTRefType)typeForItem:(XTSideBarItem *)item inRepository:(XTRepository *)repo {
     if ([item isKindOfClass:[XTLocalBranchItem class]]) {
         if ([item isKindOfClass:[XTRemoteBranchItem class]])
-            return XTRefTypeRemote;
+            return XTRefTypeRemoteBranch;
         if ([[item title] isEqualToString:[repo currentBranch]])
             return XTRefTypeActiveBranch;
         return XTRefTypeBranch;

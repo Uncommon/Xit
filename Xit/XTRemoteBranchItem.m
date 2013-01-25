@@ -18,4 +18,8 @@
     return self;
 }
 
+- (XTRefType)refType {
+  return XTRefTypeRemoteBranch;
+}
+
 @end

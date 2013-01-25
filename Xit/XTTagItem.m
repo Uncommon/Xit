@@ -13,4 +13,8 @@
     return NO;
 }
 
+- (XTRefType)refType {
+  return XTRefTypeTag;
+}
+
 @end

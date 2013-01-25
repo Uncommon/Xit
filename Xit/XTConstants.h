@@ -9,8 +9,9 @@
 typedef enum {
     XTRefTypeBranch,
     XTRefTypeActiveBranch,
-    XTRefTypeRemote,
+    XTRefTypeRemoteBranch,
     XTRefTypeTag,
+    XTRefTypeRemote,
     XTRefTypeUnknown
 } XTRefType;
 

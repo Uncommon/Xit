@@ -9,6 +9,7 @@
 #import "XTSideBarItem.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
+#import "XTRemoteItem.h"
 #import "XTRemoteBranchItem.h"
 #import "XTTagItem.h"
 #import "XTRemotesItem.h"
@@ -120,7 +121,7 @@
     void (^remoteBlock)(NSString *, NSString *, NSString *) = ^(NSString *remoteName, NSString *branchName, NSString *commit) {
         XTSideBarItem *remote = [remotes getRemote:remoteName];
         if (remote == nil) {
-            remote = [[XTSideBarItem alloc] initWithTitle:remoteName];
+            remote = [[XTRemoteItem alloc] initWithTitle:remoteName];
             [remotes addchild:remote];
         }
         XTRemoteBranchItem *branch = [[XTRemoteBranchItem alloc] initWithTitle:branchName remote:remoteName sha:commit];
