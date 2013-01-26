@@ -9,8 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "XTConstants.h"
 
-@class XTRepository;
+@class XTHistoryViewController;
 @class XTLocalBranchItem;
+@class XTRefFormatter;
+@class XTRepository;
 
 @interface XTSideBarDataSource : NSObject <NSOutlineViewDataSource, NSOutlineViewDelegate>
 {
@@ -20,6 +22,8 @@
     NSOutlineView *outline;
     NSString *currentBranch;
     BOOL didInitialExpandGroups;
+    IBOutlet XTHistoryViewController *viewController;
+    IBOutlet XTRefFormatter *refFormatter;
 }
 
 - (void)setRepo:(XTRepository *)repo;

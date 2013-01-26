@@ -43,6 +43,8 @@
 - (IBAction)toggleLayout:(id)sender;
 - (IBAction)toggleSideBar:(id)sender;
 
+- (IBAction)sideBarItemRenamed:(id)sender;
+
 - (NSString *)selectedBranch;
 - (void)selectBranch:(NSString *)branch;
 

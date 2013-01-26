@@ -7,6 +7,7 @@
 
 #import "XTSideBarDataSource.h"
 #import "XTSideBarItem.h"
+#import "XTRefFormatter.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
 #import "XTRemoteItem.h"
@@ -206,7 +207,15 @@
     } else {
         XTSideBarTableCellView *dataView = (XTSideBarTableCellView *)[outlineView makeViewWithIdentifier:@"DataCell" owner:self];
 
+        dataView.item = (XTSideBarItem *)item;
         [dataView.textField setStringValue:[item title]];
+
+        // These connections are in the xib, but they get lost, probably
+        // when the row view gets copied.
+        [dataView.textField setFormatter:refFormatter];
+        [dataView.textField setTarget:viewController];
+        [dataView.textField setAction:@selector(sideBarItemRenamed:)];
+
         if ([item isKindOfClass:[XTLocalBranchItem class]]) {
             [dataView.imageView setImage:[NSImage imageNamed:@"branch"]];
             if (![item isKindOfClass:[XTRemoteBranchItem class]])

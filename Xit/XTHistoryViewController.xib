@@ -445,13 +445,15 @@
 																			<int key="NSvFlags">256</int>
 																			<string key="NSFrameSize">{703, 17}</string>
 																			<reference key="NSSuperview" ref="25621835"/>
-																			<reference key="NSNextKeyView" ref="4744271"/>
+																			<reference key="NSNextKeyView" ref="904841007"/>
 																			<reference key="NSTableView" ref="781583056"/>
 																		</object>
-																		<object class="_NSCornerView" key="NSCornerView">
-																			<nil key="NSNextResponder"/>
+																		<object class="_NSCornerView" key="NSCornerView" id="904841007">
+																			<reference key="NSNextResponder" ref="747594250"/>
 																			<int key="NSvFlags">-2147483392</int>
 																			<string key="NSFrame">{{224, 0}, {16, 17}}</string>
+																			<reference key="NSSuperview" ref="747594250"/>
+																			<reference key="NSNextKeyView" ref="4744271"/>
 																		</object>
 																		<array class="NSMutableArray" key="NSTableColumns">
 																			<object class="NSTableColumn" id="898957588">
@@ -611,6 +613,7 @@
 																<reference key="NSBGColor" ref="608418260"/>
 																<int key="NScvFlags">4</int>
 															</object>
+															<reference ref="904841007"/>
 														</array>
 														<string key="NSFrameSize">{703, 194}</string>
 														<reference key="NSSuperview" ref="83736380"/>
@@ -676,6 +679,9 @@
 			</object>
 			<object class="NSCustomObject" id="1028451060">
 				<string key="NSClassName">XTHistoryDataSource</string>
+			</object>
+			<object class="NSCustomObject" id="42388568">
+				<string key="NSClassName">XTRefFormatter</string>
 			</object>
 			<object class="NSViewController" id="993088276"/>
 			<object class="NSMenu" id="1030618735">
@@ -919,6 +925,30 @@
 					<int key="connectionID">163</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">sideBarItemRenamed:</string>
+						<reference key="source" ref="1001"/>
+						<object class="NSTextFieldCell" key="destination" id="293972320">
+							<int key="NSCellFlags">337641537</int>
+							<int key="NSCellFlags2">272631872</int>
+							<string key="NSContents">Row label</string>
+							<object class="NSFont" key="NSSupport">
+								<string key="NSName">LucidaGrande</string>
+								<double key="NSSize">11</double>
+								<int key="NSfFlags">16</int>
+							</object>
+							<string key="NSCellIdentifier">_NS:4049</string>
+							<reference key="NSControlView" ref="807409169"/>
+							<reference key="NSBackgroundColor" ref="1066615389"/>
+							<reference key="NSTextColor" ref="1045463140"/>
+							<array key="NSAllowedInputLocales">
+								<string>NSAllRomanInputSourcesLocaleIdentifier</string>
+							</array>
+						</object>
+					</object>
+					<int key="connectionID">169</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">dataSource</string>
 						<reference key="source" ref="781583056"/>
@@ -933,6 +963,22 @@
 						<reference key="destination" ref="1001"/>
 					</object>
 					<int key="connectionID">122</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">refFormatter</string>
+						<reference key="source" ref="715398906"/>
+						<reference key="destination" ref="42388568"/>
+					</object>
+					<int key="connectionID">167</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">viewController</string>
+						<reference key="source" ref="715398906"/>
+						<reference key="destination" ref="1001"/>
+					</object>
+					<int key="connectionID">168</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -1080,20 +1126,7 @@
 									<reference key="NSNextKeyView" ref="883897339"/>
 									<string key="NSReuseIdentifierKey">_NS:4049</string>
 									<bool key="NSEnabled">YES</bool>
-									<object class="NSTextFieldCell" key="NSCell" id="293972320">
-										<int key="NSCellFlags">67108928</int>
-										<int key="NSCellFlags2">272631808</int>
-										<string key="NSContents">Row label</string>
-										<object class="NSFont" key="NSSupport">
-											<string key="NSName">LucidaGrande</string>
-											<double key="NSSize">11</double>
-											<int key="NSfFlags">16</int>
-										</object>
-										<string key="NSCellIdentifier">_NS:4049</string>
-										<reference key="NSControlView" ref="807409169"/>
-										<reference key="NSBackgroundColor" ref="1066615389"/>
-										<reference key="NSTextColor" ref="1045463140"/>
-									</object>
+									<reference key="NSCell" ref="293972320"/>
 									<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 								</object>
 								<object class="NSButton" id="883897339">
@@ -1148,6 +1181,14 @@
 						<reference key="destination" ref="883897339"/>
 					</object>
 					<int key="connectionID">116</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">formatter</string>
+						<reference key="source" ref="293972320"/>
+						<reference key="destination" ref="42388568"/>
+					</object>
+					<int key="connectionID">166</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1591,6 +1632,11 @@
 						<reference key="object" ref="1064651721"/>
 						<reference key="parent" ref="49274033"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">165</int>
+						<reference key="object" ref="42388568"/>
+						<reference key="parent" ref="0"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -1620,6 +1666,7 @@
 				<string key="155.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="158.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="16.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="165.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="17.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="18.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="19.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1676,7 +1723,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">163</int>
+			<int key="maxID">169</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1738,6 +1785,7 @@
 						<string key="renameBranch:">id</string>
 						<string key="renameRemote:">id</string>
 						<string key="renameTag:">id</string>
+						<string key="sidebarItemRenamed:">id</string>
 						<string key="toggleLayout:">id</string>
 						<string key="toggleSideBar:">id</string>
 					</dictionary>
@@ -1774,6 +1822,10 @@
 							<string key="name">renameTag:</string>
 							<string key="candidateClassName">id</string>
 						</object>
+						<object class="IBActionInfo" key="sidebarItemRenamed:">
+							<string key="name">sidebarItemRenamed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="toggleLayout:">
 							<string key="name">toggleLayout:</string>
 							<string key="candidateClassName">id</string>
@@ -1790,7 +1842,7 @@
 						<string key="historyTable">NSTableView</string>
 						<string key="mainSplitView">NSSplitView</string>
 						<string key="sideBarDS">XTSideBarDataSource</string>
-						<string key="sidebarOutline">NSOutlineView</string>
+						<string key="sidebarOutline">XTSideBarOutlineView</string>
 						<string key="sidebarSplitView">NSSplitView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -1820,7 +1872,7 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="sidebarOutline">
 							<string key="name">sidebarOutline</string>
-							<string key="candidateClassName">NSOutlineView</string>
+							<string key="candidateClassName">XTSideBarOutlineView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="sidebarSplitView">
 							<string key="name">sidebarSplitView</string>
@@ -1833,11 +1885,84 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">XTRefFormatter</string>
+					<string key="superclassName">NSFormatter</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/XTRefFormatter.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">XTSideBarDataSource</string>
 					<string key="superclassName">NSObject</string>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="refFormatter">XTRefFormatter</string>
+						<string key="viewController">XTHistoryViewController</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="refFormatter">
+							<string key="name">refFormatter</string>
+							<string key="candidateClassName">XTRefFormatter</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="viewController">
+							<string key="name">viewController</string>
+							<string key="candidateClassName">XTHistoryViewController</string>
+						</object>
+					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/XTSideBarDataSource.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">XTSideBarOutlineView</string>
+					<string key="superclassName">NSOutlineView</string>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="branchContextMenu">NSMenu</string>
+						<string key="controller">XTHistoryViewController</string>
+						<string key="remoteContextMenu">NSMenu</string>
+						<string key="tagContextMenu">NSMenu</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="branchContextMenu">
+							<string key="name">branchContextMenu</string>
+							<string key="candidateClassName">NSMenu</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="controller">
+							<string key="name">controller</string>
+							<string key="candidateClassName">XTHistoryViewController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="remoteContextMenu">
+							<string key="name">remoteContextMenu</string>
+							<string key="candidateClassName">NSMenu</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="tagContextMenu">
+							<string key="name">tagContextMenu</string>
+							<string key="candidateClassName">NSMenu</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/XTSideBarOutlineView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">XTSideBarTableCellView</string>
+					<string key="superclassName">NSTableCellView</string>
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">button</string>
+						<string key="NS.object.0">NSButton</string>
+					</object>
+					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<string key="NS.key.0">button</string>
+						<object class="IBToOneOutletInfo" key="NS.object.0">
+							<string key="name">button</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/XTSideBarTableCellView.h</string>
 					</object>
 				</object>
 			</array>

@@ -72,6 +72,7 @@
 		DD00725613E76DFB003B4120 /* Xit.icns in Resources */ = {isa = PBXBuildFile; fileRef = DD00725513E76DFB003B4120 /* Xit.icns */; };
 		DD07B07816A5D2A80012AC19 /* XTSideBarOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = DD07B07716A5D2A80012AC19 /* XTSideBarOutlineView.m */; };
 		DD07B08616B202E00012AC19 /* XTRemoteItem.m in Sources */ = {isa = PBXBuildFile; fileRef = DD07B08516B202E00012AC19 /* XTRemoteItem.m */; };
+		DD07B08916B313A60012AC19 /* XTRefFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = DD07B08816B313A60012AC19 /* XTRefFormatter.m */; };
 		DD3AC5B41611215C00238F58 /* XTRemoteBranchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3AC5B31611215C00238F58 /* XTRemoteBranchItem.m */; };
 		DD592093156EEE64005FBB0F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		DD592096156EEF40005FBB0F /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD592095156EEF40005FBB0F /* OCMock.framework */; };
@@ -235,6 +236,8 @@
 		DD07B08316B2005B0012AC19 /* XTConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTConstants.h; sourceTree = "<group>"; };
 		DD07B08416B202E00012AC19 /* XTRemoteItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XTRemoteItem.h; path = Xit/XTRemoteItem.h; sourceTree = "<group>"; };
 		DD07B08516B202E00012AC19 /* XTRemoteItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XTRemoteItem.m; path = Xit/XTRemoteItem.m; sourceTree = "<group>"; };
+		DD07B08716B313A60012AC19 /* XTRefFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRefFormatter.h; sourceTree = "<group>"; };
+		DD07B08816B313A60012AC19 /* XTRefFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRefFormatter.m; sourceTree = "<group>"; };
 		DD3AC5B21611215C00238F58 /* XTRemoteBranchItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XTRemoteBranchItem.h; path = Xit/XTRemoteBranchItem.h; sourceTree = "<group>"; };
 		DD3AC5B31611215C00238F58 /* XTRemoteBranchItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XTRemoteBranchItem.m; path = Xit/XTRemoteBranchItem.m; sourceTree = "<group>"; };
 		DD579ADB15D08978007E4AFE /* NSDate+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Extensions.h"; sourceTree = "<group>"; };
@@ -374,6 +377,8 @@
 				31C7C13213ECC74C00A65FE9 /* XTHistoryViewController.xib */,
 				DD07B07616A5D2A80012AC19 /* XTSideBarOutlineView.h */,
 				DD07B07716A5D2A80012AC19 /* XTSideBarOutlineView.m */,
+				DD07B08716B313A60012AC19 /* XTRefFormatter.h */,
+				DD07B08816B313A60012AC19 /* XTRefFormatter.m */,
 			);
 			name = HistoryView;
 			sourceTree = "<group>";
@@ -799,6 +804,7 @@
 				DDE55DDF1613C6C000CCAC03 /* XTModDateTracker.m in Sources */,
 				DD07B07816A5D2A80012AC19 /* XTSideBarOutlineView.m in Sources */,
 				DD07B08616B202E00012AC19 /* XTRemoteItem.m in Sources */,
+				DD07B08916B313A60012AC19 /* XTRefFormatter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

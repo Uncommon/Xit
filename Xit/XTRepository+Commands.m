@@ -201,4 +201,24 @@
     return error == nil;
 }
 
+- (BOOL)renameBranch:(NSString *)branch to:(NSString *)newName {
+    NSError *error = nil;
+
+    [self executeGitWithArgs:[NSArray arrayWithObjects:@"branch", @"-m", branch, newName, nil] error:&error];
+    return error == nil;
+}
+
+- (BOOL)renameTag:(NSString *)branch to:(NSString *)newName {
+    // delete and re-make the tag
+    // not doable for signed tags?
+    return NO;
+}
+
+- (BOOL)renameRemote:(NSString *)branch to:(NSString *)newName {
+    NSError *error = nil;
+
+    [self executeGitWithArgs:[NSArray arrayWithObjects:@"remote", @"rename", branch, newName, nil] error:&error];
+    return error == nil;
+}
+
 @end

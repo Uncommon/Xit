@@ -12,6 +12,7 @@
 @implementation XTSideBarTableCellView
 
 @synthesize button = _button;
+@synthesize item;
 
 - (void)awakeFromNib {
     // We want it to appear "inline"

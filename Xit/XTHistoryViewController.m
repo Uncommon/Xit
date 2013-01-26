@@ -19,6 +19,12 @@
 #import "XTTagItem.h"
 #import "PBGitRevisionCell.h"
 
+@interface XTHistoryViewController ()
+
+- (void)editSelectedSidebarRow;
+
+@end
+
 @implementation XTHistoryViewController
 
 @synthesize sideBarDS;
@@ -104,18 +110,21 @@
 }
 
 - (IBAction)renameBranch:(id)sender {
+    [self editSelectedSidebarRow];
 }
 
 - (IBAction)deleteBranch:(id)sender {
 }
 
 - (IBAction)renameTag:(id)sender {
+    [self editSelectedSidebarRow];
 }
 
 - (IBAction)deleteTag:(id)sender {
 }
 
 - (IBAction)renameRemote:(id)sender {
+    [self editSelectedSidebarRow];
 }
 
 - (IBAction)deleteRemote:(id)sender {
@@ -136,6 +145,45 @@
     if ([sender state] == NSOffState)
         savedSidebarWidth = [[[sidebarSplitView subviews] objectAtIndex:0] frame].size.width;
     [sidebarSplitView setPosition:newWidth ofDividerAtIndex:0 ];
+}
+
+- (IBAction)sideBarItemRenamed:(id)sender {
+    XTSideBarTableCellView *cellView = (XTSideBarTableCellView *)[sender superview];
+    XTSideBarItem *editedItem = cellView.item;
+    NSString *newName = [sender stringValue];
+    NSString *oldName = [editedItem title];
+
+    if ([newName isEqualToString:oldName])
+        return;
+
+    switch ([editedItem refType]) {
+
+        case XTRefTypeBranch:
+            [repo renameBranch:oldName to:newName];
+            break;
+
+        case XTRefTypeTag:
+            [repo renameTag:oldName to:newName];
+            break;
+
+        case XTRefTypeRemote:
+            [repo renameRemote:oldName to:newName];
+            break;
+
+        default:
+            break;
+    }
+}
+
+- (void)editSelectedSidebarRow {
+    NSInteger row = sidebarOutline.selectedRow;
+
+    if (row == -1)
+        row = sidebarOutline.contextMenuRow;
+    if (row == -1)
+        return;
+
+    [sidebarOutline editColumn:0 row:row withEvent:nil select:YES];
 }
 
 - (NSString *)selectedBranch {
