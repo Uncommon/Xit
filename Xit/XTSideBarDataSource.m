@@ -65,12 +65,10 @@
 - (void)reload {
     dispatch_async(repo.queue, ^{
         [self _reload];
-        if (!self->didInitialExpandGroups) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [outline expandItem:nil expandChildren:YES];
-            });
-            self->didInitialExpandGroups = YES;
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // Empty groups get automatically collapsed, so counter that.
+            [outline expandItem:nil expandChildren:YES];
+        });
     });
 }
 
@@ -248,6 +246,11 @@
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isGroupItem:(id)item {
     return [roots containsObject:item];
+}
+
+- (BOOL)outlineView:(NSOutlineView *)outlineView shouldShowOutlineCellForItem:(id)item {
+    // Don't show the Show/Hide control for group items.
+    return ![roots containsObject:item];
 }
 
 @end

@@ -21,7 +21,6 @@
     NSArray *roots;
     NSOutlineView *outline;
     NSString *currentBranch;
-    BOOL didInitialExpandGroups;
     IBOutlet XTHistoryViewController *viewController;
     IBOutlet XTRefFormatter *refFormatter;
 }
