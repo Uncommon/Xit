@@ -48,6 +48,10 @@
     return res;
 }
 
+- (BOOL)deleteBranch:(NSString *)name error:(NSError *__autoreleasing *)error {
+    return [self executeGitWithArgs:[NSArray arrayWithObjects:@"branch", @"-D", name, nil] error:error] != nil;
+}
+
 - (NSString *)currentBranch {
     if (cachedBranch == nil) {
         NSError *error = nil;

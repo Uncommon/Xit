@@ -27,6 +27,7 @@ extern NSString *XTPathsKey;
 
 // Avoid calling these from outside XTRepository. Instead, add methods to
 // +Commands or +Parsing.
+// Returns command output on success, or nil on failure.
 - (NSData *)executeGitWithArgs:(NSArray *)args error:(NSError **)error;
 - (NSData *)executeGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error;
 

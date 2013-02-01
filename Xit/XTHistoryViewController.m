@@ -15,6 +15,7 @@
 #import "XTRepository+Commands.h"
 #import "XTSideBarDataSource.h"
 #import "XTSideBarOutlineView.h"
+#import "XTSideBarTableCellView.h"
 #import "XTStatusView.h"
 #import "XTTagItem.h"
 #import "PBGitRevisionCell.h"
@@ -31,7 +32,7 @@
 @synthesize historyDS;
 
 - (id)initWithRepository:(XTRepository *)repository sidebar:(XTSideBarOutlineView *)sidebar {
-    if ([self init] == nil)
+    if ((self = [self init]) == nil)
         return nil;
 
     self->repo = repository;
@@ -96,6 +97,14 @@
     return NO;
 }
 
+- (NSInteger)targetRow {
+    NSInteger row = sidebarOutline.contextMenuRow;
+
+    if (row != -1)
+        return row;
+    return sidebarOutline.selectedRow;
+}
+
 - (IBAction)checkOutBranch:(id)sender {
     dispatch_async(repo.queue, ^{
         NSError *error = nil;
@@ -114,6 +123,19 @@
 }
 
 - (IBAction)deleteBranch:(id)sender {
+    XTLocalBranchItem *branchItem = [sidebarOutline itemAtRow:[self targetRow]];
+
+    if ([branchItem isKindOfClass:[XTLocalBranchItem class]]) {
+        NSError *error = nil;
+        NSString *branchName = [branchItem title];
+
+        [repo deleteBranch:branchName error:&error];
+        if (error != nil) {
+            NSString *args = [NSString stringWithFormat:@"branch -D %@", branchName];
+
+            [XTStatusView updateStatus:@"Delete branch failed" command:args output:[[error userInfo] valueForKey:XTErrorOutputKey] forRepository:repo];
+        }
+    }
 }
 
 - (IBAction)renameTag:(id)sender {
@@ -176,14 +198,7 @@
 }
 
 - (void)editSelectedSidebarRow {
-    NSInteger row = sidebarOutline.selectedRow;
-
-    if (row == -1)
-        row = sidebarOutline.contextMenuRow;
-    if (row == -1)
-        return;
-
-    [sidebarOutline editColumn:0 row:row withEvent:nil select:YES];
+    [sidebarOutline editColumn:0 row:[self targetRow] withEvent:nil select:YES];
 }
 
 - (NSString *)selectedBranch {

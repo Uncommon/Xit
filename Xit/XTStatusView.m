@@ -17,6 +17,7 @@ NSString *const XTStatusOutputKey = @"output";
 
 @implementation XTStatusView
 
+// TODO: a version that takes an NSError
 + (void)updateStatus:(NSString *)status command:(NSString *)command output:(NSString *)output forRepository:(XTRepository *)repo {
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
 

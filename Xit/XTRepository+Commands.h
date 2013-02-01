@@ -12,6 +12,7 @@
 
 - (BOOL)initializeRepository;
 - (BOOL)createBranch:(NSString *)name;
+- (BOOL)deleteBranch:(NSString *)name error:(NSError **)error;
 - (NSString *)currentBranch;
 - (BOOL)addFile:(NSString *)file;
 - (BOOL)commitWithMessage:(NSString *)message;
