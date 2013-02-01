@@ -239,9 +239,9 @@
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item {
-    XTSideBarItem *i = (XTSideBarItem *)item;
+    XTSideBarItem *sideBarItem = (XTSideBarItem *)item;
 
-    return (i.sha != nil);
+    return (sideBarItem.sha != nil) || [sideBarItem isKindOfClass:[XTRemoteItem class]];
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isGroupItem:(id)item {
