@@ -143,6 +143,19 @@
 }
 
 - (IBAction)deleteTag:(id)sender {
+    XTTagItem *tagItem = [sidebarOutline itemAtRow:[self targetRow]];
+
+    if ([tagItem isKindOfClass:[XTTagItem class]]) {
+        NSError *error = nil;
+        NSString *tagName = [tagItem title];
+
+        [repo deleteTag:tagName error:&error];
+        if (error != nil) {
+            NSString *args = [NSString stringWithFormat:@"tag -d %@", tagName];
+
+            [XTStatusView updateStatus:@"Delete tag failed" command:args output:[[error userInfo] valueForKey:XTErrorOutputKey] forRepository:repo];
+        }
+    }
 }
 
 - (IBAction)renameRemote:(id)sender {
@@ -229,8 +242,12 @@
 - (void)tableViewSelectionDidChange:(NSNotification *)note {
     NSLog(@"%@", note);
     NSTableView *table = (NSTableView*)[note object];
-    XTHistoryItem *item = [historyDS.items objectAtIndex:table.selectedRow];
-    repo.selectedCommit = item.sha;
+    const NSInteger selectedRow = table.selectedRow;
+
+    if (selectedRow >= 0) {
+        XTHistoryItem *item = [historyDS.items objectAtIndex:selectedRow];
+        repo.selectedCommit = item.sha;
+    }
 }
 
 // These values came from measuring where the Finder switches styles

@@ -17,6 +17,7 @@
 - (BOOL)addFile:(NSString *)file;
 - (BOOL)commitWithMessage:(NSString *)message;
 - (BOOL)createTag:(NSString *)name withMessage:(NSString *)msg;
+- (BOOL)deleteTag:(NSString *)name error:(NSError **)error;
 - (BOOL)addRemote:(NSString *)name withUrl:(NSString *)url;
 - (BOOL)push:(NSString *)remote;
 - (BOOL)checkout:(NSString *)branch error:(NSError **)error;

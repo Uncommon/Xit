@@ -126,6 +126,10 @@
     return res;
 }
 
+- (BOOL)deleteTag:(NSString *)name error:(NSError *__autoreleasing *)error {
+    return [self executeGitWithArgs:[NSArray arrayWithObjects:@"tag", @"-d", name, nil] error:error] != nil;
+}
+
 - (BOOL)addRemote:(NSString *)name withUrl:(NSString *)url {
     NSError *error = nil;
     BOOL res = NO;
