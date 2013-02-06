@@ -77,7 +77,6 @@
     NSMutableDictionary *refsIndex = [NSMutableDictionary dictionary];
     [self reloadBranches:refsIndex];
     [self reloadStashes:refsIndex];
-    // TODO: Consolidate refsIndex reading and storage into one class.
     repo.refsIndex = refsIndex;
     [outline performSelectorOnMainThread:@selector(reloadData)
                               withObject:nil

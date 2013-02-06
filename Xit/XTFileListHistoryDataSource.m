@@ -9,7 +9,6 @@
 #import "XTRepository.h"
 #import "XTHistoryItem.h"
 
-// TODO: this class is similar to 'XTHistoryDataSource'... refactor both in a future.
 
 @implementation XTFileListHistoryDataSource
 @synthesize items;

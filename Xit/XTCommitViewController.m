@@ -91,15 +91,12 @@ const NSString *kAuthorKeyDate = @"date";
     NSSet *refsSet = [header objectForKey:XTRefsKey];
 
     if ([refsSet count] > 0)
-        // TODO: refs styled as tokens
         addRow(@"Refs", [[refsSet allObjects] componentsJoinedByString:@" "]);
     addRow(@"SHA", [header objectForKey:XTCommitSHAKey]);
 
     NSArray *parents = [header objectForKey:XTParentSHAsKey];
 
     for (NSString *parent in parents)
-        // TODO: clickable SHA
-        // TODO: parent subject and short SHA
         addRow(@"Parent", parent);
 
     [table appendString:@"</table></td>"];
