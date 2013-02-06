@@ -10,6 +10,7 @@
 #import "XTHistoryDataSource.h"
 #import "XTHistoryItem.h"
 #import "XTLocalBranchItem.h"
+#import "XTRemoteItem.h"
 #import "XTRemotesItem.h"
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
@@ -89,8 +90,7 @@
         return [item isKindOfClass:[XTTagItem class]];
     }
     if ((action == @selector(renameRemote:)) ||
-        (action == @selector(deleteRemote:)) ||
-        (action == @selector(getRemoteInfo:))) {
+        (action == @selector(deleteRemote:))) {
         return [sidebarOutline parentForItem:item] == [sideBarDS.roots objectAtIndex:XTRemotesGroupIndex];
     }
 
@@ -163,9 +163,19 @@
 }
 
 - (IBAction)deleteRemote:(id)sender {
-}
+    XTRemoteItem *tagItem = [sidebarOutline itemAtRow:[self targetRow]];
 
-- (IBAction)getRemoteInfo:(id)sender {
+    if ([tagItem isKindOfClass:[XTRemoteItem class]]) {
+        NSError *error = nil;
+        NSString *tagName = [tagItem title];
+
+        [repo deleteRemote:tagName error:&error];
+        if (error != nil) {
+            NSString *args = [NSString stringWithFormat:@"remote rm %@", tagName];
+
+            [XTStatusView updateStatus:@"Delete remote failed" command:args output:[[error userInfo] valueForKey:XTErrorOutputKey] forRepository:repo];
+        }
+    }
 }
 
 - (IBAction)toggleLayout:(id)sender {

@@ -38,7 +38,6 @@
 - (IBAction)deleteTag:(id)sender;
 - (IBAction)renameRemote:(id)sender;
 - (IBAction)deleteRemote:(id)sender;
-- (IBAction)getRemoteInfo:(id)sender;
 
 - (IBAction)toggleLayout:(id)sender;
 - (IBAction)toggleSideBar:(id)sender;

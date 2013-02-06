@@ -19,6 +19,7 @@
 - (BOOL)createTag:(NSString *)name withMessage:(NSString *)msg;
 - (BOOL)deleteTag:(NSString *)name error:(NSError **)error;
 - (BOOL)addRemote:(NSString *)name withUrl:(NSString *)url;
+- (BOOL)deleteRemote:(NSString *)name error:(NSError **)error;
 - (BOOL)push:(NSString *)remote;
 - (BOOL)checkout:(NSString *)branch error:(NSError **)error;
 - (BOOL)stash:(NSString *)name;
