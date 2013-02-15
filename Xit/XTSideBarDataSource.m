@@ -29,10 +29,10 @@
     self = [super init];
     if (self) {
         XTSideBarItem *branches = [[XTSideBarItem alloc] initWithTitle:@"BRANCHES"];
-        XTSideBarItem *tags = [[XTSideBarItem alloc] initWithTitle:@"TAGS"];
         XTRemotesItem *remotes = [[XTRemotesItem alloc] initWithTitle:@"REMOTES"];
+        XTSideBarItem *tags = [[XTSideBarItem alloc] initWithTitle:@"TAGS"];
         XTSideBarItem *stashes = [[XTSideBarItem alloc] initWithTitle:@"STASHES"];
-        roots = [NSArray arrayWithObjects:branches, tags, remotes, stashes, nil];
+        roots = [NSArray arrayWithObjects:branches, remotes, tags, stashes, nil];
     }
 
     return self;
