@@ -70,20 +70,19 @@
     }
 }
 
-- (void)testXTSideBarDataSourceStashes {
-    NSString *testFile = [NSString stringWithFormat:@"%@/file1.txt", repoPath];
-    NSString *txt = @"other some text";
-
+- (BOOL)writeText:(NSString *)text toFilePath:(NSString *)path {
+    NSString *testFile = [repoPath stringByAppendingPathComponent:path];
     NSError *error;
 
-    [txt writeToFile:testFile atomically:YES encoding:NSASCIIStringEncoding error:&error];
-    if (error != nil) {
-        STFail(@"error: %@", error.localizedFailureReason);
-    }
+    [text writeToFile:testFile atomically:YES encoding:NSASCIIStringEncoding error:&error];
+    return error == nil;
+}
 
-    if (![repository stash:@"s1"]) {
-        STFail(@"stash");
-    }
+- (void)testXTSideBarDataSourceStashes {
+    STAssertTrue([self writeText:@"second text" toFilePath:@"file1.txt"], @"");
+    STAssertTrue([repository saveStash:@"s1"], @"");
+    STAssertTrue([self writeText:@"third text" toFilePath:@"file1.txt"], @"");
+    STAssertTrue([repository saveStash:@"s2"], @"");
 
     XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
     [sbds setRepo:repository];
@@ -93,8 +92,8 @@
     id stashes = [sbds outlineView:nil child:XTStashesGroupIndex ofItem:nil];
     STAssertTrue((stashes != nil), @"no stashes");
 
-    NSInteger nr = [sbds outlineView:nil numberOfChildrenOfItem:stashes];
-    STAssertTrue((nr == 1), @"found %d stashes FAIL - stashes=%@", nr, stashes);
+    NSInteger stashCount = [sbds outlineView:nil numberOfChildrenOfItem:stashes];
+    STAssertEquals(stashCount, 2L, @"");
 }
 
 - (void)testXTSideBarDataSourceReomtes {
@@ -254,6 +253,12 @@
 
 @synthesize stringValue;
 
+- (void)setFormatter:(id)formatter {}
+- (void)setTarget:(id)target {}
+- (void)setAction:(SEL)action {}
+- (void)setEditable:(BOOL)editable {}
+- (void)setSelectable:(BOOL)selectable {}
+
 @end
 
 
@@ -274,6 +279,9 @@
 
 - (id)button {
     return nil;
+}
+
+- (void)setItem:(id)item {
 }
 
 @end

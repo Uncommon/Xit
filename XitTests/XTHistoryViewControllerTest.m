@@ -12,6 +12,7 @@
 #import "XTHistoryViewController.h"
 #import "XTRepository.h"
 #import "XTSideBarDataSource.h"
+#import "XTSideBarOutlineView.h"
 #import "XTRepository+Commands.h"
 #import <OCMock/OCMock.h>
 
@@ -23,21 +24,23 @@
         STFail(@"Create Branch 'b1'");
     }
 
-    id mockSidebar = [OCMockObject mockForClass:[NSOutlineView class]];
+    id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
     XTHistoryViewController *historyView = [[XTHistoryViewController alloc] initWithRepository:repository sidebar:mockSidebar];
 
     [historyView.sideBarDS setRepo:repository];
     [[mockSidebar expect] setDelegate:historyView.sideBarDS];
     [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
     [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
+    [[mockSidebar expect] expandItem:nil expandChildren:YES];
     [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
     [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
+    [[mockSidebar expect] expandItem:nil expandChildren:YES];
 
     [historyView.sideBarDS reload];
     [repository waitForQueue];
 
     // selectBranch
-    NSInteger row = 2;
+    NSInteger row = 2, noRow = -1;
 
     [[[mockSidebar expect] andReturn:nil] itemAtRow:XTBranchesGroupIndex];
     [[mockSidebar expect] expandItem:OCMOCK_ANY];
@@ -49,8 +52,9 @@
     [[[mockSidebar expect] andReturn:[historyView.sideBarDS itemForBranchName:@"master"]] itemAtRow:row];
 
     // selectedBranch from checkOutBranch
-    [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
+    [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(noRow)] contextMenuRow];
     [[[mockSidebar expect] andReturn:[historyView.sideBarDS itemForBranchName:@"master"]] itemAtRow:row];
+    [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
 
     [historyView.sideBarDS outlineView:mockSidebar numberOfChildrenOfItem:nil]; // initialize sidebarDS->outline
     [repository waitForQueue];
