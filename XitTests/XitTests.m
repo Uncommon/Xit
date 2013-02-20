@@ -55,13 +55,11 @@
 // }
 
 - (void)addInitialRepoContent {
-    NSString *repoName = [repository.repoURL path];
-    NSString *testFile = [NSString stringWithFormat:@"%@/file1.txt", repoName];
+    file1Path = [repoPath stringByAppendingPathComponent:@"file1.txt"];
+    [@"some text" writeToFile:file1Path atomically:YES encoding:NSASCIIStringEncoding error:nil];
 
-    [@"some text" writeToFile:testFile atomically:YES encoding:NSASCIIStringEncoding error:nil];
-
-    if (![[NSFileManager defaultManager] fileExistsAtPath:testFile]) {
-        STFail(@"testFile NOT Found!!");
+    if (![[NSFileManager defaultManager] fileExistsAtPath:file1Path]) {
+        STFail(@"file1.txt NOT Found!!");
     }
 
     if (![repository addFile:@"file1.txt"]) {

@@ -50,7 +50,7 @@
     [[NSFileManager defaultManager] createDirectoryAtPath:[repoPath stringByAppendingPathComponent:@"dir_1/subdir_0"] withIntermediateDirectories:YES attributes:nil error:nil];
     [[NSFileManager defaultManager] createDirectoryAtPath:[repoPath stringByAppendingPathComponent:@"dir_1/subdir_1"] withIntermediateDirectories:YES attributes:nil error:nil];
     [[NSFileManager defaultManager] createDirectoryAtPath:[repoPath stringByAppendingPathComponent:@"dir_1/subdir_2"] withIntermediateDirectories:YES attributes:nil error:nil];
-    [[NSFileManager defaultManager] removeItemAtPath:[repoPath stringByAppendingPathComponent:@"file1.txt"] error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:file1Path error:nil];
 
     for (int n = 0; n < 12; n++) {
         NSString *file = [NSString stringWithFormat:@"%@/dir_%d/subdir_%d/file_%d.txt", repoPath, n % 2, n % 3, n];

@@ -70,18 +70,17 @@
     }
 }
 
-- (BOOL)writeText:(NSString *)text toFilePath:(NSString *)path {
-    NSString *testFile = [repoPath stringByAppendingPathComponent:path];
+- (BOOL)writeTextToFile1:(NSString *)text {
     NSError *error;
 
-    [text writeToFile:testFile atomically:YES encoding:NSASCIIStringEncoding error:&error];
+    [text writeToFile:file1Path atomically:YES encoding:NSASCIIStringEncoding error:&error];
     return error == nil;
 }
 
 - (void)testXTSideBarDataSourceStashes {
-    STAssertTrue([self writeText:@"second text" toFilePath:@"file1.txt"], @"");
+    STAssertTrue([self writeTextToFile1:@"second text"], @"");
     STAssertTrue([repository saveStash:@"s1"], @"");
-    STAssertTrue([self writeText:@"third text" toFilePath:@"file1.txt"], @"");
+    STAssertTrue([self writeTextToFile1:@"third text"], @"");
     STAssertTrue([repository saveStash:@"s2"], @"");
 
     XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
