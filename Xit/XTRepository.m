@@ -8,6 +8,7 @@
 
 NSString *XTRepositoryChangedNotification = @"xtrepochanged";
 NSString *XTErrorOutputKey = @"output";
+NSString *XTErrorArgsKey = @"args";
 NSString *XTPathsKey = @"paths";
 
 @implementation XTRepository
@@ -196,9 +197,14 @@ NSString *XTPathsKey = @"paths";
         NSString *string = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
         NSLog(@"**** output = %@", string);
         if (error != NULL) {
+            NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:
+                    string, XTErrorOutputKey,
+                    [args componentsJoinedByString:@" "], XTErrorArgsKey,
+                    nil];
+
             *error = [NSError errorWithDomain:@"git"
                                          code:status
-                                     userInfo:[NSDictionary dictionaryWithObject:string forKey:XTErrorOutputKey]];
+                                     userInfo:info];
         }
         output = nil;
     }

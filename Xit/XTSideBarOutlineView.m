@@ -19,15 +19,13 @@
     NSMenu *menu = nil;
 
     if ([item isKindOfClass:[XTLocalBranchItem class]]) {
-        // check out (if not current)
-        // delete (if not current)
-        // push to...
-        // rename
         menu = branchContextMenu;
     } else if ([item isKindOfClass:[XTTagItem class]]) {
         menu = tagContextMenu;
     } else if ([self parentForItem:item] == [[controller.sideBarDS roots] objectAtIndex:XTRemotesGroupIndex]) {
         menu = remoteContextMenu;
+    } else if ([item isKindOfClass:[XTStashItem class]]) {
+        menu = stashContextMenu;
     }
     [self setMenu:menu];
 

@@ -38,6 +38,9 @@
 - (IBAction)deleteTag:(id)sender;
 - (IBAction)renameRemote:(id)sender;
 - (IBAction)deleteRemote:(id)sender;
+- (IBAction)popStash:(id)sender;
+- (IBAction)applyStash:(id)sender;
+- (IBAction)dropStash:(id)sender;
 
 - (IBAction)toggleLayout:(id)sender;
 - (IBAction)toggleSideBar:(id)sender;

@@ -8,6 +8,7 @@
     IBOutlet NSMenu *branchContextMenu;
     IBOutlet NSMenu *remoteContextMenu;
     IBOutlet NSMenu *tagContextMenu;
+    IBOutlet NSMenu *stashContextMenu;
 
     NSInteger contextMenuRow;
 }

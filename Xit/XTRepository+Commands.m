@@ -22,7 +22,7 @@
     return res;
 }
 
-- (BOOL)stash:(NSString *)name {
+- (BOOL)saveStash:(NSString *)name {
     NSError *error = nil;
     BOOL res = NO;
 
@@ -230,6 +230,24 @@
     NSError *error = nil;
 
     [self executeGitWithArgs:[NSArray arrayWithObjects:@"remote", @"rename", branch, newName, nil] error:&error];
+    return error == nil;
+}
+
+- (BOOL)popStash:(NSString *)name error:(NSError **)error {
+    name = [[name componentsSeparatedByString:@" "] objectAtIndex:0];
+    [self executeGitWithArgs:[NSArray arrayWithObjects:@"stash", @"pop", name, nil] error:error];
+    return error == nil;
+}
+
+- (BOOL)applyStash:(NSString *)name error:(NSError **)error {
+    name = [[name componentsSeparatedByString:@" "] objectAtIndex:0];
+    [self executeGitWithArgs:[NSArray arrayWithObjects:@"stash", @"apply", name, nil] error:error];
+    return error == nil;
+}
+
+- (BOOL)dropStash:(NSString *)name error:(NSError **)error {
+    name = [[name componentsSeparatedByString:@" "] objectAtIndex:0];
+    [self executeGitWithArgs:[NSArray arrayWithObjects:@"stash", @"drop", name, nil] error:error];
     return error == nil;
 }
 

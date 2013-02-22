@@ -106,6 +106,9 @@
     [scan scanUpToString:@"" intoString:&block];
 
     NSArray *files = [XTHTML getFilesNames:block];
+
+    if ([files count] != 2)
+        return txt;
     [res appendString:@"<tr class='images'><td>"];
     [res appendString:[NSString stringWithFormat:@"%@<br/>", [files objectAtIndex:0]]];
     if (![[files objectAtIndex:0] isAbsolutePath]) {

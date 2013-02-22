@@ -70,13 +70,6 @@
     }
 }
 
-- (BOOL)writeTextToFile1:(NSString *)text {
-    NSError *error;
-
-    [text writeToFile:file1Path atomically:YES encoding:NSASCIIStringEncoding error:&error];
-    return error == nil;
-}
-
 - (void)testXTSideBarDataSourceStashes {
     STAssertTrue([self writeTextToFile1:@"second text"], @"");
     STAssertTrue([repository saveStash:@"s1"], @"");

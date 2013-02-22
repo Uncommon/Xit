@@ -7,6 +7,7 @@
 
 extern NSString *XTRepositoryChangedNotification;
 extern NSString *XTErrorOutputKey;
+extern NSString *XTErrorArgsKey;
 extern NSString *XTPathsKey;
 
 @interface XTRepository : NSObject

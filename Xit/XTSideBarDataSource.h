@@ -13,6 +13,7 @@
 @class XTLocalBranchItem;
 @class XTRefFormatter;
 @class XTRepository;
+@class XTSideBarItem;
 
 @interface XTSideBarDataSource : NSObject <NSOutlineViewDataSource, NSOutlineViewDelegate>
 {
@@ -30,7 +31,7 @@
 - (void)reloadBranches:(NSMutableDictionary *)refsIndex;
 - (void)reloadStashes:(NSMutableDictionary *)refsIndex;
 
-- (XTLocalBranchItem *)itemForBranchName:(NSString *)branch;
+- (XTSideBarItem *)itemNamed:(NSString *)name inGroup:(NSInteger)groupIndex;
 
 @property (readonly) NSArray *roots;
 

@@ -93,6 +93,11 @@
         (action == @selector(deleteRemote:))) {
         return [sidebarOutline parentForItem:item] == [sideBarDS.roots objectAtIndex:XTRemotesGroupIndex];
     }
+    if ((action == @selector(popStash:)) ||
+        (action == @selector(applyStash:)) ||
+        (action == @selector(dropStash:))) {
+        return [item isKindOfClass:[XTStashItem class]];
+    }
 
     return NO;
 }
@@ -105,17 +110,27 @@
     return sidebarOutline.selectedRow;
 }
 
+- (void)callCMBlock:(void(^)(XTSideBarItem *item, NSError **error))block verifyingClass:(Class)class errorString:(NSString *)errorString {
+    XTSideBarItem *item = [sidebarOutline itemAtRow:[self targetRow]];
+
+    if ([item isKindOfClass:class]) {
+        dispatch_async(repo.queue, ^{
+            NSError *error = nil;
+
+            block(item, &error);
+            if (error != nil)
+                [XTStatusView updateStatus:errorString
+                        command:[[error userInfo] valueForKey:XTErrorArgsKey]
+                        output:[[error userInfo] valueForKey:XTErrorOutputKey]
+                        forRepository:repo];
+        });
+    }
+}
+
 - (IBAction)checkOutBranch:(id)sender {
-    dispatch_async(repo.queue, ^{
-        NSError *error = nil;
-
-        [repo checkout:[self selectedBranch] error:&error];
-        if (error != nil) {
-            NSArray *args = [NSArray arrayWithObjects:@"checkout", [self selectedBranch], nil];
-
-            [XTStatusView updateStatus:@"Checkout failed" command:[args componentsJoinedByString:@" "] output:[[error userInfo] valueForKey:XTErrorOutputKey] forRepository:repo];
-        }
-    });
+    [self callCMBlock:^(XTSideBarItem *item, NSError *__autoreleasing *error) {
+        [repo checkout:[item title] error:error];
+    } verifyingClass:[XTLocalBranchItem class] errorString:@"Checkout failed"];
 }
 
 - (IBAction)renameBranch:(id)sender {
@@ -123,19 +138,9 @@
 }
 
 - (IBAction)deleteBranch:(id)sender {
-    XTLocalBranchItem *branchItem = [sidebarOutline itemAtRow:[self targetRow]];
-
-    if ([branchItem isKindOfClass:[XTLocalBranchItem class]]) {
-        NSError *error = nil;
-        NSString *branchName = [branchItem title];
-
-        [repo deleteBranch:branchName error:&error];
-        if (error != nil) {
-            NSString *args = [NSString stringWithFormat:@"branch -D %@", branchName];
-
-            [XTStatusView updateStatus:@"Delete branch failed" command:args output:[[error userInfo] valueForKey:XTErrorOutputKey] forRepository:repo];
-        }
-    }
+    [self callCMBlock:^(XTSideBarItem *item, NSError *__autoreleasing *error) {
+        [repo deleteBranch:[item title] error:error];
+    } verifyingClass:[XTLocalBranchItem class] errorString:@"Delete branch failed"];
 }
 
 - (IBAction)renameTag:(id)sender {
@@ -143,19 +148,9 @@
 }
 
 - (IBAction)deleteTag:(id)sender {
-    XTTagItem *tagItem = [sidebarOutline itemAtRow:[self targetRow]];
-
-    if ([tagItem isKindOfClass:[XTTagItem class]]) {
-        NSError *error = nil;
-        NSString *tagName = [tagItem title];
-
-        [repo deleteTag:tagName error:&error];
-        if (error != nil) {
-            NSString *args = [NSString stringWithFormat:@"tag -d %@", tagName];
-
-            [XTStatusView updateStatus:@"Delete tag failed" command:args output:[[error userInfo] valueForKey:XTErrorOutputKey] forRepository:repo];
-        }
-    }
+    [self callCMBlock:^(XTSideBarItem *item, NSError *__autoreleasing *error) {
+        [repo deleteTag:[item title] error:error];
+    } verifyingClass:[XTTagItem class] errorString:@"Delete tag failed"];
 }
 
 - (IBAction)renameRemote:(id)sender {
@@ -163,19 +158,27 @@
 }
 
 - (IBAction)deleteRemote:(id)sender {
-    XTRemoteItem *tagItem = [sidebarOutline itemAtRow:[self targetRow]];
+    [self callCMBlock:^(XTSideBarItem *item, NSError *__autoreleasing *error) {
+        [repo deleteRemote:[item title] error:error];
+    } verifyingClass:[XTRemoteItem class] errorString:@"Delete remote failed"];
+}
 
-    if ([tagItem isKindOfClass:[XTRemoteItem class]]) {
-        NSError *error = nil;
-        NSString *tagName = [tagItem title];
+- (IBAction)popStash:(id)sender {
+    [self callCMBlock:^(XTSideBarItem *item, NSError *__autoreleasing *error) {
+        [repo popStash:[item title] error:error];
+    } verifyingClass:[XTStashItem class] errorString:@"Pop stash failed"];
+}
 
-        [repo deleteRemote:tagName error:&error];
-        if (error != nil) {
-            NSString *args = [NSString stringWithFormat:@"remote rm %@", tagName];
+- (IBAction)applyStash:(id)sender {
+    [self callCMBlock:^(XTSideBarItem *item, NSError **error){
+        [repo applyStash:[item title] error:error];
+    } verifyingClass:[XTStashItem class] errorString:@"Apply stash failed"];
+}
 
-            [XTStatusView updateStatus:@"Delete remote failed" command:args output:[[error userInfo] valueForKey:XTErrorOutputKey] forRepository:repo];
-        }
-    }
+- (IBAction)dropStash:(id)sender {
+    [self callCMBlock:^(XTSideBarItem *item, NSError **error){
+        [repo dropStash:[item title] error:error];
+    } verifyingClass:[XTStashItem class] errorString:@"Drop stash failed"];
 }
 
 - (IBAction)toggleLayout:(id)sender {
@@ -235,7 +238,7 @@
 }
 
 - (void)selectBranch:(NSString *)branch {
-    XTLocalBranchItem *branchItem = [sideBarDS itemForBranchName:branch];
+    XTLocalBranchItem *branchItem = (XTLocalBranchItem *)[sideBarDS itemNamed:branch inGroup:XTBranchesGroupIndex];
 
     if (branchItem != nil) {
         [sidebarOutline expandItem:[sidebarOutline itemAtRow:XTBranchesGroupIndex]];

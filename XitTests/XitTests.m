@@ -95,4 +95,11 @@
     return repo;
 }
 
+- (BOOL)writeTextToFile1:(NSString *)text {
+    NSError *error;
+
+    [text writeToFile:file1Path atomically:YES encoding:NSASCIIStringEncoding error:&error];
+    return error == nil;
+}
+
 @end

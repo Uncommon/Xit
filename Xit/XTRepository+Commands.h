@@ -22,7 +22,6 @@
 - (BOOL)deleteRemote:(NSString *)name error:(NSError **)error;
 - (BOOL)push:(NSString *)remote;
 - (BOOL)checkout:(NSString *)branch error:(NSError **)error;
-- (BOOL)stash:(NSString *)name;
 - (BOOL)merge:(NSString *)name;
 
 - (NSString *)diffForStagedFile:(NSString *)file;
@@ -35,5 +34,10 @@
 - (BOOL)renameBranch:(NSString *)branch to:(NSString *)newName;
 - (BOOL)renameTag:(NSString *)branch to:(NSString *)newName;
 - (BOOL)renameRemote:(NSString *)branch to:(NSString *)newName;
+
+- (BOOL)saveStash:(NSString *)name;
+- (BOOL)popStash:(NSString *)name error:(NSError **)error;
+- (BOOL)applyStash:(NSString *)name error:(NSError **)error;
+- (BOOL)dropStash:(NSString *)name error:(NSError **)error;
 
 @end

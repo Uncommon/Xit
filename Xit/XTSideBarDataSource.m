@@ -146,13 +146,25 @@
 }
 
 - (XTLocalBranchItem *)itemForBranchName:(NSString *)branch {
-    XTSideBarItem *branches = [roots objectAtIndex:0];
+    XTSideBarItem *branches = [roots objectAtIndex:XTBranchesGroupIndex];
 
     for (NSInteger i = 0; i < [branches numberOfChildren]; ++i) {
         XTLocalBranchItem *branchItem = [branches childAtIndex:i];
 
         if ([branchItem.title isEqual:branch])
             return branchItem;
+    }
+    return nil;
+}
+
+- (XTSideBarItem *)itemNamed:(NSString *)name inGroup:(NSInteger)groupIndex {
+    XTSideBarItem *group = [roots objectAtIndex:groupIndex];
+
+    for (NSInteger i = 0; i < [group numberOfChildren]; ++i) {
+        XTSideBarItem *item = [group childAtIndex:i];
+
+        if ([item.title isEqual:name])
+            return item;
     }
     return nil;
 }
@@ -207,11 +219,18 @@
         dataView.item = (XTSideBarItem *)item;
         [dataView.textField setStringValue:[item title]];
 
-        // These connections are in the xib, but they get lost, probably
-        // when the row view gets copied.
-        [dataView.textField setFormatter:refFormatter];
-        [dataView.textField setTarget:viewController];
-        [dataView.textField setAction:@selector(sideBarItemRenamed:)];
+        if ([item isKindOfClass:[XTStashItem class]]) {
+            [dataView.textField setEditable:NO];
+            [dataView.textField setSelectable:NO];
+        } else {
+            // These connections are in the xib, but they get lost, probably
+            // when the row view gets copied.
+            [dataView.textField setFormatter:refFormatter];
+            [dataView.textField setTarget:viewController];
+            [dataView.textField setAction:@selector(sideBarItemRenamed:)];
+            [dataView.textField setEditable:YES];
+            [dataView.textField setSelectable:YES];
+        }
 
         if ([item isKindOfClass:[XTLocalBranchItem class]]) {
             [dataView.imageView setImage:[NSImage imageNamed:@"branch"]];
@@ -240,7 +259,9 @@
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item {
     XTSideBarItem *sideBarItem = (XTSideBarItem *)item;
 
-    return (sideBarItem.sha != nil) || [sideBarItem isKindOfClass:[XTRemoteItem class]];
+    return (sideBarItem.sha != nil) ||
+           [sideBarItem isKindOfClass:[XTRemoteItem class]] ||
+           [sideBarItem isKindOfClass:[XTStashItem class]];
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isGroupItem:(id)item {
