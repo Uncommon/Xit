@@ -30,6 +30,7 @@ static const int kColumnWidth = 10;
 - (id)initWithCoder:(id)coder {
     self = [super initWithCoder:coder];
     textCell = [[NSTextFieldCell alloc] initWithCoder:coder];
+    [textCell setFont:[NSFont labelFontOfSize:12]];
     return self;
 }
 

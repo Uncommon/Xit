@@ -263,20 +263,23 @@
     }
 }
 
-// These values came from measuring where the Finder switches styles
+// These values came from measuring where the Finder switches styles.
 const NSUInteger
     kFullStyleThreshold = 280,
     kLongStyleThreshold = 210,
     kMediumStyleThreshold = 170,
     kShortStyleThreshold = 150;
 
-- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
-    if ([[aTableColumn identifier] isEqualToString:@"subject"]) {
+
+- (void)tableView:(NSTableView *)tableView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)column row:(NSInteger)rowIndex {
+    [cell setFont:[NSFont labelFontOfSize:12]];
+
+    if ([[column identifier] isEqualToString:@"subject"]) {
         XTHistoryItem *item = [historyDS.items objectAtIndex:rowIndex];
 
-        ((PBGitRevisionCell *)aCell).objectValue = item;
-    } else if ([[aTableColumn identifier] isEqualToString:@"date"]) {
-        const CGFloat width = [aTableColumn width];
+        ((PBGitRevisionCell *)cell).objectValue = item;
+    } else if ([[column identifier] isEqualToString:@"date"]) {
+        const CGFloat width = [column width];
         NSDateFormatterStyle dateStyle = NSDateFormatterShortStyle;
         NSDateFormatterStyle timeStyle = NSDateFormatterShortStyle;
 
@@ -292,8 +295,8 @@ const NSUInteger
             dateStyle = NSDateFormatterShortStyle;
             timeStyle = NSDateFormatterNoStyle;
         }
-        [[aCell formatter] setDateStyle:dateStyle];
-        [[aCell formatter] setTimeStyle:timeStyle];
+        [[cell formatter] setDateStyle:dateStyle];
+        [[cell formatter] setTimeStyle:timeStyle];
     }
 }
 
