@@ -71,8 +71,9 @@
         return nil;
 
     XTFileIndexInfo *item = [items objectAtIndex:rowIndex];
+    NSString *title = [item valueForKey:column.identifier];
 
-    return [item valueForKey:column.identifier];
+    return [@"  " stringByAppendingString:title];
 }
 
 @end
