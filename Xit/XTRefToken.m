@@ -167,15 +167,15 @@
     return size.width + 12;
 }
 
-+ (XTRefType)typeForItem:(XTSideBarItem *)item inRepository:(XTRepository *)repo {
-    if ([item isKindOfClass:[XTLocalBranchItem class]]) {
-        if ([item isKindOfClass:[XTRemoteBranchItem class]])
-            return XTRefTypeRemoteBranch;
-        if ([[item title] isEqualToString:[repo currentBranch]])
++ (XTRefType)typeForRefName:(NSString *)ref inRepository:(XTRepository *)repo {
+    if ([ref hasPrefix:@"refs/remotes"])
+        return XTRefTypeRemoteBranch;
+    if ([ref hasPrefix:@"refs/heads"]) {
+        if ([[ref lastPathComponent] isEqualToString:[repo currentBranch]])
             return XTRefTypeActiveBranch;
         return XTRefTypeBranch;
     }
-    if ([item isKindOfClass:[XTTagItem class]])
+    if ([ref hasPrefix:@"refs/tags"])
         return XTRefTypeTag;
     return XTRefTypeUnknown;
 }

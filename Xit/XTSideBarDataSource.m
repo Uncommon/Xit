@@ -95,7 +95,7 @@
     [repo readStashesWithBlock:^(NSString *commit, NSString *name) {
         XTSideBarItem *stash = [[XTStashItem alloc] initWithTitle:name];
         [stashes addchild:stash];
-        [refsIndex addObject:stash forKey:commit];
+        [refsIndex addObject:name forKey:commit];
     }];
 }
 
@@ -113,7 +113,7 @@
     void (^localBlock)(NSString *, NSString *) = ^(NSString *name, NSString *commit) {
         XTLocalBranchItem *branch = [[XTLocalBranchItem alloc] initWithTitle:[name lastPathComponent] andSha:commit];
         [branches addchild:branch];
-        [refsIndex addObject:branch forKey:branch.sha];
+        [refsIndex addObject:[@"refs/heads" stringByAppendingPathComponent:name] forKey:branch.sha];
     };
 
     void (^remoteBlock)(NSString *, NSString *, NSString *) = ^(NSString *remoteName, NSString *branchName, NSString *commit) {
@@ -124,7 +124,7 @@
         }
         XTRemoteBranchItem *branch = [[XTRemoteBranchItem alloc] initWithTitle:branchName remote:remoteName sha:commit];
         [remote addchild:branch];
-        [refsIndex addObject:branch forKey:branch.sha];
+        [refsIndex addObject:[NSString stringWithFormat:@"refs/remotes/%@/%@", remoteName, branchName] forKey:branch.sha];
     };
 
     void (^tagBlock)(NSString *, NSString *) = ^(NSString *name, NSString *commit) {
@@ -139,7 +139,7 @@
             [tags addchild:tag];
             [tagIndex setObject:tag forKey:tagName];
         }
-        [refsIndex addObject:tag forKey:tag.sha];
+        [refsIndex addObject:[@"refs/tags" stringByAppendingPathComponent:name] forKey:tag.sha];
     };
 
     [repo readRefsWithLocalBlock:localBlock remoteBlock:remoteBlock tagBlock:tagBlock];

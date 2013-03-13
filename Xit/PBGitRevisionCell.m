@@ -148,20 +148,21 @@ static const int kColumnWidth = 10;
     if ([refs count] > 0) {
         rect.origin.x += 2;
         rect.size.width -= 2;
-        for (XTSideBarItem *item in refs) {
-            NSString *text = item.title;
+        for (NSString *ref in refs) {
+            NSArray *refPrefixes = [NSArray arrayWithObjects:
+                    @"refs/heads/", @"refs/remotes/", @"refs/tags/", nil];
+            NSString *text = ref;
 
-            if ([item isKindOfClass:[XTRemoteBranchItem class]])
-                text = [NSString stringWithFormat:@"%@/%@", [(XTRemoteBranchItem *)item remote], text];
-            if ([item isKindOfClass:[XTStashItem class]])
-                text = [text firstWord];
+            for (NSString *prefix in refPrefixes)
+                if ([ref hasPrefix:prefix])
+                    text = [ref substringFromIndex:[prefix length]];
 
             NSRect tokenRect = { rect.origin,
                                  { [XTRefToken rectWidthForText:text],
                                    rect.size.height } };
             const CGFloat rectAdjust = tokenRect.size.width + kSpaceBetweenTokens;
 
-            [XTRefToken drawTokenForRefType:[XTRefToken typeForItem:item inRepository:repo] text:text rect:tokenRect];
+            [XTRefToken drawTokenForRefType:[XTRefToken typeForRefName:ref inRepository:repo] text:text rect:tokenRect];
             rect.origin.x += rectAdjust;
             rect.size.width -= rectAdjust;
         }

@@ -15,6 +15,6 @@
 
 + (void)drawTokenForRefType:(XTRefType)type text:(NSString *)text rect:(NSRect)rect;
 + (CGFloat)rectWidthForText:(NSString *)text;
-+ (XTRefType)typeForItem:(XTSideBarItem *)item inRepository:(XTRepository *)repo;
++ (XTRefType)typeForRefName:(NSString *)ref inRepository:(XTRepository *)repo;
 
 @end

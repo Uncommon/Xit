@@ -77,6 +77,7 @@
 		DD592093156EEE64005FBB0F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		DD592096156EEF40005FBB0F /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD592095156EEF40005FBB0F /* OCMock.framework */; };
 		DD9C1B8F160239DD0001FE9B /* XTRefToken.m in Sources */ = {isa = PBXBuildFile; fileRef = DD9C1B8E160239DD0001FE9B /* XTRefToken.m */; };
+		DDB9319516EC12B100A6ABC6 /* XTRefTokenTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DDB9319416EC12B100A6ABC6 /* XTRefTokenTest.m */; };
 		DDC75B8315D08E8F0087F2D4 /* NSDate+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC75B8215D08E8F0087F2D4 /* NSDate+Extensions.m */; };
 		DDD00551158FF551001B055E /* branch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDD00550158FF551001B055E /* branch@2x.png */; };
 		DDD9E33615953952007EF2F6 /* XTStagingDataSourceBase.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD9E33515953952007EF2F6 /* XTStagingDataSourceBase.m */; };
@@ -244,6 +245,8 @@
 		DD592095156EEF40005FBB0F /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCMock.framework; sourceTree = SOURCE_ROOT; };
 		DD9C1B8D160239DD0001FE9B /* XTRefToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRefToken.h; sourceTree = "<group>"; };
 		DD9C1B8E160239DD0001FE9B /* XTRefToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRefToken.m; sourceTree = "<group>"; };
+		DDB9319316EC12B100A6ABC6 /* XTRefTokenTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRefTokenTest.h; sourceTree = "<group>"; };
+		DDB9319416EC12B100A6ABC6 /* XTRefTokenTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRefTokenTest.m; sourceTree = "<group>"; };
 		DDC75B8215D08E8F0087F2D4 /* NSDate+Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Extensions.m"; sourceTree = "<group>"; };
 		DDD00550158FF551001B055E /* branch@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "branch@2x.png"; sourceTree = "<group>"; };
 		DDD9E33315953868007EF2F6 /* XTStagingDataSourceBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTStagingDataSourceBase.h; sourceTree = "<group>"; };
@@ -561,6 +564,8 @@
 				313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */,
 				31C62D9613F2580E00845A9B /* XTStageViewControllerTest.h */,
 				31C62D9713F2580E00845A9B /* XTStageViewControllerTest.m */,
+				DDB9319316EC12B100A6ABC6 /* XTRefTokenTest.h */,
+				DDB9319416EC12B100A6ABC6 /* XTRefTokenTest.m */,
 			);
 			path = XitTests;
 			sourceTree = "<group>";
@@ -820,6 +825,7 @@
 				3199BABD142079BB008AAA4F /* XTFileListDataSourceTest.m in Sources */,
 				896B05D015796D2A003B0C24 /* XTHistoryViewControllerTest.m in Sources */,
 				89FE824815A716E800E2EA2A /* XTRepositoryTests.m in Sources */,
+				DDB9319516EC12B100A6ABC6 /* XTRefTokenTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
