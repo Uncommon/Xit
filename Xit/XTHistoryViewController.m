@@ -7,6 +7,7 @@
 
 #import "XTHistoryViewController.h"
 #import "XTCommitViewController.h"
+#import "XTFileListDataSource.h"
 #import "XTHistoryDataSource.h"
 #import "XTHistoryItem.h"
 #import "XTLocalBranchItem.h"
@@ -66,6 +67,7 @@
     repo = newRepo;
     [sideBarDS setRepo:newRepo];
     [historyDS setRepo:newRepo];
+    [fileListDS setRepo:newRepo];
     [commitViewController setRepo:newRepo];
     [[commitViewController view] setFrame:NSMakeRect(0, 0, [commitView frame].size.width, [commitView frame].size.height)];
     [commitView addSubview:[commitViewController view]];
@@ -195,6 +197,14 @@
     [sidebarSplitView setPosition:newWidth ofDividerAtIndex:0 ];
 }
 
+- (IBAction)showDiffView:(id)sender {
+  [commitTabView selectTabViewItemAtIndex:0];
+}
+
+- (IBAction)showTreeView:(id)sender {
+  [commitTabView selectTabViewItemAtIndex:1];
+}
+
 - (IBAction)sideBarItemRenamed:(id)sender {
     XTSideBarTableCellView *cellView = (XTSideBarTableCellView *)[sender superview];
     XTSideBarItem *editedItem = cellView.item;
@@ -298,6 +308,23 @@ const NSUInteger
         [[cell formatter] setDateStyle:dateStyle];
         [[cell formatter] setTimeStyle:timeStyle];
     }
+}
+
+#pragma mark - NSOutlineViewDelegate
+
+- (NSView *)outlineView:(NSOutlineView *)outlineView viewForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+    if (outlineView == fileListOutline) {
+        NSTableCellView *cell = [outlineView makeViewWithIdentifier:@"fileCell" owner:self];
+        NSTreeNode *node = (NSTreeNode *)item;
+        NSString *fileName = (NSString *)node.representedObject;
+
+        // TODO: cache the file icon extending NSTreeNode....
+        cell.imageView.image = [[NSWorkspace sharedWorkspace] iconForFile:[repo.repoURL.path stringByAppendingPathComponent:fileName]];
+        cell.textField.stringValue = [fileName lastPathComponent];
+
+        return cell;
+    }
+    return nil;
 }
 
 @end

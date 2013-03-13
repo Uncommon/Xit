@@ -11,6 +11,7 @@
 
 @class XTSideBarDataSource;
 @class XTSideBarOutlineView;
+@class XTFileListDataSource;
 @class XTHistoryDataSource;
 @class XTCommitViewController;
 
@@ -18,12 +19,15 @@
 {
     IBOutlet XTSideBarDataSource *sideBarDS;
     IBOutlet XTHistoryDataSource *historyDS;
+    IBOutlet XTFileListDataSource *fileListDS;
     IBOutlet XTCommitViewController *commitViewController;
     IBOutlet NSTableView *historyTable;
     IBOutlet XTSideBarOutlineView *sidebarOutline;
     IBOutlet NSView *commitView;
     IBOutlet NSSplitView *sidebarSplitView;
     IBOutlet NSSplitView *mainSplitView;
+    IBOutlet NSTabView *commitTabView;
+    IBOutlet NSOutlineView *fileListOutline;
     @private
     XTRepository *repo;
     NSUInteger savedSidebarWidth;
@@ -44,6 +48,8 @@
 
 - (IBAction)toggleLayout:(id)sender;
 - (IBAction)toggleSideBar:(id)sender;
+- (IBAction)showDiffView:(id)sender;
+- (IBAction)showTreeView:(id)sender;
 
 - (IBAction)sideBarItemRenamed:(id)sender;
 
