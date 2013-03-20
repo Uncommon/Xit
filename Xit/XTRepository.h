@@ -38,6 +38,8 @@ extern NSString *XTPathsKey;
 - (NSString *)headSHA;
 - (NSString *)shaForRef:(NSString *)ref;
 
+- (NSData *)contentsOfFile:(NSString *)filePath atCommit:(NSString *)commit;
+
 - (void)initializeEventStream;
 - (void)start;
 - (void)stop;

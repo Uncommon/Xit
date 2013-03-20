@@ -284,6 +284,14 @@ NSString *XTPathsKey = @"paths";
     return [self shaForRef:[self headRef]];
 }
 
+- (NSData *)contentsOfFile:(NSString *)filePath atCommit:(NSString *)commit {
+    NSString *spec = [NSString stringWithFormat:@"%@:%@", commit, filePath];
+    NSArray *args = [NSArray arrayWithObjects:@"cat-file", @"blob", spec, nil];
+    NSError *error = nil;
+
+    return [self executeGitWithArgs:args error:&error];
+}
+
 // XXX tmp
 - (void)start {
     [self initializeEventStream];

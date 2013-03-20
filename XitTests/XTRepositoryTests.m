@@ -78,4 +78,16 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
     STAssertEqualObjects(message, @"file list parsing in XTRepository", @"mismatched description");
 }
 
+- (void)testContents {
+    [super addInitialRepoContent];
+
+    NSData *contentsData = [repository contentsOfFile:@"file1.txt" atCommit:@"HEAD"];
+
+    STAssertNotNil(contentsData, @"");
+
+    NSString *contentsString = [[NSString alloc] initWithData:contentsData encoding:NSUTF8StringEncoding];
+
+    STAssertEqualObjects(contentsString, @"some text", @"");
+}
+
 @end
