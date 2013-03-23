@@ -80,6 +80,9 @@
 		DDB9319516EC12B100A6ABC6 /* XTRefTokenTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DDB9319416EC12B100A6ABC6 /* XTRefTokenTest.m */; };
 		DDC75B8315D08E8F0087F2D4 /* NSDate+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC75B8215D08E8F0087F2D4 /* NSDate+Extensions.m */; };
 		DDD00551158FF551001B055E /* branch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDD00550158FF551001B055E /* branch@2x.png */; };
+		DDD4708116F3E7B000CA76FF /* XTPreviewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD4708016F3E7B000CA76FF /* XTPreviewItem.m */; };
+		DDD4708516F96F7E00CA76FF /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDD4708416F96F7E00CA76FF /* QuickLook.framework */; };
+		DDD4708716F9701600CA76FF /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDD4708616F9701600CA76FF /* Quartz.framework */; };
 		DDD9E33615953952007EF2F6 /* XTStagingDataSourceBase.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD9E33515953952007EF2F6 /* XTStagingDataSourceBase.m */; };
 		DDDA447215B0EA4700DF407B /* XTRepository+Parsing.m in Sources */ = {isa = PBXBuildFile; fileRef = DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */; };
 		DDE55DDF1613C6C000CCAC03 /* XTModDateTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = DDE55DDE1613C6C000CCAC03 /* XTModDateTracker.m */; };
@@ -248,6 +251,10 @@
 		DDB9319416EC12B100A6ABC6 /* XTRefTokenTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRefTokenTest.m; sourceTree = "<group>"; };
 		DDC75B8215D08E8F0087F2D4 /* NSDate+Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Extensions.m"; sourceTree = "<group>"; };
 		DDD00550158FF551001B055E /* branch@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "branch@2x.png"; sourceTree = "<group>"; };
+		DDD4707F16F3E7B000CA76FF /* XTPreviewItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTPreviewItem.h; sourceTree = "<group>"; };
+		DDD4708016F3E7B000CA76FF /* XTPreviewItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTPreviewItem.m; sourceTree = "<group>"; };
+		DDD4708416F96F7E00CA76FF /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
+		DDD4708616F9701600CA76FF /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		DDD9E33315953868007EF2F6 /* XTStagingDataSourceBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTStagingDataSourceBase.h; sourceTree = "<group>"; };
 		DDD9E33515953952007EF2F6 /* XTStagingDataSourceBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTStagingDataSourceBase.m; sourceTree = "<group>"; };
 		DDDA447015B0E97000DF407B /* XTRepository+Parsing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XTRepository+Parsing.h"; sourceTree = "<group>"; };
@@ -273,6 +280,8 @@
 			files = (
 				31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */,
 				C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */,
+				DDD4708516F96F7E00CA76FF /* QuickLook.framework in Frameworks */,
+				DDD4708716F9701600CA76FF /* Quartz.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,6 +390,8 @@
 				DD07B07716A5D2A80012AC19 /* XTSideBarOutlineView.m */,
 				DD07B08716B313A60012AC19 /* XTRefFormatter.h */,
 				DD07B08816B313A60012AC19 /* XTRefFormatter.m */,
+				DDD4707F16F3E7B000CA76FF /* XTPreviewItem.h */,
+				DDD4708016F3E7B000CA76FF /* XTPreviewItem.m */,
 			);
 			name = HistoryView;
 			sourceTree = "<group>";
@@ -481,6 +492,8 @@
 				31A8939F13E9DA5B008BE0C2 /* WebKit.framework */,
 				C3FA470013D0F8E200AC4F9B /* Cocoa.framework */,
 				31355B0713EA139700C33AAB /* CoreFoundation.framework */,
+				DDD4708416F96F7E00CA76FF /* QuickLook.framework */,
+				DDD4708616F9701600CA76FF /* Quartz.framework */,
 				C3FA470213D0F8E200AC4F9B /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -793,6 +806,7 @@
 				DD07B07816A5D2A80012AC19 /* XTSideBarOutlineView.m in Sources */,
 				DD07B08616B202E00012AC19 /* XTRemoteItem.m in Sources */,
 				DD07B08916B313A60012AC19 /* XTRefFormatter.m in Sources */,
+				DDD4708116F3E7B000CA76FF /* XTPreviewItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

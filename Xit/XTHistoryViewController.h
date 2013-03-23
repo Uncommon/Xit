@@ -6,14 +6,15 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <Quartz/Quartz.h>
 
 @class XTRepository;
 
-@class XTSideBarDataSource;
-@class XTSideBarOutlineView;
+@class XTCommitViewController;
 @class XTFileListDataSource;
 @class XTHistoryDataSource;
-@class XTCommitViewController;
+@class XTSideBarDataSource;
+@class XTSideBarOutlineView;
 
 @interface XTHistoryViewController : NSViewController
 {
@@ -28,6 +29,7 @@
     IBOutlet NSSplitView *mainSplitView;
     IBOutlet NSTabView *commitTabView;
     IBOutlet NSOutlineView *fileListOutline;
+    IBOutlet QLPreviewView *filePreview;
     @private
     XTRepository *repo;
     NSUInteger savedSidebarWidth;

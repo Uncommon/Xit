@@ -11,6 +11,7 @@
 #import "XTHistoryDataSource.h"
 #import "XTHistoryItem.h"
 #import "XTLocalBranchItem.h"
+#import "XTPreviewItem.h"
 #import "XTRemoteItem.h"
 #import "XTRemotesItem.h"
 #import "XTRepository.h"
@@ -44,6 +45,10 @@
     return self;
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)awakeFromNib {
     // Remove intercell spacing so the history lines will connect
     NSSize cellSpacing = [historyTable intercellSpacing];
@@ -53,9 +58,20 @@
     // Without this, the first group title moves when you hide its contents
     [sidebarOutline setFloatsGroupRows:NO];
 
-    NSMenu *menu = [[NSMenu alloc] initWithTitle:@""];
-    [menu addItemWithTitle:@"item" action:NULL keyEquivalent:@""];
-    [sidebarOutline setMenu:menu];
+    if ([sidebarOutline menu] == nil) {
+        NSMenu *menu = [[NSMenu alloc] initWithTitle:@""];
+        [menu addItemWithTitle:@"item" action:NULL keyEquivalent:@""];
+        [sidebarOutline setMenu:menu];
+    }
+
+    [[NSNotificationCenter defaultCenter]
+            addObserver:self
+            selector:@selector(fileSelectionChanged:)
+            name:NSOutlineViewSelectionDidChangeNotification
+            object:fileListOutline];
+
+    if ((filePreview != nil) && (filePreview.previewItem == nil))
+        filePreview.previewItem = [[XTPreviewItem alloc] init];
 }
 
 - (NSString *)nibName {
@@ -71,6 +87,7 @@
     [commitViewController setRepo:newRepo];
     [[commitViewController view] setFrame:NSMakeRect(0, 0, [commitView frame].size.width, [commitView frame].size.height)];
     [commitView addSubview:[commitViewController view]];
+    ((XTPreviewItem*)filePreview.previewItem).repo = newRepo;
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
@@ -191,8 +208,10 @@
 }
 
 - (IBAction)toggleSideBar:(id)sender {
-    const CGFloat newWidth = ([sender state] == NSOnState) ? savedSidebarWidth : 0;
-    if ([sender state] == NSOffState)
+    const NSInteger buttonState = [(NSButton*)sender state];
+    const CGFloat newWidth = (buttonState == NSOnState) ? savedSidebarWidth : 0;
+
+    if (buttonState == NSOffState)
         savedSidebarWidth = [[[sidebarSplitView subviews] objectAtIndex:0] frame].size.width;
     [sidebarSplitView setPosition:newWidth ofDividerAtIndex:0 ];
 }
@@ -270,6 +289,7 @@
     if (selectedRow >= 0) {
         XTHistoryItem *item = [historyDS.items objectAtIndex:selectedRow];
         repo.selectedCommit = item.sha;
+        ((XTPreviewItem*)filePreview.previewItem).commitSHA = item.sha;
     }
 }
 
@@ -325,6 +345,21 @@ const NSUInteger
         return cell;
     }
     return nil;
+}
+
+- (void)fileSelectionChanged:(NSNotification *)note {
+    NSIndexSet *selection = [fileListOutline selectedRowIndexes];
+    const NSUInteger selectionCount = [selection count];
+    XTPreviewItem *previewItem = (XTPreviewItem*)filePreview.previewItem;
+
+    if (selectionCount != 1) {
+        //[filePreview setHidden:YES];
+        previewItem.path = nil;
+        return;
+    }
+    [filePreview setHidden:NO];
+    previewItem.path = [[fileListOutline itemAtRow:[selection firstIndex]] representedObject];
+    [filePreview refreshPreviewItem];
 }
 
 @end
