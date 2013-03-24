@@ -4,13 +4,14 @@
 @class XTRepository;
 
 @interface XTPreviewItem : NSObject<QLPreviewItem> {
-    NSString *path;
+    NSString *path, *commitSHA;
+    NSURL *previewItemURL;
 }
 
 @property(retain) XTRepository *repo;
 @property(copy, nonatomic) NSString *commitSHA;
 @property(copy, nonatomic) NSString *path;
 @property(copy, readonly) NSString *tempFolder;
-@property(retain, readonly) NSURL *previewItemURL;
+@property(readonly) NSURL *previewItemURL;
 
 @end

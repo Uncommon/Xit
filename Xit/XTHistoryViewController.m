@@ -69,9 +69,6 @@
             selector:@selector(fileSelectionChanged:)
             name:NSOutlineViewSelectionDidChangeNotification
             object:fileListOutline];
-
-    if ((filePreview != nil) && (filePreview.previewItem == nil))
-        filePreview.previewItem = [[XTPreviewItem alloc] init];
 }
 
 - (NSString *)nibName {
@@ -279,17 +276,33 @@
     }
 }
 
+- (void)updatePreviewItem {
+    NSIndexSet *selection = [fileListOutline selectedRowIndexes];
+    const NSUInteger selectionCount = [selection count];
+    XTPreviewItem *previewItem = (XTPreviewItem*)filePreview.previewItem;
+
+    previewItem.commitSHA = repo.selectedCommit;
+    if (selectionCount != 1) {
+        [filePreview setHidden:YES];
+        previewItem.path = nil;
+        return;
+    }
+    [filePreview setHidden:NO];
+    previewItem.path = [[fileListOutline itemAtRow:[selection firstIndex]] representedObject];
+}
+
 #pragma mark - NSTableViewDelegate
 
 - (void)tableViewSelectionDidChange:(NSNotification *)note {
-    NSLog(@"%@", note);
     NSTableView *table = (NSTableView*)[note object];
     const NSInteger selectedRow = table.selectedRow;
 
     if (selectedRow >= 0) {
         XTHistoryItem *item = [historyDS.items objectAtIndex:selectedRow];
+
         repo.selectedCommit = item.sha;
-        ((XTPreviewItem*)filePreview.previewItem).commitSHA = item.sha;
+        [self updatePreviewItem];
+        [filePreview refreshPreviewItem];
     }
 }
 
@@ -348,18 +361,23 @@ const NSUInteger
 }
 
 - (void)fileSelectionChanged:(NSNotification *)note {
-    NSIndexSet *selection = [fileListOutline selectedRowIndexes];
-    const NSUInteger selectionCount = [selection count];
-    XTPreviewItem *previewItem = (XTPreviewItem*)filePreview.previewItem;
-
-    if (selectionCount != 1) {
-        //[filePreview setHidden:YES];
-        previewItem.path = nil;
-        return;
-    }
-    [filePreview setHidden:NO];
-    previewItem.path = [[fileListOutline itemAtRow:[selection firstIndex]] representedObject];
+    [self updatePreviewItem];
     [filePreview refreshPreviewItem];
+}
+
+#pragma mark - NSTabViewDelegate
+
+- (void)tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem {
+    if ([[tabViewItem identifier] isEqualToString:@"tree"]) {
+        // When the QLPreviewView is hidden, it releases its previewItem,
+        // so it must be re-created when the tab is shown again.
+        XTPreviewItem *previewItem = [[XTPreviewItem alloc] init];
+
+        previewItem.repo = repo;
+        filePreview.previewItem = previewItem;
+        [self updatePreviewItem];
+        [filePreview refreshPreviewItem];
+    }
 }
 
 @end

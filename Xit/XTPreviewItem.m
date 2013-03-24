@@ -7,9 +7,9 @@
 
 @end
 
+
 @implementation XTPreviewItem
 
-@synthesize commitSHA;
 @synthesize previewItemURL;
 @synthesize repo;
 @synthesize tempFolder;
@@ -49,6 +49,7 @@
 
 - (void)remakeTempFile {
     [self deleteTempFile];
+    self.previewItemURL = nil;
 
     if ((self.path != nil) && (self.commitSHA != nil)) {
         NSData *contents = [self.repo contentsOfFile:self.path atCommit:self.commitSHA];
@@ -59,9 +60,6 @@
             [contents writeToFile:tempFilePath atomically:NO];
             self.previewItemURL = [NSURL fileURLWithPath:tempFilePath];
         }
-    }
-    else {
-        self.previewItemURL = nil;
     }
 }
 
@@ -77,8 +75,14 @@
 }
 
 - (void)setCommitSHA:(NSString *)newSHA {
-    self->commitSHA = newSHA;
-    [self remakeTempFile];
+    if (![newSHA isEqualToString:self->commitSHA]) {
+        self->commitSHA = newSHA;
+        [self remakeTempFile];
+    }
+}
+
+- (NSString *)commitSHA {
+    return commitSHA;
 }
 
 @end
