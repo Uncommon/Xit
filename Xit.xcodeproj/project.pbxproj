@@ -187,7 +187,6 @@
 		89A6EA2714478DA40089B212 /* XTAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTAppDelegate.m; sourceTree = "<group>"; };
 		89FE824615A716E800E2EA2A /* XTRepositoryTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRepositoryTests.h; sourceTree = "<group>"; };
 		89FE824715A716E800E2EA2A /* XTRepositoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRepositoryTests.m; sourceTree = "<group>"; };
-		C3355E1413F32815008D14B8 /* uncrustify.cfg */ = {isa = PBXFileReference; lastKnownFileType = text; path = uncrustify.cfg; sourceTree = "<group>"; };
 		C343F90F13F4908E009C928A /* XTHTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTHTML.h; sourceTree = "<group>"; };
 		C343F91013F4908E009C928A /* XTHTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTHTML.m; sourceTree = "<group>"; };
 		C358652F14048A3F00060C53 /* XTRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRepository.h; sourceTree = "<group>"; };
@@ -462,7 +461,6 @@
 				31355B0913EA139700C33AAB /* html.theme.default */,
 				C3FA46FF13D0F8E200AC4F9B /* Frameworks */,
 				C3FA46FD13D0F8E200AC4F9B /* Products */,
-				C3355E1413F32815008D14B8 /* uncrustify.cfg */,
 			);
 			indentWidth = 4;
 			sourceTree = "<group>";
@@ -604,7 +602,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C3FA473113D0F8E300AC4F9B /* Build configuration list for PBXNativeTarget "Xit" */;
 			buildPhases = (
-				C3355E1113F31044008D14B8 /* Run uncrustify Script */,
 				C3FA46F813D0F8E200AC4F9B /* Sources */,
 				C3FA46F913D0F8E200AC4F9B /* Frameworks */,
 				C3FA46FA13D0F8E200AC4F9B /* Resources */,
@@ -727,20 +724,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "KEYWORDS=\"TODO|FIXME|\\?\\?\\?:|\\!\\!\\!:\"\nfind ${SRCROOT} \\( -name \"*.h\" -or -name \"*.m\" \\) -print0 | \\\nxargs -0 egrep --with-filename --line-number --only-matching \"($KEYWORDS).*\\$\" | \\\nperl -p -e \"s/($KEYWORDS)/ warning: \\$1/\"";
-		};
-		C3355E1113F31044008D14B8 /* Run uncrustify Script */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Run uncrustify Script";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = ./uncrustify.sh;
 		};
 		C3FA471E13D0F8E300AC4F9B /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
