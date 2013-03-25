@@ -7,8 +7,8 @@
 
 #import "XTDocController.h"
 #import "XTDocument.h"
-#import "XTFileViewController.h"
 #import "XTHistoryViewController.h"
+#import "XTRepository.h"
 #import "XTStageViewController.h"
 #import "XTStatusView.h"
 
@@ -33,14 +33,12 @@
 
     [self loadViewController:historyView onTab:0];
     [self loadViewController:stageView onTab:1];
-    [self loadViewController:fileListView onTab:2];
 
     XTRepository *repo = document.repository;
 
     [repo addObserver:self forKeyPath:@"activeTasks" options:NSKeyValueObservingOptionNew context:nil];
     [historyView setRepo:repo];
     [stageView setRepo:repo];
-    [fileListView setRepo:repo];
     [statusView setRepo:repo];
 }
 
@@ -102,8 +100,6 @@
         controller = stageView;
     if ([[tabViewItem identifier] isEqual:@"history"])
         controller = historyView;
-    if ([[tabViewItem identifier] isEqual:@"files"])
-        controller = fileListView;
     if (controller != nil) {
         [self setNextResponder:controller];
         [controller setNextResponder:nextResponder];

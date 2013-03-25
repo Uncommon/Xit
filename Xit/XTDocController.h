@@ -10,14 +10,12 @@
 @class XTDocument;
 @class XTHistoryViewController;
 @class XTStageViewController;
-@class XTFileViewController;
 @class XTRepository;
 @class XTStatusView;
 
 @interface XTDocController : NSWindowController {
     IBOutlet XTHistoryViewController *historyView;
     IBOutlet XTStageViewController *stageView;
-    IBOutlet XTFileViewController *fileListView;
     IBOutlet NSTabView *tabs;
     IBOutlet NSProgressIndicator *activity;
     IBOutlet XTStatusView *statusView;
