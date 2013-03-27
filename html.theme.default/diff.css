@@ -100,3 +100,8 @@ table.headercol > tbody > tr > td:first-child {
     text-align: right;
     color: gray;
 }
+
+.subject {
+    font-family: monospace;
+    white-space: pre-wrap;
+}
