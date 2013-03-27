@@ -351,8 +351,10 @@ const NSUInteger
         NSTreeNode *node = (NSTreeNode *)item;
         NSString *fileName = (NSString *)node.representedObject;
 
-        // TODO: cache the file icon extending NSTreeNode....
-        cell.imageView.image = [[NSWorkspace sharedWorkspace] iconForFile:[repo.repoURL.path stringByAppendingPathComponent:fileName]];
+        if ([node isLeaf])
+            cell.imageView.image = [[NSWorkspace sharedWorkspace] iconForFileType:[fileName pathExtension]];
+        else
+            cell.imageView.image = [NSImage imageNamed:NSImageNameFolder];
         cell.textField.stringValue = [fileName lastPathComponent];
 
         return cell;
