@@ -133,11 +133,10 @@ const NSString *kAuthorKeyDate = @"date";
     NSString *html = [NSString stringWithFormat:@"<html><head><link rel='stylesheet' type='text/css' href='diff.css'/></head><body>%@%@<div id='diffs'>%@</div></body></html>", headerHTML, filesHTML, diffHTML];
 
     NSBundle *bundle = [NSBundle mainBundle];
-    NSBundle *theme = [NSBundle bundleWithURL:[bundle URLForResource:@"html.theme.default" withExtension:@"bundle"]];
-    NSURL *themeURL = [theme resourceURL];
+    NSURL *htmlURL = [bundle URLForResource:@"html" withExtension:nil];
 
     dispatch_async(dispatch_get_main_queue(), ^{
-                       [[web mainFrame] loadHTMLString:html baseURL:themeURL];
+                       [[web mainFrame] loadHTMLString:html baseURL:htmlURL];
                    });
     return html;
 }

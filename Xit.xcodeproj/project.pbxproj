@@ -10,10 +10,6 @@
 		311429B913EB60AA00A7DF05 /* XTCommitViewControllerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 311429B613EB600100A7DF05 /* XTCommitViewControllerTest.m */; };
 		313014AC13EB656B0017A2A1 /* XTSideBarDataSorceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */; };
 		313014AF13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 313014AE13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m */; };
-		31355B0813EA139700C33AAB /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31355B0713EA139700C33AAB /* CoreFoundation.framework */; };
-		31355B0E13EA139700C33AAB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 31355B0C13EA139700C33AAB /* InfoPlist.strings */; };
-		31355B1713EA15DD00C33AAB /* html.theme.default.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 31355B0613EA139600C33AAB /* html.theme.default.bundle */; };
-		31355B1913EA189200C33AAB /* diff.css in Resources */ = {isa = PBXBuildFile; fileRef = 31355B1813EA189200C33AAB /* diff.css */; };
 		3152B1E61423152700DCA679 /* XTFileListHistoryDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3152B1E51423152700DCA679 /* XTFileListHistoryDataSource.m */; };
 		3174966513DF896E004C5546 /* XTHistoryDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966413DF896E004C5546 /* XTHistoryDataSource.m */; };
 		3174966813DF8A0C004C5546 /* XTSideBarDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */; };
@@ -36,6 +32,7 @@
 		31C7C13413ECC74C00A65FE9 /* XTHistoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31C7C13213ECC74C00A65FE9 /* XTHistoryViewController.xib */; };
 		31F1E87F13D3B51200F3B317 /* XTRepository+Commands.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BC055713D1133000C3CF1A /* XTRepository+Commands.m */; };
 		31F1E88313D3DCAC00F3B317 /* XTSideBarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 31F1E88213D3DCAC00F3B317 /* XTSideBarItem.m */; };
+		89039F561703A9FC000949A8 /* html in Resources */ = {isa = PBXBuildFile; fileRef = 89039F551703A9FC000949A8 /* html */; };
 		89355423157C128F007AC9CE /* XTDocController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89355422157C128F007AC9CE /* XTDocController.m */; };
 		895DEEF6142CECB7001763FC /* XTSideBarTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 895DEEF5142CECB7001763FC /* XTSideBarTableCellView.m */; };
 		895DEF0C142CF84D001763FC /* branch.png in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF0B142CF84D001763FC /* branch.png */; };
@@ -88,13 +85,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		31355B1513EA13A900C33AAB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C3FA46F313D0F8E200AC4F9B /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 31355B0513EA139600C33AAB;
-			remoteInfo = html.theme.default;
-		};
 		C3FA472213D0F8E300AC4F9B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C3FA46F313D0F8E200AC4F9B /* Project object */;
@@ -124,12 +114,7 @@
 		313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTSideBarDataSorceTests.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		313014AD13EB65DB0017A2A1 /* XTHistoryDataSorceTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTHistoryDataSorceTests.h; sourceTree = "<group>"; };
 		313014AE13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTHistoryDataSorceTests.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		31355B0613EA139600C33AAB /* html.theme.default.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = html.theme.default.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		31355B0713EA139700C33AAB /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		31355B0B13EA139700C33AAB /* html.theme.default-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "html.theme.default-Info.plist"; sourceTree = "<group>"; };
-		31355B0D13EA139700C33AAB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		31355B0F13EA139700C33AAB /* html.theme.default-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "html.theme.default-Prefix.pch"; sourceTree = "<group>"; };
-		31355B1813EA189200C33AAB /* diff.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = diff.css; sourceTree = "<group>"; };
 		3152B1E41423152700DCA679 /* XTFileListHistoryDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTFileListHistoryDataSource.h; sourceTree = "<group>"; };
 		3152B1E51423152700DCA679 /* XTFileListHistoryDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTFileListHistoryDataSource.m; sourceTree = "<group>"; };
 		3174966313DF896E004C5546 /* XTHistoryDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = XTHistoryDataSource.h; path = Xit/XTHistoryDataSource.h; sourceTree = "<group>"; tabWidth = 4; };
@@ -167,6 +152,7 @@
 		31F1E87813D3AC6D00F3B317 /* XTSideBarDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = XTSideBarDataSource.h; path = Xit/XTSideBarDataSource.h; sourceTree = "<group>"; tabWidth = 4; };
 		31F1E88113D3DCAC00F3B317 /* XTSideBarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = XTSideBarItem.h; path = Xit/XTSideBarItem.h; sourceTree = "<group>"; tabWidth = 4; };
 		31F1E88213D3DCAC00F3B317 /* XTSideBarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; name = XTSideBarItem.m; path = Xit/XTSideBarItem.m; sourceTree = "<group>"; tabWidth = 4; };
+		89039F551703A9FC000949A8 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
 		89355421157C128F007AC9CE /* XTDocController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTDocController.h; sourceTree = "<group>"; };
 		89355422157C128F007AC9CE /* XTDocController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTDocController.m; sourceTree = "<group>"; };
 		895DEEF4142CECB7001763FC /* XTSideBarTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XTSideBarTableCellView.h; path = Xit/XTSideBarTableCellView.h; sourceTree = "<group>"; };
@@ -259,14 +245,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		31355B0313EA139600C33AAB /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				31355B0813EA139700C33AAB /* CoreFoundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C3FA46F913D0F8E200AC4F9B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -288,25 +266,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		31355B0913EA139700C33AAB /* html.theme.default */ = {
-			isa = PBXGroup;
-			children = (
-				31355B1813EA189200C33AAB /* diff.css */,
-				31355B0A13EA139700C33AAB /* Supporting Files */,
-			);
-			path = html.theme.default;
-			sourceTree = "<group>";
-		};
-		31355B0A13EA139700C33AAB /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				31355B0B13EA139700C33AAB /* html.theme.default-Info.plist */,
-				31355B0C13EA139700C33AAB /* InfoPlist.strings */,
-				31355B0F13EA139700C33AAB /* html.theme.default-Prefix.pch */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 		3199BAB91420794E008AAA4F /* FileView */ = {
 			isa = PBXGroup;
 			children = (
@@ -458,7 +417,6 @@
 			children = (
 				C3FA470613D0F8E200AC4F9B /* Xit */,
 				C3FA472413D0F8E300AC4F9B /* XitTests */,
-				31355B0913EA139700C33AAB /* html.theme.default */,
 				C3FA46FF13D0F8E200AC4F9B /* Frameworks */,
 				C3FA46FD13D0F8E200AC4F9B /* Products */,
 			);
@@ -470,7 +428,6 @@
 			children = (
 				C3FA46FC13D0F8E200AC4F9B /* Xit.app */,
 				C3FA472013D0F8E300AC4F9B /* XitTests.octest */,
-				31355B0613EA139600C33AAB /* html.theme.default.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -522,6 +479,7 @@
 				89794F8A1458CC9B00E38ACC /* XTOutputViewController.m */,
 				89794F8B1458CC9B00E38ACC /* XTOutputViewController.xib */,
 				C3FA471813D0F8E300AC4F9B /* MainMenu.xib */,
+				89039F551703A9FC000949A8 /* html */,
 				899D0106142168830091DC6F /* images */,
 				C3FA470713D0F8E200AC4F9B /* Supporting Files */,
 			);
@@ -581,23 +539,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		31355B0513EA139600C33AAB /* html.theme.default */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 31355B1313EA139700C33AAB /* Build configuration list for PBXNativeTarget "html.theme.default" */;
-			buildPhases = (
-				31355B0213EA139600C33AAB /* Sources */,
-				31355B0313EA139600C33AAB /* Frameworks */,
-				31355B0413EA139600C33AAB /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = html.theme.default;
-			productName = html.theme.default;
-			productReference = 31355B0613EA139600C33AAB /* html.theme.default.bundle */;
-			productType = "com.apple.product-type.bundle";
-		};
 		C3FA46FB13D0F8E200AC4F9B /* Xit */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C3FA473113D0F8E300AC4F9B /* Build configuration list for PBXNativeTarget "Xit" */;
@@ -610,7 +551,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				31355B1613EA13A900C33AAB /* PBXTargetDependency */,
 			);
 			name = Xit;
 			productName = Xit;
@@ -660,26 +600,15 @@
 			targets = (
 				C3FA46FB13D0F8E200AC4F9B /* Xit */,
 				C3FA471F13D0F8E300AC4F9B /* XitTests */,
-				31355B0513EA139600C33AAB /* html.theme.default */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		31355B0413EA139600C33AAB /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				31355B0E13EA139700C33AAB /* InfoPlist.strings in Resources */,
-				31355B1913EA189200C33AAB /* diff.css in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C3FA46FA13D0F8E200AC4F9B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				31355B1713EA15DD00C33AAB /* html.theme.default.bundle in Resources */,
 				C3FA470B13D0F8E200AC4F9B /* InfoPlist.strings in Resources */,
 				C3FA471113D0F8E200AC4F9B /* Credits.rtf in Resources */,
 				C3FA471713D0F8E200AC4F9B /* XTDocument.xib in Resources */,
@@ -698,6 +627,7 @@
 				DDD00551158FF551001B055E /* branch@2x.png in Resources */,
 				DDF9BB3A162E29C3004588B6 /* tag.png in Resources */,
 				DDF9BB3B162E29C3004588B6 /* tag@2x.png in Resources */,
+				89039F561703A9FC000949A8 /* html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -741,13 +671,6 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		31355B0213EA139600C33AAB /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C3FA46F813D0F8E200AC4F9B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -815,11 +738,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		31355B1613EA13A900C33AAB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 31355B0513EA139600C33AAB /* html.theme.default */;
-			targetProxy = 31355B1513EA13A900C33AAB /* PBXContainerItemProxy */;
-		};
 		C3FA472313D0F8E300AC4F9B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C3FA46FB13D0F8E200AC4F9B /* Xit */;
@@ -828,14 +746,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		31355B0C13EA139700C33AAB /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				31355B0D13EA139700C33AAB /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
 		89794F651452839500E38ACC /* XTStatusView.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -887,76 +797,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		31355B1013EA139700C33AAB /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_ENABLE_OBJC_ARC = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "html.theme.default/html.theme.default-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				INFOPLIST_FILE = "html.theme.default/html.theme.default-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Debug;
-		};
-		31355B1113EA139700C33AAB /* coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_ENABLE_OBJC_ARC = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "html.theme.default/html.theme.default-Prefix.pch";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				INFOPLIST_FILE = "html.theme.default/html.theme.default-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = coverage;
-		};
-		31355B1213EA139700C33AAB /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_ENABLE_OBJC_ARC = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "html.theme.default/html.theme.default-Prefix.pch";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				INFOPLIST_FILE = "html.theme.default/html.theme.default-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Release;
-		};
 		C3D6CF2513D4DEE300D35D4D /* coverage */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1170,16 +1010,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		31355B1313EA139700C33AAB /* Build configuration list for PBXNativeTarget "html.theme.default" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				31355B1013EA139700C33AAB /* Debug */,
-				31355B1113EA139700C33AAB /* coverage */,
-				31355B1213EA139700C33AAB /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		C3FA46F613D0F8E200AC4F9B /* Build configuration list for PBXProject "Xit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
