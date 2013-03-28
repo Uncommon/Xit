@@ -25,9 +25,15 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
 
 - (void)testHeadRef {
     [super addInitialRepoContent];
-    // TODO: check that the values are correct
-    STAssertNotNil([repository headRef], @"");
-    STAssertNotNil([repository headSHA], @"");
+    STAssertEqualObjects([repository headRef], @"refs/heads/master", @"");
+
+    // The SHA will vary with the date, so just make sure it's valid.
+    NSString *headSHA = [repository headSHA];
+    NSCharacterSet *hexChars = [NSCharacterSet characterSetWithCharactersInString:@"0123456789abcdefABCDEF"];
+
+    STAssertEquals([headSHA length], (NSUInteger)40, nil);
+    STAssertEqualObjects([headSHA stringByTrimmingCharactersInSet:hexChars], @"",
+                         @"SHA should be only hex chars");
 }
 
 - (void)testParseCommit {
