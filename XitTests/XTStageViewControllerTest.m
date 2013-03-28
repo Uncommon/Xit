@@ -67,8 +67,9 @@
     [[[mockColumn expect] andReturn:@"name"] identifier];
     [[[mockColumn expect] andReturn:@"name"] identifier];
 
-    STAssertEqualObjects([ustgds tableView:mockUnstagedTable objectValueForTableColumn:mockColumn row:0], @"fileB.txt", @"");
-    STAssertEqualObjects([stgds tableView:mockUnstagedTable objectValueForTableColumn:mockColumn row:0], @"fileA.txt", @"");
+    // Two spaces are insterted before the name for aesthetics.
+    STAssertEqualObjects([ustgds tableView:mockUnstagedTable objectValueForTableColumn:mockColumn row:0], @"  fileB.txt", @"");
+    STAssertEqualObjects([stgds tableView:mockUnstagedTable objectValueForTableColumn:mockColumn row:0], @"  fileA.txt", @"");
 
     // Double-click in staged list
 
