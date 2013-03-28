@@ -5,8 +5,8 @@
 //  Created by German Laullon on 04/08/11.
 //
 
-#import "XitTests.h"
+#import "XTTest.h"
 
-@interface XTHistoryDataSorceTests : XitTests
+@interface XTHistoryDataSorceTests : XTTest
 
 @end

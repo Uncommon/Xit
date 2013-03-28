@@ -5,8 +5,8 @@
 //  Created by David Catmull on 7/6/12.
 //
 
-#import "XitTests.h"
+#import "XTTest.h"
 
-@interface XTRepositoryTests : XitTests
+@interface XTRepositoryTests : XTTest
 
 @end

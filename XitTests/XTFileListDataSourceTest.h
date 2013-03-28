@@ -5,8 +5,8 @@
 //  Created by German Laullon on 13/09/11.
 //
 
-#import "XitTests.h"
+#import "XTTest.h"
 
-@interface XTFileListDataSourceTest : XitTests
+@interface XTFileListDataSourceTest : XTTest
 
 @end

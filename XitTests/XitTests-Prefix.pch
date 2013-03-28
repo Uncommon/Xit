@@ -1,5 +1,5 @@
 //
-// Prefix header for all source files of the 'XitTests' target in the 'XitTests' project
+// Prefix header for all source files of the 'XitTests' target in the 'Xit' project
 //
 
 #ifdef __OBJC__

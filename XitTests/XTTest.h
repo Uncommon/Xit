@@ -1,6 +1,6 @@
 //
-//  XitTests.h
-//  XitTests
+//  XTTest.h
+//  XTTest
 //
 //  Created by glaullon on 7/15/11.
 //
@@ -9,7 +9,7 @@
 
 @class XTRepository;
 
-@interface XitTests : SenTestCase {
+@interface XTTest : SenTestCase {
     NSString *repoPath;
     NSString *remoteRepoPath;
     NSString *file1Path;

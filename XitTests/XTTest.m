@@ -1,15 +1,15 @@
 //
-//  XitTests.m
-//  XitTests
+//  XTTest.m
+//  XTTest
 //
 //  Created by glaullon on 7/15/11.
 //
 
-#import "XitTests.h"
+#import "XTTest.h"
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
 
-@implementation XitTests
+@implementation XTTest
 
 - (void)setUp {
     [super setUp];

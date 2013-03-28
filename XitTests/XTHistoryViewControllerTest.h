@@ -5,8 +5,8 @@
 //  Created by David Catmull on 6/1/12.
 //
 
-#import "XitTests.h"
+#import "XTTest.h"
 
-@interface XTHistoryViewControllerTest : XitTests
+@interface XTHistoryViewControllerTest : XTTest
 
 @end

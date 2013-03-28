@@ -5,8 +5,8 @@
 //  Created by German Laullon on 09/08/11.
 //
 
-#import "XitTests.h"
+#import "XTTest.h"
 
-@interface XTStageViewControllerTest : XitTests
+@interface XTStageViewControllerTest : XTTest
 
 @end
