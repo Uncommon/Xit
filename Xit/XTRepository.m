@@ -113,7 +113,7 @@ NSString *XTPathsKey = @"paths";
 
     NSPipe *pipe = [NSPipe pipe];
     [task setStandardOutput:pipe];
-    [task setStandardError:pipe];
+    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
 
     [task  launch];
     NSMutableData *output = [NSMutableData data];
@@ -183,7 +183,7 @@ NSString *XTPathsKey = @"paths";
 
     NSPipe *pipe = [NSPipe pipe];
     [task setStandardOutput:pipe];
-    [task setStandardError:pipe];
+    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
 
     NSLog(@"task.currentDirectoryPath=%@", task.currentDirectoryPath);
     [task  launch];
