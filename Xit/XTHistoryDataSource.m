@@ -66,6 +66,9 @@
 - (void)reload {
     if (repo == nil)
         return;
+
+    const BOOL selectHead = [table selectedRow] == -1;
+
     dispatch_async(repo.queue, ^{
         NSArray *args = [NSArray arrayWithObjects:@"--pretty=format:%H%n%P%n%cD%n%ce%n%s", @"--reverse", @"--tags", @"--all", @"--topo-order", nil];
         NSMutableArray *newItems = [NSMutableArray array];
@@ -124,7 +127,20 @@
         NSLog (@"-> %lu", [newItems count]);
         items = newItems;
         [table reloadData];
-        });
+
+        if (selectHead) {
+            NSString *headSHA = [repo headSHA];
+            __block NSInteger headRow = -1;
+
+            [items enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(id obj, NSUInteger row, BOOL *stop) {
+                if ([[(XTHistoryItem *)obj sha] isEqualToString:headSHA]) {
+                    headRow = row;
+                    *stop = YES;
+                }
+            }];
+            [table selectRowIndexes:[NSIndexSet indexSetWithIndex:headRow] byExtendingSelection:NO];
+        }
+    });
 }
 
 #pragma mark - NSTableViewDataSource

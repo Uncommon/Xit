@@ -521,7 +521,7 @@
 																		<string key="NSFrameSize">{703, 177}</string>
 																		<reference key="NSSuperview" ref="4744271"/>
 																		<reference key="NSWindow"/>
-																		<reference key="NSNextKeyView" ref="93965352"/>
+																		<reference key="NSNextKeyView" ref="25621835"/>
 																		<bool key="NSEnabled">YES</bool>
 																		<object class="NSTableHeaderView" key="NSHeaderView" id="553526585">
 																			<reference key="NSNextResponder" ref="25621835"/>
@@ -642,7 +642,7 @@
 																		<reference key="NSBackgroundColor" ref="955983847"/>
 																		<reference key="NSGridColor" ref="821093443"/>
 																		<double key="NSRowHeight">17</double>
-																		<int key="NSTvFlags">-759169024</int>
+																		<int key="NSTvFlags">-1027604480</int>
 																		<reference key="NSDelegate"/>
 																		<reference key="NSDataSource"/>
 																		<int key="NSColumnAutoresizingStyle">5</int>
@@ -702,7 +702,7 @@
 														<string key="NSFrameSize">{703, 194}</string>
 														<reference key="NSSuperview" ref="83736380"/>
 														<reference key="NSWindow"/>
-														<reference key="NSNextKeyView" ref="25621835"/>
+														<reference key="NSNextKeyView" ref="4744271"/>
 														<int key="NSsFlags">133680</int>
 														<reference key="NSVScroller" ref="93965352"/>
 														<reference key="NSHScroller" ref="580757005"/>
@@ -917,6 +917,7 @@
 														<array class="NSMutableArray" key="NSSubviews">
 															<reference ref="295822869"/>
 														</array>
+														<string key="NSClassName">NSView</string>
 													</object>
 												</array>
 												<string key="NSFrame">{{0, 204}, {703, 194}}</string>
