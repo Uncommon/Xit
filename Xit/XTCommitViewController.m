@@ -295,4 +295,10 @@ const NSString *kAuthorKeyDate = @"date";
     return res;
 }
 
+#pragma mark - WebUIDelegate
+
+- (NSUInteger)webView:(WebView *)sender dragDestinationActionMaskForDraggingInfo:(id <NSDraggingInfo>)draggingInfo {
+    return WebDragDestinationActionNone;
+}
+
 @end
