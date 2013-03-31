@@ -19,6 +19,7 @@
 #import "XTSideBarTableCellView.h"
 #import "XTStatusView.h"
 #import "XTTagItem.h"
+#import "NSAttributedString+XTExtensions.h"
 #import "PBGitRevisionCell.h"
 
 @interface XTHistoryViewController ()
@@ -77,9 +78,18 @@
 
     if ((action == @selector(checkOutBranch:)) ||
         (action == @selector(renameBranch:)) ||
+        (action == @selector(mergeBranch:)) ||
         (action == @selector(deleteBranch:))) {
         if (![item isKindOfClass:[XTLocalBranchItem class]])
             return NO;
+        if (action == @selector(mergeBranch:)) {
+            // "~" is used to guarantee that the placeholders are not valid branch names.
+            NSDictionary *menuFontAttributes = [NSDictionary dictionaryWithObject:[NSFont menuFontOfSize:0] forKey:NSFontAttributeName];
+            NSDictionary *obliqueAttributes = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.15] forKey:NSObliquenessAttributeName];
+            NSAttributedString *mergeTitle = [NSAttributedString attributedStringWithFormat:@"Merge @~1 into @~2" placeholders:[NSArray arrayWithObjects:@"@~1", @"@~2", nil] replacements:[NSArray arrayWithObjects:@"branch", @"master", nil] attributes:menuFontAttributes replacementAttributes:obliqueAttributes];
+
+            [menuItem setAttributedTitle:mergeTitle];
+        }
         if (action == @selector(deleteBranch:)) {
             // disable if it's the current branch
         }
@@ -135,6 +145,9 @@
 
 - (IBAction)renameBranch:(id)sender {
     [self editSelectedSidebarRow];
+}
+
+- (IBAction)mergeBranch:(id)sender {
 }
 
 - (IBAction)deleteBranch:(id)sender {
