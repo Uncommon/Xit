@@ -10,6 +10,7 @@
 #import "XTHistoryDataSource.h"
 #import "XTHistoryItem.h"
 #import "XTLocalBranchItem.h"
+#import "XTRemoteBranchItem.h"
 #import "XTRemoteItem.h"
 #import "XTRemotesItem.h"
 #import "XTRepository.h"
@@ -74,7 +75,7 @@
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     const SEL action = [menuItem action];
-    id item = [sidebarOutline itemAtRow:sidebarOutline.contextMenuRow];
+    XTSideBarItem *item = (XTSideBarItem *)[sidebarOutline itemAtRow:sidebarOutline.contextMenuRow];
 
     if ((action == @selector(checkOutBranch:)) ||
         (action == @selector(renameBranch:)) ||
@@ -83,11 +84,27 @@
         if (![item isKindOfClass:[XTLocalBranchItem class]])
             return NO;
         if (action == @selector(mergeBranch:)) {
-            // "~" is used to guarantee that the placeholders are not valid branch names.
+            NSString *clickedBranch = [item title];
+            NSString *currentBranch = [repo currentBranch];
+
+            if ([item isKindOfClass:[XTRemoteBranchItem class]]) {
+                clickedBranch = [NSString stringWithFormat:@"%@/%@", [(XTRemoteBranchItem *)item remote], clickedBranch];
+            }
+            else if ([item isKindOfClass:[XTLocalBranchItem class]]) {
+                if ([clickedBranch isEqualToString:currentBranch]) {
+                    [menuItem setAttributedTitle:nil];
+                    [menuItem setTitle:@"Merge"];
+                    return NO;
+                }
+            }
+            else
+                return NO;
+
             NSDictionary *menuFontAttributes = [NSDictionary dictionaryWithObject:[NSFont menuFontOfSize:0] forKey:NSFontAttributeName];
             NSDictionary *obliqueAttributes = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.15] forKey:NSObliquenessAttributeName];
             // TODO: handle detached HEAD case
-            NSAttributedString *mergeTitle = [NSAttributedString attributedStringWithFormat:@"Merge @~1 into @~2" placeholders:[NSArray arrayWithObjects:@"@~1", @"@~2", nil] replacements:[NSArray arrayWithObjects:[item title], [repo currentBranch], nil] attributes:menuFontAttributes replacementAttributes:obliqueAttributes];
+            // "~" is used to guarantee that the placeholders are not valid branch names.
+            NSAttributedString *mergeTitle = [NSAttributedString attributedStringWithFormat:@"Merge @~1 into @~2" placeholders:[NSArray arrayWithObjects:@"@~1", @"@~2", nil] replacements:[NSArray arrayWithObjects:clickedBranch, currentBranch, nil] attributes:menuFontAttributes replacementAttributes:obliqueAttributes];
 
             [menuItem setAttributedTitle:mergeTitle];
         }
