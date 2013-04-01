@@ -27,6 +27,12 @@ Some other ideas that I’m looking forward to working on (and using!):
   * Interactive rebase
   * Explore more ways to navigate and visualize the repository
 
+# Development
+
+You should be able to build Xit as is with no special setup. If you hit any snags, please file an issue.
+
+If you're looking for a starter task, several issues have been marked "small". These should provide a relatively easy intro to the code base.
+
 Plenty of ideas and plans have been written down in the [Issues] section. Please feel free to comment and contribute.
 
   [Issues]: https://github.com/Uncommon/Xit/issues
