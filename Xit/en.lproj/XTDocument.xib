@@ -2,31 +2,31 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1070</int>
-		<string key="IBDocument.SystemVersion">11E53</string>
-		<string key="IBDocument.InterfaceBuilderVersion">1938</string>
-		<string key="IBDocument.AppKitVersion">1138.47</string>
+		<string key="IBDocument.SystemVersion">11G63</string>
+		<string key="IBDocument.InterfaceBuilderVersion">3084</string>
+		<string key="IBDocument.AppKitVersion">1138.51</string>
 		<string key="IBDocument.HIToolboxVersion">569.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">1938</string>
+			<string key="NS.object.0">3084</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
-			<string>NSTextField</string>
-			<string>NSSegmentedControl</string>
-			<string>NSToolbar</string>
-			<string>NSViewController</string>
-			<string>NSToolbarFlexibleSpaceItem</string>
 			<string>NSButton</string>
-			<string>NSTextFieldCell</string>
 			<string>NSButtonCell</string>
-			<string>NSProgressIndicator</string>
-			<string>NSTabView</string>
 			<string>NSCustomObject</string>
-			<string>NSTabViewItem</string>
-			<string>NSView</string>
-			<string>NSWindowTemplate</string>
+			<string>NSProgressIndicator</string>
 			<string>NSSegmentedCell</string>
+			<string>NSSegmentedControl</string>
+			<string>NSTabView</string>
+			<string>NSTabViewItem</string>
+			<string>NSTextField</string>
+			<string>NSTextFieldCell</string>
+			<string>NSToolbar</string>
+			<string>NSToolbarFlexibleSpaceItem</string>
 			<string>NSToolbarItem</string>
+			<string>NSView</string>
+			<string>NSViewController</string>
+			<string>NSWindowTemplate</string>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -74,6 +74,7 @@
 								<string key="NSFrame">{{8, 14}, {32, 25}}</string>
 								<reference key="NSSuperview"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:287</string>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSButtonCell" key="NSCell" id="92530504">
@@ -120,23 +121,21 @@
 							<object class="NSSegmentedControl" key="NSToolbarItemView" id="443472690">
 								<reference key="NSNextResponder"/>
 								<int key="NSvFlags">268</int>
-								<string key="NSFrame">{{0, 14}, {93, 25}}</string>
+								<string key="NSFrame">{{0, 14}, {91, 25}}</string>
 								<reference key="NSSuperview"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:1766</string>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSSegmentedCell" key="NSCell" id="728024554">
 									<int key="NSCellFlags">67239424</int>
 									<int key="NSCellFlags2">0</int>
-									<object class="NSFont" key="NSSupport">
-										<string key="NSName">LucidaGrande</string>
-										<double key="NSSize">13</double>
-										<int key="NSfFlags">16</int>
-									</object>
+									<reference key="NSSupport" ref="285813182"/>
 									<string key="NSCellIdentifier">_NS:1766</string>
 									<reference key="NSControlView" ref="443472690"/>
 									<array class="NSMutableArray" key="NSSegmentImages">
 										<object class="NSSegmentItem">
+											<double key="NSSegmentItemWidth">29</double>
 											<object class="NSCustomResource" key="NSSegmentItemImage">
 												<string key="NSClassName">NSImage</string>
 												<string key="NSResourceName">historyTemplate</string>
@@ -146,6 +145,7 @@
 											<int key="NSSegmentItemImageScaling">0</int>
 										</object>
 										<object class="NSSegmentItem">
+											<double key="NSSegmentItemWidth">29</double>
 											<object class="NSCustomResource" key="NSSegmentItemImage">
 												<string key="NSClassName">NSImage</string>
 												<string key="NSResourceName">stageTemplate</string>
@@ -155,6 +155,7 @@
 											<int key="NSSegmentItemImageScaling">0</int>
 										</object>
 										<object class="NSSegmentItem">
+											<double key="NSSegmentItemWidth">29</double>
 											<object class="NSCustomResource" key="NSSegmentItemImage">
 												<string key="NSClassName">NSImage</string>
 												<string key="NSResourceName">NSPathTemplate</string>
@@ -163,14 +164,14 @@
 											<int key="NSSegmentItemImageScaling">0</int>
 										</object>
 									</array>
-									<int key="NSSegmentStyle">2</int>
+									<int key="NSSegmentStyle">4</int>
 								</object>
 							</object>
 							<nil key="NSToolbarItemImage"/>
 							<nil key="NSToolbarItemTarget"/>
 							<nil key="NSToolbarItemAction"/>
-							<string key="NSToolbarItemMinSize">{93, 24}</string>
-							<string key="NSToolbarItemMaxSize">{100, 25}</string>
+							<string key="NSToolbarItemMinSize">{91, 25}</string>
+							<string key="NSToolbarItemMaxSize">{91, 25}</string>
 							<bool key="NSToolbarItemEnabled">YES</bool>
 							<bool key="NSToolbarItemAutovalidates">YES</bool>
 							<int key="NSToolbarItemTag">0</int>
@@ -210,6 +211,7 @@
 								<string key="NSFrame">{{16, 14}, {16, 16}}</string>
 								<reference key="NSSuperview"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:3930</string>
 								<int key="NSpiFlags">20746</int>
 								<double key="NSMaxValue">100</double>
@@ -259,7 +261,7 @@
 							</object>
 						</object>
 					</dictionary>
-					<array class="NSMutableArray" key="NSToolbarIBAllowedItems">
+					<array key="NSToolbarIBAllowedItems">
 						<reference ref="910430088"/>
 						<reference ref="816883856"/>
 						<reference ref="494524969"/>
@@ -1000,13 +1002,63 @@
 					<string key="className">XTHistoryViewController</string>
 					<string key="superclassName">NSViewController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="applyStash:">id</string>
 						<string key="checkOutBranch:">id</string>
+						<string key="deleteBranch:">id</string>
+						<string key="deleteRemote:">id</string>
+						<string key="deleteTag:">id</string>
+						<string key="dropStash:">id</string>
+						<string key="popStash:">id</string>
+						<string key="renameBranch:">id</string>
+						<string key="renameRemote:">id</string>
+						<string key="renameTag:">id</string>
+						<string key="sideBarItemRenamed:">id</string>
 						<string key="toggleLayout:">id</string>
 						<string key="toggleSideBar:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="applyStash:">
+							<string key="name">applyStash:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="checkOutBranch:">
 							<string key="name">checkOutBranch:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="deleteBranch:">
+							<string key="name">deleteBranch:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="deleteRemote:">
+							<string key="name">deleteRemote:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="deleteTag:">
+							<string key="name">deleteTag:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="dropStash:">
+							<string key="name">dropStash:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="popStash:">
+							<string key="name">popStash:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="renameBranch:">
+							<string key="name">renameBranch:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="renameRemote:">
+							<string key="name">renameRemote:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="renameTag:">
+							<string key="name">renameTag:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="sideBarItemRenamed:">
+							<string key="name">sideBarItemRenamed:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="toggleLayout:">
@@ -1025,7 +1077,7 @@
 						<string key="historyTable">NSTableView</string>
 						<string key="mainSplitView">NSSplitView</string>
 						<string key="sideBarDS">XTSideBarDataSource</string>
-						<string key="sidebarOutline">NSOutlineView</string>
+						<string key="sidebarOutline">XTSideBarOutlineView</string>
 						<string key="sidebarSplitView">NSSplitView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -1055,7 +1107,7 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="sidebarOutline">
 							<string key="name">sidebarOutline</string>
-							<string key="candidateClassName">NSOutlineView</string>
+							<string key="candidateClassName">XTSideBarOutlineView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="sidebarSplitView">
 							<string key="name">sidebarSplitView</string>
@@ -1095,11 +1147,70 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">XTRefFormatter</string>
+					<string key="superclassName">NSFormatter</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/XTRefFormatter.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">XTSideBarDataSource</string>
 					<string key="superclassName">NSObject</string>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="refFormatter">XTRefFormatter</string>
+						<string key="viewController">XTHistoryViewController</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="refFormatter">
+							<string key="name">refFormatter</string>
+							<string key="candidateClassName">XTRefFormatter</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="viewController">
+							<string key="name">viewController</string>
+							<string key="candidateClassName">XTHistoryViewController</string>
+						</object>
+					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/XTSideBarDataSource.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">XTSideBarOutlineView</string>
+					<string key="superclassName">NSOutlineView</string>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="branchContextMenu">NSMenu</string>
+						<string key="controller">XTHistoryViewController</string>
+						<string key="remoteContextMenu">NSMenu</string>
+						<string key="stashContextMenu">NSMenu</string>
+						<string key="tagContextMenu">NSMenu</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="branchContextMenu">
+							<string key="name">branchContextMenu</string>
+							<string key="candidateClassName">NSMenu</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="controller">
+							<string key="name">controller</string>
+							<string key="candidateClassName">XTHistoryViewController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="remoteContextMenu">
+							<string key="name">remoteContextMenu</string>
+							<string key="candidateClassName">NSMenu</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="stashContextMenu">
+							<string key="name">stashContextMenu</string>
+							<string key="candidateClassName">NSMenu</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="tagContextMenu">
+							<string key="name">tagContextMenu</string>
+							<string key="candidateClassName">NSMenu</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/XTSideBarOutlineView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
