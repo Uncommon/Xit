@@ -86,7 +86,8 @@
             // "~" is used to guarantee that the placeholders are not valid branch names.
             NSDictionary *menuFontAttributes = [NSDictionary dictionaryWithObject:[NSFont menuFontOfSize:0] forKey:NSFontAttributeName];
             NSDictionary *obliqueAttributes = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.15] forKey:NSObliquenessAttributeName];
-            NSAttributedString *mergeTitle = [NSAttributedString attributedStringWithFormat:@"Merge @~1 into @~2" placeholders:[NSArray arrayWithObjects:@"@~1", @"@~2", nil] replacements:[NSArray arrayWithObjects:@"branch", @"master", nil] attributes:menuFontAttributes replacementAttributes:obliqueAttributes];
+            // TODO: handle detached HEAD case
+            NSAttributedString *mergeTitle = [NSAttributedString attributedStringWithFormat:@"Merge @~1 into @~2" placeholders:[NSArray arrayWithObjects:@"@~1", @"@~2", nil] replacements:[NSArray arrayWithObjects:[item title], [repo currentBranch], nil] attributes:menuFontAttributes replacementAttributes:obliqueAttributes];
 
             [menuItem setAttributedTitle:mergeTitle];
         }
