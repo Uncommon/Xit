@@ -55,21 +55,21 @@ NSString *XTPathsKey = @"paths";
 }
 
 - (void)addTask:(NSTask *)task {
+    [self willChangeValueForKey:@"activeTasks"];
     @synchronized(activeTasks) {
-        [self willChangeValueForKey:@"activeTasks"];
         [activeTasks addObject:task];
-        [self didChangeValueForKey:@"activeTasks"];
     }
+    [self didChangeValueForKey:@"activeTasks"];
 }
 
 - (void)removeTask:(NSTask *)task {
     @synchronized(activeTasks) {
-        if ([activeTasks containsObject:task]) {
-            [self willChangeValueForKey:@"activeTasks"];
-            [activeTasks removeObject:task];
-            [self didChangeValueForKey:@"activeTasks"];
-        }
+        if (![activeTasks containsObject:task])
+            return;
+        [self willChangeValueForKey:@"activeTasks"];
+        [activeTasks removeObject:task];
     }
+    [self didChangeValueForKey:@"activeTasks"];
 }
 
 - (void)waitForQueue {
