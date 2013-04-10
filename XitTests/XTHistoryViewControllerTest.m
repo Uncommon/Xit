@@ -10,6 +10,7 @@
 #import "XTTest.h"
 #import "XTDocument.h"
 #import "XTHistoryViewController.h"
+#import "XTLocalBranchItem.h"
 #import "XTRepository.h"
 #import "XTSideBarDataSource.h"
 #import "XTSideBarOutlineView.h"
@@ -145,6 +146,20 @@
 
 - (void)testDropStash2 {
     [self doStashAction:@selector(dropStash:) stashName:@"stash@{0} On master: s2" expectedRemains:[NSArray arrayWithObjects:@"s1", nil] expectedText:@"some text"];
+}
+
+- (void)testMergeText {
+    id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
+    XTHistoryViewController *controller = [[XTHistoryViewController alloc] initWithRepository:repository sidebar:mockSidebar];
+    XTLocalBranchItem *branchItem = [[XTLocalBranchItem alloc] initWithTitle:@"branch"];
+    NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:@"Merge" action:@selector(mergeBranch:) keyEquivalent:@""];
+    NSInteger row = 1;
+
+    [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] contextMenuRow];
+    [[[mockSidebar expect] andReturn:branchItem] itemAtRow:row];
+
+    [controller validateMenuItem:item];
+    STAssertEqualObjects([item title], @"Merge branch into master", nil);
 }
 
 @end
