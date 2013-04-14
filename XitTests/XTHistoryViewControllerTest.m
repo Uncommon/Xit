@@ -158,8 +158,23 @@
     [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] contextMenuRow];
     [[[mockSidebar expect] andReturn:branchItem] itemAtRow:row];
 
-    [controller validateMenuItem:item];
+    STAssertTrue([controller validateMenuItem:item], nil);
     STAssertEqualObjects([item title], @"Merge branch into master", nil);
+}
+
+- (void)testMergeDisabled {
+    // Merge should be disabled if the selected item is the current branch.
+    id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
+    XTHistoryViewController *controller = [[XTHistoryViewController alloc] initWithRepository:repository sidebar:mockSidebar];
+    XTLocalBranchItem *branchItem = [[XTLocalBranchItem alloc] initWithTitle:@"master"];
+    NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:@"Merge" action:@selector(mergeBranch:) keyEquivalent:@""];
+    NSInteger row = 1;
+
+    [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] contextMenuRow];
+    [[[mockSidebar expect] andReturn:branchItem] itemAtRow:row];
+
+    STAssertFalse([controller validateMenuItem:item], nil);
+    STAssertEqualObjects([item title], @"Merge", nil);
 }
 
 @end
