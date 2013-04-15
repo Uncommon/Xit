@@ -55,20 +55,23 @@
 // }
 
 - (void)addInitialRepoContent {
+    STAssertTrue([self commitNewTextFile:@"file1.txt" content:@"some text"], nil);
     file1Path = [repoPath stringByAppendingPathComponent:@"file1.txt"];
-    [@"some text" writeToFile:file1Path atomically:YES encoding:NSASCIIStringEncoding error:nil];
+}
 
-    if (![[NSFileManager defaultManager] fileExistsAtPath:file1Path]) {
-        STFail(@"file1.txt NOT Found!!");
-    }
+- (BOOL)commitNewTextFile:(NSString *)name content:(NSString *)content {
+    NSString *filePath = [repoPath stringByAppendingPathComponent:name];
 
-    if (![repository addFile:@"file1.txt"]) {
-        STFail(@"add file 'file1.txt'");
-    }
+    [content writeToFile:filePath atomically:YES encoding:NSASCIIStringEncoding error:nil];
 
-    if (![repository commitWithMessage:@"new file1.txt"]) {
-        STFail(@"Commit with mesage 'new file1.txt'");
-    }
+    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
+        return NO;
+    if (![repository addFile:@"file1.txt"])
+        return NO;
+    if (![repository commitWithMessage:[NSString stringWithFormat:@"new %@", name]])
+        return NO;
+
+    return YES;
 }
 
 - (XTRepository *)createRepo:(NSString *)repoName {
