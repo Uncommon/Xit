@@ -7,7 +7,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "XTHistoryViewControllerTest.h"
+#import "XTTest.h"
 #import "XTDocument.h"
 #import "XTHistoryViewController.h"
 #import "XTRepository.h"
@@ -16,6 +16,10 @@
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
 #import <OCMock/OCMock.h>
+
+@interface XTHistoryViewControllerTest : XTTest
+
+@end
 
 @implementation XTHistoryViewControllerTest
 

@@ -6,10 +6,14 @@
 //
 //
 
-#import "XTRefTokenTest.h"
+#import <SenTestingKit/SenTestingKit.h>
 #import "XTRefToken.h"
 #import "XTRepository+Commands.h"
 #import <OCMock/OCMock.h>
+
+@interface XTRefTokenTest : SenTestCase
+
+@end
 
 @implementation XTRefTokenTest
 

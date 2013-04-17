@@ -5,11 +5,14 @@
 //  Created by David Catmull on 7/6/12.
 //
 
-#import "XTRepositoryTests.h"
-
+#import "XTTest.h"
 #import <Cocoa/Cocoa.h>
 #import "OCMock/OCMock.h"
 #import "XTRepository+Parsing.h"
+
+@interface XTRepositoryTests : XTTest
+
+@end
 
 extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
 

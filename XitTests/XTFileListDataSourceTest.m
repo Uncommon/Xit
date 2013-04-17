@@ -5,11 +5,15 @@
 //  Created by German Laullon on 13/09/11.
 //
 
-#import "XTFileListDataSourceTest.h"
+#import "XTTest.h"
 #import "XTHistoryDataSource.h"
 #import "XTRepository+Commands.h"
 #import "XTFileListDataSource.h"
 #import "XTHistoryItem.h"
+
+@interface XTFileListDataSourceTest : XTTest
+
+@end
 
 @implementation XTFileListDataSourceTest
 

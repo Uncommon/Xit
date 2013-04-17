@@ -5,11 +5,15 @@
 //  Created by German Laullon on 04/08/11.
 //
 
-#import "XTCommitViewControllerTest.h"
+#import "XTTest.h"
 #import "XTRepository+Commands.h"
 #import "XTSideBarItem.h"
 #import "XTSideBarDataSource.h"
 #import "XTCommitViewController.h"
+
+@interface XTCommitViewControllerTest : XTTest
+
+@end
 
 @implementation XTCommitViewControllerTest
 

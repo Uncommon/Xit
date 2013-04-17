@@ -5,7 +5,7 @@
 //  Created by German Laullon on 09/08/11.
 //
 
-#import "XTStageViewControllerTest.h"
+#import "XTTest.h"
 #import "XTHTML.h"
 #import "XTUnstagedDataSource.h"
 #import "XTStagedDataSource.h"
@@ -15,6 +15,10 @@
 #import "XTStageViewController.h"
 
 #import <OCMock/OCMock.h>
+
+@interface XTStageViewControllerTest : XTTest
+
+@end
 
 @implementation XTStageViewControllerTest
 

@@ -5,11 +5,15 @@
 //  Created by German Laullon on 04/08/11.
 //
 
-#import "XTHistoryDataSorceTests.h"
+#import "XTTest.h"
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
 #import "XTHistoryDataSource.h"
 #import "XTHistoryItem.h"
+
+@interface XTHistoryDataSorceTests : XTTest
+
+@end
 
 @implementation XTHistoryDataSorceTests
 

@@ -5,13 +5,17 @@
 //  Created by German Laullon on 04/08/11.
 //
 
-#import "XTSideBarDataSorceTests.h"
+#import "XTTest.h"
 #import "XTTest.h"
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
 #import "XTSideBarItem.h"
 #import "XTSideBarDataSource.h"
 #import "XTHistoryItem.h"
+
+@interface XTSideBarDataSorceTests : XTTest
+
+@end
 
 @interface MockTextField : NSObject {
     @private
