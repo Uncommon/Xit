@@ -231,10 +231,15 @@ NSString
 
     // The first file line has newlines at the beginning.
     NSMutableArray *mutableFiles = [*files mutableCopy];
-    NSString *firstLine = [[mutableFiles objectAtIndex:0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
-    [mutableFiles removeObjectAtIndex:0];
-    [mutableFiles insertObject:firstLine atIndex:0];
+    if ([mutableFiles count] > 0) {
+        while ([mutableFiles[0] length] == 0)
+            [mutableFiles removeObjectAtIndex:0];
+
+        NSString *firstLine = [[mutableFiles objectAtIndex:0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+        [mutableFiles setObject:firstLine atIndexedSubscript:0];
+    }
 
     // Filter out any blank lines.
     *files = [mutableFiles filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id obj, NSDictionary *bindings) {
