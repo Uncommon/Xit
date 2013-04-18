@@ -80,9 +80,8 @@
         (action == @selector(deleteBranch:))) {
         if (![item isKindOfClass:[XTLocalBranchItem class]])
             return NO;
-        if (action == @selector(deleteBranch:)) {
-            // disable if it's the current branch
-        }
+        if (action == @selector(deleteBranch:))
+            return ![[repo currentBranch] isEqualToString:[item title]];
         return YES;
     }
     if ((action == @selector(renameTag:)) ||

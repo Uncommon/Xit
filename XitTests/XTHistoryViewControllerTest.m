@@ -10,6 +10,7 @@
 #import "XTTest.h"
 #import "XTDocument.h"
 #import "XTHistoryViewController.h"
+#import "XTLocalBranchItem.h"
 #import "XTRepository.h"
 #import "XTSideBarDataSource.h"
 #import "XTSideBarOutlineView.h"
@@ -18,6 +19,10 @@
 #import <OCMock/OCMock.h>
 
 @interface XTHistoryViewControllerTest : XTTest
+
+@end
+
+@interface XTHistoryViewControllerTestNoRepo : SenTestCase
 
 @end
 
@@ -145,6 +150,45 @@
 
 - (void)testDropStash2 {
     [self doStashAction:@selector(dropStash:) stashName:@"stash@{0} On master: s2" expectedRemains:[NSArray arrayWithObjects:@"s1", nil] expectedText:@"some text"];
+}
+
+@end
+
+@implementation XTHistoryViewControllerTestNoRepo
+
+- (void)testDeleteCurrentBranch {
+    id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
+    id mockRepo = [OCMockObject mockForClass:[XTRepository class]];
+    XTHistoryViewController *controller = [[XTHistoryViewController alloc] initWithRepository:mockRepo sidebar:mockSidebar];
+    NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:@"Delete" action:@selector(deleteBranch:) keyEquivalent:@""];
+    NSString *branchName = @"master";
+    XTLocalBranchItem *branchItem = [[XTLocalBranchItem alloc] initWithTitle:branchName];
+    NSInteger row = 1;
+
+    [[[mockRepo expect] andReturn:branchName] currentBranch];
+    [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] contextMenuRow];
+    [[[mockSidebar expect] andReturn:branchItem] itemAtRow:row];
+    STAssertFalse([controller validateMenuItem:menuItem], nil);
+    [mockRepo verify];
+    [mockSidebar verify];
+}
+
+- (void)testDeleteOtherBranch {
+    id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
+    id mockRepo = [OCMockObject mockForClass:[XTRepository class]];
+    XTHistoryViewController *controller = [[XTHistoryViewController alloc] initWithRepository:mockRepo sidebar:mockSidebar];
+    NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:@"Delete" action:@selector(deleteBranch:) keyEquivalent:@""];
+    NSString *clickedBranchName = @"topic";
+    NSString *currentBranchName = @"master";
+    XTLocalBranchItem *branchItem = [[XTLocalBranchItem alloc] initWithTitle:clickedBranchName];
+    NSInteger row = 1;
+
+    [[[mockRepo expect] andReturn:currentBranchName] currentBranch];
+    [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] contextMenuRow];
+    [[[mockSidebar expect] andReturn:branchItem] itemAtRow:row];
+    STAssertTrue([controller validateMenuItem:menuItem], nil);
+    [mockRepo verify];
+    [mockSidebar verify];
 }
 
 @end
