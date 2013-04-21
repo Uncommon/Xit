@@ -55,7 +55,7 @@
 
     XTHistoryDataSource *hds = [[XTHistoryDataSource alloc] init];
     [hds setRepo:repository];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     NSArray *items = hds.items;
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
@@ -98,7 +98,7 @@
 
     XTHistoryDataSource *hds = [[XTHistoryDataSource alloc] init];
     [hds setRepo:repository];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     NSUInteger nc = [hds numberOfRowsInTableView:nil];
     STAssertTrue((nc == (nCommits + 1)), @"found %d commits", nc);

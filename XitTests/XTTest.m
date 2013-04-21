@@ -26,7 +26,7 @@
 }
 
 - (void)tearDown {
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     NSFileManager *defaultManager = [NSFileManager defaultManager];
     [defaultManager removeItemAtPath:repoPath error:nil];
@@ -66,7 +66,7 @@
 
     if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
         return NO;
-    if (![repository addFile:@"file1.txt"])
+    if (![repository addFile:name])
         return NO;
     if (![repository commitWithMessage:[NSString stringWithFormat:@"new %@", name]])
         return NO;
@@ -96,6 +96,31 @@
     }
 
     return repo;
+}
+
+- (void)waitForQueue:(dispatch_queue_t)queue {
+    // Some queued tasks need to also perform tasks on the main thread, so
+    // simply waiting on the queue could cause a deadlock.
+    const CFRunLoopRef loop = CFRunLoopGetCurrent();
+    __block BOOL keepLooping = YES;
+
+    // Loop because something else might quit the run loop.
+    do {
+        CFRunLoopPerformBlock(
+                loop,
+                kCFRunLoopCommonModes,
+                ^{
+                    dispatch_async(queue, ^{
+                        CFRunLoopStop(loop);
+                        keepLooping = NO;
+                    });
+                });
+        CFRunLoopRun();
+    } while (keepLooping);
+}
+
+- (void)waitForRepoQueue {
+    [self waitForQueue:repository.queue];
 }
 
 - (BOOL)writeTextToFile1:(NSString *)text {

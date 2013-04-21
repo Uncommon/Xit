@@ -83,7 +83,7 @@
     XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
     [sbds setRepo:repository];
     [sbds reload];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     id stashes = [sbds outlineView:nil child:XTStashesGroupIndex ofItem:nil];
     STAssertTrue((stashes != nil), @"no stashes");
@@ -123,7 +123,7 @@
     XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
     [sbds setRepo:repository];
     [sbds reload];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     id remotes = [sbds outlineView:nil child:XTRemotesGroupIndex ofItem:nil];
     STAssertTrue((remotes != nil), @"no remotes");
@@ -172,7 +172,7 @@
     XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
     [sbds setRepo:repository];
     [sbds reload];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     NSInteger nr = [sbds outlineView:nil numberOfChildrenOfItem:nil];
     STAssertTrue((nr == 4), @"found %d roots FAIL", nr);

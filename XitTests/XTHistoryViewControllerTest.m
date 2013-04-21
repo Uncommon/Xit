@@ -43,7 +43,7 @@
     [[mockSidebar expect] expandItem:nil expandChildren:YES];
 
     [controller.sideBarDS reload];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     // selectBranch
     NSInteger row = 2, noRow = -1;
@@ -63,12 +63,12 @@
     [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
 
     [controller.sideBarDS outlineView:mockSidebar numberOfChildrenOfItem:nil]; // initialize sidebarDS->outline
-    [repository waitForQueue];
+    [self waitForRepoQueue];
     STAssertEqualObjects([repository currentBranch], @"b1", @"");
     [controller selectBranch:@"master"];
     STAssertEqualObjects([controller selectedBranch], @"master", @"");
     [controller checkOutBranch:nil];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
     STAssertEqualObjects([repository currentBranch], @"master", @"");
 }
 
@@ -104,7 +104,7 @@
 
     [controller.sideBarDS setRepo:repository];
     [controller.sideBarDS reload];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(noRow)] contextMenuRow];
     [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(stashRow)] selectedRow];
@@ -114,7 +114,7 @@
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
     [controller performSelector:action withObject:nil];
 #pragma clang diagnostic pop
-    [repository waitForQueue];
+    [self waitForRepoQueue];
     [self assertStashes:expectedRemains];
 
     NSError *error = nil;

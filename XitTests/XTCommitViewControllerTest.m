@@ -27,7 +27,7 @@
 
     XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
     [sbds setRepo:repository];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     id tags = [sbds outlineView:nil child:XTTagsGroupIndex ofItem:nil];
     NSInteger count = [sbds outlineView:nil numberOfChildrenOfItem:tags];

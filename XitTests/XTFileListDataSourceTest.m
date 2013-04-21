@@ -29,7 +29,7 @@
 
     XTHistoryDataSource *hds = [[XTHistoryDataSource alloc] init];
     [hds setRepo:repository];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     int expectedNF = 11;
     for (XTHistoryItem *item in hds.items) {
@@ -37,7 +37,7 @@
 
         XTFileListDataSource *flds = [[XTFileListDataSource alloc] init];
         [flds setRepo:repository];
-        [repository waitForQueue];
+        [self waitForRepoQueue];
 
         NSInteger nf = [flds outlineView:nil numberOfChildrenOfItem:nil];
         STAssertTrue((nf == expectedNF), @"found %d files, expected %d files", nf, expectedNF);
@@ -65,14 +65,14 @@
 
     XTHistoryDataSource *hds = [[XTHistoryDataSource alloc] init];
     [hds setRepo:repository];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     XTHistoryItem *item = (XTHistoryItem *)[hds.items objectAtIndex:0];
     repository.selectedCommit = item.sha;
 
     XTFileListDataSource *flds = [[XTFileListDataSource alloc] init];
     [flds setRepo:repository];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     NSInteger nf = [flds outlineView:nil numberOfChildrenOfItem:nil];
     STAssertTrue((nf == 2), @"found %d files", nf);
