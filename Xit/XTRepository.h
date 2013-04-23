@@ -41,7 +41,6 @@ extern NSString *XTPathsKey;
 - (void)initializeEventStream;
 - (void)start;
 - (void)stop;
-- (void)waitForQueue;
 - (void)reloadPaths:(NSArray *)paths;
 - (void)addReloadObserver:(id)observer selector:(SEL)selector;
 

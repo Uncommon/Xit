@@ -71,17 +71,9 @@
     return cachedBranch;
 }
 
-- (BOOL)merge:(NSString *)name {
-    NSError *error = nil;
-    BOOL res = NO;
-
-    [self executeGitWithArgs:[NSArray arrayWithObjects:@"merge", @"--no-ff", name, nil] error:&error];
-
-    if (error == nil) {
-        res = YES;
-    }
-
-    return res;
+- (BOOL)merge:(NSString *)name error:(NSError **)error {
+    [self executeGitWithArgs:@[ @"merge", name ] error:error];
+    return *error == nil;
 }
 
 - (BOOL)push:(NSString *)remote {

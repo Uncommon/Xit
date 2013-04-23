@@ -22,7 +22,7 @@
 - (BOOL)deleteRemote:(NSString *)name error:(NSError **)error;
 - (BOOL)push:(NSString *)remote;
 - (BOOL)checkout:(NSString *)branch error:(NSError **)error;
-- (BOOL)merge:(NSString *)name;
+- (BOOL)merge:(NSString *)name error:(NSError **)error;
 
 - (NSString *)diffForStagedFile:(NSString *)file;
 - (NSString *)diffForUnstagedFile:(NSString *)file;

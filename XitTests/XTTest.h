@@ -18,7 +18,10 @@
 }
 
 - (XTRepository *)createRepo:(NSString *)repoName;
+- (void)waitForQueue:(dispatch_queue_t) queue;
+- (void)waitForRepoQueue;
 - (void)addInitialRepoContent;
 - (BOOL)writeTextToFile1:(NSString *)text;
+- (BOOL)commitNewTextFile:(NSString *)name content:(NSString *)content;
 
 @end

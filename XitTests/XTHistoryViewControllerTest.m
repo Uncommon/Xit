@@ -14,11 +14,14 @@
 #import "XTRepository.h"
 #import "XTSideBarDataSource.h"
 #import "XTSideBarOutlineView.h"
+#import "XTStatusView.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
 #import <OCMock/OCMock.h>
 
 @interface XTHistoryViewControllerTest : XTTest
+
+@property NSDictionary *statusData;
 
 @end
 
@@ -27,6 +30,18 @@
 @end
 
 @implementation XTHistoryViewControllerTest
+
+@synthesize statusData;
+
+- (void)setUp {
+    [super setUp];
+    self.statusData = nil;
+}
+
+- (void)tearDown {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [super tearDown];
+}
 
 - (void)testCheckoutBranch {
     [repository start];
@@ -47,7 +62,7 @@
     [[mockSidebar expect] expandItem:nil expandChildren:YES];
 
     [controller.sideBarDS reload];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     // selectBranch
     NSInteger row = 2, noRow = -1;
@@ -67,12 +82,12 @@
     [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
 
     [controller.sideBarDS outlineView:mockSidebar numberOfChildrenOfItem:nil]; // initialize sidebarDS->outline
-    [repository waitForQueue];
+    [self waitForRepoQueue];
     STAssertEqualObjects([repository currentBranch], @"b1", @"");
     [controller selectBranch:@"master"];
     STAssertEqualObjects([controller selectedBranch], @"master", @"");
     [controller checkOutBranch:nil];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
     STAssertEqualObjects([repository currentBranch], @"master", @"");
 }
 
@@ -108,7 +123,7 @@
 
     [controller.sideBarDS setRepo:repository];
     [controller.sideBarDS reload];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(noRow)] contextMenuRow];
     [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(stashRow)] selectedRow];
@@ -118,7 +133,7 @@
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
     [controller performSelector:action withObject:nil];
 #pragma clang diagnostic pop
-    [repository waitForQueue];
+    [self waitForRepoQueue];
     [self assertStashes:expectedRemains];
 
     NSError *error = nil;
@@ -150,6 +165,64 @@
 
 - (void)testDropStash2 {
     [self doStashAction:@selector(dropStash:) stashName:@"stash@{0} On master: s2" expectedRemains:[NSArray arrayWithObjects:@"s1", nil] expectedText:@"some text"];
+}
+
+- (void)testMergeText {
+    id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
+    XTHistoryViewController *controller = [[XTHistoryViewController alloc] initWithRepository:repository sidebar:mockSidebar];
+    XTLocalBranchItem *branchItem = [[XTLocalBranchItem alloc] initWithTitle:@"branch"];
+    NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:@"Merge" action:@selector(mergeBranch:) keyEquivalent:@""];
+    NSInteger row = 1;
+
+    [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] contextMenuRow];
+    [[[mockSidebar expect] andReturn:branchItem] itemAtRow:row];
+
+    STAssertTrue([controller validateMenuItem:item], nil);
+    STAssertEqualObjects([item title], @"Merge branch into master", nil);
+}
+
+- (void)testMergeDisabled {
+    // Merge should be disabled if the selected item is the current branch.
+    id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
+    XTHistoryViewController *controller = [[XTHistoryViewController alloc] initWithRepository:repository sidebar:mockSidebar];
+    XTLocalBranchItem *branchItem = [[XTLocalBranchItem alloc] initWithTitle:@"master"];
+    NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:@"Merge" action:@selector(mergeBranch:) keyEquivalent:@""];
+    NSInteger row = 1;
+
+    [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] contextMenuRow];
+    [[[mockSidebar expect] andReturn:branchItem] itemAtRow:row];
+
+    STAssertFalse([controller validateMenuItem:item], nil);
+    STAssertEqualObjects([item title], @"Merge", nil);
+}
+
+- (void)statusUpdated:(NSNotification *)note {
+    self.statusData = [note userInfo];
+}
+
+- (void)testMergeSuccess {
+    NSString *file2Name = @"file2.txt";
+
+    STAssertTrue([repository createBranch:@"task"], nil);
+    STAssertTrue([self commitNewTextFile:file2Name content:@"branch text"], nil);
+
+    id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
+    XTHistoryViewController *controller = [[XTHistoryViewController alloc] initWithRepository:repository sidebar:mockSidebar];
+    XTLocalBranchItem *masterItem = [[XTLocalBranchItem alloc] initWithTitle:@"master"];
+    NSInteger row = 1;
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusUpdated:) name:XTStatusNotification object:repository];
+
+    [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
+    [[[mockSidebar expect] andReturn:masterItem] itemAtRow:row];
+    [controller mergeBranch:nil];
+    [self waitForQueue:dispatch_get_main_queue()];
+    STAssertEqualObjects([self.statusData valueForKey:XTStatusTextKey], @"Merged master into task", nil);
+
+    NSString *file2Path = [repoPath stringByAppendingPathComponent:file2Name];
+
+    STAssertTrue([[NSFileManager defaultManager] fileExistsAtPath:file1Path] , nil);
+    STAssertTrue([[NSFileManager defaultManager] fileExistsAtPath:file2Path], nil);
 }
 
 @end

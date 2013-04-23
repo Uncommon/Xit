@@ -43,7 +43,7 @@
 
     [ustgds setRepo:repository];
     [stgds setRepo:repository];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     STAssertEquals([ustgds numberOfRowsInTableView:mockUnstagedTable], 2L, @"");
     STAssertEquals([stgds numberOfRowsInTableView:mockStagedTable], 0L, @"");
@@ -61,7 +61,7 @@
     [[mockStagedTable stub] reloadData];
     [[mockUnstagedTable stub] reloadData];
     [controller unstagedDoubleClicked:mockUnstagedTable];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     STAssertEquals([ustgds numberOfRowsInTableView:mockUnstagedTable], 1L, @"");
     STAssertEquals([stgds numberOfRowsInTableView:mockStagedTable], 1L, @"");
@@ -80,7 +80,7 @@
     [[[mockStagedTable stub] andReturnValue:OCMOCK_VALUE(clickedRow)] clickedRow];
     [[mockStagedTable stub] reloadData];
     [controller stagedDoubleClicked:mockStagedTable];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     STAssertEquals([ustgds numberOfRowsInTableView:mockUnstagedTable], 2L, @"");
     STAssertEquals([stgds numberOfRowsInTableView:mockUnstagedTable], 0L, @"");
@@ -120,14 +120,14 @@
 
     XTUnstagedDataSource *ustgds = [[XTUnstagedDataSource alloc] init];
     [ustgds setRepo:repository];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     NSUInteger nc = [ustgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 1), @"found %d commits", nc);
 
     XTStagedDataSource *stgds = [[XTStagedDataSource alloc] init];
     [stgds setRepo:repository];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     nc = [stgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 0), @"found %d commits", nc);
@@ -138,13 +138,13 @@
     [svc stageChunk:2]; // click on stage button
 
     [ustgds reload];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     nc = [ustgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 1), @"found %d commits", nc);
 
     [stgds reload];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     nc = [stgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 1), @"found %d commits", nc);
@@ -153,7 +153,7 @@
     [svc unstageChunk:0]; // click on unstage button
 
     [stgds reload];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     nc = [stgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 0), @"found %d commits", nc);
@@ -185,7 +185,7 @@
 
     XTUnstagedDataSource *ustgds = [[XTUnstagedDataSource alloc] init];
     [ustgds setRepo:repository];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     NSUInteger nc = [ustgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 5), @"found %d commits", nc);
@@ -209,7 +209,7 @@
 
     XTStagedDataSource *stgds = [[XTStagedDataSource alloc] init];
     [stgds setRepo:repository];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     STAssertEquals([stgds numberOfRowsInTableView:nil], 5L, @"");
 
@@ -245,7 +245,7 @@
     controller.message = testMessage;
     [controller setRepo:repository];
     [controller commit:nil];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     NSString *newHeadSHA = [repository headSHA];
     NSDictionary *header = nil;
