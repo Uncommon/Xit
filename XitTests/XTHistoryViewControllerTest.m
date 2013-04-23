@@ -197,8 +197,10 @@
 }
 
 - (void)testMergeSuccess {
+    NSString *file2Name = @"file2.txt";
+
     STAssertTrue([repository createBranch:@"task"], nil);
-    STAssertTrue([self commitNewTextFile:@"file2.txt" content:@"branch text"], nil);
+    STAssertTrue([self commitNewTextFile:file2Name content:@"branch text"], nil);
 
     id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
     XTHistoryViewController *controller = [[XTHistoryViewController alloc] initWithRepository:repository sidebar:mockSidebar];
@@ -212,7 +214,11 @@
     [controller mergeBranch:nil];
     [self waitForQueue:dispatch_get_main_queue()];
     STAssertEqualObjects([self.statusData valueForKey:XTStatusTextKey], @"Merged master into task", nil);
-    // verify: successful merge
+
+    NSString *file2Path = [repoPath stringByAppendingPathComponent:file2Name];
+
+    STAssertTrue([[NSFileManager defaultManager] fileExistsAtPath:file1Path] , nil);
+    STAssertTrue([[NSFileManager defaultManager] fileExistsAtPath:file2Path], nil);
 }
 
 @end
