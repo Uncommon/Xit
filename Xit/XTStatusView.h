@@ -10,10 +10,10 @@
 @class XTOutputViewController;
 @class XTRepository;
 
-NSString *const XTStatusNotification;
-NSString *const XTStatusTextKey;
-NSString *const XTStatusCommandKey;
-NSString *const XTStatusOutputKey;
+extern NSString *const XTStatusNotification;
+extern NSString *const XTStatusTextKey;
+extern NSString *const XTStatusCommandKey;
+extern NSString *const XTStatusOutputKey;
 
 @interface XTStatusView : NSView<NSPopoverDelegate> {
     IBOutlet NSTextField *label;

@@ -104,7 +104,7 @@
             NSDictionary *obliqueAttributes = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.15] forKey:NSObliquenessAttributeName];
             // TODO: handle detached HEAD case
             // "~" is used to guarantee that the placeholders are not valid branch names.
-            NSAttributedString *mergeTitle = [NSAttributedString attributedStringWithFormat:@"Merge @~1 into @~2" placeholders:[NSArray arrayWithObjects:@"@~1", @"@~2", nil] replacements:[NSArray arrayWithObjects:clickedBranch, currentBranch, nil] attributes:menuFontAttributes replacementAttributes:obliqueAttributes];
+            NSAttributedString *mergeTitle = [NSAttributedString attributedStringWithFormat:@"Merge @~1 into @~2" placeholders:@[ @"@~1", @"@~2" ] replacements:@[ clickedBranch, currentBranch] attributes:menuFontAttributes replacementAttributes:obliqueAttributes];
 
             [menuItem setAttributedTitle:mergeTitle];
         }
@@ -166,6 +166,21 @@
 }
 
 - (IBAction)mergeBranch:(id)sender {
+    NSString *branch = [self selectedBranch];
+
+    if (branch == nil)
+        return;
+
+    NSError *error = nil;
+
+    if ([repo merge:branch error:&error]) {
+        [XTStatusView updateStatus:[NSString stringWithFormat:@"Merged %@ into %@", branch, [repo currentBranch]] command:nil output:nil forRepository:repo];
+    }
+    else {
+        NSDictionary *errorInfo = [error userInfo];
+
+        [XTStatusView updateStatus:@"Merge failed" command:errorInfo[XTErrorArgsKey] output:errorInfo[XTErrorOutputKey] forRepository:repo];
+    }
 }
 
 - (IBAction)deleteBranch:(id)sender {

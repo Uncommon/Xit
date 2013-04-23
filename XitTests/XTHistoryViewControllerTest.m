@@ -14,15 +14,30 @@
 #import "XTRepository.h"
 #import "XTSideBarDataSource.h"
 #import "XTSideBarOutlineView.h"
+#import "XTStatusView.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
 #import <OCMock/OCMock.h>
 
 @interface XTHistoryViewControllerTest : XTTest
 
+@property NSDictionary *statusData;
+
 @end
 
 @implementation XTHistoryViewControllerTest
+
+@synthesize statusData;
+
+- (void)setUp {
+    [super setUp];
+    self.statusData = nil;
+}
+
+- (void)tearDown {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [super tearDown];
+}
 
 - (void)testCheckoutBranch {
     [repository start];
@@ -175,6 +190,29 @@
 
     STAssertFalse([controller validateMenuItem:item], nil);
     STAssertEqualObjects([item title], @"Merge", nil);
+}
+
+- (void)statusUpdated:(NSNotification *)note {
+    self.statusData = [note userInfo];
+}
+
+- (void)testMergeSuccess {
+    STAssertTrue([repository createBranch:@"task"], nil);
+    STAssertTrue([self commitNewTextFile:@"file2.txt" content:@"branch text"], nil);
+
+    id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
+    XTHistoryViewController *controller = [[XTHistoryViewController alloc] initWithRepository:repository sidebar:mockSidebar];
+    XTLocalBranchItem *masterItem = [[XTLocalBranchItem alloc] initWithTitle:@"master"];
+    NSInteger row = 1;
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusUpdated:) name:XTStatusNotification object:repository];
+
+    [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
+    [[[mockSidebar expect] andReturn:masterItem] itemAtRow:row];
+    [controller mergeBranch:nil];
+    [self waitForQueue:dispatch_get_main_queue()];
+    STAssertEqualObjects([self.statusData valueForKey:XTStatusTextKey], @"Merged master into task", nil);
+    // verify: successful merge
 }
 
 @end
