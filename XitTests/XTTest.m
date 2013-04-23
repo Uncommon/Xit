@@ -17,9 +17,6 @@
     repoPath = [NSString stringWithFormat:@"%@testrepo", NSTemporaryDirectory()];
     repository = [self createRepo:repoPath];
 
-    remoteRepoPath = [NSString stringWithFormat:@"%@remotetestrepo", NSTemporaryDirectory()];
-    remoteRepository = [self createRepo:remoteRepoPath];
-
     [self addInitialRepoContent];
 
     NSLog(@"setUp ok");
@@ -45,14 +42,10 @@
     [super tearDown];
 }
 
-// - (void)testGitError
-// {
-//    NSError *error = nil;
-//    [xit exectuteGitWithArgs:[NSArray arrayWithObjects:@"checkout",@"-b",@"b1",nil] error:&error];
-//    [xit exectuteGitWithArgs:[NSArray arrayWithObjects:@"checkout",@"-b",@"b1",nil] error:&error];
-//    STAssertTrue(error!=nil, @"no error");
-//    STAssertTrue([error code]!=0, @"no error");
-// }
+- (void)makeRemoteRepo {
+    remoteRepoPath = [NSString stringWithFormat:@"%@remotetestrepo", NSTemporaryDirectory()];
+    remoteRepository = [self createRepo:remoteRepoPath];
+}
 
 - (void)addInitialRepoContent {
     STAssertTrue([self commitNewTextFile:@"file1.txt" content:@"some text"], nil);

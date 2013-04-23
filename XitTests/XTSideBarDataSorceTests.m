@@ -93,6 +93,8 @@
 }
 
 - (void)testXTSideBarDataSourceReomtes {
+    [self makeRemoteRepo];
+
     if (![repository checkout:@"master" error:NULL]) {
         STFail(@"checkout master");
     }
