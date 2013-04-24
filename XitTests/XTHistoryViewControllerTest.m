@@ -225,6 +225,31 @@
     STAssertTrue([[NSFileManager defaultManager] fileExistsAtPath:file2Path], nil);
 }
 
+- (void)testMergeFailure {
+    STAssertTrue([repository createBranch:@"task"], nil);
+    STAssertTrue([self writeTextToFile1:@"conflicting branch"], nil);
+    STAssertTrue([repository addFile:file1Path], nil);
+    STAssertTrue([repository commitWithMessage:@"conflicting commit"], nil);
+
+    STAssertTrue([repository checkout:@"master" error:NULL], nil);
+    STAssertTrue([self writeTextToFile1:@"conflicting master"], nil);
+    STAssertTrue([repository addFile:file1Path], nil);
+    STAssertTrue([repository commitWithMessage:@"conflicting commit 2"], nil);
+
+    id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
+    XTHistoryViewController *controller = [[XTHistoryViewController alloc] initWithRepository:repository sidebar:mockSidebar];
+    XTLocalBranchItem *masterItem = [[XTLocalBranchItem alloc] initWithTitle:@"task"];
+    NSInteger row = 1;
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusUpdated:) name:XTStatusNotification object:repository];
+
+    [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
+    [[[mockSidebar expect] andReturn:masterItem] itemAtRow:row];
+    [controller mergeBranch:nil];
+    [self waitForQueue:dispatch_get_main_queue()];
+    STAssertEqualObjects([self.statusData valueForKey:XTStatusTextKey], @"Merge failed", nil);
+}
+
 @end
 
 @implementation XTHistoryViewControllerTestNoRepo
