@@ -175,36 +175,37 @@
     outline = outlineView;
     outlineView.delegate = self;
 
-    NSInteger res = 0;
+    NSInteger result = 0;
+
     if (item == nil) {
-        res = [roots count];
+        result = [roots count];
     } else if ([item isKindOfClass:[XTSideBarItem class]]) {
         XTSideBarItem *sbItem = (XTSideBarItem *)item;
-        res = [sbItem numberOfChildren];
+        result = [sbItem numberOfChildren];
     }
-    return res;
+    return result;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item {
-    BOOL res = NO;
+    BOOL result = NO;
 
     if ([item isKindOfClass:[XTSideBarItem class]]) {
         XTSideBarItem *sbItem = (XTSideBarItem *)item;
-        res = [sbItem isItemExpandable];
+        result = [sbItem isItemExpandable];
     }
-    return res;
+    return result;
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item {
-    id res = nil;
+    id result = nil;
 
     if (item == nil) {
-        res = [roots objectAtIndex:index];
+        result = [roots objectAtIndex:index];
     } else if ([item isKindOfClass:[XTSideBarItem class]]) {
         XTSideBarItem *sbItem = (XTSideBarItem *)item;
-        res = [sbItem childAtIndex:index];
+        result = [sbItem childAtIndex:index];
     }
-    return res;
+    return result;
 }
 
 - (NSView *)outlineView:(NSOutlineView *)outlineView viewForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
