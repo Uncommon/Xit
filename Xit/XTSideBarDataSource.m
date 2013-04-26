@@ -73,54 +73,66 @@
 }
 
 - (void)_reload {
-    [self willChangeValueForKey:@"reload"];
     NSMutableDictionary *refsIndex = [NSMutableDictionary dictionary];
-    [self reloadBranches:refsIndex];
-    [self reloadStashes:refsIndex];
-    repo.refsIndex = refsIndex;
-    [outline performSelectorOnMainThread:@selector(reloadData)
-                              withObject:nil
-                           waitUntilDone:YES];
+
+    [self willChangeValueForKey:@"reload"];
+
+    NSMutableArray *branches = [NSMutableArray array];
+    NSMutableArray *tags = [NSMutableArray array];
+    NSMutableArray *remotes = [NSMutableArray array];
+    NSMutableArray *stashes = [NSMutableArray array];
+
+    [self reloadBranches:branches tags:tags remotes:remotes refsIndex:refsIndex];
+    [self reloadStashes:stashes refsIndex:refsIndex];
+
+    // Only modify roots on the main thread
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        XTSideBarItem *group;
+
+        group = [roots objectAtIndex:XTBranchesGroupIndex];
+        group.children = branches;
+        group = [roots objectAtIndex:XTTagsGroupIndex];
+        group.children = tags;
+        group = [roots objectAtIndex:XTRemotesGroupIndex];
+        group.children = remotes;
+        group = [roots objectAtIndex:XTStashesGroupIndex];
+        group.children = stashes;
+        repo.refsIndex = refsIndex;
+        [outline reloadData];
+    });
     currentBranch = [repo currentBranch];
+
     [self didChangeValueForKey:@"reload"];
+
     [outline performSelectorOnMainThread:@selector(reloadData)
                               withObject:nil
                            waitUntilDone:YES];
 }
 
-- (void)reloadStashes:(NSMutableDictionary *)refsIndex {
-    XTSideBarItem *stashes = [roots objectAtIndex:XTStashesGroupIndex];
-
-    [stashes clean];
+- (void)reloadStashes:(NSMutableArray *)stashes refsIndex:(NSMutableDictionary *)refsIndex {
     [repo readStashesWithBlock:^(NSString *commit, NSString *name) {
         XTSideBarItem *stash = [[XTStashItem alloc] initWithTitle:name];
-        [stashes addchild:stash];
+        [stashes addObject:stash];
         [refsIndex addObject:name forKey:commit];
     }];
 }
 
-- (void)reloadBranches:(NSMutableDictionary *)refsIndex {
-    XTSideBarItem *branches = [roots objectAtIndex:XTBranchesGroupIndex];
-    XTSideBarItem *tags = [roots objectAtIndex:XTTagsGroupIndex];
-    XTRemotesItem *remotes = [roots objectAtIndex:XTRemotesGroupIndex];
-
+- (void)reloadBranches:(NSMutableArray *)branches tags:(NSMutableArray *)tags remotes:(NSMutableArray *)remotes refsIndex:(NSMutableDictionary *)refsIndex {
+    NSMutableDictionary *remoteIndex = [NSMutableDictionary dictionary];
     NSMutableDictionary *tagIndex = [NSMutableDictionary dictionary];
-
-    [branches clean];
-    [tags clean];
-    [remotes clean];
 
     void (^localBlock)(NSString *, NSString *) = ^(NSString *name, NSString *commit) {
         XTLocalBranchItem *branch = [[XTLocalBranchItem alloc] initWithTitle:[name lastPathComponent] andSha:commit];
-        [branches addchild:branch];
+        [branches addObject:branch];
         [refsIndex addObject:[@"refs/heads" stringByAppendingPathComponent:name] forKey:branch.sha];
     };
 
     void (^remoteBlock)(NSString *, NSString *, NSString *) = ^(NSString *remoteName, NSString *branchName, NSString *commit) {
-        XTSideBarItem *remote = [remotes getRemote:remoteName];
+        XTSideBarItem *remote = [remoteIndex objectForKey:remoteName];
         if (remote == nil) {
             remote = [[XTRemoteItem alloc] initWithTitle:remoteName];
-            [remotes addchild:remote];
+            [remotes addObject:remote];
+            [remoteIndex setObject:remote forKey:remoteName];
         }
         XTRemoteBranchItem *branch = [[XTRemoteBranchItem alloc] initWithTitle:branchName remote:remoteName sha:commit];
         [remote addchild:branch];
@@ -136,7 +148,7 @@
             tag.sha = commit;
         } else {
             tag = [[XTTagItem alloc] initWithTitle:tagName andSha:commit];
-            [tags addchild:tag];
+            [tags addObject:tag];
             [tagIndex setObject:tag forKey:tagName];
         }
         [refsIndex addObject:[@"refs/tags" stringByAppendingPathComponent:name] forKey:tag.sha];

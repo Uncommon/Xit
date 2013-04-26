@@ -11,6 +11,7 @@
 
 @synthesize title;
 @synthesize sha;
+@synthesize children;
 
 - (id)initWithTitle:(NSString *)theTitle andSha:(NSString *)theSha {
     self = [super init];
