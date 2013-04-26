@@ -69,7 +69,7 @@
 
     const BOOL selectHead = [table selectedRow] == -1;
 
-    dispatch_async(repo.queue, ^{
+    [repo executeOffMainThread:^{
         NSArray *args = [NSArray arrayWithObjects:@"--pretty=format:%H%n%P%n%cD%n%ce%n%s", @"--reverse", @"--tags", @"--all", @"--topo-order", nil];
         NSMutableArray *newItems = [NSMutableArray array];
 
@@ -109,8 +109,8 @@
         } error:nil];
 
         if ([newItems count] > 0) {
-           NSUInteger i = 0;
-           NSUInteger j = [newItems count] - 1;
+           NSUInteger i = 0, j = [newItems count] - 1;
+
            while (i < j) {
                [newItems exchangeObjectAtIndex:i++ withObjectAtIndex:j--];
            }
@@ -125,22 +125,27 @@
 
         [XTStatusView updateStatus:[NSString stringWithFormat:@"%d commits loaded", (int)[newItems count]] command:nil output:@"" forRepository:repo];
         NSLog (@"-> %lu", [newItems count]);
-        items = newItems;
-        [table reloadData];
+
+        __block NSInteger headRow = -1;
 
         if (selectHead) {
             NSString *headSHA = [repo headSHA];
-            __block NSInteger headRow = -1;
 
-            [items enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(id obj, NSUInteger row, BOOL *stop) {
+            [newItems enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(id obj, NSUInteger row, BOOL *stop) {
                 if ([[(XTHistoryItem *)obj sha] isEqualToString:headSHA]) {
                     headRow = row;
                     *stop = YES;
                 }
             }];
-            [table selectRowIndexes:[NSIndexSet indexSetWithIndex:headRow] byExtendingSelection:NO];
         }
-    });
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            items = newItems;
+            [table reloadData];
+            if (headRow != -1)
+                [table selectRowIndexes:[NSIndexSet indexSetWithIndex:headRow] byExtendingSelection:NO];
+        });
+    }];
 }
 
 #pragma mark - NSTableViewDataSource
