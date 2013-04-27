@@ -10,7 +10,6 @@
 		311429B913EB60AA00A7DF05 /* XTCommitViewControllerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 311429B613EB600100A7DF05 /* XTCommitViewControllerTest.m */; };
 		313014AC13EB656B0017A2A1 /* XTSideBarDataSorceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */; };
 		313014AF13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 313014AE13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m */; };
-		3152B1E61423152700DCA679 /* XTFileListHistoryDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3152B1E51423152700DCA679 /* XTFileListHistoryDataSource.m */; };
 		3174966513DF896E004C5546 /* XTHistoryDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966413DF896E004C5546 /* XTHistoryDataSource.m */; };
 		3174966813DF8A0C004C5546 /* XTSideBarDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */; };
 		3174966E13DFF94C004C5546 /* XTHistoryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966D13DFF94C004C5546 /* XTHistoryItem.m */; };
@@ -115,8 +114,6 @@
 		313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTSideBarDataSorceTests.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		313014AE13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTHistoryDataSorceTests.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		31355B0713EA139700C33AAB /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		3152B1E41423152700DCA679 /* XTFileListHistoryDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTFileListHistoryDataSource.h; sourceTree = "<group>"; };
-		3152B1E51423152700DCA679 /* XTFileListHistoryDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTFileListHistoryDataSource.m; sourceTree = "<group>"; };
 		3174966313DF896E004C5546 /* XTHistoryDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; name = XTHistoryDataSource.h; path = Xit/XTHistoryDataSource.h; sourceTree = "<group>"; tabWidth = 4; };
 		3174966413DF896E004C5546 /* XTHistoryDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; name = XTHistoryDataSource.m; path = Xit/XTHistoryDataSource.m; sourceTree = "<group>"; tabWidth = 4; };
 		3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; name = XTSideBarDataSource.m; path = Xit/XTSideBarDataSource.m; sourceTree = "<group>"; tabWidth = 4; };
@@ -268,20 +265,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		3199BAB91420794E008AAA4F /* FileView */ = {
-			isa = PBXGroup;
-			children = (
-				3199BABE14207CFB008AAA4F /* XTFileListDataSource.h */,
-				3199BABF14207CFB008AAA4F /* XTFileListDataSource.m */,
-				31A8235414225F8A00408EDA /* XTFileViewController.h */,
-				31A8235514225F8A00408EDA /* XTFileViewController.m */,
-				31A8235614225F8B00408EDA /* XTFileViewController.xib */,
-				3152B1E41423152700DCA679 /* XTFileListHistoryDataSource.h */,
-				3152B1E51423152700DCA679 /* XTFileListHistoryDataSource.m */,
-			);
-			name = FileView;
-			sourceTree = "<group>";
-		};
 		31A8939813E9D1EA008BE0C2 /* Views */ = {
 			isa = PBXGroup;
 			children = (
