@@ -70,8 +70,8 @@
         NSArray *newRoots = [self loadRoots];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            [outline reloadData];
             roots = newRoots;
+            [outline reloadData];
             // Empty groups get automatically collapsed, so counter that.
             [outline expandItem:nil expandChildren:YES];
         });
