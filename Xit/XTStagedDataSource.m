@@ -18,13 +18,16 @@
 
 - (void)reload {
     [repo executeOffMainThread:^{
-        [items removeAllObjects];
+        NSMutableArray *newItems = [NSMutableArray array];
 
         [repo readStagedFilesWithBlock:^(NSString *name, NSString *status) {
             XTFileIndexInfo *fileInfo = [[XTFileIndexInfo alloc] initWithName:name andStatus:status];
-            [items addObject:fileInfo];
+            [newItems addObject:fileInfo];
         }];
-        [table reloadData];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            items = newItems;
+            [table reloadData];
+        });
     }];
 }
 
