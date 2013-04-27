@@ -28,8 +28,8 @@
 
 - (void)setRepo:(XTRepository *)repo;
 - (void)reload;
-- (void)reloadBranches:(NSMutableArray *)branches tags:(NSMutableArray *)tags remotes:(NSMutableArray *)remotes refsIndex:(NSMutableDictionary *)refsIndex;
-- (void)reloadStashes:(NSMutableArray *)stashes refsIndex:(NSMutableDictionary *)refsIndex;
+- (void)loadBranches:(NSMutableArray *)branches tags:(NSMutableArray *)tags remotes:(NSMutableArray *)remotes refsIndex:(NSMutableDictionary *)refsIndex;
+- (void)loadStashes:(NSMutableArray *)stashes refsIndex:(NSMutableDictionary *)refsIndex;
 
 - (XTSideBarItem *)itemNamed:(NSString *)name inGroup:(NSInteger)groupIndex;
 

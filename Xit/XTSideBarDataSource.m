@@ -18,7 +18,7 @@
 #import "NSMutableDictionary+MultiObjectForKey.h"
 
 @interface XTSideBarDataSource ()
-- (void)_reload;
+- (NSArray *)loadRoots;
 @end
 
 @implementation XTSideBarDataSource
@@ -26,20 +26,23 @@
 @synthesize roots;
 
 - (id)init {
-    self = [super init];
-    if (self) {
-        XTSideBarItem *branches = [[XTSideBarItem alloc] initWithTitle:@"BRANCHES"];
-        XTRemotesItem *remotes = [[XTRemotesItem alloc] initWithTitle:@"REMOTES"];
-        XTSideBarItem *tags = [[XTSideBarItem alloc] initWithTitle:@"TAGS"];
-        XTSideBarItem *stashes = [[XTSideBarItem alloc] initWithTitle:@"STASHES"];
-        roots = [NSArray arrayWithObjects:branches, remotes, tags, stashes, nil];
-    }
+    if ((self = [super init]) != nil)
+        roots = [self makeRoots];
 
     return self;
 }
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (NSArray *)makeRoots {
+    XTSideBarItem *branches = [[XTSideBarItem alloc] initWithTitle:@"BRANCHES"];
+    XTRemotesItem *remotes = [[XTRemotesItem alloc] initWithTitle:@"REMOTES"];
+    XTSideBarItem *tags = [[XTSideBarItem alloc] initWithTitle:@"TAGS"];
+    XTSideBarItem *stashes = [[XTSideBarItem alloc] initWithTitle:@"STASHES"];
+
+    return [NSArray arrayWithObjects:branches, remotes, tags, stashes, nil];
 }
 
 - (void)setRepo:(XTRepository *)newRepo {
@@ -63,53 +66,45 @@
 }
 
 - (void)reload {
-    dispatch_async(repo.queue, ^{
-        [self _reload];
+    [repo executeOffMainThread:^{
+        NSArray *newRoots = [self loadRoots];
+
         dispatch_async(dispatch_get_main_queue(), ^{
+            [outline reloadData];
+            roots = newRoots;
             // Empty groups get automatically collapsed, so counter that.
             [outline expandItem:nil expandChildren:YES];
         });
-    });
+    }];
 }
 
-- (void)_reload {
-    NSMutableDictionary *refsIndex = [NSMutableDictionary dictionary];
-
+- (NSArray *)loadRoots {
     [self willChangeValueForKey:@"reload"];
 
+    NSMutableDictionary *refsIndex = [NSMutableDictionary dictionary];
     NSMutableArray *branches = [NSMutableArray array];
     NSMutableArray *tags = [NSMutableArray array];
     NSMutableArray *remotes = [NSMutableArray array];
     NSMutableArray *stashes = [NSMutableArray array];
 
-    [self reloadBranches:branches tags:tags remotes:remotes refsIndex:refsIndex];
-    [self reloadStashes:stashes refsIndex:refsIndex];
+    [self loadBranches:branches tags:tags remotes:remotes refsIndex:refsIndex];
+    [self loadStashes:stashes refsIndex:refsIndex];
 
-    // Only modify roots on the main thread
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        XTSideBarItem *group;
+    NSArray *newRoots = [self makeRoots];
 
-        group = [roots objectAtIndex:XTBranchesGroupIndex];
-        group.children = branches;
-        group = [roots objectAtIndex:XTTagsGroupIndex];
-        group.children = tags;
-        group = [roots objectAtIndex:XTRemotesGroupIndex];
-        group.children = remotes;
-        group = [roots objectAtIndex:XTStashesGroupIndex];
-        group.children = stashes;
-        repo.refsIndex = refsIndex;
-        [outline reloadData];
-    });
+    [[newRoots objectAtIndex:XTBranchesGroupIndex] setChildren:branches];
+    [[newRoots objectAtIndex:XTTagsGroupIndex] setChildren:tags];
+    [[newRoots objectAtIndex:XTRemotesGroupIndex] setChildren:remotes];
+    [[newRoots objectAtIndex:XTStashesGroupIndex] setChildren:stashes];
+
+    repo.refsIndex = refsIndex;
     currentBranch = [repo currentBranch];
 
     [self didChangeValueForKey:@"reload"];
-
-    [outline performSelectorOnMainThread:@selector(reloadData)
-                              withObject:nil
-                           waitUntilDone:YES];
+    return newRoots;
 }
 
-- (void)reloadStashes:(NSMutableArray *)stashes refsIndex:(NSMutableDictionary *)refsIndex {
+- (void)loadStashes:(NSMutableArray *)stashes refsIndex:(NSMutableDictionary *)refsIndex {
     [repo readStashesWithBlock:^(NSString *commit, NSString *name) {
         XTSideBarItem *stash = [[XTStashItem alloc] initWithTitle:name];
         [stashes addObject:stash];
@@ -117,7 +112,7 @@
     }];
 }
 
-- (void)reloadBranches:(NSMutableArray *)branches tags:(NSMutableArray *)tags remotes:(NSMutableArray *)remotes refsIndex:(NSMutableDictionary *)refsIndex {
+- (void)loadBranches:(NSMutableArray *)branches tags:(NSMutableArray *)tags remotes:(NSMutableArray *)remotes refsIndex:(NSMutableDictionary *)refsIndex {
     NSMutableDictionary *remoteIndex = [NSMutableDictionary dictionary];
     NSMutableDictionary *tagIndex = [NSMutableDictionary dictionary];
 
