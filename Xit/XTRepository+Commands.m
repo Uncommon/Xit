@@ -205,6 +205,15 @@
     return error == nil;
 }
 
+- (BOOL)discardPatch:(NSString *)patch {
+    NSError *error = nil;
+
+    [self executeGitWithArgs:[NSArray arrayWithObjects:@"apply", @"--reverse", nil]
+                   withStdIn:patch
+                       error:&error];
+    return error == nil;
+}
+
 - (BOOL)renameBranch:(NSString *)branch to:(NSString *)newName {
     NSError *error = nil;
 

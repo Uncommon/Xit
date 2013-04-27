@@ -198,6 +198,10 @@
 }
 
 - (void)discardChunk:(NSInteger)idx {
+    [repo executeOffMainThread:^{
+        [repo discardPatch:[self preparePatch:idx]];
+        [self reload];
+    }];
 }
 
 #pragma mark -
