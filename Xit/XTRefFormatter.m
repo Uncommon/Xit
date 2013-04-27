@@ -1,11 +1,3 @@
-//
-//  XTRefFormatter.m
-//  Xit
-//
-//  Created by David Catmull on 1/25/13.
-//
-//
-
 #import "XTRefFormatter.h"
 
 @implementation XTRefFormatter

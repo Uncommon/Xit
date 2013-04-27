@@ -1,17 +1,14 @@
-//
-//  XTSideBarDataSorceTests.m
-//  Xit
-//
-//  Created by German Laullon on 04/08/11.
-//
-
-#import "XTSideBarDataSorceTests.h"
-#import "XitTests.h"
+#import "XTTest.h"
+#import "XTTest.h"
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
 #import "XTSideBarItem.h"
 #import "XTSideBarDataSource.h"
 #import "XTHistoryItem.h"
+
+@interface XTSideBarDataSorceTests : XTTest
+
+@end
 
 @interface MockTextField : NSObject {
     @private
@@ -79,7 +76,7 @@
     XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
     [sbds setRepo:repository];
     [sbds reload];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     id stashes = [sbds outlineView:nil child:XTStashesGroupIndex ofItem:nil];
     STAssertTrue((stashes != nil), @"no stashes");
@@ -89,6 +86,8 @@
 }
 
 - (void)testXTSideBarDataSourceReomtes {
+    [self makeRemoteRepo];
+
     if (![repository checkout:@"master" error:NULL]) {
         STFail(@"checkout master");
     }
@@ -119,7 +118,7 @@
     XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
     [sbds setRepo:repository];
     [sbds reload];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     id remotes = [sbds outlineView:nil child:XTRemotesGroupIndex ofItem:nil];
     STAssertTrue((remotes != nil), @"no remotes");
@@ -168,7 +167,7 @@
     XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
     [sbds setRepo:repository];
     [sbds reload];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     NSInteger nr = [sbds outlineView:nil numberOfChildrenOfItem:nil];
     STAssertTrue((nr == 4), @"found %d roots FAIL", nr);

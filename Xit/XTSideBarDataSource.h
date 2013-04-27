@@ -1,10 +1,3 @@
-//
-//  XTSideBarDataSource.h
-//  Xit
-//
-//  Created by German Laullon on 17/07/11.
-//
-
 #import <Cocoa/Cocoa.h>
 #import <Foundation/Foundation.h>
 #import "XTConstants.h"
@@ -28,8 +21,8 @@
 
 - (void)setRepo:(XTRepository *)repo;
 - (void)reload;
-- (void)reloadBranches:(NSMutableDictionary *)refsIndex;
-- (void)reloadStashes:(NSMutableDictionary *)refsIndex;
+- (void)loadBranches:(NSMutableArray *)branches tags:(NSMutableArray *)tags remotes:(NSMutableArray *)remotes refsIndex:(NSMutableDictionary *)refsIndex;
+- (void)loadStashes:(NSMutableArray *)stashes refsIndex:(NSMutableDictionary *)refsIndex;
 
 - (XTSideBarItem *)itemNamed:(NSString *)name inGroup:(NSInteger)groupIndex;
 

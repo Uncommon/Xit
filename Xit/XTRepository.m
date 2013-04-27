@@ -1,8 +1,3 @@
-//
-//  XTRepository.m
-//  Xit
-//
-
 #import "XTRepository.h"
 #import "NSMutableDictionary+MultiObjectForKey.h"
 
@@ -56,37 +51,20 @@ NSString *XTPathsKey = @"paths";
 
 - (void)addTask:(NSTask *)task {
     [self willChangeValueForKey:@"activeTasks"];
-    [activeTasks addObject:task];
+    @synchronized(activeTasks) {
+        [activeTasks addObject:task];
+    }
     [self didChangeValueForKey:@"activeTasks"];
 }
 
 - (void)removeTask:(NSTask *)task {
-    if ([activeTasks count] != 0) {
+    @synchronized(activeTasks) {
+        if (![activeTasks containsObject:task])
+            return;
         [self willChangeValueForKey:@"activeTasks"];
         [activeTasks removeObject:task];
-        [self didChangeValueForKey:@"activeTasks"];
     }
-}
-
-- (void)waitForQueue {
-    // Some queued tasks need to also perform tasks on the main thread, so
-    // simply waiting on the queue could cause a deadlock.
-    const CFRunLoopRef loop = CFRunLoopGetCurrent();
-    __block BOOL keepLooping = YES;
-
-    // Loop because something else might quit the run loop.
-    do {
-        CFRunLoopPerformBlock(
-                loop,
-                kCFRunLoopCommonModes,
-                ^{
-                    dispatch_async(queue, ^{
-                        CFRunLoopStop(loop);
-                        keepLooping = NO;
-                    });
-                });
-        CFRunLoopRun();
-    } while (keepLooping);
+    [self didChangeValueForKey:@"activeTasks"];
 }
 
 - (void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^)(NSString *))block error:(NSError **)error {
@@ -113,7 +91,7 @@ NSString *XTPathsKey = @"paths";
 
     NSPipe *pipe = [NSPipe pipe];
     [task setStandardOutput:pipe];
-    [task setStandardError:pipe];
+    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
 
     [task  launch];
     NSMutableData *output = [NSMutableData data];
@@ -183,7 +161,7 @@ NSString *XTPathsKey = @"paths";
 
     NSPipe *pipe = [NSPipe pipe];
     [task setStandardOutput:pipe];
-    [task setStandardError:pipe];
+    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
 
     NSLog(@"task.currentDirectoryPath=%@", task.currentDirectoryPath);
     [task  launch];
@@ -267,15 +245,17 @@ NSString *XTPathsKey = @"paths";
 }
 
 - (NSString *)headRef {
-    if (cachedHeadRef == nil) {
-        NSString *head = [self parseSymbolicReference:@"HEAD"];
+    @synchronized(self) {
+        if (cachedHeadRef == nil) {
+            NSString *head = [self parseSymbolicReference:@"HEAD"];
 
-        if ([head hasPrefix:@"refs/heads/"])
-            cachedHeadRef = head;
-        else
-            cachedHeadRef = @"HEAD";
+            if ([head hasPrefix:@"refs/heads/"])
+                cachedHeadRef = head;
+            else
+                cachedHeadRef = @"HEAD";
 
-        cachedHeadSHA = [self shaForRef:cachedHeadRef];
+            cachedHeadSHA = [self shaForRef:cachedHeadRef];
+        }
     }
     return cachedHeadRef;
 }

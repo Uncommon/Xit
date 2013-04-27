@@ -1,16 +1,10 @@
-//
-//  XTSideBarItem.m
-//  Xit
-//
-//  Created by German Laullon on 17/07/11.
-//
-
 #import "XTSideBarItem.h"
 
 @implementation XTSideBarItem
 
 @synthesize title;
 @synthesize sha;
+@synthesize children;
 
 - (id)initWithTitle:(NSString *)theTitle andSha:(NSString *)theSha {
     self = [super init];

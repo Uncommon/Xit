@@ -1,10 +1,3 @@
-//
-//  XTHTML.m
-//  Xit
-//
-//  Created by German Laullon on 8/11/11.
-//
-
 #import "XTHTML.h"
 
 @implementation XTHTML
@@ -133,16 +126,16 @@
     NSMutableString *res = [NSMutableString string];
 
     NSString *line;
-    int l_line[32]; // FIXME: make dynamic
     int r_line;
 
     line = [lines nextObject];
     DLog(@"-=%@=-", line);
 
-    int arity = 0;     /* How many files are merged here? Count the '@'! */
+    int arity = 0;     // How many files are merged here? Count the '@'!
     while ([line characterAtIndex:arity] == '@')
         arity++;
 
+    int *l_line = (int *) malloc(arity * sizeof(int));
     NSRange hr = NSMakeRange(arity + 1, [line rangeOfString:@" @@"].location - arity - 1);
     NSString *header = [line substringWithRange:hr];
 
@@ -191,6 +184,7 @@
             }
         }
     }
+    free(l_line);
     return res;
 }
 

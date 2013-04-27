@@ -1,15 +1,12 @@
-//
-//  XTHistoryDataSorceTests.m
-//  Xit
-//
-//  Created by German Laullon on 04/08/11.
-//
-
-#import "XTHistoryDataSorceTests.h"
+#import "XTTest.h"
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
 #import "XTHistoryDataSource.h"
 #import "XTHistoryItem.h"
+
+@interface XTHistoryDataSorceTests : XTTest
+
+@end
 
 @implementation XTHistoryDataSorceTests
 
@@ -51,7 +48,7 @@
 
     XTHistoryDataSource *hds = [[XTHistoryDataSource alloc] init];
     [hds setRepo:repository];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     NSArray *items = hds.items;
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
@@ -94,7 +91,7 @@
 
     XTHistoryDataSource *hds = [[XTHistoryDataSource alloc] init];
     [hds setRepo:repository];
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     NSUInteger nc = [hds numberOfRowsInTableView:nil];
     STAssertTrue((nc == (nCommits + 1)), @"found %d commits", nc);

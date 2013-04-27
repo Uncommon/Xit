@@ -1,10 +1,3 @@
-//
-//  XTHistoryView.h
-//  Xit
-//
-//  Created by German Laullon on 05/08/11.
-//
-
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
@@ -39,6 +32,7 @@
 
 - (IBAction)checkOutBranch:(id)sender;
 - (IBAction)renameBranch:(id)sender;
+- (IBAction)mergeBranch:(id)sender;
 - (IBAction)deleteBranch:(id)sender;
 - (IBAction)renameTag:(id)sender;
 - (IBAction)deleteTag:(id)sender;

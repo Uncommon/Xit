@@ -1,15 +1,8 @@
-//
-//  XitTests.m
-//  XitTests
-//
-//  Created by glaullon on 7/15/11.
-//
-
-#import "XitTests.h"
+#import "XTTest.h"
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
 
-@implementation XitTests
+@implementation XTTest
 
 - (void)setUp {
     [super setUp];
@@ -17,16 +10,13 @@
     repoPath = [NSString stringWithFormat:@"%@testrepo", NSTemporaryDirectory()];
     repository = [self createRepo:repoPath];
 
-    remoteRepoPath = [NSString stringWithFormat:@"%@remotetestrepo", NSTemporaryDirectory()];
-    remoteRepository = [self createRepo:remoteRepoPath];
-
     [self addInitialRepoContent];
 
     NSLog(@"setUp ok");
 }
 
 - (void)tearDown {
-    [repository waitForQueue];
+    [self waitForRepoQueue];
 
     NSFileManager *defaultManager = [NSFileManager defaultManager];
     [defaultManager removeItemAtPath:repoPath error:nil];
@@ -45,30 +35,29 @@
     [super tearDown];
 }
 
-// - (void)testGitError
-// {
-//    NSError *error = nil;
-//    [xit exectuteGitWithArgs:[NSArray arrayWithObjects:@"checkout",@"-b",@"b1",nil] error:&error];
-//    [xit exectuteGitWithArgs:[NSArray arrayWithObjects:@"checkout",@"-b",@"b1",nil] error:&error];
-//    STAssertTrue(error!=nil, @"no error");
-//    STAssertTrue([error code]!=0, @"no error");
-// }
+- (void)makeRemoteRepo {
+    remoteRepoPath = [NSString stringWithFormat:@"%@remotetestrepo", NSTemporaryDirectory()];
+    remoteRepository = [self createRepo:remoteRepoPath];
+}
 
 - (void)addInitialRepoContent {
+    STAssertTrue([self commitNewTextFile:@"file1.txt" content:@"some text"], nil);
     file1Path = [repoPath stringByAppendingPathComponent:@"file1.txt"];
-    [@"some text" writeToFile:file1Path atomically:YES encoding:NSASCIIStringEncoding error:nil];
+}
 
-    if (![[NSFileManager defaultManager] fileExistsAtPath:file1Path]) {
-        STFail(@"file1.txt NOT Found!!");
-    }
+- (BOOL)commitNewTextFile:(NSString *)name content:(NSString *)content {
+    NSString *filePath = [repoPath stringByAppendingPathComponent:name];
 
-    if (![repository addFile:@"file1.txt"]) {
-        STFail(@"add file 'file1.txt'");
-    }
+    [content writeToFile:filePath atomically:YES encoding:NSASCIIStringEncoding error:nil];
 
-    if (![repository commitWithMessage:@"new file1.txt"]) {
-        STFail(@"Commit with mesage 'new file1.txt'");
-    }
+    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
+        return NO;
+    if (![repository addFile:name])
+        return NO;
+    if (![repository commitWithMessage:[NSString stringWithFormat:@"new %@", name]])
+        return NO;
+
+    return YES;
 }
 
 - (XTRepository *)createRepo:(NSString *)repoName {
@@ -93,6 +82,31 @@
     }
 
     return repo;
+}
+
+- (void)waitForQueue:(dispatch_queue_t)queue {
+    // Some queued tasks need to also perform tasks on the main thread, so
+    // simply waiting on the queue could cause a deadlock.
+    const CFRunLoopRef loop = CFRunLoopGetCurrent();
+    __block BOOL keepLooping = YES;
+
+    // Loop because something else might quit the run loop.
+    do {
+        CFRunLoopPerformBlock(
+                loop,
+                kCFRunLoopCommonModes,
+                ^{
+                    dispatch_async(queue, ^{
+                        CFRunLoopStop(loop);
+                        keepLooping = NO;
+                    });
+                });
+        CFRunLoopRun();
+    } while (keepLooping);
+}
+
+- (void)waitForRepoQueue {
+    [self waitForQueue:repository.queue];
 }
 
 - (BOOL)writeTextToFile1:(NSString *)text {

@@ -1,15 +1,11 @@
-//
-//  XTRefTokenTest.m
-//  Xit
-//
-//  Created by David Catmull on 3/9/13.
-//
-//
-
-#import "XTRefTokenTest.h"
+#import <SenTestingKit/SenTestingKit.h>
 #import "XTRefToken.h"
 #import "XTRepository+Commands.h"
 #import <OCMock/OCMock.h>
+
+@interface XTRefTokenTest : SenTestCase
+
+@end
 
 @implementation XTRefTokenTest
 

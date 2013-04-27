@@ -1,10 +1,3 @@
-//
-//  NSMutableDictionary+MultiObjectForKey.h
-//  Xit
-//
-//  Created by German Laullon on 05/08/11.
-//
-
 #import <Foundation/Foundation.h>
 
 @interface NSMutableDictionary (NSMutableDictionary_MultiObjectForKey)

@@ -1,10 +1,3 @@
-//
-//  XTFileListDataSource.h
-//  Xit
-//
-//  Created by German Laullon on 13/09/11.
-//
-
 #import <Foundation/Foundation.h>
 
 @class XTRepository;
@@ -14,7 +7,6 @@
     @private
     XTRepository *repo;
     NSTreeNode *root;
-    NSMutableDictionary *nodes;
     NSOutlineView *table;
 }
 

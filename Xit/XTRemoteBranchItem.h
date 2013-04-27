@@ -1,10 +1,3 @@
-//
-//  XTRemoteBranchItem.h
-//  Xit
-//
-//  Created by David Catmull on 9/24/11.
-//
-
 #import <Foundation/Foundation.h>
 #import "XTLocalBranchItem.h"
 

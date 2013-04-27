@@ -1,19 +1,12 @@
-//
-//  XTStatusView.h
-//  Xit
-//
-//  Created by David Catmull on 10/18/11.
-//
-
 #import <Cocoa/Cocoa.h>
 
 @class XTOutputViewController;
 @class XTRepository;
 
-NSString *const XTStatusNotification;
-NSString *const XTStatusTextKey;
-NSString *const XTStatusCommandKey;
-NSString *const XTStatusOutputKey;
+extern NSString *const XTStatusNotification;
+extern NSString *const XTStatusTextKey;
+extern NSString *const XTStatusCommandKey;
+extern NSString *const XTStatusOutputKey;
 
 @interface XTStatusView : NSView<NSPopoverDelegate> {
     IBOutlet NSTextField *label;

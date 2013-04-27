@@ -1,10 +1,3 @@
-//
-//  XTIndexDataSource.m
-//  Xit
-//
-//  Created by German Laullon on 09/08/11.
-//
-
 #import "XTUnstagedDataSource.h"
 #import "XTFileIndexInfo.h"
 #import "XTModDateTracker.h"

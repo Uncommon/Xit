@@ -1,10 +1,3 @@
-//
-//  Xit.m
-//  Xit
-//
-//  Created by glaullon on 7/15/11.
-//
-
 #import "XTDocument.h"
 #import "XTDocController.h"
 #import "XTRepository.h"

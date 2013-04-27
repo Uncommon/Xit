@@ -1,8 +1,3 @@
-//
-//  XTRepository.h
-//  Xit
-//
-
 #import <Foundation/Foundation.h>
 
 extern NSString *XTRepositoryChangedNotification;
@@ -43,7 +38,6 @@ extern NSString *XTPathsKey;
 - (void)initializeEventStream;
 - (void)start;
 - (void)stop;
-- (void)waitForQueue;
 - (void)reloadPaths:(NSArray *)paths;
 - (void)addReloadObserver:(id)observer selector:(SEL)selector;
 

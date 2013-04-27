@@ -1,10 +1,3 @@
-//
-//  XTStageViewController.m
-//  Xit
-//
-//  Created by German Laullon on 10/08/11.
-//
-
 #import "XTStageViewController.h"
 #import "XTDocController.h"
 #import "XTFileIndexInfo.h"
@@ -138,11 +131,10 @@
     NSString *html = [NSString stringWithFormat:@"<html><head><link rel='stylesheet' type='text/css' href='diff.css'/></head><body><div id='diffs'>%@</div></body></html>", diff];
 
     NSBundle *bundle = [NSBundle mainBundle];
-    NSBundle *theme = [NSBundle bundleWithURL:[bundle URLForResource:@"html.theme.default" withExtension:@"bundle"]];
-    NSURL *themeURL = [[theme bundleURL] URLByAppendingPathComponent:@"Contents/Resources"];
+    NSURL *htmlURL = [bundle URLForResource:@"html" withExtension:nil];
 
     dispatch_async(dispatch_get_main_queue(), ^{
-                       [[web mainFrame] loadHTMLString:html baseURL:themeURL];
+                       [[web mainFrame] loadHTMLString:html baseURL:htmlURL];
                    });
 }
 
@@ -199,16 +191,20 @@
 }
 
 - (void)discardChunk:(NSInteger)idx {
+    [repo executeOffMainThread:^{
+        [repo discardPatch:[self preparePatch:idx]];
+        [self reload];
+    }];
 }
 
 #pragma mark -
 
 - (NSString *)preparePatch:(NSInteger)idx {
-    NSArray *comps = [actualDiff componentsSeparatedByString:@"\n@@"];
-    NSMutableString *patch = [NSMutableString stringWithString:[comps objectAtIndex:0]]; // Header
+    NSArray *components = [actualDiff componentsSeparatedByString:@"\n@@"];
+    NSMutableString *patch = [NSMutableString stringWithString:[components objectAtIndex:0]]; // Header
 
     [patch appendString:@"\n@@"];
-    [patch appendString:[comps objectAtIndex:(idx + 1)]];
+    [patch appendString:[components objectAtIndex:(idx + 1)]];
     [patch appendString:@"\n"];
     return patch;
 }
@@ -232,27 +228,27 @@
 }
 
 - (DOMHTMLElement *)createButtonWithIndex:(int)index title:(NSString *)title fromDOM:(DOMDocument *)dom {
-    DOMHTMLInputElement *bt = (DOMHTMLInputElement *)[dom createElement:@"input"];
+    DOMHTMLInputElement *button = (DOMHTMLInputElement *)[dom createElement:@"input"];
 
-    bt.type = @"button";
-    bt.value = title;
-    bt.name = [NSString stringWithFormat:@"%d", index];
-    [bt addEventListener:@"click" listener:self useCapture:YES];
-    return bt;
+    button.type = @"button";
+    button.value = title;
+    button.name = [NSString stringWithFormat:@"%d", index];
+    [button addEventListener:@"click" listener:self useCapture:YES];
+    return button;
 }
 
 #pragma mark - DOMEventListener
 
-- (void)handleEvent:(DOMEvent *)evt {
-    DOMHTMLInputElement *bt = (DOMHTMLInputElement *)evt.target;
+- (void)handleEvent:(DOMEvent *)event {
+    DOMHTMLInputElement *button = (DOMHTMLInputElement *)event.target;
 
-    NSLog(@"handleEvent: %@ - %@", bt.value, bt.name);
-    if ([bt.value isEqualToString:@"Unstage"]) {
-        [self unstageChunk:[bt.name intValue]];
-    } else if ([bt.value isEqualToString:@"Stage"]) {
-        [self stageChunk:[bt.name intValue]];
-    } else if ([bt.value isEqualToString:@"Discard"]) {
-        [self discardChunk:[bt.name intValue]];
+    NSLog(@"handleEvent: %@ - %@", button.value, button.name);
+    if ([button.value isEqualToString:@"Unstage"]) {
+        [self unstageChunk:[button.name intValue]];
+    } else if ([button.value isEqualToString:@"Stage"]) {
+        [self stageChunk:[button.name intValue]];
+    } else if ([button.value isEqualToString:@"Discard"]) {
+        [self discardChunk:[button.name intValue]];
     }
 }
 

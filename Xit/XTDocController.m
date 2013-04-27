@@ -1,10 +1,3 @@
-//
-//  XTDocController.m
-//  Xit
-//
-//  Created by David Catmull on 6/3/12.
-//
-
 #import "XTDocController.h"
 #import "XTDocument.h"
 #import "XTHistoryViewController.h"

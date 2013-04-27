@@ -1,10 +1,3 @@
-//
-//  XTRepository+Commands.m
-//  Xit
-//
-//  Created by glaullon on 7/15/11.
-//
-
 #import "XTRepository+Commands.h"
 
 
@@ -71,17 +64,9 @@
     return cachedBranch;
 }
 
-- (BOOL)merge:(NSString *)name {
-    NSError *error = nil;
-    BOOL res = NO;
-
-    [self executeGitWithArgs:[NSArray arrayWithObjects:@"merge", @"--no-ff", name, nil] error:&error];
-
-    if (error == nil) {
-        res = YES;
-    }
-
-    return res;
+- (BOOL)merge:(NSString *)name error:(NSError **)error {
+    [self executeGitWithArgs:@[ @"merge", name ] error:error];
+    return *error == nil;
 }
 
 - (BOOL)push:(NSString *)remote {
@@ -208,6 +193,15 @@
     NSError *error = nil;
 
     [self executeGitWithArgs:[NSArray arrayWithObjects:@"apply",  @"--cached", @"--reverse", nil]
+                   withStdIn:patch
+                       error:&error];
+    return error == nil;
+}
+
+- (BOOL)discardPatch:(NSString *)patch {
+    NSError *error = nil;
+
+    [self executeGitWithArgs:[NSArray arrayWithObjects:@"apply", @"--reverse", nil]
                    withStdIn:patch
                        error:&error];
     return error == nil;

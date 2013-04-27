@@ -1,10 +1,3 @@
-//
-//  XTSideBarItem.h
-//  Xit
-//
-//  Created by German Laullon on 17/07/11.
-//
-
 #import <Foundation/Foundation.h>
 #import "XTConstants.h"
 
@@ -18,6 +11,7 @@
 
 @property (strong) NSString *title;
 @property (strong) NSString *sha;
+@property (strong) NSMutableArray *children;
 
 - (id)initWithTitle:(NSString *)theTitle andSha:(NSString *)sha;
 - (id)initWithTitle:(NSString *)theTitle;

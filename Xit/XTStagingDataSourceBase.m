@@ -1,10 +1,3 @@
-//
-//  XTStagedDataSource.m
-//  Xit
-//
-//  Created by David Catmull on 6/22/11.
-//
-
 #import "XTStagingDataSourceBase.h"
 #import "XTFileIndexInfo.h"
 #import "XTModDateTracker.h"

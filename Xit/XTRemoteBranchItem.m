@@ -1,10 +1,3 @@
-//
-//  XTRemoteBranchItem.m
-//  Xit
-//
-//  Created by David Catmull on 9/24/11.
-//
-
 #import "XTRemoteBranchItem.h"
 
 

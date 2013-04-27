@@ -1,10 +1,3 @@
-//
-//  XTHistoryView.m
-//  Xit
-//
-//  Created by German Laullon on 05/08/11.
-//
-
 #import "XTHistoryViewController.h"
 #import "XTCommitViewController.h"
 #import "XTFileListDataSource.h"
@@ -12,6 +5,7 @@
 #import "XTHistoryItem.h"
 #import "XTLocalBranchItem.h"
 #import "XTPreviewItem.h"
+#import "XTRemoteBranchItem.h"
 #import "XTRemoteItem.h"
 #import "XTRemotesItem.h"
 #import "XTRepository.h"
@@ -21,6 +15,7 @@
 #import "XTSideBarTableCellView.h"
 #import "XTStatusView.h"
 #import "XTTagItem.h"
+#import "NSAttributedString+XTExtensions.h"
 #import "PBGitRevisionCell.h"
 
 @interface XTHistoryViewController ()
@@ -89,13 +84,41 @@
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     const SEL action = [menuItem action];
-    id item = [sidebarOutline itemAtRow:sidebarOutline.contextMenuRow];
+    XTSideBarItem *item = (XTSideBarItem *)[sidebarOutline itemAtRow:sidebarOutline.contextMenuRow];
 
     if ((action == @selector(checkOutBranch:)) ||
         (action == @selector(renameBranch:)) ||
+        (action == @selector(mergeBranch:)) ||
         (action == @selector(deleteBranch:))) {
         if (![item isKindOfClass:[XTLocalBranchItem class]])
             return NO;
+        if (action == @selector(deleteBranch:))
+            return ![[repo currentBranch] isEqualToString:[item title]];
+        if (action == @selector(mergeBranch:)) {
+            NSString *clickedBranch = [item title];
+            NSString *currentBranch = [repo currentBranch];
+
+            if ([item isKindOfClass:[XTRemoteBranchItem class]]) {
+                clickedBranch = [NSString stringWithFormat:@"%@/%@", [(XTRemoteBranchItem *)item remote], clickedBranch];
+            }
+            else if ([item isKindOfClass:[XTLocalBranchItem class]]) {
+                if ([clickedBranch isEqualToString:currentBranch]) {
+                    [menuItem setAttributedTitle:nil];
+                    [menuItem setTitle:@"Merge"];
+                    return NO;
+                }
+            }
+            else
+                return NO;
+
+            NSDictionary *menuFontAttributes = [NSDictionary dictionaryWithObject:[NSFont menuFontOfSize:0] forKey:NSFontAttributeName];
+            NSDictionary *obliqueAttributes = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.15] forKey:NSObliquenessAttributeName];
+            // TODO: handle detached HEAD case
+            // "~" is used to guarantee that the placeholders are not valid branch names.
+            NSAttributedString *mergeTitle = [NSAttributedString attributedStringWithFormat:@"Merge @~1 into @~2" placeholders:@[ @"@~1", @"@~2" ] replacements:@[ clickedBranch, currentBranch] attributes:menuFontAttributes replacementAttributes:obliqueAttributes];
+
+            [menuItem setAttributedTitle:mergeTitle];
+        }
         if (action == @selector(deleteBranch:)) {
             // disable if it's the current branch
         }
@@ -151,6 +174,24 @@
 
 - (IBAction)renameBranch:(id)sender {
     [self editSelectedSidebarRow];
+}
+
+- (IBAction)mergeBranch:(id)sender {
+    NSString *branch = [self selectedBranch];
+
+    if (branch == nil)
+        return;
+
+    NSError *error = nil;
+
+    if ([repo merge:branch error:&error]) {
+        [XTStatusView updateStatus:[NSString stringWithFormat:@"Merged %@ into %@", branch, [repo currentBranch]] command:nil output:nil forRepository:repo];
+    }
+    else {
+        NSDictionary *errorInfo = [error userInfo];
+
+        [XTStatusView updateStatus:@"Merge failed" command:errorInfo[XTErrorArgsKey] output:errorInfo[XTErrorOutputKey] forRepository:repo];
+    }
 }
 
 - (IBAction)deleteBranch:(id)sender {

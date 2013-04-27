@@ -1,10 +1,3 @@
-//
-//  XTRepository+Commands.h
-//  Xit
-//
-//  Created by glaullon on 7/15/11.
-//
-
 #import <Foundation/Foundation.h>
 #import "XTRepository.h"
 
@@ -22,7 +15,7 @@
 - (BOOL)deleteRemote:(NSString *)name error:(NSError **)error;
 - (BOOL)push:(NSString *)remote;
 - (BOOL)checkout:(NSString *)branch error:(NSError **)error;
-- (BOOL)merge:(NSString *)name;
+- (BOOL)merge:(NSString *)name error:(NSError **)error;
 
 - (NSString *)diffForStagedFile:(NSString *)file;
 - (NSString *)diffForUnstagedFile:(NSString *)file;
@@ -30,6 +23,7 @@
 
 - (BOOL)stagePatch:(NSString *)patch;
 - (BOOL)unstagePatch:(NSString *)patch;
+- (BOOL)discardPatch:(NSString *)patch;
 
 - (BOOL)renameBranch:(NSString *)branch to:(NSString *)newName;
 - (BOOL)renameTag:(NSString *)branch to:(NSString *)newName;

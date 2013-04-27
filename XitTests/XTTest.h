@@ -1,15 +1,8 @@
-//
-//  XitTests.h
-//  XitTests
-//
-//  Created by glaullon on 7/15/11.
-//
-
 #import <SenTestingKit/SenTestingKit.h>
 
 @class XTRepository;
 
-@interface XitTests : SenTestCase {
+@interface XTTest : SenTestCase {
     NSString *repoPath;
     NSString *remoteRepoPath;
     NSString *file1Path;
@@ -18,7 +11,11 @@
 }
 
 - (XTRepository *)createRepo:(NSString *)repoName;
+- (void)makeRemoteRepo;
+- (void)waitForQueue:(dispatch_queue_t) queue;
+- (void)waitForRepoQueue;
 - (void)addInitialRepoContent;
 - (BOOL)writeTextToFile1:(NSString *)text;
+- (BOOL)commitNewTextFile:(NSString *)name content:(NSString *)content;
 
 @end

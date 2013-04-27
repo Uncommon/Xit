@@ -1,10 +1,3 @@
-//
-//  XTSideBarDataSource.m
-//  Xit
-//
-//  Created by German Laullon on 17/07/11.
-//
-
 #import "XTSideBarDataSource.h"
 #import "XTSideBarItem.h"
 #import "XTRefFormatter.h"
@@ -18,7 +11,7 @@
 #import "NSMutableDictionary+MultiObjectForKey.h"
 
 @interface XTSideBarDataSource ()
-- (void)_reload;
+- (NSArray *)loadRoots;
 @end
 
 @implementation XTSideBarDataSource
@@ -26,20 +19,23 @@
 @synthesize roots;
 
 - (id)init {
-    self = [super init];
-    if (self) {
-        XTSideBarItem *branches = [[XTSideBarItem alloc] initWithTitle:@"BRANCHES"];
-        XTRemotesItem *remotes = [[XTRemotesItem alloc] initWithTitle:@"REMOTES"];
-        XTSideBarItem *tags = [[XTSideBarItem alloc] initWithTitle:@"TAGS"];
-        XTSideBarItem *stashes = [[XTSideBarItem alloc] initWithTitle:@"STASHES"];
-        roots = [NSArray arrayWithObjects:branches, remotes, tags, stashes, nil];
-    }
+    if ((self = [super init]) != nil)
+        roots = [self makeRoots];
 
     return self;
 }
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (NSArray *)makeRoots {
+    XTSideBarItem *branches = [[XTSideBarItem alloc] initWithTitle:@"BRANCHES"];
+    XTRemotesItem *remotes = [[XTRemotesItem alloc] initWithTitle:@"REMOTES"];
+    XTSideBarItem *tags = [[XTSideBarItem alloc] initWithTitle:@"TAGS"];
+    XTSideBarItem *stashes = [[XTSideBarItem alloc] initWithTitle:@"STASHES"];
+
+    return [NSArray arrayWithObjects:branches, remotes, tags, stashes, nil];
 }
 
 - (void)setRepo:(XTRepository *)newRepo {
@@ -63,64 +59,68 @@
 }
 
 - (void)reload {
-    dispatch_async(repo.queue, ^{
-        [self _reload];
+    [repo executeOffMainThread:^{
+        NSArray *newRoots = [self loadRoots];
+
         dispatch_async(dispatch_get_main_queue(), ^{
+            roots = newRoots;
+            [outline reloadData];
             // Empty groups get automatically collapsed, so counter that.
             [outline expandItem:nil expandChildren:YES];
         });
-    });
+    }];
 }
 
-- (void)_reload {
+- (NSArray *)loadRoots {
     [self willChangeValueForKey:@"reload"];
+
     NSMutableDictionary *refsIndex = [NSMutableDictionary dictionary];
-    [self reloadBranches:refsIndex];
-    [self reloadStashes:refsIndex];
+    NSMutableArray *branches = [NSMutableArray array];
+    NSMutableArray *tags = [NSMutableArray array];
+    NSMutableArray *remotes = [NSMutableArray array];
+    NSMutableArray *stashes = [NSMutableArray array];
+
+    [self loadBranches:branches tags:tags remotes:remotes refsIndex:refsIndex];
+    [self loadStashes:stashes refsIndex:refsIndex];
+
+    NSArray *newRoots = [self makeRoots];
+
+    [[newRoots objectAtIndex:XTBranchesGroupIndex] setChildren:branches];
+    [[newRoots objectAtIndex:XTTagsGroupIndex] setChildren:tags];
+    [[newRoots objectAtIndex:XTRemotesGroupIndex] setChildren:remotes];
+    [[newRoots objectAtIndex:XTStashesGroupIndex] setChildren:stashes];
+
     repo.refsIndex = refsIndex;
-    [outline performSelectorOnMainThread:@selector(reloadData)
-                              withObject:nil
-                           waitUntilDone:YES];
     currentBranch = [repo currentBranch];
+
     [self didChangeValueForKey:@"reload"];
-    [outline performSelectorOnMainThread:@selector(reloadData)
-                              withObject:nil
-                           waitUntilDone:YES];
+    return newRoots;
 }
 
-- (void)reloadStashes:(NSMutableDictionary *)refsIndex {
-    XTSideBarItem *stashes = [roots objectAtIndex:XTStashesGroupIndex];
-
-    [stashes clean];
+- (void)loadStashes:(NSMutableArray *)stashes refsIndex:(NSMutableDictionary *)refsIndex {
     [repo readStashesWithBlock:^(NSString *commit, NSString *name) {
         XTSideBarItem *stash = [[XTStashItem alloc] initWithTitle:name];
-        [stashes addchild:stash];
+        [stashes addObject:stash];
         [refsIndex addObject:name forKey:commit];
     }];
 }
 
-- (void)reloadBranches:(NSMutableDictionary *)refsIndex {
-    XTSideBarItem *branches = [roots objectAtIndex:XTBranchesGroupIndex];
-    XTSideBarItem *tags = [roots objectAtIndex:XTTagsGroupIndex];
-    XTRemotesItem *remotes = [roots objectAtIndex:XTRemotesGroupIndex];
-
+- (void)loadBranches:(NSMutableArray *)branches tags:(NSMutableArray *)tags remotes:(NSMutableArray *)remotes refsIndex:(NSMutableDictionary *)refsIndex {
+    NSMutableDictionary *remoteIndex = [NSMutableDictionary dictionary];
     NSMutableDictionary *tagIndex = [NSMutableDictionary dictionary];
-
-    [branches clean];
-    [tags clean];
-    [remotes clean];
 
     void (^localBlock)(NSString *, NSString *) = ^(NSString *name, NSString *commit) {
         XTLocalBranchItem *branch = [[XTLocalBranchItem alloc] initWithTitle:[name lastPathComponent] andSha:commit];
-        [branches addchild:branch];
+        [branches addObject:branch];
         [refsIndex addObject:[@"refs/heads" stringByAppendingPathComponent:name] forKey:branch.sha];
     };
 
     void (^remoteBlock)(NSString *, NSString *, NSString *) = ^(NSString *remoteName, NSString *branchName, NSString *commit) {
-        XTSideBarItem *remote = [remotes getRemote:remoteName];
+        XTSideBarItem *remote = [remoteIndex objectForKey:remoteName];
         if (remote == nil) {
             remote = [[XTRemoteItem alloc] initWithTitle:remoteName];
-            [remotes addchild:remote];
+            [remotes addObject:remote];
+            [remoteIndex setObject:remote forKey:remoteName];
         }
         XTRemoteBranchItem *branch = [[XTRemoteBranchItem alloc] initWithTitle:branchName remote:remoteName sha:commit];
         [remote addchild:branch];
@@ -136,7 +136,7 @@
             tag.sha = commit;
         } else {
             tag = [[XTTagItem alloc] initWithTitle:tagName andSha:commit];
-            [tags addchild:tag];
+            [tags addObject:tag];
             [tagIndex setObject:tag forKey:tagName];
         }
         [refsIndex addObject:[@"refs/tags" stringByAppendingPathComponent:name] forKey:tag.sha];
@@ -175,36 +175,37 @@
     outline = outlineView;
     outlineView.delegate = self;
 
-    NSInteger res = 0;
+    NSInteger result = 0;
+
     if (item == nil) {
-        res = [roots count];
+        result = [roots count];
     } else if ([item isKindOfClass:[XTSideBarItem class]]) {
         XTSideBarItem *sbItem = (XTSideBarItem *)item;
-        res = [sbItem numberOfChildren];
+        result = [sbItem numberOfChildren];
     }
-    return res;
+    return result;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item {
-    BOOL res = NO;
+    BOOL result = NO;
 
     if ([item isKindOfClass:[XTSideBarItem class]]) {
         XTSideBarItem *sbItem = (XTSideBarItem *)item;
-        res = [sbItem isItemExpandable];
+        result = [sbItem isItemExpandable];
     }
-    return res;
+    return result;
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item {
-    id res = nil;
+    id result = nil;
 
     if (item == nil) {
-        res = [roots objectAtIndex:index];
+        result = [roots objectAtIndex:index];
     } else if ([item isKindOfClass:[XTSideBarItem class]]) {
         XTSideBarItem *sbItem = (XTSideBarItem *)item;
-        res = [sbItem childAtIndex:index];
+        result = [sbItem childAtIndex:index];
     }
-    return res;
+    return result;
 }
 
 - (NSView *)outlineView:(NSOutlineView *)outlineView viewForTableColumn:(NSTableColumn *)tableColumn item:(id)item {

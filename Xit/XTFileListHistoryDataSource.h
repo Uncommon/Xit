@@ -3,7 +3,7 @@
 @class XTRepository;
 @class XTHistoryItem;
 
-@interface XTHistoryDataSource : NSObject <NSTableViewDataSource, NSTableViewDelegate>
+@interface XTFileListHistoryDataSource : NSObject <NSTableViewDataSource, NSTableViewDelegate>
 {
     @private
     XTRepository *repo;
@@ -17,4 +17,3 @@
 - (void)reload;
 - (void)setRepo:(XTRepository *)newRepo;
 @end
-

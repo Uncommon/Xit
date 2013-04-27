@@ -1,15 +1,11 @@
-//
-//  XTRepositoryTests.m
-//  Xit
-//
-//  Created by David Catmull on 7/6/12.
-//
-
-#import "XTRepositoryTests.h"
-
+#import "XTTest.h"
 #import <Cocoa/Cocoa.h>
 #import "OCMock/OCMock.h"
 #import "XTRepository+Parsing.h"
+
+@interface XTRepositoryTests : XTTest
+
+@end
 
 extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
 
@@ -25,9 +21,15 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
 
 - (void)testHeadRef {
     [super addInitialRepoContent];
-    // TODO: check that the values are correct
-    STAssertNotNil([repository headRef], @"");
-    STAssertNotNil([repository headSHA], @"");
+    STAssertEqualObjects([repository headRef], @"refs/heads/master", @"");
+
+    // The SHA will vary with the date, so just make sure it's valid.
+    NSString *headSHA = [repository headSHA];
+    NSCharacterSet *hexChars = [NSCharacterSet characterSetWithCharactersInString:@"0123456789abcdefABCDEF"];
+
+    STAssertEquals([headSHA length], (NSUInteger)40, nil);
+    STAssertEqualObjects([headSHA stringByTrimmingCharactersInSet:hexChars], @"",
+                         @"SHA should be only hex chars");
 }
 
 - (void)testParseCommit {

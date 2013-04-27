@@ -1,10 +1,3 @@
-//
-//  NSMutableDictionary+MultiObjectForKey.m
-//  Xit
-//
-//  Created by German Laullon on 05/08/11.
-//
-
 #import "NSMutableDictionary+MultiObjectForKey.h"
 
 @implementation NSMutableDictionary (NSMutableDictionary_MultiObjectForKey)

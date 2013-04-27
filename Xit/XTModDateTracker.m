@@ -1,11 +1,3 @@
-//
-//  XTModDateTracker.m
-//  Xit
-//
-//  Created by David Catmull on 9/26/12.
-//
-//
-
 #import "XTModDateTracker.h"
 
 @implementation XTModDateTracker
