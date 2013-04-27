@@ -64,9 +64,6 @@
 }
 
 - (void)reload {
-    if (repo == nil)
-        return;
-
     const BOOL selectHead = [table selectedRow] == -1;
 
     [repo executeOffMainThread:^{
@@ -104,7 +101,7 @@
                 [newItems addObject:item];
                 [index setObject:item forKey:item.sha];
             } else {
-                [NSException raise:@"Invalid commint" format:@"Line ***\n%@\n*** is invalid", line];
+                [NSException raise:@"Invalid commit" format:@"Line ***\n%@\n*** is invalid", line];
             }
         } error:nil];
 
@@ -124,7 +121,7 @@
         }];
 
         [XTStatusView updateStatus:[NSString stringWithFormat:@"%d commits loaded", (int)[newItems count]] command:nil output:@"" forRepository:repo];
-        NSLog (@"-> %lu", [newItems count]);
+        NSLog(@"-> %lu", [newItems count]);
 
         __block NSInteger headRow = -1;
 

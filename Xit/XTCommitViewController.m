@@ -136,8 +136,8 @@ const NSString *kAuthorKeyDate = @"date";
     NSURL *htmlURL = [bundle URLForResource:@"html" withExtension:nil];
 
     dispatch_async(dispatch_get_main_queue(), ^{
-                       [[web mainFrame] loadHTMLString:html baseURL:htmlURL];
-                   });
+        [[web mainFrame] loadHTMLString:html baseURL:htmlURL];
+    });
     return html;
 }
 

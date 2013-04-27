@@ -250,15 +250,17 @@ NSString *XTPathsKey = @"paths";
 }
 
 - (NSString *)headRef {
-    if (cachedHeadRef == nil) {
-        NSString *head = [self parseSymbolicReference:@"HEAD"];
+    @synchronized(self) {
+        if (cachedHeadRef == nil) {
+            NSString *head = [self parseSymbolicReference:@"HEAD"];
 
-        if ([head hasPrefix:@"refs/heads/"])
-            cachedHeadRef = head;
-        else
-            cachedHeadRef = @"HEAD";
+            if ([head hasPrefix:@"refs/heads/"])
+                cachedHeadRef = head;
+            else
+                cachedHeadRef = @"HEAD";
 
-        cachedHeadSHA = [self shaForRef:cachedHeadRef];
+            cachedHeadSHA = [self shaForRef:cachedHeadRef];
+        }
     }
     return cachedHeadRef;
 }
