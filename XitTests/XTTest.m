@@ -1,10 +1,3 @@
-//
-//  XTTest.m
-//  XTTest
-//
-//  Created by glaullon on 7/15/11.
-//
-
 #import "XTTest.h"
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"

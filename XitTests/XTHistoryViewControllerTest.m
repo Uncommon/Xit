@@ -1,10 +1,3 @@
-//
-//  XTHistoryViewControllerTest.m
-//  Xit
-//
-//  Created by David Catmull on 6/1/12.
-//
-
 #import <Cocoa/Cocoa.h>
 
 #import "XTTest.h"

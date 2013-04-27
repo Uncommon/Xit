@@ -1,10 +1,3 @@
-//
-//  XTRefToken.m
-//  Xit
-//
-//  Created by David Catmull on 9/13/12.
-//
-
 #import "XTRefToken.h"
 #import "XTRemoteBranchItem.h"
 #import "XTTagItem.h"

@@ -1,10 +1,3 @@
-//
-//  XTHistoryDataSource.m
-//  Xit
-//
-//  Created by German Laullon on 26/07/11.
-//
-
 #import "XTHistoryDataSource.h"
 #import "XTRepository.h"
 #import "XTHistoryItem.h"

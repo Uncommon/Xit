@@ -1,10 +1,3 @@
-//
-//  XTCommitViewController.m
-//  Xit
-//
-//  Created by German Laullon on 03/08/11.
-//
-
 #import "XTCommitViewController.h"
 #import "NSMutableDictionary+MultiObjectForKey.h"
 #import "XTSideBarItem.h"

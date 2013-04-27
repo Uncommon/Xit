@@ -1,10 +1,3 @@
-//
-//  XTSideBarItem.m
-//  Xit
-//
-//  Created by German Laullon on 17/07/11.
-//
-
 #import "XTSideBarItem.h"
 
 @implementation XTSideBarItem

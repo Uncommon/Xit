@@ -1,11 +1,3 @@
-//
-//  NSDate+Extensions.m
-//  Xit
-//
-//  Created by David Catmull on 8/6/11.
-//
-
-
 static NSDateFormatter *rfc2822Instance = nil;
 
 @implementation NSDate (RFC2822)

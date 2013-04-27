@@ -1,10 +1,3 @@
-//
-//  XTAppDelegate.m
-//  Xit
-//
-//  Created by David Catmull on 10/13/11.
-//
-
 #import "XTAppDelegate.h"
 #import "XTDocument.h"
 

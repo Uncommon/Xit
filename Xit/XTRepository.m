@@ -1,8 +1,3 @@
-//
-//  XTRepository.m
-//  Xit
-//
-
 #import "XTRepository.h"
 #import "NSMutableDictionary+MultiObjectForKey.h"
 

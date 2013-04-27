@@ -1,10 +1,3 @@
-//
-//  XTRefToken.h
-//  Xit
-//
-//  Created by David Catmull on 9/13/12.
-//
-
 #import <Foundation/Foundation.h>
 #import "XTConstants.h"
 

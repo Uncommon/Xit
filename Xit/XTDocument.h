@@ -1,10 +1,3 @@
-//
-//  Xit.h
-//  Xit
-//
-//  Created by glaullon on 7/15/11.
-//
-
 #import <Cocoa/Cocoa.h>
 
 @class XTRepository;

@@ -1,10 +1,3 @@
-//
-//  XTRepositoryTests.m
-//  Xit
-//
-//  Created by David Catmull on 7/6/12.
-//
-
 #import "XTTest.h"
 #import <Cocoa/Cocoa.h>
 #import "OCMock/OCMock.h"

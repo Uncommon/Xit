@@ -1,10 +1,3 @@
-//
-//  XTStagedDataSource.h
-//  Xit
-//
-//  Created by David Catmull on 6/22/11.
-//
-
 #import <Foundation/Foundation.h>
 
 @class XTModDateTracker;

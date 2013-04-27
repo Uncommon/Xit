@@ -1,10 +1,3 @@
-//
-//  XTDocController.h
-//  Xit
-//
-//  Created by David Catmull on 6/3/12.
-//
-
 #import <Cocoa/Cocoa.h>
 
 @class XTDocument;

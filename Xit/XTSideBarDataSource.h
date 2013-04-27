@@ -1,10 +1,3 @@
-//
-//  XTSideBarDataSource.h
-//  Xit
-//
-//  Created by German Laullon on 17/07/11.
-//
-
 #import <Cocoa/Cocoa.h>
 #import <Foundation/Foundation.h>
 #import "XTConstants.h"

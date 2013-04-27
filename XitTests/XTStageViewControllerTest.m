@@ -1,10 +1,3 @@
-//
-//  XTStageViewControllerTest.m
-//  Xit
-//
-//  Created by German Laullon on 09/08/11.
-//
-
 #import "XTTest.h"
 #import "XTHTML.h"
 #import "XTUnstagedDataSource.h"

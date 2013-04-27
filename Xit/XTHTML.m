@@ -1,10 +1,3 @@
-//
-//  XTHTML.m
-//  Xit
-//
-//  Created by German Laullon on 8/11/11.
-//
-
 #import "XTHTML.h"
 
 @implementation XTHTML

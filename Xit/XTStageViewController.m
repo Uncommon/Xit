@@ -1,10 +1,3 @@
-//
-//  XTStageViewController.m
-//  Xit
-//
-//  Created by German Laullon on 10/08/11.
-//
-
 #import "XTStageViewController.h"
 #import "XTDocController.h"
 #import "XTFileIndexInfo.h"

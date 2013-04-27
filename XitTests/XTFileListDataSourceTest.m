@@ -1,10 +1,3 @@
-//
-//  XTFileListDataSource.m
-//  Xit
-//
-//  Created by German Laullon on 13/09/11.
-//
-
 #import "XTTest.h"
 #import "XTHistoryDataSource.h"
 #import "XTRepository+Commands.h"

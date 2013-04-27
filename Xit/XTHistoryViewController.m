@@ -1,10 +1,3 @@
-//
-//  XTHistoryView.m
-//  Xit
-//
-//  Created by German Laullon on 05/08/11.
-//
-
 #import "XTHistoryViewController.h"
 #import "XTCommitViewController.h"
 #import "XTHistoryDataSource.h"

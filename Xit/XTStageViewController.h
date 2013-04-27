@@ -1,10 +1,3 @@
-//
-//  XTStageViewController.h
-//  Xit
-//
-//  Created by German Laullon on 10/08/11.
-//
-
 #import <Cocoa/Cocoa.h>
 #import <WebKit/WebKit.h>
 

@@ -1,10 +1,3 @@
-//
-//  XTSideBarDataSource.m
-//  Xit
-//
-//  Created by German Laullon on 17/07/11.
-//
-
 #import "XTSideBarDataSource.h"
 #import "XTSideBarItem.h"
 #import "XTRefFormatter.h"

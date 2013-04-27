@@ -1,10 +1,3 @@
-//
-//  XTStagedDataSource.m
-//  Xit
-//
-//  Created by German Laullon on 10/08/11.
-//
-
 #import "XTStagedDataSource.h"
 #import "XTModDateTracker.h"
 #import "XTRepository+Parsing.h"

@@ -1,10 +1,3 @@
-//
-//  XTRepository+Commands.m
-//  Xit
-//
-//  Created by glaullon on 7/15/11.
-//
-
 #import "XTRepository+Commands.h"
 
 

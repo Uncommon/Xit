@@ -1,10 +1,3 @@
-//
-//  XTTest.h
-//  XTTest
-//
-//  Created by glaullon on 7/15/11.
-//
-
 #import <SenTestingKit/SenTestingKit.h>
 
 @class XTRepository;

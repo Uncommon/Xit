@@ -1,10 +1,3 @@
-//
-//  XTHTML.h
-//  Xit
-//
-//  Created by German Laullon on 8/11/11.
-//
-
 #import <Foundation/Foundation.h>
 
 @interface XTHTML : NSObject

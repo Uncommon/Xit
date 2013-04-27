@@ -1,10 +1,3 @@
-//
-//  XTOutputViewController.m
-//  Xit
-//
-//  Created by David Catmull on 10/26/11.
-//
-
 #import "XTOutputViewController.h"
 #import "XTStatusView.h"
 

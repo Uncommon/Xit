@@ -1,10 +1,3 @@
-//
-//  XTHistoryView.h
-//  Xit
-//
-//  Created by German Laullon on 05/08/11.
-//
-
 #import <Cocoa/Cocoa.h>
 
 @class XTRepository;

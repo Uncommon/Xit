@@ -1,10 +1,3 @@
-//
-//  XTOutputViewController.h
-//  Xit
-//
-//  Created by David Catmull on 10/26/11.
-//
-
 #import <Cocoa/Cocoa.h>
 
 @class XTRepository;

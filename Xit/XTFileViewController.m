@@ -1,10 +1,3 @@
-//
-//  XTFileViewController.m
-//  Xit
-//
-//  Created by German Laullon on 15/09/11.
-//
-
 #import "XTFileViewController.h"
 #import "XTFileListDataSource.h"
 #import "XTFileListHistoryDataSource.h"
