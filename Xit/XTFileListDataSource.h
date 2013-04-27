@@ -14,7 +14,6 @@
     @private
     XTRepository *repo;
     NSTreeNode *root;
-    NSMutableDictionary *nodes;
     NSOutlineView *table;
 }
 

@@ -9,8 +9,10 @@
 #import "XTRepository+Parsing.h"
 
 @interface XTFileListDataSource ()
-- (void)_reload;
-- (NSTreeNode *)findTreeNodeForPath:(NSString *)path;
+- (NSTreeNode *)fileTreeForRef:(NSString *)ref;
+- (NSTreeNode *)findTreeNodeForPath:(NSString *)path
+                             parent:(NSTreeNode *)parent
+                              nodes:(NSMutableDictionary *)nodes;
 @end
 
 @implementation XTFileListDataSource
@@ -18,8 +20,7 @@
 - (id)init {
     self = [super init];
     if (self) {
-        root = [NSTreeNode treeNodeWithRepresentedObject:@"root"];
-        nodes = [NSMutableDictionary dictionary];
+        root = [self makeNewRoot];
     }
 
     return self;
@@ -27,6 +28,10 @@
 
 - (void)dealloc {
     [repo removeObserver:self forKeyPath:@"selectedCommit"];
+}
+
+- (NSTreeNode *)makeNewRoot {
+    return [NSTreeNode treeNodeWithRepresentedObject:@"root"];
 }
 
 - (void)setRepo:(XTRepository *)newRepo {
@@ -42,28 +47,30 @@
 }
 
 - (void)reload {
-    if (repo != nil)
-        dispatch_async(repo.queue, ^{ [self _reload]; });
+    [repo executeOffMainThread:^{
+        NSString *ref = repo.selectedCommit;
+        NSTreeNode *newRoot = [self fileTreeForRef:(ref == nil) ? @"HEAD" : ref];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            root = newRoot;
+            [table reloadData];
+        });
+    }];
 }
 
-- (void)_reload {
-    [nodes removeAllObjects];
-    [[root mutableChildNodes] removeAllObjects];
-
-    NSString *sha = repo.selectedCommit;
-    if (!sha)
-        sha = @"HEAD";
-
-    NSArray *files = [repo fileNamesForRef:sha];
+- (NSTreeNode *)fileTreeForRef:(NSString *)ref {
+    NSTreeNode *newRoot = [self makeNewRoot];
+    NSMutableDictionary *nodes = [NSMutableDictionary dictionary];
+    NSArray *files = [repo fileNamesForRef:ref];
 
     for (NSString *file in files) {
         NSString *path = [file stringByDeletingLastPathComponent];
         NSTreeNode *node = [NSTreeNode treeNodeWithRepresentedObject:file];
 
         if (path.length == 0) {
-            [[root mutableChildNodes] addObject:node];
+            [[newRoot mutableChildNodes] addObject:node];
         } else {
-            NSTreeNode *parentNode = [self findTreeNodeForPath:path];
+            NSTreeNode *parentNode = [self findTreeNodeForPath:path parent:newRoot nodes:nodes];
             [[parentNode mutableChildNodes] addObject:node];
         }
     }
@@ -72,21 +79,23 @@
             [[NSSortDescriptor alloc] initWithKey:@"lastPathComponent"
                                         ascending:YES
                                          selector:@selector(localizedCaseInsensitiveCompare:)];
-    [root sortWithSortDescriptors:[NSArray arrayWithObject:sortDescriptor] recursively:YES];
 
-    [table reloadData];
+    [newRoot sortWithSortDescriptors:[NSArray arrayWithObject:sortDescriptor] recursively:YES];
+    return newRoot;
 }
 
-- (NSTreeNode *)findTreeNodeForPath:(NSString *)path {
+- (NSTreeNode *)findTreeNodeForPath:(NSString *)path
+                             parent:(NSTreeNode *)parent
+                              nodes:(NSMutableDictionary *)nodes {
     NSTreeNode *pathNode = [nodes objectForKey:path];
 
     if (!pathNode) {
         pathNode = [NSTreeNode treeNodeWithRepresentedObject:path];
         NSString *parentPath = [path stringByDeletingLastPathComponent];
         if (parentPath.length == 0) {
-            [[root mutableChildNodes] addObject:pathNode];
+            [[parent mutableChildNodes] addObject:pathNode];
         } else {
-            NSTreeNode *parentNode = [self findTreeNodeForPath:parentPath];
+            NSTreeNode *parentNode = [self findTreeNodeForPath:parentPath parent:parent nodes:nodes];
             [[parentNode mutableChildNodes] addObject:pathNode];
         }
         [nodes setObject:pathNode forKey:path];
