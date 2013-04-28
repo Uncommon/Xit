@@ -15,19 +15,23 @@ NSString *XTHeaderContentKey = @"content";
 
     if (output != nil) {
         NSString *refs = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-        NSScanner *scan = [NSScanner scannerWithString:refs];
+        NSScanner *scanner = [NSScanner scannerWithString:refs];
+        NSString *localBranchPrefix = @"refs/heads/";
+        NSString *tagPrefix = @"refs/tags/";
+        NSString *remotePrefix = @"refs/remotes/";
         NSString *commit;
         NSString *name;
 
-        while ([scan scanUpToString:@" " intoString:&commit]) {
-            [scan scanUpToString:@"\n" intoString:&name];
-            if ([name hasPrefix:@"refs/heads/"]) {
-                localBlock([name lastPathComponent], commit);
-            } else if ([name hasPrefix:@"refs/tags/"]) {
-                tagBlock([name lastPathComponent], commit);
-            } else if ([name hasPrefix:@"refs/remotes/"]) {
+        while ([scanner scanUpToString:@" " intoString:&commit]) {
+            [scanner scanUpToString:@"\n" intoString:&name];
+            if ([name hasPrefix:localBranchPrefix]) {
+                localBlock([name substringFromIndex:[localBranchPrefix length]], commit);
+            } else if ([name hasPrefix:tagPrefix]) {
+                tagBlock([name substringFromIndex:[tagPrefix length]], commit);
+            } else if ([name hasPrefix:remotePrefix]) {
                 NSString *remoteName = [[name pathComponents] objectAtIndex:2];
-                NSString *branchName = [name lastPathComponent];
+                const NSUInteger prefixLen = [remotePrefix length] + [remoteName length] + 1;
+                NSString *branchName = [name substringFromIndex:prefixLen];
 
                 remoteBlock(remoteName, branchName, commit);
             }

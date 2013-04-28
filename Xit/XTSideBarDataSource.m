@@ -129,15 +129,15 @@
 
     void (^tagBlock)(NSString *, NSString *) = ^(NSString *name, NSString *commit) {
         XTTagItem *tag;
-        NSString *tagName = [name lastPathComponent];
-        if ([tagName hasSuffix:@"^{}"]) {
-            tagName = [tagName substringToIndex:tagName.length - 3];
-            tag = [tagIndex objectForKey:tagName];
+
+        if ([name hasSuffix:@"^{}"]) {
+            name = [name substringToIndex:name.length - 3];
+            tag = [tagIndex objectForKey:name];
             tag.sha = commit;
         } else {
-            tag = [[XTTagItem alloc] initWithTitle:tagName andSha:commit];
+            tag = [[XTTagItem alloc] initWithTitle:name andSha:commit];
             [tags addObject:tag];
-            [tagIndex setObject:tag forKey:tagName];
+            [tagIndex setObject:tag forKey:name];
         }
         [refsIndex addObject:[@"refs/tags" stringByAppendingPathComponent:name] forKey:tag.sha];
     };
