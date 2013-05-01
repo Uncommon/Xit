@@ -27,6 +27,7 @@
 
         if (tempPath != NULL)
             tempFolder = [NSString stringWithCString:tempPath encoding:NSUTF8StringEncoding];
+        free(template);
     }
     return self;
 }
