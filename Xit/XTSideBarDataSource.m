@@ -239,6 +239,8 @@
                 [dataView.button setHidden:![[item title] isEqualToString:currentBranch]];
         } else if ([item isKindOfClass:[XTTagItem class]]) {
             [dataView.imageView setImage:[NSImage imageNamed:@"tag"]];
+        } else if ([item isKindOfClass:[XTStashItem class]]) {
+            [dataView.imageView setImage:[NSImage imageNamed:@"stash"]];
         } else {
             [dataView.button setHidden:YES];
             if ([outlineView parentForItem:item] == [roots objectAtIndex:XTRemotesGroupIndex])
