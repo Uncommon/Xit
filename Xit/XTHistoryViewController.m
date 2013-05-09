@@ -48,7 +48,14 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)awakeFromNib {
+- (void)loadView {
+    [super loadView];
+
+    NSNib *menuNib = [[NSNib alloc] initWithNibNamed:@"HistoryView Menus" bundle:nil];
+    NSArray *objects;
+
+    [menuNib instantiateWithOwner:self topLevelObjects:&objects];
+
     // Remove intercell spacing so the history lines will connect
     NSSize cellSpacing = [historyTable intercellSpacing];
     cellSpacing.height = 0;
@@ -56,12 +63,6 @@
 
     // Without this, the first group title moves when you hide its contents
     [sidebarOutline setFloatsGroupRows:NO];
-
-    if ([sidebarOutline menu] == nil) {
-        NSMenu *menu = [[NSMenu alloc] initWithTitle:@""];
-        [menu addItemWithTitle:@"item" action:NULL keyEquivalent:@""];
-        [sidebarOutline setMenu:menu];
-    }
 
     [[NSNotificationCenter defaultCenter]
             addObserver:self
