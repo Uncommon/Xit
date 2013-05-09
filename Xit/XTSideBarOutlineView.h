@@ -5,10 +5,6 @@
 @interface XTSideBarOutlineView : NSOutlineView
 {
     IBOutlet XTHistoryViewController *controller;
-    IBOutlet NSMenu *branchContextMenu;
-    IBOutlet NSMenu *remoteContextMenu;
-    IBOutlet NSMenu *tagContextMenu;
-    IBOutlet NSMenu *stashContextMenu;
 
     NSInteger contextMenuRow;
 }

@@ -28,6 +28,10 @@
 
 @synthesize sideBarDS;
 @synthesize historyDS;
+@synthesize branchContextMenu;
+@synthesize remoteContextMenu;
+@synthesize tagContextMenu;
+@synthesize stashContextMenu;
 
 - (id)initWithRepository:(XTRepository *)repository sidebar:(XTSideBarOutlineView *)sidebar {
     if ((self = [self init]) == nil)
