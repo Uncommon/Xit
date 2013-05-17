@@ -51,10 +51,18 @@
 - (void)loadView {
     [super loadView];
 
-    NSNib *menuNib = [[NSNib alloc] initWithNibNamed:@"HistoryView Menus" bundle:nil];
-    NSArray *objects;
+    // Load the context menus
+    NSNib *nib = [[NSNib alloc] initWithNibNamed:@"HistoryView Menus" bundle:nil];
 
-    [menuNib instantiateWithOwner:self topLevelObjects:&objects];
+    [nib instantiateWithOwner:self topLevelObjects:nil];
+
+    // Load the file list view into its tab
+    const NSInteger treeTabIndex = [commitTabView indexOfTabViewItemWithIdentifier:@"tree"];
+    NSTabViewItem *treeTabItem = [commitTabView tabViewItemAtIndex:treeTabIndex];
+
+    nib = [[NSNib alloc] initWithNibNamed:@"FileView" bundle:nil];
+    [nib instantiateWithOwner:self topLevelObjects:nil];
+    [treeTabItem setView:fileListRootView];
 
     // Remove intercell spacing so the history lines will connect
     NSSize cellSpacing = [historyTable intercellSpacing];
@@ -327,6 +335,12 @@
     const NSUInteger selectionCount = [selection count];
     XTPreviewItem *previewItem = (XTPreviewItem*)filePreview.previewItem;
 
+    if (previewItem == nil) {
+        previewItem = [[XTPreviewItem alloc] init];
+        previewItem.repo = repo;
+        filePreview.previewItem = previewItem;
+    }
+
     previewItem.commitSHA = repo.selectedCommit;
     if (selectionCount != 1) {
         [filePreview setHidden:YES];
@@ -417,12 +431,6 @@ const NSUInteger
 
 - (void)tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem {
     if ([[tabViewItem identifier] isEqualToString:@"tree"]) {
-        // When the QLPreviewView is hidden, it releases its previewItem,
-        // so it must be re-created when the tab is shown again.
-        XTPreviewItem *previewItem = [[XTPreviewItem alloc] init];
-
-        previewItem.repo = repo;
-        filePreview.previewItem = previewItem;
         [self updatePreviewItem];
         [filePreview refreshPreviewItem];
     }

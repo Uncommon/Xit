@@ -21,6 +21,7 @@
     IBOutlet NSSplitView *sidebarSplitView;
     IBOutlet NSSplitView *mainSplitView;
     IBOutlet NSTabView *commitTabView;
+    IBOutlet NSView *fileListRootView;
     IBOutlet NSOutlineView *fileListOutline;
     IBOutlet QLPreviewView *filePreview;
     IBOutlet NSMenu *branchContextMenu;
