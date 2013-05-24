@@ -96,7 +96,7 @@
 }
 
 - (void)loadHistoryIntoItems:(NSMutableArray *)newItems withIndex:(NSMutableDictionary *)commitIndex {
-    NSArray *args = @[@"--pretty=format:%H%n%P%n%cD%n%ce%n%s", @"--reverse", @"--tags", @"--all", @"--topo-order"];
+    NSArray *args = @[ @"--pretty=format:%H%n%P%n%cD%n%ce%n%s", @"--reverse", @"--tags", @"--all", @"--topo-order" ];
 
     [XTStatusView updateStatus:@"Loading..." command:[args componentsJoinedByString:@" "] output:nil forRepository:repo];
     [repo getCommitsWithArgs:args enumerateCommitsUsingBlock:^(NSString *line) {
