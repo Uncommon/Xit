@@ -95,8 +95,8 @@
             else
                 return NO;
 
-            NSDictionary *menuFontAttributes = @{NSFontAttributeName: [NSFont menuFontOfSize:0]};
-            NSDictionary *obliqueAttributes = @{NSObliquenessAttributeName: @0.15f};
+            NSDictionary *menuFontAttributes = @{ NSFontAttributeName: [NSFont menuFontOfSize:0] };
+            NSDictionary *obliqueAttributes = @{ NSObliquenessAttributeName: @0.15f };
             // TODO: handle detached HEAD case
             // "~" is used to guarantee that the placeholders are not valid branch names.
             NSAttributedString *mergeTitle = [NSAttributedString attributedStringWithFormat:@"Merge @~1 into @~2" placeholders:@[ @"@~1", @"@~2" ] replacements:@[ clickedBranch, currentBranch] attributes:menuFontAttributes replacementAttributes:obliqueAttributes];
