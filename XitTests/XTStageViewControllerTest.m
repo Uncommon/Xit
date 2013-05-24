@@ -105,9 +105,9 @@
     [repository addFile:@"--all"];
     [repository commitWithMessage:@"commit"];
 
-    [lines replaceObjectAtIndex:5 withObject:@"new line number 5......."];
-    [lines replaceObjectAtIndex:15 withObject:@"new line number 15......."];
-    [lines replaceObjectAtIndex:25 withObject:@"new line number 25......."];
+    lines[5] = @"new line number 5.......";
+    lines[15] = @"new line number 15.......";
+    lines[25] = @"new line number 25.......";
 
     [[lines componentsJoinedByString:@"\n"] writeToFile:mv atomically:YES encoding:NSASCIIStringEncoding error:nil];
 
@@ -127,7 +127,7 @@
 
     XTStageViewController *svc = [[XTStageViewController alloc] init];
     [svc setRepo:repository];
-    [svc showUnstageFile:[ustgds.items objectAtIndex:0]]; // click on unstage table
+    [svc showUnstageFile:(ustgds.items)[0]]; // click on unstage table
     [svc stageChunk:2]; // click on stage button
 
     [ustgds reload];
@@ -142,7 +142,7 @@
     nc = [stgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 1), @"found %d commits", nc);
 
-    [svc showStageFile:[stgds.items objectAtIndex:0]]; // click on stage table
+    [svc showStageFile:(stgds.items)[0]]; // click on stage table
     [svc unstageChunk:0]; // click on unstage button
 
     [stgds reload];
@@ -183,18 +183,16 @@
     NSUInteger nc = [ustgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 5), @"found %d commits", nc);
 
-    NSDictionary *expected = [NSDictionary dictionaryWithObjectsAndKeys:
-                                      @"M", @"file_to_mod.txt",
-                                      @"D", @"file_to_move.txt",
-                                      @"?", @"file_moved.txt",
-                                      @"D", @"file_to_rm.txt",
-                                      @"?", @"new_file.txt",
-                                      nil];
+    NSDictionary *expected = @{ @"file_to_mod.txt": @"M",
+                                @"file_to_move.txt": @"D",
+                                @"file_moved.txt": @"?",
+                                @"file_to_rm.txt": @"D",
+                                @"new_file.txt": @"?" };
 
     NSArray *items = [ustgds items];
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
          XTFileIndexInfo *info = obj;
-         NSString *status = [expected objectForKey:info.name];
+         NSString *status = expected[info.name];
          STAssertEqualObjects(info.status, status, @"incorrect state file(%lu):%@", idx, info.name);
      }];
 
@@ -206,18 +204,16 @@
 
     STAssertEquals([stgds numberOfRowsInTableView:nil], 5L, @"");
 
-    expected = [NSDictionary dictionaryWithObjectsAndKeys:
-                @"M", @"file_to_mod.txt",
-                @"D", @"file_to_move.txt",
-                @"A", @"file_moved.txt",
-                @"D", @"file_to_rm.txt",
-                @"A", @"new_file.txt",
-                nil];
+    expected = @{ @"file_to_mod.txt": @"M",
+                  @"file_to_move.txt": @"D",
+                  @"file_moved.txt": @"A",
+                  @"file_to_rm.txt": @"D",
+                  @"new_file.txt": @"A" };
 
     items = [stgds items];
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
          XTFileIndexInfo *info = obj;
-         NSString *status = [expected objectForKey:info.name];
+         NSString *status = expected[info.name];
          STAssertEqualObjects(info.status, status, @"incorrect state file(%lu):%@", idx, info.name);
      }];
 }
@@ -255,12 +251,12 @@
     // Somewhere in there, git appended a \n to the message.
     message = [message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     STAssertEqualObjects(message, testMessage, @"");
-    STAssertEqualObjects(files, [NSArray arrayWithObject:newFileName], @"");
+    STAssertEqualObjects(files, @[ newFileName ], @"");
 
-    NSArray *parents = [header objectForKey:XTParentSHAsKey];
+    NSArray *parents = header[XTParentSHAsKey];
 
     STAssertEquals([parents count], 1UL, @"");
-    STAssertEqualObjects([parents objectAtIndex:0], oldHeadSHA, @"");
+    STAssertEqualObjects(parents[0], oldHeadSHA, @"");
 }
 
 - (void)testNewFileDiff {

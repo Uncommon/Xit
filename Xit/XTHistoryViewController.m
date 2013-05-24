@@ -124,8 +124,8 @@
             else
                 return NO;
 
-            NSDictionary *menuFontAttributes = [NSDictionary dictionaryWithObject:[NSFont menuFontOfSize:0] forKey:NSFontAttributeName];
-            NSDictionary *obliqueAttributes = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.15] forKey:NSObliquenessAttributeName];
+            NSDictionary *menuFontAttributes = @{ NSFontAttributeName: [NSFont menuFontOfSize:0] };
+            NSDictionary *obliqueAttributes = @{ NSObliquenessAttributeName: @0.15f };
             // TODO: handle detached HEAD case
             // "~" is used to guarantee that the placeholders are not valid branch names.
             NSAttributedString *mergeTitle = [NSAttributedString attributedStringWithFormat:@"Merge @~1 into @~2" placeholders:@[ @"@~1", @"@~2" ] replacements:@[ clickedBranch, currentBranch] attributes:menuFontAttributes replacementAttributes:obliqueAttributes];
@@ -143,7 +143,7 @@
     }
     if ((action == @selector(renameRemote:)) ||
         (action == @selector(deleteRemote:))) {
-        return [sidebarOutline parentForItem:item] == [sideBarDS.roots objectAtIndex:XTRemotesGroupIndex];
+        return [sidebarOutline parentForItem:item] == (sideBarDS.roots)[XTRemotesGroupIndex];
     }
     if ((action == @selector(popStash:)) ||
         (action == @selector(applyStash:)) ||
@@ -263,7 +263,7 @@
     const CGFloat newWidth = (buttonState == NSOnState) ? savedSidebarWidth : 0;
 
     if (buttonState == NSOffState)
-        savedSidebarWidth = [[[sidebarSplitView subviews] objectAtIndex:0] frame].size.width;
+        savedSidebarWidth = [[sidebarSplitView subviews][0] frame].size.width;
     [sidebarSplitView setPosition:newWidth ofDividerAtIndex:0 ];
 }
 
@@ -358,7 +358,7 @@
     const NSInteger selectedRow = table.selectedRow;
 
     if (selectedRow >= 0) {
-        XTHistoryItem *item = [historyDS.items objectAtIndex:selectedRow];
+        XTHistoryItem *item = (historyDS.items)[selectedRow];
 
         repo.selectedCommit = item.sha;
         [self updatePreviewItem];
@@ -378,7 +378,7 @@ const NSUInteger
     [cell setFont:[NSFont labelFontOfSize:12]];
 
     if ([[column identifier] isEqualToString:@"subject"]) {
-        XTHistoryItem *item = [historyDS.items objectAtIndex:rowIndex];
+        XTHistoryItem *item = (historyDS.items)[rowIndex];
 
         ((PBGitRevisionCell *)cell).objectValue = item;
     } else if ([[column identifier] isEqualToString:@"date"]) {

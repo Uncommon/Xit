@@ -36,7 +36,7 @@ const NSString *kAuthorKeyDate = @"date";
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"selectedCommit"]) {
-        NSString *newSelectedCommit = [change objectForKey:NSKeyValueChangeNewKey];
+        NSString *newSelectedCommit = change[NSKeyValueChangeNewKey];
         dispatch_async(repo.queue, ^{ [self loadCommit:newSelectedCommit]; });
     }
 }
@@ -59,15 +59,15 @@ const NSString *kAuthorKeyDate = @"date";
 
     addRow(@"Subject", firstLine);
 
-    NSString *authorName = [header objectForKey:XTAuthorNameKey];
-    NSString *authorEmail = [header objectForKey:XTAuthorEmailKey];
-    NSDate *authorDate = [header objectForKey:XTAuthorDateKey];
+    NSString *authorName = header[XTAuthorNameKey];
+    NSString *authorEmail = header[XTAuthorEmailKey];
+    NSDate *authorDate = header[XTAuthorDateKey];
 
     addPerson(@"Author", authorName, authorEmail, authorDate);
 
-    NSString *committerName = [header objectForKey:XTCommitterNameKey];
-    NSString *committerEmail = [header objectForKey:XTCommitterEmailKey];
-    NSDate *committerDate = [header objectForKey:XTCommitterDateKey];
+    NSString *committerName = header[XTCommitterNameKey];
+    NSString *committerEmail = header[XTCommitterEmailKey];
+    NSDate *committerDate = header[XTCommitterDateKey];
 
     if ((committerName != nil) && (committerEmail != nil) && (committerDate != nil)) {
         if (![authorName isEqualToString:committerName] ||
@@ -81,13 +81,13 @@ const NSString *kAuthorKeyDate = @"date";
     // Second colum: refs and SHAs
     [table appendString:@"<td><table class='headercol'>"];
 
-    NSSet *refsSet = [header objectForKey:XTRefsKey];
+    NSSet *refsSet = header[XTRefsKey];
 
     if ([refsSet count] > 0)
         addRow(@"Refs", [[refsSet allObjects] componentsJoinedByString:@" "]);
-    addRow(@"SHA", [header objectForKey:XTCommitSHAKey]);
+    addRow(@"SHA", header[XTCommitSHAKey]);
 
-    NSArray *parents = [header objectForKey:XTParentSHAsKey];
+    NSArray *parents = header[XTParentSHAsKey];
 
     for (NSString *parent in parents)
         addRow(@"Parent", parent);
@@ -148,14 +148,12 @@ const NSString *kAuthorKeyDate = @"date";
         } else {
             if (parsingSubject) {
                 NSString *trimmedLine = [line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                [result addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                                   @"subject", kHeaderKeyName, trimmedLine, kHeaderKeyContent, nil]];
+                [result addObject:@{ kHeaderKeyName: @"subject", kHeaderKeyContent: trimmedLine }];
             } else {
                 NSArray *comps = [line componentsSeparatedByString:@" "];
                 if ([comps count] == 2) {
-                    [result addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                                       [comps objectAtIndex:0], kHeaderKeyName,
-                                       [comps objectAtIndex:1], kHeaderKeyContent, nil]];
+                    [result addObject:@{ kHeaderKeyName: comps[0],
+                                         kHeaderKeyContent: comps[1] }];
                 } else if ([comps count] > 2) {
                     NSRange r_email_i = [line rangeOfString:@"<"];
                     NSRange r_email_e = [line rangeOfString:@">"];
@@ -169,18 +167,14 @@ const NSString *kAuthorKeyDate = @"date";
                     if ([line length] > r_email_e.location + 2) {
                         NSArray *t = [[line substringFromIndex:r_email_e.location + 2] componentsSeparatedByString:@" "];
                         if ([t count] > 0)
-                            date = [NSDate dateWithTimeIntervalSince1970:[[t objectAtIndex:0] doubleValue]];
+                            date = [NSDate dateWithTimeIntervalSince1970:[t[0] doubleValue]];
                     }
 
-                    NSDictionary *content = [NSDictionary dictionaryWithObjectsAndKeys:
-                                             name, kAuthorKeyName,
-                                             email, kAuthorKeyEmail,
-                                             date, kAuthorKeyDate,
-                                             nil];
-                    [result addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                                       [comps objectAtIndex:0], kHeaderKeyName,
-                                       content, kHeaderKeyContent,
-                                       nil]];
+                    NSDictionary *content = @{ kAuthorKeyName: name,
+                                               kAuthorKeyEmail: email,
+                                               kAuthorKeyDate: date };
+                    
+                    [result addObject:@{ kHeaderKeyName: comps[0], kHeaderKeyContent: content }];
                 }
             }
         }
@@ -200,7 +194,7 @@ const NSString *kAuthorKeyDate = @"date";
         } else if (black == 2) {
             NSArray *file = [line componentsSeparatedByString:@"\t"];
             if ([file count] == 3) {
-                [stats setObject:file forKey:[file objectAtIndex:2]];
+                stats[file[2]] = file;
             }
         }
     }
@@ -214,25 +208,25 @@ const NSString *kAuthorKeyDate = @"date";
     NSMutableString *subject = [NSMutableString string];
 
     for (NSDictionary *item in header) {
-        if ([[item objectForKey:kHeaderKeyName] isEqualToString:@"subject"]) {
-            [subject appendString:[NSString stringWithFormat:@"%@<br/>", [XTHTML escapeHTML:[item objectForKey:kHeaderKeyContent]]]];
+        if ([item[kHeaderKeyName] isEqualToString:@"subject"]) {
+            [subject appendString:[NSString stringWithFormat:@"%@<br/>", [XTHTML escapeHTML:item[kHeaderKeyContent]]]];
         } else {
-            if ([[item objectForKey:kHeaderKeyContent] isKindOfClass:[NSString class]]) {
-                [refs appendString:[NSString stringWithFormat:@"<tr><td>%@</td><td><a href='' onclick='selectCommit(this.innerHTML); return false;'>%@</a></td></tr>", [item objectForKey:kHeaderKeyName], [item objectForKey:kHeaderKeyContent]]];
+            if ([item[kHeaderKeyContent] isKindOfClass:[NSString class]]) {
+                [refs appendString:[NSString stringWithFormat:@"<tr><td>%@</td><td><a href='' onclick='selectCommit(this.innerHTML); return false;'>%@</a></td></tr>", item[kHeaderKeyName], item[kHeaderKeyContent]]];
             } else {            // NSDictionary: author or committer
-                NSDictionary *content = [item objectForKey:kHeaderKeyContent];
-                NSString *email = [content objectForKey:kAuthorKeyEmail];
+                NSDictionary *content = item[kHeaderKeyContent];
+                NSString *email = content[kAuthorKeyEmail];
 
                 if (![email isEqualToString:last_mail]) {
-                    NSString *name = [content objectForKey:kAuthorKeyName];
-                    NSDate *date = [content objectForKey:kAuthorKeyDate];
+                    NSString *name = content[kAuthorKeyName];
+                    NSDate *date = content[kAuthorKeyDate];
                     NSDateFormatter *theDateFormatter = [[NSDateFormatter alloc] init];
                     [theDateFormatter setDateStyle:NSDateFormatterMediumStyle];
                     [theDateFormatter setTimeStyle:NSDateFormatterMediumStyle];
                     NSString *dateString = [theDateFormatter stringForObjectValue:date];
 
-                    [auths appendString:[NSString stringWithFormat:@"<div class='user %@ clearfix'>", [item objectForKey:kHeaderKeyName]]];
-                    [auths appendString:[NSString stringWithFormat:@"<p class='name'>%@ <span class='rol'>(%@)</span></p>", name, [item objectForKey:kHeaderKeyName]]];
+                    [auths appendString:[NSString stringWithFormat:@"<div class='user %@ clearfix'>", item[kHeaderKeyName]]];
+                    [auths appendString:[NSString stringWithFormat:@"<p class='name'>%@ <span class='rol'>(%@)</span></p>", name, item[kHeaderKeyName]]];
                     [auths appendString:[NSString stringWithFormat:@"<p class='time'>%@</p></div>", dateString]];
                 }
                 last_mail = email;
@@ -247,12 +241,12 @@ const NSString *kAuthorKeyDate = @"date";
     NSInteger granTotal = 1;
 
     for (NSArray *stat in [stats allValues]) {
-        NSInteger add = [[stat objectAtIndex:0] integerValue];
-        NSInteger rem = [[stat objectAtIndex:1] integerValue];
+        NSInteger add = [stat[0] integerValue];
+        NSInteger rem = [stat[1] integerValue];
         NSInteger tot = add + rem;
         if (tot > granTotal)
             granTotal = tot;
-        [stats setObject:[NSArray arrayWithObjects:[NSNumber numberWithInteger:add], [NSNumber numberWithInteger:rem], [NSNumber numberWithInteger:tot], nil] forKey:[stat objectAtIndex:2]];
+        stats[stat[2]] = @[ @(add), @(rem), @(tot) ];
     }
 
     NSArray *lines = [txt componentsSeparatedByString:@"\n"];
@@ -262,18 +256,18 @@ const NSString *kAuthorKeyDate = @"date";
         if ([line length] < 98) continue;
         line = [line substringFromIndex:97];
         NSArray *fileStatus = [line componentsSeparatedByString:@"\t"];
-        NSString *status = [[fileStatus objectAtIndex:0] substringToIndex:1];       // ignore the score
-        NSString *file = [fileStatus objectAtIndex:1];
+        NSString *status = [fileStatus[0] substringToIndex:1];       // ignore the score
+        NSString *file = fileStatus[1];
         NSString *txt = file;
         NSString *fileName = file;
         if ([status isEqualToString:@"C"] || [status isEqualToString:@"R"]) {
-            txt = [NSString stringWithFormat:@"%@ -&gt; %@", file, [fileStatus objectAtIndex:2]];
-            fileName = [fileStatus objectAtIndex:2];
+            txt = [NSString stringWithFormat:@"%@ -&gt; %@", file, fileStatus[2]];
+            fileName = fileStatus[2];
         }
 
-        NSArray *stat = [stats objectForKey:fileName];
-        NSInteger add = [[stat objectAtIndex:0] integerValue];
-        NSInteger rem = [[stat objectAtIndex:1] integerValue];
+        NSArray *stat = stats[fileName];
+        NSInteger add = [stat[0] integerValue];
+        NSInteger rem = [stat[1] integerValue];
 
         [res appendString:@"<tr><td class='name'>"];
         [res appendString:[NSString stringWithFormat:@"<a class='%@' href='#%@' representedFile='%@'>%@</a>", status, file, fileName, txt]];

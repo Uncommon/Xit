@@ -22,7 +22,7 @@
         menu = controller.branchContextMenu;
     } else if ([item isKindOfClass:[XTTagItem class]]) {
         menu = controller.tagContextMenu;
-    } else if ([self parentForItem:item] == [[controller.sideBarDS roots] objectAtIndex:XTRemotesGroupIndex]) {
+    } else if ([self parentForItem:item] == [controller.sideBarDS roots][XTRemotesGroupIndex]) {
         menu = controller.remoteContextMenu;
     } else if ([item isKindOfClass:[XTStashItem class]]) {
         menu = controller.stashContextMenu;

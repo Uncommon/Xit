@@ -35,7 +35,7 @@
     XTSideBarItem *tags = [[XTSideBarItem alloc] initWithTitle:@"TAGS"];
     XTSideBarItem *stashes = [[XTSideBarItem alloc] initWithTitle:@"STASHES"];
 
-    return [NSArray arrayWithObjects:branches, remotes, tags, stashes, nil];
+    return @[ branches, remotes, tags, stashes ];
 }
 
 - (void)setRepo:(XTRepository *)newRepo {
@@ -47,7 +47,7 @@
 }
 
 - (void)repoChanged:(NSNotification *)note {
-    NSArray *paths = [[note userInfo] objectForKey:XTPathsKey];
+    NSArray *paths = [note userInfo][XTPathsKey];
 
     for (NSString *path in paths) {
         if ([path hasPrefix:@".git/refs/"]) {
@@ -85,10 +85,10 @@
 
     NSArray *newRoots = [self makeRoots];
 
-    [[newRoots objectAtIndex:XTBranchesGroupIndex] setChildren:branches];
-    [[newRoots objectAtIndex:XTTagsGroupIndex] setChildren:tags];
-    [[newRoots objectAtIndex:XTRemotesGroupIndex] setChildren:remotes];
-    [[newRoots objectAtIndex:XTStashesGroupIndex] setChildren:stashes];
+    [newRoots[XTBranchesGroupIndex] setChildren:branches];
+    [newRoots[XTTagsGroupIndex] setChildren:tags];
+    [newRoots[XTRemotesGroupIndex] setChildren:remotes];
+    [newRoots[XTStashesGroupIndex] setChildren:stashes];
 
     repo.refsIndex = refsIndex;
     currentBranch = [repo currentBranch];
@@ -116,11 +116,11 @@
     };
 
     void (^remoteBlock)(NSString *, NSString *, NSString *) = ^(NSString *remoteName, NSString *branchName, NSString *commit) {
-        XTSideBarItem *remote = [remoteIndex objectForKey:remoteName];
+        XTSideBarItem *remote = remoteIndex[remoteName];
         if (remote == nil) {
             remote = [[XTRemoteItem alloc] initWithTitle:remoteName];
             [remotes addObject:remote];
-            [remoteIndex setObject:remote forKey:remoteName];
+            remoteIndex[remoteName] = remote;
         }
         XTRemoteBranchItem *branch = [[XTRemoteBranchItem alloc] initWithTitle:branchName remote:remoteName sha:commit];
         [remote addchild:branch];
@@ -129,15 +129,15 @@
 
     void (^tagBlock)(NSString *, NSString *) = ^(NSString *name, NSString *commit) {
         XTTagItem *tag;
-        NSString *tagName = [name lastPathComponent];
-        if ([tagName hasSuffix:@"^{}"]) {
-            tagName = [tagName substringToIndex:tagName.length - 3];
-            tag = [tagIndex objectForKey:tagName];
+
+        if ([name hasSuffix:@"^{}"]) {
+            name = [name substringToIndex:name.length - 3];
+            tag = tagIndex[name];
             tag.sha = commit;
         } else {
-            tag = [[XTTagItem alloc] initWithTitle:tagName andSha:commit];
+            tag = [[XTTagItem alloc] initWithTitle:name andSha:commit];
             [tags addObject:tag];
-            [tagIndex setObject:tag forKey:tagName];
+            tagIndex[name] = tag;
         }
         [refsIndex addObject:[@"refs/tags" stringByAppendingPathComponent:name] forKey:tag.sha];
     };
@@ -146,7 +146,7 @@
 }
 
 - (XTLocalBranchItem *)itemForBranchName:(NSString *)branch {
-    XTSideBarItem *branches = [roots objectAtIndex:XTBranchesGroupIndex];
+    XTSideBarItem *branches = roots[XTBranchesGroupIndex];
 
     for (NSInteger i = 0; i < [branches numberOfChildren]; ++i) {
         XTLocalBranchItem *branchItem = [branches childAtIndex:i];
@@ -158,7 +158,7 @@
 }
 
 - (XTSideBarItem *)itemNamed:(NSString *)name inGroup:(NSInteger)groupIndex {
-    XTSideBarItem *group = [roots objectAtIndex:groupIndex];
+    XTSideBarItem *group = roots[groupIndex];
 
     for (NSInteger i = 0; i < [group numberOfChildren]; ++i) {
         XTSideBarItem *item = [group childAtIndex:i];
@@ -200,7 +200,7 @@
     id result = nil;
 
     if (item == nil) {
-        result = [roots objectAtIndex:index];
+        result = roots[index];
     } else if ([item isKindOfClass:[XTSideBarItem class]]) {
         XTSideBarItem *sbItem = (XTSideBarItem *)item;
         result = [sbItem childAtIndex:index];
@@ -239,9 +239,11 @@
                 [dataView.button setHidden:![[item title] isEqualToString:currentBranch]];
         } else if ([item isKindOfClass:[XTTagItem class]]) {
             [dataView.imageView setImage:[NSImage imageNamed:@"tag"]];
+        } else if ([item isKindOfClass:[XTStashItem class]]) {
+            [dataView.imageView setImage:[NSImage imageNamed:@"stash"]];
         } else {
             [dataView.button setHidden:YES];
-            if ([outlineView parentForItem:item] == [roots objectAtIndex:XTRemotesGroupIndex])
+            if ([outlineView parentForItem:item] == roots[XTRemotesGroupIndex])
                 [dataView.imageView setImage:[NSImage imageNamed:NSImageNameNetwork]];
         }
         return dataView;

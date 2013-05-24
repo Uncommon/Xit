@@ -103,17 +103,17 @@
     if ([files count] != 2)
         return txt;
     [res appendString:@"<tr class='images'><td>"];
-    [res appendString:[NSString stringWithFormat:@"%@<br/>", [files objectAtIndex:0]]];
-    if (![[files objectAtIndex:0] isAbsolutePath]) {
-        if ([XTHTML isImage:[files objectAtIndex:0]]) {
-            [res appendString:[NSString stringWithFormat:@"<img src='GitX://{SHA}:/prev/%@'/>", [files objectAtIndex:0]]];
+    [res appendString:[NSString stringWithFormat:@"%@<br/>", files[0]]];
+    if (![files[0] isAbsolutePath]) {
+        if ([XTHTML isImage:files[0]]) {
+            [res appendString:[NSString stringWithFormat:@"<img src='GitX://{SHA}:/prev/%@'/>", files[0]]];
         }
     }
     [res appendString:@"</td><td>=&gt;</td><td>"];
-    [res appendString:[NSString stringWithFormat:@"%@<br/>", [files objectAtIndex:1]]];
-    if (![[files objectAtIndex:1] isAbsolutePath]) {
-        if ([XTHTML isImage:[files objectAtIndex:1]]) {
-            [res appendString:[NSString stringWithFormat:@"<img src='GitX://{SHA}:/%@'/>", [files objectAtIndex:1]]];
+    [res appendString:[NSString stringWithFormat:@"%@<br/>", files[1]]];
+    if (![files[1] isAbsolutePath]) {
+        if ([XTHTML isImage:files[1]]) {
+            [res appendString:[NSString stringWithFormat:@"<img src='GitX://{SHA}:/%@'/>", files[1]]];
         }
     }
     [res appendString:@"</td></tr>"];
@@ -140,13 +140,13 @@
     NSString *header = [line substringWithRange:hr];
 
     NSArray *pos = [header componentsSeparatedByString:@" "];
-    NSArray *pos_r = [[pos objectAtIndex:arity - 1] componentsSeparatedByString:@","];
+    NSArray *pos_r = [pos[arity - 1] componentsSeparatedByString:@","];
 
     for (int i = 0; i < arity - 1; i++) {
-        NSArray *pos_l = [[pos objectAtIndex:i] componentsSeparatedByString:@","];
-        l_line[i] = abs([[pos_l objectAtIndex:0] intValue]);
+        NSArray *pos_l = [pos[i] componentsSeparatedByString:@","];
+        l_line[i] = abs([pos_l[0] intValue]);
     }
-    r_line = [[pos_r objectAtIndex:0] intValue];
+    r_line = [pos_r[0] intValue];
 
     [res appendString:[NSString stringWithFormat:@"<tr class='header'><td colspan='%d'>%@</td></tr>", arity + 1, line]];
     while ((line = [lines nextObject])) {
@@ -211,7 +211,7 @@
         b = [b substringFromIndex:2];
     }
 
-    return [NSArray arrayWithObjects:a, b, nil];
+    return @[ a, b ];
 }
 
 

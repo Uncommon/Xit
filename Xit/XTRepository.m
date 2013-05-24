@@ -15,10 +15,8 @@ NSString *XTPathsKey = @"paths";
 @synthesize repoURL;
 
 + (NSString *)gitPath {
-    NSArray *paths = [NSArray arrayWithObjects:
-                      @"/usr/bin/git",
-                      @"/usr/local/git/bin/git",
-                      nil];
+    NSArray *paths = @[ @"/usr/bin/git",
+                        @"/usr/local/git/bin/git" ];
 
     for (NSString *path in paths) {
         if ([[NSFileManager defaultManager] fileExistsAtPath:path])
@@ -127,7 +125,7 @@ NSString *XTPathsKey = @"paths";
         if (error != NULL) {
             *error = [NSError errorWithDomain:@"git"
                                          code:status
-                                     userInfo:[NSDictionary dictionaryWithObject:string forKey:XTErrorOutputKey]];
+                                     userInfo:@{ XTErrorOutputKey: string }];
         }
     }
     [self removeTask:task];
@@ -175,10 +173,8 @@ NSString *XTPathsKey = @"paths";
         NSString *string = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
         NSLog(@"**** output = %@", string);
         if (error != NULL) {
-            NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:
-                    string, XTErrorOutputKey,
-                    [args componentsJoinedByString:@" "], XTErrorArgsKey,
-                    nil];
+            NSDictionary *info = @{ XTErrorOutputKey: string,
+                                    XTErrorArgsKey: [args componentsJoinedByString:@" "] };
 
             *error = [NSError errorWithDomain:@"git"
                                          code:status
@@ -192,7 +188,7 @@ NSString *XTPathsKey = @"paths";
 
 - (NSString *)parseReference:(NSString *)reference {
     NSError *error = nil;
-    NSArray *args = [NSArray arrayWithObjects:@"rev-parse", @"--verify", reference, nil];
+    NSArray *args = @[ @"rev-parse", @"--verify", reference ];
     NSData *output = [self executeGitWithArgs:args error:&error];
 
     if (output == nil)
@@ -202,7 +198,7 @@ NSString *XTPathsKey = @"paths";
 
 - (NSString *)parseSymbolicReference:(NSString *)reference {
     NSError *error = nil;
-    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"symbolic-ref", @"-q", reference, nil] error:&error];
+    NSData *output = [self executeGitWithArgs:@[ @"symbolic-ref", @"-q", reference ] error:&error];
 
     if (output == nil)
         return nil;
@@ -232,7 +228,7 @@ NSString *XTPathsKey = @"paths";
             if ([shaRef isEqual:ref])
                 return sha;
 
-    NSArray *args = [NSArray arrayWithObjects:@"rev-list", @"-1", ref, nil];
+    NSArray *args = @[ @"rev-list", @"-1", ref ];
     NSError *error = nil;
     NSData *output = [self executeGitWithArgs:args error:&error];
 
@@ -287,7 +283,7 @@ NSString *XTPathsKey = @"paths";
     if (repoURL == nil)
         return;
     NSString *myPath = [[repoURL URLByAppendingPathComponent:@".git"] path];
-    NSArray *pathsToWatch = [NSArray arrayWithObject:myPath];
+    NSArray *pathsToWatch = @[ myPath ];
     void *repoPointer = (__bridge void *)self;
     FSEventStreamContext context = { 0, repoPointer, NULL, NULL, NULL };
     NSTimeInterval latency = 3.0;
@@ -314,7 +310,7 @@ NSString *XTPathsKey = @"paths";
             break;
         }
 
-    NSDictionary *info = [NSDictionary dictionaryWithObject:paths forKey:XTPathsKey];
+    NSDictionary *info = @{ XTPathsKey: paths };
 
     [[NSNotificationCenter defaultCenter] postNotificationName:XTRepositoryChangedNotification object:self userInfo:info];
 }
@@ -338,7 +334,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef,
 
     NSMutableArray *paths = [NSMutableArray arrayWithCapacity:numEvents];
     for (size_t i = 0; i < numEvents; i++) {
-        NSString *path = [(__bridge NSArray *) eventPaths objectAtIndex:i];
+        NSString *path = ((__bridge NSArray *) eventPaths)[i];
         NSRange r = [path rangeOfString:@".git" options:NSBackwardsSearch];
 
         path = [path substringFromIndex:r.location];

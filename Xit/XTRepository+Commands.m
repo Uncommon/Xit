@@ -7,7 +7,7 @@
     NSError *error = nil;
     BOOL res = NO;
 
-    [self executeGitWithArgs:[NSArray arrayWithObject:@"init"] error:&error];
+    [self executeGitWithArgs:@[ @"init" ] error:&error];
 
     if (error == nil)
         res = true;
@@ -19,7 +19,7 @@
     NSError *error = nil;
     BOOL res = NO;
 
-    [self executeGitWithArgs:[NSArray arrayWithObjects:@"stash", @"save", name, nil] error:&error];
+    [self executeGitWithArgs:@[ @"stash", @"save", name ] error:&error];
 
     if (error == nil) {
         res = YES;
@@ -32,7 +32,7 @@
     NSError *error = nil;
     BOOL res = NO;
 
-    [self executeGitWithArgs:[NSArray arrayWithObjects:@"checkout", @"-b", name, nil] error:&error];
+    [self executeGitWithArgs:@[ @"checkout", @"-b", name ] error:&error];
 
     if (error == nil) {
         res = YES;
@@ -42,13 +42,13 @@
 }
 
 - (BOOL)deleteBranch:(NSString *)name error:(NSError *__autoreleasing *)error {
-    return [self executeGitWithArgs:[NSArray arrayWithObjects:@"branch", @"-D", name, nil] error:error] != nil;
+    return [self executeGitWithArgs:@[ @"branch", @"-D", name ] error:error] != nil;
 }
 
 - (NSString *)currentBranch {
     if (cachedBranch == nil) {
         NSError *error = nil;
-        NSData *output = [self executeGitWithArgs:[NSArray arrayWithObject:@"branch"] error:&error];
+        NSData *output = [self executeGitWithArgs:@[ @"branch" ] error:&error];
 
         if (output == nil)
             return nil;
@@ -73,7 +73,7 @@
     NSError *error = nil;
     BOOL res = NO;
 
-    [self executeGitWithArgs:[NSArray arrayWithObjects:@"push", @"--all", @"--force", remote, nil] error:&error];
+    [self executeGitWithArgs:@[ @"push", @"--all", @"--force", remote ] error:&error];
 
     if (error == nil) {
         res = YES;
@@ -87,7 +87,7 @@
     BOOL res = NO;
 
     cachedBranch = nil;
-    [self executeGitWithArgs:[NSArray arrayWithObjects:@"checkout", branch, nil] error:&error];
+    [self executeGitWithArgs:@[ @"checkout", branch ] error:&error];
 
     if (error == nil) {
         res = YES;
@@ -102,7 +102,7 @@
     NSError *error = nil;
     BOOL res = NO;
 
-    [self executeGitWithArgs:[NSArray arrayWithObjects:@"tag", @"-a", name, @"-m", msg, nil] error:&error];
+    [self executeGitWithArgs:@[ @"tag", @"-a", name, @"-m", msg ] error:&error];
 
     if (error == nil) {
         res = YES;
@@ -112,14 +112,14 @@
 }
 
 - (BOOL)deleteTag:(NSString *)name error:(NSError *__autoreleasing *)error {
-    return [self executeGitWithArgs:[NSArray arrayWithObjects:@"tag", @"-d", name, nil] error:error] != nil;
+    return [self executeGitWithArgs:@[ @"tag", @"-d", name ] error:error] != nil;
 }
 
 - (BOOL)addRemote:(NSString *)name withUrl:(NSString *)url {
     NSError *error = nil;
     BOOL res = NO;
 
-    [self executeGitWithArgs:[NSArray arrayWithObjects:@"remote", @"add", name, url, nil] error:&error];
+    [self executeGitWithArgs:@[ @"remote", @"add", name, url ] error:&error];
 
     if (error == nil) {
         res = YES;
@@ -129,14 +129,14 @@
 }
 
 - (BOOL)deleteRemote:(NSString *)name error:(NSError *__autoreleasing *)error {
-    return [self executeGitWithArgs:[NSArray arrayWithObjects:@"remote", @"rm", name, nil] error:error] != nil;
+    return [self executeGitWithArgs:@[ @"remote", @"rm", name ] error:error] != nil;
 }
 
 - (BOOL)addFile:(NSString *)file {
     NSError *error = nil;
     BOOL res = NO;
 
-    [self executeGitWithArgs:[NSArray arrayWithObjects:@"add", file, nil] error:&error];
+    [self executeGitWithArgs:@[ @"add", file ] error:&error];
 
     if (error == nil) {
         res = YES;
@@ -149,7 +149,7 @@
     NSError *error = nil;
     BOOL res = NO;
 
-    [self executeGitWithArgs:[NSArray arrayWithObjects:@"commit", @"-F", @"-", nil] withStdIn:message error:&error];
+    [self executeGitWithArgs:@[ @"commit", @"-F", @"-" ] withStdIn:message error:&error];
 
     if (error == nil) {
         res = YES;
@@ -159,7 +159,7 @@
 }
 
 - (NSString *)diffForStagedFile:(NSString *)file {
-    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"diff-index",  @"--patch", @"--cached", [self parentTree], @"--", file, nil] error:nil];
+    NSData *output = [self executeGitWithArgs:@[ @"diff-index",  @"--patch", @"--cached", [self parentTree], @"--", file ] error:nil];
 
     if (output == nil)
         return nil;
@@ -167,7 +167,7 @@
 }
 
 - (NSString *)diffForUnstagedFile:(NSString *)file {
-    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"diff-files", @"--patch", @"--", file, nil] error:nil];
+    NSData *output = [self executeGitWithArgs:@[ @"diff-files", @"--patch", @"--", file ] error:nil];
 
     if (output == nil)
         return nil;
@@ -175,7 +175,7 @@
 }
 
 - (NSString *)diffForCommit:(NSString *)sha {
-    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"diff-tree", @"--root", @"--cc", @"-C90%", @"-M90%", sha, nil] error:NULL];
+    NSData *output = [self executeGitWithArgs:@[ @"diff-tree", @"--root", @"--cc", @"-C90%", @"-M90%", sha ] error:NULL];
 
     return [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
 }
@@ -183,7 +183,7 @@
 - (BOOL)stagePatch:(NSString *)patch {
     NSError *error = nil;
 
-    [self executeGitWithArgs:[NSArray arrayWithObjects:@"apply",  @"--cached", nil]
+    [self executeGitWithArgs:@[ @"apply",  @"--cached" ]
                    withStdIn:patch
                        error:&error];
     return error == nil;
@@ -192,7 +192,7 @@
 - (BOOL)unstagePatch:(NSString *)patch {
     NSError *error = nil;
 
-    [self executeGitWithArgs:[NSArray arrayWithObjects:@"apply",  @"--cached", @"--reverse", nil]
+    [self executeGitWithArgs:@[ @"apply",  @"--cached", @"--reverse" ]
                    withStdIn:patch
                        error:&error];
     return error == nil;
@@ -201,7 +201,7 @@
 - (BOOL)discardPatch:(NSString *)patch {
     NSError *error = nil;
 
-    [self executeGitWithArgs:[NSArray arrayWithObjects:@"apply", @"--reverse", nil]
+    [self executeGitWithArgs:@[ @"apply", @"--reverse" ]
                    withStdIn:patch
                        error:&error];
     return error == nil;
@@ -210,7 +210,7 @@
 - (BOOL)renameBranch:(NSString *)branch to:(NSString *)newName {
     NSError *error = nil;
 
-    [self executeGitWithArgs:[NSArray arrayWithObjects:@"branch", @"-m", branch, newName, nil] error:&error];
+    [self executeGitWithArgs:@[ @"branch", @"-m", branch, newName ] error:&error];
     return error == nil;
 }
 
@@ -223,25 +223,25 @@
 - (BOOL)renameRemote:(NSString *)branch to:(NSString *)newName {
     NSError *error = nil;
 
-    [self executeGitWithArgs:[NSArray arrayWithObjects:@"remote", @"rename", branch, newName, nil] error:&error];
+    [self executeGitWithArgs:@[ @"remote", @"rename", branch, newName ] error:&error];
     return error == nil;
 }
 
 - (BOOL)popStash:(NSString *)name error:(NSError **)error {
-    name = [[name componentsSeparatedByString:@" "] objectAtIndex:0];
-    [self executeGitWithArgs:[NSArray arrayWithObjects:@"stash", @"pop", name, nil] error:error];
+    name = [name componentsSeparatedByString:@" "][0];
+    [self executeGitWithArgs:@[ @"stash", @"pop", name ] error:error];
     return error == nil;
 }
 
 - (BOOL)applyStash:(NSString *)name error:(NSError **)error {
-    name = [[name componentsSeparatedByString:@" "] objectAtIndex:0];
-    [self executeGitWithArgs:[NSArray arrayWithObjects:@"stash", @"apply", name, nil] error:error];
+    name = [name componentsSeparatedByString:@" "][0];
+    [self executeGitWithArgs:@[ @"stash", @"apply", name ] error:error];
     return error == nil;
 }
 
 - (BOOL)dropStash:(NSString *)name error:(NSError **)error {
-    name = [[name componentsSeparatedByString:@" "] objectAtIndex:0];
-    [self executeGitWithArgs:[NSArray arrayWithObjects:@"stash", @"drop", name, nil] error:error];
+    name = [name componentsSeparatedByString:@" "][0];
+    [self executeGitWithArgs:@[ @"stash", @"drop", name ] error:error];
     return error == nil;
 }
 

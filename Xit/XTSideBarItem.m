@@ -30,7 +30,7 @@
 }
 
 - (id)childAtIndex:(NSInteger)index {
-    return [children objectAtIndex:index];
+    return children[index];
 }
 
 - (void)addchild:(XTSideBarItem *)child {

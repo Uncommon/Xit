@@ -74,6 +74,8 @@
 		DD592096156EEF40005FBB0F /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD592095156EEF40005FBB0F /* OCMock.framework */; };
 		DD997DDA173B409500C7DF82 /* HistoryView Menus.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD997DD8173B409500C7DF82 /* HistoryView Menus.xib */; };
 		DD997DF81746F40D00C7DF82 /* FileView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD997DF71746F40D00C7DF82 /* FileView.xib */; };
+		DD997DD31739CC9300C7DF82 /* stash.png in Resources */ = {isa = PBXBuildFile; fileRef = DD997DD11739CC9300C7DF82 /* stash.png */; };
+		DD997DD41739CC9300C7DF82 /* stash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DD997DD21739CC9300C7DF82 /* stash@2x.png */; };
 		DD9C1B8F160239DD0001FE9B /* XTRefToken.m in Sources */ = {isa = PBXBuildFile; fileRef = DD9C1B8E160239DD0001FE9B /* XTRefToken.m */; };
 		DDB9319516EC12B100A6ABC6 /* XTRefTokenTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DDB9319416EC12B100A6ABC6 /* XTRefTokenTest.m */; };
 		DDC75B8315D08E8F0087F2D4 /* NSDate+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC75B8215D08E8F0087F2D4 /* NSDate+Extensions.m */; };
@@ -226,6 +228,8 @@
 		DD592095156EEF40005FBB0F /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCMock.framework; sourceTree = SOURCE_ROOT; };
 		DD997DD9173B409500C7DF82 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = "en.lproj/HistoryView Menus.xib"; sourceTree = "<group>"; };
 		DD997DF71746F40D00C7DF82 /* FileView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FileView.xib; sourceTree = "<group>"; };
+		DD997DD11739CC9300C7DF82 /* stash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stash.png; sourceTree = "<group>"; };
+		DD997DD21739CC9300C7DF82 /* stash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stash@2x.png"; sourceTree = "<group>"; };
 		DD9C1B8D160239DD0001FE9B /* XTRefToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRefToken.h; sourceTree = "<group>"; };
 		DD9C1B8E160239DD0001FE9B /* XTRefToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRefToken.m; sourceTree = "<group>"; };
 		DDB9319416EC12B100A6ABC6 /* XTRefTokenTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRefTokenTest.m; sourceTree = "<group>"; };
@@ -383,6 +387,8 @@
 				DDD00550158FF551001B055E /* branch@2x.png */,
 				895DEF1E142D91F8001763FC /* historyTemplate.pdf */,
 				895DEF211432438D001763FC /* stageTemplate.pdf */,
+				DD997DD11739CC9300C7DF82 /* stash.png */,
+				DD997DD21739CC9300C7DF82 /* stash@2x.png */,
 				899D010C14216D2C0091DC6F /* sidebarTemplate.png */,
 				DDF9BB38162E29C3004588B6 /* tag.png */,
 				DDF9BB39162E29C3004588B6 /* tag@2x.png */,
@@ -621,6 +627,8 @@
 				89039F561703A9FC000949A8 /* html in Resources */,
 				DD997DDA173B409500C7DF82 /* HistoryView Menus.xib in Resources */,
 				DD997DF81746F40D00C7DF82 /* FileView.xib in Resources */,
+				DD997DD31739CC9300C7DF82 /* stash.png in Resources */,
+				DD997DD41739CC9300C7DF82 /* stash@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
