@@ -65,7 +65,7 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
 
     NSDictionary *expectedHeader = @{ @"sha": @"e8cab5650bd1ab770d6ef48c47b1fd6bb3094a92",
                                       @"tree": @"bc6eeceec6b97132b5e1755f022f69d5c245b15f",
-                                      @"parents": @[@"ab60534fdef2a1e8d191e3e113fa33797e774a2b"],
+                                      @"parents": @[ @"ab60534fdef2a1e8d191e3e113fa33797e774a2b" ],
                                       @"refs": [NSSet setWithObjects:@"HEAD", @"testing", @"repo", @"master", nil],
                                       @"authorname": @"Marshall Banana",
                                       @"authoremail": @"test@example.com",

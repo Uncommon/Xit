@@ -8,9 +8,9 @@
 - (void)testAttributedStringWithFormat {
     NSFont *systemFont = [NSFont systemFontOfSize:0];
     NSNumber *obliqueness = @0.1f;
-    NSDictionary *baseAttributes = @{NSFontAttributeName: systemFont};
-    NSDictionary *obliqueAttributes = @{NSObliquenessAttributeName: obliqueness};
-    NSAttributedString *string = [NSAttributedString attributedStringWithFormat:@"Merge @~1 into @~2" placeholders:@[@"@~1", @"@~2"] replacements:@[@"branch", @"master"] attributes:baseAttributes replacementAttributes:obliqueAttributes];
+    NSDictionary *baseAttributes = @{ NSFontAttributeName: systemFont };
+    NSDictionary *obliqueAttributes = @{ NSObliquenessAttributeName: obliqueness };
+    NSAttributedString *string = [NSAttributedString attributedStringWithFormat:@"Merge @~1 into @~2" placeholders:@[ @"@~1", @"@~2" ] replacements:@[ @"branch", @"master" ] attributes:baseAttributes replacementAttributes:obliqueAttributes];
     const NSRange fullRange = NSMakeRange(0, [[string string] length]);
 
     STAssertEqualObjects([string string], @"Merge branch into master", nil);
