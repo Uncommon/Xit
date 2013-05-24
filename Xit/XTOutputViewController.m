@@ -58,7 +58,7 @@ static float HeightForText(NSString *text, NSFont *font, float width);
         [outputText setString:@""];
     else {
         NSFont *fixedFont = [NSFont userFixedPitchFontOfSize:11];
-        NSDictionary *attributes = @{NSFontAttributeName: fixedFont};
+        NSDictionary *attributes = @{ NSFontAttributeName: fixedFont };
 
         if (![output hasSuffix:@"\n"])
             output = [output stringByAppendingString:@"\r"];
