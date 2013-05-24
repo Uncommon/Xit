@@ -15,7 +15,7 @@
     NSError *error = nil;
     NSDictionary *info = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&error];
 
-    return [info objectForKey:NSFileModificationDate];
+    return info[NSFileModificationDate];
 }
 
 - (BOOL)hasDateChanged {

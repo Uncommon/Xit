@@ -15,11 +15,11 @@ NSString *const XTStatusOutputKey = @"output";
 
     assert(repo != nil);
     if (status != nil)
-        [userInfo setObject:status forKey:XTStatusTextKey];
+        userInfo[XTStatusTextKey] = status;
     if (command != nil)
-        [userInfo setObject:command forKey:XTStatusCommandKey];
+        userInfo[XTStatusCommandKey] = command;
     if (output != nil)
-        [userInfo setObject:output forKey:XTStatusOutputKey];
+        userInfo[XTStatusOutputKey] = output;
     dispatch_async(dispatch_get_main_queue(), ^{
         [[NSNotificationCenter defaultCenter] postNotificationName:XTStatusNotification object:repo userInfo:userInfo];
     });
@@ -90,7 +90,7 @@ NSString *const XTStatusOutputKey = @"output";
 }
 
 - (void)updateStatus:(NSNotification *)note {
-    NSString *status = [[note userInfo] objectForKey:XTStatusTextKey];
+    NSString *status = [note userInfo][XTStatusTextKey];
 
     if (status != nil)
         [label setStringValue:status];

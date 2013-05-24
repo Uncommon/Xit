@@ -26,7 +26,7 @@
 }
 
 - (void)repoChanged:(NSNotification *)note {
-    NSArray *paths = [[note userInfo] objectForKey:XTPathsKey];
+    NSArray *paths = [note userInfo][XTPathsKey];
 
     if (![self shouldReloadForPaths:paths])
         return;
@@ -63,7 +63,7 @@
     if (rowIndex >= [items count])
         return nil;
 
-    XTFileIndexInfo *item = [items objectAtIndex:rowIndex];
+    XTFileIndexInfo *item = items[rowIndex];
     NSString *title = [item valueForKey:column.identifier];
 
     return [@"  " stringByAppendingString:title];

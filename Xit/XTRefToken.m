@@ -130,12 +130,10 @@
     [shadow setShadowColor:(type == XTRefTypeActiveBranch) ? [NSColor blackColor] : [NSColor whiteColor]];
     [paragraphStyle setAlignment:NSCenterTextAlignment];
 
-    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:
-            [self labelFont], NSFontAttributeName,
-            paragraphStyle, NSParagraphStyleAttributeName,
-            fgColor, NSForegroundColorAttributeName,
-            shadow, NSShadowAttributeName,
-            nil];
+    NSDictionary *attributes = @{ NSFontAttributeName: [self labelFont],
+                                  NSParagraphStyleAttributeName: paragraphStyle,
+                                  NSForegroundColorAttributeName: fgColor,
+                                  NSShadowAttributeName: shadow };
     
     ++rect.origin.y;
     if (type == XTRefTypeRemoteBranch) {
@@ -154,7 +152,7 @@
 }
 
 + (CGFloat)rectWidthForText:(NSString *)text {
-    NSDictionary *attributes = [NSDictionary dictionaryWithObject:[self labelFont] forKey:NSFontAttributeName];
+    NSDictionary *attributes = @{ NSFontAttributeName: [self labelFont] };
     const NSSize size = [text sizeWithAttributes:attributes];
 
     return size.width + 12;

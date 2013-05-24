@@ -33,7 +33,7 @@
 }
 
 - (void)repoChanged:(NSNotification *)note {
-    NSArray *paths = [[note userInfo] objectForKey:XTPathsKey];
+    NSArray *paths = [note userInfo][XTPathsKey];
 
     for (NSString *path in paths) {
         if ([path hasPrefix:@".git/logs/"]) {
@@ -45,8 +45,8 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"selectedCommit"]) {
-        NSString *newSelectedCommit = [change objectForKey:NSKeyValueChangeNewKey];
-        XTHistoryItem *item = [index objectForKey:newSelectedCommit];
+        NSString *newSelectedCommit = change[NSKeyValueChangeNewKey];
+        XTHistoryItem *item = index[newSelectedCommit];
         if (item != nil) {
             [table selectRowIndexes:[NSIndexSet indexSetWithIndex:item.index] byExtendingSelection:NO];
             [table scrollRowToVisible:item.index];
@@ -96,7 +96,7 @@
 }
 
 - (void)loadHistoryIntoItems:(NSMutableArray *)newItems withIndex:(NSMutableDictionary *)commitIndex {
-    NSArray *args = [NSArray arrayWithObjects:@"--pretty=format:%H%n%P%n%cD%n%ce%n%s", @"--reverse", @"--tags", @"--all", @"--topo-order", nil];
+    NSArray *args = @[ @"--pretty=format:%H%n%P%n%cD%n%ce%n%s", @"--reverse", @"--tags", @"--all", @"--topo-order" ];
 
     [XTStatusView updateStatus:@"Loading..." command:[args componentsJoinedByString:@" "] output:nil forRepository:repo];
     [repo getCommitsWithArgs:args enumerateCommitsUsingBlock:^(NSString *line) {
@@ -109,14 +109,14 @@
         XTHistoryItem *item = [[XTHistoryItem alloc] init];
 
         if ([comps count] == 5) {
-            item.sha = [comps objectAtIndex:0];
-            NSString *parentsStr = [comps objectAtIndex:1];
+            item.sha = comps[0];
+            NSString *parentsStr = comps[1];
             if (parentsStr.length > 0) {
                 NSArray *parents = [parentsStr componentsSeparatedByString:@" "];
 
                 [parents enumerateObjectsWithOptions:0 usingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
                     NSString *parentSha = (NSString *)obj;
-                    XTHistoryItem *parent = [commitIndex objectForKey:parentSha];
+                    XTHistoryItem *parent = commitIndex[parentSha];
                     if (parent != nil) {
                         [item.parents addObject:parent];
                     } else {
@@ -125,11 +125,11 @@
                 }];
             }
             item.repo = repo;
-            item.date = [NSDate dateFromRFC2822:[comps objectAtIndex:2]];
-            item.email = [comps objectAtIndex:3];
-            item.subject = [comps objectAtIndex:4];
+            item.date = [NSDate dateFromRFC2822:comps[2]];
+            item.email = comps[3];
+            item.subject = comps[4];
             [newItems addObject:item];
-            [commitIndex setObject:item forKey:item.sha];
+            commitIndex[item.sha] = item;
         } else {
             [NSException raise:@"Invalid commit" format:@"Line ***\n%@\n*** is invalid", line];
         }
@@ -160,7 +160,7 @@
 }
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
-    XTHistoryItem *item = [items objectAtIndex:rowIndex];
+    XTHistoryItem *item = items[rowIndex];
 
     return [item valueForKey:aTableColumn.identifier];
 }
