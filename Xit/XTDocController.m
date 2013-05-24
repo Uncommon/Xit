@@ -47,7 +47,7 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"activeTasks"]) {
-        NSMutableArray *tasks = [change objectForKey:NSKeyValueChangeNewKey];
+        NSMutableArray *tasks = change[NSKeyValueChangeNewKey];
         if (tasks.count > 0) {
             [activity startAnimation:tasks];
         } else {
@@ -57,7 +57,7 @@
 }
 
 - (IBAction)refresh:(id)sender {
-    [document.repository reloadPaths:[NSArray arrayWithObjects:@".git/refs/", @".git/logs/", nil]];
+    [document.repository reloadPaths:@[ @".git/refs/", @".git/logs/" ]];
 }
 
 - (IBAction)newTag:(id)sender {
@@ -73,7 +73,7 @@
 // item by dragging in a Custom View, the view's -drawRect never gets called.
 // Instead the xib has a plain toolbar item that is modified at runtime.
 - (void)toolbarWillAddItem:(NSNotification *)notification {
-    NSToolbarItem *item = (NSToolbarItem *)[[notification userInfo] objectForKey:@"item"];
+    NSToolbarItem *item = (NSToolbarItem *)[notification userInfo][@"item"];
 
     if ([[item itemIdentifier] isEqualToString:@"xit.status"]) {
         if (statusView == nil)

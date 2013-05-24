@@ -151,7 +151,7 @@
     if (clickedRow == -1)
         return;
 
-    XTFileIndexInfo *item = [[stageDS items] objectAtIndex:clickedRow];
+    XTFileIndexInfo *item = [stageDS items][clickedRow];
 
     [repo executeOffMainThread:^{
         if ([repo unstageFile:item.name])
@@ -166,7 +166,7 @@
     if (clickedRow == -1)
         return;
 
-    XTFileIndexInfo *item = [[unstageDS items] objectAtIndex:clickedRow];
+    XTFileIndexInfo *item = [unstageDS items][clickedRow];
 
     [repo executeOffMainThread:^{
         if ([repo stageFile:item.name])
@@ -201,10 +201,10 @@
 
 - (NSString *)preparePatch:(NSInteger)idx {
     NSArray *components = [actualDiff componentsSeparatedByString:@"\n@@"];
-    NSMutableString *patch = [NSMutableString stringWithString:[components objectAtIndex:0]]; // Header
+    NSMutableString *patch = [NSMutableString stringWithString:components[0]]; // Header
 
     [patch appendString:@"\n@@"];
-    [patch appendString:[components objectAtIndex:(idx + 1)]];
+    [patch appendString:components[(idx + 1)]];
     [patch appendString:@"\n"];
     return patch;
 }
@@ -260,11 +260,11 @@
     if (table.numberOfSelectedRows > 0) {
         if ([table isEqualTo:stageTable]) {
             [unstageTable deselectAll:nil];
-            XTFileIndexInfo *item = [[stageDS items] objectAtIndex:table.selectedRow];
+            XTFileIndexInfo *item = [stageDS items][table.selectedRow];
             [self showStageFile:item];
         } else if ([table isEqualTo:unstageTable]) {
             [stageTable deselectAll:nil];
-            XTFileIndexInfo *item = [[unstageDS items] objectAtIndex:table.selectedRow];
+            XTFileIndexInfo *item = [unstageDS items][table.selectedRow];
             [self showUnstageFile:item];
         }
     } else {

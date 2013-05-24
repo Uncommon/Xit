@@ -10,10 +10,10 @@
     NSMutableString *resultString = [result mutableString];
 
     for (NSUInteger i = 0; i < [placeholders count]; ++i) {
-        const NSRange replaceRange = [resultString rangeOfString:[placeholders objectAtIndex:i]];
+        const NSRange replaceRange = [resultString rangeOfString:placeholders[i]];
 
         [result addAttributes:replacementAttributes range:replaceRange];
-        [resultString replaceCharactersInRange:replaceRange withString:[replacements objectAtIndex:i]];
+        [resultString replaceCharactersInRange:replaceRange withString:replacements[i]];
     }
     return result;
 }

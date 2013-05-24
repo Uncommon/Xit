@@ -60,7 +60,7 @@
     [hds setRepo:repository];
     [self waitForRepoQueue];
 
-    XTHistoryItem *item = (XTHistoryItem *)[hds.items objectAtIndex:0];
+    XTHistoryItem *item = (XTHistoryItem *)(hds.items)[0];
     repository.selectedCommit = item.sha;
 
     XTFileListDataSource *flds = [[XTFileListDataSource alloc] init];

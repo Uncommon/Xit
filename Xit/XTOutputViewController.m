@@ -31,8 +31,8 @@ static float HeightForText(NSString *text, NSFont *font, float width);
 }
 
 - (void)updateStatus:(NSNotification *)note {
-    NSString *command = [[note userInfo] objectForKey:XTStatusCommandKey];
-    NSString *output = [[note userInfo] objectForKey:XTStatusOutputKey];
+    NSString *command = [note userInfo][XTStatusCommandKey];
+    NSString *output = [note userInfo][XTStatusOutputKey];
 
     if (command != nil) {
         NSRect frame = [commandText frame];
@@ -58,7 +58,7 @@ static float HeightForText(NSString *text, NSFont *font, float width);
         [outputText setString:@""];
     else {
         NSFont *fixedFont = [NSFont userFixedPitchFontOfSize:11];
-        NSDictionary *attributes = [NSDictionary dictionaryWithObject:fixedFont forKey:NSFontAttributeName];
+        NSDictionary *attributes = @{ NSFontAttributeName: fixedFont };
 
         if (![output hasSuffix:@"\n"])
             output = [output stringByAppendingString:@"\r"];
