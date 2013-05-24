@@ -57,7 +57,7 @@
 }
 
 - (IBAction)refresh:(id)sender {
-    [document.repository reloadPaths:@[@".git/refs/", @".git/logs/"]];
+    [document.repository reloadPaths:@[ @".git/refs/", @".git/logs/" ]];
 }
 
 - (IBAction)newTag:(id)sender {

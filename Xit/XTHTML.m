@@ -211,7 +211,7 @@
         b = [b substringFromIndex:2];
     }
 
-    return @[a, b];
+    return @[ a, b ];
 }
 
 

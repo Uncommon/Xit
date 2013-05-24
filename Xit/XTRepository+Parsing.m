@@ -11,7 +11,7 @@ NSString *XTHeaderContentKey = @"content";
                    remoteBlock:(void (^)(NSString *remoteName, NSString *branchName, NSString *commit))remoteBlock
                       tagBlock:(void (^)(NSString *name, NSString *commit))tagBlock {
     NSError *error = nil;
-    NSData *output = [self executeGitWithArgs:@[@"show-ref", @"-d"] error:&error];
+    NSData *output = [self executeGitWithArgs:@[ @"show-ref", @"-d" ] error:&error];
 
     if (output != nil) {
         NSString *refs = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
@@ -42,7 +42,7 @@ NSString *XTHeaderContentKey = @"content";
 
 - (BOOL)readStagedFilesWithBlock:(void (^)(NSString *, NSString *))block {
     NSError *error = nil;
-    NSData *output = [self executeGitWithArgs:@[@"diff-index", @"--cached", [self parentTree]] error:&error];
+    NSData *output = [self executeGitWithArgs:@[ @"diff-index", @"--cached", [self parentTree] ] error:&error];
 
     if ((output == nil) || (error != nil))
         return NO;
@@ -65,7 +65,7 @@ NSString *XTHeaderContentKey = @"content";
 
 - (BOOL)readUnstagedFilesWithBlock:(void (^)(NSString *, NSString *))block {
     NSError *error = nil;
-    NSData *output = [self executeGitWithArgs:@[@"diff-files"] error:nil];
+    NSData *output = [self executeGitWithArgs:@[ @"diff-files" ] error:nil];
 
     if (error != nil)
         return NO;
@@ -87,7 +87,7 @@ NSString *XTHeaderContentKey = @"content";
         }
     }];
 
-    output = [self executeGitWithArgs:@[@"ls-files", @"--others", @"--exclude-standard"] error:nil];
+    output = [self executeGitWithArgs:@[ @"ls-files", @"--others", @"--exclude-standard" ] error:nil];
     filesStr = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
     filesStr = [filesStr stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     files = [filesStr componentsSeparatedByString:@"\n"];
@@ -102,7 +102,7 @@ NSString *XTHeaderContentKey = @"content";
 
 - (BOOL)readStashesWithBlock:(void (^)(NSString *, NSString *))block {
     NSError *error = nil;
-    NSData *output = [self executeGitWithArgs:@[@"stash", @"list", @"--pretty=%H %gd %gs"] error:&error];
+    NSData *output = [self executeGitWithArgs:@[ @"stash", @"list", @"--pretty=%H %gd %gs" ] error:&error];
 
     if (output != nil) {
         NSString *refs = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
@@ -119,7 +119,7 @@ NSString *XTHeaderContentKey = @"content";
 
 - (NSArray *)fileNamesForRef:(NSString *)ref {
     NSError *error = nil;
-    NSData *output = [self executeGitWithArgs:@[@"ls-tree", @"--name-only", @"-r", ref] error:nil];
+    NSData *output = [self executeGitWithArgs:@[ @"ls-tree", @"--name-only", @"-r", ref ] error:nil];
 
     if (error != nil)
         return nil;
@@ -162,7 +162,7 @@ NSString
     NSAssert(files != NULL, @"NULL files");
 
     NSError *error = nil;
-    NSData *output = [self executeGitWithArgs:@[@"show", @"-z", @"--summary", @"--name-only", kHeaderFormat, ref] error:&error];
+    NSData *output = [self executeGitWithArgs:@[ @"show", @"-z", @"--summary", @"--name-only", kHeaderFormat, ref ] error:&error];
 
     if (error != nil)
         return NO;
@@ -181,16 +181,16 @@ NSString
     if ([lastLine length] == 0)
         [headerLines removeObject:lastLine];
 
-    NSArray *headerKeys = @[XTCommitSHAKey,
-            XTTreeSHAKey,
-            XTParentSHAsKey,
-            XTRefsKey,
-            XTAuthorNameKey,
-            XTAuthorEmailKey,
-            XTAuthorDateKey,
-            XTCommitterNameKey,
-            XTCommitterEmailKey,
-            XTCommitterDateKey];
+    NSArray *headerKeys = @[ XTCommitSHAKey,
+                             XTTreeSHAKey,
+                             XTParentSHAsKey,
+                             XTRefsKey,
+                             XTAuthorNameKey,
+                             XTAuthorEmailKey,
+                             XTAuthorDateKey,
+                             XTCommitterNameKey,
+                             XTCommitterEmailKey,
+                             XTCommitterDateKey ];
 
     // Convert refs from a string to a set
     const NSUInteger refsLineIndex = [headerKeys indexOfObject:XTRefsKey];
@@ -247,7 +247,7 @@ NSString
 - (BOOL)stageFile:(NSString *)file {
     NSError *error = nil;
 
-    [self executeGitWithArgs:@[@"add", file] error:&error];
+    [self executeGitWithArgs:@[ @"add", file ] error:&error];
     return error == nil;
 }
 
@@ -256,15 +256,15 @@ NSString
     NSError *error = nil;
 
     if ([self parseReference:@"HEAD"] == nil)
-        args = @[@"rm", @"--cached", file];
+        args = @[ @"rm", @"--cached", file ];
     else
-        args = @[@"reset", @"HEAD", file];
+        args = @[ @"reset", @"HEAD", file ];
     [self executeGitWithArgs:args error:&error];
     return error == nil;
 }
 
 - (BOOL)commitWithMessage:(NSString *)message amend:(BOOL)amend outputBlock:(void (^)(NSString *output))outputBlock error:(NSError **)error {
-    NSArray *args = @[@"commit", @"-F", @"-"];
+    NSArray *args = @[ @"commit", @"-F", @"-" ];
 
     if (amend)
         args = [args arrayByAddingObject:@"--amend"];

@@ -38,12 +38,12 @@ static const int kColumnWidth = 10;
     static NSArray *laneColors = nil;
 
     if (!laneColors)
-        laneColors = @[[NSColor colorWithCalibratedRed:0X4e / 256.0 green:0X9A / 256.0 blue:0X06 / 256.0 alpha:1.0],
-                      [NSColor colorWithCalibratedRed:0X20 / 256.0 green:0X4A / 256.0 blue:0X87 / 256.0 alpha:1.0],
-                      [NSColor colorWithCalibratedRed:0XC4 / 256.0 green:0XA0 / 256.0 blue:0 alpha:1.0],
-                      [NSColor colorWithCalibratedRed:0X5C / 256.0 green:0X35 / 256.0 blue:0X66 / 256.0 alpha:1.0],
-                      [NSColor colorWithCalibratedRed:0XA4 / 256.0 green:0X00 / 256.0 blue:0X00 / 256.0 alpha:1.0],
-                      [NSColor colorWithCalibratedRed:0XCE / 256.0 green:0X5C / 256.0 blue:0 alpha:1.0]];
+        laneColors = @[ [NSColor colorWithCalibratedRed:0X4e / 256.0 green:0X9A / 256.0 blue:0X06 / 256.0 alpha:1.0],
+                        [NSColor colorWithCalibratedRed:0X20 / 256.0 green:0X4A / 256.0 blue:0X87 / 256.0 alpha:1.0],
+                        [NSColor colorWithCalibratedRed:0XC4 / 256.0 green:0XA0 / 256.0 blue:0 alpha:1.0],
+                        [NSColor colorWithCalibratedRed:0X5C / 256.0 green:0X35 / 256.0 blue:0X66 / 256.0 alpha:1.0],
+                        [NSColor colorWithCalibratedRed:0XA4 / 256.0 green:0X00 / 256.0 blue:0X00 / 256.0 alpha:1.0],
+                        [NSColor colorWithCalibratedRed:0XCE / 256.0 green:0X5C / 256.0 blue:0 alpha:1.0] ];
 
     return laneColors;
 }
@@ -147,7 +147,7 @@ static const int kColumnWidth = 10;
         rect.origin.x += 2;
         rect.size.width -= 2;
         for (NSString *ref in refs) {
-            NSArray *refPrefixes = @[@"refs/heads/", @"refs/remotes/", @"refs/tags/"];
+            NSArray *refPrefixes = @[ @"refs/heads/", @"refs/remotes/", @"refs/tags/" ];
             NSString *text = ref;
 
             for (NSString *prefix in refPrefixes)

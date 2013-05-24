@@ -34,7 +34,7 @@
         return YES;
 
     if (outError != NULL) {
-        NSDictionary *userInfo = @{NSLocalizedFailureReasonErrorKey: @"The folder does not contain a Git repository."};
+        NSDictionary *userInfo = @{ NSLocalizedFailureReasonErrorKey: @"The folder does not contain a Git repository." };
         *outError = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileReadUnknownError userInfo:userInfo];
     }
     return NO;

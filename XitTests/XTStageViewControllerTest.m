@@ -183,11 +183,11 @@
     NSUInteger nc = [ustgds numberOfRowsInTableView:nil];
     STAssertTrue((nc == 5), @"found %d commits", nc);
 
-    NSDictionary *expected = @{@"file_to_mod.txt": @"M",
-                                      @"file_to_move.txt": @"D",
-                                      @"file_moved.txt": @"?",
-                                      @"file_to_rm.txt": @"D",
-                                      @"new_file.txt": @"?"};
+    NSDictionary *expected = @{ @"file_to_mod.txt": @"M",
+                                @"file_to_move.txt": @"D",
+                                @"file_moved.txt": @"?",
+                                @"file_to_rm.txt": @"D",
+                                @"new_file.txt": @"?" };
 
     NSArray *items = [ustgds items];
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
@@ -204,11 +204,11 @@
 
     STAssertEquals([stgds numberOfRowsInTableView:nil], 5L, @"");
 
-    expected = @{@"file_to_mod.txt": @"M",
-                @"file_to_move.txt": @"D",
-                @"file_moved.txt": @"A",
-                @"file_to_rm.txt": @"D",
-                @"new_file.txt": @"A"};
+    expected = @{ @"file_to_mod.txt": @"M",
+                  @"file_to_move.txt": @"D",
+                  @"file_moved.txt": @"A",
+                  @"file_to_rm.txt": @"D",
+                  @"new_file.txt": @"A" };
 
     items = [stgds items];
     [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
@@ -251,7 +251,7 @@
     // Somewhere in there, git appended a \n to the message.
     message = [message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     STAssertEqualObjects(message, testMessage, @"");
-    STAssertEqualObjects(files, @[newFileName], @"");
+    STAssertEqualObjects(files, @[ newFileName ], @"");
 
     NSArray *parents = header[XTParentSHAsKey];
 

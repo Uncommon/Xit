@@ -148,12 +148,12 @@ const NSString *kAuthorKeyDate = @"date";
         } else {
             if (parsingSubject) {
                 NSString *trimmedLine = [line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                [result addObject:@{kHeaderKeyName: @"subject", kHeaderKeyContent: trimmedLine}];
+                [result addObject:@{ kHeaderKeyName: @"subject", kHeaderKeyContent: trimmedLine }];
             } else {
                 NSArray *comps = [line componentsSeparatedByString:@" "];
                 if ([comps count] == 2) {
-                    [result addObject:@{kHeaderKeyName: comps[0],
-                                       kHeaderKeyContent: comps[1]}];
+                    [result addObject:@{ kHeaderKeyName: comps[0],
+                                         kHeaderKeyContent: comps[1] }];
                 } else if ([comps count] > 2) {
                     NSRange r_email_i = [line rangeOfString:@"<"];
                     NSRange r_email_e = [line rangeOfString:@">"];
@@ -170,11 +170,11 @@ const NSString *kAuthorKeyDate = @"date";
                             date = [NSDate dateWithTimeIntervalSince1970:[t[0] doubleValue]];
                     }
 
-                    NSDictionary *content = @{kAuthorKeyName: name,
-                                             kAuthorKeyEmail: email,
-                                             kAuthorKeyDate: date};
-                    [result addObject:@{kHeaderKeyName: comps[0],
-                                       kHeaderKeyContent: content}];
+                    NSDictionary *content = @{ kAuthorKeyName: name,
+                                               kAuthorKeyEmail: email,
+                                               kAuthorKeyDate: date };
+                    
+                    [result addObject:@{ kHeaderKeyName: comps[0], kHeaderKeyContent: content }];
                 }
             }
         }
@@ -246,7 +246,7 @@ const NSString *kAuthorKeyDate = @"date";
         NSInteger tot = add + rem;
         if (tot > granTotal)
             granTotal = tot;
-        stats[stat[2]] = @[@(add), @(rem), @(tot)];
+        stats[stat[2]] = @[ @(add), @(rem), @(tot) ];
     }
 
     NSArray *lines = [txt componentsSeparatedByString:@"\n"];

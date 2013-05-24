@@ -81,7 +81,7 @@
             }
         };
 
-        [repo    getCommitsWithArgs:@[@"--pretty=format:%H%n%h%n%ct%n%ce%n%s", @"--tags", @"--all", @"--topo-order"]
+        [repo    getCommitsWithArgs:@[ @"--pretty=format:%H%n%h%n%ct%n%ce%n%s", @"--tags", @"--all", @"--topo-order" ]
          enumerateCommitsUsingBlock:commitBlock
                               error:nil];
 

@@ -73,7 +73,7 @@
                                         ascending:YES
                                          selector:@selector(localizedCaseInsensitiveCompare:)];
 
-    [newRoot sortWithSortDescriptors:@[sortDescriptor] recursively:YES];
+    [newRoot sortWithSortDescriptors:@[ sortDescriptor ] recursively:YES];
     return newRoot;
 }
 
