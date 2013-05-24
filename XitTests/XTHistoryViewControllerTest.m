@@ -108,7 +108,7 @@
 
 - (void)doStashAction:(SEL)action stashName:(NSString *)stashName expectedRemains:(NSArray *)expectedRemains expectedText:(NSString *)expectedText {
     [self makeTwoStashes];
-    [self assertStashes:[NSArray arrayWithObjects:@"s2", @"s1", nil]];
+    [self assertStashes:@[@"s2", @"s1"]];
 
     id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
     XTHistoryViewController *controller = [[XTHistoryViewController alloc] initWithRepository:repository sidebar:mockSidebar];
@@ -137,27 +137,27 @@
 }
 
 - (void)testPopStash1 {
-    [self doStashAction:@selector(popStash:) stashName:@"stash@{1} On master: s1" expectedRemains:[NSArray arrayWithObjects:@"s2", nil] expectedText:@"second text"];
+    [self doStashAction:@selector(popStash:) stashName:@"stash@{1} On master: s1" expectedRemains:@[@"s2"] expectedText:@"second text"];
 }
 
 - (void)testPopStash2 {
-    [self doStashAction:@selector(popStash:) stashName:@"stash@{0} On master: s2" expectedRemains:[NSArray arrayWithObjects:@"s1", nil] expectedText:@"third text"];
+    [self doStashAction:@selector(popStash:) stashName:@"stash@{0} On master: s2" expectedRemains:@[@"s1"] expectedText:@"third text"];
 }
 
 - (void)testApplyStash1 {
-    [self doStashAction:@selector(applyStash:) stashName:@"stash@{1} On master: s1" expectedRemains:[NSArray arrayWithObjects:@"s2", @"s1", nil] expectedText:@"second text"];
+    [self doStashAction:@selector(applyStash:) stashName:@"stash@{1} On master: s1" expectedRemains:@[@"s2", @"s1"] expectedText:@"second text"];
 }
 
 - (void)testApplyStash2 {
-    [self doStashAction:@selector(applyStash:) stashName:@"stash@{0} On master: s2" expectedRemains:[NSArray arrayWithObjects:@"s2", @"s1", nil] expectedText:@"third text"];
+    [self doStashAction:@selector(applyStash:) stashName:@"stash@{0} On master: s2" expectedRemains:@[@"s2", @"s1"] expectedText:@"third text"];
 }
 
 - (void)testDropStash1 {
-    [self doStashAction:@selector(dropStash:) stashName:@"stash@{1} On master: s1" expectedRemains:[NSArray arrayWithObjects:@"s2", nil] expectedText:@"some text"];
+    [self doStashAction:@selector(dropStash:) stashName:@"stash@{1} On master: s1" expectedRemains:@[@"s2"] expectedText:@"some text"];
 }
 
 - (void)testDropStash2 {
-    [self doStashAction:@selector(dropStash:) stashName:@"stash@{0} On master: s2" expectedRemains:[NSArray arrayWithObjects:@"s1", nil] expectedText:@"some text"];
+    [self doStashAction:@selector(dropStash:) stashName:@"stash@{0} On master: s2" expectedRemains:@[@"s1"] expectedText:@"some text"];
 }
 
 - (void)testMergeText {

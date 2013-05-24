@@ -101,7 +101,7 @@
     }
 
     NSError *error = nil;
-    NSArray *configArgs = [NSArray arrayWithObjects:@"config", @"receive.denyCurrentBranch", @"ignore", nil];
+    NSArray *configArgs = @[@"config", @"receive.denyCurrentBranch", @"ignore"];
 
     [remoteRepository executeGitWithArgs:configArgs error:&error];
     if (error != nil) {

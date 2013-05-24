@@ -11,7 +11,7 @@ NSString *XTHeaderContentKey = @"content";
                    remoteBlock:(void (^)(NSString *remoteName, NSString *branchName, NSString *commit))remoteBlock
                       tagBlock:(void (^)(NSString *name, NSString *commit))tagBlock {
     NSError *error = nil;
-    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"show-ref", @"-d", nil] error:&error];
+    NSData *output = [self executeGitWithArgs:@[@"show-ref", @"-d"] error:&error];
 
     if (output != nil) {
         NSString *refs = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
@@ -29,7 +29,7 @@ NSString *XTHeaderContentKey = @"content";
             } else if ([name hasPrefix:tagPrefix]) {
                 tagBlock([name substringFromIndex:[tagPrefix length]], commit);
             } else if ([name hasPrefix:remotePrefix]) {
-                NSString *remoteName = [[name pathComponents] objectAtIndex:2];
+                NSString *remoteName = [name pathComponents][2];
                 const NSUInteger prefixLen = [remotePrefix length] + [remoteName length] + 1;
                 NSString *branchName = [name substringFromIndex:prefixLen];
 
@@ -42,7 +42,7 @@ NSString *XTHeaderContentKey = @"content";
 
 - (BOOL)readStagedFilesWithBlock:(void (^)(NSString *, NSString *))block {
     NSError *error = nil;
-    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"diff-index", @"--cached", [self parentTree], nil] error:&error];
+    NSData *output = [self executeGitWithArgs:@[@"diff-index", @"--cached", [self parentTree]] error:&error];
 
     if ((output == nil) || (error != nil))
         return NO;
@@ -55,7 +55,7 @@ NSString *XTHeaderContentKey = @"content";
         NSArray *info = [file componentsSeparatedByString:@"\t"];
         if (info.count > 1) {
             NSString *name = [info lastObject];
-            NSString *status = [[[info objectAtIndex:0] componentsSeparatedByString:@" "] lastObject];
+            NSString *status = [[info[0] componentsSeparatedByString:@" "] lastObject];
             status = [status substringToIndex:1];
             block(name, status);
         }
@@ -65,7 +65,7 @@ NSString *XTHeaderContentKey = @"content";
 
 - (BOOL)readUnstagedFilesWithBlock:(void (^)(NSString *, NSString *))block {
     NSError *error = nil;
-    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"diff-files", nil] error:nil];
+    NSData *output = [self executeGitWithArgs:@[@"diff-files"] error:nil];
 
     if (error != nil)
         return NO;
@@ -80,14 +80,14 @@ NSString *XTHeaderContentKey = @"content";
 
         if (info.count > 1) {
             NSString *name = [info lastObject];
-            NSString *status = [[[info objectAtIndex:0] componentsSeparatedByString:@" "] lastObject];
+            NSString *status = [[info[0] componentsSeparatedByString:@" "] lastObject];
 
             status = [status substringToIndex:1];
             block(name, status);
         }
     }];
 
-    output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"ls-files", @"--others", @"--exclude-standard", nil] error:nil];
+    output = [self executeGitWithArgs:@[@"ls-files", @"--others", @"--exclude-standard"] error:nil];
     filesStr = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
     filesStr = [filesStr stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     files = [filesStr componentsSeparatedByString:@"\n"];
@@ -102,7 +102,7 @@ NSString *XTHeaderContentKey = @"content";
 
 - (BOOL)readStashesWithBlock:(void (^)(NSString *, NSString *))block {
     NSError *error = nil;
-    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"stash", @"list", @"--pretty=%H %gd %gs", nil] error:&error];
+    NSData *output = [self executeGitWithArgs:@[@"stash", @"list", @"--pretty=%H %gd %gs"] error:&error];
 
     if (output != nil) {
         NSString *refs = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
@@ -119,7 +119,7 @@ NSString *XTHeaderContentKey = @"content";
 
 - (NSArray *)fileNamesForRef:(NSString *)ref {
     NSError *error = nil;
-    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"ls-tree", @"--name-only", @"-r", ref, nil] error:nil];
+    NSData *output = [self executeGitWithArgs:@[@"ls-tree", @"--name-only", @"-r", ref] error:nil];
 
     if (error != nil)
         return nil;
@@ -150,7 +150,7 @@ NSString
         *XTCommitterDateKey = @"committerdate";
 
 - (void)parseDateInArray:(NSMutableArray *)array atIndex:(NSUInteger)index {
-    NSDate *date = [NSDate dateFromRFC2822:[array objectAtIndex:index]];
+    NSDate *date = [NSDate dateFromRFC2822:array[index]];
 
     [array removeObjectAtIndex:index];
     [array insertObject:date atIndex:index];
@@ -162,7 +162,7 @@ NSString
     NSAssert(files != NULL, @"NULL files");
 
     NSError *error = nil;
-    NSData *output = [self executeGitWithArgs:[NSArray arrayWithObjects:@"show", @"-z", @"--summary", @"--name-only", kHeaderFormat, ref, nil] error:&error];
+    NSData *output = [self executeGitWithArgs:@[@"show", @"-z", @"--summary", @"--name-only", kHeaderFormat, ref] error:&error];
 
     if (error != nil)
         return NO;
@@ -175,14 +175,13 @@ NSString
         return NO;
     }
 
-    NSMutableArray *headerLines = [[[sections objectAtIndex:0] componentsSeparatedByString:@"\n"] mutableCopy];
+    NSMutableArray *headerLines = [[sections[0] componentsSeparatedByString:@"\n"] mutableCopy];
     NSString *lastLine = [headerLines lastObject];
 
     if ([lastLine length] == 0)
         [headerLines removeObject:lastLine];
 
-    NSArray *headerKeys = [NSArray arrayWithObjects:
-            XTCommitSHAKey,
+    NSArray *headerKeys = @[XTCommitSHAKey,
             XTTreeSHAKey,
             XTParentSHAsKey,
             XTRefsKey,
@@ -191,12 +190,11 @@ NSString
             XTAuthorDateKey,
             XTCommitterNameKey,
             XTCommitterEmailKey,
-            XTCommitterDateKey,
-            nil];
+            XTCommitterDateKey];
 
     // Convert refs from a string to a set
     const NSUInteger refsLineIndex = [headerKeys indexOfObject:XTRefsKey];
-    NSString *refsLine = [headerLines objectAtIndex:refsLineIndex];
+    NSString *refsLine = headerLines[refsLineIndex];
     NSSet *refsSet = nil;
 
     refsLine = [refsLine stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" ()"]];
@@ -214,7 +212,7 @@ NSString
 
     // Convert parents into an array
     const NSUInteger parentsLineIndex = [headerKeys indexOfObject:XTParentSHAsKey];
-    NSString *parentsString = [headerLines objectAtIndex:parentsLineIndex];
+    NSString *parentsString = headerLines[parentsLineIndex];
     NSArray *parents = [parentsString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 
     [headerLines removeObjectAtIndex:parentsLineIndex];
@@ -223,7 +221,7 @@ NSString
     // Set the output variables
     NSAssert([headerLines count] == [headerKeys count], @"bad header line count");
     *header = [NSMutableDictionary dictionaryWithObjects:headerLines forKeys:headerKeys];
-    *message = [sections objectAtIndex:1];
+    *message = sections[1];
     *files = [sections subarrayWithRange:NSMakeRange(2, [sections count]-2)];
 
     // The first file line has newlines at the beginning.
@@ -233,7 +231,7 @@ NSString
         while ([mutableFiles[0] length] == 0)
             [mutableFiles removeObjectAtIndex:0];
 
-        NSString *firstLine = [[mutableFiles objectAtIndex:0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString *firstLine = [mutableFiles[0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
         [mutableFiles setObject:firstLine atIndexedSubscript:0];
     }
@@ -249,7 +247,7 @@ NSString
 - (BOOL)stageFile:(NSString *)file {
     NSError *error = nil;
 
-    [self executeGitWithArgs:[NSArray arrayWithObjects:@"add", file, nil] error:&error];
+    [self executeGitWithArgs:@[@"add", file] error:&error];
     return error == nil;
 }
 
@@ -258,15 +256,15 @@ NSString
     NSError *error = nil;
 
     if ([self parseReference:@"HEAD"] == nil)
-        args = [NSArray arrayWithObjects:@"rm", @"--cached", file, nil];
+        args = @[@"rm", @"--cached", file];
     else
-        args = [NSArray arrayWithObjects:@"reset", @"HEAD", file, nil];
+        args = @[@"reset", @"HEAD", file];
     [self executeGitWithArgs:args error:&error];
     return error == nil;
 }
 
 - (BOOL)commitWithMessage:(NSString *)message amend:(BOOL)amend outputBlock:(void (^)(NSString *output))outputBlock error:(NSError **)error {
-    NSArray *args = [NSArray arrayWithObjects:@"commit", @"-F", @"-", nil];
+    NSArray *args = @[@"commit", @"-F", @"-"];
 
     if (amend)
         args = [args arrayByAddingObject:@"--amend"];

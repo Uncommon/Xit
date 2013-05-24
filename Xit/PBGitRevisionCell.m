@@ -38,14 +38,12 @@ static const int kColumnWidth = 10;
     static NSArray *laneColors = nil;
 
     if (!laneColors)
-        laneColors = [NSArray arrayWithObjects:
-                      [NSColor colorWithCalibratedRed:0X4e / 256.0 green:0X9A / 256.0 blue:0X06 / 256.0 alpha:1.0],
+        laneColors = @[[NSColor colorWithCalibratedRed:0X4e / 256.0 green:0X9A / 256.0 blue:0X06 / 256.0 alpha:1.0],
                       [NSColor colorWithCalibratedRed:0X20 / 256.0 green:0X4A / 256.0 blue:0X87 / 256.0 alpha:1.0],
                       [NSColor colorWithCalibratedRed:0XC4 / 256.0 green:0XA0 / 256.0 blue:0 alpha:1.0],
                       [NSColor colorWithCalibratedRed:0X5C / 256.0 green:0X35 / 256.0 blue:0X66 / 256.0 alpha:1.0],
                       [NSColor colorWithCalibratedRed:0XA4 / 256.0 green:0X00 / 256.0 blue:0X00 / 256.0 alpha:1.0],
-                      [NSColor colorWithCalibratedRed:0XCE / 256.0 green:0X5C / 256.0 blue:0 alpha:1.0],
-                      nil];
+                      [NSColor colorWithCalibratedRed:0XCE / 256.0 green:0X5C / 256.0 blue:0 alpha:1.0]];
 
     return laneColors;
 }
@@ -59,7 +57,7 @@ static const int kColumnWidth = 10;
     const float direction = center.y > source.y ? 1.0 : -1.0;
 
     NSArray *laneColors = [PBGitRevisionCell laneColors];
-    NSColor *color = [laneColors objectAtIndex:c % [laneColors count]];
+    NSColor *color = laneColors[c % [laneColors count]];
 
     [color set];
 
@@ -110,8 +108,8 @@ static const int kColumnWidth = 10;
     NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
 
     [style setAlignment:NSCenterTextAlignment];
-    [attributes setObject:style forKey:NSParagraphStyleAttributeName];
-    [attributes setObject:[NSFont fontWithName:@"Helvetica" size:9] forKey:NSFontAttributeName];
+    attributes[NSParagraphStyleAttributeName] = style;
+    attributes[NSFontAttributeName] = [NSFont fontWithName:@"Helvetica" size:9];
 
     // if (selected)
     //	[attributes setObject:[NSColor alternateSelectedControlTextColor] forKey:NSForegroundColorAttributeName];
@@ -143,14 +141,13 @@ static const int kColumnWidth = 10;
     }
 
     XTRepository *repo = [self.objectValue repo];
-    NSArray *refs = [[repo refsIndex] objectForKey:[self.objectValue sha]];
+    NSArray *refs = [repo refsIndex][[self.objectValue sha]];
 
     if ([refs count] > 0) {
         rect.origin.x += 2;
         rect.size.width -= 2;
         for (NSString *ref in refs) {
-            NSArray *refPrefixes = [NSArray arrayWithObjects:
-                    @"refs/heads/", @"refs/remotes/", @"refs/tags/", nil];
+            NSArray *refPrefixes = @[@"refs/heads/", @"refs/remotes/", @"refs/tags/"];
             NSString *text = ref;
 
             for (NSString *prefix in refPrefixes)

@@ -73,14 +73,14 @@
                                         ascending:YES
                                          selector:@selector(localizedCaseInsensitiveCompare:)];
 
-    [newRoot sortWithSortDescriptors:[NSArray arrayWithObject:sortDescriptor] recursively:YES];
+    [newRoot sortWithSortDescriptors:@[sortDescriptor] recursively:YES];
     return newRoot;
 }
 
 - (NSTreeNode *)findTreeNodeForPath:(NSString *)path
                              parent:(NSTreeNode *)parent
                               nodes:(NSMutableDictionary *)nodes {
-    NSTreeNode *pathNode = [nodes objectForKey:path];
+    NSTreeNode *pathNode = nodes[path];
 
     if (!pathNode) {
         pathNode = [NSTreeNode treeNodeWithRepresentedObject:path];
@@ -91,7 +91,7 @@
             NSTreeNode *parentNode = [self findTreeNodeForPath:parentPath parent:parent nodes:nodes];
             [[parentNode mutableChildNodes] addObject:pathNode];
         }
-        [nodes setObject:pathNode forKey:path];
+        nodes[path] = pathNode;
     }
     return pathNode;
 }
@@ -123,10 +123,10 @@
     id res;
 
     if (item == nil) {
-        res = [root.childNodes objectAtIndex:index];
+        res = (root.childNodes)[index];
     } else {
         NSTreeNode *node = (NSTreeNode *)item;
-        res = [[node childNodes] objectAtIndex:index];
+        res = [node childNodes][index];
     }
     return res;
 }
