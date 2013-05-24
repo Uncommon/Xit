@@ -262,7 +262,7 @@ NSString *XTPathsKey = @"paths";
 
 - (NSData *)contentsOfFile:(NSString *)filePath atCommit:(NSString *)commit {
     NSString *spec = [NSString stringWithFormat:@"%@:%@", commit, filePath];
-    NSArray *args = [NSArray arrayWithObjects:@"cat-file", @"blob", spec, nil];
+    NSArray *args = @[ @"cat-file", @"blob", spec ];
     NSError *error = nil;
 
     return [self executeGitWithArgs:args error:&error];

@@ -26,7 +26,7 @@
         const char *tempPath = mkdtemp(template);
 
         if (tempPath != NULL)
-            tempFolder = [NSString stringWithCString:tempPath encoding:NSUTF8StringEncoding];
+            tempFolder = @(tempPath);
         free(template);
     }
     return self;
