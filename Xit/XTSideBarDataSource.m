@@ -35,7 +35,7 @@
     XTSideBarItem *tags = [[XTSideBarItem alloc] initWithTitle:@"TAGS"];
     XTSideBarItem *stashes = [[XTSideBarItem alloc] initWithTitle:@"STASHES"];
 
-    return @[branches, remotes, tags, stashes];
+    return @[ branches, remotes, tags, stashes ];
 }
 
 - (void)setRepo:(XTRepository *)newRepo {
