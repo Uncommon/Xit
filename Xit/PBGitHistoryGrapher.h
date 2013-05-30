@@ -8,16 +8,13 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 #define kCurrentQueueKey @"kCurrentQueueKey"
-#define kNewCommitsKey   @"kNewCommitsKey"
-
+#define kNewCommitsKey @"kNewCommitsKey"
 
 @class PBGitGrapher;
 
-
 @interface PBGitHistoryGrapher : NSObject {
-    PBGitGrapher *grapher;
+  PBGitGrapher *grapher;
 }
 
 - (void)graphCommits:(NSArray *)revList;

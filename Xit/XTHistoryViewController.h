@@ -11,26 +11,26 @@
 
 @interface XTHistoryViewController : NSViewController
 {
-    IBOutlet XTSideBarDataSource *sideBarDS;
-    IBOutlet XTHistoryDataSource *historyDS;
-    IBOutlet XTFileListDataSource *fileListDS;
-    IBOutlet XTCommitViewController *commitViewController;
-    IBOutlet NSTableView *historyTable;
-    IBOutlet XTSideBarOutlineView *sidebarOutline;
-    IBOutlet NSView *commitView;
-    IBOutlet NSSplitView *sidebarSplitView;
-    IBOutlet NSSplitView *mainSplitView;
-    IBOutlet NSTabView *commitTabView;
-    IBOutlet NSView *fileListRootView;
-    IBOutlet NSOutlineView *fileListOutline;
-    IBOutlet QLPreviewView *filePreview;
-    IBOutlet NSMenu *branchContextMenu;
-    IBOutlet NSMenu *remoteContextMenu;
-    IBOutlet NSMenu *tagContextMenu;
-    IBOutlet NSMenu *stashContextMenu;
-    @private
-    XTRepository *repo;
-    NSUInteger savedSidebarWidth;
+  IBOutlet XTSideBarDataSource *sideBarDS;
+  IBOutlet XTHistoryDataSource *historyDS;
+  IBOutlet XTFileListDataSource *fileListDS;
+  IBOutlet XTCommitViewController *commitViewController;
+  IBOutlet NSTableView *historyTable;
+  IBOutlet XTSideBarOutlineView *sidebarOutline;
+  IBOutlet NSView *commitView;
+  IBOutlet NSSplitView *sidebarSplitView;
+  IBOutlet NSSplitView *mainSplitView;
+  IBOutlet NSTabView *commitTabView;
+  IBOutlet NSView *fileListRootView;
+  IBOutlet NSOutlineView *fileListOutline;
+  IBOutlet QLPreviewView *filePreview;
+  IBOutlet NSMenu *branchContextMenu;
+  IBOutlet NSMenu *remoteContextMenu;
+  IBOutlet NSMenu *tagContextMenu;
+  IBOutlet NSMenu *stashContextMenu;
+ @private
+  XTRepository *repo;
+  NSUInteger savedSidebarWidth;
 }
 
 - (void)setRepo:(XTRepository *)newRepo;
@@ -57,14 +57,15 @@
 - (NSString *)selectedBranch;
 - (void)selectBranch:(NSString *)branch;
 
-@property (readonly) XTSideBarDataSource *sideBarDS;
-@property (readonly) XTHistoryDataSource *historyDS;
-@property (readonly) NSMenu *branchContextMenu;
-@property (readonly) NSMenu *remoteContextMenu;
-@property (readonly) NSMenu *tagContextMenu;
-@property (readonly) NSMenu *stashContextMenu;
+@property(readonly) XTSideBarDataSource *sideBarDS;
+@property(readonly) XTHistoryDataSource *historyDS;
+@property(readonly) NSMenu *branchContextMenu;
+@property(readonly) NSMenu *remoteContextMenu;
+@property(readonly) NSMenu *tagContextMenu;
+@property(readonly) NSMenu *stashContextMenu;
 
 // For testing
-- (id)initWithRepository:(XTRepository *)repository sidebar:(XTSideBarOutlineView *)sidebar;
+- (id)initWithRepository:(XTRepository *)repository
+                 sidebar:(XTSideBarOutlineView *)sidebar;
 
 @end

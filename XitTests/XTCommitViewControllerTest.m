@@ -10,31 +10,32 @@
 
 @implementation XTCommitViewControllerTest
 
-- (void)testCommitWithTag {
-    NSString *tagName = @"TagNameTest";
-    NSString *tagMsg = @"### message ###";
+- (void)testCommitWithTag
+{
+  NSString *tagName = @"TagNameTest";
+  NSString *tagMsg = @"### message ###";
 
-    if (![repository createTag:tagName withMessage:tagMsg]) {
-        STFail(@"Create Tag 't1'");
-    }
+  if (![repository createTag:tagName withMessage:tagMsg]) {
+    STFail(@"Create Tag 't1'");
+  }
 
-    XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
-    [sbds setRepo:repository];
-    [self waitForRepoQueue];
-    [self waitForQueue:dispatch_get_main_queue()];
+  XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
+  [sbds setRepo:repository];
+  [self waitForRepoQueue];
+  [self waitForQueue:dispatch_get_main_queue()];
 
-    id tags = [sbds outlineView:nil child:XTTagsGroupIndex ofItem:nil];
-    NSInteger count = [sbds outlineView:nil numberOfChildrenOfItem:tags];
-    STAssertEquals(1L, count, @"");
-    if (count != 1)
-        return;  // abort test
-    XTSideBarItem *tag = [sbds outlineView:nil child:0 ofItem:tags];
+  id tags = [sbds outlineView:nil child:XTTagsGroupIndex ofItem:nil];
+  NSInteger count = [sbds outlineView:nil numberOfChildrenOfItem:tags];
+  STAssertEquals(1L, count, @"");
+  if (count != 1)
+    return;  // abort test
+  XTSideBarItem *tag = [sbds outlineView:nil child:0 ofItem:tags];
 
-    XTCommitViewController *cvc = [[XTCommitViewController alloc] init];
-    [cvc setRepo:repository];
-    NSString *html = [cvc loadCommit:tag.sha];
-    NSRange tagNameRange = [html rangeOfString:tagName];
-    STAssertTrue(tagNameRange.location != NSNotFound, @"'%@' not found", tagName);
+  XTCommitViewController *cvc = [[XTCommitViewController alloc] init];
+  [cvc setRepo:repository];
+  NSString *html = [cvc loadCommit:tag.sha];
+  NSRange tagNameRange = [html rangeOfString:tagName];
+  STAssertTrue(tagNameRange.location != NSNotFound, @"'%@' not found", tagName);
 }
 
 @end

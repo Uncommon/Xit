@@ -3,14 +3,13 @@
 @class XTModDateTracker;
 @class XTRepository;
 
-@interface XTStagingDataSourceBase : NSObject <NSTableViewDataSource>
-{
-    @protected
-    XTRepository *repo;
-    NSMutableArray *items;
-    NSTableView *table;
-    BOOL reloading;
-    XTModDateTracker *indexTracker;
+@interface XTStagingDataSourceBase : NSObject<NSTableViewDataSource> {
+ @protected
+  XTRepository *repo;
+  NSMutableArray *items;
+  NSTableView *table;
+  BOOL reloading;
+  XTModDateTracker *indexTracker;
 }
 
 - (NSArray *)items;

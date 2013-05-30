@@ -11,9 +11,9 @@
 #import "PBGraphCellInfo.h"
 
 @interface PBGitGrapher : NSObject {
-    PBGraphCellInfo *previous;
-    void *pl;
-    int curLane;
+  PBGraphCellInfo *previous;
+  void *pl;
+  int curLane;
 }
 
 - (void)decorateCommit:(XTHistoryItem *)commit;

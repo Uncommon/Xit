@@ -5,27 +5,30 @@ extern NSString *XTErrorOutputKey;
 extern NSString *XTErrorArgsKey;
 extern NSString *XTPathsKey;
 
-@interface XTRepository : NSObject
-{
-    @private
-    NSURL *repoURL;
-    NSString *gitCMD;
-    NSString *selectedCommit;
-    NSString *cachedHeadRef, *cachedHeadSHA, *cachedBranch;
-    NSDictionary *refsIndex;
-    FSEventStreamRef stream;
-    dispatch_queue_t queue;
-    NSMutableArray *activeTasks;
+@interface XTRepository : NSObject {
+ @private
+  NSURL *repoURL;
+  NSString *gitCMD;
+  NSString *selectedCommit;
+  NSString *cachedHeadRef, *cachedHeadSHA, *cachedBranch;
+  NSDictionary *refsIndex;
+  FSEventStreamRef stream;
+  dispatch_queue_t queue;
+  NSMutableArray *activeTasks;
 }
 
 - (id)initWithURL:(NSURL *)url;
-- (void)getCommitsWithArgs:(NSArray *)logArgs enumerateCommitsUsingBlock:(void (^)(NSString *))block error:(NSError **)error;
+- (void)getCommitsWithArgs:(NSArray *)logArgs
+    enumerateCommitsUsingBlock:(void (^)(NSString *))block
+                         error:(NSError **)error;
 
 // Avoid calling these from outside XTRepository. Instead, add methods to
 // +Commands or +Parsing.
 // Returns command output on success, or nil on failure.
 - (NSData *)executeGitWithArgs:(NSArray *)args error:(NSError **)error;
-- (NSData *)executeGitWithArgs:(NSArray *)args withStdIn:(NSString *)stdIn error:(NSError **)error;
+- (NSData *)executeGitWithArgs:(NSArray *)args
+                     withStdIn:(NSString *)stdIn
+                         error:(NSError **)error;
 
 - (NSString *)parseReference:(NSString *)reference;
 - (NSString *)parentTree;
@@ -45,11 +48,11 @@ extern NSString *XTPathsKey;
 - (void)addTask:(NSTask *)task;
 - (void)removeTask:(NSTask *)task;
 
-@property (copy) NSString *selectedCommit;
-@property (strong) NSDictionary *refsIndex;
-@property (readonly) dispatch_queue_t queue;
-@property (readonly) NSMutableArray *activeTasks;
-@property (readonly) NSURL *repoURL;
+@property(copy) NSString *selectedCommit;
+@property(strong) NSDictionary *refsIndex;
+@property(readonly) dispatch_queue_t queue;
+@property(readonly) NSMutableArray *activeTasks;
+@property(readonly) NSURL *repoURL;
 
 @end
 

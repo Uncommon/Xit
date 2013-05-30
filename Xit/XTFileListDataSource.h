@@ -2,12 +2,11 @@
 
 @class XTRepository;
 
-@interface XTFileListDataSource : NSObject <NSOutlineViewDataSource>
-{
-    @private
-    XTRepository *repo;
-    NSTreeNode *root;
-    NSOutlineView *table;
+@interface XTFileListDataSource : NSObject<NSOutlineViewDataSource> {
+ @private
+  XTRepository *repo;
+  NSTreeNode *root;
+  NSOutlineView *table;
 }
 
 - (void)setRepo:(XTRepository *)repo;

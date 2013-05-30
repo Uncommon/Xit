@@ -1,8 +1,8 @@
 #import <Foundation/Foundation.h>
 
 @interface XTModDateTracker : NSObject {
-    NSString *path;
-    NSDate *lastDate;
+  NSString *path;
+  NSDate *lastDate;
 }
 
 - (id)initWithPath:(NSString *)filePath;

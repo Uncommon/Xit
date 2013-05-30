@@ -6,20 +6,20 @@
 @class XTUnstagedDataSource;
 @class XTFileIndexInfo;
 
-@interface XTStageViewController : NSViewController <DOMEventListener, NSTableViewDelegate>
-{
-    @public
-    IBOutlet XTStagedDataSource *stageDS;
-    IBOutlet XTUnstagedDataSource *unstageDS;
-    IBOutlet WebView *web;
-    IBOutlet NSTableView *stageTable;
-    IBOutlet NSTableView *unstageTable;
-    XTRepository *repo;
-    NSString *actualDiff;
-    BOOL stagedFile;
+@interface XTStageViewController
+    : NSViewController<DOMEventListener, NSTableViewDelegate> {
+ @public
+  IBOutlet XTStagedDataSource *stageDS;
+  IBOutlet XTUnstagedDataSource *unstageDS;
+  IBOutlet WebView *web;
+  IBOutlet NSTableView *stageTable;
+  IBOutlet NSTableView *unstageTable;
+  XTRepository *repo;
+  NSString *actualDiff;
+  BOOL stagedFile;
 }
 
-@property (strong) NSString *message;
+@property(strong) NSString *message;
 
 - (IBAction)commit:(id)sender;
 
@@ -33,7 +33,9 @@
 - (NSString *)preparePatch:(NSInteger)idx;
 
 - (void)showDiff:(NSString *)diff;
-- (DOMHTMLElement *)createButtonWithIndex:(int)index title:(NSString *)title fromDOM:(DOMDocument *)dom;
+- (DOMHTMLElement *)createButtonWithIndex:(int)index
+                                    title:(NSString *)title
+                                  fromDOM:(DOMDocument *)dom;
 
 - (void)stagedDoubleClicked:(id)sender;
 - (void)unstagedDoubleClicked:(id)sender;

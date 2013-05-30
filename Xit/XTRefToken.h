@@ -6,7 +6,9 @@
 
 @interface XTRefToken : NSObject
 
-+ (void)drawTokenForRefType:(XTRefType)type text:(NSString *)text rect:(NSRect)rect;
++ (void)drawTokenForRefType:(XTRefType)type
+                       text:(NSString *)text
+                       rect:(NSRect)rect;
 + (CGFloat)rectWidthForText:(NSString *)text;
 + (XTRefType)typeForRefName:(NSString *)ref inRepository:(XTRepository *)repo;
 

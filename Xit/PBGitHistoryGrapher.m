@@ -9,24 +9,22 @@
 #import "PBGitHistoryGrapher.h"
 #import "PBGitGrapher.h"
 
-
 @implementation PBGitHistoryGrapher
 
-
-- (id)init {
-    self = [super init];
-    if (self) {
-        grapher = [[PBGitGrapher alloc] init];
-    }
-    return self;
+- (id)init
+{
+  self = [super init];
+  if (self) {
+    grapher = [[PBGitGrapher alloc] init];
+  }
+  return self;
 }
 
-
-- (void)graphCommits:(NSArray *)revList {
-    for (XTHistoryItem *commit in revList) {
-        [grapher decorateCommit:commit];
-    }
+- (void)graphCommits:(NSArray *)revList
+{
+  for (XTHistoryItem *commit in revList) {
+    [grapher decorateCommit:commit];
+  }
 }
-
 
 @end
