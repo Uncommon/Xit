@@ -11,24 +11,28 @@
 
 @synthesize position, numColumns, nLines;
 
-- (id)initWithPosition:(size_t)p andLines:(struct PBGitGraphLine *)l {
-    position = p;
-    lines = l;
+- (id)initWithPosition:(size_t)p andLines:(struct PBGitGraphLine *)l
+{
+  position = p;
+  lines = l;
 
-    return self;
+  return self;
 }
 
-- (struct PBGitGraphLine *)lines {
-    return lines;
+- (struct PBGitGraphLine *)lines
+{
+  return lines;
 }
 
-- (void)setLines:(struct PBGitGraphLine *)l {
-    free(lines);
-    lines = l;
+- (void)setLines:(struct PBGitGraphLine *)l
+{
+  free(lines);
+  lines = l;
 }
 
-- (void)dealloc {
-    free(lines);
+- (void)dealloc
+{
+  free(lines);
 }
 
 @end

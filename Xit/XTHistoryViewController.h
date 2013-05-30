@@ -7,19 +7,18 @@
 @class XTHistoryDataSource;
 @class XTCommitViewController;
 
-@interface XTHistoryViewController : NSViewController
-{
-    IBOutlet XTSideBarDataSource *sideBarDS;
-    IBOutlet XTHistoryDataSource *historyDS;
-    IBOutlet XTCommitViewController *commitViewController;
-    IBOutlet NSTableView *historyTable;
-    IBOutlet XTSideBarOutlineView *sidebarOutline;
-    IBOutlet NSView *commitView;
-    IBOutlet NSSplitView *sidebarSplitView;
-    IBOutlet NSSplitView *mainSplitView;
-    @private
-    XTRepository *repo;
-    NSUInteger savedSidebarWidth;
+@interface XTHistoryViewController : NSViewController {
+  IBOutlet XTSideBarDataSource *sideBarDS;
+  IBOutlet XTHistoryDataSource *historyDS;
+  IBOutlet XTCommitViewController *commitViewController;
+  IBOutlet NSTableView *historyTable;
+  IBOutlet XTSideBarOutlineView *sidebarOutline;
+  IBOutlet NSView *commitView;
+  IBOutlet NSSplitView *sidebarSplitView;
+  IBOutlet NSSplitView *mainSplitView;
+ @private
+  XTRepository *repo;
+  NSUInteger savedSidebarWidth;
 }
 
 - (void)setRepo:(XTRepository *)newRepo;
@@ -44,10 +43,11 @@
 - (NSString *)selectedBranch;
 - (void)selectBranch:(NSString *)branch;
 
-@property (readonly) XTSideBarDataSource *sideBarDS;
-@property (readonly) XTHistoryDataSource *historyDS;
+@property(readonly) XTSideBarDataSource *sideBarDS;
+@property(readonly) XTHistoryDataSource *historyDS;
 
 // For testing
-- (id)initWithRepository:(XTRepository *)repository sidebar:(XTSideBarOutlineView *)sidebar;
+- (id)initWithRepository:(XTRepository *)repository
+                 sidebar:(XTSideBarOutlineView *)sidebar;
 
 @end

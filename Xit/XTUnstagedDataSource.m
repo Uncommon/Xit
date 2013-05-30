@@ -5,21 +5,24 @@
 
 @implementation XTUnstagedDataSource
 
-- (BOOL)shouldReloadForPaths:(NSArray *)paths {
-    if ([indexTracker hasDateChanged])
-        return YES;
-    for (NSString *path in paths)
-        if (![path hasPrefix:@".git/"])
-            return YES;
-    return NO;
+- (BOOL)shouldReloadForPaths:(NSArray *)paths
+{
+  if ([indexTracker hasDateChanged])
+    return YES;
+  for (NSString *path in paths)
+    if (![path hasPrefix:@".git/"])
+      return YES;
+  return NO;
 }
 
-- (void)reload {
-    [items removeAllObjects];
-    [repo readUnstagedFilesWithBlock:^(NSString *name, NSString *status) {
-        [items addObject:[[XTFileIndexInfo alloc] initWithName:name andStatus:status]];
-    }];
-    [table reloadData];
+- (void)reload
+{
+  [items removeAllObjects];
+  [repo readUnstagedFilesWithBlock:^(NSString *name, NSString *status) {
+    [items addObject:
+            [[XTFileIndexInfo alloc] initWithName:name andStatus:status]];
+  }];
+  [table reloadData];
 }
 
 @end

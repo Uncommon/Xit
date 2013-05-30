@@ -1,7 +1,6 @@
 #import "XTStagingDataSourceBase.h"
 
-@interface XTStagedDataSource : XTStagingDataSourceBase
-{
+@interface XTStagedDataSource : XTStagingDataSourceBase {
 }
 
 @end

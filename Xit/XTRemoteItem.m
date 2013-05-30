@@ -2,7 +2,8 @@
 
 @implementation XTRemoteItem
 
-- (XTRefType)refType {
+- (XTRefType)refType
+{
   return XTRefTypeRemote;
 }
 

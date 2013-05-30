@@ -5,23 +5,26 @@
 
 @implementation XTStagedDataSource
 
-- (BOOL)shouldReloadForPaths:(NSArray *)paths {
-    return [indexTracker hasDateChanged];
+- (BOOL)shouldReloadForPaths:(NSArray *)paths
+{
+  return [indexTracker hasDateChanged];
 }
 
-- (void)reload {
-    [repo executeOffMainThread:^{
-        NSMutableArray *newItems = [NSMutableArray array];
+- (void)reload
+{
+  [repo executeOffMainThread:^{
+    NSMutableArray *newItems = [NSMutableArray array];
 
-        [repo readStagedFilesWithBlock:^(NSString *name, NSString *status) {
-            XTFileIndexInfo *fileInfo = [[XTFileIndexInfo alloc] initWithName:name andStatus:status];
-            [newItems addObject:fileInfo];
-        }];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            items = newItems;
-            [table reloadData];
-        });
+    [repo readStagedFilesWithBlock:^(NSString *name, NSString *status){
+      XTFileIndexInfo *fileInfo =
+          [[XTFileIndexInfo alloc] initWithName:name andStatus:status];
+      [newItems addObject:fileInfo];
     }];
+    dispatch_async(dispatch_get_main_queue(), ^{
+      items = newItems;
+      [table reloadData];
+    });
+  }];
 }
 
 @end

@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 
 @interface XTAppDelegate : NSObject<NSOpenSavePanelDelegate> {
-    NSOpenPanel *openPanel;
+  NSOpenPanel *openPanel;
 }
 
 - (IBAction)openDocument:(id)sender;

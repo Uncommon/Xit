@@ -2,11 +2,13 @@
 
 @implementation XTTagItem
 
-- (BOOL)isItemExpandable {
-    return NO;
+- (BOOL)isItemExpandable
+{
+  return NO;
 }
 
-- (XTRefType)refType {
+- (XTRefType)refType
+{
   return XTRefTypeTag;
 }
 

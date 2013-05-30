@@ -1,0 +1,5 @@
+BasedOnStyle: google
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+MaxEmptyLinesToKeep: 2
+BreakBeforeBraces: Stroustrup

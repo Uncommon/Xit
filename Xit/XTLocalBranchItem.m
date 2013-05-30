@@ -1,13 +1,14 @@
 #import "XTLocalBranchItem.h"
 
-
 @implementation XTLocalBranchItem
 
-- (BOOL)isItemExpandable {
-    return NO;
+- (BOOL)isItemExpandable
+{
+  return NO;
 }
 
-- (XTRefType)refType {
+- (XTRefType)refType
+{
   return XTRefTypeBranch;
 }
 
