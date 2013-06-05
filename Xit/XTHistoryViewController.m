@@ -1,10 +1,10 @@
 #import "XTHistoryViewController.h"
 #import "XTCommitViewController.h"
 #import "XTFileListDataSource.h"
+#import "XTFileViewController.h"
 #import "XTHistoryDataSource.h"
 #import "XTHistoryItem.h"
 #import "XTLocalBranchItem.h"
-#import "XTPreviewItem.h"
 #import "XTRemoteBranchItem.h"
 #import "XTRemoteItem.h"
 #import "XTRemotesItem.h"
@@ -66,16 +66,15 @@
       [commitTabView indexOfTabViewItemWithIdentifier:@"tree"];
   NSTabViewItem *treeTabItem = [commitTabView tabViewItemAtIndex:treeTabIndex];
 
-  nib = [[NSNib alloc] initWithNibNamed:@"FileView" bundle:nil];
-  [nib instantiateWithOwner:self topLevelObjects:NULL];
-  fileListRootView =
-      [[RBSplitView alloc] initWithFrame:[[treeTabItem view] frame]];
-  [fileListRootView setDelegate:self];
-  [fileListRootView addSubview:fileViewLeftPane];
-  [fileListRootView addSubview:fileViewRightPane];
-  [fileListRootView setDivider:[NSImage imageNamed:@"splitter"]];
-  [fileListRootView setDividerThickness:1.0];
-  [treeTabItem setView:fileListRootView];
+  [RBSplitView class];  // Make sure it's loaded.
+  fileViewController = [[XTFileViewController alloc]
+      initWithNibName:@"XTFileViewController" bundle:nil];
+  [treeTabItem setView:fileViewController.view];
+  [[NSNotificationCenter defaultCenter]
+      addObserver:fileViewController
+         selector:@selector(commitSelected:)
+             name:NSTableViewSelectionDidChangeNotification
+           object:historyTable];
 
   // Remove intercell spacing so the history lines will connect
   NSSize cellSpacing = [historyTable intercellSpacing];
@@ -84,12 +83,6 @@
 
   // Without this, the first group title moves when you hide its contents
   [sidebarOutline setFloatsGroupRows:NO];
-
-  [[NSNotificationCenter defaultCenter]
-      addObserver:self
-         selector:@selector(fileSelectionChanged:)
-             name:NSOutlineViewSelectionDidChangeNotification
-           object:fileListOutline];
 }
 
 - (NSString *)nibName
@@ -103,14 +96,13 @@
   repo = newRepo;
   [sideBarDS setRepo:newRepo];
   [historyDS setRepo:newRepo];
-  [fileListDS setRepo:newRepo];
   [commitViewController setRepo:newRepo];
   [[commitViewController view] setFrame:
       NSMakeRect(0, 0,
                  [commitView frame].size.width,
                  [commitView frame].size.height)];
   [commitView addSubview:[commitViewController view]];
-  ((XTPreviewItem *)filePreview.previewItem).repo = newRepo;
+  [fileViewController setRepo:newRepo];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem
@@ -399,29 +391,6 @@
   }
 }
 
-- (void)updatePreviewItem
-{
-  NSIndexSet *selection = [fileListOutline selectedRowIndexes];
-  const NSUInteger selectionCount = [selection count];
-  XTPreviewItem *previewItem = (XTPreviewItem *)filePreview.previewItem;
-
-  if (previewItem == nil) {
-    previewItem = [[XTPreviewItem alloc] init];
-    previewItem.repo = repo;
-    filePreview.previewItem = previewItem;
-  }
-
-  previewItem.commitSHA = repo.selectedCommit;
-  if (selectionCount != 1) {
-    [filePreview setHidden:YES];
-    previewItem.path = nil;
-    return;
-  }
-  [filePreview setHidden:NO];
-  previewItem.path =
-      [[fileListOutline itemAtRow:[selection firstIndex]] representedObject];
-}
-
 #pragma mark - NSTableViewDelegate
 
 - (void)tableViewSelectionDidChange:(NSNotification *)note
@@ -433,8 +402,6 @@
     XTHistoryItem *item = (historyDS.items)[selectedRow];
 
     repo.selectedCommit = item.sha;
-    [self updatePreviewItem];
-    [filePreview refreshPreviewItem];
   }
 }
 
@@ -475,81 +442,13 @@ const NSUInteger kFullStyleThreshold = 280, kLongStyleThreshold = 210,
   }
 }
 
-#pragma mark - NSOutlineViewDelegate
-
-- (NSView *)outlineView:(NSOutlineView *)outlineView
-     viewForTableColumn:(NSTableColumn *)tableColumn
-                   item:(id)item
-{
-  if (outlineView == fileListOutline) {
-    NSTableCellView *cell =
-        [outlineView makeViewWithIdentifier:@"fileCell" owner:self];
-    NSTreeNode *node = (NSTreeNode *)item;
-    NSString *fileName = (NSString *)node.representedObject;
-
-    if ([node isLeaf])
-      cell.imageView.image = [[NSWorkspace sharedWorkspace]
-          iconForFileType:[fileName pathExtension]];
-    else
-      cell.imageView.image = [NSImage imageNamed:NSImageNameFolder];
-    cell.textField.stringValue = [fileName lastPathComponent];
-
-    return cell;
-  }
-  return nil;
-}
-
-- (void)fileSelectionChanged:(NSNotification *)note
-{
-  [self updatePreviewItem];
-  [filePreview refreshPreviewItem];
-}
-
 #pragma mark - NSTabViewDelegate
 
 - (void)tabView:(NSTabView *)tabView
     didSelectTabViewItem:(NSTabViewItem *)tabViewItem
 {
-  if ([[tabViewItem identifier] isEqualToString:@"tree"]) {
-    [self updatePreviewItem];
-    [filePreview refreshPreviewItem];
-  }
-}
-
-#pragma mark - RBSplitViewDelegate
-
-const CGFloat kSplitterBonus = 4;
-
-- (NSRect)splitView:(RBSplitView *)sender
-         cursorRect:(NSRect)rect
-         forDivider:(NSUInteger)divider
-{
-  if ([sender isVertical]) {
-    rect.origin.x -= kSplitterBonus;
-    rect.size.width += kSplitterBonus * 2;
-  }
-  return rect;
-}
-
-- (NSUInteger)splitView:(RBSplitView *)sender
-        dividerForPoint:(NSPoint)point
-              inSubview:(RBSplitSubview *)subview
-{
-  // Assume sender is the file list split view
-  const NSRect subFrame = [subview frame];
-  NSRect frame1, frame2, remainder;
-  NSUInteger position = [subview position];
-  NSRectEdge edge1 = [sender isVertical] ? NSMinXEdge : NSMinYEdge;
-  NSRectEdge edge2 = [sender isVertical] ? NSMaxXEdge : NSMaxYEdge;
-
-  NSDivideRect(subFrame, &frame1, &remainder, kSplitterBonus, edge1);
-  NSDivideRect(subFrame, &frame2, &remainder, kSplitterBonus, edge2);
-
-  if ([sender mouse:point inRect:frame1] && (position > 0))
-    return position - 1;
-  else if ([sender mouse:point inRect:frame2])
-    return position;
-  return NSNotFound;
+  if ([[tabViewItem identifier] isEqualToString:@"tree"])
+    [fileViewController refresh];
 }
 
 @end
