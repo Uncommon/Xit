@@ -47,11 +47,13 @@
   return self;
 }
 
-- (void)dealloc {
+- (void)dealloc
+{
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)loadView {
+- (void)loadView
+{
   [super loadView];
 
   // Load the context menus
@@ -61,7 +63,7 @@
 
   // Load the file list view into its tab
   const NSInteger treeTabIndex =
-    [commitTabView indexOfTabViewItemWithIdentifier:@"tree"];
+      [commitTabView indexOfTabViewItemWithIdentifier:@"tree"];
   NSTabViewItem *treeTabItem = [commitTabView tabViewItemAtIndex:treeTabIndex];
 
   nib = [[NSNib alloc] initWithNibNamed:@"FileView" bundle:nil];
@@ -96,7 +98,8 @@
   return NSStringFromClass([self class]);
 }
 
-- (void)setRepo:(XTRepository *)newRepo {
+- (void)setRepo:(XTRepository *)newRepo
+{
   repo = newRepo;
   [sideBarDS setRepo:newRepo];
   [historyDS setRepo:newRepo];
@@ -107,7 +110,7 @@
                  [commitView frame].size.width,
                  [commitView frame].size.height)];
   [commitView addSubview:[commitViewController view]];
-  ((XTPreviewItem*)filePreview.previewItem).repo = newRepo;
+  ((XTPreviewItem *)filePreview.previewItem).repo = newRepo;
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem
@@ -206,11 +209,10 @@
   }
 }
 
-- (IBAction) checkOutBranch : (id) sender
+- (IBAction) checkOutBranch:(id)sender
 {
   [self callCMBlock:^(XTSideBarItem *item, NSError *__autoreleasing *error) {
-    [repo checkout:[item title] error:error];
-  }
+                      [repo checkout:[item title] error:error]; }
      verifyingClass:[XTLocalBranchItem class]
         errorString:@"Checkout failed"];
 }
@@ -250,8 +252,7 @@
 - (IBAction)deleteBranch:(id)sender
 {
   [self callCMBlock:^(XTSideBarItem *item, NSError *__autoreleasing *error) {
-    [repo deleteBranch:[item title] error:error];
-  }
+                      [repo deleteBranch:[item title] error:error]; }
      verifyingClass:[XTLocalBranchItem class]
         errorString:@"Delete branch failed"];
 }
@@ -264,8 +265,7 @@
 - (IBAction)deleteTag:(id)sender
 {
   [self callCMBlock:^(XTSideBarItem *item, NSError *__autoreleasing *error) {
-    [repo deleteTag:[item title] error:error];
-  }
+                      [repo deleteTag:[item title] error:error]; }
      verifyingClass:[XTTagItem class]
         errorString:@"Delete tag failed"];
 }
@@ -278,8 +278,7 @@
 - (IBAction)deleteRemote:(id)sender
 {
   [self callCMBlock:^(XTSideBarItem *item, NSError *__autoreleasing *error) {
-    [repo deleteRemote:[item title] error:error];
-  }
+                      [repo deleteRemote:[item title] error:error]; }
      verifyingClass:[XTRemoteItem class]
         errorString:@"Delete remote failed"];
 }
@@ -287,8 +286,7 @@
 - (IBAction)popStash:(id)sender
 {
   [self callCMBlock:^(XTSideBarItem *item, NSError *__autoreleasing *error) {
-    [repo popStash:[item title] error:error];
-  }
+                      [repo popStash:[item title] error:error]; }
      verifyingClass:[XTStashItem class]
         errorString:@"Pop stash failed"];
 }
@@ -296,8 +294,7 @@
 - (IBAction)applyStash:(id)sender
 {
   [self callCMBlock:^(XTSideBarItem *item, NSError **error) {
-    [repo applyStash:[item title] error:error];
-  }
+                      [repo applyStash:[item title] error:error]; }
      verifyingClass:[XTStashItem class]
         errorString:@"Apply stash failed"];
 }
@@ -305,8 +302,7 @@
 - (IBAction)dropStash:(id)sender
 {
   [self callCMBlock:^(XTSideBarItem *item, NSError **error) {
-    [repo dropStash:[item title] error:error];
-  }
+                      [repo dropStash:[item title] error:error]; }
      verifyingClass:[XTStashItem class]
         errorString:@"Drop stash failed"];
 }
@@ -320,25 +316,30 @@
   [mainSplitView adjustSubviews];
 }
 
-- (IBAction)toggleSideBar:(id)sender {
-  const NSInteger buttonState = [(NSButton*)sender state];
+- (IBAction)toggleSideBar:(id)sender
+{
+  const NSInteger buttonState = [(NSButton *)sender state];
   const CGFloat newWidth = (buttonState == NSOnState) ? savedSidebarWidth : 0;
 
   if (buttonState == NSOffState)
     savedSidebarWidth = [[sidebarSplitView subviews][0] frame].size.width;
-  [sidebarSplitView setPosition:newWidth ofDividerAtIndex:0 ];
+  [sidebarSplitView setPosition:newWidth ofDividerAtIndex:0];
 }
 
-- (IBAction)showDiffView:(id)sender {
+- (IBAction)showDiffView:(id)sender
+{
   [commitTabView selectTabViewItemAtIndex:0];
 }
 
-- (IBAction)showTreeView:(id)sender {
+- (IBAction)showTreeView:(id)sender
+{
   [commitTabView selectTabViewItemAtIndex:1];
 }
 
-- (IBAction)sideBarItemRenamed:(id)sender {
-  XTSideBarTableCellView *cellView = (XTSideBarTableCellView *)[sender superview];
+- (IBAction)sideBarItemRenamed:(id)sender
+{
+  XTSideBarTableCellView *cellView =
+      (XTSideBarTableCellView *)[sender superview];
   XTSideBarItem *editedItem = cellView.item;
   NSString *newName = [sender stringValue];
   NSString *oldName = [editedItem title];
@@ -398,31 +399,34 @@
   }
 }
 
-- (void)updatePreviewItem {
-    NSIndexSet *selection = [fileListOutline selectedRowIndexes];
-    const NSUInteger selectionCount = [selection count];
-    XTPreviewItem *previewItem = (XTPreviewItem*)filePreview.previewItem;
+- (void)updatePreviewItem
+{
+  NSIndexSet *selection = [fileListOutline selectedRowIndexes];
+  const NSUInteger selectionCount = [selection count];
+  XTPreviewItem *previewItem = (XTPreviewItem *)filePreview.previewItem;
 
-    if (previewItem == nil) {
-        previewItem = [[XTPreviewItem alloc] init];
-        previewItem.repo = repo;
-        filePreview.previewItem = previewItem;
-    }
+  if (previewItem == nil) {
+    previewItem = [[XTPreviewItem alloc] init];
+    previewItem.repo = repo;
+    filePreview.previewItem = previewItem;
+  }
 
-    previewItem.commitSHA = repo.selectedCommit;
-    if (selectionCount != 1) {
-        [filePreview setHidden:YES];
-        previewItem.path = nil;
-        return;
-    }
-    [filePreview setHidden:NO];
-    previewItem.path = [[fileListOutline itemAtRow:[selection firstIndex]] representedObject];
+  previewItem.commitSHA = repo.selectedCommit;
+  if (selectionCount != 1) {
+    [filePreview setHidden:YES];
+    previewItem.path = nil;
+    return;
+  }
+  [filePreview setHidden:NO];
+  previewItem.path =
+      [[fileListOutline itemAtRow:[selection firstIndex]] representedObject];
 }
 
 #pragma mark - NSTableViewDelegate
 
-- (void)tableViewSelectionDidChange:(NSNotification *)note {
-  NSTableView *table = (NSTableView*)[note object];
+- (void)tableViewSelectionDidChange:(NSNotification *)note
+{
+  NSTableView *table = (NSTableView *)[note object];
   const NSInteger selectedRow = table.selectedRow;
 
   if (selectedRow >= 0) {
@@ -473,42 +477,50 @@ const NSUInteger kFullStyleThreshold = 280, kLongStyleThreshold = 210,
 
 #pragma mark - NSOutlineViewDelegate
 
-- (NSView *)outlineView:(NSOutlineView *)outlineView viewForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
-    if (outlineView == fileListOutline) {
-        NSTableCellView *cell = [outlineView makeViewWithIdentifier:@"fileCell" owner:self];
-        NSTreeNode *node = (NSTreeNode *)item;
-        NSString *fileName = (NSString *)node.representedObject;
+- (NSView *)outlineView:(NSOutlineView *)outlineView
+     viewForTableColumn:(NSTableColumn *)tableColumn
+                   item:(id)item
+{
+  if (outlineView == fileListOutline) {
+    NSTableCellView *cell =
+        [outlineView makeViewWithIdentifier:@"fileCell" owner:self];
+    NSTreeNode *node = (NSTreeNode *)item;
+    NSString *fileName = (NSString *)node.representedObject;
 
-        if ([node isLeaf])
-            cell.imageView.image = [[NSWorkspace sharedWorkspace] iconForFileType:[fileName pathExtension]];
-        else
-            cell.imageView.image = [NSImage imageNamed:NSImageNameFolder];
-        cell.textField.stringValue = [fileName lastPathComponent];
+    if ([node isLeaf])
+      cell.imageView.image = [[NSWorkspace sharedWorkspace]
+          iconForFileType:[fileName pathExtension]];
+    else
+      cell.imageView.image = [NSImage imageNamed:NSImageNameFolder];
+    cell.textField.stringValue = [fileName lastPathComponent];
 
-        return cell;
-    }
-    return nil;
+    return cell;
+  }
+  return nil;
 }
 
-- (void)fileSelectionChanged:(NSNotification *)note {
-    [self updatePreviewItem];
-    [filePreview refreshPreviewItem];
+- (void)fileSelectionChanged:(NSNotification *)note
+{
+  [self updatePreviewItem];
+  [filePreview refreshPreviewItem];
 }
 
 #pragma mark - NSTabViewDelegate
 
-- (void)tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem {
-    if ([[tabViewItem identifier] isEqualToString:@"tree"]) {
-        [self updatePreviewItem];
-        [filePreview refreshPreviewItem];
-    }
+- (void)tabView:(NSTabView *)tabView
+    didSelectTabViewItem:(NSTabViewItem *)tabViewItem
+{
+  if ([[tabViewItem identifier] isEqualToString:@"tree"]) {
+    [self updatePreviewItem];
+    [filePreview refreshPreviewItem];
+  }
 }
 
 #pragma mark - RBSplitViewDelegate
 
 const CGFloat kSplitterBonus = 4;
 
-- (NSRect)splitView:(RBSplitView*)sender
+- (NSRect)splitView:(RBSplitView *)sender
          cursorRect:(NSRect)rect
          forDivider:(NSUInteger)divider
 {
@@ -519,9 +531,9 @@ const CGFloat kSplitterBonus = 4;
   return rect;
 }
 
-- (NSUInteger)splitView:(RBSplitView*)sender
+- (NSUInteger)splitView:(RBSplitView *)sender
         dividerForPoint:(NSPoint)point
-              inSubview:(RBSplitSubview*)subview
+              inSubview:(RBSplitSubview *)subview
 {
   // Assume sender is the file list split view
   const NSRect subFrame = [subview frame];

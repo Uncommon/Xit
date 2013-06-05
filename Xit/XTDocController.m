@@ -34,7 +34,8 @@
 
   [repo addObserver:self
          forKeyPath:@"activeTasks"
-            options:NSKeyValueObservingOptionNew context:nil];
+            options:NSKeyValueObservingOptionNew
+            context:nil];
   [historyView setRepo:repo];
   [stageView setRepo:repo];
   [statusView setRepo:repo];

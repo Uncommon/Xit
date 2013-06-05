@@ -63,7 +63,8 @@
   // They cannot have question-mark ?, asterisk *, or open bracket [
   // anywhere. See the --refspec-pattern option below for an exception to
   // this rule.
-  NSCharacterSet *qab = [NSCharacterSet characterSetWithCharactersInString:@"?*["];
+  NSCharacterSet *qab =
+      [NSCharacterSet characterSetWithCharactersInString:@"?*["];
 
   if ([*partialStringPtr rangeOfCharacterFromSet:qab].location != NSNotFound)
     return NO;
