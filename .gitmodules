@@ -1,0 +1,3 @@
+[submodule "RBSplitView"]
+	path = RBSplitView
+	url = git@github.com:Uncommon/RBSplitView.git

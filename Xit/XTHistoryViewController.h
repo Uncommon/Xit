@@ -8,6 +8,7 @@
 @class XTHistoryDataSource;
 @class XTSideBarDataSource;
 @class XTSideBarOutlineView;
+@class RBSplitView;
 
 @interface XTHistoryViewController : NSViewController
 {
@@ -21,7 +22,8 @@
   IBOutlet NSSplitView *sidebarSplitView;
   IBOutlet NSSplitView *mainSplitView;
   IBOutlet NSTabView *commitTabView;
-  IBOutlet NSView *fileListRootView;
+  IBOutlet RBSplitView *fileListRootView;
+  IBOutlet NSView *fileViewLeftPane, *fileViewRightPane;
   IBOutlet NSOutlineView *fileListOutline;
   IBOutlet QLPreviewView *filePreview;
   IBOutlet NSMenu *branchContextMenu;

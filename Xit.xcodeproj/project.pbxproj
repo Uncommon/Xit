@@ -72,10 +72,12 @@
 		DD3AC5B41611215C00238F58 /* XTRemoteBranchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3AC5B31611215C00238F58 /* XTRemoteBranchItem.m */; };
 		DD592093156EEE64005FBB0F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		DD592096156EEF40005FBB0F /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD592095156EEF40005FBB0F /* OCMock.framework */; };
-		DD997DDA173B409500C7DF82 /* HistoryView Menus.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD997DD8173B409500C7DF82 /* HistoryView Menus.xib */; };
-		DD997DF81746F40D00C7DF82 /* FileView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD997DF71746F40D00C7DF82 /* FileView.xib */; };
+		DD96C92F17595AE10003A30C /* liblibRBSplitView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DD96C92117595A6E0003A30C /* liblibRBSplitView.a */; };
+		DD96C931175B76990003A30C /* splitter.png in Resources */ = {isa = PBXBuildFile; fileRef = DD96C930175B76990003A30C /* splitter.png */; };
 		DD997DD31739CC9300C7DF82 /* stash.png in Resources */ = {isa = PBXBuildFile; fileRef = DD997DD11739CC9300C7DF82 /* stash.png */; };
 		DD997DD41739CC9300C7DF82 /* stash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DD997DD21739CC9300C7DF82 /* stash@2x.png */; };
+		DD997DDA173B409500C7DF82 /* HistoryView Menus.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD997DD8173B409500C7DF82 /* HistoryView Menus.xib */; };
+		DD997DF81746F40D00C7DF82 /* FileView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD997DF71746F40D00C7DF82 /* FileView.xib */; };
 		DD9C1B8F160239DD0001FE9B /* XTRefToken.m in Sources */ = {isa = PBXBuildFile; fileRef = DD9C1B8E160239DD0001FE9B /* XTRefToken.m */; };
 		DDB9319516EC12B100A6ABC6 /* XTRefTokenTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DDB9319416EC12B100A6ABC6 /* XTRefTokenTest.m */; };
 		DDC75B8315D08E8F0087F2D4 /* NSDate+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC75B8215D08E8F0087F2D4 /* NSDate+Extensions.m */; };
@@ -97,6 +99,48 @@
 			proxyType = 1;
 			remoteGlobalIDString = C3FA46FB13D0F8E200AC4F9B;
 			remoteInfo = Xit;
+		};
+		DD96C91C17595A6E0003A30C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D50A1A71162C6DF002A5832;
+			remoteInfo = RBSplitView;
+		};
+		DD96C91E17595A6E0003A30C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D50A1401162C029002A5832;
+			remoteInfo = RBSplitViewFramework;
+		};
+		DD96C92017595A6E0003A30C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D50A3141162D61C002A5832;
+			remoteInfo = Library;
+		};
+		DD96C92217595A6E0003A30C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D50A3031162D552002A5832;
+			remoteInfo = SampleApp;
+		};
+		DD96C92417595A6E0003A30C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D50A34D1162D826002A5832;
+			remoteInfo = "SampleApp (GC)";
+		};
+		DD96C92717595ACF0003A30C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 3D50A3131162D61C002A5832;
+			remoteInfo = Library;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -226,10 +270,12 @@
 		DD3AC5B31611215C00238F58 /* XTRemoteBranchItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XTRemoteBranchItem.m; path = Xit/XTRemoteBranchItem.m; sourceTree = "<group>"; tabWidth = 2; };
 		DD579ADB15D08978007E4AFE /* NSDate+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "NSDate+Extensions.h"; sourceTree = "<group>"; };
 		DD592095156EEF40005FBB0F /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCMock.framework; sourceTree = SOURCE_ROOT; };
-		DD997DD9173B409500C7DF82 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = "en.lproj/HistoryView Menus.xib"; sourceTree = "<group>"; };
-		DD997DF71746F40D00C7DF82 /* FileView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FileView.xib; sourceTree = "<group>"; };
+		DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RBSplitView.xcodeproj; path = RBSplitView/RBSplitView.xcodeproj; sourceTree = "<group>"; };
+		DD96C930175B76990003A30C /* splitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splitter.png; sourceTree = "<group>"; };
 		DD997DD11739CC9300C7DF82 /* stash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stash.png; sourceTree = "<group>"; };
 		DD997DD21739CC9300C7DF82 /* stash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stash@2x.png"; sourceTree = "<group>"; };
+		DD997DD9173B409500C7DF82 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = "en.lproj/HistoryView Menus.xib"; sourceTree = "<group>"; };
+		DD997DF71746F40D00C7DF82 /* FileView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FileView.xib; sourceTree = "<group>"; };
 		DD9C1B8D160239DD0001FE9B /* XTRefToken.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTRefToken.h; sourceTree = "<group>"; };
 		DD9C1B8E160239DD0001FE9B /* XTRefToken.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTRefToken.m; sourceTree = "<group>"; };
 		DDB9319416EC12B100A6ABC6 /* XTRefTokenTest.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTRefTokenTest.m; sourceTree = "<group>"; tabWidth = 2; };
@@ -254,6 +300,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD96C92F17595AE10003A30C /* liblibRBSplitView.a in Frameworks */,
 				31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */,
 				C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */,
 				DDD4708516F96F7E00CA76FF /* QuickLook.framework in Frameworks */,
@@ -383,6 +430,7 @@
 		899D0106142168830091DC6F /* images */ = {
 			isa = PBXGroup;
 			children = (
+				DD96C930175B76990003A30C /* splitter.png */,
 				895DEF0B142CF84D001763FC /* branch.png */,
 				DDD00550158FF551001B055E /* branch@2x.png */,
 				895DEF1E142D91F8001763FC /* historyTemplate.pdf */,
@@ -417,6 +465,7 @@
 		C3FA46F113D0F8E200AC4F9B = {
 			isa = PBXGroup;
 			children = (
+				DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */,
 				C3FA470613D0F8E200AC4F9B /* Xit */,
 				C3FA472413D0F8E300AC4F9B /* XitTests */,
 				C3FA46FF13D0F8E200AC4F9B /* Frameworks */,
@@ -462,8 +511,8 @@
 			children = (
 				31C7C12A13EC730500A65FE9 /* Utils */,
 				31A8939813E9D1EA008BE0C2 /* Views */,
-				C3D6D30F13E8E63A00AF50B0 /* GitX */,
 				31F1E87713D3AC0E00F3B317 /* DataSources */,
+				C3D6D30F13E8E63A00AF50B0 /* GitX */,
 				89A6EA2614478DA40089B212 /* XTAppDelegate.h */,
 				89A6EA2714478DA40089B212 /* XTAppDelegate.m */,
 				DD07B08316B2005B0012AC19 /* XTConstants.h */,
@@ -534,6 +583,18 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		DD96C91417595A6D0003A30C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DD96C91D17595A6E0003A30C /* RBSplitView.ibplugin */,
+				DD96C91F17595A6E0003A30C /* RBSplitView.framework */,
+				DD96C92117595A6E0003A30C /* liblibRBSplitView.a */,
+				DD96C92317595A6E0003A30C /* SampleApp.app */,
+				DD96C92517595A6E0003A30C /* SampleApp.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -549,6 +610,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				DD96C92817595ACF0003A30C /* PBXTargetDependency */,
 			);
 			name = Xit;
 			productName = Xit;
@@ -594,6 +656,12 @@
 			mainGroup = C3FA46F113D0F8E200AC4F9B;
 			productRefGroup = C3FA46FD13D0F8E200AC4F9B /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = DD96C91417595A6D0003A30C /* Products */;
+					ProjectRef = DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				C3FA46FB13D0F8E200AC4F9B /* Xit */,
@@ -601,6 +669,44 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		DD96C91D17595A6E0003A30C /* RBSplitView.ibplugin */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = RBSplitView.ibplugin;
+			remoteRef = DD96C91C17595A6E0003A30C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DD96C91F17595A6E0003A30C /* RBSplitView.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = RBSplitView.framework;
+			remoteRef = DD96C91E17595A6E0003A30C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DD96C92117595A6E0003A30C /* liblibRBSplitView.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = liblibRBSplitView.a;
+			remoteRef = DD96C92017595A6E0003A30C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DD96C92317595A6E0003A30C /* SampleApp.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = SampleApp.app;
+			remoteRef = DD96C92217595A6E0003A30C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DD96C92517595A6E0003A30C /* SampleApp.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = SampleApp.app;
+			remoteRef = DD96C92417595A6E0003A30C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		C3FA46FA13D0F8E200AC4F9B /* Resources */ = {
@@ -629,6 +735,7 @@
 				DD997DF81746F40D00C7DF82 /* FileView.xib in Resources */,
 				DD997DD31739CC9300C7DF82 /* stash.png in Resources */,
 				DD997DD41739CC9300C7DF82 /* stash@2x.png in Resources */,
+				DD96C931175B76990003A30C /* splitter.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -745,6 +852,11 @@
 			target = C3FA46FB13D0F8E200AC4F9B /* Xit */;
 			targetProxy = C3FA472213D0F8E300AC4F9B /* PBXContainerItemProxy */;
 		};
+		DD96C92817595ACF0003A30C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Library;
+			targetProxy = DD96C92717595ACF0003A30C /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -821,6 +933,10 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					RBSplitView/Source/,
+					"$(inherited)",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-lgcov";
@@ -890,6 +1006,10 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					RBSplitView/Source/,
+					"$(inherited)",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
@@ -907,6 +1027,10 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					RBSplitView/Source/,
+					"$(inherited)",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;

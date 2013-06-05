@@ -17,6 +17,7 @@
 #import "XTTagItem.h"
 #import "NSAttributedString+XTExtensions.h"
 #import "PBGitRevisionCell.h"
+#import "RBSplitView.h"
 
 @interface XTHistoryViewController ()
 
@@ -64,7 +65,14 @@
   NSTabViewItem *treeTabItem = [commitTabView tabViewItemAtIndex:treeTabIndex];
 
   nib = [[NSNib alloc] initWithNibNamed:@"FileView" bundle:nil];
-  [nib instantiateWithOwner:self topLevelObjects:nil];
+  [nib instantiateWithOwner:self topLevelObjects:NULL];
+  fileListRootView =
+      [[RBSplitView alloc] initWithFrame:[[treeTabItem view] frame]];
+  [fileListRootView setDelegate:self];
+  [fileListRootView addSubview:fileViewLeftPane];
+  [fileListRootView addSubview:fileViewRightPane];
+  [fileListRootView setDivider:[NSImage imageNamed:@"splitter"]];
+  [fileListRootView setDividerThickness:1.0];
   [treeTabItem setView:fileListRootView];
 
   // Remove intercell spacing so the history lines will connect
@@ -494,6 +502,42 @@ const NSUInteger kFullStyleThreshold = 280, kLongStyleThreshold = 210,
         [self updatePreviewItem];
         [filePreview refreshPreviewItem];
     }
+}
+
+#pragma mark - RBSplitViewDelegate
+
+const CGFloat kSplitterBonus = 4;
+
+- (NSRect)splitView:(RBSplitView*)sender
+         cursorRect:(NSRect)rect
+         forDivider:(NSUInteger)divider
+{
+  if ([sender isVertical]) {
+    rect.origin.x -= kSplitterBonus;
+    rect.size.width += kSplitterBonus * 2;
+  }
+  return rect;
+}
+
+- (NSUInteger)splitView:(RBSplitView*)sender
+        dividerForPoint:(NSPoint)point
+              inSubview:(RBSplitSubview*)subview
+{
+  // Assume sender is the file list split view
+  const NSRect subFrame = [subview frame];
+  NSRect frame1, frame2, remainder;
+  NSUInteger position = [subview position];
+  NSRectEdge edge1 = [sender isVertical] ? NSMinXEdge : NSMinYEdge;
+  NSRectEdge edge2 = [sender isVertical] ? NSMaxXEdge : NSMaxYEdge;
+
+  NSDivideRect(subFrame, &frame1, &remainder, kSplitterBonus, edge1);
+  NSDivideRect(subFrame, &frame2, &remainder, kSplitterBonus, edge2);
+
+  if ([sender mouse:point inRect:frame1] && (position > 0))
+    return position - 1;
+  else if ([sender mouse:point inRect:frame2])
+    return position;
+  return NSNotFound;
 }
 
 @end
