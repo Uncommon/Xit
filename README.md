@@ -29,7 +29,9 @@ Some other ideas that I’m looking forward to working on (and using!):
 
 # Development
 
-You should be able to build Xit as is with no special setup. If you hit any snags, please file an issue.
+You should be able to build Xit as is with no special setup, just make sure you pull in the submodules:
+Run `git submodule init` and `git submodule update` from the root of the project and you should be good to go.
+If you hit any snags, please file an issue.
 
 If you're looking for a starter task, several issues have been marked "small". These should provide a relatively easy intro to the code base.
 
