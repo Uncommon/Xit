@@ -5,8 +5,11 @@ extern NSString *XTErrorOutputKey;
 extern NSString *XTErrorArgsKey;
 extern NSString *XTPathsKey;
 
+@class GTRepository;
+
 @interface XTRepository : NSObject {
  @private
+  GTRepository *gtRepo;
   NSURL *repoURL;
   NSString *gitCMD;
   NSString *selectedCommit;

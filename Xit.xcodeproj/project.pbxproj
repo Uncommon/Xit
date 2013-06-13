@@ -1014,6 +1014,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					RBSplitView/Source/,
+					"\"$(SRCROOT)/objective-git/libgit2/include\"",
 					"$(inherited)",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
@@ -1087,6 +1088,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					RBSplitView/Source/,
+					"\"$(SRCROOT)/objective-git/libgit2/include\"",
 					"$(inherited)",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
@@ -1108,6 +1110,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					RBSplitView/Source/,
+					"\"$(SRCROOT)/objective-git/libgit2/include\"",
 					"$(inherited)",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;

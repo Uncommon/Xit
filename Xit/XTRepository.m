@@ -1,5 +1,6 @@
 #import "XTRepository.h"
 #import "NSMutableDictionary+MultiObjectForKey.h"
+#import <ObjectiveGit/ObjectiveGit.h>
 
 NSString *XTRepositoryChangedNotification = @"xtrepochanged";
 NSString *XTErrorOutputKey = @"output";
@@ -29,6 +30,14 @@ NSString *XTPathsKey = @"paths";
 {
   self = [super init];
   if (self != nil) {
+    NSError *error = nil;
+
+    gtRepo = [[GTRepository alloc] initWithURL:url error:&error];
+    if (error != nil) {
+      // TODO: Make sure we know why it failed.
+      // Assume repo hasn't been created yet, and initializeRepository will
+      // be called later.
+    }
     gitCMD = [XTRepository gitPath];
     repoURL = url;
     NSMutableString *qName =
@@ -251,23 +260,12 @@ NSString *XTPathsKey = @"paths";
   if (ref == nil)
     return nil;
 
-  for (NSString *sha in [refsIndex allKeys])
-    for (NSString *shaRef in [refsIndex objectsForKey:sha])
-      if ([shaRef isEqual:ref])
-        return sha;
-
-  NSArray *args = @[ @"rev-list", @"-1", ref ];
   NSError *error = nil;
-  NSData *output = [self executeGitWithArgs:args error:&error];
+  GTObject *object = [gtRepo lookupObjectByRefspec:ref error:&error];
 
-  if ((error != nil) || ([output length] == 0))
+  if (error != nil)
     return nil;
-
-  NSString *outputString =
-      [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-
-  return [outputString stringByTrimmingCharactersInSet:
-          [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+  return [object sha];
 }
 
 - (NSString *)headRef
