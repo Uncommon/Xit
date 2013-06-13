@@ -1,3 +1,6 @@
 [submodule "RBSplitView"]
 	path = RBSplitView
 	url = git@github.com:Uncommon/RBSplitView.git
+[submodule "objective-git"]
+	path = objective-git
+	url = git://github.com/libgit2/objective-git.git
