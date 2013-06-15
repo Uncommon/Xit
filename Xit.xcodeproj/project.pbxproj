@@ -387,20 +387,18 @@
 		31C7C12A13EC730500A65FE9 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				31C7C12C13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.h */,
-				31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */,
-				C3BC055613D1133000C3CF1A /* XTRepository+Commands.h */,
-				C3BC055713D1133000C3CF1A /* XTRepository+Commands.m */,
-				C343F90F13F4908E009C928A /* XTHTML.h */,
-				C343F91013F4908E009C928A /* XTHTML.m */,
 				DD579ADB15D08978007E4AFE /* NSDate+Extensions.h */,
 				DDC75B8215D08E8F0087F2D4 /* NSDate+Extensions.m */,
-				DD9C1B8D160239DD0001FE9B /* XTRefToken.h */,
-				DD9C1B8E160239DD0001FE9B /* XTRefToken.m */,
-				DDE55DDD1613C6C000CCAC03 /* XTModDateTracker.h */,
-				DDE55DDE1613C6C000CCAC03 /* XTModDateTracker.m */,
+				31C7C12C13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.h */,
+				31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */,
 				89D47941170894A200C04D89 /* NSAttributedString+XTExtensions.h */,
 				89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */,
+				C343F90F13F4908E009C928A /* XTHTML.h */,
+				C343F91013F4908E009C928A /* XTHTML.m */,
+				DDE55DDD1613C6C000CCAC03 /* XTModDateTracker.h */,
+				DDE55DDE1613C6C000CCAC03 /* XTModDateTracker.m */,
+				DD9C1B8D160239DD0001FE9B /* XTRefToken.h */,
+				DD9C1B8E160239DD0001FE9B /* XTRefToken.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -560,6 +558,8 @@
 				89355422157C128F007AC9CE /* XTDocController.m */,
 				C358652F14048A3F00060C53 /* XTRepository.h */,
 				C358653014048A3F00060C53 /* XTRepository.m */,
+				C3BC055613D1133000C3CF1A /* XTRepository+Commands.h */,
+				C3BC055713D1133000C3CF1A /* XTRepository+Commands.m */,
 				DDDA447015B0E97000DF407B /* XTRepository+Parsing.h */,
 				DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */,
 				89991CDB144E3FF400097A99 /* XTStatusView.h */,
