@@ -102,19 +102,36 @@
 
 - (BOOL)checkout:(NSString *)branch error:(NSError **)resultError
 {
-  NSError *error = nil;
-  BOOL result = NO;
+  NSError *localError = nil;
+  git_checkout_opts options = GIT_CHECKOUT_OPTS_INIT;
+  git_object *target;
+  git_repository *repo = self.gtRepo.git_repository;
 
-  cachedBranch = nil;
-  [self executeGitWithArgs:@[ @"checkout", branch ] error:&error];
+  options.checkout_strategy = GIT_CHECKOUT_SAFE_CREATE;
 
-  if (error == nil) {
-    result = YES;
+  int result = git_revparse_single(&target, repo, [branch UTF8String]);
+
+  if (result == 0)
+    result = git_checkout_tree(repo, target, &options);
+  if (result == 0) {
+    GTReference *head =
+        [GTReference referenceByLookingUpReferencedNamed:@"HEAD"
+                                            inRepository:self.gtRepo
+                                                   error:&localError];
+
+    if (localError == nil) {
+      NSString *fullBranchName =
+          [[GTBranch localNamePrefix] stringByAppendingString:branch];
+
+      [head setTarget:fullBranchName error:&localError];
+    }
   }
-  if (resultError != NULL)
-    *resultError = error;
+  if (result != 0)
+    localError = [NSError git_errorFor:result];
 
-  return result;
+  if (resultError != NULL)
+    *resultError = localError;
+  return localError == nil;
 }
 
 - (BOOL)createTag:(NSString *)name withMessage:(NSString *)msg

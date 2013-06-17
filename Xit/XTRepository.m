@@ -9,6 +9,7 @@ NSString *XTPathsKey = @"paths";
 
 @implementation XTRepository
 
+@synthesize gtRepo;
 @synthesize selectedCommit;
 @synthesize refsIndex;
 @synthesize queue;
@@ -229,20 +230,14 @@ NSString *XTPathsKey = @"paths";
 - (NSString *)parseSymbolicReference:(NSString *)reference
 {
   NSError *error = nil;
-  NSData *output =
-      [self executeGitWithArgs:@[ @"symbolic-ref", @"-q", reference ]
-                         error:&error];
+  GTReference *gtRef = [GTReference
+      referenceByLookingUpReferencedNamed:reference
+                             inRepository:gtRepo
+                                    error:&error];
 
-  if (output == nil)
+  if (error != nil)
     return nil;
-
-  NSString *ref =
-      [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-  if ([ref hasPrefix:@"refs/"])
-    return [ref stringByTrimmingCharactersInSet:
-            [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-
-  return nil;
+  return [gtRef target];
 }
 
 // Returns kEmptyTreeHash if the repository is empty, otherwise "HEAD"

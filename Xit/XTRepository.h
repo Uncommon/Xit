@@ -51,6 +51,7 @@ extern NSString *XTPathsKey;
 - (void)addTask:(NSTask *)task;
 - (void)removeTask:(NSTask *)task;
 
+@property(readonly) GTRepository *gtRepo;
 @property(copy) NSString *selectedCommit;
 @property(strong) NSDictionary *refsIndex;
 @property(readonly) dispatch_queue_t queue;
