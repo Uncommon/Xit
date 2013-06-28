@@ -59,7 +59,7 @@
   // Load the context menus
   NSNib *nib = [[NSNib alloc] initWithNibNamed:@"HistoryView Menus" bundle:nil];
 
-  [nib instantiateWithOwner:self topLevelObjects:nil];
+  [nib instantiateNibWithOwner:self topLevelObjects:nil];
 
   // Load the file list view into its tab
   const NSInteger treeTabIndex =
