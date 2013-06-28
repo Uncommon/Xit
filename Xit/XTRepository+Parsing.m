@@ -266,13 +266,15 @@ NSString *XTCommitSHAKey = @"sha",
   NSMutableArray *mutableFiles = [*files mutableCopy];
 
   if ([mutableFiles count] > 0) {
-    while ([mutableFiles[0] length] == 0)
+    while (([mutableFiles count] > 0) && ([mutableFiles[0] length] == 0))
       [mutableFiles removeObjectAtIndex:0];
 
-    NSString *firstLine = [mutableFiles[0] stringByTrimmingCharactersInSet:
-            [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if ([mutableFiles count] > 0) {
+      NSString *firstLine = [mutableFiles[0] stringByTrimmingCharactersInSet:
+          [NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
-    [mutableFiles setObject:firstLine atIndexedSubscript:0];
+      [mutableFiles setObject:firstLine atIndexedSubscript:0];
+    }
   }
 
   // Filter out any blank lines.
