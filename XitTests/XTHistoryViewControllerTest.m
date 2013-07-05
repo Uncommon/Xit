@@ -30,6 +30,8 @@
 {
   [super setUp];
   self.statusData = nil;
+  // Don't let change notifications cause unexpected calls.
+  [repository stop];
 }
 
 - (void)tearDown

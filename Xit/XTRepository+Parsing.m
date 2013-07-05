@@ -281,7 +281,7 @@ NSString *XTCommitSHAKey = @"sha",
   NSArray *args;
   NSError *error = nil;
 
-  if ([self parseReference:@"HEAD"] == nil)
+  if (![self hasHeadReference])
     args = @[ @"rm", @"--cached", file ];
   else
     args = @[ @"reset", @"HEAD", file ];

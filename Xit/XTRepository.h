@@ -33,7 +33,7 @@ extern NSString *XTPathsKey;
                      withStdIn:(NSString *)stdIn
                          error:(NSError **)error;
 
-- (NSString *)parseReference:(NSString *)reference;
+- (BOOL)hasHeadReference;
 - (NSString *)parentTree;
 - (NSString *)headRef;
 - (NSString *)headSHA;

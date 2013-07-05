@@ -92,7 +92,7 @@ NSString *XTPathsKey = @"paths";
                                userInfo:nil];
     return;
   }
-  if (![self parseReference:@"HEAD"])
+  if (![self hasHeadReference])
     return;  // There are no commits.
 
   NSMutableArray *args = [NSMutableArray arrayWithArray:logArgs];
@@ -216,15 +216,11 @@ NSString *XTPathsKey = @"paths";
   return output;
 }
 
-- (NSString *)parseReference:(NSString *)reference
+- (BOOL)hasHeadReference
 {
   NSError *error = nil;
-  NSArray *args = @[ @"rev-parse", @"--verify", reference ];
-  NSData *output = [self executeGitWithArgs:args error:&error];
 
-  if (output == nil)
-    return nil;
-  return [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+  return [gtRepo headReferenceWithError:&error] != nil;
 }
 
 - (NSString *)parseSymbolicReference:(NSString *)reference
@@ -243,11 +239,7 @@ NSString *XTPathsKey = @"paths";
 // Returns kEmptyTreeHash if the repository is empty, otherwise "HEAD"
 - (NSString *)parentTree
 {
-  NSString *parentTree = @"HEAD";
-
-  if ([self parseReference:parentTree] == nil)
-    parentTree = kEmptyTreeHash;
-  return parentTree;
+  return [self hasHeadReference] ? @"HEAD" : kEmptyTreeHash;
 }
 
 - (NSString *)shaForRef:(NSString *)ref
