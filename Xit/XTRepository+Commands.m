@@ -124,6 +124,7 @@
           [[GTBranch localNamePrefix] stringByAppendingString:branch];
 
       [head setTarget:fullBranchName error:&localError];
+      cachedBranch = nil;
     }
   }
   if (result != 0)
