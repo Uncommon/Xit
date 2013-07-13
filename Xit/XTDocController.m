@@ -38,7 +38,6 @@
             context:nil];
   [historyView setRepo:repo];
   [stageView setRepo:repo];
-  [statusView setRepo:repo];
 }
 
 - (void)loadViewController:(NSViewController *)viewController
@@ -84,20 +83,6 @@
 
 - (IBAction)addRemote:(id)sender
 {
-}
-
-// This works around an Interface Builder/Xcode bug. If you make a toolbar
-// item by dragging in a Custom View, the view's -drawRect never gets called.
-// Instead the xib has a plain toolbar item that is modified at runtime.
-- (void)toolbarWillAddItem:(NSNotification *)notification
-{
-  NSToolbarItem *item = (NSToolbarItem *)[notification userInfo][@"item"];
-
-  if ([[item itemIdentifier] isEqualToString:@"xit.status"]) {
-    if (statusView == nil)
-      [NSBundle loadNibNamed:@"XTStatusView" owner:self];
-    [item setView:statusView];
-  }
 }
 
 // Updates the responder chain with the selected tab view's controller.

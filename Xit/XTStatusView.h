@@ -1,4 +1,4 @@
-#import <Cocoa/Cocoa.h>
+#import "FHTLCDStatusView.h"
 
 @class XTOutputViewController;
 @class XTRepository;
@@ -8,14 +8,13 @@ extern NSString *const XTStatusTextKey;
 extern NSString *const XTStatusCommandKey;
 extern NSString *const XTStatusOutputKey;
 
-@interface XTStatusView : NSView<NSPopoverDelegate> {
+@interface XTStatusView : FHTLCDStatusView {
   IBOutlet NSTextField *label;
   IBOutlet NSPopover *popover;
   IBOutlet NSWindow *detachedWindow;
   IBOutlet XTOutputViewController *outputController;
   IBOutlet XTOutputViewController *detachedController;
   XTRepository *repo;
-  NSGradient *fillGradient, *strokeGradient;
 }
 
 // If status or command is non-nil, the text is updated.

@@ -31,6 +31,11 @@
 		31F1E88313D3DCAC00F3B317 /* XTSideBarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 31F1E88213D3DCAC00F3B317 /* XTSideBarItem.m */; };
 		89039F561703A9FC000949A8 /* html in Resources */ = {isa = PBXBuildFile; fileRef = 89039F551703A9FC000949A8 /* html */; };
 		89355423157C128F007AC9CE /* XTDocController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89355422157C128F007AC9CE /* XTDocController.m */; };
+		895229661786F6F900EE514C /* FHTDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8952295F1786F6F900EE514C /* FHTDelegate.m */; };
+		895229671786F6F900EE514C /* FHTItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 895229611786F6F900EE514C /* FHTItemView.m */; };
+		895229681786F6F900EE514C /* FHTLCDStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 895229631786F6F900EE514C /* FHTLCDStatusView.m */; };
+		895229691786F6F900EE514C /* FHTToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 895229651786F6F900EE514C /* FHTToolbar.m */; };
+		895229711786F7AB00EE514C /* XTToolbarDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 895229701786F7AB00EE514C /* XTToolbarDelegate.m */; };
 		895DEEF6142CECB7001763FC /* XTSideBarTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 895DEEF5142CECB7001763FC /* XTSideBarTableCellView.m */; };
 		895DEF0C142CF84D001763FC /* branch.png in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF0B142CF84D001763FC /* branch.png */; };
 		895DEF1F142D91F8001763FC /* historyTemplate.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF1E142D91F8001763FC /* historyTemplate.pdf */; };
@@ -196,6 +201,16 @@
 		89039F551703A9FC000949A8 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
 		89355421157C128F007AC9CE /* XTDocController.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTDocController.h; sourceTree = "<group>"; tabWidth = 2; };
 		89355422157C128F007AC9CE /* XTDocController.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTDocController.m; sourceTree = "<group>"; tabWidth = 2; };
+		8952295E1786F6F900EE514C /* FHTDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FHTDelegate.h; sourceTree = "<group>"; };
+		8952295F1786F6F900EE514C /* FHTDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FHTDelegate.m; sourceTree = "<group>"; };
+		895229601786F6F900EE514C /* FHTItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FHTItemView.h; sourceTree = "<group>"; };
+		895229611786F6F900EE514C /* FHTItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FHTItemView.m; sourceTree = "<group>"; };
+		895229621786F6F900EE514C /* FHTLCDStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FHTLCDStatusView.h; sourceTree = "<group>"; };
+		895229631786F6F900EE514C /* FHTLCDStatusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FHTLCDStatusView.m; sourceTree = "<group>"; };
+		895229641786F6F900EE514C /* FHTToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FHTToolbar.h; sourceTree = "<group>"; };
+		895229651786F6F900EE514C /* FHTToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FHTToolbar.m; sourceTree = "<group>"; };
+		8952296F1786F7AB00EE514C /* XTToolbarDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTToolbarDelegate.h; sourceTree = "<group>"; };
+		895229701786F7AB00EE514C /* XTToolbarDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTToolbarDelegate.m; sourceTree = "<group>"; };
 		895DEEF4142CECB7001763FC /* XTSideBarTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; name = XTSideBarTableCellView.h; path = Xit/XTSideBarTableCellView.h; sourceTree = "<group>"; tabWidth = 2; };
 		895DEEF5142CECB7001763FC /* XTSideBarTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; name = XTSideBarTableCellView.m; path = Xit/XTSideBarTableCellView.m; sourceTree = "<group>"; tabWidth = 2; };
 		895DEF0B142CF84D001763FC /* branch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = branch.png; sourceTree = "<group>"; };
@@ -432,6 +447,22 @@
 			name = items;
 			sourceTree = "<group>";
 		};
+		8937B6EC1786F5DE00CB9BBC /* FullHeightToolbar */ = {
+			isa = PBXGroup;
+			children = (
+				8952295E1786F6F900EE514C /* FHTDelegate.h */,
+				8952295F1786F6F900EE514C /* FHTDelegate.m */,
+				895229601786F6F900EE514C /* FHTItemView.h */,
+				895229611786F6F900EE514C /* FHTItemView.m */,
+				895229621786F6F900EE514C /* FHTLCDStatusView.h */,
+				895229631786F6F900EE514C /* FHTLCDStatusView.m */,
+				895229641786F6F900EE514C /* FHTToolbar.h */,
+				895229651786F6F900EE514C /* FHTToolbar.m */,
+			);
+			name = FullHeightToolbar;
+			path = FullHeightToolbar/Library;
+			sourceTree = "<group>";
+		};
 		899D0106142168830091DC6F /* images */ = {
 			isa = PBXGroup;
 			children = (
@@ -472,6 +503,7 @@
 			children = (
 				DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */,
 				C3FA470613D0F8E200AC4F9B /* Xit */,
+				8937B6EC1786F5DE00CB9BBC /* FullHeightToolbar */,
 				C3FA472413D0F8E300AC4F9B /* XitTests */,
 				C3FA46FF13D0F8E200AC4F9B /* Frameworks */,
 				C3FA46FD13D0F8E200AC4F9B /* Products */,
@@ -533,6 +565,8 @@
 				89991CDB144E3FF400097A99 /* XTStatusView.h */,
 				89991CDC144E3FF400097A99 /* XTStatusView.m */,
 				89794F651452839500E38ACC /* XTStatusView.xib */,
+				8952296F1786F7AB00EE514C /* XTToolbarDelegate.h */,
+				895229701786F7AB00EE514C /* XTToolbarDelegate.m */,
 				89794F891458CC9B00E38ACC /* XTOutputViewController.h */,
 				89794F8A1458CC9B00E38ACC /* XTOutputViewController.m */,
 				89794F8B1458CC9B00E38ACC /* XTOutputViewController.xib */,
@@ -648,6 +682,7 @@
 		C3FA46F313D0F8E200AC4F9B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				CLASSPREFIX = XT;
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "";
 			};
@@ -830,6 +865,11 @@
 				DDD4708116F3E7B000CA76FF /* XTPreviewItem.m in Sources */,
 				89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */,
 				DD96C939175ECE690003A30C /* XTFileViewController.m in Sources */,
+				895229661786F6F900EE514C /* FHTDelegate.m in Sources */,
+				895229671786F6F900EE514C /* FHTItemView.m in Sources */,
+				895229681786F6F900EE514C /* FHTLCDStatusView.m in Sources */,
+				895229691786F6F900EE514C /* FHTToolbar.m in Sources */,
+				895229711786F7AB00EE514C /* XTToolbarDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

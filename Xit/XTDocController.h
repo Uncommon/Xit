@@ -11,7 +11,6 @@
   IBOutlet XTStageViewController *stageView;
   IBOutlet NSTabView *tabs;
   IBOutlet NSProgressIndicator *activity;
-  IBOutlet XTStatusView *statusView;
   XTDocument *document;
 }
 
