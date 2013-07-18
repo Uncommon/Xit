@@ -233,7 +233,7 @@ NSString *XTPathsKey = @"paths";
 
   if (error != nil)
     return nil;
-  return [gtRef target];
+  return [[gtRef unresolvedTarget] name];
 }
 
 // Returns kEmptyTreeHash if the repository is empty, otherwise "HEAD"

@@ -123,7 +123,7 @@
       NSString *fullBranchName =
           [[GTBranch localNamePrefix] stringByAppendingString:branch];
 
-      [head setTarget:fullBranchName error:&localError];
+      [head referenceByUpdatingTarget:fullBranchName error:&localError];
       cachedBranch = nil;
     }
   }
