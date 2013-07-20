@@ -1,6 +1,7 @@
 #import "XTTest.h"
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
+#import "XTRepository+Parsing.h"
 #import "XTHistoryDataSource.h"
 #import "XTHistoryItem.h"
 
@@ -47,7 +48,7 @@
     if (![defaultManager fileExistsAtPath:testFile]) {
       STFail(@"testFile NOT Found!!");
     }
-    if (![repository addFile:[testFile lastPathComponent]]) {
+    if (![repository stageFile:[testFile lastPathComponent]]) {
       STFail(@"add file '%@'", testFile);
     }
     if (![repository commitWithMessage:
@@ -102,7 +103,7 @@
     if (![defaultManager fileExistsAtPath:testFile]) {
       STFail(@"testFile NOT Found!!");
     }
-    if (![repository addFile:[testFile lastPathComponent]]) {
+    if (![repository stageFile:[testFile lastPathComponent]]) {
       STFail(@"add file '%@'", testFile);
     }
     if (![repository commitWithMessage:

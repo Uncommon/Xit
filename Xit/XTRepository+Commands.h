@@ -7,7 +7,6 @@
 - (BOOL)createBranch:(NSString *)name;
 - (BOOL)deleteBranch:(NSString *)name error:(NSError **)error;
 - (NSString *)currentBranch;
-- (BOOL)addFile:(NSString *)file;
 - (BOOL)commitWithMessage:(NSString *)message;
 - (BOOL)createTag:(NSString *)name withMessage:(NSString *)msg;
 - (BOOL)deleteTag:(NSString *)name error:(NSError **)error;

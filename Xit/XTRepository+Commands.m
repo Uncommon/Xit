@@ -174,20 +174,6 @@
       nil;
 }
 
-- (BOOL)addFile:(NSString *)file
-{
-  NSError *error = nil;
-  BOOL result = NO;
-
-  [self executeGitWithArgs:@[ @"add", file ] error:&error];
-
-  if (error == nil) {
-    result = YES;
-  }
-
-  return result;
-}
-
 - (BOOL)commitWithMessage:(NSString *)message
 {
   NSError *error = nil;

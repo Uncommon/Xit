@@ -1,6 +1,7 @@
 #import "XTTest.h"
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
+#import "XTRepository+Parsing.h"
 
 @implementation XTTest
 
@@ -61,7 +62,7 @@
 
   if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
     return NO;
-  if (![repository addFile:name])
+  if (![repository stageFile:name])
     return NO;
   if (![repository
           commitWithMessage:[NSString stringWithFormat:@"new %@", name]])

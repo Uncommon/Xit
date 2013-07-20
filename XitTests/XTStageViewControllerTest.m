@@ -123,7 +123,7 @@
                                              encoding:NSASCIIStringEncoding
                                                 error:nil];
 
-  [repository addFile:@"--all"];
+  [repository stageFile:@"--all"];
   [repository commitWithMessage:@"commit"];
 
   lines[5] = @"new line number 5.......";
@@ -192,7 +192,7 @@
   [txt writeToFile:mv atomically:YES encoding:NSASCIIStringEncoding error:nil];
   [txt writeToFile:rm atomically:YES encoding:NSASCIIStringEncoding error:nil];
 
-  [repository addFile:@"--all"];
+  [repository stageFile:@"--all"];
   [repository commitWithMessage:@"commit"];
 
   txt = @"more text";
@@ -221,7 +221,7 @@
                          idx, info.name);
   }];
 
-  [repository addFile:@"--all"];
+  [repository stageFile:@"--all"];
 
   XTStagedDataSource *stgds = [[XTStagedDataSource alloc] init];
   [stgds setRepo:repository];
@@ -259,7 +259,7 @@
                   encoding:NSUTF8StringEncoding
                      error:&error];
   STAssertNil(error, @"");
-  [repository addFile:newFilePath];
+  [repository stageFile:newFilePath];
   controller.message = testMessage;
   [controller setRepo:repository];
   [controller commit:nil];

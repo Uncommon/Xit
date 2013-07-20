@@ -1,6 +1,7 @@
 #import "XTTest.h"
 #import "XTHistoryDataSource.h"
 #import "XTRepository+Commands.h"
+#import "XTRepository+Parsing.h"
 #import "XTFileListDataSource.h"
 #import "XTHistoryItem.h"
 
@@ -20,7 +21,7 @@
           atomically:YES
             encoding:NSASCIIStringEncoding
                error:nil];
-    [repository addFile:@"--all"];
+    [repository stageFile:@"--all"];
     [repository commitWithMessage:@"commit"];
   }
 
@@ -88,7 +89,7 @@
             encoding:NSASCIIStringEncoding
                error:nil];
   }
-  [repository addFile:@"--all"];
+  [repository stageFile:@"--all"];
   [repository commitWithMessage:@"commit"];
 
   XTHistoryDataSource *hds = [[XTHistoryDataSource alloc] init];
