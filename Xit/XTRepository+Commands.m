@@ -174,22 +174,6 @@
       nil;
 }
 
-- (BOOL)commitWithMessage:(NSString *)message
-{
-  NSError *error = nil;
-  BOOL result = NO;
-
-  [self executeGitWithArgs:@[ @"commit", @"-F", @"-" ]
-                 withStdIn:message
-                     error:&error];
-
-  if (error == nil) {
-    result = YES;
-  }
-
-  return result;
-}
-
 - (NSString *)diffForStagedFile:(NSString *)file
 {
   NSData *output = [self executeGitWithArgs:@[

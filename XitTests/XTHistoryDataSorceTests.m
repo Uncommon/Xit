@@ -51,8 +51,11 @@
     if (![repository stageFile:[testFile lastPathComponent]]) {
       STFail(@"add file '%@'", testFile);
     }
-    if (![repository commitWithMessage:
-                [NSString stringWithFormat:@"new %@", testFile]]) {
+    if (![repository commitWithMessage:[NSString stringWithFormat:@"new %@",
+                                                                  testFile]
+                                 amend:NO
+                           outputBlock:NULL
+                                 error:NULL]) {
       STFail(@"Commit with mesage 'new %@'", testFile);
     }
   }
@@ -106,8 +109,11 @@
     if (![repository stageFile:[testFile lastPathComponent]]) {
       STFail(@"add file '%@'", testFile);
     }
-    if (![repository commitWithMessage:
-                [NSString stringWithFormat:@"new %@", testFile]]) {
+    if (![repository commitWithMessage:[NSString stringWithFormat:@"new %@",
+                                                                  testFile]
+                                 amend:NO
+                           outputBlock:NULL
+                                 error:NULL]) {
       STFail(@"Commit with mesage 'new %@'", testFile);
     }
   }

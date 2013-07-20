@@ -304,12 +304,18 @@
   STAssertTrue([repository createBranch:@"task"], nil);
   STAssertTrue([self writeTextToFile1:@"conflicting branch"], nil);
   STAssertTrue([repository stageFile:file1Path], nil);
-  STAssertTrue([repository commitWithMessage:@"conflicting commit"], nil);
+  STAssertTrue([repository commitWithMessage:@"conflicting commit"
+                                       amend:NO
+                                 outputBlock:NULL
+                                       error:NULL], nil);
 
   STAssertTrue([repository checkout:@"master" error:NULL], nil);
   STAssertTrue([self writeTextToFile1:@"conflicting master"], nil);
   STAssertTrue([repository stageFile:file1Path], nil);
-  STAssertTrue([repository commitWithMessage:@"conflicting commit 2"], nil);
+  STAssertTrue([repository commitWithMessage:@"conflicting commit 2"
+                                       amend:NO
+                                 outputBlock:NULL
+                                       error:NULL], nil);
 
   id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
   XTHistoryViewController *controller =

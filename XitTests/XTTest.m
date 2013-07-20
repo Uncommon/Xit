@@ -64,8 +64,11 @@
     return NO;
   if (![repository stageFile:name])
     return NO;
-  if (![repository
-          commitWithMessage:[NSString stringWithFormat:@"new %@", name]])
+  if (![repository commitWithMessage:[NSString stringWithFormat:@"new %@",
+                                                                name]
+                               amend:NO
+                         outputBlock:NULL
+                               error:NULL])
     return NO;
 
   return YES;

@@ -22,7 +22,10 @@
             encoding:NSASCIIStringEncoding
                error:nil];
     [repository stageFile:@"--all"];
-    [repository commitWithMessage:@"commit"];
+    [repository commitWithMessage:@"commit"
+                            amend:NO
+                      outputBlock:NULL
+                            error:NULL];
   }
 
   XTHistoryDataSource *hds = [[XTHistoryDataSource alloc] init];
@@ -90,7 +93,10 @@
                error:nil];
   }
   [repository stageFile:@"--all"];
-  [repository commitWithMessage:@"commit"];
+  [repository commitWithMessage:@"commit"
+                          amend:NO
+                    outputBlock:NULL
+                          error:NULL];
 
   XTHistoryDataSource *hds = [[XTHistoryDataSource alloc] init];
   [hds setRepo:repository];

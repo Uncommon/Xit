@@ -124,7 +124,10 @@
                                                 error:nil];
 
   [repository stageFile:@"--all"];
-  [repository commitWithMessage:@"commit"];
+  [repository commitWithMessage:@"commit"
+                          amend:NO
+                    outputBlock:NULL
+                          error:NULL];
 
   lines[5] = @"new line number 5.......";
   lines[15] = @"new line number 15.......";
@@ -193,7 +196,10 @@
   [txt writeToFile:rm atomically:YES encoding:NSASCIIStringEncoding error:nil];
 
   [repository stageFile:@"--all"];
-  [repository commitWithMessage:@"commit"];
+  [repository commitWithMessage:@"commit"
+                          amend:NO
+                    outputBlock:NULL
+                          error:NULL];
 
   txt = @"more text";
   [txt writeToFile:mod atomically:YES encoding:NSASCIIStringEncoding error:nil];
