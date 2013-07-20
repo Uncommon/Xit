@@ -1,5 +1,6 @@
 #import "XTRepository.h"
 #import "NSMutableDictionary+MultiObjectForKey.h"
+#import <ObjectiveGit/ObjectiveGit.h>
 
 NSString *XTRepositoryChangedNotification = @"xtrepochanged";
 NSString *XTErrorOutputKey = @"output";
@@ -8,6 +9,7 @@ NSString *XTPathsKey = @"paths";
 
 @implementation XTRepository
 
+@synthesize gtRepo;
 @synthesize selectedCommit;
 @synthesize refsIndex;
 @synthesize queue;
@@ -29,6 +31,14 @@ NSString *XTPathsKey = @"paths";
 {
   self = [super init];
   if (self != nil) {
+    NSError *error = nil;
+
+    gtRepo = [[GTRepository alloc] initWithURL:url error:&error];
+    if (error != nil) {
+      // TODO: Make sure we know why it failed.
+      // Assume repo hasn't been created yet, and initializeRepository will
+      // be called later.
+    }
     gitCMD = [XTRepository gitPath];
     repoURL = url;
     NSMutableString *qName =
@@ -82,7 +92,7 @@ NSString *XTPathsKey = @"paths";
                                userInfo:nil];
     return;
   }
-  if (![self parseReference:@"HEAD"])
+  if (![self hasHeadReference])
     return;  // There are no commits.
 
   NSMutableArray *args = [NSMutableArray arrayWithArray:logArgs];
@@ -206,44 +216,30 @@ NSString *XTPathsKey = @"paths";
   return output;
 }
 
-- (NSString *)parseReference:(NSString *)reference
+- (BOOL)hasHeadReference
 {
   NSError *error = nil;
-  NSArray *args = @[ @"rev-parse", @"--verify", reference ];
-  NSData *output = [self executeGitWithArgs:args error:&error];
 
-  if (output == nil)
-    return nil;
-  return [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+  return [gtRepo headReferenceWithError:&error] != nil;
 }
 
 - (NSString *)parseSymbolicReference:(NSString *)reference
 {
   NSError *error = nil;
-  NSData *output =
-      [self executeGitWithArgs:@[ @"symbolic-ref", @"-q", reference ]
-                         error:&error];
+  GTReference *gtRef = [GTReference
+      referenceByLookingUpReferencedNamed:reference
+                             inRepository:gtRepo
+                                    error:&error];
 
-  if (output == nil)
+  if (error != nil)
     return nil;
-
-  NSString *ref =
-      [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-  if ([ref hasPrefix:@"refs/"])
-    return [ref stringByTrimmingCharactersInSet:
-            [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-
-  return nil;
+  return [[gtRef unresolvedTarget] name];
 }
 
 // Returns kEmptyTreeHash if the repository is empty, otherwise "HEAD"
 - (NSString *)parentTree
 {
-  NSString *parentTree = @"HEAD";
-
-  if ([self parseReference:parentTree] == nil)
-    parentTree = kEmptyTreeHash;
-  return parentTree;
+  return [self hasHeadReference] ? @"HEAD" : kEmptyTreeHash;
 }
 
 - (NSString *)shaForRef:(NSString *)ref
@@ -251,23 +247,12 @@ NSString *XTPathsKey = @"paths";
   if (ref == nil)
     return nil;
 
-  for (NSString *sha in [refsIndex allKeys])
-    for (NSString *shaRef in [refsIndex objectsForKey:sha])
-      if ([shaRef isEqual:ref])
-        return sha;
-
-  NSArray *args = @[ @"rev-list", @"-1", ref ];
   NSError *error = nil;
-  NSData *output = [self executeGitWithArgs:args error:&error];
+  GTObject *object = [gtRepo lookupObjectByRefspec:ref error:&error];
 
-  if ((error != nil) || ([output length] == 0))
+  if (error != nil)
     return nil;
-
-  NSString *outputString =
-      [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-
-  return [outputString stringByTrimmingCharactersInSet:
-          [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+  return [object sha];
 }
 
 - (NSString *)headRef

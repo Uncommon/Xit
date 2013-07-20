@@ -80,6 +80,8 @@
 		DD96C92F17595AE10003A30C /* liblibRBSplitView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DD96C92117595A6E0003A30C /* liblibRBSplitView.a */; };
 		DD96C931175B76990003A30C /* splitter.png in Resources */ = {isa = PBXBuildFile; fileRef = DD96C930175B76990003A30C /* splitter.png */; };
 		DD96C939175ECE690003A30C /* XTFileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD96C938175ECE690003A30C /* XTFileViewController.m */; };
+		DD96C9A6176977470003A30C /* ObjectiveGit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD96C99A176976FE0003A30C /* ObjectiveGit.framework */; };
+		DD96C9CE176EBD470003A30C /* GTRepository+Xit.m in Sources */ = {isa = PBXBuildFile; fileRef = DD96C9CD176EBD470003A30C /* GTRepository+Xit.m */; };
 		DD997DD31739CC9300C7DF82 /* stash.png in Resources */ = {isa = PBXBuildFile; fileRef = DD997DD11739CC9300C7DF82 /* stash.png */; };
 		DD997DD41739CC9300C7DF82 /* stash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DD997DD21739CC9300C7DF82 /* stash@2x.png */; };
 		DD997DDA173B409500C7DF82 /* HistoryView Menus.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD997DD8173B409500C7DF82 /* HistoryView Menus.xib */; };
@@ -147,6 +149,34 @@
 			proxyType = 1;
 			remoteGlobalIDString = 3D50A3131162D61C002A5832;
 			remoteInfo = Library;
+		};
+		DD96C999176976FE0003A30C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
+			remoteInfo = ObjectiveGit;
+		};
+		DD96C99B176976FE0003A30C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 88F05A6B16011E5400B7AD1D;
+			remoteInfo = ObjectiveGitTests;
+		};
+		DD96C99D176976FE0003A30C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 04DB4645133AB57600D9C624;
+			remoteInfo = "ObjectiveGit-iOS";
+		};
+		DD96C9A41769772E0003A30C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
+			remoteInfo = ObjectiveGit;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -290,6 +320,9 @@
 		DD96C930175B76990003A30C /* splitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splitter.png; sourceTree = "<group>"; };
 		DD96C937175ECE690003A30C /* XTFileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTFileViewController.h; sourceTree = "<group>"; };
 		DD96C938175ECE690003A30C /* XTFileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTFileViewController.m; sourceTree = "<group>"; };
+		DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ObjectiveGitFramework.xcodeproj; path = "objective-git/ObjectiveGitFramework.xcodeproj"; sourceTree = "<group>"; };
+		DD96C9CC176EBD470003A30C /* GTRepository+Xit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTRepository+Xit.h"; sourceTree = "<group>"; };
+		DD96C9CD176EBD470003A30C /* GTRepository+Xit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTRepository+Xit.m"; sourceTree = "<group>"; };
 		DD997DD11739CC9300C7DF82 /* stash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stash.png; sourceTree = "<group>"; };
 		DD997DD21739CC9300C7DF82 /* stash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stash@2x.png"; sourceTree = "<group>"; };
 		DD997DD9173B409500C7DF82 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = "en.lproj/HistoryView Menus.xib"; sourceTree = "<group>"; };
@@ -319,6 +352,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD96C92F17595AE10003A30C /* liblibRBSplitView.a in Frameworks */,
+				DD96C9A6176977470003A30C /* ObjectiveGit.framework in Frameworks */,
 				31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */,
 				C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */,
 				DDD4708516F96F7E00CA76FF /* QuickLook.framework in Frameworks */,
@@ -371,20 +405,20 @@
 		31C7C12A13EC730500A65FE9 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				31C7C12C13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.h */,
-				31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */,
-				C3BC055613D1133000C3CF1A /* XTRepository+Commands.h */,
-				C3BC055713D1133000C3CF1A /* XTRepository+Commands.m */,
-				C343F90F13F4908E009C928A /* XTHTML.h */,
-				C343F91013F4908E009C928A /* XTHTML.m */,
+				DD96C9CC176EBD470003A30C /* GTRepository+Xit.h */,
+				DD96C9CD176EBD470003A30C /* GTRepository+Xit.m */,
 				DD579ADB15D08978007E4AFE /* NSDate+Extensions.h */,
 				DDC75B8215D08E8F0087F2D4 /* NSDate+Extensions.m */,
-				DD9C1B8D160239DD0001FE9B /* XTRefToken.h */,
-				DD9C1B8E160239DD0001FE9B /* XTRefToken.m */,
-				DDE55DDD1613C6C000CCAC03 /* XTModDateTracker.h */,
-				DDE55DDE1613C6C000CCAC03 /* XTModDateTracker.m */,
+				31C7C12C13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.h */,
+				31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */,
 				89D47941170894A200C04D89 /* NSAttributedString+XTExtensions.h */,
 				89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */,
+				C343F90F13F4908E009C928A /* XTHTML.h */,
+				C343F91013F4908E009C928A /* XTHTML.m */,
+				DDE55DDD1613C6C000CCAC03 /* XTModDateTracker.h */,
+				DDE55DDE1613C6C000CCAC03 /* XTModDateTracker.m */,
+				DD9C1B8D160239DD0001FE9B /* XTRefToken.h */,
+				DD9C1B8E160239DD0001FE9B /* XTRefToken.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -501,6 +535,7 @@
 		C3FA46F113D0F8E200AC4F9B = {
 			isa = PBXGroup;
 			children = (
+				DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */,
 				DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */,
 				C3FA470613D0F8E200AC4F9B /* Xit */,
 				8937B6EC1786F5DE00CB9BBC /* FullHeightToolbar */,
@@ -560,6 +595,8 @@
 				89355422157C128F007AC9CE /* XTDocController.m */,
 				C358652F14048A3F00060C53 /* XTRepository.h */,
 				C358653014048A3F00060C53 /* XTRepository.m */,
+				C3BC055613D1133000C3CF1A /* XTRepository+Commands.h */,
+				C3BC055713D1133000C3CF1A /* XTRepository+Commands.m */,
 				DDDA447015B0E97000DF407B /* XTRepository+Parsing.h */,
 				DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */,
 				89991CDB144E3FF400097A99 /* XTStatusView.h */,
@@ -634,6 +671,16 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		DD96C990176976FC0003A30C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DD96C99A176976FE0003A30C /* ObjectiveGit.framework */,
+				DD96C99C176976FE0003A30C /* ObjectiveGitTests.octest */,
+				DD96C99E176976FE0003A30C /* libObjectiveGit-iOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -649,6 +696,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				DD96C9A51769772E0003A30C /* PBXTargetDependency */,
 				DD96C92817595ACF0003A30C /* PBXTargetDependency */,
 			);
 			name = Xit;
@@ -698,6 +746,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = DD96C990176976FC0003A30C /* Products */;
+					ProjectRef = DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */;
+				},
+				{
 					ProductGroup = DD96C91417595A6D0003A30C /* Products */;
 					ProjectRef = DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */;
 				},
@@ -744,6 +796,27 @@
 			fileType = wrapper.application;
 			path = SampleApp.app;
 			remoteRef = DD96C92417595A6E0003A30C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DD96C99A176976FE0003A30C /* ObjectiveGit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ObjectiveGit.framework;
+			remoteRef = DD96C999176976FE0003A30C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DD96C99C176976FE0003A30C /* ObjectiveGitTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ObjectiveGitTests.octest;
+			remoteRef = DD96C99B176976FE0003A30C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DD96C99E176976FE0003A30C /* libObjectiveGit-iOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libObjectiveGit-iOS.a";
+			remoteRef = DD96C99D176976FE0003A30C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -801,7 +874,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "KEYWORDS=\"TODO|FIXME|\\?\\?\\?:|\\!\\!\\!:\"\nfind ${SRCROOT} \\( -name \"*.h\" -or -name \"*.m\" \\) -print0 | \\\nxargs -0 egrep --with-filename --line-number --only-matching \"($KEYWORDS).*\\$\" | \\\nperl -p -e \"s/($KEYWORDS)/ warning: \\$1/\"";
+			shellScript = "KEYWORDS=\"TODO|FIXME|\\?\\?\\?:|\\!\\!\\!:\"\nfind ${SRCROOT}/Xit ${SRCROOT}/XitTests \\( -name \"*.h\" -or -name \"*.m\" \\) -print0 | \\\nxargs -0 egrep --with-filename --line-number --only-matching \"($KEYWORDS).*\\$\" | \\\nperl -p -e \"s/($KEYWORDS)/ warning: \\$1/\"";
 		};
 		C3FA471E13D0F8E300AC4F9B /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -870,6 +943,7 @@
 				895229681786F6F900EE514C /* FHTLCDStatusView.m in Sources */,
 				895229691786F6F900EE514C /* FHTToolbar.m in Sources */,
 				895229711786F7AB00EE514C /* XTToolbarDelegate.m in Sources */,
+				DD96C9CE176EBD470003A30C /* GTRepository+Xit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -902,6 +976,11 @@
 			isa = PBXTargetDependency;
 			name = Library;
 			targetProxy = DD96C92717595ACF0003A30C /* PBXContainerItemProxy */;
+		};
+		DD96C9A51769772E0003A30C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = ObjectiveGit;
+			targetProxy = DD96C9A41769772E0003A30C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -981,6 +1060,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					RBSplitView/Source/,
+					"\"$(SRCROOT)/objective-git/libgit2/include\"",
 					"$(inherited)",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
@@ -1054,6 +1134,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					RBSplitView/Source/,
+					"\"$(SRCROOT)/objective-git/libgit2/include\"",
 					"$(inherited)",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
@@ -1075,6 +1156,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					RBSplitView/Source/,
+					"\"$(SRCROOT)/objective-git/libgit2/include\"",
 					"$(inherited)",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;

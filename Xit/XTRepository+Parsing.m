@@ -1,5 +1,7 @@
 #import "XTRepository+Parsing.h"
 #import "NSDate+Extensions.h"
+#import <ObjectiveGit/ObjectiveGit.h>
+#import "GTRepository+Xit.h"
 
 NSString *XTHeaderNameKey = @"name";
 NSString *XTHeaderContentKey = @"content";
@@ -77,45 +79,25 @@ NSString *XTHeaderContentKey = @"content";
 
 - (BOOL)readUnstagedFilesWithBlock:(void (^)(NSString *, NSString *))block
 {
-  NSError *error = nil;
-  NSData *output = [self executeGitWithArgs:@[ @"diff-files" ] error:nil];
+  // TODO: use enum for status
+  [self.gtRepo enumerateRelativeFileStatusUsingBlock:^(NSString *path, GTRepositoryFileStatus status, BOOL *stop) {
+    NSString *statusString = @"";
 
-  if (error != nil)
-    return NO;
-
-  NSString *filesStr =
-      [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-  filesStr = [filesStr stringByTrimmingCharactersInSet:
-          [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-  NSArray *files = [filesStr componentsSeparatedByString:@"\n"];
-
-  [files enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-    NSString *file = (NSString *)obj;
-    NSArray *info = [file componentsSeparatedByString:@"\t"];
-
-    if (info.count > 1) {
-      NSString *name = [info lastObject];
-      NSString *status =
-          [[info[0] componentsSeparatedByString:@" "] lastObject];
-
-      status = [status substringToIndex:1];
-      block(name, status);
+    switch (status) {
+      case GTRepositoryFileStatusWorkingTreeDeleted:
+        statusString = @"D";
+        break;
+      case GTRepositoryFileStatusWorkingTreeModified:
+        statusString = @"M";
+        break;
+      case GTRepositoryFileStatusWorkingTreeNew:
+        statusString = @"A";
+        break;
+      default:
+        return;
     }
-  }];
 
-  output = [self
-      executeGitWithArgs:@[ @"ls-files", @"--others", @"--exclude-standard" ]
-                   error:nil];
-  filesStr =
-      [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-  filesStr = [filesStr stringByTrimmingCharactersInSet:
-          [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-  files = [filesStr componentsSeparatedByString:@"\n"];
-  [files enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-    NSString *file = (NSString *)obj;
-
-    if (file.length > 0)
-      block(file, @"?");
+    block(path, statusString);
   }];
   return YES;
 }
@@ -301,7 +283,7 @@ NSString *XTCommitSHAKey = @"sha",
   NSArray *args;
   NSError *error = nil;
 
-  if ([self parseReference:@"HEAD"] == nil)
+  if (![self hasHeadReference])
     args = @[ @"rm", @"--cached", file ];
   else
     args = @[ @"reset", @"HEAD", file ];

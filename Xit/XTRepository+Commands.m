@@ -1,71 +1,80 @@
 #import "XTRepository+Commands.h"
+#import <ObjectiveGit/ObjectiveGit.h>
 
 @implementation XTRepository (Commands)
 
 - (BOOL)initializeRepository
 {
   NSError *error = nil;
-  BOOL res = NO;
 
-  [self executeGitWithArgs:@[ @"init" ] error:&error];
-
-  if (error == nil)
-    res = true;
-
-  return res;
+  if (![GTRepository initializeEmptyRepositoryAtURL:repoURL error:&error])
+    return NO;
+  gtRepo = [GTRepository repositoryWithURL:repoURL error:&error];
+  return error == nil;
 }
 
 - (BOOL)saveStash:(NSString *)name
 {
   NSError *error = nil;
-  BOOL res = NO;
+  BOOL result = NO;
 
   [self executeGitWithArgs:@[ @"stash", @"save", name ] error:&error];
 
   if (error == nil) {
-    res = YES;
+    result = YES;
   }
 
-  return res;
+  return result;
 }
 
 - (BOOL)createBranch:(NSString *)name
 {
   NSError *error = nil;
-  BOOL res = NO;
+  BOOL result = NO;
 
   [self executeGitWithArgs:@[ @"checkout", @"-b", name ] error:&error];
 
   if (error == nil) {
-    res = YES;
+    result = YES;
   }
 
-  return res;
+  return result;
 }
 
 - (BOOL)deleteBranch:(NSString *)name error:(NSError *__autoreleasing *)error
 {
-  return [self executeGitWithArgs:@[ @"branch", @"-D", name ] error:error] !=
-      nil;
+  if (error == NULL)
+    return NO;
+  *error = nil;
+
+  NSString *fullBranch =
+      [[GTBranch localNamePrefix] stringByAppendingString:name];
+  GTBranch *branch =
+      [GTBranch branchWithName:fullBranch repository:gtRepo error:error];
+
+  if (*error != nil)
+    return NO;
+  [branch deleteWithError:error];
+  return *error != nil;
 }
 
 - (NSString *)currentBranch
 {
   if (cachedBranch == nil) {
     NSError *error = nil;
-    NSData *output = [self executeGitWithArgs:@[ @"branch" ] error:&error];
+    GTBranch *branch = [gtRepo currentBranchWithError:&error];
 
-    if (output == nil)
+    if (error != nil)
       return nil;
 
-    NSString *outputString =
-        [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-    NSArray *lines = [outputString componentsSeparatedByString:@"\n"];
+    NSString *remoteName = [branch remoteName];
 
-    for (NSString *line in lines) {
-      if ([line hasPrefix:@"*"])
-        cachedBranch = [line substringFromIndex:2];
-    }
+    if (remoteName != nil)
+      // shortName strips the remote name, so put it back
+      cachedBranch =
+          [NSString stringWithFormat:@"%@/%@", remoteName, [branch shortName]];
+    else
+      cachedBranch = [branch shortName];
   }
   return cachedBranch;
 }
@@ -79,47 +88,65 @@
 - (BOOL)push:(NSString *)remote
 {
   NSError *error = nil;
-  BOOL res = NO;
+  BOOL result = NO;
 
   [self executeGitWithArgs:@[ @"push", @"--all", @"--force", remote ]
                      error:&error];
 
   if (error == nil) {
-    res = YES;
+    result = YES;
   }
 
-  return res;
+  return result;
 }
 
 - (BOOL)checkout:(NSString *)branch error:(NSError **)resultError
 {
-  NSError *error = nil;
-  BOOL res = NO;
+  NSError *localError = nil;
+  git_checkout_opts options = GIT_CHECKOUT_OPTS_INIT;
+  git_object *target;
+  git_repository *repo = self.gtRepo.git_repository;
 
-  cachedBranch = nil;
-  [self executeGitWithArgs:@[ @"checkout", branch ] error:&error];
+  options.checkout_strategy = GIT_CHECKOUT_SAFE_CREATE;
 
-  if (error == nil) {
-    res = YES;
+  int result = git_revparse_single(&target, repo, [branch UTF8String]);
+
+  if (result == 0)
+    result = git_checkout_tree(repo, target, &options);
+  if (result == 0) {
+    GTReference *head =
+        [GTReference referenceByLookingUpReferencedNamed:@"HEAD"
+                                            inRepository:self.gtRepo
+                                                   error:&localError];
+
+    if (localError == nil) {
+      NSString *fullBranchName =
+          [[GTBranch localNamePrefix] stringByAppendingString:branch];
+
+      [head referenceByUpdatingTarget:fullBranchName error:&localError];
+      cachedBranch = nil;
+    }
   }
-  if (resultError != NULL)
-    *resultError = error;
+  if (result != 0)
+    localError = [NSError git_errorFor:result];
 
-  return res;
+  if (resultError != NULL)
+    *resultError = localError;
+  return localError == nil;
 }
 
 - (BOOL)createTag:(NSString *)name withMessage:(NSString *)msg
 {
   NSError *error = nil;
-  BOOL res = NO;
+  BOOL result = NO;
 
   [self executeGitWithArgs:@[ @"tag", @"-a", name, @"-m", msg ] error:&error];
 
   if (error == nil) {
-    res = YES;
+    result = YES;
   }
 
-  return res;
+  return result;
 }
 
 - (BOOL)deleteTag:(NSString *)name error:(NSError *__autoreleasing *)error
@@ -130,15 +157,15 @@
 - (BOOL)addRemote:(NSString *)name withUrl:(NSString *)url
 {
   NSError *error = nil;
-  BOOL res = NO;
+  BOOL result = NO;
 
   [self executeGitWithArgs:@[ @"remote", @"add", name, url ] error:&error];
 
   if (error == nil) {
-    res = YES;
+    result = YES;
   }
 
-  return res;
+  return result;
 }
 
 - (BOOL)deleteRemote:(NSString *)name error:(NSError *__autoreleasing *)error
@@ -150,31 +177,31 @@
 - (BOOL)addFile:(NSString *)file
 {
   NSError *error = nil;
-  BOOL res = NO;
+  BOOL result = NO;
 
   [self executeGitWithArgs:@[ @"add", file ] error:&error];
 
   if (error == nil) {
-    res = YES;
+    result = YES;
   }
 
-  return res;
+  return result;
 }
 
 - (BOOL)commitWithMessage:(NSString *)message
 {
   NSError *error = nil;
-  BOOL res = NO;
+  BOOL result = NO;
 
   [self executeGitWithArgs:@[ @"commit", @"-F", @"-" ]
                  withStdIn:message
                      error:&error];
 
   if (error == nil) {
-    res = YES;
+    result = YES;
   }
 
-  return res;
+  return result;
 }
 
 - (NSString *)diffForStagedFile:(NSString *)file

@@ -5,8 +5,11 @@ extern NSString *XTErrorOutputKey;
 extern NSString *XTErrorArgsKey;
 extern NSString *XTPathsKey;
 
+@class GTRepository;
+
 @interface XTRepository : NSObject {
  @private
+  GTRepository *gtRepo;
   NSURL *repoURL;
   NSString *gitCMD;
   NSString *selectedCommit;
@@ -30,7 +33,7 @@ extern NSString *XTPathsKey;
                      withStdIn:(NSString *)stdIn
                          error:(NSError **)error;
 
-- (NSString *)parseReference:(NSString *)reference;
+- (BOOL)hasHeadReference;
 - (NSString *)parentTree;
 - (NSString *)headRef;
 - (NSString *)headSHA;
@@ -48,6 +51,7 @@ extern NSString *XTPathsKey;
 - (void)addTask:(NSTask *)task;
 - (void)removeTask:(NSTask *)task;
 
+@property(readonly) GTRepository *gtRepo;
 @property(copy) NSString *selectedCommit;
 @property(strong) NSDictionary *refsIndex;
 @property(readonly) dispatch_queue_t queue;

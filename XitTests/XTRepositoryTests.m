@@ -17,7 +17,7 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
 
 - (void)testEmptyRepositoryHead
 {
-  STAssertNil([repository parseReference:@"HEAD"], @"");
+  STAssertFalse([repository hasHeadReference], @"");
   STAssertEqualObjects([repository parentTree], kEmptyTreeHash, @"");
 }
 
