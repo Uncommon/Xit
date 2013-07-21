@@ -21,17 +21,20 @@
     if ((n % 5) == 0) {
       NSData *data =
           [repository executeGitWithArgs:@[ @"symbolic-ref", @"HEAD", rn ]
+                                  writes:NO
                                    error:nil];
       if (data == nil) {
         STFail(@"'%@' error", rn);
       }
       data = [repository executeGitWithArgs:@[ @"rm", @"--cached", @"-r", @"." ]
+                                     writes:NO
                                       error:nil];
       if (data == nil) {
         STFail(@"'%@' error", rn);
       }
-      data =
-          [repository executeGitWithArgs:@[ @"clean", @"-f", @"-d" ] error:nil];
+      data = [repository executeGitWithArgs:@[ @"clean", @"-f", @"-d" ]
+                                     writes:NO
+                                      error:nil];
       if (data == nil) {
         STFail(@"'%@' error", rn);
       }

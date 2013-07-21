@@ -18,7 +18,9 @@
   NSError *error = nil;
   BOOL result = NO;
 
-  [self executeGitWithArgs:@[ @"stash", @"save", name ] error:&error];
+  [self executeGitWithArgs:@[ @"stash", @"save", name ]
+                    writes:YES
+                     error:&error];
 
   if (error == nil) {
     result = YES;
@@ -32,7 +34,9 @@
   NSError *error = nil;
   BOOL result = NO;
 
-  [self executeGitWithArgs:@[ @"checkout", @"-b", name ] error:&error];
+  [self executeGitWithArgs:@[ @"checkout", @"-b", name ]
+                    writes:YES
+                     error:&error];
 
   if (error == nil) {
     result = YES;
@@ -43,19 +47,20 @@
 
 - (BOOL)deleteBranch:(NSString *)name error:(NSError *__autoreleasing *)error
 {
-  if (error == NULL)
-    return NO;
+  NSParameterAssert(error);
   *error = nil;
 
-  NSString *fullBranch =
-      [[GTBranch localNamePrefix] stringByAppendingString:name];
-  GTBranch *branch =
-      [GTBranch branchWithName:fullBranch repository:gtRepo error:error];
+  return [self executeWritingBlock:^BOOL{
+    NSString *fullBranch =
+        [[GTBranch localNamePrefix] stringByAppendingString:name];
+    GTBranch *branch =
+        [GTBranch branchWithName:fullBranch repository:gtRepo error:error];
 
-  if (*error != nil)
-    return NO;
-  [branch deleteWithError:error];
-  return *error != nil;
+    if (*error != nil)
+      return NO;
+    [branch deleteWithError:error];
+    return *error != nil;
+  }];
 }
 
 - (NSString *)currentBranch
@@ -81,7 +86,7 @@
 
 - (BOOL)merge:(NSString *)name error:(NSError **)error
 {
-  [self executeGitWithArgs:@[ @"merge", name ] error:error];
+  [self executeGitWithArgs:@[ @"merge", name ] writes:YES error:error];
   return *error == nil;
 }
 
@@ -91,6 +96,7 @@
   BOOL result = NO;
 
   [self executeGitWithArgs:@[ @"push", @"--all", @"--force", remote ]
+                    writes:NO
                      error:&error];
 
   if (error == nil) {
@@ -140,7 +146,9 @@
   NSError *error = nil;
   BOOL result = NO;
 
-  [self executeGitWithArgs:@[ @"tag", @"-a", name, @"-m", msg ] error:&error];
+  [self executeGitWithArgs:@[ @"tag", @"-a", name, @"-m", msg ]
+                    writes:YES
+                     error:&error];
 
   if (error == nil) {
     result = YES;
@@ -151,7 +159,9 @@
 
 - (BOOL)deleteTag:(NSString *)name error:(NSError *__autoreleasing *)error
 {
-  return [self executeGitWithArgs:@[ @"tag", @"-d", name ] error:error] != nil;
+  return [self executeGitWithArgs:@[ @"tag", @"-d", name ]
+                          writes:YES
+                           error:error] != nil;
 }
 
 - (BOOL)addRemote:(NSString *)name withUrl:(NSString *)url
@@ -159,7 +169,9 @@
   NSError *error = nil;
   BOOL result = NO;
 
-  [self executeGitWithArgs:@[ @"remote", @"add", name, url ] error:&error];
+  [self executeGitWithArgs:@[ @"remote", @"add", name, url ]
+                    writes:YES
+                     error:&error];
 
   if (error == nil) {
     result = YES;
@@ -170,14 +182,16 @@
 
 - (BOOL)deleteRemote:(NSString *)name error:(NSError *__autoreleasing *)error
 {
-  return [self executeGitWithArgs:@[ @"remote", @"rm", name ] error:error] !=
-      nil;
+  return [self executeGitWithArgs:@[ @"remote", @"rm", name ]
+                           writes:YES
+                            error:error] != nil;
 }
 
 - (NSString *)diffForStagedFile:(NSString *)file
 {
   NSData *output = [self executeGitWithArgs:@[
       @"diff-index", @"--patch", @"--cached", [self parentTree], @"--", file ]
+                                     writes:NO
                                       error:nil];
 
   if (output == nil)
@@ -189,6 +203,7 @@
 {
   NSData *output =
       [self executeGitWithArgs:@[ @"diff-files", @"--patch", @"--", file ]
+                        writes:NO
                          error:nil];
 
   if (output == nil)
@@ -200,6 +215,7 @@
 {
   NSData *output = [self executeGitWithArgs:@[ @"diff-tree", @"--root", @"--cc",
                                                @"-C90%", @"-M90%", sha ]
+                                     writes:NO
                                       error:NULL];
 
   return [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
@@ -211,6 +227,7 @@
 
   [self executeGitWithArgs:@[ @"apply", @"--cached" ]
                  withStdIn:patch
+                    writes:YES
                      error:&error];
   return error == nil;
 }
@@ -221,6 +238,7 @@
 
   [self executeGitWithArgs:@[ @"apply", @"--cached", @"--reverse" ]
                  withStdIn:patch
+                    writes:YES
                      error:&error];
   return error == nil;
 }
@@ -231,6 +249,7 @@
 
   [self executeGitWithArgs:@[ @"apply", @"--reverse" ]
                  withStdIn:patch
+                    writes:YES
                      error:&error];
   return error == nil;
 }
@@ -239,7 +258,9 @@
 {
   NSError *error = nil;
 
-  [self executeGitWithArgs:@[ @"branch", @"-m", branch, newName ] error:&error];
+  [self executeGitWithArgs:@[ @"branch", @"-m", branch, newName ]
+                    writes:YES
+                     error:&error];
   return error == nil;
 }
 
@@ -255,6 +276,7 @@
   NSError *error = nil;
 
   [self executeGitWithArgs:@[ @"remote", @"rename", branch, newName ]
+                    writes:YES
                      error:&error];
   return error == nil;
 }
@@ -262,21 +284,27 @@
 - (BOOL)popStash:(NSString *)name error:(NSError **)error
 {
   name = [name componentsSeparatedByString:@" "][0];
-  [self executeGitWithArgs:@[ @"stash", @"pop", name ] error:error];
+  [self executeGitWithArgs:@[ @"stash", @"pop", name ]
+                    writes:YES
+                     error:error];
   return error == nil;
 }
 
 - (BOOL)applyStash:(NSString *)name error:(NSError **)error
 {
   name = [name componentsSeparatedByString:@" "][0];
-  [self executeGitWithArgs:@[ @"stash", @"apply", name ] error:error];
+  [self executeGitWithArgs:@[ @"stash", @"apply", name ]
+                    writes:YES
+                     error:error];
   return error == nil;
 }
 
 - (BOOL)dropStash:(NSString *)name error:(NSError **)error
 {
   name = [name componentsSeparatedByString:@" "][0];
-  [self executeGitWithArgs:@[ @"stash", @"drop", name ] error:error];
+  [self executeGitWithArgs:@[ @"stash", @"drop", name ]
+                    writes:YES
+                     error:error];
   return error == nil;
 }
 

@@ -28,10 +28,14 @@ extern NSString *XTPathsKey;
 // Avoid calling these from outside XTRepository. Instead, add methods to
 // +Commands or +Parsing.
 // Returns command output on success, or nil on failure.
-- (NSData *)executeGitWithArgs:(NSArray *)args error:(NSError **)error;
+- (NSData *)executeGitWithArgs:(NSArray *)args
+                        writes:(BOOL)writes
+                         error:(NSError **)error;
 - (NSData *)executeGitWithArgs:(NSArray *)args
                      withStdIn:(NSString *)stdIn
+                        writes:(BOOL)writes
                          error:(NSError **)error;
+- (BOOL)executeWritingBlock:(BOOL (^)())block;
 
 - (BOOL)hasHeadReference;
 - (NSString *)parentTree;
@@ -57,6 +61,7 @@ extern NSString *XTPathsKey;
 @property(readonly) dispatch_queue_t queue;
 @property(readonly) NSMutableArray *activeTasks;
 @property(readonly) NSURL *repoURL;
+@property(readonly) BOOL isWriting;
 
 @end
 

@@ -63,6 +63,7 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
 
   [[[mockRepo expect] andReturn:outputData]
       executeGitWithArgs:args
+                  writes:NO
                    error:[OCMArg setTo:nil]];
   STAssertTrue([mockRepo parseCommit:@"master"
                           intoHeader:&header
