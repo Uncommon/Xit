@@ -1,4 +1,5 @@
 #import "XTRepository+Commands.h"
+#import "XTConstants.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
 @implementation XTRepository (Commands)
@@ -59,7 +60,7 @@
     if (*error != nil)
       return NO;
     [branch deleteWithError:error];
-    return *error != nil;
+    return *error == nil;
   }];
 }
 
@@ -108,60 +109,75 @@
 
 - (BOOL)checkout:(NSString *)branch error:(NSError **)resultError
 {
-  NSError *localError = nil;
-  git_checkout_opts options = GIT_CHECKOUT_OPTS_INIT;
-  git_object *target;
-  git_repository *repo = self.gtRepo.git_repository;
+  return [self executeWritingBlock:^BOOL{
+    NSError *localError = nil;
+    git_checkout_opts options = GIT_CHECKOUT_OPTS_INIT;
+    git_object *target;
+    git_repository *repo = self.gtRepo.git_repository;
 
-  options.checkout_strategy = GIT_CHECKOUT_SAFE_CREATE;
+    options.checkout_strategy = GIT_CHECKOUT_SAFE_CREATE;
 
-  int result = git_revparse_single(&target, repo, [branch UTF8String]);
+    int result = git_revparse_single(&target, repo, [branch UTF8String]);
 
-  if (result == 0)
-    result = git_checkout_tree(repo, target, &options);
-  if (result == 0) {
-    GTReference *head =
-        [GTReference referenceByLookingUpReferencedNamed:@"HEAD"
-                                            inRepository:self.gtRepo
-                                                   error:&localError];
+    if (result == 0)
+      result = git_checkout_tree(repo, target, &options);
+    if (result == 0) {
+      GTReference *head =
+          [GTReference referenceByLookingUpReferencedNamed:@"HEAD"
+                                              inRepository:self.gtRepo
+                                                     error:&localError];
 
-    if (localError == nil) {
-      NSString *fullBranchName =
-          [[GTBranch localNamePrefix] stringByAppendingString:branch];
+      if (localError == nil) {
+        NSString *fullBranchName =
+            [[GTBranch localNamePrefix] stringByAppendingString:branch];
 
-      [head referenceByUpdatingTarget:fullBranchName error:&localError];
-      cachedBranch = nil;
+        [head referenceByUpdatingTarget:fullBranchName error:&localError];
+        cachedBranch = nil;
+      }
     }
-  }
-  if (result != 0)
-    localError = [NSError git_errorFor:result];
+    if (result != 0)
+      localError = [NSError git_errorFor:result];
 
-  if (resultError != NULL)
-    *resultError = localError;
-  return localError == nil;
+    if (resultError != NULL)
+      *resultError = localError;
+    return localError == nil;
+  }];
 }
 
 - (BOOL)createTag:(NSString *)name withMessage:(NSString *)msg
 {
-  NSError *error = nil;
-  BOOL result = NO;
+  return [self executeWritingBlock:^BOOL{
+    NSError *error = nil;
+    GTReference *headRef = [gtRepo headReferenceWithError:&error];
+    GTSignature *signature = [gtRepo userSignatureForNow];
 
-  [self executeGitWithArgs:@[ @"tag", @"-a", name, @"-m", msg ]
-                    writes:YES
+    if ((headRef == nil) || (signature == nil))
+      return NO;
+
+    [GTTag tagInRepository:gtRepo
+                      name:name
+                    target:[headRef resolvedTarget]
+                    tagger:[gtRepo userSignatureForNow]
+                   message:msg
                      error:&error];
 
-  if (error == nil) {
-    result = YES;
-  }
-
-  return result;
+    return error == nil;
+  }];
 }
 
 - (BOOL)deleteTag:(NSString *)name error:(NSError *__autoreleasing *)error
 {
-  return [self executeGitWithArgs:@[ @"tag", @"-d", name ]
-                          writes:YES
-                           error:error] != nil;
+  return [self executeWritingBlock:^BOOL{
+    int result = git_tag_delete([gtRepo git_repository], [name UTF8String]);
+
+    if (result == 0)
+      return YES;
+    else {
+      if (error != NULL)
+        *error = [NSError git_errorFor:result];
+      return NO;
+    }
+  }];
 }
 
 - (BOOL)addRemote:(NSString *)name withUrl:(NSString *)url
@@ -266,7 +282,7 @@
 
 - (BOOL)renameTag:(NSString *)branch to:(NSString *)newName
 {
-  // delete and re-make the tag
+  // TODO: delete and re-make the tag
   // not doable for signed tags?
   return NO;
 }
@@ -283,29 +299,46 @@
 
 - (BOOL)popStash:(NSString *)name error:(NSError **)error
 {
+  NSError *localError = nil;
+
   name = [name componentsSeparatedByString:@" "][0];
-  [self executeGitWithArgs:@[ @"stash", @"pop", name ]
-                    writes:YES
-                     error:error];
-  return error == nil;
+  if (![self executeGitWithArgs:@[ @"stash", @"pop", name ]
+                         writes:YES
+                          error:&localError]) {
+    if (([localError code] == 1) &&
+        [[localError domain] isEqualToString:XTErrorDomainGit])
+      return YES;  // pop may return 1 on success
+    if (error != NULL)
+      *error = localError;
+    return NO;
+  }
+  return YES;
 }
 
 - (BOOL)applyStash:(NSString *)name error:(NSError **)error
 {
+  NSError *localError = nil;
+
   name = [name componentsSeparatedByString:@" "][0];
-  [self executeGitWithArgs:@[ @"stash", @"apply", name ]
-                    writes:YES
-                     error:error];
-  return error == nil;
+  if (![self executeGitWithArgs:@[ @"stash", @"apply", name ]
+                         writes:YES
+                          error:&localError]) {
+    if (([localError code] == 1) &&
+        [[localError domain] isEqualToString:XTErrorDomainGit])
+      return YES;  // apply may return 1 on success
+    if (error != NULL)
+      *error = localError;
+    return NO;
+  }
+  return YES;
 }
 
 - (BOOL)dropStash:(NSString *)name error:(NSError **)error
 {
   name = [name componentsSeparatedByString:@" "][0];
-  [self executeGitWithArgs:@[ @"stash", @"drop", name ]
-                    writes:YES
-                     error:error];
-  return error == nil;
+  return [self executeGitWithArgs:@[ @"stash", @"drop", name ]
+                           writes:YES
+                            error:error];
 }
 
 @end

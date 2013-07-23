@@ -1,4 +1,5 @@
 #import "XTRepository.h"
+#import "XTConstants.h"
 #import "NSMutableDictionary+MultiObjectForKey.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
@@ -6,6 +7,8 @@ NSString *XTRepositoryChangedNotification = @"xtrepochanged";
 NSString *XTErrorOutputKey = @"output";
 NSString *XTErrorArgsKey = @"args";
 NSString *XTPathsKey = @"paths";
+
+NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 
 @interface XTRepository ()
 
@@ -169,7 +172,7 @@ NSString *XTPathsKey = @"paths";
     NSString *string =
         [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
     if (error != NULL) {
-      *error = [NSError errorWithDomain:@"git"
+      *error = [NSError errorWithDomain:XTErrorDomainGit
                                    code:status
                                userInfo:@{XTErrorOutputKey : string}];
     }
@@ -196,8 +199,13 @@ NSString *XTPathsKey = @"paths";
     return nil;
 
   @synchronized(self) {
-    if (writes && self.isWriting)
+    if (writes && self.isWriting) {
+      if (error != NULL)
+        *error = [NSError errorWithDomain:XTErrorDomainXit
+                                     code:XTErrorWriteLock
+                                 userInfo:nil];
       return nil;
+    }
     self.isWriting = YES;
     NSLog(@"****command = git %@", [args componentsJoinedByString:@" "]);
     NSTask *task = [[NSTask alloc] init];

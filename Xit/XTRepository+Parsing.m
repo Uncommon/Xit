@@ -292,7 +292,7 @@ NSString *XTCommitSHAKey = @"sha",
   if (![self hasHeadReference])
     args = @[ @"rm", @"--cached", file ];
   else
-    args = @[ @"reset", @"HEAD", file ];
+    args = @[ @"reset", @"-q", @"HEAD", file ];
   [self executeGitWithArgs:args writes:YES error:&error];
   return error == nil;
 }
