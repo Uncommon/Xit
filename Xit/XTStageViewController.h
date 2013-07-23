@@ -8,7 +8,6 @@
 
 @interface XTStageViewController
     : NSViewController<DOMEventListener, NSTableViewDelegate> {
- @public
   IBOutlet XTStagedDataSource *stageDS;
   IBOutlet XTUnstagedDataSource *unstageDS;
   IBOutlet WebView *web;
@@ -20,6 +19,9 @@
 }
 
 @property(strong) NSString *message;
+@property(readonly) XTStagedDataSource *stageDS;
+@property(readonly) XTUnstagedDataSource *unstageDS;
+@property(readonly) NSTableView *unstageTable;
 
 - (IBAction)commit:(id)sender;
 

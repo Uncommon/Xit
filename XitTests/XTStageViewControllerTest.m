@@ -13,6 +13,14 @@
 
 @end
 
+@interface XTStageViewController (Test)
+
+@property(readwrite) XTStagedDataSource *stageDS;
+@property(readwrite) XTUnstagedDataSource *unstageDS;
+@property(readwrite) NSTableView *unstageTable;
+
+@end
+
 @implementation XTStageViewControllerTest
 
 - (void)addInitialRepoContent
@@ -53,9 +61,9 @@
   const NSInteger clickedRow = 0;
 
   [controller setRepo:repository];
-  controller->unstageDS = ustgds;
-  controller->stageDS = stgds;
-  controller->unstageTable = mockUnstagedTable;
+  controller.unstageDS = ustgds;
+  controller.stageDS = stgds;
+  controller.unstageTable = mockUnstagedTable;
 
   // Double-click in unstaged list
   [[[mockUnstagedTable stub]
