@@ -51,28 +51,21 @@ NSString *XTHeaderContentKey = @"content";
 - (BOOL)readStagedFilesWithBlock:(void (^)(NSString *, NSString *))block
 {
   NSError *error = nil;
-  NSData *output = [self
-      executeGitWithArgs:@[ @"diff-index", @"--cached", [self parentTree] ]
-                   error:&error];
+  GTIndex *index = [gtRepo indexWithError:&error];
 
-  if ((output == nil) || (error != nil))
+  if (error != nil)
     return NO;
+  for (GTIndexEntry *entry in index.entries) {
+    NSString *status = @"";
 
-  NSString *filesStr =
-      [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-  filesStr = [filesStr stringByTrimmingCharactersInSet:
-      [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-  NSArray *files = [filesStr componentsSeparatedByString:@"\n"];
-
-  for (NSString *file in files) {
-    NSArray *info = [file componentsSeparatedByString:@"\t"];
-    if (info.count > 1) {
-      NSString *name = [info lastObject];
-      NSString *status =
-          [[info[0] componentsSeparatedByString:@" "] lastObject];
-      status = [status substringToIndex:1];
-      block(name, status);
+    switch (entry.status) {
+      case GTIndexEntryStatusUpdated:    status = @"M"; break;
+      case GTIndexEntryStatusConflicted: status = @"C"; break;
+      case GTIndexEntryStatusAdded:      status = @"A"; break;
+      case GTIndexEntryStatusRemoved:    status = @"D"; break;
+      case GTIndexEntryStatusUpToDate:   status = @""; break;
     }
+    block(entry.path, status);
   }
   return YES;
 }
