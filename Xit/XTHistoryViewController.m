@@ -117,6 +117,8 @@
       (action == @selector(deleteBranch:))) {
     if (![item isKindOfClass:[XTLocalBranchItem class]])
       return NO;
+    if (repo.isWriting)
+      return NO;
     if (action == @selector(deleteBranch:))
       return ![[repo currentBranch] isEqualToString:[item title]];
     if (action == @selector(mergeBranch:)) {
@@ -157,15 +159,21 @@
     return YES;
   }
   if ((action == @selector(renameTag:)) || (action == @selector(deleteTag:))) {
+    if (repo.isWriting)
+      return NO;
     return [item isKindOfClass:[XTTagItem class]];
   }
   if ((action == @selector(renameRemote:)) ||
       (action == @selector(deleteRemote:))) {
+    if (repo.isWriting)
+      return NO;
     return [sidebarOutline parentForItem:item] ==
            (sideBarDS.roots)[XTRemotesGroupIndex];
   }
   if ((action == @selector(popStash:)) || (action == @selector(applyStash:)) ||
       (action == @selector(dropStash:))) {
+    if (repo.isWriting)
+      return NO;
     return [item isKindOfClass:[XTStashItem class]];
   }
 

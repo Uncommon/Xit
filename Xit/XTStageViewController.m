@@ -34,6 +34,7 @@
   repo = newRepo;
   [stageDS setRepo:repo];
   [unstageDS setRepo:repo];
+  [repo addObserver:self forKeyPath:@"isWriting" options:0 context:NULL];
 }
 
 - (void)reload
@@ -49,6 +50,15 @@
 }
 
 #pragma mark -
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+  if ((object == repo) && [keyPath isEqualToString:@"isWriting"])
+    [commitButton setEnabled:!repo.isWriting];
+}
 
 - (IBAction)commit:(id)sender
 {
