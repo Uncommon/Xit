@@ -1,4 +1,5 @@
 #import "XTRepository.h"
+#import "XTConstants.h"
 #import "NSMutableDictionary+MultiObjectForKey.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
@@ -6,6 +7,14 @@ NSString *XTRepositoryChangedNotification = @"xtrepochanged";
 NSString *XTErrorOutputKey = @"output";
 NSString *XTErrorArgsKey = @"args";
 NSString *XTPathsKey = @"paths";
+
+NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
+
+@interface XTRepository ()
+
+@property(readwrite) BOOL isWriting;
+
+@end
 
 @implementation XTRepository
 
@@ -15,6 +24,7 @@ NSString *XTPathsKey = @"paths";
 @synthesize queue;
 @synthesize activeTasks;
 @synthesize repoURL;
+@synthesize isWriting;
 
 + (NSString *)gitPath
 {
@@ -51,6 +61,20 @@ NSString *XTPathsKey = @"paths";
   }
 
   return self;
+}
+
+- (BOOL)executeWritingBlock:(BOOL (^)())block;
+{
+  BOOL result = NO;
+
+  @synchronized(self) {
+    if (self.isWriting)
+      return NO;
+    self.isWriting = YES;
+    result = block();
+    self.isWriting = NO;
+  }
+  return result;
 }
 
 - (void)executeOffMainThread:(void (^)())block
@@ -148,7 +172,7 @@ NSString *XTPathsKey = @"paths";
     NSString *string =
         [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
     if (error != NULL) {
-      *error = [NSError errorWithDomain:@"git"
+      *error = [NSError errorWithDomain:XTErrorDomainGit
                                    code:status
                                userInfo:@{XTErrorOutputKey : string}];
     }
@@ -156,64 +180,82 @@ NSString *XTPathsKey = @"paths";
   [self removeTask:task];
 }
 
-- (NSData *)executeGitWithArgs:(NSArray *)args error:(NSError **)error
+- (NSData *)executeGitWithArgs:(NSArray *)args
+                        writes:(BOOL)writes
+                         error:(NSError **)error
 {
-  return [self executeGitWithArgs:args withStdIn:nil error:error];
+  return [self executeGitWithArgs:args
+                        withStdIn:nil
+                           writes:writes
+                            error:error];
 }
 
 - (NSData *)executeGitWithArgs:(NSArray *)args
                      withStdIn:(NSString *)stdIn
+                        writes:(BOOL)writes
                          error:(NSError **)error
 {
   if (repoURL == nil)
     return nil;
-  NSLog(@"****command = git %@", [args componentsJoinedByString:@" "]);
-  NSTask *task = [[NSTask alloc] init];
-  [self addTask:task];
-  [task setCurrentDirectoryPath:[repoURL path]];
-  [task setLaunchPath:gitCMD];
-  [task setArguments:args];
 
-  if (stdIn != nil) {
-#if 0
-    NSLog(@"**** stdin = %lu", stdIn.length);
-#else
-    NSLog(@"**** stdin = %lu\n%@", stdIn.length, stdIn);
-#endif
-    NSPipe *stdInPipe = [NSPipe pipe];
-    [[stdInPipe fileHandleForWriting]
-        writeData:[stdIn dataUsingEncoding:NSUTF8StringEncoding]];
-    [[stdInPipe fileHandleForWriting] closeFile];
-    [task setStandardInput:stdInPipe];
-  }
-
-  NSPipe *pipe = [NSPipe pipe];
-  [task setStandardOutput:pipe];
-  [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
-
-  NSLog(@"task.currentDirectoryPath=%@", task.currentDirectoryPath);
-  [task launch];
-  NSData *output = [[pipe fileHandleForReading] readDataToEndOfFile];
-  [task waitUntilExit];
-
-  int status = [task terminationStatus];
-  NSLog(@"**** status = %d", status);
-
-  if (status != 0) {
-    NSString *string =
-        [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-    NSLog(@"**** output = %@", string);
-    if (error != NULL) {
-      NSDictionary *info =
-          @{ XTErrorOutputKey:string,
-             XTErrorArgsKey:[args componentsJoinedByString:@" "] };
-
-      *error = [NSError errorWithDomain:@"git" code:status userInfo:info];
+  @synchronized(self) {
+    if (writes && self.isWriting) {
+      if (error != NULL)
+        *error = [NSError errorWithDomain:XTErrorDomainXit
+                                     code:XTErrorWriteLock
+                                 userInfo:nil];
+      return nil;
     }
-    output = nil;
+    self.isWriting = YES;
+    NSLog(@"****command = git %@", [args componentsJoinedByString:@" "]);
+    NSTask *task = [[NSTask alloc] init];
+    [self addTask:task];
+    [task setCurrentDirectoryPath:[repoURL path]];
+    [task setLaunchPath:gitCMD];
+    [task setArguments:args];
+
+    if (stdIn != nil) {
+#if 0
+      NSLog(@"**** stdin = %lu", stdIn.length);
+#else
+      NSLog(@"**** stdin = %lu\n%@", stdIn.length, stdIn);
+#endif
+      NSPipe *stdInPipe = [NSPipe pipe];
+      [[stdInPipe fileHandleForWriting]
+          writeData:[stdIn dataUsingEncoding:NSUTF8StringEncoding]];
+      [[stdInPipe fileHandleForWriting] closeFile];
+      [task setStandardInput:stdInPipe];
+    }
+
+    NSPipe *pipe = [NSPipe pipe];
+    [task setStandardOutput:pipe];
+    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
+
+    NSLog(@"task.currentDirectoryPath=%@", task.currentDirectoryPath);
+    [task launch];
+    NSData *output = [[pipe fileHandleForReading] readDataToEndOfFile];
+    [task waitUntilExit];
+
+    int status = [task terminationStatus];
+    NSLog(@"**** status = %d", status);
+
+    if (status != 0) {
+      NSString *string =
+          [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+      NSLog(@"**** output = %@", string);
+      if (error != NULL) {
+        NSDictionary *info =
+            @{ XTErrorOutputKey:string,
+               XTErrorArgsKey:[args componentsJoinedByString:@" "] };
+
+        *error = [NSError errorWithDomain:@"git" code:status userInfo:info];
+      }
+      output = nil;
+    }
+    [self removeTask:task];
+    self.isWriting = NO;
+    return output;
   }
-  [self removeTask:task];
-  return output;
 }
 
 - (BOOL)hasHeadReference
@@ -283,7 +325,7 @@ NSString *XTPathsKey = @"paths";
   NSArray *args = @[ @"cat-file", @"blob", spec ];
   NSError *error = nil;
 
-  return [self executeGitWithArgs:args error:&error];
+  return [self executeGitWithArgs:args writes:NO error:&error];
 }
 
 // XXX tmp

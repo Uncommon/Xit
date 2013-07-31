@@ -13,3 +13,9 @@ typedef enum {
   XTTagsGroupIndex,
   XTStashesGroupIndex
 } XTSideBarRootItems;
+
+typedef enum {
+  XTErrorWriteLock = 1
+} XTError;
+
+extern NSString *XTErrorDomainXit, *XTErrorDomainGit;

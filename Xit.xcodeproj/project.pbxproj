@@ -545,6 +545,7 @@
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
+			tabWidth = 2;
 		};
 		C3FA46FD13D0F8E200AC4F9B /* Products */ = {
 			isa = PBXGroup;

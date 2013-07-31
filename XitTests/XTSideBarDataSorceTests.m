@@ -111,7 +111,7 @@
   NSError *error = nil;
   NSArray *configArgs = @[ @"config", @"receive.denyCurrentBranch", @"ignore" ];
 
-  [remoteRepository executeGitWithArgs:configArgs error:&error];
+  [remoteRepository executeGitWithArgs:configArgs writes:NO error:&error];
   if (error != nil) {
     STFail(@"Ignore denyCurrentBranch");
     return;

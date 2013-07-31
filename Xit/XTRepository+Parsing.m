@@ -16,7 +16,9 @@ NSString *XTHeaderContentKey = @"content";
 {
   NSError *error = nil;
   NSData *output =
-      [self executeGitWithArgs:@[ @"show-ref", @"-d" ] error:&error];
+      [self executeGitWithArgs:@[ @"show-ref", @"-d" ]
+                        writes:NO
+                         error:&error];
 
   if (output != nil) {
     NSString *refs =
@@ -100,6 +102,7 @@ NSString *XTHeaderContentKey = @"content";
   NSError *error = nil;
   NSData *output =
       [self executeGitWithArgs:@[ @"stash", @"list", @"--pretty=%H %gd %gs" ]
+                        writes:NO
                          error:&error];
 
   if (output != nil) {
@@ -121,6 +124,7 @@ NSString *XTHeaderContentKey = @"content";
   NSError *error = nil;
   NSData *output =
       [self executeGitWithArgs:@[ @"ls-tree", @"--name-only", @"-r", ref ]
+                        writes:NO
                          error:nil];
 
   if (error != nil)
@@ -173,6 +177,7 @@ NSString *XTCommitSHAKey = @"sha",
   NSData *output = [self executeGitWithArgs:@[ @"show", @"-z", @"--summary",
                                                @"--name-only", kHeaderFormat,
                                                ref ]
+                                     writes:NO
                                       error:&error];
 
   if (error != nil)
@@ -267,7 +272,7 @@ NSString *XTCommitSHAKey = @"sha",
 {
   NSError *error = nil;
 
-  [self executeGitWithArgs:@[ @"add", file ] error:&error];
+  [self executeGitWithArgs:@[ @"add", file ] writes:YES error:&error];
   return error == nil;
 }
 
@@ -279,8 +284,8 @@ NSString *XTCommitSHAKey = @"sha",
   if (![self hasHeadReference])
     args = @[ @"rm", @"--cached", file ];
   else
-    args = @[ @"reset", @"HEAD", file ];
-  [self executeGitWithArgs:args error:&error];
+    args = @[ @"reset", @"-q", @"HEAD", file ];
+  [self executeGitWithArgs:args writes:YES error:&error];
   return error == nil;
 }
 
@@ -294,13 +299,16 @@ NSString *XTCommitSHAKey = @"sha",
   if (amend)
     args = [args arrayByAddingObject:@"--amend"];
 
-  NSData *output = [self executeGitWithArgs:args withStdIn:message error:error];
+  NSData *output = [self executeGitWithArgs:args
+                                  withStdIn:message
+                                     writes:YES
+                                      error:error];
 
   if (output == nil)
     return NO;
   if (outputBlock != NULL)
-    outputBlock(
-        [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding]);
+    outputBlock([[NSString alloc] initWithData:output
+                                      encoding:NSUTF8StringEncoding]);
   return YES;
 }
 

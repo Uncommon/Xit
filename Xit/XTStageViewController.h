@@ -13,6 +13,7 @@
   IBOutlet WebView *web;
   IBOutlet NSTableView *stageTable;
   IBOutlet NSTableView *unstageTable;
+  IBOutlet NSButton *commitButton;
   XTRepository *repo;
   NSString *actualDiff;
   BOOL stagedFile;

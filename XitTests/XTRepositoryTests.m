@@ -1,9 +1,16 @@
 #import "XTTest.h"
 #import <Cocoa/Cocoa.h>
 #import "OCMock/OCMock.h"
+#import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
 
 @interface XTRepositoryTests : XTTest
+
+@end
+
+@interface XTRepository (Test)
+
+@property(readwrite) BOOL isWriting;
 
 @end
 
@@ -63,6 +70,7 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
 
   [[[mockRepo expect] andReturn:outputData]
       executeGitWithArgs:args
+                  writes:NO
                    error:[OCMArg setTo:nil]];
   STAssertTrue([mockRepo parseCommit:@"master"
                           intoHeader:&header
@@ -92,15 +100,123 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
 }
 
 - (void)testContents {
-    [super addInitialRepoContent];
+  [super addInitialRepoContent];
 
-    NSData *contentsData = [repository contentsOfFile:@"file1.txt" atCommit:@"HEAD"];
+  NSData *contentsData = [repository contentsOfFile:@"file1.txt"
+                                           atCommit:@"HEAD"];
 
-    STAssertNotNil(contentsData, @"");
+  STAssertNotNil(contentsData, @"");
 
-    NSString *contentsString = [[NSString alloc] initWithData:contentsData encoding:NSUTF8StringEncoding];
+  NSString *contentsString = [[NSString alloc]
+      initWithData:contentsData encoding:NSUTF8StringEncoding];
 
-    STAssertEqualObjects(contentsString, @"some text", @"");
+  STAssertEqualObjects(contentsString, @"some text", @"");
+}
+
+- (void)testWriteLock {
+  [super addInitialRepoContent];
+
+  // Stage
+  [self writeTextToFile1:@"modification"];
+  repository.isWriting = YES;
+  STAssertFalse([repository stageFile:file1Path], nil);
+  repository.isWriting = NO;
+  STAssertTrue([repository stageFile:file1Path], nil);
+
+  // Unstage
+  repository.isWriting = YES;
+  STAssertFalse([repository unstageFile:file1Path], nil);
+  repository.isWriting = NO;
+  STAssertTrue([repository unstageFile:@"file1.txt"], nil);
+
+  // Stash
+  NSString *stash0 = @"stash@{0}";
+  
+  repository.isWriting = YES;
+  STAssertFalse([repository saveStash:@"stashname"], nil);
+  repository.isWriting = NO;
+  STAssertTrue([repository saveStash:@"stashname"], nil);
+  repository.isWriting = YES;
+  STAssertFalse([repository applyStash:stash0 error:NULL], nil);
+  repository.isWriting = NO;
+  STAssertTrue([repository applyStash:stash0 error:NULL], nil);
+  repository.isWriting = YES;
+  STAssertFalse([repository dropStash:stash0 error:NULL], nil);
+  repository.isWriting = NO;
+  STAssertTrue([repository dropStash:stash0 error:NULL], nil);
+  [self writeTextToFile1:@"modification"];
+  STAssertTrue([repository saveStash:@"stashname"], nil);
+  repository.isWriting = YES;
+  STAssertFalse([repository popStash:stash0 error:NULL], nil);
+  repository.isWriting = NO;
+  STAssertTrue([repository popStash:stash0 error:NULL], nil);
+
+  // Commit
+  [self writeTextToFile1:@"modification"];
+  STAssertTrue([repository stageFile:file1Path], nil);
+  repository.isWriting = YES;
+  STAssertFalse([repository commitWithMessage:@"blah"
+                                        amend:NO
+                                  outputBlock:NULL
+                                        error:NULL], nil);
+  repository.isWriting = NO;
+  STAssertTrue([repository commitWithMessage:@"blah"
+                                       amend:NO
+                                 outputBlock:NULL
+                                       error:NULL], nil);
+
+  // Branches
+  NSString *masterBranch = @"master";
+  NSString *testBranch1 = @"testbranch", *testBranch2 = @"testBranch2";
+  NSError *error = nil;
+  
+  repository.isWriting = YES;
+  STAssertFalse([repository createBranch:testBranch1], nil);
+  repository.isWriting = NO;
+  STAssertTrue([repository createBranch:testBranch1], nil);
+  repository.isWriting = YES;
+  STAssertFalse([repository renameBranch:testBranch1 to:testBranch2], nil);
+  repository.isWriting = NO;
+  STAssertTrue([repository renameBranch:testBranch1 to:testBranch2], nil);
+  repository.isWriting = YES;
+  STAssertFalse([repository checkout:masterBranch error:NULL], nil);
+  repository.isWriting = NO;
+  STAssertTrue([repository checkout:masterBranch error:NULL], nil);
+  repository.isWriting = YES;
+  STAssertFalse([repository deleteBranch:testBranch2 error:&error], nil);
+  repository.isWriting = NO;
+  STAssertTrue([repository deleteBranch:testBranch2 error:&error], nil);
+
+  // Tags
+  NSString *testTagName = @"testtag";
+  
+  repository.isWriting = YES;
+  STAssertFalse([repository createTag:testTagName withMessage:@"tag msg"], nil);
+  repository.isWriting = NO;
+  STAssertTrue([repository createTag:testTagName withMessage:@"tag msg"], nil);
+  repository.isWriting = YES;
+  STAssertFalse([repository deleteTag:testTagName error:&error], nil);
+  repository.isWriting = NO;
+  STAssertTrue([repository deleteTag:testTagName error:&error], nil);
+
+  // Remotes
+  NSString *testRemoteName = @"testremote";
+  NSString *testRemoteName2 = @"testremote2";
+
+  repository.isWriting = YES;
+  STAssertFalse([repository addRemote:testRemoteName withUrl:@"fakeurl"], nil);
+  repository.isWriting = NO;
+  STAssertTrue([repository addRemote:testRemoteName withUrl:@"fakeurl"], nil);
+  repository.isWriting = YES;
+  STAssertFalse([repository renameRemote:testRemoteName to:testRemoteName2],
+                nil);
+  repository.isWriting = NO;
+  STAssertTrue([repository renameRemote:testRemoteName to:testRemoteName2],
+                nil);
+  repository.isWriting = YES;
+  STAssertFalse([repository deleteRemote:testRemoteName2 error:&error], nil);
+  repository.isWriting = NO;
+  STAssertTrue([repository deleteRemote:testRemoteName2 error:&error], nil);
 }
 
 @end
