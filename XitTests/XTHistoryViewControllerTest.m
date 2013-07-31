@@ -357,7 +357,9 @@
   XTLocalBranchItem *branchItem =
       [[XTLocalBranchItem alloc] initWithTitle:branchName];
   NSInteger row = 1;
+  BOOL isWriting = NO;
 
+  [[[mockRepo expect] andReturnValue:OCMOCK_VALUE(isWriting)] isWriting];
   [[[mockRepo expect] andReturn:branchName] currentBranch];
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] contextMenuRow];
   [[[mockSidebar expect] andReturn:branchItem] itemAtRow:row];
@@ -382,7 +384,9 @@
   XTLocalBranchItem *branchItem =
       [[XTLocalBranchItem alloc] initWithTitle:clickedBranchName];
   NSInteger row = 1;
+  BOOL isWriting = NO;
 
+  [[[mockRepo expect] andReturnValue:OCMOCK_VALUE(isWriting)] isWriting];
   [[[mockRepo expect] andReturn:currentBranchName] currentBranch];
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] contextMenuRow];
   [[[mockSidebar expect] andReturn:branchItem] itemAtRow:row];
