@@ -228,8 +228,10 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
     }
 
     NSPipe *pipe = [NSPipe pipe];
+    NSPipe *errorPipe = [NSPipe pipe];
+
     [task setStandardOutput:pipe];
-    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
+    [task setStandardError:errorPipe];
 
     NSLog(@"task.currentDirectoryPath=%@", task.currentDirectoryPath);
     [task launch];
@@ -242,7 +244,12 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
     if (status != 0) {
       NSString *string =
           [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+      NSData *errorOutput =
+          [[errorPipe fileHandleForReading] readDataToEndOfFile];
+      NSString *errorString =
+          [[NSString alloc] initWithData:errorOutput encoding:NSUTF8StringEncoding];
       NSLog(@"**** output = %@", string);
+      NSLog(@"**** error = %@", errorString);
       if (error != NULL) {
         NSDictionary *info =
             @{ XTErrorOutputKey:string,

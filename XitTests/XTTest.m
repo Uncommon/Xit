@@ -53,7 +53,15 @@
 
 - (BOOL)commitNewTextFile:(NSString *)name content:(NSString *)content
 {
-  NSString *filePath = [repoPath stringByAppendingPathComponent:name];
+  return [self commitNewTextFile:name content:content inRepository:repository];
+}
+
+- (BOOL)commitNewTextFile:(NSString *)name
+                  content:(NSString *)content
+             inRepository:(XTRepository *)repo
+{
+  NSString *basePath = [repo.repoURL path];
+  NSString *filePath = [basePath stringByAppendingPathComponent:name];
 
   [content writeToFile:filePath
             atomically:YES
@@ -62,13 +70,12 @@
 
   if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
     return NO;
-  if (![repository stageFile:name])
+  if (![repo stageFile:name])
     return NO;
-  if (![repository commitWithMessage:[NSString stringWithFormat:@"new %@",
-                                                                name]
-                               amend:NO
-                         outputBlock:NULL
-                               error:NULL])
+  if (![repo commitWithMessage:[NSString stringWithFormat:@"new %@", name]
+                         amend:NO
+                   outputBlock:NULL
+                         error:NULL])
     return NO;
 
   return YES;

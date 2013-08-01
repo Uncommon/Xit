@@ -341,4 +341,30 @@
                             error:error];
 }
 
+- (BOOL)addSubmoduleAtPath:(NSString *)path
+                 urlOrPath:(NSString *)urlOrPath
+                     error:(NSError **)error
+{
+  return [self executeGitWithArgs:@[ @"submodule", @"add", @"-f",
+                                     urlOrPath, path ]
+                         writes:YES
+                          error:error];
+/* The clone step must be implemented for this to be good.
+  return [self executeWritingBlock:^BOOL{
+    git_submodule *gitSub = NULL;
+    int result = git_submodule_add_setup(
+        &gitSub, [gtRepo git_repository],
+        [urlOrPath UTF8String], [path UTF8String], false);
+
+    if ((result != 0) && (error != NULL)) {
+      *error = [NSError git_errorFor:result];
+      return NO;
+    }
+    // clone the sub-repo
+    git_submodule_add_finalize(gitSub);
+    return YES;
+  }];
+*/
+}
+
 @end

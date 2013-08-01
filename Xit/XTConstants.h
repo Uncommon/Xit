@@ -11,7 +11,8 @@ typedef enum {
   XTBranchesGroupIndex,
   XTRemotesGroupIndex,
   XTTagsGroupIndex,
-  XTStashesGroupIndex
+  XTStashesGroupIndex,
+  XTSubmodulesGroupIndex,
 } XTSideBarRootItems;
 
 typedef enum {

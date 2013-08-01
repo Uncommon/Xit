@@ -17,5 +17,8 @@
 - (void)addInitialRepoContent;
 - (BOOL)writeTextToFile1:(NSString *)text;
 - (BOOL)commitNewTextFile:(NSString *)name content:(NSString *)content;
+- (BOOL)commitNewTextFile:(NSString *)name
+                  content:(NSString *)content
+             inRepository:(XTRepository *)repo;
 
 @end

@@ -119,6 +119,15 @@ NSString *XTHeaderContentKey = @"content";
   return error == nil;
 }
 
+- (BOOL)readSubmodulesWithBlock:(void (^)(GTSubmodule *sub))block
+{
+  [gtRepo enumerateSubmodulesRecursively:NO
+                              usingBlock:^(GTSubmodule *sub, BOOL *stop){
+    block(sub);
+  }];
+  return YES;
+}
+
 - (NSArray *)fileNamesForRef:(NSString *)ref
 {
   NSError *error = nil;

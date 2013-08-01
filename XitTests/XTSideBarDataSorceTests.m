@@ -4,35 +4,30 @@
 #import "XTRepository+Commands.h"
 #import "XTSideBarItem.h"
 #import "XTSideBarDataSource.h"
+#import "XTSubmoduleItem.h"
 #import "XTHistoryItem.h"
+#import <ObjectiveGit/ObjectiveGit.h>
 
 @interface XTSideBarDataSorceTests : XTTest
 
 @end
 
-@interface MockTextField : NSObject {
- @private
-  NSString *stringValue;
-}
+@interface MockTextField : NSObject
 @property(strong) NSString *stringValue;
 @end
 
-@interface MockCellView : NSObject {
- @private
-  MockTextField *textField;
-}
+@interface MockCellView : NSObject
 @property(readonly) MockTextField *textField;
 @end
 
-@interface MockSidebarOutlineView : NSObject {
-}
+@interface MockSidebarOutlineView : NSObject
 - (id)makeViewWithIdentifier:(NSString *)identifier owner:(id)owner;
 - (id)parentForItem:(id)item;
 @end
 
 @implementation XTSideBarDataSorceTests
 
-- (void)testXTSideBarDataSourceReload
+- (void)testReload
 {
   XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
 
@@ -73,7 +68,7 @@
   }
 }
 
-- (void)testXTSideBarDataSourceStashes
+- (void)testStashes
 {
   STAssertTrue([self writeTextToFile1:@"second text"], @"");
   STAssertTrue([repository saveStash:@"s1"], @"");
@@ -92,7 +87,7 @@
   STAssertEquals(stashCount, 2L, @"");
 }
 
-- (void)testXTSideBarDataSourceReomtes
+- (void)testRemotes
 {
   [self makeRemoteRepo];
 
@@ -168,7 +163,7 @@
   STAssertTrue(branchB1Found, @"Branch 'b1' Not found");
 }
 
-- (void)testXTSideBarDataSourceBranchesAndTags
+- (void)testBranchesAndTags
 {
   if (![repository createBranch:@"b1"]) {
     STFail(@"Create Branch 'b1'");
@@ -185,11 +180,11 @@
   [self waitForRepoQueue];
 
   NSInteger nr = [sbds outlineView:nil numberOfChildrenOfItem:nil];
-  STAssertTrue((nr == 4), @"found %d roots FAIL", nr);
+  STAssertTrue((nr == 5), @"found %d roots FAIL", nr);
 
   // TAGS
   id tags = [sbds outlineView:nil child:XTTagsGroupIndex ofItem:nil];
-  STAssertTrue((tags != nil), @"no tags");
+  STAssertNotNil(tags, nil);
 
   NSInteger nt = [sbds outlineView:nil numberOfChildrenOfItem:tags];
   STAssertTrue((nt == 1), @"found %d tags FAIL", nt);
@@ -241,6 +236,53 @@
   }
   STAssertTrue(branchMasterFound, @"Branch 'master' Not found");
   STAssertTrue(branchB1Found, @"Branch 'b1' Not found");
+}
+
+- (void)testSubmodules
+{
+  NSString *tempPath = NSTemporaryDirectory();
+  XTRepository *repo1 = [self createRepo:
+      [tempPath stringByAppendingPathComponent:@"repo1"]];
+  XTRepository *repo2 = [self createRepo:
+      [tempPath stringByAppendingPathComponent:@"repo2"]];
+  STAssertNotNil(repo1, @"");
+  STAssertNotNil(repo2, @"");
+
+  STAssertTrue([self commitNewTextFile:@"file1"
+                               content:@"blah"
+                          inRepository:repo1], nil);
+  STAssertTrue([self commitNewTextFile:@"file2"
+                               content:@"fffff"
+                          inRepository:repo2], nil);
+
+  STAssertTrue([repository addSubmoduleAtPath:@"sub1"
+                                    urlOrPath:@"../repo1"
+                                        error:NULL], nil);
+  STAssertTrue([repository addSubmoduleAtPath:@"sub2"
+                                    urlOrPath:@"../repo2"
+                                        error:NULL], nil);
+
+  XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
+  [sbds setRepo:repository];
+  [sbds reload];
+  [self waitForRepoQueue];
+
+  id subs = [sbds outlineView:nil child:XTSubmodulesGroupIndex ofItem:nil];
+  STAssertNotNil(subs, nil);
+
+  const NSInteger subCount = [sbds outlineView:nil numberOfChildrenOfItem:subs];
+  STAssertEquals(subCount, 2L, nil);
+
+  for (int i = 0; i < subCount; ++i) {
+    XTSubmoduleItem *sub = [sbds outlineView:nil child:i ofItem:subs];
+    NSString *name = [NSString stringWithFormat:@"sub%d", i+1];
+    NSString *url = [NSString stringWithFormat:@"../repo%d", i+1];
+
+    STAssertTrue([sub isKindOfClass:[XTSubmoduleItem class]], nil);
+    STAssertNotNil(sub.submodule, nil);
+    STAssertEqualObjects(sub.submodule.name, name, @"");
+    STAssertEqualObjects(sub.submodule.URLString, url, nil);
+  }
 }
 
 - (void)testGroupItems

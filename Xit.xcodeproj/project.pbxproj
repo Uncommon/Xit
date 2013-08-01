@@ -36,6 +36,7 @@
 		895229681786F6F900EE514C /* FHTLCDStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 895229631786F6F900EE514C /* FHTLCDStatusView.m */; };
 		895229691786F6F900EE514C /* FHTToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 895229651786F6F900EE514C /* FHTToolbar.m */; };
 		895229711786F7AB00EE514C /* XTToolbarDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 895229701786F7AB00EE514C /* XTToolbarDelegate.m */; };
+		895229CE17A95D0500EE514C /* XTSubmoduleItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 895229CD17A95D0500EE514C /* XTSubmoduleItem.m */; };
 		895DEEF6142CECB7001763FC /* XTSideBarTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 895DEEF5142CECB7001763FC /* XTSideBarTableCellView.m */; };
 		895DEF0C142CF84D001763FC /* branch.png in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF0B142CF84D001763FC /* branch.png */; };
 		895DEF1F142D91F8001763FC /* historyTemplate.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 895DEF1E142D91F8001763FC /* historyTemplate.pdf */; };
@@ -49,6 +50,8 @@
 		89A6EA2814478DA40089B212 /* XTAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A6EA2714478DA40089B212 /* XTAppDelegate.m */; };
 		89BEB8BC157B587600FED57B /* OCMock.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = DD592095156EEF40005FBB0F /* OCMock.framework */; };
 		89CD209217089D220051C3D4 /* XTCategoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89CD209117089D220051C3D4 /* XTCategoryTests.m */; };
+		89CD708417BFB4F500ECE7E3 /* submodule.png in Resources */ = {isa = PBXBuildFile; fileRef = 89CD708217BFB4F500ECE7E3 /* submodule.png */; };
+		89CD708517BFB4F500ECE7E3 /* submodule@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89CD708317BFB4F500ECE7E3 /* submodule@2x.png */; };
 		89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */; };
 		89FE824815A716E800E2EA2A /* XTRepositoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89FE824715A716E800E2EA2A /* XTRepositoryTests.m */; };
 		C343F91113F4908E009C928A /* XTHTML.m in Sources */ = {isa = PBXBuildFile; fileRef = C343F91013F4908E009C928A /* XTHTML.m */; };
@@ -241,6 +244,8 @@
 		895229651786F6F900EE514C /* FHTToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FHTToolbar.m; sourceTree = "<group>"; };
 		8952296F1786F7AB00EE514C /* XTToolbarDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTToolbarDelegate.h; sourceTree = "<group>"; };
 		895229701786F7AB00EE514C /* XTToolbarDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTToolbarDelegate.m; sourceTree = "<group>"; };
+		895229CC17A95D0500EE514C /* XTSubmoduleItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XTSubmoduleItem.h; path = Xit/XTSubmoduleItem.h; sourceTree = "<group>"; };
+		895229CD17A95D0500EE514C /* XTSubmoduleItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XTSubmoduleItem.m; path = Xit/XTSubmoduleItem.m; sourceTree = "<group>"; };
 		895DEEF4142CECB7001763FC /* XTSideBarTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; name = XTSideBarTableCellView.h; path = Xit/XTSideBarTableCellView.h; sourceTree = "<group>"; tabWidth = 2; };
 		895DEEF5142CECB7001763FC /* XTSideBarTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; name = XTSideBarTableCellView.m; path = Xit/XTSideBarTableCellView.m; sourceTree = "<group>"; tabWidth = 2; };
 		895DEF0B142CF84D001763FC /* branch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = branch.png; sourceTree = "<group>"; };
@@ -258,6 +263,8 @@
 		89A6EA2714478DA40089B212 /* XTAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTAppDelegate.m; sourceTree = "<group>"; tabWidth = 2; };
 		89CD209017089D220051C3D4 /* XTCategoryTests.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTCategoryTests.h; sourceTree = "<group>"; tabWidth = 2; };
 		89CD209117089D220051C3D4 /* XTCategoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTCategoryTests.m; sourceTree = "<group>"; tabWidth = 2; };
+		89CD708217BFB4F500ECE7E3 /* submodule.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = submodule.png; sourceTree = "<group>"; };
+		89CD708317BFB4F500ECE7E3 /* submodule@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "submodule@2x.png"; sourceTree = "<group>"; };
 		89D47941170894A200C04D89 /* NSAttributedString+XTExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+XTExtensions.h"; sourceTree = "<group>"; };
 		89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+XTExtensions.m"; sourceTree = "<group>"; };
 		89FE824715A716E800E2EA2A /* XTRepositoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTRepositoryTests.m; sourceTree = "<group>"; tabWidth = 2; };
@@ -477,6 +484,8 @@
 				C3D6CF2013D4D5B200D35D4D /* XTRemotesItem.m */,
 				3174966C13DFF94C004C5546 /* XTHistoryItem.h */,
 				3174966D13DFF94C004C5546 /* XTHistoryItem.m */,
+				895229CC17A95D0500EE514C /* XTSubmoduleItem.h */,
+				895229CD17A95D0500EE514C /* XTSubmoduleItem.m */,
 			);
 			name = items;
 			sourceTree = "<group>";
@@ -500,14 +509,16 @@
 		899D0106142168830091DC6F /* images */ = {
 			isa = PBXGroup;
 			children = (
-				DD96C930175B76990003A30C /* splitter.png */,
 				895DEF0B142CF84D001763FC /* branch.png */,
 				DDD00550158FF551001B055E /* branch@2x.png */,
 				895DEF1E142D91F8001763FC /* historyTemplate.pdf */,
+				899D010C14216D2C0091DC6F /* sidebarTemplate.png */,
+				DD96C930175B76990003A30C /* splitter.png */,
 				895DEF211432438D001763FC /* stageTemplate.pdf */,
 				DD997DD11739CC9300C7DF82 /* stash.png */,
 				DD997DD21739CC9300C7DF82 /* stash@2x.png */,
-				899D010C14216D2C0091DC6F /* sidebarTemplate.png */,
+				89CD708217BFB4F500ECE7E3 /* submodule.png */,
+				89CD708317BFB4F500ECE7E3 /* submodule@2x.png */,
 				DDF9BB38162E29C3004588B6 /* tag.png */,
 				DDF9BB39162E29C3004588B6 /* tag@2x.png */,
 			);
@@ -850,6 +861,8 @@
 				DD997DD31739CC9300C7DF82 /* stash.png in Resources */,
 				DD997DD41739CC9300C7DF82 /* stash@2x.png in Resources */,
 				DD96C931175B76990003A30C /* splitter.png in Resources */,
+				89CD708417BFB4F500ECE7E3 /* submodule.png in Resources */,
+				89CD708517BFB4F500ECE7E3 /* submodule@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -945,6 +958,7 @@
 				895229691786F6F900EE514C /* FHTToolbar.m in Sources */,
 				895229711786F7AB00EE514C /* XTToolbarDelegate.m in Sources */,
 				DD96C9CE176EBD470003A30C /* GTRepository+Xit.m in Sources */,
+				895229CE17A95D0500EE514C /* XTSubmoduleItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1080,7 +1094,6 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = "Xit/Xit-Info.plist";
@@ -1175,7 +1188,6 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Xit/Xit-Prefix.pch";
 				INFOPLIST_FILE = "Xit/Xit-Info.plist";
@@ -1194,7 +1206,6 @@
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Xit/Xit-Prefix.pch";
 				INFOPLIST_FILE = "Xit/Xit-Info.plist";

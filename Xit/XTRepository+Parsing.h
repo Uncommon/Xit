@@ -14,6 +14,8 @@ extern NSString *XTCommitSHAKey,
     *XTCommitterEmailKey,
     *XTCommitterDateKey;
 
+@class GTSubmodule;
+
 @interface XTRepository (Reading)
 
 - (BOOL)
@@ -26,6 +28,7 @@ extern NSString *XTCommitSHAKey,
 - (BOOL)readUnstagedFilesWithBlock:(void (^)(NSString *name, NSString *status))
                                    block;
 - (BOOL)readStashesWithBlock:(void (^)(NSString *commit, NSString *name))block;
+- (BOOL)readSubmodulesWithBlock:(void (^)(GTSubmodule *sub))block;
 - (BOOL)parseCommit:(NSString *)ref
          intoHeader:(NSDictionary **)header
             message:(NSString **)message

@@ -1,5 +1,6 @@
 #import "XTSideBarDataSource.h"
 #import "XTSideBarItem.h"
+#import "XTSubmoduleItem.h"
 #import "XTRefFormatter.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
@@ -9,6 +10,7 @@
 #import "XTRemotesItem.h"
 #import "XTSideBarTableCellView.h"
 #import "NSMutableDictionary+MultiObjectForKey.h"
+#import <ObjectiveGit/ObjectiveGit.h>
 
 @interface XTSideBarDataSource ()
 - (NSArray *)loadRoots;
@@ -37,8 +39,15 @@
   XTRemotesItem *remotes = [[XTRemotesItem alloc] initWithTitle:@"REMOTES"];
   XTSideBarItem *tags = [[XTSideBarItem alloc] initWithTitle:@"TAGS"];
   XTSideBarItem *stashes = [[XTSideBarItem alloc] initWithTitle:@"STASHES"];
+  XTSideBarItem *subs = [[XTSideBarItem alloc] initWithTitle:@"SUBMODULES"];
 
-  return @[ branches, remotes, tags, stashes ];
+  return @[ branches, remotes, tags, stashes, subs ];
+}
+
+- (void)awakeFromNib
+{
+  [outline setTarget:self];
+  [outline setDoubleAction:@selector(doubleClick:)];
 }
 
 - (void)setRepo:(XTRepository *)newRepo
@@ -67,17 +76,16 @@
 
 - (void)reload
 {
-    [repo executeOffMainThread:^
-    {
-      NSArray *newRoots = [self loadRoots];
+  [repo executeOffMainThread:^{
+    NSArray *newRoots = [self loadRoots];
 
-      dispatch_async(dispatch_get_main_queue(), ^{
-        roots = newRoots;
-        [outline reloadData];
-        // Empty groups get automatically collapsed, so counter that.
-        [outline expandItem:nil expandChildren:YES];
+    dispatch_async(dispatch_get_main_queue(), ^{
+      roots = newRoots;
+      [outline reloadData];
+      // Empty groups get automatically collapsed, so counter that.
+      [outline expandItem:nil expandChildren:YES];
     });
-    }];
+  }];
 }
 
 - (NSArray *)loadRoots
@@ -89,9 +97,13 @@
   NSMutableArray *tags = [NSMutableArray array];
   NSMutableArray *remotes = [NSMutableArray array];
   NSMutableArray *stashes = [NSMutableArray array];
+  NSMutableArray *submodules = [NSMutableArray array];
 
   [self loadBranches:branches tags:tags remotes:remotes refsIndex:refsIndex];
   [self loadStashes:stashes refsIndex:refsIndex];
+  [repo readSubmodulesWithBlock:^(GTSubmodule *sub){
+    [submodules addObject:[[XTSubmoduleItem alloc] initWithSubmodule:sub]];
+  }];
 
   NSArray *newRoots = [self makeRoots];
 
@@ -99,6 +111,7 @@
   [newRoots[XTTagsGroupIndex] setChildren:tags];
   [newRoots[XTRemotesGroupIndex] setChildren:remotes];
   [newRoots[XTStashesGroupIndex] setChildren:stashes];
+  [newRoots[XTSubmodulesGroupIndex] setChildren:submodules];
 
   repo.refsIndex = refsIndex;
   currentBranch = [repo currentBranch];
@@ -178,6 +191,26 @@
   [repo readRefsWithLocalBlock:localBlock
                    remoteBlock:remoteBlock
                       tagBlock:tagBlock];
+}
+
+- (void)doubleClick:(id)sender
+{
+  id clickedItem = [outline itemAtRow:[outline clickedRow]];
+
+  if ([clickedItem isKindOfClass:[XTSubmoduleItem class]]) {
+    XTSubmoduleItem *subItem = (XTSubmoduleItem*)clickedItem;
+    NSString *subPath = subItem.submodule.path;
+    NSString *rootPath = repo.repoURL.path;
+    NSURL *subURL = [NSURL fileURLWithPath:
+        [rootPath stringByAppendingPathComponent:subPath]];
+    
+    [[NSDocumentController sharedDocumentController]
+        openDocumentWithContentsOfURL:subURL
+                              display:YES
+                    completionHandler:NULL];
+    // TODO: zoom effect
+    // http://github.com/MrNoodle/NoodleKit/blob/master/NSWindow-NoodleEffects.m
+  }
 }
 
 - (XTLocalBranchItem *)itemForBranchName:(NSString *)branch
@@ -291,6 +324,9 @@
       [dataView.imageView setImage:[NSImage imageNamed:@"tag"]];
     } else if ([item isKindOfClass:[XTStashItem class]]) {
       [dataView.imageView setImage:[NSImage imageNamed:@"stash"]];
+    } else if ([item isKindOfClass:[XTSubmoduleItem class]]) {
+      [dataView.imageView setImage:[NSImage imageNamed:@"submodule"]];
+      [dataView.textField setEditable:NO];
     } else {
       [dataView.button setHidden:YES];
       if ([outlineView parentForItem:item] == roots[XTRemotesGroupIndex])
@@ -316,7 +352,8 @@
 
   return (sideBarItem.sha != nil) ||
          [sideBarItem isKindOfClass:[XTRemoteItem class]] ||
-         [sideBarItem isKindOfClass:[XTStashItem class]];
+         [sideBarItem isKindOfClass:[XTStashItem class]] ||
+         [sideBarItem isKindOfClass:[XTSubmoduleItem class]];
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isGroupItem:(id)item

@@ -32,4 +32,8 @@
 - (BOOL)applyStash:(NSString *)name error:(NSError **)error;
 - (BOOL)dropStash:(NSString *)name error:(NSError **)error;
 
+- (BOOL)addSubmoduleAtPath:(NSString *)path
+                 urlOrPath:(NSString *)urlOrPath
+                     error:(NSError **)error;
+
 @end
