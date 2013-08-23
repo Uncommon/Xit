@@ -301,7 +301,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 
   if (error != nil)
     return nil;
-  return [object sha];
+  return [object SHA];
 }
 
 - (NSString *)headRef

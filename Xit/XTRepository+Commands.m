@@ -154,13 +154,11 @@
     if ((headRef == nil) || (signature == nil))
       return NO;
 
-    [GTTag tagInRepository:gtRepo
-                      name:name
+    [gtRepo createTagNamed:name
                     target:[headRef resolvedTarget]
                     tagger:[gtRepo userSignatureForNow]
                    message:msg
                      error:&error];
-
     return error == nil;
   }];
 }
