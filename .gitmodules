@@ -1,9 +1,9 @@
 [submodule "RBSplitView"]
 	path = RBSplitView
-	url = git@github.com:Uncommon/RBSplitView.git
+	url = git://github.com/Uncommon/RBSplitView.git
 [submodule "FullHeightToolbar"]
 	path = FullHeightToolbar
-	url = git@github.com:Uncommon/FullHeightToolbar.git
+	url = git://github.com/Uncommon/FullHeightToolbar.git
 [submodule "objective-git"]
 	path = objective-git
 	url = git://github.com/libgit2/objective-git.git
