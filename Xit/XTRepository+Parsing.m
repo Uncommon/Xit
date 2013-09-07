@@ -195,7 +195,6 @@ NSString *XTCommitSHAKey = @"sha",
 {
   NSAssert(header != NULL, @"NULL header");
   NSAssert(message != NULL, @"NULL message");
-  NSAssert(files != NULL, @"NULL files");
 
   NSError *error = nil;
   NSData *output = [self executeGitWithArgs:@[ @"show", @"-z", @"--summary",
@@ -264,30 +263,32 @@ NSString *XTCommitSHAKey = @"sha",
   *header = [NSMutableDictionary dictionaryWithObjects:headerLines
                                                forKeys:headerKeys];
   *message = sections[1];
-  *files = [sections subarrayWithRange:NSMakeRange(2, [sections count] - 2)];
+  if (files != NULL) {
+    *files = [sections subarrayWithRange:NSMakeRange(2, [sections count] - 2)];
 
-  // The first file line has newlines at the beginning.
-  NSMutableArray *mutableFiles = [*files mutableCopy];
-
-  if ([mutableFiles count] > 0) {
-    while (([mutableFiles count] > 0) && ([mutableFiles[0] length] == 0))
-      [mutableFiles removeObjectAtIndex:0];
+    // The first file line has newlines at the beginning.
+    NSMutableArray *mutableFiles = [*files mutableCopy];
 
     if ([mutableFiles count] > 0) {
-      NSString *firstLine = [mutableFiles[0] stringByTrimmingCharactersInSet:
-          [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+      while (([mutableFiles count] > 0) && ([mutableFiles[0] length] == 0))
+        [mutableFiles removeObjectAtIndex:0];
 
-      [mutableFiles setObject:firstLine atIndexedSubscript:0];
+      if ([mutableFiles count] > 0) {
+        NSString *firstLine = [mutableFiles[0] stringByTrimmingCharactersInSet:
+            [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+        [mutableFiles setObject:firstLine atIndexedSubscript:0];
+      }
     }
+
+    // Filter out any blank lines.
+    NSPredicate *predicate =
+        [NSPredicate predicateWithBlock:^BOOL(id obj, NSDictionary *bindings) {
+      return [obj length] > 0;
+    }];
+
+    *files = [mutableFiles filteredArrayUsingPredicate:predicate];
   }
-
-  // Filter out any blank lines.
-  NSPredicate *predicate =
-      [NSPredicate predicateWithBlock:^BOOL(id obj, NSDictionary *bindings) {
-    return [obj length] > 0;
-  }];
-
-  *files = [mutableFiles filteredArrayUsingPredicate:predicate];
 
   return YES;
 }

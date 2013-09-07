@@ -1,0 +1,38 @@
+<html>
+<head>
+  <link href="header.css" rel="stylesheet"/>
+	<script src="header.js"></script>
+</head>
+<body>
+<div id="table"><div id="row"/>
+	<div class="cell">
+		<img src="disclosed.png" onclick="disclosure()" id="triangle"/>
+	</div>
+	<div class="cell">
+    <div>
+      <span class="name">%@ &lt;%@&gt;</span>
+      <span class="nametag">(author)</span>
+      <span class="date">%@</span>
+    </div>
+    <div id="committer">
+      <span class="name">%@ &lt;%@&gt;</span>
+      <span>(committer)</span>
+      <span class="date">%@</span>
+    </div>
+    <div id="sha">
+      <div class="shablock">
+        <span class="label">SHA: </span>
+        <span>%@</span>
+      </div>
+      <span class="label">Parents:</span>
+    </div>
+    <div id="parents">
+      <span class="parent">Parent description</span>
+    </div>
+    <pre>
+%@
+    </pre>
+  </div>
+</div></div>
+</body>
+</html>
