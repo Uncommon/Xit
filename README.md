@@ -29,9 +29,9 @@ Some other ideas that I’m looking forward to working on (and using!):
 
 # Development
 
-You should be able to build Xit as is with no special setup, just make sure you pull in the submodules:
-Run `git submodule init` and `git submodule update` from the root of the project and you should be good to go.
-If you hit any snags, please file an issue.
+The repository uses several submodules, so you will need to clone the repository rather than downloading the source archive. To begin, get the submodules set up with `git submodule update --init --recursive` from the root of the project. You will also need [CMake] to build libgit2. If you hit any snags, please file an issue.
+
+  [CMake]: http://cmake.org/
 
 If you're looking for a starter task, several issues have been marked "small". These should provide a relatively easy intro to the code base.
 
