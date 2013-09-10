@@ -25,6 +25,10 @@
   [openPanel setCanChooseFiles:NO];
   [openPanel setCanChooseDirectories:YES];
   [openPanel setDelegate:self];
+  
+  // Add more descriptive title to open dialog box.
+  [openPanel setMessage:@"Open a directory that contains a Git repository"];
+  
   [openPanel beginWithCompletionHandler:^(NSInteger result) {
     if (result == NSFileHandlingPanelOKButton) {
       for (NSURL *url in [openPanel URLs]) {
