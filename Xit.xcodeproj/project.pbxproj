@@ -54,8 +54,9 @@
 		89CD708517BFB4F500ECE7E3 /* submodule@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89CD708317BFB4F500ECE7E3 /* submodule@2x.png */; };
 		89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */; };
 		89D6FE6F17D2F89D00633798 /* XTCommitHeaderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D6FE6E17D2F89D00633798 /* XTCommitHeaderViewController.m */; };
-		89D6FE7A17D8443200633798 /* header.css in Resources */ = {isa = PBXBuildFile; fileRef = 89D6FE7917D8443200633798 /* header.css */; };
 		89D6FE7D17D8457700633798 /* XTCommitHeaderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D6FE7C17D8457700633798 /* XTCommitHeaderTest.m */; };
+		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
+		89E927DF17E977340093DA6C /* expected header.html in Resources */ = {isa = PBXBuildFile; fileRef = 89E927DE17E977340093DA6C /* expected header.html */; };
 		89FE824815A716E800E2EA2A /* XTRepositoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89FE824715A716E800E2EA2A /* XTRepositoryTests.m */; };
 		C343F91113F4908E009C928A /* XTHTML.m in Sources */ = {isa = PBXBuildFile; fileRef = C343F91013F4908E009C928A /* XTHTML.m */; };
 		C358653114048A3F00060C53 /* XTRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = C358653014048A3F00060C53 /* XTRepository.m */; };
@@ -272,9 +273,9 @@
 		89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+XTExtensions.m"; sourceTree = "<group>"; };
 		89D6FE6D17D2F89D00633798 /* XTCommitHeaderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTCommitHeaderViewController.h; sourceTree = "<group>"; };
 		89D6FE6E17D2F89D00633798 /* XTCommitHeaderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTCommitHeaderViewController.m; sourceTree = "<group>"; };
-		89D6FE7917D8443200633798 /* header.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = header.css; path = Xit/html/header.css; sourceTree = "<group>"; };
 		89D6FE7B17D8457700633798 /* XTCommitHeaderTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTCommitHeaderTest.h; sourceTree = "<group>"; };
 		89D6FE7C17D8457700633798 /* XTCommitHeaderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTCommitHeaderTest.m; sourceTree = "<group>"; };
+		89E927DE17E977340093DA6C /* expected header.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "expected header.html"; sourceTree = "<group>"; };
 		89FE824715A716E800E2EA2A /* XTRepositoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTRepositoryTests.m; sourceTree = "<group>"; tabWidth = 2; };
 		C343F90F13F4908E009C928A /* XTHTML.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTHTML.h; sourceTree = "<group>"; };
 		C343F91013F4908E009C928A /* XTHTML.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTHTML.m; sourceTree = "<group>"; };
@@ -381,6 +382,7 @@
 			files = (
 				DD592093156EEE64005FBB0F /* Cocoa.framework in Frameworks */,
 				DD592096156EEF40005FBB0F /* OCMock.framework in Frameworks */,
+				89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -556,7 +558,6 @@
 		C3FA46F113D0F8E200AC4F9B = {
 			isa = PBXGroup;
 			children = (
-				89D6FE7917D8443200633798 /* header.css */,
 				DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */,
 				DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */,
 				C3FA470613D0F8E200AC4F9B /* Xit */,
@@ -670,6 +671,7 @@
 				89CD209117089D220051C3D4 /* XTCategoryTests.m */,
 				89D6FE7B17D8457700633798 /* XTCommitHeaderTest.h */,
 				89D6FE7C17D8457700633798 /* XTCommitHeaderTest.m */,
+				89E927DE17E977340093DA6C /* expected header.html */,
 			);
 			path = XitTests;
 			sourceTree = "<group>";
@@ -876,7 +878,6 @@
 				DD96C931175B76990003A30C /* splitter.png in Resources */,
 				89CD708417BFB4F500ECE7E3 /* submodule.png in Resources */,
 				89CD708517BFB4F500ECE7E3 /* submodule@2x.png in Resources */,
-				89D6FE7A17D8443200633798 /* header.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -885,6 +886,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3FA472913D0F8E300AC4F9B /* InfoPlist.strings in Resources */,
+				89E927DF17E977340093DA6C /* expected header.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

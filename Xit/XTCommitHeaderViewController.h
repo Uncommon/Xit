@@ -12,6 +12,8 @@
 
 @property IBOutlet WebView *webView;
 
++ (NSDateFormatter*)dateFormatter;
 - (void)setRepository:(XTRepository*)repository commit:(NSString*)commit;
+- (void)loadHeader;
 
 @end

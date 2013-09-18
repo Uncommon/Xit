@@ -1,12 +1,24 @@
 #import "XTCommitHeaderViewController.h"
 #import <WebKit/WebKit.h>
+#import <ObjectiveGit/ObjectiveGit.h>
 #import "XTRepository+Parsing.h"
 
 @interface XTCommitHeaderViewController ()
 
+@property NSArray *parents;
+
 @end
 
 @implementation XTCommitHeaderViewController
+
++ (NSDateFormatter*)dateFormatter
+{
+  NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+
+  [formatter setDateStyle:NSDateFormatterMediumStyle];
+  [formatter setTimeStyle:NSDateFormatterMediumStyle];
+  return formatter;
+}
 
 - (NSURL*)templateURL
 {
@@ -36,11 +48,7 @@
   NSString *committerName = [header objectForKey:XTCommitterNameKey];
   NSString *committerEmail = [header objectForKey:XTCommitterEmailKey];
   NSDate *committerDate = [header objectForKey:XTCommitterDateKey];
-  NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-
-  [formatter setDateStyle:NSDateFormatterMediumStyle];
-  [formatter setTimeStyle:NSDateFormatterMediumStyle];
-
+  NSDateFormatter *formatter = [[self class] dateFormatter];
   NSString *authorDateString = [formatter stringFromDate:authorDate];
   NSString *committerDateString = (committerDate == nil) ? @"" :
       [formatter stringFromDate:committerDate];
@@ -50,11 +58,12 @@
   if (committerEmail == nil)
     committerEmail = @"";
 
+  self.parents = [header objectForKey:XTParentSHAsKey];
+
   return [NSString stringWithFormat:template,
       authorName, authorEmail, authorDateString,
       committerName, committerEmail, committerDateString,
       _commitSHA,
-      // parents
       message];
 }
 
@@ -76,6 +85,32 @@
 dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
 {
   return WebDragDestinationActionNone;
+}
+
+- (void)webView:(WebView*)sender didFinishLoadForFrame:(WebFrame*)frame
+{
+  DOMDocument *domDoc = [[sender mainFrame] DOMDocument];
+  DOMElement *parentsElement = [domDoc getElementById:@"parents"];
+  GTRepository *gtRepo = _repository.gtRepo;
+  NSError *error = nil;
+  
+  for (NSString *parentSHA in self.parents) {
+    DOMHTMLElement *parentDiv = (DOMHTMLElement*)
+        [domDoc createElement:@"div"];
+    GTCommit *parentCommit =
+        [gtRepo lookupObjectBySHA:parentSHA error:&error];
+
+    NSString *summary = [parentCommit messageSummary];
+    CFStringRef cfEncodedSummary = CFXMLCreateStringByEscapingEntities(
+        kCFAllocatorDefault, (__bridge CFStringRef)summary, NULL);
+    NSString *encodedSummary = (NSString*)CFBridgingRelease(cfEncodedSummary);
+
+    if (error != nil)
+      continue;
+    [parentDiv setClassName:@"parent"];
+    [parentDiv setInnerHTML:encodedSummary];
+    [parentsElement appendChild:parentDiv];
+  }
 }
 
 @end
