@@ -130,21 +130,23 @@ NSString *XTHeaderContentKey = @"content";
 
 - (NSArray *)fileNamesForRef:(NSString *)ref
 {
-  NSError *error = nil;
-  NSData *output =
-      [self executeGitWithArgs:@[ @"ls-tree", @"--name-only", @"-r", ref ]
-                        writes:NO
-                         error:nil];
+  GTCommit *commit = [self commitForRef:ref];
 
-  if (error != nil)
+  if (commit == nil)
     return nil;
 
-  NSString *ls =
-      [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+  GTTree *tree = commit.tree;
+  NSMutableArray *result = [NSMutableArray array];
+  NSError *error = nil;
 
-  ls = [ls stringByTrimmingCharactersInSet:
-          [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-  return [ls componentsSeparatedByString:@"\n"];
+  [tree enumerateContentsWithOptions:GTTreeEnumerationOptionPre
+                               error:&error
+                               block:^int(NSString *root, GTTreeEntry *entry) {
+      if (git_tree_entry_type(entry.git_tree_entry) != GIT_OBJ_TREE)
+        [result addObject:[root stringByAppendingPathComponent:entry.name]];
+      return 0;
+  }];
+  return result;
 }
 
 NSString *kHeaderFormat = @"--format="
