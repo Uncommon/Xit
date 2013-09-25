@@ -13,7 +13,7 @@
 - (id)init
 {
   self = [super init];
-  if (self) {
+  if (self != nil) {
     root = [self makeNewRoot];
   }
 
@@ -45,22 +45,21 @@
                         change:(NSDictionary *)change
                        context:(void *)context
 {
-  if ([keyPath isEqualToString:@"selectedCommit"]) {
+  if ([keyPath isEqualToString:@"selectedCommit"])
     [self reload];
-  }
 }
 
 - (void)reload
 {
-    [repo executeOffMainThread:^{
-      NSString *ref = repo.selectedCommit;
-      NSTreeNode *newRoot = [self fileTreeForRef:(ref == nil) ? @"HEAD" : ref];
+  [repo executeOffMainThread:^{
+    NSString *ref = repo.selectedCommit;
+    NSTreeNode *newRoot = [self fileTreeForRef:(ref == nil) ? @"HEAD" : ref];
 
-      dispatch_async(dispatch_get_main_queue(), ^{
-        root = newRoot;
-        [table reloadData];
-      });
-    }];
+    dispatch_async(dispatch_get_main_queue(), ^{
+      root = newRoot;
+      [table reloadData];
+    });
+  }];
 }
 
 - (NSTreeNode *)fileTreeForRef:(NSString *)ref
