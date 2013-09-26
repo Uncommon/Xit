@@ -20,40 +20,40 @@ extern NSString *XTPathsKey;
   NSMutableArray *activeTasks;
 }
 
-- (id)initWithURL:(NSURL *)url;
-- (void)getCommitsWithArgs:(NSArray *)logArgs
-    enumerateCommitsUsingBlock:(void (^)(NSString *))block
-                         error:(NSError **)error;
+- (id)initWithURL:(NSURL*)url;
+- (void)getCommitsWithArgs:(NSArray*)logArgs
+    enumerateCommitsUsingBlock:(void (^)(NSString*))block
+                         error:(NSError**)error;
 
 // Avoid calling these from outside XTRepository. Instead, add methods to
 // +Commands or +Parsing.
 // Returns command output on success, or nil on failure.
-- (NSData *)executeGitWithArgs:(NSArray *)args
+- (NSData*)executeGitWithArgs:(NSArray*)args
                         writes:(BOOL)writes
-                         error:(NSError **)error;
-- (NSData *)executeGitWithArgs:(NSArray *)args
-                     withStdIn:(NSString *)stdIn
+                         error:(NSError**)error;
+- (NSData*)executeGitWithArgs:(NSArray*)args
+                     withStdIn:(NSString*)stdIn
                         writes:(BOOL)writes
-                         error:(NSError **)error;
+                         error:(NSError**)error;
 - (BOOL)executeWritingBlock:(BOOL (^)())block;
 
 - (BOOL)hasHeadReference;
-- (NSString *)parentTree;
-- (NSString *)headRef;
-- (NSString *)headSHA;
-- (NSString *)shaForRef:(NSString *)ref;
+- (NSString*)parentTree;
+- (NSString*)headRef;
+- (NSString*)headSHA;
+- (NSString*)shaForRef:(NSString*)ref;
 
-- (NSData *)contentsOfFile:(NSString *)filePath atCommit:(NSString *)commit;
+- (NSData*)contentsOfFile:(NSString*)filePath atCommit:(NSString*)commit;
 
 - (void)initializeEventStream;
 - (void)start;
 - (void)stop;
-- (void)reloadPaths:(NSArray *)paths;
+- (void)reloadPaths:(NSArray*)paths;
 - (void)addReloadObserver:(id)observer selector:(SEL)selector;
 
 - (void)executeOffMainThread:(void (^)())block;
-- (void)addTask:(NSTask *)task;
-- (void)removeTask:(NSTask *)task;
+- (void)addTask:(NSTask*)task;
+- (void)removeTask:(NSTask*)task;
 
 @property(readonly) GTRepository *gtRepo;
 @property(copy) NSString *selectedCommit;

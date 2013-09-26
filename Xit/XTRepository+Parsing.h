@@ -29,19 +29,20 @@ extern NSString *XTCommitSHAKey,
                                    block;
 - (BOOL)readStashesWithBlock:(void (^)(NSString *commit, NSString *name))block;
 - (BOOL)readSubmodulesWithBlock:(void (^)(GTSubmodule *sub))block;
-- (BOOL)parseCommit:(NSString *)ref
-         intoHeader:(NSDictionary **)header
-            message:(NSString **)message
-              files:(NSArray **)files;
+- (BOOL)parseCommit:(NSString*)ref
+         intoHeader:(NSDictionary**)header
+            message:(NSString**)message
+              files:(NSArray**)files;
+- (NSDictionary*)attibutesForCommit:(NSString*)ref;
 
-- (BOOL)stageFile:(NSString *)file;
-- (BOOL)unstageFile:(NSString *)file;
+- (BOOL)stageFile:(NSString*)file;
+- (BOOL)unstageFile:(NSString*)file;
 
-- (BOOL)commitWithMessage:(NSString *)message
+- (BOOL)commitWithMessage:(NSString*)message
                     amend:(BOOL)amend
               outputBlock:(void (^)(NSString *output))outputBlock
-                    error:(NSError **)error;
+                    error:(NSError**)error;
 
-- (NSArray *)fileNamesForRef:(NSString *)ref;
+- (NSArray*)fileNamesForRef:(NSString*)ref;
 
 @end
