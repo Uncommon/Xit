@@ -80,30 +80,6 @@
   [filePreview refreshPreviewItem];
 }
 
-#pragma mark - NSOutlineViewDelegate
-
-- (NSView *)outlineView:(NSOutlineView *)outlineView
-     viewForTableColumn:(NSTableColumn *)tableColumn
-                   item:(id)item
-{
-  if (outlineView == fileListOutline) {
-    NSTableCellView *cell =
-        [outlineView makeViewWithIdentifier:@"fileCell" owner:self];
-    NSTreeNode *node = (NSTreeNode *)item;
-    NSString *fileName = (NSString *)node.representedObject;
-
-    if ([node isLeaf])
-      cell.imageView.image = [[NSWorkspace sharedWorkspace]
-          iconForFileType:[fileName pathExtension]];
-    else
-      cell.imageView.image = [NSImage imageNamed:NSImageNameFolder];
-    cell.textField.stringValue = [fileName lastPathComponent];
-
-    return cell;
-  }
-  return nil;
-}
-
 #pragma mark - RBSplitViewDelegate
 
 const CGFloat kSplitterBonus = 4;

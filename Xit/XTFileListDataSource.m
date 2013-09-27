@@ -15,6 +15,13 @@
   self = [super init];
   if (self != nil) {
     root = [self makeNewRoot];
+    changeImages = @{
+        @( XitChangeAdded ) : [NSImage imageNamed:@"added"],
+        @( XitChangeCopied ) : [NSImage imageNamed:@"copied"],
+        @( XitChangeDeleted ) : [NSImage imageNamed:@"deleted"],
+        @( XitChangeModified ) : [NSImage imageNamed:@"modified"],
+        @( XitChangeRenamed ) : [NSImage imageNamed:@"renamed"],
+        };
   }
 
   return self;
@@ -54,7 +61,11 @@
   [repo executeOffMainThread:^{
     NSString *ref = repo.selectedCommit;
     NSTreeNode *newRoot = [self fileTreeForRef:(ref == nil) ? @"HEAD" : ref];
+    NSArray *changeList = [repo changesForRef:ref parent:nil];
 
+    changes = [[NSMutableDictionary alloc] initWithCapacity:[changeList count]];
+    for (XTFileChange *change in changeList)
+      [changes setValue:@( change.change ) forKey:change.path];
     dispatch_async(dispatch_get_main_queue(), ^{
       root = newRoot;
       [table reloadData];
@@ -160,5 +171,38 @@
 
   return [node representedObject];
 }
+
+- (NSView *)outlineView:(NSOutlineView *)outlineView
+     viewForTableColumn:(NSTableColumn *)tableColumn
+                   item:(id)item
+{
+  XTFileCellView *cell =
+      [outlineView makeViewWithIdentifier:@"fileCell" owner:controller];
+
+  if (![cell isKindOfClass:[XTFileCellView class]])
+    return cell;
+
+  NSTreeNode *node = (NSTreeNode*)item;
+  NSString *fileName = (NSString*)node.representedObject;
+
+  if ([node isLeaf])
+    cell.imageView.image = [[NSWorkspace sharedWorkspace]
+        iconForFileType:[fileName pathExtension]];
+  else
+    cell.imageView.image = [NSImage imageNamed:NSImageNameFolder];
+  cell.textField.stringValue = [fileName lastPathComponent];
+
+  NSNumber *change = changes[fileName];
+
+  [cell.changeImage setHidden:change == nil];
+  if (change != nil)
+    cell.changeImage.image = changeImages[change];
+
+  return cell;
+}
+
+@end
+
+@implementation XTFileCellView
 
 @end

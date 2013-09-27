@@ -1,4 +1,5 @@
 #import "XTRepository.h"
+#include <git2/diff.h>
 
 extern NSString *XTHeaderNameKey;
 extern NSString *XTHeaderContentKey;
