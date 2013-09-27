@@ -219,4 +219,53 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
   STAssertTrue([repository deleteRemote:testRemoteName2 error:&error], nil);
 }
 
+- (void)testChangesForRef
+{
+  [super addInitialRepoContent];
+
+  NSArray *changes = [repository changesForRef:@"master" parent:nil];
+
+  STAssertEquals([changes count], 1UL, nil);
+
+  XTFileChange *change = changes[0];
+
+  STAssertEqualObjects(change.path, [file1Path lastPathComponent], nil);
+  STAssertEquals(change.change, XitChangeAdded, nil);
+
+  NSError *error = nil;
+  NSString *file2Path = [repoPath stringByAppendingPathComponent:@"file2.txt"];
+
+  [self writeTextToFile1:@"changes!"];
+  [@"new file 2" writeToFile:file2Path
+                  atomically:YES
+                    encoding:NSUTF8StringEncoding
+                       error:&error];
+  STAssertNil(error, nil);
+  STAssertTrue([repository stageFile:file1Path], nil);
+  STAssertTrue([repository stageFile:file2Path], nil);
+  [repository commitWithMessage:@"#2" amend:NO outputBlock:NULL error:&error];
+  STAssertNil(error, nil);
+
+  changes = [repository changesForRef:@"master" parent:nil];
+  STAssertEquals([changes count], 2UL, nil);
+  change = changes[0];
+  STAssertEqualObjects(change.path, [file1Path lastPathComponent], nil);
+  STAssertEquals(change.change, XitChangeModified, nil);
+  change = changes[1];
+  STAssertEqualObjects(change.path, [file2Path lastPathComponent], nil);
+  STAssertEquals(change.change, XitChangeAdded, nil);
+
+  [[NSFileManager defaultManager] removeItemAtPath:file1Path error:&error];
+  STAssertNil(error, nil);
+  STAssertTrue([repository stageFile:file1Path], nil);
+  [repository commitWithMessage:@"#3" amend:NO outputBlock:NULL error:&error];
+  STAssertNil(error, nil);
+
+  changes = [repository changesForRef:@"master" parent:nil];
+  STAssertEquals([changes count], 1UL, nil);
+  change = changes[0];
+  STAssertEqualObjects(change.path, [file1Path lastPathComponent], nil);
+  STAssertEquals(change.change, XitChangeDeleted, nil);
+}
+
 @end

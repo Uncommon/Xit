@@ -149,6 +149,53 @@ NSString *XTHeaderContentKey = @"content";
   return result;
 }
 
+- (NSArray*)changesForRef:(NSString*)ref parent:(NSString*)parentSHA
+{
+  if (ref == nil)
+    return nil;
+
+  NSError *error = nil;
+  GTCommit *commit = [gtRepo lookupObjectByRefspec:ref error:&error];
+
+  if ((commit == nil) || git_object_type([commit git_object]) != GIT_OBJ_COMMIT)
+    return nil;
+
+  NSArray *parents = commit.parents;
+  GTCommit *parent = nil;
+
+  if ([parents count] != 0) {
+    if (parentSHA == nil) {
+      parent = parents[0];
+    } else {
+      for (GTCommit *iterParent in parents)
+        if ([iterParent.SHA isEqualToString:parentSHA]) {
+          parent = iterParent;
+          break;
+        }
+    }
+  }
+
+  GTDiff *diff = [GTDiff diffOldTree:parent.tree
+                         withNewTree:commit.tree
+                        inRepository:gtRepo
+                             options:nil
+                               error:&error];
+  NSMutableArray *result = [NSMutableArray array];
+
+  if (error != nil)
+    return nil;
+  [diff enumerateDeltasUsingBlock:^(GTDiffDelta *delta, BOOL *stop) {
+    if (delta.type != GTDiffFileDeltaUnmodified) {
+      XTFileChange *change = [[XTFileChange alloc] init];
+
+      change.path = delta.newFile.path;
+      change.change = delta.type;
+      [result addObject:change];
+    }
+  }];
+  return result;
+}
+
 NSString *kHeaderFormat = @"--format="
                            "%H%n%T%n%P%n"     // commit, tree, and parent hashes
                            "%d%n"             // ref names
@@ -295,8 +342,16 @@ NSString *XTCommitSHAKey = @"sha",
 - (BOOL)stageFile:(NSString *)file
 {
   NSError *error = nil;
+  NSString *fullPath = [file hasPrefix:@"/"] ? file :
+      [repoURL.path stringByAppendingPathComponent:file];
 
-  [self executeGitWithArgs:@[ @"add", file ] writes:YES error:&error];
+  if ([[NSFileManager defaultManager] fileExistsAtPath:fullPath])
+    [self executeGitWithArgs:@[ @"add", file ] writes:YES error:&error];
+  else
+    [self executeGitWithArgs:@[ @"rm", file ]
+                   withStdIn:nil
+                      writes:YES
+                       error:&error];
   return error == nil;
 }
 
@@ -335,5 +390,9 @@ NSString *XTCommitSHAKey = @"sha",
                                       encoding:NSUTF8StringEncoding]);
   return YES;
 }
+
+@end
+
+@implementation XTFileChange
 
 @end

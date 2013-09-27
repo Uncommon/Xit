@@ -14,6 +14,19 @@ extern NSString *XTCommitSHAKey,
     *XTCommitterEmailKey,
     *XTCommitterDateKey;
 
+// Values used by changesForRef:
+typedef enum {
+	XitChangeUnmodified = GIT_DELTA_UNMODIFIED,
+	XitChangeAdded = GIT_DELTA_ADDED,
+	XitChangeDeleted = GIT_DELTA_DELETED,
+	XitChangeModified = GIT_DELTA_MODIFIED,
+	XitChangeRenamed = GIT_DELTA_RENAMED,
+	XitChangeCopied = GIT_DELTA_COPIED,
+	XitChangeIgnored = GIT_DELTA_IGNORED,
+	XitChangeUntracked = GIT_DELTA_UNTRACKED,
+	XitChangeTypeChange = GIT_DELTA_TYPECHANGE,
+} XitChange;
+
 @class GTSubmodule;
 
 @interface XTRepository (Reading)
@@ -43,5 +56,13 @@ extern NSString *XTCommitSHAKey,
                     error:(NSError**)error;
 
 - (NSArray*)fileNamesForRef:(NSString*)ref;
+- (NSArray*)changesForRef:(NSString*)ref parent:(NSString*)parentSHA;
+
+@end
+
+@interface XTFileChange : NSObject
+
+@property NSString *path;
+@property XitChange change;
 
 @end
