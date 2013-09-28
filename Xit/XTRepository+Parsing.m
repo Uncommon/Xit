@@ -175,6 +175,19 @@ NSString *XTCommitSHAKey = @"sha",
   [array insertObject:date atIndex:index];
 }
 
+- (GTCommit*)commitForRef:(NSString*)ref
+{
+  NSError *error;
+  GTObject *object = [gtRepo lookupObjectByRefspec:ref error:&error];
+
+  if (object == nil)
+    return nil;
+
+  return [gtRepo lookupObjectByOID:object.OID
+                        objectType:GTObjectTypeCommit
+                             error:&error];
+}
+
 - (BOOL)parseCommit:(NSString *)ref
          intoHeader:(NSDictionary **)header
             message:(NSString **)message

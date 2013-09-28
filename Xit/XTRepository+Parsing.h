@@ -33,7 +33,6 @@ extern NSString *XTCommitSHAKey,
          intoHeader:(NSDictionary**)header
             message:(NSString**)message
               files:(NSArray**)files;
-- (NSDictionary*)attibutesForCommit:(NSString*)ref;
 
 - (BOOL)stageFile:(NSString*)file;
 - (BOOL)unstageFile:(NSString*)file;
