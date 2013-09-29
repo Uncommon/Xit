@@ -151,6 +151,7 @@
 								<bool key="NSAllowsTypeSelect">YES</bool>
 								<int key="NSTableViewDraggingDestinationStyle">1</int>
 								<int key="NSTableViewGroupRowStyle">1</int>
+								<bool key="NSOutlineViewAutoresizesOutlineColumnKey">NO</bool>
 							</object>
 						</array>
 						<string key="NSFrame">{{1, 1}, {356, 194}}</string>
@@ -181,7 +182,6 @@
 						<string key="NSFrame">{{1, 216}, {215, 15}}</string>
 						<reference key="NSSuperview" ref="485963393"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:1681</string>
 						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 						<int key="NSsFlags">1</int>
@@ -210,7 +210,6 @@
 				<string key="NSFrameSize">{347, 196}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
-				<reference key="NSNextKeyView"/>
 				<string key="NSReuseIdentifierKey">_NS:9</string>
 				<string key="NSClassName">QLPreviewView</string>
 			</object>
