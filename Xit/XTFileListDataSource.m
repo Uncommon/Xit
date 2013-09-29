@@ -172,6 +172,10 @@
   return [node representedObject];
 }
 
+#pragma mark NSOutlineViewDelegate
+
+const CGFloat kChangeImagePadding = 8;
+
 - (NSView *)outlineView:(NSOutlineView *)outlineView
      viewForTableColumn:(NSTableColumn *)tableColumn
                    item:(id)item
@@ -193,10 +197,21 @@
   cell.textField.stringValue = [fileName lastPathComponent];
 
   NSNumber *change = changes[fileName];
+  CGFloat textWidth = cell.textField.frame.size.width;
+  const NSRect changeFrame = cell.changeImage.frame;
+  const NSRect textFrame = cell.textField.frame;
+
 
   [cell.changeImage setHidden:change == nil];
-  if (change != nil)
+  if (change == nil) {
+    textWidth = changeFrame.origin.x + changeFrame.size.width -
+                textFrame.origin.x;
+  } else {
     cell.changeImage.image = changeImages[change];
+    textWidth = changeFrame.origin.x - kChangeImagePadding -
+                textFrame.origin.x;
+  }
+  [cell.textField setFrameSize:NSMakeSize(textWidth, textFrame.size.height)];
 
   return cell;
 }
