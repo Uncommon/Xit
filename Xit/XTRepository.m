@@ -282,6 +282,11 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 
   if (error != nil)
     return nil;
+
+  id unresolved = [gtRef unresolvedTarget];
+
+  if (![unresolved isKindOfClass:[GTReference class]])
+    return reference;
   return [[gtRef unresolvedTarget] name];
 }
 
