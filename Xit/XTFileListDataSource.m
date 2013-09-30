@@ -100,13 +100,20 @@
 {
   NSTreeNode *newRoot = [self makeNewRoot];
   NSMutableDictionary *nodes = [NSMutableDictionary dictionary];
-  NSArray *files = [repo fileNamesForRef:ref];
   NSArray *changeList = [repo changesForRef:ref parent:nil];
   NSDictionary *changes = [[NSMutableDictionary alloc]
       initWithCapacity:[changeList count]];
+  NSArray *files = [repo fileNamesForRef:ref];
+  NSMutableArray *deletions =
+      [NSMutableArray arrayWithCapacity:[changes count]];
 
-  for (XTFileChange *change in changeList)
+  for (XTFileChange *change in changeList) {
     [changes setValue:@( change.change ) forKey:change.path];
+    if (change.change == XitChangeDeleted)
+      [deletions addObject:change.path];
+  }
+  if ([deletions count] > 0)
+    files = [files arrayByAddingObjectsFromArray:deletions];
   for (NSString *file in files) {
     XTCommitTreeItem *item = [[XTCommitTreeItem alloc] init];
 
@@ -235,11 +242,21 @@ const CGFloat kChangeImagePadding = 8;
     cell.imageView.image = [NSImage imageNamed:NSImageNameFolder];
   cell.textField.stringValue = [path lastPathComponent];
 
+  NSColor *textColor;
+
+  if (treeItem.change == XitChangeDeleted)
+    textColor = [NSColor disabledControlTextColor];
+  else if ([outlineView isRowSelected:[outlineView rowForItem:item]])
+    textColor = [NSColor selectedTextColor];
+  else
+    textColor = [NSColor textColor];
+  cell.textField.textColor = textColor;
+  cell.change = treeItem.change;
+
   XitChange change = treeItem.change;
   CGFloat textWidth = cell.textField.frame.size.width;
   const NSRect changeFrame = cell.changeImage.frame;
   const NSRect textFrame = cell.textField.frame;
-
 
   [cell.changeImage setHidden:change == XitChangeUnmodified];
   if (change == XitChangeUnmodified) {
@@ -269,5 +286,14 @@ const CGFloat kChangeImagePadding = 8;
 
 
 @implementation XTFileCellView
+
+- (void)setBackgroundStyle:(NSBackgroundStyle)backgroundStyle
+{
+  [super setBackgroundStyle:backgroundStyle];
+  if (backgroundStyle == NSBackgroundStyleDark)
+    self.textField.textColor = [NSColor textColor];
+  else if (self.change == XitChangeDeleted)
+    self.textField.textColor = [NSColor disabledControlTextColor];
+}
 
 @end

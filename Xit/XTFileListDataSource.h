@@ -31,5 +31,6 @@
 @interface XTFileCellView : NSTableCellView
 
 @property IBOutlet NSImageView *changeImage;
+@property XitChange change;
 
 @end
