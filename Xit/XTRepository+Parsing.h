@@ -17,15 +17,16 @@ extern NSString *XTCommitSHAKey,
 
 // Values used by changesForRef:
 typedef enum {
-	XitChangeUnmodified = GIT_DELTA_UNMODIFIED,
-	XitChangeAdded = GIT_DELTA_ADDED,
-	XitChangeDeleted = GIT_DELTA_DELETED,
-	XitChangeModified = GIT_DELTA_MODIFIED,
-	XitChangeRenamed = GIT_DELTA_RENAMED,
-	XitChangeCopied = GIT_DELTA_COPIED,
-	XitChangeIgnored = GIT_DELTA_IGNORED,
-	XitChangeUntracked = GIT_DELTA_UNTRACKED,
-	XitChangeTypeChange = GIT_DELTA_TYPECHANGE,
+  XitChangeUnmodified = GIT_DELTA_UNMODIFIED,
+  XitChangeAdded = GIT_DELTA_ADDED,
+  XitChangeDeleted = GIT_DELTA_DELETED,
+  XitChangeModified = GIT_DELTA_MODIFIED,
+  XitChangeRenamed = GIT_DELTA_RENAMED,
+  XitChangeCopied = GIT_DELTA_COPIED,
+  XitChangeIgnored = GIT_DELTA_IGNORED,
+  XitChangeUntracked = GIT_DELTA_UNTRACKED,
+  XitChangeTypeChange = GIT_DELTA_TYPECHANGE,
+  XitChangeMixed,  // For folders containing a mix of changes
 } XitChange;
 
 @class GTSubmodule;

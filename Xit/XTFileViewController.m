@@ -60,8 +60,12 @@
     return;
   }
   [filePreview setHidden:NO];
-  previewItem.path =
-      [[fileListOutline itemAtRow:[selection firstIndex]] representedObject];
+
+  NSTreeNode *selectedNode = [fileListOutline itemAtRow:[selection firstIndex]];
+  XTCommitTreeItem *selectedItem = (XTCommitTreeItem*)
+      [selectedNode representedObject];
+
+  previewItem.path = selectedItem.path;
 }
 
 - (void)commitSelected:(NSNotification *)note

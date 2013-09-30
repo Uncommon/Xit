@@ -8,6 +8,7 @@
                               nodes:(NSMutableDictionary *)nodes;
 @end
 
+
 @implementation XTFileListDataSource
 
 - (id)init
@@ -21,6 +22,7 @@
         @( XitChangeDeleted ) : [NSImage imageNamed:@"deleted"],
         @( XitChangeModified ) : [NSImage imageNamed:@"modified"],
         @( XitChangeRenamed ) : [NSImage imageNamed:@"renamed"],
+        @( XitChangeMixed ) : [NSImage imageNamed:@"mixed"],
         };
   }
 
@@ -34,7 +36,10 @@
 
 - (NSTreeNode *)makeNewRoot
 {
-  return [NSTreeNode treeNodeWithRepresentedObject:@"root"];
+  XTCommitTreeItem *rootItem = [[XTCommitTreeItem alloc] init];
+
+  rootItem.path = @"root";
+  return [NSTreeNode treeNodeWithRepresentedObject:rootItem];
 }
 
 - (void)setRepo:(XTRepository *)newRepo
@@ -61,11 +66,7 @@
   [repo executeOffMainThread:^{
     NSString *ref = repo.selectedCommit;
     NSTreeNode *newRoot = [self fileTreeForRef:(ref == nil) ? @"HEAD" : ref];
-    NSArray *changeList = [repo changesForRef:ref parent:nil];
 
-    changes = [[NSMutableDictionary alloc] initWithCapacity:[changeList count]];
-    for (XTFileChange *change in changeList)
-      [changes setValue:@( change.change ) forKey:change.path];
     dispatch_async(dispatch_get_main_queue(), ^{
       root = newRoot;
       [table reloadData];
@@ -73,15 +74,47 @@
   }];
 }
 
+- (void)updateChangeForNode:(NSTreeNode*)node
+{
+  XitChange change = XitChangeUnmodified;
+  BOOL firstItem = YES;
+
+  for (NSTreeNode *child in [node childNodes]) {
+    XTCommitTreeItem *childItem = (XTCommitTreeItem*)[child representedObject];
+
+    if (![child isLeaf])
+      [self updateChangeForNode:child];
+    if (firstItem)
+      change = childItem.change;
+    else if (change != childItem.change)
+      change = XitChangeMixed;
+    firstItem = NO;
+  }
+
+  XTCommitTreeItem *item = [node representedObject];
+
+  item.change = change;
+}
+
 - (NSTreeNode *)fileTreeForRef:(NSString *)ref
 {
   NSTreeNode *newRoot = [self makeNewRoot];
   NSMutableDictionary *nodes = [NSMutableDictionary dictionary];
   NSArray *files = [repo fileNamesForRef:ref];
+  NSArray *changeList = [repo changesForRef:ref parent:nil];
+  NSDictionary *changes = [[NSMutableDictionary alloc]
+      initWithCapacity:[changeList count]];
 
+  for (XTFileChange *change in changeList)
+    [changes setValue:@( change.change ) forKey:change.path];
   for (NSString *file in files) {
+    XTCommitTreeItem *item = [[XTCommitTreeItem alloc] init];
+
+    item.path = file;
+    item.change = [changes[file] integerValue];
+
     NSString *path = [file stringByDeletingLastPathComponent];
-    NSTreeNode *node = [NSTreeNode treeNodeWithRepresentedObject:file];
+    NSTreeNode *node = [NSTreeNode treeNodeWithRepresentedObject:item];
 
     if (path.length == 0) {
       [[newRoot mutableChildNodes] addObject:node];
@@ -91,9 +124,10 @@
       [[parentNode mutableChildNodes] addObject:node];
     }
   }
+  [self updateChangeForNode:newRoot];
 
   NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]
-      initWithKey:@"lastPathComponent"
+      initWithKey:@"path.lastPathComponent"
         ascending:YES
          selector:@selector(localizedCaseInsensitiveCompare:)];
 
@@ -108,7 +142,11 @@
   NSTreeNode *pathNode = nodes[path];
 
   if (!pathNode) {
-    pathNode = [NSTreeNode treeNodeWithRepresentedObject:path];
+    XTCommitTreeItem *item = [[XTCommitTreeItem alloc] init];
+
+    item.path = path;
+
+    pathNode = [NSTreeNode treeNodeWithRepresentedObject:item];
     NSString *parentPath = [path stringByDeletingLastPathComponent];
     if (parentPath.length == 0) {
       [[parent mutableChildNodes] addObject:pathNode];
@@ -187,27 +225,28 @@ const CGFloat kChangeImagePadding = 8;
     return cell;
 
   NSTreeNode *node = (NSTreeNode*)item;
-  NSString *fileName = (NSString*)node.representedObject;
+  XTCommitTreeItem *treeItem = (XTCommitTreeItem*)[node representedObject];
+  NSString *path = treeItem.path;
 
   if ([node isLeaf])
     cell.imageView.image = [[NSWorkspace sharedWorkspace]
-        iconForFileType:[fileName pathExtension]];
+        iconForFileType:[path pathExtension]];
   else
     cell.imageView.image = [NSImage imageNamed:NSImageNameFolder];
-  cell.textField.stringValue = [fileName lastPathComponent];
+  cell.textField.stringValue = [path lastPathComponent];
 
-  NSNumber *change = changes[fileName];
+  XitChange change = treeItem.change;
   CGFloat textWidth = cell.textField.frame.size.width;
   const NSRect changeFrame = cell.changeImage.frame;
   const NSRect textFrame = cell.textField.frame;
 
 
-  [cell.changeImage setHidden:change == nil];
-  if (change == nil) {
+  [cell.changeImage setHidden:change == XitChangeUnmodified];
+  if (change == XitChangeUnmodified) {
     textWidth = changeFrame.origin.x + changeFrame.size.width -
                 textFrame.origin.x;
   } else {
-    cell.changeImage.image = changeImages[change];
+    cell.changeImage.image = changeImages[@( change )];
     textWidth = changeFrame.origin.x - kChangeImagePadding -
                 textFrame.origin.x;
   }
@@ -217,6 +256,17 @@ const CGFloat kChangeImagePadding = 8;
 }
 
 @end
+
+
+@implementation XTCommitTreeItem
+
+- (NSString*)description
+{
+  return self.path;
+}
+
+@end
+
 
 @implementation XTFileCellView
 
