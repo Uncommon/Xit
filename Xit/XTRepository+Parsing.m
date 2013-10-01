@@ -1,7 +1,6 @@
 #import "XTRepository+Parsing.h"
-#import "NSDate+Extensions.h"
 #import <ObjectiveGit/ObjectiveGit.h>
-#import "GTRepository+Xit.h"
+#import "NSDate+Extensions.h"
 
 NSString *XTHeaderNameKey = @"name";
 NSString *XTHeaderContentKey = @"content";
@@ -53,46 +52,76 @@ NSString *XTHeaderContentKey = @"content";
 - (BOOL)readStagedFilesWithBlock:(void (^)(NSString *, NSString *))block
 {
   NSError *error = nil;
-  GTIndex *index = [gtRepo indexWithError:&error];
+  NSData *output = [self
+      executeGitWithArgs:@[ @"diff-index", @"--cached", [self parentTree] ]
+                  writes:NO
+                   error:&error];
 
-  if (error != nil)
+  if ((output == nil) || (error != nil))
     return NO;
-  for (GTIndexEntry *entry in index.entries) {
-    NSString *status = @"";
 
-    switch (entry.status) {
-      case GTIndexEntryStatusUpdated:    status = @"M"; break;
-      case GTIndexEntryStatusConflicted: status = @"C"; break;
-      case GTIndexEntryStatusAdded:      status = @"A"; break;
-      case GTIndexEntryStatusRemoved:    status = @"D"; break;
-      case GTIndexEntryStatusUpToDate:   status = @""; break;
+  NSString *filesStr =
+      [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+  filesStr = [filesStr stringByTrimmingCharactersInSet:
+      [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+  NSArray *files = [filesStr componentsSeparatedByString:@"\n"];
+
+  for (NSString *file in files) {
+    NSArray *info = [file componentsSeparatedByString:@"\t"];
+    if (info.count > 1) {
+      NSString *name = [info lastObject];
+      NSString *status =
+          [[info[0] componentsSeparatedByString:@" "] lastObject];
+      status = [status substringToIndex:1];
+      block(name, status);
     }
-    block(entry.path, status);
   }
   return YES;
 }
 
 - (BOOL)readUnstagedFilesWithBlock:(void (^)(NSString *, NSString *))block
 {
-  // TODO: use enum for status
-  [self.gtRepo enumerateRelativeFileStatusUsingBlock:^(NSString *path, GTRepositoryFileStatus status, BOOL *stop) {
-    NSString *statusString = @"";
+  NSError *error = nil;
+  NSData *output =
+      [self executeGitWithArgs:@[ @"diff-files" ] writes:NO error:nil];
 
-    switch (status) {
-      case GTRepositoryFileStatusWorkingTreeDeleted:
-        statusString = @"D";
-        break;
-      case GTRepositoryFileStatusWorkingTreeModified:
-        statusString = @"M";
-        break;
-      case GTRepositoryFileStatusWorkingTreeNew:
-        statusString = @"A";
-        break;
-      default:
-        return;
+  if (error != nil)
+    return NO;
+
+  NSString *filesStr =
+      [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+  filesStr = [filesStr stringByTrimmingCharactersInSet:
+          [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+  NSArray *files = [filesStr componentsSeparatedByString:@"\n"];
+
+  [files enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+    NSString *file = (NSString *)obj;
+    NSArray *info = [file componentsSeparatedByString:@"\t"];
+
+    if (info.count > 1) {
+      NSString *name = [info lastObject];
+      NSString *status =
+          [[info[0] componentsSeparatedByString:@" "] lastObject];
+
+      status = [status substringToIndex:1];
+      block(name, status);
     }
+  }];
 
-    block(path, statusString);
+  output = [self
+      executeGitWithArgs:@[ @"ls-files", @"--others", @"--exclude-standard" ]
+                  writes:NO
+                   error:nil];
+  filesStr =
+      [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+  filesStr = [filesStr stringByTrimmingCharactersInSet:
+          [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+  files = [filesStr componentsSeparatedByString:@"\n"];
+  [files enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+    NSString *file = (NSString *)obj;
+
+    if (file.length > 0)
+      block(file, @"?");
   }];
   return YES;
 }
