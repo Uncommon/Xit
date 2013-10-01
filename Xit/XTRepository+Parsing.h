@@ -50,6 +50,7 @@ typedef enum {
               files:(NSArray**)files;
 
 - (BOOL)stageFile:(NSString*)file;
+- (BOOL)stageAllFiles;
 - (BOOL)unstageFile:(NSString*)file;
 
 - (BOOL)commitWithMessage:(NSString*)message

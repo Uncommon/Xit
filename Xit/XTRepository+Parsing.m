@@ -355,6 +355,14 @@ NSString *XTCommitSHAKey = @"sha",
   return error == nil;
 }
 
+- (BOOL)stageAllFiles
+{
+  NSError *error = nil;
+
+  [self executeGitWithArgs:@[ @"add", @"--all" ] writes:YES error:&error];
+  return error == nil;
+}
+
 - (BOOL)unstageFile:(NSString *)file
 {
   NSArray *args;

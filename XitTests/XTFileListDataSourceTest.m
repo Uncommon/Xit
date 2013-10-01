@@ -21,7 +21,7 @@
           atomically:YES
             encoding:NSASCIIStringEncoding
                error:nil];
-    [repository stageFile:@"--all"];
+    [repository stageAllFiles];
     [repository commitWithMessage:@"commit"
                             amend:NO
                       outputBlock:NULL
@@ -92,7 +92,7 @@
             encoding:NSASCIIStringEncoding
                error:nil];
   }
-  [repository stageFile:@"--all"];
+  [repository stageAllFiles];
   [repository commitWithMessage:@"commit"
                           amend:NO
                     outputBlock:NULL
@@ -110,12 +110,12 @@
   [self waitForRepoQueue];
 
   NSInteger nf = [flds outlineView:nil numberOfChildrenOfItem:nil];
-  STAssertTrue((nf == 2), @"found %d files", nf);
+  STAssertEquals(nf, 2L, nil);
 
   for (int rootIdx = 0; rootIdx < nf; rootIdx++) {
     NSTreeNode *root = [flds outlineView:nil child:rootIdx ofItem:nil];
     NSInteger rnf = [flds outlineView:nil numberOfChildrenOfItem:root];
-    STAssertTrue((rnf == 3), @"found %d files", nf);
+    STAssertEquals(rnf, 3L, nil);
   }
 }
 
