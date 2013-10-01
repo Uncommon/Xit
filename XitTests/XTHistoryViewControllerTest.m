@@ -53,20 +53,21 @@
                                                   sidebar:mockSidebar];
 
   [controller.sideBarDS setRepo:repository];
+  [[mockSidebar stub] reloadData];
   [[mockSidebar expect] setDelegate:controller.sideBarDS];
   [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData)
                                          withObject:nil
-                                      waitUntilDone:YES];
+                                      waitUntilDone:NO];
   [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData)
                                          withObject:nil
-                                      waitUntilDone:YES];
+                                      waitUntilDone:NO];
   [[mockSidebar expect] expandItem:nil expandChildren:YES];
   [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData)
                                          withObject:nil
-                                      waitUntilDone:YES];
+                                      waitUntilDone:NO];
   [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData)
                                          withObject:nil
-                                      waitUntilDone:YES];
+                                      waitUntilDone:NO];
   [[mockSidebar expect] expandItem:nil expandChildren:YES];
 
   [controller.sideBarDS reload];

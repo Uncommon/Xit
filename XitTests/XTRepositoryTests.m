@@ -43,6 +43,33 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
                        @"SHA should be only hex chars");
 }
 
+- (void)testDetachedCheckout
+{
+  [super addInitialRepoContent];
+
+  NSString *firstSHA = [repository headSHA];
+  NSError *error = nil;
+
+  [@"mash" writeToFile:file1Path
+            atomically:YES
+              encoding:NSUTF8StringEncoding
+                 error:&error];
+  STAssertNil(error, nil);
+  [repository stageFile:file1Path];
+  [repository commitWithMessage:@"commit 2"
+                          amend:NO
+                    outputBlock:NULL
+                          error:&error];
+  STAssertNil(error, nil);
+
+  [repository checkout:firstSHA error:&error];
+  STAssertNil(error, nil);
+
+  NSString *detachedSHA = [repository headSHA];
+
+  STAssertEqualObjects(firstSHA, detachedSHA, nil);
+}
+
 - (void)testParseCommit
 {
   NSString *output =
