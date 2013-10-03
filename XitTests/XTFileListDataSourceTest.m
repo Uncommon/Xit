@@ -109,10 +109,10 @@
   [flds setRepo:repository];
   [self waitForRepoQueue];
 
-  NSInteger nf = [flds outlineView:nil numberOfChildrenOfItem:nil];
-  STAssertEquals(nf, 2L, nil);
+  const NSInteger nf = [flds outlineView:nil numberOfChildrenOfItem:nil];
+  STAssertEquals(nf, 3L, nil); // 2 folders plus deleted file1.txt
 
-  for (int rootIdx = 0; rootIdx < nf; rootIdx++) {
+  for (int rootIdx = 0; rootIdx < 2; rootIdx++) {
     NSTreeNode *root = [flds outlineView:nil child:rootIdx ofItem:nil];
     NSInteger rnf = [flds outlineView:nil numberOfChildrenOfItem:root];
     STAssertEquals(rnf, 3L, nil);
