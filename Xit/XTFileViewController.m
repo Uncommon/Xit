@@ -1,4 +1,5 @@
 #import "XTFileViewController.h"
+#import "XTCommitHeaderViewController.h"
 #import "XTFileListDataSource.h"
 #import "XTPreviewItem.h"
 #import "XTRepository.h"
@@ -14,6 +15,7 @@
 {
   repo = newRepo;
   [fileListDS setRepo:newRepo];
+  headerController.repository = newRepo;
   ((XTPreviewItem *)filePreview.previewItem).repo = newRepo;
 }
 
@@ -66,6 +68,7 @@
 
 - (void)commitSelected:(NSNotification *)note
 {
+  headerController.commitSHA = [repo selectedCommit];
   [self refresh];
 }
 

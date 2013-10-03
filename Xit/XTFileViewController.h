@@ -1,6 +1,7 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
+@class XTCommitHeaderViewController;
 @class XTFileListDataSource;
 @class XTRepository;
 @class RBSplitView;
@@ -11,6 +12,7 @@
   IBOutlet NSView *leftPane, *rightPane;
   IBOutlet NSOutlineView *fileListOutline;
   IBOutlet QLPreviewView *filePreview;
+  IBOutlet XTCommitHeaderViewController *headerController;
   IBOutlet XTFileListDataSource *fileListDS;
 
   XTRepository *repo;

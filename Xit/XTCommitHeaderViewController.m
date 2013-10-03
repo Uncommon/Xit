@@ -29,6 +29,9 @@
 
 - (NSString*)generateHeaderHTML
 {
+  if (_commitSHA == nil)
+    return @"";
+
   NSError *error = nil;
   NSStringEncoding encoding;
   NSString *template = [NSString stringWithContentsOfURL:[self templateURL]
@@ -74,10 +77,14 @@
   [[_webView mainFrame] loadHTMLString:html baseURL:[self templateURL]];
 }
 
-- (void)setRepository:(XTRepository*)repository commit:(NSString*)commit
+- (NSString*)commitSHA
 {
-  _repository = repository;
-  _commitSHA = commit;
+  return _commitSHA;
+}
+
+- (void)setCommitSHA:(NSString *)sha
+{
+  _commitSHA = sha;
   [self loadHeader];
 }
 
