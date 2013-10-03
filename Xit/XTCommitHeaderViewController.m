@@ -72,6 +72,12 @@
 
 - (void)loadHeader
 {
+  id result = [[self.webView windowScriptObject]
+      callWebScriptMethod:@"isCollapsed" withArguments:@[]];
+
+  if ([result respondsToSelector:@selector(boolValue)])
+    _expanded = ![result boolValue];
+
   NSString *html = [self generateHeaderHTML];
 
   [[_webView mainFrame] loadHTMLString:html baseURL:[self templateURL]];
@@ -118,6 +124,10 @@ dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
     [parentDiv setInnerHTML:encodedSummary];
     [parentsElement appendChild:parentDiv];
   }
+
+  if (!_expanded)
+    [[self.webView windowScriptObject] callWebScriptMethod:@"disclosure"
+                                             withArguments:@[]];
 }
 
 @end

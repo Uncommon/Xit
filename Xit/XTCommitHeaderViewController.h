@@ -7,6 +7,7 @@
 @interface XTCommitHeaderViewController : NSViewController
 {
   NSString *_commitSHA;
+  BOOL _expanded;
 }
 
 @property XTRepository *repository;

@@ -1,3 +1,8 @@
+function isCollapsed()
+{
+  return document.getElementById('committer').style.display == 'none'
+}
+
 function disclosure()
 {
 	var button = document.getElementById("triangle");
@@ -5,7 +10,7 @@ function disclosure()
 	var newDisplay = 'none';
 	var newImage = 'undisclosed.png'
 
-	if (document.getElementById(hidingIds[0]).style.display == 'none') {
+	if (isCollapsed()) {
 		newDisplay = 'block';
 		newImage = 'disclosed.png'
 	}
