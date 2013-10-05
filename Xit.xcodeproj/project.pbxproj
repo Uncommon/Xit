@@ -80,6 +80,7 @@
 		DD3AC5B41611215C00238F58 /* XTRemoteBranchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3AC5B31611215C00238F58 /* XTRemoteBranchItem.m */; };
 		DD592093156EEE64005FBB0F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		DD592096156EEF40005FBB0F /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD592095156EEF40005FBB0F /* OCMock.framework */; };
+		DD858B1F17FFDCB900264F7D /* XTTextPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD858B1E17FFDCB900264F7D /* XTTextPreviewController.m */; };
 		DD96C92F17595AE10003A30C /* liblibRBSplitView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DD96C92117595A6E0003A30C /* liblibRBSplitView.a */; };
 		DD96C931175B76990003A30C /* splitter.png in Resources */ = {isa = PBXBuildFile; fileRef = DD96C930175B76990003A30C /* splitter.png */; };
 		DD96C939175ECE690003A30C /* XTFileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD96C938175ECE690003A30C /* XTFileViewController.m */; };
@@ -335,6 +336,8 @@
 		DD3AC5B31611215C00238F58 /* XTRemoteBranchItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XTRemoteBranchItem.m; path = Xit/XTRemoteBranchItem.m; sourceTree = "<group>"; tabWidth = 2; };
 		DD579ADB15D08978007E4AFE /* NSDate+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "NSDate+Extensions.h"; sourceTree = "<group>"; };
 		DD592095156EEF40005FBB0F /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCMock.framework; sourceTree = SOURCE_ROOT; };
+		DD858B1D17FFDCB900264F7D /* XTTextPreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTTextPreviewController.h; sourceTree = "<group>"; };
+		DD858B1E17FFDCB900264F7D /* XTTextPreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTTextPreviewController.m; sourceTree = "<group>"; };
 		DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RBSplitView.xcodeproj; path = RBSplitView/RBSplitView.xcodeproj; sourceTree = "<group>"; };
 		DD96C930175B76990003A30C /* splitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splitter.png; sourceTree = "<group>"; };
 		DD96C937175ECE690003A30C /* XTFileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTFileViewController.h; sourceTree = "<group>"; };
@@ -411,6 +414,8 @@
 				31A8939A13E9D5B4008BE0C2 /* XTCommitViewController.h */,
 				31A8939B13E9D5B4008BE0C2 /* XTCommitViewController.m */,
 				31A8939C13E9D5B4008BE0C2 /* XTCommitViewController.xib */,
+				DD858B1D17FFDCB900264F7D /* XTTextPreviewController.h */,
+				DD858B1E17FFDCB900264F7D /* XTTextPreviewController.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1007,6 +1012,7 @@
 				895229711786F7AB00EE514C /* XTToolbarDelegate.m in Sources */,
 				DD96C9CE176EBD470003A30C /* GTRepository+Xit.m in Sources */,
 				895229CE17A95D0500EE514C /* XTSubmoduleItem.m in Sources */,
+				DD858B1F17FFDCB900264F7D /* XTTextPreviewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
