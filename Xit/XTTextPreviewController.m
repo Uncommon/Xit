@@ -4,6 +4,9 @@
 
 #import "XTRepository.h"
 
+// They left this one out.
+const NSInteger WebMenuItemTagInspectElement = 2024;
+
 @interface XTTextPreviewController ()
 
 @end
@@ -25,7 +28,11 @@
   NSMutableString *textLines = [NSMutableString string];
 
   [text enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
-    [textLines appendFormat:@"<div>%@</div>\n", line];
+    NSString *escaped = (NSString*)CFBridgingRelease(
+        CFXMLCreateStringByEscapingEntities(
+            kCFAllocatorDefault, (__bridge CFStringRef)line, NULL));
+
+    [textLines appendFormat:@"<div>%@</div>\n", escaped];
   }];
 
   NSURL *htmlURL = [[NSBundle mainBundle]
@@ -62,6 +69,42 @@
   }
   [self loadText:text];
   return YES;
+}
+
+- (NSUInteger)webView:(WebView*)sender
+dragDestinationActionMaskForDraggingInfo:(id <NSDraggingInfo>)draggingInfo
+{
+  return WebDragDestinationActionNone;
+}
+
+- (NSArray*)webView:(WebView*)sender
+contextMenuItemsForElement:(NSDictionary*)element
+          defaultMenuItems:(NSArray*)defaultMenuItems
+{
+  // Exclude navigation, reload, download, etc.
+  NSInteger allowedTags[] = {
+      WebMenuItemTagCopy,
+      WebMenuItemTagCut,
+      WebMenuItemTagPaste,
+      WebMenuItemTagOther,
+      WebMenuItemTagSearchInSpotlight,
+      WebMenuItemTagSearchWeb,
+      WebMenuItemTagLookUpInDictionary,
+      WebMenuItemTagOpenWithDefaultApplication,
+      WebMenuItemTagInspectElement,
+      };
+  const unsigned int kAllowedCount = sizeof(allowedTags)/sizeof(NSInteger);
+  NSMutableArray *allowedItems =
+      [NSMutableArray arrayWithCapacity:[defaultMenuItems count]];
+
+  for (NSMenuItem *item in defaultMenuItems) {
+    for (int i = 0; i < kAllowedCount; ++i)
+      if (allowedTags[i] == [item tag]) {
+        [allowedItems addObject:item];
+        break;
+      }
+  }
+  return allowedItems;
 }
 
 @end

@@ -9,16 +9,20 @@ div.page {
 }
 div.page div {
 	background-color: white;
-	border-left: 3ch solid #CCC;
+	border-left: 5.5ex solid #DDD;
+	min-height: 1em;
 	padding-left: 1ex;
+	white-space: pre-wrap;
 }
 div.page div:before {
 	content: counter(line);
 	counter-increment: line;
-	margin-right: 6pt;
-	width: 3ch;
+	margin-top: 2pt;
+	width: 6ex;
 	-webkit-user-select: none;
 	position: absolute;
 	left: 9px;
 	text-align: right;
+	font-size: 0.75em;
+	vertical-align: text-bottom;
 }
