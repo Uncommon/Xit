@@ -107,4 +107,14 @@ contextMenuItemsForElement:(NSDictionary*)element
   return allowedItems;
 }
 
+- (void)webView:(WebView*)sender didFinishLoadForFrame:(WebFrame*)frame
+{
+  NSScrollView *scrollView = [[[[self.webView mainFrame] frameView]
+      documentView] enclosingScrollView];
+
+  [scrollView setHasHorizontalScroller:NO];
+  [scrollView setHorizontalScrollElasticity:NSScrollElasticityNone];
+  [scrollView setBackgroundColor:[NSColor colorWithDeviceWhite:0.8 alpha:1.0]];
+}
+
 @end

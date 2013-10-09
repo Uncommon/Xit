@@ -1,15 +1,16 @@
 body {
-	background-color: #EEE;
+	background-color: #CCC;
 	font-family: monospace;
-	margin: 8px
+	margin: 0px;
+	counter-reset: line;
 }
 div.page {
-	counter-reset: line;
-	border: 1pt solid #AAA;
+	background-color: #EEE;
+	border-bottom: #888 1px;
 }
 div.page div {
 	background-color: white;
-	border-left: 5.5ex solid #DDD;
+	margin-left: 5.5ex;
 	min-height: 1em;
 	padding-left: 1ex;
 	white-space: pre-wrap;
@@ -19,10 +20,9 @@ div.page div:before {
 	counter-increment: line;
 	margin-top: 2pt;
 	width: 6ex;
-	-webkit-user-select: none;
 	position: absolute;
-	left: 9px;
+	left: 3px;
 	text-align: right;
 	font-size: 0.75em;
-	vertical-align: text-bottom;
+	-webkit-user-select: none;
 }
