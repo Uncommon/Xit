@@ -84,6 +84,9 @@
 		DD3AC5B41611215C00238F58 /* XTRemoteBranchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3AC5B31611215C00238F58 /* XTRemoteBranchItem.m */; };
 		DD592093156EEE64005FBB0F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		DD592096156EEF40005FBB0F /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD592095156EEF40005FBB0F /* OCMock.framework */; };
+		DD858B1F17FFDCB900264F7D /* XTTextPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD858B1E17FFDCB900264F7D /* XTTextPreviewController.m */; };
+		DD858B2C1801325500264F7D /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD858B2B1801325500264F7D /* CoreServices.framework */; };
+		DD858B341801B53D00264F7D /* XTFileViewControllerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD858B331801B53D00264F7D /* XTFileViewControllerTest.m */; };
 		DD96C92F17595AE10003A30C /* liblibRBSplitView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DD96C92117595A6E0003A30C /* liblibRBSplitView.a */; };
 		DD96C931175B76990003A30C /* splitter.png in Resources */ = {isa = PBXBuildFile; fileRef = DD96C930175B76990003A30C /* splitter.png */; };
 		DD96C939175ECE690003A30C /* XTFileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD96C938175ECE690003A30C /* XTFileViewController.m */; };
@@ -94,6 +97,18 @@
 		DD997DDA173B409500C7DF82 /* HistoryView Menus.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD997DD8173B409500C7DF82 /* HistoryView Menus.xib */; };
 		DD997DF81746F40D00C7DF82 /* XTFileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD997DF71746F40D00C7DF82 /* XTFileViewController.xib */; };
 		DD9C1B8F160239DD0001FE9B /* XTRefToken.m in Sources */ = {isa = PBXBuildFile; fileRef = DD9C1B8E160239DD0001FE9B /* XTRefToken.m */; };
+		DDA8A63A17F5B6CE00AD9808 /* added.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A63017F5B6CE00AD9808 /* added.png */; };
+		DDA8A63B17F5B6CE00AD9808 /* added@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A63117F5B6CE00AD9808 /* added@2x.png */; };
+		DDA8A63C17F5B6CE00AD9808 /* copied.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A63217F5B6CE00AD9808 /* copied.png */; };
+		DDA8A63D17F5B6CE00AD9808 /* copied@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A63317F5B6CE00AD9808 /* copied@2x.png */; };
+		DDA8A63E17F5B6CE00AD9808 /* deleted.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A63417F5B6CE00AD9808 /* deleted.png */; };
+		DDA8A63F17F5B6CE00AD9808 /* deleted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A63517F5B6CE00AD9808 /* deleted@2x.png */; };
+		DDA8A64017F5B6CE00AD9808 /* modified.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A63617F5B6CE00AD9808 /* modified.png */; };
+		DDA8A64117F5B6CE00AD9808 /* modified@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A63717F5B6CE00AD9808 /* modified@2x.png */; };
+		DDA8A64217F5B6CE00AD9808 /* renamed.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A63817F5B6CE00AD9808 /* renamed.png */; };
+		DDA8A64317F5B6CE00AD9808 /* renamed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A63917F5B6CE00AD9808 /* renamed@2x.png */; };
+		DDA8A65F17F9ECED00AD9808 /* mixed.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A65D17F9ECED00AD9808 /* mixed.png */; };
+		DDA8A66017F9ECED00AD9808 /* mixed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A65E17F9ECED00AD9808 /* mixed@2x.png */; };
 		DDB9319516EC12B100A6ABC6 /* XTRefTokenTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DDB9319416EC12B100A6ABC6 /* XTRefTokenTest.m */; };
 		DDC75B8315D08E8F0087F2D4 /* NSDate+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC75B8215D08E8F0087F2D4 /* NSDate+Extensions.m */; };
 		DDD00551158FF551001B055E /* branch@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDD00550158FF551001B055E /* branch@2x.png */; };
@@ -332,6 +347,10 @@
 		DD3AC5B31611215C00238F58 /* XTRemoteBranchItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XTRemoteBranchItem.m; path = Xit/XTRemoteBranchItem.m; sourceTree = "<group>"; tabWidth = 2; };
 		DD579ADB15D08978007E4AFE /* NSDate+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "NSDate+Extensions.h"; sourceTree = "<group>"; };
 		DD592095156EEF40005FBB0F /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCMock.framework; sourceTree = SOURCE_ROOT; };
+		DD858B1D17FFDCB900264F7D /* XTTextPreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTTextPreviewController.h; sourceTree = "<group>"; };
+		DD858B1E17FFDCB900264F7D /* XTTextPreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTTextPreviewController.m; sourceTree = "<group>"; };
+		DD858B2B1801325500264F7D /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		DD858B331801B53D00264F7D /* XTFileViewControllerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTFileViewControllerTest.m; sourceTree = "<group>"; };
 		DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RBSplitView.xcodeproj; path = RBSplitView/RBSplitView.xcodeproj; sourceTree = "<group>"; };
 		DD96C930175B76990003A30C /* splitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splitter.png; sourceTree = "<group>"; };
 		DD96C937175ECE690003A30C /* XTFileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTFileViewController.h; sourceTree = "<group>"; };
@@ -345,6 +364,18 @@
 		DD997DF71746F40D00C7DF82 /* XTFileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTFileViewController.xib; sourceTree = "<group>"; };
 		DD9C1B8D160239DD0001FE9B /* XTRefToken.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTRefToken.h; sourceTree = "<group>"; };
 		DD9C1B8E160239DD0001FE9B /* XTRefToken.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTRefToken.m; sourceTree = "<group>"; };
+		DDA8A63017F5B6CE00AD9808 /* added.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = added.png; sourceTree = "<group>"; };
+		DDA8A63117F5B6CE00AD9808 /* added@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "added@2x.png"; sourceTree = "<group>"; };
+		DDA8A63217F5B6CE00AD9808 /* copied.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = copied.png; sourceTree = "<group>"; };
+		DDA8A63317F5B6CE00AD9808 /* copied@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "copied@2x.png"; sourceTree = "<group>"; };
+		DDA8A63417F5B6CE00AD9808 /* deleted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = deleted.png; sourceTree = "<group>"; };
+		DDA8A63517F5B6CE00AD9808 /* deleted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "deleted@2x.png"; sourceTree = "<group>"; };
+		DDA8A63617F5B6CE00AD9808 /* modified.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = modified.png; sourceTree = "<group>"; };
+		DDA8A63717F5B6CE00AD9808 /* modified@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "modified@2x.png"; sourceTree = "<group>"; };
+		DDA8A63817F5B6CE00AD9808 /* renamed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = renamed.png; sourceTree = "<group>"; };
+		DDA8A63917F5B6CE00AD9808 /* renamed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "renamed@2x.png"; sourceTree = "<group>"; };
+		DDA8A65D17F9ECED00AD9808 /* mixed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mixed.png; sourceTree = "<group>"; };
+		DDA8A65E17F9ECED00AD9808 /* mixed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mixed@2x.png"; sourceTree = "<group>"; };
 		DDB9319416EC12B100A6ABC6 /* XTRefTokenTest.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTRefTokenTest.m; sourceTree = "<group>"; tabWidth = 2; };
 		DDC75B8215D08E8F0087F2D4 /* NSDate+Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Extensions.m"; sourceTree = "<group>"; };
 		DDD00550158FF551001B055E /* branch@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "branch@2x.png"; sourceTree = "<group>"; };
@@ -373,6 +404,7 @@
 				C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */,
 				DDD4708516F96F7E00CA76FF /* QuickLook.framework in Frameworks */,
 				DDD4708716F9701600CA76FF /* Quartz.framework in Frameworks */,
+				DD858B2C1801325500264F7D /* CoreServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -399,6 +431,8 @@
 				31A8939C13E9D5B4008BE0C2 /* XTCommitViewController.xib */,
 				89D6FE6D17D2F89D00633798 /* XTCommitHeaderViewController.h */,
 				89D6FE6E17D2F89D00633798 /* XTCommitHeaderViewController.m */,
+				DD858B1D17FFDCB900264F7D /* XTTextPreviewController.h */,
+				DD858B1E17FFDCB900264F7D /* XTTextPreviewController.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -521,6 +555,18 @@
 		899D0106142168830091DC6F /* images */ = {
 			isa = PBXGroup;
 			children = (
+				DDA8A63017F5B6CE00AD9808 /* added.png */,
+				DDA8A63117F5B6CE00AD9808 /* added@2x.png */,
+				DDA8A63217F5B6CE00AD9808 /* copied.png */,
+				DDA8A63317F5B6CE00AD9808 /* copied@2x.png */,
+				DDA8A63417F5B6CE00AD9808 /* deleted.png */,
+				DDA8A63517F5B6CE00AD9808 /* deleted@2x.png */,
+				DDA8A65D17F9ECED00AD9808 /* mixed.png */,
+				DDA8A65E17F9ECED00AD9808 /* mixed@2x.png */,
+				DDA8A63617F5B6CE00AD9808 /* modified.png */,
+				DDA8A63717F5B6CE00AD9808 /* modified@2x.png */,
+				DDA8A63817F5B6CE00AD9808 /* renamed.png */,
+				DDA8A63917F5B6CE00AD9808 /* renamed@2x.png */,
 				895DEF0B142CF84D001763FC /* branch.png */,
 				DDD00550158FF551001B055E /* branch@2x.png */,
 				895DEF1E142D91F8001763FC /* historyTemplate.pdf */,
@@ -582,6 +628,7 @@
 		C3FA46FF13D0F8E200AC4F9B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DD858B2B1801325500264F7D /* CoreServices.framework */,
 				31A8939F13E9DA5B008BE0C2 /* WebKit.framework */,
 				C3FA470013D0F8E200AC4F9B /* Cocoa.framework */,
 				31355B0713EA139700C33AAB /* CoreFoundation.framework */,
@@ -661,12 +708,13 @@
 				C3FA472D13D0F8E300AC4F9B /* XTTest.m */,
 				311429B613EB600100A7DF05 /* XTCommitViewControllerTest.m */,
 				3199BABC142079BB008AAA4F /* XTFileListDataSourceTest.m */,
+				DD858B331801B53D00264F7D /* XTFileViewControllerTest.m */,
 				313014AE13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m */,
 				896B05CF15796D2A003B0C24 /* XTHistoryViewControllerTest.m */,
+				DDB9319416EC12B100A6ABC6 /* XTRefTokenTest.m */,
 				89FE824715A716E800E2EA2A /* XTRepositoryTests.m */,
 				313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */,
 				31C62D9713F2580E00845A9B /* XTStageViewControllerTest.m */,
-				DDB9319416EC12B100A6ABC6 /* XTRefTokenTest.m */,
 				89CD209017089D220051C3D4 /* XTCategoryTests.h */,
 				89CD209117089D220051C3D4 /* XTCategoryTests.m */,
 				89D6FE7B17D8457700633798 /* XTCommitHeaderTest.h */,
@@ -878,6 +926,18 @@
 				DD96C931175B76990003A30C /* splitter.png in Resources */,
 				89CD708417BFB4F500ECE7E3 /* submodule.png in Resources */,
 				89CD708517BFB4F500ECE7E3 /* submodule@2x.png in Resources */,
+				DDA8A63A17F5B6CE00AD9808 /* added.png in Resources */,
+				DDA8A63B17F5B6CE00AD9808 /* added@2x.png in Resources */,
+				DDA8A63C17F5B6CE00AD9808 /* copied.png in Resources */,
+				DDA8A63D17F5B6CE00AD9808 /* copied@2x.png in Resources */,
+				DDA8A63E17F5B6CE00AD9808 /* deleted.png in Resources */,
+				DDA8A63F17F5B6CE00AD9808 /* deleted@2x.png in Resources */,
+				DDA8A64017F5B6CE00AD9808 /* modified.png in Resources */,
+				DDA8A64117F5B6CE00AD9808 /* modified@2x.png in Resources */,
+				DDA8A64217F5B6CE00AD9808 /* renamed.png in Resources */,
+				DDA8A64317F5B6CE00AD9808 /* renamed@2x.png in Resources */,
+				DDA8A65F17F9ECED00AD9808 /* mixed.png in Resources */,
+				DDA8A66017F9ECED00AD9808 /* mixed@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -976,6 +1036,7 @@
 				DD96C9CE176EBD470003A30C /* GTRepository+Xit.m in Sources */,
 				895229CE17A95D0500EE514C /* XTSubmoduleItem.m in Sources */,
 				89D6FE6F17D2F89D00633798 /* XTCommitHeaderViewController.m in Sources */,
+				DD858B1F17FFDCB900264F7D /* XTTextPreviewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -994,6 +1055,7 @@
 				DDB9319516EC12B100A6ABC6 /* XTRefTokenTest.m in Sources */,
 				89CD209217089D220051C3D4 /* XTCategoryTests.m in Sources */,
 				89D6FE7D17D8457700633798 /* XTCommitHeaderTest.m in Sources */,
+				DD858B341801B53D00264F7D /* XTFileViewControllerTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

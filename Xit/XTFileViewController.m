@@ -1,8 +1,12 @@
 #import "XTFileViewController.h"
+
+#import <CoreServices/CoreServices.h>
+
 #import "XTCommitHeaderViewController.h"
 #import "XTFileListDataSource.h"
 #import "XTPreviewItem.h"
 #import "XTRepository.h"
+#import "XTTextPreviewController.h"
 #import <RBSplitView.h>
 
 @interface XTFileViewController ()
@@ -10,6 +14,25 @@
 @end
 
 @implementation XTFileViewController
+
++ (BOOL)fileNameIsText:(NSString*)name
+{
+  NSArray *extensionlessNames = @[
+      @"AUTHORS", @"CONTRIBUTING", @"COPYING", @"LICENSE", @"Makefile",
+      @"README", ];
+
+  for (NSString *extensionless in extensionlessNames)
+    if ([name isCaseInsensitiveLike:extensionless])
+      return YES;
+
+  NSString *extension = [name pathExtension];
+  const CFStringRef utType = UTTypeCreatePreferredIdentifierForTag(
+      kUTTagClassFilenameExtension, (__bridge CFStringRef)extension, NULL);
+  const Boolean result = UTTypeConformsTo(utType, kUTTypeText);
+  
+  CFRelease(utType);
+  return result;
+}
 
 - (void)setRepo:(XTRepository *)newRepo
 {
@@ -43,7 +66,7 @@
            object:fileListOutline];
 }
 
-- (void)updatePreviewItem
+- (void)updatePreview
 {
   NSIndexSet *selection = [fileListOutline selectedRowIndexes];
   const NSUInteger selectionCount = [selection count];
@@ -61,9 +84,22 @@
     previewItem.path = nil;
     return;
   }
-  [filePreview setHidden:NO];
-  previewItem.path =
-      [[fileListOutline itemAtRow:[selection firstIndex]] representedObject];
+
+  NSTreeNode *selectedNode = [fileListOutline itemAtRow:[selection firstIndex]];
+  XTCommitTreeItem *selectedItem = (XTCommitTreeItem*)
+      [selectedNode representedObject];
+
+  if ([[self class] fileNameIsText:selectedItem.path]) {
+    NSAssert([self.previewTabView indexOfTabViewItemWithIdentifier:@"text"] != NSNotFound, nil);
+    [self.previewTabView selectTabViewItemWithIdentifier:@"text"];
+    [textPreview loadPath:selectedItem.path
+                   commit:repo.selectedCommit
+               repository:repo];
+  } else {
+    [self.previewTabView selectTabViewItemWithIdentifier:@"preview"];
+    [filePreview setHidden:NO];
+    previewItem.path = selectedItem.path;
+  }
 }
 
 - (void)commitSelected:(NSNotification *)note
@@ -79,32 +115,8 @@
 
 - (void)refresh
 {
-  [self updatePreviewItem];
+  [self updatePreview];
   [filePreview refreshPreviewItem];
-}
-
-#pragma mark - NSOutlineViewDelegate
-
-- (NSView *)outlineView:(NSOutlineView *)outlineView
-     viewForTableColumn:(NSTableColumn *)tableColumn
-                   item:(id)item
-{
-  if (outlineView == fileListOutline) {
-    NSTableCellView *cell =
-        [outlineView makeViewWithIdentifier:@"fileCell" owner:self];
-    NSTreeNode *node = (NSTreeNode *)item;
-    NSString *fileName = (NSString *)node.representedObject;
-
-    if ([node isLeaf])
-      cell.imageView.image = [[NSWorkspace sharedWorkspace]
-          iconForFileType:[fileName pathExtension]];
-    else
-      cell.imageView.image = [NSImage imageNamed:NSImageNameFolder];
-    cell.textField.stringValue = [fileName lastPathComponent];
-
-    return cell;
-  }
-  return nil;
 }
 
 #pragma mark - RBSplitViewDelegate

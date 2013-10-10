@@ -21,6 +21,7 @@
 
 @end
 
+
 @implementation XTStageViewControllerTest
 
 - (void)addInitialRepoContent
@@ -131,7 +132,7 @@
                                              encoding:NSASCIIStringEncoding
                                                 error:nil];
 
-  [repository stageFile:@"--all"];
+  [repository stageAllFiles];
   [repository commitWithMessage:@"commit"
                           amend:NO
                     outputBlock:NULL
@@ -203,7 +204,7 @@
   [txt writeToFile:mv atomically:YES encoding:NSASCIIStringEncoding error:nil];
   [txt writeToFile:rm atomically:YES encoding:NSASCIIStringEncoding error:nil];
 
-  [repository stageFile:@"--all"];
+  [repository stageAllFiles];
   [repository commitWithMessage:@"commit"
                           amend:NO
                     outputBlock:NULL
@@ -235,7 +236,7 @@
                          idx, info.name);
   }];
 
-  [repository stageFile:@"--all"];
+  [repository stageAllFiles];
 
   XTStagedDataSource *stgds = [[XTStagedDataSource alloc] init];
   [stgds setRepo:repository];

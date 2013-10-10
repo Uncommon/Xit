@@ -8,6 +8,7 @@
                               nodes:(NSMutableDictionary *)nodes;
 @end
 
+
 @implementation XTFileListDataSource
 
 - (id)init
@@ -15,6 +16,14 @@
   self = [super init];
   if (self != nil) {
     root = [self makeNewRoot];
+    changeImages = @{
+        @( XitChangeAdded ) : [NSImage imageNamed:@"added"],
+        @( XitChangeCopied ) : [NSImage imageNamed:@"copied"],
+        @( XitChangeDeleted ) : [NSImage imageNamed:@"deleted"],
+        @( XitChangeModified ) : [NSImage imageNamed:@"modified"],
+        @( XitChangeRenamed ) : [NSImage imageNamed:@"renamed"],
+        @( XitChangeMixed ) : [NSImage imageNamed:@"mixed"],
+        };
   }
 
   return self;
@@ -27,7 +36,10 @@
 
 - (NSTreeNode *)makeNewRoot
 {
-  return [NSTreeNode treeNodeWithRepresentedObject:@"root"];
+  XTCommitTreeItem *rootItem = [[XTCommitTreeItem alloc] init];
+
+  rootItem.path = @"root";
+  return [NSTreeNode treeNodeWithRepresentedObject:rootItem];
 }
 
 - (void)setRepo:(XTRepository *)newRepo
@@ -62,15 +74,54 @@
   }];
 }
 
+- (void)updateChangeForNode:(NSTreeNode*)node
+{
+  XitChange change = XitChangeUnmodified;
+  BOOL firstItem = YES;
+
+  for (NSTreeNode *child in [node childNodes]) {
+    XTCommitTreeItem *childItem = (XTCommitTreeItem*)[child representedObject];
+
+    if (![child isLeaf])
+      [self updateChangeForNode:child];
+    if (firstItem)
+      change = childItem.change;
+    else if (change != childItem.change)
+      change = XitChangeMixed;
+    firstItem = NO;
+  }
+
+  XTCommitTreeItem *item = [node representedObject];
+
+  item.change = change;
+}
+
 - (NSTreeNode *)fileTreeForRef:(NSString *)ref
 {
   NSTreeNode *newRoot = [self makeNewRoot];
   NSMutableDictionary *nodes = [NSMutableDictionary dictionary];
+  NSArray *changeList = [repo changesForRef:ref parent:nil];
+  NSDictionary *changes = [[NSMutableDictionary alloc]
+      initWithCapacity:[changeList count]];
   NSArray *files = [repo fileNamesForRef:ref];
+  NSMutableArray *deletions =
+      [NSMutableArray arrayWithCapacity:[changes count]];
 
+  for (XTFileChange *change in changeList) {
+    [changes setValue:@( change.change ) forKey:change.path];
+    if (change.change == XitChangeDeleted)
+      [deletions addObject:change.path];
+  }
+  if ([deletions count] > 0)
+    files = [files arrayByAddingObjectsFromArray:deletions];
   for (NSString *file in files) {
+    XTCommitTreeItem *item = [[XTCommitTreeItem alloc] init];
+
+    item.path = file;
+    item.change = [changes[file] integerValue];
+
     NSString *path = [file stringByDeletingLastPathComponent];
-    NSTreeNode *node = [NSTreeNode treeNodeWithRepresentedObject:file];
+    NSTreeNode *node = [NSTreeNode treeNodeWithRepresentedObject:item];
 
     if (path.length == 0) {
       [[newRoot mutableChildNodes] addObject:node];
@@ -80,9 +131,10 @@
       [[parentNode mutableChildNodes] addObject:node];
     }
   }
+  [self updateChangeForNode:newRoot];
 
   NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]
-      initWithKey:@"lastPathComponent"
+      initWithKey:@"path.lastPathComponent"
         ascending:YES
          selector:@selector(localizedCaseInsensitiveCompare:)];
 
@@ -97,7 +149,11 @@
   NSTreeNode *pathNode = nodes[path];
 
   if (!pathNode) {
-    pathNode = [NSTreeNode treeNodeWithRepresentedObject:path];
+    XTCommitTreeItem *item = [[XTCommitTreeItem alloc] init];
+
+    item.path = path;
+
+    pathNode = [NSTreeNode treeNodeWithRepresentedObject:item];
     NSString *parentPath = [path stringByDeletingLastPathComponent];
     if (parentPath.length == 0) {
       [[parent mutableChildNodes] addObject:pathNode];
@@ -159,6 +215,85 @@
   NSTreeNode *node = (NSTreeNode *)item;
 
   return [node representedObject];
+}
+
+#pragma mark NSOutlineViewDelegate
+
+const CGFloat kChangeImagePadding = 8;
+
+- (NSView *)outlineView:(NSOutlineView *)outlineView
+     viewForTableColumn:(NSTableColumn *)tableColumn
+                   item:(id)item
+{
+  XTFileCellView *cell =
+      [outlineView makeViewWithIdentifier:@"fileCell" owner:controller];
+
+  if (![cell isKindOfClass:[XTFileCellView class]])
+    return cell;
+
+  NSTreeNode *node = (NSTreeNode*)item;
+  XTCommitTreeItem *treeItem = (XTCommitTreeItem*)[node representedObject];
+  NSString *path = treeItem.path;
+
+  if ([node isLeaf])
+    cell.imageView.image = [[NSWorkspace sharedWorkspace]
+        iconForFileType:[path pathExtension]];
+  else
+    cell.imageView.image = [NSImage imageNamed:NSImageNameFolder];
+  cell.textField.stringValue = [path lastPathComponent];
+
+  NSColor *textColor;
+
+  if (treeItem.change == XitChangeDeleted)
+    textColor = [NSColor disabledControlTextColor];
+  else if ([outlineView isRowSelected:[outlineView rowForItem:item]])
+    textColor = [NSColor selectedTextColor];
+  else
+    textColor = [NSColor textColor];
+  cell.textField.textColor = textColor;
+  cell.change = treeItem.change;
+
+  XitChange change = treeItem.change;
+  CGFloat textWidth;
+  const NSRect changeFrame = cell.changeImage.frame;
+  const NSRect textFrame = cell.textField.frame;
+
+  [cell.changeImage setHidden:change == XitChangeUnmodified];
+  if (change == XitChangeUnmodified) {
+    textWidth = changeFrame.origin.x + changeFrame.size.width -
+                textFrame.origin.x;
+  } else {
+    cell.changeImage.image = changeImages[@( change )];
+    textWidth = changeFrame.origin.x - kChangeImagePadding -
+                textFrame.origin.x;
+  }
+  [cell.textField setFrameSize:NSMakeSize(textWidth, textFrame.size.height)];
+
+  return cell;
+}
+
+@end
+
+
+@implementation XTCommitTreeItem
+
+- (NSString*)description
+{
+  return self.path;
+}
+
+@end
+
+
+@implementation XTFileCellView
+
+- (void)setBackgroundStyle:(NSBackgroundStyle)backgroundStyle
+{
+  [super setBackgroundStyle:backgroundStyle];
+  if (backgroundStyle == NSBackgroundStyleDark)
+    self.textField.textColor = [NSColor textColor];
+  else if (self.change == XitChangeDeleted)
+    self.textField.textColor = [NSColor disabledControlTextColor];
 }
 
 @end

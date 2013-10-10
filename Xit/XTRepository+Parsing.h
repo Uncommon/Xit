@@ -1,4 +1,5 @@
 #import "XTRepository.h"
+#include <git2/diff.h>
 
 extern NSString *XTHeaderNameKey;
 extern NSString *XTHeaderContentKey;
@@ -13,6 +14,20 @@ extern NSString *XTCommitSHAKey,
     *XTCommitterNameKey,
     *XTCommitterEmailKey,
     *XTCommitterDateKey;
+
+// Values used by changesForRef:
+typedef enum {
+  XitChangeUnmodified = GIT_DELTA_UNMODIFIED,
+  XitChangeAdded = GIT_DELTA_ADDED,
+  XitChangeDeleted = GIT_DELTA_DELETED,
+  XitChangeModified = GIT_DELTA_MODIFIED,
+  XitChangeRenamed = GIT_DELTA_RENAMED,
+  XitChangeCopied = GIT_DELTA_COPIED,
+  XitChangeIgnored = GIT_DELTA_IGNORED,
+  XitChangeUntracked = GIT_DELTA_UNTRACKED,
+  XitChangeTypeChange = GIT_DELTA_TYPECHANGE,
+  XitChangeMixed,  // For folders containing a mix of changes
+} XitChange;
 
 @class GTSubmodule;
 
@@ -35,6 +50,7 @@ extern NSString *XTCommitSHAKey,
               files:(NSArray**)files;
 
 - (BOOL)stageFile:(NSString*)file;
+- (BOOL)stageAllFiles;
 - (BOOL)unstageFile:(NSString*)file;
 
 - (BOOL)commitWithMessage:(NSString*)message
@@ -43,5 +59,13 @@ extern NSString *XTCommitSHAKey,
                     error:(NSError**)error;
 
 - (NSArray*)fileNamesForRef:(NSString*)ref;
+- (NSArray*)changesForRef:(NSString*)ref parent:(NSString*)parentSHA;
+
+@end
+
+@interface XTFileChange : NSObject
+
+@property NSString *path;
+@property XitChange change;
 
 @end

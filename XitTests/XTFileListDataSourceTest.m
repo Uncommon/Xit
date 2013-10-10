@@ -21,7 +21,7 @@
           atomically:YES
             encoding:NSASCIIStringEncoding
                error:nil];
-    [repository stageFile:@"--all"];
+    [repository stageAllFiles];
     [repository commitWithMessage:@"commit"
                             amend:NO
                       outputBlock:NULL
@@ -92,7 +92,7 @@
             encoding:NSASCIIStringEncoding
                error:nil];
   }
-  [repository stageFile:@"--all"];
+  [repository stageAllFiles];
   [repository commitWithMessage:@"commit"
                           amend:NO
                     outputBlock:NULL
@@ -109,13 +109,13 @@
   [flds setRepo:repository];
   [self waitForRepoQueue];
 
-  NSInteger nf = [flds outlineView:nil numberOfChildrenOfItem:nil];
-  STAssertTrue((nf == 2), @"found %d files", nf);
+  const NSInteger nf = [flds outlineView:nil numberOfChildrenOfItem:nil];
+  STAssertEquals(nf, 3L, nil); // 2 folders plus deleted file1.txt
 
-  for (int rootIdx = 0; rootIdx < nf; rootIdx++) {
+  for (int rootIdx = 0; rootIdx < 2; rootIdx++) {
     NSTreeNode *root = [flds outlineView:nil child:rootIdx ofItem:nil];
     NSInteger rnf = [flds outlineView:nil numberOfChildrenOfItem:root];
-    STAssertTrue((rnf == 3), @"found %d files", nf);
+    STAssertEquals(rnf, 3L, nil);
   }
 }
 

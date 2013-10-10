@@ -110,37 +110,37 @@
 - (BOOL)checkout:(NSString *)branch error:(NSError **)resultError
 {
   return [self executeWritingBlock:^BOOL{
-    NSError *localError = nil;
-    git_checkout_opts options = GIT_CHECKOUT_OPTS_INIT;
-    git_object *target;
-    git_repository *repo = self.gtRepo.git_repository;
+    cachedBranch = nil;
+    cachedHeadRef = nil;
+    cachedHeadSHA = nil;
 
-    options.checkout_strategy = GIT_CHECKOUT_SAFE_CREATE;
+    const GTCheckoutStrategyType strategy = GTCheckoutStrategySafeCreate;
+    NSString *branchRef = [[GTBranch localNamePrefix]
+        stringByAppendingPathComponent:branch];
+    GTReference *ref = [GTReference
+        referenceByLookingUpReferencedNamed:branchRef
+                               inRepository:gtRepo
+                                      error:resultError];
 
-    int result = git_revparse_single(&target, repo, [branch UTF8String]);
+    if (ref != nil)
+      return [gtRepo checkoutReference:ref
+                              strategy:strategy
+                                 error:resultError
+                         progressBlock:NULL];
 
-    if (result == 0)
-      result = git_checkout_tree(repo, target, &options);
-    if (result == 0) {
-      GTReference *head =
-          [GTReference referenceByLookingUpReferencedNamed:@"HEAD"
-                                              inRepository:self.gtRepo
-                                                     error:&localError];
+    if ([branch length] == 40) {
+      if (resultError != NULL)
+        *resultError = nil;
 
-      if (localError == nil) {
-        NSString *fullBranchName =
-            [[GTBranch localNamePrefix] stringByAppendingString:branch];
+      GTCommit *commit = [gtRepo lookupObjectBySHA:branch objectType:GTObjectTypeCommit error:resultError];
 
-        [head referenceByUpdatingTarget:fullBranchName error:&localError];
-        cachedBranch = nil;
-      }
+      if (commit != nil)
+        return [gtRepo checkoutCommit:commit
+                      strategy:strategy
+                         error:resultError
+                 progressBlock:NULL];
     }
-    if (result != 0)
-      localError = [NSError git_errorFor:result];
-
-    if (resultError != NULL)
-      *resultError = localError;
-    return localError == nil;
+    return NO;
   }];
 }
 

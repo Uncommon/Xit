@@ -8,6 +8,15 @@
 #import "XTUnstagedDataSource.h"
 #import "XTHTML.h"
 
+@interface XTStageViewController ()
+
+@property(readwrite) XTStagedDataSource *stageDS;
+@property(readwrite) XTUnstagedDataSource *unstageDS;
+@property(readwrite) NSTableView *unstageTable;
+
+@end
+
+
 @implementation XTStageViewController
 
 @synthesize message;
@@ -41,12 +50,11 @@
 {
   [stageDS reload];
   [unstageDS reload];
-    [repo executeOffMainThread:^
-    {
-      // Do this in the repo queue so it will happen after the reloads.
-      [stageTable reloadData];
-      [unstageTable reloadData];
-    }];
+  [repo executeOffMainThread:^{
+    // Do this in the repo queue so it will happen after the reloads.
+    [stageTable reloadData];
+    [unstageTable reloadData];
+  }];
 }
 
 #pragma mark -
@@ -84,11 +92,11 @@
                      outputBlock:outputBlock
                            error:&error])
       if (error != nil)
-        [XTStatusView
-            updateStatus:@"Commit failed"
-                 command:@"commit"
-                  output:[[error userInfo] valueForKey:XTErrorOutputKey]
-           forRepository:repo];
+        [XTStatusView updateStatus:@"Commit failed"
+                           command:@"commit"
+                            output:[[error userInfo]
+                                       valueForKey:XTErrorOutputKey]
+                     forRepository:repo];
     self.message = @"";
     [self reload];
     if ([sender respondsToSelector:@selector(setEnabled:)])
