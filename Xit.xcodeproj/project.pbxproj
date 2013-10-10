@@ -80,6 +80,9 @@
 		DD3AC5B41611215C00238F58 /* XTRemoteBranchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3AC5B31611215C00238F58 /* XTRemoteBranchItem.m */; };
 		DD592093156EEE64005FBB0F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		DD592096156EEF40005FBB0F /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD592095156EEF40005FBB0F /* OCMock.framework */; };
+		DD858B1F17FFDCB900264F7D /* XTTextPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD858B1E17FFDCB900264F7D /* XTTextPreviewController.m */; };
+		DD858B2C1801325500264F7D /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD858B2B1801325500264F7D /* CoreServices.framework */; };
+		DD858B341801B53D00264F7D /* XTFileViewControllerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD858B331801B53D00264F7D /* XTFileViewControllerTest.m */; };
 		DD96C92F17595AE10003A30C /* liblibRBSplitView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DD96C92117595A6E0003A30C /* liblibRBSplitView.a */; };
 		DD96C931175B76990003A30C /* splitter.png in Resources */ = {isa = PBXBuildFile; fileRef = DD96C930175B76990003A30C /* splitter.png */; };
 		DD96C939175ECE690003A30C /* XTFileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD96C938175ECE690003A30C /* XTFileViewController.m */; };
@@ -335,6 +338,10 @@
 		DD3AC5B31611215C00238F58 /* XTRemoteBranchItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XTRemoteBranchItem.m; path = Xit/XTRemoteBranchItem.m; sourceTree = "<group>"; tabWidth = 2; };
 		DD579ADB15D08978007E4AFE /* NSDate+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "NSDate+Extensions.h"; sourceTree = "<group>"; };
 		DD592095156EEF40005FBB0F /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCMock.framework; sourceTree = SOURCE_ROOT; };
+		DD858B1D17FFDCB900264F7D /* XTTextPreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTTextPreviewController.h; sourceTree = "<group>"; };
+		DD858B1E17FFDCB900264F7D /* XTTextPreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTTextPreviewController.m; sourceTree = "<group>"; };
+		DD858B2B1801325500264F7D /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		DD858B331801B53D00264F7D /* XTFileViewControllerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTFileViewControllerTest.m; sourceTree = "<group>"; };
 		DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RBSplitView.xcodeproj; path = RBSplitView/RBSplitView.xcodeproj; sourceTree = "<group>"; };
 		DD96C930175B76990003A30C /* splitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splitter.png; sourceTree = "<group>"; };
 		DD96C937175ECE690003A30C /* XTFileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTFileViewController.h; sourceTree = "<group>"; };
@@ -388,6 +395,7 @@
 				C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */,
 				DDD4708516F96F7E00CA76FF /* QuickLook.framework in Frameworks */,
 				DDD4708716F9701600CA76FF /* Quartz.framework in Frameworks */,
+				DD858B2C1801325500264F7D /* CoreServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,6 +419,8 @@
 				31A8939A13E9D5B4008BE0C2 /* XTCommitViewController.h */,
 				31A8939B13E9D5B4008BE0C2 /* XTCommitViewController.m */,
 				31A8939C13E9D5B4008BE0C2 /* XTCommitViewController.xib */,
+				DD858B1D17FFDCB900264F7D /* XTTextPreviewController.h */,
+				DD858B1E17FFDCB900264F7D /* XTTextPreviewController.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -606,6 +616,7 @@
 		C3FA46FF13D0F8E200AC4F9B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DD858B2B1801325500264F7D /* CoreServices.framework */,
 				31A8939F13E9DA5B008BE0C2 /* WebKit.framework */,
 				C3FA470013D0F8E200AC4F9B /* Cocoa.framework */,
 				31355B0713EA139700C33AAB /* CoreFoundation.framework */,
@@ -685,12 +696,13 @@
 				C3FA472D13D0F8E300AC4F9B /* XTTest.m */,
 				311429B613EB600100A7DF05 /* XTCommitViewControllerTest.m */,
 				3199BABC142079BB008AAA4F /* XTFileListDataSourceTest.m */,
+				DD858B331801B53D00264F7D /* XTFileViewControllerTest.m */,
 				313014AE13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m */,
 				896B05CF15796D2A003B0C24 /* XTHistoryViewControllerTest.m */,
+				DDB9319416EC12B100A6ABC6 /* XTRefTokenTest.m */,
 				89FE824715A716E800E2EA2A /* XTRepositoryTests.m */,
 				313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */,
 				31C62D9713F2580E00845A9B /* XTStageViewControllerTest.m */,
-				DDB9319416EC12B100A6ABC6 /* XTRefTokenTest.m */,
 				89CD209017089D220051C3D4 /* XTCategoryTests.h */,
 				89CD209117089D220051C3D4 /* XTCategoryTests.m */,
 			);
@@ -1007,6 +1019,7 @@
 				895229711786F7AB00EE514C /* XTToolbarDelegate.m in Sources */,
 				DD96C9CE176EBD470003A30C /* GTRepository+Xit.m in Sources */,
 				895229CE17A95D0500EE514C /* XTSubmoduleItem.m in Sources */,
+				DD858B1F17FFDCB900264F7D /* XTTextPreviewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1024,6 +1037,7 @@
 				89FE824815A716E800E2EA2A /* XTRepositoryTests.m in Sources */,
 				DDB9319516EC12B100A6ABC6 /* XTRefTokenTest.m in Sources */,
 				89CD209217089D220051C3D4 /* XTCategoryTests.m in Sources */,
+				DD858B341801B53D00264F7D /* XTFileViewControllerTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,0 +1,28 @@
+body {
+	background-color: #CCC;
+	font-family: monospace;
+	margin: 0px;
+	counter-reset: line;
+}
+div.page {
+	background-color: #EEE;
+	border-bottom: #888 1px;
+}
+div.page div {
+	background-color: white;
+	margin-left: 5.5ex;
+	min-height: 1em;
+	padding-left: 1ex;
+	white-space: pre-wrap;
+}
+div.page div:before {
+	content: counter(line);
+	counter-increment: line;
+	margin-top: 2pt;
+	width: 6ex;
+	position: absolute;
+	left: 3px;
+	text-align: right;
+	font-size: 0.75em;
+	-webkit-user-select: none;
+}

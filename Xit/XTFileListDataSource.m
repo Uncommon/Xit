@@ -254,7 +254,7 @@ const CGFloat kChangeImagePadding = 8;
   cell.change = treeItem.change;
 
   XitChange change = treeItem.change;
-  CGFloat textWidth = cell.textField.frame.size.width;
+  CGFloat textWidth;
   const NSRect changeFrame = cell.changeImage.frame;
   const NSRect textFrame = cell.textField.frame;
 
