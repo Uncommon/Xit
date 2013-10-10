@@ -21,6 +21,8 @@ NSDate *commitDate = nil;
 @interface FakeCommit : NSObject
 
 @property NSString *messageSummary;
+@property NSString *shortSHA;
+@property NSString *SHA;
 
 @end
 
@@ -50,7 +52,8 @@ NSDate *commitDate = nil;
 
   [webView setFrameLoadDelegate:hvc];
   [hvc setWebView:webView];
-  [hvc setRepository:(XTRepository*)fakeRepo commit:@"blahblah"];
+  hvc.repository = (XTRepository*)fakeRepo;
+  hvc.commitSHA = @"blahblah";
 
   [hvc loadHeader];
   [[NSRunLoop mainRunLoop] runUntilDate:
@@ -130,6 +133,8 @@ NSDate *commitDate = nil;
     commit.messageSummary = @"Broccoli&";
   if ([sha isEqualToString:@"3"])
     commit.messageSummary = @"Cypress";
+  commit.shortSHA = sha;
+  commit.SHA = sha;
   return commit;
 }
 

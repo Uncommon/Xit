@@ -20,6 +20,20 @@
   return formatter;
 }
 
++ (BOOL)isSelectorExcludedFromWebScript:(SEL)selector
+{
+  if (selector == @selector(selectSHA:))
+    return NO;
+  return YES;
+}
+
++ (NSString*)webScriptNameForSelector:(SEL)selector
+{
+  if (selector == @selector(selectSHA:))
+    return @"selectSHA";
+  return @"";
+}
+
 - (NSURL*)templateURL
 {
   return [[NSBundle mainBundle] URLForResource:@"header"
@@ -121,6 +135,8 @@ dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
     if (error != nil)
       continue;
     [parentDiv setClassName:@"parent"];
+    [parentDiv setAttribute:@"onclick" value:[NSString stringWithFormat:
+        @"window.controller.selectSHA('%@')", parentCommit.SHA]];
     [parentDiv setInnerHTML:encodedSummary];
     [parentsElement appendChild:parentDiv];
   }
@@ -128,6 +144,13 @@ dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
   if (!_expanded)
     [[self.webView windowScriptObject] callWebScriptMethod:@"disclosure"
                                              withArguments:@[]];
+
+  [[self.webView windowScriptObject] setValue:self forKey:@"controller"];
+}
+
+- (void)selectSHA:(NSString*)sha
+{
+  self.repository.selectedCommit = sha;
 }
 
 @end
