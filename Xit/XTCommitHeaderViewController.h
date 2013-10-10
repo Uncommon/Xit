@@ -1,10 +1,8 @@
-#import <Cocoa/Cocoa.h>
+#import "XTWebViewController.h"
 
-@class WebView;
 @class XTRepository;
-@protocol WebUIDelegate;
 
-@interface XTCommitHeaderViewController : NSViewController
+@interface XTCommitHeaderViewController : XTWebViewController
 {
   NSString *_commitSHA;
   BOOL _expanded;
@@ -12,7 +10,6 @@
 
 @property XTRepository *repository;
 @property NSString *commitSHA;
-@property IBOutlet WebView *webView;
 
 + (NSDateFormatter*)dateFormatter;
 - (void)setRepository:(XTRepository*)repository;

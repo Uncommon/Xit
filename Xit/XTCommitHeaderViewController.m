@@ -94,7 +94,7 @@
 
   NSString *html = [self generateHeaderHTML];
 
-  [[_webView mainFrame] loadHTMLString:html baseURL:[self templateURL]];
+  [[self.webView mainFrame] loadHTMLString:html baseURL:[self templateURL]];
 }
 
 - (NSString*)commitSHA
@@ -116,6 +116,8 @@ dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
 
 - (void)webView:(WebView*)sender didFinishLoadForFrame:(WebFrame*)frame
 {
+  [super webView:sender didFinishLoadForFrame:frame];
+
   DOMDocument *domDoc = [[sender mainFrame] DOMDocument];
   DOMElement *parentsElement = [domDoc getElementById:@"parents"];
   GTRepository *gtRepo = _repository.gtRepo;
@@ -144,8 +146,6 @@ dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
   if (!_expanded)
     [[self.webView windowScriptObject] callWebScriptMethod:@"disclosure"
                                              withArguments:@[]];
-
-  [[self.webView windowScriptObject] setValue:self forKey:@"controller"];
 }
 
 - (void)selectSHA:(NSString*)sha
