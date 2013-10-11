@@ -8,7 +8,7 @@
 {
   NSError *error = nil;
 
-  if (![GTRepository initializeEmptyRepositoryAtURL:repoURL error:&error])
+  if (![GTRepository initializeEmptyRepositoryAtFileURL:repoURL error:&error])
     return NO;
   gtRepo = [GTRepository repositoryWithURL:repoURL error:&error];
   return error == nil;
