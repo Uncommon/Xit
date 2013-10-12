@@ -3,6 +3,7 @@
 @class XTModDateTracker;
 @class XTRepository;
 
+#import <Cocoa/Cocoa.h>
 @interface XTStagingDataSourceBase : NSObject<NSTableViewDataSource> {
  @protected
   XTRepository *repo;

@@ -3,6 +3,7 @@
 @class XTRepository;
 @class XTHistoryItem;
 
+#import <Cocoa/Cocoa.h>
 @interface XTHistoryDataSource
     : NSObject<NSTableViewDataSource, NSTableViewDelegate> {
  @private

@@ -32,6 +32,7 @@ typedef enum {
 @class GTSubmodule;
 @class XTDiffDelta;
 
+#import <Cocoa/Cocoa.h>
 @interface XTRepository (Reading)
 
 - (BOOL)
@@ -67,7 +68,7 @@ typedef enum {
 
 @end
 
-
+#import <Cocoa/Cocoa.h>
 @interface XTFileChange : NSObject
 
 @property NSString *path;

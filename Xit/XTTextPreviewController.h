@@ -3,6 +3,7 @@
 @class WebView;
 @class XTRepository;
 
+#import <Cocoa/Cocoa.h>
 @interface XTTextPreviewController : NSViewController
 
 @property IBOutlet WebView *webView;

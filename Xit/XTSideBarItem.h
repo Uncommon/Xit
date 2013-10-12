@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "XTConstants.h"
 
+#import <Cocoa/Cocoa.h>
 @interface XTSideBarItem : NSObject {
  @private
   NSString *title;
@@ -26,6 +27,7 @@
 
 @end
 
+#import <Cocoa/Cocoa.h>
 @interface XTStashItem : XTSideBarItem {
 }
 

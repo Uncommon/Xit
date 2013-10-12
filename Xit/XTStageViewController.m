@@ -8,6 +8,7 @@
 #import "XTUnstagedDataSource.h"
 #import "XTHTML.h"
 
+#import <Cocoa/Cocoa.h>
 @interface XTStageViewController ()
 
 @property(readwrite) XTStagedDataSource *stageDS;

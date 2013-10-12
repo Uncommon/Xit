@@ -3,6 +3,7 @@
 #import "XTRepository+Commands.h"
 #import <OCMock/OCMock.h>
 
+#import <Cocoa/Cocoa.h>
 @interface XTRefTokenTest : SenTestCase
 
 @end

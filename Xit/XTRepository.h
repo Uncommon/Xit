@@ -7,6 +7,7 @@ extern NSString *XTPathsKey;
 
 @class GTRepository;
 
+#import <Cocoa/Cocoa.h>
 @interface XTRepository : NSObject {
  @private
   // The use of Objective Git should generally be considered an implementation

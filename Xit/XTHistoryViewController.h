@@ -9,6 +9,7 @@
 @class XTSideBarDataSource;
 @class XTSideBarOutlineView;
 
+#import <Cocoa/Cocoa.h>
 @interface XTHistoryViewController : NSViewController
 {
   IBOutlet XTSideBarDataSource *sideBarDS;

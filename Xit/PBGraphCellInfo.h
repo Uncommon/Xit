@@ -9,6 +9,7 @@
 #import <sys/types.h>
 #import "PBGitGraphLine.h"
 
+#import <Cocoa/Cocoa.h>
 @interface PBGraphCellInfo : NSObject {
   size_t position;
   struct PBGitGraphLine *lines;

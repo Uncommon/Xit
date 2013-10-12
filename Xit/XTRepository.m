@@ -10,6 +10,7 @@ NSString *XTPathsKey = @"paths";
 
 NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 
+#import <Cocoa/Cocoa.h>
 @interface XTRepository ()
 
 @property(readwrite) BOOL isWriting;

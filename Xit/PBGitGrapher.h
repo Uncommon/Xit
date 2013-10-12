@@ -10,6 +10,7 @@
 #import "PBGitGraphLine.h"
 #import "PBGraphCellInfo.h"
 
+#import <Cocoa/Cocoa.h>
 @interface PBGitGrapher : NSObject {
   PBGraphCellInfo *previous;
   void *pl;

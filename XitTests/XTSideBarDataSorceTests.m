@@ -8,18 +8,22 @@
 #import "XTHistoryItem.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
+#import <Cocoa/Cocoa.h>
 @interface XTSideBarDataSorceTests : XTTest
 
 @end
 
+#import <Cocoa/Cocoa.h>
 @interface MockTextField : NSObject
 @property(strong) NSString *stringValue;
 @end
 
+#import <Cocoa/Cocoa.h>
 @interface MockCellView : NSObject
 @property(readonly) MockTextField *textField;
 @end
 
+#import <Cocoa/Cocoa.h>
 @interface MockSidebarOutlineView : NSObject
 - (id)makeViewWithIdentifier:(NSString *)identifier owner:(id)owner;
 - (id)parentForItem:(id)item;

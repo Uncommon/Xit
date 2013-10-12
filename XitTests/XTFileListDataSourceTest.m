@@ -5,6 +5,7 @@
 #import "XTFileListDataSource.h"
 #import "XTHistoryItem.h"
 
+#import <Cocoa/Cocoa.h>
 @interface XTFileListDataSourceTest : XTTest
 
 @end

@@ -5,6 +5,7 @@
 #import "XTHistoryDataSource.h"
 #import "XTHistoryItem.h"
 
+#import <Cocoa/Cocoa.h>
 @interface XTHistoryDataSorceTests : XTTest
 
 @end

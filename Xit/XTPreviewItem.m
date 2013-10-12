@@ -1,6 +1,7 @@
 #import "XTPreviewItem.h"
 #import "XTRepository+Parsing.h"
 
+#import <Cocoa/Cocoa.h>
 @interface XTPreviewItem ()
 
 @property(readwrite) NSURL *previewItemURL;

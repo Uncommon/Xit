@@ -3,6 +3,7 @@
 
 @class XTRepository;
 
+#import <Cocoa/Cocoa.h>
 @interface XTHistoryItem : NSObject<NSCopying> {
  @private
   XTRepository *repo;

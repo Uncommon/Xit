@@ -3,6 +3,7 @@
 @class GTSubmodule;
 
 
+#import <Cocoa/Cocoa.h>
 @interface XTSubmoduleItem : XTSideBarItem
 
 @property GTSubmodule *submodule;
