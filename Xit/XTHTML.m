@@ -57,8 +57,8 @@
 
   NSString *file = [line substringFromIndex:b.location + b.length];
 
-  DLog(@"line=%@", line);
-  DLog(@"file=%@", file);
+  /*DLog*/NSLog(@"line=%@", line);
+  /*DLog*/NSLog(@"file=%@", file);
 
   return file;
 }
@@ -159,7 +159,7 @@
   int r_line;
 
   line = [lines nextObject];
-  DLog(@"-=%@=-", line);
+  /*DLog*/NSLog(@"-=%@=-", line);
 
   int arity = 0;  // How many files are merged here? Count the '@'!
   while ([line characterAtIndex:arity] == '@')
