@@ -12,8 +12,6 @@
 @implementation XTPreviewItem
 
 @synthesize previewItemURL;
-@synthesize repo;
-@synthesize tempFolder;
 
 - (id)init
 {
@@ -30,7 +28,7 @@
     const char *tempPath = mkdtemp(template);
 
     if (tempPath != NULL)
-      tempFolder = @(tempPath);
+      _tempFolder = @(tempPath);
     free(template);
   }
   return self;
@@ -38,7 +36,7 @@
 
 - (NSString *)tempFilePath
 {
-  return [tempFolder
+  return [_tempFolder
       stringByAppendingPathComponent:[self.path lastPathComponent]];
 }
 
@@ -54,7 +52,7 @@
 - (void)dealloc
 {
   [self deleteTempFile];
-  rmdir([tempFolder cStringUsingEncoding:NSUTF8StringEncoding]);
+  rmdir([_tempFolder cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
 - (void)remakeTempFile

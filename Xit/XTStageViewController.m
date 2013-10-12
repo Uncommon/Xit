@@ -20,7 +20,6 @@
 
 @implementation XTStageViewController
 
-@synthesize message;
 @synthesize stageDS;
 @synthesize unstageDS;
 @synthesize unstageTable;
