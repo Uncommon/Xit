@@ -8,6 +8,7 @@ extern NSString *const XTStatusTextKey;
 extern NSString *const XTStatusCommandKey;
 extern NSString *const XTStatusOutputKey;
 
+#import <Cocoa/Cocoa.h>
 @interface XTStatusView : FHTLCDStatusView {
   IBOutlet NSTextField *label;
   IBOutlet NSPopover *popover;

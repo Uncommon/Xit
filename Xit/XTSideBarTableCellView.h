@@ -4,6 +4,7 @@
 
 @class XTSideBarItem;
 
+#import <Cocoa/Cocoa.h>
 @interface XTSideBarTableCellView : NSTableCellView {
  @private
   NSButton *_button;

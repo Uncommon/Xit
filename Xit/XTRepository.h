@@ -7,6 +7,7 @@ extern NSString *XTPathsKey;
 
 @class GTRepository;
 
+#import <Cocoa/Cocoa.h>
 @interface XTRepository : NSObject {
  @private
   GTRepository *gtRepo;

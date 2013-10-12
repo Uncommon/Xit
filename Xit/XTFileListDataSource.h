@@ -5,6 +5,7 @@
 @class XTRepository;
 
 
+#import <Cocoa/Cocoa.h>
 @interface XTFileListDataSource : NSObject<NSOutlineViewDataSource> {
  @private
   XTRepository *repo;
@@ -20,6 +21,7 @@
 @end
 
 
+#import <Cocoa/Cocoa.h>
 @interface XTCommitTreeItem : NSObject
 
 @property NSString *path;
@@ -28,6 +30,7 @@
 @end
 
 
+#import <Cocoa/Cocoa.h>
 @interface XTFileCellView : NSTableCellView
 
 @property IBOutlet NSImageView *changeImage;

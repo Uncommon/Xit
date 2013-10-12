@@ -5,6 +5,7 @@
 #import "XTStageViewController.h"
 #import "XTStatusView.h"
 
+#import <Cocoa/Cocoa.h>
 @interface XTDocController (Private)
 
 - (void)loadViewController:(NSViewController *)viewController

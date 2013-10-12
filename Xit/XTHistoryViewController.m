@@ -19,6 +19,7 @@
 #import "PBGitRevisionCell.h"
 #import "RBSplitView.h"
 
+#import <Cocoa/Cocoa.h>
 @interface XTHistoryViewController ()
 
 - (void)editSelectedSidebarRow;

@@ -12,12 +12,14 @@
 #import "XTRepository+Parsing.h"
 #import <OCMock/OCMock.h>
 
+#import <Cocoa/Cocoa.h>
 @interface XTHistoryViewControllerTest : XTTest
 
 @property NSDictionary *statusData;
 
 @end
 
+#import <Cocoa/Cocoa.h>
 @interface XTHistoryViewControllerTestNoRepo : SenTestCase
 
 @end

@@ -1,6 +1,7 @@
 #import "XTTest.h"
 #import "XTFileViewController.h"
 
+#import <Cocoa/Cocoa.h>
 @interface XTFileViewControllerTest : SenTestCase
 
 @end

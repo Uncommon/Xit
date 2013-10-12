@@ -14,6 +14,7 @@ const NSString *kAuthorKeyName = @"name";
 const NSString *kAuthorKeyEmail = @"email";
 const NSString *kAuthorKeyDate = @"date";
 
+#import <Cocoa/Cocoa.h>
 @interface XTCommitViewController (Private)
 
 - (NSArray *)parseHeader:(NSString *)text;

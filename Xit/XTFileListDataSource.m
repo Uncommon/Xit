@@ -1,6 +1,7 @@
 #import "XTFileListDataSource.h"
 #import "XTRepository+Parsing.h"
 
+#import <Cocoa/Cocoa.h>
 @interface XTFileListDataSource ()
 - (NSTreeNode *)fileTreeForRef:(NSString *)ref;
 - (NSTreeNode *)findTreeNodeForPath:(NSString *)path

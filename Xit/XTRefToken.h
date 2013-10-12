@@ -4,6 +4,7 @@
 @class XTRepository;
 @class XTSideBarItem;
 
+#import <Cocoa/Cocoa.h>
 @interface XTRefToken : NSObject
 
 + (void)drawTokenForRefType:(XTRefType)type

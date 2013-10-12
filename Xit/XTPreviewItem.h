@@ -3,6 +3,7 @@
 
 @class XTRepository;
 
+#import <Cocoa/Cocoa.h>
 @interface XTPreviewItem : NSObject<QLPreviewItem> {
   NSString *path, *commitSHA;
   NSURL *previewItemURL;

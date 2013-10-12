@@ -6,6 +6,7 @@
 #import "XTTextPreviewController.h"
 #import <RBSplitView.h>
 
+#import <Cocoa/Cocoa.h>
 @interface XTFileViewController ()
 
 @end

@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 
+#import <Cocoa/Cocoa.h>
 @interface XTFileIndexInfo : NSObject {
  @private
   NSString *name;

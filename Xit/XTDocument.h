@@ -2,6 +2,7 @@
 
 @class XTRepository;
 
+#import <Cocoa/Cocoa.h>
 @interface XTDocument : NSDocument {
  @private
   NSURL *repoURL;

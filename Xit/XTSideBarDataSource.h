@@ -8,6 +8,7 @@
 @class XTRepository;
 @class XTSideBarItem;
 
+#import <Cocoa/Cocoa.h>
 @interface XTSideBarDataSource
     : NSObject<NSOutlineViewDataSource, NSOutlineViewDelegate> {
  @private

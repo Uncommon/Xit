@@ -3,6 +3,7 @@
 typedef void (^GTRepositoryRelativeStatusBlock)(
     NSString *path, GTRepositoryFileStatus status, BOOL *stop);
 
+#import <Cocoa/Cocoa.h>
 @interface GTRepository (Xit)
 
 // -[GTRepository enumerateFileStatusUsingBlock:] yields URLs with absolute

@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "XTLocalBranchItem.h"
 
+#import <Cocoa/Cocoa.h>
 @interface XTRemoteBranchItem : XTLocalBranchItem {
   NSString *remote;
 }
