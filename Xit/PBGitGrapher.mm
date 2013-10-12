@@ -135,7 +135,7 @@ void add_line(struct PBGitGraphLine *lines, int *nLines, int upper, size_t from,
         previous = [[PBGraphCellInfo alloc] initWithPosition:newPos andLines:lines];
 
     if (currentLine > maxLines)
-        DLog(@"Number of lines: %i vs allocated: %lu", currentLine, maxLines);
+        /*DLog*/NSLog(@"Number of lines: %i vs allocated: %lu", currentLine, maxLines);
 
     previous.nLines = currentLine;
 
