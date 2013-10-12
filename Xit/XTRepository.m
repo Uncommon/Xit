@@ -25,7 +25,6 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 @synthesize queue;
 @synthesize activeTasks;
 @synthesize repoURL;
-@synthesize isWriting;
 
 + (NSString *)gitPath
 {
