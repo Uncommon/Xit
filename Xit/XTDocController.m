@@ -17,7 +17,6 @@
 - (id)initWithDocument:(XTDocument *)doc
 {
   self = [super initWithWindowNibName:@"XTDocument"];
-
   document = doc;
 
   return self;
@@ -28,8 +27,9 @@
   [super windowDidLoad];
 
   [self loadViewController:historyView onTab:0];
+  [[self window] makeFirstResponder:historyView.historyTable];
   [self loadViewController:stageView onTab:1];
-
+  
   XTRepository *repo = document.repository;
 
   [repo addObserver:self
