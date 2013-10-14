@@ -56,6 +56,7 @@
 
 @property(readonly) XTSideBarDataSource *sideBarDS;
 @property(readonly) XTHistoryDataSource *historyDS;
+@property(readonly) NSTableView *historyTable;
 @property(readonly) NSMenu *branchContextMenu;
 @property(readonly) NSMenu *remoteContextMenu;
 @property(readonly) NSMenu *tagContextMenu;
