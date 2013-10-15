@@ -259,6 +259,26 @@ NSString *XTHeaderContentKey = @"content";
   return result;
 }
 
+- (XTDiffDelta*)diffForFile:(NSString*)path
+                  commitSHA:(NSString*)sha
+                  parentSHA:(NSString*)parentSHA
+{
+  GTDiff *diff = [self diffForSHA:sha parent:parentSHA];
+  
+  if (diff == nil)
+    return nil;
+
+  __block GTDiffDelta *result = nil;
+
+  [diff enumerateDeltasUsingBlock:^(GTDiffDelta *delta, BOOL *stop) {
+    if ([delta.newFile.path isEqualToString:path]) {
+      *stop = YES;
+      result = delta;
+    }
+  }];
+  return (XTDiffDelta*)result;
+}
+
 NSString *kHeaderFormat = @"--format="
                            "%H%n%T%n%P%n"     // commit, tree, and parent hashes
                            "%d%n"             // ref names

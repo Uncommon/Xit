@@ -26,3 +26,43 @@ div.page div:before {
 	font-size: 0.75em;
 	-webkit-user-select: none;
 }
+
+div.hunk {
+  display: table;
+  width: 100%;
+  margin-bottom: 1em;
+  background-color: white;
+  box-shadow: 0 3px 5px 0 gray;
+}
+div.hunk>div {
+  display: table-row;
+	white-space: pre-wrap;
+}
+div.hunk>div>span {
+  display: table-cell;
+}
+span.old, span.new {
+  position: relative;
+  width: 6ex;
+	font-size: 0.75em;
+  text-align: right;
+  padding-top: 2px;
+  padding-right: 2px;
+  border-right: 1px gray solid;
+	-webkit-user-select: none;
+}
+span.new {
+  margin-right: 2px;
+}
+span.text {
+  padding-left: 3px;
+}
+div.add {
+  background-color: #DFD;
+}
+div.del {
+  background-color: #FDD;
+}
+.empty {
+	-webkit-user-select: none;
+}

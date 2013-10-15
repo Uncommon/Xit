@@ -86,7 +86,6 @@
       [selectedNode representedObject];
 
   if ([[self class] fileNameIsText:selectedItem.path]) {
-    NSAssert([self.previewTabView indexOfTabViewItemWithIdentifier:@"text"] != NSNotFound, nil);
     [self.previewTabView selectTabViewItemWithIdentifier:@"text"];
     [textPreview loadPath:selectedItem.path
                    commit:repo.selectedCommit

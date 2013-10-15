@@ -1,5 +1,5 @@
 #import "XTRepository.h"
-#include <git2/diff.h>
+#import <ObjectiveGit/ObjectiveGit.h>
 
 extern NSString *XTHeaderNameKey;
 extern NSString *XTHeaderContentKey;
@@ -30,6 +30,7 @@ typedef enum {
 } XitChange;
 
 @class GTSubmodule;
+@class XTDiffDelta;
 
 @interface XTRepository (Reading)
 
@@ -60,12 +61,21 @@ typedef enum {
 
 - (NSArray*)fileNamesForRef:(NSString*)ref;
 - (NSArray*)changesForRef:(NSString*)ref parent:(NSString*)parentSHA;
+- (XTDiffDelta*)diffForFile:(NSString*)path
+                  commitSHA:(NSString*)sha
+                  parentSHA:(NSString*)parentSHA;
 
 @end
+
 
 @interface XTFileChange : NSObject
 
 @property NSString *path;
 @property XitChange change;
+
+@end
+
+
+@interface XTDiffDelta : GTDiffDelta
 
 @end
