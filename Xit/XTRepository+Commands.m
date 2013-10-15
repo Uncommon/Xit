@@ -213,6 +213,18 @@
   return [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
 }
 
+- (BOOL) copyRemoteURL:(NSString *)remoteName
+{
+  NSPasteboard *pasteBoard = [NSPasteboard generalPasteboard];
+  NSData *remoteURLData = [self executeGitWithArgs:@ [ @"config", @"--get", remoteName]
+                         writes:NO
+                           error:nil];
+  NSString *remoteURL = [[NSString alloc] initWithData:remoteURLData encoding:NSUTF8StringEncoding];
+  
+  [pasteBoard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
+  return [pasteBoard setString:remoteURL forType:NSStringPboardType];
+}
+
 - (NSString *)diffForUnstagedFile:(NSString *)file
 {
   NSData *output =
