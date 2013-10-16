@@ -213,16 +213,14 @@
   return [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
 }
 
-- (BOOL) copyRemoteURL:(NSString *)remoteName
+- (NSString *)getRemoteURL:(NSString *)remoteName
 {
-  NSPasteboard *pasteBoard = [NSPasteboard generalPasteboard];
-  NSData *remoteURLData = [self executeGitWithArgs:@ [ @"config", @"--get", remoteName]
-                         writes:NO
-                           error:nil];
-  NSString *remoteURL = [[NSString alloc] initWithData:remoteURLData encoding:NSUTF8StringEncoding];
+  NSString *remoteURL =
+      [[gtRepo configurationWithError:nil] stringForKey:remoteName];
   
-  [pasteBoard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
-  return [pasteBoard setString:remoteURL forType:NSStringPboardType];
+  if(remoteURL == nil)
+    return nil;
+  return remoteURL;
 }
 
 - (NSString *)diffForUnstagedFile:(NSString *)file

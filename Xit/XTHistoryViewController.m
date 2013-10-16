@@ -173,7 +173,7 @@
   }
   if (action == @selector(copyRemoteURL:)) {
     return [sidebarOutline parentForItem:item] ==
-    (sideBarDS.roots)[XTRemotesGroupIndex];
+           (sideBarDS.roots)[XTRemotesGroupIndex];
   }
   if ((action == @selector(popStash:)) || (action == @selector(applyStash:)) ||
       (action == @selector(dropStash:))) {
@@ -289,10 +289,16 @@
 }
 
 - (IBAction)copyRemoteURL:(id)sender {
-  XTSideBarItem *item = [sidebarOutline itemAtRow:[sidebarOutline contextMenuRow]];
-  NSString *remoteName = [[@"remote." stringByAppendingString:[item title]] stringByAppendingString:@".url"];
+  NSPasteboard *pasteBoard = [NSPasteboard generalPasteboard];
+  XTSideBarItem *item =
+      [sidebarOutline itemAtRow:[sidebarOutline contextMenuRow]];
+  NSString *remoteName =
+      [[NSString alloc] initWithFormat:@"remote.%@.url",[item title]];
+  NSString *remoteURL = [repo getRemoteURL:remoteName];
   
-  [repo copyRemoteURL:remoteName];
+  [pasteBoard declareTypes:[NSArray arrayWithObject:NSStringPboardType]
+                     owner:nil];
+  [pasteBoard setString:remoteURL forType:NSStringPboardType];
 }
 
 - (IBAction)popStash:(id)sender
