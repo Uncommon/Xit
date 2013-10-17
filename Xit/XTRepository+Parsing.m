@@ -178,6 +178,51 @@ NSString *XTHeaderContentKey = @"content";
   return result;
 }
 
+- (GTDiff*)diffForSHA:(NSString*)sha parent:(NSString*)parentSHA
+{
+  NSParameterAssert(sha != nil);
+  if (parentSHA == nil)
+    parentSHA = @"";
+
+  NSString *key = [sha stringByAppendingString:parentSHA];
+  GTDiff *diff = [diffCache objectForKey:key];
+
+  if (diff == nil) {
+    NSError *error = nil;
+    GTCommit *commit = [gtRepo lookupObjectBySHA:sha error:&error];
+
+    if ((commit == nil) ||
+        (git_object_type([commit git_object]) != GIT_OBJ_COMMIT))
+      return nil;
+
+    NSArray *parents = commit.parents;
+    GTCommit *parent = nil;
+
+    if ([parents count] != 0) {
+      if ([parentSHA isEqualToString:@""]) {
+        parent = parents[0];
+      } else {
+        for (GTCommit *iterParent in parents)
+          if ([iterParent.SHA isEqualToString:parentSHA]) {
+            parent = iterParent;
+            break;
+          }
+        if (parent == nil)
+          [NSException raise:NSInternalInconsistencyException
+                      format:@"Diff parent not found"];
+      }
+    }
+
+    diff = [GTDiff diffOldTree:parent.tree
+                   withNewTree:commit.tree
+                  inRepository:gtRepo
+                       options:nil
+                         error:&error];
+    [diffCache setObject:diff forKey:key];
+  }
+  return diff;
+}
+
 - (NSArray*)changesForRef:(NSString*)ref parent:(NSString*)parentSHA
 {
   if (ref == nil)
@@ -185,30 +230,19 @@ NSString *XTHeaderContentKey = @"content";
 
   NSError *error = nil;
   GTCommit *commit = [gtRepo lookupObjectByRefspec:ref error:&error];
-
-  if ((commit == nil) || git_object_type([commit git_object]) != GIT_OBJ_COMMIT)
+  
+  if ((commit == nil) ||
+      (git_object_type([commit git_object]) != GIT_OBJ_COMMIT))
     return nil;
+  if (parentSHA == nil) {
+    NSArray *parents = commit.parents;
 
-  NSArray *parents = commit.parents;
-  GTCommit *parent = nil;
-
-  if ([parents count] != 0) {
-    if (parentSHA == nil) {
-      parent = parents[0];
-    } else {
-      for (GTCommit *iterParent in parents)
-        if ([iterParent.SHA isEqualToString:parentSHA]) {
-          parent = iterParent;
-          break;
-        }
-    }
+    if ([parents count] > 0)
+      parentSHA = [parents[0] SHA];
   }
+  
+  GTDiff *diff = [self diffForSHA:commit.SHA parent:parentSHA];
 
-  GTDiff *diff = [GTDiff diffOldTree:parent.tree
-                         withNewTree:commit.tree
-                        inRepository:gtRepo
-                             options:nil
-                               error:&error];
   NSMutableArray *result = [NSMutableArray array];
 
   if (error != nil)
@@ -223,6 +257,26 @@ NSString *XTHeaderContentKey = @"content";
     }
   }];
   return result;
+}
+
+- (XTDiffDelta*)diffForFile:(NSString*)path
+                  commitSHA:(NSString*)sha
+                  parentSHA:(NSString*)parentSHA
+{
+  GTDiff *diff = [self diffForSHA:sha parent:parentSHA];
+  
+  if (diff == nil)
+    return nil;
+
+  __block GTDiffDelta *result = nil;
+
+  [diff enumerateDeltasUsingBlock:^(GTDiffDelta *delta, BOOL *stop) {
+    if ([delta.newFile.path isEqualToString:path]) {
+      *stop = YES;
+      result = delta;
+    }
+  }];
+  return (XTDiffDelta*)result;
 }
 
 NSString *kHeaderFormat = @"--format="

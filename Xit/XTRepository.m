@@ -58,6 +58,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
         [qName cStringUsingEncoding:NSASCIIStringEncoding],
         DISPATCH_QUEUE_SERIAL);
     activeTasks = [NSMutableArray array];
+    diffCache = [[NSCache alloc] init];
   }
 
   return self;

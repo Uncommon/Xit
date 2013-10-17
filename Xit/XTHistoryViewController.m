@@ -33,6 +33,7 @@
 @synthesize remoteContextMenu;
 @synthesize tagContextMenu;
 @synthesize stashContextMenu;
+@synthesize historyTable;
 
 - (id)initWithRepository:(XTRepository *)repository
                  sidebar:(XTSideBarOutlineView *)sidebar

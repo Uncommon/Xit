@@ -9,11 +9,14 @@ extern NSString *XTPathsKey;
 
 @interface XTRepository : NSObject {
  @private
+  // The use of Objective Git should generally be considered an implementation
+  // detail that should not be exposed to other classes.
   GTRepository *gtRepo;
   NSURL *repoURL;
   NSString *gitCMD;
   NSString *selectedCommit;
   NSString *cachedHeadRef, *cachedHeadSHA, *cachedBranch;
+  NSCache *diffCache;
   NSDictionary *refsIndex;
   FSEventStreamRef stream;
   dispatch_queue_t queue;
@@ -29,12 +32,12 @@ extern NSString *XTPathsKey;
 // +Commands or +Parsing.
 // Returns command output on success, or nil on failure.
 - (NSData*)executeGitWithArgs:(NSArray*)args
-                        writes:(BOOL)writes
-                         error:(NSError**)error;
+                       writes:(BOOL)writes
+                        error:(NSError**)error;
 - (NSData*)executeGitWithArgs:(NSArray*)args
-                     withStdIn:(NSString*)stdIn
-                        writes:(BOOL)writes
-                         error:(NSError**)error;
+                    withStdIn:(NSString*)stdIn
+                       writes:(BOOL)writes
+                        error:(NSError**)error;
 - (BOOL)executeWritingBlock:(BOOL (^)())block;
 
 - (BOOL)hasHeadReference;

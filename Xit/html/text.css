@@ -13,16 +13,70 @@ div.page div {
 	margin-left: 5.5ex;
 	min-height: 1em;
 	padding-left: 1ex;
+	border-left: 1px gray solid;
 	white-space: pre-wrap;
 }
 div.page div:before {
 	content: counter(line);
 	counter-increment: line;
-	margin-top: 2pt;
-	width: 6ex;
+	margin-top: 2px;
+	width: 22px;
 	position: absolute;
 	left: 3px;
 	text-align: right;
 	font-size: 0.75em;
+	-webkit-user-select: none;
+}
+
+div.hunk {
+  display: table;
+  width: 100%;
+  margin-bottom: 1em;
+  background-color: white;
+  box-shadow: 0 3px 5px 0 gray;
+}
+div.hunk>div {
+  display: table-row;
+	white-space: pre-wrap;
+}
+div.hunk>div>span {
+  display: table-cell;
+}
+span.old, span.new {
+  position: relative;
+  width: 25px;
+	font-size: 0.75em;
+  text-align: right;
+  padding-top: 2px;
+  padding-right: 4px;
+  border-right: 1px gray solid;
+  background-color: #EEE;
+	-webkit-user-select: none;
+}
+span.new {
+  margin-right: 2px;
+}
+span.text {
+  padding-left: 3px;
+}
+div.add {
+  background-color: #DFD;
+}
+div.del {
+  background-color: #FDD;
+}
+div.add>span.old {
+  background-color: #DFD;
+}
+div.add>span.new {
+  background-color: #DFD;
+}
+div.del>span.old {
+  background-color: #FDD;
+}
+div.del>span.new {
+  background-color: #FDD;
+}
+.empty {
 	-webkit-user-select: none;
 }

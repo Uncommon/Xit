@@ -31,9 +31,12 @@ Some other ideas that I’m looking forward to working on (and using!):
 
 ## Building
 
-The repository uses several submodules, so you will need to clone the repository rather than downloading the source archive. To begin, get the submodules set up with `git submodule update --init --recursive` from the root of the project. You will also need [CMake] to build libgit2. If you hit any snags, please file an issue.
+The repository uses several submodules, so you will need to clone the repository rather than downloading the source archive. To begin, get the submodules set up with `git submodule update --init --recursive` from the root of the project. You will also need [CMake] to build libgit2, and [Homebrew] for the other libraries used by Objective Git. If you hit any snags, please file an issue.
 
   [CMake]: http://cmake.org/
+  [Homebrew]: http://brew.sh
+
+Note that Objective Git needs the `objective-git/script/boostrap` script to be run to configure everything. If Objective Git is later updated, you may need to re-run the script.
 
 ## Contributing
 
