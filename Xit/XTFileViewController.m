@@ -118,6 +118,16 @@
   [filePreview refreshPreviewItem];
 }
 
+#pragma mark - NSSplitViewDelegate
+
+- (BOOL)splitView:(NSSplitView*)splitView
+    shouldAdjustSizeOfSubview:(NSView*)subview
+{
+  if (subview == headerController.view)
+    return NO;
+  return YES;
+}
+
 #pragma mark - RBSplitViewDelegate
 
 const CGFloat kSplitterBonus = 4;
