@@ -77,6 +77,8 @@
 
   self.parents = [header objectForKey:XTParentSHAsKey];
 
+  message = [message stringByTrimmingCharactersInSet:
+      [NSCharacterSet whitespaceAndNewlineCharacterSet]];
   return [NSString stringWithFormat:template,
       authorName, authorEmail, authorDateString,
       committerName, committerEmail, committerDateString,
@@ -126,6 +128,8 @@ dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
   for (NSString *parentSHA in self.parents) {
     DOMHTMLElement *parentDiv = (DOMHTMLElement*)
         [domDoc createElement:@"div"];
+    DOMHTMLElement *parentSpan = (DOMHTMLElement*)
+        [domDoc createElement:@"span"];
     GTCommit *parentCommit =
         [gtRepo lookupObjectBySHA:parentSHA error:&error];
 
@@ -136,11 +140,12 @@ dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
 
     if (error != nil)
       continue;
-    [parentDiv setClassName:@"parent"];
-    [parentDiv setAttribute:@"onclick" value:[NSString stringWithFormat:
+    [parentSpan setClassName:@"parent"];
+    [parentSpan setAttribute:@"onclick" value:[NSString stringWithFormat:
         @"window.controller.selectSHA('%@')", parentCommit.SHA]];
-    [parentDiv setInnerHTML:encodedSummary];
+    [parentSpan setInnerHTML:encodedSummary];
     [parentsElement appendChild:parentDiv];
+    [parentDiv appendChild:parentSpan];
   }
 
   if (!_expanded)
