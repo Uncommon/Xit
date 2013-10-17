@@ -12,7 +12,6 @@ extern NSString *XTPathsKey;
  @private
   // The use of Objective Git should generally be considered an implementation
   // detail that should not be exposed to other classes.
-  RL;
   NSString *gitCMD;
   NSString *cachedHeadRef, *cachedHeadSHA, *cachedBranch;
   NSCache *_diffCache;
