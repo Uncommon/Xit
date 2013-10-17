@@ -2,15 +2,19 @@
 #import "XTConstants.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
+@interface XTRepository ()
+@property(readwrite) GTRepository *gtRepo;
+@end
+
 @implementation XTRepository (Commands)
 
 - (BOOL)initializeRepository
 {
   NSError *error = nil;
 
-  if (![GTRepository initializeEmptyRepositoryAtURL:repoURL error:&error])
+  if (![GTRepository initializeEmptyRepositoryAtURL:self.repoURL error:&error])
     return NO;
-  gtRepo = [GTRepository repositoryWithURL:repoURL error:&error];
+  self.gtRepo = [GTRepository repositoryWithURL:self.repoURL error:&error];
   return error == nil;
 }
 
@@ -55,7 +59,7 @@
     NSString *fullBranch =
         [[GTBranch localNamePrefix] stringByAppendingString:name];
     GTBranch *branch =
-        [GTBranch branchWithName:fullBranch repository:gtRepo error:error];
+        [GTBranch branchWithName:fullBranch repository:self.gtRepo error:error];
 
     if (*error != nil)
       return NO;
@@ -68,7 +72,7 @@
 {
   if (cachedBranch == nil) {
     NSError *error = nil;
-    GTBranch *branch = [gtRepo currentBranchWithError:&error];
+    GTBranch *branch = [self.gtRepo currentBranchWithError:&error];
 
     if (error != nil)
       return nil;
@@ -119,11 +123,11 @@
         stringByAppendingPathComponent:branch];
     GTReference *ref = [GTReference
         referenceByLookingUpReferencedNamed:branchRef
-                               inRepository:gtRepo
+                               inRepository:self.gtRepo
                                       error:resultError];
 
     if (ref != nil)
-      return [gtRepo checkoutReference:ref
+      return [self.gtRepo checkoutReference:ref
                               strategy:strategy
                                  error:resultError
                          progressBlock:NULL];
@@ -132,10 +136,10 @@
       if (resultError != NULL)
         *resultError = nil;
 
-      GTCommit *commit = [gtRepo lookupObjectBySHA:branch objectType:GTObjectTypeCommit error:resultError];
+      GTCommit *commit = [self.gtRepo lookupObjectBySHA:branch objectType:GTObjectTypeCommit error:resultError];
 
       if (commit != nil)
-        return [gtRepo checkoutCommit:commit
+        return [self.gtRepo checkoutCommit:commit
                       strategy:strategy
                          error:resultError
                  progressBlock:NULL];
@@ -148,15 +152,15 @@
 {
   return [self executeWritingBlock:^BOOL{
     NSError *error = nil;
-    GTReference *headRef = [gtRepo headReferenceWithError:&error];
-    GTSignature *signature = [gtRepo userSignatureForNow];
+    GTReference *headRef = [self.gtRepo headReferenceWithError:&error];
+    GTSignature *signature = [self.gtRepo userSignatureForNow];
 
     if ((headRef == nil) || (signature == nil))
       return NO;
 
-    [gtRepo createTagNamed:name
+    [self.gtRepo createTagNamed:name
                     target:[headRef resolvedTarget]
-                    tagger:[gtRepo userSignatureForNow]
+                    tagger:[self.gtRepo userSignatureForNow]
                    message:msg
                      error:&error];
     return error == nil;
@@ -166,7 +170,7 @@
 - (BOOL)deleteTag:(NSString *)name error:(NSError *__autoreleasing *)error
 {
   return [self executeWritingBlock:^BOOL{
-    int result = git_tag_delete([gtRepo git_repository], [name UTF8String]);
+    int result = git_tag_delete([self.gtRepo git_repository], [name UTF8String]);
 
     if (result == 0)
       return YES;
@@ -351,7 +355,7 @@
   return [self executeWritingBlock:^BOOL{
     git_submodule *gitSub = NULL;
     int result = git_submodule_add_setup(
-        &gitSub, [gtRepo git_repository],
+        &gitSub, [self.gtRepo git_repository],
         [urlOrPath UTF8String], [path UTF8String], false);
 
     if ((result != 0) && (error != NULL)) {
