@@ -10,7 +10,6 @@ extern NSString *XTPathsKey;
 #import <Cocoa/Cocoa.h>
 @interface XTRepository : NSObject {
  @private
-  RL;
   NSString *gitCMD;
   NSString *cachedHeadRef, *cachedHeadSHA, *cachedBranch;
   FSEventStreamRef stream;
