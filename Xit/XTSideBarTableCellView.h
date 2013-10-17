@@ -7,8 +7,6 @@
 #import <Cocoa/Cocoa.h>
 @interface XTSideBarTableCellView : NSTableCellView {
  @private
-  NSButton *_button;
-  XTSideBarItem *__weak item;
 }
 
 @property(strong) IBOutlet NSButton *button;

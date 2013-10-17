@@ -3,8 +3,6 @@
 #import <Cocoa/Cocoa.h>
 @interface XTFileIndexInfo : NSObject {
  @private
-  NSString *name;
-  NSString *status;
 }
 
 @property(strong) NSString *name;

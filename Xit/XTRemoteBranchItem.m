@@ -2,7 +2,6 @@
 
 @implementation XTRemoteBranchItem
 
-@synthesize remote;
 
 - (id)initWithTitle:(NSString *)theTitle
              remote:(NSString *)remoteName

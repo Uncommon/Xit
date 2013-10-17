@@ -4,9 +4,6 @@
 #import <Cocoa/Cocoa.h>
 @interface XTSideBarItem : NSObject {
  @private
-  NSString *title;
-  NSString *sha;
-  NSMutableArray *children;
 }
 
 @property(strong) NSString *title;

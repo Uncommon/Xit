@@ -8,13 +8,12 @@
 
 @implementation XTHistoryDataSource
 
-@synthesize items;
 
 - (id)init
 {
   self = [super init];
   if (self) {
-    items = [NSMutableArray array];
+    _items = [NSMutableArray array];
     index = [NSMutableDictionary dictionary];
   }
 
@@ -102,7 +101,7 @@
     }
 
     dispatch_async(dispatch_get_main_queue(), ^{
-      items = newItems;
+      _items = newItems;
       index = newIndex;
       [table reloadData];
       if (headRow != -1)
@@ -193,14 +192,14 @@
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
-  return [items count];
+  return [_items count];
 }
 
 - (id)tableView:(NSTableView *)aTableView
     objectValueForTableColumn:(NSTableColumn *)aTableColumn
                           row:(NSInteger)rowIndex
 {
-  XTHistoryItem *item = items[rowIndex];
+  XTHistoryItem *item = _items[rowIndex];
 
   return [item valueForKey:aTableColumn.identifier];
 }

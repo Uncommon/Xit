@@ -11,7 +11,6 @@
 
 @implementation XTPreviewItem
 
-@synthesize previewItemURL;
 
 - (id)init
 {
