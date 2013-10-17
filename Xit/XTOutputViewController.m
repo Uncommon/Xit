@@ -5,7 +5,6 @@ static float HeightForText(NSString *text, NSFont *font, float width);
 
 @implementation XTOutputViewController
 
-@synthesize popover;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -19,16 +18,16 @@ static float HeightForText(NSString *text, NSFont *font, float width);
 
 - (NSSize)ownerSize
 {
-  if (popover != nil)
-    return popover.contentSize;
+  if (_popover != nil)
+    return _popover.contentSize;
   else
     return [[[self.view window] contentView] frame].size;
 }
 
 - (void)setOwnerSize:(NSSize)size
 {
-  if (popover != nil)
-    popover.contentSize = size;
+  if (_popover != nil)
+    _popover.contentSize = size;
   else
     [[self.view window] setContentSize:size];
 }

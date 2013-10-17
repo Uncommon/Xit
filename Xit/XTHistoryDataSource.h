@@ -8,7 +8,6 @@
     : NSObject<NSTableViewDataSource, NSTableViewDelegate> {
  @private
   XTRepository *repo;
-  NSArray *items;
   IBOutlet NSTableView *table;
   NSMutableDictionary *index;
 }

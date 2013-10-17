@@ -10,15 +10,10 @@ extern NSString *XTPathsKey;
 #import <Cocoa/Cocoa.h>
 @interface XTRepository : NSObject {
  @private
-  GTRepository *gtRepo;
-  NSURL *repoURL;
+  RL;
   NSString *gitCMD;
-  NSString *selectedCommit;
   NSString *cachedHeadRef, *cachedHeadSHA, *cachedBranch;
-  NSDictionary *refsIndex;
   FSEventStreamRef stream;
-  dispatch_queue_t queue;
-  NSMutableArray *activeTasks;
 }
 
 - (id)initWithURL:(NSURL*)url;
