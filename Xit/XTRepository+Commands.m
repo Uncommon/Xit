@@ -213,13 +213,11 @@
   return [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
 }
 
-- (NSString *)getRemoteURL:(NSString *)remoteName
+- (NSString *)urlStringForRemote:(NSString *)remoteName
 {
   NSString *remoteURL =
       [[gtRepo configurationWithError:nil] stringForKey:remoteName];
   
-  if(remoteURL == nil)
-    return nil;
   return remoteURL;
 }
 

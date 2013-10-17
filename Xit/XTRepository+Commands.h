@@ -26,7 +26,7 @@
 - (BOOL)renameBranch:(NSString*)branch to:(NSString*)newName;
 - (BOOL)renameTag:(NSString*)branch to:(NSString*)newName;
 - (BOOL)renameRemote:(NSString*)branch to:(NSString*)newName;
-- (NSString *)getRemoteURL:(NSString*)remoteName;
+- (NSString *)urlStringForRemote:(NSString*)remoteName;
 
 - (BOOL)saveStash:(NSString*)name;
 - (BOOL)popStash:(NSString*)name error:(NSError**)error;

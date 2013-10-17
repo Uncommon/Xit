@@ -293,12 +293,15 @@
   XTSideBarItem *item =
       [sidebarOutline itemAtRow:[sidebarOutline contextMenuRow]];
   NSString *remoteName =
-      [[NSString alloc] initWithFormat:@"remote.%@.url",[item title]];
-  NSString *remoteURL = [repo getRemoteURL:remoteName];
+      [[NSString alloc] initWithFormat:@"remote.%@.url", [item title]];
+  NSString *remoteURL = [repo urlStringForRemote:remoteName];
   
   [pasteBoard declareTypes:[NSArray arrayWithObject:NSStringPboardType]
                      owner:nil];
-  [pasteBoard setString:remoteURL forType:NSStringPboardType];
+  
+  if(!([remoteURL length] == 0)) {
+    [pasteBoard setString:remoteURL forType:NSStringPboardType];
+  }
 }
 
 - (IBAction)popStash:(id)sender
