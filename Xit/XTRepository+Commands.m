@@ -14,7 +14,7 @@
 
   if (![GTRepository initializeEmptyRepositoryAtFileURL:self.repoURL error:&error])
     return NO;
-  GTRepository *gtRepo = [GTRepository repositoryWithURL:self.repoURL error:&error];
+  GTRepository *gtRepo = [GTRepository repositoryWithURL:self.repoURL error:&error]; // TODO: Why are we initializing a second GTRepository here?
   _gtRepo = gtRepo;
   return _gtRepo != nil;
 }
