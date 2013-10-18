@@ -14,8 +14,9 @@
 
   if (![GTRepository initializeEmptyRepositoryAtFileURL:self.repoURL error:&error])
     return NO;
-  self.gtRepo = [GTRepository repositoryWithURL:self.repoURL error:&error];
-  return error == nil;
+  GTRepository *gtRepo = [GTRepository repositoryWithURL:self.repoURL error:&error];
+  _gtRepo = gtRepo;
+  return _gtRepo != nil;
 }
 
 - (BOOL)saveStash:(NSString *)name
