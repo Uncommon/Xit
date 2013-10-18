@@ -10,6 +10,7 @@
 
   if (![GTRepository initializeEmptyRepositoryAtFileURL:repoURL error:&error])
     return NO;
+  // TODO: Why are we initializing a second GTRepository here?
   gtRepo = [GTRepository repositoryWithURL:repoURL error:&error];
   return error == nil;
 }
