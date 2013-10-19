@@ -299,7 +299,7 @@
   [pasteBoard declareTypes:[NSArray arrayWithObject:NSStringPboardType]
                      owner:nil];
   
-  if([remoteURL length] > 0) {
+  if ([remoteURL length] > 0) {
     [pasteBoard setString:remoteURL forType:NSStringPboardType];
   }
 }
