@@ -213,6 +213,14 @@
   return [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
 }
 
+- (NSString *)urlStringForRemote:(NSString *)remoteName
+{
+  NSString *remoteURL =
+      [[gtRepo configurationWithError:nil] stringForKey:remoteName];
+  
+  return remoteURL;
+}
+
 - (NSString *)diffForUnstagedFile:(NSString *)file
 {
   NSData *output =

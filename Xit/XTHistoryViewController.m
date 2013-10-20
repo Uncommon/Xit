@@ -171,6 +171,10 @@
     return [sidebarOutline parentForItem:item] ==
            (sideBarDS.roots)[XTRemotesGroupIndex];
   }
+  if (action == @selector(copyRemoteURL:)) {
+    return [sidebarOutline parentForItem:item] ==
+           (sideBarDS.roots)[XTRemotesGroupIndex];
+  }
   if ((action == @selector(popStash:)) || (action == @selector(applyStash:)) ||
       (action == @selector(dropStash:))) {
     if (repo.isWriting)
@@ -282,6 +286,22 @@
                       [repo deleteRemote:[item title] error:error]; }
      verifyingClass:[XTRemoteItem class]
         errorString:@"Delete remote failed"];
+}
+
+- (IBAction)copyRemoteURL:(id)sender {
+  NSPasteboard *pasteBoard = [NSPasteboard generalPasteboard];
+  XTSideBarItem *item =
+      [sidebarOutline itemAtRow:[sidebarOutline contextMenuRow]];
+  NSString *remoteName =
+      [[NSString alloc] initWithFormat:@"remote.%@.url", [item title]];
+  NSString *remoteURL = [repo urlStringForRemote:remoteName];
+  
+  [pasteBoard declareTypes:[NSArray arrayWithObject:NSStringPboardType]
+                     owner:nil];
+  
+  if ([remoteURL length] > 0) {
+    [pasteBoard setString:remoteURL forType:NSStringPboardType];
+  }
 }
 
 - (IBAction)popStash:(id)sender
