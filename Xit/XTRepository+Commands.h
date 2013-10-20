@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "XTRepository.h"
 
+#import <Cocoa/Cocoa.h>
 @interface XTRepository (Commands)
 
 - (BOOL)initializeRepository;

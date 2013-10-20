@@ -4,10 +4,12 @@
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
 
+#import <Cocoa/Cocoa.h>
 @interface XTRepositoryTests : XTTest
 
 @end
 
+#import <Cocoa/Cocoa.h>
 @interface XTRepository (Test)
 
 @property(readwrite) BOOL isWriting;

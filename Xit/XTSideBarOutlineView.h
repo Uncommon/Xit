@@ -2,6 +2,7 @@
 
 @class XTHistoryViewController;
 
+#import <Cocoa/Cocoa.h>
 @interface XTSideBarOutlineView : NSOutlineView
 {
   IBOutlet XTHistoryViewController *controller;

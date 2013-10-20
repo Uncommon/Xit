@@ -13,6 +13,7 @@
 
 @class PBGitGrapher;
 
+#import <Cocoa/Cocoa.h>
 @interface PBGitHistoryGrapher : NSObject {
   PBGitGrapher *grapher;
 }

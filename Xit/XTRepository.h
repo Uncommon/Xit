@@ -7,20 +7,16 @@ extern NSString *XTPathsKey;
 
 @class GTRepository;
 
+#import <Cocoa/Cocoa.h>
 @interface XTRepository : NSObject {
  @private
   // The use of Objective Git should generally be considered an implementation
   // detail that should not be exposed to other classes.
-  GTRepository *gtRepo;
-  NSURL *repoURL;
+  GTRepository *_gtRepo;
   NSString *gitCMD;
-  NSString *selectedCommit;
   NSString *cachedHeadRef, *cachedHeadSHA, *cachedBranch;
-  NSCache *diffCache;
-  NSDictionary *refsIndex;
+  NSCache *_diffCache;
   FSEventStreamRef stream;
-  dispatch_queue_t queue;
-  NSMutableArray *activeTasks;
 }
 
 - (id)initWithURL:(NSURL*)url;

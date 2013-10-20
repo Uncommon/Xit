@@ -2,6 +2,7 @@
 
 @class XTRepository;
 
+#import <Cocoa/Cocoa.h>
 @interface XTTest : SenTestCase {
   NSString *repoPath;
   NSString *remoteRepoPath;

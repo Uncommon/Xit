@@ -6,6 +6,7 @@
 @class XTRepository;
 @class XTStatusView;
 
+#import <Cocoa/Cocoa.h>
 @interface XTDocController : NSWindowController {
   IBOutlet XTHistoryViewController *historyView;
   IBOutlet XTStageViewController *stageView;

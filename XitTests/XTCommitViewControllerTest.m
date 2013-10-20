@@ -4,6 +4,7 @@
 #import "XTSideBarDataSource.h"
 #import "XTCommitViewController.h"
 
+#import <Cocoa/Cocoa.h>
 @interface XTCommitViewControllerTest : XTTest
 
 @end

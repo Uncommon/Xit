@@ -9,6 +9,7 @@
 #import "PBGitGrapher.h"
 #import "PBGraphCellInfo.h"
 
+#import <Cocoa/Cocoa.h>
 @interface PBGitRevisionCell : NSTextFieldCell {
   PBGraphCellInfo *cellInfo;
   NSTextFieldCell *textCell;

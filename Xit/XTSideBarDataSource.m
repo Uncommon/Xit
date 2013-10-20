@@ -12,6 +12,7 @@
 #import "NSMutableDictionary+MultiObjectForKey.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
+#import <Cocoa/Cocoa.h>
 @interface XTSideBarDataSource ()
 - (NSArray *)loadRoots;
 @end

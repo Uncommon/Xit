@@ -9,10 +9,12 @@
 
 #import <OCMock/OCMock.h>
 
+#import <Cocoa/Cocoa.h>
 @interface XTStageViewControllerTest : XTTest
 
 @end
 
+#import <Cocoa/Cocoa.h>
 @interface XTStageViewController (Test)
 
 @property(readwrite) XTStagedDataSource *stageDS;

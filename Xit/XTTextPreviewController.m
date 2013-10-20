@@ -7,6 +7,7 @@
 // They left this one out.
 const NSInteger WebMenuItemTagInspectElement = 2024;
 
+#import <Cocoa/Cocoa.h>
 @interface XTTextPreviewController ()
 
 @end

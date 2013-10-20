@@ -6,6 +6,7 @@
 @class XTUnstagedDataSource;
 @class XTFileIndexInfo;
 
+#import <Cocoa/Cocoa.h>
 @interface XTStageViewController
     : NSViewController<DOMEventListener, NSTableViewDelegate> {
   IBOutlet XTStagedDataSource *stageDS;

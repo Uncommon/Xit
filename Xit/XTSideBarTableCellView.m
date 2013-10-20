@@ -4,8 +4,6 @@
 
 @implementation XTSideBarTableCellView
 
-@synthesize button = _button;
-@synthesize item;
 
 - (void)awakeFromNib
 {

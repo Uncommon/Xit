@@ -1,11 +1,9 @@
 #import <Foundation/Foundation.h>
 #import "XTConstants.h"
 
+#import <Cocoa/Cocoa.h>
 @interface XTSideBarItem : NSObject {
  @private
-  NSString *title;
-  NSString *sha;
-  NSMutableArray *children;
 }
 
 @property(strong) NSString *title;
@@ -26,6 +24,7 @@
 
 @end
 
+#import <Cocoa/Cocoa.h>
 @interface XTStashItem : XTSideBarItem {
 }
 

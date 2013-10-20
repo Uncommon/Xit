@@ -6,6 +6,7 @@
 @class XTTextPreviewController;
 @class RBSplitView;
 
+#import <Cocoa/Cocoa.h>
 @interface XTFileViewController : NSViewController
 {
   IBOutlet RBSplitView *splitView;

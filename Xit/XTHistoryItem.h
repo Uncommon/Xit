@@ -3,17 +3,9 @@
 
 @class XTRepository;
 
+#import <Cocoa/Cocoa.h>
 @interface XTHistoryItem : NSObject<NSCopying> {
  @private
-  XTRepository *repo;
-  NSString *sha;
-  NSString *shortSha;
-  NSMutableArray *parents;
-  NSDate *date;
-  NSString *email;
-  NSString *subject;
-  PBGraphCellInfo *lineInfo;
-  NSUInteger index;
 }
 
 @property(strong) XTRepository *repo;
