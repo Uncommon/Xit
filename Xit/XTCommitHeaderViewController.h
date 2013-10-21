@@ -2,6 +2,10 @@
 
 @class XTRepository;
 
+extern NSString *XTHeaderResizedNotificaiton;
+extern NSString *XTHeaderHeightKey;
+
+
 @interface XTCommitHeaderViewController : XTWebViewController
 {
   NSString *_commitSHA;

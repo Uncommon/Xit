@@ -3,6 +3,9 @@
 #import <ObjectiveGit/ObjectiveGit.h>
 #import "XTRepository+Parsing.h"
 
+NSString *XTHeaderResizedNotificaiton = @"XTHeaderResizedNotificaiton";
+NSString *XTHeaderHeightKey = @"height";
+
 @interface XTCommitHeaderViewController ()
 
 @property NSArray *parents;
@@ -23,6 +26,8 @@
 + (BOOL)isSelectorExcludedFromWebScript:(SEL)selector
 {
   if (selector == @selector(selectSHA:))
+    return NO;
+  if (selector == @selector(headerToggled))
     return NO;
   return YES;
 }
@@ -110,6 +115,21 @@
   [self loadHeader];
 }
 
+- (CGFloat)headerHeight
+{
+  const NSRect savedFrame = [self.webView frame];
+
+  [self.webView setFrame:NSMakeRect(0, 0, savedFrame.size.width, 1)];
+
+  const CGFloat result =
+      [[[[self.webView mainFrame] frameView] documentView] frame].size.height;
+
+  [self.webView setFrame:savedFrame];
+  return result;
+}
+
+#pragma mark - WebView delegate methods
+
 - (NSUInteger)webView:(WebView*)sender
 dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
 {
@@ -153,9 +173,21 @@ dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
                                              withArguments:@[]];
 }
 
+#pragma mark - Web scripting
+
 - (void)selectSHA:(NSString*)sha
 {
   self.repository.selectedCommit = sha;
+}
+
+- (void)headerToggled
+{
+  const CGFloat newHeight = [self headerHeight];
+
+  [[NSNotificationCenter defaultCenter]
+      postNotificationName:XTHeaderResizedNotificaiton
+      object:self
+      userInfo:@{ XTHeaderHeightKey: @(newHeight) }];
 }
 
 @end

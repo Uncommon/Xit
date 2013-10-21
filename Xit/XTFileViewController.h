@@ -9,6 +9,7 @@
 
 @interface XTFileViewController : NSViewController
 {
+  IBOutlet NSSplitView *headerSplitView;
   IBOutlet RBSplitView *splitView;
   IBOutlet NSView *leftPane, *rightPane;
   IBOutlet NSOutlineView *fileListOutline;

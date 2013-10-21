@@ -18,4 +18,5 @@ function disclosure()
 		document.getElementById(hidingIds[index]).style.display = newDisplay;
 	}
 	button.src = newImage;
+  window.controller.headerToggled();
 }

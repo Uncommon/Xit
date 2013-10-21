@@ -9,9 +9,16 @@
 #import "XTTextPreviewController.h"
 #import <RBSplitView.h>
 
+@interface NSSplitView (Animating)
+
+- (void)animatePosition:(CGFloat)position ofDividerAtIndex:(NSInteger)index;
+
+@end
+
 @interface XTFileViewController ()
 
 @end
+
 
 @implementation XTFileViewController
 
@@ -64,6 +71,11 @@
          selector:@selector(fileSelectionChanged:)
              name:NSOutlineViewSelectionDidChangeNotification
            object:fileListOutline];
+  [[NSNotificationCenter defaultCenter]
+      addObserver:self
+         selector:@selector(headerResized:)
+             name:XTHeaderResizedNotificaiton
+           object:headerController];
 }
 
 - (void)updatePreview
@@ -110,6 +122,13 @@
 - (void)fileSelectionChanged:(NSNotification *)note
 {
   [self refresh];
+}
+
+- (void)headerResized:(NSNotification*)note
+{
+  const CGFloat newHeight = [[note userInfo][XTHeaderHeightKey] floatValue];
+
+  [headerSplitView animatePosition:newHeight ofDividerAtIndex:0];
 }
 
 - (void)refresh
@@ -162,6 +181,32 @@ const CGFloat kSplitterBonus = 4;
   else if ([sender mouse:point inRect:frame2])
     return position;
   return NSNotFound;
+}
+
+@end
+
+@implementation NSSplitView (Animating)
+
+- (void)animatePosition:(CGFloat)position ofDividerAtIndex:(NSInteger)index
+{
+  NSView *targetView = [self subviews][index];
+  NSRect endFrame = [targetView frame];
+
+  if ([self isVertical])
+      endFrame.size.width = position;
+  else
+      endFrame.size.height = position;
+
+  NSDictionary *windowResize = @{
+      NSViewAnimationTargetKey: targetView,
+      NSViewAnimationEndFrameKey: [NSValue valueWithRect: endFrame],
+      };
+  NSViewAnimation *animation =
+      [[NSViewAnimation alloc] initWithViewAnimations:@[ windowResize ]];
+
+  [animation setAnimationBlockingMode:NSAnimationBlocking];
+  [animation setDuration:0.2];
+  [animation startAnimation];
 }
 
 @end
