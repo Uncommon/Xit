@@ -2,6 +2,7 @@
 #import "XTDocController.h"
 #import "XTRepository.h"
 #import "XTStatusView.h"
+#include "XTQueueUtils.h"
 
 @implementation XTDocument
 
@@ -56,6 +57,15 @@
                                 userInfo:userInfo];
   }
   return NO;
+}
+
+- (void)canCloseDocumentWithDelegate:(id)delegate shouldCloseSelector:(SEL)shouldCloseSelector contextInfo:(void *)contextInfo
+{
+  [repo shutDown];
+  WaitForQueue(repo.queue);
+  [super canCloseDocumentWithDelegate:delegate
+                  shouldCloseSelector:shouldCloseSelector
+                          contextInfo:contextInfo];
 }
 
 - (void)updateChangeCount:(NSDocumentChangeType)change

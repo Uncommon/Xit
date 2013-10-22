@@ -200,7 +200,7 @@
   XTSideBarItem *item = [sidebarOutline itemAtRow:[self targetRow]];
 
   if ([item isKindOfClass:class]) {
-    dispatch_async(repo.queue, ^{
+    [repo executeOffMainThread:^{
       NSError *error = nil;
 
       block(item, &error);
@@ -210,7 +210,7 @@
                  command:[[error userInfo] valueForKey:XTErrorArgsKey]
                   output:[[error userInfo] valueForKey:XTErrorOutputKey]
            forRepository:repo];
-    });
+    }];
   }
 }
 

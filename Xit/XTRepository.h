@@ -55,6 +55,7 @@ extern NSString *XTPathsKey;
 - (void)addReloadObserver:(id)observer selector:(SEL)selector;
 
 - (void)executeOffMainThread:(void (^)())block;
+- (void)shutDown;
 - (void)addTask:(NSTask*)task;
 - (void)removeTask:(NSTask*)task;
 
@@ -65,6 +66,7 @@ extern NSString *XTPathsKey;
 @property(readonly) NSMutableArray *activeTasks;
 @property(readonly) NSURL *repoURL;
 @property(readonly) BOOL isWriting;
+@property(readonly) BOOL isShutDown;
 
 @end
 

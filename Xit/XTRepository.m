@@ -13,6 +13,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 @interface XTRepository ()
 
 @property(readwrite) BOOL isWriting;
+@property(readwrite) BOOL isShutDown;
 
 @end
 
@@ -80,10 +81,17 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 
 - (void)executeOffMainThread:(void (^)())block
 {
-  if ([NSThread isMainThread])
-    dispatch_async(queue, block);
-  else
+  if ([NSThread isMainThread]) {
+    if (!self.isShutDown)
+      dispatch_async(queue, block);
+  } else {
     block();
+  }
+}
+
+- (void)shutDown
+{
+  self.isShutDown = YES;
 }
 
 - (void)addTask:(NSTask *)task

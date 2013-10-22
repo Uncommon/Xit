@@ -117,6 +117,7 @@
 		DDD4708716F9701600CA76FF /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDD4708616F9701600CA76FF /* Quartz.framework */; };
 		DDD9E33615953952007EF2F6 /* XTStagingDataSourceBase.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD9E33515953952007EF2F6 /* XTStagingDataSourceBase.m */; };
 		DDDA447215B0EA4700DF407B /* XTRepository+Parsing.m in Sources */ = {isa = PBXBuildFile; fileRef = DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */; };
+		DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */ = {isa = PBXBuildFile; fileRef = DDDDAF1318162212009F8BA1 /* XTQueueUtils.c */; };
 		DDE55DDF1613C6C000CCAC03 /* XTModDateTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = DDE55DDE1613C6C000CCAC03 /* XTModDateTracker.m */; };
 		DDF9BB3A162E29C3004588B6 /* tag.png in Resources */ = {isa = PBXBuildFile; fileRef = DDF9BB38162E29C3004588B6 /* tag.png */; };
 		DDF9BB3B162E29C3004588B6 /* tag@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDF9BB39162E29C3004588B6 /* tag@2x.png */; };
@@ -387,6 +388,8 @@
 		DDD9E33515953952007EF2F6 /* XTStagingDataSourceBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTStagingDataSourceBase.m; sourceTree = "<group>"; };
 		DDDA447015B0E97000DF407B /* XTRepository+Parsing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XTRepository+Parsing.h"; sourceTree = "<group>"; };
 		DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XTRepository+Parsing.m"; sourceTree = "<group>"; };
+		DDDDAF1318162212009F8BA1 /* XTQueueUtils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = XTQueueUtils.c; sourceTree = "<group>"; };
+		DDDDAF2018162258009F8BA1 /* XTQueueUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTQueueUtils.h; sourceTree = "<group>"; };
 		DDE55DDD1613C6C000CCAC03 /* XTModDateTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTModDateTracker.h; sourceTree = "<group>"; };
 		DDE55DDE1613C6C000CCAC03 /* XTModDateTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTModDateTracker.m; sourceTree = "<group>"; };
 		DDF9BB38162E29C3004588B6 /* tag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tag.png; sourceTree = "<group>"; };
@@ -468,6 +471,8 @@
 				C343F91013F4908E009C928A /* XTHTML.m */,
 				DDE55DDD1613C6C000CCAC03 /* XTModDateTracker.h */,
 				DDE55DDE1613C6C000CCAC03 /* XTModDateTracker.m */,
+				DDDDAF1318162212009F8BA1 /* XTQueueUtils.c */,
+				DDDDAF2018162258009F8BA1 /* XTQueueUtils.h */,
 				DD9C1B8D160239DD0001FE9B /* XTRefToken.h */,
 				DD9C1B8E160239DD0001FE9B /* XTRefToken.m */,
 				89AC82411806769A00402955 /* XTWebViewController.h */,
@@ -1003,6 +1008,7 @@
 				C3D6D32213E91EDC00AF50B0 /* PBGitRevisionCell.m in Sources */,
 				31A8939D13E9D5B4008BE0C2 /* XTCommitViewController.m in Sources */,
 				31C7C12E13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m in Sources */,
+				DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */,
 				31C7C13313ECC74C00A65FE9 /* XTHistoryViewController.m in Sources */,
 				31C62D9E13F25A6200845A9B /* XTUnstagedDataSource.m in Sources */,
 				31C62DA113F2638600845A9B /* XTFileIndexInfo.m in Sources */,

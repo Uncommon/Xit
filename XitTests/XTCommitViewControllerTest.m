@@ -3,6 +3,7 @@
 #import "XTSideBarItem.h"
 #import "XTSideBarDataSource.h"
 #import "XTCommitViewController.h"
+#include "XTQueueUtils.h"
 
 @interface XTCommitViewControllerTest : XTTest
 
@@ -22,7 +23,7 @@
   XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
   [sbds setRepo:repository];
   [self waitForRepoQueue];
-  [self waitForQueue:dispatch_get_main_queue()];
+  WaitForQueue(dispatch_get_main_queue());
 
   id tags = [sbds outlineView:nil child:XTTagsGroupIndex ofItem:nil];
   NSInteger count = [sbds outlineView:nil numberOfChildrenOfItem:tags];

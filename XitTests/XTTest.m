@@ -2,6 +2,7 @@
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
+#include "XTQueueUtils.h"
 
 @implementation XTTest
 
@@ -111,28 +112,9 @@
   return repo;
 }
 
-- (void)waitForQueue:(dispatch_queue_t)queue
-{
-  // Some queued tasks need to also perform tasks on the main thread, so
-  // simply waiting on the queue could cause a deadlock.
-  const CFRunLoopRef loop = CFRunLoopGetCurrent();
-  __block BOOL keepLooping = YES;
-
-  // Loop because something else might quit the run loop.
-  do {
-    CFRunLoopPerformBlock(loop, kCFRunLoopCommonModes, ^{
-      dispatch_async(queue, ^{
-        CFRunLoopStop(loop);
-        keepLooping = NO;
-      });
-    });
-    CFRunLoopRun();
-  } while (keepLooping);
-}
-
 - (void)waitForRepoQueue
 {
-  [self waitForQueue:repository.queue];
+  WaitForQueue(repository.queue);
 }
 
 - (BOOL)writeTextToFile1:(NSString *)text

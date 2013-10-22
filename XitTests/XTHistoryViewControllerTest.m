@@ -11,6 +11,7 @@
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
 #import <OCMock/OCMock.h>
+#include "XTQueueUtils.h"
 
 @interface XTHistoryViewControllerTest : XTTest
 
@@ -288,7 +289,7 @@
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
   [[[mockSidebar expect] andReturn:masterItem] itemAtRow:row];
   [controller mergeBranch:nil];
-  [self waitForQueue:dispatch_get_main_queue()];
+  WaitForQueue(dispatch_get_main_queue());
   STAssertEqualObjects([self.statusData valueForKey:XTStatusTextKey],
                        @"Merged master into task", nil);
 
@@ -334,7 +335,7 @@
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
   [[[mockSidebar expect] andReturn:masterItem] itemAtRow:row];
   [controller mergeBranch:nil];
-  [self waitForQueue:dispatch_get_main_queue()];
+  WaitForQueue(dispatch_get_main_queue());
   STAssertEqualObjects([self.statusData valueForKey:XTStatusTextKey],
                        @"Merge failed", nil);
 }

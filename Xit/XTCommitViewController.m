@@ -47,7 +47,8 @@ const NSString *kAuthorKeyDate = @"date";
 {
   if ([keyPath isEqualToString:@"selectedCommit"]) {
     NSString *newSelectedCommit = change[NSKeyValueChangeNewKey];
-    dispatch_async(repo.queue, ^{ [self loadCommit:newSelectedCommit]; });
+
+    [repo executeOffMainThread:^{ [self loadCommit:newSelectedCommit]; }];
   }
 }
 
