@@ -41,6 +41,11 @@
   return result;
 }
 
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)setRepo:(XTRepository *)newRepo
 {
   repo = newRepo;
