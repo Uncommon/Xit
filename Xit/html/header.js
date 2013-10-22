@@ -3,7 +3,7 @@ function isCollapsed()
   return document.getElementById('committer').style.display == 'none'
 }
 
-function disclosure()
+function disclosure(clicked)
 {
 	var button = document.getElementById("triangle");
 	var hidingIds = ['committer', 'sha', 'parents'];
@@ -18,5 +18,6 @@ function disclosure()
 		document.getElementById(hidingIds[index]).style.display = newDisplay;
 	}
 	button.src = newImage;
-  window.controller.headerToggled();
+  if (clicked)
+    window.controller.headerToggled();
 }
