@@ -1,14 +1,24 @@
 #import "XTFileViewController.h"
+
 #import <CoreServices/CoreServices.h>
+
+#import "XTCommitHeaderViewController.h"
 #import "XTFileListDataSource.h"
 #import "XTPreviewItem.h"
 #import "XTRepository.h"
 #import "XTTextPreviewController.h"
 #import <RBSplitView.h>
 
+@interface NSSplitView (Animating)
+
+- (void)animatePosition:(CGFloat)position ofDividerAtIndex:(NSInteger)index;
+
+@end
+
 @interface XTFileViewController ()
 
 @end
+
 
 @implementation XTFileViewController
 
@@ -31,10 +41,16 @@
   return result;
 }
 
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)setRepo:(XTRepository *)newRepo
 {
   repo = newRepo;
   [fileListDS setRepo:newRepo];
+  headerController.repository = newRepo;
   ((XTPreviewItem *)filePreview.previewItem).repo = newRepo;
 }
 
@@ -60,6 +76,11 @@
          selector:@selector(fileSelectionChanged:)
              name:NSOutlineViewSelectionDidChangeNotification
            object:fileListOutline];
+  [[NSNotificationCenter defaultCenter]
+      addObserver:self
+         selector:@selector(headerResized:)
+             name:XTHeaderResizedNotificaiton
+           object:headerController];
 }
 
 - (void)updatePreview
@@ -99,6 +120,7 @@
 
 - (void)commitSelected:(NSNotification *)note
 {
+  headerController.commitSHA = [repo selectedCommit];
   [self refresh];
 }
 
@@ -107,10 +129,27 @@
   [self refresh];
 }
 
+- (void)headerResized:(NSNotification*)note
+{
+  const CGFloat newHeight = [[note userInfo][XTHeaderHeightKey] floatValue];
+
+  [headerSplitView animatePosition:newHeight ofDividerAtIndex:0];
+}
+
 - (void)refresh
 {
   [self updatePreview];
   [filePreview refreshPreviewItem];
+}
+
+#pragma mark - NSSplitViewDelegate
+
+- (BOOL)splitView:(NSSplitView*)splitView
+    shouldAdjustSizeOfSubview:(NSView*)subview
+{
+  if (subview == headerController.view)
+    return NO;
+  return YES;
 }
 
 #pragma mark - RBSplitViewDelegate
@@ -147,6 +186,32 @@ const CGFloat kSplitterBonus = 4;
   else if ([sender mouse:point inRect:frame2])
     return position;
   return NSNotFound;
+}
+
+@end
+
+@implementation NSSplitView (Animating)
+
+- (void)animatePosition:(CGFloat)position ofDividerAtIndex:(NSInteger)index
+{
+  NSView *targetView = [self subviews][index];
+  NSRect endFrame = [targetView frame];
+
+  if ([self isVertical])
+      endFrame.size.width = position;
+  else
+      endFrame.size.height = position;
+
+  NSDictionary *windowResize = @{
+      NSViewAnimationTargetKey: targetView,
+      NSViewAnimationEndFrameKey: [NSValue valueWithRect: endFrame],
+      };
+  NSViewAnimation *animation =
+      [[NSViewAnimation alloc] initWithViewAnimations:@[ windowResize ]];
+
+  [animation setAnimationBlockingMode:NSAnimationBlocking];
+  [animation setDuration:0.2];
+  [animation startAnimation];
 }
 
 @end

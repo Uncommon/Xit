@@ -1,11 +1,9 @@
-#import <Cocoa/Cocoa.h>
+#import "XTWebViewController.h"
 
 @class WebView;
 @class XTRepository;
 
-@interface XTTextPreviewController : NSViewController
-
-@property IBOutlet WebView *webView;
+@interface XTTextPreviewController : XTWebViewController
 
 - (void)loadText:(NSString*)text;
 - (BOOL)loadPath:(NSString*)path

@@ -1,0 +1,37 @@
+body {
+  font-family: Helvetica;
+  font-size: 12;
+  line-height: 16px;
+}
+.name { font-weight: bold }
+.date { color: #888; float: right }
+.label {
+  font-weight: bold; color: #888;
+  cursor: default;
+  -webkit-user-select: none;
+}
+.nametag {
+  cursor: default;
+  -webkit-user-select: none;
+}
+.shablock { float: right }
+body > div { margin-top: 4px }
+.parent {
+  padding-left: 14px;
+  margin-left: 2px
+  cursor: default;
+  -webkit-user-select: none;
+}
+.parent:hover {
+	background-image: url(follow.png);
+	background-repeat: no-repeat;
+	background-size: 10px;
+	background-position: 1px 1px;
+}
+
+#table {
+  display: table;
+  width: 100%;
+}
+#row { display: table-row }
+.cell { display: table-cell }

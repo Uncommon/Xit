@@ -1,0 +1,36 @@
+<head>
+  <link href="header.css" rel="stylesheet">
+	<script src="header.js"></script>
+</head>
+<body>
+<div id="table"><div id="row">
+	<div class="cell">
+		<img src="undisclosed.png" onclick="disclosure()" id="triangle">
+	</div>
+	<div class="cell">
+    <div>
+      <span class="name">Guy One &lt;guy1@example.com&gt;</span>
+      <span class="nametag">(author)</span>
+      <span class="date">%@</span>
+    </div>
+    <div id="committer" style="display: none; ">
+      <span class="name">Guy Two &lt;guy2@example.com&gt;</span>
+      <span>(committer)</span>
+      <span class="date">%@</span>
+    </div>
+    <div id="sha" style="display: none; ">
+      <div class="shablock">
+        <span class="label">SHA: </span>
+        <span>blahblah</span>
+      </div>
+      <span class="label">Parents:</span>
+    </div>
+    <div id="parents" style="display: none; ">
+    <div class="parent" onclick="window.controller.selectSHA('1')">Alphabet&lt;&gt;</div><div class="parent" onclick="window.controller.selectSHA('2')">Broccoli&amp;</div><div class="parent" onclick="window.controller.selectSHA('3')">Cypress</div></div>
+    <pre>Example message
+    </pre>
+  </div>
+</div></div>
+
+
+</body>

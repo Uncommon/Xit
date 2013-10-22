@@ -48,11 +48,16 @@
 		89991CDD144E3FF400097A99 /* XTStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 89991CDC144E3FF400097A99 /* XTStatusView.m */; };
 		899D010D14216D2C0091DC6F /* sidebarTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 899D010C14216D2C0091DC6F /* sidebarTemplate.png */; };
 		89A6EA2814478DA40089B212 /* XTAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A6EA2714478DA40089B212 /* XTAppDelegate.m */; };
+		89AC82431806769A00402955 /* XTWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89AC82421806769A00402955 /* XTWebViewController.m */; };
 		89BEB8BC157B587600FED57B /* OCMock.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = DD592095156EEF40005FBB0F /* OCMock.framework */; };
 		89CD209217089D220051C3D4 /* XTCategoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89CD209117089D220051C3D4 /* XTCategoryTests.m */; };
 		89CD708417BFB4F500ECE7E3 /* submodule.png in Resources */ = {isa = PBXBuildFile; fileRef = 89CD708217BFB4F500ECE7E3 /* submodule.png */; };
 		89CD708517BFB4F500ECE7E3 /* submodule@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89CD708317BFB4F500ECE7E3 /* submodule@2x.png */; };
 		89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */; };
+		89D6FE6F17D2F89D00633798 /* XTCommitHeaderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D6FE6E17D2F89D00633798 /* XTCommitHeaderViewController.m */; };
+		89D6FE7D17D8457700633798 /* XTCommitHeaderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D6FE7C17D8457700633798 /* XTCommitHeaderTest.m */; };
+		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
+		89E927DF17E977340093DA6C /* expected header.html in Resources */ = {isa = PBXBuildFile; fileRef = 89E927DE17E977340093DA6C /* expected header.html */; };
 		89FE824815A716E800E2EA2A /* XTRepositoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89FE824715A716E800E2EA2A /* XTRepositoryTests.m */; };
 		C343F91113F4908E009C928A /* XTHTML.m in Sources */ = {isa = PBXBuildFile; fileRef = C343F91013F4908E009C928A /* XTHTML.m */; };
 		C358653114048A3F00060C53 /* XTRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = C358653014048A3F00060C53 /* XTRepository.m */; };
@@ -275,12 +280,19 @@
 		899D010C14216D2C0091DC6F /* sidebarTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sidebarTemplate.png; sourceTree = "<group>"; };
 		89A6EA2614478DA40089B212 /* XTAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTAppDelegate.h; sourceTree = "<group>"; tabWidth = 2; };
 		89A6EA2714478DA40089B212 /* XTAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTAppDelegate.m; sourceTree = "<group>"; tabWidth = 2; };
+		89AC82411806769A00402955 /* XTWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTWebViewController.h; sourceTree = "<group>"; };
+		89AC82421806769A00402955 /* XTWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTWebViewController.m; sourceTree = "<group>"; };
 		89CD209017089D220051C3D4 /* XTCategoryTests.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTCategoryTests.h; sourceTree = "<group>"; tabWidth = 2; };
 		89CD209117089D220051C3D4 /* XTCategoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTCategoryTests.m; sourceTree = "<group>"; tabWidth = 2; };
 		89CD708217BFB4F500ECE7E3 /* submodule.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = submodule.png; sourceTree = "<group>"; };
 		89CD708317BFB4F500ECE7E3 /* submodule@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "submodule@2x.png"; sourceTree = "<group>"; };
 		89D47941170894A200C04D89 /* NSAttributedString+XTExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+XTExtensions.h"; sourceTree = "<group>"; };
 		89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+XTExtensions.m"; sourceTree = "<group>"; };
+		89D6FE6D17D2F89D00633798 /* XTCommitHeaderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTCommitHeaderViewController.h; sourceTree = "<group>"; };
+		89D6FE6E17D2F89D00633798 /* XTCommitHeaderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTCommitHeaderViewController.m; sourceTree = "<group>"; };
+		89D6FE7B17D8457700633798 /* XTCommitHeaderTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTCommitHeaderTest.h; sourceTree = "<group>"; };
+		89D6FE7C17D8457700633798 /* XTCommitHeaderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTCommitHeaderTest.m; sourceTree = "<group>"; };
+		89E927DE17E977340093DA6C /* expected header.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "expected header.html"; sourceTree = "<group>"; };
 		89FE824715A716E800E2EA2A /* XTRepositoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTRepositoryTests.m; sourceTree = "<group>"; tabWidth = 2; };
 		C343F90F13F4908E009C928A /* XTHTML.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTHTML.h; sourceTree = "<group>"; };
 		C343F91013F4908E009C928A /* XTHTML.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTHTML.m; sourceTree = "<group>"; };
@@ -402,6 +414,7 @@
 			files = (
 				DD592093156EEE64005FBB0F /* Cocoa.framework in Frameworks */,
 				DD592096156EEF40005FBB0F /* OCMock.framework in Frameworks */,
+				89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -416,6 +429,8 @@
 				31A8939A13E9D5B4008BE0C2 /* XTCommitViewController.h */,
 				31A8939B13E9D5B4008BE0C2 /* XTCommitViewController.m */,
 				31A8939C13E9D5B4008BE0C2 /* XTCommitViewController.xib */,
+				89D6FE6D17D2F89D00633798 /* XTCommitHeaderViewController.h */,
+				89D6FE6E17D2F89D00633798 /* XTCommitHeaderViewController.m */,
 				DD858B1D17FFDCB900264F7D /* XTTextPreviewController.h */,
 				DD858B1E17FFDCB900264F7D /* XTTextPreviewController.m */,
 			);
@@ -455,6 +470,8 @@
 				DDE55DDE1613C6C000CCAC03 /* XTModDateTracker.m */,
 				DD9C1B8D160239DD0001FE9B /* XTRefToken.h */,
 				DD9C1B8E160239DD0001FE9B /* XTRefToken.m */,
+				89AC82411806769A00402955 /* XTWebViewController.h */,
+				89AC82421806769A00402955 /* XTWebViewController.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -700,6 +717,9 @@
 				31C62D9713F2580E00845A9B /* XTStageViewControllerTest.m */,
 				89CD209017089D220051C3D4 /* XTCategoryTests.h */,
 				89CD209117089D220051C3D4 /* XTCategoryTests.m */,
+				89D6FE7B17D8457700633798 /* XTCommitHeaderTest.h */,
+				89D6FE7C17D8457700633798 /* XTCommitHeaderTest.m */,
+				89E927DE17E977340093DA6C /* expected header.html */,
 			);
 			path = XitTests;
 			sourceTree = "<group>";
@@ -926,6 +946,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3FA472913D0F8E300AC4F9B /* InfoPlist.strings in Resources */,
+				89E927DF17E977340093DA6C /* expected header.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1013,7 +1034,9 @@
 				895229691786F6F900EE514C /* FHTToolbar.m in Sources */,
 				895229711786F7AB00EE514C /* XTToolbarDelegate.m in Sources */,
 				895229CE17A95D0500EE514C /* XTSubmoduleItem.m in Sources */,
+				89D6FE6F17D2F89D00633798 /* XTCommitHeaderViewController.m in Sources */,
 				DD858B1F17FFDCB900264F7D /* XTTextPreviewController.m in Sources */,
+				89AC82431806769A00402955 /* XTWebViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1031,6 +1054,7 @@
 				89FE824815A716E800E2EA2A /* XTRepositoryTests.m in Sources */,
 				DDB9319516EC12B100A6ABC6 /* XTRefTokenTest.m in Sources */,
 				89CD209217089D220051C3D4 /* XTCategoryTests.m in Sources */,
+				89D6FE7D17D8457700633798 /* XTCommitHeaderTest.m in Sources */,
 				DD858B341801B53D00264F7D /* XTFileViewControllerTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

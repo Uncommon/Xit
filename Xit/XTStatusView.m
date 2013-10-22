@@ -33,6 +33,11 @@ NSString *const XTStatusOutputKey = @"output";
   });
 }
 
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)awakeFromNib
 {
   detachedWindow.title =
@@ -55,6 +60,7 @@ NSString *const XTStatusOutputKey = @"output";
   if (repo != nil)
     [[NSNotificationCenter defaultCenter] removeObserver:self];
   repo = newRepo;
+
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(updateStatus:)
                                                name:XTStatusNotification
