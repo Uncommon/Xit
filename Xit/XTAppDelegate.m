@@ -50,7 +50,7 @@
   return YES;
 }
 
-- (BOOL)panel:(id)sender validateURL:(NSURL *)url error:(NSError **)outError
+- (BOOL)panel:(id)sender validateURL:(NSURL*)url error:(NSError**)outError
 {
   NSURL *repoURL = [url URLByAppendingPathComponent:@".git" isDirectory:YES];
 
@@ -64,7 +64,7 @@
                       otherButton:nil
         informativeTextWithFormat:@""];
 
-    [alert beginSheetModalForWindow:[sender window]
+    [alert beginSheetModalForWindow:sender
                       modalDelegate:nil
                      didEndSelector:NULL
                         contextInfo:NULL];
