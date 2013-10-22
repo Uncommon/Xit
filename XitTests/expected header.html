@@ -5,7 +5,7 @@
 <body>
 <div id="table"><div id="row">
 	<div class="cell">
-		<img src="undisclosed.png" onclick="disclosure()" id="triangle">
+		<img src="undisclosed.png" onclick="disclosure(true)" id="triangle">
 	</div>
 	<div class="cell">
     <div>
@@ -26,9 +26,8 @@
       <span class="label">Parents:</span>
     </div>
     <div id="parents" style="display: none; ">
-    <div class="parent" onclick="window.controller.selectSHA('1')">Alphabet&lt;&gt;</div><div class="parent" onclick="window.controller.selectSHA('2')">Broccoli&amp;</div><div class="parent" onclick="window.controller.selectSHA('3')">Cypress</div></div>
-    <pre>Example message
-    </pre>
+    <div><span class="parent" onclick="window.controller.selectSHA('1')">Alphabet&lt;&gt;</span></div><div><span class="parent" onclick="window.controller.selectSHA('2')">Broccoli&amp;</span></div><div><span class="parent" onclick="window.controller.selectSHA('3')">Cypress</span></div></div>
+    <pre>Example message</pre>
   </div>
 </div></div>
 
