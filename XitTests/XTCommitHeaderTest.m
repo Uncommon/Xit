@@ -44,6 +44,11 @@ NSDate *commitDate = nil;
   commitDate = [NSDate dateWithTimeInterval:5000 sinceDate:authorDate];
 }
 
+- (void)progressFinished:(NSNotification*)note
+{
+  CFRunLoopStop(CFRunLoopGetMain());
+}
+
 - (void)testHTML
 {
   WebView *webView = [[WebView alloc] init];
@@ -51,15 +56,23 @@ NSDate *commitDate = nil;
   FakeRepository *fakeRepo = [[FakeRepository alloc] init];
 
   [webView setFrameLoadDelegate:hvc];
+  [webView setUIDelegate:hvc];
   [hvc setWebView:webView];
   hvc.repository = (XTRepository*)fakeRepo;
   hvc.commitSHA = @"blahblah";
 
-  [hvc loadHeader];
-  [[NSRunLoop mainRunLoop] runUntilDate:
-      [NSDate dateWithTimeIntervalSinceNow:0.1]];
+  [[NSNotificationCenter defaultCenter]
+      addObserver:self
+      selector:@selector(progressFinished:)
+      name:WebViewProgressFinishedNotification
+      object:webView];
 
-  // The result doesn't include the encloning html tags, so neither does the
+  [hvc loadHeader];
+  CFRunLoopRun();
+  [[NSRunLoop mainRunLoop] runUntilDate:
+      [NSDate dateWithTimeIntervalSinceNow:2]];
+
+  // The result doesn't include the enclosing html tags, so neither does the
   // reference file.
   NSString *html = [webView stringByEvaluatingJavaScriptFromString:
       @"document.getElementsByTagName('html')[0].innerHTML"];
@@ -83,10 +96,10 @@ NSDate *commitDate = nil;
   NSArray *lines = [html componentsSeparatedByString:@"\n"];
   NSArray *expectedLines = [expectedHtml componentsSeparatedByString:@"\n"];
 
+  // Some differences may be due to changes in WebKit.
   STAssertEquals([lines count], [expectedLines count], nil);
   for (NSUInteger i = 0; i < [lines count]; ++i)
     STAssertEqualObjects(lines[i], expectedLines[i], @"line %d", i);
-  //STAssertEqualObjects(html, expectedHtml, nil);
 }
 
 @end
