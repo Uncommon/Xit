@@ -13,14 +13,15 @@
 
 - (void)testHistoricFileList
 {
-  NSString *txt = @"some text";
+  NSString *text = @"some text";
 
   for (int n = 0; n < 10; n++) {
     NSString *file = [NSString stringWithFormat:@"%@/file_%u.txt", repoPath, n];
-    [txt writeToFile:file
-          atomically:YES
-            encoding:NSASCIIStringEncoding
-               error:nil];
+
+    [text writeToFile:file
+           atomically:YES
+             encoding:NSASCIIStringEncoding
+                error:nil];
     [repository stageAllFiles];
     [repository commitWithMessage:@"commit"
                             amend:NO
@@ -32,7 +33,8 @@
   [hds setRepo:repository];
   [self waitForRepoQueue];
 
-  int expectedNF = 11;
+  NSInteger expectedFileCount = 11;
+
   for (XTHistoryItem *item in hds.items) {
     repository.selectedCommit = item.sha;
 
@@ -40,57 +42,39 @@
     [flds setRepo:repository];
     [self waitForRepoQueue];
 
-    NSInteger nf = [flds outlineView:nil numberOfChildrenOfItem:nil];
-    STAssertTrue((nf == expectedNF), @"found %d files, expected %d files", nf,
-                 expectedNF);
-    expectedNF--;
+    const NSInteger fileCount =
+        [flds outlineView:nil numberOfChildrenOfItem:nil];
+
+    STAssertEquals(fileCount, expectedFileCount, @"file count");
+    --expectedFileCount;
   }
 }
 
 - (void)testMultipleFileList
 {
-  NSString *txt = @"some text";
+  NSString *text = @"some text";
 
-  [[NSFileManager defaultManager] createDirectoryAtPath:
-      [repoPath stringByAppendingPathComponent:@"dir_0/subdir_0"]
-                            withIntermediateDirectories:YES
-                                             attributes:nil
-                                                  error:nil];
-  [[NSFileManager defaultManager] createDirectoryAtPath:
-      [repoPath stringByAppendingPathComponent:@"dir_0/subdir_1"]
-                            withIntermediateDirectories:YES
-                                             attributes:nil
-                                                  error:nil];
-  [[NSFileManager defaultManager] createDirectoryAtPath:
-      [repoPath stringByAppendingPathComponent:@"dir_0/subdir_2"]
-                            withIntermediateDirectories:YES
-                                             attributes:nil
-                                                  error:nil];
-  [[NSFileManager defaultManager] createDirectoryAtPath:
-      [repoPath stringByAppendingPathComponent:@"dir_1/subdir_0"]
-                            withIntermediateDirectories:YES
-                                             attributes:nil
-                                                  error:nil];
-  [[NSFileManager defaultManager] createDirectoryAtPath:
-      [repoPath stringByAppendingPathComponent:@"dir_1/subdir_1"]
-                            withIntermediateDirectories:YES
-                                             attributes:nil
-                                                  error:nil];
-  [[NSFileManager defaultManager] createDirectoryAtPath:
-      [repoPath stringByAppendingPathComponent:@"dir_1/subdir_2"]
-                            withIntermediateDirectories:YES
-                                             attributes:nil
-                                                  error:nil];
-  [[NSFileManager defaultManager] removeItemAtPath:file1Path error:nil];
+  for (int i = 0; i < 2; ++i)
+    for (int j = 0; j < 3; ++j) {
+      NSString *path = [NSString stringWithFormat:@"dir_%d/subdir_%d", i, j];
+      NSString *fullPath = [repoPath stringByAppendingPathComponent:path];
+    
+      NSLog(@"create path %@", path);
+      [[NSFileManager defaultManager] createDirectoryAtPath:fullPath
+                                withIntermediateDirectories:YES
+                                                 attributes:nil
+                                                      error:NULL];
+    }
+  [[NSFileManager defaultManager] removeItemAtPath:file1Path error:NULL];
 
-  for (int n = 0; n < 12; n++) {
+  for (int n = 0; n < 12; ++n) {
     NSString *file =
         [NSString stringWithFormat:@"%@/dir_%d/subdir_%d/file_%d.txt",
                                    repoPath, n % 2, n % 3, n];
-    [txt writeToFile:file
-          atomically:YES
-            encoding:NSASCIIStringEncoding
-               error:nil];
+    [text writeToFile:file
+           atomically:YES
+             encoding:NSASCIIStringEncoding
+                error:nil];
   }
   [repository stageAllFiles];
   [repository commitWithMessage:@"commit"
@@ -99,6 +83,7 @@
                           error:NULL];
 
   XTHistoryDataSource *hds = [[XTHistoryDataSource alloc] init];
+
   [hds setRepo:repository];
   [self waitForRepoQueue];
 
@@ -106,15 +91,17 @@
   repository.selectedCommit = item.sha;
 
   XTFileListDataSource *flds = [[XTFileListDataSource alloc] init];
+
   [flds setRepo:repository];
   [self waitForRepoQueue];
 
-  const NSInteger nf = [flds outlineView:nil numberOfChildrenOfItem:nil];
-  STAssertEquals(nf, 3L, nil); // 2 folders plus deleted file1.txt
+  const NSInteger fileCount = [flds outlineView:nil numberOfChildrenOfItem:nil];
+  STAssertEquals(fileCount, 3L, nil); // 2 folders plus deleted file1.txt
 
-  for (int rootIdx = 0; rootIdx < 2; rootIdx++) {
-    NSTreeNode *root = [flds outlineView:nil child:rootIdx ofItem:nil];
-    NSInteger rnf = [flds outlineView:nil numberOfChildrenOfItem:root];
+  for (int rootIndex = 0; rootIndex < 2; ++rootIndex) {
+    NSTreeNode *root = [flds outlineView:nil child:rootIndex ofItem:nil];
+    const NSInteger rnf = [flds outlineView:nil numberOfChildrenOfItem:root];
+
     STAssertEquals(rnf, 3L, nil);
   }
 }
