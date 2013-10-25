@@ -55,6 +55,7 @@
   NSInteger nb = [sbds outlineView:nil numberOfChildrenOfItem:branches];
   STAssertTrue((nb == 2), @"found %d branches FAIL", nb);
 
+  [sbds removeObserver:self forKeyPath:@"reload"];
   [repository stop];
 }
 

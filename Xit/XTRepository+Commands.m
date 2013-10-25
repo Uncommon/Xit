@@ -344,7 +344,7 @@
   name = [name componentsSeparatedByString:@" "][0];
   return [self executeGitWithArgs:@[ @"stash", @"drop", name ]
                            writes:YES
-                            error:error];
+                            error:error] != nil;
 }
 
 - (BOOL)addSubmoduleAtPath:(NSString *)path
@@ -353,8 +353,8 @@
 {
   return [self executeGitWithArgs:@[ @"submodule", @"add", @"-f",
                                      urlOrPath, path ]
-                         writes:YES
-                          error:error];
+                           writes:YES
+                            error:error] != nil;
 /* The clone step must be implemented for this to be good.
   return [self executeWritingBlock:^BOOL{
     git_submodule *gitSub = NULL;
