@@ -1,10 +1,19 @@
-#import "XTCommitHeaderTest.h"
+#import <SenTestingKit/SenTestingKit.h>
 #import <WebKit/WebKit.h>
 #import "XTCommitHeaderViewController.h"
 #import "XTRepository+Parsing.h"
+#include "CFRunLoop+Extensions.h"
 
 NSDate *authorDate = nil;
 NSDate *commitDate = nil;
+
+@interface XTCommitHeaderTest : SenTestCase
+{
+  CFRunLoopRef runLoop;
+}
+
+@end
+
 
 @interface XTCommitHeaderViewController (Test)
 
@@ -12,11 +21,13 @@ NSDate *commitDate = nil;
 
 @end
 
+
 @interface FakeGTRepository : NSObject
 
 - (id)lookupObjectBySHA:(NSString*)sha error:(NSError**)error;
 
 @end
+
 
 @interface FakeCommit : NSObject
 
@@ -25,6 +36,7 @@ NSDate *commitDate = nil;
 @property NSString *SHA;
 
 @end
+
 
 @interface FakeRepository : NSObject
 
@@ -36,6 +48,7 @@ NSDate *commitDate = nil;
 
 @end
 
+
 @implementation XTCommitHeaderTest
 
 - (void)setUp
@@ -46,7 +59,7 @@ NSDate *commitDate = nil;
 
 - (void)progressFinished:(NSNotification*)note
 {
-  CFRunLoopStop(CFRunLoopGetMain());
+  CFRunLoopStop(runLoop);
 }
 
 - (void)testHTML
@@ -67,8 +80,10 @@ NSDate *commitDate = nil;
       name:WebViewProgressFinishedNotification
       object:webView];
 
+  runLoop = CFRunLoopGetCurrent();
   [hvc loadHeader];
-  CFRunLoopRun();
+  CFRunLoopRunWithTimeout(5);
+  runLoop = NULL;
   [[NSRunLoop mainRunLoop] runUntilDate:
       [NSDate dateWithTimeIntervalSinceNow:2]];
 

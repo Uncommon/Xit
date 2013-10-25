@@ -80,7 +80,9 @@
     NSArray *newRoots = [self loadRoots];
 
     dispatch_async(dispatch_get_main_queue(), ^{
+      [self willChangeValueForKey:@"reload"];
       roots = newRoots;
+      [self didChangeValueForKey:@"reload"];
       [outline reloadData];
       // Empty groups get automatically collapsed, so counter that.
       [outline expandItem:nil expandChildren:YES];
@@ -90,8 +92,6 @@
 
 - (NSArray *)loadRoots
 {
-  [self willChangeValueForKey:@"reload"];
-
   NSMutableDictionary *refsIndex = [NSMutableDictionary dictionary];
   NSMutableArray *branches = [NSMutableArray array];
   NSMutableArray *tags = [NSMutableArray array];
@@ -116,7 +116,6 @@
   repo.refsIndex = refsIndex;
   currentBranch = [repo currentBranch];
 
-  [self didChangeValueForKey:@"reload"];
   return newRoots;
 }
 

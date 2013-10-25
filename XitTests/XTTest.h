@@ -7,7 +7,6 @@
   NSString *remoteRepoPath;
   NSString *file1Path;
   XTRepository *repository, *remoteRepository;
-  BOOL reloadDetected;
 }
 
 - (XTRepository *)createRepo:(NSString *)repoName;

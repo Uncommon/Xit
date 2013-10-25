@@ -6,9 +6,13 @@
 #import "XTSideBarDataSource.h"
 #import "XTSubmoduleItem.h"
 #import "XTHistoryItem.h"
+#include "CFRunLoop+Extensions.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
 @interface XTSideBarDataSorceTests : XTTest
+{
+  CFRunLoopRef runLoop;
+}
 
 @end
 
@@ -36,24 +40,25 @@
 
   [repository start];
 
-  reloadDetected = NO;
-  if (![repository createBranch:@"b1"]) {
+  if (![repository createBranch:@"b1"])
     STFail(@"Create Branch 'b1'");
-  }
 
-  int timeOut = 0;
-  while (!reloadDetected && (++timeOut <= 10)) {
-    [[NSRunLoop currentRunLoop]
-        runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
-    NSLog(@"Polling... (%d)", timeOut);
-  }
-  if (timeOut > 10) {
-    STFail(@"TimeOut on reload");
-  }
+  NSArray *titles, *expectedTitles = @[ @"b1", @"master" ];
 
-  id branches = [sbds outlineView:nil child:XTBranchesGroupIndex ofItem:nil];
-  NSInteger nb = [sbds outlineView:nil numberOfChildrenOfItem:branches];
-  STAssertTrue((nb == 2), @"found %d branches FAIL", nb);
+  // Sometimes it reloads too soon, so give it a few tries.
+  for (int i = 0; i < 5; ++i) {
+    runLoop = CFRunLoopGetCurrent();
+    if (!CFRunLoopRunWithTimeout(10))
+      STFail(@"TimeOut on reload");
+    runLoop = NULL;
+
+    id branches = [sbds outlineView:nil child:XTBranchesGroupIndex ofItem:nil];
+
+    titles = [[branches children] valueForKey:@"title"];
+    if ([titles isEqual:expectedTitles])
+      break;
+  }
+  STAssertEqualObjects(titles, expectedTitles, nil);
 
   [sbds removeObserver:self forKeyPath:@"reload"];
   [repository stop];
@@ -64,9 +69,8 @@
                         change:(NSDictionary *)change
                        context:(void *)context
 {
-  if ([keyPath isEqualToString:@"reload"]) {
-    reloadDetected = YES;
-  }
+  if ([keyPath isEqualToString:@"reload"] && (runLoop != NULL))
+    CFRunLoopStop(runLoop);
 }
 
 - (void)testStashes
