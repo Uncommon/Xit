@@ -4,12 +4,24 @@
 #import "XTRepository+Parsing.h"
 #import "XTFileListDataSource.h"
 #import "XTHistoryItem.h"
+#include "XTQueueUtils.h"
 
 @interface XTFileListDataSourceTest : XTTest
 
 @end
 
 @implementation XTFileListDataSourceTest
+
+- (XTHistoryDataSource*)makeDataSource
+{
+  XTHistoryDataSource *hds = [[XTHistoryDataSource alloc] init];
+
+  [hds setRepo:repository];
+  [self waitForRepoQueue];
+  // Part of the reload process is dispatched to the main queue.
+  WaitForQueue(dispatch_get_main_queue());
+  return hds;
+}
 
 - (void)testHistoricFileList
 {
@@ -29,10 +41,7 @@
                             error:NULL];
   }
 
-  XTHistoryDataSource *hds = [[XTHistoryDataSource alloc] init];
-  [hds setRepo:repository];
-  [self waitForRepoQueue];
-
+  XTHistoryDataSource *hds = [self makeDataSource];
   NSInteger expectedFileCount = 11;
 
   for (XTHistoryItem *item in hds.items) {
@@ -82,11 +91,7 @@
                     outputBlock:NULL
                           error:NULL];
 
-  XTHistoryDataSource *hds = [[XTHistoryDataSource alloc] init];
-
-  [hds setRepo:repository];
-  [self waitForRepoQueue];
-
+  XTHistoryDataSource *hds = [self makeDataSource];
   XTHistoryItem *item = (XTHistoryItem *)(hds.items)[0];
   repository.selectedCommit = item.sha;
 
