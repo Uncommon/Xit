@@ -4,12 +4,23 @@
 #import "XTRepository+Parsing.h"
 #import "XTHistoryDataSource.h"
 #import "XTHistoryItem.h"
+#include "XTQueueUtils.h"
 
 @interface XTHistoryDataSorceTests : XTTest
 
 @end
 
 @implementation XTHistoryDataSorceTests
+
+- (XTHistoryDataSource*)makeDataSource
+{
+  XTHistoryDataSource *result = [[XTHistoryDataSource alloc] init];
+
+  [result setRepo:repository];
+  [self waitForRepoQueue];
+  WaitForQueue(dispatch_get_main_queue());
+  return result;
+}
 
 - (void)testRootCommitsGraph
 {
@@ -63,10 +74,7 @@
     }
   }
 
-  XTHistoryDataSource *hds = [[XTHistoryDataSource alloc] init];
-  [hds setRepo:repository];
-  [self waitForRepoQueue];
-
+  XTHistoryDataSource *hds = [self makeDataSource];
   NSArray *items = hds.items;
 
   [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -86,7 +94,7 @@
 
 - (void)testXTHistoryDataSource
 {
-  NSInteger nCommits = 60;
+  const NSUInteger nCommits = 60;
   NSFileManager *defaultManager = [NSFileManager defaultManager];
 
   for (int n = 0; n < nCommits; n++) {
@@ -101,14 +109,13 @@
     NSString *testFile =
         [NSString stringWithFormat:@"%@/file%d.txt", repoPath, n];
     NSString *txt = [NSString stringWithFormat:@"some text %d", n];
+
     [txt writeToFile:testFile
           atomically:YES
             encoding:NSASCIIStringEncoding
                error:nil];
 
-    if (![defaultManager fileExistsAtPath:testFile]) {
-      STFail(@"testFile NOT Found!!");
-    }
+    STAssertTrue([defaultManager fileExistsAtPath:testFile], nil);
     if (![repository stageFile:[testFile lastPathComponent]]) {
       STFail(@"add file '%@'", testFile);
     }
@@ -121,12 +128,10 @@
     }
   }
 
-  XTHistoryDataSource *hds = [[XTHistoryDataSource alloc] init];
-  [hds setRepo:repository];
-  [self waitForRepoQueue];
+  XTHistoryDataSource *hds = [self makeDataSource];
+  const NSUInteger nc = [hds numberOfRowsInTableView:nil];
 
-  NSUInteger nc = [hds numberOfRowsInTableView:nil];
-  STAssertTrue((nc == (nCommits + 1)), @"found %d commits", nc);
+  STAssertEquals(nc, nCommits + 1, @"wrong commit count");
 }
 
 @end
