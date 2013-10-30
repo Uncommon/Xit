@@ -372,6 +372,9 @@
                         <real value="250"/>
                         <real value="250"/>
                     </holdingPriorities>
+                    <connections>
+                        <outlet property="delegate" destination="-2" id="Ot2-gU-chX"/>
+                    </connections>
                 </splitView>
             </subviews>
         </view>

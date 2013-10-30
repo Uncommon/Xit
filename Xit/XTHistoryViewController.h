@@ -9,7 +9,7 @@
 @class XTSideBarDataSource;
 @class XTSideBarOutlineView;
 
-@interface XTHistoryViewController : NSViewController
+@interface XTHistoryViewController : NSViewController<NSSplitViewDelegate>
 {
   IBOutlet XTSideBarDataSource *sideBarDS;
   IBOutlet XTHistoryDataSource *historyDS;

@@ -420,6 +420,14 @@
   }
 }
 
+#pragma mark - NSSplitViewDelegate
+
+- (BOOL)splitView:(NSSplitView*)splitView
+    shouldAdjustSizeOfSubview:(NSView*)view
+{
+  return view != [splitView subviews][0];
+}
+
 #pragma mark - NSTableViewDelegate
 
 - (void)tableViewSelectionDidChange:(NSNotification *)note
