@@ -69,8 +69,8 @@
     }
   }
   [_outline performSelectorOnMainThread:@selector(reloadData)
-							 withObject:nil
-						  waitUntilDone:NO];
+                             withObject:nil
+                          waitUntilDone:NO];
 }
 
 - (void)reload
@@ -121,7 +121,7 @@
 - (void)loadStashes:(NSMutableArray *)stashes
           refsIndex:(NSMutableDictionary *)refsIndex
 {
-    [_repo readStashesWithBlock:^(NSString *commit, NSString *name) {
+  [_repo readStashesWithBlock:^(NSString *commit, NSString *name) {
 		XTSideBarItem *stash = [[XTStashItem alloc] initWithTitle:name];
 		[stashes addObject:stash];
 		[refsIndex addObject:name forKey:commit];
@@ -186,8 +186,8 @@
   };
 
   [_repo readRefsWithLocalBlock:localBlock
-					remoteBlock:remoteBlock
-					   tagBlock:tagBlock];
+                    remoteBlock:remoteBlock
+                       tagBlock:tagBlock];
 }
 
 - (void)doubleClick:(id)sender
@@ -316,7 +316,7 @@
       [dataView.imageView setImage:[NSImage imageNamed:@"branch"]];
       if (![item isKindOfClass:[XTRemoteBranchItem class]])
         [dataView.button
-            setHidden:! [[item title] isEqualToString:_currentBranch]];
+            setHidden:![[item title] isEqualToString:_currentBranch]];
     } else if ([item isKindOfClass:[XTTagItem class]]) {
       [dataView.imageView setImage:[NSImage imageNamed:@"tag"]];
     } else if ([item isKindOfClass:[XTStashItem class]]) {

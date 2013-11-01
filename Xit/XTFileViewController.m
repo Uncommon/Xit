@@ -74,13 +74,13 @@
   [[NSNotificationCenter defaultCenter]
   	addObserver:self
   	   selector:@selector(fileSelectionChanged:)
-  		   name:NSOutlineViewSelectionDidChangeNotification
+  		     name:NSOutlineViewSelectionDidChangeNotification
   		 object:_fileListOutline];
   [[NSNotificationCenter defaultCenter]
   	addObserver:self
   	   selector:@selector(headerResized:)
-  		   name:XTHeaderResizedNotificaiton
-  		 object:_headerController];
+    		   name:XTHeaderResizedNotificaiton
+  	  	 object:_headerController];
 }
 
 - (void)updatePreview

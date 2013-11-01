@@ -46,9 +46,9 @@
 {
   _repo = newRepo;
   [_repo addObserver:self
-		  forKeyPath:@"selectedCommit"
-			 options:NSKeyValueObservingOptionNew
-			 context:nil];
+          forKeyPath:@"selectedCommit"
+             options:NSKeyValueObservingOptionNew
+             context:nil];
   [self reload];
 }
 

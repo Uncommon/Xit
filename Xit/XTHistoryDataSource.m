@@ -140,18 +140,18 @@
         NSArray *parents = [parentsStr componentsSeparatedByString:@" "];
         
         [parents enumerateObjectsWithOptions:0
-                                  usingBlock:^(id obj, NSUInteger idx,
-                                               BOOL *stop) {
-                                    NSString *parentSha = (NSString *)obj;
-                                    XTHistoryItem *parent = commitIndex[parentSha];
-                                    if (parent != nil) {
-                                      [item.parents addObject:parent];
-                                    } else {
-                                      NSLog(@"parent with sha:'%@' not found for commit with "
-                                            "sha:'%@' idx=%lu",
-                                            parentSha, item.sha, item.index);
-                                    }
-                                  }];
+          usingBlock:^(id obj, NSUInteger idx,
+                     BOOL *stop) {
+          NSString *parentSha = (NSString *)obj;
+          XTHistoryItem *parent = commitIndex[parentSha];
+          if (parent != nil) {
+            [item.parents addObject:parent];
+          } else {
+            NSLog(@"parent with sha:'%@' not found for commit with "
+                  "sha:'%@' idx=%lu",
+                  parentSha, item.sha, item.index);
+          }
+        }];
       }
       item.repo = _repo;
       item.date = [NSDate dateFromRFC2822:comps[2]];
@@ -181,7 +181,7 @@
   }];
   
   [XTStatusView updateStatus:[NSString stringWithFormat:@"%d commits loaded",
-                              (int)[newItems count]]
+                                                        (int)[newItems count]]
                      command:nil
                       output:@""
                forRepository:_repo];

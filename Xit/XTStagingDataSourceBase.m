@@ -38,7 +38,7 @@
 
   // Recursion can happen if reloading uses git calls that trigger the file
   // system notification.
-  if (! _reloading) {
+  if (!_reloading) {
     _reloading = YES;
     [self reload];
     _reloading = NO;

@@ -60,7 +60,7 @@
                        context:(void *)context
 {
   if ((object == _repo) && [keyPath isEqualToString:@"isWriting"])
-    [_commitButton setEnabled:! _repo.isWriting];
+    [_commitButton setEnabled:!_repo.isWriting];
 }
 
 - (IBAction)commit:(id)sender
@@ -77,20 +77,20 @@
 		  NSString *status = [NSString stringWithFormat:@"Committed %@", headSHA];
 
 		  [XTStatusView updateStatus:status
-							 command:@"commit"
-							  output:output
-					   forRepository:_repo];
+                         command:@"commit"
+                          output:output
+                   forRepository:_repo];
 	  };
 
-	  if (! [_repo commitWithMessage:self.message
+	  if (![_repo commitWithMessage:self.message
 							   amend:NO
-						 outputBlock:outputBlock
-							   error:& error]) if (error != nil)
-		  [XTStatusView updateStatus:@"Commit failed"
-							 command:@"commit"
-							  output:[[error userInfo]
-									  valueForKey:XTErrorOutputKey]
-					   forRepository:_repo];
+						outputBlock:outputBlock
+							   error:&error]) if (error != nil)
+                   [XTStatusView updateStatus:@"Commit failed"
+                                      command:@"commit"
+                                       output:[[error userInfo]
+                                               valueForKey:XTErrorOutputKey]
+                                forRepository:_repo];
 	  self.message = @"";
 	  [self reload];
 	  if ([sender respondsToSelector:@selector(setEnabled:)])
