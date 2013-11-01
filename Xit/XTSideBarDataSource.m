@@ -305,8 +305,8 @@
     } else {
       // These connections are in the xib, but they get lost, probably
       // when the row view gets copied.
-		[dataView.textField setFormatter:_refFormatter];
-		[dataView.textField setTarget:_viewController];
+      [dataView.textField setFormatter:_refFormatter];
+      [dataView.textField setTarget:_viewController];
       [dataView.textField setAction:@selector(sideBarItemRenamed:)];
       [dataView.textField setEditable:YES];
       [dataView.textField setSelectable:YES];

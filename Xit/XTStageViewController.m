@@ -85,7 +85,8 @@
 	  if (![_repo commitWithMessage:self.message
 							   amend:NO
 						outputBlock:outputBlock
-							   error:&error]) if (error != nil)
+							   error:&error])
+      if (error != nil)
                    [XTStatusView updateStatus:@"Commit failed"
                                       command:@"commit"
                                        output:[[error userInfo]
