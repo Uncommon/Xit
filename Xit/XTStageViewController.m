@@ -83,15 +83,15 @@
 	  };
 
 	  if (![_repo commitWithMessage:self.message
-							   amend:NO
-						outputBlock:outputBlock
-							   error:&error])
+                            amend:NO
+                      outputBlock:outputBlock
+                            error:&error])
       if (error != nil)
-                   [XTStatusView updateStatus:@"Commit failed"
-                                      command:@"commit"
-                                       output:[[error userInfo]
-                                               valueForKey:XTErrorOutputKey]
-                                forRepository:_repo];
+        [XTStatusView updateStatus:@"Commit failed"
+                           command:@"commit"
+                            output:[[error userInfo]
+                                    valueForKey:XTErrorOutputKey]
+                     forRepository:_repo];
 	  self.message = @"";
 	  [self reload];
 	  if ([sender respondsToSelector:@selector(setEnabled:)])
