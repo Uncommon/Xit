@@ -11,23 +11,23 @@
 
 @interface XTHistoryViewController : NSViewController
 {
-  IBOutlet XTSideBarDataSource *sideBarDS;
-  IBOutlet XTHistoryDataSource *historyDS;
-  IBOutlet XTCommitViewController *commitViewController;
-  IBOutlet NSTableView *historyTable;
-  IBOutlet XTSideBarOutlineView *sidebarOutline;
-  IBOutlet NSView *commitView;
-  IBOutlet NSSplitView *sidebarSplitView;
-  IBOutlet NSSplitView *mainSplitView;
-  IBOutlet NSTabView *commitTabView;
-  IBOutlet NSMenu *branchContextMenu;
-  IBOutlet NSMenu *remoteContextMenu;
-  IBOutlet NSMenu *tagContextMenu;
-  IBOutlet NSMenu *stashContextMenu;
+  IBOutlet XTSideBarDataSource *_sideBarDS;
+  IBOutlet XTHistoryDataSource *_historyDS;
+  IBOutlet XTCommitViewController *_commitViewController;
+  IBOutlet NSTableView *_historyTable;
+  IBOutlet XTSideBarOutlineView *_sidebarOutline;
+  IBOutlet NSView *_commitView;
+  IBOutlet NSSplitView *_sidebarSplitView;
+  IBOutlet NSSplitView *_mainSplitView;
+  IBOutlet NSTabView *_commitTabView;
+  IBOutlet NSMenu *_branchContextMenu;
+  IBOutlet NSMenu *_remoteContextMenu;
+  IBOutlet NSMenu *_tagContextMenu;
+  IBOutlet NSMenu *_stashContextMenu;
  @private
-  XTRepository *repo;
-  XTFileViewController *fileViewController;
-  NSUInteger savedSidebarWidth;
+  XTRepository *_repo;
+  XTFileViewController *_fileViewController;
+  NSUInteger _savedSidebarWidth;
 }
 
 - (void)setRepo:(XTRepository *)newRepo;

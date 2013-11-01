@@ -5,7 +5,6 @@ static float HeightForText(NSString *text, NSFont *font, float width);
 
 @implementation XTOutputViewController
 
-@synthesize popover;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -19,16 +18,16 @@ static float HeightForText(NSString *text, NSFont *font, float width);
 
 - (NSSize)ownerSize
 {
-  if (popover != nil)
-    return popover.contentSize;
+  if (_popover != nil)
+    return _popover.contentSize;
   else
     return [[[self.view window] contentView] frame].size;
 }
 
 - (void)setOwnerSize:(NSSize)size
 {
-  if (popover != nil)
-    popover.contentSize = size;
+  if (_popover != nil)
+    _popover.contentSize = size;
   else
     [[self.view window] setContentSize:size];
 }
@@ -39,36 +38,36 @@ static float HeightForText(NSString *text, NSFont *font, float width);
   NSString *output = [note userInfo][XTStatusOutputKey];
 
   if (command != nil) {
-    NSRect frame = [commandText frame];
-    NSFont *font = [commandText font];
+    NSRect frame = [_commandText frame];
+    NSFont *font = [_commandText font];
     const float newHeight =
         (font == nil) ? frame.size.height
                       : HeightForText(command, font, frame.size.width);
     const float delta = newHeight - frame.size.height;
 
-    [commandText setStringValue:command];
+    [_commandText setStringValue:command];
     if (delta != 0.0) {
       NSSize popoverSize = [self ownerSize];
-      NSRect outputFrame = [outputScroll frame];
+      NSRect outputFrame = [_outputScroll frame];
 
       frame.size.height = newHeight;
       frame.origin.y -= delta;
-      [commandText setFrame:frame];
+      [_commandText setFrame:frame];
       outputFrame.size.height -= delta;
-      [outputScroll setFrame:outputFrame];
+      [_outputScroll setFrame:outputFrame];
       popoverSize.height += delta;
       [self setOwnerSize:popoverSize];
     }
   }
   if (output == nil)
-    [outputText setString:@""];
+    [_outputText setString:@""];
   else {
     NSFont *fixedFont = [NSFont userFixedPitchFontOfSize:11];
     NSDictionary *attributes = @{ NSFontAttributeName : fixedFont };
 
     if (![output hasSuffix:@"\n"])
       output = [output stringByAppendingString:@"\r"];
-    [[outputText textStorage] appendAttributedString:
+    [[_outputText textStorage] appendAttributedString:
         [[NSAttributedString alloc] initWithString:output
                                         attributes:attributes]];
   }

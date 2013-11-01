@@ -15,8 +15,8 @@
 {
   self = [super init];
   if (self != nil) {
-    root = [self makeNewRoot];
-    changeImages = @{
+    _root = [self makeNewRoot];
+    _changeImages = @{
         @( XitChangeAdded ) : [NSImage imageNamed:@"added"],
         @( XitChangeCopied ) : [NSImage imageNamed:@"copied"],
         @( XitChangeDeleted ) : [NSImage imageNamed:@"deleted"],
@@ -31,7 +31,7 @@
 
 - (void)dealloc
 {
-  [repo removeObserver:self forKeyPath:@"selectedCommit"];
+  [_repo removeObserver:self forKeyPath:@"selectedCommit"];
 }
 
 - (NSTreeNode *)makeNewRoot
@@ -44,11 +44,11 @@
 
 - (void)setRepo:(XTRepository *)newRepo
 {
-  repo = newRepo;
-  [repo addObserver:self
-         forKeyPath:@"selectedCommit"
-            options:NSKeyValueObservingOptionNew
-            context:nil];
+  _repo = newRepo;
+  [_repo addObserver:self
+		  forKeyPath:@"selectedCommit"
+			 options:NSKeyValueObservingOptionNew
+			 context:nil];
   [self reload];
 }
 
@@ -63,14 +63,14 @@
 
 - (void)reload
 {
-  [repo executeOffMainThread:^{
-    NSString *ref = repo.selectedCommit;
-    NSTreeNode *newRoot = [self fileTreeForRef:(ref == nil) ? @"HEAD" : ref];
+  [_repo executeOffMainThread:^{
+	  NSString *ref = _repo.selectedCommit;
+	  NSTreeNode *newRoot = [self fileTreeForRef:(ref == nil) ? @"HEAD" : ref];
 
-    dispatch_async(dispatch_get_main_queue(), ^{
-      root = newRoot;
-      [table reloadData];
-    });
+	  dispatch_async(dispatch_get_main_queue(), ^{
+		  _root = newRoot;
+		  [_table reloadData];
+	  });
   }];
 }
 
@@ -100,10 +100,10 @@
 {
   NSTreeNode *newRoot = [self makeNewRoot];
   NSMutableDictionary *nodes = [NSMutableDictionary dictionary];
-  NSArray *changeList = [repo changesForRef:ref parent:nil];
+  NSArray *changeList = [_repo changesForRef:ref parent:nil];
   NSDictionary *changes = [[NSMutableDictionary alloc]
       initWithCapacity:[changeList count]];
-  NSArray *files = [repo fileNamesForRef:ref];
+  NSArray *files = [_repo fileNamesForRef:ref];
   NSMutableArray *deletions =
       [NSMutableArray arrayWithCapacity:[changes count]];
 
@@ -172,12 +172,12 @@
 - (NSInteger)outlineView:(NSOutlineView *)outlineView
     numberOfChildrenOfItem:(id)item
 {
-  table = outlineView;
+  _table = outlineView;
 
   NSInteger res = 0;
 
   if (item == nil) {
-    res = [root.childNodes count];
+    res = [_root.childNodes count];
   } else if ([item isKindOfClass:[NSTreeNode class]]) {
     NSTreeNode *node = (NSTreeNode *)item;
     res = [[node childNodes] count];
@@ -200,7 +200,7 @@
   id res;
 
   if (item == nil) {
-    res = (root.childNodes)[index];
+    res = (_root.childNodes)[index];
   } else {
     NSTreeNode *node = (NSTreeNode *)item;
     res = [node childNodes][index];
@@ -226,7 +226,7 @@ const CGFloat kChangeImagePadding = 8;
                    item:(id)item
 {
   XTFileCellView *cell =
-      [outlineView makeViewWithIdentifier:@"fileCell" owner:controller];
+      [outlineView makeViewWithIdentifier:@"fileCell" owner:_controller];
 
   if (![cell isKindOfClass:[XTFileCellView class]])
     return cell;
@@ -263,7 +263,7 @@ const CGFloat kChangeImagePadding = 8;
     textWidth = changeFrame.origin.x + changeFrame.size.width -
                 textFrame.origin.x;
   } else {
-    cell.changeImage.image = changeImages[@( change )];
+    cell.changeImage.image = _changeImages[@( change )];
     textWidth = changeFrame.origin.x - kChangeImagePadding -
                 textFrame.origin.x;
   }

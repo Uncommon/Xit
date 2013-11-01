@@ -4,9 +4,9 @@
 
 // The commit view displays the info and content for a selected commit.
 @interface XTCommitViewController : NSViewController {
-  IBOutlet WebView *web;
+  IBOutlet WebView *_web;
  @private
-  XTRepository *repo;
+  XTRepository *_repo;
 }
 
 - (void)setRepo:(XTRepository *)newRepo;

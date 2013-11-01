@@ -9,7 +9,7 @@
 {
   self = [super init];
   if (self) {
-    items = [NSMutableArray array];
+    _items = [NSMutableArray array];
   }
 
   return self;
@@ -22,10 +22,10 @@
 
 - (void)setRepo:(XTRepository *)newRepo
 {
-  repo = newRepo;
-  [repo addReloadObserver:self selector:@selector(repoChanged:)];
-  indexTracker = [[XTModDateTracker alloc] initWithPath:
-          [[repo.repoURL path] stringByAppendingPathComponent:@".git/index"]];
+  _repo = newRepo;
+  [_repo addReloadObserver:self selector:@selector(repoChanged:)];
+  _indexTracker = [[XTModDateTracker alloc] initWithPath:
+          [[_repo.repoURL path] stringByAppendingPathComponent:@".git/index"]];
   [self reload];
 }
 
@@ -38,10 +38,10 @@
 
   // Recursion can happen if reloading uses git calls that trigger the file
   // system notification.
-  if (!reloading) {
-    reloading = YES;
+  if (! _reloading) {
+    _reloading = YES;
     [self reload];
-    reloading = NO;
+    _reloading = NO;
   }
 }
 
@@ -57,25 +57,25 @@
 
 - (NSArray *)items
 {
-  return items;
+  return _items;
 }
 
 #pragma mark - NSTableViewDataSource
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
-  table = aTableView;
-  return [items count];
+  _table = aTableView;
+  return [_items count];
 }
 
 - (id)tableView:(NSTableView *)aTableView
     objectValueForTableColumn:(NSTableColumn *)column
                           row:(NSInteger)rowIndex
 {
-  if (rowIndex >= [items count])
+  if (rowIndex >= [_items count])
     return nil;
 
-  XTFileIndexInfo *item = items[rowIndex];
+  XTFileIndexInfo *item = _items[rowIndex];
   NSString *title = [item valueForKey:column.identifier];
 
   return [@"  " stringByAppendingString:title];

@@ -8,10 +8,10 @@
 {
   NSError *error = nil;
 
-  if (![GTRepository initializeEmptyRepositoryAtFileURL:repoURL error:&error])
+  if (![GTRepository initializeEmptyRepositoryAtFileURL:_repoURL error:&error])
     return NO;
   // TODO: Why are we initializing a second GTRepository here?
-  gtRepo = [GTRepository repositoryWithURL:repoURL error:&error];
+  _gtRepo = [GTRepository repositoryWithURL:_repoURL error:&error];
   return error == nil;
 }
 
@@ -56,7 +56,7 @@
     NSString *fullBranch =
         [[GTBranch localNamePrefix] stringByAppendingString:name];
     GTBranch *branch =
-        [GTBranch branchWithName:fullBranch repository:gtRepo error:error];
+        [GTBranch branchWithName:fullBranch repository:_gtRepo error:error];
 
     if (*error != nil)
       return NO;
@@ -67,9 +67,9 @@
 
 - (NSString *)currentBranch
 {
-  if (cachedBranch == nil) {
+  if (_cachedBranch == nil) {
     NSError *error = nil;
-    GTBranch *branch = [gtRepo currentBranchWithError:&error];
+    GTBranch *branch = [_gtRepo currentBranchWithError:&error];
 
     if (error != nil)
       return nil;
@@ -78,12 +78,12 @@
 
     if (remoteName != nil)
       // shortName strips the remote name, so put it back
-      cachedBranch =
+      _cachedBranch =
           [NSString stringWithFormat:@"%@/%@", remoteName, [branch shortName]];
     else
-      cachedBranch = [branch shortName];
+      _cachedBranch = [branch shortName];
   }
-  return cachedBranch;
+  return _cachedBranch;
 }
 
 - (BOOL)merge:(NSString *)name error:(NSError **)error
@@ -111,20 +111,20 @@
 - (BOOL)checkout:(NSString *)branch error:(NSError **)resultError
 {
   return [self executeWritingBlock:^BOOL{
-    cachedBranch = nil;
-    cachedHeadRef = nil;
-    cachedHeadSHA = nil;
+    _cachedBranch = nil;
+    _cachedHeadRef = nil;
+    _cachedHeadSHA = nil;
 
     const GTCheckoutStrategyType strategy = GTCheckoutStrategySafeCreate;
     NSString *branchRef = [[GTBranch localNamePrefix]
         stringByAppendingPathComponent:branch];
     GTReference *ref = [GTReference
         referenceByLookingUpReferencedNamed:branchRef
-                               inRepository:gtRepo
+                               inRepository:_gtRepo
                                       error:resultError];
 
     if (ref != nil)
-      return [gtRepo checkoutReference:ref
+      return [_gtRepo checkoutReference:ref
                               strategy:strategy
                                  error:resultError
                          progressBlock:NULL];
@@ -133,10 +133,10 @@
       if (resultError != NULL)
         *resultError = nil;
 
-      GTCommit *commit = [gtRepo lookupObjectBySHA:branch objectType:GTObjectTypeCommit error:resultError];
+      GTCommit *commit = [_gtRepo lookupObjectBySHA:branch objectType:GTObjectTypeCommit error:resultError];
 
       if (commit != nil)
-        return [gtRepo checkoutCommit:commit
+        return [_gtRepo checkoutCommit:commit
                       strategy:strategy
                          error:resultError
                  progressBlock:NULL];
@@ -149,17 +149,17 @@
 {
   return [self executeWritingBlock:^BOOL{
     NSError *error = nil;
-    GTReference *headRef = [gtRepo headReferenceWithError:&error];
-    GTSignature *signature = [gtRepo userSignatureForNow];
+    GTReference *headRef = [_gtRepo headReferenceWithError:&error];
+    GTSignature *signature = [_gtRepo userSignatureForNow];
 
     if ((headRef == nil) || (signature == nil))
       return NO;
 
-    [gtRepo createTagNamed:name
-                    target:[headRef resolvedTarget]
-                    tagger:[gtRepo userSignatureForNow]
-                   message:msg
-                     error:&error];
+    [_gtRepo createTagNamed:name
+                     target:[headRef resolvedTarget]
+                     tagger:[_gtRepo userSignatureForNow]
+                    message:msg
+                      error:&error];
     return error == nil;
   }];
 }
@@ -167,7 +167,7 @@
 - (BOOL)deleteTag:(NSString *)name error:(NSError *__autoreleasing *)error
 {
   return [self executeWritingBlock:^BOOL{
-    int result = git_tag_delete([gtRepo git_repository], [name UTF8String]);
+    int result = git_tag_delete([_gtRepo git_repository], [name UTF8String]);
 
     if (result == 0)
       return YES;
@@ -217,7 +217,7 @@
 - (NSString *)urlStringForRemote:(NSString *)remoteName
 {
   NSString *remoteURL =
-      [[gtRepo configurationWithError:nil] stringForKey:remoteName];
+      [[_gtRepo configurationWithError:nil] stringForKey:remoteName];
   
   return remoteURL;
 }

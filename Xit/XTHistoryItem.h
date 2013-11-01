@@ -3,18 +3,7 @@
 
 @class XTRepository;
 
-@interface XTHistoryItem : NSObject<NSCopying> {
- @private
-  XTRepository *repo;
-  NSString *sha;
-  NSString *shortSha;
-  NSMutableArray *parents;
-  NSDate *date;
-  NSString *email;
-  NSString *subject;
-  PBGraphCellInfo *lineInfo;
-  NSUInteger index;
-}
+@interface XTHistoryItem : NSObject<NSCopying>
 
 @property(strong) XTRepository *repo;
 @property(strong) NSString *sha;

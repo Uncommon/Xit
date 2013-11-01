@@ -11,16 +11,12 @@ extern NSString *XTPathsKey;
  @private
   // The use of Objective Git should generally be considered an implementation
   // detail that should not be exposed to other classes.
-  GTRepository *gtRepo;
-  NSURL *repoURL;
-  NSString *gitCMD;
-  NSString *selectedCommit;
-  NSString *cachedHeadRef, *cachedHeadSHA, *cachedBranch;
-  NSCache *diffCache;
-  NSDictionary *refsIndex;
-  FSEventStreamRef stream;
-  dispatch_queue_t queue;
-  NSMutableArray *activeTasks;
+  GTRepository *_gtRepo;
+  NSURL *_repoURL;
+  NSString *_gitCMD;
+  NSString *_cachedHeadRef, *_cachedHeadSHA, *_cachedBranch;
+  NSCache *_diffCache;
+  FSEventStreamRef _stream;
 }
 
 - (id)initWithURL:(NSURL*)url;

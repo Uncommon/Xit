@@ -19,7 +19,7 @@ const NSInteger WebMenuItemTagInspectElement = 2024;
 
 - (void)webView:(WebView*)sender didFinishLoadForFrame:(WebFrame*)frame
 {
-  [[self.webView windowScriptObject] setValue:self forKey:@"controller"];
+  [[_webView windowScriptObject] setValue:self forKey:@"controller"];
 }
 
 - (NSUInteger)webView:(WebView*)sender

@@ -15,7 +15,7 @@
 {
   self = [super init];
   if (self) {
-    grapher = [[PBGitGrapher alloc] init];
+    _grapher = [[PBGitGrapher alloc] init];
   }
   return self;
 }
@@ -23,7 +23,7 @@
 - (void)graphCommits:(NSArray *)revList
 {
   for (XTHistoryItem *commit in revList) {
-    [grapher decorateCommit:commit];
+    [_grapher decorateCommit:commit];
   }
 }
 

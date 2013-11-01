@@ -4,8 +4,7 @@
 @class XTRepository;
 
 @interface XTPreviewItem : NSObject<QLPreviewItem> {
-  NSString *path, *commitSHA;
-  NSURL *previewItemURL;
+  NSString *_path, *_commitSHA;
 }
 
 @property(retain) XTRepository *repo;

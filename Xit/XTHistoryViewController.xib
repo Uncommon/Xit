@@ -7,15 +7,15 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="XTHistoryViewController">
             <connections>
-                <outlet property="commitTabView" destination="186" id="192"/>
-                <outlet property="commitView" destination="27" id="37"/>
-                <outlet property="commitViewController" destination="31" id="38"/>
-                <outlet property="historyDS" destination="30" id="36"/>
-                <outlet property="historyTable" destination="20" id="119"/>
-                <outlet property="mainSplitView" destination="13" id="71"/>
-                <outlet property="sideBarDS" destination="29" id="35"/>
-                <outlet property="sidebarOutline" destination="80" id="120"/>
-                <outlet property="sidebarSplitView" destination="4" id="67"/>
+                <outlet property="_commitTabView" destination="186" id="192"/>
+                <outlet property="_commitView" destination="27" id="37"/>
+                <outlet property="_commitViewController" destination="31" id="38"/>
+                <outlet property="_historyDS" destination="30" id="36"/>
+                <outlet property="_historyTable" destination="20" id="119"/>
+                <outlet property="_mainSplitView" destination="13" id="71"/>
+                <outlet property="_sideBarDS" destination="29" id="35"/>
+                <outlet property="_sidebarOutline" destination="80" id="120"/>
+                <outlet property="_sidebarSplitView" destination="4" id="67"/>
                 <outlet property="view" destination="3" id="28"/>
             </connections>
         </customObject>
@@ -218,7 +218,7 @@
                                             </tableColumn>
                                         </tableColumns>
                                         <connections>
-                                            <outlet property="controller" destination="-2" id="134"/>
+                                            <outlet property="_controller" destination="-2" id="134"/>
                                             <outlet property="dataSource" destination="29" id="117"/>
                                             <outlet property="delegate" destination="29" id="118"/>
                                         </connections>
@@ -377,13 +377,13 @@
         </view>
         <customObject id="29" customClass="XTSideBarDataSource">
             <connections>
-                <outlet property="refFormatter" destination="165" id="167"/>
-                <outlet property="viewController" destination="-2" id="168"/>
+                <outlet property="_refFormatter" destination="165" id="167"/>
+                <outlet property="_viewController" destination="-2" id="168"/>
             </connections>
         </customObject>
         <customObject id="30" customClass="XTHistoryDataSource">
             <connections>
-                <outlet property="table" destination="20" id="72"/>
+                <outlet property="_table" destination="20" id="72"/>
             </connections>
         </customObject>
         <customObject id="165" customClass="XTRefFormatter"/>

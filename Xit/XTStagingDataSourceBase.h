@@ -5,11 +5,11 @@
 
 @interface XTStagingDataSourceBase : NSObject<NSTableViewDataSource> {
  @protected
-  XTRepository *repo;
-  NSMutableArray *items;
-  NSTableView *table;
-  BOOL reloading;
-  XTModDateTracker *indexTracker;
+  XTRepository *_repo;
+  NSMutableArray *_items;
+  NSTableView *_table;
+  BOOL _reloading;
+  XTModDateTracker *_indexTracker;
 }
 
 - (NSArray *)items;

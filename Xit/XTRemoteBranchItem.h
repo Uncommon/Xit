@@ -1,9 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "XTLocalBranchItem.h"
 
-@interface XTRemoteBranchItem : XTLocalBranchItem {
-  NSString *remote;
-}
+@interface XTRemoteBranchItem : XTLocalBranchItem
 
 @property(strong) NSString *remote;
 

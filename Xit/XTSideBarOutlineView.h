@@ -4,9 +4,9 @@
 
 @interface XTSideBarOutlineView : NSOutlineView
 {
-  IBOutlet XTHistoryViewController *controller;
+  IBOutlet XTHistoryViewController *_controller;
 
-  NSInteger contextMenuRow;
+  NSInteger _contextMenuRow;
 }
 
 @property(readonly) NSInteger contextMenuRow;

@@ -48,79 +48,79 @@
 
 - (void)setRepo:(XTRepository *)newRepo
 {
-  repo = newRepo;
-  [fileListDS setRepo:newRepo];
-  headerController.repository = newRepo;
-  ((XTPreviewItem *)filePreview.previewItem).repo = newRepo;
+  _repo = newRepo;
+  [_fileListDS setRepo:newRepo];
+  _headerController.repository = newRepo;
+  ((XTPreviewItem *)_filePreview.previewItem).repo = newRepo;
 }
 
 - (void)awakeFromNib
 {
   // -[NSOutlineView makeViewWithIdentifier:owner:] causes this to get called
   // again after the initial load.
-  if ([[splitView subviews] count] == 2)
+  if ([[_splitView subviews] count] == 2)
     return;
 
   // For some reason the splitview comes with preexisting subviews.
-  NSArray *subviews = [[splitView subviews] copy];
+  NSArray *subviews = [[_splitView subviews] copy];
 
   for (NSView *sub in subviews)
     [sub removeFromSuperview];
-  [splitView addSubview:leftPane];
-  [splitView addSubview:rightPane];
-  [splitView setDivider:[NSImage imageNamed:@"splitter"]];
-  [splitView setDividerThickness:1.0];
+  [_splitView addSubview:_leftPane];
+  [_splitView addSubview:_rightPane];
+  [_splitView setDivider:[NSImage imageNamed:@"splitter"]];
+  [_splitView setDividerThickness:1.0];
 
   [[NSNotificationCenter defaultCenter]
-      addObserver:self
-         selector:@selector(fileSelectionChanged:)
-             name:NSOutlineViewSelectionDidChangeNotification
-           object:fileListOutline];
+  	addObserver:self
+  	   selector:@selector(fileSelectionChanged:)
+  		   name:NSOutlineViewSelectionDidChangeNotification
+  		 object:_fileListOutline];
   [[NSNotificationCenter defaultCenter]
-      addObserver:self
-         selector:@selector(headerResized:)
-             name:XTHeaderResizedNotificaiton
-           object:headerController];
+  	addObserver:self
+  	   selector:@selector(headerResized:)
+  		   name:XTHeaderResizedNotificaiton
+  		 object:_headerController];
 }
 
 - (void)updatePreview
 {
-  NSIndexSet *selection = [fileListOutline selectedRowIndexes];
+  NSIndexSet *selection = [_fileListOutline selectedRowIndexes];
   const NSUInteger selectionCount = [selection count];
-  XTPreviewItem *previewItem = (XTPreviewItem *)filePreview.previewItem;
+  XTPreviewItem *previewItem = (XTPreviewItem *)_filePreview.previewItem;
 
   if (previewItem == nil) {
     previewItem = [[XTPreviewItem alloc] init];
-    previewItem.repo = repo;
-    filePreview.previewItem = previewItem;
+    previewItem.repo = _repo;
+    _filePreview.previewItem = previewItem;
   }
 
-  previewItem.commitSHA = repo.selectedCommit;
+  previewItem.commitSHA = _repo.selectedCommit;
   if (selectionCount != 1) {
-    [filePreview setHidden:YES];
+    [_filePreview setHidden:YES];
     previewItem.path = nil;
     return;
   }
 
-  NSTreeNode *selectedNode = [fileListOutline itemAtRow:[selection firstIndex]];
+  NSTreeNode *selectedNode = [_fileListOutline itemAtRow:[selection firstIndex]];
   XTCommitTreeItem *selectedItem = (XTCommitTreeItem*)
       [selectedNode representedObject];
 
   if ([[self class] fileNameIsText:selectedItem.path]) {
     [self.previewTabView selectTabViewItemWithIdentifier:@"text"];
-    [textPreview loadPath:selectedItem.path
-                   commit:repo.selectedCommit
-               repository:repo];
+    [_textPreview loadPath:selectedItem.path
+                    commit:_repo.selectedCommit
+                repository:_repo];
   } else {
     [self.previewTabView selectTabViewItemWithIdentifier:@"preview"];
-    [filePreview setHidden:NO];
+    [_filePreview setHidden:NO];
     previewItem.path = selectedItem.path;
   }
 }
 
 - (void)commitSelected:(NSNotification *)note
 {
-  headerController.commitSHA = [repo selectedCommit];
+  _headerController.commitSHA = [_repo selectedCommit];
   [self refresh];
 }
 
@@ -133,13 +133,13 @@
 {
   const CGFloat newHeight = [[note userInfo][XTHeaderHeightKey] floatValue];
 
-  [headerSplitView animatePosition:newHeight ofDividerAtIndex:0];
+  [_headerSplitView animatePosition:newHeight ofDividerAtIndex:0];
 }
 
 - (void)refresh
 {
   [self updatePreview];
-  [filePreview refreshPreviewItem];
+  [_filePreview refreshPreviewItem];
 }
 
 #pragma mark - NSSplitViewDelegate
@@ -147,7 +147,7 @@
 - (BOOL)splitView:(NSSplitView*)splitView
     shouldAdjustSizeOfSubview:(NSView*)subview
 {
-  if (subview == headerController.view)
+  if (subview == _headerController.view)
     return NO;
   return YES;
 }

@@ -18,12 +18,11 @@
 
 @implementation XTSideBarDataSource
 
-@synthesize roots;
 
 - (id)init
 {
   if ((self = [super init]) != nil)
-    roots = [self makeRoots];
+    _roots = [self makeRoots];
 
   return self;
 }
@@ -46,15 +45,15 @@
 
 - (void)awakeFromNib
 {
-  [outline setTarget:self];
-  [outline setDoubleAction:@selector(doubleClick:)];
+  [_outline setTarget:self];
+  [_outline setDoubleAction:@selector(doubleClick:)];
 }
 
 - (void)setRepo:(XTRepository *)newRepo
 {
-  repo = newRepo;
-  if (repo != nil) {
-    [repo addReloadObserver:self selector:@selector(repoChanged:)];
+  _repo = newRepo;
+  if (_repo != nil) {
+    [_repo addReloadObserver:self selector:@selector(repoChanged:)];
     [self reload];
   }
 }
@@ -69,24 +68,24 @@
       break;
     }
   }
-  [outline performSelectorOnMainThread:@selector(reloadData)
-                            withObject:nil
-                         waitUntilDone:NO];
+  [_outline performSelectorOnMainThread:@selector(reloadData)
+							 withObject:nil
+						  waitUntilDone:NO];
 }
 
 - (void)reload
 {
-  [repo executeOffMainThread:^{
-    NSArray *newRoots = [self loadRoots];
+  [_repo executeOffMainThread:^{
+	  NSArray *newRoots = [self loadRoots];
 
-    dispatch_async(dispatch_get_main_queue(), ^{
-      [self willChangeValueForKey:@"reload"];
-      roots = newRoots;
-      [self didChangeValueForKey:@"reload"];
-      [outline reloadData];
-      // Empty groups get automatically collapsed, so counter that.
-      [outline expandItem:nil expandChildren:YES];
-    });
+	  dispatch_async(dispatch_get_main_queue(), ^{
+		  [self willChangeValueForKey:@"reload"];
+		  _roots = newRoots;
+		  [self didChangeValueForKey:@"reload"];
+		  [_outline reloadData];
+		  // Empty groups get automatically collapsed, so counter that.
+		  [_outline expandItem:nil expandChildren:YES];
+	  });
   }];
 }
 
@@ -101,8 +100,8 @@
 
   [self loadBranches:branches tags:tags remotes:remotes refsIndex:refsIndex];
   [self loadStashes:stashes refsIndex:refsIndex];
-  [repo readSubmodulesWithBlock:^(GTSubmodule *sub){
-    [submodules addObject:[[XTSubmoduleItem alloc] initWithSubmodule:sub]];
+  [_repo readSubmodulesWithBlock:^(GTSubmodule *sub) {
+	  [submodules addObject:[[XTSubmoduleItem alloc] initWithSubmodule:sub]];
   }];
 
   NSArray *newRoots = [self makeRoots];
@@ -113,8 +112,8 @@
   [newRoots[XTStashesGroupIndex] setChildren:stashes];
   [newRoots[XTSubmodulesGroupIndex] setChildren:submodules];
 
-  repo.refsIndex = refsIndex;
-  currentBranch = [repo currentBranch];
+  _repo.refsIndex = refsIndex;
+  _currentBranch = [_repo currentBranch];
 
   return newRoots;
 }
@@ -122,12 +121,11 @@
 - (void)loadStashes:(NSMutableArray *)stashes
           refsIndex:(NSMutableDictionary *)refsIndex
 {
-    [repo readStashesWithBlock:^(NSString *commit, NSString *name)
-    {
-      XTSideBarItem *stash = [[XTStashItem alloc] initWithTitle:name];
-      [stashes addObject:stash];
-      [refsIndex addObject:name forKey:commit];
-    }];
+    [_repo readStashesWithBlock:^(NSString *commit, NSString *name) {
+		XTSideBarItem *stash = [[XTStashItem alloc] initWithTitle:name];
+		[stashes addObject:stash];
+		[refsIndex addObject:name forKey:commit];
+	}];
 }
 
 - (void)loadBranches:(NSMutableArray *)branches
@@ -187,19 +185,19 @@
                   forKey:tag.sha];
   };
 
-  [repo readRefsWithLocalBlock:localBlock
-                   remoteBlock:remoteBlock
-                      tagBlock:tagBlock];
+  [_repo readRefsWithLocalBlock:localBlock
+					remoteBlock:remoteBlock
+					   tagBlock:tagBlock];
 }
 
 - (void)doubleClick:(id)sender
 {
-  id clickedItem = [outline itemAtRow:[outline clickedRow]];
+  id clickedItem = [_outline itemAtRow:[_outline clickedRow]];
 
   if ([clickedItem isKindOfClass:[XTSubmoduleItem class]]) {
     XTSubmoduleItem *subItem = (XTSubmoduleItem*)clickedItem;
     NSString *subPath = subItem.submodule.path;
-    NSString *rootPath = repo.repoURL.path;
+    NSString *rootPath = _repo.repoURL.path;
     NSURL *subURL = [NSURL fileURLWithPath:
         [rootPath stringByAppendingPathComponent:subPath]];
     
@@ -214,7 +212,7 @@
 
 - (XTLocalBranchItem *)itemForBranchName:(NSString *)branch
 {
-  XTSideBarItem *branches = roots[XTBranchesGroupIndex];
+  XTSideBarItem *branches = _roots[XTBranchesGroupIndex];
 
   for (NSInteger i = 0; i < [branches numberOfChildren]; ++i) {
     XTLocalBranchItem *branchItem = [branches childAtIndex:i];
@@ -227,7 +225,7 @@
 
 - (XTSideBarItem *)itemNamed:(NSString *)name inGroup:(NSInteger)groupIndex
 {
-  XTSideBarItem *group = roots[groupIndex];
+  XTSideBarItem *group = _roots[groupIndex];
 
   for (NSInteger i = 0; i < [group numberOfChildren]; ++i) {
     XTSideBarItem *item = [group childAtIndex:i];
@@ -243,13 +241,13 @@
 - (NSInteger)outlineView:(NSOutlineView *)outlineView
     numberOfChildrenOfItem:(id)item
 {
-  outline = outlineView;
+  _outline = outlineView;
   outlineView.delegate = self;
 
   NSInteger result = 0;
 
   if (item == nil) {
-    result = [roots count];
+    result = [_roots count];
   } else if ([item isKindOfClass:[XTSideBarItem class]]) {
     XTSideBarItem *sbItem = (XTSideBarItem *)item;
     result = [sbItem numberOfChildren];
@@ -275,7 +273,7 @@
   id result = nil;
 
   if (item == nil) {
-    result = roots[index];
+    result = _roots[index];
   } else if ([item isKindOfClass:[XTSideBarItem class]]) {
     XTSideBarItem *sbItem = (XTSideBarItem *)item;
     result = [sbItem childAtIndex:index];
@@ -287,7 +285,7 @@
      viewForTableColumn:(NSTableColumn *)tableColumn
                    item:(id)item
 {
-  if ([roots containsObject:item]) {
+  if ([_roots containsObject:item]) {
     NSTableCellView *headerView =
         [outlineView makeViewWithIdentifier:@"HeaderCell" owner:self];
 
@@ -307,8 +305,8 @@
     } else {
       // These connections are in the xib, but they get lost, probably
       // when the row view gets copied.
-      [dataView.textField setFormatter:refFormatter];
-      [dataView.textField setTarget:viewController];
+		[dataView.textField setFormatter:_refFormatter];
+		[dataView.textField setTarget:_viewController];
       [dataView.textField setAction:@selector(sideBarItemRenamed:)];
       [dataView.textField setEditable:YES];
       [dataView.textField setSelectable:YES];
@@ -318,7 +316,7 @@
       [dataView.imageView setImage:[NSImage imageNamed:@"branch"]];
       if (![item isKindOfClass:[XTRemoteBranchItem class]])
         [dataView.button
-            setHidden:![[item title] isEqualToString:currentBranch]];
+            setHidden:! [[item title] isEqualToString:_currentBranch]];
     } else if ([item isKindOfClass:[XTTagItem class]]) {
       [dataView.imageView setImage:[NSImage imageNamed:@"tag"]];
     } else if ([item isKindOfClass:[XTStashItem class]]) {
@@ -328,7 +326,7 @@
       [dataView.textField setEditable:NO];
     } else {
       [dataView.button setHidden:YES];
-      if ([outlineView parentForItem:item] == roots[XTRemotesGroupIndex])
+      if ([outlineView parentForItem:item] == _roots[XTRemotesGroupIndex])
         [dataView.imageView setImage:[NSImage imageNamed:NSImageNameNetwork]];
     }
     return dataView;
@@ -339,10 +337,10 @@
 
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification
 {
-  XTSideBarItem *item = [outline itemAtRow:outline.selectedRow];
+  XTSideBarItem *item = [_outline itemAtRow:_outline.selectedRow];
 
   if (item.sha != nil)
-    repo.selectedCommit = item.sha;
+    _repo.selectedCommit = item.sha;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item
@@ -357,14 +355,14 @@
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isGroupItem:(id)item
 {
-  return [roots containsObject:item];
+  return [_roots containsObject:item];
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView
     shouldShowOutlineCellForItem:(id)item
 {
   // Don't show the Show/Hide control for group items.
-  return ![roots containsObject:item];
+  return ![_roots containsObject:item];
 }
 
 @end

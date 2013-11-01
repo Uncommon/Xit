@@ -2,8 +2,6 @@
 
 @implementation XTFileIndexInfo
 
-@synthesize name;
-@synthesize status;
 
 - (id)initWithName:(NSString *)theName andStatus:(NSString *)theStatus
 {

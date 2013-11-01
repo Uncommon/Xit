@@ -10,9 +10,6 @@
 
 @implementation XTPreviewItem
 
-@synthesize previewItemURL;
-@synthesize repo;
-@synthesize tempFolder;
 
 - (id)init
 {
@@ -29,7 +26,7 @@
     const char *tempPath = mkdtemp(template);
 
     if (tempPath != NULL)
-      tempFolder = @(tempPath);
+      _tempFolder = @(tempPath);
     free(template);
   }
   return self;
@@ -37,8 +34,8 @@
 
 - (NSString *)tempFilePath
 {
-  return [tempFolder
-      stringByAppendingPathComponent:[self.path lastPathComponent]];
+  return [_tempFolder
+      stringByAppendingPathComponent:[_path lastPathComponent]];
 }
 
 - (void)deleteTempFile
@@ -53,7 +50,7 @@
 - (void)dealloc
 {
   [self deleteTempFile];
-  rmdir([tempFolder cStringUsingEncoding:NSUTF8StringEncoding]);
+  rmdir([_tempFolder cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
 - (void)remakeTempFile
@@ -61,9 +58,9 @@
   [self deleteTempFile];
   self.previewItemURL = nil;
 
-  if ((self.path != nil) && (self.commitSHA != nil)) {
+  if ((_path != nil) && (_commitSHA != nil)) {
     NSData *contents =
-        [self.repo contentsOfFile:self.path atCommit:self.commitSHA];
+        [_repo contentsOfFile:_path atCommit:_commitSHA];
 
     if (contents != nil) {
       NSString *tempFilePath = [self tempFilePath];
@@ -76,28 +73,28 @@
 
 - (void)setPath:(NSString *)newPath
 {
-  if (![newPath isEqualToString:self->path]) {
-    self->path = newPath;
+  if (![newPath isEqualToString:_path]) {
+    _path = newPath;
     [self remakeTempFile];
   }
 }
 
 - (NSString *)path
 {
-  return path;
+  return _path;
 }
 
 - (void)setCommitSHA:(NSString *)newSHA
 {
-  if (![newSHA isEqualToString:self->commitSHA]) {
-    self->commitSHA = newSHA;
+  if (![newSHA isEqualToString:_commitSHA]) {
+    _commitSHA = newSHA;
     [self remakeTempFile];
   }
 }
 
 - (NSString *)commitSHA
 {
-  return commitSHA;
+  return _commitSHA;
 }
 
 @end

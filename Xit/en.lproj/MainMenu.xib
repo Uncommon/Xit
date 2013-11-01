@@ -3723,12 +3723,12 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>activity</string>
+							<string>_activity</string>
 							<string>fileListView</string>
-							<string>historyView</string>
-							<string>stageView</string>
+							<string>_historyView</string>
+							<string>_stageView</string>
 							<string>statusView</string>
-							<string>tabs</string>
+							<string>_tabs</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -3744,17 +3744,17 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>activity</string>
+							<string>_activity</string>
 							<string>fileListView</string>
-							<string>historyView</string>
-							<string>stageView</string>
+							<string>_historyView</string>
+							<string>_stageView</string>
 							<string>statusView</string>
-							<string>tabs</string>
+							<string>_tabs</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBToOneOutletInfo">
-								<string key="name">activity</string>
+								<string key="name">_activity</string>
 								<string key="candidateClassName">NSProgressIndicator</string>
 							</object>
 							<object class="IBToOneOutletInfo">
@@ -3762,11 +3762,11 @@
 								<string key="candidateClassName">XTFileViewController</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">historyView</string>
+								<string key="name">_historyView</string>
 								<string key="candidateClassName">XTHistoryViewController</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">stageView</string>
+								<string key="name">_stageView</string>
 								<string key="candidateClassName">XTStageViewController</string>
 							</object>
 							<object class="IBToOneOutletInfo">
@@ -3774,7 +3774,7 @@
 								<string key="candidateClassName">XTStatusView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">tabs</string>
+								<string key="name">_tabs</string>
 								<string key="candidateClassName">NSTabView</string>
 							</object>
 						</object>
@@ -3818,7 +3818,7 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>fileListDS</string>
+							<string>_fileListDS</string>
 							<string>fileListHistoryDS</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -3831,13 +3831,13 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>fileListDS</string>
+							<string>_fileListDS</string>
 							<string>fileListHistoryDS</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBToOneOutletInfo">
-								<string key="name">fileListDS</string>
+								<string key="name">_fileListDS</string>
 								<string key="candidateClassName">XTFileListDataSource</string>
 							</object>
 							<object class="IBToOneOutletInfo">
@@ -3909,14 +3909,14 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>commitView</string>
-							<string>commitViewController</string>
-							<string>historyDS</string>
-							<string>historyTable</string>
-							<string>mainSplitView</string>
-							<string>sideBarDS</string>
-							<string>sidebarOutline</string>
-							<string>sidebarSplitView</string>
+							<string>_commitView</string>
+							<string>_commitViewController</string>
+							<string>_historyDS</string>
+							<string>_historyTable</string>
+							<string>_mainSplitView</string>
+							<string>_sideBarDS</string>
+							<string>_sidebarOutline</string>
+							<string>_sidebarSplitView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -3934,47 +3934,47 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>commitView</string>
-							<string>commitViewController</string>
-							<string>historyDS</string>
-							<string>historyTable</string>
-							<string>mainSplitView</string>
-							<string>sideBarDS</string>
-							<string>sidebarOutline</string>
-							<string>sidebarSplitView</string>
+							<string>_commitView</string>
+							<string>_commitViewController</string>
+							<string>_historyDS</string>
+							<string>_historyTable</string>
+							<string>_mainSplitView</string>
+							<string>_sideBarDS</string>
+							<string>_sidebarOutline</string>
+							<string>_sidebarSplitView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBToOneOutletInfo">
-								<string key="name">commitView</string>
+								<string key="name">_commitView</string>
 								<string key="candidateClassName">NSView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">commitViewController</string>
+								<string key="name">_commitViewController</string>
 								<string key="candidateClassName">XTCommitViewController</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">historyDS</string>
+								<string key="name">_historyDS</string>
 								<string key="candidateClassName">XTHistoryDataSource</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">historyTable</string>
+								<string key="name">_historyTable</string>
 								<string key="candidateClassName">NSTableView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">mainSplitView</string>
+								<string key="name">_mainSplitView</string>
 								<string key="candidateClassName">NSSplitView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">sideBarDS</string>
+								<string key="name">_sideBarDS</string>
 								<string key="candidateClassName">XTSideBarDataSource</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">sidebarOutline</string>
+								<string key="name">_sidebarOutline</string>
 								<string key="candidateClassName">NSOutlineView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">sidebarSplitView</string>
+								<string key="name">_sidebarSplitView</string>
 								<string key="candidateClassName">NSSplitView</string>
 							</object>
 						</object>
@@ -3991,9 +3991,9 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>commandText</string>
-							<string>outputScroll</string>
-							<string>outputText</string>
+							<string>_commandText</string>
+							<string>_outputScroll</string>
+							<string>_outputText</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -4006,22 +4006,22 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>commandText</string>
-							<string>outputScroll</string>
-							<string>outputText</string>
+							<string>_commandText</string>
+							<string>_outputScroll</string>
+							<string>_outputText</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBToOneOutletInfo">
-								<string key="name">commandText</string>
+								<string key="name">_commandText</string>
 								<string key="candidateClassName">NSTextField</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">outputScroll</string>
+								<string key="name">_outputScroll</string>
 								<string key="candidateClassName">NSScrollView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">outputText</string>
+								<string key="name">_outputText</string>
 								<string key="candidateClassName">NSTextView</string>
 							</object>
 						</object>
@@ -4046,10 +4046,10 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>stageDS</string>
-							<string>stageTable</string>
-							<string>unstageDS</string>
-							<string>unstageTable</string>
+							<string>_stageDS</string>
+							<string>_stageTable</string>
+							<string>_unstageDS</string>
+							<string>_unstageTable</string>
 							<string>web</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -4065,28 +4065,28 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>stageDS</string>
-							<string>stageTable</string>
-							<string>unstageDS</string>
-							<string>unstageTable</string>
+							<string>_stageDS</string>
+							<string>_stageTable</string>
+							<string>_unstageDS</string>
+							<string>_unstageTable</string>
 							<string>web</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBToOneOutletInfo">
-								<string key="name">stageDS</string>
+								<string key="name">_stageDS</string>
 								<string key="candidateClassName">XTStagedDataSource</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">stageTable</string>
+								<string key="name">_stageTable</string>
 								<string key="candidateClassName">NSTableView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">unstageDS</string>
+								<string key="name">_unstageDS</string>
 								<string key="candidateClassName">XTUnstagedDataSource</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">unstageTable</string>
+								<string key="name">_unstageTable</string>
 								<string key="candidateClassName">NSTableView</string>
 							</object>
 							<object class="IBToOneOutletInfo">

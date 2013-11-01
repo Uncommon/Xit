@@ -15,30 +15,30 @@
 
 - (void)openDocument:(id)sender
 {
-  if (openPanel != nil) {
-    [openPanel makeKeyAndOrderFront:self];
+  if (_openPanel != nil) {
+    [_openPanel makeKeyAndOrderFront:self];
     return;
   }
 
-  openPanel = [NSOpenPanel openPanel];
+  _openPanel = [NSOpenPanel openPanel];
 
-  [openPanel setCanChooseFiles:NO];
-  [openPanel setCanChooseDirectories:YES];
-  [openPanel setDelegate:self];
+  [_openPanel setCanChooseFiles:NO];
+  [_openPanel setCanChooseDirectories:YES];
+  [_openPanel setDelegate:self];
   
   // Add more descriptive title to open dialog box.
-  [openPanel setMessage:@"Open a directory that contains a Git repository"];
+  [_openPanel setMessage:@"Open a directory that contains a Git repository"];
   
-  [openPanel beginWithCompletionHandler:^(NSInteger result) {
+  [_openPanel beginWithCompletionHandler:^(NSInteger result) {
     if (result == NSFileHandlingPanelOKButton) {
-      for (NSURL *url in [openPanel URLs]) {
+      for (NSURL *url in [_openPanel URLs]) {
         [[NSDocumentController sharedDocumentController]
             openDocumentWithContentsOfURL:url
                                   display:YES
                         completionHandler:NULL];
       }
     }
-    openPanel = nil;
+    _openPanel = nil;
   }];
 }
 
