@@ -64,10 +64,10 @@
       initWithNibName:@"XTFileViewController" bundle:nil];
   [treeTabItem setView:_fileViewController.view];
 	[[NSNotificationCenter defaultCenter]
-			addObserver:_fileViewController
-			   selector:@selector(commitSelected:)
-				   name:NSTableViewSelectionDidChangeNotification
-				 object:_historyTable];
+      addObserver:_fileViewController
+         selector:@selector(commitSelected:)
+             name:NSTableViewSelectionDidChangeNotification
+           object:_historyTable];
 
   // Remove intercell spacing so the history lines will connect
   NSSize cellSpacing = [_historyTable intercellSpacing];
@@ -193,16 +193,16 @@
 
   if ([item isKindOfClass:class]) {
     [_repo executeOffMainThread:^{
-		NSError *error = nil;
-
-		block(item, & error);
-		if (error != nil)
-			[XTStatusView
+      NSError *error = nil;
+      
+      block(item, & error);
+      if (error != nil)
+        [XTStatusView
 					updateStatus:errorString
-						 command:[[error userInfo] valueForKey:XTErrorArgsKey]
-						  output:[[error userInfo] valueForKey:XTErrorOutputKey]
-				   forRepository:_repo];
-	}];
+			  			 command:[[error userInfo] valueForKey:XTErrorArgsKey]
+			  			  output:[[error userInfo] valueForKey:XTErrorOutputKey]
+			   forRepository:_repo];
+    }];
   }
 }
 
@@ -228,21 +228,21 @@
 
   NSError *error = nil;
 
-  if ([_repo merge:branch error:& error]) {
+  if ([_repo merge:branch error:&error]) {
     NSString *mergeStatus =[NSString stringWithFormat:
         @"Merged %@ into %@", branch, [_repo currentBranch]];
 
 	  [XTStatusView updateStatus:mergeStatus
-						 command:nil
-						  output:nil
-				   forRepository:_repo];
+                       command:nil
+                        output:nil
+                 forRepository:_repo];
   } else {
     NSDictionary *errorInfo = [error userInfo];
 
 	  [XTStatusView updateStatus:@"Merge failed"
-						 command:errorInfo[XTErrorArgsKey]
-						  output:errorInfo[XTErrorOutputKey]
-				   forRepository:_repo];
+                       command:errorInfo[XTErrorArgsKey]
+                        output:errorInfo[XTErrorOutputKey]
+                 forRepository:_repo];
   }
 }
 
