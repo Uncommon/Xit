@@ -22,27 +22,12 @@
   return self;
 }
 
-- (void)dealloc
-{
-  [repo removeObserver:self forKeyPath:@"selectedCommit"];
-}
-
 - (NSTreeNode *)makeNewRoot
 {
   XTCommitTreeItem *rootItem = [[XTCommitTreeItem alloc] init];
 
   rootItem.path = @"root";
   return [NSTreeNode treeNodeWithRepresentedObject:rootItem];
-}
-
-- (void)setRepo:(XTRepository *)newRepo
-{
-  repo = newRepo;
-  [repo addObserver:self
-         forKeyPath:@"selectedCommit"
-            options:NSKeyValueObservingOptionNew
-            context:nil];
-  [self reload];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath
@@ -56,8 +41,8 @@
 
 - (void)reload
 {
-  [repo executeOffMainThread:^{
-    NSString *ref = repo.selectedCommit;
+  [self.repository executeOffMainThread:^{
+    NSString *ref = self.repository.selectedCommit;
     NSTreeNode *newRoot = [self fileTreeForRef:(ref == nil) ? @"HEAD" : ref];
 
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -93,10 +78,10 @@
 {
   NSTreeNode *newRoot = [self makeNewRoot];
   NSMutableDictionary *nodes = [NSMutableDictionary dictionary];
-  NSArray *changeList = [repo changesForRef:ref parent:nil];
+  NSArray *changeList = [self.repository changesForRef:ref parent:nil];
   NSDictionary *changes = [[NSMutableDictionary alloc]
       initWithCapacity:[changeList count]];
-  NSArray *files = [repo fileNamesForRef:ref];
+  NSArray *files = [self.repository fileNamesForRef:ref];
   NSMutableArray *deletions =
       [NSMutableArray arrayWithCapacity:[changes count]];
 

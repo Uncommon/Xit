@@ -54,7 +54,7 @@ const CGFloat kChangeImagePadding = 8;
 {
   repo = newRepo;
   _fileChangeDS.repository = newRepo;
-  [fileListDS setRepo:newRepo];
+  fileListDS.repository = newRepo;
   headerController.repository = newRepo;
   ((XTPreviewItem *)filePreview.previewItem).repo = newRepo;
 }

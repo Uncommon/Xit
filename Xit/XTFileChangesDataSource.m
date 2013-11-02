@@ -27,16 +27,6 @@
     [self reload];
 }
 
-- (void)setRepository:(XTRepository*)repository
-{
-  _repository = repository;
-  [_repository addObserver:self
-               forKeyPath:@"selectedCommit"
-                  options:NSKeyValueObservingOptionNew
-                  context:nil];
-  [self reload];
-}
-
 - (NSInteger)outlineView:(NSOutlineView*)outlineView
     numberOfChildrenOfItem:(id)item
 {

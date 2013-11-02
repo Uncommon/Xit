@@ -12,14 +12,12 @@
 @interface XTFileListDataSource :
     XTFileListDataSourceBase<NSOutlineViewDataSource> {
  @private
-  XTRepository *repo;
   IBOutlet XTFileViewController *controller;
   NSTreeNode *root;
   NSDictionary *changeImages;
   NSOutlineView *table;
 }
 
-- (void)setRepo:(XTRepository*)repo;
 - (void)reload;
 
 @end

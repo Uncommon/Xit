@@ -9,7 +9,6 @@
 @interface XTFileChangesDataSource :
     XTFileListDataSourceBase<NSOutlineViewDataSource>
 
-@property(nonatomic) XTRepository *repository;
 @property IBOutlet NSOutlineView *outlineView;
 @property IBOutlet XTFileViewController *controller;
 
