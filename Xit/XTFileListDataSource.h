@@ -5,6 +5,10 @@
 @class XTRepository;
 
 
+/**
+  Provides all files from the selected commit's tree, with special icons
+  displayed for changed files. Entried are added for deleted files.
+ */
 @interface XTFileListDataSource : NSObject<NSOutlineViewDataSource> {
  @private
   XTRepository *repo;
@@ -28,6 +32,9 @@
 @end
 
 
+/**
+  Cell view with additional images for changed files.
+ */
 @interface XTFileCellView : NSTableCellView
 
 @property IBOutlet NSImageView *changeImage;

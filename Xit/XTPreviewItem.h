@@ -3,6 +3,9 @@
 
 @class XTRepository;
 
+/**
+  QuickLook preview item for binary file previews.
+ */
 @interface XTPreviewItem : NSObject<QLPreviewItem> {
   NSString *path, *commitSHA;
   NSURL *previewItemURL;

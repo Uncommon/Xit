@@ -7,6 +7,10 @@ extern NSString *XTPathsKey;
 
 @class GTRepository;
 
+/**
+  XTRepository represents the application's interface to the Git repository.
+  Operations may be implemented by executing Git itself, or by using libgit2.
+ */
 @interface XTRepository : NSObject {
  @private
   // The use of Objective Git should generally be considered an implementation
@@ -28,9 +32,11 @@ extern NSString *XTPathsKey;
     enumerateCommitsUsingBlock:(void (^)(NSString*))block
                          error:(NSError**)error;
 
-// Avoid calling these from outside XTRepository. Instead, add methods to
-// +Commands or +Parsing.
-// Returns command output on success, or nil on failure.
+/**
+  Avoid calling these from outside XTRepository. Instead, add methods to
+  +Commands or +Parsing.
+  @returns command output on success, or nil on failure.
+ */
 - (NSData*)executeGitWithArgs:(NSArray*)args
                        writes:(BOOL)writes
                         error:(NSError**)error;
@@ -54,8 +60,17 @@ extern NSString *XTPathsKey;
 - (void)reloadPaths:(NSArray*)paths;
 - (void)addReloadObserver:(id)observer selector:(SEL)selector;
 
+/**
+ If called on the main thread, executes \a block on the repository's dispatch
+ queue. If called on another thread, \a block is executed synchronously.
+ */
 - (void)executeOffMainThread:(void (^)())block;
+/**
+  After this is called, future calls to \a executeOffMainThread: from the main
+  thread will be ignored.
+ */
 - (void)shutDown;
+
 - (void)addTask:(NSTask*)task;
 - (void)removeTask:(NSTask*)task;
 

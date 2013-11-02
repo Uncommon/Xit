@@ -7,6 +7,9 @@
 @class XTTextPreviewController;
 @class RBSplitView;
 
+/**
+  View controller for the file list and detail view.
+ */
 @interface XTFileViewController : NSViewController
 {
   IBOutlet NSSplitView *headerSplitView;

@@ -3,6 +3,9 @@
 @class WebView;
 @class XTRepository;
 
+/**
+  Manages a WebView for displaying text file contents or diffs.
+ */
 @interface XTTextPreviewController : XTWebViewController
 
 - (void)loadText:(NSString*)text;

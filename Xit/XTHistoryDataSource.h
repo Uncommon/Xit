@@ -3,6 +3,9 @@
 @class XTRepository;
 @class XTHistoryItem;
 
+/**
+  Data source for the history list.
+ */
 @interface XTHistoryDataSource
     : NSObject<NSTableViewDataSource, NSTableViewDelegate> {
  @private

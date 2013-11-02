@@ -6,6 +6,9 @@ extern NSString *XTHeaderResizedNotificaiton;
 extern NSString *XTHeaderHeightKey;
 
 
+/**
+  Manages a WebView for displaying info about a commit.
+ */
 @interface XTCommitHeaderViewController : XTWebViewController
 {
   NSString *_commitSHA;

@@ -9,6 +9,10 @@
 @class XTSideBarDataSource;
 @class XTSideBarOutlineView;
 
+/**
+  View controller for history view, with the history list on top and detail
+  views below.
+ */
 @interface XTHistoryViewController : NSViewController<NSSplitViewDelegate>
 {
   IBOutlet XTSideBarDataSource *sideBarDS;
