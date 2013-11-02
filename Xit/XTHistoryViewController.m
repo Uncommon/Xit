@@ -65,9 +65,9 @@
   [treeTabItem setView:_fileViewController.view];
 	[[NSNotificationCenter defaultCenter]
       addObserver:_fileViewController
-	 		   selector:@selector(commitSelected:)
-	 		 	    name:NSTableViewSelectionDidChangeNotification
-	 		  	  object:_historyTable];
+         selector:@selector(commitSelected:)
+             name:NSTableViewSelectionDidChangeNotification
+           object:_historyTable];
 
   // Remove intercell spacing so the history lines will connect
   NSSize cellSpacing = [_historyTable intercellSpacing];
@@ -240,9 +240,9 @@
     NSDictionary *errorInfo = [error userInfo];
 
 	  [XTStatusView updateStatus:@"Merge failed"
-				    		 command:errorInfo[XTErrorArgsKey]
-                  output:errorInfo[XTErrorOutputKey]
-           forRepository:_repo];
+                       command:errorInfo[XTErrorArgsKey]
+                        output:errorInfo[XTErrorOutputKey]
+                 forRepository:_repo];
   }
 }
 
