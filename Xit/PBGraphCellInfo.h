@@ -10,10 +10,10 @@
 #import "PBGitGraphLine.h"
 
 @interface PBGraphCellInfo : NSObject {
-  size_t position;
-  struct PBGitGraphLine *lines;
-  int nLines;
-  size_t numColumns;
+  size_t _position;
+  struct PBGitGraphLine *_lines;
+  int _nLines;
+  size_t _numColumns;
 }
 
 @property(assign) struct PBGitGraphLine *lines;

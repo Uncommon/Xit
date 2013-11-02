@@ -10,8 +10,8 @@
 #import "PBGraphCellInfo.h"
 
 @interface PBGitRevisionCell : NSTextFieldCell {
-  PBGraphCellInfo *cellInfo;
-  NSTextFieldCell *textCell;
+  PBGraphCellInfo *_cellInfo;
+  NSTextFieldCell *_textCell;
 }
 
 - (NSRect)rectAtIndex:(int)index;

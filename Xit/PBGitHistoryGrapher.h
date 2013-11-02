@@ -14,7 +14,7 @@
 @class PBGitGrapher;
 
 @interface PBGitHistoryGrapher : NSObject {
-  PBGitGrapher *grapher;
+  PBGitGrapher *_grapher;
 }
 
 - (void)graphCommits:(NSArray *)revList;

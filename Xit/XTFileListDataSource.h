@@ -11,11 +11,11 @@
  */
 @interface XTFileListDataSource : NSObject<NSOutlineViewDataSource> {
  @private
-  XTRepository *repo;
-  IBOutlet XTFileViewController *controller;
-  NSTreeNode *root;
-  NSDictionary *changeImages;
-  NSOutlineView *table;
+  XTRepository *_repo;
+  IBOutlet XTFileViewController *_controller;
+  NSTreeNode *_root;
+  NSDictionary *_changeImages;
+  NSOutlineView *_table;
 }
 
 - (void)setRepo:(XTRepository *)repo;

@@ -1,7 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "XTSideBarItem.h"
 
-@interface XTRemotesItem : XTSideBarItem {
-}
+@interface XTRemotesItem : XTSideBarItem
 
 @end

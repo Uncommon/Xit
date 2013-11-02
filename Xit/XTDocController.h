@@ -7,11 +7,11 @@
 @class XTStatusView;
 
 @interface XTDocController : NSWindowController {
-  IBOutlet XTHistoryViewController *historyView;
-  IBOutlet XTStageViewController *stageView;
-  IBOutlet NSTabView *tabs;
-  IBOutlet NSProgressIndicator *activity;
-  XTDocument *document;
+  IBOutlet XTHistoryViewController *_historyView;
+  IBOutlet XTStageViewController *_stageView;
+  IBOutlet NSTabView *_tabs;
+  IBOutlet NSProgressIndicator *_activity;
+  XTDocument *_xtDocument;
 }
 
 - (id)initWithDocument:(XTDocument *)doc;

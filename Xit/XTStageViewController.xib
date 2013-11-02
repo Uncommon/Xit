@@ -8,13 +8,13 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="XTStageViewController">
             <connections>
-                <outlet property="commitButton" destination="31" id="77"/>
-                <outlet property="stageDS" destination="48" id="51"/>
-                <outlet property="stageTable" destination="26" id="61"/>
-                <outlet property="unstageDS" destination="47" id="52"/>
-                <outlet property="unstageTable" destination="20" id="62"/>
+                <outlet property="_commitButton" destination="31" id="77"/>
+                <outlet property="_stageDS" destination="48" id="51"/>
+                <outlet property="_stageTable" destination="26" id="61"/>
+                <outlet property="_unstageDS" destination="47" id="52"/>
+                <outlet property="_unstageTable" destination="20" id="62"/>
                 <outlet property="view" destination="1" id="2"/>
-                <outlet property="web" destination="53" id="54"/>
+                <outlet property="_web" destination="53" id="54"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>

@@ -7,22 +7,22 @@
 #import <Cocoa/Cocoa.h>
 
 class PBGitLane {
-  static int s_colorIndex;
+  static int _s_colorIndex;
 
-  NSString *d_sha;
-  int d_index;
+  NSString *_d_sha;
+  int _d_index;
 
  public:
 
   PBGitLane(NSString *sha) {
-    d_index = s_colorIndex++;
-    d_sha = sha;
-    [d_sha isEqualToString:sha];
+    _d_index = _s_colorIndex ++;
+    _d_sha = sha;
+    [_d_sha isEqualToString:sha];
   }
 
-  PBGitLane() { d_index = s_colorIndex++; }
+  PBGitLane() { _d_index = _s_colorIndex ++; }
 
-  bool isCommit(NSString *sha) const { return [d_sha isEqualToString:sha]; }
+  bool isCommit(NSString *sha) const { return [_d_sha isEqualToString:sha]; }
 
   void setSha(NSString *sha);
   int index() const;

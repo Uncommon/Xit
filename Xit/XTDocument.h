@@ -4,8 +4,8 @@
 
 @interface XTDocument : NSDocument {
  @private
-  NSURL *repoURL;
-  XTRepository *repo;
+  NSURL *_repoURL;
+  XTRepository *_repo;
 }
 
 @property(readonly) XTRepository *repository;

@@ -7,17 +7,17 @@
 
 #import "PBGitLane.h"
 
-int PBGitLane::s_colorIndex = 0;
+int PBGitLane::_s_colorIndex = 0;
 
 int PBGitLane::index() const {
-    return d_index;
+    return _d_index;
 }
 
 void PBGitLane::setSha(NSString *sha){
-    d_sha = sha;
-    [d_sha isEqualToString:sha];
+    _d_sha = sha;
+    [_d_sha isEqualToString:sha];
 }
 
 void PBGitLane::resetColors(){
-    s_colorIndex = 0;
+    _s_colorIndex = 0;
 }

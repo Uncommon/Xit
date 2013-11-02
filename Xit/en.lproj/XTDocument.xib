@@ -7,10 +7,10 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="XTDocController">
             <connections>
-                <outlet property="activity" destination="100113" id="100116"/>
-                <outlet property="historyView" destination="100102" id="100105"/>
-                <outlet property="stageView" destination="100106" id="100107"/>
-                <outlet property="tabs" destination="100085" id="100104"/>
+                <outlet property="_activity" destination="100113" id="100116"/>
+                <outlet property="_historyView" destination="100102" id="100105"/>
+                <outlet property="_stageView" destination="100106" id="100107"/>
+                <outlet property="_tabs" destination="100085" id="100104"/>
                 <outlet property="window" destination="5" id="18"/>
             </connections>
         </customObject>

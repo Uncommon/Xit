@@ -31,8 +31,8 @@ static const int kColumnWidth = 10;
 - (id)initWithCoder:(id)coder
 {
   self = [super initWithCoder:coder];
-  textCell = [[NSTextFieldCell alloc] initWithCoder:coder];
-  [textCell setFont:[NSFont labelFontOfSize:12]];
+  _textCell = [[NSTextFieldCell alloc] initWithCoder:coder];
+  [_textCell setFont:[NSFont labelFontOfSize:12]];
   return self;
 }
 
@@ -109,7 +109,7 @@ static const int kColumnWidth = 10;
 - (void)drawCircleInRect:(NSRect)r
 {
 
-  const size_t c = cellInfo.position;
+  const size_t c = _cellInfo.position;
   const NSPoint origin = r.origin;
   const NSPoint columnOrigin = { origin.x + kColumnWidth * c, origin.y };
 
@@ -160,17 +160,17 @@ static const int kColumnWidth = 10;
 
 - (void)drawWithFrame:(NSRect)rect inView:(NSView *)view
 {
-  cellInfo = ((XTHistoryItem *)self.objectValue).lineInfo;
+  _cellInfo = ((XTHistoryItem *)self.objectValue).lineInfo;
 
-  if (cellInfo) {
-    const size_t pathWidth = 10 + kColumnWidth * cellInfo.numColumns;
+  if (_cellInfo) {
+    const size_t pathWidth = 10 + kColumnWidth * _cellInfo.numColumns;
 
     NSRect ownRect;
     NSDivideRect(rect, &ownRect, &rect, pathWidth, NSMinXEdge);
 
     int i;
-    struct PBGitGraphLine *lines = cellInfo.lines;
-    for (i = 0; i < cellInfo.nLines; i++) {
+    struct PBGitGraphLine *lines = _cellInfo.lines;
+    for (i = 0; i < _cellInfo.nLines; i++) {
       if (lines[i].upper == 0)
         [self drawLineFromColumn:lines[i].from
                         toColumn:lines[i].to
@@ -216,17 +216,17 @@ static const int kColumnWidth = 10;
     }
   }
 
-  [textCell setObjectValue:[self.objectValue subject]];
-  [textCell setHighlighted:[self isHighlighted]];
-  [textCell drawWithFrame:rect inView:view];
+  [_textCell setObjectValue:[self.objectValue subject]];
+  [_textCell setHighlighted:[self isHighlighted]];
+  [_textCell drawWithFrame:rect inView:view];
 }
 
 - (NSRect)rectAtIndex:(int)index
 {
-  cellInfo = [self.objectValue lineInfo];
+  _cellInfo = [self.objectValue lineInfo];
   CGFloat pathWidth = 0;
-  if (cellInfo)
-    pathWidth = 10 + kColumnWidth * cellInfo.numColumns;
+  if (_cellInfo)
+    pathWidth = 10 + kColumnWidth * _cellInfo.numColumns;
   NSRect refRect = NSMakeRect(pathWidth, 0, 1000, 10000);
   return refRect;
 }
