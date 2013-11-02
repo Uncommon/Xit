@@ -7,6 +7,8 @@
 @class XTTextPreviewController;
 @class RBSplitView;
 
+extern const CGFloat kChangeImagePadding;
+
 /**
   View controller for the file list and detail view.
  */
@@ -25,6 +27,7 @@
 }
 
 @property (strong) IBOutlet NSTabView *previewTabView;
+@property (readonly) NSDictionary *changeImages;
 
 + (BOOL)fileNameIsText:(NSString*)name;
 

@@ -9,6 +9,8 @@
 #import "XTTextPreviewController.h"
 #import <RBSplitView.h>
 
+const CGFloat kChangeImagePadding = 8;
+
 @interface NSSplitView (Animating)
 
 - (void)animatePosition:(CGFloat)position ofDividerAtIndex:(NSInteger)index;
@@ -60,6 +62,15 @@
   // again after the initial load.
   if ([[splitView subviews] count] == 2)
     return;
+
+  _changeImages = @{
+      @( XitChangeAdded ) : [NSImage imageNamed:@"added"],
+      @( XitChangeCopied ) : [NSImage imageNamed:@"copied"],
+      @( XitChangeDeleted ) : [NSImage imageNamed:@"deleted"],
+      @( XitChangeModified ) : [NSImage imageNamed:@"modified"],
+      @( XitChangeRenamed ) : [NSImage imageNamed:@"renamed"],
+      @( XitChangeMixed ) : [NSImage imageNamed:@"mixed"],
+      };
 
   // For some reason the splitview comes with preexisting subviews.
   NSArray *subviews = [[splitView subviews] copy];

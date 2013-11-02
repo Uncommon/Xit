@@ -1,4 +1,5 @@
 #import "XTFileListDataSource.h"
+#import "XTFileViewController.h"
 #import "XTRepository+Parsing.h"
 
 @interface XTFileListDataSource ()
@@ -16,14 +17,6 @@
   self = [super init];
   if (self != nil) {
     root = [self makeNewRoot];
-    changeImages = @{
-        @( XitChangeAdded ) : [NSImage imageNamed:@"added"],
-        @( XitChangeCopied ) : [NSImage imageNamed:@"copied"],
-        @( XitChangeDeleted ) : [NSImage imageNamed:@"deleted"],
-        @( XitChangeModified ) : [NSImage imageNamed:@"modified"],
-        @( XitChangeRenamed ) : [NSImage imageNamed:@"renamed"],
-        @( XitChangeMixed ) : [NSImage imageNamed:@"mixed"],
-        };
   }
 
   return self;
@@ -219,8 +212,6 @@
 
 #pragma mark NSOutlineViewDelegate
 
-const CGFloat kChangeImagePadding = 8;
-
 - (NSView *)outlineView:(NSOutlineView *)outlineView
      viewForTableColumn:(NSTableColumn *)tableColumn
                    item:(id)item
@@ -263,7 +254,7 @@ const CGFloat kChangeImagePadding = 8;
     textWidth = changeFrame.origin.x + changeFrame.size.width -
                 textFrame.origin.x;
   } else {
-    cell.changeImage.image = changeImages[@( change )];
+    cell.changeImage.image = controller.changeImages[@( change )];
     textWidth = changeFrame.origin.x - kChangeImagePadding -
                 textFrame.origin.x;
   }
