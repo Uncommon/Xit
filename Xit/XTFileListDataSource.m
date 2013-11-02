@@ -160,6 +160,11 @@
   return pathNode;
 }
 
+- (XTFileChange*)fileChangeAtRow:(NSInteger)row
+{
+  return [[table itemAtRow:row] representedObject];
+}
+
 #pragma mark - NSOutlineViewDataSource
 
 - (NSInteger)outlineView:(NSOutlineView *)outlineView

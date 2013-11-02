@@ -2,6 +2,7 @@
 #import <Quartz/Quartz.h>
 
 @class XTCommitHeaderViewController;
+@class XTFileChangesDataSource;
 @class XTFileListDataSource;
 @class XTRepository;
 @class XTTextPreviewController;
@@ -20,6 +21,7 @@ extern const CGFloat kChangeImagePadding;
   IBOutlet NSOutlineView *fileListOutline;
   IBOutlet QLPreviewView *filePreview;
   IBOutlet XTCommitHeaderViewController *headerController;
+  IBOutlet XTFileChangesDataSource *_fileChangeDS;
   IBOutlet XTFileListDataSource *fileListDS;
   IBOutlet XTTextPreviewController *textPreview;
 
@@ -27,9 +29,12 @@ extern const CGFloat kChangeImagePadding;
 }
 
 @property (strong) IBOutlet NSTabView *previewTabView;
+@property (weak) IBOutlet NSSegmentedControl *viewSelector;
 @property (readonly) NSDictionary *changeImages;
 
 + (BOOL)fileNameIsText:(NSString*)name;
+
+- (IBAction)changeFileListView:(id)sender;
 
 - (void)setRepo:(XTRepository *)repo;
 - (void)refresh;

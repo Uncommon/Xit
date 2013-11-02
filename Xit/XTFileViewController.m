@@ -3,6 +3,8 @@
 #import <CoreServices/CoreServices.h>
 
 #import "XTCommitHeaderViewController.h"
+#import "XTFileChangesDataSource.h"
+#import "XTFileListDataSourceBase.h"
 #import "XTFileListDataSource.h"
 #import "XTPreviewItem.h"
 #import "XTRepository.h"
@@ -51,6 +53,7 @@ const CGFloat kChangeImagePadding = 8;
 - (void)setRepo:(XTRepository *)newRepo
 {
   repo = newRepo;
+  _fileChangeDS.repository = newRepo;
   [fileListDS setRepo:newRepo];
   headerController.repository = newRepo;
   ((XTPreviewItem *)filePreview.previewItem).repo = newRepo;
@@ -82,6 +85,8 @@ const CGFloat kChangeImagePadding = 8;
   [splitView setDivider:[NSImage imageNamed:@"splitter"]];
   [splitView setDividerThickness:1.0];
 
+  [fileListOutline sizeToFit];
+
   [[NSNotificationCenter defaultCenter]
       addObserver:self
          selector:@selector(fileSelectionChanged:)
@@ -92,6 +97,23 @@ const CGFloat kChangeImagePadding = 8;
          selector:@selector(headerResized:)
              name:XTHeaderResizedNotificaiton
            object:headerController];
+}
+
+- (IBAction)changeFileListView:(id)sender
+{
+  id newDS = _fileChangeDS;
+
+  if (self.viewSelector.selectedSegment == 1) {
+    newDS = fileListDS;
+    [fileListOutline setOutlineTableColumn:
+        [fileListOutline tableColumnWithIdentifier:@"main"]];
+  } else {
+    [fileListOutline setOutlineTableColumn:
+        [fileListOutline tableColumnWithIdentifier:@"hidden"]];
+  }
+  [fileListOutline setDataSource:newDS];
+  [fileListOutline setDelegate:newDS];
+  [fileListOutline reloadData];
 }
 
 - (void)updatePreview
@@ -113,9 +135,10 @@ const CGFloat kChangeImagePadding = 8;
     return;
   }
 
-  NSTreeNode *selectedNode = [fileListOutline itemAtRow:[selection firstIndex]];
-  XTCommitTreeItem *selectedItem = (XTCommitTreeItem*)
-      [selectedNode representedObject];
+  XTFileListDataSourceBase *dataSource = (XTFileListDataSourceBase*)
+      [fileListOutline dataSource];
+  XTFileChange *selectedItem = (XTFileChange*)
+      [dataSource fileChangeAtRow:[selection firstIndex]];
 
   if ([[self class] fileNameIsText:selectedItem.path]) {
     [self.previewTabView selectTabViewItemWithIdentifier:@"text"];

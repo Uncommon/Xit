@@ -133,14 +133,14 @@
                     <rect key="frame" x="0.0" y="0.0" width="871" height="398"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <subviews>
-                        <scrollView focusRingType="none" autohidesScrollers="YES" horizontalLineScroll="24" horizontalPageScroll="10" verticalLineScroll="24" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="77">
+                        <scrollView focusRingType="none" autohidesScrollers="YES" horizontalLineScroll="17" horizontalPageScroll="10" verticalLineScroll="17" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="77">
                             <rect key="frame" x="0.0" y="0.0" width="167" height="398"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <clipView key="contentView" id="Bty-Hw-GSh">
                                 <rect key="frame" x="1" y="1" width="165" height="396"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
-                                    <outlineView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" autosaveColumns="NO" rowHeight="24" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="81" id="80" customClass="XTSideBarOutlineView">
+                                    <outlineView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="81" id="80" customClass="XTSideBarOutlineView">
                                         <rect key="frame" x="0.0" y="0.0" width="165" height="396"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <size key="intercellSpacing" width="3" height="0.0"/>
@@ -200,7 +200,7 @@
                                                                 </textFieldCell>
                                                             </textField>
                                                             <button hidden="YES" verticalHuggingPriority="750" id="110">
-                                                                <rect key="frame" x="129" y="-1" width="33" height="17"/>
+                                                                <rect key="frame" x="129" y="0.0" width="33" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                                 <buttonCell key="cell" type="roundRect" title="✔" bezelStyle="roundedRect" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="111">
                                                                     <behavior key="behavior" lightByContents="YES"/>
@@ -337,7 +337,7 @@
                                                         <tabViewItem label="Diff" identifier="diff" id="187">
                                                             <view key="view" id="188">
                                                                 <rect key="frame" x="0.0" y="0.0" width="703" height="194"/>
-                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
                                                                     <customView id="27">
                                                                         <rect key="frame" x="0.0" y="0.0" width="703" height="194"/>

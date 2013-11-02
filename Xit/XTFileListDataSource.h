@@ -1,4 +1,4 @@
-#import <Foundation/Foundation.h>
+#import "XTFileListDataSourceBase.h"
 #import "XTRepository+Parsing.h"
 
 @class XTFileViewController;
@@ -9,7 +9,8 @@
   Provides all files from the selected commit's tree, with special icons
   displayed for changed files. Entried are added for deleted files.
  */
-@interface XTFileListDataSource : NSObject<NSOutlineViewDataSource> {
+@interface XTFileListDataSource :
+    XTFileListDataSourceBase<NSOutlineViewDataSource> {
  @private
   XTRepository *repo;
   IBOutlet XTFileViewController *controller;
@@ -18,16 +19,13 @@
   NSOutlineView *table;
 }
 
-- (void)setRepo:(XTRepository *)repo;
+- (void)setRepo:(XTRepository*)repo;
 - (void)reload;
 
 @end
 
 
-@interface XTCommitTreeItem : NSObject
-
-@property NSString *path;
-@property XitChange change;
+@interface XTCommitTreeItem : XTFileChange
 
 @end
 
