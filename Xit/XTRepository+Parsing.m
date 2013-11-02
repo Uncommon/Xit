@@ -150,8 +150,8 @@ NSString *XTHeaderContentKey = @"content";
 
 - (BOOL)readSubmodulesWithBlock:(void (^)(GTSubmodule *sub))block
 {
-  [gtRepo enumerateSubmodulesRecursively:NO
-                              usingBlock:^(GTSubmodule *sub, BOOL *stop){
+  [_gtRepo enumerateSubmodulesRecursively:NO
+                               usingBlock:^(GTSubmodule *sub, BOOL *stop){
     block(sub);
   }];
   return YES;
@@ -185,11 +185,11 @@ NSString *XTHeaderContentKey = @"content";
     parentSHA = @"";
 
   NSString *key = [sha stringByAppendingString:parentSHA];
-  GTDiff *diff = [diffCache objectForKey:key];
+  GTDiff *diff = [_diffCache objectForKey:key];
 
   if (diff == nil) {
     NSError *error = nil;
-    GTCommit *commit = [gtRepo lookupObjectBySHA:sha error:&error];
+    GTCommit *commit = [_gtRepo lookupObjectBySHA:sha error:&error];
 
     if ((commit == nil) ||
         (git_object_type([commit git_object]) != GIT_OBJ_COMMIT))
@@ -215,10 +215,10 @@ NSString *XTHeaderContentKey = @"content";
 
     diff = [GTDiff diffOldTree:parent.tree
                    withNewTree:commit.tree
-                  inRepository:gtRepo
+                  inRepository:_gtRepo
                        options:nil
                          error:&error];
-    [diffCache setObject:diff forKey:key];
+    [_diffCache setObject:diff forKey:key];
   }
   return diff;
 }
@@ -229,7 +229,7 @@ NSString *XTHeaderContentKey = @"content";
     return nil;
 
   NSError *error = nil;
-  GTCommit *commit = [gtRepo lookupObjectByRefspec:ref error:&error];
+  GTCommit *commit = [_gtRepo lookupObjectByRefspec:ref error:&error];
   
   if ((commit == nil) ||
       (git_object_type([commit git_object]) != GIT_OBJ_COMMIT))
@@ -308,14 +308,14 @@ NSString *XTCommitSHAKey = @"sha",
 - (GTCommit*)commitForRef:(NSString*)ref
 {
   NSError *error;
-  GTObject *object = [gtRepo lookupObjectByRefspec:ref error:&error];
+  GTObject *object = [_gtRepo lookupObjectByRefspec:ref error:&error];
 
   if (object == nil)
     return nil;
 
-  return [gtRepo lookupObjectByOID:object.OID
-                        objectType:GTObjectTypeCommit
-                             error:&error];
+  return [_gtRepo lookupObjectByOID:object.OID
+                         objectType:GTObjectTypeCommit
+                              error:&error];
 }
 
 - (BOOL)parseCommit:(NSString *)ref
@@ -427,7 +427,7 @@ NSString *XTCommitSHAKey = @"sha",
 {
   NSError *error = nil;
   NSString *fullPath = [file hasPrefix:@"/"] ? file :
-      [repoURL.path stringByAppendingPathComponent:file];
+      [_repoURL.path stringByAppendingPathComponent:file];
 
   if ([[NSFileManager defaultManager] fileExistsAtPath:fullPath])
     [self executeGitWithArgs:@[ @"add", file ] writes:YES error:&error];

@@ -7,9 +7,9 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="XTOutputViewController">
             <connections>
-                <outlet property="commandText" destination="5" id="11"/>
-                <outlet property="outputScroll" destination="4" id="13"/>
-                <outlet property="outputText" destination="7" id="12"/>
+                <outlet property="_commandText" destination="5" id="11"/>
+                <outlet property="_outputScroll" destination="4" id="13"/>
+                <outlet property="_outputText" destination="7" id="12"/>
                 <outlet property="view" destination="3" id="10"/>
             </connections>
         </customObject>

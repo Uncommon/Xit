@@ -2,17 +2,14 @@
 
 @implementation XTSideBarItem
 
-@synthesize title;
-@synthesize sha;
-@synthesize children;
 
 - (id)initWithTitle:(NSString *)theTitle andSha:(NSString *)theSha
 {
   self = [super init];
   if (self) {
-    title = theTitle;
-    sha = theSha;
-    children = [NSMutableArray array];
+    _title = theTitle;
+    _sha = theSha;
+    _children = [NSMutableArray array];
   }
 
   return self;
@@ -30,27 +27,27 @@
 
 - (NSInteger)numberOfChildren
 {
-  return (NSInteger)[children count];
+  return (NSInteger)[_children count];
 }
 
 - (id)childAtIndex:(NSInteger)index
 {
-  return children[index];
+  return _children[index];
 }
 
 - (void)addchild:(XTSideBarItem *)child
 {
-  [children addObject:child];
+  [_children addObject:child];
 }
 
 - (BOOL)isItemExpandable
 {
-  return [children count] > 0;
+  return [_children count] > 0;
 }
 
 - (void)clean
 {
-  [children removeAllObjects];
+  [_children removeAllObjects];
 }
 
 - (XTRefType)refType

@@ -17,7 +17,7 @@
 - (id)initWithDocument:(XTDocument *)doc
 {
   self = [super initWithWindowNibName:@"XTDocument"];
-  document = doc;
+  _xtDocument = doc;
 
   return self;
 }
@@ -26,25 +26,25 @@
 {
   [super windowDidLoad];
 
-  [self loadViewController:historyView onTab:0];
-  [[self window] makeFirstResponder:historyView.historyTable];
-  [self loadViewController:stageView onTab:1];
+  [self loadViewController:_historyView onTab:0];
+  [[self window] makeFirstResponder:_historyView.historyTable];
+  [self loadViewController:_stageView onTab:1];
   
-  XTRepository *repo = document.repository;
+  XTRepository *repo = _xtDocument.repository;
 
   [repo addObserver:self
          forKeyPath:@"activeTasks"
             options:NSKeyValueObservingOptionNew
             context:nil];
-  [historyView setRepo:repo];
-  [stageView setRepo:repo];
+  [_historyView setRepo:repo];
+  [_stageView setRepo:repo];
 }
 
 - (void)loadViewController:(NSViewController *)viewController
                      onTab:(NSInteger)tabId
 {
   [viewController loadView];
-  NSTabViewItem *tabView = [tabs tabViewItemAtIndex:tabId];
+  NSTabViewItem *tabView = [_tabs tabViewItemAtIndex:tabId];
   [[viewController view]
       setFrame:NSMakeRect(0, 0,
                           [[viewController view] frame].size.width,
@@ -61,16 +61,16 @@
   if ([keyPath isEqualToString:@"activeTasks"]) {
     NSMutableArray *tasks = change[NSKeyValueChangeNewKey];
     if (tasks.count > 0) {
-      [activity startAnimation:tasks];
+      [_activity startAnimation:tasks];
     } else {
-      [activity stopAnimation:tasks];
+      [_activity stopAnimation:tasks];
     }
   }
 }
 
 - (IBAction)refresh:(id)sender
 {
-  [document.repository reloadPaths:@[ @".git/refs/", @".git/logs/" ]];
+  [_xtDocument.repository reloadPaths:@[ @".git/refs/", @".git/logs/" ]];
 }
 
 - (IBAction)newTag:(id)sender
@@ -97,9 +97,9 @@
   NSViewController *controller = nil;
 
   if ([[tabViewItem identifier] isEqual:@"stage"])
-    controller = stageView;
+    controller = _stageView;
   if ([[tabViewItem identifier] isEqual:@"history"])
-    controller = historyView;
+    controller = _historyView;
   if (controller != nil) {
     [self setNextResponder:controller];
     [controller setNextResponder:nextResponder];

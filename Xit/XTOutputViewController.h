@@ -3,10 +3,9 @@
 @class XTRepository;
 
 @interface XTOutputViewController : NSViewController {
-  IBOutlet NSTextField *commandText;
-  IBOutlet NSTextView *outputText;
-  IBOutlet NSScrollView *outputScroll;
-  NSPopover *popover;
+  IBOutlet NSTextField *_commandText;
+  IBOutlet NSTextView *_outputText;
+  IBOutlet NSScrollView *_outputScroll;
 }
 
 @property(strong) NSPopover *popover;

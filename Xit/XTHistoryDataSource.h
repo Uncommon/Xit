@@ -9,10 +9,9 @@
 @interface XTHistoryDataSource
     : NSObject<NSTableViewDataSource, NSTableViewDelegate> {
  @private
-  XTRepository *repo;
-  NSArray *items;
-  IBOutlet NSTableView *table;
-  NSMutableDictionary *index;
+  XTRepository *_repo;
+  IBOutlet NSTableView *_table;
+  NSMutableDictionary *_index;
 }
 
 @property(readonly) NSArray *items;

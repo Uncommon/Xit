@@ -19,17 +19,12 @@
 
 @implementation XTStageViewController
 
-@synthesize message;
-@synthesize stageDS;
-@synthesize unstageDS;
-@synthesize unstageTable;
-
 - (void)awakeFromNib
 {
-  [stageTable setTarget:self];
-  [stageTable setDoubleAction:@selector(stagedDoubleClicked:)];
-  [unstageTable setTarget:self];
-  [unstageTable setDoubleAction:@selector(unstagedDoubleClicked:)];
+  [_stageTable setTarget:self];
+  [_stageTable setDoubleAction:@selector(stagedDoubleClicked:)];
+  [_unstageTable setTarget:self];
+  [_unstageTable setDoubleAction:@selector(unstagedDoubleClicked:)];
 }
 
 - (NSString *)nibName
@@ -40,20 +35,20 @@
 
 - (void)setRepo:(XTRepository *)newRepo
 {
-  repo = newRepo;
-  [stageDS setRepo:repo];
-  [unstageDS setRepo:repo];
-  [repo addObserver:self forKeyPath:@"isWriting" options:0 context:NULL];
+  _repo = newRepo;
+	[_stageDS setRepo:_repo];
+	[_unstageDS setRepo:_repo];
+  [_repo addObserver:self forKeyPath:@"isWriting" options:0 context:NULL];
 }
 
 - (void)reload
 {
-  [stageDS reload];
-  [unstageDS reload];
-  [repo executeOffMainThread:^{
-    // Do this in the repo queue so it will happen after the reloads.
-    [stageTable reloadData];
-    [unstageTable reloadData];
+  [_stageDS reload];
+  [_unstageDS reload];
+  [_repo executeOffMainThread:^{
+	  // Do this in the _repo queue so it will happen after the reloads.
+	  [_stageTable reloadData];
+	  [_unstageTable reloadData];
   }];
 }
 
@@ -64,8 +59,8 @@
                         change:(NSDictionary *)change
                        context:(void *)context
 {
-  if ((object == repo) && [keyPath isEqualToString:@"isWriting"])
-    [commitButton setEnabled:!repo.isWriting];
+  if ((object == _repo) && [keyPath isEqualToString:@"isWriting"])
+    [_commitButton setEnabled:!_repo.isWriting];
 }
 
 - (IBAction)commit:(id)sender
@@ -75,35 +70,35 @@
 
   if ([sender respondsToSelector:@selector(setEnabled:)])
     [sender setEnabled:NO];
-  [repo executeOffMainThread:^{
-    NSError *error = NULL;
-    void (^outputBlock)(NSString *) = ^(NSString * output) {
-      NSString *headSHA = [[repo headSHA] substringToIndex:7];
-      NSString *status = [NSString stringWithFormat:@"Committed %@", headSHA];
+  [_repo executeOffMainThread:^{
+	  NSError *error = NULL;
+	  void (^outputBlock)(NSString *) = ^(NSString *output) {
+		  NSString *headSHA = [[_repo headSHA] substringToIndex:7];
+		  NSString *status = [NSString stringWithFormat:@"Committed %@", headSHA];
 
-      [XTStatusView updateStatus:status
+		  [XTStatusView updateStatus:status
                          command:@"commit"
                           output:output
-                   forRepository:repo];
-    };
+                   forRepository:_repo];
+	  };
 
-    if (![repo commitWithMessage:self.message
-                           amend:NO
-                     outputBlock:outputBlock
-                           error:&error])
+	  if (![_repo commitWithMessage:self.message
+                            amend:NO
+                      outputBlock:outputBlock
+                            error:&error])
       if (error != nil)
         [XTStatusView updateStatus:@"Commit failed"
                            command:@"commit"
                             output:[[error userInfo]
-                                       valueForKey:XTErrorOutputKey]
-                     forRepository:repo];
-    self.message = @"";
-    [self reload];
-    if ([sender respondsToSelector:@selector(setEnabled:)])
-      [sender setEnabled:YES];
+                                    valueForKey:XTErrorOutputKey]
+                     forRepository:_repo];
+	  self.message = @"";
+	  [self reload];
+	  if ([sender respondsToSelector:@selector(setEnabled:)])
+		  [sender setEnabled:YES];
 
-    // TODO: Make this automatic
-    [doc refresh:nil];
+	  // TODO: Make this automatic
+	  [doc refresh:nil];
   }];
 }
 
@@ -111,7 +106,7 @@
 
 - (NSString *)diffForNewFile:(NSString *)file
 {
-  NSURL *url = [repo.repoURL URLByAppendingPathComponent:file];
+  NSURL *url = [_repo.repoURL URLByAppendingPathComponent:file];
   NSStringEncoding encoding;
   NSError *error = nil;
   NSString *contents = [NSString stringWithContentsOfURL:url
@@ -150,24 +145,24 @@
 
 - (void)showUnstageFile:(XTFileIndexInfo *)file
 {
-  [repo executeOffMainThread:^{
-    stagedFile = NO;
-    actualDiff = [repo diffForUnstagedFile:file.name];
-    if ([actualDiff length] == 0)
-      actualDiff = [self diffForNewFile:file.name];
+  [_repo executeOffMainThread:^{
+	  _stagedFile = NO;
+	  _actualDiff = [_repo diffForUnstagedFile:file.name];
+	  if ([_actualDiff length] == 0)
+		  _actualDiff = [self diffForNewFile:file.name];
 
-    [self showDiff:[XTHTML parseDiff:actualDiff]];
+	  [self showDiff:[XTHTML parseDiff:_actualDiff]];
   }];
 }
 
 - (void)showStageFile:(XTFileIndexInfo *)file
 {
-  [repo executeOffMainThread:^{
-    stagedFile = YES;
-    actualDiff = [repo diffForStagedFile:file.name];
+  [_repo executeOffMainThread:^{
+	  _stagedFile = YES;
+	  _actualDiff = [_repo diffForStagedFile:file.name];
 
-    NSString *diffHTML = [XTHTML parseDiff:actualDiff];
-    [self showDiff:diffHTML];
+	  NSString *diffHTML = [XTHTML parseDiff:_actualDiff];
+	  [self showDiff:diffHTML];
   }];
 }
 
@@ -183,14 +178,14 @@
   NSURL *htmlURL = [bundle URLForResource:@"html" withExtension:nil];
 
   dispatch_async(dispatch_get_main_queue(), ^{
-    [[web mainFrame] loadHTMLString:html baseURL:htmlURL];
+    [[_web mainFrame] loadHTMLString:html baseURL:htmlURL];
   });
 }
 
 - (void)clearDiff
 {
   dispatch_async(dispatch_get_main_queue(), ^{
-    [[web mainFrame] loadHTMLString:@"" baseURL:nil];
+    [[_web mainFrame] loadHTMLString:@"" baseURL:nil];
   });
 }
 
@@ -202,11 +197,11 @@
   if (clickedRow == -1)
     return;
 
-  XTFileIndexInfo *item = [stageDS items][clickedRow];
+  XTFileIndexInfo *item = [_stageDS items][clickedRow];
 
-  [repo executeOffMainThread:^{
-    if ([repo unstageFile:item.name])
-      [self reload];
+  [_repo executeOffMainThread:^{
+	  if ([_repo unstageFile:item.name])
+		  [self reload];
   }];
 }
 
@@ -218,11 +213,11 @@
   if (clickedRow == -1)
     return;
 
-  XTFileIndexInfo *item = [unstageDS items][clickedRow];
+  XTFileIndexInfo *item = [_unstageDS items][clickedRow];
 
-  [repo executeOffMainThread:^{
-    if ([repo stageFile:item.name])
-      [self reload];
+  [_repo executeOffMainThread:^{
+	  if ([_repo stageFile:item.name])
+		  [self reload];
   }];
 }
 
@@ -230,25 +225,25 @@
 
 - (void)unstageChunk:(NSInteger)idx
 {
-  [repo executeOffMainThread:^{
-    [repo unstagePatch:[self preparePatch:idx]];
-    [self reload];
+  [_repo executeOffMainThread:^{
+	  [_repo unstagePatch:[self preparePatch:idx]];
+	  [self reload];
   }];
 }
 
 - (void)stageChunk:(NSInteger)idx
 {
-  [repo executeOffMainThread:^{
-    [repo stagePatch:[self preparePatch:idx]];
-    [self reload];
+  [_repo executeOffMainThread:^{
+	  [_repo stagePatch:[self preparePatch:idx]];
+	  [self reload];
   }];
 }
 
 - (void)discardChunk:(NSInteger)idx
 {
-  [repo executeOffMainThread:^{
-    [repo discardPatch:[self preparePatch:idx]];
-    [self reload];
+  [_repo executeOffMainThread:^{
+	  [_repo discardPatch:[self preparePatch:idx]];
+	  [self reload];
   }];
 }
 
@@ -256,7 +251,7 @@
 
 - (NSString *)preparePatch:(NSInteger)idx
 {
-  NSArray *components = [actualDiff componentsSeparatedByString:@"\n@@"];
+  NSArray *components = [_actualDiff componentsSeparatedByString:@"\n@@"];
   NSMutableString *patch =
       [NSMutableString stringWithString:components[0]];  // Header
 
@@ -270,13 +265,13 @@
 
 - (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame
 {
-  DOMDocument *dom = [[web mainFrame] DOMDocument];
+  DOMDocument *dom = [[_web mainFrame] DOMDocument];
   DOMNodeList *headers =
       [dom getElementsByClassName:@"header"];  // TODO: change class names
 
   for (int n = 0; n < headers.length; n++) {
     DOMHTMLElement *header = (DOMHTMLElement *)[headers item:n];
-    if (stagedFile) {
+    if (_stagedFile) {
       [[[header children] item:0] appendChild:
               [self createButtonWithIndex:n title:@"Unstage" fromDOM:dom]];
     } else {
@@ -325,13 +320,13 @@
   NSTableView *table = (NSTableView *)aNotification.object;
 
   if (table.numberOfSelectedRows > 0) {
-    if ([table isEqualTo:stageTable]) {
-      [unstageTable deselectAll:nil];
-      XTFileIndexInfo *item = [stageDS items][table.selectedRow];
+    if ([table isEqualTo:_stageTable]) {
+      [_unstageTable deselectAll:nil];
+      XTFileIndexInfo *item = [_stageDS items][table.selectedRow];
       [self showStageFile:item];
-    } else if ([table isEqualTo:unstageTable]) {
-      [stageTable deselectAll:nil];
-      XTFileIndexInfo *item = [unstageDS items][table.selectedRow];
+    } else if ([table isEqualTo:_unstageTable]) {
+      [_stageTable deselectAll:nil];
+      XTFileIndexInfo *item = [_unstageDS items][table.selectedRow];
       [self showUnstageFile:item];
     }
   } else {

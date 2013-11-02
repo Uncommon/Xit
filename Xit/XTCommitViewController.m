@@ -28,16 +28,16 @@ const NSString *kAuthorKeyDate = @"date";
 
 - (void)setRepo:(XTRepository *)newRepo
 {
-  repo = newRepo;
-  [repo addObserver:self
-         forKeyPath:@"selectedCommit"
-            options:NSKeyValueObservingOptionNew
-            context:nil];
+  _repo = newRepo;
+  [_repo addObserver:self
+          forKeyPath:@"selectedCommit"
+             options:NSKeyValueObservingOptionNew
+             context:nil];
 }
 
 - (void)dealloc
 {
-  [repo removeObserver:self forKeyPath:@"selectedCommit"];
+  [_repo removeObserver:self forKeyPath:@"selectedCommit"];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath
@@ -48,7 +48,7 @@ const NSString *kAuthorKeyDate = @"date";
   if ([keyPath isEqualToString:@"selectedCommit"]) {
     NSString *newSelectedCommit = change[NSKeyValueChangeNewKey];
 
-    [repo executeOffMainThread:^{ [self loadCommit:newSelectedCommit]; }];
+    [_repo executeOffMainThread:^{ [self loadCommit:newSelectedCommit]; }];
   }
 }
 
@@ -140,13 +140,13 @@ const NSString *kAuthorKeyDate = @"date";
   NSString *message = nil;
   NSArray *files = nil;
 
-  if (![repo parseCommit:sha intoHeader:&header message:&message files:&files])
+  if (![_repo parseCommit:sha intoHeader:&header message:&message files:&files])
     return nil;
 
   NSString *headerHTML = [self htmlForHeader:header message:message];
   NSString *filesHTML = [self htmlForFiles:files];
 
-  NSString *diffString = [repo diffForCommit:sha];
+  NSString *diffString = [_repo diffForCommit:sha];
   NSString *diffHTML = [XTHTML parseDiff:diffString];
 
   NSString *html =
@@ -160,7 +160,7 @@ const NSString *kAuthorKeyDate = @"date";
   NSURL *htmlURL = [bundle URLForResource:@"html" withExtension:nil];
 
   dispatch_async(dispatch_get_main_queue(), ^{
-    [[web mainFrame] loadHTMLString:html baseURL:htmlURL];
+    [[_web mainFrame] loadHTMLString:html baseURL:htmlURL];
   });
   return html;
 }

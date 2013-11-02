@@ -51,7 +51,7 @@
   NSURL *baseURL = [[NSBundle mainBundle]
       URLForResource:@"html" withExtension:nil];
 
-  [[self.webView mainFrame] loadHTMLString:html baseURL:baseURL];
+  [[_webView mainFrame] loadHTMLString:html baseURL:baseURL];
 }
 
 + (void)appendDiffLine:(NSString*)text
@@ -104,7 +104,7 @@
   NSURL *baseURL = [[NSBundle mainBundle]
       URLForResource:@"html" withExtension:nil];
 
-  [[self.webView mainFrame] loadHTMLString:html baseURL:baseURL];
+  [[_webView mainFrame] loadHTMLString:html baseURL:baseURL];
 }
 
 - (BOOL)isFileChanged:(NSString*)path inRepository:(XTRepository*)repo
@@ -149,7 +149,7 @@
 
 - (void)webView:(WebView*)sender didFinishLoadForFrame:(WebFrame*)frame
 {
-  NSScrollView *scrollView = [[[[self.webView mainFrame] frameView]
+  NSScrollView *scrollView = [[[[_webView mainFrame] frameView]
       documentView] enclosingScrollView];
 
   [scrollView setHasHorizontalScroller:NO];

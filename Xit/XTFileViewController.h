@@ -12,16 +12,16 @@
  */
 @interface XTFileViewController : NSViewController
 {
-  IBOutlet NSSplitView *headerSplitView;
-  IBOutlet RBSplitView *splitView;
-  IBOutlet NSView *leftPane, *rightPane;
-  IBOutlet NSOutlineView *fileListOutline;
-  IBOutlet QLPreviewView *filePreview;
-  IBOutlet XTCommitHeaderViewController *headerController;
-  IBOutlet XTFileListDataSource *fileListDS;
-  IBOutlet XTTextPreviewController *textPreview;
+  IBOutlet NSSplitView *_headerSplitView;
+  IBOutlet RBSplitView *_splitView;
+  IBOutlet NSView *_leftPane, *_rightPane;
+  IBOutlet NSOutlineView *_fileListOutline;
+  IBOutlet QLPreviewView *_filePreview;
+  IBOutlet XTCommitHeaderViewController *_headerController;
+  IBOutlet XTFileListDataSource *_fileListDS;
+  IBOutlet XTTextPreviewController *_textPreview;
 
-  XTRepository *repo;
+  XTRepository *_repo;
 }
 
 @property (strong) IBOutlet NSTabView *previewTabView;

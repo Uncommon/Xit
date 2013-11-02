@@ -1,10 +1,6 @@
 #import <Foundation/Foundation.h>
 
-@interface XTFileIndexInfo : NSObject {
- @private
-  NSString *name;
-  NSString *status;
-}
+@interface XTFileIndexInfo : NSObject
 
 @property(strong) NSString *name;
 @property(strong) NSString *status;

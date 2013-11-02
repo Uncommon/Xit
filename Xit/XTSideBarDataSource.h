@@ -15,12 +15,11 @@
 @interface XTSideBarDataSource
     : NSObject<NSOutlineViewDataSource, NSOutlineViewDelegate> {
  @private
-  XTRepository *repo;
-  NSArray *roots;
-  NSOutlineView *outline;
-  NSString *currentBranch;
-  IBOutlet XTHistoryViewController *viewController;
-  IBOutlet XTRefFormatter *refFormatter;
+  XTRepository *_repo;
+  NSOutlineView *_outline;
+  NSString *_currentBranch;
+  IBOutlet XTHistoryViewController *_viewController;
+  IBOutlet XTRefFormatter *_refFormatter;
 }
 
 - (void)setRepo:(XTRepository *)repo;
