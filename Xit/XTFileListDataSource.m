@@ -64,13 +64,13 @@
 - (void)reload
 {
   [_repo executeOffMainThread:^{
-	  NSString *ref = _repo.selectedCommit;
-	  NSTreeNode *newRoot = [self fileTreeForRef:(ref == nil) ? @"HEAD" : ref];
-
-	  dispatch_async(dispatch_get_main_queue(), ^{
-		  _root = newRoot;
-		  [_table reloadData];
-	  });
+    NSString *ref = _repo.selectedCommit;
+    NSTreeNode *newRoot = [self fileTreeForRef:(ref == nil) ? @"HEAD" : ref];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+      _root = newRoot;
+      [_table reloadData];
+    });
   }];
 }
 

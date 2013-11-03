@@ -63,7 +63,7 @@
   _fileViewController = [[XTFileViewController alloc]
       initWithNibName:@"XTFileViewController" bundle:nil];
   [treeTabItem setView:_fileViewController.view];
-	[[NSNotificationCenter defaultCenter]
+  [[NSNotificationCenter defaultCenter]
       addObserver:_fileViewController
          selector:@selector(commitSelected:)
              name:NSTableViewSelectionDidChangeNotification
@@ -198,10 +198,10 @@
       block(item, & error);
       if (error != nil)
         [XTStatusView
-					updateStatus:errorString
-			  			 command:[[error userInfo] valueForKey:XTErrorArgsKey]
-			  			  output:[[error userInfo] valueForKey:XTErrorOutputKey]
-			   forRepository:_repo];
+          updateStatus:errorString
+               command:[[error userInfo] valueForKey:XTErrorArgsKey]
+                output:[[error userInfo] valueForKey:XTErrorOutputKey]
+         forRepository:_repo];
     }];
   }
 }
@@ -232,14 +232,14 @@
     NSString *mergeStatus =[NSString stringWithFormat:
         @"Merged %@ into %@", branch, [_repo currentBranch]];
 
-	  [XTStatusView updateStatus:mergeStatus
+    [XTStatusView updateStatus:mergeStatus
                        command:nil
                         output:nil
                  forRepository:_repo];
   } else {
     NSDictionary *errorInfo = [error userInfo];
 
-	  [XTStatusView updateStatus:@"Merge failed"
+    [XTStatusView updateStatus:@"Merge failed"
                        command:errorInfo[XTErrorArgsKey]
                         output:errorInfo[XTErrorOutputKey]
                  forRepository:_repo];
@@ -397,9 +397,9 @@
 
 - (void)selectBranch:(NSString *)branch
 {
-  XTLocalBranchItem *branchItem =
-      (XTLocalBranchItem *)[_sideBarDS itemNamed:branch
-										 inGroup:XTBranchesGroupIndex];
+  XTLocalBranchItem *branchItem = (XTLocalBranchItem*)
+      [_sideBarDS itemNamed:branch
+                    inGroup:XTBranchesGroupIndex];
 
   if (branchItem != nil) {
     [_sidebarOutline expandItem:[_sidebarOutline itemAtRow:XTBranchesGroupIndex]];
@@ -408,7 +408,7 @@
 
     if (row != -1)
       [_sidebarOutline selectRowIndexes:[NSIndexSet indexSetWithIndex:row]
-				   byExtendingSelection:NO];
+                   byExtendingSelection:NO];
   }
 }
 

@@ -36,8 +36,8 @@
 - (void)setRepo:(XTRepository *)newRepo
 {
   _repo = newRepo;
-	[_stageDS setRepo:_repo];
-	[_unstageDS setRepo:_repo];
+  [_stageDS setRepo:_repo];
+  [_unstageDS setRepo:_repo];
   [_repo addObserver:self forKeyPath:@"isWriting" options:0 context:NULL];
 }
 
@@ -46,9 +46,9 @@
   [_stageDS reload];
   [_unstageDS reload];
   [_repo executeOffMainThread:^{
-	  // Do this in the _repo queue so it will happen after the reloads.
-	  [_stageTable reloadData];
-	  [_unstageTable reloadData];
+    // Do this in the _repo queue so it will happen after the reloads.
+    [_stageTable reloadData];
+    [_unstageTable reloadData];
   }];
 }
 
@@ -71,18 +71,18 @@
   if ([sender respondsToSelector:@selector(setEnabled:)])
     [sender setEnabled:NO];
   [_repo executeOffMainThread:^{
-	  NSError *error = NULL;
-	  void (^outputBlock)(NSString *) = ^(NSString *output) {
-		  NSString *headSHA = [[_repo headSHA] substringToIndex:7];
-		  NSString *status = [NSString stringWithFormat:@"Committed %@", headSHA];
+    NSError *error = NULL;
+    void (^outputBlock)(NSString *) = ^(NSString *output) {
+      NSString *headSHA = [[_repo headSHA] substringToIndex:7];
+      NSString *status = [NSString stringWithFormat:@"Committed %@", headSHA];
 
-		  [XTStatusView updateStatus:status
+      [XTStatusView updateStatus:status
                          command:@"commit"
                           output:output
                    forRepository:_repo];
-	  };
+    };
 
-	  if (![_repo commitWithMessage:self.message
+    if (![_repo commitWithMessage:self.message
                             amend:NO
                       outputBlock:outputBlock
                             error:&error])
@@ -92,13 +92,13 @@
                             output:[[error userInfo]
                                     valueForKey:XTErrorOutputKey]
                      forRepository:_repo];
-	  self.message = @"";
-	  [self reload];
-	  if ([sender respondsToSelector:@selector(setEnabled:)])
-		  [sender setEnabled:YES];
+    self.message = @"";
+    [self reload];
+    if ([sender respondsToSelector:@selector(setEnabled:)])
+      [sender setEnabled:YES];
 
-	  // TODO: Make this automatic
-	  [doc refresh:nil];
+    // TODO: Make this automatic
+    [doc refresh:nil];
   }];
 }
 
@@ -146,23 +146,23 @@
 - (void)showUnstageFile:(XTFileIndexInfo *)file
 {
   [_repo executeOffMainThread:^{
-	  _stagedFile = NO;
-	  _actualDiff = [_repo diffForUnstagedFile:file.name];
-	  if ([_actualDiff length] == 0)
-		  _actualDiff = [self diffForNewFile:file.name];
+    _stagedFile = NO;
+    _actualDiff = [_repo diffForUnstagedFile:file.name];
+    if ([_actualDiff length] == 0)
+      _actualDiff = [self diffForNewFile:file.name];
 
-	  [self showDiff:[XTHTML parseDiff:_actualDiff]];
+    [self showDiff:[XTHTML parseDiff:_actualDiff]];
   }];
 }
 
 - (void)showStageFile:(XTFileIndexInfo *)file
 {
   [_repo executeOffMainThread:^{
-	  _stagedFile = YES;
-	  _actualDiff = [_repo diffForStagedFile:file.name];
+    _stagedFile = YES;
+    _actualDiff = [_repo diffForStagedFile:file.name];
 
-	  NSString *diffHTML = [XTHTML parseDiff:_actualDiff];
-	  [self showDiff:diffHTML];
+    NSString *diffHTML = [XTHTML parseDiff:_actualDiff];
+    [self showDiff:diffHTML];
   }];
 }
 
@@ -200,8 +200,8 @@
   XTFileIndexInfo *item = [_stageDS items][clickedRow];
 
   [_repo executeOffMainThread:^{
-	  if ([_repo unstageFile:item.name])
-		  [self reload];
+    if ([_repo unstageFile:item.name])
+      [self reload];
   }];
 }
 
@@ -216,8 +216,8 @@
   XTFileIndexInfo *item = [_unstageDS items][clickedRow];
 
   [_repo executeOffMainThread:^{
-	  if ([_repo stageFile:item.name])
-		  [self reload];
+    if ([_repo stageFile:item.name])
+      [self reload];
   }];
 }
 
@@ -226,24 +226,24 @@
 - (void)unstageChunk:(NSInteger)idx
 {
   [_repo executeOffMainThread:^{
-	  [_repo unstagePatch:[self preparePatch:idx]];
-	  [self reload];
+    [_repo unstagePatch:[self preparePatch:idx]];
+    [self reload];
   }];
 }
 
 - (void)stageChunk:(NSInteger)idx
 {
   [_repo executeOffMainThread:^{
-	  [_repo stagePatch:[self preparePatch:idx]];
-	  [self reload];
+    [_repo stagePatch:[self preparePatch:idx]];
+    [self reload];
   }];
 }
 
 - (void)discardChunk:(NSInteger)idx
 {
   [_repo executeOffMainThread:^{
-	  [_repo discardPatch:[self preparePatch:idx]];
-	  [self reload];
+    [_repo discardPatch:[self preparePatch:idx]];
+    [self reload];
   }];
 }
 

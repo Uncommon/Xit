@@ -19,8 +19,8 @@
 {
   [_items removeAllObjects];
   [_repo readUnstagedFilesWithBlock:^(NSString *name, NSString *status) {
-	  [_items addObject:
-			  [[XTFileIndexInfo alloc] initWithName:name andStatus:status]];
+    [_items addObject:
+        [[XTFileIndexInfo alloc] initWithName:name andStatus:status]];
   }];
   [_table reloadData];
 }

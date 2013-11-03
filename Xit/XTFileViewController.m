@@ -72,15 +72,15 @@
   [_splitView setDividerThickness:1.0];
 
   [[NSNotificationCenter defaultCenter]
-  	addObserver:self
-  	   selector:@selector(fileSelectionChanged:)
-  		     name:NSOutlineViewSelectionDidChangeNotification
-  		 object:_fileListOutline];
+      addObserver:self
+         selector:@selector(fileSelectionChanged:)
+             name:NSOutlineViewSelectionDidChangeNotification
+           object:_fileListOutline];
   [[NSNotificationCenter defaultCenter]
-  	addObserver:self
-  	   selector:@selector(headerResized:)
-    		   name:XTHeaderResizedNotificaiton
-  	  	 object:_headerController];
+      addObserver:self
+         selector:@selector(headerResized:)
+             name:XTHeaderResizedNotificaiton
+           object:_headerController];
 }
 
 - (void)updatePreview

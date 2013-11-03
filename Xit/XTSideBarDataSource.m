@@ -76,16 +76,16 @@
 - (void)reload
 {
   [_repo executeOffMainThread:^{
-	  NSArray *newRoots = [self loadRoots];
+    NSArray *newRoots = [self loadRoots];
 
-	  dispatch_async(dispatch_get_main_queue(), ^{
-		  [self willChangeValueForKey:@"reload"];
-		  _roots = newRoots;
-		  [self didChangeValueForKey:@"reload"];
-		  [_outline reloadData];
-		  // Empty groups get automatically collapsed, so counter that.
-		  [_outline expandItem:nil expandChildren:YES];
-	  });
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self willChangeValueForKey:@"reload"];
+      _roots = newRoots;
+      [self didChangeValueForKey:@"reload"];
+      [_outline reloadData];
+      // Empty groups get automatically collapsed, so counter that.
+      [_outline expandItem:nil expandChildren:YES];
+    });
   }];
 }
 
@@ -101,7 +101,7 @@
   [self loadBranches:branches tags:tags remotes:remotes refsIndex:refsIndex];
   [self loadStashes:stashes refsIndex:refsIndex];
   [_repo readSubmodulesWithBlock:^(GTSubmodule *sub) {
-	  [submodules addObject:[[XTSubmoduleItem alloc] initWithSubmodule:sub]];
+    [submodules addObject:[[XTSubmoduleItem alloc] initWithSubmodule:sub]];
   }];
 
   NSArray *newRoots = [self makeRoots];
@@ -122,10 +122,10 @@
           refsIndex:(NSMutableDictionary *)refsIndex
 {
   [_repo readStashesWithBlock:^(NSString *commit, NSString *name) {
-		XTSideBarItem *stash = [[XTStashItem alloc] initWithTitle:name];
-		[stashes addObject:stash];
-		[refsIndex addObject:name forKey:commit];
-	}];
+    XTSideBarItem *stash = [[XTStashItem alloc] initWithTitle:name];
+    [stashes addObject:stash];
+    [refsIndex addObject:name forKey:commit];
+  }];
 }
 
 - (void)loadBranches:(NSMutableArray *)branches

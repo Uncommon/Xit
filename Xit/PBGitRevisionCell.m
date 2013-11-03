@@ -150,7 +150,7 @@ static const int kColumnWidth = 10;
   attributes[NSFontAttributeName] = [NSFont fontWithName:@"Helvetica" size:9];
 
   // if (selected)
-  //	 [attributes setObject:[NSColor alternateSelectedControlTextColor]
+  //   [attributes setObject:[NSColor alternateSelectedControlTextColor]
   //                  forKey:NSForegroundColorAttributeName];
 
   return attributes;
