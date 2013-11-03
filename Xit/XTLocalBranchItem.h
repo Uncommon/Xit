@@ -1,7 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "XTSideBarItem.h"
 
-@interface XTLocalBranchItem : XTSideBarItem {
-}
+@interface XTLocalBranchItem : XTSideBarItem
 
 @end

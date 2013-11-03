@@ -17,9 +17,9 @@
                 <outlet property="headerSplitView" destination="68" id="sxd-qI-gKa"/>
                 <outlet property="leftPane" destination="yIN-xT-jEO" id="69s-1K-JKi"/>
                 <outlet property="previewTabView" destination="52" id="62"/>
-                <outlet property="rightPane" destination="52" id="64"/>
-                <outlet property="splitView" destination="39" id="42"/>
-                <outlet property="textPreview" destination="58" id="61"/>
+                <outlet property="_rightPane" destination="52" id="64"/>
+                <outlet property="_splitView" destination="39" id="42"/>
+                <outlet property="_textPreview" destination="58" id="61"/>
                 <outlet property="view" destination="68" id="75"/>
                 <outlet property="viewSelector" destination="taS-ff-AsX" id="zMB-X1-GEd"/>
             </connections>
@@ -103,19 +103,19 @@
         </customObject>
         <customObject id="24" customClass="XTFileListDataSource">
             <connections>
-                <outlet property="controller" destination="-2" id="51"/>
+                <outlet property="_controller" destination="-2" id="51"/>
             </connections>
         </customObject>
         <customObject id="67" customClass="XTCommitHeaderViewController">
             <connections>
                 <outlet property="view" destination="71" id="77"/>
-                <outlet property="webView" destination="71" id="76"/>
+                <outlet property="_webView" destination="71" id="76"/>
             </connections>
         </customObject>
         <customObject id="58" customClass="XTTextPreviewController">
             <connections>
                 <outlet property="view" destination="57" id="60"/>
-                <outlet property="webView" destination="57" id="59"/>
+                <outlet property="_webView" destination="57" id="59"/>
             </connections>
         </customObject>
         <customView id="yIN-xT-jEO">

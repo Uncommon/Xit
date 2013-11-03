@@ -155,12 +155,12 @@
 - (NSInteger)outlineView:(NSOutlineView *)outlineView
     numberOfChildrenOfItem:(id)item
 {
-  table = outlineView;
+  _table = outlineView;
 
   NSInteger res = 0;
 
   if (item == nil) {
-    res = [root.childNodes count];
+    res = [_root.childNodes count];
   } else if ([item isKindOfClass:[NSTreeNode class]]) {
     NSTreeNode *node = (NSTreeNode *)item;
     res = [[node childNodes] count];
@@ -183,7 +183,7 @@
   id res;
 
   if (item == nil) {
-    res = (root.childNodes)[index];
+    res = (_root.childNodes)[index];
   } else {
     NSTreeNode *node = (NSTreeNode *)item;
     res = [node childNodes][index];
@@ -207,7 +207,7 @@
                    item:(id)item
 {
   XTFileCellView *cell =
-      [outlineView makeViewWithIdentifier:@"fileCell" owner:controller];
+      [outlineView makeViewWithIdentifier:@"fileCell" owner:_controller];
 
   if (![cell isKindOfClass:[XTFileCellView class]])
     return cell;

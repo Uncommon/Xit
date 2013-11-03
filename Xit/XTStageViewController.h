@@ -8,15 +8,15 @@
 
 @interface XTStageViewController
     : NSViewController<DOMEventListener, NSTableViewDelegate> {
-  IBOutlet XTStagedDataSource *stageDS;
-  IBOutlet XTUnstagedDataSource *unstageDS;
-  IBOutlet WebView *web;
-  IBOutlet NSTableView *stageTable;
-  IBOutlet NSTableView *unstageTable;
-  IBOutlet NSButton *commitButton;
-  XTRepository *repo;
-  NSString *actualDiff;
-  BOOL stagedFile;
+  IBOutlet XTStagedDataSource *_stageDS;
+  IBOutlet XTUnstagedDataSource *_unstageDS;
+  IBOutlet WebView *_web;
+  IBOutlet NSTableView *_stageTable;
+  IBOutlet NSTableView *_unstageTable;
+  IBOutlet NSButton *_commitButton;
+  XTRepository *_repo;
+  NSString *_actualDiff;
+  BOOL _stagedFile;
 }
 
 @property(strong) NSString *message;

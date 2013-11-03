@@ -7,8 +7,8 @@
   self = [super init];
   if (self == nil)
     return nil;
-  path = [filePath copy];
-  lastDate = [[self modDate] copy];
+  _path = [filePath copy];
+  _lastDate = [[self modDate] copy];
   return self;
 }
 
@@ -16,7 +16,7 @@
 {
   NSError *error = nil;
   NSDictionary *info =
-      [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&error];
+      [[NSFileManager defaultManager] attributesOfItemAtPath:_path error:&error];
 
   return info[NSFileModificationDate];
 }
@@ -25,8 +25,8 @@
 {
   NSDate *newDate = [self modDate];
 
-  if (![newDate isEqual:lastDate]) {
-    lastDate = [newDate copy];
+  if (![newDate isEqual:_lastDate]) {
+    _lastDate = [newDate copy];
     return YES;
   }
   return NO;

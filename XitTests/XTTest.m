@@ -87,6 +87,7 @@
   NSLog(@"[createRepo] repoName=%@", repoName);
   NSFileManager *fileManager = [NSFileManager defaultManager];
 
+  // TODO: We need better error checking here!
   if ([fileManager fileExistsAtPath:repoName]) {
     [fileManager removeItemAtPath:repoName error:nil];
   }

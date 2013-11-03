@@ -93,7 +93,7 @@ NSString *XTHeaderHeightKey = @"height";
 
 - (void)loadHeader
 {
-  id result = [[self.webView windowScriptObject]
+  id result = [[_webView windowScriptObject]
       callWebScriptMethod:@"isCollapsed" withArguments:@[]];
 
   if ([result respondsToSelector:@selector(boolValue)])
@@ -101,7 +101,7 @@ NSString *XTHeaderHeightKey = @"height";
 
   NSString *html = [self generateHeaderHTML];
 
-  [[self.webView mainFrame] loadHTMLString:html baseURL:[self templateURL]];
+  [[_webView mainFrame] loadHTMLString:html baseURL:[self templateURL]];
 }
 
 - (NSString*)commitSHA
@@ -117,14 +117,14 @@ NSString *XTHeaderHeightKey = @"height";
 
 - (CGFloat)headerHeight
 {
-  const NSRect savedFrame = [self.webView frame];
+  const NSRect savedFrame = [_webView frame];
 
-  [self.webView setFrame:NSMakeRect(0, 0, savedFrame.size.width, 1)];
+  [_webView setFrame:NSMakeRect(0, 0, savedFrame.size.width, 1)];
 
   const CGFloat result =
-      [[[[self.webView mainFrame] frameView] documentView] frame].size.height;
+      [[[[_webView mainFrame] frameView] documentView] frame].size.height;
 
-  [self.webView setFrame:savedFrame];
+  [_webView setFrame:savedFrame];
   return result;
 }
 
@@ -169,7 +169,7 @@ dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
   }
 
   if (!_expanded)
-    [[self.webView windowScriptObject] callWebScriptMethod:@"disclosure"
+    [[_webView windowScriptObject] callWebScriptMethod:@"disclosure"
                                              withArguments:@[ @(NO) ]];
 }
 

@@ -6,7 +6,7 @@
 
 @implementation XTDocument
 
-@synthesize repository = repo;
+@synthesize repository = _repo;
 
 - (id)initWithContentsOfURL:(NSURL *)absoluteURL
                      ofType:(NSString *)typeName
@@ -15,8 +15,8 @@
   self =
       [super initWithContentsOfURL:absoluteURL ofType:typeName error:outError];
   if (self) {
-    repoURL = absoluteURL;
-    repo = [[XTRepository alloc] initWithURL:repoURL];
+    _repoURL = absoluteURL;
+    _repo = [[XTRepository alloc] initWithURL:_repoURL];
   }
   return self;
 }
@@ -36,7 +36,7 @@
   XTDocController *controller = [[XTDocController alloc] initWithDocument:self];
 
   [self addWindowController:controller];
-  [repo start];
+  [_repo start];
 }
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL
@@ -61,8 +61,8 @@
 
 - (void)canCloseDocumentWithDelegate:(id)delegate shouldCloseSelector:(SEL)shouldCloseSelector contextInfo:(void *)contextInfo
 {
-  [repo shutDown];
-  WaitForQueue(repo.queue);
+  [_repo shutDown];
+  WaitForQueue(_repo.queue);
   [super canCloseDocumentWithDelegate:delegate
                   shouldCloseSelector:shouldCloseSelector
                           contextInfo:contextInfo];

@@ -3,8 +3,10 @@
 @class WebView;
 
 // Base class for web view controllers, implementing common delegate methods.
-@interface XTWebViewController : NSViewController
+@interface XTWebViewController : NSViewController {
+	IBOutlet WebView *_webView;
+}
 
-@property IBOutlet WebView *webView;
+@property WebView *webView;
 
 @end

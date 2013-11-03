@@ -19,7 +19,7 @@ using namespace std;
 - (id)init {
     self = [super init];
     if (self) {
-        pl = new std::list<PBGitLane *>;
+        _pl = new std::list<PBGitLane *>;
         PBGitLane::resetColors();
     }
 
@@ -38,7 +38,7 @@ void add_line(struct PBGitGraphLine *lines, int *nLines, int upper, size_t from,
     size_t newPos = -1;
 
     std::list<PBGitLane *> *currentLanes = new std::list<PBGitLane *>;
-    std::list<PBGitLane *> *previousLanes = (std::list<PBGitLane *> *)pl;
+    std::list<PBGitLane *> *previousLanes = (std::list<PBGitLane *> *)_pl;
     NSArray *parents = [commit parents];
     NSUInteger nParents = [parents count];
 
@@ -51,7 +51,7 @@ void add_line(struct PBGitGraphLine *lines, int *nLines, int upper, size_t from,
     NSString *commit_oid = [commit sha];
 
     // First, iterate over earlier columns and pass through any that don't want this commit
-    if (previous != nil) {
+    if (_previous != nil) {
         // We can't count until numColumns here, as it's only used for the width of the cell.
         std::list<PBGitLane *>::iterator it = previousLanes->begin();
         for (; it != previousLanes->end(); ++it) {
@@ -128,22 +128,22 @@ void add_line(struct PBGitGraphLine *lines, int *nLines, int upper, size_t from,
     }
 
     if (commit.lineInfo) {
-        previous = commit.lineInfo;
-        previous.position = newPos;
-        previous.lines = lines;
+        _previous = commit.lineInfo;
+        _previous.position = newPos;
+        _previous.lines = lines;
     } else
-        previous = [[PBGraphCellInfo alloc] initWithPosition:newPos andLines:lines];
+        _previous = [[PBGraphCellInfo alloc] initWithPosition:newPos andLines:lines];
 
     if (currentLine > maxLines)
         DLog(@"Number of lines: %i vs allocated: %lu", currentLine, maxLines);
 
-    previous.nLines = currentLine;
+    _previous.nLines = currentLine;
 
     // If a parent was added, we have room to not indent.
     if (addedParent)
-        previous.numColumns = currentLanes->size() - 1;
+        _previous.numColumns = currentLanes->size() - 1;
     else
-        previous.numColumns = currentLanes->size();
+        _previous.numColumns = currentLanes->size();
 
     // Update the current lane to point to the new parent
     if (currentLane && nParents > 0) {
@@ -155,12 +155,12 @@ void add_line(struct PBGitGraphLine *lines, int *nLines, int upper, size_t from,
 
     delete previousLanes;
 
-    pl = currentLanes;
-    commit.lineInfo = previous;
+    _pl = currentLanes;
+    commit.lineInfo = _previous;
 }
 
 - (void)dealloc {
-    std::list<PBGitLane *> *lanes = (std::list<PBGitLane *> *)pl;
+    std::list<PBGitLane *> *lanes = (std::list<PBGitLane *> *)_pl;
     std::list<PBGitLane *>::iterator it = lanes->begin();
     for (; it != lanes->end(); ++it) {
         delete *it;

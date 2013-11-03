@@ -19,13 +19,6 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 
 @implementation XTRepository
 
-@synthesize gtRepo;
-@synthesize selectedCommit;
-@synthesize refsIndex;
-@synthesize queue;
-@synthesize activeTasks;
-@synthesize repoURL;
-@synthesize isWriting;
 
 + (NSString *)gitPath
 {
@@ -44,22 +37,22 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
   if (self != nil) {
     NSError *error = nil;
 
-    gtRepo = [[GTRepository alloc] initWithURL:url error:&error];
+    _gtRepo = [[GTRepository alloc] initWithURL:url error:&error];
     if (error != nil) {
       // TODO: Make sure we know why it failed.
       // Assume repo hasn't been created yet, and initializeRepository will
       // be called later.
     }
-    gitCMD = [XTRepository gitPath];
-    repoURL = url;
+    _gitCMD = [XTRepository gitPath];
+    _repoURL = url;
     NSMutableString *qName =
         [NSMutableString stringWithString:@"com.xit.queue."];
     [qName appendString:[url path]];
-    queue = dispatch_queue_create(
+    _queue = dispatch_queue_create(
         [qName cStringUsingEncoding:NSASCIIStringEncoding],
         DISPATCH_QUEUE_SERIAL);
-    activeTasks = [NSMutableArray array];
-    diffCache = [[NSCache alloc] init];
+    _activeTasks = [NSMutableArray array];
+    _diffCache = [[NSCache alloc] init];
   }
 
   return self;
@@ -83,7 +76,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 {
   if ([NSThread isMainThread]) {
     if (!self.isShutDown)
-      dispatch_async(queue, block);
+      dispatch_async(_queue, block);
   } else {
     block();
   }
@@ -97,19 +90,19 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 - (void)addTask:(NSTask *)task
 {
   [self willChangeValueForKey:@"activeTasks"];
-  @synchronized(activeTasks) {
-    [activeTasks addObject:task];
+  @synchronized(_activeTasks) {
+    [_activeTasks addObject:task];
   }
   [self didChangeValueForKey:@"activeTasks"];
 }
 
 - (void)removeTask:(NSTask *)task
 {
-  @synchronized(activeTasks) {
-    if (![activeTasks containsObject:task])
+  @synchronized(_activeTasks) {
+    if (![_activeTasks containsObject:task])
       return;
     [self willChangeValueForKey:@"activeTasks"];
-    [activeTasks removeObject:task];
+    [_activeTasks removeObject:task];
   }
   [self didChangeValueForKey:@"activeTasks"];
 }
@@ -118,7 +111,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
     enumerateCommitsUsingBlock:(void (^)(NSString *))block
                          error:(NSError **)error
 {
-  if (repoURL == nil) {
+  if (_repoURL == nil) {
     if (error != NULL)
       *error = [NSError errorWithDomain:NSOSStatusErrorDomain
                                    code:fnfErr
@@ -137,8 +130,8 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
   NSLog(@"****command = git %@", [args componentsJoinedByString:@" "]);
   NSTask *task = [[NSTask alloc] init];
   [self addTask:task];
-  [task setCurrentDirectoryPath:[repoURL path]];
-  [task setLaunchPath:gitCMD];
+  [task setCurrentDirectoryPath:[_repoURL path]];
+  [task setLaunchPath:_gitCMD];
   [task setArguments:args];
 
   NSPipe *pipe = [NSPipe pipe];
@@ -204,7 +197,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
                         writes:(BOOL)writes
                          error:(NSError **)error
 {
-  if (repoURL == nil)
+  if (_repoURL == nil)
     return nil;
 
   @synchronized(self) {
@@ -219,8 +212,8 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
     NSLog(@"****command = git %@", [args componentsJoinedByString:@" "]);
     NSTask *task = [[NSTask alloc] init];
     [self addTask:task];
-    [task setCurrentDirectoryPath:[repoURL path]];
-    [task setLaunchPath:gitCMD];
+    [task setCurrentDirectoryPath:[_repoURL path]];
+    [task setLaunchPath:_gitCMD];
     [task setArguments:args];
 
     if (stdIn != nil) {
@@ -278,7 +271,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 {
   NSError *error = nil;
 
-  return [gtRepo headReferenceWithError:&error] != nil;
+  return [_gtRepo headReferenceWithError:&error] != nil;
 }
 
 - (NSString *)parseSymbolicReference:(NSString *)reference
@@ -286,7 +279,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
   NSError *error = nil;
   GTReference *gtRef = [GTReference
       referenceByLookingUpReferencedNamed:reference
-                             inRepository:gtRepo
+                             inRepository:_gtRepo
                                     error:&error];
 
   if (error != nil)
@@ -311,7 +304,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
     return nil;
 
   NSError *error = nil;
-  GTObject *object = [gtRepo lookupObjectByRefspec:ref error:&error];
+  GTObject *object = [_gtRepo lookupObjectByRefspec:ref error:&error];
 
   if (error != nil)
     return nil;
@@ -321,18 +314,18 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 - (NSString *)headRef
 {
   @synchronized(self) {
-    if (cachedHeadRef == nil) {
+    if (_cachedHeadRef == nil) {
       NSString *head = [self parseSymbolicReference:@"HEAD"];
 
       if ([head hasPrefix:@"refs/heads/"])
-        cachedHeadRef = head;
+        _cachedHeadRef = head;
       else
-        cachedHeadRef = @"HEAD";
+        _cachedHeadRef = @"HEAD";
 
-      cachedHeadSHA = [self shaForRef:cachedHeadRef];
+      _cachedHeadSHA = [self shaForRef:_cachedHeadRef];
     }
   }
-  return cachedHeadRef;
+  return _cachedHeadRef;
 }
 
 - (NSString *)headSHA
@@ -357,36 +350,36 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 
 - (void)stop
 {
-  FSEventStreamStop(stream);
-  FSEventStreamInvalidate(stream);
+  FSEventStreamStop(_stream);
+  FSEventStreamInvalidate(_stream);
 }
 
 #pragma mark - monitor file system
 - (void)initializeEventStream
 {
-  if (repoURL == nil)
+  if (_repoURL == nil)
     return;
-  NSString *myPath = [[repoURL URLByAppendingPathComponent:@".git"] path];
+  NSString *myPath = [[_repoURL URLByAppendingPathComponent:@".git"] path];
   NSArray *pathsToWatch = @[ myPath ];
   void *repoPointer = (__bridge void *)self;
   FSEventStreamContext context = {0, repoPointer, NULL, NULL, NULL};
   NSTimeInterval latency = 3.0;
 
-  stream = FSEventStreamCreate(
+  _stream = FSEventStreamCreate(
       kCFAllocatorDefault, &fsevents_callback, &context,
       (__bridge CFArrayRef) pathsToWatch, kFSEventStreamEventIdSinceNow,
       (CFAbsoluteTime) latency, kFSEventStreamCreateFlagUseCFTypes);
 
-  FSEventStreamScheduleWithRunLoop(stream, CFRunLoopGetCurrent(),
+  FSEventStreamScheduleWithRunLoop(_stream, CFRunLoopGetCurrent(),
                                    kCFRunLoopDefaultMode);
-  FSEventStreamStart(stream);
+  FSEventStreamStart(_stream);
 }
 
 - (void)reloadPaths:(NSArray *)paths
 {
   for (NSString *path in paths)
     if ([path hasPrefix:@".git/"]) {
-      cachedBranch = nil;
+      _cachedBranch = nil;
       break;
     }
 
