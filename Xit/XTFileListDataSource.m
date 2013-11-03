@@ -16,7 +16,7 @@
 {
   self = [super init];
   if (self != nil) {
-    root = [self makeNewRoot];
+    _root = [self makeNewRoot];
   }
 
   return self;
@@ -46,8 +46,8 @@
     NSTreeNode *newRoot = [self fileTreeForRef:(ref == nil) ? @"HEAD" : ref];
 
     dispatch_async(dispatch_get_main_queue(), ^{
-      root = newRoot;
-      [table reloadData];
+      _root = newRoot;
+      [_table reloadData];
     });
   }];
 }
@@ -147,7 +147,7 @@
 
 - (XTFileChange*)fileChangeAtRow:(NSInteger)row
 {
-  return [[table itemAtRow:row] representedObject];
+  return [[_table itemAtRow:row] representedObject];
 }
 
 #pragma mark - NSOutlineViewDataSource
@@ -244,7 +244,7 @@
     textWidth = changeFrame.origin.x + changeFrame.size.width -
                 textFrame.origin.x;
   } else {
-    cell.changeImage.image = controller.changeImages[@( change )];
+    cell.changeImage.image = _controller.changeImages[@( change )];
     textWidth = changeFrame.origin.x - kChangeImagePadding -
                 textFrame.origin.x;
   }

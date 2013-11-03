@@ -9,13 +9,13 @@
         <customObject id="-2" userLabel="File's Owner" customClass="XTFileViewController">
             <connections>
                 <outlet property="_fileChangeDS" destination="QBv-mK-3e5" id="4Kz-Bn-qV6"/>
-                <outlet property="fileChangeDS" destination="QBv-mK-3e5" id="ugg-hS-pIO"/>
-                <outlet property="fileListDS" destination="24" id="26"/>
-                <outlet property="fileListOutline" destination="7" id="27"/>
-                <outlet property="filePreview" destination="4" id="38"/>
-                <outlet property="headerController" destination="67" id="74"/>
-                <outlet property="headerSplitView" destination="68" id="sxd-qI-gKa"/>
-                <outlet property="leftPane" destination="yIN-xT-jEO" id="69s-1K-JKi"/>
+                <outlet property="_fileChangeDS" destination="QBv-mK-3e5" id="ugg-hS-pIO"/>
+                <outlet property="_fileListDS" destination="24" id="26"/>
+                <outlet property="_fileListOutline" destination="7" id="27"/>
+                <outlet property="_filePreview" destination="4" id="38"/>
+                <outlet property="_headerController" destination="67" id="74"/>
+                <outlet property="_headerSplitView" destination="68" id="sxd-qI-gKa"/>
+                <outlet property="_leftPane" destination="yIN-xT-jEO" id="69s-1K-JKi"/>
                 <outlet property="previewTabView" destination="52" id="62"/>
                 <outlet property="_rightPane" destination="52" id="64"/>
                 <outlet property="_splitView" destination="39" id="42"/>

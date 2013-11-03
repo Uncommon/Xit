@@ -52,11 +52,11 @@ const CGFloat kChangeImagePadding = 8;
 
 - (void)setRepo:(XTRepository *)newRepo
 {
-  repo = newRepo;
+  _repo = newRepo;
   _fileChangeDS.repository = newRepo;
-  fileListDS.repository = newRepo;
-  headerController.repository = newRepo;
-  ((XTPreviewItem *)filePreview.previewItem).repo = newRepo;
+  _fileListDS.repository = newRepo;
+  _headerController.repository = newRepo;
+  ((XTPreviewItem*)_filePreview.previewItem).repo = newRepo;
 }
 
 - (void)awakeFromNib
@@ -85,7 +85,7 @@ const CGFloat kChangeImagePadding = 8;
   [_splitView setDivider:[NSImage imageNamed:@"splitter"]];
   [_splitView setDividerThickness:1.0];
 
-  [fileListOutline sizeToFit];
+  [_fileListOutline sizeToFit];
 
   [[NSNotificationCenter defaultCenter]
   	addObserver:self
@@ -104,16 +104,16 @@ const CGFloat kChangeImagePadding = 8;
   id newDS = _fileChangeDS;
 
   if (self.viewSelector.selectedSegment == 1) {
-    newDS = fileListDS;
-    [fileListOutline setOutlineTableColumn:
-        [fileListOutline tableColumnWithIdentifier:@"main"]];
+    newDS = _fileListDS;
+    [_fileListOutline setOutlineTableColumn:
+        [_fileListOutline tableColumnWithIdentifier:@"main"]];
   } else {
-    [fileListOutline setOutlineTableColumn:
-        [fileListOutline tableColumnWithIdentifier:@"hidden"]];
+    [_fileListOutline setOutlineTableColumn:
+        [_fileListOutline tableColumnWithIdentifier:@"hidden"]];
   }
-  [fileListOutline setDataSource:newDS];
-  [fileListOutline setDelegate:newDS];
-  [fileListOutline reloadData];
+  [_fileListOutline setDataSource:newDS];
+  [_fileListOutline setDelegate:newDS];
+  [_fileListOutline reloadData];
 }
 
 - (void)updatePreview
@@ -136,7 +136,7 @@ const CGFloat kChangeImagePadding = 8;
   }
 
   XTFileListDataSourceBase *dataSource = (XTFileListDataSourceBase*)
-      [fileListOutline dataSource];
+      [_fileListOutline dataSource];
   XTFileChange *selectedItem = (XTFileChange*)
       [dataSource fileChangeAtRow:[selection firstIndex]];
 

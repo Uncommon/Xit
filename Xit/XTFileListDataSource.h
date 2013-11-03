@@ -12,10 +12,10 @@
 @interface XTFileListDataSource :
     XTFileListDataSourceBase<NSOutlineViewDataSource> {
  @private
-  IBOutlet XTFileViewController *controller;
-  NSTreeNode *root;
-  NSDictionary *changeImages;
-  NSOutlineView *table;
+  IBOutlet XTFileViewController *_controller;
+  NSTreeNode *_root;
+  NSDictionary *_changeImages;
+  NSOutlineView *_table;
 }
 
 - (void)reload;
