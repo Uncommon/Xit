@@ -12,7 +12,6 @@
 @interface XTFileListDataSource :
     XTFileListDataSourceBase<NSOutlineViewDataSource> {
  @private
-  IBOutlet XTFileViewController *_controller;
   NSTreeNode *_root;
   NSDictionary *_changeImages;
   NSOutlineView *_table;
@@ -24,16 +23,5 @@
 
 
 @interface XTCommitTreeItem : XTFileChange
-
-@end
-
-
-/**
-  Cell view with additional images for changed files.
- */
-@interface XTFileCellView : NSTableCellView
-
-@property IBOutlet NSImageView *changeImage;
-@property XitChange change;
 
 @end

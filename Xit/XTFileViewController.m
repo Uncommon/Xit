@@ -101,16 +101,17 @@ const CGFloat kChangeImagePadding = 8;
 
 - (IBAction)changeFileListView:(id)sender
 {
-  id newDS = _fileChangeDS;
+  XTFileListDataSourceBase *newDS = _fileChangeDS;
 
-  if (self.viewSelector.selectedSegment == 1) {
+  if (self.viewSelector.selectedSegment == 1)
     newDS = _fileListDS;
+  if (newDS.isHierarchical)
     [_fileListOutline setOutlineTableColumn:
         [_fileListOutline tableColumnWithIdentifier:@"main"]];
-  } else {
+  else
     [_fileListOutline setOutlineTableColumn:
         [_fileListOutline tableColumnWithIdentifier:@"hidden"]];
-  }
+  [_fileListOutline setDelegate:nil];
   [_fileListOutline setDataSource:newDS];
   [_fileListOutline setDelegate:newDS];
   [_fileListOutline reloadData];
