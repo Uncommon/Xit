@@ -350,8 +350,10 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 
 - (void)stop
 {
-  FSEventStreamStop(_stream);
-  FSEventStreamInvalidate(_stream);
+  if (_stream != NULL) {
+    FSEventStreamStop(_stream);
+    FSEventStreamInvalidate(_stream);
+  }
 }
 
 #pragma mark - monitor file system
