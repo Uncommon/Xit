@@ -13,9 +13,13 @@
 
 - (void)reload
 {
-  self.changes = [self.repository changesForRef:self.repository.selectedCommit
-                                         parent:nil];
-  [self.outlineView reloadData];
+  [self.repository executeOffMainThread:^{
+    self.changes = [self.repository changesForRef:self.repository.selectedCommit
+                                           parent:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self.outlineView reloadData];
+    });
+  }];
 }
 
 - (BOOL)isHierarchical
