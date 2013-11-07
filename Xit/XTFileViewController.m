@@ -3,11 +3,15 @@
 #import <CoreServices/CoreServices.h>
 
 #import "XTCommitHeaderViewController.h"
+#import "XTFileChangesDataSource.h"
+#import "XTFileListDataSourceBase.h"
 #import "XTFileListDataSource.h"
 #import "XTPreviewItem.h"
 #import "XTRepository.h"
 #import "XTTextPreviewController.h"
 #import <RBSplitView.h>
+
+const CGFloat kChangeImagePadding = 8;
 
 @interface NSSplitView (Animating)
 
@@ -49,9 +53,10 @@
 - (void)setRepo:(XTRepository *)newRepo
 {
   _repo = newRepo;
-  [_fileListDS setRepo:newRepo];
+  _fileChangeDS.repository = newRepo;
+  _fileListDS.repository = newRepo;
   _headerController.repository = newRepo;
-  ((XTPreviewItem *)_filePreview.previewItem).repo = newRepo;
+  ((XTPreviewItem*)_filePreview.previewItem).repo = newRepo;
 }
 
 - (void)awakeFromNib
@@ -60,6 +65,15 @@
   // again after the initial load.
   if ([[_splitView subviews] count] == 2)
     return;
+
+  _changeImages = @{
+      @( XitChangeAdded ) : [NSImage imageNamed:@"added"],
+      @( XitChangeCopied ) : [NSImage imageNamed:@"copied"],
+      @( XitChangeDeleted ) : [NSImage imageNamed:@"deleted"],
+      @( XitChangeModified ) : [NSImage imageNamed:@"modified"],
+      @( XitChangeRenamed ) : [NSImage imageNamed:@"renamed"],
+      @( XitChangeMixed ) : [NSImage imageNamed:@"mixed"],
+      };
 
   // For some reason the splitview comes with preexisting subviews.
   NSArray *subviews = [[_splitView subviews] copy];
@@ -71,6 +85,8 @@
   [_splitView setDivider:[NSImage imageNamed:@"splitter"]];
   [_splitView setDividerThickness:1.0];
 
+  [_fileListOutline sizeToFit];
+
   [[NSNotificationCenter defaultCenter]
       addObserver:self
          selector:@selector(fileSelectionChanged:)
@@ -81,6 +97,24 @@
          selector:@selector(headerResized:)
              name:XTHeaderResizedNotificaiton
            object:_headerController];
+}
+
+- (IBAction)changeFileListView:(id)sender
+{
+  XTFileListDataSourceBase *newDS = _fileChangeDS;
+
+  if (self.viewSelector.selectedSegment == 1)
+    newDS = _fileListDS;
+  if (newDS.isHierarchical)
+    [_fileListOutline setOutlineTableColumn:
+        [_fileListOutline tableColumnWithIdentifier:@"main"]];
+  else
+    [_fileListOutline setOutlineTableColumn:
+        [_fileListOutline tableColumnWithIdentifier:@"hidden"]];
+  [_fileListOutline setDelegate:nil];
+  [_fileListOutline setDataSource:newDS];
+  [_fileListOutline setDelegate:newDS];
+  [_fileListOutline reloadData];
 }
 
 - (void)updatePreview
@@ -102,9 +136,10 @@
     return;
   }
 
-  NSTreeNode *selectedNode = [_fileListOutline itemAtRow:[selection firstIndex]];
-  XTCommitTreeItem *selectedItem = (XTCommitTreeItem*)
-      [selectedNode representedObject];
+  XTFileListDataSourceBase *dataSource = (XTFileListDataSourceBase*)
+      [_fileListOutline dataSource];
+  XTFileChange *selectedItem = (XTFileChange*)
+      [dataSource fileChangeAtRow:[selection firstIndex]];
 
   if ([[self class] fileNameIsText:selectedItem.path]) {
     [self.previewTabView selectTabViewItemWithIdentifier:@"text"];

@@ -1,4 +1,5 @@
 #import "XTFileListDataSource.h"
+#import "XTFileViewController.h"
 #import "XTRepository+Parsing.h"
 
 @interface XTFileListDataSource ()
@@ -16,22 +17,9 @@
   self = [super init];
   if (self != nil) {
     _root = [self makeNewRoot];
-    _changeImages = @{
-        @( XitChangeAdded ) : [NSImage imageNamed:@"added"],
-        @( XitChangeCopied ) : [NSImage imageNamed:@"copied"],
-        @( XitChangeDeleted ) : [NSImage imageNamed:@"deleted"],
-        @( XitChangeModified ) : [NSImage imageNamed:@"modified"],
-        @( XitChangeRenamed ) : [NSImage imageNamed:@"renamed"],
-        @( XitChangeMixed ) : [NSImage imageNamed:@"mixed"],
-        };
   }
 
   return self;
-}
-
-- (void)dealloc
-{
-  [_repo removeObserver:self forKeyPath:@"selectedCommit"];
 }
 
 - (NSTreeNode *)makeNewRoot
@@ -42,36 +30,22 @@
   return [NSTreeNode treeNodeWithRepresentedObject:rootItem];
 }
 
-- (void)setRepo:(XTRepository *)newRepo
-{
-  _repo = newRepo;
-  [_repo addObserver:self
-          forKeyPath:@"selectedCommit"
-             options:NSKeyValueObservingOptionNew
-             context:nil];
-  [self reload];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context
-{
-  if ([keyPath isEqualToString:@"selectedCommit"])
-    [self reload];
-}
-
 - (void)reload
 {
-  [_repo executeOffMainThread:^{
-    NSString *ref = _repo.selectedCommit;
+  [self.repository executeOffMainThread:^{
+    NSString *ref = self.repository.selectedCommit;
     NSTreeNode *newRoot = [self fileTreeForRef:(ref == nil) ? @"HEAD" : ref];
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
       _root = newRoot;
       [_table reloadData];
     });
   }];
+}
+
+- (BOOL)isHierarchical
+{
+  return YES;
 }
 
 - (void)updateChangeForNode:(NSTreeNode*)node
@@ -100,10 +74,10 @@
 {
   NSTreeNode *newRoot = [self makeNewRoot];
   NSMutableDictionary *nodes = [NSMutableDictionary dictionary];
-  NSArray *changeList = [_repo changesForRef:ref parent:nil];
+  NSArray *changeList = [self.repository changesForRef:ref parent:nil];
   NSDictionary *changes = [[NSMutableDictionary alloc]
       initWithCapacity:[changeList count]];
-  NSArray *files = [_repo fileNamesForRef:ref];
+  NSArray *files = [self.repository fileNamesForRef:ref];
   NSMutableArray *deletions =
       [NSMutableArray arrayWithCapacity:[changes count]];
 
@@ -167,6 +141,27 @@
   return pathNode;
 }
 
+- (XTFileChange*)fileChangeAtRow:(NSInteger)row
+{
+  return [[_table itemAtRow:row] representedObject];
+}
+
+- (NSString*)pathForItem:(id)item
+{
+  XTCommitTreeItem *treeItem = (XTCommitTreeItem*)
+      [(NSTreeNode*)item representedObject];
+
+  return treeItem.path;
+}
+
+- (XitChange)changeForItem:(id)item
+{
+  XTCommitTreeItem *treeItem = (XTCommitTreeItem*)
+      [(NSTreeNode*)item representedObject];
+
+  return treeItem.change;
+}
+
 #pragma mark - NSOutlineViewDataSource
 
 - (NSInteger)outlineView:(NSOutlineView *)outlineView
@@ -217,61 +212,6 @@
   return [node representedObject];
 }
 
-#pragma mark NSOutlineViewDelegate
-
-const CGFloat kChangeImagePadding = 8;
-
-- (NSView *)outlineView:(NSOutlineView *)outlineView
-     viewForTableColumn:(NSTableColumn *)tableColumn
-                   item:(id)item
-{
-  XTFileCellView *cell =
-      [outlineView makeViewWithIdentifier:@"fileCell" owner:_controller];
-
-  if (![cell isKindOfClass:[XTFileCellView class]])
-    return cell;
-
-  NSTreeNode *node = (NSTreeNode*)item;
-  XTCommitTreeItem *treeItem = (XTCommitTreeItem*)[node representedObject];
-  NSString *path = treeItem.path;
-
-  if ([node isLeaf])
-    cell.imageView.image = [[NSWorkspace sharedWorkspace]
-        iconForFileType:[path pathExtension]];
-  else
-    cell.imageView.image = [NSImage imageNamed:NSImageNameFolder];
-  cell.textField.stringValue = [path lastPathComponent];
-
-  NSColor *textColor;
-
-  if (treeItem.change == XitChangeDeleted)
-    textColor = [NSColor disabledControlTextColor];
-  else if ([outlineView isRowSelected:[outlineView rowForItem:item]])
-    textColor = [NSColor selectedTextColor];
-  else
-    textColor = [NSColor textColor];
-  cell.textField.textColor = textColor;
-  cell.change = treeItem.change;
-
-  XitChange change = treeItem.change;
-  CGFloat textWidth;
-  const NSRect changeFrame = cell.changeImage.frame;
-  const NSRect textFrame = cell.textField.frame;
-
-  [cell.changeImage setHidden:change == XitChangeUnmodified];
-  if (change == XitChangeUnmodified) {
-    textWidth = changeFrame.origin.x + changeFrame.size.width -
-                textFrame.origin.x;
-  } else {
-    cell.changeImage.image = _changeImages[@( change )];
-    textWidth = changeFrame.origin.x - kChangeImagePadding -
-                textFrame.origin.x;
-  }
-  [cell.textField setFrameSize:NSMakeSize(textWidth, textFrame.size.height)];
-
-  return cell;
-}
-
 @end
 
 
@@ -280,20 +220,6 @@ const CGFloat kChangeImagePadding = 8;
 - (NSString*)description
 {
   return self.path;
-}
-
-@end
-
-
-@implementation XTFileCellView
-
-- (void)setBackgroundStyle:(NSBackgroundStyle)backgroundStyle
-{
-  [super setBackgroundStyle:backgroundStyle];
-  if (backgroundStyle == NSBackgroundStyleDark)
-    self.textField.textColor = [NSColor textColor];
-  else if (self.change == XitChangeDeleted)
-    self.textField.textColor = [NSColor disabledControlTextColor];
 }
 
 @end

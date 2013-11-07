@@ -48,7 +48,7 @@
     repository.selectedCommit = item.sha;
 
     XTFileListDataSource *flds = [[XTFileListDataSource alloc] init];
-    [flds setRepo:repository];
+    flds.repository = repository;
     [self waitForRepoQueue];
 
     const NSInteger fileCount =
@@ -97,7 +97,7 @@
 
   XTFileListDataSource *flds = [[XTFileListDataSource alloc] init];
 
-  [flds setRepo:repository];
+  flds.repository = repository;
   [self waitForRepoQueue];
 
   const NSInteger fileCount = [flds outlineView:nil numberOfChildrenOfItem:nil];
