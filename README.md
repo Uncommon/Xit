@@ -57,7 +57,14 @@ The coding style used is based on the [Google Objective-C Style Guide], with the
 
   [Google Objective-C Style Guide]: http://google-styleguide.googlecode.com/svn/trunk/objcguide.xml
 
+* Line length is 80 columns.
 * The opening brace of a function goes on its own line.
-* No single-line `if` statements. (You can't set a breakpoint if the body is on the same line as the `if`!)
+* No single-line `if` statements, like `if (x) return;` (you can't set a breakpoint on that `return`!)
 * No space before `*` when it is not immediately followed by an identifier, such as `(NSString*)`.
-* When wrapping function calls, a four-space indent is preferred over aligning with the `:` or `(`.
+* When wrapping function/method calls, a four-space indent is allowed as well as aligning with the `:` or `(`.
+* Variable declarations are separated from other statements by one blank line.
+* Whitespace at the indentation level of the surrounding lines is allowed.
+* Doxygen style comments are encouraged because Xcode parses them.
+* Explicitly compare values with `0`, `nil`, or `NULL`. Only write `if (x)` if `x` is a Boolean value.
+
+Some of the code was written before these rules were put in place and may still need to be updated. Feel free to correct any instances you find.
