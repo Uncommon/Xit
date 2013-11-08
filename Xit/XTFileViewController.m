@@ -28,6 +28,9 @@ const CGFloat kChangeImagePadding = 8;
 
 + (BOOL)fileNameIsText:(NSString*)name
 {
+  if (name == nil)
+    return NO;
+
   NSArray *extensionlessNames = @[
       @"AUTHORS", @"CONTRIBUTING", @"COPYING", @"LICENSE", @"Makefile",
       @"README", ];
@@ -120,22 +123,6 @@ const CGFloat kChangeImagePadding = 8;
 - (void)updatePreview
 {
   NSIndexSet *selection = [_fileListOutline selectedRowIndexes];
-  const NSUInteger selectionCount = [selection count];
-  XTPreviewItem *previewItem = (XTPreviewItem *)_filePreview.previewItem;
-
-  if (previewItem == nil) {
-    previewItem = [[XTPreviewItem alloc] init];
-    previewItem.repo = _repo;
-    _filePreview.previewItem = previewItem;
-  }
-
-  previewItem.commitSHA = _repo.selectedCommit;
-  if (selectionCount != 1) {
-    [_filePreview setHidden:YES];
-    previewItem.path = nil;
-    return;
-  }
-
   XTFileListDataSourceBase *dataSource = (XTFileListDataSourceBase*)
       [_fileListOutline dataSource];
   XTFileChange *selectedItem = (XTFileChange*)
@@ -149,6 +136,23 @@ const CGFloat kChangeImagePadding = 8;
   } else {
     [self.previewTabView selectTabViewItemWithIdentifier:@"preview"];
     [_filePreview setHidden:NO];
+
+    XTPreviewItem *previewItem = (XTPreviewItem *)_filePreview.previewItem;
+    const NSUInteger selectionCount = [selection count];
+
+    if (previewItem == nil) {
+      previewItem = [[XTPreviewItem alloc] init];
+      previewItem.repo = _repo;
+      _filePreview.previewItem = previewItem;
+    }
+
+    previewItem.commitSHA = _repo.selectedCommit;
+    if (selectionCount != 1) {
+      [_filePreview setHidden:YES];
+      previewItem.path = nil;
+      return;
+    }
+
     previewItem.path = selectedItem.path;
   }
 }
