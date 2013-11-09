@@ -154,7 +154,9 @@ dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
         [gtRepo lookupObjectBySHA:parentSHA error:&error];
     
     if (parentCommit == nil) {
-      NSLog(@"%@", error);
+      if ([parentSHA length] > 0) {
+        NSLog(@"%@", error);
+      }
       continue;
     }
 
