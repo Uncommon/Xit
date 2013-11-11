@@ -152,14 +152,19 @@ dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
         [domDoc createElement:@"span"];
     GTCommit *parentCommit =
         [gtRepo lookupObjectBySHA:parentSHA error:&error];
+    
+    if (parentCommit == nil) {
+      if ([parentSHA length] > 0) {
+        NSLog(@"%@", error);
+      }
+      continue;
+    }
 
     NSString *summary = [parentCommit messageSummary];
     CFStringRef cfEncodedSummary = CFXMLCreateStringByEscapingEntities(
         kCFAllocatorDefault, (__bridge CFStringRef)summary, NULL);
     NSString *encodedSummary = (NSString*)CFBridgingRelease(cfEncodedSummary);
 
-    if (error != nil)
-      continue;
     [parentSpan setClassName:@"parent"];
     [parentSpan setAttribute:@"onclick" value:[NSString stringWithFormat:
         @"window.controller.selectSHA('%@')", parentCommit.SHA]];
