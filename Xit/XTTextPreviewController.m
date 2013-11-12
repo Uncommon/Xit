@@ -16,27 +16,6 @@
   return self;
 }
 
-+ (NSString*)htmlTemplate:(NSString*)name
-{
-  NSURL *htmlURL = [[NSBundle mainBundle]
-      URLForResource:name withExtension:@"html" subdirectory:@"html"];
-  NSStringEncoding encoding;
-  NSError *error = nil;
-  NSString *htmlTemplate = [NSString stringWithContentsOfURL:htmlURL
-                                                usedEncoding:&encoding
-                                                       error:&error];
-
-  NSAssert(htmlTemplate != nil, @"Couldn't load text.html");
-  return htmlTemplate;
-}
-
-+ (NSString*)escapeText:(NSString*)text
-{
-  return (NSString*)CFBridgingRelease(
-      CFXMLCreateStringByEscapingEntities(
-          kCFAllocatorDefault, (__bridge CFStringRef)text, NULL));
-}
-
 - (void)loadText:(NSString*)text
 {
   NSMutableString *textLines = [NSMutableString string];
@@ -145,16 +124,6 @@
     [self loadText:text];
     return YES;
   }
-}
-
-- (void)webView:(WebView*)sender didFinishLoadForFrame:(WebFrame*)frame
-{
-  NSScrollView *scrollView = [[[[_webView mainFrame] frameView]
-      documentView] enclosingScrollView];
-
-  [scrollView setHasHorizontalScroller:NO];
-  [scrollView setHorizontalScrollElasticity:NSScrollElasticityNone];
-  [scrollView setBackgroundColor:[NSColor colorWithDeviceWhite:0.8 alpha:1.0]];
 }
 
 @end
