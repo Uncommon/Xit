@@ -23,7 +23,7 @@ extern const CGFloat kChangeImagePadding;
   IBOutlet XTCommitHeaderViewController *_headerController;
   IBOutlet XTFileChangesDataSource *_fileChangeDS;
   IBOutlet XTFileListDataSource *_fileListDS;
-  IBOutlet XTTextPreviewController *_textPreview;
+  IBOutlet XTTextPreviewController *_textController;
 
   XTRepository *_repo;
 }

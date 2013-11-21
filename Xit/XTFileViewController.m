@@ -19,10 +19,6 @@ const CGFloat kChangeImagePadding = 8;
 
 @end
 
-@interface XTFileViewController ()
-
-@end
-
 
 @implementation XTFileViewController
 
@@ -130,9 +126,9 @@ const CGFloat kChangeImagePadding = 8;
 
   if ([[self class] fileNameIsText:selectedItem.path]) {
     [self.previewTabView selectTabViewItemWithIdentifier:@"text"];
-    [_textPreview loadPath:selectedItem.path
-                    commit:_repo.selectedCommit
-                repository:_repo];
+    [_textController loadPath:selectedItem.path
+                       commit:_repo.selectedCommit
+                   repository:_repo];
   } else {
     [self.previewTabView selectTabViewItemWithIdentifier:@"preview"];
     [_filePreview setHidden:NO];
