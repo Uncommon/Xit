@@ -3,6 +3,7 @@
 
 @class XTCommitHeaderViewController;
 @class XTFileChangesDataSource;
+@class XTFileDiffController;
 @class XTFileListDataSource;
 @class XTRepository;
 @class XTTextPreviewController;
@@ -30,6 +31,7 @@ extern const CGFloat kChangeImagePadding;
 
 @property (strong) IBOutlet NSTabView *previewTabView;
 @property (weak) IBOutlet NSSegmentedControl *viewSelector;
+@property (strong) IBOutlet XTFileDiffController *diffController;
 @property (readonly) NSDictionary *changeImages;
 
 + (BOOL)fileNameIsText:(NSString*)name;
