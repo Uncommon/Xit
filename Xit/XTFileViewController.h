@@ -37,6 +37,7 @@ extern const CGFloat kChangeImagePadding;
 + (BOOL)fileNameIsText:(NSString*)name;
 
 - (IBAction)changeFileListView:(id)sender;
+- (IBAction)changeContentView:(id)sender;
 
 - (void)setRepo:(XTRepository *)repo;
 - (void)refresh;

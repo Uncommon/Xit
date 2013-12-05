@@ -16,6 +16,11 @@
   return self;
 }
 
+- (void)clear
+{
+  [[_webView mainFrame] loadHTMLString:@"" baseURL:nil];
+}
+
 - (void)loadText:(NSString*)text
 {
   NSMutableString *textLines = [NSMutableString string];

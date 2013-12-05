@@ -218,7 +218,12 @@
                 </scrollView>
             </subviews>
         </customView>
-        <customObject id="fX5-fH-Hy5" customClass="XTFileDiffController"/>
+        <customObject id="fX5-fH-Hy5" customClass="XTFileDiffController">
+            <connections>
+                <outlet property="_webView" destination="e4U-lz-eEd" id="mct-Ae-eey"/>
+                <outlet property="view" destination="e4U-lz-eEd" id="94Q-P5-Sfh"/>
+            </connections>
+        </customObject>
         <customView id="LHY-c4-rvq" userLabel="Content Pane">
             <rect key="frame" x="0.0" y="0.0" width="347" height="216"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -237,35 +242,48 @@
                     <segmentedCell key="cell" alignment="left" style="smallSquare" trackingMode="selectOne" id="fhE-uz-5iG">
                         <font key="font" metaFont="system"/>
                         <segments>
-                            <segment label="𝚫" width="37" selected="YES"/>
-                            <segment label="𝐓" width="37" tag="1"/>
-                            <segment image="NSQuickLookTemplate" width="37">
+                            <segment label="𝚫" toolTip="Diff view" width="37" selected="YES"/>
+                            <segment label="𝐓" toolTip="Text view" width="37" tag="1"/>
+                            <segment toolTip="QuickLook preview" image="NSQuickLookTemplate" width="37">
                                 <nil key="label"/>
                             </segment>
                         </segments>
                     </segmentedCell>
                     <connections>
-                        <action selector="changeFileListView:" target="-2" id="9BD-mi-mBp"/>
+                        <action selector="changeContentView:" target="-2" id="2H2-Od-oUS"/>
                     </connections>
                 </segmentedControl>
-                <tabView type="noTabsNoBorder" initialItem="53" id="52">
-                    <rect key="frame" x="0.0" y="0.0" width="347" height="196"/>
+                <tabView type="noTabsNoBorder" initialItem="A2f-Wf-RNT" id="52">
+                    <rect key="frame" x="0.0" y="0.0" width="347" height="195"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <font key="font" metaFont="system"/>
                     <tabViewItems>
                         <tabViewItem label="Diff" identifier="diff" id="A2f-Wf-RNT">
                             <view key="view" id="uQh-Df-4fp">
-                                <rect key="frame" x="0.0" y="0.0" width="347" height="196"/>
+                                <rect key="frame" x="0.0" y="0.0" width="347" height="195"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <subviews>
+                                    <webView maintainsBackForwardList="NO" id="e4U-lz-eEd">
+                                        <rect key="frame" x="0.0" y="0.0" width="347" height="195"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
+                                            <nil key="identifier"/>
+                                        </webPreferences>
+                                        <connections>
+                                            <outlet property="UIDelegate" destination="fX5-fH-Hy5" id="VV9-Tp-VXI"/>
+                                            <outlet property="frameLoadDelegate" destination="fX5-fH-Hy5" id="Ncv-4m-teW"/>
+                                        </connections>
+                                    </webView>
+                                </subviews>
                             </view>
                         </tabViewItem>
                         <tabViewItem label="Text" identifier="text" id="53">
                             <view key="view" id="56">
-                                <rect key="frame" x="0.0" y="0.0" width="347" height="196"/>
+                                <rect key="frame" x="0.0" y="0.0" width="347" height="195"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <webView maintainsBackForwardList="NO" id="57">
-                                        <rect key="frame" x="0.0" y="0.0" width="347" height="196"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="347" height="195"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
                                             <nil key="identifier"/>
@@ -280,11 +298,11 @@
                         </tabViewItem>
                         <tabViewItem label="Preview" identifier="preview" id="54">
                             <view key="view" id="55">
-                                <rect key="frame" x="0.0" y="0.0" width="347" height="196"/>
+                                <rect key="frame" x="0.0" y="0.0" width="347" height="195"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <customView id="4" customClass="QLPreviewView">
-                                        <rect key="frame" x="0.0" y="0.0" width="347" height="196"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="347" height="195"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     </customView>
                                 </subviews>
