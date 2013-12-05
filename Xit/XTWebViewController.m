@@ -21,6 +21,11 @@ const NSInteger WebMenuItemTagInspectElement = 2024;
   return htmlTemplate;
 }
 
++ (NSURL*)baseURL
+{
+  return [[NSBundle mainBundle] URLForResource:@"html" withExtension:nil];
+}
+
 + (NSString*)escapeText:(NSString*)text
 {
   return (NSString*)CFBridgingRelease(
@@ -36,6 +41,15 @@ const NSInteger WebMenuItemTagInspectElement = 2024;
     }
     
     return self;
+}
+
+- (void)loadNotice:(NSString*)text
+{
+  NSString *template = [[self class] htmlTemplate:@"notice"];
+  NSString *escapedText = [[self class] escapeText:text];
+  NSString *html = [NSString stringWithFormat:template, escapedText];
+  
+  [[_webView mainFrame] loadHTMLString:html baseURL:[[self class] baseURL]];
 }
 
 - (void)webView:(WebView*)sender didFinishLoadForFrame:(WebFrame*)frame

@@ -72,20 +72,26 @@
   }];
 
   NSString *html = [NSString stringWithFormat:htmlTemplate, textLines];
-  NSURL *baseURL = [[NSBundle mainBundle]
-      URLForResource:@"html" withExtension:nil];
 
-  [[_webView mainFrame] loadHTMLString:html baseURL:baseURL];
+  [[_webView mainFrame] loadHTMLString:html baseURL:[[self class] baseURL]];
 }
 
 - (BOOL)loadPath:(NSString*)path
           commit:(NSString*)sha
       repository:(XTRepository*)repository
 {
+  if ([path length] == 0) {
+    [self loadNotice:@"No selection"];
+    return YES;
+  }
+
   XTDiffDelta *delta =
       [repository diffForFile:path commitSHA:sha parentSHA:nil];
 
-  if (delta != nil) {
+  if (delta == nil) {
+    [self loadNotice:@"No changes for this selection"];
+    return YES;
+  } else {
     [self loadDiff:delta];
     return YES;
   }

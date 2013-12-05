@@ -32,10 +32,8 @@
 
   NSString *htmlTemplate = [[self class] htmlTemplate:@"text"];
   NSString *html = [NSString stringWithFormat:htmlTemplate, textLines];
-  NSURL *baseURL = [[NSBundle mainBundle]
-      URLForResource:@"html" withExtension:nil];
 
-  [[_webView mainFrame] loadHTMLString:html baseURL:baseURL];
+  [[_webView mainFrame] loadHTMLString:html baseURL:[[self class] baseURL]];
 }
 
 - (BOOL)isFileChanged:(NSString*)path inRepository:(XTRepository*)repo

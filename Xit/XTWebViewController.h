@@ -12,6 +12,9 @@
 @property WebView *webView;
 
 + (NSString*)htmlTemplate:(NSString*)name;
++ (NSURL*)baseURL;
 + (NSString*)escapeText:(NSString*)text;
+
+- (void)loadNotice:(NSString*)text;
 
 @end
