@@ -295,4 +295,29 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
   STAssertEquals(change.change, XitChangeDeleted, nil);
 }
 
+- (void)testIsTextFile
+{
+  NSDictionary *names = @{
+      @"COPYING": @YES,
+      @"a.txt": @YES,
+      @"a.c": @YES,
+      @"a.xml": @YES,
+      @"a.html": @YES,
+      @"a.jpg": @NO,
+      @"a.png": @NO,
+      @"a.ffff": @NO,
+      @"AAAAA": @NO,
+      };
+  NSArray *keys = [names allKeys];
+  NSArray *values = [names allValues];
+
+  for (int i = 0; i < [keys count]; ++i)
+    STAssertEqualObjects(
+        @([repository isTextFile:keys[i] commit:@"master"]),
+        values[i],
+        @"fileNameIsText should be %@ for %@",
+        [values[i] boolValue] ? @"true" : @"false",
+        keys[i]);
+}
+
 @end

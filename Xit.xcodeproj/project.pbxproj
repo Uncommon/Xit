@@ -89,7 +89,6 @@
 		DD592096156EEF40005FBB0F /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD592095156EEF40005FBB0F /* OCMock.framework */; };
 		DD858B1F17FFDCB900264F7D /* XTTextPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD858B1E17FFDCB900264F7D /* XTTextPreviewController.m */; };
 		DD858B2C1801325500264F7D /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD858B2B1801325500264F7D /* CoreServices.framework */; };
-		DD858B341801B53D00264F7D /* XTFileViewControllerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD858B331801B53D00264F7D /* XTFileViewControllerTest.m */; };
 		DD96C92F17595AE10003A30C /* liblibRBSplitView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DD96C92117595A6E0003A30C /* liblibRBSplitView.a */; };
 		DD96C931175B76990003A30C /* splitter.png in Resources */ = {isa = PBXBuildFile; fileRef = DD96C930175B76990003A30C /* splitter.png */; };
 		DD96C939175ECE690003A30C /* XTFileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD96C938175ECE690003A30C /* XTFileViewController.m */; };
@@ -362,7 +361,6 @@
 		DD858B1D17FFDCB900264F7D /* XTTextPreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTTextPreviewController.h; sourceTree = "<group>"; };
 		DD858B1E17FFDCB900264F7D /* XTTextPreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTTextPreviewController.m; sourceTree = "<group>"; };
 		DD858B2B1801325500264F7D /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
-		DD858B331801B53D00264F7D /* XTFileViewControllerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTFileViewControllerTest.m; sourceTree = "<group>"; };
 		DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RBSplitView.xcodeproj; path = RBSplitView/RBSplitView.xcodeproj; sourceTree = "<group>"; };
 		DD96C930175B76990003A30C /* splitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splitter.png; sourceTree = "<group>"; };
 		DD96C937175ECE690003A30C /* XTFileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTFileViewController.h; sourceTree = "<group>"; };
@@ -740,7 +738,6 @@
 				311429B613EB600100A7DF05 /* XTCommitViewControllerTest.m */,
 				DD3D9534182B5EC7004AF532 /* XTFileChangesDataSourceTest.m */,
 				3199BABC142079BB008AAA4F /* XTFileListDataSourceTest.m */,
-				DD858B331801B53D00264F7D /* XTFileViewControllerTest.m */,
 				313014AE13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m */,
 				896B05CF15796D2A003B0C24 /* XTHistoryViewControllerTest.m */,
 				DDB9319416EC12B100A6ABC6 /* XTRefTokenTest.m */,
@@ -1092,7 +1089,6 @@
 				DDB9319516EC12B100A6ABC6 /* XTRefTokenTest.m in Sources */,
 				89CD209217089D220051C3D4 /* XTCategoryTests.m in Sources */,
 				89D6FE7D17D8457700633798 /* XTCommitHeaderTest.m in Sources */,
-				DD858B341801B53D00264F7D /* XTFileViewControllerTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

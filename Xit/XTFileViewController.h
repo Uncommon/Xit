@@ -34,8 +34,6 @@ extern const CGFloat kChangeImagePadding;
 @property (strong) IBOutlet XTFileDiffController *diffController;
 @property (readonly) NSDictionary *changeImages;
 
-+ (BOOL)fileNameIsText:(NSString*)name;
-
 - (IBAction)changeFileListView:(id)sender;
 - (IBAction)changeContentView:(id)sender;
 

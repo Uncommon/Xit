@@ -26,28 +26,6 @@ NSString* const XTContentTabIDPreview = @"preview";
 
 @implementation XTFileViewController
 
-+ (BOOL)fileNameIsText:(NSString*)name
-{
-  if (name == nil)
-    return NO;
-
-  NSArray *extensionlessNames = @[
-      @"AUTHORS", @"CONTRIBUTING", @"COPYING", @"LICENSE", @"Makefile",
-      @"README", ];
-
-  for (NSString *extensionless in extensionlessNames)
-    if ([name isCaseInsensitiveLike:extensionless])
-      return YES;
-
-  NSString *extension = [name pathExtension];
-  const CFStringRef utType = UTTypeCreatePreferredIdentifierForTag(
-      kUTTagClassFilenameExtension, (__bridge CFStringRef)extension, NULL);
-  const Boolean result = UTTypeConformsTo(utType, kUTTypeText);
-  
-  CFRelease(utType);
-  return result;
-}
-
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
