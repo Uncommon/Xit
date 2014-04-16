@@ -354,8 +354,6 @@
 		DD3D94F118254442004AF532 /* XTFileListDataSourceBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTFileListDataSourceBase.h; sourceTree = "<group>"; };
 		DD3D94F218254442004AF532 /* XTFileListDataSourceBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTFileListDataSourceBase.m; sourceTree = "<group>"; };
 		DD3D9534182B5EC7004AF532 /* XTFileChangesDataSourceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTFileChangesDataSourceTest.m; sourceTree = "<group>"; };
-		DD494B6918503D9E007DF530 /* notice.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = notice.html; path = Xit/html/notice.html; sourceTree = "<group>"; };
-		DD494B7618503DEC007DF530 /* notice.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = notice.css; path = Xit/html/notice.css; sourceTree = "<group>"; };
 		DD579ADB15D08978007E4AFE /* NSDate+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "NSDate+Extensions.h"; sourceTree = "<group>"; };
 		DD592095156EEF40005FBB0F /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCMock.framework; sourceTree = SOURCE_ROOT; };
 		DD858B1D17FFDCB900264F7D /* XTTextPreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTTextPreviewController.h; sourceTree = "<group>"; };
@@ -628,8 +626,6 @@
 		C3FA46F113D0F8E200AC4F9B = {
 			isa = PBXGroup;
 			children = (
-				DD494B7618503DEC007DF530 /* notice.css */,
-				DD494B6918503D9E007DF530 /* notice.html */,
 				DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */,
 				DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */,
 				C3FA470613D0F8E200AC4F9B /* Xit */,
