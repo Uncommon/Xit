@@ -259,6 +259,30 @@ NSString *XTHeaderContentKey = @"content";
   return result;
 }
 
+- (BOOL)isTextFile:(NSString*)path commit:(NSString*)commit
+{
+  NSString *name = [path lastPathComponent];
+
+  if ([name length] == 0)
+    return NO;
+
+  NSArray *extensionlessNames = @[
+      @"AUTHORS", @"CONTRIBUTING", @"COPYING", @"LICENSE", @"Makefile",
+      @"README", ];
+
+  for (NSString *extensionless in extensionlessNames)
+    if ([name isCaseInsensitiveLike:extensionless])
+      return YES;
+
+  NSString *extension = [name pathExtension];
+  const CFStringRef utType = UTTypeCreatePreferredIdentifierForTag(
+      kUTTagClassFilenameExtension, (__bridge CFStringRef)extension, NULL);
+  const Boolean result = UTTypeConformsTo(utType, kUTTypeText);
+  
+  CFRelease(utType);
+  return result;
+}
+
 - (XTDiffDelta*)diffForFile:(NSString*)path
                   commitSHA:(NSString*)sha
                   parentSHA:(NSString*)parentSHA

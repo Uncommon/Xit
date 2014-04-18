@@ -4,6 +4,7 @@
 
 #import "XTCommitHeaderViewController.h"
 #import "XTFileChangesDataSource.h"
+#import "XTFileDiffController.h"
 #import "XTFileListDataSourceBase.h"
 #import "XTFileListDataSource.h"
 #import "XTPreviewItem.h"
@@ -12,6 +13,9 @@
 #import <RBSplitView.h>
 
 const CGFloat kChangeImagePadding = 8;
+NSString* const XTContentTabIDDiff = @"diff";
+NSString* const XTContentTabIDText = @"text";
+NSString* const XTContentTabIDPreview = @"preview";
 
 @interface NSSplitView (Animating)
 
@@ -19,34 +23,8 @@ const CGFloat kChangeImagePadding = 8;
 
 @end
 
-@interface XTFileViewController ()
-
-@end
-
 
 @implementation XTFileViewController
-
-+ (BOOL)fileNameIsText:(NSString*)name
-{
-  if (name == nil)
-    return NO;
-
-  NSArray *extensionlessNames = @[
-      @"AUTHORS", @"CONTRIBUTING", @"COPYING", @"LICENSE", @"Makefile",
-      @"README", ];
-
-  for (NSString *extensionless in extensionlessNames)
-    if ([name isCaseInsensitiveLike:extensionless])
-      return YES;
-
-  NSString *extension = [name pathExtension];
-  const CFStringRef utType = UTTypeCreatePreferredIdentifierForTag(
-      kUTTagClassFilenameExtension, (__bridge CFStringRef)extension, NULL);
-  const Boolean result = UTTypeConformsTo(utType, kUTTypeText);
-  
-  CFRelease(utType);
-  return result;
-}
 
 - (void)dealloc
 {
@@ -120,21 +98,44 @@ const CGFloat kChangeImagePadding = 8;
   [_fileListOutline reloadData];
 }
 
-- (void)updatePreview
+- (IBAction)changeContentView:(id)sender
+{
+  const NSInteger selection = [sender selectedSegment];
+  NSString *tabIDs[] =
+      { XTContentTabIDDiff, XTContentTabIDText, XTContentTabIDPreview };
+
+  NSParameterAssert((selection >= 0) && (selection < 3));
+  [self.previewTabView selectTabViewItemWithIdentifier:tabIDs[selection]];
+  [self loadSelectedPreview];
+}
+
+- (void)clearPreviews
+{
+  // tell all controllers to clear their previews
+  [self.diffController clear];
+  [_textController clear];
+  _filePreview.previewItem = nil;
+}
+
+- (void)loadSelectedPreview
 {
   NSIndexSet *selection = [_fileListOutline selectedRowIndexes];
   XTFileListDataSourceBase *dataSource = (XTFileListDataSourceBase*)
       [_fileListOutline dataSource];
   XTFileChange *selectedItem = (XTFileChange*)
       [dataSource fileChangeAtRow:[selection firstIndex]];
+  NSString *contentTabID =
+      [[self.previewTabView selectedTabViewItem] identifier];
 
-  if ([[self class] fileNameIsText:selectedItem.path]) {
-    [self.previewTabView selectTabViewItemWithIdentifier:@"text"];
-    [_textPreview loadPath:selectedItem.path
-                    commit:_repo.selectedCommit
-                repository:_repo];
-  } else {
-    [self.previewTabView selectTabViewItemWithIdentifier:@"preview"];
+  if ([contentTabID isEqualToString:XTContentTabIDDiff]) {
+    [self.diffController loadPath:selectedItem.path
+                           commit:_repo.selectedCommit
+                       repository:_repo];
+  } else if ([contentTabID isEqualToString:XTContentTabIDText]) {
+    [_textController loadPath:selectedItem.path
+                       commit:_repo.selectedCommit
+                   repository:_repo];
+  } else if ([contentTabID isEqualToString:XTContentTabIDPreview]) {
     [_filePreview setHidden:NO];
 
     XTPreviewItem *previewItem = (XTPreviewItem *)_filePreview.previewItem;
@@ -177,7 +178,7 @@ const CGFloat kChangeImagePadding = 8;
 
 - (void)refresh
 {
-  [self updatePreview];
+  [self loadSelectedPreview];
   [_filePreview refreshPreviewItem];
 }
 

@@ -1,5 +1,4 @@
 #import "XTHistoryViewController.h"
-#import "XTCommitViewController.h"
 #import "XTFileListDataSource.h"
 #import "XTFileViewController.h"
 #import "XTHistoryDataSource.h"
@@ -54,15 +53,14 @@
 
   [nib instantiateNibWithOwner:self topLevelObjects:nil];
 
-  // Load the file list view into its tab
-  const NSInteger treeTabIndex =
-      [_commitTabView indexOfTabViewItemWithIdentifier:@"tree"];
-  NSTabViewItem *treeTabItem = [_commitTabView tabViewItemAtIndex:treeTabIndex];
-
+  // Load the file list view
+  NSView *lowerPane = [[_mainSplitView subviews] objectAtIndex:1];
+  
   [RBSplitView class];  // Make sure it's loaded.
   _fileViewController = [[XTFileViewController alloc]
       initWithNibName:@"XTFileViewController" bundle:nil];
-  [treeTabItem setView:_fileViewController.view];
+  [lowerPane addSubview:_fileViewController.view];
+  [_fileViewController.view setFrameSize:[lowerPane frame].size];
   [[NSNotificationCenter defaultCenter]
       addObserver:_fileViewController
          selector:@selector(commitSelected:)
@@ -89,12 +87,6 @@
   _repo = newRepo;
   [_sideBarDS setRepo:newRepo];
   [_historyDS setRepo:newRepo];
-  [_commitViewController setRepo:newRepo];
-  [[_commitViewController view] setFrame:
-      NSMakeRect(0, 0,
-                 [_commitView frame].size.width,
-                 [_commitView frame].size.height)];
-  [_commitView addSubview:[_commitViewController view]];
   [_fileViewController setRepo:newRepo];
 }
 
@@ -337,16 +329,6 @@
   if (buttonState == NSOffState)
     _savedSidebarWidth = [[_sidebarSplitView subviews][0] frame].size.width;
   [_sidebarSplitView setPosition:newWidth ofDividerAtIndex:0];
-}
-
-- (IBAction)showDiffView:(id)sender
-{
-  [_commitTabView selectTabViewItemAtIndex:0];
-}
-
-- (IBAction)showTreeView:(id)sender
-{
-  [_commitTabView selectTabViewItemAtIndex:1];
 }
 
 - (IBAction)sideBarItemRenamed:(id)sender

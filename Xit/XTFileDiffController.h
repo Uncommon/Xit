@@ -1,15 +1,13 @@
 #import "XTWebViewController.h"
 
-@class WebView;
 @class XTRepository;
 
 /**
-  Manages a WebView for displaying text file contents or diffs.
+  Manages a WebView for displaying text file diffs.
  */
-@interface XTTextPreviewController : XTWebViewController
+@interface XTFileDiffController : XTWebViewController
 
 - (void)clear;
-- (void)loadText:(NSString*)text;
 - (BOOL)loadPath:(NSString*)path
           commit:(NSString*)sha
       repository:(XTRepository*)repository;

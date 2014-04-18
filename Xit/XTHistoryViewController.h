@@ -2,7 +2,6 @@
 
 @class XTRepository;
 
-@class XTCommitViewController;
 @class XTFileListDataSource;
 @class XTFileViewController;
 @class XTHistoryDataSource;
@@ -17,13 +16,10 @@
 {
   IBOutlet XTSideBarDataSource *_sideBarDS;
   IBOutlet XTHistoryDataSource *_historyDS;
-  IBOutlet XTCommitViewController *_commitViewController;
   IBOutlet NSTableView *_historyTable;
   IBOutlet XTSideBarOutlineView *_sidebarOutline;
-  IBOutlet NSView *_commitView;
   IBOutlet NSSplitView *_sidebarSplitView;
   IBOutlet NSSplitView *_mainSplitView;
-  IBOutlet NSTabView *_commitTabView;
   IBOutlet NSMenu *_branchContextMenu;
   IBOutlet NSMenu *_remoteContextMenu;
   IBOutlet NSMenu *_tagContextMenu;
@@ -51,8 +47,6 @@
 
 - (IBAction)toggleLayout:(id)sender;
 - (IBAction)toggleSideBar:(id)sender;
-- (IBAction)showDiffView:(id)sender;
-- (IBAction)showTreeView:(id)sender;
 
 - (IBAction)sideBarItemRenamed:(id)sender;
 
