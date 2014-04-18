@@ -2,6 +2,7 @@
 *.swp
 *~.nib
 
+.idea/
 build/
 
 *.pbxuser
