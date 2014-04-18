@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C64" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment version="1070" defaultVersion="1070" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
@@ -7,9 +7,6 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="XTHistoryViewController">
             <connections>
-                <outlet property="_commitTabView" destination="186" id="192"/>
-                <outlet property="_commitView" destination="27" id="37"/>
-                <outlet property="_commitViewController" destination="31" id="38"/>
                 <outlet property="_historyDS" destination="30" id="36"/>
                 <outlet property="_historyTable" destination="20" id="119"/>
                 <outlet property="_mainSplitView" destination="13" id="71"/>
@@ -89,44 +86,6 @@
                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <font key="titleFont" metaFont="system"/>
                         </box>
-                        <box autoresizesSubviews="NO" horizontalHuggingPriority="750" boxType="separator" titlePosition="noTitle" id="178">
-                            <rect key="frame" x="315" y="5" width="5" height="13"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                            <font key="titleFont" metaFont="system"/>
-                        </box>
-                        <matrix verticalHuggingPriority="750" selectionByRect="NO" allowsEmptySelection="NO" id="179" userLabel="Matrix">
-                            <rect key="frame" x="334" y="3" width="140" height="19"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                            <size key="cellSize" width="68" height="19"/>
-                            <size key="intercellSpacing" width="4" height="2"/>
-                            <buttonCell key="prototype" type="recessed" title="1" bezelStyle="recessed" alignment="center" borderStyle="border" inset="2" id="183" userLabel="Button Cell">
-                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="systemBold" size="12"/>
-                            </buttonCell>
-                            <cells>
-                                <column>
-                                    <buttonCell type="recessed" title="Diff" bezelStyle="recessed" alignment="center" state="on" borderStyle="border" toolTip="Show all commits" inset="2" id="182" userLabel="Button Cell">
-                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                        <font key="font" metaFont="systemBold" size="12"/>
-                                        <connections>
-                                            <action selector="showDiffView:" target="-2" id="184"/>
-                                        </connections>
-                                    </buttonCell>
-                                </column>
-                                <column>
-                                    <buttonCell type="recessed" title="Tree" bezelStyle="recessed" alignment="center" borderStyle="border" toolTip="Show only local branches" inset="2" id="181">
-                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                        <font key="font" metaFont="systemBold" size="12"/>
-                                        <connections>
-                                            <action selector="showTreeView:" target="-2" id="185"/>
-                                        </connections>
-                                    </buttonCell>
-                                </column>
-                            </cells>
-                        </matrix>
                     </subviews>
                 </customView>
                 <splitView dividerStyle="thin" vertical="YES" id="4" userLabel="sideBar split">
@@ -328,36 +287,6 @@
                                         <customView id="14">
                                             <rect key="frame" x="0.0" y="204" width="703" height="194"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <tabView type="noTabsNoBorder" initialItem="187" id="186">
-                                                    <rect key="frame" x="0.0" y="0.0" width="703" height="194"/>
-                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                    <font key="font" metaFont="system"/>
-                                                    <tabViewItems>
-                                                        <tabViewItem label="Diff" identifier="diff" id="187">
-                                                            <view key="view" id="188">
-                                                                <rect key="frame" x="0.0" y="0.0" width="703" height="194"/>
-                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                                <subviews>
-                                                                    <customView id="27">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="703" height="194"/>
-                                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                                    </customView>
-                                                                </subviews>
-                                                            </view>
-                                                        </tabViewItem>
-                                                        <tabViewItem label="Tree" identifier="tree" id="189">
-                                                            <view key="view" id="190">
-                                                                <rect key="frame" x="0.0" y="0.0" width="703" height="194"/>
-                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                            </view>
-                                                        </tabViewItem>
-                                                    </tabViewItems>
-                                                    <connections>
-                                                        <outlet property="delegate" destination="-2" id="214"/>
-                                                    </connections>
-                                                </tabView>
-                                            </subviews>
                                         </customView>
                                     </subviews>
                                     <holdingPriorities>
@@ -390,7 +319,6 @@
             </connections>
         </customObject>
         <customObject id="165" customClass="XTRefFormatter"/>
-        <viewController nibName="XTCommitViewController" id="31" userLabel="Commit View Controller" customClass="XTCommitViewController"/>
     </objects>
     <resources>
         <image name="NSApplicationIcon" width="128" height="128"/>
