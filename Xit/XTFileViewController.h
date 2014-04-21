@@ -7,7 +7,6 @@
 @class XTFileListDataSource;
 @class XTRepository;
 @class XTTextPreviewController;
-@class RBSplitView;
 
 extern const CGFloat kChangeImagePadding;
 
@@ -17,7 +16,6 @@ extern const CGFloat kChangeImagePadding;
 @interface XTFileViewController : NSViewController
 {
   IBOutlet NSSplitView *_headerSplitView;
-  IBOutlet RBSplitView *_splitView;
   IBOutlet NSView *_leftPane, *_rightPane;
   IBOutlet NSOutlineView *_fileListOutline;
   IBOutlet QLPreviewView *_filePreview;

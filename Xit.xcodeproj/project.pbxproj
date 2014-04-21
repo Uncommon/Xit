@@ -86,7 +86,6 @@
 		DD592096156EEF40005FBB0F /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD592095156EEF40005FBB0F /* OCMock.framework */; };
 		DD858B1F17FFDCB900264F7D /* XTTextPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD858B1E17FFDCB900264F7D /* XTTextPreviewController.m */; };
 		DD858B2C1801325500264F7D /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD858B2B1801325500264F7D /* CoreServices.framework */; };
-		DD96C92F17595AE10003A30C /* liblibRBSplitView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DD96C92117595A6E0003A30C /* liblibRBSplitView.a */; };
 		DD96C931175B76990003A30C /* splitter.png in Resources */ = {isa = PBXBuildFile; fileRef = DD96C930175B76990003A30C /* splitter.png */; };
 		DD96C939175ECE690003A30C /* XTFileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD96C938175ECE690003A30C /* XTFileViewController.m */; };
 		DD96C9A6176977470003A30C /* ObjectiveGit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD96C99A176976FE0003A30C /* ObjectiveGit.framework */; };
@@ -131,48 +130,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = C3FA46FB13D0F8E200AC4F9B;
 			remoteInfo = Xit;
-		};
-		DD96C91C17595A6E0003A30C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3D50A1A71162C6DF002A5832;
-			remoteInfo = RBSplitView;
-		};
-		DD96C91E17595A6E0003A30C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3D50A1401162C029002A5832;
-			remoteInfo = RBSplitViewFramework;
-		};
-		DD96C92017595A6E0003A30C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3D50A3141162D61C002A5832;
-			remoteInfo = Library;
-		};
-		DD96C92217595A6E0003A30C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3D50A3031162D552002A5832;
-			remoteInfo = SampleApp;
-		};
-		DD96C92417595A6E0003A30C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3D50A34D1162D826002A5832;
-			remoteInfo = "SampleApp (GC)";
-		};
-		DD96C92717595ACF0003A30C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 3D50A3131162D61C002A5832;
-			remoteInfo = Library;
 		};
 		DD96C999176976FE0003A30C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -352,7 +309,6 @@
 		DD858B1D17FFDCB900264F7D /* XTTextPreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTTextPreviewController.h; sourceTree = "<group>"; };
 		DD858B1E17FFDCB900264F7D /* XTTextPreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTTextPreviewController.m; sourceTree = "<group>"; };
 		DD858B2B1801325500264F7D /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
-		DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RBSplitView.xcodeproj; path = RBSplitView/RBSplitView.xcodeproj; sourceTree = "<group>"; };
 		DD96C930175B76990003A30C /* splitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splitter.png; sourceTree = "<group>"; };
 		DD96C937175ECE690003A30C /* XTFileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTFileViewController.h; sourceTree = "<group>"; };
 		DD96C938175ECE690003A30C /* XTFileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTFileViewController.m; sourceTree = "<group>"; };
@@ -405,7 +361,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DD96C92F17595AE10003A30C /* liblibRBSplitView.a in Frameworks */,
 				DD96C9A6176977470003A30C /* ObjectiveGit.framework in Frameworks */,
 				31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */,
 				C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */,
@@ -617,7 +572,6 @@
 			isa = PBXGroup;
 			children = (
 				DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */,
-				DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */,
 				C3FA470613D0F8E200AC4F9B /* Xit */,
 				8937B6EC1786F5DE00CB9BBC /* FullHeightToolbar */,
 				C3FA472413D0F8E300AC4F9B /* XitTests */,
@@ -747,18 +701,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		DD96C91417595A6D0003A30C /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				DD96C91D17595A6E0003A30C /* RBSplitView.ibplugin */,
-				DD96C91F17595A6E0003A30C /* RBSplitView.framework */,
-				DD96C92117595A6E0003A30C /* liblibRBSplitView.a */,
-				DD96C92317595A6E0003A30C /* SampleApp.app */,
-				DD96C92517595A6E0003A30C /* SampleApp.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		DD96C990176976FC0003A30C /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -785,7 +727,6 @@
 			);
 			dependencies = (
 				DD96C9A51769772E0003A30C /* PBXTargetDependency */,
-				DD96C92817595ACF0003A30C /* PBXTargetDependency */,
 			);
 			name = Xit;
 			productName = Xit;
@@ -837,10 +778,6 @@
 					ProductGroup = DD96C990176976FC0003A30C /* Products */;
 					ProjectRef = DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */;
 				},
-				{
-					ProductGroup = DD96C91417595A6D0003A30C /* Products */;
-					ProjectRef = DD96C91317595A6D0003A30C /* RBSplitView.xcodeproj */;
-				},
 			);
 			projectRoot = "";
 			targets = (
@@ -851,41 +788,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		DD96C91D17595A6E0003A30C /* RBSplitView.ibplugin */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = RBSplitView.ibplugin;
-			remoteRef = DD96C91C17595A6E0003A30C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		DD96C91F17595A6E0003A30C /* RBSplitView.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = RBSplitView.framework;
-			remoteRef = DD96C91E17595A6E0003A30C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		DD96C92117595A6E0003A30C /* liblibRBSplitView.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = liblibRBSplitView.a;
-			remoteRef = DD96C92017595A6E0003A30C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		DD96C92317595A6E0003A30C /* SampleApp.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = SampleApp.app;
-			remoteRef = DD96C92217595A6E0003A30C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		DD96C92517595A6E0003A30C /* SampleApp.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = SampleApp.app;
-			remoteRef = DD96C92417595A6E0003A30C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		DD96C99A176976FE0003A30C /* ObjectiveGit.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -1081,11 +983,6 @@
 			isa = PBXTargetDependency;
 			target = C3FA46FB13D0F8E200AC4F9B /* Xit */;
 			targetProxy = C3FA472213D0F8E300AC4F9B /* PBXContainerItemProxy */;
-		};
-		DD96C92817595ACF0003A30C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Library;
-			targetProxy = DD96C92717595ACF0003A30C /* PBXContainerItemProxy */;
 		};
 		DD96C9A51769772E0003A30C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

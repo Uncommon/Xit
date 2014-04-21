@@ -10,7 +10,6 @@
 #import "XTPreviewItem.h"
 #import "XTRepository.h"
 #import "XTTextPreviewController.h"
-#import <RBSplitView.h>
 
 const CGFloat kChangeImagePadding = 8;
 NSString* const XTContentTabIDDiff = @"diff";
@@ -44,7 +43,7 @@ NSString* const XTContentTabIDPreview = @"preview";
 {
   // -[NSOutlineView makeViewWithIdentifier:owner:] causes this to get called
   // again after the initial load.
-  if ([[_splitView subviews] count] == 2)
+  if (_changeImages != nil)
     return;
 
   _changeImages = @{
@@ -55,16 +54,6 @@ NSString* const XTContentTabIDPreview = @"preview";
       @( XitChangeRenamed ) : [NSImage imageNamed:@"renamed"],
       @( XitChangeMixed ) : [NSImage imageNamed:@"mixed"],
       };
-
-  // For some reason the splitview comes with preexisting subviews.
-  NSArray *subviews = [[_splitView subviews] copy];
-
-  for (NSView *sub in subviews)
-    [sub removeFromSuperview];
-  [_splitView addSubview:_leftPane];
-  [_splitView addSubview:_rightPane];
-  [_splitView setDivider:[NSImage imageNamed:@"splitter"]];
-  [_splitView setDividerThickness:1.0];
 
   [_fileListOutline sizeToFit];
 
@@ -190,42 +179,6 @@ NSString* const XTContentTabIDPreview = @"preview";
   if (subview == _headerController.view)
     return NO;
   return YES;
-}
-
-#pragma mark - RBSplitViewDelegate
-
-const CGFloat kSplitterBonus = 4;
-
-- (NSRect)splitView:(RBSplitView *)sender
-         cursorRect:(NSRect)rect
-         forDivider:(NSUInteger)divider
-{
-  if ([sender isVertical]) {
-    rect.origin.x -= kSplitterBonus;
-    rect.size.width += kSplitterBonus * 2;
-  }
-  return rect;
-}
-
-- (NSUInteger)splitView:(RBSplitView *)sender
-        dividerForPoint:(NSPoint)point
-              inSubview:(RBSplitSubview *)subview
-{
-  // Assume sender is the file list split view
-  const NSRect subFrame = [subview frame];
-  NSRect frame1, frame2, remainder;
-  NSUInteger position = [subview position];
-  NSRectEdge edge1 = [sender isVertical] ? NSMinXEdge : NSMinYEdge;
-  NSRectEdge edge2 = [sender isVertical] ? NSMaxXEdge : NSMaxYEdge;
-
-  NSDivideRect(subFrame, &frame1, &remainder, kSplitterBonus, edge1);
-  NSDivideRect(subFrame, &frame2, &remainder, kSplitterBonus, edge2);
-
-  if ([sender mouse:point inRect:frame1] && (position > 0))
-    return position - 1;
-  else if ([sender mouse:point inRect:frame2])
-    return position;
-  return NSNotFound;
 }
 
 @end
