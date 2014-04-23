@@ -176,8 +176,10 @@ NSString* const XTContentTabIDPreview = @"preview";
 - (BOOL)splitView:(NSSplitView*)splitView
     shouldAdjustSizeOfSubview:(NSView*)subview
 {
-  if (subview == _headerController.view)
-    return NO;
+  if (splitView == _headerSplitView)
+    return subview != _headerController.view;
+  if (splitView == _fileSplitView)
+    return subview != _leftPane;
   return YES;
 }
 

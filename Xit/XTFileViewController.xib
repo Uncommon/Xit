@@ -12,6 +12,7 @@
                 <outlet property="_fileListDS" destination="24" id="26"/>
                 <outlet property="_fileListOutline" destination="7" id="27"/>
                 <outlet property="_filePreview" destination="4" id="38"/>
+                <outlet property="_fileSplitView" destination="PgV-aZ-kTu" id="vJt-PE-YuL"/>
                 <outlet property="_headerController" destination="67" id="74"/>
                 <outlet property="_headerSplitView" destination="68" id="sxd-qI-gKa"/>
                 <outlet property="_leftPane" destination="yIN-xT-jEO" id="69s-1K-JKi"/>
@@ -45,11 +46,11 @@
                     <autoresizingMask key="autoresizingMask"/>
                     <subviews>
                         <customView id="yIN-xT-jEO" userLabel="File List Pane">
-                            <rect key="frame" x="0.0" y="0.0" width="356.5" height="210"/>
+                            <rect key="frame" x="0.0" y="0.0" width="357" height="210"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" id="bSV-tc-rQa">
-                                    <rect key="frame" x="-1" y="188" width="358.5" height="23"/>
+                                    <rect key="frame" x="-1" y="188" width="359" height="23"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="70r-N1-aQY">
                                         <behavior key="behavior" lightByContents="YES"/>
@@ -71,14 +72,14 @@
                                     </connections>
                                 </segmentedControl>
                                 <scrollView focusRingType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="3">
-                                    <rect key="frame" x="-1" y="0.0" width="358.5" height="190"/>
+                                    <rect key="frame" x="-1" y="0.0" width="359" height="190"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <clipView key="contentView" id="AEe-un-dQy">
-                                        <rect key="frame" x="1" y="1" width="356.5" height="188"/>
+                                        <rect key="frame" x="1" y="1" width="357" height="188"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <outlineView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="tVZ-Iq-I4v" id="7">
-                                                <rect key="frame" x="0.0" y="0.0" width="356.5" height="188"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="357" height="188"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -183,11 +184,11 @@
                             </subviews>
                         </customView>
                         <customView id="LHY-c4-rvq" userLabel="Content Pane">
-                            <rect key="frame" x="357.5" y="0.0" width="345.5" height="210"/>
+                            <rect key="frame" x="358" y="0.0" width="345" height="210"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" id="e4E-MC-bxy">
-                                    <rect key="frame" x="-1" y="188" width="347.5" height="23"/>
+                                    <rect key="frame" x="-1" y="188" width="347" height="23"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="lNU-FQ-Ngf">
                                         <behavior key="behavior" lightByContents="YES"/>
@@ -195,7 +196,7 @@
                                     </buttonCell>
                                 </button>
                                 <segmentedControl verticalHuggingPriority="750" id="zOv-gm-Q8M">
-                                    <rect key="frame" x="121" y="188" width="115" height="23"/>
+                                    <rect key="frame" x="120.5" y="188" width="115" height="23"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <segmentedCell key="cell" alignment="left" style="smallSquare" trackingMode="selectOne" id="fhE-uz-5iG">
                                         <font key="font" metaFont="system"/>
@@ -212,17 +213,17 @@
                                     </connections>
                                 </segmentedControl>
                                 <tabView type="noTabsNoBorder" initialItem="A2f-Wf-RNT" id="52">
-                                    <rect key="frame" x="0.0" y="0.0" width="345.5" height="189"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="345" height="189"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <font key="font" metaFont="system"/>
                                     <tabViewItems>
                                         <tabViewItem label="Diff" identifier="diff" id="A2f-Wf-RNT">
                                             <view key="view" id="uQh-Df-4fp">
-                                                <rect key="frame" x="0.0" y="0.0" width="347" height="217"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="345" height="189"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <webView maintainsBackForwardList="NO" id="e4U-lz-eEd">
-                                                        <rect key="frame" x="0.0" y="0.0" width="347" height="217"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="345" height="189"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
                                                             <nil key="identifier"/>
@@ -275,6 +276,9 @@
                         <real value="250"/>
                         <real value="250"/>
                     </holdingPriorities>
+                    <connections>
+                        <outlet property="delegate" destination="-2" id="poi-On-eA0"/>
+                    </connections>
                 </splitView>
             </subviews>
             <holdingPriorities>

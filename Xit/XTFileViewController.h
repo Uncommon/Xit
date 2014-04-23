@@ -15,7 +15,7 @@ extern const CGFloat kChangeImagePadding;
  */
 @interface XTFileViewController : NSViewController
 {
-  IBOutlet NSSplitView *_headerSplitView;
+  IBOutlet NSSplitView *_headerSplitView, *_fileSplitView;
   IBOutlet NSView *_leftPane, *_rightPane;
   IBOutlet NSOutlineView *_fileListOutline;
   IBOutlet QLPreviewView *_filePreview;
