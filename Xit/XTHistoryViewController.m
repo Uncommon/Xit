@@ -16,7 +16,6 @@
 #import "XTTagItem.h"
 #import "NSAttributedString+XTExtensions.h"
 #import "PBGitRevisionCell.h"
-#import "RBSplitView.h"
 
 @interface XTHistoryViewController ()
 
@@ -56,7 +55,6 @@
   // Load the file list view
   NSView *lowerPane = [[_mainSplitView subviews] objectAtIndex:1];
   
-  [RBSplitView class];  // Make sure it's loaded.
   _fileViewController = [[XTFileViewController alloc]
       initWithNibName:@"XTFileViewController" bundle:nil];
   [lowerPane addSubview:_fileViewController.view];
