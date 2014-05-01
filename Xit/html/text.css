@@ -1,31 +1,32 @@
 body {
-	background-color: #CCC;
-	font-family: monospace;
-	margin: 0px;
-	counter-reset: line;
+  background-color: #CCC;
+  font-family: monospace;
+  margin: 0px;
+  counter-reset: line;
+  font-size: 12;
 }
 div.page {
-	background-color: #EEE;
-	border-bottom: #888 1px;
+  background-color: #EEE;
+  border-bottom: #888 1px;
 }
 div.page div {
-	background-color: white;
-	margin-left: 5.5ex;
-	min-height: 1em;
-	padding-left: 1ex;
-	border-left: 1px gray solid;
-	white-space: pre-wrap;
+  background-color: white;
+  margin-left: 5.5ex;
+  min-height: 1em;
+  padding-left: 1ex;
+  border-left: 1px gray solid;
+  white-space: pre-wrap;
 }
 div.page div:before {
-	content: counter(line);
-	counter-increment: line;
-	margin-top: 2px;
-	width: 22px;
-	position: absolute;
-	left: 3px;
-	text-align: right;
-	font-size: 0.75em;
-	-webkit-user-select: none;
+  content: counter(line);
+  counter-increment: line;
+  margin-top: 2px;
+  width: 22px;
+  position: absolute;
+  left: 3px;
+  text-align: right;
+  font-size: 0.75em;
+  -webkit-user-select: none;
 }
 
 div.hunk {
@@ -37,7 +38,7 @@ div.hunk {
 }
 div.hunk>div {
   display: table-row;
-	white-space: pre-wrap;
+  white-space: pre-wrap;
 }
 div.hunk>div>span {
   display: table-cell;
@@ -45,13 +46,13 @@ div.hunk>div>span {
 span.old, span.new {
   position: relative;
   width: 25px;
-	font-size: 0.75em;
+  font-size: 0.75em;
   text-align: right;
   padding-top: 2px;
   padding-right: 4px;
-  border-right: 1px gray solid;
+  border-right: 1px lightgray solid;
   background-color: #EEE;
-	-webkit-user-select: none;
+  -webkit-user-select: none;
 }
 span.new {
   margin-right: 2px;
@@ -78,5 +79,5 @@ div.del>span.new {
   background-color: #FDD;
 }
 .empty {
-	-webkit-user-select: none;
+  -webkit-user-select: none;
 }
