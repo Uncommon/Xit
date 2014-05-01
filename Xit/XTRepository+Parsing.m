@@ -151,7 +151,8 @@ NSString *XTHeaderContentKey = @"content";
 - (BOOL)readSubmodulesWithBlock:(void (^)(GTSubmodule *sub))block
 {
   [_gtRepo enumerateSubmodulesRecursively:NO
-                               usingBlock:^(GTSubmodule *sub, BOOL *stop){
+                               usingBlock:^(GTSubmodule *sub, NSError *error,
+                                            BOOL *stop){
     block(sub);
   }];
   return YES;
@@ -168,9 +169,10 @@ NSString *XTHeaderContentKey = @"content";
   NSMutableArray *result = [NSMutableArray array];
   NSError *error = nil;
 
-  [tree enumerateContentsWithOptions:GTTreeEnumerationOptionPre
-                               error:&error
-                               block:^int(NSString *root, GTTreeEntry *entry) {
+  [tree enumerateEntriesWithOptions:GTTreeEnumerationOptionPre
+                              error:&error
+                              block:^BOOL(GTTreeEntry *entry, NSString *root,
+                                          BOOL *stop) {
       if (git_tree_entry_type(entry.git_tree_entry) != GIT_OBJ_TREE)
         [result addObject:[root stringByAppendingPathComponent:entry.name]];
       return 0;
@@ -189,7 +191,7 @@ NSString *XTHeaderContentKey = @"content";
 
   if (diff == nil) {
     NSError *error = nil;
-    GTCommit *commit = [_gtRepo lookupObjectBySHA:sha error:&error];
+    GTCommit *commit = [_gtRepo lookUpObjectBySHA:sha error:&error];
 
     if ((commit == nil) ||
         (git_object_type([commit git_object]) != GIT_OBJ_COMMIT))
@@ -229,7 +231,7 @@ NSString *XTHeaderContentKey = @"content";
     return nil;
 
   NSError *error = nil;
-  GTCommit *commit = [_gtRepo lookupObjectByRefspec:ref error:&error];
+  GTCommit *commit = [_gtRepo lookUpObjectByRevParse:ref error:&error];
   
   if ((commit == nil) ||
       (git_object_type([commit git_object]) != GIT_OBJ_COMMIT))
@@ -332,12 +334,12 @@ NSString *XTCommitSHAKey = @"sha",
 - (GTCommit*)commitForRef:(NSString*)ref
 {
   NSError *error;
-  GTObject *object = [_gtRepo lookupObjectByRefspec:ref error:&error];
+  GTObject *object = [_gtRepo lookUpObjectByRevParse:ref error:&error];
 
   if (object == nil)
     return nil;
 
-  return [_gtRepo lookupObjectByOID:object.OID
+  return [_gtRepo lookUpObjectByOID:object.OID
                          objectType:GTObjectTypeCommit
                               error:&error];
 }

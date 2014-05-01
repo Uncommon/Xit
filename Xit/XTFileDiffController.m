@@ -56,18 +56,30 @@
 {
   NSString *htmlTemplate = [[self class] htmlTemplate:@"diff"];
   NSMutableString *textLines = [NSMutableString string];
+  NSError *error = nil;
+  GTDiffPatch *patch = [delta generatePatch:&error];
 
-  [delta enumerateHunksUsingBlock:^(GTDiffHunk *hunk, BOOL *stop) {
-    NSError *error = nil;
+  if (error != nil) {
+    // TODO: report error
+    return;
+  }
+
+  [patch enumerateHunksUsingBlock:^(GTDiffHunk *hunk, BOOL *stop) {
+    NSError *hunkError = nil;
 
     [textLines appendString:@"<div class='hunk'>\n"];
-    [hunk enumerateLinesInHunk:&error
+    [hunk enumerateLinesInHunk:&hunkError
                     usingBlock:^(GTDiffLine *line, BOOL *stop) {
       [[self class] appendDiffLine:line.content
                                 to:textLines
                            oldLine:line.oldLineNumber
                            newLine:line.newLineNumber];
     }];
+    if (hunkError != nil) {
+      // TODO: report error
+      *stop = YES;
+      return;
+    }
     [textLines appendString:@"</div>\n"];
   }];
 

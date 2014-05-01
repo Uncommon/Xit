@@ -151,7 +151,7 @@ dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
     DOMHTMLElement *parentSpan = (DOMHTMLElement*)
         [domDoc createElement:@"span"];
     GTCommit *parentCommit =
-        [gtRepo lookupObjectBySHA:parentSHA error:&error];
+        [gtRepo lookUpObjectBySHA:parentSHA error:&error];
     
     if (parentCommit == nil) {
       if ([parentSHA length] > 0) {

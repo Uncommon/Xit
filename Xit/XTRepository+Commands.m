@@ -55,8 +55,11 @@
   return [self executeWritingBlock:^BOOL{
     NSString *fullBranch =
         [[GTBranch localNamePrefix] stringByAppendingString:name];
-    GTBranch *branch =
-        [GTBranch branchWithName:fullBranch repository:_gtRepo error:error];
+    GTReference *ref = [GTReference
+        referenceByLookingUpReferencedNamed:fullBranch
+        inRepository:_gtRepo
+        error:error];
+    GTBranch *branch = [GTBranch branchWithReference:ref repository:_gtRepo];
 
     if (*error != nil)
       return NO;
@@ -133,7 +136,10 @@
       if (resultError != NULL)
         *resultError = nil;
 
-      GTCommit *commit = [_gtRepo lookupObjectBySHA:branch objectType:GTObjectTypeCommit error:resultError];
+      GTCommit *commit = [_gtRepo
+          lookUpObjectBySHA:branch
+          objectType:GTObjectTypeCommit
+          error:resultError];
 
       if (commit != nil)
         return [_gtRepo checkoutCommit:commit

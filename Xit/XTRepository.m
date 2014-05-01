@@ -304,7 +304,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
     return nil;
 
   NSError *error = nil;
-  GTObject *object = [_gtRepo lookupObjectByRefspec:ref error:&error];
+  GTObject *object = [_gtRepo lookUpObjectByRevParse:ref error:&error];
 
   if (error != nil)
     return nil;

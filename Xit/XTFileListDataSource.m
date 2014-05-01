@@ -92,7 +92,7 @@
     XTCommitTreeItem *item = [[XTCommitTreeItem alloc] init];
 
     item.path = file;
-    item.change = [changes[file] integerValue];
+    item.change = (XitChange)[changes[file] integerValue];
 
     NSString *path = [file stringByDeletingLastPathComponent];
     NSTreeNode *node = [NSTreeNode treeNodeWithRepresentedObject:item];
