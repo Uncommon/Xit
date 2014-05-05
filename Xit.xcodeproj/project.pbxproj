@@ -388,12 +388,7 @@
 			children = (
 				31C62D9A13F25A3600845A9B /* StageView */,
 				31C7C12F13ECC6C700A65FE9 /* HistoryView */,
-				89D6FE6D17D2F89D00633798 /* XTCommitHeaderViewController.h */,
-				89D6FE6E17D2F89D00633798 /* XTCommitHeaderViewController.m */,
-				DD9D5E9A183EA33F00EBC1C7 /* XTFileDiffController.h */,
-				DD9D5E9B183EA33F00EBC1C7 /* XTFileDiffController.m */,
-				DD858B1D17FFDCB900264F7D /* XTTextPreviewController.h */,
-				DD858B1E17FFDCB900264F7D /* XTTextPreviewController.m */,
+				DD39D1F21918306B00827532 /* FileView */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -446,17 +441,6 @@
 				31C7C13113ECC74C00A65FE9 /* XTHistoryViewController.m */,
 				31C7C13213ECC74C00A65FE9 /* XTHistoryViewController.xib */,
 				DD997DD8173B409500C7DF82 /* HistoryView Menus.xib */,
-				DD98D0001822FFE2008B79C9 /* XTFileChangesDataSource.h */,
-				DD98D0011822FFE2008B79C9 /* XTFileChangesDataSource.m */,
-				DD3D94F118254442004AF532 /* XTFileListDataSourceBase.h */,
-				DD3D94F218254442004AF532 /* XTFileListDataSourceBase.m */,
-				3199BABE14207CFB008AAA4F /* XTFileListDataSource.h */,
-				3199BABF14207CFB008AAA4F /* XTFileListDataSource.m */,
-				DD96C937175ECE690003A30C /* XTFileViewController.h */,
-				DD96C938175ECE690003A30C /* XTFileViewController.m */,
-				DD997DF71746F40D00C7DF82 /* XTFileViewController.xib */,
-				DDD4707F16F3E7B000CA76FF /* XTPreviewItem.h */,
-				DDD4708016F3E7B000CA76FF /* XTPreviewItem.m */,
 				DD07B08716B313A60012AC19 /* XTRefFormatter.h */,
 				DD07B08816B313A60012AC19 /* XTRefFormatter.m */,
 				DD07B07616A5D2A80012AC19 /* XTSideBarOutlineView.h */,
@@ -701,12 +685,36 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		DD39D1F21918306B00827532 /* FileView */ = {
+			isa = PBXGroup;
+			children = (
+				DD997DF71746F40D00C7DF82 /* XTFileViewController.xib */,
+				89D6FE6D17D2F89D00633798 /* XTCommitHeaderViewController.h */,
+				89D6FE6E17D2F89D00633798 /* XTCommitHeaderViewController.m */,
+				DD98D0001822FFE2008B79C9 /* XTFileChangesDataSource.h */,
+				DD98D0011822FFE2008B79C9 /* XTFileChangesDataSource.m */,
+				DD9D5E9A183EA33F00EBC1C7 /* XTFileDiffController.h */,
+				DD9D5E9B183EA33F00EBC1C7 /* XTFileDiffController.m */,
+				DD3D94F118254442004AF532 /* XTFileListDataSourceBase.h */,
+				DD3D94F218254442004AF532 /* XTFileListDataSourceBase.m */,
+				3199BABE14207CFB008AAA4F /* XTFileListDataSource.h */,
+				3199BABF14207CFB008AAA4F /* XTFileListDataSource.m */,
+				DD96C937175ECE690003A30C /* XTFileViewController.h */,
+				DD96C938175ECE690003A30C /* XTFileViewController.m */,
+				DDD4707F16F3E7B000CA76FF /* XTPreviewItem.h */,
+				DDD4708016F3E7B000CA76FF /* XTPreviewItem.m */,
+				DD858B1D17FFDCB900264F7D /* XTTextPreviewController.h */,
+				DD858B1E17FFDCB900264F7D /* XTTextPreviewController.m */,
+			);
+			name = FileView;
+			sourceTree = "<group>";
+		};
 		DD96C990176976FC0003A30C /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				DD96C99A176976FE0003A30C /* ObjectiveGit.framework */,
-				DD96C99C176976FE0003A30C /* ObjectiveGitTests.octest */,
 				DD96C99E176976FE0003A30C /* libObjectiveGit-iOS.a */,
+				DD96C99C176976FE0003A30C /* ObjectiveGitTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
