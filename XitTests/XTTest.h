@@ -20,3 +20,10 @@
              inRepository:(XTRepository *)repo;
 
 @end
+
+
+@interface XTFakeDocController : NSObject
+
+@property NSString *selectedCommitSHA;
+
+@end

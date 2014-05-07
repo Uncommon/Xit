@@ -1,4 +1,5 @@
 #import "XTFileListDataSource.h"
+#import "XTDocController.h"
 
 @interface XTFileListDataSource ()
 - (NSTreeNode *)fileTreeForRef:(NSString *)ref;
@@ -31,7 +32,7 @@
 - (void)reload
 {
   [self.repository executeOffMainThread:^{
-    NSString *ref = self.repository.selectedCommit;
+    NSString *ref = self.docController.selectedCommitSHA;
     NSTreeNode *newRoot = [self fileTreeForRef:(ref == nil) ? @"HEAD" : ref];
 
     dispatch_async(dispatch_get_main_queue(), ^{

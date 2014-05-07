@@ -3,6 +3,7 @@
 #import <CoreServices/CoreServices.h>
 
 #import "XTCommitHeaderViewController.h"
+#import "XTDocController.h"
 #import "XTFileChangesDataSource.h"
 #import "XTFileDiffController.h"
 #import "XTFileListDataSourceBase.h"
@@ -65,6 +66,17 @@ NSString* const XTContentTabIDPreview = @"preview";
            object:_headerController];
 }
 
+- (void)windowDidLoad
+{
+  XTDocController *controller = (XTDocController*)
+      self.view.window.windowController;
+
+  NSAssert([controller isKindOfClass:[XTDocController class]], @"");
+  _fileChangeDS.docController = controller;
+  _fileListDS.docController = controller;
+  _headerController.docController = controller;
+}
+
 - (IBAction)changeFileListView:(id)sender
 {
   XTFileListDataSourceBase *newDS = _fileChangeDS;
@@ -111,14 +123,16 @@ NSString* const XTContentTabIDPreview = @"preview";
       [dataSource fileChangeAtRow:[selection firstIndex]];
   NSString *contentTabID =
       [[self.previewTabView selectedTabViewItem] identifier];
+  XTDocController *docController = self.view.window.windowController;
 
+  NSAssert([docController isKindOfClass:[XTDocController class]], @"");
   if ([contentTabID isEqualToString:XTContentTabIDDiff]) {
     [self.diffController loadPath:selectedItem.path
-                           commit:_repo.selectedCommit
+                           commit:docController.selectedCommitSHA
                        repository:_repo];
   } else if ([contentTabID isEqualToString:XTContentTabIDText]) {
     [_textController loadPath:selectedItem.path
-                       commit:_repo.selectedCommit
+                       commit:docController.selectedCommitSHA
                    repository:_repo];
   } else if ([contentTabID isEqualToString:XTContentTabIDPreview]) {
     [_filePreview setHidden:NO];
@@ -132,7 +146,7 @@ NSString* const XTContentTabIDPreview = @"preview";
       _filePreview.previewItem = previewItem;
     }
 
-    previewItem.commitSHA = _repo.selectedCommit;
+    previewItem.commitSHA = docController.selectedCommitSHA;
     if (selectionCount != 1) {
       [_filePreview setHidden:YES];
       previewItem.path = nil;
@@ -145,7 +159,10 @@ NSString* const XTContentTabIDPreview = @"preview";
 
 - (void)commitSelected:(NSNotification *)note
 {
-  _headerController.commitSHA = [_repo selectedCommit];
+  XTDocController *docController = self.view.window.windowController;
+
+  NSAssert([docController isKindOfClass:[XTDocController class]], @"");
+  _headerController.commitSHA = docController.selectedCommitSHA;
   [self refresh];
 }
 

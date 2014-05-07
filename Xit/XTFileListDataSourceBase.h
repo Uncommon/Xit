@@ -1,5 +1,6 @@
 #import "XTRepository+Parsing.h"
 
+@class XTDocController;
 @class XTFileChange;
 @class XTFileViewController;
 @class XTRepository;
@@ -12,6 +13,7 @@
 
 @property IBOutlet XTFileViewController *controller;
 @property(nonatomic) XTRepository *repository;
+@property(nonatomic) XTDocController *docController;
 @property(readonly, nonatomic) BOOL isHierarchical;
 
 - (void)reload;

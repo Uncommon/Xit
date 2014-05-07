@@ -1,13 +1,13 @@
 #import "XTHistoryDataSource.h"
-#import "XTRepository.h"
+#import "XTDocController.h"
 #import "XTHistoryItem.h"
+#import "XTRepository.h"
 #import "XTStatusView.h"
 #import "PBGitGrapher.h"
 #import "PBGitHistoryGrapher.h"
 #import "NSDate+Extensions.h"
 
 @implementation XTHistoryDataSource
-
 
 - (id)init
 {
@@ -23,21 +23,26 @@
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
-  [_repo removeObserver:self forKeyPath:@"selectedCommit"];
+  [_controller removeObserver:self forKeyPath:@"selectedCommitSHA"];
 }
 
-- (void)setRepo:(XTRepository *)newRepo
+- (void)setRepo:(XTRepository*)newRepo
 {
   _repo = newRepo;
   [_repo addReloadObserver:self selector:@selector(repoChanged:)];
-  [_repo addObserver:self
-          forKeyPath:@"selectedCommit"
-             options:NSKeyValueObservingOptionNew
-             context:nil];
   [self reload];
 }
 
-- (void)repoChanged:(NSNotification *)note
+- (void)setController:(XTDocController*)controller
+{
+  _controller = controller;
+  [controller addObserver:self
+               forKeyPath:@"selectedCommitSHA"
+                  options:NSKeyValueObservingOptionNew
+                  context:nil];
+}
+
+- (void)repoChanged:(NSNotification*)note
 {
   NSArray *paths = [note userInfo][XTPathsKey];
   
@@ -54,7 +59,7 @@
                         change:(NSDictionary *)change
                        context:(void *)context
 {
-  if ([keyPath isEqualToString:@"selectedCommit"]) {
+  if ([keyPath isEqualToString:@"selectedCommitSHA"]) {
     NSString *newSelectedCommit = change[NSKeyValueChangeNewKey];
     XTHistoryItem *item = _index[newSelectedCommit];
     if (item != nil) {

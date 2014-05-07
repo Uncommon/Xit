@@ -2,6 +2,8 @@
 #import "XTFileChangesDataSource.h"
 #include "XTQueueUtils.h"
 
+@class XTDocController;
+
 @interface XTFileChangesDataSourceTest : XTTest
 
 @end
@@ -10,11 +12,13 @@
 
 - (void)testInitialCommit
 {
+  XTFakeDocController *docController = [[XTFakeDocController alloc] init];
   XTFileChangesDataSource *dataSource = [[XTFileChangesDataSource alloc] init];
   NSOutlineView *outlineView = [[NSOutlineView alloc] init];
 
-  repository.selectedCommit = repository.headSHA;
+  docController.selectedCommitSHA = repository.headSHA;
   dataSource.repository = repository;
+  dataSource.docController = (XTDocController*)docController;
   [self waitForRepoQueue];
   WaitForQueue(dispatch_get_main_queue());
 

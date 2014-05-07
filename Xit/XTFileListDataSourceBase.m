@@ -1,4 +1,5 @@
 #import "XTFileListDataSourceBase.h"
+#import "XTDocController.h"
 #import "XTFileViewController.h"
 #import "XTRepository.h"
 
@@ -6,7 +7,7 @@
 
 - (void)dealloc
 {
-  [self.repository removeObserver:self forKeyPath:@"selectedCommit"];
+  [self.docController removeObserver:self forKeyPath:@"selectedCommitSHA"];
 }
 
 - (void)reload
@@ -23,20 +24,26 @@
 - (void)setRepository:(XTRepository*)repository
 {
   _repository = repository;
-  [_repository addObserver:self
-               forKeyPath:@"selectedCommit"
-                  options:NSKeyValueObservingOptionNew
-                  context:nil];
   [self reload];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context
+- (void)setDocController:(XTDocController *)docController
 {
-  if ([keyPath isEqualToString:@"selectedCommit"] &&
-      (object == self.repository))
+  _docController = docController;
+  [_docController addObserver:self
+                   forKeyPath:NSStringFromSelector(@selector(selectedCommitSHA))
+                      options:NSKeyValueObservingOptionNew
+                      context:nil];
+}
+
+- (void)observeValueForKeyPath:(NSString*)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary*)change
+                       context:(void*)context
+{
+  NSString *path = NSStringFromSelector(@selector(selectedCommitSHA));
+  
+  if ([keyPath isEqualToString:path] && (object == self.docController))
     [self reload];
 }
 

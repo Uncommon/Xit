@@ -10,6 +10,7 @@
 
 @end
 
+
 @implementation XTFileListDataSourceTest
 
 - (XTHistoryDataSource*)makeDataSource
@@ -28,9 +29,10 @@
   NSString *text = @"some text";
 
   for (int n = 0; n < 10; n++) {
-    NSString *file = [NSString stringWithFormat:@"%@/file_%u.txt", repoPath, n];
+    NSString *fileName = [NSString stringWithFormat:@"file_%u.txt", n];
+    NSString *filePath = [repoPath stringByAppendingPathComponent:fileName];
 
-    [text writeToFile:file
+    [text writeToFile:filePath
            atomically:YES
              encoding:NSASCIIStringEncoding
                 error:nil];
@@ -42,14 +44,20 @@
   }
 
   NSOutlineView *outlineView = [[NSOutlineView alloc] init];
+  XTFakeDocController *docController = [[XTFakeDocController alloc] init];
   XTHistoryDataSource *hds = [self makeDataSource];
+  XTFileListDataSource *flds = [[XTFileListDataSource alloc] init];
   NSInteger expectedFileCount = 11;
 
-  for (XTHistoryItem *item in hds.items) {
-    repository.selectedCommit = item.sha;
+  hds.controller = (XTDocController*)docController;
+  flds.docController = (XTDocController*)docController;
+  [hds setRepo:repository];
+  flds.repository = repository;
+  [self waitForRepoQueue];
 
-    XTFileListDataSource *flds = [[XTFileListDataSource alloc] init];
-    flds.repository = repository;
+  for (XTHistoryItem *item in hds.items) {
+    docController.selectedCommitSHA = item.sha;
+    [flds reload];
     [self waitForRepoQueue];
 
     const NSInteger fileCount =
@@ -92,9 +100,12 @@
                     outputBlock:NULL
                           error:NULL];
 
+  XTFakeDocController *docController = [[XTFakeDocController alloc] init];
   XTHistoryDataSource *hds = [self makeDataSource];
   XTHistoryItem *item = (XTHistoryItem *)(hds.items)[0];
-  repository.selectedCommit = item.sha;
+
+  [hds setController:(XTDocController*)docController];
+  docController.selectedCommitSHA = item.sha;
 
   NSOutlineView *outlineView = [[NSOutlineView alloc] init];
   XTFileListDataSource *flds = [[XTFileListDataSource alloc] init];

@@ -36,6 +36,7 @@
          forKeyPath:@"activeTasks"
             options:NSKeyValueObservingOptionNew
             context:nil];
+  [_historyView windowDidLoad];
   [_historyView setRepo:repo];
   [_stageView setRepo:repo];
 }

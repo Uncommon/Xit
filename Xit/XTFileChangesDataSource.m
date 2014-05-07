@@ -1,4 +1,5 @@
 #import "XTFileChangesDataSource.h"
+#import "XTDocController.h"
 #import "XTFileListDataSource.h"
 #import "XTFileViewController.h"
 #import "XTRepository+Parsing.h"
@@ -14,8 +15,8 @@
 - (void)reload
 {
   [self.repository executeOffMainThread:^{
-    self.changes = [self.repository changesForRef:self.repository.selectedCommit
-                                           parent:nil];
+    self.changes = [self.repository
+        changesForRef:self.docController.selectedCommitSHA parent:nil];
     dispatch_async(dispatch_get_main_queue(), ^{
       [self.outlineView reloadData];
     });

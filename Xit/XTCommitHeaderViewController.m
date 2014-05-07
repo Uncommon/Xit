@@ -1,6 +1,7 @@
 #import "XTCommitHeaderViewController.h"
 #import <WebKit/WebKit.h>
 #import <ObjectiveGit/ObjectiveGit.h>
+#import "XTDocController.h"
 #import "XTRepository+Parsing.h"
 
 NSString *XTHeaderResizedNotificaiton = @"XTHeaderResizedNotificaiton";
@@ -182,7 +183,7 @@ dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
 
 - (void)selectSHA:(NSString*)sha
 {
-  self.repository.selectedCommit = sha;
+  self.docController.selectedCommitSHA = sha;
 }
 
 - (void)headerToggled

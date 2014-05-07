@@ -131,3 +131,8 @@
 }
 
 @end
+
+
+@implementation XTFakeDocController
+
+@end

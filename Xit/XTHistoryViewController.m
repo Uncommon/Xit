@@ -1,4 +1,5 @@
 #import "XTHistoryViewController.h"
+#import "XTDocController.h"
 #import "XTFileListDataSource.h"
 #import "XTFileViewController.h"
 #import "XTHistoryDataSource.h"
@@ -74,13 +75,18 @@
   [_sidebarOutline setFloatsGroupRows:NO];
 }
 
-- (NSString *)nibName
+- (NSString*)nibName
 {
   NSLog(@"nibName: %@ (%@)", [super nibName], [self class]);
   return NSStringFromClass([self class]);
 }
 
-- (void)setRepo:(XTRepository *)newRepo
+- (void)windowDidLoad
+{
+  [_fileViewController windowDidLoad];
+}
+
+- (void)setRepo:(XTRepository*)newRepo
 {
   _repo = newRepo;
   [_sideBarDS setRepo:newRepo];
@@ -407,9 +413,11 @@
   const NSInteger selectedRow = table.selectedRow;
 
   if (selectedRow >= 0) {
+    XTDocController *controller = self.view.window.windowController;
     XTHistoryItem *item = (_historyDS.items)[selectedRow];
 
-    _repo.selectedCommit = item.sha;
+    NSAssert([controller isKindOfClass:[XTDocController class]], @"");
+    controller.selectedCommitSHA = item.sha;
   }
 }
 

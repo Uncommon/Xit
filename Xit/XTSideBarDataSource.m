@@ -1,4 +1,5 @@
 #import "XTSideBarDataSource.h"
+#import "XTDocController.h"
 #import "XTSideBarItem.h"
 #import "XTSubmoduleItem.h"
 #import "XTRefFormatter.h"
@@ -339,8 +340,12 @@
 {
   XTSideBarItem *item = [_outline itemAtRow:_outline.selectedRow];
 
-  if (item.sha != nil)
-    _repo.selectedCommit = item.sha;
+  if (item.sha != nil) {
+    XTDocController *controller = _outline.window.windowController;
+
+    NSAssert([controller isKindOfClass:[XTDocController class]], @"");
+    controller.selectedCommitSHA = item.sha;
+  }
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item

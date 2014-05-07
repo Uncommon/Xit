@@ -30,6 +30,7 @@
   NSUInteger _savedSidebarWidth;
 }
 
+- (void)windowDidLoad;
 - (void)setRepo:(XTRepository *)newRepo;
 
 - (IBAction)checkOutBranch:(id)sender;

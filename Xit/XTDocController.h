@@ -14,6 +14,8 @@
   XTDocument *_xtDocument;
 }
 
+@property NSString *selectedCommitSHA;
+
 - (id)initWithDocument:(XTDocument *)doc;
 
 - (IBAction)refresh:(id)sender;
