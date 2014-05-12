@@ -39,12 +39,9 @@ NSString* const XTContentTabIDPreview = @"preview";
   ((XTPreviewItem*)_filePreview.previewItem).repo = newRepo;
 }
 
-- (void)awakeFromNib
+- (void)loadView
 {
-  // -[NSOutlineView makeViewWithIdentifier:owner:] causes this to get called
-  // again after the initial load.
-  if (_changeImages != nil)
-    return;
+  [super loadView];
 
   _changeImages = @{
       @( XitChangeAdded ) : [NSImage imageNamed:@"added"],

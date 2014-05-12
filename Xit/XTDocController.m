@@ -43,7 +43,6 @@
 - (void)loadViewController:(NSViewController *)viewController
                      onTab:(NSInteger)tabId
 {
-  [viewController loadView];
   NSTabViewItem *tabView = [_tabs tabViewItemAtIndex:tabId];
   [[viewController view]
       setFrame:NSMakeRect(0, 0,
