@@ -8,7 +8,6 @@
 #import "XTFileListDataSourceBase.h"
 #import "XTFileListDataSource.h"
 #import "XTPreviewItem.h"
-#import "XTRepository.h"
 #import "XTTextPreviewController.h"
 
 const CGFloat kChangeImagePadding = 8;
@@ -108,7 +107,7 @@ NSString* const XTContentTabIDPreview = @"preview";
   NSIndexSet *selection = [_fileListOutline selectedRowIndexes];
   XTFileListDataSourceBase *dataSource = (XTFileListDataSourceBase*)
       [_fileListOutline dataSource];
-  XTFileChange *selectedItem = (XTFileChange*)
+  XTFileChange *selectedItem =
       [dataSource fileChangeAtRow:[selection firstIndex]];
   NSString *contentTabID =
       [[self.previewTabView selectedTabViewItem] identifier];

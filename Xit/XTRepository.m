@@ -1,6 +1,5 @@
 #import "XTRepository.h"
 #import "XTConstants.h"
-#import "NSMutableDictionary+MultiObjectForKey.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
 NSString *XTRepositoryChangedNotification = @"xtrepochanged";

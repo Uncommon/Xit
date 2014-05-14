@@ -1,5 +1,4 @@
 #import "XTAppDelegate.h"
-#import "XTDocument.h"
 
 @implementation XTAppDelegate
 

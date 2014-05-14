@@ -1,7 +1,4 @@
 #import "XTRefToken.h"
-#import "XTRemoteBranchItem.h"
-#import "XTTagItem.h"
-#import "XTRemotesItem.h"
 #import "XTRepository+Commands.h"
 
 @implementation XTRefToken

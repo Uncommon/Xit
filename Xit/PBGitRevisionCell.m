@@ -9,7 +9,6 @@
 #import "XTRefToken.h"
 #import "XTRepository.h"
 #import "XTRemoteBranchItem.h"
-#import "XTSideBarItem.h"
 
 static const int kColumnWidth = 10;
 

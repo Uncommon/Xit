@@ -1,7 +1,6 @@
 #import "XTDocument.h"
 #import "XTDocController.h"
 #import "XTRepository.h"
-#import "XTStatusView.h"
 #include "XTQueueUtils.h"
 
 @implementation XTDocument
