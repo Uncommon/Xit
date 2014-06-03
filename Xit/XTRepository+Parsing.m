@@ -416,8 +416,7 @@ NSString *XTCommitSHAKey = @"sha",
 
   // Set the output variables
   NSAssert([headerLines count] == [headerKeys count], @"bad header line count");
-  *header = [NSMutableDictionary dictionaryWithObjects:headerLines
-                                               forKeys:headerKeys];
+  *header = [@{ headerKeys : headerLines } mutableCopy];
   *message = sections[1];
   if (files != NULL) {
     *files = [sections subarrayWithRange:NSMakeRange(2, [sections count] - 2)];
@@ -433,7 +432,7 @@ NSString *XTCommitSHAKey = @"sha",
         NSString *firstLine = [mutableFiles[0] stringByTrimmingCharactersInSet:
             [NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
-        [mutableFiles setObject:firstLine atIndexedSubscript:0];
+        mutableFiles[0] = firstLine;
       }
     }
 

@@ -64,12 +64,12 @@ NSString *XTHeaderHeightKey = @"height";
                    message:&message
                      files:NULL];
 
-  NSString *authorName = [header objectForKey:XTAuthorNameKey];
-  NSString *authorEmail = [header objectForKey:XTAuthorEmailKey];
-  NSDate *authorDate = [header objectForKey:XTAuthorDateKey];
-  NSString *committerName = [header objectForKey:XTCommitterNameKey];
-  NSString *committerEmail = [header objectForKey:XTCommitterEmailKey];
-  NSDate *committerDate = [header objectForKey:XTCommitterDateKey];
+  NSString *authorName = header[XTAuthorNameKey];
+  NSString *authorEmail = header[XTAuthorEmailKey];
+  NSDate *authorDate = header[XTAuthorDateKey];
+  NSString *committerName = header[XTCommitterNameKey];
+  NSString *committerEmail = header[XTCommitterEmailKey];
+  NSDate *committerDate = header[XTCommitterDateKey];
   NSDateFormatter *formatter = [[self class] dateFormatter];
   NSString *authorDateString = [formatter stringFromDate:authorDate];
   NSString *committerDateString = (committerDate == nil) ? @"" :
@@ -80,7 +80,7 @@ NSString *XTHeaderHeightKey = @"height";
   if (committerEmail == nil)
     committerEmail = @"";
 
-  self.parents = [header objectForKey:XTParentSHAsKey];
+  self.parents = header[XTParentSHAsKey];
 
   message = [message stringByTrimmingCharactersInSet:
       [NSCharacterSet whitespaceAndNewlineCharacterSet]];

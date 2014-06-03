@@ -126,16 +126,16 @@ NSDate *commitDate = nil;
             message:(NSString **)message
               files:(NSArray **)files
 {
-  *header = [NSDictionary dictionaryWithObjectsAndKeys:
-      @"Guy One", XTAuthorNameKey,
-      @"guy1@example.com", XTAuthorEmailKey,
-      authorDate, XTAuthorDateKey,
-      @"Guy Two", XTCommitterNameKey,
-      @"guy2@example.com", XTCommitterEmailKey,
-      commitDate, XTCommitterDateKey,
-      @[ @"1", @"2", @"3" ], XTParentSHAsKey,
-      [NSArray array], XTRefsKey,
-      nil];
+  *header = @{
+      XTAuthorNameKey : @"Guy One",
+      XTAuthorEmailKey : @"guy1@example.com",
+      XTAuthorDateKey : authorDate,
+      XTCommitterNameKey : @"Guy Two",
+      XTCommitterEmailKey : @"guy2@example.com",
+      XTCommitterDateKey : commitDate,
+      XTParentSHAsKey : @[ @"1", @"2", @"3" ],
+      XTRefsKey : [NSArray array],
+      };
   *message = @"Example message";
   if (files != NULL)
     *files = [NSArray array];

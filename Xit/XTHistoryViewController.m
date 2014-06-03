@@ -53,7 +53,7 @@
   [nib instantiateNibWithOwner:self topLevelObjects:nil];
 
   // Load the file list view
-  NSView *lowerPane = [[_mainSplitView subviews] objectAtIndex:1];
+  NSView *lowerPane = [_mainSplitView subviews][1];
   
   _fileViewController = [[XTFileViewController alloc]
       initWithNibName:@"XTFileViewController" bundle:nil];
@@ -278,8 +278,7 @@
       [[NSString alloc] initWithFormat:@"remote.%@.url", [item title]];
   NSString *remoteURL = [_repo urlStringForRemote:remoteName];
   
-  [pasteBoard declareTypes:[NSArray arrayWithObject:NSStringPboardType]
-                     owner:nil];
+  [pasteBoard declareTypes:@[NSStringPboardType] owner:nil];
   
   if ([remoteURL length] > 0) {
     [pasteBoard setString:remoteURL forType:NSStringPboardType];
