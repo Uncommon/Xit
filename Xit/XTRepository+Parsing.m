@@ -83,7 +83,7 @@ NSString *XTHeaderContentKey = @"content";
 {
   NSError *error = nil;
   NSData *output =
-      [self executeGitWithArgs:@[ @"diff-files" ] writes:NO error:nil];
+      [self executeGitWithArgs:@[ @"diff-files" ] writes:NO error:&error];
 
   if (error != nil)
     return NO;
