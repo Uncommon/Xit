@@ -124,6 +124,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		89E6384C1C8651E400B7BB42 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F879D8361B4B7F7C002D5C07;
+			remoteInfo = "ObjectiveGit-iOSTests";
+		};
 		C3FA472213D0F8E300AC4F9B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C3FA46F313D0F8E200AC4F9B /* Project object */;
@@ -713,8 +720,9 @@
 			isa = PBXGroup;
 			children = (
 				DD96C99A176976FE0003A30C /* ObjectiveGit.framework */,
-				DD96C99E176976FE0003A30C /* libObjectiveGit-iOS.a */,
-				DD96C99C176976FE0003A30C /* ObjectiveGitTests.octest */,
+				DD96C99C176976FE0003A30C /* ObjectiveGit-MacTests.xctest */,
+				DD96C99E176976FE0003A30C /* ObjectiveGit.framework */,
+				89E6384D1C8651E400B7BB42 /* ObjectiveGit-iOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -759,7 +767,7 @@
 			name = XitTests;
 			productName = XitTests;
 			productReference = C3FA472013D0F8E300AC4F9B /* XitTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productType = "com.apple.product-type.bundle.ocunit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -768,7 +776,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = XT;
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "";
 			};
 			buildConfigurationList = C3FA46F613D0F8E200AC4F9B /* Build configuration list for PBXProject "Xit" */;
@@ -796,6 +804,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		89E6384D1C8651E400B7BB42 /* ObjectiveGit-iOSTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "ObjectiveGit-iOSTests.xctest";
+			remoteRef = 89E6384C1C8651E400B7BB42 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		DD96C99A176976FE0003A30C /* ObjectiveGit.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -803,17 +818,17 @@
 			remoteRef = DD96C999176976FE0003A30C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		DD96C99C176976FE0003A30C /* ObjectiveGitTests.octest */ = {
+		DD96C99C176976FE0003A30C /* ObjectiveGit-MacTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = ObjectiveGitTests.octest;
+			path = "ObjectiveGit-MacTests.xctest";
 			remoteRef = DD96C99B176976FE0003A30C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		DD96C99E176976FE0003A30C /* libObjectiveGit-iOS.a */ = {
+		DD96C99E176976FE0003A30C /* ObjectiveGit.framework */ = {
 			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libObjectiveGit-iOS.a";
+			fileType = wrapper.framework;
+			path = ObjectiveGit.framework;
 			remoteRef = DD96C99D176976FE0003A30C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -1097,6 +1112,7 @@
 				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = "Xit/Xit-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.uncommonplace.Xit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1125,6 +1141,7 @@
 					SenTestingKit,
 					$inherited,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.uncommonplace.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				TEST_HOST = "$(BUNDLE_LOADER)";
@@ -1135,6 +1152,7 @@
 		C3FA472F13D0F8E300AC4F9B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_GENERATE_TEST_COVERAGE_FILES = NO;
 				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = NO;
@@ -1189,6 +1207,7 @@
 				GCC_PREFIX_HEADER = "Xit/Xit-Prefix.pch";
 				INFOPLIST_FILE = "Xit/Xit-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.uncommonplace.Xit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1207,6 +1226,7 @@
 				GCC_PREFIX_HEADER = "Xit/Xit-Prefix.pch";
 				INFOPLIST_FILE = "Xit/Xit-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.uncommonplace.Xit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1235,6 +1255,7 @@
 					SenTestingKit,
 					$inherited,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.uncommonplace.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				TEST_HOST = "$(BUNDLE_LOADER)";
@@ -1265,6 +1286,7 @@
 					SenTestingKit,
 					$inherited,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.uncommonplace.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				TEST_HOST = "$(BUNDLE_LOADER)";
