@@ -50,7 +50,7 @@
   // Load the context menus
   NSNib *nib = [[NSNib alloc] initWithNibNamed:@"HistoryView Menus" bundle:nil];
 
-  [nib instantiateNibWithOwner:self topLevelObjects:nil];
+  [nib instantiateWithOwner:self topLevelObjects:NULL];
 
   // Load the file list view
   NSView *lowerPane = [_mainSplitView subviews][1];

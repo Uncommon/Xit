@@ -9,7 +9,7 @@
     NSArray *objects;
 
     NSAssert(nib, @"missing nib");
-    [nib instantiateNibWithOwner:item topLevelObjects:&objects];
+    [nib instantiateWithOwner:item topLevelObjects:&objects];
     for (id object in objects)
       if ([object isKindOfClass:[NSView class]])
         [item setView:object];

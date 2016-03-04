@@ -56,17 +56,12 @@
   if ([[NSFileManager defaultManager] fileExistsAtPath:[repoURL path]])
     return YES;
   else {
-    NSAlert *alert = [NSAlert
-             alertWithMessageText:@"That folder does not contain a Git repository."
-                    defaultButton:@"OK"
-                  alternateButton:nil
-                      otherButton:nil
-        informativeTextWithFormat:@""];
-
+    NSAlert *alert = [[NSAlert alloc] init];
+    
+    alert.messageText = @"That folder does not contain a Git repository.";
+    
     [alert beginSheetModalForWindow:sender
-                      modalDelegate:nil
-                     didEndSelector:NULL
-                        contextInfo:NULL];
+                  completionHandler:NULL];
     return NO;
   }
 }
