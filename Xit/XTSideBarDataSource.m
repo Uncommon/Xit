@@ -204,7 +204,7 @@
     [[NSDocumentController sharedDocumentController]
         openDocumentWithContentsOfURL:subURL
                               display:YES
-                    completionHandler:NULL];
+                    completionHandler:^(NSDocument *doc,BOOL open, NSError *error) {}];
     // TODO: zoom effect
     // http://github.com/MrNoodle/NoodleKit/blob/master/NSWindow-NoodleEffects.m
   }

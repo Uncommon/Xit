@@ -34,7 +34,7 @@
         [[NSDocumentController sharedDocumentController]
             openDocumentWithContentsOfURL:url
                                   display:YES
-                        completionHandler:NULL];
+                        completionHandler:^(NSDocument *doc,BOOL open, NSError *error) {}];
       }
     }
     _openPanel = nil;

@@ -10,6 +10,5 @@
     XTFileListDataSourceBase<NSOutlineViewDataSource>
 
 @property IBOutlet NSOutlineView *outlineView;
-@property IBOutlet XTFileViewController *controller;
 
 @end

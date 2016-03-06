@@ -1,5 +1,6 @@
 #import <Cocoa/Cocoa.h>
 
+@class WebFrame;
 @class WebView;
 
 /**
@@ -16,5 +17,6 @@
 + (NSString*)escapeText:(NSString*)text;
 
 - (void)loadNotice:(NSString*)text;
+- (void)webView:(WebView*)sender didFinishLoadForFrame:(WebFrame*)frame;
 
 @end
