@@ -35,19 +35,19 @@
                                   writes:NO
                                    error:nil];
       if (data == nil) {
-        STFail(@"'%@' error", rn);
+        XCTFail(@"'%@' error", rn);
       }
       data = [repository executeGitWithArgs:@[ @"rm", @"--cached", @"-r", @"." ]
                                      writes:NO
                                       error:nil];
       if (data == nil) {
-        STFail(@"'%@' error", rn);
+        XCTFail(@"'%@' error", rn);
       }
       data = [repository executeGitWithArgs:@[ @"clean", @"-f", @"-d" ]
                                      writes:NO
                                       error:nil];
       if (data == nil) {
-        STFail(@"'%@' error", rn);
+        XCTFail(@"'%@' error", rn);
       }
     }
 
@@ -60,17 +60,17 @@
                error:nil];
 
     if (![defaultManager fileExistsAtPath:testFile]) {
-      STFail(@"testFile NOT Found!!");
+      XCTFail(@"testFile NOT Found!!");
     }
     if (![repository stageFile:[testFile lastPathComponent]]) {
-      STFail(@"add file '%@'", testFile);
+      XCTFail(@"add file '%@'", testFile);
     }
     if (![repository commitWithMessage:[NSString stringWithFormat:@"new %@",
                                                                   testFile]
                                  amend:NO
                            outputBlock:NULL
                                  error:NULL]) {
-      STFail(@"Commit with mesage 'new %@'", testFile);
+      XCTFail(@"Commit with mesage 'new %@'", testFile);
     }
   }
 
@@ -81,11 +81,11 @@
     XTHistoryItem *item = (XTHistoryItem *)obj;
 
     if (idx != (items.count - 1)) {
-      STAssertTrue(item.lineInfo.numColumns == 1,
+      XCTAssertTrue(item.lineInfo.numColumns == 1,
                    @"%lu - incorrect numColumns=%lu", idx,
                    item.lineInfo.numColumns);
     } else {
-      STAssertTrue(item.lineInfo.numColumns == 0,
+      XCTAssertTrue(item.lineInfo.numColumns == 0,
                    @"%lu - incorrect numColumns=%lu", idx,
                    item.lineInfo.numColumns);
     }
@@ -102,7 +102,7 @@
     if ((n % 10) == 0) {
       [repository checkout:@"master" error:NULL];
       if (![repository createBranch:bn]) {
-        STFail(@"Create Branch");
+        XCTFail(@"Create Branch");
       }
     }
 
@@ -115,23 +115,23 @@
             encoding:NSASCIIStringEncoding
                error:nil];
 
-    STAssertTrue([defaultManager fileExistsAtPath:testFile], nil);
+    XCTAssertTrue([defaultManager fileExistsAtPath:testFile]);
     if (![repository stageFile:[testFile lastPathComponent]]) {
-      STFail(@"add file '%@'", testFile);
+      XCTFail(@"add file '%@'", testFile);
     }
     if (![repository commitWithMessage:[NSString stringWithFormat:@"new %@",
                                                                   testFile]
                                  amend:NO
                            outputBlock:NULL
                                  error:NULL]) {
-      STFail(@"Commit with mesage 'new %@'", testFile);
+      XCTFail(@"Commit with mesage 'new %@'", testFile);
     }
   }
 
   XTHistoryDataSource *hds = [self makeDataSource];
   const NSUInteger nc = [hds numberOfRowsInTableView:nil];
 
-  STAssertEquals(nc, nCommits + 1, @"wrong commit count");
+  XCTAssertEqual(nc, nCommits + 1, @"wrong commit count");
 }
 
 @end

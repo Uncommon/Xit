@@ -54,7 +54,7 @@
     const NSInteger fileCount =
         [flds outlineView:nil numberOfChildrenOfItem:nil];
 
-    STAssertEquals(fileCount, expectedFileCount, @"file count");
+    XCTAssertEqual(fileCount, expectedFileCount, @"file count");
     --expectedFileCount;
   }
 }
@@ -101,13 +101,13 @@
   [self waitForRepoQueue];
 
   const NSInteger fileCount = [flds outlineView:nil numberOfChildrenOfItem:nil];
-  STAssertEquals(fileCount, 3L, nil); // 2 folders plus deleted file1.txt
+  XCTAssertEqual(fileCount, 3L); // 2 folders plus deleted file1.txt
 
   for (int rootIndex = 0; rootIndex < 2; ++rootIndex) {
     NSTreeNode *root = [flds outlineView:nil child:rootIndex ofItem:nil];
     const NSInteger rnf = [flds outlineView:nil numberOfChildrenOfItem:root];
 
-    STAssertEquals(rnf, 3L, nil);
+    XCTAssertEqual(rnf, 3L);
   }
 }
 

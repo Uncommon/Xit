@@ -1,5 +1,5 @@
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 
-@interface XTCategoryTests : SenTestCase
+@interface XTCategoryTests : XCTestCase
 
 @end

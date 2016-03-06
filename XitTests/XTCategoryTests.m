@@ -19,7 +19,7 @@
                                replacementAttributes:obliqueAttributes];
   const NSRange fullRange = NSMakeRange(0, [[string string] length]);
 
-  STAssertEqualObjects([string string], @"Merge branch into master", nil);
+  XCTAssertEqualObjects([string string], @"Merge branch into master");
 
   NSRange effectiveRange;
   NSDictionary *attributes = [string attributesAtIndex:0
@@ -27,38 +27,36 @@
                                                inRange:fullRange];
   NSUInteger start = 0;
 
-  STAssertEquals(effectiveRange.location, start, nil);
-  STAssertEquals(effectiveRange.length, [@"Merge " length], nil);
-  STAssertEquals([attributes count], (NSUInteger) 1, nil);
-  STAssertEqualObjects(systemFont, attributes[NSFontAttributeName], nil);
+  XCTAssertEqual(effectiveRange.location, start);
+  XCTAssertEqual(effectiveRange.length, [@"Merge " length]);
+  XCTAssertEqual([attributes count], (NSUInteger) 1);
+  XCTAssertEqualObjects(systemFont, attributes[NSFontAttributeName]);
   start = effectiveRange.length;
 
   attributes = [string attributesAtIndex:start
                    longestEffectiveRange:&effectiveRange
                                  inRange:fullRange];
-  STAssertEquals(effectiveRange.location, [@"Merge " length], nil);
-  STAssertEquals(effectiveRange.length, [@"branch" length], nil);
-  STAssertEquals([attributes count], (NSUInteger) 2, nil);
-  STAssertEqualObjects(obliqueness, attributes[NSObliquenessAttributeName],
-                       nil);
+  XCTAssertEqual(effectiveRange.location, [@"Merge " length]);
+  XCTAssertEqual(effectiveRange.length, [@"branch" length]);
+  XCTAssertEqual([attributes count], (NSUInteger) 2);
+  XCTAssertEqualObjects(obliqueness, attributes[NSObliquenessAttributeName]);
   start = effectiveRange.location + effectiveRange.length;
 
   attributes = [string attributesAtIndex:start
                    longestEffectiveRange:&effectiveRange
                                  inRange:fullRange];
-  STAssertEquals(effectiveRange.location, [@"Merge branch" length], nil);
-  STAssertEquals(effectiveRange.length, [@" into " length], nil);
-  STAssertEquals([attributes count], (NSUInteger) 1, nil);
+  XCTAssertEqual(effectiveRange.location, [@"Merge branch" length]);
+  XCTAssertEqual(effectiveRange.length, [@" into " length]);
+  XCTAssertEqual([attributes count], (NSUInteger) 1);
   start = effectiveRange.location + effectiveRange.length;
 
   attributes = [string attributesAtIndex:start
                    longestEffectiveRange:&effectiveRange
                                  inRange:fullRange];
-  STAssertEquals(effectiveRange.location, [@"Merge branch into " length], nil);
-  STAssertEquals(effectiveRange.length, [@"master" length], nil);
-  STAssertEquals([attributes count], (NSUInteger) 2, nil);
-  STAssertEqualObjects(obliqueness, attributes[NSObliquenessAttributeName],
-                       nil);
+  XCTAssertEqual(effectiveRange.location, [@"Merge branch into " length]);
+  XCTAssertEqual(effectiveRange.length, [@"master" length]);
+  XCTAssertEqual([attributes count], (NSUInteger) 2);
+  XCTAssertEqualObjects(obliqueness, attributes[NSObliquenessAttributeName]);
 }
 
 @end

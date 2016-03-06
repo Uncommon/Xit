@@ -27,11 +27,11 @@
   [defaultManager removeItemAtPath:remoteRepoPath error:nil];
 
   if ([defaultManager fileExistsAtPath:repoPath]) {
-    STFail(@"tearDown %@ FAIL!!", repoPath);
+    XCTFail(@"tearDown %@ FAIL!!", repoPath);
   }
 
   if ([defaultManager fileExistsAtPath:remoteRepoPath]) {
-    STFail(@"tearDown %@ FAIL!!", remoteRepoPath);
+    XCTFail(@"tearDown %@ FAIL!!", remoteRepoPath);
   }
 
   NSLog(@"tearDown ok");
@@ -48,7 +48,7 @@
 
 - (void)addInitialRepoContent
 {
-  STAssertTrue([self commitNewTextFile:@"file1.txt" content:@"some text"], nil);
+  XCTAssertTrue([self commitNewTextFile:@"file1.txt" content:@"some text"]);
   file1Path = [repoPath stringByAppendingPathComponent:@"file1.txt"];
 }
 
@@ -102,12 +102,12 @@
   XTRepository *repo = [[XTRepository alloc] initWithURL:repoURL];
 
   if (![repo initializeRepository]) {
-    STFail(@"initializeRepository '%@' FAIL!!", repoName);
+    XCTFail(@"initializeRepository '%@' FAIL!!", repoName);
   }
 
   if (![fileManager
           fileExistsAtPath:[NSString stringWithFormat:@"%@/.git", repoName]]) {
-    STFail(@"%@/.git NOT Found!!", repoName);
+    XCTFail(@"%@/.git NOT Found!!", repoName);
   }
 
   return repo;

@@ -1,4 +1,4 @@
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 #import <WebKit/WebKit.h>
 #import "XTCommitHeaderViewController.h"
 #import "XTRepository+Parsing.h"
@@ -7,7 +7,7 @@
 NSDate *authorDate = nil;
 NSDate *commitDate = nil;
 
-@interface XTCommitHeaderTest : SenTestCase
+@interface XTCommitHeaderTest : XCTestCase
 {
   CFRunLoopRef runLoop;
 }
@@ -106,15 +106,15 @@ NSDate *commitDate = nil;
       [dateFormatter stringFromDate:authorDate],
       [dateFormatter stringFromDate:commitDate]];
   
-  STAssertNil(error, nil);
+  XCTAssertNil(error);
 
   NSArray *lines = [html componentsSeparatedByString:@"\n"];
   NSArray *expectedLines = [expectedHtml componentsSeparatedByString:@"\n"];
 
   // Some differences may be due to changes in WebKit.
-  STAssertEquals([lines count], [expectedLines count], nil);
+  XCTAssertEqual([lines count], [expectedLines count]);
   for (NSUInteger i = 0; i < [lines count]; ++i)
-    STAssertEqualObjects(lines[i], expectedLines[i], @"line %d", i);
+    XCTAssertEqualObjects(lines[i], expectedLines[i], @"line %d", i);
 }
 
 @end
