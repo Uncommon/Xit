@@ -151,15 +151,16 @@
   [ustgds setRepo:repository];
   [self waitForRepoQueue];
 
-  NSUInteger nc = [ustgds numberOfRowsInTableView:nil];
-  XCTAssertTrue((nc == 1), @"found %d commits", nc);
+  NSTableView *tableView = [[NSTableView alloc] init];
+  unsigned long nc = [ustgds numberOfRowsInTableView:tableView];
+  XCTAssertTrue((nc == 1), @"found %lu commits", nc);
 
   XTStagedDataSource *stgds = [[XTStagedDataSource alloc] init];
   [stgds setRepo:repository];
   [self waitForRepoQueue];
 
-  nc = [stgds numberOfRowsInTableView:nil];
-  XCTAssertTrue((nc == 0), @"found %d commits", nc);
+  nc = [stgds numberOfRowsInTableView:tableView];
+  XCTAssertTrue((nc == 0), @"found %lu commits", nc);
 
   XTStageViewController *svc = [[XTStageViewController alloc] init];
   [svc setRepo:repository];
@@ -169,14 +170,14 @@
   [ustgds reload];
   [self waitForRepoQueue];
 
-  nc = [ustgds numberOfRowsInTableView:nil];
-  XCTAssertTrue((nc == 1), @"found %d commits", nc);
+  nc = [ustgds numberOfRowsInTableView:tableView];
+  XCTAssertTrue((nc == 1), @"found %lu commits", nc);
 
   [stgds reload];
   [self waitForRepoQueue];
 
-  nc = [stgds numberOfRowsInTableView:nil];
-  XCTAssertTrue((nc == 1), @"found %d commits", nc);
+  nc = [stgds numberOfRowsInTableView:tableView];
+  XCTAssertTrue((nc == 1), @"found %lu commits", nc);
 
   [svc showStageFile:(stgds.items)[0]];  // click on stage table
   [svc unstageChunk:0];                  // click on unstage button
@@ -184,8 +185,8 @@
   [stgds reload];
   [self waitForRepoQueue];
 
-  nc = [stgds numberOfRowsInTableView:nil];
-  XCTAssertTrue((nc == 0), @"found %d commits", nc);
+  nc = [stgds numberOfRowsInTableView:tableView];
+  XCTAssertTrue((nc == 0), @"found %lu commits", nc);
 }
 
 - (void)testXTDataSources
@@ -220,8 +221,9 @@
   [ustgds setRepo:repository];
   [self waitForRepoQueue];
 
-  NSUInteger nc = [ustgds numberOfRowsInTableView:nil];
-  XCTAssertTrue((nc == 5), @"found %d commits", nc);
+  NSTableView *tableView = [[NSTableView alloc] init];
+  NSUInteger nc = [ustgds numberOfRowsInTableView:tableView];
+  XCTAssertTrue((nc == 5), @"found %lu commits", (unsigned long)nc);
 
   NSDictionary *expected =
       @{@"file_to_mod.txt" : @"M", @"file_to_move.txt" : @"D",
@@ -242,7 +244,7 @@
   [stgds setRepo:repository];
   [self waitForRepoQueue];
 
-  XCTAssertEqual([stgds numberOfRowsInTableView:nil], 5L, @"");
+  XCTAssertEqual([stgds numberOfRowsInTableView:tableView], 5L, @"");
 
   expected = @{@"file_to_mod.txt" : @"M", @"file_to_move.txt" : @"D",
                @"file_moved.txt" : @"A", @"file_to_rm.txt" : @"D",

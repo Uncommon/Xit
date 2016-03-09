@@ -41,6 +41,7 @@
                             error:NULL];
   }
 
+  NSOutlineView *outlineView = [[NSOutlineView alloc] init];
   XTHistoryDataSource *hds = [self makeDataSource];
   NSInteger expectedFileCount = 11;
 
@@ -52,7 +53,7 @@
     [self waitForRepoQueue];
 
     const NSInteger fileCount =
-        [flds outlineView:nil numberOfChildrenOfItem:nil];
+        [flds outlineView:outlineView numberOfChildrenOfItem:nil];
 
     XCTAssertEqual(fileCount, expectedFileCount, @"file count");
     --expectedFileCount;
@@ -95,17 +96,18 @@
   XTHistoryItem *item = (XTHistoryItem *)(hds.items)[0];
   repository.selectedCommit = item.sha;
 
+  NSOutlineView *outlineView = [[NSOutlineView alloc] init];
   XTFileListDataSource *flds = [[XTFileListDataSource alloc] init];
 
   flds.repository = repository;
   [self waitForRepoQueue];
 
-  const NSInteger fileCount = [flds outlineView:nil numberOfChildrenOfItem:nil];
+  const NSInteger fileCount = [flds outlineView:outlineView numberOfChildrenOfItem:nil];
   XCTAssertEqual(fileCount, 3L); // 2 folders plus deleted file1.txt
 
   for (int rootIndex = 0; rootIndex < 2; ++rootIndex) {
-    NSTreeNode *root = [flds outlineView:nil child:rootIndex ofItem:nil];
-    const NSInteger rnf = [flds outlineView:nil numberOfChildrenOfItem:root];
+    NSTreeNode *root = [flds outlineView:outlineView child:rootIndex ofItem:nil];
+    const NSInteger rnf = [flds outlineView:outlineView numberOfChildrenOfItem:root];
 
     XCTAssertEqual(rnf, 3L);
   }

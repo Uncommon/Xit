@@ -11,6 +11,7 @@
 - (void)testInitialCommit
 {
   XTFileChangesDataSource *dataSource = [[XTFileChangesDataSource alloc] init];
+  NSOutlineView *outlineView = [[NSOutlineView alloc] init];
 
   repository.selectedCommit = repository.headSHA;
   dataSource.repository = repository;
@@ -18,12 +19,12 @@
   WaitForQueue(dispatch_get_main_queue());
 
   XCTAssertEqual(
-      [dataSource outlineView:nil numberOfChildrenOfItem:nil], 1L);
+      [dataSource outlineView:outlineView numberOfChildrenOfItem:nil], 1L);
 
-  id item1 = [dataSource outlineView:nil child:0 ofItem:nil];
+  id item1 = [dataSource outlineView:outlineView child:0 ofItem:nil];
 
   XCTAssertEqualObjects([dataSource pathForItem:item1], @"file1.txt");
-  XCTAssertFalse([dataSource outlineView:nil isItemExpandable:item1]);
+  XCTAssertFalse([dataSource outlineView:outlineView isItemExpandable:item1]);
   XCTAssertEqual([dataSource changeForItem:item1], XitChangeAdded);
 }
 

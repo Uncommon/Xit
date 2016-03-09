@@ -128,8 +128,9 @@
     }
   }
 
+  NSTableView *tableView = [[NSTableView alloc] init];
   XTHistoryDataSource *hds = [self makeDataSource];
-  const NSUInteger nc = [hds numberOfRowsInTableView:nil];
+  const NSUInteger nc = [hds numberOfRowsInTableView:tableView];
 
   XCTAssertEqual(nc, nCommits + 1, @"wrong commit count");
 }

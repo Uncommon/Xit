@@ -114,7 +114,8 @@ NSDate *commitDate = nil;
   // Some differences may be due to changes in WebKit.
   XCTAssertEqual([lines count], [expectedLines count]);
   for (NSUInteger i = 0; i < [lines count]; ++i)
-    XCTAssertEqualObjects(lines[i], expectedLines[i], @"line %d", i);
+    XCTAssertEqualObjects(lines[i], expectedLines[i],
+                          @"line %d", (unsigned long)i);
 }
 
 @end
