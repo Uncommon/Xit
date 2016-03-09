@@ -292,7 +292,7 @@
 		C3FA471313D0F8E200AC4F9B /* XTDocument.m */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTDocument.m; sourceTree = "<group>"; tabWidth = 2; };
 		C3FA471613D0F8E200AC4F9B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/XTDocument.xib; sourceTree = "<group>"; };
 		C3FA471913D0F8E300AC4F9B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		C3FA472013D0F8E300AC4F9B /* XitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3FA472013D0F8E300AC4F9B /* XitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3FA472613D0F8E300AC4F9B /* XitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "XitTests-Info.plist"; sourceTree = "<group>"; };
 		C3FA472813D0F8E300AC4F9B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C3FA472A13D0F8E300AC4F9B /* XitTests-Prefix.pch */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = "XitTests-Prefix.pch"; sourceTree = "<group>"; tabWidth = 4; };
@@ -578,7 +578,7 @@
 			isa = PBXGroup;
 			children = (
 				C3FA46FC13D0F8E200AC4F9B /* Xit.app */,
-				C3FA472013D0F8E300AC4F9B /* XitTests.octest */,
+				C3FA472013D0F8E300AC4F9B /* XitTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -756,7 +756,6 @@
 				C3FA471B13D0F8E300AC4F9B /* Sources */,
 				C3FA471C13D0F8E300AC4F9B /* Frameworks */,
 				C3FA471D13D0F8E300AC4F9B /* Resources */,
-				C3FA471E13D0F8E300AC4F9B /* ShellScript */,
 				89BEB8BB157B586F00FED57B /* CopyFiles */,
 			);
 			buildRules = (
@@ -766,7 +765,7 @@
 			);
 			name = XitTests;
 			productName = XitTests;
-			productReference = C3FA472013D0F8E300AC4F9B /* XitTests.octest */;
+			productReference = C3FA472013D0F8E300AC4F9B /* XitTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -902,19 +901,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "KEYWORDS=\"TODO|FIXME|\\?\\?\\?:|\\!\\!\\!:\"\nfind ${SRCROOT}/Xit ${SRCROOT}/XitTests \\( -name \"*.h\" -or -name \"*.m\" \\) -print0 | \\\nxargs -0 egrep --with-filename --line-number --only-matching \"($KEYWORDS).*\\$\" | \\\nperl -p -e \"s/($KEYWORDS)/ warning: \\$1/\"";
-		};
-		C3FA471E13D0F8E300AC4F9B /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
