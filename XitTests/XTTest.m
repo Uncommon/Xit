@@ -116,6 +116,7 @@
 - (void)waitForRepoQueue
 {
   WaitForQueue(repository.queue);
+  WaitForQueue(dispatch_get_main_queue());
 }
 
 - (BOOL)writeTextToFile1:(NSString *)text

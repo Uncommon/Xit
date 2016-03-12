@@ -18,7 +18,6 @@
 
   [result setRepo:repository];
   [self waitForRepoQueue];
-  WaitForQueue(dispatch_get_main_queue());
   return result;
 }
 

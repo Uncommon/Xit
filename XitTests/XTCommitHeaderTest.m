@@ -24,7 +24,7 @@ NSDate *commitDate = nil;
 
 @interface FakeGTRepository : NSObject
 
-- (id)lookupObjectBySHA:(NSString*)sha error:(NSError**)error;
+- (id)lookUpObjectBySHA:(NSString*)sha error:(NSError**)error;
 
 @end
 
@@ -92,7 +92,7 @@ NSDate *commitDate = nil;
   NSString *html = [webView stringByEvaluatingJavaScriptFromString:
       @"document.getElementsByTagName('html')[0].innerHTML"];
   NSBundle *testBundle =
-      [NSBundle bundleWithIdentifier:@"com.laullon.XitTests"];
+      [NSBundle bundleWithIdentifier:@"com.uncommonplace.XitTests"];
   NSURL *expectedURL = [testBundle
       URLForResource:@"expected header" withExtension:@"html"];
   NSStringEncoding encoding;
@@ -152,7 +152,7 @@ NSDate *commitDate = nil;
 
 @implementation FakeGTRepository
 
-- (id)lookupObjectBySHA:(NSString*)sha error:(NSError**)error
+- (id)lookUpObjectBySHA:(NSString*)sha error:(NSError**)error
 {
   FakeCommit *commit = [[FakeCommit alloc] init];
 
