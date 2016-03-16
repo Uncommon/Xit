@@ -8,7 +8,9 @@
 {
   NSError *error = nil;
 
-  if (![GTRepository initializeEmptyRepositoryAtFileURL:_repoURL error:&error])
+  if (![GTRepository initializeEmptyRepositoryAtFileURL:_repoURL
+                                                options:nil
+                                                  error:&error])
     return NO;
   // TODO: Why are we initializing a second GTRepository here?
   _gtRepo = [GTRepository repositoryWithURL:_repoURL error:&error];
@@ -55,10 +57,7 @@
   return [self executeWritingBlock:^BOOL{
     NSString *fullBranch =
         [[GTBranch localNamePrefix] stringByAppendingString:name];
-    GTReference *ref = [GTReference
-        referenceByLookingUpReferencedNamed:fullBranch
-        inRepository:_gtRepo
-        error:error];
+    GTReference *ref = [_gtRepo lookUpReferenceWithName:fullBranch error:error];
     GTBranch *branch = [GTBranch branchWithReference:ref repository:_gtRepo];
 
     if (*error != nil)
@@ -118,13 +117,10 @@
     _cachedHeadRef = nil;
     _cachedHeadSHA = nil;
 
-    const GTCheckoutStrategyType strategy = GTCheckoutStrategySafeCreate;
+    const GTCheckoutStrategyType strategy = GTCheckoutStrategySafe;
     NSString *branchRef = [[GTBranch localNamePrefix]
         stringByAppendingPathComponent:branch];
-    GTReference *ref = [GTReference
-        referenceByLookingUpReferencedNamed:branchRef
-                               inRepository:_gtRepo
-                                      error:resultError];
+    GTReference *ref = [_gtRepo lookUpReferenceWithName:branchRef error:resultError];
 
     if (ref != nil)
       return [_gtRepo checkoutReference:ref
