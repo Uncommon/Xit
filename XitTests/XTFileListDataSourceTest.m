@@ -102,14 +102,16 @@
   flds.repository = repository;
   [self waitForRepoQueue];
 
-  const NSInteger fileCount = [flds outlineView:outlineView numberOfChildrenOfItem:nil];
+  const NSInteger fileCount = [flds outlineView:outlineView
+                         numberOfChildrenOfItem:nil];
   XCTAssertEqual(fileCount, 3L); // 2 folders plus deleted file1.txt
 
   for (int rootIndex = 0; rootIndex < 2; ++rootIndex) {
     NSTreeNode *root = [flds outlineView:outlineView child:rootIndex ofItem:nil];
-    const NSInteger rnf = [flds outlineView:outlineView numberOfChildrenOfItem:root];
+    const NSInteger rnf =
+        [flds outlineView:outlineView numberOfChildrenOfItem:root];
 
-    XCTAssertEqual(rnf, 3L);
+    XCTAssertEqual(rnf, 3L, @"item %i", rootIndex);
   }
 }
 

@@ -173,9 +173,8 @@ NSString *XTHeaderContentKey = @"content";
                               error:&error
                               block:^BOOL(GTTreeEntry *entry, NSString *root,
                                           BOOL *stop) {
-      if (git_tree_entry_type(entry.git_tree_entry) != GIT_OBJ_TREE)
-        [result addObject:[root stringByAppendingPathComponent:entry.name]];
-      return 0;
+      [result addObject:[root stringByAppendingPathComponent:entry.name]];
+      return YES;  // Don't go into descendants
   }];
   return result;
 }
