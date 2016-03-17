@@ -115,7 +115,7 @@ NSDate *commitDate = nil;
   XCTAssertEqual([lines count], [expectedLines count]);
   for (NSUInteger i = 0; i < [lines count]; ++i)
     XCTAssertEqualObjects(lines[i], expectedLines[i],
-                          @"line %d", (unsigned long)i);
+                          @"line %lu", (unsigned long)i);
 }
 
 @end

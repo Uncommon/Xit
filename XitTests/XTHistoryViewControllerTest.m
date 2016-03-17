@@ -55,7 +55,8 @@
 
   [controller.sideBarDS setRepo:repository];
   [[mockSidebar stub] reloadData];
-  [[mockSidebar expect] setDelegate:controller.sideBarDS];
+  // Cast because the compiler assumes the wrong setDelegate: method
+  [(XTSideBarOutlineView*)[mockSidebar expect] setDelegate:controller.sideBarDS];
   [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData)
                                          withObject:nil
                                       waitUntilDone:NO];
