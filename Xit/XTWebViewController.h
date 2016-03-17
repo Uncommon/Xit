@@ -1,11 +1,11 @@
 #import <Cocoa/Cocoa.h>
-
-@class WebView;
+#import <Webkit/WebKit.h>
 
 /**
   Base class for web view controllers, implementing common delegate methods.
 **/
-@interface XTWebViewController : NSViewController {
+@interface XTWebViewController : NSViewController
+    <WebFrameLoadDelegate, WebUIDelegate> {
   IBOutlet WebView *_webView;
 }
 
@@ -16,5 +16,6 @@
 + (NSString*)escapeText:(NSString*)text;
 
 - (void)loadNotice:(NSString*)text;
+- (void)webView:(WebView*)sender didFinishLoadForFrame:(WebFrame*)frame;
 
 @end

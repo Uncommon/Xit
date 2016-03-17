@@ -19,7 +19,7 @@
 
 @end
 
-@interface XTHistoryViewControllerTestNoRepo : SenTestCase
+@interface XTHistoryViewControllerTestNoRepo : XCTestCase
 
 @end
 
@@ -45,7 +45,7 @@
 {
   [repository start];
   if (![repository createBranch:@"b1"]) {
-    STFail(@"Create Branch 'b1'");
+    XCTFail(@"Create Branch 'b1'");
   }
 
   id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
@@ -55,7 +55,8 @@
 
   [controller.sideBarDS setRepo:repository];
   [[mockSidebar stub] reloadData];
-  [[mockSidebar expect] setDelegate:controller.sideBarDS];
+  // Cast because the compiler assumes the wrong setDelegate: method
+  [(XTSideBarOutlineView*)[mockSidebar expect] setDelegate:controller.sideBarDS];
   [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData)
                                          withObject:nil
                                       waitUntilDone:NO];
@@ -99,20 +100,20 @@
   [controller.sideBarDS outlineView:mockSidebar
              numberOfChildrenOfItem:nil];  // initialize sidebarDS->outline
   [self waitForRepoQueue];
-  STAssertEqualObjects([repository currentBranch], @"b1", @"");
+  XCTAssertEqualObjects([repository currentBranch], @"b1", @"");
   [controller selectBranch:@"master"];
-  STAssertEqualObjects([controller selectedBranch], @"master", @"");
+  XCTAssertEqualObjects([controller selectedBranch], @"master", @"");
   [controller checkOutBranch:nil];
   [self waitForRepoQueue];
-  STAssertEqualObjects([repository currentBranch], @"master", @"");
+  XCTAssertEqualObjects([repository currentBranch], @"master", @"");
 }
 
 - (void)makeTwoStashes
 {
-  STAssertTrue([self writeTextToFile1:@"second text"], @"");
-  STAssertTrue([repository saveStash:@"s1"], @"");
-  STAssertTrue([self writeTextToFile1:@"third text"], @"");
-  STAssertTrue([repository saveStash:@"s2"], @"");
+  XCTAssertTrue([self writeTextToFile1:@"second text"], @"");
+  XCTAssertTrue([repository saveStash:@"s1"], @"");
+  XCTAssertTrue([self writeTextToFile1:@"third text"], @"");
+  XCTAssertTrue([repository saveStash:@"s2"], @"");
 }
 
 - (void)assertStashes:(NSArray *)expectedStashes
@@ -129,7 +130,7 @@
   [repository readStashesWithBlock:^(NSString *commit, NSString *name) {
     [stashes addObject:name];
   }];
-  STAssertEqualObjects(stashes, composedStashes, @"");
+  XCTAssertEqualObjects(stashes, composedStashes, @"");
 }
 
 - (void)doStashAction:(SEL)action
@@ -168,8 +169,8 @@
                                              encoding:NSASCIIStringEncoding
                                                 error:&error];
 
-  STAssertNil(error, @"");
-  STAssertEqualObjects(text, expectedText, @"");
+  XCTAssertNil(error, @"");
+  XCTAssertEqualObjects(text, expectedText, @"");
 }
 
 - (void)testPopStash1
@@ -236,8 +237,8 @@
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] contextMenuRow];
   [[[mockSidebar expect] andReturn:branchItem] itemAtRow:row];
 
-  STAssertTrue([controller validateMenuItem:item], nil);
-  STAssertEqualObjects([item title], @"Merge branch into master", nil);
+  XCTAssertTrue([controller validateMenuItem:item]);
+  XCTAssertEqualObjects([item title], @"Merge branch into master");
 }
 
 - (void)testMergeDisabled
@@ -257,8 +258,8 @@
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] contextMenuRow];
   [[[mockSidebar expect] andReturn:branchItem] itemAtRow:row];
 
-  STAssertFalse([controller validateMenuItem:item], nil);
-  STAssertEqualObjects([item title], @"Merge", nil);
+  XCTAssertFalse([controller validateMenuItem:item]);
+  XCTAssertEqualObjects([item title], @"Merge");
 }
 
 - (void)statusUpdated:(NSNotification *)note
@@ -270,8 +271,8 @@
 {
   NSString *file2Name = @"file2.txt";
 
-  STAssertTrue([repository createBranch:@"task"], nil);
-  STAssertTrue([self commitNewTextFile:file2Name content:@"branch text"], nil);
+  XCTAssertTrue([repository createBranch:@"task"]);
+  XCTAssertTrue([self commitNewTextFile:file2Name content:@"branch text"]);
 
   id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
   XTHistoryViewController *controller =
@@ -290,34 +291,32 @@
   [[[mockSidebar expect] andReturn:masterItem] itemAtRow:row];
   [controller mergeBranch:nil];
   WaitForQueue(dispatch_get_main_queue());
-  STAssertEqualObjects([self.statusData valueForKey:XTStatusTextKey],
-                       @"Merged master into task", nil);
+  XCTAssertEqualObjects([self.statusData valueForKey:XTStatusTextKey],
+                       @"Merged master into task");
 
   NSString *file2Path = [repoPath stringByAppendingPathComponent:file2Name];
 
-  STAssertTrue([[NSFileManager defaultManager] fileExistsAtPath:file1Path],
-               nil);
-  STAssertTrue([[NSFileManager defaultManager] fileExistsAtPath:file2Path],
-               nil);
+  XCTAssertTrue([[NSFileManager defaultManager] fileExistsAtPath:file1Path]);
+  XCTAssertTrue([[NSFileManager defaultManager] fileExistsAtPath:file2Path]);
 }
 
 - (void)testMergeFailure
 {
-  STAssertTrue([repository createBranch:@"task"], nil);
-  STAssertTrue([self writeTextToFile1:@"conflicting branch"], nil);
-  STAssertTrue([repository stageFile:file1Path], nil);
-  STAssertTrue([repository commitWithMessage:@"conflicting commit"
+  XCTAssertTrue([repository createBranch:@"task"]);
+  XCTAssertTrue([self writeTextToFile1:@"conflicting branch"]);
+  XCTAssertTrue([repository stageFile:file1Path]);
+  XCTAssertTrue([repository commitWithMessage:@"conflicting commit"
                                        amend:NO
                                  outputBlock:NULL
-                                       error:NULL], nil);
+                                       error:NULL]);
 
-  STAssertTrue([repository checkout:@"master" error:NULL], nil);
-  STAssertTrue([self writeTextToFile1:@"conflicting master"], nil);
-  STAssertTrue([repository stageFile:file1Path], nil);
-  STAssertTrue([repository commitWithMessage:@"conflicting commit 2"
+  XCTAssertTrue([repository checkout:@"master" error:NULL]);
+  XCTAssertTrue([self writeTextToFile1:@"conflicting master"]);
+  XCTAssertTrue([repository stageFile:file1Path]);
+  XCTAssertTrue([repository commitWithMessage:@"conflicting commit 2"
                                        amend:NO
                                  outputBlock:NULL
-                                       error:NULL], nil);
+                                       error:NULL]);
 
   id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
   XTHistoryViewController *controller =
@@ -336,8 +335,8 @@
   [[[mockSidebar expect] andReturn:masterItem] itemAtRow:row];
   [controller mergeBranch:nil];
   WaitForQueue(dispatch_get_main_queue());
-  STAssertEqualObjects([self.statusData valueForKey:XTStatusTextKey],
-                       @"Merge failed", nil);
+  XCTAssertEqualObjects([self.statusData valueForKey:XTStatusTextKey],
+                       @"Merge failed");
 }
 
 @end
@@ -365,7 +364,7 @@
   [[[mockRepo expect] andReturn:branchName] currentBranch];
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] contextMenuRow];
   [[[mockSidebar expect] andReturn:branchItem] itemAtRow:row];
-  STAssertFalse([controller validateMenuItem:menuItem], nil);
+  XCTAssertFalse([controller validateMenuItem:menuItem]);
   [mockRepo verify];
   [mockSidebar verify];
 }
@@ -392,7 +391,7 @@
   [[[mockRepo expect] andReturn:currentBranchName] currentBranch];
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] contextMenuRow];
   [[[mockSidebar expect] andReturn:branchItem] itemAtRow:row];
-  STAssertTrue([controller validateMenuItem:menuItem], nil);
+  XCTAssertTrue([controller validateMenuItem:menuItem]);
   [mockRepo verify];
   [mockSidebar verify];
 }

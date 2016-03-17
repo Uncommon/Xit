@@ -27,12 +27,12 @@
 		<dict>
 			<key>CFBundleTypeName</key>
 			<string>folder</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>public.directory</string>
 			</array>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
 			<key>NSDocumentClass</key>
 			<string>XTDocument</string>
 		</dict>
@@ -42,7 +42,7 @@
 	<key>CFBundleIconFile</key>
 	<string>Xit</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.laullon.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

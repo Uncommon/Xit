@@ -41,24 +41,25 @@
   [repository start];
 
   if (![repository createBranch:@"b1"])
-    STFail(@"Create Branch 'b1'");
+    XCTFail(@"Create Branch 'b1'");
 
   NSArray *titles, *expectedTitles = @[ @"b1", @"master" ];
+  NSOutlineView *outlineView = [[NSOutlineView alloc] init];
 
   // Sometimes it reloads too soon, so give it a few tries.
   for (int i = 0; i < 5; ++i) {
     runLoop = CFRunLoopGetCurrent();
     if (!CFRunLoopRunWithTimeout(10))
-      STFail(@"TimeOut on reload");
+      XCTFail(@"TimeOut on reload");
     runLoop = NULL;
 
-    id branches = [sbds outlineView:nil child:XTBranchesGroupIndex ofItem:nil];
+    id branches = [sbds outlineView:outlineView child:XTBranchesGroupIndex ofItem:nil];
 
     titles = [[branches children] valueForKey:@"title"];
     if ([titles isEqual:expectedTitles])
       break;
   }
-  STAssertEqualObjects(titles, expectedTitles, nil);
+  XCTAssertEqualObjects(titles, expectedTitles);
 
   [sbds removeObserver:self forKeyPath:@"reload"];
   [repository stop];
@@ -75,21 +76,22 @@
 
 - (void)testStashes
 {
-  STAssertTrue([self writeTextToFile1:@"second text"], @"");
-  STAssertTrue([repository saveStash:@"s1"], @"");
-  STAssertTrue([self writeTextToFile1:@"third text"], @"");
-  STAssertTrue([repository saveStash:@"s2"], @"");
+  XCTAssertTrue([self writeTextToFile1:@"second text"], @"");
+  XCTAssertTrue([repository saveStash:@"s1"], @"");
+  XCTAssertTrue([self writeTextToFile1:@"third text"], @"");
+  XCTAssertTrue([repository saveStash:@"s2"], @"");
 
+  NSOutlineView *outlineView = [[NSOutlineView alloc] init];
   XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
   [sbds setRepo:repository];
   [sbds reload];
   [self waitForRepoQueue];
 
-  id stashes = [sbds outlineView:nil child:XTStashesGroupIndex ofItem:nil];
-  STAssertTrue((stashes != nil), @"no stashes");
+  id stashes = [sbds outlineView:outlineView child:XTStashesGroupIndex ofItem:nil];
+  XCTAssertTrue((stashes != nil), @"no stashes");
 
-  NSInteger stashCount = [sbds outlineView:nil numberOfChildrenOfItem:stashes];
-  STAssertEquals(stashCount, 2L, @"");
+  NSInteger stashCount = [sbds outlineView:outlineView numberOfChildrenOfItem:stashes];
+  XCTAssertEqual(stashCount, 2L, @"");
 }
 
 - (void)testRemotes
@@ -97,15 +99,15 @@
   [self makeRemoteRepo];
 
   if (![repository checkout:@"master" error:NULL]) {
-    STFail(@"checkout master");
+    XCTFail(@"checkout master");
   }
 
   if (![repository createBranch:@"b1"]) {
-    STFail(@"Create Branch 'b1'");
+    XCTFail(@"Create Branch 'b1'");
   }
 
   if (![repository addRemote:@"origin" withUrl:remoteRepoPath]) {
-    STFail(@"add origin '%@'", remoteRepoPath);
+    XCTFail(@"add origin '%@'", remoteRepoPath);
   }
 
   NSError *error = nil;
@@ -113,12 +115,12 @@
 
   [remoteRepository executeGitWithArgs:configArgs writes:NO error:&error];
   if (error != nil) {
-    STFail(@"Ignore denyCurrentBranch");
+    XCTFail(@"Ignore denyCurrentBranch");
     return;
   }
 
   if (![repository push:@"origin"]) {
-    STFail(@"push origin");
+    XCTFail(@"push origin");
     return;
   }
 
@@ -128,30 +130,32 @@
   [sbds reload];
   [self waitForRepoQueue];
 
-  id remotes = [sbds outlineView:nil child:XTRemotesGroupIndex ofItem:nil];
-  STAssertTrue((remotes != nil), @"no remotes");
+  NSOutlineView *outlineView = [[NSOutlineView alloc] init];
+  id remotes = [sbds outlineView:outlineView child:XTRemotesGroupIndex ofItem:nil];
+  XCTAssertTrue((remotes != nil), @"no remotes");
 
-  NSInteger nr = [sbds outlineView:nil numberOfChildrenOfItem:remotes];
-  STAssertTrue((nr == 1), @"found %d remotes FAIL", nr);
+  NSInteger nr = [sbds outlineView:outlineView numberOfChildrenOfItem:remotes];
+  XCTAssertTrue((nr == 1), @"found %ld remotes FAIL", (long)nr);
 
   // BRANCHES
-  id remote = [sbds outlineView:nil child:0 ofItem:remotes];
+  id remote = [sbds outlineView:outlineView child:0 ofItem:remotes];
   NSTableCellView *remoteView =
       (NSTableCellView *)[sbds outlineView:(NSOutlineView *)sov
                         viewForTableColumn:nil
                                       item:remote];
   NSString *rName = remoteView.textField.stringValue;
-  STAssertTrue([rName isEqualToString:@"origin"], @"found remote '%@'", rName);
+  XCTAssertTrue([rName isEqualToString:@"origin"], @"found remote '%@'", rName);
 
-  NSInteger nb = [sbds outlineView:nil numberOfChildrenOfItem:remote];
-  STAssertTrue((nb == 2), @"found %d branches FAIL", nb);
+  NSInteger nb = [sbds outlineView:outlineView numberOfChildrenOfItem:remote];
+  XCTAssertTrue((nb == 2), @"found %ld branches FAIL", (long)nb);
 
   bool branchB1Found = false;
   bool branchMasterFound = false;
+  
   for (int n = 0; n < nb; n++) {
-    id branch = [sbds outlineView:nil child:n ofItem:remote];
-    BOOL isExpandable = [sbds outlineView:nil isItemExpandable:branch];
-    STAssertTrue(isExpandable == NO, @"Branches must be no Expandable");
+    id branch = [sbds outlineView:outlineView child:n ofItem:remote];
+    BOOL isExpandable = [sbds outlineView:outlineView isItemExpandable:branch];
+    XCTAssertTrue(isExpandable == NO, @"Branches must be no Expandable");
 
     NSTableCellView *branchView =
         (NSTableCellView *)[sbds outlineView:(NSOutlineView *)sov
@@ -164,43 +168,44 @@
       branchB1Found = YES;
     }
   }
-  STAssertTrue(branchMasterFound, @"Branch 'master' Not found");
-  STAssertTrue(branchB1Found, @"Branch 'b1' Not found");
+  XCTAssertTrue(branchMasterFound, @"Branch 'master' Not found");
+  XCTAssertTrue(branchB1Found, @"Branch 'b1' Not found");
 }
 
 - (void)testBranchesAndTags
 {
   if (![repository createBranch:@"b1"]) {
-    STFail(@"Create Branch 'b1'");
+    XCTFail(@"Create Branch 'b1'");
   }
 
   if (![repository createTag:@"t1" withMessage:@"msg"]) {
-    STFail(@"Create Tag 't1'");
+    XCTFail(@"Create Tag 't1'");
   }
 
+  NSOutlineView *outlineView = [[NSOutlineView alloc] init];
   MockSidebarOutlineView *sov = [[MockSidebarOutlineView alloc] init];
   XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
   [sbds setRepo:repository];
   [sbds reload];
   [self waitForRepoQueue];
 
-  NSInteger nr = [sbds outlineView:nil numberOfChildrenOfItem:nil];
-  STAssertTrue((nr == 5), @"found %d roots FAIL", nr);
+  NSInteger nr = [sbds outlineView:outlineView numberOfChildrenOfItem:nil];
+  XCTAssertTrue((nr == 5), @"found %ld roots FAIL", (long)nr);
 
   // TAGS
-  id tags = [sbds outlineView:nil child:XTTagsGroupIndex ofItem:nil];
-  STAssertNotNil(tags, nil);
+  id tags = [sbds outlineView:outlineView child:XTTagsGroupIndex ofItem:nil];
+  XCTAssertNotNil(tags);
 
-  NSInteger nt = [sbds outlineView:nil numberOfChildrenOfItem:tags];
-  STAssertTrue((nt == 1), @"found %d tags FAIL", nt);
+  NSInteger nt = [sbds outlineView:outlineView numberOfChildrenOfItem:tags];
+  XCTAssertTrue((nt == 1), @"found %ld tags FAIL", (long)nt);
 
   bool tagT1Found = false;
   for (int n = 0; n < nt; n++) {
-    XTSideBarItem *tag = [sbds outlineView:nil child:n ofItem:tags];
-    STAssertTrue(tag.sha != Nil, @"Tag '%@' must have sha", tag.title);
+    XTSideBarItem *tag = [sbds outlineView:outlineView child:n ofItem:tags];
+    XCTAssertTrue(tag.sha != Nil, @"Tag '%@' must have sha", tag.title);
 
-    BOOL isExpandable = [sbds outlineView:nil isItemExpandable:tag];
-    STAssertTrue(isExpandable == NO, @"Tags must be no Expandable");
+    BOOL isExpandable = [sbds outlineView:outlineView isItemExpandable:tag];
+    XCTAssertTrue(isExpandable == NO, @"Tags must be no Expandable");
 
     NSTableCellView *view =
         (NSTableCellView *)[sbds outlineView:(NSOutlineView *)sov
@@ -210,23 +215,23 @@
       tagT1Found = YES;
     }
   }
-  STAssertTrue(tagT1Found, @"Tag 't1' Not found");
+  XCTAssertTrue(tagT1Found, @"Tag 't1' Not found");
 
   // BRANCHES
-  id branches = [sbds outlineView:nil child:XTBranchesGroupIndex ofItem:nil];
-  STAssertTrue((branches != nil), @"no branches FAIL");
+  id branches = [sbds outlineView:outlineView child:XTBranchesGroupIndex ofItem:nil];
+  XCTAssertTrue((branches != nil), @"no branches FAIL");
 
-  NSInteger nb = [sbds outlineView:nil numberOfChildrenOfItem:branches];
-  STAssertTrue((nb == 2), @"found %d branches FAIL", nb);
+  NSInteger nb = [sbds outlineView:outlineView numberOfChildrenOfItem:branches];
+  XCTAssertTrue((nb == 2), @"found %ld branches FAIL", (long)nb);
 
   bool branchB1Found = false;
   bool branchMasterFound = false;
   for (int n = 0; n < nb; n++) {
-    XTSideBarItem *branch = [sbds outlineView:nil child:n ofItem:branches];
-    STAssertTrue(branch.sha != Nil, @"Branch '%@' must have sha", branch.title);
+    XTSideBarItem *branch = [sbds outlineView:outlineView child:n ofItem:branches];
+    XCTAssertTrue(branch.sha != Nil, @"Branch '%@' must have sha", branch.title);
 
-    BOOL isExpandable = [sbds outlineView:nil isItemExpandable:branch];
-    STAssertTrue(isExpandable == NO, @"Branches must be no Expandable");
+    BOOL isExpandable = [sbds outlineView:outlineView isItemExpandable:branch];
+    XCTAssertTrue(isExpandable == NO, @"Branches must be no Expandable");
 
     NSTableCellView *branchView =
         (NSTableCellView *)[sbds outlineView:(NSOutlineView *)sov
@@ -239,8 +244,8 @@
       branchB1Found = YES;
     }
   }
-  STAssertTrue(branchMasterFound, @"Branch 'master' Not found");
-  STAssertTrue(branchB1Found, @"Branch 'b1' Not found");
+  XCTAssertTrue(branchMasterFound, @"Branch 'master' Not found");
+  XCTAssertTrue(branchB1Found, @"Branch 'b1' Not found");
 }
 
 - (void)testSubmodules
@@ -250,61 +255,63 @@
       [tempPath stringByAppendingPathComponent:@"repo1"]];
   XTRepository *repo2 = [self createRepo:
       [tempPath stringByAppendingPathComponent:@"repo2"]];
-  STAssertNotNil(repo1, @"");
-  STAssertNotNil(repo2, @"");
+  XCTAssertNotNil(repo1, @"");
+  XCTAssertNotNil(repo2, @"");
 
-  STAssertTrue([self commitNewTextFile:@"file1"
+  XCTAssertTrue([self commitNewTextFile:@"file1"
                                content:@"blah"
-                          inRepository:repo1], nil);
-  STAssertTrue([self commitNewTextFile:@"file2"
+                          inRepository:repo1]);
+  XCTAssertTrue([self commitNewTextFile:@"file2"
                                content:@"fffff"
-                          inRepository:repo2], nil);
+                          inRepository:repo2]);
 
-  STAssertTrue([repository addSubmoduleAtPath:@"sub1"
+  XCTAssertTrue([repository addSubmoduleAtPath:@"sub1"
                                     urlOrPath:@"../repo1"
-                                        error:NULL], nil);
-  STAssertTrue([repository addSubmoduleAtPath:@"sub2"
+                                        error:NULL]);
+  XCTAssertTrue([repository addSubmoduleAtPath:@"sub2"
                                     urlOrPath:@"../repo2"
-                                        error:NULL], nil);
+                                        error:NULL]);
 
+  NSOutlineView *outlineView = [[NSOutlineView alloc] init];
   XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
   [sbds setRepo:repository];
   [sbds reload];
   [self waitForRepoQueue];
 
-  id subs = [sbds outlineView:nil child:XTSubmodulesGroupIndex ofItem:nil];
-  STAssertNotNil(subs, nil);
+  id subs = [sbds outlineView:outlineView child:XTSubmodulesGroupIndex ofItem:nil];
+  XCTAssertNotNil(subs);
 
-  const NSInteger subCount = [sbds outlineView:nil numberOfChildrenOfItem:subs];
-  STAssertEquals(subCount, 2L, nil);
+  const NSInteger subCount = [sbds outlineView:outlineView numberOfChildrenOfItem:subs];
+  XCTAssertEqual(subCount, 2L);
 
   for (int i = 0; i < subCount; ++i) {
-    XTSubmoduleItem *sub = [sbds outlineView:nil child:i ofItem:subs];
+    XTSubmoduleItem *sub = [sbds outlineView:outlineView child:i ofItem:subs];
     NSString *name = [NSString stringWithFormat:@"sub%d", i+1];
     NSString *url = [NSString stringWithFormat:@"../repo%d", i+1];
 
-    STAssertTrue([sub isKindOfClass:[XTSubmoduleItem class]], nil);
-    STAssertNotNil(sub.submodule, nil);
-    STAssertEqualObjects(sub.submodule.name, name, @"");
-    STAssertEqualObjects(sub.submodule.URLString, url, nil);
+    XCTAssertTrue([sub isKindOfClass:[XTSubmoduleItem class]]);
+    XCTAssertNotNil(sub.submodule);
+    XCTAssertEqualObjects(sub.submodule.name, name, @"");
+    XCTAssertEqualObjects(sub.submodule.URLString, url);
   }
 }
 
 - (void)testGroupItems
 {
   if (![repository createBranch:@"b1"]) {
-    STFail(@"Create Branch 'b1'");
+    XCTFail(@"Create Branch 'b1'");
   }
 
+  NSOutlineView *outlineView = [[NSOutlineView alloc] init];
   XTSideBarDataSource *sbds = [[XTSideBarDataSource alloc] init];
   [sbds setRepo:repository];
   [sbds reload];
 
-  for (NSInteger i = 0; i < [sbds outlineView:nil numberOfChildrenOfItem:nil];
+  for (NSInteger i = 0; i < [sbds outlineView:outlineView numberOfChildrenOfItem:nil];
        ++i) {
-    id root = [sbds outlineView:nil child:i ofItem:nil];
-    STAssertTrue([sbds outlineView:nil isGroupItem:root],
-                 @"item %d should be group", i);
+    id root = [sbds outlineView:outlineView child:i ofItem:nil];
+    XCTAssertTrue([sbds outlineView:outlineView isGroupItem:root],
+                 @"item %ld should be group", (long)i);
   }
 }
 

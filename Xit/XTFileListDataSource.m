@@ -86,22 +86,20 @@
   }
   if ([deletions count] > 0)
     files = [files arrayByAddingObjectsFromArray:deletions];
+
   for (NSString *file in files) {
     XTCommitTreeItem *item = [[XTCommitTreeItem alloc] init];
 
     item.path = file;
     item.change = (XitChange)[changes[file] integerValue];
 
-    NSString *path = [file stringByDeletingLastPathComponent];
+    NSString *parentPath = [file stringByDeletingLastPathComponent];
     NSTreeNode *node = [NSTreeNode treeNodeWithRepresentedObject:item];
+    NSTreeNode *parentNode =
+        [self findTreeNodeForPath:parentPath parent:newRoot nodes:nodes];
 
-    if (path.length == 0) {
-      [[newRoot mutableChildNodes] addObject:node];
-    } else {
-      NSTreeNode *parentNode =
-          [self findTreeNodeForPath:path parent:newRoot nodes:nodes];
-      [[parentNode mutableChildNodes] addObject:node];
-    }
+    [[parentNode mutableChildNodes] addObject:node];
+    nodes[file] = node;
   }
   [self updateChangeForNode:newRoot];
 
@@ -118,15 +116,19 @@
                              parent:(NSTreeNode *)parent
                               nodes:(NSMutableDictionary *)nodes
 {
+  if (path.length == 0)
+    return parent;
+  
   NSTreeNode *pathNode = nodes[path];
 
-  if (!pathNode) {
+  if (pathNode == nil) {
     XTCommitTreeItem *item = [[XTCommitTreeItem alloc] init];
 
     item.path = path;
-
     pathNode = [NSTreeNode treeNodeWithRepresentedObject:item];
+
     NSString *parentPath = [path stringByDeletingLastPathComponent];
+
     if (parentPath.length == 0) {
       [[parent mutableChildNodes] addObject:pathNode];
     } else {

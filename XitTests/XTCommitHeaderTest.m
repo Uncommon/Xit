@@ -1,4 +1,4 @@
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 #import <WebKit/WebKit.h>
 #import "XTCommitHeaderViewController.h"
 #import "XTRepository+Parsing.h"
@@ -7,7 +7,7 @@
 NSDate *authorDate = nil;
 NSDate *commitDate = nil;
 
-@interface XTCommitHeaderTest : SenTestCase
+@interface XTCommitHeaderTest : XCTestCase
 {
   CFRunLoopRef runLoop;
 }
@@ -24,7 +24,7 @@ NSDate *commitDate = nil;
 
 @interface FakeGTRepository : NSObject
 
-- (id)lookupObjectBySHA:(NSString*)sha error:(NSError**)error;
+- (id)lookUpObjectBySHA:(NSString*)sha error:(NSError**)error;
 
 @end
 
@@ -92,7 +92,7 @@ NSDate *commitDate = nil;
   NSString *html = [webView stringByEvaluatingJavaScriptFromString:
       @"document.getElementsByTagName('html')[0].innerHTML"];
   NSBundle *testBundle =
-      [NSBundle bundleWithIdentifier:@"com.laullon.XitTests"];
+      [NSBundle bundleWithIdentifier:@"com.uncommonplace.XitTests"];
   NSURL *expectedURL = [testBundle
       URLForResource:@"expected header" withExtension:@"html"];
   NSStringEncoding encoding;
@@ -106,15 +106,16 @@ NSDate *commitDate = nil;
       [dateFormatter stringFromDate:authorDate],
       [dateFormatter stringFromDate:commitDate]];
   
-  STAssertNil(error, nil);
+  XCTAssertNil(error);
 
   NSArray *lines = [html componentsSeparatedByString:@"\n"];
   NSArray *expectedLines = [expectedHtml componentsSeparatedByString:@"\n"];
 
   // Some differences may be due to changes in WebKit.
-  STAssertEquals([lines count], [expectedLines count], nil);
+  XCTAssertEqual([lines count], [expectedLines count]);
   for (NSUInteger i = 0; i < [lines count]; ++i)
-    STAssertEqualObjects(lines[i], expectedLines[i], @"line %d", i);
+    XCTAssertEqualObjects(lines[i], expectedLines[i],
+                          @"line %lu", (unsigned long)i);
 }
 
 @end
@@ -151,7 +152,7 @@ NSDate *commitDate = nil;
 
 @implementation FakeGTRepository
 
-- (id)lookupObjectBySHA:(NSString*)sha error:(NSError**)error
+- (id)lookUpObjectBySHA:(NSString*)sha error:(NSError**)error
 {
   FakeCommit *commit = [[FakeCommit alloc] init];
 

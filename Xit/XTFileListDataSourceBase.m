@@ -69,7 +69,7 @@
 
   NSString *path = [self pathForItem:item];
 
-  if ([self outlineView:nil isItemExpandable:item])
+  if ([self outlineView:outlineView isItemExpandable:item])
     cell.imageView.image = [NSImage imageNamed:NSImageNameFolder];
   else
     cell.imageView.image = [[NSWorkspace sharedWorkspace]

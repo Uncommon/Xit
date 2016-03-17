@@ -1,8 +1,8 @@
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 
 @class XTRepository;
 
-@interface XTTest : SenTestCase {
+@interface XTTest : XCTestCase {
   NSString *repoPath;
   NSString *remoteRepoPath;
   NSString *file1Path;

@@ -39,12 +39,12 @@
              atomically:YES
                encoding:NSASCIIStringEncoding
                   error:&error];
-  STAssertNil(error, @"creating file1");
+  XCTAssertNil(error, @"creating file1");
   [@"text2" writeToFile:path2
              atomically:YES
                encoding:NSASCIIStringEncoding
                   error:&error];
-  STAssertNil(error, @"creating file2");
+  XCTAssertNil(error, @"creating file2");
 
   id mockUnstagedTable = [OCMockObject mockForClass:[NSTableView class]];
   id mockStagedTable = [OCMockObject mockForClass:[NSTableView class]];
@@ -55,8 +55,8 @@
   [stgds setRepo:repository];
   [self waitForRepoQueue];
 
-  STAssertEquals([ustgds numberOfRowsInTableView:mockUnstagedTable], 2L, @"");
-  STAssertEquals([stgds numberOfRowsInTableView:mockStagedTable], 0L, @"");
+  XCTAssertEqual([ustgds numberOfRowsInTableView:mockUnstagedTable], 2L, @"");
+  XCTAssertEqual([stgds numberOfRowsInTableView:mockStagedTable], 0L, @"");
 
   XTStageViewController *controller = [[XTStageViewController alloc] init];
   const NSInteger clickedRow = 0;
@@ -74,8 +74,8 @@
   [controller unstagedDoubleClicked:mockUnstagedTable];
   [self waitForRepoQueue];
 
-  STAssertEquals([ustgds numberOfRowsInTableView:mockUnstagedTable], 1L, @"");
-  STAssertEquals([stgds numberOfRowsInTableView:mockStagedTable], 1L, @"");
+  XCTAssertEqual([ustgds numberOfRowsInTableView:mockUnstagedTable], 1L, @"");
+  XCTAssertEqual([stgds numberOfRowsInTableView:mockStagedTable], 1L, @"");
 
   id mockColumn = [OCMockObject mockForClass:[NSTableColumn class]];
 
@@ -83,11 +83,11 @@
   [[[mockColumn expect] andReturn:@"name"] identifier];
 
   // Two spaces are insterted before the name for aesthetics.
-  STAssertEqualObjects([ustgds tableView:mockUnstagedTable
+  XCTAssertEqualObjects([ustgds tableView:mockUnstagedTable
                            objectValueForTableColumn:mockColumn
                                                  row:0],
                        @"  fileB.txt", @"");
-  STAssertEqualObjects([stgds tableView:mockUnstagedTable
+  XCTAssertEqualObjects([stgds tableView:mockUnstagedTable
                            objectValueForTableColumn:mockColumn
                                                  row:0],
                        @"  fileA.txt", @"");
@@ -99,8 +99,8 @@
   [controller stagedDoubleClicked:mockStagedTable];
   [self waitForRepoQueue];
 
-  STAssertEquals([ustgds numberOfRowsInTableView:mockUnstagedTable], 2L, @"");
-  STAssertEquals([stgds numberOfRowsInTableView:mockUnstagedTable], 0L, @"");
+  XCTAssertEqual([ustgds numberOfRowsInTableView:mockUnstagedTable], 2L, @"");
+  XCTAssertEqual([stgds numberOfRowsInTableView:mockUnstagedTable], 0L, @"");
 
   [mockUnstagedTable verify];
   [mockStagedTable verify];
@@ -151,15 +151,16 @@
   [ustgds setRepo:repository];
   [self waitForRepoQueue];
 
-  NSUInteger nc = [ustgds numberOfRowsInTableView:nil];
-  STAssertTrue((nc == 1), @"found %d commits", nc);
+  NSTableView *tableView = [[NSTableView alloc] init];
+  unsigned long nc = [ustgds numberOfRowsInTableView:tableView];
+  XCTAssertTrue((nc == 1), @"found %lu commits", nc);
 
   XTStagedDataSource *stgds = [[XTStagedDataSource alloc] init];
   [stgds setRepo:repository];
   [self waitForRepoQueue];
 
-  nc = [stgds numberOfRowsInTableView:nil];
-  STAssertTrue((nc == 0), @"found %d commits", nc);
+  nc = [stgds numberOfRowsInTableView:tableView];
+  XCTAssertTrue((nc == 0), @"found %lu commits", nc);
 
   XTStageViewController *svc = [[XTStageViewController alloc] init];
   [svc setRepo:repository];
@@ -169,14 +170,14 @@
   [ustgds reload];
   [self waitForRepoQueue];
 
-  nc = [ustgds numberOfRowsInTableView:nil];
-  STAssertTrue((nc == 1), @"found %d commits", nc);
+  nc = [ustgds numberOfRowsInTableView:tableView];
+  XCTAssertTrue((nc == 1), @"found %lu commits", nc);
 
   [stgds reload];
   [self waitForRepoQueue];
 
-  nc = [stgds numberOfRowsInTableView:nil];
-  STAssertTrue((nc == 1), @"found %d commits", nc);
+  nc = [stgds numberOfRowsInTableView:tableView];
+  XCTAssertTrue((nc == 1), @"found %lu commits", nc);
 
   [svc showStageFile:(stgds.items)[0]];  // click on stage table
   [svc unstageChunk:0];                  // click on unstage button
@@ -184,8 +185,8 @@
   [stgds reload];
   [self waitForRepoQueue];
 
-  nc = [stgds numberOfRowsInTableView:nil];
-  STAssertTrue((nc == 0), @"found %d commits", nc);
+  nc = [stgds numberOfRowsInTableView:tableView];
+  XCTAssertTrue((nc == 0), @"found %lu commits", nc);
 }
 
 - (void)testXTDataSources
@@ -220,8 +221,9 @@
   [ustgds setRepo:repository];
   [self waitForRepoQueue];
 
-  NSUInteger nc = [ustgds numberOfRowsInTableView:nil];
-  STAssertTrue((nc == 5), @"found %d commits", nc);
+  NSTableView *tableView = [[NSTableView alloc] init];
+  NSUInteger nc = [ustgds numberOfRowsInTableView:tableView];
+  XCTAssertTrue((nc == 5), @"found %lu commits", (unsigned long)nc);
 
   NSDictionary *expected =
       @{@"file_to_mod.txt" : @"M", @"file_to_move.txt" : @"D",
@@ -232,7 +234,7 @@
   [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
     XTFileIndexInfo *info = obj;
     NSString *status = expected[info.name];
-    STAssertEqualObjects(info.status, status, @"incorrect state file(%lu):%@",
+    XCTAssertEqualObjects(info.status, status, @"incorrect state file(%lu):%@",
                          idx, info.name);
   }];
 
@@ -242,7 +244,7 @@
   [stgds setRepo:repository];
   [self waitForRepoQueue];
 
-  STAssertEquals([stgds numberOfRowsInTableView:nil], 5L, @"");
+  XCTAssertEqual([stgds numberOfRowsInTableView:tableView], 5L, @"");
 
   expected = @{@"file_to_mod.txt" : @"M", @"file_to_move.txt" : @"D",
                @"file_moved.txt" : @"A", @"file_to_rm.txt" : @"D",
@@ -252,7 +254,7 @@
   [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * stop) {
     XTFileIndexInfo *info = obj;
     NSString *status = expected[info.name];
-    STAssertEqualObjects(info.status, status, @"incorrect state file(%lu):%@",
+    XCTAssertEqualObjects(info.status, status, @"incorrect state file(%lu):%@",
                          idx, info.name);
   }];
 }
@@ -273,7 +275,7 @@
                 atomically:YES
                   encoding:NSUTF8StringEncoding
                      error:&error];
-  STAssertNil(error, @"");
+  XCTAssertNil(error, @"");
   [repository stageFile:newFilePath];
   controller.message = testMessage;
   [controller setRepo:repository];
@@ -285,27 +287,27 @@
   NSString *message = nil;
   NSArray *files = nil;
 
-  STAssertFalse([oldHeadSHA isEqual:newHeadSHA], @"");
-  STAssertTrue([repository parseCommit:newHeadSHA
+  XCTAssertFalse([oldHeadSHA isEqual:newHeadSHA], @"");
+  XCTAssertTrue([repository parseCommit:newHeadSHA
                             intoHeader:&header
                                message:&message
                                  files:&files],
                @"");
 
-  STAssertNotNil(header, @"");
-  STAssertNotNil(message, @"");
-  STAssertNotNil(files, @"");
+  XCTAssertNotNil(header, @"");
+  XCTAssertNotNil(message, @"");
+  XCTAssertNotNil(files, @"");
 
   // Somewhere in there, git appended a \n to the message.
   message = [message stringByTrimmingCharactersInSet:
           [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-  STAssertEqualObjects(message, testMessage, @"");
-  STAssertEqualObjects(files, @[ newFileName ], @"");
+  XCTAssertEqualObjects(message, testMessage, @"");
+  XCTAssertEqualObjects(files, @[ newFileName ], @"");
 
   NSArray *parents = header[XTParentSHAsKey];
 
-  STAssertEquals([parents count], 1UL, @"");
-  STAssertEqualObjects(parents[0], oldHeadSHA, @"");
+  XCTAssertEqual([parents count], 1UL, @"");
+  XCTAssertEqualObjects(parents[0], oldHeadSHA, @"");
 }
 
 - (void)testNewFileDiff
@@ -319,13 +321,13 @@
                                 atomically:YES
                                   encoding:NSUTF8StringEncoding
                                      error:&error];
-  STAssertNil(error, @"");
+  XCTAssertNil(error, @"");
 
   XTStageViewController *svc = [[XTStageViewController alloc] init];
   [svc setRepo:repository];
 
   NSString *diff = [svc diffForNewFile:newFileName];
-  STAssertEqualObjects(diff,
+  XCTAssertEqualObjects(diff,
                        @"diff --git /dev/null b/newfile.txt\n"
                         "--- /dev/null\n"
                         "+++ b/newfile.txt\n"
@@ -337,7 +339,7 @@
                        @"");
 
   NSString *html = [XTHTML parseDiff:diff];
-  STAssertNotNil(html, @"");
+  XCTAssertNotNil(html, @"");
 }
 
 @end

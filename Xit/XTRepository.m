@@ -276,10 +276,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 - (NSString *)parseSymbolicReference:(NSString *)reference
 {
   NSError *error = nil;
-  GTReference *gtRef = [GTReference
-      referenceByLookingUpReferencedNamed:reference
-                             inRepository:_gtRepo
-                                    error:&error];
+  GTReference *gtRef = [_gtRepo lookUpReferenceWithName:reference error:&error];
 
   if (error != nil)
     return nil;

@@ -173,9 +173,8 @@ NSString *XTHeaderContentKey = @"content";
                               error:&error
                               block:^BOOL(GTTreeEntry *entry, NSString *root,
                                           BOOL *stop) {
-      if (git_tree_entry_type(entry.git_tree_entry) != GIT_OBJ_TREE)
-        [result addObject:[root stringByAppendingPathComponent:entry.name]];
-      return 0;
+      [result addObject:[root stringByAppendingPathComponent:entry.name]];
+      return YES;  // Don't go into descendants
   }];
   return result;
 }
@@ -416,7 +415,8 @@ NSString *XTCommitSHAKey = @"sha",
 
   // Set the output variables
   NSAssert([headerLines count] == [headerKeys count], @"bad header line count");
-  *header = [@{ headerKeys : headerLines } mutableCopy];
+  *header = [NSMutableDictionary dictionaryWithObjects:headerLines
+                                               forKeys:headerKeys];
   *message = sections[1];
   if (files != NULL) {
     *files = [sections subarrayWithRange:NSMakeRange(2, [sections count] - 2)];
