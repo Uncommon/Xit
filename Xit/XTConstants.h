@@ -20,3 +20,4 @@ typedef enum {
 } XTError;
 
 extern NSString *XTErrorDomainXit, *XTErrorDomainGit;
+extern NSString * const XTStagingSHA;  // Fake value for seleting staging view

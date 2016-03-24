@@ -1,4 +1,5 @@
 #import "XTSideBarDataSource.h"
+#import "XTConstants.h"
 #import "XTDocController.h"
 #import "XTSideBarItem.h"
 #import "XTSubmoduleItem.h"
@@ -13,6 +14,8 @@
 #import "NSMutableDictionary+MultiObjectForKey.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
+NSString * const XTStagingSHA = @"";
+
 @interface XTSideBarDataSource ()
 - (NSArray *)loadRoots;
 @end
@@ -22,8 +25,11 @@
 
 - (id)init
 {
-  if ((self = [super init]) != nil)
+  if ((self = [super init]) != nil) {
     _roots = [self makeRoots];
+    _stagingItem = [[XTSideBarItem alloc] initWithTitle:@"Staging"
+                                                 andSha:XTStagingSHA];
+  }
 
   return self;
 }
@@ -248,7 +254,7 @@
   NSInteger result = 0;
 
   if (item == nil) {
-    result = [_roots count];
+    result = [_roots count] + 1;  // Groups plus staging item
   } else if ([item isKindOfClass:[XTSideBarItem class]]) {
     XTSideBarItem *sbItem = (XTSideBarItem *)item;
     result = [sbItem numberOfChildren];
@@ -274,7 +280,10 @@
   id result = nil;
 
   if (item == nil) {
-    result = _roots[index];
+    if (index == 0)
+      return _stagingItem;
+    else
+      result = _roots[index - 1];
   } else if ([item isKindOfClass:[XTSideBarItem class]]) {
     XTSideBarItem *sbItem = (XTSideBarItem *)item;
     result = [sbItem childAtIndex:index];
@@ -286,7 +295,18 @@
      viewForTableColumn:(NSTableColumn *)tableColumn
                    item:(id)item
 {
-  if ([_roots containsObject:item]) {
+  if (item == _stagingItem) {
+    XTSideBarTableCellView *dataView = (
+        XTSideBarTableCellView *)[outlineView makeViewWithIdentifier:@"DataCell"
+                                                               owner:self];
+
+    dataView.item = item;
+    [dataView.textField setStringValue:[item title]];
+    [dataView.textField setEditable:NO];
+    [dataView.textField setSelectable:NO];
+    // set icon
+    return dataView;
+  } else if ([_roots containsObject:item]) {
     NSTableCellView *headerView =
         [outlineView makeViewWithIdentifier:@"HeaderCell" owner:self];
 
