@@ -14,7 +14,6 @@
  @private
   NSTreeNode *_root;
   NSDictionary *_changeImages;
-  NSOutlineView *_table;
 }
 
 - (void)reload;

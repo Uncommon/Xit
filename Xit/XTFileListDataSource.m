@@ -37,7 +37,7 @@
 
     dispatch_async(dispatch_get_main_queue(), ^{
       _root = newRoot;
-      [_table reloadData];
+      [self.outlineView reloadData];
     });
   }];
 }
@@ -144,7 +144,7 @@
 
 - (XTFileChange*)fileChangeAtRow:(NSInteger)row
 {
-  return [[_table itemAtRow:row] representedObject];
+  return [[self.outlineView itemAtRow:row] representedObject];
 }
 
 - (NSString*)pathForItem:(id)item
@@ -168,7 +168,7 @@
 - (NSInteger)outlineView:(NSOutlineView *)outlineView
     numberOfChildrenOfItem:(id)item
 {
-  _table = outlineView;
+  self.outlineView = outlineView;
 
   NSInteger res = 0;
 

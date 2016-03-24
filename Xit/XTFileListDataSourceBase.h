@@ -11,6 +11,7 @@
 @interface XTFileListDataSourceBase :
     NSObject<NSOutlineViewDataSource, NSOutlineViewDelegate>
 
+@property IBOutlet NSOutlineView *outlineView;
 @property IBOutlet XTFileViewController *controller;
 @property(nonatomic) XTRepository *repository;
 @property(nonatomic) XTDocController *docController;
