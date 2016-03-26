@@ -1,9 +1,17 @@
 #import "XTRepository+Parsing.h"
+#import "XTConstants.h"
 #import <ObjectiveGit/ObjectiveGit.h>
+#import <ObjectiveGit/GTRepository+Status.h>
 #import "NSDate+Extensions.h"
 
 NSString *XTHeaderNameKey = @"name";
 NSString *XTHeaderContentKey = @"content";
+
+@interface XTRepository (Private)
+
+- (NSArray*)stagingChanges;
+
+@end
 
 @implementation XTRepository (Reading)
 
@@ -229,6 +237,9 @@ NSString *XTHeaderContentKey = @"content";
   if (ref == nil)
     return nil;
 
+  if ([ref isEqualToString:XTStagingSHA])
+    return [self stagingChanges];
+
   NSError *error = nil;
   GTCommit *commit = [_gtRepo lookUpObjectByRevParse:ref error:&error];
   
@@ -257,6 +268,36 @@ NSString *XTHeaderContentKey = @"content";
       [result addObject:change];
     }
   }];
+  return result;
+}
+
+- (NSArray*)stagingChanges
+{
+  NSMutableArray *result = [NSMutableArray array];
+  NSDictionary *options = @{ GTRepositoryStatusOptionsFlagsKey : @(0) };
+  NSError *error = nil;
+  
+  if (![_gtRepo enumerateFileStatusWithOptions:options
+                                         error:nil
+                                    usingBlock:
+      ^(GTStatusDelta *headToIndex, GTStatusDelta *indexToWorking, BOOL *stop) {
+    XTFileStaging *change = [[XTFileStaging alloc] init];
+    
+    if (headToIndex != nil) {
+      change.path = headToIndex.oldFile.path;
+      change.destinationPath = headToIndex.newFile.path;
+    } else {
+      change.path = indexToWorking.oldFile.path;
+      change.destinationPath = indexToWorking.newFile.path;
+    }
+    change.change = indexToWorking.status;
+    change.stagedChange = headToIndex.status;
+    [result addObject:change];
+  }]) {
+    NSLog(@"Can't enumerate file status: %@", [error description]);
+    return nil;
+  }
+  
   return result;
 }
 
@@ -510,6 +551,12 @@ NSString *XTCommitSHAKey = @"sha",
 
 @end
 
+
 @implementation XTFileChange
+
+@end
+
+
+@implementation XTFileStaging
 
 @end

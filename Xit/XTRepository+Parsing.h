@@ -69,10 +69,21 @@ typedef enum {
 @end
 
 
+/// Represents a changed file from a commit.
 @interface XTFileChange : NSObject
 
 @property NSString *path;
 @property XitChange change;
+
+@end
+
+
+/// Represents a workspace file with staged or unstaged changes.
+@interface XTFileStaging : XTFileChange
+
+/// The new path for a moved file.
+@property NSString *destinationPath;
+@property XitChange stagedChange;
 
 @end
 
