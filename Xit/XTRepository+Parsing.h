@@ -74,6 +74,7 @@ typedef enum {
 
 @property NSString *path;
 @property XitChange change;
+@property XitChange unstagedChange;
 
 @end
 
@@ -83,7 +84,6 @@ typedef enum {
 
 /// The new path for a moved file.
 @property NSString *destinationPath;
-@property XitChange stagedChange;
 
 @end
 

@@ -290,8 +290,8 @@ NSString *XTHeaderContentKey = @"content";
       change.path = indexToWorking.oldFile.path;
       change.destinationPath = indexToWorking.newFile.path;
     }
-    change.change = indexToWorking.status;
-    change.stagedChange = headToIndex.status;
+    change.change = headToIndex.status;
+    change.unstagedChange = indexToWorking.status;
     [result addObject:change];
   }]) {
     NSLog(@"Can't enumerate file status: %@", [error description]);

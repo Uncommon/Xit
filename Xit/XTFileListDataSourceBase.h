@@ -21,6 +21,7 @@
 - (XTFileChange*)fileChangeAtRow:(NSInteger)row;
 - (NSString*)pathForItem:(id)item;
 - (XitChange)changeForItem:(id)item;
+- (XitChange)unstagedChangeForItem:(id)item;
 
 @end
 
@@ -31,6 +32,7 @@
 @interface XTFileCellView : NSTableCellView
 
 @property IBOutlet NSImageView *changeImage;
+@property IBOutlet NSImageView *unstagedImage;
 @property XitChange change;
 
 @end

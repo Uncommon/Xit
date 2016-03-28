@@ -163,6 +163,14 @@
   return treeItem.change;
 }
 
+- (XitChange)unstagedChangeForItem:(id)item
+{
+  XTCommitTreeItem *treeItem = (XTCommitTreeItem*)
+      [(NSTreeNode*)item representedObject];
+
+  return treeItem.unstagedChange;
+}
+
 #pragma mark - NSOutlineViewDataSource
 
 - (NSInteger)outlineView:(NSOutlineView *)outlineView

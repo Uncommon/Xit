@@ -1,4 +1,5 @@
 #import "XTFileListDataSourceBase.h"
+#import "XTConstants.h"
 #import "XTDocController.h"
 #import "XTFileViewController.h"
 #import "XTRepository.h"
@@ -64,12 +65,25 @@
   return XitChangeUnmodified;
 }
 
+- (XitChange)unstagedChangeForItem:(id)item
+{
+  NSAssert(false, @"unstagedChangeForItem must be overridden");
+  return XitChangeUnmodified;
+}
+
+- (NSImage*)imageForChange:(XitChange)change
+{
+  return self.controller.changeImages[@( change )];
+}
+
 - (NSView *)outlineView:(NSOutlineView *)outlineView
      viewForTableColumn:(NSTableColumn *)tableColumn
                    item:(id)item
 {
   XTFileCellView *cell =
       [outlineView makeViewWithIdentifier:@"fileCell" owner:_controller];
+  const BOOL inStagingView =
+      [self.docController.selectedCommitSHA isEqualToString:XTStagingSHA];
 
   if (![cell isKindOfClass:[XTFileCellView class]])
     return cell;
@@ -85,6 +99,7 @@
 
   NSColor *textColor;
   const XitChange change = [self changeForItem:item];
+  const XitChange unstagedChange = [self unstagedChangeForItem:item];
 
   if (change == XitChangeDeleted)
     textColor = [NSColor disabledControlTextColor];
@@ -95,20 +110,37 @@
   cell.textField.textColor = textColor;
   cell.change = change;
 
-  CGFloat textWidth;
+  const BOOL changeUnmodified = change == XitChangeUnmodified;
+  const BOOL unstagedUnmodified = unstagedChange == XitChangeUnmodified;
   const NSRect changeFrame = cell.changeImage.frame;
   const NSRect textFrame = cell.textField.frame;
+  CGFloat textRight = changeFrame.origin.x + changeFrame.size.width;
 
-  [cell.changeImage setHidden:change == XitChangeUnmodified];
-  if (change == XitChangeUnmodified) {
-    textWidth = changeFrame.origin.x + changeFrame.size.width -
-                textFrame.origin.x;
+  if (inStagingView) {
+    if (changeUnmodified && unstagedUnmodified) {
+      cell.changeImage.hidden = YES;
+      cell.unstagedImage.hidden = YES;
+    } else {
+      cell.changeImage.hidden = NO;
+      cell.unstagedImage.hidden = NO;
+      // Use the "mixed" icon for unmodified so there's always an icon for
+      // modified/staged files.
+      cell.changeImage.image = [self imageForChange:
+          changeUnmodified ? XitChangeMixed : change];
+      cell.unstagedImage.image = [self imageForChange:
+          unstagedUnmodified ? XitChangeMixed : unstagedChange];
+      textRight = cell.unstagedImage.frame.origin.x - kChangeImagePadding;
+    }
   } else {
-    cell.changeImage.image = self.controller.changeImages[@( change )];
-    textWidth = changeFrame.origin.x - kChangeImagePadding -
-                textFrame.origin.x;
+    cell.changeImage.hidden = changeUnmodified;
+    cell.unstagedImage.hidden = YES;
+    if (change != XitChangeUnmodified)
+      textRight = changeFrame.origin.x - kChangeImagePadding;
   }
-  [cell.textField setFrameSize:NSMakeSize(textWidth, textFrame.size.height)];
+
+  [cell.textField setFrameSize:NSMakeSize(
+      textRight - textFrame.origin.x,
+      textFrame.size.height)];
 
   return cell;
 }

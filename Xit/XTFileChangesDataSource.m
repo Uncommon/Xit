@@ -47,6 +47,13 @@
   return change.change;
 }
 
+- (XitChange)unstagedChangeForItem:(id)item
+{
+  XTFileChange *change = (XTFileChange*)item;
+  
+  return change.unstagedChange;
+}
+
 #pragma mark NSOutlineViewDataSource
 
 - (NSInteger)outlineView:(NSOutlineView*)outlineView

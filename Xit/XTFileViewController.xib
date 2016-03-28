@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5053" systemVersion="13C1021" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <deployment defaultVersion="1070" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5053"/>
-        <plugIn identifier="com.apple.WebKitIBPlugin" version="5053"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
+        <plugIn identifier="com.apple.WebKitIBPlugin" version="10116"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="XTFileViewController">
@@ -25,7 +25,7 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <splitView dividerStyle="thin" id="68">
             <rect key="frame" x="0.0" y="0.0" width="703" height="320"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -60,7 +60,7 @@
                                 <segmentedControl verticalHuggingPriority="750" id="taS-ff-AsX">
                                     <rect key="frame" x="145" y="188" width="67" height="23"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <segmentedCell key="cell" alignment="left" style="smallSquare" trackingMode="selectOne" id="VOL-YW-yiD">
+                                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="selectOne" id="VOL-YW-yiD">
                                         <font key="font" metaFont="system"/>
                                         <segments>
                                             <segment image="NSListViewTemplate" width="32" selected="YES"/>
@@ -79,13 +79,13 @@
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <outlineView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="tVZ-Iq-I4v" id="7">
-                                                <rect key="frame" x="0.0" y="0.0" width="357" height="188"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="356.5" height="0.0"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                 <tableColumns>
-                                                    <tableColumn identifier="main" width="350.5" minWidth="16" maxWidth="1000" id="8">
+                                                    <tableColumn identifier="main" width="351" minWidth="16" maxWidth="1000" id="8">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -121,11 +121,17 @@
                                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="added" id="44"/>
                                                                     </imageView>
+                                                                    <imageView id="nGX-Kh-ch8">
+                                                                        <rect key="frame" x="307" y="0.0" width="16" height="16"/>
+                                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="added" id="uTS-KY-ssz"/>
+                                                                    </imageView>
                                                                 </subviews>
                                                                 <connections>
                                                                     <outlet property="changeImage" destination="43" id="47"/>
                                                                     <outlet property="imageView" destination="11" id="46"/>
                                                                     <outlet property="textField" destination="12" id="16"/>
+                                                                    <outlet property="unstagedImage" destination="nGX-Kh-ch8" id="H5J-SK-YkF"/>
                                                                 </connections>
                                                             </tableCellView>
                                                         </prototypeCellViews>
@@ -198,7 +204,7 @@
                                 <segmentedControl verticalHuggingPriority="750" id="zOv-gm-Q8M">
                                     <rect key="frame" x="120" y="188" width="115" height="23"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <segmentedCell key="cell" alignment="left" style="smallSquare" trackingMode="selectOne" id="fhE-uz-5iG">
+                                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="selectOne" id="fhE-uz-5iG">
                                         <font key="font" metaFont="system"/>
                                         <segments>
                                             <segment label="𝚫" toolTip="Diff view" width="37" selected="YES"/>
@@ -321,9 +327,9 @@
     </objects>
     <resources>
         <image name="NSActionTemplate" width="14" height="14"/>
-        <image name="NSListViewTemplate" width="11" height="10"/>
-        <image name="NSPathTemplate" width="13" height="10"/>
-        <image name="NSQuickLookTemplate" width="21" height="16"/>
+        <image name="NSListViewTemplate" width="14" height="10"/>
+        <image name="NSPathTemplate" width="16" height="10"/>
+        <image name="NSQuickLookTemplate" width="19" height="12"/>
         <image name="added" width="16" height="16"/>
     </resources>
 </document>
