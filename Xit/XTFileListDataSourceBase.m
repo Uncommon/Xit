@@ -3,8 +3,15 @@
 #import "XTDocController.h"
 #import "XTFileViewController.h"
 #import "XTRepository.h"
+#import <objc/runtime.h>
+
+#define XTAssertOverride() \
+  NSAssert(false, @"%s must be overridden", sel_getName(_cmd))
+
 
 @implementation XTFileListDataSourceBase
+
+@synthesize controller = _controller;
 
 - (void)dealloc
 {
@@ -28,6 +35,22 @@
   [self reload];
 }
 
+- (XTFileViewController*)controller
+{
+  return _controller;
+}
+
+- (void)setController:(XTFileViewController*)controller
+{
+  @synchronized (self) {
+    _controller = controller;
+    [controller addObserver:self
+                 forKeyPath:@"inStagingView"
+                    options:nil
+                    context:NULL];
+  }
+}
+
 - (void)setDocController:(XTDocController *)docController
 {
   _docController = docController;
@@ -37,15 +60,24 @@
                       context:nil];
 }
 
+- (void)updateStagingView
+{
+  NSTableColumn *unstagedColumn =
+      [self.outlineView tableColumnWithIdentifier:@"unstaged"];
+
+  unstagedColumn.hidden = !self.controller.inStagingView;
+  // update the column highliht
+}
+
 - (void)observeValueForKeyPath:(NSString*)keyPath
                       ofObject:(id)object
                         change:(NSDictionary*)change
                        context:(void*)context
 {
-  NSString *path = NSStringFromSelector(@selector(selectedCommitSHA));
-  
-  if ([keyPath isEqualToString:path] && (object == self.docController))
+  if ([keyPath isEqualToString:@"selectedCommitSHA"])
     [self reload];
+  else if ([keyPath isEqualToString:@"inStagingView"])
+    [self updateStagingView];
 }
 
 - (XTFileChange*)fileChangeAtRow:(NSInteger)row
@@ -80,69 +112,64 @@
      viewForTableColumn:(NSTableColumn *)tableColumn
                    item:(id)item
 {
-  XTFileCellView *cell =
-      [outlineView makeViewWithIdentifier:@"fileCell" owner:_controller];
-  const BOOL inStagingView =
-      [self.docController.selectedCommitSHA isEqualToString:XTStagingSHA];
-
-  if (![cell isKindOfClass:[XTFileCellView class]])
-    return cell;
-
-  NSString *path = [self pathForItem:item];
-
-  if ([self outlineView:outlineView isItemExpandable:item])
-    cell.imageView.image = [NSImage imageNamed:NSImageNameFolder];
-  else
-    cell.imageView.image = [[NSWorkspace sharedWorkspace]
-        iconForFileType:[path pathExtension]];
-  cell.textField.stringValue = [path lastPathComponent];
-
-  NSColor *textColor;
+  NSString * const columnID = tableColumn.identifier;
+  const BOOL inStagingView = self.controller.inStagingView;
   const XitChange change = [self changeForItem:item];
-  const XitChange unstagedChange = [self unstagedChangeForItem:item];
+  
+  if ([columnID isEqualToString:@"main"]) {
+    XTFileCellView *cell =
+        [outlineView makeViewWithIdentifier:@"fileCell" owner:_controller];
 
-  if (change == XitChangeDeleted)
-    textColor = [NSColor disabledControlTextColor];
-  else if ([outlineView isRowSelected:[outlineView rowForItem:item]])
-    textColor = [NSColor selectedTextColor];
-  else
-    textColor = [NSColor textColor];
-  cell.textField.textColor = textColor;
-  cell.change = change;
+    if (![cell isKindOfClass:[XTFileCellView class]])
+      return cell;
 
-  const BOOL changeUnmodified = change == XitChangeUnmodified;
-  const BOOL unstagedUnmodified = unstagedChange == XitChangeUnmodified;
-  const NSRect changeFrame = cell.changeImage.frame;
-  const NSRect textFrame = cell.textField.frame;
-  CGFloat textRight = changeFrame.origin.x + changeFrame.size.width;
+    NSString * const path = [self pathForItem:item];
 
-  if (inStagingView) {
-    if (changeUnmodified && unstagedUnmodified) {
-      cell.changeImage.hidden = YES;
-      cell.unstagedImage.hidden = YES;
-    } else {
-      cell.changeImage.hidden = NO;
-      cell.unstagedImage.hidden = NO;
-      // Use the "mixed" icon for unmodified so there's always an icon for
-      // modified/staged files.
-      cell.changeImage.image = [self imageForChange:
-          changeUnmodified ? XitChangeMixed : change];
-      cell.unstagedImage.image = [self imageForChange:
-          unstagedUnmodified ? XitChangeMixed : unstagedChange];
-      textRight = cell.unstagedImage.frame.origin.x - kChangeImagePadding;
-    }
-  } else {
-    cell.changeImage.hidden = changeUnmodified;
-    cell.unstagedImage.hidden = YES;
-    if (change != XitChangeUnmodified)
-      textRight = changeFrame.origin.x - kChangeImagePadding;
+    if ([self outlineView:outlineView isItemExpandable:item])
+      cell.imageView.image = [NSImage imageNamed:NSImageNameFolder];
+    else
+      cell.imageView.image = [[NSWorkspace sharedWorkspace]
+          iconForFileType:[path pathExtension]];
+    cell.textField.stringValue = [path lastPathComponent];
+    
+    NSColor *textColor;
+    
+    if (change == XitChangeDeleted)
+      textColor = [NSColor disabledControlTextColor];
+    else if ([outlineView isRowSelected:[outlineView rowForItem:item]])
+      textColor = [NSColor selectedTextColor];
+    else
+      textColor = [NSColor textColor];
+    cell.textField.textColor = textColor;
+    cell.change = change;
+
+    return cell;
+  }
+  if ([columnID isEqualToString:@"change"]) {
+    XitChange useChange = change;
+    NSTableCellView *cell =
+        [outlineView makeViewWithIdentifier:columnID owner:_controller];
+    
+    if (inStagingView && (change == XitChangeUnmodified))
+      useChange = XitChangeMixed;
+    cell.imageView.image = [self imageForChange:useChange];
+    return cell;
+  }
+  if ([columnID isEqualToString:@"unstaged"]) {
+    if (!inStagingView)
+      return nil;
+
+    NSTableCellView *cell =
+        [outlineView makeViewWithIdentifier:columnID owner:_controller];
+    const XitChange unstagedChange = [self unstagedChangeForItem:item];
+    const XitChange useUnstagedChange = (unstagedChange == XitChangeUnmodified) ?
+        XitChangeMixed : unstagedChange;
+    
+    cell.imageView.image = [self imageForChange:useUnstagedChange];
+    return cell;
   }
 
-  [cell.textField setFrameSize:NSMakeSize(
-      textRight - textFrame.origin.x,
-      textFrame.size.height)];
-
-  return cell;
+  return nil;
 }
 
 @end

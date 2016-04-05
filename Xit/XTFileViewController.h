@@ -31,6 +31,7 @@ extern const CGFloat kChangeImagePadding;
 @property (weak) IBOutlet NSSegmentedControl *viewSelector;
 @property (strong) IBOutlet XTFileDiffController *diffController;
 @property (readonly) NSDictionary *changeImages;
+@property (readonly) BOOL inStagingView;
 
 - (IBAction)changeFileListView:(id)sender;
 - (IBAction)changeContentView:(id)sender;

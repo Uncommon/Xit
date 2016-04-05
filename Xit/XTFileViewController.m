@@ -2,6 +2,7 @@
 
 #import <CoreServices/CoreServices.h>
 
+#import "XTConstants.h"
 #import "XTCommitHeaderViewController.h"
 #import "XTDocController.h"
 #import "XTFileChangesDataSource.h"
@@ -16,14 +17,25 @@ NSString* const XTContentTabIDDiff = @"diff";
 NSString* const XTContentTabIDText = @"text";
 NSString* const XTContentTabIDPreview = @"preview";
 
+
 @interface NSSplitView (Animating)
 
+/// Animate the divider to the given position
 - (void)animatePosition:(CGFloat)position ofDividerAtIndex:(NSInteger)index;
 
 @end
 
 
+@interface XTFileViewController ()
+
+@property (readwrite) BOOL inStagingView;
+
+@end
+
+
 @implementation XTFileViewController
+
+@synthesize inStagingView;
 
 - (void)dealloc
 {
@@ -52,6 +64,8 @@ NSString* const XTContentTabIDPreview = @"preview";
       @( XitChangeMixed ) : [NSImage imageNamed:@"mixed"],
       };
 
+  _fileListOutline.highlightedTableColumn =
+      [_fileListOutline tableColumnWithIdentifier:@"change"];
   [_fileListOutline sizeToFit];
 
   [[NSNotificationCenter defaultCenter]
@@ -75,6 +89,30 @@ NSString* const XTContentTabIDPreview = @"preview";
   _fileChangeDS.docController = controller;
   _fileListDS.docController = controller;
   _headerController.docController = controller;
+  [controller addObserver:self
+               forKeyPath:@"selectedCommitSHA"
+                  options:NSKeyValueObservingOptionNew |
+                          NSKeyValueObservingOptionOld
+                  context:NULL];
+}
+
+- (void)
+observeValueForKeyPath:(NSString*)keyPath
+              ofObject:(id)object
+                change:(NSDictionary<NSString *,id> *)change
+               context:(void*)context
+{
+  if ([keyPath isEqualToString:@"selectedCommitSHA"]) {
+    NSString * const oldSHA = change[NSKeyValueChangeOldKey];
+    NSString * const newSHA = change[NSKeyValueChangeNewKey];
+    const BOOL wasStaging = (oldSHA != (NSString*)[NSNull null]) &&
+                            [oldSHA isEqualToString:XTStagingSHA];
+    const BOOL nowStaging = (newSHA != (NSString*)[NSNull null]) &&
+                            [newSHA isEqualToString:XTStagingSHA];
+    
+    if (wasStaging != nowStaging)
+      self.inStagingView = nowStaging;
+  }
 }
 
 - (IBAction)changeFileListView:(id)sender
@@ -157,12 +195,22 @@ NSString* const XTContentTabIDPreview = @"preview";
   }
 }
 
+- (void)showUnstagedColumn:(BOOL)shown
+{
+  NSTableColumn *column =
+      [_fileListOutline tableColumnWithIdentifier:@"unstaged"];
+
+  column.hidden = !shown;
+}
+
 - (void)commitSelected:(NSNotification *)note
 {
   XTDocController *docController = self.view.window.windowController;
 
   NSAssert([docController isKindOfClass:[XTDocController class]], @"");
   _headerController.commitSHA = docController.selectedCommitSHA;
+  [self showUnstagedColumn:
+      [docController.selectedCommitSHA isEqualToString:XTStagingSHA]];
   [self refresh];
 }
 
@@ -197,6 +245,7 @@ NSString* const XTContentTabIDPreview = @"preview";
 }
 
 @end
+
 
 @implementation NSSplitView (Animating)
 

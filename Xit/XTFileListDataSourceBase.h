@@ -27,12 +27,11 @@
 
 
 /**
-  Cell view with additional images for changed files.
+  Cell view with custom drawing for deleted files.
  */
 @interface XTFileCellView : NSTableCellView
 
-@property IBOutlet NSImageView *changeImage;
-@property IBOutlet NSImageView *unstagedImage;
+/// The change is stored to improve drawing of selected deleted files.
 @property XitChange change;
 
 @end
