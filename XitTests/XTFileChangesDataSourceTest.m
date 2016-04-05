@@ -32,4 +32,18 @@
   XCTAssertEqual([dataSource changeForItem:item1], XitChangeAdded);
 }
 
+- (void)testAssertOverride
+{
+  XTFileListDataSourceBase *flds = [[XTFileListDataSourceBase alloc] init];
+  BOOL caught = NO;
+  
+  @try {
+    [flds reload];
+  } @catch (NSException *exception) {
+    if ([exception.name isEqualToString:NSInternalInconsistencyException])
+      caught = YES;
+  }
+  XCTAssertTrue(caught, @"");
+}
+
 @end

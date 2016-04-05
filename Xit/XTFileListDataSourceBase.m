@@ -20,12 +20,12 @@
 
 - (void)reload
 {
-  NSAssert(false, @"reload must be overridden");
+  XTAssertOverride();
 }
 
 - (BOOL)isHierarchical
 {
-  NSAssert(false, @"isHierarchical must be overridden");
+  XTAssertOverride();
   return NO;
 }
 
@@ -87,19 +87,19 @@
 
 - (NSString*)pathForItem:(id)item
 {
-  NSAssert(false, @"pathForItem must be overridden");
+  XTAssertOverride();
   return nil;
 }
 
 - (XitChange)changeForItem:(id)item
 {
-  NSAssert(false, @"changeForItem must be overridden");
+  XTAssertOverride();
   return XitChangeUnmodified;
 }
 
 - (XitChange)unstagedChangeForItem:(id)item
 {
-  NSAssert(false, @"unstagedChangeForItem must be overridden");
+  XTAssertOverride();
   return XitChangeUnmodified;
 }
 
