@@ -35,3 +35,13 @@
 @property XitChange change;
 
 @end
+
+
+/**
+  Cell view with a button rather than an image.
+ */
+@interface XTTableButtonView : NSTableCellView
+
+@property (assign) IBOutlet NSButton *button;
+
+@end

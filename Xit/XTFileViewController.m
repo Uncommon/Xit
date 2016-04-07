@@ -144,6 +144,16 @@ observeValueForKeyPath:(NSString*)keyPath
   [self loadSelectedPreview];
 }
 
+- (IBAction)stageClicked:(id)sender
+{
+  // stage sender.superview.objectValue
+}
+
+- (IBAction)unstageClicked:(id)sender
+{
+  // unstage sender.superview.objectValue
+}
+
 - (void)clearPreviews
 {
   // tell all controllers to clear their previews

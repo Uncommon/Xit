@@ -146,26 +146,35 @@
     return cell;
   }
   if ([columnID isEqualToString:@"change"]) {
-    XitChange useChange = change;
-    NSTableCellView *cell =
-        [outlineView makeViewWithIdentifier:columnID owner:_controller];
-    
-    if (inStagingView && (change == XitChangeUnmodified))
-      useChange = XitChangeMixed;
-    cell.imageView.image = [self imageForChange:useChange];
-    return cell;
+    // Different cell views are used so that the icon is only clickable in
+    // staging view.
+    if (inStagingView) {
+      const XitChange useChange = (change == XitChangeUnmodified) ?
+          XitChangeMixed : change;
+      XTTableButtonView *cell =
+          [outlineView makeViewWithIdentifier:@"staged" owner:_controller];
+      
+      cell.button.image = [self imageForChange:useChange];
+      return cell;
+    } else {
+      NSTableCellView *cell =
+          [outlineView makeViewWithIdentifier:@"change" owner:_controller];
+      
+      cell.imageView.image = [self imageForChange:change];
+      return cell;
+    }
   }
   if ([columnID isEqualToString:@"unstaged"]) {
     if (!inStagingView)
       return nil;
 
-    NSTableCellView *cell =
+    XTTableButtonView *cell =
         [outlineView makeViewWithIdentifier:columnID owner:_controller];
     const XitChange unstagedChange = [self unstagedChangeForItem:item];
     const XitChange useUnstagedChange = (unstagedChange == XitChangeUnmodified) ?
         XitChangeMixed : unstagedChange;
     
-    cell.imageView.image = [self imageForChange:useUnstagedChange];
+    cell.button.image = [self imageForChange:useUnstagedChange];
     return cell;
   }
 
@@ -185,5 +194,10 @@
   else if (self.change == XitChangeDeleted)
     self.textField.textColor = [NSColor disabledControlTextColor];
 }
+
+@end
+
+
+@implementation XTTableButtonView
 
 @end

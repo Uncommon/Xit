@@ -136,18 +136,24 @@
                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                         <prototypeCellViews>
-                                                            <tableCellView identifier="unstaged" id="Iq5-SU-7aX">
+                                                            <tableCellView identifier="unstaged" id="Iq5-SU-7aX" customClass="XTTableButtonView">
                                                                 <rect key="frame" x="312" y="1" width="20" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
-                                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="3QD-uU-Zw4">
+                                                                    <button id="TgP-Oj-yya">
                                                                         <rect key="frame" x="3" y="-1" width="17" height="17"/>
                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="mixed" id="bgU-ed-8Dt"/>
-                                                                    </imageView>
+                                                                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="mixed" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="xXZ-cS-rR7">
+                                                                            <behavior key="behavior" lightByContents="YES"/>
+                                                                            <font key="font" metaFont="system"/>
+                                                                        </buttonCell>
+                                                                        <connections>
+                                                                            <action selector="stageClicked:" target="-2" id="zuT-Iq-Xap"/>
+                                                                        </connections>
+                                                                    </button>
                                                                 </subviews>
                                                                 <connections>
-                                                                    <outlet property="imageView" destination="3QD-uU-Zw4" id="K2d-Tp-GJu"/>
+                                                                    <outlet property="button" destination="TgP-Oj-yya" id="X52-27-pB6"/>
                                                                 </connections>
                                                             </tableCellView>
                                                         </prototypeCellViews>
@@ -164,18 +170,38 @@
                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                         <prototypeCellViews>
-                                                            <tableCellView identifier="change" id="BbI-KF-1f6">
+                                                            <tableCellView identifier="staged" id="BbI-KF-1f6" customClass="XTTableButtonView">
                                                                 <rect key="frame" x="335" y="1" width="20" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
-                                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="iD6-2x-ysj">
+                                                                    <button id="yEf-Zs-21Y">
                                                                         <rect key="frame" x="3" y="-1" width="17" height="17"/>
                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="mixed" id="NLR-Gq-gFs"/>
+                                                                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="mixed" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="u7S-Ju-sjt">
+                                                                            <behavior key="behavior" lightByContents="YES"/>
+                                                                            <font key="font" metaFont="system"/>
+                                                                        </buttonCell>
+                                                                        <connections>
+                                                                            <action selector="unstageClicked:" target="-2" id="rL2-b2-Mnc"/>
+                                                                        </connections>
+                                                                    </button>
+                                                                </subviews>
+                                                                <connections>
+                                                                    <outlet property="button" destination="yEf-Zs-21Y" id="rwu-5w-rNr"/>
+                                                                </connections>
+                                                            </tableCellView>
+                                                            <tableCellView identifier="change" id="VrT-LJ-mPE">
+                                                                <rect key="frame" x="335" y="20" width="20" height="17"/>
+                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                <subviews>
+                                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="Y5n-4d-xvk">
+                                                                        <rect key="frame" x="3" y="0.0" width="17" height="17"/>
+                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="ImW-TC-Ds9"/>
                                                                     </imageView>
                                                                 </subviews>
                                                                 <connections>
-                                                                    <outlet property="imageView" destination="iD6-2x-ysj" id="ebx-AL-a9W"/>
+                                                                    <outlet property="imageView" destination="Y5n-4d-xvk" id="wUl-9l-7zl"/>
                                                                 </connections>
                                                             </tableCellView>
                                                         </prototypeCellViews>
@@ -193,11 +219,11 @@
                                                         </textFieldCell>
                                                         <prototypeCellViews>
                                                             <tableCellView id="VVR-iO-ChX">
-                                                                <rect key="frame" x="1" y="1" width="64" height="17"/>
+                                                                <rect key="frame" x="1" y="1" width="-3" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
                                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="TM8-CV-Mz9">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="64" height="17"/>
+                                                                        <rect key="frame" x="-1.5" y="0.0" width="4" height="17"/>
                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                         <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="1i7-sp-fc7">
                                                                             <font key="font" metaFont="system"/>
