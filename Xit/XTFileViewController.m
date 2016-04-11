@@ -146,12 +146,14 @@ observeValueForKeyPath:(NSString*)keyPath
 
 - (IBAction)stageClicked:(id)sender
 {
-  // stage sender.superview.objectValue
+  // on single click, show workspace diff
+  // on double click, stage file
 }
 
 - (IBAction)unstageClicked:(id)sender
 {
-  // unstage sender.superview.objectValue
+  // on single click, show index diff
+  // on double click, unstage file
 }
 
 - (void)clearPreviews
@@ -242,7 +244,88 @@ observeValueForKeyPath:(NSString*)keyPath
   [_filePreview refreshPreviewItem];
 }
 
-#pragma mark - NSSplitViewDelegate
+- (NSImage*)imageForChange:(XitChange)change
+{
+  return self.changeImages[@( change )];
+}
+
+#pragma mark NSOutlineViewDelegate
+
+- (NSView *)outlineView:(NSOutlineView *)outlineView
+     viewForTableColumn:(NSTableColumn *)tableColumn
+                   item:(id)item
+{
+  XTFileListDataSourceBase *dataSource =
+      (XTFileListDataSourceBase*)_fileListOutline.dataSource;
+  NSString * const columnID = tableColumn.identifier;
+  const XitChange change = [dataSource changeForItem:item];
+  
+  if ([columnID isEqualToString:@"main"]) {
+    XTFileCellView *cell =
+        [outlineView makeViewWithIdentifier:@"fileCell" owner:self];
+    
+    if (![cell isKindOfClass:[XTFileCellView class]])
+      return cell;
+    
+    NSString * const path = [dataSource pathForItem:item];
+    
+    if ([dataSource outlineView:outlineView isItemExpandable:item])
+      cell.imageView.image = [NSImage imageNamed:NSImageNameFolder];
+    else
+      cell.imageView.image = [[NSWorkspace sharedWorkspace]
+                              iconForFileType:[path pathExtension]];
+    cell.textField.stringValue = [path lastPathComponent];
+    
+    NSColor *textColor;
+    
+    if (change == XitChangeDeleted)
+      textColor = [NSColor disabledControlTextColor];
+    else if ([outlineView isRowSelected:[outlineView rowForItem:item]])
+      textColor = [NSColor selectedTextColor];
+    else
+      textColor = [NSColor textColor];
+    cell.textField.textColor = textColor;
+    cell.change = change;
+    
+    return cell;
+  }
+  if ([columnID isEqualToString:@"change"]) {
+    // Different cell views are used so that the icon is only clickable in
+    // staging view.
+    if (inStagingView) {
+      const XitChange useChange = (change == XitChangeUnmodified) ?
+          XitChangeMixed : change;
+      XTTableButtonView *cell =
+          [outlineView makeViewWithIdentifier:@"staged" owner:self];
+      
+      cell.button.image = [self imageForChange:useChange];
+      return cell;
+    } else {
+      NSTableCellView *cell =
+          [outlineView makeViewWithIdentifier:@"change" owner:self];
+      
+      cell.imageView.image = [self imageForChange:change];
+      return cell;
+    }
+  }
+  if ([columnID isEqualToString:@"unstaged"]) {
+    if (!inStagingView)
+      return nil;
+    
+    XTTableButtonView *cell =
+        [outlineView makeViewWithIdentifier:columnID owner:self];
+    const XitChange unstagedChange = [dataSource unstagedChangeForItem:item];
+    const XitChange useUnstagedChange = (unstagedChange == XitChangeUnmodified) ?
+        XitChangeMixed : unstagedChange;
+    
+    cell.button.image = [self imageForChange:useUnstagedChange];
+    return cell;
+  }
+  
+  return nil;
+}
+
+#pragma mark NSSplitViewDelegate
 
 - (BOOL)splitView:(NSSplitView*)splitView
     shouldAdjustSizeOfSubview:(NSView*)subview

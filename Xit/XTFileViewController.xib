@@ -182,7 +182,7 @@
                                                                             <font key="font" metaFont="system"/>
                                                                         </buttonCell>
                                                                         <connections>
-                                                                            <action selector="unstageClicked:" target="-2" id="rL2-b2-Mnc"/>
+                                                                            <action selector="unstageClicked:" target="-2" id="Gc7-zY-D8W"/>
                                                                         </connections>
                                                                     </button>
                                                                 </subviews>
@@ -241,7 +241,7 @@
                                                 </tableColumns>
                                                 <connections>
                                                     <outlet property="dataSource" destination="QBv-mK-3e5" id="hp0-ov-MCp"/>
-                                                    <outlet property="delegate" destination="QBv-mK-3e5" id="r5a-vY-IkX"/>
+                                                    <outlet property="delegate" destination="-2" id="TCl-lY-j7i"/>
                                                 </connections>
                                             </outlineView>
                                         </subviews>

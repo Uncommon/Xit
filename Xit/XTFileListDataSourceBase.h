@@ -9,7 +9,7 @@
   Abstract base class for file list data sources.
  */
 @interface XTFileListDataSourceBase :
-    NSObject<NSOutlineViewDataSource, NSOutlineViewDelegate>
+    NSObject<NSOutlineViewDataSource>
 
 @property IBOutlet NSOutlineView *outlineView;
 @property IBOutlet XTFileViewController *controller;
