@@ -9,6 +9,7 @@
 #import "XTFileDiffController.h"
 #import "XTFileListDataSourceBase.h"
 #import "XTFileListDataSource.h"
+#import "XTFileListView.h"
 #import "XTPreviewItem.h"
 #import "XTTextPreviewController.h"
 
@@ -129,7 +130,6 @@ observeValueForKeyPath:(NSString*)keyPath
         [_fileListOutline tableColumnWithIdentifier:@"hidden"]];
   [_fileListOutline setDelegate:nil];
   [_fileListOutline setDataSource:newDS];
-  [_fileListOutline setDelegate:newDS];
   [_fileListOutline reloadData];
 }
 
@@ -144,14 +144,43 @@ observeValueForKeyPath:(NSString*)keyPath
   [self loadSelectedPreview];
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+
+/**
+  Performs the given selector off the main thread, and refreshes the file list.
+  Without this, methods like stageClicked: and unstageClicked: have too much
+  common code.
+ */
+- (void)performRepoAction:(SEL)action onFileListItem:(id)item
+{
+  XTFileListDataSourceBase *dataSource =
+  (XTFileListDataSourceBase*)_fileListOutline.dataSource;
+  
+  [_repo executeOffMainThread:^{
+    [_repo performSelector:action withObject:[dataSource pathForItem:item]];
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [dataSource reload];
+    });
+  }];
+}
+
+#pragma clang diagnostic pop
+
 - (IBAction)stageClicked:(id)sender
 {
+  _fileListOutline.highlightedTableColumn =
+      [_fileListOutline tableColumnWithIdentifier:@"unstaged"];
+  [_fileListOutline setNeedsDisplay];
   // on single click, show workspace diff
   // on double click, stage file
 }
 
 - (IBAction)unstageClicked:(id)sender
 {
+  _fileListOutline.highlightedTableColumn =
+      [_fileListOutline tableColumnWithIdentifier:@"change"];
+  [_fileListOutline setNeedsDisplay];
   // on single click, show index diff
   // on double click, unstage file
 }
@@ -323,6 +352,21 @@ observeValueForKeyPath:(NSString*)keyPath
   }
   
   return nil;
+}
+
+- (NSTableRowView*)outlineView:(NSOutlineView *)outlineView
+                rowViewForItem:(id)item
+{
+  return [[XTFileRowView alloc] init];
+}
+
+- (void)outlineView:(NSOutlineView*)outlineView
+      didAddRowView:(NSTableRowView*)rowView
+             forRow:(NSInteger)row
+{
+  XTFileRowView *xtRowView = (XTFileRowView*)rowView;
+  
+  xtRowView.outlineView = _fileListOutline;
 }
 
 #pragma mark NSSplitViewDelegate

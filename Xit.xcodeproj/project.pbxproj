@@ -30,6 +30,7 @@
 		89355423157C128F007AC9CE /* XTDocController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89355422157C128F007AC9CE /* XTDocController.m */; };
 		894C8D931CA44A44001A4B80 /* staging.png in Resources */ = {isa = PBXBuildFile; fileRef = 894C8D911CA44A44001A4B80 /* staging.png */; };
 		894C8D941CA44A44001A4B80 /* staging@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 894C8D921CA44A44001A4B80 /* staging@2x.png */; };
+		894C8DAC1CBC0A1B001A4B80 /* XTFileListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 894C8DAB1CBC0A1B001A4B80 /* XTFileListView.m */; };
 		895229661786F6F900EE514C /* FHTDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8952295F1786F6F900EE514C /* FHTDelegate.m */; };
 		895229671786F6F900EE514C /* FHTItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 895229611786F6F900EE514C /* FHTItemView.m */; };
 		895229681786F6F900EE514C /* FHTLCDStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 895229631786F6F900EE514C /* FHTLCDStatusView.m */; };
@@ -219,6 +220,8 @@
 		89355422157C128F007AC9CE /* XTDocController.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTDocController.m; sourceTree = "<group>"; tabWidth = 2; };
 		894C8D911CA44A44001A4B80 /* staging.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = staging.png; sourceTree = "<group>"; };
 		894C8D921CA44A44001A4B80 /* staging@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "staging@2x.png"; sourceTree = "<group>"; };
+		894C8DAA1CBC0A1B001A4B80 /* XTFileListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTFileListView.h; sourceTree = "<group>"; };
+		894C8DAB1CBC0A1B001A4B80 /* XTFileListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTFileListView.m; sourceTree = "<group>"; };
 		8952295E1786F6F900EE514C /* FHTDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FHTDelegate.h; sourceTree = "<group>"; };
 		8952295F1786F6F900EE514C /* FHTDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FHTDelegate.m; sourceTree = "<group>"; };
 		895229601786F6F900EE514C /* FHTItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FHTItemView.h; sourceTree = "<group>"; };
@@ -718,6 +721,8 @@
 				DDD4708016F3E7B000CA76FF /* XTPreviewItem.m */,
 				DD858B1D17FFDCB900264F7D /* XTTextPreviewController.h */,
 				DD858B1E17FFDCB900264F7D /* XTTextPreviewController.m */,
+				894C8DAA1CBC0A1B001A4B80 /* XTFileListView.h */,
+				894C8DAB1CBC0A1B001A4B80 /* XTFileListView.m */,
 			);
 			name = FileView;
 			sourceTree = "<group>";
@@ -932,6 +937,7 @@
 				C3D6D31613E8E6BC00AF50B0 /* PBGitGrapher.mm in Sources */,
 				C3D6D31913E8E6E400AF50B0 /* PBGraphCellInfo.m in Sources */,
 				C3D6D31F13E8E7E700AF50B0 /* PBGitLane.mm in Sources */,
+				894C8DAC1CBC0A1B001A4B80 /* XTFileListView.m in Sources */,
 				C3D6D32213E91EDC00AF50B0 /* PBGitRevisionCell.m in Sources */,
 				31C7C12E13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m in Sources */,
 				DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */,
