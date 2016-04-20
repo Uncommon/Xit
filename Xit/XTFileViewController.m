@@ -10,6 +10,7 @@
 #import "XTFileListDataSourceBase.h"
 #import "XTFileListDataSource.h"
 #import "XTFileListView.h"
+#import "XTPreviewController.h"
 #import "XTPreviewItem.h"
 #import "XTTextPreviewController.h"
 
@@ -30,6 +31,7 @@ NSString* const XTContentTabIDPreview = @"preview";
 @interface XTFileViewController ()
 
 @property (readwrite) BOOL inStagingView;
+@property id<XTFileContentController> contentController;
 
 @end
 
@@ -68,6 +70,7 @@ NSString* const XTContentTabIDPreview = @"preview";
   _fileListOutline.highlightedTableColumn =
       [_fileListOutline tableColumnWithIdentifier:@"change"];
   [_fileListOutline sizeToFit];
+  self.contentController = self.diffController;
 
   [[NSNotificationCenter defaultCenter]
       addObserver:self
@@ -138,9 +141,13 @@ observeValueForKeyPath:(NSString*)keyPath
   const NSInteger selection = [sender selectedSegment];
   NSString *tabIDs[] =
       { XTContentTabIDDiff, XTContentTabIDText, XTContentTabIDPreview };
+  id contentControllers[] = { self.diffController,
+                              _textController,
+                              self.previewController };
 
   NSParameterAssert((selection >= 0) && (selection < 3));
   [self.previewTabView selectTabViewItemWithIdentifier:tabIDs[selection]];
+  self.contentController = contentControllers[selection];
   [self loadSelectedPreview];
 }
 
@@ -190,7 +197,7 @@ observeValueForKeyPath:(NSString*)keyPath
   // tell all controllers to clear their previews
   [self.diffController clear];
   [_textController clear];
-  _filePreview.previewItem = nil;
+  [self.previewController clear];
 }
 
 - (void)loadSelectedPreview
@@ -200,40 +207,12 @@ observeValueForKeyPath:(NSString*)keyPath
       [_fileListOutline dataSource];
   XTFileChange *selectedItem =
       [dataSource fileChangeAtRow:[selection firstIndex]];
-  NSString *contentTabID =
-      [[self.previewTabView selectedTabViewItem] identifier];
   XTDocController *docController = self.view.window.windowController;
 
   NSAssert([docController isKindOfClass:[XTDocController class]], @"");
-  if ([contentTabID isEqualToString:XTContentTabIDDiff]) {
-    [self.diffController loadPath:selectedItem.path
-                           commit:docController.selectedCommitSHA
-                       repository:_repo];
-  } else if ([contentTabID isEqualToString:XTContentTabIDText]) {
-    [_textController loadPath:selectedItem.path
-                       commit:docController.selectedCommitSHA
-                   repository:_repo];
-  } else if ([contentTabID isEqualToString:XTContentTabIDPreview]) {
-    [_filePreview setHidden:NO];
-
-    XTPreviewItem *previewItem = (XTPreviewItem *)_filePreview.previewItem;
-    const NSUInteger selectionCount = [selection count];
-
-    if (previewItem == nil) {
-      previewItem = [[XTPreviewItem alloc] init];
-      previewItem.repo = _repo;
-      _filePreview.previewItem = previewItem;
-    }
-
-    previewItem.commitSHA = docController.selectedCommitSHA;
-    if (selectionCount != 1) {
-      [_filePreview setHidden:YES];
-      previewItem.path = nil;
-      return;
-    }
-
-    previewItem.path = selectedItem.path;
-  }
+  [self.contentController loadPath:selectedItem.path
+                            commit:docController.selectedCommitSHA
+                        repository:_repo];
 }
 
 - (void)showUnstagedColumn:(BOOL)shown

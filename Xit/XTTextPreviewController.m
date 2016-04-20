@@ -24,6 +24,9 @@
 
 - (void)loadText:(NSString*)text
 {
+  if (text == nil)
+    text = @"";
+
   NSMutableString *textLines = [NSMutableString string];
 
   [text enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
@@ -50,7 +53,7 @@
   return NO;
 }
 
-- (BOOL)loadPath:(NSString*)path
+- (void)loadPath:(NSString*)path
           commit:(NSString*)sha
       repository:(XTRepository*)repository
 {
@@ -59,14 +62,24 @@
       initWithData:data encoding:NSUTF8StringEncoding];
 
   // TODO: Use TECSniffTextEncoding to detect encoding.
-  if (text == nil) {
+  if (text == nil)
     text = [[NSString alloc]
         initWithData:data encoding:NSUTF16StringEncoding];
-    if (text == nil)
-      return NO;
-  }
+  
   [self loadText:text];
-  return YES;
+}
+
+
+- (void)loadUnstagedPath:(NSString*)path
+              repository:(XTRepository*)repository
+{
+  // show file on disk
+}
+
+- (void)loadStagedPath:(NSString*)path
+            repository:(XTRepository*)repository
+{
+  // show file from index
 }
 
 @end

@@ -19,6 +19,7 @@
                 <outlet property="_rightPane" destination="LHY-c4-rvq" id="y76-R2-Gw2"/>
                 <outlet property="_textController" destination="58" id="5d0-jn-kOw"/>
                 <outlet property="diffController" destination="fX5-fH-Hy5" id="nP0-l5-ngF"/>
+                <outlet property="previewController" destination="3g8-eR-FPJ" id="dy4-6W-vsZ"/>
                 <outlet property="previewTabView" destination="52" id="62"/>
                 <outlet property="view" destination="68" id="75"/>
                 <outlet property="viewSelector" destination="taS-ff-AsX" id="zMB-X1-GEd"/>
@@ -79,7 +80,7 @@
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <outlineView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="8" id="7" customClass="XTFileListView">
-                                                <rect key="frame" x="0.0" y="0.0" width="357" height="188"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="357" height="0.0"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -332,11 +333,11 @@
                                         </tabViewItem>
                                         <tabViewItem label="Preview" identifier="preview" id="54">
                                             <view key="view" id="55">
-                                                <rect key="frame" x="0.0" y="0.0" width="345.5" height="189"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="345" height="189"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <customView id="4" customClass="QLPreviewView">
-                                                        <rect key="frame" x="0.0" y="0.0" width="345.5" height="189"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="345" height="189"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     </customView>
                                                 </subviews>
@@ -391,6 +392,11 @@
             <connections>
                 <outlet property="_webView" destination="e4U-lz-eEd" id="mct-Ae-eey"/>
                 <outlet property="view" destination="e4U-lz-eEd" id="94Q-P5-Sfh"/>
+            </connections>
+        </customObject>
+        <customObject id="3g8-eR-FPJ" customClass="XTPreviewController">
+            <connections>
+                <outlet property="view" destination="4" id="aa2-ft-Co4"/>
             </connections>
         </customObject>
     </objects>

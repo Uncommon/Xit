@@ -5,10 +5,32 @@
 @class XTFileChangesDataSource;
 @class XTFileDiffController;
 @class XTFileListDataSource;
+@class XTPreviewController;
 @class XTRepository;
 @class XTTextPreviewController;
 
 extern const CGFloat kChangeImagePadding;
+
+/**
+  Interface for a controller that displays file content in some form.
+ */
+@protocol XTFileContentController <NSObject>
+
+/// Clears the display for when nothing is selected.
+- (void)clear;
+/// Displays a file from a commit.
+- (void)loadPath:(NSString*)path
+          commit:(NSString*)sha
+      repository:(XTRepository*)repository;
+/// Displays a workspace file.
+- (void)loadUnstagedPath:(NSString*)path
+              repository:(XTRepository*)repository;
+/// Displays a file from the index.
+- (void)loadStagedPath:(NSString*)path
+            repository:(XTRepository*)repository;
+
+@end
+
 
 /**
   View controller for the file list and detail view.
@@ -30,6 +52,7 @@ extern const CGFloat kChangeImagePadding;
 @property (strong) IBOutlet NSTabView *previewTabView;
 @property (weak) IBOutlet NSSegmentedControl *viewSelector;
 @property (strong) IBOutlet XTFileDiffController *diffController;
+@property (strong) IBOutlet XTPreviewController *previewController;
 @property (readonly) NSDictionary *changeImages;
 @property (readonly) BOOL inStagingView;
 

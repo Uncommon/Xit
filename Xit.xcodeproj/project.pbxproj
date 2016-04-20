@@ -31,6 +31,7 @@
 		894C8D931CA44A44001A4B80 /* staging.png in Resources */ = {isa = PBXBuildFile; fileRef = 894C8D911CA44A44001A4B80 /* staging.png */; };
 		894C8D941CA44A44001A4B80 /* staging@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 894C8D921CA44A44001A4B80 /* staging@2x.png */; };
 		894C8DAC1CBC0A1B001A4B80 /* XTFileListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 894C8DAB1CBC0A1B001A4B80 /* XTFileListView.m */; };
+		894C8DBD1CC12F3E001A4B80 /* XTPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 894C8DBB1CC12F3E001A4B80 /* XTPreviewController.m */; };
 		895229661786F6F900EE514C /* FHTDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8952295F1786F6F900EE514C /* FHTDelegate.m */; };
 		895229671786F6F900EE514C /* FHTItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 895229611786F6F900EE514C /* FHTItemView.m */; };
 		895229681786F6F900EE514C /* FHTLCDStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 895229631786F6F900EE514C /* FHTLCDStatusView.m */; };
@@ -222,6 +223,8 @@
 		894C8D921CA44A44001A4B80 /* staging@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "staging@2x.png"; sourceTree = "<group>"; };
 		894C8DAA1CBC0A1B001A4B80 /* XTFileListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTFileListView.h; sourceTree = "<group>"; };
 		894C8DAB1CBC0A1B001A4B80 /* XTFileListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTFileListView.m; sourceTree = "<group>"; };
+		894C8DBA1CC12F3E001A4B80 /* XTPreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTPreviewController.h; sourceTree = "<group>"; };
+		894C8DBB1CC12F3E001A4B80 /* XTPreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTPreviewController.m; sourceTree = "<group>"; };
 		8952295E1786F6F900EE514C /* FHTDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FHTDelegate.h; sourceTree = "<group>"; };
 		8952295F1786F6F900EE514C /* FHTDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FHTDelegate.m; sourceTree = "<group>"; };
 		895229601786F6F900EE514C /* FHTItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FHTItemView.h; sourceTree = "<group>"; };
@@ -723,6 +726,8 @@
 				DD858B1E17FFDCB900264F7D /* XTTextPreviewController.m */,
 				894C8DAA1CBC0A1B001A4B80 /* XTFileListView.h */,
 				894C8DAB1CBC0A1B001A4B80 /* XTFileListView.m */,
+				894C8DBA1CC12F3E001A4B80 /* XTPreviewController.h */,
+				894C8DBB1CC12F3E001A4B80 /* XTPreviewController.m */,
 			);
 			name = FileView;
 			sourceTree = "<group>";
@@ -956,6 +961,7 @@
 				89355423157C128F007AC9CE /* XTDocController.m in Sources */,
 				DDD9E33615953952007EF2F6 /* XTStagingDataSourceBase.m in Sources */,
 				DDDA447215B0EA4700DF407B /* XTRepository+Parsing.m in Sources */,
+				894C8DBD1CC12F3E001A4B80 /* XTPreviewController.m in Sources */,
 				DD98D0021822FFE2008B79C9 /* XTFileChangesDataSource.m in Sources */,
 				DDC75B8315D08E8F0087F2D4 /* NSDate+Extensions.m in Sources */,
 				DD9C1B8F160239DD0001FE9B /* XTRefToken.m in Sources */,

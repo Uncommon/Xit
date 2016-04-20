@@ -88,26 +88,43 @@
   [[_webView mainFrame] loadHTMLString:html baseURL:[[self class] baseURL]];
 }
 
-- (BOOL)loadPath:(NSString*)path
+- (void)loadDiffOrNotify:(XTDiffDelta*)delta
+{
+  if (delta == nil)
+    [self loadNotice:@"No changes for this selection"];
+  else
+    [self loadDiff:delta];
+}
+
+- (void)loadPath:(NSString*)path
           commit:(NSString*)sha
       repository:(XTRepository*)repository
 {
   if ([path length] == 0) {
     [self loadNotice:@"No selection"];
-    return YES;
+    return;
   }
 
   XTDiffDelta *delta =
       [repository diffForFile:path commitSHA:sha parentSHA:nil];
 
-  if (delta == nil) {
-    [self loadNotice:@"No changes for this selection"];
-    return YES;
-  } else {
-    [self loadDiff:delta];
-    return YES;
-  }
-  return NO;
+  return [self loadDiffOrNotify:delta];
+}
+
+- (void)loadStagedPath:(NSString*)path
+            repository:(XTRepository*)repository
+{
+  XTDiffDelta *delta = [repository stagedDiffForFile:path];
+  
+  [self loadDiffOrNotify:delta];
+}
+
+- (void)loadUnstagedPath:(NSString*)path
+              repository:(XTRepository*)repository
+{
+  XTDiffDelta *delta = [repository unstagedDiffForFile:path];
+  
+  [self loadDiffOrNotify:delta];
 }
 
 @end
