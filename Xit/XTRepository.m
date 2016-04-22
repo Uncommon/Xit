@@ -329,13 +329,24 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
   return [self shaForRef:[self headRef]];
 }
 
-- (NSData *)contentsOfFile:(NSString *)filePath atCommit:(NSString *)commit
+- (NSData*)contentsOfFile:(NSString*)filePath atCommit:(NSString*)commitSHA
 {
-  NSString *spec = [NSString stringWithFormat:@"%@:%@", commit, filePath];
-  NSArray *args = @[ @"cat-file", @"blob", spec ];
-  NSError *error = nil;
+  if ((filePath == nil) || (commitSHA == nil))
+    return nil;
 
-  return [self executeGitWithArgs:args writes:NO error:&error];
+  NSError *error = nil;
+  GTCommit *commit = [self.gtRepo lookUpObjectBySHA:commitSHA error:&error];
+
+  if (![commit isKindOfClass:[GTCommit class]])
+    return nil;
+
+  GTTree *tree = commit.tree;
+  GTTreeEntry *entry = [tree entryWithPath:filePath error:&error];
+  GTBlob *blob = (GTBlob*)[entry GTObject:&error];
+
+  if (![blob isKindOfClass:[GTBlob class]])
+    return nil;
+  return blob.data;
 }
 
 // XXX tmp
