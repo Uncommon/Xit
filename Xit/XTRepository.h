@@ -49,6 +49,7 @@ extern NSString *XTPathsKey;
 - (NSString*)shaForRef:(NSString*)ref;
 
 - (NSData*)contentsOfFile:(NSString*)filePath atCommit:(NSString*)commit;
+- (NSData*)contentsOfStagedFile:(NSString*)filePath;
 
 - (void)initializeEventStream;
 - (void)start;

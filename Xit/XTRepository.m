@@ -349,6 +349,23 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
   return blob.data;
 }
 
+- (NSData*)contentsOfStagedFile:(NSString*)filePath
+{
+  NSError *error = nil;
+  GTIndex *index = [self.gtRepo indexWithError:&error];
+  
+  // GTRepository returns any cached index object it had, so it may need
+  // to be reloaded.
+  [index refresh:&error];
+  
+  GTIndexEntry *entry = [index entryWithPath:filePath error:&error];
+  GTBlob *blob = (GTBlob*)[entry GTObject:&error];
+  
+  if (![blob isKindOfClass:[GTBlob class]])
+    return nil;
+  return blob.data;
+}
+
 // XXX tmp
 - (void)start
 {
