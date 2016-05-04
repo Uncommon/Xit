@@ -76,6 +76,7 @@ extern NSString *XTPathsKey;
 @property(readonly) dispatch_queue_t queue;
 @property(readonly) NSMutableArray *activeTasks;
 @property(readonly) NSURL *repoURL;
+@property(readonly) NSURL *gitDirectoryURL;
 @property(readonly) BOOL isWriting;
 @property(readonly) BOOL isShutDown;
 

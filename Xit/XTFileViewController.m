@@ -52,6 +52,11 @@ NSString* const XTContentTabIDPreview = @"preview";
   _fileListDS.repository = newRepo;
   _headerController.repository = newRepo;
   ((XTPreviewItem*)_filePreview.previewItem).repo = newRepo;
+  [[NSNotificationCenter defaultCenter]
+      addObserver:self
+         selector:@selector(repoChanged:)
+             name:XTRepositoryChangedNotification
+           object:newRepo];
 }
 
 - (void)loadView
@@ -223,7 +228,20 @@ observeValueForKeyPath:(NSString*)keyPath
   column.hidden = !shown;
 }
 
-- (void)commitSelected:(NSNotification *)note
+- (void)repoChanged:(NSNotification*)note
+{
+  NSArray *paths = note.userInfo[XTPathsKey];
+  
+  if (self.inStagingView && ([paths count] != 0))
+    for (NSString *path in paths)
+      if ([path isEqualToString:@"/"]) {
+        // ideally check the mod date on /index
+        [_fileListDS reload];
+        break;
+      }
+}
+
+- (void)commitSelected:(NSNotification*)note
 {
   XTDocController *docController = self.view.window.windowController;
 
@@ -234,7 +252,7 @@ observeValueForKeyPath:(NSString*)keyPath
   [self refresh];
 }
 
-- (void)fileSelectionChanged:(NSNotification *)note
+- (void)fileSelectionChanged:(NSNotification*)note
 {
   [self refresh];
 }
