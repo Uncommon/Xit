@@ -1,5 +1,7 @@
 #import "XTPreviewController.h"
+#import "XTConstants.h"
 #import "XTPreviewItem.h"
+#import "XTRepository.h"
 #import <Quartz/Quartz.h>
 
 @interface XTPreviewController ()
@@ -26,7 +28,7 @@
   
   XTPreviewItem *previewItem = (XTPreviewItem *)self.view.previewItem;
   
-  if (previewItem == nil) {
+  if (![previewItem isKindOfClass:[XTPreviewItem class]]) {
     previewItem = [[XTPreviewItem alloc] init];
     previewItem.repo = repository;
     self.view.previewItem = previewItem;
@@ -40,13 +42,17 @@
 - (void)loadUnstagedPath:(NSString*)path
               repository:(XTRepository*)repository
 {
+  [self.view setHidden:NO];
   
+  NSURL *fileURL = [repository.repoURL URLByAppendingPathComponent:path];
+  
+  self.view.previewItem = fileURL;
 }
 
 - (void)loadStagedPath:(NSString*)path
             repository:(XTRepository*)repository
 {
-  
+  [self loadPath:path commit:XTStagingSHA repository:repository];
 }
 
 @end

@@ -64,6 +64,8 @@ typedef enum {
 - (XTDiffDelta*)diffForFile:(NSString*)path
                   commitSHA:(NSString*)sha
                   parentSHA:(NSString*)parentSHA;
+- (XTDiffDelta*)stagedDiffForFile:(NSString*)path;
+- (XTDiffDelta*)unstagedDiffForFile:(NSString*)path;
 - (BOOL)isTextFile:(NSString*)path commit:(NSString*)commit;
 
 @end

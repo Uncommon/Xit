@@ -325,17 +325,10 @@ NSString *XTHeaderContentKey = @"content";
   return result;
 }
 
-- (XTDiffDelta*)diffForFile:(NSString*)path
-                  commitSHA:(NSString*)sha
-                  parentSHA:(NSString*)parentSHA
+- (XTDiffDelta*)deltaFromDiff:(GTDiff*)diff withPath:(NSString*)path
 {
-  GTDiff *diff = [self diffForSHA:sha parent:parentSHA];
-  
-  if (diff == nil)
-    return nil;
-
   __block GTDiffDelta *result = nil;
-
+  
   [diff enumerateDeltasUsingBlock:^(GTDiffDelta *delta, BOOL *stop) {
     if ([delta.newFile.path isEqualToString:path]) {
       *stop = YES;
@@ -343,6 +336,40 @@ NSString *XTHeaderContentKey = @"content";
     }
   }];
   return (XTDiffDelta*)result;
+}
+
+- (XTDiffDelta*)diffForFile:(NSString*)path
+                  commitSHA:(NSString*)sha
+                  parentSHA:(NSString*)parentSHA
+{
+  GTDiff *diff = [self diffForSHA:sha parent:parentSHA];
+  
+  return [self deltaFromDiff:diff withPath:path];
+}
+
+- (XTDiffDelta*)stagedDiffForFile:(NSString*)path
+{
+  NSError *error = nil;
+  GTCommit *headCommit = [self commitForRef:self.headRef];
+  GTDiff *diff = [GTDiff diffIndexFromTree:headCommit.tree
+                              inRepository:_gtRepo
+                                   options:nil
+                                     error:&error];
+  if (error != nil)
+    return nil;
+  return [self deltaFromDiff:diff withPath:path];
+}
+
+- (XTDiffDelta*)unstagedDiffForFile:(NSString*)path
+{
+  NSError *error = nil;
+  GTDiff *diff = [GTDiff diffIndexToWorkingDirectoryInRepository:_gtRepo
+                                                         options:nil
+                                                           error:&error];
+
+  if (error != nil)
+    return nil;
+  return [self deltaFromDiff:diff withPath:path];
 }
 
 NSString *kHeaderFormat = @"--format="

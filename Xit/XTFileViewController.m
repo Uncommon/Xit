@@ -18,6 +18,8 @@ const CGFloat kChangeImagePadding = 8;
 NSString* const XTContentTabIDDiff = @"diff";
 NSString* const XTContentTabIDText = @"text";
 NSString* const XTContentTabIDPreview = @"preview";
+NSString* const XTColumnIDStaged = @"change";
+NSString* const XTColumnIDUnstaged = @"unstaged";
 
 
 @interface NSSplitView (Animating)
@@ -31,6 +33,7 @@ NSString* const XTContentTabIDPreview = @"preview";
 @interface XTFileViewController ()
 
 @property (readwrite) BOOL inStagingView;
+@property BOOL showingStaged;
 @property id<XTFileContentController> contentController;
 
 @end
@@ -179,22 +182,44 @@ observeValueForKeyPath:(NSString*)keyPath
 
 #pragma clang diagnostic pop
 
+- (BOOL)showingStaged
+{
+  return [_fileListOutline.highlightedTableColumn.identifier
+      isEqualToString:XTColumnIDStaged];
+}
+
+- (void)setShowingStaged:(BOOL)showingStaged
+{
+  NSString *columnID = showingStaged ? XTColumnIDStaged : XTColumnIDUnstaged;
+  
+  _fileListOutline.highlightedTableColumn =
+      [_fileListOutline tableColumnWithIdentifier:columnID];
+  NSAssert(_fileListOutline.highlightedTableColumn != nil, @"");
+  [_fileListOutline setNeedsDisplay];
+  [self refresh];
+}
+
+- (void)selectRowFromButton:(NSButton*)button
+{
+  const NSInteger row = ((XTTableButtonView*)button.superview).row;
+  
+  [_fileListOutline selectRowIndexes:[NSIndexSet indexSetWithIndex:row]
+                byExtendingSelection:NO];
+  [self.view.window makeFirstResponder:_fileListOutline];
+}
+
 - (IBAction)stageClicked:(id)sender
 {
-  _fileListOutline.highlightedTableColumn =
-      [_fileListOutline tableColumnWithIdentifier:@"unstaged"];
-  [_fileListOutline setNeedsDisplay];
+  self.showingStaged = NO;
+  [self selectRowFromButton:sender];
   // on single click, show workspace diff
   // on double click, stage file
 }
 
 - (IBAction)unstageClicked:(id)sender
 {
-  _fileListOutline.highlightedTableColumn =
-      [_fileListOutline tableColumnWithIdentifier:@"change"];
-  [_fileListOutline setNeedsDisplay];
-  // on single click, show index diff
-  // on double click, unstage file
+  self.showingStaged = YES;
+  [self selectRowFromButton:sender];
 }
 
 - (void)clearPreviews
@@ -214,10 +239,20 @@ observeValueForKeyPath:(NSString*)keyPath
       [dataSource fileChangeAtRow:[selection firstIndex]];
   XTDocController *docController = self.view.window.windowController;
 
-  NSAssert([docController isKindOfClass:[XTDocController class]], @"");
-  [self.contentController loadPath:selectedItem.path
-                            commit:docController.selectedCommitSHA
-                        repository:_repo];
+  if (self.inStagingView) {
+    if (self.showingStaged)
+      [self.contentController loadStagedPath:selectedItem.path
+                                  repository:_repo];
+    else
+      [self.contentController loadUnstagedPath:selectedItem.path
+                                    repository:_repo];
+  }
+  else {
+    NSAssert([docController isKindOfClass:[XTDocController class]], @"");
+    [self.contentController loadPath:selectedItem.path
+                              commit:docController.selectedCommitSHA
+                          repository:_repo];
+  }
 }
 
 - (void)showUnstagedColumn:(BOOL)shown
@@ -325,6 +360,7 @@ observeValueForKeyPath:(NSString*)keyPath
           [outlineView makeViewWithIdentifier:@"staged" owner:self];
       
       cell.button.image = [self imageForChange:useChange];
+      cell.row = [outlineView rowForItem:item];
       return cell;
     } else {
       NSTableCellView *cell =
@@ -345,6 +381,7 @@ observeValueForKeyPath:(NSString*)keyPath
         XitChangeMixed : unstagedChange;
     
     cell.button.image = [self imageForChange:useUnstagedChange];
+    cell.row = [outlineView rowForItem:item];
     return cell;
   }
   

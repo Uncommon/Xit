@@ -43,5 +43,6 @@
 @interface XTTableButtonView : NSTableCellView
 
 @property (assign) IBOutlet NSButton *button;
+@property NSInteger row;
 
 @end

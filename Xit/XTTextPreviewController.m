@@ -40,6 +40,22 @@
   [[_webView mainFrame] loadHTMLString:html baseURL:[[self class] baseURL]];
 }
 
+- (void)loadData:(NSData*)data
+{
+  if (data == nil)
+    return;
+
+  NSString *text = [[NSString alloc]
+                    initWithData:data encoding:NSUTF8StringEncoding];
+  
+  // TODO: Use TECSniffTextEncoding to detect encoding.
+  if (text == nil)
+    text = [[NSString alloc]
+            initWithData:data encoding:NSUTF16StringEncoding];
+  
+  [self loadText:text];
+}
+
 - (BOOL)isFileChanged:(NSString*)path inRepository:(XTRepository*)repo
 {
   XTDocController *controller = self.view.window.windowController;
@@ -57,29 +73,21 @@
           commit:(NSString*)sha
       repository:(XTRepository*)repository
 {
-  NSData *data = [repository contentsOfFile:path atCommit:sha];
-  NSString *text = [[NSString alloc]
-      initWithData:data encoding:NSUTF8StringEncoding];
-
-  // TODO: Use TECSniffTextEncoding to detect encoding.
-  if (text == nil)
-    text = [[NSString alloc]
-        initWithData:data encoding:NSUTF16StringEncoding];
-  
-  [self loadText:text];
+  [self loadData:[repository contentsOfFile:path atCommit:sha]];
 }
-
 
 - (void)loadUnstagedPath:(NSString*)path
               repository:(XTRepository*)repository
 {
-  // show file on disk
+  NSURL *url = [repository.repoURL URLByAppendingPathComponent:path];
+  
+  [self loadData:[NSData dataWithContentsOfURL:url]];
 }
 
 - (void)loadStagedPath:(NSString*)path
             repository:(XTRepository*)repository
 {
-  // show file from index
+  [self loadData:[repository contentsOfStagedFile:path]];
 }
 
 @end
