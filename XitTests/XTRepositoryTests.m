@@ -149,7 +149,7 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
 
   file1Path = [repoPath stringByAppendingPathComponent:fileName];
   [content writeToFile:file1Path
-            atomically:YES
+            atomically:NO
               encoding:encoding
                 error:&error];
   XCTAssertNil(error);
@@ -162,6 +162,21 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
   NSString *stagedString =
       [[NSString alloc] initWithData:stagedContent encoding:encoding];
   
+  XCTAssertEqualObjects(expectedContent, stagedContent);
+  XCTAssertEqualObjects(content, stagedString);
+  
+  // Write to the workspace file, but don't stage it. The staged content
+  // should be the same.
+  NSString *newContent = @"new stuff";
+  
+  [newContent writeToFile:file1Path
+               atomically:NO
+                 encoding:encoding
+                    error:&error];
+  XCTAssertNil(error);
+  stagedContent = [repository contentsOfStagedFile:fileName];
+  stagedString =
+      [[NSString alloc] initWithData:stagedContent encoding:encoding];
   XCTAssertEqualObjects(expectedContent, stagedContent);
   XCTAssertEqualObjects(content, stagedString);
 }
