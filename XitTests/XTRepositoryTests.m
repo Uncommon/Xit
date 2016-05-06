@@ -130,7 +130,7 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
   [super addInitialRepoContent];
 
   NSData *contentsData = [repository contentsOfFile:@"file1.txt"
-                                           atCommit:@"HEAD"];
+                                           atCommit:repository.headSHA];
 
   XCTAssertNotNil(contentsData, @"");
 
