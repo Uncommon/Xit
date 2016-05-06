@@ -1,7 +1,7 @@
-#import "XTFileListDataSource.h"
+#import "XTFileTreeDataSource.h"
 #import "XTDocController.h"
 
-@interface XTFileListDataSource ()
+@interface XTFileTreeDataSource ()
 - (NSTreeNode *)fileTreeForRef:(NSString *)ref;
 - (NSTreeNode *)findTreeNodeForPath:(NSString *)path
                              parent:(NSTreeNode *)parent
@@ -9,7 +9,7 @@
 @end
 
 
-@implementation XTFileListDataSource
+@implementation XTFileTreeDataSource
 
 - (id)init
 {

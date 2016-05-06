@@ -4,7 +4,7 @@
 @class XTCommitHeaderViewController;
 @class XTFileChangesDataSource;
 @class XTFileDiffController;
-@class XTFileListDataSource;
+@class XTFileTreeDataSource;
 @class XTPreviewController;
 @class XTRepository;
 @class XTTextPreviewController;
@@ -43,7 +43,7 @@ extern const CGFloat kChangeImagePadding;
   IBOutlet QLPreviewView *_filePreview;
   IBOutlet XTCommitHeaderViewController *_headerController;
   IBOutlet XTFileChangesDataSource *_fileChangeDS;
-  IBOutlet XTFileListDataSource *_fileListDS;
+  IBOutlet XTFileTreeDataSource *_fileListDS;
   IBOutlet XTTextPreviewController *_textController;
 
   XTRepository *_repo;

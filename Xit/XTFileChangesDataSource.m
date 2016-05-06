@@ -1,6 +1,5 @@
 #import "XTFileChangesDataSource.h"
 #import "XTDocController.h"
-#import "XTFileListDataSource.h"
 #import "XTFileViewController.h"
 #import "XTRepository+Parsing.h"
 

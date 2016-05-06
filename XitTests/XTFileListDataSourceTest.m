@@ -2,7 +2,7 @@
 #import "XTHistoryDataSource.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
-#import "XTFileListDataSource.h"
+#import "XTFileTreeDataSource.h"
 #import "XTHistoryItem.h"
 #include "XTQueueUtils.h"
 
@@ -46,7 +46,7 @@
   NSOutlineView *outlineView = [[NSOutlineView alloc] init];
   XTFakeDocController *docController = [[XTFakeDocController alloc] init];
   XTHistoryDataSource *hds = [self makeDataSource];
-  XTFileListDataSource *flds = [[XTFileListDataSource alloc] init];
+  XTFileTreeDataSource *flds = [[XTFileTreeDataSource alloc] init];
   NSInteger expectedFileCount = 11;
 
   hds.controller = (XTDocController*)docController;
@@ -108,7 +108,7 @@
   docController.selectedCommitSHA = item.sha;
 
   NSOutlineView *outlineView = [[NSOutlineView alloc] init];
-  XTFileListDataSource *flds = [[XTFileListDataSource alloc] init];
+  XTFileTreeDataSource *flds = [[XTFileTreeDataSource alloc] init];
 
   flds.repository = repository;
   [self waitForRepoQueue];

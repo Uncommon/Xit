@@ -9,7 +9,7 @@
   Provides all files from the selected commit's tree, with special icons
   displayed for changed files. Entried are added for deleted files.
  */
-@interface XTFileListDataSource :
+@interface XTFileTreeDataSource :
     XTFileListDataSourceBase<NSOutlineViewDataSource> {
  @private
   NSTreeNode *_root;

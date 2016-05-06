@@ -2,7 +2,6 @@
 
 @class XTRepository;
 
-@class XTFileListDataSource;
 @class XTFileViewController;
 @class XTHistoryDataSource;
 @class XTSideBarDataSource;

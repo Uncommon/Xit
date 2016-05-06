@@ -13,7 +13,7 @@
 		3174966813DF8A0C004C5546 /* XTSideBarDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */; };
 		3174966E13DFF94C004C5546 /* XTHistoryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966D13DFF94C004C5546 /* XTHistoryItem.m */; };
 		3199BABD142079BB008AAA4F /* XTFileListDataSourceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3199BABC142079BB008AAA4F /* XTFileListDataSourceTest.m */; };
-		3199BAC014207CFB008AAA4F /* XTFileListDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3199BABF14207CFB008AAA4F /* XTFileListDataSource.m */; };
+		3199BAC014207CFB008AAA4F /* XTFileTreeDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3199BABF14207CFB008AAA4F /* XTFileTreeDataSource.m */; };
 		31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		31C62D9813F2580E00845A9B /* XTStageViewControllerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 31C62D9713F2580E00845A9B /* XTStageViewControllerTest.m */; };
 		31C62D9E13F25A6200845A9B /* XTUnstagedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 31C62D9C13F25A5D00845A9B /* XTUnstagedDataSource.m */; };
@@ -195,8 +195,8 @@
 		3174966C13DFF94C004C5546 /* XTHistoryItem.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; name = XTHistoryItem.h; path = Xit/XTHistoryItem.h; sourceTree = "<group>"; tabWidth = 2; };
 		3174966D13DFF94C004C5546 /* XTHistoryItem.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; name = XTHistoryItem.m; path = Xit/XTHistoryItem.m; sourceTree = "<group>"; tabWidth = 2; };
 		3199BABC142079BB008AAA4F /* XTFileListDataSourceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTFileListDataSourceTest.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		3199BABE14207CFB008AAA4F /* XTFileListDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTFileListDataSource.h; sourceTree = "<group>"; };
-		3199BABF14207CFB008AAA4F /* XTFileListDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTFileListDataSource.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		3199BABE14207CFB008AAA4F /* XTFileTreeDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTFileTreeDataSource.h; sourceTree = "<group>"; };
+		3199BABF14207CFB008AAA4F /* XTFileTreeDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTFileTreeDataSource.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		31A8939F13E9DA5B008BE0C2 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		31C62D9713F2580E00845A9B /* XTStageViewControllerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTStageViewControllerTest.m; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		31C62D9B13F25A5D00845A9B /* XTUnstagedDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTUnstagedDataSource.h; sourceTree = "<group>"; tabWidth = 2; };
@@ -718,8 +718,8 @@
 				DD9D5E9B183EA33F00EBC1C7 /* XTFileDiffController.m */,
 				DD3D94F118254442004AF532 /* XTFileListDataSourceBase.h */,
 				DD3D94F218254442004AF532 /* XTFileListDataSourceBase.m */,
-				3199BABE14207CFB008AAA4F /* XTFileListDataSource.h */,
-				3199BABF14207CFB008AAA4F /* XTFileListDataSource.m */,
+				3199BABE14207CFB008AAA4F /* XTFileTreeDataSource.h */,
+				3199BABF14207CFB008AAA4F /* XTFileTreeDataSource.m */,
 				DD96C937175ECE690003A30C /* XTFileViewController.h */,
 				DD96C938175ECE690003A30C /* XTFileViewController.m */,
 				DDD4707F16F3E7B000CA76FF /* XTPreviewItem.h */,
@@ -956,7 +956,7 @@
 				31C666A513F3B55A000E4073 /* XTStageViewController.m in Sources */,
 				C343F91113F4908E009C928A /* XTHTML.m in Sources */,
 				C358653114048A3F00060C53 /* XTRepository.m in Sources */,
-				3199BAC014207CFB008AAA4F /* XTFileListDataSource.m in Sources */,
+				3199BAC014207CFB008AAA4F /* XTFileTreeDataSource.m in Sources */,
 				895DEEF6142CECB7001763FC /* XTSideBarTableCellView.m in Sources */,
 				89A6EA2814478DA40089B212 /* XTAppDelegate.m in Sources */,
 				89991CDD144E3FF400097A99 /* XTStatusView.m in Sources */,
