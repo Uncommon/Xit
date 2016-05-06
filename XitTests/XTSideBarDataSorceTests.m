@@ -50,7 +50,6 @@
 
 - (void)testReload
 {
-
   [sbds setRepo:repository];
   [sbds addObserver:self forKeyPath:@"reload" options:0 context:nil];
 

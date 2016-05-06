@@ -70,7 +70,7 @@ NSString * const XTStagingSHA = @"";
   NSArray *paths = [note userInfo][XTPathsKey];
 
   for (NSString *path in paths) {
-    if ([path hasPrefix:@".git/refs/"]) {
+    if ([path hasPrefix:@"/refs/"]) {
       [self reload];
       break;
     }
