@@ -139,7 +139,7 @@ observeValueForKeyPath:(NSString*)keyPath
   else
     [_fileListOutline setOutlineTableColumn:
         [_fileListOutline tableColumnWithIdentifier:@"hidden"]];
-  [_fileListOutline setDelegate:nil];
+  [_fileListOutline setDelegate:self];
   [_fileListOutline setDataSource:newDS];
   [_fileListOutline reloadData];
 }
