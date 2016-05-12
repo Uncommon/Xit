@@ -299,7 +299,8 @@ NSString *XTHeaderContentKey = @"content";
 - (NSArray*)stagingChanges
 {
   NSMutableArray *result = [NSMutableArray array];
-  NSDictionary *options = @{ GTRepositoryStatusOptionsFlagsKey : @(0) };
+  NSDictionary *options = @{
+      GTRepositoryStatusOptionsFlagsKey: @(GTRepositoryStatusFlagsIncludeUntracked) };
   NSError *error = nil;
   
   if (![_gtRepo enumerateFileStatusWithOptions:options
@@ -374,6 +375,9 @@ NSString *XTHeaderContentKey = @"content";
 
 - (XTDiffDelta*)stagedDiffForFile:(NSString*)path
 {
+  // TODO: Get the file diff directly
+  // Get the blobs from the index and HEAD and compare
+  // [GTDiffDelta diffDeltaFromBlob:forPath:toBlob:forPath:options:error]
   NSError *error = nil;
   GTCommit *headCommit = [self commitForRef:self.headRef];
   GTDiff *diff = [GTDiff diffIndexFromTree:headCommit.tree
@@ -387,9 +391,15 @@ NSString *XTHeaderContentKey = @"content";
 
 - (XTDiffDelta*)unstagedDiffForFile:(NSString*)path
 {
+  // TODO: Get the file diff directly
+  // Instead of diffing the entire working directory, get the blob from the
+  // index and compare it to the file contents.
+  // [GTDiffDelta diffDeltaFromBlob:forPath:toData:forPath:options:error]
   NSError *error = nil;
+  NSDictionary *options = @{
+      GTDiffOptionsFlagsKey: @(GTDiffOptionsFlagsIncludeUntracked) };
   GTDiff *diff = [GTDiff diffIndexToWorkingDirectoryInRepository:_gtRepo
-                                                         options:nil
+                                                         options:options
                                                            error:&error];
 
   if (error != nil)

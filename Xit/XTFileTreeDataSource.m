@@ -49,9 +49,10 @@
   return YES;
 }
 
+/// Sets a folder's status according to the status of its children.
 - (void)updateChangeForNode:(NSTreeNode*)node
 {
-  XitChange change = XitChangeUnmodified;
+  XitChange change = XitChangeUnmodified, unstagedChange = XitChangeUnmodified;
   BOOL firstItem = YES;
 
   for (NSTreeNode *child in [node childNodes]) {
@@ -59,16 +60,35 @@
 
     if (![child isLeaf])
       [self updateChangeForNode:child];
-    if (firstItem)
+    if (firstItem) {
       change = childItem.change;
-    else if (change != childItem.change)
-      change = XitChangeMixed;
+      unstagedChange = childItem.unstagedChange;
+    }
+    else {
+      if (change != childItem.change)
+        change = XitChangeMixed;
+      if (unstagedChange != childItem.unstagedChange)
+        unstagedChange = XitChangeMixed;
+    }
     firstItem = NO;
   }
 
   XTCommitTreeItem *item = [node representedObject];
 
   item.change = change;
+  item.unstagedChange = unstagedChange;
+}
+
+/// Performs common operation for after a staging/commit tree is built.
+- (void)postProcessFileTree:(NSTreeNode*)tree
+{
+  NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]
+                                      initWithKey:@"path.lastPathComponent"
+                                      ascending:YES
+                                      selector:@selector(localizedCaseInsensitiveCompare:)];
+  
+  [tree sortWithSortDescriptors:@[ sortDescriptor ] recursively:YES];
+  [self updateChangeForNode:tree];
 }
 
 - (NSTreeNode*)fileTreeForCommitRef:(NSString *)ref
@@ -104,14 +124,7 @@
     [[parentNode mutableChildNodes] addObject:node];
     nodes[file] = node;
   }
-  [self updateChangeForNode:newRoot];
-
-  NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]
-      initWithKey:@"path.lastPathComponent"
-        ascending:YES
-         selector:@selector(localizedCaseInsensitiveCompare:)];
-
-  [newRoot sortWithSortDescriptors:@[ sortDescriptor ] recursively:YES];
+  [self postProcessFileTree:newRoot];
   return newRoot;
 }
 
@@ -119,8 +132,10 @@
 {
   XTWorkspaceTreeBuilder *builder = [[XTWorkspaceTreeBuilder alloc]
       initWithChanges:self.repository.workspaceStatus];
-
-  return [builder build:self.repository.repoURL];
+  NSTreeNode *newRoot = [builder build:self.repository.repoURL];
+  
+  [self postProcessFileTree:newRoot];
+  return newRoot;
 }
 
 - (NSTreeNode*)fileTreeForRef:(NSString *)ref
