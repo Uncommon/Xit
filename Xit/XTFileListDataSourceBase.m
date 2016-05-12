@@ -91,6 +91,11 @@
   return nil;
 }
 
++ (XitChange)transformDisplayChange:(XitChange)change
+{
+  return (change == XitChangeUnmodified) ? XitChangeMixed : change;
+}
+
 - (XitChange)changeForItem:(id)item
 {
   XTAssertOverride();

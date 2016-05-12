@@ -1,5 +1,7 @@
 #import "XTFileTreeDataSource.h"
+#import "XTConstants.h"
 #import "XTDocController.h"
+#import "Xit-Swift.h"
 
 @interface XTFileTreeDataSource ()
 - (NSTreeNode *)fileTreeForRef:(NSString *)ref;
@@ -69,7 +71,7 @@
   item.change = change;
 }
 
-- (NSTreeNode *)fileTreeForRef:(NSString *)ref
+- (NSTreeNode*)fileTreeForCommitRef:(NSString *)ref
 {
   NSTreeNode *newRoot = [self makeNewRoot];
   NSMutableDictionary *nodes = [NSMutableDictionary dictionary];
@@ -111,6 +113,22 @@
 
   [newRoot sortWithSortDescriptors:@[ sortDescriptor ] recursively:YES];
   return newRoot;
+}
+
+- (NSTreeNode*)fileTreeForWorkspace
+{
+  XTWorkspaceTreeBuilder *builder = [[XTWorkspaceTreeBuilder alloc]
+      initWithChanges:self.repository.workspaceStatus];
+
+  return [builder build:self.repository.repoURL];
+}
+
+- (NSTreeNode*)fileTreeForRef:(NSString *)ref
+{
+  if ([ref isEqualToString:XTStagingSHA])
+    return [self fileTreeForWorkspace];
+  else
+    return [self fileTreeForCommitRef:ref];
 }
 
 - (NSTreeNode *)findTreeNodeForPath:(NSString *)path

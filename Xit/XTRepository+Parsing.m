@@ -134,6 +134,31 @@ NSString *XTHeaderContentKey = @"content";
   return YES;
 }
 
+- (NSDictionary*)workspaceStatus
+{
+  NSMutableDictionary *result = [NSMutableDictionary dictionary];
+  NSDictionary *options =
+      @{ GTRepositoryStatusOptionsFlagsKey:@(GIT_STATUS_OPT_INCLUDE_UNTRACKED) };
+
+  [self.gtRepo enumerateFileStatusWithOptions:options error:NULL
+      usingBlock:^(GTStatusDelta * _Nullable headToIndex,
+                   GTStatusDelta * _Nullable indexToWorkingDirectory,
+                   BOOL * _Nonnull stop) {
+    NSString *path = headToIndex.oldFile.path;
+    
+    if (path == nil)
+      path = indexToWorkingDirectory.oldFile.path;
+    if (path != nil) {
+      XTWorkspaceFileStatus *status = [[XTWorkspaceFileStatus alloc] init];
+      
+      status.unstagedChange = indexToWorkingDirectory.status;
+      status.change = headToIndex.status;
+      result[path] = status;
+    }
+  }];
+  return result;
+}
+
 - (BOOL)readStashesWithBlock:(void (^)(NSString *, NSString *))block
 {
   NSError *error = nil;
@@ -580,6 +605,11 @@ NSString *XTCommitSHAKey = @"sha",
 
 
 @implementation XTFileChange
+
+@end
+
+
+@implementation XTWorkspaceFileStatus
 
 @end
 

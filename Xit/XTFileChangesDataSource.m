@@ -41,16 +41,13 @@
 
 - (XitChange)changeForItem:(id)item
 {
-  XTFileChange *change = (XTFileChange*)item;
-
-  return change.change;
+  return [[self class] transformDisplayChange:((XTFileChange*)item).change];
 }
 
 - (XitChange)unstagedChangeForItem:(id)item
 {
-  XTFileChange *change = (XTFileChange*)item;
-  
-  return change.unstagedChange;
+  return [[self class]
+      transformDisplayChange:((XTFileChange*)item).unstagedChange];
 }
 
 #pragma mark NSOutlineViewDataSource
@@ -77,7 +74,7 @@
     objectValueForTableColumn:(NSTableColumn*)tableColumn
                        byItem:(id)item
 {
-  return [item path];
+  return [(XTFileChange*)item path];
 }
 
 @end

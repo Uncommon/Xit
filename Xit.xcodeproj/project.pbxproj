@@ -48,6 +48,7 @@
 		89794F8D1458CC9B00E38ACC /* XTOutputViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89794F8B1458CC9B00E38ACC /* XTOutputViewController.xib */; };
 		89991CDD144E3FF400097A99 /* XTStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 89991CDC144E3FF400097A99 /* XTStatusView.m */; };
 		899D010D14216D2C0091DC6F /* sidebarTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 899D010C14216D2C0091DC6F /* sidebarTemplate.png */; };
+		899DB1921CE109C700760270 /* XTWorkspaceTreeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB18D1CE0EA3A00760270 /* XTWorkspaceTreeBuilder.swift */; };
 		89A6EA2814478DA40089B212 /* XTAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A6EA2714478DA40089B212 /* XTAppDelegate.m */; };
 		89AC82431806769A00402955 /* XTWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89AC82421806769A00402955 /* XTWebViewController.m */; };
 		89BEB8BC157B587600FED57B /* OCMock.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = DD592095156EEF40005FBB0F /* OCMock.framework */; };
@@ -251,6 +252,7 @@
 		89991CDB144E3FF400097A99 /* XTStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTStatusView.h; sourceTree = "<group>"; tabWidth = 2; };
 		89991CDC144E3FF400097A99 /* XTStatusView.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTStatusView.m; sourceTree = "<group>"; tabWidth = 2; };
 		899D010C14216D2C0091DC6F /* sidebarTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sidebarTemplate.png; sourceTree = "<group>"; };
+		899DB18D1CE0EA3A00760270 /* XTWorkspaceTreeBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTWorkspaceTreeBuilder.swift; sourceTree = "<group>"; };
 		89A6EA2614478DA40089B212 /* XTAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTAppDelegate.h; sourceTree = "<group>"; tabWidth = 2; };
 		89A6EA2714478DA40089B212 /* XTAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTAppDelegate.m; sourceTree = "<group>"; tabWidth = 2; };
 		89AC82411806769A00402955 /* XTWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTWebViewController.h; sourceTree = "<group>"; };
@@ -730,6 +732,7 @@
 				894C8DAB1CBC0A1B001A4B80 /* XTFileListView.m */,
 				894C8DBA1CC12F3E001A4B80 /* XTPreviewController.h */,
 				894C8DBB1CC12F3E001A4B80 /* XTPreviewController.m */,
+				899DB18D1CE0EA3A00760270 /* XTWorkspaceTreeBuilder.swift */,
 			);
 			name = FileView;
 			sourceTree = "<group>";
@@ -947,6 +950,7 @@
 				C3D6D31F13E8E7E700AF50B0 /* PBGitLane.mm in Sources */,
 				894C8DAC1CBC0A1B001A4B80 /* XTFileListView.m in Sources */,
 				C3D6D32213E91EDC00AF50B0 /* PBGitRevisionCell.m in Sources */,
+				899DB1921CE109C700760270 /* XTWorkspaceTreeBuilder.swift in Sources */,
 				31C7C12E13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m in Sources */,
 				DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */,
 				31C7C13313ECC74C00A65FE9 /* XTHistoryViewController.m in Sources */,

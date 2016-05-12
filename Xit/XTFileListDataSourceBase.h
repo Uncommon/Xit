@@ -23,6 +23,10 @@
 - (XitChange)changeForItem:(id)item;
 - (XitChange)unstagedChangeForItem:(id)item;
 
+/// Get the change value used for display because in some cases we want to
+/// make sure an icon is displayed for unmodified files.
++ (XitChange)transformDisplayChange:(XitChange)change;
+
 @end
 
 
@@ -43,6 +47,7 @@
 @interface XTTableButtonView : NSTableCellView
 
 @property (assign) IBOutlet NSButton *button;
+/// The row index is stored so we know where button clicks come from.
 @property NSInteger row;
 
 @end

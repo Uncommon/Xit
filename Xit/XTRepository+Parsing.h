@@ -41,6 +41,8 @@ typedef enum {
                   tagBlock:(void (^)(NSString *name, NSString *commit))tagBlock;
 - (BOOL)
     readStagedFilesWithBlock:(void (^)(NSString *name, NSString *status))block;
+/// Returns a dictionary mapping paths to XTWorkspaceFileStatuses.
+- (NSDictionary*)workspaceStatus;
 - (BOOL)readUnstagedFilesWithBlock:(void (^)(NSString *name, NSString *status))
                                    block;
 - (BOOL)readStashesWithBlock:(void (^)(NSString *commit, NSString *name))block;
@@ -75,6 +77,15 @@ typedef enum {
 @interface XTFileChange : NSObject
 
 @property NSString *path;
+@property XitChange change;
+@property XitChange unstagedChange;
+
+@end
+
+
+/// Contains the stanged and unstaged status for a workspace file.
+@interface XTWorkspaceFileStatus : NSObject
+
 @property XitChange change;
 @property XitChange unstagedChange;
 

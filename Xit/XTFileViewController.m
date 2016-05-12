@@ -68,6 +68,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 
   _changeImages = @{
       @( XitChangeAdded ) : [NSImage imageNamed:@"added"],
+      @( XitChangeUntracked ) : [NSImage imageNamed:@"added"],
       @( XitChangeCopied ) : [NSImage imageNamed:@"copied"],
       @( XitChangeDeleted ) : [NSImage imageNamed:@"deleted"],
       @( XitChangeModified ) : [NSImage imageNamed:@"modified"],
@@ -310,6 +311,14 @@ observeValueForKeyPath:(NSString*)keyPath
   return self.changeImages[@( change )];
 }
 
+- (NSImage*)stagingImageForChange:(XitChange)change
+                      otherChange:(XitChange)otherChange
+{
+  if ((change == XitChangeUnmodified) && (otherChange != XitChangeUnmodified))
+    change = XitChangeMixed;
+  return [self imageForChange:change];
+}
+
 #pragma mark NSOutlineViewDelegate
 
 - (NSView *)outlineView:(NSOutlineView *)outlineView
@@ -354,12 +363,12 @@ observeValueForKeyPath:(NSString*)keyPath
     // Different cell views are used so that the icon is only clickable in
     // staging view.
     if (inStagingView) {
-      const XitChange useChange = (change == XitChangeUnmodified) ?
-          XitChangeMixed : change;
       XTTableButtonView *cell =
           [outlineView makeViewWithIdentifier:@"staged" owner:self];
       
-      cell.button.image = [self imageForChange:useChange];
+      cell.button.image =
+          [self stagingImageForChange:change
+                          otherChange:[dataSource unstagedChangeForItem:item]];
       cell.row = [outlineView rowForItem:item];
       return cell;
     } else {
@@ -376,11 +385,10 @@ observeValueForKeyPath:(NSString*)keyPath
     
     XTTableButtonView *cell =
         [outlineView makeViewWithIdentifier:columnID owner:self];
-    const XitChange unstagedChange = [dataSource unstagedChangeForItem:item];
-    const XitChange useUnstagedChange = (unstagedChange == XitChangeUnmodified) ?
-        XitChangeMixed : unstagedChange;
-    
-    cell.button.image = [self imageForChange:useUnstagedChange];
+
+    cell.button.image =
+        [self stagingImageForChange:[dataSource unstagedChangeForItem:item]
+                        otherChange:change];
     cell.row = [outlineView rowForItem:item];
     return cell;
   }

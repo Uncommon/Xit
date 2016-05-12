@@ -1,3 +1,4 @@
+#import <Cocoa/Cocoa.h>
 #import "XTFileListDataSourceBase.h"
 #import "XTRepository+Parsing.h"
 
