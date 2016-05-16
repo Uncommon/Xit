@@ -257,7 +257,8 @@ NSString *XTHeaderContentKey = @"content";
   return diff;
 }
 
-- (NSArray*)changesForRef:(NSString*)ref parent:(NSString*)parentSHA
+- (NSArray<XTFileChange*>*)changesForRef:(NSString*)ref
+                                  parent:(NSString*)parentSHA
 {
   if (ref == nil)
     return nil;

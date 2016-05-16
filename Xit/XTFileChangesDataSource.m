@@ -5,7 +5,7 @@
 
 @interface XTFileChangesDataSource ()
 
-@property NSArray *changes;
+@property NSArray<XTFileChange*> *changes;
 
 @end
 
@@ -29,7 +29,9 @@
 
 - (XTFileChange*)fileChangeAtRow:(NSInteger)row
 {
-  return [self.outlineView itemAtRow:row];
+  if (row >= self.changes.count)
+    return nil;
+  return self.changes[row];
 }
 
 - (NSString*)pathForItem:(id)item

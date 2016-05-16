@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
+        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
         <plugIn identifier="com.apple.WebKitIBPlugin" version="10116"/>
     </dependencies>
@@ -18,6 +19,7 @@
                 <outlet property="_rightPane" destination="LHY-c4-rvq" id="y76-R2-Gw2"/>
                 <outlet property="_textController" destination="58" id="5d0-jn-kOw"/>
                 <outlet property="diffController" destination="fX5-fH-Hy5" id="nP0-l5-ngF"/>
+                <outlet property="headerTabView" destination="krT-Kf-MrD" id="t9e-WI-aqg"/>
                 <outlet property="previewController" destination="3g8-eR-FPJ" id="dy4-6W-vsZ"/>
                 <outlet property="previewTabView" destination="52" id="62"/>
                 <outlet property="view" destination="68" id="75"/>
@@ -30,27 +32,48 @@
             <rect key="frame" x="0.0" y="0.0" width="703" height="320"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <webView id="71">
-                    <rect key="frame" x="0.0" y="0.0" width="703" height="109"/>
-                    <autoresizingMask key="autoresizingMask"/>
-                    <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
-                        <nil key="identifier"/>
-                    </webPreferences>
-                    <connections>
-                        <outlet property="UIDelegate" destination="67" id="72"/>
-                        <outlet property="frameLoadDelegate" destination="67" id="73"/>
-                    </connections>
-                </webView>
+                <tabView type="noTabsNoBorder" initialItem="9dv-tr-LeJ" id="krT-Kf-MrD">
+                    <rect key="frame" x="0.0" y="0.0" width="703" height="108.5"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <font key="font" metaFont="system"/>
+                    <tabViewItems>
+                        <tabViewItem label="Display" identifier="1" id="9dv-tr-LeJ">
+                            <view key="view" id="dFn-2I-XuO">
+                                <rect key="frame" x="0.0" y="0.0" width="703" height="108.5"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <subviews>
+                                    <webView id="71">
+                                        <rect key="frame" x="0.0" y="0.0" width="703" height="108.5"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
+                                            <nil key="identifier"/>
+                                        </webPreferences>
+                                        <connections>
+                                            <outlet property="UIDelegate" destination="67" id="72"/>
+                                            <outlet property="frameLoadDelegate" destination="67" id="73"/>
+                                        </connections>
+                                    </webView>
+                                </subviews>
+                            </view>
+                        </tabViewItem>
+                        <tabViewItem label="Entry" identifier="2" id="lir-Gd-6lf">
+                            <view key="view" id="85G-ba-XjD">
+                                <rect key="frame" x="0.0" y="0.0" width="703" height="108.5"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </view>
+                        </tabViewItem>
+                    </tabViewItems>
+                </tabView>
                 <splitView dividerStyle="thin" vertical="YES" id="PgV-aZ-kTu">
-                    <rect key="frame" x="0.0" y="110" width="703" height="210"/>
+                    <rect key="frame" x="0.0" y="109.5" width="703" height="210.5"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <subviews>
                         <customView id="yIN-xT-jEO" userLabel="File List Pane">
-                            <rect key="frame" x="0.0" y="0.0" width="357" height="210"/>
+                            <rect key="frame" x="0.0" y="0.0" width="357" height="210.5"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" id="bSV-tc-rQa">
-                                    <rect key="frame" x="-1" y="188" width="359" height="23"/>
+                                    <rect key="frame" x="-1" y="188.5" width="359" height="23"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="70r-N1-aQY">
                                         <behavior key="behavior" lightByContents="YES"/>
@@ -58,7 +81,7 @@
                                     </buttonCell>
                                 </button>
                                 <segmentedControl verticalHuggingPriority="750" id="taS-ff-AsX">
-                                    <rect key="frame" x="145" y="188" width="67" height="23"/>
+                                    <rect key="frame" x="145" y="188.5" width="67" height="23"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="selectOne" id="VOL-YW-yiD">
                                         <font key="font" metaFont="system"/>
@@ -72,14 +95,14 @@
                                     </connections>
                                 </segmentedControl>
                                 <scrollView focusRingType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="3">
-                                    <rect key="frame" x="-1" y="0.0" width="359" height="190"/>
+                                    <rect key="frame" x="-1" y="0.0" width="359" height="190.5"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <clipView key="contentView" id="AEe-un-dQy">
-                                        <rect key="frame" x="1" y="1" width="357" height="188"/>
+                                        <rect key="frame" x="1" y="1" width="357" height="188.5"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <outlineView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="8" id="7" customClass="XTFileListView">
-                                                <rect key="frame" x="0.0" y="0.0" width="357" height="0.0"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="357" height="188.5"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -259,11 +282,11 @@
                             </subviews>
                         </customView>
                         <customView id="LHY-c4-rvq" userLabel="Content Pane">
-                            <rect key="frame" x="358" y="0.0" width="345" height="210"/>
+                            <rect key="frame" x="358" y="0.0" width="345" height="210.5"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" id="e4E-MC-bxy">
-                                    <rect key="frame" x="-1" y="188" width="347" height="23"/>
+                                    <rect key="frame" x="-1" y="188.5" width="347" height="23"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="lNU-FQ-Ngf">
                                         <behavior key="behavior" lightByContents="YES"/>
@@ -271,7 +294,7 @@
                                     </buttonCell>
                                 </button>
                                 <segmentedControl verticalHuggingPriority="750" id="zOv-gm-Q8M">
-                                    <rect key="frame" x="120" y="188" width="115" height="23"/>
+                                    <rect key="frame" x="120" y="188.5" width="115" height="23"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="selectOne" id="fhE-uz-5iG">
                                         <font key="font" metaFont="system"/>
@@ -288,17 +311,17 @@
                                     </connections>
                                 </segmentedControl>
                                 <tabView type="noTabsNoBorder" initialItem="A2f-Wf-RNT" id="52">
-                                    <rect key="frame" x="0.0" y="0.0" width="345" height="189"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="345" height="189.5"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <font key="font" metaFont="system"/>
                                     <tabViewItems>
                                         <tabViewItem label="Diff" identifier="diff" id="A2f-Wf-RNT">
                                             <view key="view" id="uQh-Df-4fp">
-                                                <rect key="frame" x="0.0" y="0.0" width="345" height="189"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="345" height="189.5"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <webView maintainsBackForwardList="NO" id="e4U-lz-eEd">
-                                                        <rect key="frame" x="0.0" y="0.0" width="345" height="189"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="345" height="189.5"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
                                                             <nil key="identifier"/>

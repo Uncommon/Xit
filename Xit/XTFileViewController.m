@@ -13,6 +13,7 @@
 #import "XTPreviewController.h"
 #import "XTPreviewItem.h"
 #import "XTTextPreviewController.h"
+#import "Xit-Swift.h"
 
 const CGFloat kChangeImagePadding = 8;
 NSString* const XTContentTabIDDiff = @"diff";
@@ -32,9 +33,10 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 
 @interface XTFileViewController ()
 
-@property (readwrite) BOOL inStagingView;
+@property (readwrite, nonatomic) BOOL inStagingView;
 @property BOOL showingStaged;
 @property id<XTFileContentController> contentController;
+@property XTCommitEntryController *commitEntryController;
 
 @end
 
@@ -54,6 +56,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   _fileChangeDS.repository = newRepo;
   _fileListDS.repository = newRepo;
   _headerController.repository = newRepo;
+  self.commitEntryController.repo = newRepo;
   ((XTPreviewItem*)_filePreview.previewItem).repo = newRepo;
   [[NSNotificationCenter defaultCenter]
       addObserver:self
@@ -91,6 +94,12 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
          selector:@selector(headerResized:)
              name:XTHeaderResizedNotificaiton
            object:_headerController];
+
+  self.commitEntryController = [[XTCommitEntryController alloc]
+      initWithNibName:@"XTCommitEntryController" bundle:nil];
+  if (_repo != nil)
+    self.commitEntryController.repo = _repo;
+  self.headerTabView.tabViewItems[1].view = self.commitEntryController.view;
 }
 
 - (void)windowDidLoad
@@ -126,6 +135,12 @@ observeValueForKeyPath:(NSString*)keyPath
     if (wasStaging != nowStaging)
       self.inStagingView = nowStaging;
   }
+}
+
+- (void)setInStagingView:(BOOL)staging
+{
+  inStagingView = staging;
+  [self.headerTabView selectTabViewItemAtIndex:staging ? 1 : 0];
 }
 
 - (IBAction)changeFileListView:(id)sender
@@ -234,6 +249,12 @@ observeValueForKeyPath:(NSString*)keyPath
 - (void)loadSelectedPreview
 {
   NSIndexSet *selection = [_fileListOutline selectedRowIndexes];
+  
+  if (selection.count == 0) {
+    [self.contentController clear];
+    return;
+  }
+  
   XTFileListDataSourceBase *dataSource = (XTFileListDataSourceBase*)
       [_fileListOutline dataSource];
   XTFileChange *selectedItem =

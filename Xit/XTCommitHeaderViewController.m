@@ -1,6 +1,7 @@
 #import "XTCommitHeaderViewController.h"
 #import <WebKit/WebKit.h>
 #import <ObjectiveGit/ObjectiveGit.h>
+#import "XTConstants.h"
 #import "XTDocController.h"
 #import "XTRepository+Parsing.h"
 
@@ -49,7 +50,7 @@ NSString *XTHeaderHeightKey = @"height";
 
 - (NSString*)generateHeaderHTML
 {
-  if (_commitSHA == nil)
+  if ((_commitSHA == nil) || [_commitSHA isEqualToString:XTStagingSHA])
     return @"";
 
   NSError *error = nil;

@@ -356,6 +356,9 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 
 - (NSData*)contentsOfStagedFile:(NSString*)filePath
 {
+  if (filePath == nil)
+    return nil;
+
   NSError *error = nil;
   GTIndex *index = [self.gtRepo indexWithError:&error];
   

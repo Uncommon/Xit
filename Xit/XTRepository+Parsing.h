@@ -31,6 +31,7 @@ typedef enum {
 
 @class GTSubmodule;
 @class XTDiffDelta;
+@class XTFileChange;
 
 @interface XTRepository (Reading)
 
@@ -62,7 +63,9 @@ typedef enum {
                     error:(NSError**)error;
 
 - (NSArray*)fileNamesForRef:(NSString*)ref;
-- (NSArray*)changesForRef:(NSString*)ref parent:(NSString*)parentSHA;
+/// Returns a list of changed files in the given commit.
+- (NSArray<XTFileChange*>*)changesForRef:(NSString*)ref
+                                  parent:(NSString*)parentSHA;
 - (XTDiffDelta*)diffForFile:(NSString*)path
                   commitSHA:(NSString*)sha
                   parentSHA:(NSString*)parentSHA;
