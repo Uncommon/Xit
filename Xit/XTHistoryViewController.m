@@ -413,10 +413,8 @@
 
   if (selectedRow >= 0) {
     XTDocController *controller = self.view.window.windowController;
-    XTHistoryItem *item = (_historyDS.items)[selectedRow];
 
-    NSAssert([controller isKindOfClass:[XTDocController class]], @"");
-    controller.selectedCommitSHA = item.sha;
+    controller.selectedCommitSHA = _historyDS.shas[selectedRow];
   }
 }
 
@@ -432,7 +430,7 @@ const NSUInteger kFullStyleThreshold = 280, kLongStyleThreshold = 210,
   [cell setFont:[NSFont labelFontOfSize:12]];
 
   if ([[column identifier] isEqualToString:@"subject"]) {
-    XTHistoryItem *item = (_historyDS.items)[rowIndex];
+    XTHistoryItem *item = [_historyDS itemAtIndex:rowIndex];
 
     ((PBGitRevisionCell *)cell).objectValue = item;
   } else if ([[column identifier] isEqualToString:@"date"]) {

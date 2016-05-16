@@ -55,8 +55,8 @@
   flds.repository = repository;
   [self waitForRepoQueue];
 
-  for (XTHistoryItem *item in hds.items) {
-    docController.selectedCommitSHA = item.sha;
+  for (NSString *sha in hds.shas) {
+    docController.selectedCommitSHA = sha;
     [flds reload];
     [self waitForRepoQueue];
 
@@ -102,7 +102,7 @@
 
   XTFakeDocController *docController = [[XTFakeDocController alloc] init];
   XTHistoryDataSource *hds = [self makeDataSource];
-  XTHistoryItem *item = (XTHistoryItem *)(hds.items)[0];
+  XTHistoryItem *item = [hds itemAtIndex:0];
 
   [hds setController:(XTDocController*)docController];
   docController.selectedCommitSHA = item.sha;

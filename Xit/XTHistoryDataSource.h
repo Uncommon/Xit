@@ -15,10 +15,13 @@
   NSMutableDictionary *_index;
 }
 
-@property(readonly) NSArray *items;
+@property(readonly) NSOrderedSet<NSString*> *shas;
 @property(weak, nonatomic) XTDocController *controller;
 
 - (void)reload;
 - (void)setRepo:(XTRepository*)newRepo;
+
+- (XTHistoryItem*)itemAtIndex:(NSUInteger)index;
+
 @end
 
