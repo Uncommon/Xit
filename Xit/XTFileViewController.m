@@ -37,6 +37,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 @property BOOL showingStaged;
 @property id<XTFileContentController> contentController;
 @property XTCommitEntryController *commitEntryController;
+@property NSDictionary<NSNumber*, NSImage*> *stageImages;
 
 @end
 
@@ -77,6 +78,14 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
       @( XitChangeModified ) : [NSImage imageNamed:@"modified"],
       @( XitChangeRenamed ) : [NSImage imageNamed:@"renamed"],
       @( XitChangeMixed ) : [NSImage imageNamed:@"mixed"],
+      };
+  self.stageImages = @{
+      @( XitChangeAdded ) : [NSImage imageNamed:@"add"],
+      @( XitChangeUntracked ) : [NSImage imageNamed:@"add"],
+      @( XitChangeDeleted ) : [NSImage imageNamed:@"delete"],
+      @( XitChangeModified ) : [NSImage imageNamed:@"modify"],
+      @( XitChangeMixed ) : [NSImage imageNamed:@"mixed"],
+      @( XitChangeConflict ) : [NSImage imageNamed:@"conflict"],
       };
 
   _fileListOutline.highlightedTableColumn =
@@ -337,7 +346,7 @@ observeValueForKeyPath:(NSString*)keyPath
 {
   if ((change == XitChangeUnmodified) && (otherChange != XitChangeUnmodified))
     change = XitChangeMixed;
-  return [self imageForChange:change];
+  return self.stageImages[@( change )];
 }
 
 #pragma mark NSOutlineViewDelegate

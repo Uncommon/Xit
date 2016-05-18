@@ -26,6 +26,7 @@ typedef enum {
   XitChangeIgnored = GIT_DELTA_IGNORED,
   XitChangeUntracked = GIT_DELTA_UNTRACKED,
   XitChangeTypeChange = GIT_DELTA_TYPECHANGE,
+  XitChangeConflict = GIT_DELTA_CONFLICTED,
   XitChangeMixed,  // For folders containing a mix of changes
 } XitChange;
 
