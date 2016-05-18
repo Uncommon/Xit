@@ -83,6 +83,10 @@
 - (void)windowDidLoad
 {
   [_fileViewController windowDidLoad];
+  [self.view.window.windowController addObserver:self
+                                      forKeyPath:@"selectedCommitSHA"
+                                         options:NSKeyValueObservingOptionNew
+                                         context:NULL];
 }
 
 - (void)setRepo:(XTRepository*)newRepo
@@ -170,6 +174,36 @@
   }
 
   return NO;
+}
+
+- (void)selectRowForSHA:(NSString*)sha
+{
+  // Assuming the first responder originated the change
+  const id firstResponder = self.view.window.firstResponder;
+
+  if (firstResponder != _sidebarOutline)
+    [_sidebarOutline deselectAll:self];
+
+  const NSUInteger historyRow = [_historyDS.shas indexOfObject:sha];
+  
+  if (historyRow == NSNotFound)
+    [_historyTable deselectAll:self];
+  else {
+    [_historyTable selectRowIndexes:[NSIndexSet indexSetWithIndex:historyRow]
+               byExtendingSelection:NO];
+    if (firstResponder != _historyTable)
+      [_historyTable scrollRowToVisible:historyRow];
+  }
+}
+
+- (void)observeValueForKeyPath:(NSString*)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary<NSString*,id>*)change
+                       context:(void*)context
+{
+  if ([keyPath isEqualToString:@"selectedCommitSHA"]) {
+    [self selectRowForSHA:change[NSKeyValueChangeNewKey]];
+  }
 }
 
 - (NSInteger)targetRow
@@ -316,9 +350,6 @@
 
 - (IBAction)toggleLayout:(id)sender
 {
-  // TODO: improve it
-  NSLog(@"toggleLayout, %lu,%d", ((NSButton *)sender).state,
-        (((NSButton *)sender).state == 1));
   [_mainSplitView setVertical:(((NSButton *)sender).state == 1)];
   [_mainSplitView adjustSubviews];
 }
