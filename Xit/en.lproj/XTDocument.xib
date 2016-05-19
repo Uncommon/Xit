@@ -62,10 +62,10 @@
                     </toolbarItem>
                 </allowedToolbarItems>
                 <defaultToolbarItems>
+                    <toolbarItem reference="100152"/>
                     <toolbarItem reference="100117"/>
                     <toolbarItem reference="100157"/>
                     <toolbarItem reference="100117"/>
-                    <toolbarItem reference="100152"/>
                     <toolbarItem reference="100114"/>
                 </defaultToolbarItems>
                 <connections>
