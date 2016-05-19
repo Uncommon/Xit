@@ -1,5 +1,5 @@
 #import "XTHistoryViewController.h"
-#import "XTFileListDataSource.h"
+#import "XTDocController.h"
 #import "XTFileViewController.h"
 #import "XTHistoryDataSource.h"
 #import "XTHistoryItem.h"
@@ -74,13 +74,22 @@
   [_sidebarOutline setFloatsGroupRows:NO];
 }
 
-- (NSString *)nibName
+- (NSString*)nibName
 {
   NSLog(@"nibName: %@ (%@)", [super nibName], [self class]);
   return NSStringFromClass([self class]);
 }
 
-- (void)setRepo:(XTRepository *)newRepo
+- (void)windowDidLoad
+{
+  [_fileViewController windowDidLoad];
+  [self.view.window.windowController addObserver:self
+                                      forKeyPath:@"selectedCommitSHA"
+                                         options:NSKeyValueObservingOptionNew
+                                         context:NULL];
+}
+
+- (void)setRepo:(XTRepository*)newRepo
 {
   _repo = newRepo;
   [_sideBarDS setRepo:newRepo];
@@ -165,6 +174,36 @@
   }
 
   return NO;
+}
+
+- (void)selectRowForSHA:(NSString*)sha
+{
+  // Assuming the first responder originated the change
+  const id firstResponder = self.view.window.firstResponder;
+
+  if (firstResponder != _sidebarOutline)
+    [_sidebarOutline deselectAll:self];
+
+  const NSUInteger historyRow = [_historyDS.shas indexOfObject:sha];
+  
+  if (historyRow == NSNotFound)
+    [_historyTable deselectAll:self];
+  else {
+    [_historyTable selectRowIndexes:[NSIndexSet indexSetWithIndex:historyRow]
+               byExtendingSelection:NO];
+    if (firstResponder != _historyTable)
+      [_historyTable scrollRowToVisible:historyRow];
+  }
+}
+
+- (void)observeValueForKeyPath:(NSString*)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary<NSString*,id>*)change
+                       context:(void*)context
+{
+  if ([keyPath isEqualToString:@"selectedCommitSHA"]) {
+    [self selectRowForSHA:change[NSKeyValueChangeNewKey]];
+  }
 }
 
 - (NSInteger)targetRow
@@ -311,9 +350,6 @@
 
 - (IBAction)toggleLayout:(id)sender
 {
-  // TODO: improve it
-  NSLog(@"toggleLayout, %lu,%d", ((NSButton *)sender).state,
-        (((NSButton *)sender).state == 1));
   [_mainSplitView setVertical:(((NSButton *)sender).state == 1)];
   [_mainSplitView adjustSubviews];
 }
@@ -407,9 +443,9 @@
   const NSInteger selectedRow = table.selectedRow;
 
   if (selectedRow >= 0) {
-    XTHistoryItem *item = (_historyDS.items)[selectedRow];
+    XTDocController *controller = self.view.window.windowController;
 
-    _repo.selectedCommit = item.sha;
+    controller.selectedCommitSHA = _historyDS.shas[selectedRow];
   }
 }
 
@@ -425,7 +461,7 @@ const NSUInteger kFullStyleThreshold = 280, kLongStyleThreshold = 210,
   [cell setFont:[NSFont labelFontOfSize:12]];
 
   if ([[column identifier] isEqualToString:@"subject"]) {
-    XTHistoryItem *item = (_historyDS.items)[rowIndex];
+    XTHistoryItem *item = [_historyDS itemAtIndex:rowIndex];
 
     ((PBGitRevisionCell *)cell).objectValue = item;
   } else if ([[column identifier] isEqualToString:@"date"]) {

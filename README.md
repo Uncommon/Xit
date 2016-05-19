@@ -10,6 +10,8 @@ Xit is a graphical tool for working with git repositories. The overall goals are
 
 Xit began as a rewrite of GitX, born from a desire for a codebase that was easier to work with, thoroughly unit tested, etc. It is currently working towards 1.0 beta status, where all basic features are in place, with many more interesting features slated for the future.
 
+Currently there are two major transitions underway: consolidating the user interface (originally there were separate history/commit/file tree views), and migrating to Objective-Git instead of the command-line tool.
+
 # Roadmap
 
 The plan is to have a concrete 1.0 milestone to provide a good foundation and firm direction moving forward. Version 1.0 will simply be a starting point covering basic usage:
@@ -42,6 +44,8 @@ Note that Objective Git needs the `objective-git/script/boostrap` script to be r
 
 If you're looking for a starter task, several issues have been marked "small". These should provide a relatively easy intro to the code base.
 
+Swift is preferred for new classes, but not necessarily required. In particular, working with some C APIs can be awkward in Swift, so Objective-C is fine. 
+
 For larger tasks, there are two options:
 
 * Plenty of other ideas and plans have been written down in the [Issues] section. Feel free to comment and contribute there.
@@ -61,7 +65,7 @@ The coding style used is based on the [Google Objective-C Style Guide], with the
 * The opening brace of a function goes on its own line.
 * No single-line `if` statements, like `if (x) return;` (you can't set a breakpoint on that `return`!)
 * No space before `*` when it is not immediately followed by an identifier, such as `(NSString*)`.
-* When wrapping function/method calls, a four-space indent is allowed as well as aligning with the `:` or `(`.
+* When wrapping function/method calls, a four-space indent may be used instead of aligning with the `:` or `(`.
 * Variable declarations are separated from other statements by one blank line.
 * Whitespace at the indentation level of the surrounding lines is allowed.
 * Doxygen style comments are encouraged because Xcode parses them.

@@ -78,17 +78,16 @@
   }
 
   XTHistoryDataSource *hds = [self makeDataSource];
-  NSArray *items = hds.items;
 
-  [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-    XTHistoryItem *item = (XTHistoryItem *)obj;
+  for (NSUInteger idx = 0; idx < hds.shas.count; ++idx) {
+    XTHistoryItem *item = [hds itemAtIndex:idx];
 
-    if (idx == (items.count - 1)) {
+    if (idx == (hds.shas.count - 1)) {
       XCTAssertEqual(item.lineInfo.numColumns, 0);
     } else {
       XCTAssertEqual(item.lineInfo.numColumns, 1, "item %lu", idx);
     }
-  }];
+  };
 }
 
 - (void)testXTHistoryDataSource

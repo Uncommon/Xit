@@ -57,6 +57,11 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
   return self;
 }
 
+- (NSURL*)gitDirectoryURL
+{
+  return _gtRepo.gitDirectoryURL;
+}
+
 - (BOOL)executeWritingBlock:(BOOL (^)())block;
 {
   BOOL result = NO;
@@ -288,7 +293,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
   return [[gtRef unresolvedTarget] name];
 }
 
-// Returns kEmptyTreeHash if the repository is empty, otherwise "HEAD"
+/// Returns kEmptyTreeHash if the repository is empty, otherwise "HEAD"
 - (NSString *)parentTree
 {
   return [self hasHeadReference] ? @"HEAD" : kEmptyTreeHash;
@@ -329,13 +334,44 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
   return [self shaForRef:[self headRef]];
 }
 
-- (NSData *)contentsOfFile:(NSString *)filePath atCommit:(NSString *)commit
+- (NSData*)contentsOfFile:(NSString*)filePath atCommit:(NSString*)commitSHA
 {
-  NSString *spec = [NSString stringWithFormat:@"%@:%@", commit, filePath];
-  NSArray *args = @[ @"cat-file", @"blob", spec ];
-  NSError *error = nil;
+  if ((filePath == nil) || (commitSHA == nil))
+    return nil;
 
-  return [self executeGitWithArgs:args writes:NO error:&error];
+  NSError *error = nil;
+  GTCommit *commit = [self.gtRepo lookUpObjectBySHA:commitSHA error:&error];
+
+  if (![commit isKindOfClass:[GTCommit class]])
+    return nil;
+
+  GTTree *tree = commit.tree;
+  GTTreeEntry *entry = [tree entryWithPath:filePath error:&error];
+  GTBlob *blob = (GTBlob*)[entry GTObject:&error];
+
+  if (![blob isKindOfClass:[GTBlob class]])
+    return nil;
+  return blob.data;
+}
+
+- (NSData*)contentsOfStagedFile:(NSString*)filePath
+{
+  if (filePath == nil)
+    return nil;
+
+  NSError *error = nil;
+  GTIndex *index = [self.gtRepo indexWithError:&error];
+  
+  // GTRepository returns any cached index object it had, so it may need
+  // to be reloaded.
+  [index refresh:&error];
+  
+  GTIndexEntry *entry = [index entryWithPath:filePath error:&error];
+  GTBlob *blob = (GTBlob*)[entry GTObject:&error];
+  
+  if (![blob isKindOfClass:[GTBlob class]])
+    return nil;
+  return blob.data;
 }
 
 // XXX tmp
@@ -355,13 +391,11 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 #pragma mark - monitor file system
 - (void)initializeEventStream
 {
-  if (_repoURL == nil)
-    return;
-  NSString *myPath = [[_repoURL URLByAppendingPathComponent:@".git"] path];
+  NSString *myPath = [[_gtRepo gitDirectoryURL] path];
   NSArray *pathsToWatch = @[ myPath ];
-  void *repoPointer = (__bridge void *)self;
-  FSEventStreamContext context = {0, repoPointer, NULL, NULL, NULL};
-  NSTimeInterval latency = 3.0;
+  void *repoPointer = (__bridge void*)self;
+  FSEventStreamContext context = { 0, repoPointer, NULL, NULL, NULL };
+  const NSTimeInterval latency = 1.0;
 
   _stream = FSEventStreamCreate(
       kCFAllocatorDefault, &fsevents_callback, &context,
@@ -399,25 +433,34 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
            object:self];
 }
 
+#ifdef DEBUG
 int event = 0;
+#endif
 
 void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData,
                        size_t numEvents, void *eventPaths,
                        const FSEventStreamEventFlags eventFlags[],
                        const FSEventStreamEventId eventIds[])
 {
-  XTRepository *repo = (__bridge XTRepository *)userData;
-
+#ifdef DEBUG
   ++event;
-
+#endif
+  XTRepository *repo = (__bridge XTRepository *)userData;
   NSMutableArray *paths = [NSMutableArray arrayWithCapacity:numEvents];
+  NSString *rootPath = repo.gitDirectoryURL.path;
+  
   for (size_t i = 0; i < numEvents; i++) {
     NSString *path = ((__bridge NSArray *)eventPaths)[i];
-    NSRange r = [path rangeOfString:@".git" options:NSBackwardsSearch];
-
-    path = [path substringFromIndex:r.location];
+    
+    if (![path hasPrefix:rootPath]) {
+      NSLog(@"Unexpected event on path: %@", path);
+      continue;
+    }
+    path = [path substringFromIndex:rootPath.length];
     [paths addObject:path];
+#ifdef DEBUG
     NSLog(@"fsevent #%d\t%@", event, path);
+#endif
   }
 
   [repo reloadPaths:paths];

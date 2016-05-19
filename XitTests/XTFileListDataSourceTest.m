@@ -2,13 +2,14 @@
 #import "XTHistoryDataSource.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
-#import "XTFileListDataSource.h"
+#import "XTFileTreeDataSource.h"
 #import "XTHistoryItem.h"
 #include "XTQueueUtils.h"
 
 @interface XTFileListDataSourceTest : XTTest
 
 @end
+
 
 @implementation XTFileListDataSourceTest
 
@@ -28,9 +29,10 @@
   NSString *text = @"some text";
 
   for (int n = 0; n < 10; n++) {
-    NSString *file = [NSString stringWithFormat:@"%@/file_%u.txt", repoPath, n];
+    NSString *fileName = [NSString stringWithFormat:@"file_%u.txt", n];
+    NSString *filePath = [repoPath stringByAppendingPathComponent:fileName];
 
-    [text writeToFile:file
+    [text writeToFile:filePath
            atomically:YES
              encoding:NSASCIIStringEncoding
                 error:nil];
@@ -42,14 +44,20 @@
   }
 
   NSOutlineView *outlineView = [[NSOutlineView alloc] init];
+  XTFakeDocController *docController = [[XTFakeDocController alloc] init];
   XTHistoryDataSource *hds = [self makeDataSource];
+  XTFileTreeDataSource *flds = [[XTFileTreeDataSource alloc] init];
   NSInteger expectedFileCount = 11;
 
-  for (XTHistoryItem *item in hds.items) {
-    repository.selectedCommit = item.sha;
+  hds.controller = (XTDocController*)docController;
+  flds.docController = (XTDocController*)docController;
+  [hds setRepo:repository];
+  flds.repository = repository;
+  [self waitForRepoQueue];
 
-    XTFileListDataSource *flds = [[XTFileListDataSource alloc] init];
-    flds.repository = repository;
+  for (NSString *sha in hds.shas) {
+    docController.selectedCommitSHA = sha;
+    [flds reload];
     [self waitForRepoQueue];
 
     const NSInteger fileCount =
@@ -92,12 +100,15 @@
                     outputBlock:NULL
                           error:NULL];
 
+  XTFakeDocController *docController = [[XTFakeDocController alloc] init];
   XTHistoryDataSource *hds = [self makeDataSource];
-  XTHistoryItem *item = (XTHistoryItem *)(hds.items)[0];
-  repository.selectedCommit = item.sha;
+  XTHistoryItem *item = [hds itemAtIndex:0];
+
+  [hds setController:(XTDocController*)docController];
+  docController.selectedCommitSHA = item.sha;
 
   NSOutlineView *outlineView = [[NSOutlineView alloc] init];
-  XTFileListDataSource *flds = [[XTFileListDataSource alloc] init];
+  XTFileTreeDataSource *flds = [[XTFileTreeDataSource alloc] init];
 
   flds.repository = repository;
   [self waitForRepoQueue];

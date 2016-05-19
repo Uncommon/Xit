@@ -1,11 +1,11 @@
 #import "XTFileChangesDataSource.h"
-#import "XTFileListDataSource.h"
+#import "XTDocController.h"
 #import "XTFileViewController.h"
 #import "XTRepository+Parsing.h"
 
 @interface XTFileChangesDataSource ()
 
-@property NSArray *changes;
+@property NSArray<XTFileChange*> *changes;
 
 @end
 
@@ -14,8 +14,8 @@
 - (void)reload
 {
   [self.repository executeOffMainThread:^{
-    self.changes = [self.repository changesForRef:self.repository.selectedCommit
-                                           parent:nil];
+    self.changes = [self.repository
+        changesForRef:self.docController.selectedCommitSHA parent:nil];
     dispatch_async(dispatch_get_main_queue(), ^{
       [self.outlineView reloadData];
     });
@@ -29,7 +29,9 @@
 
 - (XTFileChange*)fileChangeAtRow:(NSInteger)row
 {
-  return [self.outlineView itemAtRow:row];
+  if (row >= self.changes.count)
+    return nil;
+  return self.changes[row];
 }
 
 - (NSString*)pathForItem:(id)item
@@ -41,9 +43,13 @@
 
 - (XitChange)changeForItem:(id)item
 {
-  XTFileChange *change = (XTFileChange*)item;
+  return [[self class] transformDisplayChange:((XTFileChange*)item).change];
+}
 
-  return change.change;
+- (XitChange)unstagedChangeForItem:(id)item
+{
+  return [[self class]
+      transformDisplayChange:((XTFileChange*)item).unstagedChange];
 }
 
 #pragma mark NSOutlineViewDataSource
@@ -70,7 +76,7 @@
     objectValueForTableColumn:(NSTableColumn*)tableColumn
                        byItem:(id)item
 {
-  return [item path];
+  return [(XTFileChange*)item path];
 }
 
 @end

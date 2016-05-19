@@ -1,7 +1,8 @@
 #import <Foundation/Foundation.h>
 
-@class XTRepository;
+@class XTDocController;
 @class XTHistoryItem;
+@class XTRepository;
 
 /**
   Data source for the history list.
@@ -14,9 +15,13 @@
   NSMutableDictionary *_index;
 }
 
-@property(readonly) NSArray *items;
+@property(readonly) NSOrderedSet<NSString*> *shas;
+@property(weak, nonatomic) XTDocController *controller;
 
 - (void)reload;
-- (void)setRepo:(XTRepository *)newRepo;
+- (void)setRepo:(XTRepository*)newRepo;
+
+- (XTHistoryItem*)itemAtIndex:(NSUInteger)index;
+
 @end
 

@@ -18,6 +18,7 @@
   XTRepository *_repo;
   NSOutlineView *_outline;
   NSString *_currentBranch;
+  XTSideBarItem *_stagingItem;
   IBOutlet XTHistoryViewController *_viewController;
   IBOutlet XTRefFormatter *_refFormatter;
 }

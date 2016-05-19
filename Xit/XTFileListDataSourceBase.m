@@ -1,109 +1,79 @@
 #import "XTFileListDataSourceBase.h"
+#import "XTConstants.h"
+#import "XTDocController.h"
 #import "XTFileViewController.h"
 #import "XTRepository.h"
+#import <objc/runtime.h>
+
 
 @implementation XTFileListDataSourceBase
 
+@synthesize controller = _controller;
+
 - (void)dealloc
 {
-  [self.repository removeObserver:self forKeyPath:@"selectedCommit"];
+  [self.docController removeObserver:self forKeyPath:@"selectedCommitSHA"];
 }
 
 - (void)reload
 {
-  NSAssert(false, @"reload must be overridden");
-}
-
-- (BOOL)isHierarchical
-{
-  NSAssert(false, @"isHierarchical must be overridden");
-  return NO;
+  // Subclasses must override
 }
 
 - (void)setRepository:(XTRepository*)repository
 {
   _repository = repository;
-  [_repository addObserver:self
-               forKeyPath:@"selectedCommit"
-                  options:NSKeyValueObservingOptionNew
-                  context:nil];
   [self reload];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context
+- (XTFileViewController*)controller
 {
-  if ([keyPath isEqualToString:@"selectedCommit"] &&
-      (object == self.repository))
-    [self reload];
+  return _controller;
 }
 
-- (XTFileChange*)fileChangeAtRow:(NSInteger)row
+- (void)setController:(XTFileViewController*)controller
 {
-  return nil;
-}
-
-- (NSString*)pathForItem:(id)item
-{
-  NSAssert(false, @"pathForItem must be overridden");
-  return nil;
-}
-
-- (XitChange)changeForItem:(id)item
-{
-  NSAssert(false, @"changeForItem must be overridden");
-  return XitChangeUnmodified;
-}
-
-- (NSView *)outlineView:(NSOutlineView *)outlineView
-     viewForTableColumn:(NSTableColumn *)tableColumn
-                   item:(id)item
-{
-  XTFileCellView *cell =
-      [outlineView makeViewWithIdentifier:@"fileCell" owner:_controller];
-
-  if (![cell isKindOfClass:[XTFileCellView class]])
-    return cell;
-
-  NSString *path = [self pathForItem:item];
-
-  if ([self outlineView:outlineView isItemExpandable:item])
-    cell.imageView.image = [NSImage imageNamed:NSImageNameFolder];
-  else
-    cell.imageView.image = [[NSWorkspace sharedWorkspace]
-        iconForFileType:[path pathExtension]];
-  cell.textField.stringValue = [path lastPathComponent];
-
-  NSColor *textColor;
-  const XitChange change = [self changeForItem:item];
-
-  if (change == XitChangeDeleted)
-    textColor = [NSColor disabledControlTextColor];
-  else if ([outlineView isRowSelected:[outlineView rowForItem:item]])
-    textColor = [NSColor selectedTextColor];
-  else
-    textColor = [NSColor textColor];
-  cell.textField.textColor = textColor;
-  cell.change = change;
-
-  CGFloat textWidth;
-  const NSRect changeFrame = cell.changeImage.frame;
-  const NSRect textFrame = cell.textField.frame;
-
-  [cell.changeImage setHidden:change == XitChangeUnmodified];
-  if (change == XitChangeUnmodified) {
-    textWidth = changeFrame.origin.x + changeFrame.size.width -
-                textFrame.origin.x;
-  } else {
-    cell.changeImage.image = self.controller.changeImages[@( change )];
-    textWidth = changeFrame.origin.x - kChangeImagePadding -
-                textFrame.origin.x;
+  @synchronized (self) {
+    _controller = controller;
+    [controller addObserver:self
+                 forKeyPath:@"inStagingView"
+                    options:nil
+                    context:NULL];
   }
-  [cell.textField setFrameSize:NSMakeSize(textWidth, textFrame.size.height)];
+}
 
-  return cell;
+- (void)setDocController:(XTDocController *)docController
+{
+  _docController = docController;
+  [_docController addObserver:self
+                   forKeyPath:NSStringFromSelector(@selector(selectedCommitSHA))
+                      options:NSKeyValueObservingOptionNew
+                      context:nil];
+}
+
+- (void)updateStagingView
+{
+  NSTableColumn *unstagedColumn =
+      [self.outlineView tableColumnWithIdentifier:@"unstaged"];
+
+  unstagedColumn.hidden = !self.controller.inStagingView;
+  // update the column highliht
+}
+
+- (void)observeValueForKeyPath:(NSString*)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary*)change
+                       context:(void*)context
+{
+  if ([keyPath isEqualToString:@"selectedCommitSHA"])
+    [self reload];
+  else if ([keyPath isEqualToString:@"inStagingView"])
+    [self updateStagingView];
+}
+
++ (XitChange)transformDisplayChange:(XitChange)change
+{
+  return (change == XitChangeUnmodified) ? XitChangeMixed : change;
 }
 
 @end
@@ -119,5 +89,10 @@
   else if (self.change == XitChangeDeleted)
     self.textField.textColor = [NSColor disabledControlTextColor];
 }
+
+@end
+
+
+@implementation XTTableButtonView
 
 @end

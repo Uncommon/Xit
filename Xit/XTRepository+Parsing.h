@@ -26,11 +26,13 @@ typedef enum {
   XitChangeIgnored = GIT_DELTA_IGNORED,
   XitChangeUntracked = GIT_DELTA_UNTRACKED,
   XitChangeTypeChange = GIT_DELTA_TYPECHANGE,
+  XitChangeConflict = GIT_DELTA_CONFLICTED,
   XitChangeMixed,  // For folders containing a mix of changes
 } XitChange;
 
 @class GTSubmodule;
 @class XTDiffDelta;
+@class XTFileChange;
 
 @interface XTRepository (Reading)
 
@@ -41,6 +43,8 @@ typedef enum {
                   tagBlock:(void (^)(NSString *name, NSString *commit))tagBlock;
 - (BOOL)
     readStagedFilesWithBlock:(void (^)(NSString *name, NSString *status))block;
+/// Returns a dictionary mapping paths to XTWorkspaceFileStatuses.
+- (NSDictionary*)workspaceStatus;
 - (BOOL)readUnstagedFilesWithBlock:(void (^)(NSString *name, NSString *status))
                                    block;
 - (BOOL)readStashesWithBlock:(void (^)(NSString *commit, NSString *name))block;
@@ -60,19 +64,43 @@ typedef enum {
                     error:(NSError**)error;
 
 - (NSArray*)fileNamesForRef:(NSString*)ref;
-- (NSArray*)changesForRef:(NSString*)ref parent:(NSString*)parentSHA;
+/// Returns a list of changed files in the given commit.
+- (NSArray<XTFileChange*>*)changesForRef:(NSString*)ref
+                                  parent:(NSString*)parentSHA;
 - (XTDiffDelta*)diffForFile:(NSString*)path
                   commitSHA:(NSString*)sha
                   parentSHA:(NSString*)parentSHA;
+- (XTDiffDelta*)stagedDiffForFile:(NSString*)path;
+- (XTDiffDelta*)unstagedDiffForFile:(NSString*)path;
 - (BOOL)isTextFile:(NSString*)path commit:(NSString*)commit;
 
 @end
 
 
+/// Represents a changed file from a commit.
 @interface XTFileChange : NSObject
 
 @property NSString *path;
 @property XitChange change;
+@property XitChange unstagedChange;
+
+@end
+
+
+/// Contains the stanged and unstaged status for a workspace file.
+@interface XTWorkspaceFileStatus : NSObject
+
+@property XitChange change;
+@property XitChange unstagedChange;
+
+@end
+
+
+/// Represents a workspace file with staged or unstaged changes.
+@interface XTFileStaging : XTFileChange
+
+/// The new path for a moved file.
+@property NSString *destinationPath;
 
 @end
 

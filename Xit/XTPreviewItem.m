@@ -1,4 +1,5 @@
 #import "XTPreviewItem.h"
+#import "XTConstants.h"
 #import "XTRepository+Parsing.h"
 
 @interface XTPreviewItem ()
@@ -59,7 +60,8 @@
   self.previewItemURL = nil;
 
   if ((_path != nil) && (_commitSHA != nil)) {
-    NSData *contents =
+    NSData *contents = [_commitSHA isEqualToString:XTStagingSHA] ?
+        [_repo contentsOfStagedFile:_path] :
         [_repo contentsOfFile:_path atCommit:_commitSHA];
 
     if (contents != nil) {

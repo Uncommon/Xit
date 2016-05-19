@@ -1,3 +1,4 @@
+#import <Cocoa/Cocoa.h>
 #import "XTFileListDataSourceBase.h"
 #import "XTRepository+Parsing.h"
 
@@ -9,12 +10,11 @@
   Provides all files from the selected commit's tree, with special icons
   displayed for changed files. Entried are added for deleted files.
  */
-@interface XTFileListDataSource :
-    XTFileListDataSourceBase<NSOutlineViewDataSource> {
+@interface XTFileTreeDataSource : XTFileListDataSourceBase
+    <XTFileListDataSource, NSOutlineViewDataSource> {
  @private
   NSTreeNode *_root;
   NSDictionary *_changeImages;
-  NSOutlineView *_table;
 }
 
 - (void)reload;

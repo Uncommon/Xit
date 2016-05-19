@@ -1,4 +1,6 @@
 #import "XTSideBarDataSource.h"
+#import "XTConstants.h"
+#import "XTDocController.h"
 #import "XTSideBarItem.h"
 #import "XTSubmoduleItem.h"
 #import "XTRefFormatter.h"
@@ -12,6 +14,8 @@
 #import "NSMutableDictionary+MultiObjectForKey.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
+NSString * const XTStagingSHA = @"";
+
 @interface XTSideBarDataSource ()
 - (NSArray *)loadRoots;
 @end
@@ -21,8 +25,11 @@
 
 - (id)init
 {
-  if ((self = [super init]) != nil)
+  if ((self = [super init]) != nil) {
     _roots = [self makeRoots];
+    _stagingItem = [[XTSideBarItem alloc] initWithTitle:@"Staging"
+                                                 andSha:XTStagingSHA];
+  }
 
   return self;
 }
@@ -63,7 +70,7 @@
   NSArray *paths = [note userInfo][XTPathsKey];
 
   for (NSString *path in paths) {
-    if ([path hasPrefix:@".git/refs/"]) {
+    if ([path hasPrefix:@"/refs/"]) {
       [self reload];
       break;
     }
@@ -205,8 +212,6 @@
         openDocumentWithContentsOfURL:subURL
                               display:YES
                     completionHandler:^(NSDocument *doc,BOOL open, NSError *error) {}];
-    // TODO: zoom effect
-    // http://github.com/MrNoodle/NoodleKit/blob/master/NSWindow-NoodleEffects.m
   }
 }
 
@@ -247,7 +252,7 @@
   NSInteger result = 0;
 
   if (item == nil) {
-    result = [_roots count];
+    result = [_roots count] + 1;  // Groups plus staging item
   } else if ([item isKindOfClass:[XTSideBarItem class]]) {
     XTSideBarItem *sbItem = (XTSideBarItem *)item;
     result = [sbItem numberOfChildren];
@@ -273,7 +278,10 @@
   id result = nil;
 
   if (item == nil) {
-    result = _roots[index];
+    if (index == 0)
+      return _stagingItem;
+    else
+      result = _roots[index - 1];
   } else if ([item isKindOfClass:[XTSideBarItem class]]) {
     XTSideBarItem *sbItem = (XTSideBarItem *)item;
     result = [sbItem childAtIndex:index];
@@ -285,7 +293,18 @@
      viewForTableColumn:(NSTableColumn *)tableColumn
                    item:(id)item
 {
-  if ([_roots containsObject:item]) {
+  if (item == _stagingItem) {
+    XTSideBarTableCellView *dataView = (
+        XTSideBarTableCellView *)[outlineView makeViewWithIdentifier:@"DataCell"
+                                                               owner:self];
+
+    dataView.item = item;
+    [dataView.textField setStringValue:[item title]];
+    [dataView.textField setEditable:NO];
+    [dataView.textField setSelectable:NO];
+    [dataView.imageView setImage:[NSImage imageNamed:@"staging"]];
+    return dataView;
+  } else if ([_roots containsObject:item]) {
     NSTableCellView *headerView =
         [outlineView makeViewWithIdentifier:@"HeaderCell" owner:self];
 
@@ -339,8 +358,12 @@
 {
   XTSideBarItem *item = [_outline itemAtRow:_outline.selectedRow];
 
-  if (item.sha != nil)
-    _repo.selectedCommit = item.sha;
+  if (item.sha != nil) {
+    XTDocController *controller = _outline.window.windowController;
+
+    NSAssert([controller isKindOfClass:[XTDocController class]], @"");
+    controller.selectedCommitSHA = item.sha;
+  }
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item

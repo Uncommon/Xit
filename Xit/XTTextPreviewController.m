@@ -2,6 +2,7 @@
 
 #import <WebKit/WebKit.h>
 
+#import "XTDocController.h"
 #import "XTRepository+Parsing.h"
 
 @implementation XTTextPreviewController
@@ -23,6 +24,9 @@
 
 - (void)loadText:(NSString*)text
 {
+  if (text == nil)
+    text = @"";
+
   NSMutableString *textLines = [NSMutableString string];
 
   [text enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
@@ -36,9 +40,28 @@
   [[_webView mainFrame] loadHTMLString:html baseURL:[[self class] baseURL]];
 }
 
+- (void)loadData:(NSData*)data
+{
+  if (data == nil)
+    return;
+
+  NSString *text = [[NSString alloc]
+                    initWithData:data encoding:NSUTF8StringEncoding];
+  
+  // TODO: Use TECSniffTextEncoding to detect encoding.
+  if (text == nil)
+    text = [[NSString alloc]
+            initWithData:data encoding:NSUTF16StringEncoding];
+  
+  [self loadText:text];
+}
+
 - (BOOL)isFileChanged:(NSString*)path inRepository:(XTRepository*)repo
 {
-  NSArray *changes = [repo changesForRef:repo.selectedCommit parent:nil];
+  XTDocController *controller = self.view.window.windowController;
+  NSAssert([controller isKindOfClass:[XTDocController class]], @"");
+  NSArray *changes =
+      [repo changesForRef:controller.selectedCommitSHA parent:nil];
 
   for (XTFileChange *change in changes)
     if ([change.path isEqualToString:path])
@@ -46,23 +69,25 @@
   return NO;
 }
 
-- (BOOL)loadPath:(NSString*)path
+- (void)loadPath:(NSString*)path
           commit:(NSString*)sha
       repository:(XTRepository*)repository
 {
-  NSData *data = [repository contentsOfFile:path atCommit:sha];
-  NSString *text = [[NSString alloc]
-      initWithData:data encoding:NSUTF8StringEncoding];
+  [self loadData:[repository contentsOfFile:path atCommit:sha]];
+}
 
-  // TODO: Use TECSniffTextEncoding to detect encoding.
-  if (text == nil) {
-    text = [[NSString alloc]
-        initWithData:data encoding:NSUTF16StringEncoding];
-    if (text == nil)
-      return NO;
-  }
-  [self loadText:text];
-  return YES;
+- (void)loadUnstagedPath:(NSString*)path
+              repository:(XTRepository*)repository
+{
+  NSURL *url = [repository.repoURL URLByAppendingPathComponent:path];
+  
+  [self loadData:[NSData dataWithContentsOfURL:url]];
+}
+
+- (void)loadStagedPath:(NSString*)path
+            repository:(XTRepository*)repository
+{
+  [self loadData:[repository contentsOfStagedFile:path]];
 }
 
 @end

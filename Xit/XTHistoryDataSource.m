@@ -1,6 +1,7 @@
 #import "XTHistoryDataSource.h"
-#import "XTRepository.h"
+#import "XTDocController.h"
 #import "XTHistoryItem.h"
+#import "XTRepository.h"
 #import "XTStatusView.h"
 #import "PBGitGrapher.h"
 #import "PBGitHistoryGrapher.h"
@@ -8,12 +9,11 @@
 
 @implementation XTHistoryDataSource
 
-
 - (id)init
 {
   self = [super init];
   if (self) {
-    _items = [NSMutableArray array];
+    _shas = [NSOrderedSet orderedSet];
     _index = [NSMutableDictionary dictionary];
   }
   
@@ -23,21 +23,31 @@
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
-  [_repo removeObserver:self forKeyPath:@"selectedCommit"];
+  [_controller removeObserver:self forKeyPath:@"selectedCommitSHA"];
 }
 
-- (void)setRepo:(XTRepository *)newRepo
+- (void)setRepo:(XTRepository*)newRepo
 {
   _repo = newRepo;
   [_repo addReloadObserver:self selector:@selector(repoChanged:)];
-  [_repo addObserver:self
-          forKeyPath:@"selectedCommit"
-             options:NSKeyValueObservingOptionNew
-             context:nil];
   [self reload];
 }
 
-- (void)repoChanged:(NSNotification *)note
+- (void)setController:(XTDocController*)controller
+{
+  _controller = controller;
+  [controller addObserver:self
+               forKeyPath:@"selectedCommitSHA"
+                  options:NSKeyValueObservingOptionNew
+                  context:nil];
+}
+
+- (XTHistoryItem*)itemAtIndex:(NSUInteger)index
+{
+  return _index[self.shas[index]];
+}
+
+- (void)repoChanged:(NSNotification*)note
 {
   NSArray *paths = [note userInfo][XTPathsKey];
   
@@ -54,7 +64,7 @@
                         change:(NSDictionary *)change
                        context:(void *)context
 {
-  if ([keyPath isEqualToString:@"selectedCommit"]) {
+  if ([keyPath isEqualToString:@"selectedCommitSHA"]) {
     NSString *newSelectedCommit = change[NSKeyValueChangeNewKey];
     XTHistoryItem *item = _index[newSelectedCommit];
     if (item != nil) {
@@ -74,45 +84,31 @@
   const BOOL selectHead = [_table selectedRow] == -1;
   
   [_repo executeOffMainThread:^{
-    NSMutableArray *newItems = [NSMutableArray array];
+    NSMutableOrderedSet<NSString*> *newShas = [NSMutableOrderedSet orderedSet];
     NSMutableDictionary *newIndex = [NSMutableDictionary dictionary];
     
     @try {
-      [self loadHistoryIntoItems:newItems withIndex:newIndex];
+      [self loadHistoryIntoShas:newShas withIndex:newIndex];
     } @catch (NSException *exception) {
       return;
     }
     
-    NSInteger headRow = - 1;
-    
-    if (selectHead) {
-      NSString *headSHA = [_repo headSHA];
-      __block NSInteger blockHeadRow = - 1;
-      
-      [newItems enumerateObjectsWithOptions:NSEnumerationConcurrent
-                                 usingBlock:^(id obj, NSUInteger row,
-                                              BOOL *stop) {
-                                   if ([[(XTHistoryItem *)obj sha] isEqualToString:headSHA]) {
-                                     blockHeadRow = row;
-                                     * stop = YES;
-                                   }
-                                 }];
-      headRow = blockHeadRow;
-    }
+    const NSUInteger headRow = selectHead ?
+        [newShas indexOfObject:_repo.headSHA] : NSNotFound;
     
     dispatch_async(dispatch_get_main_queue(), ^{
-      _items = newItems;
+      _shas = newShas;
       _index = newIndex;
       [_table reloadData];
-      if (headRow != - 1)
+      if (headRow != NSNotFound)
         [_table selectRowIndexes:[NSIndexSet indexSetWithIndex:headRow]
             byExtendingSelection:NO];
     });
   }];
 }
 
-- (void)loadHistoryIntoItems:(NSMutableArray *)newItems
-                   withIndex:(NSMutableDictionary *)commitIndex
+- (void)loadHistoryIntoShas:(NSMutableOrderedSet<NSString*>*)newShas
+                  withIndex:(NSMutableDictionary*)commitIndex
 {
   NSArray *args = @[ @"--pretty=format:%H%n%P%n%cD%n%ce%n%s", @"--reverse",
                      @"--tags", @"--all", @"--topo-order" ];
@@ -157,7 +153,7 @@
       item.date = [NSDate dateFromRFC2822:comps[2]];
       item.email = comps[3];
       item.subject = comps[4];
-      [newItems addObject:item];
+      [newShas insertObject:item.sha atIndex:0];
       commitIndex[item.sha] = item;
     } else {
       [NSException raise:@"Invalid commit"
@@ -166,40 +162,32 @@
   }
                       error:nil];
   
-  if ([newItems count] > 0) {
-    NSUInteger i = 0, j = [newItems count] - 1;
-    
-    while (i < j)
-      [newItems exchangeObjectAtIndex:i++ withObjectAtIndex:j--];
-  }
-  
   PBGitGrapher *grapher = [[PBGitGrapher alloc] init];
-  [newItems enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-    XTHistoryItem *item = (XTHistoryItem *)obj;
-    [grapher decorateCommit:item];
-    item.index = idx;
+
+  [newShas enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+    [grapher decorateCommit:commitIndex[obj]];
   }];
   
   [XTStatusView updateStatus:[NSString stringWithFormat:@"%d commits loaded",
-                                                        (int)[newItems count]]
+                                                        (int)[newShas count]]
                      command:nil
                       output:@""
                forRepository:_repo];
-  NSLog(@"-> %lu", [newItems count]);
+  NSLog(@"-> %lu", [newShas count]);
 }
 
 #pragma mark - NSTableViewDataSource
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
-  return [_items count];
+  return [_shas count];
 }
 
 - (id)tableView:(NSTableView *)aTableView
     objectValueForTableColumn:(NSTableColumn *)aTableColumn
                           row:(NSInteger)rowIndex
 {
-  XTHistoryItem *item = _items[rowIndex];
+  XTHistoryItem *item = _index[_shas[rowIndex]];
 
   return [item valueForKey:aTableColumn.identifier];
 }

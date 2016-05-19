@@ -1,6 +1,9 @@
-#import "XTFileListDataSource.h"
+#import "XTFileTreeDataSource.h"
+#import "XTConstants.h"
+#import "XTDocController.h"
+#import "Xit-Swift.h"
 
-@interface XTFileListDataSource ()
+@interface XTFileTreeDataSource ()
 - (NSTreeNode *)fileTreeForRef:(NSString *)ref;
 - (NSTreeNode *)findTreeNodeForPath:(NSString *)path
                              parent:(NSTreeNode *)parent
@@ -8,7 +11,7 @@
 @end
 
 
-@implementation XTFileListDataSource
+@implementation XTFileTreeDataSource
 
 - (id)init
 {
@@ -31,12 +34,12 @@
 - (void)reload
 {
   [self.repository executeOffMainThread:^{
-    NSString *ref = self.repository.selectedCommit;
+    NSString *ref = self.docController.selectedCommitSHA;
     NSTreeNode *newRoot = [self fileTreeForRef:(ref == nil) ? @"HEAD" : ref];
 
     dispatch_async(dispatch_get_main_queue(), ^{
       _root = newRoot;
-      [_table reloadData];
+      [self.outlineView reloadData];
     });
   }];
 }
@@ -46,9 +49,10 @@
   return YES;
 }
 
+/// Sets a folder's status according to the status of its children.
 - (void)updateChangeForNode:(NSTreeNode*)node
 {
-  XitChange change = XitChangeUnmodified;
+  XitChange change = XitChangeUnmodified, unstagedChange = XitChangeUnmodified;
   BOOL firstItem = YES;
 
   for (NSTreeNode *child in [node childNodes]) {
@@ -56,19 +60,38 @@
 
     if (![child isLeaf])
       [self updateChangeForNode:child];
-    if (firstItem)
+    if (firstItem) {
       change = childItem.change;
-    else if (change != childItem.change)
-      change = XitChangeMixed;
+      unstagedChange = childItem.unstagedChange;
+    }
+    else {
+      if (change != childItem.change)
+        change = XitChangeMixed;
+      if (unstagedChange != childItem.unstagedChange)
+        unstagedChange = XitChangeMixed;
+    }
     firstItem = NO;
   }
 
   XTCommitTreeItem *item = [node representedObject];
 
   item.change = change;
+  item.unstagedChange = unstagedChange;
 }
 
-- (NSTreeNode *)fileTreeForRef:(NSString *)ref
+/// Performs common operation for after a staging/commit tree is built.
+- (void)postProcessFileTree:(NSTreeNode*)tree
+{
+  NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]
+                                      initWithKey:@"path.lastPathComponent"
+                                      ascending:YES
+                                      selector:@selector(localizedCaseInsensitiveCompare:)];
+  
+  [tree sortWithSortDescriptors:@[ sortDescriptor ] recursively:YES];
+  [self updateChangeForNode:tree];
+}
+
+- (NSTreeNode*)fileTreeForCommitRef:(NSString *)ref
 {
   NSTreeNode *newRoot = [self makeNewRoot];
   NSMutableDictionary *nodes = [NSMutableDictionary dictionary];
@@ -101,15 +124,26 @@
     [[parentNode mutableChildNodes] addObject:node];
     nodes[file] = node;
   }
-  [self updateChangeForNode:newRoot];
-
-  NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]
-      initWithKey:@"path.lastPathComponent"
-        ascending:YES
-         selector:@selector(localizedCaseInsensitiveCompare:)];
-
-  [newRoot sortWithSortDescriptors:@[ sortDescriptor ] recursively:YES];
+  [self postProcessFileTree:newRoot];
   return newRoot;
+}
+
+- (NSTreeNode*)fileTreeForWorkspace
+{
+  XTWorkspaceTreeBuilder *builder = [[XTWorkspaceTreeBuilder alloc]
+      initWithChanges:self.repository.workspaceStatus];
+  NSTreeNode *newRoot = [builder build:self.repository.repoURL];
+  
+  [self postProcessFileTree:newRoot];
+  return newRoot;
+}
+
+- (NSTreeNode*)fileTreeForRef:(NSString *)ref
+{
+  if ([ref isEqualToString:XTStagingSHA])
+    return [self fileTreeForWorkspace];
+  else
+    return [self fileTreeForCommitRef:ref];
 }
 
 - (NSTreeNode *)findTreeNodeForPath:(NSString *)path
@@ -143,7 +177,7 @@
 
 - (XTFileChange*)fileChangeAtRow:(NSInteger)row
 {
-  return [[_table itemAtRow:row] representedObject];
+  return [[self.outlineView itemAtRow:row] representedObject];
 }
 
 - (NSString*)pathForItem:(id)item
@@ -162,12 +196,20 @@
   return treeItem.change;
 }
 
+- (XitChange)unstagedChangeForItem:(id)item
+{
+  XTCommitTreeItem *treeItem = (XTCommitTreeItem*)
+      [(NSTreeNode*)item representedObject];
+
+  return treeItem.unstagedChange;
+}
+
 #pragma mark - NSOutlineViewDataSource
 
 - (NSInteger)outlineView:(NSOutlineView *)outlineView
     numberOfChildrenOfItem:(id)item
 {
-  _table = outlineView;
+  self.outlineView = outlineView;
 
   NSInteger res = 0;
 

@@ -2,7 +2,6 @@
 
 @class XTRepository;
 
-@class XTFileListDataSource;
 @class XTFileViewController;
 @class XTHistoryDataSource;
 @class XTSideBarDataSource;
@@ -30,6 +29,7 @@
   NSUInteger _savedSidebarWidth;
 }
 
+- (void)windowDidLoad;
 - (void)setRepo:(XTRepository *)newRepo;
 
 - (IBAction)checkOutBranch:(id)sender;

@@ -1,5 +1,6 @@
 #import "XTWebViewController.h"
 
+@class XTDocController;
 @class XTRepository;
 
 extern NSString *XTHeaderResizedNotificaiton;
@@ -15,6 +16,7 @@ extern NSString *XTHeaderHeightKey;
   BOOL _expanded;
 }
 
+@property XTDocController *docController;
 @property XTRepository *repository;
 @property NSString *commitSHA;
 

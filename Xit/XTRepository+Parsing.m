@@ -1,9 +1,17 @@
 #import "XTRepository+Parsing.h"
+#import "XTConstants.h"
 #import <ObjectiveGit/ObjectiveGit.h>
+#import <ObjectiveGit/GTRepository+Status.h>
 #import "NSDate+Extensions.h"
 
 NSString *XTHeaderNameKey = @"name";
 NSString *XTHeaderContentKey = @"content";
+
+@interface XTRepository (Private)
+
+- (NSArray*)stagingChanges;
+
+@end
 
 @implementation XTRepository (Reading)
 
@@ -126,6 +134,31 @@ NSString *XTHeaderContentKey = @"content";
   return YES;
 }
 
+- (NSDictionary*)workspaceStatus
+{
+  NSMutableDictionary *result = [NSMutableDictionary dictionary];
+  NSDictionary *options =
+      @{ GTRepositoryStatusOptionsFlagsKey:@(GIT_STATUS_OPT_INCLUDE_UNTRACKED) };
+
+  [self.gtRepo enumerateFileStatusWithOptions:options error:NULL
+      usingBlock:^(GTStatusDelta * _Nullable headToIndex,
+                   GTStatusDelta * _Nullable indexToWorkingDirectory,
+                   BOOL * _Nonnull stop) {
+    NSString *path = headToIndex.oldFile.path;
+    
+    if (path == nil)
+      path = indexToWorkingDirectory.oldFile.path;
+    if (path != nil) {
+      XTWorkspaceFileStatus *status = [[XTWorkspaceFileStatus alloc] init];
+      
+      status.unstagedChange = indexToWorkingDirectory.status;
+      status.change = headToIndex.status;
+      result[path] = status;
+    }
+  }];
+  return result;
+}
+
 - (BOOL)readStashesWithBlock:(void (^)(NSString *, NSString *))block
 {
   NSError *error = nil;
@@ -224,10 +257,14 @@ NSString *XTHeaderContentKey = @"content";
   return diff;
 }
 
-- (NSArray*)changesForRef:(NSString*)ref parent:(NSString*)parentSHA
+- (NSArray<XTFileChange*>*)changesForRef:(NSString*)ref
+                                  parent:(NSString*)parentSHA
 {
   if (ref == nil)
     return nil;
+
+  if ([ref isEqualToString:XTStagingSHA])
+    return [self stagingChanges];
 
   NSError *error = nil;
   GTCommit *commit = [_gtRepo lookUpObjectByRevParse:ref error:&error];
@@ -260,6 +297,37 @@ NSString *XTHeaderContentKey = @"content";
   return result;
 }
 
+- (NSArray*)stagingChanges
+{
+  NSMutableArray *result = [NSMutableArray array];
+  NSDictionary *options = @{
+      GTRepositoryStatusOptionsFlagsKey: @(GTRepositoryStatusFlagsIncludeUntracked) };
+  NSError *error = nil;
+  
+  if (![_gtRepo enumerateFileStatusWithOptions:options
+                                         error:nil
+                                    usingBlock:
+      ^(GTStatusDelta *headToIndex, GTStatusDelta *indexToWorking, BOOL *stop) {
+    XTFileStaging *change = [[XTFileStaging alloc] init];
+    
+    if (headToIndex != nil) {
+      change.path = headToIndex.oldFile.path;
+      change.destinationPath = headToIndex.newFile.path;
+    } else {
+      change.path = indexToWorking.oldFile.path;
+      change.destinationPath = indexToWorking.newFile.path;
+    }
+    change.change = headToIndex.status;
+    change.unstagedChange = indexToWorking.status;
+    [result addObject:change];
+  }]) {
+    NSLog(@"Can't enumerate file status: %@", [error description]);
+    return nil;
+  }
+  
+  return result;
+}
+
 - (BOOL)isTextFile:(NSString*)path commit:(NSString*)commit
 {
   NSString *name = [path lastPathComponent];
@@ -284,17 +352,10 @@ NSString *XTHeaderContentKey = @"content";
   return result;
 }
 
-- (XTDiffDelta*)diffForFile:(NSString*)path
-                  commitSHA:(NSString*)sha
-                  parentSHA:(NSString*)parentSHA
+- (XTDiffDelta*)deltaFromDiff:(GTDiff*)diff withPath:(NSString*)path
 {
-  GTDiff *diff = [self diffForSHA:sha parent:parentSHA];
-  
-  if (diff == nil)
-    return nil;
-
   __block GTDiffDelta *result = nil;
-
+  
   [diff enumerateDeltasUsingBlock:^(GTDiffDelta *delta, BOOL *stop) {
     if ([delta.newFile.path isEqualToString:path]) {
       *stop = YES;
@@ -302,6 +363,49 @@ NSString *XTHeaderContentKey = @"content";
     }
   }];
   return (XTDiffDelta*)result;
+}
+
+- (XTDiffDelta*)diffForFile:(NSString*)path
+                  commitSHA:(NSString*)sha
+                  parentSHA:(NSString*)parentSHA
+{
+  GTDiff *diff = [self diffForSHA:sha parent:parentSHA];
+  
+  return [self deltaFromDiff:diff withPath:path];
+}
+
+- (XTDiffDelta*)stagedDiffForFile:(NSString*)path
+{
+  // TODO: Get the file diff directly
+  // Get the blobs from the index and HEAD and compare
+  // [GTDiffDelta diffDeltaFromBlob:forPath:toBlob:forPath:options:error]
+  NSError *error = nil;
+  GTCommit *headCommit = [self commitForRef:self.headRef];
+  GTDiff *diff = [GTDiff diffIndexFromTree:headCommit.tree
+                              inRepository:_gtRepo
+                                   options:nil
+                                     error:&error];
+  if (error != nil)
+    return nil;
+  return [self deltaFromDiff:diff withPath:path];
+}
+
+- (XTDiffDelta*)unstagedDiffForFile:(NSString*)path
+{
+  // TODO: Get the file diff directly
+  // Instead of diffing the entire working directory, get the blob from the
+  // index and compare it to the file contents.
+  // [GTDiffDelta diffDeltaFromBlob:forPath:toData:forPath:options:error]
+  NSError *error = nil;
+  NSDictionary *options = @{
+      GTDiffOptionsFlagsKey: @(GTDiffOptionsFlagsIncludeUntracked) };
+  GTDiff *diff = [GTDiff diffIndexToWorkingDirectoryInRepository:_gtRepo
+                                                         options:options
+                                                           error:&error];
+
+  if (error != nil)
+    return nil;
+  return [self deltaFromDiff:diff withPath:path];
 }
 
 NSString *kHeaderFormat = @"--format="
@@ -510,6 +614,17 @@ NSString *XTCommitSHAKey = @"sha",
 
 @end
 
+
 @implementation XTFileChange
+
+@end
+
+
+@implementation XTWorkspaceFileStatus
+
+@end
+
+
+@implementation XTFileStaging
 
 @end

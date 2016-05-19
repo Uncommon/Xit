@@ -130,7 +130,7 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
   [super addInitialRepoContent];
 
   NSData *contentsData = [repository contentsOfFile:@"file1.txt"
-                                           atCommit:@"HEAD"];
+                                           atCommit:repository.headSHA];
 
   XCTAssertNotNil(contentsData, @"");
 
@@ -138,6 +138,47 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
       initWithData:contentsData encoding:NSUTF8StringEncoding];
 
   XCTAssertEqualObjects(contentsString, @"some text", @"");
+}
+
+- (void)testStagedContents
+{
+  NSError *error = nil;
+  NSString *fileName = @"file1.txt";
+  NSString *content = @"some content";
+  const NSStringEncoding encoding = NSASCIIStringEncoding;
+
+  file1Path = [repoPath stringByAppendingPathComponent:fileName];
+  [content writeToFile:file1Path
+            atomically:NO
+              encoding:encoding
+                error:&error];
+  XCTAssertNil(error);
+  XCTAssertNil([repository contentsOfStagedFile:fileName]);
+  
+  XCTAssertTrue([repository stageFile:fileName]);
+  
+  NSData *expectedContent = [content dataUsingEncoding:encoding];
+  NSData *stagedContent = [repository contentsOfStagedFile:fileName];
+  NSString *stagedString =
+      [[NSString alloc] initWithData:stagedContent encoding:encoding];
+  
+  XCTAssertEqualObjects(expectedContent, stagedContent);
+  XCTAssertEqualObjects(content, stagedString);
+  
+  // Write to the workspace file, but don't stage it. The staged content
+  // should be the same.
+  NSString *newContent = @"new stuff";
+  
+  [newContent writeToFile:file1Path
+               atomically:NO
+                 encoding:encoding
+                    error:&error];
+  XCTAssertNil(error);
+  stagedContent = [repository contentsOfStagedFile:fileName];
+  stagedString =
+      [[NSString alloc] initWithData:stagedContent encoding:encoding];
+  XCTAssertEqualObjects(expectedContent, stagedContent);
+  XCTAssertEqualObjects(content, stagedString);
 }
 
 - (void)testWriteLock {

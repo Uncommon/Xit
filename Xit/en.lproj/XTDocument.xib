@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9532"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="XTDocController">
             <connections>
                 <outlet property="_activity" destination="100113" id="100116"/>
                 <outlet property="_historyView" destination="100102" id="100105"/>
-                <outlet property="_stageView" destination="100106" id="100107"/>
-                <outlet property="_tabs" destination="100085" id="100104"/>
                 <outlet property="window" destination="5" id="18"/>
             </connections>
         </customObject>
@@ -24,78 +22,9 @@
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="775" height="660"/>
                 <autoresizingMask key="autoresizingMask"/>
-                <subviews>
-                    <tabView type="noTabsNoBorder" initialItem="100086" id="100085">
-                        <rect key="frame" x="0.0" y="0.0" width="775" height="660"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <font key="font" metaFont="system"/>
-                        <tabViewItems>
-                            <tabViewItem label="History" identifier="history" id="100086">
-                                <view key="view" id="100089">
-                                    <rect key="frame" x="0.0" y="0.0" width="775" height="660"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <subviews>
-                                        <textField verticalHuggingPriority="750" id="100096">
-                                            <rect key="frame" x="282" y="474" width="13" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="1" id="100097">
-                                                <font key="font" metaFont="system"/>
-                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                            </textFieldCell>
-                                        </textField>
-                                    </subviews>
-                                </view>
-                            </tabViewItem>
-                            <tabViewItem label="stage" identifier="stage" id="100087">
-                                <view key="view" id="100088">
-                                    <rect key="frame" x="0.0" y="0.0" width="775" height="660"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <subviews>
-                                        <textField verticalHuggingPriority="750" id="100098">
-                                            <rect key="frame" x="210" y="480" width="13" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="2" id="100099">
-                                                <font key="font" metaFont="system"/>
-                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                            </textFieldCell>
-                                        </textField>
-                                    </subviews>
-                                </view>
-                            </tabViewItem>
-                        </tabViewItems>
-                        <connections>
-                            <outlet property="delegate" destination="-2" id="100149"/>
-                        </connections>
-                    </tabView>
-                </subviews>
             </view>
             <toolbar key="toolbar" implicitIdentifier="40D3E1FE-6996-449E-9FB3-B8BE88A5CCCF" allowsUserCustomization="NO" displayMode="iconAndLabel" sizeMode="regular" id="100060" customClass="FHTToolbar">
                 <allowedToolbarItems>
-                    <toolbarItem implicitItemIdentifier="89540DBC-6492-41EC-A660-13F626D71769" label="View" paletteLabel="View" id="100094">
-                        <nil key="toolTip"/>
-                        <size key="minSize" width="75" height="24"/>
-                        <size key="maxSize" width="75" height="25"/>
-                        <segmentedControl key="view" verticalHuggingPriority="750" id="100092">
-                            <rect key="frame" x="0.0" y="14" width="75" height="25"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="selectOne" id="100093">
-                                <font key="font" metaFont="system"/>
-                                <segments>
-                                    <segment toolTip="History" image="historyTemplate" selected="YES">
-                                        <nil key="label"/>
-                                    </segment>
-                                    <segment toolTip="Stage" image="stageTemplate" tag="1">
-                                        <nil key="label"/>
-                                    </segment>
-                                </segments>
-                            </segmentedCell>
-                        </segmentedControl>
-                        <connections>
-                            <action selector="takeSelectedTabViewItemFromSender:" target="100085" id="100095"/>
-                        </connections>
-                    </toolbarItem>
                     <toolbarItem implicitItemIdentifier="FB2710CD-FC77-453B-8ED4-E4D111C9340C" label="Activity" paletteLabel="Activity" tag="-1" id="100114">
                         <nil key="toolTip"/>
                         <size key="minSize" width="16" height="16"/>
@@ -133,7 +62,6 @@
                     </toolbarItem>
                 </allowedToolbarItems>
                 <defaultToolbarItems>
-                    <toolbarItem reference="100094"/>
                     <toolbarItem reference="100117"/>
                     <toolbarItem reference="100157"/>
                     <toolbarItem reference="100117"/>
@@ -150,12 +78,9 @@
         </window>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <viewController nibName="XTHistoryViewController" id="100102" userLabel="History View Controller" customClass="XTHistoryViewController"/>
-        <viewController nibName="XTStageViewController" id="100106" customClass="XTStageViewController"/>
         <customObject id="100154" customClass="XTToolbarDelegate"/>
     </objects>
     <resources>
         <image name="NSRefreshTemplate" width="11" height="15"/>
-        <image name="historyTemplate" width="10" height="9"/>
-        <image name="stageTemplate" width="12" height="8"/>
     </resources>
 </document>

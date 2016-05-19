@@ -49,6 +49,7 @@ extern NSString *XTPathsKey;
 - (NSString*)shaForRef:(NSString*)ref;
 
 - (NSData*)contentsOfFile:(NSString*)filePath atCommit:(NSString*)commit;
+- (NSData*)contentsOfStagedFile:(NSString*)filePath;
 
 - (void)initializeEventStream;
 - (void)start;
@@ -71,11 +72,11 @@ extern NSString *XTPathsKey;
 - (void)removeTask:(NSTask*)task;
 
 @property(readonly) GTRepository *gtRepo;
-@property(copy) NSString *selectedCommit;
 @property(strong) NSDictionary *refsIndex;
 @property(readonly) dispatch_queue_t queue;
 @property(readonly) NSMutableArray *activeTasks;
 @property(readonly) NSURL *repoURL;
+@property(readonly) NSURL *gitDirectoryURL;
 @property(readonly) BOOL isWriting;
 @property(readonly) BOOL isShutDown;
 
