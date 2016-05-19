@@ -10,8 +10,8 @@
   Provides all files from the selected commit's tree, with special icons
   displayed for changed files. Entried are added for deleted files.
  */
-@interface XTFileTreeDataSource :
-    XTFileListDataSourceBase<NSOutlineViewDataSource> {
+@interface XTFileTreeDataSource : XTFileListDataSourceBase
+    <XTFileListDataSource, NSOutlineViewDataSource> {
  @private
   NSTreeNode *_root;
   NSDictionary *_changeImages;

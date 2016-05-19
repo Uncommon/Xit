@@ -184,6 +184,13 @@ observeValueForKeyPath:(NSString*)keyPath
   [self loadSelectedPreview];
 }
 
+// For convenience because this is such a long cast
+- (XTFileListDataSourceBase<XTFileListDataSource>*)fileListDataSource
+{
+  return (XTFileListDataSourceBase<XTFileListDataSource>*)
+      _fileListOutline.dataSource;
+}
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
 
@@ -194,8 +201,8 @@ observeValueForKeyPath:(NSString*)keyPath
  */
 - (void)performRepoAction:(SEL)action onFileListItem:(id)item
 {
-  XTFileListDataSourceBase *dataSource =
-  (XTFileListDataSourceBase*)_fileListOutline.dataSource;
+  XTFileListDataSourceBase<XTFileListDataSource> *dataSource =
+      self.fileListDataSource;
   
   [_repo executeOffMainThread:^{
     [_repo performSelector:action withObject:[dataSource pathForItem:item]];
@@ -264,10 +271,8 @@ observeValueForKeyPath:(NSString*)keyPath
     return;
   }
   
-  XTFileListDataSourceBase *dataSource = (XTFileListDataSourceBase*)
-      [_fileListOutline dataSource];
   XTFileChange *selectedItem =
-      [dataSource fileChangeAtRow:[selection firstIndex]];
+      [self.fileListDataSource fileChangeAtRow:[selection firstIndex]];
   XTDocController *docController = self.view.window.windowController;
 
   if (self.inStagingView) {
@@ -355,8 +360,8 @@ observeValueForKeyPath:(NSString*)keyPath
      viewForTableColumn:(NSTableColumn *)tableColumn
                    item:(id)item
 {
-  XTFileListDataSourceBase *dataSource =
-      (XTFileListDataSourceBase*)_fileListOutline.dataSource;
+  XTFileListDataSourceBase<XTFileListDataSource> *dataSource =
+      self.fileListDataSource;
   NSString * const columnID = tableColumn.identifier;
   const XitChange change = [dataSource changeForItem:item];
   

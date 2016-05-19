@@ -5,9 +5,6 @@
 #import "XTRepository.h"
 #import <objc/runtime.h>
 
-#define XTAssertOverride() \
-  NSAssert(false, @"%s must be overridden", sel_getName(_cmd))
-
 
 @implementation XTFileListDataSourceBase
 
@@ -20,13 +17,7 @@
 
 - (void)reload
 {
-  XTAssertOverride();
-}
-
-- (BOOL)isHierarchical
-{
-  XTAssertOverride();
-  return NO;
+  // Subclasses must override
 }
 
 - (void)setRepository:(XTRepository*)repository
@@ -80,32 +71,9 @@
     [self updateStagingView];
 }
 
-- (XTFileChange*)fileChangeAtRow:(NSInteger)row
-{
-  return nil;
-}
-
-- (NSString*)pathForItem:(id)item
-{
-  XTAssertOverride();
-  return nil;
-}
-
 + (XitChange)transformDisplayChange:(XitChange)change
 {
   return (change == XitChangeUnmodified) ? XitChangeMixed : change;
-}
-
-- (XitChange)changeForItem:(id)item
-{
-  XTAssertOverride();
-  return XitChangeUnmodified;
-}
-
-- (XitChange)unstagedChangeForItem:(id)item
-{
-  XTAssertOverride();
-  return XitChangeUnmodified;
 }
 
 @end

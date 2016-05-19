@@ -8,8 +8,7 @@
 /**
   Abstract base class for file list data sources.
  */
-@interface XTFileListDataSourceBase :
-    NSObject<NSOutlineViewDataSource>
+@interface XTFileListDataSourceBase : NSObject<NSOutlineViewDataSource>
 
 @property IBOutlet NSOutlineView *outlineView;
 @property IBOutlet XTFileViewController *controller;
@@ -17,15 +16,25 @@
 @property(nonatomic) XTDocController *docController;
 @property(readonly, nonatomic) BOOL isHierarchical;
 
-- (void)reload;
-- (XTFileChange*)fileChangeAtRow:(NSInteger)row;
-- (NSString*)pathForItem:(id)item;
-- (XitChange)changeForItem:(id)item;
-- (XitChange)unstagedChangeForItem:(id)item;
 
 /// Get the change value used for display because in some cases we want to
 /// make sure an icon is displayed for unmodified files.
 + (XitChange)transformDisplayChange:(XitChange)change;
+
+@end
+
+
+/**
+  Methods that a file list data source must implement.
+ */
+@protocol XTFileListDataSource <NSObject>
+
+- (void)reload;
+- (BOOL)isHierarchical;
+- (XTFileChange*)fileChangeAtRow:(NSInteger)row;
+- (NSString*)pathForItem:(id)item;
+- (XitChange)changeForItem:(id)item;
+- (XitChange)unstagedChangeForItem:(id)item;
 
 @end
 
