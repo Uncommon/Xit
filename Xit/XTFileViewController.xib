@@ -18,10 +18,12 @@
                 <outlet property="_leftPane" destination="yIN-xT-jEO" id="69s-1K-JKi"/>
                 <outlet property="_rightPane" destination="LHY-c4-rvq" id="y76-R2-Gw2"/>
                 <outlet property="_textController" destination="58" id="5d0-jn-kOw"/>
+                <outlet property="actionButton" destination="gNu-NG-LYe" id="8EA-bg-zQa"/>
                 <outlet property="diffController" destination="fX5-fH-Hy5" id="nP0-l5-ngF"/>
                 <outlet property="headerTabView" destination="krT-Kf-MrD" id="t9e-WI-aqg"/>
                 <outlet property="previewController" destination="3g8-eR-FPJ" id="dy4-6W-vsZ"/>
                 <outlet property="previewTabView" destination="52" id="62"/>
+                <outlet property="stageSelector" destination="2h9-2i-j6F" id="i5H-X6-6ss"/>
                 <outlet property="view" destination="68" id="75"/>
                 <outlet property="viewSelector" destination="taS-ff-AsX" id="zMB-X1-GEd"/>
             </connections>
@@ -81,8 +83,8 @@
                                     </buttonCell>
                                 </button>
                                 <segmentedControl verticalHuggingPriority="750" id="taS-ff-AsX">
-                                    <rect key="frame" x="145" y="188.5" width="67" height="23"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <rect key="frame" x="0.0" y="188.5" width="67" height="23"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="selectOne" id="VOL-YW-yiD">
                                         <font key="font" metaFont="system"/>
                                         <segments>
@@ -101,7 +103,7 @@
                                         <rect key="frame" x="1" y="1" width="357" height="188.5"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
-                                            <outlineView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="8" id="7" customClass="XTFileListView">
+                                            <outlineView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="7Uz-gy-exv" id="7" customClass="XTFileListView">
                                                 <rect key="frame" x="0.0" y="0.0" width="357" height="188.5"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
@@ -279,6 +281,54 @@
                                         <autoresizingMask key="autoresizingMask"/>
                                     </scroller>
                                 </scrollView>
+                                <segmentedControl hidden="YES" verticalHuggingPriority="750" id="2h9-2i-j6F">
+                                    <rect key="frame" x="312" y="188.5" width="45" height="23"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="selectOne" id="cL0-a1-NLM">
+                                        <font key="font" metaFont="system"/>
+                                        <segments>
+                                            <segment toolTip="Show unstaged previews" image="NSLeftFacingTriangleTemplate" width="21"/>
+                                            <segment toolTip="Show staged previews" image="NSRightFacingTriangleTemplate" width="21" selected="YES" tag="1"/>
+                                        </segments>
+                                    </segmentedCell>
+                                    <connections>
+                                        <action selector="changeStageView:" target="-2" id="gWy-zs-6pW"/>
+                                    </connections>
+                                </segmentedControl>
+                                <popUpButton hidden="YES" id="gNu-NG-LYe">
+                                    <rect key="frame" x="268" y="190" width="36" height="22"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                    <popUpButtonCell key="cell" type="square" bezelStyle="shadowlessSquare" alignment="left" lineBreakMode="truncatingTail" imageScaling="proportionallyDown" inset="2" pullsDown="YES" altersStateOfSelectedItem="NO" id="1Rs-yJ-kMB">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="menu"/>
+                                        <menu key="menu" id="V1w-2z-F5k">
+                                            <items>
+                                                <menuItem image="NSActionTemplate" hidden="YES" id="kEh-c0-FPf">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                </menuItem>
+                                                <menuItem title="Stage All" id="5jh-NM-FNc">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="stageAll:" target="-2" id="luc-Ol-vfk"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="Unstage All" id="9JQ-7k-LFp">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="unstageAll:" target="-2" id="HoT-Sz-5bP"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem isSeparatorItem="YES" id="oQy-My-hZS"/>
+                                                <menuItem title="Show Ignored Files" id="SH6-6F-ij9">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="showIgnored:" target="-2" id="ehI-7w-V0g"/>
+                                                    </connections>
+                                                </menuItem>
+                                            </items>
+                                        </menu>
+                                    </popUpButtonCell>
+                                </popUpButton>
                             </subviews>
                         </customView>
                         <customView id="LHY-c4-rvq" userLabel="Content Pane">
@@ -424,9 +474,11 @@
     </objects>
     <resources>
         <image name="NSActionTemplate" width="14" height="14"/>
+        <image name="NSLeftFacingTriangleTemplate" width="9" height="12"/>
         <image name="NSListViewTemplate" width="14" height="10"/>
         <image name="NSPathTemplate" width="16" height="10"/>
         <image name="NSQuickLookTemplate" width="19" height="12"/>
+        <image name="NSRightFacingTriangleTemplate" width="9" height="12"/>
         <image name="mixed" width="16" height="16"/>
     </resources>
 </document>

@@ -150,6 +150,8 @@ observeValueForKeyPath:(NSString*)keyPath
 {
   inStagingView = staging;
   [self.headerTabView selectTabViewItemAtIndex:staging ? 1 : 0];
+  self.actionButton.hidden = !staging;
+  self.stageSelector.hidden = !staging;
 }
 
 - (IBAction)changeFileListView:(id)sender
@@ -242,16 +244,31 @@ observeValueForKeyPath:(NSString*)keyPath
 
 - (IBAction)stageClicked:(id)sender
 {
-  self.showingStaged = NO;
+  // stage the file
   [self selectRowFromButton:sender];
-  // on single click, show workspace diff
-  // on double click, stage file
 }
 
 - (IBAction)unstageClicked:(id)sender
 {
-  self.showingStaged = YES;
+  // unstage the file
   [self selectRowFromButton:sender];
+}
+
+- (IBAction)changeStageView:(id)sender
+{
+  self.showingStaged = self.stageSelector.selectedSegment == 1;
+}
+
+- (IBAction)stageAll:(id)sender
+{
+}
+
+- (IBAction)unstageAll:(id)sender
+{
+}
+
+- (IBAction)showIgnored:(id)sender
+{
 }
 
 - (void)clearPreviews

@@ -52,6 +52,8 @@ extern const CGFloat kChangeImagePadding;
 @property (weak) IBOutlet NSTabView *headerTabView;
 @property (strong) IBOutlet NSTabView *previewTabView;
 @property (weak) IBOutlet NSSegmentedControl *viewSelector;
+@property (weak) IBOutlet NSSegmentedControl *stageSelector;
+@property (weak) IBOutlet NSPopUpButton *actionButton;
 @property (strong) IBOutlet XTFileDiffController *diffController;
 @property (strong) IBOutlet XTPreviewController *previewController;
 @property (readonly) NSDictionary *changeImages;
@@ -61,6 +63,11 @@ extern const CGFloat kChangeImagePadding;
 - (IBAction)changeContentView:(id)sender;
 - (IBAction)stageClicked:(id)sender;
 - (IBAction)unstageClicked:(id)sender;
+- (IBAction)changeStageView:(id)sender;
+
+- (IBAction)stageAll:(id)sender;
+- (IBAction)unstageAll:(id)sender;
+- (IBAction)showIgnored:(id)sender;
 
 - (void)windowDidLoad;
 - (void)setRepo:(XTRepository *)repo;

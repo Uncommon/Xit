@@ -9,6 +9,7 @@
 
 + (void)highlightColumnInRect:(NSRect)rect
 {
+  rect.size.width += 2;
   [NSGraphicsContext saveGraphicsState];
   [[self columnHighlightColor] setFill];
   [NSBezierPath fillRect:rect];
