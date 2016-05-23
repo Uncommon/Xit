@@ -24,7 +24,6 @@
 - (BOOL)discardPatch:(NSString*)patch;
 
 - (BOOL)renameBranch:(NSString*)branch to:(NSString*)newName;
-- (BOOL)renameTag:(NSString*)branch to:(NSString*)newName;
 - (BOOL)renameRemote:(NSString*)branch to:(NSString*)newName;
 - (NSString *)urlStringForRemote:(NSString*)remoteName;
 

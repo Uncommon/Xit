@@ -381,10 +381,6 @@
       [_repo renameBranch:oldName to:newName];
       break;
 
-    case XTRefTypeTag:
-      [_repo renameTag:oldName to:newName];
-      break;
-
     case XTRefTypeRemote:
       [_repo renameRemote:oldName to:newName];
       break;

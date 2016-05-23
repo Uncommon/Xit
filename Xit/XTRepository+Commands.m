@@ -289,13 +289,6 @@
   return error == nil;
 }
 
-- (BOOL)renameTag:(NSString *)branch to:(NSString *)newName
-{
-  // TODO: delete and re-make the tag
-  // not doable for signed tags?
-  return NO;
-}
-
 - (BOOL)renameRemote:(NSString *)branch to:(NSString *)newName
 {
   NSError *error = nil;
