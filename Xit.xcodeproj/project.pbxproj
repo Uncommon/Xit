@@ -62,6 +62,9 @@
 		89D8BDFD1CED200B00D640AA /* modify@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BDF71CED200B00D640AA /* modify@2x.png */; };
 		89D8BE001CED203900D640AA /* stage.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BDFE1CED203900D640AA /* stage.png */; };
 		89D8BE011CED203900D640AA /* stage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BDFF1CED203900D640AA /* stage@2x.png */; };
+		89D8BE221CF0A4ED00D640AA /* XTRolloverButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8BE211CF0A4ED00D640AA /* XTRolloverButton.swift */; };
+		89D8BE251CF35C7000D640AA /* unstage.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BE231CF35C7000D640AA /* unstage.png */; };
+		89D8BE261CF35C7000D640AA /* unstage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BE241CF35C7000D640AA /* unstage@2x.png */; };
 		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		89E927DF17E977340093DA6C /* expected header.html in Resources */ = {isa = PBXBuildFile; fileRef = 89E927DE17E977340093DA6C /* expected header.html */; };
 		89FE824815A716E800E2EA2A /* XTRepositoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89FE824715A716E800E2EA2A /* XTRepositoryTests.m */; };
@@ -269,6 +272,9 @@
 		89D8BDF71CED200B00D640AA /* modify@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "modify@2x.png"; sourceTree = "<group>"; };
 		89D8BDFE1CED203900D640AA /* stage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stage.png; sourceTree = "<group>"; };
 		89D8BDFF1CED203900D640AA /* stage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stage@2x.png"; sourceTree = "<group>"; };
+		89D8BE211CF0A4ED00D640AA /* XTRolloverButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRolloverButton.swift; sourceTree = "<group>"; };
+		89D8BE231CF35C7000D640AA /* unstage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unstage.png; sourceTree = "<group>"; };
+		89D8BE241CF35C7000D640AA /* unstage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unstage@2x.png"; sourceTree = "<group>"; };
 		89E927DE17E977340093DA6C /* expected header.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "expected header.html"; sourceTree = "<group>"; };
 		89FE824715A716E800E2EA2A /* XTRepositoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTRepositoryTests.m; sourceTree = "<group>"; tabWidth = 2; };
 		C343F90F13F4908E009C928A /* XTHTML.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTHTML.h; sourceTree = "<group>"; };
@@ -543,6 +549,8 @@
 				89CD708317BFB4F500ECE7E3 /* submodule@2x.png */,
 				DDF9BB38162E29C3004588B6 /* tag.png */,
 				DDF9BB39162E29C3004588B6 /* tag@2x.png */,
+				89D8BE231CF35C7000D640AA /* unstage.png */,
+				89D8BE241CF35C7000D640AA /* unstage@2x.png */,
 			);
 			path = images;
 			sourceTree = "<group>";
@@ -724,6 +732,7 @@
 				894C8DBA1CC12F3E001A4B80 /* XTPreviewController.h */,
 				894C8DBB1CC12F3E001A4B80 /* XTPreviewController.m */,
 				899DB18D1CE0EA3A00760270 /* XTWorkspaceTreeBuilder.swift */,
+				89D8BE211CF0A4ED00D640AA /* XTRolloverButton.swift */,
 			);
 			name = FileView;
 			sourceTree = "<group>";
@@ -853,6 +862,7 @@
 			files = (
 				C3FA470B13D0F8E200AC4F9B /* InfoPlist.strings in Resources */,
 				89D8BDFB1CED200B00D640AA /* delete@2x.png in Resources */,
+				89D8BE261CF35C7000D640AA /* unstage@2x.png in Resources */,
 				C3FA471113D0F8E200AC4F9B /* Credits.rtf in Resources */,
 				C3FA471713D0F8E200AC4F9B /* XTDocument.xib in Resources */,
 				89D8BDE91CED1FE700D640AA /* add.png in Resources */,
@@ -882,6 +892,7 @@
 				89D8BDEA1CED1FE700D640AA /* add@2x.png in Resources */,
 				DD997DD41739CC9300C7DF82 /* stash@2x.png in Resources */,
 				DD96C931175B76990003A30C /* splitter.png in Resources */,
+				89D8BE251CF35C7000D640AA /* unstage.png in Resources */,
 				89CD708417BFB4F500ECE7E3 /* submodule.png in Resources */,
 				894C8D941CA44A44001A4B80 /* staging@2x.png in Resources */,
 				89CD708517BFB4F500ECE7E3 /* submodule@2x.png in Resources */,
@@ -950,6 +961,7 @@
 				894C8DAC1CBC0A1B001A4B80 /* XTFileListView.m in Sources */,
 				C3D6D32213E91EDC00AF50B0 /* PBGitRevisionCell.m in Sources */,
 				899DB1921CE109C700760270 /* XTWorkspaceTreeBuilder.swift in Sources */,
+				89D8BE221CF0A4ED00D640AA /* XTRolloverButton.swift in Sources */,
 				31C7C12E13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m in Sources */,
 				DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */,
 				31C7C13313ECC74C00A65FE9 /* XTHistoryViewController.m in Sources */,

@@ -363,12 +363,39 @@ observeValueForKeyPath:(NSString*)keyPath
   return self.changeImages[@( change )];
 }
 
+- (XitChange)displayChangeForChange:(XitChange)change
+                        otherChange:(XitChange)otherChange
+{
+  return (change == XitChangeUnmodified) &&
+         (otherChange != XitChangeUnmodified) ?
+         XitChangeMixed : change;
+}
+
 - (NSImage*)stagingImageForChange:(XitChange)change
                       otherChange:(XitChange)otherChange
 {
-  if ((change == XitChangeUnmodified) && (otherChange != XitChangeUnmodified))
-    change = XitChangeMixed;
+  change = [self displayChangeForChange:change otherChange:otherChange];
   return self.stageImages[@( change )];
+}
+
+- (XTTableButtonView*)tableButtonView:(NSString*)identifier
+                               change:(XitChange)change
+                          otherChange:(XitChange)otherChange
+                                  row:(NSInteger)row
+{
+  XTTableButtonView *cell =
+      [_fileListOutline makeViewWithIdentifier:identifier owner:self];
+  XTRolloverButton *button = (XTRolloverButton*)cell.button;
+  
+  button.image = [self stagingImageForChange:change
+                                 otherChange:otherChange];
+  button.rolloverActive = change != XitChangeMixed;
+  ((NSButtonCell*)button.cell).imageDimsWhenDisabled = NO;
+  button.enabled =
+      [self displayChangeForChange:change otherChange:otherChange] !=
+      XitChangeMixed;
+  cell.row = row;
+  return cell;
 }
 
 #pragma mark NSOutlineViewDelegate
@@ -415,14 +442,10 @@ observeValueForKeyPath:(NSString*)keyPath
     // Different cell views are used so that the icon is only clickable in
     // staging view.
     if (inStagingView) {
-      XTTableButtonView *cell =
-          [outlineView makeViewWithIdentifier:@"staged" owner:self];
-      
-      cell.button.image =
-          [self stagingImageForChange:change
-                          otherChange:[dataSource unstagedChangeForItem:item]];
-      cell.row = [outlineView rowForItem:item];
-      return cell;
+      return [self tableButtonView:@"staged"
+                            change:change
+                       otherChange:[dataSource unstagedChangeForItem:item]
+                               row:[outlineView rowForItem:item]];
     } else {
       NSTableCellView *cell =
           [outlineView makeViewWithIdentifier:@"change" owner:self];
@@ -434,15 +457,10 @@ observeValueForKeyPath:(NSString*)keyPath
   if ([columnID isEqualToString:@"unstaged"]) {
     if (!inStagingView)
       return nil;
-    
-    XTTableButtonView *cell =
-        [outlineView makeViewWithIdentifier:columnID owner:self];
-
-    cell.button.image =
-        [self stagingImageForChange:[dataSource unstagedChangeForItem:item]
-                        otherChange:change];
-    cell.row = [outlineView rowForItem:item];
-    return cell;
+    return [self tableButtonView:@"unstaged"
+                          change:[dataSource unstagedChangeForItem:item]
+                     otherChange:change
+                             row:[outlineView rowForItem:item]];
   }
   
   return nil;

@@ -165,13 +165,16 @@
                                                                 <rect key="frame" x="312" y="1" width="20" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
-                                                                    <button id="TgP-Oj-yya">
+                                                                    <button id="TgP-Oj-yya" customClass="XTRolloverButton" customModule="Xit" customModuleProvider="target">
                                                                         <rect key="frame" x="3" y="-1" width="17" height="17"/>
                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                         <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="mixed" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="xXZ-cS-rR7">
                                                                             <behavior key="behavior" lightByContents="YES"/>
                                                                             <font key="font" metaFont="system"/>
                                                                         </buttonCell>
+                                                                        <userDefinedRuntimeAttributes>
+                                                                            <userDefinedRuntimeAttribute type="image" keyPath="rolloverImage" value="stage"/>
+                                                                        </userDefinedRuntimeAttributes>
                                                                         <connections>
                                                                             <action selector="stageClicked:" target="-2" id="zuT-Iq-Xap"/>
                                                                         </connections>
@@ -199,13 +202,16 @@
                                                                 <rect key="frame" x="335" y="1" width="20" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
-                                                                    <button id="yEf-Zs-21Y">
+                                                                    <button id="yEf-Zs-21Y" customClass="XTRolloverButton" customModule="Xit" customModuleProvider="target">
                                                                         <rect key="frame" x="3" y="-1" width="17" height="17"/>
                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                         <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="mixed" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="u7S-Ju-sjt">
                                                                             <behavior key="behavior" lightByContents="YES"/>
                                                                             <font key="font" metaFont="system"/>
                                                                         </buttonCell>
+                                                                        <userDefinedRuntimeAttributes>
+                                                                            <userDefinedRuntimeAttribute type="image" keyPath="rolloverImage" value="unstage"/>
+                                                                        </userDefinedRuntimeAttributes>
                                                                         <connections>
                                                                             <action selector="unstageClicked:" target="-2" id="Gc7-zY-D8W"/>
                                                                         </connections>
@@ -480,5 +486,7 @@
         <image name="NSQuickLookTemplate" width="19" height="12"/>
         <image name="NSRightFacingTriangleTemplate" width="9" height="12"/>
         <image name="mixed" width="16" height="16"/>
+        <image name="stage" width="7" height="7.5"/>
+        <image name="unstage" width="7" height="7.5"/>
     </resources>
 </document>
