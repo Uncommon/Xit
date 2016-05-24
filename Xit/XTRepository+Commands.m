@@ -7,14 +7,15 @@
 - (BOOL)initializeRepository
 {
   NSError *error = nil;
-
-  if (![GTRepository initializeEmptyRepositoryAtFileURL:_repoURL
-                                                options:nil
-                                                  error:&error])
+  GTRepository *newRepo = [GTRepository
+      initializeEmptyRepositoryAtFileURL:_repoURL
+                                 options:nil
+                                   error:&error];
+  
+  if ((newRepo == nil) || (error != nil))
     return NO;
-  // TODO: Why are we initializing a second GTRepository here?
-  _gtRepo = [GTRepository repositoryWithURL:_repoURL error:&error];
-  return error == nil;
+  _gtRepo = newRepo;
+  return YES;
 }
 
 - (BOOL)saveStash:(NSString *)name
