@@ -105,6 +105,11 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
                                files:&files],
                @"");
 
+  // Simulate the behavior of the now-deprecated +[NSDate dateWithString:]
+  NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+  
+  formatter.dateFormat = @"yyyy-MM-dd HH:mm:ss Z";
+  
   NSDictionary *expectedHeader =
       @{ @"sha":@"e8cab5650bd1ab770d6ef48c47b1fd6bb3094a92",
          @"tree":@"bc6eeceec6b97132b5e1755f022f69d5c245b15f",
@@ -112,10 +117,10 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
          [NSSet setWithObjects:@"HEAD", @"testing", @"repo", @"master", nil],
          @"authorname":@"Marshall Banana",
          @"authoremail":@"test@example.com",
-         @"authordate":[NSDate dateWithString:@"2012-07-20 18:59:31 -0700"],
+         @"authordate":[formatter dateFromString:@"2012-07-20 18:59:31 -0700"],
          @"committername":@"Victoria Terpsichore",
          @"committeremail":@"vt@example.com", @"committerdate" :
-         [NSDate dateWithString:@"2012-07-20 18:59:31 -0700"] };
+         [formatter dateFromString:@"2012-07-20 18:59:31 -0700"] };
   NSArray *expectedFiles =
       @[ @"Xit/XTFileListDataSource.m", @"Xit/XTRepository+Parsing.h",
          @"Xit/XTRepository+Parsing.m" ];
