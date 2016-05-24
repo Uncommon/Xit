@@ -48,7 +48,6 @@
   NSString *text = [[NSString alloc]
                     initWithData:data encoding:NSUTF8StringEncoding];
   
-  // TODO: Use TECSniffTextEncoding to detect encoding.
   if (text == nil)
     text = [[NSString alloc]
             initWithData:data encoding:NSUTF16StringEncoding];
