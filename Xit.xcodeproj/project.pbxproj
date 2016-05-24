@@ -68,7 +68,6 @@
 		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		89E927DF17E977340093DA6C /* expected header.html in Resources */ = {isa = PBXBuildFile; fileRef = 89E927DE17E977340093DA6C /* expected header.html */; };
 		89FE824815A716E800E2EA2A /* XTRepositoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89FE824715A716E800E2EA2A /* XTRepositoryTests.m */; };
-		C343F91113F4908E009C928A /* XTHTML.m in Sources */ = {isa = PBXBuildFile; fileRef = C343F91013F4908E009C928A /* XTHTML.m */; };
 		C358653114048A3F00060C53 /* XTRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = C358653014048A3F00060C53 /* XTRepository.m */; };
 		C3D6CF1B13D4B18900D35D4D /* XTLocalBranchItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6CF1A13D4B18900D35D4D /* XTLocalBranchItem.m */; };
 		C3D6CF1E13D4B74400D35D4D /* XTTagItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6CF1D13D4B74400D35D4D /* XTTagItem.m */; };
@@ -277,8 +276,6 @@
 		89D8BE241CF35C7000D640AA /* unstage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unstage@2x.png"; sourceTree = "<group>"; };
 		89E927DE17E977340093DA6C /* expected header.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "expected header.html"; sourceTree = "<group>"; };
 		89FE824715A716E800E2EA2A /* XTRepositoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTRepositoryTests.m; sourceTree = "<group>"; tabWidth = 2; };
-		C343F90F13F4908E009C928A /* XTHTML.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTHTML.h; sourceTree = "<group>"; };
-		C343F91013F4908E009C928A /* XTHTML.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTHTML.m; sourceTree = "<group>"; };
 		C358652F14048A3F00060C53 /* XTRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTRepository.h; sourceTree = "<group>"; tabWidth = 2; };
 		C358653014048A3F00060C53 /* XTRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTRepository.m; sourceTree = "<group>"; tabWidth = 2; };
 		C3BC055613D1133000C3CF1A /* XTRepository+Commands.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "XTRepository+Commands.h"; sourceTree = "<group>"; };
@@ -428,8 +425,6 @@
 				31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */,
 				89D47941170894A200C04D89 /* NSAttributedString+XTExtensions.h */,
 				89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */,
-				C343F90F13F4908E009C928A /* XTHTML.h */,
-				C343F91013F4908E009C928A /* XTHTML.m */,
 				DDE55DDD1613C6C000CCAC03 /* XTModDateTracker.h */,
 				DDE55DDE1613C6C000CCAC03 /* XTModDateTracker.m */,
 				DDDDAF1318162212009F8BA1 /* XTQueueUtils.c */,
@@ -965,7 +960,6 @@
 				31C7C12E13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m in Sources */,
 				DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */,
 				31C7C13313ECC74C00A65FE9 /* XTHistoryViewController.m in Sources */,
-				C343F91113F4908E009C928A /* XTHTML.m in Sources */,
 				C358653114048A3F00060C53 /* XTRepository.m in Sources */,
 				3199BAC014207CFB008AAA4F /* XTFileTreeDataSource.m in Sources */,
 				895DEEF6142CECB7001763FC /* XTSideBarTableCellView.m in Sources */,
