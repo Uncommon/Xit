@@ -65,6 +65,14 @@
 		89D8BE221CF0A4ED00D640AA /* XTRolloverButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8BE211CF0A4ED00D640AA /* XTRolloverButton.swift */; };
 		89D8BE251CF35C7000D640AA /* unstage.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BE231CF35C7000D640AA /* unstage.png */; };
 		89D8BE261CF35C7000D640AA /* unstage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BE241CF35C7000D640AA /* unstage@2x.png */; };
+		89D8BE291CF39C3700D640AA /* NSData+Encoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D8BE281CF39C3700D640AA /* NSData+Encoding.m */; };
+		89D8BE2B1CF3BF9200D640AA /* NSData+EncodingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D8BE2A1CF3BF9200D640AA /* NSData+EncodingTests.m */; };
+		89D8BE321CF3C0AD00D640AA /* utf8.txt in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BE2C1CF3C0AD00D640AA /* utf8.txt */; };
+		89D8BE331CF3C0AD00D640AA /* utf16.txt in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BE2D1CF3C0AD00D640AA /* utf16.txt */; };
+		89D8BE341CF3C0AD00D640AA /* utf16be.txt in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BE2E1CF3C0AD00D640AA /* utf16be.txt */; };
+		89D8BE351CF3C0AD00D640AA /* utf16le.txt in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BE2F1CF3C0AD00D640AA /* utf16le.txt */; };
+		89D8BE361CF3C0AD00D640AA /* utf32be.txt in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BE301CF3C0AD00D640AA /* utf32be.txt */; };
+		89D8BE371CF3C0AD00D640AA /* utf32le.txt in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BE311CF3C0AD00D640AA /* utf32le.txt */; };
 		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		89E927DF17E977340093DA6C /* expected header.html in Resources */ = {isa = PBXBuildFile; fileRef = 89E927DE17E977340093DA6C /* expected header.html */; };
 		89FE824815A716E800E2EA2A /* XTRepositoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89FE824715A716E800E2EA2A /* XTRepositoryTests.m */; };
@@ -275,6 +283,15 @@
 		89D8BE211CF0A4ED00D640AA /* XTRolloverButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRolloverButton.swift; sourceTree = "<group>"; };
 		89D8BE231CF35C7000D640AA /* unstage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unstage.png; sourceTree = "<group>"; };
 		89D8BE241CF35C7000D640AA /* unstage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unstage@2x.png"; sourceTree = "<group>"; };
+		89D8BE271CF39BB300D640AA /* NSData+Encoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Encoding.h"; sourceTree = "<group>"; };
+		89D8BE281CF39C3700D640AA /* NSData+Encoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Encoding.m"; sourceTree = "<group>"; };
+		89D8BE2A1CF3BF9200D640AA /* NSData+EncodingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+EncodingTests.m"; sourceTree = "<group>"; };
+		89D8BE2C1CF3C0AD00D640AA /* utf8.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = utf8.txt; sourceTree = "<group>"; };
+		89D8BE2D1CF3C0AD00D640AA /* utf16.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = utf16.txt; sourceTree = "<group>"; };
+		89D8BE2E1CF3C0AD00D640AA /* utf16be.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = utf16be.txt; sourceTree = "<group>"; };
+		89D8BE2F1CF3C0AD00D640AA /* utf16le.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = utf16le.txt; sourceTree = "<group>"; };
+		89D8BE301CF3C0AD00D640AA /* utf32be.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = utf32be.txt; sourceTree = "<group>"; };
+		89D8BE311CF3C0AD00D640AA /* utf32le.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = utf32le.txt; sourceTree = "<group>"; };
 		89E927DE17E977340093DA6C /* expected header.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "expected header.html"; sourceTree = "<group>"; };
 		89FE824715A716E800E2EA2A /* XTRepositoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTRepositoryTests.m; sourceTree = "<group>"; tabWidth = 2; };
 		C343F90F13F4908E009C928A /* XTHTML.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTHTML.h; sourceTree = "<group>"; };
@@ -422,6 +439,8 @@
 		31C7C12A13EC730500A65FE9 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				89D8BE271CF39BB300D640AA /* NSData+Encoding.h */,
+				89D8BE281CF39C3700D640AA /* NSData+Encoding.m */,
 				DD579ADB15D08978007E4AFE /* NSDate+Extensions.h */,
 				DDC75B8215D08E8F0087F2D4 /* NSDate+Extensions.m */,
 				31C7C12C13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.h */,
@@ -691,6 +710,7 @@
 				89CD209117089D220051C3D4 /* XTCategoryTests.m */,
 				89D6FE7C17D8457700633798 /* XTCommitHeaderTest.m */,
 				89E927DE17E977340093DA6C /* expected header.html */,
+				89D8BE2A1CF3BF9200D640AA /* NSData+EncodingTests.m */,
 			);
 			path = XitTests;
 			sourceTree = "<group>";
@@ -698,6 +718,12 @@
 		C3FA472513D0F8E300AC4F9B /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				89D8BE2C1CF3C0AD00D640AA /* utf8.txt */,
+				89D8BE2D1CF3C0AD00D640AA /* utf16.txt */,
+				89D8BE2E1CF3C0AD00D640AA /* utf16be.txt */,
+				89D8BE2F1CF3C0AD00D640AA /* utf16le.txt */,
+				89D8BE301CF3C0AD00D640AA /* utf32be.txt */,
+				89D8BE311CF3C0AD00D640AA /* utf32le.txt */,
 				C3FA472613D0F8E300AC4F9B /* XitTests-Info.plist */,
 				C3FA472713D0F8E300AC4F9B /* InfoPlist.strings */,
 				C3FA472A13D0F8E300AC4F9B /* XitTests-Prefix.pch */,
@@ -915,7 +941,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89D8BE341CF3C0AD00D640AA /* utf16be.txt in Resources */,
 				C3FA472913D0F8E300AC4F9B /* InfoPlist.strings in Resources */,
+				89D8BE351CF3C0AD00D640AA /* utf16le.txt in Resources */,
+				89D8BE331CF3C0AD00D640AA /* utf16.txt in Resources */,
+				89D8BE321CF3C0AD00D640AA /* utf8.txt in Resources */,
+				89D8BE361CF3C0AD00D640AA /* utf32be.txt in Resources */,
+				89D8BE371CF3C0AD00D640AA /* utf32le.txt in Resources */,
 				89E927DF17E977340093DA6C /* expected header.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -986,6 +1018,7 @@
 				DDD4708116F3E7B000CA76FF /* XTPreviewItem.m in Sources */,
 				899DB1A21CE5022400760270 /* XTCommitEntryController.swift in Sources */,
 				89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */,
+				89D8BE291CF39C3700D640AA /* NSData+Encoding.m in Sources */,
 				DD96C939175ECE690003A30C /* XTFileViewController.m in Sources */,
 				895229661786F6F900EE514C /* FHTDelegate.m in Sources */,
 				895229671786F6F900EE514C /* FHTItemView.m in Sources */,
@@ -1005,6 +1038,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3FA472E13D0F8E300AC4F9B /* XTTest.m in Sources */,
+				89D8BE2B1CF3BF9200D640AA /* NSData+EncodingTests.m in Sources */,
 				313014AC13EB656B0017A2A1 /* XTSideBarDataSorceTests.m in Sources */,
 				313014AF13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m in Sources */,
 				DD3D9535182B5EC7004AF532 /* XTFileChangesDataSourceTest.m in Sources */,
