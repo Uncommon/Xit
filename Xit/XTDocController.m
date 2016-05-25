@@ -48,7 +48,9 @@
 
 - (IBAction)refresh:(id)sender
 {
-  [_xtDocument.repository reloadPaths:@[ @".git/refs/", @".git/logs/" ]];
+  [[NSNotificationCenter defaultCenter]
+      postNotificationName:XTRepositoryChangedNotification
+                    object:_xtDocument.repository];
 }
 
 - (IBAction)newTag:(id)sender

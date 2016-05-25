@@ -35,7 +35,6 @@
   XTDocController *controller = [[XTDocController alloc] initWithDocument:self];
 
   [self addWindowController:controller];
-  [_repo start];
 }
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL

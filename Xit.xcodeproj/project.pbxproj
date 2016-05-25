@@ -65,6 +65,7 @@
 		89D8BE221CF0A4ED00D640AA /* XTRolloverButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8BE211CF0A4ED00D640AA /* XTRolloverButton.swift */; };
 		89D8BE251CF35C7000D640AA /* unstage.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BE231CF35C7000D640AA /* unstage.png */; };
 		89D8BE261CF35C7000D640AA /* unstage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BE241CF35C7000D640AA /* unstage@2x.png */; };
+		89D8BE3B1CF4DB9400D640AA /* XTRepositoryWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D8BE3A1CF4DB9400D640AA /* XTRepositoryWatcher.m */; };
 		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		89E927DF17E977340093DA6C /* expected header.html in Resources */ = {isa = PBXBuildFile; fileRef = 89E927DE17E977340093DA6C /* expected header.html */; };
 		89FE824815A716E800E2EA2A /* XTRepositoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89FE824715A716E800E2EA2A /* XTRepositoryTests.m */; };
@@ -274,6 +275,8 @@
 		89D8BE211CF0A4ED00D640AA /* XTRolloverButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRolloverButton.swift; sourceTree = "<group>"; };
 		89D8BE231CF35C7000D640AA /* unstage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unstage.png; sourceTree = "<group>"; };
 		89D8BE241CF35C7000D640AA /* unstage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unstage@2x.png"; sourceTree = "<group>"; };
+		89D8BE391CF4DB9400D640AA /* XTRepositoryWatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRepositoryWatcher.h; sourceTree = "<group>"; };
+		89D8BE3A1CF4DB9400D640AA /* XTRepositoryWatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRepositoryWatcher.m; sourceTree = "<group>"; };
 		89E927DE17E977340093DA6C /* expected header.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "expected header.html"; sourceTree = "<group>"; };
 		89FE824715A716E800E2EA2A /* XTRepositoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTRepositoryTests.m; sourceTree = "<group>"; tabWidth = 2; };
 		C358652F14048A3F00060C53 /* XTRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTRepository.h; sourceTree = "<group>"; tabWidth = 2; };
@@ -637,6 +640,8 @@
 				C3BC055713D1133000C3CF1A /* XTRepository+Commands.m */,
 				DDDA447015B0E97000DF407B /* XTRepository+Parsing.h */,
 				DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */,
+				89D8BE391CF4DB9400D640AA /* XTRepositoryWatcher.h */,
+				89D8BE3A1CF4DB9400D640AA /* XTRepositoryWatcher.m */,
 				89991CDB144E3FF400097A99 /* XTStatusView.h */,
 				89991CDC144E3FF400097A99 /* XTStatusView.m */,
 				89794F651452839500E38ACC /* XTStatusView.xib */,
@@ -938,6 +943,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89D8BE3B1CF4DB9400D640AA /* XTRepositoryWatcher.m in Sources */,
 				C3FA470E13D0F8E200AC4F9B /* main.m in Sources */,
 				C3FA471413D0F8E200AC4F9B /* XTDocument.m in Sources */,
 				31F1E87F13D3B51200F3B317 /* XTRepository+Commands.m in Sources */,

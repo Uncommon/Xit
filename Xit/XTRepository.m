@@ -1,4 +1,5 @@
 #import "XTRepository.h"
+#import "XTRepositoryWatcher.h"
 #import "XTConstants.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
@@ -11,6 +12,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 
 @interface XTRepository ()
 
+@property XTRepositoryWatcher *watcher;
 @property(readwrite) BOOL isWriting;
 @property(readwrite) BOOL isShutDown;
 
@@ -52,6 +54,8 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
         DISPATCH_QUEUE_SERIAL);
     _activeTasks = [NSMutableArray array];
     _diffCache = [[NSCache alloc] init];
+    
+    self.watcher = [XTRepositoryWatcher watcherWithRepo:self];
   }
 
   return self;
@@ -374,55 +378,6 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
   return blob.data;
 }
 
-// XXX tmp
-- (void)start
-{
-  [self initializeEventStream];
-}
-
-- (void)stop
-{
-  if (_stream != NULL) {
-    FSEventStreamStop(_stream);
-    FSEventStreamInvalidate(_stream);
-  }
-}
-
-#pragma mark - monitor file system
-- (void)initializeEventStream
-{
-  NSString *myPath = [[_gtRepo gitDirectoryURL] path];
-  NSArray *pathsToWatch = @[ myPath ];
-  void *repoPointer = (__bridge void*)self;
-  FSEventStreamContext context = { 0, repoPointer, NULL, NULL, NULL };
-  const NSTimeInterval latency = 1.0;
-
-  _stream = FSEventStreamCreate(
-      kCFAllocatorDefault, &fsevents_callback, &context,
-      (__bridge CFArrayRef) pathsToWatch, kFSEventStreamEventIdSinceNow,
-      (CFAbsoluteTime) latency, kFSEventStreamCreateFlagUseCFTypes);
-
-  FSEventStreamScheduleWithRunLoop(_stream, CFRunLoopGetCurrent(),
-                                   kCFRunLoopDefaultMode);
-  FSEventStreamStart(_stream);
-}
-
-- (void)reloadPaths:(NSArray *)paths
-{
-  for (NSString *path in paths)
-    if ([path hasPrefix:@".git/"]) {
-      _cachedBranch = nil;
-      break;
-    }
-
-  NSDictionary *info = @{XTPathsKey : paths};
-
-  [[NSNotificationCenter defaultCenter]
-      postNotificationName:XTRepositoryChangedNotification
-                    object:self
-                  userInfo:info];
-}
-
 // A convenience method for adding to the default notification center.
 - (void)addReloadObserver:(id)observer selector:(SEL)selector
 {
@@ -431,39 +386,6 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
          selector:selector
              name:XTRepositoryChangedNotification
            object:self];
-}
-
-#ifdef DEBUG
-int event = 0;
-#endif
-
-void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData,
-                       size_t numEvents, void *eventPaths,
-                       const FSEventStreamEventFlags eventFlags[],
-                       const FSEventStreamEventId eventIds[])
-{
-#ifdef DEBUG
-  ++event;
-#endif
-  XTRepository *repo = (__bridge XTRepository *)userData;
-  NSMutableArray *paths = [NSMutableArray arrayWithCapacity:numEvents];
-  NSString *rootPath = repo.gitDirectoryURL.path;
-  
-  for (size_t i = 0; i < numEvents; i++) {
-    NSString *path = ((__bridge NSArray *)eventPaths)[i];
-    
-    if (![path hasPrefix:rootPath]) {
-      NSLog(@"Unexpected event on path: %@", path);
-      continue;
-    }
-    path = [path substringFromIndex:rootPath.length];
-    [paths addObject:path];
-#ifdef DEBUG
-    NSLog(@"fsevent #%d\t%@", event, path);
-#endif
-  }
-
-  [repo reloadPaths:paths];
 }
 
 @end

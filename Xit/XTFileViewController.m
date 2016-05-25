@@ -62,7 +62,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   [[NSNotificationCenter defaultCenter]
       addObserver:self
          selector:@selector(repoChanged:)
-             name:XTRepositoryChangedNotification
+             name:XTRepositoryIndexChangedNotification
            object:newRepo];
 }
 
@@ -186,7 +186,7 @@ observeValueForKeyPath:(NSString*)keyPath
   [self loadSelectedPreview];
 }
 
-// For convenience because this is such a long cast
+/// Returns the current file list data source, cast to XTFileListDataSourceBase
 - (XTFileListDataSourceBase<XTFileListDataSource>*)fileListDataSource
 {
   return (XTFileListDataSourceBase<XTFileListDataSource>*)
@@ -324,7 +324,7 @@ observeValueForKeyPath:(NSString*)keyPath
     for (NSString *path in paths)
       if ([path isEqualToString:@"/"]) {
         // ideally check the mod date on /index
-        [_fileListDS reload];
+        [self.fileListDataSource reload];
         break;
       }
 }

@@ -20,4 +20,9 @@ typedef enum {
 } XTError;
 
 extern NSString *XTErrorDomainXit, *XTErrorDomainGit;
-extern NSString * const XTStagingSHA;  // Fake value for seleting staging view
+
+/// Fake value for seleting staging view.
+extern NSString * const XTStagingSHA;
+
+/// The repository's index has changed.
+extern NSString * const XTRepositoryIndexChangedNotification;

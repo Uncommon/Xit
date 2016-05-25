@@ -51,10 +51,6 @@ extern NSString *XTPathsKey;
 - (NSData*)contentsOfFile:(NSString*)filePath atCommit:(NSString*)commit;
 - (NSData*)contentsOfStagedFile:(NSString*)filePath;
 
-- (void)initializeEventStream;
-- (void)start;
-- (void)stop;
-- (void)reloadPaths:(NSArray*)paths;
 - (void)addReloadObserver:(id)observer selector:(SEL)selector;
 
 /**
