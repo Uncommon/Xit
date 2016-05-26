@@ -617,6 +617,11 @@ NSString *XTCommitSHAKey = @"sha",
 
 @implementation XTFileChange
 
+-(NSString*)description
+{
+  return self.path.description;
+}
+
 @end
 
 
