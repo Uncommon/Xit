@@ -355,8 +355,12 @@
                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="selectOne" id="fhE-uz-5iG">
                                         <font key="font" metaFont="system"/>
                                         <segments>
-                                            <segment label="𝚫" toolTip="Diff view" width="37" selected="YES"/>
-                                            <segment label="𝐓" toolTip="Text view" width="37" tag="1"/>
+                                            <segment toolTip="Diff view" image="diff" width="37" selected="YES">
+                                                <nil key="label"/>
+                                            </segment>
+                                            <segment toolTip="Text view" image="text" width="37" tag="1">
+                                                <nil key="label"/>
+                                            </segment>
                                             <segment toolTip="QuickLook preview" image="NSQuickLookTemplate" width="37">
                                                 <nil key="label"/>
                                             </segment>
@@ -485,8 +489,10 @@
         <image name="NSPathTemplate" width="16" height="10"/>
         <image name="NSQuickLookTemplate" width="19" height="12"/>
         <image name="NSRightFacingTriangleTemplate" width="9" height="12"/>
+        <image name="diff" width="8" height="8"/>
         <image name="mixed" width="16" height="16"/>
         <image name="stage" width="7" height="7.5"/>
+        <image name="text" width="8" height="8"/>
         <image name="unstage" width="7" height="7.5"/>
     </resources>
 </document>
