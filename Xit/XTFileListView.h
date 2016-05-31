@@ -7,7 +7,6 @@
 @interface XTFileListView : NSOutlineView
 
 + (nonnull NSColor*)columnHighlightColor;
-+ (void)highlightColumnInRect:(NSRect)rect;
 
 @end
 

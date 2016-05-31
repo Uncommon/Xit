@@ -12,6 +12,7 @@
 }
 
 @property NSString *selectedCommitSHA;
+@property (readonly) BOOL inStagingView;
 
 - (id)initWithDocument:(XTDocument *)doc;
 

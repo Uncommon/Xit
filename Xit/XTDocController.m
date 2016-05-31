@@ -1,4 +1,5 @@
 #import "XTDocController.h"
+#import "XTConstants.h"
 #import "XTDocument.h"
 #import "XTHistoryViewController.h"
 #import "XTRepository.h"
@@ -44,6 +45,11 @@
       [_activity stopAnimation:tasks];
     }
   }
+}
+
+- (BOOL)inStagingView
+{
+  return [self.selectedCommitSHA isEqualToString:XTStagingSHA];
 }
 
 - (IBAction)refresh:(id)sender

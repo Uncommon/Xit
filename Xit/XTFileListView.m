@@ -1,4 +1,6 @@
 #import "XTFileListView.h"
+#import "XTConstants.h"
+#import "XTDocController.h"
 
 @implementation XTFileListView
 
@@ -11,7 +13,7 @@
 {
   rect.size.width += 2;
   [NSGraphicsContext saveGraphicsState];
-  [[self columnHighlightColor] setFill];
+  [[[self class] columnHighlightColor] setFill];
   [NSBezierPath fillRect:rect];
   [NSGraphicsContext restoreGraphicsState];
 }
@@ -24,6 +26,12 @@
 - (void)drawBackgroundInClipRect:(NSRect)clipRect
 {
   [super drawBackgroundInClipRect:clipRect];
+  
+  XTDocController *docController = (XTDocController*)
+      self.window.windowController;
+  
+  if (!docController.inStagingView)
+    return;
   
   const NSInteger highlightedIndex =
       [self indexOfTableColumn:self.highlightedTableColumn];
@@ -43,7 +51,12 @@
 - (void)drawBackgroundInRect:(NSRect)dirtyRect
 {
   [super drawBackgroundInRect:dirtyRect];
-  if (self.interiorBackgroundStyle != NSBackgroundStyleDark) {
+
+  XTDocController *docController = (XTDocController*)
+      self.outlineView.window.windowController;
+
+  if (docController.inStagingView &&
+      (self.interiorBackgroundStyle != NSBackgroundStyleDark)) {
     NSTableColumn *column = self.outlineView.highlightedTableColumn;
     const NSInteger columnIndex = [self.outlineView.tableColumns indexOfObject:column];
     NSView *highlightedView = [self viewAtColumn:columnIndex];
