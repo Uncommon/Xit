@@ -280,6 +280,33 @@
   return error == nil;
 }
 
+- (BOOL)unstageAllFiles
+{
+  // "Unstaging" just means making things match what's in the head commit,
+  // so if we're unstaging everything we can just copy the tree over.
+  NSError *error = nil;
+  GTReference *headRef = [_gtRepo headReferenceWithError:&error];
+  GTCommit *headCommit = (GTCommit*)headRef.resolvedTarget;
+  
+  if ((headCommit == nil) || ![headCommit isKindOfClass:[GTCommit class]])
+    return NO;
+  
+  GTIndex *index = [_gtRepo indexWithError:&error];
+  
+  if (index == nil)
+    return NO;
+  
+  if (![index addContentsOfTree:headCommit.tree error:&error]) {
+    NSLog(@"couldn't unstage all: %@", error);
+    return NO;
+  }
+  if (![index write:&error]) {
+    NSLog(@"couldn't write index: %@", error);
+    return NO;
+  }
+  return YES;
+}
+
 - (BOOL)renameBranch:(NSString *)branch to:(NSString *)newName
 {
   NSError *error = nil;

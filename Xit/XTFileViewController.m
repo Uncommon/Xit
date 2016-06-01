@@ -12,6 +12,7 @@
 #import "XTFileListView.h"
 #import "XTPreviewController.h"
 #import "XTPreviewItem.h"
+#import "XTRepository+Commands.h"
 #import "XTTextPreviewController.h"
 #import "Xit-Swift.h"
 
@@ -275,10 +276,12 @@ observeValueForKeyPath:(NSString*)keyPath
 
 - (IBAction)stageAll:(id)sender
 {
+  [_repo stageAllFiles];
 }
 
 - (IBAction)unstageAll:(id)sender
 {
+  [_repo unstageAllFiles];
 }
 
 - (IBAction)showIgnored:(id)sender

@@ -22,6 +22,7 @@
 - (BOOL)stagePatch:(NSString*)patch;
 - (BOOL)unstagePatch:(NSString*)patch;
 - (BOOL)discardPatch:(NSString*)patch;
+- (BOOL)unstageAllFiles;
 
 - (BOOL)renameBranch:(NSString*)branch to:(NSString*)newName;
 - (BOOL)renameRemote:(NSString*)branch to:(NSString*)newName;
