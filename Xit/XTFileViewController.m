@@ -296,12 +296,34 @@ observeValueForKeyPath:(NSString*)keyPath
   [self.previewController clear];
 }
 
+- (void)updatePreviewPath:(NSString*)path
+{
+  NSArray<NSString*> *components = path.pathComponents;
+  NSMutableArray<NSPathComponentCell*> *cells =
+      [NSMutableArray arrayWithCapacity:components.count];
+  
+  [components enumerateObjectsUsingBlock:
+      ^(NSString * _Nonnull component, NSUInteger idx, BOOL * _Nonnull stop) {
+    NSPathComponentCell *cell = [[NSPathComponentCell alloc] init];
+    
+    cell.title = component;
+    if (idx == components.count - 1)
+      cell.image = [[NSWorkspace sharedWorkspace]
+                    iconForFileType:[component pathExtension]];
+    else
+      cell.image = [NSImage imageNamed:NSImageNameFolder];
+    [cells addObject:cell];
+  }];
+  self.previewPath.pathComponentCells = cells;
+}
+
 - (void)loadSelectedPreview
 {
   NSIndexSet *selection = [_fileListOutline selectedRowIndexes];
   
   if (selection.count == 0) {
     [self.contentController clear];
+    self.previewPath.pathComponentCells = [NSArray array];
     return;
   }
   
@@ -309,6 +331,7 @@ observeValueForKeyPath:(NSString*)keyPath
       [self.fileListDataSource fileChangeAtRow:[selection firstIndex]];
   XTDocController *docController = self.view.window.windowController;
 
+  [self updatePreviewPath:selectedItem.path];
   if (self.inStagingView) {
     if (self.showingStaged)
       [self.contentController loadStagedPath:selectedItem.path
@@ -511,6 +534,15 @@ observeValueForKeyPath:(NSString*)keyPath
   if (splitView == _fileSplitView)
     return subview != _leftPane;
   return YES;
+}
+
+- (void)splitViewDidResizeSubviews:(NSNotification*)note
+{
+  NSRect pathFrame = self.previewPath.frame;
+  const NSRect tabFrame = self.previewSelector.frame;
+  
+  pathFrame.size.width = tabFrame.origin.x - pathFrame.origin.x - 8;
+  [self.previewPath setFrameSize:pathFrame.size];
 }
 
 @end

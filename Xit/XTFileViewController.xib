@@ -22,6 +22,8 @@
                 <outlet property="diffController" destination="fX5-fH-Hy5" id="nP0-l5-ngF"/>
                 <outlet property="headerTabView" destination="krT-Kf-MrD" id="t9e-WI-aqg"/>
                 <outlet property="previewController" destination="3g8-eR-FPJ" id="dy4-6W-vsZ"/>
+                <outlet property="previewPath" destination="gna-OS-Gx2" id="RDg-dh-fJV"/>
+                <outlet property="previewSelector" destination="zOv-gm-Q8M" id="XWz-1t-Hyz"/>
                 <outlet property="previewTabView" destination="52" id="62"/>
                 <outlet property="stageSelector" destination="2h9-2i-j6F" id="i5H-X6-6ss"/>
                 <outlet property="view" destination="68" id="75"/>
@@ -427,6 +429,13 @@
                                         </tabViewItem>
                                     </tabViewItems>
                                 </tabView>
+                                <pathControl verticalHuggingPriority="750" allowsExpansionToolTips="YES" id="gna-OS-Gx2">
+                                    <rect key="frame" x="0.0" y="189" width="112" height="22"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <pathCell key="cell" selectable="YES" refusesFirstResponder="YES" alignment="left" id="kf1-n1-9Vv">
+                                        <font key="font" metaFont="system"/>
+                                    </pathCell>
+                                </pathControl>
                             </subviews>
                         </customView>
                     </subviews>
