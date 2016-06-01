@@ -40,14 +40,19 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
 
 -(void)dealloc
 {
-  if (self.stream != NULL)
+  if (self.stream != NULL) {
+    FSEventStreamStop(self.stream);
+    FSEventStreamInvalidate(self.stream);
     FSEventStreamRelease(self.stream);
+  }
 }
 
 -(void)setLastIndexChange:(NSDate*)lastIndexChange
 {
   _lastIndexChange = lastIndexChange;
-  [[NSNotificationCenter defaultCenter] postNotificationName:XTRepositoryIndexChangedNotification object:self.repo];
+  [[NSNotificationCenter defaultCenter]
+      postNotificationName:XTRepositoryIndexChangedNotification
+                    object:self.repo];
 }
 
 -(void)startEventStream
@@ -65,7 +70,15 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
       &context,
       (__bridge CFArrayRef)paths,
       kFSEventStreamEventIdSinceNow,
-      1.0, kFSEventStreamCreateFlagUseCFTypes);
+      1.0,
+      kFSEventStreamCreateFlagUseCFTypes |
+      kFSEventStreamCreateFlagNoDefer);
+  if (self.stream != NULL) {
+    FSEventStreamScheduleWithRunLoop(self.stream,
+                                     CFRunLoopGetMain(),
+                                     kCFRunLoopDefaultMode);
+    FSEventStreamStart(self.stream);
+  }
 }
 
 -(void)checkIndex

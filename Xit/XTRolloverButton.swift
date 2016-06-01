@@ -14,6 +14,19 @@ class XTRolloverButton: NSButton {
     self.normalImage = self.image
   }
 
+  override var image: NSImage?
+  {
+    get
+    {
+      return super.image
+    }
+    set(image)
+    {
+      self.normalImage = nil
+      super.image = image
+    }
+  }
+
   override func awakeFromNib()
   {
     let tracking = NSTrackingArea(
@@ -30,14 +43,16 @@ class XTRolloverButton: NSButton {
   {
     if self.rolloverActive {
       self.normalImage = self.image
-      self.image = self.rolloverImage
+      super.image = self.rolloverImage  // Skip my override
       self.setNeedsDisplay()
     }
   }
   
   override func mouseExited(theEvent: NSEvent)
   {
-    self.image = self.normalImage
-    self.setNeedsDisplay()
+    if let normalImage = self.normalImage {
+      super.image = normalImage
+      self.setNeedsDisplay()
+    }
   }
 }

@@ -242,16 +242,30 @@ observeValueForKeyPath:(NSString*)keyPath
   [self.view.window makeFirstResponder:_fileListOutline];
 }
 
+- (NSString*)pathFromButton:(NSButton*)button
+{
+  const NSInteger row = ((XTTableButtonView*)button.superview).row;
+  XTFileChange *change = [self.fileListDataSource fileChangeAtRow:row];
+  
+  return change.path;
+}
+
 - (IBAction)stageClicked:(id)sender
 {
-  // stage the file
+  [sender setEnabled:NO];
+  [_repo stageFile:[self pathFromButton:(NSButton*)sender]];
   [self selectRowFromButton:sender];
+  [[NSNotificationCenter defaultCenter]
+      postNotificationName:XTRepositoryIndexChangedNotification object:_repo];
 }
 
 - (IBAction)unstageClicked:(id)sender
 {
-  // unstage the file
+  [sender setEnabled:NO];
+  [_repo unstageFile:[self pathFromButton:(NSButton*)sender]];
   [self selectRowFromButton:sender];
+  [[NSNotificationCenter defaultCenter]
+      postNotificationName:XTRepositoryIndexChangedNotification object:_repo];
 }
 
 - (IBAction)changeStageView:(id)sender
@@ -319,14 +333,16 @@ observeValueForKeyPath:(NSString*)keyPath
 - (void)repoChanged:(NSNotification*)note
 {
   NSArray *paths = note.userInfo[XTPathsKey];
+  BOOL doReload = paths == nil;
   
-  if (self.inStagingView && ([paths count] != 0))
+  if (!doReload && self.inStagingView && ([paths count] != 0))
     for (NSString *path in paths)
       if ([path isEqualToString:@"/"]) {
-        // ideally check the mod date on /index
-        [self.fileListDataSource reload];
+        doReload = YES;
         break;
       }
+  if (doReload)
+    [self.fileListDataSource reload];
 }
 
 - (void)commitSelected:(NSNotification*)note
@@ -387,6 +403,7 @@ observeValueForKeyPath:(NSString*)keyPath
       [_fileListOutline makeViewWithIdentifier:identifier owner:self];
   XTRolloverButton *button = (XTRolloverButton*)cell.button;
   
+  button.enabled = YES;
   button.image = [self stagingImageForChange:change
                                  otherChange:otherChange];
   button.rolloverActive = change != XitChangeMixed;

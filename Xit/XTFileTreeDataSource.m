@@ -177,6 +177,8 @@
 
 - (XTFileChange*)fileChangeAtRow:(NSInteger)row
 {
+  if ((row < 0) || (row >= self.outlineView.numberOfRows))
+    return nil;
   return [[self.outlineView itemAtRow:row] representedObject];
 }
 

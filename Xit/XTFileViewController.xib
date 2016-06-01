@@ -97,14 +97,14 @@
                                     </connections>
                                 </segmentedControl>
                                 <scrollView focusRingType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="3">
-                                    <rect key="frame" x="-1" y="0.0" width="359" height="190.5"/>
+                                    <rect key="frame" x="-1" y="-1" width="359" height="191.5"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <clipView key="contentView" id="AEe-un-dQy">
-                                        <rect key="frame" x="1" y="1" width="357" height="188.5"/>
+                                        <rect key="frame" x="1" y="1" width="357" height="189.5"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <outlineView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="7Uz-gy-exv" id="7" customClass="XTFileListView">
-                                                <rect key="frame" x="0.0" y="0.0" width="357" height="188.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="357" height="189.5"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -289,7 +289,7 @@
                                 </scrollView>
                                 <segmentedControl hidden="YES" verticalHuggingPriority="750" id="2h9-2i-j6F">
                                     <rect key="frame" x="312" y="188.5" width="45" height="23"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="selectOne" id="cL0-a1-NLM">
                                         <font key="font" metaFont="system"/>
                                         <segments>
