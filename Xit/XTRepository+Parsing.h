@@ -41,12 +41,8 @@ typedef enum {
                remoteBlock:(void (^)(NSString *remoteName, NSString *branchName,
                                      NSString *commit))remoteBlock
                   tagBlock:(void (^)(NSString *name, NSString *commit))tagBlock;
-- (BOOL)
-    readStagedFilesWithBlock:(void (^)(NSString *name, NSString *status))block;
 /// Returns a dictionary mapping paths to XTWorkspaceFileStatuses.
 - (NSDictionary*)workspaceStatus;
-- (BOOL)readUnstagedFilesWithBlock:(void (^)(NSString *name, NSString *status))
-                                   block;
 - (BOOL)readStashesWithBlock:(void (^)(NSString *commit, NSString *name))block;
 - (BOOL)readSubmodulesWithBlock:(void (^)(GTSubmodule *sub))block;
 - (BOOL)parseCommit:(NSString*)ref
