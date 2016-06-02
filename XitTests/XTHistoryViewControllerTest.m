@@ -32,7 +32,6 @@
   [super setUp];
   self.statusData = nil;
   // Don't let change notifications cause unexpected calls.
-  [repository stop];
 }
 
 - (void)tearDown
@@ -43,7 +42,6 @@
 
 - (void)testCheckoutBranch
 {
-  [repository start];
   if (![repository createBranch:@"b1"]) {
     XCTFail(@"Create Branch 'b1'");
   }

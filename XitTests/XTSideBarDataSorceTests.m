@@ -51,9 +51,10 @@
 - (void)testReload
 {
   [sbds setRepo:repository];
-  [sbds addObserver:self forKeyPath:@"reload" options:0 context:nil];
-
-  [repository start];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(repoChanged:)
+                                               name:XTRepositoryChangedNotification
+                                             object:repository];
 
   if (![repository createBranch:@"b1"])
     XCTFail(@"Create Branch 'b1'");
@@ -63,8 +64,8 @@
   // Sometimes it reloads too soon, so give it a few tries.
   for (int i = 0; i < 5; ++i) {
     runLoop = CFRunLoopGetCurrent();
-    if (!CFRunLoopRunWithTimeout(10))
-      XCTFail(@"TimeOut on reload");
+    if (!CFRunLoopRunWithTimeout(5))
+      NSLog(@"warning: TimeOut on reload");
     runLoop = NULL;
 
     id branches = [self groupItemForIndex:XTBranchesGroupIndex];
@@ -75,16 +76,12 @@
   }
   XCTAssertEqualObjects(titles, expectedTitles);
 
-  [sbds removeObserver:self forKeyPath:@"reload"];
-  [repository stop];
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context
+- (void)repoChanged:(NSNotification*)note
 {
-  if ([keyPath isEqualToString:@"reload"] && (runLoop != NULL))
+  if (runLoop != NULL)
     CFRunLoopStop(runLoop);
 }
 
