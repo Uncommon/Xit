@@ -63,6 +63,7 @@ typedef enum {
 /// Returns a list of changed files in the given commit.
 - (NSArray<XTFileChange*>*)changesForRef:(NSString*)ref
                                   parent:(NSString*)parentSHA;
+- (NSArray<XTFileChange*>*)changesForStashIndex:(NSUInteger)index;
 - (XTDiffDelta*)diffForFile:(NSString*)path
                   commitSHA:(NSString*)sha
                   parentSHA:(NSString*)parentSHA;
