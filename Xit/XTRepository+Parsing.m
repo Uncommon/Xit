@@ -228,7 +228,7 @@ NSString *XTHeaderContentKey = @"content";
   return result;
 }
 
-- (GTReflogEntry*)entryForStashAtIndex:(NSUInteger)index
+- (GTCommit*)commitForStashAtIndex:(NSUInteger)index
 {
   GTReference *stashRef = [self.gtRepo lookUpReferenceWithName:@"refs/stash" error:NULL];
   
@@ -240,59 +240,11 @@ NSString *XTHeaderContentKey = @"content";
   if ((stashLog == nil) || (index >= stashLog.entryCount))
     return nil;
   
-  return [stashLog entryAtIndex:index];
-}
-
-- (NSArray<XTFileChange*>*)changesForStashIndex:(NSUInteger)index
-{
-  GTReflogEntry *entry = [self entryForStashAtIndex:index];
-  GTCommit *stashCommit = [self.gtRepo lookUpObjectByOID:entry.updatedOID
-                                                   error:nil];
+  GTReflogEntry *entry = [stashLog entryAtIndex:index];
   
-  if (stashCommit == nil)
+  if (entry == nil)
     return nil;
-  
-  NSArray<GTCommit*> *parents = stashCommit.parents;
-  GTCommit *indexCommit = nil, *untrackedCommit = nil;
-  
-  if (parents.count >= 1)
-    indexCommit = parents[1];
-  if (parents.count >= 2)
-    untrackedCommit = parents[2];
-  
-  NSArray<XTFileChange*>
-      *unstagedChanges = [self changesForRef:stashCommit.SHA parent:nil],
-      *stagedChanges = [self changesForRef:indexCommit.SHA parent:nil],
-      *untrackedChanges = [self changesForRef:untrackedCommit.SHA parent:nil];
-  
-  unstagedChanges =
-      [unstagedChanges arrayByAddingObjectsFromArray:untrackedChanges];
-  // Unstaged statuses aren't set because these are coming out of commits,
-  // so they all have to be switched.
-  [unstagedChanges enumerateObjectsUsingBlock:
-      ^(XTFileChange * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-    obj.unstagedChange = obj.change;
-    obj.change = XitChangeUnmodified;
-  }];
-  
-  NSArray<NSString*> *unstagedPaths = [unstagedChanges valueForKey:@"path"];
-  NSMutableDictionary<NSString*,XTFileChange*> *changesDict =
-      [NSMutableDictionary dictionaryWithObjects:unstagedChanges
-                                         forKeys:unstagedPaths];
-  
-  for (XTFileChange *staged in stagedChanges) {
-    XTFileChange *change = changesDict[staged.path];
-    
-    if (change == nil)
-      changesDict[staged.path] = staged;
-    else
-      change.change = staged.change;
-  }
-  
-  NSSortDescriptor *sorter = [NSSortDescriptor sortDescriptorWithKey:@"path"
-                                                           ascending:YES];
-  
-  return [changesDict.allValues sortedArrayUsingDescriptors:@[ sorter ]];
+  return [self.gtRepo lookUpObjectByOID:entry.updatedOID error:nil];
 }
 
 - (NSArray*)stagingChanges
@@ -629,5 +581,10 @@ NSString *XTCommitSHAKey = @"sha",
 
 
 @implementation XTFileStaging
+
+@end
+
+
+@implementation XTDiffDelta
 
 @end

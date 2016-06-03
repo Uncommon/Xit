@@ -1,6 +1,8 @@
 #import "XTRepository.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString *XTHeaderNameKey;
 extern NSString *XTHeaderContentKey;
 
@@ -46,9 +48,9 @@ typedef enum {
 - (BOOL)readStashesWithBlock:(void (^)(NSString *commit, NSString *name))block;
 - (BOOL)readSubmodulesWithBlock:(void (^)(GTSubmodule *sub))block;
 - (BOOL)parseCommit:(NSString*)ref
-         intoHeader:(NSDictionary**)header
-            message:(NSString**)message
-              files:(NSArray**)files;
+         intoHeader:(NSDictionary * _Nullable * _Nonnull)header
+            message:(NSString * _Nullable * _Nonnull)message
+              files:(NSArray * _Nullable * _Nullable)files;
 
 - (BOOL)stageFile:(NSString*)file;
 - (BOOL)stageAllFiles;
@@ -56,17 +58,17 @@ typedef enum {
 
 - (BOOL)commitWithMessage:(NSString*)message
                     amend:(BOOL)amend
-              outputBlock:(void (^)(NSString *output))outputBlock
+              outputBlock:(nullable void (^)(NSString *output))outputBlock
                     error:(NSError**)error;
 
 - (NSArray*)fileNamesForRef:(NSString*)ref;
 /// Returns a list of changed files in the given commit.
 - (NSArray<XTFileChange*>*)changesForRef:(NSString*)ref
-                                  parent:(NSString*)parentSHA;
-- (NSArray<XTFileChange*>*)changesForStashIndex:(NSUInteger)index;
+                                  parent:(nullable NSString*)parentSHA;
+- (GTCommit*)commitForStashAtIndex:(NSUInteger)index;
 - (XTDiffDelta*)diffForFile:(NSString*)path
                   commitSHA:(NSString*)sha
-                  parentSHA:(NSString*)parentSHA;
+                  parentSHA:(nullable NSString*)parentSHA;
 - (XTDiffDelta*)stagedDiffForFile:(NSString*)path;
 - (XTDiffDelta*)unstagedDiffForFile:(NSString*)path;
 - (BOOL)isTextFile:(NSString*)path commit:(NSString*)commit;
@@ -105,3 +107,5 @@ typedef enum {
 @interface XTDiffDelta : GTDiffDelta
 
 @end
+
+NS_ASSUME_NONNULL_END
