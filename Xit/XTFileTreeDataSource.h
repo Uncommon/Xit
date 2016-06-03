@@ -14,7 +14,6 @@
     <XTFileListDataSource, NSOutlineViewDataSource> {
  @private
   NSTreeNode *_root;
-  NSDictionary *_changeImages;
 }
 
 - (void)reload;

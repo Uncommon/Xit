@@ -115,7 +115,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
   [self didChangeValueForKey:@"activeTasks"];
 }
 
-- (void)getCommitsWithArgs:(NSArray *)logArgs
+- (BOOL)getCommitsWithArgs:(NSArray *)logArgs
     enumerateCommitsUsingBlock:(void (^)(NSString *))block
                          error:(NSError **)error
 {
@@ -124,10 +124,10 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
       *error = [NSError errorWithDomain:NSOSStatusErrorDomain
                                    code:fnfErr
                                userInfo:nil];
-    return;
+    return NO;
   }
   if (![self hasHeadReference])
-    return;  // There are no commits.
+    return YES;  // There are no commits.
 
   NSMutableArray *args = [NSMutableArray arrayWithArray:logArgs];
 
@@ -175,19 +175,23 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
     output = [NSMutableData dataWithData:[output subdataWithRange:searchRange]];
   }
 
+  BOOL result = YES;
   int status = [task terminationStatus];
   NSLog(@"**** status = %d", status);
 
   if (status != 0) {
     NSString *string =
         [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+    
     if (error != NULL) {
       *error = [NSError errorWithDomain:XTErrorDomainGit
                                    code:status
                                userInfo:@{XTErrorOutputKey : string}];
     }
+    result = NO;
   }
   [self removeTask:task];
+  return result;
 }
 
 - (NSData *)executeGitWithArgs:(NSArray *)args

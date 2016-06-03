@@ -20,11 +20,10 @@ extern NSString *XTPathsKey;
   NSString *_gitCMD;
   NSString *_cachedHeadRef, *_cachedHeadSHA, *_cachedBranch;
   NSCache *_diffCache;
-  FSEventStreamRef _stream;
 }
 
 - (id)initWithURL:(NSURL*)url;
-- (void)getCommitsWithArgs:(NSArray*)logArgs
+- (BOOL)getCommitsWithArgs:(NSArray*)logArgs
     enumerateCommitsUsingBlock:(void (^)(NSString*))block
                          error:(NSError**)error;
 
