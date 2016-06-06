@@ -302,7 +302,8 @@ NSString * const XTStagingSHA = @"";
     [dataView.textField setStringValue:[item title]];
     [dataView.textField setEditable:NO];
     [dataView.textField setSelectable:NO];
-    [dataView.imageView setImage:[NSImage imageNamed:@"staging"]];
+    [dataView.imageView setImage:[NSImage imageNamed:@"stagingTemplate"]];
+    
     return dataView;
   } else if ([_roots containsObject:item]) {
     NSTableCellView *headerView =
