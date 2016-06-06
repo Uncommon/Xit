@@ -18,7 +18,7 @@ extern NSString *XTCommitSHAKey,
     *XTCommitterDateKey;
 
 // Values used by changesForRef:
-typedef enum {
+typedef NS_ENUM(NSInteger, XitChange) {
   XitChangeUnmodified = GIT_DELTA_UNMODIFIED,
   XitChangeAdded = GIT_DELTA_ADDED,
   XitChangeDeleted = GIT_DELTA_DELETED,
@@ -30,7 +30,7 @@ typedef enum {
   XitChangeTypeChange = GIT_DELTA_TYPECHANGE,
   XitChangeConflict = GIT_DELTA_CONFLICTED,
   XitChangeMixed,  // For folders containing a mix of changes
-} XitChange;
+};
 
 @class GTSubmodule;
 @class XTDiffDelta;

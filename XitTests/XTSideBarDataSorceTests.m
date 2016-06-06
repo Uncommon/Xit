@@ -88,9 +88,9 @@
 - (void)testStashes
 {
   XCTAssertTrue([self writeTextToFile1:@"second text"], @"");
-  XCTAssertTrue([self.repository saveStash:@"s1"], @"");
+  XCTAssertTrue([self.repository saveStash:@"s1" includeUntracked:NO], @"");
   XCTAssertTrue([self writeTextToFile1:@"third text"], @"");
-  XCTAssertTrue([self.repository saveStash:@"s2"], @"");
+  XCTAssertTrue([self.repository saveStash:@"s2" includeUntracked:NO], @"");
 
   [sbds setRepo:self.repository];
   [sbds reload];

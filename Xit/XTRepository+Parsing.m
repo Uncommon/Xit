@@ -569,7 +569,8 @@ NSString *XTCommitSHAKey = @"sha",
 
 -(NSString*)description
 {
-  return self.path.description;
+  return [NSString stringWithFormat:@"%@ %ld %ld", self.path.description,
+          self.change, self.unstagedChange];
 }
 
 @end

@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)renameRemote:(NSString*)branch to:(NSString*)newName;
 - (NSString*)urlStringForRemote:(NSString*)remoteName;
 
-- (BOOL)saveStash:(NSString*)name;
+- (BOOL)saveStash:(nullable NSString*)name includeUntracked:(BOOL)untracked;
 - (BOOL)popStash:(NSString*)name error:(NSError**)error;
 - (BOOL)applyStash:(NSString*)name error:(NSError**)error;
 - (BOOL)dropStash:(NSString*)name error:(NSError**)error;

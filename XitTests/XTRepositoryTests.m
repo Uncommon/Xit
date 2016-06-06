@@ -207,9 +207,9 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
   NSString *stash0 = @"stash@{0}";
   
   self.repository.isWriting = YES;
-  XCTAssertFalse([self.repository saveStash:@"stashname"]);
+  XCTAssertFalse([self.repository saveStash:@"stashname" includeUntracked:NO]);
   self.repository.isWriting = NO;
-  XCTAssertTrue([self.repository saveStash:@"stashname"]);
+  XCTAssertTrue([self.repository saveStash:@"stashname" includeUntracked:NO]);
   self.repository.isWriting = YES;
   XCTAssertFalse([self.repository applyStash:stash0 error:NULL]);
   self.repository.isWriting = NO;
@@ -219,7 +219,7 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
   self.repository.isWriting = NO;
   XCTAssertTrue([self.repository dropStash:stash0 error:NULL]);
   [self writeTextToFile1:@"modification"];
-  XCTAssertTrue([self.repository saveStash:@"stashname"]);
+  XCTAssertTrue([self.repository saveStash:@"stashname" includeUntracked:NO]);
   self.repository.isWriting = YES;
   XCTAssertFalse([self.repository popStash:stash0 error:NULL]);
   self.repository.isWriting = NO;

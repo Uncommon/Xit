@@ -12,6 +12,7 @@
 
   self.repoPath = [NSString stringWithFormat:@"%@testrepo", NSTemporaryDirectory()];
   self.repository = [self createRepo:self.repoPath];
+  self.file1Name = @"file1.txt";
 
   [self addInitialRepoContent];
 
@@ -48,8 +49,8 @@
 
 - (void)addInitialRepoContent
 {
-  XCTAssertTrue([self commitNewTextFile:@"file1.txt" content:@"some text"]);
-  self.file1Path = [self.repoPath stringByAppendingPathComponent:@"file1.txt"];
+  XCTAssertTrue([self commitNewTextFile:self.file1Name content:@"some text"]);
+  self.file1Path = [self.repoPath stringByAppendingPathComponent:self.file1Name];
 }
 
 - (BOOL)commitNewTextFile:(NSString *)name content:(NSString *)content
@@ -121,13 +122,21 @@
   WaitForQueue(dispatch_get_main_queue());
 }
 
+- (BOOL)writeText:(NSString *)text toFile:(NSString *)path
+{
+  return [text writeToFile:[self.repoPath stringByAppendingPathComponent:path]
+                atomically:YES
+                  encoding:NSUTF8StringEncoding
+                     error:nil];
+}
+
 - (BOOL)writeTextToFile1:(NSString *)text
 {
   NSError *error;
 
   [text writeToFile:self.file1Path
          atomically:YES
-           encoding:NSASCIIStringEncoding
+           encoding:NSUTF8StringEncoding
               error:&error];
   return error == nil;
 }
