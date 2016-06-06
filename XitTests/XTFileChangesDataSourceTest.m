@@ -16,8 +16,8 @@
   XTFileChangesDataSource *dataSource = [[XTFileChangesDataSource alloc] init];
   NSOutlineView *outlineView = [[NSOutlineView alloc] init];
 
-  docController.selectedCommitSHA = repository.headSHA;
-  dataSource.repository = repository;
+  docController.selectedCommitSHA = self.repository.headSHA;
+  dataSource.repository = self.repository;
   dataSource.docController = (XTDocController*)docController;
   [self waitForRepoQueue];
   WaitForQueue(dispatch_get_main_queue());

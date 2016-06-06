@@ -3,11 +3,10 @@
 @class XTRepository;
 
 @interface XTTest : XCTestCase {
-  NSString *repoPath;
-  NSString *remoteRepoPath;
-  NSString *file1Path;
-  XTRepository *repository, *remoteRepository;
 }
+
+@property NSString *repoPath, *remoteRepoPath, *file1Path;
+@property XTRepository *repository, *remoteRepository;
 
 - (XTRepository *)createRepo:(NSString *)repoName;
 - (void)makeRemoteRepo;

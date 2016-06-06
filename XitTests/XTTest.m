@@ -10,8 +10,8 @@
 {
   [super setUp];
 
-  repoPath = [NSString stringWithFormat:@"%@testrepo", NSTemporaryDirectory()];
-  repository = [self createRepo:repoPath];
+  self.repoPath = [NSString stringWithFormat:@"%@testrepo", NSTemporaryDirectory()];
+  self.repository = [self createRepo:self.repoPath];
 
   [self addInitialRepoContent];
 
@@ -23,15 +23,15 @@
   [self waitForRepoQueue];
 
   NSFileManager *defaultManager = [NSFileManager defaultManager];
-  [defaultManager removeItemAtPath:repoPath error:nil];
-  [defaultManager removeItemAtPath:remoteRepoPath error:nil];
+  [defaultManager removeItemAtPath:self.repoPath error:nil];
+  [defaultManager removeItemAtPath:self.remoteRepoPath error:nil];
 
-  if ([defaultManager fileExistsAtPath:repoPath]) {
-    XCTFail(@"tearDown %@ FAIL!!", repoPath);
+  if ([defaultManager fileExistsAtPath:self.repoPath]) {
+    XCTFail(@"tearDown %@ FAIL!!", self.repoPath);
   }
 
-  if ([defaultManager fileExistsAtPath:remoteRepoPath]) {
-    XCTFail(@"tearDown %@ FAIL!!", remoteRepoPath);
+  if ([defaultManager fileExistsAtPath:self.remoteRepoPath]) {
+    XCTFail(@"tearDown %@ FAIL!!", self.remoteRepoPath);
   }
 
   NSLog(@"tearDown ok");
@@ -41,20 +41,22 @@
 
 - (void)makeRemoteRepo
 {
-  remoteRepoPath =
+  self.remoteRepoPath =
       [NSString stringWithFormat:@"%@remotetestrepo", NSTemporaryDirectory()];
-  remoteRepository = [self createRepo:remoteRepoPath];
+  self.remoteRepository = [self createRepo:self.remoteRepoPath];
 }
 
 - (void)addInitialRepoContent
 {
   XCTAssertTrue([self commitNewTextFile:@"file1.txt" content:@"some text"]);
-  file1Path = [repoPath stringByAppendingPathComponent:@"file1.txt"];
+  self.file1Path = [self.repoPath stringByAppendingPathComponent:@"file1.txt"];
 }
 
 - (BOOL)commitNewTextFile:(NSString *)name content:(NSString *)content
 {
-  return [self commitNewTextFile:name content:content inRepository:repository];
+  return [self commitNewTextFile:name
+                         content:content
+                    inRepository:self.repository];
 }
 
 - (BOOL)commitNewTextFile:(NSString *)name
@@ -115,7 +117,7 @@
 
 - (void)waitForRepoQueue
 {
-  WaitForQueue(repository.queue);
+  WaitForQueue(self.repository.queue);
   WaitForQueue(dispatch_get_main_queue());
 }
 
@@ -123,7 +125,7 @@
 {
   NSError *error;
 
-  [text writeToFile:file1Path
+  [text writeToFile:self.file1Path
          atomically:YES
            encoding:NSASCIIStringEncoding
               error:&error];

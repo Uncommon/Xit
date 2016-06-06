@@ -16,7 +16,7 @@
 {
   XTHistoryDataSource *result = [[XTHistoryDataSource alloc] init];
 
-  [result setRepo:repository];
+  [result setRepo:self.repository];
   [self waitForRepoQueue];
   return result;
 }
@@ -32,30 +32,30 @@
       NSString *rootName = [NSString stringWithFormat:@"refs/heads/root_%d", n];
       NSData *data;
       
-      data = [repository executeGitWithArgs:@[ @"symbolic-ref",
+      data = [self.repository executeGitWithArgs:@[ @"symbolic-ref",
                                                @"HEAD", rootName ]
-                                     writes:NO
-                                      error:nil];
+                                          writes:NO
+                                           error:nil];
       if (data == nil)
         XCTFail(@"'%@' error", rootName);
       
       // Recursively unstage the current directory
-      data = [repository executeGitWithArgs:@[ @"rm", @"--cached", @"-r", @"." ]
-                                     writes:NO
-                                      error:nil];
+      data = [self.repository executeGitWithArgs:@[ @"rm", @"--cached", @"-r", @"." ]
+                                          writes:NO
+                                           error:nil];
       if (data == nil)
         XCTFail(@"'%@' error", rootName);
       
       // Delete all untracked files
-      data = [repository executeGitWithArgs:@[ @"clean", @"-f", @"-d" ]
-                                     writes:NO
-                                      error:nil];
+      data = [self.repository executeGitWithArgs:@[ @"clean", @"-f", @"-d" ]
+                                          writes:NO
+                                           error:nil];
       if (data == nil)
         XCTFail(@"'%@' error", rootName);
     }
 
     NSString *testFilePath =
-        [NSString stringWithFormat:@"%@/file%d.txt", repoPath, n];
+        [NSString stringWithFormat:@"%@/file%d.txt", self.repoPath, n];
     NSString *txt = [NSString stringWithFormat:@"some text %d", n];
     [txt writeToFile:testFilePath
           atomically:YES
@@ -65,14 +65,14 @@
     if (![fileManager fileExistsAtPath:testFilePath]) {
       XCTFail(@"testFile NOT Found!!");
     }
-    if (![repository stageFile:[testFilePath lastPathComponent]]) {
+    if (![self.repository stageFile:[testFilePath lastPathComponent]]) {
       XCTFail(@"add file '%@'", testFilePath);
     }
-    if (![repository commitWithMessage:[NSString stringWithFormat:@"new %@",
+    if (![self.repository commitWithMessage:[NSString stringWithFormat:@"new %@",
                                                                   testFilePath]
-                                 amend:NO
-                           outputBlock:NULL
-                                 error:NULL]) {
+                                      amend:NO
+                                outputBlock:NULL
+                                      error:NULL]) {
       XCTFail(@"Commit with mesage 'new %@'", testFilePath);
     }
   }
@@ -98,14 +98,14 @@
   for (int n = 0; n < nCommits; n++) {
     NSString *bn = [NSString stringWithFormat:@"branch_%d", n];
     if ((n % 10) == 0) {
-      [repository checkout:@"master" error:NULL];
-      if (![repository createBranch:bn]) {
+      [self.repository checkout:@"master" error:NULL];
+      if (![self.repository createBranch:bn]) {
         XCTFail(@"Create Branch");
       }
     }
 
     NSString *testFile =
-        [NSString stringWithFormat:@"%@/file%d.txt", repoPath, n];
+        [NSString stringWithFormat:@"%@/file%d.txt", self.repoPath, n];
     NSString *txt = [NSString stringWithFormat:@"some text %d", n];
 
     [txt writeToFile:testFile
@@ -114,14 +114,14 @@
                error:nil];
 
     XCTAssertTrue([defaultManager fileExistsAtPath:testFile]);
-    if (![repository stageFile:[testFile lastPathComponent]]) {
+    if (![self.repository stageFile:[testFile lastPathComponent]]) {
       XCTFail(@"add file '%@'", testFile);
     }
-    if (![repository commitWithMessage:[NSString stringWithFormat:@"new %@",
+    if (![self.repository commitWithMessage:[NSString stringWithFormat:@"new %@",
                                                                   testFile]
-                                 amend:NO
-                           outputBlock:NULL
-                                 error:NULL]) {
+                                      amend:NO
+                                outputBlock:NULL
+                                      error:NULL]) {
       XCTFail(@"Commit with mesage 'new %@'", testFile);
     }
   }

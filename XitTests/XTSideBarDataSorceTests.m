@@ -50,13 +50,13 @@
 
 - (void)testReload
 {
-  [sbds setRepo:repository];
+  [sbds setRepo:self.repository];
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(repoChanged:)
                                                name:XTRepositoryChangedNotification
-                                             object:repository];
+                                             object:self.repository];
 
-  if (![repository createBranch:@"b1"])
+  if (![self.repository createBranch:@"b1"])
     XCTFail(@"Create Branch 'b1'");
 
   NSArray *titles, *expectedTitles = @[ @"b1", @"master" ];
@@ -88,11 +88,11 @@
 - (void)testStashes
 {
   XCTAssertTrue([self writeTextToFile1:@"second text"], @"");
-  XCTAssertTrue([repository saveStash:@"s1"], @"");
+  XCTAssertTrue([self.repository saveStash:@"s1"], @"");
   XCTAssertTrue([self writeTextToFile1:@"third text"], @"");
-  XCTAssertTrue([repository saveStash:@"s2"], @"");
+  XCTAssertTrue([self.repository saveStash:@"s2"], @"");
 
-  [sbds setRepo:repository];
+  [sbds setRepo:self.repository];
   [sbds reload];
   [self waitForRepoQueue];
 
@@ -107,35 +107,35 @@
 {
   [self makeRemoteRepo];
 
-  if (![repository checkout:@"master" error:NULL]) {
+  if (![self.repository checkout:@"master" error:NULL]) {
     XCTFail(@"checkout master");
   }
 
-  if (![repository createBranch:@"b1"]) {
+  if (![self.repository createBranch:@"b1"]) {
     XCTFail(@"Create Branch 'b1'");
   }
 
-  if (![repository addRemote:@"origin" withUrl:remoteRepoPath]) {
-    XCTFail(@"add origin '%@'", remoteRepoPath);
+  if (![self.repository addRemote:@"origin" withUrl:self.remoteRepoPath]) {
+    XCTFail(@"add origin '%@'", self.remoteRepoPath);
   }
 
   NSError *error = nil;
   NSArray *configArgs = @[ @"config", @"receive.denyCurrentBranch", @"ignore" ];
 
-  [remoteRepository executeGitWithArgs:configArgs writes:NO error:&error];
+  [self.remoteRepository executeGitWithArgs:configArgs writes:NO error:&error];
   if (error != nil) {
     XCTFail(@"Ignore denyCurrentBranch");
     return;
   }
 
-  if (![repository push:@"origin"]) {
+  if (![self.repository push:@"origin"]) {
     XCTFail(@"push origin");
     return;
   }
 
   MockSidebarOutlineView *sov = [[MockSidebarOutlineView alloc] init];
   
-  [sbds setRepo:repository];
+  [sbds setRepo:self.repository];
   [sbds reload];
   [self waitForRepoQueue];
 
@@ -182,16 +182,16 @@
 
 - (void)testBranchesAndTags
 {
-  if (![repository createBranch:@"b1"]) {
+  if (![self.repository createBranch:@"b1"]) {
     XCTFail(@"Create Branch 'b1'");
   }
 
-  if (![repository createTag:@"t1" withMessage:@"msg"]) {
+  if (![self.repository createTag:@"t1" withMessage:@"msg"]) {
     XCTFail(@"Create Tag 't1'");
   }
 
   MockSidebarOutlineView *sov = [[MockSidebarOutlineView alloc] init];
-  [sbds setRepo:repository];
+  [sbds setRepo:self.repository];
   [sbds reload];
   [self waitForRepoQueue];
 
@@ -271,14 +271,14 @@
                                content:@"fffff"
                           inRepository:repo2]);
 
-  XCTAssertTrue([repository addSubmoduleAtPath:@"sub1"
-                                    urlOrPath:@"../repo1"
-                                        error:NULL]);
-  XCTAssertTrue([repository addSubmoduleAtPath:@"sub2"
-                                    urlOrPath:@"../repo2"
-                                        error:NULL]);
+  XCTAssertTrue([self.repository addSubmoduleAtPath:@"sub1"
+                                          urlOrPath:@"../repo1"
+                                              error:NULL]);
+  XCTAssertTrue([self.repository addSubmoduleAtPath:@"sub2"
+                                          urlOrPath:@"../repo2"
+                                              error:NULL]);
 
-  [sbds setRepo:repository];
+  [sbds setRepo:self.repository];
   [sbds reload];
   [self waitForRepoQueue];
 
@@ -302,11 +302,11 @@
 
 - (void)testGroupItems
 {
-  if (![repository createBranch:@"b1"]) {
+  if (![self.repository createBranch:@"b1"]) {
     XCTFail(@"Create Branch 'b1'");
   }
 
-  [sbds setRepo:repository];
+  [sbds setRepo:self.repository];
   [sbds reload];
 
   // Start at 1 to skip "Staging"
