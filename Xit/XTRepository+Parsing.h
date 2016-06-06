@@ -61,16 +61,16 @@ typedef enum {
               outputBlock:(nullable void (^)(NSString *output))outputBlock
                     error:(NSError**)error;
 
-- (NSArray*)fileNamesForRef:(NSString*)ref;
+- (nullable NSArray*)fileNamesForRef:(NSString*)ref;
 /// Returns a list of changed files in the given commit.
-- (NSArray<XTFileChange*>*)changesForRef:(NSString*)ref
-                                  parent:(nullable NSString*)parentSHA;
-- (GTCommit*)commitForStashAtIndex:(NSUInteger)index;
-- (XTDiffDelta*)diffForFile:(NSString*)path
-                  commitSHA:(NSString*)sha
-                  parentSHA:(nullable NSString*)parentSHA;
-- (XTDiffDelta*)stagedDiffForFile:(NSString*)path;
-- (XTDiffDelta*)unstagedDiffForFile:(NSString*)path;
+- (nullable NSArray<XTFileChange*>*)changesForRef:(NSString*)ref
+                                           parent:(nullable NSString*)parentSHA;
+- (nullable GTCommit*)commitForStashAtIndex:(NSUInteger)index;
+- (nullable XTDiffDelta*)diffForFile:(NSString*)path
+                           commitSHA:(NSString*)sha
+                           parentSHA:(nullable NSString*)parentSHA;
+- (nullable XTDiffDelta*)stagedDiffForFile:(NSString*)path;
+- (nullable XTDiffDelta*)unstagedDiffForFile:(NSString*)path;
 - (BOOL)isTextFile:(NSString*)path commit:(NSString*)commit;
 
 @end
