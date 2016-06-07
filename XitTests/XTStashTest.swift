@@ -3,7 +3,7 @@ import XCTest
 class XTStashTest: XTTest
 {
 
-  func testExample()
+  func testChanges()
   {
     let addedName = "added.txt"
     let addedPath =
@@ -41,8 +41,24 @@ class XTStashTest: XTTest
     XCTAssertEqual(untrackedChange.unstagedChange, XitChange.Added)
     
     XCTAssertNotNil(stash.headBlobForPath(self.file1Name))
-    XCTAssertNotNil(stash.unstagedDiffForFile(self.file1Name))
-    XCTAssertNotNil(stash.unstagedDiffForFile(untrackedName))
+    
+    let changeDiff = stash.unstagedDiffForFile(self.file1Name)
+    let changePatch = try! changeDiff!.generatePatch()
+    
+    XCTAssertEqual(changePatch.addedLinesCount, 1)
+    XCTAssertEqual(changePatch.deletedLinesCount, 1)
+    
+    let untrackedDiff = stash.unstagedDiffForFile(untrackedName)
+    let untrackedPatch = try! untrackedDiff!.generatePatch()
+    
+    XCTAssertEqual(untrackedPatch.addedLinesCount, 1)
+    XCTAssertEqual(untrackedPatch.deletedLinesCount, 0)
+    
+    let addedDiff = stash.stagedDiffForFile(addedName)
+    let addedPatch = try! addedDiff!.generatePatch()
+    
+    XCTAssertEqual(addedPatch.addedLinesCount, 1)
+    XCTAssertEqual(addedPatch.deletedLinesCount, 0)
   }
 
 }
