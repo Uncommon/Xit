@@ -333,10 +333,19 @@ NSString * const XTStagingSHA = @"";
     }
 
     if ([item isKindOfClass:[XTLocalBranchItem class]]) {
-      [dataView.imageView setImage:[NSImage imageNamed:@"branch"]];
-      if (![item isKindOfClass:[XTRemoteBranchItem class]])
-        [dataView.button
-            setHidden:![[item title] isEqualToString:_currentBranch]];
+      [dataView.imageView setImage:[NSImage imageNamed:@"branchTemplate"]];
+      if (![item isKindOfClass:[XTRemoteBranchItem class]]) {
+        if ([[item title] isEqualToString:_currentBranch]) {
+          dataView.button.hidden = NO;
+          dataView.textField.font =
+              [NSFont boldSystemFontOfSize:[NSFont smallSystemFontSize]];
+        }
+        else {
+          dataView.button.hidden = YES;
+          dataView.textField.font =
+              [NSFont systemFontOfSize:[NSFont smallSystemFontSize]];
+        }
+      }
     } else if ([item isKindOfClass:[XTTagItem class]]) {
       [dataView.imageView setImage:[NSImage imageNamed:@"tag"]];
     } else if ([item isKindOfClass:[XTStashItem class]]) {
@@ -347,7 +356,7 @@ NSString * const XTStagingSHA = @"";
     } else {
       [dataView.button setHidden:YES];
       if ([outlineView parentForItem:item] == _roots[XTRemotesGroupIndex])
-        [dataView.imageView setImage:[NSImage imageNamed:NSImageNameNetwork]];
+        [dataView.imageView setImage:[NSImage imageNamed:@"cloudTemplate"]];
     }
     return dataView;
   }
