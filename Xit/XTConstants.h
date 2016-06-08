@@ -1,3 +1,5 @@
+#import <Cocoa/Cocoa.h>
+
 typedef enum {
   XTRefTypeBranch,
   XTRefTypeActiveBranch,
