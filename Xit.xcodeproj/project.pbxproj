@@ -36,6 +36,12 @@
 		895869A91D0869D1003A9AF0 /* branchTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 895869A51D0869D1003A9AF0 /* branchTemplate@2x.png */; };
 		895869AA1D0869D1003A9AF0 /* cloudTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 895869A61D0869D1003A9AF0 /* cloudTemplate.png */; };
 		895869AB1D0869D1003A9AF0 /* cloudTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 895869A71D0869D1003A9AF0 /* cloudTemplate@2x.png */; };
+		895869BC1D088A46003A9AF0 /* stashTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 895869B61D088A46003A9AF0 /* stashTemplate.png */; };
+		895869BD1D088A46003A9AF0 /* stashTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 895869B71D088A46003A9AF0 /* stashTemplate@2x.png */; };
+		895869BE1D088A46003A9AF0 /* submoduleTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 895869B81D088A46003A9AF0 /* submoduleTemplate.png */; };
+		895869BF1D088A46003A9AF0 /* submoduleTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 895869B91D088A46003A9AF0 /* submoduleTemplate@2x.png */; };
+		895869C01D088A46003A9AF0 /* tagTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 895869BA1D088A46003A9AF0 /* tagTemplate.png */; };
+		895869C11D088A46003A9AF0 /* tagTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 895869BB1D088A46003A9AF0 /* tagTemplate@2x.png */; };
 		895DEEF6142CECB7001763FC /* XTSideBarTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 895DEEF5142CECB7001763FC /* XTSideBarTableCellView.m */; };
 		896B05D015796D2A003B0C24 /* XTHistoryViewControllerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 896B05CF15796D2A003B0C24 /* XTHistoryViewControllerTest.m */; };
 		89794F671452839500E38ACC /* XTStatusView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89794F651452839500E38ACC /* XTStatusView.xib */; };
@@ -50,8 +56,6 @@
 		89AC82431806769A00402955 /* XTWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89AC82421806769A00402955 /* XTWebViewController.m */; };
 		89BEB8BC157B587600FED57B /* OCMock.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = DD592095156EEF40005FBB0F /* OCMock.framework */; };
 		89CD209217089D220051C3D4 /* XTCategoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89CD209117089D220051C3D4 /* XTCategoryTests.m */; };
-		89CD708417BFB4F500ECE7E3 /* submodule.png in Resources */ = {isa = PBXBuildFile; fileRef = 89CD708217BFB4F500ECE7E3 /* submodule.png */; };
-		89CD708517BFB4F500ECE7E3 /* submodule@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89CD708317BFB4F500ECE7E3 /* submodule@2x.png */; };
 		89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */; };
 		89D6FE6F17D2F89D00633798 /* XTCommitHeaderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D6FE6E17D2F89D00633798 /* XTCommitHeaderViewController.m */; };
 		89D6FE7D17D8457700633798 /* XTCommitHeaderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D6FE7C17D8457700633798 /* XTCommitHeaderTest.m */; };
@@ -114,8 +118,6 @@
 		DD96C9A6176977470003A30C /* ObjectiveGit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD96C99A176976FE0003A30C /* ObjectiveGit.framework */; };
 		DD98CFF3181ADFC5008B79C9 /* CFRunLoop+Extensions.c in Sources */ = {isa = PBXBuildFile; fileRef = DD98CFF2181ADFC5008B79C9 /* CFRunLoop+Extensions.c */; };
 		DD98D0021822FFE2008B79C9 /* XTFileChangesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = DD98D0011822FFE2008B79C9 /* XTFileChangesDataSource.m */; };
-		DD997DD31739CC9300C7DF82 /* stash.png in Resources */ = {isa = PBXBuildFile; fileRef = DD997DD11739CC9300C7DF82 /* stash.png */; };
-		DD997DD41739CC9300C7DF82 /* stash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DD997DD21739CC9300C7DF82 /* stash@2x.png */; };
 		DD997DDA173B409500C7DF82 /* HistoryView Menus.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD997DD8173B409500C7DF82 /* HistoryView Menus.xib */; };
 		DD997DF81746F40D00C7DF82 /* XTFileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD997DF71746F40D00C7DF82 /* XTFileViewController.xib */; };
 		DD9C1B8F160239DD0001FE9B /* XTRefToken.m in Sources */ = {isa = PBXBuildFile; fileRef = DD9C1B8E160239DD0001FE9B /* XTRefToken.m */; };
@@ -140,8 +142,6 @@
 		DDDA447215B0EA4700DF407B /* XTRepository+Parsing.m in Sources */ = {isa = PBXBuildFile; fileRef = DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */; };
 		DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */ = {isa = PBXBuildFile; fileRef = DDDDAF1318162212009F8BA1 /* XTQueueUtils.c */; };
 		DDE55DDF1613C6C000CCAC03 /* XTModDateTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = DDE55DDE1613C6C000CCAC03 /* XTModDateTracker.m */; };
-		DDF9BB3A162E29C3004588B6 /* tag.png in Resources */ = {isa = PBXBuildFile; fileRef = DDF9BB38162E29C3004588B6 /* tag.png */; };
-		DDF9BB3B162E29C3004588B6 /* tag@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDF9BB39162E29C3004588B6 /* tag@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -249,6 +249,12 @@
 		895869A51D0869D1003A9AF0 /* branchTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "branchTemplate@2x.png"; sourceTree = "<group>"; };
 		895869A61D0869D1003A9AF0 /* cloudTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cloudTemplate.png; sourceTree = "<group>"; };
 		895869A71D0869D1003A9AF0 /* cloudTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cloudTemplate@2x.png"; sourceTree = "<group>"; };
+		895869B61D088A46003A9AF0 /* stashTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stashTemplate.png; sourceTree = "<group>"; };
+		895869B71D088A46003A9AF0 /* stashTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stashTemplate@2x.png"; sourceTree = "<group>"; };
+		895869B81D088A46003A9AF0 /* submoduleTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = submoduleTemplate.png; sourceTree = "<group>"; };
+		895869B91D088A46003A9AF0 /* submoduleTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "submoduleTemplate@2x.png"; sourceTree = "<group>"; };
+		895869BA1D088A46003A9AF0 /* tagTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tagTemplate.png; sourceTree = "<group>"; };
+		895869BB1D088A46003A9AF0 /* tagTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tagTemplate@2x.png"; sourceTree = "<group>"; };
 		895DEEF4142CECB7001763FC /* XTSideBarTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; name = XTSideBarTableCellView.h; path = Xit/XTSideBarTableCellView.h; sourceTree = "<group>"; tabWidth = 2; };
 		895DEEF5142CECB7001763FC /* XTSideBarTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; name = XTSideBarTableCellView.m; path = Xit/XTSideBarTableCellView.m; sourceTree = "<group>"; tabWidth = 2; };
 		896B05CF15796D2A003B0C24 /* XTHistoryViewControllerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTHistoryViewControllerTest.m; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -268,8 +274,6 @@
 		89AC82421806769A00402955 /* XTWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTWebViewController.m; sourceTree = "<group>"; };
 		89CD209017089D220051C3D4 /* XTCategoryTests.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTCategoryTests.h; sourceTree = "<group>"; tabWidth = 2; };
 		89CD209117089D220051C3D4 /* XTCategoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTCategoryTests.m; sourceTree = "<group>"; tabWidth = 2; };
-		89CD708217BFB4F500ECE7E3 /* submodule.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = submodule.png; sourceTree = "<group>"; };
-		89CD708317BFB4F500ECE7E3 /* submodule@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "submodule@2x.png"; sourceTree = "<group>"; };
 		89D47941170894A200C04D89 /* NSAttributedString+XTExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+XTExtensions.h"; sourceTree = "<group>"; };
 		89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+XTExtensions.m"; sourceTree = "<group>"; };
 		89D6FE6D17D2F89D00633798 /* XTCommitHeaderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTCommitHeaderViewController.h; sourceTree = "<group>"; };
@@ -367,8 +371,6 @@
 		DD98CFFF181AE297008B79C9 /* CFRunLoop+Extensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CFRunLoop+Extensions.h"; path = "XitTests/CFRunLoop+Extensions.h"; sourceTree = SOURCE_ROOT; };
 		DD98D0001822FFE2008B79C9 /* XTFileChangesDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTFileChangesDataSource.h; sourceTree = "<group>"; };
 		DD98D0011822FFE2008B79C9 /* XTFileChangesDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTFileChangesDataSource.m; sourceTree = "<group>"; };
-		DD997DD11739CC9300C7DF82 /* stash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stash.png; sourceTree = "<group>"; };
-		DD997DD21739CC9300C7DF82 /* stash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stash@2x.png"; sourceTree = "<group>"; };
 		DD997DD9173B409500C7DF82 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = "en.lproj/HistoryView Menus.xib"; sourceTree = "<group>"; };
 		DD997DF71746F40D00C7DF82 /* XTFileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTFileViewController.xib; sourceTree = "<group>"; };
 		DD9C1B8D160239DD0001FE9B /* XTRefToken.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTRefToken.h; sourceTree = "<group>"; };
@@ -399,8 +401,6 @@
 		DDDDAF2018162258009F8BA1 /* XTQueueUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTQueueUtils.h; sourceTree = "<group>"; };
 		DDE55DDD1613C6C000CCAC03 /* XTModDateTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTModDateTracker.h; sourceTree = "<group>"; };
 		DDE55DDE1613C6C000CCAC03 /* XTModDateTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTModDateTracker.m; sourceTree = "<group>"; };
-		DDF9BB38162E29C3004588B6 /* tag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tag.png; sourceTree = "<group>"; };
-		DDF9BB39162E29C3004588B6 /* tag@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tag@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -579,18 +579,18 @@
 		895869B51D0871A6003A9AF0 /* Sidebar */ = {
 			isa = PBXGroup;
 			children = (
-				894C8D911CA44A44001A4B80 /* stagingTemplate.png */,
-				894C8D921CA44A44001A4B80 /* stagingTemplate@2x.png */,
-				DD997DD11739CC9300C7DF82 /* stash.png */,
-				DD997DD21739CC9300C7DF82 /* stash@2x.png */,
-				89CD708217BFB4F500ECE7E3 /* submodule.png */,
-				89CD708317BFB4F500ECE7E3 /* submodule@2x.png */,
-				DDF9BB38162E29C3004588B6 /* tag.png */,
-				DDF9BB39162E29C3004588B6 /* tag@2x.png */,
 				895869A41D0869D1003A9AF0 /* branchTemplate.png */,
 				895869A51D0869D1003A9AF0 /* branchTemplate@2x.png */,
 				895869A61D0869D1003A9AF0 /* cloudTemplate.png */,
 				895869A71D0869D1003A9AF0 /* cloudTemplate@2x.png */,
+				894C8D911CA44A44001A4B80 /* stagingTemplate.png */,
+				894C8D921CA44A44001A4B80 /* stagingTemplate@2x.png */,
+				895869B61D088A46003A9AF0 /* stashTemplate.png */,
+				895869B71D088A46003A9AF0 /* stashTemplate@2x.png */,
+				895869B81D088A46003A9AF0 /* submoduleTemplate.png */,
+				895869B91D088A46003A9AF0 /* submoduleTemplate@2x.png */,
+				895869BA1D088A46003A9AF0 /* tagTemplate.png */,
+				895869BB1D088A46003A9AF0 /* tagTemplate@2x.png */,
 			);
 			name = Sidebar;
 			sourceTree = "<group>";
@@ -915,6 +915,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3FA470B13D0F8E200AC4F9B /* InfoPlist.strings in Resources */,
+				895869C01D088A46003A9AF0 /* tagTemplate.png in Resources */,
 				89D8BDFB1CED200B00D640AA /* delete@2x.png in Resources */,
 				89D8BE261CF35C7000D640AA /* unstage@2x.png in Resources */,
 				C3FA471113D0F8E200AC4F9B /* Credits.rtf in Resources */,
@@ -922,10 +923,12 @@
 				89D8BE5B1CF8E9C900D640AA /* diffTemplate@2x.png in Resources */,
 				89D8BDE91CED1FE700D640AA /* add.png in Resources */,
 				C3FA471A13D0F8E300AC4F9B /* MainMenu.xib in Resources */,
+				895869BE1D088A46003A9AF0 /* submoduleTemplate.png in Resources */,
 				DD00725613E76DFB003B4120 /* Xit.icns in Resources */,
 				31C7C13413ECC74C00A65FE9 /* XTHistoryViewController.xib in Resources */,
 				899D010D14216D2C0091DC6F /* sidebarTemplate.png in Resources */,
 				894C8D931CA44A44001A4B80 /* stagingTemplate.png in Resources */,
+				895869BD1D088A46003A9AF0 /* stashTemplate@2x.png in Resources */,
 				89D8BE5F1CF8E9C900D640AA /* textTemplate@2x.png in Resources */,
 				899DB1A31CE5022400760270 /* XTCommitEntryController.xib in Resources */,
 				89794F671452839500E38ACC /* XTStatusView.xib in Resources */,
@@ -933,8 +936,6 @@
 				89794F8D1458CC9B00E38ACC /* XTOutputViewController.xib in Resources */,
 				89D8BDFA1CED200B00D640AA /* delete.png in Resources */,
 				89D8BDFC1CED200B00D640AA /* modify.png in Resources */,
-				DDF9BB3A162E29C3004588B6 /* tag.png in Resources */,
-				DDF9BB3B162E29C3004588B6 /* tag@2x.png in Resources */,
 				89039F561703A9FC000949A8 /* html in Resources */,
 				89D8BDFD1CED200B00D640AA /* modify@2x.png in Resources */,
 				DD997DDA173B409500C7DF82 /* HistoryView Menus.xib in Resources */,
@@ -942,22 +943,21 @@
 				DD997DF81746F40D00C7DF82 /* XTFileViewController.xib in Resources */,
 				89D8BDF91CED200B00D640AA /* conflict@2x.png in Resources */,
 				89D8BE011CED203900D640AA /* stage@2x.png in Resources */,
-				DD997DD31739CC9300C7DF82 /* stash.png in Resources */,
 				89D8BE581CF8E9C900D640AA /* blameTemplate.png in Resources */,
 				89D8BDEA1CED1FE700D640AA /* add@2x.png in Resources */,
-				DD997DD41739CC9300C7DF82 /* stash@2x.png in Resources */,
 				DD96C931175B76990003A30C /* splitter.png in Resources */,
 				89D8BE251CF35C7000D640AA /* unstage.png in Resources */,
 				895869A91D0869D1003A9AF0 /* branchTemplate@2x.png in Resources */,
-				89CD708417BFB4F500ECE7E3 /* submodule.png in Resources */,
+				895869C11D088A46003A9AF0 /* tagTemplate@2x.png in Resources */,
 				894C8D941CA44A44001A4B80 /* stagingTemplate@2x.png in Resources */,
-				89CD708517BFB4F500ECE7E3 /* submodule@2x.png in Resources */,
+				895869BF1D088A46003A9AF0 /* submoduleTemplate@2x.png in Resources */,
 				DDA8A63A17F5B6CE00AD9808 /* added.png in Resources */,
 				DDA8A63B17F5B6CE00AD9808 /* added@2x.png in Resources */,
 				DDA8A63C17F5B6CE00AD9808 /* copied.png in Resources */,
 				DDA8A63D17F5B6CE00AD9808 /* copied@2x.png in Resources */,
 				895869AB1D0869D1003A9AF0 /* cloudTemplate@2x.png in Resources */,
 				DDA8A63E17F5B6CE00AD9808 /* deleted.png in Resources */,
+				895869BC1D088A46003A9AF0 /* stashTemplate.png in Resources */,
 				DDA8A63F17F5B6CE00AD9808 /* deleted@2x.png in Resources */,
 				895869A81D0869D1003A9AF0 /* branchTemplate.png in Resources */,
 				DDA8A64017F5B6CE00AD9808 /* modified.png in Resources */,

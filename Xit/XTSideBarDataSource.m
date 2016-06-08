@@ -52,8 +52,9 @@ NSString * const XTStagingSHA = @"";
 
 - (void)awakeFromNib
 {
-  [_outline setTarget:self];
-  [_outline setDoubleAction:@selector(doubleClick:)];
+  _outline.target = self;
+  _outline.doubleAction = @selector(doubleClick:);
+  _outline.rowSizeStyle = NSTableViewRowSizeStyleMedium;
 }
 
 - (void)setRepo:(XTRepository *)newRepo
@@ -347,11 +348,11 @@ NSString * const XTStagingSHA = @"";
         }
       }
     } else if ([item isKindOfClass:[XTTagItem class]]) {
-      [dataView.imageView setImage:[NSImage imageNamed:@"tag"]];
+      [dataView.imageView setImage:[NSImage imageNamed:@"tagTemplate"]];
     } else if ([item isKindOfClass:[XTStashItem class]]) {
-      [dataView.imageView setImage:[NSImage imageNamed:@"stash"]];
+      [dataView.imageView setImage:[NSImage imageNamed:@"stashTemplate"]];
     } else if ([item isKindOfClass:[XTSubmoduleItem class]]) {
-      [dataView.imageView setImage:[NSImage imageNamed:@"submodule"]];
+      [dataView.imageView setImage:[NSImage imageNamed:@"submoduleTemplate"]];
       [dataView.textField setEditable:NO];
     } else {
       [dataView.button setHidden:YES];
