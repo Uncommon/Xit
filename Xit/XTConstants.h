@@ -1,15 +1,16 @@
 #import <Cocoa/Cocoa.h>
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, XTRefType) {
   XTRefTypeBranch,
   XTRefTypeActiveBranch,
   XTRefTypeRemoteBranch,
   XTRefTypeTag,
   XTRefTypeRemote,
   XTRefTypeUnknown
-} XTRefType;
+};
 
 typedef enum {
+  XTWorkspaceGroupIndex,
   XTBranchesGroupIndex,
   XTRemotesGroupIndex,
   XTTagsGroupIndex,

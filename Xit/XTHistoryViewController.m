@@ -3,17 +3,13 @@
 #import "XTFileViewController.h"
 #import "XTHistoryDataSource.h"
 #import "XTHistoryItem.h"
-#import "XTLocalBranchItem.h"
-#import "XTRemoteBranchItem.h"
-#import "XTRemoteItem.h"
-#import "XTRemotesItem.h"
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
 #import "XTSideBarDataSource.h"
 #import "XTSideBarOutlineView.h"
 #import "XTSideBarTableCellView.h"
 #import "XTStatusView.h"
-#import "XTTagItem.h"
+#import "Xit-Swift.h"
 #import "NSAttributedString+XTExtensions.h"
 #import "PBGitRevisionCell.h"
 
@@ -238,7 +234,7 @@
 - (IBAction) checkOutBranch:(id)sender
 {
   [self callCMBlock:^(XTSideBarItem *item, NSError *__autoreleasing *error) {
-                      [_repo checkout:[item title] error:error]; }
+                      [_repo checkout:item.title error:error]; }
      verifyingClass:[XTLocalBranchItem class]
         errorString:@"Checkout failed"];
 }

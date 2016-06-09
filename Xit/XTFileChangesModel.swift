@@ -4,7 +4,7 @@ import Cocoa
  * Protocol for a commit or commit-like object,
  * with metadata, files, and diffs.
  */
-protocol XTFileChangesModel {
+@objc protocol XTFileChangesModel {
 
 var repository: XTRepository { get set }
 /// SHA for commit to be selected in the history list
@@ -71,7 +71,7 @@ init(repository: XTRepository, index: UInt)
 class XTStagingChanges: NSObject, XTFileChangesModel {
 
 var repository: XTRepository
-var shaToSelect: String? { get { return nil } }
+var shaToSelect: String? { get { return XTStagingSHA } }
 var hasUnstaged: Bool { get { return true; } }
 var changes: [XTFileChange]
     { get { return repository.changesForRef(XTStagingSHA, parent: nil) ?? [] } }
