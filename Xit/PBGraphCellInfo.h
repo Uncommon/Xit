@@ -20,6 +20,6 @@
 @property(assign) int nLines;
 @property(assign) size_t position, numColumns;
 
-- (id)initWithPosition:(size_t)p andLines:(struct PBGitGraphLine *)l;
+- (instancetype)initWithPosition:(size_t)p andLines:(struct PBGitGraphLine *)l;
 
 @end

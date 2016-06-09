@@ -16,7 +16,7 @@ extern NSString *XTCommitSHAKey,
     *XTCommitterDateKey;
 
 // Values used by changesForRef:
-typedef enum {
+typedef NS_ENUM(NSUInteger, XitChange) {
   XitChangeUnmodified = GIT_DELTA_UNMODIFIED,
   XitChangeAdded = GIT_DELTA_ADDED,
   XitChangeDeleted = GIT_DELTA_DELETED,
@@ -28,7 +28,7 @@ typedef enum {
   XitChangeTypeChange = GIT_DELTA_TYPECHANGE,
   XitChangeConflict = GIT_DELTA_CONFLICTED,
   XitChangeMixed,  // For folders containing a mix of changes
-} XitChange;
+};
 
 @class GTSubmodule;
 @class XTDiffDelta;
@@ -36,13 +36,14 @@ typedef enum {
 
 @interface XTRepository (Reading)
 
+@property (readonly, copy) NSDictionary *workspaceStatus;
+
 - (BOOL)
     readRefsWithLocalBlock:(void (^)(NSString *name, NSString *commit))localBlock
                remoteBlock:(void (^)(NSString *remoteName, NSString *branchName,
                                      NSString *commit))remoteBlock
                   tagBlock:(void (^)(NSString *name, NSString *commit))tagBlock;
 /// Returns a dictionary mapping paths to XTWorkspaceFileStatuses.
-- (NSDictionary*)workspaceStatus;
 - (BOOL)readStashesWithBlock:(void (^)(NSString *commit, NSString *name))block;
 - (BOOL)readSubmodulesWithBlock:(void (^)(GTSubmodule *sub))block;
 - (BOOL)parseCommit:(NSString*)ref

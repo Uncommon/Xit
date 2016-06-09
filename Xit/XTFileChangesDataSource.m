@@ -133,7 +133,7 @@
 - (NSInteger)outlineView:(NSOutlineView*)outlineView
     numberOfChildrenOfItem:(id)item
 {
-  return [self.changes count];
+  return self.changes.count;
 }
 
 - (id)outlineView:(NSOutlineView*)outlineView
@@ -152,7 +152,7 @@
     objectValueForTableColumn:(NSTableColumn*)tableColumn
                        byItem:(id)item
 {
-  return [(XTFileChange*)item path];
+  return ((XTFileChange*)item).path;
 }
 
 @end

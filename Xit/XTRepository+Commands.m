@@ -77,14 +77,14 @@
     if (error != nil)
       return nil;
 
-    NSString *remoteName = [branch remoteName];
+    NSString *remoteName = branch.remoteName;
 
     if (remoteName != nil)
       // shortName strips the remote name, so put it back
       _cachedBranch =
-          [NSString stringWithFormat:@"%@/%@", remoteName, [branch shortName]];
+          [NSString stringWithFormat:@"%@/%@", remoteName, branch.shortName];
     else
-      _cachedBranch = [branch shortName];
+      _cachedBranch = branch.shortName;
   }
   return _cachedBranch;
 }
@@ -129,7 +129,7 @@
                                  error:resultError
                          progressBlock:NULL];
 
-    if ([branch length] == 40) {
+    if (branch.length == 40) {
       if (resultError != NULL)
         *resultError = nil;
 
@@ -159,7 +159,7 @@
       return NO;
 
     [_gtRepo createTagNamed:name
-                     target:[headRef resolvedTarget]
+                     target:headRef.resolvedTarget
                      tagger:[_gtRepo userSignatureForNow]
                     message:msg
                       error:&error];
@@ -170,7 +170,7 @@
 - (BOOL)deleteTag:(NSString *)name error:(NSError *__autoreleasing *)error
 {
   return [self executeWritingBlock:^BOOL{
-    int result = git_tag_delete([_gtRepo git_repository], [name UTF8String]);
+    int result = git_tag_delete([_gtRepo git_repository], name.UTF8String);
 
     if (result == 0)
       return YES;
@@ -335,8 +335,8 @@
   if (![self executeGitWithArgs:@[ @"stash", @"pop", name ]
                          writes:YES
                           error:&localError]) {
-    if (([localError code] == 1) &&
-        [[localError domain] isEqualToString:XTErrorDomainGit])
+    if ((localError.code == 1) &&
+        [localError.domain isEqualToString:XTErrorDomainGit])
       return YES;  // pop may return 1 on success
     if (error != NULL)
       *error = localError;
@@ -353,8 +353,8 @@
   if (![self executeGitWithArgs:@[ @"stash", @"apply", name ]
                          writes:YES
                           error:&localError]) {
-    if (([localError code] == 1) &&
-        [[localError domain] isEqualToString:XTErrorDomainGit])
+    if ((localError.code == 1) &&
+        [localError.domain isEqualToString:XTErrorDomainGit])
       return YES;  // apply may return 1 on success
     if (error != NULL)
       *error = localError;

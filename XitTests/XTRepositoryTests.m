@@ -353,10 +353,10 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
       @"a.ffff": @NO,
       @"AAAAA": @NO,
       };
-  NSArray *keys = [names allKeys];
-  NSArray *values = [names allValues];
+  NSArray *keys = names.allKeys;
+  NSArray *values = names.allValues;
 
-  for (int i = 0; i < [keys count]; ++i)
+  for (int i = 0; i < keys.count; ++i)
     XCTAssertEqualObjects(
         @([repository isTextFile:keys[i] commit:@"master"]),
         values[i],

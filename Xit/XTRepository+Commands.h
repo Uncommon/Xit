@@ -3,10 +3,11 @@
 
 @interface XTRepository (Commands)
 
+@property (readonly) NSString *currentBranch;
+
 - (BOOL)initializeRepository;
 - (BOOL)createBranch:(NSString*)name;
 - (BOOL)deleteBranch:(NSString*)name error:(NSError**)error;
-- (NSString*)currentBranch;
 - (BOOL)createTag:(NSString*)name withMessage:(NSString*)msg;
 - (BOOL)deleteTag:(NSString*)name error:(NSError**)error;
 - (BOOL)addRemote:(NSString*)name withUrl:(NSString*)url;

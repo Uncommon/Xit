@@ -11,7 +11,7 @@
 - (void)rightMouseDown:(NSEvent *)event
 {
   const NSPoint localPoint =
-      [self convertPoint:[event locationInWindow] fromView:nil];
+      [self convertPoint:event.locationInWindow fromView:nil];
 
   _contextMenuRow = [self rowAtPoint:localPoint];
 
@@ -23,12 +23,12 @@
   } else if ([item isKindOfClass:[XTTagItem class]]) {
     menu = _controller.tagContextMenu;
   } else if ([self parentForItem:item] ==
-             [_controller.sideBarDS roots][XTRemotesGroupIndex]) {
+             _controller.sideBarDS.roots[XTRemotesGroupIndex]) {
     menu = _controller.remoteContextMenu;
   } else if ([item isKindOfClass:[XTStashItem class]]) {
     menu = _controller.stashContextMenu;
   }
-  [self setMenu:menu];
+  self.menu = menu;
 
   [super rightMouseDown:event];
   _contextMenuRow = -1;

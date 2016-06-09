@@ -20,8 +20,8 @@ NSString *XTHeaderHeightKey = @"height";
 {
   NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
 
-  [formatter setDateStyle:NSDateFormatterMediumStyle];
-  [formatter setTimeStyle:NSDateFormatterMediumStyle];
+  formatter.dateStyle = NSDateFormatterMediumStyle;
+  formatter.timeStyle = NSDateFormatterMediumStyle;
   return formatter;
 }
 
@@ -95,7 +95,7 @@ NSString *XTHeaderHeightKey = @"height";
 
 - (void)loadHeader
 {
-  id result = [[_webView windowScriptObject]
+  id result = [_webView.windowScriptObject
       callWebScriptMethod:@"isCollapsed" withArguments:@[]];
 
   if ([result respondsToSelector:@selector(boolValue)])
@@ -103,7 +103,7 @@ NSString *XTHeaderHeightKey = @"height";
 
   NSString *html = [self generateHeaderHTML];
 
-  [[_webView mainFrame] loadHTMLString:html baseURL:[self templateURL]];
+  [_webView.mainFrame loadHTMLString:html baseURL:[self templateURL]];
 }
 
 - (NSString*)commitSHA
@@ -119,14 +119,14 @@ NSString *XTHeaderHeightKey = @"height";
 
 - (CGFloat)headerHeight
 {
-  const NSRect savedFrame = [_webView frame];
+  const NSRect savedFrame = _webView.frame;
 
-  [_webView setFrame:NSMakeRect(0, 0, savedFrame.size.width, 1)];
+  _webView.frame = NSMakeRect(0, 0, savedFrame.size.width, 1);
 
   const CGFloat result =
-      [[[[_webView mainFrame] frameView] documentView] frame].size.height;
+      _webView.mainFrame.frameView.documentView.frame.size.height;
 
-  [_webView setFrame:savedFrame];
+  _webView.frame = savedFrame;
   return result;
 }
 
@@ -142,7 +142,7 @@ dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
 {
   [super webView:sender didFinishLoadForFrame:frame];
 
-  DOMDocument *domDoc = [[sender mainFrame] DOMDocument];
+  DOMDocument *domDoc = sender.mainFrame.DOMDocument;
   DOMElement *parentsElement = [domDoc getElementById:@"parents"];
   GTRepository *gtRepo = _repository.gtRepo;
   NSError *error = nil;
@@ -156,28 +156,28 @@ dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
         [gtRepo lookUpObjectBySHA:parentSHA error:&error];
     
     if (parentCommit == nil) {
-      if ([parentSHA length] > 0) {
+      if (parentSHA.length > 0) {
         NSLog(@"%@", error);
       }
       continue;
     }
 
-    NSString *summary = [parentCommit messageSummary];
+    NSString *summary = parentCommit.messageSummary;
     CFStringRef cfEncodedSummary = CFXMLCreateStringByEscapingEntities(
         kCFAllocatorDefault, (__bridge CFStringRef)summary, NULL);
     NSString *encodedSummary = (NSString*)CFBridgingRelease(cfEncodedSummary);
 
-    [parentSpan setClassName:@"parent"];
+    parentSpan.className = @"parent";
     [parentSpan setAttribute:@"onclick" value:[NSString stringWithFormat:
         @"window.controller.selectSHA('%@')", parentCommit.SHA]];
-    [parentSpan setInnerHTML:encodedSummary];
+    parentSpan.innerHTML = encodedSummary;
     [parentsElement appendChild:parentDiv];
     [parentDiv appendChild:parentSpan];
   }
 
   if (!_expanded)
-    [[_webView windowScriptObject] callWebScriptMethod:@"disclosure"
-                                             withArguments:@[ @(NO) ]];
+    [_webView.windowScriptObject callWebScriptMethod:@"disclosure"
+                                       withArguments:@[ @(NO) ]];
 }
 
 #pragma mark - Web scripting

@@ -27,11 +27,11 @@ static const int kColumnWidth = 10;
 
 @implementation PBGitRevisionCell
 
-- (id)initWithCoder:(id)coder
+- (instancetype)initWithCoder:(id)coder
 {
   self = [super initWithCoder:coder];
   _textCell = [[NSTextFieldCell alloc] initWithCoder:coder];
-  [_textCell setFont:[NSFont labelFontOfSize:12]];
+  _textCell.font = [NSFont labelFontOfSize:12];
   return self;
 }
 
@@ -84,12 +84,12 @@ static const int kColumnWidth = 10;
   const float direction = center.y > source.y ? 1.0 : -1.0;
 
   NSArray *laneColors = [PBGitRevisionCell laneColors];
-  NSColor *color = laneColors[c % [laneColors count]];
+  NSColor *color = laneColors[c % laneColors.count];
 
   [color set];
 
   NSBezierPath *path = [NSBezierPath bezierPath];
-  [path setLineWidth:2];
+  path.lineWidth = 2;
 
   [path moveToPoint:source];
   [path relativeLineToPoint:NSMakePoint(0.0, direction * 1.0)];
@@ -144,7 +144,7 @@ static const int kColumnWidth = 10;
   NSMutableParagraphStyle *style =
       [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
 
-  [style setAlignment:NSCenterTextAlignment];
+  style.alignment = NSCenterTextAlignment;
   attributes[NSParagraphStyleAttributeName] = style;
   attributes[NSFontAttributeName] = [NSFont fontWithName:@"Helvetica" size:9];
 
@@ -188,9 +188,9 @@ static const int kColumnWidth = 10;
   }
 
   XTRepository *repo = [self.objectValue repo];
-  NSArray *refs = [repo refsIndex][[self.objectValue sha]];
+  NSArray *refs = repo.refsIndex[[self.objectValue sha]];
 
-  if ([refs count] > 0) {
+  if (refs.count > 0) {
     rect.origin.x += 2;
     rect.size.width -= 2;
     for (NSString *ref in refs) {
@@ -200,7 +200,7 @@ static const int kColumnWidth = 10;
 
       for (NSString *prefix in refPrefixes)
         if ([ref hasPrefix:prefix])
-          text = [ref substringFromIndex:[prefix length]];
+          text = [ref substringFromIndex:prefix.length];
 
       NSRect tokenRect = { rect.origin, { [XTRefToken rectWidthForText : text],
                                           rect.size.height } };
@@ -215,8 +215,8 @@ static const int kColumnWidth = 10;
     }
   }
 
-  [_textCell setObjectValue:[self.objectValue subject]];
-  [_textCell setHighlighted:[self isHighlighted]];
+  _textCell.objectValue = [self.objectValue subject];
+  _textCell.highlighted = self.highlighted;
   [_textCell drawWithFrame:rect inView:view];
 }
 

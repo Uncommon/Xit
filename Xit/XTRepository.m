@@ -32,7 +32,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
   return nil;
 }
 
-- (id)initWithURL:(NSURL *)url
+- (instancetype)initWithURL:(NSURL *)url
 {
   self = [super init];
   if (self != nil) {
@@ -48,7 +48,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
     _repoURL = url;
     NSMutableString *qName =
         [NSMutableString stringWithString:@"com.xit.queue."];
-    [qName appendString:[url path]];
+    [qName appendString:url.path];
     _queue = dispatch_queue_create(
         [qName cStringUsingEncoding:NSASCIIStringEncoding],
         DISPATCH_QUEUE_SERIAL);
@@ -138,27 +138,27 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
   NSLog(@"****command = git %@", [args componentsJoinedByString:@" "]);
   NSTask *task = [[NSTask alloc] init];
   [self addTask:task];
-  [task setCurrentDirectoryPath:[_repoURL path]];
-  [task setLaunchPath:_gitCMD];
-  [task setArguments:args];
+  task.currentDirectoryPath = _repoURL.path;
+  task.launchPath = _gitCMD;
+  task.arguments = args;
 
   NSPipe *pipe = [NSPipe pipe];
-  [task setStandardOutput:pipe];
-  [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
+  task.standardOutput = pipe;
+  task.standardError = [NSFileHandle fileHandleWithNullDevice];
 
   [task launch];
   NSMutableData *output = [NSMutableData data];
 
   BOOL end = NO;
   while (!end) {
-    NSData *availableData = [[pipe fileHandleForReading] availableData];
+    NSData *availableData = pipe.fileHandleForReading.availableData;
     [output appendData:availableData];
 
-    end = (([availableData length] == 0) && ![task isRunning]);
+    end = ((availableData.length == 0) && !task.running);
     if (end)
       [output appendData:zero];
 
-    NSRange searchRange = NSMakeRange(0, [output length]);
+    NSRange searchRange = NSMakeRange(0, output.length);
     NSRange zeroRange = [output rangeOfData:zero options:0 range:searchRange];
     while (zeroRange.location != NSNotFound) {
       NSRange commitRange = NSMakeRange(
@@ -169,14 +169,14 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
       if (str != nil)
         block(str);
       searchRange = NSMakeRange(zeroRange.location + 1,
-                                [output length] - (zeroRange.location + 1));
+                                output.length - (zeroRange.location + 1));
       zeroRange = [output rangeOfData:zero options:0 range:searchRange];
     }
     output = [NSMutableData dataWithData:[output subdataWithRange:searchRange]];
   }
 
   BOOL result = YES;
-  int status = [task terminationStatus];
+  const int status = task.terminationStatus;
   NSLog(@"**** status = %d", status);
 
   if (status != 0) {
@@ -224,9 +224,9 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
     NSLog(@"****command = git %@", [args componentsJoinedByString:@" "]);
     NSTask *task = [[NSTask alloc] init];
     [self addTask:task];
-    [task setCurrentDirectoryPath:[_repoURL path]];
-    [task setLaunchPath:_gitCMD];
-    [task setArguments:args];
+    task.currentDirectoryPath = _repoURL.path;
+    task.launchPath = _gitCMD;
+    task.arguments = args;
 
     if (stdIn != nil) {
 #if 0
@@ -235,31 +235,31 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
       NSLog(@"**** stdin = %lu\n%@", stdIn.length, stdIn);
 #endif
       NSPipe *stdInPipe = [NSPipe pipe];
-      [[stdInPipe fileHandleForWriting]
+      [stdInPipe.fileHandleForWriting
           writeData:[stdIn dataUsingEncoding:NSUTF8StringEncoding]];
-      [[stdInPipe fileHandleForWriting] closeFile];
-      [task setStandardInput:stdInPipe];
+      [stdInPipe.fileHandleForWriting closeFile];
+      task.standardInput = stdInPipe;
     }
 
     NSPipe *pipe = [NSPipe pipe];
     NSPipe *errorPipe = [NSPipe pipe];
 
-    [task setStandardOutput:pipe];
-    [task setStandardError:errorPipe];
+    task.standardOutput = pipe;
+    task.standardError = errorPipe;
 
     NSLog(@"task.currentDirectoryPath=%@", task.currentDirectoryPath);
     [task launch];
-    NSData *output = [[pipe fileHandleForReading] readDataToEndOfFile];
+    NSData *output = [pipe.fileHandleForReading readDataToEndOfFile];
     [task waitUntilExit];
 
-    int status = [task terminationStatus];
+    const int status = task.terminationStatus;
     NSLog(@"**** status = %d", status);
 
     if (status != 0) {
       NSString *string =
           [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
       NSData *errorOutput =
-          [[errorPipe fileHandleForReading] readDataToEndOfFile];
+          [errorPipe.fileHandleForReading readDataToEndOfFile];
       NSString *errorString =
           [[NSString alloc] initWithData:errorOutput encoding:NSUTF8StringEncoding];
       NSLog(@"**** output = %@", string);
@@ -294,11 +294,11 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
   if (error != nil)
     return nil;
 
-  id unresolved = [gtRef unresolvedTarget];
+  id unresolved = gtRef.unresolvedTarget;
 
   if (![unresolved isKindOfClass:[GTReference class]])
     return reference;
-  return [[gtRef unresolvedTarget] name];
+  return [gtRef.unresolvedTarget name];
 }
 
 /// Returns kEmptyTreeHash if the repository is empty, otherwise "HEAD"
@@ -317,7 +317,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 
   if (error != nil)
     return nil;
-  return [object SHA];
+  return object.SHA;
 }
 
 - (NSString *)headRef

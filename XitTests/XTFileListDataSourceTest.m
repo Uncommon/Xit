@@ -104,7 +104,7 @@
   XTHistoryDataSource *hds = [self makeDataSource];
   XTHistoryItem *item = [hds itemAtIndex:0];
 
-  [hds setController:(XTDocController*)docController];
+  hds.controller = (XTDocController*)docController;
   docController.selectedCommitSHA = item.sha;
 
   NSOutlineView *outlineView = [[NSOutlineView alloc] init];

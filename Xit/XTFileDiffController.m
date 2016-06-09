@@ -8,7 +8,8 @@
 
 @implementation XTFileDiffController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithNibName:(NSString*)nibNameOrNil
+                         bundle:(NSBundle*)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
@@ -19,7 +20,7 @@
 
 - (void)clear
 {
-  [[_webView mainFrame] loadHTMLString:@"" baseURL:nil];
+  [_webView.mainFrame loadHTMLString:@"" baseURL:nil];
 }
 
 + (void)appendDiffLine:(NSString*)text
@@ -85,7 +86,7 @@
 
   NSString *html = [NSString stringWithFormat:htmlTemplate, textLines];
 
-  [[_webView mainFrame] loadHTMLString:html baseURL:[[self class] baseURL]];
+  [_webView.mainFrame loadHTMLString:html baseURL:[[self class] baseURL]];
 }
 
 - (void)loadDiffOrNotify:(XTDiffDelta*)delta
@@ -100,7 +101,7 @@
           commit:(NSString*)sha
       repository:(XTRepository*)repository
 {
-  if ([path length] == 0) {
+  if (path.length == 0) {
     [self loadNotice:@"No selection"];
     return;
   }

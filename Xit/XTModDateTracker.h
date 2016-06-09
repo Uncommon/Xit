@@ -5,8 +5,8 @@
   NSDate *_lastDate;
 }
 
-- (id)initWithPath:(NSString *)filePath;
-- (NSDate *)modDate;
-- (BOOL)hasDateChanged;
+- (instancetype)initWithPath:(NSString *)filePath;
+@property (readonly, copy) NSDate *modDate;
+@property (readonly) BOOL hasDateChanged;
 
 @end

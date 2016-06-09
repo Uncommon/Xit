@@ -2,7 +2,7 @@
 
 @implementation XTAppDelegate
 
-- (id)init
+- (instancetype)init
 {
   self = [super init];
   if (self) {
@@ -23,14 +23,14 @@
 
   [_openPanel setCanChooseFiles:NO];
   [_openPanel setCanChooseDirectories:YES];
-  [_openPanel setDelegate:self];
+  _openPanel.delegate = self;
   
   // Add more descriptive title to open dialog box.
-  [_openPanel setMessage:@"Open a directory that contains a Git repository"];
+  _openPanel.message = @"Open a directory that contains a Git repository";
   
   [_openPanel beginWithCompletionHandler:^(NSInteger result) {
     if (result == NSFileHandlingPanelOKButton) {
-      for (NSURL *url in [_openPanel URLs]) {
+      for (NSURL *url in _openPanel.URLs) {
         [[NSDocumentController sharedDocumentController]
             openDocumentWithContentsOfURL:url
                                   display:YES
@@ -53,7 +53,7 @@
 {
   NSURL *repoURL = [url URLByAppendingPathComponent:@".git" isDirectory:YES];
 
-  if ([[NSFileManager defaultManager] fileExistsAtPath:[repoURL path]])
+  if ([[NSFileManager defaultManager] fileExistsAtPath:repoURL.path])
     return YES;
   else {
     NSAlert *alert = [[NSAlert alloc] init];

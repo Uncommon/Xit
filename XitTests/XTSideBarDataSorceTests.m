@@ -22,6 +22,7 @@
 
 @interface MockTextField : NSObject
 @property(strong) NSString *stringValue;
+@property(strong) NSFont *font;
 @end
 
 @interface MockCellView : NSObject
@@ -338,7 +339,7 @@
 
 @synthesize textField;
 
-- (id)init
+- (instancetype)init
 {
   if ([super init] == nil)
     return nil;

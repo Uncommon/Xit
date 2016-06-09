@@ -162,11 +162,11 @@ observeValueForKeyPath:(NSString*)keyPath
   if (self.viewSelector.selectedSegment == 1)
     newDS = _fileListDS;
   if (newDS.isHierarchical)
-    [_fileListOutline setOutlineTableColumn:
-        [_fileListOutline tableColumnWithIdentifier:@"main"]];
+    _fileListOutline.outlineTableColumn =
+        [_fileListOutline tableColumnWithIdentifier:@"main"];
   else
-    [_fileListOutline setOutlineTableColumn:
-        [_fileListOutline tableColumnWithIdentifier:@"hidden"]];
+    _fileListOutline.outlineTableColumn =
+        [_fileListOutline tableColumnWithIdentifier:@"hidden"];
   [_fileListOutline setDelegate:self];
   [_fileListOutline setDataSource:newDS];
   [_fileListOutline reloadData];
@@ -309,7 +309,7 @@ observeValueForKeyPath:(NSString*)keyPath
     cell.title = component;
     if (idx == components.count - 1)
       cell.image = [[NSWorkspace sharedWorkspace]
-                    iconForFileType:[component pathExtension]];
+                    iconForFileType:component.pathExtension];
     else
       cell.image = [NSImage imageNamed:NSImageNameFolder];
     [cells addObject:cell];
@@ -319,16 +319,16 @@ observeValueForKeyPath:(NSString*)keyPath
 
 - (void)loadSelectedPreview
 {
-  NSIndexSet *selection = [_fileListOutline selectedRowIndexes];
+  NSIndexSet *selection = _fileListOutline.selectedRowIndexes;
   
   if (selection.count == 0) {
     [self.contentController clear];
-    self.previewPath.pathComponentCells = [NSArray array];
+    self.previewPath.pathComponentCells = @[];
     return;
   }
   
   XTFileChange *selectedItem =
-      [self.fileListDataSource fileChangeAtRow:[selection firstIndex]];
+      [self.fileListDataSource fileChangeAtRow:selection.firstIndex];
   XTDocController *docController = self.view.window.windowController;
 
   [self updatePreviewPath:selectedItem.path];
@@ -361,7 +361,7 @@ observeValueForKeyPath:(NSString*)keyPath
   NSArray *paths = note.userInfo[XTPathsKey];
   BOOL doReload = paths == nil;
   
-  if (!doReload && self.inStagingView && ([paths count] != 0))
+  if (!doReload && self.inStagingView && (paths.count != 0))
     for (NSString *path in paths)
       if ([path isEqualToString:@"/"]) {
         doReload = YES;
@@ -389,7 +389,7 @@ observeValueForKeyPath:(NSString*)keyPath
 
 - (void)headerResized:(NSNotification*)note
 {
-  const CGFloat newHeight = [[note userInfo][XTHeaderHeightKey] floatValue];
+  const CGFloat newHeight = [note.userInfo[XTHeaderHeightKey] floatValue];
 
   [_headerSplitView animatePosition:newHeight ofDividerAtIndex:0];
 }
@@ -465,8 +465,8 @@ observeValueForKeyPath:(NSString*)keyPath
       cell.imageView.image = [NSImage imageNamed:NSImageNameFolder];
     else
       cell.imageView.image = [[NSWorkspace sharedWorkspace]
-                              iconForFileType:[path pathExtension]];
-    cell.textField.stringValue = [path lastPathComponent];
+                              iconForFileType:path.pathExtension];
+    cell.textField.stringValue = path.lastPathComponent;
     
     NSColor *textColor;
     
@@ -552,10 +552,10 @@ observeValueForKeyPath:(NSString*)keyPath
 
 - (void)animatePosition:(CGFloat)position ofDividerAtIndex:(NSInteger)index
 {
-  NSView *targetView = [self subviews][index];
-  NSRect endFrame = [targetView frame];
+  NSView *targetView = self.subviews[index];
+  NSRect endFrame = targetView.frame;
 
-  if ([self isVertical])
+  if (self.vertical)
       endFrame.size.width = position;
   else
       endFrame.size.height = position;
@@ -567,8 +567,8 @@ observeValueForKeyPath:(NSString*)keyPath
   NSViewAnimation *animation =
       [[NSViewAnimation alloc] initWithViewAnimations:@[ windowResize ]];
 
-  [animation setAnimationBlockingMode:NSAnimationBlocking];
-  [animation setDuration:0.2];
+  animation.animationBlockingMode = NSAnimationBlocking;
+  animation.duration = 0.2;
   [animation startAnimation];
 }
 

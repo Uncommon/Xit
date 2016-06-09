@@ -65,7 +65,7 @@
     if (![fileManager fileExistsAtPath:testFilePath]) {
       XCTFail(@"testFile NOT Found!!");
     }
-    if (![repository stageFile:[testFilePath lastPathComponent]]) {
+    if (![repository stageFile:testFilePath.lastPathComponent]) {
       XCTFail(@"add file '%@'", testFilePath);
     }
     if (![repository commitWithMessage:[NSString stringWithFormat:@"new %@",
@@ -114,7 +114,7 @@
                error:nil];
 
     XCTAssertTrue([defaultManager fileExistsAtPath:testFile]);
-    if (![repository stageFile:[testFile lastPathComponent]]) {
+    if (![repository stageFile:testFile.lastPathComponent]) {
       XCTFail(@"add file '%@'", testFile);
     }
     if (![repository commitWithMessage:[NSString stringWithFormat:@"new %@",

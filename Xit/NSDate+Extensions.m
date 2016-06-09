@@ -8,8 +8,8 @@ static NSDateFormatter *rfc2822Instance = nil;
     if (rfc2822Instance == nil) {
       rfc2822Instance = [[NSDateFormatter alloc] init];
       NSLocale *enUS = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-      [rfc2822Instance setLocale:enUS];
-      [rfc2822Instance setDateFormat:@"EEE, dd MMM yyyy HH:mm:ss ZZ"];
+      rfc2822Instance.locale = enUS;
+      rfc2822Instance.dateFormat = @"EEE, dd MMM yyyy HH:mm:ss ZZ";
     }
   }
   return rfc2822Instance;

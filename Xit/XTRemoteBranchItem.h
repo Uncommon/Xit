@@ -5,8 +5,8 @@
 
 @property(strong) NSString *remote;
 
-- (id)initWithTitle:(NSString *)theTitle
+- (instancetype)initWithTitle:(NSString *)theTitle
              remote:(NSString *)remote
-                sha:(NSString *)sha;
+                sha:(NSString *)sha NS_DESIGNATED_INITIALIZER;
 
 @end

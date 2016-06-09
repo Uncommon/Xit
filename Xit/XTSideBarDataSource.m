@@ -23,7 +23,7 @@ NSString * const XTStagingSHA = @"";
 @implementation XTSideBarDataSource
 
 
-- (id)init
+- (instancetype)init
 {
   if ((self = [super init]) != nil) {
     _roots = [self makeRoots];
@@ -68,7 +68,7 @@ NSString * const XTStagingSHA = @"";
 
 - (void)repoChanged:(NSNotification *)note
 {
-  NSArray *paths = [note userInfo][XTPathsKey];
+  NSArray *paths = note.userInfo[XTPathsKey];
 
   for (NSString *path in paths) {
     if ([path hasPrefix:@"/refs/"]) {
@@ -147,7 +147,7 @@ NSString * const XTStagingSHA = @"";
   void (^localBlock)(NSString *, NSString *) =
       ^(NSString *name, NSString *commit) {
     XTLocalBranchItem *branch =
-        [[XTLocalBranchItem alloc] initWithTitle:[name lastPathComponent]
+        [[XTLocalBranchItem alloc] initWithTitle:name.lastPathComponent
                                           andSha:commit];
 
     [branches addObject:branch];
@@ -200,7 +200,7 @@ NSString * const XTStagingSHA = @"";
 
 - (void)doubleClick:(id)sender
 {
-  id clickedItem = [_outline itemAtRow:[_outline clickedRow]];
+  id clickedItem = [_outline itemAtRow:_outline.clickedRow];
 
   if ([clickedItem isKindOfClass:[XTSubmoduleItem class]]) {
     XTSubmoduleItem *subItem = (XTSubmoduleItem*)clickedItem;
@@ -253,7 +253,7 @@ NSString * const XTStagingSHA = @"";
   NSInteger result = 0;
 
   if (item == nil) {
-    result = [_roots count] + 1;  // Groups plus staging item
+    result = _roots.count + 1;  // Groups plus staging item
   } else if ([item isKindOfClass:[XTSideBarItem class]]) {
     XTSideBarItem *sbItem = (XTSideBarItem *)item;
     result = [sbItem numberOfChildren];
@@ -300,17 +300,17 @@ NSString * const XTStagingSHA = @"";
                                                                owner:self];
 
     dataView.item = item;
-    [dataView.textField setStringValue:[item title]];
+    dataView.textField.stringValue = [item title];
     [dataView.textField setEditable:NO];
     [dataView.textField setSelectable:NO];
-    [dataView.imageView setImage:[NSImage imageNamed:@"stagingTemplate"]];
+    dataView.imageView.image = [NSImage imageNamed:@"stagingTemplate"];
     
     return dataView;
   } else if ([_roots containsObject:item]) {
     NSTableCellView *headerView =
         [outlineView makeViewWithIdentifier:@"HeaderCell" owner:self];
 
-    [headerView.textField setStringValue:[item title]];
+    headerView.textField.stringValue = [item title];
     return headerView;
   } else {
     XTSideBarTableCellView *dataView = (
@@ -318,7 +318,7 @@ NSString * const XTStagingSHA = @"";
                                                                owner:self];
 
     dataView.item = (XTSideBarItem *)item;
-    [dataView.textField setStringValue:[item title]];
+    (dataView.textField).stringValue = [item title];
 
     if ([item isKindOfClass:[XTStashItem class]]) {
       [dataView.textField setEditable:NO];
@@ -326,15 +326,15 @@ NSString * const XTStagingSHA = @"";
     } else {
       // These connections are in the xib, but they get lost, probably
       // when the row view gets copied.
-      [dataView.textField setFormatter:_refFormatter];
-      [dataView.textField setTarget:_viewController];
-      [dataView.textField setAction:@selector(sideBarItemRenamed:)];
-      [dataView.textField setEditable:YES];
-      [dataView.textField setSelectable:YES];
+      dataView.textField.formatter = _refFormatter;
+      dataView.textField.target = _viewController;
+      dataView.textField.action = @selector(sideBarItemRenamed:);
+      dataView.textField.editable = YES;
+      dataView.textField.selectable = YES;
     }
 
     if ([item isKindOfClass:[XTLocalBranchItem class]]) {
-      [dataView.imageView setImage:[NSImage imageNamed:@"branchTemplate"]];
+      (dataView.imageView).image = [NSImage imageNamed:@"branchTemplate"];
       if (![item isKindOfClass:[XTRemoteBranchItem class]]) {
         if ([[item title] isEqualToString:_currentBranch]) {
           dataView.button.hidden = NO;
@@ -348,16 +348,16 @@ NSString * const XTStagingSHA = @"";
         }
       }
     } else if ([item isKindOfClass:[XTTagItem class]]) {
-      [dataView.imageView setImage:[NSImage imageNamed:@"tagTemplate"]];
+      dataView.imageView.image = [NSImage imageNamed:@"tagTemplate"];
     } else if ([item isKindOfClass:[XTStashItem class]]) {
-      [dataView.imageView setImage:[NSImage imageNamed:@"stashTemplate"]];
+      dataView.imageView.image = [NSImage imageNamed:@"stashTemplate"];
     } else if ([item isKindOfClass:[XTSubmoduleItem class]]) {
-      [dataView.imageView setImage:[NSImage imageNamed:@"submoduleTemplate"]];
+      dataView.imageView.image = [NSImage imageNamed:@"submoduleTemplate"];
       [dataView.textField setEditable:NO];
     } else {
       [dataView.button setHidden:YES];
       if ([outlineView parentForItem:item] == _roots[XTRemotesGroupIndex])
-        [dataView.imageView setImage:[NSImage imageNamed:@"cloudTemplate"]];
+        (dataView.imageView).image = [NSImage imageNamed:@"cloudTemplate"];
     }
     return dataView;
   }

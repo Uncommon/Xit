@@ -2,7 +2,7 @@
 
 @implementation XTModDateTracker
 
-- (id)initWithPath:(NSString *)filePath
+- (instancetype)initWithPath:(NSString *)filePath
 {
   self = [super init];
   if (self == nil)

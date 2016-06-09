@@ -9,7 +9,7 @@ NSString *XTHeaderContentKey = @"content";
 
 @interface XTRepository (Private)
 
-- (NSArray*)stagingChanges;
+@property (readonly, copy) NSArray *stagingChanges;
 
 @end
 
@@ -40,14 +40,14 @@ NSString *XTHeaderContentKey = @"content";
     while ([scanner scanUpToString:@" " intoString:&commit]) {
       [scanner scanUpToString:@"\n" intoString:&name];
       if ([name hasPrefix:localBranchPrefix]) {
-        localBlock([name substringFromIndex:[localBranchPrefix length]],
+        localBlock([name substringFromIndex:localBranchPrefix.length],
                    commit);
       } else if ([name hasPrefix:tagPrefix]) {
-        tagBlock([name substringFromIndex:[tagPrefix length]], commit);
+        tagBlock([name substringFromIndex:tagPrefix.length], commit);
       } else if ([name hasPrefix:remotePrefix]) {
-        NSString *remoteName = [name pathComponents][2];
+        NSString *remoteName = name.pathComponents[2];
         const NSUInteger prefixLen =
-            [remotePrefix length] + [remoteName length] + 1;
+            remotePrefix.length + remoteName.length + 1;
         NSString *branchName = [name substringFromIndex:prefixLen];
 
         remoteBlock(remoteName, branchName, commit);
@@ -155,7 +155,7 @@ NSString *XTHeaderContentKey = @"content";
     NSArray *parents = commit.parents;
     GTCommit *parent = nil;
 
-    if ([parents count] != 0) {
+    if (parents.count != 0) {
       if ([parentSHA isEqualToString:@""]) {
         parent = parents[0];
       } else {
@@ -198,7 +198,7 @@ NSString *XTHeaderContentKey = @"content";
   if (parentSHA == nil) {
     NSArray *parents = commit.parents;
 
-    if ([parents count] > 0)
+    if (parents.count > 0)
       parentSHA = [parents[0] SHA];
   }
   
@@ -244,7 +244,7 @@ NSString *XTHeaderContentKey = @"content";
     change.unstagedChange = indexToWorking.status;
     [result addObject:change];
   }]) {
-    NSLog(@"Can't enumerate file status: %@", [error description]);
+    NSLog(@"Can't enumerate file status: %@", error.description);
     return nil;
   }
   
@@ -253,9 +253,9 @@ NSString *XTHeaderContentKey = @"content";
 
 - (BOOL)isTextFile:(NSString*)path commit:(NSString*)commit
 {
-  NSString *name = [path lastPathComponent];
+  NSString *name = path.lastPathComponent;
 
-  if ([name length] == 0)
+  if (name.length == 0)
     return NO;
 
   NSArray *extensionlessNames = @[
@@ -266,7 +266,7 @@ NSString *XTHeaderContentKey = @"content";
     if ([name isCaseInsensitiveLike:extensionless])
       return YES;
 
-  NSString *extension = [name pathExtension];
+  NSString *extension = name.pathExtension;
   const CFStringRef utType = UTTypeCreatePreferredIdentifierForTag(
       kUTTagClassFilenameExtension, (__bridge CFStringRef)extension, NULL);
   const Boolean result = UTTypeConformsTo(utType, kUTTypeText);
@@ -392,16 +392,16 @@ NSString *XTCommitSHAKey = @"sha",
       [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
   NSArray *sections = [commit componentsSeparatedByString:@"\0"];
 
-  if ([sections count] < 2) {
+  if (sections.count < 2) {
     NSLog(@"Commit failed to parse: %@", commit);
     return NO;
   }
 
   NSMutableArray *headerLines =
       [[sections[0] componentsSeparatedByString:@"\n"] mutableCopy];
-  NSString *lastLine = [headerLines lastObject];
+  NSString *lastLine = headerLines.lastObject;
 
-  if ([lastLine length] == 0)
+  if (lastLine.length == 0)
     [headerLines removeObject:lastLine];
 
   NSArray *headerKeys =
@@ -418,7 +418,7 @@ NSString *XTCommitSHAKey = @"sha",
           [NSCharacterSet characterSetWithCharactersInString:@" ()"]];
 
   [headerLines removeObjectAtIndex:refsLineIndex];
-  if ([refsLine length] == 0)
+  if (refsLine.length == 0)
     refsSet = [NSSet set];
   else
     refsSet = [NSSet setWithArray:[refsLine componentsSeparatedByString:@", "]];
@@ -446,16 +446,16 @@ NSString *XTCommitSHAKey = @"sha",
                                                forKeys:headerKeys];
   *message = sections[1];
   if (files != NULL) {
-    *files = [sections subarrayWithRange:NSMakeRange(2, [sections count] - 2)];
+    *files = [sections subarrayWithRange:NSMakeRange(2, sections.count - 2)];
 
     // The first file line has newlines at the beginning.
     NSMutableArray *mutableFiles = [*files mutableCopy];
 
-    if ([mutableFiles count] > 0) {
-      while (([mutableFiles count] > 0) && ([mutableFiles[0] length] == 0))
+    if (mutableFiles.count > 0) {
+      while ((mutableFiles.count > 0) && ([mutableFiles[0] length] == 0))
         [mutableFiles removeObjectAtIndex:0];
 
-      if ([mutableFiles count] > 0) {
+      if (mutableFiles.count > 0) {
         NSString *firstLine = [mutableFiles[0] stringByTrimmingCharactersInSet:
             [NSCharacterSet whitespaceAndNewlineCharacterSet]];
 

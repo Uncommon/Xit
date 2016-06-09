@@ -9,7 +9,7 @@
                     attributes:(NSDictionary *)attributes
          replacementAttributes:(NSDictionary *)replacementAttributes
 {
-  if ([placeholders count] != [replacements count])
+  if (placeholders.count != replacements.count)
     return nil;
 
   NSMutableAttributedString *result =
@@ -17,7 +17,7 @@
                                              attributes:attributes];
   NSMutableString *resultString = [result mutableString];
 
-  for (NSUInteger i = 0; i < [placeholders count]; ++i) {
+  for (NSUInteger i = 0; i < placeholders.count; ++i) {
     const NSRange replaceRange = [resultString rangeOfString:placeholders[i]];
 
     [result addAttributes:replacementAttributes range:replaceRange];

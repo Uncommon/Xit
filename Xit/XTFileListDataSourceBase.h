@@ -29,8 +29,9 @@
  */
 @protocol XTFileListDataSource <NSObject>
 
+@property (getter=isHierarchical, readonly) BOOL hierarchical;
+
 - (void)reload;
-- (BOOL)isHierarchical;
 - (XTFileChange*)fileChangeAtRow:(NSInteger)row;
 - (NSString*)pathForItem:(id)item;
 - (XitChange)changeForItem:(id)item;

@@ -3,9 +3,9 @@
 @implementation XTRemoteBranchItem
 
 
-- (id)initWithTitle:(NSString *)theTitle
-             remote:(NSString *)remoteName
-                sha:(NSString *)sha
+- (instancetype)initWithTitle:(NSString *)theTitle
+                       remote:(NSString *)remoteName
+                          sha:(NSString *)sha
 {
   if ((self = [super initWithTitle:theTitle andSha:sha]) != nil)
     self.remote = remoteName;

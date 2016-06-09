@@ -1,11 +1,11 @@
-typedef enum {
+typedef NS_ENUM(NSUInteger, XTRefType) {
   XTRefTypeBranch,
   XTRefTypeActiveBranch,
   XTRefTypeRemoteBranch,
   XTRefTypeTag,
   XTRefTypeRemote,
   XTRefTypeUnknown
-} XTRefType;
+};
 
 typedef enum {
   XTBranchesGroupIndex,
@@ -15,9 +15,9 @@ typedef enum {
   XTSubmodulesGroupIndex,
 } XTSideBarRootItems;
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, XTError) {
   XTErrorWriteLock = 1
-} XTError;
+};
 
 extern NSString *XTErrorDomainXit, *XTErrorDomainGit;
 

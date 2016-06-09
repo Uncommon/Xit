@@ -13,7 +13,7 @@
 
 @implementation XTFileTreeDataSource
 
-- (id)init
+- (instancetype)init
 {
   self = [super init];
   if (self != nil) {
@@ -55,10 +55,10 @@
   XitChange change = XitChangeUnmodified, unstagedChange = XitChangeUnmodified;
   BOOL firstItem = YES;
 
-  for (NSTreeNode *child in [node childNodes]) {
-    XTCommitTreeItem *childItem = (XTCommitTreeItem*)[child representedObject];
+  for (NSTreeNode *child in node.childNodes) {
+    XTCommitTreeItem *childItem = (XTCommitTreeItem*)child.representedObject;
 
-    if (![child isLeaf])
+    if (!child.isLeaf)
       [self updateChangeForNode:child];
     if (firstItem) {
       change = childItem.change;
@@ -73,7 +73,7 @@
     firstItem = NO;
   }
 
-  XTCommitTreeItem *item = [node representedObject];
+  XTCommitTreeItem *item = node.representedObject;
 
   item.change = change;
   item.unstagedChange = unstagedChange;
@@ -97,17 +97,17 @@
   NSMutableDictionary *nodes = [NSMutableDictionary dictionary];
   NSArray *changeList = [self.repository changesForRef:ref parent:nil];
   NSDictionary *changes = [[NSMutableDictionary alloc]
-      initWithCapacity:[changeList count]];
+      initWithCapacity:changeList.count];
   NSArray *files = [self.repository fileNamesForRef:ref];
   NSMutableArray *deletions =
-      [NSMutableArray arrayWithCapacity:[changes count]];
+      [NSMutableArray arrayWithCapacity:changes.count];
 
   for (XTFileChange *change in changeList) {
     [changes setValue:@( change.change ) forKey:change.path];
     if (change.change == XitChangeDeleted)
       [deletions addObject:change.path];
   }
-  if ([deletions count] > 0)
+  if (deletions.count > 0)
     files = [files arrayByAddingObjectsFromArray:deletions];
 
   for (NSString *file in files) {
@@ -116,12 +116,12 @@
     item.path = file;
     item.change = (XitChange)[changes[file] integerValue];
 
-    NSString *parentPath = [file stringByDeletingLastPathComponent];
+    NSString *parentPath = file.stringByDeletingLastPathComponent;
     NSTreeNode *node = [NSTreeNode treeNodeWithRepresentedObject:item];
     NSTreeNode *parentNode =
         [self findTreeNodeForPath:parentPath parent:newRoot nodes:nodes];
 
-    [[parentNode mutableChildNodes] addObject:node];
+    [parentNode.mutableChildNodes addObject:node];
     nodes[file] = node;
   }
   [self postProcessFileTree:newRoot];
@@ -161,14 +161,14 @@
     item.path = path;
     pathNode = [NSTreeNode treeNodeWithRepresentedObject:item];
 
-    NSString *parentPath = [path stringByDeletingLastPathComponent];
+    NSString *parentPath = path.stringByDeletingLastPathComponent;
 
     if (parentPath.length == 0) {
-      [[parent mutableChildNodes] addObject:pathNode];
+      [parent.mutableChildNodes addObject:pathNode];
     } else {
       NSTreeNode *parentNode =
           [self findTreeNodeForPath:parentPath parent:parent nodes:nodes];
-      [[parentNode mutableChildNodes] addObject:pathNode];
+      [parentNode.mutableChildNodes addObject:pathNode];
     }
     nodes[path] = pathNode;
   }
@@ -185,7 +185,7 @@
 - (NSString*)pathForItem:(id)item
 {
   XTCommitTreeItem *treeItem = (XTCommitTreeItem*)
-      [(NSTreeNode*)item representedObject];
+      ((NSTreeNode*)item).representedObject;
 
   return treeItem.path;
 }
@@ -193,7 +193,7 @@
 - (XitChange)changeForItem:(id)item
 {
   XTCommitTreeItem *treeItem = (XTCommitTreeItem*)
-      [(NSTreeNode*)item representedObject];
+      ((NSTreeNode*)item).representedObject;
 
   return treeItem.change;
 }
@@ -201,7 +201,7 @@
 - (XitChange)unstagedChangeForItem:(id)item
 {
   XTCommitTreeItem *treeItem = (XTCommitTreeItem*)
-      [(NSTreeNode*)item representedObject];
+      ((NSTreeNode*)item).representedObject;
 
   return treeItem.unstagedChange;
 }
@@ -216,10 +216,10 @@
   NSInteger res = 0;
 
   if (item == nil) {
-    res = [_root.childNodes count];
+    res = _root.childNodes.count;
   } else if ([item isKindOfClass:[NSTreeNode class]]) {
     NSTreeNode *node = (NSTreeNode *)item;
-    res = [[node childNodes] count];
+    res = node.childNodes.count;
   }
   return res;
 }
@@ -227,24 +227,17 @@
 - (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
 {
   NSTreeNode *node = (NSTreeNode *)item;
-  BOOL res = [[node childNodes] count] > 0;
-
-  return res;
+  
+  return node.childNodes.count > 0;
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView
             child:(NSInteger)index
            ofItem:(id)item
 {
-  id res;
-
-  if (item == nil) {
-    res = (_root.childNodes)[index];
-  } else {
-    NSTreeNode *node = (NSTreeNode *)item;
-    res = [node childNodes][index];
-  }
-  return res;
+  NSTreeNode *root = (item == nil) ? _root : (NSTreeNode*)item;
+  
+  return root.childNodes[index];
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView
@@ -253,7 +246,7 @@
 {
   NSTreeNode *node = (NSTreeNode *)item;
 
-  return [node representedObject];
+  return node.representedObject;
 }
 
 @end
