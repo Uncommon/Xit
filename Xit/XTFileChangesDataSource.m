@@ -76,6 +76,8 @@
       self.changes = newChanges;
     
     dispatch_async(dispatch_get_main_queue(), ^{
+      if (self.outlineView.dataSource != self)
+        return;
       [self.outlineView beginUpdates];
       if (deleteIndexes.count > 0)
         [self.outlineView removeItemsAtIndexes:deleteIndexes

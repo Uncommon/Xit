@@ -237,7 +237,7 @@
 {
   NSTreeNode *root = (item == nil) ? _root : (NSTreeNode*)item;
   
-  return root.childNodes[index];
+  return (index < root.childNodes.count) ? root.childNodes[index] : nil;
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView
