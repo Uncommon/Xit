@@ -5,7 +5,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface XTRepository (Commands)
 
-@property (readonly) NSString *currentBranch;
+@property (readonly) NSString * _Nullable currentBranch;
 
 - (BOOL)initializeRepository;
 - (BOOL)createBranch:(NSString*)name;
