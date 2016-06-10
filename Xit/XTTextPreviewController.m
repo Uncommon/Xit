@@ -2,8 +2,8 @@
 
 #import <WebKit/WebKit.h>
 
-#import "XTDocController.h"
 #import "XTRepository+Parsing.h"
+#import "Xit-Swift.h"
 
 @implementation XTTextPreviewController
 
@@ -57,8 +57,7 @@
 
 - (BOOL)isFileChanged:(NSString*)path inRepository:(XTRepository*)repo
 {
-  XTDocController *controller = self.view.window.windowController;
-  NSAssert([controller isKindOfClass:[XTDocController class]], @"");
+  XTWindowController *controller = self.view.window.windowController;
   NSArray *changes =
       [repo changesForRef:controller.selectedCommitSHA parent:nil];
 

@@ -1,5 +1,8 @@
 import Cocoa
 
+/**
+ * Wraps a stash to preset a unified list of file changes.
+ */
 public class XTStash: NSObject {
 
 var repo: XTRepository

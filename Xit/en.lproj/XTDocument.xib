@@ -5,10 +5,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="XTDocController">
+        <customObject id="-2" userLabel="File's Owner" customClass="XTWindowController" customModule="Xit" customModuleProvider="target">
             <connections>
-                <outlet property="_activity" destination="100113" id="100116"/>
-                <outlet property="_historyView" destination="100102" id="100105"/>
+                <outlet property="activity" destination="100113" id="LWu-SP-egG"/>
+                <outlet property="historyController" destination="100102" id="GPc-Qf-MhO"/>
                 <outlet property="window" destination="5" id="18"/>
             </connections>
         </customObject>

@@ -1,6 +1,6 @@
 #import "XTDocument.h"
-#import "XTDocController.h"
 #import "XTRepository.h"
+#import "Xit-Swift.h"
 #include "XTQueueUtils.h"
 
 @implementation XTDocument
@@ -32,7 +32,8 @@
 
 - (void)makeWindowControllers
 {
-  XTDocController *controller = [[XTDocController alloc] initWithDocument:self];
+  XTWindowController *controller =
+      [[XTWindowController alloc] initWithWindowNibName:@"XTDocument"];
 
   [self addWindowController:controller];
 }

@@ -1,5 +1,4 @@
 #import "XTHistoryViewController.h"
-#import "XTDocController.h"
 #import "XTFileViewController.h"
 #import "XTHistoryDataSource.h"
 #import "XTHistoryItem.h"
@@ -435,7 +434,7 @@
   const NSInteger selectedRow = table.selectedRow;
 
   if (selectedRow >= 0) {
-    XTDocController *controller = self.view.window.windowController;
+    XTWindowController *controller = self.view.window.windowController;
 
     controller.selectedCommitSHA = _historyDS.shas[selectedRow];
   }

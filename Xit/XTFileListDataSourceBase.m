@@ -1,8 +1,8 @@
 #import "XTFileListDataSourceBase.h"
 #import "XTConstants.h"
-#import "XTDocController.h"
 #import "XTFileViewController.h"
 #import "XTRepository.h"
+#import "Xit-Swift.h"
 #import <objc/runtime.h>
 
 
@@ -12,7 +12,7 @@
 
 - (void)dealloc
 {
-  [self.docController removeObserver:self forKeyPath:@"selectedCommitSHA"];
+  [self.winController removeObserver:self forKeyPath:@"selectedCommitSHA"];
 }
 
 - (void)reload
@@ -42,10 +42,10 @@
   }
 }
 
-- (void)setDocController:(XTDocController *)docController
+- (void)setWinController:(XTWindowController*)docController
 {
-  _docController = docController;
-  [_docController addObserver:self
+  _winController = docController;
+  [_winController addObserver:self
                    forKeyPath:NSStringFromSelector(@selector(selectedCommitSHA))
                       options:NSKeyValueObservingOptionNew
                       context:nil];

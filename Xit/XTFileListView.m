@@ -1,6 +1,6 @@
 #import "XTFileListView.h"
 #import "XTConstants.h"
-#import "XTDocController.h"
+#import "Xit-Swift.h"
 
 @implementation XTFileListView
 
@@ -27,10 +27,9 @@
 {
   [super drawBackgroundInClipRect:clipRect];
   
-  XTDocController *docController = (XTDocController*)
-      self.window.windowController;
+  XTWindowController *controller = self.window.windowController;
   
-  if (!docController.inStagingView)
+  if (!controller.inStagingView)
     return;
   
   const NSInteger highlightedIndex =
@@ -52,10 +51,9 @@
 {
   [super drawBackgroundInRect:dirtyRect];
 
-  XTDocController *docController = (XTDocController*)
-      self.outlineView.window.windowController;
+  XTWindowController *controller = self.outlineView.window.windowController;
 
-  if (docController.inStagingView &&
+  if (controller.inStagingView &&
       (self.interiorBackgroundStyle != NSBackgroundStyleDark)) {
     NSTableColumn *column = self.outlineView.highlightedTableColumn;
     const NSInteger columnIndex = [self.outlineView.tableColumns indexOfObject:column];

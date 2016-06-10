@@ -1,11 +1,11 @@
 #import "XTHistoryDataSource.h"
-#import "XTDocController.h"
 #import "XTHistoryItem.h"
 #import "XTRepository.h"
 #import "XTStatusView.h"
 #import "PBGitGrapher.h"
 #import "PBGitHistoryGrapher.h"
 #import "NSDate+Extensions.h"
+#import "Xit-Swift.h"
 
 @implementation XTHistoryDataSource
 
@@ -33,7 +33,7 @@
   [self reload];
 }
 
-- (void)setController:(XTDocController*)controller
+- (void)setController:(XTWindowController*)controller
 {
   _controller = controller;
   [controller addObserver:self

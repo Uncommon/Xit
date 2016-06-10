@@ -4,7 +4,6 @@
 
 #import "XTConstants.h"
 #import "XTCommitHeaderViewController.h"
-#import "XTDocController.h"
 #import "XTFileChangesDataSource.h"
 #import "XTFileDiffController.h"
 #import "XTFileListDataSourceBase.h"
@@ -114,13 +113,12 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 
 - (void)windowDidLoad
 {
-  XTDocController *controller = (XTDocController*)
+  XTWindowController *controller = (XTWindowController*)
       self.view.window.windowController;
 
-  NSAssert([controller isKindOfClass:[XTDocController class]], @"");
-  _fileChangeDS.docController = controller;
-  _fileListDS.docController = controller;
-  _headerController.docController = controller;
+  _fileChangeDS.winController = controller;
+  _fileListDS.winController = controller;
+  _headerController.winController = controller;
   [controller addObserver:self
                forKeyPath:@"selectedCommitSHA"
                   options:NSKeyValueObservingOptionNew |
@@ -329,7 +327,7 @@ observeValueForKeyPath:(NSString*)keyPath
   
   XTFileChange *selectedItem =
       [self.fileListDataSource fileChangeAtRow:selection.firstIndex];
-  XTDocController *docController = self.view.window.windowController;
+  XTWindowController *controller = self.view.window.windowController;
 
   [self updatePreviewPath:selectedItem.path];
   if (self.inStagingView) {
@@ -341,9 +339,8 @@ observeValueForKeyPath:(NSString*)keyPath
                                     repository:_repo];
   }
   else {
-    NSAssert([docController isKindOfClass:[XTDocController class]], @"");
     [self.contentController loadPath:selectedItem.path
-                              commit:docController.selectedCommitSHA
+                              commit:controller.selectedCommitSHA
                           repository:_repo];
   }
 }
@@ -373,12 +370,11 @@ observeValueForKeyPath:(NSString*)keyPath
 
 - (void)commitSelected:(NSNotification*)note
 {
-  XTDocController *docController = self.view.window.windowController;
+  XTWindowController *controller = self.view.window.windowController;
 
-  NSAssert([docController isKindOfClass:[XTDocController class]], @"");
-  _headerController.commitSHA = docController.selectedCommitSHA;
+  _headerController.commitSHA = controller.selectedCommitSHA;
   [self showUnstagedColumn:
-      [docController.selectedCommitSHA isEqualToString:XTStagingSHA]];
+      [controller.selectedCommitSHA isEqualToString:XTStagingSHA]];
   [self refresh];
 }
 

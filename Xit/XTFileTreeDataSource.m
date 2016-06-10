@@ -1,6 +1,5 @@
 #import "XTFileTreeDataSource.h"
 #import "XTConstants.h"
-#import "XTDocController.h"
 #import "Xit-Swift.h"
 
 @interface XTFileTreeDataSource ()
@@ -34,7 +33,7 @@
 - (void)reload
 {
   [self.repository executeOffMainThread:^{
-    NSString *ref = self.docController.selectedCommitSHA;
+    NSString *ref = self.winController.selectedCommitSHA;
     NSTreeNode *newRoot = [self fileTreeForRef:(ref == nil) ? @"HEAD" : ref];
 
     dispatch_async(dispatch_get_main_queue(), ^{

@@ -1,6 +1,5 @@
 #import "XTSideBarDataSource.h"
 #import "XTConstants.h"
-#import "XTDocController.h"
 #import "XTRefFormatter.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
@@ -329,9 +328,8 @@ NSString * const XTStagingSHA = @"";
   XTSideBarItem *item = [_outline itemAtRow:_outline.selectedRow];
 
   if (item.model != nil) {
-    XTDocController *controller = _outline.window.windowController;
+    XTWindowController *controller = _outline.window.windowController;
 
-    NSAssert([controller isKindOfClass:[XTDocController class]], @"");
     controller.selectedCommitSHA = item.model.shaToSelect;
   }
 }
