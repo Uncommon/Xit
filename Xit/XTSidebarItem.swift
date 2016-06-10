@@ -3,11 +3,14 @@ import Cocoa
 class XTSideBarItem: NSObject {
 
 var title: String
+var icon: NSImage? { return nil }
 var children: [XTSideBarItem]
 var model: XTFileChangesModel?
 var refType: XTRefType { return .Unknown } // only used for renaming
 var expandable: Bool { return false }
 var selectable: Bool { return true }
+var editable: Bool { return false }
+var current: Bool { return false }
 
 init(title: String)
 {
@@ -44,12 +47,33 @@ override var expandable: Bool { return true }
 class XTRemotesItem : XTSideBarGroupItem {}
 
 
-class XTStashItem : XTSideBarItem {}
+class XTStagingItem : XTSideBarItem {
+
+override var icon: NSImage? { return NSImage(named: "stagingTemplate") }
+
+}
+
+
+class XTStashItem : XTSideBarItem
+{
+
+override var icon: NSImage? { return NSImage(named: "stashTemplate") }
+
+}
 
 
 class XTLocalBranchItem : XTSideBarItem {
 
+override var icon: NSImage? { return NSImage(named: "branchTemplate") }
 override var refType: XTRefType { return .Branch }
+override var editable: Bool { return true }
+override var current: Bool
+{
+  if let currentBranch = self.model!.repository.currentBranch() {
+    return currentBranch == self.title
+  }
+  return false
+}
 
 }
 
@@ -57,7 +81,9 @@ override var refType: XTRefType { return .Branch }
 class XTRemoteBranchItem : XTLocalBranchItem {
 
 var remote: String
+override var icon: NSImage? { return NSImage(named: "branchTemplate") }
 override var refType: XTRefType { return .RemoteBranch }
+override var current: Bool { return false }
 
 init(title: String, remote: String, model: XTFileChangesModel)
 {
@@ -72,7 +98,9 @@ init(title: String, remote: String, model: XTFileChangesModel)
 
 class XTRemoteItem : XTSideBarItem {
 
+override var icon: NSImage? { return NSImage(named: "cloudTemplate") }
 override var expandable: Bool { return true }
+override var editable: Bool { return true }
 override var refType: XTRefType { return .Remote }
 
 }
@@ -81,6 +109,7 @@ override var refType: XTRefType { return .Remote }
 
 class XTTagItem : XTSideBarItem {
 
+override var icon: NSImage? { return NSImage(named: "tagTemplate") }
 override var refType: XTRefType { return .Tag }
 
 }
@@ -89,6 +118,7 @@ override var refType: XTRefType { return .Tag }
 class XTSubmoduleItem : XTSideBarItem {
 
 var submodule: GTSubmodule
+override var icon: NSImage? { return NSImage(named: "submoduleTemplate") }
 
 init(submodule: GTSubmodule)
 {

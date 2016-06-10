@@ -5,4 +5,5 @@
 #import "XTConstants.h"
 #import "XTFileTreeDataSource.h"
 #import "XTRepository.h"
+#import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"

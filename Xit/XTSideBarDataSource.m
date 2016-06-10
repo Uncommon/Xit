@@ -22,7 +22,7 @@ NSString * const XTStagingSHA = @"";
 {
   if ((self = [super init]) != nil) {
     _roots = [self makeRoots];
-    _stagingItem = [[XTSideBarItem alloc] initWithTitle:@"Staging"];
+    _stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
   }
 
   return self;
@@ -50,7 +50,6 @@ NSString * const XTStagingSHA = @"";
 {
   _outline.target = self;
   _outline.doubleAction = @selector(doubleClick:);
-  _outline.rowSizeStyle = NSTableViewRowSizeStyleMedium;
 }
 
 - (void)setRepo:(XTRepository *)newRepo
@@ -285,71 +284,39 @@ NSString * const XTStagingSHA = @"";
      viewForTableColumn:(NSTableColumn *)tableColumn
                    item:(id)item
 {
-  if (item == _stagingItem) {
-    XTSideBarTableCellView *dataView = (
-        XTSideBarTableCellView *)[outlineView makeViewWithIdentifier:@"DataCell"
-                                                               owner:self];
+  XTSideBarItem *sbItem = (XTSideBarItem*)item;
 
-    dataView.item = item;
-    [dataView.textField setStringValue:[item title]];
-    [dataView.textField setEditable:NO];
-    [dataView.textField setSelectable:NO];
-    [dataView.imageView setImage:[NSImage imageNamed:@"stagingTemplate"]];
-    
-    return dataView;
-  } else if ([_roots containsObject:item]) {
+  if ([_roots containsObject:item]) {
     NSTableCellView *headerView =
         [outlineView makeViewWithIdentifier:@"HeaderCell" owner:self];
 
     [headerView.textField setStringValue:[item title]];
     return headerView;
   } else {
-    XTSideBarItem *sbItem = (XTSideBarItem*)item;
     XTSideBarTableCellView *dataView = (XTSideBarTableCellView*)
         [outlineView makeViewWithIdentifier:@"DataCell"
                                       owner:self];
+    NSTextField *textField = dataView.textField;
 
     dataView.item = sbItem;
-    dataView.textField.stringValue = sbItem.title;
-
-    if ([item isKindOfClass:[XTStashItem class]]) {
-      dataView.textField.editable = NO;
-      dataView.textField.selectable = NO;
-    } else {
-      // These connections are in the xib, but they get lost, probably
-      // when the row view gets copied.
-      dataView.textField.formatter = _refFormatter;
-      dataView.textField.target = _viewController;
-      dataView.textField.action = @selector(sideBarItemRenamed:);
-      dataView.textField.editable = YES;
-      dataView.textField.selectable = YES;
+    dataView.imageView.image = sbItem.icon;
+    textField.stringValue = sbItem.title;
+    textField.editable = sbItem.editable;
+    textField.selectable = sbItem.editable;
+    if (sbItem.editable) {
+      textField.formatter = _refFormatter;
+      textField.target = _viewController;
+      textField.action = @selector(sideBarItemRenamed:);
     }
-
-    if ([item isKindOfClass:[XTLocalBranchItem class]]) {
-      dataView.imageView.image = [NSImage imageNamed:@"branchTemplate"];
-      if (![item isKindOfClass:[XTRemoteBranchItem class]]) {
-        if ([[item title] isEqualToString:_currentBranch]) {
-          dataView.button.hidden = NO;
-          dataView.textField.font =
-              [NSFont boldSystemFontOfSize:[NSFont smallSystemFontSize]];
-        }
-        else {
-          dataView.button.hidden = YES;
-          dataView.textField.font =
-              [NSFont systemFontOfSize:[NSFont smallSystemFontSize]];
-        }
-      }
-    } else if ([item isKindOfClass:[XTTagItem class]]) {
-      dataView.imageView.image = [NSImage imageNamed:@"tagTemplate"];
-    } else if ([item isKindOfClass:[XTStashItem class]]) {
-      dataView.imageView.image = [NSImage imageNamed:@"stashTemplate"];
-    } else if ([item isKindOfClass:[XTSubmoduleItem class]]) {
-      dataView.imageView.image = [NSImage imageNamed:@"submoduleTemplate"];
-      dataView.textField.editable = NO;
-    } else {
+    if (sbItem.current) {
+      dataView.button.hidden = NO;
+      textField.font =
+          [NSFont boldSystemFontOfSize:dataView.textField.font.pointSize];
+    }
+    else {
       dataView.button.hidden = YES;
-      if ([outlineView parentForItem:item] == _roots[XTRemotesGroupIndex])
-        dataView.imageView.image = [NSImage imageNamed:@"cloudTemplate"];
+      textField.font =
+          [NSFont systemFontOfSize:dataView.textField.font.pointSize];
     }
     return dataView;
   }
@@ -380,12 +347,13 @@ NSString * const XTStagingSHA = @"";
 {
   return [_roots containsObject:item];
 }
-/*
-- (BOOL)outlineView:(NSOutlineView *)outlineView
-    shouldShowOutlineCellForItem:(id)item
+
+- (CGFloat)outlineView:(NSOutlineView*)outlineView
+     heightOfRowByItem:(id)item
 {
-  // Don't show the Show/Hide control for group items.
-  return ![_roots containsObject:item];
+  // Using this instead of setting rowSizeStyle because that prevents text
+  // from displaying as bold (for the active branch).
+  return 20.0;
 }
-*/
+
 @end
