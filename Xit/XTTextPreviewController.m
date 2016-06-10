@@ -7,7 +7,7 @@
 
 @implementation XTTextPreviewController
 
-- (id)initWithNibName:(NSString*)nibNameOrNil bundle:(NSBundle*)nibBundleOrNil
+- (instancetype)initWithNibName:(NSString*)nibNameOrNil bundle:(NSBundle*)nibBundleOrNil
 {
   self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
   if (self != nil) {
@@ -19,7 +19,7 @@
 
 - (void)clear
 {
-  [[_webView mainFrame] loadHTMLString:@"" baseURL:nil];
+  [_webView.mainFrame loadHTMLString:@"" baseURL:nil];
 }
 
 - (void)loadText:(NSString*)text
@@ -37,7 +37,7 @@
   NSString *htmlTemplate = [[self class] htmlTemplate:@"text"];
   NSString *html = [NSString stringWithFormat:htmlTemplate, textLines];
 
-  [[_webView mainFrame] loadHTMLString:html baseURL:[[self class] baseURL]];
+  [_webView.mainFrame loadHTMLString:html baseURL:[[self class] baseURL]];
 }
 
 - (void)loadData:(NSData*)data

@@ -83,7 +83,7 @@
 
 - (void)setBackgroundStyle:(NSBackgroundStyle)backgroundStyle
 {
-  [super setBackgroundStyle:backgroundStyle];
+  super.backgroundStyle = backgroundStyle;
   if (backgroundStyle == NSBackgroundStyleDark)
     self.textField.textColor = [NSColor textColor];
   else if (self.change == XitChangeDeleted)

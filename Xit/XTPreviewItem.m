@@ -12,7 +12,7 @@
 @implementation XTPreviewItem
 
 
-- (id)init
+- (instancetype)init
 {
   if ((self = [super init]) != nil) {
     NSString *tempDir = NSTemporaryDirectory();
@@ -36,7 +36,7 @@
 - (NSString *)tempFilePath
 {
   return [_tempFolder
-      stringByAppendingPathComponent:[_path lastPathComponent]];
+      stringByAppendingPathComponent:_path.lastPathComponent];
 }
 
 - (void)deleteTempFile

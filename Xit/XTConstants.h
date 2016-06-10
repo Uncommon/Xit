@@ -18,9 +18,9 @@ typedef enum {
   XTSubmodulesGroupIndex,
 } XTSideBarRootItems;
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, XTError) {
   XTErrorWriteLock = 1
-} XTError;
+};
 
 extern NSString *XTErrorDomainXit, *XTErrorDomainGit;
 

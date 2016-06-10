@@ -142,12 +142,12 @@
   NSMutableParagraphStyle *paragraphStyle =
       [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
 
-  [shadow setShadowBlurRadius:1.0];
-  [shadow setShadowOffset:NSMakeSize(0, -1)];
-  [shadow setShadowColor:(type == XTRefTypeActiveBranch)
+  shadow.shadowBlurRadius = 1.0;
+  shadow.shadowOffset = NSMakeSize(0, -1);
+  shadow.shadowColor = (type == XTRefTypeActiveBranch)
       ? [NSColor blackColor]
-      : [NSColor whiteColor]];
-  [paragraphStyle setAlignment:NSCenterTextAlignment];
+      : [NSColor whiteColor];
+  paragraphStyle.alignment = NSCenterTextAlignment;
 
   NSDictionary *attributes = @{ NSFontAttributeName:[self labelFont],
                                 NSParagraphStyleAttributeName:paragraphStyle,
@@ -186,7 +186,7 @@
   if ([ref hasPrefix:@"refs/remotes"])
     return XTRefTypeRemoteBranch;
   if ([ref hasPrefix:@"refs/heads"]) {
-    if ([[ref lastPathComponent] isEqualToString:[repo currentBranch]])
+    if ([ref.lastPathComponent isEqualToString:[repo currentBranch]])
       return XTRefTypeActiveBranch;
     return XTRefTypeBranch;
   }

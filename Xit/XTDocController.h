@@ -14,7 +14,7 @@
 @property NSString *selectedCommitSHA;
 @property (readonly) BOOL inStagingView;
 
-- (id)initWithDocument:(XTDocument *)doc;
+- (instancetype)initWithDocument:(XTDocument *)doc;
 
 - (IBAction)refresh:(id)sender;
 - (IBAction)newTag:(id)sender;

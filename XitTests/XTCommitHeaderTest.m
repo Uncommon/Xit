@@ -17,7 +17,7 @@ NSDate *commitDate = nil;
 
 @interface XTCommitHeaderViewController (Test)
 
-- (NSString*)generateHeaderHTML;
+@property (readonly, copy) NSString *generateHeaderHTML;
 
 @end
 
@@ -40,7 +40,8 @@ NSDate *commitDate = nil;
 
 @interface FakeRepository : NSObject
 
-- (FakeGTRepository*)gtRepo;
+@property (readonly, strong) FakeGTRepository *gtRepo;
+
 - (BOOL)parseCommit:(NSString *)ref
          intoHeader:(NSDictionary **)header
             message:(NSString **)message
@@ -68,9 +69,9 @@ NSDate *commitDate = nil;
   XTCommitHeaderViewController *hvc = [[XTCommitHeaderViewController alloc] init];
   FakeRepository *fakeRepo = [[FakeRepository alloc] init];
 
-  [webView setFrameLoadDelegate:hvc];
-  [webView setUIDelegate:hvc];
-  [hvc setWebView:webView];
+  webView.frameLoadDelegate = hvc;
+  webView.UIDelegate = hvc;
+  hvc.webView = webView;
   hvc.repository = (XTRepository*)fakeRepo;
   hvc.commitSHA = @"blahblah";
 
@@ -113,7 +114,7 @@ NSDate *commitDate = nil;
 
   // Some differences may be due to changes in WebKit.
   XCTAssertEqual([lines count], [expectedLines count]);
-  for (NSUInteger i = 0; i < [lines count]; ++i)
+  for (NSUInteger i = 0; i < lines.count; ++i)
     XCTAssertEqualObjects(lines[i], expectedLines[i],
                           @"line %lu", (unsigned long)i);
 }

@@ -7,7 +7,7 @@
 
 @synthesize repository = _repo;
 
-- (id)initWithContentsOfURL:(NSURL *)absoluteURL
+- (instancetype)initWithContentsOfURL:(NSURL *)absoluteURL
                      ofType:(NSString *)typeName
                       error:(NSError **)outError
 {
@@ -20,7 +20,7 @@
   return self;
 }
 
-- (id)initForURL:(NSURL *)absoluteDocumentURL
+- (instancetype)initForURL:(NSURL *)absoluteDocumentURL
     withContentsOfURL:(NSURL *)absoluteDocumentContentsURL
                ofType:(NSString *)typeName
                 error:(NSError **)outError
@@ -43,7 +43,7 @@
 {
   NSURL *gitURL = [absoluteURL URLByAppendingPathComponent:@".git"];
 
-  if ([[NSFileManager defaultManager] fileExistsAtPath:[gitURL path]])
+  if ([[NSFileManager defaultManager] fileExistsAtPath:gitURL.path])
     return YES;
 
   if (outError != NULL) {

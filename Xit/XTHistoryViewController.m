@@ -21,7 +21,7 @@
 
 @implementation XTHistoryViewController
 
-- (id)initWithRepository:(XTRepository *)repository
+- (instancetype)initWithRepository:(XTRepository *)repository
                  sidebar:(XTSideBarOutlineView *)sidebar
 {
   if ((self = [self init]) == nil)
@@ -49,12 +49,12 @@
   [nib instantiateWithOwner:self topLevelObjects:NULL];
 
   // Load the file list view
-  NSView *lowerPane = [_mainSplitView subviews][1];
+  NSView *lowerPane = _mainSplitView.subviews[1];
   
   _fileViewController = [[XTFileViewController alloc]
       initWithNibName:@"XTFileViewController" bundle:nil];
   [lowerPane addSubview:_fileViewController.view];
-  [_fileViewController.view setFrameSize:[lowerPane frame].size];
+  [_fileViewController.view setFrameSize:lowerPane.frame.size];
   [[NSNotificationCenter defaultCenter]
       addObserver:_fileViewController
          selector:@selector(commitSelected:)
@@ -62,9 +62,9 @@
            object:_historyTable];
 
   // Remove intercell spacing so the history lines will connect
-  NSSize cellSpacing = [_historyTable intercellSpacing];
+  NSSize cellSpacing = _historyTable.intercellSpacing;
   cellSpacing.height = 0;
-  [_historyTable setIntercellSpacing:cellSpacing];
+  _historyTable.intercellSpacing = cellSpacing;
 
   // Without this, the first group title moves when you hide its contents
   [_sidebarOutline setFloatsGroupRows:NO];
@@ -72,7 +72,7 @@
 
 - (NSString*)nibName
 {
-  NSLog(@"nibName: %@ (%@)", [super nibName], [self class]);
+  NSLog(@"nibName: %@ (%@)", super.nibName, [self class]);
   return NSStringFromClass([self class]);
 }
 
@@ -95,7 +95,7 @@
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem
 {
-  const SEL action = [menuItem action];
+  const SEL action = menuItem.action;
   XTSideBarItem *item =
       (XTSideBarItem *)[_sidebarOutline itemAtRow:_sidebarOutline.contextMenuRow];
 
@@ -108,18 +108,18 @@
     if (_repo.isWriting)
       return NO;
     if (action == @selector(deleteBranch:))
-      return ![[_repo currentBranch] isEqualToString:[item title]];
+      return ![[_repo currentBranch] isEqualToString:item.title];
     if (action == @selector(mergeBranch:)) {
-      NSString *clickedBranch = [item title];
+      NSString *clickedBranch = item.title;
       NSString *currentBranch = [_repo currentBranch];
 
       if ([item isKindOfClass:[XTRemoteBranchItem class]]) {
         clickedBranch = [NSString stringWithFormat:
-            @"%@/%@", [(XTRemoteBranchItem *)item remote], clickedBranch];
+            @"%@/%@", ((XTRemoteBranchItem *)item).remote, clickedBranch];
       } else if ([item isKindOfClass:[XTLocalBranchItem class]]) {
         if ([clickedBranch isEqualToString:currentBranch]) {
-          [menuItem setAttributedTitle:nil];
-          [menuItem setTitle:@"Merge"];
+          menuItem.attributedTitle = nil;
+          menuItem.title = @"Merge";
           return NO;
         }
       } else {
@@ -139,7 +139,7 @@
                           attributes:menuFontAttributes
                replacementAttributes:obliqueAttributes];
 
-      [menuItem setAttributedTitle:mergeTitle];
+      menuItem.attributedTitle = mergeTitle;
     }
     if (action == @selector(deleteBranch:)) {
       // disable if it's the current branch
@@ -224,8 +224,8 @@
       if (error != nil)
         [XTStatusView
           updateStatus:errorString
-               command:[[error userInfo] valueForKey:XTErrorArgsKey]
-                output:[[error userInfo] valueForKey:XTErrorOutputKey]
+               command:[error.userInfo valueForKey:XTErrorArgsKey]
+                output:[error.userInfo valueForKey:XTErrorOutputKey]
          forRepository:_repo];
     }];
   }
@@ -262,7 +262,7 @@
                         output:nil
                  forRepository:_repo];
   } else {
-    NSDictionary *errorInfo = [error userInfo];
+    NSDictionary *errorInfo = error.userInfo;
 
     [XTStatusView updateStatus:@"Merge failed"
                        command:errorInfo[XTErrorArgsKey]
@@ -274,7 +274,7 @@
 - (IBAction)deleteBranch:(id)sender
 {
   [self callCMBlock:^(XTSideBarItem *item, NSError *__autoreleasing *error) {
-                      [_repo deleteBranch:[item title] error:error]; }
+                      [_repo deleteBranch:item.title error:error]; }
      verifyingClass:[XTLocalBranchItem class]
         errorString:@"Delete branch failed"];
 }
@@ -287,7 +287,7 @@
 - (IBAction)deleteTag:(id)sender
 {
   [self callCMBlock:^(XTSideBarItem *item, NSError *__autoreleasing *error) {
-                      [_repo deleteTag:[item title] error:error]; }
+                      [_repo deleteTag:item.title error:error]; }
      verifyingClass:[XTTagItem class]
         errorString:@"Delete tag failed"];
 }
@@ -300,7 +300,7 @@
 - (IBAction)deleteRemote:(id)sender
 {
   [self callCMBlock:^(XTSideBarItem *item, NSError *__autoreleasing *error) {
-                      [_repo deleteRemote:[item title] error:error]; }
+                      [_repo deleteRemote:item.title error:error]; }
      verifyingClass:[XTRemoteItem class]
         errorString:@"Delete remote failed"];
 }
@@ -308,14 +308,14 @@
 - (IBAction)copyRemoteURL:(id)sender {
   NSPasteboard *pasteBoard = [NSPasteboard generalPasteboard];
   XTSideBarItem *item =
-      [_sidebarOutline itemAtRow:[_sidebarOutline contextMenuRow]];
+      [_sidebarOutline itemAtRow:_sidebarOutline.contextMenuRow];
   NSString *remoteName =
-      [[NSString alloc] initWithFormat:@"remote.%@.url", [item title]];
+      [[NSString alloc] initWithFormat:@"remote.%@.url", item.title];
   NSString *remoteURL = [_repo urlStringForRemote:remoteName];
   
   [pasteBoard declareTypes:@[NSStringPboardType] owner:nil];
   
-  if ([remoteURL length] > 0) {
+  if (remoteURL.length > 0) {
     [pasteBoard setString:remoteURL forType:NSStringPboardType];
   }
 }
@@ -323,7 +323,7 @@
 - (IBAction)popStash:(id)sender
 {
   [self callCMBlock:^(XTSideBarItem *item, NSError *__autoreleasing *error) {
-                      [_repo popStash:[item title] error:error]; }
+                      [_repo popStash:item.title error:error]; }
      verifyingClass:[XTStashItem class]
         errorString:@"Pop stash failed"];
 }
@@ -331,7 +331,7 @@
 - (IBAction)applyStash:(id)sender
 {
   [self callCMBlock:^(XTSideBarItem *item, NSError **error) {
-                      [_repo applyStash:[item title] error:error]; }
+                      [_repo applyStash:item.title error:error]; }
      verifyingClass:[XTStashItem class]
         errorString:@"Apply stash failed"];
 }
@@ -339,24 +339,24 @@
 - (IBAction)dropStash:(id)sender
 {
   [self callCMBlock:^(XTSideBarItem *item, NSError **error) {
-                      [_repo dropStash:[item title] error:error]; }
+                      [_repo dropStash:item.title error:error]; }
      verifyingClass:[XTStashItem class]
         errorString:@"Drop stash failed"];
 }
 
 - (IBAction)toggleLayout:(id)sender
 {
-  [_mainSplitView setVertical:(((NSButton *)sender).state == 1)];
+  _mainSplitView.vertical = (((NSButton *)sender).state == 1);
   [_mainSplitView adjustSubviews];
 }
 
 - (IBAction)toggleSideBar:(id)sender
 {
-  const NSInteger buttonState = [(NSButton *)sender state];
+  const NSInteger buttonState = ((NSButton *)sender).state;
   const CGFloat newWidth = (buttonState == NSOnState) ? _savedSidebarWidth : 0;
 
   if (buttonState == NSOffState)
-    _savedSidebarWidth = [[_sidebarSplitView subviews][0] frame].size.width;
+    _savedSidebarWidth = (_sidebarSplitView.subviews[0]).frame.size.width;
   [_sidebarSplitView setPosition:newWidth ofDividerAtIndex:0];
 }
 
@@ -366,7 +366,7 @@
       (XTSideBarTableCellView *)[sender superview];
   XTSideBarItem *editedItem = cellView.item;
   NSString *newName = [sender stringValue];
-  NSString *oldName = [editedItem title];
+  NSString *oldName = editedItem.title;
 
   if ([newName isEqualToString:oldName])
     return;
@@ -393,12 +393,12 @@
 
 - (NSString *)selectedBranch
 {
-  id selection = [_sidebarOutline itemAtRow:[_sidebarOutline selectedRow]];
+  id selection = [_sidebarOutline itemAtRow:_sidebarOutline.selectedRow];
 
   if (selection == nil)
     return nil;
   if ([selection isKindOfClass:[XTLocalBranchItem class]])
-    return [(XTLocalBranchItem *)selection title];
+    return ((XTLocalBranchItem *)selection).title;
   return nil;
 }
 
@@ -424,14 +424,14 @@
 - (BOOL)splitView:(NSSplitView*)splitView
     shouldAdjustSizeOfSubview:(NSView*)view
 {
-  return view != [splitView subviews][0];
+  return view != splitView.subviews[0];
 }
 
 #pragma mark - NSTableViewDelegate
 
 - (void)tableViewSelectionDidChange:(NSNotification *)note
 {
-  NSTableView *table = (NSTableView *)[note object];
+  NSTableView *table = (NSTableView *)note.object;
   const NSInteger selectedRow = table.selectedRow;
 
   if (selectedRow >= 0) {
@@ -452,12 +452,12 @@ const NSUInteger kFullStyleThreshold = 280, kLongStyleThreshold = 210,
 {
   [cell setFont:[NSFont labelFontOfSize:12]];
 
-  if ([[column identifier] isEqualToString:@"subject"]) {
+  if ([column.identifier isEqualToString:@"subject"]) {
     XTHistoryItem *item = [_historyDS itemAtIndex:rowIndex];
 
     ((PBGitRevisionCell *)cell).objectValue = item;
-  } else if ([[column identifier] isEqualToString:@"date"]) {
-    const CGFloat width = [column width];
+  } else if ([column.identifier isEqualToString:@"date"]) {
+    const CGFloat width = column.width;
     NSDateFormatterStyle dateStyle = NSDateFormatterShortStyle;
     NSDateFormatterStyle timeStyle = NSDateFormatterShortStyle;
 
@@ -483,7 +483,7 @@ const NSUInteger kFullStyleThreshold = 280, kLongStyleThreshold = 210,
 - (void)tabView:(NSTabView *)tabView
     didSelectTabViewItem:(NSTabViewItem *)tabViewItem
 {
-  if ([[tabViewItem identifier] isEqualToString:@"tree"])
+  if ([tabViewItem.identifier isEqualToString:@"tree"])
     [_fileViewController refresh];
 }
 

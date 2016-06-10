@@ -9,7 +9,7 @@
 
 @implementation XTHistoryDataSource
 
-- (id)init
+- (instancetype)init
 {
   self = [super init];
   if (self) {
@@ -49,7 +49,7 @@
 
 - (void)repoChanged:(NSNotification*)note
 {
-  NSArray *paths = [note userInfo][XTPathsKey];
+  NSArray *paths = note.userInfo[XTPathsKey];
   
   for (NSString *path in paths) {
     if ([path hasPrefix:@".git/logs/"]) {
@@ -81,7 +81,7 @@
   if (_repo == nil)
     return;
   
-  const BOOL selectHead = [_table selectedRow] == -1;
+  const BOOL selectHead = _table.selectedRow == -1;
   
   [_repo executeOffMainThread:^{
     NSMutableOrderedSet<NSString*> *newShas = [NSMutableOrderedSet orderedSet];
@@ -129,7 +129,7 @@
     NSArray *comps = [line componentsSeparatedByString:@"\n"];
     XTHistoryItem *item = [[XTHistoryItem alloc] init];
     
-    if ([comps count] == 5) {
+    if (comps.count == 5) {
       item.sha = comps[0];
       NSString *parentsStr = comps[1];
       if (parentsStr.length > 0) {
@@ -169,18 +169,18 @@
   }];
   
   [XTStatusView updateStatus:[NSString stringWithFormat:@"%d commits loaded",
-                                                        (int)[newShas count]]
+                                                        (int)newShas.count]
                      command:nil
                       output:@""
                forRepository:_repo];
-  NSLog(@"-> %lu", [newShas count]);
+  NSLog(@"-> %lu", newShas.count);
 }
 
 #pragma mark - NSTableViewDataSource
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
-  return [_shas count];
+  return _shas.count;
 }
 
 - (id)tableView:(NSTableView *)aTableView

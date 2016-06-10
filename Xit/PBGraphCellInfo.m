@@ -9,7 +9,7 @@
 
 @implementation PBGraphCellInfo
 
-- (id)initWithPosition:(size_t)p andLines:(struct PBGitGraphLine *)l
+- (instancetype)initWithPosition:(size_t)p andLines:(struct PBGitGraphLine *)l
 {
   _position = p;
   _lines = l;

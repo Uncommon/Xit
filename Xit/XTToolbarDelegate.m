@@ -12,7 +12,7 @@
     [nib instantiateWithOwner:item topLevelObjects:&objects];
     for (id object in objects)
       if ([object isKindOfClass:[NSView class]])
-        [item setView:object];
+        item.view = object;
     return YES;
   }
   return NO;

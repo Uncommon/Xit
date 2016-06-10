@@ -16,7 +16,7 @@
 - (void)viewWillDraw
 {
   [super viewWillDraw];
-  if (![self.button isHidden]) {
+  if (!self.button.hidden) {
     [self.button sizeToFit];
 
     NSRect textFrame = self.textField.frame;

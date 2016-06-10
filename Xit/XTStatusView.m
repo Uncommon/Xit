@@ -42,17 +42,17 @@ NSString *const XTStatusOutputKey = @"output";
 {
   detachedWindow.title =
       [NSString stringWithFormat:detachedWindow.title, self.window.title];
-  [detachedWindow setContentSize:[detachedController.view bounds].size];
+  [detachedWindow setContentSize:(detachedController.view).bounds.size];
   detachedWindow.contentView = detachedController.view;
   [outputController view];  // make sure the view is loaded
 }
 
 - (void)viewDidMoveToWindow
 {
-  NSDocument *doc = [(NSWindowController*)self.window.windowController document];
+  NSDocument *doc = ((NSWindowController*)self.window.windowController).document;
 
   if ([doc isKindOfClass:[XTDocument class]])
-    [self setRepo:[(XTDocument*)doc repository]];
+    [self setRepo:((XTDocument*)doc).repository];
 }
 
 - (void)setRepo:(XTRepository *)newRepo
@@ -77,10 +77,10 @@ NSString *const XTStatusOutputKey = @"output";
 
 - (void)updateStatus:(NSNotification *)note
 {
-  NSString *status = [note userInfo][XTStatusTextKey];
+  NSString *status = note.userInfo[XTStatusTextKey];
 
   if (status != nil)
-    [label setStringValue:status];
+    label.stringValue = status;
 }
 
 - (IBAction)showOutput:(id)sender
@@ -96,7 +96,7 @@ NSString *const XTStatusOutputKey = @"output";
 
 - (NSWindow *)detachableWindowForPopover:(NSPopover *)pop
 {
-  [detachedWindow setContentSize:[pop contentSize]];
+  [detachedWindow setContentSize:pop.contentSize];
   return detachedWindow;
 }
 

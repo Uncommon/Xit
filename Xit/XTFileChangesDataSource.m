@@ -76,6 +76,8 @@
       self.changes = newChanges;
     
     dispatch_async(dispatch_get_main_queue(), ^{
+      if (self.outlineView.dataSource != self)
+        return;
       [self.outlineView beginUpdates];
       if (deleteIndexes.count > 0)
         [self.outlineView removeItemsAtIndexes:deleteIndexes
@@ -133,7 +135,7 @@
 - (NSInteger)outlineView:(NSOutlineView*)outlineView
     numberOfChildrenOfItem:(id)item
 {
-  return [self.changes count];
+  return self.changes.count;
 }
 
 - (id)outlineView:(NSOutlineView*)outlineView
@@ -152,7 +154,7 @@
     objectValueForTableColumn:(NSTableColumn*)tableColumn
                        byItem:(id)item
 {
-  return [(XTFileChange*)item path];
+  return ((XTFileChange*)item).path;
 }
 
 @end

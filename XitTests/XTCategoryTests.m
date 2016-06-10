@@ -17,7 +17,7 @@
                                         replacements:@[ @"branch", @"master" ]
                                           attributes:baseAttributes
                                replacementAttributes:obliqueAttributes];
-  const NSRange fullRange = NSMakeRange(0, [[string string] length]);
+  const NSRange fullRange = NSMakeRange(0, string.string.length);
 
   XCTAssertEqualObjects([string string], @"Merge branch into master");
 

@@ -7,7 +7,7 @@
 
 @implementation XTDocController
 
-- (id)initWithDocument:(XTDocument *)doc
+- (instancetype)initWithDocument:(XTDocument *)doc
 {
   self = [super initWithWindowNibName:@"XTDocument"];
   _xtDocument = doc;
@@ -20,7 +20,7 @@
   [super windowDidLoad];
 
   self.window.contentViewController = _historyView;
-  [[self window] makeFirstResponder:_historyView.historyTable];
+  [self.window makeFirstResponder:_historyView.historyTable];
   
   XTRepository *repo = _xtDocument.repository;
 

@@ -64,7 +64,7 @@
                   content:(NSString *)content
              inRepository:(XTRepository *)repo
 {
-  NSString *basePath = [repo.repoURL path];
+  NSString *basePath = repo.repoURL.path;
   NSString *filePath = [basePath stringByAppendingPathComponent:name];
 
   [content writeToFile:filePath

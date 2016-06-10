@@ -22,7 +22,7 @@ extern NSString *XTPathsKey;
   NSCache *_diffCache;
 }
 
-- (id)initWithURL:(NSURL*)url;
+- (instancetype)initWithURL:(NSURL*)url;
 - (BOOL)getCommitsWithArgs:(NSArray*)logArgs
     enumerateCommitsUsingBlock:(void (^)(NSString*))block
                          error:(NSError**)error;
@@ -41,10 +41,6 @@ extern NSString *XTPathsKey;
                         error:(NSError**)error;
 - (BOOL)executeWritingBlock:(BOOL (^)())block;
 
-- (BOOL)hasHeadReference;
-- (NSString*)parentTree;
-- (NSString*)headRef;
-- (NSString*)headSHA;
 - (NSString*)shaForRef:(NSString*)ref;
 
 - (NSData*)contentsOfFile:(NSString*)filePath atCommit:(NSString*)commit;
@@ -66,6 +62,10 @@ extern NSString *XTPathsKey;
 - (void)addTask:(NSTask*)task;
 - (void)removeTask:(NSTask*)task;
 
+@property(readonly) BOOL hasHeadReference;
+@property(readonly, copy) NSString *parentTree;
+@property(readonly, copy) NSString *headRef;
+@property(readonly, copy) NSString *headSHA;
 @property(readonly) GTRepository *gtRepo;
 @property(strong) NSDictionary *refsIndex;
 @property(readonly) dispatch_queue_t queue;

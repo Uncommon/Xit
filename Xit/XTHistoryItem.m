@@ -3,7 +3,7 @@
 @implementation XTHistoryItem
 
 
-- (id)init
+- (instancetype)init
 {
   self = [super init];
   if (self) {

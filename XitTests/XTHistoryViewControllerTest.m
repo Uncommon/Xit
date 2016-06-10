@@ -262,7 +262,7 @@
 
 - (void)statusUpdated:(NSNotification *)note
 {
-  self.statusData = [note userInfo];
+  self.statusData = note.userInfo;
 }
 
 - (void)testMergeSuccess

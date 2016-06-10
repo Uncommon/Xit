@@ -50,9 +50,9 @@
 
 - (IBAction)sideBarItemRenamed:(id)sender;
 
-- (NSString *)selectedBranch;
 - (void)selectBranch:(NSString *)branch;
 
+@property(readonly) NSString *selectedBranch;
 @property(readonly) XTSideBarDataSource *sideBarDS;
 @property(readonly) XTHistoryDataSource *historyDS;
 @property(readonly) NSTableView *historyTable;
@@ -62,7 +62,7 @@
 @property(readonly) NSMenu *stashContextMenu;
 
 // For testing
-- (id)initWithRepository:(XTRepository *)repository
+- (instancetype)initWithRepository:(XTRepository *)repository
                  sidebar:(XTSideBarOutlineView *)sidebar;
 
 @end

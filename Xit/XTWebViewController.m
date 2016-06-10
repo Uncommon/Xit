@@ -33,7 +33,7 @@ const NSInteger WebMenuItemTagInspectElement = 2024;
           kCFAllocatorDefault, (__bridge CFStringRef)text, NULL));
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
@@ -49,18 +49,18 @@ const NSInteger WebMenuItemTagInspectElement = 2024;
   NSString *escapedText = [[self class] escapeText:text];
   NSString *html = [NSString stringWithFormat:template, escapedText];
   
-  [[_webView mainFrame] loadHTMLString:html baseURL:[[self class] baseURL]];
+  [_webView.mainFrame loadHTMLString:html baseURL:[[self class] baseURL]];
 }
 
 - (void)webView:(WebView*)sender didFinishLoadForFrame:(WebFrame*)frame
 {
-  NSScrollView *scrollView = [[[[_webView mainFrame] frameView]
-      documentView] enclosingScrollView];
+  NSScrollView *scrollView =
+      _webView.mainFrame.frameView.documentView.enclosingScrollView;
 
   [scrollView setHasHorizontalScroller:NO];
-  [scrollView setHorizontalScrollElasticity:NSScrollElasticityNone];
-  [scrollView setBackgroundColor:[NSColor colorWithDeviceWhite:0.8 alpha:1.0]];
-  [[_webView windowScriptObject] setValue:self forKey:@"controller"];
+  scrollView.horizontalScrollElasticity = NSScrollElasticityNone;
+  scrollView.backgroundColor = [NSColor colorWithDeviceWhite:0.8 alpha:1.0];
+  [_webView.windowScriptObject setValue:self forKey:@"controller"];
 }
 
 - (NSUInteger)webView:(WebView*)sender
@@ -87,11 +87,11 @@ contextMenuItemsForElement:(NSDictionary*)element
       };
   const unsigned int kAllowedCount = sizeof(allowedTags)/sizeof(NSInteger);
   NSMutableArray *allowedItems =
-      [NSMutableArray arrayWithCapacity:[defaultMenuItems count]];
+      [NSMutableArray arrayWithCapacity:defaultMenuItems.count];
 
   for (NSMenuItem *item in defaultMenuItems) {
     for (int i = 0; i < kAllowedCount; ++i)
-      if (allowedTags[i] == [item tag]) {
+      if (allowedTags[i] == item.tag) {
         [allowedItems addObject:item];
         break;
       }

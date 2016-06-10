@@ -18,7 +18,7 @@ NSString * const XTStagingSHA = @"";
 @implementation XTSideBarDataSource
 
 
-- (id)init
+- (instancetype)init
 {
   if ((self = [super init]) != nil) {
     _roots = [self makeRoots];
@@ -64,7 +64,7 @@ NSString * const XTStagingSHA = @"";
 
 - (void)repoChanged:(NSNotification *)note
 {
-  NSArray *paths = [note userInfo][XTPathsKey];
+  NSArray *paths = note.userInfo[XTPathsKey];
 
   for (NSString *path in paths) {
     if ([path hasPrefix:@"/refs/"]) {
@@ -145,7 +145,7 @@ NSString * const XTStagingSHA = @"";
     XTCommitChanges *branchModel =
         [[XTCommitChanges alloc] initWithRepository:_repo sha:commit];
     XTLocalBranchItem *branch =
-        [[XTLocalBranchItem alloc] initWithTitle:[name lastPathComponent]
+        [[XTLocalBranchItem alloc] initWithTitle:name.lastPathComponent
                                            model:branchModel];
 
     [branches addObject:branch];
@@ -202,7 +202,7 @@ NSString * const XTStagingSHA = @"";
 
 - (void)doubleClick:(id)sender
 {
-  id clickedItem = [_outline itemAtRow:[_outline clickedRow]];
+  id clickedItem = [_outline itemAtRow:_outline.clickedRow];
 
   if ([clickedItem isKindOfClass:[XTSubmoduleItem class]]) {
     XTSubmoduleItem *subItem = (XTSubmoduleItem*)clickedItem;
@@ -290,7 +290,7 @@ NSString * const XTStagingSHA = @"";
     NSTableCellView *headerView =
         [outlineView makeViewWithIdentifier:@"HeaderCell" owner:self];
 
-    [headerView.textField setStringValue:[item title]];
+    headerView.textField.stringValue = [item title];
     return headerView;
   } else {
     XTSideBarTableCellView *dataView = (XTSideBarTableCellView*)

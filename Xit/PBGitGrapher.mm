@@ -16,7 +16,7 @@ using namespace std;
 
 #define MAX_LANES 100
 
-- (id)init {
+- (instancetype)init {
     self = [super init];
     if (self) {
         _pl = new std::list<PBGitLane *>;
@@ -39,8 +39,8 @@ void add_line(struct PBGitGraphLine *lines, int *nLines, int upper, size_t from,
 
     std::list<PBGitLane *> *currentLanes = new std::list<PBGitLane *>;
     std::list<PBGitLane *> *previousLanes = (std::list<PBGitLane *> *)_pl;
-    NSArray *parents = [commit parents];
-    NSUInteger nParents = [parents count];
+    NSArray *parents = commit.parents;
+    NSUInteger nParents = parents.count;
 
     NSUInteger maxLines = (previousLanes->size() + nParents + 2) * 2;
     struct PBGitGraphLine *lines = (struct PBGitGraphLine *)malloc(sizeof(struct PBGitGraphLine) * maxLines);
@@ -48,7 +48,7 @@ void add_line(struct PBGitGraphLine *lines, int *nLines, int upper, size_t from,
 
     PBGitLane *currentLane = NULL;
     BOOL didFirst = NO;
-    NSString *commit_oid = [commit sha];
+    NSString *commit_oid = commit.sha;
 
     // First, iterate over earlier columns and pass through any that don't want this commit
     if (_previous != nil) {
