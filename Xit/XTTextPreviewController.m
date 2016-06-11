@@ -72,7 +72,9 @@
           commit:(NSString*)sha
       repository:(XTRepository*)repository
 {
-  [self loadData:[repository contentsOfFile:path atCommit:sha]];
+  NSError *error = nil;
+
+  [self loadData:[repository contentsOfFile:path atCommit:sha error:&error]];
 }
 
 - (void)loadUnstagedPath:(NSString*)path
@@ -86,7 +88,9 @@
 - (void)loadStagedPath:(NSString*)path
             repository:(XTRepository*)repository
 {
-  [self loadData:[repository contentsOfStagedFile:path]];
+  NSError *error = nil;
+  
+  [self loadData:[repository contentsOfStagedFile:path error:&error]];
 }
 
 @end

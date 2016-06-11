@@ -16,7 +16,8 @@ typedef enum {
 } XTSideBarRootItems;
 
 typedef NS_ENUM(NSUInteger, XTError) {
-  XTErrorWriteLock = 1
+  XTErrorWriteLock = 1,
+  XTErrorUnexpectedObject,
 };
 
 extern NSString *XTErrorDomainXit, *XTErrorDomainGit;

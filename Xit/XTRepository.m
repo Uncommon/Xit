@@ -342,43 +342,56 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
   return [self shaForRef:[self headRef]];
 }
 
-- (NSData*)contentsOfFile:(NSString*)filePath atCommit:(NSString*)commitSHA
+- (NSData*)contentsOfFile:(NSString*)filePath
+                 atCommit:(NSString*)commitSHA
+                    error:(NSError**)error
 {
-  if ((filePath == nil) || (commitSHA == nil))
-    return nil;
+  GTCommit *commit = [self.gtRepo lookUpObjectBySHA:commitSHA error:error];
 
-  NSError *error = nil;
-  GTCommit *commit = [self.gtRepo lookUpObjectBySHA:commitSHA error:&error];
-
-  if (![commit isKindOfClass:[GTCommit class]])
+  if (![commit isKindOfClass:[GTCommit class]]) {
+    if (*error == nil)
+      *error = [NSError errorWithDomain:XTErrorDomainXit
+                                   code:XTErrorUnexpectedObject
+                               userInfo:nil];
     return nil;
+  }
 
   GTTree *tree = commit.tree;
-  GTTreeEntry *entry = [tree entryWithPath:filePath error:&error];
-  GTBlob *blob = (GTBlob*)[entry GTObject:&error];
+  GTTreeEntry *entry = [tree entryWithPath:filePath error:error];
+  GTBlob *blob = (GTBlob*)[entry GTObject:error];
 
-  if (![blob isKindOfClass:[GTBlob class]])
+  if (![blob isKindOfClass:[GTBlob class]]) {
+    if (*error == nil)
+      *error = [NSError errorWithDomain:XTErrorDomainXit
+                                   code:XTErrorUnexpectedObject
+                               userInfo:nil];
     return nil;
+  }
   return blob.data;
 }
 
 - (NSData*)contentsOfStagedFile:(NSString*)filePath
+                          error:(NSError**)error
 {
-  if (filePath == nil)
-    return nil;
-
-  NSError *error = nil;
-  GTIndex *index = [self.gtRepo indexWithError:&error];
+  GTIndex *index = [self.gtRepo indexWithError:error];
   
+  if (index == nil)
+    return nil;
   // GTRepository returns any cached index object it had, so it may need
   // to be reloaded.
-  [index refresh:&error];
-  
-  GTIndexEntry *entry = [index entryWithPath:filePath error:&error];
-  GTBlob *blob = (GTBlob*)[entry GTObject:&error];
-  
-  if (![blob isKindOfClass:[GTBlob class]])
+  if ([index refresh:error])
     return nil;
+  
+  GTIndexEntry *entry = [index entryWithPath:filePath error:error];
+  GTBlob *blob = (GTBlob*)[entry GTObject:error];
+  
+  if (![blob isKindOfClass:[GTBlob class]]) {
+    if (*error == nil)
+      *error = [NSError errorWithDomain:XTErrorDomainXit
+                                   code:XTErrorUnexpectedObject
+                               userInfo:nil];
+    return nil;
+  }
   return blob.data;
 }
 

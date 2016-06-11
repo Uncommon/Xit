@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString *XTRepositoryChangedNotification;
 extern NSString *XTErrorOutputKey;
 extern NSString *XTErrorArgsKey;
@@ -36,15 +38,18 @@ extern NSString *XTPathsKey;
                        writes:(BOOL)writes
                         error:(NSError**)error;
 - (NSData*)executeGitWithArgs:(NSArray*)args
-                    withStdIn:(NSString*)stdIn
+                    withStdIn:(nullable NSString*)stdIn
                        writes:(BOOL)writes
                         error:(NSError**)error;
 - (BOOL)executeWritingBlock:(BOOL (^)())block;
 
-- (NSString*)shaForRef:(NSString*)ref;
+- (nullable NSString*)shaForRef:(NSString*)ref;
 
-- (NSData*)contentsOfFile:(NSString*)filePath atCommit:(NSString*)commit;
-- (NSData*)contentsOfStagedFile:(NSString*)filePath;
+- (NSData*)contentsOfFile:(NSString*)filePath
+                 atCommit:(NSString*)commit
+                    error:(NSError**)error;
+- (NSData*)contentsOfStagedFile:(NSString*)filePath
+                          error:(NSError**)error;
 
 - (void)addReloadObserver:(id)observer selector:(SEL)selector;
 
@@ -77,12 +82,7 @@ extern NSString *XTPathsKey;
 
 @end
 
+NS_ASSUME_NONNULL_END
+
 // An empty tree will always have this hash.
 #define kEmptyTreeHash @"4b825dc642cb6eb9a060e54bf8d69288fbee4904"
-
-void fsevents_callback(ConstFSEventStreamRef streamRef,
-                       void *userData,
-                       size_t numEvents,
-                       void *eventPaths,
-                       const FSEventStreamEventFlags eventFlags[],
-                       const FSEventStreamEventId eventIds[]);
