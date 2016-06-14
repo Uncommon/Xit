@@ -101,8 +101,8 @@ class XTStashChanges: NSObject, XTFileChangesModel {
          let untrackedData = self.repository.contentsOfFile(path, atCommit: untrackedCommit.SHA) {
         return untrackedData
       }
-      return self.repository.contentsOfFile(path,
-                                            atCommit: self.stash.mainCommit.SHA)
+      return self.repository.contentsOfFile(
+          path, atCommit: self.stash.mainCommit.SHA)
     }
   }
 

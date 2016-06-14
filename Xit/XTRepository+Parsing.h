@@ -46,7 +46,8 @@ typedef NS_ENUM(NSUInteger, XitChange) {
                                      NSString *commit))remoteBlock
                   tagBlock:(void (^)(NSString *name, NSString *commit))tagBlock;
 /// Returns a dictionary mapping paths to XTWorkspaceFileStatuses.
-- (BOOL)readStashesWithBlock:(void (^)(NSString *commit, NSString *name))block;
+- (BOOL)readStashesWithBlock:
+    (void (^)(NSString *commit, NSUInteger index, NSString *name))block;
 - (BOOL)readSubmodulesWithBlock:(void (^)(GTSubmodule *sub))block;
 - (BOOL)parseCommit:(NSString*)ref
          intoHeader:(NSDictionary * _Nullable * _Nonnull)header

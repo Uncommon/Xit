@@ -128,7 +128,7 @@
 
   NSMutableArray *stashes = [NSMutableArray array];
 
-  [self.repository readStashesWithBlock:^(NSString *commit, NSString *name) {
+  [self.repository readStashesWithBlock:^(NSString *commit, NSUInteger index, NSString *name) {
     [stashes addObject:name];
   }];
   XCTAssertEqualObjects(stashes, composedStashes, @"");

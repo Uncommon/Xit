@@ -90,7 +90,7 @@ NSString *XTHeaderContentKey = @"content";
   return result;
 }
 
-- (BOOL)readStashesWithBlock:(void (^)(NSString *, NSString *))block
+- (BOOL)readStashesWithBlock:(void (^)(NSString *, NSUInteger, NSString *))block
 {
   NSError *error = nil;
   NSData *output =
@@ -103,10 +103,12 @@ NSString *XTHeaderContentKey = @"content";
         [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
     NSScanner *scanner = [NSScanner scannerWithString:refs];
     NSString *commit, *name;
+    NSUInteger stashIndex = 0;
 
     while ([scanner scanUpToString:@" " intoString:&commit]) {
       [scanner scanUpToString:@"\n" intoString:&name];
-      block(commit, name);
+      block(commit, stashIndex, name);
+      ++stashIndex;
     }
   }
   return error == nil;

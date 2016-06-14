@@ -124,8 +124,13 @@ NSString * const XTStagingSHA = @"";
 - (void)loadStashes:(NSMutableArray *)stashes
           refsIndex:(NSMutableDictionary *)refsIndex
 {
-  [_repo readStashesWithBlock:^(NSString *commit, NSString *name) {
-    XTSideBarItem *stash = [[XTStashItem alloc] initWithTitle:name];
+  [_repo readStashesWithBlock:
+      ^(NSString *commit, NSUInteger index, NSString *name) {
+    XTStashChanges *stashModel = [[XTStashChanges alloc]
+        initWithRepository:_repo index:index];
+    XTSideBarItem *stash = [[XTStashItem alloc]
+        initWithTitle:name model:stashModel];
+    
     [stashes addObject:stash];
     [refsIndex addObject:name forKey:commit];
   }];

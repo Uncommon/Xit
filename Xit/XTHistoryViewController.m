@@ -434,6 +434,10 @@
 
 - (void)tableViewSelectionDidChange:(NSNotification *)note
 {
+  // If the selection wasn't directly user-initiated, don't propagate it.
+  if (self.view.window.firstResponder != self.historyTable)
+    return;
+
   NSTableView *table = (NSTableView *)note.object;
   const NSInteger selectedRow = table.selectedRow;
 
