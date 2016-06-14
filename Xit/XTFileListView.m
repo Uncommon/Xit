@@ -29,7 +29,7 @@
   
   XTWindowController *controller = self.window.windowController;
   
-  if (!controller.inStagingView)
+  if (!controller.selectedModel.hasUnstaged)
     return;
   
   const NSInteger highlightedIndex =
@@ -53,7 +53,7 @@
 
   XTWindowController *controller = self.outlineView.window.windowController;
 
-  if (controller.inStagingView &&
+  if (controller.selectedModel.hasUnstaged &&
       (self.interiorBackgroundStyle != NSBackgroundStyleDark)) {
     NSTableColumn *column = self.outlineView.highlightedTableColumn;
     const NSInteger columnIndex = [self.outlineView.tableColumns indexOfObject:column];

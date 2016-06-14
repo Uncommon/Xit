@@ -5,7 +5,7 @@ class XTSideBarItem: NSObject {
   var icon: NSImage? { return nil }
   var children: [XTSideBarItem]
   var model: XTFileChangesModel?
-  var refType: XTRefType { return .Unknown } // only used for renaming
+  var refType: XTRefType { return .Unknown }
   var expandable: Bool { return false }
   var selectable: Bool { return true }
   var editable: Bool { return false }

@@ -330,7 +330,7 @@ NSString * const XTStagingSHA = @"";
   if (item.model != nil) {
     XTWindowController *controller = _outline.window.windowController;
 
-    controller.selectedCommitSHA = item.model.shaToSelect;
+    controller.selectedModel = item.model;
   }
 }
 

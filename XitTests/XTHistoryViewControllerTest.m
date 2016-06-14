@@ -3,7 +3,6 @@
 #import "XTTest.h"
 #import "XTDocument.h"
 #import "XTHistoryViewController.h"
-#import "XTLocalBranchItem.h"
 #import "XTRepository.h"
 #import "XTSideBarDataSource.h"
 #import "XTSideBarOutlineView.h"
@@ -12,6 +11,7 @@
 #import "XTRepository+Parsing.h"
 #import <OCMock/OCMock.h>
 #include "XTQueueUtils.h"
+#import "XitTests-Swift.h"
 
 @interface XTHistoryViewControllerTest : XTTest
 
@@ -89,11 +89,14 @@
                                   inGroup:XTBranchesGroupIndex]] itemAtRow:row];
 
   // selectedBranch from checkOutBranch
+  XTSideBarItem *branchesGroup = controller.sideBarDS.roots[XTBranchesGroupIndex];
+  
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(noRow)] contextMenuRow];
   [[[mockSidebar expect] andReturn:
           [controller.sideBarDS itemNamed:@"master"
                                   inGroup:XTBranchesGroupIndex]] itemAtRow:row];
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
+  [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
 
   [controller.sideBarDS outlineView:mockSidebar
              numberOfChildrenOfItem:nil];  // initialize sidebarDS->outline
@@ -276,6 +279,8 @@
   XTHistoryViewController *controller =
       [[XTHistoryViewController alloc] initWithRepository:self.repository
                                                   sidebar:mockSidebar];
+  XTSideBarItem *branchesGroup =
+      controller.sideBarDS.roots[XTBranchesGroupIndex];
   XTLocalBranchItem *masterItem =
       [[XTLocalBranchItem alloc] initWithTitle:@"master"];
   NSInteger row = 1;
@@ -285,6 +290,7 @@
                                                name:XTStatusNotification
                                              object:self.repository];
 
+  [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
   [[[mockSidebar expect] andReturn:masterItem] itemAtRow:row];
   [controller mergeBranch:nil];
@@ -320,6 +326,8 @@
   XTHistoryViewController *controller =
       [[XTHistoryViewController alloc] initWithRepository:self.repository
                                                   sidebar:mockSidebar];
+  XTSideBarItem *branchesGroup =
+      controller.sideBarDS.roots[XTBranchesGroupIndex];
   XTLocalBranchItem *masterItem =
       [[XTLocalBranchItem alloc] initWithTitle:@"task"];
   NSInteger row = 1;
@@ -329,6 +337,7 @@
                                                name:XTStatusNotification
                                              object:self.repository];
 
+  [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
   [[[mockSidebar expect] andReturn:masterItem] itemAtRow:row];
   [controller mergeBranch:nil];

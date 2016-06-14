@@ -33,7 +33,8 @@
 - (void)reload
 {
   [self.repository executeOffMainThread:^{
-    NSString *ref = self.winController.selectedCommitSHA;
+    // NSTreeNode *newRoot = self.winController.selectedModel.treeRoot;
+    NSString *ref = self.winController.selectedModel.shaToSelect;
     NSTreeNode *newRoot = [self fileTreeForRef:(ref == nil) ? @"HEAD" : ref];
 
     dispatch_async(dispatch_get_main_queue(), ^{

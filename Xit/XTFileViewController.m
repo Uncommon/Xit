@@ -33,7 +33,6 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 
 @interface XTFileViewController ()
 
-@property (readwrite, nonatomic) BOOL inStagingView;
 @property BOOL showingStaged;
 @property id<XTFileContentController> contentController;
 @property XTCommitEntryController *commitEntryController;
@@ -43,8 +42,6 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 
 
 @implementation XTFileViewController
-
-@synthesize inStagingView;
 
 - (void)dealloc
 {
@@ -58,7 +55,6 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   _fileListDS.repository = newRepo;
   _headerController.repository = newRepo;
   self.commitEntryController.repo = newRepo;
-  ((XTPreviewItem*)_filePreview.previewItem).repo = newRepo;
   [[NSNotificationCenter defaultCenter]
       addObserver:self
          selector:@selector(repoChanged:)
@@ -120,10 +116,17 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   _fileListDS.winController = controller;
   _headerController.winController = controller;
   [controller addObserver:self
-               forKeyPath:@"selectedCommitSHA"
+               forKeyPath:@"selectedModel"
                   options:NSKeyValueObservingOptionNew |
                           NSKeyValueObservingOptionOld
                   context:NULL];
+}
+
+- (void)setStaging:(BOOL)staging
+{
+  [self.headerTabView selectTabViewItemAtIndex:staging ? 1 : 0];
+  self.actionButton.hidden = !staging;
+  self.stageSelector.hidden = !staging;
 }
 
 - (void)
@@ -132,25 +135,19 @@ observeValueForKeyPath:(NSString*)keyPath
                 change:(NSDictionary<NSString *,id> *)change
                context:(void*)context
 {
-  if ([keyPath isEqualToString:@"selectedCommitSHA"]) {
-    NSString * const oldSHA = change[NSKeyValueChangeOldKey];
-    NSString * const newSHA = change[NSKeyValueChangeNewKey];
-    const BOOL wasStaging = (oldSHA != (NSString*)[NSNull null]) &&
-                            [oldSHA isEqualToString:XTStagingSHA];
-    const BOOL nowStaging = (newSHA != (NSString*)[NSNull null]) &&
-                            [newSHA isEqualToString:XTStagingSHA];
+  if ([keyPath isEqualToString:@"selectedModel"]) {
+    id<XTFileChangesModel>
+        newModel = change[NSKeyValueChangeNewKey],
+        oldModel = change[NSKeyValueChangeOldKey];
     
-    if (wasStaging != nowStaging)
-      self.inStagingView = nowStaging;
+    if (newModel == (id<XTFileChangesModel>)[NSNull null])
+      newModel = nil;
+    if (oldModel == (id<XTFileChangesModel>)[NSNull null])
+      oldModel = nil;
+    
+    if (oldModel.hasUnstaged != newModel.hasUnstaged)
+      [self setStaging:newModel.hasUnstaged];
   }
-}
-
-- (void)setInStagingView:(BOOL)staging
-{
-  inStagingView = staging;
-  [self.headerTabView selectTabViewItemAtIndex:staging ? 1 : 0];
-  self.actionButton.hidden = !staging;
-  self.stageSelector.hidden = !staging;
 }
 
 - (IBAction)changeFileListView:(id)sender
@@ -214,6 +211,13 @@ observeValueForKeyPath:(NSString*)keyPath
 }
 
 #pragma clang diagnostic pop
+
+- (BOOL)inStagingView
+{
+  XTWindowController *controller = self.view.window.windowController;
+  
+  return controller.selectedModel.hasUnstaged;
+}
 
 - (BOOL)showingStaged
 {
@@ -330,19 +334,9 @@ observeValueForKeyPath:(NSString*)keyPath
   XTWindowController *controller = self.view.window.windowController;
 
   [self updatePreviewPath:selectedItem.path];
-  if (self.inStagingView) {
-    if (self.showingStaged)
-      [self.contentController loadStagedPath:selectedItem.path
-                                  repository:_repo];
-    else
-      [self.contentController loadUnstagedPath:selectedItem.path
-                                    repository:_repo];
-  }
-  else {
-    [self.contentController loadPath:selectedItem.path
-                              commit:controller.selectedCommitSHA
-                          repository:_repo];
-  }
+  [self.contentController loadPath:selectedItem.path
+                             model:controller.selectedModel
+                            staged:self.showingStaged];
 }
 
 - (void)showUnstagedColumn:(BOOL)shown
@@ -372,9 +366,8 @@ observeValueForKeyPath:(NSString*)keyPath
 {
   XTWindowController *controller = self.view.window.windowController;
 
-  _headerController.commitSHA = controller.selectedCommitSHA;
-  [self showUnstagedColumn:
-      [controller.selectedCommitSHA isEqualToString:XTStagingSHA]];
+  _headerController.commitSHA = controller.selectedModel.shaToSelect;
+  [self showUnstagedColumn:controller.selectedModel.hasUnstaged];
   [self refresh];
 }
 
@@ -480,7 +473,7 @@ observeValueForKeyPath:(NSString*)keyPath
   if ([columnID isEqualToString:@"change"]) {
     // Different cell views are used so that the icon is only clickable in
     // staging view.
-    if (inStagingView) {
+    if (self.inStagingView) {
       return [self tableButtonView:@"staged"
                             change:change
                        otherChange:[dataSource unstagedChangeForItem:item]
@@ -494,7 +487,7 @@ observeValueForKeyPath:(NSString*)keyPath
     }
   }
   if ([columnID isEqualToString:@"unstaged"]) {
-    if (!inStagingView)
+    if (!self.inStagingView)
       return nil;
     return [self tableButtonView:@"unstaged"
                           change:[dataSource unstagedChangeForItem:item]

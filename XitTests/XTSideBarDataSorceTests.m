@@ -2,12 +2,11 @@
 #import "XTTest.h"
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
-#import "XTSideBarItem.h"
 #import "XTSideBarDataSource.h"
-#import "XTSubmoduleItem.h"
 #import "XTHistoryItem.h"
 #include "CFRunLoop+Extensions.h"
 #import <ObjectiveGit/ObjectiveGit.h>
+#import "XitTests-Swift.h"
 
 @interface XTSideBarDataSorceTests : XTTest
 {
@@ -46,7 +45,7 @@
 - (id)groupItemForIndex:(NSUInteger)index
 {
   // Add one to skip the staging item
-  return [sbds outlineView:outlineView child:index+1 ofItem:nil];
+  return [sbds outlineView:outlineView child:index ofItem:nil];
 }
 
 - (void)testReload
@@ -108,17 +107,10 @@
 {
   [self makeRemoteRepo];
 
-  if (![self.repository checkout:@"master" error:NULL]) {
-    XCTFail(@"checkout master");
-  }
-
-  if (![self.repository createBranch:@"b1"]) {
-    XCTFail(@"Create Branch 'b1'");
-  }
-
-  if (![self.repository addRemote:@"origin" withUrl:self.remoteRepoPath]) {
-    XCTFail(@"add origin '%@'", self.remoteRepoPath);
-  }
+  XCTAssertTrue([self.repository checkout:@"master" error:NULL]);
+  XCTAssertTrue([self.repository createBranch:@"b1"]);
+  XCTAssertTrue([self.repository addRemote:@"origin"
+                                   withUrl:self.remoteRepoPath]);
 
   NSError *error = nil;
   NSArray *configArgs = @[ @"config", @"receive.denyCurrentBranch", @"ignore" ];
@@ -137,14 +129,13 @@
   MockSidebarOutlineView *sov = [[MockSidebarOutlineView alloc] init];
   
   [sbds setRepo:self.repository];
-  [sbds reload];
   [self waitForRepoQueue];
 
   id remotes = [self groupItemForIndex:XTRemotesGroupIndex];
-  XCTAssertTrue((remotes != nil), @"no remotes");
+  XCTAssertNotNil(remotes);
 
-  NSInteger nr = [sbds outlineView:outlineView numberOfChildrenOfItem:remotes];
-  XCTAssertTrue((nr == 1), @"found %ld remotes FAIL", (long)nr);
+  const NSInteger remoteCount = [sbds outlineView:outlineView numberOfChildrenOfItem:remotes];
+  XCTAssertEqual(remoteCount, 1);
 
   // BRANCHES
   id remote = [sbds outlineView:outlineView child:0 ofItem:remotes];
@@ -155,13 +146,13 @@
   NSString *rName = remoteView.textField.stringValue;
   XCTAssertTrue([rName isEqualToString:@"origin"], @"found remote '%@'", rName);
 
-  NSInteger nb = [sbds outlineView:outlineView numberOfChildrenOfItem:remote];
-  XCTAssertTrue((nb == 2), @"found %ld branches FAIL", (long)nb);
+  const NSInteger branchCount = [sbds outlineView:outlineView numberOfChildrenOfItem:remote];
+  XCTAssertEqual(branchCount, 2);
 
   bool branchB1Found = false;
   bool branchMasterFound = false;
   
-  for (int n = 0; n < nb; n++) {
+  for (int n = 0; n < branchCount; n++) {
     id branch = [sbds outlineView:outlineView child:n ofItem:remote];
     BOOL isExpandable = [sbds outlineView:outlineView isItemExpandable:branch];
     XCTAssertTrue(isExpandable == NO, @"Branches must be no Expandable");
@@ -209,7 +200,8 @@
   bool tagT1Found = false;
   for (int n = 0; n < nt; n++) {
     XTSideBarItem *tag = [sbds outlineView:outlineView child:n ofItem:tags];
-    XCTAssertTrue(tag.sha != Nil, @"Tag '%@' must have sha", tag.title);
+    XCTAssertNotNil(tag.model, @"%@ has no model", tag.title);
+    XCTAssertNotNil(tag.model.shaToSelect, @"%@ has no SHA", tag.title);
 
     BOOL isExpandable = [sbds outlineView:outlineView isItemExpandable:tag];
     XCTAssertTrue(isExpandable == NO, @"Tags must be no Expandable");
@@ -235,7 +227,8 @@
   bool branchMasterFound = false;
   for (int n = 0; n < nb; n++) {
     XTSideBarItem *branch = [sbds outlineView:outlineView child:n ofItem:branches];
-    XCTAssertTrue(branch.sha != Nil, @"Branch '%@' must have sha", branch.title);
+    XCTAssertNotNil(branch.model, @"%@ has no model", branch.title);
+    XCTAssertNotNil(branch.model.shaToSelect, @"%@ has no SHA", branch.title);
 
     BOOL isExpandable = [sbds outlineView:outlineView isItemExpandable:branch];
     XCTAssertTrue(isExpandable == NO, @"Branches must be no Expandable");
@@ -280,7 +273,6 @@
                                               error:NULL]);
 
   [sbds setRepo:self.repository];
-  [sbds reload];
   [self waitForRepoQueue];
 
   id subs = [self groupItemForIndex:XTSubmodulesGroupIndex];
@@ -294,7 +286,6 @@
     NSString *name = [NSString stringWithFormat:@"sub%d", i+1];
     NSString *url = [NSString stringWithFormat:@"../repo%d", i+1];
 
-    XCTAssertTrue([sub isKindOfClass:[XTSubmoduleItem class]]);
     XCTAssertNotNil(sub.submodule);
     XCTAssertEqualObjects(sub.submodule.name, name, @"");
     XCTAssertEqualObjects(sub.submodule.URLString, url);

@@ -184,7 +184,8 @@ dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
 
 - (void)selectSHA:(NSString*)sha
 {
-  self.winController.selectedCommitSHA = sha;
+  self.winController.selectedModel =
+      [[XTCommitChanges alloc] initWithRepository:self.repository sha:sha];
 }
 
 - (void)headerToggled

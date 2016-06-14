@@ -1,6 +1,7 @@
 #import <XCTest/XCTest.h>
 
 @class XTRepository;
+@protocol XTFileChangesModel;
 
 @interface XTTest : XCTestCase {
 }
@@ -22,8 +23,9 @@
 @end
 
 
-@interface XTFakeDocController : NSObject
+@interface XTFakeWinController : NSObject
 
 @property NSString *selectedCommitSHA;
+@property id<XTFileChangesModel> selectedModel;
 
 @end

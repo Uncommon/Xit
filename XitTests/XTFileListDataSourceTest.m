@@ -5,6 +5,7 @@
 #import "XTFileTreeDataSource.h"
 #import "XTHistoryItem.h"
 #include "XTQueueUtils.h"
+#import "XitTests-Swift.h"
 
 @interface XTFileListDataSourceTest : XTTest
 
@@ -44,19 +45,20 @@
   }
 
   NSOutlineView *outlineView = [[NSOutlineView alloc] init];
-  XTFakeDocController *docController = [[XTFakeDocController alloc] init];
+  XTFakeWinController *winController = [[XTFakeWinController alloc] init];
   XTHistoryDataSource *hds = [self makeDataSource];
   XTFileTreeDataSource *flds = [[XTFileTreeDataSource alloc] init];
   NSInteger expectedFileCount = 11;
 
-  hds.controller = (XTDocController*)docController;
-  flds.docController = (XTDocController*)docController;
+  hds.controller = (XTWindowController*)winController;
+  flds.winController = (XTWindowController*)winController;
   [hds setRepo:self.repository];
   flds.repository = self.repository;
   [self waitForRepoQueue];
 
   for (NSString *sha in hds.shas) {
-    docController.selectedCommitSHA = sha;
+    winController.selectedModel =
+        [[XTCommitChanges alloc] initWithRepository:self.repository sha:sha];
     [flds reload];
     [self waitForRepoQueue];
 
@@ -100,11 +102,11 @@
                          outputBlock:NULL
                                error:NULL];
 
-  XTFakeDocController *docController = [[XTFakeDocController alloc] init];
+  XTFakeWinController *docController = [[XTFakeWinController alloc] init];
   XTHistoryDataSource *hds = [self makeDataSource];
   XTHistoryItem *item = [hds itemAtIndex:0];
 
-  hds.controller = (XTDocController*)docController;
+  hds.controller = (XTWindowController*)docController;
   docController.selectedCommitSHA = item.sha;
 
   NSOutlineView *outlineView = [[NSOutlineView alloc] init];

@@ -23,7 +23,7 @@
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
-  [_controller removeObserver:self forKeyPath:@"selectedCommitSHA"];
+  [_controller removeObserver:self forKeyPath:@"selectedModel"];
 }
 
 - (void)setRepo:(XTRepository*)newRepo
@@ -37,7 +37,7 @@
 {
   _controller = controller;
   [controller addObserver:self
-               forKeyPath:@"selectedCommitSHA"
+               forKeyPath:@"selectedModel"
                   options:NSKeyValueObservingOptionNew
                   context:nil];
 }
@@ -64,9 +64,11 @@
                         change:(NSDictionary *)change
                        context:(void *)context
 {
-  if ([keyPath isEqualToString:@"selectedCommitSHA"]) {
-    NSString *newSelectedCommit = change[NSKeyValueChangeNewKey];
+  if ([keyPath isEqualToString:@"selectedModel"]) {
+    id<XTFileChangesModel> newModel = change[NSKeyValueChangeNewKey];
+    NSString *newSelectedCommit = newModel.shaToSelect;
     XTHistoryItem *item = _index[newSelectedCommit];
+    
     if (item != nil) {
       [_table selectRowIndexes:[NSIndexSet indexSetWithIndex:item.index]
           byExtendingSelection:NO];

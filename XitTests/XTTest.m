@@ -144,6 +144,6 @@
 @end
 
 
-@implementation XTFakeDocController
+@implementation XTFakeWinController
 
 @end

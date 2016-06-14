@@ -1,8 +1,7 @@
 #import "XTTest.h"
 #import "XTFileChangesDataSource.h"
 #include "XTQueueUtils.h"
-
-@class XTDocController;
+#import "XitTests-Swift.h"
 
 @interface XTFileChangesDataSourceTest : XTTest
 
@@ -12,13 +11,14 @@
 
 - (void)testInitialCommit
 {
-  XTFakeDocController *docController = [[XTFakeDocController alloc] init];
+  XTFakeWinController *winController = [[XTFakeWinController alloc] init];
   XTFileChangesDataSource *dataSource = [[XTFileChangesDataSource alloc] init];
   NSOutlineView *outlineView = [[NSOutlineView alloc] init];
 
-  docController.selectedCommitSHA = self.repository.headSHA;
+  winController.selectedModel = [[XTCommitChanges alloc]
+      initWithRepository:self.repository sha:self.repository.headSHA];
   dataSource.repository = self.repository;
-  dataSource.docController = (XTDocController*)docController;
+  dataSource.winController = (XTWindowController*)winController;
   [self waitForRepoQueue];
   WaitForQueue(dispatch_get_main_queue());
 

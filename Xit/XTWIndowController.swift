@@ -5,6 +5,7 @@ class XTWindowController: NSWindowController {
   @IBOutlet var activity: NSProgressIndicator!
   var xtDocument: XTDocument?
   var selectedCommitSHA: String?
+  var selectedModel: XTFileChangesModel?
   var inStagingView: Bool { return self.selectedCommitSHA == XTStagingSHA }
   
   override var document: AnyObject? {
@@ -21,9 +22,15 @@ class XTWindowController: NSWindowController {
     
     let repo = self.xtDocument!.repository
     
-    repo.addObserver(self, forKeyPath: "activeTasks", options: .New, context: nil)
+    repo.addObserver(self, forKeyPath:"activeTasks", options:.New, context:nil)
     self.historyController.windowDidLoad()
     self.historyController.setRepo(repo)
+  }
+  
+  deinit
+  {
+    self.xtDocument!.repository.removeObserver(
+        self, forKeyPath:"actaiveTasks")
   }
   
   override func observeValueForKeyPath(
@@ -32,14 +39,18 @@ class XTWindowController: NSWindowController {
       change: [String : AnyObject]?,
       context: UnsafeMutablePointer<Void>)
   {
-    guard let keyPath = keyPath else { return }
-    guard keyPath == "activeTasks" else { return }
+    guard keyPath! == "activeTasks"
+    else {
+      super.observeValueForKeyPath(
+          keyPath, ofObject:object, change:change, context:context)
+      return
+    }
     
     if let tasks = change?[NSKeyValueChangeNewKey] {
       if tasks.count > 0 {
         self.activity.startAnimation(self)
+        return
       }
-      return
     }
     self.activity.stopAnimation(self)
   }

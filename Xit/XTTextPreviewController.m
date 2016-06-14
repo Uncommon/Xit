@@ -59,7 +59,7 @@
 {
   XTWindowController *controller = self.view.window.windowController;
   NSArray *changes =
-      [repo changesForRef:controller.selectedCommitSHA parent:nil];
+      [repo changesForRef:controller.selectedModel.shaToSelect parent:nil];
 
   for (XTFileChange *change in changes)
     if ([change.path isEqualToString:path])
@@ -67,25 +67,11 @@
   return NO;
 }
 
-- (void)loadPath:(NSString*)path
-          commit:(NSString*)sha
-      repository:(XTRepository*)repository
+- (void)loadPath:(NSString *)path
+           model:(id<XTFileChangesModel>)model
+          staged:(BOOL)staged
 {
-  [self loadData:[repository contentsOfFile:path atCommit:sha]];
-}
-
-- (void)loadUnstagedPath:(NSString*)path
-              repository:(XTRepository*)repository
-{
-  NSURL *url = [repository.repoURL URLByAppendingPathComponent:path];
-  
-  [self loadData:[NSData dataWithContentsOfURL:url]];
-}
-
-- (void)loadStagedPath:(NSString*)path
-            repository:(XTRepository*)repository
-{
-  [self loadData:[repository contentsOfStagedFile:path]];
+  [self loadData:[model dataForFile:path staged:staged]];
 }
 
 @end
