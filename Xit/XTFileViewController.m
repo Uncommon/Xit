@@ -34,6 +34,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 @interface XTFileViewController ()
 
 @property BOOL showingStaged;
+@property (readonly) BOOL canCommit;
 @property id<XTFileContentController> contentController;
 @property XTCommitEntryController *commitEntryController;
 @property NSDictionary<NSNumber*, NSImage*> *stageImages;
@@ -151,8 +152,19 @@ observeValueForKeyPath:(NSString*)keyPath
     
     if (oldModel.hasUnstaged != newModel.hasUnstaged)
       [self setStaging:newModel.hasUnstaged];
-    if (oldModel.canCommit != newModel.canCommit)
+    if (oldModel.canCommit != newModel.canCommit) {
       [self setCommitting:newModel.canCommit];
+      
+      // Status icons are different
+      const NSInteger
+          unstagedIndex = [_fileListOutline columnWithIdentifier:@"unstaged"],
+          stagedIndex = [_fileListOutline columnWithIdentifier:@"change"];
+      const NSRect displayRect = NSUnionRect(
+          [_fileListOutline rectOfColumn:unstagedIndex],
+          [_fileListOutline rectOfColumn:stagedIndex]);
+      
+      [_fileListOutline setNeedsDisplayInRect:displayRect];
+    }
   }
 }
 
@@ -223,6 +235,13 @@ observeValueForKeyPath:(NSString*)keyPath
   XTWindowController *controller = self.view.window.windowController;
   
   return controller.selectedModel.hasUnstaged;
+}
+
+- (BOOL)canCommit
+{
+  XTWindowController *controller = self.view.window.windowController;
+  
+  return controller.selectedModel.canCommit;
 }
 
 - (BOOL)showingStaged
@@ -425,8 +444,11 @@ observeValueForKeyPath:(NSString*)keyPath
   XTRolloverButton *button = (XTRolloverButton*)cell.button;
   
   button.enabled = YES;
-  button.image = [self stagingImageForChange:change
-                                 otherChange:otherChange];
+  if (self.canCommit)
+    button.image = [self stagingImageForChange:change
+                                   otherChange:otherChange];
+  else
+    button.image = [self imageForChange:change];
   button.rolloverActive = change != XitChangeMixed;
   ((NSButtonCell*)button.cell).imageDimsWhenDisabled = NO;
   button.enabled =
