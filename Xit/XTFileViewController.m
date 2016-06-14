@@ -124,9 +124,13 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 
 - (void)setStaging:(BOOL)staging
 {
-  [self.headerTabView selectTabViewItemAtIndex:staging ? 1 : 0];
-  self.actionButton.hidden = !staging;
   self.stageSelector.hidden = !staging;
+}
+
+- (void)setCommitting:(BOOL)committing
+{
+  [self.headerTabView selectTabViewItemAtIndex:committing ? 1 : 0];
+  self.actionButton.hidden = !committing;
 }
 
 - (void)
@@ -147,6 +151,8 @@ observeValueForKeyPath:(NSString*)keyPath
     
     if (oldModel.hasUnstaged != newModel.hasUnstaged)
       [self setStaging:newModel.hasUnstaged];
+    if (oldModel.canCommit != newModel.canCommit)
+      [self setCommitting:newModel.canCommit];
   }
 }
 

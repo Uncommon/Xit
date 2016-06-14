@@ -14,6 +14,8 @@ import Cocoa
   var treeRoot: NSTreeNode? { get }
   /// Are there staged and unstaged changes?
   var hasUnstaged: Bool { get }
+  /// Is this used to stage and commit files?
+  var canCommit: Bool { get }
   /// Get the diff for the given file.
   /// @param path Repository-relative file path.
   /// @param staged Whether to show the staged or unstaged diff. Ignored for
@@ -35,6 +37,7 @@ class XTCommitChanges: NSObject, XTFileChangesModel {
   var sha: String
   var shaToSelect: String? { return self.sha }
   var hasUnstaged: Bool { return false }
+  var canCommit: Bool { return false }
   var changes: [XTFileChange] {
     return self.repository.changesForRef(self.sha, parent: self.diffParent) ?? []
   }
@@ -67,7 +70,8 @@ class XTCommitChanges: NSObject, XTFileChangesModel {
 class XTStashChanges: NSObject, XTFileChangesModel {
   var repository: XTRepository
   var stash: XTStash
-  var hasUnstaged: Bool { return true; }
+  var hasUnstaged: Bool { return true }
+  var canCommit: Bool { return false }
   var shaToSelect: String? { return stash.mainCommit.parents[0].SHA }
   var changes: [XTFileChange] { return self.stash.changes() }
   var treeRoot: NSTreeNode? { return nil }
@@ -115,7 +119,8 @@ class XTStashChanges: NSObject, XTFileChangesModel {
 class XTStagingChanges: NSObject, XTFileChangesModel {
   var repository: XTRepository
   var shaToSelect: String? { return XTStagingSHA }
-  var hasUnstaged: Bool { return true; }
+  var hasUnstaged: Bool { return true }
+  var canCommit: Bool { return true }
   var changes: [XTFileChange]
     { return repository.changesForRef(XTStagingSHA, parent: nil) ?? [] }
   var treeRoot: NSTreeNode? { return nil }
