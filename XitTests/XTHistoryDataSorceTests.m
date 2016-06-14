@@ -36,22 +36,19 @@
                                                @"HEAD", rootName ]
                                           writes:NO
                                            error:nil];
-      if (data == nil)
-        XCTFail(@"'%@' error", rootName);
+      XCTAssertNotNil(data, @"%@", rootName);
       
       // Recursively unstage the current directory
       data = [self.repository executeGitWithArgs:@[ @"rm", @"--cached", @"-r", @"." ]
                                           writes:NO
                                            error:nil];
-      if (data == nil)
-        XCTFail(@"'%@' error", rootName);
+      XCTAssertNotNil(data, @"%@", rootName);
       
       // Delete all untracked files
       data = [self.repository executeGitWithArgs:@[ @"clean", @"-f", @"-d" ]
                                           writes:NO
                                            error:nil];
-      if (data == nil)
-        XCTFail(@"'%@' error", rootName);
+      XCTAssertNotNil(data, @"%@", rootName);
     }
 
     NSString *testFilePath =
