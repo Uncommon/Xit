@@ -12,7 +12,6 @@
 
   self.repoPath = [NSString stringWithFormat:@"%@testrepo", NSTemporaryDirectory()];
   self.repository = [self createRepo:self.repoPath];
-  self.file1Name = @"file1.txt";
 
   [self addInitialRepoContent];
 
@@ -40,6 +39,26 @@
   [super tearDown];
 }
 
+- (NSString*)file1Name
+{
+  return @"file1.txt";
+}
+
+- (NSString*)file1Path
+{
+  return [self.repoPath stringByAppendingPathComponent:self.file1Name];
+}
+
+- (NSString*)addedName
+{
+  return @"added.txt";
+}
+
+- (NSString*)untrackedName
+{
+  return @"untracked.txt";
+}
+
 - (void)makeRemoteRepo
 {
   self.remoteRepoPath =
@@ -50,7 +69,15 @@
 - (void)addInitialRepoContent
 {
   XCTAssertTrue([self commitNewTextFile:self.file1Name content:@"some text"]);
-  self.file1Path = [self.repoPath stringByAppendingPathComponent:self.file1Name];
+}
+
+- (void)makeStash
+{
+  [self writeTextToFile1:@"stashy"];
+  [self writeText:@"new" toFile:self.untrackedName];
+  [self writeText:@"add" toFile:self.addedName];
+  [self.repository stageFile:self.addedName];
+  [self.repository saveStash:@"" includeUntracked:YES];
 }
 
 - (BOOL)commitNewTextFile:(NSString *)name content:(NSString *)content

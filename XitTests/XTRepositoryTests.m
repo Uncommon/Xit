@@ -153,7 +153,6 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
   NSString *content = @"some content";
   const NSStringEncoding encoding = NSASCIIStringEncoding;
 
-  self.file1Path = [self.repoPath stringByAppendingPathComponent:fileName];
   [content writeToFile:self.file1Path
             atomically:NO
               encoding:encoding

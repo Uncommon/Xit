@@ -5,19 +5,13 @@ class XTStashTest: XTTest
 
   func testChanges()
   {
-    let addedName = "added.txt"
+    self.makeStash()
+    
     let addedPath =
       (self.repoPath as NSString).stringByAppendingPathComponent(addedName)
-    let untrackedName = "untracked.txt"
     let untrackedPath =
         (self.repoPath as NSString).stringByAppendingPathComponent(untrackedName)
     let addedIndex = 0, file1Index = 1, untrackedIndex = 2;
-    
-    self.writeTextToFile1("stashy")
-    self.writeText("new", toFile: untrackedName)
-    self.writeText("add", toFile: addedName)
-    self.repository.stageFile(addedName)
-    self.repository.saveStash("", includeUntracked: true)
     
     // Stash should have cleaned up both new files
     XCTAssertFalse(NSFileManager.defaultManager().fileExistsAtPath(untrackedPath))
