@@ -16,6 +16,15 @@ class XTFileChangesModelTest: XTTest {
   {
     let model = XTCommitChanges(
         repository: repository, sha: repository.headSHA)
+    let changes = model.changes
+    
+    XCTAssertEqual(changes.count, 1)
+    
+    let change = changes[0]
+    
+    XCTAssertEqual(change.path, file1Name)
+    XCTAssertEqual(change.change, XitChange.Added)
+    
     let data = model.dataForFile(file1Name, staged: false)
     
     XCTAssertEqual(data, self.data(for:"some text"))
@@ -37,10 +46,18 @@ class XTFileChangesModelTest: XTTest {
         String(format: "%@%@", staged ? ">" : "<", path))
   }
   
-  func testStash() {
+  func testStash()
+  {
     self.makeStash()
     
     let model = XTStashChanges(repository: repository, index: 0)
+    
+    XCTAssertEqual(model.shaToSelect, repository.headSHA)
+    
+    let changes = model.changes
+    
+    XCTAssertEqual(changes.count, 3)
+    
     let addedContent =
         self.string(from: model.dataForFile(addedName, staged: true)!)
     let untrackedContent =
@@ -67,5 +84,37 @@ class XTFileChangesModelTest: XTTest {
     self.checkPatchLines(
         model, path: file1Name, staged: true, added: 0, deleted: 0)
     XCTAssertNil(model.diffForFile(untrackedName, staged: true))
+  }
+  
+  func testStaging()
+  {
+    let model = XTStagingChanges(repository: repository)
+    var changes = model.changes
+    
+    XCTAssertEqual(changes.count, 0)
+    
+    self.writeTextToFile1("change")
+    changes = model.changes
+    XCTAssertEqual(changes.count, 1)
+    
+    var change = changes[0]
+    
+    XCTAssertEqual(change.path, file1Name)
+    XCTAssertEqual(change.unstagedChange, XitChange.Modified)
+    
+    self.writeText("new", toFile: addedName)
+    changes = model.changes
+    XCTAssertEqual(changes.count, 2)
+    change = changes[0] // "added" will be sorted to the top
+    XCTAssertEqual(change.path, addedName)
+    XCTAssertEqual(change.unstagedChange, XitChange.Untracked)
+    
+    repository.stageFile(addedName)
+    changes = model.changes
+    XCTAssertEqual(changes.count, 2)
+    change = changes[0]
+    XCTAssertEqual(change.path, addedName)
+    XCTAssertEqual(change.change, XitChange.Added)
+    XCTAssertEqual(change.unstagedChange, XitChange.Unmodified)
   }
 }
