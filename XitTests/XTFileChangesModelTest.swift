@@ -117,4 +117,17 @@ class XTFileChangesModelTest: XTTest {
     XCTAssertEqual(change.change, XitChange.Added)
     XCTAssertEqual(change.unstagedChange, XitChange.Unmodified)
   }
+  
+  func testStagingTreeSimple()
+  {
+    let model = XTStagingChanges(repository: repository)
+    let tree = model.treeRoot
+    
+    XCTAssertNotNil(tree.childNodes)
+    XCTAssertEqual(tree.childNodes!.count, 1)
+    
+    let change = tree.childNodes![0].representedObject!
+    
+    XCTAssertEqual(change.change, XitChange.Unmodified)
+  }
 }

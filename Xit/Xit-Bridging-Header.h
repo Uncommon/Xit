@@ -5,6 +5,7 @@
 #import "XTConstants.h"
 #import "XTDocument.h"
 #import "XTFileTreeDataSource.h"
+#import "XTFileChangesDataSource.h"
 #import "XTHistoryViewController.h"
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"

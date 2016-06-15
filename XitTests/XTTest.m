@@ -10,7 +10,11 @@
 {
   [super setUp];
 
-  self.repoPath = [NSString stringWithFormat:@"%@testrepo", NSTemporaryDirectory()];
+  // /tmp is actually a link to /private/tmp, which APIs like
+  // NSTemporaryDirectory and -[NSString stringByResolvingSymlinksInPath]
+  // deliberately ignore, but -[NSFileManager enumeratorAtURL] doesn't.
+  self.repoPath = [@"/private" stringByAppendingPathComponent:
+      [NSString stringWithFormat:@"%@testrepo", NSTemporaryDirectory()]];
   self.repository = [self createRepo:self.repoPath];
 
   [self addInitialRepoContent];

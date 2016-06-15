@@ -20,12 +20,13 @@ class XTWorkspaceTreeBuilder: NSObject {
         includingPropertiesForKeys: [ NSURLIsDirectoryKey ],
         options: NSDirectoryEnumerationOptions.SkipsSubdirectoryDescendants,
         errorHandler: nil)
-    let rootPathLength = rootPath.length + 1  //  include slash
+    let rootPathLength = rootPath.length + 1
     
     while let url: NSURL = enumerator?.nextObject() as! NSURL? {
-      let path = (url.path! as NSString).substringFromIndex(rootPathLength)
+      let urlPath = url.path!
+      let path = (urlPath as NSString).substringFromIndex(rootPathLength)
       
-      if path == "/.git" {
+      if path == ".git" {
         continue
       }
       

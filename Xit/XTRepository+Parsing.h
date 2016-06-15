@@ -35,10 +35,12 @@ typedef NS_ENUM(NSUInteger, XitChange) {
 @class GTSubmodule;
 @class XTDiffDelta;
 @class XTFileChange;
+@class XTWorkspaceFileStatus;
 
 @interface XTRepository (Reading)
 
-@property (readonly, copy) NSDictionary *workspaceStatus;
+@property (readonly, copy) NSDictionary<NSString*, XTWorkspaceFileStatus*>
+    *workspaceStatus;
 
 - (BOOL)
     readRefsWithLocalBlock:(void (^)(NSString *name, NSString *commit))localBlock

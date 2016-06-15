@@ -65,9 +65,10 @@ NSString *XTHeaderContentKey = @"content";
   return error == nil;
 }
 
-- (NSDictionary*)workspaceStatus
+- (NSDictionary<NSString*, XTWorkspaceFileStatus*>*)workspaceStatus
 {
-  NSMutableDictionary *result = [NSMutableDictionary dictionary];
+  NSMutableDictionary<NSString*, XTWorkspaceFileStatus*> *result =
+      [NSMutableDictionary dictionary];
   NSDictionary *options =
       @{ GTRepositoryStatusOptionsFlagsKey:@(GIT_STATUS_OPT_INCLUDE_UNTRACKED) };
 
