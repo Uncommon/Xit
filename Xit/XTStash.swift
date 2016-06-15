@@ -102,11 +102,14 @@ func unstagedDiffForFile(path: String) -> XTDiffDelta?
   var indexBlob: GTBlob? = nil
   
   if let indexEntry = try? indexCommit.tree!.entryWithPath(path) {
-    indexBlob = try? indexEntry.GTObject() as! GTBlob
+    let object = try? indexEntry.GTObject()
+    
+    indexBlob = object as? GTBlob
   }
   
-  if let untrackedEntry = try? self.untrackedCommit?.tree?.entryWithPath(path) {
-    guard let untrackedBlob = try? untrackedEntry?.GTObject() as? GTBlob
+  if let untrackedCommit = self.untrackedCommit,
+     let untrackedEntry = try? untrackedCommit.tree?.entryWithPath(path) {
+    guard let untrackedBlob = try? untrackedEntry!.GTObject() as? GTBlob
     else { return nil }
     
     return try? XTDiffDelta(fromBlob: indexBlob, forPath: path,
