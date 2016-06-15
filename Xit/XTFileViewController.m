@@ -33,8 +33,8 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 
 @interface XTFileViewController ()
 
-@property BOOL showingStaged;
-@property (readonly) BOOL canCommit;
+@property BOOL modelHasStaging;
+@property (readonly) BOOL modelCanCommit;
 @property id<XTFileContentController> contentController;
 @property XTCommitEntryController *commitEntryController;
 @property NSDictionary<NSNumber*, NSImage*> *stageImages;
@@ -237,22 +237,22 @@ observeValueForKeyPath:(NSString*)keyPath
   return controller.selectedModel.hasUnstaged;
 }
 
-- (BOOL)canCommit
+- (BOOL)modelCanCommit
 {
   XTWindowController *controller = self.view.window.windowController;
   
   return controller.selectedModel.canCommit;
 }
 
-- (BOOL)showingStaged
+- (BOOL)modelHasStaging
 {
   return [_fileListOutline.highlightedTableColumn.identifier
       isEqualToString:XTColumnIDStaged];
 }
 
-- (void)setShowingStaged:(BOOL)showingStaged
+- (void)setModelHasStaging:(BOOL)modelHasStaging
 {
-  NSString *columnID = showingStaged ? XTColumnIDStaged : XTColumnIDUnstaged;
+  NSString *columnID = modelHasStaging ? XTColumnIDStaged : XTColumnIDUnstaged;
   
   _fileListOutline.highlightedTableColumn =
       [_fileListOutline tableColumnWithIdentifier:columnID];
@@ -298,7 +298,7 @@ observeValueForKeyPath:(NSString*)keyPath
 
 - (IBAction)changeStageView:(id)sender
 {
-  self.showingStaged = self.stageSelector.selectedSegment == 1;
+  self.modelHasStaging = self.stageSelector.selectedSegment == 1;
 }
 
 - (IBAction)stageAll:(id)sender
@@ -361,7 +361,7 @@ observeValueForKeyPath:(NSString*)keyPath
   [self updatePreviewPath:selectedItem.path];
   [self.contentController loadPath:selectedItem.path
                              model:controller.selectedModel
-                            staged:self.showingStaged];
+                            staged:self.modelHasStaging];
 }
 
 - (void)showUnstagedColumn:(BOOL)shown
@@ -443,17 +443,20 @@ observeValueForKeyPath:(NSString*)keyPath
       [_fileListOutline makeViewWithIdentifier:identifier owner:self];
   XTRolloverButton *button = (XTRolloverButton*)cell.button;
   
-  button.enabled = YES;
-  if (self.canCommit)
+  ((NSButtonCell*)button.cell).imageDimsWhenDisabled = NO;
+  if (self.modelCanCommit) {
     button.image = [self stagingImageForChange:change
                                    otherChange:otherChange];
-  else
+    button.rolloverActive = change != XitChangeMixed;
+    button.enabled =
+        [self displayChangeForChange:change otherChange:otherChange] !=
+            XitChangeMixed;
+  }
+  else {
     button.image = [self imageForChange:change];
-  button.rolloverActive = change != XitChangeMixed;
-  ((NSButtonCell*)button.cell).imageDimsWhenDisabled = NO;
-  button.enabled =
-      [self displayChangeForChange:change otherChange:otherChange] !=
-      XitChangeMixed;
+    button.rolloverActive = NO;
+    button.enabled = NO;
+  }
   cell.row = row;
   return cell;
 }
