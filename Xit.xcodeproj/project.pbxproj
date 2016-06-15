@@ -208,11 +208,11 @@
 		313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTSideBarDataSorceTests.m; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		313014AE13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTHistoryDataSorceTests.m; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		31355B0713EA139700C33AAB /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		3174966313DF896E004C5546 /* XTHistoryDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; name = XTHistoryDataSource.h; path = Xit/XTHistoryDataSource.h; sourceTree = "<group>"; tabWidth = 2; };
-		3174966413DF896E004C5546 /* XTHistoryDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; name = XTHistoryDataSource.m; path = Xit/XTHistoryDataSource.m; sourceTree = "<group>"; tabWidth = 2; };
-		3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; name = XTSideBarDataSource.m; path = Xit/XTSideBarDataSource.m; sourceTree = "<group>"; tabWidth = 2; };
-		3174966C13DFF94C004C5546 /* XTHistoryItem.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; name = XTHistoryItem.h; path = Xit/XTHistoryItem.h; sourceTree = "<group>"; tabWidth = 2; };
-		3174966D13DFF94C004C5546 /* XTHistoryItem.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; name = XTHistoryItem.m; path = Xit/XTHistoryItem.m; sourceTree = "<group>"; tabWidth = 2; };
+		3174966313DF896E004C5546 /* XTHistoryDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTHistoryDataSource.h; sourceTree = "<group>"; tabWidth = 2; };
+		3174966413DF896E004C5546 /* XTHistoryDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTHistoryDataSource.m; sourceTree = "<group>"; tabWidth = 2; };
+		3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTSideBarDataSource.m; sourceTree = "<group>"; tabWidth = 2; };
+		3174966C13DFF94C004C5546 /* XTHistoryItem.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTHistoryItem.h; sourceTree = "<group>"; tabWidth = 2; };
+		3174966D13DFF94C004C5546 /* XTHistoryItem.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTHistoryItem.m; sourceTree = "<group>"; tabWidth = 2; };
 		3199BABC142079BB008AAA4F /* XTFileListDataSourceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTFileListDataSourceTest.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3199BABE14207CFB008AAA4F /* XTFileTreeDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTFileTreeDataSource.h; sourceTree = "<group>"; };
 		3199BABF14207CFB008AAA4F /* XTFileTreeDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTFileTreeDataSource.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -222,7 +222,7 @@
 		31C7C13013ECC74C00A65FE9 /* XTHistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTHistoryViewController.h; sourceTree = "<group>"; tabWidth = 2; };
 		31C7C13113ECC74C00A65FE9 /* XTHistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTHistoryViewController.m; sourceTree = "<group>"; tabWidth = 2; };
 		31C7C13213ECC74C00A65FE9 /* XTHistoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTHistoryViewController.xib; sourceTree = "<group>"; };
-		31F1E87813D3AC6D00F3B317 /* XTSideBarDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; name = XTSideBarDataSource.h; path = Xit/XTSideBarDataSource.h; sourceTree = "<group>"; tabWidth = 2; };
+		31F1E87813D3AC6D00F3B317 /* XTSideBarDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTSideBarDataSource.h; sourceTree = "<group>"; tabWidth = 2; };
 		89039F551703A9FC000949A8 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
 		894C8D911CA44A44001A4B80 /* stagingTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stagingTemplate.png; sourceTree = "<group>"; };
 		894C8D921CA44A44001A4B80 /* stagingTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stagingTemplate@2x.png"; sourceTree = "<group>"; };
@@ -251,8 +251,8 @@
 		895869B91D088A46003A9AF0 /* submoduleTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "submoduleTemplate@2x.png"; sourceTree = "<group>"; };
 		895869BA1D088A46003A9AF0 /* tagTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tagTemplate.png; sourceTree = "<group>"; };
 		895869BB1D088A46003A9AF0 /* tagTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tagTemplate@2x.png"; sourceTree = "<group>"; };
-		895DEEF4142CECB7001763FC /* XTSideBarTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; name = XTSideBarTableCellView.h; path = Xit/XTSideBarTableCellView.h; sourceTree = "<group>"; tabWidth = 2; };
-		895DEEF5142CECB7001763FC /* XTSideBarTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; name = XTSideBarTableCellView.m; path = Xit/XTSideBarTableCellView.m; sourceTree = "<group>"; tabWidth = 2; };
+		895DEEF4142CECB7001763FC /* XTSideBarTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTSideBarTableCellView.h; sourceTree = "<group>"; tabWidth = 2; };
+		895DEEF5142CECB7001763FC /* XTSideBarTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTSideBarTableCellView.m; sourceTree = "<group>"; tabWidth = 2; };
 		896B05CF15796D2A003B0C24 /* XTHistoryViewControllerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTHistoryViewControllerTest.m; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		89794F661452839500E38ACC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/XTStatusView.xib; sourceTree = "<group>"; };
 		89794F891458CC9B00E38ACC /* XTOutputViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTOutputViewController.h; sourceTree = "<group>"; tabWidth = 2; };
@@ -341,7 +341,7 @@
 		C9EB87231D01D93400C47D13 /* XTStash.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTStash.swift; sourceTree = "<group>"; };
 		C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "XitTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		C9EB87311D05D35800C47D13 /* XTStashTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTStashTest.swift; sourceTree = "<group>"; };
-		C9F78B131D0896AF008490EA /* XTSidebarItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = XTSidebarItem.swift; path = Xit/XTSidebarItem.swift; sourceTree = "<group>"; };
+		C9F78B131D0896AF008490EA /* XTSidebarItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSidebarItem.swift; sourceTree = "<group>"; };
 		DD00725513E76DFB003B4120 /* Xit.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Xit.icns; sourceTree = "<group>"; };
 		DD07B07616A5D2A80012AC19 /* XTSideBarOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTSideBarOutlineView.h; sourceTree = "<group>"; tabWidth = 2; };
 		DD07B07716A5D2A80012AC19 /* XTSideBarOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTSideBarOutlineView.m; sourceTree = "<group>"; tabWidth = 2; };
@@ -423,15 +423,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		31A8939813E9D1EA008BE0C2 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				31C7C12F13ECC6C700A65FE9 /* HistoryView */,
-				DD39D1F21918306B00827532 /* FileView */,
-			);
-			name = Views;
-			sourceTree = "<group>";
-		};
 		31C7C12A13EC730500A65FE9 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -460,38 +451,15 @@
 				31C7C13013ECC74C00A65FE9 /* XTHistoryViewController.h */,
 				31C7C13113ECC74C00A65FE9 /* XTHistoryViewController.m */,
 				31C7C13213ECC74C00A65FE9 /* XTHistoryViewController.xib */,
-				DD997DD8173B409500C7DF82 /* HistoryView Menus.xib */,
-				DD07B08716B313A60012AC19 /* XTRefFormatter.h */,
-				DD07B08816B313A60012AC19 /* XTRefFormatter.m */,
-				DD07B07616A5D2A80012AC19 /* XTSideBarOutlineView.h */,
-				DD07B07716A5D2A80012AC19 /* XTSideBarOutlineView.m */,
-			);
-			name = HistoryView;
-			sourceTree = "<group>";
-		};
-		31F1E87713D3AC0E00F3B317 /* DataSources */ = {
-			isa = PBXGroup;
-			children = (
-				31F1E88013D3DC6E00F3B317 /* items */,
-				895DEEF4142CECB7001763FC /* XTSideBarTableCellView.h */,
-				895DEEF5142CECB7001763FC /* XTSideBarTableCellView.m */,
-				31F1E87813D3AC6D00F3B317 /* XTSideBarDataSource.h */,
-				3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */,
 				3174966313DF896E004C5546 /* XTHistoryDataSource.h */,
 				3174966413DF896E004C5546 /* XTHistoryDataSource.m */,
-			);
-			name = DataSources;
-			path = ..;
-			sourceTree = "<group>";
-		};
-		31F1E88013D3DC6E00F3B317 /* items */ = {
-			isa = PBXGroup;
-			children = (
 				3174966C13DFF94C004C5546 /* XTHistoryItem.h */,
 				3174966D13DFF94C004C5546 /* XTHistoryItem.m */,
-				C9F78B131D0896AF008490EA /* XTSidebarItem.swift */,
+				DD07B08716B313A60012AC19 /* XTRefFormatter.h */,
+				DD07B08816B313A60012AC19 /* XTRefFormatter.m */,
+				DD997DD8173B409500C7DF82 /* HistoryView Menus.xib */,
 			);
-			name = items;
+			name = HistoryView;
 			sourceTree = "<group>";
 		};
 		8937B6EC1786F5DE00CB9BBC /* FullHeightToolbar */ = {
@@ -656,35 +624,16 @@
 		C3FA470613D0F8E200AC4F9B /* Xit */ = {
 			isa = PBXGroup;
 			children = (
+				C97328661D11DE6C00C56B9E /* Document */,
+				C97328671D11DECD00C56B9E /* Repository */,
+				C973285E1D11DD4A00C56B9E /* Sidebar */,
+				31C7C12F13ECC6C700A65FE9 /* HistoryView */,
+				DD39D1F21918306B00827532 /* FileView */,
 				31C7C12A13EC730500A65FE9 /* Utils */,
-				31A8939813E9D1EA008BE0C2 /* Views */,
-				31F1E87713D3AC0E00F3B317 /* DataSources */,
 				C3D6D30F13E8E63A00AF50B0 /* GitX */,
 				89A6EA2614478DA40089B212 /* XTAppDelegate.h */,
 				89A6EA2714478DA40089B212 /* XTAppDelegate.m */,
 				DD07B08316B2005B0012AC19 /* XTConstants.h */,
-				C3FA471213D0F8E200AC4F9B /* XTDocument.h */,
-				C3FA471313D0F8E200AC4F9B /* XTDocument.m */,
-				C3FA471513D0F8E200AC4F9B /* XTDocument.xib */,
-				C9E9A37C1D0B5706007BFABF /* XTWIndowController.swift */,
-				C926804D1D074EC500E422FA /* XTFileChangesModel.swift */,
-				C358652F14048A3F00060C53 /* XTRepository.h */,
-				C358653014048A3F00060C53 /* XTRepository.m */,
-				C3BC055613D1133000C3CF1A /* XTRepository+Commands.h */,
-				C3BC055713D1133000C3CF1A /* XTRepository+Commands.m */,
-				DDDA447015B0E97000DF407B /* XTRepository+Parsing.h */,
-				DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */,
-				89D8BE391CF4DB9400D640AA /* XTRepositoryWatcher.h */,
-				89D8BE3A1CF4DB9400D640AA /* XTRepositoryWatcher.m */,
-				C9EB87231D01D93400C47D13 /* XTStash.swift */,
-				89991CDB144E3FF400097A99 /* XTStatusView.h */,
-				89991CDC144E3FF400097A99 /* XTStatusView.m */,
-				89794F651452839500E38ACC /* XTStatusView.xib */,
-				8952296F1786F7AB00EE514C /* XTToolbarDelegate.h */,
-				895229701786F7AB00EE514C /* XTToolbarDelegate.m */,
-				89794F891458CC9B00E38ACC /* XTOutputViewController.h */,
-				89794F8A1458CC9B00E38ACC /* XTOutputViewController.m */,
-				89794F8B1458CC9B00E38ACC /* XTOutputViewController.xib */,
 				C3FA471813D0F8E300AC4F9B /* MainMenu.xib */,
 				89039F551703A9FC000949A8 /* html */,
 				899D0106142168830091DC6F /* images */,
@@ -743,34 +692,84 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		C973285E1D11DD4A00C56B9E /* Sidebar */ = {
+			isa = PBXGroup;
+			children = (
+				DD07B07616A5D2A80012AC19 /* XTSideBarOutlineView.h */,
+				DD07B07716A5D2A80012AC19 /* XTSideBarOutlineView.m */,
+				895DEEF4142CECB7001763FC /* XTSideBarTableCellView.h */,
+				895DEEF5142CECB7001763FC /* XTSideBarTableCellView.m */,
+				31F1E87813D3AC6D00F3B317 /* XTSideBarDataSource.h */,
+				3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */,
+				C9F78B131D0896AF008490EA /* XTSidebarItem.swift */,
+			);
+			name = Sidebar;
+			sourceTree = "<group>";
+		};
+		C97328661D11DE6C00C56B9E /* Document */ = {
+			isa = PBXGroup;
+			children = (
+				C3FA471213D0F8E200AC4F9B /* XTDocument.h */,
+				C3FA471313D0F8E200AC4F9B /* XTDocument.m */,
+				C3FA471513D0F8E200AC4F9B /* XTDocument.xib */,
+				C9E9A37C1D0B5706007BFABF /* XTWIndowController.swift */,
+				89991CDB144E3FF400097A99 /* XTStatusView.h */,
+				89991CDC144E3FF400097A99 /* XTStatusView.m */,
+				89794F651452839500E38ACC /* XTStatusView.xib */,
+				8952296F1786F7AB00EE514C /* XTToolbarDelegate.h */,
+				895229701786F7AB00EE514C /* XTToolbarDelegate.m */,
+				89794F891458CC9B00E38ACC /* XTOutputViewController.h */,
+				89794F8A1458CC9B00E38ACC /* XTOutputViewController.m */,
+				89794F8B1458CC9B00E38ACC /* XTOutputViewController.xib */,
+			);
+			name = Document;
+			sourceTree = "<group>";
+		};
+		C97328671D11DECD00C56B9E /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				C358652F14048A3F00060C53 /* XTRepository.h */,
+				C358653014048A3F00060C53 /* XTRepository.m */,
+				C3BC055613D1133000C3CF1A /* XTRepository+Commands.h */,
+				C3BC055713D1133000C3CF1A /* XTRepository+Commands.m */,
+				DDDA447015B0E97000DF407B /* XTRepository+Parsing.h */,
+				DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */,
+				89D8BE391CF4DB9400D640AA /* XTRepositoryWatcher.h */,
+				89D8BE3A1CF4DB9400D640AA /* XTRepositoryWatcher.m */,
+				C926804D1D074EC500E422FA /* XTFileChangesModel.swift */,
+				C9EB87231D01D93400C47D13 /* XTStash.swift */,
+			);
+			name = Repository;
+			sourceTree = "<group>";
+		};
 		DD39D1F21918306B00827532 /* FileView */ = {
 			isa = PBXGroup;
 			children = (
-				DD997DF71746F40D00C7DF82 /* XTFileViewController.xib */,
 				DD96C937175ECE690003A30C /* XTFileViewController.h */,
 				DD96C938175ECE690003A30C /* XTFileViewController.m */,
-				89D6FE6D17D2F89D00633798 /* XTCommitHeaderViewController.h */,
-				89D6FE6E17D2F89D00633798 /* XTCommitHeaderViewController.m */,
+				DD997DF71746F40D00C7DF82 /* XTFileViewController.xib */,
 				899DB1A01CE5022400760270 /* XTCommitEntryController.swift */,
 				899DB1A11CE5022400760270 /* XTCommitEntryController.xib */,
+				89D6FE6D17D2F89D00633798 /* XTCommitHeaderViewController.h */,
+				89D6FE6E17D2F89D00633798 /* XTCommitHeaderViewController.m */,
 				DD98D0001822FFE2008B79C9 /* XTFileChangesDataSource.h */,
 				DD98D0011822FFE2008B79C9 /* XTFileChangesDataSource.m */,
 				DD9D5E9A183EA33F00EBC1C7 /* XTFileDiffController.h */,
 				DD9D5E9B183EA33F00EBC1C7 /* XTFileDiffController.m */,
 				DD3D94F118254442004AF532 /* XTFileListDataSourceBase.h */,
 				DD3D94F218254442004AF532 /* XTFileListDataSourceBase.m */,
-				3199BABE14207CFB008AAA4F /* XTFileTreeDataSource.h */,
-				3199BABF14207CFB008AAA4F /* XTFileTreeDataSource.m */,
-				DDD4707F16F3E7B000CA76FF /* XTPreviewItem.h */,
-				DDD4708016F3E7B000CA76FF /* XTPreviewItem.m */,
-				DD858B1D17FFDCB900264F7D /* XTTextPreviewController.h */,
-				DD858B1E17FFDCB900264F7D /* XTTextPreviewController.m */,
 				894C8DAA1CBC0A1B001A4B80 /* XTFileListView.h */,
 				894C8DAB1CBC0A1B001A4B80 /* XTFileListView.m */,
+				3199BABE14207CFB008AAA4F /* XTFileTreeDataSource.h */,
+				3199BABF14207CFB008AAA4F /* XTFileTreeDataSource.m */,
 				894C8DBA1CC12F3E001A4B80 /* XTPreviewController.h */,
 				894C8DBB1CC12F3E001A4B80 /* XTPreviewController.m */,
-				899DB18D1CE0EA3A00760270 /* XTWorkspaceTreeBuilder.swift */,
+				DDD4707F16F3E7B000CA76FF /* XTPreviewItem.h */,
+				DDD4708016F3E7B000CA76FF /* XTPreviewItem.m */,
 				89D8BE211CF0A4ED00D640AA /* XTRolloverButton.swift */,
+				DD858B1D17FFDCB900264F7D /* XTTextPreviewController.h */,
+				DD858B1E17FFDCB900264F7D /* XTTextPreviewController.m */,
+				899DB18D1CE0EA3A00760270 /* XTWorkspaceTreeBuilder.swift */,
 			);
 			name = FileView;
 			sourceTree = "<group>";
