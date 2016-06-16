@@ -125,7 +125,7 @@ NSString *XTHeaderContentKey = @"content";
   return YES;
 }
 
-- (NSArray *)fileNamesForRef:(NSString *)ref
+- (NSArray<NSString*>*)fileNamesForRef:(NSString *)ref
 {
   GTCommit *commit = [self commitForRef:ref];
 
@@ -569,6 +569,34 @@ NSString *XTCommitSHAKey = @"sha",
 
 
 @implementation XTFileChange
+
+- (instancetype)initWithPath:(NSString*)path
+{
+  return [self initWithPath:path
+                     change:XitChangeUnmodified
+             unstagedChange:XitChangeUnmodified];
+}
+
+- (instancetype)initWithPath:(NSString*)path
+                      change:(XitChange)change
+{
+  return [self initWithPath:path
+                     change:change
+             unstagedChange:XitChangeUnmodified];
+}
+
+- (instancetype)initWithPath:(NSString*)path
+                      change:(XitChange)change
+              unstagedChange:(XitChange)unstagedChange
+{
+  if ((self = [super init]) == nil)
+    return nil;
+  
+  self.path = path;
+  self.change = change;
+  self.unstagedChange = change;
+  return self;
+}
 
 -(NSString*)description
 {

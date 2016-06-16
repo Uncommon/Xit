@@ -38,10 +38,48 @@ class XTCommitChanges: NSObject, XTFileChangesModel {
   var shaToSelect: String? { return self.sha }
   var hasUnstaged: Bool { return false }
   var canCommit: Bool { return false }
-  var changes: [XTFileChange] {
-    return self.repository.changesForRef(self.sha, parent: self.diffParent) ?? []
+  
+  var changes: [XTFileChange]
+  {
+    return self.repository.changesForRef(self.sha, parent: self.diffParent) ??
+        [XTFileChange]()
   }
-  var treeRoot: NSTreeNode { return NSTreeNode() }
+  
+  var treeRoot: NSTreeNode
+  {
+    var files = repository.fileNamesForRef(sha) ?? [String]()
+    var changes = [String: XitChange]()
+    
+    if let changeList = repository.changesForRef(sha, parent:diffParent) {
+      var deletions = [String]()
+
+      for change in changeList {
+        changes[change.path] = change.change
+        if change.change == .Deleted {
+          deletions.append(change.path)
+        }
+      }
+      files.appendContentsOf(deletions)
+    }
+    
+    let newRoot = NSTreeNode(representedObject: XTCommitTreeItem(path:"/"))
+    var nodes = [String: NSTreeNode]()
+
+    for file in files {
+      let item = XTCommitTreeItem(path: file,
+                                  change: changes[file] ?? .Unmodified)
+      let parentPath = (file as NSString).stringByDeletingLastPathComponent
+      let node = NSTreeNode(representedObject: item)
+      let parentNode =
+          findTreeNode(forPath: parentPath, parent: newRoot, nodes: &nodes)
+      
+      parentNode.mutableChildNodes.addObject(node)
+      nodes[file] = node
+    }
+    postProcess(fileTree: newRoot)
+    return newRoot
+  }
+  
   /// SHA of the parent commit to use for diffs
   var diffParent: String?
   
@@ -216,4 +254,26 @@ func updateChanges(node: NSTreeNode)
   
   nodeItem.change = change ?? .Unmodified
   nodeItem.unstagedChange = unstagedChange ?? .Unmodified
+}
+
+func findTreeNode(forPath path: String,
+                  parent: NSTreeNode,
+                  inout nodes: [String: NSTreeNode]) -> NSTreeNode
+{
+  guard !path.isEmpty
+  else { return parent }
+  
+  if let pathNode = nodes[path] {
+    return pathNode
+  }
+  else {
+    let pathNode = NSTreeNode(representedObject: XTCommitTreeItem(path: path))
+    let parentPath = (path as NSString).stringByDeletingLastPathComponent
+    
+    parent.mutableChildNodes.addObject((parentPath.isEmpty) ?
+        pathNode :
+        findTreeNode(forPath: parentPath, parent: parent, nodes: &nodes))
+    nodes[path] = pathNode
+    return pathNode
+  }
 }

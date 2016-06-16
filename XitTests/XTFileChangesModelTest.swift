@@ -130,4 +130,25 @@ class XTFileChangesModelTest: XTTest {
     
     XCTAssertEqual(change.change, XitChange.Unmodified)
   }
+  
+  func testCommitTree()
+  {
+    self.commitNewTextFile(addedName, content: "new")
+    
+    let model = XTCommitChanges(repository: repository,
+                                sha: repository.headSHA)
+    let tree = model.treeRoot
+    
+    XCTAssertNotNil(tree.childNodes)
+    XCTAssertEqual(tree.childNodes!.count, 2)
+    
+    var change = tree.childNodes![0].representedObject!
+    
+    XCTAssertEqual(change.path, addedName)
+    XCTAssertEqual(change.change, XitChange.Added)
+    
+    change = tree.childNodes![1].representedObject!
+    XCTAssertEqual(change.path, file1Name)
+    XCTAssertEqual(change.change, XitChange.Unmodified)
+  }
 }
