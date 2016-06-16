@@ -47,37 +47,7 @@ class XTCommitChanges: NSObject, XTFileChangesModel {
   
   var treeRoot: NSTreeNode
   {
-    var files = repository.fileNamesForRef(sha) ?? [String]()
-    var changes = [String: XitChange]()
-    
-    if let changeList = repository.changesForRef(sha, parent:diffParent) {
-      var deletions = [String]()
-
-      for change in changeList {
-        changes[change.path] = change.change
-        if change.change == .Deleted {
-          deletions.append(change.path)
-        }
-      }
-      files.appendContentsOf(deletions)
-    }
-    
-    let newRoot = NSTreeNode(representedObject: XTCommitTreeItem(path:"/"))
-    var nodes = [String: NSTreeNode]()
-
-    for file in files {
-      let item = XTCommitTreeItem(path: file,
-                                  change: changes[file] ?? .Unmodified)
-      let parentPath = (file as NSString).stringByDeletingLastPathComponent
-      let node = NSTreeNode(representedObject: item)
-      let parentNode =
-          findTreeNode(forPath: parentPath, parent: newRoot, nodes: &nodes)
-      
-      parentNode.mutableChildNodes.addObject(node)
-      nodes[file] = node
-    }
-    postProcess(fileTree: newRoot)
-    return newRoot
+    return self.makeTreeRoot(staged:true)
   }
   
   /// SHA of the parent commit to use for diffs
@@ -103,6 +73,45 @@ class XTCommitChanges: NSObject, XTFileChangesModel {
   }
   
   func unstagedFileURL(path: String) -> NSURL? { return nil }
+
+  func makeTreeRoot(staged staged: Bool) -> NSTreeNode
+  {
+    var files = repository.fileNamesForRef(sha) ?? [String]()
+    var changes = [String: XitChange]()
+    
+    if let changeList = repository.changesForRef(sha, parent:diffParent) {
+      var deletions = [String]()
+      
+      for change in changeList {
+        changes[change.path] = change.change
+        if change.change == .Deleted {
+          deletions.append(change.path)
+        }
+      }
+      files.appendContentsOf(deletions)
+    }
+    
+    let newRoot = NSTreeNode(representedObject: XTCommitTreeItem(path:"/"))
+    var nodes = [String: NSTreeNode]()
+    
+    for file in files {
+      let changeValue = changes[file] ?? .Unmodified
+      let item = staged ?
+          XTCommitTreeItem(path: file, change: changeValue) :
+          XTCommitTreeItem(path: file,
+                           change: .Unmodified,
+                           unstagedChange: changeValue)
+      let parentPath = (file as NSString).stringByDeletingLastPathComponent
+      let node = NSTreeNode(representedObject: item)
+      let parentNode =
+        findTreeNode(forPath: parentPath, parent: newRoot, nodes: &nodes)
+      
+      parentNode.mutableChildNodes.addObject(node)
+      nodes[file] = node
+    }
+    postProcess(fileTree: newRoot)
+    return newRoot
+  }
 }
 
 
@@ -114,7 +123,29 @@ class XTStashChanges: NSObject, XTFileChangesModel {
   var canCommit: Bool { return false }
   var shaToSelect: String? { return stash.mainCommit.parents[0].SHA }
   var changes: [XTFileChange] { return self.stash.changes() }
-  var treeRoot: NSTreeNode { return NSTreeNode() }
+  
+  var treeRoot: NSTreeNode {
+    let mainModel = XTCommitChanges(repository: repository,
+                                    sha: stash.mainCommit.SHA!)
+    var mainRoot = mainModel.makeTreeRoot(staged: false)
+    
+    if let indexCommit = stash.indexCommit {
+      let indexModel = XTCommitChanges(repository: repository,
+                                       sha: indexCommit.SHA!)
+      let indexRoot = indexModel.treeRoot
+      
+      combineTrees(unstagedTree: &mainRoot, stagedTree: indexRoot)
+    }
+    if let untrackedCommit = stash.untrackedCommit {
+      let untrackedModel = XTCommitChanges(repository: repository,
+                                           sha: untrackedCommit.SHA!)
+      let untrackedRoot = untrackedModel.treeRoot
+    
+      
+      combineTrees(unstagedTree: &mainRoot, stagedTree: untrackedRoot)
+    }
+    return mainRoot
+  }
   
   init(repository: XTRepository, index: UInt)
   {
@@ -276,4 +307,56 @@ func findTreeNode(forPath path: String,
     nodes[path] = pathNode
     return pathNode
   }
+}
+
+func combineTrees(inout unstagedTree unstagedTree: NSTreeNode,
+                  stagedTree: NSTreeNode)
+{
+  // Not sure if these should be expected
+  guard let unstagedNodes = unstagedTree.childNodes
+  else {
+    NSLog("combineTrees: no unstaged children at %@",
+          unstagedTree.representedObject!.path)
+    return
+  }
+  guard let stagedNodes = stagedTree.childNodes
+    else {
+      NSLog("combineTrees: no staged children at %@",
+            stagedTree.representedObject!.path)
+      return
+  }
+  
+  var unstagedIndex = 0, stagedIndex = 0;
+  var deletedItems = [XTFileChange]()
+  
+  while (unstagedIndex < unstagedNodes.count) &&
+        (stagedIndex < stagedNodes.count) {
+    let unstagedNode = unstagedTree.childNodes![unstagedIndex]
+    let unstagedItem = unstagedNode.representedObject! as! XTFileChange
+    let stagedNode = stagedTree.childNodes![stagedIndex]
+    let stagedItem = stagedNode.representedObject! as! XTFileChange
+    
+    switch (unstagedItem.path as NSString).compare(stagedItem.path) {
+      case .OrderedSame:
+        unstagedItem.change = stagedItem.change
+        unstagedIndex += 1
+        stagedIndex += 1
+        if !unstagedNode.leaf || !stagedNode.leaf {
+          combineTrees(unstagedTree: &unstagedTree, stagedTree: stagedTree)
+        }
+      case .OrderedAscending:
+        // Added in unstaged
+        unstagedItem.change = .Deleted
+        unstagedIndex += 1
+      case .OrderedDescending:
+        // Added in staged
+        deletedItems.append(XTFileChange(path: stagedItem.path,
+                                         change: stagedItem.change,
+                                         unstagedChange: .Deleted))
+        stagedIndex += 1
+    }
+  }
+  unstagedTree.mutableChildNodes.addObjectsFromArray(deletedItems)
+  unstagedTree.mutableChildNodes.sortUsingDescriptors(
+      [NSSortDescriptor(key: "path", ascending: true)])
 }
