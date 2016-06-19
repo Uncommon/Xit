@@ -80,15 +80,12 @@ class XTCommitChanges: NSObject, XTFileChangesModel {
     var changes = [String: XitChange]()
     
     if let changeList = repository.changesForRef(sha, parent:diffParent) {
-      var deletions = [String]()
-      
       for change in changeList {
         changes[change.path] = change.change
-        if change.change == .Deleted {
-          deletions.append(change.path)
-        }
       }
-      files.appendContentsOf(deletions)
+      files.appendContentsOf(
+          changeList.filter({ return $0.change == .Deleted })
+                    .map({ return $0.path }))
     }
     
     let newRoot = NSTreeNode(representedObject: XTCommitTreeItem(path:"/"))
