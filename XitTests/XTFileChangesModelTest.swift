@@ -151,4 +151,26 @@ class XTFileChangesModelTest: XTTest {
     XCTAssertEqual(change.path, file1Name)
     XCTAssertEqual(change.change, XitChange.Unmodified)
   }
+  
+  func testStashTree()
+  {
+    self.makeStash()
+    
+    let model = XTStashChanges(repository: repository, index: 0)
+    let tree = model.treeRoot
+    
+    XCTAssertEqual(tree.childNodes!.count, 3)
+    
+    let expectedPaths = [addedName, file1Name, untrackedName]
+    let expectedChanges: [XitChange] = [.Added, .Unmodified, .Untracked]
+    let expectedUnstaged: [XitChange] = [.Unmodified, .Modified, .Added]
+    
+    for i in 0...2 {
+      let item = tree.childNodes![i].representedObject as! XTFileChange
+      
+      XCTAssertEqual(item.path, expectedPaths[i])
+      XCTAssertEqual(item.change, expectedChanges[i], expectedPaths[i])
+      XCTAssertEqual(item.unstagedChange, expectedUnstaged[i], expectedPaths[i])
+    }
+  }
 }

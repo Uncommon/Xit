@@ -42,9 +42,9 @@
   }
 }
 
-- (void)setWinController:(XTWindowController*)docController
+- (void)setWinController:(XTWindowController*)winController
 {
-  _winController = docController;
+  _winController = winController;
   [_winController addObserver:self
                    forKeyPath:@"selectedModel"
                       options:NSKeyValueObservingOptionNew
