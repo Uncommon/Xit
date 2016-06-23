@@ -337,7 +337,7 @@ private class XTChangesModelUtils {
     
     while (unstagedIndex < unstagedNodes.count) &&
           (stagedIndex < stagedNodes.count) {
-      let unstagedNode = unstagedNodes[unstagedIndex]
+      var unstagedNode = unstagedNodes[unstagedIndex]
       let unstagedItem = unstagedNode.representedObject! as! XTFileChange
       let stagedNode = stagedNodes[stagedIndex]
       let stagedItem = stagedNode.representedObject! as! XTFileChange
@@ -345,14 +345,15 @@ private class XTChangesModelUtils {
       switch (unstagedItem.path as NSString).compare(stagedItem.path) {
         case .OrderedSame:
           unstagedItem.change = stagedItem.change
-          if unstagedItem.change == .Added &&
-             unstagedItem.unstagedChange == .Added {
+          if unstagedItem.change == unstagedItem.unstagedChange &&
+             (unstagedItem.change == .Added ||
+              unstagedItem.change == .Deleted) {
             unstagedItem.unstagedChange = .Unmodified
           }
           unstagedIndex += 1
           stagedIndex += 1
           if !unstagedNode.leaf || !stagedNode.leaf {
-            combineTrees(unstagedTree: &unstagedTree, stagedTree: stagedTree)
+            combineTrees(unstagedTree: &unstagedNode, stagedTree: stagedNode)
           }
         case .OrderedAscending:
           // Added in unstaged

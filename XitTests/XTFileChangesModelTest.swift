@@ -154,18 +154,28 @@ class XTFileChangesModelTest: XTTest {
   
   func testStashTree()
   {
+    let deletedName = "deleted"
+    let deletedURL = repository.repoURL.URLByAppendingPathComponent(deletedName)
+  
+    self.commitNewTextFile(deletedName, content: "bye!")
+    try! NSFileManager.defaultManager().removeItemAtURL(deletedURL)
+    self.repository.stageFile(deletedName)
+    
     self.makeStash()
     
     let model = XTStashChanges(repository: repository, index: 0)
     let tree = model.treeRoot
     
-    XCTAssertEqual(tree.childNodes!.count, 3)
+    XCTAssertEqual(tree.childNodes!.count, 4)
     
-    let expectedPaths =                 [addedName,   file1Name,   untrackedName]
-    let expectedChanges: [XitChange] =  [.Added,      .Unmodified, .Unmodified]
-    let expectedUnstaged: [XitChange] = [.Unmodified, .Modified,   .Untracked]
+    let expectedPaths =
+        [addedName,   deletedName, file1Name,   untrackedName]
+    let expectedChanges: [XitChange] =
+        [.Added,      .Deleted,    .Unmodified, .Unmodified]
+    let expectedUnstaged: [XitChange] =
+        [.Unmodified, .Unmodified, .Modified,   .Untracked]
     
-    for i in 0...2 {
+    for i in 0...3 {
       let item = tree.childNodes![i].representedObject as! XTFileChange
       
       XCTAssertEqual(item.path, expectedPaths[i])
