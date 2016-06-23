@@ -69,7 +69,7 @@ class XTCommitChanges: NSObject, XTFileChangesModel {
   
   func dataForFile(path: String, staged: Bool) -> NSData?
   {
-    return self.repository.contentsOfFile(path, atCommit: self.sha)
+    return try? self.repository.contentsOfFile(path, atCommit: self.sha)
   }
   
   func unstagedFileURL(path: String) -> NSURL? { return nil }
@@ -168,15 +168,16 @@ class XTStashChanges: NSObject, XTFileChangesModel {
       guard let indexCommit = self.stash.indexCommit
       else { return nil }
       
-      return self.repository.contentsOfFile(path, atCommit: indexCommit.SHA)
+      return try? self.repository.contentsOfFile(path, atCommit: indexCommit.SHA!)
     }
     else {
       if let untrackedCommit = self.stash.untrackedCommit,
-         let untrackedData = self.repository.contentsOfFile(path, atCommit: untrackedCommit.SHA) {
+         let untrackedData = try? self.repository.contentsOfFile(
+             path, atCommit: untrackedCommit.SHA!) {
         return untrackedData
       }
-      return self.repository.contentsOfFile(
-          path, atCommit: self.stash.mainCommit.SHA)
+      return try? self.repository.contentsOfFile(
+          path, atCommit: self.stash.mainCommit.SHA!)
     }
   }
 
@@ -223,7 +224,7 @@ class XTStagingChanges: NSObject, XTFileChangesModel {
   func dataForFile(path: String, staged: Bool) -> NSData?
   {
     if staged {
-      return self.repository.contentsOfStagedFile(path)
+      return try? self.repository.contentsOfStagedFile(path)
     }
     else {
       let url = self.repository.repoURL.URLByAppendingPathComponent(path)

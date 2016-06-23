@@ -58,11 +58,8 @@
   [self deleteTempFile];
   self.previewItemURL = nil;
 
-  if ((_path != nil) && (_commitSHA != nil)) {
-    NSError *error = nil;
-    NSData *contents = [_commitSHA isEqualToString:XTStagingSHA] ?
-        [_repo contentsOfStagedFile:_path error:&error] :
-        [_repo contentsOfFile:_path atCommit:_commitSHA error:&error];
+  if ((self.path != nil) && (self.model != nil)) {
+    NSData *contents = [self.model dataForFile:self.path staged:YES];
 
     if (contents != nil) {
       NSString *tempFilePath = [self tempFilePath];

@@ -71,9 +71,7 @@
            model:(id<XTFileChangesModel>)model
           staged:(BOOL)staged
 {
-  NSError *error = nil;
-
-  [self loadData:[repository contentsOfFile:path atCommit:sha error:&error]];
+  [self loadData:[model dataForFile:path staged:staged]];
 }
 
 - (void)loadUnstagedPath:(NSString*)path

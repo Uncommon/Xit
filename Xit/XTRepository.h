@@ -45,11 +45,11 @@ extern NSString *XTPathsKey;
 
 - (nullable NSString*)shaForRef:(NSString*)ref;
 
-- (NSData*)contentsOfFile:(NSString*)filePath
-                 atCommit:(NSString*)commit
-                    error:(NSError**)error;
-- (NSData*)contentsOfStagedFile:(NSString*)filePath
-                          error:(NSError**)error;
+- (nullable NSData*)contentsOfFile:(NSString*)filePath
+                          atCommit:(NSString*)commit
+                             error:(NSError**)error;
+- (nullable NSData*)contentsOfStagedFile:(NSString*)filePath
+                                   error:(NSError**)error;
 
 - (void)addReloadObserver:(id)observer selector:(SEL)selector;
 
