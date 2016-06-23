@@ -1,8 +1,8 @@
 #import "XTFileListDataSourceBase.h"
 #import "XTConstants.h"
-#import "XTDocController.h"
 #import "XTFileViewController.h"
 #import "XTRepository.h"
+#import "Xit-Swift.h"
 #import <objc/runtime.h>
 
 
@@ -12,7 +12,7 @@
 
 - (void)dealloc
 {
-  [self.docController removeObserver:self forKeyPath:@"selectedCommitSHA"];
+  [self.winController removeObserver:self forKeyPath:@"selectedModel"];
 }
 
 - (void)reload
@@ -42,11 +42,11 @@
   }
 }
 
-- (void)setDocController:(XTDocController *)docController
+- (void)setWinController:(XTWindowController*)winController
 {
-  _docController = docController;
-  [_docController addObserver:self
-                   forKeyPath:NSStringFromSelector(@selector(selectedCommitSHA))
+  _winController = winController;
+  [_winController addObserver:self
+                   forKeyPath:@"selectedModel"
                       options:NSKeyValueObservingOptionNew
                       context:nil];
 }
@@ -56,8 +56,7 @@
   NSTableColumn *unstagedColumn =
       [self.outlineView tableColumnWithIdentifier:@"unstaged"];
 
-  unstagedColumn.hidden = !self.controller.inStagingView;
-  // update the column highliht
+  unstagedColumn.hidden = !self.winController.selectedModel.hasUnstaged;
 }
 
 - (void)observeValueForKeyPath:(NSString*)keyPath
@@ -65,10 +64,10 @@
                         change:(NSDictionary*)change
                        context:(void*)context
 {
-  if ([keyPath isEqualToString:@"selectedCommitSHA"])
+  if ([keyPath isEqualToString:@"selectedModel"]) {
     [self reload];
-  else if ([keyPath isEqualToString:@"inStagingView"])
     [self updateStagingView];
+  }
 }
 
 + (XitChange)transformDisplayChange:(XitChange)change

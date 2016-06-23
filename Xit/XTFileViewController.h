@@ -1,5 +1,6 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
+#import "Xit-Swift.h"
 
 @class XTCommitHeaderViewController;
 @class XTFileChangesDataSource;
@@ -18,16 +19,13 @@ extern const CGFloat kChangeImagePadding;
 
 /// Clears the display for when nothing is selected.
 - (void)clear;
-/// Displays a file from a commit.
+/// Displays the content from the given file model.
+/// @param path The repository-relative file path.
+/// @param model The model to read data from.
+/// @param staged Whether to show staged content.
 - (void)loadPath:(NSString*)path
-          commit:(NSString*)sha
-      repository:(XTRepository*)repository;
-/// Displays a workspace file.
-- (void)loadUnstagedPath:(NSString*)path
-              repository:(XTRepository*)repository;
-/// Displays a file from the index.
-- (void)loadStagedPath:(NSString*)path
-            repository:(XTRepository*)repository;
+           model:(id<XTFileChangesModel>)model
+          staged:(BOOL)staged;
 
 @end
 
@@ -59,7 +57,6 @@ extern const CGFloat kChangeImagePadding;
 @property (strong) IBOutlet XTFileDiffController *diffController;
 @property (strong) IBOutlet XTPreviewController *previewController;
 @property (readonly) NSDictionary *changeImages;
-@property (readonly) BOOL inStagingView;
 
 - (IBAction)changeFileListView:(id)sender;
 - (IBAction)changeContentView:(id)sender;

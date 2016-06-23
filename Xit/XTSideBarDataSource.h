@@ -34,6 +34,6 @@
 
 - (XTSideBarItem *)itemNamed:(NSString *)name inGroup:(NSInteger)groupIndex;
 
-@property(readonly) NSArray *roots;
+@property(readonly) NSArray<XTSideBarItem*> *roots;
 
 @end

@@ -1,6 +1,8 @@
 #import "XTRepository.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString *XTHeaderNameKey;
 extern NSString *XTHeaderContentKey;
 
@@ -33,10 +35,12 @@ typedef NS_ENUM(NSUInteger, XitChange) {
 @class GTSubmodule;
 @class XTDiffDelta;
 @class XTFileChange;
+@class XTWorkspaceFileStatus;
 
 @interface XTRepository (Reading)
 
-@property (readonly, copy) NSDictionary *workspaceStatus;
+@property (readonly, copy) NSDictionary<NSString*, XTWorkspaceFileStatus*>
+    *workspaceStatus;
 
 - (BOOL)
     readRefsWithLocalBlock:(void (^)(NSString *name, NSString *commit))localBlock
@@ -44,12 +48,13 @@ typedef NS_ENUM(NSUInteger, XitChange) {
                                      NSString *commit))remoteBlock
                   tagBlock:(void (^)(NSString *name, NSString *commit))tagBlock;
 /// Returns a dictionary mapping paths to XTWorkspaceFileStatuses.
-- (BOOL)readStashesWithBlock:(void (^)(NSString *commit, NSString *name))block;
+- (BOOL)readStashesWithBlock:
+    (void (^)(NSString *commit, NSUInteger index, NSString *name))block;
 - (BOOL)readSubmodulesWithBlock:(void (^)(GTSubmodule *sub))block;
 - (BOOL)parseCommit:(NSString*)ref
-         intoHeader:(NSDictionary**)header
-            message:(NSString**)message
-              files:(NSArray**)files;
+         intoHeader:(NSDictionary * _Nullable * _Nonnull)header
+            message:(NSString * _Nullable * _Nonnull)message
+              files:(NSArray * _Nullable * _Nullable)files;
 
 - (BOOL)stageFile:(NSString*)file;
 - (BOOL)stageAllFiles;
@@ -57,18 +62,19 @@ typedef NS_ENUM(NSUInteger, XitChange) {
 
 - (BOOL)commitWithMessage:(NSString*)message
                     amend:(BOOL)amend
-              outputBlock:(void (^)(NSString *output))outputBlock
+              outputBlock:(nullable void (^)(NSString *output))outputBlock
                     error:(NSError**)error;
 
-- (NSArray*)fileNamesForRef:(NSString*)ref;
+- (nullable NSArray<NSString*>*)fileNamesForRef:(NSString*)ref;
 /// Returns a list of changed files in the given commit.
-- (NSArray<XTFileChange*>*)changesForRef:(NSString*)ref
-                                  parent:(NSString*)parentSHA;
-- (XTDiffDelta*)diffForFile:(NSString*)path
-                  commitSHA:(NSString*)sha
-                  parentSHA:(NSString*)parentSHA;
-- (XTDiffDelta*)stagedDiffForFile:(NSString*)path;
-- (XTDiffDelta*)unstagedDiffForFile:(NSString*)path;
+- (nullable NSArray<XTFileChange*>*)changesForRef:(NSString*)ref
+                                           parent:(nullable NSString*)parentSHA;
+- (nullable GTCommit*)commitForStashAtIndex:(NSUInteger)index;
+- (nullable XTDiffDelta*)diffForFile:(NSString*)path
+                           commitSHA:(NSString*)sha
+                           parentSHA:(nullable NSString*)parentSHA;
+- (nullable XTDiffDelta*)stagedDiffForFile:(NSString*)path;
+- (nullable XTDiffDelta*)unstagedDiffForFile:(NSString*)path;
 - (BOOL)isTextFile:(NSString*)path commit:(NSString*)commit;
 
 @end
@@ -80,6 +86,13 @@ typedef NS_ENUM(NSUInteger, XitChange) {
 @property NSString *path;
 @property XitChange change;
 @property XitChange unstagedChange;
+
+- (instancetype)initWithPath:(NSString*)path;
+- (instancetype)initWithPath:(NSString*)path
+                      change:(XitChange)change;
+- (instancetype)initWithPath:(NSString*)path
+                      change:(XitChange)change
+              unstagedChange:(XitChange)unstagedChange;
 
 @end
 
@@ -105,3 +118,5 @@ typedef NS_ENUM(NSUInteger, XitChange) {
 @interface XTDiffDelta : GTDiffDelta
 
 @end
+
+NS_ASSUME_NONNULL_END

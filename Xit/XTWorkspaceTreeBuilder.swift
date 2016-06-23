@@ -10,22 +10,20 @@ class XTWorkspaceTreeBuilder: NSObject {
   }
   
   func treeAtURL(baseURL: NSURL, rootPath: NSString) -> NSTreeNode {
-    let rootItem = XTCommitTreeItem()
+    let rootItem = XTCommitTreeItem(path: baseURL.path!)
     let node = NSTreeNode(representedObject: rootItem)
-    
-    rootItem.path = baseURL.path!
-    
     let enumerator = NSFileManager.defaultManager().enumeratorAtURL(
         baseURL,
         includingPropertiesForKeys: [ NSURLIsDirectoryKey ],
-        options: NSDirectoryEnumerationOptions.SkipsSubdirectoryDescendants,
+        options: .SkipsSubdirectoryDescendants,
         errorHandler: nil)
-    let rootPathLength = rootPath.length + 1  //  include slash
+    let rootPathLength = rootPath.length + 1
     
     while let url: NSURL = enumerator?.nextObject() as! NSURL? {
-      let path = (url.path! as NSString).substringFromIndex(rootPathLength)
+      let urlPath = url.path!
+      let path = (urlPath as NSString).substringFromIndex(rootPathLength)
       
-      if path == "/.git" {
+      if path == ".git" {
         continue
       }
       
@@ -42,9 +40,8 @@ class XTWorkspaceTreeBuilder: NSObject {
         if (isDirValue as! NSNumber).boolValue {
           childNode = self.treeAtURL(url, rootPath: rootPath)
         } else {
-          let item = XTCommitTreeItem()
+          let item = XTCommitTreeItem(path: path)
           
-          item.path = path
           if let status = self.changes[path] {
             item.change = status.change
             item.unstagedChange = status.unstagedChange

@@ -11,7 +11,6 @@
 
 @implementation XTPreviewItem
 
-
 - (instancetype)init
 {
   if ((self = [super init]) != nil) {
@@ -35,8 +34,8 @@
 
 - (NSString *)tempFilePath
 {
-  return [_tempFolder
-      stringByAppendingPathComponent:_path.lastPathComponent];
+  return [self.tempFolder
+      stringByAppendingPathComponent:self.path.lastPathComponent];
 }
 
 - (void)deleteTempFile
@@ -74,30 +73,16 @@
   }
 }
 
-- (void)setPath:(NSString *)newPath
+- (void)setModel:(id<XTFileChangesModel>)newModel
 {
-  if (![newPath isEqualToString:_path]) {
-    _path = newPath;
-    [self remakeTempFile];
-  }
+  _model = newModel;
+  [self remakeTempFile];
 }
 
-- (NSString *)path
+- (void)setPath:(NSString*)path
 {
-  return _path;
-}
-
-- (void)setCommitSHA:(NSString *)newSHA
-{
-  if (![newSHA isEqualToString:_commitSHA]) {
-    _commitSHA = newSHA;
-    [self remakeTempFile];
-  }
-}
-
-- (NSString *)commitSHA
-{
-  return _commitSHA;
+  _path = path;
+  [self remakeTempFile];
 }
 
 @end

@@ -1,6 +1,6 @@
 #import "XTRepository+Parsing.h"
 
-@class XTDocController;
+@class XTWindowController;
 @class XTFileChange;
 @class XTFileViewController;
 @class XTRepository;
@@ -13,7 +13,7 @@
 @property IBOutlet NSOutlineView *outlineView;
 @property IBOutlet XTFileViewController *controller;
 @property(nonatomic) XTRepository *repository;
-@property(nonatomic) XTDocController *docController;
+@property(nonatomic) XTWindowController *winController;
 @property(readonly, nonatomic) BOOL isHierarchical;
 
 

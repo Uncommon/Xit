@@ -8,7 +8,6 @@
 #import "PBGitRevisionCell.h"
 #import "XTRefToken.h"
 #import "XTRepository.h"
-#import "XTRemoteBranchItem.h"
 
 static const int kColumnWidth = 10;
 

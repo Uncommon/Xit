@@ -10,8 +10,12 @@
 {
   [super setUp];
 
-  repoPath = [NSString stringWithFormat:@"%@testrepo", NSTemporaryDirectory()];
-  repository = [self createRepo:repoPath];
+  // /tmp is actually a link to /private/tmp, which APIs like
+  // NSTemporaryDirectory and -[NSString stringByResolvingSymlinksInPath]
+  // deliberately ignore, but -[NSFileManager enumeratorAtURL] doesn't.
+  self.repoPath = [@"/private" stringByAppendingPathComponent:
+      [NSString stringWithFormat:@"%@testrepo", NSTemporaryDirectory()]];
+  self.repository = [self createRepo:self.repoPath];
 
   [self addInitialRepoContent];
 
@@ -23,15 +27,15 @@
   [self waitForRepoQueue];
 
   NSFileManager *defaultManager = [NSFileManager defaultManager];
-  [defaultManager removeItemAtPath:repoPath error:nil];
-  [defaultManager removeItemAtPath:remoteRepoPath error:nil];
+  [defaultManager removeItemAtPath:self.repoPath error:nil];
+  [defaultManager removeItemAtPath:self.remoteRepoPath error:nil];
 
-  if ([defaultManager fileExistsAtPath:repoPath]) {
-    XCTFail(@"tearDown %@ FAIL!!", repoPath);
+  if ([defaultManager fileExistsAtPath:self.repoPath]) {
+    XCTFail(@"tearDown %@ FAIL!!", self.repoPath);
   }
 
-  if ([defaultManager fileExistsAtPath:remoteRepoPath]) {
-    XCTFail(@"tearDown %@ FAIL!!", remoteRepoPath);
+  if ([defaultManager fileExistsAtPath:self.remoteRepoPath]) {
+    XCTFail(@"tearDown %@ FAIL!!", self.remoteRepoPath);
   }
 
   NSLog(@"tearDown ok");
@@ -39,22 +43,52 @@
   [super tearDown];
 }
 
+- (NSString*)file1Name
+{
+  return @"file1.txt";
+}
+
+- (NSString*)file1Path
+{
+  return [self.repoPath stringByAppendingPathComponent:self.file1Name];
+}
+
+- (NSString*)addedName
+{
+  return @"added.txt";
+}
+
+- (NSString*)untrackedName
+{
+  return @"untracked.txt";
+}
+
 - (void)makeRemoteRepo
 {
-  remoteRepoPath =
+  self.remoteRepoPath =
       [NSString stringWithFormat:@"%@remotetestrepo", NSTemporaryDirectory()];
-  remoteRepository = [self createRepo:remoteRepoPath];
+  self.remoteRepository = [self createRepo:self.remoteRepoPath];
 }
 
 - (void)addInitialRepoContent
 {
-  XCTAssertTrue([self commitNewTextFile:@"file1.txt" content:@"some text"]);
-  file1Path = [repoPath stringByAppendingPathComponent:@"file1.txt"];
+  XCTAssertTrue([self commitNewTextFile:self.file1Name content:@"some text"]);
+}
+
+- (void)makeStash
+{
+  [self writeTextToFile1:@"stashy"];
+  [self writeText:@"new" toFile:self.untrackedName];
+  [self writeText:@"add" toFile:self.addedName];
+  [self.repository stageFile:self.addedName];
+  [self.repository saveStash:@"" includeUntracked:YES];
 }
 
 - (BOOL)commitNewTextFile:(NSString *)name content:(NSString *)content
 {
-  return [self commitNewTextFile:name content:content inRepository:repository];
+  return [self commitNewTextFile:name
+                         content:content
+                    inRepository:self.repository];
 }
 
 - (BOOL)commitNewTextFile:(NSString *)name
@@ -115,17 +149,25 @@
 
 - (void)waitForRepoQueue
 {
-  WaitForQueue(repository.queue);
+  WaitForQueue(self.repository.queue);
   WaitForQueue(dispatch_get_main_queue());
+}
+
+- (BOOL)writeText:(NSString *)text toFile:(NSString *)path
+{
+  return [text writeToFile:[self.repoPath stringByAppendingPathComponent:path]
+                atomically:YES
+                  encoding:NSUTF8StringEncoding
+                     error:nil];
 }
 
 - (BOOL)writeTextToFile1:(NSString *)text
 {
   NSError *error;
 
-  [text writeToFile:file1Path
+  [text writeToFile:self.file1Path
          atomically:YES
-           encoding:NSASCIIStringEncoding
+           encoding:NSUTF8StringEncoding
               error:&error];
   return error == nil;
 }
@@ -133,6 +175,6 @@
 @end
 
 
-@implementation XTFakeDocController
+@implementation XTFakeWinController
 
 @end

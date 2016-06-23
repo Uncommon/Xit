@@ -3,7 +3,6 @@
 #import "XTTest.h"
 #import "XTDocument.h"
 #import "XTHistoryViewController.h"
-#import "XTLocalBranchItem.h"
 #import "XTRepository.h"
 #import "XTSideBarDataSource.h"
 #import "XTSideBarOutlineView.h"
@@ -12,6 +11,7 @@
 #import "XTRepository+Parsing.h"
 #import <OCMock/OCMock.h>
 #include "XTQueueUtils.h"
+#import "XitTests-Swift.h"
 
 @interface XTHistoryViewControllerTest : XTTest
 
@@ -42,16 +42,16 @@
 
 - (void)testCheckoutBranch
 {
-  if (![repository createBranch:@"b1"]) {
+  if (![self.repository createBranch:@"b1"]) {
     XCTFail(@"Create Branch 'b1'");
   }
 
   id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
   XTHistoryViewController *controller =
-      [[XTHistoryViewController alloc] initWithRepository:repository
+      [[XTHistoryViewController alloc] initWithRepository:self.repository
                                                   sidebar:mockSidebar];
 
-  [controller.sideBarDS setRepo:repository];
+  [controller.sideBarDS setRepo:self.repository];
   [[mockSidebar stub] reloadData];
   // Cast because the compiler assumes the wrong setDelegate: method
   [(XTSideBarOutlineView*)[mockSidebar expect] setDelegate:controller.sideBarDS];
@@ -89,29 +89,32 @@
                                   inGroup:XTBranchesGroupIndex]] itemAtRow:row];
 
   // selectedBranch from checkOutBranch
+  XTSideBarItem *branchesGroup = controller.sideBarDS.roots[XTBranchesGroupIndex];
+  
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(noRow)] contextMenuRow];
   [[[mockSidebar expect] andReturn:
           [controller.sideBarDS itemNamed:@"master"
                                   inGroup:XTBranchesGroupIndex]] itemAtRow:row];
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
+  [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
 
   [controller.sideBarDS outlineView:mockSidebar
              numberOfChildrenOfItem:nil];  // initialize sidebarDS->outline
   [self waitForRepoQueue];
-  XCTAssertEqualObjects([repository currentBranch], @"b1", @"");
+  XCTAssertEqualObjects([self.repository currentBranch], @"b1", @"");
   [controller selectBranch:@"master"];
   XCTAssertEqualObjects([controller selectedBranch], @"master", @"");
   [controller checkOutBranch:nil];
   [self waitForRepoQueue];
-  XCTAssertEqualObjects([repository currentBranch], @"master", @"");
+  XCTAssertEqualObjects([self.repository currentBranch], @"master", @"");
 }
 
 - (void)makeTwoStashes
 {
   XCTAssertTrue([self writeTextToFile1:@"second text"], @"");
-  XCTAssertTrue([repository saveStash:@"s1"], @"");
+  XCTAssertTrue([self.repository saveStash:@"s1" includeUntracked:NO], @"");
   XCTAssertTrue([self writeTextToFile1:@"third text"], @"");
-  XCTAssertTrue([repository saveStash:@"s2"], @"");
+  XCTAssertTrue([self.repository saveStash:@"s2" includeUntracked:NO], @"");
 }
 
 - (void)assertStashes:(NSArray *)expectedStashes
@@ -125,7 +128,7 @@
 
   NSMutableArray *stashes = [NSMutableArray array];
 
-  [repository readStashesWithBlock:^(NSString *commit, NSString *name) {
+  [self.repository readStashesWithBlock:^(NSString *commit, NSUInteger index, NSString *name) {
     [stashes addObject:name];
   }];
   XCTAssertEqualObjects(stashes, composedStashes, @"");
@@ -141,11 +144,11 @@
 
   id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
   XTHistoryViewController *controller =
-      [[XTHistoryViewController alloc] initWithRepository:repository
+      [[XTHistoryViewController alloc] initWithRepository:self.repository
                                                   sidebar:mockSidebar];
   NSInteger stashRow = 2, noRow = -1;
 
-  [controller.sideBarDS setRepo:repository];
+  [controller.sideBarDS setRepo:self.repository];
   [controller.sideBarDS reload];
   [self waitForRepoQueue];
 
@@ -163,7 +166,7 @@
   [self assertStashes:expectedRemains];
 
   NSError *error = nil;
-  NSString *text = [NSString stringWithContentsOfFile:file1Path
+  NSString *text = [NSString stringWithContentsOfFile:self.file1Path
                                              encoding:NSASCIIStringEncoding
                                                 error:&error];
 
@@ -223,7 +226,7 @@
 {
   id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
   XTHistoryViewController *controller =
-      [[XTHistoryViewController alloc] initWithRepository:repository
+      [[XTHistoryViewController alloc] initWithRepository:self.repository
                                                   sidebar:mockSidebar];
   XTLocalBranchItem *branchItem =
       [[XTLocalBranchItem alloc] initWithTitle:@"branch"];
@@ -244,7 +247,7 @@
   // Merge should be disabled if the selected item is the current branch.
   id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
   XTHistoryViewController *controller =
-      [[XTHistoryViewController alloc] initWithRepository:repository
+      [[XTHistoryViewController alloc] initWithRepository:self.repository
                                                   sidebar:mockSidebar];
   XTLocalBranchItem *branchItem =
       [[XTLocalBranchItem alloc] initWithTitle:@"master"];
@@ -269,13 +272,15 @@
 {
   NSString *file2Name = @"file2.txt";
 
-  XCTAssertTrue([repository createBranch:@"task"]);
+  XCTAssertTrue([self.repository createBranch:@"task"]);
   XCTAssertTrue([self commitNewTextFile:file2Name content:@"branch text"]);
 
   id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
   XTHistoryViewController *controller =
-      [[XTHistoryViewController alloc] initWithRepository:repository
+      [[XTHistoryViewController alloc] initWithRepository:self.repository
                                                   sidebar:mockSidebar];
+  XTSideBarItem *branchesGroup =
+      controller.sideBarDS.roots[XTBranchesGroupIndex];
   XTLocalBranchItem *masterItem =
       [[XTLocalBranchItem alloc] initWithTitle:@"master"];
   NSInteger row = 1;
@@ -283,8 +288,9 @@
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(statusUpdated:)
                                                name:XTStatusNotification
-                                             object:repository];
+                                             object:self.repository];
 
+  [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
   [[[mockSidebar expect] andReturn:masterItem] itemAtRow:row];
   [controller mergeBranch:nil];
@@ -292,34 +298,36 @@
   XCTAssertEqualObjects([self.statusData valueForKey:XTStatusTextKey],
                        @"Merged master into task");
 
-  NSString *file2Path = [repoPath stringByAppendingPathComponent:file2Name];
+  NSString *file2Path = [self.repoPath stringByAppendingPathComponent:file2Name];
 
-  XCTAssertTrue([[NSFileManager defaultManager] fileExistsAtPath:file1Path]);
+  XCTAssertTrue([[NSFileManager defaultManager] fileExistsAtPath:self.file1Path]);
   XCTAssertTrue([[NSFileManager defaultManager] fileExistsAtPath:file2Path]);
 }
 
 - (void)testMergeFailure
 {
-  XCTAssertTrue([repository createBranch:@"task"]);
+  XCTAssertTrue([self.repository createBranch:@"task"]);
   XCTAssertTrue([self writeTextToFile1:@"conflicting branch"]);
-  XCTAssertTrue([repository stageFile:file1Path]);
-  XCTAssertTrue([repository commitWithMessage:@"conflicting commit"
-                                       amend:NO
-                                 outputBlock:NULL
-                                       error:NULL]);
+  XCTAssertTrue([self.repository stageFile:self.file1Path]);
+  XCTAssertTrue([self.repository commitWithMessage:@"conflicting commit"
+                                             amend:NO
+                                       outputBlock:NULL
+                                             error:NULL]);
 
-  XCTAssertTrue([repository checkout:@"master" error:NULL]);
+  XCTAssertTrue([self.repository checkout:@"master" error:NULL]);
   XCTAssertTrue([self writeTextToFile1:@"conflicting master"]);
-  XCTAssertTrue([repository stageFile:file1Path]);
-  XCTAssertTrue([repository commitWithMessage:@"conflicting commit 2"
-                                       amend:NO
-                                 outputBlock:NULL
-                                       error:NULL]);
+  XCTAssertTrue([self.repository stageFile:self.file1Path]);
+  XCTAssertTrue([self.repository commitWithMessage:@"conflicting commit 2"
+                                             amend:NO
+                                       outputBlock:NULL
+                                             error:NULL]);
 
   id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
   XTHistoryViewController *controller =
-      [[XTHistoryViewController alloc] initWithRepository:repository
+      [[XTHistoryViewController alloc] initWithRepository:self.repository
                                                   sidebar:mockSidebar];
+  XTSideBarItem *branchesGroup =
+      controller.sideBarDS.roots[XTBranchesGroupIndex];
   XTLocalBranchItem *masterItem =
       [[XTLocalBranchItem alloc] initWithTitle:@"task"];
   NSInteger row = 1;
@@ -327,8 +335,9 @@
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(statusUpdated:)
                                                name:XTStatusNotification
-                                             object:repository];
+                                             object:self.repository];
 
+  [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
   [[[mockSidebar expect] andReturn:masterItem] itemAtRow:row];
   [controller mergeBranch:nil];

@@ -18,14 +18,18 @@
   return YES;
 }
 
-- (BOOL)saveStash:(NSString *)name
+- (BOOL)saveStash:(NSString*)name includeUntracked:(BOOL)untracked
 {
   NSError *error = nil;
   BOOL result = NO;
+  NSMutableArray<NSString*> *args =
+      [NSMutableArray arrayWithObjects:@"stash", @"save", nil];
 
-  [self executeGitWithArgs:@[ @"stash", @"save", name ]
-                    writes:YES
-                     error:&error];
+  if (untracked)
+    [args addObject:@"--include-untracked"];
+  if (name.length > 0)
+    [args addObject:name];
+  [self executeGitWithArgs:args writes:YES error:&error];
 
   if (error == nil) {
     result = YES;

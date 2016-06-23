@@ -98,34 +98,10 @@
 }
 
 - (void)loadPath:(NSString*)path
-          commit:(NSString*)sha
-      repository:(XTRepository*)repository
+           model:(id<XTFileChangesModel>)model
+          staged:(BOOL)staged
 {
-  if (path.length == 0) {
-    [self loadNotice:@"No selection"];
-    return;
-  }
-
-  XTDiffDelta *delta =
-      [repository diffForFile:path commitSHA:sha parentSHA:nil];
-
-  return [self loadDiffOrNotify:delta];
-}
-
-- (void)loadStagedPath:(NSString*)path
-            repository:(XTRepository*)repository
-{
-  XTDiffDelta *delta = [repository stagedDiffForFile:path];
-  
-  [self loadDiffOrNotify:delta];
-}
-
-- (void)loadUnstagedPath:(NSString*)path
-              repository:(XTRepository*)repository
-{
-  XTDiffDelta *delta = [repository unstagedDiffForFile:path];
-  
-  [self loadDiffOrNotify:delta];
+  [self loadDiffOrNotify:[model diffForFile:path staged:staged]];
 }
 
 @end

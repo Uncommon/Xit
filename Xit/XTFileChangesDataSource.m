@@ -1,7 +1,7 @@
 #import "XTFileChangesDataSource.h"
-#import "XTDocController.h"
 #import "XTFileViewController.h"
 #import "XTRepository+Parsing.h"
+#import "Xit-Swift.h"
 
 @interface XTFileChangesDataSource ()
 
@@ -14,9 +14,7 @@
 - (void)reload
 {
   [self.repository executeOffMainThread:^{
-    NSMutableArray<XTFileChange*> *newChanges = [[self.repository
-        changesForRef:self.docController.selectedCommitSHA parent:nil]
-        mutableCopy];
+    NSMutableArray<XTFileChange*> *newChanges = self.winController.selectedModel.changes.mutableCopy;
     NSArray<NSSortDescriptor*> *pathDescriptors = @[
         [NSSortDescriptor sortDescriptorWithKey:@"path" ascending:YES] ];
     

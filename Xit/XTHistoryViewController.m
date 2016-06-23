@@ -1,19 +1,14 @@
 #import "XTHistoryViewController.h"
-#import "XTDocController.h"
 #import "XTFileViewController.h"
 #import "XTHistoryDataSource.h"
 #import "XTHistoryItem.h"
-#import "XTLocalBranchItem.h"
-#import "XTRemoteBranchItem.h"
-#import "XTRemoteItem.h"
-#import "XTRemotesItem.h"
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
 #import "XTSideBarDataSource.h"
 #import "XTSideBarOutlineView.h"
 #import "XTSideBarTableCellView.h"
 #import "XTStatusView.h"
-#import "XTTagItem.h"
+#import "Xit-Swift.h"
 #import "NSAttributedString+XTExtensions.h"
 #import "PBGitRevisionCell.h"
 
@@ -84,7 +79,7 @@
 {
   [_fileViewController windowDidLoad];
   [self.view.window.windowController addObserver:self
-                                      forKeyPath:@"selectedCommitSHA"
+                                      forKeyPath:@"selectedModel"
                                          options:NSKeyValueObservingOptionNew
                                          context:NULL];
 }
@@ -107,7 +102,8 @@
       (action == @selector(renameBranch:)) ||
       (action == @selector(mergeBranch:)) ||
       (action == @selector(deleteBranch:))) {
-    if (![item isKindOfClass:[XTLocalBranchItem class]])
+    if ((item.refType != XTRefTypeBranch) &&
+        (item.refType != XTRefTypeRemoteBranch))
       return NO;
     if (_repo.isWriting)
       return NO;
@@ -117,10 +113,10 @@
       NSString *clickedBranch = item.title;
       NSString *currentBranch = [_repo currentBranch];
 
-      if ([item isKindOfClass:[XTRemoteBranchItem class]]) {
+      if (item.refType == XTRefTypeRemoteBranch) {
         clickedBranch = [NSString stringWithFormat:
             @"%@/%@", ((XTRemoteBranchItem *)item).remote, clickedBranch];
-      } else if ([item isKindOfClass:[XTLocalBranchItem class]]) {
+      } else if (item.refType == XTRefTypeBranch) {
         if ([clickedBranch isEqualToString:currentBranch]) {
           menuItem.attributedTitle = nil;
           menuItem.title = @"Merge";
@@ -201,8 +197,10 @@
                         change:(NSDictionary<NSString*,id>*)change
                        context:(void*)context
 {
-  if ([keyPath isEqualToString:@"selectedCommitSHA"]) {
-    [self selectRowForSHA:change[NSKeyValueChangeNewKey]];
+  if ([keyPath isEqualToString:@"selectedModel"]) {
+    id<XTFileChangesModel> newModel = change[NSKeyValueChangeNewKey];
+    
+    [self selectRowForSHA:newModel.shaToSelect];
   }
 }
 
@@ -401,7 +399,8 @@
 
   if (selection == nil)
     return nil;
-  if ([selection isKindOfClass:[XTLocalBranchItem class]])
+  if ([_sidebarOutline parentForItem:selection] ==
+      _sideBarDS.roots[XTBranchesGroupIndex])
     return ((XTLocalBranchItem *)selection).title;
   return nil;
 }
@@ -435,13 +434,19 @@
 
 - (void)tableViewSelectionDidChange:(NSNotification *)note
 {
+  // If the selection wasn't directly user-initiated, don't propagate it.
+  if (self.view.window.firstResponder != self.historyTable)
+    return;
+
   NSTableView *table = (NSTableView *)note.object;
   const NSInteger selectedRow = table.selectedRow;
 
   if (selectedRow >= 0) {
-    XTDocController *controller = self.view.window.windowController;
+    XTWindowController *controller = self.view.window.windowController;
 
-    controller.selectedCommitSHA = _historyDS.shas[selectedRow];
+    controller.selectedModel =
+        [[XTCommitChanges alloc] initWithRepository:_repo
+                                                sha:_historyDS.shas[selectedRow]];
   }
 }
 

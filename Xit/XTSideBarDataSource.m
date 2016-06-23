@@ -1,16 +1,10 @@
 #import "XTSideBarDataSource.h"
 #import "XTConstants.h"
-#import "XTDocController.h"
-#import "XTSideBarItem.h"
-#import "XTSubmoduleItem.h"
 #import "XTRefFormatter.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
-#import "XTRemoteItem.h"
-#import "XTRemoteBranchItem.h"
-#import "XTTagItem.h"
-#import "XTRemotesItem.h"
 #import "XTSideBarTableCellView.h"
+#import "Xit-Swift.h"
 #import "NSMutableDictionary+MultiObjectForKey.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
@@ -27,8 +21,7 @@ NSString * const XTStagingSHA = @"";
 {
   if ((self = [super init]) != nil) {
     _roots = [self makeRoots];
-    _stagingItem = [[XTSideBarItem alloc] initWithTitle:@"Staging"
-                                                 andSha:XTStagingSHA];
+    _stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
   }
 
   return self;
@@ -41,26 +34,28 @@ NSString * const XTStagingSHA = @"";
 
 - (NSArray *)makeRoots
 {
-  XTSideBarItem *branches = [[XTSideBarItem alloc] initWithTitle:@"BRANCHES"];
+  XTSideBarItem *workspace = [[XTSideBarGroupItem alloc] initWithTitle:@"WORKSPACE"];
+  XTSideBarItem *branches = [[XTSideBarGroupItem alloc] initWithTitle:@"BRANCHES"];
   XTRemotesItem *remotes = [[XTRemotesItem alloc] initWithTitle:@"REMOTES"];
-  XTSideBarItem *tags = [[XTSideBarItem alloc] initWithTitle:@"TAGS"];
-  XTSideBarItem *stashes = [[XTSideBarItem alloc] initWithTitle:@"STASHES"];
-  XTSideBarItem *subs = [[XTSideBarItem alloc] initWithTitle:@"SUBMODULES"];
+  XTSideBarItem *tags = [[XTSideBarGroupItem alloc] initWithTitle:@"TAGS"];
+  XTSideBarItem *stashes = [[XTSideBarGroupItem alloc] initWithTitle:@"STASHES"];
+  XTSideBarItem *subs = [[XTSideBarGroupItem alloc] initWithTitle:@"SUBMODULES"];
 
-  return @[ branches, remotes, tags, stashes, subs ];
+  [workspace addChild:_stagingItem];
+  return @[ workspace, branches, remotes, tags, stashes, subs ];
 }
 
 - (void)awakeFromNib
 {
   _outline.target = self;
   _outline.doubleAction = @selector(doubleClick:);
-  _outline.rowSizeStyle = NSTableViewRowSizeStyleMedium;
 }
 
 - (void)setRepo:(XTRepository *)newRepo
 {
   _repo = newRepo;
   if (_repo != nil) {
+    _stagingItem.model = [[XTStagingChanges alloc] initWithRepository:_repo];
     [_repo addReloadObserver:self selector:@selector(repoChanged:)];
     [self reload];
   }
@@ -129,8 +124,13 @@ NSString * const XTStagingSHA = @"";
 - (void)loadStashes:(NSMutableArray *)stashes
           refsIndex:(NSMutableDictionary *)refsIndex
 {
-  [_repo readStashesWithBlock:^(NSString *commit, NSString *name) {
-    XTSideBarItem *stash = [[XTStashItem alloc] initWithTitle:name];
+  [_repo readStashesWithBlock:
+      ^(NSString *commit, NSUInteger index, NSString *name) {
+    XTStashChanges *stashModel = [[XTStashChanges alloc]
+        initWithRepository:_repo index:index];
+    XTSideBarItem *stash = [[XTStashItem alloc]
+        initWithTitle:name model:stashModel];
+    
     [stashes addObject:stash];
     [refsIndex addObject:name forKey:commit];
   }];
@@ -146,13 +146,15 @@ NSString * const XTStagingSHA = @"";
 
   void (^localBlock)(NSString *, NSString *) =
       ^(NSString *name, NSString *commit) {
+    XTCommitChanges *branchModel =
+        [[XTCommitChanges alloc] initWithRepository:_repo sha:commit];
     XTLocalBranchItem *branch =
         [[XTLocalBranchItem alloc] initWithTitle:name.lastPathComponent
-                                          andSha:commit];
+                                           model:branchModel];
 
     [branches addObject:branch];
     [refsIndex addObject:[@"refs/heads" stringByAppendingPathComponent:name]
-                  forKey:branch.sha];
+                  forKey:commit];
   };
 
   void (^remoteBlock)(NSString *, NSString *, NSString *) =
@@ -165,32 +167,36 @@ NSString * const XTStagingSHA = @"";
       remoteIndex[remoteName] = remote;
     }
 
+    XTCommitChanges *branchModel =
+        [[XTCommitChanges alloc] initWithRepository:_repo sha:commit];
     XTRemoteBranchItem *branch =
         [[XTRemoteBranchItem alloc] initWithTitle:branchName
                                            remote:remoteName
-                                              sha:commit];
+                                            model:branchModel];
     NSString *branchRef =
         [NSString stringWithFormat:@"refs/remotes/%@/%@", remoteName, branchName];
 
-    [remote addchild:branch];
+    [remote addChild:branch];
     [refsIndex addObject:branchRef
-                  forKey:branch.sha];
+                  forKey:commit];
   };
 
   void (^tagBlock)(NSString *, NSString *) = ^(NSString *name, NSString *commit) {
     XTTagItem *tag;
+    XTCommitChanges *tagModel =
+        [[XTCommitChanges alloc] initWithRepository:_repo sha:commit];
 
     if ([name hasSuffix:@"^{}"]) {
       name = [name substringToIndex:name.length - 3];
       tag = tagIndex[name];
-      tag.sha = commit;
+      tag.model = tagModel;
     } else {
-      tag = [[XTTagItem alloc] initWithTitle:name andSha:commit];
+      tag = [[XTTagItem alloc] initWithTitle:name model:tagModel];
       [tags addObject:tag];
       tagIndex[name] = tag;
     }
     [refsIndex addObject:[@"refs/tags" stringByAppendingPathComponent:name]
-                  forKey:tag.sha];
+                  forKey:commit];
   };
 
   [_repo readRefsWithLocalBlock:localBlock
@@ -220,11 +226,9 @@ NSString * const XTStagingSHA = @"";
 {
   XTSideBarItem *branches = _roots[XTBranchesGroupIndex];
 
-  for (NSInteger i = 0; i < [branches numberOfChildren]; ++i) {
-    XTLocalBranchItem *branchItem = [branches childAtIndex:i];
-
+  for (XTSideBarItem *branchItem in branches.children) {
     if ([branchItem.title isEqual:branch])
-      return branchItem;
+      return (XTLocalBranchItem*)branchItem;
   }
   return nil;
 }
@@ -233,9 +237,7 @@ NSString * const XTStagingSHA = @"";
 {
   XTSideBarItem *group = _roots[groupIndex];
 
-  for (NSInteger i = 0; i < [group numberOfChildren]; ++i) {
-    XTSideBarItem *item = [group childAtIndex:i];
-
+  for (XTSideBarItem *item in group.children) {
     if ([item.title isEqual:name])
       return item;
   }
@@ -250,15 +252,13 @@ NSString * const XTStagingSHA = @"";
   _outline = outlineView;
   outlineView.delegate = self;
 
-  NSInteger result = 0;
-
   if (item == nil) {
-    result = _roots.count + 1;  // Groups plus staging item
-  } else if ([item isKindOfClass:[XTSideBarItem class]]) {
-    XTSideBarItem *sbItem = (XTSideBarItem *)item;
-    result = [sbItem numberOfChildren];
+    return _roots.count;
   }
-  return result;
+  if ([item isKindOfClass:[XTSideBarItem class]]) {
+    return ((XTSideBarItem*)item).children.count;
+  }
+  return 0;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
@@ -267,7 +267,7 @@ NSString * const XTStagingSHA = @"";
 
   if ([item isKindOfClass:[XTSideBarItem class]]) {
     XTSideBarItem *sbItem = (XTSideBarItem *)item;
-    result = [sbItem isItemExpandable];
+    result = sbItem.expandable;
   }
   return result;
 }
@@ -276,88 +276,51 @@ NSString * const XTStagingSHA = @"";
             child:(NSInteger)index
            ofItem:(id)item
 {
-  id result = nil;
-
   if (item == nil) {
-    if (index == 0)
-      return _stagingItem;
-    else
-      result = _roots[index - 1];
+    return _roots[index];
   } else if ([item isKindOfClass:[XTSideBarItem class]]) {
-    XTSideBarItem *sbItem = (XTSideBarItem *)item;
-    result = [sbItem childAtIndex:index];
+    return ((XTSideBarItem*)item).children[index];
   }
-  return result;
+  return nil;
 }
 
 - (NSView *)outlineView:(NSOutlineView *)outlineView
      viewForTableColumn:(NSTableColumn *)tableColumn
                    item:(id)item
 {
-  if (item == _stagingItem) {
-    XTSideBarTableCellView *dataView = (
-        XTSideBarTableCellView *)[outlineView makeViewWithIdentifier:@"DataCell"
-                                                               owner:self];
+  XTSideBarItem *sbItem = (XTSideBarItem*)item;
 
-    dataView.item = item;
-    dataView.textField.stringValue = [item title];
-    [dataView.textField setEditable:NO];
-    [dataView.textField setSelectable:NO];
-    dataView.imageView.image = [NSImage imageNamed:@"stagingTemplate"];
-    
-    return dataView;
-  } else if ([_roots containsObject:item]) {
+  if ([_roots containsObject:item]) {
     NSTableCellView *headerView =
         [outlineView makeViewWithIdentifier:@"HeaderCell" owner:self];
 
     headerView.textField.stringValue = [item title];
     return headerView;
   } else {
-    XTSideBarTableCellView *dataView = (
-        XTSideBarTableCellView *)[outlineView makeViewWithIdentifier:@"DataCell"
-                                                               owner:self];
+    XTSideBarTableCellView *dataView = (XTSideBarTableCellView*)
+        [outlineView makeViewWithIdentifier:@"DataCell"
+                                      owner:self];
+    NSTextField *textField = dataView.textField;
 
-    dataView.item = (XTSideBarItem *)item;
-    (dataView.textField).stringValue = [item title];
-
-    if ([item isKindOfClass:[XTStashItem class]]) {
-      [dataView.textField setEditable:NO];
-      [dataView.textField setSelectable:NO];
-    } else {
-      // These connections are in the xib, but they get lost, probably
-      // when the row view gets copied.
-      dataView.textField.formatter = _refFormatter;
-      dataView.textField.target = _viewController;
-      dataView.textField.action = @selector(sideBarItemRenamed:);
-      dataView.textField.editable = YES;
-      dataView.textField.selectable = YES;
+    dataView.item = sbItem;
+    dataView.imageView.image = sbItem.icon;
+    textField.stringValue = sbItem.title;
+    textField.editable = sbItem.editable;
+    textField.selectable = sbItem.editable;
+    if (sbItem.editable) {
+      textField.formatter = _refFormatter;
+      textField.target = _viewController;
+      textField.action = @selector(sideBarItemRenamed:);
     }
-
-    if ([item isKindOfClass:[XTLocalBranchItem class]]) {
-      (dataView.imageView).image = [NSImage imageNamed:@"branchTemplate"];
-      if (![item isKindOfClass:[XTRemoteBranchItem class]]) {
-        if ([[item title] isEqualToString:_currentBranch]) {
-          dataView.button.hidden = NO;
-          dataView.textField.font =
-              [NSFont boldSystemFontOfSize:[NSFont smallSystemFontSize]];
-        }
-        else {
-          dataView.button.hidden = YES;
-          dataView.textField.font =
-              [NSFont systemFontOfSize:[NSFont smallSystemFontSize]];
-        }
-      }
-    } else if ([item isKindOfClass:[XTTagItem class]]) {
-      dataView.imageView.image = [NSImage imageNamed:@"tagTemplate"];
-    } else if ([item isKindOfClass:[XTStashItem class]]) {
-      dataView.imageView.image = [NSImage imageNamed:@"stashTemplate"];
-    } else if ([item isKindOfClass:[XTSubmoduleItem class]]) {
-      dataView.imageView.image = [NSImage imageNamed:@"submoduleTemplate"];
-      [dataView.textField setEditable:NO];
-    } else {
-      [dataView.button setHidden:YES];
-      if ([outlineView parentForItem:item] == _roots[XTRemotesGroupIndex])
-        (dataView.imageView).image = [NSImage imageNamed:@"cloudTemplate"];
+    if (sbItem.current) {
+      dataView.button.hidden = NO;
+      textField.font =
+          [NSFont boldSystemFontOfSize:dataView.textField.font.pointSize];
+    }
+    else {
+      dataView.button.hidden = YES;
+      textField.font =
+          [NSFont systemFontOfSize:dataView.textField.font.pointSize];
     }
     return dataView;
   }
@@ -369,11 +332,10 @@ NSString * const XTStagingSHA = @"";
 {
   XTSideBarItem *item = [_outline itemAtRow:_outline.selectedRow];
 
-  if (item.sha != nil) {
-    XTDocController *controller = _outline.window.windowController;
+  if (item.model != nil) {
+    XTWindowController *controller = _outline.window.windowController;
 
-    NSAssert([controller isKindOfClass:[XTDocController class]], @"");
-    controller.selectedCommitSHA = item.sha;
+    controller.selectedModel = item.model;
   }
 }
 
@@ -381,10 +343,7 @@ NSString * const XTStagingSHA = @"";
 {
   XTSideBarItem *sideBarItem = (XTSideBarItem *)item;
 
-  return (sideBarItem.sha != nil) ||
-         [sideBarItem isKindOfClass:[XTRemoteItem class]] ||
-         [sideBarItem isKindOfClass:[XTStashItem class]] ||
-         [sideBarItem isKindOfClass:[XTSubmoduleItem class]];
+  return sideBarItem.selectable;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isGroupItem:(id)item
@@ -392,11 +351,12 @@ NSString * const XTStagingSHA = @"";
   return [_roots containsObject:item];
 }
 
-- (BOOL)outlineView:(NSOutlineView *)outlineView
-    shouldShowOutlineCellForItem:(id)item
+- (CGFloat)outlineView:(NSOutlineView*)outlineView
+     heightOfRowByItem:(id)item
 {
-  // Don't show the Show/Hide control for group items.
-  return ![_roots containsObject:item];
+  // Using this instead of setting rowSizeStyle because that prevents text
+  // from displaying as bold (for the active branch).
+  return 20.0;
 }
 
 @end

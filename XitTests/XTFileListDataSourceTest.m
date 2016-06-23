@@ -5,6 +5,7 @@
 #import "XTFileTreeDataSource.h"
 #import "XTHistoryItem.h"
 #include "XTQueueUtils.h"
+#import "XitTests-Swift.h"
 
 @interface XTFileListDataSourceTest : XTTest
 
@@ -17,7 +18,7 @@
 {
   XTHistoryDataSource *hds = [[XTHistoryDataSource alloc] init];
 
-  [hds setRepo:repository];
+  [hds setRepo:self.repository];
   [self waitForRepoQueue];
   // Part of the reload process is dispatched to the main queue.
   WaitForQueue(dispatch_get_main_queue());
@@ -30,33 +31,34 @@
 
   for (int n = 0; n < 10; n++) {
     NSString *fileName = [NSString stringWithFormat:@"file_%u.txt", n];
-    NSString *filePath = [repoPath stringByAppendingPathComponent:fileName];
+    NSString *filePath = [self.repoPath stringByAppendingPathComponent:fileName];
 
     [text writeToFile:filePath
            atomically:YES
              encoding:NSASCIIStringEncoding
                 error:nil];
-    [repository stageAllFiles];
-    [repository commitWithMessage:@"commit"
-                            amend:NO
-                      outputBlock:NULL
-                            error:NULL];
+    [self.repository stageAllFiles];
+    [self.repository commitWithMessage:@"commit"
+                                 amend:NO
+                           outputBlock:NULL
+                                 error:NULL];
   }
 
   NSOutlineView *outlineView = [[NSOutlineView alloc] init];
-  XTFakeDocController *docController = [[XTFakeDocController alloc] init];
+  XTFakeWinController *winController = [[XTFakeWinController alloc] init];
   XTHistoryDataSource *hds = [self makeDataSource];
   XTFileTreeDataSource *flds = [[XTFileTreeDataSource alloc] init];
   NSInteger expectedFileCount = 11;
 
-  hds.controller = (XTDocController*)docController;
-  flds.docController = (XTDocController*)docController;
-  [hds setRepo:repository];
-  flds.repository = repository;
+  hds.controller = (XTWindowController*)winController;
+  flds.winController = (XTWindowController*)winController;
+  [hds setRepo:self.repository];
+  flds.repository = self.repository;
   [self waitForRepoQueue];
 
   for (NSString *sha in hds.shas) {
-    docController.selectedCommitSHA = sha;
+    winController.selectedModel =
+        [[XTCommitChanges alloc] initWithRepository:self.repository sha:sha];
     [flds reload];
     [self waitForRepoQueue];
 
@@ -75,7 +77,7 @@
   for (int i = 0; i < 2; ++i)
     for (int j = 0; j < 3; ++j) {
       NSString *path = [NSString stringWithFormat:@"dir_%d/subdir_%d", i, j];
-      NSString *fullPath = [repoPath stringByAppendingPathComponent:path];
+      NSString *fullPath = [self.repoPath stringByAppendingPathComponent:path];
     
       NSLog(@"create path %@", path);
       [[NSFileManager defaultManager] createDirectoryAtPath:fullPath
@@ -83,34 +85,34 @@
                                                  attributes:nil
                                                       error:NULL];
     }
-  [[NSFileManager defaultManager] removeItemAtPath:file1Path error:NULL];
+  [[NSFileManager defaultManager] removeItemAtPath:self.file1Path error:NULL];
 
   for (int n = 0; n < 12; ++n) {
     NSString *file =
         [NSString stringWithFormat:@"%@/dir_%d/subdir_%d/file_%d.txt",
-                                   repoPath, n % 2, n % 3, n];
+                                   self.repoPath, n % 2, n % 3, n];
     [text writeToFile:file
            atomically:YES
              encoding:NSASCIIStringEncoding
                 error:nil];
   }
-  [repository stageAllFiles];
-  [repository commitWithMessage:@"commit"
-                          amend:NO
-                    outputBlock:NULL
-                          error:NULL];
+  [self.repository stageAllFiles];
+  [self.repository commitWithMessage:@"commit"
+                               amend:NO
+                         outputBlock:NULL
+                               error:NULL];
 
-  XTFakeDocController *docController = [[XTFakeDocController alloc] init];
+  XTFakeWinController *docController = [[XTFakeWinController alloc] init];
   XTHistoryDataSource *hds = [self makeDataSource];
   XTHistoryItem *item = [hds itemAtIndex:0];
 
-  hds.controller = (XTDocController*)docController;
+  hds.controller = (XTWindowController*)docController;
   docController.selectedCommitSHA = item.sha;
 
   NSOutlineView *outlineView = [[NSOutlineView alloc] init];
   XTFileTreeDataSource *flds = [[XTFileTreeDataSource alloc] init];
 
-  flds.repository = repository;
+  flds.repository = self.repository;
   [self waitForRepoQueue];
 
   const NSInteger fileCount = [flds outlineView:outlineView

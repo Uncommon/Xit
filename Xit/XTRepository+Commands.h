@@ -1,13 +1,16 @@
 #import <Foundation/Foundation.h>
 #import "XTRepository.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface XTRepository (Commands)
 
-@property (readonly) NSString *currentBranch;
+@property (readonly) NSString * _Nullable currentBranch;
 
 - (BOOL)initializeRepository;
 - (BOOL)createBranch:(NSString*)name;
 - (BOOL)deleteBranch:(NSString*)name error:(NSError**)error;
+- (nullable NSString*)currentBranch;
 - (BOOL)createTag:(NSString*)name withMessage:(NSString*)msg;
 - (BOOL)deleteTag:(NSString*)name error:(NSError**)error;
 - (BOOL)addRemote:(NSString*)name withUrl:(NSString*)url;
@@ -16,9 +19,9 @@
 - (BOOL)checkout:(NSString*)branch error:(NSError**)error;
 - (BOOL)merge:(NSString*)name error:(NSError**)error;
 
-- (NSString*)diffForStagedFile:(NSString*)file;
-- (NSString*)diffForUnstagedFile:(NSString*)file;
-- (NSString*)diffForCommit:(NSString*)sha;
+- (nullable NSString*)diffForStagedFile:(NSString*)file;
+- (nullable NSString*)diffForUnstagedFile:(NSString*)file;
+- (nullable NSString*)diffForCommit:(NSString*)sha;
 
 - (BOOL)stagePatch:(NSString*)patch;
 - (BOOL)unstagePatch:(NSString*)patch;
@@ -27,9 +30,9 @@
 
 - (BOOL)renameBranch:(NSString*)branch to:(NSString*)newName;
 - (BOOL)renameRemote:(NSString*)branch to:(NSString*)newName;
-- (NSString *)urlStringForRemote:(NSString*)remoteName;
+- (NSString*)urlStringForRemote:(NSString*)remoteName;
 
-- (BOOL)saveStash:(NSString*)name;
+- (BOOL)saveStash:(nullable NSString*)name includeUntracked:(BOOL)untracked;
 - (BOOL)popStash:(NSString*)name error:(NSError**)error;
 - (BOOL)applyStash:(NSString*)name error:(NSError**)error;
 - (BOOL)dropStash:(NSString*)name error:(NSError**)error;
@@ -39,3 +42,5 @@
                      error:(NSError**)error;
 
 @end
+
+NS_ASSUME_NONNULL_END

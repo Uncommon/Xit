@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-@class XTDocController;
+@class XTWindowController;
 @class XTHistoryItem;
 @class XTRepository;
 
@@ -16,7 +16,7 @@
 }
 
 @property(readonly) NSOrderedSet<NSString*> *shas;
-@property(weak, nonatomic) XTDocController *controller;
+@property(weak, nonatomic) XTWindowController *controller;
 
 - (void)reload;
 - (void)setRepo:(XTRepository*)newRepo;

@@ -25,17 +25,17 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
 
 - (void)testEmptyRepositoryHead
 {
-  XCTAssertFalse([repository hasHeadReference], @"");
-  XCTAssertEqualObjects([repository parentTree], kEmptyTreeHash, @"");
+  XCTAssertFalse([self.repository hasHeadReference], @"");
+  XCTAssertEqualObjects([self.repository parentTree], kEmptyTreeHash, @"");
 }
 
 - (void)testHeadRef
 {
   [super addInitialRepoContent];
-  XCTAssertEqualObjects([repository headRef], @"refs/heads/master", @"");
+  XCTAssertEqualObjects([self.repository headRef], @"refs/heads/master", @"");
 
   // The SHA will vary with the date, so just make sure it's valid.
-  NSString *headSHA = [repository headSHA];
+  NSString *headSHA = [self.repository headSHA];
   NSCharacterSet *hexChars = [NSCharacterSet
       characterSetWithCharactersInString:@"0123456789abcdefABCDEF"];
 
@@ -48,25 +48,25 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
 {
   [super addInitialRepoContent];
 
-  NSString *firstSHA = [repository headSHA];
+  NSString *firstSHA = [self.repository headSHA];
   NSError *error = nil;
 
-  [@"mash" writeToFile:file1Path
+  [@"mash" writeToFile:self.file1Path
             atomically:YES
               encoding:NSUTF8StringEncoding
                  error:&error];
   XCTAssertNil(error);
-  [repository stageFile:file1Path];
-  [repository commitWithMessage:@"commit 2"
-                          amend:NO
-                    outputBlock:NULL
-                          error:&error];
+  [self.repository stageFile:self.file1Path];
+  [self.repository commitWithMessage:@"commit 2"
+                               amend:NO
+                         outputBlock:NULL
+                               error:&error];
   XCTAssertNil(error);
 
-  [repository checkout:firstSHA error:&error];
+  [self.repository checkout:firstSHA error:&error];
   XCTAssertNil(error);
 
-  NSString *detachedSHA = [repository headSHA];
+  NSString *detachedSHA = [self.repository headSHA];
 
   XCTAssertEqualObjects(firstSHA, detachedSHA);
 }
@@ -92,7 +92,7 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
   NSDictionary *header = nil;
   NSString *message = nil;
   NSArray *files = nil;
-  id mockRepo = [OCMockObject partialMockForObject:repository];
+  id mockRepo = [OCMockObject partialMockForObject:self.repository];
   NSArray *args = @[ @"show", @"-z", @"--summary", @"--name-only",
                      kHeaderFormat, @"master" ];
 
@@ -135,8 +135,8 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
 - (void)testContents {
   [super addInitialRepoContent];
 
-  NSData *contentsData = [repository contentsOfFile:@"file1.txt"
-                                           atCommit:repository.headSHA];
+  NSData *contentsData = [self.repository contentsOfFile:@"file1.txt"
+                                                atCommit:self.repository.headSHA];
 
   XCTAssertNotNil(contentsData, @"");
 
@@ -153,18 +153,17 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
   NSString *content = @"some content";
   const NSStringEncoding encoding = NSASCIIStringEncoding;
 
-  file1Path = [repoPath stringByAppendingPathComponent:fileName];
-  [content writeToFile:file1Path
+  [content writeToFile:self.file1Path
             atomically:NO
               encoding:encoding
                 error:&error];
   XCTAssertNil(error);
-  XCTAssertNil([repository contentsOfStagedFile:fileName]);
+  XCTAssertNil([self.repository contentsOfStagedFile:fileName]);
   
-  XCTAssertTrue([repository stageFile:fileName]);
+  XCTAssertTrue([self.repository stageFile:fileName]);
   
   NSData *expectedContent = [content dataUsingEncoding:encoding];
-  NSData *stagedContent = [repository contentsOfStagedFile:fileName];
+  NSData *stagedContent = [self.repository contentsOfStagedFile:fileName];
   NSString *stagedString =
       [[NSString alloc] initWithData:stagedContent encoding:encoding];
   
@@ -175,12 +174,12 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
   // should be the same.
   NSString *newContent = @"new stuff";
   
-  [newContent writeToFile:file1Path
+  [newContent writeToFile:self.file1Path
                atomically:NO
                  encoding:encoding
                     error:&error];
   XCTAssertNil(error);
-  stagedContent = [repository contentsOfStagedFile:fileName];
+  stagedContent = [self.repository contentsOfStagedFile:fileName];
   stagedString =
       [[NSString alloc] initWithData:stagedContent encoding:encoding];
   XCTAssertEqualObjects(expectedContent, stagedContent);
@@ -192,49 +191,49 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
 
   // Stage
   [self writeTextToFile1:@"modification"];
-  repository.isWriting = YES;
-  XCTAssertFalse([repository stageFile:file1Path]);
-  repository.isWriting = NO;
-  XCTAssertTrue([repository stageFile:file1Path]);
+  self.repository.isWriting = YES;
+  XCTAssertFalse([self.repository stageFile:self.file1Path]);
+  self.repository.isWriting = NO;
+  XCTAssertTrue([self.repository stageFile:self.file1Path]);
 
   // Unstage
-  repository.isWriting = YES;
-  XCTAssertFalse([repository unstageFile:file1Path]);
-  repository.isWriting = NO;
-  XCTAssertTrue([repository unstageFile:@"file1.txt"]);
+  self.repository.isWriting = YES;
+  XCTAssertFalse([self.repository unstageFile:self.file1Path]);
+  self.repository.isWriting = NO;
+  XCTAssertTrue([self.repository unstageFile:@"file1.txt"]);
 
   // Stash
   NSString *stash0 = @"stash@{0}";
   
-  repository.isWriting = YES;
-  XCTAssertFalse([repository saveStash:@"stashname"]);
-  repository.isWriting = NO;
-  XCTAssertTrue([repository saveStash:@"stashname"]);
-  repository.isWriting = YES;
-  XCTAssertFalse([repository applyStash:stash0 error:NULL]);
-  repository.isWriting = NO;
-  XCTAssertTrue([repository applyStash:stash0 error:NULL]);
-  repository.isWriting = YES;
-  XCTAssertFalse([repository dropStash:stash0 error:NULL]);
-  repository.isWriting = NO;
-  XCTAssertTrue([repository dropStash:stash0 error:NULL]);
+  self.repository.isWriting = YES;
+  XCTAssertFalse([self.repository saveStash:@"stashname" includeUntracked:NO]);
+  self.repository.isWriting = NO;
+  XCTAssertTrue([self.repository saveStash:@"stashname" includeUntracked:NO]);
+  self.repository.isWriting = YES;
+  XCTAssertFalse([self.repository applyStash:stash0 error:NULL]);
+  self.repository.isWriting = NO;
+  XCTAssertTrue([self.repository applyStash:stash0 error:NULL]);
+  self.repository.isWriting = YES;
+  XCTAssertFalse([self.repository dropStash:stash0 error:NULL]);
+  self.repository.isWriting = NO;
+  XCTAssertTrue([self.repository dropStash:stash0 error:NULL]);
   [self writeTextToFile1:@"modification"];
-  XCTAssertTrue([repository saveStash:@"stashname"]);
-  repository.isWriting = YES;
-  XCTAssertFalse([repository popStash:stash0 error:NULL]);
-  repository.isWriting = NO;
-  XCTAssertTrue([repository popStash:stash0 error:NULL]);
+  XCTAssertTrue([self.repository saveStash:@"stashname" includeUntracked:NO]);
+  self.repository.isWriting = YES;
+  XCTAssertFalse([self.repository popStash:stash0 error:NULL]);
+  self.repository.isWriting = NO;
+  XCTAssertTrue([self.repository popStash:stash0 error:NULL]);
 
   // Commit
   [self writeTextToFile1:@"modification"];
-  XCTAssertTrue([repository stageFile:file1Path]);
-  repository.isWriting = YES;
-  XCTAssertFalse([repository commitWithMessage:@"blah"
+  XCTAssertTrue([self.repository stageFile:self.file1Path]);
+  self.repository.isWriting = YES;
+  XCTAssertFalse([self.repository commitWithMessage:@"blah"
                                         amend:NO
                                   outputBlock:NULL
                                         error:NULL]);
-  repository.isWriting = NO;
-  XCTAssertTrue([repository commitWithMessage:@"blah"
+  self.repository.isWriting = NO;
+  XCTAssertTrue([self.repository commitWithMessage:@"blah"
                                        amend:NO
                                  outputBlock:NULL
                                        error:NULL]);
@@ -244,68 +243,68 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
   NSString *testBranch1 = @"testbranch", *testBranch2 = @"testBranch2";
   NSError *error = nil;
   
-  repository.isWriting = YES;
-  XCTAssertFalse([repository createBranch:testBranch1]);
-  repository.isWriting = NO;
-  XCTAssertTrue([repository createBranch:testBranch1]);
-  repository.isWriting = YES;
-  XCTAssertFalse([repository renameBranch:testBranch1 to:testBranch2]);
-  repository.isWriting = NO;
-  XCTAssertTrue([repository renameBranch:testBranch1 to:testBranch2]);
-  repository.isWriting = YES;
-  XCTAssertFalse([repository checkout:masterBranch error:NULL]);
-  repository.isWriting = NO;
-  XCTAssertTrue([repository checkout:masterBranch error:NULL]);
-  repository.isWriting = YES;
-  XCTAssertFalse([repository deleteBranch:testBranch2 error:&error]);
-  repository.isWriting = NO;
-  XCTAssertTrue([repository deleteBranch:testBranch2 error:&error]);
+  self.repository.isWriting = YES;
+  XCTAssertFalse([self.repository createBranch:testBranch1]);
+  self.repository.isWriting = NO;
+  XCTAssertTrue([self.repository createBranch:testBranch1]);
+  self.repository.isWriting = YES;
+  XCTAssertFalse([self.repository renameBranch:testBranch1 to:testBranch2]);
+  self.repository.isWriting = NO;
+  XCTAssertTrue([self.repository renameBranch:testBranch1 to:testBranch2]);
+  self.repository.isWriting = YES;
+  XCTAssertFalse([self.repository checkout:masterBranch error:NULL]);
+  self.repository.isWriting = NO;
+  XCTAssertTrue([self.repository checkout:masterBranch error:NULL]);
+  self.repository.isWriting = YES;
+  XCTAssertFalse([self.repository deleteBranch:testBranch2 error:&error]);
+  self.repository.isWriting = NO;
+  XCTAssertTrue([self.repository deleteBranch:testBranch2 error:&error]);
 
   // Tags
   NSString *testTagName = @"testtag";
   
-  repository.isWriting = YES;
-  XCTAssertFalse([repository createTag:testTagName withMessage:@"tag msg"]);
-  repository.isWriting = NO;
-  XCTAssertTrue([repository createTag:testTagName withMessage:@"tag msg"]);
-  repository.isWriting = YES;
-  XCTAssertFalse([repository deleteTag:testTagName error:&error]);
-  repository.isWriting = NO;
-  XCTAssertTrue([repository deleteTag:testTagName error:&error]);
+  self.repository.isWriting = YES;
+  XCTAssertFalse([self.repository createTag:testTagName withMessage:@"tag msg"]);
+  self.repository.isWriting = NO;
+  XCTAssertTrue([self.repository createTag:testTagName withMessage:@"tag msg"]);
+  self.repository.isWriting = YES;
+  XCTAssertFalse([self.repository deleteTag:testTagName error:&error]);
+  self.repository.isWriting = NO;
+  XCTAssertTrue([self.repository deleteTag:testTagName error:&error]);
 
   // Remotes
   NSString *testRemoteName = @"testremote";
   NSString *testRemoteName2 = @"testremote2";
 
-  repository.isWriting = YES;
-  XCTAssertFalse([repository addRemote:testRemoteName withUrl:@"fakeurl"]);
-  repository.isWriting = NO;
-  XCTAssertTrue([repository addRemote:testRemoteName withUrl:@"fakeurl"]);
-  repository.isWriting = YES;
-  XCTAssertFalse([repository renameRemote:testRemoteName to:testRemoteName2]);
-  repository.isWriting = NO;
-  XCTAssertTrue([repository renameRemote:testRemoteName to:testRemoteName2]);
-  repository.isWriting = YES;
-  XCTAssertFalse([repository deleteRemote:testRemoteName2 error:&error]);
-  repository.isWriting = NO;
-  XCTAssertTrue([repository deleteRemote:testRemoteName2 error:&error]);
+  self.repository.isWriting = YES;
+  XCTAssertFalse([self.repository addRemote:testRemoteName withUrl:@"fakeurl"]);
+  self.repository.isWriting = NO;
+  XCTAssertTrue([self.repository addRemote:testRemoteName withUrl:@"fakeurl"]);
+  self.repository.isWriting = YES;
+  XCTAssertFalse([self.repository renameRemote:testRemoteName to:testRemoteName2]);
+  self.repository.isWriting = NO;
+  XCTAssertTrue([self.repository renameRemote:testRemoteName to:testRemoteName2]);
+  self.repository.isWriting = YES;
+  XCTAssertFalse([self.repository deleteRemote:testRemoteName2 error:&error]);
+  self.repository.isWriting = NO;
+  XCTAssertTrue([self.repository deleteRemote:testRemoteName2 error:&error]);
 }
 
 - (void)testChangesForRef
 {
   [super addInitialRepoContent];
 
-  NSArray *changes = [repository changesForRef:@"master" parent:nil];
+  NSArray *changes = [self.repository changesForRef:@"master" parent:nil];
 
   XCTAssertEqual([changes count], 1UL);
 
   XTFileChange *change = changes[0];
 
-  XCTAssertEqualObjects(change.path, [file1Path lastPathComponent]);
+  XCTAssertEqualObjects(change.path, [self.file1Path lastPathComponent]);
   XCTAssertEqual(change.change, XitChangeAdded);
 
   NSError *error = nil;
-  NSString *file2Path = [repoPath stringByAppendingPathComponent:@"file2.txt"];
+  NSString *file2Path = [self.repoPath stringByAppendingPathComponent:@"file2.txt"];
 
   [self writeTextToFile1:@"changes!"];
   [@"new file 2" writeToFile:file2Path
@@ -313,30 +312,30 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
                     encoding:NSUTF8StringEncoding
                        error:&error];
   XCTAssertNil(error);
-  XCTAssertTrue([repository stageFile:file1Path]);
-  XCTAssertTrue([repository stageFile:file2Path]);
-  [repository commitWithMessage:@"#2" amend:NO outputBlock:NULL error:&error];
+  XCTAssertTrue([self.repository stageFile:self.file1Path]);
+  XCTAssertTrue([self.repository stageFile:file2Path]);
+  [self.repository commitWithMessage:@"#2" amend:NO outputBlock:NULL error:&error];
   XCTAssertNil(error);
 
-  changes = [repository changesForRef:@"master" parent:nil];
+  changes = [self.repository changesForRef:@"master" parent:nil];
   XCTAssertEqual([changes count], 2UL);
   change = changes[0];
-  XCTAssertEqualObjects(change.path, [file1Path lastPathComponent]);
+  XCTAssertEqualObjects(change.path, [self.file1Path lastPathComponent]);
   XCTAssertEqual(change.change, XitChangeModified);
   change = changes[1];
   XCTAssertEqualObjects(change.path, [file2Path lastPathComponent]);
   XCTAssertEqual(change.change, XitChangeAdded);
 
-  [[NSFileManager defaultManager] removeItemAtPath:file1Path error:&error];
+  [[NSFileManager defaultManager] removeItemAtPath:self.file1Path error:&error];
   XCTAssertNil(error);
-  XCTAssertTrue([repository stageFile:file1Path]);
-  [repository commitWithMessage:@"#3" amend:NO outputBlock:NULL error:&error];
+  XCTAssertTrue([self.repository stageFile:self.file1Path]);
+  [self.repository commitWithMessage:@"#3" amend:NO outputBlock:NULL error:&error];
   XCTAssertNil(error);
 
-  changes = [repository changesForRef:@"master" parent:nil];
+  changes = [self.repository changesForRef:@"master" parent:nil];
   XCTAssertEqual([changes count], 1UL);
   change = changes[0];
-  XCTAssertEqualObjects(change.path, [file1Path lastPathComponent]);
+  XCTAssertEqualObjects(change.path, [self.file1Path lastPathComponent]);
   XCTAssertEqual(change.change, XitChangeDeleted);
 }
 
@@ -358,7 +357,7 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
 
   for (int i = 0; i < keys.count; ++i)
     XCTAssertEqualObjects(
-        @([repository isTextFile:keys[i] commit:@"master"]),
+        @([self.repository isTextFile:keys[i] commit:@"master"]),
         values[i],
         @"fileNameIsText should be %@ for %@",
         [values[i] boolValue] ? @"true" : @"false",
@@ -370,21 +369,23 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
   [super addInitialRepoContent];
   [self commitNewTextFile:@"file2.txt" content:@"blah"];
   
-  NSString *file2Path = [repository.repoURL.path stringByAppendingPathComponent:@"file2.txt"];
-  NSString *file3Path = [repository.repoURL.path stringByAppendingPathComponent:@"file3.txt"];
+  NSString *file2Path = [self.repoPath stringByAppendingPathComponent:@"file2.txt"];
+  NSString *file3Path = [self.repoPath stringByAppendingPathComponent:@"file3.txt"];
   
-  XCTAssertTrue([@"blah" writeToFile:file1Path
+  XCTAssertTrue([@"blah" writeToFile:self.file1Path
                           atomically:YES
                             encoding:NSASCIIStringEncoding
                                error:nil]);
-  XCTAssertTrue([[NSFileManager defaultManager] removeItemAtPath:file2Path error:nil]);
+  XCTAssertTrue([[NSFileManager defaultManager] removeItemAtPath:file2Path
+                                                           error:nil]);
   XCTAssertTrue([@"blah" writeToFile:file3Path
                           atomically:YES
                             encoding:NSASCIIStringEncoding
                                error:nil]);
-  [repository stageAllFiles];
+  [self.repository stageAllFiles];
   
-  NSArray<XTFileChange*> *changes = [repository changesForRef:XTStagingSHA parent:nil];
+  NSArray<XTFileChange*> *changes = [self.repository changesForRef:XTStagingSHA
+                                                            parent:nil];
   
   XCTAssertEqual(changes.count, 3);
   XCTAssertEqual(changes[0].unstagedChange, XitChangeUnmodified); // file1
@@ -394,8 +395,8 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
   XCTAssertEqual(changes[2].unstagedChange, XitChangeUnmodified); // file3
   XCTAssertEqual(changes[2].change, XitChangeAdded);
   
-  [repository unstageAllFiles];
-  changes = [repository changesForRef:XTStagingSHA parent:nil];
+  [self.repository unstageAllFiles];
+  changes = [self.repository changesForRef:XTStagingSHA parent:nil];
   XCTAssertEqual(changes.count, 3);
   XCTAssertEqual(changes[0].unstagedChange, XitChangeModified); // file1
   XCTAssertEqual(changes[0].change, XitChangeUnmodified);

@@ -2,8 +2,8 @@
 #import <WebKit/WebKit.h>
 #import <ObjectiveGit/ObjectiveGit.h>
 #import "XTConstants.h"
-#import "XTDocController.h"
 #import "XTRepository+Parsing.h"
+#import "Xit-Swift.h"
 
 NSString *XTHeaderResizedNotificaiton = @"XTHeaderResizedNotificaiton";
 NSString *XTHeaderHeightKey = @"height";
@@ -184,7 +184,8 @@ dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
 
 - (void)selectSHA:(NSString*)sha
 {
-  self.docController.selectedCommitSHA = sha;
+  self.winController.selectedModel =
+      [[XTCommitChanges alloc] initWithRepository:self.repository sha:sha];
 }
 
 - (void)headerToggled

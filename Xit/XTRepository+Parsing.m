@@ -7,6 +7,14 @@
 NSString *XTHeaderNameKey = @"name";
 NSString *XTHeaderContentKey = @"content";
 
+// Taken from GTReflog+Private.h
+@interface GTReflog ()
+
+- (instancetype)initWithReference:(GTReference*)reference;
+
+@end
+
+
 @interface XTRepository (Private)
 
 @property (readonly, copy) NSArray *stagingChanges;
@@ -57,9 +65,10 @@ NSString *XTHeaderContentKey = @"content";
   return error == nil;
 }
 
-- (NSDictionary*)workspaceStatus
+- (NSDictionary<NSString*, XTWorkspaceFileStatus*>*)workspaceStatus
 {
-  NSMutableDictionary *result = [NSMutableDictionary dictionary];
+  NSMutableDictionary<NSString*, XTWorkspaceFileStatus*> *result =
+      [NSMutableDictionary dictionary];
   NSDictionary *options =
       @{ GTRepositoryStatusOptionsFlagsKey:@(GIT_STATUS_OPT_INCLUDE_UNTRACKED) };
 
@@ -82,7 +91,7 @@ NSString *XTHeaderContentKey = @"content";
   return result;
 }
 
-- (BOOL)readStashesWithBlock:(void (^)(NSString *, NSString *))block
+- (BOOL)readStashesWithBlock:(void (^)(NSString *, NSUInteger, NSString *))block
 {
   NSError *error = nil;
   NSData *output =
@@ -95,10 +104,12 @@ NSString *XTHeaderContentKey = @"content";
         [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
     NSScanner *scanner = [NSScanner scannerWithString:refs];
     NSString *commit, *name;
+    NSUInteger stashIndex = 0;
 
     while ([scanner scanUpToString:@" " intoString:&commit]) {
       [scanner scanUpToString:@"\n" intoString:&name];
-      block(commit, name);
+      block(commit, stashIndex, name);
+      ++stashIndex;
     }
   }
   return error == nil;
@@ -114,7 +125,7 @@ NSString *XTHeaderContentKey = @"content";
   return YES;
 }
 
-- (NSArray *)fileNamesForRef:(NSString *)ref
+- (NSArray<NSString*>*)fileNamesForRef:(NSString *)ref
 {
   GTCommit *commit = [self commitForRef:ref];
 
@@ -218,6 +229,25 @@ NSString *XTHeaderContentKey = @"content";
     }
   }];
   return result;
+}
+
+- (GTCommit*)commitForStashAtIndex:(NSUInteger)index
+{
+  GTReference *stashRef = [self.gtRepo lookUpReferenceWithName:@"refs/stash" error:NULL];
+  
+  if (stashRef == nil)
+    return nil;
+  
+  GTReflog *stashLog = [[GTReflog alloc] initWithReference:stashRef];
+  
+  if ((stashLog == nil) || (index >= stashLog.entryCount))
+    return nil;
+  
+  GTReflogEntry *entry = [stashLog entryAtIndex:index];
+  
+  if (entry == nil)
+    return nil;
+  return [self.gtRepo lookUpObjectByOID:entry.updatedOID error:nil];
 }
 
 - (NSArray*)stagingChanges
@@ -540,9 +570,38 @@ NSString *XTCommitSHAKey = @"sha",
 
 @implementation XTFileChange
 
+- (instancetype)initWithPath:(NSString*)path
+{
+  return [self initWithPath:path
+                     change:XitChangeUnmodified
+             unstagedChange:XitChangeUnmodified];
+}
+
+- (instancetype)initWithPath:(NSString*)path
+                      change:(XitChange)change
+{
+  return [self initWithPath:path
+                     change:change
+             unstagedChange:XitChangeUnmodified];
+}
+
+- (instancetype)initWithPath:(NSString*)path
+                      change:(XitChange)change
+              unstagedChange:(XitChange)unstagedChange
+{
+  if ((self = [super init]) == nil)
+    return nil;
+  
+  self.path = path;
+  self.change = change;
+  self.unstagedChange = unstagedChange;
+  return self;
+}
+
 -(NSString*)description
 {
-  return self.path.description;
+  return [NSString stringWithFormat:@"%@ %ld %ld", self.path.description,
+          self.change, self.unstagedChange];
 }
 
 @end
@@ -554,5 +613,10 @@ NSString *XTCommitSHAKey = @"sha",
 
 
 @implementation XTFileStaging
+
+@end
+
+
+@implementation XTDiffDelta
 
 @end

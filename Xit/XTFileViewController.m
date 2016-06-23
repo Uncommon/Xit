@@ -4,7 +4,6 @@
 
 #import "XTConstants.h"
 #import "XTCommitHeaderViewController.h"
-#import "XTDocController.h"
 #import "XTFileChangesDataSource.h"
 #import "XTFileDiffController.h"
 #import "XTFileListDataSourceBase.h"
@@ -34,8 +33,8 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 
 @interface XTFileViewController ()
 
-@property (readwrite, nonatomic) BOOL inStagingView;
-@property BOOL showingStaged;
+@property BOOL modelHasStaging;
+@property (readonly) BOOL modelCanCommit;
 @property id<XTFileContentController> contentController;
 @property XTCommitEntryController *commitEntryController;
 @property NSDictionary<NSNumber*, NSImage*> *stageImages;
@@ -44,8 +43,6 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 
 
 @implementation XTFileViewController
-
-@synthesize inStagingView;
 
 - (void)dealloc
 {
@@ -59,7 +56,6 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   _fileListDS.repository = newRepo;
   _headerController.repository = newRepo;
   self.commitEntryController.repo = newRepo;
-  ((XTPreviewItem*)_filePreview.previewItem).repo = newRepo;
   [[NSNotificationCenter defaultCenter]
       addObserver:self
          selector:@selector(repoChanged:)
@@ -114,18 +110,28 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 
 - (void)windowDidLoad
 {
-  XTDocController *controller = (XTDocController*)
+  XTWindowController *controller = (XTWindowController*)
       self.view.window.windowController;
 
-  NSAssert([controller isKindOfClass:[XTDocController class]], @"");
-  _fileChangeDS.docController = controller;
-  _fileListDS.docController = controller;
-  _headerController.docController = controller;
+  _fileChangeDS.winController = controller;
+  _fileListDS.winController = controller;
+  _headerController.winController = controller;
   [controller addObserver:self
-               forKeyPath:@"selectedCommitSHA"
+               forKeyPath:@"selectedModel"
                   options:NSKeyValueObservingOptionNew |
                           NSKeyValueObservingOptionOld
                   context:NULL];
+}
+
+- (void)setStaging:(BOOL)staging
+{
+  self.stageSelector.hidden = !staging;
+}
+
+- (void)setCommitting:(BOOL)committing
+{
+  [self.headerTabView selectTabViewItemAtIndex:committing ? 1 : 0];
+  self.actionButton.hidden = !committing;
 }
 
 - (void)
@@ -134,25 +140,32 @@ observeValueForKeyPath:(NSString*)keyPath
                 change:(NSDictionary<NSString *,id> *)change
                context:(void*)context
 {
-  if ([keyPath isEqualToString:@"selectedCommitSHA"]) {
-    NSString * const oldSHA = change[NSKeyValueChangeOldKey];
-    NSString * const newSHA = change[NSKeyValueChangeNewKey];
-    const BOOL wasStaging = (oldSHA != (NSString*)[NSNull null]) &&
-                            [oldSHA isEqualToString:XTStagingSHA];
-    const BOOL nowStaging = (newSHA != (NSString*)[NSNull null]) &&
-                            [newSHA isEqualToString:XTStagingSHA];
+  if ([keyPath isEqualToString:@"selectedModel"]) {
+    id<XTFileChangesModel>
+        newModel = change[NSKeyValueChangeNewKey],
+        oldModel = change[NSKeyValueChangeOldKey];
     
-    if (wasStaging != nowStaging)
-      self.inStagingView = nowStaging;
+    if (newModel == (id<XTFileChangesModel>)[NSNull null])
+      newModel = nil;
+    if (oldModel == (id<XTFileChangesModel>)[NSNull null])
+      oldModel = nil;
+    
+    if (oldModel.hasUnstaged != newModel.hasUnstaged)
+      [self setStaging:newModel.hasUnstaged];
+    if (oldModel.canCommit != newModel.canCommit) {
+      [self setCommitting:newModel.canCommit];
+      
+      // Status icons are different
+      const NSInteger
+          unstagedIndex = [_fileListOutline columnWithIdentifier:@"unstaged"],
+          stagedIndex = [_fileListOutline columnWithIdentifier:@"change"];
+      const NSRect displayRect = NSUnionRect(
+          [_fileListOutline rectOfColumn:unstagedIndex],
+          [_fileListOutline rectOfColumn:stagedIndex]);
+      
+      [_fileListOutline setNeedsDisplayInRect:displayRect];
+    }
   }
-}
-
-- (void)setInStagingView:(BOOL)staging
-{
-  inStagingView = staging;
-  [self.headerTabView selectTabViewItemAtIndex:staging ? 1 : 0];
-  self.actionButton.hidden = !staging;
-  self.stageSelector.hidden = !staging;
 }
 
 - (IBAction)changeFileListView:(id)sender
@@ -217,15 +230,29 @@ observeValueForKeyPath:(NSString*)keyPath
 
 #pragma clang diagnostic pop
 
-- (BOOL)showingStaged
+- (BOOL)inStagingView
+{
+  XTWindowController *controller = self.view.window.windowController;
+  
+  return controller.selectedModel.hasUnstaged;
+}
+
+- (BOOL)modelCanCommit
+{
+  XTWindowController *controller = self.view.window.windowController;
+  
+  return controller.selectedModel.canCommit;
+}
+
+- (BOOL)modelHasStaging
 {
   return [_fileListOutline.highlightedTableColumn.identifier
       isEqualToString:XTColumnIDStaged];
 }
 
-- (void)setShowingStaged:(BOOL)showingStaged
+- (void)setModelHasStaging:(BOOL)modelHasStaging
 {
-  NSString *columnID = showingStaged ? XTColumnIDStaged : XTColumnIDUnstaged;
+  NSString *columnID = modelHasStaging ? XTColumnIDStaged : XTColumnIDUnstaged;
   
   _fileListOutline.highlightedTableColumn =
       [_fileListOutline tableColumnWithIdentifier:columnID];
@@ -271,7 +298,7 @@ observeValueForKeyPath:(NSString*)keyPath
 
 - (IBAction)changeStageView:(id)sender
 {
-  self.showingStaged = self.stageSelector.selectedSegment == 1;
+  self.modelHasStaging = self.stageSelector.selectedSegment == 1;
 }
 
 - (IBAction)stageAll:(id)sender
@@ -329,23 +356,12 @@ observeValueForKeyPath:(NSString*)keyPath
   
   XTFileChange *selectedItem =
       [self.fileListDataSource fileChangeAtRow:selection.firstIndex];
-  XTDocController *docController = self.view.window.windowController;
+  XTWindowController *controller = self.view.window.windowController;
 
   [self updatePreviewPath:selectedItem.path];
-  if (self.inStagingView) {
-    if (self.showingStaged)
-      [self.contentController loadStagedPath:selectedItem.path
-                                  repository:_repo];
-    else
-      [self.contentController loadUnstagedPath:selectedItem.path
-                                    repository:_repo];
-  }
-  else {
-    NSAssert([docController isKindOfClass:[XTDocController class]], @"");
-    [self.contentController loadPath:selectedItem.path
-                              commit:docController.selectedCommitSHA
-                          repository:_repo];
-  }
+  [self.contentController loadPath:selectedItem.path
+                             model:controller.selectedModel
+                            staged:self.modelHasStaging];
 }
 
 - (void)showUnstagedColumn:(BOOL)shown
@@ -373,12 +389,10 @@ observeValueForKeyPath:(NSString*)keyPath
 
 - (void)commitSelected:(NSNotification*)note
 {
-  XTDocController *docController = self.view.window.windowController;
+  XTWindowController *controller = self.view.window.windowController;
 
-  NSAssert([docController isKindOfClass:[XTDocController class]], @"");
-  _headerController.commitSHA = docController.selectedCommitSHA;
-  [self showUnstagedColumn:
-      [docController.selectedCommitSHA isEqualToString:XTStagingSHA]];
+  _headerController.commitSHA = controller.selectedModel.shaToSelect;
+  [self showUnstagedColumn:controller.selectedModel.hasUnstaged];
   [self refresh];
 }
 
@@ -429,14 +443,20 @@ observeValueForKeyPath:(NSString*)keyPath
       [_fileListOutline makeViewWithIdentifier:identifier owner:self];
   XTRolloverButton *button = (XTRolloverButton*)cell.button;
   
-  button.enabled = YES;
-  button.image = [self stagingImageForChange:change
-                                 otherChange:otherChange];
-  button.rolloverActive = change != XitChangeMixed;
   ((NSButtonCell*)button.cell).imageDimsWhenDisabled = NO;
-  button.enabled =
-      [self displayChangeForChange:change otherChange:otherChange] !=
-      XitChangeMixed;
+  if (self.modelCanCommit) {
+    button.image = [self stagingImageForChange:change
+                                   otherChange:otherChange];
+    button.rolloverActive = change != XitChangeMixed;
+    button.enabled =
+        [self displayChangeForChange:change otherChange:otherChange] !=
+            XitChangeMixed;
+  }
+  else {
+    button.image = [self imageForChange:change];
+    button.rolloverActive = NO;
+    button.enabled = NO;
+  }
   cell.row = row;
   return cell;
 }
@@ -484,7 +504,7 @@ observeValueForKeyPath:(NSString*)keyPath
   if ([columnID isEqualToString:@"change"]) {
     // Different cell views are used so that the icon is only clickable in
     // staging view.
-    if (inStagingView) {
+    if (self.inStagingView) {
       return [self tableButtonView:@"staged"
                             change:change
                        otherChange:[dataSource unstagedChangeForItem:item]
@@ -498,7 +518,7 @@ observeValueForKeyPath:(NSString*)keyPath
     }
   }
   if ([columnID isEqualToString:@"unstaged"]) {
-    if (!inStagingView)
+    if (!self.inStagingView)
       return nil;
     return [self tableButtonView:@"unstaged"
                           change:[dataSource unstagedChangeForItem:item]
