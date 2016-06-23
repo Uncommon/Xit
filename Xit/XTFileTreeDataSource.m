@@ -2,40 +2,23 @@
 #import "XTConstants.h"
 #import "Xit-Swift.h"
 
-@interface XTFileTreeDataSource ()
-- (NSTreeNode *)fileTreeForRef:(NSString *)ref;
-- (NSTreeNode *)findTreeNodeForPath:(NSString *)path
-                             parent:(NSTreeNode *)parent
-                              nodes:(NSMutableDictionary *)nodes;
-@end
-
-
 @implementation XTFileTreeDataSource
 
 - (instancetype)init
 {
   self = [super init];
   if (self != nil) {
-    _root = [self makeNewRoot];
+    _root = [NSTreeNode treeNodeWithRepresentedObject:
+        [[XTCommitTreeItem alloc] initWithPath:@"root"]];
   }
 
   return self;
 }
 
-- (NSTreeNode *)makeNewRoot
-{
-  XTCommitTreeItem *rootItem = [[XTCommitTreeItem alloc] init];
-
-  rootItem.path = @"root";
-  return [NSTreeNode treeNodeWithRepresentedObject:rootItem];
-}
-
 - (void)reload
 {
   [self.repository executeOffMainThread:^{
-    // NSTreeNode *newRoot = self.winController.selectedModel.treeRoot;
-    NSString *ref = self.winController.selectedModel.shaToSelect;
-    NSTreeNode *newRoot = [self fileTreeForRef:(ref == nil) ? @"HEAD" : ref];
+    NSTreeNode *newRoot = self.winController.selectedModel.treeRoot;
 
     dispatch_async(dispatch_get_main_queue(), ^{
       _root = newRoot;
@@ -47,132 +30,6 @@
 - (BOOL)isHierarchical
 {
   return YES;
-}
-
-/// Sets a folder's status according to the status of its children.
-- (void)updateChangeForNode:(NSTreeNode*)node
-{
-  XitChange change = XitChangeUnmodified, unstagedChange = XitChangeUnmodified;
-  BOOL firstItem = YES;
-
-  for (NSTreeNode *child in node.childNodes) {
-    XTCommitTreeItem *childItem = (XTCommitTreeItem*)child.representedObject;
-
-    if (!child.isLeaf)
-      [self updateChangeForNode:child];
-    if (firstItem) {
-      change = childItem.change;
-      unstagedChange = childItem.unstagedChange;
-    }
-    else {
-      if (change != childItem.change)
-        change = XitChangeMixed;
-      if (unstagedChange != childItem.unstagedChange)
-        unstagedChange = XitChangeMixed;
-    }
-    firstItem = NO;
-  }
-
-  XTCommitTreeItem *item = node.representedObject;
-
-  item.change = change;
-  item.unstagedChange = unstagedChange;
-}
-
-/// Performs common operation for after a staging/commit tree is built.
-- (void)postProcessFileTree:(NSTreeNode*)tree
-{
-  NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]
-                                      initWithKey:@"path.lastPathComponent"
-                                      ascending:YES
-                                      selector:@selector(localizedCaseInsensitiveCompare:)];
-  
-  [tree sortWithSortDescriptors:@[ sortDescriptor ] recursively:YES];
-  [self updateChangeForNode:tree];
-}
-
-- (NSTreeNode*)fileTreeForCommitRef:(NSString *)ref
-{
-  NSTreeNode *newRoot = [self makeNewRoot];
-  NSMutableDictionary *nodes = [NSMutableDictionary dictionary];
-  NSArray *changeList = [self.repository changesForRef:ref parent:nil];
-  NSDictionary *changes = [[NSMutableDictionary alloc]
-      initWithCapacity:changeList.count];
-  NSArray *files = [self.repository fileNamesForRef:ref];
-  NSMutableArray *deletions =
-      [NSMutableArray arrayWithCapacity:changes.count];
-
-  for (XTFileChange *change in changeList) {
-    [changes setValue:@( change.change ) forKey:change.path];
-    if (change.change == XitChangeDeleted)
-      [deletions addObject:change.path];
-  }
-  if (deletions.count > 0)
-    files = [files arrayByAddingObjectsFromArray:deletions];
-
-  for (NSString *file in files) {
-    XTCommitTreeItem *item = [[XTCommitTreeItem alloc] init];
-
-    item.path = file;
-    item.change = (XitChange)[changes[file] integerValue];
-
-    NSString *parentPath = file.stringByDeletingLastPathComponent;
-    NSTreeNode *node = [NSTreeNode treeNodeWithRepresentedObject:item];
-    NSTreeNode *parentNode =
-        [self findTreeNodeForPath:parentPath parent:newRoot nodes:nodes];
-
-    [parentNode.mutableChildNodes addObject:node];
-    nodes[file] = node;
-  }
-  [self postProcessFileTree:newRoot];
-  return newRoot;
-}
-
-- (NSTreeNode*)fileTreeForWorkspace
-{
-  XTWorkspaceTreeBuilder *builder = [[XTWorkspaceTreeBuilder alloc]
-      initWithChanges:self.repository.workspaceStatus];
-  NSTreeNode *newRoot = [builder build:self.repository.repoURL];
-  
-  [self postProcessFileTree:newRoot];
-  return newRoot;
-}
-
-- (NSTreeNode*)fileTreeForRef:(NSString *)ref
-{
-  if ([ref isEqualToString:XTStagingSHA])
-    return [self fileTreeForWorkspace];
-  else
-    return [self fileTreeForCommitRef:ref];
-}
-
-- (NSTreeNode *)findTreeNodeForPath:(NSString *)path
-                             parent:(NSTreeNode *)parent
-                              nodes:(NSMutableDictionary *)nodes
-{
-  if (path.length == 0)
-    return parent;
-  
-  NSTreeNode *pathNode = nodes[path];
-
-  if (pathNode == nil) {
-    XTCommitTreeItem *item = [[XTCommitTreeItem alloc] init];
-
-    item.path = path;
-    pathNode = [NSTreeNode treeNodeWithRepresentedObject:item];
-
-    NSString *parentPath = path.stringByDeletingLastPathComponent;
-
-    if (parentPath.length == 0) {
-      [parent.mutableChildNodes addObject:pathNode];
-    } else {
-      NSTreeNode *parentNode =
-          [self findTreeNodeForPath:parentPath parent:parent nodes:nodes];
-      [parentNode.mutableChildNodes addObject:pathNode];
-    }
-    nodes[path] = pathNode;
-  }
-  return pathNode;
 }
 
 - (XTFileChange*)fileChangeAtRow:(NSInteger)row
@@ -253,10 +110,5 @@
 
 
 @implementation XTCommitTreeItem
-
-- (NSString*)description
-{
-  return self.path;
-}
 
 @end
