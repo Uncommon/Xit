@@ -161,16 +161,18 @@ class XTFileChangesModelTest: XTTest {
     
     XCTAssertEqual(tree.childNodes!.count, 3)
     
-    let expectedPaths = [addedName, file1Name, untrackedName]
-    let expectedChanges: [XitChange] = [.Added, .Unmodified, .Untracked]
-    let expectedUnstaged: [XitChange] = [.Unmodified, .Modified, .Added]
+    let expectedPaths =                 [addedName,   file1Name,   untrackedName]
+    let expectedChanges: [XitChange] =  [.Added,      .Unmodified, .Unmodified]
+    let expectedUnstaged: [XitChange] = [.Unmodified, .Modified,   .Untracked]
     
     for i in 0...2 {
       let item = tree.childNodes![i].representedObject as! XTFileChange
       
       XCTAssertEqual(item.path, expectedPaths[i])
-      XCTAssertEqual(item.change, expectedChanges[i], expectedPaths[i])
-      XCTAssertEqual(item.unstagedChange, expectedUnstaged[i], expectedPaths[i])
+      XCTAssertEqual(item.change, expectedChanges[i],
+          "\(item.path) change: \(item.change.rawValue)")
+      XCTAssertEqual(item.unstagedChange, expectedUnstaged[i],
+          "\(item.path) unstaged: \(item.unstagedChange.rawValue)")
     }
   }
 }

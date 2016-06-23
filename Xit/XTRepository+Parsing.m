@@ -594,7 +594,7 @@ NSString *XTCommitSHAKey = @"sha",
   
   self.path = path;
   self.change = change;
-  self.unstagedChange = change;
+  self.unstagedChange = unstagedChange;
   return self;
 }
 

@@ -345,6 +345,10 @@ private class XTChangesModelUtils {
       switch (unstagedItem.path as NSString).compare(stagedItem.path) {
         case .OrderedSame:
           unstagedItem.change = stagedItem.change
+          if unstagedItem.change == .Added &&
+             unstagedItem.unstagedChange == .Added {
+            unstagedItem.unstagedChange = .Unmodified
+          }
           unstagedIndex += 1
           stagedIndex += 1
           if !unstagedNode.leaf || !stagedNode.leaf {
@@ -383,7 +387,10 @@ private class XTChangesModelUtils {
       
       if (destItem.path != srcItem.path) {
         // NSTreeNode can't be in two trees, so make a new one.
-        let newNode = NSTreeNode(representedObject: srcItem)
+        let newNode = NSTreeNode(representedObject:
+            XTFileChange(path: srcItem.path,
+                         change: .Unmodified,
+                         unstagedChange: .Untracked))
         
         newNode.mutableChildNodes.addObjectsFromArray(srcNodes[srcIndex].childNodes!)
         addedNodes.append(newNode)
