@@ -25,9 +25,9 @@
 
 - (void)setRepo:(XTRepository *)repo;
 - (void)reload;
-- (void)loadBranches:(NSMutableArray *)branches
-                tags:(NSMutableArray *)tags
-             remotes:(NSMutableArray *)remotes
+- (void)loadBranches:(XTSideBarItem*)branches
+                tags:(NSMutableArray*)tags
+             remotes:(XTSideBarItem*)remotes
            refsIndex:(NSMutableDictionary *)refsIndex;
 - (void)loadStashes:(NSMutableArray *)stashes
           refsIndex:(NSMutableDictionary *)refsIndex;

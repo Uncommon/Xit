@@ -94,10 +94,12 @@ NSString * const XTStagingSHA = @"";
 
 - (NSArray *)loadRoots
 {
+  NSArray *newRoots = [self makeRoots];
+
   NSMutableDictionary *refsIndex = [NSMutableDictionary dictionary];
-  NSMutableArray *branches = [NSMutableArray array];
+  XTSideBarItem *branches = newRoots[XTBranchesGroupIndex];
   NSMutableArray *tags = [NSMutableArray array];
-  NSMutableArray *remotes = [NSMutableArray array];
+  XTSideBarItem *remotes = newRoots[XTRemotesGroupIndex];
   NSMutableArray *stashes = [NSMutableArray array];
   NSMutableArray *submodules = [NSMutableArray array];
 
@@ -107,11 +109,7 @@ NSString * const XTStagingSHA = @"";
     [submodules addObject:[[XTSubmoduleItem alloc] initWithSubmodule:sub]];
   }];
 
-  NSArray *newRoots = [self makeRoots];
-
-  [newRoots[XTBranchesGroupIndex] setChildren:branches];
   [newRoots[XTTagsGroupIndex] setChildren:tags];
-  [newRoots[XTRemotesGroupIndex] setChildren:remotes];
   [newRoots[XTStashesGroupIndex] setChildren:stashes];
   [newRoots[XTSubmodulesGroupIndex] setChildren:submodules];
 
@@ -136,9 +134,42 @@ NSString * const XTStagingSHA = @"";
   }];
 }
 
-- (void)loadBranches:(NSMutableArray *)branches
-                tags:(NSMutableArray *)tags
-             remotes:(NSMutableArray *)remotes
+- (XTSideBarItem*)parentForBranch:(NSArray*)components
+                        underItem:(XTSideBarItem*)item
+{
+  if (components.count == 1)
+    return item;
+  
+  NSString *folderName = components[0];
+
+  for (XTSideBarItem *child in item.children) {
+    if (child.expandable && [child.title isEqualToString:folderName]) {
+      const NSRange subRange = NSMakeRange(1, components.count-1);
+      
+      return [self parentForBranch:[components subarrayWithRange:subRange]
+                         underItem:child];
+    }
+  }
+  
+  XTBranchFolderItem *newItem =
+      [[XTBranchFolderItem alloc] initWithTitle:folderName];
+
+  [item addChild:newItem];
+  return newItem;
+}
+
+- (XTSideBarItem*)parentForBranch:(NSString*)branch
+                        groupItem:(XTSideBarItem*)group
+{
+  NSArray *components = [branch componentsSeparatedByString:@"/"];
+  
+  return [self parentForBranch:components
+                     underItem:group];
+}
+
+- (void)loadBranches:(XTSideBarItem*)branches
+                tags:(NSMutableArray*)tags
+             remotes:(XTSideBarItem*)remotes
            refsIndex:(NSMutableDictionary *)refsIndex
 {
   NSMutableDictionary *remoteIndex = [NSMutableDictionary dictionary];
@@ -151,8 +182,9 @@ NSString * const XTStagingSHA = @"";
     XTLocalBranchItem *branch =
         [[XTLocalBranchItem alloc] initWithTitle:name.lastPathComponent
                                            model:branchModel];
+    XTSideBarItem *parent = [self parentForBranch:name groupItem:branches];
 
-    [branches addObject:branch];
+    [parent addChild:branch];
     [refsIndex addObject:[@"refs/heads" stringByAppendingPathComponent:name]
                   forKey:commit];
   };
@@ -163,7 +195,7 @@ NSString * const XTStagingSHA = @"";
 
     if (remote == nil) {
       remote = [[XTRemoteItem alloc] initWithTitle:remoteName];
-      [remotes addObject:remote];
+      [remotes addChild:remote];
       remoteIndex[remoteName] = remote;
     }
 
@@ -175,8 +207,9 @@ NSString * const XTStagingSHA = @"";
                                             model:branchModel];
     NSString *branchRef =
         [NSString stringWithFormat:@"refs/remotes/%@/%@", remoteName, branchName];
+    XTSideBarItem *parent = [self parentForBranch:branchName groupItem:remote];
 
-    [remote addChild:branch];
+    [parent addChild:branch];
     [refsIndex addObject:branchRef
                   forKey:commit];
   };
@@ -304,7 +337,7 @@ NSString * const XTStagingSHA = @"";
 
     dataView.item = sbItem;
     dataView.imageView.image = sbItem.icon;
-    textField.stringValue = sbItem.title;
+    textField.stringValue = sbItem.displayTitle;
     textField.editable = sbItem.editable;
     textField.selectable = sbItem.editable;
     if (sbItem.editable) {

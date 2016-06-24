@@ -2,6 +2,7 @@ import Cocoa
 
 class XTSideBarItem: NSObject {
   var title: String
+  var displayTitle: String { return title }
   var icon: NSImage? { return nil }
   var children: [XTSideBarItem]
   var model: XTFileChangesModel?
@@ -25,6 +26,7 @@ class XTSideBarItem: NSObject {
     self.model = model
   }
   
+  // Because children bridges as NSArray, not NSMutableArray.
   func addChild(child: XTSideBarItem)
   {
     self.children.append(child)
@@ -54,6 +56,8 @@ class XTStashItem : XTSideBarItem {
 
 
 class XTLocalBranchItem : XTSideBarItem {
+  override var displayTitle: String
+      { return (title as NSString).lastPathComponent }
   override var icon: NSImage? { return NSImage(named: "branchTemplate") }
   override var refType: XTRefType { return .Branch }
   override var editable: Bool { return true }
@@ -80,6 +84,13 @@ class XTRemoteBranchItem : XTLocalBranchItem {
     super.init(title: title)
     self.model = model
   }
+}
+
+
+class XTBranchFolderItem : XTSideBarItem {
+  override var icon: NSImage? { return NSImage(named: NSImageNameFolder) }
+  override var selectable: Bool { return false }
+  override var expandable: Bool { return true }
 }
 
 
