@@ -110,16 +110,18 @@
                          outputBlock:NULL
                                error:&error];
 
-  XTFakeWinController *docController = [[XTFakeWinController alloc] init];
+  XTFakeWinController *winController = [[XTFakeWinController alloc] init];
   XTHistoryDataSource *hds = [self makeDataSource];
   XTHistoryItem *item = [hds itemAtIndex:0];
 
-  hds.controller = (XTWindowController*)docController;
-  docController.selectedCommitSHA = item.sha;
+  hds.controller = (XTWindowController*)winController;
+  winController.selectedModel = [[XTCommitChanges alloc]
+      initWithRepository:self.repository sha:item.sha];
 
   NSOutlineView *outlineView = [[NSOutlineView alloc] init];
   XTFileTreeDataSource *flds = [[XTFileTreeDataSource alloc] init];
 
+  flds.winController = (XTWindowController*)winController;
   flds.repository = self.repository;
   [self waitForRepoQueue];
 
