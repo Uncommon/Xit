@@ -153,21 +153,18 @@
                                 NSParagraphStyleAttributeName:paragraphStyle,
                                 NSForegroundColorAttributeName:fgColor,
                                 NSShadowAttributeName:shadow };
+  NSMutableAttributedString *attrText =
+  [[NSMutableAttributedString alloc] initWithString:text
+                                         attributes:attributes];
+  const NSRange slashRange = [text rangeOfString:@"/"
+                                         options:NSBackwardsSearch];
 
   ++rect.origin.y;
-  if (type == XTRefTypeRemoteBranch) {
-    NSMutableAttributedString *attrText =
-        [[NSMutableAttributedString alloc] initWithString:text
-                                               attributes:attributes];
-    const NSRange slashRange = [text rangeOfString:@"/"];
-
-    if (slashRange.location != NSNotFound)
-      [attrText addAttribute:NSForegroundColorAttributeName
-                       value:[NSColor colorWithDeviceWhite:0.0 alpha:0.6]
-                       range:NSMakeRange(0, slashRange.location + 1)];
-    [attrText drawInRect:rect];
-  } else
-    [text drawInRect:rect withAttributes:attributes];
+  if (slashRange.location != NSNotFound)
+    [attrText addAttribute:NSForegroundColorAttributeName
+                     value:[NSColor colorWithDeviceWhite:0.0 alpha:0.6]
+                     range:NSMakeRange(0, slashRange.location + 1)];
+  [attrText drawInRect:rect];
 
   [[self strokeColorForType:type] set];
   [path stroke];

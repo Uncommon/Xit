@@ -456,8 +456,6 @@
 				3174966413DF896E004C5546 /* XTHistoryDataSource.m */,
 				3174966C13DFF94C004C5546 /* XTHistoryItem.h */,
 				3174966D13DFF94C004C5546 /* XTHistoryItem.m */,
-				DD07B08716B313A60012AC19 /* XTRefFormatter.h */,
-				DD07B08816B313A60012AC19 /* XTRefFormatter.m */,
 				DD997DD8173B409500C7DF82 /* HistoryView Menus.xib */,
 			);
 			name = HistoryView;
@@ -696,6 +694,8 @@
 		C973285E1D11DD4A00C56B9E /* Sidebar */ = {
 			isa = PBXGroup;
 			children = (
+				DD07B08716B313A60012AC19 /* XTRefFormatter.h */,
+				DD07B08816B313A60012AC19 /* XTRefFormatter.m */,
 				DD07B07616A5D2A80012AC19 /* XTSideBarOutlineView.h */,
 				DD07B07716A5D2A80012AC19 /* XTSideBarOutlineView.m */,
 				895DEEF4142CECB7001763FC /* XTSideBarTableCellView.h */,
