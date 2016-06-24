@@ -88,7 +88,7 @@ class XTRemoteBranchItem : XTLocalBranchItem {
 
 
 class XTBranchFolderItem : XTSideBarItem {
-  override var icon: NSImage? { return NSImage(named: NSImageNameFolder) }
+  override var icon: NSImage? { return NSImage(named: "folderTemplate") }
   override var selectable: Bool { return false }
   override var expandable: Bool { return true }
 }
