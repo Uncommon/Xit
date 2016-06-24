@@ -25,6 +25,25 @@
             </view>
             <toolbar key="toolbar" implicitIdentifier="40D3E1FE-6996-449E-9FB3-B8BE88A5CCCF" allowsUserCustomization="NO" displayMode="iconAndLabel" sizeMode="regular" id="100060" customClass="FHTToolbar">
                 <allowedToolbarItems>
+                    <toolbarItem implicitItemIdentifier="5D398A8B-1FD3-442F-A37D-E7F625BA8AC3" label="Fetch   Pull   Push" paletteLabel="Fetch   Pull   Push" id="Hth-4n-I6q">
+                        <nil key="toolTip"/>
+                        <size key="minSize" width="100" height="25"/>
+                        <size key="maxSize" width="100" height="25"/>
+                        <segmentedControl key="view" verticalHuggingPriority="750" id="91t-lw-h2m">
+                            <rect key="frame" x="1" y="14" width="100" height="25"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="SW6-i2-l4s">
+                                <font key="font" metaFont="system"/>
+                                <segments>
+                                    <segment image="fetchTemplate" imageScaling="none" width="32"/>
+                                    <segment image="pullTemplate" width="32" tag="1"/>
+                                    <segment image="pushTemplate" width="32">
+                                        <nil key="label"/>
+                                    </segment>
+                                </segments>
+                            </segmentedCell>
+                        </segmentedControl>
+                    </toolbarItem>
                     <toolbarItem implicitItemIdentifier="FB2710CD-FC77-453B-8ED4-E4D111C9340C" label="Activity" paletteLabel="Activity" tag="-1" id="100114">
                         <nil key="toolTip"/>
                         <size key="minSize" width="16" height="16"/>
@@ -60,12 +79,16 @@
                             <action selector="refresh:" target="-2" id="100153"/>
                         </connections>
                     </toolbarItem>
+                    <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="72Q-wc-QQ6"/>
                 </allowedToolbarItems>
                 <defaultToolbarItems>
                     <toolbarItem reference="100152"/>
+                    <toolbarItem reference="Hth-4n-I6q"/>
                     <toolbarItem reference="100117"/>
                     <toolbarItem reference="100157"/>
                     <toolbarItem reference="100117"/>
+                    <toolbarItem reference="72Q-wc-QQ6"/>
+                    <toolbarItem reference="72Q-wc-QQ6"/>
                     <toolbarItem reference="100114"/>
                 </defaultToolbarItems>
                 <connections>
@@ -82,5 +105,8 @@
     </objects>
     <resources>
         <image name="NSRefreshTemplate" width="11" height="15"/>
+        <image name="fetchTemplate" width="8" height="8"/>
+        <image name="pullTemplate" width="8" height="8"/>
+        <image name="pushTemplate" width="8" height="8"/>
     </resources>
 </document>
