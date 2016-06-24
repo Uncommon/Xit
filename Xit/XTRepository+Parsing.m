@@ -505,41 +505,34 @@ NSString *XTCommitSHAKey = @"sha",
   return YES;
 }
 
-- (BOOL)stageFile:(NSString *)file
+- (BOOL)stageFile:(NSString*)file error:(NSError**)error
 {
-  NSError *error = nil;
   NSString *fullPath = [file hasPrefix:@"/"] ? file :
       [_repoURL.path stringByAppendingPathComponent:file];
-
-  if ([[NSFileManager defaultManager] fileExistsAtPath:fullPath])
-    [self executeGitWithArgs:@[ @"add", file ] writes:YES error:&error];
-  else
-    [self executeGitWithArgs:@[ @"rm", file ]
-                   withStdIn:nil
-                      writes:YES
-                       error:&error];
-  return error == nil;
+  NSArray *args = [[NSFileManager defaultManager] fileExistsAtPath:fullPath]
+      ? @[ @"add", file ]
+      : @[ @"rm", file ];
+  NSData *result = [self executeGitWithArgs:args
+                                     writes:YES
+                                      error:error];
+  
+  return result != nil;
 }
 
-- (BOOL)stageAllFiles
+- (BOOL)stageAllFilesWithErorr:(NSError**)error
 {
-  NSError *error = nil;
-
-  [self executeGitWithArgs:@[ @"add", @"--all" ] writes:YES error:&error];
-  return error == nil;
+  return [self executeGitWithArgs:@[ @"add", @"--all" ]
+                           writes:YES
+                            error:error] != nil;
 }
 
-- (BOOL)unstageFile:(NSString *)file
+- (BOOL)unstageFile:(NSString*)file error:(NSError**)error
 {
-  NSArray *args;
-  NSError *error = nil;
-
-  if (![self hasHeadReference])
-    args = @[ @"rm", @"--cached", file ];
-  else
-    args = @[ @"reset", @"-q", @"HEAD", file ];
-  [self executeGitWithArgs:args writes:YES error:&error];
-  return error == nil;
+  NSArray *args = self.hasHeadReference
+      ? @[ @"rm", @"--cached", file ]
+      : @[ @"reset", @"-q", @"HEAD", file ];
+  
+  return [self executeGitWithArgs:args writes:YES error:error] != nil;
 }
 
 - (BOOL)commitWithMessage:(NSString *)message

@@ -109,7 +109,7 @@ class XTFileChangesModelTest: XTTest {
     XCTAssertEqual(change.path, addedName)
     XCTAssertEqual(change.unstagedChange, XitChange.Untracked)
     
-    repository.stageFile(addedName)
+    try! repository.stageFile(addedName)
     changes = model.changes
     XCTAssertEqual(changes.count, 2)
     change = changes[0]
@@ -159,7 +159,7 @@ class XTFileChangesModelTest: XTTest {
   
     self.commitNewTextFile(deletedName, content: "bye!")
     try! NSFileManager.defaultManager().removeItemAtURL(deletedURL)
-    self.repository.stageFile(deletedName)
+    try! self.repository.stageFile(deletedName)
     
     self.makeStash()
     

@@ -56,7 +56,7 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
               encoding:NSUTF8StringEncoding
                  error:&error];
   XCTAssertNil(error);
-  [self.repository stageFile:self.file1Path];
+  [self.repository stageFile:self.file1Path error:&error];
   [self.repository commitWithMessage:@"commit 2"
                                amend:NO
                          outputBlock:NULL
@@ -132,11 +132,14 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
                        @"mismatched description");
 }
 
-- (void)testContents {
+- (void)testContents
+{
   [super addInitialRepoContent];
 
+  NSError *error = nil;
   NSData *contentsData = [self.repository contentsOfFile:@"file1.txt"
-                                                atCommit:self.repository.headSHA];
+                                                atCommit:self.repository.headSHA
+                                                   error:&error];
 
   XCTAssertNotNil(contentsData, @"");
 
@@ -158,12 +161,14 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
               encoding:encoding
                 error:&error];
   XCTAssertNil(error);
-  XCTAssertNil([self.repository contentsOfStagedFile:fileName]);
+  XCTAssertNil([self.repository contentsOfStagedFile:fileName error:&error]);
+  error = nil;
   
-  XCTAssertTrue([self.repository stageFile:fileName]);
+  XCTAssertTrue([self.repository stageFile:fileName error:&error]);
   
   NSData *expectedContent = [content dataUsingEncoding:encoding];
-  NSData *stagedContent = [self.repository contentsOfStagedFile:fileName];
+  NSData *stagedContent = [self.repository contentsOfStagedFile:fileName
+                                                          error:&error];
   NSString *stagedString =
       [[NSString alloc] initWithData:stagedContent encoding:encoding];
   
@@ -179,7 +184,7 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
                  encoding:encoding
                     error:&error];
   XCTAssertNil(error);
-  stagedContent = [self.repository contentsOfStagedFile:fileName];
+  stagedContent = [self.repository contentsOfStagedFile:fileName error:&error];
   stagedString =
       [[NSString alloc] initWithData:stagedContent encoding:encoding];
   XCTAssertEqualObjects(expectedContent, stagedContent);
@@ -189,18 +194,20 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
 - (void)testWriteLock {
   [super addInitialRepoContent];
 
+  NSError *error = nil;
+
   // Stage
   [self writeTextToFile1:@"modification"];
   self.repository.isWriting = YES;
-  XCTAssertFalse([self.repository stageFile:self.file1Path]);
+  XCTAssertFalse([self.repository stageFile:self.file1Path error:&error]);
   self.repository.isWriting = NO;
-  XCTAssertTrue([self.repository stageFile:self.file1Path]);
+  XCTAssertTrue([self.repository stageFile:self.file1Path error:&error]);
 
   // Unstage
   self.repository.isWriting = YES;
-  XCTAssertFalse([self.repository unstageFile:self.file1Path]);
+  XCTAssertFalse([self.repository unstageFile:self.file1Path error:&error]);
   self.repository.isWriting = NO;
-  XCTAssertTrue([self.repository unstageFile:@"file1.txt"]);
+  XCTAssertTrue([self.repository unstageFile:@"file1.txt" error:&error]);
 
   // Stash
   NSString *stash0 = @"stash@{0}";
@@ -226,7 +233,7 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
 
   // Commit
   [self writeTextToFile1:@"modification"];
-  XCTAssertTrue([self.repository stageFile:self.file1Path]);
+  XCTAssertTrue([self.repository stageFile:self.file1Path error:&error]);
   self.repository.isWriting = YES;
   XCTAssertFalse([self.repository commitWithMessage:@"blah"
                                         amend:NO
@@ -241,7 +248,6 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
   // Branches
   NSString *masterBranch = @"master";
   NSString *testBranch1 = @"testbranch", *testBranch2 = @"testBranch2";
-  NSError *error = nil;
   
   self.repository.isWriting = YES;
   XCTAssertFalse([self.repository createBranch:testBranch1]);
@@ -312,8 +318,8 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
                     encoding:NSUTF8StringEncoding
                        error:&error];
   XCTAssertNil(error);
-  XCTAssertTrue([self.repository stageFile:self.file1Path]);
-  XCTAssertTrue([self.repository stageFile:file2Path]);
+  XCTAssertTrue([self.repository stageFile:self.file1Path error:&error]);
+  XCTAssertTrue([self.repository stageFile:file2Path error:&error]);
   [self.repository commitWithMessage:@"#2" amend:NO outputBlock:NULL error:&error];
   XCTAssertNil(error);
 
@@ -328,7 +334,7 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
 
   [[NSFileManager defaultManager] removeItemAtPath:self.file1Path error:&error];
   XCTAssertNil(error);
-  XCTAssertTrue([self.repository stageFile:self.file1Path]);
+  XCTAssertTrue([self.repository stageFile:self.file1Path error:&error]);
   [self.repository commitWithMessage:@"#3" amend:NO outputBlock:NULL error:&error];
   XCTAssertNil(error);
 
@@ -371,6 +377,7 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
   
   NSString *file2Path = [self.repoPath stringByAppendingPathComponent:@"file2.txt"];
   NSString *file3Path = [self.repoPath stringByAppendingPathComponent:@"file3.txt"];
+  NSError *error = nil;
   
   XCTAssertTrue([@"blah" writeToFile:self.file1Path
                           atomically:YES
@@ -382,7 +389,7 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
                           atomically:YES
                             encoding:NSASCIIStringEncoding
                                error:nil]);
-  [self.repository stageAllFiles];
+  [self.repository stageAllFilesWithErorr:&error];
   
   NSArray<XTFileChange*> *changes = [self.repository changesForRef:XTStagingSHA
                                                             parent:nil];

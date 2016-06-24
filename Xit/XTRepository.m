@@ -211,6 +211,8 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 {
   if (_repoURL == nil)
     return nil;
+  if (error != NULL)
+    *error = nil;
 
   @synchronized(self) {
     if (writes && self.isWriting) {
@@ -379,7 +381,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
     return nil;
   // GTRepository returns any cached index object it had, so it may need
   // to be reloaded.
-  if ([index refresh:error])
+  if (![index refresh:error])
     return nil;
   
   GTIndexEntry *entry = [index entryWithPath:filePath error:error];

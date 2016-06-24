@@ -306,21 +306,23 @@
 
 - (void)testMergeFailure
 {
+  NSError *error = nil;
+
   XCTAssertTrue([self.repository createBranch:@"task"]);
   XCTAssertTrue([self writeTextToFile1:@"conflicting branch"]);
-  XCTAssertTrue([self.repository stageFile:self.file1Path]);
+  XCTAssertTrue([self.repository stageFile:self.file1Path error:&error]);
   XCTAssertTrue([self.repository commitWithMessage:@"conflicting commit"
                                              amend:NO
                                        outputBlock:NULL
-                                             error:NULL]);
+                                             error:&error]);
 
   XCTAssertTrue([self.repository checkout:@"master" error:NULL]);
   XCTAssertTrue([self writeTextToFile1:@"conflicting master"]);
-  XCTAssertTrue([self.repository stageFile:self.file1Path]);
+  XCTAssertTrue([self.repository stageFile:self.file1Path error:&error]);
   XCTAssertTrue([self.repository commitWithMessage:@"conflicting commit 2"
                                              amend:NO
                                        outputBlock:NULL
-                                             error:NULL]);
+                                             error:&error]);
 
   id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
   XTHistoryViewController *controller =

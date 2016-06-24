@@ -28,20 +28,25 @@
 - (void)testHistoricFileList
 {
   NSString *text = @"some text";
+  NSError *error;
 
   for (int n = 0; n < 10; n++) {
     NSString *fileName = [NSString stringWithFormat:@"file_%u.txt", n];
     NSString *filePath = [self.repoPath stringByAppendingPathComponent:fileName];
 
+    error = nil;
     [text writeToFile:filePath
            atomically:YES
              encoding:NSASCIIStringEncoding
-                error:nil];
-    [self.repository stageAllFiles];
+                error:&error];
+    XCTAssertNil(error);
+    [self.repository stageAllFilesWithErorr:&error];
+    XCTAssertNil(error);
     [self.repository commitWithMessage:@"commit"
                                  amend:NO
                            outputBlock:NULL
-                                 error:NULL];
+                                 error:&error];
+    XCTAssertNil(error);
   }
 
   NSOutlineView *outlineView = [[NSOutlineView alloc] init];
@@ -73,6 +78,7 @@
 - (void)testMultipleFileList
 {
   NSString *text = @"some text";
+  NSError *error = nil;
 
   for (int i = 0; i < 2; ++i)
     for (int j = 0; j < 3; ++j) {
@@ -83,9 +89,11 @@
       [[NSFileManager defaultManager] createDirectoryAtPath:fullPath
                                 withIntermediateDirectories:YES
                                                  attributes:nil
-                                                      error:NULL];
+                                                      error:&error];
+      XCTAssertNil(error);
     }
-  [[NSFileManager defaultManager] removeItemAtPath:self.file1Path error:NULL];
+  [[NSFileManager defaultManager] removeItemAtPath:self.file1Path error:&error];
+  XCTAssertNil(error);
 
   for (int n = 0; n < 12; ++n) {
     NSString *file =
@@ -96,11 +104,11 @@
              encoding:NSASCIIStringEncoding
                 error:nil];
   }
-  [self.repository stageAllFiles];
+  [self.repository stageAllFilesWithErorr:&error];
   [self.repository commitWithMessage:@"commit"
                                amend:NO
                          outputBlock:NULL
-                               error:NULL];
+                               error:&error];
 
   XTFakeWinController *docController = [[XTFakeWinController alloc] init];
   XTHistoryDataSource *hds = [self makeDataSource];

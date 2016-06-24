@@ -77,10 +77,13 @@
 
 - (void)makeStash
 {
+  NSError *error = nil;
+
   [self writeTextToFile1:@"stashy"];
   [self writeText:@"new" toFile:self.untrackedName];
   [self writeText:@"add" toFile:self.addedName];
-  [self.repository stageFile:self.addedName];
+  [self.repository stageFile:self.addedName error:&error];
+  XCTAssertNil(error);
   [self.repository saveStash:@"" includeUntracked:YES];
 }
 
@@ -97,6 +100,7 @@
 {
   NSString *basePath = repo.repoURL.path;
   NSString *filePath = [basePath stringByAppendingPathComponent:name];
+  NSError *error = nil;
 
   [content writeToFile:filePath
             atomically:YES
@@ -105,7 +109,7 @@
 
   if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
     return NO;
-  if (![repo stageFile:name])
+  if (![repo stageFile:name error:&error])
     return NO;
   if (![repo commitWithMessage:[NSString stringWithFormat:@"new %@", name]
                          amend:NO

@@ -39,6 +39,7 @@ typedef NS_ENUM(NSUInteger, XitChange) {
 
 @interface XTRepository (Reading)
 
+/// A dictionary mapping paths to XTWorkspaceFileStatuses.
 @property (readonly, copy) NSDictionary<NSString*, XTWorkspaceFileStatus*>
     *workspaceStatus;
 
@@ -47,7 +48,6 @@ typedef NS_ENUM(NSUInteger, XitChange) {
                remoteBlock:(void (^)(NSString *remoteName, NSString *branchName,
                                      NSString *commit))remoteBlock
                   tagBlock:(void (^)(NSString *name, NSString *commit))tagBlock;
-/// Returns a dictionary mapping paths to XTWorkspaceFileStatuses.
 - (BOOL)readStashesWithBlock:
     (void (^)(NSString *commit, NSUInteger index, NSString *name))block;
 - (BOOL)readSubmodulesWithBlock:(void (^)(GTSubmodule *sub))block;
@@ -56,9 +56,9 @@ typedef NS_ENUM(NSUInteger, XitChange) {
             message:(NSString * _Nullable * _Nonnull)message
               files:(NSArray * _Nullable * _Nullable)files;
 
-- (BOOL)stageFile:(NSString*)file;
-- (BOOL)stageAllFiles;
-- (BOOL)unstageFile:(NSString*)file;
+- (BOOL)stageFile:(NSString*)file error:(NSError**)error;
+- (BOOL)stageAllFilesWithErorr:(NSError**)error;
+- (BOOL)unstageFile:(NSString*)file error:(NSError**)error;
 
 - (BOOL)commitWithMessage:(NSString*)message
                     amend:(BOOL)amend
@@ -83,8 +83,11 @@ typedef NS_ENUM(NSUInteger, XitChange) {
 /// Represents a changed file from a commit.
 @interface XTFileChange : NSObject
 
+/// The item's path relative to the repository.
 @property NSString *path;
+/// The (staged) change status.
 @property XitChange change;
+/// The unstaged change status, if applicable.
 @property XitChange unstagedChange;
 
 - (instancetype)initWithPath:(NSString*)path;

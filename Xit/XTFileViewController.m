@@ -280,8 +280,10 @@ observeValueForKeyPath:(NSString*)keyPath
 
 - (IBAction)stageClicked:(id)sender
 {
+  NSError *error = nil;
+
   [sender setEnabled:NO];
-  [_repo stageFile:[self pathFromButton:(NSButton*)sender]];
+  [_repo stageFile:[self pathFromButton:(NSButton*)sender] error:&error];
   [self selectRowFromButton:sender];
   [[NSNotificationCenter defaultCenter]
       postNotificationName:XTRepositoryIndexChangedNotification object:_repo];
@@ -289,8 +291,10 @@ observeValueForKeyPath:(NSString*)keyPath
 
 - (IBAction)unstageClicked:(id)sender
 {
+  NSError *error = nil;
+  
   [sender setEnabled:NO];
-  [_repo unstageFile:[self pathFromButton:(NSButton*)sender]];
+  [_repo unstageFile:[self pathFromButton:(NSButton*)sender] error:&error];
   [self selectRowFromButton:sender];
   [[NSNotificationCenter defaultCenter]
       postNotificationName:XTRepositoryIndexChangedNotification object:_repo];
@@ -303,7 +307,9 @@ observeValueForKeyPath:(NSString*)keyPath
 
 - (IBAction)stageAll:(id)sender
 {
-  [_repo stageAllFiles];
+  NSError *error = nil;
+  
+  [_repo stageAllFilesWithErorr:&error];
 }
 
 - (IBAction)unstageAll:(id)sender

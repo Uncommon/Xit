@@ -25,6 +25,7 @@
 {
   const NSInteger nCommits = 15;
   NSFileManager *fileManager = [NSFileManager defaultManager];
+  NSError *error = nil;
 
   for (int n = 0; n < nCommits; n++) {
     if ((n % 5) == 0) {
@@ -57,19 +58,22 @@
     [txt writeToFile:testFilePath
           atomically:YES
             encoding:NSASCIIStringEncoding
-               error:nil];
+               error:&error];
+    XCTAssertNil(error);
 
     if (![fileManager fileExistsAtPath:testFilePath]) {
       XCTFail(@"testFile NOT Found!!");
     }
-    if (![self.repository stageFile:testFilePath.lastPathComponent]) {
+    error = nil;
+    if (![self.repository stageFile:testFilePath.lastPathComponent
+                              error:&error]) {
       XCTFail(@"add file '%@'", testFilePath);
     }
     if (![self.repository commitWithMessage:[NSString stringWithFormat:@"new %@",
                                                                   testFilePath]
                                       amend:NO
                                 outputBlock:NULL
-                                      error:NULL]) {
+                                      error:&error]) {
       XCTFail(@"Commit with mesage 'new %@'", testFilePath);
     }
   }
@@ -94,6 +98,7 @@
 
   for (int n = 0; n < nCommits; n++) {
     NSString *bn = [NSString stringWithFormat:@"branch_%d", n];
+    
     if ((n % 10) == 0) {
       [self.repository checkout:@"master" error:NULL];
       if (![self.repository createBranch:bn]) {
@@ -104,6 +109,7 @@
     NSString *testFile =
         [NSString stringWithFormat:@"%@/file%d.txt", self.repoPath, n];
     NSString *txt = [NSString stringWithFormat:@"some text %d", n];
+    NSError *error = nil;
 
     [txt writeToFile:testFile
           atomically:YES
@@ -111,7 +117,8 @@
                error:nil];
 
     XCTAssertTrue([defaultManager fileExistsAtPath:testFile]);
-    if (![self.repository stageFile:testFile.lastPathComponent]) {
+    if (![self.repository stageFile:testFile.lastPathComponent
+                              error:&error]) {
       XCTFail(@"add file '%@'", testFile);
     }
     if (![self.repository commitWithMessage:[NSString stringWithFormat:@"new %@",
