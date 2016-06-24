@@ -1,6 +1,6 @@
 # Xit
 
-Xit is a graphical tool for working with git repositories. The overall goals are:
+Xit (pronounced "exit") is a graphical tool for working with git repositories. The overall goals are:
 
   * A useful graphical interface for viewing and managing your repository
   * Stability and scalability - handle large repositories well (lots of commits and lots of files)
