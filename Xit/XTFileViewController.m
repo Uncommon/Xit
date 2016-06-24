@@ -545,9 +545,8 @@ observeValueForKeyPath:(NSString*)keyPath
       didAddRowView:(NSTableRowView*)rowView
              forRow:(NSInteger)row
 {
-  XTFileRowView *xtRowView = (XTFileRowView*)rowView;
-  
-  xtRowView.outlineView = _fileListOutline;
+  if ([rowView isKindOfClass:[XTFileRowView class]])
+    ((XTFileRowView*)rowView).outlineView = _fileListOutline;
 }
 
 #pragma mark NSSplitViewDelegate
