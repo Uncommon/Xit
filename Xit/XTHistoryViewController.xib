@@ -24,85 +24,19 @@
             <rect key="frame" x="0.0" y="0.0" width="988" height="561"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <customView id="40">
-                    <rect key="frame" x="0.0" y="537" width="988" height="24"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                    <subviews>
-                        <button verticalHuggingPriority="750" id="43">
-                            <rect key="frame" x="8" y="2" width="26" height="19"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <buttonCell key="cell" type="recessed" bezelStyle="recessed" image="sidebarTemplate" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" inset="2" id="44">
-                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                <font key="font" metaFont="systemBold" size="12"/>
-                                <connections>
-                                    <action selector="toggleSideBar:" target="-2" id="68"/>
-                                </connections>
-                            </buttonCell>
-                        </button>
-                        <button id="45">
-                            <rect key="frame" x="883" y="4" width="85" height="15"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                            <buttonCell key="cell" type="inline" title="Vertical" alternateTitle="Horizontal" bezelStyle="inline" alignment="right" inset="2" id="46">
-                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="smallSystemBold"/>
-                            </buttonCell>
-                            <connections>
-                                <action selector="toggleLayout:" target="-2" id="69"/>
-                            </connections>
-                        </button>
-                        <matrix verticalHuggingPriority="750" selectionByRect="NO" allowsEmptySelection="NO" id="51" userLabel="Matrix">
-                            <rect key="frame" x="59" y="3" width="242" height="18"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                            <size key="cellSize" width="68" height="19"/>
-                            <size key="intercellSpacing" width="4" height="2"/>
-                            <buttonCell key="prototype" type="recessed" title="1" bezelStyle="recessed" alignment="center" borderStyle="border" inset="2" id="52" userLabel="Button Cell">
-                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                <font key="font" metaFont="systemBold" size="12"/>
-                            </buttonCell>
-                            <cells>
-                                <column>
-                                    <buttonCell type="recessed" title="All" bezelStyle="recessed" alignment="center" state="on" borderStyle="border" toolTip="Show all commits" inset="2" id="64" userLabel="Button Cell">
-                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                        <font key="font" metaFont="systemBold" size="12"/>
-                                    </buttonCell>
-                                </column>
-                                <column>
-                                    <buttonCell type="recessed" title="Local" bezelStyle="recessed" alignment="center" borderStyle="border" toolTip="Show only local branches" inset="2" id="65">
-                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                        <font key="font" metaFont="systemBold" size="12"/>
-                                    </buttonCell>
-                                </column>
-                                <column>
-                                    <buttonCell type="recessed" title="&quot;master&quot;" bezelStyle="recessed" alignment="center" borderStyle="border" toolTip="Show only the active branch" inset="2" id="66">
-                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                        <font key="font" metaFont="systemBold" size="12"/>
-                                    </buttonCell>
-                                </column>
-                            </cells>
-                        </matrix>
-                        <box horizontalHuggingPriority="750" boxType="separator" titlePosition="noTitle" id="76">
-                            <rect key="frame" x="40" y="5" width="5" height="13"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                            <font key="titleFont" metaFont="system"/>
-                        </box>
-                    </subviews>
-                </customView>
                 <splitView dividerStyle="thin" vertical="YES" id="4" userLabel="sideBar split">
-                    <rect key="frame" x="0.0" y="0.0" width="988" height="537"/>
+                    <rect key="frame" x="-1" y="-1" width="989" height="563"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <subviews>
                         <scrollView focusRingType="none" autohidesScrollers="YES" horizontalLineScroll="20" horizontalPageScroll="10" verticalLineScroll="20" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="77">
-                            <rect key="frame" x="0.0" y="0.0" width="189.5" height="537"/>
+                            <rect key="frame" x="0.0" y="0.0" width="190" height="563"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <clipView key="contentView" drawsBackground="NO" id="Bty-Hw-GSh">
-                                <rect key="frame" x="1" y="1" width="187.5" height="535"/>
+                                <rect key="frame" x="1" y="1" width="188" height="561"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <outlineView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" autosaveColumns="NO" rowHeight="20" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="81" id="80" customClass="XTSideBarOutlineView">
-                                        <rect key="frame" x="0.0" y="0.0" width="187.5" height="0.0"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="188" height="561"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <size key="intercellSpacing" width="3" height="0.0"/>
                                         <color key="backgroundColor" name="_sourceListBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -197,32 +131,32 @@
                             </scroller>
                         </scrollView>
                         <customView id="5">
-                            <rect key="frame" x="190.5" y="0.0" width="797.5" height="537"/>
+                            <rect key="frame" x="191" y="0.0" width="798" height="563"/>
                             <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <splitView dividerStyle="paneSplitter" id="13">
-                                    <rect key="frame" x="0.0" y="0.0" width="798" height="537"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="799" height="563"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <customView id="15">
-                                            <rect key="frame" x="0.0" y="0.0" width="798" height="264"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="799" height="277"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="16">
-                                                    <rect key="frame" x="0.0" y="0.0" width="798" height="264"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="799" height="277"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <clipView key="contentView" id="9VH-fB-Bra">
-                                                        <rect key="frame" x="0.0" y="0.0" width="798" height="264"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="799" height="277"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" multipleSelection="NO" autosaveColumns="NO" headerView="17" id="20">
-                                                                <rect key="frame" x="0.0" y="0.0" width="798" height="247"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="799" height="260"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                                 <tableColumns>
-                                                                    <tableColumn identifier="subject" editable="NO" width="607.91015625" minWidth="40" maxWidth="1000" id="21">
+                                                                    <tableColumn identifier="subject" editable="NO" width="608.91015625" minWidth="40" maxWidth="1000" id="21">
                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Subject">
                                                                             <font key="font" metaFont="smallSystem"/>
                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -280,14 +214,14 @@
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
                                                     <tableHeaderView key="headerView" id="17">
-                                                        <rect key="frame" x="0.0" y="0.0" width="798" height="17"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="799" height="17"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </tableHeaderView>
                                                 </scrollView>
                                             </subviews>
                                         </customView>
                                         <customView id="14">
-                                            <rect key="frame" x="0.0" y="274" width="798" height="263"/>
+                                            <rect key="frame" x="0.0" y="287" width="799" height="276"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </customView>
                                     </subviews>
@@ -325,6 +259,5 @@
     </objects>
     <resources>
         <image name="NSApplicationIcon" width="128" height="128"/>
-        <image name="sidebarTemplate" width="12" height="9.6000003814697266"/>
     </resources>
 </document>

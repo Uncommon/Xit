@@ -347,12 +347,6 @@
         errorString:@"Drop stash failed"];
 }
 
-- (IBAction)toggleLayout:(id)sender
-{
-  self.mainSplitView.vertical = (((NSButton *)sender).state == 1);
-  [self.mainSplitView adjustSubviews];
-}
-
 - (IBAction)toggleSideBar:(id)sender
 {
   NSView *sidebarPane = self.sidebarSplitView.subviews[0];
