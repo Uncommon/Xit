@@ -59,6 +59,23 @@ class XTWindowController: NSWindowController {
     self.activity.stopAnimation(self)
   }
   
+  @IBAction func showHideSidebar(sender: AnyObject)
+  {
+    historyController.toggleSideBar(sender)
+  }
+  
+  @IBAction func verticalLayout(sender: AnyObject)
+  {
+    self.historyController.mainSplitView.vertical = true
+    self.historyController.mainSplitView.adjustSubviews()
+  }
+  
+  @IBAction func horizontalLayout(sender: AnyObject)
+  {
+    self.historyController.mainSplitView.vertical = false
+    self.historyController.mainSplitView.adjustSubviews()
+  }
+  
   @IBAction func refresh(_: AnyObject)
   {
     NSNotificationCenter.defaultCenter().postNotificationName(
@@ -68,6 +85,7 @@ class XTWindowController: NSWindowController {
   @IBAction func newTag(_: AnyObject) {}
   @IBAction func newBranch(_: AnyObject) {}
   @IBAction func addRemote(_: AnyObject) {}
+
   @IBAction func fetch(_: AnyObject)
   {
     guard let repo = xtDocument?.repository
@@ -180,5 +198,37 @@ class XTWindowController: NSWindowController {
       }
       self?.operationStatus = nil
     }
+  }
+  
+  override func validateMenuItem(menuItem: NSMenuItem) -> Bool
+  {
+    var result = false
+    
+    switch menuItem.action {
+
+      case #selector(XTWindowController.showHideSidebar(_:)):
+        result = true
+        if historyController.sidebarSplitView.isSubviewCollapsed(
+            historyController.sidebarSplitView.subviews[0]) {
+          menuItem.title = NSLocalizedString("Show Sidebar", comment: "")
+        }
+        else {
+          menuItem.title = NSLocalizedString("Hide Sidebar", comment: "")
+        }
+
+      case #selector(XTWindowController.verticalLayout(_:)):
+        result = true
+        menuItem.state = historyController.mainSplitView.vertical
+            ? NSOnState : NSOffState
+
+      case #selector(XTWindowController.horizontalLayout(_:)):
+        result = true
+        menuItem.state = historyController.mainSplitView.vertical
+            ? NSOffState : NSOnState
+
+      default:
+        result = super.validateMenuItem(menuItem)
+    }
+    return result
   }
 }

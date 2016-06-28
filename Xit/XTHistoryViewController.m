@@ -48,7 +48,7 @@
   [nib instantiateWithOwner:self topLevelObjects:NULL];
 
   // Load the file list view
-  NSView *lowerPane = _mainSplitView.subviews[1];
+  NSView *lowerPane = self.mainSplitView.subviews[1];
   
   _fileViewController = [[XTFileViewController alloc]
       initWithNibName:@"XTFileViewController" bundle:nil];
@@ -62,6 +62,7 @@
 
   // Remove intercell spacing so the history lines will connect
   NSSize cellSpacing = _historyTable.intercellSpacing;
+  
   cellSpacing.height = 0;
   _historyTable.intercellSpacing = cellSpacing;
 
@@ -346,20 +347,18 @@
         errorString:@"Drop stash failed"];
 }
 
-- (IBAction)toggleLayout:(id)sender
-{
-  _mainSplitView.vertical = (((NSButton *)sender).state == 1);
-  [_mainSplitView adjustSubviews];
-}
-
 - (IBAction)toggleSideBar:(id)sender
 {
-  const NSInteger buttonState = ((NSButton *)sender).state;
-  const CGFloat newWidth = (buttonState == NSOnState) ? _savedSidebarWidth : 0;
+  NSView *sidebarPane = self.sidebarSplitView.subviews[0];
+  const bool isCollapsed = [self.sidebarSplitView isSubviewCollapsed:sidebarPane];
+  const CGFloat newWidth = isCollapsed
+      ? _savedSidebarWidth
+      : [self.sidebarSplitView minPossiblePositionOfDividerAtIndex:0];
 
-  if (buttonState == NSOffState)
-    _savedSidebarWidth = (_sidebarSplitView.subviews[0]).frame.size.width;
-  [_sidebarSplitView setPosition:newWidth ofDividerAtIndex:0];
+  if (!isCollapsed)
+    _savedSidebarWidth = sidebarPane.frame.size.width;
+  [self.sidebarSplitView setPosition:newWidth ofDividerAtIndex:0];
+  sidebarPane.hidden = !isCollapsed;
 }
 
 - (IBAction)sideBarItemRenamed:(id)sender
