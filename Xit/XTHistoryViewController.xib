@@ -13,6 +13,8 @@
                 <outlet property="_sideBarDS" destination="29" id="35"/>
                 <outlet property="_sidebarOutline" destination="80" id="120"/>
                 <outlet property="_sidebarSplitView" destination="4" id="67"/>
+                <outlet property="mainSplitView" destination="13" id="GWp-W0-KPr"/>
+                <outlet property="sidebarSplitView" destination="4" id="7xE-5y-PyQ"/>
                 <outlet property="view" destination="3" id="28"/>
             </connections>
         </customObject>

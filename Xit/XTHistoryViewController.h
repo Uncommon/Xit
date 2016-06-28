@@ -17,8 +17,6 @@
   IBOutlet XTHistoryDataSource *_historyDS;
   IBOutlet NSTableView *_historyTable;
   IBOutlet XTSideBarOutlineView *_sidebarOutline;
-  IBOutlet NSSplitView *_sidebarSplitView;
-  IBOutlet NSSplitView *_mainSplitView;
   IBOutlet NSMenu *_branchContextMenu;
   IBOutlet NSMenu *_remoteContextMenu;
   IBOutlet NSMenu *_tagContextMenu;
@@ -60,6 +58,9 @@
 @property(readonly) NSMenu *remoteContextMenu;
 @property(readonly) NSMenu *tagContextMenu;
 @property(readonly) NSMenu *stashContextMenu;
+
+@property (weak) IBOutlet NSSplitView *sidebarSplitView;
+@property (weak) IBOutlet NSSplitView *mainSplitView;
 
 // For testing
 - (instancetype)initWithRepository:(XTRepository *)repository
