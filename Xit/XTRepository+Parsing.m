@@ -305,6 +305,16 @@ NSString *XTHeaderContentKey = @"content";
   return result;
 }
 
+- (nullable NSArray<NSString*>*)remoteNamesWithError:(NSError**)error
+{
+  return [_gtRepo remoteNamesWithError:error];
+}
+
+- (nullable XTRemote*)remoteWithName:(NSString*)name error:(NSError**)error
+{
+  return [XTRemote remoteWithName:name inRepository:_gtRepo error:error];
+}
+
 - (XTDiffDelta*)deltaFromDiff:(GTDiff*)diff withPath:(NSString*)path
 {
   __block GTDiffDelta *result = nil;
@@ -611,5 +621,9 @@ NSString *XTCommitSHAKey = @"sha",
 
 
 @implementation XTDiffDelta
+
+@end
+
+@implementation XTRemote
 
 @end

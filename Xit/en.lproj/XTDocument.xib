@@ -42,6 +42,9 @@
                                     </segment>
                                 </segments>
                             </segmentedCell>
+                            <connections>
+                                <action selector="networkSegmentClicked:" target="-2" id="RaZ-Ea-jO8"/>
+                            </connections>
                         </segmentedControl>
                     </toolbarItem>
                     <toolbarItem implicitItemIdentifier="FB2710CD-FC77-453B-8ED4-E4D111C9340C" label="Activity" paletteLabel="Activity" tag="-1" id="100114">
