@@ -76,7 +76,7 @@ DQ
 </string>
                         </buttonCell>
                         <connections>
-                            <action selector="fetch:" target="-2" id="2Ms-bN-YH9"/>
+                            <action selector="accept:" target="-2" id="a85-3s-9dX"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wve-KV-q6K">

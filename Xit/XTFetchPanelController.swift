@@ -1,6 +1,6 @@
 import Cocoa
 
-public class XTFetchPanelController: NSWindowController {
+public class XTFetchPanelController: XTSheetController {
   
   @IBOutlet var remotesPopup: NSPopUpButton?
   @IBOutlet var tagCheck: NSButton?
@@ -42,20 +42,4 @@ public class XTFetchPanelController: NSWindowController {
     }
   }
   
-  @IBAction func fetch(_: AnyObject)
-  {
-    self.parentController?.window?.endSheet(self.window!,
-                                            returnCode: NSModalResponseOK)
-  }
-
-  @IBAction func cancel(_: AnyObject)
-  {
-    self.parentController?.window?.endSheet(self.window!,
-                                            returnCode: NSModalResponseCancel)
-  }
-  
-  public class func controller() -> XTFetchPanelController
-  {
-    return XTFetchPanelController(windowNibName: "XTFetchPanelController")
-  }
 }
