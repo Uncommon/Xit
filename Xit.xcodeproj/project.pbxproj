@@ -99,6 +99,9 @@
 		C92A7B261D1DD1CD00D2B944 /* folderTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C92A7B241D1DD1CD00D2B944 /* folderTemplate.png */; };
 		C92A7B271D1DD1CD00D2B944 /* folderTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C92A7B251D1DD1CD00D2B944 /* folderTemplate@2x.png */; };
 		C97328681D11FFC400C56B9E /* XTWorkspaceTreeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB18D1CE0EA3A00760270 /* XTWorkspaceTreeBuilder.swift */; };
+		C9C7730C1D26EE1C00329493 /* XTPrefsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C7730A1D26EE1C00329493 /* XTPrefsWindowController.swift */; };
+		C9C7730D1D26EE1C00329493 /* XTPrefsWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9C7730B1D26EE1C00329493 /* XTPrefsWindowController.xib */; };
+		C9C773171D26F2BB00329493 /* XTAccountsPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C773161D26F2BB00329493 /* XTAccountsPrefsController.swift */; };
 		C9E640121D1095C700192454 /* XTFileChangesModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */; };
 		C9E9A37D1D0B5706007BFABF /* XTWIndowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E9A37C1D0B5706007BFABF /* XTWIndowController.swift */; };
 		C9E9A3851D0F2077007BFABF /* XTWIndowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E9A37C1D0B5706007BFABF /* XTWIndowController.swift */; };
@@ -339,6 +342,9 @@
 		C926804D1D074EC500E422FA /* XTFileChangesModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesModel.swift; sourceTree = "<group>"; };
 		C92A7B241D1DD1CD00D2B944 /* folderTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = folderTemplate.png; sourceTree = "<group>"; };
 		C92A7B251D1DD1CD00D2B944 /* folderTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "folderTemplate@2x.png"; sourceTree = "<group>"; };
+		C9C7730A1D26EE1C00329493 /* XTPrefsWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPrefsWindowController.swift; sourceTree = "<group>"; };
+		C9C7730B1D26EE1C00329493 /* XTPrefsWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTPrefsWindowController.xib; sourceTree = "<group>"; };
+		C9C773161D26F2BB00329493 /* XTAccountsPrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTAccountsPrefsController.swift; sourceTree = "<group>"; };
 		C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesModelTest.swift; sourceTree = "<group>"; };
 		C9E9A37C1D0B5706007BFABF /* XTWIndowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTWIndowController.swift; sourceTree = "<group>"; };
 		C9EB87231D01D93400C47D13 /* XTStash.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTStash.swift; sourceTree = "<group>"; };
@@ -633,6 +639,7 @@
 				DD39D1F21918306B00827532 /* FileView */,
 				31C7C12A13EC730500A65FE9 /* Utils */,
 				C3D6D30F13E8E63A00AF50B0 /* GitX */,
+				C9C773151D26F28900329493 /* Preferences */,
 				89A6EA2614478DA40089B212 /* XTAppDelegate.h */,
 				89A6EA2714478DA40089B212 /* XTAppDelegate.m */,
 				DD07B08316B2005B0012AC19 /* XTConstants.h */,
@@ -744,6 +751,16 @@
 				C9EB87231D01D93400C47D13 /* XTStash.swift */,
 			);
 			name = Repository;
+			sourceTree = "<group>";
+		};
+		C9C773151D26F28900329493 /* Preferences */ = {
+			isa = PBXGroup;
+			children = (
+				C9C7730A1D26EE1C00329493 /* XTPrefsWindowController.swift */,
+				C9C7730B1D26EE1C00329493 /* XTPrefsWindowController.xib */,
+				C9C773161D26F2BB00329493 /* XTAccountsPrefsController.swift */,
+			);
+			name = Preferences;
 			sourceTree = "<group>";
 		};
 		DD39D1F21918306B00827532 /* FileView */ = {
@@ -921,6 +938,7 @@
 				89D8BE001CED203900D640AA /* stage.png in Resources */,
 				89794F8D1458CC9B00E38ACC /* XTOutputViewController.xib in Resources */,
 				89D8BDFA1CED200B00D640AA /* delete.png in Resources */,
+				C9C7730D1D26EE1C00329493 /* XTPrefsWindowController.xib in Resources */,
 				89D8BDFC1CED200B00D640AA /* modify.png in Resources */,
 				C92A7B271D1DD1CD00D2B944 /* folderTemplate@2x.png in Resources */,
 				89039F561703A9FC000949A8 /* html in Resources */,
@@ -1009,12 +1027,14 @@
 				C3D6D31613E8E6BC00AF50B0 /* PBGitGrapher.mm in Sources */,
 				C3D6D31913E8E6E400AF50B0 /* PBGraphCellInfo.m in Sources */,
 				C3D6D31F13E8E7E700AF50B0 /* PBGitLane.mm in Sources */,
+				C9C773171D26F2BB00329493 /* XTAccountsPrefsController.swift in Sources */,
 				894C8DAC1CBC0A1B001A4B80 /* XTFileListView.m in Sources */,
 				C3D6D32213E91EDC00AF50B0 /* PBGitRevisionCell.m in Sources */,
 				899DB1921CE109C700760270 /* XTWorkspaceTreeBuilder.swift in Sources */,
 				89D8BE221CF0A4ED00D640AA /* XTRolloverButton.swift in Sources */,
 				31C7C12E13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m in Sources */,
 				DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */,
+				C9C7730C1D26EE1C00329493 /* XTPrefsWindowController.swift in Sources */,
 				31C7C13313ECC74C00A65FE9 /* XTHistoryViewController.m in Sources */,
 				C358653114048A3F00060C53 /* XTRepository.m in Sources */,
 				3199BAC014207CFB008AAA4F /* XTFileTreeDataSource.m in Sources */,
