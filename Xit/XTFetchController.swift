@@ -23,7 +23,7 @@ class XTOperationController: NSObject {
 /// Runs a `fetch` operation.
 class XTFetchController: XTOperationController {
   
-  func defaultRemoteName() -> String?
+  final func defaultRemoteName() -> String?
   {
     guard let remotes = try? repository.remoteNames()
     else { return nil }
@@ -43,28 +43,17 @@ class XTFetchController: XTOperationController {
     }
   }
   
-  func defaultPrune(remote: String) -> Bool
-  {
-    // TODO: Provide encapsulated config access from XTRepository
-    guard let config = try? repository.gtRepo.configuration()
-    else { return false}
-    
-    if config.boolForKey("remote.\(remote).prune") {
-      return true
-    }
-    return config.boolForKey("fetch.prune")
-  }
-  
   func start()
   {
+    let config = XTConfig(repository: repository)
     let panel = XTFetchPanelController.controller()
     
     if let remoteName = defaultRemoteName() {
       panel.selectedRemote = remoteName
     }
-    panel.parentController = self.windowController
-    panel.downloadTags = false
-    panel.pruneBranches = defaultPrune(panel.selectedRemote as String)
+    panel.parentController = windowController
+    panel.downloadTags = config.fetchTags(panel.selectedRemote)
+    panel.pruneBranches = config.fetchPrune(panel.selectedRemote)
     self.windowController!.window!.beginSheet(panel.window!) { (response) in
       if response == NSModalResponseOK {
         let pruneBranches = panel.pruneBranches
@@ -81,7 +70,7 @@ class XTFetchController: XTOperationController {
     }
   }
   
-  func ended()
+  final func ended()
   {
     self.windowController?.fetchEnded()
   }
@@ -164,6 +153,7 @@ class XTFetchController: XTOperationController {
               status: "Fetching", progress: progressValue, repository: repo)
           }
         }
+        self.fetchCompleted()
         XTStatusView.update(
           status: "Fetch complete", progress: -1, repository: repo)
       }
@@ -183,6 +173,8 @@ class XTFetchController: XTOperationController {
       self.ended()
     }
   }
+  
+  func fetchCompleted() {}
 }
 
 

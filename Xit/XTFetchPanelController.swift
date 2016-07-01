@@ -6,10 +6,10 @@ public class XTFetchPanelController: XTSheetController {
   @IBOutlet var tagCheck: NSButton?
   @IBOutlet var pruneCheck: NSButton?
   
-  var selectedRemote: NSString
+  var selectedRemote: String
   {
     get { return remotesPopup!.titleOfSelectedItem ?? "" }
-    set { remotesPopup?.selectItemWithTitle(newValue as String) }
+    set { remotesPopup?.selectItemWithTitle(newValue) }
   }
   
   var downloadTags: Bool
