@@ -61,7 +61,7 @@
   GTDiffPatch *patch = [delta generatePatch:&error];
 
   if (error != nil) {
-    // TODO: report error
+    NSLog(@"%@", error.description);
     return;
   }
 
@@ -77,7 +77,7 @@
                            newLine:line.newLineNumber];
     }];
     if (hunkError != nil) {
-      // TODO: report error
+      NSLog(@"%@", error.description);
       *stop = YES;
       return;
     }

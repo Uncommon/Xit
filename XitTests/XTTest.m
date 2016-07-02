@@ -125,9 +125,11 @@
   NSLog(@"[createRepo] repoName=%@", repoName);
   NSFileManager *fileManager = [NSFileManager defaultManager];
 
-  // TODO: We need better error checking here!
   if ([fileManager fileExistsAtPath:repoName]) {
-    [fileManager removeItemAtPath:repoName error:nil];
+    if (![fileManager removeItemAtPath:repoName error:nil]) {
+      XCTFail(@"Couldn't make way for repository: %@", repoName);
+      return nil;
+    }
   }
   [fileManager createDirectoryAtPath:repoName
          withIntermediateDirectories:YES

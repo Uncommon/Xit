@@ -39,12 +39,9 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
     NSError *error = nil;
 
     _gtRepo = [[GTRepository alloc] initWithURL:url error:&error];
-    if (error != nil) {
-      // TODO: Make sure we know why it failed.
-      // Assume repo hasn't been created yet, and initializeRepository will
-      // be called later.
-    }
-    _gitCMD = [XTRepository gitPath];
+    if (error != nil)
+      NSLog(@"%@", error.description);
+    _gitCMD = [self.class gitPath];
     _repoURL = url;
     NSMutableString *qName =
         [NSMutableString stringWithString:@"com.xit.queue."];
