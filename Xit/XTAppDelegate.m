@@ -6,7 +6,10 @@
 {
   self = [super init];
   if (self) {
-    // Initialization code here.
+#if DEBUG
+    [[NSUserDefaults standardUserDefaults] registerDefaults:
+        @{ @"WebKitDeveloperExtras": @( YES ) }];
+#endif
   }
 
   return self;
