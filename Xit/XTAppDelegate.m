@@ -1,4 +1,5 @@
 #import "XTAppDelegate.h"
+#import "Xit-Swift.h"
 
 @implementation XTAppDelegate
 
@@ -67,6 +68,11 @@
                   completionHandler:NULL];
     return NO;
   }
+}
+
+- (IBAction)showPreferences:(id)sender
+{
+  [XTPrefsWindowController.sharedPrefsController.window makeKeyAndOrderFront:nil];
 }
 
 @end

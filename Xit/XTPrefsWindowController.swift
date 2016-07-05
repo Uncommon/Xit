@@ -2,13 +2,18 @@ import Cocoa
 
 class XTPrefsWindowController: NSWindowController {
   
-  @IBOutlet var accountsController: XTAccountsPrefsController!
+  static let sharedPrefsController =
+      XTPrefsWindowController(windowNibName: "XTPrefsWindowController")
+  
+  //@IBOutlet var accountsController: XTAccountsPrefsController!
   
   override func windowDidLoad() {
     super.windowDidLoad()
     
     // until other panes are implemented
-    window!.contentViewController = accountsController
+    //window!.contentViewController = accountsController
+    
+    window!.toolbar!.selectedItemIdentifier = "xit.prefs.accounts"
   }
   
   @IBAction func accountsSelected(sender: AnyObject)
