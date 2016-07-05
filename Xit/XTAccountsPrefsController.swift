@@ -21,6 +21,15 @@ enum AccountType : Int {
       return nil
     }
   }
+  
+  var name: String
+  {
+    switch self {
+    case .GitHub: return "github"
+    case .BitBucket: return "bitbucket"
+    case .TeamCity: return "teamcity"
+    }
+  }
 }
 
 
@@ -34,7 +43,6 @@ struct Account {
 class XTAccountsPrefsController: NSViewController {
   
   /// Account types as stored in preferences
-  let accountTypeNames = ["github", "bitbucket", "teamcity"]
   let userKey = "user"
   let locationKey = "location"
   let typeKey = "type"
@@ -56,14 +64,16 @@ class XTAccountsPrefsController: NSViewController {
   
   func readAccounts()
   {
-    guard let accounts =
+    guard let storedAccounts =
         NSUserDefaults.standardUserDefaults().arrayForKey("accounts")
+        as? [[String: AnyObject]]
     else { return }
     
-    for accountDict in accounts {
-      if let type = AccountType(name: accountDict[typeKey]),
-         let user = accountDict[userKey],
-         let location = NSURL(string: accountDict[locationKey]) {
+    for accountDict in storedAccounts {
+      if let type = AccountType(name: accountDict[typeKey] as? String),
+         let user = accountDict[userKey] as? String,
+         let locationString = accountDict[locationKey] as? String,
+         let location = NSURL(string: locationString) {
         accounts.append(Account(type: type, user: user, location: location))
       }
       else {
@@ -74,12 +84,12 @@ class XTAccountsPrefsController: NSViewController {
   
   func saveAccounts()
   {
-    var accountsList = NSMutableArray(capacity: accounts.count)
+    let accountsList = NSMutableArray(capacity: accounts.count)
     
     for account in accounts {
-      var accountDict = NSMutableDictionary(capacity: 3)
+      let accountDict = NSMutableDictionary(capacity: 3)
       
-      accountDict[typeKey] = accountTypeNames[account.type.rawValue]
+      accountDict[typeKey] = account.type.name
       accountDict[userKey] = account.user
       accountDict[locationKey] = account.location.absoluteString
       accountsList.addObject(accountDict)
@@ -92,34 +102,35 @@ class XTAccountsPrefsController: NSViewController {
   {
     view.window?.beginSheet(addSheet) { (response) in
       guard response == NSModalResponseOK else { return }
-      guard let type = AccountType(rawValue: servicePopup.indexOfSelectedItem)
+      guard let type = AccountType(rawValue: self.servicePopup.indexOfSelectedItem)
       else { return }
-      guard let url = NSURL(string: locationField.stringValue)
+      guard let url = NSURL(string: self.locationField.stringValue)
       else { return }
       
-      addAccount(type,
-                 user: userField.stringValue,
-                 password: passwordField.stringValue,
-                 location: url)
+      self.addAccount(type,
+                      user: self.userField.stringValue,
+                      password: self.passwordField.stringValue,
+                      location: url)
     }
   }
   
   func addAccount(type: AccountType, user: String, password: String, location: NSURL)
   {
-    let host = url?.host as NSString
-    let path = url.path as NSString
+    let host = location.host! as NSString
+    let path = location.path! as NSString
     let accountName = user as NSString
     let password = password as NSString
+    let port: UInt16 = location.port?.unsignedShortValue ?? 80
     
     let err = SecKeychainAddInternetPassword(
         nil,
-        host.length, host.UTF8String,
+        UInt32(host.length), host.UTF8String,
         0, nil,
-        accountName.length, accountName.UTF8String,
-        path.length, path.UTF8String,
-        url.port,
+        UInt32(accountName.length), accountName.UTF8String,
+        UInt32(path.length), path.UTF8String,
+        port,
         .HTTP, .HTTPBasic,
-        password.length, password.UTF8String,
+        UInt32(password.length), password.UTF8String,
         nil)
     
     guard err == noErr else {
