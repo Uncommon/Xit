@@ -83,8 +83,8 @@ NSString *XTHeaderContentKey = @"content";
     if (path != nil) {
       XTWorkspaceFileStatus *status = [[XTWorkspaceFileStatus alloc] init];
       
-      status.unstagedChange = indexToWorkingDirectory.status;
-      status.change = headToIndex.status;
+      status.unstagedChange = (XitChange)indexToWorkingDirectory.status;
+      status.change = (XitChange)headToIndex.status;
       result[path] = status;
     }
   }];
@@ -224,7 +224,7 @@ NSString *XTHeaderContentKey = @"content";
       XTFileChange *change = [[XTFileChange alloc] init];
 
       change.path = delta.newFile.path;
-      change.change = delta.type;
+      change.change = (XitChange)delta.type;
       [result addObject:change];
     }
   }];
@@ -270,8 +270,8 @@ NSString *XTHeaderContentKey = @"content";
       change.path = indexToWorking.oldFile.path;
       change.destinationPath = indexToWorking.newFile.path;
     }
-    change.change = headToIndex.status;
-    change.unstagedChange = indexToWorking.status;
+    change.change = (XitChange)headToIndex.status;
+    change.unstagedChange = (XitChange)indexToWorking.status;
     [result addObject:change];
   }]) {
     NSLog(@"Can't enumerate file status: %@", error.description);

@@ -37,7 +37,7 @@
     _controller = controller;
     [controller addObserver:self
                  forKeyPath:@"inStagingView"
-                    options:nil
+                    options:0
                     context:NULL];
   }
 }
