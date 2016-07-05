@@ -17,14 +17,14 @@ body {
 .shablock { float: right }
 body > div { margin-top: 4px }
 .parent {
-  padding-left: 14px;
-  margin-left: 2px;
+  padding: 2px;
+  margin-left: 1em;
+  border-radius: 3px;
   cursor: default;
   -webkit-user-select: none;
 }
 .parent:hover {
-    background-size: 10px;
-    background: url(follow.png) no-repeat 1px 1px;
+  background-color: #d7e5ff;
 }
 
 #table {
