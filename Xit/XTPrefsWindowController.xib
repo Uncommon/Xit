@@ -7,6 +7,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="XTPrefsWindowController" customModule="Xit" customModuleProvider="target">
             <connections>
+                <outlet property="accountsController" destination="pnH-DI-pr1" id="RfQ-tM-uRc"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
             </connections>
         </customObject>
@@ -168,6 +169,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="addAccount:" target="pnH-DI-pr1" id="gU5-gW-8aJ"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aqe-TQ-lIE">
                         <rect key="frame" x="41" y="19" width="22" height="21"/>
@@ -175,6 +179,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="removeAccount:" target="pnH-DI-pr1" id="vdl-en-FfY"/>
+                        </connections>
                     </button>
                 </subviews>
             </view>
@@ -357,6 +364,12 @@ Gw
                 <outlet property="servicePopup" destination="8FW-Zx-MeV" id="Nt9-JB-GQY"/>
                 <outlet property="userField" destination="FJb-em-33B" id="Frn-MO-n1b"/>
                 <outlet property="window" destination="paF-Pm-qRN" id="VOv-3f-VBQ"/>
+            </connections>
+        </customObject>
+        <customObject id="pnH-DI-pr1" customClass="XTAccountsPrefsController" customModule="Xit" customModuleProvider="target">
+            <connections>
+                <outlet property="accountsTable" destination="0qK-9L-P8h" id="qg2-zF-MRZ"/>
+                <outlet property="addController" destination="j14-vT-dcJ" id="2jq-dH-eys"/>
             </connections>
         </customObject>
     </objects>
