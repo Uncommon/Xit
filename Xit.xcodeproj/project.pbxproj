@@ -102,6 +102,12 @@
 		C957B84B1D2D53040040F858 /* XTSheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B84A1D2D53040040F858 /* XTSheetController.swift */; };
 		C957B8541D2D533C0040F858 /* XTAddAccountController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B8531D2D533C0040F858 /* XTAddAccountController.swift */; };
 		C957B8561D2D65FF0040F858 /* XTAccountsPrefsController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C957B8551D2D65FF0040F858 /* XTAccountsPrefsController.xib */; };
+		C957B85B1D2D6A3C0040F858 /* bitbucketTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C957B8571D2D6A3C0040F858 /* bitbucketTemplate.png */; };
+		C957B85C1D2D6A3C0040F858 /* bitbucketTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C957B8581D2D6A3C0040F858 /* bitbucketTemplate@2x.png */; };
+		C957B85D1D2D6A3C0040F858 /* githubTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C957B8591D2D6A3C0040F858 /* githubTemplate.png */; };
+		C957B85E1D2D6A3C0040F858 /* githubTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C957B85A1D2D6A3C0040F858 /* githubTemplate@2x.png */; };
+		C957B8611D2D6D900040F858 /* teamcityTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C957B85F1D2D6D900040F858 /* teamcityTemplate.png */; };
+		C957B8621D2D6D900040F858 /* teamcityTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C957B8601D2D6D900040F858 /* teamcityTemplate@2x.png */; };
 		C97328681D11FFC400C56B9E /* XTWorkspaceTreeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB18D1CE0EA3A00760270 /* XTWorkspaceTreeBuilder.swift */; };
 		C9C7730C1D26EE1C00329493 /* XTPrefsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C7730A1D26EE1C00329493 /* XTPrefsWindowController.swift */; };
 		C9C7730D1D26EE1C00329493 /* XTPrefsWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9C7730B1D26EE1C00329493 /* XTPrefsWindowController.xib */; };
@@ -349,6 +355,12 @@
 		C957B84A1D2D53040040F858 /* XTSheetController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSheetController.swift; sourceTree = "<group>"; };
 		C957B8531D2D533C0040F858 /* XTAddAccountController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTAddAccountController.swift; sourceTree = "<group>"; };
 		C957B8551D2D65FF0040F858 /* XTAccountsPrefsController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTAccountsPrefsController.xib; sourceTree = "<group>"; };
+		C957B8571D2D6A3C0040F858 /* bitbucketTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bitbucketTemplate.png; sourceTree = "<group>"; };
+		C957B8581D2D6A3C0040F858 /* bitbucketTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bitbucketTemplate@2x.png"; sourceTree = "<group>"; };
+		C957B8591D2D6A3C0040F858 /* githubTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = githubTemplate.png; sourceTree = "<group>"; };
+		C957B85A1D2D6A3C0040F858 /* githubTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "githubTemplate@2x.png"; sourceTree = "<group>"; };
+		C957B85F1D2D6D900040F858 /* teamcityTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = teamcityTemplate.png; sourceTree = "<group>"; };
+		C957B8601D2D6D900040F858 /* teamcityTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "teamcityTemplate@2x.png"; sourceTree = "<group>"; };
 		C9C7730A1D26EE1C00329493 /* XTPrefsWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPrefsWindowController.swift; sourceTree = "<group>"; };
 		C9C7730B1D26EE1C00329493 /* XTPrefsWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTPrefsWindowController.xib; sourceTree = "<group>"; };
 		C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesModelTest.swift; sourceTree = "<group>"; };
@@ -562,9 +574,15 @@
 		899D0106142168830091DC6F /* images */ = {
 			isa = PBXGroup;
 			children = (
+				C957B85F1D2D6D900040F858 /* teamcityTemplate.png */,
+				C957B8601D2D6D900040F858 /* teamcityTemplate@2x.png */,
 				895869B51D0871A6003A9AF0 /* Sidebar */,
 				895869B31D08711E003A9AF0 /* Status */,
 				895869B41D08718A003A9AF0 /* Views */,
+				C957B8571D2D6A3C0040F858 /* bitbucketTemplate.png */,
+				C957B8581D2D6A3C0040F858 /* bitbucketTemplate@2x.png */,
+				C957B8591D2D6A3C0040F858 /* githubTemplate.png */,
+				C957B85A1D2D6A3C0040F858 /* githubTemplate@2x.png */,
 				DD96C930175B76990003A30C /* splitter.png */,
 			);
 			path = images;
@@ -931,6 +949,7 @@
 				895869C01D088A46003A9AF0 /* tagTemplate.png in Resources */,
 				89D8BDFB1CED200B00D640AA /* delete@2x.png in Resources */,
 				89D8BE261CF35C7000D640AA /* unstage@2x.png in Resources */,
+				C957B85D1D2D6A3C0040F858 /* githubTemplate.png in Resources */,
 				C3FA471113D0F8E200AC4F9B /* Credits.rtf in Resources */,
 				C3FA471713D0F8E200AC4F9B /* XTDocument.xib in Resources */,
 				89D8BE5B1CF8E9C900D640AA /* diffTemplate@2x.png in Resources */,
@@ -941,6 +960,7 @@
 				31C7C13413ECC74C00A65FE9 /* XTHistoryViewController.xib in Resources */,
 				894C8D931CA44A44001A4B80 /* stagingTemplate.png in Resources */,
 				895869BD1D088A46003A9AF0 /* stashTemplate@2x.png in Resources */,
+				C957B85E1D2D6A3C0040F858 /* githubTemplate@2x.png in Resources */,
 				89D8BE5F1CF8E9C900D640AA /* textTemplate@2x.png in Resources */,
 				899DB1A31CE5022400760270 /* XTCommitEntryController.xib in Resources */,
 				89794F671452839500E38ACC /* XTStatusView.xib in Resources */,
@@ -953,12 +973,15 @@
 				89039F561703A9FC000949A8 /* html in Resources */,
 				89D8BDFD1CED200B00D640AA /* modify@2x.png in Resources */,
 				DD997DDA173B409500C7DF82 /* HistoryView Menus.xib in Resources */,
+				C957B85C1D2D6A3C0040F858 /* bitbucketTemplate@2x.png in Resources */,
 				89D8BDF81CED200B00D640AA /* conflict.png in Resources */,
 				DD997DF81746F40D00C7DF82 /* XTFileViewController.xib in Resources */,
 				89D8BDF91CED200B00D640AA /* conflict@2x.png in Resources */,
+				C957B85B1D2D6A3C0040F858 /* bitbucketTemplate.png in Resources */,
 				C92A7B261D1DD1CD00D2B944 /* folderTemplate.png in Resources */,
 				89D8BE011CED203900D640AA /* stage@2x.png in Resources */,
 				89D8BE581CF8E9C900D640AA /* blameTemplate.png in Resources */,
+				C957B8621D2D6D900040F858 /* teamcityTemplate@2x.png in Resources */,
 				89D8BDEA1CED1FE700D640AA /* add@2x.png in Resources */,
 				DD96C931175B76990003A30C /* splitter.png in Resources */,
 				89D8BE251CF35C7000D640AA /* unstage.png in Resources */,
@@ -980,6 +1003,7 @@
 				89D8BE5C1CF8E9C900D640AA /* historyTemplate.png in Resources */,
 				89D8BE591CF8E9C900D640AA /* blameTemplate@2x.png in Resources */,
 				DDA8A64117F5B6CE00AD9808 /* modified@2x.png in Resources */,
+				C957B8611D2D6D900040F858 /* teamcityTemplate.png in Resources */,
 				895869AA1D0869D1003A9AF0 /* cloudTemplate.png in Resources */,
 				DDA8A64217F5B6CE00AD9808 /* renamed.png in Resources */,
 				C957B8561D2D65FF0040F858 /* XTAccountsPrefsController.xib in Resources */,

@@ -211,9 +211,9 @@
                             <font key="font" metaFont="menu"/>
                             <menu key="menu" id="VDJ-gd-XxM">
                                 <items>
-                                    <menuItem title="GitHub" state="on" id="LRA-nk-0OX"/>
-                                    <menuItem title="BitBucket" id="aew-IP-ta4"/>
-                                    <menuItem title="TeamCity" id="YGe-V0-5Ph"/>
+                                    <menuItem title="GitHub" state="on" image="githubTemplate" id="LRA-nk-0OX"/>
+                                    <menuItem title="BitBucket" image="bitbucketTemplate" id="aew-IP-ta4"/>
+                                    <menuItem title="TeamCity" image="teamcityTemplate" id="YGe-V0-5Ph"/>
                                 </items>
                             </menu>
                         </popUpButtonCell>
@@ -340,5 +340,8 @@ Gw
         <image name="NSActionTemplate" width="14" height="14"/>
         <image name="NSAddTemplate" width="11" height="11"/>
         <image name="NSRemoveTemplate" width="11" height="11"/>
+        <image name="bitbucketTemplate" width="16" height="16"/>
+        <image name="githubTemplate" width="16" height="16"/>
+        <image name="teamcityTemplate" width="16" height="16"/>
     </resources>
 </document>
