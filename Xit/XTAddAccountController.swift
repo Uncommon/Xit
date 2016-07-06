@@ -52,9 +52,40 @@ class XTAddAccountController: XTSheetController {
     passwordFocused()
   }
   
+  func showFieldAlert(message: String, field: NSView)
+  {
+    let alert = NSAlert()
+    
+    alert.alertStyle = .CriticalAlertStyle
+    alert.messageText = message
+    alert.beginSheetModalForWindow((window?.sheetParent)!) { (response) in
+      self.window?.makeFirstResponder(field)
+    }
+  }
+  
+  override func accept(sender: AnyObject)
+  {
+    guard userName != ""
+    else {
+      showFieldAlert("The user field must not be empty.",
+                     field: userField)
+      return
+    }
+    
+    guard location == nil
+    else {
+      showFieldAlert("The location field must have a valid URL.",
+                     field: locationField)
+      return
+    }
+    
+    super.accept(sender)
+  }
+  
   func passwordFocused()
   {
-    guard let location = location,
+    guard userName != "",
+          let location = location,
           let newPassword = XTKeychain.findPassword(location, account: userName)
     else { return }
     
@@ -71,6 +102,7 @@ class XTAddAccountController: XTSheetController {
     userField.stringValue = ""
     passwordField.stringValue = ""
     syncLocationField()
+    window?.makeFirstResponder(userField)
   }
   
   func syncLocationField()
