@@ -104,6 +104,7 @@ class XTAccountsPrefsController: NSViewController {
   
   @IBAction func addAccount(sender: AnyObject)
   {
+    addController.resetFields()
     view.window?.beginSheet(addController.window!) { (response) in
       guard response == NSModalResponseOK else { return }
       guard let url = self.addController.location

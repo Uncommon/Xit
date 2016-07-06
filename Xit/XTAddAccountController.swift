@@ -30,7 +30,19 @@ class XTAddAccountController: XTSheetController {
   
   @IBAction func serviceChanged(sender: AnyObject)
   {
-    locationField.stringValue = accountType.defaultLocation
+    syncLocationField()
   }
   
+  func resetFields()
+  {
+    userField.stringValue = ""
+    passwordField.stringValue = ""
+    syncLocationField()
+  }
+  
+  func syncLocationField()
+  {
+    locationField.stringValue = accountType.defaultLocation
+  }
+
 }
