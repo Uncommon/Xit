@@ -25,9 +25,18 @@ enum AccountType : Int {
   var name: String
   {
     switch self {
-    case .GitHub: return "github"
-    case .BitBucket: return "bitbucket"
-    case .TeamCity: return "teamcity"
+      case .GitHub: return "github"
+      case .BitBucket: return "bitbucket"
+      case .TeamCity: return "teamcity"
+    }
+  }
+  
+  var defaultLocation: String
+  {
+    switch self {
+      case .GitHub: return "https://api.github.com"
+      case .BitBucket: return "https://api.bitbucket.org"
+      case .TeamCity: return ""
     }
   }
 }
@@ -49,13 +58,8 @@ class XTAccountsPrefsController: NSViewController {
   
   var accounts: [Account] = []
   
+  @IBOutlet weak var addController: XTAddAccountController!
   @IBOutlet weak var accountsTable: NSTableView!
-  @IBOutlet weak var addSheet: NSWindow!
-  
-  @IBOutlet weak var servicePopup: NSPopUpButton!
-  @IBOutlet weak var userField: NSTextField!
-  @IBOutlet weak var passwordField: NSSecureTextField!
-  @IBOutlet weak var locationField: NSTextField!
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -100,16 +104,14 @@ class XTAccountsPrefsController: NSViewController {
   
   @IBAction func addAccount(sender: AnyObject)
   {
-    view.window?.beginSheet(addSheet) { (response) in
+    view.window?.beginSheet(addController.window!) { (response) in
       guard response == NSModalResponseOK else { return }
-      guard let type = AccountType(rawValue: self.servicePopup.indexOfSelectedItem)
-      else { return }
-      guard let url = NSURL(string: self.locationField.stringValue)
+      guard let url = self.addController.location
       else { return }
       
-      self.addAccount(type,
-                      user: self.userField.stringValue,
-                      password: self.passwordField.stringValue,
+      self.addAccount(self.addController.accountType,
+                      user: self.addController.userName,
+                      password: self.addController.password,
                       location: url)
     }
   }
@@ -148,33 +150,5 @@ class XTAccountsPrefsController: NSViewController {
   {
     accounts.removeAtIndex(accountsTable.selectedRow)
     accountsTable.reloadData()
-  }
-  
-  @IBAction func typeChanged(sender: AnyObject)
-  {
-    locationField.stringValue = XTAccountsPrefsController.defaultLocation(
-        AccountType(rawValue: servicePopup.indexOfSelectedItem)!)
-  }
-  
-  @IBAction func acceptAdd(sender: AnyObject)
-  {
-    view.window?.endSheet(addSheet, returnCode: NSModalResponseOK)
-  }
-  
-  @IBAction func cancelAdd(sender: AnyObject)
-  {
-    view.window?.endSheet(addSheet, returnCode: NSModalResponseCancel)
-  }
-  
-  class func defaultLocation(type: AccountType) -> String
-  {
-    switch type {
-      case .GitHub:
-        return "api.github.com"
-      case .BitBucket:
-        return "api.bitbucket.org"
-      case .TeamCity:
-        return ""
-    }
   }
 }
