@@ -31,6 +31,15 @@ enum AccountType : Int {
     }
   }
   
+  var displayName: String
+  {
+    switch self {
+    case .GitHub: return "GitHub"
+    case .BitBucket: return "BitBucket"
+    case .TeamCity: return "TeamCity"
+    }
+  }
+  
   var defaultLocation: String
   {
     switch self {
@@ -39,6 +48,22 @@ enum AccountType : Int {
       case .TeamCity: return ""
     }
   }
+  
+  var imageName: String
+  {
+    switch self {
+      case .GitHub: return "githubTemplate"
+      case .BitBucket: return "bitbucketTemplate"
+      case .TeamCity: return "teamcityTemplate"
+    }
+  }
+}
+
+
+enum PasswordAction {
+  case Save
+  case Change
+  case UseExisting
 }
 
 
@@ -64,6 +89,14 @@ class XTAccountsPrefsController: NSViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     readAccounts()
+  }
+  
+  func showError(message: String)
+  {
+    let alert = NSAlert()
+    
+    alert.messageText = message
+    alert.beginSheetModalForWindow(view.window!) { (NSModalResponse) in }
   }
   
   func readAccounts()
@@ -119,26 +152,69 @@ class XTAccountsPrefsController: NSViewController {
   
   func addAccount(type: AccountType, user: String, password: String, location: NSURL)
   {
-    let host = location.host! as NSString
-    let path = location.path! as NSString
-    let accountName = user as NSString
-    let password = password as NSString
-    let port: UInt16 = location.port?.unsignedShortValue ?? 80
+    var passwordAction = PasswordAction.Save
     
-    let err = SecKeychainAddInternetPassword(
-        nil,
-        UInt32(host.length), host.UTF8String,
-        0, nil,
-        UInt32(accountName.length), accountName.UTF8String,
-        UInt32(path.length), path.UTF8String,
-        port,
-        .HTTP, .HTTPBasic,
-        UInt32(password.length), password.UTF8String,
-        nil)
-    
-    guard err == noErr else {
-      // alert
-      return
+    if let oldPassword = XTKeychain.findPassword(location, account: user) {
+      if oldPassword == password {
+        passwordAction = .UseExisting
+      }
+      else {
+        let alert = NSAlert()
+        
+        alert.messageText =
+            "There is already a password for that account in the keychain. " +
+            "Do you want to change it, or use the existing password?"
+        alert.addButtonWithTitle("Change")
+        alert.addButtonWithTitle("Use existing")
+        alert.addButtonWithTitle("Cancel")
+        alert.beginSheetModalForWindow(view.window!) { (response) in
+          switch response {
+            case NSAlertFirstButtonReturn:
+              self.finishAddAccount(.Change, type: type, user: user,
+                                    password: password, location: location)
+            case NSAlertSecondButtonReturn:
+              self.finishAddAccount(.UseExisting, type: type, user: user,
+                                    password: "", location: location)
+            default:
+              break
+          }
+        }
+        return
+      }
+    }
+    finishAddAccount(passwordAction, type: type, user: user, password: password,
+                     location: location)
+  }
+  
+  func finishAddAccount(action: PasswordAction, type: AccountType,
+                        user: String, password: String, location: NSURL)
+  {
+    switch action {
+      case .Save:
+        do {
+          try XTKeychain.savePassword(location, account: user, password: password)
+        }
+        catch _ as XTKeychain.Error {
+          showError("The password could not be saved because the location field is incorrect.")
+          return
+        }
+        catch _ as NSError {
+          showError("The password could not be saved to the Keychain.")
+          return
+        }
+      
+      case .Change:
+        do {
+          try XTKeychain.changePassword(location, account: user,
+                                        password: password)
+        }
+        catch _ as NSError {
+          showError("The password could not be saved to the Keychain.")
+          return
+        }
+      
+      default:
+        break
     }
     
     accounts.append(Account(type: type,
@@ -151,5 +227,36 @@ class XTAccountsPrefsController: NSViewController {
   {
     accounts.removeAtIndex(accountsTable.selectedRow)
     accountsTable.reloadData()
+  }
+  
+  func numberOfRowsInTableView(tableView: NSTableView) -> Int
+  {
+    return accounts.count
+  }
+  
+  func tableView(tableView: NSTableView,
+                 viewForTableColumn tableColumn: NSTableColumn?,
+                 row: Int) -> NSView?
+  {
+    guard let tableColumn = tableColumn
+    else { return nil }
+    
+    let view = tableView.makeViewWithIdentifier(tableColumn.identifier,
+                                                owner: self)
+               as! NSTableCellView
+    let account = accounts[row]
+    
+    switch tableColumn.identifier {
+      case "service":
+        view.textField?.stringValue = account.type.displayName
+        view.imageView?.image = NSImage(named: account.type.imageName)
+      case "userName":
+        view.textField?.stringValue = account.user
+      case "location":
+        view.textField?.stringValue = account.location.absoluteString
+      default:
+        return nil
+    }
+    return view
   }
 }

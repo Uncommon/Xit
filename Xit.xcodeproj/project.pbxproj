@@ -108,6 +108,7 @@
 		C957B85E1D2D6A3C0040F858 /* githubTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C957B85A1D2D6A3C0040F858 /* githubTemplate@2x.png */; };
 		C957B8611D2D6D900040F858 /* teamcityTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C957B85F1D2D6D900040F858 /* teamcityTemplate.png */; };
 		C957B8621D2D6D900040F858 /* teamcityTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C957B8601D2D6D900040F858 /* teamcityTemplate@2x.png */; };
+		C957B8661D2D8D500040F858 /* XTKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B8651D2D8D500040F858 /* XTKeychain.swift */; };
 		C97328681D11FFC400C56B9E /* XTWorkspaceTreeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB18D1CE0EA3A00760270 /* XTWorkspaceTreeBuilder.swift */; };
 		C9C7730C1D26EE1C00329493 /* XTPrefsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C7730A1D26EE1C00329493 /* XTPrefsWindowController.swift */; };
 		C9C7730D1D26EE1C00329493 /* XTPrefsWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9C7730B1D26EE1C00329493 /* XTPrefsWindowController.xib */; };
@@ -361,6 +362,7 @@
 		C957B85A1D2D6A3C0040F858 /* githubTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "githubTemplate@2x.png"; sourceTree = "<group>"; };
 		C957B85F1D2D6D900040F858 /* teamcityTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = teamcityTemplate.png; sourceTree = "<group>"; };
 		C957B8601D2D6D900040F858 /* teamcityTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "teamcityTemplate@2x.png"; sourceTree = "<group>"; };
+		C957B8651D2D8D500040F858 /* XTKeychain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTKeychain.swift; sourceTree = "<group>"; };
 		C9C7730A1D26EE1C00329493 /* XTPrefsWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPrefsWindowController.swift; sourceTree = "<group>"; };
 		C9C7730B1D26EE1C00329493 /* XTPrefsWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTPrefsWindowController.xib; sourceTree = "<group>"; };
 		C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesModelTest.swift; sourceTree = "<group>"; };
@@ -469,6 +471,7 @@
 				89AC82411806769A00402955 /* XTWebViewController.h */,
 				89AC82421806769A00402955 /* XTWebViewController.m */,
 				894C8DE51CCD06FE001A4B80 /* Xit-Bridging-Header.h */,
+				C957B8651D2D8D500040F858 /* XTKeychain.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -1070,6 +1073,7 @@
 				89D8BE221CF0A4ED00D640AA /* XTRolloverButton.swift in Sources */,
 				31C7C12E13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m in Sources */,
 				DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */,
+				C957B8661D2D8D500040F858 /* XTKeychain.swift in Sources */,
 				C9C7730C1D26EE1C00329493 /* XTPrefsWindowController.swift in Sources */,
 				31C7C13313ECC74C00A65FE9 /* XTHistoryViewController.m in Sources */,
 				C358653114048A3F00060C53 /* XTRepository.m in Sources */,

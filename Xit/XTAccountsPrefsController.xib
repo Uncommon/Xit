@@ -31,7 +31,7 @@
                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                 <tableColumns>
-                                    <tableColumn width="118.953125" minWidth="40" maxWidth="1000" id="RAq-jR-CZm">
+                                    <tableColumn identifier="service" width="118.953125" minWidth="40" maxWidth="1000" id="RAq-jR-CZm">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Service">
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -44,7 +44,7 @@
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                         <prototypeCellViews>
-                                            <tableCellView id="6uE-ER-2QJ">
+                                            <tableCellView identifier="service" id="6uE-ER-2QJ">
                                                 <rect key="frame" x="1" y="1" width="119" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
@@ -68,7 +68,7 @@
                                             </tableCellView>
                                         </prototypeCellViews>
                                     </tableColumn>
-                                    <tableColumn width="146.2734375" minWidth="40" maxWidth="1000" id="1CU-Tv-4Ya">
+                                    <tableColumn identifier="userName" width="146.2734375" minWidth="40" maxWidth="1000" id="1CU-Tv-4Ya">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="User name">
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -81,7 +81,7 @@
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                         <prototypeCellViews>
-                                            <tableCellView id="2kW-dM-cTY">
+                                            <tableCellView identifier="userName" id="2kW-dM-cTY">
                                                 <rect key="frame" x="123" y="1" width="147" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
@@ -100,7 +100,7 @@
                                             </tableCellView>
                                         </prototypeCellViews>
                                     </tableColumn>
-                                    <tableColumn width="163.5" minWidth="10" maxWidth="3.4028234663852886e+38" id="P0b-aQ-Z4P">
+                                    <tableColumn identifier="location" width="163.5" minWidth="10" maxWidth="3.4028234663852886e+38" id="P0b-aQ-Z4P">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Location">
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -113,7 +113,7 @@
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                         <prototypeCellViews>
-                                            <tableCellView id="pjh-Ws-sgo">
+                                            <tableCellView identifier="location" id="pjh-Ws-sgo">
                                                 <rect key="frame" x="272" y="1" width="164" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
@@ -133,6 +133,10 @@
                                         </prototypeCellViews>
                                     </tableColumn>
                                 </tableColumns>
+                                <connections>
+                                    <outlet property="dataSource" destination="-2" id="HTb-5f-aKd"/>
+                                    <outlet property="delegate" destination="-2" id="CPy-17-sSI"/>
+                                </connections>
                             </tableView>
                         </subviews>
                     </clipView>
@@ -206,12 +210,12 @@
                     </textField>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="n9S-yU-Uel">
                         <rect key="frame" x="96" y="137" width="209" height="26"/>
-                        <popUpButtonCell key="cell" type="push" title="GitHub" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="8ST-bp-GPz">
+                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="8ST-bp-GPz">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
                             <menu key="menu" id="VDJ-gd-XxM">
                                 <items>
-                                    <menuItem title="GitHub" state="on" image="githubTemplate" id="LRA-nk-0OX"/>
+                                    <menuItem title="GitHub" image="githubTemplate" id="LRA-nk-0OX"/>
                                     <menuItem title="BitBucket" image="bitbucketTemplate" id="aew-IP-ta4"/>
                                     <menuItem title="TeamCity" image="teamcityTemplate" id="YGe-V0-5Ph"/>
                                 </items>

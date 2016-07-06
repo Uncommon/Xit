@@ -17,6 +17,11 @@ class XTPrefsWindowController: NSWindowController {
     window!.toolbar!.selectedItemIdentifier = "xit.prefs.accounts"
   }
   
+  func windowDidResignKey(notification: NSNotification)
+  {
+    accountsController.saveAccounts()
+  }
+  
   @IBAction func accountsSelected(sender: AnyObject)
   {
   }
