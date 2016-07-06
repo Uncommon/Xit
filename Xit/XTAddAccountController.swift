@@ -97,7 +97,7 @@ class XTAddAccountController: XTSheetController {
     syncLocationField()
   }
   
-  func resetFields()
+  override func resetFields()
   {
     userField.stringValue = ""
     passwordField.stringValue = ""

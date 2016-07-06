@@ -60,10 +60,22 @@ enum AccountType : Int {
 }
 
 
-struct Account {
+/// Stores information about an account for an online service.
+/// Passwords are stored in the keychain. This would have been a `struct` but
+/// we need it to be `NSObject` compatible.
+class Account: NSObject {
   var type: AccountType
   var user: String
   var location: NSURL
+  
+  init(type: AccountType, user: String, location: NSURL)
+  {
+    self.type = type
+    self.user = user
+    self.location = location
+    
+    super.init()
+  }
 }
 
 
@@ -77,6 +89,11 @@ class XTAccountsManager: NSObject {
   static let manager = XTAccountsManager()
   
   var accounts: [Account] = []
+  
+  func accounts(ofType type: AccountType) -> [Account]
+  {
+    return accounts.filter() { $0.type == type }
+  }
   
   func add(account: Account)
   {

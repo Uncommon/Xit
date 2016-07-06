@@ -17,6 +17,11 @@ public class XTSheetController: NSWindowController {
     end(NSModalResponseCancel)
   }
   
+  /// Resets all fields and controls for a new session.
+  func resetFields()
+  {
+  }
+  
   class func controller() -> Self
   {
     let result = self.init(windowNibName: String(self))
