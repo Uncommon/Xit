@@ -72,7 +72,7 @@ extern NSString *XTPathsKey;
 @property(readonly, copy) NSString *headRef;
 @property(readonly, copy) NSString *headSHA;
 @property(readonly) GTRepository *gtRepo;
-@property(strong) NSDictionary *refsIndex;
+@property(strong) NSDictionary<NSString*, NSArray<NSString*>*> *refsIndex;
 @property(readonly) dispatch_queue_t queue;
 @property(readonly) NSMutableArray *activeTasks;
 @property(readonly) NSURL *repoURL;
