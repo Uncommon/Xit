@@ -1,65 +1,6 @@
 import Cocoa
 
 
-enum AccountType : Int {
-  case GitHub = 0
-  case BitBucket = 1
-  case TeamCity = 2
-  
-  init?(name: String?)
-  {
-    guard name != nil else { return nil }
-    
-    switch name! {
-    case "github":
-      self = .GitHub
-    case "bitbucket":
-      self = .BitBucket
-    case "teamcity":
-      self = .TeamCity
-    default:
-      return nil
-    }
-  }
-  
-  var name: String
-  {
-    switch self {
-      case .GitHub: return "github"
-      case .BitBucket: return "bitbucket"
-      case .TeamCity: return "teamcity"
-    }
-  }
-  
-  var displayName: String
-  {
-    switch self {
-    case .GitHub: return "GitHub"
-    case .BitBucket: return "BitBucket"
-    case .TeamCity: return "TeamCity"
-    }
-  }
-  
-  var defaultLocation: String
-  {
-    switch self {
-      case .GitHub: return "https://api.github.com"
-      case .BitBucket: return "https://api.bitbucket.org"
-      case .TeamCity: return ""
-    }
-  }
-  
-  var imageName: String
-  {
-    switch self {
-      case .GitHub: return "githubTemplate"
-      case .BitBucket: return "bitbucketTemplate"
-      case .TeamCity: return "teamcityTemplate"
-    }
-  }
-}
-
-
 enum PasswordAction {
   case Save
   case Change
@@ -67,28 +8,14 @@ enum PasswordAction {
 }
 
 
-struct Account {
-  var type: AccountType
-  var user: String
-  var location: NSURL
-}
-
-
 class XTAccountsPrefsController: NSViewController {
-  
-  /// Account types as stored in preferences
-  let userKey = "user"
-  let locationKey = "location"
-  let typeKey = "type"
-  
-  var accounts: [Account] = []
   
   @IBOutlet weak var addController: XTAddAccountController!
   @IBOutlet weak var accountsTable: NSTableView!
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    readAccounts()
+    XTAccountsManager.manager.readAccounts()
   }
   
   func showError(message: String)
@@ -97,42 +24,6 @@ class XTAccountsPrefsController: NSViewController {
     
     alert.messageText = message
     alert.beginSheetModalForWindow(view.window!) { (NSModalResponse) in }
-  }
-  
-  func readAccounts()
-  {
-    guard let storedAccounts =
-        NSUserDefaults.standardUserDefaults().arrayForKey("accounts")
-        as? [[String: AnyObject]]
-    else { return }
-    
-    for accountDict in storedAccounts {
-      if let type = AccountType(name: accountDict[typeKey] as? String),
-         let user = accountDict[userKey] as? String,
-         let locationString = accountDict[locationKey] as? String,
-         let location = NSURL(string: locationString) {
-        accounts.append(Account(type: type, user: user, location: location))
-      }
-      else {
-        NSLog("Couldn't read account: \(accountDict.description)")
-      }
-    }
-  }
-  
-  func saveAccounts()
-  {
-    let accountsList = NSMutableArray(capacity: accounts.count)
-    
-    for account in accounts {
-      let accountDict = NSMutableDictionary(capacity: 3)
-      
-      accountDict[typeKey] = account.type.name
-      accountDict[userKey] = account.user
-      accountDict[locationKey] = account.location.absoluteString
-      accountsList.addObject(accountDict)
-    }
-    NSUserDefaults.standardUserDefaults().setValue(accountsList,
-                                                   forKey: "accounts")
   }
   
   @IBAction func addAccount(sender: AnyObject)
@@ -217,21 +108,21 @@ class XTAccountsPrefsController: NSViewController {
         break
     }
     
-    accounts.append(Account(type: type,
-                            user: user,
-                            location: location))
+    XTAccountsManager.manager.add(Account(type: type,
+                                  user: user,
+                                  location: location))
     accountsTable.reloadData()
   }
   
   @IBAction func removeAccount(sender: AnyObject)
   {
-    accounts.removeAtIndex(accountsTable.selectedRow)
+    XTAccountsManager.manager.accounts.removeAtIndex(accountsTable.selectedRow)
     accountsTable.reloadData()
   }
   
   func numberOfRowsInTableView(tableView: NSTableView) -> Int
   {
-    return accounts.count
+    return XTAccountsManager.manager.accounts.count
   }
   
   func tableView(tableView: NSTableView,
@@ -244,7 +135,7 @@ class XTAccountsPrefsController: NSViewController {
     let view = tableView.makeViewWithIdentifier(tableColumn.identifier,
                                                 owner: self)
                as! NSTableCellView
-    let account = accounts[row]
+    let account = XTAccountsManager.manager.accounts[row]
     
     switch tableColumn.identifier {
       case "service":

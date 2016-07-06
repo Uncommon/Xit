@@ -19,7 +19,7 @@ class XTPrefsWindowController: NSWindowController {
   
   func windowDidResignKey(notification: NSNotification)
   {
-    accountsController.saveAccounts()
+    XTAccountsManager.manager.saveAccounts()
   }
   
   @IBAction func accountsSelected(sender: AnyObject)
