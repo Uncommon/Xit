@@ -1,6 +1,6 @@
 import Cocoa
 
-class XTRemoteOptionsController: XTSheetController {
+class XTRemoteSettingsController: XTSheetController {
   
   var remoteName: String = ""
   {
