@@ -82,13 +82,29 @@ class XTWindowController: NSWindowController {
   @IBAction func newBranch(_: AnyObject) {}
   @IBAction func addRemote(_: AnyObject) {}
   
+  @IBAction func remoteSettings(sender: AnyObject)
+  {
+    
+  }
+  
+  func updateRemotesMenu(menu: NSMenu) {
+    let remoteNames = xtDocument!.repository.remoteNames
+    
+    menu.removeAllItems()
+    for name in remoteNames {
+      menu.addItem(NSMenuItem(title: name,
+                              action: #selector(self.remoteSettings(_:)),
+                              keyEquivalent: ""))
+    }
+  }
+  
   override func validateMenuItem(menuItem: NSMenuItem) -> Bool
   {
     var result = false
     
     switch menuItem.action {
 
-      case #selector(XTWindowController.showHideSidebar(_:)):
+      case #selector(self.showHideSidebar(_:)):
         result = true
         if historyController.sidebarSplitView.isSubviewCollapsed(
             historyController.sidebarSplitView.subviews[0]) {
@@ -98,18 +114,21 @@ class XTWindowController: NSWindowController {
           menuItem.title = NSLocalizedString("Hide Sidebar", comment: "")
         }
 
-      case #selector(XTWindowController.verticalLayout(_:)):
+      case #selector(self.verticalLayout(_:)):
         result = true
         menuItem.state = historyController.mainSplitView.vertical
             ? NSOnState : NSOffState
 
-      case #selector(XTWindowController.horizontalLayout(_:)):
+      case #selector(self.horizontalLayout(_:)):
         result = true
         menuItem.state = historyController.mainSplitView.vertical
             ? NSOffState : NSOnState
 
+      case #selector(self.remoteSettings(_:)):
+        result = true
+
       default:
-        result = super.validateMenuItem(menuItem)
+        result = false
     }
     return result
   }

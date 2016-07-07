@@ -353,6 +353,19 @@
                                     <action selector="addRemote:" target="-1" id="618"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Remote Settings" id="XgQ-yf-L09">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Remote Settings" id="Od6-Cb-gjd">
+                                    <items>
+                                        <menuItem title="Item" id="5NI-0g-SqK">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                    </items>
+                                    <connections>
+                                        <outlet property="delegate" destination="530" id="vyw-Oe-1v3"/>
+                                    </connections>
+                                </menu>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="608"/>
                             <menuItem title="Commit" id="615">
                                 <string key="keyEquivalent" base64-UTF8="YES">
@@ -707,6 +720,11 @@ DQ
             </items>
         </menu>
         <customObject id="419" customClass="NSFontManager"/>
-        <customObject id="530" customClass="XTAppDelegate"/>
+        <customObject id="530" customClass="XTAppDelegate">
+            <connections>
+                <outlet property="remoteOptionsSubmenu" destination="Od6-Cb-gjd" id="cdb-yT-IFi"/>
+                <outlet property="remoteSettingsSubmenu" destination="Od6-Cb-gjd" id="9dF-Gc-ELK"/>
+            </connections>
+        </customObject>
     </objects>
 </document>

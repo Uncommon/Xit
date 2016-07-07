@@ -75,4 +75,19 @@
   [XTPrefsWindowController.sharedPrefsController.window makeKeyAndOrderFront:nil];
 }
 
+- (XTWindowController*)activeWindowController
+{
+  NSWindowController *controller = NSApp.mainWindow.windowController;
+  
+  if ([controller isKindOfClass:[XTWindowController class]])
+    return (XTWindowController*)controller;
+  return nil;
+}
+
+- (void)menuNeedsUpdate:(NSMenu*)menu
+{
+  if (menu == self.remoteSettingsSubmenu)
+    [[self activeWindowController] updateRemotesMenu:menu];
+}
+
 @end

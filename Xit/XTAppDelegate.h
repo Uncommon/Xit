@@ -4,6 +4,8 @@
   NSOpenPanel *_openPanel;
 }
 
+@property (weak) IBOutlet NSMenu *remoteSettingsSubmenu;
+
 - (IBAction)openDocument:(id)sender;
 
 @end

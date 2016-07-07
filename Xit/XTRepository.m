@@ -336,9 +336,18 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
   return _cachedHeadRef;
 }
 
-- (NSString *)headSHA
+- (NSString*)headSHA
 {
   return [self shaForRef:[self headRef]];
+}
+
+- (NSArray<NSString*>*)remoteNames
+{
+  NSArray<NSString*> *result = [_gtRepo remoteNamesWithError:NULL];
+  
+  if (result == nil)
+    result = @[];
+  return result;
 }
 
 - (NSData*)contentsOfFile:(NSString*)filePath
