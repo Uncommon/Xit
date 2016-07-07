@@ -1,6 +1,7 @@
 #import "XTRepository.h"
 #import "XTRepositoryWatcher.h"
 #import "XTConstants.h"
+#import "Xit-Swift.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
 NSString *XTRepositoryChangedNotification = @"xtrepochanged";
@@ -15,6 +16,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 @property XTRepositoryWatcher *watcher;
 @property(readwrite) BOOL isWriting;
 @property(readwrite) BOOL isShutDown;
+@property(readwrite) XTConfig *config;
 
 @end
 
@@ -53,6 +55,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
     _diffCache = [[NSCache alloc] init];
     
     self.watcher = [XTRepositoryWatcher watcherWithRepo:self];
+    self.config = [[XTConfig alloc] initWithRepository:self];
   }
 
   return self;

@@ -8,6 +8,7 @@ extern NSString *XTErrorArgsKey;
 extern NSString *XTPathsKey;
 
 @class GTRepository;
+@class XTConfig;
 
 /**
   XTRepository represents the application's interface to the Git repository.
@@ -80,6 +81,8 @@ extern NSString *XTPathsKey;
 @property(readonly) NSURL *gitDirectoryURL;
 @property(readonly) BOOL isWriting;
 @property(readonly) BOOL isShutDown;
+
+@property(readonly) XTConfig *config;
 
 @end
 

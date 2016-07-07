@@ -1,6 +1,14 @@
 #import "XTRepository+Commands.h"
 #import "XTConstants.h"
+#import "Xit-Swift.h"
 #import <ObjectiveGit/ObjectiveGit.h>
+
+@interface XTRepository()
+
+@property (readwrite) XTConfig *config;
+
+@end
+
 
 @implementation XTRepository (Commands)
 
@@ -15,6 +23,7 @@
   if ((newRepo == nil) || (error != nil))
     return NO;
   _gtRepo = newRepo;
+  self.config = [[XTConfig alloc] initWithRepository:self];
   return YES;
 }
 
