@@ -112,6 +112,9 @@
 		C91F34571D305ADD005F9BDF /* XTFetchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94866B51D256C24000BDB0A /* XTFetchController.swift */; };
 		C91F34581D305AE6005F9BDF /* XTConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE6091D2FFA8B00A87F13 /* XTConfig.swift */; };
 		C91F34591D305AF1005F9BDF /* XTPasswordPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94866BE1D25861E000BDB0A /* XTPasswordPanelController.swift */; };
+		C91F34741D3064CC005F9BDF /* Siesta.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C91F346F1D30647E005F9BDF /* Siesta.framework */; };
+		C91F34761D306506005F9BDF /* Siesta.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C91F346F1D30647E005F9BDF /* Siesta.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C91F34781D30656B005F9BDF /* XTServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91F34771D30656B005F9BDF /* XTServices.swift */; };
 		C926804E1D074EC500E422FA /* XTFileChangesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C926804D1D074EC500E422FA /* XTFileChangesModel.swift */; };
 		C92A7B261D1DD1CD00D2B944 /* folderTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C92A7B241D1DD1CD00D2B944 /* folderTemplate.png */; };
 		C92A7B271D1DD1CD00D2B944 /* folderTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C92A7B251D1DD1CD00D2B944 /* folderTemplate@2x.png */; };
@@ -208,6 +211,41 @@
 			remoteGlobalIDString = C3FA46FB13D0F8E200AC4F9B;
 			remoteInfo = Xit;
 		};
+		C91F346A1D30647E005F9BDF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C91F34631D30647D005F9BDF /* Siesta.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DA336E4F1B2E6DDB006F702A;
+			remoteInfo = "Siesta iOS";
+		};
+		C91F346C1D30647E005F9BDF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C91F34631D30647D005F9BDF /* Siesta.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DA336E591B2E6DDB006F702A;
+			remoteInfo = "SiestaTests iOS";
+		};
+		C91F346E1D30647E005F9BDF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C91F34631D30647D005F9BDF /* Siesta.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9F2FB51E1C28645E0068DFFA;
+			remoteInfo = "Siesta macOS";
+		};
+		C91F34701D30647E005F9BDF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C91F34631D30647D005F9BDF /* Siesta.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9F0FAFAC1D033FCD00CE1B61;
+			remoteInfo = "SiestaTests macOS";
+		};
+		C91F34721D3064B2005F9BDF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C91F34631D30647D005F9BDF /* Siesta.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 9F2FB51D1C28645E0068DFFA;
+			remoteInfo = "Siesta macOS";
+		};
 		DD96C999176976FE0003A30C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */;
@@ -246,6 +284,16 @@
 			dstSubfolderSpec = 16;
 			files = (
 				89BEB8BC157B587600FED57B /* OCMock.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C91F34751D3064E6005F9BDF /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C91F34761D306506005F9BDF /* Siesta.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -393,6 +441,8 @@
 		C91610201D1DE994005A3142 /* pullTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pullTemplate@2x.png"; sourceTree = "<group>"; };
 		C91610211D1DE994005A3142 /* pushTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pushTemplate.png; sourceTree = "<group>"; };
 		C91610221D1DE994005A3142 /* pushTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pushTemplate@2x.png"; sourceTree = "<group>"; };
+		C91F34631D30647D005F9BDF /* Siesta.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Siesta.xcodeproj; path = siesta/Siesta.xcodeproj; sourceTree = "<group>"; };
+		C91F34771D30656B005F9BDF /* XTServices.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTServices.swift; sourceTree = "<group>"; };
 		C926804D1D074EC500E422FA /* XTFileChangesModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesModel.swift; sourceTree = "<group>"; };
 		C92A7B241D1DD1CD00D2B944 /* folderTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = folderTemplate.png; sourceTree = "<group>"; };
 		C92A7B251D1DD1CD00D2B944 /* folderTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "folderTemplate@2x.png"; sourceTree = "<group>"; };
@@ -485,6 +535,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD96C9A6176977470003A30C /* ObjectiveGit.framework in Frameworks */,
+				C91F34741D3064CC005F9BDF /* Siesta.framework in Frameworks */,
 				31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */,
 				C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */,
 				DDD4708516F96F7E00CA76FF /* QuickLook.framework in Frameworks */,
@@ -677,6 +728,7 @@
 			isa = PBXGroup;
 			children = (
 				DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */,
+				C91F34631D30647D005F9BDF /* Siesta.xcodeproj */,
 				C3FA470613D0F8E200AC4F9B /* Xit */,
 				8937B6EC1786F5DE00CB9BBC /* FullHeightToolbar */,
 				C3FA472413D0F8E300AC4F9B /* XitTests */,
@@ -735,6 +787,7 @@
 				89A6EA2614478DA40089B212 /* XTAppDelegate.h */,
 				89A6EA2714478DA40089B212 /* XTAppDelegate.m */,
 				DD07B08316B2005B0012AC19 /* XTConstants.h */,
+				C91F34771D30656B005F9BDF /* XTServices.swift */,
 				C3FA471813D0F8E300AC4F9B /* MainMenu.xib */,
 				89039F551703A9FC000949A8 /* html */,
 				899D0106142168830091DC6F /* images */,
@@ -792,6 +845,17 @@
 				C3FA472A13D0F8E300AC4F9B /* XitTests-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C91F34641D30647D005F9BDF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C91F346B1D30647E005F9BDF /* Siesta.framework */,
+				C91F346D1D30647E005F9BDF /* SiestaTests.xctest */,
+				C91F346F1D30647E005F9BDF /* Siesta.framework */,
+				C91F34711D30647E005F9BDF /* SiestaTests.xctest */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		C973285E1D11DD4A00C56B9E /* Sidebar */ = {
@@ -923,11 +987,13 @@
 				C3FA46F913D0F8E200AC4F9B /* Frameworks */,
 				C3FA46FA13D0F8E200AC4F9B /* Resources */,
 				317C19DE13EBD2500003E8E6 /* ShellScript */,
+				C91F34751D3064E6005F9BDF /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				DD96C9A51769772E0003A30C /* PBXTargetDependency */,
+				C91F34731D3064B2005F9BDF /* PBXTargetDependency */,
 			);
 			name = Xit;
 			productName = Xit;
@@ -979,6 +1045,10 @@
 					ProductGroup = DD96C990176976FC0003A30C /* Products */;
 					ProjectRef = DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */;
 				},
+				{
+					ProductGroup = C91F34641D30647D005F9BDF /* Products */;
+					ProjectRef = C91F34631D30647D005F9BDF /* Siesta.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -994,6 +1064,34 @@
 			fileType = wrapper.cfbundle;
 			path = "ObjectiveGit-iOSTests.xctest";
 			remoteRef = 89E6384C1C8651E400B7BB42 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C91F346B1D30647E005F9BDF /* Siesta.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Siesta.framework;
+			remoteRef = C91F346A1D30647E005F9BDF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C91F346D1D30647E005F9BDF /* SiestaTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = SiestaTests.xctest;
+			remoteRef = C91F346C1D30647E005F9BDF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C91F346F1D30647E005F9BDF /* Siesta.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Siesta.framework;
+			remoteRef = C91F346E1D30647E005F9BDF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C91F34711D30647E005F9BDF /* SiestaTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = SiestaTests.xctest;
+			remoteRef = C91F34701D30647E005F9BDF /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		DD96C99A176976FE0003A30C /* ObjectiveGit.framework */ = {
@@ -1177,6 +1275,7 @@
 				89A6EA2814478DA40089B212 /* XTAppDelegate.m in Sources */,
 				89991CDD144E3FF400097A99 /* XTStatusView.m in Sources */,
 				89794F8C1458CC9B00E38ACC /* XTOutputViewController.m in Sources */,
+				C91F34781D30656B005F9BDF /* XTServices.swift in Sources */,
 				DDDA447215B0EA4700DF407B /* XTRepository+Parsing.m in Sources */,
 				894C8DBD1CC12F3E001A4B80 /* XTPreviewController.m in Sources */,
 				DD98D0021822FFE2008B79C9 /* XTFileChangesDataSource.m in Sources */,
@@ -1248,6 +1347,11 @@
 			isa = PBXTargetDependency;
 			target = C3FA46FB13D0F8E200AC4F9B /* Xit */;
 			targetProxy = C3FA472213D0F8E300AC4F9B /* PBXContainerItemProxy */;
+		};
+		C91F34731D3064B2005F9BDF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Siesta macOS";
+			targetProxy = C91F34721D3064B2005F9BDF /* PBXContainerItemProxy */;
 		};
 		DD96C9A51769772E0003A30C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
