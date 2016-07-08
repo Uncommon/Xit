@@ -1,12 +1,16 @@
 import Cocoa
 
+/// XTDocument's main window controller.
 class XTWindowController: NSWindowController {
+  
   @IBOutlet var historyController: XTHistoryViewController!
   @IBOutlet var activity: NSProgressIndicator!
   var xtDocument: XTDocument?
   var selectedCommitSHA: String?
   var selectedModel: XTFileChangesModel?
   var inStagingView: Bool { return self.selectedCommitSHA == XTStagingSHA }
+  
+  var fetchController: XTFetchController?
   
   override var document: AnyObject? {
     didSet {
@@ -29,8 +33,8 @@ class XTWindowController: NSWindowController {
   
   deinit
   {
-    self.xtDocument!.repository.removeObserver(
-        self, forKeyPath:"actaiveTasks")
+    self.xtDocument!.repository.removeObserver(self, forKeyPath:"actaiveTasks")
+    fetchController?.canceled = true
   }
   
   override func observeValueForKeyPath(
@@ -39,7 +43,7 @@ class XTWindowController: NSWindowController {
       change: [String : AnyObject]?,
       context: UnsafeMutablePointer<Void>)
   {
-    guard keyPath! == "activeTasks"
+    guard (keyPath != nil) && (keyPath! == "activeTasks")
     else {
       super.observeValueForKeyPath(
           keyPath, ofObject:object, change:change, context:context)
@@ -81,6 +85,36 @@ class XTWindowController: NSWindowController {
   @IBAction func newTag(_: AnyObject) {}
   @IBAction func newBranch(_: AnyObject) {}
   @IBAction func addRemote(_: AnyObject) {}
+
+  @IBAction func fetch(_: AnyObject)
+  {
+    if fetchController == nil {
+      fetchController = XTFetchController(windowController: self)
+      
+      fetchController!.start()
+    }
+  }
+  @IBAction func pull(_: AnyObject) {}
+  @IBAction func push(_: AnyObject) {}
+  
+  @IBAction func networkSegmentClicked(sender: AnyObject)
+  {
+    switch (sender as! NSSegmentedControl).selectedSegment {
+      case 0:
+        fetch(sender)
+      case 1:
+        pull(sender)
+      case 2:
+        push(sender)
+      default:
+        break
+    }
+  }
+  
+  func fetchEnded()
+  {
+    fetchController = nil
+  }
   
   override func validateMenuItem(menuItem: NSMenuItem) -> Bool
   {
