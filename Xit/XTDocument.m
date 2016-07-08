@@ -3,9 +3,15 @@
 #import "Xit-Swift.h"
 #include "XTQueueUtils.h"
 
-@implementation XTDocument
+@interface XTDocument ()
 
-@synthesize repository = _repo;
+@property (readwrite) XTRepository *repository;
+
+@end
+
+
+
+@implementation XTDocument
 
 - (instancetype)initWithContentsOfURL:(NSURL *)absoluteURL
                      ofType:(NSString *)typeName
@@ -15,7 +21,7 @@
       [super initWithContentsOfURL:absoluteURL ofType:typeName error:outError];
   if (self) {
     _repoURL = absoluteURL;
-    _repo = [[XTRepository alloc] initWithURL:_repoURL];
+    _repository = [[XTRepository alloc] initWithURL:_repoURL];
   }
   return self;
 }
@@ -60,8 +66,8 @@
 
 - (void)canCloseDocumentWithDelegate:(id)delegate shouldCloseSelector:(SEL)shouldCloseSelector contextInfo:(void *)contextInfo
 {
-  [_repo shutDown];
-  WaitForQueue(_repo.queue);
+  [self.repository shutDown];
+  WaitForQueue(self.repository.queue);
   [super canCloseDocumentWithDelegate:delegate
                   shouldCloseSelector:shouldCloseSelector
                           contextInfo:contextInfo];

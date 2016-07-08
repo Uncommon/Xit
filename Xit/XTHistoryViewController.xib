@@ -36,13 +36,13 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <outlineView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" autosaveColumns="NO" rowHeight="20" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="81" id="80" customClass="XTSideBarOutlineView">
-                                        <rect key="frame" x="0.0" y="0.0" width="188" height="561"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="187.5" height="0.0"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <size key="intercellSpacing" width="3" height="0.0"/>
                                         <color key="backgroundColor" name="_sourceListBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                         <tableColumns>
-                                            <tableColumn identifier="AutomaticTableColumnIdentifier.0" width="184.5" minWidth="16" maxWidth="1000" id="81">
+                                            <tableColumn identifier="AutomaticTableColumnIdentifier.0" width="185" minWidth="16" maxWidth="1000" id="81">
                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                     <font key="font" metaFont="smallSystem"/>
                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -60,7 +60,7 @@
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <textField verticalHuggingPriority="750" id="88">
-                                                                <rect key="frame" x="0.0" y="1" width="185" height="14"/>
+                                                                <rect key="frame" x="0.0" y="1" width="186" height="14"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="HEADER CELL" id="89">
                                                                     <font key="font" metaFont="smallSystemBold"/>
@@ -83,7 +83,7 @@
                                                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSApplicationIcon" id="113"/>
                                                             </imageView>
                                                             <textField verticalHuggingPriority="750" id="109">
-                                                                <rect key="frame" x="26" y="3" width="161" height="17"/>
+                                                                <rect key="frame" x="26" y="3" width="162" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" title="Row label" usesSingleLineMode="YES" id="112">
                                                                     <font key="font" metaFont="system"/>
@@ -95,7 +95,7 @@
                                                                 </textFieldCell>
                                                             </textField>
                                                             <button hidden="YES" verticalHuggingPriority="750" id="110">
-                                                                <rect key="frame" x="152" y="1" width="33" height="17"/>
+                                                                <rect key="frame" x="153" y="1" width="33" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                                 <buttonCell key="cell" type="roundRect" title="✔" bezelStyle="roundedRect" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="111">
                                                                     <behavior key="behavior" lightByContents="YES"/>

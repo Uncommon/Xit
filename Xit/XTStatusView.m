@@ -4,12 +4,33 @@
 
 NSString *const XTStatusNotification = @"XTStatus";
 NSString *const XTStatusTextKey = @"text";
+NSString *const XTStatusProgressKey = @"progress";
 NSString *const XTStatusCommandKey = @"command";
 NSString *const XTStatusOutputKey = @"output";
 
 #define kCornerRadius 4
 
 @implementation XTStatusView
+
++ (void)updateStatus:(NSString*)status
+            progress:(float)progress
+       forRepository:(XTRepository*)repo
+{
+  NSAssert(repo != nil, @"needs a repository");
+  
+  NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithCapacity:3];
+
+  if (status != nil)
+    userInfo[XTStatusTextKey] = status;
+  if (progress > 0)
+    userInfo[XTStatusProgressKey] = @( progress );
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [[NSNotificationCenter defaultCenter]
+      postNotificationName:XTStatusNotification
+                    object:repo
+                  userInfo:userInfo];
+  });
+}
 
 + (void)updateStatus:(NSString *)status
              command:(NSString *)command
@@ -18,7 +39,7 @@ NSString *const XTStatusOutputKey = @"output";
 {
   NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
 
-  assert(repo != nil);
+  NSAssert(repo != nil, @"needs a repository");
   if (status != nil)
     userInfo[XTStatusTextKey] = status;
   if (command != nil)
@@ -81,6 +102,24 @@ NSString *const XTStatusOutputKey = @"output";
 
   if (status != nil)
     label.stringValue = status;
+  
+  NSNumber *progress = note.userInfo[XTStatusProgressKey];
+  
+  if (progress != nil) {
+    const float progressValue = progress.floatValue;
+    
+    if (progressValue < 0.0)
+      progressBar.hidden = YES;
+    else {
+      progressBar.hidden = NO;
+      if (progressValue <= 1.0) {
+        progressBar.indeterminate = NO;
+        progressBar.doubleValue = progressValue;
+      }
+      else
+        progressBar.indeterminate = YES;
+    }
+  }
 }
 
 - (IBAction)showOutput:(id)sender
