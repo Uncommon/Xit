@@ -10,6 +10,8 @@ class XTWindowController: NSWindowController {
   var selectedModel: XTFileChangesModel?
   var inStagingView: Bool { return self.selectedCommitSHA == XTStagingSHA }
   
+  // to be replaced with something more generic when there are more types
+  // of cancelable operations.
   var fetchController: XTFetchController?
   
   override var document: AnyObject? {
@@ -118,7 +120,13 @@ class XTWindowController: NSWindowController {
   
   @IBAction func remoteSettings(sender: AnyObject)
   {
+    guard let menuItem = sender as? NSMenuItem
+    else { return }
     
+    let controller = XTRemoteOptionsController(windowController: self,
+                                               remote: menuItem.title)
+  
+    controller.start()
   }
   
   func updateRemotesMenu(menu: NSMenu) {

@@ -78,6 +78,13 @@ class Account: NSObject {
   }
 }
 
+func == (left: Account, right: Account) -> Bool
+{
+  return (left.type == right.type) &&
+         (left.user == right.user) &&
+         (left.location.absoluteString == right.location.absoluteString)
+}
+
 
 class XTAccountsManager: NSObject {
   
@@ -89,6 +96,13 @@ class XTAccountsManager: NSObject {
   static let manager = XTAccountsManager()
   
   var accounts: [Account] = []
+  
+  override init()
+  {
+    super.init()
+    
+    readAccounts()
+  }
   
   func accounts(ofType type: AccountType) -> [Account]
   {

@@ -72,7 +72,7 @@ class XTAddAccountController: XTSheetController {
       return
     }
     
-    guard location == nil
+    guard location != nil
     else {
       showFieldAlert("The location field must have a valid URL.",
                      field: locationField)

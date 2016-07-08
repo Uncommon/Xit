@@ -1,28 +1,18 @@
 import Cocoa
 
-class XTRemoteSettingsController: XTSheetController {
-  
-  var remoteName: String = ""
-  {
-    didSet
-    {
-      guard let remote = try? GTRemote(name: remoteName,
-                                       inRepository: repository!.gtRepo)
-      else { return }
-      
-      fetchURL = NSURL(string: remote.URLString ?? "")
-      pushURL = NSURL(string: remote.pushURLString ?? "")
-    }
-  }
+class XTRemoteSheetController: XTSheetController {
   
   var selectedAccount: Account?
   {
     get { return teamCityPopup.selectedItem?.representedObject as? Account }
     set
     {
-      if let newItem = newValue {
+      if let newAccount = newValue {
         for item in teamCityPopup.itemArray {
-          if item.representedObject as? Account == newItem {
+          guard let itemAccount = item.representedObject as? Account
+          else { continue }
+          
+          if itemAccount == newAccount {
             teamCityPopup.selectItem(item)
             return
           }
@@ -57,6 +47,9 @@ class XTRemoteSettingsController: XTSheetController {
   
   override func resetFields()
   {
+    name = ""
+    fetchURL = nil
+    pushURL = nil
     resetTeamCityPopup()
   }
   
@@ -68,11 +61,14 @@ class XTRemoteSettingsController: XTSheetController {
     teamCityPopup.addItemWithTitle("None")
     for account in accounts {
       let item = NSMenuItem()
+      guard let host = account.location.host
+      else { continue }
       
-      item.title = "\(account.user)@\(account.location.host)"
+      item.title = "\(account.user)@\(host)"
       item.representedObject = account
       teamCityPopup.menu?.addItem(item)
     }
+    teamCityPopup.selectItemAtIndex(0)
   }
   
   @IBAction func teamCityChanged(sender: AnyObject)
