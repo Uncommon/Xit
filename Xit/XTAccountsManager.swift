@@ -119,8 +119,9 @@ class XTAccountsManager: NSObject {
     guard let storedAccounts =
       NSUserDefaults.standardUserDefaults().arrayForKey("accounts")
         as? [[String: AnyObject]]
-      else { return }
+    else { return }
     
+    accounts.removeAll()
     for accountDict in storedAccounts {
       if let type = AccountType(name: accountDict[typeKey] as? String),
         let user = accountDict[userKey] as? String,
