@@ -25,8 +25,7 @@ class XTFetchController: XTOperationController {
   
   final func defaultRemoteName() -> String?
   {
-    guard let remotes = try? repository.remoteNames()
-    else { return nil }
+    let remotes = repository.remoteNames
     
     switch remotes.count {
       case 0:
