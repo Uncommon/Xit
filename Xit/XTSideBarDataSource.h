@@ -8,12 +8,14 @@
 @class XTRepository;
 @class XTSideBarItem;
 
+@protocol BOSResourceObserver;
+
 /**
   Data source for the sidebar, showing branches, remotes, tags, stashes,
   and submodules.
  */
-@interface XTSideBarDataSource
-    : NSObject<NSOutlineViewDataSource, NSOutlineViewDelegate> {
+@interface XTSideBarDataSource : NSObject
+    <NSOutlineViewDataSource, NSOutlineViewDelegate, BOSResourceObserver> {
  @private
   XTRepository *_repo;
   NSOutlineView *_outline;

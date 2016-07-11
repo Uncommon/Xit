@@ -1,27 +1,31 @@
+#import "Xit-Swift.h"
 #import "XTSideBarDataSource.h"
 #import "XTConstants.h"
 #import "XTRefFormatter.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
 #import "XTSideBarTableCellView.h"
-#import "Xit-Swift.h"
 #import "NSMutableDictionary+MultiObjectForKey.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
 NSString * const XTStagingSHA = @"";
 
 @interface XTSideBarDataSource ()
+
 - (NSArray *)loadRoots;
+
+@property NSMutableArray<BOSResource*> *observedResources;
+
 @end
 
 @implementation XTSideBarDataSource
-
 
 - (instancetype)init
 {
   if ((self = [super init]) != nil) {
     _roots = [self makeRoots];
     _stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
+    _observedResources = [[NSMutableArray alloc] init];
   }
 
   return self;
@@ -92,6 +96,65 @@ NSString * const XTStagingSHA = @"";
   }];
 }
 
+- (void)updateTeamCity:(XTSideBarItem*)remotes
+{
+  XTConfig *config = _repo.config;
+
+  for (BOSResource *resource in self.observedResources) {
+    [resource removeObserversOwnedBy:self];
+  }
+
+  for (XTSideBarItem *remote in remotes.children) {
+    Account *account = [config teamCityAccount:remote.title];
+    
+    if (account == nil)
+      continue;
+    
+    XTTeamCityAPI *api = [[XTServices services] teamCityAPI:account];
+    
+    if (api == nil)
+      continue;
+    
+    for (XTSideBarItem *branchItem in remote.children) {
+      BOSResource *resource = [api lastestBuildStatus:branchItem.title];
+      
+      [resource addObserver:self];
+      [self.observedResources addObject:resource];
+    }
+  }
+}
+
+- (NSImage*)statusImageForRemote:(NSString*)remote
+                          branch:(NSString*)branch
+{
+  XTConfig *config = _repo.config;
+  Account *account = [config teamCityAccount:remote];
+  
+  if (account == nil)
+    return nil;
+  
+  XTTeamCityAPI *api = [[XTServices services] teamCityAPI:account];
+  
+  if (api != nil) {
+    BOSResource *resource = [api lastestBuildStatus:branch];
+    NSXMLDocument *document = resource.latestData.content;
+    
+    if ((document == nil) || ![document isKindOfClass:[NSXMLDocument class]])
+      return nil;
+    
+    NSXMLElement *root = document.rootElement;
+    NSXMLNode *status = [root attributeForName:@"status"];
+    NSString *statusString = status.stringValue;
+    
+    if ([statusString isEqualToString:@"SUCCESS"])
+      return [NSImage imageNamed:NSImageNameStatusAvailable];
+    if ([statusString isEqualToString:@"FAILURE"])
+      return [NSImage imageNamed:NSImageNameStatusAvailable];
+    return [NSImage imageNamed:NSImageNameStatusNone];
+  }
+  return nil;
+}
+
 - (NSArray *)loadRoots
 {
   NSArray *newRoots = [self makeRoots];
@@ -115,6 +178,8 @@ NSString * const XTStagingSHA = @"";
 
   _repo.refsIndex = refsIndex;
   _currentBranch = [_repo currentBranch];
+
+  [self updateTeamCity:remotes];
 
   return newRoots;
 }
@@ -277,6 +342,20 @@ NSString * const XTStagingSHA = @"";
   return nil;
 }
 
+#pragma mark - BOSResourceObserver
+
+- (void)resourceChanged:(BOSResource*)resource
+                  event:(NSString*)event
+{
+  // figure out which row it is
+  
+  [_outline reloadData];
+}
+
+- (void)stoppedObservingResource:(BOSResource*)resource
+{
+}
+
 #pragma mark - NSOutlineViewDataSource
 
 - (NSInteger)outlineView:(NSOutlineView *)outlineView
@@ -355,6 +434,22 @@ NSString * const XTStagingSHA = @"";
       textField.font =
           [NSFont systemFontOfSize:dataView.textField.font.pointSize];
     }
+    
+    XTSideBarItem *remote = [outlineView parentForItem:item];
+    
+    if ([remote isKindOfClass:[XTRemoteItem class]]) {
+      NSImage *statusImage = [self statusImageForRemote:remote.title
+                                                 branch:sbItem.title];
+      
+      if (statusImage == nil)
+        dataView.statusImage.hidden = YES;
+      else {
+        dataView.statusImage.hidden = NO;
+        dataView.statusImage.image = statusImage;
+      }
+    }
+    else
+      dataView.statusImage.hidden = YES;
     return dataView;
   }
 }
