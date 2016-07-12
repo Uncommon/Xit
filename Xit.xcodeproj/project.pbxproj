@@ -123,6 +123,8 @@
 		C94866C11D25861E000BDB0A /* XTPasswordPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C94866BF1D25861E000BDB0A /* XTPasswordPanelController.xib */; };
 		C94866C31D258E88000BDB0A /* (null) in Sources */ = {isa = PBXBuildFile; };
 		C948D5B71D2C6A4800F72A27 /* XTAccountsPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C948D5B61D2C6A4800F72A27 /* XTAccountsPrefsController.swift */; };
+		C954ABFD1D34455000302160 /* XTBranch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C954ABFC1D34455000302160 /* XTBranch.swift */; };
+		C954ABFE1D34455000302160 /* XTBranch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C954ABFC1D34455000302160 /* XTBranch.swift */; };
 		C957B84B1D2D53040040F858 /* XTSheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B84A1D2D53040040F858 /* XTSheetController.swift */; };
 		C957B8541D2D533C0040F858 /* XTAddAccountController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B8531D2D533C0040F858 /* XTAddAccountController.swift */; };
 		C957B8561D2D65FF0040F858 /* XTAccountsPrefsController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C957B8551D2D65FF0040F858 /* XTAccountsPrefsController.xib */; };
@@ -450,6 +452,7 @@
 		C94866BE1D25861E000BDB0A /* XTPasswordPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPasswordPanelController.swift; sourceTree = "<group>"; };
 		C94866BF1D25861E000BDB0A /* XTPasswordPanelController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTPasswordPanelController.xib; sourceTree = "<group>"; };
 		C948D5B61D2C6A4800F72A27 /* XTAccountsPrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTAccountsPrefsController.swift; sourceTree = "<group>"; };
+		C954ABFC1D34455000302160 /* XTBranch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTBranch.swift; sourceTree = "<group>"; };
 		C957B84A1D2D53040040F858 /* XTSheetController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSheetController.swift; sourceTree = "<group>"; };
 		C957B8531D2D533C0040F858 /* XTAddAccountController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTAddAccountController.swift; sourceTree = "<group>"; };
 		C957B8551D2D65FF0040F858 /* XTAccountsPrefsController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTAccountsPrefsController.xib; sourceTree = "<group>"; };
@@ -914,6 +917,7 @@
 				DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */,
 				89D8BE391CF4DB9400D640AA /* XTRepositoryWatcher.h */,
 				89D8BE3A1CF4DB9400D640AA /* XTRepositoryWatcher.m */,
+				C954ABFC1D34455000302160 /* XTBranch.swift */,
 				C926804D1D074EC500E422FA /* XTFileChangesModel.swift */,
 				C9EB87231D01D93400C47D13 /* XTStash.swift */,
 			);
@@ -1300,6 +1304,7 @@
 				895229711786F7AB00EE514C /* XTToolbarDelegate.m in Sources */,
 				DD3D94F318254442004AF532 /* XTFileListDataSourceBase.m in Sources */,
 				89D6FE6F17D2F89D00633798 /* XTCommitHeaderViewController.m in Sources */,
+				C954ABFD1D34455000302160 /* XTBranch.swift in Sources */,
 				DD858B1F17FFDCB900264F7D /* XTTextPreviewController.m in Sources */,
 				89AC82431806769A00402955 /* XTWebViewController.m in Sources */,
 			);
@@ -1337,6 +1342,7 @@
 				89D6FE7D17D8457700633798 /* XTCommitHeaderTest.m in Sources */,
 				C9E9A3861D0F20F4007BFABF /* XTFileChangesModel.swift in Sources */,
 				C9F7A0A91D2EF9CD00BB8526 /* XTSheetController.swift in Sources */,
+				C954ABFE1D34455000302160 /* XTBranch.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
