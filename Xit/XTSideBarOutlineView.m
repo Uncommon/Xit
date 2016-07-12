@@ -1,7 +1,7 @@
+#import "Xit-Swift.h"
 #import "XTSideBarOutlineView.h"
 #import "XTHistoryViewController.h"
 #import "XTSideBarDataSource.h"
-#import "Xit-Swift.h"
 
 @implementation XTSideBarOutlineView
 

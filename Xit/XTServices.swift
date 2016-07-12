@@ -50,6 +50,11 @@ class XTBasicAuthService : Service {
         .base64EncodedStringWithOptions([]) {
       configure { (builder) in
         builder.config.headers["Authorization"] = "Basic \(data)"
+        builder.config.beforeStartingRequest { (_, request) in
+          request.onFailure { (error) in
+            NSLog("Request error: \(error.userMessage)")
+          }
+        }
       }
     }
     else {
@@ -75,13 +80,13 @@ class XTTeamCityAPI : XTBasicAuthService {
     
     configure("*", requestMethods: nil, description: nil) {
       $0.config.pipeline[.parsing].add(ResponseContentTransformer() {
-          content, entity in
+          (content: NSData, entity: Entity) -> NSXMLDocument? in
         return try? NSXMLDocument(data: content, options: 0)
       })
     }
   }
   
-  func lastestBuildStatus(branch: String) -> Resource
+  func buildStatus(branch: String) -> Resource
   {
     return self.resource(
         "httpAuth/app/rest/builds/running:any,branch:\(branch)")

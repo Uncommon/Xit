@@ -34,6 +34,7 @@ NSString * const XTStagingSHA = @"";
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
+  [self releaseTeamCityResources];
 }
 
 - (NSArray *)makeRoots
@@ -96,16 +97,29 @@ NSString * const XTStagingSHA = @"";
   }];
 }
 
+
+- (void)releaseTeamCityResources
+{
+  for (BOSResource *resource in self.observedResources)
+    [resource removeObserversOwnedBy:self];
+}
+
 - (void)updateTeamCity:(XTSideBarItem*)remotes
 {
-  XTConfig *config = _repo.config;
+  [self releaseTeamCityResources];
+  
+  NSArray<XTLocalBranch*> *localBranches = [_repo localBranchesWithError:nil];
+  
+  if (localBranches.count == 0)
+    return;
 
-  for (BOSResource *resource in self.observedResources) {
-    [resource removeObserversOwnedBy:self];
-  }
+  for (XTLocalBranch *local in localBranches) {
+    XTRemoteBranch *tracked = local.trackingBranch;
+    
+    if (tracked == nil)
+      continue;
 
-  for (XTSideBarItem *remote in remotes.children) {
-    Account *account = [config teamCityAccount:remote.title];
+    Account *account = [_repo.config teamCityAccount:tracked.remoteName];
     
     if (account == nil)
       continue;
@@ -115,12 +129,12 @@ NSString * const XTStagingSHA = @"";
     if (api == nil)
       continue;
     
-    for (XTSideBarItem *branchItem in remote.children) {
-      BOSResource *resource = [api lastestBuildStatus:branchItem.title];
-      
-      [resource addObserver:self];
-      [self.observedResources addObject:resource];
-    }
+    BOSResource *resource =
+        [api buildStatus:tracked.shortName.lastPathComponent];
+    
+    [resource addObserver:self];
+    [resource loadIfNeeded];
+    [self.observedResources addObject:resource];
   }
 }
 
@@ -135,24 +149,24 @@ NSString * const XTStagingSHA = @"";
   
   XTTeamCityAPI *api = [[XTServices services] teamCityAPI:account];
   
-  if (api != nil) {
-    BOSResource *resource = [api lastestBuildStatus:branch];
-    NSXMLDocument *document = resource.latestData.content;
-    
-    if ((document == nil) || ![document isKindOfClass:[NSXMLDocument class]])
-      return nil;
-    
-    NSXMLElement *root = document.rootElement;
-    NSXMLNode *status = [root attributeForName:@"status"];
-    NSString *statusString = status.stringValue;
-    
-    if ([statusString isEqualToString:@"SUCCESS"])
-      return [NSImage imageNamed:NSImageNameStatusAvailable];
-    if ([statusString isEqualToString:@"FAILURE"])
-      return [NSImage imageNamed:NSImageNameStatusAvailable];
-    return [NSImage imageNamed:NSImageNameStatusNone];
-  }
-  return nil;
+  if (api == nil)
+    return nil;
+  
+  BOSResource *resource = [api buildStatus:branch];
+  NSXMLDocument *document = resource.latestData.content;
+  
+  if ((document == nil) || ![document isKindOfClass:[NSXMLDocument class]])
+    return nil;
+  
+  NSXMLElement *root = document.rootElement;
+  NSXMLNode *status = [root attributeForName:@"status"];
+  NSString *statusString = status.stringValue;
+  
+  if ([statusString isEqualToString:@"SUCCESS"])
+    return [NSImage imageNamed:NSImageNameStatusAvailable];
+  if ([statusString isEqualToString:@"FAILURE"])
+    return [NSImage imageNamed:NSImageNameStatusAvailable];
+  return [NSImage imageNamed:NSImageNameStatusNone];
 }
 
 - (NSArray *)loadRoots
@@ -179,7 +193,9 @@ NSString * const XTStagingSHA = @"";
   _repo.refsIndex = refsIndex;
   _currentBranch = [_repo currentBranch];
 
-  [self updateTeamCity:remotes];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [self updateTeamCity:remotes];
+  });
 
   return newRoots;
 }
