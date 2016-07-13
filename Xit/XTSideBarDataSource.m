@@ -47,8 +47,8 @@ NSString * const XTStagingSHA = @"";
 
 - (void)awakeFromNib
 {
-  _outline.target = self;
-  _outline.doubleAction = @selector(doubleClick:);
+  self.outline.target = self;
+  self.outline.doubleAction = @selector(doubleClick:);
 }
 
 - (void)setRepo:(XTRepository *)newRepo
@@ -71,9 +71,9 @@ NSString * const XTStagingSHA = @"";
       break;
     }
   }
-  [_outline performSelectorOnMainThread:@selector(reloadData)
-                             withObject:nil
-                          waitUntilDone:NO];
+  [self.outline performSelectorOnMainThread:@selector(reloadData)
+                                 withObject:nil
+                              waitUntilDone:NO];
 }
 
 - (void)reload
@@ -85,9 +85,9 @@ NSString * const XTStagingSHA = @"";
       [self willChangeValueForKey:@"reload"];
       _roots = newRoots;
       [self didChangeValueForKey:@"reload"];
-      [_outline reloadData];
+      [self.outline reloadData];
       // Empty groups get automatically collapsed, so counter that.
-      [_outline expandItem:nil expandChildren:YES];
+      [self.outline expandItem:nil expandChildren:YES];
     });
   }];
 }
@@ -239,7 +239,7 @@ NSString * const XTStagingSHA = @"";
 
 - (void)doubleClick:(id)sender
 {
-  id clickedItem = [_outline itemAtRow:_outline.clickedRow];
+  id clickedItem = [self.outline itemAtRow:self.outline.clickedRow];
 
   if ([clickedItem isKindOfClass:[XTSubmoduleItem class]]) {
     XTSubmoduleItem *subItem = (XTSubmoduleItem*)clickedItem;
@@ -275,121 +275,6 @@ NSString * const XTStagingSHA = @"";
       return item;
   }
   return nil;
-}
-
-#pragma mark - NSOutlineViewDataSource
-
-- (NSInteger)outlineView:(NSOutlineView *)outlineView
-    numberOfChildrenOfItem:(id)item
-{
-  _outline = outlineView;
-  outlineView.delegate = self;
-
-  if (item == nil) {
-    return _roots.count;
-  }
-  if ([item isKindOfClass:[XTSideBarItem class]]) {
-    return ((XTSideBarItem*)item).children.count;
-  }
-  return 0;
-}
-
-- (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
-{
-  BOOL result = NO;
-
-  if ([item isKindOfClass:[XTSideBarItem class]]) {
-    XTSideBarItem *sbItem = (XTSideBarItem *)item;
-    result = sbItem.expandable;
-  }
-  return result;
-}
-
-- (id)outlineView:(NSOutlineView *)outlineView
-            child:(NSInteger)index
-           ofItem:(id)item
-{
-  if (item == nil) {
-    return _roots[index];
-  } else if ([item isKindOfClass:[XTSideBarItem class]]) {
-    return ((XTSideBarItem*)item).children[index];
-  }
-  return nil;
-}
-
-- (NSView *)outlineView:(NSOutlineView *)outlineView
-     viewForTableColumn:(NSTableColumn *)tableColumn
-                   item:(id)item
-{
-  XTSideBarItem *sbItem = (XTSideBarItem*)item;
-
-  if ([_roots containsObject:item]) {
-    NSTableCellView *headerView =
-        [outlineView makeViewWithIdentifier:@"HeaderCell" owner:self];
-
-    headerView.textField.stringValue = [item title];
-    return headerView;
-  } else {
-    XTSideBarTableCellView *dataView = (XTSideBarTableCellView*)
-        [outlineView makeViewWithIdentifier:@"DataCell"
-                                      owner:self];
-    NSTextField *textField = dataView.textField;
-
-    dataView.item = sbItem;
-    dataView.imageView.image = sbItem.icon;
-    textField.stringValue = sbItem.displayTitle;
-    textField.editable = sbItem.editable;
-    textField.selectable = sbItem.editable;
-    if (sbItem.editable) {
-      textField.formatter = _refFormatter;
-      textField.target = _viewController;
-      textField.action = @selector(sideBarItemRenamed:);
-    }
-    if (sbItem.current) {
-      dataView.button.hidden = NO;
-      textField.font =
-          [NSFont boldSystemFontOfSize:dataView.textField.font.pointSize];
-    }
-    else {
-      dataView.button.hidden = YES;
-      textField.font =
-          [NSFont systemFontOfSize:dataView.textField.font.pointSize];
-    }
-    return dataView;
-  }
-}
-
-#pragma mark - NSOutlineViewDelegate
-
-- (void)outlineViewSelectionDidChange:(NSNotification *)notification
-{
-  XTSideBarItem *item = [_outline itemAtRow:_outline.selectedRow];
-
-  if (item.model != nil) {
-    XTWindowController *controller = _outline.window.windowController;
-
-    controller.selectedModel = item.model;
-  }
-}
-
-- (BOOL)outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item
-{
-  XTSideBarItem *sideBarItem = (XTSideBarItem *)item;
-
-  return sideBarItem.selectable;
-}
-
-- (BOOL)outlineView:(NSOutlineView *)outlineView isGroupItem:(id)item
-{
-  return [_roots containsObject:item];
-}
-
-- (CGFloat)outlineView:(NSOutlineView*)outlineView
-     heightOfRowByItem:(id)item
-{
-  // Using this instead of setting rowSizeStyle because that prevents text
-  // from displaying as bold (for the active branch).
-  return 20.0;
 }
 
 @end

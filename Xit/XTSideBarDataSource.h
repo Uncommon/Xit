@@ -12,18 +12,12 @@
   Data source for the sidebar, showing branches, remotes, tags, stashes,
   and submodules.
  */
-@interface XTSideBarDataSource
-    : NSObject<NSOutlineViewDataSource, NSOutlineViewDelegate> {
+@interface XTSideBarDataSource : NSObject {
  @private
-  XTRepository *_repo;
-  NSOutlineView *_outline;
   NSString *_currentBranch;
   XTSideBarItem *_stagingItem;
-  IBOutlet XTHistoryViewController *_viewController;
-  IBOutlet XTRefFormatter *_refFormatter;
 }
 
-- (void)setRepo:(XTRepository *)repo;
 - (void)reload;
 - (void)loadBranches:(XTSideBarItem*)branches
                 tags:(NSMutableArray*)tags
@@ -34,6 +28,11 @@
 
 - (XTSideBarItem *)itemNamed:(NSString *)name inGroup:(NSInteger)groupIndex;
 
-@property(readonly) NSArray<XTSideBarItem*> *roots;
+@property (weak) IBOutlet XTHistoryViewController *viewController;
+@property (weak) IBOutlet XTRefFormatter *refFormatter;
+
+@property NSOutlineView *outline;
+@property (nonatomic) XTRepository *repo;
+@property (readonly) NSArray<XTSideBarItem*> *roots;
 
 @end

@@ -51,6 +51,8 @@
 		89A6EA2814478DA40089B212 /* XTAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A6EA2714478DA40089B212 /* XTAppDelegate.m */; };
 		89AC82431806769A00402955 /* XTWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89AC82421806769A00402955 /* XTWebViewController.m */; };
 		89BEB8BC157B587600FED57B /* OCMock.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = DD592095156EEF40005FBB0F /* OCMock.framework */; };
+		89C9276B1D368C020074F71A /* XTSideBarDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C9276A1D368C020074F71A /* XTSideBarDataSource.swift */; };
+		89C9276C1D368C020074F71A /* XTSideBarDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C9276A1D368C020074F71A /* XTSideBarDataSource.swift */; };
 		89CD209217089D220051C3D4 /* XTCategoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89CD209117089D220051C3D4 /* XTCategoryTests.m */; };
 		89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */; };
 		89D6FE6F17D2F89D00633798 /* XTCommitHeaderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D6FE6E17D2F89D00633798 /* XTCommitHeaderViewController.m */; };
@@ -314,6 +316,7 @@
 		89A6EA2714478DA40089B212 /* XTAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTAppDelegate.m; sourceTree = "<group>"; tabWidth = 2; };
 		89AC82411806769A00402955 /* XTWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTWebViewController.h; sourceTree = "<group>"; };
 		89AC82421806769A00402955 /* XTWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTWebViewController.m; sourceTree = "<group>"; };
+		89C9276A1D368C020074F71A /* XTSideBarDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSideBarDataSource.swift; sourceTree = "<group>"; };
 		89CD209017089D220051C3D4 /* XTCategoryTests.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTCategoryTests.h; sourceTree = "<group>"; tabWidth = 2; };
 		89CD209117089D220051C3D4 /* XTCategoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTCategoryTests.m; sourceTree = "<group>"; tabWidth = 2; };
 		89D47941170894A200C04D89 /* NSAttributedString+XTExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+XTExtensions.h"; sourceTree = "<group>"; };
@@ -524,8 +527,8 @@
 				C957B84A1D2D53040040F858 /* XTSheetController.swift */,
 				89AC82411806769A00402955 /* XTWebViewController.h */,
 				89AC82421806769A00402955 /* XTWebViewController.m */,
-				894C8DE51CCD06FE001A4B80 /* Xit-Bridging-Header.h */,
 				C957B8651D2D8D500040F858 /* XTKeychain.swift */,
+				894C8DE51CCD06FE001A4B80 /* Xit-Bridging-Header.h */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -806,6 +809,7 @@
 				31F1E87813D3AC6D00F3B317 /* XTSideBarDataSource.h */,
 				3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */,
 				C9F78B131D0896AF008490EA /* XTSidebarItem.swift */,
+				89C9276A1D368C020074F71A /* XTSideBarDataSource.swift */,
 			);
 			name = Sidebar;
 			sourceTree = "<group>";
@@ -1180,6 +1184,7 @@
 				DDDA447215B0EA4700DF407B /* XTRepository+Parsing.m in Sources */,
 				894C8DBD1CC12F3E001A4B80 /* XTPreviewController.m in Sources */,
 				DD98D0021822FFE2008B79C9 /* XTFileChangesDataSource.m in Sources */,
+				89C9276B1D368C020074F71A /* XTSideBarDataSource.swift in Sources */,
 				DDC75B8315D08E8F0087F2D4 /* NSDate+Extensions.m in Sources */,
 				DD9C1B8F160239DD0001FE9B /* XTRefToken.m in Sources */,
 				C94866B61D256C24000BDB0A /* XTFetchController.swift in Sources */,
@@ -1210,6 +1215,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89C9276C1D368C020074F71A /* XTSideBarDataSource.swift in Sources */,
 				C3FA472E13D0F8E300AC4F9B /* XTTest.m in Sources */,
 				C91F34591D305AF1005F9BDF /* XTPasswordPanelController.swift in Sources */,
 				313014AC13EB656B0017A2A1 /* XTSideBarDataSorceTests.m in Sources */,

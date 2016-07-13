@@ -7,7 +7,7 @@ class XTWindowController: NSWindowController {
   @IBOutlet var activity: NSProgressIndicator!
   var xtDocument: XTDocument?
   var selectedCommitSHA: String?
-  var selectedModel: XTFileChangesModel?
+  dynamic var selectedModel: XTFileChangesModel?
   var inStagingView: Bool { return self.selectedCommitSHA == XTStagingSHA }
   
   // to be replaced with something more generic when there are more types
