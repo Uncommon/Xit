@@ -9,5 +9,8 @@
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
+#import "XTRefFormatter.h"
+#import "XTSideBarDataSource.h"
+#import "XTSideBarTableCellView.h"
 #import "XTStatusView.h"
 #import "XTTest.h"

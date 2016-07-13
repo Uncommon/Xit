@@ -248,6 +248,7 @@
             <connections>
                 <outlet property="_refFormatter" destination="165" id="167"/>
                 <outlet property="_viewController" destination="-2" id="168"/>
+                <outlet property="outline" destination="80" id="xJk-ta-GFc"/>
                 <outlet property="refFormatter" destination="165" id="OcN-oK-xa5"/>
                 <outlet property="viewController" destination="30" id="0Va-U8-BvB"/>
             </connections>

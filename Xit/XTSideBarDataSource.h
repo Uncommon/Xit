@@ -7,6 +7,7 @@
 @class XTRefFormatter;
 @class XTRepository;
 @class XTSideBarItem;
+@class XTSideBarGroupItem;
 
 /**
   Data source for the sidebar, showing branches, remotes, tags, stashes,
@@ -15,7 +16,6 @@
 @interface XTSideBarDataSource : NSObject {
  @private
   NSString *_currentBranch;
-  XTSideBarItem *_stagingItem;
 }
 
 - (void)reload;
@@ -30,9 +30,10 @@
 
 @property (weak) IBOutlet XTHistoryViewController *viewController;
 @property (weak) IBOutlet XTRefFormatter *refFormatter;
+@property (weak) IBOutlet NSOutlineView *outline;
 
-@property NSOutlineView *outline;
 @property (nonatomic) XTRepository *repo;
-@property (readonly) NSArray<XTSideBarItem*> *roots;
+@property (readonly) NSArray<XTSideBarGroupItem*> *roots;
+@property (readonly) XTSideBarItem *stagingItem;
 
 @end

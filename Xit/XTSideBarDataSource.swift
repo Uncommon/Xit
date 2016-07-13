@@ -1,22 +1,63 @@
 import Cocoa
 
 
+extension XTSideBarDataSource {
+  
+  func makeRoots() -> [XTSideBarGroupItem]
+  {
+    let rootNames =
+        ["WORKSPACE", "BRANCHES", "REMOTES", "TAGS", "STASHES", "SUBMODULES"];
+    let roots = rootNames.map({ XTSideBarGroupItem(title: $0) })
+    
+    roots[0].addChild(stagingItem)
+    return roots;
+  }
+  
+  func makeTagItems() -> [XTTagItem]
+  {
+    guard let tags = try? repo.tags()
+    else { return [XTTagItem]() }
+    
+    return tags.map({ XTTagItem(tag: $0)})
+  }
+  
+  func makeStashItems() -> [XTStashItem]
+  {
+    let stashes = repo.stashes()
+    var stashItems = [XTStashItem]()
+    
+    for (index, stash) in stashes.enumerate() {
+      let model = XTStashChanges(repository: repo, stash: stash)
+      let message = stash.message ?? "stash \(index)"
+    
+      stashItems.append(XTStashItem(title: message, model: model))
+    }
+    return stashItems
+  }
+  
+  func makeSubmoduleItems() -> [XTSubmoduleItem]
+  {
+    return repo.submodules().map({ XTSubmoduleItem(submodule: $0) })
+  }
+}
+
 extension XTSideBarDataSource: NSOutlineViewDataSource {
   
   public func outlineView(outlineView: NSOutlineView, numberOfChildrenOfItem item: AnyObject?) -> Int {
-    outline = outlineView
-    
     if item == nil {
       return roots.count
     }
     return (item as? XTSideBarItem)?.children.count ?? 0
   }
   
-  public func outlineView(outlineView: NSOutlineView, isItemExpandable item: AnyObject) -> Bool {
+  public func outlineView(outlineView: NSOutlineView,
+                          isItemExpandable item: AnyObject) -> Bool {
     return (item as? XTSideBarItem)?.expandable ?? false
   }
   
-  public func outlineView(outlineView: NSOutlineView, child index: Int, ofItem item: AnyObject?) -> AnyObject {
+  public func outlineView(outlineView: NSOutlineView,
+                          child index: Int,
+                          ofItem item: AnyObject?) -> AnyObject {
     if item == nil {
       return roots[index]
     }
@@ -40,10 +81,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate {
   public func outlineView(outlineView: NSOutlineView,
                           isGroupItem item: AnyObject) -> Bool
   {
-    guard let sideBarItem = item as? XTSideBarItem
-    else { return false }
-    
-    return roots.contains(sideBarItem)
+    return item is XTSideBarGroupItem
   }
 
   public func outlineView(outlineView: NSOutlineView,
@@ -67,7 +105,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate {
     guard let sideBarItem = item as? XTSideBarItem
     else { return nil }
     
-    if roots.contains(sideBarItem) {
+    if item is XTSideBarGroupItem {
       guard let headerView = outlineView.makeViewWithIdentifier(
           "HeaderCell", owner: self) as? NSTableCellView
       else { return nil }

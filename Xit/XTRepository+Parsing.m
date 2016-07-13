@@ -1,5 +1,6 @@
 #import "XTRepository+Parsing.h"
 #import "XTConstants.h"
+#import "Xit-Swift.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 #import <ObjectiveGit/GTRepository+Status.h>
 #import "NSDate+Extensions.h"
@@ -89,6 +90,49 @@ NSString *XTHeaderContentKey = @"content";
     }
   }];
   return result;
+}
+
+- (NSArray<XTStash*>*)stashes
+{
+  NSMutableArray<XTStash*> *stashes = [NSMutableArray array];
+
+  // There doesn't seem to be a simple way to just get the number of stashes.
+  [_gtRepo enumerateStashesUsingBlock:
+      ^(NSUInteger index, NSString * _Nullable message,
+        GTOID * _Nullable oid, BOOL * _Nonnull stop) {
+    [stashes addObject:[[XTStash alloc] initWithRepo:self
+                                               index:index
+                                             message:message]];
+  }];
+  return stashes;
+}
+
+- (NSArray<XTSubmodule*>*)submodules
+{
+  NSMutableArray<XTSubmodule*> *submodules = [NSMutableArray array];
+  
+  [_gtRepo enumerateSubmodulesRecursively:NO usingBlock:
+      ^(GTSubmodule * _Nullable submodule, NSError * _Nonnull error,
+        BOOL * _Nonnull stop) {
+    [submodules addObject:[[XTSubmodule alloc] initWithRepository:self
+                                                        submodule:submodule]];
+  }];
+  
+  return submodules;
+}
+
+- (NSArray<XTTag*>*)tagsWithError:(NSError**)error
+{
+  NSArray<GTTag*> *gtTags = [_gtRepo allTagsWithError:error];
+
+  if (gtTags == nil)
+    return nil;
+
+  NSMutableArray<XTTag*> *tags = [NSMutableArray arrayWithCapacity:gtTags.count];
+  
+  for (GTTag *tag in gtTags)
+    [tags addObject:[[XTTag alloc] initWithRepository:self tag:tag]];
+  return tags;
 }
 
 - (BOOL)readStashesWithBlock:(void (^)(NSString *, NSUInteger, NSString *))block

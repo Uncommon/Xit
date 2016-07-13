@@ -53,6 +53,10 @@
 		89BEB8BC157B587600FED57B /* OCMock.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = DD592095156EEF40005FBB0F /* OCMock.framework */; };
 		89C9276B1D368C020074F71A /* XTSideBarDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C9276A1D368C020074F71A /* XTSideBarDataSource.swift */; };
 		89C9276C1D368C020074F71A /* XTSideBarDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C9276A1D368C020074F71A /* XTSideBarDataSource.swift */; };
+		89C927751D36A2180074F71A /* XTSubmodule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927741D36A2180074F71A /* XTSubmodule.swift */; };
+		89C927761D36A2180074F71A /* XTSubmodule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927741D36A2180074F71A /* XTSubmodule.swift */; };
+		89C927781D36A5890074F71A /* XTTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927771D36A5890074F71A /* XTTag.swift */; };
+		89C927791D36A5890074F71A /* XTTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927771D36A5890074F71A /* XTTag.swift */; };
 		89CD209217089D220051C3D4 /* XTCategoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89CD209117089D220051C3D4 /* XTCategoryTests.m */; };
 		89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */; };
 		89D6FE6F17D2F89D00633798 /* XTCommitHeaderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D6FE6E17D2F89D00633798 /* XTCommitHeaderViewController.m */; };
@@ -317,6 +321,8 @@
 		89AC82411806769A00402955 /* XTWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTWebViewController.h; sourceTree = "<group>"; };
 		89AC82421806769A00402955 /* XTWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTWebViewController.m; sourceTree = "<group>"; };
 		89C9276A1D368C020074F71A /* XTSideBarDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSideBarDataSource.swift; sourceTree = "<group>"; };
+		89C927741D36A2180074F71A /* XTSubmodule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSubmodule.swift; sourceTree = "<group>"; };
+		89C927771D36A5890074F71A /* XTTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTag.swift; sourceTree = "<group>"; };
 		89CD209017089D220051C3D4 /* XTCategoryTests.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTCategoryTests.h; sourceTree = "<group>"; tabWidth = 2; };
 		89CD209117089D220051C3D4 /* XTCategoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTCategoryTests.m; sourceTree = "<group>"; tabWidth = 2; };
 		89D47941170894A200C04D89 /* NSAttributedString+XTExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+XTExtensions.h"; sourceTree = "<group>"; };
@@ -808,8 +814,8 @@
 				895DEEF5142CECB7001763FC /* XTSideBarTableCellView.m */,
 				31F1E87813D3AC6D00F3B317 /* XTSideBarDataSource.h */,
 				3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */,
-				C9F78B131D0896AF008490EA /* XTSidebarItem.swift */,
 				89C9276A1D368C020074F71A /* XTSideBarDataSource.swift */,
+				C9F78B131D0896AF008490EA /* XTSidebarItem.swift */,
 			);
 			name = Sidebar;
 			sourceTree = "<group>";
@@ -856,6 +862,8 @@
 				89D8BE3A1CF4DB9400D640AA /* XTRepositoryWatcher.m */,
 				C926804D1D074EC500E422FA /* XTFileChangesModel.swift */,
 				C9EB87231D01D93400C47D13 /* XTStash.swift */,
+				89C927741D36A2180074F71A /* XTSubmodule.swift */,
+				89C927771D36A5890074F71A /* XTTag.swift */,
 			);
 			name = Repository;
 			sourceTree = "<group>";
@@ -1193,6 +1201,7 @@
 				DD07B07816A5D2A80012AC19 /* XTSideBarOutlineView.m in Sources */,
 				DD07B08916B313A60012AC19 /* XTRefFormatter.m in Sources */,
 				DDD4708116F3E7B000CA76FF /* XTPreviewItem.m in Sources */,
+				89C927751D36A2180074F71A /* XTSubmodule.swift in Sources */,
 				899DB1A21CE5022400760270 /* XTCommitEntryController.swift in Sources */,
 				89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */,
 				C9E9A37D1D0B5706007BFABF /* XTWindowController.swift in Sources */,
@@ -1208,6 +1217,7 @@
 				89D6FE6F17D2F89D00633798 /* XTCommitHeaderViewController.m in Sources */,
 				DD858B1F17FFDCB900264F7D /* XTTextPreviewController.m in Sources */,
 				89AC82431806769A00402955 /* XTWebViewController.m in Sources */,
+				89C927781D36A5890074F71A /* XTTag.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1227,8 +1237,10 @@
 				C9EB87321D05D35800C47D13 /* XTStashTest.swift in Sources */,
 				C9F7A0A71D2EF63100BB8526 /* XTAccountsManager.swift in Sources */,
 				DD3D9535182B5EC7004AF532 /* XTFileChangesDataSourceTest.m in Sources */,
+				89C927791D36A5890074F71A /* XTTag.swift in Sources */,
 				DD98CFF3181ADFC5008B79C9 /* CFRunLoop+Extensions.c in Sources */,
 				3199BABD142079BB008AAA4F /* XTFileListDataSourceTest.m in Sources */,
+				89C927761D36A2180074F71A /* XTSubmodule.swift in Sources */,
 				C91F34581D305AE6005F9BDF /* XTConfig.swift in Sources */,
 				896B05D015796D2A003B0C24 /* XTHistoryViewControllerTest.m in Sources */,
 				C9F7A0A51D2EF54E00BB8526 /* XTConfigTest.swift in Sources */,

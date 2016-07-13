@@ -36,6 +36,9 @@ typedef NS_ENUM(NSUInteger, XitChange) {
 @class XTDiffDelta;
 @class XTFileChange;
 @class XTRemote;
+@class XTStash;
+@class XTSubmodule;
+@class XTTag;
 @class XTWorkspaceFileStatus;
 
 @interface XTRepository (Reading)
@@ -81,6 +84,10 @@ typedef NS_ENUM(NSUInteger, XitChange) {
 - (nullable NSArray<NSString*>*)remoteNamesWithError:(NSError**)error;
 - (nullable XTRemote*)remoteWithName:(NSString*)name error:(NSError**)error
     NS_SWIFT_NAME(remote(_:));
+
+- (NSArray<XTStash*>*)stashes;
+- (NSArray<XTSubmodule*>*)submodules;
+- (nullable NSArray<XTTag*>*)tagsWithError:(NSError**)error;
 
 @end
 

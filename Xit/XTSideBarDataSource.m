@@ -10,18 +10,24 @@
 
 NSString * const XTStagingSHA = @"";
 
+
 @interface XTSideBarDataSource ()
+
 - (NSArray *)loadRoots;
+
+@property (readwrite) NSArray<XTSideBarGroupItem*> *roots;
+@property (readwrite) XTSideBarItem *stagingItem;
+
 @end
 
-@implementation XTSideBarDataSource
 
+@implementation XTSideBarDataSource
 
 - (instancetype)init
 {
   if ((self = [super init]) != nil) {
-    _roots = [self makeRoots];
-    _stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
+    self.stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
+    self.roots = [self makeRoots];
   }
 
   return self;
@@ -30,19 +36,6 @@ NSString * const XTStagingSHA = @"";
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (NSArray *)makeRoots
-{
-  XTSideBarItem *workspace = [[XTSideBarGroupItem alloc] initWithTitle:@"WORKSPACE"];
-  XTSideBarItem *branches = [[XTSideBarGroupItem alloc] initWithTitle:@"BRANCHES"];
-  XTRemotesItem *remotes = [[XTRemotesItem alloc] initWithTitle:@"REMOTES"];
-  XTSideBarItem *tags = [[XTSideBarGroupItem alloc] initWithTitle:@"TAGS"];
-  XTSideBarItem *stashes = [[XTSideBarGroupItem alloc] initWithTitle:@"STASHES"];
-  XTSideBarItem *subs = [[XTSideBarGroupItem alloc] initWithTitle:@"SUBMODULES"];
-
-  [workspace addChild:_stagingItem];
-  return @[ workspace, branches, remotes, tags, stashes, subs ];
 }
 
 - (void)awakeFromNib
@@ -100,14 +93,10 @@ NSString * const XTStagingSHA = @"";
   XTSideBarItem *branches = newRoots[XTBranchesGroupIndex];
   NSMutableArray *tags = [NSMutableArray array];
   XTSideBarItem *remotes = newRoots[XTRemotesGroupIndex];
-  NSMutableArray *stashes = [NSMutableArray array];
-  NSMutableArray *submodules = [NSMutableArray array];
+  NSArray<XTStashItem*> *stashes = [self makeStashItems];
+  NSArray<XTSubmoduleItem*> *submodules = [self makeSubmoduleItems];
 
   [self loadBranches:branches tags:tags remotes:remotes refsIndex:refsIndex];
-  [self loadStashes:stashes refsIndex:refsIndex];
-  [_repo readSubmodulesWithBlock:^(GTSubmodule *sub) {
-    [submodules addObject:[[XTSubmoduleItem alloc] initWithSubmodule:sub]];
-  }];
 
   [newRoots[XTTagsGroupIndex] setChildren:tags];
   [newRoots[XTStashesGroupIndex] setChildren:stashes];
