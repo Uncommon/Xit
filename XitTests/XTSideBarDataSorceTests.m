@@ -6,7 +6,7 @@
 #import "XTHistoryItem.h"
 #include "CFRunLoop+Extensions.h"
 #import <ObjectiveGit/ObjectiveGit.h>
-#import "XitTests-Swift.h"
+#import "Xit-Swift.h"
 
 @interface XTSideBarDataSorceTests : XTTest
 {

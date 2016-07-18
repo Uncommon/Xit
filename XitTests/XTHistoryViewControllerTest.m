@@ -11,7 +11,7 @@
 #import "XTRepository+Parsing.h"
 #import <OCMock/OCMock.h>
 #include "XTQueueUtils.h"
-#import "XitTests-Swift.h"
+#import "Xit-Swift.h"
 
 @interface XTHistoryViewControllerTest : XTTest
 
