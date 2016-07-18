@@ -24,10 +24,6 @@
 @property(strong) NSFont *font;
 @end
 
-@interface MockCellView : NSObject
-@property(readonly) MockTextField *textField;
-@end
-
 @interface MockSidebarOutlineView : NSObject
 - (id)makeViewWithIdentifier:(NSString *)identifier owner:(id)owner;
 - (id)parentForItem:(id)item;
@@ -144,7 +140,7 @@
                         viewForTableColumn:nil
                                       item:remote];
   NSString *rName = remoteView.textField.stringValue;
-  XCTAssertTrue([rName isEqualToString:@"origin"], @"found remote '%@'", rName);
+  XCTAssertEqualObjects(rName, @"origin");
 
   const NSInteger branchCount = [sbds outlineView:outlineView numberOfChildrenOfItem:remote];
   XCTAssertEqual(branchCount, 2);
@@ -326,40 +322,26 @@
 @end
 
 
-@implementation MockCellView
-
-@synthesize textField;
-
-- (instancetype)init
-{
-  if ([super init] == nil)
-    return nil;
-  textField = [[MockTextField alloc] init];
-  return self;
-}
-
-- (id)imageView
-{
-  return nil;
-}
-
-- (id)button
-{
-  return nil;
-}
-
-- (void)setItem:(id)item
-{
-}
-
-@end
-
-
 @implementation MockSidebarOutlineView
 
 - (id)makeViewWithIdentifier:(NSString *)identifier owner:(id)owner
 {
-  return [[MockCellView alloc] init];
+  XTSideBarTableCellView *view =
+      [[XTSideBarTableCellView alloc] initWithFrame:NSMakeRect(0, 0, 185, 20)];
+  NSTextField *label =
+      [[NSTextField alloc] initWithFrame:NSMakeRect(26, 3, 163, 17)];
+  NSImageView *image =
+      [[NSImageView alloc] initWithFrame:NSMakeRect(5, 2, 16, 16)];
+  NSButton *button =
+      [[NSButton alloc] initWithFrame:NSMakeRect(154, 1, 33, 17)];
+  
+  [view addSubview:label];
+  [view addSubview:image];
+  [view addSubview:button];
+  view.textField = label;
+  view.imageView = image;
+  view.button = button;
+  return view;
 }
 
 - (id)parentForItem:(id)item
