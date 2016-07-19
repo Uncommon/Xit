@@ -207,7 +207,7 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
   self.repository.isWriting = YES;
   XCTAssertFalse([self.repository unstageFile:self.file1Path error:&error]);
   self.repository.isWriting = NO;
-  XCTAssertTrue([self.repository unstageFile:@"file1.txt" error:&error]);
+  XCTAssertTrue([self.repository unstageFile:self.file1Path error:&error]);
 
   // Stash
   self.repository.isWriting = YES;

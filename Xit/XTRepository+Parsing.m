@@ -583,8 +583,8 @@ NSString *XTCommitSHAKey = @"sha",
 - (BOOL)unstageFile:(NSString*)file error:(NSError**)error
 {
   NSArray *args = self.hasHeadReference
-      ? @[ @"rm", @"--cached", file ]
-      : @[ @"reset", @"-q", @"HEAD", file ];
+      ? @[ @"reset", @"-q", @"HEAD", file ]
+      : @[ @"rm", @"--cached", file ];
   
   return [self executeGitWithArgs:args writes:YES error:error] != nil;
 }
