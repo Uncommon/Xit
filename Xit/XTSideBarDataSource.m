@@ -13,7 +13,7 @@ NSString * const XTStagingSHA = @"";
 
 @interface XTSideBarDataSource ()
 
-- (NSArray *)loadRoots;
+- (NSArray<XTSideBarGroupItem*>*)loadRoots;
 
 @property (readwrite) NSArray<XTSideBarGroupItem*> *roots;
 @property (readwrite) XTSideBarItem *stagingItem;
@@ -34,6 +34,7 @@ NSString * const XTStagingSHA = @"";
     _roots = [self makeRoots];
     _stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
     _observedResources = [[NSMutableArray alloc] init];
+  }
   return self;
 }
 
@@ -162,9 +163,9 @@ NSString * const XTStagingSHA = @"";
   return [NSImage imageNamed:NSImageNameStatusNone];
 }
 
-- (NSArray *)loadRoots
+- (NSArray<XTSideBarGroupItem*>*)loadRoots
 {
-  NSArray *newRoots = [self makeRoots];
+  NSArray<XTSideBarGroupItem*> *newRoots = [self makeRoots];
 
   NSMutableDictionary *refsIndex = [NSMutableDictionary dictionary];
   XTSideBarItem *branches = newRoots[XTBranchesGroupIndex];
@@ -359,137 +360,6 @@ NSString * const XTStagingSHA = @"";
 
 - (void)stoppedObservingResource:(BOSResource*)resource
 {
-}
-
-#pragma mark - NSOutlineViewDataSource
-
-- (NSInteger)outlineView:(NSOutlineView *)outlineView
-    numberOfChildrenOfItem:(id)item
-{
-  _outline = outlineView;
-  outlineView.delegate = self;
-
-  if (item == nil) {
-    return _roots.count;
-  }
-  if ([item isKindOfClass:[XTSideBarItem class]]) {
-    return ((XTSideBarItem*)item).children.count;
-  }
-  return 0;
-}
-
-- (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
-{
-  BOOL result = NO;
-
-  if ([item isKindOfClass:[XTSideBarItem class]]) {
-    XTSideBarItem *sbItem = (XTSideBarItem *)item;
-    result = sbItem.expandable;
-  }
-  return result;
-}
-
-- (id)outlineView:(NSOutlineView *)outlineView
-            child:(NSInteger)index
-           ofItem:(id)item
-{
-  if (item == nil) {
-    return _roots[index];
-  } else if ([item isKindOfClass:[XTSideBarItem class]]) {
-    return ((XTSideBarItem*)item).children[index];
-  }
-  return nil;
-}
-
-- (NSView *)outlineView:(NSOutlineView *)outlineView
-     viewForTableColumn:(NSTableColumn *)tableColumn
-                   item:(id)item
-{
-  XTSideBarItem *sbItem = (XTSideBarItem*)item;
-
-  if ([_roots containsObject:item]) {
-    NSTableCellView *headerView =
-        [outlineView makeViewWithIdentifier:@"HeaderCell" owner:self];
-
-    headerView.textField.stringValue = [item title];
-    return headerView;
-  } else {
-    XTSideBarTableCellView *dataView = (XTSideBarTableCellView*)
-        [outlineView makeViewWithIdentifier:@"DataCell"
-                                      owner:self];
-    NSTextField *textField = dataView.textField;
-
-    dataView.item = sbItem;
-    dataView.imageView.image = sbItem.icon;
-    textField.stringValue = sbItem.displayTitle;
-    textField.editable = sbItem.editable;
-    textField.selectable = sbItem.editable;
-    if (sbItem.editable) {
-      textField.formatter = _refFormatter;
-      textField.target = _viewController;
-      textField.action = @selector(sideBarItemRenamed:);
-    }
-    if (sbItem.current) {
-      dataView.button.hidden = NO;
-      textField.font =
-          [NSFont boldSystemFontOfSize:dataView.textField.font.pointSize];
-    }
-    else {
-      dataView.button.hidden = YES;
-      textField.font =
-          [NSFont systemFontOfSize:dataView.textField.font.pointSize];
-    }
-    
-    XTSideBarItem *remote = [outlineView parentForItem:item];
-    
-    if ([remote isKindOfClass:[XTRemoteItem class]]) {
-      NSImage *statusImage = [self statusImageForRemote:remote.title
-                                                 branch:sbItem.title];
-      
-      if (statusImage == nil)
-        dataView.statusImage.hidden = YES;
-      else {
-        dataView.statusImage.hidden = NO;
-        dataView.statusImage.image = statusImage;
-      }
-    }
-    else
-      dataView.statusImage.hidden = YES;
-    return dataView;
-  }
-}
-
-#pragma mark - NSOutlineViewDelegate
-
-- (void)outlineViewSelectionDidChange:(NSNotification *)notification
-{
-  XTSideBarItem *item = [_outline itemAtRow:_outline.selectedRow];
-
-  if (item.model != nil) {
-    XTWindowController *controller = _outline.window.windowController;
-
-    controller.selectedModel = item.model;
-  }
-}
-
-- (BOOL)outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item
-{
-  XTSideBarItem *sideBarItem = (XTSideBarItem *)item;
-
-  return sideBarItem.selectable;
-}
-
-- (BOOL)outlineView:(NSOutlineView *)outlineView isGroupItem:(id)item
-{
-  return [_roots containsObject:item];
-}
-
-- (CGFloat)outlineView:(NSOutlineView*)outlineView
-     heightOfRowByItem:(id)item
-{
-  // Using this instead of setting rowSizeStyle because that prevents text
-  // from displaying as bold (for the active branch).
-  return 20.0;
 }
 
 @end
