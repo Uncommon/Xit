@@ -37,6 +37,9 @@ typedef NS_ENUM(NSUInteger, XitChange) {
 @class XTFileChange;
 @class XTLocalBranch;
 @class XTRemote;
+@class XTStash;
+@class XTSubmodule;
+@class XTTag;
 @class XTWorkspaceFileStatus;
 
 
@@ -85,6 +88,9 @@ typedef NS_ENUM(NSUInteger, XitChange) {
     NS_SWIFT_NAME(remote(_:));
 
 - (nullable NSArray<XTLocalBranch*>*)localBranchesWithError:(NSError**)error;
+- (NSArray<XTStash*>*)stashes;
+- (NSArray<XTSubmodule*>*)submodules;
+- (nullable NSArray<XTTag*>*)tagsWithError:(NSError**)error;
 
 @end
 

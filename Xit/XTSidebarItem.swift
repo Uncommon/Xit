@@ -104,16 +104,29 @@ class XTRemoteItem : XTSideBarItem {
 
 
 class XTTagItem : XTSideBarItem {
+  let tag: XTTag
+
   override var icon: NSImage? { return NSImage(named: "tagTemplate") }
   override var refType: XTRefType { return .Tag }
+  
+  init(tag: XTTag)
+  {
+    self.tag = tag
+    
+    super.init(title: tag.name)
+    
+    if let sha = tag.targetSHA {
+      model = XTCommitChanges(repository: tag.repository, sha: sha)
+    }
+  }
 }
 
 
 class XTSubmoduleItem : XTSideBarItem {
-  var submodule: GTSubmodule
+  var submodule: XTSubmodule
   override var icon: NSImage? { return NSImage(named: "submoduleTemplate") }
   
-  init(submodule: GTSubmodule)
+  init(submodule: XTSubmodule)
   {
     self.submodule = submodule
     

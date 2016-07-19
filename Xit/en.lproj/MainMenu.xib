@@ -722,7 +722,6 @@ DQ
         <customObject id="419" customClass="NSFontManager"/>
         <customObject id="530" customClass="XTAppDelegate">
             <connections>
-                <outlet property="remoteOptionsSubmenu" destination="Od6-Cb-gjd" id="cdb-yT-IFi"/>
                 <outlet property="remoteSettingsSubmenu" destination="Od6-Cb-gjd" id="9dF-Gc-ELK"/>
             </connections>
         </customObject>

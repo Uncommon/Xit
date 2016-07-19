@@ -214,16 +214,21 @@
   return _sidebarOutline.selectedRow;
 }
 
-- (void)callCMBlock:(void (^)(XTSideBarItem *item, NSError **error))block
+- (void)callCMBlock:(void (^)(XTSideBarItem *item,
+                              NSUInteger index,
+                              NSError **error))block
      verifyingClass:(Class) class
         errorString:(NSString *)errorString {
   XTSideBarItem *item = [_sidebarOutline itemAtRow:[self targetRow]];
 
   if ([item isKindOfClass:class]) {
+    XTSideBarItem *parent = [_sidebarOutline parentForItem:item];
+    const NSUInteger index = [parent.children indexOfObject:item];
+    
     [_repo executeOffMainThread:^{
       NSError *error = nil;
       
-      block(item, & error);
+      block(item, index, &error);
       if (error != nil)
         [XTStatusView
           updateStatus:errorString
@@ -236,7 +241,7 @@
 
 - (IBAction) checkOutBranch:(id)sender
 {
-  [self callCMBlock:^(XTSideBarItem *item, NSError *__autoreleasing *error) {
+  [self callCMBlock:^(XTSideBarItem *item, NSUInteger index, NSError **error) {
                       [_repo checkout:item.title error:error]; }
      verifyingClass:[XTLocalBranchItem class]
         errorString:@"Checkout failed"];
@@ -276,7 +281,7 @@
 
 - (IBAction)deleteBranch:(id)sender
 {
-  [self callCMBlock:^(XTSideBarItem *item, NSError *__autoreleasing *error) {
+  [self callCMBlock:^(XTSideBarItem *item, NSUInteger index, NSError **error) {
                       [_repo deleteBranch:item.title error:error]; }
      verifyingClass:[XTLocalBranchItem class]
         errorString:@"Delete branch failed"];
@@ -289,7 +294,7 @@
 
 - (IBAction)deleteTag:(id)sender
 {
-  [self callCMBlock:^(XTSideBarItem *item, NSError *__autoreleasing *error) {
+  [self callCMBlock:^(XTSideBarItem *item, NSUInteger index, NSError **error) {
                       [_repo deleteTag:item.title error:error]; }
      verifyingClass:[XTTagItem class]
         errorString:@"Delete tag failed"];
@@ -302,7 +307,7 @@
 
 - (IBAction)deleteRemote:(id)sender
 {
-  [self callCMBlock:^(XTSideBarItem *item, NSError *__autoreleasing *error) {
+  [self callCMBlock:^(XTSideBarItem *item, NSUInteger index, NSError **error) {
                       [_repo deleteRemote:item.title error:error]; }
      verifyingClass:[XTRemoteItem class]
         errorString:@"Delete remote failed"];
@@ -325,24 +330,24 @@
 
 - (IBAction)popStash:(id)sender
 {
-  [self callCMBlock:^(XTSideBarItem *item, NSError *__autoreleasing *error) {
-                      [_repo popStash:item.title error:error]; }
+  [self callCMBlock:^(XTSideBarItem *item, NSUInteger index, NSError **error) {
+                      [_repo popStashIndex:index error:error]; }
      verifyingClass:[XTStashItem class]
         errorString:@"Pop stash failed"];
 }
 
 - (IBAction)applyStash:(id)sender
 {
-  [self callCMBlock:^(XTSideBarItem *item, NSError **error) {
-                      [_repo applyStash:item.title error:error]; }
+  [self callCMBlock:^(XTSideBarItem *item, NSUInteger index, NSError **error) {
+                      [_repo applyStashIndex:index error:error]; }
      verifyingClass:[XTStashItem class]
         errorString:@"Apply stash failed"];
 }
 
 - (IBAction)dropStash:(id)sender
 {
-  [self callCMBlock:^(XTSideBarItem *item, NSError **error) {
-                      [_repo dropStash:item.title error:error]; }
+  [self callCMBlock:^(XTSideBarItem *item, NSUInteger index, NSError **error) {
+                      [_repo dropStashIndex:index error:error]; }
      verifyingClass:[XTStashItem class]
         errorString:@"Drop stash failed"];
 }
@@ -392,15 +397,13 @@
   [_sidebarOutline editColumn:0 row:[self targetRow] withEvent:nil select:YES];
 }
 
-- (NSString *)selectedBranch
+- (NSString*)selectedBranch
 {
-  id selection = [_sidebarOutline itemAtRow:_sidebarOutline.selectedRow];
+  XTLocalBranchItem *selection =
+      [_sidebarOutline itemAtRow:_sidebarOutline.selectedRow];
 
-  if (selection == nil)
-    return nil;
-  if ([_sidebarOutline parentForItem:selection] ==
-      _sideBarDS.roots[XTBranchesGroupIndex])
-    return ((XTLocalBranchItem *)selection).title;
+  if ([selection isKindOfClass:[XTLocalBranchItem class]])
+    return selection.title;
   return nil;
 }
 

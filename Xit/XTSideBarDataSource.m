@@ -10,13 +10,17 @@
 
 NSString * const XTStagingSHA = @"";
 
+
 @interface XTSideBarDataSource ()
 
 - (NSArray *)loadRoots;
 
+@property (readwrite) NSArray<XTSideBarGroupItem*> *roots;
+@property (readwrite) XTSideBarItem *stagingItem;
 @property NSMutableArray<BOSResource*> *observedResources;
 
 @end
+
 
 @implementation XTSideBarDataSource
 
@@ -25,9 +29,11 @@ NSString * const XTStagingSHA = @"";
   if ((self = [super init]) != nil) {
     _roots = [self makeRoots];
     _stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
+    self.stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
+    self.roots = [self makeRoots];
+    _roots = [self makeRoots];
+    _stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
     _observedResources = [[NSMutableArray alloc] init];
-  }
-
   return self;
 }
 
@@ -37,23 +43,10 @@ NSString * const XTStagingSHA = @"";
   [self releaseTeamCityResources];
 }
 
-- (NSArray *)makeRoots
-{
-  XTSideBarItem *workspace = [[XTSideBarGroupItem alloc] initWithTitle:@"WORKSPACE"];
-  XTSideBarItem *branches = [[XTSideBarGroupItem alloc] initWithTitle:@"BRANCHES"];
-  XTRemotesItem *remotes = [[XTRemotesItem alloc] initWithTitle:@"REMOTES"];
-  XTSideBarItem *tags = [[XTSideBarGroupItem alloc] initWithTitle:@"TAGS"];
-  XTSideBarItem *stashes = [[XTSideBarGroupItem alloc] initWithTitle:@"STASHES"];
-  XTSideBarItem *subs = [[XTSideBarGroupItem alloc] initWithTitle:@"SUBMODULES"];
-
-  [workspace addChild:_stagingItem];
-  return @[ workspace, branches, remotes, tags, stashes, subs ];
-}
-
 - (void)awakeFromNib
 {
-  _outline.target = self;
-  _outline.doubleAction = @selector(doubleClick:);
+  self.outline.target = self;
+  self.outline.doubleAction = @selector(doubleClick:);
 }
 
 - (void)setRepo:(XTRepository *)newRepo
@@ -76,9 +69,9 @@ NSString * const XTStagingSHA = @"";
       break;
     }
   }
-  [_outline performSelectorOnMainThread:@selector(reloadData)
-                             withObject:nil
-                          waitUntilDone:NO];
+  [self.outline performSelectorOnMainThread:@selector(reloadData)
+                                 withObject:nil
+                              waitUntilDone:NO];
 }
 
 - (void)reload
@@ -90,9 +83,9 @@ NSString * const XTStagingSHA = @"";
       [self willChangeValueForKey:@"reload"];
       _roots = newRoots;
       [self didChangeValueForKey:@"reload"];
-      [_outline reloadData];
+      [self.outline reloadData];
       // Empty groups get automatically collapsed, so counter that.
-      [_outline expandItem:nil expandChildren:YES];
+      [self.outline expandItem:nil expandChildren:YES];
     });
   }];
 }
@@ -177,14 +170,10 @@ NSString * const XTStagingSHA = @"";
   XTSideBarItem *branches = newRoots[XTBranchesGroupIndex];
   NSMutableArray *tags = [NSMutableArray array];
   XTSideBarItem *remotes = newRoots[XTRemotesGroupIndex];
-  NSMutableArray *stashes = [NSMutableArray array];
-  NSMutableArray *submodules = [NSMutableArray array];
+  NSArray<XTStashItem*> *stashes = [self makeStashItems];
+  NSArray<XTSubmoduleItem*> *submodules = [self makeSubmoduleItems];
 
   [self loadBranches:branches tags:tags remotes:remotes refsIndex:refsIndex];
-  [self loadStashes:stashes refsIndex:refsIndex];
-  [_repo readSubmodulesWithBlock:^(GTSubmodule *sub) {
-    [submodules addObject:[[XTSubmoduleItem alloc] initWithSubmodule:sub]];
-  }];
 
   [newRoots[XTTagsGroupIndex] setChildren:tags];
   [newRoots[XTStashesGroupIndex] setChildren:stashes];
@@ -320,7 +309,7 @@ NSString * const XTStagingSHA = @"";
 
 - (void)doubleClick:(id)sender
 {
-  id clickedItem = [_outline itemAtRow:_outline.clickedRow];
+  id clickedItem = [self.outline itemAtRow:self.outline.clickedRow];
 
   if ([clickedItem isKindOfClass:[XTSubmoduleItem class]]) {
     XTSubmoduleItem *subItem = (XTSubmoduleItem*)clickedItem;

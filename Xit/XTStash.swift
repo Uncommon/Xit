@@ -6,21 +6,20 @@ import Cocoa
 public class XTStash: NSObject {
 
 var repo: XTRepository
+var message: String?
 var mainCommit: GTCommit
 var indexCommit, untrackedCommit: GTCommit?
 private var cachedChanges: [XTFileChange]?
 
-init(repo: XTRepository, index: UInt)
+init(repo: XTRepository, index: UInt, message: String?)
 {
   self.repo = repo
+  self.message = message
   self.mainCommit = repo.commitForStashAtIndex(index)!
-  print("mainCommit: ", mainCommit.messageSummary)
   if self.mainCommit.parents.count > 1 {
     self.indexCommit = self.mainCommit.parents[1]
-    print("indexCommit: ", indexCommit!.messageSummary)
     if self.mainCommit.parents.count > 2 {
       self.untrackedCommit = self.mainCommit.parents[2]
-      print("untracked: ", untrackedCommit!.messageSummary)
     }
   }
 }

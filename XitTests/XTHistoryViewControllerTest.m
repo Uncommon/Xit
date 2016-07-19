@@ -11,7 +11,7 @@
 #import "XTRepository+Parsing.h"
 #import <OCMock/OCMock.h>
 #include "XTQueueUtils.h"
-#import "XitTests-Swift.h"
+#import "Xit-Swift.h"
 
 @interface XTHistoryViewControllerTest : XTTest
 
@@ -50,6 +50,7 @@
   XTHistoryViewController *controller =
       [[XTHistoryViewController alloc] initWithRepository:self.repository
                                                   sidebar:mockSidebar];
+  XTSideBarItem *branchesGroup = controller.sideBarDS.roots[XTBranchesGroupIndex];
 
   [controller.sideBarDS setRepo:self.repository];
   [[mockSidebar stub] reloadData];
@@ -69,6 +70,7 @@
                                          withObject:nil
                                       waitUntilDone:NO];
   [[mockSidebar expect] expandItem:nil expandChildren:YES];
+  [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
 
   [controller.sideBarDS reload];
   [self waitForRepoQueue];
@@ -87,10 +89,9 @@
   [[[mockSidebar expect] andReturn:
           [controller.sideBarDS itemNamed:@"master"
                                   inGroup:XTBranchesGroupIndex]] itemAtRow:row];
+  [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
 
   // selectedBranch from checkOutBranch
-  XTSideBarItem *branchesGroup = controller.sideBarDS.roots[XTBranchesGroupIndex];
-  
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(noRow)] contextMenuRow];
   [[[mockSidebar expect] andReturn:
           [controller.sideBarDS itemNamed:@"master"
@@ -152,11 +153,16 @@
   [controller.sideBarDS reload];
   [self waitForRepoQueue];
 
+  XTSideBarGroupItem *stashesGroup =
+      controller.sideBarDS.roots[XTStashesGroupIndex];
+  XTSideBarItem *stashItem =
+      [controller.sideBarDS itemNamed:stashName inGroup:XTStashesGroupIndex];
+
+  XCTAssertNotNil(stashItem);
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(noRow)] contextMenuRow];
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(stashRow)] selectedRow];
-  [[[mockSidebar expect] andReturn:[controller.sideBarDS
-      itemNamed:stashName
-        inGroup:XTStashesGroupIndex]] itemAtRow:stashRow];
+  [[[mockSidebar expect] andReturn:stashesGroup] parentForItem:stashItem];
+  [[[mockSidebar expect] andReturn:stashItem] itemAtRow:stashRow];
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
@@ -172,12 +178,13 @@
 
   XCTAssertNil(error, @"");
   XCTAssertEqualObjects(text, expectedText, @"");
+  [mockSidebar verify];
 }
 
 - (void)testPopStash1
 {
   [self doStashAction:@selector(popStash:)
-            stashName:@"stash@{1} On master: s1"
+            stashName:@"On master: s1"
       expectedRemains:@[ @"s2" ]
          expectedText:@"second text"];
 }
@@ -185,7 +192,7 @@
 - (void)testPopStash2
 {
   [self doStashAction:@selector(popStash:)
-            stashName:@"stash@{0} On master: s2"
+            stashName:@"On master: s2"
       expectedRemains:@[ @"s1" ]
          expectedText:@"third text"];
 }
@@ -193,7 +200,7 @@
 - (void)testApplyStash1
 {
   [self doStashAction:@selector(applyStash:)
-            stashName:@"stash@{1} On master: s1"
+            stashName:@"On master: s1"
       expectedRemains:@[ @"s2", @"s1" ]
          expectedText:@"second text"];
 }
@@ -201,7 +208,7 @@
 - (void)testApplyStash2
 {
   [self doStashAction:@selector(applyStash:)
-            stashName:@"stash@{0} On master: s2"
+            stashName:@"On master: s2"
       expectedRemains:@[ @"s2", @"s1" ]
          expectedText:@"third text"];
 }
@@ -209,7 +216,7 @@
 - (void)testDropStash1
 {
   [self doStashAction:@selector(dropStash:)
-            stashName:@"stash@{1} On master: s1"
+            stashName:@"On master: s1"
       expectedRemains:@[ @"s2" ]
          expectedText:@"some text"];
 }
@@ -217,7 +224,7 @@
 - (void)testDropStash2
 {
   [self doStashAction:@selector(dropStash:)
-            stashName:@"stash@{0} On master: s2"
+            stashName:@"On master: s2"
       expectedRemains:@[ @"s1" ]
          expectedText:@"some text"];
 }

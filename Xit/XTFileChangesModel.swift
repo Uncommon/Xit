@@ -147,7 +147,15 @@ class XTStashChanges: NSObject, XTFileChangesModel {
   init(repository: XTRepository, index: UInt)
   {
     self.repository = repository
-    self.stash = XTStash(repo: repository, index: index)
+    self.stash = XTStash(repo: repository, index: index, message: nil)
+    
+    super.init()
+  }
+  
+  init(repository: XTRepository, stash: XTStash)
+  {
+    self.repository = repository
+    self.stash = stash
     
     super.init()
   }
