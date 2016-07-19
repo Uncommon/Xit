@@ -5,7 +5,7 @@
 #import "XTFileTreeDataSource.h"
 #import "XTHistoryItem.h"
 #include "XTQueueUtils.h"
-#import "XitTests-Swift.h"
+#import "Xit-Swift.h"
 
 @interface XTFileListDataSourceTest : XTTest
 

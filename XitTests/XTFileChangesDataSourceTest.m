@@ -1,7 +1,7 @@
 #import "XTTest.h"
 #import "XTFileChangesDataSource.h"
 #include "XTQueueUtils.h"
-#import "XitTests-Swift.h"
+#import "Xit-Swift.h"
 
 @interface XTFileChangesDataSourceTest : XTTest
 

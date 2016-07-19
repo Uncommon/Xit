@@ -33,9 +33,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString*)urlStringForRemote:(NSString*)remoteName;
 
 - (BOOL)saveStash:(nullable NSString*)name includeUntracked:(BOOL)untracked;
-- (BOOL)popStash:(NSString*)name error:(NSError**)error;
-- (BOOL)applyStash:(NSString*)name error:(NSError**)error;
-- (BOOL)dropStash:(NSString*)name error:(NSError**)error;
+- (BOOL)popStashIndex:(NSUInteger)index error:(NSError**)error;
+- (BOOL)applyStashIndex:(NSUInteger)index error:(NSError**)error;
+- (BOOL)dropStashIndex:(NSUInteger)index error:(NSError**)error;
 
 - (BOOL)addSubmoduleAtPath:(NSString*)path
                  urlOrPath:(NSString*)urlOrPath

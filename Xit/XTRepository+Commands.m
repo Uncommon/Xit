@@ -340,48 +340,31 @@
   return error == nil;
 }
 
-- (BOOL)popStash:(NSString *)name error:(NSError **)error
+- (BOOL)popStashIndex:(NSUInteger)index error:(NSError**)error
 {
-  NSError *localError = nil;
-
-  name = [name componentsSeparatedByString:@" "][0];
-  if (![self executeGitWithArgs:@[ @"stash", @"pop", name ]
-                         writes:YES
-                          error:&localError]) {
-    if ((localError.code == 1) &&
-        [localError.domain isEqualToString:XTErrorDomainGit])
-      return YES;  // pop may return 1 on success
-    if (error != NULL)
-      *error = localError;
-    return NO;
-  }
-  return YES;
+  return [self executeWritingBlock:^BOOL{
+    return [self.gtRepo popStashAtIndex:index
+                                  flags:GTRepositoryStashApplyFlagReinstateIndex
+                                  error:error
+                          progressBlock:nil];
+  }];
 }
 
-- (BOOL)applyStash:(NSString *)name error:(NSError **)error
+- (BOOL)applyStashIndex:(NSUInteger)index error:(NSError**)error
 {
-  NSError *localError = nil;
-
-  name = [name componentsSeparatedByString:@" "][0];
-  if (![self executeGitWithArgs:@[ @"stash", @"apply", name ]
-                         writes:YES
-                          error:&localError]) {
-    if ((localError.code == 1) &&
-        [localError.domain isEqualToString:XTErrorDomainGit])
-      return YES;  // apply may return 1 on success
-    if (error != NULL)
-      *error = localError;
-    return NO;
-  }
-  return YES;
+  return [self executeWritingBlock:^BOOL{
+    return [self.gtRepo applyStashAtIndex:index
+                                    flags:GTRepositoryStashApplyFlagReinstateIndex
+                                    error:error
+                            progressBlock:nil];
+  }];
 }
 
-- (BOOL)dropStash:(NSString *)name error:(NSError **)error
+- (BOOL)dropStashIndex:(NSUInteger)index error:(NSError**)error
 {
-  name = [name componentsSeparatedByString:@" "][0];
-  return [self executeGitWithArgs:@[ @"stash", @"drop", name ]
-                           writes:YES
-                            error:error] != nil;
+  return [self executeWritingBlock:^BOOL{
+    return [self.gtRepo dropStashAtIndex:index error:(NSError**)error];
+  }];
 }
 
 - (BOOL)addSubmoduleAtPath:(NSString *)path

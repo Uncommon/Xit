@@ -1,4 +1,5 @@
 import XCTest
+@testable import Xit
 
 class XTStashTest: XTTest
 {
@@ -17,7 +18,7 @@ class XTStashTest: XTTest
     XCTAssertFalse(NSFileManager.defaultManager().fileExistsAtPath(untrackedPath))
     XCTAssertFalse(NSFileManager.defaultManager().fileExistsAtPath(addedPath))
     
-    let stash = XTStash(repo: self.repository, index: 0)
+    let stash = XTStash(repo: self.repository, index: 0, message: "stash 0")
     let changes = stash.changes()
     let addedChange: XTFileChange = changes[addedIndex]
     let file1Change: XTFileChange = changes[file1Index]

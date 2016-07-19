@@ -1,4 +1,5 @@
 import XCTest
+@testable import Xit
 
 class XTFileChangesModelTest: XTTest {
   
