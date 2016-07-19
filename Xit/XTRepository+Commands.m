@@ -342,23 +342,29 @@
 
 - (BOOL)popStashIndex:(NSUInteger)index error:(NSError**)error
 {
-  return [self.gtRepo popStashAtIndex:index
-                                flags:GTRepositoryStashApplyFlagReinstateIndex
-                                error:error
-                        progressBlock:nil];
+  return [self executeWritingBlock:^BOOL{
+    return [self.gtRepo popStashAtIndex:index
+                                  flags:GTRepositoryStashApplyFlagReinstateIndex
+                                  error:error
+                          progressBlock:nil];
+  }];
 }
 
 - (BOOL)applyStashIndex:(NSUInteger)index error:(NSError**)error
 {
-  return [self.gtRepo applyStashAtIndex:index
-                                  flags:GTRepositoryStashApplyFlagReinstateIndex
-                                  error:error
-                          progressBlock:nil];
+  return [self executeWritingBlock:^BOOL{
+    return [self.gtRepo applyStashAtIndex:index
+                                    flags:GTRepositoryStashApplyFlagReinstateIndex
+                                    error:error
+                            progressBlock:nil];
+  }];
 }
 
 - (BOOL)dropStashIndex:(NSUInteger)index error:(NSError**)error
 {
-  return [self.gtRepo dropStashAtIndex:index error:(NSError**)error];
+  return [self executeWritingBlock:^BOOL{
+    return [self.gtRepo dropStashAtIndex:index error:(NSError**)error];
+  }];
 }
 
 - (BOOL)addSubmoduleAtPath:(NSString *)path
