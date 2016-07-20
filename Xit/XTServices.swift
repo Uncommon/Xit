@@ -14,6 +14,7 @@ extension Siesta.Resource {
           closure(data)
         }
       })
+      loadIfNeeded()
     }
   }
 }
@@ -21,13 +22,13 @@ extension Siesta.Resource {
 /// Manages and provides access to all service API instances.
 class XTServices: NSObject {
   
+  /// Status of server operations such as authentication.
   enum Status {
-    case Authenticating
-    case Authenticated
-    case Downloading
-    case Ready
-    case FailedAuthentication(ErrorType?)
-    case DownloadFailed(ErrorType?)
+    case Unknown
+    case NotStarted
+    case InProgress
+    case Done
+    case Failed(ErrorType?)
   }
   
   static let services = XTServices()
@@ -71,10 +72,10 @@ class XTServices: NSObject {
 /// Abstract service class that handles HTTP basic authentication.
 class XTBasicAuthService : Service {
   
-  var status: XTServices.Status
+  private(set) var authenticationStatus: XTServices.Status
   
   init?(user: String, password: String, baseURL: String?) {
-    status = .Authenticating
+    authenticationStatus = .NotStarted
     
     super.init(baseURL: baseURL)
   
@@ -111,7 +112,7 @@ class XTBasicAuthService : Service {
     objc_sync_enter(self)
     defer { objc_sync_exit(self) }
     
-    status = .Authenticating
+    authenticationStatus = .InProgress
     
     let authResource = resource(path)
     
@@ -123,7 +124,7 @@ class XTBasicAuthService : Service {
       switch event {
 
         case .NewData, .NotModified:
-          self.status = .Authenticated
+          self.authenticationStatus = .Done
           self.didAuthenticate()
 
         case .Error:
@@ -134,7 +135,7 @@ class XTBasicAuthService : Service {
           }
           
           if !(error.cause is Error.Cause.RequestCancelled) {
-            self.status = .FailedAuthentication(error)
+            self.authenticationStatus = .Failed(error)
           }
 
         default:
@@ -158,6 +159,8 @@ class XTTeamCityAPI : XTBasicAuthService {
     case Failed(String)  // Failure reason
     case Running(Float)  // Percentage complete
   }
+  
+  private(set) var buildTypesStatus = XTServices.Status.NotStarted
   
   /// Maps VCS root ID to repository URL.
   var vcsRootMap = [String: String]()
@@ -222,7 +225,7 @@ extension XTTeamCityAPI {
       guard let xml = data.content as? NSXMLDocument
       else {
         NSLog("Couldn't parse vcs-roots xml")
-        self.status = .DownloadFailed(nil)
+        self.buildTypesStatus = .Failed(nil)
         return
       }
       self.parseVCSRoots(xml)
@@ -247,7 +250,7 @@ extension XTTeamCityAPI {
     guard let vcsRoots = xml.children?.first?.children
     else {
       NSLog("Couldn't parse vcs-roots")
-      self.status = .DownloadFailed(nil)
+      self.buildTypesStatus = .Failed(nil)
       return
     }
     
@@ -259,7 +262,7 @@ extension XTTeamCityAPI {
             let rootID = element.attributeForName("id")?.stringValue
       else {
         NSLog("Couldn't parse vcs-roots")
-        self.status = .DownloadFailed(nil)
+        self.buildTypesStatus = .Failed(nil)
         return
       }
       
@@ -283,7 +286,7 @@ extension XTTeamCityAPI {
       guard let xml = data.content as? NSXMLDocument
       else {
         NSLog("Couldn't parse build types xml")
-        self.status = .DownloadFailed(nil)
+        self.buildTypesStatus = .Failed(nil)
         return
       }
       self.parseBuildTypes(xml)
@@ -295,7 +298,7 @@ extension XTTeamCityAPI {
     guard let buildTypesList = xml.rootElement()?.children
     else {
       NSLog("Couldn't parse build types")
-      self.status = .DownloadFailed(nil)
+      self.buildTypesStatus = .Failed(nil)
       return
     }
     
@@ -306,7 +309,7 @@ extension XTTeamCityAPI {
             let url = element.attributeForName("href")?.stringValue
       else {
         NSLog("Couldn't parse build type: \(type)")
-        self.status = .DownloadFailed(nil)
+        self.buildTypesStatus = .Failed(nil)
         return
       }
       resource(url).useData(self, closure: { (data) in
@@ -315,7 +318,7 @@ extension XTTeamCityAPI {
         guard let xml = data.content as? NSXMLDocument
         else {
           NSLog("Couldn't parse build type xml: \(data.content)")
-          self.status = .DownloadFailed(nil)
+          self.buildTypesStatus = .Failed(nil)
           return
         }
         
@@ -330,7 +333,7 @@ extension XTTeamCityAPI {
           let rootEntries = buildType.elementsForName("vcs-root-entries").first
     else {
       NSLog("Couldn't find root entries: \(xml)")
-      self.status = .DownloadFailed(nil)
+      self.buildTypesStatus = .Failed(nil)
       return
     }
     guard let entriesChildren = rootEntries.children
@@ -355,7 +358,7 @@ extension XTTeamCityAPI {
         vcsBuildTypes[vcsID] = [vcsURL]
       }
     }
-    status = .Ready
+    buildTypesStatus = .Done
   }
 }
 
