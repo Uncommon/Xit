@@ -13,9 +13,22 @@ class XTAccountsPrefsController: NSViewController {
   @IBOutlet weak var addController: XTAddAccountController!
   @IBOutlet weak var accountsTable: NSTableView!
   
-  override func viewDidLoad() {
+  override func viewDidLoad()
+  {
     super.viewDidLoad()
     XTAccountsManager.manager.readAccounts()
+    NSNotificationCenter.defaultCenter().addObserverForName(
+        XTBasicAuthService.AuthenticationStatusChangedNotification,
+        object: nil,
+        queue: NSOperationQueue.mainQueue()) {
+      (note) in
+      self.accountsTable.reloadData()
+    }
+  }
+  
+  deinit
+  {
+    NSNotificationCenter.defaultCenter().removeObserver(self)
   }
   
   func showError(message: String)
@@ -41,7 +54,10 @@ class XTAccountsPrefsController: NSViewController {
     }
   }
   
-  func addAccount(type: AccountType, user: String, password: String, location: NSURL)
+  func addAccount(type: AccountType,
+                  user: String,
+                  password: String,
+                  location: NSURL)
   {
     var passwordAction = PasswordAction.Save
     
@@ -119,35 +135,89 @@ class XTAccountsPrefsController: NSViewController {
     XTAccountsManager.manager.accounts.removeAtIndex(accountsTable.selectedRow)
     accountsTable.reloadData()
   }
+}
+
+
+extension XTAccountsPrefsController: NSTableViewDelegate {
+  
+  func statusImage(forAPI api: XTTeamCityAPI) -> NSImage?
+  {
+    var imageName: String?
+    
+    switch api.authenticationStatus {
+    case .Unknown, .NotStarted:
+      imageName = NSImageNameStatusNone
+    case .InProgress:
+      // eventually have a spinner instead
+      imageName = NSImageNameStatusPartiallyAvailable
+    case .Done:
+      break
+    case .Failed:
+      imageName = NSImageNameStatusUnavailable
+    }
+    if let imageName = imageName {
+      return NSImage(named: imageName)
+    }
+    
+    switch api.buildTypesStatus {
+    case .Unknown, .NotStarted, .InProgress:
+      imageName = NSImageNameStatusAvailable
+    case .Done:
+      imageName = NSImageNameStatusAvailable
+    case .Failed:
+      imageName = NSImageNameStatusPartiallyAvailable
+    }
+    if let imageName = imageName {
+      return NSImage(named: imageName)
+    }
+    return nil
+  }
+  
+  func tableView(tableView: NSTableView,
+                 viewForTableColumn tableColumn: NSTableColumn?,
+                                    row: Int) -> NSView?
+  {
+    guard let tableColumn = tableColumn
+      else { return nil }
+    
+    let view = tableView.makeViewWithIdentifier(tableColumn.identifier,
+                                                owner: self)
+      as! NSTableCellView
+    let account = XTAccountsManager.manager.accounts[row]
+    
+    switch tableColumn.identifier {
+    case "service":
+      view.textField?.stringValue = account.type.displayName
+      view.imageView?.image = NSImage(named: account.type.imageName)
+    case "userName":
+      view.textField?.stringValue = account.user
+    case "location":
+      view.textField?.stringValue = account.location.absoluteString
+    case "status":
+      view.imageView?.hidden = true
+      if account.type == .TeamCity {
+        guard let api = XTServices.services.teamCityAPI(account)
+        else { break }
+        
+        if let image = statusImage(forAPI: api) {
+          view.imageView?.image = image
+          view.imageView?.hidden = false
+        }
+      }
+    default:
+      return nil
+    }
+    return view
+  }
+
+}
+
+
+extension XTAccountsPrefsController: NSTableViewDataSource {
   
   func numberOfRowsInTableView(tableView: NSTableView) -> Int
   {
     return XTAccountsManager.manager.accounts.count
   }
   
-  func tableView(tableView: NSTableView,
-                 viewForTableColumn tableColumn: NSTableColumn?,
-                 row: Int) -> NSView?
-  {
-    guard let tableColumn = tableColumn
-    else { return nil }
-    
-    let view = tableView.makeViewWithIdentifier(tableColumn.identifier,
-                                                owner: self)
-               as! NSTableCellView
-    let account = XTAccountsManager.manager.accounts[row]
-    
-    switch tableColumn.identifier {
-      case "service":
-        view.textField?.stringValue = account.type.displayName
-        view.imageView?.image = NSImage(named: account.type.imageName)
-      case "userName":
-        view.textField?.stringValue = account.user
-      case "location":
-        view.textField?.stringValue = account.location.absoluteString
-      default:
-        return nil
-    }
-    return view
-  }
 }

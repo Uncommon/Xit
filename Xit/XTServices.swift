@@ -3,6 +3,8 @@ import Siesta
 
 extension Siesta.Resource {
   
+  /// Either executes the closure with the resource's data, or schedules it
+  /// to run later when the data is available.
   func useData(owner: AnyObject, closure: (Entity) -> ())
   {
     if let data = latestData {
@@ -33,15 +35,24 @@ class XTServices: NSObject {
   
   static let services = XTServices()
   
-  var teamCityServices: [String: XTTeamCityAPI] = [:]
+  private var teamCityServices: [String: XTTeamCityAPI] = [:]
   
-  static func accountKey(account: Account) -> String
+  /// Creates an API object for each account so they can start with
+  /// authorization and other state info.
+  func initializeServices()
+  {
+    for account in XTAccountsManager.manager.accounts(ofType: .TeamCity) {
+      _ = teamCityAPI(account)
+    }
+  }
+  
+  private static func accountKey(account: Account) -> String
   {
     return "\(account.user)@\(account.location.host)"
   }
   
   /// Returns the TeamCity service object for the given account, or nil if
-  /// the psasword cannot be found.
+  /// the password cannot be found.
   func teamCityAPI(account: Account) -> XTTeamCityAPI?
   {
     let key = XTServices.accountKey(account)
@@ -69,10 +80,28 @@ class XTServices: NSObject {
 }
 
 
+/// Protocol to be implemented by all concrete API classes.
+protocol XTServiceAPI {
+  
+  var type: AccountType { get }
+  
+}
+
+
 /// Abstract service class that handles HTTP basic authentication.
 class XTBasicAuthService : Service {
   
+  static let AuthenticationStatusChangedNotification = "AuthStatusChanged"
+  
   private(set) var authenticationStatus: XTServices.Status
+  {
+    didSet
+    {
+      NSNotificationCenter.defaultCenter().postNotificationName(
+          XTBasicAuthService.AuthenticationStatusChangedNotification,
+          object: self)
+    }
+  }
   
   init?(user: String, password: String, baseURL: String?) {
     authenticationStatus = .NotStarted
@@ -151,7 +180,9 @@ class XTBasicAuthService : Service {
 }
 
 
-class XTTeamCityAPI : XTBasicAuthService {
+class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
+  
+  var type: AccountType { return .TeamCity }
   
   enum BuildStatus {
     case Unknown
@@ -184,8 +215,7 @@ class XTTeamCityAPI : XTBasicAuthService {
       return (try? NSXMLDocument(data: content, options: 0)) ?? content
     }
     
-    attemptAuthentication("")
-    //enabledLogCategories = LogCategory.detailed
+    attemptAuthentication("")  // The base URL makes a good test.
   }
   
   /// Status of the most recent build of the given branch from any project

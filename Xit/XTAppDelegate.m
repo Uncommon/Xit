@@ -16,6 +16,11 @@
   return self;
 }
 
+- (void)applicationDidFinishLaunching:(NSNotification*)note
+{
+  [XTServices.services initializeServices];
+}
+
 - (void)openDocument:(id)sender
 {
   if (_openPanel != nil) {

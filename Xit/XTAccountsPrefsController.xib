@@ -144,7 +144,7 @@
                                             </tableCellView>
                                         </prototypeCellViews>
                                     </tableColumn>
-                                    <tableColumn identifier="" width="47" minWidth="47" maxWidth="47" id="drh-Ik-ltg">
+                                    <tableColumn identifier="status" width="47" minWidth="47" maxWidth="47" id="drh-Ik-ltg">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Status">
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
