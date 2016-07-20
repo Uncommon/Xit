@@ -15,17 +15,17 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView id="c22-O7-iKe">
-            <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+            <rect key="frame" x="0.0" y="0.0" width="530" height="272"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bdl-wI-DBE">
-                    <rect key="frame" x="20" y="36" width="440" height="214"/>
+                    <rect key="frame" x="20" y="38" width="490" height="214"/>
                     <clipView key="contentView" ambiguous="YES" id="EeI-MH-nLT">
-                        <rect key="frame" x="1" y="0.0" width="438" height="213"/>
+                        <rect key="frame" x="1" y="0.0" width="488" height="213"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="oAS-Kn-roc" viewBased="YES" id="V04-XE-rMm">
-                                <rect key="frame" x="0.0" y="0.0" width="438" height="190"/>
+                                <rect key="frame" x="0.0" y="0.0" width="488" height="190"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <size key="intercellSpacing" width="3" height="2"/>
                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -144,6 +144,42 @@
                                             </tableCellView>
                                         </prototypeCellViews>
                                     </tableColumn>
+                                    <tableColumn identifier="" width="47" minWidth="47" maxWidth="47" id="drh-Ik-ltg">
+                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Status">
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </tableHeaderCell>
+                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="Ohv-Ek-B7O">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                        <prototypeCellViews>
+                                            <tableCellView id="cIZ-kf-gsJ">
+                                                <rect key="frame" x="439" y="1" width="47" height="17"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="3mw-XL-ZWv">
+                                                        <rect key="frame" x="15" y="0.0" width="17" height="17"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="17" id="WQU-Z9-6Vn"/>
+                                                            <constraint firstAttribute="width" constant="17" id="tcV-BH-vRr"/>
+                                                        </constraints>
+                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSStatusAvailable" id="f02-jc-6zb"/>
+                                                    </imageView>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="3mw-XL-ZWv" firstAttribute="top" secondItem="cIZ-kf-gsJ" secondAttribute="top" id="PgU-Rk-KsI"/>
+                                                    <constraint firstItem="3mw-XL-ZWv" firstAttribute="centerX" secondItem="cIZ-kf-gsJ" secondAttribute="centerX" id="rtH-mU-mi7"/>
+                                                </constraints>
+                                                <connections>
+                                                    <outlet property="imageView" destination="3mw-XL-ZWv" id="hg9-pZ-Ivc"/>
+                                                </connections>
+                                            </tableCellView>
+                                        </prototypeCellViews>
+                                    </tableColumn>
                                 </tableColumns>
                                 <connections>
                                     <outlet property="dataSource" destination="-2" id="HTb-5f-aKd"/>
@@ -161,12 +197,12 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                     <tableHeaderView key="headerView" id="oAS-Kn-roc">
-                        <rect key="frame" x="0.0" y="0.0" width="438" height="23"/>
+                        <rect key="frame" x="0.0" y="0.0" width="488" height="23"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </tableHeaderView>
                 </scrollView>
                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MTl-22-FEI">
-                    <rect key="frame" x="62" y="19" width="398" height="21"/>
+                    <rect key="frame" x="62" y="19" width="448" height="21"/>
                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="8kx-hr-HLj">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
@@ -193,6 +229,7 @@
                     </connections>
                 </button>
             </subviews>
+            <point key="canvasLocation" x="512" y="422"/>
         </customView>
         <customObject id="TWG-OR-z9n" customClass="XTAddAccountController" customModule="Xit" customModuleProvider="target">
             <connections>
@@ -356,6 +393,7 @@ Gw
         <image name="NSActionTemplate" width="14" height="14"/>
         <image name="NSAddTemplate" width="11" height="11"/>
         <image name="NSRemoveTemplate" width="11" height="11"/>
+        <image name="NSStatusAvailable" width="16" height="16"/>
         <image name="bitbucketTemplate" width="16" height="16"/>
         <image name="githubTemplate" width="16" height="16"/>
         <image name="teamcityTemplate" width="16" height="16"/>
