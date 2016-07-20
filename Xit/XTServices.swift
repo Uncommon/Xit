@@ -1,8 +1,34 @@
 import Cocoa
 import Siesta
 
+extension Siesta.Resource {
+  
+  func useData(owner: AnyObject, closure: (Entity) -> ())
+  {
+    if let data = latestData {
+      closure(data)
+    }
+    else {
+      addObserver(owner: owner, closure: { (resource, event) in
+        if let data = resource.latestData {
+          closure(data)
+        }
+      })
+    }
+  }
+}
+
 /// Manages and provides access to all service API instances.
 class XTServices: NSObject {
+  
+  enum Status {
+    case Authenticating
+    case Authenticated
+    case Downloading
+    case Ready
+    case FailedAuthentication(ErrorType?)
+    case DownloadFailed(ErrorType?)
+  }
   
   static let services = XTServices()
   
@@ -45,12 +71,24 @@ class XTServices: NSObject {
 /// Abstract service class that handles HTTP basic authentication.
 class XTBasicAuthService : Service {
   
+  var status: XTServices.Status
+  
   init?(user: String, password: String, baseURL: String?) {
+    status = .Authenticating
+    
     super.init(baseURL: baseURL)
   
+    if !updateAuthentication(user, password: password) {
+      return nil
+    }
+  }
+  
+  /// Re-generates the authentication header with the new credentials.
+  func updateAuthentication(user: String, password: String) -> Bool
+  {
     if let data = "\(user):\(password)"
-        .dataUsingEncoding(NSUTF8StringEncoding)?
-        .base64EncodedStringWithOptions([]) {
+      .dataUsingEncoding(NSUTF8StringEncoding)?
+      .base64EncodedStringWithOptions([]) {
       configure { (builder) in
         builder.config.headers["Authorization"] = "Basic \(data)"
         builder.config.beforeStartingRequest { (resource, request) in
@@ -59,13 +97,56 @@ class XTBasicAuthService : Service {
           }
         }
       }
+      return true
     }
     else {
       NSLog("Couldn't construct auth header for \(user) @ \(baseURL)")
-      return nil
+      return false
     }
   }
   
+  /// Checks that the user and password are accepted by the server.
+  func attemptAuthentication(path: String)
+  {
+    objc_sync_enter(self)
+    defer { objc_sync_exit(self) }
+    
+    status = .Authenticating
+    
+    let authResource = resource(path)
+    
+    for request in authResource.allRequests {
+      request.cancel()
+    }
+    authResource.addObserver(owner: self) {
+      (resource, event) in
+      switch event {
+
+        case .NewData, .NotModified:
+          self.status = .Authenticated
+          self.didAuthenticate()
+
+        case .Error:
+          guard let error = resource.latestError
+          else {
+            NSLog("Error event with no error")
+            return
+          }
+          
+          if !(error.cause is Error.Cause.RequestCancelled) {
+            self.status = .FailedAuthentication(error)
+          }
+
+        default:
+          break
+      }
+    }
+  }
+  
+  // For subclasses to override when more data needs to be downloaded.
+  func didAuthenticate()
+  {
+  }
 }
 
 
@@ -78,9 +159,19 @@ class XTTeamCityAPI : XTBasicAuthService {
     case Running(Float)  // Percentage complete
   }
   
+  /// Maps VCS root ID to repository URL.
+  var vcsRootMap = [String: String]()
+  var vcsBuildTypes = [String: [String]]()
+  
   override init?(user: String, password: String, baseURL: String?)
   {
-    super.init(user: user, password: password, baseURL: baseURL)
+    guard let baseURL = baseURL,
+          let fullBaseURL = NSURLComponents(string: baseURL)
+    else { return nil }
+    
+    fullBaseURL.path = "httpAuth/app/rest"
+    
+    super.init(user: user, password: password, baseURL: fullBaseURL.string)
     
     configureTransformer("**/properties/*") {
       (content: NSData, entity) -> String? in
@@ -89,6 +180,8 @@ class XTTeamCityAPI : XTBasicAuthService {
     configureTransformer("**") { (content: NSData, entity) -> AnyObject? in
       return (try? NSXMLDocument(data: content, options: 0)) ?? content
     }
+    
+    attemptAuthentication("")
     //enabledLogCategories = LogCategory.detailed
   }
   
@@ -96,150 +189,177 @@ class XTTeamCityAPI : XTBasicAuthService {
   /// and build type.
   func buildStatus(branch: String) -> Resource
   {
-    return resource("httpAuth/app/rest/builds/running:any,branch:\(branch)")
+    return resource("builds/running:any,branch:\(branch)")
   }
   
   var vcsRoots: Resource
-  { return resource("httpAuth/app/rest/vcs-roots") }
+  { return resource("vcs-roots") }
   
   var projects: Resource
-  { return resource("httpAuth/app/rest/projects") }
+  { return resource("projects") }
   
   /// A resource for the repo URL of a VCS root. This will be just the URL,
   /// not wrapped in XML.
   func vcsRootURL(vcsRoodID: String) -> Resource
   {
-    return resource("httpAuth/app/rest/vcs-roots/id:\(vcsRoodID)/properties/url")
+    return resource("vcs-roots/id:\(vcsRoodID)/properties/url")
   }
   
   var buildTypes: Resource
   {
-    return resource("httpAuth/app/rest/buildTypes")
-  }
-  
-  /// Looks up the VCS root for the given repo URL. You can't use the URL
-  /// as a locator, so we have to search through all VCS roots.
-  func findVCSRoot(url: String, completion: (Resource?, Error?) -> Void)
-  {
-    let vcsRoot = TeamCityVCSRoot(url: url, api: self, completion: completion)
+    return resource("buildTypes")
   }
 }
 
-// Indexing projects:
-// - Get VCS roots, build repo URL -> vcs-root id map.
-// - Get build types, build buildType <-> vcs-root map.
-// - Make a list of build types for each remote
+// MARK: VCS
+
+extension XTTeamCityAPI {
+  
+  override func didAuthenticate()
+  {
+    // - Get VCS roots, build repo URL -> vcs-root id map.
+    vcsRoots.useData(self) { (data) in
+      guard let xml = data.content as? NSXMLDocument
+      else {
+        NSLog("Couldn't parse vcs-roots xml")
+        self.status = .DownloadFailed(nil)
+        return
+      }
+      self.parseVCSRoots(xml)
+    }
+  }
+  
+  /// Returns all the build types that use the given remote.
+  func buildTypes(remoteURL: NSString) -> [String]
+  {
+    var result = [String]()
+    
+    for (buildType, urls) in vcsBuildTypes {
+      if !urls.filter({ $0 == remoteURL }).isEmpty {
+        result.append(buildType)
+      }
+    }
+    return result
+  }
+  
+  private func parseVCSRoots(xml: NSXMLDocument)
+  {
+    guard let vcsRoots = xml.children?.first?.children
+    else {
+      NSLog("Couldn't parse vcs-roots")
+      self.status = .DownloadFailed(nil)
+      return
+    }
+    
+    var waitingRootCount = vcsRoots.count
+    
+    vcsRootMap.removeAll()
+    for vcsRoot in vcsRoots {
+      guard let element = vcsRoot as? NSXMLElement,
+            let rootID = element.attributeForName("id")?.stringValue
+      else {
+        NSLog("Couldn't parse vcs-roots")
+        self.status = .DownloadFailed(nil)
+        return
+      }
+      
+      let repoResource = self.vcsRootURL(rootID)
+      
+      repoResource.useData(self, closure: { (data) in
+        if let repoURL = data.content as? String {
+          self.vcsRootMap[rootID] = repoURL
+        }
+        waitingRootCount -= 1
+        if (waitingRootCount == 0) {
+          self.getBuildTypes()
+        }
+      })
+    }
+  }
+  
+  private func getBuildTypes()
+  {
+    buildTypes.useData(self) { (data) in
+      guard let xml = data.content as? NSXMLDocument
+      else {
+        NSLog("Couldn't parse build types xml")
+        self.status = .DownloadFailed(nil)
+        return
+      }
+      self.parseBuildTypes(xml)
+    }
+  }
+  
+  private func parseBuildTypes(xml: NSXMLDocument)
+  {
+    guard let buildTypesList = xml.rootElement()?.children
+    else {
+      NSLog("Couldn't parse build types")
+      self.status = .DownloadFailed(nil)
+      return
+    }
+    
+    var waitingTypeCount = buildTypesList.count
+    
+    for type in buildTypesList {
+      guard let element = type as? NSXMLElement,
+            let url = element.attributeForName("href")?.stringValue
+      else {
+        NSLog("Couldn't parse build type: \(type)")
+        self.status = .DownloadFailed(nil)
+        return
+      }
+      resource(url).useData(self, closure: { (data) in
+        waitingTypeCount -= 1
+        
+        guard let xml = data.content as? NSXMLDocument
+        else {
+          NSLog("Couldn't parse build type xml: \(data.content)")
+          self.status = .DownloadFailed(nil)
+          return
+        }
+        
+        self.parseBuildType(xml)
+      })
+    }
+  }
+  
+  private func parseBuildType(xml: NSXMLDocument)
+  {
+    guard let buildType = xml.children?.first as? NSXMLElement,
+          let rootEntries = buildType.elementsForName("vcs-root-entries").first
+    else {
+      NSLog("Couldn't find root entries: \(xml)")
+      self.status = .DownloadFailed(nil)
+      return
+    }
+    guard let entriesChildren = rootEntries.children
+    else { return }  // Empty list is not an error
+    
+    for entry in entriesChildren {
+      guard let entryElement = entry as? NSXMLElement,
+            let vcsID = entryElement.attributeForName("id")?.stringValue
+      else { continue }
+      guard let vcsURL = vcsRootMap[vcsID]
+      else {
+        NSLog("No match for VCS ID \(vcsID)")
+        continue
+      }
+      
+      if var buildTypeURLs = vcsBuildTypes[vcsID] {
+        // Modify and put it back because Array is a value type
+        buildTypeURLs.append(vcsURL)
+        vcsBuildTypes[vcsID] = buildTypeURLs
+      }
+      else {
+        vcsBuildTypes[vcsID] = [vcsURL]
+      }
+    }
+    status = .Ready
+  }
+}
+
 // Look up:
 // - /httpAuth/app/rest/builds?locator=running:any,
 //    buildType:\(buildType),branch:\(branch)
 // - Returns a list of <build href=".."/>, retrieve those
-
-class MetaResource {
-  
-  typealias Completion = (Resource?, Error?) -> Void
-  
-  var resource: Resource?
-  let api: XTTeamCityAPI
-  let completion: Completion
-  
-  init(api: XTTeamCityAPI, completion: Completion)
-  {
-    self.api = api
-    self.completion = completion
-  }
-}
-
-class TeamCityVCSRoot: MetaResource {
-  
-  let vcsURL: String
-  
-  init(url: String, api: XTTeamCityAPI, completion: Completion)
-  {
-    self.vcsURL = url
-    
-    super.init(api: api, completion: completion)
-
-    let vcsRoots = api.vcsRoots
-    
-    if vcsRoots.latestData != nil {
-      parseVCSRoots(vcsRoots)
-    }
-    else {
-      vcsRoots.addObserver(owner: self) {
-        (resource: Siesta.Resource, event) in
-        switch event {
-        case .Error:
-          NSLog("Error getting vcs-roots")
-        case .NewData:
-          self.parseVCSRoots(resource)
-        default:
-          break
-        }
-      }
-      vcsRoots.loadIfNeeded()
-    }
-  }
-  
-  func parseVCSRoots(rootsResource: Resource)
-  {
-    guard let xml = rootsResource.latestData?.content as? NSXMLDocument,
-      let vcsRoots = xml.children?.first?.children
-      else {
-        NSLog("Couldn't parse vcs-roots")
-        // tell the completion handler
-        return
-    }
-    
-    for vcsRoot in vcsRoots {
-      guard let element = vcsRoot as? NSXMLElement,
-        let path = element.attributeForName("href")?.stringValue
-        else { continue }
-      
-      let vcsResource = api.resource(path)
-      
-      if vcsResource.latestData != nil {
-        parseVCSRoot(vcsResource)
-      }
-      else {
-        vcsResource.addObserver(owner: self) {
-          (resource: Siesta.Resource, event) in
-          switch event {
-          case .Error:
-            // Failed, but we don't know if it's the one we want
-            break
-          case .NewData:
-            self.parseVCSRoot(resource)
-          default:
-            break
-          }
-        }
-        vcsResource.loadIfNeeded()
-      }
-    }
-  }
-  
-  func parseVCSRoot(rootResource: Resource) -> Bool
-  {
-    guard let xml = rootResource.latestData?.content as? NSXMLDocument,
-      let vcsRoot = xml.children?.first as? NSXMLElement,
-      let properties = vcsRoot.elementsForName("properties").first?.children
-      else { return false }
-    
-    for property in properties {
-      guard let element = property as? NSXMLElement,
-        let name = element.attributeForName("name")?.stringValue
-        else { continue }
-      
-      if name == "url" {
-        guard let value = element.attributeForName("value")?.stringValue
-          else { continue }
-        
-        if value == vcsURL {
-          completion(rootResource, nil)
-          return true
-        }
-      }
-    }
-    return false
-  }
-}
