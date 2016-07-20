@@ -111,6 +111,7 @@
 		C916102B1D1DE994005A3142 /* pushTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C91610211D1DE994005A3142 /* pushTemplate.png */; };
 		C916102C1D1DE994005A3142 /* pushTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C91610221D1DE994005A3142 /* pushTemplate@2x.png */; };
 		C926804E1D074EC500E422FA /* XTFileChangesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C926804D1D074EC500E422FA /* XTFileChangesModel.swift */; };
+		C929D03B1D400B3B00D7DC52 /* XTRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D03A1D400B3B00D7DC52 /* XTRemote.swift */; };
 		C92A7B261D1DD1CD00D2B944 /* folderTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C92A7B241D1DD1CD00D2B944 /* folderTemplate.png */; };
 		C92A7B271D1DD1CD00D2B944 /* folderTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C92A7B251D1DD1CD00D2B944 /* folderTemplate@2x.png */; };
 		C94866B61D256C24000BDB0A /* XTFetchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94866B51D256C24000BDB0A /* XTFetchController.swift */; };
@@ -386,6 +387,7 @@
 		C91610211D1DE994005A3142 /* pushTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pushTemplate.png; sourceTree = "<group>"; };
 		C91610221D1DE994005A3142 /* pushTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pushTemplate@2x.png"; sourceTree = "<group>"; };
 		C926804D1D074EC500E422FA /* XTFileChangesModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesModel.swift; sourceTree = "<group>"; };
+		C929D03A1D400B3B00D7DC52 /* XTRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRemote.swift; sourceTree = "<group>"; };
 		C92A7B241D1DD1CD00D2B944 /* folderTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = folderTemplate.png; sourceTree = "<group>"; };
 		C92A7B251D1DD1CD00D2B944 /* folderTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "folderTemplate@2x.png"; sourceTree = "<group>"; };
 		C94866B51D256C24000BDB0A /* XTFetchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFetchController.swift; sourceTree = "<group>"; };
@@ -847,6 +849,7 @@
 				C9EB87231D01D93400C47D13 /* XTStash.swift */,
 				89C927741D36A2180074F71A /* XTSubmodule.swift */,
 				89C927771D36A5890074F71A /* XTTag.swift */,
+				C929D03A1D400B3B00D7DC52 /* XTRemote.swift */,
 			);
 			name = Repository;
 			sourceTree = "<group>";
@@ -1171,6 +1174,7 @@
 				C9BAE61E1D303A8100A87F13 /* XTRemoteOptionsController.swift in Sources */,
 				89A6EA2814478DA40089B212 /* XTAppDelegate.m in Sources */,
 				89991CDD144E3FF400097A99 /* XTStatusView.m in Sources */,
+				C929D03B1D400B3B00D7DC52 /* XTRemote.swift in Sources */,
 				89794F8C1458CC9B00E38ACC /* XTOutputViewController.m in Sources */,
 				DDDA447215B0EA4700DF407B /* XTRepository+Parsing.m in Sources */,
 				894C8DBD1CC12F3E001A4B80 /* XTPreviewController.m in Sources */,

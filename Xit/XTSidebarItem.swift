@@ -95,10 +95,37 @@ class XTBranchFolderItem : XTSideBarItem {
 
 
 class XTRemoteItem : XTSideBarItem {
-  override var icon: NSImage? { return NSImage(named: "cloudTemplate") }
+  
+  let remote: XTRemote?
+  
+  override var icon: NSImage?
+  {
+    if let urlString = remote?.URLString {
+      if let url = NSURL(string: urlString),
+         let host = url.host {
+        if (host == "github.com") || host.hasSuffix(".github.com") {
+          return NSImage(named: "githubTemplate")
+        }
+        else {
+          NSLog("unmatched")
+        }
+      }
+      else {
+        NSLog("no URL)")
+      }
+    }
+    return NSImage(named: "cloudTemplate")
+  }
   override var expandable: Bool { return true }
   override var editable: Bool { return true }
   override var refType: XTRefType { return .Remote }
+  
+  init(title: String, repository: XTRepository)
+  {
+    self.remote = XTRemote(name: title, repository: repository)
+    
+    super.init(title: title)
+  }
 }
 
 

@@ -134,9 +134,4 @@ typedef NS_ENUM(NSUInteger, XitChange) {
 
 @end
 
-
-@interface XTRemote : GTRemote
-
-@end
-
 NS_ASSUME_NONNULL_END

@@ -667,7 +667,3 @@ NSString *XTCommitSHAKey = @"sha",
 @implementation XTDiffDelta
 
 @end
-
-@implementation XTRemote
-
-@end

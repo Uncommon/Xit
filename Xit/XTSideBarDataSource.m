@@ -183,7 +183,8 @@ NSString * const XTStagingSHA = @"";
     XTSideBarItem *remote = remoteIndex[remoteName];
 
     if (remote == nil) {
-      remote = [[XTRemoteItem alloc] initWithTitle:remoteName];
+      remote = [[XTRemoteItem alloc] initWithTitle:remoteName
+                                        repository:self.repo];
       [remotes addChild:remote];
       remoteIndex[remoteName] = remote;
     }
