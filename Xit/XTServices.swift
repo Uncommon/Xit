@@ -73,6 +73,7 @@ class XTServices: NSObject {
                                     baseURL: account.location.absoluteString)
       else { return nil }
       
+      api.attemptAuthentication()
       teamCityServices[key] = api
       return api
     }
@@ -102,9 +103,12 @@ class XTBasicAuthService : Service {
           object: self)
     }
   }
+  private let authenticationPath: String
   
-  init?(user: String, password: String, baseURL: String?) {
-    authenticationStatus = .NotStarted
+  init?(user: String, password: String, baseURL: String?,
+        authenticationPath: String) {
+    self.authenticationStatus = .NotStarted
+    self.authenticationPath = authenticationPath
     
     super.init(baseURL: baseURL)
   
@@ -136,13 +140,14 @@ class XTBasicAuthService : Service {
   }
   
   /// Checks that the user and password are accepted by the server.
-  func attemptAuthentication(path: String)
+  func attemptAuthentication(path: String? = nil)
   {
     objc_sync_enter(self)
     defer { objc_sync_exit(self) }
     
     authenticationStatus = .InProgress
     
+    let path = path ?? authenticationPath
     let authResource = resource(path)
     
     for request in authResource.allRequests {
@@ -171,6 +176,8 @@ class XTBasicAuthService : Service {
           break
       }
     }
+    // Use a custom request to skip the XML transformer
+    authResource.load(usingRequest: authResource.request(.GET))
   }
   
   // For subclasses to override when more data needs to be downloaded.
@@ -180,9 +187,20 @@ class XTBasicAuthService : Service {
 }
 
 
+private func XMLResponseTransformer(
+    transformErrors: Bool = true) -> Siesta.ResponseTransformer
+{
+  return Siesta.ResponseContentTransformer(transformErrors: transformErrors) {
+    (content: NSData, entity: Siesta.Entity) throws -> NSXMLDocument in
+    return try NSXMLDocument(data: content, options: 0)
+  }
+}
+
+
 class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
   
   var type: AccountType { return .TeamCity }
+  static let rootPath = "/httpAuth/app/rest"
   
   enum BuildStatus {
     case Unknown
@@ -197,25 +215,21 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
   var vcsRootMap = [String: String]()
   var vcsBuildTypes = [String: [String]]()
   
-  override init?(user: String, password: String, baseURL: String?)
+  init?(user: String, password: String, baseURL: String?)
   {
     guard let baseURL = baseURL,
           let fullBaseURL = NSURLComponents(string: baseURL)
     else { return nil }
     
-    fullBaseURL.path = "httpAuth/app/rest"
+    fullBaseURL.path = XTTeamCityAPI.rootPath
     
-    super.init(user: user, password: password, baseURL: fullBaseURL.string)
+    super.init(user: user, password: password, baseURL: fullBaseURL.string,
+               authenticationPath: "/")
     
-    configureTransformer("**/properties/*") {
-      (content: NSData, entity) -> String? in
-      return String(data: content, encoding: NSUTF8StringEncoding)
+    configure(description: "xml") {
+      $0.config.pipeline[.parsing].add(XMLResponseTransformer(),
+                                       contentTypes: [ "*/xml" ])
     }
-    configureTransformer("**") { (content: NSData, entity) -> AnyObject? in
-      return (try? NSXMLDocument(data: content, options: 0)) ?? content
-    }
-    
-    attemptAuthentication("")  // The base URL makes a good test.
   }
   
   /// Status of the most recent build of the given branch from any project
@@ -231,22 +245,15 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
   var projects: Resource
   { return resource("projects") }
   
+  var buildTypes: Resource
+  { return resource("buildTypes") }
+  
   /// A resource for the repo URL of a VCS root. This will be just the URL,
   /// not wrapped in XML.
   func vcsRootURL(vcsRoodID: String) -> Resource
   {
     return resource("vcs-roots/id:\(vcsRoodID)/properties/url")
   }
-  
-  var buildTypes: Resource
-  {
-    return resource("buildTypes")
-  }
-}
-
-// MARK: VCS
-
-extension XTTeamCityAPI {
   
   override func didAuthenticate()
   {
@@ -255,12 +262,17 @@ extension XTTeamCityAPI {
       guard let xml = data.content as? NSXMLDocument
       else {
         NSLog("Couldn't parse vcs-roots xml")
-        self.buildTypesStatus = .Failed(nil)
+        self.buildTypesStatus = .Failed(nil)  // TODO: ParseError type
         return
       }
       self.parseVCSRoots(xml)
     }
   }
+}
+
+// MARK: VCS
+
+extension XTTeamCityAPI {
   
   /// Returns all the build types that use the given remote.
   func buildTypes(remoteURL: NSString) -> [String]
@@ -336,14 +348,22 @@ extension XTTeamCityAPI {
     
     for type in buildTypesList {
       guard let element = type as? NSXMLElement,
-            let url = element.attributeForName("href")?.stringValue
+            let href = element.attributeForName("href")?.stringValue
       else {
         NSLog("Couldn't parse build type: \(type)")
         self.buildTypesStatus = .Failed(nil)
         return
       }
-      resource(url).useData(self, closure: { (data) in
+      
+      let relativePath = href.stringByRemovingPrefix(XTTeamCityAPI.rootPath)
+      
+      resource(relativePath).useData(self, closure: { (data) in
         waitingTypeCount -= 1
+        defer {
+          if waitingTypeCount == 0 {
+            self.buildTypesStatus = .Done
+          }
+        }
         
         guard let xml = data.content as? NSXMLDocument
         else {
@@ -366,6 +386,11 @@ extension XTTeamCityAPI {
       self.buildTypesStatus = .Failed(nil)
       return
     }
+    guard let buildTypeID = buildType.attributeForName("id")?.stringValue
+    else {
+      NSLog("No ID for build type: \(xml)")
+      return
+    }
     guard let entriesChildren = rootEntries.children
     else { return }  // Empty list is not an error
     
@@ -379,16 +404,15 @@ extension XTTeamCityAPI {
         continue
       }
       
-      if var buildTypeURLs = vcsBuildTypes[vcsID] {
+      if var buildTypeURLs = vcsBuildTypes[buildTypeID] {
         // Modify and put it back because Array is a value type
         buildTypeURLs.append(vcsURL)
-        vcsBuildTypes[vcsID] = buildTypeURLs
+        vcsBuildTypes[buildTypeID] = buildTypeURLs
       }
       else {
-        vcsBuildTypes[vcsID] = [vcsURL]
+        vcsBuildTypes[buildTypeID] = [vcsURL]
       }
     }
-    buildTypesStatus = .Done
   }
 }
 
