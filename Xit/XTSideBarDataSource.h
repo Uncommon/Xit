@@ -9,12 +9,13 @@
 @class XTSideBarItem;
 @class XTSideBarGroupItem;
 
+@protocol BOSResourceObserver;
+
 /**
   Data source for the sidebar, showing branches, remotes, tags, stashes,
   and submodules.
  */
-@interface XTSideBarDataSource : NSObject {
- @private
+@interface XTSideBarDataSource : NSObject<BOSResourceObserver> {
   NSString *_currentBranch;
 }
 

@@ -1,10 +1,10 @@
+#import "Xit-Swift.h"
 #import "XTSideBarDataSource.h"
 #import "XTConstants.h"
 #import "XTRefFormatter.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
 #import "XTSideBarTableCellView.h"
-#import "Xit-Swift.h"
 #import "NSMutableDictionary+MultiObjectForKey.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
@@ -13,10 +13,11 @@ NSString * const XTStagingSHA = @"";
 
 @interface XTSideBarDataSource ()
 
-- (NSArray *)loadRoots;
+- (NSArray<XTSideBarGroupItem*>*)loadRoots;
 
 @property (readwrite) NSArray<XTSideBarGroupItem*> *roots;
 @property (readwrite) XTSideBarItem *stagingItem;
+@property NSMutableArray<BOSResource*> *observedResources;
 
 @end
 
@@ -26,16 +27,21 @@ NSString * const XTStagingSHA = @"";
 - (instancetype)init
 {
   if ((self = [super init]) != nil) {
+    _stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
+    _roots = [self makeRoots];
     self.stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
     self.roots = [self makeRoots];
+    _roots = [self makeRoots];
+    _stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
+    _observedResources = [[NSMutableArray alloc] init];
   }
-
   return self;
 }
 
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
+  [self releaseTeamCityResources];
 }
 
 - (void)awakeFromNib
@@ -85,9 +91,81 @@ NSString * const XTStagingSHA = @"";
   }];
 }
 
-- (NSArray *)loadRoots
+
+- (void)releaseTeamCityResources
 {
-  NSArray *newRoots = [self makeRoots];
+  for (BOSResource *resource in self.observedResources)
+    [resource removeObserversOwnedBy:self];
+}
+
+- (void)updateTeamCity:(XTSideBarItem*)remotes
+{
+  [self releaseTeamCityResources];
+  
+  NSArray<XTLocalBranch*> *localBranches = [_repo localBranchesWithError:nil];
+  
+  if (localBranches.count == 0)
+    return;
+
+  for (XTLocalBranch *local in localBranches) {
+    XTRemoteBranch *tracked = local.trackingBranch;
+    
+    if (tracked == nil)
+      continue;
+
+    Account *account = [_repo.config teamCityAccount:tracked.remoteName];
+    
+    if (account == nil)
+      continue;
+    
+    XTTeamCityAPI *api = [[XTServices services] teamCityAPI:account];
+    
+    if (api == nil)
+      continue;
+    
+    BOSResource *resource =
+        [api buildStatus:tracked.shortName.lastPathComponent];
+    
+    [resource addObserver:self];
+    [resource loadIfNeeded];
+    [self.observedResources addObject:resource];
+  }
+}
+
+- (NSImage*)statusImageForRemote:(NSString*)remote
+                          branch:(NSString*)branch
+{
+  XTConfig *config = _repo.config;
+  Account *account = [config teamCityAccount:remote];
+  
+  if (account == nil)
+    return nil;
+  
+  XTTeamCityAPI *api = [[XTServices services] teamCityAPI:account];
+  
+  if (api == nil)
+    return nil;
+  
+  BOSResource *resource = [api buildStatus:branch];
+  NSXMLDocument *document = resource.latestData.content;
+  
+  if ((document == nil) || ![document isKindOfClass:[NSXMLDocument class]])
+    return nil;
+  
+  NSXMLElement *root = document.rootElement;
+  NSXMLNode *status = [root attributeForName:@"status"];
+  NSString *statusString = status.stringValue;
+  
+  if ([statusString isEqualToString:@"SUCCESS"])
+    return [NSImage imageNamed:NSImageNameStatusAvailable];
+  if ([statusString isEqualToString:@"FAILURE"])
+    return [NSImage imageNamed:NSImageNameStatusAvailable];
+  return [NSImage imageNamed:NSImageNameStatusNone];
+}
+
+- (NSArray<XTSideBarGroupItem*>*)loadRoots
+{
+  NSArray<XTSideBarGroupItem*> *newRoots = [self makeRoots];
 
   NSMutableDictionary *refsIndex = [NSMutableDictionary dictionary];
   XTSideBarItem *branches = newRoots[XTBranchesGroupIndex];
@@ -104,6 +182,10 @@ NSString * const XTStagingSHA = @"";
 
   _repo.refsIndex = refsIndex;
   _currentBranch = [_repo currentBranch];
+
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [self updateTeamCity:remotes];
+  });
 
   return newRoots;
 }
@@ -265,6 +347,20 @@ NSString * const XTStagingSHA = @"";
       return item;
   }
   return nil;
+}
+
+#pragma mark - BOSResourceObserver
+
+- (void)resourceChanged:(BOSResource*)resource
+                  event:(NSString*)event
+{
+  // figure out which row it is
+  
+  [_outline reloadData];
+}
+
+- (void)stoppedObservingResource:(BOSResource*)resource
+{
 }
 
 @end
