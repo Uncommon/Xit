@@ -27,8 +27,8 @@ NSString * const XTStagingSHA = @"";
 - (instancetype)init
 {
   if ((self = [super init]) != nil) {
-    _roots = [self makeRoots];
     _stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
+    _roots = [self makeRoots];
     self.stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
     self.roots = [self makeRoots];
     _roots = [self makeRoots];
