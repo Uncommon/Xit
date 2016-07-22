@@ -157,11 +157,11 @@
     if (_repo.isWriting)
       return NO;
     return [_sidebarOutline parentForItem:item] ==
-           (_sideBarDS.roots)[XTRemotesGroupIndex];
+           (_sideBarDS.roots)[XTGroupIndexRemotes];
   }
   if (action == @selector(copyRemoteURL:)) {
     return [_sidebarOutline parentForItem:item] ==
-           (_sideBarDS.roots)[XTRemotesGroupIndex];
+           (_sideBarDS.roots)[XTGroupIndexRemotes];
   }
   if ((action == @selector(popStash:)) || (action == @selector(applyStash:)) ||
       (action == @selector(dropStash:))) {
@@ -411,10 +411,10 @@
 {
   XTLocalBranchItem *branchItem = (XTLocalBranchItem*)
       [_sideBarDS itemNamed:branch
-                    inGroup:XTBranchesGroupIndex];
+                    inGroup:XTGroupIndexBranches];
 
   if (branchItem != nil) {
-    [_sidebarOutline expandItem:[_sidebarOutline itemAtRow:XTBranchesGroupIndex]];
+    [_sidebarOutline expandItem:[_sidebarOutline itemAtRow:XTGroupIndexBranches]];
 
     const NSInteger row = [_sidebarOutline rowForItem:branchItem];
 

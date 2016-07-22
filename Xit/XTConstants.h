@@ -9,14 +9,14 @@ typedef NS_ENUM(NSUInteger, XTRefType) {
   XTRefTypeUnknown
 };
 
-typedef enum {
-  XTWorkspaceGroupIndex,
-  XTBranchesGroupIndex,
-  XTRemotesGroupIndex,
-  XTTagsGroupIndex,
-  XTStashesGroupIndex,
-  XTSubmodulesGroupIndex,
-} XTSideBarRootItems;
+typedef NS_ENUM(NSInteger, XTGroupIndex) {
+  XTGroupIndexWorkspace,
+  XTGroupIndexBranches,
+  XTGroupIndexRemotes,
+  XTGroupIndexTags,
+  XTGroupIndexStashes,
+  XTGroupIndexSubmodules,
+};
 
 typedef NS_ENUM(NSUInteger, XTError) {
   XTErrorWriteLock = 1,

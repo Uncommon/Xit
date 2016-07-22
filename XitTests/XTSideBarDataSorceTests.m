@@ -64,7 +64,7 @@
       NSLog(@"warning: TimeOut on reload");
     runLoop = NULL;
 
-    id branches = [self groupItemForIndex:XTBranchesGroupIndex];
+    id branches = [self groupItemForIndex:XTGroupIndexBranches];
 
     titles = [[branches children] valueForKey:@"title"];
     if ([titles isEqual:expectedTitles])
@@ -92,7 +92,7 @@
   [sbds reload];
   [self waitForRepoQueue];
 
-  id stashes = [self groupItemForIndex:XTStashesGroupIndex];
+  id stashes = [self groupItemForIndex:XTGroupIndexStashes];
   XCTAssertNotNil(stashes);
 
   NSInteger stashCount = [sbds outlineView:outlineView numberOfChildrenOfItem:stashes];
@@ -127,7 +127,7 @@
   [sbds setRepo:self.repository];
   [self waitForRepoQueue];
 
-  id remotes = [self groupItemForIndex:XTRemotesGroupIndex];
+  id remotes = [self groupItemForIndex:XTGroupIndexRemotes];
   XCTAssertNotNil(remotes);
 
   const NSInteger remoteCount = [sbds outlineView:outlineView numberOfChildrenOfItem:remotes];
@@ -187,7 +187,7 @@
   XCTAssertEqual(nr, 6L);
 
   // TAGS
-  id tags = [self groupItemForIndex:XTTagsGroupIndex];
+  id tags = [self groupItemForIndex:XTGroupIndexTags];
   XCTAssertNotNil(tags);
 
   NSInteger nt = [sbds outlineView:outlineView numberOfChildrenOfItem:tags];
@@ -213,7 +213,7 @@
   XCTAssertTrue(tagT1Found, @"Tag 't1' Not found");
 
   // BRANCHES
-  id branches = [self groupItemForIndex:XTBranchesGroupIndex];
+  id branches = [self groupItemForIndex:XTGroupIndexBranches];
   XCTAssertTrue((branches != nil), @"no branches FAIL");
 
   NSInteger nb = [sbds outlineView:outlineView numberOfChildrenOfItem:branches];
@@ -271,7 +271,7 @@
   [sbds setRepo:self.repository];
   [self waitForRepoQueue];
 
-  id subs = [self groupItemForIndex:XTSubmodulesGroupIndex];
+  id subs = [self groupItemForIndex:XTGroupIndexSubmodules];
   XCTAssertNotNil(subs);
 
   const NSInteger subCount = [sbds outlineView:outlineView numberOfChildrenOfItem:subs];

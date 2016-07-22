@@ -50,7 +50,7 @@
   XTHistoryViewController *controller =
       [[XTHistoryViewController alloc] initWithRepository:self.repository
                                                   sidebar:mockSidebar];
-  XTSideBarItem *branchesGroup = controller.sideBarDS.roots[XTBranchesGroupIndex];
+  XTSideBarItem *branchesGroup = controller.sideBarDS.roots[XTGroupIndexBranches];
 
   [controller.sideBarDS setRepo:self.repository];
   [[mockSidebar stub] reloadData];
@@ -78,7 +78,7 @@
   // selectBranch
   NSInteger row = 2, noRow = -1;
 
-  [[[mockSidebar expect] andReturn:nil] itemAtRow:XTBranchesGroupIndex];
+  [[[mockSidebar expect] andReturn:nil] itemAtRow:XTGroupIndexBranches];
   [[mockSidebar expect] expandItem:OCMOCK_ANY];
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)]
       rowForItem:OCMOCK_ANY];
@@ -88,14 +88,14 @@
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
   [[[mockSidebar expect] andReturn:
           [controller.sideBarDS itemNamed:@"master"
-                                  inGroup:XTBranchesGroupIndex]] itemAtRow:row];
+                                  inGroup:XTGroupIndexBranches]] itemAtRow:row];
   [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
 
   // selectedBranch from checkOutBranch
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(noRow)] contextMenuRow];
   [[[mockSidebar expect] andReturn:
           [controller.sideBarDS itemNamed:@"master"
-                                  inGroup:XTBranchesGroupIndex]] itemAtRow:row];
+                                  inGroup:XTGroupIndexBranches]] itemAtRow:row];
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
   [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
 
@@ -154,9 +154,9 @@
   [self waitForRepoQueue];
 
   XTSideBarGroupItem *stashesGroup =
-      controller.sideBarDS.roots[XTStashesGroupIndex];
+      controller.sideBarDS.roots[XTGroupIndexStashes];
   XTSideBarItem *stashItem =
-      [controller.sideBarDS itemNamed:stashName inGroup:XTStashesGroupIndex];
+      [controller.sideBarDS itemNamed:stashName inGroup:XTGroupIndexStashes];
 
   XCTAssertNotNil(stashItem);
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(noRow)] contextMenuRow];
@@ -287,7 +287,7 @@
       [[XTHistoryViewController alloc] initWithRepository:self.repository
                                                   sidebar:mockSidebar];
   XTSideBarItem *branchesGroup =
-      controller.sideBarDS.roots[XTBranchesGroupIndex];
+      controller.sideBarDS.roots[XTGroupIndexBranches];
   XTLocalBranchItem *masterItem =
       [[XTLocalBranchItem alloc] initWithTitle:@"master"];
   NSInteger row = 1;
@@ -336,7 +336,7 @@
       [[XTHistoryViewController alloc] initWithRepository:self.repository
                                                   sidebar:mockSidebar];
   XTSideBarItem *branchesGroup =
-      controller.sideBarDS.roots[XTBranchesGroupIndex];
+      controller.sideBarDS.roots[XTGroupIndexBranches];
   XTLocalBranchItem *masterItem =
       [[XTLocalBranchItem alloc] initWithTitle:@"task"];
   NSInteger row = 1;

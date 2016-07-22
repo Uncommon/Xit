@@ -22,7 +22,7 @@
   } else if ([item isKindOfClass:[XTTagItem class]]) {
     menu = _controller.tagContextMenu;
   } else if ([self parentForItem:item] ==
-             _controller.sideBarDS.roots[XTRemotesGroupIndex]) {
+             _controller.sideBarDS.roots[XTGroupIndexRemotes]) {
     menu = _controller.remoteContextMenu;
   } else if ([item isKindOfClass:[XTStashItem class]]) {
     menu = _controller.stashContextMenu;

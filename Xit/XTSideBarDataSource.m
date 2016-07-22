@@ -168,17 +168,17 @@ NSString * const XTStagingSHA = @"";
   NSArray<XTSideBarGroupItem*> *newRoots = [self makeRoots];
 
   NSMutableDictionary *refsIndex = [NSMutableDictionary dictionary];
-  XTSideBarItem *branches = newRoots[XTBranchesGroupIndex];
+  XTSideBarItem *branches = newRoots[XTGroupIndexBranches];
   NSMutableArray *tags = [NSMutableArray array];
-  XTSideBarItem *remotes = newRoots[XTRemotesGroupIndex];
+  XTSideBarItem *remotes = newRoots[XTGroupIndexRemotes];
   NSArray<XTStashItem*> *stashes = [self makeStashItems];
   NSArray<XTSubmoduleItem*> *submodules = [self makeSubmoduleItems];
 
   [self loadBranches:branches tags:tags remotes:remotes refsIndex:refsIndex];
 
-  [newRoots[XTTagsGroupIndex] setChildren:tags];
-  [newRoots[XTStashesGroupIndex] setChildren:stashes];
-  [newRoots[XTSubmodulesGroupIndex] setChildren:submodules];
+  [newRoots[XTGroupIndexTags] setChildren:tags];
+  [newRoots[XTGroupIndexStashes] setChildren:stashes];
+  [newRoots[XTGroupIndexSubmodules] setChildren:submodules];
 
   _repo.refsIndex = refsIndex;
   _currentBranch = [_repo currentBranch];
@@ -329,7 +329,7 @@ NSString * const XTStagingSHA = @"";
 
 - (XTLocalBranchItem *)itemForBranchName:(NSString *)branch
 {
-  XTSideBarItem *branches = _roots[XTBranchesGroupIndex];
+  XTSideBarItem *branches = _roots[XTGroupIndexBranches];
 
   for (XTSideBarItem *branchItem in branches.children) {
     if ([branchItem.title isEqual:branch])
