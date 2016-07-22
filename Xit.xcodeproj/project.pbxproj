@@ -116,6 +116,7 @@
 		C926804E1D074EC500E422FA /* XTFileChangesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C926804D1D074EC500E422FA /* XTFileChangesModel.swift */; };
 		C929D03B1D400B3B00D7DC52 /* XTRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D03A1D400B3B00D7DC52 /* XTRemote.swift */; };
 		C929D0461D415F6F00D7DC52 /* MiscExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */; };
+		C929D0601D42785B00D7DC52 /* XTTeamCityAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D05F1D42785B00D7DC52 /* XTTeamCityAPI.swift */; };
 		C92A7B261D1DD1CD00D2B944 /* folderTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C92A7B241D1DD1CD00D2B944 /* folderTemplate.png */; };
 		C92A7B271D1DD1CD00D2B944 /* folderTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C92A7B251D1DD1CD00D2B944 /* folderTemplate@2x.png */; };
 		C94866B61D256C24000BDB0A /* XTFetchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94866B51D256C24000BDB0A /* XTFetchController.swift */; };
@@ -442,6 +443,7 @@
 		C926804D1D074EC500E422FA /* XTFileChangesModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesModel.swift; sourceTree = "<group>"; };
 		C929D03A1D400B3B00D7DC52 /* XTRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRemote.swift; sourceTree = "<group>"; };
 		C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiscExtensions.swift; sourceTree = "<group>"; };
+		C929D05F1D42785B00D7DC52 /* XTTeamCityAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTeamCityAPI.swift; sourceTree = "<group>"; };
 		C92A7B241D1DD1CD00D2B944 /* folderTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = folderTemplate.png; sourceTree = "<group>"; };
 		C92A7B251D1DD1CD00D2B944 /* folderTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "folderTemplate@2x.png"; sourceTree = "<group>"; };
 		C94866B51D256C24000BDB0A /* XTFetchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFetchController.swift; sourceTree = "<group>"; };
@@ -784,10 +786,10 @@
 				31C7C12A13EC730500A65FE9 /* Utils */,
 				C3D6D30F13E8E63A00AF50B0 /* GitX */,
 				C9C773151D26F28900329493 /* Preferences */,
+				C929D0541D42784000D7DC52 /* Services */,
 				89A6EA2614478DA40089B212 /* XTAppDelegate.h */,
 				89A6EA2714478DA40089B212 /* XTAppDelegate.m */,
 				DD07B08316B2005B0012AC19 /* XTConstants.h */,
-				C91F34771D30656B005F9BDF /* XTServices.swift */,
 				C3FA471813D0F8E300AC4F9B /* MainMenu.xib */,
 				89039F551703A9FC000949A8 /* html */,
 				899D0106142168830091DC6F /* images */,
@@ -856,6 +858,15 @@
 				C91F34711D30647E005F9BDF /* SiestaTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		C929D0541D42784000D7DC52 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				C91F34771D30656B005F9BDF /* XTServices.swift */,
+				C929D05F1D42785B00D7DC52 /* XTTeamCityAPI.swift */,
+			);
+			name = Services;
 			sourceTree = "<group>";
 		};
 		C973285E1D11DD4A00C56B9E /* Sidebar */ = {
@@ -1310,6 +1321,7 @@
 				DD3D94F318254442004AF532 /* XTFileListDataSourceBase.m in Sources */,
 				89D6FE6F17D2F89D00633798 /* XTCommitHeaderViewController.m in Sources */,
 				C954ABFD1D34455000302160 /* XTBranch.swift in Sources */,
+				C929D0601D42785B00D7DC52 /* XTTeamCityAPI.swift in Sources */,
 				DD858B1F17FFDCB900264F7D /* XTTextPreviewController.m in Sources */,
 				89AC82431806769A00402955 /* XTWebViewController.m in Sources */,
 				89C927781D36A5890074F71A /* XTTag.swift in Sources */,
