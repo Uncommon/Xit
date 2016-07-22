@@ -34,6 +34,7 @@ NSString * const XTStagingSHA = @"";
     _roots = [self makeRoots];
     _stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
     _observedResources = [[NSMutableArray alloc] init];
+    self.buildStatuses = [NSMutableDictionary dictionary];
   }
   return self;
 }
@@ -41,13 +42,7 @@ NSString * const XTStagingSHA = @"";
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
-  [self releaseTeamCityResources];
-}
-
-- (void)awakeFromNib
-{
-  self.outline.target = self;
-  self.outline.doubleAction = @selector(doubleClick:);
+  [self.buildStatusTimer invalidate];
 }
 
 - (void)setRepo:(XTRepository *)newRepo
@@ -91,17 +86,8 @@ NSString * const XTStagingSHA = @"";
   }];
 }
 
-
-- (void)releaseTeamCityResources
-{
-  for (BOSResource *resource in self.observedResources)
-    [resource removeObserversOwnedBy:self];
-}
-
 - (void)updateTeamCity:(XTSideBarItem*)remotes
 {
-  [self releaseTeamCityResources];
-  
   NSArray<XTLocalBranch*> *localBranches = [_repo localBranchesWithError:nil];
   
   if (localBranches.count == 0)
@@ -109,8 +95,10 @@ NSString * const XTStagingSHA = @"";
 
   for (XTLocalBranch *local in localBranches) {
     XTRemoteBranch *tracked = local.trackingBranch;
+    XTRemote *remote = [[XTRemote alloc] initWithName:tracked.remoteName
+                                           repository:self.repo];
     
-    if (tracked == nil)
+    if ((tracked == nil) || (remote == nil))
       continue;
 
     Account *account = [_repo.config teamCityAccount:tracked.remoteName];
@@ -119,16 +107,17 @@ NSString * const XTStagingSHA = @"";
       continue;
     
     XTTeamCityAPI *api = [[XTServices services] teamCityAPI:account];
+    NSArray<NSString*> *buildTypes = [api buildTypesForRemote:remote.URLString];
+    BOOL __block success = YES;
     
-    if (api == nil)
-      continue;
-    
-    BOSResource *resource =
-        [api buildStatus:tracked.shortName.lastPathComponent];
-    
-    [resource addObserver:self];
-    [resource loadIfNeeded];
-    [self.observedResources addObject:resource];
+    for (NSString *builtType in buildTypes) {
+      [api enumerateBuildStatus:local.name
+                      builtType:builtType
+                      processor:^(NSDictionary<NSString*,NSString*>* _Nonnull buildAttributes) {
+        if (![buildAttributes[@"status"] isEqualToString:@"SUCCESS"])
+          success = NO;
+      }];
+    }
   }
 }
 
@@ -142,25 +131,23 @@ NSString * const XTStagingSHA = @"";
     return nil;
   
   XTTeamCityAPI *api = [[XTServices services] teamCityAPI:account];
+  NSArray<NSString*> *buildTypes = [api buildTypesForRemote:remote];
   
-  if (api == nil)
-    return nil;
+  BOOL __block success = YES;
   
-  BOSResource *resource = [api buildStatus:branch];
-  NSXMLDocument *document = resource.latestData.content;
+  for (NSString *builtType in buildTypes) {
+    [api enumerateBuildStatus:branch
+                    builtType:builtType
+                    processor:^(NSDictionary<NSString*,NSString*>* _Nonnull
+                                buildAttributes) {
+      if (![buildAttributes[@"status"] isEqualToString:@"SUCCESS"])
+        success = NO;
+    }];
+  }
   
-  if ((document == nil) || ![document isKindOfClass:[NSXMLDocument class]])
-    return nil;
-  
-  NSXMLElement *root = document.rootElement;
-  NSXMLNode *status = [root attributeForName:@"status"];
-  NSString *statusString = status.stringValue;
-  
-  if ([statusString isEqualToString:@"SUCCESS"])
-    return [NSImage imageNamed:NSImageNameStatusAvailable];
-  if ([statusString isEqualToString:@"FAILURE"])
-    return [NSImage imageNamed:NSImageNameStatusAvailable];
-  return [NSImage imageNamed:NSImageNameStatusNone];
+  return [NSImage imageNamed:success
+      ? NSImageNameStatusAvailable
+      : NSImageNameStatusUnavailable];
 }
 
 - (NSArray<XTSideBarGroupItem*>*)loadRoots

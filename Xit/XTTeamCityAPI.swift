@@ -37,6 +37,7 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
   
   /// Maps VCS root ID to repository URL.
   var vcsRootMap = [String: String]()
+  /// Maps built type IDs to lists of repository URLs.
   var vcsBuildTypes = [String: [String]]()
   
   init?(user: String, password: String, baseURL: String?)
@@ -68,7 +69,7 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
   }
   
   // Applies the given closure to the build statuses for the given branch and
-  // build type.
+  // build type, asynchronously if the data is not yet cached.
   func enumerateBuildStatus(branch: String, builtType: String,
                             processor: ([String: String]) -> Void)
   {

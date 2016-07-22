@@ -3,6 +3,50 @@ import Cocoa
 
 extension XTSideBarDataSource {
   
+  @nonobjc static let kReloadInterval: NSTimeInterval = 1
+  
+  public override func awakeFromNib()
+  {
+    outline!.target = self
+    outline!.doubleAction = #selector(XTSideBarDataSource.doubleClick(_:))
+    if (!XTAccountsManager.manager.accounts(ofType: .TeamCity).isEmpty) {
+      buildStatusTimer = NSTimer.scheduledTimerWithTimeInterval(
+          60 * 5,
+          target: self,
+          selector: #selector(XTSideBarDataSource.buildStatusTimerFired(_:)),
+          userInfo: nil, repeats: true)
+    }
+  }
+  
+  func buildStatusTimerFired(timer: NSTimer)
+  {
+    updateTeamCity(roots[XTGroupIndex.Remotes.rawValue])
+  }
+  
+  func scheduleReload()
+  {
+    if let timer = reloadTimer where timer.valid {
+      timer.fireDate =
+          NSDate(timeIntervalSinceNow: XTSideBarDataSource.kReloadInterval)
+    }
+    else {
+      reloadTimer = NSTimer.scheduledTimerWithTimeInterval(
+          XTSideBarDataSource.kReloadInterval,
+          target: self,
+          selector: #selector(XTSideBarDataSource.reloadTimerFired(_:)),
+          userInfo: nil,
+          repeats: false)
+    }
+  }
+  
+  func reloadTimerFired(timer: NSTimer)
+  {
+    dispatch_async(dispatch_get_main_queue()) { 
+      self.outline!.reloadData()
+    }
+    reloadTimer = nil
+  }
+  
   func makeRoots() -> [XTSideBarGroupItem]
   {
     let rootNames =
@@ -39,6 +83,36 @@ extension XTSideBarDataSource {
   {
     return repo.submodules().map({ XTSubmoduleItem(submodule: $0) })
   }
+  
+  func updateTeamCity(remotesGroup: XTSideBarItem)
+  {
+    guard let localBranches = try? repo.localBranches()
+    else { return }
+    
+    buildStatuses = [:]
+    for local in localBranches {
+      guard let fullBranchName = local.name,
+            let tracked = local.trackingBranch,
+            let remote = XTRemote(name: tracked.remoteName, repository: repo),
+            let remoteURL = remote.URLString,
+            let account = repo.config.teamCityAccount(tracked.remoteName),
+            let api = XTServices.services.teamCityAPI(account)
+      else { continue }
+      
+      let branchName = (fullBranchName as NSString).lastPathComponent
+      let buildTypes = api.buildTypes(forRemote: remoteURL)
+      
+      for buildType in buildTypes {
+        api.enumerateBuildStatus(branchName, builtType: buildType) {
+          (attributes) in
+          if attributes[XTTeamCityAPI.BuildAttribute.Status.rawValue] !=
+             XTTeamCityAPI.BuildStatus.Succeded.rawValue {
+            self.buildStatuses[buildType] = false
+          }
+        }
+      }
+    }
+  }
 }
 
 extension XTSideBarDataSource: NSOutlineViewDataSource {
@@ -69,9 +143,9 @@ extension XTSideBarDataSource: NSOutlineViewDelegate {
 
   public func outlineViewSelectionDidChange(notification: NSNotification)
   {
-    guard let item = outline.itemAtRow(outline.selectedRow) as? XTSideBarItem,
+    guard let item = outline!.itemAtRow(outline!.selectedRow) as? XTSideBarItem,
           let model = item.model,
-          let controller = outline.window?.windowController as? XTWindowController
+          let controller = outline!.window?.windowController as? XTWindowController
     else { return }
     
     controller.selectedModel = model
