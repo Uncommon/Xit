@@ -12,3 +12,24 @@ extension String {
     return self.substringFromIndex(prefix.characters.endIndex)
   }
 }
+
+extension NSXMLElement {
+
+  /// Returns the attribute's elements as a dictionary.
+  func attributesDict() -> [String: String]
+  {
+    guard let attributes = attributes
+    else { return [:] }
+
+    var result = [String: String]()
+
+    for attribute in attributes {
+      guard let name = attribute.name,
+            let value = attribute.stringValue
+      else { continue }
+
+      result[name] = value
+    }
+    return result
+  }
+}

@@ -123,12 +123,7 @@ NSString * const XTStagingSHA = @"";
     if (api == nil)
       continue;
     
-    BOSResource *resource =
-        [api buildStatus:tracked.shortName.lastPathComponent];
-    
-    [resource addObserver:self];
-    [resource loadIfNeeded];
-    [self.observedResources addObject:resource];
+    // start loading the build status data
   }
 }
 
@@ -146,21 +141,9 @@ NSString * const XTStagingSHA = @"";
   if (api == nil)
     return nil;
   
-  BOSResource *resource = [api buildStatus:branch];
-  NSXMLDocument *document = resource.latestData.content;
-  
-  if ((document == nil) || ![document isKindOfClass:[NSXMLDocument class]])
-    return nil;
-  
-  NSXMLElement *root = document.rootElement;
-  NSXMLNode *status = [root attributeForName:@"status"];
-  NSString *statusString = status.stringValue;
-  
-  if ([statusString isEqualToString:@"SUCCESS"])
-    return [NSImage imageNamed:NSImageNameStatusAvailable];
-  if ([statusString isEqualToString:@"FAILURE"])
-    return [NSImage imageNamed:NSImageNameStatusAvailable];
-  return [NSImage imageNamed:NSImageNameStatusNone];
+  // return one of NSImageNameStatusAvailable, NSImageNameStatusUnavailable,
+  // or NSImageNameStatusNone.
+  return nil;
 }
 
 - (NSArray<XTSideBarGroupItem*>*)loadRoots
