@@ -93,14 +93,10 @@ extension XTSideBarDataSource {
     for local in localBranches {
       guard let fullBranchName = local.name,
             let tracked = local.trackingBranch,
-            let remote = XTRemote(name: tracked.remoteName, repository: repo),
-            let remoteURL = remote.URLString,
-            let account = repo.config.teamCityAccount(tracked.remoteName),
-            let api = XTServices.services.teamCityAPI(account)
+            let (api, buildTypes) = matchTeamCity(tracked.remoteName)
       else { continue }
       
       let branchName = (fullBranchName as NSString).lastPathComponent
-      let buildTypes = api.buildTypes(forRemote: remoteURL)
       
       for buildType in buildTypes {
         let statusResource = api.buildStatus(branchName, buildType: buildType)
@@ -111,9 +107,12 @@ extension XTSideBarDataSource {
                 let status = (firstBuild as? NSXMLElement)?.attributeForName(XTTeamCityAPI.BuildAttribute.Status.rawValue)?.stringValue
           else { return }
           
-          NSLog("\(buildType): \(status)")
-          self.buildStatuses[buildType] =
+          NSLog("\(buildType)/\(branchName): \(status)")
+          var buildTypeStatuses = self.buildStatuses[buildType] as? [String: Bool] ?? [String: Bool]()
+          
+          buildTypeStatuses[branchName] =
               (status == XTTeamCityAPI.BuildStatus.Succeded.rawValue)
+          self.buildStatuses[buildType] = buildTypeStatuses
           self.scheduleReload()
         }
       }
@@ -124,11 +123,8 @@ extension XTSideBarDataSource {
   /// tracking branch.
   func remoteName(forBranchItem branchItem: XTSideBarItem) -> String?
   {
-    var remoteBranch: XTRemoteBranch?
-    
     if let remoteBranchItem = branchItem as? XTRemoteBranchItem {
-      remoteBranch = XTRemoteBranch(repository: repo,
-                                    name: remoteBranchItem.title)
+      return remoteBranchItem.remote
     }
     else if let localBranchItem = branchItem as? XTLocalBranchItem {
       guard let branch = XTLocalBranch(repository: repo,
@@ -138,10 +134,9 @@ extension XTSideBarDataSource {
         return nil
       }
       
-      remoteBranch = branch.trackingBranch
+      return branch.trackingBranch?.remoteName
     }
-    
-    return remoteBranch?.remoteName
+    return nil
   }
   
   /// Returns the first TeamCity service that builds from the given repository,
@@ -171,10 +166,11 @@ extension XTSideBarDataSource {
           let (_, buildTypes) = matchTeamCity(remoteName)
     else { return nil }
     
+    let branchName = (item.title as NSString).lastPathComponent
     var overallSuccess: Bool?
     
     for buildType in buildTypes {
-      if let buildSuccess = buildStatuses[buildType]?.boolValue {
+      if let buildSuccess = buildStatuses[buildType]?[branchName]??.boolValue {
         overallSuccess = (overallSuccess ?? true) && buildSuccess
       }
     }

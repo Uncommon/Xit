@@ -40,7 +40,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) XTRepository *repo;
 @property (readonly) NSArray<XTSideBarGroupItem*> *roots;
 @property (readonly) XTSideBarItem *stagingItem;
-@property NSMutableDictionary<NSString*, NSNumber*> *buildStatuses;
+/// Cached build statuses, keyed on build type and branch name.
+@property NSMutableDictionary<NSString*,
+                              NSDictionary<NSString*, NSNumber*>*> *buildStatuses;
 
 @property NSTimer *buildStatusTimer;
 @property (nullable) NSTimer *reloadTimer;
