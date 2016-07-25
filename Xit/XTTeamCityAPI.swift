@@ -142,28 +142,20 @@ extension XTTeamCityAPI {
   
   private func parseVCSRoots(xml: NSXMLDocument)
   {
-    guard let vcsRoots = xml.children?.first?.children
-      else {
-        NSLog("Couldn't parse vcs-roots")
-        self.buildTypesStatus = .Failed(nil)
-        return
+    guard let vcsIDs = xml.rootElement()?.childrenAttributes("id")
+    else {
+      NSLog("Couldn't parse vcs-roots")
+      self.buildTypesStatus = .Failed(nil)
+      return
     }
     
-    var waitingRootCount = vcsRoots.count
+    var waitingRootCount = vcsIDs.count
     
     vcsRootMap.removeAll()
-    for vcsRoot in vcsRoots {
-      guard let element = vcsRoot as? NSXMLElement,
-            let rootID = element.attributeForName("id")?.stringValue
-      else {
-        NSLog("Couldn't parse vcs-roots")
-        self.buildTypesStatus = .Failed(nil)
-        return
-      }
-      
+    for rootID in vcsIDs {
       let repoResource = self.vcsRootURL(rootID)
       
-      repoResource.useData(self, closure: { (data) in
+      repoResource.useData(self) { (data) in
         if let repoURL = data.content as? String {
           self.vcsRootMap[rootID] = repoURL
         }
@@ -171,7 +163,7 @@ extension XTTeamCityAPI {
         if (waitingRootCount == 0) {
           self.getBuildTypes()
         }
-      })
+      }
     }
   }
   
@@ -190,24 +182,15 @@ extension XTTeamCityAPI {
   
   private func parseBuildTypes(xml: NSXMLDocument)
   {
-    guard let buildTypesList = xml.rootElement()?.children
+    guard let hrefs = xml.rootElement()?.childrenAttributes("href")
     else {
-      NSLog("Couldn't parse build types")
-      self.buildTypesStatus = .Failed(nil)
+      NSLog("Couldn't get hrefs: \(xml)")
       return
     }
     
-    var waitingTypeCount = buildTypesList.count
+    var waitingTypeCount = hrefs.count
     
-    for type in buildTypesList {
-      guard let element = type as? NSXMLElement,
-            let href = element.attributeForName("href")?.stringValue
-      else {
-        NSLog("Couldn't parse build type: \(type)")
-        self.buildTypesStatus = .Failed(nil)
-        return
-      }
-      
+    for href in hrefs {
       let relativePath = href.stringByRemovingPrefix(XTTeamCityAPI.rootPath)
       
       resource(relativePath).useData(self, closure: { (data) in
@@ -244,27 +227,19 @@ extension XTTeamCityAPI {
       NSLog("No ID for build type: \(xml)")
       return
     }
-    guard let entriesChildren = rootEntries.children
-    else { return }  // Empty list is not an error
     
-    for entry in entriesChildren {
-      guard let entryElement = entry as? NSXMLElement,
-            let vcsID = entryElement.attributeForName("id")?.stringValue
-      else { continue }
+    let vcsIDs = rootEntries.childrenAttributes("id")
+    var buildTypeURLs = [String]()
+    
+    for vcsID in vcsIDs {
       guard let vcsURL = vcsRootMap[vcsID]
       else {
         NSLog("No match for VCS ID \(vcsID)")
         continue
       }
       
-      if var buildTypeURLs = vcsBuildTypes[buildTypeID] {
-        // Modify and put it back because Array is a value type
-        buildTypeURLs.append(vcsURL)
-        vcsBuildTypes[buildTypeID] = buildTypeURLs
-      }
-      else {
-        vcsBuildTypes[buildTypeID] = [vcsURL]
-      }
+      buildTypeURLs.append(vcsURL)
     }
+    vcsBuildTypes[buildTypeID] = buildTypeURLs
   }
 }
