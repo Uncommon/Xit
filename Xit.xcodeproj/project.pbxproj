@@ -55,6 +55,7 @@
 		89C927751D36A2180074F71A /* XTSubmodule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927741D36A2180074F71A /* XTSubmodule.swift */; };
 		89C927781D36A5890074F71A /* XTTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927771D36A5890074F71A /* XTTag.swift */; };
 		89C927881D43B0460074F71A /* XTPullController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927871D43B0460074F71A /* XTPullController.swift */; };
+		89C927941D43B23B0074F71A /* XTRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927931D43B23B0074F71A /* XTRepository.swift */; };
 		89CD209217089D220051C3D4 /* XTCategoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89CD209117089D220051C3D4 /* XTCategoryTests.m */; };
 		89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */; };
 		89D6FE6F17D2F89D00633798 /* XTCommitHeaderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D6FE6E17D2F89D00633798 /* XTCommitHeaderViewController.m */; };
@@ -361,6 +362,7 @@
 		89C927741D36A2180074F71A /* XTSubmodule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSubmodule.swift; sourceTree = "<group>"; };
 		89C927771D36A5890074F71A /* XTTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTag.swift; sourceTree = "<group>"; };
 		89C927871D43B0460074F71A /* XTPullController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPullController.swift; sourceTree = "<group>"; };
+		89C927931D43B23B0074F71A /* XTRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRepository.swift; sourceTree = "<group>"; };
 		89CD209017089D220051C3D4 /* XTCategoryTests.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTCategoryTests.h; sourceTree = "<group>"; tabWidth = 2; };
 		89CD209117089D220051C3D4 /* XTCategoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTCategoryTests.m; sourceTree = "<group>"; tabWidth = 2; };
 		89D47941170894A200C04D89 /* NSAttributedString+XTExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+XTExtensions.h"; sourceTree = "<group>"; };
@@ -935,6 +937,7 @@
 				89C927741D36A2180074F71A /* XTSubmodule.swift */,
 				89C927771D36A5890074F71A /* XTTag.swift */,
 				C929D03A1D400B3B00D7DC52 /* XTRemote.swift */,
+				89C927931D43B23B0074F71A /* XTRepository.swift */,
 			);
 			name = Repository;
 			sourceTree = "<group>";
@@ -1265,6 +1268,7 @@
 				3174966513DF896E004C5546 /* XTHistoryDataSource.m in Sources */,
 				C957B84B1D2D53040040F858 /* XTSheetController.swift in Sources */,
 				3174966813DF8A0C004C5546 /* XTSideBarDataSource.m in Sources */,
+				89C927941D43B23B0074F71A /* XTRepository.swift in Sources */,
 				3174966E13DFF94C004C5546 /* XTHistoryItem.m in Sources */,
 				DD9D5E9C183EA33F00EBC1C7 /* XTFileDiffController.m in Sources */,
 				C3D6D31313E8E65700AF50B0 /* PBGitHistoryGrapher.m in Sources */,

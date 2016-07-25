@@ -1,6 +1,6 @@
 import Cocoa
 
-class XTRemote: GTRemote {
+public class XTRemote: GTRemote {
 
   init?(name: String, repository: XTRepository)
   {
