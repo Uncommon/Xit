@@ -20,7 +20,7 @@ extension XTSideBarDataSource {
   
   func buildStatusTimerFired(timer: NSTimer)
   {
-    updateTeamCity(roots[XTGroupIndex.Remotes.rawValue])
+    updateTeamCity()
   }
   
   func scheduleReload()
@@ -84,7 +84,7 @@ extension XTSideBarDataSource {
     return repo.submodules().map({ XTSubmoduleItem(submodule: $0) })
   }
   
-  func updateTeamCity(remotesGroup: XTSideBarItem)
+  func updateTeamCity()
   {
     guard let localBranches = try? repo.localBranches()
     else { return }
@@ -103,12 +103,18 @@ extension XTSideBarDataSource {
       let buildTypes = api.buildTypes(forRemote: remoteURL)
       
       for buildType in buildTypes {
-        api.enumerateBuildStatus(branchName, builtType: buildType) {
-          (attributes) in
-          if attributes[XTTeamCityAPI.BuildAttribute.Status.rawValue] !=
-             XTTeamCityAPI.BuildStatus.Succeded.rawValue {
-            self.buildStatuses[buildType] = false
-          }
+        let statusResource = api.buildStatus(branchName, buildType: buildType)
+        
+        statusResource.useData(self) { (data) in
+          guard let xml = data.content as? NSXMLDocument,
+                let firstBuild = xml.rootElement()?.children?.first,
+                let status = (firstBuild as? NSXMLElement)?.attributeForName(XTTeamCityAPI.BuildAttribute.Status.rawValue)?.stringValue
+          else { return }
+          
+          NSLog("\(buildType): \(status)")
+          self.buildStatuses[buildType] =
+              (status == XTTeamCityAPI.BuildStatus.Succeded.rawValue)
+          self.scheduleReload()
         }
       }
     }
@@ -142,11 +148,15 @@ extension XTSideBarDataSource {
   /// and a list of its build types.
   func matchTeamCity(remoteName: String) -> (XTTeamCityAPI, [String])?
   {
+    guard let remote = XTRemote(name: remoteName, repository: repo),
+          let remoteURL = remote.URLString
+    else { return nil }
+    
     let accounts = XTAccountsManager.manager.accounts(ofType: .TeamCity)
     let services = accounts.flatMap({ XTServices.services.teamCityAPI($0) })
     
     for service in services {
-      let buildTypes = service.buildTypes(forRemote: remoteName)
+      let buildTypes = service.buildTypes(forRemote: remoteURL)
       
       if !buildTypes.isEmpty {
         return (service, buildTypes)
@@ -271,12 +281,10 @@ extension XTSideBarDataSource: NSOutlineViewDelegate {
             #selector(XTHistoryViewController.sideBarItemRenamed(_:))
       }
       if sideBarItem.current {
-        dataView.button.hidden = false
         textField.font = NSFont.boldSystemFontOfSize(
             textField.font?.pointSize ?? 12)
       }
       else {
-        dataView.button.hidden = true
         textField.font = NSFont.systemFontOfSize(
             textField.font?.pointSize ?? 12)
       }

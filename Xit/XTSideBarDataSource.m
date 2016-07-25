@@ -107,7 +107,7 @@ NSString * const XTStagingSHA = @"";
   _currentBranch = [_repo currentBranch];
 
   dispatch_async(dispatch_get_main_queue(), ^{
-    [self updateTeamCity:remotes];
+    [self updateTeamCity];
   });
 
   return newRoots;
