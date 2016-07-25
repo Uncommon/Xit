@@ -86,70 +86,6 @@ NSString * const XTStagingSHA = @"";
   }];
 }
 
-- (void)updateTeamCity:(XTSideBarItem*)remotes
-{
-  NSArray<XTLocalBranch*> *localBranches = [_repo localBranchesWithError:nil];
-  
-  if (localBranches.count == 0)
-    return;
-
-  for (XTLocalBranch *local in localBranches) {
-    XTRemoteBranch *tracked = local.trackingBranch;
-    XTRemote *remote = [[XTRemote alloc] initWithName:tracked.remoteName
-                                           repository:self.repo];
-    
-    if ((tracked == nil) || (remote == nil))
-      continue;
-
-    Account *account = [_repo.config teamCityAccount:tracked.remoteName];
-    
-    if (account == nil)
-      continue;
-    
-    XTTeamCityAPI *api = [[XTServices services] teamCityAPI:account];
-    NSArray<NSString*> *buildTypes = [api buildTypesForRemote:remote.URLString];
-    BOOL __block success = YES;
-    
-    for (NSString *builtType in buildTypes) {
-      [api enumerateBuildStatus:local.name
-                      builtType:builtType
-                      processor:^(NSDictionary<NSString*,NSString*>* _Nonnull buildAttributes) {
-        if (![buildAttributes[@"status"] isEqualToString:@"SUCCESS"])
-          success = NO;
-      }];
-    }
-  }
-}
-
-- (NSImage*)statusImageForRemote:(NSString*)remote
-                          branch:(NSString*)branch
-{
-  XTConfig *config = _repo.config;
-  Account *account = [config teamCityAccount:remote];
-  
-  if (account == nil)
-    return nil;
-  
-  XTTeamCityAPI *api = [[XTServices services] teamCityAPI:account];
-  NSArray<NSString*> *buildTypes = [api buildTypesForRemote:remote];
-  
-  BOOL __block success = YES;
-  
-  for (NSString *builtType in buildTypes) {
-    [api enumerateBuildStatus:branch
-                    builtType:builtType
-                    processor:^(NSDictionary<NSString*,NSString*>* _Nonnull
-                                buildAttributes) {
-      if (![buildAttributes[@"status"] isEqualToString:@"SUCCESS"])
-        success = NO;
-    }];
-  }
-  
-  return [NSImage imageNamed:success
-      ? NSImageNameStatusAvailable
-      : NSImageNameStatusUnavailable];
-}
-
 - (NSArray<XTSideBarGroupItem*>*)loadRoots
 {
   NSArray<XTSideBarGroupItem*> *newRoots = [self makeRoots];
@@ -238,7 +174,7 @@ NSString * const XTStagingSHA = @"";
     XTCommitChanges *branchModel =
         [[XTCommitChanges alloc] initWithRepository:_repo sha:commit];
     XTLocalBranchItem *branch =
-        [[XTLocalBranchItem alloc] initWithTitle:name.lastPathComponent
+        [[XTLocalBranchItem alloc] initWithTitle:name
                                            model:branchModel];
     XTSideBarItem *parent = [self parentForBranch:name groupItem:branches];
 

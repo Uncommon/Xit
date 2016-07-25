@@ -113,6 +113,70 @@ extension XTSideBarDataSource {
       }
     }
   }
+  
+  /// Returns the name of the remote for either a remote branch or a local
+  /// tracking branch.
+  func remoteName(forBranchItem branchItem: XTSideBarItem) -> String?
+  {
+    var remoteBranch: XTRemoteBranch?
+    
+    if let remoteBranchItem = branchItem as? XTRemoteBranchItem {
+      remoteBranch = XTRemoteBranch(repository: repo,
+                                    name: remoteBranchItem.title)
+    }
+    else if let localBranchItem = branchItem as? XTLocalBranchItem {
+      guard let branch = XTLocalBranch(repository: repo,
+                                       name: localBranchItem.title)
+      else {
+        NSLog("Can't get branch for branch item: \(branchItem.title)")
+        return nil
+      }
+      
+      remoteBranch = branch.trackingBranch
+    }
+    
+    return remoteBranch?.remoteName
+  }
+  
+  /// Returns the first TeamCity service that builds from the given repository,
+  /// and a list of its build types.
+  func matchTeamCity(remoteName: String) -> (XTTeamCityAPI, [String])?
+  {
+    let accounts = XTAccountsManager.manager.accounts(ofType: .TeamCity)
+    let services = accounts.flatMap({ XTServices.services.teamCityAPI($0) })
+    
+    for service in services {
+      let buildTypes = service.buildTypes(forRemote: remoteName)
+      
+      if !buildTypes.isEmpty {
+        return (service, buildTypes)
+      }
+    }
+    return nil
+  }
+  
+  func statusImage(item: XTSideBarItem) -> NSImage?
+  {
+    guard let remoteName = remoteName(forBranchItem: item),
+          let (_, buildTypes) = matchTeamCity(remoteName)
+    else { return nil }
+    
+    var overallSuccess: Bool?
+    
+    for buildType in buildTypes {
+      if let buildSuccess = buildStatuses[buildType]?.boolValue {
+        overallSuccess = (overallSuccess ?? true) && buildSuccess
+      }
+    }
+    if overallSuccess == nil {
+      return NSImage(named: NSImageNameStatusNone)
+    }
+    else {
+      return NSImage(named: overallSuccess!
+          ? NSImageNameStatusAvailable
+          : NSImageNameStatusUnavailable)
+    }
+  }
 }
 
 extension XTSideBarDataSource: NSOutlineViewDataSource {
@@ -199,6 +263,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate {
       textField.stringValue = sideBarItem.displayTitle
       textField.editable = sideBarItem.editable
       textField.selectable = sideBarItem.selectable
+      dataView.statusImage.image = statusImage(sideBarItem)
       if sideBarItem.editable {
         textField.formatter = refFormatter
         textField.target = viewController

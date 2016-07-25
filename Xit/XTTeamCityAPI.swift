@@ -65,7 +65,11 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
     // - builds?locator=running:any,
     //    buildType:\(buildType),branch:\(branch)
     // - Returns a list of <build href=".."/>, retrieve those
-    return resource("builds/running:any,branch:\(branch),buildType:\(buildType)")
+    // If we just pass this to resource(path:), the ? gets encoded.
+    let href = "builds/?locator=running:any,branch:\(branch),buildType:\(buildType)"
+    let url = NSURL(string: href, relativeToURL: baseURL)
+    
+    return self.resource(absoluteURL: url)
   }
   
   // Applies the given closure to the build statuses for the given branch and
@@ -78,14 +82,11 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
     statusResource.useData(self) { (data) in
       guard let xml = data.content as? NSXMLDocument,
             let builds = xml.children?.first?.children
-      else {
-        NSLog("Couldn't process build statuses: \(data.content)")
-        return
-      }
+      else { return }
       
       for build in builds {
         guard let buildElement = build as? NSXMLElement
-          else { continue }
+        else { continue }
         
         processor(buildElement.attributesDict())
       }
