@@ -11,18 +11,18 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
   struct Build {
     
     enum Status {
-      case Succeded
+      case Succeeded
       case Failed
       
       init?(string: String)
       {
         switch string {
-        case "SUCCEEDED":
-          self = .Succeded
-        case "FAILED":
-          self = .Failed
-        default:
-          return nil
+          case "SUCCESS":
+            self = .Succeeded
+          case "FAILURE":
+            self = .Failed
+          default:
+            return nil
         }
       }
     }
@@ -36,7 +36,7 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
         switch string {
           case "running":
             self = .Running
-          case "running":
+          case "finished":
             self = .Finished
           default:
             return nil
@@ -70,10 +70,9 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
       let attributes = buildElement.attributesDict()
       
       self.buildType = attributes[Attribute.BuildType]
-      self.status = attributes[Attribute.Status].map({ Status(string: $0) })
-                    ?? nil
-      self.state = attributes[Attribute.State].map({ State(string: $0) }) ?? nil
-      self.url = attributes[Attribute.WebURL].map({ NSURL(string: $0) }) ?? nil
+      self.status = attributes[Attribute.Status].flatMap { Status(string: $0) }
+      self.state = attributes[Attribute.State].flatMap { State(string: $0) }
+      self.url = attributes[Attribute.WebURL].flatMap { NSURL(string: $0) }
     }
     
     init?(xml: NSXMLDocument)

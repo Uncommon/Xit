@@ -111,7 +111,7 @@ extension XTSideBarDataSource {
           NSLog("\(buildType)/\(branchName): \(build.status)")
           var buildTypeStatuses = self.buildStatuses[buildType] as? [String: Bool] ?? [String: Bool]()
           
-          buildTypeStatuses[branchName] = build.status == .Succeded
+          buildTypeStatuses[branchName] = build.status == .Succeeded
           self.buildStatuses[buildType] = buildTypeStatuses
           self.scheduleReload()
         }
