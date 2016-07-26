@@ -34,6 +34,7 @@ NSString * const XTStagingSHA = @"";
     _roots = [self makeRoots];
     _stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
     _observedResources = [[NSMutableArray alloc] init];
+    self.buildStatuses = [NSMutableDictionary dictionary];
   }
   return self;
 }
@@ -41,13 +42,7 @@ NSString * const XTStagingSHA = @"";
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
-  [self releaseTeamCityResources];
-}
-
-- (void)awakeFromNib
-{
-  self.outline.target = self;
-  self.outline.doubleAction = @selector(doubleClick:);
+  [self.buildStatusTimer invalidate];
 }
 
 - (void)setRepo:(XTRepository *)newRepo
@@ -167,7 +162,7 @@ NSString * const XTStagingSHA = @"";
   _currentBranch = [_repo currentBranch];
 
   dispatch_async(dispatch_get_main_queue(), ^{
-    [self updateTeamCity:remotes];
+    [self updateTeamCity];
   });
 
   return newRoots;
@@ -234,7 +229,7 @@ NSString * const XTStagingSHA = @"";
     XTCommitChanges *branchModel =
         [[XTCommitChanges alloc] initWithRepository:_repo sha:commit];
     XTLocalBranchItem *branch =
-        [[XTLocalBranchItem alloc] initWithTitle:name.lastPathComponent
+        [[XTLocalBranchItem alloc] initWithTitle:name
                                            model:branchModel];
     XTSideBarItem *parent = [self parentForBranch:name groupItem:branches];
 

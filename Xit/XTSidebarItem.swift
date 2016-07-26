@@ -100,22 +100,16 @@ class XTRemoteItem : XTSideBarItem {
   
   override var icon: NSImage?
   {
-    if let urlString = remote?.URLString {
-      if let url = NSURL(string: urlString),
-         let host = url.host {
-        if (host == "github.com") || host.hasSuffix(".github.com") {
-          return NSImage(named: "githubTemplate")
-        }
-        else {
-          NSLog("unmatched")
-        }
-      }
-      else {
-        NSLog("no URL)")
+    if let urlString = remote?.URLString,
+       let url = NSURL(string: urlString),
+       let host = url.host {
+      if (host == "github.com") || host.hasSuffix(".github.com") {
+        return NSImage(named: "githubTemplate")
       }
     }
     return NSImage(named: "cloudTemplate")
   }
+  
   override var expandable: Bool { return true }
   override var editable: Bool { return true }
   override var refType: XTRefType { return .Remote }
@@ -127,7 +121,6 @@ class XTRemoteItem : XTSideBarItem {
     super.init(title: title)
   }
 }
-
 
 
 class XTTagItem : XTSideBarItem {

@@ -4,27 +4,18 @@
 
 @implementation XTSideBarTableCellView
 
-
-- (void)awakeFromNib
-{
-  // We want it to appear "inline"
-  [[self.button cell] setBezelStyle:NSInlineBezelStyle];
-}
-
 // The standard rowSizeStyle does some specific layout for us. To customize
 // layout for our button, we first call super and then modify things
 - (void)viewWillDraw
 {
   [super viewWillDraw];
-  if (!self.button.hidden) {
-    [self.button sizeToFit];
-
+  if (self.statusImage.image != nil) {
     NSRect textFrame = self.textField.frame;
-    NSRect buttonFrame = self.button.frame;
+    NSRect imageFrame = self.statusImage.frame;
 
-    buttonFrame.origin.x = NSWidth(self.frame) - NSWidth(buttonFrame);
-    self.button.frame = buttonFrame;
-    textFrame.size.width = NSMinX(buttonFrame) - NSMinX(textFrame);
+    imageFrame.origin.x = NSWidth(self.frame) - NSWidth(imageFrame) + 2;
+    self.statusImage.frame = imageFrame;
+    textFrame.size.width = NSMinX(imageFrame) - NSMinX(textFrame);
     self.textField.frame = textFrame;
   }
 }
