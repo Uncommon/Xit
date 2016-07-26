@@ -9,28 +9,28 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
   static let rootPath = "/httpAuth/app/rest"
   
   /// Attribute names of a <build> element.
-  enum BuildAttribute: String {
-    case ID = "id"
-    case BuildType = "buildTypeId"
-    case BuildNumber = "number"
-    case Status = "status"
-    case State = "state"
-    case Running = "running"
-    case Percentage = "percentageComplete"
-    case BranchName = "branchName"
-    case HRef = "href"
-    case WebURL = "webUrl"
+  struct BuildAttribute {
+    static let ID = "id"
+    static let BuildType = "buildTypeId"
+    static let BuildNumber = "number"
+    static let Status = "status"
+    static let State = "state"
+    static let Running = "running"
+    static let Percentage = "percentageComplete"
+    static let BranchName = "branchName"
+    static let HRef = "href"
+    static let WebURL = "webUrl"
   }
   
-  enum BuildStatus: String {
-    case Unknown = ""
-    case Succeded = "SUCCESS"
-    case Failed = "FAILURE"
+  struct BuildStatus {
+    static let Unknown = ""
+    static let Succeded = "SUCCESS"
+    static let Failed = "FAILURE"
   }
   
-  enum BuildState: String {
-    case Running = "running"
-    case Finished = "finished"
+  struct BuildState {
+    static let Running = "running"
+    static let Finished = "finished"
   }
   
   private(set) var buildTypesStatus = XTServices.Status.NotStarted
@@ -183,7 +183,7 @@ extension XTTeamCityAPI {
   
   private func parseBuildTypes(xml: NSXMLDocument)
   {
-    guard let hrefs = xml.rootElement()?.childrenAttributes("href")
+    guard let hrefs = xml.rootElement()?.childrenAttributes(BuildAttribute.HRef)
     else {
       NSLog("Couldn't get hrefs: \(xml)")
       return
