@@ -84,6 +84,10 @@ extension XTSideBarDataSource {
     return repo.submodules().map({ XTSubmoduleItem(submodule: $0) })
   }
   
+}
+
+extension XTSideBarDataSource { // MARK: TeamCity
+  
   func updateTeamCity()
   {
     guard let localBranches = try? repo.localBranches()
@@ -186,6 +190,7 @@ extension XTSideBarDataSource {
 }
 
 extension XTSideBarDataSource: NSOutlineViewDataSource {
+  // MARK: NSOutlineViewDataSource
   
   public func outlineView(outlineView: NSOutlineView, numberOfChildrenOfItem item: AnyObject?) -> Int {
     if item == nil {
@@ -210,6 +215,7 @@ extension XTSideBarDataSource: NSOutlineViewDataSource {
 }
 
 extension XTSideBarDataSource: NSOutlineViewDelegate {
+  // MARK: NSOutlineViewDelegate
 
   public func outlineViewSelectionDidChange(notification: NSNotification)
   {

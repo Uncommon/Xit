@@ -11,13 +11,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol BOSResourceObserver;
-
 /**
   Data source for the sidebar, showing branches, remotes, tags, stashes,
   and submodules.
  */
-@interface XTSideBarDataSource : NSObject<BOSResourceObserver> {
+@interface XTSideBarDataSource : NSObject {
   NSString *_currentBranch;
 }
 

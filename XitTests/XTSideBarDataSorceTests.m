@@ -332,11 +332,15 @@
       [[NSTextField alloc] initWithFrame:NSMakeRect(26, 3, 163, 17)];
   NSImageView *image =
       [[NSImageView alloc] initWithFrame:NSMakeRect(5, 2, 16, 16)];
+  NSImageView *statusImage =
+      [[NSImageView alloc] initWithFrame:NSMakeRect(171, 2, 16, 16)];
   
   [view addSubview:label];
   [view addSubview:image];
+  [view addSubview:statusImage];
   view.textField = label;
   view.imageView = image;
+  view.statusImage = statusImage;
   return view;
 }
 

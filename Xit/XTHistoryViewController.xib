@@ -60,7 +60,7 @@
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <textField verticalHuggingPriority="750" id="88">
-                                                                <rect key="frame" x="0.0" y="1" width="188" height="14"/>
+                                                                <rect key="frame" x="0.0" y="1" width="189" height="14"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="HEADER CELL" id="89">
                                                                     <font key="font" metaFont="smallSystemBold"/>
@@ -83,7 +83,7 @@
                                                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSApplicationIcon" id="113"/>
                                                             </imageView>
                                                             <textField verticalHuggingPriority="750" id="109">
-                                                                <rect key="frame" x="26" y="3" width="164" height="17"/>
+                                                                <rect key="frame" x="26" y="3" width="165" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" title="Row label" usesSingleLineMode="YES" id="112">
                                                                     <font key="font" metaFont="system"/>
@@ -95,7 +95,7 @@
                                                                 </textFieldCell>
                                                             </textField>
                                                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="Zdp-Ps-pbu">
-                                                                <rect key="frame" x="170" y="2" width="16" height="16"/>
+                                                                <rect key="frame" x="171" y="2" width="16" height="16"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSStatusAvailable" id="Uoo-ST-MXt"/>
                                                             </imageView>

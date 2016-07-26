@@ -86,61 +86,6 @@ NSString * const XTStagingSHA = @"";
   }];
 }
 
-
-- (void)releaseTeamCityResources
-{
-  for (BOSResource *resource in self.observedResources)
-    [resource removeObserversOwnedBy:self];
-}
-
-- (void)updateTeamCity:(XTSideBarItem*)remotes
-{
-  [self releaseTeamCityResources];
-  
-  NSArray<XTLocalBranch*> *localBranches = [_repo localBranchesWithError:nil];
-  
-  if (localBranches.count == 0)
-    return;
-
-  for (XTLocalBranch *local in localBranches) {
-    XTRemoteBranch *tracked = local.trackingBranch;
-    
-    if (tracked == nil)
-      continue;
-
-    Account *account = [_repo.config teamCityAccount:tracked.remoteName];
-    
-    if (account == nil)
-      continue;
-    
-    XTTeamCityAPI *api = [[XTServices services] teamCityAPI:account];
-    
-    if (api == nil)
-      continue;
-    
-    // start loading the build status data
-  }
-}
-
-- (NSImage*)statusImageForRemote:(NSString*)remote
-                          branch:(NSString*)branch
-{
-  XTConfig *config = _repo.config;
-  Account *account = [config teamCityAccount:remote];
-  
-  if (account == nil)
-    return nil;
-  
-  XTTeamCityAPI *api = [[XTServices services] teamCityAPI:account];
-  
-  if (api == nil)
-    return nil;
-  
-  // return one of NSImageNameStatusAvailable, NSImageNameStatusUnavailable,
-  // or NSImageNameStatusNone.
-  return nil;
-}
-
 - (NSArray<XTSideBarGroupItem*>*)loadRoots
 {
   NSArray<XTSideBarGroupItem*> *newRoots = [self makeRoots];
@@ -325,20 +270,6 @@ NSString * const XTStagingSHA = @"";
       return item;
   }
   return nil;
-}
-
-#pragma mark - BOSResourceObserver
-
-- (void)resourceChanged:(BOSResource*)resource
-                  event:(NSString*)event
-{
-  // figure out which row it is
-  
-  [_outline reloadData];
-}
-
-- (void)stoppedObservingResource:(BOSResource*)resource
-{
 }
 
 @end
