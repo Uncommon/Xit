@@ -103,15 +103,15 @@ extension XTSideBarDataSource {
         
         statusResource.useData(self) { (data) in
           guard let xml = data.content as? NSXMLDocument,
-                let firstBuild = xml.rootElement()?.children?.first,
-                let status = (firstBuild as? NSXMLElement)?.attributeForName(XTTeamCityAPI.BuildAttribute.Status)?.stringValue
+                let firstBuildElement =
+                    xml.rootElement()?.children?.first as? NSXMLElement,
+                let build = XTTeamCityAPI.Build(element: firstBuildElement)
           else { return }
           
-          NSLog("\(buildType)/\(branchName): \(status)")
+          NSLog("\(buildType)/\(branchName): \(build.status)")
           var buildTypeStatuses = self.buildStatuses[buildType] as? [String: Bool] ?? [String: Bool]()
           
-          buildTypeStatuses[branchName] =
-              (status == XTTeamCityAPI.BuildStatus.Succeded)
+          buildTypeStatuses[branchName] = build.status == .Succeded
           self.buildStatuses[buildType] = buildTypeStatuses
           self.scheduleReload()
         }

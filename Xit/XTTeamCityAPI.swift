@@ -8,29 +8,81 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
   var type: AccountType { return .TeamCity }
   static let rootPath = "/httpAuth/app/rest"
   
-  /// Attribute names of a <build> element.
-  struct BuildAttribute {
-    static let ID = "id"
-    static let BuildType = "buildTypeId"
-    static let BuildNumber = "number"
-    static let Status = "status"
-    static let State = "state"
-    static let Running = "running"
-    static let Percentage = "percentageComplete"
-    static let BranchName = "branchName"
-    static let HRef = "href"
-    static let WebURL = "webUrl"
-  }
-  
-  struct BuildStatus {
-    static let Unknown = ""
-    static let Succeded = "SUCCESS"
-    static let Failed = "FAILURE"
-  }
-  
-  struct BuildState {
-    static let Running = "running"
-    static let Finished = "finished"
+  struct Build {
+    
+    enum Status {
+      case Succeded
+      case Failed
+      
+      init?(string: String)
+      {
+        switch string {
+        case "SUCCEEDED":
+          self = .Succeded
+        case "FAILED":
+          self = .Failed
+        default:
+          return nil
+        }
+      }
+    }
+    
+    enum State {
+      case Running
+      case Finished
+      
+      init?(string: String)
+      {
+        switch string {
+          case "running":
+            self = .Running
+          case "running":
+            self = .Finished
+          default:
+            return nil
+        }
+      }
+    }
+    
+    struct Attribute {
+      static let ID = "id"
+      static let BuildType = "buildTypeId"
+      static let BuildNumber = "number"
+      static let Status = "status"
+      static let State = "state"
+      static let Running = "running"
+      static let Percentage = "percentageComplete"
+      static let BranchName = "branchName"
+      static let HRef = "href"
+      static let WebURL = "webUrl"
+    }
+    
+    let buildType: String?
+    let status: Status?
+    let state: State?
+    let url: NSURL?
+    
+    init?(element buildElement: NSXMLElement)
+    {
+      guard buildElement.name == "build"
+      else { return nil }
+      
+      let attributes = buildElement.attributesDict()
+      
+      self.buildType = attributes[Attribute.BuildType]
+      self.status = attributes[Attribute.Status].map({ Status(string: $0) })
+                    ?? nil
+      self.state = attributes[Attribute.State].map({ State(string: $0) }) ?? nil
+      self.url = attributes[Attribute.WebURL].map({ NSURL(string: $0) }) ?? nil
+    }
+    
+    init?(xml: NSXMLDocument)
+    {
+      guard let build = xml.rootElement()
+      else { return nil }
+      
+      self.init(element: build)
+    }
   }
   
   private(set) var buildTypesStatus = XTServices.Status.NotStarted
@@ -183,7 +235,7 @@ extension XTTeamCityAPI {
   
   private func parseBuildTypes(xml: NSXMLDocument)
   {
-    guard let hrefs = xml.rootElement()?.childrenAttributes(BuildAttribute.HRef)
+    guard let hrefs = xml.rootElement()?.childrenAttributes(Build.Attribute.HRef)
     else {
       NSLog("Couldn't get hrefs: \(xml)")
       return
