@@ -14,22 +14,31 @@ extension String {
 }
 
 extension NSXMLElement {
-
-  /// Returns the attribute's elements as a dictionary.
+  
+  /// Returns the element's attributes as a dictionary.
   func attributesDict() -> [String: String]
   {
     guard let attributes = attributes
     else { return [:] }
-
+    
     var result = [String: String]()
-
+    
     for attribute in attributes {
       guard let name = attribute.name,
             let value = attribute.stringValue
       else { continue }
-
+      
       result[name] = value
     }
     return result
+  }
+  
+  /// Returns a list of attribute values of all children, matching the given
+  /// attribute name.
+  func childrenAttributes(name: String) -> [String]
+  {
+    return children?.flatMap({
+      ($0 as? NSXMLElement)?.attributeForName(name)?.stringValue
+    }) ?? []
   }
 }

@@ -9,13 +9,13 @@
 @class XTSideBarItem;
 @class XTSideBarGroupItem;
 
-@protocol BOSResourceObserver;
+NS_ASSUME_NONNULL_BEGIN
 
 /**
   Data source for the sidebar, showing branches, remotes, tags, stashes,
   and submodules.
  */
-@interface XTSideBarDataSource : NSObject<BOSResourceObserver> {
+@interface XTSideBarDataSource : NSObject {
   NSString *_currentBranch;
 }
 
@@ -29,6 +29,8 @@
 
 - (XTSideBarItem *)itemNamed:(NSString *)name inGroup:(NSInteger)groupIndex;
 
+- (void)doubleClick:(id)sender;
+
 @property (weak) IBOutlet XTHistoryViewController *viewController;
 @property (weak) IBOutlet XTRefFormatter *refFormatter;
 @property (weak) IBOutlet NSOutlineView *outline;
@@ -36,5 +38,13 @@
 @property (nonatomic) XTRepository *repo;
 @property (readonly) NSArray<XTSideBarGroupItem*> *roots;
 @property (readonly) XTSideBarItem *stagingItem;
+/// Cached build statuses, keyed on build type and branch name.
+@property NSMutableDictionary<NSString*,
+                              NSDictionary<NSString*, NSNumber*>*> *buildStatuses;
+
+@property NSTimer *buildStatusTimer;
+@property (nullable) NSTimer *reloadTimer;
 
 @end
+
+NS_ASSUME_NONNULL_END

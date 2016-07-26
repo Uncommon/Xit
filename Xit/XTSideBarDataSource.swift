@@ -3,6 +3,50 @@ import Cocoa
 
 extension XTSideBarDataSource {
   
+  @nonobjc static let kReloadInterval: NSTimeInterval = 1
+  
+  public override func awakeFromNib()
+  {
+    outline!.target = self
+    outline!.doubleAction = #selector(XTSideBarDataSource.doubleClick(_:))
+    if (!XTAccountsManager.manager.accounts(ofType: .TeamCity).isEmpty) {
+      buildStatusTimer = NSTimer.scheduledTimerWithTimeInterval(
+          60 * 5,
+          target: self,
+          selector: #selector(XTSideBarDataSource.buildStatusTimerFired(_:)),
+          userInfo: nil, repeats: true)
+    }
+  }
+  
+  func buildStatusTimerFired(timer: NSTimer)
+  {
+    updateTeamCity()
+  }
+  
+  func scheduleReload()
+  {
+    if let timer = reloadTimer where timer.valid {
+      timer.fireDate =
+          NSDate(timeIntervalSinceNow: XTSideBarDataSource.kReloadInterval)
+    }
+    else {
+      reloadTimer = NSTimer.scheduledTimerWithTimeInterval(
+          XTSideBarDataSource.kReloadInterval,
+          target: self,
+          selector: #selector(XTSideBarDataSource.reloadTimerFired(_:)),
+          userInfo: nil,
+          repeats: false)
+    }
+  }
+  
+  func reloadTimerFired(timer: NSTimer)
+  {
+    dispatch_async(dispatch_get_main_queue()) { 
+      self.outline!.reloadData()
+    }
+    reloadTimer = nil
+  }
+  
   func makeRoots() -> [XTSideBarGroupItem]
   {
     let rootNames =
@@ -39,9 +83,114 @@ extension XTSideBarDataSource {
   {
     return repo.submodules().map({ XTSubmoduleItem(submodule: $0) })
   }
+  
+}
+
+extension XTSideBarDataSource { // MARK: TeamCity
+  
+  func updateTeamCity()
+  {
+    guard let localBranches = try? repo.localBranches()
+    else { return }
+    
+    buildStatuses = [:]
+    for local in localBranches {
+      guard let fullBranchName = local.name,
+            let tracked = local.trackingBranch,
+            let (api, buildTypes) = matchTeamCity(tracked.remoteName)
+      else { continue }
+      
+      let branchName = (fullBranchName as NSString).lastPathComponent
+      
+      for buildType in buildTypes {
+        let statusResource = api.buildStatus(branchName, buildType: buildType)
+        
+        statusResource.useData(self) { (data) in
+          guard let xml = data.content as? NSXMLDocument,
+                let firstBuildElement =
+                    xml.rootElement()?.children?.first as? NSXMLElement,
+                let build = XTTeamCityAPI.Build(element: firstBuildElement)
+          else { return }
+          
+          NSLog("\(buildType)/\(branchName): \(build.status)")
+          var buildTypeStatuses = self.buildStatuses[buildType] as? [String: Bool] ?? [String: Bool]()
+          
+          buildTypeStatuses[branchName] = build.status == .Succeeded
+          self.buildStatuses[buildType] = buildTypeStatuses
+          self.scheduleReload()
+        }
+      }
+    }
+  }
+  
+  /// Returns the name of the remote for either a remote branch or a local
+  /// tracking branch.
+  func remoteName(forBranchItem branchItem: XTSideBarItem) -> String?
+  {
+    if let remoteBranchItem = branchItem as? XTRemoteBranchItem {
+      return remoteBranchItem.remote
+    }
+    else if let localBranchItem = branchItem as? XTLocalBranchItem {
+      guard let branch = XTLocalBranch(repository: repo,
+                                       name: localBranchItem.title)
+      else {
+        NSLog("Can't get branch for branch item: \(branchItem.title)")
+        return nil
+      }
+      
+      return branch.trackingBranch?.remoteName
+    }
+    return nil
+  }
+  
+  /// Returns the first TeamCity service that builds from the given repository,
+  /// and a list of its build types.
+  func matchTeamCity(remoteName: String) -> (XTTeamCityAPI, [String])?
+  {
+    guard let remote = XTRemote(name: remoteName, repository: repo),
+          let remoteURL = remote.URLString
+    else { return nil }
+    
+    let accounts = XTAccountsManager.manager.accounts(ofType: .TeamCity)
+    let services = accounts.flatMap({ XTServices.services.teamCityAPI($0) })
+    
+    for service in services {
+      let buildTypes = service.buildTypes(forRemote: remoteURL)
+      
+      if !buildTypes.isEmpty {
+        return (service, buildTypes)
+      }
+    }
+    return nil
+  }
+  
+  func statusImage(item: XTSideBarItem) -> NSImage?
+  {
+    guard let remoteName = remoteName(forBranchItem: item),
+          let (_, buildTypes) = matchTeamCity(remoteName)
+    else { return nil }
+    
+    let branchName = (item.title as NSString).lastPathComponent
+    var overallSuccess: Bool?
+    
+    for buildType in buildTypes {
+      if let buildSuccess = buildStatuses[buildType]?[branchName]??.boolValue {
+        overallSuccess = (overallSuccess ?? true) && buildSuccess
+      }
+    }
+    if overallSuccess == nil {
+      return NSImage(named: NSImageNameStatusNone)
+    }
+    else {
+      return NSImage(named: overallSuccess!
+          ? NSImageNameStatusAvailable
+          : NSImageNameStatusUnavailable)
+    }
+  }
 }
 
 extension XTSideBarDataSource: NSOutlineViewDataSource {
+  // MARK: NSOutlineViewDataSource
   
   public func outlineView(outlineView: NSOutlineView, numberOfChildrenOfItem item: AnyObject?) -> Int {
     if item == nil {
@@ -66,12 +215,13 @@ extension XTSideBarDataSource: NSOutlineViewDataSource {
 }
 
 extension XTSideBarDataSource: NSOutlineViewDelegate {
+  // MARK: NSOutlineViewDelegate
 
   public func outlineViewSelectionDidChange(notification: NSNotification)
   {
-    guard let item = outline.itemAtRow(outline.selectedRow) as? XTSideBarItem,
+    guard let item = outline!.itemAtRow(outline!.selectedRow) as? XTSideBarItem,
           let model = item.model,
-          let controller = outline.window?.windowController as? XTWindowController
+          let controller = outline!.window?.windowController as? XTWindowController
     else { return }
     
     controller.selectedModel = model
@@ -125,6 +275,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate {
       textField.stringValue = sideBarItem.displayTitle
       textField.editable = sideBarItem.editable
       textField.selectable = sideBarItem.selectable
+      dataView.statusImage.image = statusImage(sideBarItem)
       if sideBarItem.editable {
         textField.formatter = refFormatter
         textField.target = viewController
@@ -132,12 +283,10 @@ extension XTSideBarDataSource: NSOutlineViewDelegate {
             #selector(XTHistoryViewController.sideBarItemRenamed(_:))
       }
       if sideBarItem.current {
-        dataView.button.hidden = false
         textField.font = NSFont.boldSystemFontOfSize(
             textField.font?.pointSize ?? 12)
       }
       else {
-        dataView.button.hidden = true
         textField.font = NSFont.systemFontOfSize(
             textField.font?.pointSize ?? 12)
       }
