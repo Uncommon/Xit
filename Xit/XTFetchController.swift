@@ -4,8 +4,20 @@ import Cocoa
 /// Runs a `fetch` operation.
 class XTFetchController: XTOperationController {
   
+  /// The default remote to fetch from, either:
+  /// - the current branch's tracking branch
+  /// - if there are multiple remotes, the one named "origin"
+  /// - if there is one remote, use that one
   func defaultRemoteName() -> String?
   {
+    if let branchName = repository.currentBranch {
+      let currentBranch = XTLocalBranch(repository: repository,
+                                        name: branchName)
+      if let trackingBranch = currentBranch?.trackingBranch {
+        return trackingBranch.remoteName
+      }
+    }
+    
     let remotes = repository.remoteNames
     
     switch remotes.count {
@@ -115,8 +127,9 @@ class XTFetchController: XTOperationController {
       }
       catch let error as NSError {
         dispatch_async(dispatch_get_main_queue()) {
-          XTStatusView.update(
-            status: "Fetch failed", progress: -1, repository: repo)
+          XTStatusView.update(status: "Fetch failed",
+                              progress: -1,
+                              repository: repo)
           
           if let window = self.windowController?.window {
             let alert = NSAlert(error: error)

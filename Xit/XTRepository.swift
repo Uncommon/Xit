@@ -33,6 +33,23 @@ extension XTRepository {
     }
   }
   
+  public func fetchOptions(downloadTags: Bool,
+                           pruneBranches: Bool,
+                           passwordBlock: () -> (String, String)?)
+      -> [String: AnyObject]
+  {
+    let tagOption = downloadTags ? GTRemoteDownloadTagsAuto
+      : GTRemoteDownloadTagsNone
+    let pruneOption: GTFetchPruneOption = pruneBranches ? .Yes : .No
+    let pruneValue = NSNumber(long: pruneOption.rawValue)
+    let tagValue = NSNumber(unsignedInt: tagOption.rawValue)
+    let provider = self.credentialProvider(passwordBlock)
+    return [
+      GTRepositoryRemoteOptionsDownloadTags: tagValue,
+      GTRepositoryRemoteOptionsFetchPrune: pruneValue,
+      GTRepositoryRemoteOptionsCredentialProvider: provider]
+  }
+  
   /// Initiates a fetch operation.
   /// - parameter remote: The remote to pull from.
   /// - parameter downloadTags: True to also download tags
@@ -45,37 +62,36 @@ extension XTRepository {
                     passwordBlock: () -> (String, String)?,
                     progressBlock: (git_transfer_progress) -> Bool) throws
   {
-    let tagOption = downloadTags ? GTRemoteDownloadTagsAuto
-                                 : GTRemoteDownloadTagsNone
-    let pruneOption: GTFetchPruneOption = pruneBranches ? .Yes : .No
-    let pruneValue = NSNumber(long: pruneOption.rawValue)
-    let tagValue = NSNumber(unsignedInt: tagOption.rawValue)
-    let provider = self.credentialProvider(passwordBlock)
-    let options = [
-        GTRepositoryRemoteOptionsDownloadTags: tagValue,
-        GTRepositoryRemoteOptionsFetchPrune: pruneValue,
-        GTRepositoryRemoteOptionsCredentialProvider: provider]
+    let options = fetchOptions(downloadTags,
+                               pruneBranches: pruneBranches,
+                               passwordBlock: passwordBlock)
   
     try gtRepo.fetchRemote(remote, withOptions: options) { (progress, stop) in
-      if progressBlock(progress.memory) {
-        stop.memory = true
-      }
+      stop.memory = ObjCBool(progressBlock(progress.memory))
     }
   }
   
   /// Initiates pulling the given branch.
   /// - parameter branch: Either the local branch or the remote tracking branch.
   /// - parameter remote: The remote to pull from.
-  /// - parameter options: Options for fetch.
-  /// - parameter progressBlock: Progress callback. Return true to stop.
-  public func pullBranch(branch: XTBranch,
-                         remote: XTRemote,
-                         options: [String: AnyObject],
-                         progressBlock: (git_transfer_progress) -> Bool) throws
+  /// - parameter downloadTags: True to also download tags
+  /// - parameter pruneBranches: True to delete obsolete branch refs
+  /// - parameter passwordBlock: Callback for getting the user and password
+  /// - parameter progressBlock: Return true to stop the operation
+  public func pull(branch branch: XTBranch,
+                   remote: XTRemote,
+                   downloadTags: Bool,
+                   pruneBranches: Bool,
+                   passwordBlock: () -> (String, String)?,
+                   progressBlock: (git_transfer_progress) -> Bool) throws
   {
-    try gtRepo.pullBranch(branch.gtBranch, fromRemote: remote, withOptions: options) {
-      (progress: UnsafePointer<git_transfer_progress>,
-       stop: UnsafeMutablePointer<ObjCBool>) in
+    let options = fetchOptions(downloadTags,
+                               pruneBranches: pruneBranches,
+                               passwordBlock: passwordBlock)
+
+    try gtRepo.pullBranch(branch.gtBranch,
+                          fromRemote: remote,
+                          withOptions: options) { (progress, stop) in
       stop.memory = ObjCBool(progressBlock(progress.memory))
     }
   }
