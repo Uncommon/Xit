@@ -45,9 +45,9 @@ extension XTRepository {
     let tagValue = NSNumber(unsignedInt: tagOption.rawValue)
     let provider = self.credentialProvider(passwordBlock)
     return [
-      GTRepositoryRemoteOptionsDownloadTags: tagValue,
-      GTRepositoryRemoteOptionsFetchPrune: pruneValue,
-      GTRepositoryRemoteOptionsCredentialProvider: provider]
+        GTRepositoryRemoteOptionsDownloadTags: tagValue,
+        GTRepositoryRemoteOptionsFetchPrune: pruneValue,
+        GTRepositoryRemoteOptionsCredentialProvider: provider]
   }
   
   /// Initiates a fetch operation.
@@ -93,6 +93,27 @@ extension XTRepository {
                           fromRemote: remote,
                           withOptions: options) { (progress, stop) in
       stop.memory = ObjCBool(progressBlock(progress.memory))
+    }
+  }
+  
+  /// Initiates pushing the given branch.
+  /// - parameter branch: Either the local branch or the remote tracking branch.
+  /// - parameter remote: The remote to pull from.
+  /// - parameter passwordBlock: Callback for getting the user and password
+  /// - parameter progressBlock: Return true to stop the operation
+  public func push(branch branch: XTBranch,
+                   remote: XTRemote,
+                   passwordBlock: () -> (String, String)?,
+                   progressBlock: (UInt32, UInt32, size_t) -> Bool) throws
+  {
+    let provider = self.credentialProvider(passwordBlock)
+    let options = [ GTRepositoryRemoteOptionsCredentialProvider: provider ]
+    
+    try gtRepo.pushBranch(branch.gtBranch,
+                          toRemote: remote,
+                          withOptions: options) {
+      (current, total, bytes, stop) in
+      stop.memory = ObjCBool(progressBlock(current, total, bytes))
     }
   }
 }

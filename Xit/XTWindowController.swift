@@ -96,7 +96,10 @@ class XTWindowController: NSWindowController {
     let _: XTPullController? = startOperation()
   }
   
-  @IBAction func push(_: AnyObject) {}
+  @IBAction func push(_: AnyObject)
+  {
+    let _: XTPushController? = startOperation()
+  }
   
   /// Returns the new operation, if any, mostly because the generic type must
   /// be part of the signature.
