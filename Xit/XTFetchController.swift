@@ -2,7 +2,7 @@ import Cocoa
 
 
 /// Runs a `fetch` operation.
-class XTFetchController: XTOperationController {
+class XTFetchController: XTSimpleOperationController {
   
   /// The default remote to fetch from, either:
   /// - the current branch's tracking branch
@@ -35,7 +35,7 @@ class XTFetchController: XTOperationController {
     }
   }
   
-  func start()
+  override func start()
   {
     let config = XTConfig(repository: repository)
     let panel = XTFetchPanelController.controller()
@@ -60,7 +60,7 @@ class XTFetchController: XTOperationController {
   
   func ended()
   {
-    self.windowController?.fetchEnded()
+    self.windowController?.operationEnded(self)
   }
   
   /// Fetch progress callback
@@ -143,7 +143,7 @@ class XTFetchController: XTOperationController {
     }
   }
   
-  /// The fetch phase is complete. This is factored out so pull can override it.
+  /// The fetch phase is complete.
   func fetchCompleted()
   {
     XTStatusView.update(

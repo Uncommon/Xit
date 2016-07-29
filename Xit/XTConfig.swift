@@ -86,7 +86,8 @@ class XTConfig: NSObject {
     if config.stringForKey("remote.\(remote).tagOpt") == "--no-tags" {
       return false
     }
-    return true
+    return NSUserDefaults.standardUserDefaults().boolForKey(
+        XTGitPrefsController.PrefKey.FetchTags)
   }
   
   final func teamCityAccountKey(remote: String) -> String

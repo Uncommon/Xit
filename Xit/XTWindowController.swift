@@ -10,9 +10,7 @@ class XTWindowController: NSWindowController {
   dynamic var selectedModel: XTFileChangesModel?
   var inStagingView: Bool { return self.selectedCommitSHA == XTStagingSHA }
   
-  // to be replaced with something more generic when there are more types
-  // of cancelable operations.
-  var fetchController: XTFetchController?
+  var currentOperation: XTOperationController?
   
   override var document: AnyObject? {
     didSet {
@@ -36,7 +34,7 @@ class XTWindowController: NSWindowController {
   deinit
   {
     self.xtDocument!.repository.removeObserver(self, forKeyPath:"actaiveTasks")
-    fetchController?.canceled = true
+    currentOperation?.canceled = true
   }
   
   override func observeValueForKeyPath(
@@ -90,14 +88,30 @@ class XTWindowController: NSWindowController {
 
   @IBAction func fetch(_: AnyObject)
   {
-    if fetchController == nil {
-      fetchController = XTFetchController(windowController: self)
-      
-      fetchController!.start()
-    }
+    let _: XTFetchController? = startOperation()
   }
-  @IBAction func pull(_: AnyObject) {}
+  
+  @IBAction func pull(_: AnyObject)
+  {
+    let _: XTPullController? = startOperation()
+  }
+  
   @IBAction func push(_: AnyObject) {}
+  
+  /// Returns the new operation, if any, mostly because the generic type must
+  /// be part of the signature.
+  func startOperation<OperationType: XTSimpleOperationController>()
+      -> OperationType?
+  {
+    if currentOperation == nil {
+      let operation = OperationType(windowController: self)
+      
+      operation.start()
+      currentOperation = operation
+      return operation
+    }
+    return nil
+  }
   
   @IBAction func networkSegmentClicked(sender: AnyObject)
   {
@@ -113,9 +127,12 @@ class XTWindowController: NSWindowController {
     }
   }
   
-  func fetchEnded()
+  /// Called by the operation controller when it's done.
+  func operationEnded(operation: XTOperationController)
   {
-    fetchController = nil
+    if currentOperation == operation {
+      currentOperation = nil
+    }
   }
   
   @IBAction func remoteSettings(sender: AnyObject)
