@@ -793,6 +793,7 @@
 			children = (
 				C97328661D11DE6C00C56B9E /* Document */,
 				C97328671D11DECD00C56B9E /* Repository */,
+				C936AD0D1D4C156000C5ADC3 /* Operations */,
 				C973285E1D11DD4A00C56B9E /* Sidebar */,
 				31C7C12F13ECC6C700A65FE9 /* HistoryView */,
 				DD39D1F21918306B00827532 /* FileView */,
@@ -883,6 +884,25 @@
 			name = Services;
 			sourceTree = "<group>";
 		};
+		C936AD0D1D4C156000C5ADC3 /* Operations */ = {
+			isa = PBXGroup;
+			children = (
+				C94866B51D256C24000BDB0A /* XTFetchController.swift */,
+				C90FD5941D217D5B00A30570 /* XTFetchPanelController.swift */,
+				C90FD5951D217D5B00A30570 /* XTFetchPanelController.xib */,
+				C9BAE6131D3039C500A87F13 /* XTOperationController.swift */,
+				C936AD0B1D4C0FA900C5ADC3 /* XTPasswordOpController.swift */,
+				C94866BE1D25861E000BDB0A /* XTPasswordPanelController.swift */,
+				C94866BF1D25861E000BDB0A /* XTPasswordPanelController.xib */,
+				89C927871D43B0460074F71A /* XTPullController.swift */,
+				C936AD091D4C0CD400C5ADC3 /* XTPushController.swift */,
+				C9BAE61D1D303A8100A87F13 /* XTRemoteOptionsController.swift */,
+				C957B8701D2DB44E0040F858 /* XTRemoteSheetController.swift */,
+				C957B8711D2DB44E0040F858 /* XTRemoteSheetController.xib */,
+			);
+			name = Operations;
+			sourceTree = "<group>";
+		};
 		C973285E1D11DD4A00C56B9E /* Sidebar */ = {
 			isa = PBXGroup;
 			children = (
@@ -915,18 +935,6 @@
 				89794F891458CC9B00E38ACC /* XTOutputViewController.h */,
 				89794F8A1458CC9B00E38ACC /* XTOutputViewController.m */,
 				89794F8B1458CC9B00E38ACC /* XTOutputViewController.xib */,
-				C94866B51D256C24000BDB0A /* XTFetchController.swift */,
-				C90FD5941D217D5B00A30570 /* XTFetchPanelController.swift */,
-				C90FD5951D217D5B00A30570 /* XTFetchPanelController.xib */,
-				C9BAE6131D3039C500A87F13 /* XTOperationController.swift */,
-				89C927871D43B0460074F71A /* XTPullController.swift */,
-				C9BAE61D1D303A8100A87F13 /* XTRemoteOptionsController.swift */,
-				C957B8701D2DB44E0040F858 /* XTRemoteSheetController.swift */,
-				C957B8711D2DB44E0040F858 /* XTRemoteSheetController.xib */,
-				C94866BE1D25861E000BDB0A /* XTPasswordPanelController.swift */,
-				C94866BF1D25861E000BDB0A /* XTPasswordPanelController.xib */,
-				C936AD0B1D4C0FA900C5ADC3 /* XTPasswordOpController.swift */,
-				C936AD091D4C0CD400C5ADC3 /* XTPushController.swift */,
 			);
 			name = Document;
 			sourceTree = "<group>";
