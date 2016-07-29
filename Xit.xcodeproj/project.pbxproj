@@ -130,7 +130,6 @@
 		C954ABFE1D34455000302160 /* XTBranch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C954ABFC1D34455000302160 /* XTBranch.swift */; };
 		C957B84B1D2D53040040F858 /* XTSheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B84A1D2D53040040F858 /* XTSheetController.swift */; };
 		C957B8541D2D533C0040F858 /* XTAddAccountController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B8531D2D533C0040F858 /* XTAddAccountController.swift */; };
-		C957B8561D2D65FF0040F858 /* XTAccountsPrefsController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C957B8551D2D65FF0040F858 /* XTAccountsPrefsController.xib */; };
 		C957B85B1D2D6A3C0040F858 /* bitbucketTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C957B8571D2D6A3C0040F858 /* bitbucketTemplate.png */; };
 		C957B85C1D2D6A3C0040F858 /* bitbucketTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C957B8581D2D6A3C0040F858 /* bitbucketTemplate@2x.png */; };
 		C957B85D1D2D6A3C0040F858 /* githubTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C957B8591D2D6A3C0040F858 /* githubTemplate.png */; };
@@ -145,8 +144,10 @@
 		C9BAE6141D3039C500A87F13 /* XTOperationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE6131D3039C500A87F13 /* XTOperationController.swift */; };
 		C9BAE61E1D303A8100A87F13 /* XTRemoteOptionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE61D1D303A8100A87F13 /* XTRemoteOptionsController.swift */; };
 		C9C7730C1D26EE1C00329493 /* XTPrefsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C7730A1D26EE1C00329493 /* XTPrefsWindowController.swift */; };
-		C9C7730D1D26EE1C00329493 /* XTPrefsWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9C7730B1D26EE1C00329493 /* XTPrefsWindowController.xib */; };
 		C9DAB5AF1D47C23900586854 /* XTTeamCityTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DAB5AE1D47C23900586854 /* XTTeamCityTest.swift */; };
+		C9DAB5CD1D4A4EA700586854 /* Git-Icon-1788C.png in Resources */ = {isa = PBXBuildFile; fileRef = C9DAB5CC1D4A4EA700586854 /* Git-Icon-1788C.png */; };
+		C9DAB5D01D4A4F0300586854 /* XTGitPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DAB5CE1D4A4F0300586854 /* XTGitPrefsController.swift */; };
+		C9DAB5D31D4A8D2000586854 /* Preferences.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C9DAB5D21D4A8D2000586854 /* Preferences.storyboard */; };
 		C9E640121D1095C700192454 /* XTFileChangesModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */; };
 		C9E9A37D1D0B5706007BFABF /* XTWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E9A37C1D0B5706007BFABF /* XTWindowController.swift */; };
 		C9EB87241D01D93400C47D13 /* XTStash.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EB87231D01D93400C47D13 /* XTStash.swift */; };
@@ -458,7 +459,6 @@
 		C954ABFC1D34455000302160 /* XTBranch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTBranch.swift; sourceTree = "<group>"; };
 		C957B84A1D2D53040040F858 /* XTSheetController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSheetController.swift; sourceTree = "<group>"; };
 		C957B8531D2D533C0040F858 /* XTAddAccountController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTAddAccountController.swift; sourceTree = "<group>"; };
-		C957B8551D2D65FF0040F858 /* XTAccountsPrefsController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTAccountsPrefsController.xib; sourceTree = "<group>"; };
 		C957B8571D2D6A3C0040F858 /* bitbucketTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bitbucketTemplate.png; sourceTree = "<group>"; };
 		C957B8581D2D6A3C0040F858 /* bitbucketTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bitbucketTemplate@2x.png"; sourceTree = "<group>"; };
 		C957B8591D2D6A3C0040F858 /* githubTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = githubTemplate.png; sourceTree = "<group>"; };
@@ -473,8 +473,10 @@
 		C9BAE6131D3039C500A87F13 /* XTOperationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTOperationController.swift; sourceTree = "<group>"; };
 		C9BAE61D1D303A8100A87F13 /* XTRemoteOptionsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRemoteOptionsController.swift; sourceTree = "<group>"; };
 		C9C7730A1D26EE1C00329493 /* XTPrefsWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPrefsWindowController.swift; sourceTree = "<group>"; };
-		C9C7730B1D26EE1C00329493 /* XTPrefsWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTPrefsWindowController.xib; sourceTree = "<group>"; };
 		C9DAB5AE1D47C23900586854 /* XTTeamCityTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTeamCityTest.swift; sourceTree = "<group>"; };
+		C9DAB5CC1D4A4EA700586854 /* Git-Icon-1788C.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Git-Icon-1788C.png"; sourceTree = "<group>"; };
+		C9DAB5CE1D4A4F0300586854 /* XTGitPrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTGitPrefsController.swift; sourceTree = "<group>"; };
+		C9DAB5D21D4A8D2000586854 /* Preferences.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Preferences.storyboard; sourceTree = "<group>"; };
 		C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesModelTest.swift; sourceTree = "<group>"; };
 		C9E9A37C1D0B5706007BFABF /* XTWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTWindowController.swift; sourceTree = "<group>"; };
 		C9EB87231D01D93400C47D13 /* XTStash.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTStash.swift; sourceTree = "<group>"; };
@@ -700,8 +702,7 @@
 		899D0106142168830091DC6F /* images */ = {
 			isa = PBXGroup;
 			children = (
-				C957B85F1D2D6D900040F858 /* teamcityTemplate.png */,
-				C957B8601D2D6D900040F858 /* teamcityTemplate@2x.png */,
+				C9DAB5CC1D4A4EA700586854 /* Git-Icon-1788C.png */,
 				895869B51D0871A6003A9AF0 /* Sidebar */,
 				895869B31D08711E003A9AF0 /* Status */,
 				895869B41D08718A003A9AF0 /* Views */,
@@ -710,6 +711,8 @@
 				C957B8591D2D6A3C0040F858 /* githubTemplate.png */,
 				C957B85A1D2D6A3C0040F858 /* githubTemplate@2x.png */,
 				DD96C930175B76990003A30C /* splitter.png */,
+				C957B85F1D2D6D900040F858 /* teamcityTemplate.png */,
+				C957B8601D2D6D900040F858 /* teamcityTemplate@2x.png */,
 			);
 			path = images;
 			sourceTree = "<group>";
@@ -951,9 +954,9 @@
 				C9C7730A1D26EE1C00329493 /* XTPrefsWindowController.swift */,
 				C948D5B61D2C6A4800F72A27 /* XTAccountsPrefsController.swift */,
 				C957B8531D2D533C0040F858 /* XTAddAccountController.swift */,
-				C9C7730B1D26EE1C00329493 /* XTPrefsWindowController.xib */,
-				C957B8551D2D65FF0040F858 /* XTAccountsPrefsController.xib */,
 				C957B87B1D2DBBC00040F858 /* XTAccountsManager.swift */,
+				C9DAB5CE1D4A4F0300586854 /* XTGitPrefsController.swift */,
+				C9DAB5D21D4A8D2000586854 /* Preferences.storyboard */,
 			);
 			name = Preferences;
 			sourceTree = "<group>";
@@ -1168,6 +1171,7 @@
 				C957B85E1D2D6A3C0040F858 /* githubTemplate@2x.png in Resources */,
 				89D8BE5F1CF8E9C900D640AA /* textTemplate@2x.png in Resources */,
 				899DB1A31CE5022400760270 /* XTCommitEntryController.xib in Resources */,
+				C9DAB5CD1D4A4EA700586854 /* Git-Icon-1788C.png in Resources */,
 				C957B8731D2DB44E0040F858 /* XTRemoteSheetController.xib in Resources */,
 				89794F671452839500E38ACC /* XTStatusView.xib in Resources */,
 				89D8BE001CED203900D640AA /* stage.png in Resources */,
@@ -1175,7 +1179,6 @@
 				C91610251D1DE994005A3142 /* mergeTemplate.png in Resources */,
 				C91610241D1DE994005A3142 /* fetchTemplate@2x.png in Resources */,
 				89D8BDFA1CED200B00D640AA /* delete.png in Resources */,
-				C9C7730D1D26EE1C00329493 /* XTPrefsWindowController.xib in Resources */,
 				89D8BDFC1CED200B00D640AA /* modify.png in Resources */,
 				C92A7B271D1DD1CD00D2B944 /* folderTemplate@2x.png in Resources */,
 				89039F561703A9FC000949A8 /* html in Resources */,
@@ -1198,6 +1201,7 @@
 				895869A91D0869D1003A9AF0 /* branchTemplate@2x.png in Resources */,
 				895869C11D088A46003A9AF0 /* tagTemplate@2x.png in Resources */,
 				894C8D941CA44A44001A4B80 /* stagingTemplate@2x.png in Resources */,
+				C9DAB5D31D4A8D2000586854 /* Preferences.storyboard in Resources */,
 				895869BF1D088A46003A9AF0 /* submoduleTemplate@2x.png in Resources */,
 				DDA8A63A17F5B6CE00AD9808 /* added.png in Resources */,
 				DDA8A63B17F5B6CE00AD9808 /* added@2x.png in Resources */,
@@ -1219,7 +1223,6 @@
 				C957B8611D2D6D900040F858 /* teamcityTemplate.png in Resources */,
 				895869AA1D0869D1003A9AF0 /* cloudTemplate.png in Resources */,
 				DDA8A64217F5B6CE00AD9808 /* renamed.png in Resources */,
-				C957B8561D2D65FF0040F858 /* XTAccountsPrefsController.xib in Resources */,
 				DDA8A64317F5B6CE00AD9808 /* renamed@2x.png in Resources */,
 				89D8BE5E1CF8E9C900D640AA /* textTemplate.png in Resources */,
 				89D8BE5D1CF8E9C900D640AA /* historyTemplate@2x.png in Resources */,
@@ -1317,6 +1320,7 @@
 				DD07B07816A5D2A80012AC19 /* XTSideBarOutlineView.m in Sources */,
 				DD07B08916B313A60012AC19 /* XTRefFormatter.m in Sources */,
 				DDD4708116F3E7B000CA76FF /* XTPreviewItem.m in Sources */,
+				C9DAB5D01D4A4F0300586854 /* XTGitPrefsController.swift in Sources */,
 				89C927751D36A2180074F71A /* XTSubmodule.swift in Sources */,
 				899DB1A21CE5022400760270 /* XTCommitEntryController.swift in Sources */,
 				89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */,

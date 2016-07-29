@@ -42,3 +42,13 @@ extension NSXMLElement {
     }) ?? []
   }
 }
+
+extension NSButton {
+  
+  /// The intValue property interpreted as a Bool.
+  var boolValue: Bool
+  {
+    get { return intValue != 0 }
+    set { intValue = newValue ? 1 : 0 }
+  }
+}

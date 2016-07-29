@@ -8,27 +8,41 @@ enum PasswordAction {
 }
 
 
-class XTAccountsPrefsController: NSViewController {
+class XTAccountsPrefsController: NSViewController, PreferencesSaver {
   
-  @IBOutlet weak var addController: XTAddAccountController!
+  // Not a weak reference because there are no other references to it.
+  @IBOutlet var addController: XTAddAccountController!
   @IBOutlet weak var accountsTable: NSTableView!
   
   override func viewDidLoad()
   {
     super.viewDidLoad()
+    
+    let notificationCenter = NSNotificationCenter.defaultCenter()
+    
     XTAccountsManager.manager.readAccounts()
-    NSNotificationCenter.defaultCenter().addObserverForName(
+    notificationCenter.addObserverForName(
         XTBasicAuthService.AuthenticationStatusChangedNotification,
         object: nil,
-        queue: NSOperationQueue.mainQueue()) {
-      (note) in
+        queue: NSOperationQueue.mainQueue()) { (_) in
       self.accountsTable.reloadData()
+    }
+    notificationCenter.addObserverForName(
+        NSWindowDidResignKeyNotification,
+        object: self.view.window,
+        queue: nil) { (_) in
+      self.savePreferences()
     }
   }
   
   deinit
   {
     NSNotificationCenter.defaultCenter().removeObserver(self)
+  }
+  
+  func savePreferences()
+  {
+    XTAccountsManager.manager.saveAccounts()
   }
   
   func showError(message: String)
