@@ -50,60 +50,61 @@ class CommitHistory {
     self.repository = repository
   }
   
-  /// Adds a commit to the history, either at the end or after its
-  /// first parent.
-  /// - returns: false if the commit is already in the history.
-  func add(commit: Commit, toParent parent: Commit?) -> Bool
+  /// Creates a list of commits for the branch starting at the given commit, and also a list of
+  /// secondary parents that may start other branches.
+  func branchEntries(startCommit: Commit) -> ([CommitEntry], [(commit: Commit, parent: Commit)])
   {
-    guard commitLookup[commit.sha] == nil
-    else { return false }
-    
-    let entry = CommitEntry(commit: commit)
-    
-    commitLookup[commit.sha] = entry
-    
-    // Too do: find a more efficient way of finding the parent. Maybe
-    // keep a recently added list, since those would be likely candidates.
-    if let firstParentSHA = commit.parentSHAs.first,
-       let parentEntry = commitLookup[firstParentSHA],
-       let parentIndex = entries.indexOf({ $0 == parentEntry }) {
-      entries.insert(entry, atIndex: parentIndex+1)
-    }
-    else {
-      NSLog("Parent not found for \(commit.sha)")
-    }
-    entries.append(entry)
-    return true;
-  }
-
-  /// Adds a commit and all of its parents to the list.
-  func process(startCommit: Commit, parent: Commit?)
-  {
-    var parent = parent
     var commit = startCommit
-    var parentStack = [(Commit, Commit)]()
+    var result = [CommitEntry]()
+    var secondaryParents = [(commit: Commit, parent: Commit)]()
     
-    while add(commit, toParent: parent) && !commit.parentSHAs.isEmpty {
-      if commit.parentSHAs.count > 1 {
-        let parents = commit.parentSHAs[1..<commit.parentSHAs.count]
+    while !commit.parentSHAs.isEmpty {
+      if commit.parentSHAs.count > 0 {
+        let shas = commit.parentSHAs[1..<commit.parentSHAs.count]
         
-        parentStack.appendContentsOf(parents.flatMap({
-          guard let parentCommit = self.repository.commit(forSHA: $0)
+        secondaryParents.appendContentsOf(shas.flatMap({ (parentSHA) in
+          guard let parentCommit = self.repository.commit(forSHA: parentSHA)
           else { return nil }
           return (commit, parentCommit)
         }))
       }
-      if !commit.parentSHAs.isEmpty,
-         let next = repository.commit(forSHA: commit.parentSHAs[0]) {
-        parent = commit
-        commit = next
-      }
+      
+      // If the parent SHA is already in the lookup, then it's the end of the branch.
+      guard let parentSHA = commit.parentSHAs.first where
+            commitLookup[parentSHA] == nil
+      else { break }
+      
+      guard let parentCommit = repository.commit(forSHA: parentSHA)
       else {
+        NSLog("Aborting branch, parent not found: \(parentSHA)")
         break
       }
+      
+      result.append(CommitEntry(commit: parentCommit))
+      commit = parentCommit
     }
-    for (commit, parent) in parentStack { // need to reverse order?
-      process(commit, parent: parent)
+    return (result, secondaryParents)
+  }
+  
+  /// Adds new commits to the list.
+  func process(startCommit: Commit, afterCommit: Commit?)
+  {
+    guard commitLookup[startCommit.sha] == nil
+    else { return }
+    
+    let (branchEntries, secondaryParents) = self.branchEntries(startCommit)
+    
+    branchEntries.forEach({ entry in commitLookup[entry.commit.sha] = entry })
+    if let afterCommit = afterCommit,
+       let afterIndex = entries.indexOf({ return $0.commit.sha == afterCommit.sha }) {
+      entries.insertContentsOf(branchEntries, at: afterIndex + 1)
+    }
+    else {
+      entries.appendContentsOf(branchEntries)
+    }
+    
+    for (commit, parent) in secondaryParents {
+      process(parent, afterCommit: commit)
     }
   }
 
