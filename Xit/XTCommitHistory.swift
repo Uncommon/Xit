@@ -35,7 +35,7 @@ class XTCommitHistory {
     -> ([CommitEntry], [(commit: CommitType, parent: CommitType)])
   {
     var commit = startCommit
-    var result = [CommitEntry]()
+    var result = [CommitEntry(commit: startCommit)]
     var secondaryParents = [(commit: CommitType, parent: CommitType)]()
     
     while !commit.parentSHAs.isEmpty {
