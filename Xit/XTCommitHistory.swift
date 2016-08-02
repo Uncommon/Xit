@@ -32,24 +32,39 @@ class XTCommitHistory {
   /// Creates a list of commits for the branch starting at the given commit, and
   /// also a list of secondary parents that may start other branches.
   func branchEntries(startCommit: CommitType)
-    -> ([CommitEntry], [(commit: CommitType, parent: CommitType)])
+    -> ([CommitEntry], [(commit: CommitType, after: CommitType)])
   {
     var commit = startCommit
     var result = [CommitEntry(commit: startCommit)]
-    var secondaryParents = [(commit: CommitType, parent: CommitType)]()
+    var secondaryParents = [(commit: CommitType, after: CommitType)]()
     
     while !commit.parentSHAs.isEmpty {
+      let parentSHA = commit.parentSHAs.first!
+      
       if commit.parentSHAs.count > 0 {
-        let parents = commit.parentSHAs[1..<commit.parentSHAs.count]
+        let parentSHAs = commit.parentSHAs[1..<commit.parentSHAs.count]
+        var existingParent: CommitType? = nil
         
-        secondaryParents.appendContentsOf(parents.flatMap({ (parentSHA) in
+        secondaryParents.appendContentsOf(parentSHAs.flatMap({ (parentSHA) in
+          // If a parent is already entered, stop now.
+          if let parentEntry = commitLookup[parentSHA] {
+            existingParent = parentEntry.commit
+            return nil
+          }
           guard let parentCommit = self.repository.commit(forSHA: parentSHA)
           else { return nil }
-          return (commit, parentCommit)
+          return (parentCommit, commit)
         }))
+        if let existingParent = existingParent {
+          if let firstParent =
+              self.repository.commit(forSHA: commit.parentSHAs[0]) {
+            // Add the current commit's first parent so we can pick up
+            // after adding the current batch.
+            secondaryParents.append((firstParent, existingParent))
+          }
+          break
+        }
       }
-      
-      let parentSHA = commit.parentSHAs.first!
       
       // If the parent SHA is already in the lookup,
       // then it's the end of the branch.
@@ -92,8 +107,8 @@ class XTCommitHistory {
       entries.appendContentsOf(branchEntries)
     }
     
-    for (commit, parent) in secondaryParents {
-      process(parent, afterCommit: commit)
+    for (parent, after) in secondaryParents {
+      process(parent, afterCommit: after)
     }
   }
   
