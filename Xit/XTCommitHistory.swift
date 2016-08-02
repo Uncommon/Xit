@@ -3,7 +3,7 @@ import Foundation
 
 class CommitEntry: Equatable {
   let commit: CommitType
-  var children = [CommitEntry]()
+  var connections = [CommitConnection]()
   
   init(commit: CommitType)
   {
@@ -14,6 +14,13 @@ class CommitEntry: Equatable {
 func == (left: CommitEntry, right: CommitEntry) -> Bool
 {
   return left.commit.SHA == right.commit.SHA
+}
+
+
+/// A connection line between commits in the history list.
+struct CommitConnection {
+  let parentSHA, childSHA: String
+  let colorIndex: UInt
 }
 
 
@@ -112,4 +119,43 @@ class XTCommitHistory {
     }
   }
   
+  
+  /// Creates the connections to be drawn between commits.
+  func connectCommits()
+  {
+    var connections = [CommitConnection]()
+    var nextColorIndex: UInt = 0
+    
+    for entry in entries {
+      guard let commitSHA = entry.commit.SHA
+      else { continue }
+      
+      var incomingColor: UInt? = nil
+      
+      if let incomingIndex = connections.indexOf({ $0.childSHA == commitSHA }) {
+        incomingColor = connections[incomingIndex].colorIndex
+      }
+      // Add new connections for the commit's parents
+      for parentSHA in entry.commit.parentSHAs {
+        var colorIndex: UInt
+        
+        if let incomingColor = incomingColor {
+          // Keep the branch color the same.
+          colorIndex = incomingColor
+        }
+        else {
+          colorIndex = nextColorIndex
+          nextColorIndex += 1
+        }
+        connections.append(CommitConnection(parentSHA: parentSHA,
+                                            childSHA: commitSHA,
+                                            colorIndex: colorIndex))
+      }
+      
+      entry.connections = connections
+
+      // Drop connections targeting this commit
+      connections = connections.filter({ $0.childSHA != commitSHA })
+    }
+  }
 }
