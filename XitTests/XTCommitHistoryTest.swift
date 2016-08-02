@@ -140,9 +140,8 @@ class XTCommitHistoryTest: XCTestCase {
   func testCrossMerge2()
   {
     let history = makeHistory([
-      ("a", ["c", "b"]), ("b", ["d", "c"]), ("c", ["e"]),
-      ("d", ["f"]), ("e", ["f"]), ("f", ["g"]), ("g", [])])
-    
+        ("a", ["c", "b"]), ("b", ["d", "c"]), ("c", ["e"]),
+        ("d", ["f"]), ("e", ["f"]), ("f", ["g"]), ("g", [])])
     
     guard let commitA = history.repository.commit(forSHA: "a")
     else {
@@ -152,5 +151,67 @@ class XTCommitHistoryTest: XCTestCase {
     
     history.process(commitA, afterCommit: nil)
     check(history, expectedLength: 7)
+  }
+  
+  /* Disjoint:
+      d-c b-a
+  */
+  func testDisjoint()
+  {
+    let history = makeHistory([
+        ("a", ["b"]), ("b", []),
+        ("c", ["d"]), ("d", [])])
+    
+    guard let commitA = history.repository.commit(forSHA: "a"),
+          let commitB = history.repository.commit(forSHA: "c")
+    else {
+      XCTFail("Can't get starting commit")
+      return
+    }
+    
+    history.process(commitA, afterCommit: nil)
+    history.process(commitB, afterCommit: nil)
+    check(history, expectedLength: 4)
+  }
+  
+  /* Multi-merge:
+      d------a
+      \-c---/
+       \-b-/
+  */
+  func testMultiMerge1()
+  {
+    let history = makeHistory([
+        ("a", ["d", "c", "b"]), ("b", ["d"]), ("c", ["d"]), ("d", [])])
+    
+    guard let commitA = history.repository.commit(forSHA: "a")
+    else {
+      XCTFail("Can't get starting commit")
+      return
+    }
+    
+    history.process(commitA, afterCommit: nil)
+    check(history, expectedLength: 4)
+  }
+  
+  /* Multi-merge 2:
+      e----c----a
+      \-d-/    /
+       \----b-/
+  */
+  func testMultiMerge2()
+  {
+    let history = makeHistory([
+        ("a", ["c", "b"]), ("b", ["e"]), ("c", ["e", "d"]), ("d", ["e"]),
+        ("e", [])])
+    
+    guard let commitA = history.repository.commit(forSHA: "a")
+    else {
+      XCTFail("Can't get starting commit")
+      return
+    }
+    
+    history.process(commitA, afterCommit: nil)
+    check(history, expectedLength: 5)
   }
 }
