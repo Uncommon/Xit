@@ -28,6 +28,12 @@ class MockRepository: RepositoryType {
 }
 
 
+extension Xit.CommitConnection: CustomDebugStringConvertible {
+  var debugDescription: String
+  { return "\(childSHA)-\(parentSHA) \(colorIndex)" }
+}
+
+
 class XTCommitHistoryTest: XCTestCase {
   
   func makeHistory(commitData: [(String, [String])]) -> XTCommitHistory
@@ -71,12 +77,8 @@ class XTCommitHistoryTest: XCTestCase {
     
     history.connectCommits()
     
-    let aToB = CommitConnection(parentSHA: "b",
-                                childSHA: "a",
-                                colorIndex: 0)
-    let bToC = CommitConnection(parentSHA: "c",
-                                childSHA: "b",
-                                colorIndex: 0)
+    let aToB = CommitConnection(parentSHA: "b", childSHA: "a", colorIndex: 0)
+    let bToC = CommitConnection(parentSHA: "c", childSHA: "b", colorIndex: 0)
     
     XCTAssertEqual(history.entries[0].connections, [aToB])
     XCTAssertEqual(history.entries[1].connections, [aToB, bToC])
@@ -106,15 +108,9 @@ class XTCommitHistoryTest: XCTestCase {
     
     history.connectCommits()
     
-    let aToC = CommitConnection(parentSHA: "c",
-                                childSHA: "a",
-                                colorIndex: 0)
-    let bToC = CommitConnection(parentSHA: "c",
-                                childSHA: "b",
-                                colorIndex: 1)
-    let cToD = CommitConnection(parentSHA: "d",
-                                childSHA: "c",
-                                colorIndex: 0)
+    let aToC = CommitConnection(parentSHA: "c", childSHA: "a", colorIndex: 0)
+    let bToC = CommitConnection(parentSHA: "c", childSHA: "b", colorIndex: 1)
+    let cToD = CommitConnection(parentSHA: "d", childSHA: "c", colorIndex: 0)
     
     XCTAssertEqual(history.entries[0].connections, [aToC])
     XCTAssertEqual(history.entries[1].connections, [aToC, bToC])
@@ -143,18 +139,10 @@ class XTCommitHistoryTest: XCTestCase {
     
     history.connectCommits()
     
-    let aToC = CommitConnection(parentSHA: "c",
-                                childSHA: "a",
-                                colorIndex: 0)
-    let aToB = CommitConnection(parentSHA: "b",
-                                childSHA: "a",
-                                colorIndex: 1)
-    let bToC = CommitConnection(parentSHA: "c",
-                                childSHA: "b",
-                                colorIndex: 1)
-    let cToD = CommitConnection(parentSHA: "d",
-                                childSHA: "c",
-                                colorIndex: 0)
+    let aToC = CommitConnection(parentSHA: "c", childSHA: "a", colorIndex: 0)
+    let aToB = CommitConnection(parentSHA: "b", childSHA: "a", colorIndex: 1)
+    let bToC = CommitConnection(parentSHA: "c", childSHA: "b", colorIndex: 1)
+    let cToD = CommitConnection(parentSHA: "d", childSHA: "c", colorIndex: 0)
   
     XCTAssertEqual(history.entries[0].connections, [aToC, aToB])
     XCTAssertEqual(history.entries[1].connections, [aToC, aToB, bToC])
@@ -181,6 +169,25 @@ class XTCommitHistoryTest: XCTestCase {
     
     history.process(commitA, afterCommit: nil)
     check(history, expectedLength: 7)
+    
+    history.connectCommits()
+    
+    let aToC = CommitConnection(parentSHA: "c", childSHA: "a", colorIndex: 0)
+    let aToB = CommitConnection(parentSHA: "b", childSHA: "a", colorIndex: 1)
+    let cToE = CommitConnection(parentSHA: "e", childSHA: "c", colorIndex: 0)
+    let cToD = CommitConnection(parentSHA: "d", childSHA: "c", colorIndex: 2)
+    let bToD = CommitConnection(parentSHA: "d", childSHA: "b", colorIndex: 1)
+    let eToF = CommitConnection(parentSHA: "f", childSHA: "e", colorIndex: 0)
+    let dToF = CommitConnection(parentSHA: "f", childSHA: "d", colorIndex: 1)
+    let fToG = CommitConnection(parentSHA: "g", childSHA: "f", colorIndex: 0)
+    
+    XCTAssertEqual(history.entries[0].connections, [aToC, aToB])
+    XCTAssertEqual(history.entries[1].connections, [aToC, aToB, bToD])
+    XCTAssertEqual(history.entries[2].connections, [aToC, cToE, bToD, cToD])
+    XCTAssertEqual(history.entries[3].connections, [cToE, bToD, dToF, cToD])
+    XCTAssertEqual(history.entries[4].connections, [cToE, eToF, dToF])
+    XCTAssertEqual(history.entries[5].connections, [eToF, fToG, dToF])
+    XCTAssertEqual(history.entries[6].connections, [fToG])
   }
   
   /* Cross-merge 2:

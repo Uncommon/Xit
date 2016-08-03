@@ -156,18 +156,9 @@ class XTCommitHistory {
       
       // Add new connections for the commit's parents
       for parentSHA in entry.commit.parentSHAs.dropFirst() {
-        var colorIndex: UInt
-        
-        if let incomingColor = incomingColor {
-          // Keep the branch color the same.
-          colorIndex = incomingColor
-        }
-        else {
-          colorIndex = nextColorIndex++
-        }
         connections.append(CommitConnection(parentSHA: parentSHA,
                                             childSHA: commitSHA,
-                                            colorIndex: colorIndex))
+                                            colorIndex: nextColorIndex++))
       }
       
       entry.connections = connections
