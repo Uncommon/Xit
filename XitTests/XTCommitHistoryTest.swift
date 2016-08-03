@@ -103,6 +103,23 @@ class XTCommitHistoryTest: XCTestCase {
     history.process(commitA, afterCommit: nil)
     history.process(commitB, afterCommit: commitA)
     check(history, expectedLength: 4)
+    
+    history.connectCommits()
+    
+    let aToC = CommitConnection(parentSHA: "c",
+                                childSHA: "a",
+                                colorIndex: 0)
+    let bToC = CommitConnection(parentSHA: "c",
+                                childSHA: "b",
+                                colorIndex: 1)
+    let cToD = CommitConnection(parentSHA: "d",
+                                childSHA: "c",
+                                colorIndex: 0)
+    
+    XCTAssertEqual(history.entries[0].connections, [aToC])
+    XCTAssertEqual(history.entries[1].connections, [aToC, bToC])
+    XCTAssertEqual(history.entries[2].connections, [aToC, cToD, bToC])
+    XCTAssertEqual(history.entries[3].connections, [cToD])
   }
   
   /* Merge:
@@ -123,6 +140,26 @@ class XTCommitHistoryTest: XCTestCase {
     
     history.process(commitA, afterCommit: nil)
     check(history, expectedLength: 4)
+    
+    history.connectCommits()
+    
+    let aToC = CommitConnection(parentSHA: "c",
+                                childSHA: "a",
+                                colorIndex: 0)
+    let aToB = CommitConnection(parentSHA: "b",
+                                childSHA: "a",
+                                colorIndex: 1)
+    let bToC = CommitConnection(parentSHA: "c",
+                                childSHA: "b",
+                                colorIndex: 1)
+    let cToD = CommitConnection(parentSHA: "d",
+                                childSHA: "c",
+                                colorIndex: 0)
+  
+    XCTAssertEqual(history.entries[0].connections, [aToC, aToB])
+    XCTAssertEqual(history.entries[1].connections, [aToC, aToB, bToC])
+    XCTAssertEqual(history.entries[2].connections, [aToC, cToD, bToC])
+    XCTAssertEqual(history.entries[3].connections, [cToD])
   }
   
   /* Cross-merge 1:
