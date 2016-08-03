@@ -121,7 +121,7 @@ class XTCommitHistory {
       entries.appendContentsOf(branchEntries)
     }
     
-    for (parent, after) in secondaryParents {
+    for (parent, after) in secondaryParents.reverse() {
       process(parent, afterCommit: after)
     }
   }

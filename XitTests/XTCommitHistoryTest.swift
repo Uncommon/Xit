@@ -169,7 +169,7 @@ class XTCommitHistoryTest: XCTestCase {
   func testCrossMerge1()
   {
     let history = makeHistory([
-        ("a", ["c", "b"]), ("b", ["c"]), ("c", ["e", "d"]),
+        ("a", ["c", "b"]), ("b", ["d"]), ("c", ["e", "d"]),
         ("d", ["f"]), ("e", ["f"]), ("f", ["g"]), ("g", [])])
     
     
@@ -226,13 +226,13 @@ class XTCommitHistoryTest: XCTestCase {
   
   /* Multi-merge:
       d------a
-      \-c---/
-       \-b-/
+      \---b-/
+       \-c-/
   */
   func testMultiMerge1()
   {
     let history = makeHistory([
-        ("a", ["d", "c", "b"]), ("b", ["d"]), ("c", ["d"]), ("d", [])])
+        ("a", ["d", "b", "c"]), ("b", ["d"]), ("c", ["d"]), ("d", [])])
     
     guard let commitA = history.repository.commit(forSHA: "a")
     else {
