@@ -18,9 +18,16 @@ func == (left: CommitEntry, right: CommitEntry) -> Bool
 
 
 /// A connection line between commits in the history list.
-struct CommitConnection {
+struct CommitConnection: Equatable {
   let parentSHA, childSHA: String
   let colorIndex: UInt
+}
+
+func == (left: CommitConnection, right: CommitConnection) -> Bool
+{
+  return (left.parentSHA == right.parentSHA) &&
+         (left.childSHA == right.childSHA) &&
+         (left .colorIndex == right.colorIndex)
 }
 
 
@@ -130,13 +137,25 @@ class XTCommitHistory {
       guard let commitSHA = entry.commit.SHA
       else { continue }
       
-      var incomingColor: UInt? = nil
+      let incomingIndex = connections.indexOf({ $0.parentSHA == commitSHA })
+      let incomingColor: UInt? = (incomingIndex != nil)
+          ? connections[incomingIndex!].colorIndex
+          : nil
       
-      if let incomingIndex = connections.indexOf({ $0.childSHA == commitSHA }) {
-        incomingColor = connections[incomingIndex].colorIndex
+      if let firstParentSHA = entry.commit.parentSHAs.first {
+        let newConnection = CommitConnection(parentSHA: firstParentSHA,
+                                             childSHA: commitSHA,
+                                             colorIndex: incomingColor ??
+                                                         nextColorIndex++)
+        let insertIndex = (incomingIndex != nil)
+            ? incomingIndex! + 1
+            : connections.endIndex
+        
+        connections.insert(newConnection, atIndex: insertIndex)
       }
+      
       // Add new connections for the commit's parents
-      for parentSHA in entry.commit.parentSHAs {
+      for parentSHA in entry.commit.parentSHAs.dropFirst() {
         var colorIndex: UInt
         
         if let incomingColor = incomingColor {
@@ -144,8 +163,7 @@ class XTCommitHistory {
           colorIndex = incomingColor
         }
         else {
-          colorIndex = nextColorIndex
-          nextColorIndex += 1
+          colorIndex = nextColorIndex++
         }
         connections.append(CommitConnection(parentSHA: parentSHA,
                                             childSHA: commitSHA,
@@ -153,9 +171,7 @@ class XTCommitHistory {
       }
       
       entry.connections = connections
-
-      // Drop connections targeting this commit
-      connections = connections.filter({ $0.childSHA != commitSHA })
+      connections = connections.filter({ $0.parentSHA != commitSHA })
     }
   }
 }

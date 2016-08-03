@@ -68,6 +68,19 @@ class XTCommitHistoryTest: XCTestCase {
     
     history.process(commitA, afterCommit: nil)
     check(history, expectedLength: 3)
+    
+    history.connectCommits()
+    
+    let aToB = CommitConnection(parentSHA: "b",
+                                childSHA: "a",
+                                colorIndex: 0)
+    let bToC = CommitConnection(parentSHA: "c",
+                                childSHA: "b",
+                                colorIndex: 0)
+    
+    XCTAssertEqual(history.entries[0].connections, [aToB])
+    XCTAssertEqual(history.entries[1].connections, [aToB, bToC])
+    XCTAssertEqual(history.entries[2].connections, [bToC])
   }
   
   /* Fork:
