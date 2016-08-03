@@ -5,6 +5,9 @@ import XCTest
 struct MockCommit: CommitType {
   let SHA: String?
   let parentSHAs: [String]
+  
+  var message: String? { return nil }
+  var commitDate: NSDate { return NSDate() }
 }
 
 

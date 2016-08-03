@@ -91,6 +91,7 @@
   [_sideBarDS setRepo:newRepo];
   [_historyDS setRepo:newRepo];
   [_fileViewController setRepo:newRepo];
+  self.tableController.repository = newRepo;
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem

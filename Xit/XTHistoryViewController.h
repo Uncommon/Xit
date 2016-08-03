@@ -4,6 +4,7 @@
 
 @class XTFileViewController;
 @class XTHistoryDataSource;
+@class XTHistoryTableController;
 @class XTSideBarDataSource;
 @class XTSideBarOutlineView;
 
@@ -60,6 +61,8 @@
 
 @property (weak) IBOutlet NSSplitView *sidebarSplitView;
 @property (weak) IBOutlet NSSplitView *mainSplitView;
+@property (weak) IBOutlet XTHistoryTableController *tableController;
+@property (weak) IBOutlet NSTableView *commitTable;
 
 // For testing
 - (instancetype)initWithRepository:(XTRepository *)repository

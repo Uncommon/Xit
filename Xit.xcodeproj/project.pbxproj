@@ -110,6 +110,7 @@
 		C916102A1D1DE994005A3142 /* pullTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C91610201D1DE994005A3142 /* pullTemplate@2x.png */; };
 		C916102B1D1DE994005A3142 /* pushTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C91610211D1DE994005A3142 /* pushTemplate.png */; };
 		C916102C1D1DE994005A3142 /* pushTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C91610221D1DE994005A3142 /* pushTemplate@2x.png */; };
+		C91E9A011D527A1300E128AC /* XTHistoryTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91E9A001D527A1300E128AC /* XTHistoryTableController.swift */; };
 		C91F34741D3064CC005F9BDF /* Siesta.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C91F346F1D30647E005F9BDF /* Siesta.framework */; };
 		C91F34761D306506005F9BDF /* Siesta.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C91F346F1D30647E005F9BDF /* Siesta.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C91F34781D30656B005F9BDF /* XTServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91F34771D30656B005F9BDF /* XTServices.swift */; };
@@ -443,6 +444,7 @@
 		C91610201D1DE994005A3142 /* pullTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pullTemplate@2x.png"; sourceTree = "<group>"; };
 		C91610211D1DE994005A3142 /* pushTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pushTemplate.png; sourceTree = "<group>"; };
 		C91610221D1DE994005A3142 /* pushTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pushTemplate@2x.png"; sourceTree = "<group>"; };
+		C91E9A001D527A1300E128AC /* XTHistoryTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTHistoryTableController.swift; sourceTree = "<group>"; };
 		C91F34631D30647D005F9BDF /* Siesta.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Siesta.xcodeproj; path = siesta/Siesta.xcodeproj; sourceTree = "<group>"; };
 		C91F34771D30656B005F9BDF /* XTServices.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTServices.swift; sourceTree = "<group>"; };
 		C926804D1D074EC500E422FA /* XTFileChangesModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesModel.swift; sourceTree = "<group>"; };
@@ -605,6 +607,7 @@
 				3174966D13DFF94C004C5546 /* XTHistoryItem.m */,
 				DD997DD8173B409500C7DF82 /* HistoryView Menus.xib */,
 				C92E30EE1D4FF358001985F7 /* XTCommitHistory.swift */,
+				C91E9A001D527A1300E128AC /* XTHistoryTableController.swift */,
 			);
 			name = HistoryView;
 			sourceTree = "<group>";
@@ -842,12 +845,12 @@
 				89CD209017089D220051C3D4 /* XTCategoryTests.h */,
 				89CD209117089D220051C3D4 /* XTCategoryTests.m */,
 				89D6FE7C17D8457700633798 /* XTCommitHeaderTest.m */,
+				C9FCC1D01D50EB1A00AC398E /* XTCommitHistoryTest.swift */,
 				C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */,
 				C9EB87311D05D35800C47D13 /* XTStashTest.swift */,
 				C9DAB5AE1D47C23900586854 /* XTTeamCityTest.swift */,
 				89E927DE17E977340093DA6C /* expected header.html */,
 				C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */,
-				C9FCC1D01D50EB1A00AC398E /* XTCommitHistoryTest.swift */,
 			);
 			path = XitTests;
 			sourceTree = "<group>";
@@ -1274,6 +1277,7 @@
 				31F1E87F13D3B51200F3B317 /* XTRepository+Commands.m in Sources */,
 				C926804E1D074EC500E422FA /* XTFileChangesModel.swift in Sources */,
 				C9F78B141D0896AF008490EA /* XTSidebarItem.swift in Sources */,
+				C91E9A011D527A1300E128AC /* XTHistoryTableController.swift in Sources */,
 				3174966513DF896E004C5546 /* XTHistoryDataSource.m in Sources */,
 				C957B84B1D2D53040040F858 /* XTSheetController.swift in Sources */,
 				3174966813DF8A0C004C5546 /* XTSideBarDataSource.m in Sources */,
