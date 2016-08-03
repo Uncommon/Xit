@@ -208,6 +208,25 @@ class XTCommitHistoryTest: XCTestCase {
     
     history.process(commitA, afterCommit: nil)
     check(history, expectedLength: 7)
+    
+    history.connectCommits()
+    
+    let aToC = CommitConnection(parentSHA: "c", childSHA: "a", colorIndex: 0)
+    let aToB = CommitConnection(parentSHA: "b", childSHA: "a", colorIndex: 1)
+    let cToE = CommitConnection(parentSHA: "e", childSHA: "c", colorIndex: 0)
+    let bToC = CommitConnection(parentSHA: "c", childSHA: "b", colorIndex: 2)
+    let bToD = CommitConnection(parentSHA: "d", childSHA: "b", colorIndex: 1)
+    let eToF = CommitConnection(parentSHA: "f", childSHA: "e", colorIndex: 0)
+    let dToF = CommitConnection(parentSHA: "f", childSHA: "d", colorIndex: 1)
+    let fToG = CommitConnection(parentSHA: "g", childSHA: "f", colorIndex: 0)
+    
+    XCTAssertEqual(history.entries[0].connections, [aToC, aToB])
+    XCTAssertEqual(history.entries[1].connections, [aToC, aToB, bToD, bToC])
+    XCTAssertEqual(history.entries[2].connections, [aToC, cToE, bToD, bToC])
+    XCTAssertEqual(history.entries[3].connections, [cToE, bToD, dToF])
+    XCTAssertEqual(history.entries[4].connections, [cToE, eToF, dToF])
+    XCTAssertEqual(history.entries[5].connections, [eToF, fToG, dToF])
+    XCTAssertEqual(history.entries[6].connections, [fToG])
   }
   
   /* Disjoint:
@@ -229,6 +248,16 @@ class XTCommitHistoryTest: XCTestCase {
     history.process(commitA, afterCommit: nil)
     history.process(commitB, afterCommit: nil)
     check(history, expectedLength: 4)
+    
+    history.connectCommits()
+    
+    let aToB = CommitConnection(parentSHA: "b", childSHA: "a", colorIndex: 0)
+    let cToD = CommitConnection(parentSHA: "d", childSHA: "c", colorIndex: 1)
+    
+    XCTAssertEqual(history.entries[0].connections, [aToB])
+    XCTAssertEqual(history.entries[1].connections, [aToB])
+    XCTAssertEqual(history.entries[2].connections, [cToD])
+    XCTAssertEqual(history.entries[3].connections, [cToD])
   }
   
   /* Multi-merge:
@@ -249,6 +278,19 @@ class XTCommitHistoryTest: XCTestCase {
     
     history.process(commitA, afterCommit: nil)
     check(history, expectedLength: 4)
+    
+    history.connectCommits()
+    
+    let aToD = CommitConnection(parentSHA: "d", childSHA: "a", colorIndex: 0)
+    let aToB = CommitConnection(parentSHA: "b", childSHA: "a", colorIndex: 1)
+    let aToC = CommitConnection(parentSHA: "c", childSHA: "a", colorIndex: 2)
+    let bToD = CommitConnection(parentSHA: "d", childSHA: "b", colorIndex: 1)
+    let cToD = CommitConnection(parentSHA: "d", childSHA: "c", colorIndex: 2)
+
+    XCTAssertEqual(history.entries[0].connections, [aToD, aToB, aToC])
+    XCTAssertEqual(history.entries[1].connections, [aToD, aToB, bToD, aToC])
+    XCTAssertEqual(history.entries[2].connections, [aToD, bToD, aToC, cToD])
+    XCTAssertEqual(history.entries[3].connections, [aToD, bToD, cToD])
   }
   
   /* Multi-merge 2:
