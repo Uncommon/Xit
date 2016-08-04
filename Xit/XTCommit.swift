@@ -15,8 +15,7 @@ class XTCommit: CommitType {
 
   let gtCommit: GTCommit
 
-  var SHA: String?
-  { return gtCommit.SHA }
+  lazy var SHA: String? = self.calculateSHA()
 
   lazy var parentSHAs: [String] = self.calculateParentSHAs()
   
@@ -58,5 +57,10 @@ class XTCommit: CommitType {
       result.append(GTOID(gitOid:parentID).SHA)
     }
     return result
+  }
+  
+  func calculateSHA() -> String?
+  {
+    return gtCommit.SHA
   }
 }
