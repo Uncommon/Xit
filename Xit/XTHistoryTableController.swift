@@ -7,14 +7,24 @@ public class XTHistoryTableController: NSViewController {
     didSet
     {
       history = XTCommitHistory(repository: repository)
+
+      guard let table = view as? NSTableView
+        else { return }
+      var spacing = table.intercellSpacing
+      
+      spacing.height = 0
+      table.intercellSpacing = spacing
+
       if let headSHA = repository.headSHA,
         let headCommit = repository.commit(forSHA: headSHA) {
         history.process(headCommit, afterCommit: nil)
+        history.connectCommits()
       }
+      table.reloadData()
     }
   }
+  
   var history: XTCommitHistory!
-
 }
 
 extension XTHistoryTableController: NSTableViewDelegate {
@@ -38,6 +48,7 @@ extension XTHistoryTableController: NSTableViewDelegate {
     switch tableColumn.identifier {
       case "commit":
         result.textField?.stringValue = entry.commit.message ?? ""
+        result.objectValue = entry
       case "date":
         result.textField?.objectValue = entry.commit.commitDate
       case "email":

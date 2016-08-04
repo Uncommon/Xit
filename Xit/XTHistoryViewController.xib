@@ -237,7 +237,7 @@
                                                                 <subviews>
                                                                     <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="khd-Qt-OtX">
                                                                         <rect key="frame" x="-3" y="-3" width="799" height="247"/>
-                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                         <clipView key="contentView" id="QCe-lk-wQ6">
                                                                             <rect key="frame" x="1" y="23" width="797" height="223"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -262,12 +262,12 @@
                                                                                             </textFieldCell>
                                                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                                             <prototypeCellViews>
-                                                                                                <tableCellView identifier="commit" id="oW4-S9-MQ4">
+                                                                                                <tableCellView identifier="commit" id="oW4-S9-MQ4" customClass="XTHistoryCellView" customModule="Xit" customModuleProvider="target">
                                                                                                     <rect key="frame" x="1" y="1" width="494" height="17"/>
                                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                                     <subviews>
                                                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="oMe-ke-Jkz">
-                                                                                                            <rect key="frame" x="0.0" y="0.0" width="494" height="17"/>
+                                                                                                            <rect key="frame" x="76" y="0.0" width="418" height="17"/>
                                                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="g1y-W2-Nej">
                                                                                                                 <font key="font" metaFont="system"/>
