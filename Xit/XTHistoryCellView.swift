@@ -1,11 +1,16 @@
 import Cocoa
 
+/// Cell view that draws the graph lines next to the text.
 class XTHistoryCellView: NSTableCellView {
+  
+  var repository: XTRepository!
+  var refs = [String]()
   
   static let lineColors = [
       NSColor.blueColor(), NSColor.greenColor(), NSColor.redColor(),
       NSColor.brownColor(), NSColor.cyanColor(), NSColor.darkGrayColor(),
       NSColor.magentaColor(), NSColor.orangeColor(), NSColor.purpleColor(),
+      // Regular yellow is too light
       NSColor(calibratedHue: 0.13, saturation: 0.08, brightness: 0.8, alpha: 1.0),
       NSColor.blackColor(), NSColor.lightGrayColor()]
   
@@ -14,16 +19,25 @@ class XTHistoryCellView: NSTableCellView {
   static let rightMargin: CGFloat = 4.0
   static let textMargin: CGFloat = 4.0
 
+  /// Finds the center of the given column.
   static func columnCenter(index: UInt) -> CGFloat
   {
     return leftMargin + columnWidth * CGFloat(index) + columnWidth / 2
   }
   
+  func stripRefPrefix(ref: String) -> String
+  {
+    return ref.stringByRemovingPrefix("refs/heads/")
+              .stringByRemovingPrefix("refs/remotes/")
+  }
+  
+  /// Moves the text field out of the way of the graph lines.
   override func viewWillDraw()
   {
     super.viewWillDraw()
     
     guard let entry = objectValue as? CommitEntry,
+          let sha = entry.commit.SHA,
           let textField = textField
     else { return }
     
@@ -40,12 +54,18 @@ class XTHistoryCellView: NSTableCellView {
     }
     let totalColumns = throughCount + max(incomingCount, outgoingCount)
     
-    let textFrame = textField.frame
+    refs = repository.refsAtCommit(sha)
+    
+    let tokenMargin: CGFloat = 4.0
+    let tokenWidth: CGFloat = refs.reduce(0.0) { (width, ref) -> CGFloat in
+      let displayText = stripRefPrefix(ref)
+      return width + XTRefToken.rectWidth(text: displayText) + tokenMargin
+    }
+    
     let frame = self.frame
+    var newFrame = textField.frame
     
-    var newFrame = textFrame
-    
-    newFrame.origin.x = XTHistoryCellView.leftMargin +
+    newFrame.origin.x = XTHistoryCellView.leftMargin + tokenWidth +
                         XTHistoryCellView.columnWidth * CGFloat(totalColumns) +
                         XTHistoryCellView.textMargin
     newFrame.size.width = frame.size.width - newFrame.origin.x -
@@ -53,6 +73,7 @@ class XTHistoryCellView: NSTableCellView {
     textField.frame = newFrame
   }
   
+  /// Draws the graph lines in the view.
   override func drawRect(dirtyRect: NSRect)
   {
     super.drawRect(dirtyRect)

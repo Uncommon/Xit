@@ -4,12 +4,19 @@
 @class XTRepository;
 @class XTSideBarItem;
 
+NS_ASSUME_NONNULL_BEGIN
+
+/// Class that holds methods for drawing reference tokens.
 @interface XTRefToken : NSObject
 
 + (void)drawTokenForRefType:(XTRefType)type
                        text:(NSString *)text
-                       rect:(NSRect)rect;
-+ (CGFloat)rectWidthForText:(NSString *)text;
-+ (XTRefType)typeForRefName:(NSString *)ref inRepository:(XTRepository *)repo;
+                       rect:(NSRect)rect
+                       NS_SWIFT_NAME(drawToken(refType:text:rect:));
++ (CGFloat)rectWidthForText:(NSString *)text NS_SWIFT_NAME(rectWidth(text:));
++ (XTRefType)typeForRefName:(NSString *)ref inRepository:(XTRepository *)repo
+    NS_SWIFT_NAME(type(refName:repository:));
 
 @end
+
+NS_ASSUME_NONNULL_END

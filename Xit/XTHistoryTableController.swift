@@ -47,8 +47,11 @@ extension XTHistoryTableController: NSTableViewDelegate {
     
     switch tableColumn.identifier {
       case "commit":
-        result.textField?.stringValue = entry.commit.message ?? ""
-        result.objectValue = entry
+        let historyCell = result as! XTHistoryCellView
+        
+        historyCell.repository = repository
+        historyCell.textField?.stringValue = entry.commit.message ?? ""
+        historyCell.objectValue = entry
       case "date":
         result.textField?.objectValue = entry.commit.commitDate
       case "email":
