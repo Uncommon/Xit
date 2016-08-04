@@ -18,8 +18,7 @@ class XTCommit: CommitType {
   var SHA: String?
   { return gtCommit.SHA }
 
-  var parentSHAs: [String]
-  { return gtCommit.parents.flatMap({ $0.SHA }) }
+  lazy var parentSHAs: [String] = self.calculateParentSHAs()
   
   var message: String?
   { return gtCommit.message }
@@ -45,5 +44,19 @@ class XTCommit: CommitType {
     else { return nil }
     
     self.gtCommit = commit
+  }
+  
+  func calculateParentSHAs() -> [String]
+  {
+    var result = [String]()
+    
+    for index in 0..<git_commit_parentcount(gtCommit.git_commit()) {
+      let parentID = git_commit_parent_id(gtCommit.git_commit(), index)
+      guard parentID != nil
+      else { continue }
+      
+      result.append(GTOID(gitOid:parentID).SHA)
+    }
+    return result
   }
 }
