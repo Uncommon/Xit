@@ -71,7 +71,7 @@ class XTCommitHistory {
         }))
         if let existingParent = existingParent {
           if let firstParent =
-              self.repository.commit(forSHA: commit.parentSHAs[0]) {
+              repository.commit(forSHA: commit.parentSHAs[0]) {
             // Add the current commit's first parent so we can pick up
             // after adding the current batch.
             secondaryParents.append((firstParent, existingParent))
@@ -112,13 +112,22 @@ class XTCommitHistory {
         commitLookup[sha] = branchEntry
       }
     }
+    
     if let afterCommit = afterCommit,
        let afterIndex = entries.indexOf(
           { return $0.commit.SHA == afterCommit.SHA }) {
       entries.insertContentsOf(branchEntries, at: afterIndex + 1)
     }
     else {
-      entries.appendContentsOf(branchEntries)
+      if let lastSecondarySHA = secondaryParents.last?.after.SHA,
+         let lastAfter = commitLookup[lastSecondarySHA],
+         let afterIndex = entries.indexOf(
+          { return $0.commit.SHA == lastAfter.commit.SHA }) {
+        entries.insertContentsOf(branchEntries, at: afterIndex)
+      }
+      else {
+        entries.appendContentsOf(branchEntries)
+      }
     }
     
     for (parent, after) in secondaryParents.reverse() {

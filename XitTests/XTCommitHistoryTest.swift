@@ -8,6 +8,7 @@ struct MockCommit: CommitType {
   
   var message: String? { return nil }
   var commitDate: NSDate { return NSDate() }
+  var email: String? { return nil }
 }
 
 
@@ -225,6 +226,46 @@ class XTCommitHistoryTest: XCTestCase {
     
     XCTAssertEqual(history.entries[0].connections, [aToC, aToB])
     XCTAssertEqual(history.entries[1].connections, [aToC, aToB, bToD, bToC])
+    XCTAssertEqual(history.entries[2].connections, [aToC, cToE, bToD, bToC])
+    XCTAssertEqual(history.entries[3].connections, [cToE, bToD, dToF])
+    XCTAssertEqual(history.entries[4].connections, [cToE, eToF, dToF])
+    XCTAssertEqual(history.entries[5].connections, [eToF, fToG, dToF])
+    XCTAssertEqual(history.entries[6].connections, [fToG])
+  }
+  
+  /* Merged fork:
+      g-f-e--c---a
+         \-d-\-b
+  */
+  func testMergedFork()
+  {
+    let history = makeHistory([
+        ("a", ["c"]), ("b", ["d", "c"]), ("c", ["e"]),
+        ("d", ["f"]), ("e", ["f"]), ("f", ["g"]), ("g", [])])
+    
+    guard let commitA = history.repository.commit(forSHA: "a"),
+          let commitB = history.repository.commit(forSHA: "b")
+    else {
+      XCTFail("Can't get starting commits")
+      return
+    }
+    
+    history.process(commitA, afterCommit: nil)
+    history.process(commitB, afterCommit: nil)
+    check(history, expectedLength: 7)
+    
+    history.connectCommits()
+    
+    let aToC = CommitConnection(parentSHA: "c", childSHA: "a", colorIndex: 0)
+    let cToE = CommitConnection(parentSHA: "e", childSHA: "c", colorIndex: 0)
+    let bToC = CommitConnection(parentSHA: "c", childSHA: "b", colorIndex: 2)
+    let bToD = CommitConnection(parentSHA: "d", childSHA: "b", colorIndex: 1)
+    let eToF = CommitConnection(parentSHA: "f", childSHA: "e", colorIndex: 0)
+    let dToF = CommitConnection(parentSHA: "f", childSHA: "d", colorIndex: 1)
+    let fToG = CommitConnection(parentSHA: "g", childSHA: "f", colorIndex: 0)
+    
+    XCTAssertEqual(history.entries[0].connections, [aToC])
+    XCTAssertEqual(history.entries[1].connections, [aToC, bToD, bToC])
     XCTAssertEqual(history.entries[2].connections, [aToC, cToE, bToD, bToC])
     XCTAssertEqual(history.entries[3].connections, [cToE, bToD, dToF])
     XCTAssertEqual(history.entries[4].connections, [cToE, eToF, dToF])
