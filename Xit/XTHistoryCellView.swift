@@ -3,8 +3,13 @@ import Cocoa
 /// Cell view that draws the graph lines next to the text.
 class XTHistoryCellView: NSTableCellView {
   
-  var repository: XTRepository!
   var refs = [String]()
+  
+  // Flipped because that's how XTRefToken draws.
+  override var flipped: Bool { return true }
+  
+  /// Margin of space to leave for the lines in this cell.
+  private var linesMargin: CGFloat = 0.0
   
   static let lineColors = [
       NSColor.blueColor(), NSColor.greenColor(), NSColor.redColor(),
@@ -18,6 +23,7 @@ class XTHistoryCellView: NSTableCellView {
   static let leftMargin: CGFloat = 4.0
   static let rightMargin: CGFloat = 4.0
   static let textMargin: CGFloat = 4.0
+  static let tokenMargin: CGFloat = 4.0
 
   /// Finds the center of the given column.
   static func columnCenter(index: UInt) -> CGFloat
@@ -25,59 +31,101 @@ class XTHistoryCellView: NSTableCellView {
     return leftMargin + columnWidth * CGFloat(index) + columnWidth / 2
   }
   
-  func stripRefPrefix(ref: String) -> String
+  /// Counts the different kinds of connections passing through a commit.
+  static func count(connections connections: [CommitConnection], sha: String)
+    -> (incoming: UInt, outgoing: UInt, through: UInt)
   {
-    return ref.stringByRemovingPrefix("refs/heads/")
-              .stringByRemovingPrefix("refs/remotes/")
+    var incomingCount: UInt = 0, outgoingCount: UInt = 0, throughCount: UInt = 0
+    
+    for connection in connections {
+      let incoming = connection.parentSHA == sha
+      let outgoing = connection.childSHA == sha
+      
+      incomingCount += incoming ? 1 : 0
+      outgoingCount += outgoing ? 1 : 0
+      throughCount += !(incoming || outgoing) ? 1 : 0
+    }
+    return (incomingCount, outgoingCount, throughCount)
   }
   
-  /// Moves the text field out of the way of the graph lines.
+  /// Moves the text field out of the way of the lines and refs.
   override func viewWillDraw()
   {
     super.viewWillDraw()
     
     guard let entry = objectValue as? CommitEntry,
-          let sha = entry.commit.SHA,
-          let textField = textField
+          let textField = textField,
+          let sha = entry.commit.SHA
     else { return }
     
-    let incomingCount = entry.connections.reduce(0) { (count, connection) in
-      return connection.parentSHA == entry.commit.SHA ? count + 1 : count
-    }
-    let outgoingCount = entry.connections.reduce(0) { (count, connection) in
-      return connection.childSHA == entry.commit.SHA ? count + 1 : count
-    }
-    let throughCount = entry.connections.reduce(0) { (count, connection) in
-      return (connection.parentSHA == entry.commit.SHA) ||
-             (connection.childSHA == entry.commit.SHA)
-             ? count : count + 1
-    }
+    let (incomingCount, outgoingCount, throughCount) =
+        XTHistoryCellView.count(connections: entry.connections, sha: sha)
     let totalColumns = throughCount + max(incomingCount, outgoingCount)
     
-    refs = repository.refsAtCommit(sha)
+    linesMargin = XTHistoryCellView.leftMargin +
+                  CGFloat(totalColumns) * XTHistoryCellView.columnWidth
     
-    let tokenMargin: CGFloat = 4.0
     let tokenWidth: CGFloat = refs.reduce(0.0) { (width, ref) -> CGFloat in
-      let displayText = stripRefPrefix(ref)
-      return width + XTRefToken.rectWidth(text: displayText) + tokenMargin
+      guard let (_, displayRef) = ref.splitRefName()
+      else { return 0 }
+      return XTRefToken.rectWidth(text: displayRef) +
+             width + XTHistoryCellView.tokenMargin
     }
     
     let frame = self.frame
     var newFrame = textField.frame
     
-    newFrame.origin.x = XTHistoryCellView.leftMargin + tokenWidth +
-                        XTHistoryCellView.columnWidth * CGFloat(totalColumns) +
+    newFrame.origin.x = tokenWidth + linesMargin +
                         XTHistoryCellView.textMargin
     newFrame.size.width = frame.size.width - newFrame.origin.x -
                           XTHistoryCellView.rightMargin
     textField.frame = newFrame
   }
   
-  /// Draws the graph lines in the view.
+  /// Draws the graph lines and refs in the view.
   override func drawRect(dirtyRect: NSRect)
   {
     super.drawRect(dirtyRect)
     
+    drawRefs()
+    drawLines()
+  }
+  
+  static func refType(typeName: String) -> XTRefType
+  {
+    switch typeName {
+      case "refs/heads/":
+        return .Branch
+      case "refs/remotes/":
+        return .RemoteBranch
+      case "refs/tags/":
+        return .Tag
+      default:
+        return .Unknown
+    }
+  }
+  
+  func drawRefs()
+  {
+    var x: CGFloat = linesMargin + XTHistoryCellView.tokenMargin
+    
+    for ref in refs {
+      guard let (refTypeName, displayRef) = ref.splitRefName()
+      else { continue }
+      
+      let refRect = NSRect(x: x, y: -1,
+                           width: XTRefToken.rectWidth(text: displayRef),
+                           height: frame.size.height)
+      
+      XTRefToken.drawToken(refType: XTHistoryCellView.refType(refTypeName),
+                           text: displayRef,
+                           rect: refRect)
+      x += refRect.size.width + XTHistoryCellView.tokenMargin
+    }
+  }
+  
+  func drawLines()
+  {
     guard let entry = objectValue as? CommitEntry
     else { return }
     
@@ -97,8 +145,8 @@ class XTHistoryCellView: NSTableCellView {
         }
         
         path.moveToPoint(NSPoint(x: XTHistoryCellView.columnCenter(topOffset),
-                                 y: bounds.size.height))
-        path.relativeLineToPoint(NSMakePoint(0, -0.5))
+                                 y: 0))
+        path.relativeLineToPoint(NSMakePoint(0, 0.5))
         path.lineToPoint(NSPoint(x: XTHistoryCellView.columnCenter(dotOffset!),
                                  y: bounds.size.height/2))
         topOffset += 1
@@ -110,17 +158,17 @@ class XTHistoryCellView: NSTableCellView {
         }
         
         path.moveToPoint(NSPoint(x: XTHistoryCellView.columnCenter(bottomOffset),
-                                 y: 0))
-        path.relativeLineToPoint(NSMakePoint(0, 0.5))
+                                 y: bounds.size.height))
+        path.relativeLineToPoint(NSMakePoint(0, -0.5))
         path.lineToPoint(NSPoint(x: XTHistoryCellView.columnCenter(dotOffset!),
                                  y: bounds.size.height/2))
         bottomOffset += 1
       }
       else {
         path.moveToPoint(NSPoint(x: XTHistoryCellView.columnCenter(topOffset),
-                                 y: bounds.size.height))
-        path.lineToPoint(NSPoint(x: XTHistoryCellView.columnCenter(bottomOffset),
                                  y: 0))
+        path.lineToPoint(NSPoint(x: XTHistoryCellView.columnCenter(bottomOffset),
+                                 y: bounds.size.height))
         topOffset += 1
         bottomOffset += 1
       }

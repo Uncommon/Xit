@@ -267,7 +267,7 @@
                                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                                     <subviews>
                                                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="oMe-ke-Jkz">
-                                                                                                            <rect key="frame" x="76" y="0.0" width="418" height="17"/>
+                                                                                                            <rect key="frame" x="76" y="-1" width="418" height="17"/>
                                                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="g1y-W2-Nej">
                                                                                                                 <font key="font" metaFont="system"/>

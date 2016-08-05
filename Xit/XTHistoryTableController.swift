@@ -44,12 +44,14 @@ extension XTHistoryTableController: NSTableViewDelegate {
     else { return nil }
     
     let entry = history.entries[row]
+    guard let sha = entry.commit.SHA
+    else { return nil }
     
     switch tableColumn.identifier {
       case "commit":
         let historyCell = result as! XTHistoryCellView
         
-        historyCell.repository = repository
+        historyCell.refs = repository.refsAtCommit(sha)
         historyCell.textField?.stringValue = entry.commit.message ?? ""
         historyCell.objectValue = entry
       case "date":
