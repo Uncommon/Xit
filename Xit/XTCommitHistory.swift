@@ -81,7 +81,7 @@ class XTCommitHistory {
           break
         }
       }
-      else if commitLookup[parentSHA] != nil {
+      if (insertBeforeSHA == nil) && (commitLookup[parentSHA] != nil) {
         insertBeforeSHA = parentSHA
       }
       

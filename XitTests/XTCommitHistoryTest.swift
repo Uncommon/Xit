@@ -272,6 +272,74 @@ class XTCommitHistoryTest: XCTestCase {
     XCTAssertEqual(history.entries[5].connections, [eToF, fToG, dToF])
     XCTAssertEqual(history.entries[6].connections, [fToG])
   }
+
+  /* Merged fork 2:
+      d-------a
+      \-----b
+       \-c-/
+  */
+  func testMergedFork2()
+  {
+    let history = makeHistory([
+        ("a", ["d"]), ("b", ["d", "c"]), ("c", ["d"]), ("d", [])])
+    
+    guard let commitA = history.repository.commit(forSHA: "a"),
+          let commitB = history.repository.commit(forSHA: "b")
+    else {
+      XCTFail("Can't get starting commit")
+      return
+    }
+    
+    history.process(commitA, afterCommit: nil)
+    history.process(commitB, afterCommit: nil)
+    check(history, expectedLength: 4)
+  }
+
+  /* Merged fork 3:
+      g-f----/-d-----a
+        \-e-/  \--
+        \-------c-\-b
+  */
+  func testMergedFork3()
+  {
+    let history = makeHistory([
+        ("a", ["d"]), ("b", ["d", "c"]), ("d", ["f", "e"]),
+        ("c", ["f"]), ("e", ["f"]), ("f", ["g"]), ("g", [])])
+    
+    guard let commitA = history.repository.commit(forSHA: "a"),
+          let commitB = history.repository.commit(forSHA: "b")
+    else {
+      XCTFail("Can't get starting commit")
+      return
+    }
+    
+    history.process(commitA, afterCommit: nil)
+    history.process(commitB, afterCommit: nil)
+    check(history, expectedLength: 7)
+  }
+
+  /* Merged fork 4:
+      g-f----c-----a
+      \-+-e-/ \
+        \---d-\b
+  */
+  func testMergedFork4()
+  {
+    let history = makeHistory([
+        ("a", ["c"]), ("b", ["d", "c"]), ("c", ["f", "e"]), ("d", ["f"]),
+        ("e", ["g"]), ("f", ["g"]), ("g", [])])
+    
+    guard let commitA = history.repository.commit(forSHA: "a"),
+          let commitB = history.repository.commit(forSHA: "b")
+    else {
+      XCTFail("Can't get starting commit")
+      return
+    }
+    
+    history.process(commitA, afterCommit: nil)
+    history.process(commitB, afterCommit: nil)
+    check(history, expectedLength: 7)
+  }
   
   /* Disjoint:
       d-c b-a
