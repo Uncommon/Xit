@@ -46,8 +46,9 @@ class XTCommitHistory {
   /// Creates a list of commits for the branch starting at the given commit, and
   /// also a list of secondary parents that may start other branches.
   func branchEntries(startCommit: CommitType)
-    -> ([CommitEntry], [(commit: CommitType, after: CommitType)])
+    -> ([CommitEntry], [(commit: CommitType, after: CommitType)], String?)
   {
+    var insertBeforeSHA: String? = nil
     var commit = startCommit
     var result = [CommitEntry(commit: startCommit)]
     var secondaryParents = [(commit: CommitType, after: CommitType)]()
@@ -55,12 +56,12 @@ class XTCommitHistory {
     while !commit.parentSHAs.isEmpty {
       let parentSHA = commit.parentSHAs.first!
       
-      if commit.parentSHAs.count > 0 {
+      if commit.parentSHAs.count > 1 {
         let parentSHAs = commit.parentSHAs[1..<commit.parentSHAs.count]
         var existingParent: CommitType? = nil
         
         secondaryParents.appendContentsOf(parentSHAs.flatMap({ (parentSHA) in
-          // If a parent is already entered, stop now.
+          // If a parent is already entered, stop at this commit.
           if let parentEntry = commitLookup[parentSHA] {
             existingParent = parentEntry.commit
             return nil
@@ -75,9 +76,13 @@ class XTCommitHistory {
             // Add the current commit's first parent so we can pick up
             // after adding the current batch.
             secondaryParents.append((firstParent, existingParent))
+            insertBeforeSHA = existingParent.SHA
           }
           break
         }
+      }
+      else if commitLookup[parentSHA] != nil {
+        insertBeforeSHA = parentSHA
       }
       
       // If the parent SHA is already in the lookup,
@@ -95,7 +100,7 @@ class XTCommitHistory {
       result.append(CommitEntry(commit: parentCommit))
       commit = parentCommit
     }
-    return (result, secondaryParents)
+    return (result, secondaryParents, insertBeforeSHA)
   }
   
   /// Adds new commits to the list.
@@ -105,7 +110,8 @@ class XTCommitHistory {
           commitLookup[startSHA] == nil
     else { return }
     
-    let (branchEntries, secondaryParents) = self.branchEntries(startCommit)
+    let (branchEntries, secondaryParents, insertBeforeSHA) =
+        self.branchEntries(startCommit)
     
     for branchEntry in branchEntries {
       if let sha = branchEntry.commit.SHA {
@@ -119,7 +125,8 @@ class XTCommitHistory {
       entries.insertContentsOf(branchEntries, at: afterIndex + 1)
     }
     else {
-      if let lastSecondarySHA = secondaryParents.last?.after.SHA,
+      if let lastSecondarySHA = insertBeforeSHA ??
+                                secondaryParents.last?.after.SHA,
          let lastAfter = commitLookup[lastSecondarySHA],
          let afterIndex = entries.indexOf(
           { return $0.commit.SHA == lastAfter.commit.SHA }) {

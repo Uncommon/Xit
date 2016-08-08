@@ -107,7 +107,7 @@ class XTCommitHistoryTest: XCTestCase {
     }
     
     history.process(commitA, afterCommit: nil)
-    history.process(commitB, afterCommit: commitA)
+    history.process(commitB, afterCommit: nil)
     check(history, expectedLength: 4)
     
     history.connectCommits()
