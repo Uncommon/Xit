@@ -71,13 +71,12 @@ class XTCommitHistory {
           return (parentCommit, commit)
         }))
         if let existingParent = existingParent {
-          if let firstParent =
-              repository.commit(forSHA: commit.parentSHAs[0]) {
-            // Add the current commit's first parent so we can pick up
-            // after adding the current batch.
-            secondaryParents.append((firstParent, existingParent))
-            insertBeforeSHA = existingParent.SHA
-          }
+          guard let firstParent =
+              repository.commit(forSHA: commit.parentSHAs[0])
+          else { break }
+          // Add the current commit's first parent so we can pick up
+          // after adding the current batch.
+          secondaryParents.append((firstParent, existingParent))
           break
         }
       }
