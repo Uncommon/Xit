@@ -25,6 +25,43 @@ public class XTHistoryTableController: NSViewController {
   }
   
   var history: XTCommitHistory!
+  
+  override public func viewDidAppear()
+  {
+    let controller = view.window?.windowController as! XTWindowController
+    
+    controller.addObserver(self, forKeyPath: "selectedModel",
+                           options: .New, context: nil)
+  }
+  
+  /// Selects the row for the given commit SHA.
+  func selectRow(sha sha: String?)
+  {
+    let tableView = view as! NSTableView
+    
+    guard let sha = sha,
+          let row = history.entries.indexOf({ $0.commit.SHA == sha })
+    else {
+      tableView.deselectAll(self)
+      return
+    }
+    
+    tableView.selectRowIndexes(NSIndexSet(index: row),
+                               byExtendingSelection: false)
+    if view.window?.firstResponder != tableView {
+      tableView.scrollRowToVisible(row)
+    }
+  }
+  
+  override public func observeValueForKeyPath(
+      keyPath: String?, ofObject object: AnyObject?,
+      change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
+  {
+    if keyPath == "selectedModel",
+       let newModel = change?[NSKeyValueChangeNewKey] as? XTFileChangesModel {
+      selectRow(sha: newModel.shaToSelect)
+    }
+  }
 }
 
 extension XTHistoryTableController: NSTableViewDelegate {
