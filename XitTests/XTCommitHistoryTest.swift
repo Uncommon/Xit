@@ -233,6 +233,28 @@ class XTCommitHistoryTest: XCTestCase {
     XCTAssertEqual(history.entries[6].connections, [fToG])
   }
   
+  /* Cross-merge 4:
+      f----e---------a
+      \    '--c-,  /
+       \   ,-'  \ /
+        \-d------b
+  */
+  func testCrossMerge4()
+  {
+    let history = makeHistory([
+      ("a", ["e", "b"]), ("b", ["d", "c"]), ("c", ["e", "d"]),
+      ("d", ["f"]), ("e", ["f"]), ("f", [])])
+    
+    guard let commitA = history.repository.commit(forSHA: "a")
+      else {
+        XCTFail("Can't get starting commit")
+        return
+    }
+    
+    history.process(commitA, afterCommit: nil)
+    check(history, expectedLength: 6)
+  }
+  
   /* Merged fork:
       g-f-e--c---a
          \-d-\-b
@@ -339,6 +361,27 @@ class XTCommitHistoryTest: XCTestCase {
     history.process(commitA, afterCommit: nil)
     history.process(commitB, afterCommit: nil)
     check(history, expectedLength: 7)
+  }
+  
+  /* Merged fork 5:
+      e----c---a
+      \-d--\-b
+  */
+  func testMergedFork5()
+  {
+    let history = makeHistory([
+        ("a", ["c"]), ("b", ["d", "c"]), ("c", ["e"]), ("d", ["e"]), ("e", [])])
+    
+    guard let commitA = history.repository.commit(forSHA: "a"),
+          let commitB = history.repository.commit(forSHA: "b")
+    else {
+      XCTFail("Can't get starting commit")
+      return
+    }
+    
+    history.process(commitA, afterCommit: nil)
+    history.process(commitB, afterCommit: nil)
+    check(history, expectedLength: 5)
   }
   
   /* Disjoint:

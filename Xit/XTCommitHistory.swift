@@ -46,60 +46,39 @@ class XTCommitHistory {
   /// Creates a list of commits for the branch starting at the given commit, and
   /// also a list of secondary parents that may start other branches.
   func branchEntries(startCommit: CommitType)
-    -> ([CommitEntry], [(commit: CommitType, after: CommitType)], String?)
+    -> ([CommitEntry], [(commit: CommitType, after: CommitType)], [String])
   {
-    var insertBeforeSHA: String? = nil
     var commit = startCommit
     var result = [CommitEntry(commit: startCommit)]
-    var secondaryParents = [(commit: CommitType, after: CommitType)]()
+    var registeredParentSHAs = [String]()
+    var queue = [(commit: CommitType, after: CommitType)]()
     
-    while !commit.parentSHAs.isEmpty {
-      let parentSHA = commit.parentSHAs.first!
-      
-      if commit.parentSHAs.count > 1 {
-        let parentSHAs = commit.parentSHAs[1..<commit.parentSHAs.count]
-        var existingParent: CommitType? = nil
-        
-        secondaryParents.appendContentsOf(parentSHAs.flatMap({ (parentSHA) in
-          // If a parent is already entered, stop at this commit.
-          if let parentEntry = commitLookup[parentSHA] {
-            existingParent = parentEntry.commit
-            return nil
-          }
-          guard let parentCommit = self.repository.commit(forSHA: parentSHA)
-          else { return nil }
-          return (parentCommit, commit)
-        }))
-        if let existingParent = existingParent {
-          guard let firstParent =
-              repository.commit(forSHA: commit.parentSHAs[0])
-          else { break }
-          // Add the current commit's first parent so we can pick up
-          // after adding the current batch.
-          secondaryParents.append((firstParent, existingParent))
-          break
+    while let firstParentSHA = commit.parentSHAs.first {
+      for (index, parentSHA) in commit.parentSHAs.enumerate() {
+        if commitLookup[parentSHA] != nil {
+          registeredParentSHAs.append(parentSHA)
+        } else if index > 0,
+           let parentCommit = repository.commit(forSHA: parentSHA) {
+          queue.append((parentCommit, commit))
         }
       }
-      if (insertBeforeSHA == nil) && (commitLookup[parentSHA] != nil) {
-        insertBeforeSHA = parentSHA
-      }
       
-      // If the parent SHA is already in the lookup,
-      // then it's the end of the branch.
-      if commitLookup[parentSHA] != nil {
+      guard let parentCommit = repository.commit(forSHA: firstParentSHA)
+      else {
+        NSLog("Aborting branch, parent not found: \(firstParentSHA)")
         break
       }
-      
-      guard let parentCommit = repository.commit(forSHA: parentSHA)
-      else {
-        NSLog("Aborting branch, parent not found: \(parentSHA)")
+
+      if !registeredParentSHAs.isEmpty {
+        queue.append((parentCommit, commit))
         break
       }
       
       result.append(CommitEntry(commit: parentCommit))
       commit = parentCommit
     }
-    return (result, secondaryParents, insertBeforeSHA)
+    
+    return (result, queue, registeredParentSHAs)
   }
   
   /// Adds new commits to the list.
@@ -109,7 +88,7 @@ class XTCommitHistory {
           commitLookup[startSHA] == nil
     else { return }
     
-    let (branchEntries, secondaryParents, insertBeforeSHA) =
+    let (branchEntries, secondaryParents, insertBeforeSHAs) =
         self.branchEntries(startCommit)
     
     for branchEntry in branchEntries {
@@ -118,24 +97,33 @@ class XTCommitHistory {
       }
     }
     
-    if let afterCommit = afterCommit,
-       let afterIndex = entries.indexOf(
-          { return $0.commit.SHA == afterCommit.SHA }) {
+    let afterIndex = afterCommit.flatMap(
+        { commit in entries.indexOf({ $0.commit.SHA == commit.SHA }) })
+    
+    if let insertBeforeIndex = insertBeforeSHAs.flatMap(
+           { sha in entries.indexOf({ $0.commit.SHA == sha }) }).sort().first {
+      if let afterIndex = afterIndex where
+         afterIndex < insertBeforeIndex {
+        entries.insertContentsOf(branchEntries, at: afterIndex + 1)
+      }
+      else {
+        entries.insertContentsOf(branchEntries, at: insertBeforeIndex)
+      }
+    }
+    else if
+       let lastSecondarySHA = secondaryParents.last?.after.SHA,
+       let lastSecondaryEntry = commitLookup[lastSecondarySHA],
+       let lastSecondaryIndex = entries.indexOf(
+          { return $0.commit.SHA == lastSecondaryEntry.commit.SHA }) {
+      entries.insertContentsOf(branchEntries, at: lastSecondaryIndex)
+    }
+    else if let afterIndex = afterIndex {
       entries.insertContentsOf(branchEntries, at: afterIndex + 1)
     }
     else {
-      if let lastSecondarySHA = insertBeforeSHA ??
-                                secondaryParents.last?.after.SHA,
-         let lastAfter = commitLookup[lastSecondarySHA],
-         let afterIndex = entries.indexOf(
-          { return $0.commit.SHA == lastAfter.commit.SHA }) {
-        entries.insertContentsOf(branchEntries, at: afterIndex)
-      }
-      else {
-        entries.appendContentsOf(branchEntries)
-      }
+      entries.appendContentsOf(branchEntries)
     }
-    
+  
     for (parent, after) in secondaryParents.reverse() {
       process(parent, afterCommit: after)
     }
