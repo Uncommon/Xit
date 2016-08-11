@@ -50,16 +50,17 @@ class XTCommitHistoryTest: XCTestCase {
     return XTCommitHistory(repository: repository)
   }
   
+  /// Makes sure each commit preceds its parents.
   func check(history: XTCommitHistory, expectedLength: Int)
   {
-    let letters = "abcdefghijklmnopqrstuvwxyz"
-    
     print("\(history.entries.flatMap({ $0.commit.SHA }))")
-    XCTAssertEqual(history.entries.count, expectedLength)
-    for (index, sha) in history.entries.flatMap({ $0.commit.SHA }).enumerate() {
-      let letterIndex = letters.startIndex.advancedBy(index)
-      
-      XCTAssertEqual(sha, letters.substringWithRange(letterIndex...letterIndex))
+    XCTAssert(history.entries.count == expectedLength)
+    for (index, entry) in history.entries.enumerate() {
+      for parentSHA in entry.commit.parentSHAs {
+        let parentIndex = history.entries.indexOf({ $0.commit.SHA == parentSHA })
+        
+        XCTAssert(parentIndex > index, "\(entry.commit.SHA!) !< \(parentSHA)")
+      }
     }
   }
   
@@ -394,14 +395,14 @@ class XTCommitHistoryTest: XCTestCase {
         ("c", ["d"]), ("d", [])])
     
     guard let commitA = history.repository.commit(forSHA: "a"),
-          let commitB = history.repository.commit(forSHA: "c")
+          let commitC = history.repository.commit(forSHA: "c")
     else {
       XCTFail("Can't get starting commit")
       return
     }
     
     history.process(commitA, afterCommit: nil)
-    history.process(commitB, afterCommit: nil)
+    history.process(commitC, afterCommit: nil)
     check(history, expectedLength: 4)
     
     history.connectCommits()
@@ -467,5 +468,54 @@ class XTCommitHistoryTest: XCTestCase {
     
     history.process(commitA, afterCommit: nil)
     check(history, expectedLength: 5)
+  }
+  
+  /* Late merge:
+      g----d----b-a
+      \-f-/    / /
+       \----c-/ /
+        \-e----/
+  */
+  func testLateMerge()
+  {
+    let history = makeHistory([
+        ("a", ["b", "e"]), ("b", ["d", "c"]), ("c", ["g"]), ("d", ["g", "f"]),
+        ("e", ["g"]), ("f", ["g"]), ("g", [])])
+    
+    guard let commitA = history.repository.commit(forSHA: "a"),
+          let commitC = history.repository.commit(forSHA: "c"),
+          let commitE = history.repository.commit(forSHA: "e"),
+          let commitF = history.repository.commit(forSHA: "f")
+    else {
+      XCTFail("Can't get starting commit")
+      return
+    }
+    
+    history.process(commitC, afterCommit: nil)
+    history.process(commitE, afterCommit: nil)
+    history.process(commitF, afterCommit: nil)
+    history.process(commitA, afterCommit: nil)
+    check(history, expectedLength: 7)
+  }
+  
+  /* Early start:
+      d----b-\
+      \-c----a
+  */
+  func testEarlyStart()
+  {
+    let history = makeHistory([
+        ("a", ["b", "c"]), ("b", ["d"]), ("c", ["d"]), ("d", [])])
+    
+    guard let commitA = history.repository.commit(forSHA: "a"),
+          let commitB = history.repository.commit(forSHA: "b")
+    else {
+      XCTFail("Can't get starting commit")
+      return
+    }
+    
+    history.process(commitB, afterCommit: nil)
+    history.process(commitA, afterCommit: nil)
+    check(history, expectedLength: 4)
   }
 }

@@ -38,6 +38,16 @@ class XTCommitHistory {
   var commitLookup = [String: CommitEntry]()
   var entries = [CommitEntry]()
   
+  /// The result of processing a segment of a branch.
+  struct BranchResult {
+    /// The commit entries collected for this segment.
+    var entries: [CommitEntry]
+    /// Other branches queued for processing.
+    var queue: [(commit: CommitType, after: CommitType)]
+    /// Parents of processed commits which have previously been processed.
+    var registeredParentSHAs: [String]
+  }
+  
   init(repository: RepositoryType)
   {
     self.repository = repository
@@ -45,8 +55,7 @@ class XTCommitHistory {
   
   /// Creates a list of commits for the branch starting at the given commit, and
   /// also a list of secondary parents that may start other branches.
-  func branchEntries(startCommit: CommitType)
-    -> ([CommitEntry], [(commit: CommitType, after: CommitType)], [String])
+  func branchEntries(startCommit: CommitType) -> BranchResult
   {
     var commit = startCommit
     var result = [CommitEntry(commit: startCommit)]
@@ -78,7 +87,9 @@ class XTCommitHistory {
       commit = parentCommit
     }
     
-    return (result, queue, registeredParentSHAs)
+    return BranchResult(entries: result,
+                        queue: queue,
+                        registeredParentSHAs: registeredParentSHAs)
   }
   
   /// Adds new commits to the list.
@@ -88,10 +99,36 @@ class XTCommitHistory {
           commitLookup[startSHA] == nil
     else { return }
     
-    let (branchEntries, secondaryParents, insertBeforeSHAs) =
-        self.branchEntries(startCommit)
+    var results = [BranchResult]()
+    var startCommit = startCommit
     
-    for branchEntry in branchEntries {
+    repeat {
+      var result = self.branchEntries(startCommit)
+      
+      defer { results.append(result) }
+      if let nextSHA = result.entries.last?.commit.parentSHAs.first where
+         commitLookup[nextSHA] == nil,
+         let nextCommit = repository.commit(forSHA: nextSHA) {
+        startCommit = nextCommit
+        result.registeredParentSHAs.append(nextSHA)
+      }
+      else {
+        break
+      }
+    } while true
+    
+    for result in results.reverse() {
+      processBranchResult(result, after: afterCommit)
+    }
+    for result in results {
+      result.queue.reverse().forEach(
+          { (parent, after) in process(parent, afterCommit: after) })
+    }
+  }
+  
+  func processBranchResult(result: BranchResult, after afterCommit: CommitType?)
+  {
+    for branchEntry in result.entries {
       if let sha = branchEntry.commit.SHA {
         commitLookup[sha] = branchEntry
       }
@@ -100,32 +137,28 @@ class XTCommitHistory {
     let afterIndex = afterCommit.flatMap(
         { commit in entries.indexOf({ $0.commit.SHA == commit.SHA }) })
     
-    if let insertBeforeIndex = insertBeforeSHAs.flatMap(
+    if let insertBeforeIndex = result.registeredParentSHAs.flatMap(
            { sha in entries.indexOf({ $0.commit.SHA == sha }) }).sort().first {
       if let afterIndex = afterIndex where
          afterIndex < insertBeforeIndex {
-        entries.insertContentsOf(branchEntries, at: afterIndex + 1)
+        entries.insertContentsOf(result.entries, at: afterIndex + 1)
       }
       else {
-        entries.insertContentsOf(branchEntries, at: insertBeforeIndex)
+        entries.insertContentsOf(result.entries, at: insertBeforeIndex)
       }
     }
     else if
-       let lastSecondarySHA = secondaryParents.last?.after.SHA,
+       let lastSecondarySHA = result.queue.last?.after.SHA,
        let lastSecondaryEntry = commitLookup[lastSecondarySHA],
        let lastSecondaryIndex = entries.indexOf(
           { return $0.commit.SHA == lastSecondaryEntry.commit.SHA }) {
-      entries.insertContentsOf(branchEntries, at: lastSecondaryIndex)
+      entries.insertContentsOf(result.entries, at: lastSecondaryIndex)
     }
     else if let afterIndex = afterIndex {
-      entries.insertContentsOf(branchEntries, at: afterIndex + 1)
+      entries.insertContentsOf(result.entries, at: afterIndex + 1)
     }
     else {
-      entries.appendContentsOf(branchEntries)
-    }
-  
-    for (parent, after) in secondaryParents.reverse() {
-      process(parent, afterCommit: after)
+      entries.appendContentsOf(result.entries)
     }
   }
   
