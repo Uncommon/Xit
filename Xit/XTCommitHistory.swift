@@ -53,6 +53,12 @@ class XTCommitHistory {
     self.repository = repository
   }
   
+  func reset()
+  {
+    commitLookup.removeAll()
+    entries.removeAll()
+  }
+  
   /// Creates a list of commits for the branch starting at the given commit, and
   /// also a list of secondary parents that may start other branches.
   func branchEntries(startCommit: CommitType) -> BranchResult
@@ -93,7 +99,7 @@ class XTCommitHistory {
   }
   
   /// Adds new commits to the list.
-  func process(startCommit: CommitType, afterCommit: CommitType?)
+  func process(startCommit: CommitType, afterCommit: CommitType? = nil)
   {
     guard let startSHA = startCommit.SHA where
           commitLookup[startSHA] == nil

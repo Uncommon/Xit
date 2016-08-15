@@ -247,13 +247,45 @@ class XTCommitHistoryTest: XCTestCase {
       ("d", ["f"]), ("e", ["f"]), ("f", [])])
     
     guard let commitA = history.repository.commit(forSHA: "a")
-      else {
-        XCTFail("Can't get starting commit")
-        return
+    else {
+      XCTFail("Can't get starting commit")
+      return
     }
     
     history.process(commitA, afterCommit: nil)
     check(history, expectedLength: 6)
+  }
+  
+  /* Cross-merge 5:
+      k----h-f---d--b--a
+      \j-i-+-\e--+-/  /
+           \g---/--c-/
+  */
+  func testCrossMerge5()
+  {
+    let history = makeHistory([
+        ("a", ["b", "c"]), ("b", ["d", "e"]), ("c", ["g"]), ("d", ["f", "g"]),
+        ("e", ["i", "f"]), ("f", ["h"]), ("g", ["h"]), ("h", ["k"]),
+        ("i", ["j"]), ("j", ["k"]), ("k", [])])
+    
+    guard let commitA = history.repository.commit(forSHA: "a"),
+          let commitD = history.repository.commit(forSHA: "d"),
+          let commitE = history.repository.commit(forSHA: "e"),
+          let commitG = history.repository.commit(forSHA: "g")
+    else {
+      XCTFail("Can't get starting commit")
+      return
+    }
+    
+    history.process(commitA, afterCommit: nil)
+    check(history, expectedLength: 11)
+    
+    history.reset()
+    history.process(commitD)
+    history.process(commitE)
+    history.process(commitG)
+    history.process(commitA)
+    check(history, expectedLength: 11)
   }
   
   /* Merged fork:
@@ -330,7 +362,8 @@ class XTCommitHistoryTest: XCTestCase {
         ("c", ["f"]), ("e", ["f"]), ("f", ["g"]), ("g", [])])
     
     guard let commitA = history.repository.commit(forSHA: "a"),
-          let commitB = history.repository.commit(forSHA: "b")
+          let commitB = history.repository.commit(forSHA: "b"),
+          let commitE = history.repository.commit(forSHA: "e")
     else {
       XCTFail("Can't get starting commit")
       return
@@ -339,6 +372,11 @@ class XTCommitHistoryTest: XCTestCase {
     history.process(commitA, afterCommit: nil)
     history.process(commitB, afterCommit: nil)
     check(history, expectedLength: 7)
+    
+    history.reset()
+    history.process(commitE)
+    history.process(commitA)
+    history.process(commitB)
   }
 
   /* Merged fork 4:
