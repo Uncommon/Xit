@@ -9,17 +9,24 @@ public class XTHistoryTableController: NSViewController {
       history = XTCommitHistory(repository: repository)
 
       guard let table = view as? NSTableView
-        else { return }
+      else { return }
       var spacing = table.intercellSpacing
       
       spacing.height = 0
       table.intercellSpacing = spacing
 
-      if let headSHA = repository.headSHA,
-        let headCommit = repository.commit(forSHA: headSHA) {
-        history.process(headCommit, afterCommit: nil)
-        history.connectCommits()
+      let refs = repository.allRefs()
+      
+      for ref in refs {
+        #if DEBUGLOG
+        print("-- <\(ref)> --")
+        #endif
+        guard let sha = repository.shaForRef(ref),
+              let commit = repository.commit(forSHA: sha)
+        else { continue }
+        history.process(commit, afterCommit: nil)
       }
+      history.connectCommits()
       table.reloadData()
     }
   }

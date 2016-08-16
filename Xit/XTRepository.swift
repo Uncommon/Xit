@@ -54,8 +54,28 @@ extension XTRepository {
     git_reference_foreach(gtRepo.git_repository(), callback, &payload)
   }
   
+  /// Returns a list of refs that point to the given commit.
   func refsAtCommit(sha: String) -> [String]
   {
     return refsIndex[sha] ?? []
+  }
+  
+  /// Returns a list of all ref names.
+  func allRefs() -> [String]
+  {
+    var stringArray = git_strarray()
+    guard git_reference_list(&stringArray, gtRepo.git_repository()) == 0
+    else { return [] }
+    defer { git_strarray_free(&stringArray) }
+    
+    var result = [String]()
+    
+    for i in 1..<stringArray.count {
+      guard let refString =
+          String(UTF8String: UnsafePointer<CChar>(stringArray.strings[i]))
+      else { continue }
+      result.append(refString)
+    }
+    return result
   }
 }
