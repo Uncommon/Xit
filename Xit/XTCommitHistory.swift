@@ -44,8 +44,6 @@ class XTCommitHistory {
     var entries: [CommitEntry]
     /// Other branches queued for processing.
     var queue: [(commit: CommitType, after: CommitType)]
-    /// Parents of processed commits which have previously been processed.
-    var registeredParentSHAs: [String]
   }
   
   init(repository: RepositoryType)
@@ -60,31 +58,27 @@ class XTCommitHistory {
   }
   
   /// Creates a list of commits for the branch starting at the given commit, and
-  /// also a list of secondary parents that may start other branches.
+  /// also a list of secondary parents that may start other branches. A branch
+  /// segment ends when a commit has more than one parent, or its parent is
+  /// already registered.
   func branchEntries(startCommit: CommitType) -> BranchResult
   {
     var commit = startCommit
     var result = [CommitEntry(commit: startCommit)]
-    var registeredParentSHAs = [String]()
     var queue = [(commit: CommitType, after: CommitType)]()
     
     while let firstParentSHA = commit.parentSHAs.first {
-      for (index, parentSHA) in commit.parentSHAs.enumerate() {
-        if commitLookup[parentSHA] != nil {
-          registeredParentSHAs.append(parentSHA)
-        } else if index > 0,
-           let parentCommit = repository.commit(forSHA: parentSHA) {
+      for parentSHA in commit.parentSHAs.dropFirst() {
+        if let parentCommit = repository.commit(forSHA: parentSHA) {
           queue.append((parentCommit, commit))
         }
       }
       
-      guard let parentCommit = repository.commit(forSHA: firstParentSHA)
-      else {
-        NSLog("Aborting branch, parent not found: \(firstParentSHA)")
-        break
-      }
+      guard commitLookup[firstParentSHA] == nil,
+            let parentCommit = repository.commit(forSHA: firstParentSHA)
+      else { break }
 
-      if !registeredParentSHAs.isEmpty {
+      if commit.parentSHAs.count > 1 {
         queue.append((parentCommit, commit))
         break
       }
@@ -93,9 +87,9 @@ class XTCommitHistory {
       commit = parentCommit
     }
     
-    return BranchResult(entries: result,
-                        queue: queue,
-                        registeredParentSHAs: registeredParentSHAs)
+    let branchResult = BranchResult(entries: result, queue: queue)
+    
+    return branchResult
   }
   
   /// Adds new commits to the list.
@@ -116,7 +110,6 @@ class XTCommitHistory {
          commitLookup[nextSHA] == nil,
          let nextCommit = repository.commit(forSHA: nextSHA) {
         startCommit = nextCommit
-        result.registeredParentSHAs.append(nextSHA)
       }
       else {
         break
@@ -124,11 +117,10 @@ class XTCommitHistory {
     } while true
     
     for result in results.reverse() {
+      for (parent, after) in result.queue.reverse() {
+        process(parent, afterCommit: after)
+      }
       processBranchResult(result, after: afterCommit)
-    }
-    for result in results {
-      result.queue.reverse().forEach(
-          { (parent, after) in process(parent, afterCommit: after) })
     }
   }
   
@@ -142,9 +134,12 @@ class XTCommitHistory {
     
     let afterIndex = afterCommit.flatMap(
         { commit in entries.indexOf({ $0.commit.SHA == commit.SHA }) })
+    guard let lastEntry = result.entries.last
+    else { return }
+    let lastParentSHAs = lastEntry.commit.parentSHAs
     
-    if let insertBeforeIndex = result.registeredParentSHAs.flatMap(
-           { sha in entries.indexOf({ $0.commit.SHA == sha }) }).sort().first {
+    if let insertBeforeIndex = lastParentSHAs.flatMap(
+           { sha in entries.indexOf({ $0.commit.SHA! == sha }) }).sort().first {
       if let afterIndex = afterIndex where
          afterIndex < insertBeforeIndex {
         entries.insertContentsOf(result.entries, at: afterIndex + 1)
