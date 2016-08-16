@@ -1,13 +1,18 @@
 import Cocoa
 
 
-protocol CommitType {
+public protocol CommitType: CustomStringConvertible {
   var SHA: String? { get }
   var parentSHAs: [String] { get }
   
   var message: String? { get }
   var commitDate: NSDate { get }
   var email: String? { get }
+}
+
+extension CommitType {
+  public var description: String
+  { return "\(SHA?.firstSix() ?? "-")" }
 }
 
 
