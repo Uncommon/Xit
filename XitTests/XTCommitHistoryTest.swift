@@ -4,11 +4,27 @@ import XCTest
 
 struct MockCommit: CommitType {
   let SHA: String?
-  let parentSHAs: [String]
+  let OID: GTOID
+  let parentOIDs: [GTOID]
   
   var message: String? { return nil }
   var commitDate: NSDate { return NSDate() }
   var email: String? { return nil }
+}
+
+func == (a: MockCommit, b: MockCommit) -> Bool
+{
+  return a.OID == b.OID
+}
+
+
+extension GTOID {
+  convenience init(oid: String)
+  {
+    let padded = (oid as NSString).stringByPaddingToLength(40, withString: "0", startingAtIndex: 0)
+    
+    self.init(SHA: padded)!
+  }
 }
 
 
@@ -29,12 +45,32 @@ class MockRepository: RepositoryType {
     }
     return nil
   }
+
+  func commit(forOID oid: GTOID) -> CommitType?
+  {
+    for commit in commits {
+      if commit.OID == oid {
+        return commit
+      }
+    }
+    return nil
+  }
 }
 
 
 extension Xit.CommitConnection: CustomDebugStringConvertible {
   var debugDescription: String
-  { return "\(childSHA)-\(parentSHA) \(colorIndex)" }
+  { return "\(childOID.SHA)-\(parentOID.SHA) \(colorIndex)" }
+}
+
+
+extension Xit.CommitConnection {
+  init(parentSHA: String, childSHA: String, colorIndex: UInt)
+  {
+    self.init(parentOID: GTOID(oid: parentSHA),
+              childOID: GTOID(oid: childSHA),
+              colorIndex: colorIndex)
+  }
 }
 
 
@@ -43,7 +79,9 @@ class XTCommitHistoryTest: XCTestCase {
   func makeHistory(commitData: [(String, [String])]) -> XTCommitHistory
   {
     let commits = commitData.map({ (sha, parents) in
-        MockCommit(SHA: sha, parentSHAs: parents) })
+        MockCommit(SHA: sha,
+                   OID: GTOID(oid: sha),
+                   parentOIDs: parents.map { GTOID(oid: $0) }) })
     // Reverse the input to better test the ordering.
     let repository = MockRepository(commits: commits.reverse())
     
@@ -56,10 +94,10 @@ class XTCommitHistoryTest: XCTestCase {
     print("\(history.entries.flatMap({ $0.commit.SHA }))")
     XCTAssert(history.entries.count == expectedLength)
     for (index, entry) in history.entries.enumerate() {
-      for parentSHA in entry.commit.parentSHAs {
-        let parentIndex = history.entries.indexOf({ $0.commit.SHA == parentSHA })
+      for parentOID in entry.commit.parentOIDs {
+        let parentIndex = history.entries.indexOf({ $0.commit.OID == parentOID })
         
-        XCTAssert(parentIndex > index, "\(entry.commit.SHA!) !< \(parentSHA)")
+        XCTAssert(parentIndex > index, "\(entry.commit.SHA!.firstSix()) !< \(parentOID.SHA.firstSix())")
       }
     }
   }
@@ -156,15 +194,15 @@ class XTCommitHistoryTest: XCTestCase {
   }
   
   /* Merge 2:
-      g------d----a
+      aa-----d----a
       \-f---/\-c\
         \-e------b
   */
   func testMerge2()
   {
     let history = makeHistory([
-        ("a", ["d"]), ("b", ["e", "c"]), ("c", ["d"]), ("d", ["g", "f"]),
-        ("e", ["f"]), ("f", ["g"]), ("g", [])])
+        ("a", ["d"]), ("b", ["e", "c"]), ("c", ["d"]), ("d", ["aa", "f"]),
+        ("e", ["f"]), ("f", ["aa"]), ("aa", [])])
     
     guard let commitA = history.repository.commit(forSHA: "a"),
           let commitB = history.repository.commit(forSHA: "b")
@@ -180,7 +218,7 @@ class XTCommitHistoryTest: XCTestCase {
   }
   
   /* Cross-merge 1:
-      g-f--------e-/-c-a
+      aa-f--------e-/-c-a
          \     /--/   /
           \-d-/-b----/
   */
@@ -188,7 +226,7 @@ class XTCommitHistoryTest: XCTestCase {
   {
     let history = makeHistory([
         ("a", ["c", "b"]), ("b", ["d"]), ("c", ["e", "d"]),
-        ("d", ["f"]), ("e", ["f"]), ("f", ["g"]), ("g", [])])
+        ("d", ["f"]), ("e", ["f"]), ("f", ["aa"]), ("aa", [])])
     
     
     guard let commitA = history.repository.commit(forSHA: "a")
@@ -209,27 +247,27 @@ class XTCommitHistoryTest: XCTestCase {
     let bToD = CommitConnection(parentSHA: "d", childSHA: "b", colorIndex: 1)
     let eToF = CommitConnection(parentSHA: "f", childSHA: "e", colorIndex: 0)
     let dToF = CommitConnection(parentSHA: "f", childSHA: "d", colorIndex: 1)
-    let fToG = CommitConnection(parentSHA: "g", childSHA: "f", colorIndex: 0)
+    let fToAA = CommitConnection(parentSHA: "aa", childSHA: "f", colorIndex: 0)
     
-    // Order is ["a", "c", "e", "b", "d", "f", "g"]
+    // Order is ["a", "c", "e", "b", "d", "f", "aa"]
     XCTAssertEqual(history.entries[0].connections, [aToC, aToB])
     XCTAssertEqual(history.entries[1].connections, [aToC, cToE, aToB, cToD])
     XCTAssertEqual(history.entries[2].connections, [cToE, eToF, aToB, cToD])
     XCTAssertEqual(history.entries[3].connections, [eToF, aToB, bToD, cToD])
     XCTAssertEqual(history.entries[4].connections, [eToF, bToD, dToF, cToD])
-    XCTAssertEqual(history.entries[5].connections, [eToF, fToG, dToF])
-    XCTAssertEqual(history.entries[6].connections, [fToG])
+    XCTAssertEqual(history.entries[5].connections, [eToF, fToAA, dToF])
+    XCTAssertEqual(history.entries[6].connections, [fToAA])
   }
   
   /* Cross-merge 2:
-      g-f---e-c----a
+      aa-f---e-c----a
          \-d--\-b-/
   */
   func testCrossMerge2()
   {
     let history = makeHistory([
         ("a", ["c", "b"]), ("b", ["d", "c"]), ("c", ["e"]),
-        ("d", ["f"]), ("e", ["f"]), ("f", ["g"]), ("g", [])])
+        ("d", ["f"]), ("e", ["f"]), ("f", ["aa"]), ("aa", [])])
     
     guard let commitA = history.repository.commit(forSHA: "a")
     else {
@@ -249,9 +287,9 @@ class XTCommitHistoryTest: XCTestCase {
     let bToD = CommitConnection(parentSHA: "d", childSHA: "b", colorIndex: 1)
     let eToF = CommitConnection(parentSHA: "f", childSHA: "e", colorIndex: 0)
     let dToF = CommitConnection(parentSHA: "f", childSHA: "d", colorIndex: 1)
-    let fToG = CommitConnection(parentSHA: "g", childSHA: "f", colorIndex: 0)
+    let fToG = CommitConnection(parentSHA: "aa", childSHA: "f", colorIndex: 0)
     
-    // Order is ["a", "b", "c", "e", "d", "f", "g"]
+    // Order is ["a", "b", "c", "e", "d", "f", "aa"]
     XCTAssertEqual(history.entries[0].connections, [aToC, aToB])
     XCTAssertEqual(history.entries[1].connections, [aToC, aToB, bToD, bToC])
     XCTAssertEqual(history.entries[2].connections, [aToC, cToE, bToD, bToC])
@@ -312,14 +350,14 @@ class XTCommitHistoryTest: XCTestCase {
   func testCrossMerge5()
   {
     let history = makeHistory([
-        ("a", ["b", "c"]), ("b", ["d", "e"]), ("c", ["g"]), ("d", ["f", "g"]),
-        ("e", ["i", "f"]), ("f", ["h"]), ("g", ["h"]), ("h", ["k"]),
-        ("i", ["j"]), ("j", ["k"]), ("k", [])])
+        ("a", ["b", "c"]), ("b", ["d", "e"]), ("c", ["aa"]), ("d", ["f", "aa"]),
+        ("e", ["cc", "f"]), ("f", ["bb"]), ("aa", ["bb"]), ("bb", ["ee"]),
+        ("cc", ["dd"]), ("dd", ["ee"]), ("ee", [])])
     
     guard let commitA = history.repository.commit(forSHA: "a"),
           let commitD = history.repository.commit(forSHA: "d"),
           let commitE = history.repository.commit(forSHA: "e"),
-          let commitG = history.repository.commit(forSHA: "g")
+          let commitAA = history.repository.commit(forSHA: "aa")
     else {
       XCTFail("Can't get starting commit")
       return
@@ -331,7 +369,7 @@ class XTCommitHistoryTest: XCTestCase {
     history.reset()
     history.process(commitD)
     history.process(commitE)
-    history.process(commitG)
+    history.process(commitAA)
     history.process(commitA)
     check(history, expectedLength: 11)
   }
@@ -344,7 +382,7 @@ class XTCommitHistoryTest: XCTestCase {
   {
     let history = makeHistory([
         ("a", ["c"]), ("b", ["d", "c"]), ("c", ["e"]),
-        ("d", ["f"]), ("e", ["f"]), ("f", ["g"]), ("g", [])])
+        ("d", ["f"]), ("e", ["f"]), ("f", ["aa"]), ("aa", [])])
     
     guard let commitA = history.repository.commit(forSHA: "a"),
           let commitB = history.repository.commit(forSHA: "b")
@@ -365,16 +403,16 @@ class XTCommitHistoryTest: XCTestCase {
     let bToD = CommitConnection(parentSHA: "d", childSHA: "b", colorIndex: 1)
     let eToF = CommitConnection(parentSHA: "f", childSHA: "e", colorIndex: 0)
     let dToF = CommitConnection(parentSHA: "f", childSHA: "d", colorIndex: 1)
-    let fToG = CommitConnection(parentSHA: "g", childSHA: "f", colorIndex: 0)
+    let fToAA = CommitConnection(parentSHA: "aa", childSHA: "f", colorIndex: 0)
     
-    // Order is ["a", "b", "c", "e", "d", "f", "g"]
+    // Order is ["a", "b", "c", "e", "d", "f", "aa"]
     XCTAssertEqual(history.entries[0].connections, [aToC])
     XCTAssertEqual(history.entries[1].connections, [aToC, bToD, bToC])
     XCTAssertEqual(history.entries[2].connections, [aToC, cToE, bToD, bToC])
     XCTAssertEqual(history.entries[3].connections, [cToE, eToF, bToD])
     XCTAssertEqual(history.entries[4].connections, [eToF, bToD, dToF])
-    XCTAssertEqual(history.entries[5].connections, [eToF, fToG, dToF])
-    XCTAssertEqual(history.entries[6].connections, [fToG])
+    XCTAssertEqual(history.entries[5].connections, [eToF, fToAA, dToF])
+    XCTAssertEqual(history.entries[6].connections, [fToAA])
   }
 
   /* Merged fork 2:
@@ -400,15 +438,15 @@ class XTCommitHistoryTest: XCTestCase {
   }
 
   /* Merged fork 3:
-      g-f----/-d-----a
-        \-e-/  \--
-        \-------c-\-b
+      aa-f----/-d-----a
+         \-e-/  \--
+         \-------c-\-b
   */
   func testMergedFork3()
   {
     let history = makeHistory([
         ("a", ["d"]), ("b", ["d", "c"]), ("d", ["f", "e"]),
-        ("c", ["f"]), ("e", ["f"]), ("f", ["g"]), ("g", [])])
+        ("c", ["f"]), ("e", ["f"]), ("f", ["aa"]), ("aa", [])])
     
     guard let commitA = history.repository.commit(forSHA: "a"),
           let commitB = history.repository.commit(forSHA: "b"),
@@ -429,15 +467,15 @@ class XTCommitHistoryTest: XCTestCase {
   }
 
   /* Merged fork 4:
-      g-f----c-----a
-      \-+-e-/ \
-        \---d-\b
+      aa-f----c-----a
+       \-+-e-/ \
+         \---d-\b
   */
   func testMergedFork4()
   {
     let history = makeHistory([
         ("a", ["c"]), ("b", ["d", "c"]), ("c", ["f", "e"]), ("d", ["f"]),
-        ("e", ["g"]), ("f", ["g"]), ("g", [])])
+        ("e", ["aa"]), ("f", ["aa"]), ("aa", [])])
     
     guard let commitA = history.repository.commit(forSHA: "a"),
           let commitB = history.repository.commit(forSHA: "b")
@@ -567,7 +605,7 @@ class XTCommitHistoryTest: XCTestCase {
   {
     let history = makeHistory([
         ("a", ["b", "d"]), ("b", ["e", "c"]), ("c", ["e"]), ("d", ["f", "e"]),
-        ("e", ["g"]), ("f", ["g"]), ("g", [])])
+        ("e", ["aa"]), ("f", ["aa"]), ("aa", [])])
     
     guard let commitA = history.repository.commit(forSHA: "a")
       else {
@@ -588,8 +626,8 @@ class XTCommitHistoryTest: XCTestCase {
   func testLateMerge()
   {
     let history = makeHistory([
-        ("a", ["b", "e"]), ("b", ["d", "c"]), ("c", ["g"]), ("d", ["g", "f"]),
-        ("e", ["g"]), ("f", ["g"]), ("g", [])])
+        ("a", ["b", "e"]), ("b", ["d", "c"]), ("c", ["aa"]), ("d", ["aa", "f"]),
+        ("e", ["aa"]), ("f", ["aa"]), ("aa", [])])
     
     guard let commitA = history.repository.commit(forSHA: "a"),
           let commitC = history.repository.commit(forSHA: "c"),

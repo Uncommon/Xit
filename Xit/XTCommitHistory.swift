@@ -17,20 +17,20 @@ public class CommitEntry: Equatable, CustomStringConvertible {
 
 public func == (left: CommitEntry, right: CommitEntry) -> Bool
 {
-  return left.commit.SHA == right.commit.SHA
+  return left.commit.OID == right.commit.OID
 }
 
 
 /// A connection line between commits in the history list.
 struct CommitConnection: Equatable {
-  let parentSHA, childSHA: String
+  let parentOID, childOID: GTOID
   let colorIndex: UInt
 }
 
 func == (left: CommitConnection, right: CommitConnection) -> Bool
 {
-  return (left.parentSHA == right.parentSHA) &&
-         (left.childSHA == right.childSHA) &&
+  return (left.parentOID == right.parentOID) &&
+         (left.childOID == right.childOID) &&
          (left .colorIndex == right.colorIndex)
 }
 
@@ -47,7 +47,7 @@ class XTCommitHistory {
   
   let repository: RepositoryType
   
-  var commitLookup = [String: CommitEntry]()
+  var commitLookup = [GTOID: CommitEntry]()
   var entries = [CommitEntry]()
   
   /// The result of processing a segment of a branch.
@@ -87,18 +87,18 @@ class XTCommitHistory {
     var result = [CommitEntry(commit: startCommit)]
     var queue = [(commit: CommitType, after: CommitType)]()
     
-    while let firstParentSHA = commit.parentSHAs.first {
-      for parentSHA in commit.parentSHAs.dropFirst() {
-        if let parentCommit = repository.commit(forSHA: parentSHA) {
+    while let firstParentOID = commit.parentOIDs.first {
+      for parentOID in commit.parentOIDs.dropFirst() {
+        if let parentCommit = repository.commit(forOID: parentOID) {
           queue.append((parentCommit, commit))
         }
       }
       
-      guard commitLookup[firstParentSHA] == nil,
-            let parentCommit = repository.commit(forSHA: firstParentSHA)
+      guard commitLookup[firstParentOID] == nil,
+            let parentCommit = repository.commit(forOID: firstParentOID)
       else { break }
 
-      if commit.parentSHAs.count > 1 {
+      if commit.parentOIDs.count > 1 {
         queue.append((parentCommit, commit))
         break
       }
@@ -110,7 +110,7 @@ class XTCommitHistory {
     let branchResult = BranchResult(entries: result, queue: queue)
     
 #if DEBUGLOG
-    let before = entries.last?.commit.parentSHAs.map({ $0.firstSix() }).joinWithSeparator(" ")
+    let before = entries.last?.commit.parentOIDs.map({ $0.SHA.firstSix() }).joinWithSeparator(" ")
     
     print("\(branchResult) ‹ \(before ?? "-")", terminator: "")
     for (commit, after) in queue {
@@ -125,8 +125,8 @@ class XTCommitHistory {
   /// Adds new commits to the list.
   func process(startCommit: CommitType, afterCommit: CommitType? = nil)
   {
-    guard let startSHA = startCommit.SHA where
-          commitLookup[startSHA] == nil
+    let startOID = startCommit.OID
+    guard commitLookup[startOID] == nil
     else { return }
     
     var results = [BranchResult]()
@@ -136,9 +136,9 @@ class XTCommitHistory {
       var result = self.branchEntries(startCommit)
       
       defer { results.append(result) }
-      if let nextSHA = result.entries.last?.commit.parentSHAs.first where
-         commitLookup[nextSHA] == nil,
-         let nextCommit = repository.commit(forSHA: nextSHA) {
+      if let nextOID = result.entries.last?.commit.parentOIDs.first where
+         commitLookup[nextOID] == nil,
+         let nextCommit = repository.commit(forOID: nextOID) {
         startCommit = nextCommit
       }
       else {
@@ -157,19 +157,17 @@ class XTCommitHistory {
   func processBranchResult(result: BranchResult, after afterCommit: CommitType?)
   {
     for branchEntry in result.entries {
-      if let sha = branchEntry.commit.SHA {
-        commitLookup[sha] = branchEntry
-      }
+      commitLookup[branchEntry.commit.OID] = branchEntry
     }
     
     let afterIndex = afterCommit.flatMap(
-        { commit in entries.indexOf({ $0.commit.SHA == commit.SHA }) })
+        { commit in entries.indexOf({ $0.commit.OID == commit.OID }) })
     guard let lastEntry = result.entries.last
     else { return }
-    let lastParentSHAs = lastEntry.commit.parentSHAs
+    let lastParentOIDs = lastEntry.commit.parentOIDs
     
-    if let insertBeforeIndex = lastParentSHAs.flatMap(
-           { sha in entries.indexOf({ $0.commit.SHA! == sha }) }).sort().first {
+    if let insertBeforeIndex = lastParentOIDs.flatMap(
+           { oid in entries.indexOf({ $0.commit.OID == oid }) }).sort().first {
       #if DEBUGLOG
       print(" ** \(insertBeforeIndex) before \(entries[insertBeforeIndex].commit)")
       #endif
@@ -188,12 +186,12 @@ class XTCommitHistory {
       }
     }
     else if
-       let lastSecondarySHA = result.queue.last?.after.SHA,
-       let lastSecondaryEntry = commitLookup[lastSecondarySHA],
+       let lastSecondaryOID = result.queue.last?.after.OID,
+       let lastSecondaryEntry = commitLookup[lastSecondaryOID],
        let lastSecondaryIndex = entries.indexOf(
-          { return $0.commit.SHA == lastSecondaryEntry.commit.SHA }) {
+          { return $0.commit.OID == lastSecondaryEntry.commit.OID }) {
       #if DEBUGLOG
-      print(" ** after secondary \(lastSecondarySHA.firstSix())")
+      print(" ** after secondary \(lastSecondaryOID.SHA!.firstSix())")
       #endif
       entries.insertContentsOf(result.entries, at: lastSecondaryIndex)
     }
@@ -219,17 +217,15 @@ class XTCommitHistory {
     var nextColorIndex: UInt = 0
     
     for entry in entries {
-      guard let commitSHA = entry.commit.SHA
-      else { continue }
-      
-      let incomingIndex = connections.indexOf({ $0.parentSHA == commitSHA })
+      let commitOID = entry.commit.OID
+      let incomingIndex = connections.indexOf({ $0.parentOID == commitOID })
       let incomingColor: UInt? = (incomingIndex != nil)
           ? connections[incomingIndex!].colorIndex
           : nil
       
-      if let firstParentSHA = entry.commit.parentSHAs.first {
-        let newConnection = CommitConnection(parentSHA: firstParentSHA,
-                                             childSHA: commitSHA,
+      if let firstParentOID = entry.commit.parentOIDs.first {
+        let newConnection = CommitConnection(parentOID: firstParentOID,
+                                             childOID: commitOID,
                                              colorIndex: incomingColor ??
                                                          nextColorIndex++)
         let insertIndex = (incomingIndex != nil)
@@ -240,19 +236,19 @@ class XTCommitHistory {
       }
       
       // Add new connections for the commit's parents
-      for parentSHA in entry.commit.parentSHAs.dropFirst() {
-        connections.append(CommitConnection(parentSHA: parentSHA,
-                                            childSHA: commitSHA,
+      for parentOID in entry.commit.parentOIDs.dropFirst() {
+        connections.append(CommitConnection(parentOID: parentOID,
+                                            childOID: commitOID,
                                             colorIndex: nextColorIndex++))
       }
       
       entry.connections = connections
-      connections = connections.filter({ $0.parentSHA != commitSHA })
+      connections = connections.filter({ $0.parentOID != commitOID })
     }
 #if DEBUGLOG
     if !connections.isEmpty {
       print("Unterminated parent lines:")
-      connections.forEach({ print($0.childSHA.firstSix()) })
+      connections.forEach({ print($0.childOID.SHA.firstSix()) })
     }
 #endif
   }

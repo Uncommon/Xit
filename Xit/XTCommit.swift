@@ -3,7 +3,8 @@ import Cocoa
 
 public protocol CommitType: CustomStringConvertible {
   var SHA: String? { get }
-  var parentSHAs: [String] { get }
+  var OID: GTOID { get }
+  var parentOIDs: [GTOID] { get }
   
   var message: String? { get }
   var commitDate: NSDate { get }
@@ -16,28 +17,32 @@ extension CommitType {
 }
 
 
-class XTCommit: CommitType {
+public func == (a: GTOID, b: GTOID) -> Bool
+{
+  return git_oid_cmp(a.git_oid(), b.git_oid()) == 0
+}
+
+
+public class XTCommit: CommitType {
 
   let gtCommit: GTCommit
 
-  lazy var SHA: String? = self.calculateSHA()
+  lazy public var SHA: String? = self.calculateSHA()
+  lazy public var OID: GTOID = self.calculateOID()
 
-  lazy var parentSHAs: [String] = self.calculateParentSHAs()
+  lazy public var parentOIDs: [GTOID] = self.calculateParentOIDs()
   
-  var message: String?
+  public var message: String?
   { return gtCommit.message }
   
-  var commitDate: NSDate
+  public var commitDate: NSDate
   { return gtCommit.commitDate }
   
-  var email: String?
+  public var email: String?
   { return gtCommit.author?.email }
 
-  init?(sha: String, repository: XTRepository)
+  init?(oid: GTOID, repository: XTRepository)
   {
-    guard let oid = GTOID(SHA: sha)
-    else { return nil }
-    
     var gitCommit: COpaquePointer = nil  // git_commit isn't imported
     let result = git_commit_lookup(&gitCommit,
                                    repository.gtRepo.git_repository(),
@@ -50,16 +55,24 @@ class XTCommit: CommitType {
     self.gtCommit = commit
   }
   
-  func calculateParentSHAs() -> [String]
+  convenience init?(sha: String, repository: XTRepository)
   {
-    var result = [String]()
+    guard let oid = GTOID(SHA: sha)
+    else { return nil }
+    
+    self.init(oid: oid, repository: repository)
+  }
+  
+  func calculateParentOIDs() -> [GTOID]
+  {
+    var result = [GTOID]()
     
     for index in 0..<git_commit_parentcount(gtCommit.git_commit()) {
       let parentID = git_commit_parent_id(gtCommit.git_commit(), index)
       guard parentID != nil
       else { continue }
       
-      result.append(GTOID(gitOid:parentID).SHA)
+      result.append(GTOID(gitOid:parentID))
     }
     return result
   }
@@ -68,4 +81,14 @@ class XTCommit: CommitType {
   {
     return gtCommit.SHA
   }
+  
+  func calculateOID() -> GTOID
+  {
+    return gtCommit.OID!
+  }
+}
+
+public func == (a: XTCommit, b: XTCommit) -> Bool
+{
+  return git_oid_cmp(a.OID.git_oid(), b.OID.git_oid()) == 0
 }

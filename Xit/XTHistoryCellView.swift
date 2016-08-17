@@ -32,14 +32,14 @@ class XTHistoryCellView: NSTableCellView {
   }
   
   /// Counts the different kinds of connections passing through a commit.
-  static func count(connections connections: [CommitConnection], sha: String)
+  static func count(connections connections: [CommitConnection], oid: GTOID)
     -> (incoming: UInt, outgoing: UInt, through: UInt)
   {
     var incomingCount: UInt = 0, outgoingCount: UInt = 0, throughCount: UInt = 0
     
     for connection in connections {
-      let incoming = connection.parentSHA == sha
-      let outgoing = connection.childSHA == sha
+      let incoming = connection.parentOID == oid
+      let outgoing = connection.childOID == oid
       
       incomingCount += incoming ? 1 : 0
       outgoingCount += outgoing ? 1 : 0
@@ -54,12 +54,12 @@ class XTHistoryCellView: NSTableCellView {
     super.viewWillDraw()
     
     guard let entry = objectValue as? CommitEntry,
-          let textField = textField,
-          let sha = entry.commit.SHA
+          let textField = textField
     else { return }
+    let oid = entry.commit.OID
     
     let (incomingCount, outgoingCount, throughCount) =
-        XTHistoryCellView.count(connections: entry.connections, sha: sha)
+        XTHistoryCellView.count(connections: entry.connections, oid: oid)
     let totalColumns = throughCount + max(incomingCount, outgoingCount)
     
     linesMargin = XTHistoryCellView.leftMargin +
@@ -138,7 +138,7 @@ class XTHistoryCellView: NSTableCellView {
     for connection in entry.connections {
       let path = NSBezierPath()
       
-      if connection.parentSHA == entry.commit.SHA {
+      if connection.parentOID == entry.commit.OID {
         if dotOffset == nil {
           dotOffset = topOffset
           dotColorIndex = connection.colorIndex
@@ -151,7 +151,7 @@ class XTHistoryCellView: NSTableCellView {
                                  y: bounds.size.height/2))
         topOffset += 1
       }
-      else if connection.childSHA == entry.commit.SHA {
+      else if connection.childOID == entry.commit.OID {
         if dotOffset == nil {
           dotOffset = topOffset
           dotColorIndex = connection.colorIndex
