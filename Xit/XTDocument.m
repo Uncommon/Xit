@@ -3,6 +3,9 @@
 #import "Xit-Swift.h"
 #include "XTQueueUtils.h"
 
+NSString * const XTTaskStartedNotification = @"XTTaskStarted";
+NSString * const XTTaskEndedNotification = @"XTTaskEnded";
+
 @interface XTDocument ()
 
 @property (readwrite) XTRepository *repository;

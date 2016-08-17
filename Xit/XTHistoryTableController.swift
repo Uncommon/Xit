@@ -48,6 +48,8 @@ public class XTHistoryTableController: NSViewController {
     XTStatusView.update(status: "Loading...",
                         progress: -1,
                         repository: repository)
+    NSNotificationCenter.defaultCenter().postNotificationName(
+        XTTaskStartedNotification, object: repository)
     repository.executeOffMainThread {
       let refs = repository.allRefs()
       
@@ -66,6 +68,8 @@ public class XTHistoryTableController: NSViewController {
         XTStatusView.update(status: "Loaded \(history.entries.count) commits",
                             progress: -1,
                             repository: repository)
+        NSNotificationCenter.defaultCenter().postNotificationName(
+            XTTaskEndedNotification, object: repository)
       }
     }
   }

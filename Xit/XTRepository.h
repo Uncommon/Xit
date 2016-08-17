@@ -26,9 +26,6 @@ extern NSString *XTPathsKey;
 }
 
 - (instancetype)initWithURL:(NSURL*)url;
-- (BOOL)getCommitsWithArgs:(NSArray*)logArgs
-    enumerateCommitsUsingBlock:(void (^)(NSString*))block
-                         error:(NSError**)error;
 
 /**
   Avoid calling these from outside XTRepository. Instead, add methods to
@@ -65,9 +62,6 @@ extern NSString *XTPathsKey;
  */
 - (void)shutDown;
 
-- (void)addTask:(NSTask*)task;
-- (void)removeTask:(NSTask*)task;
-
 @property(readonly) BOOL hasHeadReference;
 @property(readonly, copy) NSString *parentTree;
 @property(readonly, copy) NSString *headRef;
@@ -76,7 +70,6 @@ extern NSString *XTPathsKey;
 @property(readonly) GTRepository *gtRepo;
 @property(strong) NSDictionary<NSString*, NSArray<NSString*>*> *refsIndex;
 @property(readonly) dispatch_queue_t queue;
-@property(readonly) NSMutableArray *activeTasks;
 @property(readonly) NSURL *repoURL;
 @property(readonly) NSURL *gitDirectoryURL;
 @property(readonly) BOOL isWriting;
