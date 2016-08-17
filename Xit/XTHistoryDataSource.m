@@ -115,18 +115,10 @@
   NSArray *args = @[ @"--pretty=format:%H%n%P%n%cD%n%ce%n%s", @"--reverse",
                      @"--tags", @"--all", @"--topo-order" ];
   
-  [XTStatusView updateStatus:@"Loading..."
-                     command:[args componentsJoinedByString:@" "]
-                      output:nil
-               forRepository:_repo];
   [_repo getCommitsWithArgs:args enumerateCommitsUsingBlock:^(NSString *line) {
     // Guard Malloc pollutes the output; skip it
     if ([line hasPrefix:@"GuardMalloc[git"])
       return;
-    [XTStatusView updateStatus:nil
-                       command:nil
-                        output:line
-                 forRepository:_repo];
     
     NSArray *comps = [line componentsSeparatedByString:@"\n"];
     XTHistoryItem *item = [[XTHistoryItem alloc] init];
@@ -170,11 +162,6 @@
     [grapher decorateCommit:commitIndex[obj]];
   }];
   
-  [XTStatusView updateStatus:[NSString stringWithFormat:@"%d commits loaded",
-                                                        (int)newShas.count]
-                     command:nil
-                      output:@""
-               forRepository:_repo];
   NSLog(@"-> %lu", newShas.count);
 }
 

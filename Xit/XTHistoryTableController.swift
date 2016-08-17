@@ -15,19 +15,7 @@ public class XTHistoryTableController: NSViewController {
       spacing.height = 0
       table.intercellSpacing = spacing
 
-      let refs = repository.allRefs()
-      
-      for ref in refs {
-        #if DEBUGLOG
-        print("-- <\(ref)> --")
-        #endif
-        guard let sha = repository.shaForRef(ref),
-              let commit = repository.commit(forSHA: sha)
-        else { continue }
-        history.process(commit, afterCommit: nil)
-      }
-      history.connectCommits()
-      table.reloadData()
+      loadHistory()
     }
   }
   
@@ -39,6 +27,37 @@ public class XTHistoryTableController: NSViewController {
     
     controller.addObserver(self, forKeyPath: "selectedModel",
                            options: .New, context: nil)
+  }
+  
+  func loadHistory()
+  {
+    let repository = self.repository
+    let history = self.history
+    weak var tableView = view as? NSTableView
+    
+    XTStatusView.update(status: "Loading...",
+                        progress: -1,
+                        repository: repository)
+    repository.executeOffMainThread {
+      let refs = repository.allRefs()
+      
+      for ref in refs {
+        #if DEBUGLOG
+          print("-- <\(ref)> --")
+        #endif
+        guard let sha = repository.shaForRef(ref),
+              let commit = repository.commit(forSHA: sha)
+        else { continue }
+        history.process(commit, afterCommit: nil)
+      }
+      history.connectCommits()
+      dispatch_async(dispatch_get_main_queue()) {
+        tableView?.reloadData()
+        XTStatusView.update(status: "Loaded \(history.entries.count) commits",
+                            progress: -1,
+                            repository: repository)
+      }
+    }
   }
   
   /// Selects the row for the given commit SHA.
