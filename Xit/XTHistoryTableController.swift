@@ -90,6 +90,33 @@ public class XTHistoryTableController: NSViewController {
   }
 }
 
+let kFullStyleThreshold: CGFloat = 280
+let kLongStyleThreshold: CGFloat = 210
+let kMediumStyleThreshold: CGFloat = 170
+let kShordStyleThreshold: CGFloat = 150
+
+/// Calculates the appropriate date and time format for a given column width.
+func dateTimeStyle(width width: CGFloat) -> (date: NSDateFormatterStyle,
+                                             time: NSDateFormatterStyle)
+{
+  var dateStyle = NSDateFormatterStyle.ShortStyle
+  var timeStyle = NSDateFormatterStyle.ShortStyle
+  
+  switch width {
+    case 0..<kShordStyleThreshold:
+      timeStyle = .NoStyle
+    case kShordStyleThreshold..<kMediumStyleThreshold:
+      dateStyle = .ShortStyle
+    case kMediumStyleThreshold..<kLongStyleThreshold:
+      dateStyle = .MediumStyle
+    case kLongStyleThreshold..<kFullStyleThreshold:
+      dateStyle = .LongStyle
+    default:
+      dateStyle = .FullStyle
+  }
+  return (dateStyle, timeStyle)
+}
+
 extension XTHistoryTableController: NSTableViewDelegate {
   
   public func tableView(tableView: NSTableView,
@@ -118,6 +145,11 @@ extension XTHistoryTableController: NSTableViewDelegate {
         historyCell.textField?.stringValue = entry.commit.message ?? ""
         historyCell.objectValue = entry
       case "date":
+        let formatter = result.textField!.cell!.formatter as! NSDateFormatter
+        let (dateStyle, timeStyle) = dateTimeStyle(width: tableColumn.width)
+        
+        formatter.dateStyle = dateStyle
+        formatter.timeStyle = timeStyle
         result.textField?.objectValue = entry.commit.commitDate
       case "email":
         result.textField?.stringValue = entry.commit.email ?? ""
@@ -140,6 +172,15 @@ extension XTHistoryTableController: NSTableViewDelegate {
        let sha = history.entries[selectedRow].commit.SHA {
       controller.selectedModel = XTCommitChanges(repository: repository, sha: sha)
     }
+  }
+  
+  public func tableViewColumnDidResize(notification: NSNotification)
+  {
+    let tableView = view as! NSTableView
+    let columnIndexes = NSIndexSet(index: tableView.columnWithIdentifier("date"))
+    
+    tableView.reloadDataForRowIndexes(tableView.visibleRows(),
+                                      columnIndexes: columnIndexes)
   }
 }
 

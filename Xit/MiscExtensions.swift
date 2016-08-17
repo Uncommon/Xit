@@ -58,3 +58,11 @@ extension String {
             substringFromIndex(slashRange.endIndex))
   }
 }
+
+extension NSTableView {
+  /// Returns a set of all visible row indexes
+  func visibleRows() -> NSIndexSet
+  {
+    return NSIndexSet(indexesInRange: rowsInRect(visibleRect))
+  }
+}
