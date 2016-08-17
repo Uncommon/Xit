@@ -78,10 +78,6 @@
 - (void)windowDidLoad
 {
   [_fileViewController windowDidLoad];
-  [self.view.window.windowController addObserver:self
-                                      forKeyPath:@"selectedModel"
-                                         options:NSKeyValueObservingOptionNew
-                                         context:NULL];
 }
 
 - (void)setRepo:(XTRepository*)newRepo

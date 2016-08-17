@@ -94,8 +94,8 @@ NSDate *commitDate = nil;
       @"document.getElementsByTagName('html')[0].innerHTML"];
   NSBundle *testBundle =
       [NSBundle bundleWithIdentifier:@"com.uncommonplace.XitTests"];
-  NSURL *expectedURL = [testBundle
-      URLForResource:@"expected header" withExtension:@"html"];
+  NSURL *expectedURL = [testBundle URLForResource:@"expected header"
+                                    withExtension:@"html"];
   NSStringEncoding encoding;
   NSError *error = nil;
   NSString *expectedHtmlTemplate =
