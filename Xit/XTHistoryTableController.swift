@@ -21,12 +21,22 @@ public class XTHistoryTableController: NSViewController {
   
   let history = XTCommitHistory()
   
+  deinit
+  {
+    NSNotificationCenter.defaultCenter().removeObserver(self)
+  }
+  
   override public func viewDidAppear()
   {
     let controller = view.window?.windowController as! XTWindowController
     
     controller.addObserver(self, forKeyPath: "selectedModel",
                            options: .New, context: nil)
+    NSNotificationCenter.defaultCenter().addObserver(
+        self,
+        selector: #selector(XTHistoryTableController.dateViewResized(_:)),
+        name: NSViewFrameDidChangeNotification,
+        object: nil)
   }
   
   func loadHistory()
@@ -88,6 +98,26 @@ public class XTHistoryTableController: NSViewController {
       selectRow(sha: newModel.shaToSelect)
     }
   }
+  
+  func dateViewResized(notification: NSNotification)
+  {
+    guard let textField = notification.object as? NSTextField,
+          let formatter = textField.cell?.formatter as? NSDateFormatter,
+          let date = textField.objectValue as? NSDate
+    else { return }
+    
+    updateDateStyle(formatter, width: textField.bounds.size.width)
+    textField.stringValue = ""
+    textField.objectValue = date
+  }
+  
+  func updateDateStyle(formatter: NSDateFormatter, width: CGFloat)
+  {
+    let (dateStyle, timeStyle) = dateTimeStyle(width: width)
+    
+    formatter.dateStyle = dateStyle
+    formatter.timeStyle = timeStyle
+  }
 }
 
 let kFullStyleThreshold: CGFloat = 280
@@ -145,12 +175,13 @@ extension XTHistoryTableController: NSTableViewDelegate {
         historyCell.textField?.stringValue = entry.commit.message ?? ""
         historyCell.objectValue = entry
       case "date":
-        let formatter = result.textField!.cell!.formatter as! NSDateFormatter
-        let (dateStyle, timeStyle) = dateTimeStyle(width: tableColumn.width)
+        let textField = result.textField!
+        let formatter = textField.cell!.formatter as! NSDateFormatter
         
-        formatter.dateStyle = dateStyle
-        formatter.timeStyle = timeStyle
-        result.textField?.objectValue = entry.commit.commitDate
+        updateDateStyle(formatter, width: tableColumn.width)
+        textField.objectValue = entry.commit.commitDate
+        textField.postsFrameChangedNotifications = true
+        textField.postsBoundsChangedNotifications = true
       case "email":
         result.textField?.stringValue = entry.commit.email ?? ""
       default:
@@ -172,15 +203,6 @@ extension XTHistoryTableController: NSTableViewDelegate {
        let sha = history.entries[selectedRow].commit.SHA {
       controller.selectedModel = XTCommitChanges(repository: repository, sha: sha)
     }
-  }
-  
-  public func tableViewColumnDidResize(notification: NSNotification)
-  {
-    let tableView = view as! NSTableView
-    let columnIndexes = NSIndexSet(index: tableView.columnWithIdentifier("date"))
-    
-    tableView.reloadDataForRowIndexes(tableView.visibleRows(),
-                                      columnIndexes: columnIndexes)
   }
 }
 
