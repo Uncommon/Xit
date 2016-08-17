@@ -6,7 +6,7 @@ public class XTHistoryTableController: NSViewController {
   {
     didSet
     {
-      history = XTCommitHistory(repository: repository)
+      history.repository = repository
 
       guard let table = view as? NSTableView
       else { return }
@@ -19,7 +19,7 @@ public class XTHistoryTableController: NSViewController {
     }
   }
   
-  var history: XTCommitHistory!
+  let history = XTCommitHistory()
   
   override public func viewDidAppear()
   {

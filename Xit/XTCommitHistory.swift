@@ -45,7 +45,7 @@ extension String {
 
 class XTCommitHistory {
   
-  let repository: RepositoryType
+  var repository: RepositoryType!
   
   var commitLookup = [GTOID: CommitEntry]()
   var entries = [CommitEntry]()
@@ -64,11 +64,6 @@ class XTCommitHistory {
       else { return "empty" }
       return "\(first)..\(last)"
     }
-  }
-  
-  init(repository: RepositoryType)
-  {
-    self.repository = repository
   }
   
   func reset()
