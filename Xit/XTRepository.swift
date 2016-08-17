@@ -1,7 +1,7 @@
 import Foundation
 
 
-protocol RepositoryType {
+@objc protocol RepositoryType {
   func commit(forSHA sha: String) -> CommitType?
   func commit(forOID oid: GTOID) -> CommitType?
 }

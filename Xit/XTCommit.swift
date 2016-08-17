@@ -1,7 +1,7 @@
 import Cocoa
 
 
-public protocol CommitType: CustomStringConvertible {
+@objc public protocol CommitType {
   var SHA: String? { get }
   var OID: GTOID { get }
   var parentOIDs: [GTOID] { get }
@@ -23,7 +23,7 @@ public func == (a: GTOID, b: GTOID) -> Bool
 }
 
 
-public class XTCommit: CommitType {
+public class XTCommit: NSObject, CommitType {
 
   let gtCommit: GTCommit
 

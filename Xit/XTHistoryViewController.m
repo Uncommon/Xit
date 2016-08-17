@@ -1,6 +1,5 @@
 #import "XTHistoryViewController.h"
 #import "XTFileViewController.h"
-#import "XTHistoryDataSource.h"
 #import "XTHistoryItem.h"
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
@@ -89,7 +88,6 @@
 {
   _repo = newRepo;
   [_sideBarDS setRepo:newRepo];
-  [_historyDS setRepo:newRepo];
   [_fileViewController setRepo:newRepo];
   self.tableController.repository = newRepo;
 }
@@ -172,38 +170,6 @@
   }
 
   return NO;
-}
-
-- (void)selectRowForSHA:(NSString*)sha
-{
-  // Assuming the first responder originated the change
-  const id firstResponder = self.view.window.firstResponder;
-
-  if (firstResponder != _sidebarOutline)
-    [_sidebarOutline deselectAll:self];
-
-  const NSUInteger historyRow = [_historyDS.shas indexOfObject:sha];
-  
-  if (historyRow == NSNotFound)
-    [_historyTable deselectAll:self];
-  else {
-    [_historyTable selectRowIndexes:[NSIndexSet indexSetWithIndex:historyRow]
-               byExtendingSelection:NO];
-    if (firstResponder != _historyTable)
-      [_historyTable scrollRowToVisible:historyRow];
-  }
-}
-
-- (void)observeValueForKeyPath:(NSString*)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary<NSString*,id>*)change
-                       context:(void*)context
-{
-  if ([keyPath isEqualToString:@"selectedModel"]) {
-    id<XTFileChangesModel> newModel = change[NSKeyValueChangeNewKey];
-    
-    [self selectRowForSHA:newModel.shaToSelect];
-  }
 }
 
 - (NSInteger)targetRow
@@ -431,63 +397,6 @@
     shouldAdjustSizeOfSubview:(NSView*)view
 {
   return view != splitView.subviews[0];
-}
-
-#pragma mark - NSTableViewDelegate
-
-- (void)tableViewSelectionDidChange:(NSNotification *)note
-{
-  // If the selection wasn't directly user-initiated, don't propagate it.
-  if (self.view.window.firstResponder != self.historyTable)
-    return;
-
-  NSTableView *table = (NSTableView *)note.object;
-  const NSInteger selectedRow = table.selectedRow;
-
-  if (selectedRow >= 0) {
-    XTWindowController *controller = self.view.window.windowController;
-
-    controller.selectedModel =
-        [[XTCommitChanges alloc] initWithRepository:_repo
-                                                sha:_historyDS.shas[selectedRow]];
-  }
-}
-
-// These values came from measuring where the Finder switches styles.
-const NSUInteger kFullStyleThreshold = 280, kLongStyleThreshold = 210,
-                 kMediumStyleThreshold = 170, kShortStyleThreshold = 150;
-
-- (void)tableView:(NSTableView *)tableView
-  willDisplayCell:(id)cell
-   forTableColumn:(NSTableColumn *)column
-              row:(NSInteger)rowIndex
-{
-  [cell setFont:[NSFont labelFontOfSize:12]];
-
-  if ([column.identifier isEqualToString:@"subject"]) {
-    XTHistoryItem *item = [_historyDS itemAtIndex:rowIndex];
-
-    ((PBGitRevisionCell *)cell).objectValue = item;
-  } else if ([column.identifier isEqualToString:@"date"]) {
-    const CGFloat width = column.width;
-    NSDateFormatterStyle dateStyle = NSDateFormatterShortStyle;
-    NSDateFormatterStyle timeStyle = NSDateFormatterShortStyle;
-
-    if (width > kFullStyleThreshold)
-      dateStyle = NSDateFormatterFullStyle;
-    else if (width > kLongStyleThreshold)
-      dateStyle = NSDateFormatterLongStyle;
-    else if (width > kMediumStyleThreshold)
-      dateStyle = NSDateFormatterMediumStyle;
-    else if (width > kShortStyleThreshold)
-      dateStyle = NSDateFormatterShortStyle;
-    else {
-      dateStyle = NSDateFormatterShortStyle;
-      timeStyle = NSDateFormatterNoStyle;
-    }
-    [[cell formatter] setDateStyle:dateStyle];
-    [[cell formatter] setTimeStyle:timeStyle];
-  }
 }
 
 #pragma mark - NSTabViewDelegate

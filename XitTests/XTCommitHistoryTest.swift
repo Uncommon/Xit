@@ -2,7 +2,7 @@ import XCTest
 @testable import Xit
 
 
-struct MockCommit: CommitType {
+class MockCommit: NSObject, CommitType {
   let SHA: String?
   let OID: GTOID
   let parentOIDs: [GTOID]
@@ -10,6 +10,13 @@ struct MockCommit: CommitType {
   var message: String? { return nil }
   var commitDate: NSDate { return NSDate() }
   var email: String? { return nil }
+  
+  init(SHA: String?, OID: GTOID, parentOIDs: [GTOID])
+  {
+    self.SHA = SHA
+    self.OID = OID
+    self.parentOIDs = parentOIDs
+  }
 }
 
 func == (a: MockCommit, b: MockCommit) -> Bool
@@ -28,7 +35,7 @@ extension GTOID {
 }
 
 
-class MockRepository: RepositoryType {
+class MockRepository: NSObject, RepositoryType {
   let commits: [MockCommit]
   
   init(commits: [MockCommit])
@@ -84,8 +91,10 @@ class XTCommitHistoryTest: XCTestCase {
                    parentOIDs: parents.map { GTOID(oid: $0) }) })
     // Reverse the input to better test the ordering.
     let repository = MockRepository(commits: commits.reverse())
+    let history = XTCommitHistory()
     
-    return XTCommitHistory(repository: repository)
+    history.repository = repository
+    return history
   }
   
   /// Makes sure each commit preceds its parents.

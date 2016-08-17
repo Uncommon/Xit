@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		313014AC13EB656B0017A2A1 /* XTSideBarDataSorceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */; };
-		313014AF13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 313014AE13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m */; };
-		3174966513DF896E004C5546 /* XTHistoryDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966413DF896E004C5546 /* XTHistoryDataSource.m */; };
 		3174966813DF8A0C004C5546 /* XTSideBarDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */; };
 		3174966E13DFF94C004C5546 /* XTHistoryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966D13DFF94C004C5546 /* XTHistoryItem.m */; };
 		3199BABD142079BB008AAA4F /* XTFileListDataSourceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3199BABC142079BB008AAA4F /* XTFileListDataSourceTest.m */; };
@@ -302,10 +300,7 @@
 
 /* Begin PBXFileReference section */
 		313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTSideBarDataSorceTests.m; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		313014AE13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTHistoryDataSorceTests.m; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		31355B0713EA139700C33AAB /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		3174966313DF896E004C5546 /* XTHistoryDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTHistoryDataSource.h; sourceTree = "<group>"; tabWidth = 2; };
-		3174966413DF896E004C5546 /* XTHistoryDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTHistoryDataSource.m; sourceTree = "<group>"; tabWidth = 2; };
 		3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTSideBarDataSource.m; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3174966C13DFF94C004C5546 /* XTHistoryItem.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTHistoryItem.h; sourceTree = "<group>"; tabWidth = 2; };
 		3174966D13DFF94C004C5546 /* XTHistoryItem.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTHistoryItem.m; sourceTree = "<group>"; tabWidth = 2; };
@@ -603,8 +598,6 @@
 				31C7C13013ECC74C00A65FE9 /* XTHistoryViewController.h */,
 				31C7C13113ECC74C00A65FE9 /* XTHistoryViewController.m */,
 				31C7C13213ECC74C00A65FE9 /* XTHistoryViewController.xib */,
-				3174966313DF896E004C5546 /* XTHistoryDataSource.h */,
-				3174966413DF896E004C5546 /* XTHistoryDataSource.m */,
 				3174966C13DFF94C004C5546 /* XTHistoryItem.h */,
 				3174966D13DFF94C004C5546 /* XTHistoryItem.m */,
 				DD997DD8173B409500C7DF82 /* HistoryView Menus.xib */,
@@ -840,7 +833,6 @@
 				C9F7A0A41D2EF54E00BB8526 /* XTConfigTest.swift */,
 				DD3D9534182B5EC7004AF532 /* XTFileChangesDataSourceTest.m */,
 				3199BABC142079BB008AAA4F /* XTFileListDataSourceTest.m */,
-				313014AE13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m */,
 				896B05CF15796D2A003B0C24 /* XTHistoryViewControllerTest.m */,
 				DDB9319416EC12B100A6ABC6 /* XTRefTokenTest.m */,
 				89FE824715A716E800E2EA2A /* XTRepositoryTests.m */,
@@ -1281,7 +1273,6 @@
 				C926804E1D074EC500E422FA /* XTFileChangesModel.swift in Sources */,
 				C9F78B141D0896AF008490EA /* XTSidebarItem.swift in Sources */,
 				C91E9A011D527A1300E128AC /* XTHistoryTableController.swift in Sources */,
-				3174966513DF896E004C5546 /* XTHistoryDataSource.m in Sources */,
 				C957B84B1D2D53040040F858 /* XTSheetController.swift in Sources */,
 				3174966813DF8A0C004C5546 /* XTSideBarDataSource.m in Sources */,
 				3174966E13DFF94C004C5546 /* XTHistoryItem.m in Sources */,
@@ -1360,7 +1351,6 @@
 			files = (
 				C3FA472E13D0F8E300AC4F9B /* XTTest.m in Sources */,
 				313014AC13EB656B0017A2A1 /* XTSideBarDataSorceTests.m in Sources */,
-				313014AF13EB65DB0017A2A1 /* XTHistoryDataSorceTests.m in Sources */,
 				C9EB87321D05D35800C47D13 /* XTStashTest.swift in Sources */,
 				DD3D9535182B5EC7004AF532 /* XTFileChangesDataSourceTest.m in Sources */,
 				DD98CFF3181ADFC5008B79C9 /* CFRunLoop+Extensions.c in Sources */,

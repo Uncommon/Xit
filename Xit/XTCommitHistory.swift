@@ -1,12 +1,13 @@
 import Foundation
 
 
-public class CommitEntry: Equatable, CustomStringConvertible {
+// Inherits from NSObject just to make it accessible to ObjC
+public class CommitEntry: NSObject {
   let commit: CommitType
   var connections = [CommitConnection]()
   var incoming: UInt = 0
   
-  public var description: String
+  public override var description: String
   { return commit.description }
   
   init(commit: CommitType)
@@ -43,7 +44,7 @@ extension String {
 }
 
 
-class XTCommitHistory {
+public class XTCommitHistory: NSObject {
   
   var repository: RepositoryType!
   
