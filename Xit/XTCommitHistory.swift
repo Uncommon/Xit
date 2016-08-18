@@ -5,7 +5,6 @@ import Foundation
 public class CommitEntry: NSObject {
   let commit: CommitType
   var connections = [CommitConnection]()
-  var incoming: UInt = 0
   
   public override var description: String
   { return commit.description }
@@ -44,6 +43,7 @@ extension String {
 }
 
 
+/// Maintains the history list, allowing for dynamic adding and removing.
 public class XTCommitHistory: NSObject {
   
   var repository: RepositoryType!
@@ -67,6 +67,13 @@ public class XTCommitHistory: NSObject {
     }
   }
   
+  /// Manually appends a commit.
+  func appendCommit(commit: CommitType)
+  {
+    entries.append(CommitEntry(commit: commit))
+  }
+  
+  /// Clears the history list.
   func reset()
   {
     commitLookup.removeAll()

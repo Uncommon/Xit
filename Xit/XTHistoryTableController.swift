@@ -51,25 +51,41 @@ public class XTHistoryTableController: NSViewController {
     NSNotificationCenter.defaultCenter().postNotificationName(
         XTTaskStartedNotification, object: repository)
     repository.executeOffMainThread {
+      defer {
+        dispatch_async(dispatch_get_main_queue()) {
+          NSNotificationCenter.defaultCenter().postNotificationName(
+              XTTaskEndedNotification, object: repository)
+        }
+      }
+      
+      guard let walker = try? GTEnumerator(repository: repository.gtRepo)
+      else {
+        NSLog("GTEnumerator failed")
+        return
+      }
+      
+      walker.resetWithOptions([.TopologicalSort, .TimeSort])
+      
       let refs = repository.allRefs()
       
+      // TODO: sort refs by commit date
       for ref in refs {
-        #if DEBUGLOG
-          print("-- <\(ref)> --")
-        #endif
-        guard let sha = repository.shaForRef(ref),
-              let commit = repository.commit(forSHA: sha)
-        else { continue }
-        history.process(commit, afterCommit: nil)
+        _ = repository.shaForRef(ref).flatMap { try? walker.pushSHA($0) }
       }
+      
+      while let gtCommit = walker.nextObject() as? GTCommit {
+        guard let commit = XTCommit(oid: gtCommit.OID!, repository: repository)
+        else { continue }
+        
+        history.appendCommit(commit)
+      }
+      
       history.connectCommits()
       dispatch_async(dispatch_get_main_queue()) {
         tableView?.reloadData()
         XTStatusView.update(status: "Loaded \(history.entries.count) commits",
                             progress: -1,
                             repository: repository)
-        NSNotificationCenter.defaultCenter().postNotificationName(
-            XTTaskEndedNotification, object: repository)
       }
     }
   }
