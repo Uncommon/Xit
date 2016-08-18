@@ -44,12 +44,20 @@ extension String {
 }
 
 
+extension GTOID {
+  override public var description: String
+  { return SHA.firstSix() }
+}
+
+
 public class XTCommitHistory: NSObject {
   
   var repository: RepositoryType!
   
   var commitLookup = [GTOID: CommitEntry]()
   var entries = [CommitEntry]()
+  
+  let cache = IndexCache<GTOID>()
   
   /// The result of processing a segment of a branch.
   struct BranchResult: CustomStringConvertible {
@@ -71,6 +79,30 @@ public class XTCommitHistory: NSObject {
   {
     commitLookup.removeAll()
     entries.removeAll()
+    cache.reset()
+  }
+  
+  func indexOf(oid: GTOID) -> Int?
+  {
+    if let index = cache.indexOf(oid) {
+      assert(entries[index].commit.OID == oid)
+      return index
+    }
+    
+    for index in (cache.lastValidIndex+1)..<entries.count {
+      cache.setIndex(index, forValue: entries[index].commit.OID)
+      if entries[index].commit.OID == oid {
+        return index
+      }
+    }
+    
+    return nil
+  }
+  
+  func insertEntries(newEntries: [CommitEntry], at index: Int)
+  {
+    cache.invalidate(index: index)
+    entries.insertContentsOf(newEntries, at: index)
   }
   
   /// Creates a list of commits for the branch starting at the given commit, and
@@ -156,14 +188,13 @@ public class XTCommitHistory: NSObject {
       commitLookup[branchEntry.commit.OID] = branchEntry
     }
     
-    let afterIndex = afterCommit.flatMap(
-        { commit in entries.indexOf({ $0.commit.OID == commit.OID }) })
+    let afterIndex = afterCommit.flatMap({ indexOf($0.OID) })
     guard let lastEntry = result.entries.last
     else { return }
     let lastParentOIDs = lastEntry.commit.parentOIDs
     
     if let insertBeforeIndex = lastParentOIDs.flatMap(
-           { oid in entries.indexOf({ $0.commit.OID == oid }) }).sort().first {
+           { indexOf($0) }).sort().first {
       #if DEBUGLOG
       print(" ** \(insertBeforeIndex) before \(entries[insertBeforeIndex].commit)")
       #endif
@@ -172,30 +203,29 @@ public class XTCommitHistory: NSObject {
         #if DEBUGLOG
         print(" *** \(result) after \(afterCommit?.description ?? "")")
         #endif
-        entries.insertContentsOf(result.entries, at: afterIndex + 1)
+        insertEntries(result.entries, at: afterIndex + 1)
       }
       else {
         #if DEBUGLOG
         print(" *** \(result) before \(entries[insertBeforeIndex].commit) (after \(afterCommit?.description ?? "-"))")
         #endif
-        entries.insertContentsOf(result.entries, at: insertBeforeIndex)
+        insertEntries(result.entries, at: insertBeforeIndex)
       }
     }
     else if
        let lastSecondaryOID = result.queue.last?.after.OID,
        let lastSecondaryEntry = commitLookup[lastSecondaryOID],
-       let lastSecondaryIndex = entries.indexOf(
-          { return $0.commit.OID == lastSecondaryEntry.commit.OID }) {
+       let lastSecondaryIndex = indexOf(lastSecondaryEntry.commit.OID) {
       #if DEBUGLOG
       print(" ** after secondary \(lastSecondaryOID.SHA!.firstSix())")
       #endif
-      entries.insertContentsOf(result.entries, at: lastSecondaryIndex)
+      insertEntries(result.entries, at: lastSecondaryIndex)
     }
     else if let afterIndex = afterIndex {
       #if DEBUGLOG
       print(" ** \(result) after \(afterCommit?.description ?? "")")
       #endif
-      entries.insertContentsOf(result.entries, at: afterIndex + 1)
+      insertEntries(result.entries, at: afterIndex + 1)
     }
     else {
       #if DEBUGLOG

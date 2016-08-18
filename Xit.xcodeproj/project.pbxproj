@@ -143,6 +143,7 @@
 		C957B87C1D2DBBC00040F858 /* XTAccountsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B87B1D2DBBC00040F858 /* XTAccountsManager.swift */; };
 		C96F65461D53A6CE001B2557 /* XTHistoryCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F65451D53A6CE001B2557 /* XTHistoryCellView.swift */; };
 		C9B753671D651ECC005A53CC /* XTActivityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B753661D651ECC005A53CC /* XTActivityViewController.swift */; };
+		C9B753691D65FBD2005A53CC /* IndexCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B753681D65FBD2005A53CC /* IndexCache.swift */; };
 		C9BAE60A1D2FFA8B00A87F13 /* XTConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE6091D2FFA8B00A87F13 /* XTConfig.swift */; };
 		C9BAE6141D3039C500A87F13 /* XTOperationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE6131D3039C500A87F13 /* XTOperationController.swift */; };
 		C9BAE61E1D303A8100A87F13 /* XTRemoteOptionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE61D1D303A8100A87F13 /* XTRemoteOptionsController.swift */; };
@@ -473,6 +474,7 @@
 		C957B87B1D2DBBC00040F858 /* XTAccountsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTAccountsManager.swift; sourceTree = "<group>"; };
 		C96F65451D53A6CE001B2557 /* XTHistoryCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTHistoryCellView.swift; sourceTree = "<group>"; };
 		C9B753661D651ECC005A53CC /* XTActivityViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTActivityViewController.swift; sourceTree = "<group>"; };
+		C9B753681D65FBD2005A53CC /* IndexCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IndexCache.swift; sourceTree = "<group>"; };
 		C9BAE6091D2FFA8B00A87F13 /* XTConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTConfig.swift; sourceTree = "<group>"; };
 		C9BAE6131D3039C500A87F13 /* XTOperationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTOperationController.swift; sourceTree = "<group>"; };
 		C9BAE61D1D303A8100A87F13 /* XTRemoteOptionsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRemoteOptionsController.swift; sourceTree = "<group>"; };
@@ -590,6 +592,7 @@
 				C957B8651D2D8D500040F858 /* XTKeychain.swift */,
 				894C8DE51CCD06FE001A4B80 /* Xit-Bridging-Header.h */,
 				C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */,
+				C9B753681D65FBD2005A53CC /* IndexCache.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -1272,6 +1275,7 @@
 				C9B753671D651ECC005A53CC /* XTActivityViewController.swift in Sources */,
 				89D8BE3B1CF4DB9400D640AA /* XTRepositoryWatcher.m in Sources */,
 				C3FA470E13D0F8E200AC4F9B /* main.m in Sources */,
+				C9B753691D65FBD2005A53CC /* IndexCache.swift in Sources */,
 				C3FA471413D0F8E200AC4F9B /* XTDocument.m in Sources */,
 				31F1E87F13D3B51200F3B317 /* XTRepository+Commands.m in Sources */,
 				C926804E1D074EC500E422FA /* XTFileChangesModel.swift in Sources */,
