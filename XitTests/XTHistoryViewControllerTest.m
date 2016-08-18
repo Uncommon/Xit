@@ -286,7 +286,7 @@
   XTHistoryViewController *controller =
       [[XTHistoryViewController alloc] initWithRepository:self.repository
                                                   sidebar:mockSidebar];
-  XTSideBarItem *branchesGroup =
+  XTSideBarGroupItem *branchesGroup =
       controller.sideBarDS.roots[XTGroupIndexBranches];
   XTLocalBranchItem *masterItem =
       [[XTLocalBranchItem alloc] initWithTitle:@"master"];
@@ -335,7 +335,7 @@
   XTHistoryViewController *controller =
       [[XTHistoryViewController alloc] initWithRepository:self.repository
                                                   sidebar:mockSidebar];
-  XTSideBarItem *branchesGroup =
+  XTSideBarGroupItem *branchesGroup =
       controller.sideBarDS.roots[XTGroupIndexBranches];
   XTLocalBranchItem *masterItem =
       [[XTLocalBranchItem alloc] initWithTitle:@"task"];
