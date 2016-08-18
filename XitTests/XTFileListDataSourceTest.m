@@ -1,5 +1,4 @@
 #import "XTTest.h"
-#import "XTHistoryDataSource.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
 #import "XTFileTreeDataSource.h"
@@ -13,17 +12,6 @@
 
 
 @implementation XTFileListDataSourceTest
-
-- (XTHistoryDataSource*)makeDataSource
-{
-  XTHistoryDataSource *hds = [[XTHistoryDataSource alloc] init];
-
-  [hds setRepo:self.repository];
-  [self waitForRepoQueue];
-  // Part of the reload process is dispatched to the main queue.
-  WaitForQueue(dispatch_get_main_queue());
-  return hds;
-}
 
 - (void)testHistoricFileList
 {
@@ -51,19 +39,19 @@
 
   NSOutlineView *outlineView = [[NSOutlineView alloc] init];
   XTFakeWinController *winController = [[XTFakeWinController alloc] init];
-  XTHistoryDataSource *hds = [self makeDataSource];
   XTFileTreeDataSource *flds = [[XTFileTreeDataSource alloc] init];
   NSInteger expectedFileCount = 11;
+  XTCommitHistory *history = [[XTCommitHistory alloc] init];
 
-  hds.controller = (XTWindowController*)winController;
   flds.winController = (XTWindowController*)winController;
-  [hds setRepo:self.repository];
   flds.repository = self.repository;
+  history.repository = self.repository;
   [self waitForRepoQueue];
 
-  for (NSString *sha in hds.shas) {
+  for (CommitEntry *entry in history.entries) {
     winController.selectedModel =
-        [[XTCommitChanges alloc] initWithRepository:self.repository sha:sha];
+        [[XTCommitChanges alloc] initWithRepository:self.repository
+                                                sha:entry.commit.SHA];
     [flds reload];
     [self waitForRepoQueue];
 
@@ -111,12 +99,9 @@
                                error:&error];
 
   XTFakeWinController *winController = [[XTFakeWinController alloc] init];
-  XTHistoryDataSource *hds = [self makeDataSource];
-  XTHistoryItem *item = [hds itemAtIndex:0];
 
-  hds.controller = (XTWindowController*)winController;
   winController.selectedModel = [[XTCommitChanges alloc]
-      initWithRepository:self.repository sha:item.sha];
+      initWithRepository:self.repository sha:[self.repository headSHA]];
 
   NSOutlineView *outlineView = [[NSOutlineView alloc] init];
   XTFileTreeDataSource *flds = [[XTFileTreeDataSource alloc] init];

@@ -3,7 +3,7 @@
 @class XTRepository;
 
 @class XTFileViewController;
-@class XTHistoryDataSource;
+@class XTHistoryTableController;
 @class XTSideBarDataSource;
 @class XTSideBarOutlineView;
 
@@ -14,7 +14,6 @@
 @interface XTHistoryViewController : NSViewController<NSSplitViewDelegate>
 {
   IBOutlet XTSideBarDataSource *_sideBarDS;
-  IBOutlet XTHistoryDataSource *_historyDS;
   IBOutlet NSTableView *_historyTable;
   IBOutlet XTSideBarOutlineView *_sidebarOutline;
   IBOutlet NSMenu *_branchContextMenu;
@@ -51,7 +50,6 @@
 
 @property(readonly) NSString *selectedBranch;
 @property(readonly) XTSideBarDataSource *sideBarDS;
-@property(readonly) XTHistoryDataSource *historyDS;
 @property(readonly) NSTableView *historyTable;
 @property(readonly) NSMenu *branchContextMenu;
 @property(readonly) NSMenu *remoteContextMenu;
@@ -60,6 +58,8 @@
 
 @property (weak) IBOutlet NSSplitView *sidebarSplitView;
 @property (weak) IBOutlet NSSplitView *mainSplitView;
+@property (weak) IBOutlet XTHistoryTableController *tableController;
+@property (weak) IBOutlet NSTableView *commitTable;
 
 // For testing
 - (instancetype)initWithRepository:(XTRepository *)repository

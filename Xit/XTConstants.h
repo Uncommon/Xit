@@ -30,3 +30,6 @@ extern NSString * const XTStagingSHA;
 
 /// The repository's index has changed.
 extern NSString * const XTRepositoryIndexChangedNotification;
+
+extern NSString * const XTTaskStartedNotification;
+extern NSString * const XTTaskEndedNotification;
