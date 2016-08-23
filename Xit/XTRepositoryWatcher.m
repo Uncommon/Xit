@@ -1,5 +1,14 @@
 #import "XTRepositoryWatcher.h"
 #import "XTRepository.h"
+#import "Xit-Swift.h"
+
+NSString * const XTRepositoryChangedNotification = @"RepoChanged";
+NSString * const XTRepositoryRefsChangedNotification = @"RefsChanged";
+NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
+
+NSString * const XTAddedRefsKey = @"addedRefs";
+NSString * const XTDeletedRefsKey = @"deletedRefs";
+NSString * const XTChangedRefsKey = @"changedRefs";
 
 
 void EventStreamCallback(
@@ -8,14 +17,13 @@ void EventStreamCallback(
     const FSEventStreamEventFlags eventFlags[],
     const FSEventStreamEventId eventIds[]);
 
-NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
-
 
 @interface XTRepositoryWatcher ()
 
 @property (weak) XTRepository *repo;
 @property FSEventStreamRef stream;
 @property (nonatomic) NSDate *lastIndexChange;
+@property NSDictionary<NSString*, GTOID*> *refsCache;
 
 @end
 
@@ -33,6 +41,7 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
   if (self != nil) {
     self.repo = repo;
     self.lastIndexChange = [NSDate date];
+    self.refsCache = [self indexRefs:[repo allRefs]];
     [self startEventStream];
   }
   return self;
@@ -47,6 +56,21 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
   }
 }
 
+-(NSDictionary<NSString*, GTOID*>*)indexRefs:(NSArray<NSString*>*)refs
+{
+  NSDictionary<NSString*, GTOID*> *result =
+      [NSMutableDictionary dictionaryWithCapacity:refs.count];
+
+  for (NSString *ref in refs) {
+    GTOID *oid = [GTOID oidWithSHA:[self.repo shaForRef:ref]];
+    
+    if (oid != nil)
+      [result setValue:oid forKey:ref];
+  }
+
+  return result;
+}
+
 -(void)setLastIndexChange:(NSDate*)lastIndexChange
 {
   _lastIndexChange = lastIndexChange;
@@ -57,12 +81,12 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
 
 -(void)startEventStream
 {
-  NSString *path = [self.repo.repoURL.path
-      stringByAppendingPathComponent:@".git"];
+  NSString *path = self.repo.gitDirectoryURL.path;
   NSArray *paths = @[ path ];
   FSEventStreamContext context = {
       0, (__bridge void * _Nullable)(self),
       NULL, NULL, NULL };
+  const CFTimeInterval latency = 1.0;
 
   self.stream = FSEventStreamCreate(
       kCFAllocatorDefault,
@@ -70,7 +94,7 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
       &context,
       (__bridge CFArrayRef)paths,
       kFSEventStreamEventIdSinceNow,
-      1.0,
+      latency,
       kFSEventStreamCreateFlagUseCFTypes |
       kFSEventStreamCreateFlagNoDefer);
   if (self.stream != NULL) {
@@ -99,9 +123,63 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
   }
 }
 
+-(void)checkRefs:(NSArray<NSString*>*)paths
+{
+  NSString * const headsSubpath = @"refs/heads/";
+  BOOL refsChanged = NO;
+
+  for (NSString *path in paths) {
+    if ([path hasSuffix:headsSubpath] ||
+        [[path stringByDeletingLastPathComponent] hasSuffix:headsSubpath]) {
+      refsChanged = YES;
+      break;
+    }
+  }
+  if (!refsChanged)
+    return;
+
+  NSDictionary<NSString*, GTOID*> *newRefCache =
+      [self indexRefs:[self.repo allRefs]];
+  NSSet<NSString*> *newKeys = [NSSet setWithArray:newRefCache.allKeys],
+                   *oldKeys = [NSSet setWithArray:self.refsCache.allKeys];
+  NSMutableSet<NSString*> *addedRefs = [newKeys mutableCopy],
+                          *deletedRefs = [oldKeys mutableCopy],
+                          *changedRefs = [newKeys mutableCopy];
+  
+  [addedRefs minusSet:oldKeys];
+  [deletedRefs minusSet:newKeys];
+  [changedRefs minusSet:addedRefs];
+  [changedRefs filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(
+      id  _Nonnull key,
+      NSDictionary<NSString *,id> * _Nullable bindings) {
+    GTOID *oldOID = self.refsCache[key],
+    *newOID = [GTOID oidWithSHA:[self.repo shaForRef:key]];
+    
+    return ![oldOID isEqual:newOID];
+  }]];
+  
+  NSMutableDictionary<NSString*, NSSet*> *refChanges =
+      [NSMutableDictionary dictionaryWithCapacity:3];
+  
+  if (addedRefs.count > 0)
+    [refChanges setObject:addedRefs forKey:XTAddedRefsKey];
+  if (deletedRefs.count > 0)
+    [refChanges setObject:deletedRefs forKey:XTDeletedRefsKey];
+  if (changedRefs.count > 0)
+    [refChanges setObject:changedRefs forKey:XTChangedRefsKey];
+  
+  if (refChanges.count > 0)
+    [[NSNotificationCenter defaultCenter]
+        postNotificationName:XTRepositoryRefsChangedNotification
+                      object:self.repo
+                    userInfo:refChanges];
+  self.refsCache = newRefCache;
+}
+
 -(void)observeEvents:(NSArray<NSString*>*)paths
 {
   [self checkIndex];
+  [self checkRefs:paths];
   
   // Temporary until more specific notifications are done
   [[NSNotificationCenter defaultCenter]

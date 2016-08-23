@@ -2,7 +2,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString *XTRepositoryChangedNotification;
 extern NSString *XTErrorOutputKey;
 extern NSString *XTErrorArgsKey;
 extern NSString *XTPathsKey;

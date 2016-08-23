@@ -4,7 +4,6 @@
 #import "Xit-Swift.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
-NSString *XTRepositoryChangedNotification = @"xtrepochanged";
 NSString *XTErrorOutputKey = @"output";
 NSString *XTErrorArgsKey = @"args";
 NSString *XTPathsKey = @"paths";

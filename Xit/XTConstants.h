@@ -28,8 +28,18 @@ extern NSString *XTErrorDomainXit, *XTErrorDomainGit;
 /// Fake value for seleting staging view.
 extern NSString * const XTStagingSHA;
 
+/// Some change has been detected in the repository.
+extern NSString * const XTRepositoryChangedNotification;
+
 /// The repository's index has changed.
 extern NSString * const XTRepositoryIndexChangedNotification;
+
+/// The repository's refs have changed.
+extern NSString * const XTRepositoryRefsChangedNotification;
+
+extern NSString * const XTAddedRefsKey;
+extern NSString * const XTDeletedRefsKey;
+extern NSString * const XTChangedRefsKey;
 
 extern NSString * const XTTaskStartedNotification;
 extern NSString * const XTTaskEndedNotification;
