@@ -86,7 +86,7 @@ void EventStreamCallback(
   FSEventStreamContext context = {
       0, (__bridge void * _Nullable)(self),
       NULL, NULL, NULL };
-  const CFTimeInterval latency = 1.0;
+  const CFTimeInterval latency = 0.5;
 
   self.stream = FSEventStreamCreate(
       kCFAllocatorDefault,

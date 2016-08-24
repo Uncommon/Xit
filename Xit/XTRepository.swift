@@ -76,7 +76,7 @@ extension XTRepository {
     
     var result = [String]()
     
-    for i in 1..<stringArray.count {
+    for i in 0..<stringArray.count {
       guard let refString =
           String(UTF8String: UnsafePointer<CChar>(stringArray.strings[i]))
       else { continue }
