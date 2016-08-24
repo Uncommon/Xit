@@ -86,6 +86,164 @@ extension XTSideBarDataSource {
   
 }
 
+extension XTSideBarDataSource { // MARK: Updating
+  
+  func refsChanged(notification: NSNotification)
+  {
+    guard let info = notification.userInfo as? [String: Set<String>],
+      let outline = outline
+      else { return }
+    
+    let localBranchesPrefix = "refs/heads/"
+    let tagsPrefix = "refs/tags/"
+    let remoteBranchesPrefix = "refs/remotes/"
+    
+    if let added = info[XTAddedRefsKey]  {
+      outline.beginUpdates()
+      for addedRef in added {
+        if let branchName = addedRef.substringAfterPrefix(localBranchesPrefix),
+          let sha = repo.shaForRef(addedRef) {
+          let model = XTCommitChanges(repository: repo, sha: sha)
+          
+          addItem(XTLocalBranchItem(title: branchName, model: model),
+                     groupIndex: .Branches)
+        }
+        else if let tagName = addedRef.substringAfterPrefix(tagsPrefix),
+          let tag = XTTag(repository: repo, name: tagName) {
+          addItem(XTTagItem(tag: tag), groupIndex: .Tags)
+        }
+        else if let remoteBranchName =
+          addedRef.substringAfterPrefix(remoteBranchesPrefix) {
+          insertRemoteBranch(remoteBranchName)
+        }
+      }
+      outline.endUpdates()
+    }
+    if let deleted = info[XTDeletedRefsKey] {
+      outline.beginUpdates()
+      for deletedRef in deleted {
+        if let branchName = deletedRef.substringAfterPrefix(localBranchesPrefix) {
+          deleteItem(branchName, groupIndex: .Branches)
+        }
+        else if let tagName = deletedRef.substringAfterPrefix(tagsPrefix) {
+          deleteItem(tagName, groupIndex: .Tags)
+        }
+        else if let remoteBranchName =
+          deletedRef.substringAfterPrefix(remoteBranchesPrefix) {
+          deleteItem(remoteBranchName, groupIndex: .Remotes)
+        }
+      }
+      outline.endUpdates()
+    }
+    // Don't care about changed refs
+  }
+  
+  /// Adds the item to its parent and notifies the table.
+  func insertItem(item: XTSideBarItem, atIndex index: Int, parent: XTSideBarItem)
+  {
+    parent.children.insert(item, atIndex: index)
+    outline!.insertItemsAtIndexes(NSIndexSet(index: index),
+                                  inParent: parent,
+                                  withAnimation: .EffectFade)
+  }
+  
+  /// Removes the item from its parent and notifies the table.
+  func removeItem(atIndex index: Int, parent: XTSideBarItem)
+  {
+    parent.children.removeAtIndex(index)
+    outline!.removeItemsAtIndexes(NSIndexSet(index: index),
+                                  inParent: parent,
+                                  withAnimation: .EffectFade)
+  }
+  
+  /// Finds where a new item goes, and inserts it.
+  func addItem(newItem: XTSideBarItem, groupIndex: XTGroupIndex)
+  {
+    let group = roots[groupIndex.rawValue]
+    
+    addItem(newItem, parent: group, path: newItem.title)
+  }
+  
+  /// Adds a new item, recursively adding folders if necessary.
+  func addItem(newItem: XTSideBarItem, parent: XTSideBarItem, path: String)
+  {
+    var insertIndex = parent.children.count
+    let (folderTitle, subpath) = path.splitFirstPathComponent()
+    
+    for (index, item) in parent.children.enumerate() {
+      if item.title == newItem.title {
+        return
+      }
+      if (folderTitle == item.title) && (item is XTBranchFolderItem) {
+        addItem(newItem, parent:item, path: subpath)
+        return
+      }
+      if item.title > newItem.title {
+        insertIndex = index
+        break
+      }
+    }
+    if let folderTitle = folderTitle {
+      let folder = XTBranchFolderItem(title: folderTitle)
+      
+      insertItem(folder, atIndex: insertIndex, parent: parent)
+      addItem(newItem, parent: folder, path: subpath)
+    }
+    else {
+      insertItem(newItem, atIndex: insertIndex, parent: parent)
+    }
+  }
+  
+  /// Finds the matching item and deletes it.
+  func deleteItem(name: String, groupIndex: XTGroupIndex)
+  {
+    deleteItem(name, parent: roots[groupIndex.rawValue])
+  }
+  
+  /// Deletes an item, searching branch folders recursively.
+  func deleteItem(name: String, parent: XTSideBarItem)
+  {
+    for (index, item) in parent.children.enumerate() {
+      // A folder can have the same name as a branch.
+      if let folder = item as? XTBranchFolderItem where
+         name.hasPrefix(folder.title) && (name != folder.title) {
+        deleteItem(name, parent: folder)
+        if folder.children.isEmpty {
+          removeItem(atIndex: index, parent: parent)
+        }
+      }
+      if item.title == name {
+        removeItem(atIndex: index, parent: parent)
+        break
+      }
+    }
+  }
+  
+  func insertRemoteBranch(branchName: String)
+  {
+    let remotes = roots[XTGroupIndex.Remotes.rawValue]
+    
+    for remote in remotes.children {
+      if branchName.hasPrefix(remote.title) {
+        break
+      }
+    }
+  }
+  
+  func deleteSidebarItem(name: String, groupIndex: XTGroupIndex)
+  {
+    let group = roots[groupIndex.rawValue]
+    
+    for (index, item) in group.children.enumerate() {
+      if item.title == name {
+        removeItem(atIndex: index, parent: group)
+        break
+      }
+    }
+  }
+
+}
+
 extension XTSideBarDataSource { // MARK: TeamCity
   
   func updateTeamCity()

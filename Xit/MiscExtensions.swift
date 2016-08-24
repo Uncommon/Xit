@@ -11,6 +11,26 @@ extension String {
     
     return self.substringFromIndex(prefix.characters.endIndex)
   }
+  
+  /// Returns the substring remaining after removing the given prefix, or nil
+  /// if the prefix does not match.
+  func substringAfterPrefix(prefix: String) -> String?
+  {
+    guard hasPrefix(prefix)
+    else { return nil }
+    
+    return self.substringFromIndex(prefix.characters.endIndex)
+  }
+  
+  /// Returns the substring up to the first slash.
+  func splitFirstPathComponent() -> (String?, String)
+  {
+    guard let slashRange = rangeOfString("/")
+    else { return (nil, self) }
+    
+    return (substringToIndex(slashRange.startIndex),
+            substringFromIndex(slashRange.startIndex.advancedBy(1)))
+  }
 }
 
 extension NSXMLElement {
