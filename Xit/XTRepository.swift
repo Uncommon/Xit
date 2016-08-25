@@ -34,9 +34,9 @@ extension XTRepository {
       let repo = UnsafePointer<CallbackPayload>(payload).memory.repo
       
       var rawName = git_reference_name(reference)
-      guard rawName != nil
+      guard rawName != nil,
+            let name = String.fromCString(rawName)
       else { return 0 }
-      var name = String(rawName)
       
       var resolved: COpaquePointer = nil
       guard git_reference_resolve(&resolved, reference) == 0

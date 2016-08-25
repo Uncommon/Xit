@@ -168,11 +168,13 @@ void EventStreamCallback(
   if (changedRefs.count > 0)
     [refChanges setObject:changedRefs forKey:XTChangedRefsKey];
   
-  if (refChanges.count > 0)
+  if (refChanges.count > 0) {
+    [self.repo rebuildRefsIndex];
     [[NSNotificationCenter defaultCenter]
         postNotificationName:XTRepositoryRefsChangedNotification
                       object:self.repo
                     userInfo:refChanges];
+  }
   self.refsCache = newRefCache;
 }
 
