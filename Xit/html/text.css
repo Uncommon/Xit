@@ -54,6 +54,9 @@ span.old, span.new {
   background-color: #EEE;
   -webkit-user-select: none;
 }
+[line]::after {
+  content: attr(line);
+}
 span.new {
   margin-right: 2px;
 }

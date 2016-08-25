@@ -8,16 +8,6 @@
 
 @implementation XTFileDiffController
 
-- (instancetype)initWithNibName:(NSString*)nibNameOrNil
-                         bundle:(NSBundle*)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Initialization code here.
-    }
-    return self;
-}
-
 - (void)clear
 {
   [_webView.mainFrame loadHTMLString:@"" baseURL:nil];
@@ -45,8 +35,8 @@
         [NSString stringWithFormat:numberFormat, (unsigned long)newLine];
   [lines appendFormat:
       @"<div class='%@'>"
-       "<span class='old'>%@</span>"
-       "<span class='new'>%@</span>"
+       "<span class='old' line='%@'></span>"
+       "<span class='new' line='%@'></span>"
        "<span class='text'>%@</span>"
        "</div>\n",
        class, oldLineText, newLineText,
