@@ -2,6 +2,13 @@ import Cocoa
 
 public class XTHistoryTableController: NSViewController {
 
+  struct ColumnID
+  {
+    static let commit = "commit"
+    static let date = "date"
+    static let email = "email"
+  }
+
   var repository: XTRepository!
   {
     didSet
@@ -16,6 +23,11 @@ public class XTHistoryTableController: NSViewController {
       table.intercellSpacing = spacing
 
       loadHistory()
+      NSNotificationCenter.defaultCenter().addObserver(
+          self,
+          selector: #selector(XTHistoryTableController.refsChanged(_:)),
+          name: XTRepositoryRefsChangedNotification,
+          object: self)
     }
   }
   
@@ -37,6 +49,23 @@ public class XTHistoryTableController: NSViewController {
         selector: #selector(XTHistoryTableController.dateViewResized(_:)),
         name: NSViewFrameDidChangeNotification,
         object: nil)
+  }
+  
+  func refsChanged(_: NSNotification)
+  {
+    let tableView = view as! NSTableView
+    let commitColumnIndex = tableView.columnWithIdentifier(ColumnID.commit)
+    
+    tableView.enumerateAvailableRowViewsUsingBlock {
+      (rowView, index) in
+      guard let columnView = rowView.viewAtColumn(commitColumnIndex)
+                    as? XTHistoryCellView,
+                entry = columnView.objectValue as? CommitEntry
+      else { return }
+      
+      columnView.refs = self.repository.refsAtCommit(entry.commit.SHA!)
+    }
+    tableView.reloadData()
   }
   
   func loadHistory()
@@ -188,13 +217,13 @@ extension XTHistoryTableController: NSTableViewDelegate {
     else { return nil }
     
     switch tableColumn.identifier {
-      case "commit":
+      case ColumnID.commit:
         let historyCell = result as! XTHistoryCellView
         
         historyCell.refs = repository.refsAtCommit(sha)
         historyCell.textField?.stringValue = entry.commit.message ?? ""
         historyCell.objectValue = entry
-      case "date":
+      case ColumnID.date:
         let textField = result.textField!
         let formatter = textField.cell!.formatter as! NSDateFormatter
         
@@ -202,7 +231,7 @@ extension XTHistoryTableController: NSTableViewDelegate {
         textField.objectValue = entry.commit.commitDate
         textField.postsFrameChangedNotifications = true
         textField.postsBoundsChangedNotifications = true
-      case "email":
+      case ColumnID.email:
         result.textField?.stringValue = entry.commit.email ?? ""
       default:
         return nil
