@@ -275,6 +275,35 @@ public class XTCommitHistory: NSObject
     }
   }
   
+  /// Deletes a commit and all parents that are not otherwise referenced.
+  /// Commit connections are also adjusted.
+  func delete(commit: CommitType, startIndex: Int?) -> [Int]
+  {
+    guard let startIndex = startIndex ?? entries.indexOf({
+      (entry) -> Bool in
+      entry.commit.OID == commit.OID
+    })
+    else { return [] }
+    var deleteIndexes = [startIndex]
+    
+    for parentOID in commit.parentOIDs {
+      for index in startIndex.advancedBy(1)..<entries.endIndex {
+        let entry = entries[index]
+        
+        entry.connections = entry.connections.filter({ $0.childOID != commit.OID })
+        if entry.commit.OID == parentOID {
+          if entry.connections.indexOf({ $0.parentOID == parentOID }) == nil {
+            deleteIndexes.appendContentsOf(delete(entry.commit, startIndex: index))
+          }
+          break
+        }
+      }
+    }
+    // follow parent lines down and delete them at each entry
+    // if the parent has no other children, delete it
+    
+    return deleteIndexes
+  }
   
   /// Creates the connections to be drawn between commits.
   func connectCommits()
