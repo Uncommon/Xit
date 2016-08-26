@@ -258,7 +258,7 @@ observeValueForKeyPath:(NSString*)keyPath
       [_fileListOutline tableColumnWithIdentifier:columnID];
   NSAssert(_fileListOutline.highlightedTableColumn != nil, @"");
   [_fileListOutline setNeedsDisplay];
-  [self refresh];
+  [self refreshPreview];
 }
 
 - (void)selectRowFromButton:(NSButton*)button
@@ -399,12 +399,12 @@ observeValueForKeyPath:(NSString*)keyPath
 
   _headerController.commitSHA = controller.selectedModel.shaToSelect;
   [self showUnstagedColumn:controller.selectedModel.hasUnstaged];
-  [self refresh];
+  [self refreshPreview];
 }
 
 - (void)fileSelectionChanged:(NSNotification*)note
 {
-  [self refresh];
+  [self refreshPreview];
 }
 
 - (void)headerResized:(NSNotification*)note
@@ -414,7 +414,12 @@ observeValueForKeyPath:(NSString*)keyPath
   [_headerSplitView animatePosition:newHeight ofDividerAtIndex:0];
 }
 
-- (void)refresh
+- (void)reload
+{
+  [self.fileListDataSource reload];
+}
+
+- (void)refreshPreview
 {
   [self loadSelectedPreview];
   [_filePreview refreshPreviewItem];

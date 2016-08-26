@@ -86,6 +86,13 @@
   self.tableController.repository = newRepo;
 }
 
+- (void)reload
+{
+  [(XTHistoryTableController*)self.historyTable.dataSource reload];
+  [_fileViewController reload];
+  [_sideBarDS reload];
+}
+
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem
 {
   const SEL action = menuItem.action;
@@ -399,7 +406,7 @@
     didSelectTabViewItem:(NSTabViewItem *)tabViewItem
 {
   if ([tabViewItem.identifier isEqualToString:@"tree"])
-    [_fileViewController refresh];
+    [_fileViewController refreshPreview];
 }
 
 @end

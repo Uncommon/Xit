@@ -72,6 +72,7 @@ extern const CGFloat kChangeImagePadding;
 
 - (void)windowDidLoad;
 - (void)setRepo:(XTRepository *)repo;
-- (void)refresh;
+- (void)reload;
+- (void)refreshPreview;
 
 @end

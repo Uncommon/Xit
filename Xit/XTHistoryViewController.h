@@ -28,6 +28,7 @@
 
 - (void)windowDidLoad;
 - (void)setRepo:(XTRepository *)newRepo;
+- (void)reload;
 
 - (IBAction)checkOutBranch:(id)sender;
 - (IBAction)renameBranch:(id)sender;

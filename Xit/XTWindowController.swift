@@ -60,6 +60,11 @@ class XTWindowController: NSWindowController {
     activityController.activityEnded()
   }
   
+  @IBAction func reload(sender: AnyObject)
+  {
+    historyController.reload()
+  }
+  
   @IBAction func showHideSidebar(sender: AnyObject)
   {
     historyController.toggleSideBar(sender)
@@ -144,6 +149,9 @@ class XTWindowController: NSWindowController {
     var result = false
     
     switch menuItem.action {
+
+      case #selector(self.reload(_:)):
+        result = !xtDocument!.repository.isWriting
 
       case #selector(self.showHideSidebar(_:)):
         result = true
