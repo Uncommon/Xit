@@ -8,6 +8,7 @@ extern NSString *XTPathsKey;
 
 @class GTRepository;
 @class XTConfig;
+@class XTRepositoryWatcher;
 
 /**
   XTRepository represents the application's interface to the Git repository.
@@ -24,7 +25,7 @@ extern NSString *XTPathsKey;
   NSCache *_diffCache;
 }
 
-- (instancetype)initWithURL:(NSURL*)url;
+- (nullable instancetype)initWithURL:(NSURL*)url;
 
 /**
   Avoid calling these from outside XTRepository. Instead, add methods to
@@ -74,6 +75,7 @@ extern NSString *XTPathsKey;
 @property(readonly) BOOL isWriting;
 @property(readonly) BOOL isShutDown;
 
+@property(readonly) XTRepositoryWatcher *watcher;
 @property(readonly) XTConfig *config;
 
 @end

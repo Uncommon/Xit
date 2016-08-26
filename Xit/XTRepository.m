@@ -12,7 +12,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 
 @interface XTRepository ()
 
-@property XTRepositoryWatcher *watcher;
+@property(readwrite) XTRepositoryWatcher *watcher;
 @property(readwrite) BOOL isWriting;
 @property(readwrite) BOOL isShutDown;
 @property(readwrite) XTConfig *config;
@@ -33,7 +33,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
   return nil;
 }
 
-- (instancetype)initWithURL:(NSURL *)url
+- (nullable instancetype)initWithURL:(NSURL *)url
 {
   self = [super init];
   if (self != nil) {
@@ -52,8 +52,10 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
         DISPATCH_QUEUE_SERIAL);
     _diffCache = [[NSCache alloc] init];
     
-    self.watcher = [XTRepositoryWatcher watcherWithRepo:self];
-    self.config = [[XTConfig alloc] initWithRepository:self];
+    if (_gtRepo != nil) {
+      self.watcher = [XTRepositoryWatcher watcherWithRepo:self];
+      self.config = [[XTConfig alloc] initWithRepository:self];
+    }
   }
 
   return self;
