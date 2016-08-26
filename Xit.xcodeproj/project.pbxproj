@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		313014AC13EB656B0017A2A1 /* XTSideBarDataSorceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */; };
 		3174966813DF8A0C004C5546 /* XTSideBarDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */; };
-		3174966E13DFF94C004C5546 /* XTHistoryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966D13DFF94C004C5546 /* XTHistoryItem.m */; };
 		3199BABD142079BB008AAA4F /* XTFileListDataSourceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3199BABC142079BB008AAA4F /* XTFileListDataSourceTest.m */; };
 		3199BAC014207CFB008AAA4F /* XTFileTreeDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3199BABF14207CFB008AAA4F /* XTFileTreeDataSource.m */; };
 		31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
@@ -83,11 +82,6 @@
 		89E927DF17E977340093DA6C /* expected header.html in Resources */ = {isa = PBXBuildFile; fileRef = 89E927DE17E977340093DA6C /* expected header.html */; };
 		89FE824815A716E800E2EA2A /* XTRepositoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89FE824715A716E800E2EA2A /* XTRepositoryTests.m */; };
 		C358653114048A3F00060C53 /* XTRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = C358653014048A3F00060C53 /* XTRepository.m */; };
-		C3D6D31313E8E65700AF50B0 /* PBGitHistoryGrapher.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6D31113E8E65700AF50B0 /* PBGitHistoryGrapher.m */; };
-		C3D6D31613E8E6BC00AF50B0 /* PBGitGrapher.mm in Sources */ = {isa = PBXBuildFile; fileRef = C3D6D31413E8E6BC00AF50B0 /* PBGitGrapher.mm */; };
-		C3D6D31913E8E6E400AF50B0 /* PBGraphCellInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6D31713E8E6E400AF50B0 /* PBGraphCellInfo.m */; };
-		C3D6D31F13E8E7E700AF50B0 /* PBGitLane.mm in Sources */ = {isa = PBXBuildFile; fileRef = C3D6D31D13E8E7E700AF50B0 /* PBGitLane.mm */; };
-		C3D6D32213E91EDC00AF50B0 /* PBGitRevisionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6D32013E91EDC00AF50B0 /* PBGitRevisionCell.m */; };
 		C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		C3FA470B13D0F8E200AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA470913D0F8E200AC4F9B /* InfoPlist.strings */; };
 		C3FA470E13D0F8E200AC4F9B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA470D13D0F8E200AC4F9B /* main.m */; };
@@ -303,8 +297,6 @@
 		313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTSideBarDataSorceTests.m; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		31355B0713EA139700C33AAB /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTSideBarDataSource.m; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		3174966C13DFF94C004C5546 /* XTHistoryItem.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTHistoryItem.h; sourceTree = "<group>"; tabWidth = 2; };
-		3174966D13DFF94C004C5546 /* XTHistoryItem.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTHistoryItem.m; sourceTree = "<group>"; tabWidth = 2; };
 		3199BABC142079BB008AAA4F /* XTFileListDataSourceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTFileListDataSourceTest.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3199BABE14207CFB008AAA4F /* XTFileTreeDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTFileTreeDataSource.h; sourceTree = "<group>"; };
 		3199BABF14207CFB008AAA4F /* XTFileTreeDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTFileTreeDataSource.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -399,17 +391,6 @@
 		C358653014048A3F00060C53 /* XTRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTRepository.m; sourceTree = "<group>"; tabWidth = 2; };
 		C3BC055613D1133000C3CF1A /* XTRepository+Commands.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "XTRepository+Commands.h"; sourceTree = "<group>"; };
 		C3BC055713D1133000C3CF1A /* XTRepository+Commands.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = "XTRepository+Commands.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		C3D6D31113E8E65700AF50B0 /* PBGitHistoryGrapher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBGitHistoryGrapher.m; sourceTree = "<group>"; };
-		C3D6D31213E8E65700AF50B0 /* PBGitHistoryGrapher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBGitHistoryGrapher.h; sourceTree = "<group>"; };
-		C3D6D31413E8E6BC00AF50B0 /* PBGitGrapher.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PBGitGrapher.mm; sourceTree = "<group>"; };
-		C3D6D31513E8E6BC00AF50B0 /* PBGitGrapher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBGitGrapher.h; sourceTree = "<group>"; };
-		C3D6D31713E8E6E400AF50B0 /* PBGraphCellInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBGraphCellInfo.m; sourceTree = "<group>"; };
-		C3D6D31813E8E6E400AF50B0 /* PBGraphCellInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBGraphCellInfo.h; sourceTree = "<group>"; };
-		C3D6D31B13E8E6FA00AF50B0 /* PBGitGraphLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBGitGraphLine.h; sourceTree = "<group>"; };
-		C3D6D31D13E8E7E700AF50B0 /* PBGitLane.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PBGitLane.mm; sourceTree = "<group>"; };
-		C3D6D31E13E8E7E700AF50B0 /* PBGitLane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBGitLane.h; sourceTree = "<group>"; };
-		C3D6D32013E91EDC00AF50B0 /* PBGitRevisionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBGitRevisionCell.m; sourceTree = "<group>"; };
-		C3D6D32113E91EDC00AF50B0 /* PBGitRevisionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBGitRevisionCell.h; sourceTree = "<group>"; };
 		C3FA46FC13D0F8E200AC4F9B /* Xit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Xit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3FA470013D0F8E200AC4F9B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		C3FA470313D0F8E200AC4F9B /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -600,8 +581,6 @@
 				31C7C13013ECC74C00A65FE9 /* XTHistoryViewController.h */,
 				31C7C13113ECC74C00A65FE9 /* XTHistoryViewController.m */,
 				31C7C13213ECC74C00A65FE9 /* XTHistoryViewController.xib */,
-				3174966C13DFF94C004C5546 /* XTHistoryItem.h */,
-				3174966D13DFF94C004C5546 /* XTHistoryItem.m */,
 				DD997DD8173B409500C7DF82 /* HistoryView Menus.xib */,
 				C92E30EE1D4FF358001985F7 /* XTCommitHistory.swift */,
 				C91E9A001D527A1300E128AC /* XTHistoryTableController.swift */,
@@ -720,24 +699,6 @@
 			path = images;
 			sourceTree = "<group>";
 		};
-		C3D6D30F13E8E63A00AF50B0 /* GitX */ = {
-			isa = PBXGroup;
-			children = (
-				C3D6D32013E91EDC00AF50B0 /* PBGitRevisionCell.m */,
-				C3D6D32113E91EDC00AF50B0 /* PBGitRevisionCell.h */,
-				C3D6D31D13E8E7E700AF50B0 /* PBGitLane.mm */,
-				C3D6D31E13E8E7E700AF50B0 /* PBGitLane.h */,
-				C3D6D31B13E8E6FA00AF50B0 /* PBGitGraphLine.h */,
-				C3D6D31713E8E6E400AF50B0 /* PBGraphCellInfo.m */,
-				C3D6D31813E8E6E400AF50B0 /* PBGraphCellInfo.h */,
-				C3D6D31413E8E6BC00AF50B0 /* PBGitGrapher.mm */,
-				C3D6D31513E8E6BC00AF50B0 /* PBGitGrapher.h */,
-				C3D6D31113E8E65700AF50B0 /* PBGitHistoryGrapher.m */,
-				C3D6D31213E8E65700AF50B0 /* PBGitHistoryGrapher.h */,
-			);
-			name = GitX;
-			sourceTree = "<group>";
-		};
 		C3FA46F113D0F8E200AC4F9B = {
 			isa = PBXGroup;
 			children = (
@@ -796,7 +757,6 @@
 				31C7C12F13ECC6C700A65FE9 /* HistoryView */,
 				DD39D1F21918306B00827532 /* FileView */,
 				31C7C12A13EC730500A65FE9 /* Utils */,
-				C3D6D30F13E8E63A00AF50B0 /* GitX */,
 				C9C773151D26F28900329493 /* Preferences */,
 				C929D0541D42784000D7DC52 /* Services */,
 				89A6EA2614478DA40089B212 /* XTAppDelegate.h */,
@@ -1279,19 +1239,13 @@
 				C91E9A011D527A1300E128AC /* XTHistoryTableController.swift in Sources */,
 				C957B84B1D2D53040040F858 /* XTSheetController.swift in Sources */,
 				3174966813DF8A0C004C5546 /* XTSideBarDataSource.m in Sources */,
-				3174966E13DFF94C004C5546 /* XTHistoryItem.m in Sources */,
 				DD9D5E9C183EA33F00EBC1C7 /* XTFileDiffController.m in Sources */,
-				C3D6D31313E8E65700AF50B0 /* PBGitHistoryGrapher.m in Sources */,
-				C3D6D31613E8E6BC00AF50B0 /* PBGitGrapher.mm in Sources */,
 				C9BAE60A1D2FFA8B00A87F13 /* XTConfig.swift in Sources */,
 				C9BAE6141D3039C500A87F13 /* XTOperationController.swift in Sources */,
 				C957B8541D2D533C0040F858 /* XTAddAccountController.swift in Sources */,
-				C3D6D31913E8E6E400AF50B0 /* PBGraphCellInfo.m in Sources */,
-				C3D6D31F13E8E7E700AF50B0 /* PBGitLane.mm in Sources */,
 				C948D5B71D2C6A4800F72A27 /* XTAccountsPrefsController.swift in Sources */,
 				894C8DAC1CBC0A1B001A4B80 /* XTFileListView.m in Sources */,
 				C957B8721D2DB44E0040F858 /* XTRemoteSheetController.swift in Sources */,
-				C3D6D32213E91EDC00AF50B0 /* PBGitRevisionCell.m in Sources */,
 				899DB1921CE109C700760270 /* XTWorkspaceTreeBuilder.swift in Sources */,
 				89D8BE221CF0A4ED00D640AA /* XTRolloverButton.swift in Sources */,
 				31C7C12E13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m in Sources */,

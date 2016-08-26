@@ -1,6 +1,5 @@
 #import "XTHistoryViewController.h"
 #import "XTFileViewController.h"
-#import "XTHistoryItem.h"
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
 #import "XTSideBarDataSource.h"
@@ -9,7 +8,6 @@
 #import "XTStatusView.h"
 #import "Xit-Swift.h"
 #import "NSAttributedString+XTExtensions.h"
-#import "PBGitRevisionCell.h"
 
 @interface XTHistoryViewController ()
 
