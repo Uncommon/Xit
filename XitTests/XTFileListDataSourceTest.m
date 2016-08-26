@@ -2,7 +2,6 @@
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
 #import "XTFileTreeDataSource.h"
-#import "XTHistoryItem.h"
 #include "XTQueueUtils.h"
 #import "Xit-Swift.h"
 

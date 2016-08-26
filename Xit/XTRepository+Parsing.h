@@ -56,7 +56,6 @@ typedef NS_ENUM(NSUInteger, XitChange) {
                   tagBlock:(void (^)(NSString *name, NSString *commit))tagBlock;
 - (BOOL)readStashesWithBlock:
     (void (^)(NSString *commit, NSUInteger index, NSString *name))block;
-- (BOOL)readSubmodulesWithBlock:(void (^)(GTSubmodule *sub))block;
 - (BOOL)parseCommit:(NSString*)ref
          intoHeader:(NSDictionary * _Nullable * _Nonnull)header
             message:(NSString * _Nullable * _Nonnull)message

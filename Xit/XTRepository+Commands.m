@@ -241,28 +241,6 @@
   return remoteURL;
 }
 
-- (NSString *)diffForUnstagedFile:(NSString *)file
-{
-  NSData *output =
-      [self executeGitWithArgs:@[ @"diff-files", @"--patch", @"--", file ]
-                        writes:NO
-                         error:nil];
-
-  if (output == nil)
-    return nil;
-  return [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-}
-
-- (NSString *)diffForCommit:(NSString *)sha
-{
-  NSData *output = [self executeGitWithArgs:@[ @"diff-tree", @"--root", @"--cc",
-                                               @"-C90%", @"-M90%", sha ]
-                                     writes:NO
-                                      error:NULL];
-
-  return [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-}
-
 - (BOOL)stagePatch:(NSString *)patch
 {
   NSError *error = nil;

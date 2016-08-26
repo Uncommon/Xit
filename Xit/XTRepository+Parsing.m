@@ -117,16 +117,6 @@ NSString *XTHeaderContentKey = @"content";
   return error == nil;
 }
 
-- (BOOL)readSubmodulesWithBlock:(void (^)(GTSubmodule *sub))block
-{
-  [_gtRepo enumerateSubmodulesRecursively:NO
-                               usingBlock:^(GTSubmodule *sub, NSError *error,
-                                            BOOL *stop){
-    block(sub);
-  }];
-  return YES;
-}
-
 - (NSArray<NSString*>*)fileNamesForRef:(NSString *)ref
 {
   GTCommit *commit = [self commitForRef:ref];
