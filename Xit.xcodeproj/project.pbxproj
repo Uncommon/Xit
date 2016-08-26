@@ -187,7 +187,6 @@
 		DDD4708716F9701600CA76FF /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDD4708616F9701600CA76FF /* Quartz.framework */; };
 		DDDA447215B0EA4700DF407B /* XTRepository+Parsing.m in Sources */ = {isa = PBXBuildFile; fileRef = DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */; };
 		DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */ = {isa = PBXBuildFile; fileRef = DDDDAF1318162212009F8BA1 /* XTQueueUtils.c */; };
-		DDE55DDF1613C6C000CCAC03 /* XTModDateTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = DDE55DDE1613C6C000CCAC03 /* XTModDateTracker.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -518,8 +517,6 @@
 		DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XTRepository+Parsing.m"; sourceTree = "<group>"; };
 		DDDDAF1318162212009F8BA1 /* XTQueueUtils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = XTQueueUtils.c; sourceTree = "<group>"; };
 		DDDDAF2018162258009F8BA1 /* XTQueueUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTQueueUtils.h; sourceTree = "<group>"; };
-		DDE55DDD1613C6C000CCAC03 /* XTModDateTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTModDateTracker.h; sourceTree = "<group>"; };
-		DDE55DDE1613C6C000CCAC03 /* XTModDateTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTModDateTracker.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -559,8 +556,6 @@
 				31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */,
 				89D47941170894A200C04D89 /* NSAttributedString+XTExtensions.h */,
 				89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */,
-				DDE55DDD1613C6C000CCAC03 /* XTModDateTracker.h */,
-				DDE55DDE1613C6C000CCAC03 /* XTModDateTracker.m */,
 				DDDDAF1318162212009F8BA1 /* XTQueueUtils.c */,
 				DDDDAF2018162258009F8BA1 /* XTQueueUtils.h */,
 				DD9C1B8D160239DD0001FE9B /* XTRefToken.h */,
@@ -1274,7 +1269,6 @@
 				C92E30EF1D4FF358001985F7 /* XTCommitHistory.swift in Sources */,
 				C929D0461D415F6F00D7DC52 /* MiscExtensions.swift in Sources */,
 				C94866B61D256C24000BDB0A /* XTFetchController.swift in Sources */,
-				DDE55DDF1613C6C000CCAC03 /* XTModDateTracker.m in Sources */,
 				C957B87C1D2DBBC00040F858 /* XTAccountsManager.swift in Sources */,
 				DD07B07816A5D2A80012AC19 /* XTSideBarOutlineView.m in Sources */,
 				DD07B08916B313A60012AC19 /* XTRefFormatter.m in Sources */,
