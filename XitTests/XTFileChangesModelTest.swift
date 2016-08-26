@@ -15,8 +15,13 @@ class XTFileChangesModelTest: XTTest {
   
   func testCommit()
   {
+    guard let headSHA = repository.headSHA
+    else {
+      XCTFail("no head")
+      return
+    }
     let model = XTCommitChanges(
-        repository: repository, sha: repository.headSHA)
+        repository: repository, sha: headSHA)
     let changes = model.changes
     
     XCTAssertEqual(changes.count, 1)
@@ -136,8 +141,13 @@ class XTFileChangesModelTest: XTTest {
   {
     self.commitNewTextFile(addedName, content: "new")
     
+    guard let headSHA = repository.headSHA
+      else {
+        XCTFail("no head")
+        return
+    }
     let model = XTCommitChanges(repository: repository,
-                                sha: repository.headSHA)
+                                sha: headSHA)
     let tree = model.treeRoot
     
     XCTAssertNotNil(tree.childNodes)

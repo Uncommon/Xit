@@ -18,7 +18,8 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification*)note
 {
-  [XTServices.services initializeServices];
+  if ([NSBundle bundleWithIdentifier:@"com.uncommonplace.XitTests"] == nil)
+    [XTServices.services initializeServices];
 }
 
 - (void)openDocument:(id)sender

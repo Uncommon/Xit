@@ -56,7 +56,6 @@ typedef NS_ENUM(NSUInteger, XitChange) {
                   tagBlock:(void (^)(NSString *name, NSString *commit))tagBlock;
 - (BOOL)readStashesWithBlock:
     (void (^)(NSString *commit, NSUInteger index, NSString *name))block;
-- (BOOL)readSubmodulesWithBlock:(void (^)(GTSubmodule *sub))block;
 - (BOOL)parseCommit:(NSString*)ref
          intoHeader:(NSDictionary * _Nullable * _Nonnull)header
             message:(NSString * _Nullable * _Nonnull)message
@@ -88,9 +87,6 @@ typedef NS_ENUM(NSUInteger, XitChange) {
     NS_SWIFT_NAME(remote(_:));
 
 - (nullable NSArray<XTLocalBranch*>*)localBranchesWithError:(NSError**)error;
-- (NSArray<XTStash*>*)stashes;
-- (NSArray<XTSubmodule*>*)submodules;
-- (nullable NSArray<XTTag*>*)tagsWithError:(NSError**)error;
 
 @end
 

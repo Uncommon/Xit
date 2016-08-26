@@ -52,3 +52,27 @@ extension NSButton {
     set { intValue = newValue ? 1 : 0 }
   }
 }
+
+extension String {
+  /// Splits a "refs/*/..." string into prefix and remainder.
+  func splitRefName() -> (String, String)?
+  {
+    guard hasPrefix("refs/")
+    else { return nil }
+    
+    let start = startIndex.advancedBy("refs/".characters.count)
+    guard let slashRange = rangeOfString("/", options: [], range: start..<endIndex, locale: nil)
+    else { return nil }
+    
+    return (substringToIndex(slashRange.startIndex.successor()),
+            substringFromIndex(slashRange.endIndex))
+  }
+}
+
+extension NSTableView {
+  /// Returns a set of all visible row indexes
+  func visibleRows() -> NSIndexSet
+  {
+    return NSIndexSet(indexesInRange: rowsInRect(visibleRect))
+  }
+}

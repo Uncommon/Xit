@@ -2,13 +2,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString *XTRepositoryChangedNotification;
 extern NSString *XTErrorOutputKey;
 extern NSString *XTErrorArgsKey;
 extern NSString *XTPathsKey;
 
 @class GTRepository;
 @class XTConfig;
+@class XTRepositoryWatcher;
 
 /**
   XTRepository represents the application's interface to the Git repository.
@@ -25,10 +25,7 @@ extern NSString *XTPathsKey;
   NSCache *_diffCache;
 }
 
-- (instancetype)initWithURL:(NSURL*)url;
-- (BOOL)getCommitsWithArgs:(NSArray*)logArgs
-    enumerateCommitsUsingBlock:(void (^)(NSString*))block
-                         error:(NSError**)error;
+- (nullable instancetype)initWithURL:(NSURL*)url;
 
 /**
   Avoid calling these from outside XTRepository. Instead, add methods to
@@ -65,23 +62,20 @@ extern NSString *XTPathsKey;
  */
 - (void)shutDown;
 
-- (void)addTask:(NSTask*)task;
-- (void)removeTask:(NSTask*)task;
-
 @property(readonly) BOOL hasHeadReference;
 @property(readonly, copy) NSString *parentTree;
 @property(readonly, copy) NSString *headRef;
-@property(readonly, copy) NSString *headSHA;
+@property(readonly, copy, nullable) NSString *headSHA;
 @property(readonly, copy) NSArray<NSString*> *remoteNames;
 @property(readonly) GTRepository *gtRepo;
 @property(strong) NSDictionary<NSString*, NSArray<NSString*>*> *refsIndex;
 @property(readonly) dispatch_queue_t queue;
-@property(readonly) NSMutableArray *activeTasks;
 @property(readonly) NSURL *repoURL;
 @property(readonly) NSURL *gitDirectoryURL;
 @property(readonly) BOOL isWriting;
 @property(readonly) BOOL isShutDown;
 
+@property(readonly) XTRepositoryWatcher *watcher;
 @property(readonly) XTConfig *config;
 
 @end

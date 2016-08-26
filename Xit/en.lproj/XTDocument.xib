@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
@@ -7,7 +7,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="XTWindowController" customModule="Xit" customModuleProvider="target">
             <connections>
-                <outlet property="activity" destination="100113" id="LWu-SP-egG"/>
+                <outlet property="activityController" destination="Ib1-UC-8LJ" id="1Nb-sh-KPf"/>
                 <outlet property="historyController" destination="100102" id="GPc-Qf-MhO"/>
                 <outlet property="window" destination="5" id="18"/>
             </connections>
@@ -47,15 +47,6 @@
                             </connections>
                         </segmentedControl>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="FB2710CD-FC77-453B-8ED4-E4D111C9340C" label="Activity" paletteLabel="Activity" tag="-1" id="100114">
-                        <nil key="toolTip"/>
-                        <size key="minSize" width="16" height="16"/>
-                        <size key="maxSize" width="16" height="16"/>
-                        <progressIndicator key="view" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" id="100113">
-                            <rect key="frame" x="16" y="14" width="16" height="16"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        </progressIndicator>
-                    </toolbarItem>
                     <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="100117"/>
                     <toolbarItem implicitItemIdentifier="BFCC741B-D044-4F0A-876B-58F4FBF316F3" explicitItemIdentifier="xit.status" label="Status" paletteLabel="Status" tag="-1" autovalidates="NO" id="100157">
                         <nil key="toolTip"/>
@@ -85,14 +76,12 @@
                     <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="72Q-wc-QQ6"/>
                 </allowedToolbarItems>
                 <defaultToolbarItems>
-                    <toolbarItem reference="100152"/>
                     <toolbarItem reference="Hth-4n-I6q"/>
                     <toolbarItem reference="100117"/>
                     <toolbarItem reference="100157"/>
                     <toolbarItem reference="100117"/>
                     <toolbarItem reference="72Q-wc-QQ6"/>
-                    <toolbarItem reference="72Q-wc-QQ6"/>
-                    <toolbarItem reference="100114"/>
+                    <toolbarItem reference="100152"/>
                 </defaultToolbarItems>
                 <connections>
                     <outlet property="delegate" destination="100154" id="100155"/>
@@ -105,6 +94,23 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <viewController nibName="XTHistoryViewController" id="100102" userLabel="History View Controller" customClass="XTHistoryViewController"/>
         <customObject id="100154" customClass="XTToolbarDelegate"/>
+        <customObject id="Ib1-UC-8LJ" customClass="XTActivityViewController" customModule="Xit" customModuleProvider="target">
+            <connections>
+                <outlet property="spinner" destination="1uV-vf-IPh" id="Sz1-Mk-zV8"/>
+                <outlet property="view" destination="WHy-2u-kon" id="gxe-LD-uca"/>
+            </connections>
+        </customObject>
+        <customView id="WHy-2u-kon">
+            <rect key="frame" x="0.0" y="0.0" width="24" height="36"/>
+            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <progressIndicator hidden="YES" wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" id="1uV-vf-IPh">
+                    <rect key="frame" x="0.0" y="12" width="16" height="16"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                </progressIndicator>
+            </subviews>
+            <point key="canvasLocation" x="977" y="347"/>
+        </customView>
     </objects>
     <resources>
         <image name="NSRefreshTemplate" width="11" height="15"/>

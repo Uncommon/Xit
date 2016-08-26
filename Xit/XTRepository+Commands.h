@@ -19,10 +19,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)checkout:(NSString*)branch error:(NSError**)error;
 - (BOOL)merge:(NSString*)name error:(NSError**)error;
 
-- (nullable NSString*)diffForStagedFile:(NSString*)file;
-- (nullable NSString*)diffForUnstagedFile:(NSString*)file;
-- (nullable NSString*)diffForCommit:(NSString*)sha;
-
 - (BOOL)stagePatch:(NSString*)patch;
 - (BOOL)unstagePatch:(NSString*)patch;
 - (BOOL)discardPatch:(NSString*)patch;

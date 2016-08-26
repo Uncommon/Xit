@@ -166,11 +166,13 @@ dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
     CFStringRef cfEncodedSummary = CFXMLCreateStringByEscapingEntities(
         kCFAllocatorDefault, (__bridge CFStringRef)summary, NULL);
     NSString *encodedSummary = (NSString*)CFBridgingRelease(cfEncodedSummary);
+    NSString *parentText = [NSString stringWithFormat:@"%@ %@",
+        [parentSHA substringToIndex:6], encodedSummary];
 
     parentSpan.className = @"parent";
     [parentSpan setAttribute:@"onclick" value:[NSString stringWithFormat:
         @"window.controller.selectSHA('%@')", parentCommit.SHA]];
-    parentSpan.innerHTML = encodedSummary;
+    parentSpan.innerHTML = parentText;
     [parentsElement appendChild:parentDiv];
     [parentDiv appendChild:parentSpan];
   }

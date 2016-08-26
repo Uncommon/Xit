@@ -3,7 +3,6 @@
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
 #import "XTSideBarDataSource.h"
-#import "XTHistoryItem.h"
 #include "CFRunLoop+Extensions.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 #import "Xit-Swift.h"

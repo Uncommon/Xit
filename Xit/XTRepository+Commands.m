@@ -1,10 +1,12 @@
 #import "XTRepository+Commands.h"
 #import "XTConstants.h"
+#import "XTRepositoryWatcher.h"
 #import "Xit-Swift.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
 @interface XTRepository()
 
+@property (readwrite) XTRepositoryWatcher *watcher;
 @property (readwrite) XTConfig *config;
 
 @end
@@ -23,6 +25,7 @@
   if ((newRepo == nil) || (error != nil))
     return NO;
   _gtRepo = newRepo;
+  self.watcher = [XTRepositoryWatcher watcherWithRepo:self];
   self.config = [[XTConfig alloc] initWithRepository:self];
   return YES;
 }
@@ -236,28 +239,6 @@
       [[_gtRepo configurationWithError:nil] stringForKey:remoteName];
   
   return remoteURL;
-}
-
-- (NSString *)diffForUnstagedFile:(NSString *)file
-{
-  NSData *output =
-      [self executeGitWithArgs:@[ @"diff-files", @"--patch", @"--", file ]
-                        writes:NO
-                         error:nil];
-
-  if (output == nil)
-    return nil;
-  return [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-}
-
-- (NSString *)diffForCommit:(NSString *)sha
-{
-  NSData *output = [self executeGitWithArgs:@[ @"diff-tree", @"--root", @"--cc",
-                                               @"-C90%", @"-M90%", sha ]
-                                     writes:NO
-                                      error:NULL];
-
-  return [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
 }
 
 - (BOOL)stagePatch:(NSString *)patch

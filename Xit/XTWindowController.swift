@@ -5,6 +5,7 @@ class XTWindowController: NSWindowController {
   
   @IBOutlet var historyController: XTHistoryViewController!
   @IBOutlet var activity: NSProgressIndicator!
+  @IBOutlet var activityController: XTActivityViewController!
   var xtDocument: XTDocument?
   var selectedCommitSHA: String?
   dynamic var selectedModel: XTFileChangesModel?
@@ -21,42 +22,45 @@ class XTWindowController: NSWindowController {
   override func windowDidLoad()
   {
     super.windowDidLoad()
-    self.window!.contentViewController = self.historyController
-    self.window!.makeFirstResponder(self.historyController.historyTable)
+    window!.contentViewController = self.historyController
+    window!.makeFirstResponder(self.historyController.historyTable)
+    window!.addTitlebarAccessoryViewController(activityController)
     
     let repo = self.xtDocument!.repository
     
-    repo.addObserver(self, forKeyPath:"activeTasks", options:.New, context:nil)
+    NSNotificationCenter.defaultCenter().addObserver(
+        self,
+        selector: #selector(XTWindowController.taskStarted(_:)),
+        name: XTTaskStartedNotification,
+        object: repo)
+    NSNotificationCenter.defaultCenter().addObserver(
+        self,
+        selector: #selector(XTWindowController.taskEnded(_:)),
+        name: XTTaskEndedNotification,
+        object: repo)
     self.historyController.windowDidLoad()
     self.historyController.setRepo(repo)
   }
   
   deinit
   {
-    self.xtDocument!.repository.removeObserver(self, forKeyPath:"actaiveTasks")
+    NSNotificationCenter.defaultCenter().removeObserver(self)
     currentOperation?.canceled = true
   }
   
-  override func observeValueForKeyPath(
-      keyPath: String?,
-      ofObject object: AnyObject?,
-      change: [String : AnyObject]?,
-      context: UnsafeMutablePointer<Void>)
+  func taskStarted(notification: NSNotification)
   {
-    guard (keyPath != nil) && (keyPath! == "activeTasks")
-    else {
-      super.observeValueForKeyPath(
-          keyPath, ofObject:object, change:change, context:context)
-      return
-    }
-    
-    if let tasks = change?[NSKeyValueChangeNewKey] {
-      if tasks.count > 0 {
-        self.activity.startAnimation(self)
-        return
-      }
-    }
-    self.activity.stopAnimation(self)
+    activityController.activityStarted()
+  }
+  
+  func taskEnded(notification: NSNotification)
+  {
+    activityController.activityEnded()
+  }
+  
+  @IBAction func reload(sender: AnyObject)
+  {
+    historyController.reload()
   }
   
   @IBAction func showHideSidebar(sender: AnyObject)
@@ -165,6 +169,9 @@ class XTWindowController: NSWindowController {
     var result = false
     
     switch menuItem.action {
+
+      case #selector(self.reload(_:)):
+        result = !xtDocument!.repository.isWriting
 
       case #selector(self.showHideSidebar(_:)):
         result = true

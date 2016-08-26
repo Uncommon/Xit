@@ -4,7 +4,6 @@
 #import "Xit-Swift.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
-NSString *XTRepositoryChangedNotification = @"xtrepochanged";
 NSString *XTErrorOutputKey = @"output";
 NSString *XTErrorArgsKey = @"args";
 NSString *XTPathsKey = @"paths";
@@ -13,7 +12,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 
 @interface XTRepository ()
 
-@property XTRepositoryWatcher *watcher;
+@property(readwrite) XTRepositoryWatcher *watcher;
 @property(readwrite) BOOL isWriting;
 @property(readwrite) BOOL isShutDown;
 @property(readwrite) XTConfig *config;
@@ -34,7 +33,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
   return nil;
 }
 
-- (instancetype)initWithURL:(NSURL *)url
+- (nullable instancetype)initWithURL:(NSURL *)url
 {
   self = [super init];
   if (self != nil) {
@@ -51,11 +50,12 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
     _queue = dispatch_queue_create(
         [qName cStringUsingEncoding:NSASCIIStringEncoding],
         DISPATCH_QUEUE_SERIAL);
-    _activeTasks = [NSMutableArray array];
     _diffCache = [[NSCache alloc] init];
     
-    self.watcher = [XTRepositoryWatcher watcherWithRepo:self];
-    self.config = [[XTConfig alloc] initWithRepository:self];
+    if (_gtRepo != nil) {
+      self.watcher = [XTRepositoryWatcher watcherWithRepo:self];
+      self.config = [[XTConfig alloc] initWithRepository:self];
+    }
   }
 
   return self;
@@ -95,105 +95,6 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
   self.isShutDown = YES;
 }
 
-- (void)addTask:(NSTask *)task
-{
-  [self willChangeValueForKey:@"activeTasks"];
-  @synchronized(_activeTasks) {
-    [_activeTasks addObject:task];
-  }
-  [self didChangeValueForKey:@"activeTasks"];
-}
-
-- (void)removeTask:(NSTask *)task
-{
-  @synchronized(_activeTasks) {
-    if (![_activeTasks containsObject:task])
-      return;
-    [self willChangeValueForKey:@"activeTasks"];
-    [_activeTasks removeObject:task];
-  }
-  [self didChangeValueForKey:@"activeTasks"];
-}
-
-- (BOOL)getCommitsWithArgs:(NSArray *)logArgs
-    enumerateCommitsUsingBlock:(void (^)(NSString *))block
-                         error:(NSError **)error
-{
-  if (_repoURL == nil) {
-    if (error != NULL)
-      *error = [NSError errorWithDomain:NSOSStatusErrorDomain
-                                   code:fnfErr
-                               userInfo:nil];
-    return NO;
-  }
-  if (![self hasHeadReference])
-    return YES;  // There are no commits.
-
-  NSMutableArray *args = [NSMutableArray arrayWithArray:logArgs];
-
-  [args insertObject:@"log" atIndex:0];
-  [args insertObject:@"-z" atIndex:1];
-  NSData *zero = [NSData dataWithBytes:"" length:1];
-
-  NSLog(@"****command = git %@", [args componentsJoinedByString:@" "]);
-  NSTask *task = [[NSTask alloc] init];
-  [self addTask:task];
-  task.currentDirectoryPath = _repoURL.path;
-  task.launchPath = _gitCMD;
-  task.arguments = args;
-
-  NSPipe *pipe = [NSPipe pipe];
-  task.standardOutput = pipe;
-  task.standardError = [NSFileHandle fileHandleWithNullDevice];
-
-  [task launch];
-  NSMutableData *output = [NSMutableData data];
-
-  BOOL end = NO;
-  while (!end) {
-    NSData *availableData = pipe.fileHandleForReading.availableData;
-    [output appendData:availableData];
-
-    end = ((availableData.length == 0) && !task.running);
-    if (end)
-      [output appendData:zero];
-
-    NSRange searchRange = NSMakeRange(0, output.length);
-    NSRange zeroRange = [output rangeOfData:zero options:0 range:searchRange];
-    while (zeroRange.location != NSNotFound) {
-      NSRange commitRange = NSMakeRange(
-          searchRange.location, (zeroRange.location - searchRange.location));
-      NSData *commit = [output subdataWithRange:commitRange];
-      NSString *str =
-          [[NSString alloc] initWithData:commit encoding:NSUTF8StringEncoding];
-      if (str != nil)
-        block(str);
-      searchRange = NSMakeRange(zeroRange.location + 1,
-                                output.length - (zeroRange.location + 1));
-      zeroRange = [output rangeOfData:zero options:0 range:searchRange];
-    }
-    output = [NSMutableData dataWithData:[output subdataWithRange:searchRange]];
-  }
-
-  BOOL result = YES;
-  const int status = task.terminationStatus;
-  NSLog(@"**** status = %d", status);
-
-  if (status != 0) {
-    NSString *string =
-        [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-    
-    if (error != NULL) {
-      *error = [NSError errorWithDomain:XTErrorDomainGit
-                                   code:status
-                               userInfo:@{XTErrorOutputKey : string}];
-    }
-    result = NO;
-  }
-  [self removeTask:task];
-  return result;
-}
-
 - (NSData *)executeGitWithArgs:(NSArray *)args
                         writes:(BOOL)writes
                          error:(NSError **)error
@@ -225,7 +126,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
     self.isWriting = YES;
     NSLog(@"****command = git %@", [args componentsJoinedByString:@" "]);
     NSTask *task = [[NSTask alloc] init];
-    [self addTask:task];
+    [[NSNotificationCenter defaultCenter] postNotificationName:XTTaskStartedNotification object:self];
     task.currentDirectoryPath = _repoURL.path;
     task.launchPath = _gitCMD;
     task.arguments = args;
@@ -275,7 +176,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
       }
       output = nil;
     }
-    [self removeTask:task];
+    [[NSNotificationCenter defaultCenter] postNotificationName:XTTaskEndedNotification object:self];
     self.isWriting = NO;
     return output;
   }

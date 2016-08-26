@@ -45,29 +45,23 @@ NSString * const XTStagingSHA = @"";
   [self.buildStatusTimer invalidate];
 }
 
-- (void)setRepo:(XTRepository *)newRepo
+- (void)setRepo:(XTRepository*)newRepo
 {
   _repo = newRepo;
   if (_repo != nil) {
     _stagingItem.model = [[XTStagingChanges alloc] initWithRepository:_repo];
-    [_repo addReloadObserver:self selector:@selector(repoChanged:)];
+    [[NSNotificationCenter defaultCenter]
+        addObserver:self
+           selector:@selector(refsChanged:)
+               name:XTRepositoryRefsChangedNotification
+             object:newRepo];
     [self reload];
   }
 }
 
-- (void)repoChanged:(NSNotification *)note
+- (void)refsChanged:(NSNotification*)note
 {
-  NSArray *paths = note.userInfo[XTPathsKey];
-
-  for (NSString *path in paths) {
-    if ([path hasPrefix:@"/refs/"]) {
-      [self reload];
-      break;
-    }
-  }
-  [self.outline performSelectorOnMainThread:@selector(reloadData)
-                                 withObject:nil
-                              waitUntilDone:NO];
+  [self reload];
 }
 
 - (void)reload

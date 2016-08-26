@@ -131,13 +131,16 @@
       return nil;
     }
   }
-  [fileManager createDirectoryAtPath:repoName
-         withIntermediateDirectories:YES
-                          attributes:nil
-                               error:nil];
+  
+  BOOL created = [fileManager createDirectoryAtPath:repoName
+                        withIntermediateDirectories:YES
+                                         attributes:nil
+                                              error:nil];
+  if (!created)
+    return nil;
 
-  NSURL *repoURL = [NSURL URLWithString:
-          [NSString stringWithFormat:@"file://localhost%@", repoName]];
+
+  NSURL *repoURL = [NSURL fileURLWithPath:repoName];
 
   XTRepository *repo = [[XTRepository alloc] initWithURL:repoURL];
 
