@@ -12,22 +12,38 @@ public class XTActivityViewController: NSTitlebarAccessoryViewController {
     spinner.hidden = true
   }
   
+  func forceMainThread(block: dispatch_block_t)
+  {
+    let mainQueue = dispatch_get_main_queue()
+    
+    if NSThread.isMainThread() {
+      block()
+    }
+    else {
+      dispatch_sync(mainQueue, block)
+    }
+  }
+  
   func activityStarted()
   {
-    activityCount += 1
-    spinner.hidden = false
-    spinner.startAnimation(self)
+    forceMainThread() {
+      self.activityCount += 1
+      self.spinner.hidden = false
+      self.spinner.startAnimation(self)
+    }
   }
   
   func activityEnded()
   {
-    guard activityCount > 0
-    else { return }
-    
-    activityCount -= 1
-    if activityCount == 0 {
-      spinner.stopAnimation(self)
-      spinner.hidden = true
+    forceMainThread() {
+      guard self.activityCount > 0
+      else { return }
+      
+      self.activityCount -= 1
+      if self.activityCount == 0 {
+        self.spinner.stopAnimation(self)
+        self.spinner.hidden = true
+      }
     }
   }
 }
