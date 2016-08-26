@@ -53,18 +53,20 @@ public class XTHistoryTableController: NSViewController {
   
   func refsChanged(_: NSNotification)
   {
-    let tableView = view as! NSTableView
-    let commitColumnIndex = tableView.columnWithIdentifier(ColumnID.commit)
+    // To do: dynamic updating
+    // - new and changed refs: add if they're not already in the list
+    // - deleted and changed refs: recursively remove unreferenced commits
     
-    tableView.enumerateAvailableRowViewsUsingBlock {
-      (rowView, index) in
-      guard let columnView = rowView.viewAtColumn(commitColumnIndex)
-                    as? XTHistoryCellView,
-                entry = columnView.objectValue as? CommitEntry
-      else { return }
-      
-      columnView.refs = self.repository.refsAtCommit(entry.commit.SHA!)
-    }
+    // For now: just reload
+    reload()
+  }
+  
+  /// Reloads the commit history from scratch.
+  public func reload()
+  {
+    let tableView = view as! NSTableView
+    
+    loadHistory()
     tableView.reloadData()
   }
   
@@ -74,6 +76,7 @@ public class XTHistoryTableController: NSViewController {
     let history = self.history
     weak var tableView = view as? NSTableView
     
+    history.reset()
     XTStatusView.update(status: "Loading...",
                         progress: -1,
                         repository: repository)
