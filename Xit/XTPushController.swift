@@ -29,14 +29,14 @@ class XTPushController: XTPasswordOpController {
     
     let alert = NSAlert()
     
-    alert.messageText = "Push local branch \(branchName) to "
-                        "\(remoteBranch.remoteName)?"
-    alert.buttons[0].title = "Push"
+    alert.messageText = "Push local branch \(branchName) to " +
+                        "remote \"\(remoteBranch.remoteName)\"?"
+    alert.addButtonWithTitle("Push")
     alert.addButtonWithTitle("Cancel")
     
     alert.beginSheetModalForWindow(windowController!.window!) {
       (response) in
-      if (response == NSModalResponseOK) {
+      if (response == NSAlertFirstButtonReturn) {
         self.push(branch, remote: remote)
       }
       else {
