@@ -21,32 +21,15 @@ class XTPullController: XTFetchController {
       return
     }
     
-    repository.executeOffMainThread {
-      do {
-        try self.repository.pull(branch: branch,
-                                 remote: remote,
-                                 downloadTags: true,
-                                 pruneBranches: true,
-                                 passwordBlock: self.getPassword,
-                                 progressBlock: self.shouldStop)
-      }
-      catch _ as XTRepository.Error {
-        // The command shouldn't have been enabled if this was going to happen
-      }
-      catch let error as NSError {
-        dispatch_async(dispatch_get_main_queue()) {
-          XTStatusView.update(status: "Pull failed",
-                              progress: -1,
-                              repository: self.repository)
-          
-          if let window = self.windowController?.window {
-            let alert = NSAlert(error: error)
-            
-            // needs to be smarter: look at error type
-            alert.beginSheetModalForWindow(window, completionHandler: nil)
-          }
-        }
-      }
+    tryRepoOperation(successStatus: "Pull complete",
+                     failureStatus: "Pull failed") {
+      try self.repository.pull(branch: branch,
+                               remote: remote,
+                               downloadTags: true,
+                               pruneBranches: true,
+                               passwordBlock: self.getPassword,
+                               progressBlock: self.shouldStop)
+      self.ended()
     }
   }
 

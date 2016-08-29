@@ -58,11 +58,6 @@ class XTFetchController: XTPasswordOpController {
     }
   }
   
-  func ended()
-  {
-    self.windowController?.operationEnded(self)
-  }
-  
   /// Fetch progress callback
   func shouldStop(progress progress: git_transfer_progress) -> Bool
   {
@@ -94,41 +89,15 @@ class XTFetchController: XTPasswordOpController {
     
     let repo = repository  // For use in the block without being tied to self
     
-    repo.executeOffMainThread {
-      do {
-        try repo.fetch(remote: remote,
-                       downloadTags: downloadTags,
-                       pruneBranches: pruneBranches,
-                       passwordBlock: self.getPassword,
-                       progressBlock: self.shouldStop)
-        self.fetchCompleted()
-      }
-      catch _ as XTRepository.Error {
-        // The command shouldn't have been enabled if this was going to happen
-      }
-      catch let error as NSError {
-        dispatch_async(dispatch_get_main_queue()) {
-          XTStatusView.update(status: "Fetch failed",
-                              progress: -1,
-                              repository: repo)
-          
-          if let window = self.windowController?.window {
-            let alert = NSAlert(error: error)
-            
-            // needs to be smarter: look at error type
-            alert.beginSheetModalForWindow(window, completionHandler: nil)
-          }
-        }
-      }
+    tryRepoOperation(successStatus: "Fetch complete",
+                     failureStatus: "Fetch failed") {
+      try repo.fetch(remote: remote,
+                     downloadTags: downloadTags,
+                     pruneBranches: pruneBranches,
+                     passwordBlock: self.getPassword,
+                     progressBlock: self.shouldStop)
       self.ended()
     }
-  }
-  
-  /// The fetch phase is complete.
-  func fetchCompleted()
-  {
-    XTStatusView.update(
-        status: "Fetch complete", progress: -1, repository: repository)
   }
 }
 

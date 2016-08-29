@@ -12,9 +12,6 @@ class XTPushController: XTPasswordOpController {
 
   override func start()
   {
-    defer {
-      windowController?.operationEnded(self)
-    }
     guard let branchName = repository.currentBranch,
           let branch = XTLocalBranch(repository: repository,
                                      name: branchName)
@@ -30,33 +27,33 @@ class XTPushController: XTPasswordOpController {
         return
     }
     
-    repository.executeOffMainThread {
-      do {
-        try self.repository.push(branch: branch,
-                                 remote: remote,
-                                 passwordBlock: self.getPassword,
-                                 progressBlock: self.shouldStop)
-        XTStatusView.update(status: "Push complete",
-                            progress: -1,
-                            repository: self.repository)
+    let alert = NSAlert()
+    
+    alert.messageText = "Push local branch \(branchName) to "
+                        "\(remoteBranch.remoteName)?"
+    alert.buttons[0].title = "Push"
+    alert.addButtonWithTitle("Cancel")
+    
+    alert.beginSheetModalForWindow(windowController!.window!) {
+      (response) in
+      if (response == NSModalResponseOK) {
+        self.push(branch, remote: remote)
       }
-      catch _ as XTRepository.Error {
-        // The command shouldn't have been enabled if this was going to happen
+      else {
+        self.ended()
       }
-      catch let error as NSError {
-        dispatch_async(dispatch_get_main_queue()) {
-          XTStatusView.update(status: "Push failed",
-            progress: -1,
-            repository: self.repository)
-          
-          if let window = self.windowController?.window {
-            let alert = NSAlert(error: error)
-            
-            // needs to be smarter: look at error type
-            alert.beginSheetModalForWindow(window, completionHandler: nil)
-          }
-        }
-      }
+    }
+  }
+  
+  func push(localBranch: XTLocalBranch, remote: XTRemote)
+  {
+    tryRepoOperation(successStatus: "Push complete",
+                     failureStatus: "Push failed") {
+      try self.repository.push(branch: localBranch,
+                               remote: remote,
+                               passwordBlock: self.getPassword,
+                               progressBlock: self.shouldStop)
+      self.ended()
     }
   }
 
