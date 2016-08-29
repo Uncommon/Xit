@@ -103,6 +103,9 @@ class XTFetchController: XTPasswordOpController {
                        progressBlock: self.shouldStop)
         self.fetchCompleted()
       }
+      catch _ as XTRepository.Error {
+        // The command shouldn't have been enabled if this was going to happen
+      }
       catch let error as NSError {
         dispatch_async(dispatch_get_main_queue()) {
           XTStatusView.update(status: "Fetch failed",

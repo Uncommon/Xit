@@ -7,7 +7,7 @@ class XTPasswordOpController: XTSimpleOperationController {
   func getPassword() -> (String, String)?
   {
     guard let window = self.windowController?.window
-      else { return nil }
+    else { return nil }
     
     let panel = XTPasswordPanelController.controller()
     let semaphore = dispatch_semaphore_create(0)

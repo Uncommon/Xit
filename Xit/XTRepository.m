@@ -13,7 +13,6 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 @interface XTRepository ()
 
 @property(readwrite) XTRepositoryWatcher *watcher;
-@property(readwrite) BOOL isWriting;
 @property(readwrite) BOOL isShutDown;
 @property(readwrite) XTConfig *config;
 

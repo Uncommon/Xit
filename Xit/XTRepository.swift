@@ -27,6 +27,25 @@ extension XTRepository: RepositoryType {
 
 extension XTRepository {
   
+  enum Error: ErrorType {
+    case AlreadyWriting
+  }
+  
+  /// Like executeWritingBlock, but using Swift exceptions instead of
+  /// returning bool.
+  func performWriting(block: (() throws -> Void)) throws
+  {
+    objc_sync_enter(self)
+    defer { objc_sync_exit(self) }
+    
+    if isWriting {
+      throw Error.AlreadyWriting
+    }
+    isWriting = true
+    try block()
+    isWriting = false
+  }
+  
   func rebuildRefsIndex()
   {
     var payload = CallbackPayload(repo: self)
@@ -180,12 +199,15 @@ extension XTRepository {  // MARK: Push/pull
                     passwordBlock: () -> (String, String)?,
                     progressBlock: (git_transfer_progress) -> Bool) throws
   {
-    let options = fetchOptions(downloadTags,
-                               pruneBranches: pruneBranches,
-                               passwordBlock: passwordBlock)
-  
-    try gtRepo.fetchRemote(remote, withOptions: options) { (progress, stop) in
-      stop.memory = ObjCBool(progressBlock(progress.memory))
+    try performWriting() {
+      let options = self.fetchOptions(downloadTags,
+                                      pruneBranches: pruneBranches,
+                                      passwordBlock: passwordBlock)
+    
+      try self.gtRepo.fetchRemote(remote, withOptions: options) {
+        (progress, stop) in
+        stop.memory = ObjCBool(progressBlock(progress.memory))
+      }
     }
   }
   
@@ -196,6 +218,7 @@ extension XTRepository {  // MARK: Push/pull
   /// - parameter pruneBranches: True to delete obsolete branch refs
   /// - parameter passwordBlock: Callback for getting the user and password
   /// - parameter progressBlock: Return true to stop the operation
+  // TODO: Use something other than git_transfer_progress
   public func pull(branch branch: XTBranch,
                    remote: XTRemote,
                    downloadTags: Bool,
@@ -203,14 +226,17 @@ extension XTRepository {  // MARK: Push/pull
                    passwordBlock: () -> (String, String)?,
                    progressBlock: (git_transfer_progress) -> Bool) throws
   {
-    let options = fetchOptions(downloadTags,
-                               pruneBranches: pruneBranches,
-                               passwordBlock: passwordBlock)
+    try performWriting() {
+      let options = self.fetchOptions(downloadTags,
+                                      pruneBranches: pruneBranches,
+                                      passwordBlock: passwordBlock)
 
-    try gtRepo.pullBranch(branch.gtBranch,
-                          fromRemote: remote,
-                          withOptions: options) { (progress, stop) in
-      stop.memory = ObjCBool(progressBlock(progress.memory))
+      try self.gtRepo.pullBranch(branch.gtBranch,
+                                 fromRemote: remote,
+                                 withOptions: options) {
+        (progress, stop) in
+        stop.memory = ObjCBool(progressBlock(progress.memory))
+      }
     }
   }
   
@@ -224,14 +250,16 @@ extension XTRepository {  // MARK: Push/pull
                    passwordBlock: () -> (String, String)?,
                    progressBlock: (UInt32, UInt32, size_t) -> Bool) throws
   {
-    let provider = self.credentialProvider(passwordBlock)
-    let options = [ GTRepositoryRemoteOptionsCredentialProvider: provider ]
-    
-    try gtRepo.pushBranch(branch.gtBranch,
-                          toRemote: remote,
-                          withOptions: options) {
-      (current, total, bytes, stop) in
-      stop.memory = ObjCBool(progressBlock(current, total, bytes))
+    try performWriting() {
+      let provider = self.credentialProvider(passwordBlock)
+      let options = [ GTRepositoryRemoteOptionsCredentialProvider: provider ]
+      
+      try self.gtRepo.pushBranch(branch.gtBranch,
+                                 toRemote: remote,
+                                 withOptions: options) {
+        (current, total, bytes, stop) in
+        stop.memory = ObjCBool(progressBlock(current, total, bytes))
+      }
     }
   }
 }

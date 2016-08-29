@@ -40,6 +40,9 @@ class XTPushController: XTPasswordOpController {
                             progress: -1,
                             repository: self.repository)
       }
+      catch _ as XTRepository.Error {
+        // The command shouldn't have been enabled if this was going to happen
+      }
       catch let error as NSError {
         dispatch_async(dispatch_get_main_queue()) {
           XTStatusView.update(status: "Push failed",

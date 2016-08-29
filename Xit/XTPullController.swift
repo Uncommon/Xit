@@ -30,6 +30,9 @@ class XTPullController: XTFetchController {
                                  passwordBlock: self.getPassword,
                                  progressBlock: self.shouldStop)
       }
+      catch _ as XTRepository.Error {
+        // The command shouldn't have been enabled if this was going to happen
+      }
       catch let error as NSError {
         dispatch_async(dispatch_get_main_queue()) {
           XTStatusView.update(status: "Pull failed",
