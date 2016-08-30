@@ -117,6 +117,9 @@ class XTWindowController: NSWindowController {
       currentOperation = operation
       return operation
     }
+    else {
+      NSLog("Can't start new operation, already have \(currentOperation)")
+    }
     return nil
   }
   

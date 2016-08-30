@@ -14,4 +14,10 @@ public class XTRemote: GTRemote {
     super.init(gitRemote: gtRemote, inRepository: repository.gtRepo)
   }
 
+  // Yes, this override is necessary.
+  override init?(gitRemote remote: COpaquePointer, inRepository repo: GTRepository)
+  {
+    super.init(gitRemote: remote, inRepository: repo)
+  }
+
 }
