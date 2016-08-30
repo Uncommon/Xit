@@ -120,6 +120,8 @@ NSString *const XTStatusOutputKey = @"output";
         progressBar.indeterminate = YES;
     }
   }
+  else
+    progressBar.hidden = YES;
 }
 
 - (IBAction)showOutput:(id)sender
