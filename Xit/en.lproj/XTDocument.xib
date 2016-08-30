@@ -70,7 +70,7 @@
                             </buttonCell>
                         </button>
                         <connections>
-                            <action selector="refresh:" target="-2" id="100153"/>
+                            <action selector="refresh:" target="-2" id="oao-vW-b4e"/>
                         </connections>
                     </toolbarItem>
                     <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="72Q-wc-QQ6"/>

@@ -97,8 +97,8 @@ extension XTRepository {
     
     for i in 0..<stringArray.count {
       guard let refString =
-        String(UTF8String: UnsafePointer<CChar>(stringArray.strings[i]))
-        else { continue }
+          String(UTF8String: UnsafePointer<CChar>(stringArray.strings[i]))
+      else { continue }
       result.append(refString)
     }
     return result

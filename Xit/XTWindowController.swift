@@ -58,7 +58,7 @@ class XTWindowController: NSWindowController {
     activityController.activityEnded()
   }
   
-  @IBAction func reload(sender: AnyObject)
+  @IBAction func refresh(sender: AnyObject)
   {
     historyController.reload()
   }
@@ -78,12 +78,6 @@ class XTWindowController: NSWindowController {
   {
     self.historyController.mainSplitView.vertical = false
     self.historyController.mainSplitView.adjustSubviews()
-  }
-  
-  @IBAction func refresh(_: AnyObject)
-  {
-    NSNotificationCenter.defaultCenter().postNotificationName(
-        XTRepositoryChangedNotification, object: self.xtDocument!.repository)
   }
   
   @IBAction func newTag(_: AnyObject) {}
@@ -173,7 +167,7 @@ class XTWindowController: NSWindowController {
     
     switch menuItem.action {
 
-      case #selector(self.reload(_:)):
+      case #selector(self.refresh(_:)):
         result = !xtDocument!.repository.isWriting
 
       case #selector(self.showHideSidebar(_:)):
