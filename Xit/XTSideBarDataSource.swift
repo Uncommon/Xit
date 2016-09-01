@@ -18,6 +18,12 @@ extension XTSideBarDataSource {
     }
   }
   
+  func stopTimers()
+  {
+    buildStatusTimer?.invalidate()
+    reloadTimer?.invalidate()
+  }
+  
   func buildStatusTimerFired(timer: NSTimer)
   {
     updateTeamCity()
