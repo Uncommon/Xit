@@ -7,7 +7,7 @@ class XTOperationController: NSObject {
   /// if the window is closed before the operation completes.
   weak var windowController: XTWindowController?
   /// Convenient reference to the repository from the window controller.
-  let repository: XTRepository
+  weak var repository: XTRepository?
   /// True if the operation is being canceled.
   var canceled = false
   
@@ -30,12 +30,15 @@ class XTOperationController: NSObject {
                         failureStatus: String,
                         block: (() throws -> Void))
   {
-    repository.executeOffMainThread {
+    repository?.executeOffMainThread {
+      guard let repository = self.repository
+      else { return }
+      
       do {
         try block()
         XTStatusView.update(status: successStatus,
                             progress: -1,
-                            repository: self.repository)
+                            repository: repository)
       }
       catch _ as XTRepository.Error {
         // The command shouldn't have been enabled if this was going to happen
@@ -43,7 +46,7 @@ class XTOperationController: NSObject {
       catch let error as NSError {
         XTStatusView.update(status: failureStatus,
                             progress: -1,
-                            repository: self.repository)
+                            repository: repository)
         dispatch_async(dispatch_get_main_queue()) {
           if let window = self.windowController?.window {
             let alert = NSAlert(error: error)

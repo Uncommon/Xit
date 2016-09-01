@@ -17,7 +17,7 @@ extern NSString *XTHeaderHeightKey;
 }
 
 @property XTWindowController *winController;
-@property XTRepository *repository;
+@property (weak) XTRepository *repository;
 @property NSString *commitSHA;
 
 + (NSDateFormatter*)dateFormatter;

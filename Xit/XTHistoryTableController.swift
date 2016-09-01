@@ -9,7 +9,7 @@ public class XTHistoryTableController: NSViewController {
     static let email = "email"
   }
 
-  var repository: XTRepository!
+  weak var repository: XTRepository!
   {
     didSet
     {
@@ -27,7 +27,7 @@ public class XTHistoryTableController: NSViewController {
           self,
           selector: #selector(XTHistoryTableController.refsChanged(_:)),
           name: XTRepositoryRefsChangedNotification,
-          object: self)
+          object: repository)
     }
   }
   
@@ -84,10 +84,8 @@ public class XTHistoryTableController: NSViewController {
         XTTaskStartedNotification, object: repository)
     repository.executeOffMainThread {
       defer {
-        dispatch_async(dispatch_get_main_queue()) {
-          NSNotificationCenter.defaultCenter().postNotificationName(
-              XTTaskEndedNotification, object: repository)
-        }
+        NSNotificationCenter.defaultCenter().postNotificationName(
+            XTTaskEndedNotification, object: repository)
       }
       
       guard let walker = try? GTEnumerator(repository: repository.gtRepo)

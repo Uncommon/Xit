@@ -21,7 +21,7 @@
   IBOutlet NSMenu *_tagContextMenu;
   IBOutlet NSMenu *_stashContextMenu;
  @private
-  XTRepository *_repo;
+  __weak XTRepository *_repo;
   XTFileViewController *_fileViewController;
   NSUInteger _savedSidebarWidth;
 }

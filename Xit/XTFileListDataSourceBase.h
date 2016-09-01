@@ -12,7 +12,7 @@
 
 @property IBOutlet NSOutlineView *outlineView;
 @property IBOutlet XTFileViewController *controller;
-@property(nonatomic) XTRepository *repository;
+@property(weak, nonatomic) XTRepository *repository;
 @property(nonatomic) XTWindowController *winController;
 @property(readonly, nonatomic) BOOL isHierarchical;
 

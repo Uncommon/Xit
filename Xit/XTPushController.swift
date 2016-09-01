@@ -4,6 +4,9 @@ class XTPushController: XTPasswordOpController {
   
   func shouldStop(current: UInt32, total: UInt32, bytes: size_t) -> Bool
   {
+    guard let repository = repository
+    else { return true }
+  
     XTStatusView.update(status: "Pushing...",
                         progress: Float(total)/Float(current),
                         repository: repository)
@@ -12,7 +15,8 @@ class XTPushController: XTPasswordOpController {
 
   override func start()
   {
-    guard let branchName = repository.currentBranch,
+    guard let repository = repository,
+          let branchName = repository.currentBranch,
           let branch = XTLocalBranch(repository: repository,
                                      name: branchName)
       else {
@@ -49,10 +53,10 @@ class XTPushController: XTPasswordOpController {
   {
     tryRepoOperation(successStatus: "Push complete",
                      failureStatus: "Push failed") {
-      try self.repository.push(branch: localBranch,
-                               remote: remote,
-                               passwordBlock: self.getPassword,
-                               progressBlock: self.shouldStop)
+      try self.repository?.push(branch: localBranch,
+                                remote: remote,
+                                passwordBlock: self.getPassword,
+                                progressBlock: self.shouldStop)
       self.ended()
     }
   }

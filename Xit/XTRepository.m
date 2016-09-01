@@ -13,6 +13,7 @@ NSString * const XTRepositoryChangedNotification = @"RepoChanged";
 NSString * const XTRepositoryRefsChangedNotification = @"RefsChanged";
 NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
 
+
 @interface XTRepository ()
 
 @property(readwrite) XTRepositoryWatcher *watcher;
@@ -21,8 +22,8 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
 
 @end
 
-@implementation XTRepository
 
+@implementation XTRepository
 
 + (NSString *)gitPath
 {

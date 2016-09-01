@@ -35,14 +35,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak) IBOutlet XTRefFormatter *refFormatter;
 @property (weak) IBOutlet NSOutlineView *outline;
 
-@property (nonatomic) XTRepository *repo;
+@property (weak, nonatomic) XTRepository *repo;
 @property (readonly) NSArray<XTSideBarGroupItem*> *roots;
 @property (readonly) XTSideBarItem *stagingItem;
 /// Cached build statuses, keyed on build type and branch name.
 @property NSMutableDictionary<NSString*,
                               NSDictionary<NSString*, NSNumber*>*> *buildStatuses;
 
-@property NSTimer *buildStatusTimer;
+@property (nullable) NSTimer *buildStatusTimer;
 @property (nullable) NSTimer *reloadTimer;
 
 @end

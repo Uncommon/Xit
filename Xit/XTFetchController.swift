@@ -10,6 +10,9 @@ class XTFetchController: XTPasswordOpController {
   /// - if there is one remote, use that one
   func defaultRemoteName() -> String?
   {
+    guard let repository = repository
+    else { return nil }
+    
     if let branchName = repository.currentBranch {
       let currentBranch = XTLocalBranch(repository: repository,
                                         name: branchName)
@@ -37,6 +40,9 @@ class XTFetchController: XTPasswordOpController {
   
   override func start()
   {
+    guard let repository = repository
+    else { return }
+    
     let config = XTConfig(repository: repository)
     let panel = XTFetchPanelController.controller()
     
@@ -61,7 +67,10 @@ class XTFetchController: XTPasswordOpController {
   /// Fetch progress callback
   func shouldStop(progress progress: git_transfer_progress) -> Bool
   {
-    if self.canceled {
+    guard let repository = repository
+    else { return true }
+    
+    if canceled {
       return true
     }
     
@@ -81,7 +90,8 @@ class XTFetchController: XTPasswordOpController {
                     downloadTags: Bool,
                     pruneBranches: Bool)
   {
-    guard let remote = try? repository.remote(remoteName)
+    guard let repository = repository,
+          let remote = try? repository.remote(remoteName)
     else { return }
     
     XTStatusView.update(

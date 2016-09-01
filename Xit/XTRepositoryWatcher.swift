@@ -7,7 +7,7 @@ let XTChangedRefsKey = "changedRefs"
 // Remove inheritance when XTRepository is converted to Swift
 @objc class XTRepositoryWatcher: NSObject
 {
-  let repository: XTRepository
+  unowned let repository: XTRepository
 
   // stream must be var because we have to reference self to initialize it.
   var stream: FSEventStreamRef!

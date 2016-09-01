@@ -13,7 +13,8 @@ class XTRemoteOptionsController: XTOperationController
   
   override func start()
   {
-    guard let remote = try? GTRemote(name: remoteName,
+    guard let repository = repository,
+          let remote = try? GTRemote(name: remoteName,
                                      inRepository: repository.gtRepo)
     else { return }
     

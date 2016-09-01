@@ -3,7 +3,7 @@ import Siesta
 
 class XTRemoteSheetController: XTSheetController {
   
-  var repository: XTRepository? = nil
+  weak var repository: XTRepository? = nil
   
   @IBOutlet weak var nameField: NSTextField!
   @IBOutlet weak var fetchField: NSTextField!
