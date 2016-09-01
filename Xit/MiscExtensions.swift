@@ -11,6 +11,16 @@ extension String {
     
     return self.substringFromIndex(prefix.characters.endIndex)
   }
+  
+  func stringByAppendingPathComponent(component: String) -> String
+  {
+    return (self as NSString).stringByAppendingPathComponent(component)
+  }
+  
+  var stringByDeletingLastPathComponent: String
+  {
+    return (self as NSString).stringByDeletingLastPathComponent
+  }
 }
 
 extension NSXMLElement {
