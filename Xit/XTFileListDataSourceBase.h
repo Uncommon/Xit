@@ -10,10 +10,10 @@
  */
 @interface XTFileListDataSourceBase : NSObject<NSOutlineViewDataSource>
 
-@property IBOutlet NSOutlineView *outlineView;
-@property IBOutlet XTFileViewController *controller;
+@property(weak) IBOutlet NSOutlineView *outlineView;
+@property(weak) IBOutlet XTFileViewController *controller;
 @property(weak, nonatomic) XTRepository *repository;
-@property(nonatomic) XTWindowController *winController;
+@property(weak, nonatomic) XTWindowController *winController;
 @property(readonly, nonatomic) BOOL isHierarchical;
 
 

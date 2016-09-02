@@ -47,6 +47,8 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
+  [self.view.window.windowController removeObserver:self
+                                         forKeyPath:@"selectedModel"];
 }
 
 - (void)setRepo:(XTRepository *)newRepo

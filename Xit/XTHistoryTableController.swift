@@ -36,6 +36,8 @@ public class XTHistoryTableController: NSViewController {
   deinit
   {
     NSNotificationCenter.defaultCenter().removeObserver(self)
+    view.window?.windowController?.removeObserver(self,
+                                                  forKeyPath: "selectedModel")
   }
   
   override public func viewDidAppear()
