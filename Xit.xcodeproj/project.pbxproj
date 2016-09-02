@@ -116,6 +116,7 @@
 		C92E30EF1D4FF358001985F7 /* XTCommitHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92E30EE1D4FF358001985F7 /* XTCommitHistory.swift */; };
 		C92E30FB1D4FF4F0001985F7 /* XTCommit.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92E30FA1D4FF4F0001985F7 /* XTCommit.swift */; };
 		C9328B061D75E3F600EFF7F7 /* XTWritingToolbarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328B051D75E3F600EFF7F7 /* XTWritingToolbarItem.swift */; };
+		C9328B121D77303200EFF7F7 /* XTFileMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328B111D77303200EFF7F7 /* XTFileMonitor.swift */; };
 		C9328B141D776BC700EFF7F7 /* XTRepositoryWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328B131D776BC700EFF7F7 /* XTRepositoryWatcher.swift */; };
 		C936AD0A1D4C0CD400C5ADC3 /* XTPushController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C936AD091D4C0CD400C5ADC3 /* XTPushController.swift */; };
 		C936AD0C1D4C0FA900C5ADC3 /* XTPasswordOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C936AD0B1D4C0FA900C5ADC3 /* XTPasswordOpController.swift */; };
@@ -437,6 +438,7 @@
 		C92E30EE1D4FF358001985F7 /* XTCommitHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTCommitHistory.swift; sourceTree = "<group>"; };
 		C92E30FA1D4FF4F0001985F7 /* XTCommit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTCommit.swift; sourceTree = "<group>"; };
 		C9328B051D75E3F600EFF7F7 /* XTWritingToolbarItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTWritingToolbarItem.swift; sourceTree = "<group>"; };
+		C9328B111D77303200EFF7F7 /* XTFileMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileMonitor.swift; sourceTree = "<group>"; };
 		C9328B131D776BC700EFF7F7 /* XTRepositoryWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRepositoryWatcher.swift; sourceTree = "<group>"; };
 		C936AD091D4C0CD400C5ADC3 /* XTPushController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPushController.swift; sourceTree = "<group>"; };
 		C936AD0B1D4C0FA900C5ADC3 /* XTPasswordOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPasswordOpController.swift; sourceTree = "<group>"; };
@@ -917,6 +919,7 @@
 				C954ABFC1D34455000302160 /* XTBranch.swift */,
 				C92E30FA1D4FF4F0001985F7 /* XTCommit.swift */,
 				C926804D1D074EC500E422FA /* XTFileChangesModel.swift */,
+				C9328B111D77303200EFF7F7 /* XTFileMonitor.swift */,
 				C929D03A1D400B3B00D7DC52 /* XTRemote.swift */,
 				89C927931D43B23B0074F71A /* XTRepository.swift */,
 				C9328B131D776BC700EFF7F7 /* XTRepositoryWatcher.swift */,
@@ -1275,6 +1278,7 @@
 				3199BAC014207CFB008AAA4F /* XTFileTreeDataSource.m in Sources */,
 				895DEEF6142CECB7001763FC /* XTSideBarTableCellView.m in Sources */,
 				C9BAE61E1D303A8100A87F13 /* XTRemoteOptionsController.swift in Sources */,
+				C9328B121D77303200EFF7F7 /* XTFileMonitor.swift in Sources */,
 				89A6EA2814478DA40089B212 /* XTAppDelegate.m in Sources */,
 				89991CDD144E3FF400097A99 /* XTStatusView.m in Sources */,
 				C929D03B1D400B3B00D7DC52 /* XTRemote.swift in Sources */,

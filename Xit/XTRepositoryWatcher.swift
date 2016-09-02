@@ -11,6 +11,7 @@ let XTChangedRefsKey = "changedRefs"
 
   // stream must be var because we have to reference self to initialize it.
   var stream: FSEventStreamRef!
+  var packedRefsWatcher: XTFileMonitor?
   var lastIndexChange = NSDate()
   {
     didSet
@@ -28,6 +29,8 @@ let XTChangedRefsKey = "changedRefs"
     
     self.repository = repository
     super.init()
+    
+    makePackedRefsWatcher()
 
     let latency: CFTimeInterval = 1.0
     let unsafeSelf = UnsafeMutablePointer<Void>(unsafeAddressOf(self))
@@ -65,6 +68,16 @@ let XTChangedRefsKey = "changedRefs"
     FSEventStreamStop(stream)
     FSEventStreamInvalidate(stream)
     FSEventStreamRelease(stream)
+  }
+  
+  func makePackedRefsWatcher()
+  {
+    guard let path = repository.gitDirectoryURL.path
+    else { return }
+    
+    self.packedRefsWatcher =
+        XTFileMonitor(path: path.stringByAppendingPathComponent("packed-refs"))
+    self.packedRefsWatcher?.notifyBlock = { (_, _) in self.checkRefs() }
   }
   
   func indexRefs(refs: [String]) -> [String: GTOID]
@@ -111,11 +124,21 @@ let XTChangedRefsKey = "changedRefs"
     return false
   }
   
-  func checkRefs(paths: [String])
+  func checkRefs(changedPaths: [String])
   {
-    guard self.paths(paths, includeSubpaths: ["refs/heads/", "refs/remotes/"])
-    else { return }
+    if packedRefsWatcher == nil,
+       let path = repository.gitDirectoryURL.path where
+       changedPaths.indexOf(path) != nil {
+      makePackedRefsWatcher()
+    }
     
+    if paths(changedPaths, includeSubpaths: ["refs/heads", "refs/remotes"]) {
+      checkRefs()
+    }
+  }
+  
+  func checkRefs()
+  {
     let newRefCache = indexRefs(repository.allRefs())
     let newKeys = Set(newRefCache.keys)
     let oldKeys = Set(refsCache.keys)
@@ -154,8 +177,11 @@ let XTChangedRefsKey = "changedRefs"
   
   func observeEvents(paths: [String])
   {
+    // FSEvents includes trailing slashes, but some other APIs don't.
+    let standardPaths = paths.map({ ($0 as NSString).stringByStandardizingPath })
+  
     checkIndex()
-    checkRefs(paths)
+    checkRefs(standardPaths)
     
     NSNotificationCenter.defaultCenter().postNotificationName(
         XTRepositoryChangedNotification, object: repository)
