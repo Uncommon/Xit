@@ -6,6 +6,8 @@
 NSString * const XTTaskStartedNotification = @"XTTaskStarted";
 NSString * const XTTaskEndedNotification = @"XTTaskEnded";
 
+NSString * const XTSelectedModelChangedNotification = @"XTSelectedModelChanged";
+
 @interface XTDocument ()
 
 @property (readwrite) XTRepository *repository;

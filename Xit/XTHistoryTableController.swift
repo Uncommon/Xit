@@ -36,16 +36,22 @@ public class XTHistoryTableController: NSViewController {
   deinit
   {
     NSNotificationCenter.defaultCenter().removeObserver(self)
-    view.window?.windowController?.removeObserver(self,
-                                                  forKeyPath: "selectedModel")
   }
   
   override public func viewDidAppear()
   {
     let controller = view.window?.windowController as! XTWindowController
     
-    controller.addObserver(self, forKeyPath: "selectedModel",
-                           options: .New, context: nil)
+    NSNotificationCenter.defaultCenter().addObserverForName(
+        XTSelectedModelChangedNotification,
+        object: controller,
+        queue: nil) { [weak self]
+      (notification) in
+      if let selectedModel = notification.userInfo?[NSKeyValueChangeNewKey]
+                             as? XTFileChangesModel {
+        self?.selectRow(sha: selectedModel.shaToSelect)
+      }
+    }
     NSNotificationCenter.defaultCenter().addObserver(
         self,
         selector: #selector(XTHistoryTableController.dateViewResized(_:)),
@@ -138,16 +144,6 @@ public class XTHistoryTableController: NSViewController {
                                byExtendingSelection: false)
     if view.window?.firstResponder != tableView {
       tableView.scrollRowToVisible(row)
-    }
-  }
-  
-  override public func observeValueForKeyPath(
-      keyPath: String?, ofObject object: AnyObject?,
-      change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
-  {
-    if keyPath == "selectedModel",
-       let newModel = change?[NSKeyValueChangeNewKey] as? XTFileChangesModel {
-      selectRow(sha: newModel.shaToSelect)
     }
   }
   

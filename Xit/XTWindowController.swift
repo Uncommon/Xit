@@ -9,6 +9,20 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
   weak var xtDocument: XTDocument?
   var selectedCommitSHA: String?
   dynamic var selectedModel: XTFileChangesModel?
+  {
+    didSet
+    {
+      var userInfo = [NSObject: AnyObject]()
+      
+      userInfo[NSKeyValueChangeNewKey] = selectedModel
+      userInfo[NSKeyValueChangeOldKey] = oldValue
+      
+      NSNotificationCenter.defaultCenter().postNotificationName(
+          XTSelectedModelChangedNotification,
+          object: self,
+          userInfo: userInfo)
+    }
+  }
   var inStagingView: Bool { return self.selectedCommitSHA == XTStagingSHA }
   
   var currentOperation: XTOperationController?

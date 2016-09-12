@@ -47,8 +47,6 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
-  [self.view.window.windowController removeObserver:self
-                                         forKeyPath:@"selectedModel"];
 }
 
 - (void)setRepo:(XTRepository *)newRepo
@@ -118,11 +116,17 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   _fileChangeDS.winController = controller;
   _fileListDS.winController = controller;
   _headerController.winController = controller;
-  [controller addObserver:self
-               forKeyPath:@"selectedModel"
-                  options:NSKeyValueObservingOptionNew |
-                          NSKeyValueObservingOptionOld
-                  context:NULL];
+  
+  __weak XTFileViewController *weakSelf = self;
+  
+  [[NSNotificationCenter defaultCenter]
+      addObserverForName:XTSelectedModelChangedNotification
+                  object:controller
+                   queue:nil
+              usingBlock:^(NSNotification * _Nonnull note) {
+    [weakSelf selectedModelChanged:note.userInfo[NSKeyValueChangeNewKey]
+                          oldModel:note.userInfo[NSKeyValueChangeOldKey]];
+  }];
 }
 
 - (void)setStaging:(BOOL)staging
@@ -136,37 +140,23 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   self.actionButton.hidden = !committing;
 }
 
-- (void)
-observeValueForKeyPath:(NSString*)keyPath
-              ofObject:(id)object
-                change:(NSDictionary<NSString *,id> *)change
-               context:(void*)context
+- (void)selectedModelChanged:(id<XTFileChangesModel>)newModel
+                    oldModel:(id<XTFileChangesModel>)oldModel
 {
-  if ([keyPath isEqualToString:@"selectedModel"]) {
-    id<XTFileChangesModel>
-        newModel = change[NSKeyValueChangeNewKey],
-        oldModel = change[NSKeyValueChangeOldKey];
+  if (oldModel.hasUnstaged != newModel.hasUnstaged)
+    [self setStaging:newModel.hasUnstaged];
+  if (oldModel.canCommit != newModel.canCommit) {
+    [self setCommitting:newModel.canCommit];
     
-    if (newModel == (id<XTFileChangesModel>)[NSNull null])
-      newModel = nil;
-    if (oldModel == (id<XTFileChangesModel>)[NSNull null])
-      oldModel = nil;
+    // Status icons are different
+    const NSInteger
+        unstagedIndex = [_fileListOutline columnWithIdentifier:@"unstaged"],
+        stagedIndex = [_fileListOutline columnWithIdentifier:@"change"];
+    const NSRect displayRect = NSUnionRect(
+        [_fileListOutline rectOfColumn:unstagedIndex],
+        [_fileListOutline rectOfColumn:stagedIndex]);
     
-    if (oldModel.hasUnstaged != newModel.hasUnstaged)
-      [self setStaging:newModel.hasUnstaged];
-    if (oldModel.canCommit != newModel.canCommit) {
-      [self setCommitting:newModel.canCommit];
-      
-      // Status icons are different
-      const NSInteger
-          unstagedIndex = [_fileListOutline columnWithIdentifier:@"unstaged"],
-          stagedIndex = [_fileListOutline columnWithIdentifier:@"change"];
-      const NSRect displayRect = NSUnionRect(
-          [_fileListOutline rectOfColumn:unstagedIndex],
-          [_fileListOutline rectOfColumn:stagedIndex]);
-      
-      [_fileListOutline setNeedsDisplayInRect:displayRect];
-    }
+    [_fileListOutline setNeedsDisplayInRect:displayRect];
   }
 }
 
