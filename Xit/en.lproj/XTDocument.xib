@@ -16,11 +16,11 @@
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="5" userLabel="Window">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="133" y="235" width="775" height="660"/>
+            <rect key="contentRect" x="133" y="235" width="988" height="660"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="94" height="86"/>
             <view key="contentView" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="775" height="660"/>
+                <rect key="frame" x="0.0" y="0.0" width="988" height="660"/>
                 <autoresizingMask key="autoresizingMask"/>
             </view>
             <toolbar key="toolbar" implicitIdentifier="40D3E1FE-6996-449E-9FB3-B8BE88A5CCCF" allowsUserCustomization="NO" displayMode="iconAndLabel" sizeMode="regular" id="100060" customClass="FHTToolbar">
@@ -90,6 +90,7 @@
             <connections>
                 <outlet property="delegate" destination="-2" id="17"/>
             </connections>
+            <point key="canvasLocation" x="506" y="445"/>
         </window>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <viewController nibName="XTHistoryViewController" id="100102" userLabel="History View Controller" customClass="XTHistoryViewController"/>

@@ -26,22 +26,6 @@
   [self reload];
 }
 
-- (XTFileViewController*)controller
-{
-  return _controller;
-}
-
-- (void)setController:(XTFileViewController*)controller
-{
-  @synchronized (self) {
-    _controller = controller;
-    [controller addObserver:self
-                 forKeyPath:@"inStagingView"
-                    options:0
-                    context:NULL];
-  }
-}
-
 - (void)setWinController:(XTWindowController*)winController
 {
   _winController = winController;

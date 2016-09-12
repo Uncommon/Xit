@@ -1,7 +1,7 @@
 import Cocoa
 
 /// XTDocument's main window controller.
-class XTWindowController: NSWindowController {
+class XTWindowController: NSWindowController, NSWindowDelegate {
   
   @IBOutlet var historyController: XTHistoryViewController!
   @IBOutlet var activity: NSProgressIndicator!
@@ -22,11 +22,14 @@ class XTWindowController: NSWindowController {
   override func windowDidLoad()
   {
     super.windowDidLoad()
-    window!.contentViewController = self.historyController
-    window!.makeFirstResponder(self.historyController.historyTable)
+    window!.delegate = self
+    // We could set the window's contentViewController, but then it would
+    // retain the view controller, which is undesirable.
+    window!.contentView = historyController.view
+    window!.makeFirstResponder(historyController.historyTable)
     window!.addTitlebarAccessoryViewController(activityController)
     
-    let repo = self.xtDocument!.repository
+    let repo = xtDocument!.repository
     
     NSNotificationCenter.defaultCenter().addObserver(
         self,
@@ -38,8 +41,8 @@ class XTWindowController: NSWindowController {
         selector: #selector(XTWindowController.taskEnded(_:)),
         name: XTTaskEndedNotification,
         object: repo)
-    self.historyController.windowDidLoad()
-    self.historyController.setRepo(repo)
+    historyController.windowDidLoad()
+    historyController.setRepo(repo)
   }
   
   deinit
