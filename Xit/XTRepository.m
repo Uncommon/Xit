@@ -64,6 +64,11 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
   return self;
 }
 
+- (void)dealloc
+{
+  [self.watcher stop];
+}
+
 - (NSURL*)gitDirectoryURL
 {
   return _gtRepo.gitDirectoryURL;

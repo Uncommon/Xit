@@ -63,11 +63,13 @@ let XTChangedRefsKey = "changedRefs"
     FSEventStreamStart(self.stream)
   }
   
-  deinit
+  func stop()
   {
     FSEventStreamStop(stream)
     FSEventStreamInvalidate(stream)
     FSEventStreamRelease(stream)
+    stream = nil
+    packedRefsWatcher = nil
   }
   
   func makePackedRefsWatcher()
