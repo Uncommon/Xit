@@ -10,7 +10,6 @@ class XTFileMonitor {
   let path: String
   let fd: CInt
   let source: dispatch_source_t
-  let queue: dispatch_queue_t
   
   var notifyBlock: ((path: String, flags: UInt) -> Void)?
   
@@ -27,12 +26,12 @@ class XTFileMonitor {
           let source = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE,
                                               UInt(fd), kSourceMask, queue)
     else { return nil }
-    self.queue = queue
     self.source = source
     
     dispatch_source_set_event_handler(source) {
-      self.notifyBlock?(path: self.path,
-                        flags: dispatch_source_get_data(source))
+      [weak self] in
+      self?.notifyBlock?(path: self!.path,
+                         flags: dispatch_source_get_data(source))
     }
     
     dispatch_resume(source);
