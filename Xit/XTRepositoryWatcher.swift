@@ -79,7 +79,10 @@ let XTChangedRefsKey = "changedRefs"
     
     self.packedRefsWatcher =
         XTFileMonitor(path: path.stringByAppendingPathComponent("packed-refs"))
-    self.packedRefsWatcher?.notifyBlock = { (_, _) in self.checkRefs() }
+    self.packedRefsWatcher?.notifyBlock = {
+      [weak self] (_, _) in
+      self?.checkRefs()
+    }
   }
   
   func indexRefs(refs: [String]) -> [String: GTOID]

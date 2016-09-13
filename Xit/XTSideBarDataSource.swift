@@ -268,7 +268,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate {
     
     if item is XTSideBarGroupItem {
       guard let headerView = outlineView.makeViewWithIdentifier(
-          "HeaderCell", owner: self) as? NSTableCellView
+          "HeaderCell", owner: nil) as? NSTableCellView
       else { return nil }
       
       headerView.textField?.stringValue = sideBarItem.title
@@ -276,7 +276,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate {
     }
     else {
       guard let dataView = outlineView.makeViewWithIdentifier(
-          "DataCell", owner: self) as? XTSideBarTableCellView
+          "DataCell", owner: nil) as? XTSideBarTableCellView
       else { return nil }
       
       let textField = dataView.textField!
