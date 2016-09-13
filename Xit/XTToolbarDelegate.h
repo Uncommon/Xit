@@ -6,4 +6,6 @@
 
 @property (weak) IBOutlet XTWindowController *windowController;
 
+- (void)finalizeItems;
+
 @end

@@ -4,6 +4,15 @@
 
 @implementation XTToolbarDelegate
 
+- (void)finalizeItems
+{
+  for (NSToolbarItem *item in self.windowController.window.toolbar.items) {
+    if ([item isKindOfClass:[XTWritingToolbarItem class]])
+      [self.windowController.xtDocument.repository removeObserver:item
+                                                       forKeyPath:@"isWriting"];
+  }
+}
+
 - (void)toolbarWillAddItem:(NSNotification*)notification
 {
   [super toolbarWillAddItem:notification];

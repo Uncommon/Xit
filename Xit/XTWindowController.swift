@@ -59,6 +59,14 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
     historyController.setRepo(repo)
   }
   
+  func windowWillClose(notification: NSNotification)
+  {
+    guard let toolbarDelegate = window?.toolbar?.delegate as? XTToolbarDelegate
+    else { return }
+    
+    toolbarDelegate.finalizeItems()
+  }
+  
   deinit
   {
     NSNotificationCenter.defaultCenter().removeObserver(self)
