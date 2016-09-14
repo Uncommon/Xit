@@ -21,7 +21,7 @@ extern NSString *const XTStatusOutputKey;
   IBOutlet NSWindow *detachedWindow;
   IBOutlet XTOutputViewController *outputController;
   IBOutlet XTOutputViewController *detachedController;
-  XTRepository *repo;
+  __weak XTRepository *repo;
 }
 
 /**

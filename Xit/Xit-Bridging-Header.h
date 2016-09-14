@@ -15,3 +15,4 @@
 #import "XTSidebarDataSource.h"
 #import "XTSideBarTableCellView.h"
 #import "XTStatusView.h"
+#import "XTToolbarDelegate.h"

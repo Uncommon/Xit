@@ -11,6 +11,16 @@ extension String {
     
     return self.substringFromIndex(prefix.characters.endIndex)
   }
+  
+  func stringByAppendingPathComponent(component: String) -> String
+  {
+    return (self as NSString).stringByAppendingPathComponent(component)
+  }
+  
+  var stringByDeletingLastPathComponent: String
+  {
+    return (self as NSString).stringByDeletingLastPathComponent
+  }
 }
 
 extension NSXMLElement {
@@ -40,6 +50,16 @@ extension NSXMLElement {
     return children?.flatMap({
       ($0 as? NSXMLElement)?.attributeForName(name)?.stringValue
     }) ?? []
+  }
+}
+
+extension NSButton {
+  
+  /// The intValue property interpreted as a Bool.
+  var boolValue: Bool
+  {
+    get { return intValue != 0 }
+    set { intValue = newValue ? 1 : 0 }
   }
 }
 

@@ -1,5 +1,4 @@
 #import "XTRepository.h"
-#import "XTRepositoryWatcher.h"
 #import "XTConstants.h"
 #import "Xit-Swift.h"
 #import <ObjectiveGit/ObjectiveGit.h>
@@ -10,17 +9,21 @@ NSString *XTPathsKey = @"paths";
 
 NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 
+NSString * const XTRepositoryChangedNotification = @"RepoChanged";
+NSString * const XTRepositoryRefsChangedNotification = @"RefsChanged";
+NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
+
+
 @interface XTRepository ()
 
 @property(readwrite) XTRepositoryWatcher *watcher;
-@property(readwrite) BOOL isWriting;
 @property(readwrite) BOOL isShutDown;
 @property(readwrite) XTConfig *config;
 
 @end
 
-@implementation XTRepository
 
+@implementation XTRepository
 
 + (NSString *)gitPath
 {
@@ -53,12 +56,17 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
     _diffCache = [[NSCache alloc] init];
     
     if (_gtRepo != nil) {
-      self.watcher = [XTRepositoryWatcher watcherWithRepo:self];
+      self.watcher = [[XTRepositoryWatcher alloc] initWithRepository:self];
       self.config = [[XTConfig alloc] initWithRepository:self];
     }
   }
 
   return self;
+}
+
+- (void)dealloc
+{
+  [self.watcher stop];
 }
 
 - (NSURL*)gitDirectoryURL

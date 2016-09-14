@@ -1,8 +1,8 @@
 import Cocoa
 
-class XTBranch: NSObject {
+public class XTBranch: NSObject {
 
-  private let gtBranch: GTBranch
+  let gtBranch: GTBranch
   
   init(gtBranch: GTBranch)
   {
@@ -13,7 +13,7 @@ class XTBranch: NSObject {
   var shortName: String? { return name }
 }
 
-class XTLocalBranch: XTBranch {
+public class XTLocalBranch: XTBranch {
   
   init?(repository: XTRepository, name: String)
   {
@@ -39,7 +39,7 @@ class XTLocalBranch: XTBranch {
   }
 }
 
-class XTRemoteBranch: XTBranch {
+public class XTRemoteBranch: XTBranch {
   
   init?(repository: XTRepository, name: String)
   {

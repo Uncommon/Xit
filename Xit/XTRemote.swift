@@ -1,6 +1,6 @@
 import Cocoa
 
-class XTRemote: GTRemote {
+public class XTRemote: GTRemote {
 
   init?(name: String, repository: XTRepository)
   {
@@ -12,6 +12,12 @@ class XTRemote: GTRemote {
     else { return nil }
 
     super.init(gitRemote: gtRemote, inRepository: repository.gtRepo)
+  }
+
+  // Yes, this override is necessary.
+  override init?(gitRemote remote: COpaquePointer, inRepository repo: GTRepository)
+  {
+    super.init(gitRemote: remote, inRepository: repo)
   }
 
 }

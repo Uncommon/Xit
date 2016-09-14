@@ -44,7 +44,7 @@ extern const CGFloat kChangeImagePadding;
   IBOutlet XTFileTreeDataSource *_fileListDS;
   IBOutlet XTTextPreviewController *_textController;
 
-  XTRepository *_repo;
+  __weak XTRepository *_repo;
 }
 
 @property (weak) IBOutlet NSTabView *headerTabView;

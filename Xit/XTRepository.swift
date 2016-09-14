@@ -27,6 +27,25 @@ extension XTRepository: RepositoryType {
 
 extension XTRepository {
   
+  enum Error: ErrorType {
+    case AlreadyWriting
+  }
+  
+  /// Like executeWritingBlock, but using Swift exceptions instead of
+  /// returning bool.
+  func performWriting(block: (() throws -> Void)) throws
+  {
+    objc_sync_enter(self)
+    defer { objc_sync_exit(self) }
+    
+    if isWriting {
+      throw Error.AlreadyWriting
+    }
+    isWriting = true
+    try block()
+    isWriting = false
+  }
+  
   func rebuildRefsIndex()
   {
     var payload = CallbackPayload(repo: self)
@@ -35,17 +54,17 @@ extension XTRepository {
       
       var rawName = git_reference_name(reference)
       guard rawName != nil,
-            let name = String.fromCString(rawName)
-      else { return 0 }
+        let name = String.fromCString(rawName)
+        else { return 0 }
       
       var resolved: COpaquePointer = nil
       guard git_reference_resolve(&resolved, reference) == 0
-      else { return 0 }
+        else { return 0 }
       defer { git_reference_free(resolved) }
       
       let target = git_reference_target(resolved)
       guard target != nil
-      else { return 0 }
+        else { return 0 }
       
       let sha = GTOID(gitOid: target).SHA
       var refs = repo.refsIndex[sha] ?? [String]()
@@ -71,7 +90,7 @@ extension XTRepository {
   {
     var stringArray = git_strarray()
     guard git_reference_list(&stringArray, gtRepo.git_repository()) == 0
-    else { return [] }
+      else { return [] }
     defer { git_strarray_free(&stringArray) }
     
     var result = [String]()
@@ -84,7 +103,7 @@ extension XTRepository {
     }
     return result
   }
-
+  
   func stashes() -> [XTStash]
   {
     var stashes = [XTStash]()
@@ -117,4 +136,179 @@ extension XTRepository {
     
     return tags.map({ XTTag(repository: self, tag: $0) })
   }
+}
+
+extension XTRepository {  // MARK: Push/pull
+  
+  func credentialProvider(passwordBlock: () -> (String, String)?)
+      -> GTCredentialProvider
+  {
+    return GTCredentialProvider() {
+      (type, url, user) -> GTCredential in
+      if checkCredentialType(type, flag: .SSHKey) {
+        return sshCredential(user) ?? GTCredential()
+      }
+      
+      guard checkCredentialType(type, flag: .UserPassPlaintext)
+      else { return GTCredential() }
+      
+      if let password = keychainPassword(url, user: user) {
+        do {
+          return try GTCredential(userName: user, password: password)
+        }
+        catch let error as NSError {
+          NSLog(error.description)
+        }
+      }
+      
+      if let (userName, password) = passwordBlock(),
+         let result = try? GTCredential(userName: userName,
+                                        password: password) {
+        return result
+      }
+      return GTCredential()
+    }
+  }
+  
+  public func fetchOptions(downloadTags: Bool,
+                           pruneBranches: Bool,
+                           passwordBlock: () -> (String, String)?)
+      -> [String: AnyObject]
+  {
+    let tagOption = downloadTags ? GTRemoteDownloadTagsAuto
+      : GTRemoteDownloadTagsNone
+    let pruneOption: GTFetchPruneOption = pruneBranches ? .Yes : .No
+    let pruneValue = NSNumber(long: pruneOption.rawValue)
+    let tagValue = NSNumber(unsignedInt: tagOption.rawValue)
+    let provider = self.credentialProvider(passwordBlock)
+    return [
+        GTRepositoryRemoteOptionsDownloadTags: tagValue,
+        GTRepositoryRemoteOptionsFetchPrune: pruneValue,
+        GTRepositoryRemoteOptionsCredentialProvider: provider]
+  }
+  
+  /// Initiates a fetch operation.
+  /// - parameter remote: The remote to pull from.
+  /// - parameter downloadTags: True to also download tags
+  /// - parameter pruneBranches: True to delete obsolete branch refs
+  /// - parameter passwordBlock: Callback for getting the user and password
+  /// - parameter progressBlock: Return true to stop the operation
+  public func fetch(remote remote: XTRemote,
+                    downloadTags: Bool,
+                    pruneBranches: Bool,
+                    passwordBlock: () -> (String, String)?,
+                    progressBlock: (git_transfer_progress) -> Bool) throws
+  {
+    try performWriting() {
+      let options = self.fetchOptions(downloadTags,
+                                      pruneBranches: pruneBranches,
+                                      passwordBlock: passwordBlock)
+    
+      try self.gtRepo.fetchRemote(remote, withOptions: options) {
+        (progress, stop) in
+        stop.memory = ObjCBool(progressBlock(progress.memory))
+      }
+    }
+  }
+  
+  /// Initiates pulling the given branch.
+  /// - parameter branch: Either the local branch or the remote tracking branch.
+  /// - parameter remote: The remote to pull from.
+  /// - parameter downloadTags: True to also download tags
+  /// - parameter pruneBranches: True to delete obsolete branch refs
+  /// - parameter passwordBlock: Callback for getting the user and password
+  /// - parameter progressBlock: Return true to stop the operation
+  // TODO: Use something other than git_transfer_progress
+  public func pull(branch branch: XTBranch,
+                   remote: XTRemote,
+                   downloadTags: Bool,
+                   pruneBranches: Bool,
+                   passwordBlock: () -> (String, String)?,
+                   progressBlock: (git_transfer_progress) -> Bool) throws
+  {
+    try performWriting() {
+      let options = self.fetchOptions(downloadTags,
+                                      pruneBranches: pruneBranches,
+                                      passwordBlock: passwordBlock)
+
+      try self.gtRepo.pullBranch(branch.gtBranch,
+                                 fromRemote: remote,
+                                 withOptions: options) {
+        (progress, stop) in
+        stop.memory = ObjCBool(progressBlock(progress.memory))
+      }
+    }
+  }
+  
+  /// Initiates pushing the given branch.
+  /// - parameter branch: Either the local branch or the remote tracking branch.
+  /// - parameter remote: The remote to pull from.
+  /// - parameter passwordBlock: Callback for getting the user and password
+  /// - parameter progressBlock: Return true to stop the operation
+  public func push(branch branch: XTBranch,
+                   remote: XTRemote,
+                   passwordBlock: () -> (String, String)?,
+                   progressBlock: (UInt32, UInt32, size_t) -> Bool) throws
+  {
+    try performWriting() {
+      let provider = self.credentialProvider(passwordBlock)
+      let options = [ GTRepositoryRemoteOptionsCredentialProvider: provider ]
+      
+      try self.gtRepo.pushBranch(branch.gtBranch,
+                                 toRemote: remote,
+                                 withOptions: options) {
+        (current, total, bytes, stop) in
+        stop.memory = ObjCBool(progressBlock(current, total, bytes))
+      }
+    }
+  }
+}
+
+// MARK: Credential helpers
+
+func checkCredentialType(type: GTCredentialType,
+                         flag: GTCredentialType) -> Bool
+{
+  return (type.rawValue & flag.rawValue) != 0
+}
+
+func keychainPassword(urlString: String, user: String) -> String?
+{
+  guard let url = NSURL(string: urlString),
+        let server = url.host as NSString?
+  else { return nil }
+  
+  let user = user as NSString
+  var passwordLength: UInt32 = 0
+  var passwordData: UnsafeMutablePointer<Void> = nil
+  
+  let err = SecKeychainFindInternetPassword(
+      nil,
+      UInt32(server.length), server.UTF8String,
+      0, nil,
+      UInt32(user.length), user.UTF8String,
+      0, nil, 0,
+      .Any, .Default,
+      &passwordLength, &passwordData, nil)
+  
+  if err != noErr {
+    return nil
+  }
+  return NSString(bytes: passwordData,
+                  length: Int(passwordLength),
+                  encoding: NSUTF8StringEncoding) as String?
+}
+
+func sshCredential(user: String) -> GTCredential?
+{
+  let publicPath =
+      ("~/.ssh/id_rsa.pub" as NSString).stringByExpandingTildeInPath
+  let privatePath =
+      ("~/.ssh/id_rsa" as NSString).stringByExpandingTildeInPath
+  
+  return try? GTCredential(
+      userName: user,
+      publicKeyURL: NSURL(fileURLWithPath: publicPath),
+      privateKeyURL: NSURL(fileURLWithPath: privatePath),
+      passphrase: "")
 }

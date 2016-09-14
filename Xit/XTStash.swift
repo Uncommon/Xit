@@ -5,7 +5,7 @@ import Cocoa
  */
 public class XTStash: NSObject {
 
-var repo: XTRepository
+unowned var repo: XTRepository
 var message: String?
 var mainCommit: GTCommit
 var indexCommit, untrackedCommit: GTCommit?

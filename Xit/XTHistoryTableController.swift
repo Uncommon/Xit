@@ -9,7 +9,7 @@ public class XTHistoryTableController: NSViewController {
     static let email = "email"
   }
 
-  var repository: XTRepository!
+  weak var repository: XTRepository!
   {
     didSet
     {
@@ -27,7 +27,7 @@ public class XTHistoryTableController: NSViewController {
           self,
           selector: #selector(XTHistoryTableController.refsChanged(_:)),
           name: XTRepositoryRefsChangedNotification,
-          object: self)
+          object: repository)
     }
   }
   
@@ -42,8 +42,16 @@ public class XTHistoryTableController: NSViewController {
   {
     let controller = view.window?.windowController as! XTWindowController
     
-    controller.addObserver(self, forKeyPath: "selectedModel",
-                           options: .New, context: nil)
+    NSNotificationCenter.defaultCenter().addObserverForName(
+        XTSelectedModelChangedNotification,
+        object: controller,
+        queue: nil) { [weak self]
+      (notification) in
+      if let selectedModel = notification.userInfo?[NSKeyValueChangeNewKey]
+                             as? XTFileChangesModel {
+        self?.selectRow(sha: selectedModel.shaToSelect)
+      }
+    }
     NSNotificationCenter.defaultCenter().addObserver(
         self,
         selector: #selector(XTHistoryTableController.dateViewResized(_:)),
@@ -84,10 +92,8 @@ public class XTHistoryTableController: NSViewController {
         XTTaskStartedNotification, object: repository)
     repository.executeOffMainThread {
       defer {
-        dispatch_async(dispatch_get_main_queue()) {
-          NSNotificationCenter.defaultCenter().postNotificationName(
-              XTTaskEndedNotification, object: repository)
-        }
+        NSNotificationCenter.defaultCenter().postNotificationName(
+            XTTaskEndedNotification, object: repository)
       }
       
       guard let walker = try? GTEnumerator(repository: repository.gtRepo)
@@ -138,16 +144,6 @@ public class XTHistoryTableController: NSViewController {
                                byExtendingSelection: false)
     if view.window?.firstResponder != tableView {
       tableView.scrollRowToVisible(row)
-    }
-  }
-  
-  override public func observeValueForKeyPath(
-      keyPath: String?, ofObject object: AnyObject?,
-      change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
-  {
-    if keyPath == "selectedModel",
-       let newModel = change?[NSKeyValueChangeNewKey] as? XTFileChangesModel {
-      selectRow(sha: newModel.shaToSelect)
     }
   }
   

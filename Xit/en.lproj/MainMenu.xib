@@ -337,9 +337,9 @@
                 <menuItem title="Repository" id="534">
                     <menu key="submenu" title="Repository" id="535">
                         <items>
-                            <menuItem title="Reload" keyEquivalent="r" id="615">
+                            <menuItem title="Refresh" keyEquivalent="r" id="615">
                                 <connections>
-                                    <action selector="reload:" target="-1" id="HIg-TM-sJr"/>
+                                    <action selector="refresh:" target="-1" id="yIh-B6-s8M"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="fMJ-BA-jcw"/>

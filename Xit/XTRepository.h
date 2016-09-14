@@ -72,7 +72,7 @@ extern NSString *XTPathsKey;
 @property(readonly) dispatch_queue_t queue;
 @property(readonly) NSURL *repoURL;
 @property(readonly) NSURL *gitDirectoryURL;
-@property(readonly) BOOL isWriting;
+@property(readwrite) BOOL isWriting;  /// Other classes should only read
 @property(readonly) BOOL isShutDown;
 
 @property(readonly) XTRepositoryWatcher *watcher;

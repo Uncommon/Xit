@@ -16,16 +16,16 @@
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="5" userLabel="Window">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="133" y="235" width="775" height="660"/>
+            <rect key="contentRect" x="133" y="235" width="988" height="660"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
             <value key="minSize" type="size" width="94" height="86"/>
             <view key="contentView" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="775" height="660"/>
+                <rect key="frame" x="0.0" y="0.0" width="988" height="660"/>
                 <autoresizingMask key="autoresizingMask"/>
             </view>
             <toolbar key="toolbar" implicitIdentifier="40D3E1FE-6996-449E-9FB3-B8BE88A5CCCF" allowsUserCustomization="NO" displayMode="iconAndLabel" sizeMode="regular" id="100060" customClass="FHTToolbar">
                 <allowedToolbarItems>
-                    <toolbarItem implicitItemIdentifier="5D398A8B-1FD3-442F-A37D-E7F625BA8AC3" label="Fetch   Pull   Push" paletteLabel="Fetch   Pull   Push" id="Hth-4n-I6q">
+                    <toolbarItem implicitItemIdentifier="5D398A8B-1FD3-442F-A37D-E7F625BA8AC3" label="Fetch   Pull   Push" paletteLabel="Fetch   Pull   Push" id="Hth-4n-I6q" customClass="XTWritingToolbarItem" customModule="Xit" customModuleProvider="target">
                         <nil key="toolTip"/>
                         <size key="minSize" width="100" height="25"/>
                         <size key="maxSize" width="100" height="25"/>
@@ -57,7 +57,7 @@
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         </customView>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="788BFBF4-B947-4490-BA90-A8EFA5C84EC5" label="Refresh" paletteLabel="Refresh" image="NSRefreshTemplate" id="100152">
+                    <toolbarItem implicitItemIdentifier="788BFBF4-B947-4490-BA90-A8EFA5C84EC5" label="Refresh" paletteLabel="Refresh" image="NSRefreshTemplate" id="100152" customClass="XTWritingToolbarItem" customModule="Xit" customModuleProvider="target">
                         <nil key="toolTip"/>
                         <size key="minSize" width="32" height="25"/>
                         <size key="maxSize" width="32" height="25"/>
@@ -70,7 +70,7 @@
                             </buttonCell>
                         </button>
                         <connections>
-                            <action selector="refresh:" target="-2" id="100153"/>
+                            <action selector="refresh:" target="-2" id="oao-vW-b4e"/>
                         </connections>
                     </toolbarItem>
                     <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="72Q-wc-QQ6"/>
@@ -90,10 +90,15 @@
             <connections>
                 <outlet property="delegate" destination="-2" id="17"/>
             </connections>
+            <point key="canvasLocation" x="506" y="445"/>
         </window>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <viewController nibName="XTHistoryViewController" id="100102" userLabel="History View Controller" customClass="XTHistoryViewController"/>
-        <customObject id="100154" customClass="XTToolbarDelegate"/>
+        <customObject id="100154" customClass="XTToolbarDelegate">
+            <connections>
+                <outlet property="windowController" destination="-2" id="rNy-9a-VqG"/>
+            </connections>
+        </customObject>
         <customObject id="Ib1-UC-8LJ" customClass="XTActivityViewController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="spinner" destination="1uV-vf-IPh" id="Sz1-Mk-zV8"/>

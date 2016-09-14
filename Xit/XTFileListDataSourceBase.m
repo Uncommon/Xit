@@ -12,7 +12,7 @@
 
 - (void)dealloc
 {
-  [self.winController removeObserver:self forKeyPath:@"selectedModel"];
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)reload
@@ -26,29 +26,19 @@
   [self reload];
 }
 
-- (XTFileViewController*)controller
-{
-  return _controller;
-}
-
-- (void)setController:(XTFileViewController*)controller
-{
-  @synchronized (self) {
-    _controller = controller;
-    [controller addObserver:self
-                 forKeyPath:@"inStagingView"
-                    options:0
-                    context:NULL];
-  }
-}
-
 - (void)setWinController:(XTWindowController*)winController
 {
+  __weak XTFileListDataSourceBase *weakSelf = self;
+  
   _winController = winController;
-  [_winController addObserver:self
-                   forKeyPath:@"selectedModel"
-                      options:NSKeyValueObservingOptionNew
-                      context:nil];
+  [[NSNotificationCenter defaultCenter]
+      addObserverForName:XTSelectedModelChangedNotification
+                  object:winController
+                   queue:nil
+              usingBlock:^(NSNotification * _Nonnull note) {
+    [weakSelf reload];
+    [weakSelf updateStagingView];
+  }];
 }
 
 - (void)updateStagingView
@@ -57,17 +47,6 @@
       [self.outlineView tableColumnWithIdentifier:@"unstaged"];
 
   unstagedColumn.hidden = !self.winController.selectedModel.hasUnstaged;
-}
-
-- (void)observeValueForKeyPath:(NSString*)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary*)change
-                       context:(void*)context
-{
-  if ([keyPath isEqualToString:@"selectedModel"]) {
-    [self reload];
-    [self updateStagingView];
-  }
 }
 
 + (XitChange)transformDisplayChange:(XitChange)change

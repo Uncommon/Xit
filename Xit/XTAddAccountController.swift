@@ -37,6 +37,11 @@ class XTAddAccountController: XTSheetController {
     set { locationField.stringValue = (newValue?.absoluteString)! }
   }
   
+  deinit
+  {
+    window?.removeObserver(self, forKeyPath: "firstResponder")
+  }
+  
   override func observeValueForKeyPath(
       keyPath: String?, ofObject object: AnyObject?,
       change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)

@@ -1,6 +1,5 @@
 #import "XTRepository+Commands.h"
 #import "XTConstants.h"
-#import "XTRepositoryWatcher.h"
 #import "Xit-Swift.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
@@ -25,7 +24,7 @@
   if ((newRepo == nil) || (error != nil))
     return NO;
   _gtRepo = newRepo;
-  self.watcher = [XTRepositoryWatcher watcherWithRepo:self];
+  self.watcher = [[XTRepositoryWatcher alloc] initWithRepository:self];
   self.config = [[XTConfig alloc] initWithRepository:self];
   return YES;
 }

@@ -18,6 +18,12 @@ extension XTSideBarDataSource {
     }
   }
   
+  func stopTimers()
+  {
+    buildStatusTimer?.invalidate()
+    reloadTimer?.invalidate()
+  }
+  
   func buildStatusTimerFired(timer: NSTimer)
   {
     updateTeamCity()
@@ -59,7 +65,7 @@ extension XTSideBarDataSource {
   
   func makeTagItems() -> [XTTagItem]
   {
-    guard let tags = try? repo.tags()
+    guard let tags = try? repo!.tags()
     else { return [XTTagItem]() }
     
     return tags.map({ XTTagItem(tag: $0)})
@@ -67,11 +73,11 @@ extension XTSideBarDataSource {
   
   func makeStashItems() -> [XTStashItem]
   {
-    let stashes = repo.stashes()
+    let stashes = repo!.stashes()
     var stashItems = [XTStashItem]()
     
     for (index, stash) in stashes.enumerate() {
-      let model = XTStashChanges(repository: repo, stash: stash)
+      let model = XTStashChanges(repository: repo!, stash: stash)
       let message = stash.message ?? "stash \(index)"
     
       stashItems.append(XTStashItem(title: message, model: model))
@@ -81,7 +87,7 @@ extension XTSideBarDataSource {
   
   func makeSubmoduleItems() -> [XTSubmoduleItem]
   {
-    return repo.submodules().map({ XTSubmoduleItem(submodule: $0) })
+    return repo!.submodules().map({ XTSubmoduleItem(submodule: $0) })
   }
   
 }
@@ -90,7 +96,8 @@ extension XTSideBarDataSource { // MARK: TeamCity
   
   func updateTeamCity()
   {
-    guard let localBranches = try? repo.localBranches()
+    guard let repo = repo,
+          let localBranches = try? repo.localBranches()
     else { return }
     
     buildStatuses = [:]
@@ -127,6 +134,9 @@ extension XTSideBarDataSource { // MARK: TeamCity
   /// tracking branch.
   func remoteName(forBranchItem branchItem: XTSideBarItem) -> String?
   {
+    guard let repo = repo
+    else { return nil }
+    
     if let remoteBranchItem = branchItem as? XTRemoteBranchItem {
       return remoteBranchItem.remote
     }
@@ -147,7 +157,8 @@ extension XTSideBarDataSource { // MARK: TeamCity
   /// and a list of its build types.
   func matchTeamCity(remoteName: String) -> (XTTeamCityAPI, [String])?
   {
-    guard let remote = XTRemote(name: remoteName, repository: repo),
+    guard let repo = repo,
+          let remote = XTRemote(name: remoteName, repository: repo),
           let remoteURL = remote.URLString
     else { return nil }
     
@@ -257,7 +268,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate {
     
     if item is XTSideBarGroupItem {
       guard let headerView = outlineView.makeViewWithIdentifier(
-          "HeaderCell", owner: self) as? NSTableCellView
+          "HeaderCell", owner: nil) as? NSTableCellView
       else { return nil }
       
       headerView.textField?.stringValue = sideBarItem.title
@@ -265,7 +276,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate {
     }
     else {
       guard let dataView = outlineView.makeViewWithIdentifier(
-          "DataCell", owner: self) as? XTSideBarTableCellView
+          "DataCell", owner: nil) as? XTSideBarTableCellView
       else { return nil }
       
       let textField = dataView.textField!

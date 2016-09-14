@@ -33,6 +33,9 @@
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
+  
+  // The timers contain references to the ds object and repository.
+  [_sideBarDS stopTimers];
 }
 
 - (void)loadView

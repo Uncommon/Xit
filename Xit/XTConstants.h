@@ -37,6 +37,8 @@ extern NSString * const XTRepositoryIndexChangedNotification;
 /// The repository's refs have changed.
 extern NSString * const XTRepositoryRefsChangedNotification;
 
+extern NSString * const XTSelectedModelChangedNotification;
+
 extern NSString * const XTAddedRefsKey;
 extern NSString * const XTDeletedRefsKey;
 extern NSString * const XTChangedRefsKey;

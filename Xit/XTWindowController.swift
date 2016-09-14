@@ -1,19 +1,31 @@
 import Cocoa
 
 /// XTDocument's main window controller.
-class XTWindowController: NSWindowController {
+class XTWindowController: NSWindowController, NSWindowDelegate {
   
   @IBOutlet var historyController: XTHistoryViewController!
   @IBOutlet var activity: NSProgressIndicator!
   @IBOutlet var activityController: XTActivityViewController!
-  var xtDocument: XTDocument?
+  weak var xtDocument: XTDocument?
   var selectedCommitSHA: String?
   dynamic var selectedModel: XTFileChangesModel?
+  {
+    didSet
+    {
+      var userInfo = [NSObject: AnyObject]()
+      
+      userInfo[NSKeyValueChangeNewKey] = selectedModel
+      userInfo[NSKeyValueChangeOldKey] = oldValue
+      
+      NSNotificationCenter.defaultCenter().postNotificationName(
+          XTSelectedModelChangedNotification,
+          object: self,
+          userInfo: userInfo)
+    }
+  }
   var inStagingView: Bool { return self.selectedCommitSHA == XTStagingSHA }
   
-  // to be replaced with something more generic when there are more types
-  // of cancelable operations.
-  var fetchController: XTFetchController?
+  var currentOperation: XTOperationController?
   
   override var document: AnyObject? {
     didSet {
@@ -24,11 +36,14 @@ class XTWindowController: NSWindowController {
   override func windowDidLoad()
   {
     super.windowDidLoad()
-    window!.contentViewController = self.historyController
-    window!.makeFirstResponder(self.historyController.historyTable)
+    window!.delegate = self
+    // We could set the window's contentViewController, but then it would
+    // retain the view controller, which is undesirable.
+    window!.contentView = historyController.view
+    window!.makeFirstResponder(historyController.historyTable)
     window!.addTitlebarAccessoryViewController(activityController)
     
-    let repo = self.xtDocument!.repository
+    let repo = xtDocument!.repository
     
     NSNotificationCenter.defaultCenter().addObserver(
         self,
@@ -40,14 +55,22 @@ class XTWindowController: NSWindowController {
         selector: #selector(XTWindowController.taskEnded(_:)),
         name: XTTaskEndedNotification,
         object: repo)
-    self.historyController.windowDidLoad()
-    self.historyController.setRepo(repo)
+    historyController.windowDidLoad()
+    historyController.setRepo(repo)
+  }
+  
+  func windowWillClose(notification: NSNotification)
+  {
+    guard let toolbarDelegate = window?.toolbar?.delegate as? XTToolbarDelegate
+    else { return }
+    
+    toolbarDelegate.finalizeItems()
   }
   
   deinit
   {
     NSNotificationCenter.defaultCenter().removeObserver(self)
-    fetchController?.canceled = true
+    currentOperation?.canceled = true
   }
   
   func taskStarted(notification: NSNotification)
@@ -60,7 +83,7 @@ class XTWindowController: NSWindowController {
     activityController.activityEnded()
   }
   
-  @IBAction func reload(sender: AnyObject)
+  @IBAction func refresh(sender: AnyObject)
   {
     historyController.reload()
   }
@@ -82,26 +105,42 @@ class XTWindowController: NSWindowController {
     self.historyController.mainSplitView.adjustSubviews()
   }
   
-  @IBAction func refresh(_: AnyObject)
-  {
-    NSNotificationCenter.defaultCenter().postNotificationName(
-        XTRepositoryChangedNotification, object: self.xtDocument!.repository)
-  }
-  
   @IBAction func newTag(_: AnyObject) {}
   @IBAction func newBranch(_: AnyObject) {}
   @IBAction func addRemote(_: AnyObject) {}
 
   @IBAction func fetch(_: AnyObject)
   {
-    if fetchController == nil {
-      fetchController = XTFetchController(windowController: self)
-      
-      fetchController!.start()
-    }
+    let _: XTFetchController? = startOperation()
   }
-  @IBAction func pull(_: AnyObject) {}
-  @IBAction func push(_: AnyObject) {}
+  
+  @IBAction func pull(_: AnyObject)
+  {
+    let _: XTPullController? = startOperation()
+  }
+  
+  @IBAction func push(_: AnyObject)
+  {
+    let _: XTPushController? = startOperation()
+  }
+  
+  /// Returns the new operation, if any, mostly because the generic type must
+  /// be part of the signature.
+  func startOperation<OperationType: XTSimpleOperationController>()
+      -> OperationType?
+  {
+    if currentOperation == nil {
+      let operation = OperationType(windowController: self)
+      
+      operation.start()
+      currentOperation = operation
+      return operation
+    }
+    else {
+      NSLog("Can't start new operation, already have \(currentOperation)")
+    }
+    return nil
+  }
   
   @IBAction func networkSegmentClicked(sender: AnyObject)
   {
@@ -117,9 +156,12 @@ class XTWindowController: NSWindowController {
     }
   }
   
-  func fetchEnded()
+  /// Called by the operation controller when it's done.
+  func operationEnded(operation: XTOperationController)
   {
-    fetchController = nil
+    if currentOperation == operation {
+      currentOperation = nil
+    }
   }
   
   @IBAction func remoteSettings(sender: AnyObject)
@@ -150,7 +192,7 @@ class XTWindowController: NSWindowController {
     
     switch menuItem.action {
 
-      case #selector(self.reload(_:)):
+      case #selector(self.refresh(_:)):
         result = !xtDocument!.repository.isWriting
 
       case #selector(self.showHideSidebar(_:)):
