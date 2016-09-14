@@ -30,6 +30,8 @@ class XTPullController: XTFetchController {
                           pruneBranches: true,
                           passwordBlock: self.getPassword,
                           progressBlock: self.shouldStop)
+      NSNotificationCenter.defaultCenter().postNotificationName(
+          XTRepositoryRefsChangedNotification, object: repository)
       self.ended()
     }
   }

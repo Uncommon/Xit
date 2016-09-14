@@ -106,6 +106,8 @@ class XTFetchController: XTPasswordOpController {
                      pruneBranches: pruneBranches,
                      passwordBlock: self.getPassword,
                      progressBlock: self.shouldStop)
+      NSNotificationCenter.defaultCenter().postNotificationName(
+          XTRepositoryRefsChangedNotification, object: repository)
       self.ended()
     }
   }

@@ -53,10 +53,15 @@ class XTPushController: XTPasswordOpController {
   {
     tryRepoOperation(successStatus: "Push complete",
                      failureStatus: "Push failed") {
-      try self.repository?.push(branch: localBranch,
-                                remote: remote,
-                                passwordBlock: self.getPassword,
-                                progressBlock: self.shouldStop)
+      guard let repository = self.repository
+      else { return }
+      
+      try repository.push(branch: localBranch,
+                          remote: remote,
+                          passwordBlock: self.getPassword,
+                          progressBlock: self.shouldStop)
+      NSNotificationCenter.defaultCenter().postNotificationName(
+          XTRepositoryRefsChangedNotification, object: repository)
       self.ended()
     }
   }
