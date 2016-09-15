@@ -9,7 +9,7 @@ public class XTFetchPanelController: XTSheetController {
   var selectedRemote: String
   {
     get { return remotesPopup!.titleOfSelectedItem ?? "" }
-    set { remotesPopup?.selectItemWithTitle(newValue) }
+    set { remotesPopup?.selectItem(withTitle: newValue) }
   }
   
   var downloadTags: Bool

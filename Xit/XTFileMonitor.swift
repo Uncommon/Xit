@@ -1,17 +1,12 @@
 import Foundation
 
-let kSourceMask: UInt =
-    DISPATCH_VNODE_DELETE | DISPATCH_VNODE_WRITE | DISPATCH_VNODE_EXTEND |
-    DISPATCH_VNODE_ATTRIB | DISPATCH_VNODE_LINK | DISPATCH_VNODE_RENAME |
-    DISPATCH_VNODE_REVOKE
-
 class XTFileMonitor {
   
   let path: String
   let fd: CInt
-  let source: dispatch_source_t
+  let source: DispatchSourceProtocol
   
-  var notifyBlock: ((path: String, flags: UInt) -> Void)?
+  var notifyBlock: ((_ path: String, _ flags: UInt) -> Void)?
   
   init?(path: String)
   {
@@ -21,25 +16,26 @@ class XTFileMonitor {
     guard fd >= 0
     else { return nil }
     
-    guard let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,
-                                                0),
-          let source = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE,
-                                              UInt(fd), kSourceMask, queue)
-    else { return nil }
+    let queue = DispatchQueue.global()
+    let source = DispatchSource.makeFileSystemObjectSource(
+        fileDescriptor: fd,
+        eventMask: [.delete, .write, .extend, .attrib, .link, .rename, .revoke],
+        queue: queue)
+
     self.source = source
     
-    dispatch_source_set_event_handler(source) {
+    source.setEventHandler {
       [weak self] in
-      self?.notifyBlock?(path: self!.path,
-                         flags: dispatch_source_get_data(source))
+      self?.notifyBlock?(self!.path,
+                         source.data)
     }
     
-    dispatch_resume(source);
+    source.resume();
   }
   
   deinit
   {
-    dispatch_source_cancel(source);
+    source.cancel();
     close(fd)
   }
 }

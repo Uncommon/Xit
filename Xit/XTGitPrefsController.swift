@@ -7,7 +7,7 @@ class XTGitPrefsController: NSViewController, PreferencesSaver {
   @IBOutlet weak var fetchTagsCheckbox: NSButton!
   @IBOutlet weak var fetchPruneCheckbox: NSButton!
   
-  let config = GTConfiguration.defaultConfiguration()
+  let config = GTConfiguration.default()
   
   struct PrefKey {
     static let FetchTags = "FetchTags"
@@ -21,21 +21,21 @@ class XTGitPrefsController: NSViewController, PreferencesSaver {
       let allControls = [userNameField,
                          userEmailField,
                          fetchTagsCheckbox,
-                         fetchPruneCheckbox]
+                         fetchPruneCheckbox] as [NSControl]
       
-      allControls.forEach { $0.enabled = false }
+      allControls.forEach { $0.isEnabled = false }
       return
     }
     
-    userNameField.stringValue = config.stringForKey("user.name") ?? ""
-    userEmailField.stringValue = config.stringForKey("user.email") ?? ""
+    userNameField.stringValue = config.string(forKey: "user.name") ?? ""
+    userEmailField.stringValue = config.string(forKey: "user.email") ?? ""
     
-    fetchPruneCheckbox.boolValue = config.boolForKey("fetch.prune")
-    fetchTagsCheckbox.boolValue = NSUserDefaults.standardUserDefaults()
-        .boolForKey(PrefKey.FetchTags)
+    fetchPruneCheckbox.boolValue = config.bool(forKey: "fetch.prune")
+    fetchTagsCheckbox.boolValue = UserDefaults.standard
+        .bool(forKey: PrefKey.FetchTags)
     
-    NSNotificationCenter.defaultCenter().addObserverForName(
-        NSWindowDidResignKeyNotification,
+    NotificationCenter.default.addObserver(
+        forName: NSNotification.Name.NSWindowDidResignKey,
         object: self.view.window,
         queue: nil) { (_) in
       self.savePreferences()
@@ -48,7 +48,7 @@ class XTGitPrefsController: NSViewController, PreferencesSaver {
     config?.setString(userEmailField.stringValue, forKey: "user.email")
     
     config?.setBool(fetchPruneCheckbox.boolValue, forKey: "fetch.prune")
-    NSUserDefaults.standardUserDefaults().setBool(fetchTagsCheckbox.boolValue,
-                                                  forKey: PrefKey.FetchTags)
+    UserDefaults.standard.set(fetchTagsCheckbox.boolValue,
+                              forKey: PrefKey.FetchTags)
   }
 }

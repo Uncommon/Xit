@@ -5,22 +5,22 @@ import Siesta
 /// API for getting TeamCity build information.
 class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
   
-  var type: AccountType { return .TeamCity }
+  var type: AccountType { return .teamCity }
   static let rootPath = "/httpAuth/app/rest"
   
   struct Build {
     
     enum Status {
-      case Succeeded
-      case Failed
+      case succeeded
+      case failed
       
       init?(string: String)
       {
         switch string {
           case "SUCCESS":
-            self = .Succeeded
+            self = .succeeded
           case "FAILURE":
-            self = .Failed
+            self = .failed
           default:
             return nil
         }
@@ -28,16 +28,16 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
     }
     
     enum State {
-      case Running
-      case Finished
+      case running
+      case finished
       
       init?(string: String)
       {
         switch string {
           case "running":
-            self = .Running
+            self = .running
           case "finished":
-            self = .Finished
+            self = .finished
           default:
             return nil
         }
@@ -60,9 +60,9 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
     let buildType: String?
     let status: Status?
     let state: State?
-    let url: NSURL?
+    let url: URL?
     
-    init?(element buildElement: NSXMLElement)
+    init?(element buildElement: XMLElement)
     {
       guard buildElement.name == "build"
       else { return nil }
@@ -72,10 +72,10 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
       self.buildType = attributes[Attribute.BuildType]
       self.status = attributes[Attribute.Status].flatMap { Status(string: $0) }
       self.state = attributes[Attribute.State].flatMap { State(string: $0) }
-      self.url = attributes[Attribute.WebURL].flatMap { NSURL(string: $0) }
+      self.url = attributes[Attribute.WebURL].flatMap { URL(string: $0) }
     }
     
-    init?(xml: NSXMLDocument)
+    init?(xml: XMLDocument)
     {
       guard let build = xml.rootElement()
       else { return nil }
@@ -84,7 +84,7 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
     }
   }
   
-  private(set) var buildTypesStatus = XTServices.Status.NotStarted
+  fileprivate(set) var buildTypesStatus = XTServices.Status.notStarted
   
   /// Maps VCS root ID to repository URL.
   var vcsRootMap = [String: String]()
@@ -94,7 +94,7 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
   init?(user: String, password: String, baseURL: String?)
   {
     guard let baseURL = baseURL,
-          let fullBaseURL = NSURLComponents(string: baseURL)
+          var fullBaseURL = URLComponents(string: baseURL)
     else { return nil }
     
     fullBaseURL.path = XTTeamCityAPI.rootPath
@@ -103,14 +103,14 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
                authenticationPath: "/")
     
     configure(description: "xml") {
-      $0.config.pipeline[.parsing].add(XMLResponseTransformer(),
+      $0.pipeline[.parsing].add(XMLResponseTransformer(),
                                        contentTypes: [ "*/xml" ])
     }
   }
   
   /// Status of the most recent build of the given branch from any project
   /// and build type.
-  func buildStatus(branch: String, buildType: String) -> Resource
+  func buildStatus(_ branch: String, buildType: String) -> Resource
   {
     // Look up:
     // - builds?locator=running:any,
@@ -118,25 +118,25 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
     // - Returns a list of <build href=".."/>, retrieve those
     // If we just pass this to resource(path:), the ? gets encoded.
     let href = "builds/?locator=running:any,branch:\(branch),buildType:\(buildType)"
-    let url = NSURL(string: href, relativeToURL: baseURL)
+    let url = URL(string: href, relativeTo: baseURL)
     
     return self.resource(absoluteURL: url)
   }
   
   // Applies the given closure to the build statuses for the given branch and
   // build type, asynchronously if the data is not yet cached.
-  func enumerateBuildStatus(branch: String, builtType: String,
-                            processor: ([String: String]) -> Void)
+  func enumerateBuildStatus(_ branch: String, builtType: String,
+                            processor: @escaping ([String: String]) -> Void)
   {
     let statusResource = buildStatus(branch, buildType: builtType)
     
-    statusResource.useData(self) { (data) in
-      guard let xml = data.content as? NSXMLDocument,
+    statusResource.useData(owner: self) { (data) in
+      guard let xml = data.content as? XMLDocument,
             let builds = xml.children?.first?.children
       else { return }
       
       for build in builds {
-        guard let buildElement = build as? NSXMLElement
+        guard let buildElement = build as? XMLElement
         else { continue }
         
         processor(buildElement.attributesDict())
@@ -155,7 +155,7 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
   
   /// A resource for the repo URL of a VCS root. This will be just the URL,
   /// not wrapped in XML.
-  func vcsRootURL(vcsRoodID: String) -> Resource
+  func vcsRootURL(_ vcsRoodID: String) -> Resource
   {
     return resource("vcs-roots/id:\(vcsRoodID)/properties/url")
   }
@@ -163,11 +163,11 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
   override func didAuthenticate()
   {
     // - Get VCS roots, build repo URL -> vcs-root id map.
-    vcsRoots.useData(self) { (data) in
-      guard let xml = data.content as? NSXMLDocument
+    vcsRoots.useData(owner: self) { (data) in
+      guard let xml = data.content as? XMLDocument
       else {
         NSLog("Couldn't parse vcs-roots xml")
-        self.buildTypesStatus = .Failed(nil)  // TODO: ParseError type
+        self.buildTypesStatus = .failed(nil)  // TODO: ParseError type
         return
       }
       self.parseVCSRoots(xml)
@@ -180,7 +180,8 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
 extension XTTeamCityAPI {
   
   /// Returns all the build types that use the given remote.
-  func buildTypes(forRemote remoteURL: NSString) -> [String]
+  // Calling it buildTypes(forRemote:) would conflict with the buildTypes var.
+  func buildTypesForRemote(_ remoteURL: String) -> [String]
   {
     var result = [String]()
     
@@ -192,12 +193,12 @@ extension XTTeamCityAPI {
     return result
   }
   
-  private func parseVCSRoots(xml: NSXMLDocument)
+  fileprivate func parseVCSRoots(_ xml: XMLDocument)
   {
     guard let vcsIDs = xml.rootElement()?.childrenAttributes("id")
     else {
       NSLog("Couldn't parse vcs-roots")
-      self.buildTypesStatus = .Failed(nil)
+      self.buildTypesStatus = .failed(nil)
       return
     }
     
@@ -207,7 +208,7 @@ extension XTTeamCityAPI {
     for rootID in vcsIDs {
       let repoResource = self.vcsRootURL(rootID)
       
-      repoResource.useData(self) { (data) in
+      repoResource.useData(owner: self) { (data) in
         if let repoURL = data.content as? String {
           self.vcsRootMap[rootID] = repoURL
         }
@@ -221,18 +222,18 @@ extension XTTeamCityAPI {
   
   private func getBuildTypes()
   {
-    buildTypes.useData(self) { (data) in
-      guard let xml = data.content as? NSXMLDocument
+    buildTypes.useData(owner: self) { (data) in
+      guard let xml = data.content as? XMLDocument
       else {
         NSLog("Couldn't parse build types xml")
-        self.buildTypesStatus = .Failed(nil)
+        self.buildTypesStatus = .failed(nil)
         return
       }
       self.parseBuildTypes(xml)
     }
   }
   
-  private func parseBuildTypes(xml: NSXMLDocument)
+  private func parseBuildTypes(_ xml: XMLDocument)
   {
     guard let hrefs = xml.rootElement()?.childrenAttributes(Build.Attribute.HRef)
     else {
@@ -245,18 +246,18 @@ extension XTTeamCityAPI {
     for href in hrefs {
       let relativePath = href.stringByRemovingPrefix(XTTeamCityAPI.rootPath)
       
-      resource(relativePath).useData(self, closure: { (data) in
+      resource(relativePath).useData(owner: self, closure: { (data) in
         waitingTypeCount -= 1
         defer {
           if waitingTypeCount == 0 {
-            self.buildTypesStatus = .Done
+            self.buildTypesStatus = .done
           }
         }
         
-        guard let xml = data.content as? NSXMLDocument
+        guard let xml = data.content as? XMLDocument
         else {
-          NSLog("Couldn't parse build type xml: \(data.content)")
-          self.buildTypesStatus = .Failed(nil)
+          NSLog("Couldn't parse build type xml")
+          self.buildTypesStatus = .failed(nil)
           return
         }
         
@@ -265,16 +266,16 @@ extension XTTeamCityAPI {
     }
   }
   
-  private func parseBuildType(xml: NSXMLDocument)
+  private func parseBuildType(_ xml: XMLDocument)
   {
-    guard let buildType = xml.children?.first as? NSXMLElement,
-          let rootEntries = buildType.elementsForName("vcs-root-entries").first
+    guard let buildType = xml.children?.first as? XMLElement,
+          let rootEntries = buildType.elements(forName: "vcs-root-entries").first
     else {
       NSLog("Couldn't find root entries: \(xml)")
-      self.buildTypesStatus = .Failed(nil)
+      self.buildTypesStatus = .failed(nil)
       return
     }
-    guard let buildTypeID = buildType.attributeForName("id")?.stringValue
+    guard let buildTypeID = buildType.attribute(forName: "id")?.stringValue
     else {
       NSLog("No ID for build type: \(xml)")
       return

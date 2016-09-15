@@ -2,18 +2,18 @@ import Cocoa
 
 
 @objc public protocol CommitType {
-  var SHA: String? { get }
-  var OID: GTOID { get }
+  var sha: String? { get }
+  var oid: GTOID { get }
   var parentOIDs: [GTOID] { get }
   
   var message: String? { get }
-  var commitDate: NSDate { get }
+  var commitDate: Date { get }
   var email: String? { get }
 }
 
 extension CommitType {
   public var description: String
-  { return "\(SHA?.firstSix() ?? "-")" }
+  { return "\(sha?.firstSix() ?? "-")" }
 }
 
 
@@ -26,16 +26,21 @@ public func == (a: GTOID, b: GTOID) -> Bool
 public class XTCommit: NSObject, CommitType {
 
   let gtCommit: GTCommit
+  
+  // These used to be lazy properties, but the Swift 3 compiler crashes on that.
+  let cachedSHA: String?
+  let cachedOID: GTOID
+  let cachedParentOIDs: [GTOID]
 
-  lazy public var SHA: String? = self.calculateSHA()
-  lazy public var OID: GTOID = self.calculateOID()
+  public var sha: String? { return cachedSHA }
+  public var oid: GTOID { return cachedOID }
 
-  lazy public var parentOIDs: [GTOID] = self.calculateParentOIDs()
+  public var parentOIDs: [GTOID] { return cachedParentOIDs }
   
   public var message: String?
   { return gtCommit.message }
   
-  public var commitDate: NSDate
+  public var commitDate: Date
   { return gtCommit.commitDate }
   
   public var email: String?
@@ -43,52 +48,55 @@ public class XTCommit: NSObject, CommitType {
 
   init?(oid: GTOID, repository: XTRepository)
   {
-    var gitCommit: COpaquePointer = nil  // git_commit isn't imported
+    var gitCommit: OpaquePointer? = nil  // git_commit isn't imported
     let result = git_commit_lookup(&gitCommit,
                                    repository.gtRepo.git_repository(),
                                    oid.git_oid())
   
     guard result == 0,
-          let commit = GTCommit(obj: gitCommit, inRepository: repository.gtRepo)
+          let commit = GTCommit(obj: gitCommit!, in: repository.gtRepo)
     else { return nil }
     
     self.gtCommit = commit
+    self.cachedSHA = commit.sha
+    self.cachedOID = commit.oid!
+    self.cachedParentOIDs = XTCommit.calculateParentOIDs(gtCommit.git_commit())
   }
   
   convenience init?(sha: String, repository: XTRepository)
   {
-    guard let oid = GTOID(SHA: sha)
+    guard let oid = GTOID(sha: sha)
     else { return nil }
     
     self.init(oid: oid, repository: repository)
   }
   
-  func calculateParentOIDs() -> [GTOID]
+  static func calculateParentOIDs(_ rawCommit: OpaquePointer) -> [GTOID]
   {
     var result = [GTOID]()
     
-    for index in 0..<git_commit_parentcount(gtCommit.git_commit()) {
-      let parentID = git_commit_parent_id(gtCommit.git_commit(), index)
+    for index in 0..<git_commit_parentcount(rawCommit) {
+      let parentID = git_commit_parent_id(rawCommit, index)
       guard parentID != nil
       else { continue }
       
-      result.append(GTOID(gitOid:parentID))
+      result.append(GTOID(gitOid:parentID!))
     }
     return result
   }
   
   func calculateSHA() -> String?
   {
-    return gtCommit.SHA
+    return gtCommit.sha
   }
   
   func calculateOID() -> GTOID
   {
-    return gtCommit.OID!
+    return gtCommit.oid!
   }
 }
 
 public func == (a: XTCommit, b: XTCommit) -> Bool
 {
-  return git_oid_cmp(a.OID.git_oid(), b.OID.git_oid()) == 0
+  return git_oid_cmp(a.oid.git_oid(), b.oid.git_oid()) == 0
 }

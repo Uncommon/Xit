@@ -17,7 +17,7 @@ class XTTag: NSObject {
   {
     self.repository = repository
     
-    guard let ref = try? repository.gtRepo.lookUpReferenceWithName(name)
+    guard let ref = try? repository.gtRepo.lookUpReference(withName: name)
     else { return nil }
     
     guard let target = ref.resolvedTarget as? GTTag
@@ -28,5 +28,5 @@ class XTTag: NSObject {
   
   var name: String { return tag.name }
   var message: String { return tag.message }
-  var targetSHA: String? { return tag.target?.SHA }
+  var targetSHA: String? { return tag.target?.sha }
 }

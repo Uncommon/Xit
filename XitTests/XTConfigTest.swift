@@ -18,7 +18,7 @@ class XTConfigTest: XTTest {
     
     let account = Account(type: .TeamCity,
                           user: "User",
-                          location: NSURL(string: "http://teamcity/path")!)
+                          location: URL(string: "http://teamcity/path")!)
     
     config.setTeamCityAccount(remoteName, account: account)
     config.saveXitConfig()

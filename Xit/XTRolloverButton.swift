@@ -31,15 +31,15 @@ class XTRolloverButton: NSButton {
   {
     let tracking = NSTrackingArea(
         rect: self.bounds,
-        options: [NSTrackingAreaOptions.MouseEnteredAndExited,
-                  NSTrackingAreaOptions.ActiveInActiveApp,
-                  NSTrackingAreaOptions.AssumeInside],
+        options: [NSTrackingAreaOptions.mouseEnteredAndExited,
+                  NSTrackingAreaOptions.activeInActiveApp,
+                  NSTrackingAreaOptions.assumeInside],
         owner: self, userInfo: nil)
     
     self.addTrackingArea(tracking)
   }
 
-  override func mouseEntered(theEvent: NSEvent)
+  override func mouseEntered(with theEvent: NSEvent)
   {
     if self.rolloverActive {
       self.normalImage = self.image
@@ -48,7 +48,7 @@ class XTRolloverButton: NSButton {
     }
   }
   
-  override func mouseExited(theEvent: NSEvent)
+  override func mouseExited(with theEvent: NSEvent)
   {
     if let normalImage = self.normalImage {
       super.image = normalImage

@@ -13,7 +13,7 @@ class XTTeamCityTest: XCTestCase {
     super.tearDown()
   }
   
-  func parseBuild(statusString statusString: String,
+  func parseBuild(statusString: String,
                   status: XTTeamCityAPI.Build.Status,
                   stateString: String,
                   state: XTTeamCityAPI.Build.State)
@@ -27,7 +27,7 @@ class XTTeamCityTest: XCTestCase {
         "href=\"/httpAuth/app/rest/builds/id:45272\" " +
         "webUrl=\"https://teamcity.example.com/viewLog.html?buildId=45272&amp;buildTypeId=\(buildType)\"/>"
     
-    let xml = try! NSXMLDocument(XMLString: sourceXML, options: 0)
+    let xml = try! XMLDocument(xmlString: sourceXML, options: 0)
     let build = XTTeamCityAPI.Build(xml: xml)!
     
     XCTAssertEqual(build.buildType!, buildType)

@@ -12,13 +12,13 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
   {
     didSet
     {
-      var userInfo = [NSObject: AnyObject]()
+      var userInfo = [AnyHashable: Any]()
       
-      userInfo[NSKeyValueChangeNewKey] = selectedModel
-      userInfo[NSKeyValueChangeOldKey] = oldValue
+      userInfo[NSKeyValueChangeKey.newKey] = selectedModel
+      userInfo[NSKeyValueChangeKey.oldKey] = oldValue
       
-      NSNotificationCenter.defaultCenter().postNotificationName(
-          XTSelectedModelChangedNotification,
+      NotificationCenter.default.post(
+          name: NSNotification.Name.XTSelectedModelChanged,
           object: self,
           userInfo: userInfo)
     }
@@ -45,21 +45,21 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
     
     let repo = xtDocument!.repository
     
-    NSNotificationCenter.defaultCenter().addObserver(
+    NotificationCenter.default.addObserver(
         self,
         selector: #selector(XTWindowController.taskStarted(_:)),
-        name: XTTaskStartedNotification,
+        name: NSNotification.Name.XTTaskStarted,
         object: repo)
-    NSNotificationCenter.defaultCenter().addObserver(
+    NotificationCenter.default.addObserver(
         self,
         selector: #selector(XTWindowController.taskEnded(_:)),
-        name: XTTaskEndedNotification,
+        name: NSNotification.Name.XTTaskEnded,
         object: repo)
     historyController.windowDidLoad()
     historyController.setRepo(repo)
   }
   
-  func windowWillClose(notification: NSNotification)
+  func windowWillClose(_ notification: Notification)
   {
     guard let toolbarDelegate = window?.toolbar?.delegate as? XTToolbarDelegate
     else { return }
@@ -69,39 +69,39 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
   
   deinit
   {
-    NSNotificationCenter.defaultCenter().removeObserver(self)
+    NotificationCenter.default.removeObserver(self)
     currentOperation?.canceled = true
   }
   
-  func taskStarted(notification: NSNotification)
+  func taskStarted(_ notification: Notification)
   {
     activityController.activityStarted()
   }
   
-  func taskEnded(notification: NSNotification)
+  func taskEnded(_ notification: Notification)
   {
     activityController.activityEnded()
   }
   
-  @IBAction func refresh(sender: AnyObject)
+  @IBAction func refresh(_ sender: AnyObject)
   {
     historyController.reload()
   }
   
-  @IBAction func showHideSidebar(sender: AnyObject)
+  @IBAction func showHideSidebar(_ sender: AnyObject)
   {
     historyController.toggleSideBar(sender)
   }
   
-  @IBAction func verticalLayout(sender: AnyObject)
+  @IBAction func verticalLayout(_ sender: AnyObject)
   {
-    self.historyController.mainSplitView.vertical = true
+    self.historyController.mainSplitView.isVertical = true
     self.historyController.mainSplitView.adjustSubviews()
   }
   
-  @IBAction func horizontalLayout(sender: AnyObject)
+  @IBAction func horizontalLayout(_ sender: AnyObject)
   {
-    self.historyController.mainSplitView.vertical = false
+    self.historyController.mainSplitView.isVertical = false
     self.historyController.mainSplitView.adjustSubviews()
   }
   
@@ -142,7 +142,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
     return nil
   }
   
-  @IBAction func networkSegmentClicked(sender: AnyObject)
+  @IBAction func networkSegmentClicked(_ sender: AnyObject)
   {
     switch (sender as! NSSegmentedControl).selectedSegment {
       case 0:
@@ -157,14 +157,14 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
   }
   
   /// Called by the operation controller when it's done.
-  func operationEnded(operation: XTOperationController)
+  func operationEnded(_ operation: XTOperationController)
   {
     if currentOperation == operation {
       currentOperation = nil
     }
   }
   
-  @IBAction func remoteSettings(sender: AnyObject)
+  @IBAction func remoteSettings(_ sender: AnyObject)
   {
     guard let menuItem = sender as? NSMenuItem
     else { return }
@@ -175,7 +175,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
     controller.start()
   }
   
-  func updateRemotesMenu(menu: NSMenu) {
+  func updateRemotesMenu(_ menu: NSMenu) {
     let remoteNames = xtDocument!.repository.remoteNames
     
     menu.removeAllItems()
@@ -186,11 +186,13 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
     }
   }
   
-  override func validateMenuItem(menuItem: NSMenuItem) -> Bool
+  override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
   {
+    guard let action = menuItem.action
+    else { return false }
     var result = false
     
-    switch menuItem.action {
+    switch action {
 
       case #selector(self.refresh(_:)):
         result = !xtDocument!.repository.isWriting
@@ -207,12 +209,12 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
 
       case #selector(self.verticalLayout(_:)):
         result = true
-        menuItem.state = historyController.mainSplitView.vertical
+        menuItem.state = historyController.mainSplitView.isVertical
             ? NSOnState : NSOffState
 
       case #selector(self.horizontalLayout(_:)):
         result = true
-        menuItem.state = historyController.mainSplitView.vertical
+        menuItem.state = historyController.mainSplitView.isVertical
             ? NSOffState : NSOnState
 
       case #selector(self.remoteSettings(_:)):

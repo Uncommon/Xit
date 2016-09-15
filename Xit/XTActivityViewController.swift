@@ -6,21 +6,21 @@ public class XTActivityViewController: NSTitlebarAccessoryViewController {
   
   @IBOutlet var spinner: NSProgressIndicator!
   
-  public override func awakeFromNib()
+  open override func awakeFromNib()
   {
-    layoutAttribute = .Right
-    spinner.hidden = true
+    layoutAttribute = .right
+    spinner.isHidden = true
   }
   
-  func forceMainThread(block: dispatch_block_t)
+  func forceMainThread(_ block: ()->())
   {
-    let mainQueue = dispatch_get_main_queue()
+    let mainQueue = DispatchQueue.main
     
-    if NSThread.isMainThread() {
+    if Thread.isMainThread {
       block()
     }
     else {
-      dispatch_sync(mainQueue, block)
+      mainQueue.sync(execute: block)
     }
   }
   
@@ -28,7 +28,7 @@ public class XTActivityViewController: NSTitlebarAccessoryViewController {
   {
     forceMainThread() {
       self.activityCount += 1
-      self.spinner.hidden = false
+      self.spinner.isHidden = false
       self.spinner.startAnimation(self)
     }
   }
@@ -42,7 +42,7 @@ public class XTActivityViewController: NSTitlebarAccessoryViewController {
       self.activityCount -= 1
       if self.activityCount == 0 {
         self.spinner.stopAnimation(self)
-        self.spinner.hidden = true
+        self.spinner.isHidden = true
       }
     }
   }

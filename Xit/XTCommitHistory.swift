@@ -17,7 +17,7 @@ public class CommitEntry: NSObject {
 
 public func == (left: CommitEntry, right: CommitEntry) -> Bool
 {
-  return left.commit.OID == right.commit.OID
+  return left.commit.oid == right.commit.oid
 }
 
 
@@ -60,15 +60,15 @@ public class XTCommitHistory: NSObject {
     
     var description: String
     {
-      guard let first = entries.first?.commit.SHA?.firstSix(),
-            let last = entries.last?.commit.SHA?.firstSix()
+      guard let first = entries.first?.commit.sha?.firstSix(),
+            let last = entries.last?.commit.sha?.firstSix()
       else { return "empty" }
       return "\(first)..\(last)"
     }
   }
   
   /// Manually appends a commit.
-  func appendCommit(commit: CommitType)
+  func appendCommit(_ commit: CommitType)
   {
     entries.append(CommitEntry(commit: commit))
   }
@@ -126,9 +126,9 @@ public class XTCommitHistory: NSObject {
   }
   
   /// Adds new commits to the list.
-  func process(startCommit: CommitType, afterCommit: CommitType? = nil)
+  func process(_ startCommit: CommitType, afterCommit: CommitType? = nil)
   {
-    let startOID = startCommit.OID
+    let startOID = startCommit.oid
     guard commitLookup[startOID] == nil
     else { return }
     
@@ -136,10 +136,10 @@ public class XTCommitHistory: NSObject {
     var startCommit = startCommit
     
     repeat {
-      var result = self.branchEntries(startCommit)
+      var result = self.branchEntries(startCommit: startCommit)
       
       defer { results.append(result) }
-      if let nextOID = result.entries.last?.commit.parentOIDs.first where
+      if let nextOID = result.entries.last?.commit.parentOIDs.first ,
          commitLookup[nextOID] == nil,
          let nextCommit = repository.commit(forOID: nextOID) {
         startCommit = nextCommit
@@ -149,66 +149,66 @@ public class XTCommitHistory: NSObject {
       }
     } while true
     
-    for result in results.reverse() {
-      for (parent, after) in result.queue.reverse() {
+    for result in results.reversed() {
+      for (parent, after) in result.queue.reversed() {
         process(parent, afterCommit: after)
       }
       processBranchResult(result, after: afterCommit)
     }
   }
   
-  func processBranchResult(result: BranchResult, after afterCommit: CommitType?)
+  func processBranchResult(_ result: BranchResult, after afterCommit: CommitType?)
   {
     for branchEntry in result.entries {
-      commitLookup[branchEntry.commit.OID] = branchEntry
+      commitLookup[branchEntry.commit.oid] = branchEntry
     }
     
     let afterIndex = afterCommit.flatMap(
-        { commit in entries.indexOf({ $0.commit.OID == commit.OID }) })
+        { commit in entries.index(where: { $0.commit.oid == commit.oid }) })
     guard let lastEntry = result.entries.last
     else { return }
     let lastParentOIDs = lastEntry.commit.parentOIDs
     
     if let insertBeforeIndex = lastParentOIDs.flatMap(
-           { oid in entries.indexOf({ $0.commit.OID == oid }) }).sort().first {
+           { oid in entries.index(where: { $0.commit.oid == oid }) }).sorted().first {
       #if DEBUGLOG
       print(" ** \(insertBeforeIndex) before \(entries[insertBeforeIndex].commit)")
       #endif
-      if let afterIndex = afterIndex where
+      if let afterIndex = afterIndex ,
          afterIndex < insertBeforeIndex {
         #if DEBUGLOG
         print(" *** \(result) after \(afterCommit?.description ?? "")")
         #endif
-        entries.insertContentsOf(result.entries, at: afterIndex + 1)
+        entries.insert(contentsOf: result.entries, at: afterIndex + 1)
       }
       else {
         #if DEBUGLOG
         print(" *** \(result) before \(entries[insertBeforeIndex].commit) (after \(afterCommit?.description ?? "-"))")
         #endif
-        entries.insertContentsOf(result.entries, at: insertBeforeIndex)
+        entries.insert(contentsOf: result.entries, at: insertBeforeIndex)
       }
     }
     else if
-       let lastSecondaryOID = result.queue.last?.after.OID,
+       let lastSecondaryOID = result.queue.last?.after.oid,
        let lastSecondaryEntry = commitLookup[lastSecondaryOID],
-       let lastSecondaryIndex = entries.indexOf(
-          { return $0.commit.OID == lastSecondaryEntry.commit.OID }) {
+       let lastSecondaryIndex = entries.index(
+          where: { return $0.commit.oid == lastSecondaryEntry.commit.oid }) {
       #if DEBUGLOG
       print(" ** after secondary \(lastSecondaryOID.SHA!.firstSix())")
       #endif
-      entries.insertContentsOf(result.entries, at: lastSecondaryIndex)
+      entries.insert(contentsOf: result.entries, at: lastSecondaryIndex)
     }
     else if let afterIndex = afterIndex {
       #if DEBUGLOG
       print(" ** \(result) after \(afterCommit?.description ?? "")")
       #endif
-      entries.insertContentsOf(result.entries, at: afterIndex + 1)
+      entries.insert(contentsOf: result.entries, at: afterIndex + 1)
     }
     else {
       #if DEBUGLOG
       print(" ** appending \(result)")
       #endif
-      entries.appendContentsOf(result.entries)
+      entries.append(contentsOf: result.entries)
     }
   }
   
@@ -220,8 +220,8 @@ public class XTCommitHistory: NSObject {
     var nextColorIndex: UInt = 0
     
     for entry in entries {
-      let commitOID = entry.commit.OID
-      let incomingIndex = connections.indexOf({ $0.parentOID == commitOID })
+      let commitOID = entry.commit.oid
+      let incomingIndex = connections.index(where: { $0.parentOID == commitOID })
       let incomingColor: UInt? = (incomingIndex != nil)
           ? connections[incomingIndex!].colorIndex
           : nil
@@ -235,7 +235,7 @@ public class XTCommitHistory: NSObject {
             ? incomingIndex! + 1
             : connections.endIndex
         
-        connections.insert(newConnection, atIndex: insertIndex)
+        connections.insert(newConnection, at: insertIndex)
       }
       
       // Add new connections for the commit's parents

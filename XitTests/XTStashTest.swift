@@ -9,14 +9,14 @@ class XTStashTest: XTTest
     self.makeStash()
     
     let addedPath =
-      (self.repoPath as NSString).stringByAppendingPathComponent(addedName)
+      (self.repoPath as NSString).appendingPathComponent(addedName)
     let untrackedPath =
-        (self.repoPath as NSString).stringByAppendingPathComponent(untrackedName)
+        (self.repoPath as NSString).appendingPathComponent(untrackedName)
     let addedIndex = 0, file1Index = 1, untrackedIndex = 2;
     
     // Stash should have cleaned up both new files
-    XCTAssertFalse(NSFileManager.defaultManager().fileExistsAtPath(untrackedPath))
-    XCTAssertFalse(NSFileManager.defaultManager().fileExistsAtPath(addedPath))
+    XCTAssertFalse(FileManager.default.fileExists(atPath: untrackedPath))
+    XCTAssertFalse(FileManager.default.fileExists(atPath: addedPath))
     
     let stash = XTStash(repo: self.repository, index: 0, message: "stash 0")
     let changes = stash.changes()
@@ -26,14 +26,14 @@ class XTStashTest: XTTest
     
     XCTAssertEqual(changes.count, 3)
     XCTAssertEqual(addedChange.path, addedName)
-    XCTAssertEqual(addedChange.change, XitChange.Added)
-    XCTAssertEqual(addedChange.unstagedChange, XitChange.Unmodified)
+    XCTAssertEqual(addedChange.change, XitChange.added)
+    XCTAssertEqual(addedChange.unstagedChange, XitChange.unmodified)
     XCTAssertEqual(file1Change.path, self.file1Name)
-    XCTAssertEqual(file1Change.change, XitChange.Unmodified)
-    XCTAssertEqual(file1Change.unstagedChange, XitChange.Modified)
+    XCTAssertEqual(file1Change.change, XitChange.unmodified)
+    XCTAssertEqual(file1Change.unstagedChange, XitChange.modified)
     XCTAssertEqual(untrackedChange.path, untrackedName)
-    XCTAssertEqual(untrackedChange.change, XitChange.Unmodified)
-    XCTAssertEqual(untrackedChange.unstagedChange, XitChange.Added)
+    XCTAssertEqual(untrackedChange.change, XitChange.unmodified)
+    XCTAssertEqual(untrackedChange.unstagedChange, XitChange.added)
     
     XCTAssertNotNil(stash.headBlobForPath(self.file1Name))
     

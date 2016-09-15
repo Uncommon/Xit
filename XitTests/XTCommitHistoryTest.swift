@@ -8,7 +8,7 @@ class MockCommit: NSObject, CommitType {
   let parentOIDs: [GTOID]
   
   var message: String? { return nil }
-  var commitDate: NSDate { return NSDate() }
+  var commitDate: Date { return Date() }
   var email: String? { return nil }
   
   init(SHA: String?, OID: GTOID, parentOIDs: [GTOID])
@@ -28,9 +28,9 @@ func == (a: MockCommit, b: MockCommit) -> Bool
 extension GTOID {
   convenience init(oid: String)
   {
-    let padded = (oid as NSString).stringByPaddingToLength(40, withString: "0", startingAtIndex: 0)
+    let padded = (oid as NSString).padding(toLength: 40, withPad: "0", startingAt: 0)
     
-    self.init(SHA: padded)!
+    self.init(sha: padded)!
   }
 }
 
@@ -83,7 +83,7 @@ extension Xit.CommitConnection {
 
 class XTCommitHistoryTest: XCTestCase {
   
-  func makeHistory(commitData: [(String, [String])]) -> XTCommitHistory
+  func makeHistory(_ commitData: [(String, [String])]) -> XTCommitHistory
   {
     let commits = commitData.map({ (sha, parents) in
         MockCommit(SHA: sha,
@@ -98,7 +98,7 @@ class XTCommitHistoryTest: XCTestCase {
   }
   
   /// Makes sure each commit preceds its parents.
-  func check(history: XTCommitHistory, expectedLength: Int)
+  func check(_ history: XTCommitHistory, expectedLength: Int)
   {
     print("\(history.entries.flatMap({ $0.commit.SHA }))")
     XCTAssert(history.entries.count == expectedLength)

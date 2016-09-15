@@ -23,10 +23,10 @@ public class XTHistoryTableController: NSViewController {
       table.intercellSpacing = spacing
 
       loadHistory()
-      NSNotificationCenter.defaultCenter().addObserver(
+      NotificationCenter.default.addObserver(
           self,
           selector: #selector(XTHistoryTableController.refsChanged(_:)),
-          name: XTRepositoryRefsChangedNotification,
+          name: NSNotification.Name.XTRepositoryRefsChanged,
           object: repository)
     }
   }
@@ -35,31 +35,31 @@ public class XTHistoryTableController: NSViewController {
   
   deinit
   {
-    NSNotificationCenter.defaultCenter().removeObserver(self)
+    NotificationCenter.default.removeObserver(self)
   }
   
-  override public func viewDidAppear()
+  override open func viewDidAppear()
   {
     let controller = view.window?.windowController as! XTWindowController
     
-    NSNotificationCenter.defaultCenter().addObserverForName(
-        XTSelectedModelChangedNotification,
+    NotificationCenter.default.addObserver(
+        forName: NSNotification.Name.XTSelectedModelChanged,
         object: controller,
         queue: nil) { [weak self]
       (notification) in
-      if let selectedModel = notification.userInfo?[NSKeyValueChangeNewKey]
+      if let selectedModel = (notification as NSNotification).userInfo?[NSKeyValueChangeKey.newKey]
                              as? XTFileChangesModel {
         self?.selectRow(sha: selectedModel.shaToSelect)
       }
     }
-    NSNotificationCenter.defaultCenter().addObserver(
+    NotificationCenter.default.addObserver(
         self,
         selector: #selector(XTHistoryTableController.dateViewResized(_:)),
-        name: NSViewFrameDidChangeNotification,
+        name: NSNotification.Name.NSViewFrameDidChange,
         object: nil)
   }
   
-  func refsChanged(_: NSNotification)
+  func refsChanged(_: Notification)
   {
     // To do: dynamic updating
     // - new and changed refs: add if they're not already in the list
@@ -87,71 +87,71 @@ public class XTHistoryTableController: NSViewController {
     history.reset()
     XTStatusView.update(status: "Loading...",
                         progress: -1,
-                        repository: repository)
-    NSNotificationCenter.defaultCenter().postNotificationName(
-        XTTaskStartedNotification, object: repository)
-    repository.executeOffMainThread {
+                        repository: repository!)
+    NotificationCenter.default.post(name: NSNotification.Name.XTTaskStarted,
+                                    object: repository)
+    repository?.executeOffMainThread {
       defer {
-        NSNotificationCenter.defaultCenter().postNotificationName(
-            XTTaskEndedNotification, object: repository)
+        NotificationCenter.default.post(name: NSNotification.Name.XTTaskEnded,
+                                        object: repository)
       }
       
-      guard let walker = try? GTEnumerator(repository: repository.gtRepo)
+      guard let walker = try? GTEnumerator(repository: (repository?.gtRepo)!)
       else {
         NSLog("GTEnumerator failed")
         return
       }
       
-      walker.resetWithOptions([.TopologicalSort, .TimeSort])
+      walker.reset(options: [.topologicalSort, .timeSort])
       
-      let refs = repository.allRefs()
+      let refs = repository?.allRefs()
       
       // TODO: sort refs by commit date
-      for ref in refs {
-        _ = repository.shaForRef(ref).flatMap { try? walker.pushSHA($0) }
+      for ref in refs! { //!
+        _ = repository?.sha(forRef: ref).flatMap { try? walker.pushSHA($0) }
       }
       
       while let gtCommit = walker.nextObject() as? GTCommit {
-        guard let commit = XTCommit(oid: gtCommit.OID!, repository: repository)
+        guard let commit = XTCommit(oid: gtCommit.oid!, repository: repository!)
         else { continue }
         
         history.appendCommit(commit)
       }
       
       history.connectCommits()
-      dispatch_async(dispatch_get_main_queue()) {
+      DispatchQueue.main.async {
         tableView?.reloadData()
         XTStatusView.update(status: "Loaded \(history.entries.count) commits",
                             progress: -1,
-                            repository: repository)
+                            repository: repository!)
       }
     }
   }
   
   /// Selects the row for the given commit SHA.
-  func selectRow(sha sha: String?)
+  func selectRow(sha: String?)
   {
     let tableView = view as! NSTableView
     
     guard let sha = sha,
-          let row = history.entries.indexOf({ $0.commit.SHA == sha })
+          let row = history.entries.index(where: { $0.commit.sha == sha })
     else {
       tableView.deselectAll(self)
       return
     }
     
-    tableView.selectRowIndexes(NSIndexSet(index: row),
+    tableView.selectRowIndexes(IndexSet(integer: row),
                                byExtendingSelection: false)
     if view.window?.firstResponder != tableView {
       tableView.scrollRowToVisible(row)
     }
   }
   
-  func dateViewResized(notification: NSNotification)
+  func dateViewResized(_ notification: Notification)
   {
     guard let textField = notification.object as? NSTextField,
-          let formatter = textField.cell?.formatter as? NSDateFormatter,
-          let date = textField.objectValue as? NSDate
+          let formatter = textField.cell?.formatter as? DateFormatter,
+          let date = textField.objectValue as? Date
     else { return }
     
     updateDateStyle(formatter, width: textField.bounds.size.width)
@@ -159,7 +159,7 @@ public class XTHistoryTableController: NSViewController {
     textField.objectValue = date
   }
   
-  func updateDateStyle(formatter: NSDateFormatter, width: CGFloat)
+  func updateDateStyle(_ formatter: DateFormatter, width: CGFloat)
   {
     let (dateStyle, timeStyle) = dateTimeStyle(width: width)
     
@@ -174,31 +174,31 @@ let kMediumStyleThreshold: CGFloat = 170
 let kShordStyleThreshold: CGFloat = 150
 
 /// Calculates the appropriate date and time format for a given column width.
-func dateTimeStyle(width width: CGFloat) -> (date: NSDateFormatterStyle,
-                                             time: NSDateFormatterStyle)
+func dateTimeStyle(width: CGFloat) -> (date: DateFormatter.Style,
+                                       time: DateFormatter.Style)
 {
-  var dateStyle = NSDateFormatterStyle.ShortStyle
-  var timeStyle = NSDateFormatterStyle.ShortStyle
+  var dateStyle = DateFormatter.Style.short
+  var timeStyle = DateFormatter.Style.short
   
   switch width {
     case 0..<kShordStyleThreshold:
-      timeStyle = .NoStyle
+      timeStyle = .none
     case kShordStyleThreshold..<kMediumStyleThreshold:
-      dateStyle = .ShortStyle
+      dateStyle = .short
     case kMediumStyleThreshold..<kLongStyleThreshold:
-      dateStyle = .MediumStyle
+      dateStyle = .medium
     case kLongStyleThreshold..<kFullStyleThreshold:
-      dateStyle = .LongStyle
+      dateStyle = .long
     default:
-      dateStyle = .FullStyle
+      dateStyle = .full
   }
   return (dateStyle, timeStyle)
 }
 
 extension XTHistoryTableController: NSTableViewDelegate {
   
-  public func tableView(tableView: NSTableView,
-                        viewForTableColumn tableColumn: NSTableColumn?,
+  public func tableView(_ tableView: NSTableView,
+                        viewFor tableColumn: NSTableColumn?,
                         row: Int) -> NSView?
   {
     guard (row >= 0) && (row < history.entries.count)
@@ -207,12 +207,12 @@ extension XTHistoryTableController: NSTableViewDelegate {
       return nil
     }
     guard let tableColumn = tableColumn,
-          let result = tableView.makeViewWithIdentifier(
-              tableColumn.identifier, owner: self) as? NSTableCellView
+          let result = tableView.make(withIdentifier: tableColumn.identifier,
+                                      owner: self) as? NSTableCellView
     else { return nil }
     
     let entry = history.entries[row]
-    guard let sha = entry.commit.SHA
+    guard let sha = entry.commit.sha
     else { return nil }
     
     switch tableColumn.identifier {
@@ -224,7 +224,7 @@ extension XTHistoryTableController: NSTableViewDelegate {
         historyCell.objectValue = entry
       case ColumnID.date:
         let textField = result.textField!
-        let formatter = textField.cell!.formatter as! NSDateFormatter
+        let formatter = textField.cell!.formatter as! DateFormatter
         
         updateDateStyle(formatter, width: tableColumn.width)
         textField.objectValue = entry.commit.commitDate
@@ -238,7 +238,7 @@ extension XTHistoryTableController: NSTableViewDelegate {
     return result
   }
  
-  public func tableViewSelectionDidChange(notification: NSNotification)
+  public func tableViewSelectionDidChange(_ notification: Notification)
   {
     guard view.window?.firstResponder == view,
           let tableView = notification.object as? NSTableView
@@ -248,7 +248,7 @@ extension XTHistoryTableController: NSTableViewDelegate {
     
     if (selectedRow >= 0) && (selectedRow < history.entries.count),
        let controller = view.window?.windowController as? XTWindowController,
-       let sha = history.entries[selectedRow].commit.SHA {
+       let sha = history.entries[selectedRow].commit.sha {
       controller.selectedModel = XTCommitChanges(repository: repository, sha: sha)
     }
   }
@@ -256,7 +256,7 @@ extension XTHistoryTableController: NSTableViewDelegate {
 
 extension XTHistoryTableController: NSTableViewDataSource {
   
-  public func numberOfRowsInTableView(tableView: NSTableView) -> Int
+  public func numberOfRows(in tableView: NSTableView) -> Int
   {
     return history.entries.count
   }

@@ -15,5 +15,5 @@ class XTSubmodule: NSObject {
   
   var name: String? { return sub.name }
   var path: String? { return sub.path }
-  var URLString: String? { return sub.URLString }
+  var URLString: String? { return sub.urlString }
 }

@@ -54,7 +54,7 @@ class XTFetchController: XTPasswordOpController {
     panel.pruneBranches = config.fetchPrune(panel.selectedRemote)
     self.windowController!.window!.beginSheet(panel.window!) { (response) in
       if response == NSModalResponseOK {
-        self.executeFetch(panel.selectedRemote as String,
+        self.executeFetch(remoteName: panel.selectedRemote as String,
                           downloadTags: panel.downloadTags,
                           pruneBranches: panel.pruneBranches)
       }
@@ -65,7 +65,7 @@ class XTFetchController: XTPasswordOpController {
   }
   
   /// Fetch progress callback
-  func shouldStop(progress progress: git_transfer_progress) -> Bool
+  func shouldStop(progress: git_transfer_progress) -> Bool
   {
     guard let repository = repository
     else { return true }
@@ -106,8 +106,8 @@ class XTFetchController: XTPasswordOpController {
                      pruneBranches: pruneBranches,
                      passwordBlock: self.getPassword,
                      progressBlock: self.shouldStop)
-      NSNotificationCenter.defaultCenter().postNotificationName(
-          XTRepositoryRefsChangedNotification, object: repository)
+      NotificationCenter.default.post(
+          name: NSNotification.Name.XTRepositoryRefsChanged, object: repository)
       self.ended()
     }
   }

@@ -14,14 +14,14 @@ class XTRemoteSheetController: XTSheetController {
     get { return nameField.stringValue }
     set { nameField.stringValue = newValue }
   }
-  var fetchURL: NSURL?
+  var fetchURL: URL?
   {
-    get { return NSURL(string: fetchField.stringValue) }
+    get { return URL(string: fetchField.stringValue) }
     set { fetchField.stringValue = newValue?.absoluteString ?? "" }
   }
-  var pushURL: NSURL?
+  var pushURL: URL?
     {
-    get { return NSURL(string: pushField.stringValue) }
+    get { return URL(string: pushField.stringValue) }
     set { pushField.stringValue = newValue?.absoluteString ?? "" }
   }
   
@@ -32,7 +32,7 @@ class XTRemoteSheetController: XTSheetController {
     pushURL = nil
   }
   
-  override func accept(sender: AnyObject)
+  override func accept(_ sender: AnyObject)
   {
     // validate the fields
     

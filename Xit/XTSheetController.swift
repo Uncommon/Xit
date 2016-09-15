@@ -2,17 +2,17 @@ import Cocoa
 
 public class XTSheetController: NSWindowController {
   
-  func end(code: NSModalResponse)
+  func end(_ code: NSModalResponse)
   {
     window!.sheetParent?.endSheet(window!, returnCode: code)
   }
   
-  @IBAction func accept(sender: AnyObject)
+  @IBAction func accept(_ sender: AnyObject)
   {
     end(NSModalResponseOK)
   }
   
-  @IBAction func cancel(sender: AnyObject)
+  @IBAction func cancel(_ sender: AnyObject)
   {
     end(NSModalResponseCancel)
   }
@@ -24,7 +24,7 @@ public class XTSheetController: NSWindowController {
   
   class func controller() -> Self
   {
-    let result = self.init(windowNibName: String(self))
+    let result = self.init(windowNibName: String(describing: self))
     
     _ = result.window  // force the nib to load
     return result

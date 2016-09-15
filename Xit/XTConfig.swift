@@ -9,9 +9,9 @@ class XTConfig: NSObject {
   let config: GTConfiguration?
   var xitConfig: [String: String] = [:]
   
-  var xitConfigURL: NSURL?
+  var xitConfigURL: URL?
   {
-    return repository.gitDirectoryURL.URLByAppendingPathComponent("xit-config.plist")
+    return repository.gitDirectoryURL.appendingPathComponent("xit-config.plist")
   }
   
   init(repository: XTRepository)
@@ -34,7 +34,7 @@ class XTConfig: NSObject {
       NSLog("Can't make Xit config URL")
       return
     }
-    guard let configContents = NSMutableDictionary(contentsOfURL: xitConfigURL)
+    guard let configContents = NSMutableDictionary(contentsOf: xitConfigURL)
     else {
       NSLog("Can't read xit-config")
       return
@@ -56,7 +56,7 @@ class XTConfig: NSObject {
         return
     }
     
-    if !(xitConfig as NSDictionary).writeToURL(xitConfigURL, atomically: true) {
+    if !(xitConfig as NSDictionary).write(to: xitConfigURL, atomically: true) {
       NSLog("Save config failed")
     }
   }
@@ -65,42 +65,42 @@ class XTConfig: NSObject {
   final func fetchPrune() -> Bool
   {
     guard let config = config else { return false }
-    return config.boolForKey("fetch.prune")
+    return config.bool(forKey: "fetch.prune")
   }
   
   /// Returns the prune setting for `remote`, or falls back to the general
   /// `fetch.prune` setting.
-  final func fetchPrune(remote: String) -> Bool
+  final func fetchPrune(_ remote: String) -> Bool
   {
     guard let config = config else { return false }
-    if config.boolForKey("remote.\(remote).prune") {
+    if config.bool(forKey: "remote.\(remote).prune") {
       return true
     }
     return fetchPrune()
   }
   
   /// Returns true if `--no-tags` is set for `remote.<remote>.tagOpt`.
-  final func fetchTags(remote: String) -> Bool
+  final func fetchTags(_ remote: String) -> Bool
   {
     guard let config = config else { return true }
-    if config.stringForKey("remote.\(remote).tagOpt") == "--no-tags" {
+    if config.string(forKey: "remote.\(remote).tagOpt") == "--no-tags" {
       return false
     }
-    return NSUserDefaults.standardUserDefaults().boolForKey(
-        XTGitPrefsController.PrefKey.FetchTags)
+    return UserDefaults.standard.bool(
+        forKey: XTGitPrefsController.PrefKey.FetchTags)
   }
   
-  final func teamCityAccountKey(remote: String) -> String
+  final func teamCityAccountKey(_ remote: String) -> String
   {
     return "remote.\(remote).teamCityAccount"
   }
   
   /// Returns the TeamCity account chosen for the remote, if any.
-  final func teamCityAccount(remote: String) -> Account?
+  final func teamCityAccount(_ remote: String) -> Account?
   {
     guard let accountString = xitConfig[teamCityAccountKey(remote)]
     else { return nil }
-    guard let url = NSURLComponents(string: accountString)
+    guard var url = URLComponents(string: accountString)
     else {
       NSLog("Stored URL not parseable: \(accountString)")
       return nil
@@ -109,26 +109,26 @@ class XTConfig: NSObject {
     
     url.user = nil
     
-    guard let finalURL = url.URL
+    guard let finalURL = url.url
     else {
       NSLog("Couldn't reconstruct URL: \(accountString)")
       return nil
     }
     
-    return Account(type: .TeamCity, user: user, location: finalURL)
+    return Account(type: .teamCity, user: user, location: finalURL)
   }
   
   /// Sets (or clears) the TeamCity account for the remote.
-  final func setTeamCityAccount(remote: String, account: Account?)
+  final func setTeamCityAccount(_ remote: String, account: Account?)
   {
     if let account = account {
-      guard account.type == .TeamCity
+      guard account.type == .teamCity
       else {
         NSLog("Wrong account type: \(account.type.name)")
         return
       }
-      guard let url = NSURLComponents(URL: account.location,
-                                      resolvingAgainstBaseURL: false)
+      guard var url = URLComponents(url: account.location as URL,
+                                    resolvingAgainstBaseURL: false)
       else {
         NSLog("Couldn't parse URL from account: \(account.location.absoluteString)")
         return
@@ -138,7 +138,7 @@ class XTConfig: NSObject {
       xitConfig[teamCityAccountKey(remote)] = url.string
     }
     else {
-      xitConfig.removeValueForKey(teamCityAccountKey(remote))
+      xitConfig.removeValue(forKey: teamCityAccountKey(remote))
     }
   }
 }

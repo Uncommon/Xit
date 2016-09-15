@@ -10,18 +10,18 @@ class XTPasswordOpController: XTSimpleOperationController {
     else { return nil }
     
     let panel = XTPasswordPanelController.controller()
-    let semaphore = dispatch_semaphore_create(0)
+    let semaphore = DispatchSemaphore(value: 0)
     var result: (String, String)? = nil
     
-    dispatch_async(dispatch_get_main_queue()) {
+    DispatchQueue.main.async {
       window.beginSheet(panel.window!) { (response) in
         if response == NSModalResponseOK {
           result = (panel.userName, panel.password)
         }
-        _ = dispatch_semaphore_signal(semaphore)
+        _ = semaphore.signal()
       }
     }
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+    _ = semaphore.wait(timeout: DispatchTime.distantFuture)
     return result
   }
 

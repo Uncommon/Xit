@@ -9,19 +9,19 @@ class XTWorkspaceTreeBuilder: NSObject {
     super.init()
   }
   
-  func treeAtURL(baseURL: NSURL, rootPath: NSString) -> NSTreeNode {
-    let rootItem = XTCommitTreeItem(path: baseURL.path!)
+  func treeAtURL(_ baseURL: URL, rootPath: NSString) -> NSTreeNode {
+    let rootItem = XTCommitTreeItem(path: baseURL.path)
     let node = NSTreeNode(representedObject: rootItem)
-    let enumerator = NSFileManager.defaultManager().enumeratorAtURL(
-        baseURL,
-        includingPropertiesForKeys: [ NSURLIsDirectoryKey ],
-        options: .SkipsSubdirectoryDescendants,
+    let enumerator = FileManager.default.enumerator(
+        at: baseURL,
+        includingPropertiesForKeys: [ URLResourceKey.isDirectoryKey ],
+        options: .skipsSubdirectoryDescendants,
         errorHandler: nil)
     let rootPathLength = rootPath.length + 1
     
-    while let url: NSURL = enumerator?.nextObject() as! NSURL? {
-      let urlPath = url.path!
-      let path = (urlPath as NSString).substringFromIndex(rootPathLength)
+    while let url: URL = enumerator?.nextObject() as! URL? {
+      let urlPath = url.path
+      let path = (urlPath as NSString).substring(from: rootPathLength)
       
       if path == ".git" {
         continue
@@ -31,7 +31,7 @@ class XTWorkspaceTreeBuilder: NSObject {
       var isDirectory: AnyObject?
       
       do {
-        try url.getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
+        try (url as NSURL).getResourceValue(&isDirectory, forKey: URLResourceKey.isDirectoryKey)
       }
       catch {
         continue
@@ -50,13 +50,13 @@ class XTWorkspaceTreeBuilder: NSObject {
         }
       }
       if childNode != nil {
-        node.mutableChildNodes.addObject(childNode!)
+        node.mutableChildren.add(childNode!)
       }
     }
     return node
   }
   
-  func build(baseURL: NSURL) -> NSTreeNode {
-    return self.treeAtURL(baseURL, rootPath: baseURL.path!)
+  func build(_ baseURL: URL) -> NSTreeNode {
+    return self.treeAtURL(baseURL, rootPath: baseURL.path as NSString)
   }
 }

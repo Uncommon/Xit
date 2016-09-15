@@ -4,26 +4,26 @@ extension String {
   
   /// Returns the string with the given prefix removed, or returns the string
   /// unchanged if the prefix does not match.
-  func stringByRemovingPrefix(prefix: String) -> String
+  func stringByRemovingPrefix(_ prefix: String) -> String
   {
     guard hasPrefix(prefix)
     else { return self }
     
-    return self.substringFromIndex(prefix.characters.endIndex)
+    return self.substring(from: prefix.characters.endIndex)
   }
   
-  func stringByAppendingPathComponent(component: String) -> String
+  func stringByAppendingPathComponent(_ component: String) -> String
   {
-    return (self as NSString).stringByAppendingPathComponent(component)
+    return (self as NSString).appendingPathComponent(component)
   }
   
   var stringByDeletingLastPathComponent: String
   {
-    return (self as NSString).stringByDeletingLastPathComponent
+    return (self as NSString).deletingLastPathComponent
   }
 }
 
-extension NSXMLElement {
+extension XMLElement {
   
   /// Returns the element's attributes as a dictionary.
   func attributesDict() -> [String: String]
@@ -45,10 +45,10 @@ extension NSXMLElement {
   
   /// Returns a list of attribute values of all children, matching the given
   /// attribute name.
-  func childrenAttributes(name: String) -> [String]
+  func childrenAttributes(_ name: String) -> [String]
   {
     return children?.flatMap({
-      ($0 as? NSXMLElement)?.attributeForName(name)?.stringValue
+      ($0 as? XMLElement)?.attribute(forName: name)?.stringValue
     }) ?? []
   }
 }
@@ -70,19 +70,31 @@ extension String {
     guard hasPrefix("refs/")
     else { return nil }
     
-    let start = startIndex.advancedBy("refs/".characters.count)
-    guard let slashRange = rangeOfString("/", options: [], range: start..<endIndex, locale: nil)
+    let start = characters.index(startIndex, offsetBy: "refs/".characters.count)
+    guard let slashRange = range(of: "/", options: [], range: start..<endIndex, locale: nil)
     else { return nil }
     
-    return (substringToIndex(slashRange.startIndex.successor()),
-            substringFromIndex(slashRange.endIndex))
+    return (substring(to: characters.index(before: slashRange.lowerBound)),
+            substring(from: slashRange.upperBound))
   }
 }
 
 extension NSTableView {
   /// Returns a set of all visible row indexes
-  func visibleRows() -> NSIndexSet
+  func visibleRows() -> IndexSet
   {
-    return NSIndexSet(indexesInRange: rowsInRect(visibleRect))
+    return IndexSet(integersIn: rows(in: visibleRect).toRange() ?? 0..<0)
+  }
+}
+
+// Swift 3 took away ++, but it still can be useful.
+postfix operator ++
+
+extension UInt {
+  static postfix func ++ (i: inout UInt) -> UInt
+  {
+    let result = i
+    i = i + 1
+    return result
   }
 }

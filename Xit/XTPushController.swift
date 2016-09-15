@@ -35,13 +35,13 @@ class XTPushController: XTPasswordOpController {
     
     alert.messageText = "Push local branch \(branchName) to " +
                         "remote \"\(remoteBranch.remoteName)\"?"
-    alert.addButtonWithTitle("Push")
-    alert.addButtonWithTitle("Cancel")
+    alert.addButton(withTitle: "Push")
+    alert.addButton(withTitle: "Cancel")
     
-    alert.beginSheetModalForWindow(windowController!.window!) {
+    alert.beginSheetModal(for: windowController!.window!) {
       (response) in
       if (response == NSAlertFirstButtonReturn) {
-        self.push(branch, remote: remote)
+        self.push(localBranch: branch, remote: remote)
       }
       else {
         self.ended()
@@ -60,8 +60,8 @@ class XTPushController: XTPasswordOpController {
                           remote: remote,
                           passwordBlock: self.getPassword,
                           progressBlock: self.shouldStop)
-      NSNotificationCenter.defaultCenter().postNotificationName(
-          XTRepositoryRefsChangedNotification, object: repository)
+      NotificationCenter.default.post(
+          name: NSNotification.Name.XTRepositoryRefsChanged, object: repository)
       self.ended()
     }
   }

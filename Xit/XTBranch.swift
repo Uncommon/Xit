@@ -17,8 +17,8 @@ public class XTLocalBranch: XTBranch {
   
   init?(repository: XTRepository, name: String)
   {
-    guard let gtBranch = try? repository.gtRepo.lookUpBranchWithName(
-        name, type: .Local, success: nil)
+    guard let gtBranch = try? repository.gtRepo.lookUpBranch(
+        withName: name, type: .local, success: nil)
     else { return nil }
     
     super.init(gtBranch: gtBranch)
@@ -43,8 +43,8 @@ public class XTRemoteBranch: XTBranch {
   
   init?(repository: XTRepository, name: String)
   {
-    guard let gtBranch = try? repository.gtRepo.lookUpBranchWithName(
-      name, type: .Remote, success: nil)
+    guard let gtBranch = try? repository.gtRepo.lookUpBranch(
+      withName: name, type: .remote, success: nil)
       else { return nil }
     
     super.init(gtBranch: gtBranch)

@@ -6,18 +6,18 @@ class XTHistoryCellView: NSTableCellView {
   var refs = [String]()
   
   // Flipped because that's how XTRefToken draws.
-  override var flipped: Bool { return true }
+  override var isFlipped: Bool { return true }
   
   /// Margin of space to leave for the lines in this cell.
-  private var linesMargin: CGFloat = 0.0
+  fileprivate var linesMargin: CGFloat = 0.0
   
   static let lineColors = [
-      NSColor.blueColor(), NSColor.greenColor(), NSColor.redColor(),
-      NSColor.brownColor(), NSColor.cyanColor(), NSColor.darkGrayColor(),
-      NSColor.magentaColor(), NSColor.orangeColor(), NSColor.purpleColor(),
+      NSColor.blue, NSColor.green, NSColor.red,
+      NSColor.brown, NSColor.cyan, NSColor.darkGray,
+      NSColor.magenta, NSColor.orange, NSColor.purple,
       // Regular yellow is too light
       NSColor(calibratedHue: 0.13, saturation: 0.08, brightness: 0.8, alpha: 1.0),
-      NSColor.blackColor(), NSColor.lightGrayColor()]
+      NSColor.black, NSColor.lightGray]
   
   static let columnWidth: CGFloat = 8.0
   static let leftMargin: CGFloat = 4.0
@@ -26,13 +26,13 @@ class XTHistoryCellView: NSTableCellView {
   static let tokenMargin: CGFloat = 4.0
 
   /// Finds the center of the given column.
-  static func columnCenter(index: UInt) -> CGFloat
+  static func columnCenter(_ index: UInt) -> CGFloat
   {
     return leftMargin + columnWidth * CGFloat(index) + columnWidth / 2
   }
   
   /// Counts the different kinds of connections passing through a commit.
-  static func count(connections connections: [CommitConnection], oid: GTOID)
+  static func count(connections: [CommitConnection], oid: GTOID)
     -> (incoming: UInt, outgoing: UInt, through: UInt)
   {
     var incomingCount: UInt = 0, outgoingCount: UInt = 0, throughCount: UInt = 0
@@ -56,7 +56,7 @@ class XTHistoryCellView: NSTableCellView {
     guard let entry = objectValue as? CommitEntry,
           let textField = textField
     else { return }
-    let oid = entry.commit.OID
+    let oid = entry.commit.oid
     
     let (incomingCount, outgoingCount, throughCount) =
         XTHistoryCellView.count(connections: entry.connections, oid: oid)
@@ -83,25 +83,25 @@ class XTHistoryCellView: NSTableCellView {
   }
   
   /// Draws the graph lines and refs in the view.
-  override func drawRect(dirtyRect: NSRect)
+  override func draw(_ dirtyRect: NSRect)
   {
-    super.drawRect(dirtyRect)
+    super.draw(dirtyRect)
     
     drawRefs()
     drawLines()
   }
   
-  static func refType(typeName: String) -> XTRefType
+  static func refType(_ typeName: String) -> XTRefType
   {
     switch typeName {
       case "refs/heads/":
-        return .Branch
+        return .branch
       case "refs/remotes/":
-        return .RemoteBranch
+        return .remoteBranch
       case "refs/tags/":
-        return .Tag
+        return .tag
       default:
-        return .Unknown
+        return .unknown
     }
   }
   
@@ -138,36 +138,36 @@ class XTHistoryCellView: NSTableCellView {
     for connection in entry.connections {
       let path = NSBezierPath()
       
-      if connection.parentOID == entry.commit.OID {
+      if connection.parentOID == entry.commit.oid {
         if dotOffset == nil {
           dotOffset = topOffset
           dotColorIndex = connection.colorIndex
         }
         
-        path.moveToPoint(NSPoint(x: XTHistoryCellView.columnCenter(topOffset),
+        path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(topOffset),
                                  y: 0))
-        path.relativeLineToPoint(NSMakePoint(0, 0.5))
-        path.lineToPoint(NSPoint(x: XTHistoryCellView.columnCenter(dotOffset!),
+        path.relativeLine(to: NSMakePoint(0, 0.5))
+        path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(dotOffset!),
                                  y: bounds.size.height/2))
         topOffset += 1
       }
-      else if connection.childOID == entry.commit.OID {
+      else if connection.childOID == entry.commit.oid {
         if dotOffset == nil {
           dotOffset = topOffset
           dotColorIndex = connection.colorIndex
         }
         
-        path.moveToPoint(NSPoint(x: XTHistoryCellView.columnCenter(bottomOffset),
+        path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(bottomOffset),
                                  y: bounds.size.height))
-        path.relativeLineToPoint(NSMakePoint(0, -0.5))
-        path.lineToPoint(NSPoint(x: XTHistoryCellView.columnCenter(dotOffset!),
+        path.relativeLine(to: NSMakePoint(0, -0.5))
+        path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(dotOffset!),
                                  y: bounds.size.height/2))
         bottomOffset += 1
       }
       else {
-        path.moveToPoint(NSPoint(x: XTHistoryCellView.columnCenter(topOffset),
+        path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(topOffset),
                                  y: 0))
-        path.lineToPoint(NSPoint(x: XTHistoryCellView.columnCenter(bottomOffset),
+        path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(bottomOffset),
                                  y: bounds.size.height))
         topOffset += 1
         bottomOffset += 1
@@ -177,8 +177,8 @@ class XTHistoryCellView: NSTableCellView {
                        XTHistoryCellView.lineColors.count
       let lineColor =  XTHistoryCellView.lineColors[colorIndex]
       
-      path.lineJoinStyle = .RoundLineJoinStyle
-      NSColor.whiteColor().setStroke()
+      path.lineJoinStyle = .roundLineJoinStyle
+      NSColor.white.setStroke()
       path.lineWidth = 3.0
       path.stroke()
       lineColor.setStroke()
@@ -187,16 +187,16 @@ class XTHistoryCellView: NSTableCellView {
       
       if let dotOffset = dotOffset {
         let dotSize: CGFloat = 6.0
-        let path = NSBezierPath(ovalInRect:
+        let path = NSBezierPath(ovalIn:
             NSRect(x: XTHistoryCellView.columnCenter(dotOffset) - dotSize/2,
                    y: bounds.size.height/2 - dotSize/2,
                    width: dotSize, height: dotSize))
         let dotColorIndex = Int(dotColorIndex!) %
                             XTHistoryCellView.lineColors.count
         let baseDotColor = XTHistoryCellView.lineColors[dotColorIndex]
-        let dotColor = baseDotColor.shadowWithLevel(0.5) ?? baseDotColor
+        let dotColor = baseDotColor.shadow(withLevel: 0.5) ?? baseDotColor
         
-        NSColor.whiteColor().setStroke()
+        NSColor.white.setStroke()
         path.lineWidth = 1.0
         path.stroke()
         dotColor.setFill()

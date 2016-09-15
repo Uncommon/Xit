@@ -5,7 +5,7 @@ extension Siesta.Resource {
   
   /// Either executes the closure with the resource's data, or schedules it
   /// to run later when the data is available.
-  func useData(owner: AnyObject, closure: (Entity) -> ())
+  func useData(owner: AnyObject, closure: @escaping (Siesta.Entity<Any>) -> ())
   {
     if let data = latestData {
       closure(data)
@@ -26,11 +26,11 @@ class XTServices: NSObject {
   
   /// Status of server operations such as authentication.
   enum Status {
-    case Unknown
-    case NotStarted
-    case InProgress
-    case Done
-    case Failed(ErrorType?)
+    case unknown
+    case notStarted
+    case inProgress
+    case done
+    case failed(Error?)
   }
   
   static let services = XTServices()
@@ -41,19 +41,19 @@ class XTServices: NSObject {
   /// authorization and other state info.
   func initializeServices()
   {
-    for account in XTAccountsManager.manager.accounts(ofType: .TeamCity) {
+    for account in XTAccountsManager.manager.accounts(ofType: .teamCity) {
       _ = teamCityAPI(account)
     }
   }
   
-  private static func accountKey(account: Account) -> String
+  private static func accountKey(_ account: Account) -> String
   {
     return "\(account.user)@\(account.location.host)"
   }
   
   /// Returns the TeamCity service object for the given account, or nil if
   /// the password cannot be found.
-  func teamCityAPI(account: Account) -> XTTeamCityAPI?
+  func teamCityAPI(_ account: Account) -> XTTeamCityAPI?
   {
     let key = XTServices.accountKey(account)
   
@@ -61,7 +61,7 @@ class XTServices: NSObject {
       return api
     }
     else {
-      guard let password = XTKeychain.findPassword(account.location,
+      guard let password = XTKeychain.findPassword(url: account.location,
                                                    account: account.user)
       else {
         NSLog("No password found for \(key)")
@@ -98,8 +98,8 @@ class XTBasicAuthService : Service {
   {
     didSet
     {
-      NSNotificationCenter.defaultCenter().postNotificationName(
-          XTBasicAuthService.AuthenticationStatusChangedNotification,
+      NotificationCenter.default.post(
+          name: Notification.Name(rawValue: XTBasicAuthService.AuthenticationStatusChangedNotification),
           object: self)
     }
   }
@@ -107,7 +107,7 @@ class XTBasicAuthService : Service {
   
   init?(user: String, password: String, baseURL: String?,
         authenticationPath: String) {
-    self.authenticationStatus = .NotStarted
+    self.authenticationStatus = .notStarted
     self.authenticationPath = authenticationPath
     
     super.init(baseURL: baseURL)
@@ -118,14 +118,14 @@ class XTBasicAuthService : Service {
   }
   
   /// Re-generates the authentication header with the new credentials.
-  func updateAuthentication(user: String, password: String) -> Bool
+  func updateAuthentication(_ user: String, password: String) -> Bool
   {
     if let data = "\(user):\(password)"
-      .dataUsingEncoding(NSUTF8StringEncoding)?
-      .base64EncodedStringWithOptions([]) {
+      .data(using: String.Encoding.utf8)?
+      .base64EncodedString(options: []) {
       configure { (builder) in
-        builder.config.headers["Authorization"] = "Basic \(data)"
-        builder.config.beforeStartingRequest { (resource, request) in
+        builder.headers["Authorization"] = "Basic \(data)"
+        builder.decorateRequests { (resource, request) in
           request.onFailure { (error) in
             NSLog("Request error: \(error.userMessage) \(resource.url)")
           }
@@ -140,12 +140,12 @@ class XTBasicAuthService : Service {
   }
   
   /// Checks that the user and password are accepted by the server.
-  func attemptAuthentication(path: String? = nil)
+  func attemptAuthentication(_ path: String? = nil)
   {
     objc_sync_enter(self)
     defer { objc_sync_exit(self) }
     
-    authenticationStatus = .InProgress
+    authenticationStatus = .inProgress
     
     let path = path ?? authenticationPath
     let authResource = resource(path)
@@ -157,19 +157,19 @@ class XTBasicAuthService : Service {
       (resource, event) in
       switch event {
 
-        case .NewData, .NotModified:
-          self.authenticationStatus = .Done
+        case .newData, .notModified:
+          self.authenticationStatus = .done
           self.didAuthenticate()
 
-        case .Error:
+        case .error:
           guard let error = resource.latestError
           else {
             NSLog("Error event with no error")
             return
           }
           
-          if !(error.cause is Error.Cause.RequestCancelled) {
-            self.authenticationStatus = .Failed(error)
+          if !(error.cause is Siesta.RequestError.Cause.RequestCancelled) {
+            self.authenticationStatus = .failed(error)
           }
 
         default:
@@ -177,7 +177,7 @@ class XTBasicAuthService : Service {
       }
     }
     // Use a custom request to skip the XML transformer
-    authResource.load(usingRequest: authResource.request(.GET))
+    _ = authResource.load(using: authResource.request(.get))
   }
   
   // For subclasses to override when more data needs to be downloaded.
@@ -188,11 +188,11 @@ class XTBasicAuthService : Service {
 
 
 public func XMLResponseTransformer(
-    transformErrors: Bool = true) -> Siesta.ResponseTransformer
+    _ transformErrors: Bool = true) -> Siesta.ResponseTransformer
 {
-  return Siesta.ResponseContentTransformer(transformErrors: transformErrors) {
-    (content: NSData, entity: Siesta.Entity) throws -> NSXMLDocument in
-    return try NSXMLDocument(data: content, options: 0)
+  return Siesta.ResponseContentTransformer<Data, XMLDocument>(
+      transformErrors: transformErrors) {
+    (entity: Siesta.Entity<Data>) throws -> XMLDocument? in
+    return try XMLDocument(data: entity.content, options: 0)
   }
 }
-

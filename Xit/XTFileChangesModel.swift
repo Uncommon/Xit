@@ -20,14 +20,14 @@ import Cocoa
   /// - parameter path: Repository-relative file path.
   /// - parameter staged: Whether to show the staged or unstaged diff. Ignored
   /// for models that don't have unstaged files.
-  func diffForFile(path: String, staged: Bool) -> XTDiffDelta?
+  func diffForFile(_ path: String, staged: Bool) -> XTDiffDelta?
   /// Get the contents of the given file.
   /// - parameter path: Repository-relative file path.
   /// - parameter staged: Whether to show the staged or unstaged diff. Ignored
   /// for models that don't have unstaged files.
-  func dataForFile(path: String, staged: Bool) -> NSData?
+  func dataForFile(_ path: String, staged: Bool) -> Data?
   /// The URL of the unstaged file, if any.
-  func unstagedFileURL(path: String) -> NSURL?
+  func unstagedFileURL(_ path: String) -> URL?
 }
 
 
@@ -41,7 +41,7 @@ class XTCommitChanges: NSObject, XTFileChangesModel {
   
   var changes: [XTFileChange]
   {
-    return self.repository.changesForRef(self.sha, parent: self.diffParent) ??
+    return self.repository.changes(forRef: self.sha, parent: self.diffParent) ??
         [XTFileChange]()
   }
   
@@ -61,30 +61,30 @@ class XTCommitChanges: NSObject, XTFileChangesModel {
     super.init()
   }
   
-  func diffForFile(path: String, staged: Bool) -> XTDiffDelta?
+  func diffForFile(_ path: String, staged: Bool) -> XTDiffDelta?
   {
-    return self.repository.diffForFile(
-        path, commitSHA: self.sha, parentSHA: self.diffParent)
+    return self.repository.diff(
+        forFile: path, commitSHA: self.sha, parentSHA: self.diffParent)
   }
   
-  func dataForFile(path: String, staged: Bool) -> NSData?
+  func dataForFile(_ path: String, staged: Bool) -> Data?
   {
-    return try? self.repository.contentsOfFile(path, atCommit: self.sha)
+    return try? self.repository.contents(ofFile: path, atCommit: self.sha)
   }
   
-  func unstagedFileURL(path: String) -> NSURL? { return nil }
+  func unstagedFileURL(_ path: String) -> URL? { return nil }
 
-  func makeTreeRoot(staged staged: Bool) -> NSTreeNode
+  func makeTreeRoot(staged: Bool) -> NSTreeNode
   {
-    var files = repository.fileNamesForRef(sha) ?? [String]()
+    var files = repository.fileNames(forRef: sha) ?? [String]()
     var changes = [String: XitChange]()
     
-    if let changeList = repository.changesForRef(sha, parent:diffParent) {
+    if let changeList = repository.changes(forRef: sha, parent:diffParent) {
       for change in changeList {
         changes[change.path] = change.change
       }
-      files.appendContentsOf(
-          changeList.filter({ return $0.change == .Deleted })
+      files.append(
+          contentsOf: changeList.filter({ return $0.change == .deleted })
                     .map({ return $0.path }))
     }
     
@@ -92,18 +92,18 @@ class XTCommitChanges: NSObject, XTFileChangesModel {
     var nodes = [String: NSTreeNode]()
     
     for file in files {
-      let changeValue = changes[file] ?? .Unmodified
+      let changeValue = changes[file] ?? .unmodified
       let item = staged ?
           XTCommitTreeItem(path: file, change: changeValue) :
           XTCommitTreeItem(path: file,
-                           change: .Unmodified,
+                           change: .unmodified,
                            unstagedChange: changeValue)
-      let parentPath = (file as NSString).stringByDeletingLastPathComponent
+      let parentPath = (file as NSString).deletingLastPathComponent
       let node = NSTreeNode(representedObject: item)
       let parentNode = XTChangesModelUtils.findTreeNode(
           forPath: parentPath, parent: newRoot, nodes: &nodes)
       
-      parentNode.mutableChildNodes.addObject(node)
+      parentNode.mutableChildren.add(node)
       nodes[file] = node
     }
     XTChangesModelUtils.postProcess(fileTree: newRoot)
@@ -118,17 +118,17 @@ class XTStashChanges: NSObject, XTFileChangesModel {
   var stash: XTStash
   var hasUnstaged: Bool { return true }
   var canCommit: Bool { return false }
-  var shaToSelect: String? { return stash.mainCommit.parents[0].SHA }
+  var shaToSelect: String? { return stash.mainCommit.parents[0].sha }
   var changes: [XTFileChange] { return self.stash.changes() }
   
   var treeRoot: NSTreeNode {
     let mainModel = XTCommitChanges(repository: repository,
-                                    sha: stash.mainCommit.SHA!)
+                                    sha: stash.mainCommit.sha!)
     var mainRoot = mainModel.makeTreeRoot(staged: false)
     
     if let indexCommit = stash.indexCommit {
       let indexModel = XTCommitChanges(repository: repository,
-                                       sha: indexCommit.SHA!)
+                                       sha: indexCommit.sha!)
       let indexRoot = indexModel.treeRoot
       
       XTChangesModelUtils.combineTrees(unstagedTree: &mainRoot,
@@ -136,7 +136,7 @@ class XTStashChanges: NSObject, XTFileChangesModel {
     }
     if let untrackedCommit = stash.untrackedCommit {
       let untrackedModel = XTCommitChanges(repository: repository,
-                                           sha: untrackedCommit.SHA!)
+                                           sha: untrackedCommit.sha!)
       let untrackedRoot = untrackedModel.treeRoot
     
       XTChangesModelUtils.add(untrackedRoot, to: &mainRoot)
@@ -160,7 +160,7 @@ class XTStashChanges: NSObject, XTFileChangesModel {
     super.init()
   }
   
-  func diffForFile(path: String, staged: Bool) -> XTDiffDelta?
+  func diffForFile(_ path: String, staged: Bool) -> XTDiffDelta?
   {
     if staged {
       return self.stash.stagedDiffForFile(path)
@@ -170,27 +170,27 @@ class XTStashChanges: NSObject, XTFileChangesModel {
     }
   }
   
-  func dataForFile(path: String, staged: Bool) -> NSData?
+  func dataForFile(_ path: String, staged: Bool) -> Data?
   {
     if staged {
       guard let indexCommit = self.stash.indexCommit
       else { return nil }
       
-      return try? self.repository.contentsOfFile(path, atCommit: indexCommit.SHA!)
+      return try? self.repository.contents(ofFile: path, atCommit: indexCommit.sha!)
     }
     else {
       if let untrackedCommit = self.stash.untrackedCommit,
-         let untrackedData = try? self.repository.contentsOfFile(
-             path, atCommit: untrackedCommit.SHA!) {
+         let untrackedData = try? self.repository.contents(
+             ofFile: path, atCommit: untrackedCommit.sha!) {
         return untrackedData
       }
-      return try? self.repository.contentsOfFile(
-          path, atCommit: self.stash.mainCommit.SHA!)
+      return try? self.repository.contents(
+          ofFile: path, atCommit: self.stash.mainCommit.sha!)
     }
   }
 
   // Unstaged files are stored in commits, so there is no URL.
-  func unstagedFileURL(path: String) -> NSURL? { return nil }
+  func unstagedFileURL(_ path: String) -> URL? { return nil }
 }
 
 
@@ -201,7 +201,7 @@ class XTStagingChanges: NSObject, XTFileChangesModel {
   var hasUnstaged: Bool { return true }
   var canCommit: Bool { return true }
   var changes: [XTFileChange]
-    { return repository.changesForRef(XTStagingSHA, parent: nil) ?? [] }
+    { return repository.changes(forRef: XTStagingSHA, parent: nil) ?? [] }
   
   var treeRoot: NSTreeNode
   {
@@ -219,31 +219,31 @@ class XTStagingChanges: NSObject, XTFileChangesModel {
     super.init()
   }
   
-  func diffForFile(path: String, staged: Bool) -> XTDiffDelta?
+  func diffForFile(_ path: String, staged: Bool) -> XTDiffDelta?
   {
     if staged {
-      return self.repository.stagedDiffForFile(path)
+      return self.repository.stagedDiff(forFile: path)
     }
     else {
-      return self.repository.unstagedDiffForFile(path)
+      return self.repository.unstagedDiff(forFile: path)
     }
   }
   
-  func dataForFile(path: String, staged: Bool) -> NSData?
+  func dataForFile(_ path: String, staged: Bool) -> Data?
   {
     if staged {
-      return try? self.repository.contentsOfStagedFile(path)
+      return try? self.repository.contents(ofStagedFile: path)
     }
     else {
-      let url = self.repository.repoURL.URLByAppendingPathComponent(path)
+      let url = self.repository.repoURL.appendingPathComponent(path)
       
-      return NSData(contentsOfURL: url)
+      return try? Data(contentsOf: url)
     }
   }
   
-  func unstagedFileURL(path: String) -> NSURL?
+  func unstagedFileURL(_ path: String) -> URL?
   {
-    return self.repository.repoURL.URLByAppendingPathComponent(path)
+    return self.repository.repoURL.appendingPathComponent(path)
   }
 }
 
@@ -258,14 +258,14 @@ private class XTChangesModelUtils {
         ascending: true,
         selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))
     
-    tree.sortWithSortDescriptors([sortDescriptor], recursively: true)
+    tree.sort(with: [sortDescriptor], recursively: true)
     updateChanges(tree)
   }
 
   /// Recursive helper for `postProcess`.
-  class func updateChanges(node: NSTreeNode)
+  class func updateChanges(_ node: NSTreeNode)
   {
-    guard let childNodes = node.childNodes
+    guard let childNodes = node.children
     else { return }
     
     var change: XitChange?, unstagedChange: XitChange?
@@ -273,7 +273,7 @@ private class XTChangesModelUtils {
     for child in childNodes {
       let childItem = child.representedObject as! XTCommitTreeItem
       
-      if !child.leaf {
+      if !child.isLeaf {
         updateChanges(child)
       }
       
@@ -281,27 +281,27 @@ private class XTChangesModelUtils {
         change = childItem.change
       }
       else if change! != childItem.change {
-        change = XitChange.Mixed
+        change = XitChange.mixed
       }
       
       if (unstagedChange == nil) {
         unstagedChange = childItem.unstagedChange
       }
       else if unstagedChange! != childItem.unstagedChange {
-        unstagedChange = XitChange.Mixed
+        unstagedChange = XitChange.mixed
       }
     }
     
     let nodeItem = node.representedObject as! XTCommitTreeItem
     
-    nodeItem.change = change ?? .Unmodified
-    nodeItem.unstagedChange = unstagedChange ?? .Unmodified
+    nodeItem.change = change ?? .unmodified
+    nodeItem.unstagedChange = unstagedChange ?? .unmodified
   }
 
   class func findTreeNode(
       forPath path: String,
       parent: NSTreeNode,
-      inout nodes: [String: NSTreeNode]) -> NSTreeNode
+      nodes: inout [String: NSTreeNode]) -> NSTreeNode
   {
     guard !path.isEmpty
     else { return parent }
@@ -311,9 +311,9 @@ private class XTChangesModelUtils {
     }
     else {
       let pathNode = NSTreeNode(representedObject: XTCommitTreeItem(path: path))
-      let parentPath = (path as NSString).stringByDeletingLastPathComponent
+      let parentPath = (path as NSString).deletingLastPathComponent
       
-      parent.mutableChildNodes.addObject((parentPath.isEmpty) ?
+      parent.mutableChildren.add((parentPath.isEmpty) ?
           pathNode :
           findTreeNode(forPath: parentPath, parent: parent, nodes: &nodes))
       nodes[path] = pathNode
@@ -323,20 +323,20 @@ private class XTChangesModelUtils {
 
   /// Merges a tree of unstaged changes into a tree of staged changes.
   class func combineTrees(
-      inout unstagedTree unstagedTree: NSTreeNode,
+      unstagedTree: inout NSTreeNode,
       stagedTree: NSTreeNode)
   {
     // Not sure if these should be expected
-    guard let unstagedNodes = unstagedTree.childNodes
+    guard let unstagedNodes = unstagedTree.children
     else {
       NSLog("combineTrees: no unstaged children at %@",
-            unstagedTree.representedObject!.path)
+            (unstagedTree.representedObject! as AnyObject).path)
       return
     }
-    guard let stagedNodes = stagedTree.childNodes
+    guard let stagedNodes = stagedTree.children
     else {
       NSLog("combineTrees: no staged children at %@",
-            stagedTree.representedObject!.path)
+            (stagedTree.representedObject! as AnyObject).path)
       return
     }
     
@@ -352,40 +352,40 @@ private class XTChangesModelUtils {
       let stagedItem = stagedNode.representedObject! as! XTFileChange
       
       switch (unstagedItem.path as NSString).compare(stagedItem.path) {
-        case .OrderedSame:
+        case .orderedSame:
           unstagedItem.change = stagedItem.change
           if unstagedItem.change == unstagedItem.unstagedChange &&
-             (unstagedItem.change == .Added ||
-              unstagedItem.change == .Deleted) {
-            unstagedItem.unstagedChange = .Unmodified
+             (unstagedItem.change == .added ||
+              unstagedItem.change == .deleted) {
+            unstagedItem.unstagedChange = .unmodified
           }
           unstagedIndex += 1
           stagedIndex += 1
-          if !unstagedNode.leaf || !stagedNode.leaf {
+          if !unstagedNode.isLeaf || !stagedNode.isLeaf {
             combineTrees(unstagedTree: &unstagedNode, stagedTree: stagedNode)
           }
-        case .OrderedAscending:
+        case .orderedAscending:
           // Added in unstaged
-          unstagedItem.change = .Deleted
+          unstagedItem.change = .deleted
           unstagedIndex += 1
-        case .OrderedDescending:
+        case .orderedDescending:
           // Added in staged
           deletedItems.append(XTFileChange(path: stagedItem.path,
                                            change: stagedItem.change,
-                                           unstagedChange: .Deleted))
+                                           unstagedChange: .deleted))
           stagedIndex += 1
       }
     }
-    unstagedTree.mutableChildNodes.addObjectsFromArray(deletedItems)
-    unstagedTree.mutableChildNodes.sort(keyPath: "representedObject.path")
+    unstagedTree.mutableChildren.addObjects(from: deletedItems)
+    unstagedTree.mutableChildren.sort(keyPath: "representedObject.path")
   }
 
   /// Adds the contents of one tree into another
-  class func add(srcTree: NSTreeNode, inout to destTree: NSTreeNode)
+  class func add(_ srcTree: NSTreeNode, to destTree: inout NSTreeNode)
   {
-    guard let srcNodes = srcTree.childNodes
+    guard let srcNodes = srcTree.children
     else { return }
-    guard let destNodes = destTree.childNodes
+    guard let destNodes = destTree.children
     else { return }
     
     var srcIndex = 0, destIndex = 0
@@ -399,10 +399,10 @@ private class XTChangesModelUtils {
         // NSTreeNode can't be in two trees, so make a new one.
         let newNode = NSTreeNode(representedObject:
             XTFileChange(path: srcItem.path,
-                         change: .Unmodified,
-                         unstagedChange: .Untracked))
+                         change: .unmodified,
+                         unstagedChange: .untracked))
         
-        newNode.mutableChildNodes.addObjectsFromArray(srcNodes[srcIndex].childNodes!)
+        newNode.mutableChildren.addObjects(from: srcNodes[srcIndex].children!)
         addedNodes.append(newNode)
       }
       else {
@@ -410,14 +410,14 @@ private class XTChangesModelUtils {
       }
       srcIndex += 1
     }
-    destTree.mutableChildNodes.addObjectsFromArray(addedNodes)
-    destTree.mutableChildNodes.sort(keyPath: "representedObject.path")
+    destTree.mutableChildren.addObjects(from: addedNodes)
+    destTree.mutableChildren.sort(keyPath: "representedObject.path")
   }
 }
 
 extension NSMutableArray {
   func sort(keyPath key: String, ascending: Bool = true)
   {
-    sortUsingDescriptors([NSSortDescriptor(key: key, ascending: ascending)])
+    self.sort(using: [NSSortDescriptor(key: key, ascending: ascending)])
   }
 }

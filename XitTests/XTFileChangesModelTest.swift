@@ -3,14 +3,14 @@ import XCTest
 
 class XTFileChangesModelTest: XTTest {
   
-  func data(for string: String) -> NSData
+  func data(for string: String) -> Data
   {
-    return (string as NSString).dataUsingEncoding(NSUTF8StringEncoding)!
+    return (string as NSString).data(using: String.Encoding.utf8.rawValue)!
   }
   
-  func string(from data: NSData) -> String
+  func string(from data: Data) -> String
   {
-    return NSString(data: data, encoding: NSUTF8StringEncoding)! as String
+    return NSString(data: data, encoding: String.Encoding.utf8.rawValue)! as String
   }
   
   func testCommit()
@@ -41,7 +41,7 @@ class XTFileChangesModelTest: XTTest {
   }
   
   func checkPatchLines(
-      model: XTFileChangesModel, path: String, staged: Bool,
+      _ model: XTFileChangesModel, path: String, staged: Bool,
       added: UInt, deleted: UInt)
   {
     let patch = try! model.diffForFile(path, staged: staged)!.generatePatch()
@@ -99,7 +99,7 @@ class XTFileChangesModelTest: XTTest {
     
     XCTAssertEqual(changes.count, 0)
     
-    self.writeTextToFile1("change")
+    self.writeText(toFile1: "change")
     changes = model.changes
     XCTAssertEqual(changes.count, 1)
     
@@ -166,10 +166,10 @@ class XTFileChangesModelTest: XTTest {
   func testStashTree()
   {
     let deletedName = "deleted"
-    let deletedURL = repository.repoURL.URLByAppendingPathComponent(deletedName)
+    let deletedURL = repository.repoURL.appendingPathComponent(deletedName)
   
     self.commitNewTextFile(deletedName, content: "bye!")
-    try! NSFileManager.defaultManager().removeItemAtURL(deletedURL)
+    try! FileManager.default.removeItem(at: deletedURL)
     try! self.repository.stageFile(deletedName)
     
     self.makeStash()
@@ -182,9 +182,9 @@ class XTFileChangesModelTest: XTTest {
     let expectedPaths =
         [addedName,   deletedName, file1Name,   untrackedName]
     let expectedChanges: [XitChange] =
-        [.Added,      .Deleted,    .Unmodified, .Unmodified]
+        [.added,      .deleted,    .unmodified, .unmodified]
     let expectedUnstaged: [XitChange] =
-        [.Unmodified, .Unmodified, .Modified,   .Untracked]
+        [.unmodified, .unmodified, .modified,   .untracked]
     
     for i in 0...3 {
       let item = tree.childNodes![i].representedObject as! XTFileChange
