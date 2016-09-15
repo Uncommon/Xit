@@ -1,5 +1,7 @@
 import Cocoa
 
+let tagPrefix = "refs/tags/"
+
 class XTTag: NSObject {
 
   unowned let repository: XTRepository
@@ -13,14 +15,19 @@ class XTTag: NSObject {
     super.init()
   }
   
+  /// Initialize with the given tag name.
+  /// - parameter name: Can be either fully qualified with `refs/tags/`
+  /// or just the tag name itself.
   init?(repository: XTRepository, name: String)
   {
+    let refName = name.hasPrefix(tagPrefix) ? name : tagPrefix + name
+  
     self.repository = repository
     
-    guard let ref = try? repository.gtRepo.lookUpReference(withName: name)
+    guard let ref = try? repository.gtRepo.lookUpReference(withName: refName)
     else { return nil }
     
-    guard let target = ref.resolvedTarget as? GTTag
+    guard let target = ref.unresolvedTarget as? GTTag
     else { return nil }
     
     tag = target

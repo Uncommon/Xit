@@ -56,7 +56,7 @@ let XTChangedRefsKey = "changedRefs"
     }
     FSEventStreamScheduleWithRunLoop(self.stream,
                                      CFRunLoopGetMain(),
-                                     CFRunLoopMode.defaultMode as! CFString)
+                                     CFRunLoopMode.defaultMode.rawValue)
     FSEventStreamStart(self.stream)
   }
   

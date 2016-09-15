@@ -13,7 +13,7 @@ class XTConfigTest: XTTest {
       return
     }
     
-    XCTAssertFalse(try! xitConfigURL.checkResourceIsReachable())
+    XCTAssertFalse((try? xitConfigURL.checkResourceIsReachable()) ?? false)
     XCTAssertNil(config.teamCityAccount(remoteName))
     
     let account = Account(type: .teamCity,
