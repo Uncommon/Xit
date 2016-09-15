@@ -29,7 +29,7 @@ class XTFileChangesModelTest: XTTest {
     let change = changes[0]
     
     XCTAssertEqual(change.path, file1Name)
-    XCTAssertEqual(change.change, XitChange.Added)
+    XCTAssertEqual(change.change, XitChange.added)
     
     let data = model.dataForFile(file1Name, staged: false)
     
@@ -106,22 +106,22 @@ class XTFileChangesModelTest: XTTest {
     var change = changes[0]
     
     XCTAssertEqual(change.path, file1Name)
-    XCTAssertEqual(change.unstagedChange, XitChange.Modified)
+    XCTAssertEqual(change.unstagedChange, XitChange.modified)
     
     self.writeText("new", toFile: addedName)
     changes = model.changes
     XCTAssertEqual(changes.count, 2)
     change = changes[0] // "added" will be sorted to the top
     XCTAssertEqual(change.path, addedName)
-    XCTAssertEqual(change.unstagedChange, XitChange.Untracked)
+    XCTAssertEqual(change.unstagedChange, XitChange.untracked)
     
     try! repository.stageFile(addedName)
     changes = model.changes
     XCTAssertEqual(changes.count, 2)
     change = changes[0]
     XCTAssertEqual(change.path, addedName)
-    XCTAssertEqual(change.change, XitChange.Added)
-    XCTAssertEqual(change.unstagedChange, XitChange.Unmodified)
+    XCTAssertEqual(change.change, XitChange.added)
+    XCTAssertEqual(change.unstagedChange, XitChange.unmodified)
   }
   
   func testStagingTreeSimple()
@@ -129,12 +129,12 @@ class XTFileChangesModelTest: XTTest {
     let model = XTStagingChanges(repository: repository)
     let tree = model.treeRoot
     
-    XCTAssertNotNil(tree.childNodes)
-    XCTAssertEqual(tree.childNodes!.count, 1)
+    XCTAssertNotNil(tree.children)
+    XCTAssertEqual(tree.children!.count, 1)
     
-    let change = tree.childNodes![0].representedObject!
+    let change = tree.children![0].representedObject as! XTFileChange
     
-    XCTAssertEqual(change.change, XitChange.Unmodified)
+    XCTAssertEqual(change.change, XitChange.unmodified)
   }
   
   func testCommitTree()
@@ -150,17 +150,17 @@ class XTFileChangesModelTest: XTTest {
                                 sha: headSHA)
     let tree = model.treeRoot
     
-    XCTAssertNotNil(tree.childNodes)
-    XCTAssertEqual(tree.childNodes!.count, 2)
+    XCTAssertNotNil(tree.children)
+    XCTAssertEqual(tree.children!.count, 2)
     
-    var change = tree.childNodes![0].representedObject!
+    var change = tree.children![0].representedObject as! XTFileChange
     
     XCTAssertEqual(change.path, addedName)
-    XCTAssertEqual(change.change, XitChange.Added)
+    XCTAssertEqual(change.change, XitChange.added)
     
-    change = tree.childNodes![1].representedObject!
+    change = tree.children![1].representedObject as! XTFileChange
     XCTAssertEqual(change.path, file1Name)
-    XCTAssertEqual(change.change, XitChange.Unmodified)
+    XCTAssertEqual(change.change, XitChange.unmodified)
   }
   
   func testStashTree()
@@ -177,7 +177,7 @@ class XTFileChangesModelTest: XTTest {
     let model = XTStashChanges(repository: repository, index: 0)
     let tree = model.treeRoot
     
-    XCTAssertEqual(tree.childNodes!.count, 4)
+    XCTAssertEqual(tree.children!.count, 4)
     
     let expectedPaths =
         [addedName,   deletedName, file1Name,   untrackedName]
@@ -187,7 +187,7 @@ class XTFileChangesModelTest: XTTest {
         [.unmodified, .unmodified, .modified,   .untracked]
     
     for i in 0...3 {
-      let item = tree.childNodes![i].representedObject as! XTFileChange
+      let item = tree.children![i].representedObject as! XTFileChange
       
       XCTAssertEqual(item.path, expectedPaths[i])
       XCTAssertEqual(item.change, expectedChanges[i],

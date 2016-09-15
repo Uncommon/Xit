@@ -38,16 +38,16 @@ class XTTeamCityTest: XCTestCase {
   func testParseBuildFailure()
   {
     parseBuild(statusString: "FAILURE",
-               status: .Failed,
+               status: .failed,
                stateString: "finished",
-               state: .Finished)
+               state: .finished)
   }
   
   func testParseBuildSuccess()
   {
     parseBuild(statusString: "SUCCESS",
-               status: .Succeeded,
+               status: .succeeded,
                stateString: "running",
-               state: .Running)
+               state: .running)
   }
 }

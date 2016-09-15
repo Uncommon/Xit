@@ -50,7 +50,7 @@
   for (CommitEntry *entry in history.entries) {
     winController.selectedModel =
         [[XTCommitChanges alloc] initWithRepository:self.repository
-                                                sha:entry.commit.SHA];
+                                                sha:entry.commit.sha];
     [flds reload];
     [self waitForRepoQueue];
 
