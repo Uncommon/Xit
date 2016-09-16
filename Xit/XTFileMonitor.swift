@@ -10,26 +10,22 @@ class XTFileMonitor {
   
   init?(path: String)
   {
-    self.path = path
     self.fd = open(path, O_EVTONLY)
     
     guard fd >= 0
     else { return nil }
     
-    let queue = DispatchQueue.global()
-    let source = DispatchSource.makeFileSystemObjectSource(
+    self.path = path
+    self.source = DispatchSource.makeFileSystemObjectSource(
         fileDescriptor: fd,
         eventMask: [.delete, .write, .extend, .attrib, .link, .rename, .revoke],
-        queue: queue)
-
-    self.source = source
+        queue: DispatchQueue.global())
     
     source.setEventHandler {
       [weak self] in
       self?.notifyBlock?(self!.path,
-                         source.data)
+                         self!.source.data)
     }
-    
     source.resume();
   }
   
