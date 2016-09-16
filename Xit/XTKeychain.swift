@@ -23,7 +23,8 @@ final class XTKeychain: NSObject {
   class func findPassword(host: String, path: String,
                           port: UInt16, account: String) -> String?
   {
-    let (password, _) = findItem(host: host, path: path, port: port, account: account)
+    let (password, _) = findItem(host: host, path: path,
+                                 port: port, account: account)
     
     return password
   }
@@ -45,7 +46,7 @@ final class XTKeychain: NSObject {
         0, nil,
         UInt32(nsAccount.length), nsAccount.utf8String,
         UInt32(nsPath.length), nsPath.utf8String,
-        UInt16(port), .HTTP, .httpBasic,
+        port, .HTTP, .httpBasic,
         &passwordLength, &passwordData,
         item)
     
@@ -63,14 +64,15 @@ final class XTKeychain: NSObject {
     guard let host = url.host
     else { throw Error.invalidURL }
     
-    try savePassword(host, path: url.path,
-                     port: (url as NSURL).port?.uint16Value ?? 80,
+    try savePassword(host: host,
+                     path: url.path,
+                     port: UInt16(url.port ?? 80),
                      account: account,
                      password: password)
   }
   
   /// Saves a password to the keychain.
-  class func savePassword(_ host: String, path: String,
+  class func savePassword(host: String, path: String,
                           port: UInt16, account: String,
                           password: String) throws
   {
@@ -96,17 +98,17 @@ final class XTKeychain: NSObject {
     }
   }
   
-  class func changePassword(_ url: URL, account: String, password: String) throws
+  class func changePassword(url: URL, account: String, password: String) throws
   {
     guard let host = url.host
     else { throw Error.invalidURL }
     
-    try changePassword(host, path: url.path,
-                       port: (url as NSURL).port?.uint16Value ?? 80, //!
+    try changePassword(host: host, path: url.path,
+                       port: UInt16(url.port ?? 80),
                        account: account, password: password)
   }
   
-  class func changePassword(_ host: String, path: String,
+  class func changePassword(host: String, path: String,
                             port: UInt16, account: String,
                             password: String) throws
   {

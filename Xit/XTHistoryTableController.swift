@@ -80,23 +80,23 @@ public class XTHistoryTableController: NSViewController {
   
   func loadHistory()
   {
-    let repository = self.repository
+    let repository = self.repository!
     let history = self.history
     weak var tableView = view as? NSTableView
     
     history.reset()
     XTStatusView.update(status: "Loading...",
                         progress: -1,
-                        repository: repository!)
+                        repository: repository)
     NotificationCenter.default.post(name: NSNotification.Name.XTTaskStarted,
                                     object: repository)
-    repository?.executeOffMainThread {
+    repository.executeOffMainThread {
       defer {
         NotificationCenter.default.post(name: NSNotification.Name.XTTaskEnded,
                                         object: repository)
       }
       
-      guard let walker = try? GTEnumerator(repository: (repository?.gtRepo)!)
+      guard let walker = try? GTEnumerator(repository: repository.gtRepo)
       else {
         NSLog("GTEnumerator failed")
         return
@@ -104,15 +104,15 @@ public class XTHistoryTableController: NSViewController {
       
       walker.reset(options: [.topologicalSort, .timeSort])
       
-      let refs = repository?.allRefs()
+      let refs = repository.allRefs()
       
       // TODO: sort refs by commit date
-      for ref in refs! { //!
-        _ = repository?.sha(forRef: ref).flatMap { try? walker.pushSHA($0) }
+      for ref in refs {
+        _ = repository.sha(forRef: ref).flatMap { try? walker.pushSHA($0) }
       }
       
       while let gtCommit = walker.nextObject() as? GTCommit {
-        guard let commit = XTCommit(oid: gtCommit.oid!, repository: repository!)
+        guard let commit = XTCommit(oid: gtCommit.oid!, repository: repository)
         else { continue }
         
         history.appendCommit(commit)
@@ -123,7 +123,7 @@ public class XTHistoryTableController: NSViewController {
         tableView?.reloadData()
         XTStatusView.update(status: "Loaded \(history.entries.count) commits",
                             progress: -1,
-                            repository: repository!)
+                            repository: repository)
       }
     }
   }
@@ -219,7 +219,7 @@ extension XTHistoryTableController: NSTableViewDelegate {
       case ColumnID.commit:
         let historyCell = result as! XTHistoryCellView
         
-        historyCell.refs = repository.refsAtCommit(sha)
+        historyCell.refs = repository.refs(at: sha)
         historyCell.textField?.stringValue = entry.commit.message ?? ""
         historyCell.objectValue = entry
       case ColumnID.date:

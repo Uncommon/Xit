@@ -59,7 +59,7 @@ extension XTSideBarDataSource {
         ["WORKSPACE", "BRANCHES", "REMOTES", "TAGS", "STASHES", "SUBMODULES"];
     let roots = rootNames.map({ XTSideBarGroupItem(title: $0) })
     
-    roots[0].addChild(stagingItem)
+    roots[0].add(child: stagingItem)
     return roots;
   }
   

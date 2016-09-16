@@ -81,7 +81,7 @@ let XTChangedRefsKey = "changedRefs"
     }
   }
   
-  func indexRefs(_ refs: [String]) -> [String: GTOID] //!
+  func index(refs: [String]) -> [String: GTOID]
   {
     var result = [String: GTOID]()
     
@@ -138,7 +138,7 @@ let XTChangedRefsKey = "changedRefs"
   
   func checkRefs()
   {
-    let newRefCache = indexRefs(repository.allRefs())
+    let newRefCache = index(refs: repository.allRefs())
     let newKeys = Set(newRefCache.keys)
     let oldKeys = Set(refsCache.keys)
     let addedRefs = newKeys.subtracting(oldKeys)

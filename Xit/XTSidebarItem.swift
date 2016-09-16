@@ -27,7 +27,8 @@ class XTSideBarItem: NSObject {
   }
   
   // Because children bridges as NSArray, not NSMutableArray.
-  func addChild(_ child: XTSideBarItem) //!
+  @objc(addChild:)  // Override default "addWithChild:"
+  func add(child: XTSideBarItem)
   {
     self.children.append(child)
   }

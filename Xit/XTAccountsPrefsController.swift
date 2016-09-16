@@ -127,7 +127,8 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver {
       
       case .change:
         do {
-          try XTKeychain.changePassword(location, account: user,
+          try XTKeychain.changePassword(url: location,
+                                        account: user,
                                         password: password)
         }
         catch _ as NSError {

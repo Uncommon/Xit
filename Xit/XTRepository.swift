@@ -54,18 +54,17 @@ extension XTRepository {
       
       var rawName = git_reference_name(reference)
       guard rawName != nil,
-        let name = String(validatingUTF8: rawName!)
-        else { return 0 }
+            let name = String(validatingUTF8: rawName!)
+      else { return 0 }
       
       var resolved: OpaquePointer? = nil
       guard git_reference_resolve(&resolved, reference) == 0
-        else { return 0 }
+      else { return 0 }
       defer { git_reference_free(resolved) }
       
       let target = git_reference_target(resolved)
       guard target != nil
-        else { return 0 }
-      
+      else { return 0}
       let sha = GTOID(gitOid: target!).sha
       var refs = repo.refsIndex[sha] ?? [String]()
       
@@ -80,7 +79,7 @@ extension XTRepository {
   }
   
   /// Returns a list of refs that point to the given commit.
-  func refsAtCommit(_ sha: String) -> [String] //!
+  func refs(at sha: String) -> [String]
   {
     return refsIndex[sha] ?? []
   }
