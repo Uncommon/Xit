@@ -245,6 +245,20 @@
 			remoteGlobalIDString = 9F2FB51D1C28645E0068DFFA;
 			remoteInfo = "Siesta macOS";
 		};
+		C923D6551D8CA56900C6B90B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C91F34631D30647D005F9BDF /* Siesta.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DAC0B3AA1D651CB500D25C44;
+			remoteInfo = "SiestaUI iOS";
+		};
+		C923D6571D8CA56900C6B90B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C91F34631D30647D005F9BDF /* Siesta.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DAC0B3D61D651CC700D25C44;
+			remoteInfo = "SiestaUI macOS";
+		};
 		DD96C999176976FE0003A30C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */;
@@ -836,8 +850,10 @@
 			isa = PBXGroup;
 			children = (
 				C91F346B1D30647E005F9BDF /* Siesta.framework */,
-				C91F346D1D30647E005F9BDF /* SiestaTests.xctest */,
 				C91F346F1D30647E005F9BDF /* Siesta.framework */,
+				C923D6561D8CA56900C6B90B /* SiestaUI.framework */,
+				C923D6581D8CA56900C6B90B /* SiestaUI.framework */,
+				C91F346D1D30647E005F9BDF /* SiestaTests.xctest */,
 				C91F34711D30647E005F9BDF /* SiestaTests.xctest */,
 			);
 			name = Products;
@@ -1113,6 +1129,20 @@
 			fileType = wrapper.cfbundle;
 			path = SiestaTests.xctest;
 			remoteRef = C91F34701D30647E005F9BDF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C923D6561D8CA56900C6B90B /* SiestaUI.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SiestaUI.framework;
+			remoteRef = C923D6551D8CA56900C6B90B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C923D6581D8CA56900C6B90B /* SiestaUI.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SiestaUI.framework;
+			remoteRef = C923D6571D8CA56900C6B90B /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		DD96C99A176976FE0003A30C /* ObjectiveGit.framework */ = {
