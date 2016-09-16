@@ -3,15 +3,15 @@ import Cocoa
 
 extension XTSideBarDataSource {
   
-  @nonobjc static let kReloadInterval: NSTimeInterval = 1
+  @nonobjc static let kReloadInterval: TimeInterval = 1
   
-  public override func awakeFromNib()
+  open override func awakeFromNib()
   {
     outline!.target = self
     outline!.doubleAction = #selector(XTSideBarDataSource.doubleClick(_:))
-    if (!XTAccountsManager.manager.accounts(ofType: .TeamCity).isEmpty) {
-      buildStatusTimer = NSTimer.scheduledTimerWithTimeInterval(
-          60 * 5,
+    if (!XTAccountsManager.manager.accounts(ofType: .teamCity).isEmpty) {
+      buildStatusTimer = Timer.scheduledTimer(
+          timeInterval: 60 * 5,
           target: self,
           selector: #selector(XTSideBarDataSource.buildStatusTimerFired(_:)),
           userInfo: nil, repeats: true)
@@ -24,20 +24,20 @@ extension XTSideBarDataSource {
     reloadTimer?.invalidate()
   }
   
-  func buildStatusTimerFired(timer: NSTimer)
+  func buildStatusTimerFired(_ timer: Timer)
   {
     updateTeamCity()
   }
   
   func scheduleReload()
   {
-    if let timer = reloadTimer where timer.valid {
+    if let timer = reloadTimer , timer.isValid {
       timer.fireDate =
-          NSDate(timeIntervalSinceNow: XTSideBarDataSource.kReloadInterval)
+          Date(timeIntervalSinceNow: XTSideBarDataSource.kReloadInterval)
     }
     else {
-      reloadTimer = NSTimer.scheduledTimerWithTimeInterval(
-          XTSideBarDataSource.kReloadInterval,
+      reloadTimer = Timer.scheduledTimer(
+          timeInterval: XTSideBarDataSource.kReloadInterval,
           target: self,
           selector: #selector(XTSideBarDataSource.reloadTimerFired(_:)),
           userInfo: nil,
@@ -45,9 +45,9 @@ extension XTSideBarDataSource {
     }
   }
   
-  func reloadTimerFired(timer: NSTimer)
+  func reloadTimerFired(_ timer: Timer)
   {
-    dispatch_async(dispatch_get_main_queue()) { 
+    DispatchQueue.main.async { 
       self.outline!.reloadData()
     }
     reloadTimer = nil
@@ -59,7 +59,7 @@ extension XTSideBarDataSource {
         ["WORKSPACE", "BRANCHES", "REMOTES", "TAGS", "STASHES", "SUBMODULES"];
     let roots = rootNames.map({ XTSideBarGroupItem(title: $0) })
     
-    roots[0].addChild(stagingItem)
+    roots[0].add(child: stagingItem)
     return roots;
   }
   
@@ -76,7 +76,7 @@ extension XTSideBarDataSource {
     let stashes = repo!.stashes()
     var stashItems = [XTStashItem]()
     
-    for (index, stash) in stashes.enumerate() {
+    for (index, stash) in stashes.enumerated() {
       let model = XTStashChanges(repository: repo!, stash: stash)
       let message = stash.message ?? "stash \(index)"
     
@@ -112,17 +112,17 @@ extension XTSideBarDataSource { // MARK: TeamCity
       for buildType in buildTypes {
         let statusResource = api.buildStatus(branchName, buildType: buildType)
         
-        statusResource.useData(self) { (data) in
-          guard let xml = data.content as? NSXMLDocument,
+        statusResource.useData(owner: self) { (data) in
+          guard let xml = data.content as? XMLDocument,
                 let firstBuildElement =
-                    xml.rootElement()?.children?.first as? NSXMLElement,
+                    xml.rootElement()?.children?.first as? XMLElement,
                 let build = XTTeamCityAPI.Build(element: firstBuildElement)
           else { return }
           
           NSLog("\(buildType)/\(branchName): \(build.status)")
           var buildTypeStatuses = self.buildStatuses[buildType] as? [String: Bool] ?? [String: Bool]()
           
-          buildTypeStatuses[branchName] = build.status == .Succeeded
+          buildTypeStatuses[branchName] = build.status == .succeeded
           self.buildStatuses[buildType] = buildTypeStatuses
           self.scheduleReload()
         }
@@ -155,18 +155,18 @@ extension XTSideBarDataSource { // MARK: TeamCity
   
   /// Returns the first TeamCity service that builds from the given repository,
   /// and a list of its build types.
-  func matchTeamCity(remoteName: String) -> (XTTeamCityAPI, [String])?
+  func matchTeamCity(_ remoteName: String) -> (XTTeamCityAPI, [String])?
   {
     guard let repo = repo,
           let remote = XTRemote(name: remoteName, repository: repo),
-          let remoteURL = remote.URLString
+          let remoteURL = remote.urlString
     else { return nil }
     
-    let accounts = XTAccountsManager.manager.accounts(ofType: .TeamCity)
+    let accounts = XTAccountsManager.manager.accounts(ofType: .teamCity)
     let services = accounts.flatMap({ XTServices.services.teamCityAPI($0) })
     
     for service in services {
-      let buildTypes = service.buildTypes(forRemote: remoteURL)
+      let buildTypes = service.buildTypesForRemote(remoteURL as String)
       
       if !buildTypes.isEmpty {
         return (service, buildTypes)
@@ -175,7 +175,7 @@ extension XTSideBarDataSource { // MARK: TeamCity
     return nil
   }
   
-  func statusImage(item: XTSideBarItem) -> NSImage?
+  func statusImage(_ item: XTSideBarItem) -> NSImage?
   {
     guard let remoteName = remoteName(forBranchItem: item),
           let (_, buildTypes) = matchTeamCity(remoteName)
@@ -185,7 +185,8 @@ extension XTSideBarDataSource { // MARK: TeamCity
     var overallSuccess: Bool?
     
     for buildType in buildTypes {
-      if let buildSuccess = buildStatuses[buildType]?[branchName]??.boolValue {
+      if let status = buildStatuses[buildType] as? [NSString:NSNumber],
+         let buildSuccess = status[branchName as NSString]?.boolValue {
         overallSuccess = (overallSuccess ?? true) && buildSuccess
       }
     }
@@ -203,21 +204,21 @@ extension XTSideBarDataSource { // MARK: TeamCity
 extension XTSideBarDataSource: NSOutlineViewDataSource {
   // MARK: NSOutlineViewDataSource
   
-  public func outlineView(outlineView: NSOutlineView, numberOfChildrenOfItem item: AnyObject?) -> Int {
+  public func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
     if item == nil {
       return roots.count
     }
     return (item as? XTSideBarItem)?.children.count ?? 0
   }
   
-  public func outlineView(outlineView: NSOutlineView,
-                          isItemExpandable item: AnyObject) -> Bool {
+  public func outlineView(_ outlineView: NSOutlineView,
+                          isItemExpandable item: Any) -> Bool {
     return (item as? XTSideBarItem)?.expandable ?? false
   }
   
-  public func outlineView(outlineView: NSOutlineView,
+  public func outlineView(_ outlineView: NSOutlineView,
                           child index: Int,
-                          ofItem item: AnyObject?) -> AnyObject {
+                          ofItem item: Any?) -> Any {
     if item == nil {
       return roots[index]
     }
@@ -228,9 +229,9 @@ extension XTSideBarDataSource: NSOutlineViewDataSource {
 extension XTSideBarDataSource: NSOutlineViewDelegate {
   // MARK: NSOutlineViewDelegate
 
-  public func outlineViewSelectionDidChange(notification: NSNotification)
+  public func outlineViewSelectionDidChange(_ notification: Notification)
   {
-    guard let item = outline!.itemAtRow(outline!.selectedRow) as? XTSideBarItem,
+    guard let item = outline!.item(atRow: outline!.selectedRow) as? XTSideBarItem,
           let model = item.model,
           let controller = outline!.window?.windowController as? XTWindowController
     else { return }
@@ -239,44 +240,44 @@ extension XTSideBarDataSource: NSOutlineViewDelegate {
   }
 
 
-  public func outlineView(outlineView: NSOutlineView,
-                          isGroupItem item: AnyObject) -> Bool
+  public func outlineView(_ outlineView: NSOutlineView,
+                          isGroupItem item: Any) -> Bool
   {
     return item is XTSideBarGroupItem
   }
 
-  public func outlineView(outlineView: NSOutlineView,
-                          shouldSelectItem item: AnyObject) -> Bool
+  public func outlineView(_ outlineView: NSOutlineView,
+                          shouldSelectItem item: Any) -> Bool
   {
     return (item as? XTSideBarItem)?.selectable ?? false
   }
 
-  public func outlineView(outlineView: NSOutlineView,
-                          heightOfRowByItem item: AnyObject) -> CGFloat
+  public func outlineView(_ outlineView: NSOutlineView,
+                          heightOfRowByItem item: Any) -> CGFloat
   {
     // Using this instead of setting rowSizeStyle because that prevents text
     // from displaying as bold (for the active branch).
    return 20.0
   }
 
-  public func outlineView(outlineView: NSOutlineView,
-                          viewForTableColumn tableColumn: NSTableColumn?,
-                          item: AnyObject) -> NSView?
+  public func outlineView(_ outlineView: NSOutlineView,
+                          viewFor tableColumn: NSTableColumn?,
+                          item: Any) -> NSView?
   {
     guard let sideBarItem = item as? XTSideBarItem
     else { return nil }
     
     if item is XTSideBarGroupItem {
-      guard let headerView = outlineView.makeViewWithIdentifier(
-          "HeaderCell", owner: nil) as? NSTableCellView
+      guard let headerView = outlineView.make(
+          withIdentifier: "HeaderCell", owner: nil) as? NSTableCellView
       else { return nil }
       
       headerView.textField?.stringValue = sideBarItem.title
       return headerView
     }
     else {
-      guard let dataView = outlineView.makeViewWithIdentifier(
-          "DataCell", owner: nil) as? XTSideBarTableCellView
+      guard let dataView = outlineView.make(
+          withIdentifier: "DataCell", owner: nil) as? XTSideBarTableCellView
       else { return nil }
       
       let textField = dataView.textField!
@@ -284,8 +285,8 @@ extension XTSideBarDataSource: NSOutlineViewDelegate {
       dataView.item = sideBarItem
       dataView.imageView?.image = sideBarItem.icon
       textField.stringValue = sideBarItem.displayTitle
-      textField.editable = sideBarItem.editable
-      textField.selectable = sideBarItem.selectable
+      textField.isEditable = sideBarItem.editable
+      textField.isSelectable = sideBarItem.selectable
       dataView.statusImage.image = statusImage(sideBarItem)
       if sideBarItem.editable {
         textField.formatter = refFormatter
@@ -294,12 +295,12 @@ extension XTSideBarDataSource: NSOutlineViewDelegate {
             #selector(XTHistoryViewController.sideBarItemRenamed(_:))
       }
       if sideBarItem.current {
-        textField.font = NSFont.boldSystemFontOfSize(
-            textField.font?.pointSize ?? 12)
+        textField.font = NSFont.boldSystemFont(
+            ofSize: textField.font?.pointSize ?? 12)
       }
       else {
-        textField.font = NSFont.systemFontOfSize(
-            textField.font?.pointSize ?? 12)
+        textField.font = NSFont.systemFont(
+            ofSize: textField.font?.pointSize ?? 12)
       }
       return dataView
     }

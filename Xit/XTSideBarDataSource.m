@@ -204,18 +204,20 @@ NSString * const XTStagingSHA = @"";
   };
 
   void (^tagBlock)(NSString *, NSString *) = ^(NSString *name, NSString *commit) {
-    XTTagItem *tag;
+    XTTagItem *tagItem;
     XTCommitChanges *tagModel =
         [[XTCommitChanges alloc] initWithRepository:_repo sha:commit];
 
     if ([name hasSuffix:@"^{}"]) {
       name = [name substringToIndex:name.length - 3];
-      tag = tagIndex[name];
-      tag.model = tagModel;
+      tagItem = tagIndex[name];
+      tagItem.model = tagModel;
     } else {
-      tag = [[XTTagItem alloc] initWithTitle:name model:tagModel];
-      [tags addObject:tag];
-      tagIndex[name] = tag;
+      XTTag *tag = [[XTTag alloc] initWithRepository:_repo name:name];
+    
+      tagItem = [[XTTagItem alloc] initWithTag:tag];
+      [tags addObject:tagItem];
+      tagIndex[name] = tagItem;
     }
     [refsIndex addObject:[@"refs/tags" stringByAppendingPathComponent:name]
                   forKey:commit];

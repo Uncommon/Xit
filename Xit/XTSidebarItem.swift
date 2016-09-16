@@ -6,7 +6,7 @@ class XTSideBarItem: NSObject {
   var icon: NSImage? { return nil }
   var children: [XTSideBarItem]
   var model: XTFileChangesModel?
-  var refType: XTRefType { return .Unknown }
+  var refType: XTRefType { return .unknown }
   var expandable: Bool { return false }
   var selectable: Bool { return true }
   var editable: Bool { return false }
@@ -27,7 +27,8 @@ class XTSideBarItem: NSObject {
   }
   
   // Because children bridges as NSArray, not NSMutableArray.
-  func addChild(child: XTSideBarItem)
+  @objc(addChild:)  // Override default "addWithChild:"
+  func add(child: XTSideBarItem)
   {
     self.children.append(child)
   }
@@ -59,7 +60,7 @@ class XTLocalBranchItem : XTSideBarItem {
   override var displayTitle: String
       { return (title as NSString).lastPathComponent }
   override var icon: NSImage? { return NSImage(named: "branchTemplate") }
-  override var refType: XTRefType { return .Branch }
+  override var refType: XTRefType { return .branch }
   override var editable: Bool { return true }
   override var current: Bool
   {
@@ -74,7 +75,7 @@ class XTLocalBranchItem : XTSideBarItem {
 class XTRemoteBranchItem : XTLocalBranchItem {
   var remote: String
   override var icon: NSImage? { return NSImage(named: "branchTemplate") }
-  override var refType: XTRefType { return .RemoteBranch }
+  override var refType: XTRefType { return .remoteBranch }
   override var current: Bool { return false }
   
   init(title: String, remote: String, model: XTFileChangesModel)
@@ -100,8 +101,8 @@ class XTRemoteItem : XTSideBarItem {
   
   override var icon: NSImage?
   {
-    if let urlString = remote?.URLString,
-       let url = NSURL(string: urlString),
+    if let urlString = remote?.urlString,
+       let url = URL(string: urlString),
        let host = url.host {
       if (host == "github.com") || host.hasSuffix(".github.com") {
         return NSImage(named: "githubTemplate")
@@ -112,7 +113,7 @@ class XTRemoteItem : XTSideBarItem {
   
   override var expandable: Bool { return true }
   override var editable: Bool { return true }
-  override var refType: XTRefType { return .Remote }
+  override var refType: XTRefType { return .remote }
   
   init(title: String, repository: XTRepository)
   {
@@ -127,7 +128,7 @@ class XTTagItem : XTSideBarItem {
   let tag: XTTag
 
   override var icon: NSImage? { return NSImage(named: "tagTemplate") }
-  override var refType: XTRefType { return .Tag }
+  override var refType: XTRefType { return .tag }
   
   init(tag: XTTag)
   {

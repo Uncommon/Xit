@@ -2,9 +2,9 @@ import Cocoa
 
 
 enum PasswordAction {
-  case Save
-  case Change
-  case UseExisting
+  case save
+  case change
+  case useExisting
 }
 
 
@@ -18,17 +18,17 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver {
   {
     super.viewDidLoad()
     
-    let notificationCenter = NSNotificationCenter.defaultCenter()
+    let notificationCenter = NotificationCenter.default
     
     XTAccountsManager.manager.readAccounts()
-    notificationCenter.addObserverForName(
-        XTBasicAuthService.AuthenticationStatusChangedNotification,
+    notificationCenter.addObserver(
+        forName: NSNotification.Name(rawValue: XTBasicAuthService.AuthenticationStatusChangedNotification),
         object: nil,
-        queue: NSOperationQueue.mainQueue()) { (_) in
+        queue: OperationQueue.main) { (_) in
       self.accountsTable.reloadData()
     }
-    notificationCenter.addObserverForName(
-        NSWindowDidResignKeyNotification,
+    notificationCenter.addObserver(
+        forName: NSNotification.Name.NSWindowDidResignKey,
         object: self.view.window,
         queue: nil) { (_) in
       self.savePreferences()
@@ -37,7 +37,7 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver {
   
   deinit
   {
-    NSNotificationCenter.defaultCenter().removeObserver(self)
+    NotificationCenter.default.removeObserver(self)
   }
   
   func savePreferences()
@@ -45,15 +45,15 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver {
     XTAccountsManager.manager.saveAccounts()
   }
   
-  func showError(message: String)
+  func showError(_ message: String)
   {
     let alert = NSAlert()
     
     alert.messageText = message
-    alert.beginSheetModalForWindow(view.window!) { (NSModalResponse) in }
+    alert.beginSheetModal(for: view.window!) { (NSModalResponse) in }
   }
   
-  @IBAction func addAccount(sender: AnyObject)
+  @IBAction func addAccount(_ sender: AnyObject)
   {
     addController.resetFields()
     view.window?.beginSheet(addController.window!) { (response) in
@@ -61,23 +61,23 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver {
       guard let url = self.addController.location
       else { return }
       
-      self.addAccount(self.addController.accountType,
+      self.addAccount(type: self.addController.accountType,
                       user: self.addController.userName,
                       password: self.addController.password,
-                      location: url)
+                      location: url as URL)
     }
   }
   
   func addAccount(type: AccountType,
                   user: String,
                   password: String,
-                  location: NSURL)
+                  location: URL)
   {
-    var passwordAction = PasswordAction.Save
+    var passwordAction = PasswordAction.save
     
-    if let oldPassword = XTKeychain.findPassword(location, account: user) {
+    if let oldPassword = XTKeychain.findPassword(url: location, account: user) {
       if oldPassword == password {
-        passwordAction = .UseExisting
+        passwordAction = .useExisting
       }
       else {
         let alert = NSAlert()
@@ -85,16 +85,16 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver {
         alert.messageText =
             "There is already a password for that account in the keychain. " +
             "Do you want to change it, or use the existing password?"
-        alert.addButtonWithTitle("Change")
-        alert.addButtonWithTitle("Use existing")
-        alert.addButtonWithTitle("Cancel")
-        alert.beginSheetModalForWindow(view.window!) { (response) in
+        alert.addButton(withTitle: "Change")
+        alert.addButton(withTitle: "Use existing")
+        alert.addButton(withTitle: "Cancel")
+        alert.beginSheetModal(for: view.window!) { (response) in
           switch response {
             case NSAlertFirstButtonReturn:
-              self.finishAddAccount(.Change, type: type, user: user,
+              self.finishAddAccount(action: .change, type: type, user: user,
                                     password: password, location: location)
             case NSAlertSecondButtonReturn:
-              self.finishAddAccount(.UseExisting, type: type, user: user,
+              self.finishAddAccount(action: .useExisting, type: type, user: user,
                                     password: "", location: location)
             default:
               break
@@ -103,17 +103,18 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver {
         return
       }
     }
-    finishAddAccount(passwordAction, type: type, user: user, password: password,
-                     location: location)
+    finishAddAccount(action: passwordAction, type: type, user: user,
+                     password: password, location: location)
   }
   
   func finishAddAccount(action: PasswordAction, type: AccountType,
-                        user: String, password: String, location: NSURL)
+                        user: String, password: String, location: URL)
   {
     switch action {
-      case .Save:
+      case .save:
         do {
-          try XTKeychain.savePassword(location, account: user, password: password)
+          try XTKeychain.savePassword(url: location, account: user,
+                                      password: password)
         }
         catch _ as XTKeychain.Error {
           showError("The password could not be saved because the location field is incorrect.")
@@ -124,9 +125,10 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver {
           return
         }
       
-      case .Change:
+      case .change:
         do {
-          try XTKeychain.changePassword(location, account: user,
+          try XTKeychain.changePassword(url: location,
+                                        account: user,
                                         password: password)
         }
         catch _ as NSError {
@@ -144,9 +146,9 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver {
     accountsTable.reloadData()
   }
   
-  @IBAction func removeAccount(sender: AnyObject)
+  @IBAction func removeAccount(_ sender: AnyObject)
   {
-    XTAccountsManager.manager.accounts.removeAtIndex(accountsTable.selectedRow)
+    XTAccountsManager.manager.accounts.remove(at: accountsTable.selectedRow)
     accountsTable.reloadData()
   }
 }
@@ -159,14 +161,14 @@ extension XTAccountsPrefsController: NSTableViewDelegate {
     var imageName: String?
     
     switch api.authenticationStatus {
-    case .Unknown, .NotStarted:
+    case .unknown, .notStarted:
       imageName = NSImageNameStatusNone
-    case .InProgress:
+    case .inProgress:
       // eventually have a spinner instead
       imageName = NSImageNameStatusPartiallyAvailable
-    case .Done:
+    case .done:
       break
-    case .Failed:
+    case .failed:
       imageName = NSImageNameStatusUnavailable
     }
     if let imageName = imageName {
@@ -174,11 +176,11 @@ extension XTAccountsPrefsController: NSTableViewDelegate {
     }
     
     switch api.buildTypesStatus {
-    case .Unknown, .NotStarted, .InProgress:
+    case .unknown, .notStarted, .inProgress:
       imageName = NSImageNameStatusAvailable
-    case .Done:
+    case .done:
       imageName = NSImageNameStatusAvailable
-    case .Failed:
+    case .failed:
       imageName = NSImageNameStatusPartiallyAvailable
     }
     if let imageName = imageName {
@@ -187,15 +189,15 @@ extension XTAccountsPrefsController: NSTableViewDelegate {
     return nil
   }
   
-  func tableView(tableView: NSTableView,
-                 viewForTableColumn tableColumn: NSTableColumn?,
-                                    row: Int) -> NSView?
+  func tableView(_ tableView: NSTableView,
+                 viewFor tableColumn: NSTableColumn?,
+                 row: Int) -> NSView?
   {
     guard let tableColumn = tableColumn
       else { return nil }
     
-    let view = tableView.makeViewWithIdentifier(tableColumn.identifier,
-                                                owner: self)
+    let view = tableView.make(withIdentifier: tableColumn.identifier,
+                              owner: self)
       as! NSTableCellView
     let account = XTAccountsManager.manager.accounts[row]
     
@@ -208,14 +210,14 @@ extension XTAccountsPrefsController: NSTableViewDelegate {
     case "location":
       view.textField?.stringValue = account.location.absoluteString
     case "status":
-      view.imageView?.hidden = true
-      if account.type == .TeamCity {
+      view.imageView?.isHidden = true
+      if account.type == .teamCity {
         guard let api = XTServices.services.teamCityAPI(account)
         else { break }
         
         if let image = statusImage(forAPI: api) {
           view.imageView?.image = image
-          view.imageView?.hidden = false
+          view.imageView?.isHidden = false
         }
       }
     default:
@@ -229,7 +231,7 @@ extension XTAccountsPrefsController: NSTableViewDelegate {
 
 extension XTAccountsPrefsController: NSTableViewDataSource {
   
-  func numberOfRowsInTableView(tableView: NSTableView) -> Int
+  func numberOfRows(in tableView: NSTableView) -> Int
   {
     return XTAccountsManager.manager.accounts.count
   }

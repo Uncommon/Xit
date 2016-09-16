@@ -13,7 +13,7 @@ class XTAddAccountController: XTSheetController {
     didSet
     {
       window?.addObserver(self, forKeyPath: "firstResponder",
-                          options: .New, context: nil)
+                          options: .new, context: nil)
     }
   }
   
@@ -31,9 +31,9 @@ class XTAddAccountController: XTSheetController {
     get { return passwordField.stringValue }
     set { passwordField.stringValue = newValue }
   }
-  var location: NSURL?
+  var location: URL?
   {
-    get { return NSURL(string: locationField.stringValue) }
+    get { return URL(string: locationField.stringValue) }
     set { locationField.stringValue = (newValue?.absoluteString)! }
   }
   
@@ -42,33 +42,33 @@ class XTAddAccountController: XTSheetController {
     window?.removeObserver(self, forKeyPath: "firstResponder")
   }
   
-  override func observeValueForKeyPath(
-      keyPath: String?, ofObject object: AnyObject?,
-      change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
+  override func observeValue(
+      forKeyPath keyPath: String?, of object: Any?,
+      change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?)
   {
     guard (object != nil) && ((object! as! NSObject) == window) &&
           (keyPath != nil) && (keyPath == "firstResponder")
     else { return }
     guard let change = change,
-          let newResponder = change[NSKeyValueChangeNewKey] as? NSView
-              where newResponder == passwordField
+          let newResponder = change[NSKeyValueChangeKey.newKey] as? NSView,
+          newResponder == passwordField
     else { return }
     
     passwordFocused()
   }
   
-  func showFieldAlert(message: String, field: NSView)
+  func showFieldAlert(_ message: String, field: NSView)
   {
     let alert = NSAlert()
     
-    alert.alertStyle = .CriticalAlertStyle
+    alert.alertStyle = .critical
     alert.messageText = message
-    alert.beginSheetModalForWindow((window?.sheetParent)!) { (response) in
+    alert.beginSheetModal(for: (window?.sheetParent)!) { (response) in
       self.window?.makeFirstResponder(field)
     }
   }
   
-  override func accept(sender: AnyObject)
+  override func accept(_ sender: AnyObject)
   {
     guard userName != ""
     else {
@@ -91,13 +91,14 @@ class XTAddAccountController: XTSheetController {
   {
     guard userName != "",
           let location = location,
-          let newPassword = XTKeychain.findPassword(location, account: userName)
+          let newPassword = XTKeychain.findPassword(url: location,
+                                                    account: userName)
     else { return }
     
     password = newPassword
   }
   
-  @IBAction func serviceChanged(sender: AnyObject)
+  @IBAction func serviceChanged(_ sender: AnyObject)
   {
     syncLocationField()
   }

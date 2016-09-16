@@ -3,20 +3,19 @@ import Cocoa
 
 final class XTKeychain: NSObject {
 
-  enum Error: ErrorType {
-    case InvalidURL
-    case ItemNotFound
+  enum Error: Swift.Error {
+    case invalidURL
+    case itemNotFound
   }
 
   /// Gets a password using a URL's host, port and path.
-  class func findPassword(url: NSURL, account: String) -> String?
+  class func findPassword(url: URL, account: String) -> String?
   {
-    guard let host = url.host,
-          let path = url.path
+    guard let host = url.host
     else { return nil }
     
-    return findPassword(host, path: path,
-                        port: url.port?.unsignedShortValue ?? 80,
+    return findPassword(host: host, path: url.path,
+                        port: (url as NSURL).port?.uint16Value ?? 80,
                         account: account)
   }
   
@@ -24,49 +23,50 @@ final class XTKeychain: NSObject {
   class func findPassword(host: String, path: String,
                           port: UInt16, account: String) -> String?
   {
-    let (password, _) = findItem(host, path: path, port: port, account: account)
+    let (password, _) = findItem(host: host, path: path,
+                                 port: port, account: account)
     
     return password
   }
   
   class func findItem(host: String, path: String,
                       port: UInt16, account: String)
-                      -> (String?, SecKeychainItemRef?)
+                      -> (String?, SecKeychainItem?)
   {
     var passwordLength: UInt32 = 0
-    var passwordData: UnsafeMutablePointer<Void> = nil
-    let nsHost: NSString = host
-    let nsPath: NSString = path
-    let nsAccount: NSString = account
-    let item = UnsafeMutablePointer<SecKeychainItem?>.alloc(1)
+    var passwordData: UnsafeMutableRawPointer? = nil
+    let nsHost: NSString = host as NSString
+    let nsPath: NSString = path as NSString
+    let nsAccount: NSString = account as NSString
+    let item = UnsafeMutablePointer<SecKeychainItem?>.allocate(capacity: 1)
     
     let err = SecKeychainFindInternetPassword(
         nil,
-        UInt32(nsHost.length), nsHost.UTF8String,
+        UInt32(nsHost.length), nsHost.utf8String,
         0, nil,
-        UInt32(nsAccount.length), nsAccount.UTF8String,
-        UInt32(nsPath.length), nsPath.UTF8String,
-        UInt16(port), .HTTP, .HTTPBasic,
+        UInt32(nsAccount.length), nsAccount.utf8String,
+        UInt32(nsPath.length), nsPath.utf8String,
+        port, .HTTP, .httpBasic,
         &passwordLength, &passwordData,
         item)
     
     guard err == noErr
     else { return (nil, nil) }
     
-    return (NSString(bytes: passwordData, length: Int(passwordLength),
-                     encoding: NSUTF8StringEncoding) as? String,
-            item.memory)
+    return (NSString(bytes: passwordData!, length: Int(passwordLength),
+                     encoding: String.Encoding.utf8.rawValue) as? String,
+            item.pointee)
   }
   
   /// Saves a password to the keychain using a URL's host, port and path.
-  class func savePassword(url: NSURL, account: String, password: String) throws
+  class func savePassword(url: URL, account: String, password: String) throws
   {
-    guard let host = url.host,
-          let path = url.path
-    else { throw Error.InvalidURL }
+    guard let host = url.host
+    else { throw Error.invalidURL }
     
-    try savePassword(host, path: path,
-                     port: url.port?.unsignedShortValue ?? 80,
+    try savePassword(host: host,
+                     path: url.path,
+                     port: UInt16(url.port ?? 80),
                      account: account,
                      password: password)
   }
@@ -76,20 +76,20 @@ final class XTKeychain: NSObject {
                           port: UInt16, account: String,
                           password: String) throws
   {
-    let nsHost: NSString = host
-    let nsPath: NSString = path
-    let nsAccount: NSString = account
-    let nsPassword: NSString = password
+    let nsHost: NSString = host as NSString
+    let nsPath: NSString = path as NSString
+    let nsAccount: NSString = account as NSString
+    let nsPassword: NSString = password as NSString
 
     let err = SecKeychainAddInternetPassword(
         nil,
-        UInt32(nsHost.length), nsHost.UTF8String,
+        UInt32(nsHost.length), nsHost.utf8String,
         0, nil,
-        UInt32(nsAccount.length), nsAccount.UTF8String,
-        UInt32(nsPath.length), nsPath.UTF8String,
+        UInt32(nsAccount.length), nsAccount.utf8String,
+        UInt32(nsPath.length), nsPath.utf8String,
         port,
-        .HTTP, .HTTPBasic,
-        UInt32(nsPassword.length), nsPassword.UTF8String,
+        .HTTP, .httpBasic,
+        UInt32(nsPassword.length), nsPassword.utf8String!,
         nil)
     
     guard err == noErr
@@ -98,14 +98,13 @@ final class XTKeychain: NSObject {
     }
   }
   
-  class func changePassword(url: NSURL, account: String, password: String) throws
+  class func changePassword(url: URL, account: String, password: String) throws
   {
-    guard let host = url.host,
-          let path = url.path
-    else { throw Error.InvalidURL }
+    guard let host = url.host
+    else { throw Error.invalidURL }
     
-    try changePassword(host, path: path,
-                       port: url.port?.unsignedShortValue ?? 80,
+    try changePassword(host: host, path: url.path,
+                       port: UInt16(url.port ?? 80),
                        account: account, password: password)
   }
   
@@ -113,18 +112,18 @@ final class XTKeychain: NSObject {
                             port: UInt16, account: String,
                             password: String) throws
   {
-    let (resultPassword, resultItem) = findItem(host, path: path, port: port,
+    let (resultPassword, resultItem) = findItem(host: host, path: path, port: port,
                                                 account: account)
     guard let oldPassword = resultPassword,
           let item = resultItem
-    else { throw Error.ItemNotFound }
+    else { throw Error.itemNotFound }
     guard oldPassword != password
     else { return }
     
-    let nsPassword: NSString = password
+    let nsPassword: NSString = password as NSString
     
     let err = SecKeychainItemModifyAttributesAndData(
-        item, nil, UInt32(nsPassword.length), nsPassword.UTF8String)
+        item, nil, UInt32(nsPassword.length), nsPassword.utf8String)
     
     guard err == noErr
     else {

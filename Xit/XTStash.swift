@@ -15,7 +15,7 @@ init(repo: XTRepository, index: UInt, message: String?)
 {
   self.repo = repo
   self.message = message
-  self.mainCommit = repo.commitForStashAtIndex(index)!
+  self.mainCommit = repo.commitForStash(at: index)!
   if self.mainCommit.parents.count > 1 {
     self.indexCommit = self.mainCommit.parents[1]
     if self.mainCommit.parents.count > 2 {
@@ -31,22 +31,22 @@ func changes() -> [XTFileChange]
   }
   
   let stagedChanges = (indexCommit == nil) ? [] :
-      repo.changesForRef(indexCommit!.SHA!, parent: nil) ?? [XTFileChange]()
-  var unstagedChanges = repo.changesForRef(mainCommit.SHA!,
-                                           parent: indexCommit?.SHA) ??
+      repo.changes(forRef: indexCommit!.sha!, parent: nil) ?? [XTFileChange]()
+  var unstagedChanges = repo.changes(forRef: mainCommit.sha!,
+                                           parent: indexCommit?.sha) ??
                         [XTFileChange]()
   
   if let untrackedCommit = self.untrackedCommit {
-    if let untrackedChanges = repo.changesForRef(untrackedCommit.SHA!,
+    if let untrackedChanges = repo.changes(forRef: untrackedCommit.sha!,
                                                  parent: nil) {
-      unstagedChanges.appendContentsOf(untrackedChanges)
+      unstagedChanges.append(contentsOf: untrackedChanges)
     }
   }
   // Unstaged statuses aren't set because these are coming out of commits,
   // so they all have to be switched.
   for unstaged in unstagedChanges {
     unstaged.unstagedChange = unstaged.change
-    unstaged.change = .Unmodified
+    unstaged.change = .unmodified
   }
   
   let unstagedPaths = unstagedChanges.map({ $0.path })
@@ -68,59 +68,59 @@ func changes() -> [XTFileChange]
   
   var changes = [XTFileChange](unstagedDict.values)
   
-  changes.sortInPlace { $0.path.compare($1.path) == .OrderedAscending }
+  changes.sort { $0.path.compare($1.path) == .orderedAscending }
   self.cachedChanges = changes
   return changes
 }
 
-func headBlobForPath(path: String) -> GTBlob?
+func headBlobForPath(_ path: String) -> GTBlob?
 {
-  guard let headEntry = try? mainCommit.parents[0].tree?.entryWithPath(path),
-        let object = try? headEntry?.GTObject()
+  guard let headEntry = try? mainCommit.parents[0].tree?.entry(withPath: path),
+        let object = try? headEntry?.gtObject()
   else { return nil }
   return (object as? GTBlob?)!
 }
 
-func stagedDiffForFile(path: String) -> XTDiffDelta?
+func stagedDiffForFile(_ path: String) -> XTDiffDelta?
 {
   guard let indexCommit = self.indexCommit,
-        let indexEntry = try? indexCommit.tree?.entryWithPath(path),
-        let indexBlob = try? indexEntry!.GTObject() as? GTBlob
+        let indexEntry = try? indexCommit.tree?.entry(withPath: path),
+        let indexBlob = try? indexEntry!.gtObject() as? GTBlob
   else { return nil }
   let headBlob = self.headBlobForPath(path)
   
-  return try? XTDiffDelta(fromBlob: headBlob, forPath: path,
-                          toBlob: indexBlob, forPath: path, options: nil)
+  return try? XTDiffDelta(from: headBlob, forPath: path,
+                          to: indexBlob, forPath: path, options: nil)
 }
 
-func unstagedDiffForFile(path: String) -> XTDiffDelta?
+func unstagedDiffForFile(_ path: String) -> XTDiffDelta?
 {
   guard let indexCommit = self.indexCommit
   else { return nil }
 
   var indexBlob: GTBlob? = nil
   
-  if let indexEntry = try? indexCommit.tree!.entryWithPath(path) {
-    let object = try? indexEntry.GTObject()
+  if let indexEntry = try? indexCommit.tree!.entry(withPath: path) {
+    let object = try? indexEntry.gtObject()
     
     indexBlob = object as? GTBlob
   }
   
   if let untrackedCommit = self.untrackedCommit,
-     let untrackedEntry = try? untrackedCommit.tree?.entryWithPath(path) {
-    guard let untrackedBlob = try? untrackedEntry!.GTObject() as? GTBlob
+     let untrackedEntry = try? untrackedCommit.tree?.entry(withPath: path) {
+    guard let untrackedBlob = try? untrackedEntry!.gtObject() as? GTBlob
     else { return nil }
     
-    return try? XTDiffDelta(fromBlob: indexBlob, forPath: path,
-                            toBlob: untrackedBlob, forPath: path,
+    return try? XTDiffDelta(from: indexBlob, forPath: path,
+                            to: untrackedBlob, forPath: path,
                             options: nil)
   }
-  if let unstagedEntry = try? self.mainCommit.tree?.entryWithPath(path) {
-    guard let unstagedBlob = try? unstagedEntry?.GTObject() as? GTBlob
+  if let unstagedEntry = try? self.mainCommit.tree?.entry(withPath: path) {
+    guard let unstagedBlob = try? unstagedEntry?.gtObject() as? GTBlob
     else { return nil }
     
-    return try? XTDiffDelta(fromBlob: indexBlob, forPath: path,
-                            toBlob: unstagedBlob, forPath: path,
+    return try? XTDiffDelta(from: indexBlob, forPath: path,
+                            to: unstagedBlob, forPath: path,
                             options: nil)
   }
   return nil

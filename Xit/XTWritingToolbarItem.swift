@@ -3,21 +3,21 @@ import Cocoa
 /// Toolbar item that disables itself during repository writing operations.
 class XTWritingToolbarItem: NSToolbarItem {
 
-  override func observeValueForKeyPath(keyPath: String?,
-                                       ofObject object: AnyObject?,
-                                       change: [String : AnyObject]?,
-                                       context: UnsafeMutablePointer<Void>)
+  override func observeValue(forKeyPath keyPath: String?,
+                             of object: Any?,
+                             change: [NSKeyValueChangeKey : Any]?,
+                             context: UnsafeMutableRawPointer?)
   {
     guard let keyPath = keyPath,
           let change = change
     else { return }
     
     if keyPath == "isWriting" {
-      let writing = change[NSKeyValueChangeNewKey]?.boolValue ?? true
+      let writing = (change[NSKeyValueChangeKey.newKey] as AnyObject).boolValue ?? true
 
-      dispatch_async(dispatch_get_main_queue()) {
+      DispatchQueue.main.async {
         [weak self] in
-        self?.enabled = !writing
+        self?.isEnabled = !writing
         self?.view?.needsDisplay = true
       }
     }

@@ -12,28 +12,25 @@ let XTChangedRefsKey = "changedRefs"
   // stream must be var because we have to reference self to initialize it.
   var stream: FSEventStreamRef!
   var packedRefsWatcher: XTFileMonitor?
-  var lastIndexChange = NSDate()
+  var lastIndexChange = Date()
   {
     didSet
     {
-      NSNotificationCenter.defaultCenter().postNotificationName(
-          XTRepositoryIndexChangedNotification, object: repository)
+      NotificationCenter.default.post(
+          name: NSNotification.Name.XTRepositoryIndexChanged, object: repository)
     }
   }
   var refsCache = [String: GTOID]()
 
   init?(repository: XTRepository)
   {
-    guard let path = repository.gitDirectoryURL.path
-    else { return nil }
-    
     self.repository = repository
     super.init()
     
     makePackedRefsWatcher()
 
     let latency: CFTimeInterval = 1.0
-    let unsafeSelf = UnsafeMutablePointer<Void>(unsafeAddressOf(self))
+    let unsafeSelf = UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque())
     var context = FSEventStreamContext(version: 0,
                                        info: unsafeSelf,
                                        retain: nil,
@@ -41,16 +38,16 @@ let XTChangedRefsKey = "changedRefs"
                                        copyDescription: nil)
     let callback: FSEventStreamCallback = {
       (streamRef, userData, eventCount, paths, flags, ids) in
-      guard let cfPaths = unsafeBitCast(paths, NSArray.self) as? [String]
+      guard let cfPaths = unsafeBitCast(paths, to: NSArray.self) as? [String]
       else { return }
-      let contextSelf = unsafeBitCast(userData, XTRepositoryWatcher.self)
+      let contextSelf = unsafeBitCast(userData, to: XTRepositoryWatcher.self)
       
       contextSelf.observeEvents(cfPaths)
     }
   
     self.stream = FSEventStreamCreate(
         kCFAllocatorDefault, callback,
-        &context, [path],
+        &context, [repository.gitDirectoryURL.path] as CFArray,
         FSEventStreamEventId(kFSEventStreamEventIdSinceNow), latency,
         UInt32(kFSEventStreamCreateFlagUseCFTypes |
                kFSEventStreamCreateFlagNoDefer))
@@ -59,7 +56,7 @@ let XTChangedRefsKey = "changedRefs"
     }
     FSEventStreamScheduleWithRunLoop(self.stream,
                                      CFRunLoopGetMain(),
-                                     kCFRunLoopDefaultMode)
+                                     CFRunLoopMode.defaultMode.rawValue)
     FSEventStreamStart(self.stream)
   }
   
@@ -74,8 +71,7 @@ let XTChangedRefsKey = "changedRefs"
   
   func makePackedRefsWatcher()
   {
-    guard let path = repository.gitDirectoryURL.path
-    else { return }
+    let path = repository.gitDirectoryURL.path
     
     self.packedRefsWatcher =
         XTFileMonitor(path: path.stringByAppendingPathComponent("packed-refs"))
@@ -85,12 +81,12 @@ let XTChangedRefsKey = "changedRefs"
     }
   }
   
-  func indexRefs(refs: [String]) -> [String: GTOID]
+  func index(refs: [String]) -> [String: GTOID]
   {
     var result = [String: GTOID]()
     
     for ref in refs {
-      guard let oid = repository.shaForRef(ref).flatMap({ GTOID(SHA: $0) })
+      guard let oid = repository.sha(forRef: ref).flatMap({ GTOID(sha: $0) })
       else { continue }
       
       result[ref] = oid
@@ -100,23 +96,22 @@ let XTChangedRefsKey = "changedRefs"
   
   func checkIndex()
   {
-    guard let gitPath = repository.gitDirectoryURL.path
-    else { return }
+    let gitPath = repository.gitDirectoryURL.path
     let indexPath = gitPath.stringByAppendingPathComponent("index")
-    guard let indexAttributes = try? NSFileManager.defaultManager()
-                                     .attributesOfItemAtPath(indexPath),
-          let newMod = indexAttributes[NSFileModificationDate] as? NSDate
+    guard let indexAttributes = try? FileManager.default
+                                     .attributesOfItem(atPath: indexPath),
+          let newMod = indexAttributes[FileAttributeKey.modificationDate] as? Date
     else {
-      lastIndexChange = NSDate.distantPast()
+      lastIndexChange = Date.distantPast
       return
     }
     
-    if lastIndexChange.compare(newMod) != .OrderedSame {
+    if lastIndexChange.compare(newMod) != .orderedSame {
       lastIndexChange = newMod
     }
   }
   
-  func paths(paths: [String], includeSubpaths subpaths: [String]) -> Bool
+  func paths(_ paths: [String], includeSubpaths subpaths: [String]) -> Bool
   {
     for path in paths {
       for subpath in subpaths {
@@ -129,11 +124,10 @@ let XTChangedRefsKey = "changedRefs"
     return false
   }
   
-  func checkRefs(changedPaths: [String])
+  func checkRefs(_ changedPaths: [String])
   {
     if packedRefsWatcher == nil,
-       let path = repository.gitDirectoryURL.path where
-       changedPaths.indexOf(path) != nil {
+       changedPaths.index(of: repository.gitDirectoryURL.path) != nil {
       makePackedRefsWatcher()
     }
     
@@ -144,16 +138,16 @@ let XTChangedRefsKey = "changedRefs"
   
   func checkRefs()
   {
-    let newRefCache = indexRefs(repository.allRefs())
+    let newRefCache = index(refs: repository.allRefs())
     let newKeys = Set(newRefCache.keys)
     let oldKeys = Set(refsCache.keys)
-    let addedRefs = newKeys.subtract(oldKeys)
-    let deletedRefs = oldKeys.subtract(newKeys)
-    let changedRefs = newKeys.subtract(addedRefs).filter {
+    let addedRefs = newKeys.subtracting(oldKeys)
+    let deletedRefs = oldKeys.subtracting(newKeys)
+    let changedRefs = newKeys.subtracting(addedRefs).filter {
       (ref) -> Bool in
       guard let oldOID = refsCache[ref],
-            let newSHA = self.repository.shaForRef(ref),
-            let newOID =  GTOID(SHA: newSHA)
+            let newSHA = self.repository.sha(forRef: ref),
+            let newOID =  GTOID(sha: newSHA)
       else { return false }
       
       return oldOID != newOID
@@ -173,22 +167,22 @@ let XTChangedRefsKey = "changedRefs"
     }
     if !refChanges.isEmpty {
       repository.rebuildRefsIndex()
-      NSNotificationCenter.defaultCenter().postNotificationName(
-          XTRepositoryRefsChangedNotification, object: repository)
+      NotificationCenter.default.post(
+          name: NSNotification.Name.XTRepositoryRefsChanged, object: repository)
     }
     
     refsCache = newRefCache
   }
   
-  func observeEvents(paths: [String])
+  func observeEvents(_ paths: [String])
   {
     // FSEvents includes trailing slashes, but some other APIs don't.
-    let standardPaths = paths.map({ ($0 as NSString).stringByStandardizingPath })
+    let standardPaths = paths.map({ ($0 as NSString).standardizingPath })
   
     checkIndex()
     checkRefs(standardPaths)
     
-    NSNotificationCenter.defaultCenter().postNotificationName(
-        XTRepositoryChangedNotification, object: repository)
+    NotificationCenter.default.post(
+        name: NSNotification.Name.XTRepositoryChanged, object: repository)
   }
 }

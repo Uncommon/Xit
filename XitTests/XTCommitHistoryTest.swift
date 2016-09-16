@@ -3,34 +3,34 @@ import XCTest
 
 
 class MockCommit: NSObject, CommitType {
-  let SHA: String?
-  let OID: GTOID
+  let sha: String?
+  let oid: GTOID
   let parentOIDs: [GTOID]
   
   var message: String? { return nil }
-  var commitDate: NSDate { return NSDate() }
+  var commitDate: Date { return Date() }
   var email: String? { return nil }
   
-  init(SHA: String?, OID: GTOID, parentOIDs: [GTOID])
+  init(sha: String?, oid: GTOID, parentOIDs: [GTOID])
   {
-    self.SHA = SHA
-    self.OID = OID
+    self.sha = sha
+    self.oid = oid
     self.parentOIDs = parentOIDs
   }
 }
 
 func == (a: MockCommit, b: MockCommit) -> Bool
 {
-  return a.OID == b.OID
+  return a.oid == b.oid
 }
 
 
 extension GTOID {
   convenience init(oid: String)
   {
-    let padded = (oid as NSString).stringByPaddingToLength(40, withString: "0", startingAtIndex: 0)
+    let padded = (oid as NSString).padding(toLength: 40, withPad: "0", startingAt: 0)
     
-    self.init(SHA: padded)!
+    self.init(sha: padded)!
   }
 }
 
@@ -46,7 +46,7 @@ class MockRepository: NSObject, RepositoryType {
   func commit(forSHA sha: String) -> CommitType?
   {
     for commit in commits {
-      if commit.SHA == sha {
+      if commit.sha == sha {
         return commit
       }
     }
@@ -56,7 +56,7 @@ class MockRepository: NSObject, RepositoryType {
   func commit(forOID oid: GTOID) -> CommitType?
   {
     for commit in commits {
-      if commit.OID == oid {
+      if commit.oid == oid {
         return commit
       }
     }
@@ -67,7 +67,7 @@ class MockRepository: NSObject, RepositoryType {
 
 extension Xit.CommitConnection: CustomDebugStringConvertible {
   var debugDescription: String
-  { return "\(childOID.SHA)-\(parentOID.SHA) \(colorIndex)" }
+  { return "\(childOID.sha)-\(parentOID.sha) \(colorIndex)" }
 }
 
 
@@ -83,14 +83,14 @@ extension Xit.CommitConnection {
 
 class XTCommitHistoryTest: XCTestCase {
   
-  func makeHistory(commitData: [(String, [String])]) -> XTCommitHistory
+  func makeHistory(_ commitData: [(String, [String])]) -> XTCommitHistory
   {
     let commits = commitData.map({ (sha, parents) in
-        MockCommit(SHA: sha,
-                   OID: GTOID(oid: sha),
+        MockCommit(sha: sha,
+                   oid: GTOID(oid: sha),
                    parentOIDs: parents.map { GTOID(oid: $0) }) })
     // Reverse the input to better test the ordering.
-    let repository = MockRepository(commits: commits.reverse())
+    let repository = MockRepository(commits: commits.reversed())
     let history = XTCommitHistory()
     
     history.repository = repository
@@ -98,15 +98,16 @@ class XTCommitHistoryTest: XCTestCase {
   }
   
   /// Makes sure each commit preceds its parents.
-  func check(history: XTCommitHistory, expectedLength: Int)
+  func check(_ history: XTCommitHistory, expectedLength: Int)
   {
-    print("\(history.entries.flatMap({ $0.commit.SHA }))")
+    print("\(history.entries.flatMap({ $0.commit.sha }))")
     XCTAssert(history.entries.count == expectedLength)
-    for (index, entry) in history.entries.enumerate() {
+    for (index, entry) in history.entries.enumerated() {
       for parentOID in entry.commit.parentOIDs {
-        let parentIndex = history.entries.indexOf({ $0.commit.OID == parentOID })
+        let parentIndex = history.entries.index(
+            where: { $0.commit.oid == parentOID })
         
-        XCTAssert(parentIndex > index, "\(entry.commit.SHA!.firstSix()) !< \(parentOID.SHA.firstSix())")
+        XCTAssert(parentIndex! > index, "\(entry.commit.sha!.firstSix()) !< \(parentOID.sha.firstSix())")
       }
     }
   }

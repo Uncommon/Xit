@@ -15,15 +15,15 @@ class XTRemoteOptionsController: XTOperationController
   {
     guard let repository = repository,
           let remote = try? GTRemote(name: remoteName,
-                                     inRepository: repository.gtRepo)
+                                     in: repository.gtRepo)
     else { return }
     
     let sheetController = XTRemoteSheetController.controller()
     
     sheetController.resetFields()
     sheetController.name = remoteName
-    sheetController.fetchURL = remote.URLString.flatMap({ NSURL(string: $0) })
-    sheetController.pushURL = remote.pushURLString.flatMap({ NSURL(string: $0) })
+    sheetController.fetchURL = remote.urlString.flatMap({ URL(string: $0) })
+    sheetController.pushURL = remote.pushURLString.flatMap({ URL(string: $0) })
     windowController!.window?.beginSheet(sheetController.window!) {
         (response) in
       if response == NSModalResponseOK {
@@ -32,7 +32,7 @@ class XTRemoteOptionsController: XTOperationController
     }
   }
   
-  func acceptSheetSettings(sheetController: XTRemoteSheetController)
+  func acceptSheetSettings(_ sheetController: XTRemoteSheetController)
   {
     // update name and URLs if changed
   }

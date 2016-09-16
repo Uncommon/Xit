@@ -26,9 +26,9 @@ class XTOperationController: NSObject {
   }
   
   /// Executes the given block, handling errors and updating status.
-  func tryRepoOperation(successStatus successStatus: String,
+  func tryRepoOperation(successStatus: String,
                         failureStatus: String,
-                        block: (() throws -> Void))
+                        block: @escaping (() throws -> Void))
   {
     repository?.executeOffMainThread {
       guard let repository = self.repository
@@ -47,12 +47,12 @@ class XTOperationController: NSObject {
         XTStatusView.update(status: failureStatus,
                             progress: -1,
                             repository: repository)
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
           if let window = self.windowController?.window {
             let alert = NSAlert(error: error)
             
             // needs to be smarter: look at error type
-            alert.beginSheetModalForWindow(window, completionHandler: nil)
+            alert.beginSheetModal(for: window, completionHandler: nil)
           }
         }
       }

@@ -11,21 +11,21 @@ class XTCommitEntryController: NSViewController {
       // Do view setup here.
   }
   
-  @IBAction func commit(sender: NSButton) {
+  @IBAction func commit(_ sender: NSButton) {
     do {
-      try repo.commitWithMessage(commitField.stringValue,
-                                 amend: false,
-                                 outputBlock: nil)
+      try repo.commit(withMessage: commitField.stringValue,
+                      amend: false,
+                      outputBlock: nil)
       commitField.stringValue = ""
     }
     catch {
       let alert = NSAlert(error: error as NSError)
       
-      alert.beginSheetModalForWindow(self.view.window!, completionHandler: nil)
+      alert.beginSheetModal(for: self.view.window!, completionHandler: nil)
     }
   }
   
-  override func controlTextDidChange(obj: NSNotification) {
-    commitButton.enabled = (commitField.stringValue != "")
+  override func controlTextDidChange(_ obj: Notification) {
+    commitButton.isEnabled = (commitField.stringValue != "")
   }
 }

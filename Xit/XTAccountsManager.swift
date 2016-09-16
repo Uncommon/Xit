@@ -2,9 +2,9 @@ import Cocoa
 
 
 enum AccountType : Int {
-  case GitHub = 0
-  case BitBucket = 1
-  case TeamCity = 2
+  case gitHub = 0
+  case bitBucket = 1
+  case teamCity = 2
   
   init?(name: String?)
   {
@@ -12,11 +12,11 @@ enum AccountType : Int {
     
     switch name! {
     case "github":
-      self = .GitHub
+      self = .gitHub
     case "bitbucket":
-      self = .BitBucket
+      self = .bitBucket
     case "teamcity":
-      self = .TeamCity
+      self = .teamCity
     default:
       return nil
     }
@@ -25,36 +25,36 @@ enum AccountType : Int {
   var name: String
   {
     switch self {
-    case .GitHub: return "github"
-    case .BitBucket: return "bitbucket"
-    case .TeamCity: return "teamcity"
+    case .gitHub: return "github"
+    case .bitBucket: return "bitbucket"
+    case .teamCity: return "teamcity"
     }
   }
   
   var displayName: String
   {
     switch self {
-    case .GitHub: return "GitHub"
-    case .BitBucket: return "BitBucket"
-    case .TeamCity: return "TeamCity"
+    case .gitHub: return "GitHub"
+    case .bitBucket: return "BitBucket"
+    case .teamCity: return "TeamCity"
     }
   }
   
   var defaultLocation: String
   {
     switch self {
-    case .GitHub: return "https://api.github.com"
-    case .BitBucket: return "https://api.bitbucket.org"
-    case .TeamCity: return ""
+    case .gitHub: return "https://api.github.com"
+    case .bitBucket: return "https://api.bitbucket.org"
+    case .teamCity: return ""
     }
   }
   
   var imageName: String
   {
     switch self {
-    case .GitHub: return "githubTemplate"
-    case .BitBucket: return "bitbucketTemplate"
-    case .TeamCity: return "teamcityTemplate"
+    case .gitHub: return "githubTemplate"
+    case .bitBucket: return "bitbucketTemplate"
+    case .teamCity: return "teamcityTemplate"
     }
   }
 }
@@ -66,9 +66,9 @@ enum AccountType : Int {
 class Account: NSObject {
   var type: AccountType
   var user: String
-  var location: NSURL
+  var location: URL
   
-  init(type: AccountType, user: String, location: NSURL)
+  init(type: AccountType, user: String, location: URL)
   {
     self.type = type
     self.user = user
@@ -109,7 +109,7 @@ class XTAccountsManager: NSObject {
     return accounts.filter() { $0.type == type }
   }
   
-  func add(account: Account)
+  func add(_ account: Account)
   {
     accounts.append(account)
   }
@@ -117,7 +117,7 @@ class XTAccountsManager: NSObject {
   func readAccounts()
   {
     guard let storedAccounts =
-      NSUserDefaults.standardUserDefaults().arrayForKey("accounts")
+      UserDefaults.standard.array(forKey: "accounts")
         as? [[String: AnyObject]]
     else { return }
     
@@ -126,7 +126,7 @@ class XTAccountsManager: NSObject {
       if let type = AccountType(name: accountDict[typeKey] as? String),
         let user = accountDict[userKey] as? String,
         let locationString = accountDict[locationKey] as? String,
-        let location = NSURL(string: locationString) {
+        let location = URL(string: locationString) {
         accounts.append(Account(type: type, user: user, location: location))
       }
       else {
@@ -145,10 +145,10 @@ class XTAccountsManager: NSObject {
       accountDict[typeKey] = account.type.name
       accountDict[userKey] = account.user
       accountDict[locationKey] = account.location.absoluteString
-      accountsList.addObject(accountDict)
+      accountsList.add(accountDict)
     }
-    NSUserDefaults.standardUserDefaults().setValue(accountsList,
-                                                   forKey: "accounts")
+    UserDefaults.standard.setValue(accountsList,
+                                   forKey: "accounts")
   }
   
 }
