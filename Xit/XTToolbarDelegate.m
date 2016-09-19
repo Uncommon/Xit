@@ -13,6 +13,7 @@
   }
 }
 
+/*
 - (void)toolbarWillAddItem:(NSNotification*)notification
 {
   [super toolbarWillAddItem:notification];
@@ -26,6 +27,7 @@
             options:NSKeyValueObservingOptionNew
             context:NULL];
 }
+*/
 
 - (void)toolbarDidRemoveItem:(NSNotification*)notification
 {

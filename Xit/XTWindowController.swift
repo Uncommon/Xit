@@ -36,12 +36,36 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
   override func windowDidLoad()
   {
     super.windowDidLoad()
-    window!.delegate = self
+    
+    let window = self.window!
+    let titleController = XTTitleBarAccessoryViewController(nibName: "TitleBar",
+                                                            bundle: nil)!
+    let inverseBindingOptions =
+        [NSValueTransformerNameBindingOption:
+         NSValueTransformerName.negateBooleanTransformerName]
+    
+    window.toolbar = nil
+    window.titleVisibility = .hidden
+    window.addTitlebarAccessoryViewController(titleController)
+    titleController.titleLabel.bind("value",
+                                    to: window as NSWindow,
+                                    withKeyPath: "title",
+                                    options: nil)
+    titleController.proxyIcon.bind("hidden",
+                                   to: xtDocument!.repository,
+                                   withKeyPath: "isWriting",
+                                   options: nil)
+    titleController.spinner.bind("hidden",
+                                 to: xtDocument!.repository,
+                                 withKeyPath: "isWriting",
+                                 options: inverseBindingOptions)
+
+    window.delegate = self
     // We could set the window's contentViewController, but then it would
     // retain the view controller, which is undesirable.
-    window!.contentView = historyController.view
-    window!.makeFirstResponder(historyController.historyTable)
-    window!.addTitlebarAccessoryViewController(activityController)
+    window.contentView = historyController.view
+    window.makeFirstResponder(historyController.historyTable)
+    //window.addTitlebarAccessoryViewController(activityController)
     
     let repo = xtDocument!.repository
     

@@ -98,6 +98,20 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
   }
 }
 
+// Make sure KVO notifications happen on the main thread
+- (void)updateIsWriting:(BOOL)writing
+{
+  if (writing == self.isWriting)
+    return;
+  
+  if ([NSThread isMainThread])
+    self.isWriting = writing;
+  else
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      self.isWriting = writing;
+    });
+}
+
 - (void)shutDown
 {
   self.isShutDown = YES;
@@ -131,7 +145,7 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
                                  userInfo:nil];
       return nil;
     }
-    self.isWriting = YES;
+    [self updateIsWriting:YES];
     NSLog(@"****command = git %@", [args componentsJoinedByString:@" "]);
     NSTask *task = [[NSTask alloc] init];
     [[NSNotificationCenter defaultCenter] postNotificationName:XTTaskStartedNotification object:self];
@@ -185,7 +199,7 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
       output = nil;
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:XTTaskEndedNotification object:self];
-    self.isWriting = NO;
+    [self updateIsWriting:NO];
     return output;
   }
 }

@@ -41,9 +41,9 @@ extension XTRepository {
     if isWriting {
       throw Error.alreadyWriting
     }
-    isWriting = true
+    updateIsWriting(true)
     try block()
-    isWriting = false
+    updateIsWriting(false)
   }
   
   func rebuildRefsIndex()

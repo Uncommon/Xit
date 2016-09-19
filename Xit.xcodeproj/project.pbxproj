@@ -108,6 +108,8 @@
 		C91F34761D306506005F9BDF /* Siesta.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C91F346F1D30647E005F9BDF /* Siesta.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C91F34781D30656B005F9BDF /* XTServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91F34771D30656B005F9BDF /* XTServices.swift */; };
 		C923D6481D8CA56800C6B90B /* XTTagTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D6471D8CA56800C6B90B /* XTTagTest.swift */; };
+		C923D65E1D90506A00C6B90B /* TitleBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = C923D65D1D90506A00C6B90B /* TitleBar.xib */; };
+		C923D66C1D906FAA00C6B90B /* XTTitleBarAccessoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D66B1D906FAA00C6B90B /* XTTitleBarAccessoryViewController.swift */; };
 		C926804E1D074EC500E422FA /* XTFileChangesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C926804D1D074EC500E422FA /* XTFileChangesModel.swift */; };
 		C929D03B1D400B3B00D7DC52 /* XTRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D03A1D400B3B00D7DC52 /* XTRemote.swift */; };
 		C929D0461D415F6F00D7DC52 /* MiscExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */; };
@@ -445,6 +447,8 @@
 		C91F34631D30647D005F9BDF /* Siesta.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Siesta.xcodeproj; path = siesta/Siesta.xcodeproj; sourceTree = "<group>"; };
 		C91F34771D30656B005F9BDF /* XTServices.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTServices.swift; sourceTree = "<group>"; };
 		C923D6471D8CA56800C6B90B /* XTTagTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTagTest.swift; sourceTree = "<group>"; };
+		C923D65D1D90506A00C6B90B /* TitleBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TitleBar.xib; sourceTree = "<group>"; };
+		C923D66B1D906FAA00C6B90B /* XTTitleBarAccessoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTitleBarAccessoryViewController.swift; sourceTree = "<group>"; };
 		C926804D1D074EC500E422FA /* XTFileChangesModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesModel.swift; sourceTree = "<group>"; };
 		C929D03A1D400B3B00D7DC52 /* XTRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRemote.swift; sourceTree = "<group>"; };
 		C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiscExtensions.swift; sourceTree = "<group>"; };
@@ -907,6 +911,7 @@
 		C97328661D11DE6C00C56B9E /* Document */ = {
 			isa = PBXGroup;
 			children = (
+				C923D65D1D90506A00C6B90B /* TitleBar.xib */,
 				C3FA471213D0F8E200AC4F9B /* XTDocument.h */,
 				C3FA471313D0F8E200AC4F9B /* XTDocument.m */,
 				C3FA471513D0F8E200AC4F9B /* XTDocument.xib */,
@@ -921,6 +926,7 @@
 				89794F8A1458CC9B00E38ACC /* XTOutputViewController.m */,
 				89794F8B1458CC9B00E38ACC /* XTOutputViewController.xib */,
 				C9328B051D75E3F600EFF7F7 /* XTWritingToolbarItem.swift */,
+				C923D66B1D906FAA00C6B90B /* XTTitleBarAccessoryViewController.swift */,
 			);
 			name = Document;
 			sourceTree = "<group>";
@@ -1209,6 +1215,7 @@
 				89D8BDFD1CED200B00D640AA /* modify@2x.png in Resources */,
 				DD997DDA173B409500C7DF82 /* HistoryView Menus.xib in Resources */,
 				C957B85C1D2D6A3C0040F858 /* bitbucketTemplate@2x.png in Resources */,
+				C923D65E1D90506A00C6B90B /* TitleBar.xib in Resources */,
 				89D8BDF81CED200B00D640AA /* conflict.png in Resources */,
 				DD997DF81746F40D00C7DF82 /* XTFileViewController.xib in Resources */,
 				89D8BDF91CED200B00D640AA /* conflict@2x.png in Resources */,
@@ -1344,6 +1351,7 @@
 				899DB1A21CE5022400760270 /* XTCommitEntryController.swift in Sources */,
 				89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */,
 				C9E9A37D1D0B5706007BFABF /* XTWindowController.swift in Sources */,
+				C923D66C1D906FAA00C6B90B /* XTTitleBarAccessoryViewController.swift in Sources */,
 				DD96C939175ECE690003A30C /* XTFileViewController.m in Sources */,
 				895229661786F6F900EE514C /* FHTDelegate.m in Sources */,
 				C90FD5961D217D5B00A30570 /* XTFetchPanelController.swift in Sources */,
