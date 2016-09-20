@@ -124,14 +124,23 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
                   object:controller
                    queue:nil
               usingBlock:^(NSNotification * _Nonnull note) {
-    [weakSelf selectedModelChanged:note.userInfo[NSKeyValueChangeNewKey]
-                          oldModel:note.userInfo[NSKeyValueChangeOldKey]];
+    [weakSelf selectedModelChanged];
   }];
+}
+
+- (BOOL)isStaging
+{
+  return !self.stageSelector.hidden;
 }
 
 - (void)setStaging:(BOOL)staging
 {
   self.stageSelector.hidden = !staging;
+}
+
+- (BOOL)isCommitting
+{
+  return !self.actionButton.hidden;
 }
 
 - (void)setCommitting:(BOOL)committing
@@ -140,12 +149,15 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   self.actionButton.hidden = !committing;
 }
 
-- (void)selectedModelChanged:(id<XTFileChangesModel>)newModel
-                    oldModel:(id<XTFileChangesModel>)oldModel
+- (void)selectedModelChanged
 {
-  if (oldModel.hasUnstaged != newModel.hasUnstaged)
+  XTWindowController *controller =
+      (XTWindowController*)self.view.window.windowController;
+  id<XTFileChangesModel> newModel = controller.selectedModel;
+
+  if (self.isStaging != newModel.hasUnstaged)
     [self setStaging:newModel.hasUnstaged];
-  if (oldModel.canCommit != newModel.canCommit) {
+  if (self.isCommitting != newModel.canCommit) {
     [self setCommitting:newModel.canCommit];
     
     // Status icons are different
