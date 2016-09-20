@@ -8,7 +8,6 @@
         <customObject id="-2" userLabel="File's Owner" customClass="XTTitleBarAccessoryViewController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="branchLabel" destination="EVf-iB-Aga" id="t9a-Tv-QJZ"/>
-                <outlet property="navigationControls" destination="R3D-tM-tt5" id="55d-3s-KkS"/>
                 <outlet property="operationButton" destination="aNh-jL-whD" id="xoY-eW-HIj"/>
                 <outlet property="operationControls" destination="IIb-W1-mF1" id="b9v-BT-AAG"/>
                 <outlet property="proxyIcon" destination="WKb-MR-WPP" id="3o0-jU-AzM"/>
@@ -25,22 +24,8 @@
             <rect key="frame" x="0.0" y="0.0" width="791" height="37"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
-                <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="R3D-tM-tt5">
-                    <rect key="frame" x="8" y="5" width="55" height="25"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="55" id="Kkz-HR-FJT"/>
-                        <constraint firstAttribute="height" constant="22" id="uLf-D5-h9w"/>
-                    </constraints>
-                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="separated" trackingMode="momentary" id="yGP-dF-aYm">
-                        <font key="font" metaFont="system"/>
-                        <segments>
-                            <segment toolTip="Back" image="NSGoLeftTemplate" width="24"/>
-                            <segment toolTip="Forward" image="NSGoRightTemplate" width="24" tag="1"/>
-                        </segments>
-                    </segmentedCell>
-                </segmentedControl>
                 <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="m2X-wZ-tfZ">
-                    <rect key="frame" x="71" y="5" width="96" height="25"/>
+                    <rect key="frame" x="8" y="5" width="96" height="25"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="22" id="nVV-pR-C7Z"/>
                     </constraints>
@@ -179,14 +164,12 @@
                 </segmentedControl>
             </subviews>
             <constraints>
-                <constraint firstItem="R3D-tM-tt5" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="8" id="6bb-H6-bFT"/>
                 <constraint firstItem="gzN-mQ-RA8" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="IIb-W1-mF1" secondAttribute="trailing" constant="8" symbolic="YES" id="Ht0-BG-KbQ"/>
                 <constraint firstItem="gzN-mQ-RA8" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="8" id="NAK-dD-Ivi"/>
                 <constraint firstItem="DfW-Hf-FKe" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="m2X-wZ-tfZ" secondAttribute="trailing" constant="8" symbolic="YES" id="PyA-gP-gFU"/>
                 <constraint firstItem="aNh-jL-whD" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="10" id="T5L-YN-0DZ"/>
                 <constraint firstItem="aNh-jL-whD" firstAttribute="leading" secondItem="DfW-Hf-FKe" secondAttribute="trailing" constant="16" id="TAv-29-8IH"/>
-                <constraint firstItem="R3D-tM-tt5" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="8" id="Ubg-M0-09v"/>
-                <constraint firstItem="m2X-wZ-tfZ" firstAttribute="leading" secondItem="R3D-tM-tt5" secondAttribute="trailing" constant="8" id="and-Ve-kN4"/>
+                <constraint firstItem="m2X-wZ-tfZ" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="8" id="Uha-ic-oTu"/>
                 <constraint firstItem="IIb-W1-mF1" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="8" id="dhx-XR-ffB"/>
                 <constraint firstItem="m2X-wZ-tfZ" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="8" id="fLV-19-nuD"/>
                 <constraint firstItem="DfW-Hf-FKe" firstAttribute="centerX" secondItem="c22-O7-iKe" secondAttribute="centerX" priority="900" id="gXn-Xl-POs"/>
@@ -199,8 +182,6 @@
     </objects>
     <resources>
         <image name="NSFolder" width="32" height="32"/>
-        <image name="NSGoLeftTemplate" width="9" height="12"/>
-        <image name="NSGoRightTemplate" width="9" height="12"/>
         <image name="NSStatusAvailable" width="16" height="16"/>
         <image name="branchTemplate" width="14" height="16"/>
         <image name="fetchTemplate" width="8" height="8"/>

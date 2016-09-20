@@ -2,7 +2,6 @@ import Cocoa
 
 class XTTitleBarAccessoryViewController: NSViewController {
 
-  @IBOutlet weak var navigationControls: NSSegmentedControl!
   @IBOutlet weak var remoteControls: NSSegmentedControl!
   @IBOutlet weak var proxyIcon: NSImageView!
   @IBOutlet weak var spinner: NSProgressIndicator!
