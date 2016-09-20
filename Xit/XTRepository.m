@@ -1,4 +1,5 @@
 #import "XTRepository.h"
+#import "XTRepository+Commands.h"
 #import "XTConstants.h"
 #import "Xit-Swift.h"
 #import <ObjectiveGit/ObjectiveGit.h>
@@ -19,6 +20,8 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
 @property(readwrite) XTRepositoryWatcher *watcher;
 @property(readwrite) BOOL isShutDown;
 @property(readwrite) XTConfig *config;
+
+- (NSString*)calculateCurrentBranch;
 
 @end
 
@@ -58,6 +61,20 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
     if (_gtRepo != nil) {
       self.watcher = [[XTRepositoryWatcher alloc] initWithRepository:self];
       self.config = [[XTConfig alloc] initWithRepository:self];
+      
+      [[NSNotificationCenter defaultCenter]
+          addObserverForName:XTRepositoryRefsChangedNotification
+                      object:self
+                       queue:nil
+                  usingBlock:^(NSNotification * _Nonnull note) {
+        NSString *newBranch = [self calculateCurrentBranch];
+        
+        if (![_cachedBranch isEqualToString:newBranch]) {
+          [self willChangeValueForKey:@"currentBranch"];
+          _cachedBranch = newBranch;
+          [self didChangeValueForKey:@"currentBranch"];
+        }
+      }];
     }
   }
 
@@ -67,6 +84,7 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
 - (void)dealloc
 {
   [self.watcher stop];
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (NSURL*)gitDirectoryURL

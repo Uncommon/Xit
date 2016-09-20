@@ -230,6 +230,7 @@ extension XTWindowController: NSToolbarDelegate
               nibName: "TitleBar", bundle: nil)
     else { return }
     
+    let repository = xtDocument!.repository!
     let inverseBindingOptions =
         [NSValueTransformerNameBindingOption:
          NSValueTransformerName.negateBooleanTransformerName]
@@ -237,16 +238,23 @@ extension XTWindowController: NSToolbarDelegate
     titleBarController = viewController
     item.view = viewController.view
 
+    viewController.remoteControls.target = self
+    viewController.remoteControls.action =
+        #selector(self.networkSegmentClicked(_:))
     viewController.titleLabel.bind("value",
                                    to: window! as NSWindow,
                                    withKeyPath: "title",
                                    options: nil)
+    viewController.branchLabel.bind("value",
+                                    to: repository,
+                                    withKeyPath: "currentBranch",
+                                    options: nil)
     viewController.proxyIcon.bind("hidden",
-                                  to: xtDocument!.repository,
+                                  to: repository,
                                   withKeyPath: "isWriting",
                                   options: nil)
     viewController.spinner.bind("hidden",
-                                to: xtDocument!.repository,
+                                to: repository,
                                 withKeyPath: "isWriting",
                                 options: inverseBindingOptions)
   }
