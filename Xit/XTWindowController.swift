@@ -5,8 +5,8 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
   
   @IBOutlet var historyController: XTHistoryViewController!
   @IBOutlet var activity: NSProgressIndicator!
-  @IBOutlet var activityController: XTActivityViewController!
   weak var xtDocument: XTDocument?
+  var titleBarController: XTTitleBarAccessoryViewController? = nil
   var selectedCommitSHA: String?
   dynamic var selectedModel: XTFileChangesModel?
   {
@@ -38,34 +38,13 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
     super.windowDidLoad()
     
     let window = self.window!
-    let titleController = XTTitleBarAccessoryViewController(nibName: "TitleBar",
-                                                            bundle: nil)!
-    let inverseBindingOptions =
-        [NSValueTransformerNameBindingOption:
-         NSValueTransformerName.negateBooleanTransformerName]
     
-    window.toolbar = nil
     window.titleVisibility = .hidden
-    window.addTitlebarAccessoryViewController(titleController)
-    titleController.titleLabel.bind("value",
-                                    to: window as NSWindow,
-                                    withKeyPath: "title",
-                                    options: nil)
-    titleController.proxyIcon.bind("hidden",
-                                   to: xtDocument!.repository,
-                                   withKeyPath: "isWriting",
-                                   options: nil)
-    titleController.spinner.bind("hidden",
-                                 to: xtDocument!.repository,
-                                 withKeyPath: "isWriting",
-                                 options: inverseBindingOptions)
-
     window.delegate = self
     // We could set the window's contentViewController, but then it would
     // retain the view controller, which is undesirable.
     window.contentView = historyController.view
     window.makeFirstResponder(historyController.historyTable)
-    //window.addTitlebarAccessoryViewController(activityController)
     
     let repo = xtDocument!.repository
     
@@ -83,14 +62,6 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
     historyController.setRepo(repo)
   }
   
-  func windowWillClose(_ notification: Notification)
-  {
-    guard let toolbarDelegate = window?.toolbar?.delegate as? XTToolbarDelegate
-    else { return }
-    
-    toolbarDelegate.finalizeItems()
-  }
-  
   deinit
   {
     NotificationCenter.default.removeObserver(self)
@@ -99,12 +70,10 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
   
   func taskStarted(_ notification: Notification)
   {
-    activityController.activityStarted()
   }
   
   func taskEnded(_ notification: Notification)
   {
-    activityController.activityEnded()
   }
   
   @IBAction func refresh(_ sender: AnyObject)
@@ -248,5 +217,37 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
         result = false
     }
     return result
+  }
+}
+
+extension XTWindowController: NSToolbarDelegate
+{
+  func toolbarWillAddItem(_ notification: Notification)
+  {
+    guard let item = notification.userInfo?["item"] as? NSToolbarItem,
+          item.itemIdentifier == "com.uncommonplace.xit.titlebar",
+          let viewController = XTTitleBarAccessoryViewController(
+              nibName: "TitleBar", bundle: nil)
+    else { return }
+    
+    let inverseBindingOptions =
+        [NSValueTransformerNameBindingOption:
+         NSValueTransformerName.negateBooleanTransformerName]
+
+    titleBarController = viewController
+    item.view = viewController.view
+
+    viewController.titleLabel.bind("value",
+                                   to: window! as NSWindow,
+                                   withKeyPath: "title",
+                                   options: nil)
+    viewController.proxyIcon.bind("hidden",
+                                  to: xtDocument!.repository,
+                                  withKeyPath: "isWriting",
+                                  options: nil)
+    viewController.spinner.bind("hidden",
+                                to: xtDocument!.repository,
+                                withKeyPath: "isWriting",
+                                options: inverseBindingOptions)
   }
 }

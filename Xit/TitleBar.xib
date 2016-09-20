@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11201" systemVersion="15G31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11201"/>
@@ -56,7 +56,7 @@
                     </segmentedCell>
                 </segmentedControl>
                 <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gzN-mQ-RA8">
-                    <rect key="frame" x="687" y="5" width="96" height="25"/>
+                    <rect key="frame" x="694" y="5" width="96" height="25"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="22" id="uin-v0-wHo"/>
                     </constraints>
@@ -75,9 +75,9 @@
                     <rect key="frame" x="290" y="6" width="211" height="25"/>
                     <subviews>
                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FL9-n6-pxD">
-                            <rect key="frame" x="0.0" y="-2" width="211" height="28"/>
+                            <rect key="frame" x="1" y="-2" width="209" height="28"/>
                             <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="RfW-od-VIn">
-                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                <behavior key="behavior" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
                         </button>
@@ -142,26 +142,29 @@
                         <constraint firstItem="Mlo-m8-cp8" firstAttribute="centerY" secondItem="DfW-Hf-FKe" secondAttribute="centerY" id="alN-Pm-0RB"/>
                         <constraint firstItem="WKb-MR-WPP" firstAttribute="centerY" secondItem="DfW-Hf-FKe" secondAttribute="centerY" id="byD-Je-FmM"/>
                         <constraint firstItem="N5o-xl-R2D" firstAttribute="leading" secondItem="zFv-Uo-DhN" secondAttribute="trailing" constant="8" symbolic="YES" id="dWl-ds-K1a"/>
-                        <constraint firstAttribute="trailing" secondItem="FL9-n6-pxD" secondAttribute="trailing" id="enQ-D5-n5a"/>
+                        <constraint firstAttribute="trailing" secondItem="FL9-n6-pxD" secondAttribute="trailing" constant="1" id="enQ-D5-n5a"/>
                         <constraint firstItem="WKb-MR-WPP" firstAttribute="leading" secondItem="DfW-Hf-FKe" secondAttribute="leading" constant="8" id="giX-3M-6kk"/>
                         <constraint firstAttribute="trailing" secondItem="Mlo-m8-cp8" secondAttribute="trailing" constant="8" id="hpf-rI-6TW"/>
                         <constraint firstItem="EVf-iB-Aga" firstAttribute="leading" secondItem="Y8F-Z6-7t2" secondAttribute="trailing" constant="8" symbolic="YES" id="odh-YU-6ja"/>
                         <constraint firstItem="Mlo-m8-cp8" firstAttribute="leading" secondItem="EVf-iB-Aga" secondAttribute="trailing" constant="8" symbolic="YES" id="quP-iD-VDC"/>
                         <constraint firstItem="zFv-Uo-DhN" firstAttribute="leading" secondItem="WKb-MR-WPP" secondAttribute="trailing" constant="8" symbolic="YES" id="rnc-lS-8aK"/>
                         <constraint firstItem="PFe-lZ-RQc" firstAttribute="leading" secondItem="DfW-Hf-FKe" secondAttribute="leading" constant="8" id="vwI-HF-zRE"/>
-                        <constraint firstItem="FL9-n6-pxD" firstAttribute="leading" secondItem="DfW-Hf-FKe" secondAttribute="leading" id="vx0-wi-bgz"/>
+                        <constraint firstItem="FL9-n6-pxD" firstAttribute="leading" secondItem="DfW-Hf-FKe" secondAttribute="leading" constant="1" id="vx0-wi-bgz"/>
                         <constraint firstItem="FL9-n6-pxD" firstAttribute="top" secondItem="DfW-Hf-FKe" secondAttribute="top" id="xsD-cz-j4t"/>
                         <constraint firstItem="Y8F-Z6-7t2" firstAttribute="centerY" secondItem="DfW-Hf-FKe" secondAttribute="centerY" id="zgd-5C-aAI"/>
                     </constraints>
                 </customView>
-                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="aNh-jL-whD">
-                    <rect key="frame" x="517" y="8" width="18" height="19"/>
+                <button hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="aNh-jL-whD">
+                    <rect key="frame" x="517" y="8" width="22" height="19"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="22" id="sCv-3O-eG1"/>
+                    </constraints>
                     <buttonCell key="cell" type="recessed" bezelStyle="recessed" image="mergeTemplate" imagePosition="only" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="4dh-XP-tZc">
                         <behavior key="behavior" lightByContents="YES"/>
                         <font key="font" metaFont="systemBold" size="12"/>
                     </buttonCell>
                 </button>
-                <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="IIb-W1-mF1">
+                <segmentedControl hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="IIb-W1-mF1">
                     <rect key="frame" x="543" y="5" width="66" height="25"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="22" id="Li8-d0-CO5"/>
@@ -177,16 +180,18 @@
             </subviews>
             <constraints>
                 <constraint firstItem="R3D-tM-tt5" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="8" id="6bb-H6-bFT"/>
+                <constraint firstItem="gzN-mQ-RA8" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="IIb-W1-mF1" secondAttribute="trailing" constant="8" symbolic="YES" id="Ht0-BG-KbQ"/>
                 <constraint firstItem="gzN-mQ-RA8" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="8" id="NAK-dD-Ivi"/>
+                <constraint firstItem="DfW-Hf-FKe" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="m2X-wZ-tfZ" secondAttribute="trailing" constant="8" symbolic="YES" id="PyA-gP-gFU"/>
                 <constraint firstItem="aNh-jL-whD" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="10" id="T5L-YN-0DZ"/>
                 <constraint firstItem="aNh-jL-whD" firstAttribute="leading" secondItem="DfW-Hf-FKe" secondAttribute="trailing" constant="16" id="TAv-29-8IH"/>
                 <constraint firstItem="R3D-tM-tt5" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="8" id="Ubg-M0-09v"/>
                 <constraint firstItem="m2X-wZ-tfZ" firstAttribute="leading" secondItem="R3D-tM-tt5" secondAttribute="trailing" constant="8" id="and-Ve-kN4"/>
                 <constraint firstItem="IIb-W1-mF1" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="8" id="dhx-XR-ffB"/>
                 <constraint firstItem="m2X-wZ-tfZ" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="8" id="fLV-19-nuD"/>
-                <constraint firstItem="DfW-Hf-FKe" firstAttribute="centerX" secondItem="c22-O7-iKe" secondAttribute="centerX" id="gXn-Xl-POs"/>
-                <constraint firstItem="IIb-W1-mF1" firstAttribute="leading" secondItem="aNh-jL-whD" secondAttribute="trailing" constant="8" symbolic="YES" id="jcc-9K-9rI"/>
-                <constraint firstAttribute="trailing" secondItem="gzN-mQ-RA8" secondAttribute="trailing" constant="8" id="ykl-5G-K0b"/>
+                <constraint firstItem="DfW-Hf-FKe" firstAttribute="centerX" secondItem="c22-O7-iKe" secondAttribute="centerX" priority="900" id="gXn-Xl-POs"/>
+                <constraint firstItem="IIb-W1-mF1" firstAttribute="leading" secondItem="aNh-jL-whD" secondAttribute="trailing" constant="4" id="jcc-9K-9rI"/>
+                <constraint firstAttribute="trailing" secondItem="gzN-mQ-RA8" secondAttribute="trailing" constant="1" id="ykl-5G-K0b"/>
                 <constraint firstItem="DfW-Hf-FKe" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="6" id="zcu-RG-TW4"/>
             </constraints>
             <point key="canvasLocation" x="484.5" y="495.5"/>

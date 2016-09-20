@@ -4,12 +4,8 @@ class XTPushController: XTPasswordOpController {
   
   func shouldStop(current: UInt32, total: UInt32, bytes: size_t) -> Bool
   {
-    guard let repository = repository
-    else { return true }
-  
-    XTStatusView.update(status: "Pushing...",
-                        progress: Float(total)/Float(current),
-                        repository: repository)
+    // update progress
+    
     return canceled
   }
 

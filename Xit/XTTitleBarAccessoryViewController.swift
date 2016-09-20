@@ -1,6 +1,6 @@
 import Cocoa
 
-class XTTitleBarAccessoryViewController: NSTitlebarAccessoryViewController {
+class XTTitleBarAccessoryViewController: NSViewController {
 
   @IBOutlet weak var navigationControls: NSSegmentedControl!
   @IBOutlet weak var remoteControls: NSSegmentedControl!

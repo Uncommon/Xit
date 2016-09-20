@@ -5,7 +5,6 @@
 #import "XTSideBarDataSource.h"
 #import "XTSideBarOutlineView.h"
 #import "XTSideBarTableCellView.h"
-#import "XTStatusView.h"
 #import "Xit-Swift.h"
 #import "NSAttributedString+XTExtensions.h"
 
@@ -200,12 +199,8 @@
       NSError *error = nil;
       
       block(item, index, &error);
-      if (error != nil)
-        [XTStatusView
-          updateStatus:errorString
-               command:[error.userInfo valueForKey:XTErrorArgsKey]
-                output:[error.userInfo valueForKey:XTErrorOutputKey]
-         forRepository:_repo];
+      
+      // report error
     }];
   }
 }
@@ -232,21 +227,8 @@
 
   NSError *error = nil;
 
-  if ([_repo merge:branch error:&error]) {
-    NSString *mergeStatus =[NSString stringWithFormat:
-        @"Merged %@ into %@", branch, [_repo currentBranch]];
-
-    [XTStatusView updateStatus:mergeStatus
-                       command:nil
-                        output:nil
-                 forRepository:_repo];
-  } else {
-    NSDictionary *errorInfo = error.userInfo;
-
-    [XTStatusView updateStatus:@"Merge failed"
-                       command:errorInfo[XTErrorArgsKey]
-                        output:errorInfo[XTErrorOutputKey]
-                 forRepository:_repo];
+  if (![_repo merge:branch error:&error]) {
+    // report error
   }
 }
 

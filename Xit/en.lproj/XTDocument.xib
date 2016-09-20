@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11201" systemVersion="15G31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11201"/>
@@ -7,7 +7,6 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="XTWindowController" customModule="Xit" customModuleProvider="target">
             <connections>
-                <outlet property="activityController" destination="Ib1-UC-8LJ" id="1Nb-sh-KPf"/>
                 <outlet property="historyController" destination="100102" id="GPc-Qf-MhO"/>
                 <outlet property="window" destination="5" id="18"/>
             </connections>
@@ -23,6 +22,20 @@
                 <rect key="frame" x="0.0" y="0.0" width="988" height="660"/>
                 <autoresizingMask key="autoresizingMask"/>
             </view>
+            <toolbar key="toolbar" implicitIdentifier="CF3DA724-D8D3-467F-8B73-D2279CF2D1B0" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="kHt-EX-a5o">
+                <allowedToolbarItems>
+                    <toolbarItem implicitItemIdentifier="301E1482-91EB-4703-81FA-D4B4DC1A7184" explicitItemIdentifier="com.uncommonplace.xit.titlebar" label="Toolbar Item" paletteLabel="Toolbar Item" tag="-1" id="zNj-Uq-F2U">
+                        <size key="minSize" width="100" height="32"/>
+                        <size key="maxSize" width="10000" height="32"/>
+                    </toolbarItem>
+                </allowedToolbarItems>
+                <defaultToolbarItems>
+                    <toolbarItem reference="zNj-Uq-F2U"/>
+                </defaultToolbarItems>
+                <connections>
+                    <outlet property="delegate" destination="-2" id="vIc-2c-h0c"/>
+                </connections>
+            </toolbar>
             <connections>
                 <outlet property="delegate" destination="-2" id="17"/>
             </connections>
@@ -30,27 +43,5 @@
         </window>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <viewController nibName="XTHistoryViewController" id="100102" userLabel="History View Controller" customClass="XTHistoryViewController"/>
-        <customObject id="100154" customClass="XTToolbarDelegate">
-            <connections>
-                <outlet property="windowController" destination="-2" id="rNy-9a-VqG"/>
-            </connections>
-        </customObject>
-        <customObject id="Ib1-UC-8LJ" customClass="XTActivityViewController" customModule="Xit" customModuleProvider="target">
-            <connections>
-                <outlet property="spinner" destination="1uV-vf-IPh" id="Sz1-Mk-zV8"/>
-                <outlet property="view" destination="WHy-2u-kon" id="gxe-LD-uca"/>
-            </connections>
-        </customObject>
-        <customView id="WHy-2u-kon">
-            <rect key="frame" x="0.0" y="0.0" width="24" height="36"/>
-            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" heightSizable="YES"/>
-            <subviews>
-                <progressIndicator hidden="YES" wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" id="1uV-vf-IPh">
-                    <rect key="frame" x="0.0" y="12" width="16" height="16"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                </progressIndicator>
-            </subviews>
-            <point key="canvasLocation" x="977" y="347"/>
-        </customView>
     </objects>
 </document>
