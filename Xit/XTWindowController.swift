@@ -1,8 +1,8 @@
 import Cocoa
 
 /// XTDocument's main window controller.
-class XTWindowController: NSWindowController, NSWindowDelegate {
-  
+class XTWindowController: NSWindowController, NSWindowDelegate
+{
   @IBOutlet var historyController: XTHistoryViewController!
   @IBOutlet var activity: NSProgressIndicator!
   @IBOutlet var activityController: XTActivityViewController!

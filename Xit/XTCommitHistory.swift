@@ -2,7 +2,8 @@ import Foundation
 
 
 // Inherits from NSObject just to make it accessible to ObjC
-public class CommitEntry: NSObject {
+public class CommitEntry: NSObject
+{
   let commit: CommitType
   var connections = [CommitConnection]()
   
@@ -35,7 +36,8 @@ func == (left: CommitConnection, right: CommitConnection) -> Bool
 }
 
 
-extension String {
+extension String
+{
   func firstSix() -> String
   {
     return utf8.prefix(6).description
@@ -44,8 +46,8 @@ extension String {
 
 
 /// Maintains the history list, allowing for dynamic adding and removing.
-public class XTCommitHistory: NSObject {
-  
+public class XTCommitHistory: NSObject
+{
   var repository: RepositoryType!
   
   var commitLookup = [GTOID: CommitEntry]()

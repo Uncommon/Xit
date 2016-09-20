@@ -3,14 +3,14 @@ import Siesta
 
 
 /// API for getting TeamCity build information.
-class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
-  
+class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI
+{
   var type: AccountType { return .teamCity }
   static let rootPath = "/httpAuth/app/rest"
   
   struct Build {
-    
-    enum Status {
+    enum Status
+    {
       case succeeded
       case failed
       
@@ -27,7 +27,8 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
       }
     }
     
-    enum State {
+    enum State
+    {
       case running
       case finished
       
@@ -177,8 +178,8 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI {
 
 // MARK: VCS
 
-extension XTTeamCityAPI {
-  
+extension XTTeamCityAPI
+{
   /// Returns all the build types that use the given remote.
   // Calling it buildTypes(forRemote:) would conflict with the buildTypes var.
   func buildTypesForRemote(_ remoteURL: String) -> [String]

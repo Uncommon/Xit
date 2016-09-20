@@ -1,8 +1,8 @@
 import Cocoa
 
 /// Controller for the "new account" sheet
-class XTAddAccountController: XTSheetController {
-  
+class XTAddAccountController: XTSheetController
+{
   @IBOutlet private weak var servicePopup: NSPopUpButton!
   @IBOutlet private weak var userField: NSTextField!
   @IBOutlet private weak var passwordField: NSSecureTextField!

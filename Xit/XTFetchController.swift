@@ -2,8 +2,8 @@ import Cocoa
 
 
 /// Runs a `fetch` operation.
-class XTFetchController: XTPasswordOpController {
-  
+class XTFetchController: XTPasswordOpController
+{
   /// The default remote to fetch from, either:
   /// - the current branch's tracking branch
   /// - if there are multiple remotes, the one named "origin"

@@ -1,7 +1,7 @@
 import Foundation
 
-class XTFileMonitor {
-  
+class XTFileMonitor
+{
   let path: String
   let fd: CInt
   let source: DispatchSourceProtocol

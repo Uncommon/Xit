@@ -1,7 +1,7 @@
 import Cocoa
 
-class XTPasswordPanelController: XTSheetController {
-  
+class XTPasswordPanelController: XTSheetController
+{
   var userName: String
   {
     get { return userField.stringValue }

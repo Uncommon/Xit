@@ -1,7 +1,7 @@
 import Cocoa
 
-public class XTFetchPanelController: XTSheetController {
-  
+public class XTFetchPanelController: XTSheetController
+{
   @IBOutlet var remotesPopup: NSPopUpButton?
   @IBOutlet var tagCheck: NSButton?
   @IBOutlet var pruneCheck: NSButton?

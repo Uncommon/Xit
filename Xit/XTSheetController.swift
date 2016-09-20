@@ -1,7 +1,7 @@
 import Cocoa
 
-public class XTSheetController: NSWindowController {
-  
+public class XTSheetController: NSWindowController
+{
   func end(_ code: NSModalResponse)
   {
     window!.sheetParent?.endSheet(window!, returnCode: code)

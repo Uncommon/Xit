@@ -1,15 +1,16 @@
 import Cocoa
 
 
-enum PasswordAction {
+enum PasswordAction
+{
   case save
   case change
   case useExisting
 }
 
 
-class XTAccountsPrefsController: NSViewController, PreferencesSaver {
-  
+class XTAccountsPrefsController: NSViewController, PreferencesSaver
+{
   // Not a weak reference because there are no other references to it.
   @IBOutlet var addController: XTAddAccountController!
   @IBOutlet weak var accountsTable: NSTableView!
@@ -154,8 +155,8 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver {
 }
 
 
-extension XTAccountsPrefsController: NSTableViewDelegate {
-  
+extension XTAccountsPrefsController: NSTableViewDelegate
+{
   func statusImage(forAPI api: XTTeamCityAPI) -> NSImage?
   {
     var imageName: String?
@@ -229,8 +230,8 @@ extension XTAccountsPrefsController: NSTableViewDelegate {
 }
 
 
-extension XTAccountsPrefsController: NSTableViewDataSource {
-  
+extension XTAccountsPrefsController: NSTableViewDataSource
+{
   func numberOfRows(in tableView: NSTableView) -> Int
   {
     return XTAccountsManager.manager.accounts.count

@@ -1,7 +1,8 @@
 import Cocoa
 
 
-enum AccountType : Int {
+enum AccountType : Int
+{
   case gitHub = 0
   case bitBucket = 1
   case teamCity = 2
@@ -63,7 +64,8 @@ enum AccountType : Int {
 /// Stores information about an account for an online service.
 /// Passwords are stored in the keychain. This would have been a `struct` but
 /// we need it to be `NSObject` compatible.
-class Account: NSObject {
+class Account: NSObject
+{
   var type: AccountType
   var user: String
   var location: URL
@@ -86,8 +88,8 @@ func == (left: Account, right: Account) -> Bool
 }
 
 
-class XTAccountsManager: NSObject {
-  
+class XTAccountsManager: NSObject
+{
   /// Account types as stored in preferences
   let userKey = "user"
   let locationKey = "location"

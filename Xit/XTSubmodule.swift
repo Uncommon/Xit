@@ -1,7 +1,7 @@
 import Cocoa
 
-class XTSubmodule: NSObject {
-
+class XTSubmodule: NSObject
+{
   unowned let reepository: XTRepository
   let sub: GTSubmodule
   

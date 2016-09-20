@@ -1,7 +1,7 @@
 import Cocoa
 
-class XTGitPrefsController: NSViewController, PreferencesSaver {
-  
+class XTGitPrefsController: NSViewController, PreferencesSaver
+{
   @IBOutlet weak var userNameField: NSTextField!
   @IBOutlet weak var userEmailField: NSTextField!
   @IBOutlet weak var fetchTagsCheckbox: NSButton!

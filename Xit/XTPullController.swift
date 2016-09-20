@@ -1,7 +1,7 @@
 import Cocoa
 
-class XTPullController: XTFetchController {
-
+class XTPullController: XTFetchController
+{
   override func start() {
     defer {
       windowController?.operationEnded(self)

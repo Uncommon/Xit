@@ -11,7 +11,8 @@ import Cocoa
   var email: String? { get }
 }
 
-extension CommitType {
+extension CommitType
+{
   public var description: String
   { return "\(sha?.firstSix() ?? "-")" }
 }
@@ -23,8 +24,8 @@ public func == (a: GTOID, b: GTOID) -> Bool
 }
 
 
-public class XTCommit: NSObject, CommitType {
-
+public class XTCommit: NSObject, CommitType
+{
   let gtCommit: GTCommit
   
   // These used to be lazy properties, but the Swift 3 compiler crashes on that.

@@ -1,7 +1,7 @@
 import Cocoa
 
-public class XTHistoryTableController: NSViewController {
-
+public class XTHistoryTableController: NSViewController
+{
   struct ColumnID
   {
     static let commit = "commit"
@@ -195,8 +195,8 @@ func dateTimeStyle(width: CGFloat) -> (date: DateFormatter.Style,
   return (dateStyle, timeStyle)
 }
 
-extension XTHistoryTableController: NSTableViewDelegate {
-  
+extension XTHistoryTableController: NSTableViewDelegate
+{
   public func tableView(_ tableView: NSTableView,
                         viewFor tableColumn: NSTableColumn?,
                         row: Int) -> NSView?
@@ -254,8 +254,8 @@ extension XTHistoryTableController: NSTableViewDelegate {
   }
 }
 
-extension XTHistoryTableController: NSTableViewDataSource {
-  
+extension XTHistoryTableController: NSTableViewDataSource
+{
   public func numberOfRows(in tableView: NSTableView) -> Int
   {
     return history.entries.count

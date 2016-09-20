@@ -1,7 +1,7 @@
 import Cocoa
 
-class XTPushController: XTPasswordOpController {
-  
+class XTPushController: XTPasswordOpController
+{
   func shouldStop(current: UInt32, total: UInt32, bytes: size_t) -> Bool
   {
     guard let repository = repository

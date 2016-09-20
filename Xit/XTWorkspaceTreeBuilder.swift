@@ -1,6 +1,7 @@
 import Cocoa
 
-class XTWorkspaceTreeBuilder: NSObject {
+class XTWorkspaceTreeBuilder: NSObject
+{
   var changes: [String: XTWorkspaceFileStatus]
   
   init(changes: [String: XTWorkspaceFileStatus]) {

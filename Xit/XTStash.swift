@@ -3,8 +3,8 @@ import Cocoa
 /**
  * Wraps a stash to preset a unified list of file changes.
  */
-public class XTStash: NSObject {
-
+public class XTStash: NSObject
+{
 unowned var repo: XTRepository
 var message: String?
 var mainCommit: GTCommit

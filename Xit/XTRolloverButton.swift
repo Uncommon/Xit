@@ -1,7 +1,7 @@
 import Cocoa
 
-class XTRolloverButton: NSButton {
-
+class XTRolloverButton: NSButton
+{
   @IBInspectable var rolloverImage: NSImage?
   var normalImage: NSImage?
   var rolloverActive: Bool

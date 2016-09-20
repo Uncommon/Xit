@@ -1,9 +1,10 @@
 
 import Cocoa
 
-final class XTKeychain: NSObject {
-
-  enum Error: Swift.Error {
+final class XTKeychain: NSObject
+{
+  enum Error: Swift.Error
+  {
     case invalidURL
     case itemNotFound
   }

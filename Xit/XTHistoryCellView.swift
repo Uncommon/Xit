@@ -1,8 +1,8 @@
 import Cocoa
 
 /// Cell view that draws the graph lines next to the text.
-class XTHistoryCellView: NSTableCellView {
-  
+class XTHistoryCellView: NSTableCellView
+{
   var refs = [String]()
   
   // Flipped because that's how XTRefToken draws.

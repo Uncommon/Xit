@@ -1,6 +1,7 @@
 import Cocoa
 
-class XTSideBarItem: NSObject {
+class XTSideBarItem: NSObject
+{
   var title: String
   var displayTitle: String { return title }
   var icon: NSImage? { return nil }
@@ -37,26 +38,31 @@ class XTSideBarItem: NSObject {
 }
 
 
-class XTSideBarGroupItem : XTSideBarItem {
+class XTSideBarGroupItem : XTSideBarItem
+{
   override var selectable: Bool { return false }
   override var expandable: Bool { return true }
 }
 
 
-class XTRemotesItem : XTSideBarGroupItem {}
+class XTRemotesItem : XTSideBarGroupItem
+{}
 
 
-class XTStagingItem : XTSideBarItem {
+class XTStagingItem : XTSideBarItem
+{
   override var icon: NSImage? { return NSImage(named: "stagingTemplate") }
 }
 
 
-class XTStashItem : XTSideBarItem {
+class XTStashItem : XTSideBarItem
+{
   override var icon: NSImage? { return NSImage(named: "stashTemplate") }
 }
 
 
-class XTLocalBranchItem : XTSideBarItem {
+class XTLocalBranchItem : XTSideBarItem
+{
   override var displayTitle: String
       { return (title as NSString).lastPathComponent }
   override var icon: NSImage? { return NSImage(named: "branchTemplate") }
@@ -72,7 +78,8 @@ class XTLocalBranchItem : XTSideBarItem {
 }
 
 
-class XTRemoteBranchItem : XTLocalBranchItem {
+class XTRemoteBranchItem : XTLocalBranchItem
+{
   var remote: String
   override var icon: NSImage? { return NSImage(named: "branchTemplate") }
   override var refType: XTRefType { return .remoteBranch }
@@ -88,15 +95,16 @@ class XTRemoteBranchItem : XTLocalBranchItem {
 }
 
 
-class XTBranchFolderItem : XTSideBarItem {
+class XTBranchFolderItem : XTSideBarItem
+{
   override var icon: NSImage? { return NSImage(named: "folderTemplate") }
   override var selectable: Bool { return false }
   override var expandable: Bool { return true }
 }
 
 
-class XTRemoteItem : XTSideBarItem {
-  
+class XTRemoteItem : XTSideBarItem
+{
   let remote: XTRemote?
   
   override var icon: NSImage?
@@ -124,7 +132,8 @@ class XTRemoteItem : XTSideBarItem {
 }
 
 
-class XTTagItem : XTSideBarItem {
+class XTTagItem : XTSideBarItem
+{
   let tag: XTTag
 
   override var icon: NSImage? { return NSImage(named: "tagTemplate") }
@@ -143,7 +152,8 @@ class XTTagItem : XTSideBarItem {
 }
 
 
-class XTSubmoduleItem : XTSideBarItem {
+class XTSubmoduleItem : XTSideBarItem
+{
   var submodule: XTSubmodule
   override var icon: NSImage? { return NSImage(named: "submoduleTemplate") }
   

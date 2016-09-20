@@ -1,8 +1,8 @@
 import Cocoa
 
 /// Toolbar item that disables itself during repository writing operations.
-class XTWritingToolbarItem: NSToolbarItem {
-
+class XTWritingToolbarItem: NSToolbarItem
+{
   override func observeValue(forKeyPath keyPath: String?,
                              of object: Any?,
                              change: [NSKeyValueChangeKey : Any]?,

@@ -1,7 +1,7 @@
 import Cocoa
 
-public class XTActivityViewController: NSTitlebarAccessoryViewController {
-
+public class XTActivityViewController: NSTitlebarAccessoryViewController
+{
   var activityCount: UInt = 0
   
   @IBOutlet var spinner: NSProgressIndicator!

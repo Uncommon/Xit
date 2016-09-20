@@ -1,8 +1,8 @@
 import Cocoa
 
 
-extension XTSideBarDataSource {
-  
+extension XTSideBarDataSource
+{
   @nonobjc static let kReloadInterval: TimeInterval = 1
   
   open override func awakeFromNib()
@@ -92,7 +92,9 @@ extension XTSideBarDataSource {
   
 }
 
-extension XTSideBarDataSource { // MARK: TeamCity
+// MARK: TeamCity
+extension XTSideBarDataSource
+{
   
   func updateTeamCity()
   {
@@ -201,7 +203,8 @@ extension XTSideBarDataSource { // MARK: TeamCity
   }
 }
 
-extension XTSideBarDataSource: NSOutlineViewDataSource {
+extension XTSideBarDataSource: NSOutlineViewDataSource
+{
   // MARK: NSOutlineViewDataSource
   
   public func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
@@ -226,7 +229,8 @@ extension XTSideBarDataSource: NSOutlineViewDataSource {
   }
 }
 
-extension XTSideBarDataSource: NSOutlineViewDelegate {
+extension XTSideBarDataSource: NSOutlineViewDelegate
+{
   // MARK: NSOutlineViewDelegate
 
   public func outlineViewSelectionDidChange(_ notification: Notification)

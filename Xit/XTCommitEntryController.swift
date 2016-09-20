@@ -1,7 +1,7 @@
 import Cocoa
 
-class XTCommitEntryController: NSViewController {
-
+class XTCommitEntryController: NSViewController
+{
   weak var repo: XTRepository!
   @IBOutlet weak var commitField: NSTextField!
   @IBOutlet weak var commitButton: NSButton!

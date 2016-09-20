@@ -32,7 +32,8 @@ import Cocoa
 
 
 /// Changes for a selected commit in the history
-class XTCommitChanges: NSObject, XTFileChangesModel {
+class XTCommitChanges: NSObject, XTFileChangesModel
+{
   unowned var repository: XTRepository
   var sha: String
   var shaToSelect: String? { return self.sha }
@@ -113,7 +114,8 @@ class XTCommitChanges: NSObject, XTFileChangesModel {
 
 
 /// Changes for a selected stash, merging workspace, index, and untracked
-class XTStashChanges: NSObject, XTFileChangesModel {
+class XTStashChanges: NSObject, XTFileChangesModel
+{
   unowned var repository: XTRepository
   var stash: XTStash
   var hasUnstaged: Bool { return true }
@@ -195,7 +197,8 @@ class XTStashChanges: NSObject, XTFileChangesModel {
 
 
 /// Staged and unstaged workspace changes
-class XTStagingChanges: NSObject, XTFileChangesModel {
+class XTStagingChanges: NSObject, XTFileChangesModel
+{
   unowned var repository: XTRepository
   var shaToSelect: String? { return XTStagingSHA }
   var hasUnstaged: Bool { return true }
@@ -248,8 +251,8 @@ class XTStagingChanges: NSObject, XTFileChangesModel {
 }
 
 
-private class XTChangesModelUtils {
-  
+private class XTChangesModelUtils
+{
   /// Sets folder change status to match children.
   class func postProcess(fileTree tree: NSTreeNode)
   {
@@ -415,7 +418,8 @@ private class XTChangesModelUtils {
   }
 }
 
-extension NSMutableArray {
+extension NSMutableArray
+{
   func sort(keyPath key: String, ascending: Bool = true)
   {
     self.sort(using: [NSSortDescriptor(key: key, ascending: ascending)])

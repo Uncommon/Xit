@@ -1,8 +1,8 @@
 import Cocoa
 import Siesta
 
-class XTRemoteSheetController: XTSheetController {
-  
+class XTRemoteSheetController: XTSheetController
+{
   weak var repository: XTRepository? = nil
   
   @IBOutlet weak var nameField: NSTextField!

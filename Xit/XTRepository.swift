@@ -11,8 +11,8 @@ import Foundation
 struct CallbackPayload { let repo: XTRepository }
 
 
-extension XTRepository: RepositoryType {
-  
+extension XTRepository: RepositoryType
+{
   func commit(forSHA sha: String) -> CommitType?
   {
     return XTCommit(sha: sha, repository: self)
@@ -25,9 +25,10 @@ extension XTRepository: RepositoryType {
 }
 
 
-extension XTRepository {
-  
-  enum Error: Swift.Error {
+extension XTRepository
+{
+  enum Error: Swift.Error
+  {
     case alreadyWriting
   }
   
@@ -137,7 +138,9 @@ extension XTRepository {
   }
 }
 
-extension XTRepository {  // MARK: Push/pull
+// MARK: Push/pull
+extension XTRepository
+{
   
   func credentialProvider(_ passwordBlock: @escaping () -> (String, String)?)
       -> GTCredentialProvider

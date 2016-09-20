@@ -27,7 +27,6 @@
        originalSelectedRange:(NSRange)origSelRange
             errorDescription:(NSString **)error
 {
-
   // The rules, according to git help check-ref-format:
 
   // They can include slash / for hierarchical (directory) grouping, but no

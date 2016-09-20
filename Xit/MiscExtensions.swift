@@ -1,7 +1,7 @@
 import Foundation
 
-extension String {
-  
+extension String
+{
   /// Returns the string with the given prefix removed, or returns the string
   /// unchanged if the prefix does not match.
   func stringByRemovingPrefix(_ prefix: String) -> String
@@ -23,8 +23,8 @@ extension String {
   }
 }
 
-extension XMLElement {
-  
+extension XMLElement
+{
   /// Returns the element's attributes as a dictionary.
   func attributesDict() -> [String: String]
   {
@@ -53,8 +53,8 @@ extension XMLElement {
   }
 }
 
-extension NSButton {
-  
+extension NSButton
+{
   /// The intValue property interpreted as a Bool.
   var boolValue: Bool
   {
@@ -63,7 +63,8 @@ extension NSButton {
   }
 }
 
-extension String {
+extension String
+{
   /// Splits a "refs/*/..." string into prefix and remainder.
   func splitRefName() -> (String, String)?
   {
@@ -79,7 +80,8 @@ extension String {
   }
 }
 
-extension NSTableView {
+extension NSTableView
+{
   /// Returns a set of all visible row indexes
   func visibleRows() -> IndexSet
   {
@@ -90,7 +92,8 @@ extension NSTableView {
 // Swift 3 took away ++, but it still can be useful.
 postfix operator ++
 
-extension UInt {
+extension UInt
+{
   static postfix func ++ (i: inout UInt) -> UInt
   {
     let result = i

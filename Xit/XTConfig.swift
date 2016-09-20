@@ -3,8 +3,8 @@ import Cocoa
 /// Provides access to repository config options. This class is an exception to
 /// the rule that direct Objective Git usage should be avoided outside of
 /// `XTRepository`.
-class XTConfig: NSObject {
-  
+class XTConfig: NSObject
+{
   unowned let repository: XTRepository
   let config: GTConfiguration?
   var xitConfig: [String: String] = [:]

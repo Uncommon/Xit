@@ -2,8 +2,8 @@ import Cocoa
 
 let tagPrefix = "refs/tags/"
 
-class XTTag: NSObject {
-
+class XTTag: NSObject
+{
   unowned let repository: XTRepository
   private let tag: GTTag?
   /// Tag name (without "refs/tags/")

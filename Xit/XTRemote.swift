@@ -1,7 +1,7 @@
 import Cocoa
 
-open class XTRemote: GTRemote {
-
+open class XTRemote: GTRemote
+{
   init?(name: String, repository: XTRepository)
   {
     var gtRemote: OpaquePointer? = nil

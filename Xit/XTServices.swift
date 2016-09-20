@@ -1,8 +1,8 @@
 import Cocoa
 import Siesta
 
-extension Siesta.Resource {
-  
+extension Siesta.Resource
+{
   /// Either executes the closure with the resource's data, or schedules it
   /// to run later when the data is available.
   func useData(owner: AnyObject, closure: @escaping (Siesta.Entity<Any>) -> ())
@@ -22,10 +22,11 @@ extension Siesta.Resource {
 }
 
 /// Manages and provides access to all service API instances.
-class XTServices: NSObject {
-  
+class XTServices: NSObject
+{
   /// Status of server operations such as authentication.
-  enum Status {
+  enum Status
+  {
     case unknown
     case notStarted
     case inProgress
@@ -83,15 +84,14 @@ class XTServices: NSObject {
 
 /// Protocol to be implemented by all concrete API classes.
 protocol XTServiceAPI {
-  
   var type: AccountType { get }
   
 }
 
 
 /// Abstract service class that handles HTTP basic authentication.
-class XTBasicAuthService : Service {
-  
+class XTBasicAuthService : Service
+{
   static let AuthenticationStatusChangedNotification = "AuthStatusChanged"
   
   private(set) var authenticationStatus: XTServices.Status

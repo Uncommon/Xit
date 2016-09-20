@@ -1,8 +1,8 @@
 import Cocoa
 
 /// An operation that may require a password.
-class XTPasswordOpController: XTSimpleOperationController {
-
+class XTPasswordOpController: XTSimpleOperationController
+{
   /// User/password callback
   func getPassword() -> (String, String)?
   {
