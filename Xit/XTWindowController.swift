@@ -84,6 +84,8 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
   @IBAction func showHideSidebar(_ sender: AnyObject)
   {
     historyController.toggleSideBar(sender)
+    titleBarController!.viewControls.setSelected(
+        !historyController.sideBarHidden(), forSegment: 0)
   }
   
   @IBAction func verticalLayout(_ sender: AnyObject)
@@ -144,6 +146,16 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
         pull(sender)
       case 2:
         push(sender)
+      default:
+        break
+    }
+  }
+  
+  @IBAction func viewSegmentClicked(_ sender: AnyObject)
+  {
+    switch (sender as! NSSegmentedControl).selectedSegment {
+      case 0:
+        showHideSidebar(sender)
       default:
         break
     }
@@ -241,6 +253,9 @@ extension XTWindowController: NSToolbarDelegate
     viewController.remoteControls.target = self
     viewController.remoteControls.action =
         #selector(self.networkSegmentClicked(_:))
+    viewController.viewControls.target = self
+    viewController.viewControls.action =
+        #selector(self.viewSegmentClicked(_:))
     viewController.titleLabel.bind("value",
                                    to: window! as NSWindow,
                                    withKeyPath: "title",

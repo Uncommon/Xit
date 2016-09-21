@@ -45,12 +45,12 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="22" id="uin-v0-wHo"/>
                     </constraints>
-                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedRounded" trackingMode="momentary" id="PQW-Gq-Lrl">
+                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedRounded" trackingMode="selectAny" id="PQW-Gq-Lrl">
                         <font key="font" metaFont="system"/>
                         <segments>
-                            <segment width="30"/>
-                            <segment width="29" tag="1"/>
-                            <segment width="29">
+                            <segment image="viewSidebarTemplate" width="30" selected="YES"/>
+                            <segment image="viewHistoryTemplate" width="29" selected="YES" tag="1"/>
+                            <segment image="viewCommitTemplate" width="29" selected="YES">
                                 <nil key="label"/>
                             </segment>
                         </segments>
@@ -188,5 +188,8 @@
         <image name="mergeTemplate" width="7" height="8"/>
         <image name="pullTemplate" width="8" height="8"/>
         <image name="pushTemplate" width="8" height="8"/>
+        <image name="viewCommitTemplate" width="18" height="14"/>
+        <image name="viewHistoryTemplate" width="18" height="14"/>
+        <image name="viewSidebarTemplate" width="18" height="14"/>
     </resources>
 </document>

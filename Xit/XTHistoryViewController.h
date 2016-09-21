@@ -43,6 +43,7 @@
 - (IBAction)applyStash:(id)sender;
 - (IBAction)dropStash:(id)sender;
 
+- (BOOL)sideBarHidden;
 - (IBAction)toggleSideBar:(id)sender;
 
 - (IBAction)sideBarItemRenamed:(id)sender;

@@ -305,10 +305,16 @@
         errorString:@"Drop stash failed"];
 }
 
+- (BOOL)sideBarHidden
+{
+  return [self.sidebarSplitView
+      isSubviewCollapsed:self.sidebarSplitView.subviews[0]];
+}
+
 - (IBAction)toggleSideBar:(id)sender
 {
   NSView *sidebarPane = self.sidebarSplitView.subviews[0];
-  const bool isCollapsed = [self.sidebarSplitView isSubviewCollapsed:sidebarPane];
+  const bool isCollapsed = [self sideBarHidden];
   const CGFloat newWidth = isCollapsed
       ? _savedSidebarWidth
       : [self.sidebarSplitView minPossiblePositionOfDividerAtIndex:0];

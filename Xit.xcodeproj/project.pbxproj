@@ -136,6 +136,12 @@
 		C9BAE6141D3039C500A87F13 /* XTOperationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE6131D3039C500A87F13 /* XTOperationController.swift */; };
 		C9BAE61E1D303A8100A87F13 /* XTRemoteOptionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE61D1D303A8100A87F13 /* XTRemoteOptionsController.swift */; };
 		C9C7730C1D26EE1C00329493 /* XTPrefsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C7730A1D26EE1C00329493 /* XTPrefsWindowController.swift */; };
+		C9D74CBD1D92E62200C5626E /* viewCommitTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D74CB71D92E62200C5626E /* viewCommitTemplate.png */; };
+		C9D74CBE1D92E62200C5626E /* viewCommitTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D74CB81D92E62200C5626E /* viewCommitTemplate@2x.png */; };
+		C9D74CBF1D92E62200C5626E /* viewHistoryTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D74CB91D92E62200C5626E /* viewHistoryTemplate.png */; };
+		C9D74CC01D92E62200C5626E /* viewHistoryTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D74CBA1D92E62200C5626E /* viewHistoryTemplate@2x.png */; };
+		C9D74CC11D92E62200C5626E /* viewSidebarTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D74CBB1D92E62200C5626E /* viewSidebarTemplate.png */; };
+		C9D74CC21D92E62200C5626E /* viewSidebarTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D74CBC1D92E62200C5626E /* viewSidebarTemplate@2x.png */; };
 		C9DAB5AF1D47C23900586854 /* XTTeamCityTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DAB5AE1D47C23900586854 /* XTTeamCityTest.swift */; };
 		C9DAB5CD1D4A4EA700586854 /* Git-Icon-1788C.png in Resources */ = {isa = PBXBuildFile; fileRef = C9DAB5CC1D4A4EA700586854 /* Git-Icon-1788C.png */; };
 		C9DAB5D01D4A4F0300586854 /* XTGitPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DAB5CE1D4A4F0300586854 /* XTGitPrefsController.swift */; };
@@ -456,6 +462,12 @@
 		C9BAE6131D3039C500A87F13 /* XTOperationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTOperationController.swift; sourceTree = "<group>"; };
 		C9BAE61D1D303A8100A87F13 /* XTRemoteOptionsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRemoteOptionsController.swift; sourceTree = "<group>"; };
 		C9C7730A1D26EE1C00329493 /* XTPrefsWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPrefsWindowController.swift; sourceTree = "<group>"; };
+		C9D74CB71D92E62200C5626E /* viewCommitTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = viewCommitTemplate.png; sourceTree = "<group>"; };
+		C9D74CB81D92E62200C5626E /* viewCommitTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "viewCommitTemplate@2x.png"; sourceTree = "<group>"; };
+		C9D74CB91D92E62200C5626E /* viewHistoryTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = viewHistoryTemplate.png; sourceTree = "<group>"; };
+		C9D74CBA1D92E62200C5626E /* viewHistoryTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "viewHistoryTemplate@2x.png"; sourceTree = "<group>"; };
+		C9D74CBB1D92E62200C5626E /* viewSidebarTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = viewSidebarTemplate.png; sourceTree = "<group>"; };
+		C9D74CBC1D92E62200C5626E /* viewSidebarTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "viewSidebarTemplate@2x.png"; sourceTree = "<group>"; };
 		C9DAB5AE1D47C23900586854 /* XTTeamCityTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTeamCityTest.swift; sourceTree = "<group>"; };
 		C9DAB5CC1D4A4EA700586854 /* Git-Icon-1788C.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Git-Icon-1788C.png"; sourceTree = "<group>"; };
 		C9DAB5CE1D4A4F0300586854 /* XTGitPrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTGitPrefsController.swift; sourceTree = "<group>"; };
@@ -668,6 +680,7 @@
 				C9DAB5CC1D4A4EA700586854 /* Git-Icon-1788C.png */,
 				895869B51D0871A6003A9AF0 /* Sidebar */,
 				895869B31D08711E003A9AF0 /* Status */,
+				C9D74CAA1D92E60800C5626E /* Title bar */,
 				895869B41D08718A003A9AF0 /* Views */,
 				C957B8571D2D6A3C0040F858 /* bitbucketTemplate.png */,
 				C957B8581D2D6A3C0040F858 /* bitbucketTemplate@2x.png */,
@@ -910,6 +923,19 @@
 				C9DAB5D21D4A8D2000586854 /* Preferences.storyboard */,
 			);
 			name = Preferences;
+			sourceTree = "<group>";
+		};
+		C9D74CAA1D92E60800C5626E /* Title bar */ = {
+			isa = PBXGroup;
+			children = (
+				C9D74CB71D92E62200C5626E /* viewCommitTemplate.png */,
+				C9D74CB81D92E62200C5626E /* viewCommitTemplate@2x.png */,
+				C9D74CB91D92E62200C5626E /* viewHistoryTemplate.png */,
+				C9D74CBA1D92E62200C5626E /* viewHistoryTemplate@2x.png */,
+				C9D74CBB1D92E62200C5626E /* viewSidebarTemplate.png */,
+				C9D74CBC1D92E62200C5626E /* viewSidebarTemplate@2x.png */,
+			);
+			name = "Title bar";
 			sourceTree = "<group>";
 		};
 		DD39D1F21918306B00827532 /* FileView */ = {
@@ -1155,8 +1181,10 @@
 				89039F561703A9FC000949A8 /* html in Resources */,
 				C90FD5971D217D5B00A30570 /* XTFetchPanelController.xib in Resources */,
 				89D8BDFD1CED200B00D640AA /* modify@2x.png in Resources */,
+				C9D74CC21D92E62200C5626E /* viewSidebarTemplate@2x.png in Resources */,
 				DD997DDA173B409500C7DF82 /* HistoryView Menus.xib in Resources */,
 				C957B85C1D2D6A3C0040F858 /* bitbucketTemplate@2x.png in Resources */,
+				C9D74CBE1D92E62200C5626E /* viewCommitTemplate@2x.png in Resources */,
 				C923D65E1D90506A00C6B90B /* TitleBar.xib in Resources */,
 				89D8BDF81CED200B00D640AA /* conflict.png in Resources */,
 				DD997DF81746F40D00C7DF82 /* XTFileViewController.xib in Resources */,
@@ -1164,6 +1192,7 @@
 				C957B85B1D2D6A3C0040F858 /* bitbucketTemplate.png in Resources */,
 				C92A7B261D1DD1CD00D2B944 /* folderTemplate.png in Resources */,
 				89D8BE011CED203900D640AA /* stage@2x.png in Resources */,
+				C9D74CBD1D92E62200C5626E /* viewCommitTemplate.png in Resources */,
 				89D8BE581CF8E9C900D640AA /* blameTemplate.png in Resources */,
 				C957B8621D2D6D900040F858 /* teamcityTemplate@2x.png in Resources */,
 				C91610271D1DE994005A3142 /* pullRequestTemplate.png in Resources */,
@@ -1172,6 +1201,7 @@
 				89D8BE251CF35C7000D640AA /* unstage.png in Resources */,
 				895869A91D0869D1003A9AF0 /* branchTemplate@2x.png in Resources */,
 				895869C11D088A46003A9AF0 /* tagTemplate@2x.png in Resources */,
+				C9D74CC11D92E62200C5626E /* viewSidebarTemplate.png in Resources */,
 				894C8D941CA44A44001A4B80 /* stagingTemplate@2x.png in Resources */,
 				C9DAB5D31D4A8D2000586854 /* Preferences.storyboard in Resources */,
 				895869BF1D088A46003A9AF0 /* submoduleTemplate@2x.png in Resources */,
@@ -1186,6 +1216,7 @@
 				C94866C11D25861E000BDB0A /* XTPasswordPanelController.xib in Resources */,
 				DDA8A63F17F5B6CE00AD9808 /* deleted@2x.png in Resources */,
 				895869A81D0869D1003A9AF0 /* branchTemplate.png in Resources */,
+				C9D74CBF1D92E62200C5626E /* viewHistoryTemplate.png in Resources */,
 				DDA8A64017F5B6CE00AD9808 /* modified.png in Resources */,
 				89D8BE5A1CF8E9C900D640AA /* diffTemplate.png in Resources */,
 				89D8BE5C1CF8E9C900D640AA /* historyTemplate.png in Resources */,
@@ -1198,6 +1229,7 @@
 				DDA8A64317F5B6CE00AD9808 /* renamed@2x.png in Resources */,
 				89D8BE5E1CF8E9C900D640AA /* textTemplate.png in Resources */,
 				89D8BE5D1CF8E9C900D640AA /* historyTemplate@2x.png in Resources */,
+				C9D74CC01D92E62200C5626E /* viewHistoryTemplate@2x.png in Resources */,
 				C91610261D1DE994005A3142 /* mergeTemplate@2x.png in Resources */,
 				C916102A1D1DE994005A3142 /* pullTemplate@2x.png in Resources */,
 				DDA8A65F17F9ECED00AD9808 /* mixed.png in Resources */,
