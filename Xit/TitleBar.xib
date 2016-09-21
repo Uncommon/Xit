@@ -7,7 +7,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="XTTitleBarAccessoryViewController" customModule="Xit" customModuleProvider="target">
             <connections>
-                <outlet property="branchLabel" destination="EVf-iB-Aga" id="t9a-Tv-QJZ"/>
+                <outlet property="branchPopup" destination="UF4-D2-qhU" id="Cx4-D6-Wlb"/>
                 <outlet property="operationButton" destination="aNh-jL-whD" id="xoY-eW-HIj"/>
                 <outlet property="operationControls" destination="IIb-W1-mF1" id="b9v-BT-AAG"/>
                 <outlet property="proxyIcon" destination="WKb-MR-WPP" id="3o0-jU-AzM"/>
@@ -57,10 +57,10 @@
                     </segmentedCell>
                 </segmentedControl>
                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="DfW-Hf-FKe">
-                    <rect key="frame" x="293" y="9" width="206" height="25"/>
+                    <rect key="frame" x="296" y="9" width="199" height="25"/>
                     <subviews>
                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FL9-n6-pxD">
-                            <rect key="frame" x="1" y="-2" width="204" height="28"/>
+                            <rect key="frame" x="1" y="-2" width="197" height="28"/>
                             <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="RfW-od-VIn">
                                 <behavior key="behavior" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
@@ -99,40 +99,36 @@
                             <rect key="frame" x="114" y="3" width="14" height="16"/>
                             <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="branchTemplate" id="DxX-kV-T9C"/>
                         </imageView>
-                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="EVf-iB-Aga">
-                            <rect key="frame" x="131" y="5" width="47" height="17"/>
-                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="branch" id="f0i-3h-hy1">
+                        <popUpButton focusRingType="none" translatesAutoresizingMaskIntoConstraints="NO" id="UF4-D2-qhU">
+                            <rect key="frame" x="122" y="2" width="69" height="21"/>
+                            <popUpButtonCell key="cell" type="bevel" title="branch" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" state="on" focusRingType="none" imageScaling="proportionallyDown" inset="2" autoenablesItems="NO" selectedItem="sSQ-02-kT9" id="QYv-hf-gtv">
+                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                 <font key="font" metaFont="system"/>
-                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                            </textFieldCell>
-                        </textField>
-                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Mlo-m8-cp8">
-                            <rect key="frame" x="182" y="4" width="16" height="16"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="16" id="GYu-AA-ziT"/>
-                                <constraint firstAttribute="width" constant="16" id="fNR-rF-rnL"/>
-                            </constraints>
-                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSStatusAvailable" id="hdz-E2-yPF"/>
-                        </imageView>
+                                <menu key="menu" autoenablesItems="NO" id="mJM-HD-d6L">
+                                    <items>
+                                        <menuItem title="branch" state="on" id="sSQ-02-kT9"/>
+                                        <menuItem title="Item 2" id="BHT-gE-XNj"/>
+                                        <menuItem title="Item 3" id="e52-Mj-4Fw"/>
+                                    </items>
+                                </menu>
+                            </popUpButtonCell>
+                        </popUpButton>
                     </subviews>
                     <constraints>
+                        <constraint firstAttribute="trailing" secondItem="UF4-D2-qhU" secondAttribute="trailing" constant="8" id="3eR-lt-pgQ"/>
                         <constraint firstAttribute="height" constant="25" id="8n5-dh-MoZ"/>
                         <constraint firstItem="Y8F-Z6-7t2" firstAttribute="top" secondItem="DfW-Hf-FKe" secondAttribute="top" constant="6" id="9Fc-eT-OZX"/>
                         <constraint firstItem="N5o-xl-R2D" firstAttribute="top" secondItem="DfW-Hf-FKe" secondAttribute="top" constant="5" id="A02-fo-H9N"/>
                         <constraint firstItem="Y8F-Z6-7t2" firstAttribute="leading" secondItem="N5o-xl-R2D" secondAttribute="trailing" constant="8" symbolic="YES" id="A9o-uc-s2X"/>
                         <constraint firstAttribute="bottom" secondItem="FL9-n6-pxD" secondAttribute="bottom" id="Ied-Cx-IAn"/>
                         <constraint firstItem="zFv-Uo-DhN" firstAttribute="top" secondItem="DfW-Hf-FKe" secondAttribute="top" constant="3" id="QmC-dF-XMh"/>
+                        <constraint firstItem="UF4-D2-qhU" firstAttribute="top" secondItem="DfW-Hf-FKe" secondAttribute="top" constant="2" id="Wxv-0d-Ycv"/>
                         <constraint firstItem="PFe-lZ-RQc" firstAttribute="top" secondItem="DfW-Hf-FKe" secondAttribute="top" constant="4" id="a8T-DF-ehg"/>
-                        <constraint firstItem="Mlo-m8-cp8" firstAttribute="centerY" secondItem="DfW-Hf-FKe" secondAttribute="centerY" id="alN-Pm-0RB"/>
+                        <constraint firstItem="UF4-D2-qhU" firstAttribute="leading" secondItem="Y8F-Z6-7t2" secondAttribute="trailing" constant="-6" id="aKR-1P-kJB"/>
                         <constraint firstItem="N5o-xl-R2D" firstAttribute="leading" secondItem="zFv-Uo-DhN" secondAttribute="trailing" constant="8" symbolic="YES" id="dWl-ds-K1a"/>
                         <constraint firstAttribute="trailing" secondItem="FL9-n6-pxD" secondAttribute="trailing" constant="1" id="enQ-D5-n5a"/>
                         <constraint firstItem="WKb-MR-WPP" firstAttribute="leading" secondItem="DfW-Hf-FKe" secondAttribute="leading" constant="8" id="giX-3M-6kk"/>
                         <constraint firstItem="WKb-MR-WPP" firstAttribute="top" secondItem="DfW-Hf-FKe" secondAttribute="top" constant="5" id="hfH-aI-VqK"/>
-                        <constraint firstAttribute="trailing" secondItem="Mlo-m8-cp8" secondAttribute="trailing" constant="8" id="hpf-rI-6TW"/>
-                        <constraint firstItem="EVf-iB-Aga" firstAttribute="leading" secondItem="Y8F-Z6-7t2" secondAttribute="trailing" constant="5" id="odh-YU-6ja"/>
-                        <constraint firstItem="EVf-iB-Aga" firstAttribute="top" secondItem="DfW-Hf-FKe" secondAttribute="top" constant="3" id="py5-dX-9G5"/>
-                        <constraint firstItem="Mlo-m8-cp8" firstAttribute="leading" secondItem="EVf-iB-Aga" secondAttribute="trailing" constant="6" id="quP-iD-VDC"/>
                         <constraint firstItem="zFv-Uo-DhN" firstAttribute="leading" secondItem="WKb-MR-WPP" secondAttribute="trailing" constant="8" symbolic="YES" id="rnc-lS-8aK"/>
                         <constraint firstItem="PFe-lZ-RQc" firstAttribute="leading" secondItem="DfW-Hf-FKe" secondAttribute="leading" constant="8" id="vwI-HF-zRE"/>
                         <constraint firstItem="FL9-n6-pxD" firstAttribute="leading" secondItem="DfW-Hf-FKe" secondAttribute="leading" constant="1" id="vx0-wi-bgz"/>
@@ -140,7 +136,7 @@
                     </constraints>
                 </customView>
                 <button hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="aNh-jL-whD">
-                    <rect key="frame" x="515" y="11" width="22" height="19"/>
+                    <rect key="frame" x="511" y="11" width="22" height="19"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="22" id="sCv-3O-eG1"/>
                     </constraints>
@@ -150,7 +146,7 @@
                     </buttonCell>
                 </button>
                 <segmentedControl hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="IIb-W1-mF1">
-                    <rect key="frame" x="541" y="8" width="66" height="25"/>
+                    <rect key="frame" x="537" y="8" width="66" height="25"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="22" id="Li8-d0-CO5"/>
                     </constraints>
@@ -182,7 +178,6 @@
     </objects>
     <resources>
         <image name="NSFolder" width="32" height="32"/>
-        <image name="NSStatusAvailable" width="16" height="16"/>
         <image name="branchTemplate" width="14" height="16"/>
         <image name="fetchTemplate" width="8" height="8"/>
         <image name="mergeTemplate" width="7" height="8"/>

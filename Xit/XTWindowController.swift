@@ -46,7 +46,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
     window.contentView = historyController.view
     window.makeFirstResponder(historyController.historyTable)
     
-    let repo = xtDocument!.repository
+    let repo = xtDocument!.repository!
     
     NotificationCenter.default.addObserver(
         self,
@@ -58,6 +58,14 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
         selector: #selector(XTWindowController.taskEnded(_:)),
         name: NSNotification.Name.XTTaskEnded,
         object: repo)
+    NotificationCenter.default.addObserver(
+        forName: NSNotification.Name.XTRepositoryRefsChanged,
+        object: repo, queue: nil) {
+      (notification) in
+      self.updateBranchList()
+    }
+    repo.addObserver(self, forKeyPath: #keyPath(XTRepository.currentBranch),
+                     options: [], context: nil)
     historyController.windowDidLoad()
     historyController.setRepo(repo)
   }
@@ -66,6 +74,26 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
   {
     NotificationCenter.default.removeObserver(self)
     currentOperation?.canceled = true
+  }
+  
+  override func observeValue(forKeyPath keyPath: String?,
+                             of object: Any?,
+                             change: [NSKeyValueChangeKey : Any]?,
+                             context: UnsafeMutableRawPointer?)
+  {
+    if let repo = object as? XTRepository,
+       keyPath == #keyPath(XTRepository.currentBranch) {
+      titleBarController?.selectedBranch = repo.currentBranch
+    }
+  }
+  
+  func updateBranchList()
+  {
+    let repo = xtDocument!.repository!
+    guard let branches = try? repo.localBranches()
+    else { return }
+    
+    self.titleBarController?.updateBranchList(branches.flatMap { $0.shortName })
   }
   
   func taskStarted(_ notification: Notification)
@@ -98,6 +126,14 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
   {
     self.historyController.mainSplitView.isVertical = false
     self.historyController.mainSplitView.adjustSubviews()
+  }
+  
+  @IBAction func branchPopupSelected(_: AnyObject)
+  {
+    guard let selectedBranch = titleBarController?.selectedBranch
+    else { return }
+  
+    try? xtDocument!.repository!.checkout(selectedBranch)
   }
   
   @IBAction func newTag(_: AnyObject) {}
@@ -260,10 +296,6 @@ extension XTWindowController: NSToolbarDelegate
                                    to: window! as NSWindow,
                                    withKeyPath: "title",
                                    options: nil)
-    viewController.branchLabel.bind("value",
-                                    to: repository,
-                                    withKeyPath: "currentBranch",
-                                    options: nil)
     viewController.proxyIcon.bind("hidden",
                                   to: repository,
                                   withKeyPath: "isWriting",
@@ -272,5 +304,9 @@ extension XTWindowController: NSToolbarDelegate
                                 to: repository,
                                 withKeyPath: "isWriting",
                                 options: inverseBindingOptions)
+    viewController.branchPopup.target = self
+    viewController.branchPopup.action = #selector(self.branchPopupSelected(_:))
+    updateBranchList()
+    viewController.selectedBranch = xtDocument!.repository!.currentBranch
   }
 }
