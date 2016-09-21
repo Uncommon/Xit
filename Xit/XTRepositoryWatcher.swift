@@ -50,7 +50,8 @@ let XTChangedRefsKey = "changedRefs"
         &context, [repository.gitDirectoryURL.path] as CFArray,
         FSEventStreamEventId(kFSEventStreamEventIdSinceNow), latency,
         UInt32(kFSEventStreamCreateFlagUseCFTypes |
-               kFSEventStreamCreateFlagNoDefer))
+               kFSEventStreamCreateFlagNoDefer |
+               kFSEventStreamCreateFlagFileEvents))
     if self.stream == nil {
       return nil
     }
@@ -136,6 +137,14 @@ let XTChangedRefsKey = "changedRefs"
     }
   }
   
+  func checkHead(_ changedPaths: [String])
+  {
+    if paths(changedPaths, includeSubpaths: ["HEAD"]) {
+      NotificationCenter.default.post(
+          name: NSNotification.Name.XTRepositoryHeadChanged, object: repository)
+    }
+  }
+  
   func checkRefs()
   {
     let newRefCache = index(refs: repository.allRefs())
@@ -177,10 +186,11 @@ let XTChangedRefsKey = "changedRefs"
   func observeEvents(_ paths: [String])
   {
     // FSEvents includes trailing slashes, but some other APIs don't.
-    let standardPaths = paths.map({ ($0 as NSString).standardizingPath })
+    let standardizedPaths = paths.map({ ($0 as NSString).standardizingPath })
   
     checkIndex()
-    checkRefs(standardPaths)
+    checkHead(standardizedPaths)
+    checkRefs(standardizedPaths)
     
     NotificationCenter.default.post(
         name: NSNotification.Name.XTRepositoryChanged, object: repository)

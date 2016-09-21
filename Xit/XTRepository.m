@@ -13,6 +13,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 NSString * const XTRepositoryChangedNotification = @"RepoChanged";
 NSString * const XTRepositoryRefsChangedNotification = @"RefsChanged";
 NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
+NSString * const XTRepositoryHeadChangedNotification = @"HeadChanged";
 
 
 @interface XTRepository ()
@@ -20,6 +21,10 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
 @property(readwrite) XTRepositoryWatcher *watcher;
 @property(readwrite) BOOL isShutDown;
 @property(readwrite) XTConfig *config;
+
+@end
+
+@interface XTRepository (CurrentBranch)
 
 - (NSString*)calculateCurrentBranch;
 
