@@ -48,9 +48,9 @@
                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedRounded" trackingMode="selectAny" id="PQW-Gq-Lrl">
                         <font key="font" metaFont="system"/>
                         <segments>
-                            <segment image="viewSidebarTemplate" width="30" selected="YES"/>
-                            <segment image="viewHistoryTemplate" width="29" selected="YES" tag="1"/>
-                            <segment image="viewCommitTemplate" width="29" selected="YES">
+                            <segment toolTip="Show Sidebar" image="viewSidebarTemplate" width="30" selected="YES"/>
+                            <segment toolTip="Show History List" image="viewHistoryTemplate" width="29" selected="YES" tag="1"/>
+                            <segment toolTip="Show Commit Details" image="viewCommitTemplate" width="29" selected="YES">
                                 <nil key="label"/>
                             </segment>
                         </segments>
