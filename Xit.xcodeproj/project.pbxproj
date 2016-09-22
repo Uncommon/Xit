@@ -117,6 +117,7 @@
 		C94866C01D25861E000BDB0A /* XTPasswordPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94866BE1D25861E000BDB0A /* XTPasswordPanelController.swift */; };
 		C94866C11D25861E000BDB0A /* XTPasswordPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C94866BF1D25861E000BDB0A /* XTPasswordPanelController.xib */; };
 		C948D5B71D2C6A4800F72A27 /* XTAccountsPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C948D5B61D2C6A4800F72A27 /* XTAccountsPrefsController.swift */; };
+		C95355EA1D93470400AEEF49 /* XTTitleStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95355E91D93470400AEEF49 /* XTTitleStatusView.swift */; };
 		C954ABFD1D34455000302160 /* XTBranch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C954ABFC1D34455000302160 /* XTBranch.swift */; };
 		C954ABFE1D34455000302160 /* XTBranch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C954ABFC1D34455000302160 /* XTBranch.swift */; };
 		C957B84B1D2D53040040F858 /* XTSheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B84A1D2D53040040F858 /* XTSheetController.swift */; };
@@ -444,6 +445,7 @@
 		C94866BE1D25861E000BDB0A /* XTPasswordPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPasswordPanelController.swift; sourceTree = "<group>"; };
 		C94866BF1D25861E000BDB0A /* XTPasswordPanelController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTPasswordPanelController.xib; sourceTree = "<group>"; };
 		C948D5B61D2C6A4800F72A27 /* XTAccountsPrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTAccountsPrefsController.swift; sourceTree = "<group>"; };
+		C95355E91D93470400AEEF49 /* XTTitleStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTitleStatusView.swift; sourceTree = "<group>"; };
 		C954ABFC1D34455000302160 /* XTBranch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTBranch.swift; sourceTree = "<group>"; };
 		C957B84A1D2D53040040F858 /* XTSheetController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSheetController.swift; sourceTree = "<group>"; };
 		C957B8531D2D533C0040F858 /* XTAddAccountController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTAddAccountController.swift; sourceTree = "<group>"; };
@@ -883,6 +885,7 @@
 				C3FA471513D0F8E200AC4F9B /* XTDocument.xib */,
 				C9E9A37C1D0B5706007BFABF /* XTWindowController.swift */,
 				C923D66B1D906FAA00C6B90B /* XTTitleBarAccessoryViewController.swift */,
+				C95355E91D93470400AEEF49 /* XTTitleStatusView.swift */,
 				C923D65D1D90506A00C6B90B /* TitleBar.xib */,
 			);
 			name = Document;
@@ -1316,6 +1319,7 @@
 				C957B87C1D2DBBC00040F858 /* XTAccountsManager.swift in Sources */,
 				DD07B07816A5D2A80012AC19 /* XTSideBarOutlineView.m in Sources */,
 				DD07B08916B313A60012AC19 /* XTRefFormatter.m in Sources */,
+				C95355EA1D93470400AEEF49 /* XTTitleStatusView.swift in Sources */,
 				DDD4708116F3E7B000CA76FF /* XTPreviewItem.m in Sources */,
 				C9DAB5D01D4A4F0300586854 /* XTGitPrefsController.swift in Sources */,
 				89C927751D36A2180074F71A /* XTSubmodule.swift in Sources */,
