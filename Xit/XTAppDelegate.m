@@ -16,6 +16,12 @@
   return self;
 }
 
+- (void)applicationWillFinishLaunching:(NSNotification*)note
+{
+  // The first NSDocumentController instance becomes the shared one.
+  (void)[[XTDocumentController alloc] init];
+}
+
 - (void)applicationDidFinishLaunching:(NSNotification*)note
 {
   if ([NSBundle bundleWithIdentifier:@"com.uncommonplace.XitTests"] == nil)
