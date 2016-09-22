@@ -18,6 +18,12 @@ NSString * const XTSelectedModelChangedNotification = @"XTSelectedModelChanged";
 
 @implementation XTDocument
 
+- (instancetype)initWithType:(NSString *)typeName
+                       error:(NSError * _Nullable __autoreleasing *)outError
+{
+  return nil;
+}
+
 - (instancetype)initWithContentsOfURL:(NSURL *)absoluteURL
                      ofType:(NSString *)typeName
                       error:(NSError **)outError
