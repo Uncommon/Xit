@@ -118,12 +118,12 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
   
   @IBAction func showHideHistory(_ sender: AnyObject)
   {
-    
+    historyController.toggleHistory(sender)
   }
   
   @IBAction func showHideDetails(_ sender: AnyObject)
   {
-    
+    historyController.toggleDetails(sender)
   }
   
   @IBAction func verticalLayout(_ sender: AnyObject)
@@ -261,6 +261,13 @@ extension XTWindowController: XTTitleBarDelegate
   func branchSelecetd(_ branch: String)
   {
     try? xtDocument!.repository!.checkout(branch)
+  }
+  
+  var viewStates: (sidebar: Bool, history: Bool, details: Bool)
+  {
+    return (!historyController.sideBarHidden(),
+            !historyController.historyHidden(),
+            !historyController.detailsHidden())
   }
   
   func fetchSelecetd() { fetch(self) }

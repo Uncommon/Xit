@@ -2,6 +2,8 @@ import Cocoa
 
 protocol XTTitleBarDelegate
 {
+  var viewStates: (sidebar: Bool, history: Bool, details: Bool) { get }
+
   func branchSelecetd(_ branch: String)
   func fetchSelecetd()
   func pushSelecetd()
@@ -40,16 +42,25 @@ class XTTitleBarAccessoryViewController: NSViewController
   
   @IBAction func viewAction(_ sender: NSSegmentedControl)
   {
+    guard let delegate = self.delegate
+    else { return }
+    
     switch sender.selectedSegment {
-    case 0:
-      delegate?.showHideSidebar()
-    case 1:
-      delegate?.showHideHistory()
-    case 2:
-      delegate?.showHideDetails()
-    default:
-      break
+      case 0:
+        delegate.showHideSidebar()
+      case 1:
+        delegate.showHideHistory()
+      case 2:
+        delegate.showHideDetails()
+      default:
+        break
     }
+    
+    let states = delegate.viewStates
+    
+    viewControls.setSelected(states.sidebar, forSegment: 0)
+    viewControls.setSelected(states.history, forSegment: 1)
+    viewControls.setSelected(states.details, forSegment: 2)
   }
   
   @IBAction func branchSelected(_ sender: NSPopUpButton)
