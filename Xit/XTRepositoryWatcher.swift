@@ -55,6 +55,11 @@ let XTChangedRefsKey = "changedRefs"
     if self.stream == nil {
       return nil
     }
+    
+    let objectsPath = repository.gitDirectoryURL.path
+                      .stringByAppendingPathComponent("objects")
+    
+    FSEventStreamSetExclusionPaths(stream, [objectsPath] as CFArray)
     FSEventStreamScheduleWithRunLoop(self.stream,
                                      CFRunLoopGetMain(),
                                      CFRunLoopMode.defaultMode.rawValue)
