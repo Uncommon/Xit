@@ -37,6 +37,9 @@ extern NSString * const XTRepositoryIndexChangedNotification;
 /// The repository's refs have changed.
 extern NSString * const XTRepositoryRefsChangedNotification;
 
+/// The head reference (current branch) has changed.
+extern NSString * const XTRepositoryHeadChangedNotification;
+
 extern NSString * const XTSelectedModelChangedNotification;
 
 extern NSString * const XTAddedRefsKey;

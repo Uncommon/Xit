@@ -83,23 +83,28 @@
   }];
 }
 
+- (NSString*)calculateCurrentBranch
+{
+  NSError *error = nil;
+  GTBranch *branch = [_gtRepo currentBranchWithError:&error];
+  
+  if (error != nil)
+    return nil;
+  
+  NSString *remoteName = branch.remoteName;
+  
+  if (remoteName != nil)
+    // shortName strips the remote name, so put it back
+    return
+        [NSString stringWithFormat:@"%@/%@", remoteName, branch.shortName];
+  else
+    return branch.shortName;
+}
+
 - (NSString *)currentBranch
 {
   if (_cachedBranch == nil) {
-    NSError *error = nil;
-    GTBranch *branch = [_gtRepo currentBranchWithError:&error];
-
-    if (error != nil)
-      return nil;
-
-    NSString *remoteName = branch.remoteName;
-
-    if (remoteName != nil)
-      // shortName strips the remote name, so put it back
-      _cachedBranch =
-          [NSString stringWithFormat:@"%@/%@", remoteName, branch.shortName];
-    else
-      _cachedBranch = branch.shortName;
+    _cachedBranch = [self calculateCurrentBranch];
   }
   return _cachedBranch;
 }

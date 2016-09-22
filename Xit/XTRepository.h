@@ -56,6 +56,7 @@ extern NSString *XTPathsKey;
  queue. If called on another thread, \a block is executed synchronously.
  */
 - (void)executeOffMainThread:(void (^)())block;
+- (void)updateIsWriting:(BOOL)writing; // Private use
 /**
   After this is called, future calls to \a executeOffMainThread: from the main
   thread will be ignored.

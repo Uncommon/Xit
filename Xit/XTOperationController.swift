@@ -31,22 +31,13 @@ class XTOperationController: NSObject
                         block: @escaping (() throws -> Void))
   {
     repository?.executeOffMainThread {
-      guard let repository = self.repository
-      else { return }
-      
       do {
         try block()
-        XTStatusView.update(status: successStatus,
-                            progress: -1,
-                            repository: repository)
       }
       catch _ as XTRepository.Error {
         // The command shouldn't have been enabled if this was going to happen
       }
       catch let error as NSError {
-        XTStatusView.update(status: failureStatus,
-                            progress: -1,
-                            repository: repository)
         DispatchQueue.main.async {
           if let window = self.windowController?.window {
             let alert = NSAlert(error: error)

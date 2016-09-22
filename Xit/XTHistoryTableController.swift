@@ -85,9 +85,6 @@ public class XTHistoryTableController: NSViewController
     weak var tableView = view as? NSTableView
     
     history.reset()
-    XTStatusView.update(status: "Loading...",
-                        progress: -1,
-                        repository: repository)
     NotificationCenter.default.post(name: NSNotification.Name.XTTaskStarted,
                                     object: repository)
     repository.executeOffMainThread {
@@ -121,9 +118,6 @@ public class XTHistoryTableController: NSViewController
       history.connectCommits()
       DispatchQueue.main.async {
         tableView?.reloadData()
-        XTStatusView.update(status: "Loaded \(history.entries.count) commits",
-                            progress: -1,
-                            repository: repository)
       }
     }
   }

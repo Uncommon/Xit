@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11201"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="XTTitleBarAccessoryViewController" customModule="Xit" customModuleProvider="target">
+            <connections>
+                <outlet property="branchPopup" destination="UF4-D2-qhU" id="Cx4-D6-Wlb"/>
+                <outlet property="operationButton" destination="aNh-jL-whD" id="xoY-eW-HIj"/>
+                <outlet property="operationControls" destination="IIb-W1-mF1" id="b9v-BT-AAG"/>
+                <outlet property="proxyIcon" destination="WKb-MR-WPP" id="3o0-jU-AzM"/>
+                <outlet property="remoteControls" destination="m2X-wZ-tfZ" id="QxK-8s-npQ"/>
+                <outlet property="spinner" destination="PFe-lZ-RQc" id="IoQ-0M-3Jh"/>
+                <outlet property="titleLabel" destination="zFv-Uo-DhN" id="ra1-Dt-ITW"/>
+                <outlet property="view" destination="c22-O7-iKe" id="yyV-s9-Isp"/>
+                <outlet property="viewControls" destination="gzN-mQ-RA8" id="Nac-sA-chV"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="c22-O7-iKe">
+            <rect key="frame" x="0.0" y="0.0" width="791" height="37"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="m2X-wZ-tfZ">
+                    <rect key="frame" x="1" y="8" width="96" height="25"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="22" id="nVV-pR-C7Z"/>
+                    </constraints>
+                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedRounded" trackingMode="momentary" id="dxK-Dd-Juj">
+                        <font key="font" metaFont="system"/>
+                        <segments>
+                            <segment toolTip="Fetch" image="fetchTemplate" width="30"/>
+                            <segment toolTip="Pull" image="pullTemplate" width="29" tag="1"/>
+                            <segment toolTip="Push" image="pushTemplate" width="29">
+                                <nil key="label"/>
+                            </segment>
+                        </segments>
+                    </segmentedCell>
+                    <connections>
+                        <action selector="remoteAction:" target="-2" id="aru-FK-3m6"/>
+                    </connections>
+                </segmentedControl>
+                <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gzN-mQ-RA8">
+                    <rect key="frame" x="694" y="8" width="96" height="25"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="22" id="uin-v0-wHo"/>
+                    </constraints>
+                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedRounded" trackingMode="selectAny" id="PQW-Gq-Lrl">
+                        <font key="font" metaFont="system"/>
+                        <segments>
+                            <segment toolTip="Show Sidebar" image="viewSidebarTemplate" width="30" selected="YES"/>
+                            <segment toolTip="Show History List" image="viewHistoryTemplate" width="29" selected="YES" tag="1"/>
+                            <segment toolTip="Show Commit Details" image="viewCommitTemplate" width="29" selected="YES">
+                                <nil key="label"/>
+                            </segment>
+                        </segments>
+                    </segmentedCell>
+                    <connections>
+                        <action selector="viewAction:" target="-2" id="Kca-PO-31K"/>
+                    </connections>
+                </segmentedControl>
+                <customView translatesAutoresizingMaskIntoConstraints="NO" id="DfW-Hf-FKe" customClass="XTTitleStatusView" customModule="Xit" customModuleProvider="target">
+                    <rect key="frame" x="296" y="9" width="199" height="25"/>
+                    <subviews>
+                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FL9-n6-pxD" customClass="XTDraggingButton" customModule="Xit" customModuleProvider="target">
+                            <rect key="frame" x="1" y="-2" width="197" height="28"/>
+                            <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="RfW-od-VIn">
+                                <behavior key="behavior" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                        </button>
+                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="WKb-MR-WPP" customClass="XTDraggingImage" customModule="Xit" customModuleProvider="target">
+                            <rect key="frame" x="8" y="4" width="16" height="16"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="16" id="9AI-3K-YGh"/>
+                                <constraint firstAttribute="width" constant="16" id="nrF-Hm-NkP"/>
+                            </constraints>
+                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSFolder" id="atu-Ru-5oE"/>
+                        </imageView>
+                        <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="PFe-lZ-RQc" customClass="XTDraggingProgress" customModule="Xit" customModuleProvider="target">
+                            <rect key="frame" x="8" y="5" width="16" height="16"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="16" id="uh1-dB-U5t"/>
+                                <constraint firstAttribute="height" constant="16" id="zcv-Wq-7Cr"/>
+                            </constraints>
+                        </progressIndicator>
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zFv-Uo-DhN" customClass="XTDraggingLabel" customModule="Xit" customModuleProvider="target">
+                            <rect key="frame" x="30" y="5" width="69" height="17"/>
+                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Repository" id="mT9-Xv-yPn">
+                                <font key="font" metaFont="system"/>
+                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <box horizontalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="N5o-xl-R2D">
+                            <rect key="frame" x="103" y="4" width="5" height="16"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="16" id="o1R-ky-y9Q"/>
+                            </constraints>
+                        </box>
+                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Y8F-Z6-7t2" customClass="XTDraggingImage" customModule="Xit" customModuleProvider="target">
+                            <rect key="frame" x="114" y="3" width="14" height="16"/>
+                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="branchTemplate" id="DxX-kV-T9C"/>
+                        </imageView>
+                        <popUpButton focusRingType="none" translatesAutoresizingMaskIntoConstraints="NO" id="UF4-D2-qhU">
+                            <rect key="frame" x="122" y="2" width="69" height="21"/>
+                            <popUpButtonCell key="cell" type="bevel" title="branch" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" state="on" focusRingType="none" imageScaling="proportionallyDown" inset="2" autoenablesItems="NO" selectedItem="sSQ-02-kT9" id="QYv-hf-gtv">
+                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                <font key="font" metaFont="system"/>
+                                <menu key="menu" autoenablesItems="NO" id="mJM-HD-d6L">
+                                    <items>
+                                        <menuItem title="branch" state="on" id="sSQ-02-kT9"/>
+                                        <menuItem title="Item 2" id="BHT-gE-XNj"/>
+                                        <menuItem title="Item 3" id="e52-Mj-4Fw"/>
+                                    </items>
+                                </menu>
+                            </popUpButtonCell>
+                            <connections>
+                                <action selector="branchSelected:" target="-2" id="LsH-oA-lgj"/>
+                            </connections>
+                        </popUpButton>
+                    </subviews>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="UF4-D2-qhU" secondAttribute="trailing" constant="8" id="3eR-lt-pgQ"/>
+                        <constraint firstAttribute="height" constant="25" id="8n5-dh-MoZ"/>
+                        <constraint firstItem="Y8F-Z6-7t2" firstAttribute="top" secondItem="DfW-Hf-FKe" secondAttribute="top" constant="6" id="9Fc-eT-OZX"/>
+                        <constraint firstItem="N5o-xl-R2D" firstAttribute="top" secondItem="DfW-Hf-FKe" secondAttribute="top" constant="5" id="A02-fo-H9N"/>
+                        <constraint firstItem="Y8F-Z6-7t2" firstAttribute="leading" secondItem="N5o-xl-R2D" secondAttribute="trailing" constant="8" symbolic="YES" id="A9o-uc-s2X"/>
+                        <constraint firstAttribute="bottom" secondItem="FL9-n6-pxD" secondAttribute="bottom" id="Ied-Cx-IAn"/>
+                        <constraint firstItem="zFv-Uo-DhN" firstAttribute="top" secondItem="DfW-Hf-FKe" secondAttribute="top" constant="3" id="QmC-dF-XMh"/>
+                        <constraint firstItem="UF4-D2-qhU" firstAttribute="top" secondItem="DfW-Hf-FKe" secondAttribute="top" constant="2" id="Wxv-0d-Ycv"/>
+                        <constraint firstItem="PFe-lZ-RQc" firstAttribute="top" secondItem="DfW-Hf-FKe" secondAttribute="top" constant="4" id="a8T-DF-ehg"/>
+                        <constraint firstItem="UF4-D2-qhU" firstAttribute="leading" secondItem="Y8F-Z6-7t2" secondAttribute="trailing" constant="-6" id="aKR-1P-kJB"/>
+                        <constraint firstItem="N5o-xl-R2D" firstAttribute="leading" secondItem="zFv-Uo-DhN" secondAttribute="trailing" constant="8" symbolic="YES" id="dWl-ds-K1a"/>
+                        <constraint firstAttribute="trailing" secondItem="FL9-n6-pxD" secondAttribute="trailing" constant="1" id="enQ-D5-n5a"/>
+                        <constraint firstItem="WKb-MR-WPP" firstAttribute="leading" secondItem="DfW-Hf-FKe" secondAttribute="leading" constant="8" id="giX-3M-6kk"/>
+                        <constraint firstItem="WKb-MR-WPP" firstAttribute="top" secondItem="DfW-Hf-FKe" secondAttribute="top" constant="5" id="hfH-aI-VqK"/>
+                        <constraint firstItem="zFv-Uo-DhN" firstAttribute="leading" secondItem="WKb-MR-WPP" secondAttribute="trailing" constant="8" symbolic="YES" id="rnc-lS-8aK"/>
+                        <constraint firstItem="PFe-lZ-RQc" firstAttribute="leading" secondItem="DfW-Hf-FKe" secondAttribute="leading" constant="8" id="vwI-HF-zRE"/>
+                        <constraint firstItem="FL9-n6-pxD" firstAttribute="leading" secondItem="DfW-Hf-FKe" secondAttribute="leading" constant="1" id="vx0-wi-bgz"/>
+                        <constraint firstItem="FL9-n6-pxD" firstAttribute="top" secondItem="DfW-Hf-FKe" secondAttribute="top" id="xsD-cz-j4t"/>
+                    </constraints>
+                </customView>
+                <button hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="aNh-jL-whD">
+                    <rect key="frame" x="511" y="11" width="22" height="19"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="22" id="sCv-3O-eG1"/>
+                    </constraints>
+                    <buttonCell key="cell" type="recessed" bezelStyle="recessed" image="mergeTemplate" imagePosition="only" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="4dh-XP-tZc">
+                        <behavior key="behavior" lightByContents="YES"/>
+                        <font key="font" metaFont="systemBold" size="12"/>
+                    </buttonCell>
+                </button>
+                <segmentedControl hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="IIb-W1-mF1">
+                    <rect key="frame" x="537" y="8" width="66" height="25"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="22" id="Li8-d0-CO5"/>
+                    </constraints>
+                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedRounded" trackingMode="momentary" id="PSA-YP-yDG">
+                        <font key="font" metaFont="system"/>
+                        <segments>
+                            <segment label="▶︎" width="30"/>
+                            <segment label="◼" width="29" tag="1"/>
+                        </segments>
+                    </segmentedCell>
+                </segmentedControl>
+            </subviews>
+            <constraints>
+                <constraint firstItem="gzN-mQ-RA8" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="IIb-W1-mF1" secondAttribute="trailing" constant="8" symbolic="YES" id="Ht0-BG-KbQ"/>
+                <constraint firstItem="gzN-mQ-RA8" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="5" id="NAK-dD-Ivi"/>
+                <constraint firstItem="DfW-Hf-FKe" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="m2X-wZ-tfZ" secondAttribute="trailing" constant="8" symbolic="YES" id="PyA-gP-gFU"/>
+                <constraint firstItem="aNh-jL-whD" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="7" id="T5L-YN-0DZ"/>
+                <constraint firstItem="aNh-jL-whD" firstAttribute="leading" secondItem="DfW-Hf-FKe" secondAttribute="trailing" constant="16" id="TAv-29-8IH"/>
+                <constraint firstItem="m2X-wZ-tfZ" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="1" id="Uha-ic-oTu"/>
+                <constraint firstItem="IIb-W1-mF1" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="5" id="dhx-XR-ffB"/>
+                <constraint firstItem="m2X-wZ-tfZ" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="5" id="fLV-19-nuD"/>
+                <constraint firstItem="DfW-Hf-FKe" firstAttribute="centerX" secondItem="c22-O7-iKe" secondAttribute="centerX" priority="900" id="gXn-Xl-POs"/>
+                <constraint firstItem="IIb-W1-mF1" firstAttribute="leading" secondItem="aNh-jL-whD" secondAttribute="trailing" constant="4" id="jcc-9K-9rI"/>
+                <constraint firstAttribute="trailing" secondItem="gzN-mQ-RA8" secondAttribute="trailing" constant="1" id="ykl-5G-K0b"/>
+                <constraint firstItem="DfW-Hf-FKe" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="3" id="zcu-RG-TW4"/>
+            </constraints>
+            <point key="canvasLocation" x="484.5" y="495.5"/>
+        </customView>
+    </objects>
+    <resources>
+        <image name="NSFolder" width="32" height="32"/>
+        <image name="branchTemplate" width="14" height="16"/>
+        <image name="fetchTemplate" width="8" height="8"/>
+        <image name="mergeTemplate" width="7" height="8"/>
+        <image name="pullTemplate" width="8" height="8"/>
+        <image name="pushTemplate" width="8" height="8"/>
+        <image name="viewCommitTemplate" width="18" height="14"/>
+        <image name="viewHistoryTemplate" width="18" height="14"/>
+        <image name="viewSidebarTemplate" width="18" height="14"/>
+    </resources>
+</document>

@@ -10,7 +10,7 @@ public class XTBranch: NSObject
   }
   
   var name: String? { return gtBranch.name }
-  var shortName: String? { return name }
+  var shortName: String? { return gtBranch.shortName }
 }
 
 public class XTLocalBranch: XTBranch

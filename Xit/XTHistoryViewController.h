@@ -23,7 +23,7 @@
  @private
   __weak XTRepository *_repo;
   XTFileViewController *_fileViewController;
-  NSUInteger _savedSidebarWidth;
+  NSUInteger _savedSidebarWidth, _savedHistorySize;
 }
 
 - (void)windowDidLoad;
@@ -43,7 +43,12 @@
 - (IBAction)applyStash:(id)sender;
 - (IBAction)dropStash:(id)sender;
 
+- (BOOL)sideBarHidden;
+- (BOOL)historyHidden;
+- (BOOL)detailsHidden;
 - (IBAction)toggleSideBar:(id)sender;
+- (IBAction)toggleHistory:(id)sender;
+- (IBAction)toggleDetails:(id)sender;
 
 - (IBAction)sideBarItemRenamed:(id)sender;
 

@@ -21,11 +21,6 @@
 		894C8D941CA44A44001A4B80 /* stagingTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 894C8D921CA44A44001A4B80 /* stagingTemplate@2x.png */; };
 		894C8DAC1CBC0A1B001A4B80 /* XTFileListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 894C8DAB1CBC0A1B001A4B80 /* XTFileListView.m */; };
 		894C8DBD1CC12F3E001A4B80 /* XTPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 894C8DBB1CC12F3E001A4B80 /* XTPreviewController.m */; };
-		895229661786F6F900EE514C /* FHTDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8952295F1786F6F900EE514C /* FHTDelegate.m */; };
-		895229671786F6F900EE514C /* FHTItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 895229611786F6F900EE514C /* FHTItemView.m */; };
-		895229681786F6F900EE514C /* FHTLCDStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 895229631786F6F900EE514C /* FHTLCDStatusView.m */; };
-		895229691786F6F900EE514C /* FHTToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 895229651786F6F900EE514C /* FHTToolbar.m */; };
-		895229711786F7AB00EE514C /* XTToolbarDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 895229701786F7AB00EE514C /* XTToolbarDelegate.m */; };
 		895869A81D0869D1003A9AF0 /* branchTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 895869A41D0869D1003A9AF0 /* branchTemplate.png */; };
 		895869A91D0869D1003A9AF0 /* branchTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 895869A51D0869D1003A9AF0 /* branchTemplate@2x.png */; };
 		895869AA1D0869D1003A9AF0 /* cloudTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 895869A61D0869D1003A9AF0 /* cloudTemplate.png */; };
@@ -38,10 +33,6 @@
 		895869C11D088A46003A9AF0 /* tagTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 895869BB1D088A46003A9AF0 /* tagTemplate@2x.png */; };
 		895DEEF6142CECB7001763FC /* XTSideBarTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 895DEEF5142CECB7001763FC /* XTSideBarTableCellView.m */; };
 		896B05D015796D2A003B0C24 /* XTHistoryViewControllerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 896B05CF15796D2A003B0C24 /* XTHistoryViewControllerTest.m */; };
-		89794F671452839500E38ACC /* XTStatusView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89794F651452839500E38ACC /* XTStatusView.xib */; };
-		89794F8C1458CC9B00E38ACC /* XTOutputViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89794F8A1458CC9B00E38ACC /* XTOutputViewController.m */; };
-		89794F8D1458CC9B00E38ACC /* XTOutputViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89794F8B1458CC9B00E38ACC /* XTOutputViewController.xib */; };
-		89991CDD144E3FF400097A99 /* XTStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 89991CDC144E3FF400097A99 /* XTStatusView.m */; };
 		899DB1921CE109C700760270 /* XTWorkspaceTreeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB18D1CE0EA3A00760270 /* XTWorkspaceTreeBuilder.swift */; };
 		899DB1A21CE5022400760270 /* XTCommitEntryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB1A01CE5022400760270 /* XTCommitEntryController.swift */; };
 		899DB1A31CE5022400760270 /* XTCommitEntryController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 899DB1A11CE5022400760270 /* XTCommitEntryController.xib */; };
@@ -108,6 +99,8 @@
 		C91F34761D306506005F9BDF /* Siesta.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C91F346F1D30647E005F9BDF /* Siesta.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C91F34781D30656B005F9BDF /* XTServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91F34771D30656B005F9BDF /* XTServices.swift */; };
 		C923D6481D8CA56800C6B90B /* XTTagTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D6471D8CA56800C6B90B /* XTTagTest.swift */; };
+		C923D65E1D90506A00C6B90B /* TitleBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = C923D65D1D90506A00C6B90B /* TitleBar.xib */; };
+		C923D66C1D906FAA00C6B90B /* XTTitleBarAccessoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D66B1D906FAA00C6B90B /* XTTitleBarAccessoryViewController.swift */; };
 		C926804E1D074EC500E422FA /* XTFileChangesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C926804D1D074EC500E422FA /* XTFileChangesModel.swift */; };
 		C929D03B1D400B3B00D7DC52 /* XTRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D03A1D400B3B00D7DC52 /* XTRemote.swift */; };
 		C929D0461D415F6F00D7DC52 /* MiscExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */; };
@@ -116,7 +109,6 @@
 		C92A7B271D1DD1CD00D2B944 /* folderTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C92A7B251D1DD1CD00D2B944 /* folderTemplate@2x.png */; };
 		C92E30EF1D4FF358001985F7 /* XTCommitHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92E30EE1D4FF358001985F7 /* XTCommitHistory.swift */; };
 		C92E30FB1D4FF4F0001985F7 /* XTCommit.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92E30FA1D4FF4F0001985F7 /* XTCommit.swift */; };
-		C9328B061D75E3F600EFF7F7 /* XTWritingToolbarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328B051D75E3F600EFF7F7 /* XTWritingToolbarItem.swift */; };
 		C9328B121D77303200EFF7F7 /* XTFileMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328B111D77303200EFF7F7 /* XTFileMonitor.swift */; };
 		C9328B141D776BC700EFF7F7 /* XTRepositoryWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328B131D776BC700EFF7F7 /* XTRepositoryWatcher.swift */; };
 		C936AD0A1D4C0CD400C5ADC3 /* XTPushController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C936AD091D4C0CD400C5ADC3 /* XTPushController.swift */; };
@@ -125,6 +117,7 @@
 		C94866C01D25861E000BDB0A /* XTPasswordPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94866BE1D25861E000BDB0A /* XTPasswordPanelController.swift */; };
 		C94866C11D25861E000BDB0A /* XTPasswordPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C94866BF1D25861E000BDB0A /* XTPasswordPanelController.xib */; };
 		C948D5B71D2C6A4800F72A27 /* XTAccountsPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C948D5B61D2C6A4800F72A27 /* XTAccountsPrefsController.swift */; };
+		C95355EA1D93470400AEEF49 /* XTTitleStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95355E91D93470400AEEF49 /* XTTitleStatusView.swift */; };
 		C954ABFD1D34455000302160 /* XTBranch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C954ABFC1D34455000302160 /* XTBranch.swift */; };
 		C954ABFE1D34455000302160 /* XTBranch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C954ABFC1D34455000302160 /* XTBranch.swift */; };
 		C957B84B1D2D53040040F858 /* XTSheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B84A1D2D53040040F858 /* XTSheetController.swift */; };
@@ -140,11 +133,16 @@
 		C957B8731D2DB44E0040F858 /* XTRemoteSheetController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C957B8711D2DB44E0040F858 /* XTRemoteSheetController.xib */; };
 		C957B87C1D2DBBC00040F858 /* XTAccountsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B87B1D2DBBC00040F858 /* XTAccountsManager.swift */; };
 		C96F65461D53A6CE001B2557 /* XTHistoryCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F65451D53A6CE001B2557 /* XTHistoryCellView.swift */; };
-		C9B753671D651ECC005A53CC /* XTActivityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B753661D651ECC005A53CC /* XTActivityViewController.swift */; };
 		C9BAE60A1D2FFA8B00A87F13 /* XTConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE6091D2FFA8B00A87F13 /* XTConfig.swift */; };
 		C9BAE6141D3039C500A87F13 /* XTOperationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE6131D3039C500A87F13 /* XTOperationController.swift */; };
 		C9BAE61E1D303A8100A87F13 /* XTRemoteOptionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE61D1D303A8100A87F13 /* XTRemoteOptionsController.swift */; };
 		C9C7730C1D26EE1C00329493 /* XTPrefsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C7730A1D26EE1C00329493 /* XTPrefsWindowController.swift */; };
+		C9D74CBD1D92E62200C5626E /* viewCommitTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D74CB71D92E62200C5626E /* viewCommitTemplate.png */; };
+		C9D74CBE1D92E62200C5626E /* viewCommitTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D74CB81D92E62200C5626E /* viewCommitTemplate@2x.png */; };
+		C9D74CBF1D92E62200C5626E /* viewHistoryTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D74CB91D92E62200C5626E /* viewHistoryTemplate.png */; };
+		C9D74CC01D92E62200C5626E /* viewHistoryTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D74CBA1D92E62200C5626E /* viewHistoryTemplate@2x.png */; };
+		C9D74CC11D92E62200C5626E /* viewSidebarTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D74CBB1D92E62200C5626E /* viewSidebarTemplate.png */; };
+		C9D74CC21D92E62200C5626E /* viewSidebarTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D74CBC1D92E62200C5626E /* viewSidebarTemplate@2x.png */; };
 		C9DAB5AF1D47C23900586854 /* XTTeamCityTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DAB5AE1D47C23900586854 /* XTTeamCityTest.swift */; };
 		C9DAB5CD1D4A4EA700586854 /* Git-Icon-1788C.png in Resources */ = {isa = PBXBuildFile; fileRef = C9DAB5CC1D4A4EA700586854 /* Git-Icon-1788C.png */; };
 		C9DAB5D01D4A4F0300586854 /* XTGitPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DAB5CE1D4A4F0300586854 /* XTGitPrefsController.swift */; };
@@ -334,16 +332,6 @@
 		894C8DBA1CC12F3E001A4B80 /* XTPreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTPreviewController.h; sourceTree = "<group>"; };
 		894C8DBB1CC12F3E001A4B80 /* XTPreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTPreviewController.m; sourceTree = "<group>"; };
 		894C8DE51CCD06FE001A4B80 /* Xit-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Xit-Bridging-Header.h"; sourceTree = "<group>"; };
-		8952295E1786F6F900EE514C /* FHTDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FHTDelegate.h; sourceTree = "<group>"; };
-		8952295F1786F6F900EE514C /* FHTDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FHTDelegate.m; sourceTree = "<group>"; };
-		895229601786F6F900EE514C /* FHTItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FHTItemView.h; sourceTree = "<group>"; };
-		895229611786F6F900EE514C /* FHTItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FHTItemView.m; sourceTree = "<group>"; };
-		895229621786F6F900EE514C /* FHTLCDStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FHTLCDStatusView.h; sourceTree = "<group>"; };
-		895229631786F6F900EE514C /* FHTLCDStatusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FHTLCDStatusView.m; sourceTree = "<group>"; };
-		895229641786F6F900EE514C /* FHTToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FHTToolbar.h; sourceTree = "<group>"; };
-		895229651786F6F900EE514C /* FHTToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FHTToolbar.m; sourceTree = "<group>"; };
-		8952296F1786F7AB00EE514C /* XTToolbarDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTToolbarDelegate.h; sourceTree = "<group>"; };
-		895229701786F7AB00EE514C /* XTToolbarDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTToolbarDelegate.m; sourceTree = "<group>"; };
 		895869A41D0869D1003A9AF0 /* branchTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = branchTemplate.png; sourceTree = "<group>"; };
 		895869A51D0869D1003A9AF0 /* branchTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "branchTemplate@2x.png"; sourceTree = "<group>"; };
 		895869A61D0869D1003A9AF0 /* cloudTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cloudTemplate.png; sourceTree = "<group>"; };
@@ -357,12 +345,6 @@
 		895DEEF4142CECB7001763FC /* XTSideBarTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTSideBarTableCellView.h; sourceTree = "<group>"; tabWidth = 2; };
 		895DEEF5142CECB7001763FC /* XTSideBarTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTSideBarTableCellView.m; sourceTree = "<group>"; tabWidth = 2; };
 		896B05CF15796D2A003B0C24 /* XTHistoryViewControllerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTHistoryViewControllerTest.m; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		89794F661452839500E38ACC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/XTStatusView.xib; sourceTree = "<group>"; };
-		89794F891458CC9B00E38ACC /* XTOutputViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTOutputViewController.h; sourceTree = "<group>"; tabWidth = 2; };
-		89794F8A1458CC9B00E38ACC /* XTOutputViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTOutputViewController.m; sourceTree = "<group>"; tabWidth = 2; };
-		89794F8B1458CC9B00E38ACC /* XTOutputViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTOutputViewController.xib; sourceTree = "<group>"; };
-		89991CDB144E3FF400097A99 /* XTStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTStatusView.h; sourceTree = "<group>"; tabWidth = 2; };
-		89991CDC144E3FF400097A99 /* XTStatusView.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTStatusView.m; sourceTree = "<group>"; tabWidth = 2; };
 		899DB18D1CE0EA3A00760270 /* XTWorkspaceTreeBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTWorkspaceTreeBuilder.swift; sourceTree = "<group>"; };
 		899DB1A01CE5022400760270 /* XTCommitEntryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTCommitEntryController.swift; sourceTree = "<group>"; };
 		899DB1A11CE5022400760270 /* XTCommitEntryController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTCommitEntryController.xib; sourceTree = "<group>"; };
@@ -445,6 +427,8 @@
 		C91F34631D30647D005F9BDF /* Siesta.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Siesta.xcodeproj; path = siesta/Siesta.xcodeproj; sourceTree = "<group>"; };
 		C91F34771D30656B005F9BDF /* XTServices.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTServices.swift; sourceTree = "<group>"; };
 		C923D6471D8CA56800C6B90B /* XTTagTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTagTest.swift; sourceTree = "<group>"; };
+		C923D65D1D90506A00C6B90B /* TitleBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TitleBar.xib; sourceTree = "<group>"; };
+		C923D66B1D906FAA00C6B90B /* XTTitleBarAccessoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTitleBarAccessoryViewController.swift; sourceTree = "<group>"; };
 		C926804D1D074EC500E422FA /* XTFileChangesModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesModel.swift; sourceTree = "<group>"; };
 		C929D03A1D400B3B00D7DC52 /* XTRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRemote.swift; sourceTree = "<group>"; };
 		C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiscExtensions.swift; sourceTree = "<group>"; };
@@ -453,7 +437,6 @@
 		C92A7B251D1DD1CD00D2B944 /* folderTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "folderTemplate@2x.png"; sourceTree = "<group>"; };
 		C92E30EE1D4FF358001985F7 /* XTCommitHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTCommitHistory.swift; sourceTree = "<group>"; };
 		C92E30FA1D4FF4F0001985F7 /* XTCommit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTCommit.swift; sourceTree = "<group>"; };
-		C9328B051D75E3F600EFF7F7 /* XTWritingToolbarItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTWritingToolbarItem.swift; sourceTree = "<group>"; };
 		C9328B111D77303200EFF7F7 /* XTFileMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileMonitor.swift; sourceTree = "<group>"; };
 		C9328B131D776BC700EFF7F7 /* XTRepositoryWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRepositoryWatcher.swift; sourceTree = "<group>"; };
 		C936AD091D4C0CD400C5ADC3 /* XTPushController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPushController.swift; sourceTree = "<group>"; };
@@ -462,6 +445,7 @@
 		C94866BE1D25861E000BDB0A /* XTPasswordPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPasswordPanelController.swift; sourceTree = "<group>"; };
 		C94866BF1D25861E000BDB0A /* XTPasswordPanelController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTPasswordPanelController.xib; sourceTree = "<group>"; };
 		C948D5B61D2C6A4800F72A27 /* XTAccountsPrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTAccountsPrefsController.swift; sourceTree = "<group>"; };
+		C95355E91D93470400AEEF49 /* XTTitleStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTitleStatusView.swift; sourceTree = "<group>"; };
 		C954ABFC1D34455000302160 /* XTBranch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTBranch.swift; sourceTree = "<group>"; };
 		C957B84A1D2D53040040F858 /* XTSheetController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSheetController.swift; sourceTree = "<group>"; };
 		C957B8531D2D533C0040F858 /* XTAddAccountController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTAddAccountController.swift; sourceTree = "<group>"; };
@@ -476,11 +460,16 @@
 		C957B8711D2DB44E0040F858 /* XTRemoteSheetController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTRemoteSheetController.xib; sourceTree = "<group>"; };
 		C957B87B1D2DBBC00040F858 /* XTAccountsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTAccountsManager.swift; sourceTree = "<group>"; };
 		C96F65451D53A6CE001B2557 /* XTHistoryCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTHistoryCellView.swift; sourceTree = "<group>"; };
-		C9B753661D651ECC005A53CC /* XTActivityViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTActivityViewController.swift; sourceTree = "<group>"; };
 		C9BAE6091D2FFA8B00A87F13 /* XTConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTConfig.swift; sourceTree = "<group>"; };
 		C9BAE6131D3039C500A87F13 /* XTOperationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTOperationController.swift; sourceTree = "<group>"; };
 		C9BAE61D1D303A8100A87F13 /* XTRemoteOptionsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRemoteOptionsController.swift; sourceTree = "<group>"; };
 		C9C7730A1D26EE1C00329493 /* XTPrefsWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPrefsWindowController.swift; sourceTree = "<group>"; };
+		C9D74CB71D92E62200C5626E /* viewCommitTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = viewCommitTemplate.png; sourceTree = "<group>"; };
+		C9D74CB81D92E62200C5626E /* viewCommitTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "viewCommitTemplate@2x.png"; sourceTree = "<group>"; };
+		C9D74CB91D92E62200C5626E /* viewHistoryTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = viewHistoryTemplate.png; sourceTree = "<group>"; };
+		C9D74CBA1D92E62200C5626E /* viewHistoryTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "viewHistoryTemplate@2x.png"; sourceTree = "<group>"; };
+		C9D74CBB1D92E62200C5626E /* viewSidebarTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = viewSidebarTemplate.png; sourceTree = "<group>"; };
+		C9D74CBC1D92E62200C5626E /* viewSidebarTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "viewSidebarTemplate@2x.png"; sourceTree = "<group>"; };
 		C9DAB5AE1D47C23900586854 /* XTTeamCityTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTeamCityTest.swift; sourceTree = "<group>"; };
 		C9DAB5CC1D4A4EA700586854 /* Git-Icon-1788C.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Git-Icon-1788C.png"; sourceTree = "<group>"; };
 		C9DAB5CE1D4A4F0300586854 /* XTGitPrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTGitPrefsController.swift; sourceTree = "<group>"; };
@@ -610,22 +599,6 @@
 			name = HistoryView;
 			sourceTree = "<group>";
 		};
-		8937B6EC1786F5DE00CB9BBC /* FullHeightToolbar */ = {
-			isa = PBXGroup;
-			children = (
-				8952295E1786F6F900EE514C /* FHTDelegate.h */,
-				8952295F1786F6F900EE514C /* FHTDelegate.m */,
-				895229601786F6F900EE514C /* FHTItemView.h */,
-				895229611786F6F900EE514C /* FHTItemView.m */,
-				895229621786F6F900EE514C /* FHTLCDStatusView.h */,
-				895229631786F6F900EE514C /* FHTLCDStatusView.m */,
-				895229641786F6F900EE514C /* FHTToolbar.h */,
-				895229651786F6F900EE514C /* FHTToolbar.m */,
-			);
-			name = FullHeightToolbar;
-			path = FullHeightToolbar/Library;
-			sourceTree = "<group>";
-		};
 		895869B31D08711E003A9AF0 /* Status */ = {
 			isa = PBXGroup;
 			children = (
@@ -709,6 +682,7 @@
 				C9DAB5CC1D4A4EA700586854 /* Git-Icon-1788C.png */,
 				895869B51D0871A6003A9AF0 /* Sidebar */,
 				895869B31D08711E003A9AF0 /* Status */,
+				C9D74CAA1D92E60800C5626E /* Title bar */,
 				895869B41D08718A003A9AF0 /* Views */,
 				C957B8571D2D6A3C0040F858 /* bitbucketTemplate.png */,
 				C957B8581D2D6A3C0040F858 /* bitbucketTemplate@2x.png */,
@@ -727,7 +701,6 @@
 				DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */,
 				C91F34631D30647D005F9BDF /* Siesta.xcodeproj */,
 				C3FA470613D0F8E200AC4F9B /* Xit */,
-				8937B6EC1786F5DE00CB9BBC /* FullHeightToolbar */,
 				C3FA472413D0F8E300AC4F9B /* XitTests */,
 				C3FA46FF13D0F8E200AC4F9B /* Frameworks */,
 				C3FA46FD13D0F8E200AC4F9B /* Products */,
@@ -911,16 +884,9 @@
 				C3FA471313D0F8E200AC4F9B /* XTDocument.m */,
 				C3FA471513D0F8E200AC4F9B /* XTDocument.xib */,
 				C9E9A37C1D0B5706007BFABF /* XTWindowController.swift */,
-				C9B753661D651ECC005A53CC /* XTActivityViewController.swift */,
-				89991CDB144E3FF400097A99 /* XTStatusView.h */,
-				89991CDC144E3FF400097A99 /* XTStatusView.m */,
-				89794F651452839500E38ACC /* XTStatusView.xib */,
-				8952296F1786F7AB00EE514C /* XTToolbarDelegate.h */,
-				895229701786F7AB00EE514C /* XTToolbarDelegate.m */,
-				89794F891458CC9B00E38ACC /* XTOutputViewController.h */,
-				89794F8A1458CC9B00E38ACC /* XTOutputViewController.m */,
-				89794F8B1458CC9B00E38ACC /* XTOutputViewController.xib */,
-				C9328B051D75E3F600EFF7F7 /* XTWritingToolbarItem.swift */,
+				C923D66B1D906FAA00C6B90B /* XTTitleBarAccessoryViewController.swift */,
+				C95355E91D93470400AEEF49 /* XTTitleStatusView.swift */,
+				C923D65D1D90506A00C6B90B /* TitleBar.xib */,
 			);
 			name = Document;
 			sourceTree = "<group>";
@@ -960,6 +926,19 @@
 				C9DAB5D21D4A8D2000586854 /* Preferences.storyboard */,
 			);
 			name = Preferences;
+			sourceTree = "<group>";
+		};
+		C9D74CAA1D92E60800C5626E /* Title bar */ = {
+			isa = PBXGroup;
+			children = (
+				C9D74CB71D92E62200C5626E /* viewCommitTemplate.png */,
+				C9D74CB81D92E62200C5626E /* viewCommitTemplate@2x.png */,
+				C9D74CB91D92E62200C5626E /* viewHistoryTemplate.png */,
+				C9D74CBA1D92E62200C5626E /* viewHistoryTemplate@2x.png */,
+				C9D74CBB1D92E62200C5626E /* viewSidebarTemplate.png */,
+				C9D74CBC1D92E62200C5626E /* viewSidebarTemplate@2x.png */,
+			);
+			name = "Title bar";
 			sourceTree = "<group>";
 		};
 		DD39D1F21918306B00827532 /* FileView */ = {
@@ -1196,9 +1175,7 @@
 				899DB1A31CE5022400760270 /* XTCommitEntryController.xib in Resources */,
 				C9DAB5CD1D4A4EA700586854 /* Git-Icon-1788C.png in Resources */,
 				C957B8731D2DB44E0040F858 /* XTRemoteSheetController.xib in Resources */,
-				89794F671452839500E38ACC /* XTStatusView.xib in Resources */,
 				89D8BE001CED203900D640AA /* stage.png in Resources */,
-				89794F8D1458CC9B00E38ACC /* XTOutputViewController.xib in Resources */,
 				C91610251D1DE994005A3142 /* mergeTemplate.png in Resources */,
 				C91610241D1DE994005A3142 /* fetchTemplate@2x.png in Resources */,
 				89D8BDFA1CED200B00D640AA /* delete.png in Resources */,
@@ -1207,14 +1184,18 @@
 				89039F561703A9FC000949A8 /* html in Resources */,
 				C90FD5971D217D5B00A30570 /* XTFetchPanelController.xib in Resources */,
 				89D8BDFD1CED200B00D640AA /* modify@2x.png in Resources */,
+				C9D74CC21D92E62200C5626E /* viewSidebarTemplate@2x.png in Resources */,
 				DD997DDA173B409500C7DF82 /* HistoryView Menus.xib in Resources */,
 				C957B85C1D2D6A3C0040F858 /* bitbucketTemplate@2x.png in Resources */,
+				C9D74CBE1D92E62200C5626E /* viewCommitTemplate@2x.png in Resources */,
+				C923D65E1D90506A00C6B90B /* TitleBar.xib in Resources */,
 				89D8BDF81CED200B00D640AA /* conflict.png in Resources */,
 				DD997DF81746F40D00C7DF82 /* XTFileViewController.xib in Resources */,
 				89D8BDF91CED200B00D640AA /* conflict@2x.png in Resources */,
 				C957B85B1D2D6A3C0040F858 /* bitbucketTemplate.png in Resources */,
 				C92A7B261D1DD1CD00D2B944 /* folderTemplate.png in Resources */,
 				89D8BE011CED203900D640AA /* stage@2x.png in Resources */,
+				C9D74CBD1D92E62200C5626E /* viewCommitTemplate.png in Resources */,
 				89D8BE581CF8E9C900D640AA /* blameTemplate.png in Resources */,
 				C957B8621D2D6D900040F858 /* teamcityTemplate@2x.png in Resources */,
 				C91610271D1DE994005A3142 /* pullRequestTemplate.png in Resources */,
@@ -1223,6 +1204,7 @@
 				89D8BE251CF35C7000D640AA /* unstage.png in Resources */,
 				895869A91D0869D1003A9AF0 /* branchTemplate@2x.png in Resources */,
 				895869C11D088A46003A9AF0 /* tagTemplate@2x.png in Resources */,
+				C9D74CC11D92E62200C5626E /* viewSidebarTemplate.png in Resources */,
 				894C8D941CA44A44001A4B80 /* stagingTemplate@2x.png in Resources */,
 				C9DAB5D31D4A8D2000586854 /* Preferences.storyboard in Resources */,
 				895869BF1D088A46003A9AF0 /* submoduleTemplate@2x.png in Resources */,
@@ -1237,6 +1219,7 @@
 				C94866C11D25861E000BDB0A /* XTPasswordPanelController.xib in Resources */,
 				DDA8A63F17F5B6CE00AD9808 /* deleted@2x.png in Resources */,
 				895869A81D0869D1003A9AF0 /* branchTemplate.png in Resources */,
+				C9D74CBF1D92E62200C5626E /* viewHistoryTemplate.png in Resources */,
 				DDA8A64017F5B6CE00AD9808 /* modified.png in Resources */,
 				89D8BE5A1CF8E9C900D640AA /* diffTemplate.png in Resources */,
 				89D8BE5C1CF8E9C900D640AA /* historyTemplate.png in Resources */,
@@ -1249,6 +1232,7 @@
 				DDA8A64317F5B6CE00AD9808 /* renamed@2x.png in Resources */,
 				89D8BE5E1CF8E9C900D640AA /* textTemplate.png in Resources */,
 				89D8BE5D1CF8E9C900D640AA /* historyTemplate@2x.png in Resources */,
+				C9D74CC01D92E62200C5626E /* viewHistoryTemplate@2x.png in Resources */,
 				C91610261D1DE994005A3142 /* mergeTemplate@2x.png in Resources */,
 				C916102A1D1DE994005A3142 /* pullTemplate@2x.png in Resources */,
 				DDA8A65F17F9ECED00AD9808 /* mixed.png in Resources */,
@@ -1288,7 +1272,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C9B753671D651ECC005A53CC /* XTActivityViewController.swift in Sources */,
 				C3FA470E13D0F8E200AC4F9B /* main.m in Sources */,
 				C3FA471413D0F8E200AC4F9B /* XTDocument.m in Sources */,
 				31F1E87F13D3B51200F3B317 /* XTRepository+Commands.m in Sources */,
@@ -1320,9 +1303,7 @@
 				C9BAE61E1D303A8100A87F13 /* XTRemoteOptionsController.swift in Sources */,
 				C9328B121D77303200EFF7F7 /* XTFileMonitor.swift in Sources */,
 				89A6EA2814478DA40089B212 /* XTAppDelegate.m in Sources */,
-				89991CDD144E3FF400097A99 /* XTStatusView.m in Sources */,
 				C929D03B1D400B3B00D7DC52 /* XTRemote.swift in Sources */,
-				89794F8C1458CC9B00E38ACC /* XTOutputViewController.m in Sources */,
 				C91F34781D30656B005F9BDF /* XTServices.swift in Sources */,
 				DDDA447215B0EA4700DF407B /* XTRepository+Parsing.m in Sources */,
 				894C8DBD1CC12F3E001A4B80 /* XTPreviewController.m in Sources */,
@@ -1338,29 +1319,25 @@
 				C957B87C1D2DBBC00040F858 /* XTAccountsManager.swift in Sources */,
 				DD07B07816A5D2A80012AC19 /* XTSideBarOutlineView.m in Sources */,
 				DD07B08916B313A60012AC19 /* XTRefFormatter.m in Sources */,
+				C95355EA1D93470400AEEF49 /* XTTitleStatusView.swift in Sources */,
 				DDD4708116F3E7B000CA76FF /* XTPreviewItem.m in Sources */,
 				C9DAB5D01D4A4F0300586854 /* XTGitPrefsController.swift in Sources */,
 				89C927751D36A2180074F71A /* XTSubmodule.swift in Sources */,
 				899DB1A21CE5022400760270 /* XTCommitEntryController.swift in Sources */,
 				89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */,
 				C9E9A37D1D0B5706007BFABF /* XTWindowController.swift in Sources */,
+				C923D66C1D906FAA00C6B90B /* XTTitleBarAccessoryViewController.swift in Sources */,
 				DD96C939175ECE690003A30C /* XTFileViewController.m in Sources */,
-				895229661786F6F900EE514C /* FHTDelegate.m in Sources */,
 				C90FD5961D217D5B00A30570 /* XTFetchPanelController.swift in Sources */,
-				895229671786F6F900EE514C /* FHTItemView.m in Sources */,
 				C92E30FB1D4FF4F0001985F7 /* XTCommit.swift in Sources */,
 				C9328B141D776BC700EFF7F7 /* XTRepositoryWatcher.swift in Sources */,
-				895229681786F6F900EE514C /* FHTLCDStatusView.m in Sources */,
 				C9EB87241D01D93400C47D13 /* XTStash.swift in Sources */,
-				895229691786F6F900EE514C /* FHTToolbar.m in Sources */,
-				895229711786F7AB00EE514C /* XTToolbarDelegate.m in Sources */,
 				C96F65461D53A6CE001B2557 /* XTHistoryCellView.swift in Sources */,
 				DD3D94F318254442004AF532 /* XTFileListDataSourceBase.m in Sources */,
 				89D6FE6F17D2F89D00633798 /* XTCommitHeaderViewController.m in Sources */,
 				C954ABFD1D34455000302160 /* XTBranch.swift in Sources */,
 				C929D0601D42785B00D7DC52 /* XTTeamCityAPI.swift in Sources */,
 				DD858B1F17FFDCB900264F7D /* XTTextPreviewController.m in Sources */,
-				C9328B061D75E3F600EFF7F7 /* XTWritingToolbarItem.swift in Sources */,
 				89AC82431806769A00402955 /* XTWebViewController.m in Sources */,
 				89C927781D36A5890074F71A /* XTTag.swift in Sources */,
 			);
@@ -1411,14 +1388,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		89794F651452839500E38ACC /* XTStatusView.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				89794F661452839500E38ACC /* en */,
-			);
-			name = XTStatusView.xib;
-			sourceTree = "<group>";
-		};
 		C3FA470913D0F8E200AC4F9B /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (

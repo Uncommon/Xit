@@ -1,4 +1,5 @@
 #import "XTRepository.h"
+#import "XTRepository+Commands.h"
 #import "XTConstants.h"
 #import "Xit-Swift.h"
 #import <ObjectiveGit/ObjectiveGit.h>
@@ -12,6 +13,7 @@ NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
 NSString * const XTRepositoryChangedNotification = @"RepoChanged";
 NSString * const XTRepositoryRefsChangedNotification = @"RefsChanged";
 NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
+NSString * const XTRepositoryHeadChangedNotification = @"HeadChanged";
 
 
 @interface XTRepository ()
@@ -19,6 +21,12 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
 @property(readwrite) XTRepositoryWatcher *watcher;
 @property(readwrite) BOOL isShutDown;
 @property(readwrite) XTConfig *config;
+
+@end
+
+@interface XTRepository (CurrentBranch)
+
+- (NSString*)calculateCurrentBranch;
 
 @end
 
@@ -58,6 +66,20 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
     if (_gtRepo != nil) {
       self.watcher = [[XTRepositoryWatcher alloc] initWithRepository:self];
       self.config = [[XTConfig alloc] initWithRepository:self];
+      
+      [[NSNotificationCenter defaultCenter]
+          addObserverForName:XTRepositoryRefsChangedNotification
+                      object:self
+                       queue:nil
+                  usingBlock:^(NSNotification * _Nonnull note) {
+        NSString *newBranch = [self calculateCurrentBranch];
+        
+        if (![_cachedBranch isEqualToString:newBranch]) {
+          [self willChangeValueForKey:@"currentBranch"];
+          _cachedBranch = newBranch;
+          [self didChangeValueForKey:@"currentBranch"];
+        }
+      }];
     }
   }
 
@@ -67,6 +89,7 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
 - (void)dealloc
 {
   [self.watcher stop];
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (NSURL*)gitDirectoryURL
@@ -96,6 +119,20 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
   } else {
     block();
   }
+}
+
+// Make sure KVO notifications happen on the main thread
+- (void)updateIsWriting:(BOOL)writing
+{
+  if (writing == self.isWriting)
+    return;
+  
+  if ([NSThread isMainThread])
+    self.isWriting = writing;
+  else
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      self.isWriting = writing;
+    });
 }
 
 - (void)shutDown
@@ -131,7 +168,7 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
                                  userInfo:nil];
       return nil;
     }
-    self.isWriting = YES;
+    [self updateIsWriting:YES];
     NSLog(@"****command = git %@", [args componentsJoinedByString:@" "]);
     NSTask *task = [[NSTask alloc] init];
     [[NSNotificationCenter defaultCenter] postNotificationName:XTTaskStartedNotification object:self];
@@ -185,7 +222,7 @@ NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
       output = nil;
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:XTTaskEndedNotification object:self];
-    self.isWriting = NO;
+    [self updateIsWriting:NO];
     return output;
   }
 }

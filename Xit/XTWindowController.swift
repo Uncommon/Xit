@@ -5,8 +5,8 @@ class XTWindowController: NSWindowController, NSWindowDelegate
 {
   @IBOutlet var historyController: XTHistoryViewController!
   @IBOutlet var activity: NSProgressIndicator!
-  @IBOutlet var activityController: XTActivityViewController!
   weak var xtDocument: XTDocument?
+  var titleBarController: XTTitleBarAccessoryViewController? = nil
   var selectedCommitSHA: String?
   dynamic var selectedModel: XTFileChangesModel?
   {
@@ -36,14 +36,17 @@ class XTWindowController: NSWindowController, NSWindowDelegate
   override func windowDidLoad()
   {
     super.windowDidLoad()
-    window!.delegate = self
+    
+    let window = self.window!
+    
+    window.titleVisibility = .hidden
+    window.delegate = self
     // We could set the window's contentViewController, but then it would
     // retain the view controller, which is undesirable.
-    window!.contentView = historyController.view
-    window!.makeFirstResponder(historyController.historyTable)
-    window!.addTitlebarAccessoryViewController(activityController)
+    window.contentView = historyController.view
+    window.makeFirstResponder(historyController.historyTable)
     
-    let repo = xtDocument!.repository
+    let repo = xtDocument!.repository!
     
     NotificationCenter.default.addObserver(
         self,
@@ -55,16 +58,16 @@ class XTWindowController: NSWindowController, NSWindowDelegate
         selector: #selector(XTWindowController.taskEnded(_:)),
         name: NSNotification.Name.XTTaskEnded,
         object: repo)
+    NotificationCenter.default.addObserver(
+        forName: NSNotification.Name.XTRepositoryRefsChanged,
+        object: repo, queue: nil) {
+      (notification) in
+      self.updateBranchList()
+    }
+    repo.addObserver(self, forKeyPath: #keyPath(XTRepository.currentBranch),
+                     options: [], context: nil)
     historyController.windowDidLoad()
     historyController.setRepo(repo)
-  }
-  
-  func windowWillClose(_ notification: Notification)
-  {
-    guard let toolbarDelegate = window?.toolbar?.delegate as? XTToolbarDelegate
-    else { return }
-    
-    toolbarDelegate.finalizeItems()
   }
   
   deinit
@@ -73,14 +76,32 @@ class XTWindowController: NSWindowController, NSWindowDelegate
     currentOperation?.canceled = true
   }
   
+  override func observeValue(forKeyPath keyPath: String?,
+                             of object: Any?,
+                             change: [NSKeyValueChangeKey : Any]?,
+                             context: UnsafeMutableRawPointer?)
+  {
+    if let repo = object as? XTRepository,
+       keyPath == #keyPath(XTRepository.currentBranch) {
+      titleBarController?.selectedBranch = repo.currentBranch
+    }
+  }
+  
+  func updateBranchList()
+  {
+    let repo = xtDocument!.repository!
+    guard let branches = try? repo.localBranches()
+    else { return }
+    
+    self.titleBarController?.updateBranchList(branches.flatMap { $0.shortName })
+  }
+  
   func taskStarted(_ notification: Notification)
   {
-    activityController.activityStarted()
   }
   
   func taskEnded(_ notification: Notification)
   {
-    activityController.activityEnded()
   }
   
   @IBAction func refresh(_ sender: AnyObject)
@@ -91,6 +112,18 @@ class XTWindowController: NSWindowController, NSWindowDelegate
   @IBAction func showHideSidebar(_ sender: AnyObject)
   {
     historyController.toggleSideBar(sender)
+    titleBarController!.viewControls.setSelected(
+        !historyController.sideBarHidden(), forSegment: 0)
+  }
+  
+  @IBAction func showHideHistory(_ sender: AnyObject)
+  {
+    historyController.toggleHistory(sender)
+  }
+  
+  @IBAction func showHideDetails(_ sender: AnyObject)
+  {
+    historyController.toggleDetails(sender)
   }
   
   @IBAction func verticalLayout(_ sender: AnyObject)
@@ -142,15 +175,11 @@ class XTWindowController: NSWindowController, NSWindowDelegate
     return nil
   }
   
-  @IBAction func networkSegmentClicked(_ sender: AnyObject)
+  @IBAction func viewSegmentClicked(_ sender: AnyObject)
   {
     switch (sender as! NSSegmentedControl).selectedSegment {
       case 0:
-        fetch(sender)
-      case 1:
-        pull(sender)
-      case 2:
-        push(sender)
+        showHideSidebar(sender)
       default:
         break
     }
@@ -224,5 +253,63 @@ class XTWindowController: NSWindowController, NSWindowDelegate
         result = false
     }
     return result
+  }
+}
+
+extension XTWindowController: XTTitleBarDelegate
+{
+  func branchSelecetd(_ branch: String)
+  {
+    try? xtDocument!.repository!.checkout(branch)
+  }
+  
+  var viewStates: (sidebar: Bool, history: Bool, details: Bool)
+  {
+    return (!historyController.sideBarHidden(),
+            !historyController.historyHidden(),
+            !historyController.detailsHidden())
+  }
+  
+  func fetchSelecetd() { fetch(self) }
+  func pushSelecetd() { push(self) }
+  func pullSelecetd() { pull(self) }
+  func showHideSidebar() { showHideSidebar(self) }
+  func showHideHistory() { showHideHistory(self) }
+  func showHideDetails() { showHideDetails(self) }
+}
+
+extension XTWindowController: NSToolbarDelegate
+{
+  func toolbarWillAddItem(_ notification: Notification)
+  {
+    guard let item = notification.userInfo?["item"] as? NSToolbarItem,
+          item.itemIdentifier == "com.uncommonplace.xit.titlebar",
+          let viewController = XTTitleBarAccessoryViewController(
+              nibName: "TitleBar", bundle: nil)
+    else { return }
+    
+    let repository = xtDocument!.repository!
+    let inverseBindingOptions =
+        [NSValueTransformerNameBindingOption:
+         NSValueTransformerName.negateBooleanTransformerName]
+
+    titleBarController = viewController
+    item.view = viewController.view
+
+    viewController.delegate = self
+    viewController.titleLabel.bind("value",
+                                   to: window! as NSWindow,
+                                   withKeyPath: "title",
+                                   options: nil)
+    viewController.proxyIcon.bind("hidden",
+                                  to: repository,
+                                  withKeyPath: "isWriting",
+                                  options: nil)
+    viewController.spinner.bind("hidden",
+                                to: repository,
+                                withKeyPath: "isWriting",
+                                options: inverseBindingOptions)
+    updateBranchList()
+    viewController.selectedBranch = xtDocument!.repository!.currentBranch
   }
 }

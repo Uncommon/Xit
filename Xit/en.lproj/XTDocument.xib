@@ -1,13 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11201"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="XTWindowController" customModule="Xit" customModuleProvider="target">
             <connections>
-                <outlet property="activityController" destination="Ib1-UC-8LJ" id="1Nb-sh-KPf"/>
                 <outlet property="historyController" destination="100102" id="GPc-Qf-MhO"/>
                 <outlet property="window" destination="5" id="18"/>
             </connections>
@@ -23,68 +22,18 @@
                 <rect key="frame" x="0.0" y="0.0" width="988" height="660"/>
                 <autoresizingMask key="autoresizingMask"/>
             </view>
-            <toolbar key="toolbar" implicitIdentifier="40D3E1FE-6996-449E-9FB3-B8BE88A5CCCF" allowsUserCustomization="NO" displayMode="iconAndLabel" sizeMode="regular" id="100060" customClass="FHTToolbar">
+            <toolbar key="toolbar" implicitIdentifier="CF3DA724-D8D3-467F-8B73-D2279CF2D1B0" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="kHt-EX-a5o">
                 <allowedToolbarItems>
-                    <toolbarItem implicitItemIdentifier="5D398A8B-1FD3-442F-A37D-E7F625BA8AC3" label="Fetch   Pull   Push" paletteLabel="Fetch   Pull   Push" id="Hth-4n-I6q" customClass="XTWritingToolbarItem" customModule="Xit" customModuleProvider="target">
-                        <nil key="toolTip"/>
-                        <size key="minSize" width="100" height="25"/>
-                        <size key="maxSize" width="100" height="25"/>
-                        <segmentedControl key="view" verticalHuggingPriority="750" id="91t-lw-h2m">
-                            <rect key="frame" x="1" y="14" width="100" height="25"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="SW6-i2-l4s">
-                                <font key="font" metaFont="system"/>
-                                <segments>
-                                    <segment image="fetchTemplate" imageScaling="none" width="32"/>
-                                    <segment image="pullTemplate" width="32" tag="1"/>
-                                    <segment image="pushTemplate" width="32">
-                                        <nil key="label"/>
-                                    </segment>
-                                </segments>
-                            </segmentedCell>
-                            <connections>
-                                <action selector="networkSegmentClicked:" target="-2" id="RaZ-Ea-jO8"/>
-                            </connections>
-                        </segmentedControl>
+                    <toolbarItem implicitItemIdentifier="301E1482-91EB-4703-81FA-D4B4DC1A7184" explicitItemIdentifier="com.uncommonplace.xit.titlebar" label="Toolbar Item" paletteLabel="Toolbar Item" tag="-1" id="zNj-Uq-F2U">
+                        <size key="minSize" width="100" height="32"/>
+                        <size key="maxSize" width="10000" height="32"/>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="100117"/>
-                    <toolbarItem implicitItemIdentifier="BFCC741B-D044-4F0A-876B-58F4FBF316F3" explicitItemIdentifier="xit.status" label="Status" paletteLabel="Status" tag="-1" autovalidates="NO" id="100157">
-                        <nil key="toolTip"/>
-                        <size key="minSize" width="163" height="48"/>
-                        <size key="maxSize" width="230" height="48"/>
-                        <customView key="view" id="100156">
-                            <rect key="frame" x="0.0" y="14" width="163" height="48"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        </customView>
-                    </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="788BFBF4-B947-4490-BA90-A8EFA5C84EC5" label="Refresh" paletteLabel="Refresh" image="NSRefreshTemplate" id="100152" customClass="XTWritingToolbarItem" customModule="Xit" customModuleProvider="target">
-                        <nil key="toolTip"/>
-                        <size key="minSize" width="32" height="25"/>
-                        <size key="maxSize" width="32" height="25"/>
-                        <button key="view" verticalHuggingPriority="750" id="100150">
-                            <rect key="frame" x="8" y="14" width="32" height="25"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="NSRefreshTemplate" imagePosition="only" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="100151">
-                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                <font key="font" metaFont="system"/>
-                            </buttonCell>
-                        </button>
-                        <connections>
-                            <action selector="refresh:" target="-2" id="oao-vW-b4e"/>
-                        </connections>
-                    </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="72Q-wc-QQ6"/>
                 </allowedToolbarItems>
                 <defaultToolbarItems>
-                    <toolbarItem reference="Hth-4n-I6q"/>
-                    <toolbarItem reference="100117"/>
-                    <toolbarItem reference="100157"/>
-                    <toolbarItem reference="100117"/>
-                    <toolbarItem reference="72Q-wc-QQ6"/>
-                    <toolbarItem reference="100152"/>
+                    <toolbarItem reference="zNj-Uq-F2U"/>
                 </defaultToolbarItems>
                 <connections>
-                    <outlet property="delegate" destination="100154" id="100155"/>
+                    <outlet property="delegate" destination="-2" id="vIc-2c-h0c"/>
                 </connections>
             </toolbar>
             <connections>
@@ -94,33 +43,5 @@
         </window>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <viewController nibName="XTHistoryViewController" id="100102" userLabel="History View Controller" customClass="XTHistoryViewController"/>
-        <customObject id="100154" customClass="XTToolbarDelegate">
-            <connections>
-                <outlet property="windowController" destination="-2" id="rNy-9a-VqG"/>
-            </connections>
-        </customObject>
-        <customObject id="Ib1-UC-8LJ" customClass="XTActivityViewController" customModule="Xit" customModuleProvider="target">
-            <connections>
-                <outlet property="spinner" destination="1uV-vf-IPh" id="Sz1-Mk-zV8"/>
-                <outlet property="view" destination="WHy-2u-kon" id="gxe-LD-uca"/>
-            </connections>
-        </customObject>
-        <customView id="WHy-2u-kon">
-            <rect key="frame" x="0.0" y="0.0" width="24" height="36"/>
-            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" heightSizable="YES"/>
-            <subviews>
-                <progressIndicator hidden="YES" wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" id="1uV-vf-IPh">
-                    <rect key="frame" x="0.0" y="12" width="16" height="16"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                </progressIndicator>
-            </subviews>
-            <point key="canvasLocation" x="977" y="347"/>
-        </customView>
     </objects>
-    <resources>
-        <image name="NSRefreshTemplate" width="11" height="15"/>
-        <image name="fetchTemplate" width="8" height="8"/>
-        <image name="pullTemplate" width="8" height="8"/>
-        <image name="pushTemplate" width="8" height="8"/>
-    </resources>
 </document>

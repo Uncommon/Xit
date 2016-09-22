@@ -67,22 +67,20 @@ class XTFetchController: XTPasswordOpController
   /// Fetch progress callback
   func shouldStop(progress: git_transfer_progress) -> Bool
   {
-    guard let repository = repository
-    else { return true }
-    
     if canceled {
       return true
     }
     
+    /*
     let progressValue =
         progress.received_objects == progress.total_objects
             ? -1.0
             : Float(progress.total_objects) /
               Float(progress.received_objects)
+    */
     
-    XTStatusView.update(status: "Fetching",
-                        progress: progressValue,
-                        repository: repository)
+    // update progress
+    
     return false
   }
   
@@ -93,9 +91,6 @@ class XTFetchController: XTPasswordOpController
     guard let repository = repository,
           let remote = try? repository.remote(remoteName)
     else { return }
-    
-    XTStatusView.update(
-        status: "Fetching...", progress: 0.0, repository: repository)
     
     let repo = repository  // For use in the block without being tied to self
     

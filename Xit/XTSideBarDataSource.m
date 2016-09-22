@@ -55,6 +55,14 @@ NSString * const XTStagingSHA = @"";
            selector:@selector(refsChanged:)
                name:XTRepositoryRefsChangedNotification
              object:newRepo];
+    [[NSNotificationCenter defaultCenter]
+        addObserverForName:XTRepositoryHeadChangedNotification
+                    object:newRepo
+                     queue:[NSOperationQueue mainQueue]
+                usingBlock:^(NSNotification * _Nonnull note) {
+      [self.outline reloadItem:self.roots[XTGroupIndexBranches]
+                reloadChildren:YES];
+    }];
     [self reload];
   }
 }
