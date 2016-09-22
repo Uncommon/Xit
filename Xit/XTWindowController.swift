@@ -116,6 +116,16 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
         !historyController.sideBarHidden(), forSegment: 0)
   }
   
+  @IBAction func showHideHistory(_ sender: AnyObject)
+  {
+    
+  }
+  
+  @IBAction func showHideDetails(_ sender: AnyObject)
+  {
+    
+  }
+  
   @IBAction func verticalLayout(_ sender: AnyObject)
   {
     self.historyController.mainSplitView.isVertical = true
@@ -126,14 +136,6 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
   {
     self.historyController.mainSplitView.isVertical = false
     self.historyController.mainSplitView.adjustSubviews()
-  }
-  
-  @IBAction func branchPopupSelected(_: AnyObject)
-  {
-    guard let selectedBranch = titleBarController?.selectedBranch
-    else { return }
-  
-    try? xtDocument!.repository!.checkout(selectedBranch)
   }
   
   @IBAction func newTag(_: AnyObject) {}
@@ -171,20 +173,6 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
       NSLog("Can't start new operation, already have \(currentOperation)")
     }
     return nil
-  }
-  
-  @IBAction func networkSegmentClicked(_ sender: AnyObject)
-  {
-    switch (sender as! NSSegmentedControl).selectedSegment {
-      case 0:
-        fetch(sender)
-      case 1:
-        pull(sender)
-      case 2:
-        push(sender)
-      default:
-        break
-    }
   }
   
   @IBAction func viewSegmentClicked(_ sender: AnyObject)
@@ -268,6 +256,21 @@ class XTWindowController: NSWindowController, NSWindowDelegate {
   }
 }
 
+extension XTWindowController: XTTitleBarDelegate
+{
+  func branchSelecetd(_ branch: String)
+  {
+    try? xtDocument!.repository!.checkout(branch)
+  }
+  
+  func fetchSelecetd() { fetch(self) }
+  func pushSelecetd() { push(self) }
+  func pullSelecetd() { pull(self) }
+  func showHideSidebar() { showHideSidebar(self) }
+  func showHideHistory() { showHideHistory(self) }
+  func showHideDetails() { showHideDetails(self) }
+}
+
 extension XTWindowController: NSToolbarDelegate
 {
   func toolbarWillAddItem(_ notification: Notification)
@@ -286,12 +289,7 @@ extension XTWindowController: NSToolbarDelegate
     titleBarController = viewController
     item.view = viewController.view
 
-    viewController.remoteControls.target = self
-    viewController.remoteControls.action =
-        #selector(self.networkSegmentClicked(_:))
-    viewController.viewControls.target = self
-    viewController.viewControls.action =
-        #selector(self.viewSegmentClicked(_:))
+    viewController.delegate = self
     viewController.titleLabel.bind("value",
                                    to: window! as NSWindow,
                                    withKeyPath: "title",
@@ -304,8 +302,6 @@ extension XTWindowController: NSToolbarDelegate
                                 to: repository,
                                 withKeyPath: "isWriting",
                                 options: inverseBindingOptions)
-    viewController.branchPopup.target = self
-    viewController.branchPopup.action = #selector(self.branchPopupSelected(_:))
     updateBranchList()
     viewController.selectedBranch = xtDocument!.repository!.currentBranch
   }

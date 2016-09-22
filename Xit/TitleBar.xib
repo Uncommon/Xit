@@ -39,6 +39,9 @@
                             </segment>
                         </segments>
                     </segmentedCell>
+                    <connections>
+                        <action selector="remoteAction:" target="-2" id="aru-FK-3m6"/>
+                    </connections>
                 </segmentedControl>
                 <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gzN-mQ-RA8">
                     <rect key="frame" x="694" y="8" width="96" height="25"/>
@@ -55,6 +58,9 @@
                             </segment>
                         </segments>
                     </segmentedCell>
+                    <connections>
+                        <action selector="viewAction:" target="-2" id="Kca-PO-31K"/>
+                    </connections>
                 </segmentedControl>
                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="DfW-Hf-FKe" customClass="XTTitleStatusView" customModule="Xit" customModuleProvider="target">
                     <rect key="frame" x="296" y="9" width="199" height="25"/>
@@ -112,6 +118,9 @@
                                     </items>
                                 </menu>
                             </popUpButtonCell>
+                            <connections>
+                                <action selector="branchSelected:" target="-2" id="LsH-oA-lgj"/>
+                            </connections>
                         </popUpButton>
                     </subviews>
                     <constraints>
