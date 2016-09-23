@@ -570,15 +570,6 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   return YES;
 }
 
-- (void)splitViewDidResizeSubviews:(NSNotification*)note
-{
-  NSRect pathFrame = self.previewPath.frame;
-  const NSRect tabFrame = self.previewSelector.frame;
-  
-  pathFrame.size.width = tabFrame.origin.x - pathFrame.origin.x - 8;
-  [self.previewPath setFrameSize:pathFrame.size];
-}
-
 @end
 
 
