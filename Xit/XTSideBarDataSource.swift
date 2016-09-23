@@ -177,11 +177,29 @@ extension XTSideBarDataSource
     return nil
   }
   
+  func branchHasLocalTrackingBranch(_ branch: String) -> Bool
+  {
+    guard let localBranches = try? repo!.localBranches()
+    else { return false }
+    
+    for localBranch in localBranches {
+      if let trackingBranch = localBranch.trackingBranch,
+        trackingBranch.shortName == branch {
+        return true
+      }
+    }
+    return false
+  }
+  
   func statusImage(_ item: XTSideBarItem) -> NSImage?
   {
     guard let remoteName = remoteName(forBranchItem: item),
           let (_, buildTypes) = matchTeamCity(remoteName)
     else { return nil }
+    
+    if (item is XTRemoteBranchItem) && !branchHasLocalTrackingBranch(item.title) {
+      return nil
+    }
     
     let branchName = (item.title as NSString).lastPathComponent
     var overallSuccess: Bool?
@@ -203,11 +221,11 @@ extension XTSideBarDataSource
   }
 }
 
+// MARK: NSOutlineViewDataSource
 extension XTSideBarDataSource: NSOutlineViewDataSource
 {
-  // MARK: NSOutlineViewDataSource
-  
-  public func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
+  public func outlineView(_ outlineView: NSOutlineView,
+                          numberOfChildrenOfItem item: Any?) -> Int {
     if item == nil {
       return roots.count
     }
@@ -229,10 +247,9 @@ extension XTSideBarDataSource: NSOutlineViewDataSource
   }
 }
 
+// MARK: NSOutlineViewDelegate
 extension XTSideBarDataSource: NSOutlineViewDelegate
 {
-  // MARK: NSOutlineViewDelegate
-
   public func outlineViewSelectionDidChange(_ notification: Notification)
   {
     guard let item = outline!.item(atRow: outline!.selectedRow) as? XTSideBarItem,
@@ -242,7 +259,6 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
     
     controller.selectedModel = model
   }
-
 
   public func outlineView(_ outlineView: NSOutlineView,
                           isGroupItem item: Any) -> Bool
