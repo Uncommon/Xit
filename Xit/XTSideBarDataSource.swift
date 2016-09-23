@@ -24,6 +24,13 @@ extension XTSideBarDataSource
       
       outline?.selectRowIndexes(IndexSet(integer: row),
                                 byExtendingSelection: false)
+      
+      if let controller = outline!.window?.windowController
+                          as? XTWindowController,
+         let newModel = item.model,
+         controller.selectedModel?.shaToSelect != newModel.shaToSelect {
+        controller.selectedModel = item.model
+      }
     }
   }
   

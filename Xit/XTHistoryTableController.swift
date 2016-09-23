@@ -137,7 +137,7 @@ public class XTHistoryTableController: NSViewController
     tableView.selectRowIndexes(IndexSet(integer: row),
                                byExtendingSelection: false)
     if view.window?.firstResponder != tableView {
-      tableView.scrollRowToVisible(row)
+      tableView.scrollRowToCenter(row)
     }
   }
   

@@ -89,6 +89,20 @@ extension NSTableView
   {
     return IndexSet(integersIn: rows(in: visibleRect).toRange() ?? 0..<0)
   }
+  
+  func scrollRowToCenter(_ row: Int)
+  {
+    guard let viewRect = superview?.frame
+    else { return }
+    let rowRect = rect(ofRow: row)
+    var scrollOrigin = rowRect.origin
+    
+    scrollOrigin.y += (rowRect.size.height - viewRect.size.height)/2
+    if scrollOrigin.y < 0 {
+      scrollOrigin.y = 0
+    }
+    superview?.animator().setBoundsOrigin(scrollOrigin)
+  }
 }
 
 // Swift 3 took away ++, but it still can be useful.
