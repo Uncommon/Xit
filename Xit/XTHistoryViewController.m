@@ -53,11 +53,6 @@
       initWithNibName:@"XTFileViewController" bundle:nil];
   [lowerPane addSubview:_fileViewController.view];
   [_fileViewController.view setFrameSize:lowerPane.frame.size];
-  [[NSNotificationCenter defaultCenter]
-      addObserver:_fileViewController
-         selector:@selector(commitSelected:)
-             name:NSTableViewSelectionDidChangeNotification
-           object:_historyTable];
 
   // Remove intercell spacing so the history lines will connect
   NSSize cellSpacing = _historyTable.intercellSpacing;

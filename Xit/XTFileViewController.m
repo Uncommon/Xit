@@ -170,6 +170,8 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
     
     [_fileListOutline setNeedsDisplayInRect:displayRect];
   }
+  _headerController.commitSHA = newModel.shaToSelect;
+  [self refreshPreview];
 }
 
 - (IBAction)changeFileListView:(id)sender
@@ -395,15 +397,6 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
       }
   if (doReload)
     [self.fileListDataSource reload];
-}
-
-- (void)commitSelected:(NSNotification*)note
-{
-  XTWindowController *controller = self.view.window.windowController;
-
-  _headerController.commitSHA = controller.selectedModel.shaToSelect;
-  [self showUnstagedColumn:controller.selectedModel.hasUnstaged];
-  [self refreshPreview];
 }
 
 - (void)fileSelectionChanged:(NSNotification*)note
