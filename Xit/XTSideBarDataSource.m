@@ -84,6 +84,8 @@ NSString * const XTStagingSHA = @"";
       [self.outline reloadData];
       // Empty groups get automatically collapsed, so counter that.
       [self.outline expandItem:nil expandChildren:YES];
+      if ([self.outline selectedRow] == -1)
+        [self selectCurrentBranch];
     });
   }];
 }

@@ -5,6 +5,28 @@ extension XTSideBarDataSource
 {
   @nonobjc static let kReloadInterval: TimeInterval = 1
   
+  var selectedItem: XTSideBarItem?
+  {
+    get
+    {
+      guard let row = outline?.selectedRow,
+            row >= 0
+      else { return nil }
+      
+      return outline?.item(atRow: row) as? XTSideBarItem
+    }
+    set
+    {
+      guard let item = newValue,
+            let row = outline?.row(forItem: item),
+            row >= 0
+      else { return }
+      
+      outline?.selectRowIndexes(IndexSet(integer: row),
+                                byExtendingSelection: false)
+    }
+  }
+  
   open override func awakeFromNib()
   {
     outline!.target = self
@@ -16,6 +38,25 @@ extension XTSideBarDataSource
           selector: #selector(XTSideBarDataSource.buildStatusTimerFired(_:)),
           userInfo: nil, repeats: true)
     }
+  }
+  
+  func selectCurrentBranch()
+  {
+    _ = selectCurrentBranch(in: roots[XTGroupIndex.branches.rawValue])
+  }
+  
+  func selectCurrentBranch(in parent: XTSideBarItem) -> Bool
+  {
+    for item in parent.children {
+      if item.current {
+        self.selectedItem = item
+        return true
+      }
+      if selectCurrentBranch(in: item) {
+        return true
+      }
+    }
+    return false
   }
   
   func stopTimers()
@@ -47,8 +88,13 @@ extension XTSideBarDataSource
   
   func reloadTimerFired(_ timer: Timer)
   {
-    DispatchQueue.main.async { 
+    DispatchQueue.main.async {
+      let savedSelection = self.selectedItem
+      
       self.outline!.reloadData()
+      if savedSelection != nil {
+        self.selectedItem = savedSelection
+      }
     }
     reloadTimer = nil
   }
