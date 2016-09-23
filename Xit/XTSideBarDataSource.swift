@@ -184,7 +184,7 @@ extension XTSideBarDataSource
     
     for localBranch in localBranches {
       if let trackingBranch = localBranch.trackingBranch,
-        trackingBranch.shortName == branch {
+         trackingBranch.shortName == branch {
         return true
       }
     }

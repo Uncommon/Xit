@@ -72,10 +72,12 @@ extension String
     else { return nil }
     
     let start = characters.index(startIndex, offsetBy: "refs/".characters.count)
-    guard let slashRange = range(of: "/", options: [], range: start..<endIndex, locale: nil)
+    guard let slashRange = range(of: "/", options: [], range: start..<endIndex,
+                                 locale: nil)
     else { return nil }
+    let slashIndex = index(slashRange.lowerBound, offsetBy: 1)
     
-    return (substring(to: characters.index(before: slashRange.lowerBound)),
+    return (substring(to: slashIndex),
             substring(from: slashRange.upperBound))
   }
 }
