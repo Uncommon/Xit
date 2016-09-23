@@ -310,7 +310,9 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
           let controller = outline!.window?.windowController as? XTWindowController
     else { return }
     
-    controller.selectedModel = model
+    if controller.selectedModel?.shaToSelect != model.shaToSelect {
+      controller.selectedModel = model
+    }
   }
 
   public func outlineView(_ outlineView: NSOutlineView,

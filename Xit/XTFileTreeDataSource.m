@@ -23,6 +23,9 @@
     dispatch_async(dispatch_get_main_queue(), ^{
       _root = newRoot;
       [self.outlineView reloadData];
+      if (self.outlineView.selectedRow == -1)
+        [self.outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:0]
+                      byExtendingSelection:NO];
     });
   }];
 }

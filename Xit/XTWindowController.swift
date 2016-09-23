@@ -89,8 +89,8 @@ class XTWindowController: NSWindowController, NSWindowDelegate
   
   func updateBranchList()
   {
-    let repo = xtDocument!.repository!
-    guard let branches = try? repo.localBranches()
+    guard let repo = xtDocument?.repository,
+          let branches = try? repo.localBranches()
     else { return }
     
     self.titleBarController?.updateBranchList(branches.flatMap { $0.shortName })

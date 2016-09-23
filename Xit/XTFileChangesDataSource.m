@@ -94,6 +94,9 @@
         [self.outlineView reloadDataForRowIndexes:newChangeIndexes
                                     columnIndexes:allColumnIndexes];
       }
+      if (self.outlineView.selectedRow == -1)
+        [self.outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:0]
+                      byExtendingSelection:NO];
     });
   }];
 }
