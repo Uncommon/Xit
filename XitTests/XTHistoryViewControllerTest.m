@@ -6,7 +6,6 @@
 #import "XTRepository.h"
 #import "XTSideBarDataSource.h"
 #import "XTSideBarOutlineView.h"
-#import "XTStatusView.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
 #import <OCMock/OCMock.h>
@@ -15,8 +14,6 @@
 
 @interface XTHistoryViewControllerTest : XTTest
 
-@property NSDictionary *statusData;
-
 @end
 
 @interface XTHistoryViewControllerTestNoRepo : XCTestCase
@@ -24,21 +21,6 @@
 @end
 
 @implementation XTHistoryViewControllerTest
-
-@synthesize statusData;
-
-- (void)setUp
-{
-  [super setUp];
-  self.statusData = nil;
-  // Don't let change notifications cause unexpected calls.
-}
-
-- (void)tearDown
-{
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
-  [super tearDown];
-}
 
 - (void)testCheckoutBranch
 {
@@ -270,11 +252,6 @@
   XCTAssertEqualObjects([item title], @"Merge");
 }
 
-- (void)statusUpdated:(NSNotification *)note
-{
-  self.statusData = note.userInfo;
-}
-
 - (void)testMergeSuccess
 {
   NSString *file2Name = @"file2.txt";
@@ -292,18 +269,11 @@
       [[XTLocalBranchItem alloc] initWithTitle:@"master"];
   NSInteger row = 1;
 
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(statusUpdated:)
-                                               name:XTStatusNotification
-                                             object:self.repository];
-
   [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
   [[[mockSidebar expect] andReturn:masterItem] itemAtRow:row];
   [controller mergeBranch:nil];
   WaitForQueue(dispatch_get_main_queue());
-  XCTAssertEqualObjects([self.statusData valueForKey:XTStatusTextKey],
-                       @"Merged master into task");
 
   NSString *file2Path = [self.repoPath stringByAppendingPathComponent:file2Name];
 
@@ -341,18 +311,11 @@
       [[XTLocalBranchItem alloc] initWithTitle:@"task"];
   NSInteger row = 1;
 
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(statusUpdated:)
-                                               name:XTStatusNotification
-                                             object:self.repository];
-
   [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
   [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
   [[[mockSidebar expect] andReturn:masterItem] itemAtRow:row];
   [controller mergeBranch:nil];
   WaitForQueue(dispatch_get_main_queue());
-  XCTAssertEqualObjects([self.statusData valueForKey:XTStatusTextKey],
-                       @"Merge failed");
 }
 
 @end
