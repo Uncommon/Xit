@@ -27,14 +27,19 @@
        originalSelectedRange:(NSRange)origSelRange
             errorDescription:(NSString **)error
 {
+  return [[self class] isValidRefString:*partialStringPtr];
+}
+
++ (BOOL)isValidRefString:(NSString*)ref
+{
   // The rules, according to git help check-ref-format:
 
   // They can include slash / for hierarchical (directory) grouping, but no
   // slash-separated component can begin with a dot . or end with the
   // sequence .lock.
-  if (([*partialStringPtr rangeOfString:@"/."].location != NSNotFound) ||
-      ([*partialStringPtr rangeOfString:@".lock/"].location != NSNotFound) ||
-      [*partialStringPtr hasPrefix:@".lock"])
+  if (([ref rangeOfString:@"/."].location != NSNotFound) ||
+      ([ref rangeOfString:@".lock/"].location != NSNotFound) ||
+      [ref hasPrefix:@".lock"])
     return NO;
 
   // They must contain at least one /. This enforces the presence of a
@@ -44,7 +49,7 @@
   // (We're effectively doing allow-onelevel here)
 
   // They cannot have two consecutive dots .. anywhere.
-  if ([*partialStringPtr rangeOfString:@".."].location != NSNotFound)
+  if ([ref rangeOfString:@".."].location != NSNotFound)
     return NO;
 
   // They cannot have ASCII control characters (i.e. bytes whose values are
@@ -55,37 +60,35 @@
 
   [controlEtc formUnionWithCharacterSet:
       [NSCharacterSet characterSetWithCharactersInString:@" ~^:"]];
-  if ([*partialStringPtr rangeOfCharacterFromSet:controlEtc].location !=
+  if ([ref rangeOfCharacterFromSet:controlEtc].location !=
       NSNotFound)
     return NO;
 
   // They cannot have question-mark ?, asterisk *, or open bracket [
-  // anywhere. See the --refspec-pattern option below for an exception to
-  // this rule.
+  // anywhere.
   NSCharacterSet *qab =
       [NSCharacterSet characterSetWithCharactersInString:@"?*["];
 
-  if ([*partialStringPtr rangeOfCharacterFromSet:qab].location != NSNotFound)
+  if ([ref rangeOfCharacterFromSet:qab].location != NSNotFound)
     return NO;
 
   // They cannot begin or end with a slash / or contain multiple consecutive
-  // slashes (see the --normalize option below for an exception to this
-  // rule)
-  if ([*partialStringPtr hasPrefix:@"/"] ||
-      [*partialStringPtr hasSuffix:@"/"] ||
-      ([*partialStringPtr rangeOfString:@"//"].location != NSNotFound))
+  // slashes
+  if ([ref hasPrefix:@"/"] ||
+      [ref hasSuffix:@"/"] ||
+      ([ref rangeOfString:@"//"].location != NSNotFound))
     return NO;
 
-  // They cannot end with a dot ..
-  if ([*partialStringPtr hasSuffix:@"."])
+  // They cannot end with a dot ".".
+  if ([ref hasSuffix:@"."])
     return NO;
 
-  // They cannot contain a sequence @{.
-  if ([*partialStringPtr rangeOfString:@"@{"].location != NSNotFound)
+  // They cannot contain a sequence "@{".
+  if ([ref rangeOfString:@"@{"].location != NSNotFound)
     return NO;
   //
-  // They cannot contain a \.
-  if ([*partialStringPtr rangeOfString:@"\\"].location != NSNotFound)
+  // They cannot contain a "\".
+  if ([ref rangeOfString:@"\\"].location != NSNotFound)
     return NO;
 
   return YES;

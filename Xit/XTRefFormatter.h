@@ -5,4 +5,6 @@
  */
 @interface XTRefFormatter : NSFormatter
 
++ (BOOL)isValidRefString:(NSString*)ref;
+
 @end
