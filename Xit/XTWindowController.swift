@@ -64,10 +64,13 @@ class XTWindowController: NSWindowController, NSWindowDelegate
       (notification) in
       self.updateBranchList()
     }
+    window.addObserver(self, forKeyPath: #keyPath(NSWindow.title),
+                       options: [], context: nil)
     repo.addObserver(self, forKeyPath: #keyPath(XTRepository.currentBranch),
                      options: [], context: nil)
     historyController.windowDidLoad()
     historyController.setRepo(repo)
+    updateMiniwindowTitle()
   }
   
   deinit
@@ -81,9 +84,32 @@ class XTWindowController: NSWindowController, NSWindowDelegate
                              change: [NSKeyValueChangeKey : Any]?,
                              context: UnsafeMutableRawPointer?)
   {
-    if let repo = object as? XTRepository,
-       keyPath == #keyPath(XTRepository.currentBranch) {
-      titleBarController?.selectedBranch = repo.currentBranch
+    switch object {
+      case let repo as XTRepository:
+        if keyPath == #keyPath(XTRepository.currentBranch) {
+          titleBarController?.selectedBranch = repo.currentBranch
+          updateMiniwindowTitle()
+        }
+      case _ as NSWindow:
+        if keyPath == #keyPath(NSWindow.title) {
+          updateMiniwindowTitle()
+        }
+      default:
+        break
+    }
+  }
+  
+  func updateMiniwindowTitle()
+  {
+    guard let window = self.window,
+          let repo = xtDocument?.repository
+    else { return }
+  
+    if let currentBranch = repo.currentBranch {
+      window.miniwindowTitle = "\(window.title) - \(currentBranch)"
+    }
+    else {
+      window.miniwindowTitle = window.title
     }
   }
   
