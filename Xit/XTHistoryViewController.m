@@ -210,7 +210,14 @@
 
 - (IBAction)renameBranch:(id)sender
 {
-  [self editSelectedSidebarRow];
+  XTSideBarItem *selectedItem = (_sidebarOutline.contextMenuRow == -1)
+      ? _sideBarDS.selectedItem
+      : [_sidebarOutline itemAtRow:_sidebarOutline.contextMenuRow];
+  NSString *branchName = selectedItem.title;
+
+  if (branchName != nil)
+    [(XTWindowController*)self.view.window.windowController
+        startRenameBranch:branchName];
 }
 
 - (IBAction)mergeBranch:(id)sender

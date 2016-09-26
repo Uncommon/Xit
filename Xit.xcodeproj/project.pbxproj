@@ -138,6 +138,9 @@
 		C9BAE60A1D2FFA8B00A87F13 /* XTConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE6091D2FFA8B00A87F13 /* XTConfig.swift */; };
 		C9BAE6141D3039C500A87F13 /* XTOperationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE6131D3039C500A87F13 /* XTOperationController.swift */; };
 		C9BAE61E1D303A8100A87F13 /* XTRemoteOptionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE61D1D303A8100A87F13 /* XTRemoteOptionsController.swift */; };
+		C9BDF4C11D99A70F0034841F /* XTRenameBranchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BDF4C01D99A70F0034841F /* XTRenameBranchController.swift */; };
+		C9BDF4D01D99A7660034841F /* XTRenameBranchPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BDF4CE1D99A7660034841F /* XTRenameBranchPanelController.swift */; };
+		C9BDF4D11D99A7660034841F /* XTRenameBranchPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9BDF4CF1D99A7660034841F /* XTRenameBranchPanelController.xib */; };
 		C9C7730C1D26EE1C00329493 /* XTPrefsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C7730A1D26EE1C00329493 /* XTPrefsWindowController.swift */; };
 		C9D74CBD1D92E62200C5626E /* viewCommitTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D74CB71D92E62200C5626E /* viewCommitTemplate.png */; };
 		C9D74CBE1D92E62200C5626E /* viewCommitTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D74CB81D92E62200C5626E /* viewCommitTemplate@2x.png */; };
@@ -467,6 +470,9 @@
 		C9BAE6091D2FFA8B00A87F13 /* XTConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTConfig.swift; sourceTree = "<group>"; };
 		C9BAE6131D3039C500A87F13 /* XTOperationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTOperationController.swift; sourceTree = "<group>"; };
 		C9BAE61D1D303A8100A87F13 /* XTRemoteOptionsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRemoteOptionsController.swift; sourceTree = "<group>"; };
+		C9BDF4C01D99A70F0034841F /* XTRenameBranchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRenameBranchController.swift; sourceTree = "<group>"; };
+		C9BDF4CE1D99A7660034841F /* XTRenameBranchPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRenameBranchPanelController.swift; sourceTree = "<group>"; };
+		C9BDF4CF1D99A7660034841F /* XTRenameBranchPanelController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTRenameBranchPanelController.xib; sourceTree = "<group>"; };
 		C9C7730A1D26EE1C00329493 /* XTPrefsWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPrefsWindowController.swift; sourceTree = "<group>"; };
 		C9D74CB71D92E62200C5626E /* viewCommitTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = viewCommitTemplate.png; sourceTree = "<group>"; };
 		C9D74CB81D92E62200C5626E /* viewCommitTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "viewCommitTemplate@2x.png"; sourceTree = "<group>"; };
@@ -862,6 +868,9 @@
 				C9BAE61D1D303A8100A87F13 /* XTRemoteOptionsController.swift */,
 				C957B8701D2DB44E0040F858 /* XTRemoteSheetController.swift */,
 				C957B8711D2DB44E0040F858 /* XTRemoteSheetController.xib */,
+				C9BDF4C01D99A70F0034841F /* XTRenameBranchController.swift */,
+				C9BDF4CE1D99A7660034841F /* XTRenameBranchPanelController.swift */,
+				C9BDF4CF1D99A7660034841F /* XTRenameBranchPanelController.xib */,
 			);
 			name = Operations;
 			sourceTree = "<group>";
@@ -1158,6 +1167,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9BDF4D11D99A7660034841F /* XTRenameBranchPanelController.xib in Resources */,
 				C91610291D1DE994005A3142 /* pullTemplate.png in Resources */,
 				C91610231D1DE994005A3142 /* fetchTemplate.png in Resources */,
 				C3FA470B13D0F8E200AC4F9B /* InfoPlist.strings in Resources */,
@@ -1291,6 +1301,7 @@
 				C9BAE60A1D2FFA8B00A87F13 /* XTConfig.swift in Sources */,
 				C9BAE6141D3039C500A87F13 /* XTOperationController.swift in Sources */,
 				C957B8541D2D533C0040F858 /* XTAddAccountController.swift in Sources */,
+				C9BDF4C11D99A70F0034841F /* XTRenameBranchController.swift in Sources */,
 				C948D5B71D2C6A4800F72A27 /* XTAccountsPrefsController.swift in Sources */,
 				894C8DAC1CBC0A1B001A4B80 /* XTFileListView.m in Sources */,
 				C957B8721D2DB44E0040F858 /* XTRemoteSheetController.swift in Sources */,
@@ -1340,6 +1351,7 @@
 				C9328B141D776BC700EFF7F7 /* XTRepositoryWatcher.swift in Sources */,
 				C9EB87241D01D93400C47D13 /* XTStash.swift in Sources */,
 				C96F65461D53A6CE001B2557 /* XTHistoryCellView.swift in Sources */,
+				C9BDF4D01D99A7660034841F /* XTRenameBranchPanelController.swift in Sources */,
 				DD3D94F318254442004AF532 /* XTFileListDataSourceBase.m in Sources */,
 				89D6FE6F17D2F89D00633798 /* XTCommitHeaderViewController.m in Sources */,
 				C954ABFD1D34455000302160 /* XTBranch.swift in Sources */,

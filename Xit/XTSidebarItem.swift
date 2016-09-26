@@ -67,7 +67,6 @@ class XTLocalBranchItem : XTSideBarItem
       { return (title as NSString).lastPathComponent }
   override var icon: NSImage? { return NSImage(named: "branchTemplate") }
   override var refType: XTRefType { return .branch }
-  override var editable: Bool { return true }
   override var current: Bool
   {
     if let currentBranch = self.model!.repository.currentBranch {

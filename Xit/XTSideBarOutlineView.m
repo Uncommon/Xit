@@ -17,8 +17,10 @@
   id item = [self itemAtRow:_contextMenuRow];
   NSMenu *menu = nil;
 
-  if ([item isKindOfClass:[XTLocalBranchItem class]]) {
-    menu = _controller.branchContextMenu;
+  if ([item isKindOfClass:[XTRemoteBranchItem class]]) {
+    menu = [self prepBranchMenuForLocal:NO];
+  } else if ([item isKindOfClass:[XTLocalBranchItem class]]) {
+    menu = [self prepBranchMenuForLocal:YES];
   } else if ([item isKindOfClass:[XTTagItem class]]) {
     menu = _controller.tagContextMenu;
   } else if ([self parentForItem:item] ==
@@ -31,6 +33,16 @@
 
   [super rightMouseDown:event];
   _contextMenuRow = -1;
+}
+
+- (NSMenu*)prepBranchMenuForLocal:(BOOL)local
+{
+  // Renaming remote branches is not implemented.
+  for (NSMenuItem *item in _controller.branchContextMenu.itemArray) {
+    if (item.action == @selector(renameBranch:))
+      item.hidden = !local;
+  }
+  return _controller.branchContextMenu;
 }
 
 @end

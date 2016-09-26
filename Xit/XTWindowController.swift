@@ -183,13 +183,26 @@ class XTWindowController: NSWindowController, NSWindowDelegate
     let _: XTPushController? = startOperation()
   }
   
+  public func startRenameBranch(_ branchName: String)
+  {
+    _ = startOperation() { XTRenameBranchController(windowController: self,
+                                                    branchName: branchName) }
+  }
+  
   /// Returns the new operation, if any, mostly because the generic type must
   /// be part of the signature.
   func startOperation<OperationType: XTSimpleOperationController>()
       -> OperationType?
   {
+    return startOperation() { return OperationType(windowController: self) }
+           as? OperationType
+  }
+  
+  func startOperation(factory: () -> XTOperationController)
+      -> XTOperationController?
+  {
     if currentOperation == nil {
-      let operation = OperationType(windowController: self)
+      let operation = factory()
       
       operation.start()
       currentOperation = operation
