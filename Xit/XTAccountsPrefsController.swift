@@ -15,6 +15,9 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
   @IBOutlet var addController: XTAddAccountController!
   @IBOutlet weak var accountsTable: NSTableView!
   
+  var authStatusObserver: NSObjectProtocol?
+  var keyObserver: NSObjectProtocol?
+  
   override func viewDidLoad()
   {
     super.viewDidLoad()
@@ -22,13 +25,13 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
     let notificationCenter = NotificationCenter.default
     
     XTAccountsManager.manager.readAccounts()
-    notificationCenter.addObserver(
+    authStatusObserver = notificationCenter.addObserver(
         forName: NSNotification.Name(rawValue: XTBasicAuthService.AuthenticationStatusChangedNotification),
         object: nil,
         queue: OperationQueue.main) { (_) in
       self.accountsTable.reloadData()
     }
-    notificationCenter.addObserver(
+    keyObserver = notificationCenter.addObserver(
         forName: NSNotification.Name.NSWindowDidResignKey,
         object: self.view.window,
         queue: nil) { (_) in
@@ -38,6 +41,8 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
   
   deinit
   {
+    NotificationCenter.default.removeObserver(authStatusObserver)
+    NotificationCenter.default.removeObserver(keyObserver)
     NotificationCenter.default.removeObserver(self)
   }
   

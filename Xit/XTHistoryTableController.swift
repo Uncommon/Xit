@@ -8,6 +8,9 @@ public class XTHistoryTableController: NSViewController
     static let date = "date"
     static let email = "email"
   }
+  
+  var refsChangedObserver: NSObjectProtocol?
+  var selectionObserver: NSObjectProtocol?
 
   weak var repository: XTRepository!
   {
@@ -23,11 +26,17 @@ public class XTHistoryTableController: NSViewController
       table.intercellSpacing = spacing
 
       loadHistory()
-      NotificationCenter.default.addObserver(
-          self,
-          selector: #selector(XTHistoryTableController.refsChanged(_:)),
-          name: NSNotification.Name.XTRepositoryRefsChanged,
-          object: repository)
+      refsChangedObserver = NotificationCenter.default.addObserver(
+          forName: NSNotification.Name.XTRepositoryRefsChanged,
+          object: repository, queue: OperationQueue.main) {
+        (notification) in
+        // To do: dynamic updating
+        // - new and changed refs: add if they're not already in the list
+        // - deleted and changed refs: recursively remove unreferenced commits
+        
+        // For now: just reload
+        self.reload()
+      }
     }
   }
   
@@ -35,6 +44,8 @@ public class XTHistoryTableController: NSViewController
   
   deinit
   {
+    NotificationCenter.default.removeObserver(refsChangedObserver)
+    NotificationCenter.default.removeObserver(selectionObserver)
     NotificationCenter.default.removeObserver(self)
   }
   
@@ -42,7 +53,7 @@ public class XTHistoryTableController: NSViewController
   {
     let controller = view.window?.windowController as! XTWindowController
     
-    NotificationCenter.default.addObserver(
+    selectionObserver = NotificationCenter.default.addObserver(
         forName: NSNotification.Name.XTSelectedModelChanged,
         object: controller,
         queue: nil) { [weak self]
@@ -57,16 +68,6 @@ public class XTHistoryTableController: NSViewController
         selector: #selector(XTHistoryTableController.dateViewResized(_:)),
         name: NSNotification.Name.NSViewFrameDidChange,
         object: nil)
-  }
-  
-  func refsChanged(_: Notification)
-  {
-    // To do: dynamic updating
-    // - new and changed refs: add if they're not already in the list
-    // - deleted and changed refs: recursively remove unreferenced commits
-    
-    // For now: just reload
-    reload()
   }
   
   /// Reloads the commit history from scratch.

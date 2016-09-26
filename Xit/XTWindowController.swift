@@ -8,6 +8,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate
   weak var xtDocument: XTDocument?
   var titleBarController: XTTitleBarAccessoryViewController? = nil
   var selectedCommitSHA: String?
+  var refsChangedObserver: NSObjectProtocol?
   dynamic var selectedModel: XTFileChangesModel?
   {
     didSet
@@ -58,7 +59,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate
         selector: #selector(XTWindowController.taskEnded(_:)),
         name: NSNotification.Name.XTTaskEnded,
         object: repo)
-    NotificationCenter.default.addObserver(
+    refsChangedObserver = NotificationCenter.default.addObserver(
         forName: NSNotification.Name.XTRepositoryRefsChanged,
         object: repo, queue: nil) {
       (notification) in
@@ -75,6 +76,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate
   
   deinit
   {
+    NotificationCenter.default.removeObserver(refsChangedObserver)
     NotificationCenter.default.removeObserver(self)
     currentOperation?.canceled = true
   }

@@ -8,9 +8,16 @@ class XTGitPrefsController: NSViewController, PreferencesSaver
   @IBOutlet weak var fetchPruneCheckbox: NSButton!
   
   let config = GTConfiguration.default()
+  var keyObserver: NSObjectProtocol?
   
-  struct PrefKey {
+  struct PrefKey
+  {
     static let FetchTags = "FetchTags"
+  }
+  
+  deinit
+  {
+    NotificationCenter.default.removeObserver(keyObserver)
   }
   
   override func viewDidLoad() {
@@ -34,7 +41,7 @@ class XTGitPrefsController: NSViewController, PreferencesSaver
     fetchTagsCheckbox.boolValue = UserDefaults.standard
         .bool(forKey: PrefKey.FetchTags)
     
-    NotificationCenter.default.addObserver(
+    keyObserver = NotificationCenter.default.addObserver(
         forName: NSNotification.Name.NSWindowDidResignKey,
         object: self.view.window,
         queue: nil) { (_) in
