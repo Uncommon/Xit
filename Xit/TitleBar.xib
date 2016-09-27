@@ -109,7 +109,7 @@
                             <rect key="frame" x="122" y="2" width="69" height="21"/>
                             <popUpButtonCell key="cell" type="bevel" title="branch" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" state="on" focusRingType="none" imageScaling="proportionallyDown" inset="2" autoenablesItems="NO" selectedItem="sSQ-02-kT9" id="QYv-hf-gtv">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                <font key="font" metaFont="system"/>
+                                <font key="font" metaFont="menu"/>
                                 <menu key="menu" autoenablesItems="NO" id="mJM-HD-d6L">
                                     <items>
                                         <menuItem title="branch" state="on" id="sSQ-02-kT9"/>

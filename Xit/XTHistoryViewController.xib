@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11201"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="XTHistoryViewController">
@@ -37,7 +37,7 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <outlineView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" autosaveColumns="NO" rowHeight="20" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="81" id="80" customClass="XTSideBarOutlineView">
-                                        <rect key="frame" x="0.0" y="0.0" width="188" height="0.0"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="188" height="561"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <size key="intercellSpacing" width="3" height="0.0"/>
                                         <color key="backgroundColor" name="_sourceListBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -57,11 +57,11 @@
                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                 <prototypeCellViews>
                                                     <tableCellView identifier="HeaderCell" id="87">
-                                                        <rect key="frame" x="1" y="0.0" width="184.5" height="17"/>
+                                                        <rect key="frame" x="1" y="0.0" width="185" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <textField verticalHuggingPriority="750" id="88">
-                                                                <rect key="frame" x="0.0" y="1" width="198" height="14"/>
+                                                                <rect key="frame" x="0.0" y="1" width="199" height="14"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="HEADER CELL" id="89">
                                                                     <font key="font" metaFont="smallSystemBold"/>
@@ -75,7 +75,7 @@
                                                         </connections>
                                                     </tableCellView>
                                                     <tableCellView identifier="DataCell" id="90" customClass="XTSideBarTableCellView">
-                                                        <rect key="frame" x="1" y="17" width="184.5" height="20"/>
+                                                        <rect key="frame" x="1" y="17" width="185" height="20"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <imageView id="108">
@@ -96,7 +96,7 @@
                                                                 </textFieldCell>
                                                             </textField>
                                                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="Zdp-Ps-pbu">
-                                                                <rect key="frame" x="180" y="2" width="16" height="16"/>
+                                                                <rect key="frame" x="181" y="2" width="16" height="16"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSStatusAvailable" id="Uoo-ST-MXt"/>
                                                             </imageView>
@@ -201,7 +201,7 @@
                                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                         <prototypeCellViews>
                                                                             <tableCellView identifier="email" id="YBF-IH-NHG">
-                                                                                <rect key="frame" x="498" y="1" width="188.5" height="17"/>
+                                                                                <rect key="frame" x="498" y="1" width="188" height="17"/>
                                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                 <subviews>
                                                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="LZ4-Sa-GPC">
@@ -261,7 +261,6 @@
                                                                 </connections>
                                                             </tableView>
                                                         </subviews>
-                                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </clipView>
                                                     <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="MX2-Hl-Ekc">
                                                         <rect key="frame" x="1" y="230" width="797" height="16"/>
