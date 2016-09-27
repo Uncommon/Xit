@@ -49,12 +49,9 @@ class XTHistoryCellView: NSTableCellView
   }
   
   /// Moves the text field out of the way of the lines and refs.
-  override func viewWillDraw()
+  func adjustLayout()
   {
-    super.viewWillDraw()
-    
-    guard let entry = objectValue as? CommitEntry,
-          let textField = textField
+    guard let entry = objectValue as? CommitEntry
     else { return }
     let oid = entry.commit.oid
     
@@ -72,14 +69,14 @@ class XTHistoryCellView: NSTableCellView
              width + XTHistoryCellView.tokenMargin
     }
     
-    let frame = self.frame
-    var newFrame = textField.frame
-    
-    newFrame.origin.x = tokenWidth + linesMargin +
-                        XTHistoryCellView.textMargin
-    newFrame.size.width = frame.size.width - newFrame.origin.x -
-                          XTHistoryCellView.rightMargin
-    textField.frame = newFrame
+    if let textField = textField {
+      var newFrame = textField.frame
+      
+      newFrame.origin.x = tokenWidth + linesMargin + XTHistoryCellView.textMargin
+      newFrame.size.width = frame.size.width - newFrame.origin.x -
+                            XTHistoryCellView.rightMargin
+      textField.frame = newFrame
+    }
   }
   
   /// Draws the graph lines and refs in the view.
@@ -87,6 +84,7 @@ class XTHistoryCellView: NSTableCellView
   {
     super.draw(dirtyRect)
     
+    adjustLayout()
     drawRefs()
     drawLines()
   }
