@@ -3,20 +3,25 @@ import Cocoa
 class XTCommitEntryController: NSViewController
 {
   weak var repo: XTRepository!
-  @IBOutlet weak var commitField: NSTextField!
+  @IBOutlet weak var commitField: NSTextView!
   @IBOutlet weak var commitButton: NSButton!
+  @IBOutlet weak var placeholder: NSTextField!
   
-  override func viewDidLoad() {
-      super.viewDidLoad()
-      // Do view setup here.
+  override func viewDidLoad()
+  {
+    // The editor doesn't allow setting the font of an empty text view.
+    commitField.font = placeholder.font
   }
   
   @IBAction func commit(_ sender: NSButton) {
     do {
-      try repo.commit(withMessage: commitField.stringValue,
+      guard let message = commitField.string
+      else { return }
+    
+      try repo.commit(withMessage: message,
                       amend: false,
                       outputBlock: nil)
-      commitField.stringValue = ""
+      commitField.string = ""
     }
     catch {
       let alert = NSAlert(error: error as NSError)
@@ -24,8 +29,15 @@ class XTCommitEntryController: NSViewController
       alert.beginSheetModal(for: self.view.window!, completionHandler: nil)
     }
   }
-  
-  override func controlTextDidChange(_ obj: Notification) {
-    commitButton.isEnabled = (commitField.stringValue != "")
+}
+
+extension XTCommitEntryController: NSTextDelegate
+{
+  func textDidChange(_ obj: Notification)
+  {
+    commitButton.isEnabled = commitField.string.flatMap({
+        !$0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty })
+        ?? false
+    placeholder.isHidden = commitField.string.flatMap({ $0 != "" }) ?? false
   }
 }
