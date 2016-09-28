@@ -5,9 +5,6 @@ class XTHistoryCellView: NSTableCellView
 {
   var refs = [String]()
   
-  // Flipped because that's how XTRefToken draws.
-  override var isFlipped: Bool { return true }
-  
   /// Margin of space to leave for the lines in this cell.
   fileprivate var linesMargin: CGFloat = 0.0
   
@@ -143,10 +140,10 @@ class XTHistoryCellView: NSTableCellView
         }
         
         path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(topOffset),
-                                 y: 0))
+                              y: bounds.size.height))
         path.relativeLine(to: NSMakePoint(0, 0.5))
         path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(dotOffset!),
-                                 y: bounds.size.height/2))
+                              y: bounds.size.height/2))
         topOffset += 1
       }
       else if connection.childOID == entry.commit.oid {
@@ -156,17 +153,17 @@ class XTHistoryCellView: NSTableCellView
         }
         
         path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(bottomOffset),
-                                 y: bounds.size.height))
+                              y: 0))
         path.relativeLine(to: NSMakePoint(0, -0.5))
         path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(dotOffset!),
-                                 y: bounds.size.height/2))
+                              y: bounds.size.height/2))
         bottomOffset += 1
       }
       else {
         path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(topOffset),
-                                 y: 0))
+                              y: bounds.size.height))
         path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(bottomOffset),
-                                 y: bounds.size.height))
+                              y: 0))
         topOffset += 1
         bottomOffset += 1
       }

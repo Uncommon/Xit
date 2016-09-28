@@ -127,10 +127,10 @@
   NSGradient *gradient = [self gradientForType:type];
   NSAffineTransform *transform = [NSAffineTransform transform];
 
-  [gradient drawInBezierPath:path angle:90];
+  [gradient drawInBezierPath:path angle:270];
   [NSGraphicsContext saveGraphicsState];
   [path addClip];
-  [transform translateXBy:0.0 yBy:1.0];
+  [transform translateXBy:0.0 yBy:-1.0];
   [transform concat];
   [[NSColor colorWithDeviceWhite:1.0 alpha:0.4] set];
   [path stroke];
@@ -159,7 +159,6 @@
   const NSRange slashRange = [text rangeOfString:@"/"
                                          options:NSBackwardsSearch];
 
-  ++rect.origin.y;
   if (slashRange.location != NSNotFound)
     [attrText addAttribute:NSForegroundColorAttributeName
                      value:[NSColor colorWithDeviceWhite:0.0 alpha:0.6]
