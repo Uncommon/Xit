@@ -9,7 +9,8 @@ class XTSideBarItem: NSObject
   var model: XTFileChangesModel?
   var refType: XTRefType { return .unknown }
   var expandable: Bool { return false }
-  var selectable: Bool { return true }
+  // NSObject.isSelectable is new in 10.12
+  override var isSelectable: Bool { return true }
   var editable: Bool { return false }
   var current: Bool { return false }
   
@@ -40,7 +41,7 @@ class XTSideBarItem: NSObject
 
 class XTSideBarGroupItem : XTSideBarItem
 {
-  override var selectable: Bool { return false }
+  override var isSelectable: Bool { return false }
   override var expandable: Bool { return true }
 }
 
@@ -97,7 +98,7 @@ class XTRemoteBranchItem : XTLocalBranchItem
 class XTBranchFolderItem : XTSideBarItem
 {
   override var icon: NSImage? { return NSImage(named: "folderTemplate") }
-  override var selectable: Bool { return false }
+  override var isSelectable: Bool { return false }
   override var expandable: Bool { return true }
 }
 

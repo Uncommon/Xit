@@ -324,7 +324,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
   public func outlineView(_ outlineView: NSOutlineView,
                           shouldSelectItem item: Any) -> Bool
   {
-    return (item as? XTSideBarItem)?.selectable ?? false
+    return (item as? XTSideBarItem)?.isSelectable ?? false
   }
 
   public func outlineView(_ outlineView: NSOutlineView,
@@ -361,7 +361,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
       dataView.imageView?.image = sideBarItem.icon
       textField.stringValue = sideBarItem.displayTitle
       textField.isEditable = sideBarItem.editable
-      textField.isSelectable = sideBarItem.selectable
+      textField.isSelectable = sideBarItem.isSelectable
       dataView.statusImage.image = statusImage(sideBarItem)
       if sideBarItem.editable {
         textField.formatter = refFormatter
