@@ -154,7 +154,7 @@
                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                                 <tableColumns>
-                                                                    <tableColumn identifier="commit" width="493.5703125" minWidth="40" maxWidth="1000" id="dd7-jX-0NL">
+                                                                    <tableColumn identifier="commit" width="493.5703125" minWidth="40" maxWidth="5000" id="dd7-jX-0NL">
                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Commit">
                                                                             <font key="font" metaFont="smallSystem"/>
                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
