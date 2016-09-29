@@ -90,7 +90,7 @@ extension XTRepository
   {
     var stringArray = git_strarray()
     guard git_reference_list(&stringArray, gtRepo.git_repository()) == 0
-      else { return [] }
+    else { return [] }
     defer { git_strarray_free(&stringArray) }
     
     var result = [String]()

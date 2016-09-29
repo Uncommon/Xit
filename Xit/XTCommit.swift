@@ -47,7 +47,15 @@ public class XTCommit: NSObject, CommitType
   public var email: String?
   { return gtCommit.author?.email }
 
-  init?(oid: GTOID, repository: XTRepository)
+  init(commit: GTCommit)
+  {
+    self.gtCommit = commit
+    self.cachedSHA = commit.sha
+    self.cachedOID = commit.oid!
+    self.cachedParentOIDs = XTCommit.calculateParentOIDs(gtCommit.git_commit())
+  }
+
+  convenience init?(oid: GTOID, repository: XTRepository)
   {
     var gitCommit: OpaquePointer? = nil  // git_commit isn't imported
     let result = git_commit_lookup(&gitCommit,
@@ -58,10 +66,7 @@ public class XTCommit: NSObject, CommitType
           let commit = GTCommit(obj: gitCommit!, in: repository.gtRepo)
     else { return nil }
     
-    self.gtCommit = commit
-    self.cachedSHA = commit.sha
-    self.cachedOID = commit.oid!
-    self.cachedParentOIDs = XTCommit.calculateParentOIDs(gtCommit.git_commit())
+    self.init(commit: commit)
   }
   
   convenience init?(sha: String, repository: XTRepository)
@@ -70,6 +75,24 @@ public class XTCommit: NSObject, CommitType
     else { return nil }
     
     self.init(oid: oid, repository: repository)
+  }
+  
+  convenience init?(ref: String, repository: XTRepository)
+  {
+    let gitRefPtr = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    guard git_reference_lookup(gitRefPtr,
+                               repository.gtRepo.git_repository(),
+                               ref) == 0,
+          let gitRef = gitRefPtr.pointee
+    else { return nil }
+    
+    let gitObjectPtr = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    guard git_reference_peel(gitObjectPtr, gitRef, GIT_OBJ_COMMIT) == 0,
+          let gitObject = gitObjectPtr.pointee,
+          let commit = GTCommit(obj: gitObject, in: repository.gtRepo)
+    else { return nil }
+    
+    self.init(commit: commit)
   }
   
   static func calculateParentOIDs(_ rawCommit: OpaquePointer) -> [GTOID]
