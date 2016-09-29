@@ -82,6 +82,7 @@
 		C3FA471A13D0F8E300AC4F9B /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3FA471813D0F8E300AC4F9B /* MainMenu.xib */; };
 		C3FA472913D0F8E300AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA472713D0F8E300AC4F9B /* InfoPlist.strings */; };
 		C3FA472E13D0F8E300AC4F9B /* XTTest.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA472D13D0F8E300AC4F9B /* XTTest.m */; };
+		C90FCA2F1D9C776C006196DE /* XTFileDiffController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90FCA2E1D9C776C006196DE /* XTFileDiffController.swift */; };
 		C90FD5961D217D5B00A30570 /* XTFetchPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90FD5941D217D5B00A30570 /* XTFetchPanelController.swift */; };
 		C90FD5971D217D5B00A30570 /* XTFetchPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C90FD5951D217D5B00A30570 /* XTFetchPanelController.xib */; };
 		C91610231D1DE994005A3142 /* fetchTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C91610191D1DE994005A3142 /* fetchTemplate.png */; };
@@ -176,7 +177,6 @@
 		DD997DDA173B409500C7DF82 /* HistoryView Menus.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD997DD8173B409500C7DF82 /* HistoryView Menus.xib */; };
 		DD997DF81746F40D00C7DF82 /* XTFileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD997DF71746F40D00C7DF82 /* XTFileViewController.xib */; };
 		DD9C1B8F160239DD0001FE9B /* XTRefToken.m in Sources */ = {isa = PBXBuildFile; fileRef = DD9C1B8E160239DD0001FE9B /* XTRefToken.m */; };
-		DD9D5E9C183EA33F00EBC1C7 /* XTFileDiffController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD9D5E9B183EA33F00EBC1C7 /* XTFileDiffController.m */; };
 		DDA8A63A17F5B6CE00AD9808 /* added.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A63017F5B6CE00AD9808 /* added.png */; };
 		DDA8A63B17F5B6CE00AD9808 /* added@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A63117F5B6CE00AD9808 /* added@2x.png */; };
 		DDA8A63C17F5B6CE00AD9808 /* copied.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A63217F5B6CE00AD9808 /* copied.png */; };
@@ -416,6 +416,7 @@
 		C3FA472A13D0F8E300AC4F9B /* XitTests-Prefix.pch */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = "XitTests-Prefix.pch"; sourceTree = "<group>"; tabWidth = 4; };
 		C3FA472B13D0F8E300AC4F9B /* XTTest.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTTest.h; sourceTree = "<group>"; tabWidth = 2; };
 		C3FA472D13D0F8E300AC4F9B /* XTTest.m */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTTest.m; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		C90FCA2E1D9C776C006196DE /* XTFileDiffController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileDiffController.swift; sourceTree = "<group>"; };
 		C90FD5941D217D5B00A30570 /* XTFetchPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFetchPanelController.swift; sourceTree = "<group>"; };
 		C90FD5951D217D5B00A30570 /* XTFetchPanelController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTFetchPanelController.xib; sourceTree = "<group>"; };
 		C91610191D1DE994005A3142 /* fetchTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fetchTemplate.png; sourceTree = "<group>"; };
@@ -518,8 +519,6 @@
 		DD997DF71746F40D00C7DF82 /* XTFileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTFileViewController.xib; sourceTree = "<group>"; };
 		DD9C1B8D160239DD0001FE9B /* XTRefToken.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTRefToken.h; sourceTree = "<group>"; };
 		DD9C1B8E160239DD0001FE9B /* XTRefToken.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTRefToken.m; sourceTree = "<group>"; };
-		DD9D5E9A183EA33F00EBC1C7 /* XTFileDiffController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTFileDiffController.h; sourceTree = "<group>"; };
-		DD9D5E9B183EA33F00EBC1C7 /* XTFileDiffController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTFileDiffController.m; sourceTree = "<group>"; };
 		DDA8A63017F5B6CE00AD9808 /* added.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = added.png; sourceTree = "<group>"; };
 		DDA8A63117F5B6CE00AD9808 /* added@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "added@2x.png"; sourceTree = "<group>"; };
 		DDA8A63217F5B6CE00AD9808 /* copied.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = copied.png; sourceTree = "<group>"; };
@@ -968,8 +967,7 @@
 				89D6FE6E17D2F89D00633798 /* XTCommitHeaderViewController.m */,
 				DD98D0001822FFE2008B79C9 /* XTFileChangesDataSource.h */,
 				DD98D0011822FFE2008B79C9 /* XTFileChangesDataSource.m */,
-				DD9D5E9A183EA33F00EBC1C7 /* XTFileDiffController.h */,
-				DD9D5E9B183EA33F00EBC1C7 /* XTFileDiffController.m */,
+				C90FCA2E1D9C776C006196DE /* XTFileDiffController.swift */,
 				DD3D94F118254442004AF532 /* XTFileListDataSourceBase.h */,
 				DD3D94F218254442004AF532 /* XTFileListDataSourceBase.m */,
 				894C8DAA1CBC0A1B001A4B80 /* XTFileListView.h */,
@@ -1297,7 +1295,6 @@
 				C957B84B1D2D53040040F858 /* XTSheetController.swift in Sources */,
 				3174966813DF8A0C004C5546 /* XTSideBarDataSource.m in Sources */,
 				89C927941D43B23B0074F71A /* XTRepository.swift in Sources */,
-				DD9D5E9C183EA33F00EBC1C7 /* XTFileDiffController.m in Sources */,
 				C9BAE60A1D2FFA8B00A87F13 /* XTConfig.swift in Sources */,
 				C9BAE6141D3039C500A87F13 /* XTOperationController.swift in Sources */,
 				C957B8541D2D533C0040F858 /* XTAddAccountController.swift in Sources */,
@@ -1350,6 +1347,7 @@
 				C92E30FB1D4FF4F0001985F7 /* XTCommit.swift in Sources */,
 				C9328B141D776BC700EFF7F7 /* XTRepositoryWatcher.swift in Sources */,
 				C9EB87241D01D93400C47D13 /* XTStash.swift in Sources */,
+				C90FCA2F1D9C776C006196DE /* XTFileDiffController.swift in Sources */,
 				C96F65461D53A6CE001B2557 /* XTHistoryCellView.swift in Sources */,
 				C9BDF4D01D99A7660034841F /* XTRenameBranchPanelController.swift in Sources */,
 				DD3D94F318254442004AF532 /* XTFileListDataSourceBase.m in Sources */,

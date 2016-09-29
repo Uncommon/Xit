@@ -1,6 +1,8 @@
 #import <Cocoa/Cocoa.h>
 #import <Webkit/WebKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
   Base class for web view controllers, implementing common delegate methods.
 **/
@@ -19,3 +21,5 @@
 - (void)webView:(WebView*)sender didFinishLoadForFrame:(WebFrame*)frame;
 
 @end
+
+NS_ASSUME_NONNULL_END

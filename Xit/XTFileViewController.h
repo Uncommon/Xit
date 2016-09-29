@@ -1,6 +1,5 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
-#import "Xit-Swift.h"
 
 @class XTCommitHeaderViewController;
 @class XTFileChangesDataSource;
@@ -9,6 +8,8 @@
 @class XTPreviewController;
 @class XTRepository;
 @class XTTextPreviewController;
+
+@protocol XTFileChangesModel;
 
 extern const CGFloat kChangeImagePadding;
 
@@ -25,7 +26,7 @@ extern const CGFloat kChangeImagePadding;
 /// @param staged Whether to show staged content.
 - (void)loadPath:(NSString*)path
            model:(id<XTFileChangesModel>)model
-          staged:(BOOL)staged;
+          staged:(BOOL)staged NS_SWIFT_NAME(load(path:model:staged:));
 
 @end
 

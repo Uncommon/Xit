@@ -6,6 +6,7 @@
 #import "XTDocument.h"
 #import "XTFileTreeDataSource.h"
 #import "XTFileChangesDataSource.h"
+#import "XTFileViewController.h"
 #import "XTHistoryViewController.h"
 #import "XTRefFormatter.h"
 #import "XTRefToken.h"
@@ -14,3 +15,4 @@
 #import "XTRepository+Parsing.h"
 #import "XTSidebarDataSource.h"
 #import "XTSideBarTableCellView.h"
+#import "XTWebViewController.h"

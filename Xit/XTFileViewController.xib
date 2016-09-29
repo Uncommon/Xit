@@ -483,7 +483,7 @@
                 <outlet property="view" destination="57" id="60"/>
             </connections>
         </customObject>
-        <customObject id="fX5-fH-Hy5" customClass="XTFileDiffController">
+        <customObject id="fX5-fH-Hy5" customClass="XTFileDiffController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="_webView" destination="e4U-lz-eEd" id="mct-Ae-eey"/>
                 <outlet property="view" destination="e4U-lz-eEd" id="94Q-P5-Sfh"/>

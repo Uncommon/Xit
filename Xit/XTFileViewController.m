@@ -5,7 +5,6 @@
 #import "XTConstants.h"
 #import "XTCommitHeaderViewController.h"
 #import "XTFileChangesDataSource.h"
-#import "XTFileDiffController.h"
 #import "XTFileListDataSourceBase.h"
 #import "XTFileTreeDataSource.h"
 #import "XTFileListView.h"

@@ -246,7 +246,7 @@ NSString * const XTRepositoryHeadChangedNotification = @"HeadChanged";
 
   if (![unresolved isKindOfClass:[GTReference class]])
     return reference;
-  return [gtRef.unresolvedTarget name];
+  return [(GTReference*)unresolved name];
 }
 
 /// Returns kEmptyTreeHash if the repository is empty, otherwise "HEAD"
