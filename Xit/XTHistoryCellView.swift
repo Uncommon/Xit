@@ -119,6 +119,14 @@ class XTHistoryCellView: NSTableCellView
     }
   }
   
+  func cornerOffset(_ offset1: UInt, _ offset2: UInt) -> CGFloat
+  {
+    let pathOffset = abs(Int(offset1) - Int(offset2))
+    let height = Double(pathOffset) * 0.5
+    
+    return CGFloat(height)
+  }
+  
   func drawLines()
   {
     guard let entry = objectValue as? CommitEntry
@@ -141,7 +149,8 @@ class XTHistoryCellView: NSTableCellView
         
         path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(topOffset),
                               y: bounds.size.height))
-        path.relativeLine(to: NSMakePoint(0, 0.5))
+        path.relativeLine(to: NSPoint(x: 0, y: -cornerOffset(dotOffset!,
+                                                             topOffset)))
         path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(dotOffset!),
                               y: bounds.size.height/2))
         topOffset += 1
@@ -154,7 +163,8 @@ class XTHistoryCellView: NSTableCellView
         
         path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(bottomOffset),
                               y: 0))
-        path.relativeLine(to: NSMakePoint(0, -0.5))
+        path.relativeLine(to: NSPoint(x: 0, y: cornerOffset(dotOffset!,
+                                                            bottomOffset)))
         path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(dotOffset!),
                               y: bounds.size.height/2))
         bottomOffset += 1
