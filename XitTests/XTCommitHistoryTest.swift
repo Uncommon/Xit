@@ -697,3 +697,169 @@ class XTCommitHistoryTest: XCTestCase
     check(history, expectedLength: 4)
   }
 }
+
+class XTCommitLinesTest: XCTestCase
+{
+  // Only the SHA/OID matters
+  func basicCommit() -> MockCommit
+  {
+    return MockCommit(sha: "a", oid: GTOID(oid: "a"), parentOIDs: [])
+  }
+
+  /*  o
+      |\
+  */
+  func testMerge1()
+  {
+    let entry = CommitEntry(commit: basicCommit())
+    
+    entry.connections = [
+        CommitConnection(parentSHA: "b", childSHA: "a", colorIndex: 0),
+        CommitConnection(parentSHA: "c", childSHA: "a", colorIndex: 0),
+        ]
+  
+    XCTAssertEqual(entry.dotOffset, 0)
+    XCTAssertEqual(entry.dotColorIndex, 0)
+    
+    XCTAssertEqual(entry.lines[0].parentIndex, 0)
+    XCTAssertNil(entry.lines[0].childIndex)
+    XCTAssertEqual(entry.lines[1].parentIndex, 1)
+    XCTAssertNil(entry.lines[1].childIndex)
+  }
+  
+  
+  /* | o
+     |/|
+  */
+  func testMerge2()
+  {
+    let entry = CommitEntry(commit: basicCommit())
+    
+    entry.connections = [
+        CommitConnection(parentSHA: "b", childSHA: "0", colorIndex: 0),
+        CommitConnection(parentSHA: "b", childSHA: "a", colorIndex: 1),
+        CommitConnection(parentSHA: "c", childSHA: "a", colorIndex: 2)
+        ]
+    
+    XCTAssertEqual(entry.dotOffset, 1)
+    XCTAssertEqual(entry.dotColorIndex, 1)
+    XCTAssertEqual(entry.lines[0].parentIndex, 0)
+    XCTAssertEqual(entry.lines[0].childIndex, 0)
+    XCTAssertEqual(entry.lines[1].parentIndex, 0)
+    XCTAssertNil(entry.lines[1].childIndex)
+    XCTAssertEqual(entry.lines[2].parentIndex, 1)
+    XCTAssertNil(entry.lines[2].childIndex)
+  }
+  
+  /* | |
+     | o
+     | |
+  */
+  func testParallel()
+  {
+    let entry = CommitEntry(commit: basicCommit())
+    
+    entry.connections = [
+      CommitConnection(parentSHA: "b", childSHA: "0", colorIndex: 0),
+      CommitConnection(parentSHA: "a", childSHA: "1", colorIndex: 1),
+      CommitConnection(parentSHA: "c", childSHA: "a", colorIndex: 1)
+    ]
+    
+    XCTAssertEqual(entry.dotOffset, 1)
+    XCTAssertEqual(entry.dotColorIndex, 1)
+    XCTAssertEqual(entry.lines[0].parentIndex, 0)
+    XCTAssertEqual(entry.lines[0].childIndex, 0)
+    XCTAssertNil(entry.lines[1].parentIndex)
+    XCTAssertEqual(entry.lines[1].childIndex, 1)
+    XCTAssertEqual(entry.lines[2].parentIndex, 1)
+    XCTAssertNil(entry.lines[2].childIndex)
+  }
+  
+  /* | |
+     o |
+     |/
+  */
+  func testSplitBelow()
+  {
+    let entry = CommitEntry(commit: basicCommit())
+    
+    entry.connections = [
+      CommitConnection(parentSHA: "a", childSHA: "0", colorIndex: 0),
+      CommitConnection(parentSHA: "b", childSHA: "a", colorIndex: 0),
+      CommitConnection(parentSHA: "b", childSHA: "1", colorIndex: 1)
+    ]
+    
+    XCTAssertEqual(entry.dotOffset, 0)
+    XCTAssertEqual(entry.dotColorIndex, 0)
+    XCTAssertNil(entry.lines[0].parentIndex)
+    XCTAssertEqual(entry.lines[0].childIndex, 0)
+    XCTAssertEqual(entry.lines[1].parentIndex, 0)
+    XCTAssertNil(entry.lines[1].childIndex)
+    XCTAssertEqual(entry.lines[2].childIndex, 1)
+    XCTAssertEqual(entry.lines[2].parentIndex, 0)
+  }
+  
+  /* |/
+     |
+     o
+  */
+  func testSplitAbove()
+  {
+    let entry = CommitEntry(commit: basicCommit())
+    
+    entry.connections = [
+      CommitConnection(parentSHA: "a", childSHA: "0", colorIndex: 0),
+      CommitConnection(parentSHA: "a", childSHA: "1", colorIndex: 1)
+    ]
+    
+    XCTAssertEqual(entry.dotOffset, 0)
+    XCTAssertEqual(entry.dotColorIndex, 0)
+    XCTAssertNil(entry.lines[0].parentIndex)
+    XCTAssertEqual(entry.lines[0].childIndex, 0)
+    XCTAssertNil(entry.lines[1].parentIndex)
+    XCTAssertEqual(entry.lines[1].childIndex, 0)
+  }
+  
+  /* Based on a true story.
+     9 0 1  2&3
+     | | |  |
+     | a//-/
+     | |X|
+     | | |\
+     f b c d
+  */
+  func testCrossover()
+  {
+    let entry = CommitEntry(commit: basicCommit())
+    
+    entry.connections = [
+      CommitConnection(parentSHA: "f", childSHA: "9", colorIndex: 0),
+      CommitConnection(parentSHA: "a", childSHA: "0", colorIndex: 5),
+      CommitConnection(parentSHA: "b", childSHA: "a", colorIndex: 5),
+      CommitConnection(parentSHA: "c", childSHA: "1", colorIndex: 10),
+      CommitConnection(parentSHA: "b", childSHA: "2", colorIndex: 12),
+      CommitConnection(parentSHA: "b", childSHA: "3", colorIndex: 13),
+      CommitConnection(parentSHA: "a", childSHA: "1", colorIndex: 14),
+      CommitConnection(parentSHA: "d", childSHA: "a", colorIndex: 15),
+    ]
+    
+    XCTAssertEqual(entry.dotOffset, 1)
+    XCTAssertEqual(entry.dotColorIndex, 5)
+    XCTAssertEqual(entry.lines[0].parentIndex, 0) // z-9
+    XCTAssertEqual(entry.lines[0].childIndex, 0)
+    XCTAssertNil(entry.lines[1].parentIndex)      // a-0
+    XCTAssertEqual(entry.lines[1].childIndex, 1)
+    XCTAssertEqual(entry.lines[2].parentIndex, 1) // b-a
+    XCTAssertNil(entry.lines[2].childIndex)
+    XCTAssertEqual(entry.lines[3].parentIndex, 2) // c-1
+    XCTAssertEqual(entry.lines[3].childIndex, 2)
+    XCTAssertEqual(entry.lines[4].parentIndex, 1) // b-2
+    XCTAssertEqual(entry.lines[4].childIndex, 3)
+    XCTAssertEqual(entry.lines[5].parentIndex, 1) // b-3
+    XCTAssertEqual(entry.lines[5].childIndex, 3)
+    XCTAssertNil(entry.lines[6].parentIndex)      // a-1
+    XCTAssertEqual(entry.lines[6].childIndex, 2)
+    XCTAssertEqual(entry.lines[7].parentIndex, 3) // d-a
+    XCTAssertNil(entry.lines[7].childIndex)
+  }
+}

@@ -4,8 +4,23 @@ import Foundation
 // Inherits from NSObject just to make it accessible to ObjC
 public class CommitEntry: NSObject
 {
+  struct Line
+  {
+    let childIndex, parentIndex: UInt?
+    let colorIndex: UInt
+  }
+
   let commit: CommitType
   var connections = [CommitConnection]()
+  {
+    didSet
+    {
+      generateLines()
+    }
+  }
+  var lines = [Line]()
+  var dotOffset: UInt? = nil
+  var dotColorIndex: UInt? = nil
   
   public override var description: String
   { return commit.description }
@@ -13,6 +28,82 @@ public class CommitEntry: NSObject
   init(commit: CommitType)
   {
     self.commit = commit
+  }
+  
+  func generateLines()
+  {
+    var bottomOffset: UInt = 0
+    var parentLines = [GTOID: (index: UInt, colorIndex: UInt)]()
+
+    for connection in connections {
+      if parentLines[connection.parentOID] == nil {
+        parentLines[connection.parentOID] = (bottomOffset, connection.colorIndex)
+        if connection.parentOID != commit.oid {
+          bottomOffset += 1
+        }
+      }
+    }
+    bottomOffset = 0
+    
+    var topOffset: UInt = 0
+    
+    for connection in connections {
+      var connectionColor = connection.colorIndex
+    
+      if connection.parentOID == commit.oid {
+        let (offset, lineColor) = parentLines[connection.parentOID]
+                ?? (topOffset, connectionColor)
+        
+        connectionColor = lineColor
+        if dotOffset == nil {
+          dotOffset = topOffset
+          dotColorIndex = connection.colorIndex
+        }
+        lines.append(Line(childIndex: offset,
+                          parentIndex: nil,
+                          colorIndex: connectionColor))
+        topOffset += 1
+      }
+      else if connection.childOID == commit.oid {
+        let (offset, _) = parentLines[connection.parentOID]
+                ?? (bottomOffset, 0)
+        
+        if dotOffset == nil {
+          dotOffset = topOffset
+          dotColorIndex = connection.colorIndex
+        }
+        lines.append(Line(childIndex: nil,
+                          parentIndex: offset,
+                          colorIndex: connectionColor))
+        if offset == bottomOffset {
+          bottomOffset += 1
+        }
+      }
+      else {
+        var useTopOffset = topOffset
+        var useBottomOffset = bottomOffset
+        
+        if let (parentOffset, lineColor) = parentLines[connection.parentOID] {
+          useTopOffset = parentOffset
+          useBottomOffset = parentOffset
+          connectionColor = lineColor
+          if let dotOffset = dotOffset,
+             useTopOffset == dotOffset {
+            useTopOffset += 1
+            topOffset += 1
+          }
+        }
+        lines.append(Line(childIndex: useTopOffset,
+                          parentIndex: useBottomOffset,
+                          colorIndex: connectionColor))
+        if useTopOffset == topOffset {
+          topOffset += 1
+        }
+        if useBottomOffset == bottomOffset {
+          bottomOffset += 1
+        }
+      }
+    }
   }
 }
 
