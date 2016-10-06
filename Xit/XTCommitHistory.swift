@@ -224,18 +224,15 @@ public class XTCommitHistory: NSObject
     for entry in entries {
       let commitOID = entry.commit.oid
       let incomingIndex = connections.index(where: { $0.parentOID == commitOID })
-      let incomingColor: UInt? = (incomingIndex != nil)
-          ? connections[incomingIndex!].colorIndex
-          : nil
+      let incomingColor = incomingIndex.flatMap { connections[$0].colorIndex }
       
       if let firstParentOID = entry.commit.parentOIDs.first {
         let newConnection = CommitConnection(parentOID: firstParentOID,
                                              childOID: commitOID,
                                              colorIndex: incomingColor ??
                                                          nextColorIndex++)
-        let insertIndex = (incomingIndex != nil)
-            ? incomingIndex! + 1
-            : connections.endIndex
+        let insertIndex = incomingIndex.flatMap { $0 + 1 } ??
+                          connections.endIndex
         
         connections.insert(newConnection, at: insertIndex)
       }
@@ -248,7 +245,7 @@ public class XTCommitHistory: NSObject
       }
       
       entry.connections = connections
-      connections = connections.filter({ $0.parentOID != commitOID })
+      connections = connections.filter { $0.parentOID != commitOID }
     }
 #if DEBUGLOG
     if !connections.isEmpty {
