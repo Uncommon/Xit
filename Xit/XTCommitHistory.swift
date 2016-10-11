@@ -32,27 +32,38 @@ public class CommitEntry: NSObject
   
   func generateLines()
   {
+    var topOffset: UInt = 0
     var bottomOffset: UInt = 0
-    var parentLines = [GTOID: (index: UInt, colorIndex: UInt)]()
+    let parentOutlets = NSOrderedSet(array: connections.map { $0.parentOID })
+    var parentLines = [GTOID: (parentIndex: UInt,
+                               childIndex: UInt,
+                               colorIndex: UInt)]()
 
     for connection in connections {
       if parentLines[connection.parentOID] == nil {
-        parentLines[connection.parentOID] = (bottomOffset, connection.colorIndex)
+        parentLines[connection.parentOID] = (bottomOffset,
+                                             topOffset,
+                                             connection.colorIndex)
         if connection.parentOID != commit.oid {
           bottomOffset += 1
         }
+        if connection.childOID != commit.oid {
+          topOffset += 1
+        }
       }
     }
+    topOffset = 0
     bottomOffset = 0
     
-    var topOffset: UInt = 0
     
     for connection in connections {
+      let parentIndex = parentOutlets.index(of: connection.parentOID)
       var connectionColor = connection.colorIndex
+      let previousLine = parentLines[connection.parentOID]
     
       if connection.parentOID == commit.oid {
-        let (offset, lineColor) = parentLines[connection.parentOID]
-                ?? (topOffset, connectionColor)
+        let (offset, _, lineColor) = previousLine
+                ?? (topOffset, 0, connectionColor)
         
         connectionColor = lineColor
         if dotOffset == nil {
@@ -65,8 +76,8 @@ public class CommitEntry: NSObject
         topOffset += 1
       }
       else if connection.childOID == commit.oid {
-        let (offset, _) = parentLines[connection.parentOID]
-                ?? (bottomOffset, 0)
+        let (offset, _, _) = previousLine
+                ?? (bottomOffset, 0, 0)
         
         if dotOffset == nil {
           dotOffset = topOffset
@@ -83,8 +94,8 @@ public class CommitEntry: NSObject
         var useTopOffset = topOffset
         var useBottomOffset = bottomOffset
         
-        if let (parentOffset, lineColor) = parentLines[connection.parentOID] {
-          useTopOffset = parentOffset
+        if let (parentOffset, childOffset, lineColor) = previousLine {
+          useTopOffset = childOffset
           useBottomOffset = parentOffset
           connectionColor = lineColor
           if let dotOffset = dotOffset,
