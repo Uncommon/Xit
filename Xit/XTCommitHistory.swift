@@ -32,88 +32,44 @@ public class CommitEntry: NSObject
   
   func generateLines()
   {
-    var topOffset: UInt = 0
-    var bottomOffset: UInt = 0
-    let parentOutlets = NSOrderedSet(array: connections.map { $0.parentOID })
-    var parentLines = [GTOID: (parentIndex: UInt,
-                               childIndex: UInt,
+    var childIndex: UInt = 0
+    let parentOutlets = NSOrderedSet(array: connections.flatMap {
+            ($0.parentOID == commit.oid) ? nil : $0.parentOID })
+    var parentLines = [GTOID: (childIndex: UInt,
                                colorIndex: UInt)]()
-
+    
     for connection in connections {
-      if parentLines[connection.parentOID] == nil {
-        parentLines[connection.parentOID] = (bottomOffset,
-                                             topOffset,
-                                             connection.colorIndex)
-        if connection.parentOID != commit.oid {
-          bottomOffset += 1
-        }
+      let parentIndex: UInt? = (connection.parentOID == commit.oid)
+              ? nil : UInt(parentOutlets.index(of: connection.parentOID))
+      var useChildIndex: UInt? = (connection.childOID == commit.oid)
+              ? nil : childIndex
+      var colorIndex = connection.colorIndex
+      
+      if (dotOffset == nil) &&
+         ((connection.parentOID == commit.oid) ||
+          (connection.childOID == commit.oid)) {
+        dotOffset = childIndex
+        dotColorIndex = colorIndex
+      }
+      if let parentLine = parentLines[connection.parentOID] {
         if connection.childOID != commit.oid {
-          topOffset += 1
+          useChildIndex = parentLine.childIndex
         }
-      }
-    }
-    topOffset = 0
-    bottomOffset = 0
-    
-    
-    for connection in connections {
-      let parentIndex = parentOutlets.index(of: connection.parentOID)
-      var connectionColor = connection.colorIndex
-      let previousLine = parentLines[connection.parentOID]
-    
-      if connection.parentOID == commit.oid {
-        let (offset, _, lineColor) = previousLine
-                ?? (topOffset, 0, connectionColor)
-        
-        connectionColor = lineColor
-        if dotOffset == nil {
-          dotOffset = topOffset
-          dotColorIndex = connection.colorIndex
-        }
-        lines.append(Line(childIndex: offset,
-                          parentIndex: nil,
-                          colorIndex: connectionColor))
-        topOffset += 1
-      }
-      else if connection.childOID == commit.oid {
-        let (offset, _, _) = previousLine
-                ?? (bottomOffset, 0, 0)
-        
-        if dotOffset == nil {
-          dotOffset = topOffset
-          dotColorIndex = connection.colorIndex
-        }
-        lines.append(Line(childIndex: nil,
-                          parentIndex: offset,
-                          colorIndex: connectionColor))
-        if offset == bottomOffset {
-          bottomOffset += 1
-        }
+        colorIndex = parentLine.colorIndex
       }
       else {
-        var useTopOffset = topOffset
-        var useBottomOffset = bottomOffset
-        
-        if let (parentOffset, childOffset, lineColor) = previousLine {
-          useTopOffset = childOffset
-          useBottomOffset = parentOffset
-          connectionColor = lineColor
-          if let dotOffset = dotOffset,
-             useTopOffset == dotOffset {
-            useTopOffset += 1
-            topOffset += 1
-          }
+        if useChildIndex != nil {
+          parentLines[connection.parentOID] = (
+              childIndex: childIndex,
+              colorIndex: colorIndex)
         }
-        lines.append(Line(childIndex: useTopOffset,
-                          parentIndex: useBottomOffset,
-                          colorIndex: connectionColor))
-        if useTopOffset == topOffset {
-          topOffset += 1
-        }
-        if useBottomOffset == bottomOffset {
-          bottomOffset += 1
+        if connection.parentOID != commit.oid {
+          childIndex += 1
         }
       }
+      lines.append(Line(childIndex: useChildIndex,
+                        parentIndex: parentIndex,
+                        colorIndex: colorIndex))
     }
   }
 }
