@@ -5,19 +5,15 @@ import XCTest
 class XTCommitLinesTest: XCTestCase
 {
   // Only the SHA/OID matters
-  func basicCommit() -> MockCommit
-  {
-    return MockCommit(sha: "a", oid: GTOID(oid: "a"), parentOIDs: [])
-  }
+  let entry = CommitEntry(commit: MockCommit(sha: "a",
+                                             oid: GTOID(oid: "a"),
+                                             parentOIDs: []))
   
-  /*  a
-      |\
-      b c
-  */
+  //  a
+  //  |\
+  //  b c
   func testMerge1()
   {
-    let entry = CommitEntry(commit: basicCommit())
-    
     entry.connections = [
       CommitConnection(parentSHA: "b", childSHA: "a", colorIndex: 0),
       CommitConnection(parentSHA: "c", childSHA: "a", colorIndex: 0),
@@ -33,15 +29,12 @@ class XTCommitLinesTest: XCTestCase
   }
   
   
-  /* 0
-     | a
-     |/|
-     b c
-  */
+  // 0
+  // | a
+  // |/|
+  // b c
   func testMerge2()
   {
-    let entry = CommitEntry(commit: basicCommit())
-    
     entry.connections = [
       CommitConnection(parentSHA: "b", childSHA: "0", colorIndex: 0),
       CommitConnection(parentSHA: "b", childSHA: "a", colorIndex: 1),
@@ -58,16 +51,13 @@ class XTCommitLinesTest: XCTestCase
     XCTAssertNil(entry.lines[2].childIndex)
   }
   
-  /* 0 1
-     | |
-     | a
-     | |
-     b c
-  */
+  // 0 1
+  // | |
+  // | a
+  // | |
+  // b c
   func testParallel()
   {
-    let entry = CommitEntry(commit: basicCommit())
-    
     entry.connections = [
       CommitConnection(parentSHA: "b", childSHA: "0", colorIndex: 0),
       CommitConnection(parentSHA: "a", childSHA: "1", colorIndex: 1),
@@ -84,16 +74,13 @@ class XTCommitLinesTest: XCTestCase
     XCTAssertNil(entry.lines[2].childIndex)
   }
   
-  /* 0 1
-     | |
-     a |
-     |/
-     b
-  */
+  // 0 1
+  // | |
+  // a |
+  // |/
+  // b
   func testSplitBelow()
   {
-    let entry = CommitEntry(commit: basicCommit())
-    
     entry.connections = [
       CommitConnection(parentSHA: "a", childSHA: "0", colorIndex: 0),
       CommitConnection(parentSHA: "b", childSHA: "a", colorIndex: 0),
@@ -110,14 +97,11 @@ class XTCommitLinesTest: XCTestCase
     XCTAssertEqual(entry.lines[2].parentIndex, 0)
   }
   
-  /* |/
-     |
-     o
-  */
+  // |/
+  // |
+  // o
   func testSplitAbove()
   {
-    let entry = CommitEntry(commit: basicCommit())
-    
     entry.connections = [
       CommitConnection(parentSHA: "a", childSHA: "0", colorIndex: 0),
       CommitConnection(parentSHA: "a", childSHA: "1", colorIndex: 1)
@@ -131,16 +115,13 @@ class XTCommitLinesTest: XCTestCase
     XCTAssertEqual(entry.lines[1].childIndex, 0)
   }
   
-  /* 0 1 2 3
-     | | | |
-     | a / |
-     | |/ /
-     b c d
-  */
+  // 0 1 2 3
+  // | | | |
+  // | a / |
+  // | |/ /
+  // b c d
   func testSplitBelow2()
   {
-    let entry = CommitEntry(commit: basicCommit())
-    
     entry.connections = [
       CommitConnection(parentSHA: "b", childSHA: "0", colorIndex: 0),
       CommitConnection(parentSHA: "a", childSHA: "1", colorIndex: 1),
