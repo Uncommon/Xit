@@ -54,11 +54,11 @@ public class CommitEntry: NSObject
       if let parentLine = parentLines[connection.parentOID] {
         if !commitIsChild {
           childIndex = parentLine.childIndex
+          colorIndex = parentLine.colorIndex
         }
         else if !commitIsParent {
           nextChildIndex += 1
         }
-        colorIndex = parentLine.colorIndex
       }
       else {
         if !commitIsChild {

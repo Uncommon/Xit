@@ -16,7 +16,7 @@ class XTCommitLinesTest: XCTestCase
   {
     entry.connections = [
       CommitConnection(parentSHA: "b", childSHA: "a", colorIndex: 0),
-      CommitConnection(parentSHA: "c", childSHA: "a", colorIndex: 0),
+      CommitConnection(parentSHA: "c", childSHA: "a", colorIndex: 1),
     ]
     
     XCTAssertEqual(entry.dotOffset, 0)
@@ -24,8 +24,10 @@ class XTCommitLinesTest: XCTestCase
     
     XCTAssertEqual(entry.lines[0].parentIndex, 0)
     XCTAssertNil(entry.lines[0].childIndex)
+    XCTAssertEqual(entry.lines[0].colorIndex, 0)
     XCTAssertEqual(entry.lines[1].parentIndex, 1)
     XCTAssertNil(entry.lines[1].childIndex)
+    XCTAssertEqual(entry.lines[1].colorIndex, 1)
   }
   
   
@@ -45,10 +47,13 @@ class XTCommitLinesTest: XCTestCase
     XCTAssertEqual(entry.dotColorIndex, 1)
     XCTAssertEqual(entry.lines[0].parentIndex, 0)
     XCTAssertEqual(entry.lines[0].childIndex, 0)
+    XCTAssertEqual(entry.lines[0].colorIndex, 0)
     XCTAssertEqual(entry.lines[1].parentIndex, 0)
     XCTAssertNil(entry.lines[1].childIndex)
+    XCTAssertEqual(entry.lines[1].colorIndex, 1)
     XCTAssertEqual(entry.lines[2].parentIndex, 1)
     XCTAssertNil(entry.lines[2].childIndex)
+    XCTAssertEqual(entry.lines[2].colorIndex, 2)
   }
   
   // 0 1
@@ -68,10 +73,13 @@ class XTCommitLinesTest: XCTestCase
     XCTAssertEqual(entry.dotColorIndex, 1)
     XCTAssertEqual(entry.lines[0].parentIndex, 0)
     XCTAssertEqual(entry.lines[0].childIndex, 0)
+    XCTAssertEqual(entry.lines[0].colorIndex, 0)
     XCTAssertNil(entry.lines[1].parentIndex)
     XCTAssertEqual(entry.lines[1].childIndex, 1)
+    XCTAssertEqual(entry.lines[1].colorIndex, 1)
     XCTAssertEqual(entry.lines[2].parentIndex, 1)
     XCTAssertNil(entry.lines[2].childIndex)
+    XCTAssertEqual(entry.lines[2].colorIndex, 1)
   }
   
   // 0 1
@@ -91,10 +99,13 @@ class XTCommitLinesTest: XCTestCase
     XCTAssertEqual(entry.dotColorIndex, 0)
     XCTAssertNil(entry.lines[0].parentIndex)
     XCTAssertEqual(entry.lines[0].childIndex, 0)
+    XCTAssertEqual(entry.lines[0].colorIndex, 0)
     XCTAssertEqual(entry.lines[1].parentIndex, 0)
     XCTAssertNil(entry.lines[1].childIndex)
+    XCTAssertEqual(entry.lines[1].colorIndex, 0)
     XCTAssertEqual(entry.lines[2].childIndex, 1)
     XCTAssertEqual(entry.lines[2].parentIndex, 0)
+    XCTAssertEqual(entry.lines[2].colorIndex, 1)
   }
   
   // |/
@@ -111,8 +122,10 @@ class XTCommitLinesTest: XCTestCase
     XCTAssertEqual(entry.dotColorIndex, 0)
     XCTAssertNil(entry.lines[0].parentIndex)
     XCTAssertEqual(entry.lines[0].childIndex, 0)
+    XCTAssertEqual(entry.lines[0].colorIndex, 0)
     XCTAssertNil(entry.lines[1].parentIndex)
     XCTAssertEqual(entry.lines[1].childIndex, 0)
+    XCTAssertEqual(entry.lines[1].colorIndex, 0)
   }
   
   // 0 1 2 3
