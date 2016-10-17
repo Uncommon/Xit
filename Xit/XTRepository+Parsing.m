@@ -212,7 +212,7 @@ NSString *XTHeaderContentKey = @"content";
   if (error != nil)
     return nil;
   [diff enumerateDeltasUsingBlock:^(GTDiffDelta *delta, BOOL *stop) {
-    if (delta.type != GTDiffFileDeltaUnmodified) {
+    if (delta.type != GTDeltaTypeUnmodified) {
       XTFileChange *change = [[XTFileChange alloc] init];
 
       change.path = delta.newFile.path;
