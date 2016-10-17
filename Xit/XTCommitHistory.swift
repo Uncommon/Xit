@@ -4,8 +4,23 @@ import Foundation
 // Inherits from NSObject just to make it accessible to ObjC
 public class CommitEntry: NSObject
 {
+  struct Line
+  {
+    let childIndex, parentIndex: UInt?
+    let colorIndex: UInt
+  }
+
   let commit: CommitType
   var connections = [CommitConnection]()
+  {
+    didSet
+    {
+      generateLines()
+    }
+  }
+  var lines = [Line]()
+  var dotOffset: UInt? = nil
+  var dotColorIndex: UInt? = nil
   
   public override var description: String
   { return commit.description }
@@ -13,6 +28,52 @@ public class CommitEntry: NSObject
   init(commit: CommitType)
   {
     self.commit = commit
+  }
+  
+  func generateLines()
+  {
+    var nextChildIndex: UInt = 0
+    let parentOutlets = NSOrderedSet(array: connections.flatMap {
+            ($0.parentOID == commit.oid) ? nil : $0.parentOID })
+    var parentLines = [GTOID: (childIndex: UInt,
+                               colorIndex: UInt)]()
+    
+    for connection in connections {
+      let commitIsParent = connection.parentOID == commit.oid
+      let commitIsChild = connection.childOID == commit.oid
+      let parentIndex: UInt? = commitIsParent
+              ? nil : UInt(parentOutlets.index(of: connection.parentOID))
+      var childIndex: UInt? = commitIsChild
+              ? nil : nextChildIndex
+      var colorIndex = connection.colorIndex
+      
+      if (dotOffset == nil) && (commitIsParent || commitIsChild) {
+        dotOffset = nextChildIndex
+        dotColorIndex = colorIndex
+      }
+      if let parentLine = parentLines[connection.parentOID] {
+        if !commitIsChild {
+          childIndex = parentLine.childIndex
+          colorIndex = parentLine.colorIndex
+        }
+        else if !commitIsParent {
+          nextChildIndex += 1
+        }
+      }
+      else {
+        if !commitIsChild {
+          parentLines[connection.parentOID] = (
+              childIndex: nextChildIndex,
+              colorIndex: colorIndex)
+        }
+        if !commitIsParent {
+          nextChildIndex += 1
+        }
+      }
+      lines.append(Line(childIndex: childIndex,
+                        parentIndex: parentIndex,
+                        colorIndex: colorIndex))
+    }
   }
 }
 
