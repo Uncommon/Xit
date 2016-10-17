@@ -28,36 +28,18 @@ class XTHistoryCellView: NSTableCellView
     return leftMargin + columnWidth * CGFloat(index) + columnWidth / 2
   }
   
-  /// Counts the different kinds of connections passing through a commit.
-  static func count(connections: [CommitConnection], oid: GTOID)
-    -> (incoming: UInt, outgoing: UInt, through: UInt)
-  {
-    var incomingCount: UInt = 0, outgoingCount: UInt = 0, throughCount: UInt = 0
-    
-    for connection in connections {
-      let incoming = connection.parentOID == oid
-      let outgoing = connection.childOID == oid
-      
-      incomingCount += incoming ? 1 : 0
-      outgoingCount += outgoing ? 1 : 0
-      throughCount += !(incoming || outgoing) ? 1 : 0
-    }
-    return (incomingCount, outgoingCount, throughCount)
-  }
-  
   /// Moves the text field out of the way of the lines and refs.
   func adjustLayout()
   {
     guard let entry = objectValue as? CommitEntry
     else { return }
-    let oid = entry.commit.oid
     
-    let (incomingCount, outgoingCount, throughCount) =
-        XTHistoryCellView.count(connections: entry.connections, oid: oid)
-    let totalColumns = throughCount + max(incomingCount, outgoingCount)
+    let totalColumns = entry.lines.reduce(0) { (oldMax, line) -> UInt in
+      max(oldMax, line.parentIndex ?? 0, line.childIndex ?? 0)
+    }
     
     linesMargin = XTHistoryCellView.leftMargin +
-                  CGFloat(totalColumns) * XTHistoryCellView.columnWidth
+                  CGFloat(totalColumns + 1) * XTHistoryCellView.columnWidth
     
     let tokenWidth: CGFloat = refs.reduce(0.0) { (width, ref) -> CGFloat in
       guard let (_, displayRef) = ref.splitRefName()
