@@ -113,7 +113,7 @@ NSDate *commitDate = nil;
   NSArray *expectedLines = [expectedHtml componentsSeparatedByString:@"\n"];
 
   // Some differences may be due to changes in WebKit.
-  XCTAssertEqual([lines count], [expectedLines count]);
+  XCTAssertEqual([lines count], [expectedLines count]-1);
   for (NSUInteger i = 0; i < lines.count; ++i)
     XCTAssertEqualObjects(lines[i], expectedLines[i],
                           @"line %lu", (unsigned long)i);
@@ -135,7 +135,7 @@ NSDate *commitDate = nil;
       XTCommitterNameKey : @"Guy Two",
       XTCommitterEmailKey : @"guy2@example.com",
       XTCommitterDateKey : commitDate,
-      XTParentSHAsKey : @[ @"1", @"2", @"3" ],
+      XTParentSHAsKey : @[ @"111111", @"222222", @"333333" ],
       XTRefsKey : [NSArray array],
       };
   *message = @"Example message";
@@ -157,11 +157,11 @@ NSDate *commitDate = nil;
 {
   FakeCommit *commit = [[FakeCommit alloc] init];
 
-  if ([sha isEqualToString:@"1"])
+  if ([sha isEqualToString:@"111111"])
     commit.messageSummary = @"Alphabet<>";
-  if ([sha isEqualToString:@"2"])
+  if ([sha isEqualToString:@"222222"])
     commit.messageSummary = @"Broccoli&";
-  if ([sha isEqualToString:@"3"])
+  if ([sha isEqualToString:@"333333"])
     commit.messageSummary = @"Cypress";
   commit.shortSHA = sha;
   commit.SHA = sha;

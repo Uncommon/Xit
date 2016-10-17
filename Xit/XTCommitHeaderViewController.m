@@ -179,7 +179,7 @@ dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
 
   if (!_expanded)
     [_webView.windowScriptObject callWebScriptMethod:@"disclosure"
-                                       withArguments:@[ @(NO) ]];
+                                       withArguments:@[ @(NO), @(YES) ]];
 }
 
 #pragma mark - Web scripting

@@ -1,16 +1,18 @@
 function isCollapsed()
 {
-  return document.getElementById('committer').style.display == 'none'
+  var committer = document.getElementById('committer')
+  
+  return (committer == null) || (committer.style.display == 'none')
 }
 
-function disclosure(clicked)
+function disclosure(clicked, forceDisclose)
 {
 	var button = document.getElementById("triangle");
 	var hidingIds = ['committer', 'sha', 'parents'];
 	var newDisplay = 'none';
 	var newImage = 'undisclosed.png';
 
-	if (isCollapsed()) {
+	if (forceCollapse || isCollapsed()) {
 		newDisplay = 'block';
 		newImage = 'disclosed.png'
 	}
