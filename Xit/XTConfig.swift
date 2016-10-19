@@ -51,9 +51,9 @@ class XTConfig: NSObject
   final func saveXitConfig()
   {
     guard let xitConfigURL = xitConfigURL
-      else {
-        NSLog("Can't make Xit config URL")
-        return
+    else {
+      NSLog("Can't make Xit config URL")
+      return
     }
     
     if !(xitConfig as NSDictionary).write(to: xitConfigURL, atomically: true) {
@@ -88,57 +88,5 @@ class XTConfig: NSObject
     }
     return UserDefaults.standard.bool(
         forKey: XTGitPrefsController.PrefKey.FetchTags)
-  }
-  
-  final func teamCityAccountKey(_ remote: String) -> String
-  {
-    return "remote.\(remote).teamCityAccount"
-  }
-  
-  /// Returns the TeamCity account chosen for the remote, if any.
-  final func teamCityAccount(_ remote: String) -> Account?
-  {
-    guard let accountString = xitConfig[teamCityAccountKey(remote)]
-    else { return nil }
-    guard var url = URLComponents(string: accountString)
-    else {
-      NSLog("Stored URL not parseable: \(accountString)")
-      return nil
-    }
-    let user = url.user ?? ""
-    
-    url.user = nil
-    
-    guard let finalURL = url.url
-    else {
-      NSLog("Couldn't reconstruct URL: \(accountString)")
-      return nil
-    }
-    
-    return Account(type: .teamCity, user: user, location: finalURL)
-  }
-  
-  /// Sets (or clears) the TeamCity account for the remote.
-  final func setTeamCityAccount(_ remote: String, account: Account?)
-  {
-    if let account = account {
-      guard account.type == .teamCity
-      else {
-        NSLog("Wrong account type: \(account.type.name)")
-        return
-      }
-      guard var url = URLComponents(url: account.location as URL,
-                                    resolvingAgainstBaseURL: false)
-      else {
-        NSLog("Couldn't parse URL from account: \(account.location.absoluteString)")
-        return
-      }
-      
-      url.user = account.user
-      xitConfig[teamCityAccountKey(remote)] = url.string
-    }
-    else {
-      xitConfig.removeValue(forKey: teamCityAccountKey(remote))
-    }
   }
 }

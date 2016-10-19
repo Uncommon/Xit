@@ -159,7 +159,6 @@
 		C9EB87241D01D93400C47D13 /* XTStash.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EB87231D01D93400C47D13 /* XTStash.swift */; };
 		C9EB87321D05D35800C47D13 /* XTStashTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EB87311D05D35800C47D13 /* XTStashTest.swift */; };
 		C9F78B141D0896AF008490EA /* XTSidebarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F78B131D0896AF008490EA /* XTSidebarItem.swift */; };
-		C9F7A0A51D2EF54E00BB8526 /* XTConfigTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F7A0A41D2EF54E00BB8526 /* XTConfigTest.swift */; };
 		C9FCC1D11D50EB1A00AC398E /* XTCommitHistoryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FCC1D01D50EB1A00AC398E /* XTCommitHistoryTest.swift */; };
 		DD00725613E76DFB003B4120 /* Xit.icns in Resources */ = {isa = PBXBuildFile; fileRef = DD00725513E76DFB003B4120 /* Xit.icns */; };
 		DD07B07816A5D2A80012AC19 /* XTSideBarOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = DD07B07716A5D2A80012AC19 /* XTSideBarOutlineView.m */; };
@@ -493,7 +492,6 @@
 		C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "XitTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		C9EB87311D05D35800C47D13 /* XTStashTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTStashTest.swift; sourceTree = "<group>"; };
 		C9F78B131D0896AF008490EA /* XTSidebarItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSidebarItem.swift; sourceTree = "<group>"; };
-		C9F7A0A41D2EF54E00BB8526 /* XTConfigTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTConfigTest.swift; sourceTree = "<group>"; };
 		C9FCC1D01D50EB1A00AC398E /* XTCommitHistoryTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTCommitHistoryTest.swift; sourceTree = "<group>"; };
 		DD00725513E76DFB003B4120 /* Xit.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Xit.icns; sourceTree = "<group>"; };
 		DD07B07616A5D2A80012AC19 /* XTSideBarOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTSideBarOutlineView.h; sourceTree = "<group>"; tabWidth = 2; };
@@ -800,7 +798,6 @@
 				DD98CFFF181AE297008B79C9 /* CFRunLoop+Extensions.h */,
 				C3FA472B13D0F8E300AC4F9B /* XTTest.h */,
 				C3FA472D13D0F8E300AC4F9B /* XTTest.m */,
-				C9F7A0A41D2EF54E00BB8526 /* XTConfigTest.swift */,
 				DD3D9534182B5EC7004AF532 /* XTFileChangesDataSourceTest.m */,
 				3199BABC142079BB008AAA4F /* XTFileListDataSourceTest.m */,
 				896B05CF15796D2A003B0C24 /* XTHistoryViewControllerTest.m */,
@@ -1376,7 +1373,6 @@
 				C953560A1D958E8D00AEEF49 /* StringExtensionsTest.swift in Sources */,
 				896B05D015796D2A003B0C24 /* XTHistoryViewControllerTest.m in Sources */,
 				C923D6481D8CA56800C6B90B /* XTTagTest.swift in Sources */,
-				C9F7A0A51D2EF54E00BB8526 /* XTConfigTest.swift in Sources */,
 				89FE824815A716E800E2EA2A /* XTRepositoryTests.m in Sources */,
 				C98925B31DA70D3A00E5645C /* XTCommitLinesTest.swift in Sources */,
 				DDB9319516EC12B100A6ABC6 /* XTRefTokenTest.m in Sources */,
