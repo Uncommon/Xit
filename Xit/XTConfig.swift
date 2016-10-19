@@ -61,6 +61,18 @@ class XTConfig: NSObject
     }
   }
   
+  final func userName() -> String?
+  {
+    guard let config = config else { return nil }
+    return config.string(forKey: "user.name")
+  }
+  
+  final func userEmail() -> String?
+  {
+    guard let config = config else { return nil }
+    return config.string(forKey: "user.email")
+  }
+
   /// Returns the `fetch.prune` setting.
   final func fetchPrune() -> Bool
   {

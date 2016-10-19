@@ -187,6 +187,22 @@
   }];
 }
 
+- (BOOL)createLightweightTag:(NSString*)name
+{
+  return [self executeWritingBlock:^BOOL{
+    NSError *error = nil;
+    GTReference *headRef = [_gtRepo headReferenceWithError:&error];
+    id target = headRef.resolvedTarget;
+    
+    if (target == nil)
+      return NO;
+    [_gtRepo createLightweightTagNamed:name
+                                target:target
+                                 error:&error];
+    return error != nil;
+  }];
+}
+
 - (BOOL)deleteTag:(NSString *)name error:(NSError *__autoreleasing *)error
 {
   return [self executeWritingBlock:^BOOL{

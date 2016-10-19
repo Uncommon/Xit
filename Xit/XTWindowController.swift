@@ -166,7 +166,11 @@ class XTWindowController: NSWindowController, NSWindowDelegate
     self.historyController.mainSplitView.adjustSubviews()
   }
   
-  @IBAction func newTag(_: AnyObject) {}
+  @IBAction func newTag(_: AnyObject)
+  {
+    _ = startOperation() { XTNewTagController(windowController: self) }
+  }
+  
   @IBAction func newBranch(_: AnyObject) {}
   @IBAction func addRemote(_: AnyObject) {}
 
@@ -288,6 +292,9 @@ class XTWindowController: NSWindowController, NSWindowDelegate
             ? NSOffState : NSOnState
 
       case #selector(self.remoteSettings(_:)):
+        result = true
+      
+      case #selector(self.newTag(_:)):
         result = true
 
       default:

@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)deleteBranch:(NSString*)name error:(NSError**)error;
 - (nullable NSString*)currentBranch;
 - (BOOL)createTag:(NSString*)name withMessage:(NSString*)msg;
+- (BOOL)createLightweightTag:(NSString*)name;
 - (BOOL)deleteTag:(NSString*)name error:(NSError**)error;
 - (BOOL)addRemote:(NSString*)name withUrl:(NSString*)url;
 - (BOOL)deleteRemote:(NSString*)name error:(NSError**)error;
