@@ -16,6 +16,7 @@ class XTHistoryCellView: NSTableCellView
       NSColor(calibratedHue: 0.13, saturation: 0.08, brightness: 0.8, alpha: 1.0),
       NSColor.black, NSColor.lightGray]
   
+  static let lineWidth: CGFloat = 2.0
   static let columnWidth: CGFloat = 8.0
   static let leftMargin: CGFloat = 4.0
   static let rightMargin: CGFloat = 4.0
@@ -104,9 +105,9 @@ class XTHistoryCellView: NSTableCellView
   func cornerOffset(_ offset1: UInt, _ offset2: UInt) -> CGFloat
   {
     let pathOffset = abs(Int(offset1) - Int(offset2))
-    let height = Double(pathOffset) * 0.5
+    let height = Double(pathOffset) * 0.25
     
-    return CGFloat(height)
+    return min(CGFloat(height), XTHistoryCellView.lineWidth);
   }
   
   func drawLines()
@@ -147,9 +148,13 @@ class XTHistoryCellView: NSTableCellView
         guard let parentIndex = line.parentIndex,
               let childIndex = line.childIndex
         else { continue }
+        let cornerOffset = self.cornerOffset(childIndex, parentIndex)
         
         path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(childIndex),
                               y: bounds.size.height))
+        path.relativeLine(to: NSPoint(x: 0, y: cornerOffset))
+        path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(parentIndex),
+                              y: cornerOffset))
         path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(parentIndex),
                               y: 0))
       }
@@ -160,10 +165,10 @@ class XTHistoryCellView: NSTableCellView
       
       path.lineJoinStyle = .roundLineJoinStyle
       NSColor.white.setStroke()
-      path.lineWidth = 3.0
+      path.lineWidth = XTHistoryCellView.lineWidth + 1.0
       path.stroke()
       lineColor.setStroke()
-      path.lineWidth = 2.0
+      path.lineWidth = XTHistoryCellView.lineWidth
       path.stroke()
       
       let dotSize: CGFloat = 6.0
