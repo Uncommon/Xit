@@ -149,6 +149,7 @@
                                  error:resultError
                          progressBlock:NULL];
 
+    // TODO: Make a separate checkoutSHA method to avoid ambiguity
     if (branch.length == 40) {
       if (resultError != NULL)
         *resultError = nil;
@@ -168,22 +169,43 @@
   }];
 }
 
-- (BOOL)createTag:(NSString *)name withMessage:(NSString *)msg
+- (BOOL)createTag:(NSString*)name
+        targetSHA:(NSString*)sha
+          message:(NSString*)message
 {
   return [self executeWritingBlock:^BOOL{
     NSError *error = nil;
-    GTReference *headRef = [_gtRepo headReferenceWithError:&error];
+    GTCommit *targetCommit = [_gtRepo lookUpObjectBySHA:sha
+                                             objectType:GTObjectTypeCommit
+                                                  error:&error];
     GTSignature *signature = [_gtRepo userSignatureForNow];
 
-    if ((headRef == nil) || (signature == nil))
+    if ((targetCommit == nil) || (signature == nil))
       return NO;
 
     [_gtRepo createTagNamed:name
-                     target:headRef.resolvedTarget
+                     target:targetCommit
                      tagger:[_gtRepo userSignatureForNow]
-                    message:msg
+                    message:message
                       error:&error];
     return error == nil;
+  }];
+}
+
+- (BOOL)createLightweightTag:(NSString*)name targetSHA:(NSString*)sha
+{
+  return [self executeWritingBlock:^BOOL{
+    NSError *error = nil;
+    GTCommit *targetCommit = [_gtRepo lookUpObjectBySHA:sha
+                                             objectType:GTObjectTypeCommit
+                                                  error:&error];
+    
+    if (targetCommit == nil)
+      return NO;
+    [_gtRepo createLightweightTagNamed:name
+                                target:targetCommit
+                                 error:&error];
+    return error != nil;
   }];
 }
 

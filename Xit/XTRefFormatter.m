@@ -32,6 +32,9 @@
 
 + (BOOL)isValidRefString:(NSString*)ref
 {
+  if ([ref length] == 0)
+    return NO;
+  
   // The rules, according to git help check-ref-format:
 
   // They can include slash / for hierarchical (directory) grouping, but no
