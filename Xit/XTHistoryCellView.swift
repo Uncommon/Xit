@@ -152,7 +152,7 @@ class XTHistoryCellView: NSTableCellView
         
         path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(childIndex),
                               y: bounds.size.height))
-        path.relativeLine(to: NSPoint(x: 0, y: cornerOffset))
+        path.relativeLine(to: NSPoint(x: 0, y: -cornerOffset))
         path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(parentIndex),
                               y: cornerOffset))
         path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(parentIndex),
