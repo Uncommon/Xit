@@ -345,40 +345,6 @@ NSString *XTHeaderContentKey = @"content";
   return [self deltaFromDiff:diff withPath:path];
 }
 
-- (XTDiffDelta*)stagedDiffForFile:(NSString*)path
-{
-  // TODO: Get the file diff directly
-  // Get the blobs from the index and HEAD and compare
-  // [GTDiffDelta diffDeltaFromBlob:forPath:toBlob:forPath:options:error]
-  NSError *error = nil;
-  GTCommit *headCommit = [self commitForRef:self.headRef];
-  GTDiff *diff = [GTDiff diffIndexFromTree:headCommit.tree
-                              inRepository:_gtRepo
-                                   options:nil
-                                     error:&error];
-  if (error != nil)
-    return nil;
-  return [self deltaFromDiff:diff withPath:path];
-}
-
-- (XTDiffDelta*)unstagedDiffForFile:(NSString*)path
-{
-  // TODO: Get the file diff directly
-  // Instead of diffing the entire working directory, get the blob from the
-  // index and compare it to the file contents.
-  // [GTDiffDelta diffDeltaFromBlob:forPath:toData:forPath:options:error]
-  NSError *error = nil;
-  NSDictionary *options = @{
-      GTDiffOptionsFlagsKey: @(GTDiffOptionsFlagsIncludeUntracked) };
-  GTDiff *diff = [GTDiff diffIndexToWorkingDirectoryInRepository:_gtRepo
-                                                         options:options
-                                                           error:&error];
-
-  if (error != nil)
-    return nil;
-  return [self deltaFromDiff:diff withPath:path];
-}
-
 NSString *kHeaderFormat = @"--format="
                            "%H%n%T%n%P%n"     // commit, tree, and parent hashes
                            "%d%n"             // ref names

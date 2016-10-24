@@ -136,6 +136,35 @@ extension XTRepository
     
     return tags.map({ XTTag(repository: self, tag: $0) })
   }
+  
+  func stagedDiff(file: String) -> XTDiffDelta?
+  {
+    guard let index = try? gtRepo.index(),
+          let indexEntry = index.entry(withPath: file),
+          let indexBlob = GTObject(indexEntry: indexEntry, error: nil) as? GTBlob,
+          let headTree = commit(ref: headRef)?.tree,
+          let headEntry = try? headTree.entry(withPath: file),
+          let headBlob = try? GTObject(treeEntry: headEntry) as? GTBlob
+    else { return nil }
+    
+    return try? XTDiffDelta(from: headBlob, forPath: file,
+                            to: indexBlob, forPath: file,
+                            options: nil)
+  }
+  
+  func unstagedDiff(file: String) -> XTDiffDelta?
+  {
+    let url = self.repoURL.appendingPathComponent(file)
+    guard let index = try? gtRepo.index(),
+          let indexEntry = index.entry(withPath: file),
+          let indexBlob = GTObject(indexEntry: indexEntry, error: nil) as? GTBlob,
+          let data = try? Data(contentsOf: url)
+    else { return nil }
+    
+    return try? XTDiffDelta(from: indexBlob, forPath: file,
+                            to: data, forPath: file,
+                            options: nil)
+  }
 }
 
 // MARK: Push/pull

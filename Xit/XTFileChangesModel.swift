@@ -225,10 +225,10 @@ class XTStagingChanges: NSObject, XTFileChangesModel
   func diffForFile(_ path: String, staged: Bool) -> XTDiffDelta?
   {
     if staged {
-      return self.repository.stagedDiff(forFile: path)
+      return self.repository.stagedDiff(file: path)
     }
     else {
-      return self.repository.unstagedDiff(forFile: path)
+      return self.repository.unstagedDiff(file: path)
     }
   }
   

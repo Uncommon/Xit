@@ -75,11 +75,10 @@ typedef NS_ENUM(NSUInteger, XitChange) {
 - (nullable NSArray<XTFileChange*>*)changesForRef:(NSString*)ref
                                            parent:(nullable NSString*)parentSHA;
 - (nullable GTCommit*)commitForStashAtIndex:(NSUInteger)index;
+- (nullable GTCommit*)commitForRef:(NSString*)ref NS_SWIFT_NAME(commit(ref:));
 - (nullable XTDiffDelta*)diffForFile:(NSString*)path
                            commitSHA:(NSString*)sha
                            parentSHA:(nullable NSString*)parentSHA;
-- (nullable XTDiffDelta*)stagedDiffForFile:(NSString*)path;
-- (nullable XTDiffDelta*)unstagedDiffForFile:(NSString*)path;
 - (BOOL)isTextFile:(NSString*)path commit:(NSString*)commit;
 
 - (nullable NSArray<NSString*>*)remoteNamesWithError:(NSError**)error;
