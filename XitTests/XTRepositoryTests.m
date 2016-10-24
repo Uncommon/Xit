@@ -268,9 +268,13 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
   NSString *testTagName = @"testtag";
   
   self.repository.isWriting = YES;
-  XCTAssertFalse([self.repository createTag:testTagName withMessage:@"tag msg"]);
+  XCTAssertFalse([self.repository createTag:testTagName
+                                  targetSHA:self.repository.headSHA
+                                    message:@"tag msg"]);
   self.repository.isWriting = NO;
-  XCTAssertTrue([self.repository createTag:testTagName withMessage:@"tag msg"]);
+  XCTAssertTrue([self.repository createTag:testTagName
+                                 targetSHA:self.repository.headSHA
+                                   message:@"tag msg"]);
   self.repository.isWriting = YES;
   XCTAssertFalse([self.repository deleteTag:testTagName error:&error]);
   self.repository.isWriting = NO;

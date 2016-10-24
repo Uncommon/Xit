@@ -173,7 +173,9 @@
     XCTFail(@"Create Branch 'b1'");
   }
 
-  if (![self.repository createTag:@"t1" withMessage:@"msg"]) {
+  if (![self.repository createTag:@"t1"
+                        targetSHA:self.repository.headSHA
+                          message:@"msg"]) {
     XCTFail(@"Create Tag 't1'");
   }
 
