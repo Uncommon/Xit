@@ -279,9 +279,11 @@ public class XTCommitHistory: NSObject
   /// Creates the connections to be drawn between commits.
   func connectCommits()
   {
+    var newConnectionsList = [[CommitConnection]]()
     var connections = [CommitConnection]()
     var nextColorIndex: UInt = 0
     
+    newConnectionsList.reserveCapacity(entries.count)
     for entry in entries {
       let commitOID = entry.commit.oid
       let incomingIndex = connections.index(where: { $0.parentOID == commitOID })
@@ -305,8 +307,13 @@ public class XTCommitHistory: NSObject
                                             colorIndex: nextColorIndex++))
       }
       
-      entry.connections = connections
+      newConnectionsList.append(connections)
       connections = connections.filter { $0.parentOID != commitOID }
+    }
+    
+    DispatchQueue.concurrentPerform(iterations: entries.count) {
+      (index) in
+      entries[index].connections = newConnectionsList[index]
     }
 #if DEBUGLOG
     if !connections.isEmpty {
