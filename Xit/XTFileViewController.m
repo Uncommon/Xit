@@ -355,13 +355,18 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   self.previewPath.pathComponentCells = cells;
 }
 
+- (void)clear
+{
+  [self.contentController clear];
+  self.previewPath.pathComponentCells = @[];
+}
+
 - (void)loadSelectedPreview
 {
   NSIndexSet *selection = _fileListOutline.selectedRowIndexes;
   
   if (selection.count == 0) {
-    [self.contentController clear];
-    self.previewPath.pathComponentCells = @[];
+    [self clear];
     return;
   }
   
@@ -369,6 +374,10 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
       [self.fileListDataSource fileChangeAtRow:selection.firstIndex];
   XTWindowController *controller = self.view.window.windowController;
 
+  if (selectedItem == nil) {
+    [self clear];
+    return;
+  }
   [self updatePreviewPath:selectedItem.path];
   [self.contentController loadPath:selectedItem.path
                              model:controller.selectedModel
