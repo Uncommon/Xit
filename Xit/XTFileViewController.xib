@@ -85,7 +85,7 @@
                                     </buttonCell>
                                 </button>
                                 <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="taS-ff-AsX">
-                                    <rect key="frame" x="0.0" y="188" width="67" height="23"/>
+                                    <rect key="frame" x="-1" y="188" width="67" height="23"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="selectOne" id="VOL-YW-yiD">
                                         <font key="font" metaFont="system"/>
