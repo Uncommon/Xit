@@ -14,5 +14,8 @@
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
 #import "XTSidebarDataSource.h"
+#import "XTSideBarOutlineView.h"
 #import "XTSideBarTableCellView.h"
 #import "XTWebViewController.h"
+
+#import "NSAttributedString+XTExtensions.h"

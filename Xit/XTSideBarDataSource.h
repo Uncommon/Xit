@@ -6,6 +6,7 @@
 @class XTLocalBranchItem;
 @class XTRefFormatter;
 @class XTRepository;
+@class XTSidebarController;
 @class XTSideBarItem;
 @class XTSideBarGroupItem;
 
@@ -27,11 +28,12 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)loadStashes:(NSMutableArray *)stashes
           refsIndex:(NSMutableDictionary *)refsIndex;
 
-- (XTSideBarItem *)itemNamed:(NSString *)name inGroup:(NSInteger)groupIndex;
+- (nullable XTSideBarItem*)itemNamed:(NSString *)name
+                             inGroup:(XTGroupIndex)groupIndex;
 
 - (void)doubleClick:(id)sender;
 
-@property (weak) IBOutlet XTHistoryViewController *viewController;
+@property (weak) IBOutlet XTSidebarController *viewController;
 @property (weak) IBOutlet XTRefFormatter *refFormatter;
 @property (weak) IBOutlet NSOutlineView *outline;
 

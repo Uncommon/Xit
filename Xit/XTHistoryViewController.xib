@@ -112,6 +112,7 @@
                                         </tableColumns>
                                         <connections>
                                             <outlet property="_controller" destination="-2" id="134"/>
+                                            <outlet property="controller" destination="bvs-X9-kYl" id="SJx-wa-uX6"/>
                                             <outlet property="dataSource" destination="29" id="117"/>
                                             <outlet property="delegate" destination="29" id="118"/>
                                         </connections>
@@ -307,12 +308,20 @@
                 <outlet property="_viewController" destination="-2" id="168"/>
                 <outlet property="outline" destination="80" id="xJk-ta-GFc"/>
                 <outlet property="refFormatter" destination="165" id="OcN-oK-xa5"/>
+                <outlet property="viewController" destination="bvs-X9-kYl" id="cm4-tT-l4X"/>
             </connections>
         </customObject>
         <customObject id="165" customClass="XTRefFormatter"/>
         <customObject id="IYz-w0-bcN" customClass="XTHistoryTableController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="view" destination="No3-Ik-sWu" id="rsr-3x-Jbg"/>
+            </connections>
+        </customObject>
+        <customObject id="bvs-X9-kYl" customClass="XTSidebarController" customModule="Xit" customModuleProvider="target">
+            <connections>
+                <outlet property="sidebarDS" destination="29" id="2r1-gm-E0M"/>
+                <outlet property="sidebarOutline" destination="80" id="8Kj-SS-ywV"/>
+                <outlet property="view" destination="80" id="gtL-AT-WQG"/>
             </connections>
         </customObject>
     </objects>

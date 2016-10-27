@@ -1,17 +1,13 @@
 #import <Cocoa/Cocoa.h>
 
-@class XTHistoryViewController;
+@class XTSidebarController;
 
 /**
   Subclassed in order to get the desired right-click behavior.
  */
 @interface XTSideBarOutlineView : NSOutlineView
-{
-  IBOutlet __weak XTHistoryViewController *_controller;
 
-  NSInteger _contextMenuRow;
-}
-
+@property(weak) IBOutlet XTSidebarController *controller;
 @property(readonly) NSInteger contextMenuRow;
 
 @end
