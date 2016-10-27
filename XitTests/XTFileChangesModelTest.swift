@@ -1,8 +1,8 @@
 import XCTest
 @testable import Xit
 
-class XTFileChangesModelTest: XTTest {
-  
+class XTFileChangesModelTest: XTTest
+{  
   func data(for string: String) -> Data
   {
     return (string as NSString).data(using: String.Encoding.utf8.rawValue)!
