@@ -70,7 +70,7 @@ class MockRepository: NSObject, RepositoryType
 
 extension Xit.CommitConnection: CustomDebugStringConvertible
 {
-  var debugDescription: String
+  public var debugDescription: String
   { return "\(childOID.sha)-\(parentOID.sha) \(colorIndex)" }
 }
 

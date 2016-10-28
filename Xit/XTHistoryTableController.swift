@@ -44,9 +44,11 @@ public class XTHistoryTableController: NSViewController
   
   deinit
   {
-    NotificationCenter.default.removeObserver(refsChangedObserver)
-    NotificationCenter.default.removeObserver(selectionObserver)
-    NotificationCenter.default.removeObserver(self)
+    let center = NotificationCenter.default
+  
+    refsChangedObserver.map { center.removeObserver($0) }
+    selectionObserver.map { center.removeObserver($0) }
+    center.removeObserver(self)
   }
   
   override open func viewDidAppear()

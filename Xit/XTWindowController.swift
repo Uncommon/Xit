@@ -76,8 +76,10 @@ class XTWindowController: NSWindowController, NSWindowDelegate
   
   deinit
   {
-    NotificationCenter.default.removeObserver(refsChangedObserver)
-    NotificationCenter.default.removeObserver(self)
+    let center = NotificationCenter.default
+    
+    refsChangedObserver.map { center.removeObserver($0) }
+    center.removeObserver(self)
     currentOperation?.canceled = true
   }
   

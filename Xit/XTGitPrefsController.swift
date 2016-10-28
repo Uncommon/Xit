@@ -17,7 +17,7 @@ class XTGitPrefsController: NSViewController, PreferencesSaver
   
   deinit
   {
-    NotificationCenter.default.removeObserver(keyObserver)
+    keyObserver.map { NotificationCenter.default.removeObserver($0) }
   }
   
   override func viewDidLoad() {
@@ -51,10 +51,11 @@ class XTGitPrefsController: NSViewController, PreferencesSaver
   
   func savePreferences()
   {
-    config?.setString(userNameField.stringValue, forKey: "user.name")
-    config?.setString(userEmailField.stringValue, forKey: "user.email")
-    
-    config?.setBool(fetchPruneCheckbox.boolValue, forKey: "fetch.prune")
+    if let config = config {
+      config.setString(userNameField.stringValue, forKey: "user.name")
+      config.setString(userEmailField.stringValue, forKey: "user.email")
+      config.setBool(fetchPruneCheckbox.boolValue, forKey: "fetch.prune")
+    }
     UserDefaults.standard.set(fetchTagsCheckbox.boolValue,
                               forKey: PrefKey.FetchTags)
   }

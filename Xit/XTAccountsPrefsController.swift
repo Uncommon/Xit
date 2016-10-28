@@ -41,9 +41,11 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
   
   deinit
   {
-    NotificationCenter.default.removeObserver(authStatusObserver)
-    NotificationCenter.default.removeObserver(keyObserver)
-    NotificationCenter.default.removeObserver(self)
+    let center = NotificationCenter.default
+    
+    authStatusObserver.map { center.removeObserver($0) }
+    keyObserver.map { center.removeObserver($0) }
+    center.removeObserver(self)
   }
   
   func savePreferences()
