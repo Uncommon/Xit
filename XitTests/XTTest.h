@@ -14,6 +14,7 @@
 
 - (XTRepository *)createRepo:(NSString *)repoName;
 - (void)makeRemoteRepo;
+- (void)waitForRepository:(XTRepository*)repo;
 - (void)waitForRepoQueue;
 - (void)addInitialRepoContent;
 - (void)makeStash;

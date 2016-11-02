@@ -118,7 +118,7 @@
                             outputBlock:NULL
                                   error:NULL];
   }];
-  [self waitForRepoQueue];
+  [self waitForRepository:repo];
   
   return success;
 }
@@ -161,7 +161,12 @@
 
 - (void)waitForRepoQueue
 {
-  WaitForQueue(self.repository.queue);
+  [self waitForRepository: self.repository];
+}
+
+- (void)waitForRepository:(XTRepository*)repo
+{
+  WaitForQueue(repo.queue);
   WaitForQueue(dispatch_get_main_queue());
 }
 
