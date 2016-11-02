@@ -4,6 +4,7 @@
 
 @class XTFileViewController;
 @class XTHistoryTableController;
+@class XTSidebarController;
 @class XTSideBarDataSource;
 @class XTSideBarOutlineView;
 
@@ -33,6 +34,7 @@
 
 @property(readonly) NSTableView *historyTable;
 
+@property (strong) IBOutlet XTSidebarController *sidebarController;
 @property (weak) IBOutlet NSSplitView *sidebarSplitView;
 @property (weak) IBOutlet NSSplitView *mainSplitView;
 @property (weak) IBOutlet XTHistoryTableController *tableController;

@@ -59,6 +59,7 @@
 - (void)setRepo:(XTRepository*)newRepo
 {
   _repo = newRepo;
+  self.sidebarController.repo = newRepo;
   [_fileViewController setRepo:newRepo];
   self.tableController.repository = newRepo;
 }
