@@ -41,7 +41,6 @@
 {
   [super setUp];
 
-  mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
   sidebar = [[XTSideBarOutlineView alloc] initWithFrame:NSMakeRect(0, 0, 100, 100)];
   [sidebar addTableColumn:[[NSTableColumn alloc] initWithIdentifier:@"column"]];
   sidebarDS = [[XTSideBarDataSource alloc] init];
@@ -100,7 +99,7 @@
   XCTAssertEqualObjects(stashes, composedStashes, @"");
 }
 
-- (void)doStashAction:(SEL)action
+- (void)doStashAction:(void (^)())action
             stashName:(NSString *)stashName
       expectedRemains:(NSArray *)expectedRemains
          expectedText:(NSString *)expectedText
@@ -108,27 +107,18 @@
   [self makeTwoStashes];
   [self assertStashes:@[ @"s2", @"s1" ]];
 
-  NSInteger stashRow = 2, noRow = -1;
-
   [controller.sidebarDS setRepo:self.repository];
   [controller.sidebarDS reload];
   [self waitForRepoQueue];
+  [sidebar expandItem:nil expandChildren:YES];
 
-  XTSideBarGroupItem *stashesGroup =
-      controller.sidebarDS.roots[XTGroupIndexStashes];
   XTSideBarItem *stashItem =
       [controller.sidebarDS itemNamed:stashName inGroup:XTGroupIndexStashes];
 
   XCTAssertNotNil(stashItem);
-  [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(noRow)] contextMenuRow];
-  [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(stashRow)] selectedRow];
-  [[[mockSidebar expect] andReturn:stashesGroup] parentForItem:stashItem];
-  [[[mockSidebar expect] andReturn:stashItem] itemAtRow:stashRow];
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-  [controller performSelector:action withObject:nil];
-#pragma clang diagnostic pop
+  sidebar.contextMenuRow = [sidebar rowForItem:stashItem];
+  action();
   [self waitForRepoQueue];
   [self assertStashes:expectedRemains];
 
@@ -139,12 +129,11 @@
 
   XCTAssertNil(error, @"");
   XCTAssertEqualObjects(text, expectedText, @"");
-  [mockSidebar verify];
 }
 
 - (void)testPopStash1
 {
-  [self doStashAction:@selector(popStash:)
+  [self doStashAction:^{ [controller popStash:nil]; }
             stashName:@"On master: s1"
       expectedRemains:@[ @"s2" ]
          expectedText:@"second text"];
@@ -152,7 +141,7 @@
 
 - (void)testPopStash2
 {
-  [self doStashAction:@selector(popStash:)
+  [self doStashAction:^{ [controller popStash:nil]; }
             stashName:@"On master: s2"
       expectedRemains:@[ @"s1" ]
          expectedText:@"third text"];
@@ -160,7 +149,7 @@
 
 - (void)testApplyStash1
 {
-  [self doStashAction:@selector(applyStash:)
+  [self doStashAction:^{ [controller applyStash:nil]; }
             stashName:@"On master: s1"
       expectedRemains:@[ @"s2", @"s1" ]
          expectedText:@"second text"];
@@ -168,7 +157,7 @@
 
 - (void)testApplyStash2
 {
-  [self doStashAction:@selector(applyStash:)
+  [self doStashAction:^{ [controller applyStash:nil]; }
             stashName:@"On master: s2"
       expectedRemains:@[ @"s2", @"s1" ]
          expectedText:@"third text"];
@@ -176,7 +165,7 @@
 
 - (void)testDropStash1
 {
-  [self doStashAction:@selector(dropStash:)
+  [self doStashAction:^{ [controller dropStash:nil]; }
             stashName:@"On master: s1"
       expectedRemains:@[ @"s2" ]
          expectedText:@"some text"];
@@ -184,7 +173,7 @@
 
 - (void)testDropStash2
 {
-  [self doStashAction:@selector(dropStash:)
+  [self doStashAction:^{ [controller dropStash:nil]; }
             stashName:@"On master: s2"
       expectedRemains:@[ @"s1" ]
          expectedText:@"some text"];
@@ -192,16 +181,21 @@
 
 - (void)testMergeText
 {
-  XTLocalBranchItem *branchItem =
-      [[XTLocalBranchItem alloc] initWithTitle:@"branch"];
   NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:@"Merge"
                                                 action:@selector(mergeBranch:)
                                          keyEquivalent:@""];
-  NSInteger row = 1;
 
-  [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] contextMenuRow];
-  [[[mockSidebar expect] andReturn:branchItem] itemAtRow:row];
-
+  XCTAssertTrue([self.repository createBranch:@"branch"]);
+  XCTAssertTrue([self.repository checkout:@"master" error:NULL]);
+  [sidebarDS reload];
+  [self waitForRepoQueue];
+  [sidebar expandItem:nil expandChildren:YES];
+  
+  const NSInteger branchRow = 3;
+  XTSideBarItem *branchItem = [sidebar itemAtRow:branchRow];
+  
+  XCTAssertEqualObjects(branchItem.title, @"branch");
+  sidebar.contextMenuRow = branchRow;
   XCTAssertTrue([controller validateMenuItem:item]);
   XCTAssertEqualObjects([item title], @"Merge branch into master");
 }
@@ -209,15 +203,9 @@
 - (void)testMergeDisabled
 {
   // Merge should be disabled if the selected item is the current branch.
-  XTLocalBranchItem *branchItem =
-      [[XTLocalBranchItem alloc] initWithTitle:@"master"];
   NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:@"Merge"
                                                 action:@selector(mergeBranch:)
                                          keyEquivalent:@""];
-  NSInteger row = 1;
-
-  [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] contextMenuRow];
-  [[[mockSidebar expect] andReturn:branchItem] itemAtRow:row];
 
   XCTAssertFalse([controller validateMenuItem:item]);
   XCTAssertEqualObjects([item title], @"Merge");
@@ -230,15 +218,6 @@
   XCTAssertTrue([self.repository createBranch:@"task"]);
   XCTAssertTrue([self commitNewTextFile:file2Name content:@"branch text"]);
 
-  XTSideBarGroupItem *branchesGroup =
-      controller.sidebarDS.roots[XTGroupIndexBranches];
-  XTLocalBranchItem *masterItem =
-      [[XTLocalBranchItem alloc] initWithTitle:@"master"];
-  NSInteger row = 1;
-
-  [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
-  [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
-  [[[mockSidebar expect] andReturn:masterItem] itemAtRow:row];
   [controller mergeBranch:nil];
   WaitForQueue(dispatch_get_main_queue());
 
@@ -268,15 +247,6 @@
                                        outputBlock:NULL
                                              error:&error]);
 
-  XTSideBarGroupItem *branchesGroup =
-      controller.sidebarDS.roots[XTGroupIndexBranches];
-  XTLocalBranchItem *masterItem =
-      [[XTLocalBranchItem alloc] initWithTitle:@"task"];
-  NSInteger row = 1;
-
-  [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
-  [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
-  [[[mockSidebar expect] andReturn:masterItem] itemAtRow:row];
   [controller mergeBranch:nil];
   WaitForQueue(dispatch_get_main_queue());
 }
