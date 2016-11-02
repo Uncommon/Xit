@@ -16,14 +16,24 @@
 {
   XTSidebarController *controller;
   XTSideBarDataSource *sidebarDS;
+  XTSideBarOutlineView *sidebar;
   id mockSidebar;
 }
 
 @end
 
+
 @interface XTSidebarControllerTestNoRepo : XCTestCase
 
 @end
+
+
+@interface XTSideBarOutlineView ()
+
+@property(readwrite) NSInteger contextMenuRow;
+
+@end
+
 
 @implementation XTSidebarControllerTest
 
@@ -32,75 +42,34 @@
   [super setUp];
 
   mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
+  sidebar = [[XTSideBarOutlineView alloc] initWithFrame:NSMakeRect(0, 0, 100, 100)];
+  [sidebar addTableColumn:[[NSTableColumn alloc] initWithIdentifier:@"column"]];
   sidebarDS = [[XTSideBarDataSource alloc] init];
+  sidebar.dataSource = sidebarDS;
   controller = [[XTSidebarController alloc] init];
   controller.sidebarDS = sidebarDS;
   controller.repo = self.repository;
-  controller.sidebarOutline = mockSidebar;
+  controller.sidebarOutline = sidebar;
   [self waitForRepoQueue];
 }
 
 - (void)testCheckoutBranch
 {
-  if (![self.repository createBranch:@"b1"]) {
-    XCTFail(@"Create Branch 'b1'");
-  }
-
-  XTSideBarItem *branchesGroup = controller.sidebarDS.roots[XTGroupIndexBranches];
+  XCTAssertTrue([self.repository createBranch:@"b1"]);
 
   [controller.sidebarDS setRepo:self.repository];
-  [[mockSidebar stub] reloadData];
-  // Cast because the compiler assumes the wrong setDelegate: method
-  [(XTSideBarOutlineView*)[mockSidebar expect] setDelegate:controller.sidebarDS];
-  [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData)
-                                         withObject:nil
-                                      waitUntilDone:NO];
-  [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData)
-                                         withObject:nil
-                                      waitUntilDone:NO];
-  [[mockSidebar expect] expandItem:nil expandChildren:YES];
-  [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData)
-                                         withObject:nil
-                                      waitUntilDone:NO];
-  [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData)
-                                         withObject:nil
-                                      waitUntilDone:NO];
-  [[mockSidebar expect] expandItem:nil expandChildren:YES];
-  [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
-
   [controller.sidebarDS reload];
   [self waitForRepoQueue];
 
-  // selectBranch
-  const NSInteger row = 2, noRow = -1;
-
-  [[[mockSidebar expect] andReturn:nil] itemAtRow:XTGroupIndexBranches];
-  [[mockSidebar expect] expandItem:OCMOCK_ANY];
-  [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)]
-      rowForItem:OCMOCK_ANY];
-  [[mockSidebar expect] selectRowIndexes:OCMOCK_ANY byExtendingSelection:NO];
-
-  // selectedBranch
-  [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
-  [[[mockSidebar expect] andReturn:
-          [controller.sidebarDS itemNamed:@"master"
-                                  inGroup:XTGroupIndexBranches]] itemAtRow:row];
-  [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
-
-  // selectedBranch from checkOutBranch
-  [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(noRow)] contextMenuRow];
-  [[[mockSidebar expect] andReturn:
-          [controller.sidebarDS itemNamed:@"master"
-                                  inGroup:XTGroupIndexBranches]] itemAtRow:row];
-  [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
-  [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
-
-  [controller.sidebarDS outlineView:mockSidebar
-             numberOfChildrenOfItem:nil];  // initialize sidebarDS->outline
-  [self waitForRepoQueue];
   XCTAssertEqualObjects([self.repository currentBranch], @"b1", @"");
   [controller selectBranch:@"master"];
   XCTAssertEqualObjects([controller selectedBranch], @"master", @"");
+  
+  const NSInteger masterRow = 3;
+  XTSideBarItem *masterItem = [sidebar itemAtRow:masterRow];
+  
+  sidebar.contextMenuRow = masterRow;
+  XCTAssertEqualObjects(masterItem.title, @"master");
   [controller checkOutBranch:nil];
   [self waitForRepoQueue];
   XCTAssertEqualObjects([self.repository currentBranch], @"master", @"");

@@ -54,6 +54,7 @@
   NSError *error = nil;
   BOOL result = NO;
 
+  _cachedBranch = nil;
   [self executeGitWithArgs:@[ @"checkout", @"-b", name ]
                     writes:YES
                      error:&error];

@@ -148,7 +148,6 @@ extension XTSideBarDataSource
 // MARK: TeamCity
 extension XTSideBarDataSource
 {
-  
   func updateTeamCity()
   {
     guard let repo = repo,
