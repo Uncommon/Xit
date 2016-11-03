@@ -6,10 +6,10 @@ class XTSidebarController: NSViewController
   @IBOutlet weak var sidebarOutline: XTSideBarOutlineView!
   @IBOutlet weak var sidebarDS: XTSideBarDataSource!
   
-  @IBOutlet weak var branchContextMenu: NSMenu!
-  @IBOutlet weak var remoteContextMenu: NSMenu!
-  @IBOutlet weak var tagContextMenu: NSMenu!
-  @IBOutlet weak var stashContextMenu: NSMenu!
+  @IBOutlet var branchContextMenu: NSMenu!
+  @IBOutlet var remoteContextMenu: NSMenu!
+  @IBOutlet var tagContextMenu: NSMenu!
+  @IBOutlet var stashContextMenu: NSMenu!
   
   weak var repo: XTRepository!
   {
