@@ -1,8 +1,8 @@
 import XCTest
 @testable import Xit
 
-class XTTeamCityTest: XCTestCase {
-  
+class XTTeamCityTest: XCTestCase
+{  
   override func setUp()
   {
     super.setUp()

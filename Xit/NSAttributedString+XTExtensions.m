@@ -3,11 +3,11 @@
 @implementation NSAttributedString (XTExtensions)
 
 + (NSAttributedString *)
-    attributedStringWithFormat:(NSString *)format
-                  placeholders:(NSArray *)placeholders
-                  replacements:(NSArray *)replacements
-                    attributes:(NSDictionary *)attributes
-         replacementAttributes:(NSDictionary *)replacementAttributes
+    attributedStringWithFormat:(NSString*)format
+                  placeholders:(NSArray<NSString*>*)placeholders
+                  replacements:(NSArray<NSString*>*)replacements
+                    attributes:(NSDictionary*)attributes
+         replacementAttributes:(NSDictionary*)replacementAttributes
 {
   if (placeholders.count != replacements.count)
     return nil;

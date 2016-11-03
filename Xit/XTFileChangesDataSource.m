@@ -14,7 +14,8 @@
 - (void)reload
 {
   [self.repository executeOffMainThread:^{
-    NSMutableArray<XTFileChange*> *newChanges = self.winController.selectedModel.changes.mutableCopy;
+    NSMutableArray<XTFileChange*> *newChanges =
+        self.winController.selectedModel.changes.mutableCopy;
     NSArray<NSSortDescriptor*> *pathDescriptors = @[
         [NSSortDescriptor sortDescriptorWithKey:@"path" ascending:YES] ];
     

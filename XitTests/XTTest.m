@@ -94,13 +94,12 @@
                     inRepository:self.repository];
 }
 
-- (BOOL)commitNewTextFile:(NSString *)name
-                  content:(NSString *)content
-             inRepository:(XTRepository *)repo
+- (BOOL)commitNewTextFile:(NSString*)name
+                  content:(NSString*)content
+             inRepository:(XTRepository*)repo
 {
   NSString *basePath = repo.repoURL.path;
   NSString *filePath = [basePath stringByAppendingPathComponent:name];
-  NSError *error = nil;
 
   [content writeToFile:filePath
             atomically:YES
@@ -109,15 +108,19 @@
 
   if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
     return NO;
-  if (![repo stageFile:name error:&error])
-    return NO;
-  if (![repo commitWithMessage:[NSString stringWithFormat:@"new %@", name]
-                         amend:NO
-                   outputBlock:NULL
-                         error:NULL])
-    return NO;
-
-  return YES;
+  
+  __block BOOL success = false;
+  
+  [repo executeOffMainThread:^{
+    success = [repo stageFile:name error:NULL] &&
+              [repo commitWithMessage:[NSString stringWithFormat:@"new %@", name]
+                                  amend:NO
+                            outputBlock:NULL
+                                  error:NULL];
+  }];
+  [self waitForRepository:repo];
+  
+  return success;
 }
 
 - (XTRepository *)createRepo:(NSString *)repoName
@@ -158,7 +161,12 @@
 
 - (void)waitForRepoQueue
 {
-  WaitForQueue(self.repository.queue);
+  [self waitForRepository: self.repository];
+}
+
+- (void)waitForRepository:(XTRepository*)repo
+{
+  WaitForQueue(repo.queue);
   WaitForQueue(dispatch_get_main_queue());
 }
 

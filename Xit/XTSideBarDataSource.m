@@ -267,7 +267,7 @@ NSString * const XTStagingSHA = @"";
   return nil;
 }
 
-- (XTSideBarItem *)itemNamed:(NSString *)name inGroup:(NSInteger)groupIndex
+- (XTSideBarItem *)itemNamed:(NSString *)name inGroup:(XTGroupIndex)groupIndex
 {
   XTSideBarItem *group = _roots[groupIndex];
 

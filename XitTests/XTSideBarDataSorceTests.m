@@ -258,10 +258,12 @@
   XCTAssertTrue([self commitNewTextFile:@"file1"
                                content:@"blah"
                           inRepository:repo1]);
+  [self waitForRepository:repo1];
   XCTAssertTrue([self commitNewTextFile:@"file2"
                                content:@"fffff"
                           inRepository:repo2]);
 
+  [self waitForRepository:repo2];
   XCTAssertTrue([self.repository addSubmoduleAtPath:@"sub1"
                                           urlOrPath:@"../repo1"
                                               error:NULL]);

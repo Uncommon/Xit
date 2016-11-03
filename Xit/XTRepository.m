@@ -196,7 +196,23 @@ NSString * const XTRepositoryHeadChangedNotification = @"HeadChanged";
     task.standardError = errorPipe;
 
     NSLog(@"task.currentDirectoryPath=%@", task.currentDirectoryPath);
-    [task launch];
+    if (![[NSFileManager defaultManager]
+         fileExistsAtPath:task.currentDirectoryPath]) {
+      if (error != NULL)
+        *error = [NSError errorWithDomain:NSCocoaErrorDomain
+                                     code:NSFileNoSuchFileError
+                                 userInfo:nil];
+      return nil;
+    }
+    @try {
+      [task launch];
+    } @catch (NSException *exception) {
+      if (error != NULL)
+        *error = [NSError errorWithDomain:NSCocoaErrorDomain
+                                     code:0
+                                 userInfo:exception.userInfo];
+      return nil;
+    }
     NSData *output = [pipe.fileHandleForReading readDataToEndOfFile];
     [task waitUntilExit];
 

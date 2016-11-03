@@ -148,7 +148,6 @@ extension XTSideBarDataSource
 // MARK: TeamCity
 extension XTSideBarDataSource
 {
-  
   func updateTeamCity()
   {
     guard let repo = repo,
@@ -367,7 +366,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
         textField.formatter = refFormatter
         textField.target = viewController
         textField.action =
-            #selector(XTHistoryViewController.sideBarItemRenamed(_:))
+            #selector(XTSidebarController.sidebarItemRenamed(_:))
       }
       if sideBarItem.current {
         textField.font = NSFont.boldSystemFont(

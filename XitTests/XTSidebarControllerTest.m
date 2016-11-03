@@ -12,81 +12,63 @@
 #include "XTQueueUtils.h"
 #import "Xit-Swift.h"
 
-@interface XTHistoryViewControllerTest : XTTest
+@interface XTSidebarControllerTest : XTTest
+{
+  XTSidebarController *controller;
+  XTSideBarDataSource *sidebarDS;
+  XTSideBarOutlineView *sidebar;
+  id mockSidebar;
+}
 
 @end
 
-@interface XTHistoryViewControllerTestNoRepo : XCTestCase
+
+@interface XTSidebarControllerTestNoRepo : XCTestCase
 
 @end
 
-@implementation XTHistoryViewControllerTest
+
+@interface XTSideBarOutlineView ()
+
+@property(readwrite) NSInteger contextMenuRow;
+
+@end
+
+
+@implementation XTSidebarControllerTest
+
+- (void)setUp
+{
+  [super setUp];
+
+  sidebar = [[XTSideBarOutlineView alloc] initWithFrame:NSMakeRect(0, 0, 100, 100)];
+  [sidebar addTableColumn:[[NSTableColumn alloc] initWithIdentifier:@"column"]];
+  sidebarDS = [[XTSideBarDataSource alloc] init];
+  sidebar.dataSource = sidebarDS;
+  controller = [[XTSidebarController alloc] init];
+  controller.sidebarDS = sidebarDS;
+  controller.repo = self.repository;
+  controller.sidebarOutline = sidebar;
+  [self waitForRepoQueue];
+}
 
 - (void)testCheckoutBranch
 {
-  if (![self.repository createBranch:@"b1"]) {
-    XCTFail(@"Create Branch 'b1'");
-  }
+  XCTAssertTrue([self.repository createBranch:@"b1"]);
 
-  id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
-  XTHistoryViewController *controller =
-      [[XTHistoryViewController alloc] initWithRepository:self.repository
-                                                  sidebar:mockSidebar];
-  XTSideBarItem *branchesGroup = controller.sideBarDS.roots[XTGroupIndexBranches];
-
-  [controller.sideBarDS setRepo:self.repository];
-  [[mockSidebar stub] reloadData];
-  // Cast because the compiler assumes the wrong setDelegate: method
-  [(XTSideBarOutlineView*)[mockSidebar expect] setDelegate:controller.sideBarDS];
-  [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData)
-                                         withObject:nil
-                                      waitUntilDone:NO];
-  [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData)
-                                         withObject:nil
-                                      waitUntilDone:NO];
-  [[mockSidebar expect] expandItem:nil expandChildren:YES];
-  [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData)
-                                         withObject:nil
-                                      waitUntilDone:NO];
-  [[mockSidebar expect] performSelectorOnMainThread:@selector(reloadData)
-                                         withObject:nil
-                                      waitUntilDone:NO];
-  [[mockSidebar expect] expandItem:nil expandChildren:YES];
-  [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
-
-  [controller.sideBarDS reload];
+  [controller.sidebarDS setRepo:self.repository];
+  [controller.sidebarDS reload];
   [self waitForRepoQueue];
 
-  // selectBranch
-  NSInteger row = 2, noRow = -1;
-
-  [[[mockSidebar expect] andReturn:nil] itemAtRow:XTGroupIndexBranches];
-  [[mockSidebar expect] expandItem:OCMOCK_ANY];
-  [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)]
-      rowForItem:OCMOCK_ANY];
-  [[mockSidebar expect] selectRowIndexes:OCMOCK_ANY byExtendingSelection:NO];
-
-  // selectedBranch
-  [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
-  [[[mockSidebar expect] andReturn:
-          [controller.sideBarDS itemNamed:@"master"
-                                  inGroup:XTGroupIndexBranches]] itemAtRow:row];
-  [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
-
-  // selectedBranch from checkOutBranch
-  [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(noRow)] contextMenuRow];
-  [[[mockSidebar expect] andReturn:
-          [controller.sideBarDS itemNamed:@"master"
-                                  inGroup:XTGroupIndexBranches]] itemAtRow:row];
-  [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
-  [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
-
-  [controller.sideBarDS outlineView:mockSidebar
-             numberOfChildrenOfItem:nil];  // initialize sidebarDS->outline
-  [self waitForRepoQueue];
   XCTAssertEqualObjects([self.repository currentBranch], @"b1", @"");
   [controller selectBranch:@"master"];
   XCTAssertEqualObjects([controller selectedBranch], @"master", @"");
+  
+  const NSInteger masterRow = 3;
+  XTSideBarItem *masterItem = [sidebar itemAtRow:masterRow];
+  
+  sidebar.contextMenuRow = masterRow;
+  XCTAssertEqualObjects(masterItem.title, @"master");
   [controller checkOutBranch:nil];
   [self waitForRepoQueue];
   XCTAssertEqualObjects([self.repository currentBranch], @"master", @"");
@@ -117,7 +99,7 @@
   XCTAssertEqualObjects(stashes, composedStashes, @"");
 }
 
-- (void)doStashAction:(SEL)action
+- (void)doStashAction:(void (^)())action
             stashName:(NSString *)stashName
       expectedRemains:(NSArray *)expectedRemains
          expectedText:(NSString *)expectedText
@@ -125,31 +107,18 @@
   [self makeTwoStashes];
   [self assertStashes:@[ @"s2", @"s1" ]];
 
-  id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
-  XTHistoryViewController *controller =
-      [[XTHistoryViewController alloc] initWithRepository:self.repository
-                                                  sidebar:mockSidebar];
-  NSInteger stashRow = 2, noRow = -1;
-
-  [controller.sideBarDS setRepo:self.repository];
-  [controller.sideBarDS reload];
+  [controller.sidebarDS setRepo:self.repository];
+  [controller.sidebarDS reload];
   [self waitForRepoQueue];
+  [sidebar expandItem:nil expandChildren:YES];
 
-  XTSideBarGroupItem *stashesGroup =
-      controller.sideBarDS.roots[XTGroupIndexStashes];
   XTSideBarItem *stashItem =
-      [controller.sideBarDS itemNamed:stashName inGroup:XTGroupIndexStashes];
+      [controller.sidebarDS itemNamed:stashName inGroup:XTGroupIndexStashes];
 
   XCTAssertNotNil(stashItem);
-  [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(noRow)] contextMenuRow];
-  [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(stashRow)] selectedRow];
-  [[[mockSidebar expect] andReturn:stashesGroup] parentForItem:stashItem];
-  [[[mockSidebar expect] andReturn:stashItem] itemAtRow:stashRow];
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-  [controller performSelector:action withObject:nil];
-#pragma clang diagnostic pop
+  sidebar.contextMenuRow = [sidebar rowForItem:stashItem];
+  action();
   [self waitForRepoQueue];
   [self assertStashes:expectedRemains];
 
@@ -160,12 +129,11 @@
 
   XCTAssertNil(error, @"");
   XCTAssertEqualObjects(text, expectedText, @"");
-  [mockSidebar verify];
 }
 
 - (void)testPopStash1
 {
-  [self doStashAction:@selector(popStash:)
+  [self doStashAction:^{ [controller popStash:nil]; }
             stashName:@"On master: s1"
       expectedRemains:@[ @"s2" ]
          expectedText:@"second text"];
@@ -173,7 +141,7 @@
 
 - (void)testPopStash2
 {
-  [self doStashAction:@selector(popStash:)
+  [self doStashAction:^{ [controller popStash:nil]; }
             stashName:@"On master: s2"
       expectedRemains:@[ @"s1" ]
          expectedText:@"third text"];
@@ -181,7 +149,7 @@
 
 - (void)testApplyStash1
 {
-  [self doStashAction:@selector(applyStash:)
+  [self doStashAction:^{ [controller applyStash:nil]; }
             stashName:@"On master: s1"
       expectedRemains:@[ @"s2", @"s1" ]
          expectedText:@"second text"];
@@ -189,7 +157,7 @@
 
 - (void)testApplyStash2
 {
-  [self doStashAction:@selector(applyStash:)
+  [self doStashAction:^{ [controller applyStash:nil]; }
             stashName:@"On master: s2"
       expectedRemains:@[ @"s2", @"s1" ]
          expectedText:@"third text"];
@@ -197,7 +165,7 @@
 
 - (void)testDropStash1
 {
-  [self doStashAction:@selector(dropStash:)
+  [self doStashAction:^{ [controller dropStash:nil]; }
             stashName:@"On master: s1"
       expectedRemains:@[ @"s2" ]
          expectedText:@"some text"];
@@ -205,7 +173,7 @@
 
 - (void)testDropStash2
 {
-  [self doStashAction:@selector(dropStash:)
+  [self doStashAction:^{ [controller dropStash:nil]; }
             stashName:@"On master: s2"
       expectedRemains:@[ @"s1" ]
          expectedText:@"some text"];
@@ -213,20 +181,21 @@
 
 - (void)testMergeText
 {
-  id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
-  XTHistoryViewController *controller =
-      [[XTHistoryViewController alloc] initWithRepository:self.repository
-                                                  sidebar:mockSidebar];
-  XTLocalBranchItem *branchItem =
-      [[XTLocalBranchItem alloc] initWithTitle:@"branch"];
   NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:@"Merge"
                                                 action:@selector(mergeBranch:)
                                          keyEquivalent:@""];
-  NSInteger row = 1;
 
-  [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] contextMenuRow];
-  [[[mockSidebar expect] andReturn:branchItem] itemAtRow:row];
-
+  XCTAssertTrue([self.repository createBranch:@"branch"]);
+  XCTAssertTrue([self.repository checkout:@"master" error:NULL]);
+  [sidebarDS reload];
+  [self waitForRepoQueue];
+  [sidebar expandItem:nil expandChildren:YES];
+  
+  const NSInteger branchRow = 3;
+  XTSideBarItem *branchItem = [sidebar itemAtRow:branchRow];
+  
+  XCTAssertEqualObjects(branchItem.title, @"branch");
+  sidebar.contextMenuRow = branchRow;
   XCTAssertTrue([controller validateMenuItem:item]);
   XCTAssertEqualObjects([item title], @"Merge branch into master");
 }
@@ -234,19 +203,9 @@
 - (void)testMergeDisabled
 {
   // Merge should be disabled if the selected item is the current branch.
-  id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
-  XTHistoryViewController *controller =
-      [[XTHistoryViewController alloc] initWithRepository:self.repository
-                                                  sidebar:mockSidebar];
-  XTLocalBranchItem *branchItem =
-      [[XTLocalBranchItem alloc] initWithTitle:@"master"];
   NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:@"Merge"
                                                 action:@selector(mergeBranch:)
                                          keyEquivalent:@""];
-  NSInteger row = 1;
-
-  [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] contextMenuRow];
-  [[[mockSidebar expect] andReturn:branchItem] itemAtRow:row];
 
   XCTAssertFalse([controller validateMenuItem:item]);
   XCTAssertEqualObjects([item title], @"Merge");
@@ -259,19 +218,6 @@
   XCTAssertTrue([self.repository createBranch:@"task"]);
   XCTAssertTrue([self commitNewTextFile:file2Name content:@"branch text"]);
 
-  id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
-  XTHistoryViewController *controller =
-      [[XTHistoryViewController alloc] initWithRepository:self.repository
-                                                  sidebar:mockSidebar];
-  XTSideBarGroupItem *branchesGroup =
-      controller.sideBarDS.roots[XTGroupIndexBranches];
-  XTLocalBranchItem *masterItem =
-      [[XTLocalBranchItem alloc] initWithTitle:@"master"];
-  NSInteger row = 1;
-
-  [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
-  [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
-  [[[mockSidebar expect] andReturn:masterItem] itemAtRow:row];
   [controller mergeBranch:nil];
   WaitForQueue(dispatch_get_main_queue());
 
@@ -301,34 +247,37 @@
                                        outputBlock:NULL
                                              error:&error]);
 
-  id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
-  XTHistoryViewController *controller =
-      [[XTHistoryViewController alloc] initWithRepository:self.repository
-                                                  sidebar:mockSidebar];
-  XTSideBarGroupItem *branchesGroup =
-      controller.sideBarDS.roots[XTGroupIndexBranches];
-  XTLocalBranchItem *masterItem =
-      [[XTLocalBranchItem alloc] initWithTitle:@"task"];
-  NSInteger row = 1;
-
-  [[[mockSidebar expect] andReturn:branchesGroup] parentForItem:OCMOCK_ANY];
-  [[[mockSidebar expect] andReturnValue:OCMOCK_VALUE(row)] selectedRow];
-  [[[mockSidebar expect] andReturn:masterItem] itemAtRow:row];
   [controller mergeBranch:nil];
   WaitForQueue(dispatch_get_main_queue());
 }
 
 @end
 
-@implementation XTHistoryViewControllerTestNoRepo
+
+@interface MockSidebarDS : NSObject
+
+@property (weak) XTRepository *repo;
+
+@end
+
+@implementation MockSidebarDS
+
+@end
+
+
+@implementation XTSidebarControllerTestNoRepo
 
 - (void)testDeleteCurrentBranch
 {
   id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
   id mockRepo = [OCMockObject mockForClass:[XTRepository class]];
-  XTHistoryViewController *controller =
-      [[XTHistoryViewController alloc] initWithRepository:mockRepo
-                                                  sidebar:mockSidebar];
+  XTSidebarController *controller = [[XTSidebarController alloc] init];
+  MockSidebarDS *sidebarDS = [[MockSidebarDS alloc] init];
+  
+  controller.sidebarOutline = mockSidebar;
+  controller.sidebarDS = (XTSideBarDataSource*)sidebarDS;
+  controller.repo = mockRepo;
+  
   NSMenuItem *menuItem =
       [[NSMenuItem alloc] initWithTitle:@"Delete"
                                  action:@selector(deleteBranch:)
@@ -352,9 +301,13 @@
 {
   id mockSidebar = [OCMockObject mockForClass:[XTSideBarOutlineView class]];
   id mockRepo = [OCMockObject mockForClass:[XTRepository class]];
-  XTHistoryViewController *controller =
-      [[XTHistoryViewController alloc] initWithRepository:mockRepo
-                                                  sidebar:mockSidebar];
+  XTSidebarController *controller = [[XTSidebarController alloc] init];
+  MockSidebarDS *sidebarDS = [[MockSidebarDS alloc] init];
+  
+  controller.sidebarOutline = mockSidebar;
+  controller.sidebarDS = (XTSideBarDataSource*)sidebarDS;
+  controller.repo = mockRepo;
+  
   NSMenuItem *menuItem =
       [[NSMenuItem alloc] initWithTitle:@"Delete"
                                  action:@selector(deleteBranch:)

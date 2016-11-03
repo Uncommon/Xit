@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2657" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11201"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11542"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="XTHistoryViewController">
@@ -14,6 +15,7 @@
                 <outlet property="_sidebarSplitView" destination="4" id="67"/>
                 <outlet property="commitTable" destination="No3-Ik-sWu" id="dkg-3y-hVy"/>
                 <outlet property="mainSplitView" destination="13" id="GWp-W0-KPr"/>
+                <outlet property="sidebarController" destination="bvs-X9-kYl" id="P2w-my-4X5"/>
                 <outlet property="sidebarSplitView" destination="4" id="7xE-5y-PyQ"/>
                 <outlet property="tableController" destination="IYz-w0-bcN" id="CLT-wB-Gyk"/>
                 <outlet property="view" destination="3" id="28"/>
@@ -112,6 +114,7 @@
                                         </tableColumns>
                                         <connections>
                                             <outlet property="_controller" destination="-2" id="134"/>
+                                            <outlet property="controller" destination="bvs-X9-kYl" id="SJx-wa-uX6"/>
                                             <outlet property="dataSource" destination="29" id="117"/>
                                             <outlet property="delegate" destination="29" id="118"/>
                                         </connections>
@@ -307,12 +310,20 @@
                 <outlet property="_viewController" destination="-2" id="168"/>
                 <outlet property="outline" destination="80" id="xJk-ta-GFc"/>
                 <outlet property="refFormatter" destination="165" id="OcN-oK-xa5"/>
+                <outlet property="viewController" destination="bvs-X9-kYl" id="cm4-tT-l4X"/>
             </connections>
         </customObject>
         <customObject id="165" customClass="XTRefFormatter"/>
         <customObject id="IYz-w0-bcN" customClass="XTHistoryTableController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="view" destination="No3-Ik-sWu" id="rsr-3x-Jbg"/>
+            </connections>
+        </customObject>
+        <customObject id="bvs-X9-kYl" customClass="XTSidebarController" customModule="Xit" customModuleProvider="target">
+            <connections>
+                <outlet property="sidebarDS" destination="29" id="2r1-gm-E0M"/>
+                <outlet property="sidebarOutline" destination="80" id="8Kj-SS-ywV"/>
+                <outlet property="view" destination="80" id="gtL-AT-WQG"/>
             </connections>
         </customObject>
     </objects>

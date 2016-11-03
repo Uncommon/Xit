@@ -4,8 +4,8 @@ import XCTest
 let message = "testing"
 let tagName = "testTag"
 
-class XTTagTest: XTTest {
-  
+class XTTagTest: XTTest
+{
   func testAnnotatedTag()
   {
     repository.executeGit(withArgs: ["tag", "-a", tagName, "-m", message],
@@ -50,5 +50,4 @@ class XTTagTest: XTTest {
       XCTAssertEqual(trimmedMessage(tag: fullTag), message)
     }
   }
-  
 }
