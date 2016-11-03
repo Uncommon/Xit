@@ -9,19 +9,13 @@
 NSString *XTHeaderNameKey = @"name";
 NSString *XTHeaderContentKey = @"content";
 
-// Taken from GTReflog+Private.h
-@interface GTReflog ()
-
-- (instancetype)initWithReference:(GTReference*)reference;
-
-@end
-
 
 @interface XTRepository (Private)
 
 @property (readonly, copy) NSArray *stagingChanges;
 
 @end
+
 
 @implementation XTRepository (Reading)
 
