@@ -8,16 +8,6 @@
 // layout for our button, we first call super and then modify things
 - (void)drawRect:(NSRect)dirtyRect
 {
-  if (self.statusImage.image != nil) {
-    NSRect textFrame = self.textField.frame;
-    NSRect imageFrame = self.statusImage.frame;
-    
-    imageFrame.origin.x = NSWidth(self.frame) - NSWidth(imageFrame) + 2;
-    self.statusImage.frame = imageFrame;
-    textFrame.size.width = NSMinX(imageFrame) - NSMinX(textFrame);
-    self.textField.frame = textFrame;
-  }
-
   [super drawRect:dirtyRect];
 }
 

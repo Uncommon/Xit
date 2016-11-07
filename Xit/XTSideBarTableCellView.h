@@ -7,6 +7,7 @@
 @interface XTSideBarTableCellView : NSTableCellView
 
 @property(strong) IBOutlet NSImageView *statusImage;
+@property(strong) IBOutlet NSButton *statusText;
 @property(weak) XTSideBarItem *item;
 
 @end

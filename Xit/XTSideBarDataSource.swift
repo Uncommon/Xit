@@ -277,7 +277,8 @@ extension XTSideBarDataSource
 extension XTSideBarDataSource: NSOutlineViewDataSource
 {
   public func outlineView(_ outlineView: NSOutlineView,
-                          numberOfChildrenOfItem item: Any?) -> Int {
+                          numberOfChildrenOfItem item: Any?) -> Int
+  {
     if item == nil {
       return roots.count
     }
@@ -285,13 +286,15 @@ extension XTSideBarDataSource: NSOutlineViewDataSource
   }
   
   public func outlineView(_ outlineView: NSOutlineView,
-                          isItemExpandable item: Any) -> Bool {
+                          isItemExpandable item: Any) -> Bool
+  {
     return (item as? XTSideBarItem)?.expandable ?? false
   }
   
   public func outlineView(_ outlineView: NSOutlineView,
                           child index: Int,
-                          ofItem item: Any?) -> Any {
+                          ofItem item: Any?) -> Any
+  {
     if item == nil {
       return roots[index]
     }
@@ -362,6 +365,8 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
       textField.isEditable = sideBarItem.editable
       textField.isSelectable = sideBarItem.isSelectable
       dataView.statusImage.image = statusImage(sideBarItem)
+      dataView.statusImage.isHidden = dataView.statusImage.image == nil
+      dataView.statusText.isHidden = true
       if sideBarItem.editable {
         textField.formatter = refFormatter
         textField.target = viewController

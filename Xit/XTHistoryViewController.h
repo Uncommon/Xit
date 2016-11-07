@@ -18,30 +18,25 @@
  @private
   __weak XTRepository *_repo;
   XTFileViewController *_fileViewController;
-  NSUInteger _savedSidebarWidth, _savedHistorySize;
+  NSUInteger _savedHistorySize;
 }
 
 - (void)windowDidLoad;
 - (void)setRepo:(XTRepository *)newRepo;
 - (void)reload;
 
-- (BOOL)sideBarHidden;
 - (BOOL)historyHidden;
 - (BOOL)detailsHidden;
-- (IBAction)toggleSideBar:(id)sender;
 - (IBAction)toggleHistory:(id)sender;
 - (IBAction)toggleDetails:(id)sender;
 
 @property(readonly) NSTableView *historyTable;
 
-@property (strong) IBOutlet XTSidebarController *sidebarController;
-@property (weak) IBOutlet NSSplitView *sidebarSplitView;
 @property (weak) IBOutlet NSSplitView *mainSplitView;
 @property (weak) IBOutlet XTHistoryTableController *tableController;
 @property (weak) IBOutlet NSTableView *commitTable;
 
 // For testing
-- (instancetype)initWithRepository:(XTRepository*)repository
-                           sidebar:(XTSideBarOutlineView*)sidebar;
+- (instancetype)initWithRepository:(XTRepository*)repository;
 
 @end

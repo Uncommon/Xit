@@ -4,7 +4,10 @@ import Cocoa
 class XTWindowController: NSWindowController, NSWindowDelegate
 {
   @IBOutlet var historyController: XTHistoryViewController!
+  @IBOutlet var sidebarController: XTSidebarController!
+  @IBOutlet weak var mainSplitView: NSSplitView!
   @IBOutlet var activity: NSProgressIndicator!
+  
   weak var xtDocument: XTDocument?
   var titleBarController: XTTitleBarAccessoryViewController? = nil
   var selectedCommitSHA: String?
@@ -25,6 +28,10 @@ class XTWindowController: NSWindowController, NSWindowDelegate
     }
   }
   var inStagingView: Bool { return self.selectedCommitSHA == XTStagingSHA }
+  var sidebarHidden: Bool {
+    return mainSplitView.isSubviewCollapsed(mainSplitView.subviews[0])
+  }
+  var savedSidebarWidth: CGFloat = 180
   
   var currentOperation: XTOperationController?
   
@@ -42,9 +49,8 @@ class XTWindowController: NSWindowController, NSWindowDelegate
     
     window.titleVisibility = .hidden
     window.delegate = self
-    // We could set the window's contentViewController, but then it would
-    // retain the view controller, which is undesirable.
-    window.contentView = historyController.view
+    mainSplitView.addArrangedSubview(historyController.view)
+    mainSplitView.removeArrangedSubview(mainSplitView.arrangedSubviews[1])
     window.makeFirstResponder(historyController.historyTable)
     
     let repo = xtDocument!.repository!
@@ -71,6 +77,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate
                      options: [], context: nil)
     historyController.windowDidLoad()
     historyController.setRepo(repo)
+    sidebarController.repo = repo
     updateMiniwindowTitle()
   }
   
@@ -141,9 +148,18 @@ class XTWindowController: NSWindowController, NSWindowDelegate
   
   @IBAction func showHideSidebar(_ sender: AnyObject)
   {
-    historyController.toggleSideBar(sender)
-    titleBarController!.viewControls.setSelected(
-        !historyController.sideBarHidden(), forSegment: 0)
+    let sidebarPane = mainSplitView.subviews[0]
+    let isCollapsed = sidebarHidden
+    let newWidth = isCollapsed
+        ? savedSidebarWidth
+        : mainSplitView.minPossiblePositionOfDivider(at: 0)
+    
+    if !isCollapsed {
+      savedSidebarWidth = sidebarPane.frame.size.width
+    }
+    mainSplitView.setPosition(newWidth, ofDividerAt: 0)
+    sidebarPane.isHidden = !isCollapsed
+    titleBarController!.viewControls.setSelected(sidebarHidden, forSegment: 0)
   }
   
   @IBAction func showHideHistory(_ sender: AnyObject)
@@ -275,8 +291,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate
 
       case #selector(self.showHideSidebar(_:)):
         result = true
-        if historyController.sidebarSplitView.isSubviewCollapsed(
-            historyController.sidebarSplitView.subviews[0]) {
+        if sidebarHidden {
           menuItem.title = NSLocalizedString("Show Sidebar", comment: "")
         }
         else {
@@ -315,7 +330,7 @@ extension XTWindowController: XTTitleBarDelegate
   
   var viewStates: (sidebar: Bool, history: Bool, details: Bool)
   {
-    return (!historyController.sideBarHidden(),
+    return (!sidebarHidden,
             !historyController.historyHidden(),
             !historyController.detailsHidden())
   }
