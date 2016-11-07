@@ -329,21 +329,25 @@
 
 - (id)makeViewWithIdentifier:(NSString *)identifier owner:(id)owner
 {
-  XTSideBarTableCellView *view =
-      [[XTSideBarTableCellView alloc] initWithFrame:NSMakeRect(0, 0, 185, 20)];
+  XTSidebarTableCellView *view =
+      [[XTSidebarTableCellView alloc] initWithFrame:NSMakeRect(0, 0, 185, 20)];
   NSTextField *label =
       [[NSTextField alloc] initWithFrame:NSMakeRect(26, 3, 163, 17)];
   NSImageView *image =
       [[NSImageView alloc] initWithFrame:NSMakeRect(5, 2, 16, 16)];
   NSImageView *statusImage =
       [[NSImageView alloc] initWithFrame:NSMakeRect(171, 2, 16, 16)];
+  NSButton *statusText =
+      [NSButton buttonWithTitle:@"10" target:nil action:nil];
   
   [view addSubview:label];
   [view addSubview:image];
   [view addSubview:statusImage];
+  [view addSubview:statusText];
   view.textField = label;
   view.imageView = image;
   view.statusImage = statusImage;
+  view.statusText = statusText;
   return view;
 }
 
