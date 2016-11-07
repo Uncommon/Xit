@@ -16,7 +16,6 @@ NSString * const XTStagingSHA = @"";
 
 @property (readwrite) NSArray<XTSideBarGroupItem*> *roots;
 @property (readwrite) XTSideBarItem *stagingItem;
-@property NSMutableArray<BOSResource*> *observedResources;
 
 @end
 
@@ -26,13 +25,8 @@ NSString * const XTStagingSHA = @"";
 - (instancetype)init
 {
   if ((self = [super init]) != nil) {
-    _stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
-    _roots = [self makeRoots];
     self.stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
     self.roots = [self makeRoots];
-    _roots = [self makeRoots];
-    _stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
-    _observedResources = [[NSMutableArray alloc] init];
     self.buildStatuses = [NSMutableDictionary dictionary];
   }
   return self;
