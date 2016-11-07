@@ -75,9 +75,9 @@ class XTWindowController: NSWindowController, NSWindowDelegate
                        options: [], context: nil)
     repo.addObserver(self, forKeyPath: #keyPath(XTRepository.currentBranch),
                      options: [], context: nil)
+    sidebarController.repo = repo
     historyController.windowDidLoad()
     historyController.setRepo(repo)
-    sidebarController.repo = repo
     updateMiniwindowTitle()
   }
   
