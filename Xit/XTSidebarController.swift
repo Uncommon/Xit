@@ -111,7 +111,7 @@ class XTSidebarController: NSViewController
   @objc(selectBranch:)
   func select(branch: String)
   {
-    guard let branchItem = sidebarDS.itemNamed(branch, inGroup: .branches)
+    guard let branchItem = sidebarDS.item(named: branch, inGroup: .branches)
     else { return }
     
     sidebarOutline.expandItem(

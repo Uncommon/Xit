@@ -249,26 +249,4 @@ NSString * const XTStagingSHA = @"";
   }
 }
 
-- (XTLocalBranchItem *)itemForBranchName:(NSString *)branch
-{
-  XTSideBarItem *branches = _roots[XTGroupIndexBranches];
-
-  for (XTSideBarItem *branchItem in branches.children) {
-    if ([branchItem.title isEqual:branch])
-      return (XTLocalBranchItem*)branchItem;
-  }
-  return nil;
-}
-
-- (XTSideBarItem *)itemNamed:(NSString *)name inGroup:(XTGroupIndex)groupIndex
-{
-  XTSideBarItem *group = _roots[groupIndex];
-
-  for (XTSideBarItem *item in group.children) {
-    if ([item.title isEqual:name])
-      return item;
-  }
-  return nil;
-}
-
 @end

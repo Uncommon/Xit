@@ -28,9 +28,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)loadStashes:(NSMutableArray *)stashes
           refsIndex:(NSMutableDictionary *)refsIndex;
 
-- (nullable XTSideBarItem*)itemNamed:(NSString *)name
-                             inGroup:(XTGroupIndex)groupIndex;
-
 - (void)doubleClick:(id)sender;
 
 @property (weak) IBOutlet XTSidebarController *viewController;

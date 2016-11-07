@@ -143,6 +143,21 @@ extension XTSideBarDataSource
     return repo!.submodules().map({ XTSubmoduleItem(submodule: $0) })
   }
   
+  func item(forBranchName branch: String) -> XTLocalBranchItem?
+  {
+    let branches = roots[XTGroupIndex.branches.rawValue]
+    let result = branches.children.first(where: { $0.title == branch } )
+    
+    return result as? XTLocalBranchItem
+  }
+  
+  @objc(itemNamed:inGroup:)
+  func item(named name: String, inGroup group: XTGroupIndex) -> XTSideBarItem?
+  {
+    let group = roots[group.rawValue]
+    
+    return group.children.first(where: { $0.title == name} )
+  }
 }
 
 // MARK: TeamCity
