@@ -354,7 +354,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
     }
     else {
       guard let dataView = outlineView.make(
-          withIdentifier: "DataCell", owner: nil) as? XTSideBarTableCellView
+          withIdentifier: "DataCell", owner: nil) as? XTSidebarTableCellView
       else { return nil }
       
       let textField = dataView.textField!

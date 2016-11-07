@@ -74,7 +74,7 @@
                                                                 <outlet property="textField" destination="J9t-4U-9tF" id="i1W-KQ-1Pq"/>
                                                             </connections>
                                                         </tableCellView>
-                                                        <tableCellView identifier="DataCell" id="BRo-bm-Y6k" customClass="XTSideBarTableCellView">
+                                                        <tableCellView identifier="DataCell" id="BRo-bm-Y6k" customClass="XTSidebarTableCellView" customModule="Xit" customModuleProvider="target">
                                                             <rect key="frame" x="1" y="20" width="232" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>

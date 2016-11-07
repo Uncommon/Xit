@@ -183,7 +183,7 @@ class XTSidebarController: NSViewController
   @IBAction func sidebarItemRenamed(_ sender: Any)
   {
     guard let textField = sender as? NSTextField,
-          let cellView = textField.superview as? XTSideBarTableCellView,
+          let cellView = textField.superview as? XTSidebarTableCellView,
           let editedItem = cellView.item
     else { return }
     
