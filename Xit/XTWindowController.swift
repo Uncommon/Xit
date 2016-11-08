@@ -323,6 +323,21 @@ class XTWindowController: NSWindowController, NSWindowDelegate
   }
 }
 
+// MARK: NSSplitViewDelegate
+extension XTWindowController: NSSplitViewDelegate
+{
+  func splitView(_ splitView: NSSplitView,
+                 shouldAdjustSizeOfSubview view: NSView) -> Bool
+  {
+    if (splitView == mainSplitView) &&
+       (view == mainSplitView.arrangedSubviews[0]) {
+      return false
+    }
+    return true
+  }
+}
+
+// MARK: XTTitleBarDelegate
 extension XTWindowController: XTTitleBarDelegate
 {
   func branchSelecetd(_ branch: String)
@@ -345,6 +360,7 @@ extension XTWindowController: XTTitleBarDelegate
   func showHideDetails() { showHideDetails(self) }
 }
 
+// MARK: NSToolbarDelegate
 extension XTWindowController: NSToolbarDelegate
 {
   func toolbarWillAddItem(_ notification: Notification)

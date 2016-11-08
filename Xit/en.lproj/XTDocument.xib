@@ -161,6 +161,9 @@
                             <real value="250"/>
                             <real value="250"/>
                         </holdingPriorities>
+                        <connections>
+                            <outlet property="delegate" destination="-2" id="CWr-Xc-QHd"/>
+                        </connections>
                     </splitView>
                 </subviews>
                 <constraints>
