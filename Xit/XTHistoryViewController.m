@@ -42,7 +42,6 @@
 
 - (NSString*)nibName
 {
-  NSLog(@"nibName: %@ (%@)", super.nibName, [self class]);
   return NSStringFromClass([self class]);
 }
 

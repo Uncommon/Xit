@@ -9,7 +9,6 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="XTWindowController" customModule="Xit" customModuleProvider="target">
             <connections>
-                <outlet property="historyController" destination="100102" id="GPc-Qf-MhO"/>
                 <outlet property="mainSplitView" destination="qUN-9c-eC3" id="uCi-Lw-0EW"/>
                 <outlet property="sidebarController" destination="aFR-LL-LwM" id="BBu-of-fEY"/>
                 <outlet property="window" destination="5" id="18"/>
@@ -191,7 +190,6 @@
             <point key="canvasLocation" x="506" y="445"/>
         </window>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <viewController nibName="XTHistoryViewController" id="100102" userLabel="History View Controller" customClass="XTHistoryViewController"/>
         <customObject id="aFR-LL-LwM" customClass="XTSidebarController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="sidebarDS" destination="oB7-gc-1Gq" id="4eO-bD-hf3"/>

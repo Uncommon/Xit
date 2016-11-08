@@ -3,11 +3,11 @@ import Cocoa
 /// XTDocument's main window controller.
 class XTWindowController: NSWindowController, NSWindowDelegate
 {
-  @IBOutlet var historyController: XTHistoryViewController!
   @IBOutlet var sidebarController: XTSidebarController!
   @IBOutlet weak var mainSplitView: NSSplitView!
   @IBOutlet var activity: NSProgressIndicator!
   
+  var historyController: XTHistoryViewController!
   weak var xtDocument: XTDocument?
   var titleBarController: XTTitleBarAccessoryViewController? = nil
   var selectedCommitSHA: String?
@@ -49,6 +49,8 @@ class XTWindowController: NSWindowController, NSWindowDelegate
     
     window.titleVisibility = .hidden
     window.delegate = self
+    historyController = XTHistoryViewController(
+        nibName: "XTHistoryViewController", bundle: nil)
     mainSplitView.addArrangedSubview(historyController.view)
     mainSplitView.removeArrangedSubview(mainSplitView.arrangedSubviews[1])
     window.makeFirstResponder(historyController.historyTable)
