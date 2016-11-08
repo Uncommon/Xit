@@ -143,6 +143,21 @@ extension XTSideBarDataSource
     return repo!.submodules().map({ XTSubmoduleItem(submodule: $0) })
   }
   
+  func item(forBranchName branch: String) -> XTLocalBranchItem?
+  {
+    let branches = roots[XTGroupIndex.branches.rawValue]
+    let result = branches.children.first(where: { $0.title == branch } )
+    
+    return result as? XTLocalBranchItem
+  }
+  
+  @objc(itemNamed:inGroup:)
+  func item(named name: String, inGroup group: XTGroupIndex) -> XTSideBarItem?
+  {
+    let group = roots[group.rawValue]
+    
+    return group.children.first(where: { $0.title == name} )
+  }
 }
 
 // MARK: TeamCity
@@ -277,7 +292,8 @@ extension XTSideBarDataSource
 extension XTSideBarDataSource: NSOutlineViewDataSource
 {
   public func outlineView(_ outlineView: NSOutlineView,
-                          numberOfChildrenOfItem item: Any?) -> Int {
+                          numberOfChildrenOfItem item: Any?) -> Int
+  {
     if item == nil {
       return roots.count
     }
@@ -285,13 +301,15 @@ extension XTSideBarDataSource: NSOutlineViewDataSource
   }
   
   public func outlineView(_ outlineView: NSOutlineView,
-                          isItemExpandable item: Any) -> Bool {
+                          isItemExpandable item: Any) -> Bool
+  {
     return (item as? XTSideBarItem)?.expandable ?? false
   }
   
   public func outlineView(_ outlineView: NSOutlineView,
                           child index: Int,
-                          ofItem item: Any?) -> Any {
+                          ofItem item: Any?) -> Any
+  {
     if item == nil {
       return roots[index]
     }
@@ -351,7 +369,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
     }
     else {
       guard let dataView = outlineView.make(
-          withIdentifier: "DataCell", owner: nil) as? XTSideBarTableCellView
+          withIdentifier: "DataCell", owner: nil) as? XTSidebarTableCellView
       else { return nil }
       
       let textField = dataView.textField!
@@ -362,6 +380,8 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
       textField.isEditable = sideBarItem.editable
       textField.isSelectable = sideBarItem.isSelectable
       dataView.statusImage.image = statusImage(sideBarItem)
+      dataView.statusImage.isHidden = dataView.statusImage.image == nil
+      dataView.statusText.isHidden = true
       if sideBarItem.editable {
         textField.formatter = refFormatter
         textField.target = viewController

@@ -4,7 +4,6 @@
 #import "XTRefFormatter.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
-#import "XTSideBarTableCellView.h"
 #import "NSMutableDictionary+MultiObjectForKey.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
@@ -17,7 +16,6 @@ NSString * const XTStagingSHA = @"";
 
 @property (readwrite) NSArray<XTSideBarGroupItem*> *roots;
 @property (readwrite) XTSideBarItem *stagingItem;
-@property NSMutableArray<BOSResource*> *observedResources;
 
 @end
 
@@ -27,13 +25,8 @@ NSString * const XTStagingSHA = @"";
 - (instancetype)init
 {
   if ((self = [super init]) != nil) {
-    _stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
-    _roots = [self makeRoots];
     self.stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
     self.roots = [self makeRoots];
-    _roots = [self makeRoots];
-    _stagingItem = [[XTStagingItem alloc] initWithTitle:@"Staging"];
-    _observedResources = [[NSMutableArray alloc] init];
     self.buildStatuses = [NSMutableDictionary dictionary];
   }
   return self;
@@ -254,28 +247,6 @@ NSString * const XTStagingSHA = @"";
                               display:YES
                     completionHandler:^(NSDocument *doc,BOOL open, NSError *error) {}];
   }
-}
-
-- (XTLocalBranchItem *)itemForBranchName:(NSString *)branch
-{
-  XTSideBarItem *branches = _roots[XTGroupIndexBranches];
-
-  for (XTSideBarItem *branchItem in branches.children) {
-    if ([branchItem.title isEqual:branch])
-      return (XTLocalBranchItem*)branchItem;
-  }
-  return nil;
-}
-
-- (XTSideBarItem *)itemNamed:(NSString *)name inGroup:(XTGroupIndex)groupIndex
-{
-  XTSideBarItem *group = _roots[groupIndex];
-
-  for (XTSideBarItem *item in group.children) {
-    if ([item.title isEqual:name])
-      return item;
-  }
-  return nil;
 }
 
 @end

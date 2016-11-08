@@ -2,22 +2,17 @@
 #import "XTFileViewController.h"
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
-#import "XTSideBarDataSource.h"
-#import "XTSideBarOutlineView.h"
-#import "XTSideBarTableCellView.h"
 #import "Xit-Swift.h"
 #import "NSAttributedString+XTExtensions.h"
 
 @implementation XTHistoryViewController
 
 - (instancetype)initWithRepository:(XTRepository*)repository
-                           sidebar:(XTSideBarOutlineView*)sidebar
 {
   if ((self = [self init]) == nil)
     return nil;
 
   _repo = repository;
-  _savedSidebarWidth = 180;
   return self;
 }
 
@@ -47,7 +42,6 @@
 
 - (NSString*)nibName
 {
-  NSLog(@"nibName: %@ (%@)", super.nibName, [self class]);
   return NSStringFromClass([self class]);
 }
 
@@ -59,7 +53,6 @@
 - (void)setRepo:(XTRepository*)newRepo
 {
   _repo = newRepo;
-  self.sidebarController.repo = newRepo;
   [_fileViewController setRepo:newRepo];
   self.tableController.repository = newRepo;
 }
@@ -70,12 +63,6 @@
   [_fileViewController reload];
 }
 
-- (BOOL)sideBarHidden
-{
-  return [self.sidebarSplitView
-      isSubviewCollapsed:self.sidebarSplitView.subviews[0]];
-}
-
 - (BOOL)historyHidden
 {
   return [self.mainSplitView isSubviewCollapsed:self.mainSplitView.subviews[0]];
@@ -84,20 +71,6 @@
 - (BOOL)detailsHidden
 {
   return [self.mainSplitView isSubviewCollapsed:self.mainSplitView.subviews[1]];
-}
-
-- (IBAction)toggleSideBar:(id)sender
-{
-  NSView *sidebarPane = self.sidebarSplitView.subviews[0];
-  const bool isCollapsed = [self sideBarHidden];
-  const CGFloat newWidth = isCollapsed
-      ? _savedSidebarWidth
-      : [self.sidebarSplitView minPossiblePositionOfDividerAtIndex:0];
-
-  if (!isCollapsed)
-    _savedSidebarWidth = sidebarPane.frame.size.width;
-  [self.sidebarSplitView setPosition:newWidth ofDividerAtIndex:0];
-  sidebarPane.hidden = !isCollapsed;
 }
 
 - (IBAction)toggleHistory:(id)sender
