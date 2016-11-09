@@ -391,7 +391,7 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
                           atomically:YES
                             encoding:NSASCIIStringEncoding
                                error:nil]);
-  [self.repository stageAllFilesWithErorr:&error];
+  [self.repository stageAllFilesWithError:&error];
   
   NSArray<XTFileChange*> *changes = [self.repository changesForRef:XTStagingSHA
                                                             parent:nil];

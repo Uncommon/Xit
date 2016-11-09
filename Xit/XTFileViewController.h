@@ -68,6 +68,7 @@ extern const CGFloat kChangeImagePadding;
 - (IBAction)stageAll:(id)sender;
 - (IBAction)unstageAll:(id)sender;
 - (IBAction)showIgnored:(id)sender;
+- (IBAction)stageUnstageAll:(NSSegmentedControl*)sender;
 
 - (void)windowDidLoad;
 - (void)setRepo:(XTRepository *)repo;

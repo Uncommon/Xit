@@ -105,6 +105,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   if (_repo != nil)
     self.commitEntryController.repo = _repo;
   self.headerTabView.tabViewItems[1].view = self.commitEntryController.view;
+  self.previewPath.pathComponentCells = @[];
 }
 
 - (void)windowDidLoad
@@ -314,7 +315,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 {
   NSError *error = nil;
   
-  [_repo stageAllFilesWithErorr:&error];
+  [_repo stageAllFilesWithError:&error];
 }
 
 - (IBAction)unstageAll:(id)sender
@@ -324,6 +325,14 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 
 - (IBAction)showIgnored:(id)sender
 {
+}
+
+- (IBAction)stageUnstageAll:(NSSegmentedControl*)sender
+{
+  switch (sender.selectedSegment) {
+    case 0: [self unstageAll:sender]; break;
+    case 1: [self stageAll:sender]; break;
+  }
 }
 
 - (void)clearPreviews

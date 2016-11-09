@@ -27,7 +27,7 @@
              encoding:NSASCIIStringEncoding
                 error:&error];
     XCTAssertNil(error);
-    [self.repository stageAllFilesWithErorr:&error];
+    [self.repository stageAllFilesWithError:&error];
     XCTAssertNil(error);
     [self.repository commitWithMessage:@"commit"
                                  amend:NO
@@ -91,7 +91,7 @@
              encoding:NSASCIIStringEncoding
                 error:nil];
   }
-  [self.repository stageAllFilesWithErorr:&error];
+  [self.repository stageAllFilesWithError:&error];
   [self.repository commitWithMessage:@"commit"
                                amend:NO
                          outputBlock:NULL

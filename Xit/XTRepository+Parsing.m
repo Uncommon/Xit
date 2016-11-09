@@ -497,7 +497,7 @@ NSString *XTCommitSHAKey = @"sha",
   return result != nil;
 }
 
-- (BOOL)stageAllFilesWithErorr:(NSError**)error
+- (BOOL)stageAllFilesWithError:(NSError**)error
 {
   return [self executeGitWithArgs:@[ @"add", @"--all" ]
                            writes:YES

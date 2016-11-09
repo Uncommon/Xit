@@ -62,7 +62,7 @@ typedef NS_ENUM(NSUInteger, XitChange) {
               files:(NSArray * _Nullable * _Nullable)files;
 
 - (BOOL)stageFile:(NSString*)file error:(NSError**)error;
-- (BOOL)stageAllFilesWithErorr:(NSError**)error;
+- (BOOL)stageAllFilesWithError:(NSError**)error;
 - (BOOL)unstageFile:(NSString*)file error:(NSError**)error;
 
 - (BOOL)commitWithMessage:(NSString*)message
