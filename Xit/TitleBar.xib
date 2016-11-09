@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2657" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11201"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11542"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="XTTitleBarAccessoryViewController" customModule="Xit" customModuleProvider="target">
@@ -88,7 +89,7 @@
                             </constraints>
                         </progressIndicator>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zFv-Uo-DhN" customClass="XTDraggingLabel" customModule="Xit" customModuleProvider="target">
-                            <rect key="frame" x="30" y="5" width="69" height="17"/>
+                            <rect key="frame" x="30" y="4" width="69" height="17"/>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Repository" id="mT9-Xv-yPn">
                                 <font key="font" metaFont="system"/>
                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -130,8 +131,7 @@
                         <constraint firstItem="N5o-xl-R2D" firstAttribute="top" secondItem="DfW-Hf-FKe" secondAttribute="top" constant="5" id="A02-fo-H9N"/>
                         <constraint firstItem="Y8F-Z6-7t2" firstAttribute="leading" secondItem="N5o-xl-R2D" secondAttribute="trailing" constant="8" symbolic="YES" id="A9o-uc-s2X"/>
                         <constraint firstAttribute="bottom" secondItem="FL9-n6-pxD" secondAttribute="bottom" id="Ied-Cx-IAn"/>
-                        <constraint firstItem="zFv-Uo-DhN" firstAttribute="top" secondItem="DfW-Hf-FKe" secondAttribute="top" constant="3" id="QmC-dF-XMh"/>
-                        <constraint firstItem="UF4-D2-qhU" firstAttribute="top" secondItem="DfW-Hf-FKe" secondAttribute="top" constant="2" id="Wxv-0d-Ycv"/>
+                        <constraint firstItem="zFv-Uo-DhN" firstAttribute="top" secondItem="DfW-Hf-FKe" secondAttribute="top" constant="4" id="QmC-dF-XMh"/>
                         <constraint firstItem="PFe-lZ-RQc" firstAttribute="top" secondItem="DfW-Hf-FKe" secondAttribute="top" constant="4" id="a8T-DF-ehg"/>
                         <constraint firstItem="UF4-D2-qhU" firstAttribute="leading" secondItem="Y8F-Z6-7t2" secondAttribute="trailing" constant="-6" id="aKR-1P-kJB"/>
                         <constraint firstItem="N5o-xl-R2D" firstAttribute="leading" secondItem="zFv-Uo-DhN" secondAttribute="trailing" constant="8" symbolic="YES" id="dWl-ds-K1a"/>
@@ -141,6 +141,7 @@
                         <constraint firstItem="zFv-Uo-DhN" firstAttribute="leading" secondItem="WKb-MR-WPP" secondAttribute="trailing" constant="8" symbolic="YES" id="rnc-lS-8aK"/>
                         <constraint firstItem="PFe-lZ-RQc" firstAttribute="leading" secondItem="DfW-Hf-FKe" secondAttribute="leading" constant="8" id="vwI-HF-zRE"/>
                         <constraint firstItem="FL9-n6-pxD" firstAttribute="leading" secondItem="DfW-Hf-FKe" secondAttribute="leading" constant="1" id="vx0-wi-bgz"/>
+                        <constraint firstItem="UF4-D2-qhU" firstAttribute="baseline" secondItem="zFv-Uo-DhN" secondAttribute="baseline" id="wRp-zd-oAH"/>
                         <constraint firstItem="FL9-n6-pxD" firstAttribute="top" secondItem="DfW-Hf-FKe" secondAttribute="top" id="xsD-cz-j4t"/>
                     </constraints>
                 </customView>
