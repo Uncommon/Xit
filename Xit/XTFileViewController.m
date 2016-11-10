@@ -333,6 +333,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 {
   [self selectRowFromButton:button];
   [self setStageView:staged];
+  self.stageSelector.selectedSegment = staged ? 1 : 0;
 }
 
 - (void)setStageView:(BOOL)showStaged
