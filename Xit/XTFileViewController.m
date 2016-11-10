@@ -37,6 +37,8 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 @property id<XTFileContentController> contentController;
 @property XTCommitEntryController *commitEntryController;
 @property NSDictionary<NSNumber*, NSImage*> *stageImages;
+@property (weak) NSButton *lastClickedButton;
+@property NSTimer *doubleClickTImer;
 
 @end
 
@@ -176,18 +178,15 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 
 - (IBAction)changeFileListView:(id)sender
 {
-  XTFileListDataSourceBase *newDS = _fileChangeDS;
-
-  if (self.viewSelector.selectedSegment == 1)
-    newDS = _fileListDS;
-  if (newDS.isHierarchical)
-    _fileListOutline.outlineTableColumn =
-        [_fileListOutline tableColumnWithIdentifier:@"main"];
-  else
-    _fileListOutline.outlineTableColumn =
-        [_fileListOutline tableColumnWithIdentifier:@"hidden"];
-  [_fileListOutline setDelegate:self];
-  [_fileListOutline setDataSource:newDS];
+  XTFileListDataSourceBase *newDS = (self.viewSelector.selectedSegment == 0)
+      ? _fileChangeDS
+      : _fileListDS;
+  NSString *columnID = newDS.isHierarchical ? @"main" : @"hidden";
+  
+  _fileListOutline.outlineTableColumn =
+      [_fileListOutline tableColumnWithIdentifier:columnID];
+  _fileListOutline.delegate = self;
+  _fileListOutline.dataSource = newDS;
   [_fileListOutline reloadData];
 }
 
@@ -284,26 +283,61 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   return change.path;
 }
 
+- (BOOL)checkDoubleClick:(id)sender
+{
+  if (![sender isKindOfClass:[NSButton class]])
+    return false;
+
+  if ((self.lastClickedButton == sender) &&
+      (NSApp.currentEvent.clickCount > 1)) {
+    self.lastClickedButton = nil;
+    return true;
+  }
+  else {
+    self.lastClickedButton = sender;
+    return false;
+  }
+}
+
+- (void)clickButton:(NSButton*)sender staging:(BOOL)staging
+{
+  if ([self checkDoubleClick:sender]) {
+    NSError *error = nil;
+    
+    sender.enabled = NO;
+    if (staging)
+      [_repo stageFile:[self pathFromButton:sender] error:&error];
+    else
+      [_repo unstageFile:[self pathFromButton:sender] error:&error];
+    [self selectRowFromButton:sender];
+    [[NSNotificationCenter defaultCenter]
+        postNotificationName:XTRepositoryIndexChangedNotification
+                      object:_repo];
+  }
+  else {
+    [self selectRowFromButton:sender staged:!staging];
+  }
+}
+
 - (IBAction)stageClicked:(id)sender
 {
-  NSError *error = nil;
-
-  [sender setEnabled:NO];
-  [_repo stageFile:[self pathFromButton:(NSButton*)sender] error:&error];
-  [self selectRowFromButton:sender];
-  [[NSNotificationCenter defaultCenter]
-      postNotificationName:XTRepositoryIndexChangedNotification object:_repo];
+  [self clickButton:sender staging:YES];
 }
 
 - (IBAction)unstageClicked:(id)sender
 {
-  NSError *error = nil;
-  
-  [sender setEnabled:NO];
-  [_repo unstageFile:[self pathFromButton:(NSButton*)sender] error:&error];
-  [self selectRowFromButton:sender];
-  [[NSNotificationCenter defaultCenter]
-      postNotificationName:XTRepositoryIndexChangedNotification object:_repo];
+  [self clickButton:sender staging:NO];
+}
+
+- (void)selectRowFromButton:(NSButton*)button staged:(BOOL)staged
+{
+  [self selectRowFromButton:button];
+  [self setStageView:staged];
+}
+
+- (void)setStageView:(BOOL)showStaged
+{
+  self.modelHasStaging = showStaged;
 }
 
 - (IBAction)changeStageView:(id)sender
@@ -472,14 +506,12 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   if (self.modelCanCommit) {
     button.image = [self stagingImageForChange:change
                                    otherChange:otherChange];
-    button.rolloverActive = change != XitChangeMixed;
     button.enabled =
         [self displayChangeForChange:change otherChange:otherChange] !=
             XitChangeMixed;
   }
   else {
     button.image = [self imageForChange:change];
-    button.rolloverActive = NO;
     button.enabled = NO;
   }
   cell.row = row;
