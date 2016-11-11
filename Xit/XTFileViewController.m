@@ -59,7 +59,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   self.commitEntryController.repo = newRepo;
   [[NSNotificationCenter defaultCenter]
       addObserver:self
-         selector:@selector(repoChanged:)
+         selector:@selector(indexChanged:)
              name:XTRepositoryIndexChangedNotification
            object:newRepo];
 }
@@ -309,7 +309,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
       [_repo stageFile:[self pathFromButton:sender] error:&error];
     else
       [_repo unstageFile:[self pathFromButton:sender] error:&error];
-    [self selectRowFromButton:sender];
+    [self selectRowFromButton:sender staged:staging];
     [[NSNotificationCenter defaultCenter]
         postNotificationName:XTRepositoryIndexChangedNotification
                       object:_repo];
@@ -333,12 +333,12 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 {
   [self selectRowFromButton:button];
   [self setStageView:staged];
-  self.stageSelector.selectedSegment = staged ? 1 : 0;
 }
 
 - (void)setStageView:(BOOL)showStaged
 {
   self.modelHasStaging = showStaged;
+  self.stageSelector.selectedSegment = showStaged ? 1 : 0;
 }
 
 - (IBAction)changeStageView:(id)sender
@@ -351,11 +351,13 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   NSError *error = nil;
   
   [_repo stageAllFilesWithError:&error];
+  [self setStageView:YES];
 }
 
 - (IBAction)unstageAll:(id)sender
 {
   [_repo unstageAllFiles];
+  [self setStageView:NO];
 }
 
 - (IBAction)showIgnored:(id)sender
@@ -436,19 +438,14 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   column.hidden = !shown;
 }
 
-- (void)repoChanged:(NSNotification*)note
+- (void)indexChanged:(NSNotification*)note
 {
-  NSArray *paths = note.userInfo[XTPathsKey];
-  BOOL doReload = paths == nil;
-  
-  if (!doReload && self.inStagingView && (paths.count != 0))
-    for (NSString *path in paths)
-      if ([path isEqualToString:@"/"]) {
-        doReload = YES;
-        break;
-      }
-  if (doReload)
+  if (self.inStagingView)
     [self.fileListDataSource reload];
+  
+  // Ideally, check to see if the selected file has changed
+  if (self.modelHasStaging)
+    [self loadSelectedPreview];
 }
 
 - (void)fileSelectionChanged:(NSNotification*)note
