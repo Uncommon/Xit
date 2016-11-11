@@ -399,4 +399,16 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
       return dataView
     }
   }
+  
+  public func outlineView(_ outlineView: NSOutlineView,
+                          rowViewForItem item: Any) -> NSTableRowView?
+  {
+    if let branchItem = item as? XTLocalBranchItem,
+       branchItem.current {
+      return SidebarCheckedRowView()
+    }
+    else {
+      return nil
+    }
+  }
 }
