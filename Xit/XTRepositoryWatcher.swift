@@ -30,7 +30,9 @@ let XTChangedRefsKey = "changedRefs"
     makePackedRefsWatcher()
 
     let latency: CFTimeInterval = 1.0
-    let unsafeSelf = UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque())
+    let unsafeSelf = UnsafeMutableRawPointer(
+            Unmanaged.passUnretained(self).toOpaque())
+    // Must be var because it will be passed by reference
     var context = FSEventStreamContext(version: 0,
                                        info: unsafeSelf,
                                        retain: nil,
@@ -106,7 +108,8 @@ let XTChangedRefsKey = "changedRefs"
     let indexPath = gitPath.stringByAppendingPathComponent("index")
     guard let indexAttributes = try? FileManager.default
                                      .attributesOfItem(atPath: indexPath),
-          let newMod = indexAttributes[FileAttributeKey.modificationDate] as? Date
+          let newMod = indexAttributes[FileAttributeKey.modificationDate]
+                       as? Date
     else {
       lastIndexChange = Date.distantPast
       return

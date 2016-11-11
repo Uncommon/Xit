@@ -6,7 +6,6 @@ class XTRolloverButton: NSButton
   var normalImage: NSImage?
   var rolloverActive: Bool
 
-  // Does nothing, but overriding a designated initializer is required
   required init?(coder: NSCoder)
   {
     self.rolloverActive = true
