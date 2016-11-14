@@ -444,7 +444,7 @@
 		C91F34771D30656B005F9BDF /* XTServices.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTServices.swift; sourceTree = "<group>"; };
 		C923D6471D8CA56800C6B90B /* XTTagTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTagTest.swift; sourceTree = "<group>"; };
 		C923D65D1D90506A00C6B90B /* TitleBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TitleBar.xib; sourceTree = "<group>"; };
-		C923D66B1D906FAA00C6B90B /* XTTitleBarAccessoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTitleBarAccessoryViewController.swift; sourceTree = "<group>"; };
+		C923D66B1D906FAA00C6B90B /* XTTitleBarAccessoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = XTTitleBarAccessoryViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C926804D1D074EC500E422FA /* XTFileChangesModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesModel.swift; sourceTree = "<group>"; };
 		C929D03A1D400B3B00D7DC52 /* XTRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRemote.swift; sourceTree = "<group>"; };
 		C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiscExtensions.swift; sourceTree = "<group>"; };
@@ -503,7 +503,7 @@
 		C9DAB5CE1D4A4F0300586854 /* XTGitPrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTGitPrefsController.swift; sourceTree = "<group>"; };
 		C9DAB5D21D4A8D2000586854 /* Preferences.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Preferences.storyboard; sourceTree = "<group>"; };
 		C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesModelTest.swift; sourceTree = "<group>"; };
-		C9E9A37C1D0B5706007BFABF /* XTWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTWindowController.swift; sourceTree = "<group>"; };
+		C9E9A37C1D0B5706007BFABF /* XTWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = XTWindowController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C9EB87231D01D93400C47D13 /* XTStash.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTStash.swift; sourceTree = "<group>"; };
 		C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "XitTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		C9EB87311D05D35800C47D13 /* XTStashTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTStashTest.swift; sourceTree = "<group>"; };

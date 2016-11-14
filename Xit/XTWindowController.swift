@@ -352,9 +352,9 @@ extension XTWindowController: XTTitleBarDelegate
             !historyController.detailsHidden())
   }
   
-  func fetchSelecetd() { fetch(self) }
-  func pushSelecetd() { push(self) }
-  func pullSelecetd() { pull(self) }
+  func fetchSelected() { fetch(self) }
+  func pushSelected() { push(self) }
+  func pullSelected() { pull(self) }
   func showHideSidebar() { showHideSidebar(self) }
   func showHideHistory() { showHideHistory(self) }
   func showHideDetails() { showHideDetails(self) }

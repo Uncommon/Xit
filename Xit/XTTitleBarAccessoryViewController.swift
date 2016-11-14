@@ -5,9 +5,9 @@ protocol XTTitleBarDelegate
   var viewStates: (sidebar: Bool, history: Bool, details: Bool) { get }
 
   func branchSelecetd(_ branch: String)
-  func fetchSelecetd()
-  func pushSelecetd()
-  func pullSelecetd()
+  func fetchSelected()
+  func pushSelected()
+  func pullSelected()
   func showHideSidebar()
   func showHideHistory()
   func showHideDetails()
@@ -30,11 +30,11 @@ class XTTitleBarAccessoryViewController: NSViewController
   {
     switch sender.selectedSegment {
       case 0:
-        delegate?.fetchSelecetd()
+        delegate?.fetchSelected()
       case 1:
-        delegate?.pullSelecetd()
+        delegate?.pullSelected()
       case 2:
-        delegate?.pushSelecetd()
+        delegate?.pushSelected()
       default:
         break
     }
