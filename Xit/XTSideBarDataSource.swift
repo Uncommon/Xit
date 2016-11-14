@@ -322,9 +322,11 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
 {
   public func outlineViewSelectionDidChange(_ notification: Notification)
   {
-    guard let item = outline!.item(atRow: outline!.selectedRow) as? XTSideBarItem,
+    guard let item = outline!.item(atRow: outline!.selectedRow)
+                     as? XTSideBarItem,
           let model = item.model,
-          let controller = outline!.window?.windowController as? XTWindowController
+          let controller = outline!.window?.windowController
+                           as? XTWindowController
     else { return }
     
     if controller.selectedModel?.shaToSelect != model.shaToSelect {
@@ -381,7 +383,6 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
       textField.isSelectable = sideBarItem.isSelectable
       dataView.statusImage.image = statusImage(sideBarItem)
       dataView.statusImage.isHidden = dataView.statusImage.image == nil
-      dataView.statusText.isHidden = true
       if sideBarItem.editable {
         textField.formatter = refFormatter
         textField.target = viewController
@@ -395,6 +396,30 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
       else {
         textField.font = NSFont.systemFont(
             ofSize: textField.font?.pointSize ?? 12)
+      }
+      if sideBarItem is XTStagingItem {
+        let changes = sideBarItem.model!.changes
+        var stagedCount = 0, unstagedCount = 0
+        
+        for change in changes {
+          if change.change != .unmodified {
+            stagedCount += 1
+          }
+          if change.unstagedChange != .unmodified {
+            unstagedCount += 1
+          }
+        }
+        
+        if (stagedCount != 0) || (unstagedCount != 0) {
+          dataView.statusText.title = "\(unstagedCount)▸\(stagedCount)"
+          dataView.statusText.isHidden = false
+        }
+        else {
+          dataView.statusText.isHidden = true
+        }
+      }
+      else {
+        dataView.statusText.isHidden = true
       }
       return dataView
     }

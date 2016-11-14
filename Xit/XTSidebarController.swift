@@ -16,6 +16,12 @@ class XTSidebarController: NSViewController
     didSet
     {
       sidebarDS.repo = repo
+      NotificationCenter.default.addObserver(
+          forName: NSNotification.Name.XTRepositoryIndexChanged,
+          object: repo, queue: nil) {
+        (notification) in
+        self.sidebarOutline.reloadItem(self.sidebarDS.stagingItem)
+      }
     }
   }
   var savedSidebarWidth: UInt = 0
@@ -24,6 +30,7 @@ class XTSidebarController: NSViewController
   {
     // The timers contain references to the ds object and repository.
     sidebarDS?.stopTimers()
+    NotificationCenter.default.removeObserver(self)
   }
   
   override func viewDidLoad()
