@@ -6,7 +6,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="XTTitleBarAccessoryViewController" customModule="Xit" customModuleProvider="target">
+        <customObject id="-2" userLabel="File's Owner" customClass="XTTitleBarViewController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="branchPopup" destination="UF4-D2-qhU" id="Cx4-D6-Wlb"/>
                 <outlet property="operationButton" destination="aNh-jL-whD" id="xoY-eW-HIj"/>

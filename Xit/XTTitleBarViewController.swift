@@ -13,7 +13,7 @@ protocol XTTitleBarDelegate
   func showHideDetails()
 }
 
-class XTTitleBarAccessoryViewController: NSViewController
+class XTTitleBarViewController: NSViewController
 {
   @IBOutlet weak var remoteControls: NSSegmentedControl!
   @IBOutlet weak var proxyIcon: NSImageView!

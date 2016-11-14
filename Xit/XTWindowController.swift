@@ -9,7 +9,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate
   
   var historyController: XTHistoryViewController!
   weak var xtDocument: XTDocument?
-  var titleBarController: XTTitleBarAccessoryViewController? = nil
+  var titleBarController: XTTitleBarViewController? = nil
   var selectedCommitSHA: String?
   var refsChangedObserver: NSObjectProtocol?
   dynamic var selectedModel: XTFileChangesModel?
@@ -367,7 +367,7 @@ extension XTWindowController: NSToolbarDelegate
   {
     guard let item = notification.userInfo?["item"] as? NSToolbarItem,
           item.itemIdentifier == "com.uncommonplace.xit.titlebar",
-          let viewController = XTTitleBarAccessoryViewController(
+          let viewController = XTTitleBarViewController(
               nibName: "TitleBar", bundle: nil)
     else { return }
     
