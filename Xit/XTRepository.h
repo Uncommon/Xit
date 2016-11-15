@@ -63,6 +63,7 @@ extern NSString *XTPathsKey;
  */
 - (void)shutDown;
 
+@property(readonly) BOOL busy;
 @property(readonly) BOOL hasHeadReference;
 @property(readonly, copy) NSString *parentTree;
 @property(readonly, copy) NSString *headRef;

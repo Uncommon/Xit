@@ -386,12 +386,13 @@ extension XTWindowController: NSToolbarDelegate
                                    options: nil)
     viewController.proxyIcon.bind("hidden",
                                   to: repository,
-                                  withKeyPath: "isWriting",
+                                  withKeyPath: "busy",
                                   options: nil)
     viewController.spinner.bind("hidden",
                                 to: repository,
-                                withKeyPath: "isWriting",
+                                withKeyPath: "busy",
                                 options: inverseBindingOptions)
+    viewController.spinner.startAnimation(nil)
     updateBranchList()
     viewController.selectedBranch = xtDocument!.repository!.currentBranch
   }

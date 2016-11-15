@@ -18,6 +18,7 @@ NSString * const XTRepositoryHeadChangedNotification = @"HeadChanged";
 
 @interface XTRepository ()
 
+@property NSUInteger queueCount;
 @property(readwrite) XTRepositoryWatcher *watcher;
 @property(readwrite) BOOL isShutDown;
 @property(readwrite) XTConfig *config;
@@ -97,6 +98,11 @@ NSString * const XTRepositoryHeadChangedNotification = @"HeadChanged";
   return _gtRepo.gitDirectoryURL;
 }
 
+- (BOOL)busy
+{
+  return self.queueCount > 0;
+}
+
 - (BOOL)executeWritingBlock:(BOOL (^)())block;
 {
   BOOL result = NO;
@@ -111,13 +117,29 @@ NSString * const XTRepositoryHeadChangedNotification = @"HeadChanged";
   return result;
 }
 
+- (void)updateQueueCount:(NSInteger)delta
+{
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [self willChangeValueForKey:@"busy"];
+    self.queueCount += delta;
+    [self didChangeValueForKey:@"busy"];
+  });
+}
+
+- (void)executeTask:(void (^)())block
+{
+  [self updateQueueCount:1];
+  block();
+  [self updateQueueCount:-1];
+}
+
 - (void)executeOffMainThread:(void (^)())block
 {
   if ([NSThread isMainThread]) {
     if (!self.isShutDown)
-      dispatch_async(_queue, block);
+      dispatch_async(_queue, ^{ [self executeTask:block]; });
   } else {
-    block();
+    [self executeTask:block];
   }
 }
 
