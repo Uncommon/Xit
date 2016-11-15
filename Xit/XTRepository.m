@@ -193,7 +193,6 @@ NSString * const XTRepositoryHeadChangedNotification = @"HeadChanged";
     [self updateIsWriting:YES];
     NSLog(@"****command = git %@", [args componentsJoinedByString:@" "]);
     NSTask *task = [[NSTask alloc] init];
-    [[NSNotificationCenter defaultCenter] postNotificationName:XTTaskStartedNotification object:self];
     task.currentDirectoryPath = _repoURL.path;
     task.launchPath = _gitCMD;
     task.arguments = args;
@@ -259,7 +258,6 @@ NSString * const XTRepositoryHeadChangedNotification = @"HeadChanged";
       }
       output = nil;
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:XTTaskEndedNotification object:self];
     [self updateIsWriting:NO];
     return output;
   }

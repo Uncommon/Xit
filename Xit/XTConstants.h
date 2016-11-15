@@ -45,6 +45,3 @@ extern NSString * const XTSelectedModelChangedNotification;
 extern NSString * const XTAddedRefsKey;
 extern NSString * const XTDeletedRefsKey;
 extern NSString * const XTChangedRefsKey;
-
-extern NSString * const XTTaskStartedNotification;
-extern NSString * const XTTaskEndedNotification;

@@ -57,16 +57,6 @@ class XTWindowController: NSWindowController, NSWindowDelegate
     
     let repo = xtDocument!.repository!
     
-    NotificationCenter.default.addObserver(
-        self,
-        selector: #selector(XTWindowController.taskStarted(_:)),
-        name: NSNotification.Name.XTTaskStarted,
-        object: repo)
-    NotificationCenter.default.addObserver(
-        self,
-        selector: #selector(XTWindowController.taskEnded(_:)),
-        name: NSNotification.Name.XTTaskEnded,
-        object: repo)
     refsChangedObserver = NotificationCenter.default.addObserver(
         forName: NSNotification.Name.XTRepositoryRefsChanged,
         object: repo, queue: nil) {
@@ -133,14 +123,6 @@ class XTWindowController: NSWindowController, NSWindowDelegate
     else { return }
     
     self.titleBarController?.updateBranchList(branches.flatMap { $0.shortName })
-  }
-  
-  func taskStarted(_ notification: Notification)
-  {
-  }
-  
-  func taskEnded(_ notification: Notification)
-  {
   }
   
   @IBAction func refresh(_ sender: AnyObject)

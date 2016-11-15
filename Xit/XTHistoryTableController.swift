@@ -88,14 +88,7 @@ public class XTHistoryTableController: NSViewController
     weak var tableView = view as? NSTableView
     
     history.reset()
-    NotificationCenter.default.post(name: NSNotification.Name.XTTaskStarted,
-                                    object: repository)
     repository.executeOffMainThread {
-      defer {
-        NotificationCenter.default.post(name: NSNotification.Name.XTTaskEnded,
-                                        object: repository)
-      }
-      
       guard let walker = try? GTEnumerator(repository: repository.gtRepo)
       else {
         NSLog("GTEnumerator failed")
