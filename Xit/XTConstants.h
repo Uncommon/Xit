@@ -41,7 +41,3 @@ extern NSString * const XTRepositoryRefsChangedNotification;
 extern NSString * const XTRepositoryHeadChangedNotification;
 
 extern NSString * const XTSelectedModelChangedNotification;
-
-extern NSString * const XTAddedRefsKey;
-extern NSString * const XTDeletedRefsKey;
-extern NSString * const XTChangedRefsKey;

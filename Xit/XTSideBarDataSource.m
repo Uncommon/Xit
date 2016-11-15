@@ -7,8 +7,6 @@
 #import "NSMutableDictionary+MultiObjectForKey.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
-NSString * const XTStagingSHA = @"";
-
 
 @interface XTSideBarDataSource ()
 

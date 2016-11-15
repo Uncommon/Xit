@@ -3,7 +3,6 @@
 #import "Xit-Swift.h"
 #include "XTQueueUtils.h"
 
-NSString * const XTSelectedModelChangedNotification = @"XTSelectedModelChanged";
 
 @interface XTDocument ()
 

@@ -8,13 +8,6 @@ NSString *XTErrorOutputKey = @"output";
 NSString *XTErrorArgsKey = @"args";
 NSString *XTPathsKey = @"paths";
 
-NSString *XTErrorDomainXit = @"Xit", *XTErrorDomainGit = @"git";
-
-NSString * const XTRepositoryChangedNotification = @"RepoChanged";
-NSString * const XTRepositoryRefsChangedNotification = @"RefsChanged";
-NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
-NSString * const XTRepositoryHeadChangedNotification = @"HeadChanged";
-
 
 @interface XTRepository ()
 
