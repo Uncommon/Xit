@@ -5,6 +5,13 @@
 #import "Xit-Swift.h"
 #import "NSAttributedString+XTExtensions.h"
 
+
+@interface XTHistoryViewController ()
+
+@property (readwrite) XTFileViewController *fileViewController;
+
+@end
+
 @implementation XTHistoryViewController
 
 - (instancetype)initWithRepository:(XTRepository*)repository

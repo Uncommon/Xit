@@ -25,6 +25,10 @@ class XTWindowController: NSWindowController, NSWindowDelegate
           name: NSNotification.Name.XTSelectedModelChanged,
           object: self,
           userInfo: userInfo)
+      
+      if #available(OSX 10.12.1, *) {
+        touchBar = makeTouchBar()
+      }
     }
   }
   var inStagingView: Bool { return self.selectedCommitSHA == XTStagingSHA }
@@ -379,3 +383,89 @@ extension XTWindowController: NSToolbarDelegate
     viewController.selectedBranch = xtDocument!.repository!.currentBranch
   }
 }
+
+// MARK: NSTouchBar
+fileprivate extension NSTouchBarItemIdentifier
+{
+  static let
+      staging = NSTouchBarItemIdentifier("com.uncommonplace.xit.staging"),
+      unstageAll = NSTouchBarItemIdentifier("com.uncommonplace.xit.unstageall"),
+      stageAll = NSTouchBarItemIdentifier("com.uncommonplace.xit.stageall")
+}
+
+@available(OSX 10.12.1, *)
+extension XTWindowController: NSTouchBarDelegate
+{
+  override func makeTouchBar() -> NSTouchBar?
+  {
+    let bar = NSTouchBar()
+    
+    bar.delegate = self
+    if selectedModel is XTStagingChanges {
+      bar.defaultItemIdentifiers = [ .unstageAll, .stageAll ]
+    }
+    else {
+      bar.defaultItemIdentifiers = [ .staging ]
+    }
+    
+    return bar
+  }
+  
+  func touchBarButton(identifier: NSTouchBarItemIdentifier,
+                      title: String, image: NSImage?,
+                      target: Any, action: Selector) -> NSCustomTouchBarItem
+  {
+    let item = NSCustomTouchBarItem(identifier: identifier)
+    
+    if let image = image {
+      item.view = NSButton(title: title, image: image,
+                           target: target, action: action)
+    }
+    else {
+      item.view = NSButton(title: title, target: target, action: action)
+    }
+    return item
+  }
+  
+  func touchBar(_ touchBar: NSTouchBar,
+                makeItemForIdentifier identifier: NSTouchBarItemIdentifier)
+                -> NSTouchBarItem?
+  {
+    switch identifier {
+
+      case NSTouchBarItemIdentifier.staging:
+        guard let stagingImage = NSImage(named: "stagingTemplate")
+        else { return nil }
+      
+        return touchBarButton(
+            identifier: identifier, title: "Staging", image: stagingImage,
+            target: self, action: #selector(XTWindowController.showStaging(_:)))
+
+      case NSTouchBarItemIdentifier.unstageAll:
+        return touchBarButton(
+            identifier: identifier, title: "« Unstage All", image: nil,
+            target: historyController.fileViewController,
+            action: #selector(XTFileViewController.unstageAll(_:)))
+      
+      case NSTouchBarItemIdentifier.stageAll:
+        return touchBarButton(
+            identifier: identifier, title: "» Stage All", image: nil,
+            target: historyController.fileViewController,
+            action: #selector(XTFileViewController.stageAll(_:)))
+
+      default:
+        return nil
+    }
+  }
+  
+  @IBAction func showStaging(_ sender: Any?)
+  {
+    guard let outline = sidebarController.sidebarOutline
+    else { return }
+    let stagingRow = outline.row(forItem: sidebarController.sidebarDS.stagingItem)
+  
+    outline.selectRowIndexes(IndexSet(integer: stagingRow),
+                             byExtendingSelection: false)
+  }
+}
+

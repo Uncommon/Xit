@@ -17,7 +17,6 @@
   IBOutlet NSTableView *_historyTable;
  @private
   __weak XTRepository *_repo;
-  XTFileViewController *_fileViewController;
   NSUInteger _savedHistorySize;
 }
 
@@ -30,7 +29,8 @@
 - (IBAction)toggleHistory:(id)sender;
 - (IBAction)toggleDetails:(id)sender;
 
-@property(readonly) NSTableView *historyTable;
+@property (readonly) XTFileViewController *fileViewController;
+@property (readonly) NSTableView *historyTable;
 
 @property (weak) IBOutlet NSSplitView *mainSplitView;
 @property (weak) IBOutlet XTHistoryTableController *tableController;
