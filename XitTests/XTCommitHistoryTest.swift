@@ -696,4 +696,18 @@ class XTCommitHistoryTest: XCTestCase
     history.process(commitA, afterCommit: nil)
     check(history, expectedLength: 4)
   }
+  
+  // delete tests:
+  
+  // o-o-x
+  //   ^ *
+  
+  // o-o-x-x
+  //   ^   *
+  
+  // o-o---o
+  //   \-x ^
+  
+  // o-o-----x
+  //   ^\-x-/
 }

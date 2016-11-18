@@ -275,25 +275,52 @@ public class XTCommitHistory: NSObject
     }
   }
   
-  /// Deletes a commit and all parents that are not otherwise referenced.
-  /// Commit connections are also adjusted.
-  func delete(commit: CommitType, startIndex: Int?) -> [Int]
+  /// Returns a list of indexes in `entries` to delete starting with the
+  /// given commit.
+  /// - parameter commit: The first commit in the branch to delete.
+  /// - parameter refOIDs: Commit OIDs that are still referenced and should not
+  /// be deleted.
+  public func indexesToDelete(commit: CommitType, refOIDs: [GTOID]) -> IndexSet
   {
-    guard let startIndex = startIndex ?? entries.indexOf({
+    guard let startIndex = entries.index(where: {
       (entry) -> Bool in
-      entry.commit.OID == commit.OID
+      entry.commit.oid == commit.oid
     })
-    else { return [] }
-    var deleteIndexes = [startIndex]
+    else { return IndexSet() }
     
+    // Don't delete if this commit has any children
+    for connection in entries[startIndex].connections {
+      if connection.parentOID == commit.oid {
+        return IndexSet()
+      }
+    }
+    return indexesToDelete(commit: commit, startIndex: startIndex,
+                           refOIDs: refOIDs)
+  }
+  
+  private func indexesToDelete(commit: CommitType,
+                               startIndex: Int,
+                               refOIDs: [GTOID]) -> IndexSet
+  {
+    var deleteIndexes = IndexSet(integer: startIndex)
+    
+    // TODO handle the first parent differently so we don't recurse for everything
     for parentOID in commit.parentOIDs {
-      for index in startIndex.advancedBy(1)..<entries.endIndex {
+      if refOIDs.contains(parentOID) {
+        continue
+      }
+      for index in (startIndex+1)..<entries.endIndex {
         let entry = entries[index]
         
-        entry.connections = entry.connections.filter({ $0.childOID != commit.OID })
-        if entry.commit.OID == parentOID {
-          if entry.connections.indexOf({ $0.parentOID == parentOID }) == nil {
-            deleteIndexes.appendContentsOf(delete(entry.commit, startIndex: index))
+        entry.connections = entry.connections.filter({ $0.childOID != commit.oid })
+        if entry.commit.oid == parentOID {
+          let parentConnectionIndex =
+              entry.connections.index(where: { $0.parentOID == parentOID })
+          
+          if parentConnectionIndex == nil {
+            deleteIndexes.formUnion(indexesToDelete(commit: entry.commit,
+                                                    startIndex: index,
+                                                    refOIDs: refOIDs))
           }
           break
         }
