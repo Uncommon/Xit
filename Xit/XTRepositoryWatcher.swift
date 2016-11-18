@@ -10,7 +10,7 @@ let XTChangedRefsKey = "changedRefs"
   unowned let repository: XTRepository
 
   // stream must be var because we have to reference self to initialize it.
-  var stream: FSEventStreamRef!
+  var stream: FileEventStream! = nil
   var packedRefsWatcher: XTFileMonitor?
   var lastIndexChange = Date()
   {
@@ -27,53 +27,23 @@ let XTChangedRefsKey = "changedRefs"
     self.repository = repository
     super.init()
     
-    makePackedRefsWatcher()
-
-    let latency: CFTimeInterval = 1.0
-    let unsafeSelf = UnsafeMutableRawPointer(
-            Unmanaged.passUnretained(self).toOpaque())
-    // Must be var because it will be passed by reference
-    var context = FSEventStreamContext(version: 0,
-                                       info: unsafeSelf,
-                                       retain: nil,
-                                       release: nil,
-                                       copyDescription: nil)
-    let callback: FSEventStreamCallback = {
-      (streamRef, userData, eventCount, paths, flags, ids) in
-      guard let cfPaths = unsafeBitCast(paths, to: NSArray.self) as? [String]
-      else { return }
-      let contextSelf = unsafeBitCast(userData, to: XTRepositoryWatcher.self)
-      
-      contextSelf.observeEvents(cfPaths)
-    }
-  
-    self.stream = FSEventStreamCreate(
-        kCFAllocatorDefault, callback,
-        &context, [repository.gitDirectoryURL.path] as CFArray,
-        FSEventStreamEventId(kFSEventStreamEventIdSinceNow), latency,
-        UInt32(kFSEventStreamCreateFlagUseCFTypes |
-               kFSEventStreamCreateFlagNoDefer |
-               kFSEventStreamCreateFlagFileEvents))
-    if self.stream == nil {
-      return nil
-    }
-    
     let objectsPath = repository.gitDirectoryURL.path
                       .stringByAppendingPathComponent("objects")
-    
-    FSEventStreamSetExclusionPaths(stream, [objectsPath] as CFArray)
-    FSEventStreamScheduleWithRunLoop(self.stream,
-                                     CFRunLoopGetMain(),
-                                     CFRunLoopMode.defaultMode.rawValue)
-    FSEventStreamStart(self.stream)
+    guard let stream = FileEventStream(path: repository.gitDirectoryURL.path,
+                                       excludePaths: [objectsPath],
+                                       queue: repository.queue,
+                                       callback: {
+       (paths) in self.observeEvents(paths)
+    })
+    else { return nil }
+  
+    self.stream = stream
+    makePackedRefsWatcher()
   }
   
   func stop()
   {
-    FSEventStreamStop(stream)
-    FSEventStreamInvalidate(stream)
-    FSEventStreamRelease(stream)
-    stream = nil
+    stream.stop()
     packedRefsWatcher = nil
   }
   
@@ -169,7 +139,6 @@ let XTChangedRefsKey = "changedRefs"
       
       return oldOID != newOID
     }
-    
     
     var refChanges = [String: Set<String>]()
     

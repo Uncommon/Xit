@@ -58,10 +58,12 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   _headerController.repository = newRepo;
   self.commitEntryController.repo = newRepo;
   [[NSNotificationCenter defaultCenter]
-      addObserver:self
-         selector:@selector(indexChanged:)
-             name:XTRepositoryIndexChangedNotification
-           object:newRepo];
+      addObserverForName:XTRepositoryIndexChangedNotification
+                  object:newRepo
+                   queue:[NSOperationQueue mainQueue]
+              usingBlock:^(NSNotification *note) {
+    [self indexChanged:note];
+  }];
 }
 
 - (void)loadView

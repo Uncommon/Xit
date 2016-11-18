@@ -147,6 +147,7 @@
 		C9BAE60A1D2FFA8B00A87F13 /* XTConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE6091D2FFA8B00A87F13 /* XTConfig.swift */; };
 		C9BAE6141D3039C500A87F13 /* XTOperationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE6131D3039C500A87F13 /* XTOperationController.swift */; };
 		C9BAE61E1D303A8100A87F13 /* XTRemoteOptionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE61D1D303A8100A87F13 /* XTRemoteOptionsController.swift */; };
+		C9BC1B9B1DDF51B900C71562 /* FileEventStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BC1B9A1DDF51B900C71562 /* FileEventStream.swift */; };
 		C9BDF4C11D99A70F0034841F /* XTRenameBranchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BDF4C01D99A70F0034841F /* XTRenameBranchController.swift */; };
 		C9BDF4D01D99A7660034841F /* XTRenameBranchPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BDF4CE1D99A7660034841F /* XTRenameBranchPanelController.swift */; };
 		C9BDF4D11D99A7660034841F /* XTRenameBranchPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9BDF4CF1D99A7660034841F /* XTRenameBranchPanelController.xib */; };
@@ -492,6 +493,7 @@
 		C9BAE6091D2FFA8B00A87F13 /* XTConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTConfig.swift; sourceTree = "<group>"; };
 		C9BAE6131D3039C500A87F13 /* XTOperationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTOperationController.swift; sourceTree = "<group>"; };
 		C9BAE61D1D303A8100A87F13 /* XTRemoteOptionsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRemoteOptionsController.swift; sourceTree = "<group>"; };
+		C9BC1B9A1DDF51B900C71562 /* FileEventStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileEventStream.swift; sourceTree = "<group>"; };
 		C9BDF4C01D99A70F0034841F /* XTRenameBranchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRenameBranchController.swift; sourceTree = "<group>"; };
 		C9BDF4CE1D99A7660034841F /* XTRenameBranchPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRenameBranchPanelController.swift; sourceTree = "<group>"; };
 		C9BDF4CF1D99A7660034841F /* XTRenameBranchPanelController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTRenameBranchPanelController.xib; sourceTree = "<group>"; };
@@ -600,6 +602,8 @@
 				31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */,
 				89D47941170894A200C04D89 /* NSAttributedString+XTExtensions.h */,
 				89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */,
+				C9BC1B9A1DDF51B900C71562 /* FileEventStream.swift */,
+				C951EB061DDB9BD600B99FBE /* LabelButton.swift */,
 				C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */,
 				C957B8651D2D8D500040F858 /* XTKeychain.swift */,
 				DDDDAF1318162212009F8BA1 /* XTQueueUtils.c */,
@@ -610,7 +614,6 @@
 				89AC82411806769A00402955 /* XTWebViewController.h */,
 				89AC82421806769A00402955 /* XTWebViewController.m */,
 				894C8DE51CCD06FE001A4B80 /* Xit-Bridging-Header.h */,
-				C951EB061DDB9BD600B99FBE /* LabelButton.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -1355,6 +1358,7 @@
 				C9BAE61E1D303A8100A87F13 /* XTRemoteOptionsController.swift in Sources */,
 				C9328B121D77303200EFF7F7 /* XTFileMonitor.swift in Sources */,
 				89A6EA2814478DA40089B212 /* XTAppDelegate.m in Sources */,
+				C9BC1B9B1DDF51B900C71562 /* FileEventStream.swift in Sources */,
 				C929D03B1D400B3B00D7DC52 /* XTRemote.swift in Sources */,
 				C91F34781D30656B005F9BDF /* XTServices.swift in Sources */,
 				DDDA447215B0EA4700DF407B /* XTRepository+Parsing.m in Sources */,
