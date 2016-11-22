@@ -105,6 +105,43 @@ extension NSTableView
   }
 }
 
+extension Array
+{
+  /// Assuming the array is sorted, returns the insertion index for the given
+  /// item to be inserted in order.
+  func sortedInsertionIndex(of elem: Element,
+                            isOrderedBefore: (Element, Element) -> Bool)
+                            -> Int {
+    var lo = 0
+    var hi = self.count - 1
+    
+    while lo <= hi {
+      let mid = (lo + hi)/2
+      
+      if isOrderedBefore(self[mid], elem) {
+        lo = mid + 1
+      }
+      else if isOrderedBefore(elem, self[mid]) {
+        hi = mid - 1
+      }
+      else {
+        return mid
+      }
+    }
+    return lo
+  }
+}
+
+extension Array where Element: Comparable
+{
+  mutating func insertSorted(_ newElement: Element)
+  {
+    insert(newElement,
+           at: sortedInsertionIndex(of: newElement,
+                                    isOrderedBefore: { $0 < $1 }))
+  }
+}
+
 // Swift 3 took away ++, but it still can be useful.
 postfix operator ++
 

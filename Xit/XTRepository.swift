@@ -179,6 +179,67 @@ extension XTRepository
                               options: nil)
     }
   }
+  
+  /// Returns the unstaged and staged status of the given file.
+  func status(file: String) throws -> (XitChange, XitChange)
+  {
+    let statusFlags = UnsafeMutablePointer<UInt32>.allocate(capacity: 1)
+    let result = git_status_file(statusFlags, gtRepo.git_repository(), file)
+    
+    if result != 0 {
+      throw NSError.git_error(for: result)
+    }
+    
+    let flags = git_status_t(statusFlags.pointee)
+    var unstagedChange = XitChange.unmodified
+    var stagedChange = XitChange.unmodified
+    
+    if flags.test(GIT_STATUS_WT_NEW) {
+      unstagedChange = .untracked
+    }
+    else if flags.test(GIT_STATUS_WT_MODIFIED) ||
+            flags.test(GIT_STATUS_WT_TYPECHANGE) {
+      unstagedChange = .modified
+    }
+    else if flags.test(GIT_STATUS_WT_DELETED) {
+      unstagedChange = .deleted
+    }
+    else if flags.test(GIT_STATUS_WT_RENAMED) {
+      unstagedChange = .renamed
+    }
+    else if flags.test(GIT_STATUS_IGNORED) {
+      unstagedChange = .ignored
+    }
+    else if flags.test(GIT_STATUS_CONFLICTED) {
+      unstagedChange = .conflict
+    }
+    // ignoring GIT_STATUS_WT_UNREADABLE
+    
+    if flags.test(GIT_STATUS_INDEX_NEW) {
+      stagedChange = .added
+    }
+    else if flags.test(GIT_STATUS_INDEX_MODIFIED) ||
+            flags.test(GIT_STATUS_WT_TYPECHANGE) {
+      stagedChange = .modified
+    }
+    else if flags.test(GIT_STATUS_INDEX_DELETED) {
+      stagedChange = .deleted
+    }
+    else if flags.test(GIT_STATUS_INDEX_RENAMED) {
+      stagedChange = .renamed
+    }
+    
+    return (unstagedChange, stagedChange)
+  }
+}
+
+// git_status_t is bridged as a struct instead of a raw UInt32.
+extension git_status_t
+{
+  func test(_ flag: git_status_t) -> Bool
+  {
+    return (rawValue & flag.rawValue) != 0
+  }
 }
 
 // MARK: Push/pull
