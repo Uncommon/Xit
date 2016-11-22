@@ -40,4 +40,7 @@ extern NSString * const XTRepositoryRefsChangedNotification;
 /// The head reference (current branch) has changed.
 extern NSString * const XTRepositoryHeadChangedNotification;
 
+/// A file in the workspace has changed.
+extern NSString * const XTRepositoryWorkspaceChangedNotification;
+
 extern NSString * const XTSelectedModelChangedNotification;

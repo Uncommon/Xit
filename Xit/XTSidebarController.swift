@@ -18,7 +18,7 @@ class XTSidebarController: NSViewController
       sidebarDS.repo = repo
       NotificationCenter.default.addObserver(
           forName: NSNotification.Name.XTRepositoryIndexChanged,
-          object: repo, queue: nil) {
+          object: repo, queue: OperationQueue.main) {
         (notification) in
         self.sidebarOutline.reloadItem(self.sidebarDS.stagingItem)
       }

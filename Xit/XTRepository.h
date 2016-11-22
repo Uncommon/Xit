@@ -9,6 +9,7 @@ extern NSString *XTPathsKey;
 @class GTRepository;
 @class XTConfig;
 @class XTRepositoryWatcher;
+@class XTWorkspaceWatcher;
 
 /**
   XTRepository represents the application's interface to the Git repository.
@@ -77,7 +78,8 @@ extern NSString *XTPathsKey;
 @property(readwrite) BOOL isWriting;  /// Other classes should only read
 @property(readonly) BOOL isShutDown;
 
-@property(readonly) XTRepositoryWatcher *watcher;
+@property(readonly) XTRepositoryWatcher *repoWatcher;
+@property(readonly) XTWorkspaceWatcher *workspaceWatcher;
 @property(readonly) XTConfig *config;
 
 @end
