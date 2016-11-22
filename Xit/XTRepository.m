@@ -12,7 +12,8 @@ NSString *XTPathsKey = @"paths";
 @interface XTRepository ()
 
 @property NSUInteger queueCount;
-@property(readwrite) XTRepositoryWatcher *watcher;
+@property(readwrite) XTRepositoryWatcher *repoWatcher;
+@property(readwrite) XTWorkspaceWatcher *workspaceWatcher;
 @property(readwrite) BOOL isShutDown;
 @property(readwrite) XTConfig *config;
 
@@ -58,7 +59,9 @@ NSString *XTPathsKey = @"paths";
     _diffCache = [[NSCache alloc] init];
     
     if (_gtRepo != nil) {
-      self.watcher = [[XTRepositoryWatcher alloc] initWithRepository:self];
+      self.repoWatcher = [[XTRepositoryWatcher alloc] initWithRepository:self];
+      self.workspaceWatcher =
+          [[XTWorkspaceWatcher alloc] initWithRepository:self];
       self.config = [[XTConfig alloc] initWithRepository:self];
       
       [[NSNotificationCenter defaultCenter]
@@ -82,7 +85,8 @@ NSString *XTPathsKey = @"paths";
 
 - (void)dealloc
 {
-  [self.watcher stop];
+  [self.repoWatcher stop];
+  [self.workspaceWatcher stop];
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

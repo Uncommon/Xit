@@ -6,9 +6,20 @@ public class FileEventStream
   var stream: FSEventStreamRef!
   let eventCallback: ([String]) -> Void
   
+  static let rescanFlags =
+      UInt32(kFSEventStreamEventFlagMustScanSubDirs) |
+      UInt32(kFSEventStreamEventFlagUserDropped) |
+      UInt32(kFSEventStreamEventFlagKernelDropped)
+  
   public var latestEventID: FSEventStreamEventId
   { return FSEventStreamGetLatestEventId(stream) }
   
+  /// Constructor
+  /// - parameter path: The root path to watch.
+  /// - parameter excludePaths: FSEvents allows up to 8 ignored paths.
+  /// - parameter queue: The dispatch queue for the callback.
+  /// - parameter callback: Called with a list of changed paths. An empty list
+  /// means the root directory should be re-scanned.
   public init?(path: String,
                excludePaths: [String],
                queue: DispatchQueue,
@@ -30,6 +41,17 @@ public class FileEventStream
       guard let cfPaths = unsafeBitCast(paths, to: NSArray.self) as? [String]
       else { return }
       let contextSelf = unsafeBitCast(userData, to: FileEventStream.self)
+      
+      if let flags = flags {
+        for index in 0..<eventCount {
+          let pathFlags = flags[index]
+          
+          if (pathFlags & FileEventStream.rescanFlags) != 0 {
+            contextSelf.eventCallback([])
+            return
+          }
+        }
+      }
       
       contextSelf.eventCallback(cfPaths)
     }

@@ -24,6 +24,14 @@
 {
   _repository = repository;
   [self reload];
+  
+  [[NSNotificationCenter defaultCenter]
+      addObserverForName:XTRepositoryWorkspaceChangedNotification
+                  object:repository
+                   queue:[NSOperationQueue mainQueue]
+              usingBlock:^(NSNotification * _Nonnull note) {
+    [self workspaceChanged:note.userInfo[XTPathsKey]];
+  }];
 }
 
 - (void)setWinController:(XTWindowController*)winController
@@ -39,6 +47,13 @@
     [weakSelf reload];
     [weakSelf updateStagingView];
   }];
+}
+
+- (void)workspaceChanged:(NSArray<NSString*>*)paths
+{
+  if ([(NSObject*)_winController.selectedModel
+          isKindOfClass:[XTStagingChanges class]])
+    [self reload];
 }
 
 - (void)updateStagingView
