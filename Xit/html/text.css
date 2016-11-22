@@ -4,6 +4,7 @@ body {
   margin: 0px;
   counter-reset: line;
   font-size: 12;
+  tab-size: 4;
 }
 div.page {
   background-color: #EEE;
