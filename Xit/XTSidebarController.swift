@@ -152,13 +152,16 @@ class XTSidebarController: NSViewController
     sidebarOutline.editColumn(0, row: targetRow(), with: nil, select: true)
   }
   
-  func confirmDelete(kind: String, name: String, onConfirm: @escaping () -> Void)
+  func confirmDelete(kind: String, name: String,
+                     onConfirm: @escaping () -> Void)
   {
     let alert = NSAlert.init()
     
     alert.messageText = "Delete the \(kind) “\(name)”?"
-    alert.buttons[0].title = "Delete"
+    alert.addButton(withTitle: "Delete")
     alert.addButton(withTitle: "Cancel")
+    // Delete is destructive, so it should not be default
+    alert.buttons[0].keyEquivalent = ""
     alert.beginSheetModal(for: view.window!) {
       (response) in
       if response == NSAlertFirstButtonReturn {
@@ -168,9 +171,10 @@ class XTSidebarController: NSViewController
   }
   
   func callCMBlock(errorString: String,
+                   targetItem: XTSideBarItem? = nil,
                    block: @escaping (XTSideBarItem, UInt) throws -> Void)
   {
-    guard let item = targetItem(),
+    guard let item = targetItem ?? self.targetItem(),
           let parent = sidebarOutline.parent(forItem: item) as? XTSideBarItem,
           let index = parent.children.index(of: item)
     else { return }
@@ -235,7 +239,7 @@ class XTSidebarController: NSViewController
     else { return }
     
     confirmDelete(kind: "branch", name: item.title) {
-      self.callCMBlock(errorString: "Delete branch failed") {
+      self.callCMBlock(errorString: "Delete branch failed", targetItem: item) {
         (item, index) in
         try self.repo.deleteBranch(item.title)
       }
@@ -248,7 +252,7 @@ class XTSidebarController: NSViewController
     else { return }
     
     confirmDelete(kind: "tag", name: item.title) {
-      self.callCMBlock(errorString: "Delete tag failed") {
+      self.callCMBlock(errorString: "Delete tag failed", targetItem: item) {
         (item, index) in
         try self.repo.deleteTag(item.title)
       }
