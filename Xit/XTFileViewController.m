@@ -441,7 +441,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
     [self.fileListDataSource reload];
   
   // Ideally, check to see if the selected file has changed
-  if (self.showingStaged)
+  if (self.modelCanCommit)
     [self loadSelectedPreview];
 }
 
