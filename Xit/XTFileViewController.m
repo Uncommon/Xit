@@ -32,7 +32,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 
 @interface XTFileViewController ()
 
-@property BOOL modelHasStaging;
+@property (nonatomic) BOOL showingStaged;
 @property (readonly) BOOL modelCanCommit;
 @property id<XTFileContentController> contentController;
 @property XTCommitEntryController *commitEntryController;
@@ -251,20 +251,21 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   return controller.selectedModel.canCommit;
 }
 
-- (BOOL)modelHasStaging
+- (BOOL)showingStaged
 {
   return [_fileListOutline.highlightedTableColumn.identifier
       isEqualToString:XTColumnIDStaged];
 }
 
-- (void)setModelHasStaging:(BOOL)modelHasStaging
+- (void)setShowingStaged:(BOOL)showingStaged
 {
-  NSString *columnID = modelHasStaging ? XTColumnIDStaged : XTColumnIDUnstaged;
+  NSString *columnID = showingStaged ? XTColumnIDStaged : XTColumnIDUnstaged;
   
   _fileListOutline.highlightedTableColumn =
       [_fileListOutline tableColumnWithIdentifier:columnID];
   NSAssert(_fileListOutline.highlightedTableColumn != nil, @"");
   [_fileListOutline setNeedsDisplay];
+  self.stageSelector.selectedSegment = showingStaged ? 1 : 0;
   [self refreshPreview];
 }
 
@@ -334,18 +335,12 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 - (void)selectRowFromButton:(NSButton*)button staged:(BOOL)staged
 {
   [self selectRowFromButton:button];
-  [self setStageView:staged];
-}
-
-- (void)setStageView:(BOOL)showStaged
-{
-  self.modelHasStaging = showStaged;
-  self.stageSelector.selectedSegment = showStaged ? 1 : 0;
+  self.showingStaged = staged;
 }
 
 - (IBAction)changeStageView:(id)sender
 {
-  self.modelHasStaging = self.stageSelector.selectedSegment == 1;
+  self.showingStaged = self.stageSelector.selectedSegment == 1;
 }
 
 - (IBAction)stageAll:(id)sender
@@ -353,13 +348,13 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   NSError *error = nil;
   
   [_repo stageAllFilesWithError:&error];
-  [self setStageView:YES];
+  self.showingStaged = YES;
 }
 
 - (IBAction)unstageAll:(id)sender
 {
   [_repo unstageAllFiles];
-  [self setStageView:NO];
+  self.showingStaged = NO;
 }
 
 - (IBAction)showIgnored:(id)sender
@@ -429,7 +424,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   [self updatePreviewPath:selectedItem.path];
   [self.contentController loadPath:selectedItem.path
                              model:controller.selectedModel
-                            staged:self.modelHasStaging];
+                            staged:self.showingStaged];
 }
 
 - (void)showUnstagedColumn:(BOOL)shown
@@ -446,7 +441,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
     [self.fileListDataSource reload];
   
   // Ideally, check to see if the selected file has changed
-  if (self.modelHasStaging)
+  if (self.showingStaged)
     [self loadSelectedPreview];
 }
 
