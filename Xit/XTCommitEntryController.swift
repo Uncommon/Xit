@@ -1,5 +1,6 @@
 import Cocoa
 
+/// Handles the commit message entry area.
 class XTCommitEntryController: NSViewController
 {
   weak var repo: XTRepository!
@@ -11,6 +12,11 @@ class XTCommitEntryController: NSViewController
   {
     // The editor doesn't allow setting the font of an empty text view.
     commitField.font = placeholder.font
+  }
+  
+  override func viewWillAppear()
+  {
+    updateCommitButton()
   }
   
   @IBAction func commit(_ sender: NSButton) {
@@ -29,15 +35,24 @@ class XTCommitEntryController: NSViewController
       alert.beginSheetModal(for: self.view.window!, completionHandler: nil)
     }
   }
+  
+  func updateCommitButton()
+  {
+    let text = commitField.string
+    let whitespace = CharacterSet.whitespacesAndNewlines
+    let onlyWhitespace = text?.trimmingCharacters(in: whitespace).isEmpty
+                         ?? true
+    let emptyText = text?.isEmpty ?? true
+    
+    commitButton.isEnabled = !onlyWhitespace
+    placeholder.isHidden = !emptyText
+  }
 }
 
 extension XTCommitEntryController: NSTextDelegate
 {
   func textDidChange(_ obj: Notification)
   {
-    commitButton.isEnabled = commitField.string.flatMap({
-        !$0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty })
-        ?? false
-    placeholder.isHidden = commitField.string.flatMap({ $0 != "" }) ?? false
+    updateCommitButton()
   }
 }
