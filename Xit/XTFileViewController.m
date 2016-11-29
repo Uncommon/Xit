@@ -39,6 +39,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 @property NSDictionary<NSNumber*, NSImage*> *stageImages;
 @property (weak) NSButton *lastClickedButton;
 @property NSTimer *doubleClickTImer;
+@property XTFileEventStream *fileWatcher;
 
 @end
 
@@ -425,6 +426,21 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   [self.contentController loadPath:selectedItem.path
                              model:controller.selectedModel
                             staged:self.showingStaged];
+  
+  // Swift bridge weirdness
+  OS_dispatch_queue *queue = (OS_dispatch_queue*)dispatch_get_main_queue();
+  NSString *fullPath =
+      [_repo.repoURL.path stringByAppendingPathComponent:selectedItem.path];
+  
+  self.fileWatcher = self.inStagingView ?
+      [[XTFileEventStream alloc] initWithPath:fullPath
+                                 excludePaths:[NSArray array]
+                                        queue:queue
+                                      latency:0.5
+                                     callback:^(NSArray<NSString*> *paths) {
+        [self loadSelectedPreview];
+      }]
+      : nil;
 }
 
 - (void)showUnstagedColumn:(BOOL)shown
