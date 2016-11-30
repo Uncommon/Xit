@@ -89,16 +89,16 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
       @( XitChangeConflict ) : [NSImage imageNamed:@"conflict"],
       };
 
-  _fileListOutline.highlightedTableColumn =
-      [_fileListOutline tableColumnWithIdentifier:@"change"];
-  [_fileListOutline sizeToFit];
+  self.fileListOutline.highlightedTableColumn =
+      [self.fileListOutline tableColumnWithIdentifier:@"change"];
+  [self.fileListOutline sizeToFit];
   self.contentController = self.diffController;
 
   [[NSNotificationCenter defaultCenter]
       addObserver:self
          selector:@selector(fileSelectionChanged:)
              name:NSOutlineViewSelectionDidChangeNotification
-           object:_fileListOutline];
+           object:self.fileListOutline];
   [[NSNotificationCenter defaultCenter]
       addObserver:self
          selector:@selector(headerResized:)
@@ -107,8 +107,8 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 
   self.commitEntryController = [[XTCommitEntryController alloc]
       initWithNibName:@"XTCommitEntryController" bundle:nil];
-  if (_repo != nil)
-    self.commitEntryController.repo = _repo;
+  if (self.repo != nil)
+    self.commitEntryController.repo = self.repo;
   self.headerTabView.tabViewItems[1].view = self.commitEntryController.view;
   self.previewPath.pathComponentCells = @[];
 }
@@ -167,13 +167,13 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
     
     // Status icons are different
     const NSInteger
-        unstagedIndex = [_fileListOutline columnWithIdentifier:@"unstaged"],
-        stagedIndex = [_fileListOutline columnWithIdentifier:@"change"];
+        unstagedIndex = [self.fileListOutline columnWithIdentifier:@"unstaged"],
+        stagedIndex = [self.fileListOutline columnWithIdentifier:@"change"];
     const NSRect displayRect = NSUnionRect(
-        [_fileListOutline rectOfColumn:unstagedIndex],
-        [_fileListOutline rectOfColumn:stagedIndex]);
+        [self.fileListOutline rectOfColumn:unstagedIndex],
+        [self.fileListOutline rectOfColumn:stagedIndex]);
     
-    [_fileListOutline setNeedsDisplayInRect:displayRect];
+    [self.fileListOutline setNeedsDisplayInRect:displayRect];
   }
   _headerController.commitSHA = newModel.shaToSelect;
   [self refreshPreview];
@@ -186,11 +186,11 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
       : _fileListDS;
   NSString *columnID = newDS.isHierarchical ? @"main" : @"hidden";
   
-  _fileListOutline.outlineTableColumn =
-      [_fileListOutline tableColumnWithIdentifier:columnID];
-  _fileListOutline.delegate = self;
-  _fileListOutline.dataSource = newDS;
-  [_fileListOutline reloadData];
+  self.fileListOutline.outlineTableColumn =
+      [self.fileListOutline tableColumnWithIdentifier:columnID];
+  self.fileListOutline.delegate = self;
+  self.fileListOutline.dataSource = newDS;
+  [self.fileListOutline reloadData];
 }
 
 - (IBAction)changeContentView:(id)sender
@@ -212,7 +212,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 - (XTFileListDataSourceBase<XTFileListDataSource>*)fileListDataSource
 {
   return (XTFileListDataSourceBase<XTFileListDataSource>*)
-      _fileListOutline.dataSource;
+      self.fileListOutline.dataSource;
 }
 
 #pragma clang diagnostic push
@@ -228,8 +228,9 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   XTFileListDataSourceBase<XTFileListDataSource> *dataSource =
       self.fileListDataSource;
   
-  [_repo executeOffMainThread:^{
-    [_repo performSelector:action withObject:[dataSource pathForItem:item]];
+  [self.repo executeOffMainThread:^{
+    [self.repo performSelector:action
+                    withObject:[dataSource pathForItem:item]];
     dispatch_async(dispatch_get_main_queue(), ^{
       [dataSource reload];
     });
@@ -254,7 +255,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 
 - (BOOL)showingStaged
 {
-  return [_fileListOutline.highlightedTableColumn.identifier
+  return [self.fileListOutline.highlightedTableColumn.identifier
       isEqualToString:XTColumnIDStaged];
 }
 
@@ -262,10 +263,10 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 {
   NSString *columnID = showingStaged ? XTColumnIDStaged : XTColumnIDUnstaged;
   
-  _fileListOutline.highlightedTableColumn =
-      [_fileListOutline tableColumnWithIdentifier:columnID];
-  NSAssert(_fileListOutline.highlightedTableColumn != nil, @"");
-  [_fileListOutline setNeedsDisplay];
+  self.fileListOutline.highlightedTableColumn =
+      [self.fileListOutline tableColumnWithIdentifier:columnID];
+  NSAssert(self.fileListOutline.highlightedTableColumn != nil, @"");
+  [self.fileListOutline setNeedsDisplay];
   self.stageSelector.selectedSegment = showingStaged ? 1 : 0;
   [self refreshPreview];
 }
@@ -274,9 +275,9 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 {
   const NSInteger row = ((XTTableButtonView*)button.superview).row;
   
-  [_fileListOutline selectRowIndexes:[NSIndexSet indexSetWithIndex:row]
+  [self.fileListOutline selectRowIndexes:[NSIndexSet indexSetWithIndex:row]
                 byExtendingSelection:NO];
-  [self.view.window makeFirstResponder:_fileListOutline];
+  [self.view.window makeFirstResponder:self.fileListOutline];
 }
 
 - (NSString*)pathFromButton:(NSButton*)button
@@ -310,13 +311,13 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
     
     sender.enabled = NO;
     if (staging)
-      [_repo stageFile:[self pathFromButton:sender] error:&error];
+      [self.repo stageFile:[self pathFromButton:sender] error:&error];
     else
-      [_repo unstageFile:[self pathFromButton:sender] error:&error];
+      [self.repo unstageFile:[self pathFromButton:sender] error:&error];
     [self selectRowFromButton:sender staged:staging];
     [[NSNotificationCenter defaultCenter]
         postNotificationName:XTRepositoryIndexChangedNotification
-                      object:_repo];
+                      object:self.repo];
   }
   else {
     [self selectRowFromButton:sender staged:!staging];
@@ -348,32 +349,14 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 {
   NSError *error = nil;
   
-  [_repo stageAllFilesWithError:&error];
+  [self.repo stageAllFilesWithError:&error];
   self.showingStaged = YES;
 }
 
 - (IBAction)unstageAll:(id)sender
 {
-  [_repo unstageAllFiles];
+  [self.repo unstageAllFiles];
   self.showingStaged = NO;
-}
-
-- (IBAction)revert:(id)sender
-{
-  const NSUInteger selectedRow = _fileListOutline.selectedRowIndexes.firstIndex;
-  
-  if (selectedRow == NSNotFound)
-    return;
-  
-  XTFileChange *change = [self.fileListDataSource fileChangeAtRow:selectedRow];
-  NSError *error = nil;
-  
-  if (![_repo revertFile:change.path error:&error]) {
-    NSAlert *alert = [NSAlert alertWithError:error];
-    
-    [alert beginSheetModalForWindow:self.view.window
-                  completionHandler:nil];
-  }
 }
 
 - (IBAction)showIgnored:(id)sender
@@ -386,23 +369,6 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
     case 0: [self unstageAll:sender]; break;
     case 1: [self stageAll:sender]; break;
   }
-}
-
-- (BOOL)validateMenuItem:(NSMenuItem*)menuItem
-{
-  if (menuItem.action == @selector(revert:)) {
-    const NSUInteger row = _fileListOutline.selectedRowIndexes.firstIndex;
-    
-    if (row == NSNotFound)
-      return NO;
-    
-    XTFileChange *change = [self.fileListDataSource fileChangeAtRow:row];
-    
-    return (change != nil) &&
-           (change.unstagedChange != XitChangeUnmodified);
-  }
-  
-  return YES;
 }
 
 - (void)clearPreviews
@@ -442,7 +408,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 
 - (void)loadSelectedPreview
 {
-  NSIndexSet *selection = _fileListOutline.selectedRowIndexes;
+  NSIndexSet *selection = self.fileListOutline.selectedRowIndexes;
   
   if (selection.count == 0) {
     [self clear];
@@ -464,8 +430,8 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   
   // Swift bridge weirdness
   OS_dispatch_queue *queue = (OS_dispatch_queue*)dispatch_get_main_queue();
-  NSString *fullPath =
-      [_repo.repoURL.path stringByAppendingPathComponent:selectedItem.path];
+  NSString *fullPath = [self.repo.repoURL.path
+                       stringByAppendingPathComponent:selectedItem.path];
   
   self.fileWatcher = self.inStagingView ?
       [[XTFileEventStream alloc] initWithPath:fullPath
@@ -481,7 +447,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 - (void)showUnstagedColumn:(BOOL)shown
 {
   NSTableColumn *column =
-      [_fileListOutline tableColumnWithIdentifier:@"unstaged"];
+      [self.fileListOutline tableColumnWithIdentifier:@"unstaged"];
 
   column.hidden = !shown;
 }
@@ -545,7 +511,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
                                   row:(NSInteger)row
 {
   XTTableButtonView *cell =
-      [_fileListOutline makeViewWithIdentifier:identifier owner:self];
+      [self.fileListOutline makeViewWithIdentifier:identifier owner:self];
   XTRolloverButton *button = (XTRolloverButton*)cell.button;
   
   ((NSButtonCell*)button.cell).imageDimsWhenDisabled = NO;
@@ -643,7 +609,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
              forRow:(NSInteger)row
 {
   if ([rowView isKindOfClass:[XTFileRowView class]])
-    ((XTFileRowView*)rowView).outlineView = _fileListOutline;
+    ((XTFileRowView*)rowView).outlineView = self.fileListOutline;
 }
 
 #pragma mark NSSplitViewDelegate

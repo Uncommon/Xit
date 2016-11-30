@@ -1,5 +1,6 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
+#import "XTFileListDataSourceBase.h"
 
 @class XTCommitHeaderViewController;
 @class XTFileChangesDataSource;
@@ -38,16 +39,14 @@ extern const CGFloat kChangeImagePadding;
 {
   IBOutlet NSSplitView *_headerSplitView, *_fileSplitView;
   IBOutlet NSView *_leftPane, *_rightPane;
-  IBOutlet NSOutlineView *_fileListOutline;
   IBOutlet QLPreviewView *_filePreview;
   IBOutlet XTCommitHeaderViewController *_headerController;
   IBOutlet XTFileChangesDataSource *_fileChangeDS;
   IBOutlet XTFileTreeDataSource *_fileListDS;
   IBOutlet XTTextPreviewController *_textController;
-
-  __weak XTRepository *_repo;
 }
 
+@property (weak) IBOutlet NSOutlineView *fileListOutline;
 @property (weak) IBOutlet NSTabView *headerTabView;
 @property (strong) IBOutlet NSTabView *previewTabView;
 @property (weak) IBOutlet NSSegmentedControl *viewSelector;
@@ -57,7 +56,11 @@ extern const CGFloat kChangeImagePadding;
 @property (weak) IBOutlet NSPathControl *previewPath;
 @property (strong) IBOutlet XTFileDiffController *diffController;
 @property (strong) IBOutlet XTPreviewController *previewController;
+
+@property (weak) XTRepository *repo;
 @property (readonly) NSDictionary *changeImages;
+@property (readonly) XTFileListDataSourceBase<XTFileListDataSource>
+    *fileListDataSource;
 
 - (IBAction)changeFileListView:(id)sender;
 - (IBAction)changeContentView:(id)sender;
@@ -67,12 +70,10 @@ extern const CGFloat kChangeImagePadding;
 
 - (IBAction)stageAll:(id)sender;
 - (IBAction)unstageAll:(id)sender;
-- (IBAction)revert:(id)sender;
 - (IBAction)showIgnored:(id)sender;
 - (IBAction)stageUnstageAll:(NSSegmentedControl*)sender;
 
 - (void)windowDidLoad;
-- (void)setRepo:(XTRepository *)repo;
 - (void)reload;
 - (void)refreshPreview;
 

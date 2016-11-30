@@ -11,7 +11,6 @@
             <connections>
                 <outlet property="_fileChangeDS" destination="QBv-mK-3e5" id="ugg-hS-pIO"/>
                 <outlet property="_fileListDS" destination="24" id="26"/>
-                <outlet property="_fileListOutline" destination="7" id="27"/>
                 <outlet property="_filePreview" destination="4" id="38"/>
                 <outlet property="_fileSplitView" destination="PgV-aZ-kTu" id="vJt-PE-YuL"/>
                 <outlet property="_headerController" destination="67" id="74"/>
@@ -21,6 +20,7 @@
                 <outlet property="_textController" destination="58" id="5d0-jn-kOw"/>
                 <outlet property="actionButton" destination="gNu-NG-LYe" id="8EA-bg-zQa"/>
                 <outlet property="diffController" destination="fX5-fH-Hy5" id="nP0-l5-ngF"/>
+                <outlet property="fileListOutline" destination="7" id="r4y-MV-ca1"/>
                 <outlet property="headerTabView" destination="krT-Kf-MrD" id="t9e-WI-aqg"/>
                 <outlet property="previewController" destination="3g8-eR-FPJ" id="dy4-6W-vsZ"/>
                 <outlet property="previewPath" destination="gna-OS-Gx2" id="RDg-dh-fJV"/>
