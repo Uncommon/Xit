@@ -9,8 +9,24 @@ extension XTFileViewController
           let change = dataSource.fileChange(atRow: selectedRow)
     else { return }
     
+    let confirmAlert = NSAlert()
+    
+    confirmAlert.messageText = "Are you sure you want to revert changes to " +
+                               "\((change.path as NSString).lastPathComponent)?"
+    confirmAlert.addButton(withTitle: "Revert")
+    confirmAlert.addButton(withTitle: "Cancel")
+    confirmAlert.beginSheetModal(for: view.window!) {
+      (response) in
+      if response == NSAlertFirstButtonReturn {
+        self.revertConfirmed(path: change.path)
+      }
+    }
+  }
+  
+  func revertConfirmed(path: String)
+  {
     do {
-      try repo.revert(file: change.path)
+      try repo.revert(file: path)
     }
     catch let error as NSError {
       let alert = NSAlert(error: error)
