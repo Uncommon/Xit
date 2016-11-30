@@ -236,18 +236,17 @@ extension XTRepository
   @objc(revertFile:error:)
   func revert(file: String) throws
   {
-    let options = UnsafeMutablePointer<git_checkout_options>.allocate(
-                  capacity: 1)
+    var options = git_checkout_options.defaultOptions()
     var error: NSError? = nil
     
-    git_checkout_init_options(options, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
+    git_checkout_init_options(&options, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
     withGitStringArray(from: [file]) {
       (stringarray) in
-      options.pointee.checkout_strategy = GIT_CHECKOUT_FORCE.rawValue +
+      options.checkout_strategy = GIT_CHECKOUT_FORCE.rawValue +
                                           GIT_CHECKOUT_RECREATE_MISSING.rawValue
-      options.pointee.paths = stringarray
+      options.paths = stringarray
       
-      let result = git_checkout_tree(self.gtRepo.git_repository(), nil, options)
+      let result = git_checkout_tree(self.gtRepo.git_repository(), nil, &options)
       
       if result < 0 {
         error = NSError.git_error(for: result) as NSError?
@@ -255,15 +254,6 @@ extension XTRepository
     }
     
     try error.map { throw $0 }
-  }
-}
-
-// git_status_t is bridged as a struct instead of a raw UInt32.
-extension git_status_t
-{
-  func test(_ flag: git_status_t) -> Bool
-  {
-    return (rawValue & flag.rawValue) != 0
   }
 }
 

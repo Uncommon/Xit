@@ -116,6 +116,7 @@
 		C93799D51DDF9B28005C08B8 /* WorkspaceWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */; };
 		C94736741DEE1D7D000E3A05 /* ObjectiveGit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = DD96C99A176976FE0003A30C /* ObjectiveGit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C94736761DEF28F8000E3A05 /* GitSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94736751DEF28F8000E3A05 /* GitSwiftTests.swift */; };
+		C94736781DEF5AAE000E3A05 /* GitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94736771DEF5AAE000E3A05 /* GitExtensions.swift */; };
 		C94866B61D256C24000BDB0A /* XTFetchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94866B51D256C24000BDB0A /* XTFetchController.swift */; };
 		C94866C01D25861E000BDB0A /* XTPasswordPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94866BE1D25861E000BDB0A /* XTPasswordPanelController.swift */; };
 		C94866C11D25861E000BDB0A /* XTPasswordPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C94866BF1D25861E000BDB0A /* XTPasswordPanelController.xib */; };
@@ -466,6 +467,7 @@
 		C936AD0B1D4C0FA900C5ADC3 /* XTPasswordOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPasswordOpController.swift; sourceTree = "<group>"; };
 		C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceWatcher.swift; sourceTree = "<group>"; };
 		C94736751DEF28F8000E3A05 /* GitSwiftTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitSwiftTests.swift; sourceTree = "<group>"; };
+		C94736771DEF5AAE000E3A05 /* GitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitExtensions.swift; sourceTree = "<group>"; };
 		C94866B51D256C24000BDB0A /* XTFetchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFetchController.swift; sourceTree = "<group>"; };
 		C94866BE1D25861E000BDB0A /* XTPasswordPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPasswordPanelController.swift; sourceTree = "<group>"; };
 		C94866BF1D25861E000BDB0A /* XTPasswordPanelController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTPasswordPanelController.xib; sourceTree = "<group>"; };
@@ -963,6 +965,7 @@
 				89C927741D36A2180074F71A /* XTSubmodule.swift */,
 				89C927771D36A5890074F71A /* XTTag.swift */,
 				C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */,
+				C94736771DEF5AAE000E3A05 /* GitExtensions.swift */,
 			);
 			name = Repository;
 			sourceTree = "<group>";
@@ -1334,6 +1337,7 @@
 			files = (
 				C3FA470E13D0F8E200AC4F9B /* main.m in Sources */,
 				C3FA471413D0F8E200AC4F9B /* XTDocument.m in Sources */,
+				C94736781DEF5AAE000E3A05 /* GitExtensions.swift in Sources */,
 				31F1E87F13D3B51200F3B317 /* XTRepository+Commands.m in Sources */,
 				C926804E1D074EC500E422FA /* XTFileChangesModel.swift in Sources */,
 				C9F78B141D0896AF008490EA /* XTSidebarItem.swift in Sources */,
