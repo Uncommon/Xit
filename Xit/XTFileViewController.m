@@ -358,6 +358,24 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   self.showingStaged = NO;
 }
 
+- (IBAction)revert:(id)sender
+{
+  const NSUInteger selectedRow = _fileListOutline.selectedRowIndexes.firstIndex;
+  
+  if (selectedRow == NSNotFound)
+    return;
+  
+  XTFileChange *change = [self.fileListDataSource fileChangeAtRow:selectedRow];
+  NSError *error = nil;
+  
+  if (![_repo revertFile:change.path error:&error]) {
+    NSAlert *alert = [NSAlert alertWithError:error];
+    
+    [alert beginSheetModalForWindow:self.view.window
+                  completionHandler:nil];
+  }
+}
+
 - (IBAction)showIgnored:(id)sender
 {
 }
@@ -368,6 +386,23 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
     case 0: [self unstageAll:sender]; break;
     case 1: [self stageAll:sender]; break;
   }
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem*)menuItem
+{
+  if (menuItem.action == @selector(revert:)) {
+    const NSUInteger row = _fileListOutline.selectedRowIndexes.firstIndex;
+    
+    if (row == NSNotFound)
+      return NO;
+    
+    XTFileChange *change = [self.fileListDataSource fileChangeAtRow:row];
+    
+    return (change != nil) &&
+           (change.unstagedChange != XitChangeUnmodified);
+  }
+  
+  return YES;
 }
 
 - (void)clearPreviews

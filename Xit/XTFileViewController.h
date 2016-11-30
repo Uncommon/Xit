@@ -67,6 +67,7 @@ extern const CGFloat kChangeImagePadding;
 
 - (IBAction)stageAll:(id)sender;
 - (IBAction)unstageAll:(id)sender;
+- (IBAction)revert:(id)sender;
 - (IBAction)showIgnored:(id)sender;
 - (IBAction)stageUnstageAll:(NSSegmentedControl*)sender;
 

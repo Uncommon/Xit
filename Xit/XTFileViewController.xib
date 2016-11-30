@@ -321,6 +321,13 @@
                                                     </connections>
                                                 </menuItem>
                                                 <menuItem isSeparatorItem="YES" id="oQy-My-hZS"/>
+                                                <menuItem title="Revert" id="b6V-A6-EdD" userLabel="Revert">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="revert:" target="-2" id="wRE-Ah-9rE"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem isSeparatorItem="YES" id="vYR-8h-fjB"/>
                                                 <menuItem title="Show Ignored Files" id="SH6-6F-ij9">
                                                     <modifierMask key="keyEquivalentModifierMask"/>
                                                     <connections>

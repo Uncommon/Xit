@@ -231,6 +231,31 @@ extension XTRepository
     
     return (unstagedChange, stagedChange)
   }
+  
+  /// Reverts the given workspace file to the contents at HEAD.
+  @objc(revertFile:error:)
+  func revert(file: String) throws
+  {
+    let options = UnsafeMutablePointer<git_checkout_options>.allocate(
+                  capacity: 1)
+    var error: NSError? = nil
+    
+    git_checkout_init_options(options, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
+    withGitStringArray(from: [file]) {
+      (stringarray) in
+      options.pointee.checkout_strategy = GIT_CHECKOUT_FORCE.rawValue +
+                                          GIT_CHECKOUT_RECREATE_MISSING.rawValue
+      options.pointee.paths = stringarray
+      
+      let result = git_checkout_tree(self.gtRepo.git_repository(), nil, options)
+      
+      if result < 0 {
+        error = NSError.git_error(for: result) as NSError?
+      }
+    }
+    
+    try error.map { throw $0 }
+  }
 }
 
 // git_status_t is bridged as a struct instead of a raw UInt32.
@@ -239,6 +264,45 @@ extension git_status_t
   func test(_ flag: git_status_t) -> Bool
   {
     return (rawValue & flag.rawValue) != 0
+  }
+}
+
+/// Converts the given array to a `git_strarray` and calls the given block.
+/// This is patterned after `withArrayOfCStrings` except that function does not
+/// produce the necessary type.
+/// - Note: Ideally this would be an extension on Array where `Element == String`
+/// but that's not allowed.
+/// - parameter array: The array to convert
+/// - parameter block: The block called with the resulting `git_strarray`. To
+/// use this array outside the block, use `git_strarray_copy()`.
+func withGitStringArray(from array: [String],
+                        block: @escaping (git_strarray) -> Void)
+{
+  let lengths = array.map { $0.utf8.count + 1 }
+  let offsets = [0] + scan(lengths, 0, +)
+  var buffer = [Int8]()
+  
+  buffer.reserveCapacity(offsets.last!)
+  for string in array {
+    buffer.append(contentsOf: string.utf8.map({ Int8($0) }))
+    buffer.append(0)
+  }
+  
+  buffer.withUnsafeMutableBufferPointer {
+    (pointer) in
+    let boundPointer = UnsafeMutableRawPointer(pointer.baseAddress!)
+                       .bindMemory(to: Int8.self, capacity: buffer.count)
+    var cStrings: [UnsafeMutablePointer<Int8>?] =
+                  offsets.map { boundPointer + $0 }
+    
+    cStrings[cStrings.count-1] = nil
+    cStrings.withUnsafeMutableBufferPointer({
+      (arrayBuffer) in
+      let strarray = git_strarray(strings: arrayBuffer.baseAddress,
+                                  count: array.count)
+      
+      block(strarray)
+    })
   }
 }
 
