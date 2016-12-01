@@ -7,7 +7,6 @@
 #import "XTFileChangesDataSource.h"
 #import "XTFileListDataSourceBase.h"
 #import "XTFileTreeDataSource.h"
-#import "XTFileListView.h"
 #import "XTPreviewController.h"
 #import "XTPreviewItem.h"
 #import "XTRepository+Commands.h"
