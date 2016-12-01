@@ -1,7 +1,10 @@
 import Cocoa
 
-class FileListView: NSOutlineView
+class FileListView: ContextMenuOutlineView
 {
+  @IBOutlet var stagingMenu: NSMenu!
+  @IBOutlet var commitMenu: NSMenu!
+
   static func columnHighlightColor() -> NSColor
   {
     return NSColor.shadowColor.withAlphaComponent(0.05)
@@ -39,5 +42,17 @@ class FileListView: NSOutlineView
     highlightRect.size.height = clipRect.size.height
     
     FileListView.highlightColumn(rect: highlightRect)
+  }
+  
+  override func updateMenu(forItem item: Any)
+  {
+    let controller = window?.windowController as! XTWindowController
+    
+    if controller.selectedModel?.canCommit ?? false {
+      menu = stagingMenu
+    }
+    else {
+      menu = commitMenu
+    }
   }
 }

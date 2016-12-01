@@ -268,8 +268,10 @@
                                                     </tableColumn>
                                                 </tableColumns>
                                                 <connections>
+                                                    <outlet property="commitMenu" destination="Pme-Bw-dSB" id="cgi-hI-W90"/>
                                                     <outlet property="dataSource" destination="QBv-mK-3e5" id="hp0-ov-MCp"/>
                                                     <outlet property="delegate" destination="-2" id="TCl-lY-j7i"/>
+                                                    <outlet property="stagingMenu" destination="Ae9-1e-hjk" id="dr0-e1-nxW"/>
                                                 </connections>
                                             </outlineView>
                                         </subviews>
@@ -538,6 +540,49 @@
                 <outlet property="view" destination="4" id="aa2-ft-Co4"/>
             </connections>
         </customObject>
+        <menu id="Ae9-1e-hjk">
+            <items>
+                <menuItem title="Stage" id="KL1-BE-xHb">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+                <menuItem title="Unstage" id="56P-vr-NNv">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="OqE-vm-D4r"/>
+                <menuItem title="Revert" id="SZG-EL-c5c">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="revert:" target="-2" id="bH4-kl-d1Y"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="6oh-xm-7Hd"/>
+                <menuItem title="Open" id="FnF-3f-hi3">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+                <menuItem title="Show in Finder" id="VaE-p6-7i0">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+            </items>
+            <point key="canvasLocation" x="-79" y="470"/>
+        </menu>
+        <menu id="Pme-Bw-dSB">
+            <items>
+                <menuItem title="Export Revision..." id="XU4-Ya-pVw">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+                <menuItem title="Check Out Revision" id="F1G-rx-Rze">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+                <menuItem title="Open Revision" id="48r-ul-thZ">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="mvO-Pl-lTD"/>
+                <menuItem title="Show Current in Finder" id="nrL-0o-SXd">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+            </items>
+            <point key="canvasLocation" x="-87" y="622"/>
+        </menu>
     </objects>
     <resources>
         <image name="NSActionTemplate" width="14" height="14"/>

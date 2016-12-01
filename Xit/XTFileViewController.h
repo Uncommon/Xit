@@ -57,7 +57,7 @@ extern const CGFloat kChangeImagePadding;
 @property (strong) IBOutlet XTFileDiffController *diffController;
 @property (strong) IBOutlet XTPreviewController *previewController;
 
-@property (weak) XTRepository *repo;
+@property (weak, nonatomic) XTRepository *repo;
 @property (readonly) NSDictionary *changeImages;
 @property (readonly) XTFileListDataSourceBase<XTFileListDataSource>
     *fileListDataSource;
