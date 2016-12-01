@@ -1,23 +1,11 @@
 import Foundation
 
-class SideBarOutlineView: NSOutlineView
+class SideBarOutlineView: ContextMenuOutlineView
 {
   @IBOutlet public weak var controller: XTSidebarController!
-  public private(set) var contextMenuRow: Int? = nil
   
-  override func rightMouseDown(with event: NSEvent)
+  override func updateMenu(forItem item: Any)
   {
-    defer {
-      super.rightMouseDown(with: event)
-      contextMenuRow = nil
-    }
-  
-    let localPoint = convert(event.locationInWindow, from: nil)
-    let clickedRow = row(at: localPoint)
-    guard let item = self.item(atRow: clickedRow)
-    else { return }
-    
-    contextMenuRow = clickedRow
     switch item {
       case is XTRemoteBranchItem:
         menu = prepBranchMenu(local: false)
