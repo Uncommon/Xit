@@ -118,6 +118,7 @@
 		C94736761DEF28F8000E3A05 /* GitSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94736751DEF28F8000E3A05 /* GitSwiftTests.swift */; };
 		C94736781DEF5AAE000E3A05 /* GitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94736771DEF5AAE000E3A05 /* GitExtensions.swift */; };
 		C947367A1DEF5CA8000E3A05 /* XTFileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94736791DEF5CA8000E3A05 /* XTFileViewController.swift */; };
+		C947367C1DF079DB000E3A05 /* SideBarOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C947367B1DF079DB000E3A05 /* SideBarOutlineView.swift */; };
 		C94866B61D256C24000BDB0A /* XTFetchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94866B51D256C24000BDB0A /* XTFetchController.swift */; };
 		C94866C01D25861E000BDB0A /* XTPasswordPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94866BE1D25861E000BDB0A /* XTPasswordPanelController.swift */; };
 		C94866C11D25861E000BDB0A /* XTPasswordPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C94866BF1D25861E000BDB0A /* XTPasswordPanelController.xib */; };
@@ -174,7 +175,6 @@
 		C9F78B141D0896AF008490EA /* XTSidebarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F78B131D0896AF008490EA /* XTSidebarItem.swift */; };
 		C9FCC1D11D50EB1A00AC398E /* XTCommitHistoryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FCC1D01D50EB1A00AC398E /* XTCommitHistoryTest.swift */; };
 		DD00725613E76DFB003B4120 /* Xit.icns in Resources */ = {isa = PBXBuildFile; fileRef = DD00725513E76DFB003B4120 /* Xit.icns */; };
-		DD07B07816A5D2A80012AC19 /* XTSideBarOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = DD07B07716A5D2A80012AC19 /* XTSideBarOutlineView.m */; };
 		DD07B08916B313A60012AC19 /* XTRefFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = DD07B08816B313A60012AC19 /* XTRefFormatter.m */; };
 		DD3D94F318254442004AF532 /* XTFileListDataSourceBase.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3D94F218254442004AF532 /* XTFileListDataSourceBase.m */; };
 		DD3D9535182B5EC7004AF532 /* XTFileChangesDataSourceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3D9534182B5EC7004AF532 /* XTFileChangesDataSourceTest.m */; };
@@ -470,6 +470,7 @@
 		C94736751DEF28F8000E3A05 /* GitSwiftTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitSwiftTests.swift; sourceTree = "<group>"; };
 		C94736771DEF5AAE000E3A05 /* GitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitExtensions.swift; sourceTree = "<group>"; };
 		C94736791DEF5CA8000E3A05 /* XTFileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileViewController.swift; sourceTree = "<group>"; };
+		C947367B1DF079DB000E3A05 /* SideBarOutlineView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideBarOutlineView.swift; sourceTree = "<group>"; };
 		C94866B51D256C24000BDB0A /* XTFetchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFetchController.swift; sourceTree = "<group>"; };
 		C94866BE1D25861E000BDB0A /* XTPasswordPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPasswordPanelController.swift; sourceTree = "<group>"; };
 		C94866BF1D25861E000BDB0A /* XTPasswordPanelController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTPasswordPanelController.xib; sourceTree = "<group>"; };
@@ -526,8 +527,6 @@
 		C9F78B131D0896AF008490EA /* XTSidebarItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSidebarItem.swift; sourceTree = "<group>"; };
 		C9FCC1D01D50EB1A00AC398E /* XTCommitHistoryTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTCommitHistoryTest.swift; sourceTree = "<group>"; };
 		DD00725513E76DFB003B4120 /* Xit.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Xit.icns; sourceTree = "<group>"; };
-		DD07B07616A5D2A80012AC19 /* XTSideBarOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTSideBarOutlineView.h; sourceTree = "<group>"; tabWidth = 2; };
-		DD07B07716A5D2A80012AC19 /* XTSideBarOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTSideBarOutlineView.m; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		DD07B08316B2005B0012AC19 /* XTConstants.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = XTConstants.h; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		DD07B08716B313A60012AC19 /* XTRefFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRefFormatter.h; sourceTree = "<group>"; tabWidth = 2; };
 		DD07B08816B313A60012AC19 /* XTRefFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRefFormatter.m; sourceTree = "<group>"; tabWidth = 2; };
@@ -920,13 +919,12 @@
 				DD07B08716B313A60012AC19 /* XTRefFormatter.h */,
 				DD07B08816B313A60012AC19 /* XTRefFormatter.m */,
 				C98925F81DBFCE7000E5645C /* XTSidebarController.swift */,
-				DD07B07616A5D2A80012AC19 /* XTSideBarOutlineView.h */,
-				DD07B07716A5D2A80012AC19 /* XTSideBarOutlineView.m */,
 				C951EAE01DD11BDD00B99FBE /* XTSidebarTableCellView.swift */,
 				31F1E87813D3AC6D00F3B317 /* XTSideBarDataSource.h */,
 				3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */,
 				89C9276A1D368C020074F71A /* XTSideBarDataSource.swift */,
 				C9F78B131D0896AF008490EA /* XTSidebarItem.swift */,
+				C947367B1DF079DB000E3A05 /* SideBarOutlineView.swift */,
 				C951EB041DD636B900B99FBE /* SidebarCheckedRowView.swift */,
 			);
 			name = Sidebar;
@@ -1346,6 +1344,7 @@
 				C9F78B141D0896AF008490EA /* XTSidebarItem.swift in Sources */,
 				C91E9A011D527A1300E128AC /* XTHistoryTableController.swift in Sources */,
 				C957B84B1D2D53040040F858 /* XTSheetController.swift in Sources */,
+				C947367C1DF079DB000E3A05 /* SideBarOutlineView.swift in Sources */,
 				3174966813DF8A0C004C5546 /* XTSideBarDataSource.m in Sources */,
 				89C927941D43B23B0074F71A /* XTRepository.swift in Sources */,
 				C9BAE60A1D2FFA8B00A87F13 /* XTConfig.swift in Sources */,
@@ -1390,7 +1389,6 @@
 				89C927881D43B0460074F71A /* XTPullController.swift in Sources */,
 				C94866B61D256C24000BDB0A /* XTFetchController.swift in Sources */,
 				C957B87C1D2DBBC00040F858 /* XTAccountsManager.swift in Sources */,
-				DD07B07816A5D2A80012AC19 /* XTSideBarOutlineView.m in Sources */,
 				DD07B08916B313A60012AC19 /* XTRefFormatter.m in Sources */,
 				C947367A1DEF5CA8000E3A05 /* XTFileViewController.swift in Sources */,
 				C95355EA1D93470400AEEF49 /* XTTitleStatusView.swift in Sources */,

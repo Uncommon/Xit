@@ -3,7 +3,7 @@ import Cocoa
 /// Manages the main window sidebar.
 class XTSidebarController: NSViewController
 {
-  @IBOutlet weak var sidebarOutline: XTSideBarOutlineView!
+  @IBOutlet weak var sidebarOutline: SideBarOutlineView!
   @IBOutlet weak var sidebarDS: XTSideBarDataSource!
   
   @IBOutlet var branchContextMenu: NSMenu!
@@ -134,9 +134,7 @@ class XTSidebarController: NSViewController
   
   func targetRow() -> Int
   {
-    let row = sidebarOutline.contextMenuRow
-    
-    if row != -1 {
+    if let row = sidebarOutline.contextMenuRow {
       return row
     }
     return sidebarOutline.selectedRow
