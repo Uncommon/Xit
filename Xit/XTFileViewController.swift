@@ -46,8 +46,14 @@ extension XTFileViewController
           let dataSource = fileListDataSource as? XTFileListDataSource,
           let change = dataSource.fileChange(atRow: selectedRow)
           else { return false }
-      
-          return change.unstagedChange != .unmodified
+        
+          switch change.unstagedChange {
+            case .unmodified: fallthrough  // No changes to revert
+            case .untracked:               // Nothing to revert to
+              return false
+            default:
+              return true
+          }
       default:
         return true
     }
