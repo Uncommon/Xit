@@ -35,7 +35,7 @@
                                     <rect key="frame" x="1" y="1" width="235" height="658"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="gxZ-qS-2C2" id="lxI-HL-izL" customClass="XTSideBarOutlineView">
+                                        <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="gxZ-qS-2C2" id="lxI-HL-izL" customClass="SideBarOutlineView" customModule="Xit" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="235" height="658"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -135,7 +135,7 @@
                                                 </tableColumn>
                                             </tableColumns>
                                             <connections>
-                                                <outlet property="controller" destination="aFR-LL-LwM" id="TY5-wt-nyo"/>
+                                                <outlet property="controller" destination="aFR-LL-LwM" id="VJl-gi-oZA"/>
                                                 <outlet property="dataSource" destination="oB7-gc-1Gq" id="x98-VY-qkx"/>
                                                 <outlet property="delegate" destination="oB7-gc-1Gq" id="RBE-h6-SZW"/>
                                             </connections>
