@@ -1,5 +1,5 @@
 body {
-  background-color: #CCC;
+  background-color: F8F8F8;
   font-family: monospace;
   margin: 0px;
   counter-reset: line;
@@ -35,7 +35,9 @@ div.hunk {
   width: 100%;
   margin-bottom: 1em;
   background-color: white;
-  box-shadow: 0 3px 5px 0 gray;
+  box-shadow: 0 3px 5px 0 lightgray;
+  border-bottom: 1px solid #BBB;
+  border-top: 1px solid #DDD;
 }
 div.hunk>div {
   display: table-row;
