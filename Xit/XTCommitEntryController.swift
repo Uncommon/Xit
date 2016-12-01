@@ -4,9 +4,36 @@ import Cocoa
 class XTCommitEntryController: NSViewController
 {
   weak var repo: XTRepository!
+  {
+    didSet
+    {
+      NotificationCenter.default.addObserver(
+          forName: NSNotification.Name.XTRepositoryIndexChanged,
+          object: repo,
+          queue: OperationQueue.main) {
+        (notification) in
+        self.updateStagedStatus()
+      }
+    }
+  }
   @IBOutlet weak var commitField: NSTextView!
   @IBOutlet weak var commitButton: NSButton!
   @IBOutlet weak var placeholder: NSTextField!
+  
+  var anyStaged = false
+  {
+    didSet
+    {
+      if anyStaged != oldValue {
+        updateCommitButton()
+      }
+    }
+  }
+  
+  deinit
+  {
+    NotificationCenter.default.removeObserver(self)
+  }
   
   override func viewDidLoad()
   {
@@ -16,6 +43,7 @@ class XTCommitEntryController: NSViewController
   
   override func viewWillAppear()
   {
+    updateStagedStatus()
     updateCommitButton()
   }
   
@@ -36,16 +64,36 @@ class XTCommitEntryController: NSViewController
     }
   }
   
+  func updateStagedStatus()
+  {
+    guard let controller = view.ancestorWindow?.windowController
+                           as? XTWindowController,
+          let changes = controller.selectedModel?.changes
+    else {
+      anyStaged = false
+      return
+    }
+    
+    anyStaged = changes.first(where: { $0.change != .unmodified }) != nil
+  }
+  
   func updateCommitButton()
   {
     let text = commitField.string
-    let whitespace = CharacterSet.whitespacesAndNewlines
-    let onlyWhitespace = text?.trimmingCharacters(in: whitespace).isEmpty
-                         ?? true
     let emptyText = text?.isEmpty ?? true
     
-    commitButton.isEnabled = !onlyWhitespace
     placeholder.isHidden = !emptyText
+    
+    if anyStaged {
+      let whitespace = CharacterSet.whitespacesAndNewlines
+      let onlyWhitespace = text?.trimmingCharacters(in: whitespace).isEmpty
+                           ?? true
+      
+      commitButton.isEnabled = !onlyWhitespace
+    }
+    else {
+      commitButton.isEnabled = false
+    }
   }
 }
 

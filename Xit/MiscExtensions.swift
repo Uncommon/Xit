@@ -53,6 +53,28 @@ extension XMLElement
   }
 }
 
+extension NSView
+{
+  /// Follows the superview chain and returns the highest ancestor.
+  var firstAncestor: NSView?
+  {
+    var ancestor = superview
+    
+    while ancestor?.superview != nil {
+      ancestor = ancestor?.superview
+    }
+    return ancestor
+  }
+  
+  /// Returns the window for the view's first ancestor. For example, if a view
+  /// is in a hidden tab, its own `window` will be `null`, but this will still
+  /// return the real window.
+  var ancestorWindow: NSWindow?
+  {
+    return firstAncestor?.window
+  }
+}
+
 extension NSButton
 {
   /// The intValue property interpreted as a Bool.
