@@ -5,7 +5,6 @@
 #import "XTHistoryViewController.h"
 #import "XTRepository.h"
 #import "XTSideBarDataSource.h"
-#import "XTSideBarOutlineView.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
 #import <OCMock/OCMock.h>

@@ -1,5 +1,6 @@
 import Foundation
 
+@objc(XTSideBarOutlineView)
 class SideBarOutlineView: ContextMenuOutlineView
 {
   @IBOutlet public weak var controller: XTSidebarController!
