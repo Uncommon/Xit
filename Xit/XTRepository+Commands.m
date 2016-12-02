@@ -5,7 +5,8 @@
 
 @interface XTRepository()
 
-@property (readwrite) XTRepositoryWatcher *watcher;
+@property (readwrite) XTRepositoryWatcher *repoWatcher;
+@property (readwrite) XTWorkspaceWatcher *workspaceWatcher;
 @property (readwrite) XTConfig *config;
 
 @end
@@ -24,7 +25,9 @@
   if ((newRepo == nil) || (error != nil))
     return NO;
   _gtRepo = newRepo;
-  self.watcher = [[XTRepositoryWatcher alloc] initWithRepository:self];
+  self.repoWatcher = [[XTRepositoryWatcher alloc] initWithRepository:self];
+  self.workspaceWatcher =
+      [[XTWorkspaceWatcher alloc] initWithRepository:self];
   self.config = [[XTConfig alloc] initWithRepository:self];
   return YES;
 }
