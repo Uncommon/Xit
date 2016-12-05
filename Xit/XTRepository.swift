@@ -64,9 +64,9 @@ extension XTRepository
       defer { git_reference_free(resolved) }
       
       let target = git_reference_target(resolved)
-      guard target != nil
-      else { return 0}
-      let sha = GTOID(gitOid: target!).sha
+      guard target != nil,
+            let sha = GTOID(gitOid: target!).sha
+      else { return 0 }
       var refs = repo.refsIndex[sha] ?? [String]()
       
       refs.append(name)
