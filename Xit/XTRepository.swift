@@ -140,43 +140,53 @@ extension XTRepository
   func stagedDiff(file: String) -> XTDiffDelta?
   {
     guard let index = try? gtRepo.index(),
-          let indexEntry = index.entry(withPath: file),
-          let indexBlob = GTObject(indexEntry: indexEntry, error: nil) as? GTBlob
+          (try? index.refresh()) != nil
     else { return nil }
     
+    var indexBlob: GTBlob? = nil
+    var headBlob: GTBlob? = nil
+    
+    if let indexEntry = index.entry(withPath: file),
+       let indexObject = try? GTObject(indexEntry: indexEntry) {
+      indexBlob = indexObject as? GTBlob
+    }
+      
     if let headTree = commit(ref: headRef)?.tree,
        let headEntry = try? headTree.entry(withPath: file),
-       let headBlob = try? GTObject(treeEntry: headEntry) as? GTBlob {
-      return try? XTDiffDelta(from: headBlob, forPath: file,
-                              to: indexBlob, forPath: file,
-                              options: nil)
+       let headObject = try? GTObject(treeEntry: headEntry) {
+      headBlob = headObject as? GTBlob
     }
-    else {
-      return try? XTDiffDelta(from: nil, forPath: file,
-                              to: indexBlob, forPath: file,
-                              options: nil)
-    }
+    
+    return try? XTDiffDelta(from: headBlob, forPath: file,
+                            to: indexBlob, forPath: file,
+                            options: nil)
   }
   
   func unstagedDiff(file: String) -> XTDiffDelta?
   {
     let url = self.repoURL.appendingPathComponent(file)
-    guard let data = try? Data(contentsOf: url)
-    else { return nil }
+    let exists = FileManager.default.fileExists(atPath: url.path)
     
-    if let index = try? gtRepo.index(),
-       let indexEntry = index.entry(withPath: file),
-       let indexBlob = GTObject(indexEntry: indexEntry, error: nil) as? GTBlob {
-      return try? XTDiffDelta(from: indexBlob, forPath: file,
-                              to: data, forPath: file,
-                              options: nil)
+    do {
+      let data = exists ? try Data(contentsOf: url) : Data()
+      
+      if let index = try? gtRepo.index(),
+         let indexEntry = index.entry(withPath: file),
+         let indexBlob = try? GTObject(indexEntry: indexEntry) as? GTBlob {
+        return try? XTDiffDelta(from: indexBlob, forPath: file,
+                                to: data, forPath: file,
+                                options: nil)
+      }
+      else {
+        let noBlob: Data? = nil
+      
+        return try? XTDiffDelta(from: noBlob, forPath: file,
+                                to: data, forPath: file,
+                                options: nil)
+      }
     }
-    else {
-      let noBlob: Data? = nil
-    
-      return try? XTDiffDelta(from: noBlob, forPath: file,
-                              to: data, forPath: file,
-                              options: nil)
+    catch {
+      return nil;
     }
   }
   
