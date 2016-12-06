@@ -270,6 +270,10 @@ extension XTRepository
   @objc(renameBranch:to:error:)
   func rename(branch: String, to newName: String) throws
   {
+    if isWriting {
+      throw Error.alreadyWriting
+    }
+    
     let branchRef = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     var result = git_branch_lookup(branchRef, gtRepo.git_repository(),
                                    branch, GIT_BRANCH_LOCAL)

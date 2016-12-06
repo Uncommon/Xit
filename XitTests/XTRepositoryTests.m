@@ -4,6 +4,7 @@
 #import "XTConstants.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
+#import "Xit-Swift.h"
 
 @interface XTRepositoryTests : XTTest
 
@@ -252,9 +253,13 @@ extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
   self.repository.isWriting = NO;
   XCTAssertTrue([self.repository createBranch:testBranch1]);
   self.repository.isWriting = YES;
-  XCTAssertFalse([self.repository renameBranch:testBranch1 to:testBranch2]);
+  XCTAssertFalse([self.repository renameBranch:testBranch1
+                                            to:testBranch2
+                                         error:&error]);
   self.repository.isWriting = NO;
-  XCTAssertTrue([self.repository renameBranch:testBranch1 to:testBranch2]);
+  XCTAssertTrue([self.repository renameBranch:testBranch1
+                                           to:testBranch2
+                                        error:&error]);
   self.repository.isWriting = YES;
   XCTAssertFalse([self.repository checkout:masterBranch error:NULL]);
   self.repository.isWriting = NO;
