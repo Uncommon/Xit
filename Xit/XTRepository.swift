@@ -265,6 +265,26 @@ extension XTRepository
     
     try error.map { throw $0 }
   }
+  
+  /// Renames the given local branch.
+  @objc(renameBranch:to:error:)
+  func rename(branch: String, to newName: String) throws
+  {
+    let branchRef = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    var result = git_branch_lookup(branchRef, gtRepo.git_repository(),
+                                   branch, GIT_BRANCH_LOCAL)
+  
+    if result != 0 {
+      throw NSError.git_error(for: result)
+    }
+    
+    let newRef = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    
+    result = git_branch_move(newRef, branchRef.pointee, newName, 0)
+    if result != 0 {
+      throw NSError.git_error(for: result)
+    }
+  }
 }
 
 /// Converts the given array to a `git_strarray` and calls the given block.

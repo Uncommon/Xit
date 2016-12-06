@@ -331,16 +331,6 @@
   return YES;
 }
 
-- (BOOL)renameBranch:(NSString *)branch to:(NSString *)newName
-{
-  NSError *error = nil;
-
-  [self executeGitWithArgs:@[ @"branch", @"-m", branch, newName ]
-                    writes:YES
-                     error:&error];
-  return error == nil;
-}
-
 - (BOOL)renameRemote:(NSString *)branch to:(NSString *)newName
 {
   NSError *error = nil;
