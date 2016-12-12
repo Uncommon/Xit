@@ -1,7 +1,76 @@
 import Cocoa
 
+// Command handling extracted for testability
+protocol XTSidebarHandler
+{
+  var repo: XTRepository! { get }
+  func targetItem() -> XTSideBarItem?
+}
+
+extension XTSidebarHandler
+{
+  func validate(sidebarCommand: NSMenuItem) -> Bool
+  {
+    guard let action = sidebarCommand.action,
+          let item = targetItem()
+    else { return false }
+    
+    switch action {
+      case #selector(XTSidebarController.checkOutBranch(_:)),
+           #selector(XTSidebarController.renameBranch(_:)),
+           #selector(XTSidebarController.mergeBranch(_:)),
+           #selector(XTSidebarController.deleteBranch(_:)):
+        if ((item.refType != .branch) && (item.refType != .remoteBranch)) ||
+            repo.isWriting {
+          return false
+        }
+        if action == #selector(XTSidebarController.deleteBranch(_:)) {
+          return repo.currentBranch != item.title
+        }
+        if action == #selector(XTSidebarController.mergeBranch(_:)) {
+          sidebarCommand.attributedTitle = nil
+          sidebarCommand.title = "Merge"
+          
+          var clickedBranch = item.title
+          guard let currentBranch = repo.currentBranch
+          else { return false }
+          
+          if item.refType == .remoteBranch {
+            guard let remoteItem = item as? XTRemoteBranchItem
+            else { return false }
+            
+            clickedBranch = "\(remoteItem.remote)/\(clickedBranch)"
+          }
+          else if item.refType == .branch {
+            if clickedBranch == currentBranch {
+              return false
+            }
+          }
+          else {
+            return false
+          }
+          
+          let menuFontAttributes = [NSFontAttributeName: NSFont.menuFont(ofSize: 0)]
+          let obliqueAttributes = [NSObliquenessAttributeName: 0.15]
+          
+          if let mergeTitle = NSAttributedString.init(
+              format: "Merge @~1 into @~2",
+              placeholders: ["@~1", "@~2"],
+              replacements: [clickedBranch, currentBranch],
+              attributes: menuFontAttributes,
+              replacementAttributes: obliqueAttributes) {
+            sidebarCommand.attributedTitle = mergeTitle
+          }
+        }
+        return true
+      default:
+        return false
+    }
+  }
+}
+
 /// Manages the main window sidebar.
-class XTSidebarController: NSViewController
+class XTSidebarController: NSViewController, XTSidebarHandler
 {
   @IBOutlet weak var sidebarOutline: SideBarOutlineView!
   @IBOutlet weak var sidebarDS: XTSideBarDataSource!
@@ -50,61 +119,7 @@ class XTSidebarController: NSViewController
   
   override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
   {
-    guard let action = menuItem.action,
-          let item = targetItem()
-    else { return false }
-    
-    switch action {
-      case #selector(XTSidebarController.checkOutBranch(_:)): fallthrough
-      case #selector(XTSidebarController.renameBranch(_:)): fallthrough
-      case #selector(XTSidebarController.mergeBranch(_:)): fallthrough
-      case #selector(XTSidebarController.deleteBranch(_:)):
-        if ((item.refType != .branch) && (item.refType != .remoteBranch)) ||
-           repo.isWriting {
-          return false
-        }
-        if action == #selector(XTSidebarController.deleteBranch(_:)) {
-          return repo.currentBranch != item.title
-        }
-        if action == #selector(XTSidebarController.mergeBranch(_:)) {
-          menuItem.attributedTitle = nil
-          menuItem.title = "Merge"
-          
-          var clickedBranch = item.title
-          guard let currentBranch = repo.currentBranch
-          else { return false }
-          
-          if item.refType == .remoteBranch {
-            guard let remoteItem = item as? XTRemoteBranchItem
-            else { return false }
-            
-            clickedBranch = "\(remoteItem.remote)/\(clickedBranch)"
-          }
-          else if item.refType == .branch {
-            if clickedBranch == currentBranch {
-              return false
-            }
-          }
-          else {
-            return false
-          }
-          
-          let menuFontAttributes = [NSFontAttributeName: NSFont.menuFont(ofSize: 0)]
-          let obliqueAttributes = [NSObliquenessAttributeName: 0.15]
-          
-          if let mergeTitle = NSAttributedString.init(
-              format: "Merge @~1 into @~2",
-              placeholders: ["@~1", "@~2"],
-              replacements: [clickedBranch, currentBranch],
-              attributes: menuFontAttributes,
-              replacementAttributes: obliqueAttributes) {
-            menuItem.attributedTitle = mergeTitle
-          }
-        }
-        return true
-      default:
-        return false
-    }
+    return validate(sidebarCommand: menuItem)
   }
   
   func selectedBranch() -> String?
@@ -231,6 +246,7 @@ class XTSidebarController: NSViewController
     _ = try? repo.merge(branch)
   }
   
+  @objc(deleteBranch:)
   @IBAction func deleteBranch(_ sender: Any?)
   {
     guard let item = targetItem()

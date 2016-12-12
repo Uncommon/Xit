@@ -147,6 +147,7 @@
 		C957B8721D2DB44E0040F858 /* XTRemoteSheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B8701D2DB44E0040F858 /* XTRemoteSheetController.swift */; };
 		C957B8731D2DB44E0040F858 /* XTRemoteSheetController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C957B8711D2DB44E0040F858 /* XTRemoteSheetController.xib */; };
 		C957B87C1D2DBBC00040F858 /* XTAccountsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B87B1D2DBBC00040F858 /* XTAccountsManager.swift */; };
+		C96D24B31DFEFD9F00431317 /* XTSidebarControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96D24B21DFEFD9F00431317 /* XTSidebarControllerTest.swift */; };
 		C96F65461D53A6CE001B2557 /* XTHistoryCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F65451D53A6CE001B2557 /* XTHistoryCellView.swift */; };
 		C98925B31DA70D3A00E5645C /* XTCommitLinesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925B21DA70D3A00E5645C /* XTCommitLinesTest.swift */; };
 		C98925C61DB693CC00E5645C /* XTTagPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925C41DB693CC00E5645C /* XTTagPanelController.swift */; };
@@ -500,6 +501,7 @@
 		C957B8701D2DB44E0040F858 /* XTRemoteSheetController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRemoteSheetController.swift; sourceTree = "<group>"; };
 		C957B8711D2DB44E0040F858 /* XTRemoteSheetController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTRemoteSheetController.xib; sourceTree = "<group>"; };
 		C957B87B1D2DBBC00040F858 /* XTAccountsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTAccountsManager.swift; sourceTree = "<group>"; };
+		C96D24B21DFEFD9F00431317 /* XTSidebarControllerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSidebarControllerTest.swift; sourceTree = "<group>"; };
 		C96F65451D53A6CE001B2557 /* XTHistoryCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTHistoryCellView.swift; sourceTree = "<group>"; };
 		C98925B21DA70D3A00E5645C /* XTCommitLinesTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTCommitLinesTest.swift; sourceTree = "<group>"; };
 		C98925C41DB693CC00E5645C /* XTTagPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTagPanelController.swift; sourceTree = "<group>"; };
@@ -841,6 +843,7 @@
 				DD3D9534182B5EC7004AF532 /* XTFileChangesDataSourceTest.m */,
 				3199BABC142079BB008AAA4F /* XTFileListDataSourceTest.m */,
 				896B05CF15796D2A003B0C24 /* XTSidebarControllerTest.m */,
+				C96D24B21DFEFD9F00431317 /* XTSidebarControllerTest.swift */,
 				DDB9319416EC12B100A6ABC6 /* XTRefTokenTest.m */,
 				89FE824715A716E800E2EA2A /* XTRepositoryTests.m */,
 				313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */,
@@ -850,6 +853,7 @@
 				C9FCC1D01D50EB1A00AC398E /* XTCommitHistoryTest.swift */,
 				C98925B21DA70D3A00E5645C /* XTCommitLinesTest.swift */,
 				C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */,
+				C94736871DF1DDDE000E3A05 /* XTRepositoryTest.swift */,
 				C9EB87311D05D35800C47D13 /* XTStashTest.swift */,
 				C923D6471D8CA56800C6B90B /* XTTagTest.swift */,
 				C9DAB5AE1D47C23900586854 /* XTTeamCityTest.swift */,
@@ -857,7 +861,6 @@
 				C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */,
 				C95356091D958E8D00AEEF49 /* StringExtensionsTest.swift */,
 				C94736751DEF28F8000E3A05 /* GitSwiftTests.swift */,
-				C94736871DF1DDDE000E3A05 /* XTRepositoryTest.swift */,
 			);
 			path = XitTests;
 			sourceTree = "<group>";
@@ -1440,6 +1443,7 @@
 				DD98CFF3181ADFC5008B79C9 /* CFRunLoop+Extensions.c in Sources */,
 				3199BABD142079BB008AAA4F /* XTFileListDataSourceTest.m in Sources */,
 				C953560A1D958E8D00AEEF49 /* StringExtensionsTest.swift in Sources */,
+				C96D24B31DFEFD9F00431317 /* XTSidebarControllerTest.swift in Sources */,
 				896B05D015796D2A003B0C24 /* XTSidebarControllerTest.m in Sources */,
 				C923D6481D8CA56800C6B90B /* XTTagTest.swift in Sources */,
 				89FE824815A716E800E2EA2A /* XTRepositoryTests.m in Sources */,
