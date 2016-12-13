@@ -378,7 +378,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   [self.previewController clear];
 }
 
-- (void)updatePreviewPath:(NSString*)path
+- (void)updatePreviewPath:(NSString*)path isFolder:(BOOL)isFolder
 {
   NSArray<NSString*> *components = path.pathComponents;
   NSMutableArray<NSPathComponentCell*> *cells =
@@ -389,7 +389,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
     NSPathComponentCell *cell = [[NSPathComponentCell alloc] init];
     
     cell.title = component;
-    if (idx == components.count - 1)
+    if (!isFolder && idx == components.count - 1)
       cell.image = [[NSWorkspace sharedWorkspace]
                     iconForFileType:component.pathExtension];
     else
@@ -414,23 +414,25 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
     return;
   }
   
-  XTFileChange *selectedItem =
+  id selectedItem = [self.fileListOutline itemAtRow:selection.firstIndex];
+  XTFileChange *selectedChange =
       [self.fileListDataSource fileChangeAtRow:selection.firstIndex];
   XTWindowController *controller = self.view.window.windowController;
 
-  if (selectedItem == nil) {
+  if (selectedChange == nil) {
     [self clear];
     return;
   }
-  [self updatePreviewPath:selectedItem.path];
-  [self.contentController loadPath:selectedItem.path
+  [self updatePreviewPath:selectedChange.path
+                 isFolder:[self.fileListOutline isExpandable:selectedItem]];
+  [self.contentController loadPath:selectedChange.path
                              model:controller.selectedModel
                             staged:self.showingStaged];
   
   // Swift bridge weirdness
   OS_dispatch_queue *queue = (OS_dispatch_queue*)dispatch_get_main_queue();
   NSString *fullPath = [self.repo.repoURL.path
-                       stringByAppendingPathComponent:selectedItem.path];
+                       stringByAppendingPathComponent:selectedChange.path];
   
   self.fileWatcher = self.inStagingView ?
       [[XTFileEventStream alloc] initWithPath:fullPath
