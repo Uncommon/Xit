@@ -148,4 +148,29 @@ class XTSidebarHandlerTest: XTTest
                   expectedText: "some text",
                   action: { handler.dropStash() })
   }
+  
+  func testMergeText()
+  {
+    let menuItem = NSMenuItem(
+        title: "Merge",
+        action: #selector(XTSidebarController.mergeBranch(_:)),
+        keyEquivalent: "")
+    
+    handler.selectedItem = XTLocalBranchItem(title: "branch")
+    XCTAssertTrue(repository.createBranch("branch"))
+    XCTAssertNotNil(try? repository.checkout("master"))
+    XCTAssertTrue(handler.validate(sidebarCommand: menuItem))
+    XCTAssertEqual(menuItem.title, "Merge branch into master")
+  }
+  
+  func testMergeDisabled()
+  {
+    let menuItem = NSMenuItem(
+      title: "Merge",
+      action: #selector(XTSidebarController.mergeBranch(_:)),
+      keyEquivalent: "")
+    
+    handler.selectedItem = XTLocalBranchItem(title: "master")
+    XCTAssertFalse(handler.validate(sidebarCommand: menuItem))
+  }
 }
