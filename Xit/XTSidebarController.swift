@@ -1,13 +1,15 @@
 import Cocoa
 
 // Command handling extracted for testability
-protocol XTSidebarHandler
+protocol SidebarHandler
 {
   var repo: XTRepository! { get }
+  var window: NSWindow? { get }
   func targetItem() -> XTSideBarItem?
+  func stashIndex(for item: XTSideBarItem) -> UInt?
 }
 
-extension XTSidebarHandler
+extension SidebarHandler
 {
   func validate(sidebarCommand: NSMenuItem) -> Bool
   {
@@ -50,7 +52,8 @@ extension XTSidebarHandler
             return false
           }
           
-          let menuFontAttributes = [NSFontAttributeName: NSFont.menuFont(ofSize: 0)]
+          let menuFontAttributes = [NSFontAttributeName:
+                                    NSFont.menuFont(ofSize: 0)]
           let obliqueAttributes = [NSObliquenessAttributeName: 0.15]
           
           if let mergeTitle = NSAttributedString.init(
@@ -67,10 +70,64 @@ extension XTSidebarHandler
         return false
     }
   }
+  
+  func callCommand(errorString: String,
+                   targetItem: XTSideBarItem? = nil,
+                   block: @escaping (XTSideBarItem) throws -> Void)
+  {
+    guard let item = targetItem ?? self.targetItem()
+    else { return }
+    
+    repo.executeOffMainThread {
+      do {
+        try block(item)
+      }
+      catch let error as NSError {
+        guard let window = self.window
+        else { return }
+        let alert = NSAlert(error: error)
+        
+        alert.beginSheetModal(for: window, completionHandler: nil)
+      }
+    }
+  }
+
+  func popStash()
+  {
+    callCommand(errorString: "Pop stash failed") {
+      (item) in
+      guard let index = self.stashIndex(for: item)
+      else { return }
+      
+      try self.repo.popStashIndex(index)
+    }
+  }
+  
+  func applyStash()
+  {
+    callCommand(errorString: "Apply stash failed") {
+      (item) in
+      guard let index = self.stashIndex(for: item)
+      else { return }
+      
+      try self.repo.applyStashIndex(index)
+    }
+  }
+  
+  func dropStash()
+  {
+    callCommand(errorString: "Drop stash failed") {
+      (item) in
+      guard let index = self.stashIndex(for: item)
+      else { return }
+      
+      try self.repo.dropStashIndex(index)
+    }
+  }
 }
 
 /// Manages the main window sidebar.
-class XTSidebarController: NSViewController, XTSidebarHandler
+class XTSidebarController: NSViewController, SidebarHandler
 {
   @IBOutlet weak var sidebarOutline: SideBarOutlineView!
   @IBOutlet weak var sidebarDS: XTSideBarDataSource!
@@ -93,6 +150,7 @@ class XTSidebarController: NSViewController, XTSidebarHandler
       }
     }
   }
+  var window: NSWindow? { return view.window }
   var savedSidebarWidth: UInt = 0
   
   deinit
@@ -160,6 +218,13 @@ class XTSidebarController: NSViewController, XTSidebarHandler
     return sidebarOutline.item(atRow: targetRow()) as? XTSideBarItem
   }
   
+  func stashIndex(for item: XTSideBarItem) -> UInt?
+  {
+    let stashes = sidebarDS.roots[XTGroupIndex.stashes.rawValue]
+    
+    return stashes.children.index(of: item).map { UInt($0) }
+  }
+  
   func editSelectedRow()
   {
     sidebarOutline.editColumn(0, row: targetRow(), with: nil, select: true)
@@ -179,25 +244,6 @@ class XTSidebarController: NSViewController, XTSidebarHandler
       (response) in
       if response == NSAlertFirstButtonReturn {
         onConfirm()
-      }
-    }
-  }
-  
-  func callCMBlock(errorString: String,
-                   targetItem: XTSideBarItem? = nil,
-                   block: @escaping (XTSideBarItem, UInt) throws -> Void)
-  {
-    guard let item = targetItem ?? self.targetItem(),
-          let parent = sidebarOutline.parent(forItem: item) as? XTSideBarItem,
-          let index = parent.children.index(of: item)
-    else { return }
-    
-    repo.executeOffMainThread {
-      do {
-        try block(item, UInt(index))
-      }
-      catch {
-        // report error
       }
     }
   }
@@ -223,8 +269,8 @@ class XTSidebarController: NSViewController, XTSidebarHandler
   
   @IBAction func checkOutBranch(_ sender: Any?)
   {
-    callCMBlock(errorString: "Checkout failed") {
-      (item, index) in
+    callCommand(errorString: "Checkout failed") {
+      (item) in
       try self.repo.checkout(item.title)
     }
   }
@@ -253,8 +299,8 @@ class XTSidebarController: NSViewController, XTSidebarHandler
     else { return }
     
     confirmDelete(kind: "branch", name: item.title) {
-      self.callCMBlock(errorString: "Delete branch failed", targetItem: item) {
-        (item, index) in
+      self.callCommand(errorString: "Delete branch failed", targetItem: item) {
+        (item) in
         try self.repo.deleteBranch(item.title)
       }
     }
@@ -266,8 +312,8 @@ class XTSidebarController: NSViewController, XTSidebarHandler
     else { return }
     
     confirmDelete(kind: "tag", name: item.title) {
-      self.callCMBlock(errorString: "Delete tag failed", targetItem: item) {
-        (item, index) in
+      self.callCommand(errorString: "Delete tag failed", targetItem: item) {
+        (item) in
         try self.repo.deleteTag(item.title)
       }
     }
@@ -280,8 +326,8 @@ class XTSidebarController: NSViewController, XTSidebarHandler
   
   @IBAction func deleteRemote(_ sender: Any?)
   {
-    callCMBlock(errorString: "Delete remote failed") {
-      (item, index) in
+    callCommand(errorString: "Delete remote failed") {
+      (item) in
       try self.repo.deleteRemote(item.title)
     }
   }
@@ -300,25 +346,16 @@ class XTSidebarController: NSViewController, XTSidebarHandler
   
   @IBAction func popStash(_ sender: Any?)
   {
-    callCMBlock(errorString: "Pop stash failed") {
-      (item, index) in
-      try self.repo.popStashIndex(index)
-    }
+    popStash()
   }
   
   @IBAction func applyStash(_ sender: Any?)
   {
-    callCMBlock(errorString: "Apply stash failed") {
-      (item, index) in
-      try self.repo.applyStashIndex(index)
-    }
+    applyStash()
   }
   
   @IBAction func dropStash(_ sender: Any?)
   {
-    callCMBlock(errorString: "Drop stash failed") {
-      (item, index) in
-      try self.repo.dropStashIndex(index)
-    }
+    dropStash()
   }
 }
