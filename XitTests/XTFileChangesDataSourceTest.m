@@ -19,6 +19,8 @@
       initWithRepository:self.repository sha:self.repository.headSHA];
   dataSource.repository = self.repository;
   dataSource.winController = (XTWindowController*)winController;
+  outlineView.dataSource = dataSource;
+  [dataSource reload];
   [self waitForRepoQueue];
   WaitForQueue(dispatch_get_main_queue());
 
