@@ -14,8 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
                        rect:(NSRect)rect
                        NS_SWIFT_NAME(drawToken(refType:text:rect:));
 + (CGFloat)rectWidthForText:(NSString *)text NS_SWIFT_NAME(rectWidth(text:));
-+ (XTRefType)typeForRefName:(NSString *)ref inRepository:(XTRepository *)repo
-    NS_SWIFT_NAME(type(refName:repository:));
 
 @end
 

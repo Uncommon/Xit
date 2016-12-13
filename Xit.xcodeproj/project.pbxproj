@@ -205,7 +205,6 @@
 		DDA8A64317F5B6CE00AD9808 /* renamed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A63917F5B6CE00AD9808 /* renamed@2x.png */; };
 		DDA8A65F17F9ECED00AD9808 /* mixed.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A65D17F9ECED00AD9808 /* mixed.png */; };
 		DDA8A66017F9ECED00AD9808 /* mixed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A65E17F9ECED00AD9808 /* mixed@2x.png */; };
-		DDB9319516EC12B100A6ABC6 /* XTRefTokenTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DDB9319416EC12B100A6ABC6 /* XTRefTokenTest.m */; };
 		DDC75B8315D08E8F0087F2D4 /* NSDate+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC75B8215D08E8F0087F2D4 /* NSDate+Extensions.m */; };
 		DDD4708116F3E7B000CA76FF /* XTPreviewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD4708016F3E7B000CA76FF /* XTPreviewItem.m */; };
 		DDD4708516F96F7E00CA76FF /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDD4708416F96F7E00CA76FF /* QuickLook.framework */; };
@@ -567,7 +566,6 @@
 		DDA8A63917F5B6CE00AD9808 /* renamed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "renamed@2x.png"; sourceTree = "<group>"; };
 		DDA8A65D17F9ECED00AD9808 /* mixed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mixed.png; sourceTree = "<group>"; };
 		DDA8A65E17F9ECED00AD9808 /* mixed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mixed@2x.png"; sourceTree = "<group>"; };
-		DDB9319416EC12B100A6ABC6 /* XTRefTokenTest.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTRefTokenTest.m; sourceTree = "<group>"; tabWidth = 2; };
 		DDC75B8215D08E8F0087F2D4 /* NSDate+Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Extensions.m"; sourceTree = "<group>"; };
 		DDD4707F16F3E7B000CA76FF /* XTPreviewItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTPreviewItem.h; sourceTree = "<group>"; };
 		DDD4708016F3E7B000CA76FF /* XTPreviewItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTPreviewItem.m; sourceTree = "<group>"; };
@@ -841,7 +839,6 @@
 				DD3D9534182B5EC7004AF532 /* XTFileChangesDataSourceTest.m */,
 				3199BABC142079BB008AAA4F /* XTFileListDataSourceTest.m */,
 				C96D24B21DFEFD9F00431317 /* XTSidebarControllerTest.swift */,
-				DDB9319416EC12B100A6ABC6 /* XTRefTokenTest.m */,
 				89FE824715A716E800E2EA2A /* XTRepositoryTests.m */,
 				313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */,
 				89CD209017089D220051C3D4 /* XTCategoryTests.h */,
@@ -1444,7 +1441,6 @@
 				C923D6481D8CA56800C6B90B /* XTTagTest.swift in Sources */,
 				89FE824815A716E800E2EA2A /* XTRepositoryTests.m in Sources */,
 				C98925B31DA70D3A00E5645C /* XTCommitLinesTest.swift in Sources */,
-				DDB9319516EC12B100A6ABC6 /* XTRefTokenTest.m in Sources */,
 				C94736761DEF28F8000E3A05 /* GitSwiftTests.swift in Sources */,
 				C9DAB5AF1D47C23900586854 /* XTTeamCityTest.swift in Sources */,
 				C9FCC1D11D50EB1A00AC398E /* XTCommitHistoryTest.swift in Sources */,

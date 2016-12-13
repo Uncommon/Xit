@@ -177,18 +177,4 @@
   return size.width + 12;
 }
 
-+ (XTRefType)typeForRefName:(NSString *)ref inRepository:(XTRepository *)repo
-{
-  if ([ref hasPrefix:@"refs/remotes"])
-    return XTRefTypeRemoteBranch;
-  if ([ref hasPrefix:@"refs/heads"]) {
-    if ([ref.lastPathComponent isEqualToString:[repo currentBranch]])
-      return XTRefTypeActiveBranch;
-    return XTRefTypeBranch;
-  }
-  if ([ref hasPrefix:@"refs/tags"])
-    return XTRefTypeTag;
-  return XTRefTypeUnknown;
-}
-
 @end
