@@ -56,10 +56,6 @@ typedef NS_ENUM(NSUInteger, XitChange) {
                   tagBlock:(void (^)(NSString *name, NSString *commit))tagBlock;
 - (BOOL)readStashesWithBlock:
     (void (^)(NSString *commit, NSUInteger index, NSString *name))block;
-- (BOOL)parseCommit:(NSString*)ref
-         intoHeader:(NSDictionary * _Nullable * _Nonnull)header
-            message:(NSString * _Nullable * _Nonnull)message
-              files:(NSArray * _Nullable * _Nullable)files;
 
 - (BOOL)stageFile:(NSString*)file error:(NSError**)error;
 - (BOOL)stageAllFilesWithError:(NSError**)error;

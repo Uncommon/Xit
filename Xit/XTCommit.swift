@@ -37,9 +37,28 @@ public class XTCommit: NSObject, CommitType
   public var oid: GTOID { return cachedOID }
 
   public var parentOIDs: [GTOID] { return cachedParentOIDs }
+  public var parentSHAs: [String]
+  {
+    return parentOIDs.flatMap { $0.sha }
+  }
   
   public var message: String?
   { return gtCommit.message }
+  
+  public var authorName: String?
+  { return gtCommit.author?.name }
+  
+  public var authorEmail: String?
+  { return gtCommit.author?.email }
+  
+  public var authorDate: Date?
+  { return gtCommit.author?.time }
+  
+  public var committerName: String?
+  { return gtCommit.committer?.name }
+  
+  public var committerEmail: String?
+  { return gtCommit.committer?.email }
   
   public var commitDate: Date
   { return gtCommit.commitDate }

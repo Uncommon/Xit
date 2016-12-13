@@ -53,25 +53,20 @@ NSString *XTHeaderHeightKey = @"height";
   if ((_commitSHA == nil) || [_commitSHA isEqualToString:XTStagingSHA])
     return @"";
 
+  XTCommit *commit = [[XTCommit alloc] initWithSha:_commitSHA
+                                        repository:_repository];
   NSError *error = nil;
   NSStringEncoding encoding;
   NSString *template = [NSString stringWithContentsOfURL:[self templateURL]
                                             usedEncoding:&encoding
                                                    error:&error];
-  NSDictionary *header = nil;
-  NSString *message;
-  
-  [_repository parseCommit:_commitSHA
-                intoHeader:&header
-                   message:&message
-                     files:NULL];
-
-  NSString *authorName = header[XTAuthorNameKey];
-  NSString *authorEmail = header[XTAuthorEmailKey];
-  NSDate *authorDate = header[XTAuthorDateKey];
-  NSString *committerName = header[XTCommitterNameKey];
-  NSString *committerEmail = header[XTCommitterEmailKey];
-  NSDate *committerDate = header[XTCommitterDateKey];
+  NSString *message = commit.message;
+  NSString *authorName = commit.authorName;
+  NSString *authorEmail = commit.authorEmail;
+  NSDate *authorDate = commit.authorDate;
+  NSString *committerName = commit.committerName;
+  NSString *committerEmail = commit.committerEmail;
+  NSDate *committerDate = commit.commitDate;
   NSDateFormatter *formatter = [[self class] dateFormatter];
   NSString *authorDateString = [formatter stringFromDate:authorDate];
   NSString *committerDateString = (committerDate == nil) ? @"" :
@@ -82,7 +77,7 @@ NSString *XTHeaderHeightKey = @"height";
   if (committerEmail == nil)
     committerEmail = @"";
 
-  self.parents = header[XTParentSHAsKey];
+  self.parents = commit.parentSHAs;
 
   message = [message stringByTrimmingCharactersInSet:
       [NSCharacterSet whitespaceAndNewlineCharacterSet]];
