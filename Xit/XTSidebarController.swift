@@ -1,7 +1,133 @@
 import Cocoa
 
+// Command handling extracted for testability
+protocol SidebarHandler
+{
+  var repo: XTRepository! { get }
+  var window: NSWindow? { get }
+  func targetItem() -> XTSideBarItem?
+  func stashIndex(for item: XTSideBarItem) -> UInt?
+}
+
+extension SidebarHandler
+{
+  func validate(sidebarCommand: NSMenuItem) -> Bool
+  {
+    guard let action = sidebarCommand.action,
+          let item = targetItem()
+    else { return false }
+    
+    switch action {
+      case #selector(XTSidebarController.checkOutBranch(_:)),
+           #selector(XTSidebarController.renameBranch(_:)),
+           #selector(XTSidebarController.mergeBranch(_:)),
+           #selector(XTSidebarController.deleteBranch(_:)):
+        if ((item.refType != .branch) && (item.refType != .remoteBranch)) ||
+            repo.isWriting {
+          return false
+        }
+        if action == #selector(XTSidebarController.deleteBranch(_:)) {
+          return repo.currentBranch != item.title
+        }
+        if action == #selector(XTSidebarController.mergeBranch(_:)) {
+          sidebarCommand.attributedTitle = nil
+          sidebarCommand.title = "Merge"
+          
+          var clickedBranch = item.title
+          guard let currentBranch = repo.currentBranch
+          else { return false }
+          
+          if item.refType == .remoteBranch {
+            guard let remoteItem = item as? XTRemoteBranchItem
+            else { return false }
+            
+            clickedBranch = "\(remoteItem.remote)/\(clickedBranch)"
+          }
+          else if item.refType == .branch {
+            if clickedBranch == currentBranch {
+              return false
+            }
+          }
+          else {
+            return false
+          }
+          
+          let menuFontAttributes = [NSFontAttributeName:
+                                    NSFont.menuFont(ofSize: 0)]
+          let obliqueAttributes = [NSObliquenessAttributeName: 0.15]
+          
+          if let mergeTitle = NSAttributedString.init(
+              format: "Merge @~1 into @~2",
+              placeholders: ["@~1", "@~2"],
+              replacements: [clickedBranch, currentBranch],
+              attributes: menuFontAttributes,
+              replacementAttributes: obliqueAttributes) {
+            sidebarCommand.attributedTitle = mergeTitle
+          }
+        }
+        return true
+      default:
+        return false
+    }
+  }
+  
+  func callCommand(errorString: String,
+                   targetItem: XTSideBarItem? = nil,
+                   block: @escaping (XTSideBarItem) throws -> Void)
+  {
+    guard let item = targetItem ?? self.targetItem()
+    else { return }
+    
+    repo.executeOffMainThread {
+      do {
+        try block(item)
+      }
+      catch let error as NSError {
+        guard let window = self.window
+        else { return }
+        let alert = NSAlert(error: error)
+        
+        alert.beginSheetModal(for: window, completionHandler: nil)
+      }
+    }
+  }
+
+  func popStash()
+  {
+    callCommand(errorString: "Pop stash failed") {
+      (item) in
+      guard let index = self.stashIndex(for: item)
+      else { return }
+      
+      try self.repo.popStashIndex(index)
+    }
+  }
+  
+  func applyStash()
+  {
+    callCommand(errorString: "Apply stash failed") {
+      (item) in
+      guard let index = self.stashIndex(for: item)
+      else { return }
+      
+      try self.repo.applyStashIndex(index)
+    }
+  }
+  
+  func dropStash()
+  {
+    callCommand(errorString: "Drop stash failed") {
+      (item) in
+      guard let index = self.stashIndex(for: item)
+      else { return }
+      
+      try self.repo.dropStashIndex(index)
+    }
+  }
+}
+
 /// Manages the main window sidebar.
-class XTSidebarController: NSViewController
+class XTSidebarController: NSViewController, SidebarHandler
 {
   @IBOutlet weak var sidebarOutline: SideBarOutlineView!
   @IBOutlet weak var sidebarDS: XTSideBarDataSource!
@@ -24,6 +150,7 @@ class XTSidebarController: NSViewController
       }
     }
   }
+  var window: NSWindow? { return view.window }
   var savedSidebarWidth: UInt = 0
   
   deinit
@@ -50,61 +177,7 @@ class XTSidebarController: NSViewController
   
   override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
   {
-    guard let action = menuItem.action,
-          let item = targetItem()
-    else { return false }
-    
-    switch action {
-      case #selector(XTSidebarController.checkOutBranch(_:)): fallthrough
-      case #selector(XTSidebarController.renameBranch(_:)): fallthrough
-      case #selector(XTSidebarController.mergeBranch(_:)): fallthrough
-      case #selector(XTSidebarController.deleteBranch(_:)):
-        if ((item.refType != .branch) && (item.refType != .remoteBranch)) ||
-           repo.isWriting {
-          return false
-        }
-        if action == #selector(XTSidebarController.deleteBranch(_:)) {
-          return repo.currentBranch != item.title
-        }
-        if action == #selector(XTSidebarController.mergeBranch(_:)) {
-          menuItem.attributedTitle = nil
-          menuItem.title = "Merge"
-          
-          var clickedBranch = item.title
-          guard let currentBranch = repo.currentBranch
-          else { return false }
-          
-          if item.refType == .remoteBranch {
-            guard let remoteItem = item as? XTRemoteBranchItem
-            else { return false }
-            
-            clickedBranch = "\(remoteItem.remote)/\(clickedBranch)"
-          }
-          else if item.refType == .branch {
-            if clickedBranch == currentBranch {
-              return false
-            }
-          }
-          else {
-            return false
-          }
-          
-          let menuFontAttributes = [NSFontAttributeName: NSFont.menuFont(ofSize: 0)]
-          let obliqueAttributes = [NSObliquenessAttributeName: 0.15]
-          
-          if let mergeTitle = NSAttributedString.init(
-              format: "Merge @~1 into @~2",
-              placeholders: ["@~1", "@~2"],
-              replacements: [clickedBranch, currentBranch],
-              attributes: menuFontAttributes,
-              replacementAttributes: obliqueAttributes) {
-            menuItem.attributedTitle = mergeTitle
-          }
-        }
-        return true
-      default:
-        return false
-    }
+    return validate(sidebarCommand: menuItem)
   }
   
   func selectedBranch() -> String?
@@ -145,6 +218,13 @@ class XTSidebarController: NSViewController
     return sidebarOutline.item(atRow: targetRow()) as? XTSideBarItem
   }
   
+  func stashIndex(for item: XTSideBarItem) -> UInt?
+  {
+    let stashes = sidebarDS.roots[XTGroupIndex.stashes.rawValue]
+    
+    return stashes.children.index(of: item).map { UInt($0) }
+  }
+  
   func editSelectedRow()
   {
     sidebarOutline.editColumn(0, row: targetRow(), with: nil, select: true)
@@ -164,25 +244,6 @@ class XTSidebarController: NSViewController
       (response) in
       if response == NSAlertFirstButtonReturn {
         onConfirm()
-      }
-    }
-  }
-  
-  func callCMBlock(errorString: String,
-                   targetItem: XTSideBarItem? = nil,
-                   block: @escaping (XTSideBarItem, UInt) throws -> Void)
-  {
-    guard let item = targetItem ?? self.targetItem(),
-          let parent = sidebarOutline.parent(forItem: item) as? XTSideBarItem,
-          let index = parent.children.index(of: item)
-    else { return }
-    
-    repo.executeOffMainThread {
-      do {
-        try block(item, UInt(index))
-      }
-      catch {
-        // report error
       }
     }
   }
@@ -208,8 +269,8 @@ class XTSidebarController: NSViewController
   
   @IBAction func checkOutBranch(_ sender: Any?)
   {
-    callCMBlock(errorString: "Checkout failed") {
-      (item, index) in
+    callCommand(errorString: "Checkout failed") {
+      (item) in
       try self.repo.checkout(item.title)
     }
   }
@@ -231,14 +292,15 @@ class XTSidebarController: NSViewController
     _ = try? repo.merge(branch)
   }
   
+  @objc(deleteBranch:)
   @IBAction func deleteBranch(_ sender: Any?)
   {
     guard let item = targetItem()
     else { return }
     
     confirmDelete(kind: "branch", name: item.title) {
-      self.callCMBlock(errorString: "Delete branch failed", targetItem: item) {
-        (item, index) in
+      self.callCommand(errorString: "Delete branch failed", targetItem: item) {
+        (item) in
         try self.repo.deleteBranch(item.title)
       }
     }
@@ -250,8 +312,8 @@ class XTSidebarController: NSViewController
     else { return }
     
     confirmDelete(kind: "tag", name: item.title) {
-      self.callCMBlock(errorString: "Delete tag failed", targetItem: item) {
-        (item, index) in
+      self.callCommand(errorString: "Delete tag failed", targetItem: item) {
+        (item) in
         try self.repo.deleteTag(item.title)
       }
     }
@@ -264,8 +326,8 @@ class XTSidebarController: NSViewController
   
   @IBAction func deleteRemote(_ sender: Any?)
   {
-    callCMBlock(errorString: "Delete remote failed") {
-      (item, index) in
+    callCommand(errorString: "Delete remote failed") {
+      (item) in
       try self.repo.deleteRemote(item.title)
     }
   }
@@ -284,25 +346,16 @@ class XTSidebarController: NSViewController
   
   @IBAction func popStash(_ sender: Any?)
   {
-    callCMBlock(errorString: "Pop stash failed") {
-      (item, index) in
-      try self.repo.popStashIndex(index)
-    }
+    popStash()
   }
   
   @IBAction func applyStash(_ sender: Any?)
   {
-    callCMBlock(errorString: "Apply stash failed") {
-      (item, index) in
-      try self.repo.applyStashIndex(index)
-    }
+    applyStash()
   }
   
   @IBAction func dropStash(_ sender: Any?)
   {
-    callCMBlock(errorString: "Drop stash failed") {
-      (item, index) in
-      try self.repo.dropStashIndex(index)
-    }
+    dropStash()
   }
 }
