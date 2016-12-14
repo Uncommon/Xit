@@ -18,6 +18,7 @@ extension SidebarHandler
     else { return false }
     
     switch action {
+      
       case #selector(XTSidebarController.checkOutBranch(_:)),
            #selector(XTSidebarController.renameBranch(_:)),
            #selector(XTSidebarController.mergeBranch(_:)),
@@ -66,6 +67,22 @@ extension SidebarHandler
           }
         }
         return true
+      
+      case #selector(XTSidebarController.deleteTag(_:)):
+        return !repo.isWriting && (item is XTTagItem)
+      
+      case #selector(XTSidebarController.renameRemote(_:)),
+           #selector(XTSidebarController.deleteRemote(_:)):
+        return !repo.isWriting && (item is XTRemoteItem)
+      
+      case #selector(XTSidebarController.copyRemoteURL(_:)):
+        return item is XTRemoteItem
+      
+      case #selector(XTSidebarController.popStash(_:)),
+           #selector(XTSidebarController.applyStash(_:)),
+           #selector(XTSidebarController.dropStash(_:)):
+        return !repo.isWriting && item is XTStashItem
+      
       default:
         return false
     }
