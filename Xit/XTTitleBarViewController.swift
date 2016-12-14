@@ -77,12 +77,12 @@ class XTTitleBarViewController: NSViewController
     set { branchPopup.selectItem(withTitle: newValue ?? "") }
   }
   
-  func updateBranchList(_ branches: [String])
+  func updateBranchList(_ branches: [String], current: String?)
   {
-    let savedBranch = selectedBranch
-    
     branchPopup.removeAllItems()
     branchPopup.addItems(withTitles: branches)
-    selectedBranch = savedBranch
+    if let current = current {
+      selectedBranch = current
+    }
   }
 }

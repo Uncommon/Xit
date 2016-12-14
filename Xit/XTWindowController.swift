@@ -126,7 +126,9 @@ class XTWindowController: NSWindowController, NSWindowDelegate
           let branches = try? repo.localBranches()
     else { return }
     
-    self.titleBarController?.updateBranchList(branches.flatMap { $0.shortName })
+    self.titleBarController?.updateBranchList(
+        branches.flatMap { $0.shortName },
+        current: repo.currentBranch)
   }
   
   @IBAction func refresh(_ sender: AnyObject)
