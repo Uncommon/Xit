@@ -176,9 +176,15 @@ extension XTSideBarDataSource
             let (api, buildTypes) = matchTeamCity(tracked.remoteName)
       else { continue }
       
-      let branchName = (fullBranchName as NSString).lastPathComponent
-      
       for buildType in buildTypes {
+        let vcsRoots = api.vcsRootsForBuildType(buildType)
+        guard !vcsRoots.isEmpty
+        else { continue }
+        let branchSpec = api.vcsBranchSpecs[vcsRoots[0]] ??
+                         XTTeamCityAPI.BranchSpec.defaultSpec()
+        guard let branchName = branchSpec.match(branch: fullBranchName)
+        else { continue }
+        
         let statusResource = api.buildStatus(branchName, buildType: buildType)
         
         statusResource.useData(owner: self) { (data) in

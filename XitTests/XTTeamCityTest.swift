@@ -50,4 +50,22 @@ class XTTeamCityTest: XCTestCase
                stateString: "running",
                state: .running)
   }
+  
+  func testBranchSpec()
+  {
+    let branchSpec = XTTeamCityAPI.BranchSpec(ruleStrings: [
+        "+:refs/heads/feature/*",
+        "+:refs/heads/fix/(target)",
+        "-:refs/heads/skip/*",
+        "+:refs/heads/*"])!
+    
+    XCTAssertEqual(branchSpec.match(branch: "refs/heads/thing"), "thing")
+    XCTAssertEqual(branchSpec.match(branch: "refs/heads/feature/thing"), "thing")
+    XCTAssertEqual(branchSpec.match(branch: "refs/heads/fix/target"), "target")
+    XCTAssertNil(branchSpec.match(branch: "refs/heads/skip/rope"))
+    
+    let defaultSpec = XTTeamCityAPI.BranchSpec.defaultSpec()
+    
+    XCTAssertEqual(defaultSpec.match(branch: "refs/heads/master"), "master")
+  }
 }
