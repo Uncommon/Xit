@@ -180,9 +180,21 @@ extension XTSideBarDataSource
         let vcsRoots = api.vcsRootsForBuildType(buildType)
         guard !vcsRoots.isEmpty
         else { continue }
-        let branchSpec = api.vcsBranchSpecs[vcsRoots[0]] ??
-                         XTTeamCityAPI.BranchSpec.defaultSpec()
-        guard let branchName = branchSpec.match(branch: fullBranchName)
+        
+        var shortestDisplayName: String? = nil
+        
+        for root in vcsRoots {
+          guard let branchSpec = api.vcsBranchSpecs[root],
+                let display = branchSpec.match(branch: fullBranchName)
+          else { continue }
+          
+          if (shortestDisplayName == nil) ||
+             (shortestDisplayName!.utf8.count > display.utf8.count) {
+            shortestDisplayName = display
+          }
+        }
+        
+        guard let branchName = shortestDisplayName
         else { continue }
         
         let statusResource = api.buildStatus(branchName, buildType: buildType)

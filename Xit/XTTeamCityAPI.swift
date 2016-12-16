@@ -156,29 +156,15 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI
   var buildTypes: Resource
   { return resource("buildTypes") }
   
-  /// A resource for a VCS root's individual property. The response will be
-  /// the raw value, not wrapped in XML.
-  func vcsRootProperty(name: String, vcsRootID: String) -> Resource
+  /// A resource for the VCS root with the given ID.
+  func vcsRoot(id: String) -> Resource
   {
-    return resource("vcs-roots/id:\(vcsRootID)/properties/\(name)")
-  }
-  
-  /// The repo URL of a VCS root.
-  func vcsRootURL(_ vcsRootID: String) -> Resource
-  {
-    return vcsRootProperty(name: "url", vcsRootID: vcsRootID)
-  }
-  
-  /// The VCS root's branch specification. Some VCS roots don't have a
-  /// branchSpec set, and the server will give a 404 response.
-  func branchSpec(_ vcsRootID: String) -> Resource
-  {
-    return vcsRootProperty(name: "teamcity:branchSpec", vcsRootID: vcsRootID)
+    return resource("vcs-roots/id:\(id)")
   }
   
   override func didAuthenticate()
   {
-    // - Get VCS roots, build repo URL -> vcs-root id map.
+    // Get VCS roots, build repo URL -> vcs-root id map.
     vcsRoots.useData(owner: self) { (data) in
       guard let xml = data.content as? XMLDocument
       else {
@@ -244,7 +230,7 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI
                                            range: stringRange)
         else { return nil }
         
-        if match.numberOfRanges > 0 {
+        if match.numberOfRanges >= 2 {
           return (branch as NSString).substring(with: match.rangeAt(1))
         }
         return nil
@@ -323,27 +309,48 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI
     var waitingRootCount = vcsIDs.count
     
     vcsRootMap.removeAll()
+    vcsBranchSpecs.removeAll()
     for rootID in vcsIDs {
-      let repoResource = self.vcsRootURL(rootID)
-      let branchSpecResource = self.branchSpec(rootID)
+      let rootResource = vcsRoot(id: rootID)
       
-      repoResource.useData(owner: self) {
+      rootResource.useData(owner: self) {
         (data) in
-        if let repoURL = data.content as? String {
-          self.vcsRootMap[rootID] = repoURL
-        }
-        waitingRootCount -= 1
-        if (waitingRootCount == 0) {
-          self.getBuildTypes()
+        if let xmlData = data.content as? XMLDocument {
+          self.parseVCSRoot(xml: xmlData, vcsRootID: rootID)
+          waitingRootCount -= 1
+          if (waitingRootCount == 0) {
+            self.getBuildTypes()
+          }
         }
       }
-      branchSpecResource.useData(owner: self) {
-        (data) in
-        if let specString = data.content as? String,
-           let branchSpec = BranchSpec(ruleStrings:
-               specString.components(separatedBy: .whitespacesAndNewlines)) {
-          self.vcsBranchSpecs[rootID] = branchSpec
-        }
+    }
+  }
+  
+  /// Parses the data for an individual VCS root.
+  private func parseVCSRoot(xml: XMLDocument, vcsRootID: String)
+  {
+    guard let properties = xml.rootElement()?.elements(forName: "properties")
+                           .first,
+          let propertiesChildren = properties.children
+    else { return }
+    
+    for property in propertiesChildren {
+      guard let propertyElement = property as? XMLElement,
+            let name = propertyElement.attribute(forName: "name")?.stringValue,
+            let value = propertyElement.attribute(forName: "value")?.stringValue
+      else { continue }
+      
+      switch name {
+        case "url":
+          vcsRootMap[vcsRootID] = value
+        case "teamcity:branchSpec":
+          let specLines = value.components(separatedBy: .whitespacesAndNewlines)
+        
+          if let branchSpec = BranchSpec(ruleStrings: specLines) {
+            vcsBranchSpecs[vcsRootID] = branchSpec
+          }
+        default:
+          break
       }
     }
   }
