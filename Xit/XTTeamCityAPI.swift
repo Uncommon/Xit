@@ -86,11 +86,24 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI
   }
   
   fileprivate(set) var buildTypesStatus = XTServices.Status.notStarted
+  {
+    didSet
+    {
+      if buildTypesStatus != oldValue &&
+         buildTypesStatus == .done {
+        NotificationCenter.default.post(
+            name: NSNotification.Name.XTTeamCityStatusChanged,
+            object: self)
+      }
+    }
+  }
   
   /// Maps VCS root ID to repository URL.
-  var vcsRootMap = [String: String]()
+  fileprivate(set) var vcsRootMap = [String: String]()
+  /// Maps VCS root ID to branch specification.
+  fileprivate(set) var vcsBranchSpecs = [String: BranchSpec]()
   /// Maps built type IDs to lists of repository URLs.
-  var vcsBuildTypes = [String: [String]]()
+  fileprivate(set) var vcsBuildTypes = [String: [String]]()
   
   init?(user: String, password: String, baseURL: String?)
   {
@@ -100,12 +113,13 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI
     
     fullBaseURL.path = XTTeamCityAPI.rootPath
     
-    super.init(user: user, password: password, baseURL: fullBaseURL.string,
+    super.init(user: user, password: password,
+               baseURL: fullBaseURL.string,
                authenticationPath: "/")
     
     configure(description: "xml") {
       $0.pipeline[.parsing].add(XMLResponseTransformer(),
-                                       contentTypes: [ "*/xml" ])
+                                contentTypes: [ "*/xml" ])
     }
   }
   
@@ -154,16 +168,15 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI
   var buildTypes: Resource
   { return resource("buildTypes") }
   
-  /// A resource for the repo URL of a VCS root. This will be just the URL,
-  /// not wrapped in XML.
-  func vcsRootURL(_ vcsRoodID: String) -> Resource
+  /// A resource for the VCS root with the given ID.
+  func vcsRoot(id: String) -> Resource
   {
-    return resource("vcs-roots/id:\(vcsRoodID)/properties/url")
+    return resource("vcs-roots/id:\(id)")
   }
   
   override func didAuthenticate()
   {
-    // - Get VCS roots, build repo URL -> vcs-root id map.
+    // Get VCS roots, build repo URL -> vcs-root id map.
     vcsRoots.useData(owner: self) { (data) in
       guard let xml = data.content as? XMLDocument
       else {
@@ -174,14 +187,98 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI
       self.parseVCSRoots(xml)
     }
   }
-}
 
-// MARK: VCS
+  // MARK: TeamCity
+  // This used to be in an extension but the compiler got confused.
 
-extension XTTeamCityAPI
-{
+  /// A branch specification describes which branches in a VCS are used,
+  /// and how their names are displayed.
+  public class BranchSpec
+  {
+    enum Inclusion
+    {
+      case include
+      case exclude
+    }
+    
+    /// An invididual matching rule in a branch specification.
+    struct Rule
+    {
+      let inclusion: Inclusion
+      let regex: NSRegularExpression
+      
+      init?(content: String)
+      {
+        let prefixEndIndex = content.index(content.startIndex,
+                                           offsetBy: 2)
+        
+        switch content.substring(to: prefixEndIndex) {
+          case "+:":
+            self.inclusion = .include
+          case "-:":
+            self.inclusion = .exclude
+          default:
+            return nil
+        }
+        
+        var substring = content.substring(from: prefixEndIndex)
+        
+        // Parentheses are needed to identify a range to be extracted.
+        substring = substring.replacingOccurrences(of: "*", with: "(.+)")
+        substring.insert("^", at: substring.startIndex)
+      
+        if let regex = try? NSRegularExpression(pattern: substring) {
+          self.regex = regex
+        }
+        else {
+          return nil
+        }
+      }
+      
+      func match(branch: String) -> String?
+      {
+        let stringRange = NSRange(location: 0, length: branch.utf8.count)
+        guard let match = regex.firstMatch(in: branch, options: .anchored,
+                                           range: stringRange)
+        else { return nil }
+        
+        if match.numberOfRanges >= 2 {
+          return (branch as NSString).substring(with: match.rangeAt(1))
+        }
+        return nil
+      }
+    }
+    
+    let rules: [Rule]
+    
+    init?(ruleStrings: [String])
+    {
+      self.rules = ruleStrings.flatMap { Rule(content: $0) }
+      if self.rules.count == 0 {
+        return nil
+      }
+    }
+    
+    class func defaultSpec() -> BranchSpec
+    {
+      return BranchSpec(ruleStrings: ["+:refs/heads/*"])!
+    }
+    
+    /// If the given branch matches the rules, the display name is returned,
+    /// otherwise nil.
+    func match(branch: String) -> String?
+    {
+      for rule in rules {
+        if let result = rule.match(branch: branch) {
+          return rule.inclusion == .include ? result : nil
+        }
+      }
+      return nil
+    }
+  }
+
+  // Calling this buildTypes(forRemote:) would conflict with the buildTypes var.
   /// Returns all the build types that use the given remote.
-  // Calling it buildTypes(forRemote:) would conflict with the buildTypes var.
   func buildTypesForRemote(_ remoteURL: String) -> [String]
   {
     var result = [String]()
@@ -194,6 +291,24 @@ extension XTTeamCityAPI
     return result
   }
   
+  /// Returns the VCS root IDs that use the given build type.
+  func vcsRootsForBuildType(_ buildType: String) -> [String]
+  {
+    var result = [String]()
+    guard let urls = vcsBuildTypes[buildType]
+    else { return result }
+    
+    for (vcsRoot, rootURL) in vcsRootMap {
+      if urls.contains(rootURL) {
+        result.append(vcsRoot)
+      }
+    }
+    
+    return result;
+  }
+  
+  /// Parses the list of VCS roots, collecting their repository URLs.
+  /// Once all repo URLs have been logged, it moves on to reading build types.
   fileprivate func parseVCSRoots(_ xml: XMLDocument)
   {
     guard let vcsIDs = xml.rootElement()?.childrenAttributes("id")
@@ -206,21 +321,53 @@ extension XTTeamCityAPI
     var waitingRootCount = vcsIDs.count
     
     vcsRootMap.removeAll()
+    vcsBranchSpecs.removeAll()
     for rootID in vcsIDs {
-      let repoResource = self.vcsRootURL(rootID)
+      let rootResource = vcsRoot(id: rootID)
       
-      repoResource.useData(owner: self) { (data) in
-        if let repoURL = data.content as? String {
-          self.vcsRootMap[rootID] = repoURL
-        }
-        waitingRootCount -= 1
-        if (waitingRootCount == 0) {
-          self.getBuildTypes()
+      rootResource.useData(owner: self) {
+        (data) in
+        if let xmlData = data.content as? XMLDocument {
+          self.parseVCSRoot(xml: xmlData, vcsRootID: rootID)
+          waitingRootCount -= 1
+          if (waitingRootCount == 0) {
+            self.getBuildTypes()
+          }
         }
       }
     }
   }
   
+  /// Parses the data for an individual VCS root.
+  private func parseVCSRoot(xml: XMLDocument, vcsRootID: String)
+  {
+    guard let properties = xml.rootElement()?.elements(forName: "properties")
+                           .first,
+          let propertiesChildren = properties.children
+    else { return }
+    
+    for property in propertiesChildren {
+      guard let propertyElement = property as? XMLElement,
+            let name = propertyElement.attribute(forName: "name")?.stringValue,
+            let value = propertyElement.attribute(forName: "value")?.stringValue
+      else { continue }
+      
+      switch name {
+        case "url":
+          vcsRootMap[vcsRootID] = value
+        case "teamcity:branchSpec":
+          let specLines = value.components(separatedBy: .whitespacesAndNewlines)
+        
+          if let branchSpec = BranchSpec(ruleStrings: specLines) {
+            vcsBranchSpecs[vcsRootID] = branchSpec
+          }
+        default:
+          break
+      }
+    }
+  }
+  
+  /// Initiates the request for the list of build types.
   private func getBuildTypes()
   {
     buildTypes.useData(owner: self) { (data) in
@@ -234,6 +381,8 @@ extension XTTeamCityAPI
     }
   }
   
+  /// Parses the received list of build types. Once all have been parsed
+  /// successfully, `buildTypesStatus` is set to `done`.
   private func parseBuildTypes(_ xml: XMLDocument)
   {
     guard let hrefs = xml.rootElement()?.childrenAttributes(Build.Attribute.HRef)
@@ -267,6 +416,7 @@ extension XTTeamCityAPI
     }
   }
   
+  /// Parses an individual build type to see which VCS roots it uses.
   private func parseBuildType(_ xml: XMLDocument)
   {
     guard let buildType = xml.children?.first as? XMLElement,

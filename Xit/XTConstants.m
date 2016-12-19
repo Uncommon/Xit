@@ -11,3 +11,5 @@ NSString * const XTRepositoryRefsChangedNotification = @"RefsChanged";
 NSString * const XTRepositoryIndexChangedNotification = @"IndexChanged";
 NSString * const XTRepositoryHeadChangedNotification = @"HeadChanged";
 NSString * const XTRepositoryWorkspaceChangedNotification = @"WorkspaceChanged";
+
+NSString * const XTTeamCityStatusChangedNotification = @"TeamCityChanged";

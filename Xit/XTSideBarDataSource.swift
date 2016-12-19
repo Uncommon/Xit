@@ -45,6 +45,13 @@ extension XTSideBarDataSource
           selector: #selector(XTSideBarDataSource.buildStatusTimerFired(_:)),
           userInfo: nil, repeats: true)
     }
+    NotificationCenter.default.addObserver(
+        forName: NSNotification.Name.XTTeamCityStatusChanged,
+        object: nil,
+        queue: OperationQueue.main) {
+      _ in
+      self.updateTeamCity()
+    }
   }
   
   func selectCurrentBranch()
@@ -176,9 +183,27 @@ extension XTSideBarDataSource
             let (api, buildTypes) = matchTeamCity(tracked.remoteName)
       else { continue }
       
-      let branchName = (fullBranchName as NSString).lastPathComponent
-      
       for buildType in buildTypes {
+        let vcsRoots = api.vcsRootsForBuildType(buildType)
+        guard !vcsRoots.isEmpty
+        else { continue }
+        
+        var shortestDisplayName: String? = nil
+        
+        for root in vcsRoots {
+          guard let branchSpec = api.vcsBranchSpecs[root],
+                let display = branchSpec.match(branch: fullBranchName)
+          else { continue }
+          
+          if (shortestDisplayName == nil) ||
+             (shortestDisplayName!.utf8.count > display.utf8.count) {
+            shortestDisplayName = display
+          }
+        }
+        
+        guard let branchName = shortestDisplayName
+        else { continue }
+        
         let statusResource = api.buildStatus(branchName, buildType: buildType)
         
         statusResource.useData(owner: self) { (data) in
