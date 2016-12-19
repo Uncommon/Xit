@@ -43,6 +43,11 @@ extern NSString * const XTRepositoryHeadChangedNotification;
 /// A file in the workspace has changed.
 extern NSString * const XTRepositoryWorkspaceChangedNotification;
 
+/// There is a new selection to be displayed.
 extern NSString * const XTSelectedModelChangedNotification;
 
+/// The selection has been clicked again. Make sure it is visible.
+extern NSString * const XTReselectModelNotification;
+
+/// TeamCity build status has been downloaded/refreshed.
 extern NSString * const XTTeamCityStatusChangedNotification;

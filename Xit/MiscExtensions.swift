@@ -136,6 +136,7 @@ extension NSTableView
     if scrollOrigin.y < 0 {
       scrollOrigin.y = 0
     }
+    scrollOrigin.y -= headerView?.bounds.size.height ?? 0
     superview?.animator().setBoundsOrigin(scrollOrigin)
   }
 }

@@ -11,6 +11,7 @@ public class XTHistoryTableController: NSViewController
   
   var refsChangedObserver: NSObjectProtocol?
   var selectionObserver: NSObjectProtocol?
+  var reselectObserver: NSObjectProtocol?
 
   weak var repository: XTRepository!
   {
@@ -28,7 +29,7 @@ public class XTHistoryTableController: NSViewController
       loadHistory()
       refsChangedObserver = NotificationCenter.default.addObserver(
           forName: NSNotification.Name.XTRepositoryRefsChanged,
-          object: repository, queue: OperationQueue.main) {
+          object: repository, queue: .main) {
         (notification) in
         // To do: dynamic updating
         // - new and changed refs: add if they're not already in the list
@@ -36,6 +37,16 @@ public class XTHistoryTableController: NSViewController
         
         // For now: just reload
         self.reload()
+      }
+      reselectObserver = NotificationCenter.default.addObserver(
+          forName: NSNotification.Name.XTReselectModel,
+          object: repository, queue: .main) {
+        _ in
+        guard let tableView = self.view as? NSTableView,
+              let selectedIndex = tableView.selectedRowIndexes.first
+        else { return }
+        
+        tableView.scrollRowToCenter(selectedIndex)
       }
     }
   }
@@ -48,10 +59,11 @@ public class XTHistoryTableController: NSViewController
   
     refsChangedObserver.map { center.removeObserver($0) }
     selectionObserver.map { center.removeObserver($0) }
+    reselectObserver.map { center.removeObserver($0) }
     center.removeObserver(self)
   }
   
-  override open func viewDidAppear()
+  override public func viewDidAppear()
   {
     let controller = view.window?.windowController as! XTWindowController
     

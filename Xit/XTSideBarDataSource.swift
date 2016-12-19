@@ -17,7 +17,9 @@ extension XTSideBarDataSource
     }
     set
     {
-      guard let item = newValue,
+      guard let controller = outline!.window?.windowController
+                             as? XTWindowController,
+            let item = newValue,
             let row = outline?.row(forItem: item),
             row >= 0
       else { return }
@@ -25,13 +27,16 @@ extension XTSideBarDataSource
       outline?.selectRowIndexes(IndexSet(integer: row),
                                 byExtendingSelection: false)
       
-      if let controller = outline!.window?.windowController
-                          as? XTWindowController,
-         let newModel = item.model,
-         (controller.selectedModel == nil) ||
-         (controller.selectedModel?.shaToSelect != newModel.shaToSelect) ||
-         (type(of:controller.selectedModel!) != type(of:newModel)) {
-        controller.selectedModel = item.model
+      if let newModel = item.model {
+        if (controller.selectedModel == nil) ||
+           (controller.selectedModel?.shaToSelect != newModel.shaToSelect) ||
+           (type(of:controller.selectedModel!) != type(of:newModel)) {
+          controller.selectedModel = item.model
+        }
+        else {
+          NotificationCenter.default.post(
+              name: NSNotification.Name.XTReselectModel, object: repo)
+        }
       }
     }
   }
