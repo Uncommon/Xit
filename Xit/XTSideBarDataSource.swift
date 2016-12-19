@@ -28,7 +28,9 @@ extension XTSideBarDataSource
       if let controller = outline!.window?.windowController
                           as? XTWindowController,
          let newModel = item.model,
-         controller.selectedModel?.shaToSelect != newModel.shaToSelect {
+         (controller.selectedModel == nil) ||
+         (controller.selectedModel?.shaToSelect != newModel.shaToSelect) ||
+         (type(of:controller.selectedModel!) != type(of:newModel)) {
         controller.selectedModel = item.model
       }
     }
@@ -460,5 +462,17 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
     else {
       return nil
     }
+  }
+}
+
+extension XTSideBarDataSource : XTOutlineViewDelegate
+{
+  func outlineViewClickedSelectedRow(_ outline: NSOutlineView)
+  {
+    guard let selectedIndex = outline.selectedRowIndexes.first,
+          let selection = outline.item(atRow: selectedIndex)
+    else { return }
+    
+    selectedItem = selection as? XTSideBarItem
   }
 }

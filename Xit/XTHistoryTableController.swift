@@ -244,6 +244,28 @@ extension XTHistoryTableController: NSTableViewDelegate
   }
 }
 
+extension XTHistoryTableController: XTTableViewDelegate
+{
+  func tableViewClickedSelectedRow(_ tableView: NSTableView)
+  {
+    guard let selectionIndex = tableView.selectedRowIndexes.first,
+          let controller = tableView.window?.windowController
+                           as? XTWindowController
+    else { return }
+    
+    let entry = history.entries[selectionIndex]
+    guard let sha = entry.commit.sha
+    else { return }
+    let newModel = XTCommitChanges(repository: repository, sha: sha)
+    
+    if (controller.selectedModel == nil) ||
+       (controller.selectedModel?.shaToSelect != newModel.shaToSelect) ||
+       (type(of:controller.selectedModel!) != type(of:newModel)) {
+      controller.selectedModel = newModel
+    }
+  }
+}
+
 extension XTHistoryTableController: NSTableViewDataSource
 {
   public func numberOfRows(in tableView: NSTableView) -> Int

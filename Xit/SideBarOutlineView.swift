@@ -39,4 +39,18 @@ class SideBarOutlineView: ContextMenuOutlineView
     }
     return menu
   }
+  
+  override func mouseDown(with event: NSEvent)
+  {
+    let oldSelection = self.selectedRowIndexes
+  
+    super.mouseDown(with: event)
+    
+    let newSelection = self.selectedRowIndexes
+    
+    if oldSelection == newSelection,
+       let xtDelegate = delegate as? XTOutlineViewDelegate {
+      xtDelegate.outlineViewClickedSelectedRow(self)
+    }
+  }
 }

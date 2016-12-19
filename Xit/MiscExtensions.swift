@@ -1,5 +1,18 @@
 import Foundation
 
+
+protocol XTOutlineViewDelegate
+{
+  /// The user has clicked on the selected row.
+  func outlineViewClickedSelectedRow(_ outline: NSOutlineView)
+}
+
+protocol XTTableViewDelegate
+{
+  /// The user has clicked on the selected row.
+  func tableViewClickedSelectedRow(_ tableView: NSTableView)
+}
+
 extension String
 {
   /// Returns the string with the given prefix removed, or returns the string
@@ -172,7 +185,7 @@ extension UInt
   static postfix func ++ (i: inout UInt) -> UInt
   {
     let result = i
-    i = i + 1
+    i += 1
     return result
   }
 }
