@@ -82,6 +82,26 @@ class XTServices: NSObject
 }
 
 
+extension XTServices.Status: Equatable {
+}
+
+// This doesn't come for free because of the associated value on .failed
+func ==(a: XTServices.Status, b: XTServices.Status) -> Bool
+{
+  switch (a, b) {
+    case (.unknown, .unknown),
+         (.notStarted, .notStarted),
+         (.inProgress, .inProgress),
+         (.done, .done):
+      return true
+    case (.failed(_), .failed(_)):
+      return true
+    default:
+      return false
+  }
+}
+
+
 /// Protocol to be implemented by all concrete API classes.
 protocol XTServiceAPI {
   var type: AccountType { get }

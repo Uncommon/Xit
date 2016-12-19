@@ -44,3 +44,5 @@ extern NSString * const XTRepositoryHeadChangedNotification;
 extern NSString * const XTRepositoryWorkspaceChangedNotification;
 
 extern NSString * const XTSelectedModelChangedNotification;
+
+extern NSString * const XTTeamCityStatusChangedNotification;

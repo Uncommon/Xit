@@ -86,6 +86,17 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI
   }
   
   fileprivate(set) var buildTypesStatus = XTServices.Status.notStarted
+  {
+    didSet
+    {
+      if buildTypesStatus != oldValue &&
+         buildTypesStatus == .done {
+        NotificationCenter.default.post(
+            name: NSNotification.Name.XTTeamCityStatusChanged,
+            object: self)
+      }
+    }
+  }
   
   /// Maps VCS root ID to repository URL.
   fileprivate(set) var vcsRootMap = [String: String]()
@@ -102,12 +113,13 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI
     
     fullBaseURL.path = XTTeamCityAPI.rootPath
     
-    super.init(user: user, password: password, baseURL: fullBaseURL.string,
+    super.init(user: user, password: password,
+               baseURL: fullBaseURL.string,
                authenticationPath: "/")
     
     configure(description: "xml") {
       $0.pipeline[.parsing].add(XMLResponseTransformer(),
-                                       contentTypes: [ "*/xml" ])
+                                contentTypes: [ "*/xml" ])
     }
   }
   

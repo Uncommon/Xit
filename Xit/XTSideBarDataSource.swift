@@ -45,6 +45,13 @@ extension XTSideBarDataSource
           selector: #selector(XTSideBarDataSource.buildStatusTimerFired(_:)),
           userInfo: nil, repeats: true)
     }
+    NotificationCenter.default.addObserver(
+        forName: NSNotification.Name.XTTeamCityStatusChanged,
+        object: nil,
+        queue: OperationQueue.main) {
+      _ in
+      self.updateTeamCity()
+    }
   }
   
   func selectCurrentBranch()
