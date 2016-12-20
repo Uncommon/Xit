@@ -25,6 +25,7 @@
                 <outlet property="previewSelector" destination="zOv-gm-Q8M" id="XWz-1t-Hyz"/>
                 <outlet property="previewTabView" destination="52" id="62"/>
                 <outlet property="rightPane" destination="LHY-c4-rvq" id="Yry-QT-bGO"/>
+                <outlet property="stageButtons" destination="0gj-go-0vi" id="aea-wk-l2j"/>
                 <outlet property="stageSelector" destination="2h9-2i-j6F" id="i5H-X6-6ss"/>
                 <outlet property="textController" destination="58" id="xo6-ln-nOf"/>
                 <outlet property="view" destination="68" id="75"/>
@@ -348,7 +349,7 @@
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
                                 </button>
-                                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0gj-go-0vi">
+                                <segmentedControl hidden="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0gj-go-0vi">
                                     <rect key="frame" x="-1" y="-2" width="67" height="23"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="momentary" id="cKC-Gc-Or8">
@@ -404,12 +405,10 @@
                                     <font key="font" metaFont="system"/>
                                     <tabViewItems>
                                         <tabViewItem label="Diff" identifier="diff" id="A2f-Wf-RNT">
-                                            <view key="view" id="uQh-Df-4fp">
-                                                <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
+                                            <view key="view" ambiguous="YES" id="uQh-Df-4fp">
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <webView fixedFrame="YES" maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e4U-lz-eEd">
-                                                        <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
                                                             <nil key="identifier"/>
@@ -442,7 +441,7 @@
                                             </view>
                                         </tabViewItem>
                                         <tabViewItem label="Preview" identifier="preview" id="54">
-                                            <view key="view" ambiguous="YES" id="55">
+                                            <view key="view" id="55">
                                                 <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>

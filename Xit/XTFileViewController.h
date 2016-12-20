@@ -47,6 +47,7 @@ extern const CGFloat kChangeImagePadding;
 @property (weak) IBOutlet NSSegmentedControl *viewSelector;
 @property (weak) IBOutlet NSSegmentedControl *stageSelector;
 @property (weak) IBOutlet NSSegmentedControl *previewSelector;
+@property (weak) IBOutlet NSSegmentedControl *stageButtons;
 @property (weak) IBOutlet NSPopUpButton *actionButton;
 @property (weak) IBOutlet NSPathControl *previewPath;
 @property (strong) IBOutlet XTCommitHeaderViewController *headerController;

@@ -176,6 +176,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   }
   self.headerController.commitSHA = newModel.shaToSelect;
   [self refreshPreview];
+  self.stageButtons.hidden = !newModel.canCommit;
 }
 
 - (IBAction)changeFileListView:(id)sender
