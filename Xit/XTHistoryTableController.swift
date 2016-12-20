@@ -126,12 +126,27 @@ public class XTHistoryTableController: NSViewController
       history.connectCommits()
       DispatchQueue.main.async {
         tableView?.reloadData()
+        self.ensureSelection()
       }
     }
   }
   
+  func ensureSelection()
+  {
+    guard let tableView = view as? NSTableView,
+          tableView.selectedRowIndexes.count == 0
+    else { return }
+    
+    guard let controller = self.view.window?.windowController
+                           as? XTWindowController,
+          let selectedModel = controller.selectedModel
+    else { return }
+    
+    selectRow(sha: selectedModel.shaToSelect, forceScroll: true)
+  }
+  
   /// Selects the row for the given commit SHA.
-  func selectRow(sha: String?)
+  func selectRow(sha: String?, forceScroll: Bool = false)
   {
     let tableView = view as! NSTableView
     
@@ -144,7 +159,7 @@ public class XTHistoryTableController: NSViewController
     
     tableView.selectRowIndexes(IndexSet(integer: row),
                                byExtendingSelection: false)
-    if view.window?.firstResponder != tableView {
+    if forceScroll || (view.window?.firstResponder != tableView) {
       tableView.scrollRowToCenter(row)
     }
   }
