@@ -52,10 +52,10 @@ extension XTSideBarDataSource
           selector: #selector(XTSideBarDataSource.buildStatusTimerFired(_:)),
           userInfo: nil, repeats: true)
     }
-    NotificationCenter.default.addObserver(
+    teamCityObserver = NotificationCenter.default.addObserver(
         forName: NSNotification.Name.XTTeamCityStatusChanged,
         object: nil,
-        queue: OperationQueue.main) {
+        queue: .main) {
       _ in
       self.updateTeamCity()
     }

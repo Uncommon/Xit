@@ -33,6 +33,8 @@
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
+  if (self.teamCityObserver != nil)
+    [[NSNotificationCenter defaultCenter] removeObserver:self.teamCityObserver];
   [self.buildStatusTimer invalidate];
 }
 

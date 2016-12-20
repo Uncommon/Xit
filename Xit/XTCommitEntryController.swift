@@ -7,11 +7,11 @@ class XTCommitEntryController: NSViewController
   {
     didSet
     {
-      NotificationCenter.default.addObserver(
+      indexObserver = NotificationCenter.default.addObserver(
           forName: NSNotification.Name.XTRepositoryIndexChanged,
           object: repo,
-          queue: OperationQueue.main) {
-        (notification) in
+          queue: .main) {
+        _ in
         self.updateStagedStatus()
       }
     }
@@ -19,6 +19,8 @@ class XTCommitEntryController: NSViewController
   @IBOutlet weak var commitField: NSTextView!
   @IBOutlet weak var commitButton: NSButton!
   @IBOutlet weak var placeholder: NSTextField!
+  
+  var indexObserver: NSObjectProtocol?
   
   var anyStaged = false
   {
@@ -33,6 +35,7 @@ class XTCommitEntryController: NSViewController
   deinit
   {
     NotificationCenter.default.removeObserver(self)
+    indexObserver.map { NotificationCenter.default.removeObserver($0) }
   }
   
   override func viewDidLoad()

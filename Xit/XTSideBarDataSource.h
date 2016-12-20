@@ -44,6 +44,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable) NSTimer *buildStatusTimer;
 @property (nullable) NSTimer *reloadTimer;
 
+@property (nullable) id<NSObject> teamCityObserver;
+
 @end
 
 NS_ASSUME_NONNULL_END
