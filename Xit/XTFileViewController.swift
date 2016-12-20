@@ -59,3 +59,19 @@ extension XTFileViewController
     }
   }
 }
+
+extension XTFileViewController: NSSplitViewDelegate
+{
+  public func splitView(_ splitView: NSSplitView,
+                        shouldAdjustSizeOfSubview view: NSView) -> Bool
+  {
+    switch splitView {
+      case headerSplitView:
+        return view != headerController.view
+      case fileSplitView:
+        return view != leftPane
+      default:
+        return true
+    }
+  }
+}

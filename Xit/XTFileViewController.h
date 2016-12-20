@@ -36,17 +36,12 @@ extern const CGFloat kChangeImagePadding;
   View controller for the file list and detail view.
  */
 @interface XTFileViewController : NSViewController <NSOutlineViewDelegate>
-{
-  IBOutlet NSSplitView *_headerSplitView, *_fileSplitView;
-  IBOutlet NSView *_leftPane, *_rightPane;
-  IBOutlet QLPreviewView *_filePreview;
-  IBOutlet XTCommitHeaderViewController *_headerController;
-  IBOutlet XTFileChangesDataSource *_fileChangeDS;
-  IBOutlet XTFileTreeDataSource *_fileListDS;
-  IBOutlet XTTextPreviewController *_textController;
-}
 
+@property (weak) IBOutlet NSSplitView *headerSplitView, *fileSplitView;
+@property (weak) IBOutlet NSView *leftPane, *rightPane;
 @property (weak) IBOutlet NSOutlineView *fileListOutline;
+@property (strong) IBOutlet XTFileChangesDataSource *fileChangeDS;
+@property (strong) IBOutlet XTFileTreeDataSource *fileListDS;
 @property (weak) IBOutlet NSTabView *headerTabView;
 @property (strong) IBOutlet NSTabView *previewTabView;
 @property (weak) IBOutlet NSSegmentedControl *viewSelector;
@@ -54,8 +49,11 @@ extern const CGFloat kChangeImagePadding;
 @property (weak) IBOutlet NSSegmentedControl *previewSelector;
 @property (weak) IBOutlet NSPopUpButton *actionButton;
 @property (weak) IBOutlet NSPathControl *previewPath;
+@property (strong) IBOutlet XTCommitHeaderViewController *headerController;
 @property (strong) IBOutlet XTFileDiffController *diffController;
 @property (strong) IBOutlet XTPreviewController *previewController;
+@property (strong) IBOutlet XTTextPreviewController *textController;
+@property (weak) IBOutlet QLPreviewView *filePreview;
 
 @property (weak, nonatomic) XTRepository *repo;
 @property (readonly) NSDictionary *changeImages;

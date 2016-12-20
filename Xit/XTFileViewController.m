@@ -53,9 +53,9 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 - (void)setRepo:(XTRepository *)newRepo
 {
   _repo = newRepo;
-  _fileChangeDS.repository = newRepo;
-  _fileListDS.repository = newRepo;
-  _headerController.repository = newRepo;
+  self.fileChangeDS.repository = newRepo;
+  self.fileListDS.repository = newRepo;
+  self.headerController.repository = newRepo;
   self.commitEntryController.repo = newRepo;
   [[NSNotificationCenter defaultCenter]
       addObserverForName:XTRepositoryIndexChangedNotification
@@ -102,7 +102,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
       addObserver:self
          selector:@selector(headerResized:)
              name:XTHeaderResizedNotificaiton
-           object:_headerController];
+           object:self.headerController];
 
   self.commitEntryController = [[XTCommitEntryController alloc]
       initWithNibName:@"XTCommitEntryController" bundle:nil];
@@ -117,9 +117,9 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   XTWindowController *controller = (XTWindowController*)
       self.view.window.windowController;
 
-  _fileChangeDS.winController = controller;
-  _fileListDS.winController = controller;
-  _headerController.winController = controller;
+  self.fileChangeDS.winController = controller;
+  self.fileListDS.winController = controller;
+  self.headerController.winController = controller;
   
   __weak XTFileViewController *weakSelf = self;
   
@@ -174,15 +174,15 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
     
     [self.fileListOutline setNeedsDisplayInRect:displayRect];
   }
-  _headerController.commitSHA = newModel.shaToSelect;
+  self.headerController.commitSHA = newModel.shaToSelect;
   [self refreshPreview];
 }
 
 - (IBAction)changeFileListView:(id)sender
 {
   XTFileListDataSourceBase *newDS = (self.viewSelector.selectedSegment == 0)
-      ? _fileChangeDS
-      : _fileListDS;
+      ? self.fileChangeDS
+      : self.fileListDS;
   NSString *columnID = newDS.isHierarchical ? @"main" : @"hidden";
   
   self.fileListOutline.outlineTableColumn =
@@ -198,7 +198,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   NSString *tabIDs[] =
       { XTContentTabIDDiff, XTContentTabIDText, XTContentTabIDPreview };
   id contentControllers[] = { self.diffController,
-                              _textController,
+                              self.textController,
                               self.previewController };
 
   NSParameterAssert((selection >= 0) && (selection < 3));
@@ -374,7 +374,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 {
   // tell all controllers to clear their previews
   [self.diffController clear];
-  [_textController clear];
+  [self.textController clear];
   [self.previewController clear];
 }
 
@@ -472,7 +472,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 {
   const CGFloat newHeight = [note.userInfo[XTHeaderHeightKey] floatValue];
 
-  [_headerSplitView animatePosition:newHeight ofDividerAtIndex:0];
+  [self.headerSplitView animatePosition:newHeight ofDividerAtIndex:0];
 }
 
 - (void)reload
@@ -483,7 +483,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 - (void)refreshPreview
 {
   [self loadSelectedPreview];
-  [_filePreview refreshPreviewItem];
+  [self.filePreview refreshPreviewItem];
 }
 
 - (NSImage*)imageForChange:(XitChange)change
@@ -611,18 +611,6 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 {
   if ([rowView isKindOfClass:[XTFileRowView class]])
     ((XTFileRowView*)rowView).outlineView = self.fileListOutline;
-}
-
-#pragma mark NSSplitViewDelegate
-
-- (BOOL)splitView:(NSSplitView*)splitView
-    shouldAdjustSizeOfSubview:(NSView*)subview
-{
-  if (splitView == _headerSplitView)
-    return subview != _headerController.view;
-  if (splitView == _fileSplitView)
-    return subview != _leftPane;
-  return YES;
 }
 
 @end
