@@ -29,47 +29,18 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 @end
 
 
-@interface XTFileViewController ()
-
-@property (nonatomic) BOOL showingStaged;
-@property (readonly) BOOL modelCanCommit;
-@property XTCommitEntryController *commitEntryController;
-@property NSDictionary<NSNumber*, NSImage*> *stageImages;
-@property (weak) NSButton *lastClickedButton;
-@property NSTimer *doubleClickTImer;
-@property XTFileEventStream *fileWatcher;
+@interface XTFileViewController (Additional)
 
 @end
 
 
-@implementation XTFileViewController
-
-- (void)dealloc
-{
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)setRepo:(XTRepository *)newRepo
-{
-  _repo = newRepo;
-  self.fileChangeDS.repository = newRepo;
-  self.fileListDS.repository = newRepo;
-  self.headerController.repository = newRepo;
-  self.commitEntryController.repo = newRepo;
-  [[NSNotificationCenter defaultCenter]
-      addObserverForName:XTRepositoryIndexChangedNotification
-                  object:newRepo
-                   queue:[NSOperationQueue mainQueue]
-              usingBlock:^(NSNotification *note) {
-    [self indexChanged:note];
-  }];
-}
+@implementation XTFileViewController (Additional)
 
 - (void)loadView
 {
   [super loadView];
 
-  _changeImages = @{
+  self.changeImages = @{
       @( XitChangeAdded ) : [NSImage imageNamed:@"added"],
       @( XitChangeUntracked ) : [NSImage imageNamed:@"added"],
       @( XitChangeCopied ) : [NSImage imageNamed:@"copied"],
@@ -111,73 +82,6 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   self.previewPath.pathComponentCells = @[];
 }
 
-- (void)windowDidLoad
-{
-  XTWindowController *controller = (XTWindowController*)
-      self.view.window.windowController;
-
-  self.fileChangeDS.winController = controller;
-  self.fileListDS.winController = controller;
-  self.headerController.winController = controller;
-  
-  __weak XTFileViewController *weakSelf = self;
-  
-  [[NSNotificationCenter defaultCenter]
-      addObserverForName:XTSelectedModelChangedNotification
-                  object:controller
-                   queue:nil
-              usingBlock:^(NSNotification * _Nonnull note) {
-    [weakSelf selectedModelChanged];
-  }];
-}
-
-- (BOOL)isStaging
-{
-  return !self.stageSelector.hidden;
-}
-
-- (void)setStaging:(BOOL)staging
-{
-  self.stageSelector.hidden = !staging;
-}
-
-- (BOOL)isCommitting
-{
-  return !self.actionButton.hidden;
-}
-
-- (void)setCommitting:(BOOL)committing
-{
-  [self.headerTabView selectTabViewItemAtIndex:committing ? 1 : 0];
-  self.actionButton.hidden = !committing;
-}
-
-- (void)selectedModelChanged
-{
-  XTWindowController *controller =
-      (XTWindowController*)self.view.window.windowController;
-  id<XTFileChangesModel> newModel = controller.selectedModel;
-
-  if (self.isStaging != newModel.hasUnstaged)
-    [self setStaging:newModel.hasUnstaged];
-  if (self.isCommitting != newModel.canCommit) {
-    [self setCommitting:newModel.canCommit];
-    
-    // Status icons are different
-    const NSInteger
-        unstagedIndex = [self.fileListOutline columnWithIdentifier:@"unstaged"],
-        stagedIndex = [self.fileListOutline columnWithIdentifier:@"change"];
-    const NSRect displayRect = NSUnionRect(
-        [self.fileListOutline rectOfColumn:unstagedIndex],
-        [self.fileListOutline rectOfColumn:stagedIndex]);
-    
-    [self.fileListOutline setNeedsDisplayInRect:displayRect];
-  }
-  self.headerController.commitSHA = newModel.shaToSelect;
-  [self refreshPreview];
-  self.stageButtons.hidden = !newModel.canCommit;
-}
-
 - (IBAction)changeFileListView:(id)sender
 {
   XTFileListDataSourceBase *newDS = (self.viewSelector.selectedSegment == 0)
@@ -207,13 +111,6 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   [self loadSelectedPreview];
 }
 
-/// Returns the current file list data source, cast to XTFileListDataSourceBase
-- (XTFileListDataSourceBase<XTFileListDataSource>*)fileListDataSource
-{
-  return (XTFileListDataSourceBase<XTFileListDataSource>*)
-      self.fileListOutline.dataSource;
-}
-
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
 
@@ -224,8 +121,7 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
  */
 - (void)performRepoAction:(SEL)action onFileListItem:(id)item
 {
-  XTFileListDataSourceBase<XTFileListDataSource> *dataSource =
-      self.fileListDataSource;
+  id<XTFileListDataSource> dataSource = self.fileListDataSource;
   
   [self.repo executeOffMainThread:^{
     [self.repo performSelector:action
@@ -237,38 +133,6 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 }
 
 #pragma clang diagnostic pop
-
-- (BOOL)inStagingView
-{
-  XTWindowController *controller = self.view.window.windowController;
-  
-  return controller.selectedModel.hasUnstaged;
-}
-
-- (BOOL)modelCanCommit
-{
-  XTWindowController *controller = self.view.window.windowController;
-  
-  return controller.selectedModel.canCommit;
-}
-
-- (BOOL)showingStaged
-{
-  return [self.fileListOutline.highlightedTableColumn.identifier
-      isEqualToString:XTColumnIDStaged];
-}
-
-- (void)setShowingStaged:(BOOL)showingStaged
-{
-  NSString *columnID = showingStaged ? XTColumnIDStaged : XTColumnIDUnstaged;
-  
-  self.fileListOutline.highlightedTableColumn =
-      [self.fileListOutline tableColumnWithIdentifier:columnID];
-  NSAssert(self.fileListOutline.highlightedTableColumn != nil, @"");
-  [self.fileListOutline setNeedsDisplay];
-  self.stageSelector.selectedSegment = showingStaged ? 1 : 0;
-  [self refreshPreview];
-}
 
 - (void)selectRowFromButton:(NSButton*)button
 {
@@ -344,20 +208,6 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   self.showingStaged = self.stageSelector.selectedSegment == 1;
 }
 
-- (IBAction)stageAll:(id)sender
-{
-  NSError *error = nil;
-  
-  [self.repo stageAllFilesWithError:&error];
-  self.showingStaged = YES;
-}
-
-- (IBAction)unstageAll:(id)sender
-{
-  [self.repo unstageAllFiles];
-  self.showingStaged = NO;
-}
-
 - (IBAction)showIgnored:(id)sender
 {
 }
@@ -378,71 +228,10 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   [self.previewController clear];
 }
 
-- (void)updatePreviewPath:(NSString*)path isFolder:(BOOL)isFolder
-{
-  NSArray<NSString*> *components = path.pathComponents;
-  NSMutableArray<NSPathComponentCell*> *cells =
-      [NSMutableArray arrayWithCapacity:components.count];
-  
-  [components enumerateObjectsUsingBlock:
-      ^(NSString * _Nonnull component, NSUInteger idx, BOOL * _Nonnull stop) {
-    NSPathComponentCell *cell = [[NSPathComponentCell alloc] init];
-    
-    cell.title = component;
-    if (!isFolder && idx == components.count - 1)
-      cell.image = [[NSWorkspace sharedWorkspace]
-                    iconForFileType:component.pathExtension];
-    else
-      cell.image = [NSImage imageNamed:NSImageNameFolder];
-    [cells addObject:cell];
-  }];
-  self.previewPath.pathComponentCells = cells;
-}
-
 - (void)clear
 {
   [self.contentController clear];
   self.previewPath.pathComponentCells = @[];
-}
-
-- (void)loadSelectedPreview
-{
-  NSIndexSet *selection = self.fileListOutline.selectedRowIndexes;
-  
-  if (selection.count == 0) {
-    [self clear];
-    return;
-  }
-  
-  id selectedItem = [self.fileListOutline itemAtRow:selection.firstIndex];
-  XTFileChange *selectedChange =
-      [self.fileListDataSource fileChangeAtRow:selection.firstIndex];
-  XTWindowController *controller = self.view.window.windowController;
-
-  if (selectedChange == nil) {
-    [self clear];
-    return;
-  }
-  [self updatePreviewPath:selectedChange.path
-                 isFolder:[self.fileListOutline isExpandable:selectedItem]];
-  [self.contentController loadPath:selectedChange.path
-                             model:controller.selectedModel
-                            staged:self.showingStaged];
-  
-  // Swift bridge weirdness
-  OS_dispatch_queue *queue = (OS_dispatch_queue*)dispatch_get_main_queue();
-  NSString *fullPath = [self.repo.repoURL.path
-                       stringByAppendingPathComponent:selectedChange.path];
-  
-  self.fileWatcher = self.inStagingView ?
-      [[XTFileEventStream alloc] initWithPath:fullPath
-                                 excludePaths:[NSArray array]
-                                        queue:queue
-                                      latency:0.5
-                                     callback:^(NSArray<NSString*> *paths) {
-        [self loadSelectedPreview];
-      }]
-      : nil;
 }
 
 - (void)showUnstagedColumn:(BOOL)shown
@@ -451,16 +240,6 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
       [self.fileListOutline tableColumnWithIdentifier:@"unstaged"];
 
   column.hidden = !shown;
-}
-
-- (void)indexChanged:(NSNotification*)note
-{
-  if (self.inStagingView)
-    [self.fileListDataSource reload];
-  
-  // Ideally, check to see if the selected file has changed
-  if (self.modelCanCommit)
-    [self loadSelectedPreview];
 }
 
 - (void)fileSelectionChanged:(NSNotification*)note
@@ -473,17 +252,6 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   const CGFloat newHeight = [note.userInfo[XTHeaderHeightKey] floatValue];
 
   [self.headerSplitView animatePosition:newHeight ofDividerAtIndex:0];
-}
-
-- (void)reload
-{
-  [self.fileListDataSource reload];
-}
-
-- (void)refreshPreview
-{
-  [self loadSelectedPreview];
-  [self.filePreview refreshPreviewItem];
 }
 
 - (NSImage*)imageForChange:(XitChange)change
@@ -537,7 +305,8 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
      viewForTableColumn:(NSTableColumn *)tableColumn
                    item:(id)item
 {
-  XTFileListDataSourceBase<XTFileListDataSource> *dataSource =
+  id<NSOutlineViewDataSource, XTFileListDataSource> dataSource =
+      (id<NSOutlineViewDataSource, XTFileListDataSource>)
       self.fileListDataSource;
   NSString * const columnID = tableColumn.identifier;
   const XitChange change = [dataSource changeForItem:item];
