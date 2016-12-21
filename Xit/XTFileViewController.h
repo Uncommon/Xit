@@ -29,6 +29,9 @@ extern const CGFloat kChangeImagePadding;
            model:(id<XTFileChangesModel>)model
           staged:(BOOL)staged NS_SWIFT_NAME(load(path:model:staged:));
 
+@property (readonly) BOOL canSetWhitespace;
+@property (readonly) BOOL canSetTabWidth;
+
 @end
 
 
@@ -60,6 +63,7 @@ extern const CGFloat kChangeImagePadding;
 @property (readonly) NSDictionary *changeImages;
 @property (readonly) XTFileListDataSourceBase<XTFileListDataSource>
     *fileListDataSource;
+@property id<XTFileContentController> contentController;
 
 - (IBAction)changeFileListView:(id)sender;
 - (IBAction)changeContentView:(id)sender;

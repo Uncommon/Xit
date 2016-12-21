@@ -33,7 +33,6 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
 
 @property (nonatomic) BOOL showingStaged;
 @property (readonly) BOOL modelCanCommit;
-@property id<XTFileContentController> contentController;
 @property XTCommitEntryController *commitEntryController;
 @property NSDictionary<NSNumber*, NSImage*> *stageImages;
 @property (weak) NSButton *lastClickedButton;

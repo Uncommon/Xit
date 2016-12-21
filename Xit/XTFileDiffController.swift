@@ -81,6 +81,9 @@ class XTFileDiffController: XTWebViewController
 
 extension XTFileDiffController: XTFileContentController
 {
+  public var canSetWhitespace: Bool { return true }
+  public var canSetTabWidth: Bool { return true }
+
   public func clear()
   {
     webView.mainFrame.loadHTMLString("", baseURL: URL(fileURLWithPath: "/"))

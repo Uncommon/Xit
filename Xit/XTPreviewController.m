@@ -41,4 +41,14 @@
   }
 }
 
+- (BOOL) canSetWhitespace
+{
+  return NO;
+}
+
+- (BOOL) canSetTabWidth
+{
+  return NO;
+}
+
 @end

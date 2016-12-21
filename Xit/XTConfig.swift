@@ -101,6 +101,6 @@ class XTConfig: NSObject
       return false
     }
     return UserDefaults.standard.bool(
-        forKey: XTGitPrefsController.PrefKey.FetchTags)
+        forKey: XTGitPrefsController.PrefKey.fetchTags)
   }
 }
