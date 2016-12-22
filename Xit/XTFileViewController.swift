@@ -294,20 +294,36 @@ class XTFileViewController: NSViewController
           default:
             return true
         }
+      
       case #selector(self.showWhitespaceChanges(_:)),
            #selector(self.ignoreEOLWhitespace(_:)),
            #selector(self.ignoreAllWhitespace(_:)):
         // update the check mark
         return contentController is WhitespaceVariable
-      case #selector(self.tabWidth2(_:)),
-           #selector(self.tabWidth4(_:)),
-           #selector(self.tabWidth6(_:)),
-           #selector(self.tabWidth8(_:)):
-        // update the check mark
-        return contentController is TabWidthVariable
+      
+      case #selector(self.tabWidth2(_:)):
+        return validateTabMenuItem(menuItem, width: 2)
+      case #selector(self.tabWidth4(_:)):
+        return validateTabMenuItem(menuItem, width: 4)
+      case #selector(self.tabWidth6(_:)):
+        return validateTabMenuItem(menuItem, width: 6)
+      case #selector(self.tabWidth8(_:)):
+        return validateTabMenuItem(menuItem, width: 8)
       default:
         return true
     }
+  }
+  
+  func validateTabMenuItem(_ item: NSMenuItem, width: UInt) -> Bool
+  {
+    guard let tabController = contentController as? TabWidthVariable
+    else {
+      item.state = NSOffState
+      return false
+    }
+    
+    item.state = (tabController.tabWidth == width) ? NSOnState : NSOffState
+    return true
   }
   
   @IBAction func showWhitespaceChanges(_ sender: Any?)

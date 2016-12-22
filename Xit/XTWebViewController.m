@@ -46,8 +46,9 @@ const NSInteger WebMenuItemTagInspectElement = 2024;
 - (NSUInteger)tabWidth
 {
   DOMCSSStyleDeclaration *style = self.webView.mainFrameDocument.body.style;
+  NSString *tabSizeString = [style getPropertyValue:@"tab-size"];
   
-  return [[style getPropertyValue:@"tab-size"] integerValue];
+  return (tabSizeString.length == 0) ? 4 : [tabSizeString integerValue];
 }
 
 - (void)setTabWidth:(NSUInteger)tabWidth
@@ -57,6 +58,16 @@ const NSInteger WebMenuItemTagInspectElement = 2024;
   [style setProperty:@"tab-size"
                value:[NSString stringWithFormat:@"%lu", tabWidth]
             priority:@"important"];
+}
+
+- (void)setDefaultTabWidth
+{
+  NSUInteger defaultWidth = [[NSUserDefaults standardUserDefaults]
+                             integerForKey:@"tabWidth"];
+  
+  if (defaultWidth == 0)
+    defaultWidth = 4;
+  self.tabWidth = defaultWidth;
 }
 
 - (void)loadNotice:(NSString*)text
@@ -77,6 +88,7 @@ const NSInteger WebMenuItemTagInspectElement = 2024;
   scrollView.horizontalScrollElasticity = NSScrollElasticityNone;
   scrollView.backgroundColor = [NSColor colorWithDeviceWhite:0.8 alpha:1.0];
   [_webView.windowScriptObject setValue:self forKey:@"controller"];
+  [self setDefaultTabWidth];
 }
 
 - (NSUInteger)webView:(WebView*)sender
