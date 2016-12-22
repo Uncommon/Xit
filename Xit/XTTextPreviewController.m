@@ -22,16 +22,6 @@
   [_webView.mainFrame loadHTMLString:@"" baseURL:nil];
 }
 
-- (BOOL) canSetWhitespace
-{
-  return NO;
-}
-
-- (BOOL) canSetTabWidth
-{
-  return YES;
-}
-
 - (void)loadText:(NSString*)text
 {
   if (text == nil)

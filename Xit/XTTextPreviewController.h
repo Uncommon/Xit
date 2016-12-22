@@ -8,7 +8,9 @@
   Manages a WebView for displaying text file contents or diffs.
  */
 @interface XTTextPreviewController : XTWebViewController
-    <XTFileContentController>
+    <XTFileContentController, TabWidthVariable>
+
+@property NSUInteger tabWidth;
 
 - (void)loadText:(nullable NSString*)text;
 

@@ -1,5 +1,6 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
+#import "XTConstants.h"
 #import "XTFileListDataSourceBase.h"
 
 @class XTCommitHeaderViewController;
@@ -29,7 +30,16 @@ extern const CGFloat kChangeImagePadding;
            model:(id<XTFileChangesModel>)model
           staged:(BOOL)staged NS_SWIFT_NAME(load(path:model:staged:));
 
-@property (readonly) BOOL canSetWhitespace;
-@property (readonly) BOOL canSetTabWidth;
+@end
+
+@protocol WhitespaceVariable
+
+@property XTWhitespace whitespace;
+
+@end
+
+@protocol TabWidthVariable
+
+@property NSUInteger tabWidth;
 
 @end

@@ -1,8 +1,13 @@
 import Cocoa
 
 /// Manages a WebView for displaying text file diffs.
-class XTFileDiffController: XTWebViewController
+class XTFileDiffController: XTWebViewController,
+                            WhitespaceVariable,
+                            TabWidthVariable
 {
+  public var whitespace: XTWhitespace = .showAll
+  public var tabWidth: UInt = 4
+
   static func append(diffLine text: String,
                      to lines: inout String,
                      oldLine: Int,
@@ -81,9 +86,6 @@ class XTFileDiffController: XTWebViewController
 
 extension XTFileDiffController: XTFileContentController
 {
-  public var canSetWhitespace: Bool { return true }
-  public var canSetTabWidth: Bool { return true }
-
   public func clear()
   {
     webView.mainFrame.loadHTMLString("", baseURL: URL(fileURLWithPath: "/"))

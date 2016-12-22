@@ -298,13 +298,13 @@ class XTFileViewController: NSViewController
            #selector(self.ignoreEOLWhitespace(_:)),
            #selector(self.ignoreAllWhitespace(_:)):
         // update the check mark
-        return contentController.canSetWhitespace
+        return contentController is WhitespaceVariable
       case #selector(self.tabWidth2(_:)),
            #selector(self.tabWidth4(_:)),
            #selector(self.tabWidth6(_:)),
            #selector(self.tabWidth8(_:)):
         // update the check mark
-        return contentController.canSetTabWidth
+        return contentController is TabWidthVariable
       default:
         return true
     }
@@ -345,18 +345,20 @@ class XTFileViewController: NSViewController
     setTabWidth(8)
   }
   
-  func setWhitespace(_ setting: PreviewsPrefsController.WhitespaceSetting)
+  func setWhitespace(_ setting: XTWhitespace)
   {
-    // store the setting somewhere
+    guard let wsController = contentController as? WhitespaceVariable
+    else { return }
     
-    // re-do the diff
+    wsController.whitespace = setting
   }
   
   func setTabWidth(_ tabWidth: UInt)
   {
-    // store the setting somewhere
+    guard let tabController = contentController as? TabWidthVariable
+    else { return }
     
-    // change the CSS tab width style
+    tabController.tabWidth = tabWidth
   }
 }
 
