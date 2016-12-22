@@ -43,6 +43,22 @@ const NSInteger WebMenuItemTagInspectElement = 2024;
     return self;
 }
 
+- (NSUInteger)tabWidth
+{
+  DOMCSSStyleDeclaration *style = self.webView.mainFrameDocument.body.style;
+  
+  return [[style getPropertyValue:@"tab-size"] integerValue];
+}
+
+- (void)setTabWidth:(NSUInteger)tabWidth
+{
+  DOMCSSStyleDeclaration *style = self.webView.mainFrameDocument.body.style;
+
+  [style setProperty:@"tab-size"
+               value:[NSString stringWithFormat:@"%lu", tabWidth]
+            priority:@"important"];
+}
+
 - (void)loadNotice:(NSString*)text
 {
   NSString *template = [[self class] htmlTemplate:@"notice"];

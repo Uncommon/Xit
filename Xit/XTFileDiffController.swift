@@ -6,7 +6,6 @@ class XTFileDiffController: XTWebViewController,
                             TabWidthVariable
 {
   public var whitespace: XTWhitespace = .showAll
-  public var tabWidth: UInt = 4
 
   static func append(diffLine text: String,
                      to lines: inout String,

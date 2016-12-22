@@ -10,8 +10,6 @@
 @interface XTTextPreviewController : XTWebViewController
     <XTFileContentController, TabWidthVariable>
 
-@property NSUInteger tabWidth;
-
 - (void)loadText:(nullable NSString*)text;
 
 @end
