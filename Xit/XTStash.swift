@@ -81,7 +81,7 @@ func headBlobForPath(_ path: String) -> GTBlob?
   return (object as? GTBlob?)!
 }
 
-func stagedDiffForFile(_ path: String) -> XTDiffDelta?
+func stagedDiffForFile(_ path: String) -> XTDiffMaker?
 {
   guard let indexCommit = self.indexCommit,
         let indexEntry = try? indexCommit.tree?.entry(withPath: path),
@@ -89,11 +89,12 @@ func stagedDiffForFile(_ path: String) -> XTDiffDelta?
   else { return nil }
   let headBlob = self.headBlobForPath(path)
   
-  return try? XTDiffDelta(from: headBlob, forPath: path,
-                          to: indexBlob, forPath: path, options: nil)
+  return XTDiffMaker(from: XTDiffMaker.SourceType(headBlob),
+                     to: XTDiffMaker.SourceType(indexBlob),
+                     path: path)
 }
 
-func unstagedDiffForFile(_ path: String) -> XTDiffDelta?
+func unstagedDiffForFile(_ path: String) -> XTDiffMaker?
 {
   guard let indexCommit = self.indexCommit
   else { return nil }
@@ -111,17 +112,17 @@ func unstagedDiffForFile(_ path: String) -> XTDiffDelta?
     guard let untrackedBlob = try? untrackedEntry!.gtObject() as? GTBlob
     else { return nil }
     
-    return try? XTDiffDelta(from: indexBlob, forPath: path,
-                            to: untrackedBlob, forPath: path,
-                            options: nil)
+    return XTDiffMaker(from: XTDiffMaker.SourceType(indexBlob),
+                       to: XTDiffMaker.SourceType(untrackedBlob),
+                       path: path)
   }
   if let unstagedEntry = try? self.mainCommit.tree?.entry(withPath: path) {
     guard let unstagedBlob = try? unstagedEntry?.gtObject() as? GTBlob
     else { return nil }
     
-    return try? XTDiffDelta(from: indexBlob, forPath: path,
-                            to: unstagedBlob, forPath: path,
-                            options: nil)
+    return XTDiffMaker(from: XTDiffMaker.SourceType(indexBlob),
+                       to: XTDiffMaker.SourceType(unstagedBlob),
+                       path: path)
   }
   return nil
 }

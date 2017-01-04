@@ -20,7 +20,7 @@ import Cocoa
   /// - parameter path: Repository-relative file path.
   /// - parameter staged: Whether to show the staged or unstaged diff. Ignored
   /// for models that don't have unstaged files.
-  func diffForFile(_ path: String, staged: Bool) -> XTDiffDelta?
+  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
   /// Get the contents of the given file.
   /// - parameter path: Repository-relative file path.
   /// - parameter staged: Whether to show the staged or unstaged diff. Ignored
@@ -62,10 +62,17 @@ class XTCommitChanges: NSObject, XTFileChangesModel
     super.init()
   }
   
-  func diffForFile(_ path: String, staged: Bool) -> XTDiffDelta?
+  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
   {
-    return self.repository.diff(
-        forFile: path, commitSHA: self.sha, parentSHA: self.diffParent)
+    guard let diffParent = self.diffParent ??
+                           repository.commit(forSHA: sha)?.parentOIDs.first?.sha
+    else {
+      // or return a diff showing all new data
+      return nil
+    }
+  
+    return self.repository.diffMaker(
+        forFile: path, commitSHA: self.sha, parentSHA: diffParent)
   }
   
   func dataForFile(_ path: String, staged: Bool) -> Data?
@@ -162,7 +169,7 @@ class XTStashChanges: NSObject, XTFileChangesModel
     super.init()
   }
   
-  func diffForFile(_ path: String, staged: Bool) -> XTDiffDelta?
+  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
   {
     if staged {
       return self.stash.stagedDiffForFile(path)
@@ -222,7 +229,7 @@ class XTStagingChanges: NSObject, XTFileChangesModel
     super.init()
   }
   
-  func diffForFile(_ path: String, staged: Bool) -> XTDiffDelta?
+  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
   {
     if staged {
       return self.repository.stagedDiff(file: path)

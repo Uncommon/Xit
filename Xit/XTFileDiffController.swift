@@ -6,6 +6,25 @@ class XTFileDiffController: XTWebViewController,
                             TabWidthVariable
 {
   public var whitespace: XTWhitespace = .showAll
+  {
+    didSet
+    {
+      configureDiffMaker()
+    }
+  }
+  var diffMaker: XTDiffMaker? = nil
+  {
+    didSet
+    {
+      configureDiffMaker()
+    }
+  }
+
+  private func configureDiffMaker()
+  {
+    diffMaker?.whitespace = whitespace
+    reloadDiff()
+  }
 
   static func append(diffLine text: String,
                      to lines: inout String,
@@ -35,8 +54,10 @@ class XTFileDiffController: XTWebViewController,
              "</div>\n"
   }
   
-  func load(diff: XTDiffDelta)
+  func reloadDiff()
   {
+    guard let diff = diffMaker?.makeDiff()
+    else { return }
     let htmlTemplate = XTWebViewController.htmlTemplate("diff")
     var textLines = ""
     
@@ -72,10 +93,10 @@ class XTFileDiffController: XTWebViewController,
     webView.mainFrame.loadHTMLString(html, baseURL: XTWebViewController.baseURL())
   }
   
-  func loadOrNotify(diff: XTDiffDelta?)
+  func loadOrNotify(diffMaker: XTDiffMaker?)
   {
-    if let diff = diff {
-      load(diff: diff)
+    if let diffMaker = diffMaker {
+      self.diffMaker = diffMaker
     }
     else {
       loadNotice("No changes for this selection")
@@ -92,6 +113,6 @@ extension XTFileDiffController: XTFileContentController
   
   public func load(path: String!, model: XTFileChangesModel!, staged: Bool)
   {
-    loadOrNotify(diff: model.diffForFile(path, staged: staged))
+    loadOrNotify(diffMaker: model.diffForFile(path, staged: staged))
   }
 }
