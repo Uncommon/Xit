@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 @property WebView *webView;
+@property NSUInteger tabWidth;
 
 + (NSString*)htmlTemplate:(NSString*)name;
 + (NSURL*)baseURL;

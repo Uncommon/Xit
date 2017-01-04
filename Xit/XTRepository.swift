@@ -137,7 +137,25 @@ extension XTRepository
     return tags.map({ XTTag(repository: self, tag: $0) })
   }
   
-  func stagedDiff(file: String) -> XTDiffDelta?
+  func diffMaker(forFile file: String, commitSHA: String, parentSHA: String)
+      -> XTDiffMaker?
+  {
+    guard let toCommit = (commit(forSHA: commitSHA) as? XTCommit)?.gtCommit,
+          let toTree = toCommit.tree,
+          let toEntry = try? toTree.entry(withPath: file),
+          let toBlob = (try? GTObject(treeEntry: toEntry)) as? GTBlob
+    else { return nil }
+    
+    guard let parentCommit = (commit(forSHA: parentSHA) as? XTCommit)?.gtCommit,
+          let fromTree = parentCommit.tree,
+          let fromEntry = try? fromTree.entry(withPath: file),
+          let fromBlob = (try? GTObject(treeEntry: fromEntry)) as? GTBlob
+    else { return nil }
+    
+    return XTDiffMaker(from: .blob(fromBlob), to: .blob(toBlob), path: file)
+  }
+  
+  func stagedDiff(file: String) -> XTDiffMaker?
   {
     guard let index = try? gtRepo.index(),
           (try? index.refresh()) != nil
@@ -157,12 +175,12 @@ extension XTRepository
       headBlob = headObject as? GTBlob
     }
     
-    return try? XTDiffDelta(from: headBlob, forPath: file,
-                            to: indexBlob, forPath: file,
-                            options: nil)
+    return XTDiffMaker(from: XTDiffMaker.SourceType(headBlob),
+                       to: XTDiffMaker.SourceType(indexBlob),
+                       path: file)
   }
   
-  func unstagedDiff(file: String) -> XTDiffDelta?
+  func unstagedDiff(file: String) -> XTDiffMaker?
   {
     let url = self.repoURL.appendingPathComponent(file)
     let exists = FileManager.default.fileExists(atPath: url.path)
@@ -173,16 +191,11 @@ extension XTRepository
       if let index = try? gtRepo.index(),
          let indexEntry = index.entry(withPath: file),
          let indexBlob = try? GTObject(indexEntry: indexEntry) as? GTBlob {
-        return try? XTDiffDelta(from: indexBlob, forPath: file,
-                                to: data, forPath: file,
-                                options: nil)
+        return XTDiffMaker(from: XTDiffMaker.SourceType(indexBlob),
+                           to: .data(data), path: file)
       }
       else {
-        let noBlob: Data? = nil
-      
-        return try? XTDiffDelta(from: noBlob, forPath: file,
-                                to: data, forPath: file,
-                                options: nil)
+        return XTDiffMaker(from: .data(Data()), to: .data(data), path: file)
       }
     }
     catch {

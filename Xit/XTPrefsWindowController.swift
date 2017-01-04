@@ -10,6 +10,7 @@ class XTPrefsWindowController: NSWindowController
 }
 
 
-protocol PreferencesSaver {
+protocol PreferencesSaver
+{
   func savePreferences()
 }

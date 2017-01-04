@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2657" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11542"/>
-        <plugIn identifier="com.apple.WebKitIBPlugin" version="11542"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
+        <plugIn identifier="com.apple.WebKitIBPlugin" version="11762"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -406,9 +406,11 @@
                                     <tabViewItems>
                                         <tabViewItem label="Diff" identifier="diff" id="A2f-Wf-RNT">
                                             <view key="view" ambiguous="YES" id="uQh-Df-4fp">
+                                                <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <webView fixedFrame="YES" maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e4U-lz-eEd">
+                                                        <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
                                                             <nil key="identifier"/>
@@ -471,6 +473,64 @@
                                         <url key="url" string="file:///Volumes/Path"/>
                                     </pathCell>
                                 </pathControl>
+                                <popUpButton fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="W46-9p-Zh1" userLabel="Action Button">
+                                    <rect key="frame" x="309" y="190" width="36" height="22"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                    <popUpButtonCell key="cell" type="square" bezelStyle="shadowlessSquare" alignment="left" lineBreakMode="truncatingTail" imageScaling="proportionallyDown" inset="2" pullsDown="YES" altersStateOfSelectedItem="NO" id="q3g-By-2Hk">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="menu"/>
+                                        <menu key="menu" id="7Di-Wa-20v">
+                                            <items>
+                                                <menuItem image="NSActionTemplate" hidden="YES" id="3vS-Np-NuM">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                </menuItem>
+                                                <menuItem title="Show whitespace changes" state="on" id="ASg-28-A5e">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="showWhitespaceChanges:" target="-2" id="GiG-Lm-8VV"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="Ignore end of line whitespace" id="vNl-5Q-fx3">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="ignoreEOLWhitespace:" target="-2" id="dRj-JD-tBd"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="Ignore all whitespace" id="tL0-gN-dS7">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="ignoreAllWhitespace:" target="-2" id="BXA-pU-6qB"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem isSeparatorItem="YES" id="TZj-4t-p1k"/>
+                                                <menuItem title="2 spaces per tab" id="cGg-oH-Xqi">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="tabWidth2:" target="-2" id="XM9-qk-gPe"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="4 spaces per tab" state="on" id="hn5-Pj-hVw">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="tabWidth4:" target="-2" id="xbX-hc-Bv2"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="6 spaces per tab" id="PBl-JE-SLc">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="tabWidth6:" target="-2" id="6xb-DR-nrF"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="8 spaces per tab" id="EQr-XC-DnQ">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="tabWidth8:" target="-2" id="Ou2-Z6-eWG"/>
+                                                    </connections>
+                                                </menuItem>
+                                            </items>
+                                        </menu>
+                                    </popUpButtonCell>
+                                </popUpButton>
                             </subviews>
                             <constraints>
                                 <constraint firstAttribute="bottom" secondItem="gna-OS-Gx2" secondAttribute="bottom" constant="-1" id="0sb-Cf-3h0"/>

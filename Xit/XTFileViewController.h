@@ -1,5 +1,6 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
+#import "XTConstants.h"
 #import "XTFileListDataSourceBase.h"
 
 @class XTCommitHeaderViewController;
@@ -31,49 +32,14 @@ extern const CGFloat kChangeImagePadding;
 
 @end
 
+@protocol WhitespaceVariable
 
-/**
-  View controller for the file list and detail view.
- */
-@interface XTFileViewController : NSViewController <NSOutlineViewDelegate>
+@property XTWhitespace whitespace;
 
-@property (weak) IBOutlet NSSplitView *headerSplitView, *fileSplitView;
-@property (weak) IBOutlet NSView *leftPane, *rightPane;
-@property (weak) IBOutlet NSOutlineView *fileListOutline;
-@property (strong) IBOutlet XTFileChangesDataSource *fileChangeDS;
-@property (strong) IBOutlet XTFileTreeDataSource *fileListDS;
-@property (weak) IBOutlet NSTabView *headerTabView;
-@property (strong) IBOutlet NSTabView *previewTabView;
-@property (weak) IBOutlet NSSegmentedControl *viewSelector;
-@property (weak) IBOutlet NSSegmentedControl *stageSelector;
-@property (weak) IBOutlet NSSegmentedControl *previewSelector;
-@property (weak) IBOutlet NSSegmentedControl *stageButtons;
-@property (weak) IBOutlet NSPopUpButton *actionButton;
-@property (weak) IBOutlet NSPathControl *previewPath;
-@property (strong) IBOutlet XTCommitHeaderViewController *headerController;
-@property (strong) IBOutlet XTFileDiffController *diffController;
-@property (strong) IBOutlet XTPreviewController *previewController;
-@property (strong) IBOutlet XTTextPreviewController *textController;
-@property (weak) IBOutlet QLPreviewView *filePreview;
+@end
 
-@property (weak, nonatomic) XTRepository *repo;
-@property (readonly) NSDictionary *changeImages;
-@property (readonly) XTFileListDataSourceBase<XTFileListDataSource>
-    *fileListDataSource;
+@protocol TabWidthVariable
 
-- (IBAction)changeFileListView:(id)sender;
-- (IBAction)changeContentView:(id)sender;
-- (IBAction)stageClicked:(id)sender;
-- (IBAction)unstageClicked:(id)sender;
-- (IBAction)changeStageView:(id)sender;
-
-- (IBAction)stageAll:(id)sender;
-- (IBAction)unstageAll:(id)sender;
-- (IBAction)showIgnored:(id)sender;
-- (IBAction)stageUnstageAll:(NSSegmentedControl*)sender;
-
-- (void)windowDidLoad;
-- (void)reload;
-- (void)refreshPreview;
+@property NSUInteger tabWidth;
 
 @end

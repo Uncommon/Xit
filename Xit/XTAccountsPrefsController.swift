@@ -16,7 +16,6 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
   @IBOutlet weak var accountsTable: NSTableView!
   
   var authStatusObserver: NSObjectProtocol?
-  var keyObserver: NSObjectProtocol?
   
   override func viewDidLoad()
   {
@@ -31,12 +30,6 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
         queue: OperationQueue.main) { (_) in
       self.accountsTable.reloadData()
     }
-    keyObserver = notificationCenter.addObserver(
-        forName: NSNotification.Name.NSWindowDidResignKey,
-        object: self.view.window,
-        queue: nil) { (_) in
-      self.savePreferences()
-    }
   }
   
   deinit
@@ -44,8 +37,6 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
     let center = NotificationCenter.default
     
     authStatusObserver.map { center.removeObserver($0) }
-    keyObserver.map { center.removeObserver($0) }
-    center.removeObserver(self)
   }
   
   func savePreferences()

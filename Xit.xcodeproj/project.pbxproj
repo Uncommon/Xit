@@ -153,6 +153,8 @@
 		C98925D51DB6D3D300E5645C /* XTNewTagController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925D41DB6D3D300E5645C /* XTNewTagController.swift */; };
 		C98925F91DBFCE7000E5645C /* XTSidebarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925F81DBFCE7000E5645C /* XTSidebarController.swift */; };
 		C9999AC71E08712000DF3E11 /* HistoryTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9999AC61E08712000DF3E11 /* HistoryTableView.swift */; };
+		C9ABDB201E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ABDB1F1E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift */; };
+		C9ABDB2F1E0AE72600CBD8D8 /* PrefsTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ABDB2E1E0AE72600CBD8D8 /* PrefsTabViewController.swift */; };
 		C9BAE60A1D2FFA8B00A87F13 /* XTConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE6091D2FFA8B00A87F13 /* XTConfig.swift */; };
 		C9BAE6141D3039C500A87F13 /* XTOperationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE6131D3039C500A87F13 /* XTOperationController.swift */; };
 		C9BAE61E1D303A8100A87F13 /* XTRemoteOptionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE61D1D303A8100A87F13 /* XTRemoteOptionsController.swift */; };
@@ -176,6 +178,7 @@
 		C9EB87241D01D93400C47D13 /* XTStash.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EB87231D01D93400C47D13 /* XTStash.swift */; };
 		C9EB87321D05D35800C47D13 /* XTStashTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EB87311D05D35800C47D13 /* XTStashTest.swift */; };
 		C9F78B141D0896AF008490EA /* XTSidebarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F78B131D0896AF008490EA /* XTSidebarItem.swift */; };
+		C9F9A02A1E1C417D00261E33 /* XTDiffMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F9A0291E1C417D00261E33 /* XTDiffMaker.swift */; };
 		C9FCC1D11D50EB1A00AC398E /* XTCommitHistoryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FCC1D01D50EB1A00AC398E /* XTCommitHistoryTest.swift */; };
 		DD00725613E76DFB003B4120 /* Xit.icns in Resources */ = {isa = PBXBuildFile; fileRef = DD00725513E76DFB003B4120 /* Xit.icns */; };
 		DD07B08916B313A60012AC19 /* XTRefFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = DD07B08816B313A60012AC19 /* XTRefFormatter.m */; };
@@ -494,6 +497,8 @@
 		C98925D41DB6D3D300E5645C /* XTNewTagController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTNewTagController.swift; sourceTree = "<group>"; };
 		C98925F81DBFCE7000E5645C /* XTSidebarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSidebarController.swift; sourceTree = "<group>"; };
 		C9999AC61E08712000DF3E11 /* HistoryTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryTableView.swift; sourceTree = "<group>"; };
+		C9ABDB1F1E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewsPrefsController.swift; sourceTree = "<group>"; };
+		C9ABDB2E1E0AE72600CBD8D8 /* PrefsTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrefsTabViewController.swift; sourceTree = "<group>"; };
 		C9BAE6091D2FFA8B00A87F13 /* XTConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTConfig.swift; sourceTree = "<group>"; };
 		C9BAE6131D3039C500A87F13 /* XTOperationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTOperationController.swift; sourceTree = "<group>"; };
 		C9BAE61D1D303A8100A87F13 /* XTRemoteOptionsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRemoteOptionsController.swift; sourceTree = "<group>"; };
@@ -518,6 +523,7 @@
 		C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "XitTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		C9EB87311D05D35800C47D13 /* XTStashTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTStashTest.swift; sourceTree = "<group>"; };
 		C9F78B131D0896AF008490EA /* XTSidebarItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSidebarItem.swift; sourceTree = "<group>"; };
+		C9F9A0291E1C417D00261E33 /* XTDiffMaker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTDiffMaker.swift; sourceTree = "<group>"; };
 		C9FCC1D01D50EB1A00AC398E /* XTCommitHistoryTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTCommitHistoryTest.swift; sourceTree = "<group>"; };
 		DD00725513E76DFB003B4120 /* Xit.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Xit.icns; sourceTree = "<group>"; };
 		DD07B08316B2005B0012AC19 /* XTConstants.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = XTConstants.h; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -941,6 +947,7 @@
 				89C927931D43B23B0074F71A /* XTRepository.swift */,
 				C954ABFC1D34455000302160 /* XTBranch.swift */,
 				C92E30FA1D4FF4F0001985F7 /* XTCommit.swift */,
+				C9F9A0291E1C417D00261E33 /* XTDiffMaker.swift */,
 				C926804D1D074EC500E422FA /* XTFileChangesModel.swift */,
 				C9328B111D77303200EFF7F7 /* XTFileMonitor.swift */,
 				C929D03A1D400B3B00D7DC52 /* XTRemote.swift */,
@@ -962,6 +969,8 @@
 				C957B8531D2D533C0040F858 /* XTAddAccountController.swift */,
 				C957B87B1D2DBBC00040F858 /* XTAccountsManager.swift */,
 				C9DAB5CE1D4A4F0300586854 /* XTGitPrefsController.swift */,
+				C9ABDB2E1E0AE72600CBD8D8 /* PrefsTabViewController.swift */,
+				C9ABDB1F1E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift */,
 				C9DAB5D21D4A8D2000586854 /* Preferences.storyboard */,
 			);
 			name = Preferences;
@@ -1350,6 +1359,7 @@
 				31C7C12E13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m in Sources */,
 				DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */,
 				C957B8661D2D8D500040F858 /* XTKeychain.swift in Sources */,
+				C9ABDB201E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift in Sources */,
 				C9C7730C1D26EE1C00329493 /* XTPrefsWindowController.swift in Sources */,
 				31C7C13313ECC74C00A65FE9 /* XTHistoryViewController.m in Sources */,
 				C358653114048A3F00060C53 /* XTRepository.m in Sources */,
@@ -1371,6 +1381,7 @@
 				C936AD0A1D4C0CD400C5ADC3 /* XTPushController.swift in Sources */,
 				C95355FC1D9492EA00AEEF49 /* XTDocumentController.swift in Sources */,
 				DDC75B8315D08E8F0087F2D4 /* NSDate+Extensions.m in Sources */,
+				C9F9A02A1E1C417D00261E33 /* XTDiffMaker.swift in Sources */,
 				C93799D51DDF9B28005C08B8 /* WorkspaceWatcher.swift in Sources */,
 				C94736801DF08FFB000E3A05 /* FileRowView.swift in Sources */,
 				DD9C1B8F160239DD0001FE9B /* XTRefToken.m in Sources */,
@@ -1385,6 +1396,7 @@
 				DDD4708116F3E7B000CA76FF /* XTPreviewItem.m in Sources */,
 				C9DAB5D01D4A4F0300586854 /* XTGitPrefsController.swift in Sources */,
 				89C927751D36A2180074F71A /* XTSubmodule.swift in Sources */,
+				C9ABDB2F1E0AE72600CBD8D8 /* PrefsTabViewController.swift in Sources */,
 				899DB1A21CE5022400760270 /* XTCommitEntryController.swift in Sources */,
 				89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */,
 				C9E9A37D1D0B5706007BFABF /* XTWindowController.swift in Sources */,
