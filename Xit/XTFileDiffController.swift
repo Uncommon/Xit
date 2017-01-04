@@ -65,6 +65,16 @@ class XTFileDiffController: XTWebViewController,
     do {
       let patch = try diff.generatePatch()
       
+      guard patch.hunkCount > 0
+      else {
+        if whitespace == .showAll {
+          loadNotice("No differences")
+        }
+        else {
+          loadNotice("Whitespace changes not displayed")
+        }
+        return
+      }
       patch.enumerateHunks {
         (hunk, stop) in
         textLines += "<div class='hunk'>\n"
