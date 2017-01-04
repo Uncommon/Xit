@@ -26,7 +26,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate
           object: self,
           userInfo: userInfo)
       
-      if #available(OSX 10.12.1, *) {
+      if #available(OSX 10.12.2, *) {
         touchBar = makeTouchBar()
       }
     }
@@ -395,7 +395,7 @@ fileprivate extension NSTouchBarItemIdentifier
       stageAll = NSTouchBarItemIdentifier("com.uncommonplace.xit.stageall")
 }
 
-@available(OSX 10.12.1, *)
+@available(OSX 10.12.2, *)
 extension XTWindowController: NSTouchBarDelegate
 {
   override func makeTouchBar() -> NSTouchBar?
