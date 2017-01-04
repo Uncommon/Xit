@@ -58,6 +58,7 @@ class XTFileDiffController: XTWebViewController,
   {
     guard let diff = diffMaker?.makeDiff()
     else { return }
+    
     let htmlTemplate = XTWebViewController.htmlTemplate("diff")
     var textLines = ""
     
