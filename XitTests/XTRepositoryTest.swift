@@ -36,9 +36,9 @@ class XTRepositoryTest: XTTest
   func testDeleteDiff()
   {
     try? FileManager.default.removeItem(atPath: file1Path)
-    checkDeletedDiff(repository.unstagedDiff(file: file1Name))
+    checkDeletedDiff(repository.unstagedDiff(file: file1Name)!.makeDiff())
     
     try! repository.stageFile(file1Name)
-    checkDeletedDiff(repository.stagedDiff(file: file1Name))
+    checkDeletedDiff(repository.stagedDiff(file: file1Name)!.makeDiff())
   }
 }

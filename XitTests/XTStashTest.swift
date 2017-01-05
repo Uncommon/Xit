@@ -37,19 +37,19 @@ class XTStashTest: XTTest
     
     XCTAssertNotNil(stash.headBlobForPath(self.file1Name))
     
-    let changeDiff = stash.unstagedDiffForFile(self.file1Name)
+    let changeDiff = stash.unstagedDiffForFile(self.file1Name)!.makeDiff()
     let changePatch = try! changeDiff!.generatePatch()
     
     XCTAssertEqual(changePatch.addedLinesCount, 1)
     XCTAssertEqual(changePatch.deletedLinesCount, 1)
     
-    let untrackedDiff = stash.unstagedDiffForFile(untrackedName)
+    let untrackedDiff = stash.unstagedDiffForFile(untrackedName)!.makeDiff()
     let untrackedPatch = try! untrackedDiff!.generatePatch()
     
     XCTAssertEqual(untrackedPatch.addedLinesCount, 1)
     XCTAssertEqual(untrackedPatch.deletedLinesCount, 0)
     
-    let addedDiff = stash.stagedDiffForFile(addedName)
+    let addedDiff = stash.stagedDiffForFile(addedName)!.makeDiff()
     let addedPatch = try! addedDiff!.generatePatch()
     
     XCTAssertEqual(addedPatch.addedLinesCount, 1)

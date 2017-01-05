@@ -64,11 +64,17 @@ class XTCommitChanges: NSObject, XTFileChangesModel
   
   func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
   {
-    guard let diffParent = self.diffParent ??
-                           repository.commit(forSHA: sha)?.parentOIDs.first?.sha
+    guard let commit = repository.commit(forSHA: sha) as? XTCommit
+    else { return nil }
+    
+    guard let diffParent = self.diffParent ?? commit.parentOIDs.first?.sha
     else {
-      // or return a diff showing all new data
-      return nil
+      guard let toTree = commit.gtCommit.tree,
+            let toEntry = try? toTree.entry(withPath: path),
+            let toBlob = (try? GTObject(treeEntry: toEntry)) as? GTBlob
+      else { return nil }
+      
+      return XTDiffMaker(from: .data(Data()), to: .blob(toBlob), path: path)
     }
   
     return self.repository.diffMaker(

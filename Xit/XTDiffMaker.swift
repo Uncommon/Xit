@@ -68,9 +68,13 @@ class XTDiffMaker: NSObject
         return try? XTDiffDelta(from: fromBlob, forPath: path,
                                 to: toData, forPath: path,
                                 options: options)
-      // Data to blob is not available
-      default:
-        return nil
+      case let (.data(fromData), .blob(toBlob)):
+        guard let toData = toBlob.data()
+        else { return nil }
+      
+        return try? XTDiffDelta(from: fromData, forPath: path,
+                                to: toData, forPath: path,
+                                options: options)
     }
   }
 }
