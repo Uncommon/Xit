@@ -67,12 +67,7 @@ class XTFileDiffController: XTWebViewController,
       
       guard patch.hunkCount > 0
       else {
-        if whitespace == .showAll {
-          loadNotice("No differences")
-        }
-        else {
-          loadNotice("Whitespace changes not displayed")
-        }
+        loadNoChangesNotice()
         return
       }
       patch.enumerateHunks {
@@ -110,8 +105,13 @@ class XTFileDiffController: XTWebViewController,
       self.diffMaker = diffMaker
     }
     else {
-      loadNotice("No changes for this selection")
+      loadNoChangesNotice()
     }
+  }
+  
+  func loadNoChangesNotice()
+  {
+    loadNotice("No changes for this selection")
   }
 }
 
