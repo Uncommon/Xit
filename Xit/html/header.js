@@ -12,7 +12,7 @@ function disclosure(clicked, forceDisclose)
 	var newDisplay = 'none';
 	var newImage = 'undisclosed.png';
 
-	if (forceCollapse || isCollapsed()) {
+	if (forceDisclose || isCollapsed()) {
 		newDisplay = 'block';
 		newImage = 'disclosed.png'
 	}

@@ -2,6 +2,7 @@
 
 @class XTWindowController;
 @class XTRepository;
+@class XTCommit;
 
 extern NSString *XTHeaderResizedNotificaiton;
 extern NSString *XTHeaderHeightKey;
@@ -23,5 +24,7 @@ extern NSString *XTHeaderHeightKey;
 + (NSDateFormatter*)dateFormatter;
 - (void)setRepository:(XTRepository*)repository;
 - (void)loadHeader;
+
+- (NSString*)generateHeaderHTML:(XTCommit*)commit;
 
 @end

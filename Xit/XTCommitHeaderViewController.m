@@ -48,13 +48,11 @@ NSString *XTHeaderHeightKey = @"height";
                                   subdirectory:@"html"];
 }
 
-- (NSString*)generateHeaderHTML
+- (NSString*)generateHeaderHTML:(XTCommit*)commit
 {
   if ((_commitSHA == nil) || [_commitSHA isEqualToString:XTStagingSHA])
     return @"";
 
-  XTCommit *commit = [[XTCommit alloc] initWithSha:_commitSHA
-                                        repository:_repository];
   NSError *error = nil;
   NSStringEncoding encoding;
   NSString *template = [NSString stringWithContentsOfURL:[self templateURL]
@@ -78,6 +76,31 @@ NSString *XTHeaderHeightKey = @"height";
     committerEmail = @"";
 
   self.parents = commit.parentSHAs;
+  
+  NSMutableString *parents = [NSMutableString string];
+  GTRepository *gtRepo = _repository.gtRepo;
+  
+  for (NSString *parentSHA in commit.parentSHAs) {
+    GTCommit *parentCommit =
+        [gtRepo lookUpObjectBySHA:parentSHA error:&error];
+    
+    if (parentCommit == nil)
+      continue;
+    
+    NSString *summary = parentCommit.messageSummary;
+    CFStringRef cfEncodedSummary =
+        CFXMLCreateStringByEscapingEntities(kCFAllocatorDefault,
+                                            (__bridge CFStringRef)summary,
+                                            NULL);
+    NSString *encodedSummary = (NSString*)CFBridgingRelease(cfEncodedSummary);
+    NSString *parentText = [NSString stringWithFormat:@"%@ %@",
+                            [parentSHA substringToIndex:6], encodedSummary];
+    
+    [parents appendFormat:@"<div><span class=\"parent\" "
+                           "onclick=\"window.controller.selectSHA('%@')\">"
+                           "%@</span></div>",
+                           parentSHA, parentText];
+  }
 
   message = [message stringByTrimmingCharactersInSet:
       [NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -85,6 +108,7 @@ NSString *XTHeaderHeightKey = @"height";
       authorName, authorEmail, authorDateString,
       committerName, committerEmail, committerDateString,
       _commitSHA,
+      parents,
       message];
 }
 
@@ -96,7 +120,9 @@ NSString *XTHeaderHeightKey = @"height";
   if ([result respondsToSelector:@selector(boolValue)])
     _expanded = ![result boolValue];
 
-  NSString *html = [self generateHeaderHTML];
+  XTCommit *commit = [[XTCommit alloc] initWithSha:_commitSHA
+                                        repository:_repository];
+  NSString *html = [self generateHeaderHTML:commit];
 
   [_webView.mainFrame loadHTMLString:html baseURL:[self templateURL]];
 }
@@ -136,41 +162,6 @@ dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
 - (void)webView:(WebView*)sender didFinishLoadForFrame:(WebFrame*)frame
 {
   [super webView:sender didFinishLoadForFrame:frame];
-
-  DOMDocument *domDoc = sender.mainFrame.DOMDocument;
-  DOMElement *parentsElement = [domDoc getElementById:@"parents"];
-  GTRepository *gtRepo = _repository.gtRepo;
-  NSError *error = nil;
-  
-  for (NSString *parentSHA in self.parents) {
-    DOMHTMLElement *parentDiv = (DOMHTMLElement*)
-        [domDoc createElement:@"div"];
-    DOMHTMLElement *parentSpan = (DOMHTMLElement*)
-        [domDoc createElement:@"span"];
-    GTCommit *parentCommit =
-        [gtRepo lookUpObjectBySHA:parentSHA error:&error];
-    
-    if (parentCommit == nil) {
-      if (parentSHA.length > 0) {
-        NSLog(@"%@", error);
-      }
-      continue;
-    }
-
-    NSString *summary = parentCommit.messageSummary;
-    CFStringRef cfEncodedSummary = CFXMLCreateStringByEscapingEntities(
-        kCFAllocatorDefault, (__bridge CFStringRef)summary, NULL);
-    NSString *encodedSummary = (NSString*)CFBridgingRelease(cfEncodedSummary);
-    NSString *parentText = [NSString stringWithFormat:@"%@ %@",
-        [parentSHA substringToIndex:6], encodedSummary];
-
-    parentSpan.className = @"parent";
-    [parentSpan setAttribute:@"onclick" value:[NSString stringWithFormat:
-        @"window.controller.selectSHA('%@')", parentCommit.SHA]];
-    parentSpan.innerHTML = parentText;
-    [parentsElement appendChild:parentDiv];
-    [parentDiv appendChild:parentSpan];
-  }
 
   if (!_expanded)
     [_webView.windowScriptObject callWebScriptMethod:@"disclosure"

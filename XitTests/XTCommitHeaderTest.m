@@ -31,9 +31,10 @@ NSDate *commitDate = nil;
 
 @interface FakeCommit : NSObject
 
-@property NSString *messageSummary;
-@property NSString *shortSHA;
-@property NSString *SHA;
+@property NSString *message, *messageSummary;
+@property NSString *shortSHA, *SHA;
+@property NSString *authorName, *authorEmail;
+@property NSString *committerName, *committerEmail;
 
 @end
 
@@ -68,30 +69,23 @@ NSDate *commitDate = nil;
   WebView *webView = [[WebView alloc] init];
   XTCommitHeaderViewController *hvc = [[XTCommitHeaderViewController alloc] init];
   FakeRepository *fakeRepo = [[FakeRepository alloc] init];
+  FakeCommit *commit = [[FakeCommit alloc] init];
 
   webView.frameLoadDelegate = hvc;
   webView.UIDelegate = hvc;
   hvc.webView = webView;
   hvc.repository = (XTRepository*)fakeRepo;
   hvc.commitSHA = @"blahblah";
-
-  [[NSNotificationCenter defaultCenter]
-      addObserver:self
-      selector:@selector(progressFinished:)
-      name:WebViewProgressFinishedNotification
-      object:webView];
-
-  runLoop = CFRunLoopGetCurrent();
-  [hvc loadHeader];
-  CFRunLoopRunWithTimeout(5);
-  runLoop = NULL;
-  [[NSRunLoop mainRunLoop] runUntilDate:
-      [NSDate dateWithTimeIntervalSinceNow:2]];
+  
+  commit.authorName = @"Guy One";
+  commit.authorEmail = @"guy1@example.com";
+  commit.committerName = @"Guy Two";
+  commit.committerEmail = @"guy2@example.com";
+  commit.message = @"Example message";
 
   // The result doesn't include the enclosing html tags, so neither does the
   // reference file.
-  NSString *html = [webView stringByEvaluatingJavaScriptFromString:
-      @"document.getElementsByTagName('html')[0].innerHTML"];
+  NSString *html = [hvc generateHeaderHTML:(XTCommit*)commit];
   NSBundle *testBundle =
       [NSBundle bundleWithIdentifier:@"com.uncommonplace.XitTests"];
   NSURL *expectedURL = [testBundle URLForResource:@"expected header"
@@ -113,7 +107,7 @@ NSDate *commitDate = nil;
   NSArray *expectedLines = [expectedHtml componentsSeparatedByString:@"\n"];
 
   // Some differences may be due to changes in WebKit.
-  XCTAssertEqual([lines count], [expectedLines count]-1);
+  XCTAssertEqual([lines count], [expectedLines count]);
   for (NSUInteger i = 0; i < lines.count; ++i)
     XCTAssertEqualObjects(lines[i], expectedLines[i],
                           @"line %lu", (unsigned long)i);
@@ -171,5 +165,20 @@ NSDate *commitDate = nil;
 @end
 
 @implementation FakeCommit
+
+- (NSArray*)parentSHAs
+{
+  return @[ @"111111", @"222222", @"333333" ];
+}
+
+- (NSDate*)authorDate
+{
+  return authorDate;
+}
+
+- (NSDate*)commitDate
+{
+  return commitDate;
+}
 
 @end
