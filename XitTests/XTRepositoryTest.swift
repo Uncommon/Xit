@@ -41,4 +41,44 @@ class XTRepositoryTest: XTTest
     try! repository.stageFile(file1Name)
     checkDeletedDiff(repository.stagedDiff(file: file1Name)!.makeDiff())
   }
+  
+  func testDeletedDiff()
+  {
+    try! FileManager.default.removeItem(atPath: file1Path)
+    try! repository.stageFile(file1Path)
+    try! repository.commit(withMessage: "deleted", amend: false,
+                           outputBlock: nil)
+    
+    guard let commit = repository.commit(ref: "HEAD")
+    else {
+      XCTFail("no HEAD")
+      return
+    }
+    
+    let parentSHA = commit.parents.first!.sha!
+    let maker = repository.diffMaker(forFile: file1Name,
+                                     commitSHA: commit.sha!,
+                                     parentSHA: parentSHA)!
+    let diff = maker.makeDiff()!
+    let patch = try! diff.generatePatch()
+    
+    XCTAssertEqual(patch.deletedLinesCount, 1)
+  }
+  
+  func testAddedDiff()
+  {
+    guard let commit = repository.commit(ref: "HEAD")
+      else {
+        XCTFail("no HEAD")
+        return
+    }
+    
+    let maker = repository.diffMaker(forFile: file1Name,
+                                     commitSHA: commit.sha!,
+                                     parentSHA: nil)!
+    let diff = maker.makeDiff()!
+    let patch = try! diff.generatePatch()
+    
+    XCTAssertEqual(patch.addedLinesCount, 1)
+  }
 }

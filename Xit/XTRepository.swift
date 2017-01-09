@@ -137,22 +137,31 @@ extension XTRepository
     return tags.map({ XTTag(repository: self, tag: $0) })
   }
   
-  func diffMaker(forFile file: String, commitSHA: String, parentSHA: String)
+  func diffMaker(forFile file: String, commitSHA: String, parentSHA: String?)
       -> XTDiffMaker?
   {
-    guard let toCommit = (commit(forSHA: commitSHA) as? XTCommit)?.gtCommit,
-          let toTree = toCommit.tree,
-          let toEntry = try? toTree.entry(withPath: file),
-          let toBlob = (try? GTObject(treeEntry: toEntry)) as? GTBlob
+    guard let toCommit = (commit(forSHA: commitSHA) as? XTCommit)?.gtCommit
+    
     else { return nil }
     
-    guard let parentCommit = (commit(forSHA: parentSHA) as? XTCommit)?.gtCommit,
-          let fromTree = parentCommit.tree,
-          let fromEntry = try? fromTree.entry(withPath: file),
-          let fromBlob = (try? GTObject(treeEntry: fromEntry)) as? GTBlob
-    else { return nil }
+    var fromSource = XTDiffMaker.SourceType.data(Data())
+    var toSource = XTDiffMaker.SourceType.data(Data())
     
-    return XTDiffMaker(from: .blob(fromBlob), to: .blob(toBlob), path: file)
+    if let toTree = toCommit.tree,
+       let toEntry = try? toTree.entry(withPath: file),
+       let toBlob = (try? GTObject(treeEntry: toEntry)) as? GTBlob {
+      toSource = .blob(toBlob)
+    }
+    
+    if let parentSHA = parentSHA,
+       let parentCommit = (commit(forSHA: parentSHA) as? XTCommit)?.gtCommit,
+       let fromTree = parentCommit.tree,
+       let fromEntry = try? fromTree.entry(withPath: file),
+       let fromBlob = (try? GTObject(treeEntry: fromEntry)) as? GTBlob {
+      fromSource = .blob(fromBlob)
+    }
+    
+    return XTDiffMaker(from: fromSource, to: toSource, path: file)
   }
   
   func stagedDiff(file: String) -> XTDiffMaker?
