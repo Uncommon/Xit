@@ -12,7 +12,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate
   var titleBarController: XTTitleBarViewController? = nil
   var selectedCommitSHA: String?
   var refsChangedObserver: NSObjectProtocol?
-  dynamic var selectedModel: XTFileChangesModel?
+  var selectedModel: XTFileChangesModel?
   {
     didSet
     {
