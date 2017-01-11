@@ -4,9 +4,20 @@ import Foundation
 @objc
 class XTFileViewController: NSViewController
 {
+  /// Column identifiers for the file list
   struct ColumnID
   {
+    static let main = "main"
     static let staged = "change"
+    static let unstaged = "unstaged"
+  }
+  
+  /// Table cell view identifiers for the file list
+  struct CellViewID
+  {
+    static let fileCell = "fileCell"
+    static let change = "change"
+    static let staged = "staged"
     static let unstaged = "unstaged"
   }
 
@@ -42,9 +53,10 @@ class XTFileViewController: NSViewController
   weak var lastClickedButton: NSButton?
   var doubleClickTimer: Timer?
   
-  var fileListDataSource: XTFileListDataSource
+  var fileListDataSource: XTFileListDataSource & NSOutlineViewDataSource
   {
-    return fileListOutline.dataSource as! XTFileListDataSource
+    return fileListOutline.dataSource as! XTFileListDataSource &
+                                          NSOutlineViewDataSource
   }
   
   var inStagingView: Bool
@@ -485,17 +497,17 @@ extension XTFileViewController: NSOutlineViewDelegate
   {
     guard let columnID = tableColumn?.identifier
     else { return nil }
-    let change = fileListDataSource.change(forItem: item)
+    let dataSource = fileListDataSource
+    let change = dataSource.change(forItem: item)
     
     switch columnID {
       
-      case "main":
-        guard let cell = outlineView.make(withIdentifier: "fileCell",
+      case ColumnID.main:
+        guard let cell = outlineView.make(withIdentifier: CellViewID.fileCell,
                                           owner: self) as? XTFileCellView
         else { return nil }
       
-        let path = fileListDataSource.path(forItem: item) as NSString
-        let dataSource = fileListDataSource as! NSOutlineViewDataSource
+        let path = dataSource.path(forItem: item) as NSString
       
         cell.imageView?.image = dataSource.outlineView!(outlineView,
                                                        isItemExpandable: item)
@@ -519,14 +531,17 @@ extension XTFileViewController: NSOutlineViewDelegate
         cell.change = change
         return cell
       
-      case "change":
+      case ColumnID.staged:
         if inStagingView {
-          return tableButtonView("staged", change: change,
-                                 otherChange: fileListDataSource.unstagedChange(forItem: item),
-                                 row: outlineView.row(forItem:item))
+          return tableButtonView(
+              CellViewID.staged,
+              change: change,
+              otherChange: dataSource.unstagedChange(forItem: item),
+              row: outlineView.row(forItem:item))
         }
         else {
-          guard let cell = outlineView.make(withIdentifier: "change", owner: self)
+          guard let cell = outlineView.make(withIdentifier: CellViewID.change,
+                                            owner: self)
                            as? NSTableCellView
           else { return nil }
           
@@ -534,11 +549,17 @@ extension XTFileViewController: NSOutlineViewDelegate
           return cell
         }
       
-      case "unstaged":
-        if !inStagingView {
+      case ColumnID.unstaged:
+        if inStagingView {
+          return tableButtonView(
+              CellViewID.unstaged,
+              change: dataSource.unstagedChange(forItem: item),
+              otherChange: change,
+              row: outlineView.row(forItem: item))
+        }
+        else {
           return nil
         }
-        return tableButtonView("unstaged", change: fileListDataSource.unstagedChange(forItem: item), otherChange: change, row: outlineView.row(forItem: item))
       
       default:
         return nil
