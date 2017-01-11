@@ -13,12 +13,9 @@
 #import "XTTextPreviewController.h"
 #import "Xit-Swift.h"
 
-const CGFloat kChangeImagePadding = 8;
 NSString* const XTContentTabIDDiff = @"diff";
 NSString* const XTContentTabIDText = @"text";
 NSString* const XTContentTabIDPreview = @"preview";
-NSString* const XTColumnIDStaged = @"change";
-NSString* const XTColumnIDUnstaged = @"unstaged";
 
 
 @interface NSSplitView (Animating)
@@ -82,20 +79,6 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   self.previewPath.pathComponentCells = @[];
 }
 
-- (IBAction)changeFileListView:(id)sender
-{
-  XTFileListDataSourceBase *newDS = (self.viewSelector.selectedSegment == 0)
-      ? self.fileChangeDS
-      : self.fileListDS;
-  NSString *columnID = newDS.isHierarchical ? @"main" : @"hidden";
-  
-  self.fileListOutline.outlineTableColumn =
-      [self.fileListOutline tableColumnWithIdentifier:columnID];
-  self.fileListOutline.delegate = self;
-  self.fileListOutline.dataSource = newDS;
-  [self.fileListOutline reloadData];
-}
-
 - (IBAction)changeContentView:(id)sender
 {
   const NSInteger selection = [sender selectedSegment];
@@ -110,29 +93,6 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   self.contentController = contentControllers[selection];
   [self loadSelectedPreview];
 }
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-
-/**
-  Performs the given selector off the main thread, and refreshes the file list.
-  Without this, methods like stageClicked: and unstageClicked: have too much
-  common code.
- */
-- (void)performRepoAction:(SEL)action onFileListItem:(id)item
-{
-  id<XTFileListDataSource> dataSource = self.fileListDataSource;
-  
-  [self.repo executeOffMainThread:^{
-    [self.repo performSelector:action
-                    withObject:[dataSource pathForItem:item]];
-    dispatch_async(dispatch_get_main_queue(), ^{
-      [dataSource reload];
-    });
-  }];
-}
-
-#pragma clang diagnostic pop
 
 - (void)selectRowFromButton:(NSButton*)button
 {
@@ -208,18 +168,6 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   self.showingStaged = self.stageSelector.selectedSegment == 1;
 }
 
-- (IBAction)showIgnored:(id)sender
-{
-}
-
-- (IBAction)stageUnstageAll:(NSSegmentedControl*)sender
-{
-  switch (sender.selectedSegment) {
-    case 0: [self unstageAll:sender]; break;
-    case 1: [self stageAll:sender]; break;
-  }
-}
-
 - (void)clearPreviews
 {
   // tell all controllers to clear their previews
@@ -252,134 +200,6 @@ NSString* const XTColumnIDUnstaged = @"unstaged";
   const CGFloat newHeight = [note.userInfo[XTHeaderHeightKey] floatValue];
 
   [self.headerSplitView animatePosition:newHeight ofDividerAtIndex:0];
-}
-
-- (NSImage*)imageForChange:(XitChange)change
-{
-  return self.changeImages[@( change )];
-}
-
-- (XitChange)displayChangeForChange:(XitChange)change
-                        otherChange:(XitChange)otherChange
-{
-  return (change == XitChangeUnmodified) &&
-         (otherChange != XitChangeUnmodified) ?
-         XitChangeMixed : change;
-}
-
-- (NSImage*)stagingImageForChange:(XitChange)change
-                      otherChange:(XitChange)otherChange
-{
-  change = [self displayChangeForChange:change otherChange:otherChange];
-  return self.stageImages[@( change )];
-}
-
-- (XTTableButtonView*)tableButtonView:(NSString*)identifier
-                               change:(XitChange)change
-                          otherChange:(XitChange)otherChange
-                                  row:(NSInteger)row
-{
-  XTTableButtonView *cell =
-      [self.fileListOutline makeViewWithIdentifier:identifier owner:self];
-  XTRolloverButton *button = (XTRolloverButton*)cell.button;
-  
-  ((NSButtonCell*)button.cell).imageDimsWhenDisabled = NO;
-  if (self.modelCanCommit) {
-    button.image = [self stagingImageForChange:change
-                                   otherChange:otherChange];
-    button.enabled =
-        [self displayChangeForChange:change otherChange:otherChange] !=
-            XitChangeMixed;
-  }
-  else {
-    button.image = [self imageForChange:change];
-    button.enabled = NO;
-  }
-  cell.row = row;
-  return cell;
-}
-
-#pragma mark NSOutlineViewDelegate
-
-- (NSView *)outlineView:(NSOutlineView *)outlineView
-     viewForTableColumn:(NSTableColumn *)tableColumn
-                   item:(id)item
-{
-  id<NSOutlineViewDataSource, XTFileListDataSource> dataSource =
-      (id<NSOutlineViewDataSource, XTFileListDataSource>)
-      self.fileListDataSource;
-  NSString * const columnID = tableColumn.identifier;
-  const XitChange change = [dataSource changeForItem:item];
-  
-  if ([columnID isEqualToString:@"main"]) {
-    XTFileCellView *cell =
-        [outlineView makeViewWithIdentifier:@"fileCell" owner:self];
-    
-    if (![cell isKindOfClass:[XTFileCellView class]])
-      return cell;
-    
-    NSString * const path = [dataSource pathForItem:item];
-    
-    if ([dataSource outlineView:outlineView isItemExpandable:item])
-      cell.imageView.image = [NSImage imageNamed:NSImageNameFolder];
-    else
-      cell.imageView.image = [[NSWorkspace sharedWorkspace]
-                              iconForFileType:path.pathExtension];
-    cell.textField.stringValue = path.lastPathComponent;
-    
-    NSColor *textColor;
-    
-    if (change == XitChangeDeleted)
-      textColor = [NSColor disabledControlTextColor];
-    else if ([outlineView isRowSelected:[outlineView rowForItem:item]])
-      textColor = [NSColor selectedTextColor];
-    else
-      textColor = [NSColor textColor];
-    cell.textField.textColor = textColor;
-    cell.change = change;
-    
-    return cell;
-  }
-  if ([columnID isEqualToString:@"change"]) {
-    // Different cell views are used so that the icon is only clickable in
-    // staging view.
-    if (self.inStagingView) {
-      return [self tableButtonView:@"staged"
-                            change:change
-                       otherChange:[dataSource unstagedChangeForItem:item]
-                               row:[outlineView rowForItem:item]];
-    } else {
-      NSTableCellView *cell =
-          [outlineView makeViewWithIdentifier:@"change" owner:self];
-      
-      cell.imageView.image = [self imageForChange:change];
-      return cell;
-    }
-  }
-  if ([columnID isEqualToString:@"unstaged"]) {
-    if (!self.inStagingView)
-      return nil;
-    return [self tableButtonView:@"unstaged"
-                          change:[dataSource unstagedChangeForItem:item]
-                     otherChange:change
-                             row:[outlineView rowForItem:item]];
-  }
-  
-  return nil;
-}
-
-- (NSTableRowView*)outlineView:(NSOutlineView *)outlineView
-                rowViewForItem:(id)item
-{
-  return [[XTFileRowView alloc] init];
-}
-
-- (void)outlineView:(NSOutlineView*)outlineView
-      didAddRowView:(NSTableRowView*)rowView
-             forRow:(NSInteger)row
-{
-  if ([rowView isKindOfClass:[XTFileRowView class]])
-    ((XTFileRowView*)rowView).outlineView = self.fileListOutline;
 }
 
 @end

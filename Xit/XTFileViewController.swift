@@ -1,12 +1,15 @@
 import Foundation
 
-let XTColumnIDStaged = "change"
-let XTColumnIDUnstaged = "unstaged"
-
 /// View controller for the file list and detail view.
 @objc
 class XTFileViewController: NSViewController
 {
+  struct ColumnID
+  {
+    static let staged = "change"
+    static let unstaged = "unstaged"
+  }
+
   @IBOutlet weak var headerSplitView: NSSplitView!
   @IBOutlet weak var fileSplitView: NSSplitView!
   @IBOutlet weak var leftPane: NSView!
@@ -87,11 +90,11 @@ class XTFileViewController: NSViewController
     get
     {
       return fileListOutline.highlightedTableColumn?.identifier ==
-             XTColumnIDStaged
+             ColumnID.staged
     }
     set
     {
-      let columnID = newValue ? XTColumnIDStaged : XTColumnIDUnstaged
+      let columnID = newValue ? ColumnID.staged : ColumnID.unstaged
       guard let column = fileListOutline.tableColumn(withIdentifier: columnID)
       else { return }
       
@@ -131,7 +134,9 @@ class XTFileViewController: NSViewController
     fileChangeDS.winController = controller
     fileListDS.winController = controller
     headerController.winController = controller
-    modelObserver = NotificationCenter.default.addObserver(forName: NSNotification.Name.XTSelectedModelChanged, object: controller, queue: .main) {
+    modelObserver = NotificationCenter.default.addObserver(
+        forName: NSNotification.Name.XTSelectedModelChanged,
+        object: controller, queue: .main) {
       [weak self] _ in
       self?.selectedModelChanged()
     }
@@ -192,8 +197,8 @@ class XTFileViewController: NSViewController
     if isCommitting != newModel.canCommit {
       isCommitting = newModel.canCommit
     
-      let unstagedIndex = fileListOutline.column(withIdentifier: XTColumnIDUnstaged)
-      let stagedIndex = fileListOutline.column(withIdentifier: XTColumnIDStaged)
+      let unstagedIndex = fileListOutline.column(withIdentifier: ColumnID.unstaged)
+      let stagedIndex = fileListOutline.column(withIdentifier: ColumnID.staged)
       let displayRect = NSUnionRect(fileListOutline.rect(ofColumn: unstagedIndex),
                                     fileListOutline.rect(ofColumn: stagedIndex))
       
@@ -232,6 +237,20 @@ class XTFileViewController: NSViewController
         : nil
   }
 
+  // MARK: Actions
+
+  @IBAction func changeFileListView(_: Any?)
+  {
+    let newDS = viewSelector.selectedSegment == 0 ? fileChangeDS : fileListDS
+    let columnID = newDS.isHierarchical ? "main" : "hidden"
+    
+    fileListOutline.outlineTableColumn =
+        fileListOutline.tableColumn(withIdentifier: columnID)
+    fileListOutline.delegate = self
+    fileListOutline.dataSource = newDS
+    fileListOutline.reloadData()
+  }
+
   @IBAction func stageAll(_: Any?)
   {
     try? repo?.stageAllFiles()
@@ -242,6 +261,22 @@ class XTFileViewController: NSViewController
   {
     repo?.unstageAllFiles()
     showingStaged = false
+  }
+
+  @IBAction func stageUnstageAll(sender: Any?)
+  {
+    guard let segmentControl = sender as? NSSegmentedControl
+    else { return }
+    
+    switch segmentControl.selectedSegment {
+      case 0: unstageAll(sender)
+      case 1: stageAll(sender)
+      default: break
+    }
+  }
+  
+  @IBAction func showIgnored(_: Any?)
+  {
   }
 
   @IBAction func revert(_: AnyObject)
@@ -394,7 +429,132 @@ class XTFileViewController: NSViewController
 
 extension XTFileViewController: NSOutlineViewDelegate
 {
-  // Implemented in XTFileViewController.m
+  private func image(forChange change: XitChange) -> NSImage?
+  {
+    return changeImages[change.rawValue]
+  }
+
+  private func displayChange(forChange change: XitChange,
+                             otherChange: XitChange) -> XitChange
+  {
+    return (change == .unmodified) && (otherChange != .unmodified)
+           ? .mixed : change
+  }
+
+  private func stagingImage(forChange change: XitChange,
+                            otherChange: XitChange) -> NSImage?
+  {
+    let change = displayChange(forChange:change, otherChange:otherChange)
+    
+    return stageImages[change.rawValue]
+  }
+
+  private func tableButtonView(_ identifier: String,
+                               change: XitChange,
+                               otherChange: XitChange,
+                               row: Int) -> XTTableButtonView
+  {
+    let cell = fileListOutline.make(withIdentifier: identifier, owner: self)
+               as! XTTableButtonView
+    
+    if let button = cell.button {
+      (button.cell as! NSButtonCell).imageDimsWhenDisabled = false
+      if modelCanCommit {
+        button.image = stagingImage(forChange:change,
+                                    otherChange:otherChange)
+        button.isEnabled = displayChange(forChange:change,
+                                         otherChange:otherChange)
+                           != .mixed
+      }
+      else {
+        button.image = image(forChange:change)
+        button.isEnabled = false
+      }
+    }
+    cell.row = row
+    return cell
+  }
+
+  func outlineView(_ outlineView: NSOutlineView,
+                   viewFor tableColumn: NSTableColumn?,
+                   item: Any) -> NSView?
+  {
+    guard let columnID = tableColumn?.identifier
+    else { return nil }
+    let change = fileListDataSource.change(forItem: item)
+    
+    switch columnID {
+      
+      case "main":
+        guard let cell = outlineView.make(withIdentifier: "fileCell",
+                                          owner: self) as? XTFileCellView
+        else { return nil }
+      
+        let path = fileListDataSource.path(forItem: item) as NSString
+        let dataSource = fileListDataSource as! NSOutlineViewDataSource
+      
+        cell.imageView?.image = dataSource.outlineView!(outlineView,
+                                                       isItemExpandable: item)
+                                ? NSImage(named: NSImageNameFolder)
+                                : NSWorkspace.shared()
+                                  .icon(forFileType: path.pathExtension)
+        cell.textField?.stringValue = path.lastPathComponent
+      
+        var textColor: NSColor!
+      
+        if change == .deleted {
+          textColor = NSColor.disabledControlTextColor
+        }
+        else if outlineView.isRowSelected(outlineView.row(forItem: item)) {
+          textColor = NSColor.selectedTextColor
+        }
+        else {
+          textColor = NSColor.textColor
+        }
+        cell.textField?.textColor = textColor
+        cell.change = change
+        return cell
+      
+      case "change":
+        if inStagingView {
+          return tableButtonView("staged", change: change,
+                                 otherChange: fileListDataSource.unstagedChange(forItem: item),
+                                 row: outlineView.row(forItem:item))
+        }
+        else {
+          guard let cell = outlineView.make(withIdentifier: "change", owner: self)
+                           as? NSTableCellView
+          else { return nil }
+          
+          cell.imageView?.image = image(forChange:change)
+          return cell
+        }
+      
+      case "unstaged":
+        if !inStagingView {
+          return nil
+        }
+        return tableButtonView("unstaged", change: fileListDataSource.unstagedChange(forItem: item), otherChange: change, row: outlineView.row(forItem: item))
+      
+      default:
+        return nil
+    }
+  }
+  
+  func outlineView(_ outlineView: NSOutlineView,
+                   rowViewForItem item: Any) -> NSTableRowView?
+  {
+    return FileRowView()
+  }
+  
+  func outlineView(_ outlineView: NSOutlineView,
+                   didAdd rowView: NSTableRowView,
+                   forRow row: Int)
+  {
+    if let fileRowView = rowView as? FileRowView {
+      fileRowView.outlineView = fileListOutline
+    }
+  }
 }
 
 extension XTFileViewController: NSSplitViewDelegate

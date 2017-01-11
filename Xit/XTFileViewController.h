@@ -13,8 +13,6 @@
 
 @protocol XTFileChangesModel;
 
-extern const CGFloat kChangeImagePadding;
-
 /**
   Interface for a controller that displays file content in some form.
  */
