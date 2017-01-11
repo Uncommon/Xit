@@ -192,12 +192,8 @@ NSString *XTHeaderContentKey = @"content";
   if ((commit == nil) ||
       (git_object_type([commit git_object]) != GIT_OBJ_COMMIT))
     return nil;
-  if (parentSHA == nil) {
-    NSArray *parents = commit.parents;
-
-    if (parents.count > 0)
-      parentSHA = [parents[0] SHA];
-  }
+  if (parentSHA == nil)
+    parentSHA = commit.parents.firstObject.SHA;
   
   GTDiff *diff = [self diffForSHA:commit.SHA parent:parentSHA];
 

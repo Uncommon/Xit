@@ -4,7 +4,8 @@ import Cocoa
  * Protocol for a commit or commit-like object,
  * with metadata, files, and diffs.
  */
-@objc protocol XTFileChangesModel {
+@objc protocol XTFileChangesModel
+{
   var repository: XTRepository { get set }
   /// SHA for commit to be selected in the history list
   var shaToSelect: String? { get }
@@ -40,11 +41,9 @@ class XTCommitChanges: NSObject, XTFileChangesModel
   var hasUnstaged: Bool { return false }
   var canCommit: Bool { return false }
   
-  var changes: [XTFileChange]
-  {
-    return self.repository.changes(forRef: self.sha, parent: self.diffParent) ??
-        [XTFileChange]()
-  }
+  // Can't currently do changes as as lazy var because it crashes the compiler.
+  let savedChanges: [XTFileChange]
+  var changes: [XTFileChange] { return savedChanges }
   
   var treeRoot: NSTreeNode
   {
@@ -58,6 +57,9 @@ class XTCommitChanges: NSObject, XTFileChangesModel
   {
     self.repository = repository
     self.sha = sha
+    self.savedChanges = repository.changes(forRef: self.sha,
+                                           parent: self.diffParent) ??
+                        [XTFileChange]()
     
     super.init()
   }
