@@ -36,7 +36,7 @@ The repository uses several submodules, so you will need to clone the repository
   [CMake]: http://cmake.org/
   [Homebrew]: http://brew.sh
 
-Note that Objective Git needs the `objective-git/script/boostrap` script to be run to configure everything. If Objective Git is later updated, you may need to re-run the script.
+Note that Objective Git needs the `objective-git/script/bootstrap` script to be run to configure everything. If Objective Git is later updated, you may need to re-run the script.
 
 ## Contributing
 
