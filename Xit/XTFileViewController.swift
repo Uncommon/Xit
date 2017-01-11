@@ -113,7 +113,9 @@ class XTFileViewController: NSViewController
       fileListDS.repository = repo
       headerController.repository = repo
       commitEntryController.repo = repo
-      indexObserver = NotificationCenter.default.addObserver(forName: NSNotification.Name.XTRepositoryIndexChanged, object: repo, queue: .main) {
+      indexObserver = NotificationCenter.default.addObserver(
+          forName: NSNotification.Name.XTRepositoryIndexChanged,
+          object: repo, queue: .main) {
         note in
         self.indexChanged(note)
       }
@@ -122,7 +124,9 @@ class XTFileViewController: NSViewController
   
   deinit
   {
-    indexObserver.map { NotificationCenter.default.removeObserver($0) }
+    [indexObserver, modelObserver].forEach {
+      $0.map { NotificationCenter.default.removeObserver($0) }
+    }
   }
 
   func windowDidLoad()
