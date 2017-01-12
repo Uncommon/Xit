@@ -10,6 +10,7 @@ class XTFileViewController: NSViewController
     static let main = "main"
     static let staged = "change"
     static let unstaged = "unstaged"
+    static let hidden = "hidden"
   }
   
   /// Table cell view identifiers for the file list
@@ -271,7 +272,7 @@ class XTFileViewController: NSViewController
   @IBAction func changeFileListView(_: Any?)
   {
     let newDS = viewSelector.selectedSegment == 0 ? fileChangeDS : fileListDS
-    let columnID = newDS.isHierarchical ? "main" : "hidden"
+    let columnID = newDS.isHierarchical ? ColumnID.main : ColumnID.hidden
     
     fileListOutline.outlineTableColumn =
         fileListOutline.tableColumn(withIdentifier: columnID)
