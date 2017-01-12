@@ -147,7 +147,7 @@
   shadow.shadowColor = (type == XTRefTypeActiveBranch)
       ? [NSColor blackColor]
       : [NSColor whiteColor];
-  paragraphStyle.alignment = NSCenterTextAlignment;
+  paragraphStyle.alignment = NSTextAlignmentCenter;
 
   NSDictionary *attributes = @{ NSFontAttributeName:[self labelFont],
                                 NSParagraphStyleAttributeName:paragraphStyle,
