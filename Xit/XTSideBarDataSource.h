@@ -28,8 +28,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)loadStashes:(NSMutableArray *)stashes
           refsIndex:(NSMutableDictionary *)refsIndex;
 
-- (void)doubleClick:(id)sender;
-
 @property (weak) IBOutlet XTSidebarController *viewController;
 @property (weak) IBOutlet XTRefFormatter *refFormatter;
 @property (weak) IBOutlet NSOutlineView *outline;

@@ -172,6 +172,21 @@ extension XTSideBarDataSource
     
     return group.children.first(where: { $0.title == name} )
   }
+  
+  func doubleClick(_: Any?)
+  {
+    if let outline = outline,
+       let clickedItem = outline.item(atRow: outline.clickedRow)
+                         as? XTSubmoduleItem,
+       let rootPath = repo?.repoURL.path,
+       let subPath = clickedItem.submodule.path {
+      let subURL = URL(fileURLWithPath: rootPath.stringByAppendingPathComponent(subPath))
+      
+      NSDocumentController.shared().openDocument(
+          withContentsOf: subURL, display: true,
+          completionHandler: { (_, _, _) in })
+    }
+  }
 }
 
 // MARK: TeamCity

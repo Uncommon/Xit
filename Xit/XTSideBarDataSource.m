@@ -231,22 +231,4 @@
                        tagBlock:tagBlock];
 }
 
-- (void)doubleClick:(id)sender
-{
-  id clickedItem = [self.outline itemAtRow:self.outline.clickedRow];
-
-  if ([clickedItem isKindOfClass:[XTSubmoduleItem class]]) {
-    XTSubmoduleItem *subItem = (XTSubmoduleItem*)clickedItem;
-    NSString *subPath = subItem.submodule.path;
-    NSString *rootPath = _repo.repoURL.path;
-    NSURL *subURL = [NSURL fileURLWithPath:
-        [rootPath stringByAppendingPathComponent:subPath]];
-    
-    [[NSDocumentController sharedDocumentController]
-        openDocumentWithContentsOfURL:subURL
-                              display:YES
-                    completionHandler:^(NSDocument *doc,BOOL open, NSError *error) {}];
-  }
-}
-
 @end
