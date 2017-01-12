@@ -52,6 +52,7 @@ class XTFileViewController: NSViewController
   var fileWatcher: XTFileEventStream?
   weak var lastClickedButton: NSButton?
   var doubleClickTimer: Timer?
+  var indexTimer: Timer?
   
   var fileListDataSource: XTFileListDataSource & NSOutlineViewDataSource
   {
@@ -139,6 +140,7 @@ class XTFileViewController: NSViewController
     [indexObserver, modelObserver].forEach {
       $0.map { NotificationCenter.default.removeObserver($0) }
     }
+    indexTimer.map { $0.invalidate() }
   }
 
   func windowDidLoad()
@@ -160,8 +162,19 @@ class XTFileViewController: NSViewController
   
   func indexChanged(_ note: Notification)
   {
-    if inStagingView {
-      fileListDataSource.reload()
+    // Reading the index too soon can yield incorrect results.
+    let indexDelay: TimeInterval = 0.125
+    
+    if let timer = indexTimer {
+      timer.fireDate = Date(timeIntervalSinceNow: indexDelay)
+    }
+    else {
+      indexTimer = Timer.scheduledTimer(withTimeInterval: indexDelay,
+                                        repeats: false) {
+        [weak self] (timer) in
+        self?.fileListDataSource.reload()
+        self?.indexTimer = nil
+      }
     }
     
     // Ideally, check to see if the selected file has changed
