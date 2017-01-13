@@ -18,46 +18,40 @@ class XTFileChangesDataSource : XTFileListDataSourceBase
     let newSet = NSOrderedSet(array: newPaths)
     let oldSet = NSOrderedSet(array: oldPaths)
     
-    let deleteIndexes = oldSet.indexes(options: []) { !newSet.contains($0) }
-    let addIndexes = newSet.indexes(options: []) { !oldSet.contains($0) }
-    
-    var changeIndexes = IndexSet()
+    let deleteIndexes = oldSet.indexes(options: []) {
+      (path, index, stop) in !newSet.contains(path) }
+    let addIndexes = newSet.indexes(options: []) {
+      (path, index, stop) in !oldSet.contains(path) }
     var newChangeIndexes = IndexSet()
     
-    if !changes.isEmpty {
-      changeIndexes = (changes as NSArray).indexesOfObjects(options: []) {
-        (obj, index, stop) -> Bool in
-        let change = obj as! XTFileChange
+    if changes.isEmpty {
+      changes = newChanges
+    }
+    else {
+      changes.forEach {
+        (change) in
         guard let newIndex = newChanges.index(where: {
           (newChange) in
-          newChange.path == change.path
+          newChange.path == change.path &&
+          ((newChange.change != change.change) ||
+           (newChange.unstagedChange != change.unstagedChange))
         })
-        else { return false }
+        else { return }
         
         let newChange = newChanges[newIndex]
-        
-        if (newChange.change == change.change) &&
-           (newChange.unstagedChange == change.unstagedChange) {
-          return false
-        }
         
         change.change = newChange.change
         change.unstagedChange = newChange.unstagedChange
         newChangeIndexes.insert(newIndex)
-        return true
       }
       changes.removeObjects(at: deleteIndexes)
       changes.append(contentsOf: newChanges.objects(at: addIndexes))
       changes.sort { $0.path < $1.path }
     }
-    else {
-      changes = newChanges
-    }
     
     DispatchQueue.main.async {
       [weak self] in
-      guard let myself = self,
-            let outlineView = myself.outlineView,
+      guard let outlineView = self?.outlineView,
             self === outlineView.dataSource
       else { return }
       
@@ -74,7 +68,7 @@ class XTFileChangesDataSource : XTFileListDataSourceBase
       }
       outlineView.endUpdates()
       
-      if changeIndexes.count > 0 {
+      if newChangeIndexes.count > 0 {
         // Have to construct an NSIndexSet and then convert to IndexSet
         // because the compiler doesn't recognize the constructor.
         let range = NSRange(location: 0, length: outlineView.numberOfColumns)
