@@ -147,9 +147,6 @@ extension XTFileChangesDataSource // NSOutlineViewDataSource
                    objectValueFor tableColumn: NSTableColumn?,
                    byItem item: Any?) -> Any?
   {
-    guard let fileChange = item as? XTFileChange
-    else { return nil }
-    
-    return fileChange.path
+    return (item as? XTFileChange)?.path
   }
 }
