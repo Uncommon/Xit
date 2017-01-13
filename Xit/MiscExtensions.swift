@@ -166,6 +166,19 @@ extension Array
     }
     return lo
   }
+  
+  func objects(at indexSet: IndexSet) -> [Element]
+  {
+    return enumerated().filter({ indexSet.contains($0.offset) })
+           .map { $0.element }
+  }
+  
+  mutating func removeObjects(at indexSet: IndexSet)
+  {
+    self = enumerated()
+           .filter({ !indexSet.contains($0.offset) })
+           .map({$0.element})
+  }
 }
 
 extension Array where Element: Comparable

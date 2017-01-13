@@ -565,7 +565,7 @@
             </connections>
             <point key="canvasLocation" x="140.5" y="169"/>
         </splitView>
-        <customObject id="QBv-mK-3e5" customClass="XTFileChangesDataSource">
+        <customObject id="QBv-mK-3e5" customClass="XTFileChangesDataSource" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="controller" destination="-2" id="Roc-D7-Ia2"/>
                 <outlet property="outlineView" destination="7" id="6gy-pU-3w5"/>

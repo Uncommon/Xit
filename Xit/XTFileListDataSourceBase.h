@@ -5,6 +5,8 @@
 @class XTFileViewController;
 @class XTRepository;
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
   Abstract base class for file list data sources.
  */
@@ -19,7 +21,8 @@
 
 /// Get the change value used for display because in some cases we want to
 /// make sure an icon is displayed for unmodified files.
-+ (XitChange)transformDisplayChange:(XitChange)change;
++ (XitChange)transformDisplayChange:(XitChange)change
+    NS_SWIFT_NAME(transformDisplayChange(_:));
 
 @end
 
@@ -32,7 +35,7 @@
 @property (getter=isHierarchical, readonly) BOOL hierarchical;
 
 - (void)reload;
-- (XTFileChange*)fileChangeAtRow:(NSInteger)row;
+- (nullable XTFileChange*)fileChangeAtRow:(NSInteger)row;
 - (NSString*)pathForItem:(id)item;
 - (XitChange)changeForItem:(id)item;
 - (XitChange)unstagedChangeForItem:(id)item;
@@ -61,3 +64,5 @@
 @property NSInteger row;
 
 @end
+
+NS_ASSUME_NONNULL_END
