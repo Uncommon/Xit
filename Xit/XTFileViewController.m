@@ -4,7 +4,6 @@
 
 #import "XTConstants.h"
 #import "XTCommitHeaderViewController.h"
-#import "XTFileChangesDataSource.h"
 #import "XTFileListDataSourceBase.h"
 #import "XTFileTreeDataSource.h"
 #import "XTPreviewController.h"

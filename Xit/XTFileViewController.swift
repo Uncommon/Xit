@@ -486,20 +486,19 @@ extension XTFileViewController: NSOutlineViewDelegate
   {
     let cell = fileListOutline.make(withIdentifier: identifier, owner: self)
                as! XTTableButtonView
+    let button = cell.button
     
-    if let button = cell.button {
-      (button.cell as! NSButtonCell).imageDimsWhenDisabled = false
-      if modelCanCommit {
-        button.image = stagingImage(forChange:change,
-                                    otherChange:otherChange)
-        button.isEnabled = displayChange(forChange:change,
-                                         otherChange:otherChange)
-                           != .mixed
-      }
-      else {
-        button.image = image(forChange:change)
-        button.isEnabled = false
-      }
+    (button.cell as! NSButtonCell).imageDimsWhenDisabled = false
+    if modelCanCommit {
+      button.image = stagingImage(forChange:change,
+                                  otherChange:otherChange)
+      button.isEnabled = displayChange(forChange:change,
+                                       otherChange:otherChange)
+                         != .mixed
+    }
+    else {
+      button.image = image(forChange:change)
+      button.isEnabled = false
     }
     cell.row = row
     return cell
