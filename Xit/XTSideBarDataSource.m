@@ -218,9 +218,11 @@
     } else {
       XTTag *tag = [[XTTag alloc] initWithRepository:_repo name:name];
     
-      tagItem = [[XTTagItem alloc] initWithTag:tag];
-      [tags addObject:tagItem];
-      tagIndex[name] = tagItem;
+      if (tag != nil) {
+        tagItem = [[XTTagItem alloc] initWithTag:tag];
+        [tags addObject:tagItem];
+        tagIndex[name] = tagItem;
+      }
     }
     [refsIndex addObject:[@"refs/tags" stringByAppendingPathComponent:name]
                   forKey:commit];

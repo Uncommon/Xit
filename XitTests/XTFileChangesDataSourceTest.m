@@ -1,5 +1,4 @@
 #import "XTTest.h"
-#import "XTFileChangesDataSource.h"
 #include "XTQueueUtils.h"
 #import "Xit-Swift.h"
 
@@ -11,7 +10,7 @@
 
 - (void)testInitialCommit
 {
-  XTFakeWinController *winController = [[XTFakeWinController alloc] init];
+  XTWindowController *winController = [[XTWindowController alloc] init];
   XTFileChangesDataSource *dataSource = [[XTFileChangesDataSource alloc] init];
   NSOutlineView *outlineView = [[NSOutlineView alloc] init];
 
