@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2657" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11542"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="XTHistoryViewController">
+        <customObject id="-2" userLabel="File's Owner" customClass="XTHistoryViewController" customModule="Xit" customModuleProvider="target">
             <connections>
-                <outlet property="_historyTable" destination="No3-Ik-sWu" id="ou3-nb-Tsk"/>
-                <outlet property="_mainSplitView" destination="13" id="71"/>
                 <outlet property="commitTable" destination="No3-Ik-sWu" id="dkg-3y-hVy"/>
-                <outlet property="mainSplitView" destination="13" id="GWp-W0-KPr"/>
+                <outlet property="historyTable" destination="No3-Ik-sWu" id="J6H-r5-bX8"/>
+                <outlet property="mainSplitView" destination="13" id="AuV-Jw-5yM"/>
                 <outlet property="tableController" destination="IYz-w0-bcN" id="CLT-wB-Gyk"/>
                 <outlet property="view" destination="13" id="wOS-VU-dJu"/>
             </connections>

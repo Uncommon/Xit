@@ -111,7 +111,6 @@ public class XTHistoryTableController: NSViewController
       
       let refs = repository.allRefs()
       
-      // TODO: sort refs by commit date
       for ref in refs {
         _ = repository.sha(forRef: ref).flatMap { try? walker.pushSHA($0) }
       }

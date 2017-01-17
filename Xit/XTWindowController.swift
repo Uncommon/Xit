@@ -53,8 +53,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate
     
     window.titleVisibility = .hidden
     window.delegate = self
-    historyController = XTHistoryViewController(
-        nibName: "XTHistoryViewController", bundle: nil)
+    historyController = XTHistoryViewController()
     mainSplitView.addArrangedSubview(historyController.view)
     mainSplitView.removeArrangedSubview(mainSplitView.arrangedSubviews[1])
     window.makeFirstResponder(historyController.historyTable)
@@ -73,7 +72,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate
                      options: [], context: nil)
     sidebarController.repo = repo
     historyController.windowDidLoad()
-    historyController.setRepo(repo)
+    historyController.repo = repo
     updateMiniwindowTitle()
   }
   
@@ -336,8 +335,8 @@ extension XTWindowController: XTTitleBarDelegate
   var viewStates: (sidebar: Bool, history: Bool, details: Bool)
   {
     return (!sidebarHidden,
-            !historyController.historyHidden(),
-            !historyController.detailsHidden())
+            !historyController.historyHidden,
+            !historyController.detailsHidden)
   }
   
   func fetchSelected() { fetch(self) }
