@@ -1,15 +1,6 @@
 #import <Cocoa/Cocoa.h>
-#import <Quartz/Quartz.h>
 #import "XTConstants.h"
 #import "XTFileListDataSourceBase.h"
-
-@class XTCommitHeaderViewController;
-@class XTFileChangesDataSource;
-@class XTFileDiffController;
-@class XTFileTreeDataSource;
-@class XTPreviewController;
-@class XTRepository;
-@class XTTextPreviewController;
 
 @protocol XTFileChangesModel;
 

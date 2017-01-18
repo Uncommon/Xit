@@ -141,6 +141,31 @@ extension NSTableView
   }
 }
 
+extension NSSplitView
+{
+  func animate(position: CGFloat, ofDividerAtIndex index:Int)
+  {
+    let targetView = subviews[index]
+    var endFrame = targetView.frame
+    
+    if isVertical {
+      endFrame.size.width = position
+    }
+    else {
+      endFrame.size.height = position
+    }
+    
+    let windowResize: [String: Any] = [
+        NSViewAnimationTargetKey: targetView,
+        NSViewAnimationEndFrameKey: endFrame ]
+    let animation = NSViewAnimation(viewAnimations: [windowResize])
+    
+    animation.animationBlockingMode = .blocking
+    animation.duration = 0.2
+    animation.start()
+  }
+}
+
 extension Array
 {
   /// Assuming the array is sorted, returns the insertion index for the given

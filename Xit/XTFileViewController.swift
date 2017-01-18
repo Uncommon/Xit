@@ -1,4 +1,6 @@
 import Foundation
+import Quartz
+
 
 /// View controller for the file list and detail view.
 @objc
@@ -20,6 +22,16 @@ class XTFileViewController: NSViewController
     static let change = "change"
     static let staged = "staged"
     static let unstaged = "unstaged"
+  }
+  
+  /// Preview tab identifiers
+  struct TabID
+  {
+    static let diff = "diff"
+    static let text = "text"
+    static let preview = "preview"
+    
+    static let allIDs = [ diff, text, preview ]
   }
 
   @IBOutlet weak var headerSplitView: NSSplitView!
@@ -44,11 +56,13 @@ class XTFileViewController: NSViewController
   @IBOutlet var textController: XTTextPreviewController!
   var commitEntryController: XTCommitEntryController!
   
-  var changeImages = [UInt: NSImage]()
-  var stageImages = [UInt: NSImage]()
+  var changeImages = [XitChange: NSImage]()
+  var stageImages = [XitChange: NSImage]()
   var contentController: XTFileContentController!
   var indexObserver: NSObjectProtocol?
   var modelObserver: NSObjectProtocol?
+  var selectionObserver: NSObjectProtocol?
+  var resizeObserver: NSObjectProtocol?
   
   var fileWatcher: XTFileEventStream?
   weak var lastClickedButton: NSButton?
@@ -138,7 +152,7 @@ class XTFileViewController: NSViewController
   
   deinit
   {
-    [indexObserver, modelObserver].forEach {
+    [indexObserver, modelObserver, selectionObserver, resizeObserver].forEach {
       $0.map { NotificationCenter.default.removeObserver($0) }
     }
     indexTimer.map { $0.invalidate() }
@@ -159,6 +173,62 @@ class XTFileViewController: NSViewController
       [weak self] _ in
       self?.selectedModelChanged()
     }
+  }
+  
+  override func loadView()
+  {
+    super.loadView()
+    
+    changeImages = [
+        .added: NSImage(named:"added")!,
+        .untracked: NSImage(named:"added")!,
+        .copied: NSImage(named:"copied")!,
+        .deleted: NSImage(named:"deleted")!,
+        .modified: NSImage(named:"modified")!,
+        .renamed: NSImage(named:"renamed")!,
+        .mixed: NSImage(named:"mixed")!,
+        ]
+    stageImages = [
+        .added: NSImage(named:"add")!,
+        .untracked: NSImage(named:"add")!,
+        .deleted: NSImage(named:"delete")!,
+        .modified: NSImage(named:"modify")!,
+        .mixed: NSImage(named:"mixed")!,
+        .conflict: NSImage(named:"conflict")!,
+        ]
+    
+    fileListOutline.highlightedTableColumn =
+        fileListOutline.tableColumn(withIdentifier: ColumnID.staged)
+    fileListOutline.sizeToFit()
+    contentController = diffController
+    
+    selectionObserver = NotificationCenter.default.addObserver(
+        forName: NSNotification.Name.NSOutlineViewSelectionDidChange,
+        object: fileListOutline,
+        queue: nil) {
+      [weak self] _ in
+      self?.refreshPreview()
+    }
+    resizeObserver = NotificationCenter.default.addObserver(
+        forName: NSNotification.Name(rawValue: XTHeaderResizedNotificaiton),
+        object: headerController,
+        queue: nil) {
+      [weak self] note in
+      guard let newHeight = (note.userInfo?[XTHeaderHeightKey] as? NSNumber)?
+                            .floatValue
+      else { return }
+      
+      self?.headerSplitView.animate(position:CGFloat(newHeight),
+                                    ofDividerAtIndex:0)
+    }
+    
+    commitEntryController = XTCommitEntryController(
+        nibName: "XTCommitEntryController", bundle: nil)!
+    if repo != nil {
+      commitEntryController.repo = repo
+    }
+    headerTabView.tabViewItems[1].view = commitEntryController.view
+    previewPath.setPathComponentCells([])
   }
   
   func indexChanged(_ note: Notification)
@@ -266,8 +336,106 @@ class XTFileViewController: NSViewController
         }
         : nil
   }
+  
+  func selectRow(from button: NSButton)
+  {
+    guard let row = (button.superview as? XTTableButtonView)?.row
+    else { return }
+    let indexes = IndexSet(integer: row)
+    
+    fileListOutline.selectRowIndexes(indexes,
+                                     byExtendingSelection: false)
+    view.window?.makeFirstResponder(fileListOutline)
+  }
+  
+  func selectRow(from button: NSButton, staged: Bool)
+  {
+    selectRow(from: button)
+    showingStaged = staged
+  }
+  
+  func path(from button: NSButton) -> String?
+  {
+    guard let row = (button.superview as? XTTableButtonView)?.row,
+          let change = fileListDataSource.fileChange(atRow: row)
+    else { return nil }
+    
+    return change.path
+  }
+  
+  func checkDoubleClick(_ button: NSButton) -> Bool
+  {
+    if let last = lastClickedButton,
+       let event = NSApp.currentEvent,
+       (last == button) && (event.clickCount > 1) {
+      lastClickedButton = nil
+      return true
+    }
+    else {
+      lastClickedButton = button
+      return false
+    }
+  }
+  
+  func click(button: NSButton, staging: Bool)
+  {
+    if checkDoubleClick(button),
+       let path = path(from: button) {
+      button.isEnabled = false
+      if staging {
+        _ = try? repo?.stageFile(path)
+      }
+      else {
+        _ = try? repo?.unstageFile(path)
+      }
+      selectRow(from: button, staged: staging)
+      NotificationCenter.default.post(
+          name: NSNotification.Name.XTRepositoryIndexChanged,
+          object: repo)
+    }
+    else {
+      selectRow(from: button, staged: !staging)
+    }
+  }
+
+  func clearPreviews()
+  {
+    diffController.clear()
+    textController.clear()
+    previewController.clear()
+  }
+  
+  func clear()
+  {
+    contentController.clear()
+    previewPath.setPathComponentCells([])
+  }
 
   // MARK: Actions
+
+  @IBAction func changeStageView(_ sender: Any?)
+  {
+    guard let segmentedControl = sender as? NSSegmentedControl
+    else { return }
+    
+    showingStaged = segmentedControl.selectedSegment == 1
+  }
+
+  @IBAction func stageClicked(_ sender: Any?)
+  {
+    guard let button = sender as? NSButton
+    else { return }
+  
+    click(button: button, staging: true)
+  }
+  
+  @IBAction func unstageClicked(_ sender: Any?)
+  {
+    guard let button = sender as? NSButton
+    else { return }
+    
+    click(button: button, staging: false)
+  }
 
   @IBAction func changeFileListView(_: Any?)
   {
@@ -279,6 +447,20 @@ class XTFileViewController: NSViewController
     fileListOutline.delegate = self
     fileListOutline.dataSource = newDS
     fileListOutline.reloadData()
+  }
+  
+  @IBAction func changeContentView(_ sender: Any?)
+  {
+    guard let segmentedControl = sender as? NSSegmentedControl
+    else { return }
+    
+    let selection = segmentedControl.selectedSegment
+    let contentControllers: [XTFileContentController ] =
+        [ diffController, textController, previewController ]
+    
+    previewTabView.selectTabViewItem(withIdentifier: TabID.allIDs[selection])
+    contentController = contentControllers[selection]
+    loadSelectedPreview()
   }
 
   @IBAction func stageAll(_: Any?)
@@ -293,7 +475,7 @@ class XTFileViewController: NSViewController
     showingStaged = false
   }
 
-  @IBAction func stageUnstageAll(sender: Any?)
+  @IBAction func stageUnstageAll(_ sender: Any?)
   {
     guard let segmentControl = sender as? NSSegmentedControl
     else { return }
@@ -461,7 +643,7 @@ extension XTFileViewController: NSOutlineViewDelegate
 {
   private func image(forChange change: XitChange) -> NSImage?
   {
-    return changeImages[change.rawValue]
+    return changeImages[change]
   }
 
   private func displayChange(forChange change: XitChange,
@@ -476,7 +658,7 @@ extension XTFileViewController: NSOutlineViewDelegate
   {
     let change = displayChange(forChange:change, otherChange:otherChange)
     
-    return stageImages[change.rawValue]
+    return stageImages[change]
   }
 
   private func tableButtonView(_ identifier: String,
@@ -589,9 +771,7 @@ extension XTFileViewController: NSOutlineViewDelegate
                    didAdd rowView: NSTableRowView,
                    forRow row: Int)
   {
-    if let fileRowView = rowView as? FileRowView {
-      fileRowView.outlineView = fileListOutline
-    }
+    (rowView as? FileRowView)?.outlineView = fileListOutline
   }
 }
 

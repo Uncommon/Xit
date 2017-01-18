@@ -77,7 +77,7 @@ class XTFileChangesDataSource : XTFileListDataSourceBase
         outlineView.reloadData(forRowIndexes: newChangeIndexes,
                                columnIndexes: allColumnIndexes)
       }
-      if outlineView.selectedRow != -1 {
+      if outlineView.selectedRow == -1 {
         outlineView.selectRowIndexes(NSIndexSet(index: 0) as IndexSet,
                                      byExtendingSelection: false)
       }
