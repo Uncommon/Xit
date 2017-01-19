@@ -399,7 +399,7 @@ class XTFileViewController: NSViewController
   
   func click(button: NSButton, staging: Bool)
   {
-    if checkDoubleClick(button),
+    if modelCanCommit && checkDoubleClick(button),
        let path = path(from: button) {
       button.isEnabled = false
       if staging {
@@ -686,24 +686,19 @@ extension XTFileViewController: NSOutlineViewDelegate
                                otherChange: XitChange,
                                row: Int) -> XTTableButtonView
   {
-    let cell = fileListOutline.make(withIdentifier: identifier, owner: self)
-               as! XTTableButtonView
-    let button = cell.button
+    let cellView = fileListOutline.make(withIdentifier: identifier, owner: self)
+                   as! XTTableButtonView
+    let button = cellView.button
+    let displayChange = self.displayChange(forChange:change,
+                                           otherChange:otherChange)
     
     (button.cell as! NSButtonCell).imageDimsWhenDisabled = false
-    if modelCanCommit {
-      button.image = stagingImage(forChange:change,
-                                  otherChange:otherChange)
-      button.isEnabled = displayChange(forChange:change,
-                                       otherChange:otherChange)
-                         != .mixed
-    }
-    else {
-      button.image = image(forChange:change)
-      button.isEnabled = false
-    }
-    cell.row = row
-    return cell
+    button.isEnabled = displayChange != .mixed
+    button.image = modelCanCommit
+        ? stagingImage(forChange:change, otherChange:otherChange)
+        : image(forChange:change)
+    cellView.row = row
+    return cellView
   }
 
   func outlineView(_ outlineView: NSOutlineView,
