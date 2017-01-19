@@ -582,7 +582,7 @@
                 <outlet property="view" destination="71" id="77"/>
             </connections>
         </customObject>
-        <customObject id="58" customClass="XTTextPreviewController">
+        <customObject id="58" customClass="XTTextPreviewController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="_webView" destination="57" id="59"/>
                 <outlet property="view" destination="57" id="60"/>
