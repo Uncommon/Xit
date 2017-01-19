@@ -22,9 +22,7 @@
                 <outlet property="leftPane" destination="yIN-xT-jEO" id="m1y-Yf-nyz"/>
                 <outlet property="previewController" destination="3g8-eR-FPJ" id="dy4-6W-vsZ"/>
                 <outlet property="previewPath" destination="gna-OS-Gx2" id="RDg-dh-fJV"/>
-                <outlet property="previewSelector" destination="zOv-gm-Q8M" id="XWz-1t-Hyz"/>
                 <outlet property="previewTabView" destination="52" id="62"/>
-                <outlet property="rightPane" destination="LHY-c4-rvq" id="Yry-QT-bGO"/>
                 <outlet property="stageButtons" destination="0gj-go-0vi" id="aea-wk-l2j"/>
                 <outlet property="stageSelector" destination="2h9-2i-j6F" id="i5H-X6-6ss"/>
                 <outlet property="textController" destination="58" id="xo6-ln-nOf"/>

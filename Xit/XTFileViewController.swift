@@ -59,13 +59,11 @@ class XTFileViewController: NSViewController
   @IBOutlet weak var headerSplitView: NSSplitView!
   @IBOutlet weak var fileSplitView: NSSplitView!
   @IBOutlet weak var leftPane: NSView!
-  @IBOutlet weak var rightPane: NSView!
   @IBOutlet weak var fileListOutline: NSOutlineView!
   @IBOutlet weak var headerTabView: NSTabView!
   @IBOutlet weak var previewTabView: NSTabView!
   @IBOutlet weak var viewSelector: NSSegmentedControl!
   @IBOutlet weak var stageSelector: NSSegmentedControl!
-  @IBOutlet weak var previewSelector: NSSegmentedControl!
   @IBOutlet weak var stageButtons: NSSegmentedControl!
   @IBOutlet weak var actionButton: NSPopUpButton!
   @IBOutlet weak var previewPath: NSPathControl!
