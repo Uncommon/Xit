@@ -594,7 +594,7 @@
                 <outlet property="view" destination="e4U-lz-eEd" id="94Q-P5-Sfh"/>
             </connections>
         </customObject>
-        <customObject id="3g8-eR-FPJ" customClass="XTPreviewController">
+        <customObject id="3g8-eR-FPJ" customClass="XTPreviewController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="view" destination="4" id="aa2-ft-Co4"/>
             </connections>

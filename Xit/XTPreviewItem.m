@@ -1,6 +1,7 @@
 #import "XTPreviewItem.h"
 #import "XTConstants.h"
 #import "XTRepository+Parsing.h"
+#import "Xit-Swift.h"
 
 @interface XTPreviewItem ()
 

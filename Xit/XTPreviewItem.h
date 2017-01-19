@@ -1,8 +1,8 @@
 #import <Foundation/Foundation.h>
 #import <Quartz/Quartz.h>
-#import "Xit-Swift.h"
 
 @class XTRepository;
+@protocol XTFileChangesModel;
 
 /**
   QuickLook preview item for binary file previews.
