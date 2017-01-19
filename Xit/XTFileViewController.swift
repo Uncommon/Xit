@@ -1,9 +1,31 @@
 import Foundation
 import Quartz
 
+/// Interface for a controller that displays file content in some form.
+protocol XTFileContentController
+{
+  /// Clears the display for when nothing is selected.
+  func clear()
+  /// Displays the content from the given file model.
+  /// - parameter path: The repository-relative file path.
+  /// - parameter model: The model to read data from.
+  /// - parameter staged: Whether to show staged content.
+  func load(path: String!, model: XTFileChangesModel!, staged: Bool)
+}
+
+@objc
+protocol WhitespaceVariable
+{
+  var whitespace: XTWhitespace { get set }
+}
+
+@objc
+protocol TabWidthVariable
+{
+  var tabWidth: UInt { get set }
+}
 
 /// View controller for the file list and detail view.
-@objc
 class XTFileViewController: NSViewController
 {
   /// Column identifiers for the file list

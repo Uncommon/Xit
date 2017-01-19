@@ -1,6 +1,5 @@
 #import "XTFileListDataSourceBase.h"
 #import "XTConstants.h"
-#import "XTFileViewController.h"
 #import "XTRepository.h"
 #import "Xit-Swift.h"
 #import <objc/runtime.h>

@@ -6,7 +6,6 @@
 #import "XTConstants.h"
 #import "XTDocument.h"
 #import "XTFileTreeDataSource.h"
-#import "XTFileViewController.h"
 #import "XTPreviewItem.h"
 #import "XTRefFormatter.h"
 #import "XTRefToken.h"
