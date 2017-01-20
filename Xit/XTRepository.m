@@ -64,17 +64,21 @@ NSString *XTPathsKey = @"paths";
           [[XTWorkspaceWatcher alloc] initWithRepository:self];
       self.config = [[XTConfig alloc] initWithRepository:self];
       
+      __weak XTRepository *weakSelf = self;
+      
       [[NSNotificationCenter defaultCenter]
           addObserverForName:XTRepositoryRefsChangedNotification
                       object:self
                        queue:nil
                   usingBlock:^(NSNotification * _Nonnull note) {
-        NSString *newBranch = [self calculateCurrentBranch];
-        
-        if (![_cachedBranch isEqualToString:newBranch]) {
-          [self willChangeValueForKey:@"currentBranch"];
-          _cachedBranch = newBranch;
-          [self didChangeValueForKey:@"currentBranch"];
+        if (weakSelf != nil) {
+          NSString *newBranch = [weakSelf calculateCurrentBranch];
+          
+          if (![_cachedBranch isEqualToString:newBranch]) {
+            [weakSelf willChangeValueForKey:@"currentBranch"];
+            _cachedBranch = newBranch;
+            [weakSelf didChangeValueForKey:@"currentBranch"];
+          }
         }
       }];
     }

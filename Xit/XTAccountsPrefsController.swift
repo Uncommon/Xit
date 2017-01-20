@@ -27,8 +27,9 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
     authStatusObserver = notificationCenter.addObserver(
         forName: NSNotification.Name(rawValue: XTBasicAuthService.AuthenticationStatusChangedNotification),
         object: nil,
-        queue: OperationQueue.main) { (_) in
-      self.accountsTable.reloadData()
+        queue: OperationQueue.main) {
+      [weak self] (_) in
+      self?.accountsTable.reloadData()
     }
   }
   

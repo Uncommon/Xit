@@ -63,8 +63,8 @@ class XTWindowController: NSWindowController, NSWindowDelegate
     refsChangedObserver = NotificationCenter.default.addObserver(
         forName: NSNotification.Name.XTRepositoryRefsChanged,
         object: repo, queue: nil) {
-      (notification) in
-      self.updateBranchList()
+      [weak self] _ in
+      self?.updateBranchList()
     }
     window.addObserver(self, forKeyPath: #keyPath(NSWindow.title),
                        options: [], context: nil)
@@ -83,6 +83,8 @@ class XTWindowController: NSWindowController, NSWindowDelegate
     refsChangedObserver.map { center.removeObserver($0) }
     center.removeObserver(self)
     currentOperation?.canceled = true
+    xtDocument?.repository.removeObserver(
+        self, forKeyPath: #keyPath(XTRepository.currentBranch))
   }
   
   override func observeValue(forKeyPath keyPath: String?,
@@ -354,8 +356,8 @@ extension XTWindowController: NSToolbarDelegate
   {
     guard let item = notification.userInfo?["item"] as? NSToolbarItem,
           item.itemIdentifier == "com.uncommonplace.xit.titlebar",
-          let viewController = XTTitleBarViewController(
-              nibName: "TitleBar", bundle: nil)
+          let viewController = XTTitleBarViewController(nibName: "TitleBar",
+                                                        bundle: nil)
     else { return }
     
     let repository = xtDocument!.repository!

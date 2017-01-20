@@ -23,8 +23,11 @@ class PrefsTabViewController: NSTabViewController
     observer = NotificationCenter.default.addObserver(
         forName: NSNotification.Name.NSWindowDidResignKey,
         object: window, queue: .main) {
-      _ in
-      for item in self.tabViewItems {
+      [weak self] _ in
+      guard let items = self?.tabViewItems
+      else { return }
+      
+      for item in items {
         guard let controller = item.viewController as? PreferencesSaver
         else { continue }
         

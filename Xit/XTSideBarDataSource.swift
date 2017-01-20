@@ -56,8 +56,8 @@ extension XTSideBarDataSource
         forName: NSNotification.Name.XTTeamCityStatusChanged,
         object: nil,
         queue: .main) {
-      _ in
-      self.updateTeamCity()
+      [weak self] _ in
+      self?.updateTeamCity()
     }
   }
   

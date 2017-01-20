@@ -1,6 +1,6 @@
 import Cocoa
 
-protocol XTTitleBarDelegate
+protocol XTTitleBarDelegate: class
 {
   var viewStates: (sidebar: Bool, history: Bool, details: Bool) { get }
 
@@ -24,7 +24,7 @@ class XTTitleBarViewController: NSViewController
   @IBOutlet weak var operationControls: NSSegmentedControl!
   @IBOutlet weak var viewControls: NSSegmentedControl!
   
-  var delegate: XTTitleBarDelegate? = nil
+  weak var delegate: XTTitleBarDelegate? = nil
   
   @IBAction func remoteAction(_ sender: NSSegmentedControl)
   {

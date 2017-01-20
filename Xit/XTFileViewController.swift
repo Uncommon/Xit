@@ -164,8 +164,8 @@ class XTFileViewController: NSViewController
       indexObserver = NotificationCenter.default.addObserver(
           forName: NSNotification.Name.XTRepositoryIndexChanged,
           object: repo, queue: .main) {
-        note in
-        self.indexChanged(note)
+        [weak self] note in
+        self?.indexChanged(note)
       }
     }
   }

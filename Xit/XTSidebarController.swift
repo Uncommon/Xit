@@ -162,8 +162,8 @@ class XTSidebarController: NSViewController, SidebarHandler
       indexObserver = NotificationCenter.default.addObserver(
           forName: NSNotification.Name.XTRepositoryIndexChanged,
           object: repo, queue: .main) {
-        _ in
-        self.sidebarOutline.reloadItem(self.sidebarDS.stagingItem)
+        [weak self] _ in
+        self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
       }
     }
   }
