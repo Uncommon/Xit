@@ -61,7 +61,7 @@
                     object:newRepo
                      queue:[NSOperationQueue mainQueue]
                 usingBlock:^(NSNotification * _Nonnull note) {
-      [weakSelf.outline reloadItem:self.roots[XTGroupIndexBranches]
+      [weakSelf.outline reloadItem:weakSelf.roots[XTGroupIndexBranches]
                     reloadChildren:YES];
     }];
     [self reload];

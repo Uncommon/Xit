@@ -24,12 +24,14 @@
   _repository = repository;
   [self reload];
   
+  __weak XTFileListDataSourceBase *weakSelf = self;
+  
   [[NSNotificationCenter defaultCenter]
       addObserverForName:XTRepositoryWorkspaceChangedNotification
                   object:repository
                    queue:[NSOperationQueue mainQueue]
               usingBlock:^(NSNotification * _Nonnull note) {
-    [self workspaceChanged:note.userInfo[XTPathsKey]];
+    [weakSelf workspaceChanged:note.userInfo[XTPathsKey]];
   }];
 }
 
