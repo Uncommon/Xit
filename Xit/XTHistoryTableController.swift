@@ -158,7 +158,7 @@ public class XTHistoryTableController: NSViewController
     
     tableView.selectRowIndexes(IndexSet(integer: row),
                                byExtendingSelection: false)
-    if forceScroll || (view.window?.firstResponder != tableView) {
+    if forceScroll || (view.window?.firstResponder !== tableView) {
       tableView.scrollRowToCenter(row)
     }
   }
@@ -256,7 +256,7 @@ extension XTHistoryTableController: NSTableViewDelegate
  
   public func tableViewSelectionDidChange(_ notification: Notification)
   {
-    guard view.window?.firstResponder == view,
+    guard view.window?.firstResponder === view,
           let tableView = notification.object as? NSTableView
     else { return }
     

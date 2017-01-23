@@ -5,7 +5,6 @@ class XTWindowController: NSWindowController, NSWindowDelegate
 {
   @IBOutlet var sidebarController: XTSidebarController!
   @IBOutlet weak var mainSplitView: NSSplitView!
-  @IBOutlet var activity: NSProgressIndicator!
   
   var historyController: XTHistoryViewController!
   weak var xtDocument: XTDocument?
@@ -85,6 +84,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate
     currentOperation?.canceled = true
     xtDocument?.repository.removeObserver(
         self, forKeyPath: #keyPath(XTRepository.currentBranch))
+    window?.removeObserver(self, forKeyPath: #keyPath(NSWindow.title))
   }
   
   override func observeValue(forKeyPath keyPath: String?,
@@ -309,6 +309,15 @@ class XTWindowController: NSWindowController, NSWindowDelegate
         result = false
     }
     return result
+  }
+  
+  func windowWillClose(_ notification: Notification)
+  {
+    titleBarController?.titleLabel.unbind("value")
+    titleBarController?.proxyIcon.unbind("hidden")
+    titleBarController?.spinner.unbind("hidden")
+    // For some reason this avoids a crash
+    window?.makeFirstResponder(nil)
   }
 }
 
