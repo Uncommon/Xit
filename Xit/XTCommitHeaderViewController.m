@@ -8,11 +8,21 @@
 NSString *XTHeaderResizedNotificaiton = @"XTHeaderResizedNotificaiton";
 NSString *XTHeaderHeightKey = @"height";
 
+
+@interface XTCommitHeaderActionDelegate: NSObject
+
+@property (weak) XTCommitHeaderViewController *controller;
+
+@end
+
+
 @interface XTCommitHeaderViewController ()
 
 @property NSArray *parents;
+@property XTCommitHeaderActionDelegate *actionDelegate;
 
 @end
+
 
 @implementation XTCommitHeaderViewController
 
@@ -25,20 +35,12 @@ NSString *XTHeaderHeightKey = @"height";
   return formatter;
 }
 
-+ (BOOL)isSelectorExcludedFromWebScript:(SEL)selector
+- (void)awakeFromNib
 {
-  if (selector == @selector(selectSHA:))
-    return NO;
-  if (selector == @selector(headerToggled))
-    return NO;
-  return YES;
-}
-
-+ (NSString*)webScriptNameForSelector:(SEL)selector
-{
-  if (selector == @selector(selectSHA:))
-    return @"selectSHA";
-  return @"";
+  if (self.actionDelegate == nil) {
+    self.actionDelegate = [[XTCommitHeaderActionDelegate alloc] init];
+    self.actionDelegate.controller = self;
+  }
 }
 
 - (NSURL*)templateURL
@@ -97,7 +99,7 @@ NSString *XTHeaderHeightKey = @"height";
                             [parentSHA substringToIndex:6], encodedSummary];
     
     [parents appendFormat:@"<div><span class=\"parent\" "
-                           "onclick=\"window.controller.selectSHA('%@')\">"
+                           "onclick=\"window.webActionDelegate.selectSHA('%@')\">"
                            "%@</span></div>",
                            parentSHA, parentText];
   }
@@ -168,21 +170,46 @@ dragDestinationActionMaskForDraggingInfo:(id<NSDraggingInfo>)draggingInfo
                                        withArguments:@[ @(NO), @(YES) ]];
 }
 
-#pragma mark - Web scripting
+- (id)webActionDelegate
+{
+  return self.actionDelegate;
+}
+
+@end
+
+
+@implementation XTCommitHeaderActionDelegate
+
++ (BOOL)isSelectorExcludedFromWebScript:(SEL)selector
+{
+  if (selector == @selector(selectSHA:))
+    return NO;
+  if (selector == @selector(headerToggled))
+    return NO;
+  return YES;
+}
+
++ (NSString*)webScriptNameForSelector:(SEL)selector
+{
+  if (selector == @selector(selectSHA:))
+    return @"selectSHA";
+  return @"";
+}
 
 - (void)selectSHA:(NSString*)sha
 {
-  self.winController.selectedModel =
-      [[XTCommitChanges alloc] initWithRepository:self.repository sha:sha];
+  self.controller.winController.selectedModel =
+      [[XTCommitChanges alloc] initWithRepository:self.controller.repository
+                                              sha:sha];
 }
 
 - (void)headerToggled
 {
-  const CGFloat newHeight = [self headerHeight];
+  const CGFloat newHeight = [self.controller headerHeight];
 
   [[NSNotificationCenter defaultCenter]
       postNotificationName:XTHeaderResizedNotificaiton
-      object:self
+      object:self.controller
       userInfo:@{ XTHeaderHeightKey: @(newHeight) }];
 }
 

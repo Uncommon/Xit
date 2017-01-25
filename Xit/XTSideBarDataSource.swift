@@ -3,7 +3,11 @@ import Cocoa
 
 extension XTSideBarDataSource
 {
-  @nonobjc static let kReloadInterval: TimeInterval = 1
+  struct Intervals
+  {
+    static let teamCityRefresh: TimeInterval = 60 * 5
+    static let reloadDelay: TimeInterval = 1
+  }
   
   var selectedItem: XTSideBarItem?
   {
@@ -47,17 +51,17 @@ extension XTSideBarDataSource
     outline!.doubleAction = #selector(XTSideBarDataSource.doubleClick(_:))
     if (!XTAccountsManager.manager.accounts(ofType: .teamCity).isEmpty) {
       buildStatusTimer = Timer.scheduledTimer(
-          timeInterval: 60 * 5,
-          target: self,
-          selector: #selector(XTSideBarDataSource.buildStatusTimerFired(_:)),
-          userInfo: nil, repeats: true)
+          withTimeInterval: Intervals.teamCityRefresh, repeats: true) {
+        [weak self] _ in
+        self?.updateTeamCity()
+      }
     }
     teamCityObserver = NotificationCenter.default.addObserver(
         forName: NSNotification.Name.XTTeamCityStatusChanged,
         object: nil,
         queue: .main) {
-      _ in
-      self.updateTeamCity()
+      [weak self] _ in
+      self?.updateTeamCity()
     }
   }
   
@@ -86,38 +90,29 @@ extension XTSideBarDataSource
     reloadTimer?.invalidate()
   }
   
-  func buildStatusTimerFired(_ timer: Timer)
-  {
-    updateTeamCity()
-  }
-  
   func scheduleReload()
   {
     if let timer = reloadTimer , timer.isValid {
-      timer.fireDate =
-          Date(timeIntervalSinceNow: XTSideBarDataSource.kReloadInterval)
+      timer.fireDate = Date(timeIntervalSinceNow: Intervals.reloadDelay)
     }
     else {
-      reloadTimer = Timer.scheduledTimer(
-          timeInterval: XTSideBarDataSource.kReloadInterval,
-          target: self,
-          selector: #selector(XTSideBarDataSource.reloadTimerFired(_:)),
-          userInfo: nil,
-          repeats: false)
-    }
-  }
-  
-  func reloadTimerFired(_ timer: Timer)
-  {
-    DispatchQueue.main.async {
-      let savedSelection = self.selectedItem
-      
-      self.outline!.reloadData()
-      if savedSelection != nil {
-        self.selectedItem = savedSelection
+      reloadTimer = Timer.scheduledTimer(withTimeInterval: Intervals.reloadDelay,
+                                         repeats: false) {
+        [weak self] _ in
+        guard let sidebarDS = self
+        else { return }
+        
+        DispatchQueue.main.async {
+          let savedSelection = sidebarDS.selectedItem
+          
+          sidebarDS.outline!.reloadData()
+          if savedSelection != nil {
+            sidebarDS.selectedItem = savedSelection
+          }
+        }
+        sidebarDS.reloadTimer = nil
       }
     }
-    reloadTimer = nil
   }
   
   func makeRoots() -> [XTSideBarGroupItem]

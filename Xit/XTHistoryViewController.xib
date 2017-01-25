@@ -8,7 +8,6 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="XTHistoryViewController" customModule="Xit" customModuleProvider="target">
             <connections>
-                <outlet property="commitTable" destination="No3-Ik-sWu" id="dkg-3y-hVy"/>
                 <outlet property="historyTable" destination="No3-Ik-sWu" id="J6H-r5-bX8"/>
                 <outlet property="mainSplitView" destination="13" id="AuV-Jw-5yM"/>
                 <outlet property="tableController" destination="IYz-w0-bcN" id="CLT-wB-Gyk"/>
@@ -59,11 +58,11 @@
                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                 <prototypeCellViews>
                                                     <tableCellView identifier="commit" id="oW4-S9-MQ4" customClass="XTHistoryCellView" customModule="Xit" customModuleProvider="target">
-                                                        <rect key="frame" x="1" y="1" width="422.5" height="17"/>
+                                                        <rect key="frame" x="1" y="1" width="423" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="oMe-ke-Jkz">
-                                                                <rect key="frame" x="76" y="0.0" width="346.5" height="17"/>
+                                                                <rect key="frame" x="76" y="0.0" width="347" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="g1y-W2-Nej">
                                                                     <font key="font" metaFont="system"/>
@@ -92,11 +91,11 @@
                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                 <prototypeCellViews>
                                                     <tableCellView identifier="email" id="YBF-IH-NHG">
-                                                        <rect key="frame" x="426.5" y="1" width="188.5" height="17"/>
+                                                        <rect key="frame" x="427" y="1" width="188" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="LZ4-Sa-GPC">
-                                                                <rect key="frame" x="0.0" y="0.0" width="190.5" height="17"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="190" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="vVQ-tJ-ehj">
                                                                     <font key="font" metaFont="system"/>

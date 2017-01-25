@@ -15,6 +15,9 @@
 @property (readwrite) NSArray<XTSideBarGroupItem*> *roots;
 @property (readwrite) XTSideBarItem *stagingItem;
 
+@property (nullable) id<NSObject> headChangedObserver;
+@property (nullable) id<NSObject> refsChangedObserver;
+
 @end
 
 
@@ -32,9 +35,15 @@
 
 - (void)dealloc
 {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+
+  [center removeObserver:self];
   if (self.teamCityObserver != nil)
-    [[NSNotificationCenter defaultCenter] removeObserver:self.teamCityObserver];
+    [center removeObserver:self.teamCityObserver];
+  if (self.headChangedObserver != nil)
+    [center removeObserver:self.headChangedObserver];
+  if (self.refsChangedObserver != nil)
+    [center removeObserver:self.refsChangedObserver];
   [self.buildStatusTimer invalidate];
 }
 
@@ -42,27 +51,26 @@
 {
   _repo = newRepo;
   if (_repo != nil) {
+    __weak XTSideBarDataSource *weakSelf = self;
+    
     _stagingItem.model = [[XTStagingChanges alloc] initWithRepository:_repo];
-    [[NSNotificationCenter defaultCenter]
-        addObserver:self
-           selector:@selector(refsChanged:)
-               name:XTRepositoryRefsChangedNotification
-             object:newRepo];
-    [[NSNotificationCenter defaultCenter]
+    self.refsChangedObserver = [[NSNotificationCenter defaultCenter]
         addObserverForName:XTRepositoryHeadChangedNotification
                     object:newRepo
                      queue:[NSOperationQueue mainQueue]
                 usingBlock:^(NSNotification * _Nonnull note) {
-      [self.outline reloadItem:self.roots[XTGroupIndexBranches]
-                reloadChildren:YES];
+      [weakSelf reload];
+    }];
+    self.headChangedObserver = [[NSNotificationCenter defaultCenter]
+        addObserverForName:XTRepositoryHeadChangedNotification
+                    object:newRepo
+                     queue:[NSOperationQueue mainQueue]
+                usingBlock:^(NSNotification * _Nonnull note) {
+      [weakSelf.outline reloadItem:weakSelf.roots[XTGroupIndexBranches]
+                    reloadChildren:YES];
     }];
     [self reload];
   }
-}
-
-- (void)refsChanged:(NSNotification*)note
-{
-  [self reload];
 }
 
 - (void)reload

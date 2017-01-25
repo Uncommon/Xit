@@ -30,19 +30,19 @@ public class XTHistoryTableController: NSViewController
       refsChangedObserver = NotificationCenter.default.addObserver(
           forName: NSNotification.Name.XTRepositoryRefsChanged,
           object: repository, queue: .main) {
-        (notification) in
+        [weak self] _ in
         // To do: dynamic updating
         // - new and changed refs: add if they're not already in the list
         // - deleted and changed refs: recursively remove unreferenced commits
         
         // For now: just reload
-        self.reload()
+        self?.reload()
       }
       reselectObserver = NotificationCenter.default.addObserver(
           forName: NSNotification.Name.XTReselectModel,
           object: repository, queue: .main) {
-        _ in
-        guard let tableView = self.view as? NSTableView,
+        [weak self] _ in
+        guard let tableView = self?.view as? NSTableView,
               let selectedIndex = tableView.selectedRowIndexes.first
         else { return }
         
@@ -70,8 +70,8 @@ public class XTHistoryTableController: NSViewController
     selectionObserver = NotificationCenter.default.addObserver(
         forName: NSNotification.Name.XTSelectedModelChanged,
         object: controller,
-        queue: nil) { [weak self]
-      (notification) in
+        queue: nil) {
+      [weak self] (notification) in
       if let selectedModel = notification.userInfo?[NSKeyValueChangeKey.newKey]
                              as? XTFileChangesModel {
         self?.selectRow(sha: selectedModel.shaToSelect)
@@ -158,7 +158,7 @@ public class XTHistoryTableController: NSViewController
     
     tableView.selectRowIndexes(IndexSet(integer: row),
                                byExtendingSelection: false)
-    if forceScroll || (view.window?.firstResponder != tableView) {
+    if forceScroll || (view.window?.firstResponder !== tableView) {
       tableView.scrollRowToCenter(row)
     }
   }
@@ -256,7 +256,7 @@ extension XTHistoryTableController: NSTableViewDelegate
  
   public func tableViewSelectionDidChange(_ notification: Notification)
   {
-    guard view.window?.firstResponder == view,
+    guard view.window?.firstResponder === view,
           let tableView = notification.object as? NSTableView
     else { return }
     

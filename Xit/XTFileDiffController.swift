@@ -96,7 +96,7 @@ class XTFileDiffController: XTWebViewController,
     
     let html = String(format: htmlTemplate, textLines)
     
-    webView.mainFrame.loadHTMLString(html, baseURL: XTWebViewController.baseURL())
+    webView?.mainFrame.loadHTMLString(html, baseURL: XTWebViewController.baseURL())
   }
   
   func loadOrNotify(diffMaker: XTDiffMaker?)
@@ -119,7 +119,7 @@ extension XTFileDiffController: XTFileContentController
 {
   public func clear()
   {
-    webView.mainFrame.loadHTMLString("", baseURL: URL(fileURLWithPath: "/"))
+    webView?.mainFrame.loadHTMLString("", baseURL: URL(fileURLWithPath: "/"))
   }
   
   public func load(path: String!, model: XTFileChangesModel!, staged: Bool)

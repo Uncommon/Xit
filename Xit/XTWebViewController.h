@@ -8,10 +8,10 @@ NS_ASSUME_NONNULL_BEGIN
 **/
 @interface XTWebViewController : NSViewController
     <WebFrameLoadDelegate, WebUIDelegate> {
-  IBOutlet WebView *_webView;
+  __weak IBOutlet WebView *_webView;
 }
 
-@property WebView *webView;
+@property (weak) WebView *webView;
 @property NSUInteger tabWidth;
 @property NSUInteger savedTabWidth;
 
@@ -21,6 +21,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)loadNotice:(NSString*)text;
 - (void)webView:(WebView*)sender didFinishLoadForFrame:(WebFrame*)frame;
+
+- (id)webActionDelegate;
 
 @end
 

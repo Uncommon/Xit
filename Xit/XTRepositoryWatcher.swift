@@ -33,7 +33,8 @@ let XTChangedRefsKey = "changedRefs"
                                        excludePaths: [objectsPath],
                                        queue: repository.queue,
                                        callback: {
-       (paths) in self.observeEvents(paths)
+       [weak self] (paths) in
+       self?.observeEvents(paths)
     })
     else { return nil }
   
@@ -155,6 +156,7 @@ let XTChangedRefsKey = "changedRefs"
       repository.rebuildRefsIndex()
       NotificationCenter.default.post(
           name: NSNotification.Name.XTRepositoryRefsChanged, object: repository)
+      repository.refsChanged()
     }
     
     refsCache = newRefCache

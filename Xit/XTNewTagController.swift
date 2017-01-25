@@ -43,7 +43,7 @@ class XTNewTagController: XTOperationController
         repository.createLightweightTag(name, targetSHA: sha)
       }
       NotificationCenter.default.post(
-        name: NSNotification.Name.XTRepositoryRefsChanged, object: repository)
+          name: NSNotification.Name.XTRepositoryRefsChanged, object: repository)
       self.ended()
     }
   }

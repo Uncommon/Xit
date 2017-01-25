@@ -5,7 +5,6 @@ class XTWindowController: NSWindowController, NSWindowDelegate
 {
   @IBOutlet var sidebarController: XTSidebarController!
   @IBOutlet weak var mainSplitView: NSSplitView!
-  @IBOutlet var activity: NSProgressIndicator!
   
   var historyController: XTHistoryViewController!
   weak var xtDocument: XTDocument?
@@ -63,8 +62,8 @@ class XTWindowController: NSWindowController, NSWindowDelegate
     refsChangedObserver = NotificationCenter.default.addObserver(
         forName: NSNotification.Name.XTRepositoryRefsChanged,
         object: repo, queue: nil) {
-      (notification) in
-      self.updateBranchList()
+      [weak self] _ in
+      self?.updateBranchList()
     }
     window.addObserver(self, forKeyPath: #keyPath(NSWindow.title),
                        options: [], context: nil)
@@ -83,6 +82,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate
     refsChangedObserver.map { center.removeObserver($0) }
     center.removeObserver(self)
     currentOperation?.canceled = true
+    window?.removeObserver(self, forKeyPath: #keyPath(NSWindow.title))
   }
   
   override func observeValue(forKeyPath keyPath: String?,
@@ -308,6 +308,17 @@ class XTWindowController: NSWindowController, NSWindowDelegate
     }
     return result
   }
+  
+  func windowWillClose(_ notification: Notification)
+  {
+    titleBarController?.titleLabel.unbind("value")
+    titleBarController?.proxyIcon.unbind("hidden")
+    titleBarController?.spinner.unbind("hidden")
+    xtDocument?.repository.removeObserver(
+        self, forKeyPath: #keyPath(XTRepository.currentBranch))
+    // For some reason this avoids a crash
+    window?.makeFirstResponder(nil)
+  }
 }
 
 // MARK: NSSplitViewDelegate
@@ -354,8 +365,8 @@ extension XTWindowController: NSToolbarDelegate
   {
     guard let item = notification.userInfo?["item"] as? NSToolbarItem,
           item.itemIdentifier == "com.uncommonplace.xit.titlebar",
-          let viewController = XTTitleBarViewController(
-              nibName: "TitleBar", bundle: nil)
+          let viewController = XTTitleBarViewController(nibName: "TitleBar",
+                                                        bundle: nil)
     else { return }
     
     let repository = xtDocument!.repository!

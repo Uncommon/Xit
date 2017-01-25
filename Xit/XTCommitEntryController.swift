@@ -11,8 +11,8 @@ class XTCommitEntryController: NSViewController
           forName: NSNotification.Name.XTRepositoryIndexChanged,
           object: repo,
           queue: .main) {
-        _ in
-        self.updateStagedStatus()
+        [weak self] _ in
+        self?.updateStagedStatus()
       }
     }
   }

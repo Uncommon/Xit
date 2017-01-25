@@ -12,8 +12,8 @@ class XTTextPreviewController: XTWebViewController, TabWidthVariable
     let htmlTemplate = XTWebViewController.htmlTemplate("text")
     let html = String(format: htmlTemplate, textLines)
     
-    webView.mainFrame.loadHTMLString(html,
-                                     baseURL: XTTextPreviewController.baseURL())
+    webView?.mainFrame.loadHTMLString(html,
+                                      baseURL: XTTextPreviewController.baseURL())
   }
   
   func load(data: Data?)
@@ -31,7 +31,7 @@ extension XTTextPreviewController: XTFileContentController
 {
   public func clear()
   {
-    webView.mainFrame.loadHTMLString("", baseURL: nil)
+    webView?.mainFrame.loadHTMLString("", baseURL: nil)
   }
   
   public func load(path: String!, model: XTFileChangesModel!, staged: Bool)
