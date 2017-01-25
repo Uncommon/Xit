@@ -70,6 +70,11 @@ const NSInteger WebMenuItemTagInspectElement = 2024;
   [_webView.mainFrame loadHTMLString:html baseURL:[[self class] baseURL]];
 }
 
+- (id)webActionDelegate
+{
+  return nil;
+}
+
 - (void)webView:(WebView*)sender didFinishLoadForFrame:(WebFrame*)frame
 {
   NSScrollView *scrollView =
@@ -78,7 +83,13 @@ const NSInteger WebMenuItemTagInspectElement = 2024;
   [scrollView setHasHorizontalScroller:NO];
   scrollView.horizontalScrollElasticity = NSScrollElasticityNone;
   scrollView.backgroundColor = [NSColor colorWithDeviceWhite:0.8 alpha:1.0];
-  [_webView.windowScriptObject setValue:self forKey:@"controller"];
+  
+  id webActionDelegate = [self webActionDelegate];
+  
+  if (webActionDelegate != nil)
+    [_webView.windowScriptObject setValue:webActionDelegate
+                                   forKey:@"webActionDelegate"];
+  
   if (self.savedTabWidth != 0)
     self.tabWidth = self.savedTabWidth;
   else

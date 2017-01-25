@@ -22,6 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)loadNotice:(NSString*)text;
 - (void)webView:(WebView*)sender didFinishLoadForFrame:(WebFrame*)frame;
 
+- (id)webActionDelegate;
+
 @end
 
 NS_ASSUME_NONNULL_END

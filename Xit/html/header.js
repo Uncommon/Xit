@@ -21,5 +21,5 @@ function disclosure(clicked, forceDisclose)
 	}
 	button.src = newImage;
   if (clicked)
-    window.controller.headerToggled();
+    window.webActionDelegate.headerToggled();
 }
