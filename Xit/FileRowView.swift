@@ -3,7 +3,7 @@ import Cocoa
 @objc(XTFileRowView)
 class FileRowView: NSTableRowView
 {
-  var outlineView: NSOutlineView!
+  weak var outlineView: NSOutlineView!
   
   override func drawBackground(in dirtyRect: NSRect)
   {

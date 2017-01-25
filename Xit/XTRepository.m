@@ -63,24 +63,6 @@ NSString *XTPathsKey = @"paths";
       self.workspaceWatcher =
           [[XTWorkspaceWatcher alloc] initWithRepository:self];
       self.config = [[XTConfig alloc] initWithRepository:self];
-      
-      __weak XTRepository *weakSelf = self;
-      
-      [[NSNotificationCenter defaultCenter]
-          addObserverForName:XTRepositoryRefsChangedNotification
-                      object:self
-                       queue:nil
-                  usingBlock:^(NSNotification * _Nonnull note) {
-        if (weakSelf != nil) {
-          NSString *newBranch = [weakSelf calculateCurrentBranch];
-          
-          if (![_cachedBranch isEqualToString:newBranch]) {
-            [weakSelf willChangeValueForKey:@"currentBranch"];
-            _cachedBranch = newBranch;
-            [weakSelf didChangeValueForKey:@"currentBranch"];
-          }
-        }
-      }];
     }
   }
 
@@ -102,6 +84,17 @@ NSString *XTPathsKey = @"paths";
 - (BOOL)busy
 {
   return self.queueCount > 0;
+}
+
+- (void)refsChanged
+{
+  NSString *newBranch = [self calculateCurrentBranch];
+  
+  if (![_cachedBranch isEqualToString:newBranch]) {
+    [self willChangeValueForKey:@"currentBranch"];
+    _cachedBranch = newBranch;
+    [self didChangeValueForKey:@"currentBranch"];
+  }
 }
 
 - (BOOL)executeWritingBlock:(BOOL (^)())block;

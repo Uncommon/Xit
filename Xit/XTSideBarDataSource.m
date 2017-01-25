@@ -16,6 +16,7 @@
 @property (readwrite) XTSideBarItem *stagingItem;
 
 @property (nullable) id<NSObject> headChangedObserver;
+@property (nullable) id<NSObject> refsChangedObserver;
 
 @end
 
@@ -41,6 +42,8 @@
     [center removeObserver:self.teamCityObserver];
   if (self.headChangedObserver != nil)
     [center removeObserver:self.headChangedObserver];
+  if (self.refsChangedObserver != nil)
+    [center removeObserver:self.refsChangedObserver];
   [self.buildStatusTimer invalidate];
 }
 
@@ -51,11 +54,13 @@
     __weak XTSideBarDataSource *weakSelf = self;
     
     _stagingItem.model = [[XTStagingChanges alloc] initWithRepository:_repo];
-    [[NSNotificationCenter defaultCenter]
-        addObserver:self
-           selector:@selector(refsChanged:)
-               name:XTRepositoryRefsChangedNotification
-             object:newRepo];
+    self.refsChangedObserver = [[NSNotificationCenter defaultCenter]
+        addObserverForName:XTRepositoryHeadChangedNotification
+                    object:newRepo
+                     queue:[NSOperationQueue mainQueue]
+                usingBlock:^(NSNotification * _Nonnull note) {
+      [weakSelf reload];
+    }];
     self.headChangedObserver = [[NSNotificationCenter defaultCenter]
         addObserverForName:XTRepositoryHeadChangedNotification
                     object:newRepo
@@ -66,11 +71,6 @@
     }];
     [self reload];
   }
-}
-
-- (void)refsChanged:(NSNotification*)note
-{
-  [self reload];
 }
 
 - (void)reload

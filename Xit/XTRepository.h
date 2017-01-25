@@ -50,6 +50,7 @@ extern NSString *XTPathsKey;
 - (nullable NSData*)contentsOfStagedFile:(NSString*)filePath
                                    error:(NSError**)error;
 
+- (void)refsChanged;
 - (void)addReloadObserver:(id)observer selector:(SEL)selector;
 
 /**

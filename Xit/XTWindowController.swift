@@ -82,8 +82,6 @@ class XTWindowController: NSWindowController, NSWindowDelegate
     refsChangedObserver.map { center.removeObserver($0) }
     center.removeObserver(self)
     currentOperation?.canceled = true
-    xtDocument?.repository.removeObserver(
-        self, forKeyPath: #keyPath(XTRepository.currentBranch))
     window?.removeObserver(self, forKeyPath: #keyPath(NSWindow.title))
   }
   
@@ -316,6 +314,8 @@ class XTWindowController: NSWindowController, NSWindowDelegate
     titleBarController?.titleLabel.unbind("value")
     titleBarController?.proxyIcon.unbind("hidden")
     titleBarController?.spinner.unbind("hidden")
+    xtDocument?.repository.removeObserver(
+        self, forKeyPath: #keyPath(XTRepository.currentBranch))
     // For some reason this avoids a crash
     window?.makeFirstResponder(nil)
   }

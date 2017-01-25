@@ -33,16 +33,6 @@ const NSInteger WebMenuItemTagInspectElement = 2024;
           kCFAllocatorDefault, (__bridge CFStringRef)text, NULL));
 }
 
-- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Initialization code here.
-    }
-    
-    return self;
-}
-
 - (NSUInteger)tabWidth
 {
   DOMCSSStyleDeclaration *style = self.webView.mainFrameDocument.body.style;

@@ -16,7 +16,7 @@ class WorkspaceWatcher : NSObject
         path: repository.repoURL.path,
         excludePaths: [repository.gitDirectoryURL.path],
         queue: repository.queue,
-        callback: { (paths) in self.observeEvents(paths) })
+        callback: { [weak self] (paths) in self?.observeEvents(paths) })
     else { return nil }
     
     self.stream = stream

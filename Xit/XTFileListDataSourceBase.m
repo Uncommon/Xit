@@ -5,13 +5,26 @@
 #import <objc/runtime.h>
 
 
+@interface XTFileListDataSourceBase ()
+
+@property id<NSObject> selectionObserver, workspaceObserver;
+
+@end
+
+
 @implementation XTFileListDataSourceBase
 
 @synthesize controller = _controller;
 
 - (void)dealloc
 {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+
+  [center removeObserver:self];
+  if (self.selectionObserver != nil)
+    [center removeObserver:self.selectionObserver];
+  if (self.workspaceObserver != nil)
+    [center removeObserver:self.workspaceObserver];
 }
 
 - (void)reload
@@ -26,7 +39,7 @@
   
   __weak XTFileListDataSourceBase *weakSelf = self;
   
-  [[NSNotificationCenter defaultCenter]
+  self.workspaceObserver = [[NSNotificationCenter defaultCenter]
       addObserverForName:XTRepositoryWorkspaceChangedNotification
                   object:repository
                    queue:[NSOperationQueue mainQueue]
@@ -40,7 +53,7 @@
   __weak XTFileListDataSourceBase *weakSelf = self;
   
   _winController = winController;
-  [[NSNotificationCenter defaultCenter]
+  self.selectionObserver = [[NSNotificationCenter defaultCenter]
       addObserverForName:XTSelectedModelChangedNotification
                   object:winController
                    queue:nil
