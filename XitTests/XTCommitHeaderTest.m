@@ -43,11 +43,6 @@ NSDate *commitDate = nil;
 
 @property (readonly, strong) FakeGTRepository *gtRepo;
 
-- (BOOL)parseCommit:(NSString *)ref
-         intoHeader:(NSDictionary **)header
-            message:(NSString **)message
-              files:(NSArray **)files;
-
 @end
 
 
@@ -116,27 +111,6 @@ NSDate *commitDate = nil;
 @end
 
 @implementation FakeRepository
-
-- (BOOL)parseCommit:(NSString *)ref
-         intoHeader:(NSDictionary **)header
-            message:(NSString **)message
-              files:(NSArray **)files
-{
-  *header = @{
-      XTAuthorNameKey : @"Guy One",
-      XTAuthorEmailKey : @"guy1@example.com",
-      XTAuthorDateKey : authorDate,
-      XTCommitterNameKey : @"Guy Two",
-      XTCommitterEmailKey : @"guy2@example.com",
-      XTCommitterDateKey : commitDate,
-      XTParentSHAsKey : @[ @"111111", @"222222", @"333333" ],
-      XTRefsKey : [NSArray array],
-      };
-  *message = @"Example message";
-  if (files != NULL)
-    *files = [NSArray array];
-  return YES;
-}
 
 - (FakeGTRepository*)gtRepo
 {

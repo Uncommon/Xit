@@ -3,20 +3,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString *XTHeaderNameKey;
-extern NSString *XTHeaderContentKey;
-
-extern NSString *XTCommitSHAKey,
-    *XTTreeSHAKey,
-    *XTParentSHAsKey,
-    *XTRefsKey,
-    *XTAuthorNameKey,
-    *XTAuthorEmailKey,
-    *XTAuthorDateKey,
-    *XTCommitterNameKey,
-    *XTCommitterEmailKey,
-    *XTCommitterDateKey;
-
 // Values used by changesForRef:
 typedef NS_ENUM(NSUInteger, XitChange) {
   XitChangeUnmodified = GIT_DELTA_UNMODIFIED,

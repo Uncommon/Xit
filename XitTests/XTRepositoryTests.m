@@ -15,8 +15,6 @@
 
 @end
 
-extern NSString *kHeaderFormat;  // From XTRepository+Parsing.m
-
 @implementation XTRepositoryTests
 
 - (void)addInitialRepoContent

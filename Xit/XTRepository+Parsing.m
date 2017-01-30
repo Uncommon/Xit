@@ -6,10 +6,6 @@
 #import "NSDate+Extensions.h"
 #import "Xit-Swift.h"
 
-NSString *XTHeaderNameKey = @"name";
-NSString *XTHeaderContentKey = @"content";
-
-
 @interface XTRepository (Private)
 
 @property (readonly, copy) NSArray *stagingChanges;
@@ -334,24 +330,6 @@ NSString *XTHeaderContentKey = @"content";
   
   return [self deltaFromDiff:diff withPath:path];
 }
-
-NSString *kHeaderFormat = @"--format="
-                           "%H%n%T%n%P%n"     // commit, tree, and parent hashes
-                           "%d%n"             // ref names
-                           "%an%n%ae%n%aD%n"  // author name, email, date
-                           "%cn%n%ce%n%cD"    // committer name, email, date
-                           "%x00%B%x00";      // message
-
-NSString *XTCommitSHAKey = @"sha",
-         *XTTreeSHAKey = @"tree",
-         *XTParentSHAsKey = @"parents",
-         *XTRefsKey = @"refs",
-         *XTAuthorNameKey = @"authorname",
-         *XTAuthorEmailKey = @"authoremail",
-         *XTAuthorDateKey = @"authordate",
-         *XTCommitterNameKey = @"committername",
-         *XTCommitterEmailKey = @"committeremail",
-         *XTCommitterDateKey = @"committerdate";
 
 - (void)parseDateInArray:(NSMutableArray *)array atIndex:(NSUInteger)index
 {
