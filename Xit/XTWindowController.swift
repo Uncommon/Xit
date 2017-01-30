@@ -31,15 +31,18 @@ class XTWindowController: NSWindowController, NSWindowDelegate
     }
   }
   var inStagingView: Bool { return self.selectedCommitSHA == XTStagingSHA }
-  var sidebarHidden: Bool {
+  var sidebarHidden: Bool
+  {
     return mainSplitView.isSubviewCollapsed(mainSplitView.subviews[0])
   }
   var savedSidebarWidth: CGFloat = 180
   
   var currentOperation: XTOperationController?
   
-  override var document: AnyObject? {
-    didSet {
+  override var document: AnyObject?
+  {
+    didSet
+    {
       xtDocument = document as! XTDocument?
     }
   }
@@ -256,7 +259,8 @@ class XTWindowController: NSWindowController, NSWindowDelegate
     controller.start()
   }
   
-  func updateRemotesMenu(_ menu: NSMenu) {
+  func updateRemotesMenu(_ menu: NSMenu)
+  {
     let remoteNames = xtDocument!.repository.remoteNames
     
     menu.removeAllItems()
