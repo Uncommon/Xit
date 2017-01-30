@@ -52,7 +52,6 @@ typedef NS_ENUM(NSUInteger, XitChange) {
               outputBlock:(nullable void (^)(NSString *output))outputBlock
                     error:(NSError**)error;
 
-- (nullable NSArray<NSString*>*)fileNamesForRef:(NSString*)ref;
 /// Returns a list of changed files in the given commit.
 - (nullable NSArray<XTFileChange*>*)changesForRef:(NSString*)ref
                                            parent:(nullable NSString*)parentSHA;
@@ -62,7 +61,6 @@ typedef NS_ENUM(NSUInteger, XitChange) {
                            parentSHA:(nullable NSString*)parentSHA;
 - (BOOL)isTextFile:(NSString*)path commit:(NSString*)commit;
 
-- (nullable NSArray<NSString*>*)remoteNamesWithError:(NSError**)error;
 - (nullable XTRemote*)remoteWithName:(NSString*)name error:(NSError**)error
     NS_SWIFT_NAME(remote(_:));
 

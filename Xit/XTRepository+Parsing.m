@@ -107,27 +107,6 @@
   return error == nil;
 }
 
-- (NSArray<NSString*>*)fileNamesForRef:(NSString *)ref
-{
-  XTCommit *commit = [[XTCommit alloc] initWithRef:ref repository:self];
-
-  if (commit == nil)
-    return nil;
-
-  GTTree *tree = commit.tree;
-  NSMutableArray *result = [NSMutableArray array];
-  NSError *error = nil;
-
-  [tree enumerateEntriesWithOptions:GTTreeEnumerationOptionPre
-                              error:&error
-                              block:^BOOL(GTTreeEntry *entry, NSString *root,
-                                          BOOL *stop) {
-      [result addObject:[root stringByAppendingPathComponent:entry.name]];
-      return YES;  // Don't go into descendants
-  }];
-  return result;
-}
-
 - (GTDiff*)diffForSHA:(NSString*)sha parent:(NSString*)parentSHA
 {
   NSParameterAssert(sha != nil);
@@ -283,11 +262,6 @@
   return result;
 }
 
-- (nullable NSArray<NSString*>*)remoteNamesWithError:(NSError**)error
-{
-  return [_gtRepo remoteNamesWithError:error];
-}
-
 - (nullable XTRemote*)remoteWithName:(NSString*)name error:(NSError**)error
 {
   return [XTRemote remoteWithName:name inRepository:_gtRepo error:error];
@@ -329,14 +303,6 @@
   GTDiff *diff = [self diffForSHA:sha parent:parentSHA];
   
   return [self deltaFromDiff:diff withPath:path];
-}
-
-- (void)parseDateInArray:(NSMutableArray *)array atIndex:(NSUInteger)index
-{
-  NSDate *date = [NSDate dateFromRFC2822:array[index]];
-
-  [array removeObjectAtIndex:index];
-  [array insertObject:date atIndex:index];
 }
 
 - (BOOL)stageFile:(NSString*)file error:(NSError**)error
