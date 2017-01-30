@@ -49,13 +49,13 @@ class XTRepositoryTest: XTTest
     try! repository.commit(withMessage: "deleted", amend: false,
                            outputBlock: nil)
     
-    guard let commit = repository.commit(ref: "HEAD")
+    guard let commit = XTCommit(ref: "HEAD", repository: repository)
     else {
       XCTFail("no HEAD")
       return
     }
     
-    let parentSHA = commit.parents.first!.sha!
+    let parentSHA = commit.parentSHAs.first!
     let maker = repository.diffMaker(forFile: file1Name,
                                      commitSHA: commit.sha!,
                                      parentSHA: parentSHA)!
@@ -67,7 +67,7 @@ class XTRepositoryTest: XTTest
   
   func testAddedDiff()
   {
-    guard let commit = repository.commit(ref: "HEAD")
+    guard let commit = XTCommit(ref: "HEAD", repository: repository)
       else {
         XCTFail("no HEAD")
         return

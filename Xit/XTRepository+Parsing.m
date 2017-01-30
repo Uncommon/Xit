@@ -113,7 +113,7 @@ NSString *XTHeaderContentKey = @"content";
 
 - (NSArray<NSString*>*)fileNamesForRef:(NSString *)ref
 {
-  GTCommit *commit = [self commitForRef:ref];
+  XTCommit *commit = [[XTCommit alloc] initWithRef:ref repository:self];
 
   if (commit == nil)
     return nil;
@@ -359,19 +359,6 @@ NSString *XTCommitSHAKey = @"sha",
 
   [array removeObjectAtIndex:index];
   [array insertObject:date atIndex:index];
-}
-
-- (GTCommit*)commitForRef:(NSString*)ref
-{
-  NSError *error;
-  GTObject *object = [_gtRepo lookUpObjectByRevParse:ref error:&error];
-
-  if (object == nil)
-    return nil;
-
-  return [_gtRepo lookUpObjectByOID:object.OID
-                         objectType:GTObjectTypeCommit
-                              error:&error];
 }
 
 - (BOOL)stageFile:(NSString*)file error:(NSError**)error

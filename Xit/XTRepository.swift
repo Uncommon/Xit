@@ -178,7 +178,7 @@ extension XTRepository
       indexBlob = indexObject as? GTBlob
     }
       
-    if let headTree = commit(ref: headRef)?.tree,
+    if let headTree = XTCommit(ref: headRef, repository: self)?.tree,
        let headEntry = try? headTree.entry(withPath: file),
        let headObject = try? GTObject(treeEntry: headEntry) {
       headBlob = headObject as? GTBlob

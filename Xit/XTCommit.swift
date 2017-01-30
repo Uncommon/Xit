@@ -66,6 +66,9 @@ public class XTCommit: NSObject, CommitType
   public var email: String?
   { return gtCommit.author?.email }
 
+  public var tree: GTTree?
+  { return gtCommit.tree }
+
   init(commit: GTCommit)
   {
     self.gtCommit = commit
