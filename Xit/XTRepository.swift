@@ -212,6 +212,47 @@ extension XTRepository
     }
   }
   
+  /// Returns the diff for the referenced commit, compared to its first parent
+  /// or to a specific parent.
+  func diff(forSHA sha: String, parent parentSHA: String?) -> GTDiff?
+  {
+    let parentSHA = parentSHA ?? ""
+    let key = sha.appending(parentSHA) as NSString
+    
+    if let diff = diffCache.object(forKey: key) {
+      return diff
+    }
+    else {
+      guard let commit = (try? gtRepo.lookUpObject(bySHA: sha)) as? GTCommit
+      else { return nil }
+      
+      let parents = commit.parents
+      let parent: GTCommit? = (parentSHA == "")
+                              ? parents.first
+                              : parents.first(where: { $0.sha == parentSHA })
+      
+      guard let diff = try? GTDiff(oldTree: parent?.tree,
+                                   withNewTree: commit.tree,
+                                   in: gtRepo, options: nil)
+      else { return nil }
+      
+      diffCache.setObject(diff, forKey: key)
+      return diff
+    }
+  }
+  
+  func commitForStash(at index: UInt) -> GTCommit?
+  {
+    guard let stashRef = try? gtRepo.lookUpReference(withName: "refs/stash"),
+          let stashLog = GTReflog(reference: stashRef),
+          index < stashLog.entryCount,
+          let entry = stashLog.entry(at: index)
+    else { return nil }
+    
+    return (try? entry.updatedOID.map { try gtRepo.lookUpObject(by: $0) })
+           as? GTCommit
+  }
+  
   /// Returns the unstaged and staged status of the given file.
   func status(file: String) throws -> (XitChange, XitChange)
   {
@@ -390,11 +431,12 @@ extension XTRepository
       -> [String: AnyObject]
   {
     let tagOption = downloadTags ? GTRemoteDownloadTagsAuto
-      : GTRemoteDownloadTagsNone
+                                 : GTRemoteDownloadTagsNone
     let pruneOption: GTFetchPruneOption = pruneBranches ? .yes : .no
     let pruneValue = NSNumber(value: pruneOption.rawValue as Int)
     let tagValue = NSNumber(value: tagOption.rawValue as UInt32)
     let provider = self.credentialProvider(passwordBlock)
+    
     return [
         GTRepositoryRemoteOptionsDownloadTags: tagValue,
         GTRepositoryRemoteOptionsFetchPrune: pruneValue,
@@ -468,9 +510,7 @@ extension XTRepository
       let provider = self.credentialProvider(passwordBlock)
       let options = [ GTRepositoryRemoteOptionsCredentialProvider: provider ]
       
-      try self.gtRepo.push(branch.gtBranch,
-                                 to: remote,
-                                 withOptions: options) {
+      try self.gtRepo.push(branch.gtBranch, to: remote, withOptions: options) {
         (current, total, bytes, stop) in
         stop.pointee = ObjCBool(progressBlock(current, total, bytes))
       }

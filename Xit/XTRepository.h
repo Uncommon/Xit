@@ -7,6 +7,7 @@ extern NSString *XTErrorArgsKey;
 extern NSString *XTPathsKey;
 
 @class GTRepository;
+@class GTDiff;
 @class XTConfig;
 @class XTRepositoryWatcher;
 @class XTWorkspaceWatcher;
@@ -23,7 +24,7 @@ extern NSString *XTPathsKey;
   NSURL *_repoURL;
   NSString *_gitCMD;
   NSString *_cachedHeadRef, *_cachedHeadSHA, *_cachedBranch;
-  NSCache *_diffCache;
+  NSCache<NSString*, GTDiff*> *_diffCache;
 }
 
 - (nullable instancetype)initWithURL:(NSURL*)url;
@@ -82,6 +83,8 @@ extern NSString *XTPathsKey;
 @property(readonly) XTRepositoryWatcher *repoWatcher;
 @property(readonly) XTWorkspaceWatcher *workspaceWatcher;
 @property(readonly) XTConfig *config;
+
+@property(readonly) NSCache<NSString*, GTDiff*> *diffCache;
 
 @end
 

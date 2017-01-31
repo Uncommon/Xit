@@ -107,50 +107,6 @@
   return error == nil;
 }
 
-- (GTDiff*)diffForSHA:(NSString*)sha parent:(NSString*)parentSHA
-{
-  NSParameterAssert(sha != nil);
-  if (parentSHA == nil)
-    parentSHA = @"";
-
-  NSString *key = [sha stringByAppendingString:parentSHA];
-  GTDiff *diff = [_diffCache objectForKey:key];
-
-  if (diff == nil) {
-    NSError *error = nil;
-    GTCommit *commit = [_gtRepo lookUpObjectBySHA:sha error:&error];
-
-    if ((commit == nil) ||
-        (git_object_type([commit git_object]) != GIT_OBJ_COMMIT))
-      return nil;
-
-    NSArray *parents = commit.parents;
-    GTCommit *parent = nil;
-
-    if (parents.count != 0) {
-      if ([parentSHA isEqualToString:@""]) {
-        parent = parents[0];
-      } else {
-        for (GTCommit *iterParent in parents)
-          if ([iterParent.SHA isEqualToString:parentSHA]) {
-            parent = iterParent;
-            break;
-          }
-        if (parent == nil)
-          [NSException raise:NSInternalInconsistencyException
-                      format:@"Diff parent not found"];
-      }
-    }
-
-    diff = [GTDiff diffOldTree:parent.tree
-                   withNewTree:commit.tree
-                  inRepository:_gtRepo
-                       options:nil
-                         error:&error];
-    [_diffCache setObject:diff forKey:key];
-  }
-  return diff;
-}
 
 - (NSArray<XTFileChange*>*)changesForRef:(NSString*)ref
                                   parent:(NSString*)parentSHA
@@ -171,11 +127,8 @@
     parentSHA = commit.parents.firstObject.SHA;
   
   GTDiff *diff = [self diffForSHA:commit.SHA parent:parentSHA];
-
   NSMutableArray *result = [NSMutableArray array];
 
-  if (error != nil)
-    return nil;
   [diff enumerateDeltasUsingBlock:^(GTDiffDelta *delta, BOOL *stop) {
     if (delta.type != GTDeltaTypeUnmodified) {
       XTFileChange *change = [[XTFileChange alloc] init];
@@ -186,25 +139,6 @@
     }
   }];
   return result;
-}
-
-- (GTCommit*)commitForStashAtIndex:(NSUInteger)index
-{
-  GTReference *stashRef = [self.gtRepo lookUpReferenceWithName:@"refs/stash" error:NULL];
-  
-  if (stashRef == nil)
-    return nil;
-  
-  GTReflog *stashLog = [[GTReflog alloc] initWithReference:stashRef];
-  
-  if ((stashLog == nil) || (index >= stashLog.entryCount))
-    return nil;
-  
-  GTReflogEntry *entry = [stashLog entryAtIndex:index];
-  
-  if (entry == nil)
-    return nil;
-  return [self.gtRepo lookUpObjectByOID:entry.updatedOID error:nil];
 }
 
 - (NSArray*)stagingChanges

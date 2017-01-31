@@ -55,7 +55,6 @@ typedef NS_ENUM(NSUInteger, XitChange) {
 /// Returns a list of changed files in the given commit.
 - (nullable NSArray<XTFileChange*>*)changesForRef:(NSString*)ref
                                            parent:(nullable NSString*)parentSHA;
-- (nullable GTCommit*)commitForStashAtIndex:(NSUInteger)index;
 - (nullable XTDiffDelta*)diffForFile:(NSString*)path
                            commitSHA:(NSString*)sha
                            parentSHA:(nullable NSString*)parentSHA;
