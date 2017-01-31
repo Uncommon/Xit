@@ -52,6 +52,7 @@ typedef NS_ENUM(NSUInteger, XitChange) {
               outputBlock:(nullable void (^)(NSString *output))outputBlock
                     error:(NSError**)error;
 
+- (nullable NSArray<NSString*>*)fileNamesForRef:(NSString*)ref;
 /// Returns a list of changed files in the given commit.
 - (nullable NSArray<XTFileChange*>*)changesForRef:(NSString*)ref
                                            parent:(nullable NSString*)parentSHA;
