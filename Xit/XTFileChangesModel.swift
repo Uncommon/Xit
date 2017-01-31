@@ -92,7 +92,10 @@ class XTCommitChanges: NSObject, XTFileChangesModel
 
   func makeTreeRoot(staged: Bool) -> NSTreeNode
   {
-    var files = repository.fileNames(forRef: sha) ?? [String]()
+    guard let commit = XTCommit(sha: sha, repository: repository)
+    else { return NSTreeNode() }
+    
+    var files = commit.allFiles()
     var changes = [String: XitChange]()
     
     if let changeList = repository.changes(forRef: sha, parent:diffParent) {

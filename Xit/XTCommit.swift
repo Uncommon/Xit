@@ -117,7 +117,24 @@ public class XTCommit: NSObject, CommitType
     self.init(commit: commit)
   }
   
-  static func calculateParentOIDs(_ rawCommit: OpaquePointer) -> [GTOID]
+  /// Returns a list of all files in the commit's tree, with paths relative
+  /// to the root.
+  func allFiles() -> [String]
+  {
+    guard let tree = tree
+    else { return [] }
+    
+    var result = [String]()
+    
+    _ = try? tree.enumerateEntries(with: .pre) {
+      (entry, root, stop) -> Bool in
+      result.append(root.stringByAppendingPathComponent(entry.name))
+      return true
+    }
+    return result
+  }
+  
+  private static func calculateParentOIDs(_ rawCommit: OpaquePointer) -> [GTOID]
   {
     var result = [GTOID]()
     
@@ -131,12 +148,12 @@ public class XTCommit: NSObject, CommitType
     return result
   }
   
-  func calculateSHA() -> String?
+  private func calculateSHA() -> String?
   {
     return gtCommit.sha
   }
   
-  func calculateOID() -> GTOID
+  private func calculateOID() -> GTOID
   {
     return gtCommit.oid!
   }

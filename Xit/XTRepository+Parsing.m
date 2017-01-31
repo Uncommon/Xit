@@ -107,27 +107,6 @@
   return error == nil;
 }
 
-- (NSArray<NSString*>*)fileNamesForRef:(NSString *)ref
-{
-  XTCommit *commit = [[XTCommit alloc] initWithRef:ref repository:self];
-  
-  if (commit == nil)
-    return nil;
-  
-  GTTree *tree = commit.tree;
-  NSMutableArray *result = [NSMutableArray array];
-  NSError *error = nil;
-  
-  [tree enumerateEntriesWithOptions:GTTreeEnumerationOptionPre
-                              error:&error
-                              block:^BOOL(GTTreeEntry *entry, NSString *root,
-                                          BOOL *stop) {
-                                [result addObject:[root stringByAppendingPathComponent:entry.name]];
-                                return YES;  // Don't go into descendants
-                              }];
-  return result;
-}
-
 - (GTDiff*)diffForSHA:(NSString*)sha parent:(NSString*)parentSHA
 {
   NSParameterAssert(sha != nil);
