@@ -8,12 +8,13 @@ class XTCommitEntryController: NSViewController
     didSet
     {
       indexObserver = NotificationCenter.default.addObserver(
-          forName: NSNotification.Name.XTRepositoryIndexChanged,
+          forName: .XTRepositoryIndexChanged,
           object: repo,
           queue: .main) {
         [weak self] _ in
         self?.updateStagedStatus()
       }
+      resetMessage()
     }
   }
   @IBOutlet weak var commitField: NSTextView!
@@ -38,6 +39,19 @@ class XTCommitEntryController: NSViewController
     indexObserver.map { NotificationCenter.default.removeObserver($0) }
   }
   
+  func commitMessageTemplate() -> String?
+  {
+    guard let templatePath = repo.config.commitTemplate()
+    else { return nil }
+    
+    return try? String(contentsOfFile: templatePath)
+  }
+  
+  func resetMessage()
+  {
+    commitField.string = commitMessageTemplate() ?? ""
+  }
+  
   override func viewDidLoad()
   {
     // The editor doesn't allow setting the font of an empty text view.
@@ -58,7 +72,7 @@ class XTCommitEntryController: NSViewController
       try repo.commit(withMessage: message,
                       amend: false,
                       outputBlock: nil)
-      commitField.string = ""
+      resetMessage()
     }
     catch {
       let alert = NSAlert(error: error as NSError)

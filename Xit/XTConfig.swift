@@ -103,4 +103,9 @@ class XTConfig: NSObject
     return UserDefaults.standard.bool(
         forKey: XTGitPrefsController.PrefKey.fetchTags)
   }
+  
+  final func commitTemplate() -> String?
+  {
+    return config?.string(forKey: "commit.template")
+  }
 }
