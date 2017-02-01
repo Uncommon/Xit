@@ -70,7 +70,7 @@ class XTFileViewController: NSViewController
   @IBOutlet weak var filePreview: QLPreviewView!
   @IBOutlet var fileChangeDS: XTFileChangesDataSource!
   @IBOutlet var fileListDS: XTFileTreeDataSource!
-  @IBOutlet var headerController: XTCommitHeaderViewController!
+  @IBOutlet var headerController: CommitHeaderViewController!
   @IBOutlet var diffController: XTFileDiffController!
   @IBOutlet var previewController: XTPreviewController!
   @IBOutlet var textController: XTTextPreviewController!
@@ -230,12 +230,12 @@ class XTFileViewController: NSViewController
       self?.refreshPreview()
     }
     resizeObserver = NotificationCenter.default.addObserver(
-        forName: NSNotification.Name(rawValue: XTHeaderResizedNotificaiton),
+        forName: .XTHeaderResized,
         object: headerController,
         queue: nil) {
       [weak self] note in
-      guard let newHeight = (note.userInfo?[XTHeaderHeightKey] as? NSNumber)?
-                            .floatValue
+      guard let newHeight = (note.userInfo?[CommitHeaderViewController.headerHeightKey]
+                             as? NSNumber)?.floatValue
       else { return }
       
       self?.headerSplitView.animate(position:CGFloat(newHeight),

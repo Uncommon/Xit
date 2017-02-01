@@ -64,7 +64,8 @@ class XTSidebarHandlerTest: XTTest
   {
     var stashes = [String]()
     
-    repository.readStashes { (commit, index, name) in
+    repository.readStashes {
+      (commit, index, name) in
       stashes.append(name)
     }
     return stashes

@@ -8,9 +8,14 @@ class MockCommit: NSObject, CommitType
   let oid: GTOID
   let parentOIDs: [GTOID]
   
-  var message: String? { return nil }
-  var commitDate: Date { return Date() }
-  var email: String? { return nil }
+  var message: String? = nil
+  var authorName: String? = nil
+  var authorEmail: String? = nil
+  var authorDate: Date? = nil
+  var committerName: String? = nil
+  var committerEmail: String? = nil
+  var commitDate = Date()
+  var email: String? = nil
   
   init(sha: String?, oid: GTOID, parentOIDs: [GTOID])
   {

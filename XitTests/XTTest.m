@@ -18,8 +18,6 @@
   self.repository = [self createRepo:self.repoPath];
 
   [self addInitialRepoContent];
-
-  NSLog(@"setUp ok");
 }
 
 - (void)tearDown
@@ -37,8 +35,6 @@
   if ([defaultManager fileExistsAtPath:self.remoteRepoPath]) {
     XCTFail(@"tearDown %@ FAIL!!", self.remoteRepoPath);
   }
-
-  NSLog(@"tearDown ok");
 
   [super tearDown];
 }

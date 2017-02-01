@@ -7,12 +7,32 @@ import Cocoa
   var parentOIDs: [GTOID] { get }
   
   var message: String? { get }
+  var authorName: String? { get }
+  var authorEmail: String? { get }
+  var authorDate: Date? { get }
+  var committerName: String? { get }
+  var committerEmail: String? { get }
   var commitDate: Date { get }
   var email: String? { get }
 }
 
 extension CommitType
 {
+  public var parentSHAs: [String]
+  {
+    return parentOIDs.flatMap { $0.sha }
+  }
+  
+  public var messageSummary: String
+  {
+    guard let message = message
+    else { return "" }
+    
+    return message.range(of: "\n").map {
+      message.substring(to: $0.lowerBound)
+    } ?? message
+  }
+
   public var description: String
   { return "\(sha?.firstSix() ?? "-")" }
 }
@@ -37,13 +57,12 @@ public class XTCommit: NSObject, CommitType
   public var oid: GTOID { return cachedOID }
 
   public var parentOIDs: [GTOID] { return cachedParentOIDs }
-  public var parentSHAs: [String]
-  {
-    return parentOIDs.flatMap { $0.sha }
-  }
   
   public var message: String?
   { return gtCommit.message }
+  
+  public var messageSummary: String
+  { return gtCommit.messageSummary }
   
   public var authorName: String?
   { return gtCommit.author?.name }
