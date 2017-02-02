@@ -162,21 +162,27 @@ class XTSidebarController: NSViewController, SidebarHandler
       indexObserver = NotificationCenter.default.addObserver(
           forName: NSNotification.Name.XTRepositoryIndexChanged,
           object: repo, queue: .main) {
-        [weak self] _ in
+        [weak self] (_) in
+        self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
+      }
+      workspaceObserver = NotificationCenter.default.addObserver(
+          forName: .XTRepositoryWorkspaceChanged, object: repo, queue: .main) {
+        [weak self] (_) in
         self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
       }
     }
   }
   var window: NSWindow? { return view.window }
   var savedSidebarWidth: UInt = 0
-  var indexObserver: NSObjectProtocol?
+  var indexObserver, workspaceObserver: NSObjectProtocol?
   
   deinit
   {
     // The timers contain references to the ds object and repository.
     sidebarDS?.stopTimers()
-    NotificationCenter.default.removeObserver(self)
-    indexObserver.map { NotificationCenter.default.removeObserver($0) }
+    _ = [self, indexObserver, workspaceObserver].flatMap {
+      NotificationCenter.default.removeObserver($0 as Any)
+    }
   }
   
   override func viewDidLoad()
