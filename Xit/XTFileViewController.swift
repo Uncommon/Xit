@@ -84,7 +84,7 @@ class XTFileViewController: NSViewController
   var selectionObserver: NSObjectProtocol?
   var resizeObserver: NSObjectProtocol?
   
-  var fileWatcher: XTFileEventStream?
+  var fileWatcher: FileEventStream?
   weak var lastClickedButton: NSButton?
   var doubleClickTimer: Timer?
   var indexTimer: Timer?
@@ -348,11 +348,11 @@ class XTFileViewController: NSViewController
                    selectedChange.path)
     
     fileWatcher = inStagingView ?
-        XTFileEventStream(path: fullPath,
-                          excludePaths: [],
-                          queue: .main,
-                          latency: 0.5) {
-          _ in self.loadSelectedPreview()
+        FileEventStream(path: fullPath,
+                        excludePaths: [],
+                        queue: .main,
+                        latency: 0.5) {
+          [weak self] (_) in self?.loadSelectedPreview()
         }
         : nil
   }

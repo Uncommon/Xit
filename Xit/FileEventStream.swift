@@ -89,22 +89,3 @@ public class FileEventStream
     stream = nil
   }
 }
-
-/// Wrapper to expose FileEventStream to ObjC
-public class XTFileEventStream : NSObject
-{
-  let stream: FileEventStream
-
-  public init?(path: String,
-               excludePaths: [String],
-               queue: DispatchQueue,
-               latency: CFTimeInterval = 0.5,
-               callback: @escaping ([String]) -> Void)
-  {
-    guard let stream = FileEventStream(path: path, excludePaths: excludePaths,
-                                       queue: queue, callback: callback)
-    else { return nil }
-    
-    self.stream = stream
-  }
-}
