@@ -22,7 +22,7 @@ extension XTSideBarDataSource
     set
     {
       guard let controller = outline!.window?.windowController
-                             as? XTWindowController,
+                             as? RepositoryController,
             let item = newValue,
             let row = outline?.row(forItem: item),
             row >= 0
@@ -368,7 +368,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
                      as? XTSideBarItem,
           let model = item.model,
           let controller = outline!.window?.windowController
-                           as? XTWindowController
+                           as? RepositoryController
     else { return }
     
     if controller.selectedModel?.shaToSelect != model.shaToSelect {

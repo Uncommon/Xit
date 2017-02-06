@@ -71,7 +71,10 @@ class CommitHeaderViewController : XTWebViewController, HeaderGenerator
   
   let actionDelegate: CommitHeaderActionDelegate
   
-  weak var winController: XTWindowController!
+  weak var repoController: RepositoryController!
+  {
+    return view.window?.windowController as? RepositoryController
+  }
   weak var repository: RepositoryType!
   
   override init?(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?)
@@ -201,7 +204,7 @@ class CommitHeaderActionDelegate: NSObject
   @objc(selectSHA:)
   func select(sha: String)
   {
-    controller.winController.selectedModel = XTCommitChanges(
+    controller.repoController.selectedModel = XTCommitChanges(
         repository: controller.repository as! XTRepository, sha: sha)
   }
   

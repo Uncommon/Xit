@@ -65,7 +65,7 @@ public class XTHistoryTableController: NSViewController
   
   override public func viewDidAppear()
   {
-    let controller = view.window?.windowController as! XTWindowController
+    let controller = view.window?.windowController!
     
     selectionObserver = NotificationCenter.default.addObserver(
         forName: NSNotification.Name.XTSelectedModelChanged,
@@ -137,7 +137,7 @@ public class XTHistoryTableController: NSViewController
     else { return }
     
     guard let controller = self.view.window?.windowController
-                           as? XTWindowController,
+                           as? RepositoryController,
           let selectedModel = controller.selectedModel
     else { return }
     
@@ -263,7 +263,7 @@ extension XTHistoryTableController: NSTableViewDelegate
     let selectedRow = tableView.selectedRow
     
     if (selectedRow >= 0) && (selectedRow < history.entries.count),
-       let controller = view.window?.windowController as? XTWindowController,
+       let controller = view.window?.windowController as? RepositoryController,
        let sha = history.entries[selectedRow].commit.sha {
       controller.selectedModel = XTCommitChanges(repository: repository, sha: sha)
     }
@@ -276,7 +276,7 @@ extension XTHistoryTableController: XTTableViewDelegate
   {
     guard let selectionIndex = tableView.selectedRowIndexes.first,
           let controller = tableView.window?.windowController
-                           as? XTWindowController
+                           as? RepositoryController
     else { return }
     
     let entry = history.entries[selectionIndex]

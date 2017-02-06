@@ -97,13 +97,13 @@ class XTFileViewController: NSViewController
   
   var inStagingView: Bool
   {
-    return (view.window?.windowController as? XTWindowController)?
+    return (view.window?.windowController as? RepositoryController)?
            .selectedModel?.hasUnstaged ?? false
   }
   
   var modelCanCommit: Bool
   {
-    return (view.window?.windowController as? XTWindowController)?
+    return (view.window?.windowController as? RepositoryController)?
            .selectedModel?.canCommit ?? false
   }
   
@@ -186,7 +186,6 @@ class XTFileViewController: NSViewController
     
     fileChangeDS.repoController = controller
     fileTreeDS.repoController = controller
-    headerController.winController = controller
     modelObserver = NotificationCenter.default.addObserver(
         forName: NSNotification.Name.XTSelectedModelChanged,
         object: controller, queue: .main) {
@@ -307,7 +306,7 @@ class XTFileViewController: NSViewController
   func selectedModelChanged()
   {
     guard let controller = view.window?.windowController
-                           as? XTWindowController,
+                           as? RepositoryController,
           let newModel = controller.selectedModel
     else { return }
     
@@ -335,7 +334,7 @@ class XTFileViewController: NSViewController
           let selectedItem = fileListOutline.item(atRow: index),
           let selectedChange = fileListDataSource.fileChange(at: index),
           let controller = view.window?.windowController
-                           as? XTWindowController
+                           as? RepositoryController
     else { return }
     
     updatePreviewPath(selectedChange.path,

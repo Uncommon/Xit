@@ -3,7 +3,7 @@ import Cocoa
 @objc
 protocol RepositoryController: class
 {
-  var selectedModel: XTFileChangesModel? { get }
+  var selectedModel: XTFileChangesModel? { get set }
 }
 
 /// XTDocument's main window controller.
