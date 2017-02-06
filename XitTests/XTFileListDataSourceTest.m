@@ -1,7 +1,6 @@
 #import "XTTest.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
-#import "XTFileTreeDataSource.h"
 #include "XTQueueUtils.h"
 #import "Xit-Swift.h"
 
@@ -38,11 +37,11 @@
 
   NSOutlineView *outlineView = [[NSOutlineView alloc] init];
   XTFakeWinController *winController = [[XTFakeWinController alloc] init];
-  XTFileTreeDataSource *flds = [[XTFileTreeDataSource alloc] init];
+  FileTreeDataSource *flds = [[FileTreeDataSource alloc] init];
   NSInteger expectedFileCount = 11;
   XTCommitHistory *history = [[XTCommitHistory alloc] init];
 
-  flds.winController = (XTWindowController*)winController;
+  flds.repoController = (XTWindowController*)winController;
   flds.repository = self.repository;
   history.repository = self.repository;
   [self waitForRepoQueue];
@@ -103,9 +102,9 @@
       initWithRepository:self.repository sha:[self.repository headSHA]];
 
   NSOutlineView *outlineView = [[NSOutlineView alloc] init];
-  XTFileTreeDataSource *flds = [[XTFileTreeDataSource alloc] init];
+  FileTreeDataSource *flds = [[FileTreeDataSource alloc] init];
 
-  flds.winController = (XTWindowController*)winController;
+  flds.repoController = (XTWindowController*)winController;
   flds.repository = self.repository;
   [self waitForRepoQueue];
 

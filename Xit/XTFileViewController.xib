@@ -7,15 +7,15 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="XTFileViewController">
+        <customObject id="-2" userLabel="File's Owner" customClass="XTFileViewController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="actionButton" destination="gNu-NG-LYe" id="8EA-bg-zQa"/>
                 <outlet property="diffController" destination="fX5-fH-Hy5" id="nP0-l5-ngF"/>
                 <outlet property="fileChangeDS" destination="QBv-mK-3e5" id="1o8-Jg-riS"/>
-                <outlet property="fileListDS" destination="24" id="EBz-yq-DSL"/>
                 <outlet property="fileListOutline" destination="7" id="r4y-MV-ca1"/>
                 <outlet property="filePreview" destination="4" id="13f-0N-ema"/>
                 <outlet property="fileSplitView" destination="PgV-aZ-kTu" id="6W5-Vn-aRM"/>
+                <outlet property="fileTreeDS" destination="M1X-3P-vhW" id="NEO-cS-CTP"/>
                 <outlet property="headerController" destination="67" id="iWn-HL-Kjl"/>
                 <outlet property="headerSplitView" destination="68" id="7M2-oP-CZq"/>
                 <outlet property="headerTabView" destination="krT-Kf-MrD" id="t9e-WI-aqg"/>
@@ -125,7 +125,7 @@
                                                         </textFieldCell>
                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
                                                         <prototypeCellViews>
-                                                            <tableCellView identifier="fileCell" id="9" customClass="XTFileCellView">
+                                                            <tableCellView identifier="fileCell" id="9" customClass="FileCellView" customModule="Xit" customModuleProvider="target">
                                                                 <rect key="frame" x="1" y="1" width="308" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
@@ -163,7 +163,7 @@
                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                         <prototypeCellViews>
-                                                            <tableCellView identifier="unstaged" id="Iq5-SU-7aX" customClass="XTTableButtonView">
+                                                            <tableCellView identifier="unstaged" id="Iq5-SU-7aX" customClass="TableButtonView" customModule="Xit" customModuleProvider="target">
                                                                 <rect key="frame" x="312" y="1" width="20" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
@@ -197,7 +197,7 @@
                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                         <prototypeCellViews>
-                                                            <tableCellView identifier="staged" id="BbI-KF-1f6" customClass="XTTableButtonView">
+                                                            <tableCellView identifier="staged" id="BbI-KF-1f6" customClass="TableButtonView" customModule="Xit" customModuleProvider="target">
                                                                 <rect key="frame" x="335" y="1" width="20" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
@@ -569,9 +569,10 @@
                 <outlet property="outlineView" destination="7" id="6gy-pU-3w5"/>
             </connections>
         </customObject>
-        <customObject id="24" customClass="XTFileTreeDataSource">
+        <customObject id="M1X-3P-vhW" customClass="FileTreeDataSource" customModule="Xit" customModuleProvider="target">
             <connections>
-                <outlet property="_controller" destination="-2" id="51"/>
+                <outlet property="controller" destination="-2" id="Iib-rn-pVn"/>
+                <outlet property="outlineView" destination="7" id="nRP-I4-gQr"/>
             </connections>
         </customObject>
         <customObject id="67" customClass="XTCommitHeaderViewController">

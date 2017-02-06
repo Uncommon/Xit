@@ -1,14 +1,12 @@
 import Foundation
 
-class XTFileChangesDataSource : XTFileListDataSourceBase
+class XTFileChangesDataSource : FileListDataSourceBase
 {
   var changes = [XTFileChange]()
   
-  override var isHierarchical: Bool { return false }
-  
   func doReload()
   {
-    var newChanges = winController?.selectedModel?.changes ??
+    var newChanges = repoController?.selectedModel?.changes ??
                      [XTFileChange]()
     
     newChanges.sort { $0.path < $1.path }
@@ -85,8 +83,10 @@ class XTFileChangesDataSource : XTFileListDataSourceBase
   }
 }
 
-extension XTFileChangesDataSource : XTFileListDataSource
+extension XTFileChangesDataSource : FileListDataSource
 {
+  var hierarchical: Bool { return false }
+
   func reload()
   {
     repository?.executeOffMainThread {
@@ -95,17 +95,17 @@ extension XTFileChangesDataSource : XTFileListDataSource
     }
   }
   
-  func fileChange(atRow row: Int) -> XTFileChange?
+  func fileChange(at row: Int) -> XTFileChange?
   {
     return row < changes.count ? changes[row] : nil
   }
   
-  func path(forItem item: Any) -> String
+  func path(for item: Any) -> String
   {
     return (item as? XTFileChange)?.path ?? ""
   }
   
-  func change(forItem item: Any) -> XitChange
+  func change(for item: Any) -> XitChange
   {
     guard let fileChange = item as? XTFileChange
     else { return .unmodified }
@@ -113,7 +113,7 @@ extension XTFileChangesDataSource : XTFileListDataSource
     return type(of:self).transformDisplayChange(fileChange.change)
   }
   
-  func unstagedChange(forItem item: Any) -> XitChange
+  func unstagedChange(for item: Any) -> XitChange
   {
     guard let fileChange = item as? XTFileChange
     else { return .unmodified }
@@ -122,28 +122,28 @@ extension XTFileChangesDataSource : XTFileListDataSource
   }
 }
 
-extension XTFileChangesDataSource // NSOutlineViewDataSource
+extension XTFileChangesDataSource: NSOutlineViewDataSource
 {
-  override func outlineView(_ outlineView: NSOutlineView,
+  func outlineView(_ outlineView: NSOutlineView,
                             numberOfChildrenOfItem item: Any?) -> Int
   {
     return changes.count
   }
 
-  override func outlineView(_ outlineView: NSOutlineView,
+  func outlineView(_ outlineView: NSOutlineView,
                             child index: Int,
                             ofItem item: Any?) -> Any
   {
     return (index < changes.count) ? changes[index] : XTFileChange()
   }
 
-  override func outlineView(_ outlineView: NSOutlineView,
+  func outlineView(_ outlineView: NSOutlineView,
                             isItemExpandable item: Any) -> Bool
   {
     return false
   }
 
-  override func outlineView(_ outlineView: NSOutlineView,
+  func outlineView(_ outlineView: NSOutlineView,
                    objectValueFor tableColumn: NSTableColumn?,
                    byItem item: Any?) -> Any?
   {

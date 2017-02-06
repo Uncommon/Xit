@@ -11,7 +11,7 @@ class XTWorkspaceTreeBuilder: NSObject
   }
   
   func treeAtURL(_ baseURL: URL, rootPath: NSString) -> NSTreeNode {
-    let rootItem = XTCommitTreeItem(path: baseURL.path)
+    let rootItem = CommitTreeItem(path: baseURL.path)
     let node = NSTreeNode(representedObject: rootItem)
     let enumerator = FileManager.default.enumerator(
         at: baseURL,
@@ -41,7 +41,7 @@ class XTWorkspaceTreeBuilder: NSObject
         if (isDirValue as! NSNumber).boolValue {
           childNode = self.treeAtURL(url, rootPath: rootPath)
         } else {
-          let item = XTCommitTreeItem(path: path)
+          let item = CommitTreeItem(path: path)
           
           if let status = self.changes[path] {
             item.change = status.change

@@ -107,16 +107,16 @@ class XTCommitChanges: NSObject, XTFileChangesModel
                     .map({ return $0.path }))
     }
     
-    let newRoot = NSTreeNode(representedObject: XTCommitTreeItem(path:"/"))
+    let newRoot = NSTreeNode(representedObject: CommitTreeItem(path:"/"))
     var nodes = [String: NSTreeNode]()
     
     for file in files {
       let changeValue = changes[file] ?? .unmodified
       let item = staged ?
-          XTCommitTreeItem(path: file, change: changeValue) :
-          XTCommitTreeItem(path: file,
-                           change: .unmodified,
-                           unstagedChange: changeValue)
+          CommitTreeItem(path: file, change: changeValue) :
+          CommitTreeItem(path: file,
+                         change: .unmodified,
+                         unstagedChange: changeValue)
       let parentPath = (file as NSString).deletingLastPathComponent
       let node = NSTreeNode(representedObject: item)
       let parentNode = XTChangesModelUtils.findTreeNode(
@@ -292,7 +292,7 @@ private class XTChangesModelUtils
     var change: XitChange?, unstagedChange: XitChange?
     
     for child in childNodes {
-      let childItem = child.representedObject as! XTCommitTreeItem
+      let childItem = child.representedObject as! CommitTreeItem
       
       if !child.isLeaf {
         updateChanges(child)
@@ -313,7 +313,7 @@ private class XTChangesModelUtils
       }
     }
     
-    let nodeItem = node.representedObject as! XTCommitTreeItem
+    let nodeItem = node.representedObject as! CommitTreeItem
     
     nodeItem.change = change ?? .unmodified
     nodeItem.unstagedChange = unstagedChange ?? .unmodified
@@ -331,7 +331,7 @@ private class XTChangesModelUtils
       return pathNode
     }
     else {
-      let pathNode = NSTreeNode(representedObject: XTCommitTreeItem(path: path))
+      let pathNode = NSTreeNode(representedObject: CommitTreeItem(path: path))
       let parentPath = (path as NSString).deletingLastPathComponent
       
       parent.mutableChildren.add((parentPath.isEmpty) ?

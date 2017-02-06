@@ -17,7 +17,7 @@
   winController.selectedModel = [[XTCommitChanges alloc]
       initWithRepository:self.repository sha:self.repository.headSHA];
   dataSource.repository = self.repository;
-  dataSource.winController = (XTWindowController*)winController;
+  dataSource.repoController = (XTWindowController*)winController;
   outlineView.dataSource = dataSource;
   [dataSource reload];
   [self waitForRepoQueue];
@@ -28,9 +28,9 @@
 
   id item1 = [dataSource outlineView:outlineView child:0 ofItem:nil];
 
-  XCTAssertEqualObjects([dataSource pathForItem:item1], @"file1.txt");
+  XCTAssertEqualObjects([dataSource pathFor:item1], @"file1.txt");
   XCTAssertFalse([dataSource outlineView:outlineView isItemExpandable:item1]);
-  XCTAssertEqual([dataSource changeForItem:item1], XitChangeAdded);
+  XCTAssertEqual([dataSource changeFor:item1], XitChangeAdded);
 }
 
 @end

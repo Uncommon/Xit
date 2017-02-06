@@ -3,6 +3,7 @@
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
 #include "XTQueueUtils.h"
+#import "Xit-Swift.h"
 
 @implementation XTTest
 

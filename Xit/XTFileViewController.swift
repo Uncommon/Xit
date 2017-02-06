@@ -69,7 +69,7 @@ class XTFileViewController: NSViewController
   @IBOutlet weak var previewPath: NSPathControl!
   @IBOutlet weak var filePreview: QLPreviewView!
   @IBOutlet var fileChangeDS: XTFileChangesDataSource!
-  @IBOutlet var fileListDS: XTFileTreeDataSource!
+  @IBOutlet var fileTreeDS: FileTreeDataSource!
   @IBOutlet var headerController: CommitHeaderViewController!
   @IBOutlet var diffController: XTFileDiffController!
   @IBOutlet var previewController: XTPreviewController!
@@ -89,9 +89,9 @@ class XTFileViewController: NSViewController
   var doubleClickTimer: Timer?
   var indexTimer: Timer?
   
-  var fileListDataSource: XTFileListDataSource & NSOutlineViewDataSource
+  var fileListDataSource: FileListDataSource & NSOutlineViewDataSource
   {
-    return fileListOutline.dataSource as! XTFileListDataSource &
+    return fileListOutline.dataSource as! FileListDataSource &
                                           NSOutlineViewDataSource
   }
   
@@ -158,7 +158,7 @@ class XTFileViewController: NSViewController
     didSet
     {
       fileChangeDS.repository = repo
-      fileListDS.repository = repo
+      fileTreeDS.repository = repo
       headerController.repository = repo
       commitEntryController.repo = repo
       indexObserver = NotificationCenter.default.addObserver(
@@ -184,8 +184,8 @@ class XTFileViewController: NSViewController
                            as? XTWindowController
     else { return }
     
-    fileChangeDS.winController = controller
-    fileListDS.winController = controller
+    fileChangeDS.repoController = controller
+    fileTreeDS.repoController = controller
     headerController.winController = controller
     modelObserver = NotificationCenter.default.addObserver(
         forName: NSNotification.Name.XTSelectedModelChanged,
@@ -333,7 +333,7 @@ class XTFileViewController: NSViewController
     guard let repo = repo,
           let index = fileListOutline.selectedRowIndexes.first,
           let selectedItem = fileListOutline.item(atRow: index),
-          let selectedChange = fileListDataSource.fileChange(atRow: index),
+          let selectedChange = fileListDataSource.fileChange(at: index),
           let controller = view.window?.windowController
                            as? XTWindowController
     else { return }
@@ -359,7 +359,7 @@ class XTFileViewController: NSViewController
   
   func selectRow(from button: NSButton)
   {
-    guard let row = (button.superview as? XTTableButtonView)?.row
+    guard let row = (button.superview as? TableButtonView)?.row
     else { return }
     let indexes = IndexSet(integer: row)
     
@@ -376,8 +376,8 @@ class XTFileViewController: NSViewController
   
   func path(from button: NSButton) -> String?
   {
-    guard let row = (button.superview as? XTTableButtonView)?.row,
-          let change = fileListDataSource.fileChange(atRow: row)
+    guard let row = (button.superview as? TableButtonView)?.row,
+          let change = fileListDataSource.fileChange(at: row)
     else { return nil }
     
     return change.path
@@ -459,8 +459,9 @@ class XTFileViewController: NSViewController
 
   @IBAction func changeFileListView(_: Any?)
   {
-    let newDS = viewSelector.selectedSegment == 0 ? fileChangeDS : fileListDS
-    let columnID = newDS.isHierarchical ? ColumnID.main : ColumnID.hidden
+    let newDS = (viewSelector.selectedSegment == 0 ? fileChangeDS : fileTreeDS)
+                as FileListDataSource & NSOutlineViewDataSource
+    let columnID = newDS.hierarchical ? ColumnID.main : ColumnID.hidden
     
     fileListOutline.outlineTableColumn =
         fileListOutline.tableColumn(withIdentifier: columnID)
@@ -514,7 +515,7 @@ class XTFileViewController: NSViewController
   @IBAction func revert(_: AnyObject)
   {
     guard let selectedRow = fileListOutline.selectedRowIndexes.first,
-          let change = fileListDataSource.fileChange(atRow: selectedRow)
+          let change = fileListDataSource.fileChange(at: selectedRow)
     else { return }
     
     let confirmAlert = NSAlert()
@@ -551,7 +552,7 @@ class XTFileViewController: NSViewController
     switch action {
       case #selector(self.revert(_:)):
         guard let selectedRow = fileListOutline.selectedRowIndexes.first,
-              let change = fileListDataSource.fileChange(atRow: selectedRow)
+              let change = fileListDataSource.fileChange(at: selectedRow)
         else { return false }
         
         switch change.unstagedChange {
@@ -684,11 +685,11 @@ extension XTFileViewController: NSOutlineViewDelegate
   private func tableButtonView(_ identifier: String,
                                change: XitChange,
                                otherChange: XitChange,
-                               row: Int) -> XTTableButtonView
+                               row: Int) -> TableButtonView
   {
     let cellView = fileListOutline.make(withIdentifier: identifier, owner: self)
-                   as! XTTableButtonView
-    let button = cellView.button
+                   as! TableButtonView
+    let button = cellView.button!
     let displayChange = self.displayChange(forChange:change,
                                            otherChange:otherChange)
     
@@ -708,16 +709,16 @@ extension XTFileViewController: NSOutlineViewDelegate
     guard let columnID = tableColumn?.identifier
     else { return nil }
     let dataSource = fileListDataSource
-    let change = dataSource.change(forItem: item)
+    let change = dataSource.change(for: item)
     
     switch columnID {
       
       case ColumnID.main:
         guard let cell = outlineView.make(withIdentifier: CellViewID.fileCell,
-                                          owner: self) as? XTFileCellView
+                                          owner: self) as? FileCellView
         else { return nil }
       
-        let path = dataSource.path(forItem: item) as NSString
+        let path = dataSource.path(for: item) as NSString
       
         cell.imageView?.image = dataSource.outlineView!(outlineView,
                                                        isItemExpandable: item)
@@ -746,7 +747,7 @@ extension XTFileViewController: NSOutlineViewDelegate
           return tableButtonView(
               CellViewID.staged,
               change: change,
-              otherChange: dataSource.unstagedChange(forItem: item),
+              otherChange: dataSource.unstagedChange(for: item),
               row: outlineView.row(forItem:item))
         }
         else {
@@ -763,7 +764,7 @@ extension XTFileViewController: NSOutlineViewDelegate
         if inStagingView {
           return tableButtonView(
               CellViewID.unstaged,
-              change: dataSource.unstagedChange(forItem: item),
+              change: dataSource.unstagedChange(for: item),
               otherChange: change,
               row: outlineView.row(forItem: item))
         }

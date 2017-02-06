@@ -1,7 +1,14 @@
 import Cocoa
 
+@objc
+protocol RepositoryController: class
+{
+  var selectedModel: XTFileChangesModel? { get }
+}
+
 /// XTDocument's main window controller.
-class XTWindowController: NSWindowController, NSWindowDelegate
+class XTWindowController: NSWindowController, NSWindowDelegate,
+                          RepositoryController
 {
   @IBOutlet var sidebarController: XTSidebarController!
   @IBOutlet weak var mainSplitView: NSSplitView!
@@ -9,7 +16,6 @@ class XTWindowController: NSWindowController, NSWindowDelegate
   var historyController: XTHistoryViewController!
   weak var xtDocument: XTDocument?
   var titleBarController: XTTitleBarViewController? = nil
-  var selectedCommitSHA: String?
   var refsChangedObserver: NSObjectProtocol?
   var selectedModel: XTFileChangesModel?
   {
@@ -30,7 +36,6 @@ class XTWindowController: NSWindowController, NSWindowDelegate
       }
     }
   }
-  var inStagingView: Bool { return self.selectedCommitSHA == XTStagingSHA }
   var sidebarHidden: Bool
   {
     return mainSplitView.isSubviewCollapsed(mainSplitView.subviews[0])

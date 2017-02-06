@@ -1,7 +1,10 @@
 #import <XCTest/XCTest.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class XTRepository;
 @protocol XTFileChangesModel;
+@protocol RepositoryController;
 
 @interface XTTest : XCTestCase {
 }
@@ -12,7 +15,7 @@
     *addedName, *untrackedName;
 @property XTRepository *repository, *remoteRepository;
 
-- (XTRepository *)createRepo:(NSString *)repoName;
+- (XTRepository*)createRepo:(NSString*)repoName;
 - (void)makeRemoteRepo;
 - (void)waitForRepository:(XTRepository*)repo;
 - (void)waitForRepoQueue;
@@ -28,9 +31,11 @@
 @end
 
 
-@interface XTFakeWinController : NSObject
+@interface XTFakeWinController : NSObject<RepositoryController>
 
 @property NSString *selectedCommitSHA;
-@property id<XTFileChangesModel> selectedModel;
+@property (nullable) id<XTFileChangesModel> selectedModel;
 
 @end
+
+NS_ASSUME_NONNULL_END
