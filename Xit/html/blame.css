@@ -1,0 +1,50 @@
+body {
+  background-color: F8F8F8;
+  font-family: monospace;
+  margin: 0px;
+  counter-reset: line;
+  font-size: 12;
+  tab-size: 4;
+}
+table {
+  background-color: #EEE;
+  border: 0;
+  border-collapse: collapse;
+  float: left;
+  width: 100%;
+  margin-left: 2.5em;
+}
+table:after {
+  border-bottom: #888 1px;
+}
+td {
+  vertical-align: top;
+  padding: 0;
+}
+tr {
+  border-bottom: 1px #888;
+}
+div.line {
+  background-color: white;
+  min-height: 1em;
+  padding-left: 1ex;
+  border-left: 1px gray solid;
+  white-space: pre-wrap;
+}
+div.line:before {
+  content: counter(line);
+  counter-increment: line;
+  margin-top: 2px;
+  width: 22px;
+  position: absolute;
+  left: 3px;
+  text-align: right;
+  font-size: 0.75em;
+  -webkit-user-select: none;
+}
+
+.blamehead {
+  background-color: #EEE;
+  width: 20ex;
+  border-bottom: 1px solid #888;
+}
