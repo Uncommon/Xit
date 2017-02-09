@@ -10,6 +10,7 @@
         <customObject id="-2" userLabel="File's Owner" customClass="XTFileViewController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="actionButton" destination="gNu-NG-LYe" id="8EA-bg-zQa"/>
+                <outlet property="blameController" destination="qWY-M6-3vs" id="73d-3e-UiG"/>
                 <outlet property="diffController" destination="fX5-fH-Hy5" id="nP0-l5-ngF"/>
                 <outlet property="fileChangeDS" destination="QBv-mK-3e5" id="1o8-Jg-riS"/>
                 <outlet property="fileListOutline" destination="7" id="r4y-MV-ca1"/>
@@ -378,17 +379,20 @@
                                     </buttonCell>
                                 </button>
                                 <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zOv-gm-Q8M">
-                                    <rect key="frame" x="115" y="188" width="115" height="23"/>
+                                    <rect key="frame" x="97" y="188" width="151" height="23"/>
                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="selectOne" id="fhE-uz-5iG">
                                         <font key="font" metaFont="system"/>
                                         <segments>
                                             <segment toolTip="Diff view" image="diffTemplate" imageScaling="none" width="37" selected="YES">
                                                 <nil key="label"/>
                                             </segment>
-                                            <segment toolTip="Text view" image="textTemplate" imageScaling="none" width="37" tag="1">
+                                            <segment toolTip="Text view" image="blameTemplate" imageScaling="none" width="37" tag="1">
                                                 <nil key="label"/>
                                             </segment>
-                                            <segment toolTip="QuickLook preview" image="NSQuickLookTemplate" width="37">
+                                            <segment toolTip="QuickLook preview" image="textTemplate" width="37">
+                                                <nil key="label"/>
+                                            </segment>
+                                            <segment image="NSQuickLookTemplate">
                                                 <nil key="label"/>
                                             </segment>
                                         </segments>
@@ -416,6 +420,25 @@
                                                         <connections>
                                                             <outlet property="UIDelegate" destination="fX5-fH-Hy5" id="VV9-Tp-VXI"/>
                                                             <outlet property="frameLoadDelegate" destination="fX5-fH-Hy5" id="Ncv-4m-teW"/>
+                                                        </connections>
+                                                    </webView>
+                                                </subviews>
+                                            </view>
+                                        </tabViewItem>
+                                        <tabViewItem label="Blame" identifier="blame" id="JF7-NN-dRq">
+                                            <view key="view" id="xj3-cf-mv8">
+                                                <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <webView fixedFrame="YES" maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jwZ-U5-r8o">
+                                                        <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                        <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
+                                                            <nil key="identifier"/>
+                                                        </webPreferences>
+                                                        <connections>
+                                                            <outlet property="UIDelegate" destination="qWY-M6-3vs" id="Bsy-Kb-1VR"/>
+                                                            <outlet property="frameLoadDelegate" destination="qWY-M6-3vs" id="9BX-mN-TZP"/>
                                                         </connections>
                                                     </webView>
                                                 </subviews>
@@ -598,6 +621,12 @@
                 <outlet property="view" destination="4" id="aa2-ft-Co4"/>
             </connections>
         </customObject>
+        <customObject id="qWY-M6-3vs" customClass="BlameController" customModule="Xit" customModuleProvider="target">
+            <connections>
+                <outlet property="_webView" destination="jwZ-U5-r8o" id="UVQ-11-csG"/>
+                <outlet property="view" destination="jwZ-U5-r8o" id="3DG-Pe-5cJ"/>
+            </connections>
+        </customObject>
         <menu id="Ae9-1e-hjk">
             <items>
                 <menuItem title="Stage" id="KL1-BE-xHb">
@@ -649,6 +678,7 @@
         <image name="NSPathTemplate" width="16" height="10"/>
         <image name="NSQuickLookTemplate" width="19" height="12"/>
         <image name="NSRightFacingTriangleTemplate" width="9" height="12"/>
+        <image name="blameTemplate" width="8" height="8"/>
         <image name="diffTemplate" width="8" height="8"/>
         <image name="mixed" width="16" height="16"/>
         <image name="textTemplate" width="8" height="8"/>

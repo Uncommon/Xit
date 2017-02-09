@@ -2,7 +2,6 @@ import Foundation
 
 class BlameController: XTWebViewController, TabWidthVariable
 {
-  let repository: XTRepository! = nil
 }
 
 extension BlameController: XTFileContentController
@@ -14,12 +13,12 @@ extension BlameController: XTFileContentController
   
   public func load(path: String!, model: XTFileChangesModel!, staged: Bool)
   {
-    let fullPath = repository.repoURL.path.stringByAppendingPathComponent(path)
-    guard let blame = GitBlame(repository: repository, path: path,
-                               from: nil, to: nil),
-          let text = try? String(contentsOfFile: fullPath)
+    guard let data = model.dataForFile(path, staged: staged),
+          let text = String(data: data, encoding: .utf8) ??
+                     String(data: data, encoding: .utf16),
+          let blame = (model as? Blaming)?.blame(for: path)
     else {
-      loadNotice("Could not load blame")
+      loadNotice("Blame not available")
       return
     }
     
@@ -28,12 +27,12 @@ extension BlameController: XTFileContentController
     
     for hunk in blame.hunks {
       htmlLines.append(contentsOf: [
-          "<tr><td class='blamehead'>\(hunk.finalSignature.name)</td>",
+          "<tr><td class='blamehead'>\(hunk.finalSignature.name ?? "")</td>",
           "<td>"
           ])
       
       let start = hunk.finalLineStart - 1
-      let hunkLines = lines[start...start+hunk.lineCount]
+      let hunkLines = lines[start..<start+hunk.lineCount]
       
       htmlLines.append(contentsOf: hunkLines.map {
           "<div class='line'>\(XTWebViewController.escapeText($0))</div>" })

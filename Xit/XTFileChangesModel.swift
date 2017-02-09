@@ -31,9 +31,17 @@ import Cocoa
   func unstagedFileURL(_ path: String) -> URL?
 }
 
+// To be folded into FileChangesModel once the @objc can be removed
+protocol Blaming
+{
+  /// Generate the blame data for the given file.
+  /// - parameter path: Repository-relative file path.
+  func blame(for path: String) -> GitBlame?
+}
+
 
 /// Changes for a selected commit in the history
-class XTCommitChanges: NSObject, XTFileChangesModel
+class XTCommitChanges: NSObject, XTFileChangesModel, Blaming
 {
   unowned var repository: XTRepository
   var sha: String
@@ -81,6 +89,11 @@ class XTCommitChanges: NSObject, XTFileChangesModel
   
     return self.repository.diffMaker(
         forFile: path, commitSHA: self.sha, parentSHA: diffParent)
+  }
+  
+  func blame(for path: String) -> GitBlame?
+  {
+    return GitBlame(repository: repository, path: path, from: nil, to: nil)
   }
   
   func dataForFile(_ path: String, staged: Bool) -> Data?
@@ -190,6 +203,11 @@ class XTStashChanges: NSObject, XTFileChangesModel
     }
   }
   
+  func blameForFile(_ path: String) -> GitBlame?
+  {
+    return nil
+  }
+  
   func dataForFile(_ path: String, staged: Bool) -> Data?
   {
     if staged {
@@ -248,6 +266,11 @@ class XTStagingChanges: NSObject, XTFileChangesModel
     else {
       return self.repository.unstagedDiff(file: path)
     }
+  }
+  
+  func blameForFile(_ path: String) -> GitBlame?
+  {
+    return nil
   }
   
   func dataForFile(_ path: String, staged: Bool) -> Data?

@@ -50,10 +50,11 @@ class XTFileViewController: NSViewController
   struct TabID
   {
     static let diff = "diff"
+    static let blame = "blame"
     static let text = "text"
     static let preview = "preview"
     
-    static let allIDs = [ diff, text, preview ]
+    static let allIDs = [ diff, blame, text, preview ]
   }
 
   @IBOutlet weak var headerSplitView: NSSplitView!
@@ -72,6 +73,7 @@ class XTFileViewController: NSViewController
   @IBOutlet var fileTreeDS: FileTreeDataSource!
   @IBOutlet var headerController: CommitHeaderViewController!
   @IBOutlet var diffController: XTFileDiffController!
+  @IBOutlet var blameController: BlameController!
   @IBOutlet var previewController: XTPreviewController!
   @IBOutlet var textController: XTTextPreviewController!
   var commitEntryController: XTCommitEntryController!
@@ -88,6 +90,12 @@ class XTFileViewController: NSViewController
   weak var lastClickedButton: NSButton?
   var doubleClickTimer: Timer?
   var indexTimer: Timer?
+  
+  var contentControllers: [XTFileContentController]
+  {
+    return  [diffController, blameController,
+             textController, previewController]
+  }
   
   var fileListDataSource: FileListDataSource & NSOutlineViewDataSource
   {
@@ -419,9 +427,7 @@ class XTFileViewController: NSViewController
 
   func clearPreviews()
   {
-    diffController.clear()
-    textController.clear()
-    previewController.clear()
+    contentControllers.forEach { $0.clear() }
   }
   
   func clear()
@@ -475,8 +481,6 @@ class XTFileViewController: NSViewController
     else { return }
     
     let selection = segmentedControl.selectedSegment
-    let contentControllers: [XTFileContentController ] =
-        [ diffController, textController, previewController ]
     
     previewTabView.selectTabViewItem(withIdentifier: TabID.allIDs[selection])
     contentController = contentControllers[selection]
