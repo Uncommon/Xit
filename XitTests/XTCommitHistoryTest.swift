@@ -5,8 +5,8 @@ import XCTest
 class MockCommit: NSObject, CommitType
 {
   let sha: String?
-  let oid: GTOID
-  let parentOIDs: [GTOID]
+  let oid: GitOID
+  let parentOIDs: [GitOID]
   
   var message: String? = nil
   var authorName: String? = nil
@@ -17,7 +17,7 @@ class MockCommit: NSObject, CommitType
   var commitDate = Date()
   var email: String? = nil
   
-  init(sha: String?, oid: GTOID, parentOIDs: [GTOID])
+  init(sha: String?, oid: GitOID, parentOIDs: [GitOID])
   {
     self.sha = sha
     self.oid = oid
@@ -61,7 +61,7 @@ class MockRepository: NSObject, RepositoryType
     return nil
   }
 
-  func commit(forOID oid: GTOID) -> CommitType?
+  func commit(forOID oid: GitOID) -> CommitType?
   {
     for commit in commits {
       if commit.oid == oid {
@@ -84,8 +84,8 @@ extension Xit.CommitConnection
 {
   init(parentSHA: String, childSHA: String, colorIndex: UInt)
   {
-    self.init(parentOID: GTOID(oid: parentSHA),
-              childOID: GTOID(oid: childSHA),
+    self.init(parentOID: GitOID(sha: parentSHA)!,
+              childOID: GitOID(sha: childSHA)!,
               colorIndex: colorIndex)
   }
 }
@@ -97,8 +97,8 @@ class XTCommitHistoryTest: XCTestCase
   {
     let commits = commitData.map({ (sha, parents) in
         MockCommit(sha: sha,
-                   oid: GTOID(oid: sha),
-                   parentOIDs: parents.map { GTOID(oid: $0) }) })
+                   oid: GitOID(sha: sha)!,
+                   parentOIDs: parents.map { GitOID(sha: $0)! }) })
     // Reverse the input to better test the ordering.
     let repository = MockRepository(commits: commits.reversed())
     let history = XTCommitHistory()
@@ -117,7 +117,7 @@ class XTCommitHistoryTest: XCTestCase
         let parentIndex = history.entries.index(
             where: { $0.commit.oid == parentOID })
         
-        XCTAssert(parentIndex! > index, "\(entry.commit.sha!.firstSix()) !< \(parentOID.sha?.firstSix())")
+        XCTAssert(parentIndex! > index, "\(entry.commit.sha!.firstSix()) !< \(parentOID.sha.firstSix())")
       }
     }
   }

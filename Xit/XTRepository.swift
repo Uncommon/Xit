@@ -1,9 +1,10 @@
 import Foundation
 
 
-@objc protocol RepositoryType {
+protocol RepositoryType: class
+{
   func commit(forSHA sha: String) -> CommitType?
-  func commit(forOID oid: GTOID) -> CommitType?
+  func commit(forOID oid: GitOID) -> CommitType?
 }
 
 
@@ -18,7 +19,7 @@ extension XTRepository: RepositoryType
     return XTCommit(sha: sha, repository: self)
   }
   
-  func commit(forOID oid: GTOID) -> CommitType?
+  func commit(forOID oid: GitOID) -> CommitType?
   {
     return XTCommit(oid: oid, repository: self)
   }

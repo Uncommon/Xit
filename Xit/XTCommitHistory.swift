@@ -35,8 +35,8 @@ public class CommitEntry: NSObject
     var nextChildIndex: UInt = 0
     let parentOutlets = NSOrderedSet(array: connections.flatMap {
             ($0.parentOID == commit.oid) ? nil : $0.parentOID })
-    var parentLines = [GTOID: (childIndex: UInt,
-                               colorIndex: UInt)]()
+    var parentLines = [GitOID: (childIndex: UInt,
+                                colorIndex: UInt)]()
     
     for connection in connections {
       let commitIsParent = connection.parentOID == commit.oid
@@ -85,7 +85,7 @@ public func == (left: CommitEntry, right: CommitEntry) -> Bool
 
 /// A connection line between commits in the history list.
 struct CommitConnection: Equatable {
-  let parentOID, childOID: GTOID
+  let parentOID, childOID: GitOID
   let colorIndex: UInt
 }
 
@@ -111,7 +111,7 @@ public class XTCommitHistory: NSObject
 {
   var repository: RepositoryType!
   
-  var commitLookup = [GTOID: CommitEntry]()
+  var commitLookup = [GitOID: CommitEntry]()
   var entries = [CommitEntry]()
   
   /// The result of processing a segment of a branch.
