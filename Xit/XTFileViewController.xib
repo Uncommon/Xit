@@ -417,10 +417,10 @@
                                             <segment toolTip="Text view" image="blameTemplate" imageScaling="none" width="37" tag="1">
                                                 <nil key="label"/>
                                             </segment>
-                                            <segment toolTip="QuickLook preview" image="textTemplate" width="37">
+                                            <segment toolTip="Text view" image="textTemplate" width="37">
                                                 <nil key="label"/>
                                             </segment>
-                                            <segment image="NSQuickLookTemplate">
+                                            <segment toolTip="QuickLook preview" image="NSQuickLookTemplate">
                                                 <nil key="label"/>
                                             </segment>
                                         </segments>
