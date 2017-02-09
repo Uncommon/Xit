@@ -27,6 +27,7 @@
 		895869BF1D088A46003A9AF0 /* submoduleTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 895869B91D088A46003A9AF0 /* submoduleTemplate@2x.png */; };
 		895869C01D088A46003A9AF0 /* tagTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 895869BA1D088A46003A9AF0 /* tagTemplate.png */; };
 		895869C11D088A46003A9AF0 /* tagTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 895869BB1D088A46003A9AF0 /* tagTemplate@2x.png */; };
+		896A29F71E4C3620002C5EC8 /* PreviewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896A29F61E4C3620002C5EC8 /* PreviewItem.swift */; };
 		899DB1921CE109C700760270 /* XTWorkspaceTreeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB18D1CE0EA3A00760270 /* XTWorkspaceTreeBuilder.swift */; };
 		899DB1A21CE5022400760270 /* XTCommitEntryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB1A01CE5022400760270 /* XTCommitEntryController.swift */; };
 		899DB1A31CE5022400760270 /* XTCommitEntryController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 899DB1A11CE5022400760270 /* XTCommitEntryController.xib */; };
@@ -207,7 +208,6 @@
 		DDA8A65F17F9ECED00AD9808 /* mixed.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A65D17F9ECED00AD9808 /* mixed.png */; };
 		DDA8A66017F9ECED00AD9808 /* mixed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A65E17F9ECED00AD9808 /* mixed@2x.png */; };
 		DDC75B8315D08E8F0087F2D4 /* NSDate+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC75B8215D08E8F0087F2D4 /* NSDate+Extensions.m */; };
-		DDD4708116F3E7B000CA76FF /* XTPreviewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD4708016F3E7B000CA76FF /* XTPreviewItem.m */; };
 		DDD4708516F96F7E00CA76FF /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDD4708416F96F7E00CA76FF /* QuickLook.framework */; };
 		DDD4708716F9701600CA76FF /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDD4708616F9701600CA76FF /* Quartz.framework */; };
 		DDDA447215B0EA4700DF407B /* XTRepository+Parsing.m in Sources */ = {isa = PBXBuildFile; fileRef = DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */; };
@@ -353,6 +353,7 @@
 		895869B91D088A46003A9AF0 /* submoduleTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "submoduleTemplate@2x.png"; sourceTree = "<group>"; };
 		895869BA1D088A46003A9AF0 /* tagTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tagTemplate.png; sourceTree = "<group>"; };
 		895869BB1D088A46003A9AF0 /* tagTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tagTemplate@2x.png"; sourceTree = "<group>"; };
+		896A29F61E4C3620002C5EC8 /* PreviewItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewItem.swift; sourceTree = "<group>"; };
 		899DB18D1CE0EA3A00760270 /* XTWorkspaceTreeBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTWorkspaceTreeBuilder.swift; sourceTree = "<group>"; };
 		899DB1A01CE5022400760270 /* XTCommitEntryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTCommitEntryController.swift; sourceTree = "<group>"; };
 		899DB1A11CE5022400760270 /* XTCommitEntryController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTCommitEntryController.xib; sourceTree = "<group>"; };
@@ -551,8 +552,6 @@
 		DDA8A65D17F9ECED00AD9808 /* mixed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mixed.png; sourceTree = "<group>"; };
 		DDA8A65E17F9ECED00AD9808 /* mixed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mixed@2x.png"; sourceTree = "<group>"; };
 		DDC75B8215D08E8F0087F2D4 /* NSDate+Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Extensions.m"; sourceTree = "<group>"; };
-		DDD4707F16F3E7B000CA76FF /* XTPreviewItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTPreviewItem.h; sourceTree = "<group>"; };
-		DDD4708016F3E7B000CA76FF /* XTPreviewItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTPreviewItem.m; sourceTree = "<group>"; };
 		DDD4708416F96F7E00CA76FF /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
 		DDD4708616F9701600CA76FF /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		DDDA447015B0E97000DF407B /* XTRepository+Parsing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XTRepository+Parsing.h"; sourceTree = "<group>"; };
@@ -994,8 +993,6 @@
 				C9AA802F1E2929810004D670 /* XTFileChangesDataSource.swift */,
 				C90FCA2E1D9C776C006196DE /* XTFileDiffController.swift */,
 				C94A30231E311F3B00B4496B /* XTPreviewController.swift */,
-				DDD4707F16F3E7B000CA76FF /* XTPreviewItem.h */,
-				DDD4708016F3E7B000CA76FF /* XTPreviewItem.m */,
 				89D8BE211CF0A4ED00D640AA /* XTRolloverButton.swift */,
 				C94A30251E3154D400B4496B /* XTTextPreviewController.swift */,
 				899DB18D1CE0EA3A00760270 /* XTWorkspaceTreeBuilder.swift */,
@@ -1004,6 +1001,7 @@
 				C94736811DF097B2000E3A05 /* FileListView.swift */,
 				C947367F1DF08FFB000E3A05 /* FileRowView.swift */,
 				C932110B1E48E92C00232B61 /* FileTreeDataSource.swift */,
+				896A29F61E4C3620002C5EC8 /* PreviewItem.swift */,
 			);
 			name = FileView;
 			sourceTree = "<group>";
@@ -1375,9 +1373,9 @@
 				DD07B08916B313A60012AC19 /* XTRefFormatter.m in Sources */,
 				C947367A1DEF5CA8000E3A05 /* XTFileViewController.swift in Sources */,
 				C95355EA1D93470400AEEF49 /* XTTitleStatusView.swift in Sources */,
-				DDD4708116F3E7B000CA76FF /* XTPreviewItem.m in Sources */,
 				C9DAB5D01D4A4F0300586854 /* XTGitPrefsController.swift in Sources */,
 				89C927751D36A2180074F71A /* XTSubmodule.swift in Sources */,
+				896A29F71E4C3620002C5EC8 /* PreviewItem.swift in Sources */,
 				C9ABDB2F1E0AE72600CBD8D8 /* PrefsTabViewController.swift in Sources */,
 				C932110C1E48E92C00232B61 /* FileTreeDataSource.swift in Sources */,
 				899DB1A21CE5022400760270 /* XTCommitEntryController.swift in Sources */,

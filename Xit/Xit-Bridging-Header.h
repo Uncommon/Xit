@@ -4,7 +4,6 @@
 
 #import "XTConstants.h"
 #import "XTDocument.h"
-#import "XTPreviewItem.h"
 #import "XTRefFormatter.h"
 #import "XTRefToken.h"
 #import "XTRepository.h"

@@ -18,11 +18,11 @@ extension XTPreviewController: XTFileContentController
     let previewView = view as! QLPreviewView
   
     if staged {
-      var previewItem: XTPreviewItem! = previewView.previewItem
-                                        as? XTPreviewItem
+      var previewItem: PreviewItem! = previewView.previewItem
+                                      as? PreviewItem
       
       if previewItem == nil {
-        previewItem = XTPreviewItem()
+        previewItem = PreviewItem()
         previewView.previewItem = previewItem
       }
       previewItem.model = model
