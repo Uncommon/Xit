@@ -2,7 +2,10 @@ import Foundation
 
 protocol HeaderGenerator
 {
-  var repository: RepositoryType! { get }
+  associatedtype Repo: RepositoryType
+  associatedtype Commit: CommitType
+  
+  var repository: Repo! { get }
 }
 
 extension HeaderGenerator
@@ -14,7 +17,7 @@ extension HeaderGenerator
                            subdirectory: "html")!
   }
 
-  func generateHeaderHTML(_ commit: CommitType) -> String
+  func generateHeaderHTML(_ commit: Commit) -> String
   {
     guard let commitSHA = commit.sha
     else { return "" }
@@ -58,6 +61,9 @@ extension HeaderGenerator
 @objc(XTCommitHeaderViewController)
 class CommitHeaderViewController : XTWebViewController, HeaderGenerator
 {
+  typealias Repo = XTRepository
+  typealias Commit = XTCommit
+
   static let headerHeightKey = "height"
 
   var commitSHA: String?
@@ -75,7 +81,7 @@ class CommitHeaderViewController : XTWebViewController, HeaderGenerator
   {
     return view.window?.windowController as? RepositoryController
   }
-  weak var repository: RepositoryType!
+  weak var repository: XTRepository!
   
   override init?(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?)
   {
@@ -205,7 +211,7 @@ class CommitHeaderActionDelegate: NSObject
   func select(sha: String)
   {
     controller.repoController.selectedModel = XTCommitChanges(
-        repository: controller.repository as! XTRepository, sha: sha)
+        repository: controller.repository, sha: sha)
   }
   
   func headerToggled()

@@ -1,10 +1,13 @@
 import Foundation
 
 
-protocol RepositoryType: class
+public protocol RepositoryType: class
 {
-  func commit(forSHA sha: String) -> CommitType?
-  func commit(forOID oid: GitOID) -> CommitType?
+  associatedtype ID: OID
+  associatedtype C: CommitType
+  
+  func commit(forSHA sha: String) -> C?
+  func commit(forOID oid: ID) -> C?
 }
 
 
@@ -14,12 +17,15 @@ struct CallbackPayload { let repo: XTRepository }
 
 extension XTRepository: RepositoryType
 {
-  func commit(forSHA sha: String) -> CommitType?
+  public typealias ID = GitOID
+  public typealias C = XTCommit
+
+  public func commit(forSHA sha: String) -> XTCommit?
   {
     return XTCommit(sha: sha, repository: self)
   }
   
-  func commit(forOID oid: GitOID) -> CommitType?
+  public func commit(forOID oid: GitOID) -> XTCommit?
   {
     return XTCommit(oid: oid, repository: self)
   }
@@ -141,8 +147,7 @@ extension XTRepository
   func diffMaker(forFile file: String, commitSHA: String, parentSHA: String?)
       -> XTDiffMaker?
   {
-    guard let toCommit = (commit(forSHA: commitSHA) as? XTCommit)?.gtCommit
-    
+    guard let toCommit = commit(forSHA: commitSHA)?.gtCommit
     else { return nil }
     
     var fromSource = XTDiffMaker.SourceType.data(Data())
@@ -155,7 +160,7 @@ extension XTRepository
     }
     
     if let parentSHA = parentSHA,
-       let parentCommit = (commit(forSHA: parentSHA) as? XTCommit)?.gtCommit,
+       let parentCommit = commit(forSHA: parentSHA)?.gtCommit,
        let fromTree = parentCommit.tree,
        let fromEntry = try? fromTree.entry(withPath: file),
        let fromBlob = (try? GTObject(treeEntry: fromEntry)) as? GTBlob {

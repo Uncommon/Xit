@@ -74,7 +74,7 @@ class XTCommitChanges: NSObject, XTFileChangesModel, Blaming
   
   func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
   {
-    guard let commit = repository.commit(forSHA: sha) as? XTCommit
+    guard let commit = repository.commit(forSHA: sha)
     else { return nil }
     
     guard let diffParent = self.diffParent ?? commit.parentOIDs.first?.sha

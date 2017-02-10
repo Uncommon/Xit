@@ -1,11 +1,12 @@
 import Cocoa
 
 
-public protocol CommitType
+public protocol CommitType: CustomStringConvertible
 {
+  associatedtype ID: OID
   var sha: String? { get }
-  var oid: GitOID { get }
-  var parentOIDs: [GitOID] { get }
+  var oid: ID { get }
+  var parentOIDs: [ID] { get }
   
   var message: String? { get }
   var authorName: String? { get }

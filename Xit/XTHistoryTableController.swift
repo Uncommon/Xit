@@ -51,7 +51,7 @@ public class XTHistoryTableController: NSViewController
     }
   }
   
-  let history = XTCommitHistory()
+  let history = XTCommitHistory<GitOID, XTCommit, XTRepository>()
   
   deinit
   {

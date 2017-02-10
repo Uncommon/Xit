@@ -3,6 +3,8 @@ import Cocoa
 /// Cell view that draws the graph lines next to the text.
 class XTHistoryCellView: NSTableCellView
 {
+  typealias GitCommitEntry = CommitEntry<GitOID, XTCommit>
+  
   var refs = [String]()
   
   /// Margin of space to leave for the lines in this cell.
@@ -32,7 +34,7 @@ class XTHistoryCellView: NSTableCellView
   /// Moves the text field out of the way of the lines and refs.
   func adjustLayout()
   {
-    guard let entry = objectValue as? CommitEntry
+    guard let entry = objectValue as? GitCommitEntry
     else { return }
     
     let totalColumns = entry.lines.reduce(0) { (oldMax, line) -> UInt in
@@ -112,7 +114,7 @@ class XTHistoryCellView: NSTableCellView
   
   func drawLines()
   {
-    guard let entry = objectValue as? CommitEntry,
+    guard let entry = objectValue as? GitCommitEntry,
           let dotOffset = entry.dotOffset,
           let dotColorIndex = entry.dotColorIndex
     else { return }
