@@ -4,7 +4,9 @@ import Foundation
 
 class TestHeaderGenerator: HeaderGenerator
 {
-  var repository: RepositoryType!
+  typealias Repo = MockRepository
+  typealias Commit = MockCommit
+  var repository: Repo!
 }
 
 class CommitHeaderTest: XCTestCase
@@ -25,7 +27,7 @@ class CommitHeaderTest: XCTestCase
   func testHTML()
   {
     let generator = TestHeaderGenerator()
-    let oids = [0, 1, 2, 3].map { GTOID(sha: self.fakeSHA($0))! }
+    let oids = [0, 1, 2, 3].map { GitOID(sha: self.fakeSHA($0))! }
     let commit = MockCommit(sha: "blahblah",
                             oid: oids[0],
                             parentOIDs: [oids[1], oids[2], oids[3]])

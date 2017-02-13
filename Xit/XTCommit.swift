@@ -1,11 +1,12 @@
 import Cocoa
 
 
-@objc public protocol CommitType
+public protocol CommitType: CustomStringConvertible
 {
+  associatedtype ID: OID
   var sha: String? { get }
-  var oid: GTOID { get }
-  var parentOIDs: [GTOID] { get }
+  var oid: ID { get }
+  var parentOIDs: [ID] { get }
   
   var message: String? { get }
   var authorName: String? { get }
@@ -51,13 +52,13 @@ public class XTCommit: CommitType
   
   // These used to be lazy properties, but the Swift 3 compiler crashes on that.
   let cachedSHA: String?
-  let cachedOID: GTOID
-  let cachedParentOIDs: [GTOID]
+  let cachedOID: GitOID
+  let cachedParentOIDs: [GitOID]
 
   public var sha: String? { return cachedSHA }
-  public var oid: GTOID { return cachedOID }
+  public var oid: GitOID { return cachedOID }
 
-  public var parentOIDs: [GTOID] { return cachedParentOIDs }
+  public var parentOIDs: [GitOID] { return cachedParentOIDs }
   
   public var message: String?
   { return gtCommit.message }
@@ -93,16 +94,16 @@ public class XTCommit: CommitType
   {
     self.gtCommit = commit
     self.cachedSHA = commit.sha
-    self.cachedOID = commit.oid!
+    self.cachedOID = GitOID(oid: commit.oid!.git_oid().pointee)
     self.cachedParentOIDs = XTCommit.calculateParentOIDs(gtCommit.git_commit())
   }
 
-  convenience init?(oid: GTOID, repository: XTRepository)
+  convenience init?(oid: GitOID, repository: XTRepository)
   {
     var gitCommit: OpaquePointer? = nil  // git_commit isn't imported
     let result = git_commit_lookup(&gitCommit,
                                    repository.gtRepo.git_repository(),
-                                   oid.git_oid())
+                                   oid.unsafeOID())
   
     guard result == 0,
           let commit = GTCommit(obj: gitCommit!, in: repository.gtRepo)
@@ -113,7 +114,7 @@ public class XTCommit: CommitType
   
   convenience init?(sha: String, repository: XTRepository)
   {
-    guard let oid = GTOID(sha: sha)
+    guard let oid = GitOID(sha: sha)
     else { return nil }
     
     self.init(oid: oid, repository: repository)
@@ -154,16 +155,16 @@ public class XTCommit: CommitType
     return result
   }
   
-  private static func calculateParentOIDs(_ rawCommit: OpaquePointer) -> [GTOID]
+  private static func calculateParentOIDs(_ rawCommit: OpaquePointer) -> [GitOID]
   {
-    var result = [GTOID]()
+    var result = [GitOID]()
     
     for index in 0..<git_commit_parentcount(rawCommit) {
       let parentID = git_commit_parent_id(rawCommit, index)
       guard parentID != nil
       else { continue }
       
-      result.append(GTOID(gitOid:parentID!))
+      result.append(GitOID(oidPtr: parentID!))
     }
     return result
   }
@@ -181,5 +182,5 @@ public class XTCommit: CommitType
 
 public func == (a: XTCommit, b: XTCommit) -> Bool
 {
-  return git_oid_cmp(a.oid.git_oid(), b.oid.git_oid()) == 0
+  return a.oid == b.oid
 }

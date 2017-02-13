@@ -1,16 +1,18 @@
 import Foundation
 
-protocol OID: CustomStringConvertible, Equatable
+// This protocol "can only be used as a generic constraint" because Hashable
+// inherits from Equatable which uses Self.
+public protocol OID: Hashable
 {
   var sha: String { get }
 }
 
 extension OID
 {
-  var description: String { return sha }
+  public var hashValue: Int { return sha.hashValue }
 }
 
-struct GitOID: OID
+public struct GitOID: OID, Hashable
 {
   let oid: git_oid
   
@@ -19,6 +21,11 @@ struct GitOID: OID
   init(oid: git_oid)
   {
     self.oid = oid
+  }
+  
+  init(oidPtr: UnsafePointer<git_oid>)
+  {
+    self.oid = oidPtr.pointee
   }
   
   init?(sha: String)
@@ -38,7 +45,7 @@ struct GitOID: OID
     oid = oidPtr.pointee
   }
   
-  var sha: String
+  public var sha: String
   {
     let storage = UnsafeMutablePointer<Int8>.allocate(capacity: GitOID.shaLength)
     var oid = self.oid
@@ -47,9 +54,22 @@ struct GitOID: OID
     return String(bytesNoCopy: storage, length: GitOID.shaLength,
                   encoding: .ascii, freeWhenDone: true) ?? ""
   }
+  
+  func unsafeOID() -> UnsafePointer<git_oid>
+  {
+    let ptr = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
+    
+    ptr.pointee = oid
+    return UnsafePointer<git_oid>(ptr)
+  }
 }
 
-func == (left: GitOID, right: GitOID) -> Bool
+extension GitOID: CustomStringConvertible
+{
+  public var description: String { return sha }
+}
+
+public func == (left: GitOID, right: GitOID) -> Bool
 {
   var l = left.oid
   var r = right.oid
