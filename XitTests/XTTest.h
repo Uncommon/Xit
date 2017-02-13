@@ -30,12 +30,4 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-
-@interface XTFakeWinController : NSObject<RepositoryController>
-
-@property NSString *selectedCommitSHA;
-@property (nullable) id<XTFileChangesModel> selectedModel;
-
-@end
-
 NS_ASSUME_NONNULL_END

@@ -187,8 +187,3 @@
 }
 
 @end
-
-
-@implementation XTFakeWinController
-
-@end

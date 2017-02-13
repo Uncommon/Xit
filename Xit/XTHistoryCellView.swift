@@ -3,7 +3,7 @@ import Cocoa
 /// Cell view that draws the graph lines next to the text.
 class XTHistoryCellView: NSTableCellView
 {
-  typealias GitCommitEntry = CommitEntry<GitOID, XTCommit>
+  typealias GitCommitEntry = CommitEntry<XTCommit>
   
   var refs = [String]()
   

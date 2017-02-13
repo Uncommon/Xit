@@ -6,11 +6,10 @@ struct HistoryLine
   let colorIndex: UInt
 }
 
-public class CommitEntry<ID: OID, C: CommitType>: CustomStringConvertible
-  where C.ID == ID
+public class CommitEntry<C: CommitType>: CustomStringConvertible
 {
   let commit: C
-  var connections = [CommitConnection<ID>]()
+  var connections = [CommitConnection<C.ID>]()
   {
     didSet
     {
@@ -34,8 +33,8 @@ public class CommitEntry<ID: OID, C: CommitType>: CustomStringConvertible
     var nextChildIndex: UInt = 0
     let parentOutlets = NSOrderedSet(array: connections.flatMap {
             ($0.parentOID == commit.oid) ? nil : $0.parentOID })
-    var parentLines = [ID: (childIndex: UInt,
-                            colorIndex: UInt)]()
+    var parentLines: [C.ID: (childIndex: UInt,
+                             colorIndex: UInt)] = [:]
     
     for connection in connections {
       let commitIsParent = connection.parentOID == commit.oid
@@ -76,8 +75,8 @@ public class CommitEntry<ID: OID, C: CommitType>: CustomStringConvertible
   }
 }
 
-public func == <ID: OID, C: CommitType>(left: CommitEntry<ID, C>,
-                                        right: CommitEntry<ID, C>) -> Bool
+public func == <C: CommitType>(left: CommitEntry<C>,
+                               right: CommitEntry<C>) -> Bool
 {
   return left.commit.oid == right.commit.oid
 }
@@ -107,11 +106,10 @@ extension String
 
 
 /// The result of processing a segment of a branch.
-struct BranchResult<ID: OID, C: CommitType>: CustomStringConvertible
-  where C.ID == ID
+struct BranchResult<C: CommitType>: CustomStringConvertible
 {
   /// The commit entries collected for this segment.
-  var entries: [CommitEntry<ID, C>]
+  var entries: [CommitEntry<C>]
   /// Other branches queued for processing.
   var queue: [(commit: C, after: C)]
   
@@ -124,13 +122,16 @@ struct BranchResult<ID: OID, C: CommitType>: CustomStringConvertible
   }
 }
 
+public typealias GitCommitHistory = XTCommitHistory<XTRepository>
+
 /// Maintains the history list, allowing for dynamic adding and removing.
-public class XTCommitHistory<ID: OID, C: CommitType, Repo: RepositoryType>: NSObject
-  where C.ID == ID, Repo.ID == ID, Repo.C == C
+public class XTCommitHistory<Repo: RepositoryType>: NSObject
 {
-  typealias Entry = CommitEntry<ID, C>
+  typealias C = Repo.C
+  typealias ID = Repo.C.ID
+  typealias Entry = CommitEntry<C>
   typealias Connection = CommitConnection<ID>
-  typealias Result = BranchResult<ID, C>
+  typealias Result = BranchResult<C>
 
   var repository: Repo!
   

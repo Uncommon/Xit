@@ -3,11 +3,10 @@ import Foundation
 
 public protocol RepositoryType: class
 {
-  associatedtype ID: OID
   associatedtype C: CommitType
   
   func commit(forSHA sha: String) -> C?
-  func commit(forOID oid: ID) -> C?
+  func commit(forOID oid: C.ID) -> C?
 }
 
 
