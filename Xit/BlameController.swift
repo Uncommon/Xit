@@ -22,10 +22,12 @@ class BlameController: XTWebViewController, TabWidthVariable
       }
     }
     
-    guard let blame = (model as? Blaming)?.blame(for: path)
-      else {
-        notAvailable()
-        return
+    // Temporary: Blaming protocol can't be used because it has an
+    // associated type. Use XTCommitChanges directly for now.
+    guard let blame = (model as? XTCommitChanges)?.blame(for: path)
+    else {
+      notAvailable()
+      return
     }
     
     var htmlLines = [String]()
@@ -38,7 +40,8 @@ class BlameController: XTWebViewController, TabWidthVariable
         ])
       
       let start = hunk.finalLineStart - 1
-      let hunkLines = lines[start..<start+hunk.lineCount]
+      let end = min(start + hunk.lineCount, lines.count-1)
+      let hunkLines = lines[start..<end]
       
       htmlLines.append(contentsOf: hunkLines.map {
         "<div class='line'>\(XTWebViewController.escapeText($0))</div>" })

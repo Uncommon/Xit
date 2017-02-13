@@ -1,6 +1,29 @@
 import Foundation
 
-class GitBlame
+protocol Blame
+{
+  associatedtype HunkCollection: Collection
+  
+  var hunks: HunkCollection! { get }
+}
+
+protocol BlameHunk
+{
+  associatedtype ID: OID
+  
+  var lineCount: Int { get }
+  var boundary: Bool { get }
+  
+  var finalOID: ID { get }
+  var finalLineStart: Int { get }
+  var finalSignature: Signature { get }
+  
+  var origOID: ID { get }
+  var origLineStart: Int { get }
+  var origSignature: Signature { get }
+}
+
+class GitBlame: Blame
 {
   let blame: OpaquePointer
   public private(set) var hunks: HunkCollection!
@@ -95,7 +118,7 @@ class GitBlame
   }
 }
 
-struct GitBlameHunk
+struct GitBlameHunk: BlameHunk
 {
   let hunk: git_blame_hunk
   
@@ -111,4 +134,96 @@ struct GitBlameHunk
   var origLineStart: Int { return hunk.orig_start_line_number }
   var origSignature: Signature
   { return GitSignature(signature: hunk.orig_signature.pointee) }
+}
+
+/// Blame data from the git command line because libgit2 is slow
+class CLGitBlame: Blame
+{
+  typealias HunkCollection = [CLGitBlameHunk]
+  
+  var hunks: [CLGitBlameHunk]! = [CLGitBlameHunk]()
+  
+  init?(repository: XTRepository, path: String,
+        from startOID: GitOID?, to endOID: GitOID?)
+  {
+    guard let data = try? repository.executeGit(withArgs: ["blame", "-p",
+                                                           startOID?.sha ?? "HEAD",
+                                                           path],
+                                                writes: false),
+          let text = String(data: data, encoding: .utf8)
+    else { return nil }
+    
+    let lines = text.components(separatedBy: .newlines)
+    var startHunk = true
+    
+    for line in lines {
+      if startHunk {
+        let parts = line.components(separatedBy: .whitespaces)
+        guard parts.count >= 3,
+              let oid = GitOID(sha: parts[0])
+        else { continue }
+        
+        if let last = hunks.last,
+           oid == last.origOID {
+          last.lineCount += 1
+        }
+        else {
+          guard let commit = repository.commit(forOID: oid),
+                let originalLine = Int(parts[1]),
+                let finalLine = Int(parts[2]),
+                let authorSig = commit.authorSig,
+                let committerSig = commit.committerSig
+          else { continue }
+          
+          // The output doesn't have the original commit SHA so fake it
+          // by using author/committer
+          let hunk = CLGitBlameHunk(lineCount: 1, boundary: false,
+                                    finalOID: oid,
+                                    finalLineStart: finalLine,
+                                    finalSignature: committerSig,
+                                    origOID: oid,
+                                    origLineStart: originalLine,
+                                    origSignature: authorSig)
+          
+          hunks.append(hunk)
+        }
+        startHunk = false
+      }
+      else if line.hasPrefix("\t") {
+        // This line has the text from the file after the tab
+        // but we're not collecting that here.
+        startHunk = true
+      }
+      // Other lines that don't start with a tab have author & committer
+      // info, but we're getting that from the commit.
+    }
+  }
+}
+
+class CLGitBlameHunk: BlameHunk
+{
+  var lineCount: Int
+  var boundary: Bool
+  
+  var finalOID: GitOID
+  var finalLineStart: Int
+  var finalSignature: Signature
+  
+  var origOID: GitOID
+  var origLineStart: Int
+  var origSignature: Signature
+  
+  init(lineCount: Int, boundary: Bool, finalOID: GitOID, finalLineStart: Int,
+       finalSignature: Signature, origOID: GitOID, origLineStart: Int,
+       origSignature: Signature)
+  {
+    self.lineCount = lineCount
+    self.boundary = boundary
+    self.finalOID = finalOID
+    self.finalLineStart = finalLineStart
+    self.finalSignature = finalSignature
+    self.origOID = origOID
+    self.origLineStart = origLineStart
+    self.origSignature = origSignature
+  }
 }

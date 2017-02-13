@@ -66,6 +66,14 @@ public class XTCommit: CommitType
   public var messageSummary: String
   { return gtCommit.messageSummary }
   
+  public var authorSig: GitSignature?
+  {
+    guard let sig = git_commit_author(gtCommit.git_commit())
+    else { return nil }
+    
+    return GitSignature(signature: sig.pointee)
+  }
+  
   public var authorName: String?
   { return gtCommit.author?.name }
   
@@ -74,6 +82,14 @@ public class XTCommit: CommitType
   
   public var authorDate: Date?
   { return gtCommit.author?.time }
+  
+  public var committerSig: GitSignature?
+  {
+    guard let sig = git_commit_committer(gtCommit.git_commit())
+    else { return nil }
+    
+    return GitSignature(signature: sig.pointee)
+  }
   
   public var committerName: String?
   { return gtCommit.committer?.name }

@@ -8,15 +8,15 @@ class XTTagTest: XTTest
 {
   func testAnnotatedTag()
   {
-    repository.executeGit(withArgs: ["tag", "-a", tagName, "-m", message],
-                          writes: true, error: nil)
+    try! repository.executeGit(withArgs: ["tag", "-a", tagName, "-m", message],
+                               writes: true)
     checkTag(hasMessage: true)
   }
   
   func testLightweightTag()
   {
-    repository.executeGit(withArgs: ["tag", tagName],
-                          writes: true, error: nil)
+    try! repository.executeGit(withArgs: ["tag", tagName],
+                               writes: true)
     checkTag(hasMessage: false)
   }
   

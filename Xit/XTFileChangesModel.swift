@@ -34,15 +34,19 @@ import Cocoa
 // To be folded into FileChangesModel once the @objc can be removed
 protocol Blaming
 {
+  associatedtype BlameType: Blame
+
   /// Generate the blame data for the given file.
   /// - parameter path: Repository-relative file path.
-  func blame(for path: String) -> GitBlame?
+  func blame(for path: String) -> BlameType?
 }
 
 
 /// Changes for a selected commit in the history
 class XTCommitChanges: NSObject, XTFileChangesModel, Blaming
 {
+  typealias BlameType = CLGitBlame
+
   unowned var repository: XTRepository
   var sha: String
   var shaToSelect: String? { return self.sha }
@@ -91,9 +95,10 @@ class XTCommitChanges: NSObject, XTFileChangesModel, Blaming
         forFile: path, commitSHA: self.sha, parentSHA: diffParent)
   }
   
-  func blame(for path: String) -> GitBlame?
+  func blame(for path: String) -> BlameType?
   {
-    return GitBlame(repository: repository, path: path, from: nil, to: nil)
+    return BlameType(repository: repository, path: path,
+                     from: GitOID(sha: sha), to: nil)
   }
   
   func dataForFile(_ path: String, staged: Bool) -> Data?
