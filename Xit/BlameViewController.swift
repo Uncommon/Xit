@@ -34,9 +34,14 @@ class BlameViewController: XTWebViewController, TabWidthVariable
     
     for hunk in blame.hunks {
       htmlLines.append(contentsOf: [
-        "<tr><td class='blamehead'>\(hunk.finalSignature.name ?? "")</td>",
-        "<td>"
-        ])
+          "<tr><td class='blamehead'>",
+          "<div class='name'>\(hunk.finalSignature.name ?? "")</div>"
+          ])
+      
+      if hunk.lineCount > 1 {
+        htmlLines.append("<div class='sha'>\(hunk.finalOID.sha.firstSix())</div>")
+      }
+      htmlLines.append(contentsOf: ["</td>", "<td>"])
       
       let start = hunk.finalLineStart - 1
       let end = min(start + hunk.lineCount, lines.count-1)

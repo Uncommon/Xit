@@ -1,9 +1,8 @@
 body {
   background-color: F8F8F8;
-  font-family: monospace;
+  font-family: "SF Mono", monospace;
   margin: 0px;
   counter-reset: line;
-  font-size: 12;
   tab-size: 4;
 }
 table {
@@ -13,22 +12,18 @@ table {
   float: left;
   width: 100%;
   margin-left: 2.5em;
-}
-table:after {
-  border-bottom: #888 1px;
+  font-size: 12;
 }
 td {
   vertical-align: top;
   padding: 0;
-}
-tr {
-  border-bottom: 1px #888;
+  border-bottom: 1px solid white;
 }
 div.line {
   background-color: white;
   min-height: 1em;
   padding-left: 1ex;
-  border-left: 1px gray solid;
+  border-left: 1px #AAA solid;
   white-space: pre-wrap;
 }
 div.line:before {
@@ -43,8 +38,16 @@ div.line:before {
   -webkit-user-select: none;
 }
 
+.name {
+  font-family: Helvetica, sans-serif;
+}
+
 .blamehead {
   background-color: #EEE;
   width: 20ex;
-  border-bottom: 1px solid #888;
+  border-bottom: 1px solid #AAA;
+  padding-left: 3px;
+  opacity: 0.6;
+  -webkit-user-select: none;
+  cursor: default;
 }
