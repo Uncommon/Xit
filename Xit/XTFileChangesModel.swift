@@ -137,13 +137,13 @@ class XTCommitChanges: NSObject, XTFileChangesModel, Blaming
                          unstagedChange: changeValue)
       let parentPath = (file as NSString).deletingLastPathComponent
       let node = NSTreeNode(representedObject: item)
-      let parentNode = XTChangesModelUtils.findTreeNode(
+      let parentNode = findTreeNode(
           forPath: parentPath, parent: newRoot, nodes: &nodes)
       
       parentNode.mutableChildren.add(node)
       nodes[file] = node
     }
-    XTChangesModelUtils.postProcess(fileTree: newRoot)
+    postProcess(fileTree: newRoot)
     return newRoot
   }
 }
@@ -169,7 +169,7 @@ class XTStashChanges: NSObject, XTFileChangesModel, Blaming
                                        sha: indexCommit.sha!)
       let indexRoot = indexModel.treeRoot
       
-      XTChangesModelUtils.combineTrees(unstagedTree: &mainRoot,
+      combineTrees(unstagedTree: &mainRoot,
                                       stagedTree: indexRoot)
     }
     if let untrackedCommit = stash.untrackedCommit {
@@ -177,7 +177,7 @@ class XTStashChanges: NSObject, XTFileChangesModel, Blaming
                                            sha: untrackedCommit.sha!)
       let untrackedRoot = untrackedModel.treeRoot
     
-      XTChangesModelUtils.add(untrackedRoot, to: &mainRoot)
+      add(untrackedRoot, to: &mainRoot)
     }
     return mainRoot
   }
@@ -252,7 +252,7 @@ class XTStagingChanges: NSObject, XTFileChangesModel, Blaming
     let builder = XTWorkspaceTreeBuilder(changes: repository.workspaceStatus)
     let root = builder.build(repository.repoURL)
     
-    XTChangesModelUtils.postProcess(fileTree: root)
+    postProcess(fileTree: root)
     return root
   }
   
@@ -297,11 +297,10 @@ class XTStagingChanges: NSObject, XTFileChangesModel, Blaming
 }
 
 
-// TODO: This should probably be a protocol extension
-private class XTChangesModelUtils
+extension XTFileChangesModel
 {
   /// Sets folder change status to match children.
-  class func postProcess(fileTree tree: NSTreeNode)
+  func postProcess(fileTree tree: NSTreeNode)
   {
     let sortDescriptor = NSSortDescriptor(
         key: "path.lastPathComponent",
@@ -313,7 +312,7 @@ private class XTChangesModelUtils
   }
 
   /// Recursive helper for `postProcess`.
-  class func updateChanges(_ node: NSTreeNode)
+  func updateChanges(_ node: NSTreeNode)
   {
     guard let childNodes = node.children
     else { return }
@@ -348,7 +347,7 @@ private class XTChangesModelUtils
     nodeItem.unstagedChange = unstagedChange ?? .unmodified
   }
 
-  class func findTreeNode(
+  func findTreeNode(
       forPath path: String,
       parent: NSTreeNode,
       nodes: inout [String: NSTreeNode]) -> NSTreeNode
@@ -372,7 +371,7 @@ private class XTChangesModelUtils
   }
 
   /// Merges a tree of unstaged changes into a tree of staged changes.
-  class func combineTrees(
+  func combineTrees(
       unstagedTree: inout NSTreeNode,
       stagedTree: NSTreeNode)
   {
@@ -431,7 +430,7 @@ private class XTChangesModelUtils
   }
 
   /// Adds the contents of one tree into another
-  class func add(_ srcTree: NSTreeNode, to destTree: inout NSTreeNode)
+  func add(_ srcTree: NSTreeNode, to destTree: inout NSTreeNode)
   {
     guard let srcNodes = srcTree.children
     else { return }
