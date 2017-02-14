@@ -104,7 +104,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <clipView key="contentView" ambiguous="YES" id="AEe-un-dQy">
                                         <rect key="frame" x="1" y="1" width="357" height="169"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <outlineView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="7Uz-gy-exv" id="7" customClass="FileListView" customModule="Xit" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="357" height="169"/>
@@ -435,11 +435,10 @@
                                     <font key="font" metaFont="system"/>
                                     <tabViewItems>
                                         <tabViewItem label="Diff" identifier="diff" id="A2f-Wf-RNT">
-                                            <view key="view" id="uQh-Df-4fp">
-                                                <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
+                                            <view key="view" ambiguous="YES" id="uQh-Df-4fp">
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <webView maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e4U-lz-eEd">
+                                                    <webView ambiguous="YES" misplaced="YES" maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e4U-lz-eEd">
                                                         <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
                                                         <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
                                                             <nil key="identifier"/>
@@ -459,18 +458,18 @@
                                             </view>
                                         </tabViewItem>
                                         <tabViewItem label="Blame" identifier="blame" id="JF7-NN-dRq">
-                                            <view key="view" ambiguous="YES" id="xj3-cf-mv8">
+                                            <view key="view" id="xj3-cf-mv8">
                                                 <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <progressIndicator hidden="YES" wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" maxValue="100" bezeled="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="2Oq-sY-aab">
+                                                    <progressIndicator hidden="YES" wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="2Oq-sY-aab">
                                                         <rect key="frame" x="156" y="68" width="32" height="32"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="32" id="E9y-K2-scC"/>
                                                             <constraint firstAttribute="width" constant="32" id="c1v-M7-HvR"/>
                                                         </constraints>
                                                     </progressIndicator>
-                                                    <webView ambiguous="YES" misplaced="YES" maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jwZ-U5-r8o">
+                                                    <webView maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jwZ-U5-r8o">
                                                         <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
                                                         <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
                                                             <nil key="identifier"/>
@@ -678,7 +677,7 @@
                 <outlet property="view" destination="4" id="aa2-ft-Co4"/>
             </connections>
         </customObject>
-        <customObject id="qWY-M6-3vs" customClass="BlameController" customModule="Xit" customModuleProvider="target">
+        <customObject id="qWY-M6-3vs" customClass="BlameViewController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="_webView" destination="jwZ-U5-r8o" id="UVQ-11-csG"/>
                 <outlet property="spinner" destination="2Oq-sY-aab" id="syc-ah-Sk6"/>

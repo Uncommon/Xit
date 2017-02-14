@@ -1,6 +1,6 @@
 import Foundation
 
-class BlameController: XTWebViewController, TabWidthVariable
+class BlameViewController: XTWebViewController, TabWidthVariable
 {
   @IBOutlet var spinner: NSProgressIndicator!
   
@@ -57,7 +57,7 @@ class BlameController: XTWebViewController, TabWidthVariable
   }
 }
 
-extension BlameController: XTFileContentController
+extension BlameViewController: XTFileContentController
 {
   func clear()
   {

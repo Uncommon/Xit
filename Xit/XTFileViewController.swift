@@ -73,7 +73,7 @@ class XTFileViewController: NSViewController
   @IBOutlet var fileTreeDS: FileTreeDataSource!
   @IBOutlet var headerController: CommitHeaderViewController!
   @IBOutlet var diffController: XTFileDiffController!
-  @IBOutlet var blameController: BlameController!
+  @IBOutlet var blameController: BlameViewController!
   @IBOutlet var previewController: XTPreviewController!
   @IBOutlet var textController: XTTextPreviewController!
   var commitEntryController: XTCommitEntryController!
