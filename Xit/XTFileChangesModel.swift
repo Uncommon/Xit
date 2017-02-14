@@ -1,9 +1,11 @@
 import Cocoa
 
-/**
- * Protocol for a commit or commit-like object,
- * with metadata, files, and diffs.
- */
+
+typealias GitBlame = CLGitBlame
+
+
+/// Protocol for a commit or commit-like object,
+/// with metadata, files, and diffs.
 @objc protocol XTFileChangesModel
 {
   var repository: XTRepository { get set }
@@ -34,18 +36,16 @@ import Cocoa
 // To be folded into FileChangesModel once the @objc can be removed
 protocol Blaming
 {
-  associatedtype BlameType: Blame
-
   /// Generate the blame data for the given file.
   /// - parameter path: Repository-relative file path.
-  func blame(for path: String) -> BlameType?
+  func blame(for path: String) -> GitBlame?
 }
 
 
 /// Changes for a selected commit in the history
 class XTCommitChanges: NSObject, XTFileChangesModel, Blaming
 {
-  typealias BlameType = CLGitBlame
+  typealias GitBlame = CLGitBlame
 
   unowned var repository: XTRepository
   var sha: String
@@ -95,9 +95,9 @@ class XTCommitChanges: NSObject, XTFileChangesModel, Blaming
         forFile: path, commitSHA: self.sha, parentSHA: diffParent)
   }
   
-  func blame(for path: String) -> BlameType?
+  func blame(for path: String) -> GitBlame?
   {
-    return BlameType(repository: repository, path: path,
+    return GitBlame(repository: repository, path: path,
                      from: GitOID(sha: sha), to: nil)
   }
   
@@ -150,7 +150,7 @@ class XTCommitChanges: NSObject, XTFileChangesModel, Blaming
 
 
 /// Changes for a selected stash, merging workspace, index, and untracked
-class XTStashChanges: NSObject, XTFileChangesModel
+class XTStashChanges: NSObject, XTFileChangesModel, Blaming
 {
   unowned var repository: XTRepository
   var stash: XTStash
@@ -208,7 +208,7 @@ class XTStashChanges: NSObject, XTFileChangesModel
     }
   }
   
-  func blameForFile(_ path: String) -> GitBlame?
+  func blame(for path: String) -> GitBlame?
   {
     return nil
   }
@@ -238,7 +238,7 @@ class XTStashChanges: NSObject, XTFileChangesModel
 
 
 /// Staged and unstaged workspace changes
-class XTStagingChanges: NSObject, XTFileChangesModel
+class XTStagingChanges: NSObject, XTFileChangesModel, Blaming
 {
   unowned var repository: XTRepository
   var shaToSelect: String? { return XTStagingSHA }
@@ -273,7 +273,7 @@ class XTStagingChanges: NSObject, XTFileChangesModel
     }
   }
   
-  func blameForFile(_ path: String) -> GitBlame?
+  func blame(for path: String) -> GitBlame?
   {
     return nil
   }
@@ -297,6 +297,7 @@ class XTStagingChanges: NSObject, XTFileChangesModel
 }
 
 
+// TODO: This should probably be a protocol extension
 private class XTChangesModelUtils
 {
   /// Sets folder change status to match children.

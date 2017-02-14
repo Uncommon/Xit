@@ -23,7 +23,7 @@ protocol BlameHunk
   var origSignature: Signature { get }
 }
 
-class GitBlame: Blame
+class Git2Blame: Blame
 {
   let blame: OpaquePointer
   public private(set) var hunks: HunkCollection!
@@ -63,7 +63,7 @@ class GitBlame: Blame
   
   struct HunkCollection: Collection
   {
-    let blame: GitBlame
+    let blame: Git2Blame
     
     func makeIterator() -> HunkIterator
     {
@@ -90,7 +90,7 @@ class GitBlame: Blame
   
   struct HunkIterator: IteratorProtocol
   {
-    let blame: GitBlame
+    let blame: Git2Blame
     var index: UInt
     
     mutating func next() -> GitBlameHunk?

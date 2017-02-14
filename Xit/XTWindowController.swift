@@ -1,6 +1,5 @@
 import Cocoa
 
-@objc
 protocol RepositoryController: class
 {
   var selectedModel: XTFileChangesModel? { get set }

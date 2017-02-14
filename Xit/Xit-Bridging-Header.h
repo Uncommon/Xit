@@ -11,5 +11,6 @@
 #import "XTRepository+Parsing.h"
 #import "XTSidebarDataSource.h"
 #import "XTWebViewController.h"
+#import "XTQueueUtils.h"
 
 #import "NSAttributedString+XTExtensions.h"

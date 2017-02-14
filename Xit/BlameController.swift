@@ -22,9 +22,7 @@ class BlameController: XTWebViewController, TabWidthVariable
       }
     }
     
-    // Temporary: Blaming protocol can't be used because it has an
-    // associated type. Use XTCommitChanges directly for now.
-    guard let blame = (model as? XTCommitChanges)?.blame(for: path)
+    guard let blame = (model as? Blaming)?.blame(for: path)
     else {
       notAvailable()
       return

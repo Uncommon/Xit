@@ -3,8 +3,6 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class XTRepository;
-@protocol XTFileChangesModel;
-@protocol RepositoryController;
 
 @interface XTTest : XCTestCase {
 }
