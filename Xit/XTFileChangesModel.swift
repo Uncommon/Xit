@@ -38,7 +38,9 @@ protocol Blaming
 {
   /// Generate the blame data for the given file.
   /// - parameter path: Repository-relative file path.
-  func blame(for path: String) -> GitBlame?
+  /// - parameter staged: Whether to show the staged or unstaged file. Ignored
+  /// for models that don't have unstaged files.
+  func blame(for path: String, staged: Bool) -> GitBlame?
 }
 
 
@@ -95,10 +97,10 @@ class XTCommitChanges: NSObject, XTFileChangesModel, Blaming
         forFile: path, commitSHA: self.sha, parentSHA: diffParent)
   }
   
-  func blame(for path: String) -> GitBlame?
+  func blame(for path: String, staged: Bool) -> GitBlame?
   {
     return GitBlame(repository: repository, path: path,
-                     from: GitOID(sha: sha), to: nil)
+                    from: GitOID(sha: sha), to: nil)
   }
   
   func dataForFile(_ path: String, staged: Bool) -> Data?
@@ -208,9 +210,29 @@ class XTStashChanges: NSObject, XTFileChangesModel, Blaming
     }
   }
   
-  func blame(for path: String) -> GitBlame?
+  func commit(for path: String, staged: Bool) -> GTCommit?
   {
-    return nil
+    if staged {
+      return stash.indexCommit
+    }
+    else {
+      if let untrackedCommit = self.stash.untrackedCommit,
+         let _ = try? untrackedCommit.tree?.entry(withPath: path) {
+        return untrackedCommit
+      }
+      else {
+        return stash.mainCommit
+      }
+    }
+  }
+  
+  func blame(for path: String, staged: Bool) -> GitBlame?
+  {
+    guard let startCommit = commit(for: path, staged: staged),
+          let startOID = startCommit.oid.map({ GitOID(oid: $0.git_oid().pointee) })
+    else { return nil }
+    
+    return GitBlame(repository: repository, path: path, from: startOID, to: nil)
   }
   
   func dataForFile(_ path: String, staged: Bool) -> Data?
@@ -273,7 +295,7 @@ class XTStagingChanges: NSObject, XTFileChangesModel, Blaming
     }
   }
   
-  func blame(for path: String) -> GitBlame?
+  func blame(for path: String, staged: Bool) -> GitBlame?
   {
     return nil
   }

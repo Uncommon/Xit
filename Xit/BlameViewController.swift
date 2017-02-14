@@ -12,7 +12,8 @@ class BlameViewController: XTWebViewController, TabWidthVariable
     }
   }
   
-  func loadBlame(_ text: String, _ path: String, _ model: XTFileChangesModel)
+  func loadBlame(text: String, path: String,
+                 model: XTFileChangesModel, staged: Bool)
   {
     defer {
       DispatchQueue.main.async {
@@ -22,7 +23,7 @@ class BlameViewController: XTWebViewController, TabWidthVariable
       }
     }
     
-    guard let blame = (model as? Blaming)?.blame(for: path)
+    guard let blame = (model as? Blaming)?.blame(for: path, staged: staged)
     else {
       notAvailable()
       return
@@ -79,7 +80,7 @@ extension BlameViewController: XTFileContentController
     clear()
     DispatchQueue.global(qos: .userInitiated).async {
       [weak self] in
-      self?.loadBlame(text, path, model)
+      self?.loadBlame(text: text, path: path, model: model, staged: staged)
     }
   }
 }
