@@ -41,6 +41,10 @@ div.line:before {
 .name {
   font-family: Helvetica, sans-serif;
 }
+.local {
+  font-family: Helvetica, sans-serif;
+  font-style: oblique;
+}
 
 .blamehead {
   background-color: #EEE;

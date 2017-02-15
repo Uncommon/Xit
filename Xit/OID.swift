@@ -55,6 +55,11 @@ public struct GitOID: OID, Hashable
                   encoding: .ascii, freeWhenDone: true) ?? ""
   }
   
+  public var isZero: Bool
+  {
+    return git_oid_iszero(unsafeOID()) == 1
+  }
+  
   func unsafeOID() -> UnsafePointer<git_oid>
   {
     let ptr = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)

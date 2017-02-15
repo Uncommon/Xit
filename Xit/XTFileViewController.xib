@@ -104,7 +104,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <clipView key="contentView" ambiguous="YES" id="AEe-un-dQy">
                                         <rect key="frame" x="1" y="1" width="357" height="169"/>
-                                        <autoresizingMask key="autoresizingMask"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <outlineView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="7Uz-gy-exv" id="7" customClass="FileListView" customModule="Xit" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="357" height="169"/>
@@ -414,7 +414,7 @@
                                             <segment toolTip="Diff view" image="diffTemplate" imageScaling="none" width="37" selected="YES">
                                                 <nil key="label"/>
                                             </segment>
-                                            <segment toolTip="Text view" image="blameTemplate" imageScaling="none" width="37" tag="1">
+                                            <segment toolTip="Blame view" image="blameTemplate" imageScaling="none" width="37" tag="1">
                                                 <nil key="label"/>
                                             </segment>
                                             <segment toolTip="Text view" image="textTemplate" width="37">

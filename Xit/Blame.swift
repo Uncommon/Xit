@@ -14,7 +14,7 @@ protocol BlameHunk
   var lineCount: Int { get }
   var boundary: Bool { get }
   
-  var finalOID: ID { get }
+  var finalOID: ID { get } // OIDs are zero for local changes
   var finalLineStart: Int { get }
   var finalSignature: Signature { get }
   
@@ -143,15 +143,10 @@ class CLGitBlame: Blame
   
   var hunks: [CLGitBlameHunk]! = [CLGitBlameHunk]()
   
-  init?(repository: XTRepository, path: String,
-        from startOID: GitOID?, to endOID: GitOID?)
+  func read(data: Data, from repository: XTRepository) -> Bool
   {
-    guard let data = try? repository.executeGit(withArgs: ["blame", "-p",
-                                                           startOID?.sha ?? "HEAD",
-                                                           path],
-                                                writes: false),
-          let text = String(data: data, encoding: .utf8)
-    else { return nil }
+    guard let text = String(data: data, encoding: .utf8)
+    else { return false }
     
     let lines = text.components(separatedBy: .newlines)
     var startHunk = true
@@ -164,16 +159,27 @@ class CLGitBlame: Blame
         else { continue }
         
         if let last = hunks.last,
-           oid == last.origOID {
+          oid == last.origOID {
           last.lineCount += 1
         }
         else {
-          guard let commit = repository.commit(forOID: oid),
-                let originalLine = Int(parts[1]),
-                let finalLine = Int(parts[2]),
-                let authorSig = commit.authorSig,
-                let committerSig = commit.committerSig
-          else { continue }
+          guard let originalLine = Int(parts[1]),
+                let finalLine = Int(parts[2])
+            else { continue }
+          
+          var authorSig, committerSig: Signature!
+          
+          if oid.isZero {
+            authorSig = GitSignature(signature: repository.gtRepo.userSignatureForNow().git_signature().pointee)
+            committerSig = authorSig
+          }
+          else {
+            guard let commit = repository.commit(forOID: oid)
+            else { continue }
+            
+            authorSig = commit.authorSig
+            committerSig = commit.committerSig
+          }
           
           // The output doesn't have the original commit SHA so fake it
           // by using author/committer
@@ -197,6 +203,34 @@ class CLGitBlame: Blame
       // Other lines that don't start with a tab have author & committer
       // info, but we're getting that from the commit.
     }
+    return true
+  }
+  
+  init?(repository: XTRepository, path: String,
+        from startOID: GitOID?, to endOID: GitOID?)
+  {
+    var args = ["blame", "-p", path]
+    
+    if let sha = startOID?.sha {
+      args.insert(sha, at: 2)
+    }
+    
+    guard let data = try? repository.executeGit(withArgs: args, writes: false),
+          read(data: data, from: repository)
+    else { return nil }
+  }
+  
+  init?(repository: XTRepository, path: String,
+        data: Data, to endOID: GitOID?)
+  {
+    let args = ["blame", "-p", "--contents", "-", path]
+    
+    guard let input = String(data: data, encoding: .utf8),
+          let data = try? repository.executeGit(withArgs: args,
+                                                withStdIn: input,
+                                                writes: false),
+          read(data: data, from: repository)
+    else { return nil }
   }
 }
 

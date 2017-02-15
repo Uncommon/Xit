@@ -297,7 +297,15 @@ class XTStagingChanges: NSObject, XTFileChangesModel, Blaming
   
   func blame(for path: String, staged: Bool) -> GitBlame?
   {
-    return nil
+    if staged {
+      guard let data = try? repository.contents(ofStagedFile: path)
+      else { return nil }
+      
+      return GitBlame(repository: repository, path: path, data: data, to: nil)
+    }
+    else {
+      return GitBlame(repository: repository, path: path, from: nil, to: nil)
+    }
   }
   
   func dataForFile(_ path: String, staged: Bool) -> Data?

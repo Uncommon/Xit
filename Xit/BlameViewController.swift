@@ -39,7 +39,12 @@ class BlameViewController: XTWebViewController, TabWidthVariable
           ])
       
       if hunk.lineCount > 1 {
-        htmlLines.append("<div class='sha'>\(hunk.finalOID.sha.firstSix())</div>")
+        if hunk.finalOID.isZero {
+          htmlLines.append("<div class='local'>local changes</div>")
+        }
+        else {
+          htmlLines.append("<div class='sha'>\(hunk.finalOID.sha.firstSix())</div>")
+        }
       }
       htmlLines.append(contentsOf: ["</td>", "<td>"])
       
