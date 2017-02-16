@@ -125,20 +125,20 @@ extension XTFileChangesDataSource : FileListDataSource
 extension XTFileChangesDataSource: NSOutlineViewDataSource
 {
   func outlineView(_ outlineView: NSOutlineView,
-                            numberOfChildrenOfItem item: Any?) -> Int
+                   numberOfChildrenOfItem item: Any?) -> Int
   {
     return changes.count
   }
 
   func outlineView(_ outlineView: NSOutlineView,
-                            child index: Int,
-                            ofItem item: Any?) -> Any
+                   child index: Int,
+                   ofItem item: Any?) -> Any
   {
     return (index < changes.count) ? changes[index] : XTFileChange()
   }
 
   func outlineView(_ outlineView: NSOutlineView,
-                            isItemExpandable item: Any) -> Bool
+                   isItemExpandable item: Any) -> Bool
   {
     return false
   }

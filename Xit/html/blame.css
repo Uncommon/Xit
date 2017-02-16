@@ -20,7 +20,6 @@ td {
   border-bottom: 1px solid white;
 }
 div.line {
-  background-color: white;
   min-height: 1em;
   padding-left: 1ex;
   border-left: 1px #AAA solid;
@@ -47,11 +46,10 @@ div.line:before {
 }
 
 .blamehead {
-  background-color: #EEE;
   width: 20ex;
   border-bottom: 1px solid #AAA;
   padding-left: 3px;
-  opacity: 0.6;
+  opacity: 0.8;
   -webkit-user-select: none;
   cursor: default;
 }

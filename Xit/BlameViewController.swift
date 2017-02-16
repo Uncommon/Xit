@@ -12,6 +12,15 @@ class BlameViewController: XTWebViewController, TabWidthVariable
     }
   }
   
+  func nextColor(lastHue: inout Int) -> NSColor
+  {
+    let hue = CGFloat(lastHue%360)/360.0
+  
+    lastHue += 55
+    return NSColor(calibratedHue: hue, saturation: 0.6, brightness: 0.85,
+                   alpha: 1.0)
+  }
+  
   func loadBlame(text: String, path: String,
                  model: XTFileChangesModel, staged: Bool)
   {
@@ -31,10 +40,19 @@ class BlameViewController: XTWebViewController, TabWidthVariable
     
     var htmlLines = [String]()
     let lines = text.components(separatedBy: .newlines)
+    var commitColors = [GitOID: NSColor]()
+    var lastHue = 120
     
     for hunk in blame.hunks {
+      var color: NSColor! = commitColors[hunk.finalOID]
+      
+      if color == nil {
+        color = nextColor(lastHue: &lastHue)
+        commitColors[hunk.finalOID] = color
+      }
+      
       htmlLines.append(contentsOf: [
-          "<tr><td class='blamehead'>",
+          "<tr><td class='blamehead' style='background-color: \(color.cssHSL)'>",
           "<div class='name'>\(hunk.finalSignature.name ?? "")</div>"
           ])
       
@@ -46,14 +64,17 @@ class BlameViewController: XTWebViewController, TabWidthVariable
           htmlLines.append("<div class='sha'>\(hunk.finalOID.sha.firstSix())</div>")
         }
       }
-      htmlLines.append(contentsOf: ["</td>", "<td>"])
+      color = color.blended(withFraction: 0.65, of: .white)
+      htmlLines.append(contentsOf: ["</td>",
+                                    "<td style='background-color: \(color.cssHSL)'>"])
       
       let start = hunk.finalLineStart - 1
       let end = min(start + hunk.lineCount, lines.count-1)
       let hunkLines = lines[start..<end]
       
       htmlLines.append(contentsOf: hunkLines.map {
-        "<div class='line'>\(XTWebViewController.escapeText($0))</div>" })
+        "<div class='line'>" +
+        "\(XTWebViewController.escapeText($0))</div>" })
       htmlLines.append("</td></tr>")
     }
     
@@ -65,6 +86,16 @@ class BlameViewController: XTWebViewController, TabWidthVariable
       self?.webView?.mainFrame.loadHTMLString(
         html, baseURL: XTWebViewController.baseURL())
     }
+  }
+}
+
+extension NSColor
+{
+  var cssHSL: String
+  {
+    return "hsl(\(hueComponent*360.0), " +
+               "\(saturationComponent*100.0)%, " +
+               "\(brightnessComponent*100.0)%)"
   }
 }
 
