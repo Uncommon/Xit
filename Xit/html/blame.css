@@ -39,6 +39,9 @@ div.line:before {
 
 .name {
   font-family: Helvetica, sans-serif;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .local {
   font-family: Helvetica, sans-serif;
