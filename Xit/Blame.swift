@@ -212,7 +212,7 @@ class CLGitBlame: Blame
     var args = ["blame", "-p", path]
     
     if let sha = startOID?.sha {
-      args.insert(sha, at: 2)
+      args.insert(contentsOf: [sha, "--"], at: 2)
     }
     
     guard let data = try? repository.executeGit(withArgs: args, writes: false),
