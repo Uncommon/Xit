@@ -148,6 +148,7 @@ class CLGitBlame: Blame
   {
     guard let data = try? repository.executeGit(withArgs: ["blame", "-p",
                                                            startOID?.sha ?? "HEAD",
+                                                           "--",
                                                            path],
                                                 writes: false),
           let text = String(data: data, encoding: .utf8)
