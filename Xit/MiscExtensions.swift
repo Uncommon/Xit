@@ -166,6 +166,16 @@ extension NSSplitView
   }
 }
 
+extension NSColor
+{
+  var cssHSL: String
+  {
+    return "hsl(\(hueComponent*360.0), " +
+      "\(saturationComponent*100.0)%, " +
+    "\(brightnessComponent*100.0)%)"
+  }
+}
+
 extension Array
 {
   /// Assuming the array is sorted, returns the insertion index for the given

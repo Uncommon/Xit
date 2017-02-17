@@ -47,6 +47,13 @@ div.line:before {
   font-family: Helvetica, sans-serif;
   font-style: oblique;
 }
+.sha {
+  border: 1px solid rgba(0, 0, 0, 0)
+}
+.sha:hover {
+  background-color: #d7e5ff;
+  border: 1px solid #a3c3ff;
+}
 
 .blamehead {
   width: 20ex;

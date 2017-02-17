@@ -3,6 +3,7 @@ import Cocoa
 protocol RepositoryController: class
 {
   var selectedModel: XTFileChangesModel? { get set }
+  func select(sha: String)
 }
 
 /// XTDocument's main window controller.
@@ -110,6 +111,11 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       default:
         break
     }
+  }
+  
+  func select(sha: String)
+  {
+    selectedModel = XTCommitChanges(repository: xtDocument!.repository, sha: sha)
   }
   
   func updateMiniwindowTitle()

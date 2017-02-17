@@ -210,8 +210,7 @@ class CommitHeaderActionDelegate: NSObject
   @objc(selectSHA:)
   func select(sha: String)
   {
-    controller.repoController.selectedModel = XTCommitChanges(
-        repository: controller.repository, sha: sha)
+    controller?.repoController.select(sha: sha)
   }
   
   func headerToggled()

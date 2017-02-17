@@ -4,6 +4,32 @@ class BlameViewController: XTWebViewController, TabWidthVariable
 {
   @IBOutlet var spinner: NSProgressIndicator!
   
+  let actionDelegate: BlameActionDelegate
+  
+  weak var repoController: RepositoryController!
+  {
+    return view.window?.windowController as? RepositoryController
+  }
+  
+  override init?(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?)
+  {
+    actionDelegate = BlameActionDelegate()
+    
+    super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    
+    actionDelegate.controller = self
+  }
+  
+  required init?(coder: NSCoder)
+  {
+    fatalError("init(coder:) has not been implemented")
+  }
+  
+  override func webActionDelegate() -> Any
+  {
+    return actionDelegate
+  }
+  
   func notAvailable()
   {
     DispatchQueue.main.async {
@@ -61,7 +87,11 @@ class BlameViewController: XTWebViewController, TabWidthVariable
           htmlLines.append("<div class='local'>local changes</div>")
         }
         else {
-          htmlLines.append("<div class='sha'>\(hunk.finalOID.sha.firstSix())</div>")
+          htmlLines.append(
+              "<div class='sha' " +
+              "onclick=\"window.webActionDelegate.selectSHA('" +
+              hunk.finalOID.sha + "')\">" +
+              hunk.finalOID.sha.firstSix() + "</div>")
         }
       }
       color = color.blended(withFraction: 0.65, of: .white)
@@ -89,16 +119,6 @@ class BlameViewController: XTWebViewController, TabWidthVariable
   }
 }
 
-extension NSColor
-{
-  var cssHSL: String
-  {
-    return "hsl(\(hueComponent*360.0), " +
-               "\(saturationComponent*100.0)%, " +
-               "\(brightnessComponent*100.0)%)"
-  }
-}
-
 extension BlameViewController: XTFileContentController
 {
   func clear()
@@ -123,5 +143,37 @@ extension BlameViewController: XTFileContentController
       [weak self] in
       self?.loadBlame(text: text, path: path, model: model, staged: staged)
     }
+  }
+}
+
+// Similar to CommitHeaderActionDelegate, may need a refactor
+class BlameActionDelegate: NSObject
+{
+  weak var controller: BlameViewController?
+  
+  override class func isSelectorExcluded(fromWebScript selector: Selector) -> Bool
+  {
+    switch selector {
+      case #selector(BlameActionDelegate.select(sha:)):
+        return false
+      default:
+        return true
+    }
+  }
+  
+  override class func webScriptName(for selector: Selector) -> String
+  {
+    switch selector {
+      case #selector(CommitHeaderActionDelegate.select(sha:)):
+        return "selectSHA"
+      default:
+        return ""
+    }
+  }
+
+  @objc(selectSHA:)
+  func select(sha: String)
+  {
+    controller?.repoController.select(sha: sha)
   }
 }
