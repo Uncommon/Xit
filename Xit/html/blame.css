@@ -47,8 +47,11 @@ div.line:before {
   font-family: Helvetica, sans-serif;
   font-style: oblique;
 }
-.sha {
+.sha, .currentsha {
   border: 1px solid rgba(0, 0, 0, 0)
+}
+.currentsha {
+  font-style: bold;
 }
 .sha:hover {
   background-color: #d7e5ff;

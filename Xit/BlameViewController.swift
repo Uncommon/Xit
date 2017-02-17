@@ -68,7 +68,10 @@ class BlameViewController: XTWebViewController, TabWidthVariable
     let lines = text.components(separatedBy: .newlines)
     var commitColors = [GitOID: NSColor]()
     var lastHue = 120
+    let selectOID: GitOID? = model.shaToSelect.map { GitOID(sha: $0) } ?? nil
+    let currentOID = selectOID ?? GitOID.zero()
     
+    commitColors[currentOID] = nextColor(lastHue: &lastHue)
     for hunk in blame.hunks {
       var color: NSColor! = commitColors[hunk.finalOID]
       
@@ -87,11 +90,17 @@ class BlameViewController: XTWebViewController, TabWidthVariable
           htmlLines.append("<div class='local'>local changes</div>")
         }
         else {
-          htmlLines.append(
-              "<div class='sha' " +
-              "onclick=\"window.webActionDelegate.selectSHA('" +
-              hunk.finalOID.sha + "')\">" +
-              hunk.finalOID.sha.firstSix() + "</div>")
+          if hunk.finalOID == currentOID {
+            htmlLines.append("<div class='currentsha'>" +
+                             hunk.finalOID.sha.firstSix() + "</div>")
+          }
+          else {
+            htmlLines.append(
+                "<div class='sha' " +
+                "onclick=\"window.webActionDelegate.selectSHA('" +
+                hunk.finalOID.sha + "')\">" +
+                hunk.finalOID.sha.firstSix() + "</div>")
+          }
         }
       }
       color = color.blended(withFraction: 0.65, of: .white)

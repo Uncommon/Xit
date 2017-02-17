@@ -18,6 +18,11 @@ public struct GitOID: OID, Hashable
   
   static let shaLength = 40
   
+  static func zero() -> GitOID
+  {
+    return GitOID(oid: git_oid())
+  }
+  
   init(oid: git_oid)
   {
     self.oid = oid
