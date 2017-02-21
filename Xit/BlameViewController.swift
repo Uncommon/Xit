@@ -103,7 +103,9 @@ class BlameViewController: XTWebViewController, TabWidthVariable
           }
         }
       }
-      color = color.blended(withFraction: 0.65, of: .white)
+      if hunk.finalOID != currentOID {
+        color = color.blended(withFraction: 0.65, of: .white)
+      }
       htmlLines.append(contentsOf: ["</td>",
                                     "<td style='background-color: \(color.cssHSL)'>"])
       
