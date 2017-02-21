@@ -70,6 +70,10 @@ class BlameViewController: XTWebViewController, TabWidthVariable
     var lastHue = 120
     let selectOID: GitOID? = model.shaToSelect.map { GitOID(sha: $0) } ?? nil
     let currentOID = selectOID ?? GitOID.zero()
+    let dateFormatter = DateFormatter()
+    
+    dateFormatter.timeStyle = .short
+    dateFormatter.dateStyle = .short
     
     commitColors[currentOID] = nextColor(lastHue: &lastHue)
     for hunk in blame.hunks {
@@ -82,6 +86,9 @@ class BlameViewController: XTWebViewController, TabWidthVariable
       
       htmlLines.append(contentsOf: [
           "<tr><td class='blamehead' style='background-color: \(color.cssHSL)'>",
+          "<div class='jumpbutton' " +
+          "onclick=\"window.webActionDelegate.selectSHA('" +
+          hunk.finalOID.sha + "')\">‣</div>" +
           "<div class='name'>\(hunk.finalSignature.name ?? "")</div>"
           ])
       
@@ -96,12 +103,15 @@ class BlameViewController: XTWebViewController, TabWidthVariable
           }
           else {
             htmlLines.append(
-                "<div class='sha' " +
-                "onclick=\"window.webActionDelegate.selectSHA('" +
-                hunk.finalOID.sha + "')\">" +
+                "<div>" +
                 hunk.finalOID.sha.firstSix() + "</div>")
           }
         }
+      }
+      if hunk.lineCount > 2 {
+        htmlLines.append("<div class='date'>" +
+                         dateFormatter.string(from: hunk.finalSignature.when) +
+                         "</div>")
       }
       if hunk.finalOID != currentOID {
         color = color.blended(withFraction: 0.65, of: .white)

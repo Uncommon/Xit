@@ -37,28 +37,39 @@ div.line:before {
   -webkit-user-select: none;
 }
 
-.name {
+.name, .date {
   font-family: Helvetica, sans-serif;
+}
+.name {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  width: 17ex;
 }
 .local {
   font-family: Helvetica, sans-serif;
   font-style: oblique;
 }
-.sha, .currentsha {
-  border: 1px solid rgba(0, 0, 0, 0)
-}
 .currentsha {
   font-style: bold;
 }
-.sha:hover {
-  background-color: #d7e5ff;
-  border: 1px solid #a3c3ff;
+.jumpbutton {
+  border: 1px solid rgba(0, 0, 0, 0);
+  border-radius: 50%;
+  float: right;
+  width: 1em;
+  padding-left: 4px;
+}
+.jumpbutton:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+.jumpbutton:active {
+  color: white;
 }
 
+
 .blamehead {
+  max-width: 20ex;
   width: 20ex;
   border-bottom: 1px solid #AAA;
   padding-left: 3px;
