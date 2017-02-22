@@ -86,14 +86,15 @@ class BlameViewController: XTWebViewController, TabWidthVariable
       }
       
       htmlLines.append(contentsOf: [
-          "<tr><td class='blamehead' style='background-color: \(color.cssHSL)'>",
+          "<tr><td class='headcell'>",
+          "<div class='blamehead' style='background-color: \(color.cssHSL)'>",
           "<div class='jumpbutton' " +
           "onclick=\"window.webActionDelegate.selectSHA('" +
           hunk.finalOID.sha + "')\">‣</div>" +
           "<div class='name'>\(hunk.finalSignature.name ?? "")</div>"
           ])
       
-      if hunk.lineCount > 1 {
+      if hunk.lineCount > 0 {
         if hunk.finalOID.isZero {
           htmlLines.append("<div class='local'>local changes</div>")
         }
@@ -109,7 +110,7 @@ class BlameViewController: XTWebViewController, TabWidthVariable
           }
         }
       }
-      if hunk.lineCount > 2 {
+      if hunk.lineCount > 0 {
         htmlLines.append("<div class='date'>" +
                          dateFormatter.string(from: hunk.finalSignature.when) +
                          "</div>")
@@ -117,7 +118,7 @@ class BlameViewController: XTWebViewController, TabWidthVariable
       if hunk.finalOID != currentOID {
         color = color.blended(withFraction: 0.65, of: .white)
       }
-      htmlLines.append(contentsOf: ["</td>",
+      htmlLines.append(contentsOf: ["</div></td>",
                                     "<td style='background-color: \(color.cssHSL)'>"])
       
       let start = hunk.finalLineStart - 1
@@ -136,7 +137,7 @@ class BlameViewController: XTWebViewController, TabWidthVariable
     DispatchQueue.main.async {
       [weak self] in
       self?.webView?.mainFrame.loadHTMLString(
-        html, baseURL: XTWebViewController.baseURL())
+          html, baseURL: XTWebViewController.baseURL())
       self?.isLoaded = true
     }
   }

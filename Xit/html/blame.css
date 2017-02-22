@@ -22,6 +22,7 @@ td {
 div.line {
   min-height: 1em;
   padding-left: 1ex;
+  margin-left: 3px;
   border-left: 1px #AAA solid;
   white-space: pre-wrap;
 }
@@ -68,12 +69,21 @@ div.line:before {
 }
 
 
+.headcell {
+  position: relative;
+  min-width: 20ex;
+}
 .blamehead {
+  min-width: 20ex;
   max-width: 20ex;
-  width: 20ex;
-  border-bottom: 1px solid #AAA;
   padding-left: 3px;
   opacity: 0.8;
   -webkit-user-select: none;
   cursor: default;
+  overflow: hidden;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
 }
