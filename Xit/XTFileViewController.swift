@@ -11,6 +11,8 @@ protocol XTFileContentController
   /// - parameter model: The model to read data from.
   /// - parameter staged: Whether to show staged content.
   func load(path: String!, model: XTFileChangesModel!, staged: Bool)
+  /// True if the controller has content loaded.
+  var isLoaded: Bool { get }
 }
 
 @objc
@@ -277,7 +279,7 @@ class XTFileViewController: NSViewController
     
     // Ideally, check to see if the selected file has changed
     if modelCanCommit {
-      loadSelectedPreview()
+      loadSelectedPreview(force: true)
     }
   }
   
@@ -288,7 +290,7 @@ class XTFileViewController: NSViewController
   
   func refreshPreview()
   {
-    loadSelectedPreview()
+    loadSelectedPreview(force: true)
     filePreview.refreshPreviewItem()
   }
   
@@ -332,11 +334,15 @@ class XTFileViewController: NSViewController
       fileListOutline.setNeedsDisplay(displayRect)
     }
     headerController.commitSHA = newModel.shaToSelect
+    clearPreviews()
     refreshPreview()
   }
   
-  func loadSelectedPreview()
+  func loadSelectedPreview(force: Bool = false)
   {
+    guard !contentController.isLoaded || force
+    else { return }
+    
     guard let repo = repo,
           let index = fileListOutline.selectedRowIndexes.first,
           let selectedItem = fileListOutline.item(atRow: index),
@@ -359,7 +365,7 @@ class XTFileViewController: NSViewController
                         excludePaths: [],
                         queue: .main,
                         latency: 0.5) {
-          [weak self] (_) in self?.loadSelectedPreview()
+          [weak self] (_) in self?.loadSelectedPreview(force: true)
         }
         : nil
   }

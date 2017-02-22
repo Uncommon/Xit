@@ -3,6 +3,7 @@ import Foundation
 class BlameViewController: XTWebViewController, TabWidthVariable
 {
   @IBOutlet var spinner: NSProgressIndicator!
+  var isLoaded: Bool = false
   
   let actionDelegate: BlameActionDelegate
   
@@ -136,6 +137,7 @@ class BlameViewController: XTWebViewController, TabWidthVariable
       [weak self] in
       self?.webView?.mainFrame.loadHTMLString(
         html, baseURL: XTWebViewController.baseURL())
+      self?.isLoaded = true
     }
   }
 }
@@ -145,6 +147,7 @@ extension BlameViewController: XTFileContentController
   func clear()
   {
     webView?.mainFrame.loadHTMLString("", baseURL: nil)
+    isLoaded = false
   }
   
   public func load(path: String!, model: XTFileChangesModel!, staged: Bool)
