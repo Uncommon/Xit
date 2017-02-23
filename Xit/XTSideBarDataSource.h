@@ -43,6 +43,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable) NSTimer *reloadTimer;
 
 @property (nullable) id<NSObject> teamCityObserver;
+@property (nullable) id<NSObject> headChangedObserver;
+@property (nullable) id<NSObject> refsChangedObserver;
 
 @end
 

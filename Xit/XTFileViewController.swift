@@ -11,6 +11,8 @@ protocol XTFileContentController
   /// - parameter model: The model to read data from.
   /// - parameter staged: Whether to show staged content.
   func load(path: String!, model: XTFileChangesModel!, staged: Bool)
+  /// True if the controller has content loaded.
+  var isLoaded: Bool { get }
 }
 
 @objc
@@ -50,10 +52,11 @@ class XTFileViewController: NSViewController
   struct TabID
   {
     static let diff = "diff"
+    static let blame = "blame"
     static let text = "text"
     static let preview = "preview"
     
-    static let allIDs = [ diff, text, preview ]
+    static let allIDs = [ diff, blame, text, preview ]
   }
 
   @IBOutlet weak var headerSplitView: NSSplitView!
@@ -72,6 +75,7 @@ class XTFileViewController: NSViewController
   @IBOutlet var fileTreeDS: FileTreeDataSource!
   @IBOutlet var headerController: CommitHeaderViewController!
   @IBOutlet var diffController: XTFileDiffController!
+  @IBOutlet var blameController: BlameViewController!
   @IBOutlet var previewController: XTPreviewController!
   @IBOutlet var textController: XTTextPreviewController!
   var commitEntryController: XTCommitEntryController!
@@ -88,6 +92,12 @@ class XTFileViewController: NSViewController
   weak var lastClickedButton: NSButton?
   var doubleClickTimer: Timer?
   var indexTimer: Timer?
+  
+  var contentControllers: [XTFileContentController]
+  {
+    return  [diffController, blameController,
+             textController, previewController]
+  }
   
   var fileListDataSource: FileListDataSource & NSOutlineViewDataSource
   {
@@ -269,7 +279,7 @@ class XTFileViewController: NSViewController
     
     // Ideally, check to see if the selected file has changed
     if modelCanCommit {
-      loadSelectedPreview()
+      loadSelectedPreview(force: true)
     }
   }
   
@@ -280,7 +290,7 @@ class XTFileViewController: NSViewController
   
   func refreshPreview()
   {
-    loadSelectedPreview()
+    loadSelectedPreview(force: true)
     filePreview.refreshPreviewItem()
   }
   
@@ -324,11 +334,15 @@ class XTFileViewController: NSViewController
       fileListOutline.setNeedsDisplay(displayRect)
     }
     headerController.commitSHA = newModel.shaToSelect
+    clearPreviews()
     refreshPreview()
   }
   
-  func loadSelectedPreview()
+  func loadSelectedPreview(force: Bool = false)
   {
+    guard !contentController.isLoaded || force
+    else { return }
+    
     guard let repo = repo,
           let index = fileListOutline.selectedRowIndexes.first,
           let selectedItem = fileListOutline.item(atRow: index),
@@ -351,7 +365,7 @@ class XTFileViewController: NSViewController
                         excludePaths: [],
                         queue: .main,
                         latency: 0.5) {
-          [weak self] (_) in self?.loadSelectedPreview()
+          [weak self] (_) in self?.loadSelectedPreview(force: true)
         }
         : nil
   }
@@ -419,9 +433,7 @@ class XTFileViewController: NSViewController
 
   func clearPreviews()
   {
-    diffController.clear()
-    textController.clear()
-    previewController.clear()
+    contentControllers.forEach { $0.clear() }
   }
   
   func clear()
@@ -475,8 +487,6 @@ class XTFileViewController: NSViewController
     else { return }
     
     let selection = segmentedControl.selectedSegment
-    let contentControllers: [XTFileContentController ] =
-        [ diffController, textController, previewController ]
     
     previewTabView.selectTabViewItem(withIdentifier: TabID.allIDs[selection])
     contentController = contentControllers[selection]

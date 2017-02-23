@@ -1,9 +1,11 @@
 import Cocoa
 
-/**
- * Protocol for a commit or commit-like object,
- * with metadata, files, and diffs.
- */
+
+typealias GitBlame = CLGitBlame
+
+
+/// Protocol for a commit or commit-like object,
+/// with metadata, files, and diffs.
 @objc protocol XTFileChangesModel
 {
   var repository: XTRepository { get set }
@@ -31,10 +33,22 @@ import Cocoa
   func unstagedFileURL(_ path: String) -> URL?
 }
 
+// To be folded into FileChangesModel once the @objc can be removed
+protocol Blaming
+{
+  /// Generate the blame data for the given file.
+  /// - parameter path: Repository-relative file path.
+  /// - parameter staged: Whether to show the staged or unstaged file. Ignored
+  /// for models that don't have unstaged files.
+  func blame(for path: String, staged: Bool) -> GitBlame?
+}
+
 
 /// Changes for a selected commit in the history
-class XTCommitChanges: NSObject, XTFileChangesModel
+class XTCommitChanges: NSObject, XTFileChangesModel, Blaming
 {
+  typealias GitBlame = CLGitBlame
+
   unowned var repository: XTRepository
   var sha: String
   var shaToSelect: String? { return self.sha }
@@ -66,7 +80,7 @@ class XTCommitChanges: NSObject, XTFileChangesModel
   
   func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
   {
-    guard let commit = repository.commit(forSHA: sha) as? XTCommit
+    guard let commit = repository.commit(forSHA: sha)
     else { return nil }
     
     guard let diffParent = self.diffParent ?? commit.parentOIDs.first?.sha
@@ -81,6 +95,12 @@ class XTCommitChanges: NSObject, XTFileChangesModel
   
     return self.repository.diffMaker(
         forFile: path, commitSHA: self.sha, parentSHA: diffParent)
+  }
+  
+  func blame(for path: String, staged: Bool) -> GitBlame?
+  {
+    return GitBlame(repository: repository, path: path,
+                    from: GitOID(sha: sha), to: nil)
   }
   
   func dataForFile(_ path: String, staged: Bool) -> Data?
@@ -119,20 +139,20 @@ class XTCommitChanges: NSObject, XTFileChangesModel
                          unstagedChange: changeValue)
       let parentPath = (file as NSString).deletingLastPathComponent
       let node = NSTreeNode(representedObject: item)
-      let parentNode = XTChangesModelUtils.findTreeNode(
+      let parentNode = findTreeNode(
           forPath: parentPath, parent: newRoot, nodes: &nodes)
       
       parentNode.mutableChildren.add(node)
       nodes[file] = node
     }
-    XTChangesModelUtils.postProcess(fileTree: newRoot)
+    postProcess(fileTree: newRoot)
     return newRoot
   }
 }
 
 
 /// Changes for a selected stash, merging workspace, index, and untracked
-class XTStashChanges: NSObject, XTFileChangesModel
+class XTStashChanges: NSObject, XTFileChangesModel, Blaming
 {
   unowned var repository: XTRepository
   var stash: XTStash
@@ -151,7 +171,7 @@ class XTStashChanges: NSObject, XTFileChangesModel
                                        sha: indexCommit.sha!)
       let indexRoot = indexModel.treeRoot
       
-      XTChangesModelUtils.combineTrees(unstagedTree: &mainRoot,
+      combineTrees(unstagedTree: &mainRoot,
                                       stagedTree: indexRoot)
     }
     if let untrackedCommit = stash.untrackedCommit {
@@ -159,7 +179,7 @@ class XTStashChanges: NSObject, XTFileChangesModel
                                            sha: untrackedCommit.sha!)
       let untrackedRoot = untrackedModel.treeRoot
     
-      XTChangesModelUtils.add(untrackedRoot, to: &mainRoot)
+      add(untrackedRoot, to: &mainRoot)
     }
     return mainRoot
   }
@@ -190,6 +210,31 @@ class XTStashChanges: NSObject, XTFileChangesModel
     }
   }
   
+  func commit(for path: String, staged: Bool) -> GTCommit?
+  {
+    if staged {
+      return stash.indexCommit
+    }
+    else {
+      if let untrackedCommit = self.stash.untrackedCommit,
+         let _ = try? untrackedCommit.tree?.entry(withPath: path) {
+        return untrackedCommit
+      }
+      else {
+        return stash.mainCommit
+      }
+    }
+  }
+  
+  func blame(for path: String, staged: Bool) -> GitBlame?
+  {
+    guard let startCommit = commit(for: path, staged: staged),
+          let startOID = startCommit.oid.map({ GitOID(oid: $0.git_oid().pointee) })
+    else { return nil }
+    
+    return GitBlame(repository: repository, path: path, from: startOID, to: nil)
+  }
+  
   func dataForFile(_ path: String, staged: Bool) -> Data?
   {
     if staged {
@@ -215,7 +260,7 @@ class XTStashChanges: NSObject, XTFileChangesModel
 
 
 /// Staged and unstaged workspace changes
-class XTStagingChanges: NSObject, XTFileChangesModel
+class XTStagingChanges: NSObject, XTFileChangesModel, Blaming
 {
   unowned var repository: XTRepository
   var shaToSelect: String? { return XTStagingSHA }
@@ -229,7 +274,7 @@ class XTStagingChanges: NSObject, XTFileChangesModel
     let builder = XTWorkspaceTreeBuilder(changes: repository.workspaceStatus)
     let root = builder.build(repository.repoURL)
     
-    XTChangesModelUtils.postProcess(fileTree: root)
+    postProcess(fileTree: root)
     return root
   }
   
@@ -247,6 +292,19 @@ class XTStagingChanges: NSObject, XTFileChangesModel
     }
     else {
       return self.repository.unstagedDiff(file: path)
+    }
+  }
+  
+  func blame(for path: String, staged: Bool) -> GitBlame?
+  {
+    if staged {
+      guard let data = try? repository.contents(ofStagedFile: path)
+      else { return nil }
+      
+      return GitBlame(repository: repository, path: path, data: data, to: nil)
+    }
+    else {
+      return GitBlame(repository: repository, path: path, from: nil, to: nil)
     }
   }
   
@@ -269,10 +327,10 @@ class XTStagingChanges: NSObject, XTFileChangesModel
 }
 
 
-private class XTChangesModelUtils
+extension XTFileChangesModel
 {
   /// Sets folder change status to match children.
-  class func postProcess(fileTree tree: NSTreeNode)
+  func postProcess(fileTree tree: NSTreeNode)
   {
     let sortDescriptor = NSSortDescriptor(
         key: "path.lastPathComponent",
@@ -284,7 +342,7 @@ private class XTChangesModelUtils
   }
 
   /// Recursive helper for `postProcess`.
-  class func updateChanges(_ node: NSTreeNode)
+  func updateChanges(_ node: NSTreeNode)
   {
     guard let childNodes = node.children
     else { return }
@@ -319,7 +377,7 @@ private class XTChangesModelUtils
     nodeItem.unstagedChange = unstagedChange ?? .unmodified
   }
 
-  class func findTreeNode(
+  func findTreeNode(
       forPath path: String,
       parent: NSTreeNode,
       nodes: inout [String: NSTreeNode]) -> NSTreeNode
@@ -343,7 +401,7 @@ private class XTChangesModelUtils
   }
 
   /// Merges a tree of unstaged changes into a tree of staged changes.
-  class func combineTrees(
+  func combineTrees(
       unstagedTree: inout NSTreeNode,
       stagedTree: NSTreeNode)
   {
@@ -402,7 +460,7 @@ private class XTChangesModelUtils
   }
 
   /// Adds the contents of one tree into another
-  class func add(_ srcTree: NSTreeNode, to destTree: inout NSTreeNode)
+  func add(_ srcTree: NSTreeNode, to destTree: inout NSTreeNode)
   {
     guard let srcNodes = srcTree.children
     else { return }

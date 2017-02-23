@@ -15,9 +15,6 @@
 @property (readwrite) NSArray<XTSideBarGroupItem*> *roots;
 @property (readwrite) XTSideBarItem *stagingItem;
 
-@property (nullable) id<NSObject> headChangedObserver;
-@property (nullable) id<NSObject> refsChangedObserver;
-
 @end
 
 
@@ -50,27 +47,7 @@
 - (void)setRepo:(XTRepository*)newRepo
 {
   _repo = newRepo;
-  if (_repo != nil) {
-    __weak XTSideBarDataSource *weakSelf = self;
-    
-    _stagingItem.model = [[XTStagingChanges alloc] initWithRepository:_repo];
-    self.refsChangedObserver = [[NSNotificationCenter defaultCenter]
-        addObserverForName:XTRepositoryHeadChangedNotification
-                    object:newRepo
-                     queue:[NSOperationQueue mainQueue]
-                usingBlock:^(NSNotification * _Nonnull note) {
-      [weakSelf reload];
-    }];
-    self.headChangedObserver = [[NSNotificationCenter defaultCenter]
-        addObserverForName:XTRepositoryHeadChangedNotification
-                    object:newRepo
-                     queue:[NSOperationQueue mainQueue]
-                usingBlock:^(NSNotification * _Nonnull note) {
-      [weakSelf.outline reloadItem:weakSelf.roots[XTGroupIndexBranches]
-                    reloadChildren:YES];
-    }];
-    [self reload];
-  }
+  [self didSetRepo];
 }
 
 - (void)reload

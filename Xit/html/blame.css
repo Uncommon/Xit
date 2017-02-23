@@ -1,0 +1,90 @@
+body {
+  background-color: F8F8F8;
+  font-family: "SF Mono", monospace;
+  margin: 0px;
+  counter-reset: line;
+  tab-size: 4;
+}
+table {
+  background-color: #EEE;
+  border: 0;
+  border-collapse: collapse;
+  float: left;
+  width: 100%;
+  margin-left: 2.5em;
+  font-size: 12;
+}
+td {
+  vertical-align: top;
+  padding: 0;
+  border-bottom: 1px solid white;
+}
+div.line {
+  min-height: 1em;
+  padding-left: 1ex;
+  margin-left: 3px;
+  border-left: 1px #AAA solid;
+  white-space: pre-wrap;
+}
+div.line:before {
+  content: counter(line);
+  counter-increment: line;
+  margin-top: 2px;
+  width: 22px;
+  position: absolute;
+  left: 3px;
+  text-align: right;
+  font-size: 0.75em;
+  -webkit-user-select: none;
+}
+
+.name, .date {
+  font-family: Helvetica, sans-serif;
+}
+.name {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 17ex;
+}
+.local {
+  font-family: Helvetica, sans-serif;
+  font-style: oblique;
+}
+.currentsha {
+  font-style: bold;
+}
+.jumpbutton {
+  border: 1px solid rgba(0, 0, 0, 0);
+  border-radius: 50%;
+  float: right;
+  width: 1em;
+  padding-left: 4px;
+}
+.jumpbutton:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+.jumpbutton:active {
+  color: white;
+}
+
+
+.headcell {
+  position: relative;
+  min-width: 20ex;
+  width: 20ex;
+}
+.blamehead {
+  min-width: 20ex;
+  max-width: 20ex;
+  padding-left: 3px;
+  opacity: 0.8;
+  -webkit-user-select: none;
+  cursor: default;
+  overflow: hidden;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}

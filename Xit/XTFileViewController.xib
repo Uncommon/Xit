@@ -10,6 +10,7 @@
         <customObject id="-2" userLabel="File's Owner" customClass="XTFileViewController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="actionButton" destination="gNu-NG-LYe" id="8EA-bg-zQa"/>
+                <outlet property="blameController" destination="qWY-M6-3vs" id="73d-3e-UiG"/>
                 <outlet property="diffController" destination="fX5-fH-Hy5" id="nP0-l5-ngF"/>
                 <outlet property="fileChangeDS" destination="QBv-mK-3e5" id="1o8-Jg-riS"/>
                 <outlet property="fileListOutline" destination="7" id="r4y-MV-ca1"/>
@@ -129,14 +130,15 @@
                                                                 <rect key="frame" x="1" y="1" width="308" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
-                                                                    <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="11">
+                                                                    <imageView translatesAutoresizingMaskIntoConstraints="NO" id="11">
                                                                         <rect key="frame" x="3" y="0.0" width="17" height="17"/>
-                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                        <constraints>
+                                                                            <constraint firstAttribute="width" constant="17" id="klv-Va-NGH"/>
+                                                                        </constraints>
                                                                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="14"/>
                                                                     </imageView>
-                                                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="12">
+                                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="12">
                                                                         <rect key="frame" x="25" y="0.0" width="263" height="17"/>
-                                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                         <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="13">
                                                                             <font key="font" metaFont="system"/>
                                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -144,6 +146,14 @@
                                                                         </textFieldCell>
                                                                     </textField>
                                                                 </subviews>
+                                                                <constraints>
+                                                                    <constraint firstItem="11" firstAttribute="centerY" secondItem="9" secondAttribute="centerY" id="1w5-AI-9sm"/>
+                                                                    <constraint firstItem="11" firstAttribute="bottom" secondItem="12" secondAttribute="bottom" id="429-sy-rd6"/>
+                                                                    <constraint firstItem="12" firstAttribute="leading" secondItem="11" secondAttribute="trailing" constant="7" id="JT3-y5-5xQ"/>
+                                                                    <constraint firstAttribute="trailing" secondItem="12" secondAttribute="trailing" constant="22" id="LH5-C7-sVr"/>
+                                                                    <constraint firstItem="11" firstAttribute="leading" secondItem="9" secondAttribute="leading" constant="3" id="NGC-Cf-Ph5"/>
+                                                                    <constraint firstItem="11" firstAttribute="top" secondItem="12" secondAttribute="top" id="O7I-oJ-lfx"/>
+                                                                </constraints>
                                                                 <connections>
                                                                     <outlet property="imageView" destination="11" id="46"/>
                                                                     <outlet property="textField" destination="12" id="16"/>
@@ -167,9 +177,8 @@
                                                                 <rect key="frame" x="312" y="1" width="20" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
-                                                                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TgP-Oj-yya">
+                                                                    <button translatesAutoresizingMaskIntoConstraints="NO" id="TgP-Oj-yya">
                                                                         <rect key="frame" x="3" y="-1" width="17" height="17"/>
-                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                         <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="mixed" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="xXZ-cS-rR7">
                                                                             <behavior key="behavior" lightByContents="YES"/>
                                                                             <font key="font" metaFont="system"/>
@@ -179,6 +188,12 @@
                                                                         </connections>
                                                                     </button>
                                                                 </subviews>
+                                                                <constraints>
+                                                                    <constraint firstItem="TgP-Oj-yya" firstAttribute="top" secondItem="Iq5-SU-7aX" secondAttribute="top" constant="1" id="LMj-6Z-cES"/>
+                                                                    <constraint firstAttribute="trailing" secondItem="TgP-Oj-yya" secondAttribute="trailing" id="MoK-2Y-GDr"/>
+                                                                    <constraint firstAttribute="bottom" secondItem="TgP-Oj-yya" secondAttribute="bottom" constant="-1" id="Zbj-5C-a6C"/>
+                                                                    <constraint firstItem="TgP-Oj-yya" firstAttribute="leading" secondItem="Iq5-SU-7aX" secondAttribute="leading" constant="3" id="zgO-yV-Foq"/>
+                                                                </constraints>
                                                                 <connections>
                                                                     <outlet property="button" destination="TgP-Oj-yya" id="X52-27-pB6"/>
                                                                 </connections>
@@ -201,9 +216,8 @@
                                                                 <rect key="frame" x="335" y="1" width="20" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
-                                                                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yEf-Zs-21Y">
+                                                                    <button translatesAutoresizingMaskIntoConstraints="NO" id="yEf-Zs-21Y">
                                                                         <rect key="frame" x="3" y="-1" width="17" height="17"/>
-                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                         <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="mixed" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="u7S-Ju-sjt">
                                                                             <behavior key="behavior" lightByContents="YES"/>
                                                                             <font key="font" metaFont="system"/>
@@ -213,6 +227,12 @@
                                                                         </connections>
                                                                     </button>
                                                                 </subviews>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="bottom" secondItem="yEf-Zs-21Y" secondAttribute="bottom" constant="-1" id="65I-hc-dvD"/>
+                                                                    <constraint firstAttribute="trailing" secondItem="yEf-Zs-21Y" secondAttribute="trailing" id="E2r-d5-UJJ"/>
+                                                                    <constraint firstItem="yEf-Zs-21Y" firstAttribute="leading" secondItem="BbI-KF-1f6" secondAttribute="leading" constant="3" id="SWi-lt-ppA"/>
+                                                                    <constraint firstItem="yEf-Zs-21Y" firstAttribute="top" secondItem="BbI-KF-1f6" secondAttribute="top" constant="1" id="qCf-Ps-k5N"/>
+                                                                </constraints>
                                                                 <connections>
                                                                     <outlet property="button" destination="yEf-Zs-21Y" id="rwu-5w-rNr"/>
                                                                 </connections>
@@ -221,12 +241,17 @@
                                                                 <rect key="frame" x="335" y="20" width="20" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
-                                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Y5n-4d-xvk">
+                                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Y5n-4d-xvk">
                                                                         <rect key="frame" x="3" y="0.0" width="17" height="17"/>
-                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="ImW-TC-Ds9"/>
                                                                     </imageView>
                                                                 </subviews>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="trailing" secondItem="Y5n-4d-xvk" secondAttribute="trailing" id="YIm-lS-mV8"/>
+                                                                    <constraint firstItem="Y5n-4d-xvk" firstAttribute="leading" secondItem="VrT-LJ-mPE" secondAttribute="leading" constant="3" id="aQC-kS-2aM"/>
+                                                                    <constraint firstItem="Y5n-4d-xvk" firstAttribute="centerY" secondItem="VrT-LJ-mPE" secondAttribute="centerY" id="hAO-Ps-GJU"/>
+                                                                    <constraint firstItem="Y5n-4d-xvk" firstAttribute="top" secondItem="VrT-LJ-mPE" secondAttribute="top" id="tuy-Gw-jEy"/>
+                                                                </constraints>
                                                                 <connections>
                                                                     <outlet property="imageView" destination="Y5n-4d-xvk" id="wUl-9l-7zl"/>
                                                                 </connections>
@@ -249,9 +274,8 @@
                                                                 <rect key="frame" x="1" y="1" width="0.0" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
-                                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TM8-CV-Mz9">
+                                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="TM8-CV-Mz9">
                                                                         <rect key="frame" x="0.0" y="0.0" width="4" height="17"/>
-                                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                         <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="1i7-sp-fc7">
                                                                             <font key="font" metaFont="system"/>
                                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -259,6 +283,11 @@
                                                                         </textFieldCell>
                                                                     </textField>
                                                                 </subviews>
+                                                                <constraints>
+                                                                    <constraint firstItem="TM8-CV-Mz9" firstAttribute="leading" secondItem="VVR-iO-ChX" secondAttribute="leading" constant="2" id="7a4-bO-UZP"/>
+                                                                    <constraint firstAttribute="trailing" secondItem="TM8-CV-Mz9" secondAttribute="trailing" constant="-2" id="lNz-Qr-6bz"/>
+                                                                    <constraint firstItem="TM8-CV-Mz9" firstAttribute="centerY" secondItem="VVR-iO-ChX" secondAttribute="centerY" id="yBm-5l-Ge6"/>
+                                                                </constraints>
                                                                 <connections>
                                                                     <outlet property="textField" destination="TM8-CV-Mz9" id="6Z6-vS-cLV"/>
                                                                 </connections>
@@ -378,17 +407,20 @@
                                     </buttonCell>
                                 </button>
                                 <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zOv-gm-Q8M">
-                                    <rect key="frame" x="115" y="188" width="115" height="23"/>
+                                    <rect key="frame" x="97" y="188" width="151" height="23"/>
                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="selectOne" id="fhE-uz-5iG">
                                         <font key="font" metaFont="system"/>
                                         <segments>
                                             <segment toolTip="Diff view" image="diffTemplate" imageScaling="none" width="37" selected="YES">
                                                 <nil key="label"/>
                                             </segment>
-                                            <segment toolTip="Text view" image="textTemplate" imageScaling="none" width="37" tag="1">
+                                            <segment toolTip="Blame view" image="blameTemplate" imageScaling="none" width="37" tag="1">
                                                 <nil key="label"/>
                                             </segment>
-                                            <segment toolTip="QuickLook preview" image="NSQuickLookTemplate" width="37">
+                                            <segment toolTip="Text view" image="textTemplate" width="37">
+                                                <nil key="label"/>
+                                            </segment>
+                                            <segment toolTip="QuickLook preview" image="NSQuickLookTemplate">
                                                 <nil key="label"/>
                                             </segment>
                                         </segments>
@@ -404,12 +436,10 @@
                                     <tabViewItems>
                                         <tabViewItem label="Diff" identifier="diff" id="A2f-Wf-RNT">
                                             <view key="view" ambiguous="YES" id="uQh-Df-4fp">
-                                                <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <webView fixedFrame="YES" maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e4U-lz-eEd">
+                                                    <webView ambiguous="YES" misplaced="YES" maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e4U-lz-eEd">
                                                         <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
-                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
                                                             <nil key="identifier"/>
                                                         </webPreferences>
@@ -419,6 +449,45 @@
                                                         </connections>
                                                     </webView>
                                                 </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="e4U-lz-eEd" firstAttribute="top" secondItem="uQh-Df-4fp" secondAttribute="top" id="EmF-2L-uDk"/>
+                                                    <constraint firstAttribute="trailing" secondItem="e4U-lz-eEd" secondAttribute="trailing" id="eFx-xr-Lys"/>
+                                                    <constraint firstItem="e4U-lz-eEd" firstAttribute="leading" secondItem="uQh-Df-4fp" secondAttribute="leading" id="r0A-fa-RC1"/>
+                                                    <constraint firstAttribute="bottom" secondItem="e4U-lz-eEd" secondAttribute="bottom" id="xLd-dN-vDm"/>
+                                                </constraints>
+                                            </view>
+                                        </tabViewItem>
+                                        <tabViewItem label="Blame" identifier="blame" id="JF7-NN-dRq">
+                                            <view key="view" id="xj3-cf-mv8">
+                                                <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <progressIndicator hidden="YES" wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="2Oq-sY-aab">
+                                                        <rect key="frame" x="156" y="68" width="32" height="32"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="32" id="E9y-K2-scC"/>
+                                                            <constraint firstAttribute="width" constant="32" id="c1v-M7-HvR"/>
+                                                        </constraints>
+                                                    </progressIndicator>
+                                                    <webView maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jwZ-U5-r8o">
+                                                        <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
+                                                        <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
+                                                            <nil key="identifier"/>
+                                                        </webPreferences>
+                                                        <connections>
+                                                            <outlet property="UIDelegate" destination="qWY-M6-3vs" id="Bsy-Kb-1VR"/>
+                                                            <outlet property="frameLoadDelegate" destination="qWY-M6-3vs" id="9BX-mN-TZP"/>
+                                                        </connections>
+                                                    </webView>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstAttribute="bottom" secondItem="jwZ-U5-r8o" secondAttribute="bottom" id="Mdl-i6-pie"/>
+                                                    <constraint firstItem="jwZ-U5-r8o" firstAttribute="leading" secondItem="xj3-cf-mv8" secondAttribute="leading" id="YmD-Df-AHF"/>
+                                                    <constraint firstItem="2Oq-sY-aab" firstAttribute="centerX" secondItem="xj3-cf-mv8" secondAttribute="centerX" id="kIr-gm-9Hg"/>
+                                                    <constraint firstItem="2Oq-sY-aab" firstAttribute="centerY" secondItem="xj3-cf-mv8" secondAttribute="centerY" id="kkt-Vn-yp7"/>
+                                                    <constraint firstAttribute="trailing" secondItem="jwZ-U5-r8o" secondAttribute="trailing" id="qGi-tl-Etd"/>
+                                                    <constraint firstItem="jwZ-U5-r8o" firstAttribute="top" secondItem="xj3-cf-mv8" secondAttribute="top" id="s3B-wN-VT2"/>
+                                                </constraints>
                                             </view>
                                         </tabViewItem>
                                         <tabViewItem label="Text" identifier="text" id="53">
@@ -426,9 +495,8 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <webView fixedFrame="YES" maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="57">
+                                                    <webView maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="57">
                                                         <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
-                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
                                                             <nil key="identifier"/>
                                                         </webPreferences>
@@ -438,6 +506,12 @@
                                                         </connections>
                                                     </webView>
                                                 </subviews>
+                                                <constraints>
+                                                    <constraint firstAttribute="bottom" secondItem="57" secondAttribute="bottom" id="LVD-F8-nmQ"/>
+                                                    <constraint firstItem="57" firstAttribute="leading" secondItem="56" secondAttribute="leading" id="Rco-CE-zu9"/>
+                                                    <constraint firstItem="57" firstAttribute="top" secondItem="56" secondAttribute="top" id="Z5J-ns-lQT"/>
+                                                    <constraint firstAttribute="trailing" secondItem="57" secondAttribute="trailing" id="wA6-p5-qFW"/>
+                                                </constraints>
                                             </view>
                                         </tabViewItem>
                                         <tabViewItem label="Preview" identifier="preview" id="54">
@@ -445,11 +519,16 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4" customClass="QLPreviewView">
+                                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="4" customClass="QLPreviewView">
                                                         <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
-                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     </customView>
                                                 </subviews>
+                                                <constraints>
+                                                    <constraint firstAttribute="trailing" secondItem="4" secondAttribute="trailing" id="Af5-zp-I7V"/>
+                                                    <constraint firstItem="4" firstAttribute="top" secondItem="55" secondAttribute="top" id="M1V-OM-UaW"/>
+                                                    <constraint firstItem="4" firstAttribute="leading" secondItem="55" secondAttribute="leading" id="XKp-h8-Vg3"/>
+                                                    <constraint firstAttribute="bottom" secondItem="4" secondAttribute="bottom" id="dmW-Uu-rMX"/>
+                                                </constraints>
                                             </view>
                                         </tabViewItem>
                                     </tabViewItems>
@@ -598,6 +677,13 @@
                 <outlet property="view" destination="4" id="aa2-ft-Co4"/>
             </connections>
         </customObject>
+        <customObject id="qWY-M6-3vs" customClass="BlameViewController" customModule="Xit" customModuleProvider="target">
+            <connections>
+                <outlet property="_webView" destination="jwZ-U5-r8o" id="UVQ-11-csG"/>
+                <outlet property="spinner" destination="2Oq-sY-aab" id="syc-ah-Sk6"/>
+                <outlet property="view" destination="jwZ-U5-r8o" id="3DG-Pe-5cJ"/>
+            </connections>
+        </customObject>
         <menu id="Ae9-1e-hjk">
             <items>
                 <menuItem title="Stage" id="KL1-BE-xHb">
@@ -649,6 +735,7 @@
         <image name="NSPathTemplate" width="16" height="10"/>
         <image name="NSQuickLookTemplate" width="19" height="12"/>
         <image name="NSRightFacingTriangleTemplate" width="9" height="12"/>
+        <image name="blameTemplate" width="8" height="8"/>
         <image name="diffTemplate" width="8" height="8"/>
         <image name="mixed" width="16" height="16"/>
         <image name="textTemplate" width="8" height="8"/>

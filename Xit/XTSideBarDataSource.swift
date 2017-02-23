@@ -45,6 +45,31 @@ extension XTSideBarDataSource
     }
   }
   
+  // Move this to repo.didSet when this is a Swift class
+  func didSetRepo()
+  {
+    guard let repo = self.repo
+    else { return }
+    
+    stagingItem.model = XTStagingChanges(repository: repo)
+    
+    let center = NotificationCenter.default
+    
+    refsChangedObserver = center.addObserver(forName: .XTRepositoryRefsChanged,
+                                             object: repo, queue: .main) {
+      [weak self] (_) in
+      self?.reload()
+    }
+    headChangedObserver = center.addObserver(forName: .XTRepositoryHeadChanged, object: repo, queue: .main) {
+      [weak self] (_) in
+      guard let myself = self
+      else { return }
+      myself.outline?.reloadItem(myself.roots[XTGroupIndex.branches.rawValue],
+                                 reloadChildren: true)
+    }
+    reload()
+  }
+  
   open override func awakeFromNib()
   {
     outline!.target = self

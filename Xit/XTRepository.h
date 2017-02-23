@@ -34,13 +34,13 @@ extern NSString *XTPathsKey;
   +Commands or +Parsing.
   @returns command output on success, or nil on failure.
  */
-- (NSData*)executeGitWithArgs:(NSArray*)args
-                       writes:(BOOL)writes
-                        error:(NSError**)error;
-- (NSData*)executeGitWithArgs:(NSArray*)args
-                    withStdIn:(nullable NSString*)stdIn
-                       writes:(BOOL)writes
-                        error:(NSError**)error;
+- (nullable NSData*)executeGitWithArgs:(NSArray<NSString*>*)args
+                                writes:(BOOL)writes
+                                 error:(NSError**)error;
+- (nullable NSData*)executeGitWithArgs:(NSArray*)args
+                             withStdIn:(nullable NSString*)stdIn
+                                writes:(BOOL)writes
+                                 error:(NSError**)error;
 - (BOOL)executeWritingBlock:(BOOL (^)())block;
 
 - (nullable NSString*)shaForRef:(NSString*)ref;

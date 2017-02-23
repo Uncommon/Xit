@@ -5,6 +5,7 @@ class XTFileDiffController: XTWebViewController,
                             WhitespaceVariable,
                             TabWidthVariable
 {
+  var isLoaded: Bool = false
   public var whitespace: XTWhitespace = .showAll
   {
     didSet
@@ -97,6 +98,7 @@ class XTFileDiffController: XTWebViewController,
     let html = String(format: htmlTemplate, textLines)
     
     webView?.mainFrame.loadHTMLString(html, baseURL: XTWebViewController.baseURL())
+    isLoaded = true
   }
   
   func loadOrNotify(diffMaker: XTDiffMaker?)
@@ -120,6 +122,7 @@ extension XTFileDiffController: XTFileContentController
   public func clear()
   {
     webView?.mainFrame.loadHTMLString("", baseURL: URL(fileURLWithPath: "/"))
+    isLoaded = false
   }
   
   public func load(path: String!, model: XTFileChangesModel!, staged: Bool)

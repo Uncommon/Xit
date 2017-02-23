@@ -1,6 +1,6 @@
 body {
   background-color: F8F8F8;
-  font-family: monospace;
+  font-family: "SF Mono", monospace;
   margin: 0px;
   counter-reset: line;
   font-size: 12;

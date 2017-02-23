@@ -3,8 +3,6 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class XTRepository;
-@protocol XTFileChangesModel;
-@protocol RepositoryController;
 
 @interface XTTest : XCTestCase {
 }
@@ -27,14 +25,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)commitNewTextFile:(NSString *)name
                   content:(NSString *)content
              inRepository:(XTRepository *)repo;
-
-@end
-
-
-@interface XTFakeWinController : NSObject<RepositoryController>
-
-@property NSString *selectedCommitSHA;
-@property (nullable) id<XTFileChangesModel> selectedModel;
 
 @end
 
