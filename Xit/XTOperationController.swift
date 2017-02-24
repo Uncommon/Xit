@@ -43,7 +43,8 @@ class XTOperationController: NSObject
             let alert = NSAlert(error: error)
             
             // needs to be smarter: look at error type
-            alert.beginSheetModal(for: window, completionHandler: nil)
+            alert.beginSheetModal(for: window,
+                                  completionHandler: { _ in self.ended() })
           }
         }
       }
