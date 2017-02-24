@@ -17,7 +17,12 @@ class FileListDataSourceBase: NSObject
           forName: .XTRepositoryWorkspaceChanged,
           object: repository, queue: .main) {
         [weak self] (note) in
-        self?.workspaceChanged(note.userInfo?[XTPathsKey] as? [String])
+        guard let myself = self
+        else { return }
+        
+        if myself.outlineView.dataSource === myself {
+          myself.workspaceChanged(note.userInfo?[XTPathsKey] as? [String])
+        }
       }
     }
   }
@@ -28,8 +33,13 @@ class FileListDataSourceBase: NSObject
       selectionObserver = NotificationCenter.default.addObserver(
           forName: .XTSelectedModelChanged, object: repository, queue: .main) {
         [weak self] (note) in
-        (self as? FileListDataSource)?.reload()
-        self?.updateStaginView()
+        guard let myself = self
+        else { return }
+        
+        if myself.outlineView.dataSource === myself {
+          (myself as? FileListDataSource)?.reload()
+          myself.updateStagingView()
+        }
       }
     }
   }
@@ -54,7 +64,7 @@ class FileListDataSourceBase: NSObject
     }
   }
   
-  func updateStaginView()
+  func updateStagingView()
   {
     let unstagedColumn = outlineView.tableColumn(withIdentifier: "unstaged")
     

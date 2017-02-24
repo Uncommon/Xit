@@ -52,6 +52,8 @@ class XTFileChangesDataSource : FileListDataSourceBase
       guard let outlineView = self?.outlineView,
             self === outlineView.dataSource
       else { return }
+      let selectedRow = outlineView.selectedRow
+      let selectedChange = self?.fileChange(at: selectedRow)
       
       outlineView.beginUpdates()
       if !deleteIndexes.isEmpty {
@@ -75,11 +77,27 @@ class XTFileChangesDataSource : FileListDataSourceBase
         outlineView.reloadData(forRowIndexes: newChangeIndexes,
                                columnIndexes: allColumnIndexes)
       }
-      if outlineView.selectedRow == -1 {
-        outlineView.selectRowIndexes(NSIndexSet(index: 0) as IndexSet,
-                                     byExtendingSelection: false)
+      self?.reselect(change: selectedChange, oldRow: selectedRow)
+    }
+  }
+  
+  func reselect(change: XTFileChange?, oldRow: Int)
+  {
+    guard let oldChange = change
+    else { return }
+    var newRow = 0;
+    
+    if let oldRowChange = fileChange(at: oldRow),
+       oldRowChange.path == oldChange.path {
+      newRow = oldRow
+    }
+    else {
+      if let matchRow = changes.index(where: { $0.path == oldChange.path }) {
+        newRow = matchRow
       }
     }
+    outlineView.selectRowIndexes(NSIndexSet(index: newRow) as IndexSet,
+                                 byExtendingSelection: false)
   }
 }
 
@@ -97,6 +115,9 @@ extension XTFileChangesDataSource : FileListDataSource
   
   func fileChange(at row: Int) -> XTFileChange?
   {
+    guard (row >= 0) && (row < changes.count)
+    else { return nil }
+    
     return row < changes.count ? changes[row] : nil
   }
   

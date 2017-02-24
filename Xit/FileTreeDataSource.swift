@@ -27,13 +27,35 @@ extension FileTreeDataSource: FileListDataSource
       DispatchQueue.main.async {
         myself.root = newRoot
         if let outlineView = myself.outlineView {
+          let selectedRow = outlineView.selectedRow
+          let selectedChange = myself.fileChange(at: selectedRow)
+          
           outlineView.reloadData()
-          if outlineView.selectedRow == -1 {
-            outlineView.selectRowIndexes(IndexSet(integer: 0),
-                                         byExtendingSelection: false)
-          }
+          myself.reselect(item: selectedChange, oldRow: selectedRow)
         }
       }
+    }
+  }
+  
+  func reselect(item: XTFileChange?, oldRow: Int) {
+    guard let item = item,
+          let outlineView = outlineView
+    else { return }
+    
+    if let oldRowItem = fileChange(at: oldRow),
+       oldRowItem.path == item.path {
+      outlineView.selectRowIndexes(IndexSet(integer: oldRow),
+                                   byExtendingSelection: false)
+      return
+    }
+    
+    if let newChange = fileChange(at: outlineView.selectedRow),
+       item.path != newChange.path {
+      // find the item, expanding as necessary, select it
+    }
+    if outlineView.selectedRow == -1 {
+      outlineView.selectRowIndexes(IndexSet(integer: 0),
+                                   byExtendingSelection: false)
     }
   }
   

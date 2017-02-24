@@ -31,17 +31,7 @@ extension XTSideBarDataSource
       outline?.selectRowIndexes(IndexSet(integer: row),
                                 byExtendingSelection: false)
       
-      if let newModel = item.model {
-        if (controller.selectedModel == nil) ||
-           (controller.selectedModel?.shaToSelect != newModel.shaToSelect) ||
-           (type(of:controller.selectedModel!) != type(of:newModel)) {
-          controller.selectedModel = item.model
-        }
-        else {
-          NotificationCenter.default.post(
-              name: NSNotification.Name.XTReselectModel, object: repo)
-        }
-      }
+      item.model.map { controller.selectedModel = $0 }
     }
   }
   
@@ -510,9 +500,18 @@ extension XTSideBarDataSource : XTOutlineViewDelegate
   func outlineViewClickedSelectedRow(_ outline: NSOutlineView)
   {
     guard let selectedIndex = outline.selectedRowIndexes.first,
-          let selection = outline.item(atRow: selectedIndex)
+          let selection = outline.item(atRow: selectedIndex) as? XTSideBarItem
     else { return }
     
-    selectedItem = selection as? XTSideBarItem
+    if let controller = outline.window?.windowController
+                        as? RepositoryController,
+       let oldModel = controller.selectedModel,
+       let newModel = selection.model,
+       oldModel.shaToSelect == newModel.shaToSelect &&
+       type(of: oldModel) != type(of: newModel) {
+      NotificationCenter.default.post(
+          name: NSNotification.Name.XTReselectModel, object: repo)
+    }
+    selectedItem = selection
   }
 }
