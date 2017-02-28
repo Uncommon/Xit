@@ -36,10 +36,10 @@ typedef NS_ENUM(NSUInteger, XitChange) {
     *workspaceStatus;
 
 - (BOOL)
-    readRefsWithLocalBlock:(void (^)(NSString *name, NSString *commit))localBlock
-               remoteBlock:(void (^)(NSString *remoteName, NSString *branchName,
+    readRefsWithLocalBlock:(nullable void (^)(NSString *name, NSString *commit))localBlock
+               remoteBlock:(nullable void (^)(NSString *remoteName, NSString *branchName,
                                      NSString *commit))remoteBlock
-                  tagBlock:(void (^)(NSString *name, NSString *commit))tagBlock;
+                  tagBlock:(nullable void (^)(NSString *name, NSString *commit))tagBlock;
 - (BOOL)readStashesWithBlock:
     (void (^)(NSString *commit, NSUInteger index, NSString *name))block;
 

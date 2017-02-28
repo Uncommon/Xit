@@ -74,18 +74,18 @@
 
   NSMutableDictionary *refsIndex = [NSMutableDictionary dictionary];
   XTSideBarItem *branches = newRoots[XTGroupIndexBranches];
-  NSMutableArray *tags = [NSMutableArray array];
+  NSArray<XTTagItem*> *tags = [self makeTagItems];
   XTSideBarItem *remotes = newRoots[XTGroupIndexRemotes];
   NSArray<XTStashItem*> *stashes = [self makeStashItems];
   NSArray<XTSubmoduleItem*> *submodules = [self makeSubmoduleItems];
 
-  [self loadBranches:branches tags:tags remotes:remotes refsIndex:refsIndex];
+  [self loadBranches:branches remotes:remotes refsIndex:refsIndex];
 
   [newRoots[XTGroupIndexTags] setChildren:tags];
   [newRoots[XTGroupIndexStashes] setChildren:stashes];
   [newRoots[XTGroupIndexSubmodules] setChildren:submodules];
 
-  _repo.refsIndex = refsIndex;
+  [_repo rebuildRefsIndex];
   _currentBranch = [_repo currentBranch];
 
   dispatch_async(dispatch_get_main_queue(), ^{
@@ -144,12 +144,10 @@
 }
 
 - (void)loadBranches:(XTSideBarItem*)branches
-                tags:(NSMutableArray*)tags
              remotes:(XTSideBarItem*)remotes
            refsIndex:(NSMutableDictionary *)refsIndex
 {
   NSMutableDictionary *remoteIndex = [NSMutableDictionary dictionary];
-  NSMutableDictionary *tagIndex = [NSMutableDictionary dictionary];
 
   void (^localBlock)(NSString *, NSString *) =
       ^(NSString *name, NSString *commit) {
@@ -191,31 +189,9 @@
                   forKey:commit];
   };
 
-  void (^tagBlock)(NSString *, NSString *) = ^(NSString *name, NSString *commit) {
-    XTTagItem *tagItem;
-    XTCommitChanges *tagModel =
-        [[XTCommitChanges alloc] initWithRepository:_repo sha:commit];
-
-    if ([name hasSuffix:@"^{}"]) {
-      name = [name substringToIndex:name.length - 3];
-      tagItem = tagIndex[name];
-      tagItem.model = tagModel;
-    } else {
-      XTTag *tag = [[XTTag alloc] initWithRepository:_repo name:name];
-    
-      if (tag != nil) {
-        tagItem = [[XTTagItem alloc] initWithTag:tag];
-        [tags addObject:tagItem];
-        tagIndex[name] = tagItem;
-      }
-    }
-    [refsIndex addObject:[@"refs/tags" stringByAppendingPathComponent:name]
-                  forKey:commit];
-  };
-
   [_repo readRefsWithLocalBlock:localBlock
                     remoteBlock:remoteBlock
-                       tagBlock:tagBlock];
+                       tagBlock:nil];
 }
 
 @end

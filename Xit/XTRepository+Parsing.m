@@ -43,7 +43,8 @@
         localBlock([name substringFromIndex:localBranchPrefix.length],
                    commit);
       } else if ([name hasPrefix:tagPrefix]) {
-        tagBlock([name substringFromIndex:tagPrefix.length], commit);
+        if (tagBlock != nil)
+          tagBlock([name substringFromIndex:tagPrefix.length], commit);
       } else if ([name hasPrefix:remotePrefix]) {
         NSString *remoteName = name.pathComponents[2];
         const NSUInteger prefixLen =

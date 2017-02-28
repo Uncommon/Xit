@@ -22,7 +22,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)reload;
 - (void)loadBranches:(XTSideBarItem*)branches
-                tags:(NSMutableArray*)tags
              remotes:(XTSideBarItem*)remotes
            refsIndex:(NSMutableDictionary *)refsIndex;
 - (void)loadStashes:(NSMutableArray *)stashes

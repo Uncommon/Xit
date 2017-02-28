@@ -56,22 +56,21 @@ extension XTRepository
   func rebuildRefsIndex()
   {
     var payload = CallbackPayload(repo: self)
-    var callback: git_reference_foreach_cb = { (reference, payload) -> Int32 in
-      let repo = payload!.bindMemory(to: XTRepository.self, capacity: 1).pointee
+    let callback: git_reference_foreach_cb = { (reference, payload) -> Int32 in
+      let repo = payload!.bindMemory(to: XTRepository.self,
+                                     capacity: 1).pointee
       
-      var rawName = git_reference_name(reference)
+      let rawName = git_reference_name(reference)
       guard rawName != nil,
             let name = String(validatingUTF8: rawName!)
       else { return 0 }
       
-      var resolved: OpaquePointer? = nil
-      guard git_reference_resolve(&resolved, reference) == 0
+      var peeled: OpaquePointer? = nil
+      guard git_reference_peel(&peeled, reference, GIT_OBJ_COMMIT) == 0
       else { return 0 }
-      defer { git_reference_free(resolved) }
       
-      let target = git_reference_target(resolved)
-      guard target != nil,
-            let sha = GTOID(gitOid: target!).sha
+      let peeledOID = git_object_id(peeled)
+      guard let sha = GTOID(gitOid: peeledOID!).sha
       else { return 0 }
       var refs = repo.refsIndex[sha] ?? [String]()
       
