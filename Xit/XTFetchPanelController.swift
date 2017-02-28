@@ -33,7 +33,7 @@ public class XTFetchPanelController: XTSheetController
       guard let repo = parentController?.xtDocument?.repository
         else { return }
       
-      let names = repo.remoteNames
+      let names = repo.remoteNames()
 
       menu.removeAllItems()
       for name in names {

@@ -202,22 +202,6 @@
   return [XTRemote remoteWithName:name inRepository:_gtRepo error:error];
 }
 
-- (nullable NSArray<XTLocalBranch*>*)localBranchesWithError:(NSError**)error
-{
-  NSArray<GTBranch*> *gtBranches =
-      [_gtRepo localBranchesWithError:error];
-
-  if (gtBranches == nil)
-    return nil;
-  
-  NSMutableArray<XTLocalBranch*> *result =
-      [NSMutableArray arrayWithCapacity:gtBranches.count];
-  
-  for (GTBranch *gtBranch in gtBranches)
-    [result addObject:[[XTLocalBranch alloc] initWithGtBranch:gtBranch]];
-  return result;
-}
-
 - (XTDiffDelta*)deltaFromDiff:(GTDiff*)diff withPath:(NSString*)path
 {
   __block GTDiffDelta *result = nil;

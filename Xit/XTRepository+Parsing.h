@@ -63,8 +63,6 @@ typedef NS_ENUM(NSUInteger, XitChange) {
 - (nullable XTRemote*)remoteWithName:(NSString*)name error:(NSError**)error
     NS_SWIFT_NAME(remote(_:));
 
-- (nullable NSArray<XTLocalBranch*>*)localBranchesWithError:(NSError**)error;
-
 @end
 
 

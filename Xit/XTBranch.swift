@@ -4,13 +4,14 @@ public class XTBranch: NSObject
 {
   let gtBranch: GTBranch
   
-  init(gtBranch: GTBranch)
+  required public init(gtBranch: GTBranch)
   {
     self.gtBranch = gtBranch
   }
   
   var name: String? { return gtBranch.name }
   var shortName: String? { return gtBranch.shortName }
+  var sha: String? { return gtBranch.oid?.sha }
 }
 
 public class XTLocalBranch: XTBranch
@@ -25,7 +26,7 @@ public class XTLocalBranch: XTBranch
   }
   
   // Apparently just needed to disambiguate the overload
-  override init(gtBranch: GTBranch)
+  required public init(gtBranch: GTBranch)
   {
     super.init(gtBranch: gtBranch)
   }
@@ -50,7 +51,7 @@ public class XTRemoteBranch: XTBranch
     super.init(gtBranch: gtBranch)
   }
   
-  override init(gtBranch: GTBranch)
+  required public init(gtBranch: GTBranch)
   {
     super.init(gtBranch: gtBranch)
   }

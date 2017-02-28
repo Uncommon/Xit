@@ -80,6 +80,64 @@ extension XTSideBarDataSource
     }
   }
   
+  func loadRoots() -> [XTSideBarGroupItem]
+  {
+    guard let repo = self.repo
+    else { return [] }
+    
+    let newRoots = makeRoots()
+    let branchesGroup = newRoots[XTGroupIndex.branches.rawValue]
+    
+    for branch in repo.localBranches() {
+      guard let sha = branch.sha,
+            let name = branch.name?.stringByRemovingPrefix("refs/heads/")
+      else { continue }
+      
+      let model = XTCommitChanges(repository: repo, sha: sha)
+      let branchItem = XTLocalBranchItem(title: name, model: model)
+      let parent = self.parent(forBranch: name, groupItem: branchesGroup)
+      
+      parent.children.append(branchItem)
+    }
+    
+    let remoteItems = repo.remoteNames().map { XTRemoteItem(title: $0,
+                                                            repository: repo) }
+
+    for branch in repo.remoteBranches() {
+      guard let remote = remoteItems.first(where: { $0.title ==
+                                                    branch.remoteName }),
+            let name = branch.name?
+                       .stringByRemovingPrefix("refs/remotes/\(remote.title)/"),
+            let sha = branch.gtBranch.oid?.sha
+      else { continue }
+      let model = XTCommitChanges(repository: repo, sha: sha)
+      let remoteParent = parent(forBranch: name,
+                                groupItem: remote)
+      
+      remoteParent.children.append(XTRemoteBranchItem(title: name,
+                                                      remote: branch.remoteName,
+                                                      model: model))
+    }
+    
+    let tagItems = (try? repo.tags())?.map { XTTagItem(tag: $0) } ?? []
+    let stashItems = repo.stashes().map {
+      (stash: XTStash) -> XTStashItem in
+      XTStashItem(title: stash.message ?? "stash")
+    }
+    let submoduleItems = repo.submodules().map { XTSubmoduleItem(submodule: $0) }
+    
+    newRoots[XTGroupIndex.remotes.rawValue].children = remoteItems
+    newRoots[XTGroupIndex.tags.rawValue].children = tagItems
+    newRoots[XTGroupIndex.stashes.rawValue].children = stashItems
+    newRoots[XTGroupIndex.submodules.rawValue].children = submoduleItems
+    
+    repo.rebuildRefsIndex()
+    DispatchQueue.main.async {
+      self.updateTeamCity()
+    }
+    return newRoots
+  }
+  
   func selectCurrentBranch()
   {
     _ = selectCurrentBranch(in: roots[XTGroupIndex.branches.rawValue])
@@ -140,33 +198,6 @@ extension XTSideBarDataSource
     return roots;
   }
   
-  func makeTagItems() -> [XTTagItem]
-  {
-    guard let tags = try? repo!.tags()
-    else { return [XTTagItem]() }
-    
-    return tags.map({ XTTagItem(tag: $0)})
-  }
-  
-  func makeStashItems() -> [XTStashItem]
-  {
-    let stashes = repo!.stashes()
-    var stashItems = [XTStashItem]()
-    
-    for (index, stash) in stashes.enumerated() {
-      let model = XTStashChanges(repository: repo!, stash: stash)
-      let message = stash.message ?? "stash \(index)"
-    
-      stashItems.append(XTStashItem(title: message, model: model))
-    }
-    return stashItems
-  }
-  
-  func makeSubmoduleItems() -> [XTSubmoduleItem]
-  {
-    return repo!.submodules().map({ XTSubmoduleItem(submodule: $0) })
-  }
-  
   func item(forBranchName branch: String) -> XTLocalBranchItem?
   {
     let branches = roots[XTGroupIndex.branches.rawValue]
@@ -204,9 +235,10 @@ extension XTSideBarDataSource
 {
   func updateTeamCity()
   {
-    guard let repo = repo,
-          let localBranches = try? repo.localBranches()
+    guard let repo = repo
     else { return }
+    
+    let localBranches = repo.localBranches()
     
     buildStatuses = [:]
     for local in localBranches {
@@ -303,10 +335,7 @@ extension XTSideBarDataSource
   
   func branchHasLocalTrackingBranch(_ branch: String) -> Bool
   {
-    guard let localBranches = try? repo!.localBranches()
-    else { return false }
-    
-    for localBranch in localBranches {
+    for localBranch in repo!.localBranches() {
       if let trackingBranch = localBranch.trackingBranch,
          trackingBranch.shortName == branch {
         return true

@@ -45,6 +45,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable) id<NSObject> headChangedObserver;
 @property (nullable) id<NSObject> refsChangedObserver;
 
+- (XTSideBarItem*)parentForBranch:(NSString*)branch
+                        groupItem:(XTSideBarItem*)group;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -10,8 +10,6 @@
 
 @interface XTSideBarDataSource ()
 
-- (NSArray<XTSideBarGroupItem*>*)loadRoots;
-
 @property (readwrite) NSArray<XTSideBarGroupItem*> *roots;
 @property (readwrite) XTSideBarItem *stagingItem;
 
@@ -53,7 +51,7 @@
 - (void)reload
 {
   [_repo executeOffMainThread:^{
-    NSArray *newRoots = [self loadRoots];
+    NSArray<XTSideBarGroupItem*> *newRoots = [self loadRoots];
 
     dispatch_async(dispatch_get_main_queue(), ^{
       [self willChangeValueForKey:@"reload"];
@@ -66,33 +64,6 @@
         [self selectCurrentBranch];
     });
   }];
-}
-
-- (NSArray<XTSideBarGroupItem*>*)loadRoots
-{
-  NSArray<XTSideBarGroupItem*> *newRoots = [self makeRoots];
-
-  NSMutableDictionary *refsIndex = [NSMutableDictionary dictionary];
-  XTSideBarItem *branches = newRoots[XTGroupIndexBranches];
-  NSArray<XTTagItem*> *tags = [self makeTagItems];
-  XTSideBarItem *remotes = newRoots[XTGroupIndexRemotes];
-  NSArray<XTStashItem*> *stashes = [self makeStashItems];
-  NSArray<XTSubmoduleItem*> *submodules = [self makeSubmoduleItems];
-
-  [self loadBranches:branches remotes:remotes refsIndex:refsIndex];
-
-  [newRoots[XTGroupIndexTags] setChildren:tags];
-  [newRoots[XTGroupIndexStashes] setChildren:stashes];
-  [newRoots[XTGroupIndexSubmodules] setChildren:submodules];
-
-  [_repo rebuildRefsIndex];
-  _currentBranch = [_repo currentBranch];
-
-  dispatch_async(dispatch_get_main_queue(), ^{
-    [self updateTeamCity];
-  });
-
-  return newRoots;
 }
 
 - (void)loadStashes:(NSMutableArray *)stashes

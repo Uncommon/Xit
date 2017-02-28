@@ -71,7 +71,6 @@ extern NSString *XTPathsKey;
 @property(readonly, copy) NSString *parentTree;
 @property(readonly, copy) NSString *headRef;
 @property(readonly, copy, nullable) NSString *headSHA;
-@property(readonly, copy) NSArray<NSString*> *remoteNames;
 @property(readonly) GTRepository *gtRepo;
 @property(strong) NSDictionary<NSString*, NSArray<NSString*>*> *refsIndex;
 @property(readonly) dispatch_queue_t queue;
