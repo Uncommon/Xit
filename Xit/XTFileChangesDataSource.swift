@@ -84,7 +84,13 @@ class XTFileChangesDataSource : FileListDataSourceBase
   func reselect(change: XTFileChange?, oldRow: Int)
   {
     guard let oldChange = change
-    else { return }
+    else {
+      if outlineView.selectedRowIndexes.isEmpty {
+        outlineView.selectRowIndexes(IndexSet(integer: 0),
+                                     byExtendingSelection: false)
+      }
+      return
+    }
     var newRow = 0;
     
     if let oldRowChange = fileChange(at: oldRow),
