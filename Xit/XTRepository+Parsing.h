@@ -35,14 +35,6 @@ typedef NS_ENUM(NSUInteger, XitChange) {
 @property (readonly, copy) NSDictionary<NSString*, XTWorkspaceFileStatus*>
     *workspaceStatus;
 
-- (BOOL)
-    readRefsWithLocalBlock:(nullable void (^)(NSString *name, NSString *commit))localBlock
-               remoteBlock:(nullable void (^)(NSString *remoteName, NSString *branchName,
-                                     NSString *commit))remoteBlock
-                  tagBlock:(nullable void (^)(NSString *name, NSString *commit))tagBlock;
-- (BOOL)readStashesWithBlock:
-    (void (^)(NSString *commit, NSUInteger index, NSString *name))block;
-
 - (BOOL)stageFile:(NSString*)file error:(NSError**)error;
 - (BOOL)stageAllFilesWithError:(NSError**)error;
 - (BOOL)unstageFile:(NSString*)file error:(NSError**)error;

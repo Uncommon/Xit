@@ -15,49 +15,6 @@
 
 @implementation XTRepository (Reading)
 
-- (BOOL)
-    readRefsWithLocalBlock:(void (^)(NSString *name, NSString *commit))localBlock
-               remoteBlock:(void (^)(NSString *remoteName, NSString *branchName,
-                                     NSString *commit))remoteBlock
-                  tagBlock:(void (^)(NSString *name, NSString *commit))tagBlock
-{
-  NSError *error = nil;
-  NSData *output =
-      [self executeGitWithArgs:@[ @"show-ref", @"-d" ]
-                        writes:NO
-                         error:&error];
-
-  if (output != nil) {
-    NSString *refs =
-        [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-    NSScanner *scanner = [NSScanner scannerWithString:refs];
-    NSString *localBranchPrefix = @"refs/heads/";
-    NSString *tagPrefix = @"refs/tags/";
-    NSString *remotePrefix = @"refs/remotes/";
-    NSString *commit;
-    NSString *name;
-
-    while ([scanner scanUpToString:@" " intoString:&commit]) {
-      [scanner scanUpToString:@"\n" intoString:&name];
-      if ([name hasPrefix:localBranchPrefix]) {
-        localBlock([name substringFromIndex:localBranchPrefix.length],
-                   commit);
-      } else if ([name hasPrefix:tagPrefix]) {
-        if (tagBlock != nil)
-          tagBlock([name substringFromIndex:tagPrefix.length], commit);
-      } else if ([name hasPrefix:remotePrefix]) {
-        NSString *remoteName = name.pathComponents[2];
-        const NSUInteger prefixLen =
-            remotePrefix.length + remoteName.length + 1;
-        NSString *branchName = [name substringFromIndex:prefixLen];
-
-        remoteBlock(remoteName, branchName, commit);
-      }
-    }
-  }
-  return error == nil;
-}
-
 - (NSDictionary<NSString*, XTWorkspaceFileStatus*>*)workspaceStatus
 {
   NSMutableDictionary<NSString*, XTWorkspaceFileStatus*> *result =
@@ -83,31 +40,6 @@
   }];
   return result;
 }
-
-- (BOOL)readStashesWithBlock:(void (^)(NSString *, NSUInteger, NSString *))block
-{
-  NSError *error = nil;
-  NSData *output =
-      [self executeGitWithArgs:@[ @"stash", @"list", @"--pretty=%H %gd %gs" ]
-                        writes:NO
-                         error:&error];
-
-  if (output != nil) {
-    NSString *refs =
-        [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-    NSScanner *scanner = [NSScanner scannerWithString:refs];
-    NSString *commit, *name;
-    NSUInteger stashIndex = 0;
-
-    while ([scanner scanUpToString:@" " intoString:&commit]) {
-      [scanner scanUpToString:@"\n" intoString:&name];
-      block(commit, stashIndex, name);
-      ++stashIndex;
-    }
-  }
-  return error == nil;
-}
-
 
 - (NSArray<XTFileChange*>*)changesForRef:(NSString*)ref
                                   parent:(NSString*)parentSHA

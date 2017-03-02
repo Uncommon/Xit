@@ -251,18 +251,6 @@
                             error:error] != nil;
 }
 
-- (NSString *)diffForStagedFile:(NSString *)file
-{
-  NSData *output = [self executeGitWithArgs:@[
-      @"diff-index", @"--patch", @"--cached", [self parentTree], @"--", file ]
-                                     writes:NO
-                                      error:nil];
-
-  if (output == nil)
-    return nil;
-  return [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
-}
-
 - (NSString *)urlStringForRemote:(NSString *)remoteName
 {
   NSString *remoteURL =

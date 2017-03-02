@@ -62,19 +62,12 @@ class XTSidebarHandlerTest: XTTest
   /// Checks that the remaining stashes have the expected names
   func currentStashes() -> [String]
   {
-    var stashes = [String]()
-    
-    repository.readStashes {
-      (commit, index, name) in
-      stashes.append(name)
-    }
-    return stashes
+    return repository.stashes().map { $0.message ?? "" }
   }
   
   func composeStashes(_ expectedStashes: [String]) -> [String]
   {
-    return expectedStashes.enumerated().map {
-        "stash@{\($0.offset)} On master: \($0.element)" }
+    return expectedStashes.map { "On master: \($0)" }
   }
   
   func doStashAction(index: UInt, expectedRemains: [String],
