@@ -66,21 +66,6 @@
   }];
 }
 
-- (void)loadStashes:(NSMutableArray *)stashes
-          refsIndex:(NSMutableDictionary *)refsIndex
-{
-  [_repo readStashesWithBlock:
-      ^(NSString *commit, NSUInteger index, NSString *name) {
-    XTStashChanges *stashModel = [[XTStashChanges alloc]
-        initWithRepository:_repo index:index];
-    XTSideBarItem *stash = [[XTStashItem alloc]
-        initWithTitle:name model:stashModel];
-    
-    [stashes addObject:stash];
-    [refsIndex addObject:name forKey:commit];
-  }];
-}
-
 - (XTSideBarItem*)parentForBranch:(NSArray*)components
                         underItem:(XTSideBarItem*)item
 {
@@ -112,57 +97,6 @@
   
   return [self parentForBranch:components
                      underItem:group];
-}
-
-- (void)loadBranches:(XTSideBarItem*)branches
-             remotes:(XTSideBarItem*)remotes
-           refsIndex:(NSMutableDictionary *)refsIndex
-{
-  NSMutableDictionary *remoteIndex = [NSMutableDictionary dictionary];
-
-  void (^localBlock)(NSString *, NSString *) =
-      ^(NSString *name, NSString *commit) {
-    XTCommitChanges *branchModel =
-        [[XTCommitChanges alloc] initWithRepository:_repo sha:commit];
-    XTLocalBranchItem *branch =
-        [[XTLocalBranchItem alloc] initWithTitle:name
-                                           model:branchModel];
-    XTSideBarItem *parent = [self parentForBranch:name groupItem:branches];
-
-    [parent addChild:branch];
-    [refsIndex addObject:[@"refs/heads" stringByAppendingPathComponent:name]
-                  forKey:commit];
-  };
-
-  void (^remoteBlock)(NSString *, NSString *, NSString *) =
-      ^(NSString *remoteName, NSString *branchName, NSString *commit) {
-    XTSideBarItem *remote = remoteIndex[remoteName];
-
-    if (remote == nil) {
-      remote = [[XTRemoteItem alloc] initWithTitle:remoteName
-                                        repository:self.repo];
-      [remotes addChild:remote];
-      remoteIndex[remoteName] = remote;
-    }
-
-    XTCommitChanges *branchModel =
-        [[XTCommitChanges alloc] initWithRepository:_repo sha:commit];
-    XTRemoteBranchItem *branch =
-        [[XTRemoteBranchItem alloc] initWithTitle:branchName
-                                           remote:remoteName
-                                            model:branchModel];
-    NSString *branchRef =
-        [NSString stringWithFormat:@"refs/remotes/%@/%@", remoteName, branchName];
-    XTSideBarItem *parent = [self parentForBranch:branchName groupItem:remote];
-
-    [parent addChild:branch];
-    [refsIndex addObject:branchRef
-                  forKey:commit];
-  };
-
-  [_repo readRefsWithLocalBlock:localBlock
-                    remoteBlock:remoteBlock
-                       tagBlock:nil];
 }
 
 @end

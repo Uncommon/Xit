@@ -5,6 +5,8 @@ class FakeRepoController: RepositoryController
 {
   var selectedCommitSHA: String = ""
   var selectedModel: XTFileChangesModel? = nil
+  
+  func select(sha: String) {}
 }
 
 class FileListDataSourceTest: XTTest
