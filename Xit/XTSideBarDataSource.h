@@ -12,20 +12,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**
-  Data source for the sidebar, showing branches, remotes, tags, stashes,
-  and submodules.
- */
-@interface XTSideBarDataSource : NSObject {
-  NSString *_currentBranch;
-}
+
+/// Data source for the sidebar, showing branches, remotes, tags, stashes,
+/// and submodules.
+@interface XTSideBarDataSource : NSObject
 
 - (void)reload;
-- (void)loadBranches:(XTSideBarItem*)branches
-             remotes:(XTSideBarItem*)remotes
-           refsIndex:(NSMutableDictionary *)refsIndex;
-- (void)loadStashes:(NSMutableArray *)stashes
-          refsIndex:(NSMutableDictionary *)refsIndex;
+
+- (XTSideBarItem*)parentForBranch:(NSString*)branch
+                        groupItem:(XTSideBarItem*)group;
 
 @property (weak) IBOutlet XTSidebarController *viewController;
 @property (weak) IBOutlet XTRefFormatter *refFormatter;

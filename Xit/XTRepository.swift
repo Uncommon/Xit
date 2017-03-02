@@ -30,12 +30,171 @@ extension XTRepository: RepositoryType
   }
 }
 
+// Branches and BranchIterator were supposed to be nested inside XTRepository
+// but nested generics are not allowed.
+
+/// Branches is a sequence, not a collection, because the API does not provide
+/// a count or indexed access.
+struct Branches<BranchType: XTBranch>: Sequence
+{
+  typealias Element = BranchType
+  let repo: XTRepository
+  let type: git_branch_t
+  
+  func makeIterator() -> BranchIterator<BranchType>
+  {
+    return BranchIterator<BranchType>(repo: repo, flags: type)
+  }
+}
+
+class BranchIterator<BranchType: XTBranch>: IteratorProtocol
+{
+  let repo: XTRepository
+  let iterator: OpaquePointer?
+  
+  init(repo: XTRepository, flags: git_branch_t)
+  {
+    var result: OpaquePointer?
+    
+    if git_branch_iterator_new(&result,
+                               repo.gtRepo.git_repository(), flags) == 0 {
+      self.iterator = result
+    }
+    else {
+      self.iterator = nil
+    }
+    self.repo = repo
+  }
+  
+  func next() -> BranchType?
+  {
+    guard let iterator = self.iterator
+      else { return nil }
+    
+    var type = git_branch_t(0)
+    var ref: OpaquePointer?
+    guard git_branch_next(&ref, &type, iterator) == 0,
+      ref != nil,
+      let gtRef = GTReference(gitReference: ref!,
+                              repository: repo.gtRepo),
+      let gtBranch = GTBranch(reference: gtRef,
+                              repository: repo.gtRepo)
+      else { return nil }
+    
+    return BranchType(gtBranch: gtBranch)
+  }
+  
+  deinit
+  {
+    git_branch_iterator_free(iterator)
+  }
+}
 
 extension XTRepository
 {
   enum Error: Swift.Error
   {
     case alreadyWriting
+  }
+  
+  /// The indexable collection of stashes in the repository.
+  class Stashes: Collection
+  {
+    typealias Iterator = StashIterator
+    
+    let repo: XTRepository
+    let refLog: OpaquePointer?
+    let count: Int
+    
+    static let stashRefName = "refs/stash"
+    
+    init(repo: XTRepository)
+    {
+      self.repo = repo
+      
+      let refLogPtr = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+      guard git_reflog_read(refLogPtr, repo.gtRepo.git_repository(),
+                            Stashes.stashRefName) == 0
+      else {
+        self.refLog = nil
+        self.count = 0
+        return
+      }
+      
+      self.refLog = refLogPtr.pointee
+      self.count = git_reflog_entrycount(refLog)
+    }
+    
+    deinit
+    {
+      git_reflog_free(refLog)
+    }
+    
+    func makeIterator() -> StashIterator
+    {
+      return StashIterator(stashes: self)
+    }
+    
+    subscript(position: Int) -> XTStash
+    {
+      let entry = git_reflog_entry_byindex(refLog, position)
+      let message = String(cString: git_reflog_entry_message(entry))
+      
+      return XTStash(repo: repo, index: UInt(position), message: message)
+    }
+    
+    var startIndex: Int { return 0 }
+    var endIndex: Int { return count }
+    
+    func index(after i: Int) -> Int
+    {
+      return i + 1
+    }
+  }
+  
+  class StashIterator: IteratorProtocol
+  {
+    typealias Element = XTStash
+    let stashes: Stashes
+    var index: Int
+    
+    init(stashes: Stashes)
+    {
+      self.stashes = stashes
+      self.index = 0
+    }
+    
+    func next() -> XTStash?
+    {
+      let result = stashes[index]
+      
+      index += 1
+      return result
+    }
+  }
+  
+  func localBranches() -> Branches<XTLocalBranch>
+  {
+    return Branches(repo: self, type: GIT_BRANCH_LOCAL)
+  }
+  
+  func remoteBranches() -> Branches<XTRemoteBranch>
+  {
+    return Branches(repo: self, type: GIT_BRANCH_REMOTE)
+  }
+  
+  func remoteNames() -> [String]
+  {
+    let strArray = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
+    guard git_remote_list(strArray, gtRepo.git_repository()) == 0
+    else { return [] }
+    
+    return toStringArray(strArray.pointee)
+  }
+  
+  func stashes() -> Stashes
+  {
+    return Stashes(repo: self)
   }
   
   /// Like executeWritingBlock, but using Swift exceptions instead of
@@ -107,18 +266,6 @@ extension XTRepository
       result.append(refString)
     }
     return result
-  }
-  
-  func stashes() -> [XTStash]
-  {
-    var stashes = [XTStash]()
-    
-    // All we really need is the number of stashes,
-    // but there is no call that does that.
-    gtRepo.enumerateStashes { (index, message, oid, stop) in
-      stashes.append(XTStash(repo: self, index: index, message: message))
-    }
-    return stashes
   }
   
   func submodules() -> [XTSubmodule]
@@ -393,6 +540,20 @@ func withGitStringArray(from array: [String],
       block(strarray)
     })
   }
+}
+
+// Waiting for Swift 3.1 where we can do:
+// extension Array where Element == String
+func toStringArray(_ gitStrArray: git_strarray) -> [String]
+{
+  var result = [String]()
+  var stringPtr = gitStrArray.strings
+  
+  while let string = stringPtr?.pointee {
+    result.append(String(cString: string))
+    stringPtr = stringPtr?.advanced(by: 1)
+  }
+  return result
 }
 
 // MARK: Push/pull

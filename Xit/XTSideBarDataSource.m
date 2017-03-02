@@ -10,8 +10,6 @@
 
 @interface XTSideBarDataSource ()
 
-- (NSArray<XTSideBarGroupItem*>*)loadRoots;
-
 @property (readwrite) NSArray<XTSideBarGroupItem*> *roots;
 @property (readwrite) XTSideBarItem *stagingItem;
 
@@ -53,7 +51,7 @@
 - (void)reload
 {
   [_repo executeOffMainThread:^{
-    NSArray *newRoots = [self loadRoots];
+    NSArray<XTSideBarGroupItem*> *newRoots = [self loadRoots];
 
     dispatch_async(dispatch_get_main_queue(), ^{
       [self willChangeValueForKey:@"reload"];
@@ -65,48 +63,6 @@
       if ([self.outline selectedRow] == -1)
         [self selectCurrentBranch];
     });
-  }];
-}
-
-- (NSArray<XTSideBarGroupItem*>*)loadRoots
-{
-  NSArray<XTSideBarGroupItem*> *newRoots = [self makeRoots];
-
-  NSMutableDictionary *refsIndex = [NSMutableDictionary dictionary];
-  XTSideBarItem *branches = newRoots[XTGroupIndexBranches];
-  NSArray<XTTagItem*> *tags = [self makeTagItems];
-  XTSideBarItem *remotes = newRoots[XTGroupIndexRemotes];
-  NSArray<XTStashItem*> *stashes = [self makeStashItems];
-  NSArray<XTSubmoduleItem*> *submodules = [self makeSubmoduleItems];
-
-  [self loadBranches:branches remotes:remotes refsIndex:refsIndex];
-
-  [newRoots[XTGroupIndexTags] setChildren:tags];
-  [newRoots[XTGroupIndexStashes] setChildren:stashes];
-  [newRoots[XTGroupIndexSubmodules] setChildren:submodules];
-
-  [_repo rebuildRefsIndex];
-  _currentBranch = [_repo currentBranch];
-
-  dispatch_async(dispatch_get_main_queue(), ^{
-    [self updateTeamCity];
-  });
-
-  return newRoots;
-}
-
-- (void)loadStashes:(NSMutableArray *)stashes
-          refsIndex:(NSMutableDictionary *)refsIndex
-{
-  [_repo readStashesWithBlock:
-      ^(NSString *commit, NSUInteger index, NSString *name) {
-    XTStashChanges *stashModel = [[XTStashChanges alloc]
-        initWithRepository:_repo index:index];
-    XTSideBarItem *stash = [[XTStashItem alloc]
-        initWithTitle:name model:stashModel];
-    
-    [stashes addObject:stash];
-    [refsIndex addObject:name forKey:commit];
   }];
 }
 
@@ -141,57 +97,6 @@
   
   return [self parentForBranch:components
                      underItem:group];
-}
-
-- (void)loadBranches:(XTSideBarItem*)branches
-             remotes:(XTSideBarItem*)remotes
-           refsIndex:(NSMutableDictionary *)refsIndex
-{
-  NSMutableDictionary *remoteIndex = [NSMutableDictionary dictionary];
-
-  void (^localBlock)(NSString *, NSString *) =
-      ^(NSString *name, NSString *commit) {
-    XTCommitChanges *branchModel =
-        [[XTCommitChanges alloc] initWithRepository:_repo sha:commit];
-    XTLocalBranchItem *branch =
-        [[XTLocalBranchItem alloc] initWithTitle:name
-                                           model:branchModel];
-    XTSideBarItem *parent = [self parentForBranch:name groupItem:branches];
-
-    [parent addChild:branch];
-    [refsIndex addObject:[@"refs/heads" stringByAppendingPathComponent:name]
-                  forKey:commit];
-  };
-
-  void (^remoteBlock)(NSString *, NSString *, NSString *) =
-      ^(NSString *remoteName, NSString *branchName, NSString *commit) {
-    XTSideBarItem *remote = remoteIndex[remoteName];
-
-    if (remote == nil) {
-      remote = [[XTRemoteItem alloc] initWithTitle:remoteName
-                                        repository:self.repo];
-      [remotes addChild:remote];
-      remoteIndex[remoteName] = remote;
-    }
-
-    XTCommitChanges *branchModel =
-        [[XTCommitChanges alloc] initWithRepository:_repo sha:commit];
-    XTRemoteBranchItem *branch =
-        [[XTRemoteBranchItem alloc] initWithTitle:branchName
-                                           remote:remoteName
-                                            model:branchModel];
-    NSString *branchRef =
-        [NSString stringWithFormat:@"refs/remotes/%@/%@", remoteName, branchName];
-    XTSideBarItem *parent = [self parentForBranch:branchName groupItem:remote];
-
-    [parent addChild:branch];
-    [refsIndex addObject:branchRef
-                  forKey:commit];
-  };
-
-  [_repo readRefsWithLocalBlock:localBlock
-                    remoteBlock:remoteBlock
-                       tagBlock:nil];
 }
 
 @end

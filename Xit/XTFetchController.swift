@@ -21,7 +21,7 @@ class XTFetchController: XTPasswordOpController
       }
     }
     
-    let remotes = repository.remoteNames
+    let remotes = repository.remoteNames()
     
     switch remotes.count {
       case 0:

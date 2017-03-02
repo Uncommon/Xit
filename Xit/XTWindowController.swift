@@ -134,12 +134,11 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func updateBranchList()
   {
-    guard let repo = xtDocument?.repository,
-          let branches = try? repo.localBranches()
+    guard let repo = xtDocument?.repository
     else { return }
     
     self.titleBarController?.updateBranchList(
-        branches.flatMap { $0.shortName },
+        repo.localBranches().flatMap { $0.shortName },
         current: repo.currentBranch)
   }
   
@@ -271,7 +270,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func updateRemotesMenu(_ menu: NSMenu)
   {
-    let remoteNames = xtDocument!.repository.remoteNames
+    let remoteNames = xtDocument!.repository.remoteNames()
     
     menu.removeAllItems()
     for name in remoteNames {

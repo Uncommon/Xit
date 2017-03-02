@@ -320,15 +320,6 @@ NSString *XTPathsKey = @"paths";
   return [self shaForRef:[self headRef]];
 }
 
-- (NSArray<NSString*>*)remoteNames
-{
-  NSArray<NSString*> *result = [_gtRepo remoteNamesWithError:NULL];
-  
-  if (result == nil)
-    result = @[];
-  return result;
-}
-
 - (NSData*)contentsOfFile:(NSString*)filePath
                  atCommit:(NSString*)commitSHA
                     error:(NSError**)error
