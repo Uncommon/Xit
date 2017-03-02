@@ -28,7 +28,7 @@ let XTChangedRefsKey = "changedRefs"
     super.init()
     
     let objectsPath = repository.gitDirectoryURL.path
-                      .stringByAppendingPathComponent("objects")
+                      .appending(pathComponent: "objects")
     guard let stream = FileEventStream(path: repository.gitDirectoryURL.path,
                                        excludePaths: [objectsPath],
                                        queue: repository.queue,
@@ -53,7 +53,7 @@ let XTChangedRefsKey = "changedRefs"
     let path = repository.gitDirectoryURL.path
     
     self.packedRefsWatcher =
-        XTFileMonitor(path: path.stringByAppendingPathComponent("packed-refs"))
+        XTFileMonitor(path: path.appending(pathComponent: "packed-refs"))
     self.packedRefsWatcher?.notifyBlock = {
       [weak self] (_, _) in
       self?.checkRefs()
@@ -76,7 +76,7 @@ let XTChangedRefsKey = "changedRefs"
   func checkIndex()
   {
     let gitPath = repository.gitDirectoryURL.path
-    let indexPath = gitPath.stringByAppendingPathComponent("index")
+    let indexPath = gitPath.appending(pathComponent: "index")
     guard let indexAttributes = try? FileManager.default
                                      .attributesOfItem(atPath: indexPath),
           let newMod = indexAttributes[FileAttributeKey.modificationDate]
@@ -96,7 +96,7 @@ let XTChangedRefsKey = "changedRefs"
     for path in paths {
       for subpath in subpaths {
         if path.hasSuffix(subpath) ||
-          path.stringByDeletingLastPathComponent.hasSuffix(subpath) {
+           path.deletingLastPathComponent.hasSuffix(subpath) {
           return true
         }
       }

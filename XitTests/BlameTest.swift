@@ -43,7 +43,7 @@ class BlameTest: XTTest
   {
     super.setUp()
     
-    blamePath = repository.repoURL.path.stringByAppendingPathComponent(blameFile)
+    blamePath = repository.repoURL.path.appending(pathComponent: blameFile)
     commit(lines: elements1, message: "first")
     commit(lines: elements2, message: "second")
     commit(lines: elements3, message: "third")

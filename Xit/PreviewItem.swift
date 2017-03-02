@@ -16,7 +16,7 @@ class PreviewItem: NSObject, QLPreviewItem
   override init()
   {
     let tempDir = NSTemporaryDirectory()
-    let tempTemplate = tempDir.stringByAppendingPathComponent("xtpreviewXXXXXX")
+    let tempTemplate = tempDir.appending(pathComponent: "xtpreviewXXXXXX")
     
     tempFolderPath = tempTemplate.withCString {
       (template) -> String? in
@@ -43,7 +43,7 @@ class PreviewItem: NSObject, QLPreviewItem
     guard let path = self.path
     else { return nil }
     
-    return tempFolderPath?.stringByAppendingPathComponent(
+    return tempFolderPath?.appending(pathComponent:
         (path as NSString).lastPathComponent)
   }
   

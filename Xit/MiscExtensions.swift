@@ -25,12 +25,12 @@ extension String
     return self.substring(from: prefix.characters.endIndex)
   }
   
-  func stringByAppendingPathComponent(_ component: String) -> String
+  func appending(pathComponent component: String) -> String
   {
     return (self as NSString).appendingPathComponent(component)
   }
   
-  var stringByDeletingLastPathComponent: String
+  var deletingLastPathComponent: String
   {
     return (self as NSString).deletingLastPathComponent
   }

@@ -221,7 +221,8 @@ extension XTSideBarDataSource
                          as? XTSubmoduleItem,
        let rootPath = repo?.repoURL.path,
        let subPath = clickedItem.submodule.path {
-      let subURL = URL(fileURLWithPath: rootPath.stringByAppendingPathComponent(subPath))
+      let subURL = URL(fileURLWithPath: rootPath.appending(
+            pathComponent: subPath))
       
       NSDocumentController.shared().openDocument(
           withContentsOf: subURL, display: true,

@@ -357,8 +357,8 @@ class XTFileViewController: NSViewController
                            model: controller.selectedModel,
                            staged: showingStaged)
     
-    let fullPath = repo.repoURL.path.stringByAppendingPathComponent(
-                   selectedChange.path)
+    let fullPath = repo.repoURL.path.appending(
+                      pathComponent: selectedChange.path)
     
     fileWatcher = inStagingView ?
         FileEventStream(path: fullPath,

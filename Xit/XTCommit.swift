@@ -165,7 +165,7 @@ public class XTCommit: CommitType
     
     _ = try? tree.enumerateEntries(with: .pre) {
       (entry, root, stop) -> Bool in
-      result.append(root.stringByAppendingPathComponent(entry.name))
+      result.append(root.appending(pathComponent: entry.name))
       return true
     }
     return result
