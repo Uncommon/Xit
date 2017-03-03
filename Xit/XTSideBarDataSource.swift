@@ -142,6 +142,14 @@ class XTSideBarDataSource: NSObject
     }
   }
   
+  func makeStashItems() -> [XTSideBarItem]
+  {
+    return repo?.stashes().map {
+      XTStashItem(title: $0.message ?? "stash",
+                  model: XTStashChanges(repository: repo!, stash: $0))
+    } ?? []
+  }
+  
   func loadRoots() -> [XTSideBarGroupItem]
   {
     guard let repo = self.repo
@@ -182,10 +190,7 @@ class XTSideBarDataSource: NSObject
     }
     
     let tagItems = (try? repo.tags())?.map { XTTagItem(tag: $0) } ?? []
-    let stashItems = repo.stashes().map {
-      (stash: XTStash) -> XTStashItem in
-      XTStashItem(title: stash.message ?? "stash")
-    }
+    let stashItems = makeStashItems()
     let submoduleItems = repo.submodules().map { XTSubmoduleItem(submodule: $0) }
     
     newRoots[XTGroupIndex.remotes.rawValue].children = remoteItems
