@@ -1,7 +1,9 @@
 import Cocoa
 
 
-extension XTSideBarDataSource
+/// Data source for the sidebar, showing branches, remotes, tags, stashes,
+/// and submodules.
+class XTSideBarDataSource: NSObject
 {
   struct Intervals
   {
@@ -9,55 +11,99 @@ extension XTSideBarDataSource
     static let reloadDelay: TimeInterval = 1
   }
   
+  @IBOutlet weak var viewController: XTSidebarController!
+  @IBOutlet weak var refFormatter: XTRefFormatter!
+  @IBOutlet weak var outline: NSOutlineView!
+  
+  private(set) var roots: [XTSideBarGroupItem]
+  private(set) var stagingItem: XTSideBarItem!
+  
+  var buildStatuses = [String: [String: Bool]]()
+  
+  var buildStatusTimer: Timer?
+  var reloadTimer: Timer?
+  
+  var teamCityObserver: NSObjectProtocol?
+  var headChangedObserver: NSObjectProtocol?
+  var refsChangedObserver: NSObjectProtocol?
+  
+  var repo: XTRepository!
+  {
+    didSet
+    {
+      guard let repo = self.repo
+      else { return }
+      
+      stagingItem.model = XTStagingChanges(repository: repo)
+      
+      let center = NotificationCenter.default
+      
+      refsChangedObserver = center.addObserver(forName: .XTRepositoryRefsChanged,
+                                               object: repo, queue: .main) {
+        [weak self] (_) in
+        self?.reload()
+      }
+      headChangedObserver = center.addObserver(forName: .XTRepositoryHeadChanged,
+                                               object: repo, queue: .main) {
+        [weak self] (_) in
+        guard let myself = self
+        else { return }
+        myself.outline.reloadItem(myself.roots[XTGroupIndex.branches.rawValue],
+                                   reloadChildren: true)
+      }
+      reload()
+    }
+  }
+
   var selectedItem: XTSideBarItem?
   {
     get
     {
-      guard let row = outline?.selectedRow,
-            row >= 0
-      else { return nil }
+      let row = outline.selectedRow
       
-      return outline?.item(atRow: row) as? XTSideBarItem
+      return row >= 0 ? outline.item(atRow: row) as? XTSideBarItem : nil
     }
     set
     {
       guard let controller = outline!.window?.windowController
                              as? RepositoryController,
-            let item = newValue,
-            let row = outline?.row(forItem: item),
-            row >= 0
+            let item = newValue
       else { return }
       
-      outline?.selectRowIndexes(IndexSet(integer: row),
-                                byExtendingSelection: false)
+      let row = outline.row(forItem: item)
       
-      item.model.map { controller.selectedModel = $0 }
+      if row >= 0 {
+        outline.selectRowIndexes(IndexSet(integer: row),
+                                 byExtendingSelection: false)
+        
+        item.model.map { controller.selectedModel = $0 }
+      }
     }
   }
   
-  // Move this to repo.didSet when this is a Swift class
-  func didSetRepo()
+  static func makeRoots(_ stagingItem: XTSideBarItem) -> [XTSideBarGroupItem]
   {
-    guard let repo = self.repo
-    else { return }
+    let rootNames = ["WORKSPACE", "BRANCHES", "REMOTES", "TAGS", "STASHES",
+                     "SUBMODULES"];
+    let roots = rootNames.map({ XTSideBarGroupItem(title: $0) })
     
-    stagingItem.model = XTStagingChanges(repository: repo)
-    
-    let center = NotificationCenter.default
-    
-    refsChangedObserver = center.addObserver(forName: .XTRepositoryRefsChanged,
-                                             object: repo, queue: .main) {
-      [weak self] (_) in
-      self?.reload()
+    roots[0].add(child: stagingItem)
+    return roots;
+  }
+  
+  override init()
+  {
+    self.stagingItem = XTStagingItem(title: "Staging")
+    self.roots = XTSideBarDataSource.makeRoots(stagingItem)
+  }
+  
+  deinit
+  {
+    [teamCityObserver, headChangedObserver, refsChangedObserver].forEach {
+      (observer) in
+      observer.map { NotificationCenter.default.removeObserver($0) }
     }
-    headChangedObserver = center.addObserver(forName: .XTRepositoryHeadChanged, object: repo, queue: .main) {
-      [weak self] (_) in
-      guard let myself = self
-      else { return }
-      myself.outline?.reloadItem(myself.roots[XTGroupIndex.branches.rawValue],
-                                 reloadChildren: true)
-    }
-    reload()
+    buildStatusTimer?.invalidate()
   }
   
   open override func awakeFromNib()
@@ -80,12 +126,28 @@ extension XTSideBarDataSource
     }
   }
   
+  func reload()
+  {
+    repo?.executeOffMainThread {
+      let newRoots = self.loadRoots()
+      
+      DispatchQueue.main.async {
+        self.roots = newRoots
+        self.outline.reloadData()
+        self.outline.expandItem(nil, expandChildren: true)
+        if self.outline.selectedRow == -1 {
+          self.selectCurrentBranch()
+        }
+      }
+    }
+  }
+  
   func loadRoots() -> [XTSideBarGroupItem]
   {
     guard let repo = self.repo
     else { return [] }
     
-    let newRoots = makeRoots()
+    let newRoots = XTSideBarDataSource.makeRoots(stagingItem)
     let branchesGroup = newRoots[XTGroupIndex.branches.rawValue]
     
     for branch in repo.localBranches() {
@@ -95,7 +157,7 @@ extension XTSideBarDataSource
       
       let model = XTCommitChanges(repository: repo, sha: sha)
       let branchItem = XTLocalBranchItem(title: name, model: model)
-      let parent = self.parent(forBranch: name, groupItem: branchesGroup)
+      let parent = self.parent(for: name, groupItem: branchesGroup)
       
       parent.children.append(branchItem)
     }
@@ -111,7 +173,7 @@ extension XTSideBarDataSource
             let sha = branch.gtBranch.oid?.sha
       else { continue }
       let model = XTCommitChanges(repository: repo, sha: sha)
-      let remoteParent = parent(forBranch: name,
+      let remoteParent = parent(for: name,
                                 groupItem: remote)
       
       remoteParent.children.append(XTRemoteBranchItem(title: name,
@@ -136,6 +198,31 @@ extension XTSideBarDataSource
       self.updateTeamCity()
     }
     return newRoots
+  }
+  
+  func parent(for branchPath: [String],
+              under item: XTSideBarItem) -> XTSideBarItem
+  {
+    if branchPath.count == 1 {
+      return item
+    }
+    
+    let folderName = branchPath[0];
+    
+    if let child = item.children.first(where: { $0.expandable &&
+                                                $0.title == folderName }) {
+      return parent(for: Array(branchPath.dropFirst(1)), under: child)
+    }
+    
+    let newItem = XTBranchFolderItem(title: folderName)
+    
+    item.add(child: newItem)
+    return newItem
+  }
+  
+  func parent(for branch: String, groupItem: XTSideBarItem) -> XTSideBarItem
+  {
+    return parent(for: branch.components(separatedBy: "/"), under: groupItem)
   }
   
   func selectCurrentBranch()
@@ -186,16 +273,6 @@ extension XTSideBarDataSource
         sidebarDS.reloadTimer = nil
       }
     }
-  }
-  
-  func makeRoots() -> [XTSideBarGroupItem]
-  {
-    let rootNames =
-        ["WORKSPACE", "BRANCHES", "REMOTES", "TAGS", "STASHES", "SUBMODULES"];
-    let roots = rootNames.map({ XTSideBarGroupItem(title: $0) })
-    
-    roots[0].add(child: stagingItem)
-    return roots;
   }
   
   func item(forBranchName branch: String) -> XTLocalBranchItem?
@@ -279,7 +356,8 @@ extension XTSideBarDataSource
           else { return }
           
           NSLog("\(buildType)/\(branchName): \(build.status)")
-          var buildTypeStatuses = self.buildStatuses[buildType] as? [String: Bool] ?? [String: Bool]()
+          var buildTypeStatuses = self.buildStatuses[buildType] ??
+                                  [String: Bool]()
           
           buildTypeStatuses[branchName] = build.status == .succeeded
           self.buildStatuses[buildType] = buildTypeStatuses
@@ -359,18 +437,18 @@ extension XTSideBarDataSource
     var overallSuccess: Bool?
     
     for buildType in buildTypes {
-      if let status = buildStatuses[buildType] as? [NSString:NSNumber],
-         let buildSuccess = status[branchName as NSString]?.boolValue {
+      if let status = buildStatuses[buildType],
+         let buildSuccess = status[branchName] {
         overallSuccess = (overallSuccess ?? true) && buildSuccess
       }
     }
-    if overallSuccess == nil {
-      return NSImage(named: NSImageNameStatusNone)
+    
+    if let success = overallSuccess {
+      return NSImage(named: success ? NSImageNameStatusAvailable
+                                    : NSImageNameStatusUnavailable)
     }
     else {
-      return NSImage(named: overallSuccess!
-          ? NSImageNameStatusAvailable
-          : NSImageNameStatusUnavailable)
+      return NSImage(named: NSImageNameStatusNone)
     }
   }
 }
@@ -525,6 +603,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
   }
 }
 
+// MARK: XTOutlineViewDelegate
 extension XTSideBarDataSource : XTOutlineViewDelegate
 {
   func outlineViewClickedSelectedRow(_ outline: NSOutlineView)

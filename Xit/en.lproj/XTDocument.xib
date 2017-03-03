@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2657" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11542"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
         <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
@@ -200,7 +200,7 @@
                 <outlet property="view" destination="lxI-HL-izL" id="9JG-fo-qrR"/>
             </connections>
         </customObject>
-        <customObject id="oB7-gc-1Gq" customClass="XTSideBarDataSource">
+        <customObject id="oB7-gc-1Gq" customClass="XTSideBarDataSource" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="outline" destination="lxI-HL-izL" id="48K-Ah-aw5"/>
                 <outlet property="viewController" destination="aFR-LL-LwM" id="n6s-Bj-fJi"/>

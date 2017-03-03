@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		313014AC13EB656B0017A2A1 /* XTSideBarDataSorceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */; };
-		3174966813DF8A0C004C5546 /* XTSideBarDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */; };
 		31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		31C7C12E13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */; };
 		31C7C13413ECC74C00A65FE9 /* XTHistoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31C7C13213ECC74C00A65FE9 /* XTHistoryViewController.xib */; };
@@ -337,12 +336,10 @@
 /* Begin PBXFileReference section */
 		313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTSideBarDataSorceTests.m; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		31355B0713EA139700C33AAB /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTSideBarDataSource.m; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		31A8939F13E9DA5B008BE0C2 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		31C7C12C13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+MultiObjectForKey.h"; sourceTree = "<group>"; };
 		31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary+MultiObjectForKey.m"; sourceTree = "<group>"; };
 		31C7C13213ECC74C00A65FE9 /* XTHistoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTHistoryViewController.xib; sourceTree = "<group>"; };
-		31F1E87813D3AC6D00F3B317 /* XTSideBarDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTSideBarDataSource.h; sourceTree = "<group>"; tabWidth = 2; };
 		89039F551703A9FC000949A8 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
 		894C8D911CA44A44001A4B80 /* stagingTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stagingTemplate.png; sourceTree = "<group>"; };
 		894C8D921CA44A44001A4B80 /* stagingTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stagingTemplate@2x.png"; sourceTree = "<group>"; };
@@ -908,8 +905,6 @@
 				DD07B08816B313A60012AC19 /* XTRefFormatter.m */,
 				C98925F81DBFCE7000E5645C /* XTSidebarController.swift */,
 				C951EAE01DD11BDD00B99FBE /* XTSidebarTableCellView.swift */,
-				31F1E87813D3AC6D00F3B317 /* XTSideBarDataSource.h */,
-				3174966713DF8A0C004C5546 /* XTSideBarDataSource.m */,
 				89C9276A1D368C020074F71A /* XTSideBarDataSource.swift */,
 				C9F78B131D0896AF008490EA /* XTSidebarItem.swift */,
 				C947367B1DF079DB000E3A05 /* SideBarOutlineView.swift */,
@@ -1337,7 +1332,6 @@
 				C91E9A011D527A1300E128AC /* XTHistoryTableController.swift in Sources */,
 				C957B84B1D2D53040040F858 /* XTSheetController.swift in Sources */,
 				C947367C1DF079DB000E3A05 /* SideBarOutlineView.swift in Sources */,
-				3174966813DF8A0C004C5546 /* XTSideBarDataSource.m in Sources */,
 				89C927941D43B23B0074F71A /* XTRepository.swift in Sources */,
 				C9BAE60A1D2FFA8B00A87F13 /* XTConfig.swift in Sources */,
 				C9BAE6141D3039C500A87F13 /* XTOperationController.swift in Sources */,
