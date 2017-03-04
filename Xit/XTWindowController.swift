@@ -193,6 +193,14 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   @IBAction func newBranch(_: AnyObject) {}
   @IBAction func addRemote(_: AnyObject) {}
 
+  @IBAction func goBack(_: AnyObject)
+  {
+  }
+  
+  @IBAction func goForward(_: AnyObject)
+  {
+  }
+
   @IBAction func fetch(_: AnyObject)
   {
     let _: XTFetchController? = startOperation()
@@ -363,6 +371,8 @@ extension XTWindowController: XTTitleBarDelegate
             !historyController.detailsHidden)
   }
   
+  func goBack() { goBack(self) }
+  func goForward() { goBack(self) }
   func fetchSelected() { fetch(self) }
   func pushSelected() { push(self) }
   func pullSelected() { pull(self) }

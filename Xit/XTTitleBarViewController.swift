@@ -5,6 +5,8 @@ protocol XTTitleBarDelegate: class
   var viewStates: (sidebar: Bool, history: Bool, details: Bool) { get }
 
   func branchSelecetd(_ branch: String)
+  func goBack()
+  func goForward()
   func fetchSelected()
   func pushSelected()
   func pullSelected()
@@ -15,6 +17,7 @@ protocol XTTitleBarDelegate: class
 
 class XTTitleBarViewController: NSViewController
 {
+  @IBOutlet weak var navButtons: NSSegmentedControl!
   @IBOutlet weak var remoteControls: NSSegmentedControl!
   @IBOutlet weak var proxyIcon: NSImageView!
   @IBOutlet weak var spinner: NSProgressIndicator!
@@ -26,6 +29,11 @@ class XTTitleBarViewController: NSViewController
   
   weak var delegate: XTTitleBarDelegate? = nil
   
+  enum NavSegment: Int
+  {
+    case back, forward
+  }
+  
   enum RemoteSegment: Int
   {
     case fetch, pull, push
@@ -34,6 +42,19 @@ class XTTitleBarViewController: NSViewController
   enum ViewSegment: Int
   {
     case sidebar, history, details
+  }
+  
+  @IBAction func navigate(_ sender: NSSegmentedControl)
+  {
+    guard let segment = NavSegment(rawValue: sender.selectedSegment)
+    else { return }
+    
+    switch segment {
+      case .back:
+        delegate?.goBack()
+      case .forward:
+        delegate?.goForward()
+    }
   }
   
   @IBAction func remoteAction(_ sender: NSSegmentedControl)
