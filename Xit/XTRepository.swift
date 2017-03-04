@@ -731,3 +731,9 @@ func sshCredential(_ user: String) -> GTCredential?
       privateKeyURL: URL(fileURLWithPath: privatePath),
       passphrase: "")
 }
+
+extension NSNotification.Name
+{
+  static let XTRepositoryRefLogChanged =
+      NSNotification.Name("XTRepositoryRefLogChanged")
+}

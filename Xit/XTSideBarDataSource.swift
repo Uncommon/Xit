@@ -26,6 +26,7 @@ class XTSideBarDataSource: NSObject
   var teamCityObserver: NSObjectProtocol?
   var headChangedObserver: NSObjectProtocol?
   var refsChangedObserver: NSObjectProtocol?
+  var refLogChangedObserver: NSObjectProtocol?
   
   var repo: XTRepository!
   {
@@ -38,18 +39,31 @@ class XTSideBarDataSource: NSObject
       
       let center = NotificationCenter.default
       
-      refsChangedObserver = center.addObserver(forName: .XTRepositoryRefsChanged,
-                                               object: repo, queue: .main) {
+      refsChangedObserver = center.addObserver(
+          forName: .XTRepositoryRefsChanged,
+          object: repo, queue: .main) {
         [weak self] (_) in
         self?.reload()
       }
-      headChangedObserver = center.addObserver(forName: .XTRepositoryHeadChanged,
-                                               object: repo, queue: .main) {
+      refLogChangedObserver = center.addObserver(
+          forName: .XTRepositoryRefLogChanged,
+          object: repo, queue: .main) {
+        [weak self] (_) in
+        guard let myself = self
+        else { return }
+        let stashesGroup = myself.roots[XTGroupIndex.stashes.rawValue]
+        
+        stashesGroup.children = myself.makeStashItems()
+        myself.outline.reloadItem(stashesGroup, reloadChildren: true)
+      }
+      headChangedObserver = center.addObserver(
+          forName: .XTRepositoryHeadChanged,
+          object: repo, queue: .main) {
         [weak self] (_) in
         guard let myself = self
         else { return }
         myself.outline.reloadItem(myself.roots[XTGroupIndex.branches.rawValue],
-                                   reloadChildren: true)
+                                  reloadChildren: true)
       }
       reload()
     }
@@ -99,7 +113,8 @@ class XTSideBarDataSource: NSObject
   
   deinit
   {
-    [teamCityObserver, headChangedObserver, refsChangedObserver].forEach {
+    [teamCityObserver, headChangedObserver, refsChangedObserver,
+     refLogChangedObserver].forEach {
       (observer) in
       observer.map { NotificationCenter.default.removeObserver($0) }
     }

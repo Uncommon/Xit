@@ -119,8 +119,8 @@ let XTChangedRefsKey = "changedRefs"
   func checkHead(_ changedPaths: [String])
   {
     if paths(changedPaths, includeSubpaths: ["HEAD"]) {
-      NotificationCenter.default.post(
-          name: NSNotification.Name.XTRepositoryHeadChanged, object: repository)
+      NotificationCenter.default.post(name: .XTRepositoryHeadChanged,
+                                      object: repository)
     }
   }
   
@@ -152,14 +152,23 @@ let XTChangedRefsKey = "changedRefs"
     if !changedRefs.isEmpty {
       refChanges[XTChangedRefsKey] = Set(changedRefs)
     }
+    
     if !refChanges.isEmpty {
       repository.rebuildRefsIndex()
-      NotificationCenter.default.post(
-          name: NSNotification.Name.XTRepositoryRefsChanged, object: repository)
+      NotificationCenter.default.post(name: .XTRepositoryRefsChanged,
+                                      object: repository)
       repository.refsChanged()
     }
     
     refsCache = newRefCache
+  }
+  
+  func checkLogs(_ changedPaths: [String])
+  {
+    if paths(changedPaths, includeSubpaths: ["logs/refs"]) {
+      NotificationCenter.default.post(name: .XTRepositoryRefLogChanged,
+                                      object: repository)
+    }
   }
   
   func observeEvents(_ paths: [String])
@@ -170,6 +179,7 @@ let XTChangedRefsKey = "changedRefs"
     checkIndex()
     checkHead(standardizedPaths)
     checkRefs(standardizedPaths)
+    checkLogs(standardizedPaths)
     
     NotificationCenter.default.post(
         name: NSNotification.Name.XTRepositoryChanged, object: repository)
