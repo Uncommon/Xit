@@ -26,34 +26,44 @@ class XTTitleBarViewController: NSViewController
   
   weak var delegate: XTTitleBarDelegate? = nil
   
+  enum RemoteSegment: Int
+  {
+    case fetch, pull, push
+  }
+  
+  enum ViewSegment: Int
+  {
+    case sidebar, history, details
+  }
+  
   @IBAction func remoteAction(_ sender: NSSegmentedControl)
   {
-    switch sender.selectedSegment {
-      case 0:
+    guard let segment = RemoteSegment(rawValue: sender.selectedSegment)
+    else { return }
+    
+    switch segment {
+      case .fetch:
         delegate?.fetchSelected()
-      case 1:
+      case .pull:
         delegate?.pullSelected()
-      case 2:
+      case .push:
         delegate?.pushSelected()
-      default:
-        break
     }
   }
   
   @IBAction func viewAction(_ sender: NSSegmentedControl)
   {
-    guard let delegate = self.delegate
+    guard let segment = ViewSegment(rawValue: sender.selectedSegment),
+          let delegate = self.delegate
     else { return }
     
-    switch sender.selectedSegment {
-      case 0:
+    switch segment {
+      case .sidebar:
         delegate.showHideSidebar()
-      case 1:
+      case .history:
         delegate.showHideHistory()
-      case 2:
+      case .details:
         delegate.showHideDetails()
-      default:
-        break
     }
     
     let states = delegate.viewStates
