@@ -21,6 +21,9 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   {
     didSet
     {
+      guard selectedModel.map({ (s) in oldValue.map { (o) in s != o }
+          ?? true }) ?? (oldValue != nil)
+      else { return }
       var userInfo = [AnyHashable: Any]()
       
       userInfo[NSKeyValueChangeKey.newKey] = selectedModel
@@ -34,8 +37,17 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       if #available(OSX 10.12.2, *) {
         touchBar = makeTouchBar()
       }
+      
+      if !navigating {
+        navForwardStack.removeAll()
+        oldValue.map { navBackStack.append($0) }
+      }
+      updateNavButtons()
     }
   }
+  var navBackStack = [XTFileChangesModel]()
+  var navForwardStack = [XTFileChangesModel]()
+  var navigating = false
   var sidebarHidden: Bool
   {
     return mainSplitView.isSubviewCollapsed(mainSplitView.subviews[0])
@@ -81,6 +93,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     historyController.windowDidLoad()
     historyController.repo = repo
     updateMiniwindowTitle()
+    updateNavButtons()
   }
   
   deinit
@@ -116,6 +129,22 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   func select(sha: String)
   {
     selectedModel = XTCommitChanges(repository: xtDocument!.repository, sha: sha)
+  }
+  
+  private func withNavigating(_ callback: () -> Void)
+  {
+    navigating = true
+    callback()
+    navigating = false
+    updateNavButtons()
+  }
+  
+  func updateNavButtons()
+  {
+    titleBarController?.navButtons.setEnabled(!navBackStack.isEmpty,
+                                              forSegment: 0)
+    titleBarController?.navButtons.setEnabled(!navForwardStack.isEmpty,
+                                              forSegment: 1)
   }
   
   func updateMiniwindowTitle()
@@ -195,10 +224,18 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
 
   @IBAction func goBack(_: AnyObject)
   {
+    withNavigating {
+      selectedModel.map { navForwardStack.append($0) }
+      selectedModel = navBackStack.popLast()
+    }
   }
   
   @IBAction func goForward(_: AnyObject)
   {
+    withNavigating {
+      selectedModel.map { navBackStack.append($0) }
+      selectedModel = navForwardStack.popLast()
+    }
   }
 
   @IBAction func fetch(_: AnyObject)
@@ -372,7 +409,7 @@ extension XTWindowController: XTTitleBarDelegate
   }
   
   func goBack() { goBack(self) }
-  func goForward() { goBack(self) }
+  func goForward() { goForward(self) }
   func fetchSelected() { fetch(self) }
   func pushSelected() { push(self) }
   func pullSelected() { pull(self) }
