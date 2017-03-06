@@ -33,6 +33,17 @@ typealias GitBlame = CLGitBlame
   func unstagedFileURL(_ path: String) -> URL?
 }
 
+func == (a: XTFileChangesModel, b: XTFileChangesModel) -> Bool
+{
+  return type(of: a) == type(of: b) &&
+         a.shaToSelect == b.shaToSelect
+}
+
+func != (a: XTFileChangesModel, b: XTFileChangesModel) -> Bool
+{
+  return !(a == b)
+}
+
 // To be folded into FileChangesModel once the @objc can be removed
 protocol Blaming
 {
@@ -256,6 +267,11 @@ class XTStashChanges: NSObject, XTFileChangesModel, Blaming
 
   // Unstaged files are stored in commits, so there is no URL.
   func unstagedFileURL(_ path: String) -> URL? { return nil }
+}
+
+func ==(a: XTStashChanges, b: XTStashChanges) -> Bool
+{
+  return a.stash.mainCommit.oid == b.stash.mainCommit.oid
 }
 
 

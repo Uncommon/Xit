@@ -174,13 +174,13 @@ class XTSidebarController: NSViewController, SidebarHandler
   }
   var window: NSWindow? { return view.window }
   var savedSidebarWidth: UInt = 0
-  var indexObserver, workspaceObserver: NSObjectProtocol?
+  var indexObserver, workspaceObserver, selectionObserver: NSObjectProtocol?
   
   deinit
   {
     // The timers contain references to the ds object and repository.
     sidebarDS?.stopTimers()
-    _ = [self, indexObserver, workspaceObserver].flatMap {
+    _ = [self, indexObserver, workspaceObserver, selectionObserver].flatMap {
       NotificationCenter.default.removeObserver($0 as Any)
     }
   }
@@ -192,6 +192,26 @@ class XTSidebarController: NSViewController, SidebarHandler
     if branchContextMenu == nil,
        let menuNib = NSNib(nibNamed: "HistoryView Menus", bundle: nil) {
       menuNib.instantiate(withOwner: self, topLevelObjects: nil)
+    }
+    
+    let repoController = view.window!.windowController as! XTWindowController
+    
+    selectionObserver = NotificationCenter.default.addObserver(
+        forName: .XTSelectedModelChanged,
+        object: repoController, queue: .main) {
+      [weak self, weak repoController] (_) in
+      guard let myself = self
+      else { return }
+      if let stashChanges = repoController?.selectedModel as? XTStashChanges {
+        for stashItem in myself.sidebarDS.roots[XTGroupIndex.stashes.rawValue].children {
+          if let model = stashItem.model,
+             model == stashChanges {
+            myself.sidebarOutline.selectRowIndexes(
+                IndexSet(integer: myself.sidebarOutline.row(forItem: stashItem)),
+                byExtendingSelection: false)
+          }
+        }
+      }
     }
   }
   
