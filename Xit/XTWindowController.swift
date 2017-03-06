@@ -333,6 +333,12 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     
     switch action {
 
+      case #selector(self.goBack(_:)):
+        result = !navBackStack.isEmpty
+      
+      case #selector(self.goForward(_:)):
+        result = !navForwardStack.isEmpty
+
       case #selector(self.refresh(_:)):
         result = !xtDocument!.repository.isWriting
 
