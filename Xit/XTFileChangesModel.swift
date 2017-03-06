@@ -269,6 +269,11 @@ class XTStashChanges: NSObject, XTFileChangesModel, Blaming
   func unstagedFileURL(_ path: String) -> URL? { return nil }
 }
 
+func ==(a: XTStashChanges, b: XTStashChanges) -> Bool
+{
+  return a.stash.mainCommit.oid == b.stash.mainCommit.oid
+}
+
 
 /// Staged and unstaged workspace changes
 class XTStagingChanges: NSObject, XTFileChangesModel, Blaming
