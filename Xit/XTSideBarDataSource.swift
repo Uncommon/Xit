@@ -23,10 +23,7 @@ class XTSideBarDataSource: NSObject
   var buildStatusTimer: Timer?
   var reloadTimer: Timer?
   
-  var teamCityObserver: NSObjectProtocol?
-  var headChangedObserver: NSObjectProtocol?
-  var refsChangedObserver: NSObjectProtocol?
-  var refLogChangedObserver: NSObjectProtocol?
+  let observers = ObserverCollection()
   
   var repo: XTRepository!
   {
@@ -37,15 +34,13 @@ class XTSideBarDataSource: NSObject
       
       stagingItem.model = XTStagingChanges(repository: repo)
       
-      let center = NotificationCenter.default
-      
-      refsChangedObserver = center.addObserver(
+      observers.addObserver(
           forName: .XTRepositoryRefsChanged,
           object: repo, queue: .main) {
         [weak self] (_) in
         self?.reload()
       }
-      refLogChangedObserver = center.addObserver(
+      observers.addObserver(
           forName: .XTRepositoryRefLogChanged,
           object: repo, queue: .main) {
         [weak self] (_) in
@@ -56,7 +51,7 @@ class XTSideBarDataSource: NSObject
         stashesGroup.children = myself.makeStashItems()
         myself.outline.reloadItem(stashesGroup, reloadChildren: true)
       }
-      headChangedObserver = center.addObserver(
+      observers.addObserver(
           forName: .XTRepositoryHeadChanged,
           object: repo, queue: .main) {
         [weak self] (_) in
@@ -113,11 +108,6 @@ class XTSideBarDataSource: NSObject
   
   deinit
   {
-    [teamCityObserver, headChangedObserver, refsChangedObserver,
-     refLogChangedObserver].forEach {
-      (observer) in
-      observer.map { NotificationCenter.default.removeObserver($0) }
-    }
     buildStatusTimer?.invalidate()
   }
   
@@ -132,7 +122,7 @@ class XTSideBarDataSource: NSObject
         self?.updateTeamCity()
       }
     }
-    teamCityObserver = NotificationCenter.default.addObserver(
+    observers.addObserver(
         forName: NSNotification.Name.XTTeamCityStatusChanged,
         object: nil,
         queue: .main) {

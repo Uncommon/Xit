@@ -6,14 +6,14 @@ class FileListDataSourceBase: NSObject
   @IBOutlet weak var outlineView: NSOutlineView!
   @IBOutlet weak var controller: XTFileViewController!
   
-  var selectionObserver, workspaceObserver: NSObjectProtocol?
+  let observers = ObserverCollection()
   
   weak var repository: XTRepository!
   {
     didSet
     {
       (self as! FileListDataSource).reload()
-      workspaceObserver = NotificationCenter.default.addObserver(
+      observers.addObserver(
           forName: .XTRepositoryWorkspaceChanged,
           object: repository, queue: .main) {
         [weak self] (note) in
@@ -30,7 +30,7 @@ class FileListDataSourceBase: NSObject
   {
     didSet
     {
-      selectionObserver = NotificationCenter.default.addObserver(
+      observers.addObserver(
           forName: .XTSelectedModelChanged, object: repository, queue: .main) {
         [weak self] (note) in
         guard let myself = self
@@ -41,14 +41,6 @@ class FileListDataSourceBase: NSObject
           myself.updateStagingView()
         }
       }
-    }
-  }
-
-  deinit
-  {
-    [selectionObserver, workspaceObserver].forEach {
-      (observer) in
-      observer.map { NotificationCenter.default.removeObserver($0) }
     }
   }
   

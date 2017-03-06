@@ -9,9 +9,7 @@ public class XTHistoryTableController: NSViewController
     static let email = "email"
   }
   
-  var refsChangedObserver: NSObjectProtocol?
-  var selectionObserver: NSObjectProtocol?
-  var reselectObserver: NSObjectProtocol?
+  let observers = ObserverCollection()
 
   weak var repository: XTRepository!
   {
@@ -27,7 +25,7 @@ public class XTHistoryTableController: NSViewController
       table.intercellSpacing = spacing
 
       loadHistory()
-      refsChangedObserver = NotificationCenter.default.addObserver(
+      observers.addObserver(
           forName: NSNotification.Name.XTRepositoryRefsChanged,
           object: repository, queue: .main) {
         [weak self] _ in
@@ -38,7 +36,7 @@ public class XTHistoryTableController: NSViewController
         // For now: just reload
         self?.reload()
       }
-      reselectObserver = NotificationCenter.default.addObserver(
+      observers.addObserver(
           forName: NSNotification.Name.XTReselectModel,
           object: repository, queue: .main) {
         [weak self] _ in
@@ -57,9 +55,6 @@ public class XTHistoryTableController: NSViewController
   {
     let center = NotificationCenter.default
   
-    refsChangedObserver.map { center.removeObserver($0) }
-    selectionObserver.map { center.removeObserver($0) }
-    reselectObserver.map { center.removeObserver($0) }
     center.removeObserver(self)
   }
   
@@ -67,7 +62,7 @@ public class XTHistoryTableController: NSViewController
   {
     let controller = view.window?.windowController!
     
-    selectionObserver = NotificationCenter.default.addObserver(
+    observers.addObserver(
         forName: NSNotification.Name.XTSelectedModelChanged,
         object: controller,
         queue: nil) {

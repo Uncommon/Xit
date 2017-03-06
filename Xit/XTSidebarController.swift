@@ -159,13 +159,13 @@ class XTSidebarController: NSViewController, SidebarHandler
     didSet
     {
       sidebarDS.repo = repo
-      indexObserver = NotificationCenter.default.addObserver(
+      observers.addObserver(
           forName: NSNotification.Name.XTRepositoryIndexChanged,
           object: repo, queue: .main) {
         [weak self] (_) in
         self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
       }
-      workspaceObserver = NotificationCenter.default.addObserver(
+      observers.addObserver(
           forName: .XTRepositoryWorkspaceChanged, object: repo, queue: .main) {
         [weak self] (_) in
         self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
@@ -174,15 +174,12 @@ class XTSidebarController: NSViewController, SidebarHandler
   }
   var window: NSWindow? { return view.window }
   var savedSidebarWidth: UInt = 0
-  var indexObserver, workspaceObserver, selectionObserver: NSObjectProtocol?
+  let observers = ObserverCollection()
   
   deinit
   {
     // The timers contain references to the ds object and repository.
     sidebarDS?.stopTimers()
-    _ = [self, indexObserver, workspaceObserver, selectionObserver].flatMap {
-      NotificationCenter.default.removeObserver($0 as Any)
-    }
   }
   
   override func viewDidLoad()
@@ -196,7 +193,7 @@ class XTSidebarController: NSViewController, SidebarHandler
     
     let repoController = view.window!.windowController as! XTWindowController
     
-    selectionObserver = NotificationCenter.default.addObserver(
+    observers.addObserver(
         forName: .XTSelectedModelChanged,
         object: repoController, queue: .main) {
       [weak self, weak repoController] (_) in

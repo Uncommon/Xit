@@ -83,10 +83,7 @@ class XTFileViewController: NSViewController
   var changeImages = [XitChange: NSImage]()
   var stageImages = [XitChange: NSImage]()
   var contentController: XTFileContentController!
-  var indexObserver: NSObjectProtocol?
-  var modelObserver: NSObjectProtocol?
-  var selectionObserver: NSObjectProtocol?
-  var resizeObserver: NSObjectProtocol?
+  let observers = ObserverCollection()
   
   var fileWatcher: FileEventStream?
   weak var lastClickedButton: NSButton?
@@ -171,7 +168,7 @@ class XTFileViewController: NSViewController
       fileTreeDS.repository = repo
       headerController.repository = repo
       commitEntryController.repo = repo
-      indexObserver = NotificationCenter.default.addObserver(
+      observers.addObserver(
           forName: NSNotification.Name.XTRepositoryIndexChanged,
           object: repo, queue: .main) {
         [weak self] note in
@@ -182,9 +179,6 @@ class XTFileViewController: NSViewController
   
   deinit
   {
-    [indexObserver, modelObserver, selectionObserver, resizeObserver].forEach {
-      $0.map { NotificationCenter.default.removeObserver($0) }
-    }
     indexTimer.map { $0.invalidate() }
   }
 
@@ -196,7 +190,7 @@ class XTFileViewController: NSViewController
     
     fileChangeDS.repoController = controller
     fileTreeDS.repoController = controller
-    modelObserver = NotificationCenter.default.addObserver(
+    observers.addObserver(
         forName: NSNotification.Name.XTSelectedModelChanged,
         object: controller, queue: .main) {
       [weak self] _ in
@@ -231,14 +225,14 @@ class XTFileViewController: NSViewController
     fileListOutline.sizeToFit()
     contentController = diffController
     
-    selectionObserver = NotificationCenter.default.addObserver(
+    observers.addObserver(
         forName: NSNotification.Name.NSOutlineViewSelectionDidChange,
         object: fileListOutline,
         queue: nil) {
       [weak self] _ in
       self?.refreshPreview()
     }
-    resizeObserver = NotificationCenter.default.addObserver(
+    observers.addObserver(
         forName: .XTHeaderResized,
         object: headerController,
         queue: nil) {
