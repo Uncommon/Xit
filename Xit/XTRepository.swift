@@ -501,6 +501,34 @@ extension XTRepository
       throw NSError.git_error(for: result)
     }
   }
+  
+  func graphBetween(local: GitOID, upstream: GitOID) -> (ahead: Int,
+                                                         behind: Int)?
+  {
+    let ahead = UnsafeMutablePointer<Int>.allocate(capacity: 1)
+    let behind = UnsafeMutablePointer<Int>.allocate(capacity: 1)
+    
+    if git_graph_ahead_behind(ahead, behind, gtRepo.git_repository(),
+                              local.unsafeOID(), upstream.unsafeOID()) == 0 {
+      return (ahead.pointee, behind.pointee)
+    }
+    else {
+      return nil
+    }
+  }
+  
+  func graphBetween(localBranch: XTLocalBranch,
+                    upstreamBranch: XTRemoteBranch) ->(ahead: Int,
+                                                       behind: Int)?
+  {
+    if let localOID = localBranch.oid,
+       let upstreamOID = upstreamBranch.oid {
+      return graphBetween(local: localOID, upstream: upstreamOID)
+    }
+    else {
+      return nil
+    }
+  }
 }
 
 /// Converts the given array to a `git_strarray` and calls the given block.
@@ -653,8 +681,8 @@ extension XTRepository
                                       passwordBlock: passwordBlock)
 
       try self.gtRepo.pull(branch.gtBranch,
-                                 from: remote,
-                                 withOptions: options) {
+                           from: remote,
+                           withOptions: options) {
         (progress, stop) in
         stop.pointee = ObjCBool(progressBlock(progress.pointee))
       }

@@ -1,6 +1,6 @@
 import Cocoa
 
-public class XTBranch: NSObject
+public class XTBranch
 {
   let gtBranch: GTBranch
   
@@ -12,6 +12,10 @@ public class XTBranch: NSObject
   var name: String? { return gtBranch.name }
   var shortName: String? { return gtBranch.shortName }
   var sha: String? { return gtBranch.oid?.sha }
+  var oid: GitOID?
+  {
+    return gtBranch.oid.map { GitOID(oid: $0.git_oid().pointee) }
+  }
 }
 
 public class XTLocalBranch: XTBranch

@@ -440,6 +440,28 @@ extension XTSideBarDataSource
     return XTLocalBranch(repository: repo!, name: branch)?.trackingBranch != nil
   }
   
+  func graphText(for item: XTSideBarItem) -> String?
+  {
+    if item is XTLocalBranchItem,
+       let localBranch = XTLocalBranch(repository: repo!, name: item.title),
+       let trackingBranch = localBranch.trackingBranch,
+       let graph = repo.graphBetween(localBranch: localBranch,
+                                     upstreamBranch: trackingBranch) {
+      var numbers = [String]()
+      
+      if graph.ahead > 0 {
+        numbers.append("↑\(graph.ahead)")
+      }
+      if graph.behind > 0 {
+        numbers.append("↓\(graph.behind)")
+      }
+      return numbers.isEmpty ? nil : numbers.joined(separator: " ")
+    }
+    else {
+      return nil
+    }
+  }
+  
   func statusImage(for item: XTSideBarItem) -> NSImage?
   {
     guard let remoteName = remoteName(forBranchItem: item),
@@ -564,15 +586,20 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
       textField.stringValue = sideBarItem.displayTitle
       textField.isEditable = sideBarItem.editable
       textField.isSelectable = sideBarItem.isSelectable
+      dataView.statusText.isHidden = true
+      dataView.statusImage.image = nil
       if let image = statusImage(for: sideBarItem) {
         dataView.statusImage.image = image
       }
-      else if sideBarItem is XTLocalBranchItem &&
-              localBranchHasTrackingBranch(sideBarItem.title) {
-        dataView.statusImage.image = NSImage(named: "cloudTemplate")
-      }
-      else {
-        dataView.statusImage.image = nil
+      if sideBarItem is XTLocalBranchItem {
+        if let statusText = graphText(for: sideBarItem) {
+          dataView.statusText.title = statusText
+          dataView.statusText.isHidden = false
+        }
+        else if dataView.statusImage.image == nil &&
+                localBranchHasTrackingBranch(sideBarItem.title) {
+          dataView.statusImage.image = NSImage(named: "cloudTemplate")
+        }
       }
       dataView.statusImage.isHidden = dataView.statusImage.image == nil
       if sideBarItem.editable {
@@ -609,9 +636,6 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
         else {
           dataView.statusText.isHidden = true
         }
-      }
-      else {
-        dataView.statusText.isHidden = true
       }
       return dataView
     }

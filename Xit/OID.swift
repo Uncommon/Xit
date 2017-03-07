@@ -45,7 +45,7 @@ public struct GitOID: OID, Hashable
     }
     
     guard git_oid_fromstr(oidPtr, sha) == GIT_OK.rawValue
-      else { return nil }
+    else { return nil }
     
     oid = oidPtr.pointee
   }
