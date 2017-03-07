@@ -26,6 +26,7 @@ class XTTitleBarViewController: NSViewController
   @IBOutlet weak var operationButton: NSButton!
   @IBOutlet weak var operationControls: NSSegmentedControl!
   @IBOutlet weak var viewControls: NSSegmentedControl!
+  @IBOutlet weak var operationViewSpacing: NSLayoutConstraint!
   
   weak var delegate: XTTitleBarDelegate? = nil
   
@@ -42,6 +43,12 @@ class XTTitleBarViewController: NSViewController
   enum ViewSegment: Int
   {
     case sidebar, history, details
+  }
+  
+  override func viewDidLoad()
+  {
+    // This constraint will be active when the operations controls are shown.
+    operationViewSpacing.isActive = false
   }
   
   @IBAction func navigate(_ sender: NSSegmentedControl)
