@@ -422,6 +422,7 @@ extension XTSideBarDataSource
     return nil
   }
   
+  /// Returns true if the remote branch is tracked by a local branch.
   func branchHasLocalTrackingBranch(_ branch: String) -> Bool
   {
     for localBranch in repo!.localBranches() {
@@ -433,13 +434,20 @@ extension XTSideBarDataSource
     return false
   }
   
-  func statusImage(_ item: XTSideBarItem) -> NSImage?
+  /// Returns true if the local branch has a remote tracking branch.
+  func localBranchHasTrackingBranch(_ branch: String) -> Bool
+  {
+    return XTLocalBranch(repository: repo!, name: branch)?.trackingBranch != nil
+  }
+  
+  func statusImage(for item: XTSideBarItem) -> NSImage?
   {
     guard let remoteName = remoteName(forBranchItem: item),
           let (_, buildTypes) = matchTeamCity(remoteName)
     else { return nil }
     
-    if (item is XTRemoteBranchItem) && !branchHasLocalTrackingBranch(item.title) {
+    if (item is XTRemoteBranchItem) &&
+       !branchHasLocalTrackingBranch(item.title) {
       return nil
     }
     
@@ -556,7 +564,16 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
       textField.stringValue = sideBarItem.displayTitle
       textField.isEditable = sideBarItem.editable
       textField.isSelectable = sideBarItem.isSelectable
-      dataView.statusImage.image = statusImage(sideBarItem)
+      if let image = statusImage(for: sideBarItem) {
+        dataView.statusImage.image = image
+      }
+      else if sideBarItem is XTLocalBranchItem &&
+              localBranchHasTrackingBranch(sideBarItem.title) {
+        dataView.statusImage.image = NSImage(named: "cloudTemplate")
+      }
+      else {
+        dataView.statusImage.image = nil
+      }
       dataView.statusImage.isHidden = dataView.statusImage.image == nil
       if sideBarItem.editable {
         textField.formatter = refFormatter

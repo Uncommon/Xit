@@ -62,11 +62,16 @@ class XTStashItem : XTSideBarItem
 }
 
 
-class XTLocalBranchItem : XTSideBarItem
+class XTBranchItem : XTSideBarItem
 {
   override var displayTitle: String
       { return (title as NSString).lastPathComponent }
   override var icon: NSImage? { return NSImage(named: "branchTemplate") }
+}
+
+
+class XTLocalBranchItem: XTBranchItem
+{
   override var refType: XTRefType { return .branch }
   override var current: Bool
   {
@@ -75,15 +80,19 @@ class XTLocalBranchItem : XTSideBarItem
     }
     return false
   }
+  
+  func hasTrackingBranch() -> Bool
+  {
+    return XTLocalBranch(repository: model!.repository,
+                         name: title)?.trackingBranch != nil
+  }
 }
 
 
-class XTRemoteBranchItem : XTLocalBranchItem
+class XTRemoteBranchItem : XTBranchItem
 {
   var remote: String
-  override var icon: NSImage? { return NSImage(named: "branchTemplate") }
   override var refType: XTRefType { return .remoteBranch }
-  override var current: Bool { return false }
   
   init(title: String, remote: String, model: XTFileChangesModel)
   {
