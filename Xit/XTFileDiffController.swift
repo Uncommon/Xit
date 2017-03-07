@@ -6,6 +6,7 @@ class XTFileDiffController: XTWebViewController,
                             TabWidthVariable
 {
   var isLoaded: Bool = false
+  var staged: Bool?
   public var whitespace: XTWhitespace = .showAll
   {
     didSet
@@ -113,7 +114,17 @@ class XTFileDiffController: XTWebViewController,
   
   func loadNoChangesNotice()
   {
-    loadNotice("No changes for this selection")
+    var notice: String!
+  
+    if let staged = self.staged {
+      notice = staged
+          ? "No staged changes for this selection"
+          : "No unstaged changes for this selection"
+    }
+    else {
+      notice = "No changes for this selection"
+    }
+    loadNotice(notice)
   }
 }
 
@@ -127,6 +138,7 @@ extension XTFileDiffController: XTFileContentController
   
   public func load(path: String!, model: XTFileChangesModel!, staged: Bool)
   {
+    self.staged = model.hasUnstaged ? staged : nil
     loadOrNotify(diffMaker: model.diffForFile(path, staged: staged))
   }
 }
