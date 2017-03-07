@@ -472,7 +472,12 @@ class XTFileViewController: NSViewController
         fileListOutline.tableColumn(withIdentifier: columnID)
     fileListOutline.delegate = self
     fileListOutline.dataSource = newDS
-    fileListOutline.reloadData()
+    if newDS.outlineView!(fileListOutline, numberOfChildrenOfItem: nil) == 0 {
+      newDS.reload()
+    }
+    else {
+      fileListOutline.reloadData()
+    }
   }
   
   @IBAction func changeContentView(_ sender: Any?)
@@ -663,6 +668,7 @@ class XTFileViewController: NSViewController
   }
 }
 
+// MARK: NSOutlineViewDelegate
 extension XTFileViewController: NSOutlineViewDelegate
 {
   private func image(forChange change: XitChange) -> NSImage?
@@ -794,6 +800,7 @@ extension XTFileViewController: NSOutlineViewDelegate
   }
 }
 
+// MARK: NSSplitViewDelegate
 extension XTFileViewController: NSSplitViewDelegate
 {
   public func splitView(_ splitView: NSSplitView,
