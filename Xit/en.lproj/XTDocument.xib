@@ -106,7 +106,7 @@
                                                                         <button ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XN1-7Z-pLX">
                                                                             <rect key="frame" x="206" y="1" width="20" height="16"/>
                                                                             <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSStatusAvailable" imagePosition="left" inset="2" id="0yd-DC-2HJ">
-                                                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                                <behavior key="behavior" lightByContents="YES"/>
                                                                                 <font key="font" metaFont="system"/>
                                                                             </buttonCell>
                                                                         </button>
