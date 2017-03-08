@@ -141,10 +141,22 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func updateNavButtons()
   {
-    titleBarController?.navButtons.setEnabled(!navBackStack.isEmpty,
-                                              forSegment: 0)
-    titleBarController?.navButtons.setEnabled(!navForwardStack.isEmpty,
-                                              forSegment: 1)
+    updateNavControl(titleBarController?.navButtons)
+
+    if #available(OSX 10.12.2, *),
+       let item = self.touchBar?.item(forIdentifier:
+                                      NSTouchBarItemIdentifier.navigation) {
+      updateNavControl(item.view as? NSSegmentedControl)
+    }
+  }
+  
+  func updateNavControl(_ control: NSSegmentedControl?)
+  {
+    guard let control = control
+    else { return }
+    
+    control.setEnabled(!navBackStack.isEmpty, forSegment: 0)
+    control.setEnabled(!navForwardStack.isEmpty, forSegment: 1)
   }
   
   func updateMiniwindowTitle()
@@ -466,6 +478,7 @@ extension XTWindowController: NSToolbarDelegate
 fileprivate extension NSTouchBarItemIdentifier
 {
   static let
+      navigation = NSTouchBarItemIdentifier("com.uncommonplace.xit.nav"),
       staging = NSTouchBarItemIdentifier("com.uncommonplace.xit.staging"),
       unstageAll = NSTouchBarItemIdentifier("com.uncommonplace.xit.unstageall"),
       stageAll = NSTouchBarItemIdentifier("com.uncommonplace.xit.stageall")
@@ -480,10 +493,10 @@ extension XTWindowController: NSTouchBarDelegate
     
     bar.delegate = self
     if selectedModel is XTStagingChanges {
-      bar.defaultItemIdentifiers = [ .unstageAll, .stageAll ]
+      bar.defaultItemIdentifiers = [ .navigation, .unstageAll, .stageAll ]
     }
     else {
-      bar.defaultItemIdentifiers = [ .staging ]
+      bar.defaultItemIdentifiers = [ .navigation, .staging ]
     }
     
     return bar
@@ -510,6 +523,19 @@ extension XTWindowController: NSTouchBarDelegate
                 -> NSTouchBarItem?
   {
     switch identifier {
+
+      case NSTouchBarItemIdentifier.navigation:
+        let control = NSSegmentedControl(
+                images: [NSImage(named: NSImageNameGoBackTemplate)!,
+                         NSImage(named: NSImageNameGoForwardTemplate)!],
+                trackingMode: .momentary,
+                target: titleBarController,
+                action: #selector(XTTitleBarViewController.navigate(_:)))
+        let item = NSCustomTouchBarItem(identifier: identifier)
+      
+        control.segmentStyle = .separated
+        item.view = control
+        return item
 
       case NSTouchBarItemIdentifier.staging:
         guard let stagingImage = NSImage(named: "stagingTemplate")
