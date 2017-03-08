@@ -17,7 +17,7 @@ extension String
 {
   /// Returns the string with the given prefix removed, or returns the string
   /// unchanged if the prefix does not match.
-  func stringByRemovingPrefix(_ prefix: String) -> String
+  func removingPrefix(_ prefix: String) -> String
   {
     guard hasPrefix(prefix)
     else { return self }

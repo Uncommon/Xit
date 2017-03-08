@@ -13,9 +13,9 @@ class XTSideBarDataSource: NSObject
   
   enum TrackingBranchStatus
   {
-    case none    /// No tracking branch set
-    case missing /// References a non-existent branch
-    case set     /// References a real branhc
+    case none            /// No tracking branch set
+    case missing(String) /// References a non-existent branch
+    case set(String)     /// References a real branhc
   }
   
   @IBOutlet weak var viewController: XTSidebarController!
@@ -172,7 +172,7 @@ class XTSideBarDataSource: NSObject
     
     for branch in repo.localBranches() {
       guard let sha = branch.sha,
-            let name = branch.name?.stringByRemovingPrefix("refs/heads/")
+            let name = branch.name?.removingPrefix("refs/heads/")
       else { continue }
       
       let model = XTCommitChanges(repository: repo, sha: sha)
@@ -189,7 +189,7 @@ class XTSideBarDataSource: NSObject
       guard let remote = remoteItems.first(where: { $0.title ==
                                                     branch.remoteName }),
             let name = branch.name?
-                       .stringByRemovingPrefix("refs/remotes/\(remote.title)/"),
+                       .removingPrefix("refs/remotes/\(remote.title)/"),
             let sha = branch.gtBranch.oid?.sha
       else { continue }
       let model = XTCommitChanges(repository: repo, sha: sha)
@@ -450,11 +450,11 @@ extension XTSideBarDataSource
   func trackingBranchStatus(for branch: String) -> TrackingBranchStatus
   {
     if let localBranch = XTLocalBranch(repository: repo, name: branch),
-       let trackingRefName = localBranch.trackingBranchName {
-      let trackingBranchName =
-              trackingRefName.stringByRemovingPrefix("refs/remotes/")
+       let trackingBranchName = localBranch.trackingBranchName {
       return XTRemoteBranch(repository: repo,
-                            name: trackingBranchName) == nil ? .missing : .set
+                            name: trackingBranchName) == nil
+          ? .missing(trackingBranchName)
+          : .set(trackingBranchName)
     }
     else {
       return .none
@@ -621,10 +621,12 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
           switch trackingBranchStatus(for: sideBarItem.title) {
             case .none:
               break
-            case .missing:
-              dataView.statusImage.image = NSImage(named: "conflict")
-            case .set:
-              dataView.statusImage.image = NSImage(named: "cloudTemplate")
+            case .missing(let tracking):
+              dataView.statusImage.image = NSImage(named: "trackingMissing")
+              dataView.statusImage.toolTip = tracking + " (missing)"
+            case .set(let tracking):
+              dataView.statusImage.image = NSImage(named: "tracking")
+              dataView.statusImage.toolTip = tracking
           }
         }
       }

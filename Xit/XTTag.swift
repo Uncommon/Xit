@@ -30,7 +30,7 @@ class XTTag: NSObject
     let refName = name.hasPrefix(tagPrefix) ? name : tagPrefix + name
   
     self.repository = repository
-    self.name = name.stringByRemovingPrefix(tagPrefix)
+    self.name = name.removingPrefix(tagPrefix)
     
     guard let ref = try? repository.gtRepo.lookUpReference(withName: refName)
     else { return nil }

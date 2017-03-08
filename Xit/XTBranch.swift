@@ -53,7 +53,7 @@ public class XTLocalBranch: XTBranch
     let data = Data(bytes: buf.pointee.ptr, count: buf.pointee.size)
     
     git_buf_free(buf)
-    return String(data: data, encoding: .utf8)
+    return String(data: data, encoding: .utf8)?.removingPrefix("refs/remotes/")
   }
   
   /// Returns a branch object for this branch's remote tracking branch,

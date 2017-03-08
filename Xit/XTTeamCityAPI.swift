@@ -394,7 +394,7 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI
     var waitingTypeCount = hrefs.count
     
     for href in hrefs {
-      let relativePath = href.stringByRemovingPrefix(XTTeamCityAPI.rootPath)
+      let relativePath = href.removingPrefix(XTTeamCityAPI.rootPath)
       
       resource(relativePath).useData(owner: self, closure: { (data) in
         waitingTypeCount -= 1

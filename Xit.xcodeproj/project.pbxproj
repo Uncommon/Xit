@@ -150,6 +150,10 @@
 		C98925C71DB693CC00E5645C /* XTTagPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C98925C51DB693CC00E5645C /* XTTagPanelController.xib */; };
 		C98925D51DB6D3D300E5645C /* XTNewTagController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925D41DB6D3D300E5645C /* XTNewTagController.swift */; };
 		C98925F91DBFCE7000E5645C /* XTSidebarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925F81DBFCE7000E5645C /* XTSidebarController.swift */; };
+		C98D96051E706096007C3E16 /* tracking.png in Resources */ = {isa = PBXBuildFile; fileRef = C98D96011E706096007C3E16 /* tracking.png */; };
+		C98D96061E706096007C3E16 /* tracking@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C98D96021E706096007C3E16 /* tracking@2x.png */; };
+		C98D96071E706096007C3E16 /* trackingMissing.png in Resources */ = {isa = PBXBuildFile; fileRef = C98D96031E706096007C3E16 /* trackingMissing.png */; };
+		C98D96081E706096007C3E16 /* trackingMissing@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C98D96041E706096007C3E16 /* trackingMissing@2x.png */; };
 		C9999AC71E08712000DF3E11 /* HistoryTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9999AC61E08712000DF3E11 /* HistoryTableView.swift */; };
 		C99A6AEC1E48FA140030DC01 /* FileListDataSourceBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99A6AEB1E48FA140030DC01 /* FileListDataSourceBase.swift */; };
 		C99A6AFF1E4A73240030DC01 /* BlameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99A6AFE1E4A73240030DC01 /* BlameViewController.swift */; };
@@ -493,6 +497,10 @@
 		C98925C51DB693CC00E5645C /* XTTagPanelController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTTagPanelController.xib; sourceTree = "<group>"; };
 		C98925D41DB6D3D300E5645C /* XTNewTagController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTNewTagController.swift; sourceTree = "<group>"; };
 		C98925F81DBFCE7000E5645C /* XTSidebarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSidebarController.swift; sourceTree = "<group>"; };
+		C98D96011E706096007C3E16 /* tracking.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tracking.png; sourceTree = "<group>"; };
+		C98D96021E706096007C3E16 /* tracking@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tracking@2x.png"; sourceTree = "<group>"; };
+		C98D96031E706096007C3E16 /* trackingMissing.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = trackingMissing.png; sourceTree = "<group>"; };
+		C98D96041E706096007C3E16 /* trackingMissing@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trackingMissing@2x.png"; sourceTree = "<group>"; };
 		C9999AC61E08712000DF3E11 /* HistoryTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryTableView.swift; sourceTree = "<group>"; };
 		C99A6AEB1E48FA140030DC01 /* FileListDataSourceBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileListDataSourceBase.swift; sourceTree = "<group>"; };
 		C99A6AFE1E4A73240030DC01 /* BlameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlameViewController.swift; sourceTree = "<group>"; };
@@ -703,6 +711,10 @@
 				895869B91D088A46003A9AF0 /* submoduleTemplate@2x.png */,
 				895869BA1D088A46003A9AF0 /* tagTemplate.png */,
 				895869BB1D088A46003A9AF0 /* tagTemplate@2x.png */,
+				C98D96011E706096007C3E16 /* tracking.png */,
+				C98D96021E706096007C3E16 /* tracking@2x.png */,
+				C98D96031E706096007C3E16 /* trackingMissing.png */,
+				C98D96041E706096007C3E16 /* trackingMissing@2x.png */,
 			);
 			name = Sidebar;
 			sourceTree = "<group>";
@@ -1225,6 +1237,7 @@
 				894C8D931CA44A44001A4B80 /* stagingTemplate.png in Resources */,
 				895869BD1D088A46003A9AF0 /* stashTemplate@2x.png in Resources */,
 				C957B85E1D2D6A3C0040F858 /* githubTemplate@2x.png in Resources */,
+				C98D96071E706096007C3E16 /* trackingMissing.png in Resources */,
 				89D8BE5F1CF8E9C900D640AA /* textTemplate@2x.png in Resources */,
 				899DB1A31CE5022400760270 /* XTCommitEntryController.xib in Resources */,
 				C9DAB5CD1D4A4EA700586854 /* Git-Icon-1788C.png in Resources */,
@@ -1247,6 +1260,7 @@
 				DD997DF81746F40D00C7DF82 /* XTFileViewController.xib in Resources */,
 				89D8BDF91CED200B00D640AA /* conflict@2x.png in Resources */,
 				C957B85B1D2D6A3C0040F858 /* bitbucketTemplate.png in Resources */,
+				C98D96061E706096007C3E16 /* tracking@2x.png in Resources */,
 				C92A7B261D1DD1CD00D2B944 /* folderTemplate.png in Resources */,
 				89D8BE011CED203900D640AA /* stage@2x.png in Resources */,
 				C9D74CBD1D92E62200C5626E /* viewCommitTemplate.png in Resources */,
@@ -1277,7 +1291,9 @@
 				DDA8A64017F5B6CE00AD9808 /* modified.png in Resources */,
 				89D8BE5A1CF8E9C900D640AA /* diffTemplate.png in Resources */,
 				89D8BE5C1CF8E9C900D640AA /* historyTemplate.png in Resources */,
+				C98D96081E706096007C3E16 /* trackingMissing@2x.png in Resources */,
 				C91610281D1DE994005A3142 /* pullRequestTemplate@2x.png in Resources */,
+				C98D96051E706096007C3E16 /* tracking.png in Resources */,
 				89D8BE591CF8E9C900D640AA /* blameTemplate@2x.png in Resources */,
 				DDA8A64117F5B6CE00AD9808 /* modified@2x.png in Resources */,
 				C957B8611D2D6D900040F858 /* teamcityTemplate.png in Resources */,
