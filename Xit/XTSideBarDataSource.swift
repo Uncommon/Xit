@@ -11,6 +11,13 @@ class XTSideBarDataSource: NSObject
     static let reloadDelay: TimeInterval = 1
   }
   
+  enum TrackingBranchStatus
+  {
+    case none    /// No tracking branch set
+    case missing /// References a non-existent branch
+    case set     /// References a real branhc
+  }
+  
   @IBOutlet weak var viewController: XTSidebarController!
   @IBOutlet weak var refFormatter: XTRefFormatter!
   @IBOutlet weak var outline: NSOutlineView!
@@ -440,6 +447,20 @@ extension XTSideBarDataSource
     return XTLocalBranch(repository: repo!, name: branch)?.trackingBranch != nil
   }
   
+  func trackingBranchStatus(for branch: String) -> TrackingBranchStatus
+  {
+    if let localBranch = XTLocalBranch(repository: repo, name: branch),
+       let trackingRefName = localBranch.trackingBranchName {
+      let trackingBranchName =
+              trackingRefName.stringByRemovingPrefix("refs/remotes/")
+      return XTRemoteBranch(repository: repo,
+                            name: trackingBranchName) == nil ? .missing : .set
+    }
+    else {
+      return .none
+    }
+  }
+  
   func graphText(for item: XTSideBarItem) -> String?
   {
     if item is XTLocalBranchItem,
@@ -596,9 +617,15 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
           dataView.statusText.title = statusText
           dataView.statusText.isHidden = false
         }
-        else if dataView.statusImage.image == nil &&
-                localBranchHasTrackingBranch(sideBarItem.title) {
-          dataView.statusImage.image = NSImage(named: "cloudTemplate")
+        else if dataView.statusImage.image == nil {
+          switch trackingBranchStatus(for: sideBarItem.title) {
+            case .none:
+              break
+            case .missing:
+              dataView.statusImage.image = NSImage(named: "conflict")
+            case .set:
+              dataView.statusImage.image = NSImage(named: "cloudTemplate")
+          }
         }
       }
       dataView.statusImage.isHidden = dataView.statusImage.image == nil
