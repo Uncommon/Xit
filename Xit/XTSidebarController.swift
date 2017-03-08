@@ -272,6 +272,16 @@ class XTSidebarController: NSViewController, SidebarHandler
     sidebarOutline.editColumn(0, row: targetRow(), with: nil, select: true)
   }
   
+  func deleteBranch(item: XTSideBarItem)
+  {
+    confirmDelete(kind: "branch", name: item.title) {
+      self.callCommand(errorString: "Delete branch failed", targetItem: item) {
+        (item) in
+        try self.repo.deleteBranch(item.title)
+      }
+    }
+  }
+  
   func confirmDelete(kind: String, name: String,
                      onConfirm: @escaping () -> Void)
   {
@@ -340,12 +350,7 @@ class XTSidebarController: NSViewController, SidebarHandler
     guard let item = targetItem()
     else { return }
     
-    confirmDelete(kind: "branch", name: item.title) {
-      self.callCommand(errorString: "Delete branch failed", targetItem: item) {
-        (item) in
-        try self.repo.deleteBranch(item.title)
-      }
-    }
+    deleteBranch(item: item)
   }
   
   @IBAction func deleteTag(_ sender: Any?)

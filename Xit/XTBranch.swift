@@ -20,6 +20,8 @@ public class XTBranch
 
 public class XTLocalBranch: XTBranch
 {
+  static let trackingPrefix = "refs/remotes/"
+  
   init?(repository: XTRepository, name: String)
   {
     guard let gtBranch = try? repository.gtRepo.lookUpBranch(
@@ -35,25 +37,34 @@ public class XTLocalBranch: XTBranch
     super.init(gtBranch: gtBranch)
   }
   
-  /// Returns the name of this branch's remote tracking branch, even if the
+  /// The name of this branch's remote tracking branch, even if the
   /// referenced branch does not exist.
   var trackingBranchName: String?
   {
-    guard let name = self.name
-    else { return nil }
-    let buf = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
-  
-    buf.pointee.size = 0
-    buf.pointee.asize = 0
-    if git_branch_upstream_name(buf, gtBranch.repository.git_repository(),
-                                name) != 0 {
-      return nil
+    get
+    {
+      guard let name = self.name
+      else { return nil }
+      let buf = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
+    
+      buf.pointee.size = 0
+      buf.pointee.asize = 0
+      if git_branch_upstream_name(buf, gtBranch.repository.git_repository(),
+                                  name) != 0 {
+        return nil
+      }
+      
+      let data = Data(bytes: buf.pointee.ptr, count: buf.pointee.size)
+      
+      git_buf_free(buf)
+      return String(data: data, encoding: .utf8)?
+             .removingPrefix(XTLocalBranch.trackingPrefix)
     }
-    
-    let data = Data(bytes: buf.pointee.ptr, count: buf.pointee.size)
-    
-    git_buf_free(buf)
-    return String(data: data, encoding: .utf8)?.removingPrefix("refs/remotes/")
+    set
+    {
+      git_branch_set_upstream(gtBranch.reference.git_reference(),
+                              newValue?.withPrefix(XTLocalBranch.trackingPrefix))
+    }
   }
   
   /// Returns a branch object for this branch's remote tracking branch,
@@ -86,5 +97,4 @@ public class XTRemoteBranch: XTBranch
   }
   
   var remoteName: String { return gtBranch.remoteName ?? "" }
-  override var shortName: String? { return gtBranch.shortName }
 }

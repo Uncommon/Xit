@@ -25,6 +25,17 @@ extension String
     return self.substring(from: prefix.characters.endIndex)
   }
   
+  /// Returns the string with the given prefix, adding it only if necessary.
+  func withPrefix(_ prefix: String) -> String
+  {
+    if hasPrefix(prefix) {
+      return self
+    }
+    else {
+      return prefix.appending(self)
+    }
+  }
+  
   func appending(pathComponent component: String) -> String
   {
     return (self as NSString).appendingPathComponent(component)

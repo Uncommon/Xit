@@ -308,6 +308,55 @@ class XTSideBarDataSource: NSObject
     return group.children.first(where: { $0.title == name} )
   }
   
+  func item(for button: NSButton) -> XTSideBarItem?
+  {
+    var superview = button.superview
+    
+    while superview != nil {
+      if let cellView = superview as? XTSidebarTableCellView {
+        return cellView.item
+      }
+      superview = superview?.superview
+    }
+    
+    return nil
+  }
+  
+  @IBAction func missingTrackingBranch(_ sender: NSButton)
+  {
+    guard let item = item(for: sender) as? XTLocalBranchItem
+    else { return }
+    
+    let alert = NSAlert()
+    
+    alert.alertStyle = .informational
+    alert.messageText = "This branch's remote tracking branch does not exist."
+    alert.informativeText =
+        "The remote branch may have been merged and deleted. Do you want to " +
+        "clear the tracking branch setting, or delete your local branch " +
+        "\"\(item.title)\"?"
+    alert.addButton(withTitle: "Clear")
+    alert.addButton(withTitle: "Delete Branch")
+    alert.addButton(withTitle: "Cancel")
+    alert.beginSheetModal(for: outline.window!) {
+      (response) in
+      switch response {
+        
+        case NSAlertFirstButtonReturn: // Clear
+          let branch = XTLocalBranch(repository: self.repo, name: item.title)
+          
+          branch?.trackingBranchName = nil
+          self.outline.reloadItem(item)
+        
+        case NSAlertSecondButtonReturn: // Delete
+          self.viewController.deleteBranch(item: item)
+        
+        default:
+          break
+      }
+    }
+  }
+  
   func doubleClick(_: Any?)
   {
     if let outline = outline,
@@ -608,29 +657,33 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
       textField.isEditable = sideBarItem.editable
       textField.isSelectable = sideBarItem.isSelectable
       dataView.statusText.isHidden = true
-      dataView.statusImage.image = nil
+      dataView.statusImage.isHidden = true
+      dataView.statusButton.image = nil
+      dataView.statusButton.action = nil
       if let image = statusImage(for: sideBarItem) {
-        dataView.statusImage.image = image
+        dataView.statusButton.image = image
       }
       if sideBarItem is XTLocalBranchItem {
         if let statusText = graphText(for: sideBarItem) {
           dataView.statusText.title = statusText
           dataView.statusText.isHidden = false
         }
-        else if dataView.statusImage.image == nil {
+        else if dataView.statusButton.image == nil {
           switch trackingBranchStatus(for: sideBarItem.title) {
             case .none:
               break
             case .missing(let tracking):
-              dataView.statusImage.image = NSImage(named: "trackingMissing")
-              dataView.statusImage.toolTip = tracking + " (missing)"
+              dataView.statusButton.image = NSImage(named: "trackingMissing")
+              dataView.statusButton.toolTip = tracking + " (missing)"
+              dataView.statusButton.target = self
+              dataView.statusButton.action = #selector(self.missingTrackingBranch(_:))
             case .set(let tracking):
-              dataView.statusImage.image = NSImage(named: "tracking")
-              dataView.statusImage.toolTip = tracking
+              dataView.statusButton.image = NSImage(named: "tracking")
+              dataView.statusButton.toolTip = tracking
           }
         }
       }
-      dataView.statusImage.isHidden = dataView.statusImage.image == nil
+      dataView.statusButton.isHidden = dataView.statusButton.image == nil
       if sideBarItem.editable {
         textField.formatter = refFormatter
         textField.target = viewController
