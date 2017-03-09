@@ -78,6 +78,12 @@
     NSString *fullBranch =
         [[GTBranch localNamePrefix] stringByAppendingString:name];
     GTReference *ref = [_gtRepo lookUpReferenceWithName:fullBranch error:error];
+    
+    if (ref == nil) {
+      *error = [NSError git_errorFor:GIT_ENOTFOUND];
+      return NO;
+    }
+    
     GTBranch *branch = [GTBranch branchWithReference:ref repository:_gtRepo];
 
     if (*error != nil)
