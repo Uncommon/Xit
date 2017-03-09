@@ -145,6 +145,8 @@ class XTTagItem : XTSideBarItem
 {
   let tag: XTTag
 
+  override var displayTitle: String
+  { return (title as NSString).lastPathComponent }
   override var icon: NSImage? { return NSImage(named: "tagTemplate") }
   override var refType: XTRefType { return .tag }
   

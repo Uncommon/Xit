@@ -201,12 +201,21 @@ class XTSideBarDataSource: NSObject
                                                       model: model))
     }
     
-    let tagItems = (try? repo.tags())?.map { XTTagItem(tag: $0) } ?? []
+    if let tags = try? repo.tags() {
+      let tagsGroup = newRoots[XTGroupIndex.tags.rawValue]
+      
+      for tag in tags {
+        let tagItem = XTTagItem(tag: tag)
+        let tagParent = parent(for: tag.name, groupItem: tagsGroup)
+        
+        tagParent.children.append(tagItem)
+      }
+    }
+    
     let stashItems = makeStashItems()
     let submoduleItems = repo.submodules().map { XTSubmoduleItem(submodule: $0) }
     
     newRoots[XTGroupIndex.remotes.rawValue].children = remoteItems
-    newRoots[XTGroupIndex.tags.rawValue].children = tagItems
     newRoots[XTGroupIndex.stashes.rawValue].children = stashItems
     newRoots[XTGroupIndex.submodules.rawValue].children = submoduleItems
     
