@@ -5,8 +5,8 @@ class StringExtensionsTest: XCTestCase
 {
   func testPrefix()
   {
-    XCTAssertEqual("none".stringByRemovingPrefix("1"), "none")
-    XCTAssertEqual("embiggen".stringByRemovingPrefix("em"), "biggen")
+    XCTAssertEqual("none".removingPrefix("1"), "none")
+    XCTAssertEqual("embiggen".removingPrefix("em"), "biggen")
   }
   
   func testSplitRefName()

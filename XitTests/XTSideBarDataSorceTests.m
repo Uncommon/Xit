@@ -2,7 +2,6 @@
 #import "XTTest.h"
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
-#import "XTSideBarDataSource.h"
 #include "CFRunLoop+Extensions.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 #import "Xit-Swift.h"
@@ -35,6 +34,7 @@
   [super setUp];
   sbds = [[XTSideBarDataSource alloc] init];
   outlineView = [[NSOutlineView alloc] init];
+  sbds.outline = outlineView;
 }
 
 - (id)groupItemForIndex:(NSUInteger)index
@@ -337,16 +337,20 @@
       [[NSImageView alloc] initWithFrame:NSMakeRect(5, 2, 16, 16)];
   NSImageView *statusImage =
       [[NSImageView alloc] initWithFrame:NSMakeRect(171, 2, 16, 16)];
+  NSButton *statusButton =
+      [[NSButton alloc] initWithFrame:NSMakeRect(171, 2, 16, 16)];
   NSButton *statusText =
       [NSButton buttonWithTitle:@"10" target:nil action:nil];
   
   [view addSubview:label];
   [view addSubview:image];
   [view addSubview:statusImage];
+  [view addSubview:statusButton];
   [view addSubview:statusText];
   view.textField = label;
   view.imageView = image;
   view.statusImage = statusImage;
+  view.statusButton = statusButton;
   view.statusText = statusText;
   return view;
 }
