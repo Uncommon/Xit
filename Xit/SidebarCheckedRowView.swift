@@ -3,6 +3,22 @@ import Cocoa
 class SidebarCheckedRowView: NSTableRowView
 {
   weak var imageView: NSImageView? = nil
+  let imageName: String
+  let imageToolTip: String?
+  
+  init(imageName: String = NSImageNameMenuOnStateTemplate,
+       toolTip: String? = nil)
+  {
+    self.imageName = imageName
+    self.imageToolTip = toolTip
+    
+    super.init(frame: NSZeroRect)
+  }
+  
+  required init?(coder: NSCoder)
+  {
+    fatalError("init(coder:) has not been implemented")
+  }
 
   override func viewDidMoveToSuperview()
   {
@@ -12,12 +28,13 @@ class SidebarCheckedRowView: NSTableRowView
           let columnView = view(atColumn: 0)
     else { return }
     
-    let check = #imageLiteral(resourceName: NSImageNameMenuOnStateTemplate)
+    let check = NSImage(named: imageName)!
     let imageView = NSImageView(frame: NSRect(origin: NSZeroPoint,
                                               size: check.size))
     
     self.imageView = imageView
     imageView.translatesAutoresizingMaskIntoConstraints = false
+    imageView.toolTip = imageToolTip
     addSubview(imageView)
     
     let hSpacer = NSLayoutConstraint(item: imageView, attribute: .trailing,

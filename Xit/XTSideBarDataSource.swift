@@ -730,6 +730,18 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
        branchItem.current {
       return SidebarCheckedRowView()
     }
+    else if let remoteBranchItem = item as? XTRemoteBranchItem,
+            let branchName = repo.currentBranch,
+            let currentBranch = XTLocalBranch(repository: repo,
+                                              name: branchName),
+            currentBranch.trackingBranchName == remoteBranchItem.remote + "/" +
+                                                remoteBranchItem.title {
+      let rowView = SidebarCheckedRowView(
+              imageName: NSImageNameRightFacingTriangleTemplate,
+              toolTip: "The active branch is tracking this remote branch")
+      
+      return rowView
+    }
     else {
       return nil
     }
