@@ -259,8 +259,3 @@
 @implementation XTFileStaging
 
 @end
-
-
-@implementation XTDiffDelta
-
-@end

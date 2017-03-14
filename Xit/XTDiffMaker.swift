@@ -19,7 +19,8 @@ class XTDiffMaker: NSObject
   let toSource: SourceType
   let path: String
   
-  var contextLines: UInt = 3
+  static let defaultContextLines: UInt = 3
+  var contextLines: UInt = XTDiffMaker.defaultContextLines
   var whitespace: XTWhitespace = .showAll
   var usePatience = false
   var minimal = false
