@@ -58,12 +58,14 @@ public class XTHistoryTableController: NSViewController
     center.removeObserver(self)
   }
   
-  override public func viewDidAppear()
+  override public func viewDidLoad()
   {
+    super.viewDidLoad()
+  
     let controller = view.window?.windowController!
     
     observers.addObserver(
-        forName: NSNotification.Name.XTSelectedModelChanged,
+        forName: .XTSelectedModelChanged,
         object: controller,
         queue: nil) {
       [weak self] (notification) in
@@ -75,7 +77,7 @@ public class XTHistoryTableController: NSViewController
     NotificationCenter.default.addObserver(
         self,
         selector: #selector(XTHistoryTableController.dateViewResized(_:)),
-        name: NSNotification.Name.NSViewFrameDidChange,
+        name: .NSViewFrameDidChange,
         object: nil)
   }
   
