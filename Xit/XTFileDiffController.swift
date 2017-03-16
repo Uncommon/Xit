@@ -5,6 +5,7 @@ class XTFileDiffController: XTWebViewController,
                             WhitespaceVariable,
                             TabWidthVariable
 {
+  let actionDelegate: DiffActionDelegate = DiffActionDelegate()
   var isLoaded: Bool = false
   var staged: Bool?
   public var whitespace: XTWhitespace = .showAll
@@ -20,6 +21,16 @@ class XTFileDiffController: XTWebViewController,
     {
       configureDiffMaker()
     }
+  }
+
+  override func viewDidLoad()
+  {
+    actionDelegate.controller = self
+  }
+
+  override func webActionDelegate() -> Any
+  {
+    return actionDelegate
   }
 
   private func configureDiffMaker()
@@ -56,6 +67,13 @@ class XTFileDiffController: XTWebViewController,
              "</div>\n"
   }
   
+  func button(title: String, action: String, index: UInt) -> String
+  {
+    return "<span class='hunkbutton' " +
+           "onClick='window.webActionDelegate.\(action)(\(index))'" +
+           ">\(title)</span>"
+  }
+  
   func reloadDiff()
   {
     guard let diff = diffMaker?.makeDiff()
@@ -72,8 +90,24 @@ class XTFileDiffController: XTWebViewController,
         loadNoChangesNotice()
         return
       }
-      patch.enumerateHunks {
-        (hunk, stop) in
+      for index in 0..<patch.hunkCount {
+        guard let hunk = GTDiffHunk(patch: patch, hunkIndex: index)
+        else { break }
+        
+        if let staged = self.staged {
+          textLines += "<div class='hunkhead'>\n"
+          if staged {
+            textLines += button(title: "Unstage", action: "unstageHunk",
+                                index: index)
+          }
+          else {
+            textLines += button(title: "Stage", action: "stageHunk",
+                                index: index)
+            textLines += button(title: "Discard", action: "discardHunk",
+                                index: index)
+          }
+          textLines += "</div>\n"
+        }
         textLines += "<div class='hunk'>\n"
         do {
           try hunk.enumerateLinesInHunk {
@@ -86,7 +120,7 @@ class XTFileDiffController: XTWebViewController,
         }
         catch let error as NSError {
           NSLog("\(error.description)")
-          stop.pointee = true
+          break
         }
         textLines += "</div>\n"
       }
@@ -126,6 +160,21 @@ class XTFileDiffController: XTWebViewController,
     }
     loadNotice(notice)
   }
+  
+  func stageHunk(index: Int)
+  {
+    
+  }
+  
+  func unstageHunk(index: Int)
+  {
+    
+  }
+  
+  func discardHunk(index: Int)
+  {
+    
+  }
 }
 
 extension XTFileDiffController: XTFileContentController
@@ -140,5 +189,51 @@ extension XTFileDiffController: XTFileContentController
   {
     self.staged = model.hasUnstaged ? staged : nil
     loadOrNotify(diffMaker: model.diffForFile(path, staged: staged))
+  }
+}
+
+class DiffActionDelegate: NSObject
+{
+  weak var controller: XTFileDiffController!
+  
+  override class func isSelectorExcluded(fromWebScript selector: Selector) -> Bool
+  {
+    switch selector {
+      case #selector(DiffActionDelegate.stageHunk(index:)),
+           #selector(DiffActionDelegate.unstageHunk(index:)),
+           #selector(DiffActionDelegate.discardHunk(index:)):
+        return false
+      default:
+        return true
+    }
+  }
+  
+  override class func webScriptName(for selector: Selector) -> String
+  {
+    switch selector {
+      case #selector(DiffActionDelegate.stageHunk(index:)):
+        return "stageHunk"
+      case #selector(DiffActionDelegate.unstageHunk(index:)):
+        return "unstageHunk"
+      case #selector(DiffActionDelegate.discardHunk(index:)):
+        return "discardHunk"
+      default:
+        return ""
+    }
+  }
+  
+  func stageHunk(index: Int)
+  {
+    controller.stageHunk(index: index)
+  }
+  
+  func unstageHunk(index: Int)
+  {
+    controller.unstageHunk(index: index)
+  }
+  
+  func discardHunk(index: Int)
+  {
+    controller.discardHunk(index: index)
   }
 }

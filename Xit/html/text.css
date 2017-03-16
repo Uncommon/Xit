@@ -46,6 +46,27 @@ div.hunk>div {
 div.hunk>div>span {
   display: table-cell;
 }
+div.hunkhead {
+  width: 100%;
+  background-color: #EEE;
+  height: 24px;
+}
+span.hunkbutton {
+  float: right;
+  border: 1px solid #BBB;
+  border-radius: 4px;
+  display: inline;
+  padding: 2px 6px;
+  margin: 2px;
+  font-family: SF UI Display;
+  background: linear-gradient(#FFF, #EEE);
+  -webkit-user-select: none;
+  cursor: default;
+}
+span.hunkbutton:active {
+  background: linear-gradient(#EEE, #DDD);
+  border-color: #AAA;
+}
 span.old, span.new {
   position: relative;
   width: 25px;
