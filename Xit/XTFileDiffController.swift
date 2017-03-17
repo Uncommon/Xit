@@ -1,13 +1,23 @@
 import Cocoa
 
+protocol HunkStaging
+{
+  func stage(hunk: GTDiffHunk)
+  func unstage(hunk: GTDiffHunk)
+  func discard(hunk: GTDiffHunk)
+}
+
 /// Manages a WebView for displaying text file diffs.
 class XTFileDiffController: XTWebViewController,
                             WhitespaceVariable,
                             TabWidthVariable
 {
   let actionDelegate: DiffActionDelegate = DiffActionDelegate()
+  var stagingDelegate: HunkStaging!
   var isLoaded: Bool = false
   var staged: Bool?
+  var patch: GTDiffPatch?
+  
   public var whitespace: XTWhitespace = .showAll
   {
     didSet
@@ -76,6 +86,8 @@ class XTFileDiffController: XTWebViewController,
   
   func reloadDiff()
   {
+    patch = nil
+    
     guard let diff = diffMaker?.makeDiff()
     else { return }
     
@@ -83,9 +95,10 @@ class XTFileDiffController: XTWebViewController,
     var textLines = ""
     
     do {
-      let patch = try diff.generatePatch()
+      patch = try diff.generatePatch()
       
-      guard patch.hunkCount > 0
+      guard let patch = self.patch,
+            patch.hunkCount > 0
       else {
         loadNoChangesNotice()
         return
@@ -161,19 +174,28 @@ class XTFileDiffController: XTWebViewController,
     loadNotice(notice)
   }
   
+  func hunk(at index: Int) -> GTDiffHunk?
+  {
+    guard let patch = self.patch,
+          (index >= 0) && (UInt(index) < patch.hunkCount)
+    else { return nil }
+    
+    return GTDiffHunk(patch: patch, hunkIndex: UInt(index))
+  }
+  
   func stageHunk(index: Int)
   {
-    
+    hunk(at: index).map { stagingDelegate.stage(hunk: $0) }
   }
   
   func unstageHunk(index: Int)
   {
-    
+    hunk(at: index).map { stagingDelegate.unstage(hunk: $0) }
   }
   
   func discardHunk(index: Int)
   {
-    
+    hunk(at: index).map { stagingDelegate.discard(hunk: $0) }
   }
 }
 

@@ -252,6 +252,7 @@ class XTFileViewController: NSViewController
     }
     headerTabView.tabViewItems[1].view = commitEntryController.view
     previewPath.setPathComponentCells([])
+    diffController.stagingDelegate = self
   }
   
   func indexChanged(_ note: Notification)
@@ -813,6 +814,52 @@ extension XTFileViewController: NSSplitViewDelegate
         return view != leftPane
       default:
         return true
+    }
+  }
+}
+
+// MARK: HunkStaging
+extension XTFileViewController: HunkStaging
+{
+  func stage(hunk: GTDiffHunk)
+  {
+    
+  }
+  
+  func unstage(hunk: GTDiffHunk)
+  {
+    
+  }
+  
+  func discard(hunk: GTDiffHunk)
+  {
+    var encoding = String.Encoding.utf8
+  
+    guard let controller = view.window?.windowController as? RepositoryController,
+          let selectedModel = controller.selectedModel,
+          let index = fileListOutline.selectedRowIndexes.first,
+          let selectedChange = fileListDataSource.fileChange(at: index),
+          let fileURL = selectedModel.unstagedFileURL(selectedChange.path)
+    else {
+      NSLog("Setup for discard hunk failed")
+      return
+    }
+    
+    do {
+      let fileText = try String(contentsOf: fileURL, usedEncoding: &encoding)
+      guard let result = hunk.applied(to: fileText, reversed: true)
+      else {
+        throw NSError(domain: XTErrorDomainXit, code: -1,
+                      userInfo: [NSLocalizedDescriptionKey:
+                                 "The patch could not be applied."])
+      }
+      
+      try result.write(to: fileURL, atomically: true, encoding: encoding)
+    }
+    catch let error as NSError {
+      let alert = NSAlert(error: error)
+      
+      alert.beginSheetModal(for: view.window!, completionHandler: nil)
     }
   }
 }
