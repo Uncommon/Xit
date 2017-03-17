@@ -6,7 +6,7 @@ class XTDiffDelta: GTDiffDelta
 
 extension GTDiffHunk
 {
-  func applied(to text: String) -> String?
+  func applied(to text: String, reversed: Bool) -> String?
   {
     var lines = text.components(separatedBy: .newlines)
     guard Int(oldStart + oldLines) < lines.count
@@ -33,15 +33,18 @@ extension GTDiffHunk
         }
       }
       
-      let oldLineStart = Int(oldStart) - 1
-      let oldLineCount = Int(self.oldLines)
-      let replaceRange = oldLineStart..<(oldLineStart+oldLineCount)
+      let targetLines = reversed ? newLines : oldLines
+      let replacementLines = reversed ? oldLines : newLines
       
-      if oldLines != Array(lines[replaceRange]) {
+      let targetLineStart = Int(reversed ? newStart : oldStart) - 1
+      let targetLineCount = Int(reversed ? self.newLines : self.oldLines)
+      let replaceRange = targetLineStart..<(targetLineStart+targetLineCount)
+      
+      if targetLines != Array(lines[replaceRange]) {
         // Patch doesn't match
         return nil
       }
-      lines.replaceSubrange(replaceRange, with: newLines)
+      lines.replaceSubrange(replaceRange, with: replacementLines)
       
       return lines.joined(separator: text.lineEndingStyle.string)
     }
