@@ -148,16 +148,15 @@
     _cachedHeadRef = nil;
     _cachedHeadSHA = nil;
 
-    const GTCheckoutStrategyType strategy = GTCheckoutStrategySafe;
+    GTCheckoutOptions *options = [GTCheckoutOptions checkoutOptionsWithStrategy:GTCheckoutStrategySafe];
     NSString *branchRef = [[GTBranch localNamePrefix]
         stringByAppendingPathComponent:branch];
     GTReference *ref = [_gtRepo lookUpReferenceWithName:branchRef error:resultError];
 
     if (ref != nil)
       return [_gtRepo checkoutReference:ref
-                              strategy:strategy
-                                 error:resultError
-                         progressBlock:NULL];
+                               options:options
+                                 error:resultError];
 
     // TODO: Make a separate checkoutSHA method to avoid ambiguity
     if (branch.length == 40) {
@@ -171,9 +170,8 @@
 
       if (commit != nil)
         return [_gtRepo checkoutCommit:commit
-                      strategy:strategy
-                         error:resultError
-                 progressBlock:NULL];
+                               options:options
+                                 error:resultError];
     }
     return NO;
   }];
@@ -335,11 +333,17 @@
   return error == nil;
 }
 
+- (GTCheckoutOptions*)stashCheckoutOptions
+{
+  return [GTCheckoutOptions checkoutOptionsWithStrategy:GTCheckoutStrategySafe];
+}
+
 - (BOOL)popStashIndex:(NSUInteger)index error:(NSError**)error
 {
   return [self executeWritingBlock:^BOOL{
     return [self.gtRepo popStashAtIndex:index
                                   flags:GTRepositoryStashApplyFlagReinstateIndex
+                        checkoutOptions:[self stashCheckoutOptions]
                                   error:error
                           progressBlock:nil];
   }];
@@ -350,6 +354,7 @@
   return [self executeWritingBlock:^BOOL{
     return [self.gtRepo applyStashAtIndex:index
                                     flags:GTRepositoryStashApplyFlagReinstateIndex
+                          checkoutOptions:[self stashCheckoutOptions]
                                     error:error
                             progressBlock:nil];
   }];
