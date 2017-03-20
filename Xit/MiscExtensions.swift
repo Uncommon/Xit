@@ -15,6 +15,20 @@ protocol XTTableViewDelegate
 
 extension String
 {
+  init?(data: Data, usedEncoding: inout String.Encoding)
+  {
+    let encodings: [String.Encoding] = [.utf8, .utf16, .isoLatin1, .isoLatin2,
+                                        .macOSRoman, .windowsCP1252]
+    
+    for encoding in encodings {
+      if let string = String(data: data, encoding: encoding) {
+        self = string
+        return
+      }
+    }
+    return nil
+  }
+
   /// Returns the string with the given prefix removed, or returns the string
   /// unchanged if the prefix does not match.
   func removingPrefix(_ prefix: String) -> String

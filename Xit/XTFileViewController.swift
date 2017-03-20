@@ -341,7 +341,7 @@ class XTFileViewController: NSViewController
     guard let repo = repo,
           let index = fileListOutline.selectedRowIndexes.first,
           let selectedItem = fileListOutline.item(atRow: index),
-          let selectedChange = fileListDataSource.fileChange(at: index),
+          let selectedChange = self.selectedChange(),
           let controller = view.window?.windowController
                            as? RepositoryController
     else { return }
@@ -363,6 +363,14 @@ class XTFileViewController: NSViewController
           [weak self] (_) in self?.loadSelectedPreview(force: true)
         }
         : nil
+  }
+  
+  func selectedChange() -> XTFileChange?
+  {
+    guard let index = fileListOutline.selectedRowIndexes.first
+    else { return nil }
+    
+    return fileListDataSource.fileChange(at: index)
   }
   
   func selectRow(from button: NSButton)
@@ -523,8 +531,7 @@ class XTFileViewController: NSViewController
 
   @IBAction func revert(_: AnyObject)
   {
-    guard let selectedRow = fileListOutline.selectedRowIndexes.first,
-          let change = fileListDataSource.fileChange(at: selectedRow)
+    guard let change = selectedChange()
     else { return }
     
     let confirmAlert = NSAlert()
@@ -560,8 +567,7 @@ class XTFileViewController: NSViewController
     
     switch action {
       case #selector(self.revert(_:)):
-        guard let selectedRow = fileListOutline.selectedRowIndexes.first,
-              let change = fileListDataSource.fileChange(at: selectedRow)
+        guard let change = selectedChange()
         else { return false }
         
         switch change.unstagedChange {
@@ -821,14 +827,42 @@ extension XTFileViewController: NSSplitViewDelegate
 // MARK: HunkStaging
 extension XTFileViewController: HunkStaging
 {
+  func patchIndexFile(hunk: GTDiffHunk, stage: Bool)
+  {
+    guard let selectedChange = self.selectedChange()
+    else { return }
+    
+    do {
+      var encoding = String.Encoding.utf8
+      guard let index = try repo?.gtRepo.index(),
+            let entry = index.entry(withPath: selectedChange.path),
+            let blob = (try entry.gtObject()) as? GTBlob,
+            let data = blob.data(),
+            let text = String(data: data, usedEncoding: &encoding),
+            let patched = hunk.applied(to: text, reversed: !stage),
+            let patchedData = patched.data(using: encoding)
+      else {
+        return
+      }
+      
+      try index.add(patchedData, withPath: selectedChange.path)
+      try index.write()
+    }
+    catch let error as NSError {
+      let alert = NSAlert(error: error)
+      
+      alert.beginSheetModal(for: view.window!, completionHandler: nil)
+    }
+  }
+  
   func stage(hunk: GTDiffHunk)
   {
-    
+    patchIndexFile(hunk: hunk, stage: true)
   }
   
   func unstage(hunk: GTDiffHunk)
   {
-    
+    patchIndexFile(hunk: hunk, stage: false)
   }
   
   func discard(hunk: GTDiffHunk)
@@ -837,8 +871,7 @@ extension XTFileViewController: HunkStaging
   
     guard let controller = view.window?.windowController as? RepositoryController,
           let selectedModel = controller.selectedModel,
-          let index = fileListOutline.selectedRowIndexes.first,
-          let selectedChange = fileListDataSource.fileChange(at: index),
+          let selectedChange = self.selectedChange(),
           let fileURL = selectedModel.unstagedFileURL(selectedChange.path)
     else {
       NSLog("Setup for discard hunk failed")
