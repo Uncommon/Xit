@@ -833,20 +833,8 @@ extension XTFileViewController: HunkStaging
     else { return }
     
     do {
-      var encoding = String.Encoding.utf8
-      guard let index = try repo?.gtRepo.index(),
-            let entry = index.entry(withPath: selectedChange.path),
-            let blob = (try entry.gtObject()) as? GTBlob,
-            let data = blob.data(),
-            let text = String(data: data, usedEncoding: &encoding),
-            let patched = hunk.applied(to: text, reversed: !stage),
-            let patchedData = patched.data(using: encoding)
-      else {
-        return
-      }
-      
-      try index.add(patchedData, withPath: selectedChange.path)
-      try index.write()
+      try repo?.patchIndexFile(path: selectedChange.path, hunk: hunk,
+                               stage: stage)
     }
     catch let error as NSError {
       let alert = NSAlert(error: error)

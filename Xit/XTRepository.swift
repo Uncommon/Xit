@@ -289,6 +289,30 @@ extension XTRepository
     return tags.map({ XTTag(repository: self, tag: $0) })
   }
   
+  /// Applies the given patch hunk to the specified file in the index.
+  /// - parameter path: Target file path
+  /// - parameter hunk: Hunk to be applied
+  /// - parameter stage: True if the change is being staged, falses if unstaged
+  /// (the patch should be reversed)
+  func patchIndexFile(path: String, hunk: GTDiffHunk, stage: Bool) throws
+  {
+    var encoding = String.Encoding.utf8
+    let index = try gtRepo.index()
+    
+    guard let entry = index.entry(withPath: path),
+          let blob = (try entry.gtObject()) as? GTBlob,
+          let data = blob.data(),
+          let text = String(data: data, usedEncoding: &encoding),
+          let patched = hunk.applied(to: text, reversed: !stage),
+          let patchedData = patched.data(using: encoding)
+    else { return }
+    
+    try index.add(patchedData, withPath: path)
+    try index.write()
+  }
+  
+  /// Returns a diff maker for a file at the specified commit, compared to the
+  /// parent commit.
   func diffMaker(forFile file: String, commitSHA: String, parentSHA: String?)
       -> XTDiffMaker?
   {
@@ -315,6 +339,8 @@ extension XTRepository
     return XTDiffMaker(from: fromSource, to: toSource, path: file)
   }
   
+  /// Returns a diff maker for a file in the index, compared to the workspace
+  /// file.
   func stagedDiff(file: String) -> XTDiffMaker?
   {
     guard let index = try? gtRepo.index(),
@@ -340,6 +366,7 @@ extension XTRepository
                        path: file)
   }
   
+  /// Returns a diff maker for a file in the workspace, compared to the index.
   func unstagedDiff(file: String) -> XTDiffMaker?
   {
     let url = self.repoURL.appendingPathComponent(file)
