@@ -95,6 +95,8 @@ extension XTRepository
   enum Error: Swift.Error
   {
     case alreadyWriting
+    case patchMismatch
+    case unexpected
   }
   
   /// The indexable collection of stashes in the repository.
@@ -299,16 +301,30 @@ extension XTRepository
     var encoding = String.Encoding.utf8
     let index = try gtRepo.index()
     
-    guard let entry = index.entry(withPath: path),
-          let blob = (try entry.gtObject()) as? GTBlob,
-          let data = blob.data(),
-          let text = String(data: data, usedEncoding: &encoding),
-          let patched = hunk.applied(to: text, reversed: !stage),
-          let patchedData = patched.data(using: encoding)
-    else { return }
-    
-    try index.add(patchedData, withPath: path)
-    try index.write()
+    if let entry = index.entry(withPath: path) {
+      guard let blob = (try entry.gtObject()) as? GTBlob,
+            let data = blob.data(),
+            let text = String(data: data, usedEncoding: &encoding)
+      else { throw Error.unexpected }
+      
+      guard let patchedText = hunk.applied(to: text, reversed: !stage)
+      else { throw Error.patchMismatch }
+      
+      guard let patchedData = patchedText.data(using: encoding)
+      else { throw Error.unexpected }
+      
+      try index.add(patchedData, withPath: path)
+      try index.write()
+    }
+    else {
+      if hunk.newStart == 1 {
+        // Assuming the hunk covers the whole file
+        try stageFile(path)
+      }
+      else {
+        throw Error.patchMismatch
+      }
+    }
   }
   
   /// Returns a diff maker for a file at the specified commit, compared to the
@@ -339,22 +355,24 @@ extension XTRepository
     return XTDiffMaker(from: fromSource, to: toSource, path: file)
   }
   
+  func stagedBlob(file: String) -> GTBlob?
+  {
+    guard let index = try? gtRepo.index(),
+          (try? index.refresh()) != nil,
+          let indexEntry = index.entry(withPath: file),
+          let indexObject = try? GTObject(indexEntry: indexEntry)
+    else { return nil }
+    
+    return indexObject as? GTBlob
+  }
+  
   /// Returns a diff maker for a file in the index, compared to the workspace
   /// file.
   func stagedDiff(file: String) -> XTDiffMaker?
   {
-    guard let index = try? gtRepo.index(),
-          (try? index.refresh()) != nil
-    else { return nil }
-    
-    var indexBlob: GTBlob? = nil
+    let indexBlob = stagedBlob(file: file)
     var headBlob: GTBlob? = nil
     
-    if let indexEntry = index.entry(withPath: file),
-       let indexObject = try? GTObject(indexEntry: indexEntry) {
-      indexBlob = indexObject as? GTBlob
-    }
-      
     if let headTree = XTCommit(ref: headRef, repository: self)?.tree,
        let headEntry = try? headTree.entry(withPath: file),
        let headObject = try? GTObject(treeEntry: headEntry) {
