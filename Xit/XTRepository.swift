@@ -302,21 +302,30 @@ extension XTRepository
     let index = try gtRepo.index()
     
     if let entry = index.entry(withPath: path) {
-      guard let blob = (try entry.gtObject()) as? GTBlob,
-            let data = blob.data(),
-            let text = String(data: data, usedEncoding: &encoding)
-      else { throw Error.unexpected }
+      let status = try self.status(file: path)
       
-      guard let patchedText = hunk.applied(to: text, reversed: !stage)
-      else { throw Error.patchMismatch }
-      
-      guard let patchedData = patchedText.data(using: encoding)
-      else { throw Error.unexpected }
-      
-      try index.add(patchedData, withPath: path)
-      try index.write()
+      if !stage && (status.1 == .added) && (hunk.newStart == 1) {
+        // If it's added in the index, and we're unstaging, then the hunk must
+        // cover the whole file
+        try unstageFile(path)
+      }
+      else {
+        guard let blob = (try entry.gtObject()) as? GTBlob,
+              let data = blob.data(),
+              let text = String(data: data, usedEncoding: &encoding)
+        else { throw Error.unexpected }
+        
+        guard let patchedText = hunk.applied(to: text, reversed: !stage)
+        else { throw Error.patchMismatch }
+        
+        guard let patchedData = patchedText.data(using: encoding)
+        else { throw Error.unexpected }
+        
+        try index.add(patchedData, withPath: path)
+        try index.write()
+      }
     }
-    else {
+    else if stage {
       if hunk.newStart == 1 {
         // Assuming the hunk covers the whole file
         try stageFile(path)

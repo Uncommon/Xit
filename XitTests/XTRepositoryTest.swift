@@ -182,4 +182,23 @@ class XTRepositoryHunkTest: XTTest
     
     XCTAssertEqual(stagedText, loremText)
   }
+  
+  /// Tests unstaging a new file as a hunk
+  func testUnstageNewHunk()
+  {
+    try! FileManager.default.copyItem(at: loremURL, to: loremRepoURL)
+    try! repository.stageFile(loremName)
+    
+    let diffMaker = repository.stagedDiff(file: loremName)!
+    let diff = diffMaker.makeDiff()!
+    let patch = try! diff.generatePatch()
+    let hunk = GTDiffHunk(patch: patch, hunkIndex: 0)!
+    
+    try! repository.patchIndexFile(path: loremName, hunk: hunk, stage: false)
+    
+    let status = try! repository.status(file: loremName)
+    
+    XCTAssertEqual(status.0, XitChange.untracked)
+    XCTAssertEqual(status.1, XitChange.unmodified) // There is no "absent"
+  }
 }
