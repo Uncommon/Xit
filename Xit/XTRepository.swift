@@ -97,6 +97,19 @@ extension XTRepository
     case alreadyWriting
     case patchMismatch
     case unexpected
+    
+    var message: String
+    {
+      switch self {
+        case .alreadyWriting:
+          return "A writing operation is already in progress."
+        case .patchMismatch:
+          return "The patch could not be applied because it did not match " +
+                 "the file content."
+        case .unexpected:
+          return "An unexpected repository error occurred."
+      }
+    }
   }
   
   /// The indexable collection of stashes in the repository.
@@ -303,15 +316,15 @@ extension XTRepository
     
     if let entry = index.entry(withPath: path) {
       if (hunk.newStart == 1) || (hunk.oldStart == 1) {
-      let status = try self.status(file: path)
-      
+        let status = try self.status(file: path)
+        
         if stage {
           if status.0 == .deleted {
             try stageFile(path)
             return
           }
-      }
-      else {
+        }
+        else {
           switch status.1 {
             case .added, .deleted:
               // If it's added/deleted in the index, and we're unstaging, then the
@@ -324,29 +337,29 @@ extension XTRepository
         }
       }
       
-        guard let blob = (try entry.gtObject()) as? GTBlob,
-              let data = blob.data(),
-              let text = String(data: data, usedEncoding: &encoding)
-        else { throw Error.unexpected }
-        
-        guard let patchedText = hunk.applied(to: text, reversed: !stage)
-        else { throw Error.patchMismatch }
-        
-        guard let patchedData = patchedText.data(using: encoding)
-        else { throw Error.unexpected }
-        
-        try index.add(patchedData, withPath: path)
-        try index.write()
-      }
+      guard let blob = (try entry.gtObject()) as? GTBlob,
+            let data = blob.data(),
+            let text = String(data: data, usedEncoding: &encoding)
+      else { throw Error.unexpected }
+      
+      guard let patchedText = hunk.applied(to: text, reversed: !stage)
+      else { throw Error.patchMismatch }
+      
+      guard let patchedData = patchedText.data(using: encoding)
+      else { throw Error.unexpected }
+      
+      try index.add(patchedData, withPath: path)
+      try index.write()
+    }
     else if hunk.newStart == 1 {
-        // Assuming the hunk covers the whole file
+      // Assuming the hunk covers the whole file
       if stage {
         try stageFile(path)
       }
       else {
         try unstageFile(path)
       }
-      }
+    }
     else {
       throw Error.patchMismatch
     }

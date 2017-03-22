@@ -444,6 +444,37 @@ class XTFileViewController: NSViewController
     contentController.clear()
     previewPath.setPathComponentCells([])
   }
+  
+  func revert(path: String)
+  {
+    let confirmAlert = NSAlert()
+    
+    confirmAlert.messageText = "Are you sure you want to revert changes to " +
+                               "\((path as NSString).lastPathComponent)?"
+    confirmAlert.addButton(withTitle: "Revert")
+    confirmAlert.addButton(withTitle: "Cancel")
+    confirmAlert.beginSheetModal(for: view.window!) {
+      (response) in
+      if response == NSAlertFirstButtonReturn {
+        self.revertConfirmed(path: path)
+      }
+    }
+  }
+
+  func displayAlert(error: NSError)
+  {
+    let alert = NSAlert(error: error)
+    
+    alert.beginSheetModal(for: view.window!, completionHandler: nil)
+  }
+  
+  func displayRepositoryAlert(error: XTRepository.Error)
+  {
+    let alert = NSAlert()
+    
+    alert.messageText = error.message
+    alert.beginSheetModal(for: view.window!, completionHandler: nil)
+  }
 
   // MARK: Actions
 
@@ -534,18 +565,7 @@ class XTFileViewController: NSViewController
     guard let change = selectedChange()
     else { return }
     
-    let confirmAlert = NSAlert()
-    
-    confirmAlert.messageText = "Are you sure you want to revert changes to " +
-                               "\((change.path as NSString).lastPathComponent)?"
-    confirmAlert.addButton(withTitle: "Revert")
-    confirmAlert.addButton(withTitle: "Cancel")
-    confirmAlert.beginSheetModal(for: view.window!) {
-      (response) in
-      if response == NSAlertFirstButtonReturn {
-        self.revertConfirmed(path: change.path)
-      }
-    }
+    revert(path: change.path)
   }
   
   func revertConfirmed(path: String)
@@ -836,10 +856,11 @@ extension XTFileViewController: HunkStaging
       try repo?.patchIndexFile(path: selectedChange.path, hunk: hunk,
                                stage: stage)
     }
+    catch let error as XTRepository.Error {
+      displayRepositoryAlert(error: error)
+    }
     catch let error as NSError {
-      let alert = NSAlert(error: error)
-      
-      alert.beginSheetModal(for: view.window!, completionHandler: nil)
+      displayAlert(error: error)
     }
   }
   
@@ -867,20 +888,26 @@ extension XTFileViewController: HunkStaging
     }
     
     do {
-      let fileText = try String(contentsOf: fileURL, usedEncoding: &encoding)
-      guard let result = hunk.applied(to: fileText, reversed: true)
-      else {
-        throw NSError(domain: XTErrorDomainXit, code: -1,
-                      userInfo: [NSLocalizedDescriptionKey:
-                                 "The patch could not be applied."])
-      }
+      let status = try repo!.status(file: selectedChange.path)
       
-      try result.write(to: fileURL, atomically: true, encoding: encoding)
+      if (status.0 == .added) && (hunk.newStart == 1) {
+        revert(path: selectedChange.path)
+      }
+      else {
+        let fileText = try String(contentsOf: fileURL, usedEncoding: &encoding)
+        guard let result = hunk.applied(to: fileText, reversed: true)
+        else {
+          throw XTRepository.Error.patchMismatch
+        }
+        
+        try result.write(to: fileURL, atomically: true, encoding: encoding)
+      }
+    }
+    catch let error as XTRepository.Error {
+      displayRepositoryAlert(error: error)
     }
     catch let error as NSError {
-      let alert = NSAlert(error: error)
-      
-      alert.beginSheetModal(for: view.window!, completionHandler: nil)
+      displayAlert(error: error)
     }
   }
 }
