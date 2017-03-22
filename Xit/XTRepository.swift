@@ -302,14 +302,28 @@ extension XTRepository
     let index = try gtRepo.index()
     
     if let entry = index.entry(withPath: path) {
+      if (hunk.newStart == 1) || (hunk.oldStart == 1) {
       let status = try self.status(file: path)
       
-      if !stage && (status.1 == .added) && (hunk.newStart == 1) {
-        // If it's added in the index, and we're unstaging, then the hunk must
-        // cover the whole file
-        try unstageFile(path)
+        if stage {
+          if status.0 == .deleted {
+            try stageFile(path)
+            return
+          }
       }
       else {
+          switch status.1 {
+            case .added, .deleted:
+              // If it's added/deleted in the index, and we're unstaging, then the
+              // hunk must cover the whole file
+              try unstageFile(path)
+              return
+            default:
+              break
+          }
+        }
+      }
+      
         guard let blob = (try entry.gtObject()) as? GTBlob,
               let data = blob.data(),
               let text = String(data: data, usedEncoding: &encoding)
@@ -324,15 +338,17 @@ extension XTRepository
         try index.add(patchedData, withPath: path)
         try index.write()
       }
-    }
-    else if stage {
-      if hunk.newStart == 1 {
+    else if hunk.newStart == 1 {
         // Assuming the hunk covers the whole file
+      if stage {
         try stageFile(path)
       }
       else {
-        throw Error.patchMismatch
+        try unstageFile(path)
       }
+      }
+    else {
+      throw Error.patchMismatch
     }
   }
   

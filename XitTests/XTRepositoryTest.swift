@@ -183,6 +183,24 @@ class XTRepositoryHunkTest: XTTest
     XCTAssertEqual(stagedText, loremText)
   }
   
+  /// Tests staging a deleted file as a hunk
+  func testStageDeletedHunk()
+  {
+    try! FileManager.default.removeItem(atPath: file1Path)
+
+    let diffMaker = repository.unstagedDiff(file: file1Name)!
+    let diff = diffMaker.makeDiff()!
+    let patch = try! diff.generatePatch()
+    let hunk = GTDiffHunk(patch: patch, hunkIndex: 0)!
+    
+    try! repository.patchIndexFile(path: file1Name, hunk: hunk, stage: true)
+    
+    let status = try! repository.status(file: file1Name)
+    
+    XCTAssertEqual(status.0, XitChange.unmodified)
+    XCTAssertEqual(status.1, XitChange.deleted)
+  }
+  
   /// Tests unstaging a new file as a hunk
   func testUnstageNewHunk()
   {

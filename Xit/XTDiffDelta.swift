@@ -9,7 +9,7 @@ extension GTDiffHunk
   func applied(to text: String, reversed: Bool) -> String?
   {
     var lines = text.components(separatedBy: .newlines)
-    guard Int(oldStart + oldLines) < lines.count
+    guard Int(oldStart - 1 + oldLines) <= lines.count
     else { return nil }
     
     do {
