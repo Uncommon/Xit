@@ -350,19 +350,22 @@ extension XTRepository
       
       try index.add(patchedData, withPath: path)
       try index.write()
-    }
-    else if hunk.newStart == 1 {
-      // Assuming the hunk covers the whole file
-      if stage {
-        try stageFile(path)
-      }
-      else {
-        try unstageFile(path)
-      }
+      return
     }
     else {
-      throw Error.patchMismatch
+      let status = try self.status(file: path)
+      
+      // Assuming the hunk covers the whole file
+      if stage && status.0 == .untracked && hunk.newStart == 1 {
+        try stageFile(path)
+        return
+      }
+      else if !stage && (status.1 == .deleted) && (hunk.oldStart == 1) {
+        try unstageFile(path)
+        return
+      }
     }
+    throw Error.patchMismatch
   }
   
   /// Returns a diff maker for a file at the specified commit, compared to the

@@ -219,4 +219,23 @@ class XTRepositoryHunkTest: XTTest
     XCTAssertEqual(status.0, XitChange.untracked)
     XCTAssertEqual(status.1, XitChange.unmodified) // There is no "absent"
   }
+  
+  /// Tests unstaging a deleted file as a hunk
+  func testUnstageDeletedHunk()
+  {
+    try! FileManager.default.removeItem(atPath: file1Path)
+    try! repository.stageFile(file1Name)
+    
+    let diffMaker = repository.stagedDiff(file: file1Name)!
+    let diff = diffMaker.makeDiff()!
+    let patch = try! diff.generatePatch()
+    let hunk = GTDiffHunk(patch: patch, hunkIndex: 0)!
+    
+    try! repository.patchIndexFile(path: file1Name, hunk: hunk, stage: false)
+    
+    let status = try! repository.status(file: file1Name)
+    
+    XCTAssertEqual(status.0, XitChange.deleted)
+    XCTAssertEqual(status.1, XitChange.unmodified)
+  }
 }
