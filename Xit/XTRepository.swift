@@ -541,24 +541,31 @@ extension XTRepository
   @objc(revertFile:error:)
   func revert(file: String) throws
   {
-    var options = git_checkout_options.defaultOptions()
-    var error: NSError? = nil
+    let status = try self.status(file: file)
     
-    git_checkout_init_options(&options, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
-    withGitStringArray(from: [file]) {
-      (stringarray) in
-      options.checkout_strategy = GIT_CHECKOUT_FORCE.rawValue +
-                                          GIT_CHECKOUT_RECREATE_MISSING.rawValue
-      options.paths = stringarray
-      
-      let result = git_checkout_tree(self.gtRepo.git_repository(), nil, &options)
-      
-      if result < 0 {
-        error = NSError.git_error(for: result) as NSError?
-      }
+    if status.0 == .untracked {
+      try FileManager.default.removeItem(at: repoURL.appendingPathComponent(file))
     }
-    
-    try error.map { throw $0 }
+    else {
+      var options = git_checkout_options.defaultOptions()
+      var error: NSError? = nil
+      
+      git_checkout_init_options(&options, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
+      withGitStringArray(from: [file]) {
+        (stringarray) in
+        options.checkout_strategy = GIT_CHECKOUT_FORCE.rawValue +
+                                            GIT_CHECKOUT_RECREATE_MISSING.rawValue
+        options.paths = stringarray
+        
+        let result = git_checkout_tree(self.gtRepo.git_repository(), nil, &options)
+        
+        if result < 0 {
+          error = NSError.git_error(for: result) as NSError?
+        }
+      }
+      
+      try error.map { throw $0 }
+    }
   }
   
   /// Renames the given local branch.

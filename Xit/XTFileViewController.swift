@@ -448,9 +448,13 @@ class XTFileViewController: NSViewController
   func revert(path: String)
   {
     let confirmAlert = NSAlert()
+    let status = try? repo!.status(file: path)
     
     confirmAlert.messageText = "Are you sure you want to revert changes to " +
                                "\((path as NSString).lastPathComponent)?"
+    if status?.0 == .untracked {
+      confirmAlert.informativeText = "The new file will be deleted."
+    }
     confirmAlert.addButton(withTitle: "Revert")
     confirmAlert.addButton(withTitle: "Cancel")
     confirmAlert.beginSheetModal(for: view.window!) {
@@ -890,7 +894,7 @@ extension XTFileViewController: HunkStaging
     do {
       let status = try repo!.status(file: selectedChange.path)
       
-      if (status.0 == .added) && (hunk.newStart == 1) {
+      if (status.0 == .untracked) && (hunk.newStart == 1) {
         revert(path: selectedChange.path)
       }
       else {
