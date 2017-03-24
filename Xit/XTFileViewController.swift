@@ -894,7 +894,8 @@ extension XTFileViewController: HunkStaging
     do {
       let status = try repo!.status(file: selectedChange.path)
       
-      if (status.0 == .untracked) && (hunk.newStart == 1) {
+      if ((hunk.newStart == 1) && (status.0 == .untracked)) ||
+         ((hunk.oldStart == 1) && (status.0 == .deleted)) {
         revert(path: selectedChange.path)
       }
       else {
