@@ -105,6 +105,4 @@ class FileCellView : NSTableCellView
 class TableButtonView : NSTableCellView
 {
   @IBOutlet var button: NSButton!
-  /// The row index is stored so we know where button clicks come from.
-  var row = 0
 }

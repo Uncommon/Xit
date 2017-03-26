@@ -364,9 +364,20 @@ class XTFileViewController: NSViewController
         : nil
   }
   
+  func row(for view: NSView?) -> Int?
+  {
+    guard let view = view
+    else { return nil }
+    
+    if let cellView  = view as? NSTableCellView {
+      return fileListOutline.row(for: cellView)
+    }
+    return row(for: view.superview)
+  }
+  
   func selectRow(from button: NSButton)
   {
-    guard let row = (button.superview as? TableButtonView)?.row
+    guard let row = row(for: button)
     else { return }
     let indexes = IndexSet(integer: row)
     
@@ -383,7 +394,7 @@ class XTFileViewController: NSViewController
   
   func path(from button: NSButton) -> String?
   {
-    guard let row = (button.superview as? TableButtonView)?.row,
+    guard let row = row(for: button),
           let change = fileListDataSource.fileChange(at: row)
     else { return nil }
     
@@ -693,8 +704,7 @@ extension XTFileViewController: NSOutlineViewDelegate
 
   private func tableButtonView(_ identifier: String,
                                change: XitChange,
-                               otherChange: XitChange,
-                               row: Int) -> TableButtonView
+                               otherChange: XitChange) -> TableButtonView
   {
     let cellView = fileListOutline.make(withIdentifier: identifier, owner: self)
                    as! TableButtonView
@@ -707,7 +717,6 @@ extension XTFileViewController: NSOutlineViewDelegate
     button.image = modelCanCommit
         ? stagingImage(forChange:change, otherChange:otherChange)
         : image(forChange:change)
-    cellView.row = row
     return cellView
   }
 
@@ -756,8 +765,7 @@ extension XTFileViewController: NSOutlineViewDelegate
           return tableButtonView(
               CellViewID.staged,
               change: change,
-              otherChange: dataSource.unstagedChange(for: item),
-              row: outlineView.row(forItem:item))
+              otherChange: dataSource.unstagedChange(for: item))
         }
         else {
           guard let cell = outlineView.make(withIdentifier: CellViewID.change,
@@ -774,8 +782,7 @@ extension XTFileViewController: NSOutlineViewDelegate
           return tableButtonView(
               CellViewID.unstaged,
               change: dataSource.unstagedChange(for: item),
-              otherChange: change,
-              row: outlineView.row(forItem: item))
+              otherChange: change)
         }
         else {
           return nil
