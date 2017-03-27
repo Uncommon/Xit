@@ -6,6 +6,12 @@ class XTDiffDelta: GTDiffDelta
 
 extension GTDiffHunk
 {
+  /// Applies just this hunk to the target text.
+  /// - parameter text: The target text.
+  /// - parameter reversed: True if the target text is the "new" text and the
+  /// patch should be reverse-applied.
+  /// - returns: The modified hunk of text, or nil if the patch does not match
+  /// or if an error occurs.
   func applied(to text: String, reversed: Bool) -> String?
   {
     var lines = text.components(separatedBy: .newlines)
@@ -50,6 +56,38 @@ extension GTDiffHunk
     }
     catch {
       return nil
+    }
+  }
+  
+  /// Returns true if the hunk can be applied to the given text.
+  /// - parameter lines: The target text. This is an array of strings rather
+  /// than the raw text to more efficiently query multiple hunks on one file.
+  func canApply(to lines: [String]) -> Bool
+  {
+    guard Int(oldStart - 1 + oldLines) <= lines.count
+    else { return false }
+    
+    do {
+      var oldLines = [String]()
+      
+      try enumerateLinesInHunk {
+        (line, _) in
+        switch line.origin {
+          case .context, .deletion:
+            oldLines.append(line.content)
+          default:
+            break
+        }
+      }
+      
+      let targetLineStart = Int(oldStart) - 1
+      let targetLineCount = Int(self.oldLines)
+      let replaceRange = targetLineStart..<(targetLineStart+targetLineCount)
+      
+      return oldLines == Array(lines[replaceRange])
+    }
+    catch {
+      return false
     }
   }
 }

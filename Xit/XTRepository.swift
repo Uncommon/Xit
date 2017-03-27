@@ -396,6 +396,16 @@ extension XTRepository
     return XTDiffMaker(from: fromSource, to: toSource, path: file)
   }
   
+  func fileBlob(ref: String, path: String) -> GTBlob?
+  {
+    guard let headTree = XTCommit(ref: ref, repository: self)?.tree,
+          let headEntry = try? headTree.entry(withPath: path),
+          let headObject = try? GTObject(treeEntry: headEntry)
+    else { return nil }
+
+    return headObject as? GTBlob
+  }
+  
   func stagedBlob(file: String) -> GTBlob?
   {
     guard let index = try? gtRepo.index(),
@@ -412,13 +422,7 @@ extension XTRepository
   func stagedDiff(file: String) -> XTDiffMaker?
   {
     let indexBlob = stagedBlob(file: file)
-    var headBlob: GTBlob? = nil
-    
-    if let headTree = XTCommit(ref: headRef, repository: self)?.tree,
-       let headEntry = try? headTree.entry(withPath: file),
-       let headObject = try? GTObject(treeEntry: headEntry) {
-      headBlob = headObject as? GTBlob
-    }
+    let headBlob = fileBlob(ref: headRef, path: file)
     
     return XTDiffMaker(from: XTDiffMaker.SourceType(headBlob),
                        to: XTDiffMaker.SourceType(indexBlob),

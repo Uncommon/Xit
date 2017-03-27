@@ -84,11 +84,44 @@ class XTFileDiffController: XTWebViewController,
            ">\(title)</span>"
   }
   
+  func hunkHeader(hunk: GTDiffHunk, index: UInt, lines: [String]?) -> String
+  {
+    guard let diffMaker = diffMaker,
+          let staged = self.staged
+    else { return "" }
+    
+    var header = "<div class='hunkhead'>\n"
+    
+    if lines.map({ hunk.canApply(to: $0) }) ?? false {
+      if staged {
+        header += button(title: "Unstage", action: "unstageHunk",
+                         index: index)
+      }
+      else {
+        header += button(title: "Stage", action: "stageHunk",
+                         index: index)
+        header += button(title: "Discard", action: "discardHunk",
+                         index: index)
+      }
+    }
+    else {
+      let notice = (diffMaker.whitespace == .showAll)
+                   ? "This hunk cannot be applied"
+                   : "Whitespace changes are hidden"
+      
+      header += "<span class='hunknotice'>\(notice)</span>"
+    }
+    header += "</div>\n"
+    
+    return header
+  }
+  
   func reloadDiff()
   {
     patch = nil
     
-    guard let diff = diffMaker?.makeDiff()
+    guard let diffMaker = diffMaker,
+          let diff = diffMaker.makeDiff()
     else { return }
     
     let htmlTemplate = XTWebViewController.htmlTemplate("diff")
@@ -103,24 +136,27 @@ class XTFileDiffController: XTWebViewController,
         loadNoChangesNotice()
         return
       }
+      
+      let repo = (view.window?.windowController as! XTWindowController)
+                 .xtDocument!.repository!
+      var lines: [String]?
+      
+      if let staged = self.staged,
+         let blob = staged ? repo.fileBlob(ref: repo.headRef,
+                                           path: diffMaker.path)
+                           : repo.stagedBlob(file: diffMaker.path),
+         let data = blob.data() {
+        var encoding = String.Encoding.utf8
+        let text = String(data: data, usedEncoding: &encoding)
+        
+        lines = text?.components(separatedBy: .newlines)
+      }
+      
       for index in 0..<patch.hunkCount {
         guard let hunk = GTDiffHunk(patch: patch, hunkIndex: index)
         else { break }
         
-        if let staged = self.staged {
-          textLines += "<div class='hunkhead'>\n"
-          if staged {
-            textLines += button(title: "Unstage", action: "unstageHunk",
-                                index: index)
-          }
-          else {
-            textLines += button(title: "Stage", action: "stageHunk",
-                                index: index)
-            textLines += button(title: "Discard", action: "discardHunk",
-                                index: index)
-          }
-          textLines += "</div>\n"
-        }
+        textLines += hunkHeader(hunk: hunk, index: index, lines: lines)
         textLines += "<div class='hunk'>\n"
         do {
           try hunk.enumerateLinesInHunk {

@@ -67,6 +67,12 @@ span.hunkbutton:active {
   background: linear-gradient(#EEE, #DDD);
   border-color: #AAA;
 }
+.hunknotice {
+  font-family: SF UI Display;
+  opacity: 0.5;
+  padding: 5px;
+  float: right;
+}
 span.old, span.new {
   position: relative;
   width: 25px;
