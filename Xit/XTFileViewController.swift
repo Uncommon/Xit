@@ -733,6 +733,14 @@ extension XTFileViewController: NSOutlineViewDelegate
     return stageImages[change]
   }
 
+  func updateTableButton(_ button: NSButton,
+                         change: XitChange, otherChange: XitChange)
+  {
+    button.image = modelCanCommit
+        ? stagingImage(forChange:change, otherChange:otherChange)
+        : image(forChange:change)
+  }
+
   private func tableButtonView(_ identifier: String,
                                change: XitChange,
                                otherChange: XitChange) -> TableButtonView
@@ -745,9 +753,7 @@ extension XTFileViewController: NSOutlineViewDelegate
     
     (button.cell as! NSButtonCell).imageDimsWhenDisabled = false
     button.isEnabled = displayChange != .mixed
-    button.image = modelCanCommit
-        ? stagingImage(forChange:change, otherChange:otherChange)
-        : image(forChange:change)
+    updateTableButton(button, change: change, otherChange: otherChange)
     return cellView
   }
 

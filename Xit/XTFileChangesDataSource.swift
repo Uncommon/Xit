@@ -3,6 +3,7 @@ import Foundation
 class XTFileChangesDataSource : FileListDataSourceBase
 {
   var changes = [XTFileChange]()
+  var wasInStaging: Bool = false
   
   func doReload()
   {
@@ -78,6 +79,27 @@ class XTFileChangesDataSource : FileListDataSourceBase
                                columnIndexes: allColumnIndexes)
       }
       self?.reselect(change: selectedChange, oldRow: selectedRow)
+      self?.updateStagingIcons()
+    }
+  }
+  
+  func updateStagingIcons()
+  {
+    if wasInStaging != controller.isStaging {
+      let stagedIndex = outlineView.column(withIdentifier:
+        XTFileViewController.ColumnID.staged)
+      
+      for (index, change) in changes.enumerated() {
+        if let stagedCell = outlineView.view(atColumn: stagedIndex, row: index,
+                                             makeIfNecessary: false)
+                            as? TableButtonView {
+          controller.updateTableButton(stagedCell.button,
+                                       change: change.change,
+                                       otherChange: change.unstagedChange)
+        }
+      }
+      
+      wasInStaging = controller.isStaging
     }
   }
   
