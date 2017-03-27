@@ -252,6 +252,7 @@ class XTFileViewController: NSViewController
     }
     headerTabView.tabViewItems[1].view = commitEntryController.view
     previewPath.setPathComponentCells([])
+    diffController.stagingDelegate = self
   }
   
   func indexChanged(_ note: Notification)
@@ -340,7 +341,7 @@ class XTFileViewController: NSViewController
     guard let repo = repo,
           let index = fileListOutline.selectedRowIndexes.first,
           let selectedItem = fileListOutline.item(atRow: index),
-          let selectedChange = fileListDataSource.fileChange(at: index),
+          let selectedChange = self.selectedChange(),
           let controller = view.window?.windowController
                            as? RepositoryController
     else { return }
@@ -373,6 +374,14 @@ class XTFileViewController: NSViewController
       return fileListOutline.row(for: cellView)
     }
     return row(for: view.superview)
+  }
+
+  func selectedChange() -> XTFileChange?
+  {
+    guard let index = fileListOutline.selectedRowIndexes.first
+    else { return nil }
+    
+    return fileListDataSource.fileChange(at: index)
   }
   
   func selectRow(from button: NSButton)
@@ -445,6 +454,41 @@ class XTFileViewController: NSViewController
   {
     contentController.clear()
     previewPath.setPathComponentCells([])
+  }
+  
+  func revert(path: String)
+  {
+    let confirmAlert = NSAlert()
+    let status = try? repo!.status(file: path)
+    
+    confirmAlert.messageText = "Are you sure you want to revert changes to " +
+                               "\((path as NSString).lastPathComponent)?"
+    if status?.0 == .untracked {
+      confirmAlert.informativeText = "The new file will be deleted."
+    }
+    confirmAlert.addButton(withTitle: "Revert")
+    confirmAlert.addButton(withTitle: "Cancel")
+    confirmAlert.beginSheetModal(for: view.window!) {
+      (response) in
+      if response == NSAlertFirstButtonReturn {
+        self.revertConfirmed(path: path)
+      }
+    }
+  }
+
+  func displayAlert(error: NSError)
+  {
+    let alert = NSAlert(error: error)
+    
+    alert.beginSheetModal(for: view.window!, completionHandler: nil)
+  }
+  
+  func displayRepositoryAlert(error: XTRepository.Error)
+  {
+    let alert = NSAlert()
+    
+    alert.messageText = error.message
+    alert.beginSheetModal(for: view.window!, completionHandler: nil)
   }
 
   // MARK: Actions
@@ -533,22 +577,10 @@ class XTFileViewController: NSViewController
 
   @IBAction func revert(_: AnyObject)
   {
-    guard let selectedRow = fileListOutline.selectedRowIndexes.first,
-          let change = fileListDataSource.fileChange(at: selectedRow)
+    guard let change = selectedChange()
     else { return }
     
-    let confirmAlert = NSAlert()
-    
-    confirmAlert.messageText = "Are you sure you want to revert changes to " +
-                               "\((change.path as NSString).lastPathComponent)?"
-    confirmAlert.addButton(withTitle: "Revert")
-    confirmAlert.addButton(withTitle: "Cancel")
-    confirmAlert.beginSheetModal(for: view.window!) {
-      (response) in
-      if response == NSAlertFirstButtonReturn {
-        self.revertConfirmed(path: change.path)
-      }
-    }
+    revert(path: change.path)
   }
   
   func revertConfirmed(path: String)
@@ -570,8 +602,7 @@ class XTFileViewController: NSViewController
     
     switch action {
       case #selector(self.revert(_:)):
-        guard let selectedRow = fileListOutline.selectedRowIndexes.first,
-              let change = fileListDataSource.fileChange(at: selectedRow)
+        guard let change = selectedChange()
         else { return false }
         
         switch change.unstagedChange {
@@ -820,6 +851,75 @@ extension XTFileViewController: NSSplitViewDelegate
         return view != leftPane
       default:
         return true
+    }
+  }
+}
+
+// MARK: HunkStaging
+extension XTFileViewController: HunkStaging
+{
+  func patchIndexFile(hunk: GTDiffHunk, stage: Bool)
+  {
+    guard let selectedChange = self.selectedChange()
+    else { return }
+    
+    do {
+      try repo?.patchIndexFile(path: selectedChange.path, hunk: hunk,
+                               stage: stage)
+    }
+    catch let error as XTRepository.Error {
+      displayRepositoryAlert(error: error)
+    }
+    catch let error as NSError {
+      displayAlert(error: error)
+    }
+  }
+  
+  func stage(hunk: GTDiffHunk)
+  {
+    patchIndexFile(hunk: hunk, stage: true)
+  }
+  
+  func unstage(hunk: GTDiffHunk)
+  {
+    patchIndexFile(hunk: hunk, stage: false)
+  }
+  
+  func discard(hunk: GTDiffHunk)
+  {
+    var encoding = String.Encoding.utf8
+  
+    guard let controller = view.window?.windowController as? RepositoryController,
+          let selectedModel = controller.selectedModel,
+          let selectedChange = self.selectedChange(),
+          let fileURL = selectedModel.unstagedFileURL(selectedChange.path)
+    else {
+      NSLog("Setup for discard hunk failed")
+      return
+    }
+    
+    do {
+      let status = try repo!.status(file: selectedChange.path)
+      
+      if ((hunk.newStart == 1) && (status.0 == .untracked)) ||
+         ((hunk.oldStart == 1) && (status.0 == .deleted)) {
+        revert(path: selectedChange.path)
+      }
+      else {
+        let fileText = try String(contentsOf: fileURL, usedEncoding: &encoding)
+        guard let result = hunk.applied(to: fileText, reversed: true)
+        else {
+          throw XTRepository.Error.patchMismatch
+        }
+        
+        try result.write(to: fileURL, atomically: true, encoding: encoding)
+      }
+    }
+    catch let error as XTRepository.Error {
+      displayRepositoryAlert(error: error)
+    }
+    catch let error as NSError {
+      displayAlert(error: error)
     }
   }
 }

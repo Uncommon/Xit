@@ -95,6 +95,21 @@ extension XTRepository
   enum Error: Swift.Error
   {
     case alreadyWriting
+    case patchMismatch
+    case unexpected
+    
+    var message: String
+    {
+      switch self {
+        case .alreadyWriting:
+          return "A writing operation is already in progress."
+        case .patchMismatch:
+          return "The patch could not be applied because it did not match " +
+                 "the file content."
+        case .unexpected:
+          return "An unexpected repository error occurred."
+      }
+    }
   }
   
   /// The indexable collection of stashes in the repository.
@@ -289,6 +304,72 @@ extension XTRepository
     return tags.map({ XTTag(repository: self, tag: $0) })
   }
   
+  /// Applies the given patch hunk to the specified file in the index.
+  /// - parameter path: Target file path
+  /// - parameter hunk: Hunk to be applied
+  /// - parameter stage: True if the change is being staged, falses if unstaged
+  /// (the patch should be reversed)
+  func patchIndexFile(path: String, hunk: GTDiffHunk, stage: Bool) throws
+  {
+    var encoding = String.Encoding.utf8
+    let index = try gtRepo.index()
+    
+    if let entry = index.entry(withPath: path) {
+      if (hunk.newStart == 1) || (hunk.oldStart == 1) {
+        let status = try self.status(file: path)
+        
+        if stage {
+          if status.0 == .deleted {
+            try stageFile(path)
+            return
+          }
+        }
+        else {
+          switch status.1 {
+            case .added, .deleted:
+              // If it's added/deleted in the index, and we're unstaging, then the
+              // hunk must cover the whole file
+              try unstageFile(path)
+              return
+            default:
+              break
+          }
+        }
+      }
+      
+      guard let blob = (try entry.gtObject()) as? GTBlob,
+            let data = blob.data(),
+            let text = String(data: data, usedEncoding: &encoding)
+      else { throw Error.unexpected }
+      
+      guard let patchedText = hunk.applied(to: text, reversed: !stage)
+      else { throw Error.patchMismatch }
+      
+      guard let patchedData = patchedText.data(using: encoding)
+      else { throw Error.unexpected }
+      
+      try index.add(patchedData, withPath: path)
+      try index.write()
+      return
+    }
+    else {
+      let status = try self.status(file: path)
+      
+      // Assuming the hunk covers the whole file
+      if stage && status.0 == .untracked && hunk.newStart == 1 {
+        try stageFile(path)
+        return
+      }
+      else if !stage && (status.1 == .deleted) && (hunk.oldStart == 1) {
+        try unstageFile(path)
+        return
+      }
+    }
+    throw Error.patchMismatch
+  }
+  
+  /// Returns a diff maker for a file at the specified commit, compared to the
+  /// parent commit.
   func diffMaker(forFile file: String, commitSHA: String, parentSHA: String?)
       -> XTDiffMaker?
   {
@@ -315,31 +396,40 @@ extension XTRepository
     return XTDiffMaker(from: fromSource, to: toSource, path: file)
   }
   
-  func stagedDiff(file: String) -> XTDiffMaker?
+  func fileBlob(ref: String, path: String) -> GTBlob?
+  {
+    guard let headTree = XTCommit(ref: ref, repository: self)?.tree,
+          let headEntry = try? headTree.entry(withPath: path),
+          let headObject = try? GTObject(treeEntry: headEntry)
+    else { return nil }
+
+    return headObject as? GTBlob
+  }
+  
+  func stagedBlob(file: String) -> GTBlob?
   {
     guard let index = try? gtRepo.index(),
-          (try? index.refresh()) != nil
+          (try? index.refresh()) != nil,
+          let indexEntry = index.entry(withPath: file),
+          let indexObject = try? GTObject(indexEntry: indexEntry)
     else { return nil }
     
-    var indexBlob: GTBlob? = nil
-    var headBlob: GTBlob? = nil
-    
-    if let indexEntry = index.entry(withPath: file),
-       let indexObject = try? GTObject(indexEntry: indexEntry) {
-      indexBlob = indexObject as? GTBlob
-    }
-      
-    if let headTree = XTCommit(ref: headRef, repository: self)?.tree,
-       let headEntry = try? headTree.entry(withPath: file),
-       let headObject = try? GTObject(treeEntry: headEntry) {
-      headBlob = headObject as? GTBlob
-    }
+    return indexObject as? GTBlob
+  }
+  
+  /// Returns a diff maker for a file in the index, compared to the workspace
+  /// file.
+  func stagedDiff(file: String) -> XTDiffMaker?
+  {
+    let indexBlob = stagedBlob(file: file)
+    let headBlob = fileBlob(ref: headRef, path: file)
     
     return XTDiffMaker(from: XTDiffMaker.SourceType(headBlob),
                        to: XTDiffMaker.SourceType(indexBlob),
                        path: file)
   }
   
+  /// Returns a diff maker for a file in the workspace, compared to the index.
   func unstagedDiff(file: String) -> XTDiffMaker?
   {
     let url = self.repoURL.appendingPathComponent(file)
@@ -458,24 +548,31 @@ extension XTRepository
   @objc(revertFile:error:)
   func revert(file: String) throws
   {
-    var options = git_checkout_options.defaultOptions()
-    var error: NSError? = nil
+    let status = try self.status(file: file)
     
-    git_checkout_init_options(&options, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
-    withGitStringArray(from: [file]) {
-      (stringarray) in
-      options.checkout_strategy = GIT_CHECKOUT_FORCE.rawValue +
-                                          GIT_CHECKOUT_RECREATE_MISSING.rawValue
-      options.paths = stringarray
-      
-      let result = git_checkout_tree(self.gtRepo.git_repository(), nil, &options)
-      
-      if result < 0 {
-        error = NSError.git_error(for: result) as NSError?
-      }
+    if status.0 == .untracked {
+      try FileManager.default.removeItem(at: repoURL.appendingPathComponent(file))
     }
-    
-    try error.map { throw $0 }
+    else {
+      var options = git_checkout_options.defaultOptions()
+      var error: NSError? = nil
+      
+      git_checkout_init_options(&options, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
+      withGitStringArray(from: [file]) {
+        (stringarray) in
+        options.checkout_strategy = GIT_CHECKOUT_FORCE.rawValue +
+                                            GIT_CHECKOUT_RECREATE_MISSING.rawValue
+        options.paths = stringarray
+        
+        let result = git_checkout_tree(self.gtRepo.git_repository(), nil, &options)
+        
+        if result < 0 {
+          error = NSError.git_error(for: result) as NSError?
+        }
+      }
+      
+      try error.map { throw $0 }
+    }
   }
   
   /// Renames the given local branch.

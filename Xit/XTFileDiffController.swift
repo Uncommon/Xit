@@ -1,12 +1,23 @@
 import Cocoa
 
+protocol HunkStaging
+{
+  func stage(hunk: GTDiffHunk)
+  func unstage(hunk: GTDiffHunk)
+  func discard(hunk: GTDiffHunk)
+}
+
 /// Manages a WebView for displaying text file diffs.
 class XTFileDiffController: XTWebViewController,
                             WhitespaceVariable,
                             TabWidthVariable
 {
+  let actionDelegate: DiffActionDelegate = DiffActionDelegate()
+  var stagingDelegate: HunkStaging!
   var isLoaded: Bool = false
   var staged: Bool?
+  var patch: GTDiffPatch?
+  
   public var whitespace: XTWhitespace = .showAll
   {
     didSet
@@ -20,6 +31,16 @@ class XTFileDiffController: XTWebViewController,
     {
       configureDiffMaker()
     }
+  }
+
+  override func viewDidLoad()
+  {
+    actionDelegate.controller = self
+  }
+
+  override func webActionDelegate() -> Any
+  {
+    return actionDelegate
   }
 
   private func configureDiffMaker()
@@ -56,24 +77,86 @@ class XTFileDiffController: XTWebViewController,
              "</div>\n"
   }
   
+  func button(title: String, action: String, index: UInt) -> String
+  {
+    return "<span class='hunkbutton' " +
+           "onClick='window.webActionDelegate.\(action)(\(index))'" +
+           ">\(title)</span>"
+  }
+  
+  func hunkHeader(hunk: GTDiffHunk, index: UInt, lines: [String]?) -> String
+  {
+    guard let diffMaker = diffMaker,
+          let staged = self.staged
+    else { return "" }
+    
+    var header = "<div class='hunkhead'>\n"
+    
+    if lines.map({ hunk.canApply(to: $0) }) ?? false {
+      if staged {
+        header += button(title: "Unstage", action: "unstageHunk",
+                         index: index)
+      }
+      else {
+        header += button(title: "Stage", action: "stageHunk",
+                         index: index)
+        header += button(title: "Discard", action: "discardHunk",
+                         index: index)
+      }
+    }
+    else {
+      let notice = (diffMaker.whitespace == .showAll)
+                   ? "This hunk cannot be applied"
+                   : "Whitespace changes are hidden"
+      
+      header += "<span class='hunknotice'>\(notice)</span>"
+    }
+    header += "</div>\n"
+    
+    return header
+  }
+  
   func reloadDiff()
   {
-    guard let diff = diffMaker?.makeDiff()
+    patch = nil
+    
+    guard let diffMaker = diffMaker,
+          let diff = diffMaker.makeDiff()
     else { return }
     
     let htmlTemplate = XTWebViewController.htmlTemplate("diff")
     var textLines = ""
     
     do {
-      let patch = try diff.generatePatch()
+      patch = try diff.generatePatch()
       
-      guard patch.hunkCount > 0
+      guard let patch = self.patch,
+            patch.hunkCount > 0
       else {
         loadNoChangesNotice()
         return
       }
-      patch.enumerateHunks {
-        (hunk, stop) in
+      
+      let repo = (view.window?.windowController as! XTWindowController)
+                 .xtDocument!.repository!
+      var lines: [String]?
+      
+      if let staged = self.staged,
+         let blob = staged ? repo.fileBlob(ref: repo.headRef,
+                                           path: diffMaker.path)
+                           : repo.stagedBlob(file: diffMaker.path),
+         let data = blob.data() {
+        var encoding = String.Encoding.utf8
+        let text = String(data: data, usedEncoding: &encoding)
+        
+        lines = text?.components(separatedBy: .newlines)
+      }
+      
+      for index in 0..<patch.hunkCount {
+        guard let hunk = GTDiffHunk(patch: patch, hunkIndex: index)
+        else { break }
+        
+        textLines += hunkHeader(hunk: hunk, index: index, lines: lines)
         textLines += "<div class='hunk'>\n"
         do {
           try hunk.enumerateLinesInHunk {
@@ -86,7 +169,7 @@ class XTFileDiffController: XTWebViewController,
         }
         catch let error as NSError {
           NSLog("\(error.description)")
-          stop.pointee = true
+          break
         }
         textLines += "</div>\n"
       }
@@ -126,6 +209,30 @@ class XTFileDiffController: XTWebViewController,
     }
     loadNotice(notice)
   }
+  
+  func hunk(at index: Int) -> GTDiffHunk?
+  {
+    guard let patch = self.patch,
+          (index >= 0) && (UInt(index) < patch.hunkCount)
+    else { return nil }
+    
+    return GTDiffHunk(patch: patch, hunkIndex: UInt(index))
+  }
+  
+  func stageHunk(index: Int)
+  {
+    hunk(at: index).map { stagingDelegate.stage(hunk: $0) }
+  }
+  
+  func unstageHunk(index: Int)
+  {
+    hunk(at: index).map { stagingDelegate.unstage(hunk: $0) }
+  }
+  
+  func discardHunk(index: Int)
+  {
+    hunk(at: index).map { stagingDelegate.discard(hunk: $0) }
+  }
 }
 
 extension XTFileDiffController: XTFileContentController
@@ -140,5 +247,51 @@ extension XTFileDiffController: XTFileContentController
   {
     self.staged = model.hasUnstaged ? staged : nil
     loadOrNotify(diffMaker: model.diffForFile(path, staged: staged))
+  }
+}
+
+class DiffActionDelegate: NSObject
+{
+  weak var controller: XTFileDiffController!
+  
+  override class func isSelectorExcluded(fromWebScript selector: Selector) -> Bool
+  {
+    switch selector {
+      case #selector(DiffActionDelegate.stageHunk(index:)),
+           #selector(DiffActionDelegate.unstageHunk(index:)),
+           #selector(DiffActionDelegate.discardHunk(index:)):
+        return false
+      default:
+        return true
+    }
+  }
+  
+  override class func webScriptName(for selector: Selector) -> String
+  {
+    switch selector {
+      case #selector(DiffActionDelegate.stageHunk(index:)):
+        return "stageHunk"
+      case #selector(DiffActionDelegate.unstageHunk(index:)):
+        return "unstageHunk"
+      case #selector(DiffActionDelegate.discardHunk(index:)):
+        return "discardHunk"
+      default:
+        return ""
+    }
+  }
+  
+  func stageHunk(index: Int)
+  {
+    controller.stageHunk(index: index)
+  }
+  
+  func unstageHunk(index: Int)
+  {
+    controller.unstageHunk(index: index)
+  }
+  
+  func discardHunk(index: Int)
+  {
+    controller.discardHunk(index: index)
   }
 }
