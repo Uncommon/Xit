@@ -898,6 +898,32 @@
 			name = Services;
 			sourceTree = "<group>";
 		};
+		C935BD6E1E8AB13400BE51F0 /* Previews */ = {
+			isa = PBXGroup;
+			children = (
+				C90FCA2E1D9C776C006196DE /* XTFileDiffController.swift */,
+				C94A30231E311F3B00B4496B /* XTPreviewController.swift */,
+				C94A30251E3154D400B4496B /* XTTextPreviewController.swift */,
+				C99A6AFE1E4A73240030DC01 /* BlameViewController.swift */,
+				896A29F61E4C3620002C5EC8 /* PreviewItem.swift */,
+			);
+			name = Previews;
+			sourceTree = "<group>";
+		};
+		C935BD7C1E8AB16F00BE51F0 /* File List */ = {
+			isa = PBXGroup;
+			children = (
+				C9AA802F1E2929810004D670 /* XTFileChangesDataSource.swift */,
+				89D8BE211CF0A4ED00D640AA /* XTRolloverButton.swift */,
+				899DB18D1CE0EA3A00760270 /* XTWorkspaceTreeBuilder.swift */,
+				C99A6AEB1E48FA140030DC01 /* FileListDataSourceBase.swift */,
+				C94736811DF097B2000E3A05 /* FileListView.swift */,
+				C947367F1DF08FFB000E3A05 /* FileRowView.swift */,
+				C932110B1E48E92C00232B61 /* FileTreeDataSource.swift */,
+			);
+			name = "File List";
+			sourceTree = "<group>";
+		};
 		C936AD0D1D4C156000C5ADC3 /* Operations */ = {
 			isa = PBXGroup;
 			children = (
@@ -1023,21 +1049,11 @@
 			children = (
 				C94736791DEF5CA8000E3A05 /* XTFileViewController.swift */,
 				DD997DF71746F40D00C7DF82 /* XTFileViewController.xib */,
+				C935BD7C1E8AB16F00BE51F0 /* File List */,
+				C935BD6E1E8AB13400BE51F0 /* Previews */,
 				899DB1A01CE5022400760270 /* XTCommitEntryController.swift */,
 				899DB1A11CE5022400760270 /* XTCommitEntryController.xib */,
-				C9AA802F1E2929810004D670 /* XTFileChangesDataSource.swift */,
-				C90FCA2E1D9C776C006196DE /* XTFileDiffController.swift */,
-				C94A30231E311F3B00B4496B /* XTPreviewController.swift */,
-				89D8BE211CF0A4ED00D640AA /* XTRolloverButton.swift */,
-				C94A30251E3154D400B4496B /* XTTextPreviewController.swift */,
-				899DB18D1CE0EA3A00760270 /* XTWorkspaceTreeBuilder.swift */,
-				C99A6AFE1E4A73240030DC01 /* BlameViewController.swift */,
 				C9AAEF801E413DA100A248CF /* CommitHeaderViewController.swift */,
-				C99A6AEB1E48FA140030DC01 /* FileListDataSourceBase.swift */,
-				C94736811DF097B2000E3A05 /* FileListView.swift */,
-				C947367F1DF08FFB000E3A05 /* FileRowView.swift */,
-				C932110B1E48E92C00232B61 /* FileTreeDataSource.swift */,
-				896A29F61E4C3620002C5EC8 /* PreviewItem.swift */,
 			);
 			name = FileView;
 			sourceTree = "<group>";
