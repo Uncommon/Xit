@@ -8,9 +8,9 @@ Xit (pronounced "exit") is a graphical tool for working with git repositories. T
 
 # Background and current status
 
-Xit began as a rewrite of GitX, born from a desire for a codebase that was easier to work with, thoroughly unit tested, etc. It is currently working towards 1.0 beta status, where all basic features are in place, with many more interesting features slated for the future.
+![Screen shot](screenshot.png)
 
-![Screen shot] (screenshot.png)
+Xit began as a rewrite of GitX, born from a desire for a codebase that was easier to work with, thoroughly unit tested, etc. It is currently working towards 1.0 beta status, where all basic features are in place, with many more interesting features slated for the future.
 
 # Roadmap
 
