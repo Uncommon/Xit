@@ -18,8 +18,9 @@ The plan is to have a concrete 1.0 milestone to provide a good foundation and fi
   * Sidebar for navigating branches, remotes, tags, and stashes
   * Viewing the diff of a selected commit
   * Basic git actions: staging, committing, remote push/pull
+  * A few fun extras that I wanted to fit in along the way (like TeamCity build status)
 
-Plenty of advancements are on the post-1.0 list, like syntax highlighting and other diff view enhancements, file history and blame views, etc.
+Plenty of advancements are on the post-1.0 list, like syntax highlighting and other diff view enhancements, file history, etc.
 
 Some other ideas that I’m looking forward to working on (and using!):
 
@@ -42,7 +43,7 @@ Note that Objective Git needs the `objective-git/script/bootstrap` script to be 
 
 If you're looking for a starter task, several issues have been marked "small". These should provide a relatively easy intro to the code base.
 
-Swift is preferred for new classes, but not necessarily required. In particular, working with some C APIs can be awkward in Swift, so Objective-C is fine. 
+Swift is preferred for new classes, especially since the less Swift has to interact with Objective-C the more free you are to use Swift language features. But, for example, working with some C APIs can be awkward in Swift, so Objective-C is OK if it makes things easier.
 
 For larger tasks, there are two options:
 
@@ -55,7 +56,14 @@ If you decide to start working on something, please add a note in the issue (fil
 
 ## Coding style
 
-The coding style used is based on the [Google Objective-C Style Guide], with the following changes:
+Swift:
+
+* Braces at the end of the line for control statements, and on their own line for functions, classes, etc.
+* `else` always starts a new line, whether for `guard` or `if`.
+* Use blank lines to separate groups of variable declarations (`let` or `var`), `guard` statements, and other statements.
+* Otherwise, normal Swift style rules apply.
+
+For Objective-C, the coding style used is based on the [Google Objective-C Style Guide], with the following changes:
 
   [Google Objective-C Style Guide]: http://google-styleguide.googlecode.com/svn/trunk/objcguide.xml
 
