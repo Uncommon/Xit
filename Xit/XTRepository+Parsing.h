@@ -23,9 +23,6 @@ typedef NS_ENUM(NSUInteger, XitChange) {
 @class XTFileChange;
 @class XTLocalBranch;
 @class XTRemote;
-@class XTStash;
-@class XTSubmodule;
-@class XTTag;
 @class XTWorkspaceFileStatus;
 
 
@@ -51,9 +48,6 @@ typedef NS_ENUM(NSUInteger, XitChange) {
                            commitSHA:(NSString*)sha
                            parentSHA:(nullable NSString*)parentSHA;
 - (BOOL)isTextFile:(NSString*)path commit:(NSString*)commit;
-
-- (nullable XTRemote*)remoteWithName:(NSString*)name error:(NSError**)error
-    NS_SWIFT_NAME(remote(_:));
 
 @end
 

@@ -26,7 +26,7 @@
 		895869C01D088A46003A9AF0 /* tagTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 895869BA1D088A46003A9AF0 /* tagTemplate.png */; };
 		895869C11D088A46003A9AF0 /* tagTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 895869BB1D088A46003A9AF0 /* tagTemplate@2x.png */; };
 		896A29F71E4C3620002C5EC8 /* PreviewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896A29F61E4C3620002C5EC8 /* PreviewItem.swift */; };
-		899DB1921CE109C700760270 /* XTWorkspaceTreeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB18D1CE0EA3A00760270 /* XTWorkspaceTreeBuilder.swift */; };
+		899DB1921CE109C700760270 /* WorkspaceTreeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB18D1CE0EA3A00760270 /* WorkspaceTreeBuilder.swift */; };
 		899DB1A21CE5022400760270 /* XTCommitEntryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB1A01CE5022400760270 /* XTCommitEntryController.swift */; };
 		899DB1A31CE5022400760270 /* XTCommitEntryController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 899DB1A11CE5022400760270 /* XTCommitEntryController.xib */; };
 		89AC82431806769A00402955 /* XTWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89AC82421806769A00402955 /* XTWebViewController.m */; };
@@ -363,7 +363,7 @@
 		895869BA1D088A46003A9AF0 /* tagTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tagTemplate.png; sourceTree = "<group>"; };
 		895869BB1D088A46003A9AF0 /* tagTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tagTemplate@2x.png"; sourceTree = "<group>"; };
 		896A29F61E4C3620002C5EC8 /* PreviewItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewItem.swift; sourceTree = "<group>"; };
-		899DB18D1CE0EA3A00760270 /* XTWorkspaceTreeBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTWorkspaceTreeBuilder.swift; sourceTree = "<group>"; };
+		899DB18D1CE0EA3A00760270 /* WorkspaceTreeBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceTreeBuilder.swift; sourceTree = "<group>"; };
 		899DB1A01CE5022400760270 /* XTCommitEntryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTCommitEntryController.swift; sourceTree = "<group>"; };
 		899DB1A11CE5022400760270 /* XTCommitEntryController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTCommitEntryController.xib; sourceTree = "<group>"; };
 		89AC82411806769A00402955 /* XTWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTWebViewController.h; sourceTree = "<group>"; };
@@ -915,11 +915,11 @@
 			children = (
 				C9AA802F1E2929810004D670 /* XTFileChangesDataSource.swift */,
 				89D8BE211CF0A4ED00D640AA /* XTRolloverButton.swift */,
-				899DB18D1CE0EA3A00760270 /* XTWorkspaceTreeBuilder.swift */,
 				C99A6AEB1E48FA140030DC01 /* FileListDataSourceBase.swift */,
 				C94736811DF097B2000E3A05 /* FileListView.swift */,
 				C947367F1DF08FFB000E3A05 /* FileRowView.swift */,
 				C932110B1E48E92C00232B61 /* FileTreeDataSource.swift */,
+				899DB18D1CE0EA3A00760270 /* WorkspaceTreeBuilder.swift */,
 			);
 			name = "File List";
 			sourceTree = "<group>";
@@ -1393,7 +1393,7 @@
 				C951EB071DDB9BD600B99FBE /* LabelButton.swift in Sources */,
 				C936AD0C1D4C0FA900C5ADC3 /* XTPasswordOpController.swift in Sources */,
 				C98925C61DB693CC00E5645C /* XTTagPanelController.swift in Sources */,
-				899DB1921CE109C700760270 /* XTWorkspaceTreeBuilder.swift in Sources */,
+				899DB1921CE109C700760270 /* WorkspaceTreeBuilder.swift in Sources */,
 				89D8BE221CF0A4ED00D640AA /* XTRolloverButton.swift in Sources */,
 				C9AA80361E2E7F370004D670 /* XTHistoryViewController.swift in Sources */,
 				31C7C12E13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m in Sources */,

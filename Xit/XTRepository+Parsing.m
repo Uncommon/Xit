@@ -129,11 +129,6 @@
   return result;
 }
 
-- (nullable XTRemote*)remoteWithName:(NSString*)name error:(NSError**)error
-{
-  return [XTRemote remoteWithName:name inRepository:_gtRepo error:error];
-}
-
 - (XTDiffDelta*)deltaFromDiff:(GTDiff*)diff withPath:(NSString*)path
 {
   __block GTDiffDelta *result = nil;

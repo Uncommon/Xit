@@ -89,7 +89,7 @@ class XTFetchController: XTPasswordOpController
                     pruneBranches: Bool)
   {
     guard let repository = repository,
-          let remote = try? repository.remote(remoteName)
+          let remote = XTRemote(name: remoteName, repository: repository)
     else { return }
     
     let repo = repository  // For use in the block without being tied to self

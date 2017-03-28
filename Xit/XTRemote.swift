@@ -19,5 +19,4 @@ open class XTRemote: GTRemote
   {
     super.init(gitRemote: remote, in: repo)
   }
-
 }

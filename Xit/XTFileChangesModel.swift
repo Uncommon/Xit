@@ -252,7 +252,8 @@ class XTStashChanges: NSObject, XTFileChangesModel, Blaming
       guard let indexCommit = self.stash.indexCommit
       else { return nil }
       
-      return try? self.repository.contents(ofFile: path, atCommit: indexCommit.sha!)
+      return try? self.repository.contents(ofFile: path,
+                                           atCommit: indexCommit.sha!)
     }
     else {
       if let untrackedCommit = self.stash.untrackedCommit,
@@ -287,7 +288,7 @@ class XTStagingChanges: NSObject, XTFileChangesModel, Blaming
   
   var treeRoot: NSTreeNode
   {
-    let builder = XTWorkspaceTreeBuilder(changes: repository.workspaceStatus)
+    let builder = WorkspaceTreeBuilder(changes: repository.workspaceStatus)
     let root = builder.build(repository.repoURL)
     
     postProcess(fileTree: root)

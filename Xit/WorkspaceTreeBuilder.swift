@@ -1,23 +1,23 @@
 import Cocoa
 
-class XTWorkspaceTreeBuilder: NSObject
+class WorkspaceTreeBuilder
 {
   var changes: [String: XTWorkspaceFileStatus]
   
-  init(changes: [String: XTWorkspaceFileStatus]) {
+  init(changes: [String: XTWorkspaceFileStatus])
+  {
     self.changes = changes
-    
-    super.init()
   }
   
-  func treeAtURL(_ baseURL: URL, rootPath: NSString) -> NSTreeNode {
+  func treeAtURL(_ baseURL: URL, rootPath: NSString) -> NSTreeNode
+  {
     let rootItem = CommitTreeItem(path: baseURL.path)
     let node = NSTreeNode(representedObject: rootItem)
     let enumerator = FileManager.default.enumerator(
-        at: baseURL,
-        includingPropertiesForKeys: [ URLResourceKey.isDirectoryKey ],
-        options: .skipsSubdirectoryDescendants,
-        errorHandler: nil)
+          at: baseURL,
+          includingPropertiesForKeys: [ URLResourceKey.isDirectoryKey ],
+          options: .skipsSubdirectoryDescendants,
+          errorHandler: nil)
     let rootPathLength = rootPath.length + 1
     
     while let url: URL = enumerator?.nextObject() as! URL? {
@@ -32,7 +32,8 @@ class XTWorkspaceTreeBuilder: NSObject
       var isDirectory: AnyObject?
       
       do {
-        try (url as NSURL).getResourceValue(&isDirectory, forKey: URLResourceKey.isDirectoryKey)
+        try (url as NSURL).getResourceValue(&isDirectory,
+                                            forKey: URLResourceKey.isDirectoryKey)
       }
       catch {
         continue
@@ -50,14 +51,13 @@ class XTWorkspaceTreeBuilder: NSObject
           childNode = NSTreeNode(representedObject: item)
         }
       }
-      if childNode != nil {
-        node.mutableChildren.add(childNode!)
-      }
+      childNode.map { node.mutableChildren.add($0) }
     }
     return node
   }
   
-  func build(_ baseURL: URL) -> NSTreeNode {
+  func build(_ baseURL: URL) -> NSTreeNode
+  {
     return self.treeAtURL(baseURL, rootPath: baseURL.path as NSString)
   }
 }

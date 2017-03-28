@@ -2,7 +2,7 @@ import Cocoa
 
 let tagPrefix = "refs/tags/"
 
-class XTTag: NSObject
+class XTTag
 {
   unowned let repository: XTRepository
   private let tag: GTTag?
@@ -18,8 +18,6 @@ class XTTag: NSObject
     self.tag = tag
     self.name = tag.name
     self.targetSHA = tag.target!.sha!
-    
-    super.init()
   }
   
   /// Initialize with the given tag name.
