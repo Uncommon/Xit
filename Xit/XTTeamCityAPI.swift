@@ -8,7 +8,8 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI
   var type: AccountType { return .teamCity }
   static let rootPath = "/httpAuth/app/rest"
   
-  struct Build {
+  struct Build
+  {
     enum Status
     {
       case succeeded
@@ -45,7 +46,8 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI
       }
     }
     
-    struct Attribute {
+    struct Attribute
+    {
       static let ID = "id"
       static let BuildType = "buildTypeId"
       static let BuildNumber = "number"
