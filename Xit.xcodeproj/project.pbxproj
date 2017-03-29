@@ -107,6 +107,7 @@
 		C932110C1E48E92C00232B61 /* FileTreeDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C932110B1E48E92C00232B61 /* FileTreeDataSource.swift */; };
 		C9328B121D77303200EFF7F7 /* XTFileMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328B111D77303200EFF7F7 /* XTFileMonitor.swift */; };
 		C9328B141D776BC700EFF7F7 /* XTRepositoryWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328B131D776BC700EFF7F7 /* XTRepositoryWatcher.swift */; };
+		C935BD7E1E8BFA4F00BE51F0 /* DateCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C935BD7D1E8BFA4F00BE51F0 /* DateCellView.swift */; };
 		C936AD0A1D4C0CD400C5ADC3 /* XTPushController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C936AD091D4C0CD400C5ADC3 /* XTPushController.swift */; };
 		C936AD0C1D4C0FA900C5ADC3 /* XTPasswordOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C936AD0B1D4C0FA900C5ADC3 /* XTPasswordOpController.swift */; };
 		C93799D51DDF9B28005C08B8 /* WorkspaceWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */; };
@@ -459,6 +460,7 @@
 		C932110B1E48E92C00232B61 /* FileTreeDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileTreeDataSource.swift; sourceTree = "<group>"; };
 		C9328B111D77303200EFF7F7 /* XTFileMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileMonitor.swift; sourceTree = "<group>"; };
 		C9328B131D776BC700EFF7F7 /* XTRepositoryWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRepositoryWatcher.swift; sourceTree = "<group>"; };
+		C935BD7D1E8BFA4F00BE51F0 /* DateCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateCellView.swift; sourceTree = "<group>"; };
 		C936AD091D4C0CD400C5ADC3 /* XTPushController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPushController.swift; sourceTree = "<group>"; };
 		C936AD0B1D4C0FA900C5ADC3 /* XTPasswordOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPasswordOpController.swift; sourceTree = "<group>"; };
 		C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceWatcher.swift; sourceTree = "<group>"; };
@@ -647,6 +649,7 @@
 				C91E9A001D527A1300E128AC /* XTHistoryTableController.swift */,
 				C96F65451D53A6CE001B2557 /* XTHistoryCellView.swift */,
 				C9999AC61E08712000DF3E11 /* HistoryTableView.swift */,
+				C935BD7D1E8BFA4F00BE51F0 /* DateCellView.swift */,
 			);
 			name = HistoryView;
 			sourceTree = "<group>";
@@ -1433,6 +1436,7 @@
 				C957B87C1D2DBBC00040F858 /* XTAccountsManager.swift in Sources */,
 				DD07B08916B313A60012AC19 /* XTRefFormatter.m in Sources */,
 				C947367A1DEF5CA8000E3A05 /* XTFileViewController.swift in Sources */,
+				C935BD7E1E8BFA4F00BE51F0 /* DateCellView.swift in Sources */,
 				C95355EA1D93470400AEEF49 /* XTTitleStatusView.swift in Sources */,
 				C9DAB5D01D4A4F0300586854 /* XTGitPrefsController.swift in Sources */,
 				89C927751D36A2180074F71A /* XTSubmodule.swift in Sources */,

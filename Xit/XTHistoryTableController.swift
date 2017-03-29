@@ -74,11 +74,6 @@ public class XTHistoryTableController: NSViewController
         self?.selectRow(sha: selectedModel.shaToSelect)
       }
     }
-    NotificationCenter.default.addObserver(
-        self,
-        selector: #selector(XTHistoryTableController.dateViewResized(_:)),
-        name: .NSViewFrameDidChange,
-        object: nil)
   }
   
   /// Reloads the commit history from scratch.
@@ -161,53 +156,6 @@ public class XTHistoryTableController: NSViewController
       tableView.scrollRowToCenter(row)
     }
   }
-  
-  func dateViewResized(_ notification: Notification)
-  {
-    guard let textField = notification.object as? NSTextField,
-          let formatter = textField.cell?.formatter as? DateFormatter,
-          let date = textField.objectValue as? Date
-    else { return }
-    
-    updateDateStyle(formatter, width: textField.bounds.size.width)
-    textField.stringValue = ""
-    textField.objectValue = date
-  }
-  
-  func updateDateStyle(_ formatter: DateFormatter, width: CGFloat)
-  {
-    let (dateStyle, timeStyle) = dateTimeStyle(width: width)
-    
-    formatter.dateStyle = dateStyle
-    formatter.timeStyle = timeStyle
-  }
-}
-
-let kFullStyleThreshold: CGFloat = 280
-let kLongStyleThreshold: CGFloat = 210
-let kMediumStyleThreshold: CGFloat = 170
-let kShordStyleThreshold: CGFloat = 150
-
-/// Calculates the appropriate date and time format for a given column width.
-func dateTimeStyle(width: CGFloat) -> (date: DateFormatter.Style,
-                                       time: DateFormatter.Style)
-{
-  var dateStyle = DateFormatter.Style.short
-  var timeStyle = DateFormatter.Style.short
-  
-  switch width {
-    case 0..<kShordStyleThreshold:
-      timeStyle = .none
-    case kShordStyleThreshold..<kMediumStyleThreshold:
-      dateStyle = .short
-    case kMediumStyleThreshold..<kLongStyleThreshold:
-      dateStyle = .medium
-    case kLongStyleThreshold..<kFullStyleThreshold:
-      dateStyle = .long
-    default:
-      dateStyle = .full
-  }
-  return (dateStyle, timeStyle)
 }
 
 extension XTHistoryTableController: NSTableViewDelegate
@@ -238,13 +186,7 @@ extension XTHistoryTableController: NSTableViewDelegate
         historyCell.textField?.stringValue = entry.commit.message ?? ""
         historyCell.objectValue = entry
       case ColumnID.date:
-        let textField = result.textField!
-        let formatter = textField.cell!.formatter as! DateFormatter
-        
-        updateDateStyle(formatter, width: tableColumn.width)
-        textField.objectValue = entry.commit.commitDate
-        textField.postsFrameChangedNotifications = true
-        textField.postsBoundsChangedNotifications = true
+        (result as! DateCellView).date = entry.commit.commitDate
       case ColumnID.email:
         result.textField?.stringValue = entry.commit.email ?? ""
       default:
