@@ -55,7 +55,7 @@ final class XTKeychain: NSObject
     else { return (nil, nil) }
     
     return (NSString(bytes: passwordData!, length: Int(passwordLength),
-                     encoding: String.Encoding.utf8.rawValue) as? String,
+                     encoding: String.Encoding.utf8.rawValue) as String?,
             item.pointee)
   }
   

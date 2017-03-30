@@ -14,6 +14,7 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI
     {
       case succeeded
       case failed
+      case unknown
       
       init?(string: String)
       {

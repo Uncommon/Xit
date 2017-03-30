@@ -49,7 +49,12 @@ class XTServices: NSObject
   
   private static func accountKey(_ account: Account) -> String
   {
-    return "\(account.user)@\(account.location.host)"
+    if let host = account.location.host {
+      return "\(account.user)@\(host)"
+    }
+    else {
+      return account.user
+    }
   }
   
   /// Returns the TeamCity service object for the given account, or nil if
@@ -154,7 +159,8 @@ class XTBasicAuthService : Service
       return true
     }
     else {
-      NSLog("Couldn't construct auth header for \(user) @ \(baseURL)")
+      NSLog("Couldn't construct auth header for " +
+            "\(user) @ \(String(describing: baseURL))")
       return false
     }
   }

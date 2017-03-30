@@ -430,7 +430,7 @@ extension XTSideBarDataSource
                 let build = XTTeamCityAPI.Build(element: firstBuildElement)
           else { return }
           
-          NSLog("\(buildType)/\(branchName): \(build.status)")
+          NSLog("\(buildType)/\(branchName): \(build.status ?? .unknown)")
           var buildTypeStatuses = self.buildStatuses[buildType] ??
                                   [String: Bool]()
           

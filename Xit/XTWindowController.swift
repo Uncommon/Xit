@@ -283,17 +283,17 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   func startOperation(factory: () -> XTOperationController)
       -> XTOperationController?
   {
-    if currentOperation == nil {
+    if let operation = currentOperation {
+      NSLog("Can't start new operation, already have \(operation)")
+      return nil
+    }
+    else {
       let operation = factory()
       
       operation.start()
       currentOperation = operation
       return operation
     }
-    else {
-      NSLog("Can't start new operation, already have \(currentOperation)")
-    }
-    return nil
   }
   
   @IBAction func viewSegmentClicked(_ sender: AnyObject)
