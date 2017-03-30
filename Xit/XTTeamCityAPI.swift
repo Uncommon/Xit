@@ -48,16 +48,16 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI
     
     struct Attribute
     {
-      static let ID = "id"
-      static let BuildType = "buildTypeId"
-      static let BuildNumber = "number"
-      static let Status = "status"
-      static let State = "state"
-      static let Running = "running"
-      static let Percentage = "percentageComplete"
-      static let BranchName = "branchName"
-      static let HRef = "href"
-      static let WebURL = "webUrl"
+      static let id = "id"
+      static let buildType = "buildTypeId"
+      static let buildNumber = "number"
+      static let status = "status"
+      static let state = "state"
+      static let running = "running"
+      static let percentage = "percentageComplete"
+      static let branchName = "branchName"
+      static let href = "href"
+      static let webURL = "webUrl"
     }
     
     let buildType: String?
@@ -72,10 +72,10 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI
       
       let attributes = buildElement.attributesDict()
       
-      self.buildType = attributes[Attribute.BuildType]
-      self.status = attributes[Attribute.Status].flatMap { Status(string: $0) }
-      self.state = attributes[Attribute.State].flatMap { State(string: $0) }
-      self.url = attributes[Attribute.WebURL].flatMap { URL(string: $0) }
+      self.buildType = attributes[Attribute.buildType]
+      self.status = attributes[Attribute.status].flatMap { Status(string: $0) }
+      self.state = attributes[Attribute.state].flatMap { State(string: $0) }
+      self.url = attributes[Attribute.webURL].flatMap { URL(string: $0) }
     }
     
     init?(xml: XMLDocument)
@@ -387,7 +387,7 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI
   /// successfully, `buildTypesStatus` is set to `done`.
   private func parseBuildTypes(_ xml: XMLDocument)
   {
-    guard let hrefs = xml.rootElement()?.childrenAttributes(Build.Attribute.HRef)
+    guard let hrefs = xml.rootElement()?.childrenAttributes(Build.Attribute.href)
     else {
       NSLog("Couldn't get hrefs: \(xml)")
       return
