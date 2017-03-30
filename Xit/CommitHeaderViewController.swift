@@ -51,10 +51,34 @@ extension HeaderGenerator
         "\(parentText)</span></div>")
     }
     
+    let shouldSplit = (authorName != committerName) ||
+                      (authorEmail != committerEmail) ||
+                      (authorDate != committerDate)
+    let signatureTemplate =
+          "<div%@>" +
+          "<span class='name'>%@ &lt;%@&gt;</span>" +
+          "%@" +
+          "<span class='date'>%@</span>" +
+          "</div>"
+    let tagTemplate = " <span class='nametag'>(%@)</span>"
+    var signature = String(format: signatureTemplate,
+                           "", authorName, authorEmail,
+                           shouldSplit ? String(format: tagTemplate, "author")
+                                       : "",
+                           authorDateString)
+    
+    if shouldSplit {
+      signature.append("\n    ")
+      signature.append(String(format: signatureTemplate,
+                              " id='committer'", committerName, committerEmail,
+                              shouldSplit ? String(format: tagTemplate,
+                                                   "committer")
+                                          : "",
+                              committerDateString))
+    }
+    
     return String(format: template,
-                  authorName, authorEmail, authorDateString,
-                  committerName, committerEmail, committerDateString,
-                  commitSHA, parents, message)
+                  signature, commitSHA, parents, message)
   }
 }
 
