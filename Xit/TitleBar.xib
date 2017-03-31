@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12118" systemVersion="16D32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12118"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="XTTitleBarViewController" customModule="Xit" customModuleProvider="target">
+        <customObject id="-2" userLabel="File's Owner" customClass="TitleBarViewController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="branchPopup" destination="UF4-D2-qhU" id="Cx4-D6-Wlb"/>
                 <outlet property="navButtons" destination="EAc-F6-hIg" id="ukE-aJ-FLg"/>
@@ -62,17 +62,17 @@
                         <action selector="viewAction:" target="-2" id="Kca-PO-31K"/>
                     </connections>
                 </segmentedControl>
-                <customView translatesAutoresizingMaskIntoConstraints="NO" id="DfW-Hf-FKe" customClass="XTTitleStatusView" customModule="Xit" customModuleProvider="target">
+                <customView translatesAutoresizingMaskIntoConstraints="NO" id="DfW-Hf-FKe" customClass="TitleStatusView" customModule="Xit" customModuleProvider="target">
                     <rect key="frame" x="296" y="9" width="199" height="25"/>
                     <subviews>
-                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FL9-n6-pxD" customClass="XTDraggingButton" customModule="Xit" customModuleProvider="target">
+                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FL9-n6-pxD" customClass="DraggingButton" customModule="Xit" customModuleProvider="target">
                             <rect key="frame" x="1" y="-2" width="197" height="28"/>
                             <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="RfW-od-VIn">
                                 <behavior key="behavior" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
                         </button>
-                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="WKb-MR-WPP" customClass="XTDraggingImage" customModule="Xit" customModuleProvider="target">
+                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="WKb-MR-WPP" customClass="DraggingImage" customModule="Xit" customModuleProvider="target">
                             <rect key="frame" x="8" y="4" width="16" height="16"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="16" id="9AI-3K-YGh"/>
@@ -80,14 +80,14 @@
                             </constraints>
                             <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSFolder" id="atu-Ru-5oE"/>
                         </imageView>
-                        <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="PFe-lZ-RQc" customClass="XTDraggingProgress" customModule="Xit" customModuleProvider="target">
+                        <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="PFe-lZ-RQc" customClass="DraggingProgress" customModule="Xit" customModuleProvider="target">
                             <rect key="frame" x="8" y="5" width="16" height="16"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="16" id="uh1-dB-U5t"/>
                                 <constraint firstAttribute="height" constant="16" id="zcv-Wq-7Cr"/>
                             </constraints>
                         </progressIndicator>
-                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zFv-Uo-DhN" customClass="XTDraggingLabel" customModule="Xit" customModuleProvider="target">
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zFv-Uo-DhN" customClass="DraggingLabel" customModule="Xit" customModuleProvider="target">
                             <rect key="frame" x="30" y="4" width="69" height="17"/>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Repository" id="mT9-Xv-yPn">
                                 <font key="font" metaFont="system"/>
@@ -101,7 +101,7 @@
                                 <constraint firstAttribute="height" constant="16" id="o1R-ky-y9Q"/>
                             </constraints>
                         </box>
-                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Y8F-Z6-7t2" customClass="XTDraggingImage" customModule="Xit" customModuleProvider="target">
+                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Y8F-Z6-7t2" customClass="DraggingImage" customModule="Xit" customModuleProvider="target">
                             <rect key="frame" x="114" y="3" width="14" height="16"/>
                             <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="branchTemplate" id="DxX-kV-T9C"/>
                         </imageView>

@@ -1,6 +1,6 @@
 import Cocoa
 
-protocol XTTitleBarDelegate: class
+protocol TitleBarDelegate: class
 {
   var viewStates: (sidebar: Bool, history: Bool, details: Bool) { get }
 
@@ -15,7 +15,7 @@ protocol XTTitleBarDelegate: class
   func showHideDetails()
 }
 
-class XTTitleBarViewController: NSViewController
+class TitleBarViewController: NSViewController
 {
   @IBOutlet weak var navButtons: NSSegmentedControl!
   @IBOutlet weak var remoteControls: NSSegmentedControl!
@@ -28,7 +28,7 @@ class XTTitleBarViewController: NSViewController
   @IBOutlet weak var viewControls: NSSegmentedControl!
   @IBOutlet weak var operationViewSpacing: NSLayoutConstraint!
   
-  weak var delegate: XTTitleBarDelegate? = nil
+  weak var delegate: TitleBarDelegate? = nil
   
   enum NavSegment: Int
   {

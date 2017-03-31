@@ -1,27 +1,27 @@
 import Cocoa
 
-class XTTitleStatusView: NSView
+class TitleStatusView: NSView
 {
   override var mouseDownCanMoveWindow: Bool { return true }
 }
 
 
-class XTDraggingButton : NSButton
+class DraggingButton : NSButton
 {
   override var mouseDownCanMoveWindow: Bool { return true }
 }
 
-class XTDraggingLabel : NSTextField
+class DraggingLabel : NSTextField
 {
   override var mouseDownCanMoveWindow: Bool { return true }
 }
 
-class XTDraggingImage : NSImageView
+class DraggingImage : NSImageView
 {
   override var mouseDownCanMoveWindow: Bool { return true }
 }
 
-class XTDraggingProgress : NSProgressIndicator
+class DraggingProgress : NSProgressIndicator
 {
   override var mouseDownCanMoveWindow: Bool { return true }
 }

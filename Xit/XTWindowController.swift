@@ -15,7 +15,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   var historyController: XTHistoryViewController!
   weak var xtDocument: XTDocument?
-  var titleBarController: XTTitleBarViewController? = nil
+  var titleBarController: TitleBarViewController? = nil
   var refsChangedObserver: NSObjectProtocol?
   var selectedModel: XTFileChangesModel?
   {
@@ -412,7 +412,7 @@ extension XTWindowController: NSSplitViewDelegate
 }
 
 // MARK: XTTitleBarDelegate
-extension XTWindowController: XTTitleBarDelegate
+extension XTWindowController: TitleBarDelegate
 {
   func branchSelecetd(_ branch: String)
   {
@@ -443,8 +443,8 @@ extension XTWindowController: NSToolbarDelegate
   {
     guard let item = notification.userInfo?["item"] as? NSToolbarItem,
           item.itemIdentifier == "com.uncommonplace.xit.titlebar",
-          let viewController = XTTitleBarViewController(nibName: "TitleBar",
-                                                        bundle: nil)
+          let viewController = TitleBarViewController(nibName: "TitleBar",
+                                                      bundle: nil)
     else { return }
     
     let repository = xtDocument!.repository!
@@ -530,7 +530,7 @@ extension XTWindowController: NSTouchBarDelegate
                          NSImage(named: NSImageNameGoForwardTemplate)!],
                 trackingMode: .momentary,
                 target: titleBarController,
-                action: #selector(XTTitleBarViewController.navigate(_:)))
+                action: #selector(TitleBarViewController.navigate(_:)))
         let item = NSCustomTouchBarItem(identifier: identifier)
       
         control.segmentStyle = .separated
