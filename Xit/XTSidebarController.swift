@@ -338,10 +338,10 @@ class XTSidebarController: NSViewController, SidebarHandler
   
   @IBAction func mergeBranch(_ sender: Any?)
   {
-    guard let branch = selectedBranch()
+    guard let selectedItem = targetItem() as? XTBranchItem
     else { return }
     
-    _ = try? repo.merge(branch)
+    _ = try? repo.merge(selectedItem.fullName)
   }
   
   @objc(deleteBranch:)

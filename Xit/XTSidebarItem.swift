@@ -67,6 +67,8 @@ class XTBranchItem : XTSideBarItem
   override var displayTitle: String
       { return (title as NSString).lastPathComponent }
   override var icon: NSImage? { return NSImage(named: "branchTemplate") }
+  
+  var fullName: String { return title }
 }
 
 
@@ -93,6 +95,8 @@ class XTRemoteBranchItem : XTBranchItem
 {
   var remote: String
   override var refType: XTRefType { return .remoteBranch }
+  
+  override var fullName: String { return "\(remote)/\(title)" }
   
   init(title: String, remote: String, model: XTFileChangesModel)
   {
