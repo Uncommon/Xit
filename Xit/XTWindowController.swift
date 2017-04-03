@@ -186,6 +186,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   @IBAction func refresh(_ sender: AnyObject)
   {
     historyController.reload()
+    sidebarController.reload()
   }
   
   @IBAction func showHideSidebar(_ sender: AnyObject)
