@@ -2,7 +2,7 @@
 #import "XTRepository+Commands.h"
 #import "XTConstants.h"
 #import "Xit-Swift.h"
-#import <ObjectiveGit/ObjectiveGit.h>
+#import "ObjectiveGit/ObjectiveGit.h"
 
 NSString *XTErrorOutputKey = @"output";
 NSString *XTErrorArgsKey = @"args";
