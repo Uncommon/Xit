@@ -44,7 +44,7 @@ class Git2Blame: Blame
       options.pointee.oldest_commit = endOID.oid
     }
     
-    var blame: OpaquePointer? = nil
+    var blame: OpaquePointer?
     let result = git_blame_file(&blame, repository.gtRepo.git_repository(),
                                 path, options)
     
@@ -170,7 +170,8 @@ class CLGitBlame: Blame
           var authorSig, committerSig: Signature!
           
           if oid.isZero {
-            authorSig = GitSignature(signature: repository.gtRepo.userSignatureForNow().git_signature().pointee)
+            authorSig = GitSignature(signature:
+                repository.gtRepo.userSignatureForNow().git_signature().pointee)
             committerSig = authorSig
           }
           else {

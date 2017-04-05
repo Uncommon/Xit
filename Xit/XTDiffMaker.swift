@@ -29,7 +29,7 @@ class XTDiffMaker: NSObject
   {
     var whitespaceFlags: UInt32 = 0
     
-    switch (whitespace) {
+    switch whitespace {
       case .showAll:
         break
       case .ignoreEOL:

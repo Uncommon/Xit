@@ -29,10 +29,8 @@ class XTFetchController: XTPasswordOpController
       case 1:
         return remotes[0]
       default:
-        for remote in remotes {
-          if remote == "origin" {
-            return remote
-          }
+        for remote in remotes where remote == "origin" {
+          return remote
         }
         return remotes[0]
     }
@@ -107,4 +105,3 @@ class XTFetchController: XTPasswordOpController
     }
   }
 }
-

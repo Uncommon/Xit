@@ -1,13 +1,13 @@
 import Foundation
 
 
-protocol XTOutlineViewDelegate
+protocol XTOutlineViewDelegate: class
 {
   /// The user has clicked on the selected row.
   func outlineViewClickedSelectedRow(_ outline: NSOutlineView)
 }
 
-protocol XTTableViewDelegate
+protocol XTTableViewDelegate: class
 {
   /// The user has clicked on the selected row.
   func tableViewClickedSelectedRow(_ tableView: NSTableView)
@@ -168,7 +168,7 @@ extension NSTableView
 
 extension NSSplitView
 {
-  func animate(position: CGFloat, ofDividerAtIndex index:Int)
+  func animate(position: CGFloat, ofDividerAtIndex index: Int)
   {
     let targetView = subviews[index]
     var endFrame = targetView.frame

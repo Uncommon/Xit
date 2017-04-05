@@ -2,7 +2,7 @@ import Foundation
 
 
 @objc(XTWorkspaceWatcher)
-class WorkspaceWatcher : NSObject
+class WorkspaceWatcher: NSObject
 {
   unowned let repository: XTRepository
   var stream: FileEventStream! = nil

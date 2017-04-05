@@ -25,7 +25,7 @@ class XTFileDiffController: XTWebViewController,
       configureDiffMaker()
     }
   }
-  var diffMaker: XTDiffMaker? = nil
+  var diffMaker: XTDiffMaker?
   {
     didSet
     {

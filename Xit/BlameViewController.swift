@@ -119,7 +119,8 @@ class BlameViewController: XTWebViewController, TabWidthVariable
         color = color.blended(withFraction: 0.65, of: .white)
       }
       htmlLines.append(contentsOf: ["</div></td>",
-                                    "<td style='background-color: \(color.cssHSL)'>"])
+                                    "<td style='background-color: " +
+                                    "\(color.cssHSL)'>"])
       
       let start = hunk.finalLineStart - 1
       let end = min(start + hunk.lineCount, lines.count-1)

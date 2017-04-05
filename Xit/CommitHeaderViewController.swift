@@ -83,7 +83,7 @@ extension HeaderGenerator
 }
 
 @objc(XTCommitHeaderViewController)
-class CommitHeaderViewController : XTWebViewController, HeaderGenerator
+class CommitHeaderViewController: XTWebViewController, HeaderGenerator
 {
   typealias Repo = XTRepository
   typealias Commit = XTCommit

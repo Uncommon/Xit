@@ -100,11 +100,11 @@ class XTSideBarDataSource: NSObject
   static func makeRoots(_ stagingItem: XTSideBarItem) -> [XTSideBarGroupItem]
   {
     let rootNames = ["WORKSPACE", "BRANCHES", "REMOTES", "TAGS", "STASHES",
-                     "SUBMODULES"];
+                     "SUBMODULES"]
     let roots = rootNames.map({ XTSideBarGroupItem(title: $0) })
     
     roots[0].add(child: stagingItem)
-    return roots;
+    return roots
   }
   
   override init()
@@ -122,7 +122,7 @@ class XTSideBarDataSource: NSObject
   {
     outline!.target = self
     outline!.doubleAction = #selector(XTSideBarDataSource.doubleClick(_:))
-    if (!XTAccountsManager.manager.accounts(ofType: .teamCity).isEmpty) {
+    if !XTAccountsManager.manager.accounts(ofType: .teamCity).isEmpty {
       buildStatusTimer = Timer.scheduledTimer(
           withTimeInterval: Intervals.teamCityRefresh, repeats: true) {
         [weak self] _ in
@@ -233,7 +233,7 @@ class XTSideBarDataSource: NSObject
       return item
     }
     
-    let folderName = branchPath[0];
+    let folderName = branchPath[0]
     
     if let child = item.children.first(where: { $0.expandable &&
                                                 $0.title == folderName }) {
@@ -278,7 +278,7 @@ class XTSideBarDataSource: NSObject
   
   func scheduleReload()
   {
-    if let timer = reloadTimer , timer.isValid {
+    if let timer = reloadTimer, timer.isValid {
       timer.fireDate = Date(timeIntervalSinceNow: Intervals.reloadDelay)
     }
     else {
@@ -304,7 +304,7 @@ class XTSideBarDataSource: NSObject
   func item(forBranchName branch: String) -> XTLocalBranchItem?
   {
     let branches = roots[XTGroupIndex.branches.rawValue]
-    let result = branches.children.first(where: { $0.title == branch } )
+    let result = branches.children.first(where: { $0.title == branch })
     
     return result as? XTLocalBranchItem
   }
@@ -314,7 +314,7 @@ class XTSideBarDataSource: NSObject
   {
     let group = roots[group.rawValue]
     
-    return group.children.first(where: { $0.title == name} )
+    return group.children.first(where: { $0.title == name})
   }
   
   func item(for button: NSButton) -> XTSideBarItem?
@@ -685,7 +685,8 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
               dataView.statusButton.image = NSImage(named: "trackingMissing")
               dataView.statusButton.toolTip = tracking + " (missing)"
               dataView.statusButton.target = self
-              dataView.statusButton.action = #selector(self.missingTrackingBranch(_:))
+              dataView.statusButton.action =
+                  #selector(self.missingTrackingBranch(_:))
             case .set(let tracking):
               dataView.statusButton.image = NSImage(named: "tracking")
               dataView.statusButton.toolTip = tracking

@@ -39,30 +39,30 @@ class XTSideBarItem: NSObject
 }
 
 
-class XTSideBarGroupItem : XTSideBarItem
+class XTSideBarGroupItem: XTSideBarItem
 {
   override var isSelectable: Bool { return false }
   override var expandable: Bool { return true }
 }
 
 
-class XTRemotesItem : XTSideBarGroupItem
+class XTRemotesItem: XTSideBarGroupItem
 {}
 
 
-class XTStagingItem : XTSideBarItem
+class XTStagingItem: XTSideBarItem
 {
   override var icon: NSImage? { return NSImage(named: "stagingTemplate") }
 }
 
 
-class XTStashItem : XTSideBarItem
+class XTStashItem: XTSideBarItem
 {
   override var icon: NSImage? { return NSImage(named: "stashTemplate") }
 }
 
 
-class XTBranchItem : XTSideBarItem
+class XTBranchItem: XTSideBarItem
 {
   override var displayTitle: String
       { return (title as NSString).lastPathComponent }
@@ -91,7 +91,7 @@ class XTLocalBranchItem: XTBranchItem
 }
 
 
-class XTRemoteBranchItem : XTBranchItem
+class XTRemoteBranchItem: XTBranchItem
 {
   var remote: String
   override var refType: XTRefType { return .remoteBranch }
@@ -108,7 +108,7 @@ class XTRemoteBranchItem : XTBranchItem
 }
 
 
-class XTBranchFolderItem : XTSideBarItem
+class XTBranchFolderItem: XTSideBarItem
 {
   override var icon: NSImage? { return NSImage(named: "folderTemplate") }
   override var isSelectable: Bool { return false }
@@ -116,7 +116,7 @@ class XTBranchFolderItem : XTSideBarItem
 }
 
 
-class XTRemoteItem : XTSideBarItem
+class XTRemoteItem: XTSideBarItem
 {
   let remote: XTRemote?
   
@@ -145,7 +145,7 @@ class XTRemoteItem : XTSideBarItem
 }
 
 
-class XTTagItem : XTSideBarItem
+class XTTagItem: XTSideBarItem
 {
   let tag: XTTag
 
@@ -167,7 +167,7 @@ class XTTagItem : XTSideBarItem
 }
 
 
-class XTSubmoduleItem : XTSideBarItem
+class XTSubmoduleItem: XTSideBarItem
 {
   var submodule: XTSubmodule
   override var icon: NSImage? { return NSImage(named: "submoduleTemplate") }

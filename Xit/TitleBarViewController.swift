@@ -28,7 +28,7 @@ class TitleBarViewController: NSViewController
   @IBOutlet weak var viewControls: NSSegmentedControl!
   @IBOutlet weak var operationViewSpacing: NSLayoutConstraint!
   
-  weak var delegate: TitleBarDelegate? = nil
+  weak var delegate: TitleBarDelegate?
   
   enum NavSegment: Int
   {

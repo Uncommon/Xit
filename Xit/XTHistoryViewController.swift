@@ -2,17 +2,17 @@ import Foundation
 
 /// View controller for history view, with the history list on top and
 /// detail views below.
-class XTHistoryViewController : NSViewController
+class XTHistoryViewController: NSViewController
 {
-  @IBOutlet weak var historyTable : NSTableView!
+  @IBOutlet weak var historyTable: NSTableView!
   @IBOutlet weak var mainSplitView: NSSplitView!
   @IBOutlet weak var tableController: XTHistoryTableController!
   
   private(set) var fileViewController: XTFileViewController!
   
-  private var savedHistorySize: CGFloat? = nil
+  private var savedHistorySize: CGFloat?
   
-  weak var repo : XTRepository!
+  weak var repo: XTRepository!
   {
     didSet
     {

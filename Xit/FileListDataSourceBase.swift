@@ -32,7 +32,8 @@ class FileListDataSourceBase: NSObject
     {
       observers.addObserver(
           forName: .XTSelectedModelChanged, object: repository, queue: .main) {
-        [weak self] (note) in
+        [weak self]
+        (_) in
         guard let myself = self
         else { return }
         
@@ -81,7 +82,7 @@ protocol FileListDataSource: class
 
 
 /// Cell view with custom drawing for deleted files.
-class FileCellView : NSTableCellView
+class FileCellView: NSTableCellView
 {
   /// The change is stored to improve drawing of selected deleted files.
   var change: XitChange = .unmodified
@@ -102,7 +103,7 @@ class FileCellView : NSTableCellView
 
 
 /// Cell view with a button rather than an image.
-class TableButtonView : NSTableCellView
+class TableButtonView: NSTableCellView
 {
   @IBOutlet var button: NSButton!
 }

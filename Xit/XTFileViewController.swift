@@ -237,8 +237,9 @@ class XTFileViewController: NSViewController
         object: headerController,
         queue: nil) {
       [weak self] note in
-      guard let newHeight = (note.userInfo?[CommitHeaderViewController.headerHeightKey]
-                             as? NSNumber)?.floatValue
+      guard let newHeight =
+          (note.userInfo?[CommitHeaderViewController.headerHeightKey]
+           as? NSNumber)?.floatValue
       else { return }
       
       self?.headerSplitView.animate(position:CGFloat(newHeight),
@@ -266,7 +267,7 @@ class XTFileViewController: NSViewController
     else {
       indexTimer = Timer.scheduledTimer(withTimeInterval: indexDelay,
                                         repeats: false) {
-        [weak self] (timer) in
+        [weak self] (_) in
         self?.fileListDataSource.reload()
         self?.indexTimer = nil
       }
@@ -323,8 +324,9 @@ class XTFileViewController: NSViewController
     
       let unstagedIndex = fileListOutline.column(withIdentifier: ColumnID.unstaged)
       let stagedIndex = fileListOutline.column(withIdentifier: ColumnID.staged)
-      let displayRect = NSUnionRect(fileListOutline.rect(ofColumn: unstagedIndex),
-                                    fileListOutline.rect(ofColumn: stagedIndex))
+      let stagedRect = fileListOutline.rect(ofColumn: stagedIndex)
+      let unstagedRect = fileListOutline.rect(ofColumn: unstagedIndex)
+      let displayRect = stagedRect.union(unstagedRect)
       
       fileListOutline.setNeedsDisplay(displayRect)
     }

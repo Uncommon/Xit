@@ -15,7 +15,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   var historyController: XTHistoryViewController!
   weak var xtDocument: XTDocument?
-  var titleBarController: TitleBarViewController? = nil
+  var titleBarController: TitleBarViewController?
   var refsChangedObserver: NSObjectProtocol?
   var selectedModel: XTFileChangesModel?
   {
@@ -229,7 +229,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   @IBAction func newTag(_: AnyObject)
   {
-    _ = startOperation() { XTNewTagController(windowController: self) }
+    _ = startOperation { XTNewTagController(windowController: self) }
   }
   
   @IBAction func newBranch(_: AnyObject) {}
@@ -268,7 +268,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   public func startRenameBranch(_ branchName: String)
   {
-    _ = startOperation() { XTRenameBranchController(windowController: self,
+    _ = startOperation { XTRenameBranchController(windowController: self,
                                                     branchName: branchName) }
   }
   
@@ -277,7 +277,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   func startOperation<OperationType: XTSimpleOperationController>()
       -> OperationType?
   {
-    return startOperation() { return OperationType(windowController: self) }
+    return startOperation { return OperationType(windowController: self) }
            as? OperationType
   }
   
@@ -573,4 +573,3 @@ extension XTWindowController: NSTouchBarDelegate
                              byExtendingSelection: false)
   }
 }
-

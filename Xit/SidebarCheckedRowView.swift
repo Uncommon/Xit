@@ -2,7 +2,7 @@ import Cocoa
 
 class SidebarCheckedRowView: NSTableRowView
 {
-  weak var imageView: NSImageView? = nil
+  weak var imageView: NSImageView?
   let imageName: String
   let imageToolTip: String?
   
@@ -12,7 +12,7 @@ class SidebarCheckedRowView: NSTableRowView
     self.imageName = imageName
     self.imageToolTip = toolTip
     
-    super.init(frame: NSZeroRect)
+    super.init(frame: NSRect.zero)
   }
   
   required init?(coder: NSCoder)
@@ -29,7 +29,7 @@ class SidebarCheckedRowView: NSTableRowView
     else { return }
     
     let check = NSImage(named: imageName)!
-    let imageView = NSImageView(frame: NSRect(origin: NSZeroPoint,
+    let imageView = NSImageView(frame: NSRect(origin: NSPoint.zero,
                                               size: check.size))
     
     self.imageView = imageView

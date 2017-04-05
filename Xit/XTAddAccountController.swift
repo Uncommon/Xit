@@ -63,7 +63,7 @@ class XTAddAccountController: XTSheetController
     
     alert.alertStyle = .critical
     alert.messageText = message
-    alert.beginSheetModal(for: (window?.sheetParent)!) { (response) in
+    alert.beginSheetModal(for: (window?.sheetParent)!) { (_) in
       self.window?.makeFirstResponder(field)
     }
   }

@@ -1,7 +1,7 @@
 import Cocoa
 
 
-enum AccountType : Int
+enum AccountType: Int
 {
   case gitHub = 0
   case bitBucket = 1
@@ -108,7 +108,7 @@ class XTAccountsManager: NSObject
   
   func accounts(ofType type: AccountType) -> [Account]
   {
-    return accounts.filter() { $0.type == type }
+    return accounts.filter { $0.type == type }
   }
   
   func add(_ account: Account)

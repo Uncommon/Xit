@@ -116,7 +116,7 @@ public class XTCommit: CommitType
 
   convenience init?(oid: GitOID, repository: XTRepository)
   {
-    var gitCommit: OpaquePointer? = nil  // git_commit isn't imported
+    var gitCommit: OpaquePointer?  // git_commit isn't imported
     let result = git_commit_lookup(&gitCommit,
                                    repository.gtRepo.git_repository(),
                                    oid.unsafeOID())
@@ -164,7 +164,7 @@ public class XTCommit: CommitType
     var result = [String]()
     
     _ = try? tree.enumerateEntries(with: .pre) {
-      (entry, root, stop) -> Bool in
+      (entry, root, _) -> Bool in
       result.append(root.appending(pathComponent: entry.name))
       return true
     }

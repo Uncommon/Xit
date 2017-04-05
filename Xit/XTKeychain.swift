@@ -1,4 +1,3 @@
-
 import Cocoa
 
 final class XTKeychain: NSObject

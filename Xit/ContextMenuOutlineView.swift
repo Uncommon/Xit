@@ -3,7 +3,7 @@ import Cocoa
 /// Outline view with dynamic context menus.
 class ContextMenuOutlineView: NSOutlineView
 {
-  public private(set) var contextMenuRow: Int? = nil
+  public private(set) var contextMenuRow: Int?
 
   // If you do this in menu(for:) then right-clicking an unselected item
   // doesn't highlight it.

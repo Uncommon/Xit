@@ -5,13 +5,13 @@ extension Siesta.Resource
 {
   /// Either executes the closure with the resource's data, or schedules it
   /// to run later when the data is available.
-  func useData(owner: AnyObject, closure: @escaping (Siesta.Entity<Any>) -> ())
+  func useData(owner: AnyObject, closure: @escaping (Siesta.Entity<Any>) -> Void)
   {
     if let data = latestData {
       closure(data)
     }
     else {
-      addObserver(owner: owner, closure: { (resource, event) in
+      addObserver(owner: owner, closure: { (resource, _) in
         if let data = resource.latestData {
           closure(data)
         }
@@ -91,7 +91,7 @@ extension XTServices.Status: Equatable {
 }
 
 // This doesn't come for free because of the associated value on .failed
-func ==(a: XTServices.Status, b: XTServices.Status) -> Bool
+func == (a: XTServices.Status, b: XTServices.Status) -> Bool
 {
   switch (a, b) {
     case (.unknown, .unknown),
@@ -115,7 +115,7 @@ protocol XTServiceAPI {
 
 
 /// Abstract service class that handles HTTP basic authentication.
-class XTBasicAuthService : Service
+class XTBasicAuthService: Service
 {
   static let AuthenticationStatusChangedNotification = "AuthStatusChanged"
   
@@ -124,7 +124,8 @@ class XTBasicAuthService : Service
     didSet
     {
       NotificationCenter.default.post(
-          name: Notification.Name(rawValue: XTBasicAuthService.AuthenticationStatusChangedNotification),
+          name: Notification.Name(rawValue:
+              XTBasicAuthService.AuthenticationStatusChangedNotification),
           object: self)
     }
   }

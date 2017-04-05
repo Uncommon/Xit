@@ -1,0 +1,26 @@
+disabled_rules:
+    - trailing_whitespace # tws is allowed, especially matching surrounding indent
+    - opening_brace # Opening braces get their own line for func, class, etc.
+    - closure_parameter_position # Closure parameters get their own line
+    - statement_position # else & catch start a new line
+    - force_cast # "as!" has legitimate uses
+    - vertical_whitespace # 2 lines allowable between top-level classes
+    - discarded_notification_center_observer # Bug: swiftlint assumes addObserver is being called on NotificationCenter
+    - type_name # Short type names are allowed for generics
+    - identifier_name # Single-letter names can be OK
+    - trailing_comma # Trailing commas make it easier to add entries
+included:
+    - Xit
+    
+force_try:
+    severity: warning # Fine for cases like loading resources
+file_length:
+    severity: warning
+line_length: 83 # Preferably 80, with some flexibility
+type_body_length: 500
+nesting:
+    type_level:
+        warning: 3
+large_tuple:
+    warning: 5
+    error: 8

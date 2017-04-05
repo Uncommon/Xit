@@ -228,7 +228,7 @@ class XTStashChanges: NSObject, XTFileChangesModel, Blaming
     }
     else {
       if let untrackedCommit = self.stash.untrackedCommit,
-         let _ = try? untrackedCommit.tree?.entry(withPath: path) {
+         (try? untrackedCommit.tree?.entry(withPath: path)) != nil {
         return untrackedCommit
       }
       else {
@@ -270,7 +270,7 @@ class XTStashChanges: NSObject, XTFileChangesModel, Blaming
   func unstagedFileURL(_ path: String) -> URL? { return nil }
 }
 
-func ==(a: XTStashChanges, b: XTStashChanges) -> Bool
+func == (a: XTStashChanges, b: XTStashChanges) -> Bool
 {
   return a.stash.mainCommit.oid == b.stash.mainCommit.oid
 }
@@ -373,14 +373,14 @@ extension XTFileChangesModel
         updateChanges(child)
       }
       
-      if (change == nil) {
+      if change == nil {
         change = childItem.change
       }
       else if change! != childItem.change {
         change = XitChange.mixed
       }
       
-      if (unstagedChange == nil) {
+      if unstagedChange == nil {
         unstagedChange = childItem.unstagedChange
       }
       else if unstagedChange! != childItem.unstagedChange {
@@ -437,7 +437,7 @@ extension XTFileChangesModel
     }
     
     // Do a parallel iteration to more efficiently find additions & deletions.
-    var unstagedIndex = 0, stagedIndex = 0;
+    var unstagedIndex = 0, stagedIndex = 0
     var deletedItems = [XTFileChange]()
     
     while (unstagedIndex < unstagedNodes.count) &&
@@ -491,7 +491,7 @@ extension XTFileChangesModel
       let srcItem = srcNodes[srcIndex].representedObject! as! XTFileChange
       let destItem = destNodes[destIndex].representedObject! as! XTFileChange
       
-      if (destItem.path != srcItem.path) {
+      if destItem.path != srcItem.path {
         // NSTreeNode can't be in two trees, so make a new one.
         let newNode = NSTreeNode(representedObject:
             XTFileChange(path: srcItem.path,

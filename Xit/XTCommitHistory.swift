@@ -17,8 +17,8 @@ public class CommitEntry<C: CommitType>: CustomStringConvertible
     }
   }
   var lines = [HistoryLine]()
-  var dotOffset: UInt? = nil
-  var dotColorIndex: UInt? = nil
+  var dotOffset: UInt?
+  var dotColorIndex: UInt?
   
   public var description: String
   { return commit.description }
@@ -184,7 +184,8 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
     let branchResult = Result(entries: result, queue: queue)
     
 #if DEBUGLOG
-    let before = entries.last?.commit.parentOIDs.map({ $0.SHA.firstSix() }).joinWithSeparator(" ")
+    let before = entries.last?.commit.parentOIDs.map({ $0.SHA.firstSix() })
+                 .joinWithSeparator(" ")
     
     print("\(branchResult) ‹ \(before ?? "-")", terminator: "")
     for (commit, after) in queue {
@@ -241,7 +242,8 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
     let lastParentOIDs = lastEntry.commit.parentOIDs
     
     if let insertBeforeIndex = lastParentOIDs.flatMap(
-           { oid in entries.index(where: { $0.commit.oid == oid }) }).sorted().first {
+           { oid in entries.index(where: { $0.commit.oid == oid }) })
+           .sorted().first {
       #if DEBUGLOG
       print(" ** \(insertBeforeIndex) before \(entries[insertBeforeIndex].commit)")
       #endif
@@ -254,7 +256,8 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
       }
       else {
         #if DEBUGLOG
-        print(" *** \(result) before \(entries[insertBeforeIndex].commit) (after \(afterCommit?.description ?? "-"))")
+        print(" *** \(result) before \(entries[insertBeforeIndex].commit) " +
+              "(after \(afterCommit?.description ?? "-"))")
         #endif
         entries.insert(contentsOf: result.entries, at: insertBeforeIndex)
       }

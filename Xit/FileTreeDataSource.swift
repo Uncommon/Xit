@@ -92,7 +92,7 @@ extension FileTreeDataSource: FileListDataSource
 extension FileTreeDataSource: NSOutlineViewDataSource
 {
   func outlineView(_ outlineView: NSOutlineView,
-                            numberOfChildrenOfItem item: Any?) -> Int
+                   numberOfChildrenOfItem item: Any?) -> Int
   {
     let children = (item as? NSTreeNode)?.children ?? root.children
     
@@ -100,14 +100,14 @@ extension FileTreeDataSource: NSOutlineViewDataSource
   }
   
   func outlineView(_ outlineView: NSOutlineView,
-                            isItemExpandable item: Any) -> Bool
+                   isItemExpandable item: Any) -> Bool
   {
     return !((item as? NSTreeNode)?.children?.isEmpty ?? true)
   }
   
   func outlineView(_ outlineView: NSOutlineView,
-                            child index: Int,
-                            ofItem item: Any?) -> Any
+                   child index: Int,
+                   ofItem item: Any?) -> Any
   {
     guard let children = (item as? NSTreeNode)?.children ?? root.children,
           index < children.count
@@ -117,8 +117,8 @@ extension FileTreeDataSource: NSOutlineViewDataSource
   }
   
   func outlineView(_ outlineView: NSOutlineView,
-                            objectValueFor tableColumn: NSTableColumn?,
-                            byItem item: Any?) -> Any?
+                   objectValueFor tableColumn: NSTableColumn?,
+                   byItem item: Any?) -> Any?
   {
     return (item as? NSTreeNode)?.representedObject
   }

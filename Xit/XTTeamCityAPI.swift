@@ -3,7 +3,7 @@ import Siesta
 
 
 /// API for getting TeamCity build information.
-class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI
+class XTTeamCityAPI: XTBasicAuthService, XTServiceAPI
 {
   var type: AccountType { return .teamCity }
   static let rootPath = "/httpAuth/app/rest"
@@ -135,7 +135,8 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI
     //    buildType:\(buildType),branch:\(branch)
     // - Returns a list of <build href=".."/>, retrieve those
     // If we just pass this to resource(path:), the ? gets encoded.
-    let href = "builds/?locator=running:any,branch:\(branch),buildType:\(buildType)"
+    let href = "builds/?locator=running:any,branch:" +
+               "\(branch),buildType:\(buildType)"
     let url = URL(string: href, relativeTo: baseURL)
     
     return self.resource(absoluteURL: url)
@@ -307,7 +308,7 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI
       }
     }
     
-    return result;
+    return result
   }
   
   /// Parses the list of VCS roots, collecting their repository URLs.
@@ -333,7 +334,7 @@ class XTTeamCityAPI : XTBasicAuthService, XTServiceAPI
         if let xmlData = data.content as? XMLDocument {
           self.parseVCSRoot(xml: xmlData, vcsRootID: rootID)
           waitingRootCount -= 1
-          if (waitingRootCount == 0) {
+          if waitingRootCount == 0 {
             self.getBuildTypes()
           }
         }

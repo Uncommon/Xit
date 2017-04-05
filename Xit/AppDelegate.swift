@@ -2,7 +2,7 @@ import AppKit
 
 class AppDelegate: NSObject
 {
-  var openPanel: NSOpenPanel? = nil
+  var openPanel: NSOpenPanel?
   
   @IBOutlet var remoteSettingsSubmenu: NSMenu!
   

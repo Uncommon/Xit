@@ -24,7 +24,7 @@ public class XTFetchPanelController: XTSheetController
     set { pruneCheck?.intValue = newValue ? 1 : 0 }
   }
   
-  var parentController : XTWindowController?
+  var parentController: XTWindowController?
   {
     didSet
     {

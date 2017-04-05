@@ -25,7 +25,8 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
     
     XTAccountsManager.manager.readAccounts()
     authStatusObserver = notificationCenter.addObserver(
-        forName: NSNotification.Name(rawValue: XTBasicAuthService.AuthenticationStatusChangedNotification),
+        forName: NSNotification.Name(rawValue:
+            XTBasicAuthService.AuthenticationStatusChangedNotification),
         object: nil,
         queue: OperationQueue.main) {
       [weak self] (_) in
@@ -50,7 +51,7 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
     let alert = NSAlert()
     
     alert.messageText = message
-    alert.beginSheetModal(for: view.window!) { (NSModalResponse) in }
+    alert.beginSheetModal(for: view.window!) { (_) in }
   }
   
   @IBAction func addAccount(_ sender: AnyObject)
@@ -117,7 +118,8 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
                                       password: password)
         }
         catch _ as XTKeychain.Error {
-          showError("The password could not be saved because the location field is incorrect.")
+          showError("The password could not be saved because the location " +
+                    "field is incorrect.")
           return
         }
         catch _ as NSError {

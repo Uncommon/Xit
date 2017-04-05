@@ -1,6 +1,6 @@
 import Foundation
 
-class XTFileChangesDataSource : FileListDataSourceBase
+class XTFileChangesDataSource: FileListDataSourceBase
 {
   var changes = [XTFileChange]()
   var wasInStaging: Bool = false
@@ -18,9 +18,9 @@ class XTFileChangesDataSource : FileListDataSourceBase
     let oldSet = NSOrderedSet(array: oldPaths)
     
     let deleteIndexes = oldSet.indexes(options: []) {
-      (path, index, stop) in !newSet.contains(path) }
+      (path, _, _) in !newSet.contains(path) }
     let addIndexes = newSet.indexes(options: []) {
-      (path, index, stop) in !oldSet.contains(path) }
+      (path, _, _) in !oldSet.contains(path) }
     var newChangeIndexes = IndexSet()
     
     if changes.isEmpty {
@@ -113,7 +113,7 @@ class XTFileChangesDataSource : FileListDataSourceBase
       }
       return
     }
-    var newRow = 0;
+    var newRow = 0
     
     if let oldRowChange = fileChange(at: oldRow),
        oldRowChange.path == oldChange.path {

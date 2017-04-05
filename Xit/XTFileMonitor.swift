@@ -26,12 +26,12 @@ class XTFileMonitor
       self?.notifyBlock?(self!.path,
                          self!.source.data)
     }
-    source.resume();
+    source.resume()
   }
   
   deinit
   {
-    source.cancel();
+    source.cancel()
     close(fd)
   }
 }

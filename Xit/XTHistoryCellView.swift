@@ -109,7 +109,7 @@ class XTHistoryCellView: NSTableCellView
     let pathOffset = abs(Int(offset1) - Int(offset2))
     let height = Double(pathOffset) * 0.25
     
-    return min(CGFloat(height), XTHistoryCellView.lineWidth);
+    return min(CGFloat(height), XTHistoryCellView.lineWidth)
   }
   
   func drawLines()

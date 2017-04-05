@@ -288,7 +288,7 @@ extension XTRepository
     var submodules = [XTSubmodule]()
     
     gtRepo.enumerateSubmodulesRecursively(false) {
-      (submodule, error, stop) in
+      (submodule, _, _) in
       if let submodule = submodule {
         submodules.append(XTSubmodule(repository: self, submodule: submodule))
       }
@@ -449,7 +449,7 @@ extension XTRepository
       }
     }
     catch {
-      return nil;
+      return nil
     }
   }
   
@@ -688,7 +688,7 @@ extension XTRepository
   func credentialProvider(_ passwordBlock: @escaping () -> (String, String)?)
       -> GTCredentialProvider
   {
-    return GTCredentialProvider() {
+    return GTCredentialProvider {
       (type, url, user) -> GTCredential in
       if checkCredentialType(type, flag: .sshKey) {
         return sshCredential(user) ?? GTCredential()
@@ -743,9 +743,10 @@ extension XTRepository
                     downloadTags: Bool,
                     pruneBranches: Bool,
                     passwordBlock: @escaping () -> (String, String)?,
-                    progressBlock: @escaping (git_transfer_progress) -> Bool) throws
+                    progressBlock: @escaping (git_transfer_progress) -> Bool)
+                    throws
   {
-    try performWriting() {
+    try performWriting {
       let options = self.fetchOptions(downloadTags: downloadTags,
                                       pruneBranches: pruneBranches,
                                       passwordBlock: passwordBlock)
@@ -772,7 +773,7 @@ extension XTRepository
                    passwordBlock: @escaping () -> (String, String)?,
                    progressBlock: @escaping (git_transfer_progress) -> Bool) throws
   {
-    try performWriting() {
+    try performWriting {
       let options = self.fetchOptions(downloadTags: downloadTags,
                                       pruneBranches: pruneBranches,
                                       passwordBlock: passwordBlock)
@@ -794,9 +795,10 @@ extension XTRepository
   public func push(branch: XTBranch,
                    remote: XTRemote,
                    passwordBlock: @escaping () -> (String, String)?,
-                   progressBlock: @escaping (UInt32, UInt32, size_t) -> Bool) throws
+                   progressBlock: @escaping (UInt32, UInt32, size_t) -> Bool)
+                   throws
   {
-    try performWriting() {
+    try performWriting {
       let provider = self.credentialProvider(passwordBlock)
       let options = [ GTRepositoryRemoteOptionsCredentialProvider: provider ]
       
