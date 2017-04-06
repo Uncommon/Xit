@@ -207,6 +207,40 @@ extension XTRepository
     }
   }
   
+  // What git does: (merge.c:cmd_merge)
+  // - Check for detached HEAD
+  // - Look up merge config values, counting options for the target branch
+  //   (merge.c:git_merge_config)
+  // - Parse the specified options
+  // * Action: abort
+  // * Action: continue
+  // - Abort if there are unmerged files in the index
+  // - Abort if MERGE_HEAD already exists
+  // - Abort if CHERRY_PICK_HEAD already exists
+  // - resolve_undo_clear: clear out old morge resolve stuff?
+  // * Handle merge onto unborn branch
+  // - If required, verify signatures on merge heads
+  // - Set GIT_REFLOG_ACTION env
+  // - Set env GITHEAD_[sha]
+  // - Decide strategies, default recursive or octopus
+  // - Find merge base(s)
+  // - Put ORIG_HEAD ref on head commit
+  // - Die if no bases found, unless --allow-unrelated-histories
+  // - If the merge head *is* the base, already up-to-date
+  // * Fast-forward
+  // * Try trivial merge (if not ff-only) - read_tree_trivial, merge_trivial
+  // * Octopus: check if up to date
+  // - ff-only fails here
+  // - Stash local changes
+  // - For each strategy:
+  //   - start clean if not first iteration
+  //   - try the strategy
+  //   - evaluate results
+  // * If auto-merge succeeded (no conflicts), finalize it
+  // - All strategies failed?
+  // - Redo the best strategy if it wasn't the last one tried
+  // - Finalize with conflicts - write MERGE_HEAD, etc
+  
   func merge(branch: XTBranch) throws
   {
     guard let currentBranchName = currentBranch,

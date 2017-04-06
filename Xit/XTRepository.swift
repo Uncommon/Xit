@@ -95,7 +95,7 @@ extension XTRepository
   enum Error: Swift.Error
   {
     case alreadyWriting
-    case conflict([String]?)
+    case conflict([String]?)  // List of conflicted files
     case detachedHead
     case gitError(Int32)
     case patchMismatch
