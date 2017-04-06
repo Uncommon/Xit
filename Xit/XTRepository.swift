@@ -248,6 +248,7 @@ extension XTRepository
     updateIsWriting(false)
   }
   
+  /// Reloads the cached map of OIDs to refs.
   func rebuildRefsIndex()
   {
     var payload = CallbackPayload(repo: self)
@@ -583,7 +584,7 @@ extension XTRepository
       withGitStringArray(from: [file]) {
         (stringarray) in
         options.checkout_strategy = GIT_CHECKOUT_FORCE.rawValue +
-                                            GIT_CHECKOUT_RECREATE_MISSING.rawValue
+                                    GIT_CHECKOUT_RECREATE_MISSING.rawValue
         options.paths = stringarray
         
         let result = git_checkout_tree(self.gtRepo.git_repository(), nil, &options)

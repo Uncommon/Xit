@@ -22,3 +22,14 @@ extension git_checkout_options
     return options
   }
 }
+
+extension git_merge_options
+{
+  static func defaultOptions() -> git_merge_options
+  {
+    var options = git_merge_options()
+    
+    git_merge_init_options(&options, UInt32(GIT_MERGE_OPTIONS_VERSION))
+    return options
+  }
+}

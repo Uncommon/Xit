@@ -167,17 +167,15 @@ extension XTRepository
         var conflicts = [String]()
         
         try index.enumerateConflictedFiles {
-          (ancestor, ours, theirs, stop) in
+          (_, ours, _, _) in
           conflicts.append(ours.path)
         }
         
         let annotated = try annotatedCommit(fromCommit)
         let unsafeAnnotated = UnsafeMutablePointer<OpaquePointer?>(annotated)
-        var mergeOptions = git_merge_options()
-        var checkoutOptions = git_checkout_options()
+        var mergeOptions = git_merge_options.defaultOptions()
+        var checkoutOptions = git_checkout_options.defaultOptions()
         
-        mergeOptions.version = UInt32(GIT_MERGE_OPTIONS_VERSION)
-        checkoutOptions.version = UInt32(GIT_CHECKOUT_OPTIONS_VERSION)
         checkoutOptions.checkout_strategy = GIT_CHECKOUT_SAFE.rawValue |
                                             GIT_CHECKOUT_ALLOW_CONFLICTS.rawValue
 
@@ -230,7 +228,9 @@ extension XTRepository
       case .fastForward:
         try fastForwardMerge(branch: targetBranch, remoteBranch: branch)
       case .normal:
-        break
+        try normalMerge(fromBranch: branch, fromCommit: remoteCommit,
+                        targetName: currentBranchName,
+                        targetCommit: targetCommit)
       case .unborn:
         throw Error.unexpected
     }
