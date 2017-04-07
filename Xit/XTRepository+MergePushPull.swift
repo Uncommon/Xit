@@ -147,7 +147,7 @@ extension XTRepository
       try gtRepo.checkoutReference(updated, options: options)
     }
     catch let error as NSError where error.domain == GTGitErrorDomain {
-      throw Error(gitCode: git_error_code(rawValue: Int32(error.code)))
+      throw Error(gitNSError: error)
     }
   }
   
@@ -203,7 +203,33 @@ extension XTRepository
             options: GTCheckoutOptions(strategy: .conflictStyleMerge))
     }
     catch let error as NSError where error.domain == GTGitErrorDomain {
-      throw Error(gitCode: git_error_code(rawValue: Int32(error.code)))
+      throw Error(gitNSError: error)
+    }
+  }
+  
+  var mergeHeadPath: String
+  {
+    return self.gitDirectoryURL.appendingPathComponent("MERGE_HEAD").path
+  }
+  
+  var cherryPickHeadPath: String
+  {
+    return self.gitDirectoryURL.appendingPathComponent("CHERRY_PICK_HEAD").path
+  }
+  
+  private func mergePreCheck() throws
+  {
+    let index = try gtRepo.index()
+    
+    if index.hasConflicts {
+      throw Error.indexConflict
+    }
+    
+    if FileManager.default.fileExists(atPath: mergeHeadPath) {
+      throw Error.mergeInProgress
+    }
+    if FileManager.default.fileExists(atPath: cherryPickHeadPath) {
+      throw Error.cherryPickInProgress
     }
   }
   
@@ -231,53 +257,67 @@ extension XTRepository
   // * Try trivial merge (if not ff-only) - read_tree_trivial, merge_trivial
   // * Octopus: check if up to date
   // - ff-only fails here
-  // - Stash local changes
+  // - Stash local changes if multiple strategies will be tried
   // - For each strategy:
   //   - start clean if not first iteration
   //   - try the strategy
-  //   - evaluate results
-  // * If auto-merge succeeded (no conflicts), finalize it
+  //   - evaluate results; stop if there was no conflict
+  // * If the last strategy had no conflicts, finalize it
   // - All strategies failed?
   // - Redo the best strategy if it wasn't the last one tried
   // - Finalize with conflicts - write MERGE_HEAD, etc
   
   func merge(branch: XTBranch) throws
   {
-    guard let currentBranchName = currentBranch,
-          let targetBranch = XTBranch(name: currentBranchName, repository: self)
-    else { throw Error.detachedHead }
-    guard let targetCommit = targetBranch.targetCommit,
-          let remoteCommit = branch.targetCommit
-    else { throw Error.unexpected }
-    
-    if targetCommit.oid == remoteCommit.oid {
-      return
-    }
-    
-    let analysis = try analyzeMerge(from: branch)
-    
-    switch analysis {
-      case .none, .upToDate:
+    do {
+      try mergePreCheck()
+      
+      guard let currentBranchName = currentBranch,
+            let targetBranch = XTBranch(name: currentBranchName, repository: self)
+      else { throw Error.detachedHead }
+      guard let targetCommit = targetBranch.targetCommit,
+            let remoteCommit = branch.targetCommit
+      else { throw Error.unexpected }
+      
+      if targetCommit.oid == remoteCommit.oid {
         return
-      case .fastForward:
-        try fastForwardMerge(branch: targetBranch, remoteBranch: branch)
-      case .normal:
-        try normalMerge(fromBranch: branch, fromCommit: remoteCommit,
-                        targetName: currentBranchName,
-                        targetCommit: targetCommit)
-      case .unborn:
-        throw Error.unexpected
+      }
+      
+      let analysis = try analyzeMerge(from: branch)
+      
+      switch analysis {
+        case .none:
+          throw Error.unexpected
+        case .upToDate:
+          return
+        case .fastForward:
+          try fastForwardMerge(branch: targetBranch, remoteBranch: branch)
+        case .normal:
+          try normalMerge(fromBranch: branch, fromCommit: remoteCommit,
+                          targetName: currentBranchName,
+                          targetCommit: targetCommit)
+        case .unborn:
+          throw Error.unexpected
+      }
+    }
+    catch let error as NSError where error.domain == GTGitErrorDomain {
+      throw Error(gitNSError: error)
     }
   }
   
   // C enum values come in as struct instances, and only literals can be used
-  // as Swift enum values.
+  // as Swift enum values, so the values have to be repeated here.
   enum MergeAnalysis: UInt32
   {
+    /// No merge possible
     case none = 0             // GIT_MERGE_ANALYSIS_NONE
+    /// Normal merge
     case normal = 0b0001      // GIT_MERGE_ANALYSIS_NORMAL
+    /// Already up to date, nothing to do
     case upToDate = 0b0010    // GIT_MERGE_ANALYSIS_UP_TO_DATE
+    /// Fast-forward morge: just advance the branch ref
     case fastForward = 0b0100 // GIT_MERGE_ANALYSIS_FASTFORWARD
+    /// Merge target is an unborn branch
     case unborn = 0b1000      // GIT_MERGE_ANALYSIS_UNBORN
   }
   

@@ -95,7 +95,10 @@ extension XTRepository
   enum Error: Swift.Error
   {
     case alreadyWriting
+    case mergeInProgress
+    case cherryPickInProgress
     case conflict([String]?)  // List of conflicted files
+    case indexConflict
     case detachedHead
     case gitError(Int32)
     case patchMismatch
@@ -106,8 +109,14 @@ extension XTRepository
       switch self {
         case .alreadyWriting:
           return "A writing operation is already in progress."
+        case .mergeInProgress:
+          return "A merge operation is already in progress."
+        case .cherryPickInProgress:
+          return "A cherry-pick operation is already in progress."
         case .conflict:
           return "The operation could not be completed because there were conflicts."
+        case .indexConflict:
+          return "There are conflicted files in the index."
         case .detachedHead:
           return "This operation cannot be performed in a detached HEAD state."
         case .gitError(let code):
@@ -129,6 +138,16 @@ extension XTRepository
           self = .alreadyWriting
         default:
           self = .gitError(gitCode.rawValue)
+      }
+    }
+    
+    init(gitNSError: NSError)
+    {
+      if gitNSError.domain == GTGitErrorDomain {
+        self = .gitError(Int32(gitNSError.code))
+      }
+      else {
+        self = .unexpected
       }
     }
   }
