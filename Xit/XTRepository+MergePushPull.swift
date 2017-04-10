@@ -171,20 +171,22 @@ extension XTRepository
           conflicts.append(ours.path)
         }
         
-        let annotated = try annotatedCommit(fromCommit)
-        let unsafeAnnotated = UnsafeMutablePointer<OpaquePointer?>(annotated)
+        var annotated: OpaquePointer? = try annotatedCommit(fromCommit)
         var mergeOptions = git_merge_options.defaultOptions()
         var checkoutOptions = git_checkout_options.defaultOptions()
         
         checkoutOptions.checkout_strategy = GIT_CHECKOUT_SAFE.rawValue |
                                             GIT_CHECKOUT_ALLOW_CONFLICTS.rawValue
 
-        withUnsafePointer(to: &mergeOptions) {
-          (mergeOptions) in
-          withUnsafePointer(to: &checkoutOptions) {
-            (checkoutOptions) in
-            _ = git_merge(gtRepo.git_repository(), unsafeAnnotated, 1,
-                          mergeOptions, checkoutOptions)
+        withUnsafeMutablePointer(to: &annotated) {
+          (annotated) in
+          withUnsafePointer(to: &mergeOptions) {
+            (mergeOptions) in
+            withUnsafePointer(to: &checkoutOptions) {
+              (checkoutOptions) in
+              _ = git_merge(gtRepo.git_repository(), annotated, 1,
+                            mergeOptions, checkoutOptions)
+            }
           }
         }
         throw Error.conflict(conflicts)
@@ -287,40 +289,41 @@ extension XTRepository
       
       let analysis = try analyzeMerge(from: branch)
       
-      switch analysis {
-        case .none:
-          throw Error.unexpected
-        case .upToDate:
-          return
-        case .fastForward:
-          try fastForwardMerge(branch: targetBranch, remoteBranch: branch)
-        case .normal:
-          try normalMerge(fromBranch: branch, fromCommit: remoteCommit,
-                          targetName: currentBranchName,
-                          targetCommit: targetCommit)
-        case .unborn:
-          throw Error.unexpected
+      if analysis.contains(.upToDate) {
+        return
       }
+      if analysis.contains(.unborn) {
+        throw Error.unexpected
+      }
+      if analysis.contains(.fastForward) {
+        try fastForwardMerge(branch: targetBranch, remoteBranch: branch)
+      }
+      if analysis.contains(.normal) {
+        try normalMerge(fromBranch: branch, fromCommit: remoteCommit,
+                        targetName: currentBranchName,
+                        targetCommit: targetCommit)
+      }
+      throw Error.unexpected
     }
     catch let error as NSError where error.domain == GTGitErrorDomain {
       throw Error(gitNSError: error)
     }
   }
   
-  // C enum values come in as struct instances, and only literals can be used
-  // as Swift enum values, so the values have to be repeated here.
-  enum MergeAnalysis: UInt32
+  struct MergeAnalysis: OptionSet
   {
+    let rawValue: UInt32
+    
     /// No merge possible
-    case none = 0             // GIT_MERGE_ANALYSIS_NONE
+    static let none = MergeAnalysis(rawValue: 0)
     /// Normal merge
-    case normal = 0b0001      // GIT_MERGE_ANALYSIS_NORMAL
+    static let normal = MergeAnalysis(rawValue: 0b0001)
     /// Already up to date, nothing to do
-    case upToDate = 0b0010    // GIT_MERGE_ANALYSIS_UP_TO_DATE
+    static let upToDate = MergeAnalysis(rawValue: 0b0010)
     /// Fast-forward morge: just advance the branch ref
-    case fastForward = 0b0100 // GIT_MERGE_ANALYSIS_FASTFORWARD
+    static let fastForward = MergeAnalysis(rawValue: 0b0100)
     /// Merge target is an unborn branch
-    case unborn = 0b1000      // GIT_MERGE_ANALYSIS_UNBORN
+    static let unborn = MergeAnalysis(rawValue: 0b1000)
   }
   
   /// Wraps `git_annotated_commit_lookup`
@@ -353,8 +356,6 @@ extension XTRepository
     guard let commit = branch.targetCommit
     else { throw Error.unexpected }
     
-    let analysis =
-          UnsafeMutablePointer<git_merge_analysis_t>.allocate(capacity: 1)
     let preference =
           UnsafeMutablePointer<git_merge_preference_t>.allocate(capacity: 1)
     
@@ -366,17 +367,17 @@ extension XTRepository
       preference.pointee = GIT_MERGE_PREFERENCE_NONE
     }
     
-    let annotated = try annotatedCommit(commit)
-    let unsafeAnnotated = UnsafeMutablePointer<OpaquePointer?>(annotated)
-    let result = git_merge_analysis(analysis, preference, gtRepo.git_repository(),
-                                    unsafeAnnotated, 1)
+    let analysis =
+          UnsafeMutablePointer<git_merge_analysis_t>.allocate(capacity: 1)
+    var annotated: OpaquePointer? = try annotatedCommit(commit)
+    let result = withUnsafeMutablePointer(to: &annotated) {
+      git_merge_analysis(analysis, preference, gtRepo.git_repository(), $0, 1)
+    }
     
     guard result == GIT_OK.rawValue
     else { throw Error.gitError(result) }
-    guard let returnValue = MergeAnalysis(rawValue: analysis.pointee.rawValue)
-    else { throw Error.unexpected }
     
-    return returnValue
+    return MergeAnalysis(rawValue: analysis.pointee.rawValue)
   }
   
   /// Initiates pushing the given branch.
