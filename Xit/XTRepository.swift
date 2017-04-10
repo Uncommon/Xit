@@ -114,7 +114,8 @@ extension XTRepository
         case .cherryPickInProgress:
           return "A cherry-pick operation is already in progress."
         case .conflict:
-          return "The operation could not be completed because there were conflicts."
+          return "The operation could not be completed because there were " +
+                 "conflicts."
         case .indexConflict:
           return "There are conflicted files in the index."
         case .detachedHead:
@@ -226,6 +227,11 @@ extension XTRepository
       index += 1
       return result
     }
+  }
+  
+  func fileURL(_ file: String) -> URL
+  {
+    return repoURL.appendingPathComponent(file)
   }
   
   func localBranches() -> Branches<XTLocalBranch>

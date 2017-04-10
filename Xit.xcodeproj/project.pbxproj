@@ -193,6 +193,7 @@
 		C9DEA4FF1E54AEC400DF4069 /* BlameTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */; };
 		C9E640121D1095C700192454 /* XTFileChangesModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */; };
 		C9E8815D1E95988700BFA7E5 /* XTRepository+MergePushPull.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E8815C1E95988700BFA7E5 /* XTRepository+MergePushPull.swift */; };
+		C9E8816C1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E8816B1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift */; };
 		C9E9A37D1D0B5706007BFABF /* XTWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E9A37C1D0B5706007BFABF /* XTWindowController.swift */; };
 		C9EB87241D01D93400C47D13 /* XTStash.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EB87231D01D93400C47D13 /* XTStash.swift */; };
 		C9EB87321D05D35800C47D13 /* XTStashTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EB87311D05D35800C47D13 /* XTStashTest.swift */; };
@@ -546,6 +547,7 @@
 		C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlameTest.swift; sourceTree = "<group>"; };
 		C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesModelTest.swift; sourceTree = "<group>"; };
 		C9E8815C1E95988700BFA7E5 /* XTRepository+MergePushPull.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTRepository+MergePushPull.swift"; sourceTree = "<group>"; };
+		C9E8816B1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRepositoryMergeTest.swift; sourceTree = "<group>"; };
 		C9E9A37C1D0B5706007BFABF /* XTWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = XTWindowController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C9EB87231D01D93400C47D13 /* XTStash.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTStash.swift; sourceTree = "<group>"; };
 		C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "XitTests-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -863,6 +865,7 @@
 				C9DEA4BA1E4FEC1600DF4069 /* FileListDataSourceTest.swift */,
 				C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */,
 				89CB619B1E788C6000D69FE4 /* PatchTest.swift */,
+				C9E8816B1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift */,
 			);
 			path = XitTests;
 			sourceTree = "<group>";
@@ -1508,6 +1511,7 @@
 				C94736761DEF28F8000E3A05 /* GitSwiftTests.swift in Sources */,
 				C9DAB5AF1D47C23900586854 /* XTTeamCityTest.swift in Sources */,
 				C9FCC1D11D50EB1A00AC398E /* XTCommitHistoryTest.swift in Sources */,
+				C9E8816C1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift in Sources */,
 				C9E640121D1095C700192454 /* XTFileChangesModelTest.swift in Sources */,
 				89CD209217089D220051C3D4 /* XTCategoryTests.m in Sources */,
 				C94736881DF1DDDE000E3A05 /* XTRepositoryTest.swift in Sources */,

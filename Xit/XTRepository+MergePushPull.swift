@@ -140,7 +140,7 @@ extension XTRepository
             message: "merge \(remoteName): Fast-forward")
       let options = GTCheckoutOptions(strategy: .allowConflicts,
                                       notifyFlags: [.conflict]) {
-        (why, path, baseline, target, workdir) -> Int32 in
+        (_, _, _, _, _) -> Int32 in
         return GIT_EMERGECONFLICT.rawValue
       }
       
@@ -207,11 +207,13 @@ extension XTRepository
     }
   }
   
+  /// The full path to the MERGE_HEAD file
   var mergeHeadPath: String
   {
     return self.gitDirectoryURL.appendingPathComponent("MERGE_HEAD").path
   }
   
+  /// The full path to the CHERRY_PICK_HEAD file
   var cherryPickHeadPath: String
   {
     return self.gitDirectoryURL.appendingPathComponent("CHERRY_PICK_HEAD").path
