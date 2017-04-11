@@ -138,7 +138,7 @@ extension XTRepository
       let updated = try targetReference.updatingTarget(
             remoteSHA,
             message: "merge \(remoteName): Fast-forward")
-      let options = GTCheckoutOptions(strategy: .allowConflicts,
+      let options = GTCheckoutOptions(strategy: [.force, .allowConflicts],
                                       notifyFlags: [.conflict]) {
         (_, _, _, _, _) -> Int32 in
         return GIT_EMERGECONFLICT.rawValue
@@ -277,7 +277,8 @@ extension XTRepository
       try mergePreCheck()
       
       guard let currentBranchName = currentBranch,
-            let targetBranch = XTBranch(name: currentBranchName, repository: self)
+            let targetBranch = XTLocalBranch(name: currentBranchName,
+                                             repository: self)
       else { throw Error.detachedHead }
       guard let targetCommit = targetBranch.targetCommit,
             let remoteCommit = branch.targetCommit
@@ -297,11 +298,13 @@ extension XTRepository
       }
       if analysis.contains(.fastForward) {
         try fastForwardMerge(branch: targetBranch, remoteBranch: branch)
+        return
       }
       if analysis.contains(.normal) {
         try normalMerge(fromBranch: branch, fromCommit: remoteCommit,
                         targetName: currentBranchName,
                         targetCommit: targetCommit)
+        return
       }
       throw Error.unexpected
     }

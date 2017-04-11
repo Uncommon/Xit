@@ -84,26 +84,26 @@ class XTRepositoryMergeTest: XTTest
     try! repository.checkout("c0")
   }
   
-  // This can also have a ff-only variant
+  // Fast-forward case. This could also have a ff-only variant.
   func testMergeC0C1()
   {
     let c1 = XTLocalBranch(repository: repository, name: "c1")!
 
-    try! repository.merge(branch: c1)
+    XCTAssertNoThrow({ try self.repository.merge(branch: c1) })
     XCTAssertEqual(try! String(contentsOf: repository.fileURL("file")), result1)
   }
   
+  // Actually merging changes.
   func testMergeC1C2()
   {
-    let c2 = XTLocalBranch(repository: repository,
-                           name: "c2")!
+    let c2 = XTLocalBranch(repository: repository, name: "c2")!
     
     try! repository.checkout("c1")
-    try! repository.merge(branch: c2)
+    XCTAssertNoThrow({ try self.repository.merge(branch: c2) })
     XCTAssertEqual(try! String(contentsOf: repository.fileURL("file")), result15)
   }
   
-  // Not from the git test
+  // Not from the git test.
   func testConflict()
   {
     writeText(numbers.replacing("1 a", at: 0).toLines(), toFile: "file")
