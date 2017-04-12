@@ -856,6 +856,7 @@
 				C98925B21DA70D3A00E5645C /* XTCommitLinesTest.swift */,
 				C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */,
 				C94736871DF1DDDE000E3A05 /* XTRepositoryTest.swift */,
+				C9E8816B1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift */,
 				C9EB87311D05D35800C47D13 /* XTStashTest.swift */,
 				C923D6471D8CA56800C6B90B /* XTTagTest.swift */,
 				C9DAB5AE1D47C23900586854 /* XTTeamCityTest.swift */,
@@ -865,7 +866,6 @@
 				C9DEA4BA1E4FEC1600DF4069 /* FileListDataSourceTest.swift */,
 				C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */,
 				89CB619B1E788C6000D69FE4 /* PatchTest.swift */,
-				C9E8816B1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift */,
 			);
 			path = XitTests;
 			sourceTree = "<group>";

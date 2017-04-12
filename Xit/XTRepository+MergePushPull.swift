@@ -154,55 +154,47 @@ extension XTRepository
   private func normalMerge(fromBranch: XTBranch, fromCommit: XTCommit,
                            targetName: String, targetCommit: XTCommit) throws
   {
-    guard let targetTree = targetCommit.tree,
-          let fromTree = fromCommit.tree,
-          let fromName = fromBranch.name
+    guard let fromName = fromBranch.name
     else { throw Error.unexpected }
     
     do {
-      // Does it help to find the ancestor?
-      let index = try targetTree.merge(fromTree, ancestor: nil)
+      var annotated: OpaquePointer? = try annotatedCommit(fromCommit)
+      var mergeOptions = git_merge_options.defaultOptions()
+      var checkoutOptions = git_checkout_options.defaultOptions()
+      var result: Int32 = 0
       
-      if index.hasConflicts {
-        var conflicts = [String]()
-        
-        try index.enumerateConflictedFiles {
-          (_, ours, _, _) in
-          conflicts.append(ours.path)
-        }
-        
-        var annotated: OpaquePointer? = try annotatedCommit(fromCommit)
-        var mergeOptions = git_merge_options.defaultOptions()
-        var checkoutOptions = git_checkout_options.defaultOptions()
-        
-        checkoutOptions.checkout_strategy = GIT_CHECKOUT_SAFE.rawValue |
-                                            GIT_CHECKOUT_ALLOW_CONFLICTS.rawValue
+      checkoutOptions.checkout_strategy = GIT_CHECKOUT_SAFE.rawValue |
+                                          GIT_CHECKOUT_ALLOW_CONFLICTS.rawValue
 
-        withUnsafeMutablePointer(to: &annotated) {
-          (annotated) in
-          withUnsafePointer(to: &mergeOptions) {
-            (mergeOptions) in
-            withUnsafePointer(to: &checkoutOptions) {
-              (checkoutOptions) in
-              _ = git_merge(gtRepo.git_repository(), annotated, 1,
-                            mergeOptions, checkoutOptions)
-            }
+      withUnsafeMutablePointer(to: &annotated) {
+        (annotated) in
+        withUnsafePointer(to: &mergeOptions) {
+          (mergeOptions) in
+          withUnsafePointer(to: &checkoutOptions) {
+            (checkoutOptions) in
+            result = git_merge(gtRepo.git_repository(), annotated, 1,
+                               mergeOptions, checkoutOptions)
           }
         }
-        throw Error.conflict(conflicts)
+      }
+      if result != GIT_OK.rawValue {
+        throw Error.gitError(result)
       }
       
-      let newTree = try index.writeTree(to: gtRepo)
-      let message = "Merge branch '\(fromName)'"
-      let parents = [targetCommit, fromCommit].map { $0.gtCommit }
+      let index = try gtRepo.index()
       
-      _ = try gtRepo.createCommit(with: newTree, message: message,
-                                  parents: parents,
-                                  updatingReferenceNamed: targetName)
-      
-      try gtRepo.checkoutReference(
-            fromBranch.reference,
-            options: GTCheckoutOptions(strategy: .conflictStyleMerge))
+      if index.hasConflicts {
+        throw Error.conflict
+      }
+      else {
+        let parents = [targetCommit, fromCommit].map { $0.gtCommit }
+        let tree = try index.writeTree()
+        
+        _ = try gtRepo.createCommit(with: tree,
+                                    message: "Merge branch \(fromName)",
+                                    parents: parents,
+                                    updatingReferenceNamed: targetName)
+      }
     }
     catch let error as NSError where error.domain == GTGitErrorDomain {
       throw Error(gitNSError: error)
@@ -302,7 +294,8 @@ extension XTRepository
       }
       if analysis.contains(.normal) {
         try normalMerge(fromBranch: branch, fromCommit: remoteCommit,
-                        targetName: currentBranchName,
+                        targetName: targetBranch.name ??
+                                    "refs/heads/\(currentBranchName)",
                         targetCommit: targetCommit)
         return
       }

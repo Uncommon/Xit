@@ -89,8 +89,9 @@ class XTRepositoryMergeTest: XTTest
   {
     let c1 = XTLocalBranch(repository: repository, name: "c1")!
 
-    XCTAssertNoThrow({ try self.repository.merge(branch: c1) })
+    try! self.repository.merge(branch: c1)
     XCTAssertEqual(try! String(contentsOf: repository.fileURL("file")), result1)
+    XCTAssertEqual(repository.workspaceStatus.count, 0)
   }
   
   // Actually merging changes.
@@ -99,8 +100,9 @@ class XTRepositoryMergeTest: XTTest
     let c2 = XTLocalBranch(repository: repository, name: "c2")!
     
     try! repository.checkout("c1")
-    XCTAssertNoThrow({ try self.repository.merge(branch: c2) })
+    try! self.repository.merge(branch: c2)
     XCTAssertEqual(try! String(contentsOf: repository.fileURL("file")), result15)
+    XCTAssertEqual(repository.workspaceStatus.count, 0)
   }
   
   // Not from the git test.
@@ -111,22 +113,19 @@ class XTRepositoryMergeTest: XTTest
     commit("commit a")
     
     var wasConflict = false
-    var conflictFiles = [String]()
     let c1 = XTLocalBranch(repository: repository, name: "c1")!
     
     XCTAssertThrowsError({ try self.repository.merge(branch: c1) }, "") {
       (error) in
       if let repoError = error as? XTRepository.Error {
         switch repoError {
-          case .conflict(let files):
+          case .conflict:
             wasConflict = true
-            conflictFiles = files!
           default:
             break
         }
       }
     }
     XCTAssertTrue(wasConflict)
-    XCTAssertEqual(conflictFiles, ["file"])
   }
 }

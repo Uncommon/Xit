@@ -97,7 +97,7 @@ extension XTRepository
     case alreadyWriting
     case mergeInProgress
     case cherryPickInProgress
-    case conflict([String]?)  // List of conflicted files
+    case conflict  // List of conflicted files
     case indexConflict
     case detachedHead
     case gitError(Int32)
@@ -134,7 +134,7 @@ extension XTRepository
     {
       switch gitCode {
         case GIT_ECONFLICT, GIT_EMERGECONFLICT:
-          self = .conflict(nil)
+          self = .conflict
         case GIT_ELOCKED:
           self = .alreadyWriting
         default:
