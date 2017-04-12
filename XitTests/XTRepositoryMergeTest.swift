@@ -23,6 +23,7 @@ extension Array
 // Based on the t7600-merge test from git
 class XTRepositoryMergeTest: XTTest
 {
+  let fileName = "file"
   let numbers: [String] = Array(1...9).map { "\($0)" }
   var text1, text5, text9, text9y: String!
   var result1, result15, result159, result9z: String!
@@ -57,29 +58,29 @@ class XTRepositoryMergeTest: XTTest
                        .replacing("9 X", at: 8).toLines()
     result9z  = numbers.replacing("9 Z", at: 8).toLines()
     
-    writeText(numbers.toLines(), toFile: "file")
+    writeText(numbers.toLines(), toFile: fileName)
     
-    add("file")
+    add(fileName)
     commit("commit 0")
     branch("c0")
     branch("c1")
-    writeText(text1, toFile: "file")
-    add("file")
+    writeText(text1, toFile: fileName)
+    add(fileName)
     commit("commit 1")
     try! repository.checkout("c0")
     branch("c2")
-    writeText(text5, toFile: "file")
-    add("file")
+    writeText(text5, toFile: fileName)
+    add(fileName)
     commit("commit 2")
     try! repository.checkout("c0")
     branch("c7")
-    writeText(text9y, toFile: "file")
-    add("file")
+    writeText(text9y, toFile: fileName)
+    add(fileName)
     commit("commit 7")
     try! repository.checkout("c0")
     branch("c3")
-    writeText(text9, toFile: "file")
-    add("file")
+    writeText(text9, toFile: fileName)
+    add(fileName)
     commit("commit 3")
     try! repository.checkout("c0")
   }
@@ -90,7 +91,7 @@ class XTRepositoryMergeTest: XTTest
     let c1 = XTLocalBranch(repository: repository, name: "c1")!
 
     try! self.repository.merge(branch: c1)
-    XCTAssertEqual(try! String(contentsOf: repository.fileURL("file")), result1)
+    XCTAssertEqual(try! String(contentsOf: repository.fileURL(fileName)), result1)
     XCTAssertEqual(repository.workspaceStatus.count, 0)
   }
   
@@ -101,31 +102,37 @@ class XTRepositoryMergeTest: XTTest
     
     try! repository.checkout("c1")
     try! self.repository.merge(branch: c2)
-    XCTAssertEqual(try! String(contentsOf: repository.fileURL("file")), result15)
+    XCTAssertEqual(try! String(contentsOf: repository.fileURL(fileName)), result15)
     XCTAssertEqual(repository.workspaceStatus.count, 0)
   }
   
   // Not from the git test.
   func testConflict()
   {
-    writeText(numbers.replacing("1 a", at: 0).toLines(), toFile: "file")
-    add("file")
-    commit("commit a")
+    writeText(text9y, toFile: fileName)
+    add(fileName)
+    commit("commit y")
+    try! repository.gtRepo.index().refresh()
     
-    var wasConflict = false
-    let c1 = XTLocalBranch(repository: repository, name: "c1")!
+    let c3 = XTLocalBranch(repository: repository, name: "c3")!
     
-    XCTAssertThrowsError({ try self.repository.merge(branch: c1) }, "") {
-      (error) in
-      if let repoError = error as? XTRepository.Error {
-        switch repoError {
-          case .conflict:
-            wasConflict = true
-          default:
-            break
-        }
-      }
+    do {
+      try self.repository.merge(branch: c3)
+      XCTFail("No conflict detected")
     }
-    XCTAssertTrue(wasConflict)
+    catch XTRepository.Error.conflict {
+      let index = try! repository.gtRepo.index()
+      var conflicts = [String]()
+      
+      XCTAssertTrue(index.hasConflicts)
+      try! index.enumerateConflictedFiles {
+        (_, ours, _, _) in
+        conflicts.append(ours.path)
+      }
+      XCTAssertEqual(conflicts, [fileName])
+    }
+    catch {
+      XCTFail("Unexpected error thrown")
+    }
   }
 }

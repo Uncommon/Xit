@@ -177,8 +177,13 @@ extension XTRepository
           }
         }
       }
-      if result != GIT_OK.rawValue {
-        throw Error.gitError(result)
+      switch git_error_code(rawValue: result) {
+        case GIT_OK:
+          break
+        case GIT_ECONFLICT:
+          throw Error.conflict
+        default:
+          throw Error.gitError(result)
       }
       
       let index = try gtRepo.index()
