@@ -73,11 +73,13 @@ class XTRepositoryMergeTest: XTTest
     add(fileName)
     commit("commit 2")
     try! repository.checkout("c0")
+    /* From the git test, not currently used
     branch("c7")
     writeText(text9y, toFile: fileName)
     add(fileName)
     commit("commit 7")
     try! repository.checkout("c0")
+    */
     branch("c3")
     writeText(text9, toFile: fileName)
     add(fileName)
@@ -112,7 +114,6 @@ class XTRepositoryMergeTest: XTTest
     writeText(text9y, toFile: fileName)
     add(fileName)
     commit("commit y")
-    try! repository.gtRepo.index().refresh()
     
     let c3 = XTLocalBranch(repository: repository, name: "c3")!
     

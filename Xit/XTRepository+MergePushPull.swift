@@ -166,12 +166,13 @@ extension XTRepository
       checkoutOptions.checkout_strategy = GIT_CHECKOUT_SAFE.rawValue |
                                           GIT_CHECKOUT_ALLOW_CONFLICTS.rawValue
 
-      withUnsafeMutablePointer(to: &annotated) {
+      try withUnsafeMutablePointer(to: &annotated) {
         (annotated) in
-        withUnsafePointer(to: &mergeOptions) {
+        try withUnsafePointer(to: &mergeOptions) {
           (mergeOptions) in
-          withUnsafePointer(to: &checkoutOptions) {
+          try withUnsafePointer(to: &checkoutOptions) {
             (checkoutOptions) in
+            try gtRepo.index().refresh()
             result = git_merge(gtRepo.git_repository(), annotated, 1,
                                mergeOptions, checkoutOptions)
           }
