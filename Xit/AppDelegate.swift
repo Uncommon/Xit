@@ -4,6 +4,11 @@ class AppDelegate: NSObject
 {
   var openPanel: NSOpenPanel?
   
+  var isTesting: Bool
+  {
+    return Bundle(identifier:"com.uncommonplace.XitTests") != nil
+  }
+  
   @IBOutlet var remoteSettingsSubmenu: NSMenu!
   
   override init()
@@ -101,14 +106,16 @@ extension AppDelegate: NSApplicationDelegate
   
   func applicationDidFinishLaunching(_ note: Notification)
   {
-    if Bundle(identifier:"com.uncommonplace.XitTests") != nil {
+    if !isTesting {
       XTServices.services.initializeServices()
     }
   }
   
   func applicationOpenUntitledFile(_ app: NSApplication) -> Bool
   {
-    openDocument(nil)
+    if !isTesting {
+      openDocument(nil)
+    }
     // Returning true prevents the app from opening an untitled document
     // on its own.
     return true
