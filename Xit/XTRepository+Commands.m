@@ -119,12 +119,6 @@
   return _cachedBranch;
 }
 
-- (BOOL)merge:(NSString *)name error:(NSError **)error
-{
-  [self executeGitWithArgs:@[ @"merge", name ] writes:YES error:error];
-  return *error == nil;
-}
-
 - (BOOL)push:(NSString *)remote
 {
   NSError *error = nil;

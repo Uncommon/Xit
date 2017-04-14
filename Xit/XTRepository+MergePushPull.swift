@@ -269,7 +269,15 @@ extension XTRepository
   // - Redo the best strategy if it wasn't the last one tried
   // - Finalize with conflicts - write MERGE_HEAD, etc
   
+  /// Merges the given branch into the current branch.
   func merge(branch: XTBranch) throws
+  {
+    try performWriting {
+      try self.writingMerge(branch: branch)
+    }
+  }
+  
+  fileprivate func writingMerge(branch: XTBranch) throws
   {
     do {
       try mergePreCheck()

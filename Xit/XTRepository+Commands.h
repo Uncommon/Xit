@@ -18,7 +18,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)deleteRemote:(NSString*)name error:(NSError**)error;
 - (BOOL)push:(NSString*)remote;
 - (BOOL)checkout:(NSString*)branch error:(NSError**)error;
-- (BOOL)merge:(NSString*)name error:(NSError**)error;
 
 - (BOOL)stagePatch:(NSString*)patch;
 - (BOOL)unstagePatch:(NSString*)patch;

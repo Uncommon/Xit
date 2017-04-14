@@ -343,17 +343,24 @@ class XTSidebarController: NSViewController, SidebarHandler
           let branch = XTBranch(name: selectedItem.title, repository: repo)
     else { return }
     
-    do {
-      try repo.merge(branch: branch)
-    }
-    catch let repoError as XTRepository.Error {
-      let alert = NSAlert()
-      
-      alert.messageText = repoError.message
-      alert.beginSheetModal(for: view.window!, completionHandler: nil)
-    }
-    catch {
-      NSLog("Unexpected error")
+    repo.executeOffMainThread {
+      [weak self] in
+      do {
+        try self?.repo.merge(branch: branch)
+      }
+      catch let repoError as XTRepository.Error {
+        DispatchQueue.main.async {
+          guard let window = self?.view.window
+          else { return }
+          let alert = NSAlert()
+          
+          alert.messageText = repoError.message
+          alert.beginSheetModal(for: window, completionHandler: nil)
+        }
+      }
+      catch {
+        NSLog("Unexpected error")
+      }
     }
   }
   
