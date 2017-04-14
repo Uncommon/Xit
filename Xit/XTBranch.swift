@@ -9,12 +9,30 @@ public class XTBranch
     self.gtBranch = gtBranch
   }
   
+  convenience init?(name: String, repository: XTRepository)
+  {
+    do {
+      self.init(gtBranch: try repository.gtRepo.currentBranch())
+    }
+    catch {
+      return nil
+    }
+  }
+  
   var name: String? { return gtBranch.name }
   var shortName: String? { return gtBranch.shortName }
   var sha: String? { return gtBranch.oid?.sha }
   var oid: GitOID?
   {
     return gtBranch.oid.map { GitOID(oid: $0.git_oid().pointee) }
+  }
+  var targetCommit: XTCommit?
+  {
+    return (try? gtBranch.targetCommit()).map { XTCommit(commit: $0) }
+  }
+  var reference: GTReference
+  {
+    return gtBranch.reference
   }
 }
 

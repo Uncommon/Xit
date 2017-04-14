@@ -63,7 +63,7 @@ class XTFetchController: XTPasswordOpController
   }
   
   /// Fetch progress callback
-  func shouldStop(progress: git_transfer_progress) -> Bool
+  func shouldStop(progress: TransferProgress) -> Bool
   {
     if canceled {
       return true
@@ -71,7 +71,7 @@ class XTFetchController: XTPasswordOpController
     
     /*
     let progressValue =
-        progress.received_objects == progress.total_objects
+        progress.receivedObjects == progress.totalObjects
             ? -1.0
             : Float(progress.total_objects) /
               Float(progress.received_objects)
@@ -94,11 +94,12 @@ class XTFetchController: XTPasswordOpController
     
     tryRepoOperation(successStatus: "Fetch complete",
                      failureStatus: "Fetch failed") {
-      try repo.fetch(remote: remote,
-                     downloadTags: downloadTags,
-                     pruneBranches: pruneBranches,
-                     passwordBlock: self.getPassword,
-                     progressBlock: self.shouldStop)
+      let options = XTRepository.FetchOptions(downloadTags: downloadTags,
+                                              pruneBranches: pruneBranches,
+                                              passwordBlock: self.getPassword,
+                                              progressBlock: self.shouldStop)
+      
+      try repo.fetch(remote: remote, options: options)
       NotificationCenter.default.post(
           name: NSNotification.Name.XTRepositoryRefsChanged, object: repository)
       self.ended()

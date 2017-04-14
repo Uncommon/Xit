@@ -95,6 +95,12 @@ extension XTRepository
   enum Error: Swift.Error
   {
     case alreadyWriting
+    case mergeInProgress
+    case cherryPickInProgress
+    case conflict  // List of conflicted files
+    case localConflict
+    case detachedHead
+    case gitError(Int32)
     case patchMismatch
     case unexpected
     
@@ -103,11 +109,47 @@ extension XTRepository
       switch self {
         case .alreadyWriting:
           return "A writing operation is already in progress."
+        case .mergeInProgress:
+          return "A merge operation is already in progress."
+        case .cherryPickInProgress:
+          return "A cherry-pick operation is already in progress."
+        case .conflict:
+          return "The operation could not be completed because there were " +
+                 "conflicts."
+        case .localConflict:
+          return "There are conflicted files in the work tree or index. " +
+                 "Try checking in or stashing your changes first."
+        case .detachedHead:
+          return "This operation cannot be performed in a detached HEAD state."
+        case .gitError(let code):
+          return "An internal git error (\(code)) occurred."
         case .patchMismatch:
           return "The patch could not be applied because it did not match " +
                  "the file content."
         case .unexpected:
           return "An unexpected repository error occurred."
+      }
+    }
+    
+    init(gitCode: git_error_code)
+    {
+      switch gitCode {
+        case GIT_ECONFLICT, GIT_EMERGECONFLICT:
+          self = .conflict
+        case GIT_ELOCKED:
+          self = .alreadyWriting
+        default:
+          self = .gitError(gitCode.rawValue)
+      }
+    }
+    
+    init(gitNSError: NSError)
+    {
+      if gitNSError.domain == GTGitErrorDomain {
+        self = .gitError(Int32(gitNSError.code))
+      }
+      else {
+        self = .unexpected
       }
     }
   }
@@ -188,6 +230,11 @@ extension XTRepository
     }
   }
   
+  func fileURL(_ file: String) -> URL
+  {
+    return repoURL.appendingPathComponent(file)
+  }
+  
   func localBranches() -> Branches<XTLocalBranch>
   {
     return Branches(repo: self, type: GIT_BRANCH_LOCAL)
@@ -227,10 +274,12 @@ extension XTRepository
     updateIsWriting(false)
   }
   
+  /// Reloads the cached map of OIDs to refs.
   func rebuildRefsIndex()
   {
     var payload = CallbackPayload(repo: self)
-    let callback: git_reference_foreach_cb = { (reference, payload) -> Int32 in
+    let callback: git_reference_foreach_cb = {
+      (reference, payload) -> Int32 in
       let repo = payload!.bindMemory(to: XTRepository.self,
                                      capacity: 1).pointee
       
@@ -561,7 +610,7 @@ extension XTRepository
       withGitStringArray(from: [file]) {
         (stringarray) in
         options.checkout_strategy = GIT_CHECKOUT_FORCE.rawValue +
-                                            GIT_CHECKOUT_RECREATE_MISSING.rawValue
+                                    GIT_CHECKOUT_RECREATE_MISSING.rawValue
         options.paths = stringarray
         
         let result = git_checkout_tree(self.gtRepo.git_repository(), nil, &options)
@@ -679,184 +728,6 @@ func toStringArray(_ gitStrArray: git_strarray) -> [String]
     stringPtr = stringPtr?.advanced(by: 1)
   }
   return result
-}
-
-// MARK: Push/pull
-extension XTRepository
-{
-  
-  func credentialProvider(_ passwordBlock: @escaping () -> (String, String)?)
-      -> GTCredentialProvider
-  {
-    return GTCredentialProvider {
-      (type, url, user) -> GTCredential in
-      if checkCredentialType(type, flag: .sshKey) {
-        return sshCredential(user) ?? GTCredential()
-      }
-      
-      guard checkCredentialType(type, flag: .userPassPlaintext)
-      else { return GTCredential() }
-      
-      if let password = keychainPassword(urlString: url, user: user) {
-        do {
-          return try GTCredential(userName: user, password: password)
-        }
-        catch let error as NSError {
-          NSLog(error.description)
-        }
-      }
-      
-      if let (userName, password) = passwordBlock(),
-         let result = try? GTCredential(userName: userName,
-                                        password: password) {
-        return result
-      }
-      return GTCredential()
-    }
-  }
-  
-  public func fetchOptions(downloadTags: Bool,
-                           pruneBranches: Bool,
-                           passwordBlock: @escaping () -> (String, String)?)
-      -> [String: AnyObject]
-  {
-    let tagOption = downloadTags ? GTRemoteDownloadTagsAuto
-                                 : GTRemoteDownloadTagsNone
-    let pruneOption: GTFetchPruneOption = pruneBranches ? .yes : .no
-    let pruneValue = NSNumber(value: pruneOption.rawValue as Int)
-    let tagValue = NSNumber(value: tagOption.rawValue as UInt32)
-    let provider = self.credentialProvider(passwordBlock)
-    
-    return [
-        GTRepositoryRemoteOptionsDownloadTags: tagValue,
-        GTRepositoryRemoteOptionsFetchPrune: pruneValue,
-        GTRepositoryRemoteOptionsCredentialProvider: provider]
-  }
-  
-  /// Initiates a fetch operation.
-  /// - parameter remote: The remote to pull from.
-  /// - parameter downloadTags: True to also download tags
-  /// - parameter pruneBranches: True to delete obsolete branch refs
-  /// - parameter passwordBlock: Callback for getting the user and password
-  /// - parameter progressBlock: Return true to stop the operation
-  public func fetch(remote: XTRemote,
-                    downloadTags: Bool,
-                    pruneBranches: Bool,
-                    passwordBlock: @escaping () -> (String, String)?,
-                    progressBlock: @escaping (git_transfer_progress) -> Bool)
-                    throws
-  {
-    try performWriting {
-      let options = self.fetchOptions(downloadTags: downloadTags,
-                                      pruneBranches: pruneBranches,
-                                      passwordBlock: passwordBlock)
-    
-      try self.gtRepo.fetch(remote, withOptions: options) {
-        (progress, stop) in
-        stop.pointee = ObjCBool(progressBlock(progress.pointee))
-      }
-    }
-  }
-  
-  /// Initiates pulling the given branch.
-  /// - parameter branch: Either the local branch or the remote tracking branch.
-  /// - parameter remote: The remote to pull from.
-  /// - parameter downloadTags: True to also download tags
-  /// - parameter pruneBranches: True to delete obsolete branch refs
-  /// - parameter passwordBlock: Callback for getting the user and password
-  /// - parameter progressBlock: Return true to stop the operation
-  // TODO: Use something other than git_transfer_progress
-  public func pull(branch: XTBranch,
-                   remote: XTRemote,
-                   downloadTags: Bool,
-                   pruneBranches: Bool,
-                   passwordBlock: @escaping () -> (String, String)?,
-                   progressBlock: @escaping (git_transfer_progress) -> Bool) throws
-  {
-    try performWriting {
-      let options = self.fetchOptions(downloadTags: downloadTags,
-                                      pruneBranches: pruneBranches,
-                                      passwordBlock: passwordBlock)
-
-      try self.gtRepo.pull(branch.gtBranch,
-                           from: remote,
-                           withOptions: options) {
-        (progress, stop) in
-        stop.pointee = ObjCBool(progressBlock(progress.pointee))
-      }
-    }
-  }
-  
-  /// Initiates pushing the given branch.
-  /// - parameter branch: Either the local branch or the remote tracking branch.
-  /// - parameter remote: The remote to pull from.
-  /// - parameter passwordBlock: Callback for getting the user and password
-  /// - parameter progressBlock: Return true to stop the operation
-  public func push(branch: XTBranch,
-                   remote: XTRemote,
-                   passwordBlock: @escaping () -> (String, String)?,
-                   progressBlock: @escaping (UInt32, UInt32, size_t) -> Bool)
-                   throws
-  {
-    try performWriting {
-      let provider = self.credentialProvider(passwordBlock)
-      let options = [ GTRepositoryRemoteOptionsCredentialProvider: provider ]
-      
-      try self.gtRepo.push(branch.gtBranch, to: remote, withOptions: options) {
-        (current, total, bytes, stop) in
-        stop.pointee = ObjCBool(progressBlock(current, total, bytes))
-      }
-    }
-  }
-}
-
-// MARK: Credential helpers
-
-func checkCredentialType(_ type: GTCredentialType,
-                         flag: GTCredentialType) -> Bool
-{
-  return (type.rawValue & flag.rawValue) != 0
-}
-
-func keychainPassword(urlString: String, user: String) -> String?
-{
-  guard let url = URL(string: urlString),
-        let server = url.host as NSString?
-  else { return nil }
-  
-  let user = user as NSString
-  var passwordLength: UInt32 = 0
-  var passwordData: UnsafeMutableRawPointer? = nil
-  
-  let err = SecKeychainFindInternetPassword(
-      nil,
-      UInt32(server.length), server.utf8String,
-      0, nil,
-      UInt32(user.length), user.utf8String,
-      0, nil, 0,
-      .any, .default,
-      &passwordLength, &passwordData, nil)
-  
-  if err != noErr {
-    return nil
-  }
-  return NSString(bytes: passwordData!,
-                  length: Int(passwordLength),
-                  encoding: String.Encoding.utf8.rawValue) as String?
-}
-
-func sshCredential(_ user: String) -> GTCredential?
-{
-  let publicPath =
-      ("~/.ssh/id_rsa.pub" as NSString).expandingTildeInPath
-  let privatePath =
-      ("~/.ssh/id_rsa" as NSString).expandingTildeInPath
-  
-  return try? GTCredential(
-      userName: user,
-      publicKeyURL: URL(fileURLWithPath: publicPath),
-      privateKeyURL: URL(fileURLWithPath: privatePath),
-      passphrase: "")
 }
 
 extension NSNotification.Name
