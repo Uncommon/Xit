@@ -131,9 +131,16 @@ class XTRepositoryMergeTest: XTTest
         conflicts.append(ours.path)
       }
       XCTAssertEqual(conflicts, [fileName])
+      
+      XCTAssertTrue(
+          FileManager.default.fileExists(atPath: repository.mergeHeadPath))
     }
     catch {
       XCTFail("Unexpected error thrown")
     }
   }
+  
+  // Further test cases:
+  // - dirty worktree/index
+  // - merge in progress
 }

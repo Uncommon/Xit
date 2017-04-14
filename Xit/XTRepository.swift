@@ -98,7 +98,7 @@ extension XTRepository
     case mergeInProgress
     case cherryPickInProgress
     case conflict  // List of conflicted files
-    case indexConflict
+    case localConflict
     case detachedHead
     case gitError(Int32)
     case patchMismatch
@@ -116,8 +116,9 @@ extension XTRepository
         case .conflict:
           return "The operation could not be completed because there were " +
                  "conflicts."
-        case .indexConflict:
-          return "There are conflicted files in the index."
+        case .localConflict:
+          return "There are conflicted files in the work tree or index. " +
+                 "Try checking in or stashing your changes first."
         case .detachedHead:
           return "This operation cannot be performed in a detached HEAD state."
         case .gitError(let code):

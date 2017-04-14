@@ -339,10 +339,22 @@ class XTSidebarController: NSViewController, SidebarHandler
   
   @IBAction func mergeBranch(_ sender: Any?)
   {
-    guard let selectedItem = targetItem() as? XTBranchItem
+    guard let selectedItem = targetItem() as? XTBranchItem,
+          let branch = XTBranch(name: selectedItem.title, repository: repo)
     else { return }
     
-    _ = try? repo.merge(selectedItem.fullName)
+    do {
+      try repo.merge(branch: branch)
+    }
+    catch let repoError as XTRepository.Error {
+      let alert = NSAlert()
+      
+      alert.messageText = repoError.message
+      alert.beginSheetModal(for: view.window!, completionHandler: nil)
+    }
+    catch {
+      NSLog("Unexpected error")
+    }
   }
   
   @objc(deleteBranch:)

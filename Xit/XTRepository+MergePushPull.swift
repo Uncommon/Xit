@@ -182,7 +182,7 @@ extension XTRepository
         case GIT_OK:
           break
         case GIT_ECONFLICT:
-          throw Error.conflict
+          throw Error.localConflict
         default:
           throw Error.gitError(result)
       }
@@ -224,7 +224,7 @@ extension XTRepository
     let index = try gtRepo.index()
     
     if index.hasConflicts {
-      throw Error.indexConflict
+      throw Error.localConflict
     }
     
     if FileManager.default.fileExists(atPath: mergeHeadPath) {
