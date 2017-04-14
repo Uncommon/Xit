@@ -98,16 +98,6 @@ extension XTWindowController
     
     controller.start()
   }
-  
-  @IBAction func viewSegmentClicked(_ sender: AnyObject)
-  {
-    switch (sender as! NSSegmentedControl).selectedSegment {
-      case 0:
-        showHideSidebar(sender)
-      default:
-        break
-    }
-  }
 }
 
 // MARK: Action helpers
