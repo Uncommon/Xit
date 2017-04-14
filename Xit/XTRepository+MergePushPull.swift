@@ -159,6 +159,11 @@ extension XTRepository
     
     do {
       var annotated: OpaquePointer? = try annotatedCommit(fromCommit)
+      
+      defer {
+        git_annotated_commit_free(annotated)
+      }
+      
       var mergeOptions = git_merge_options.defaultOptions()
       var checkoutOptions = git_checkout_options.defaultOptions()
       var result: Int32 = 0
@@ -380,6 +385,11 @@ extension XTRepository
     let analysis =
           UnsafeMutablePointer<git_merge_analysis_t>.allocate(capacity: 1)
     var annotated: OpaquePointer? = try annotatedCommit(commit)
+    
+    defer {
+      git_annotated_commit_free(annotated)
+    }
+    
     let result = withUnsafeMutablePointer(to: &annotated) {
       git_merge_analysis(analysis, preference, gtRepo.git_repository(), $0, 1)
     }
