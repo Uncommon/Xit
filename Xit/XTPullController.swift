@@ -24,12 +24,12 @@ class XTPullController: XTFetchController
     
     tryRepoOperation(successStatus: "Pull complete",
                      failureStatus: "Pull failed") {
-      try repository.pull(branch: branch,
-                          remote: remote,
-                          downloadTags: true,
-                          pruneBranches: true,
-                          passwordBlock: self.getPassword,
-                          progressBlock: self.shouldStop)
+      let options = XTRepository.FetchOptions(downloadTags: true,
+                                              pruneBranches: true,
+                                              passwordBlock: self.getPassword,
+                                              progressBlock: self.shouldStop)
+      
+      try repository.pull(branch: branch, remote: remote, options: options)
       NotificationCenter.default.post(
           name: NSNotification.Name.XTRepositoryRefsChanged, object: repository)
       self.ended()

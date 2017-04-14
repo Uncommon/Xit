@@ -1,7 +1,45 @@
 import Foundation
 
+public protocol TransferProgress
+{
+  var totalObjects: UInt32 { get }
+  var indexedObjects: UInt32 { get }
+  var receivedObjects: UInt32 { get }
+  var localObjects: UInt32 { get }
+  var totalDeltas: UInt32 { get }
+  var indexedDeltas: UInt32 { get }
+  var receivedBytes: Int { get }
+}
+
+extension TransferProgress
+{
+  var progress: Float
+  {
+    return Float(receivedObjects) / Float(totalObjects)
+  }
+}
+
 extension XTRepository
 {
+  struct GitTransferProgress: TransferProgress
+  {
+    let gitProgress: git_transfer_progress
+    
+    var totalObjects: UInt32    { return gitProgress.total_objects }
+    var indexedObjects: UInt32  { return gitProgress.indexed_objects }
+    var receivedObjects: UInt32 { return gitProgress.received_objects }
+    var localObjects: UInt32    { return gitProgress.local_objects }
+    var totalDeltas: UInt32     { return gitProgress.total_deltas }
+    var indexedDeltas: UInt32   { return gitProgress.indexed_deltas }
+    var receivedBytes: Int      { return gitProgress.received_bytes }
+  }
+  
+  public struct FetchOptions
+  {
+    let downloadTags, pruneBranches: Bool
+    let passwordBlock: () -> (String, String)?
+    let progressBlock: (TransferProgress) -> Bool
+  }
   
   func credentialProvider(_ passwordBlock: @escaping () -> (String, String)?)
       -> GTCredentialProvider
@@ -58,20 +96,18 @@ extension XTRepository
   /// - parameter passwordBlock: Callback for getting the user and password
   /// - parameter progressBlock: Return true to stop the operation
   public func fetch(remote: XTRemote,
-                    downloadTags: Bool,
-                    pruneBranches: Bool,
-                    passwordBlock: @escaping () -> (String, String)?,
-                    progressBlock: @escaping (git_transfer_progress) -> Bool)
-                    throws
+                    options: FetchOptions) throws
   {
     try performWriting {
-      let options = self.fetchOptions(downloadTags: downloadTags,
-                                      pruneBranches: pruneBranches,
-                                      passwordBlock: passwordBlock)
+      let gtOptions = self.fetchOptions(downloadTags: options.downloadTags,
+                                        pruneBranches: options.pruneBranches,
+                                        passwordBlock: options.passwordBlock)
     
-      try self.gtRepo.fetch(remote, withOptions: options) {
+      try self.gtRepo.fetch(remote, withOptions: gtOptions) {
         (progress, stop) in
-        stop.pointee = ObjCBool(progressBlock(progress.pointee))
+        let transferProgress = GitTransferProgress(gitProgress: progress.pointee)
+        
+        stop.pointee = ObjCBool(options.progressBlock(transferProgress))
       }
     }
   }
@@ -83,38 +119,11 @@ extension XTRepository
   /// - parameter pruneBranches: True to delete obsolete branch refs
   /// - parameter passwordBlock: Callback for getting the user and password
   /// - parameter progressBlock: Return true to stop the operation
-  // TODO: Use something other than git_transfer_progress
-  public func pull(branch: XTBranch,
-                   remote: XTRemote,
-                   downloadTags: Bool,
-                   pruneBranches: Bool,
-                   passwordBlock: @escaping () -> (String, String)?,
-                   progressBlock: @escaping (git_transfer_progress) -> Bool) throws
+  func pull(branch: XTBranch,
+            remote: XTRemote,
+            options: FetchOptions) throws
   {
-    try performWriting {
-      let options = self.fetchOptions(downloadTags: downloadTags,
-                                      pruneBranches: pruneBranches,
-                                      passwordBlock: passwordBlock)
-
-      try self.gtRepo.pull(branch.gtBranch,
-                           from: remote,
-                           withOptions: options) {
-        (progress, stop) in
-        stop.pointee = ObjCBool(progressBlock(progress.pointee))
-      }
-    }
-  }
-  
-  func pull2(branch: XTBranch,
-             remote: XTRemote,
-             downloadTags: Bool,
-             pruneBranches: Bool,
-             passwordBlock: @escaping () -> (String, String)?,
-             progressBlock: @escaping (git_transfer_progress) -> Bool) throws
-  {
-    try fetch(remote: remote, downloadTags: downloadTags,
-              pruneBranches: pruneBranches, passwordBlock: passwordBlock,
-              progressBlock: progressBlock)
+    try fetch(remote: remote, options: options)
     
     var mergeBranch = branch
     
