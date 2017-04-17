@@ -167,7 +167,7 @@ extension XTRepository
     else { throw Error.unexpected }
     
     do {
-      var annotated: OpaquePointer? = try annotatedCommit(fromCommit)
+      var annotated: OpaquePointer? = try annotatedCommit(branch: fromBranch)
       
       defer {
         git_annotated_commit_free(annotated)
@@ -369,6 +369,27 @@ extension XTRepository
       throw Error.unexpected
     }
   }
+  
+  /// Wraps `git_annotated_commit_from_ref`
+  /// - parameter branch: Branch to look up the tip commit
+  /// - returns: An `OpaquePointer` wrapping a `git_annotated_commit`
+  func annotatedCommit(branch: XTBranch) throws -> OpaquePointer
+  {
+    let annotated = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    let result = git_annotated_commit_from_ref(
+          annotated, gtRepo.git_repository(),
+          branch.gtBranch.reference.git_reference())
+    
+    if result != GIT_OK.rawValue {
+      throw Error.gitError(result)
+    }
+    if let annotatedCommit = annotated.pointee {
+      return annotatedCommit
+    }
+    else {
+      throw Error.unexpected
+    }
+  }
 
   /// Determines what sort of merge can be done from the given branch.
   /// - parameter branch: Branch to merge into the current branch.
@@ -393,7 +414,7 @@ extension XTRepository
     
     let analysis =
           UnsafeMutablePointer<git_merge_analysis_t>.allocate(capacity: 1)
-    var annotated: OpaquePointer? = try annotatedCommit(commit)
+    var annotated: OpaquePointer? = try annotatedCommit(branch: branch)
     
     defer {
       git_annotated_commit_free(annotated)
