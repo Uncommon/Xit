@@ -24,3 +24,4 @@ nesting:
 large_tuple:
     warning: 5
     error: 8
+function_body_length: 60
