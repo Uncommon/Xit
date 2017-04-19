@@ -1,6 +1,5 @@
 import Cocoa
 
-
 /// Data source for the sidebar, showing branches, remotes, tags, stashes,
 /// and submodules.
 class XTSideBarDataSource: NSObject
@@ -15,7 +14,7 @@ class XTSideBarDataSource: NSObject
   {
     case none            /// No tracking branch set
     case missing(String) /// References a non-existent branch
-    case set(String)     /// References a real branhc
+    case set(String)     /// References a real branch
   }
   
   @IBOutlet weak var viewController: XTSidebarController!
@@ -169,8 +168,10 @@ class XTSideBarDataSource: NSObject
     
     let newRoots = XTSideBarDataSource.makeRoots(stagingItem)
     let branchesGroup = newRoots[XTGroupIndex.branches.rawValue]
+    let localBranches = repo.localBranches().sorted(by:
+          { ($0.name ?? "") < ($1.name ?? "") })
     
-    for branch in repo.localBranches() {
+    for branch in localBranches {
       guard let sha = branch.sha,
             let name = branch.name?.removingPrefix("refs/heads/")
       else { continue }
@@ -182,10 +183,13 @@ class XTSideBarDataSource: NSObject
       parent.children.append(branchItem)
     }
     
-    let remoteItems = repo.remoteNames().map { XTRemoteItem(title: $0,
-                                                            repository: repo) }
+    let remoteItems = repo.remoteNames().map {
+          XTRemoteItem(title: $0, repository: repo) }
+    let remoteBranches = repo.remoteBranches().sorted {
+          ($0.name ?? "") < ($1.name ?? "") }
 
-    for branch in repo.remoteBranches() {
+
+    for branch in remoteBranches {
       guard let remote = remoteItems.first(where: { $0.title ==
                                                     branch.remoteName }),
             let name = branch.name?
@@ -193,15 +197,14 @@ class XTSideBarDataSource: NSObject
             let sha = branch.gtBranch.oid?.sha
       else { continue }
       let model = XTCommitChanges(repository: repo, sha: sha)
-      let remoteParent = parent(for: name,
-                                groupItem: remote)
+      let remoteParent = parent(for: name, groupItem: remote)
       
       remoteParent.children.append(XTRemoteBranchItem(title: name,
                                                       remote: branch.remoteName,
                                                       model: model))
     }
     
-    if let tags = try? repo.tags() {
+    if let tags = try? repo.tags().sorted(by: { $0.name < $1.name }) {
       let tagsGroup = newRoots[XTGroupIndex.tags.rawValue]
       
       for tag in tags {
@@ -213,7 +216,8 @@ class XTSideBarDataSource: NSObject
     }
     
     let stashItems = makeStashItems()
-    let submoduleItems = repo.submodules().map { XTSubmoduleItem(submodule: $0) }
+    let submoduleItems = repo.submodules().map {
+          XTSubmoduleItem(submodule: $0) }
     
     newRoots[XTGroupIndex.remotes.rawValue].children = remoteItems
     newRoots[XTGroupIndex.stashes.rawValue].children = stashItems
