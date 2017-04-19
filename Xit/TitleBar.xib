@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12118" systemVersion="16D32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12118" systemVersion="16B2657" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12118"/>
@@ -28,15 +28,15 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="EAc-F6-hIg">
-                    <rect key="frame" x="1" y="8" width="66" height="25"/>
+                    <rect key="frame" x="1" y="8" width="63" height="25"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="22" id="Cla-3f-tZA"/>
                     </constraints>
-                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedRounded" trackingMode="momentary" id="HGN-bp-Yio">
+                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="HGN-bp-Yio">
                         <font key="font" metaFont="system"/>
                         <segments>
                             <segment toolTip="Go Back" image="NSGoLeftTemplate" width="30"/>
-                            <segment toolTip="Go Forward" image="NSGoRightTemplate" width="29" tag="1"/>
+                            <segment toolTip="Go Forward" image="NSGoRightTemplate" width="30" tag="1"/>
                         </segments>
                     </segmentedCell>
                     <connections>
@@ -44,16 +44,16 @@
                     </connections>
                 </segmentedControl>
                 <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gzN-mQ-RA8">
-                    <rect key="frame" x="694" y="8" width="96" height="25"/>
+                    <rect key="frame" x="690" y="8" width="100" height="25"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="22" id="uin-v0-wHo"/>
                     </constraints>
-                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedRounded" trackingMode="selectAny" id="PQW-Gq-Lrl">
+                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="selectAny" id="PQW-Gq-Lrl">
                         <font key="font" metaFont="system"/>
                         <segments>
-                            <segment toolTip="Show Sidebar" image="viewSidebarTemplate" width="30" selected="YES"/>
-                            <segment toolTip="Show History List" image="viewHistoryTemplate" width="29" selected="YES" tag="1"/>
-                            <segment toolTip="Show Commit Details" image="viewCommitTemplate" width="29" selected="YES">
+                            <segment toolTip="Show Sidebar" image="viewSidebarTemplate" width="32" selected="YES"/>
+                            <segment toolTip="Show History List" image="viewHistoryTemplate" width="32" selected="YES" tag="1"/>
+                            <segment toolTip="Show Commit Details" image="viewCommitTemplate" width="32" selected="YES">
                                 <nil key="label"/>
                             </segment>
                         </segments>
@@ -155,30 +155,30 @@
                     </buttonCell>
                 </button>
                 <segmentedControl hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="IIb-W1-mF1">
-                    <rect key="frame" x="537" y="8" width="66" height="25"/>
+                    <rect key="frame" x="537" y="8" width="63" height="25"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="22" id="Li8-d0-CO5"/>
                     </constraints>
-                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedRounded" trackingMode="momentary" id="PSA-YP-yDG">
+                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="PSA-YP-yDG">
                         <font key="font" metaFont="system"/>
                         <segments>
                             <segment label="▶︎" width="30"/>
-                            <segment label="◼" width="29" tag="1"/>
+                            <segment label="◼" width="30" tag="1"/>
                         </segments>
                     </segmentedCell>
                 </segmentedControl>
                 <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="m2X-wZ-tfZ">
-                    <rect key="frame" x="75" y="8" width="96" height="25"/>
+                    <rect key="frame" x="72" y="8" width="96" height="25"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="96" id="6Kc-qj-emE"/>
                         <constraint firstAttribute="height" constant="22" id="nVV-pR-C7Z"/>
                     </constraints>
-                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedRounded" trackingMode="momentary" id="dxK-Dd-Juj">
+                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="dxK-Dd-Juj">
                         <font key="font" metaFont="system"/>
                         <segments>
                             <segment toolTip="Fetch" image="fetchTemplate" width="30"/>
-                            <segment toolTip="Pull" image="pullTemplate" width="29" tag="1"/>
-                            <segment toolTip="Push" image="pushTemplate" width="29">
+                            <segment toolTip="Pull" image="pullTemplate" width="30" tag="1"/>
+                            <segment toolTip="Push" image="pushTemplate" width="30">
                                 <nil key="label"/>
                             </segment>
                         </segments>
