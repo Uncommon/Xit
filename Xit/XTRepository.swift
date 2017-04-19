@@ -116,7 +116,7 @@ extension XTRepository
     guard git_remote_list(strArray, gtRepo.git_repository()) == 0
     else { return [] }
     
-    return toStringArray(strArray.pointee)
+    return [String](gitStrArray: strArray.pointee)
   }
   
   func stashes() -> Stashes
@@ -469,10 +469,10 @@ extension XTRepository
     }
     else {
       var options = git_checkout_options.defaultOptions()
-      var error: NSError? = nil
+      var error: Error? = nil
       
       git_checkout_init_options(&options, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
-      withGitStringArray(from: [file]) {
+      [file].withGitStringArray {
         (stringarray) in
         options.checkout_strategy = GIT_CHECKOUT_FORCE.rawValue +
                                     GIT_CHECKOUT_RECREATE_MISSING.rawValue
@@ -481,7 +481,7 @@ extension XTRepository
         let result = git_checkout_tree(self.gtRepo.git_repository(), nil, &options)
         
         if result < 0 {
-          error = NSError.git_error(for: result) as NSError?
+          error = Error.gitError(result)
         }
       }
       
@@ -540,62 +540,6 @@ extension XTRepository
       return nil
     }
   }
-}
-
-/// Converts the given array to a `git_strarray` and calls the given block.
-/// This is patterned after `withArrayOfCStrings` except that function does not
-/// produce the necessary type.
-/// - Note: Ideally this would be an extension on Array where `Element == String`
-/// but that's not allowed.
-/// - parameter array: The array to convert
-/// - parameter block: The block called with the resulting `git_strarray`. To
-/// use this array outside the block, use `git_strarray_copy()`.
-func withGitStringArray(from array: [String],
-                        block: @escaping (git_strarray) -> Void)
-{
-  let lengths = array.map { $0.utf8.count + 1 }
-  let offsets = [0] + scan(lengths, 0, +)
-  var buffer = [Int8]()
-  
-  buffer.reserveCapacity(offsets.last!)
-  for string in array {
-    buffer.append(contentsOf: string.utf8.map({ Int8($0) }))
-    buffer.append(0)
-  }
-  
-  buffer.withUnsafeMutableBufferPointer {
-    (pointer) in
-    let boundPointer = UnsafeMutableRawPointer(pointer.baseAddress!)
-                       .bindMemory(to: Int8.self, capacity: buffer.count)
-    var cStrings: [UnsafeMutablePointer<Int8>?] =
-                  offsets.map { boundPointer + $0 }
-    
-    cStrings[cStrings.count-1] = nil
-    cStrings.withUnsafeMutableBufferPointer({
-      (arrayBuffer) in
-      let strarray = git_strarray(strings: arrayBuffer.baseAddress,
-                                  count: array.count)
-      
-      block(strarray)
-    })
-  }
-}
-
-// Waiting for Swift 3.1 where we can do:
-// extension Array where Element == String
-func toStringArray(_ gitStrArray: git_strarray) -> [String]
-{
-  var result = [String]()
-  var stringPtr = gitStrArray.strings
-  
-  for _ in 0..<gitStrArray.count {
-    guard let string = stringPtr?.pointee
-    else { continue }
-    
-    result.append(String(cString: string))
-    stringPtr = stringPtr?.advanced(by: 1)
-  }
-  return result
 }
 
 extension NSNotification.Name

@@ -33,3 +33,56 @@ extension git_merge_options
     return options
   }
 }
+
+extension Array where Element == String
+{
+  init(gitStrArray: git_strarray)
+  {
+    self.init()
+  
+    var stringPtr = gitStrArray.strings
+    
+    for _ in 0..<gitStrArray.count {
+      guard let string = stringPtr?.pointee
+      else { continue }
+      
+      append(String(cString: string))
+      stringPtr = stringPtr?.advanced(by: 1)
+    }
+  }
+  
+  /// Converts the given array to a `git_strarray` and calls the given block.
+  /// This is patterned after `withArrayOfCStrings` except that function does
+  /// not produce the necessary type.
+  /// - parameter block: The block called with the resulting `git_strarray`. To
+  /// use this array outside the block, use `git_strarray_copy()`.
+  func withGitStringArray(block: @escaping (git_strarray) -> Void)
+  {
+    let lengths = map { $0.utf8.count + 1 }
+    let offsets = [0] + scan(lengths, 0, +)
+    var buffer = [Int8]()
+    
+    buffer.reserveCapacity(offsets.last!)
+    for string in self {
+      buffer.append(contentsOf: string.utf8.map({ Int8($0) }))
+      buffer.append(0)
+    }
+    
+    buffer.withUnsafeMutableBufferPointer {
+      (pointer) in
+      let boundPointer = UnsafeMutableRawPointer(pointer.baseAddress!)
+                         .bindMemory(to: Int8.self, capacity: buffer.count)
+      var cStrings: [UnsafeMutablePointer<Int8>?] =
+            offsets.map { boundPointer + $0 }
+      
+      cStrings[cStrings.count-1] = nil
+      cStrings.withUnsafeMutableBufferPointer({
+        (arrayBuffer) in
+        let strarray = git_strarray(strings: arrayBuffer.baseAddress,
+                                    count: count)
+        
+        block(strarray)
+      })
+    }
+  }
+}

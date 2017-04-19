@@ -590,10 +590,14 @@ class XTFileViewController: NSViewController
     do {
       try repo?.revert(file: path)
     }
-    catch let error as NSError {
-      let alert = NSAlert(error: error)
+    catch let error as XTRepository.Error {
+      let alert = NSAlert()
       
+      alert.messageText = error.message
       alert.beginSheetModal(for: view.window!, completionHandler: nil)
+    }
+    catch {
+      NSLog("Unexpected revert error")
     }
   }
   
