@@ -588,7 +588,10 @@ func toStringArray(_ gitStrArray: git_strarray) -> [String]
   var result = [String]()
   var stringPtr = gitStrArray.strings
   
-  while let string = stringPtr?.pointee {
+  for _ in 0..<gitStrArray.count {
+    guard let string = stringPtr?.pointee
+    else { continue }
+    
     result.append(String(cString: string))
     stringPtr = stringPtr?.advanced(by: 1)
   }
