@@ -114,7 +114,7 @@ class XTSideBarDataSource: NSObject
   
   deinit
   {
-    buildStatusTimer?.invalidate()
+    stopTimers()
   }
   
   open override func awakeFromNib()
@@ -289,18 +289,18 @@ class XTSideBarDataSource: NSObject
       reloadTimer = Timer.scheduledTimer(withTimeInterval: Intervals.reloadDelay,
                                          repeats: false) {
         [weak self] _ in
-        guard let sidebarDS = self
-        else { return }
-        
         DispatchQueue.main.async {
+          guard let sidebarDS = self,
+                let outline = sidebarDS.outline
+          else { return }
           let savedSelection = sidebarDS.selectedItem
           
-          sidebarDS.outline!.reloadData()
+          outline.reloadData()
           if savedSelection != nil {
             sidebarDS.selectedItem = savedSelection
           }
         }
-        sidebarDS.reloadTimer = nil
+        self?.reloadTimer = nil
       }
     }
   }

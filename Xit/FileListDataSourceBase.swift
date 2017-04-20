@@ -34,7 +34,8 @@ class FileListDataSourceBase: NSObject
           forName: .XTSelectedModelChanged, object: repository, queue: .main) {
         [weak self]
         (_) in
-        guard let myself = self
+        guard let myself = self,
+              myself.repoController != nil // Otherwise we're on a stale timer
         else { return }
         
         if myself.outlineView.dataSource === myself {
