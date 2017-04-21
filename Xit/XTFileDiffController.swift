@@ -1,6 +1,6 @@
 import Cocoa
 
-protocol HunkStaging
+protocol HunkStaging: class
 {
   func stage(hunk: GTDiffHunk)
   func unstage(hunk: GTDiffHunk)
@@ -12,8 +12,9 @@ class XTFileDiffController: XTWebViewController,
                             WhitespaceVariable,
                             TabWidthVariable
 {
+  // swiftlint:disable:next weak_delegate
   let actionDelegate: DiffActionDelegate = DiffActionDelegate()
-  var stagingDelegate: HunkStaging!
+  weak var stagingDelegate: HunkStaging?
   var isLoaded: Bool = false
   var staged: Bool?
   var patch: GTDiffPatch?
@@ -221,17 +222,17 @@ class XTFileDiffController: XTWebViewController,
   
   func stageHunk(index: Int)
   {
-    hunk(at: index).map { stagingDelegate.stage(hunk: $0) }
+    hunk(at: index).map { stagingDelegate?.stage(hunk: $0) }
   }
   
   func unstageHunk(index: Int)
   {
-    hunk(at: index).map { stagingDelegate.unstage(hunk: $0) }
+    hunk(at: index).map { stagingDelegate?.unstage(hunk: $0) }
   }
   
   func discardHunk(index: Int)
   {
-    hunk(at: index).map { stagingDelegate.discard(hunk: $0) }
+    hunk(at: index).map { stagingDelegate?.discard(hunk: $0) }
   }
 }
 

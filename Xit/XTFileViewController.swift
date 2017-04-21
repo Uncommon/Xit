@@ -87,7 +87,6 @@ class XTFileViewController: NSViewController
   
   var fileWatcher: FileEventStream?
   weak var lastClickedButton: NSButton?
-  var doubleClickTimer: Timer?
   var indexTimer: Timer?
   
   var contentControllers: [XTFileContentController]
