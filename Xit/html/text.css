@@ -1,9 +1,7 @@
 body {
   background-color: F8F8F8;
-  font-family: "SF Mono", monospace;
   margin: 0px;
   counter-reset: line;
-  font-size: 12;
   tab-size: 4;
 }
 div.page {
