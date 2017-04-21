@@ -25,6 +25,7 @@ class PreviewsPrefsController: NSViewController
       else {
         fontField.stringValue = ""
       }
+      saveFont()
       NotificationCenter.default.post(name: NSNotification.Name.XTFontChanged,
                                       object: nil)
     }
@@ -147,8 +148,15 @@ extension PreviewsPrefsController: PreferencesSaver
                  forKey: PreferenceKeys.diffWhitespace)
     defaults.set(PreviewsPrefsController.tabValues[tabIndex],
                  forKey: PreferenceKeys.tabWidth)
+    
+    saveFont()
+  }
   
+  func saveFont()
+  {
     if let font = textFont {
+      let defaults = UserDefaults.standard
+      
       defaults.set(font.displayName, forKey: PreferenceKeys.fontName)
       defaults.set(Int(font.pointSize), forKey: PreferenceKeys.fontSize)
     }

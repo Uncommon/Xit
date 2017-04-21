@@ -1,4 +1,5 @@
 #import "XTWebViewController.h"
+#import "Xit-Swift.h"
 #import <WebKit/WebKit.h>
 
 // They left this one out.
@@ -31,6 +32,25 @@ const NSInteger WebMenuItemTagInspectElement = 2024;
   return (NSString*)CFBridgingRelease(
       CFXMLCreateStringByEscapingEntities(
           kCFAllocatorDefault, (__bridge CFStringRef)text, NULL));
+}
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)awakeFromNib
+{
+  // Notification name is in Swift Notification.Name
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(fontChanged:)
+                                               name:@"XTFontChanged"
+                                             object:nil];
+}
+
+- (void)fontChanged:(NSNotification*)note
+{
+  [self updateFont];
 }
 
 - (NSUInteger)tabWidth
@@ -94,6 +114,17 @@ const NSInteger WebMenuItemTagInspectElement = 2024;
     self.tabWidth = self.savedTabWidth;
   else
     [self setDefaultTabWidth];
+  
+  [self updateFont];
+}
+
+- (void)updateFont
+{
+  NSFont *font = [PreviewsPrefsController defaultFont];
+  
+  self.webView.preferences.standardFontFamily = font.familyName;
+  self.webView.preferences.defaultFontSize = font.pointSize;
+  self.webView.preferences.defaultFixedFontSize = font.pointSize;
 }
 
 - (NSUInteger)webView:(WebView*)sender
