@@ -41,7 +41,8 @@ class WorkspaceTreeBuilder
       if let isDirValue = isDirectory {
         if (isDirValue as! NSNumber).boolValue {
           childNode = self.treeAtURL(url, rootPath: rootPath)
-        } else {
+        }
+        else {
           let item = CommitTreeItem(path: path)
           
           if let status = self.changes[path] {

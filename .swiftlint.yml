@@ -2,7 +2,6 @@ disabled_rules:
     - trailing_whitespace # tws is allowed, especially matching surrounding indent
     - opening_brace # Opening braces get their own line for func, class, etc.
     - closure_parameter_position # Closure parameters get their own line
-    - statement_position # else & catch start a new line
     - force_cast # "as!" has legitimate uses
     - vertical_whitespace # 2 lines allowable between top-level classes
     - discarded_notification_center_observer # Bug: swiftlint assumes addObserver is being called on NotificationCenter
@@ -25,3 +24,5 @@ large_tuple:
     warning: 5
     error: 8
 function_body_length: 60
+statement_position:
+    statement_mode: uncuddled_else
