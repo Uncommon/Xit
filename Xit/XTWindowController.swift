@@ -3,6 +3,7 @@ import Cocoa
 protocol RepositoryController: class
 {
   var selectedModel: XTFileChangesModel? { get set }
+  
   func select(sha: String)
 }
 

@@ -5,6 +5,7 @@ protocol SidebarHandler
 {
   var repo: XTRepository! { get }
   var window: NSWindow? { get }
+  
   func targetItem() -> XTSideBarItem?
   func stashIndex(for item: XTSideBarItem) -> UInt?
 }

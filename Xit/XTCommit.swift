@@ -4,6 +4,7 @@ import Cocoa
 public protocol CommitType: CustomStringConvertible
 {
   associatedtype ID: OID
+  
   var sha: String? { get }
   var oid: ID { get }
   var parentOIDs: [ID] { get }
