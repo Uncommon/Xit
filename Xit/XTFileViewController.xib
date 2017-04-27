@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
-        <plugIn identifier="com.apple.WebKitIBPlugin" version="11762"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12118"/>
+        <plugIn identifier="com.apple.WebKitIBPlugin" version="12118"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -137,7 +137,7 @@
                                                                         </constraints>
                                                                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="14"/>
                                                                     </imageView>
-                                                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="12">
+                                                                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="12">
                                                                         <rect key="frame" x="25" y="0.0" width="263" height="17"/>
                                                                         <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="13">
                                                                             <font key="font" metaFont="system"/>
@@ -274,7 +274,7 @@
                                                                 <rect key="frame" x="1" y="1" width="0.0" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
-                                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="TM8-CV-Mz9">
+                                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TM8-CV-Mz9">
                                                                         <rect key="frame" x="0.0" y="0.0" width="4" height="17"/>
                                                                         <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="1i7-sp-fc7">
                                                                             <font key="font" metaFont="system"/>
@@ -436,9 +436,10 @@
                                     <tabViewItems>
                                         <tabViewItem label="Diff" identifier="diff" id="A2f-Wf-RNT">
                                             <view key="view" ambiguous="YES" id="uQh-Df-4fp">
+                                                <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <webView ambiguous="YES" misplaced="YES" maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e4U-lz-eEd">
+                                                    <webView ambiguous="YES" maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e4U-lz-eEd">
                                                         <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
                                                         <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
                                                             <nil key="identifier"/>
@@ -656,20 +657,20 @@
         </customObject>
         <customObject id="67" customClass="XTCommitHeaderViewController">
             <connections>
-                <outlet property="_webView" destination="71" id="76"/>
                 <outlet property="view" destination="71" id="77"/>
+                <outlet property="webView" destination="71" id="29s-r0-nPa"/>
             </connections>
         </customObject>
         <customObject id="58" customClass="XTTextPreviewController" customModule="Xit" customModuleProvider="target">
             <connections>
-                <outlet property="_webView" destination="57" id="59"/>
                 <outlet property="view" destination="57" id="60"/>
+                <outlet property="webView" destination="57" id="BJd-vu-Ecp"/>
             </connections>
         </customObject>
         <customObject id="fX5-fH-Hy5" customClass="XTFileDiffController" customModule="Xit" customModuleProvider="target">
             <connections>
-                <outlet property="_webView" destination="e4U-lz-eEd" id="mct-Ae-eey"/>
                 <outlet property="view" destination="e4U-lz-eEd" id="94Q-P5-Sfh"/>
+                <outlet property="webView" destination="e4U-lz-eEd" id="hsU-jx-H3R"/>
             </connections>
         </customObject>
         <customObject id="3g8-eR-FPJ" customClass="XTPreviewController" customModule="Xit" customModuleProvider="target">
@@ -679,9 +680,9 @@
         </customObject>
         <customObject id="qWY-M6-3vs" customClass="BlameViewController" customModule="Xit" customModuleProvider="target">
             <connections>
-                <outlet property="_webView" destination="jwZ-U5-r8o" id="UVQ-11-csG"/>
                 <outlet property="spinner" destination="2Oq-sY-aab" id="syc-ah-Sk6"/>
                 <outlet property="view" destination="jwZ-U5-r8o" id="3DG-Pe-5cJ"/>
+                <outlet property="webView" destination="jwZ-U5-r8o" id="Epo-mo-RK5"/>
             </connections>
         </customObject>
         <menu id="Ae9-1e-hjk">

@@ -1,4 +1,5 @@
 import Foundation
+import WebKit
 
 protocol HeaderGenerator
 {
@@ -83,7 +84,7 @@ extension HeaderGenerator
 }
 
 @objc(XTCommitHeaderViewController)
-class CommitHeaderViewController: XTWebViewController, HeaderGenerator
+class CommitHeaderViewController: WebViewController, HeaderGenerator
 {
   typealias Repo = XTRepository
   typealias Commit = XTCommit
@@ -124,11 +125,6 @@ class CommitHeaderViewController: XTWebViewController, HeaderGenerator
     super.init(coder: coder)
     
     actionDelegate.controller = self
-  }
-  
-  override func webActionDelegate() -> Any
-  {
-    return actionDelegate
   }
   
   static func dateFormatter() -> DateFormatter
@@ -175,13 +171,11 @@ class CommitHeaderViewController: XTWebViewController, HeaderGenerator
   }
 }
 
-extension CommitHeaderViewController // WebUIDelegate
+extension CommitHeaderViewController: WebActionDelegateHost
 {
-  override func webView(_ webView: WebView!,
-                        dragDestinationActionMaskFor draggingInfo: NSDraggingInfo!)
-                        -> UInt
+  var webActionDelegate: Any
   {
-    return 0 // WebDragDestinationActionNone
+    return actionDelegate
   }
 }
 

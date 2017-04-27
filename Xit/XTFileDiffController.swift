@@ -8,9 +8,8 @@ protocol HunkStaging: class
 }
 
 /// Manages a WebView for displaying text file diffs.
-class XTFileDiffController: XTWebViewController,
-                            WhitespaceVariable,
-                            TabWidthVariable
+class XTFileDiffController: WebViewController,
+                            WhitespaceVariable
 {
   // swiftlint:disable:next weak_delegate
   let actionDelegate: DiffActionDelegate = DiffActionDelegate()
@@ -37,11 +36,6 @@ class XTFileDiffController: XTWebViewController,
   override func viewDidLoad()
   {
     actionDelegate.controller = self
-  }
-
-  override func webActionDelegate() -> Any
-  {
-    return actionDelegate
   }
 
   private func configureDiffMaker()
@@ -74,7 +68,7 @@ class XTFileDiffController: XTWebViewController,
     lines += "<div class=\(className)>" +
              "<span class='old' line='\(oldLineText)'></span>" +
              "<span class='new' line='\(newLineText)'></span>" +
-             "<span class='text'>\(XTWebViewController.escapeText(text))</span>" +
+             "<span class='text'>\(WebViewController.escape(text: text))</span>" +
              "</div>\n"
   }
   
@@ -125,7 +119,7 @@ class XTFileDiffController: XTWebViewController,
           let diff = diffMaker.makeDiff()
     else { return }
     
-    let htmlTemplate = XTWebViewController.htmlTemplate("diff")
+    let htmlTemplate = WebViewController.htmlTemplate("diff")
     var textLines = ""
     
     do {
@@ -182,7 +176,7 @@ class XTFileDiffController: XTWebViewController,
     
     let html = String(format: htmlTemplate, textLines)
     
-    webView?.mainFrame.loadHTMLString(html, baseURL: XTWebViewController.baseURL())
+    webView?.mainFrame.loadHTMLString(html, baseURL: WebViewController.baseURL)
     isLoaded = true
   }
   
@@ -233,6 +227,14 @@ class XTFileDiffController: XTWebViewController,
   func discardHunk(index: Int)
   {
     hunk(at: index).map { stagingDelegate?.discard(hunk: $0) }
+  }
+}
+
+extension XTFileDiffController: WebActionDelegateHost
+{
+  var webActionDelegate: Any
+  {
+    return actionDelegate
   }
 }
 

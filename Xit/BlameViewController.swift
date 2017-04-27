@@ -1,6 +1,6 @@
 import Foundation
 
-class BlameViewController: XTWebViewController, TabWidthVariable
+class BlameViewController: WebViewController
 {
   @IBOutlet var spinner: NSProgressIndicator!
   var isLoaded: Bool = false
@@ -24,11 +24,6 @@ class BlameViewController: XTWebViewController, TabWidthVariable
   required init?(coder: NSCoder)
   {
     fatalError("init(coder:) has not been implemented")
-  }
-  
-  override func webActionDelegate() -> Any
-  {
-    return actionDelegate
   }
   
   func notAvailable()
@@ -126,21 +121,29 @@ class BlameViewController: XTWebViewController, TabWidthVariable
       let end = min(start + hunk.lineCount, lines.count-1)
       let hunkLines = lines[start..<end]
       
-      htmlLines.append(contentsOf: hunkLines.map {
-        "<div class='line'>" +
-        "\(XTWebViewController.escapeText($0))</div>" })
+      htmlLines.append(contentsOf: hunkLines.map({
+          "<div class='line'>" +
+          "\(WebViewController.escape(text: $0))</div>" }))
       htmlLines.append("</td></tr>")
     }
     
-    let htmlTemplate = XTWebViewController.htmlTemplate("blame")
+    let htmlTemplate = WebViewController.htmlTemplate("blame")
     let html = String(format: htmlTemplate, htmlLines.joined(separator: "\n"))
     
     DispatchQueue.main.async {
       [weak self] in
       self?.webView?.mainFrame.loadHTMLString(
-          html, baseURL: XTWebViewController.baseURL())
+          html, baseURL: WebViewController.baseURL)
       self?.isLoaded = true
     }
+  }
+}
+
+extension BlameViewController: WebActionDelegateHost
+{
+  var webActionDelegate: Any
+  {
+    return actionDelegate
   }
 }
 

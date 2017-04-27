@@ -1,6 +1,6 @@
 import Foundation
 
-class XTTextPreviewController: XTWebViewController, TabWidthVariable
+class XTTextPreviewController: WebViewController
 {
   var isLoaded: Bool = false
 
@@ -8,14 +8,14 @@ class XTTextPreviewController: XTWebViewController, TabWidthVariable
   {
     let text = text ?? ""
     let lines = text.components(separatedBy: .newlines).map {
-      "<div>\(XTWebViewController.escapeText($0))</div>"
+      "<div>\(WebViewController.escape(text: $0))</div>"
     }
     let textLines = lines.joined(separator:"\n")
-    let htmlTemplate = XTWebViewController.htmlTemplate("text")
+    let htmlTemplate = WebViewController.htmlTemplate("text")
     let html = String(format: htmlTemplate, textLines)
     
     webView?.mainFrame.loadHTMLString(html,
-                                      baseURL: XTTextPreviewController.baseURL())
+                                      baseURL: XTTextPreviewController.baseURL)
     isLoaded = true
   }
   

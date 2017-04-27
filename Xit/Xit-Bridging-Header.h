@@ -9,7 +9,6 @@
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
-#import "XTWebViewController.h"
 #import "XTQueueUtils.h"
 
 #import "NSAttributedString+XTExtensions.h"
