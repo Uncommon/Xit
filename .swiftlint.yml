@@ -8,6 +8,9 @@ disabled_rules:
     - type_name # Short type names are allowed for generics
     - identifier_name # Single-letter names can be OK
     - trailing_comma # Trailing commas make it easier to add entries
+opt_in_rules:
+    - closure_spacing
+    - conditional_returns_on_newline
 included:
     - Xit
     

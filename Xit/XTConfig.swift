@@ -64,29 +64,28 @@ class XTConfig: NSObject
   /// Returns the `user.name` setting.
   final func userName() -> String?
   {
-    guard let config = config else { return nil }
-    return config.string(forKey: "user.name")
+    return config?.string(forKey: "user.name")
   }
   
   /// Returns the `user.email` setting.
   final func userEmail() -> String?
   {
-    guard let config = config else { return nil }
-    return config.string(forKey: "user.email")
+    return config?.string(forKey: "user.email")
   }
 
   /// Returns the `fetch.prune` setting.
   final func fetchPrune() -> Bool
   {
-    guard let config = config else { return false }
-    return config.bool(forKey: "fetch.prune")
+    return config?.bool(forKey: "fetch.prune") ?? false
   }
   
   /// Returns the prune setting for `remote`, or falls back to the general
   /// `fetch.prune` setting.
   final func fetchPrune(_ remote: String) -> Bool
   {
-    guard let config = config else { return false }
+    guard let config = config
+    else { return false }
+    
     if config.bool(forKey: "remote.\(remote).prune") {
       return true
     }
@@ -96,7 +95,9 @@ class XTConfig: NSObject
   /// Returns true if `--no-tags` is set for `remote.<remote>.tagOpt`.
   final func fetchTags(_ remote: String) -> Bool
   {
-    guard let config = config else { return true }
+    guard let config = config
+    else { return true }
+    
     if config.string(forKey: "remote.\(remote).tagOpt") == "--no-tags" {
       return false
     }

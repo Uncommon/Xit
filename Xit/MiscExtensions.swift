@@ -237,7 +237,7 @@ extension Array
   {
     self = enumerated()
            .filter({ !indexSet.contains($0.offset) })
-           .map({$0.element})
+           .map({ $0.element })
   }
 }
 

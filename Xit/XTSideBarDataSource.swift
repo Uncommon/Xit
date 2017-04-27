@@ -318,7 +318,7 @@ class XTSideBarDataSource: NSObject
   {
     let group = roots[group.rawValue]
     
-    return group.children.first(where: { $0.title == name})
+    return group.children.first(where: { $0.title == name })
   }
   
   func item(for button: NSButton) -> XTSideBarItem?

@@ -9,53 +9,54 @@ enum AccountType: Int
   
   init?(name: String?)
   {
-    guard name != nil else { return nil }
+    guard name != nil
+    else { return nil }
     
     switch name! {
-    case "github":
-      self = .gitHub
-    case "bitbucket":
-      self = .bitBucket
-    case "teamcity":
-      self = .teamCity
-    default:
-      return nil
+      case "github":
+        self = .gitHub
+      case "bitbucket":
+        self = .bitBucket
+      case "teamcity":
+        self = .teamCity
+      default:
+        return nil
     }
   }
   
   var name: String
   {
     switch self {
-    case .gitHub: return "github"
-    case .bitBucket: return "bitbucket"
-    case .teamCity: return "teamcity"
+      case .gitHub: return "github"
+      case .bitBucket: return "bitbucket"
+      case .teamCity: return "teamcity"
     }
   }
   
   var displayName: String
   {
     switch self {
-    case .gitHub: return "GitHub"
-    case .bitBucket: return "BitBucket"
-    case .teamCity: return "TeamCity"
+      case .gitHub: return "GitHub"
+      case .bitBucket: return "BitBucket"
+      case .teamCity: return "TeamCity"
     }
   }
   
   var defaultLocation: String
   {
     switch self {
-    case .gitHub: return "https://api.github.com"
-    case .bitBucket: return "https://api.bitbucket.org"
-    case .teamCity: return ""
+      case .gitHub: return "https://api.github.com"
+      case .bitBucket: return "https://api.bitbucket.org"
+      case .teamCity: return ""
     }
   }
   
   var imageName: String
   {
     switch self {
-    case .gitHub: return "githubTemplate"
-    case .bitBucket: return "bitbucketTemplate"
-    case .teamCity: return "teamcityTemplate"
+      case .gitHub: return "githubTemplate"
+      case .bitBucket: return "bitbucketTemplate"
+      case .teamCity: return "teamcityTemplate"
     }
   }
 }
@@ -152,5 +153,4 @@ class XTAccountsManager: NSObject
     UserDefaults.standard.setValue(accountsList,
                                    forKey: "accounts")
   }
-  
 }

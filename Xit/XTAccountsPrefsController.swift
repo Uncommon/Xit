@@ -58,7 +58,8 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
   {
     addController.resetFields()
     view.window?.beginSheet(addController.window!) { (response) in
-      guard response == NSModalResponseOK else { return }
+      guard response == NSModalResponseOK
+      else { return }
       guard let url = self.addController.location
       else { return }
       
