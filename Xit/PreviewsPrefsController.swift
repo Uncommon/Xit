@@ -9,6 +9,7 @@ class PreviewsPrefsController: NSViewController
 {
   @IBOutlet weak var whitespacePopup: NSPopUpButton!
   @IBOutlet weak var tabPopup: NSPopUpButton!
+  @IBOutlet weak var contextPopup: NSPopUpButton!
   @IBOutlet weak var fontField: NSTextField!
   
   var textFont: NSFont?
@@ -35,8 +36,25 @@ class PreviewsPrefsController: NSViewController
   {
     static let diffWhitespace = "diffWhitespace"
     static let tabWidth = "tabWidth"
+    static let contextLines = "contextLines"
     static let fontName = "fontName"
     static let fontSize = "fontSize"
+  }
+  
+  struct Values
+  {
+    static let tabs: [UInt] = [2, 4, 6, 8]
+    static let context: [UInt] = [0, 3, 6, 12, 25]
+  }
+  
+  struct Initial
+  {
+    static let whitespace = WhitespaceSetting.showAll
+    static let tabWidth: UInt = 4
+    static var contextLines: UInt
+    {
+      return XTDiffMaker.defaultContextLines
+    }
   }
 
   enum WhitespaceSetting: String
@@ -47,8 +65,6 @@ class PreviewsPrefsController: NSViewController
     
     static let allValues: [WhitespaceSetting] = [.showAll, .ignoreEOL, .ignoreAll]
   }
-  
-  static let tabValues = [2, 4, 6, 8]
 
   static func defaultFont() -> NSFont
   {
@@ -62,33 +78,62 @@ class PreviewsPrefsController: NSViewController
            ?? NSFont(name: "Monaco", size: fontSize)
            ?? NSFont.systemFont(ofSize: fontSize)
   }
+  
+  static func defaultWhitespace() -> WhitespaceSetting
+  {
+    let defaults = UserDefaults.standard
+    let defaultWhitespace = Initial.whitespace
+    let whitespaceString = defaults.string(forKey: PreferenceKeys.diffWhitespace)
+                           ?? defaultWhitespace.rawValue
+    
+    return WhitespaceSetting.init(rawValue: whitespaceString)
+           ?? defaultWhitespace
+  }
+  
+  static func defaultTabWidth() -> UInt
+  {
+    let defaults = UserDefaults.standard
+    let tabSetting = UInt(defaults.integer(forKey: PreferenceKeys.tabWidth))
+    
+    return (tabSetting == 0) ? Initial.tabWidth : tabSetting
+  }
+  
+  static func defaultContextLines() -> UInt
+  {
+    let defaults = UserDefaults.standard
+    
+    if let contextSetting = defaults.value(forKey: PreferenceKeys.contextLines)
+                            as? UInt,
+       Values.context.index(of: contextSetting) != nil {
+      return contextSetting
+    }
+    else {
+      return Initial.contextLines
+    }
+  }
 
   override func viewDidLoad()
   {
     super.viewDidLoad()
     
-    let defaults = UserDefaults.standard
-    
-    let defaultWhitespace = WhitespaceSetting.showAll
-    let whitespaceString = defaults.string(forKey: PreferenceKeys.diffWhitespace)
-                           ?? defaultWhitespace.rawValue
-    let whitespaceValue = WhitespaceSetting.init(rawValue: whitespaceString)
-                          ?? defaultWhitespace
+    let whitespaceValue = PreviewsPrefsController.defaultWhitespace()
     
     whitespacePopup.selectItem(at:
         WhitespaceSetting.allValues.index(of: whitespaceValue)!)
     
-    let defaultTabWidth = 4
-    var tabSetting = defaults.integer(forKey: PreferenceKeys.tabWidth)
-    
-    if tabSetting == 0 {
-      tabSetting = defaultTabWidth
-    }
-    
-    let tabIndex = PreviewsPrefsController.tabValues.index(of: tabSetting)
-                ?? PreviewsPrefsController.tabValues.index(of: defaultTabWidth)!
+    let tabSetting = PreviewsPrefsController.defaultTabWidth()
+    let tabIndex = Values.tabs.index(of: tabSetting)
+                ?? Values.tabs.index(of: Initial.tabWidth)!
     
     tabPopup.selectItem(at: tabIndex)
+    
+    // 0 is a valid value, so defaults using that as the "value not set" marker
+    // isn't useful.
+    let contextIndex =
+          Values.context.index(of: PreviewsPrefsController.defaultContextLines())
+          ?? 1
+    
+    contextPopup.selectItem(at: contextIndex)
     
     textFont = PreviewsPrefsController.defaultFont()
   }
@@ -133,7 +178,7 @@ class PreviewsPrefsController: NSViewController
 
 extension PreviewsPrefsController: NSWindowDelegate
 {
-  // Just needs the protocol to set the font panel delegate.
+  // Just needs the protocol to be able to set the font panel delegate.
 }
 
 extension PreviewsPrefsController: PreferencesSaver
@@ -143,11 +188,14 @@ extension PreviewsPrefsController: PreferencesSaver
     let defaults = UserDefaults.standard
     let whitespaceIndex = whitespacePopup.indexOfSelectedItem
     let tabIndex = tabPopup.indexOfSelectedItem
+    let contextIndex = contextPopup.indexOfSelectedItem
     
     defaults.set(WhitespaceSetting.allValues[whitespaceIndex].rawValue,
                  forKey: PreferenceKeys.diffWhitespace)
-    defaults.set(PreviewsPrefsController.tabValues[tabIndex],
+    defaults.set(Values.tabs[tabIndex],
                  forKey: PreferenceKeys.tabWidth)
+    defaults.set(Values.context[contextIndex],
+                 forKey: PreferenceKeys.contextLines)
     
     saveFont()
   }
