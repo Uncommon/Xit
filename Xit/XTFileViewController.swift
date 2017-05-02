@@ -27,6 +27,11 @@ protocol TabWidthVariable
   var tabWidth: UInt { get set }
 }
 
+protocol ContextVariable: class
+{
+  var contextLines: UInt { get set }
+}
+
 /// View controller for the file list and detail view.
 class XTFileViewController: NSViewController
 {
@@ -633,6 +638,18 @@ class XTFileViewController: NSViewController
         return validateTabMenuItem(menuItem, width: 6)
       case #selector(self.tabWidth8(_:)):
         return validateTabMenuItem(menuItem, width: 8)
+      
+      case #selector(self.context0(_:)):
+        return validateContextLinesMenuItem(menuItem, context: 0)
+      case #selector(self.context3(_:)):
+        return validateContextLinesMenuItem(menuItem, context: 3)
+      case #selector(self.context6(_:)):
+        return validateContextLinesMenuItem(menuItem, context: 6)
+      case #selector(self.context12(_:)):
+        return validateContextLinesMenuItem(menuItem, context: 12)
+      case #selector(self.context25(_:)):
+        return validateContextLinesMenuItem(menuItem, context: 25)
+      
       default:
         return true
     }
@@ -660,6 +677,19 @@ class XTFileViewController: NSViewController
     }
     
     item.state = (tabController.tabWidth == width) ? NSOnState : NSOffState
+    return true
+  }
+  
+  func validateContextLinesMenuItem(_ item: NSMenuItem, context: UInt) -> Bool
+  {
+    guard let contextController = contentController as? ContextVariable
+    else {
+      item.state = NSOffState
+      return false
+    }
+    
+    item.state = (contextController.contextLines == context) ? NSOnState
+                                                             : NSOffState
     return true
   }
   
@@ -698,6 +728,31 @@ class XTFileViewController: NSViewController
     setTabWidth(8)
   }
   
+  @IBAction func context0(_ sender: Any?)
+  {
+    setContext(0)
+  }
+  
+  @IBAction func context3(_ sender: Any?)
+  {
+    setContext(3)
+  }
+  
+  @IBAction func context6(_ sender: Any?)
+  {
+    setContext(6)
+  }
+  
+  @IBAction func context12(_ sender: Any?)
+  {
+    setContext(12)
+  }
+  
+  @IBAction func context25(_ sender: Any?)
+  {
+    setContext(25)
+  }
+  
   func setWhitespace(_ setting: XTWhitespace)
   {
     guard let wsController = contentController as? WhitespaceVariable
@@ -712,6 +767,14 @@ class XTFileViewController: NSViewController
     else { return }
     
     tabController.tabWidth = tabWidth
+  }
+  
+  func setContext(_ context: UInt)
+  {
+    guard let contextController = contentController as? ContextVariable
+    else { return }
+    
+    contextController.contextLines = context
   }
 }
 
