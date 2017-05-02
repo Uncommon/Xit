@@ -14,7 +14,8 @@ class WebViewController: NSViewController
   
   struct Default
   {
-    static let tabWidth: UInt = 4
+    static var tabWidth: UInt
+    { return PreviewsPrefsController.Default.tabWidth() }
   }
   
   static let baseURL = Bundle.main.url(forResource: "html", withExtension: nil)
@@ -46,7 +47,7 @@ class WebViewController: NSViewController
   
   func updateFont()
   {
-    let font = PreviewsPrefsController.defaultFont()
+    let font = PreviewsPrefsController.Default.font()
     
     webView?.preferences.standardFontFamily = font.familyName
     webView?.preferences.defaultFontSize = Int32(font.pointSize)
@@ -77,9 +78,9 @@ extension WebViewController: TabWidthVariable
     get
     {
       guard let style = webView?.mainFrameDocument.body.style,
-        let tabSizeString = style.getPropertyValue("tab-size"),
-        let tabSize = UInt(tabSizeString)
-        else { return Default.tabWidth }
+            let tabSizeString = style.getPropertyValue("tab-size"),
+            let tabSize = UInt(tabSizeString)
+      else { return Default.tabWidth }
       
       return tabSize
     }

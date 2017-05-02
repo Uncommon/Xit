@@ -21,7 +21,7 @@ class XTDiffMaker: NSObject
   
   static let defaultContextLines: UInt = 3
   var contextLines: UInt = XTDiffMaker.defaultContextLines
-  var whitespace: XTWhitespace = .showAll
+  var whitespace = PreviewsPrefsController.Default.whitespace()
   var usePatience = false
   var minimal = false
   

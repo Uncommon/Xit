@@ -15,14 +15,12 @@ protocol XTFileContentController
   var isLoaded: Bool { get }
 }
 
-@objc
-protocol WhitespaceVariable
+protocol WhitespaceVariable: class
 {
-  var whitespace: XTWhitespace { get set }
+  var whitespace: WhitespaceSetting { get set }
 }
 
-@objc
-protocol TabWidthVariable
+protocol TabWidthVariable: class
 {
   var tabWidth: UInt { get set }
 }
@@ -656,7 +654,7 @@ class XTFileViewController: NSViewController
   }
   
   func valitadeWhitespaceMenuItem(_ item: NSMenuItem,
-                                  whitespace: XTWhitespace) -> Bool
+                                  whitespace: WhitespaceSetting) -> Bool
   {
     guard let wsController = contentController as? WhitespaceVariable
     else {
@@ -753,7 +751,7 @@ class XTFileViewController: NSViewController
     setContext(25)
   }
   
-  func setWhitespace(_ setting: XTWhitespace)
+  func setWhitespace(_ setting: WhitespaceSetting)
   {
     guard let wsController = contentController as? WhitespaceVariable
     else { return }

@@ -5,6 +5,15 @@ extension NSNotification.Name
   static let XTFontChanged = NSNotification.Name(rawValue:"XTFontChanged")
 }
 
+enum WhitespaceSetting: String
+{
+  case showAll
+  case ignoreEOL
+  case ignoreAll
+  
+  static let allValues: [WhitespaceSetting] = [.showAll, .ignoreEOL, .ignoreAll]
+}
+
 class PreviewsPrefsController: NSViewController
 {
   @IBOutlet weak var whitespacePopup: NSPopUpButton!
@@ -56,59 +65,59 @@ class PreviewsPrefsController: NSViewController
       return XTDiffMaker.defaultContextLines
     }
   }
-
-  enum WhitespaceSetting: String
-  {
-    case showAll
-    case ignoreEOL
-    case ignoreAll
-    
-    static let allValues: [WhitespaceSetting] = [.showAll, .ignoreEOL, .ignoreAll]
-  }
-
-  static func defaultFont() -> NSFont
-  {
-    let defaults = UserDefaults.standard
-    let fontName = defaults.string(forKey: PreferenceKeys.fontName)
-                   ?? "SF Mono"
-    let storedSize = defaults.integer(forKey: PreferenceKeys.fontSize)
-    let fontSize = CGFloat((storedSize == 0) ? 11 : storedSize)
-    
-    return NSFont(name: fontName, size: fontSize)
-           ?? NSFont(name: "Monaco", size: fontSize)
-           ?? NSFont.systemFont(ofSize: fontSize)
-  }
   
-  static func defaultWhitespace() -> WhitespaceSetting
+  struct Default
   {
-    let defaults = UserDefaults.standard
-    let defaultWhitespace = Initial.whitespace
-    let whitespaceString = defaults.string(forKey: PreferenceKeys.diffWhitespace)
-                           ?? defaultWhitespace.rawValue
-    
-    return WhitespaceSetting.init(rawValue: whitespaceString)
-           ?? defaultWhitespace
-  }
-  
-  static func defaultTabWidth() -> UInt
-  {
-    let defaults = UserDefaults.standard
-    let tabSetting = UInt(defaults.integer(forKey: PreferenceKeys.tabWidth))
-    
-    return (tabSetting == 0) ? Initial.tabWidth : tabSetting
-  }
-  
-  static func defaultContextLines() -> UInt
-  {
-    let defaults = UserDefaults.standard
-    
-    if let contextSetting = defaults.value(forKey: PreferenceKeys.contextLines)
-                            as? UInt,
-       Values.context.index(of: contextSetting) != nil {
-      return contextSetting
+    /// Default or user-selected font
+    static func font() -> NSFont
+    {
+      let defaults = UserDefaults.standard
+      let fontName = defaults.string(forKey: PreferenceKeys.fontName)
+                     ?? "SF Mono"
+      let storedSize = defaults.integer(forKey: PreferenceKeys.fontSize)
+      let fontSize = CGFloat((storedSize == 0) ? 11 : storedSize)
+      
+      return NSFont(name: fontName, size: fontSize)
+             ?? NSFont(name: "Monaco", size: fontSize)
+             ?? NSFont.systemFont(ofSize: fontSize)
     }
-    else {
-      return Initial.contextLines
+    
+    /// Default or user-selected whitespace setting
+    static func whitespace() -> WhitespaceSetting
+    {
+      let defaults = UserDefaults.standard
+      let defaultWhitespace = Initial.whitespace
+      let whitespaceString = defaults.string(forKey: PreferenceKeys.diffWhitespace)
+                             ?? defaultWhitespace.rawValue
+      
+      return WhitespaceSetting.init(rawValue: whitespaceString)
+             ?? defaultWhitespace
+    }
+    
+    /// Default or user-selected tab width
+    static func tabWidth() -> UInt
+    {
+      let defaults = UserDefaults.standard
+      let tabSetting = UInt(defaults.integer(forKey: PreferenceKeys.tabWidth))
+      
+      return (tabSetting == 0) ? Initial.tabWidth : tabSetting
+    }
+    
+    /// Default or user-selected context line count
+    static func contextLines() -> UInt
+    {
+      let defaults = UserDefaults.standard
+      
+      // 0 is a valid value, so defaults using that as the "value not set"
+      // marker isn't useful.
+      if let contextSetting = defaults.value(forKey: PreferenceKeys.contextLines)
+                              as? UInt,
+         Values.context.index(of: contextSetting) != nil {
+        return contextSetting
+      }
+      else {
+        return Initial.contextLines
+      }
     }
   }
 
@@ -116,26 +125,22 @@ class PreviewsPrefsController: NSViewController
   {
     super.viewDidLoad()
     
-    let whitespaceValue = PreviewsPrefsController.defaultWhitespace()
+    let whitespaceValue = Default.whitespace()
     
     whitespacePopup.selectItem(at:
         WhitespaceSetting.allValues.index(of: whitespaceValue)!)
     
-    let tabSetting = PreviewsPrefsController.defaultTabWidth()
-    let tabIndex = Values.tabs.index(of: tabSetting)
-                ?? Values.tabs.index(of: Initial.tabWidth)!
+    let tabSetting = Default.tabWidth()
+    let tabIndex = Values.tabs.index(of: tabSetting) ??
+                   Values.tabs.index(of: Initial.tabWidth)!
     
     tabPopup.selectItem(at: tabIndex)
     
-    // 0 is a valid value, so defaults using that as the "value not set" marker
-    // isn't useful.
-    let contextIndex =
-          Values.context.index(of: PreviewsPrefsController.defaultContextLines())
-          ?? 1
+    let contextIndex = Values.context.index(of: Default.contextLines()) ?? 1
     
     contextPopup.selectItem(at: contextIndex)
     
-    textFont = PreviewsPrefsController.defaultFont()
+    textFont = Default.font()
   }
   
   override func viewDidDisappear()

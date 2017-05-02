@@ -19,14 +19,14 @@ class XTFileDiffController: WebViewController,
   var staged: Bool?
   var patch: GTDiffPatch?
   
-  public var whitespace: XTWhitespace = .showAll
+  public var whitespace = PreviewsPrefsController.Default.whitespace()
   {
     didSet
     {
       configureDiffMaker()
     }
   }
-  public var contextLines: UInt = XTDiffMaker.defaultContextLines
+  public var contextLines = PreviewsPrefsController.Default.contextLines()
   {
     didSet
     {
