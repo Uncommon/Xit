@@ -9,7 +9,8 @@ protocol HunkStaging: class
 
 /// Manages a WebView for displaying text file diffs.
 class XTFileDiffController: WebViewController,
-                            WhitespaceVariable
+                            WhitespaceVariable,
+                            ContextVariable
 {
   // swiftlint:disable:next weak_delegate
   let actionDelegate: DiffActionDelegate = DiffActionDelegate()
@@ -18,7 +19,14 @@ class XTFileDiffController: WebViewController,
   var staged: Bool?
   var patch: GTDiffPatch?
   
-  public var whitespace: XTWhitespace = .showAll
+  public var whitespace = PreviewsPrefsController.Default.whitespace()
+  {
+    didSet
+    {
+      configureDiffMaker()
+    }
+  }
+  public var contextLines = PreviewsPrefsController.Default.contextLines()
   {
     didSet
     {
@@ -41,6 +49,7 @@ class XTFileDiffController: WebViewController,
   private func configureDiffMaker()
   {
     diffMaker?.whitespace = whitespace
+    diffMaker?.contextLines = contextLines
     reloadDiff()
   }
 

@@ -605,6 +605,37 @@
                                                         <action selector="tabWidth8:" target="-2" id="Ou2-Z6-eWG"/>
                                                     </connections>
                                                 </menuItem>
+                                                <menuItem isSeparatorItem="YES" id="5JK-Et-Lfy"/>
+                                                <menuItem title="No context" id="5fs-be-cMC">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="context0:" target="-2" id="ATh-mv-zNP"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="3 context lines" id="ySk-aW-O9V">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="context3:" target="-2" id="YLB-15-sfb"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="6 context lines" id="uep-et-E2k">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="context6:" target="-2" id="Ovh-1E-c6p"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="12 context lines" id="JzW-iA-622">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="context12:" target="-2" id="3lI-Fj-dzy"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="25 context lines" id="NYZ-6o-M2V">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="context25:" target="-2" id="LCY-DN-Wvx"/>
+                                                    </connections>
+                                                </menuItem>
                                             </items>
                                         </menu>
                                     </popUpButtonCell>

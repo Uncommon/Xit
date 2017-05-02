@@ -23,12 +23,6 @@ typedef NS_ENUM(NSUInteger, XTError) {
   XTErrorUnexpectedObject,
 };
 
-typedef NS_ENUM(NSUInteger, XTWhitespace) {
-  XTWhitespaceShowAll,
-  XTWhitespaceIgnoreEOL,
-  XTWhitespaceIgnoreAll,
-};
-
 extern NSString *XTErrorDomainXit, *XTErrorDomainGit;
 
 /// Fake value for seleting staging view.
