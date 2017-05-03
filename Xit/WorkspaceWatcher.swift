@@ -5,7 +5,8 @@ import Foundation
 class WorkspaceWatcher: NSObject
 {
   unowned let repository: XTRepository
-  var stream: FileEventStream! = nil
+  private(set) var stream: FileEventStream! = nil
+  var skipIgnored = true
   
   init?(repository: XTRepository)
   {
@@ -29,9 +30,22 @@ class WorkspaceWatcher: NSObject
   
   func observeEvents(_ paths: [String])
   {
+    var userInfo = [String: Any]()
+  
+    if skipIgnored {
+      let filteredPaths = paths.filter { !repository.isIgnored(path: $0) }
+      guard !filteredPaths.isEmpty
+      else { return }
+      
+      userInfo = [XTPathsKey: filteredPaths]
+    }
+    else {
+      userInfo = [XTPathsKey: paths]
+    }
+  
     NotificationCenter.default.post(
         name: NSNotification.Name.XTRepositoryWorkspaceChanged,
         object: repository,
-        userInfo: [XTPathsKey: paths])
+        userInfo: userInfo)
   }
 }
