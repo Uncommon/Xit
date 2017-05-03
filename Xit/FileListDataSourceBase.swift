@@ -20,7 +20,7 @@ class FileListDataSourceBase: NSObject
         guard let myself = self
         else { return }
         
-        if myself.outlineView.dataSource === myself {
+        if myself.outlineView?.dataSource === myself {
           myself.workspaceChanged(note.userInfo?[XTPathsKey] as? [String])
         }
       }

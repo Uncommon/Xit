@@ -5,7 +5,7 @@ class GitSwiftTests: XCTestCase
 {
   func check(strings: [String])
   {
-    withGitStringArray(from: strings) {
+    strings.withGitStringArray {
       (strarray) in
       var localArray = strarray
       let copy = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
