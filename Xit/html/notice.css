@@ -1,8 +1,11 @@
 div {
   font-family: Helvetica;
+  font-size: 18;
   color: #666;
   text-align: center;
   position: absolute;
   top: 40%;
   width: 100%;
+  -webkit-user-select: none;
+  cursor: default;
 }
