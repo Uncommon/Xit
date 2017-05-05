@@ -110,6 +110,60 @@ class XTRepositoryTest: XTTest
       })
     }
   }
+  
+  func testAddedChange()
+  {
+    let changes = repository.changes(for: "master", parent: nil)
+    
+    XCTAssertEqual(changes.count, 1)
+    
+    let change = changes[0]
+    
+    XCTAssertEqual(change.path, file1Name)
+    XCTAssertEqual(change.change, XitChange.added)
+  }
+  
+  func testModifiedChange()
+  {
+    let file2Name = "file2.txt"
+    let file2Path = repoPath.appending(pathComponent: file2Name)
+    
+    writeText(toFile1: "changes!")
+    try! "new file 2".write(toFile: file2Path, atomically: true, encoding: .utf8)
+    try! repository.stageFile(file1Name)
+    try! repository.stageFile(file2Name)
+    try! repository.commit(withMessage: "#2", amend: false, outputBlock: nil)
+    
+    let changes2 = repository.changes(for: "master", parent: nil)
+    
+    XCTAssertEqual(changes2.count, 2)
+    
+    let file1Change = changes2[0]
+    
+    XCTAssertEqual(file1Change.path, file1Name)
+    XCTAssertEqual(file1Change.change, .modified)
+    
+    let file2Change = changes2[1]
+    
+    XCTAssertEqual(file2Change.path, file2Name)
+    XCTAssertEqual(file2Change.change, .added)
+  }
+  
+  func testDeletedChange()
+  {
+    try! FileManager.default.removeItem(atPath: file1Path)
+    try! repository.stageFile(file1Name)
+    try! repository.commit(withMessage: "#3", amend: false, outputBlock: nil)
+    
+    let changes3 = repository.changes(for: "master", parent: nil)
+    
+    XCTAssertEqual(changes3.count, 1)
+    
+    let file1Deleted = changes3[0]
+    
+    XCTAssertEqual(file1Deleted.path, file1Name)
+    XCTAssertEqual(file1Deleted.change, .deleted)
+  }
 
   func testDeleteDiff()
   {

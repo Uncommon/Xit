@@ -174,55 +174,6 @@
   XCTAssertTrue([self.repository deleteRemote:testRemoteName2 error:&error]);
 }
 
-- (void)testChangesForRef
-{
-  [super addInitialRepoContent];
-
-  NSArray *changes = [self.repository changesForRef:@"master" parent:nil];
-
-  XCTAssertEqual([changes count], 1UL);
-
-  XTFileChange *change = changes[0];
-
-  XCTAssertEqualObjects(change.path, [self.file1Path lastPathComponent]);
-  XCTAssertEqual(change.change, XitChangeAdded);
-
-  NSError *error = nil;
-  NSString *file2Path = [self.repoPath stringByAppendingPathComponent:@"file2.txt"];
-
-  [self writeTextToFile1:@"changes!"];
-  [@"new file 2" writeToFile:file2Path
-                  atomically:YES
-                    encoding:NSUTF8StringEncoding
-                       error:&error];
-  XCTAssertNil(error);
-  XCTAssertTrue([self.repository stageFile:self.file1Path error:&error]);
-  XCTAssertTrue([self.repository stageFile:file2Path error:&error]);
-  [self.repository commitWithMessage:@"#2" amend:NO outputBlock:NULL error:&error];
-  XCTAssertNil(error);
-
-  changes = [self.repository changesForRef:@"master" parent:nil];
-  XCTAssertEqual([changes count], 2UL);
-  change = changes[0];
-  XCTAssertEqualObjects(change.path, [self.file1Path lastPathComponent]);
-  XCTAssertEqual(change.change, XitChangeModified);
-  change = changes[1];
-  XCTAssertEqualObjects(change.path, [file2Path lastPathComponent]);
-  XCTAssertEqual(change.change, XitChangeAdded);
-
-  [[NSFileManager defaultManager] removeItemAtPath:self.file1Path error:&error];
-  XCTAssertNil(error);
-  XCTAssertTrue([self.repository stageFile:self.file1Path error:&error]);
-  [self.repository commitWithMessage:@"#3" amend:NO outputBlock:NULL error:&error];
-  XCTAssertNil(error);
-
-  changes = [self.repository changesForRef:@"master" parent:nil];
-  XCTAssertEqual([changes count], 1UL);
-  change = changes[0];
-  XCTAssertEqualObjects(change.path, [self.file1Path lastPathComponent]);
-  XCTAssertEqual(change.change, XitChangeDeleted);
-}
-
 - (void)testStageUnstageAllStatus
 {
   [super addInitialRepoContent];
