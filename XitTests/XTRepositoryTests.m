@@ -21,71 +21,6 @@
 {
 }
 
-- (void)testEmptyRepositoryHead
-{
-  XCTAssertFalse([self.repository hasHeadReference], @"");
-  XCTAssertEqualObjects([self.repository parentTree], kEmptyTreeHash, @"");
-}
-
-- (void)testHeadRef
-{
-  [super addInitialRepoContent];
-  XCTAssertEqualObjects([self.repository headRef], @"refs/heads/master", @"");
-
-  // The SHA will vary with the date, so just make sure it's valid.
-  NSString *headSHA = [self.repository headSHA];
-  NSCharacterSet *hexChars = [NSCharacterSet
-      characterSetWithCharactersInString:@"0123456789abcdefABCDEF"];
-
-  XCTAssertEqual([headSHA length], (NSUInteger) 40);
-  XCTAssertEqualObjects([headSHA stringByTrimmingCharactersInSet:hexChars], @"",
-                       @"SHA should be only hex chars");
-}
-
-- (void)testDetachedCheckout
-{
-  [super addInitialRepoContent];
-
-  NSString *firstSHA = [self.repository headSHA];
-  NSError *error = nil;
-
-  [@"mash" writeToFile:self.file1Path
-            atomically:YES
-              encoding:NSUTF8StringEncoding
-                 error:&error];
-  XCTAssertNil(error);
-  [self.repository stageFile:self.file1Path error:&error];
-  [self.repository commitWithMessage:@"commit 2"
-                               amend:NO
-                         outputBlock:NULL
-                               error:&error];
-  XCTAssertNil(error);
-
-  [self.repository checkout:firstSHA error:&error];
-  XCTAssertNil(error);
-
-  NSString *detachedSHA = [self.repository headSHA];
-
-  XCTAssertEqualObjects(firstSHA, detachedSHA);
-}
-
-- (void)testContents
-{
-  [super addInitialRepoContent];
-
-  NSError *error = nil;
-  NSData *contentsData = [self.repository contentsOfFile:@"file1.txt"
-                                                atCommit:self.repository.headSHA
-                                                   error:&error];
-
-  XCTAssertNotNil(contentsData, @"");
-
-  NSString *contentsString = [[NSString alloc]
-      initWithData:contentsData encoding:NSUTF8StringEncoding];
-
-  XCTAssertEqualObjects(contentsString, @"some text", @"");
-}
-
 - (void)testStagedContents
 {
   NSError *error = nil;
@@ -288,31 +223,6 @@
   XCTAssertEqual(change.change, XitChangeDeleted);
 }
 
-- (void)testIsTextFile
-{
-  NSDictionary *names = @{
-      @"COPYING": @YES,
-      @"a.txt": @YES,
-      @"a.c": @YES,
-      @"a.xml": @YES,
-      @"a.html": @YES,
-      @"a.jpg": @NO,
-      @"a.png": @NO,
-      @"a.ffff": @NO,
-      @"AAAAA": @NO,
-      };
-  NSArray *keys = names.allKeys;
-  NSArray *values = names.allValues;
-
-  for (int i = 0; i < keys.count; ++i)
-    XCTAssertEqualObjects(
-        @([self.repository isTextFile:keys[i] commit:@"master"]),
-        values[i],
-        @"fileNameIsText should be %@ for %@",
-        [values[i] boolValue] ? @"true" : @"false",
-        keys[i]);
-}
-
 - (void)testStageUnstageAllStatus
 {
   [super addInitialRepoContent];
@@ -332,7 +242,7 @@
                           atomically:YES
                             encoding:NSASCIIStringEncoding
                                error:nil]);
-  [self.repository _stageAllFilesAndReturnError:&error];
+  [self.repository stageAllFilesWithError:&error];
   
   NSArray<XTFileChange*> *changes = [self.repository changesForRef:XTStagingSHA
                                                             parent:nil];

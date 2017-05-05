@@ -1,8 +1,86 @@
 import XCTest
 @testable import Xit
 
+class XTEmptyRepositoryTest: XTTest
+{
+  override func addInitialRepoContent()
+  {
+  }
+
+  func testEmptyRepositoryHead()
+  {
+    XCTAssertFalse(repository.hasHeadReference)
+    XCTAssertEqual(repository.parentTree, kEmptyTreeHash)
+  }
+  
+  func testIsTextFile()
+  {
+    let textFiles = ["COPYING", "a.txt", "a.c", "a.xml", "a.html"]
+    let nonTextFiles = ["a.jpg", "a.png", "a.ffff", "AAAAA"]
+    
+    for name in textFiles {
+      XCTAssertTrue(repository.isTextFile(name, commit: "master"),
+                    "\(name) should be a text file")
+    }
+    for name in nonTextFiles {
+      XCTAssertFalse(repository.isTextFile(name, commit: "master"),
+                     "\(name) should not be a text file")
+    }
+  }
+}
+
 class XTRepositoryTest: XTTest
 {
+  func testHeadRef()
+  {
+    XCTAssertEqual(repository.headRef, "refs/heads/master")
+    
+    guard let headSHA = repository.headSHA
+    else {
+      XCTFail("no head SHA")
+      return
+    }
+    let hexChars = CharacterSet(charactersIn: "0123456789abcdefABCDEF")
+    
+    XCTAssertEqual(headSHA.utf8.count, 40)
+    XCTAssertTrue(headSHA.trimmingCharacters(in: hexChars).isEmpty)
+  }
+  
+  func testDetachedCheckout()
+  {
+    guard let firstSHA = repository.headSHA
+    else {
+      XCTFail("no head SHA")
+      return
+    }
+    
+    try! "mash".write(toFile: file1Path, atomically: true, encoding: .utf8)
+    try! repository.stageFile(file1Name)
+    try! repository.checkout(firstSHA)
+    
+    guard let detachedSHA = repository.headSHA
+    else {
+      XCTFail("no detached head SHA")
+      return
+    }
+    
+    XCTAssertEqual(firstSHA, detachedSHA)
+  }
+  
+  func testContents()
+  {
+    guard let headSHA = repository.headSHA
+      else {
+        XCTFail("no head SHA")
+        return
+    }
+    let contentData = try! repository.contents(ofFile: file1Name,
+                                               atCommit: headSHA)
+    let contentString = String(data: contentData, encoding: .utf8)
+    
+    XCTAssertEqual(contentString, "some text")
+  }
+
   func checkDeletedDiff(_ diff: XTDiffDelta?)
   {
     guard let diff = diff
