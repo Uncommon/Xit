@@ -59,4 +59,12 @@ typedef NS_ENUM(NSUInteger, XitChange) {
 
 @end
 
+/// Represents a workspace file with staged or unstaged changes.
+@interface XTFileStaging : XTFileChange
+
+/// The new path for a moved file.
+@property NSString *destinationPath;
+
+@end
+
 NS_ASSUME_NONNULL_END

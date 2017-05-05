@@ -174,47 +174,4 @@
   XCTAssertTrue([self.repository deleteRemote:testRemoteName2 error:&error]);
 }
 
-- (void)testStageUnstageAllStatus
-{
-  [super addInitialRepoContent];
-  [self commitNewTextFile:@"file2.txt" content:@"blah"];
-  
-  NSString *file2Path = [self.repoPath stringByAppendingPathComponent:@"file2.txt"];
-  NSString *file3Path = [self.repoPath stringByAppendingPathComponent:@"file3.txt"];
-  NSError *error = nil;
-  
-  XCTAssertTrue([@"blah" writeToFile:self.file1Path
-                          atomically:YES
-                            encoding:NSASCIIStringEncoding
-                               error:nil]);
-  XCTAssertTrue([[NSFileManager defaultManager] removeItemAtPath:file2Path
-                                                           error:nil]);
-  XCTAssertTrue([@"blah" writeToFile:file3Path
-                          atomically:YES
-                            encoding:NSASCIIStringEncoding
-                               error:nil]);
-  [self.repository stageAllFilesWithError:&error];
-  
-  NSArray<XTFileChange*> *changes = [self.repository changesForRef:XTStagingSHA
-                                                            parent:nil];
-  
-  XCTAssertEqual(changes.count, 3);
-  XCTAssertEqual(changes[0].unstagedChange, XitChangeUnmodified); // file1
-  XCTAssertEqual(changes[0].change, XitChangeModified);
-  XCTAssertEqual(changes[1].unstagedChange, XitChangeUnmodified); // file2
-  XCTAssertEqual(changes[1].change, XitChangeDeleted);
-  XCTAssertEqual(changes[2].unstagedChange, XitChangeUnmodified); // file3
-  XCTAssertEqual(changes[2].change, XitChangeAdded);
-  
-  [self.repository unstageAllFiles];
-  changes = [self.repository changesForRef:XTStagingSHA parent:nil];
-  XCTAssertEqual(changes.count, 3);
-  XCTAssertEqual(changes[0].unstagedChange, XitChangeModified); // file1
-  XCTAssertEqual(changes[0].change, XitChangeUnmodified);
-  XCTAssertEqual(changes[1].unstagedChange, XitChangeDeleted); // file2
-  XCTAssertEqual(changes[1].change, XitChangeUnmodified);
-  XCTAssertEqual(changes[2].unstagedChange, XitChangeUntracked); // file3
-  XCTAssertEqual(changes[2].change, XitChangeUnmodified);
-}
-
 @end

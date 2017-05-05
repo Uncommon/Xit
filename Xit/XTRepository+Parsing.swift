@@ -77,7 +77,7 @@ extension XTRepository
   func changes(for ref: String, parent parentSHA: String?) -> [XTFileChange]
   {
     guard ref != XTStagingSHA
-    else { return [] }
+    else { return stagingChanges() }
     
     guard let commit = (try? gtRepo.lookUpObject(byRevParse: ref)) as? GTCommit,
           let sha = commit.sha
@@ -96,6 +96,29 @@ extension XTRepository
         change.change = XitChange(delta: delta.type)
         result.append(change)
       }
+    }
+    return result
+  }
+  
+  func stagingChanges() -> [XTFileChange]
+  {
+    var result = [XTFileStaging]()
+    let options = [GTRepositoryStatusOptionsFlagsKey:
+                   UInt(GTRepositoryStatusFlagsIncludeUntracked.rawValue)]
+    
+    try? gtRepo.enumerateFileStatus(options: options) {
+      (headToIndex, indexToWorking, _) in
+      let change = XTFileStaging()
+      
+      if let delta = headToIndex ?? indexToWorking {
+        change.path = delta.oldFile?.path ?? ""
+        change.destinationPath = delta.newFile?.path ?? ""
+      }
+      change.change = headToIndex.map { XitChange(delta: $0.status) }
+                      ?? XitChange.unmodified
+      change.unstagedChange = indexToWorking.map { XitChange(delta: $0.status) }
+                              ?? XitChange.unmodified
+      result.append(change)
     }
     return result
   }

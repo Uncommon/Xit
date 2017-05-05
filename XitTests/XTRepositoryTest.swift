@@ -164,6 +164,43 @@ class XTRepositoryTest: XTTest
     XCTAssertEqual(file1Deleted.path, file1Name)
     XCTAssertEqual(file1Deleted.change, .deleted)
   }
+  
+  func testStageUnstageAllStatus()
+  {
+    let file2Name = "file2.txt"
+    let file3Name = "file3.txt"
+    
+    commitNewTextFile(file2Name, content: "blah")
+    
+    let file2Path = repoPath.appending(pathComponent: file2Name)
+    let file3Path = repoPath.appending(pathComponent: file3Name)
+    
+    try! "blah".write(toFile: file1Path, atomically: true, encoding: .utf8)
+    try! FileManager.default.removeItem(atPath: file2Path)
+    try! "blah".write(toFile: file3Path, atomically: true, encoding: .utf8)
+    try! repository.stageAllFiles()
+    
+    var changes = repository.changes(for: XTStagingSHA, parent: nil)
+    
+    XCTAssertEqual(changes.count, 3);
+    XCTAssertEqual(changes[0].unstagedChange, XitChange.unmodified); // file1
+    XCTAssertEqual(changes[0].change, XitChange.modified);
+    XCTAssertEqual(changes[1].unstagedChange, XitChange.unmodified); // file2
+    XCTAssertEqual(changes[1].change, XitChange.deleted);
+    XCTAssertEqual(changes[2].unstagedChange, XitChange.unmodified); // file3
+    XCTAssertEqual(changes[2].change, XitChange.added);
+    
+    XCTAssertTrue(repository.unstageAllFiles())
+    changes = repository.changes(for: XTStagingSHA, parent: nil)
+    
+    XCTAssertEqual(changes.count, 3);
+    XCTAssertEqual(changes[0].unstagedChange, XitChange.modified); // file1
+    XCTAssertEqual(changes[0].change, XitChange.unmodified);
+    XCTAssertEqual(changes[1].unstagedChange, XitChange.deleted); // file2
+    XCTAssertEqual(changes[1].change, XitChange.unmodified);
+    XCTAssertEqual(changes[2].unstagedChange, XitChange.untracked); // file3
+    XCTAssertEqual(changes[2].change, XitChange.unmodified);
+  }
 
   func testDeleteDiff()
   {

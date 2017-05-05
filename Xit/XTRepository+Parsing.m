@@ -123,3 +123,8 @@
 }
 
 @end
+
+
+@implementation XTFileStaging
+
+@end
