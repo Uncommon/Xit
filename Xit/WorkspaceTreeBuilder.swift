@@ -2,9 +2,9 @@ import Cocoa
 
 class WorkspaceTreeBuilder
 {
-  var changes: [String: XTWorkspaceFileStatus]
+  var changes: [String: WorkspaceFileStatus]
   
-  init(changes: [String: XTWorkspaceFileStatus])
+  init(changes: [String: WorkspaceFileStatus])
   {
     self.changes = changes
   }

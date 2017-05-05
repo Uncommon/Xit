@@ -18,19 +18,11 @@ typedef NS_ENUM(NSUInteger, XitChange) {
   XitChangeMixed,  // For folders containing a mix of changes
 };
 
-@class GTSubmodule;
 @class XTDiffDelta;
 @class XTFileChange;
-@class XTLocalBranch;
-@class XTRemote;
-@class XTWorkspaceFileStatus;
 
 
 @interface XTRepository (Reading)
-
-/// A dictionary mapping paths to XTWorkspaceFileStatuses.
-@property (readonly, copy) NSDictionary<NSString*, XTWorkspaceFileStatus*>
-    *workspaceStatus;
 
 - (BOOL)stageFile:(NSString*)file error:(NSError**)error;
 - (BOOL)stageAllFilesWithError:(NSError**)error;
@@ -41,13 +33,9 @@ typedef NS_ENUM(NSUInteger, XitChange) {
               outputBlock:(nullable void (^)(NSString *output))outputBlock
                     error:(NSError**)error;
 
-/// Returns a list of changed files in the given commit.
-- (nullable NSArray<XTFileChange*>*)changesForRef:(NSString*)ref
-                                           parent:(nullable NSString*)parentSHA;
 - (nullable XTDiffDelta*)diffForFile:(NSString*)path
                            commitSHA:(NSString*)sha
                            parentSHA:(nullable NSString*)parentSHA;
-- (BOOL)isTextFile:(NSString*)path commit:(NSString*)commit;
 
 @end
 
@@ -68,24 +56,6 @@ typedef NS_ENUM(NSUInteger, XitChange) {
 - (instancetype)initWithPath:(NSString*)path
                       change:(XitChange)change
               unstagedChange:(XitChange)unstagedChange;
-
-@end
-
-
-/// Contains the stanged and unstaged status for a workspace file.
-@interface XTWorkspaceFileStatus : NSObject
-
-@property XitChange change;
-@property XitChange unstagedChange;
-
-@end
-
-
-/// Represents a workspace file with staged or unstaged changes.
-@interface XTFileStaging : XTFileChange
-
-/// The new path for a moved file.
-@property NSString *destinationPath;
 
 @end
 

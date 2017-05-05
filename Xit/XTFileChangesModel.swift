@@ -82,9 +82,8 @@ class XTCommitChanges: NSObject, XTFileChangesModel, Blaming
   {
     self.repository = repository
     self.sha = sha
-    self.savedChanges = repository.changes(forRef: self.sha,
-                                           parent: self.diffParent) ??
-                        [XTFileChange]()
+    self.savedChanges = repository.changes(for: self.sha,
+                                           parent: self.diffParent)
     
     super.init()
   }
@@ -127,16 +126,15 @@ class XTCommitChanges: NSObject, XTFileChangesModel, Blaming
     else { return NSTreeNode() }
     
     var files = commit.allFiles()
+    let changeList = repository.changes(for: sha, parent:diffParent)
     var changes = [String: XitChange]()
-    
-    if let changeList = repository.changes(forRef: sha, parent:diffParent) {
-      for change in changeList {
-        changes[change.path] = change.change
-      }
-      files.append(
-          contentsOf: changeList.filter({ return $0.change == .deleted })
-                    .map({ return $0.path }))
+      
+    for change in changeList {
+      changes[change.path] = change.change
     }
+    files.append(
+        contentsOf: changeList.filter({ return $0.change == .deleted })
+                              .map({ return $0.path }))
     
     let newRoot = NSTreeNode(representedObject: CommitTreeItem(path:"/"))
     var nodes = [String: NSTreeNode]()
@@ -284,7 +282,7 @@ class XTStagingChanges: NSObject, XTFileChangesModel, Blaming
   var hasUnstaged: Bool { return true }
   var canCommit: Bool { return true }
   var changes: [XTFileChange]
-    { return repository.changes(forRef: XTStagingSHA, parent: nil) ?? [] }
+    { return repository.changes(for: XTStagingSHA, parent: nil) }
   
   var treeRoot: NSTreeNode
   {

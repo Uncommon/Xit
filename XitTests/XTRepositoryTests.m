@@ -332,7 +332,7 @@
                           atomically:YES
                             encoding:NSASCIIStringEncoding
                                error:nil]);
-  [self.repository stageAllFilesWithError:&error];
+  [self.repository _stageAllFilesAndReturnError:&error];
   
   NSArray<XTFileChange*> *changes = [self.repository changesForRef:XTStagingSHA
                                                             parent:nil];

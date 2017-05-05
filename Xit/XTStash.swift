@@ -30,17 +30,15 @@ func changes() -> [XTFileChange]
     return changes
   }
   
-  let stagedChanges = (indexCommit == nil) ? [] :
-      repo.changes(forRef: indexCommit!.sha!, parent: nil) ?? [XTFileChange]()
-  var unstagedChanges = repo.changes(forRef: mainCommit.sha!,
-                                           parent: indexCommit?.sha) ??
-                        [XTFileChange]()
+  let stagedChanges = indexCommit.map { repo.changes(for: $0.sha!, parent: nil) }
+                      ?? []
+  var unstagedChanges = repo.changes(for: mainCommit.sha!,
+                                     parent: indexCommit?.sha)
   
   if let untrackedCommit = self.untrackedCommit {
-    if let untrackedChanges = repo.changes(forRef: untrackedCommit.sha!,
-                                                 parent: nil) {
-      unstagedChanges.append(contentsOf: untrackedChanges)
-    }
+    let untrackedChanges = repo.changes(for: untrackedCommit.sha!, parent: nil)
+    
+    unstagedChanges.append(contentsOf: untrackedChanges)
   }
   // Unstaged statuses aren't set because these are coming out of commits,
   // so they all have to be switched.
