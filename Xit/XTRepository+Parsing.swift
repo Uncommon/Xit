@@ -19,11 +19,11 @@ struct WorkspaceFileStatus
   let change, unstagedChange: XitChange
 }
 
-// TODO: Eliminate use of XTFileChange in ObjC code
-class FileChange
+// Has to inherit from NSObject so NSTreeNode can use it to sort
+class FileChange: NSObject
 {
-  let path: String
-  let change, unstagedChange: XitChange
+  var path: String
+  var change, unstagedChange: XitChange
   
   init(path: String, change: XitChange = .unmodified,
        unstagedChange: XitChange = .unmodified)
@@ -73,8 +73,7 @@ extension XTRepository
   }
   
   // Returns the changes for the given commit.
-  @objc(changesForRef:parent:)
-  func changes(for ref: String, parent parentSHA: String?) -> [XTFileChange]
+  func changes(for ref: String, parent parentSHA: String?) -> [FileChange]
   {
     guard ref != XTStagingSHA
     else { return stagingChanges() }
@@ -85,39 +84,39 @@ extension XTRepository
     
     let parentSHA = parentSHA ?? commit.parents.first?.sha
     let diff = self.diff(forSHA: sha, parent: parentSHA)
-    var result = [XTFileChange]()
+    var result = [FileChange]()
     
     diff?.enumerateDeltas {
       (delta, _) in
       if delta.type != .unmodified {
-        let change = XTFileChange()
+        let change = FileChange(path: delta.newFile.path,
+                                change: XitChange(delta: delta.type))
         
-        change.path = delta.newFile.path
-        change.change = XitChange(delta: delta.type)
         result.append(change)
       }
     }
     return result
   }
   
-  func stagingChanges() -> [XTFileChange]
+  func stagingChanges() -> [FileChange]
   {
-    var result = [XTFileStaging]()
+    var result = [FileStaging]()
     let options = [GTRepositoryStatusOptionsFlagsKey:
                    UInt(GTRepositoryStatusFlagsIncludeUntracked.rawValue)]
     
     try? gtRepo.enumerateFileStatus(options: options) {
       (headToIndex, indexToWorking, _) in
-      let change = XTFileStaging()
+      guard let delta = headToIndex ?? indexToWorking
+      else { return }
+      let stagedChange = headToIndex.map { XitChange(delta: $0.status) }
+                         ?? XitChange.unmodified
+      let unstagedChange = indexToWorking.map { XitChange(delta: $0.status) }
+                           ?? XitChange.unmodified
+      let change = FileStaging(path: delta.oldFile?.path ?? "",
+                               destinationPath: delta.newFile?.path ?? "",
+                               change: stagedChange,
+                               unstagedChange: unstagedChange)
       
-      if let delta = headToIndex ?? indexToWorking {
-        change.path = delta.oldFile?.path ?? ""
-        change.destinationPath = delta.newFile?.path ?? ""
-      }
-      change.change = headToIndex.map { XitChange(delta: $0.status) }
-                      ?? XitChange.unmodified
-      change.unstagedChange = indexToWorking.map { XitChange(delta: $0.status) }
-                              ?? XitChange.unmodified
       result.append(change)
     }
     return result

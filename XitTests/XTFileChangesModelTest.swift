@@ -134,7 +134,7 @@ class XTFileChangesModelTest: XTTest
     XCTAssertNotNil(tree.children)
     XCTAssertEqual(tree.children!.count, 1)
     
-    let change = tree.children![0].representedObject as! XTFileChange
+    let change = tree.children![0].representedObject as! FileChange
     
     XCTAssertEqual(change.change, XitChange.unmodified)
   }
@@ -155,12 +155,12 @@ class XTFileChangesModelTest: XTTest
     XCTAssertNotNil(tree.children)
     XCTAssertEqual(tree.children!.count, 2)
     
-    var change = tree.children![0].representedObject as! XTFileChange
+    var change = tree.children![0].representedObject as! FileChange
     
     XCTAssertEqual(change.path, addedName)
     XCTAssertEqual(change.change, XitChange.added)
     
-    change = tree.children![1].representedObject as! XTFileChange
+    change = tree.children![1].representedObject as! FileChange
     XCTAssertEqual(change.path, file1Name)
     XCTAssertEqual(change.change, XitChange.unmodified)
   }
@@ -189,7 +189,7 @@ class XTFileChangesModelTest: XTTest
         [.unmodified, .unmodified, .modified,   .untracked]
     
     for i in 0...3 {
-      let item = tree.children![i].representedObject as! XTFileChange
+      let item = tree.children![i].representedObject as! FileChange
       
       XCTAssertEqual(item.path, expectedPaths[i])
       XCTAssertEqual(item.change, expectedChanges[i],

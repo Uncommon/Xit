@@ -20,9 +20,9 @@ class XTStashTest: XTTest
     
     let stash = XTStash(repo: self.repository, index: 0, message: "stash 0")
     let changes = stash.changes()
-    let addedChange: XTFileChange = changes[addedIndex]
-    let file1Change: XTFileChange = changes[file1Index]
-    let untrackedChange: XTFileChange = changes[untrackedIndex]
+    let addedChange: FileChange = changes[addedIndex]
+    let file1Change: FileChange = changes[file1Index]
+    let untrackedChange: FileChange = changes[untrackedIndex]
     
     XCTAssertEqual(changes.count, 3)
     XCTAssertEqual(addedChange.path, addedName)

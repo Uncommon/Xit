@@ -2,13 +2,13 @@ import Foundation
 
 class XTFileChangesDataSource: FileListDataSourceBase
 {
-  var changes = [XTFileChange]()
+  var changes = [FileChange]()
   var wasInStaging: Bool = false
   
   func doReload()
   {
     var newChanges = repoController?.selectedModel?.changes ??
-                     [XTFileChange]()
+                     [FileChange]()
     
     newChanges.sort { $0.path < $1.path }
     
@@ -103,7 +103,7 @@ class XTFileChangesDataSource: FileListDataSourceBase
     }
   }
   
-  func reselect(change: XTFileChange?, oldRow: Int)
+  func reselect(change: FileChange?, oldRow: Int)
   {
     guard let oldChange = change
     else {
@@ -141,7 +141,7 @@ extension XTFileChangesDataSource : FileListDataSource
     }
   }
   
-  func fileChange(at row: Int) -> XTFileChange?
+  func fileChange(at row: Int) -> FileChange?
   {
     guard (row >= 0) && (row < changes.count)
     else { return nil }
@@ -151,12 +151,12 @@ extension XTFileChangesDataSource : FileListDataSource
   
   func path(for item: Any) -> String
   {
-    return (item as? XTFileChange)?.path ?? ""
+    return (item as? FileChange)?.path ?? ""
   }
   
   func change(for item: Any) -> XitChange
   {
-    guard let fileChange = item as? XTFileChange
+    guard let fileChange = item as? FileChange
     else { return .unmodified }
     
     return type(of:self).transformDisplayChange(fileChange.change)
@@ -164,7 +164,7 @@ extension XTFileChangesDataSource : FileListDataSource
   
   func unstagedChange(for item: Any) -> XitChange
   {
-    guard let fileChange = item as? XTFileChange
+    guard let fileChange = item as? FileChange
     else { return .unmodified }
     
     return type(of:self).transformDisplayChange(fileChange.unstagedChange)
@@ -183,7 +183,7 @@ extension XTFileChangesDataSource: NSOutlineViewDataSource
                    child index: Int,
                    ofItem item: Any?) -> Any
   {
-    return (index < changes.count) ? changes[index] : XTFileChange()
+    return (index < changes.count) ? changes[index] : FileChange(path: "")
   }
 
   func outlineView(_ outlineView: NSOutlineView,
@@ -196,6 +196,6 @@ extension XTFileChangesDataSource: NSOutlineViewDataSource
                    objectValueFor tableColumn: NSTableColumn?,
                    byItem item: Any?) -> Any?
   {
-    return (item as? XTFileChange)?.path
+    return (item as? FileChange)?.path
   }
 }

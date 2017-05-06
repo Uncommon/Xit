@@ -6,13 +6,13 @@ typealias GitBlame = CLGitBlame
 
 /// Protocol for a commit or commit-like object,
 /// with metadata, files, and diffs.
-@objc protocol XTFileChangesModel
+protocol XTFileChangesModel
 {
   var repository: XTRepository { get set }
   /// SHA for commit to be selected in the history list
   var shaToSelect: String? { get }
   /// Changes displayed in the file list
-  var changes: [XTFileChange] { get }
+  var changes: [FileChange] { get }
   /// Top level of the file tree
   var treeRoot: NSTreeNode { get }
   /// Are there staged and unstaged changes?
@@ -67,8 +67,8 @@ class XTCommitChanges: NSObject, XTFileChangesModel, Blaming
   var canCommit: Bool { return false }
   
   // Can't currently do changes as as lazy var because it crashes the compiler.
-  let savedChanges: [XTFileChange]
-  var changes: [XTFileChange] { return savedChanges }
+  let savedChanges: [FileChange]
+  var changes: [FileChange] { return savedChanges }
   
   var treeRoot: NSTreeNode
   {
@@ -168,7 +168,7 @@ class XTStashChanges: NSObject, XTFileChangesModel, Blaming
   var hasUnstaged: Bool { return true }
   var canCommit: Bool { return false }
   var shaToSelect: String? { return stash.mainCommit.parents[0].sha }
-  var changes: [XTFileChange] { return self.stash.changes() }
+  var changes: [FileChange] { return self.stash.changes() }
   
   var treeRoot: NSTreeNode {
     let mainModel = XTCommitChanges(repository: repository,
@@ -281,7 +281,7 @@ class XTStagingChanges: NSObject, XTFileChangesModel, Blaming
   var shaToSelect: String? { return XTStagingSHA }
   var hasUnstaged: Bool { return true }
   var canCommit: Bool { return true }
-  var changes: [XTFileChange]
+  var changes: [FileChange]
     { return repository.changes(for: XTStagingSHA, parent: nil) }
   
   var treeRoot: NSTreeNode
@@ -436,14 +436,14 @@ extension XTFileChangesModel
     
     // Do a parallel iteration to more efficiently find additions & deletions.
     var unstagedIndex = 0, stagedIndex = 0
-    var deletedItems = [XTFileChange]()
+    var deletedItems = [FileChange]()
     
     while (unstagedIndex < unstagedNodes.count) &&
           (stagedIndex < stagedNodes.count) {
       var unstagedNode = unstagedNodes[unstagedIndex]
-      let unstagedItem = unstagedNode.representedObject! as! XTFileChange
+      let unstagedItem = unstagedNode.representedObject! as! FileChange
       let stagedNode = stagedNodes[stagedIndex]
-      let stagedItem = stagedNode.representedObject! as! XTFileChange
+      let stagedItem = stagedNode.representedObject! as! FileChange
       
       switch (unstagedItem.path as NSString).compare(stagedItem.path) {
         case .orderedSame:
@@ -464,9 +464,9 @@ extension XTFileChangesModel
           unstagedIndex += 1
         case .orderedDescending:
           // Added in staged
-          deletedItems.append(XTFileChange(path: stagedItem.path,
-                                           change: stagedItem.change,
-                                           unstagedChange: .deleted))
+          deletedItems.append(FileChange(path: stagedItem.path,
+                                         change: stagedItem.change,
+                                         unstagedChange: .deleted))
           stagedIndex += 1
       }
     }
@@ -486,15 +486,15 @@ extension XTFileChangesModel
     var addedNodes = [NSTreeNode]()
     
     while (srcIndex < srcNodes.count) && (destIndex < destNodes.count) {
-      let srcItem = srcNodes[srcIndex].representedObject! as! XTFileChange
-      let destItem = destNodes[destIndex].representedObject! as! XTFileChange
+      let srcItem = srcNodes[srcIndex].representedObject! as! FileChange
+      let destItem = destNodes[destIndex].representedObject! as! FileChange
       
       if destItem.path != srcItem.path {
         // NSTreeNode can't be in two trees, so make a new one.
         let newNode = NSTreeNode(representedObject:
-            XTFileChange(path: srcItem.path,
-                         change: .unmodified,
-                         unstagedChange: .untracked))
+            FileChange(path: srcItem.path,
+                       change: .unmodified,
+                       unstagedChange: .untracked))
         
         newNode.mutableChildren.addObjects(from: srcNodes[srcIndex].children!)
         addedNodes.append(newNode)

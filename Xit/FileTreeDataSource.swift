@@ -37,7 +37,7 @@ extension FileTreeDataSource: FileListDataSource
     }
   }
   
-  func reselect(item: XTFileChange?, oldRow: Int) {
+  func reselect(item: FileChange?, oldRow: Int) {
     guard let item = item,
           let outlineView = outlineView
     else { return }
@@ -59,13 +59,13 @@ extension FileTreeDataSource: FileListDataSource
     }
   }
   
-  func fileChange(at row: Int) -> XTFileChange?
+  func fileChange(at row: Int) -> FileChange?
   {
     guard (row >= 0) && (row < outlineView!.numberOfRows)
     else { return nil }
     
     return (outlineView?.item(atRow: row) as? NSTreeNode)?.representedObject
-           as? XTFileChange
+           as? FileChange
   }
   
   func treeItem(_ item: Any) -> CommitTreeItem?
@@ -124,6 +124,6 @@ extension FileTreeDataSource: NSOutlineViewDataSource
   }
 }
 
-class CommitTreeItem: XTFileChange
+class CommitTreeItem: FileChange
 {
 }

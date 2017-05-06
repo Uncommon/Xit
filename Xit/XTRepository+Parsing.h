@@ -40,31 +40,4 @@ typedef NS_ENUM(NSUInteger, XitChange) {
 @end
 
 
-/// Represents a changed file from a commit.
-@interface XTFileChange : NSObject
-
-/// The item's path relative to the repository.
-@property NSString *path;
-/// The (staged) change status.
-@property XitChange change;
-/// The unstaged change status, if applicable.
-@property XitChange unstagedChange;
-
-- (instancetype)initWithPath:(NSString*)path;
-- (instancetype)initWithPath:(NSString*)path
-                      change:(XitChange)change;
-- (instancetype)initWithPath:(NSString*)path
-                      change:(XitChange)change
-              unstagedChange:(XitChange)unstagedChange;
-
-@end
-
-/// Represents a workspace file with staged or unstaged changes.
-@interface XTFileStaging : XTFileChange
-
-/// The new path for a moved file.
-@property NSString *destinationPath;
-
-@end
-
 NS_ASSUME_NONNULL_END

@@ -380,7 +380,7 @@ class XTFileViewController: NSViewController
     return row(for: view.superview)
   }
 
-  func selectedChange() -> XTFileChange?
+  func selectedChange() -> FileChange?
   {
     guard let index = fileListOutline.selectedRowIndexes.first
     else { return nil }

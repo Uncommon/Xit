@@ -9,7 +9,7 @@ unowned var repo: XTRepository
 var message: String?
 var mainCommit: GTCommit
 var indexCommit, untrackedCommit: GTCommit?
-private var cachedChanges: [XTFileChange]?
+private var cachedChanges: [FileChange]?
 
 init(repo: XTRepository, index: UInt, message: String?)
 {
@@ -24,7 +24,7 @@ init(repo: XTRepository, index: UInt, message: String?)
   }
 }
 
-func changes() -> [XTFileChange]
+func changes() -> [FileChange]
 {
   if let changes = cachedChanges {
     return changes
@@ -48,7 +48,7 @@ func changes() -> [XTFileChange]
   }
   
   let unstagedPaths = unstagedChanges.map({ $0.path })
-  var unstagedDict = [String: XTFileChange]()
+  var unstagedDict = [String: FileChange]()
   
   // Apparently the closest thing to dictionaryWithObjects:forKeys:
   for (path, fileChange) in zip(unstagedPaths, unstagedChanges) {
@@ -64,7 +64,7 @@ func changes() -> [XTFileChange]
     }
   }
   
-  var changes = [XTFileChange](unstagedDict.values)
+  var changes = [FileChange](unstagedDict.values)
   
   changes.sort { $0.path.compare($1.path) == .orderedAscending }
   self.cachedChanges = changes
