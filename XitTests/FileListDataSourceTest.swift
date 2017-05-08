@@ -37,8 +37,8 @@ class FileListDataSourceTest: XTTest
     waitForRepoQueue()
     
     for entry in history.entries {
-      repoController.selectedModel = XTCommitChanges(repository: repository,
-                                                    sha: entry.commit.sha!)
+      repoController.selectedModel = CommitChanges(repository: repository,
+                                                   sha: entry.commit.sha!)
       flds.reload()
       waitForRepoQueue()
     
@@ -75,8 +75,8 @@ class FileListDataSourceTest: XTTest
     
     let repoController = FakeRepoController()
     
-    repoController.selectedModel = XTCommitChanges(repository: repository,
-                                                  sha: repository.headSHA!)
+    repoController.selectedModel = CommitChanges(repository: repository,
+                                                 sha: repository.headSHA!)
     
     let outlineView = NSOutlineView()
     let flds = FileTreeDataSource()

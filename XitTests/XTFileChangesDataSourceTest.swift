@@ -9,8 +9,8 @@ class XTFileChangesDataSourceTest: XTTest
     let dataSource = XTFileChangesDataSource()
     let outlineView = NSOutlineView()
     
-    repoController.selectedModel = XTCommitChanges(repository: repository,
-                                                   sha: repository.headSHA!)
+    repoController.selectedModel = CommitChanges(repository: repository,
+                                                 sha: repository.headSHA!)
     dataSource.repository = repository
     dataSource.repoController = repoController
     outlineView.dataSource = dataSource

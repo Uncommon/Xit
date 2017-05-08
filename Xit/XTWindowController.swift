@@ -129,7 +129,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func select(sha: String)
   {
-    selectedModel = XTCommitChanges(repository: xtDocument!.repository, sha: sha)
+    selectedModel = CommitChanges(repository: xtDocument!.repository, sha: sha)
   }
   
   func updateNavButtons()
@@ -382,7 +382,7 @@ extension XTWindowController: NSTouchBarDelegate
     let bar = NSTouchBar()
     
     bar.delegate = self
-    if selectedModel is XTStagingChanges {
+    if selectedModel is StagingChanges {
       bar.defaultItemIdentifiers = [ .navigation, .unstageAll, .stageAll ]
     }
     else {

@@ -20,8 +20,7 @@ class XTFileChangesModelTest: XTTest
       XCTFail("no head")
       return
     }
-    let model = XTCommitChanges(
-        repository: repository, sha: headSHA)
+    let model = CommitChanges(repository: repository, sha: headSHA)
     let changes = model.changes
     
     XCTAssertEqual(changes.count, 1)
@@ -58,7 +57,7 @@ class XTFileChangesModelTest: XTTest
   {
     self.makeStash()
     
-    let model = XTStashChanges(repository: repository, index: 0)
+    let model = StashChanges(repository: repository, index: 0)
     
     XCTAssertEqual(model.shaToSelect, repository.headSHA)
     
@@ -96,7 +95,7 @@ class XTFileChangesModelTest: XTTest
   
   func testStaging()
   {
-    let model = XTStagingChanges(repository: repository)
+    let model = StagingChanges(repository: repository)
     var changes = model.changes
     
     XCTAssertEqual(changes.count, 0)
@@ -128,7 +127,7 @@ class XTFileChangesModelTest: XTTest
   
   func testStagingTreeSimple()
   {
-    let model = XTStagingChanges(repository: repository)
+    let model = StagingChanges(repository: repository)
     let tree = model.treeRoot
     
     XCTAssertNotNil(tree.children)
@@ -148,8 +147,8 @@ class XTFileChangesModelTest: XTTest
         XCTFail("no head")
         return
     }
-    let model = XTCommitChanges(repository: repository,
-                                sha: headSHA)
+    let model = CommitChanges(repository: repository,
+                              sha: headSHA)
     let tree = model.treeRoot
     
     XCTAssertNotNil(tree.children)
@@ -176,7 +175,7 @@ class XTFileChangesModelTest: XTTest
     
     self.makeStash()
     
-    let model = XTStashChanges(repository: repository, index: 0)
+    let model = StashChanges(repository: repository, index: 0)
     let tree = model.treeRoot
     
     XCTAssertEqual(tree.children!.count, 4)

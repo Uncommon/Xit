@@ -53,7 +53,7 @@ class FileListDataSourceBase: NSObject
   
   func workspaceChanged(_ paths: [String]?)
   {
-    if repoController.selectedModel is XTStagingChanges {
+    if repoController.selectedModel is StagingChanges {
       (self as! FileListDataSource).reload()
     }
   }

@@ -206,7 +206,7 @@ extension XTHistoryTableController: NSTableViewDelegate
     if (selectedRow >= 0) && (selectedRow < history.entries.count),
        let controller = view.window?.windowController as? RepositoryController,
        let sha = history.entries[selectedRow].commit.sha {
-      controller.selectedModel = XTCommitChanges(repository: repository, sha: sha)
+      controller.selectedModel = CommitChanges(repository: repository, sha: sha)
     }
   }
 }
@@ -223,7 +223,7 @@ extension XTHistoryTableController: XTTableViewDelegate
     let entry = history.entries[selectionIndex]
     guard let sha = entry.commit.sha
     else { return }
-    let newModel = XTCommitChanges(repository: repository, sha: sha)
+    let newModel = CommitChanges(repository: repository, sha: sha)
     
     if (controller.selectedModel == nil) ||
        (controller.selectedModel?.shaToSelect != newModel.shaToSelect) ||

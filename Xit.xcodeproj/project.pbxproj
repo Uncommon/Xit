@@ -95,7 +95,7 @@
 		C923D6481D8CA56800C6B90B /* XTTagTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D6471D8CA56800C6B90B /* XTTagTest.swift */; };
 		C923D65E1D90506A00C6B90B /* TitleBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = C923D65D1D90506A00C6B90B /* TitleBar.xib */; };
 		C923D66C1D906FAA00C6B90B /* TitleBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D66B1D906FAA00C6B90B /* TitleBarViewController.swift */; };
-		C926804E1D074EC500E422FA /* XTFileChangesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C926804D1D074EC500E422FA /* XTFileChangesModel.swift */; };
+		C926804E1D074EC500E422FA /* FileChangesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C926804D1D074EC500E422FA /* FileChangesModel.swift */; };
 		C929D03B1D400B3B00D7DC52 /* XTRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D03A1D400B3B00D7DC52 /* XTRemote.swift */; };
 		C929D0461D415F6F00D7DC52 /* MiscExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */; };
 		C929D0601D42785B00D7DC52 /* XTTeamCityAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D05F1D42785B00D7DC52 /* XTTeamCityAPI.swift */; };
@@ -453,7 +453,7 @@
 		C923D6471D8CA56800C6B90B /* XTTagTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTagTest.swift; sourceTree = "<group>"; };
 		C923D65D1D90506A00C6B90B /* TitleBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TitleBar.xib; sourceTree = "<group>"; };
 		C923D66B1D906FAA00C6B90B /* TitleBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = TitleBarViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		C926804D1D074EC500E422FA /* XTFileChangesModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesModel.swift; sourceTree = "<group>"; };
+		C926804D1D074EC500E422FA /* FileChangesModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileChangesModel.swift; sourceTree = "<group>"; };
 		C929D03A1D400B3B00D7DC52 /* XTRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRemote.swift; sourceTree = "<group>"; };
 		C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiscExtensions.swift; sourceTree = "<group>"; };
 		C929D05F1D42785B00D7DC52 /* XTTeamCityAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTeamCityAPI.swift; sourceTree = "<group>"; };
@@ -1013,13 +1013,13 @@
 				C92E30FA1D4FF4F0001985F7 /* XTCommit.swift */,
 				C9F9A0291E1C417D00261E33 /* XTDiffMaker.swift */,
 				89CB61951E77B34C00D69FE4 /* XTDiffDelta.swift */,
-				C926804D1D074EC500E422FA /* XTFileChangesModel.swift */,
 				C9328B111D77303200EFF7F7 /* XTFileMonitor.swift */,
 				C929D03A1D400B3B00D7DC52 /* XTRemote.swift */,
 				C9328B131D776BC700EFF7F7 /* XTRepositoryWatcher.swift */,
 				C9EB87231D01D93400C47D13 /* XTStash.swift */,
 				89C927741D36A2180074F71A /* XTSubmodule.swift */,
 				89C927771D36A5890074F71A /* XTTag.swift */,
+				C926804D1D074EC500E422FA /* FileChangesModel.swift */,
 				C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */,
 				C94736771DEF5AAE000E3A05 /* GitExtensions.swift */,
 				C9DEA4AA1E4B7A4200DF4069 /* Blame.swift */,
@@ -1408,7 +1408,7 @@
 				C3FA471413D0F8E200AC4F9B /* XTDocument.m in Sources */,
 				C94736781DEF5AAE000E3A05 /* GitExtensions.swift in Sources */,
 				31F1E87F13D3B51200F3B317 /* XTRepository+Commands.m in Sources */,
-				C926804E1D074EC500E422FA /* XTFileChangesModel.swift in Sources */,
+				C926804E1D074EC500E422FA /* FileChangesModel.swift in Sources */,
 				C9F78B141D0896AF008490EA /* XTSidebarItem.swift in Sources */,
 				C91E9A011D527A1300E128AC /* XTHistoryTableController.swift in Sources */,
 				C957B84B1D2D53040040F858 /* XTSheetController.swift in Sources */,

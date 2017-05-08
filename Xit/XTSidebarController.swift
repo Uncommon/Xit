@@ -200,7 +200,7 @@ class XTSidebarController: NSViewController, SidebarHandler
       [weak self, weak repoController] (_) in
       guard let myself = self
       else { return }
-      if let stashChanges = repoController?.selectedModel as? XTStashChanges {
+      if let stashChanges = repoController?.selectedModel as? StashChanges {
         for stashItem in myself.sidebarDS.roots[XTGroupIndex.stashes.rawValue]
                          .children {
           if let model = stashItem.model,

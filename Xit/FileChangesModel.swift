@@ -51,7 +51,7 @@ func != (a: FileChangesModel, b: FileChangesModel) -> Bool
 
 
 /// Changes for a selected commit in the history
-class XTCommitChanges: NSObject, FileChangesModel
+class CommitChanges: NSObject, FileChangesModel
 {
   typealias GitBlame = CLGitBlame
 
@@ -156,7 +156,7 @@ class XTCommitChanges: NSObject, FileChangesModel
 
 
 /// Changes for a selected stash, merging workspace, index, and untracked
-class XTStashChanges: NSObject, FileChangesModel
+class StashChanges: NSObject, FileChangesModel
 {
   unowned var repository: XTRepository
   var stash: XTStash
@@ -167,12 +167,12 @@ class XTStashChanges: NSObject, FileChangesModel
   
   var treeRoot: NSTreeNode {
     guard let mainModel = stash.mainCommit?.sha.map({
-        XTCommitChanges(repository: repository, sha: $0) })
+        CommitChanges(repository: repository, sha: $0) })
     else { return NSTreeNode() }
     var mainRoot = mainModel.makeTreeRoot(staged: false)
     
     if let indexCommit = stash.indexCommit {
-      let indexModel = XTCommitChanges(repository: repository,
+      let indexModel = CommitChanges(repository: repository,
                                        sha: indexCommit.sha!)
       let indexRoot = indexModel.treeRoot
       
@@ -180,7 +180,7 @@ class XTStashChanges: NSObject, FileChangesModel
                                       stagedTree: indexRoot)
     }
     if let untrackedCommit = stash.untrackedCommit {
-      let untrackedModel = XTCommitChanges(repository: repository,
+      let untrackedModel = CommitChanges(repository: repository,
                                            sha: untrackedCommit.sha!)
       let untrackedRoot = untrackedModel.treeRoot
     
@@ -267,14 +267,14 @@ class XTStashChanges: NSObject, FileChangesModel
   func unstagedFileURL(_ path: String) -> URL? { return nil }
 }
 
-func == (a: XTStashChanges, b: XTStashChanges) -> Bool
+func == (a: StashChanges, b: StashChanges) -> Bool
 {
   return a.stash.mainCommit?.oid == b.stash.mainCommit?.oid
 }
 
 
 /// Staged and unstaged workspace changes
-class XTStagingChanges: NSObject, FileChangesModel
+class StagingChanges: NSObject, FileChangesModel
 {
   unowned var repository: XTRepository
   var shaToSelect: String? { return XTStagingSHA }

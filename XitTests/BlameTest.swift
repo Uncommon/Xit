@@ -53,8 +53,8 @@ class BlameTest: XTTest
   {
     let headSHA = repository.headSHA!
     let headOID = GitOID(sha: headSHA)
-    let commitModel = XTCommitChanges(repository: repository,
-                                      sha: headSHA)
+    let commitModel = CommitChanges(repository: repository,
+                                    sha: headSHA)
     let commitBlame = commitModel.blame(for: blameFile, staged: false)!
     let lineStarts = [1, 3, 5, 6]
     let lineCounts = [2, 2, 1, 3]
@@ -84,7 +84,7 @@ class BlameTest: XTTest
     
     try! fifthLines.write(toFile: blamePath, atomically: true, encoding: .ascii)
 
-    let stagingModel = XTStagingChanges(repository: repository)
+    let stagingModel = StagingChanges(repository: repository)
     let unstagedBlame = stagingModel.blame(for: blameFile, staged: false)!
     let unstagedStarts = [1, 2, 3, 5, 6, 8]
     

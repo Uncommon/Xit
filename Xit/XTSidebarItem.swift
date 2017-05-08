@@ -161,7 +161,7 @@ class XTTagItem: XTSideBarItem
     super.init(title: tag.name)
     
     if let sha = tag.targetSHA {
-      model = XTCommitChanges(repository: tag.repository, sha: sha)
+      model = CommitChanges(repository: tag.repository, sha: sha)
     }
   }
 }

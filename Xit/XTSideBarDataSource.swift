@@ -38,7 +38,7 @@ class XTSideBarDataSource: NSObject
       guard let repo = self.repo
       else { return }
       
-      stagingItem.model = XTStagingChanges(repository: repo)
+      stagingItem.model = StagingChanges(repository: repo)
       
       observers.addObserver(
           forName: .XTRepositoryRefsChanged,
@@ -157,7 +157,7 @@ class XTSideBarDataSource: NSObject
   {
     return repo?.stashes().map {
       XTStashItem(title: $0.message ?? "stash",
-                  model: XTStashChanges(repository: repo!, stash: $0))
+                  model: StashChanges(repository: repo!, stash: $0))
     } ?? []
   }
   
@@ -176,7 +176,7 @@ class XTSideBarDataSource: NSObject
             let name = branch.name?.removingPrefix("refs/heads/")
       else { continue }
       
-      let model = XTCommitChanges(repository: repo, sha: sha)
+      let model = CommitChanges(repository: repo, sha: sha)
       let branchItem = XTLocalBranchItem(title: name, model: model)
       let parent = self.parent(for: name, groupItem: branchesGroup)
       
@@ -196,7 +196,7 @@ class XTSideBarDataSource: NSObject
                        .removingPrefix("refs/remotes/\(remote.title)/"),
             let sha = branch.gtBranch.oid?.sha
       else { continue }
-      let model = XTCommitChanges(repository: repo, sha: sha)
+      let model = CommitChanges(repository: repo, sha: sha)
       let remoteParent = parent(for: name, groupItem: remote)
       
       remoteParent.children.append(XTRemoteBranchItem(title: name,
