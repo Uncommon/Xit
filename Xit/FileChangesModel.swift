@@ -51,7 +51,7 @@ func != (a: FileChangesModel, b: FileChangesModel) -> Bool
 
 
 /// Changes for a selected commit in the history
-class CommitChanges: NSObject, FileChangesModel
+class CommitChanges: FileChangesModel
 {
   typealias GitBlame = CLGitBlame
 
@@ -79,8 +79,6 @@ class CommitChanges: NSObject, FileChangesModel
     self.sha = sha
     self.savedChanges = repository.changes(for: self.sha,
                                            parent: self.diffParent)
-    
-    super.init()
   }
   
   func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
@@ -156,7 +154,7 @@ class CommitChanges: NSObject, FileChangesModel
 
 
 /// Changes for a selected stash, merging workspace, index, and untracked
-class StashChanges: NSObject, FileChangesModel
+class StashChanges: FileChangesModel
 {
   unowned var repository: XTRepository
   var stash: XTStash
@@ -193,16 +191,12 @@ class StashChanges: NSObject, FileChangesModel
   {
     self.repository = repository
     self.stash = XTStash(repo: repository, index: index, message: nil)
-    
-    super.init()
   }
   
   init(repository: XTRepository, stash: XTStash)
   {
     self.repository = repository
     self.stash = stash
-    
-    super.init()
   }
   
   func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
@@ -274,7 +268,7 @@ func == (a: StashChanges, b: StashChanges) -> Bool
 
 
 /// Staged and unstaged workspace changes
-class StagingChanges: NSObject, FileChangesModel
+class StagingChanges: FileChangesModel
 {
   unowned var repository: XTRepository
   var shaToSelect: String? { return XTStagingSHA }
@@ -295,8 +289,6 @@ class StagingChanges: NSObject, FileChangesModel
   init(repository: XTRepository)
   {
     self.repository = repository
-    
-    super.init()
   }
   
   func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
