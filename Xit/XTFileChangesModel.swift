@@ -31,6 +31,11 @@ protocol XTFileChangesModel
   func dataForFile(_ path: String, staged: Bool) -> Data?
   /// The URL of the unstaged file, if any.
   func unstagedFileURL(_ path: String) -> URL?
+  /// Generate the blame data for the given file.
+  /// - parameter path: Repository-relative file path.
+  /// - parameter staged: Whether to show the staged or unstaged file. Ignored
+  /// for models that don't have unstaged files.
+  func blame(for path: String, staged: Bool) -> GitBlame?
 }
 
 func == (a: XTFileChangesModel, b: XTFileChangesModel) -> Bool
@@ -44,19 +49,9 @@ func != (a: XTFileChangesModel, b: XTFileChangesModel) -> Bool
   return !(a == b)
 }
 
-// To be folded into FileChangesModel once the @objc can be removed
-protocol Blaming
-{
-  /// Generate the blame data for the given file.
-  /// - parameter path: Repository-relative file path.
-  /// - parameter staged: Whether to show the staged or unstaged file. Ignored
-  /// for models that don't have unstaged files.
-  func blame(for path: String, staged: Bool) -> GitBlame?
-}
-
 
 /// Changes for a selected commit in the history
-class XTCommitChanges: NSObject, XTFileChangesModel, Blaming
+class XTCommitChanges: NSObject, XTFileChangesModel
 {
   typealias GitBlame = CLGitBlame
 
@@ -161,7 +156,7 @@ class XTCommitChanges: NSObject, XTFileChangesModel, Blaming
 
 
 /// Changes for a selected stash, merging workspace, index, and untracked
-class XTStashChanges: NSObject, XTFileChangesModel, Blaming
+class XTStashChanges: NSObject, XTFileChangesModel
 {
   unowned var repository: XTRepository
   var stash: XTStash
@@ -279,7 +274,7 @@ func == (a: XTStashChanges, b: XTStashChanges) -> Bool
 
 
 /// Staged and unstaged workspace changes
-class XTStagingChanges: NSObject, XTFileChangesModel, Blaming
+class XTStagingChanges: NSObject, XTFileChangesModel
 {
   unowned var repository: XTRepository
   var shaToSelect: String? { return XTStagingSHA }

@@ -54,7 +54,7 @@ class BlameViewController: WebViewController
       }
     }
     
-    guard let blame = (model as? Blaming)?.blame(for: path, staged: staged)
+    guard let blame = model.blame(for: path, staged: staged)
     else {
       notAvailable()
       return
