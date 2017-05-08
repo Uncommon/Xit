@@ -15,7 +15,7 @@ extension XTPreviewController: XTFileContentController
     isLoaded = false
   }
   
-  public func load(path: String!, model: XTFileChangesModel!, staged: Bool)
+  public func load(path: String!, model: FileChangesModel!, staged: Bool)
   {
     let previewView = view as! QLPreviewView
   

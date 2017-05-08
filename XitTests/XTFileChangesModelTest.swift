@@ -42,7 +42,7 @@ class XTFileChangesModelTest: XTTest
   }
   
   func checkPatchLines(
-      _ model: XTFileChangesModel, path: String, staged: Bool,
+      _ model: FileChangesModel, path: String, staged: Bool,
       added: UInt, deleted: UInt)
   {
     let patch = try! model.diffForFile(path, staged: staged)!

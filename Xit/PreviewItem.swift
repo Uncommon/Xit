@@ -5,7 +5,7 @@ import Quartz
 // from NSObject.
 class PreviewItem: NSObject, QLPreviewItem
 {
-  var model: XTFileChangesModel!
+  var model: FileChangesModel!
   { didSet { remakeTempFile() } }
   var path: String?
   { didSet { remakeTempFile() } }

@@ -4,7 +4,7 @@ import XCTest
 class FakeRepoController: RepositoryController
 {
   var selectedCommitSHA: String = ""
-  var selectedModel: XTFileChangesModel? = nil
+  var selectedModel: FileChangesModel? = nil
   
   func select(sha: String) {}
 }

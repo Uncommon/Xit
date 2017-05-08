@@ -6,7 +6,7 @@ typealias GitBlame = CLGitBlame
 
 /// Protocol for a commit or commit-like object,
 /// with metadata, files, and diffs.
-protocol XTFileChangesModel
+protocol FileChangesModel
 {
   var repository: XTRepository { get set }
   /// SHA for commit to be selected in the history list
@@ -38,20 +38,20 @@ protocol XTFileChangesModel
   func blame(for path: String, staged: Bool) -> GitBlame?
 }
 
-func == (a: XTFileChangesModel, b: XTFileChangesModel) -> Bool
+func == (a: FileChangesModel, b: FileChangesModel) -> Bool
 {
   return type(of: a) == type(of: b) &&
          a.shaToSelect == b.shaToSelect
 }
 
-func != (a: XTFileChangesModel, b: XTFileChangesModel) -> Bool
+func != (a: FileChangesModel, b: FileChangesModel) -> Bool
 {
   return !(a == b)
 }
 
 
 /// Changes for a selected commit in the history
-class XTCommitChanges: NSObject, XTFileChangesModel
+class XTCommitChanges: NSObject, FileChangesModel
 {
   typealias GitBlame = CLGitBlame
 
@@ -156,7 +156,7 @@ class XTCommitChanges: NSObject, XTFileChangesModel
 
 
 /// Changes for a selected stash, merging workspace, index, and untracked
-class XTStashChanges: NSObject, XTFileChangesModel
+class XTStashChanges: NSObject, FileChangesModel
 {
   unowned var repository: XTRepository
   var stash: XTStash
@@ -274,7 +274,7 @@ func == (a: XTStashChanges, b: XTStashChanges) -> Bool
 
 
 /// Staged and unstaged workspace changes
-class XTStagingChanges: NSObject, XTFileChangesModel
+class XTStagingChanges: NSObject, FileChangesModel
 {
   unowned var repository: XTRepository
   var shaToSelect: String? { return XTStagingSHA }
@@ -341,7 +341,7 @@ class XTStagingChanges: NSObject, XTFileChangesModel
 }
 
 
-extension XTFileChangesModel
+extension FileChangesModel
 {
   /// Sets folder change status to match children.
   func postProcess(fileTree tree: NSTreeNode)

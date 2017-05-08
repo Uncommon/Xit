@@ -38,7 +38,7 @@ extension XTTextPreviewController: XTFileContentController
     isLoaded = false
   }
   
-  public func load(path: String!, model: XTFileChangesModel!, staged: Bool)
+  public func load(path: String!, model: FileChangesModel!, staged: Bool)
   {
     load(data: model.dataForFile(path, staged: staged))
   }

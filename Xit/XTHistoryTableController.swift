@@ -70,7 +70,7 @@ public class XTHistoryTableController: NSViewController
         queue: nil) {
       [weak self] (notification) in
       if let selectedModel = notification.userInfo?[NSKeyValueChangeKey.newKey]
-                             as? XTFileChangesModel {
+                             as? FileChangesModel {
         self?.selectRow(sha: selectedModel.shaToSelect)
       }
     }

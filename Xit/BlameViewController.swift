@@ -44,7 +44,7 @@ class BlameViewController: WebViewController
   }
   
   func loadBlame(text: String, path: String,
-                 model: XTFileChangesModel, staged: Bool)
+                 model: FileChangesModel, staged: Bool)
   {
     defer {
       DispatchQueue.main.async {
@@ -155,7 +155,7 @@ extension BlameViewController: XTFileContentController
     isLoaded = false
   }
   
-  public func load(path: String!, model: XTFileChangesModel!, staged: Bool)
+  public func load(path: String!, model: FileChangesModel!, staged: Bool)
   {
     guard let data = model.dataForFile(path, staged: staged),
           let text = String(data: data, encoding: .utf8) ??

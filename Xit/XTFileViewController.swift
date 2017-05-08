@@ -10,7 +10,7 @@ protocol XTFileContentController
   /// - parameter path: The repository-relative file path.
   /// - parameter model: The model to read data from.
   /// - parameter staged: Whether to show staged content.
-  func load(path: String!, model: XTFileChangesModel!, staged: Bool)
+  func load(path: String!, model: FileChangesModel!, staged: Bool)
   /// True if the controller has content loaded.
   var isLoaded: Bool { get }
 }

@@ -255,7 +255,7 @@ extension XTFileDiffController: XTFileContentController
     isLoaded = false
   }
   
-  public func load(path: String!, model: XTFileChangesModel!, staged: Bool)
+  public func load(path: String!, model: FileChangesModel!, staged: Bool)
   {
     self.staged = model.hasUnstaged ? staged : nil
     loadOrNotify(diffMaker: model.diffForFile(path, staged: staged))

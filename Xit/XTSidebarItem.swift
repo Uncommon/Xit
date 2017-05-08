@@ -6,7 +6,7 @@ class XTSideBarItem: NSObject
   var displayTitle: String { return title }
   var icon: NSImage? { return nil }
   var children: [XTSideBarItem]
-  var model: XTFileChangesModel?
+  var model: FileChangesModel?
   var refType: XTRefType { return .unknown }
   var expandable: Bool { return false }
   // NSObject.isSelectable is new in 10.12
@@ -22,7 +22,7 @@ class XTSideBarItem: NSObject
     super.init()
   }
   
-  convenience init(title: String, model: XTFileChangesModel)
+  convenience init(title: String, model: FileChangesModel)
   {
     self.init(title: title)
     self.model = model
@@ -98,7 +98,7 @@ class XTRemoteBranchItem: XTBranchItem
   
   override var fullName: String { return "\(remote)/\(title)" }
   
-  init(title: String, remote: String, model: XTFileChangesModel)
+  init(title: String, remote: String, model: FileChangesModel)
   {
     self.remote = remote
     

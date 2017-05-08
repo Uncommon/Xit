@@ -2,7 +2,7 @@ import Cocoa
 
 protocol RepositoryController: class
 {
-  var selectedModel: XTFileChangesModel? { get set }
+  var selectedModel: FileChangesModel? { get set }
   
   func select(sha: String)
 }
@@ -18,7 +18,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   weak var xtDocument: XTDocument?
   var titleBarController: TitleBarViewController?
   var refsChangedObserver: NSObjectProtocol?
-  var selectedModel: XTFileChangesModel?
+  var selectedModel: FileChangesModel?
   {
     didSet
     {
@@ -46,8 +46,8 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       updateNavButtons()
     }
   }
-  var navBackStack = [XTFileChangesModel]()
-  var navForwardStack = [XTFileChangesModel]()
+  var navBackStack = [FileChangesModel]()
+  var navForwardStack = [FileChangesModel]()
   var navigating = false
   var sidebarHidden: Bool
   {
