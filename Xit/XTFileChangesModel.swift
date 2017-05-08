@@ -167,12 +167,13 @@ class XTStashChanges: NSObject, XTFileChangesModel, Blaming
   var stash: XTStash
   var hasUnstaged: Bool { return true }
   var canCommit: Bool { return false }
-  var shaToSelect: String? { return stash.mainCommit.parents[0].sha }
+  var shaToSelect: String? { return stash.mainCommit?.parents[0].sha }
   var changes: [FileChange] { return self.stash.changes() }
   
   var treeRoot: NSTreeNode {
-    let mainModel = XTCommitChanges(repository: repository,
-                                    sha: stash.mainCommit.sha!)
+    guard let mainModel = stash.mainCommit?.sha.map({
+        XTCommitChanges(repository: repository, sha: $0) })
+    else { return NSTreeNode() }
     var mainRoot = mainModel.makeTreeRoot(staged: false)
     
     if let indexCommit = stash.indexCommit {
@@ -259,8 +260,11 @@ class XTStashChanges: NSObject, XTFileChangesModel, Blaming
              ofFile: path, atCommit: untrackedCommit.sha!) {
         return untrackedData
       }
-      return try? self.repository.contents(
-          ofFile: path, atCommit: self.stash.mainCommit.sha!)
+      
+      guard let sha = stash.mainCommit?.sha
+      else { return nil }
+      
+      return try? self.repository.contents(ofFile: path, atCommit: sha)
     }
   }
 
@@ -270,7 +274,7 @@ class XTStashChanges: NSObject, XTFileChangesModel, Blaming
 
 func == (a: XTStashChanges, b: XTStashChanges) -> Bool
 {
-  return a.stash.mainCommit.oid == b.stash.mainCommit.oid
+  return a.stash.mainCommit?.oid == b.stash.mainCommit?.oid
 }
 
 
