@@ -65,20 +65,18 @@ class XTFetchController: XTPasswordOpController
   /// Fetch progress callback
   func shouldStop(progress: TransferProgress) -> Bool
   {
-    if canceled {
-      return true
-    }
+    guard !canceled,
+          let repository = repository
+    else { return true }
     
-    /*
-    let progressValue =
-        progress.receivedObjects == progress.totalObjects
-            ? -1.0
-            : Float(progress.total_objects) /
-              Float(progress.received_objects)
-    */
+    let received = Float(progress.receivedObjects)
+    let indexed = Float(progress.indexedObjects)
+    let note = Notification.progressNotification(
+          repository: repository,
+          progress: (received + indexed) / 2,
+          total: Float(progress.totalObjects))
     
-    // update progress
-    
+    NotificationCenter.default.post(note)
     return false
   }
   

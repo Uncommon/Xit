@@ -348,19 +348,20 @@ extension XTWindowController: NSToolbarDelegate
     viewController.delegate = self
     viewController.titleLabel.bind("value",
                                    to: window! as NSWindow,
-                                   withKeyPath: "title",
+                                   withKeyPath: #keyPath(NSWindow.title),
                                    options: nil)
     viewController.proxyIcon.bind("hidden",
                                   to: repository,
-                                  withKeyPath: "busy",
+                                  withKeyPath: #keyPath(XTRepository.busy),
                                   options: nil)
-    viewController.spinner.bind("hidden",
-                                to: repository,
-                                withKeyPath: "busy",
-                                options: inverseBindingOptions)
+    viewController.bind(#keyPath(TitleBarViewController.progressHidden),
+                        to: repository,
+                        withKeyPath: #keyPath(XTRepository.busy),
+                        options: inverseBindingOptions)
     viewController.spinner.startAnimation(nil)
     updateBranchList()
-    viewController.selectedBranch = xtDocument!.repository!.currentBranch
+    viewController.selectedBranch = repository.currentBranch
+    viewController.observe(repository: repository)
   }
 }
 

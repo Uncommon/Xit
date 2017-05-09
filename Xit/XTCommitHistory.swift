@@ -295,7 +295,7 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
     var nextColorIndex: UInt = 0
     
     newConnectionsList.reserveCapacity(entries.count)
-    for entry in entries {
+    for (index, entry) in entries.enumerated() {
       let commitOID = entry.commit.oid
       let incomingIndex = connections.index(where: { $0.parentOID == commitOID })
       let incomingColor = incomingIndex.flatMap { connections[$0].colorIndex }
@@ -320,6 +320,8 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
       
       newConnectionsList.append(connections)
       connections = connections.filter { $0.parentOID != commitOID }
+      
+      postProgress(index)
     }
     
     DispatchQueue.concurrentPerform(iterations: entries.count) {
@@ -332,5 +334,21 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
       connections.forEach({ print($0.childOID.SHA.firstSix()) })
     }
 #endif
+  }
+  
+  func postProgress(_ value: Int)
+  {
+    let step = entries.count / 100
+    
+    // TODO: Avoid the XTRepository cast
+    if value % step == 0,
+       let repo = repository as? XTRepository {
+      let progressNote = Notification.progressNotification(
+            repository: repo,
+            progress: Float(value),
+            total: Float(entries.count))
+      
+      NotificationCenter.default.post(progressNote)
+    }
   }
 }

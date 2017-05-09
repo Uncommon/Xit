@@ -15,6 +15,32 @@ protocol TitleBarDelegate: class
   func showHideDetails()
 }
 
+extension Notification.Name
+{
+  static let XTProgress = Notification.Name(rawValue: "XTProgress")
+}
+
+extension Notification
+{
+  struct XTProgressKeys
+  {
+    static let progress = "progress"
+    static let total = "total"
+  }
+  
+  static func progressNotification(repository: XTRepository,
+                                   progress: Float, total: Float) -> Notification
+  {
+    return Notification(name: .XTProgress,
+                        object: repository,
+                        userInfo: [XTProgressKeys.progress: progress,
+                                   XTProgressKeys.total: total])
+  }
+  
+  var progress: Float? { return userInfo?[XTProgressKeys.progress] as? Float }
+  var total: Float? { return userInfo?[XTProgressKeys.total] as? Float }
+}
+
 class TitleBarViewController: NSViewController
 {
   @IBOutlet weak var navButtons: NSSegmentedControl!
@@ -29,6 +55,21 @@ class TitleBarViewController: NSViewController
   @IBOutlet weak var operationViewSpacing: NSLayoutConstraint!
   
   weak var delegate: TitleBarDelegate?
+  
+  var progressObserver: NSObjectProtocol?
+  
+  dynamic var progressHidden: Bool
+  {
+    get
+    {
+      return spinner.isHidden
+    }
+    set
+    {
+      spinner.isIndeterminate = true
+      spinner.isHidden = newValue
+    }
+  }
   
   enum NavSegment: Int
   {
@@ -45,10 +86,31 @@ class TitleBarViewController: NSViewController
     case sidebar, history, details
   }
   
+  deinit
+  {
+    progressObserver.map { NotificationCenter.default.removeObserver($0) }
+  }
+  
   override func viewDidLoad()
   {
     // This constraint will be active when the operations controls are shown.
     operationViewSpacing.isActive = false
+  }
+  
+  func observe(repository: XTRepository)
+  {
+    progressObserver = NotificationCenter.default.addObserver(
+        forName: .XTProgress, object: repository, queue: .main) {
+      (notification) in
+      guard let progress = notification.progress,
+            let total = notification.total
+      else { return }
+      
+      self.spinner.isIndeterminate = false
+      self.spinner.maxValue = Double(total)
+      self.spinner.doubleValue = Double(progress)
+      self.spinner.needsDisplay = true
+    }
   }
   
   @IBAction func navigate(_ sender: NSSegmentedControl)
