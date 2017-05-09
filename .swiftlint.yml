@@ -8,6 +8,7 @@ disabled_rules:
     - type_name # Short type names are allowed for generics
     - identifier_name # Single-letter names can be OK
     - trailing_comma # Trailing commas make it easier to add entries
+    - todo # TODOs are handled separately
 opt_in_rules:
     - closure_spacing
     - conditional_returns_on_newline
@@ -17,7 +18,7 @@ included:
 force_try:
     severity: warning # Fine for cases like loading resources
 file_length:
-    severity: warning
+    warning: 500
 line_length: 83 # Preferably 80, with some flexibility
 type_body_length: 500
 nesting:
@@ -29,3 +30,5 @@ large_tuple:
 function_body_length: 60
 statement_position:
     statement_mode: uncuddled_else
+cyclomatic_complexity:
+    ignores_case_statements: true
