@@ -2,13 +2,11 @@
 #import "XTTest.h"
 #import "XTRepository.h"
 #import "XTRepository+Commands.h"
-#include "CFRunLoop+Extensions.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 #import "Xit-Swift.h"
 
 @interface XTSideBarDataSorceTests : XTTest
 {
-  CFRunLoopRef runLoop;
   NSOutlineView *outlineView;
   XTSideBarDataSource *sbds;
 }
@@ -41,43 +39,6 @@
 {
   // Add one to skip the staging item
   return [sbds outlineView:outlineView child:index ofItem:nil];
-}
-
-- (void)testReload
-{
-  [sbds setRepo:self.repository];
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(repoChanged:)
-                                               name:XTRepositoryChangedNotification
-                                             object:self.repository];
-
-  if (![self.repository createBranch:@"b1"])
-    XCTFail(@"Create Branch 'b1'");
-
-  NSArray *titles, *expectedTitles = @[ @"b1", @"master" ];
-
-  // Sometimes it reloads too soon, so give it a few tries.
-  for (int i = 0; i < 5; ++i) {
-    runLoop = CFRunLoopGetCurrent();
-    if (!CFRunLoopRunWithTimeout(5))
-      NSLog(@"warning: TimeOut on reload");
-    runLoop = NULL;
-
-    id branches = [self groupItemForIndex:XTGroupIndexBranches];
-
-    titles = [[branches children] valueForKey:@"title"];
-    if ([titles isEqual:expectedTitles])
-      break;
-  }
-  XCTAssertEqualObjects(titles, expectedTitles);
-
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)repoChanged:(NSNotification*)note
-{
-  if (runLoop != NULL)
-    CFRunLoopStop(runLoop);
 }
 
 - (void)testStashes

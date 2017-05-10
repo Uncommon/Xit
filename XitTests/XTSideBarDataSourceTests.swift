@@ -5,6 +5,7 @@ class XTSidebarDataSourceTest: XTTest
 {
   var outline = MockSidebarOutline()
   var sbds = XTSideBarDataSource()
+  var runLoop: CFRunLoop?
 
   func groupItem(_ row: XTGroupIndex) -> XTSideBarGroupItem
   {
@@ -20,6 +21,7 @@ class XTSidebarDataSourceTest: XTTest
     sbds.repo = repository
   }
 
+  /// Add a tag and make sure it gets loaded correctly
   func testTags()
   {
     XCTAssertTrue(repository.createTag("t1", targetSHA: repository.headSHA!,
@@ -50,6 +52,7 @@ class XTSidebarDataSourceTest: XTTest
     XCTAssertEqual(view.textField?.stringValue, "t1")
   }
   
+  /// Add a branch and make sure both branches are loaded correctly
   func testBranches()
   {
     XCTAssertTrue(repository.createBranch("b1"))
@@ -76,6 +79,42 @@ class XTSidebarDataSourceTest: XTTest
     
       XCTAssertEqual(view.textField?.stringValue, branchNames[b])
     }
+  }
+  
+  /// Create a branch and make sure the sidebar notices it
+  func testReload()
+  {
+    let changeObserver = NotificationCenter.default.addObserver(
+          forName: .XTRepositoryChanged, object: repository, queue: nil) {
+      (_) in
+      self.runLoop.map { CFRunLoopStop($0) }
+    }
+    
+    defer {
+      NotificationCenter.default.removeObserver(changeObserver)
+    }
+    
+    XCTAssertTrue(repository.createBranch("b1"))
+    
+    let expectedTitles = ["b1", "master"]
+    var titles = [String]()
+    let maxTries = 5
+    
+    for _ in 0..<maxTries {
+      runLoop = CFRunLoopGetCurrent()
+      if !CFRunLoopRunWithTimeout(5) {
+        NSLog("warning: Timeout on reload")
+      }
+      runLoop = nil
+      
+      let branches = groupItem(.branches)
+      
+      titles = branches.children.map { $0.title }
+      if titles == expectedTitles {
+        break
+      }
+    }
+    XCTAssertEqual(titles, expectedTitles)
   }
 }
 
