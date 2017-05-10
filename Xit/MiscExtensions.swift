@@ -59,6 +59,21 @@ extension String
   {
     return (self as NSString).deletingLastPathComponent
   }
+  
+  var pathComponents: [String]
+  {
+    return (self as NSString).pathComponents
+  }
+  
+  var firstPathComponent: String?
+  {
+    return pathComponents.first
+  }
+  
+  var deletingFirstPathComponent: String
+  {
+    return NSString.path(withComponents: Array(pathComponents.dropFirst(1)))
+  }
 }
 
 extension XMLElement

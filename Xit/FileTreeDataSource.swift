@@ -29,15 +29,47 @@ extension FileTreeDataSource: FileListDataSource
         if let outlineView = myself.outlineView {
           let selectedRow = outlineView.selectedRow
           let selectedChange = myself.fileChange(at: selectedRow)
+          let expanded = myself.expandedItems()
           
           outlineView.reloadData()
+          myself.expandItems(expanded)
           myself.reselect(item: selectedChange, oldRow: selectedRow)
         }
       }
     }
   }
   
-  func reselect(item: FileChange?, oldRow: Int) {
+  func expandedItems() -> [String]
+  {
+    var result = [String]()
+    
+    for rowIndex in 0..<outlineView.numberOfRows
+        where outlineView.isItemExpanded(outlineView.item(atRow: rowIndex)) {
+      guard let change = fileChange(at: rowIndex)
+      else { continue }
+      
+      result.append(change.path)
+    }
+    return result
+  }
+  
+  func expandItems(_ expanded: [String])
+  {
+    var rowIndex = 0
+    
+    while rowIndex < outlineView.numberOfRows {
+      guard let change = fileChange(at: rowIndex)
+      else { continue }
+      
+      if expanded.contains(change.path) {
+        outlineView.expandItem(outlineView.item(atRow: rowIndex))
+      }
+      rowIndex += 1
+    }
+  }
+  
+  func reselect(item: FileChange?, oldRow: Int)
+  {
     guard let item = item,
           let outlineView = outlineView
     else { return }
