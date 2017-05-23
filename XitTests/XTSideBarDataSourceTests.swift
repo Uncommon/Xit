@@ -21,6 +21,23 @@ class XTSidebarDataSourceTest: XTTest
     sbds.repo = repository
   }
 
+  /// Check that root items (except Staging) are groups
+  func testGroupItems()
+  {
+    XCTAssertTrue(repository.createBranch("b1"))
+    
+    sbds.reload()
+    waitForRepoQueue()
+    
+    let count = sbds.outlineView(outline, numberOfChildrenOfItem: nil)
+    
+    for index in 1..<count {
+      let rootItem = sbds.outlineView(outline, child: index, ofItem: nil)
+      
+      XCTAssertTrue(sbds.outlineView(outline, isGroupItem: rootItem))
+    }
+  }
+
   /// Add a tag and make sure it gets loaded correctly
   func testTags()
   {
@@ -78,6 +95,98 @@ class XTSidebarDataSourceTest: XTTest
                  as! NSTableCellView
     
       XCTAssertEqual(view.textField?.stringValue, branchNames[b])
+    }
+  }
+  
+  /// Create two stashes and check that they are listed
+  func testStashes()
+  {
+    XCTAssertTrue(writeText(toFile1: "second text"))
+    XCTAssertTrue(repository.saveStash("s1", includeUntracked: false))
+    XCTAssertTrue(writeText(toFile1: "third text"))
+    XCTAssertTrue(repository.saveStash("s2", includeUntracked: false))
+    
+    sbds.reload()
+    waitForRepoQueue()
+    
+    let stashes = groupItem(.stashes)
+    let stashCount = sbds.outlineView(outline, numberOfChildrenOfItem: stashes)
+    
+    XCTAssertEqual(stashCount, 2)
+  }
+  
+  /// Check that a remote and its branches are displayed correctly
+  func testRemotes()
+  {
+    makeRemoteRepo()
+    
+    let remoteName = "origin"
+    
+    try! repository.checkout("master")
+    XCTAssertTrue(repository.createBranch("b1"))
+    XCTAssertTrue(repository.addRemote(remoteName, withUrl: remoteRepoPath))
+    
+    let configArgs = ["config", "receive.denyCurrentBranch", "ignore"]
+    
+    try! remoteRepository.executeGit(withArgs: configArgs, writes: false)
+    XCTAssertTrue(repository.push("origin"))
+    
+    sbds.reload()
+    waitForRepoQueue()
+    
+    let remotes = groupItem(.remotes)
+    let remoteCount = sbds.outlineView(outline, numberOfChildrenOfItem: remotes)
+    
+    XCTAssertEqual(remoteCount, 1)
+    
+    let remote = sbds.outlineView(outline, child: 0, ofItem: remotes)
+    let remoteView = sbds.outlineView(outline, viewFor: nil, item: remote)
+                     as! NSTableCellView
+    
+    XCTAssertEqual(remoteView.textField!.stringValue, remoteName)
+    
+    let branchCount = sbds.outlineView(outline, numberOfChildrenOfItem: remote)
+    
+    XCTAssertEqual(branchCount, 2)
+    
+    let branchNames = ["b1", "master"]
+    
+    for (index, branchName) in branchNames.enumerated() {
+      let branch = sbds.outlineView(outline, child: index, ofItem: remote)
+      let expandable = sbds.outlineView(outline, isItemExpandable: branch)
+      
+      XCTAssertFalse(expandable)
+      
+      let branchView = sbds.outlineView(outline, viewFor: nil, item: branch)
+                       as! NSTableCellView
+      let itemName = branchView.textField!.stringValue
+      
+      XCTAssertEqual(itemName, branchName)
+    }
+  }
+  
+  func testSubmodules()
+  {
+    try! repository.addSubmodule(atPath: "sub1", urlOrPath: "../repo1")
+    try! repository.addSubmodule(atPath: "sub2", urlOrPath: "../repo2")
+    
+    sbds.reload()
+    waitForRepoQueue()
+    
+    let subs = groupItem(.submodules)
+    let subCount = sbds.outlineView(outline, numberOfChildrenOfItem: subs)
+    
+    XCTAssertEqual(subCount, 2)
+    
+    let subData = [("sub1", "../repo1"),
+                   ("sub2", "../repo2")]
+    
+    for (index, data) in subData.enumerated() {
+      let subItem = sbds.outlineView(outline, child: index, ofItem: subs)
+                    as! XTSubmoduleItem
+      
+      XCTAssertEqual(subItem.submodule.name, data.0)
+      XCTAssertEqual(subItem.submodule.URLString, data.1)
     }
   }
   

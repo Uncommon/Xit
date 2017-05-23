@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		313014AC13EB656B0017A2A1 /* XTSideBarDataSorceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */; };
 		31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		31C7C12E13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */; };
 		31C7C13413ECC74C00A65FE9 /* XTHistoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31C7C13213ECC74C00A65FE9 /* XTHistoryViewController.xib */; };
@@ -349,7 +348,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = XTSideBarDataSorceTests.m; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		31355B0713EA139700C33AAB /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		31A8939F13E9DA5B008BE0C2 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		31C7C12C13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+MultiObjectForKey.h"; sourceTree = "<group>"; };
@@ -854,7 +852,6 @@
 				C9DEA4EF1E53678A00DF4069 /* XTFileChangesDataSourceTest.swift */,
 				C96D24B21DFEFD9F00431317 /* XTSidebarControllerTest.swift */,
 				89FE824715A716E800E2EA2A /* XTRepositoryTests.m */,
-				313014A913EB653F0017A2A1 /* XTSideBarDataSorceTests.m */,
 				C941037F1EBDFABC002C80DC /* XTSideBarDataSourceTests.swift */,
 				89CD209017089D220051C3D4 /* XTCategoryTests.h */,
 				89CD209117089D220051C3D4 /* XTCategoryTests.m */,
@@ -1508,7 +1505,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3FA472E13D0F8E300AC4F9B /* XTTest.m in Sources */,
-				313014AC13EB656B0017A2A1 /* XTSideBarDataSorceTests.m in Sources */,
 				89CB619C1E788C6000D69FE4 /* PatchTest.swift in Sources */,
 				C9EB87321D05D35800C47D13 /* XTStashTest.swift in Sources */,
 				C9AAEF901E41527F00A248CF /* CommitHeaderTest.swift in Sources */,
