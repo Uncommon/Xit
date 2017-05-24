@@ -480,17 +480,7 @@ extension XTSideBarDataSource
           let remoteURL = remote.urlString
     else { return nil }
     
-    let accounts = XTAccountsManager.manager.accounts(ofType: .teamCity)
-    let services = accounts.flatMap({ XTServices.services.teamCityAPI($0) })
-    
-    for service in services {
-      let buildTypes = service.buildTypesForRemote(remoteURL as String)
-      
-      if !buildTypes.isEmpty {
-        return (service, buildTypes)
-      }
-    }
-    return nil
+    return XTTeamCityAPI.service(for: remoteURL)
   }
   
   /// Returns true if the remote branch is tracked by a local branch.

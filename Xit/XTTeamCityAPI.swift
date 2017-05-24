@@ -126,6 +126,21 @@ class XTTeamCityAPI: XTBasicAuthService, XTServiceAPI
     }
   }
   
+  static func service(for remoteURL: String) -> (XTTeamCityAPI, [String])?
+  {
+    let accounts = XTAccountsManager.manager.accounts(ofType: .teamCity)
+    let services = accounts.flatMap({ XTServices.services.teamCityAPI($0) })
+    
+    for service in services {
+      let buildTypes = service.buildTypesForRemote(remoteURL)
+      
+      if !buildTypes.isEmpty {
+        return (service, buildTypes)
+      }
+    }
+    return nil
+  }
+  
   /// Status of the most recent build of the given branch from any project
   /// and build type.
   func buildStatus(_ branch: String, buildType: String) -> Resource
