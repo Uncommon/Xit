@@ -22,7 +22,7 @@ extension Siesta.Resource
 }
 
 /// Manages and provides access to all service API instances.
-class XTServices: NSObject
+class Services
 {
   /// Status of server operations such as authentication.
   enum Status
@@ -34,9 +34,9 @@ class XTServices: NSObject
     case failed(Error?)
   }
   
-  static let services = XTServices()
+  static let shared = Services()
   
-  private var teamCityServices: [String: XTTeamCityAPI] = [:]
+  private var teamCityServices: [String: TeamCityAPI] = [:]
   
   /// Creates an API object for each account so they can start with
   /// authorization and other state info.
@@ -59,9 +59,9 @@ class XTServices: NSObject
   
   /// Returns the TeamCity service object for the given account, or nil if
   /// the password cannot be found.
-  func teamCityAPI(_ account: Account) -> XTTeamCityAPI?
+  func teamCityAPI(_ account: Account) -> TeamCityAPI?
   {
-    let key = XTServices.accountKey(account)
+    let key = Services.accountKey(account)
   
     if let api = teamCityServices[key] {
       return api
@@ -74,7 +74,7 @@ class XTServices: NSObject
         return nil
       }
       
-      guard let api = XTTeamCityAPI(user: account.user,
+      guard let api = TeamCityAPI(user: account.user,
                                     password: password,
                                     baseURL: account.location.absoluteString)
       else { return nil }
@@ -87,11 +87,12 @@ class XTServices: NSObject
 }
 
 
-extension XTServices.Status: Equatable {
+extension Services.Status: Equatable
+{
 }
 
 // This doesn't come for free because of the associated value on .failed
-func == (a: XTServices.Status, b: XTServices.Status) -> Bool
+func == (a: Services.Status, b: Services.Status) -> Bool
 {
   switch (a, b) {
     case (.unknown, .unknown),
@@ -108,31 +109,33 @@ func == (a: XTServices.Status, b: XTServices.Status) -> Bool
 
 
 /// Protocol to be implemented by all concrete API classes.
-protocol XTServiceAPI {
+protocol ServiceAPI
+{
   var type: AccountType { get }
-  
 }
 
 
 /// Abstract service class that handles HTTP basic authentication.
-class XTBasicAuthService: Service
+class BasicAuthService: Siesta.Service
 {
   static let AuthenticationStatusChangedNotification = "AuthStatusChanged"
   
-  private(set) var authenticationStatus: XTServices.Status
+  private(set) var authenticationStatus: Services.Status
   {
     didSet
     {
       NotificationCenter.default.post(
           name: Notification.Name(rawValue:
-              XTBasicAuthService.AuthenticationStatusChangedNotification),
+              BasicAuthService.AuthenticationStatusChangedNotification),
           object: self)
     }
   }
   private let authenticationPath: String
   
-  init?(user: String, password: String, baseURL: String?,
-        authenticationPath: String) {
+  init?(user: String, password: String,
+        baseURL: String?,
+        authenticationPath: String)
+  {
     self.authenticationStatus = .notStarted
     self.authenticationPath = authenticationPath
     
@@ -147,12 +150,15 @@ class XTBasicAuthService: Service
   func updateAuthentication(_ user: String, password: String) -> Bool
   {
     if let data = "\(user):\(password)"
-      .data(using: String.Encoding.utf8)?
-      .base64EncodedString(options: []) {
-      configure { (builder) in
+                  .data(using: String.Encoding.utf8)?
+                  .base64EncodedString(options: []) {
+      configure {
+        (builder) in
         builder.headers["Authorization"] = "Basic \(data)"
-        builder.decorateRequests { (resource, request) in
-          request.onFailure { (error) in
+        builder.decorateRequests {
+          (resource, request) in
+          request.onFailure {
+            (error) in
             NSLog("Request error: \(error.userMessage) \(resource.url)")
           }
         }

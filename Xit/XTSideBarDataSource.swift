@@ -433,7 +433,7 @@ extension XTSideBarDataSource
           guard let xml = data.content as? XMLDocument,
                 let firstBuildElement =
                     xml.rootElement()?.children?.first as? XMLElement,
-                let build = XTTeamCityAPI.Build(element: firstBuildElement)
+                let build = TeamCityAPI.Build(element: firstBuildElement)
           else { return }
           
           NSLog("\(buildType)/\(branchName): \(build.status ?? .unknown)")
@@ -473,14 +473,14 @@ extension XTSideBarDataSource
   
   /// Returns the first TeamCity service that builds from the given repository,
   /// and a list of its build types.
-  func matchTeamCity(_ remoteName: String) -> (XTTeamCityAPI, [String])?
+  func matchTeamCity(_ remoteName: String) -> (TeamCityAPI, [String])?
   {
     guard let repo = repo,
           let remote = XTRemote(name: remoteName, repository: repo),
           let remoteURL = remote.urlString
     else { return nil }
     
-    return XTTeamCityAPI.service(for: remoteURL)
+    return TeamCityAPI.service(for: remoteURL)
   }
   
   /// Returns true if the remote branch is tracked by a local branch.

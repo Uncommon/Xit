@@ -3,7 +3,7 @@ import Siesta
 
 
 /// API for getting TeamCity build information.
-class XTTeamCityAPI: XTBasicAuthService, XTServiceAPI
+class TeamCityAPI: BasicAuthService, ServiceAPI
 {
   var type: AccountType { return .teamCity }
   static let rootPath = "/httpAuth/app/rest"
@@ -88,7 +88,7 @@ class XTTeamCityAPI: XTBasicAuthService, XTServiceAPI
     }
   }
   
-  fileprivate(set) var buildTypesStatus = XTServices.Status.notStarted
+  fileprivate(set) var buildTypesStatus = Services.Status.notStarted
   {
     didSet
     {
@@ -114,7 +114,7 @@ class XTTeamCityAPI: XTBasicAuthService, XTServiceAPI
           var fullBaseURL = URLComponents(string: baseURL)
     else { return nil }
     
-    fullBaseURL.path = XTTeamCityAPI.rootPath
+    fullBaseURL.path = TeamCityAPI.rootPath
     
     super.init(user: user, password: password,
                baseURL: fullBaseURL.string,
@@ -126,10 +126,10 @@ class XTTeamCityAPI: XTBasicAuthService, XTServiceAPI
     }
   }
   
-  static func service(for remoteURL: String) -> (XTTeamCityAPI, [String])?
+  static func service(for remoteURL: String) -> (TeamCityAPI, [String])?
   {
     let accounts = XTAccountsManager.manager.accounts(ofType: .teamCity)
-    let services = accounts.flatMap({ XTServices.services.teamCityAPI($0) })
+    let services = accounts.flatMap({ Services.shared.teamCityAPI($0) })
     
     for service in services {
       let buildTypes = service.buildTypesForRemote(remoteURL)
@@ -413,7 +413,7 @@ class XTTeamCityAPI: XTBasicAuthService, XTServiceAPI
     var waitingTypeCount = hrefs.count
     
     for href in hrefs {
-      let relativePath = href.removingPrefix(XTTeamCityAPI.rootPath)
+      let relativePath = href.removingPrefix(TeamCityAPI.rootPath)
       
       resource(relativePath).useData(owner: self, closure: { (data) in
         waitingTypeCount -= 1
