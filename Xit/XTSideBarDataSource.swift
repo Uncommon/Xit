@@ -100,7 +100,7 @@ class XTSideBarDataSource: NSObject
   {
     let rootNames = ["WORKSPACE", "BRANCHES", "REMOTES", "TAGS", "STASHES",
                      "SUBMODULES"]
-    let roots = rootNames.map({ XTSideBarGroupItem(title: $0) })
+    let roots = rootNames.map { XTSideBarGroupItem(title: $0) }
     
     roots[0].add(child: stagingItem)
     return roots
@@ -701,26 +701,19 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
         textField.action =
             #selector(XTSidebarController.sidebarItemRenamed(_:))
       }
-      if sideBarItem.current {
-        textField.font = NSFont.boldSystemFont(
-            ofSize: textField.font?.pointSize ?? 12)
-      }
-      else {
-        textField.font = NSFont.systemFont(
-            ofSize: textField.font?.pointSize ?? 12)
-      }
+      
+      let fontSize = textField.font?.pointSize ?? 12
+      
+      textField.font = sideBarItem.current
+          ? NSFont.boldSystemFont(ofSize: fontSize)
+          : NSFont.systemFont(ofSize: fontSize)
+
       if sideBarItem is XTStagingItem {
         let changes = sideBarItem.model!.changes
-        var stagedCount = 0, unstagedCount = 0
-        
-        for change in changes {
-          if change.change != .unmodified {
-            stagedCount += 1
-          }
-          if change.unstagedChange != .unmodified {
-            unstagedCount += 1
-          }
-        }
+        let stagedCount =
+              changes.count(where: { $0.change != .unmodified })
+        let unstagedCount =
+              changes.count(where: { $0.unstagedChange != .unmodified })
         
         if (stagedCount != 0) || (unstagedCount != 0) {
           dataView.statusText.title = "\(unstagedCount)▸\(stagedCount)"
