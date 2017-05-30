@@ -10,41 +10,16 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
   
   struct Build
   {
-    enum Status
+    enum Status: String
     {
-      case succeeded
-      case failed
-      case unknown
-      
-      init?(string: String)
-      {
-        switch string {
-          case "SUCCESS":
-            self = .succeeded
-          case "FAILURE":
-            self = .failed
-          default:
-            return nil
-        }
-      }
+      case succeeded = "SUCCESS"
+      case failed = "FAILURE"
     }
     
-    enum State
+    enum State: String
     {
       case running
       case finished
-      
-      init?(string: String)
-      {
-        switch string {
-          case "running":
-            self = .running
-          case "finished":
-            self = .finished
-          default:
-            return nil
-        }
-      }
     }
     
     struct Attribute
@@ -74,8 +49,8 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
       let attributes = buildElement.attributesDict()
       
       self.buildType = attributes[Attribute.buildType]
-      self.status = attributes[Attribute.status].flatMap { Status(string: $0) }
-      self.state = attributes[Attribute.state].flatMap { State(string: $0) }
+      self.status = attributes[Attribute.status].flatMap { Status(rawValue: $0) }
+      self.state = attributes[Attribute.state].flatMap { State(rawValue: $0) }
       self.url = attributes[Attribute.webURL].flatMap { URL(string: $0) }
     }
     
