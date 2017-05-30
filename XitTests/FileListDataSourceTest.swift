@@ -38,7 +38,7 @@ class FileListDataSourceTest: XTTest
     
     for entry in history.entries {
       repoController.selectedModel = CommitChanges(repository: repository,
-                                                   sha: entry.commit.sha!)
+                                                   oid: entry.commit.oid)
       flds.reload()
       waitForRepoQueue()
     
@@ -74,9 +74,10 @@ class FileListDataSourceTest: XTTest
     try! repository.commit(withMessage: "commit", amend: false, outputBlock: nil)
     
     let repoController = FakeRepoController()
+    let oid = GitOID(sha: repository.headSHA!)!
     
     repoController.selectedModel = CommitChanges(repository: repository,
-                                                 sha: repository.headSHA!)
+                                                 oid: oid)
     
     let outlineView = NSOutlineView()
     let flds = FileTreeDataSource()

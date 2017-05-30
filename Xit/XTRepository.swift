@@ -408,16 +408,16 @@ extension XTRepository
     }
   }
   
-  func commitForStash(at index: UInt) -> GTCommit?
+  func commitForStash(at index: UInt) -> XTCommit?
   {
     guard let stashRef = try? gtRepo.lookUpReference(withName: "refs/stash"),
           let stashLog = GTReflog(reference: stashRef),
           index < stashLog.entryCount,
-          let entry = stashLog.entry(at: index)
+          let entry = stashLog.entry(at: index),
+          let oid = entry.updatedOID.map({ GitOID(oid: $0.git_oid().pointee) })
     else { return nil }
     
-    return (try? entry.updatedOID.map { try gtRepo.lookUpObject(by: $0) })
-           as? GTCommit
+    return XTCommit(oid: oid, repository: self)
   }
   
   /// Returns the unstaged and staged status of the given file.

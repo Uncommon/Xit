@@ -173,10 +173,11 @@ class XTSideBarDataSource: NSObject
     
     for branch in localBranches {
       guard let sha = branch.sha,
+            let oid = GitOID(sha: sha),
             let name = branch.name?.removingPrefix("refs/heads/")
       else { continue }
       
-      let model = CommitChanges(repository: repo, sha: sha)
+      let model = CommitChanges(repository: repo, oid: oid)
       let branchItem = XTLocalBranchItem(title: name, model: model)
       let parent = self.parent(for: name, groupItem: branchesGroup)
       
@@ -194,9 +195,9 @@ class XTSideBarDataSource: NSObject
                                                     branch.remoteName }),
             let name = branch.name?
                        .removingPrefix("refs/remotes/\(remote.title)/"),
-            let sha = branch.gtBranch.oid?.sha
+            let oid = branch.oid
       else { continue }
-      let model = CommitChanges(repository: repo, sha: sha)
+      let model = CommitChanges(repository: repo, oid: oid)
       let remoteParent = parent(for: name, groupItem: remote)
       
       remoteParent.children.append(XTRemoteBranchItem(title: name,

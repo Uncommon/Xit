@@ -129,7 +129,15 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func select(sha: String)
   {
-    selectedModel = CommitChanges(repository: xtDocument!.repository, sha: sha)
+    selectedModel = GitOID(sha: sha).map {
+      CommitChanges(repository: xtDocument!.repository, oid: $0)
+    }
+  }
+  
+  func select(oid: GitOID)
+  {
+    selectedModel = CommitChanges(repository: xtDocument!.repository,
+                                  oid: oid)
   }
   
   func updateNavButtons()

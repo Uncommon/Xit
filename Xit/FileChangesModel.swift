@@ -56,7 +56,8 @@ class CommitChanges: FileChangesModel
   typealias GitBlame = CLGitBlame
 
   unowned var repository: XTRepository
-  var sha: String
+  let sha: String
+  let oid: GitOID
   var shaToSelect: String? { return self.sha }
   var hasUnstaged: Bool { return false }
   var canCommit: Bool { return false }
@@ -72,11 +73,12 @@ class CommitChanges: FileChangesModel
   
   /// SHA of the parent commit to use for diffs
   var diffParent: String?
-  
-  init(repository: XTRepository, sha: String)
+
+  init(repository: XTRepository, oid: GitOID)
   {
     self.repository = repository
-    self.sha = sha
+    self.oid = oid
+    self.sha = oid.sha
     self.savedChanges = repository.changes(for: self.sha,
                                            parent: self.diffParent)
   }
@@ -160,18 +162,18 @@ class StashChanges: FileChangesModel
   var stash: XTStash
   var hasUnstaged: Bool { return true }
   var canCommit: Bool { return false }
-  var shaToSelect: String? { return stash.mainCommit?.parents[0].sha }
+  var shaToSelect: String? { return stash.mainCommit?.parentSHAs[0] }
   var changes: [FileChange] { return self.stash.changes() }
   
   var treeRoot: NSTreeNode {
-    guard let mainModel = stash.mainCommit?.sha.map({
-        CommitChanges(repository: repository, sha: $0) })
+    guard let mainModel = stash.mainCommit.map({
+        CommitChanges(repository: repository, oid: $0.oid) })
     else { return NSTreeNode() }
     var mainRoot = mainModel.makeTreeRoot(staged: false)
     
     if let indexCommit = stash.indexCommit {
       let indexModel = CommitChanges(repository: repository,
-                                       sha: indexCommit.sha!)
+                                     oid: indexCommit.oid)
       let indexRoot = indexModel.treeRoot
       
       combineTrees(unstagedTree: &mainRoot,
@@ -179,7 +181,7 @@ class StashChanges: FileChangesModel
     }
     if let untrackedCommit = stash.untrackedCommit {
       let untrackedModel = CommitChanges(repository: repository,
-                                           sha: untrackedCommit.sha!)
+                                         oid: untrackedCommit.oid)
       let untrackedRoot = untrackedModel.treeRoot
     
       add(untrackedRoot, to: &mainRoot)
@@ -209,7 +211,7 @@ class StashChanges: FileChangesModel
     }
   }
   
-  func commit(for path: String, staged: Bool) -> GTCommit?
+  func commit(for path: String, staged: Bool) -> XTCommit?
   {
     if staged {
       return stash.indexCommit
@@ -227,11 +229,11 @@ class StashChanges: FileChangesModel
   
   func blame(for path: String, staged: Bool) -> GitBlame?
   {
-    guard let startCommit = commit(for: path, staged: staged),
-          let startOID = startCommit.oid.map({ GitOID(oid: $0.git_oid().pointee) })
+    guard let startCommit = commit(for: path, staged: staged)
     else { return nil }
     
-    return GitBlame(repository: repository, path: path, from: startOID, to: nil)
+    return GitBlame(repository: repository, path: path,
+                    from: startCommit.oid, to: nil)
   }
   
   func dataForFile(_ path: String, staged: Bool) -> Data?

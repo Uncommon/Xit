@@ -52,9 +52,9 @@ class BlameTest: XTTest
   func testCommitBlame()
   {
     let headSHA = repository.headSHA!
-    let headOID = GitOID(sha: headSHA)
+    let headOID = GitOID(sha: headSHA)!
     let commitModel = CommitChanges(repository: repository,
-                                    sha: headSHA)
+                                    oid: headOID)
     let commitBlame = commitModel.blame(for: blameFile, staged: false)!
     let lineStarts = [1, 3, 5, 6]
     let lineCounts = [2, 2, 1, 3]

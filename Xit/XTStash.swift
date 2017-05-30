@@ -5,8 +5,8 @@ public class XTStash: NSObject
 {
   unowned var repo: XTRepository
   var message: String?
-  var mainCommit: GTCommit?
-  var indexCommit, untrackedCommit: GTCommit?
+  var mainCommit: XTCommit?
+  var indexCommit, untrackedCommit: XTCommit?
   private var cachedChanges: [FileChange]?
 
   init(repo: XTRepository, index: UInt, message: String?)
@@ -16,10 +16,12 @@ public class XTStash: NSObject
     
     if let mainCommit = repo.commitForStash(at: index) {
       self.mainCommit = mainCommit
-      if mainCommit.parents.count > 1 {
-        self.indexCommit = mainCommit.parents[1]
-        if mainCommit.parents.count > 2 {
-          self.untrackedCommit = mainCommit.parents[2]
+      if mainCommit.parentOIDs.count > 1 {
+        self.indexCommit = XTCommit(oid: mainCommit.parentOIDs[1],
+                                    repository: repo)
+        if mainCommit.parentOIDs.count > 2 {
+          self.untrackedCommit = XTCommit(oid: mainCommit.parentOIDs[2],
+                                          repository: repo)
         }
       }
     }
@@ -34,7 +36,8 @@ public class XTStash: NSObject
     guard var unstagedChanges = mainCommit?.sha.map({
         repo.changes(for: $0, parent: indexCommit?.sha) })
     else { return [] }
-    let stagedChanges = indexCommit.map { repo.changes(for: $0.sha!, parent: nil) }
+    let stagedChanges = indexCommit.map { repo.changes(for: $0.sha!,
+                                                       parent: nil) }
                         ?? []
     
     if let untrackedCommit = self.untrackedCommit {
@@ -75,9 +78,11 @@ public class XTStash: NSObject
 
   func headBlobForPath(_ path: String) -> GTBlob?
   {
-    guard let headEntry = try? mainCommit?.parents[0].tree?.entry(withPath: path),
+    guard let headEntry = try? mainCommit?.gtCommit.parents[0].tree?
+                               .entry(withPath: path),
           let object = try? headEntry?.gtObject()
     else { return nil }
+    
     return (object as? GTBlob?)!
   }
 

@@ -8,9 +8,10 @@ class XTFileChangesDataSourceTest: XTTest
     let repoController = FakeRepoController()
     let dataSource = XTFileChangesDataSource()
     let outlineView = NSOutlineView()
+    let oid = GitOID(sha: repository.headSHA!)!
     
     repoController.selectedModel = CommitChanges(repository: repository,
-                                                 sha: repository.headSHA!)
+                                                 oid: oid)
     dataSource.repository = repository
     dataSource.repoController = repoController
     outlineView.dataSource = dataSource
@@ -18,7 +19,9 @@ class XTFileChangesDataSourceTest: XTTest
     waitForRepoQueue()
     WaitForQueue(DispatchQueue.main)
     
-    XCTAssertEqual(dataSource.outlineView(outlineView, numberOfChildrenOfItem: nil), 1)
+    XCTAssertEqual(dataSource.outlineView(outlineView,
+                                          numberOfChildrenOfItem: nil),
+                   1)
     
     let item1 = dataSource.outlineView(outlineView, child: 0, ofItem: nil)
     
