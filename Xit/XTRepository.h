@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-
+#if 0
 NS_ASSUME_NONNULL_BEGIN
 
 extern NSString *XTErrorOutputKey;
@@ -52,14 +52,7 @@ extern NSString *XTPathsKey;
                                    error:(NSError**)error;
 
 - (void)refsChanged;
-- (void)addReloadObserver:(id)observer selector:(SEL)selector;
 
-/**
- If called on the main thread, executes \a block on the repository's dispatch
- queue. If called on another thread, \a block is executed synchronously.
- */
-- (void)executeOffMainThread:(void (^)())block;
-- (void)updateIsWriting:(BOOL)writing; // Private use
 /**
   After this is called, future calls to \a executeOffMainThread: from the main
   thread will be ignored.
@@ -67,7 +60,6 @@ extern NSString *XTPathsKey;
 - (void)shutDown;
 
 @property(readonly) BOOL busy;
-@property(readonly) BOOL hasHeadReference;
 @property(readonly, copy) NSString *parentTree;
 @property(readonly, copy) NSString *headRef;
 @property(readonly, copy, nullable) NSString *headSHA;
@@ -85,9 +77,13 @@ extern NSString *XTPathsKey;
 
 @property(readonly) NSCache<NSString*, GTDiff*> *diffCache;
 
+@property(readonly) NSString *gitCMD;
+@property NSUInteger queueCount;
+
 @end
 
 NS_ASSUME_NONNULL_END
 
 // An empty tree will always have this hash.
 #define kEmptyTreeHash @"4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+#endif

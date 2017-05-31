@@ -11,7 +11,6 @@ NSString *XTPathsKey = @"paths";
 
 @interface XTRepository ()
 
-@property NSUInteger queueCount;
 @property(readwrite) XTRepositoryWatcher *repoWatcher;
 @property(readwrite) XTWorkspaceWatcher *workspaceWatcher;
 @property(readwrite) BOOL isShutDown;
@@ -37,6 +36,11 @@ NSString *XTPathsKey = @"paths";
       return path;
   }
   return nil;
+}
+
+- (NSString*)gitCMD
+{
+  return _gitCMD;
 }
 
 - (nullable instancetype)initWithURL:(NSURL *)url
@@ -109,46 +113,6 @@ NSString *XTPathsKey = @"paths";
     self.isWriting = NO;
   }
   return result;
-}
-
-- (void)updateQueueCount:(NSInteger)delta
-{
-  dispatch_async(dispatch_get_main_queue(), ^{
-    [self willChangeValueForKey:@"busy"];
-    self.queueCount += delta;
-    [self didChangeValueForKey:@"busy"];
-  });
-}
-
-- (void)executeTask:(void (^)())block
-{
-  [self updateQueueCount:1];
-  block();
-  [self updateQueueCount:-1];
-}
-
-- (void)executeOffMainThread:(void (^)())block
-{
-  if ([NSThread isMainThread]) {
-    if (!self.isShutDown)
-      dispatch_async(_queue, ^{ [self executeTask:block]; });
-  } else {
-    [self executeTask:block];
-  }
-}
-
-// Make sure KVO notifications happen on the main thread
-- (void)updateIsWriting:(BOOL)writing
-{
-  if (writing == self.isWriting)
-    return;
-  
-  if ([NSThread isMainThread])
-    self.isWriting = writing;
-  else
-    dispatch_sync(dispatch_get_main_queue(), ^{
-      self.isWriting = writing;
-    });
 }
 
 - (void)shutDown
@@ -255,13 +219,6 @@ NSString *XTPathsKey = @"paths";
     [self updateIsWriting:NO];
     return output;
   }
-}
-
-- (BOOL)hasHeadReference
-{
-  NSError *error = nil;
-
-  return [_gtRepo headReferenceWithError:&error] != nil;
 }
 
 - (NSString *)parseSymbolicReference:(NSString *)reference
@@ -371,16 +328,6 @@ NSString *XTPathsKey = @"paths";
     return nil;
   }
   return blob.data;
-}
-
-// A convenience method for adding to the default notification center.
-- (void)addReloadObserver:(id)observer selector:(SEL)selector
-{
-  [[NSNotificationCenter defaultCenter]
-      addObserver:observer
-         selector:selector
-             name:XTRepositoryChangedNotification
-           object:self];
 }
 
 @end

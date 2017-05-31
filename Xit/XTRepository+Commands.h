@@ -3,13 +3,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class XTRepository;
+
 @interface XTRepository (Commands)
 
-@property (readonly) NSString * _Nullable currentBranch;
-
 - (BOOL)initializeRepository;
-- (BOOL)createBranch:(NSString*)name;
-- (BOOL)deleteBranch:(NSString*)name error:(NSError**)error;
 - (nullable NSString*)currentBranch;
 - (BOOL)createTag:(NSString*)name targetSHA:(NSString*)sha message:(NSString*)msg;
 - (BOOL)createLightweightTag:(NSString*)name targetSHA:(NSString*)sha;

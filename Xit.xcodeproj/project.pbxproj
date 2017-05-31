@@ -12,6 +12,7 @@
 		31C7C13413ECC74C00A65FE9 /* XTHistoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31C7C13213ECC74C00A65FE9 /* XTHistoryViewController.xib */; };
 		31F1E87F13D3B51200F3B317 /* XTRepository+Commands.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BC055713D1133000C3CF1A /* XTRepository+Commands.m */; };
 		89039F561703A9FC000949A8 /* html in Resources */ = {isa = PBXBuildFile; fileRef = 89039F551703A9FC000949A8 /* html */; };
+		89369A741EDF47FC001B69C6 /* NSTask+Throwing.m in Sources */ = {isa = PBXBuildFile; fileRef = 89369A731EDF47FC001B69C6 /* NSTask+Throwing.m */; };
 		894C8D931CA44A44001A4B80 /* stagingTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 894C8D911CA44A44001A4B80 /* stagingTemplate.png */; };
 		894C8D941CA44A44001A4B80 /* stagingTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 894C8D921CA44A44001A4B80 /* stagingTemplate@2x.png */; };
 		895869A81D0869D1003A9AF0 /* branchTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 895869A41D0869D1003A9AF0 /* branchTemplate.png */; };
@@ -39,6 +40,7 @@
 		89CB619C1E788C6000D69FE4 /* PatchTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CB619B1E788C6000D69FE4 /* PatchTest.swift */; };
 		89CD209217089D220051C3D4 /* XTCategoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89CD209117089D220051C3D4 /* XTCategoryTests.m */; };
 		89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */; };
+		89D5FDB21EDE1DC50067E886 /* XTRepository+Git.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D5FDB11EDE1DC50067E886 /* XTRepository+Git.swift */; };
 		89D8BDE91CED1FE700D640AA /* add.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BDE71CED1FE700D640AA /* add.png */; };
 		89D8BDEA1CED1FE700D640AA /* add@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BDE81CED1FE700D640AA /* add@2x.png */; };
 		89D8BDF81CED200B00D640AA /* conflict.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BDF21CED200B00D640AA /* conflict.png */; };
@@ -63,7 +65,6 @@
 		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		89E927DF17E977340093DA6C /* expected header.html in Resources */ = {isa = PBXBuildFile; fileRef = 89E927DE17E977340093DA6C /* expected header.html */; };
 		89FE824815A716E800E2EA2A /* XTRepositoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89FE824715A716E800E2EA2A /* XTRepositoryTests.m */; };
-		C358653114048A3F00060C53 /* XTRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = C358653014048A3F00060C53 /* XTRepository.m */; };
 		C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		C3FA470B13D0F8E200AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA470913D0F8E200AC4F9B /* InfoPlist.strings */; };
 		C3FA470E13D0F8E200AC4F9B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA470D13D0F8E200AC4F9B /* main.m */; };
@@ -354,6 +355,8 @@
 		31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary+MultiObjectForKey.m"; sourceTree = "<group>"; };
 		31C7C13213ECC74C00A65FE9 /* XTHistoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTHistoryViewController.xib; sourceTree = "<group>"; };
 		89039F551703A9FC000949A8 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
+		89369A721EDF47FC001B69C6 /* NSTask+Throwing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTask+Throwing.h"; sourceTree = "<group>"; };
+		89369A731EDF47FC001B69C6 /* NSTask+Throwing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTask+Throwing.m"; sourceTree = "<group>"; };
 		894C8D911CA44A44001A4B80 /* stagingTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stagingTemplate.png; sourceTree = "<group>"; };
 		894C8D921CA44A44001A4B80 /* stagingTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stagingTemplate@2x.png"; sourceTree = "<group>"; };
 		894C8DE51CCD06FE001A4B80 /* Xit-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Xit-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -384,6 +387,7 @@
 		89CD209117089D220051C3D4 /* XTCategoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTCategoryTests.m; sourceTree = "<group>"; tabWidth = 2; };
 		89D47941170894A200C04D89 /* NSAttributedString+XTExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+XTExtensions.h"; sourceTree = "<group>"; };
 		89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+XTExtensions.m"; sourceTree = "<group>"; };
+		89D5FDB11EDE1DC50067E886 /* XTRepository+Git.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTRepository+Git.swift"; sourceTree = "<group>"; };
 		89D8BDE71CED1FE700D640AA /* add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add.png; sourceTree = "<group>"; };
 		89D8BDE81CED1FE700D640AA /* add@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add@2x.png"; sourceTree = "<group>"; };
 		89D8BDF21CED200B00D640AA /* conflict.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = conflict.png; sourceTree = "<group>"; };
@@ -644,6 +648,8 @@
 				DD9C1B8E160239DD0001FE9B /* XTRefToken.m */,
 				C957B84A1D2D53040040F858 /* XTSheetController.swift */,
 				894C8DE51CCD06FE001A4B80 /* Xit-Bridging-Header.h */,
+				89369A721EDF47FC001B69C6 /* NSTask+Throwing.h */,
+				89369A731EDF47FC001B69C6 /* NSTask+Throwing.m */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -1003,6 +1009,7 @@
 				DDDA447015B0E97000DF407B /* XTRepository+Parsing.h */,
 				DDDA447115B0EA4700DF407B /* XTRepository+Parsing.m */,
 				89C927931D43B23B0074F71A /* XTRepository.swift */,
+				89D5FDB11EDE1DC50067E886 /* XTRepository+Git.swift */,
 				C9DB64441EA534A0003015D6 /* XTRepository+Iterators.swift */,
 				C9E8815C1E95988700BFA7E5 /* XTRepository+MergePushPull.swift */,
 				C94D7E8C1EBA66180059AC21 /* XTRepository+Parsing.swift */,
@@ -1436,7 +1443,6 @@
 				C94D7E8D1EBA66180059AC21 /* XTRepository+Parsing.swift in Sources */,
 				C9ABDB201E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift in Sources */,
 				C9C7730C1D26EE1C00329493 /* XTPrefsWindowController.swift in Sources */,
-				C358653114048A3F00060C53 /* XTRepository.m in Sources */,
 				C98925F91DBFCE7000E5645C /* XTSidebarController.swift in Sources */,
 				C951EB051DD636B900B99FBE /* SidebarCheckedRowView.swift in Sources */,
 				C94866C01D25861E000BDB0A /* XTPasswordPanelController.swift in Sources */,
@@ -1450,10 +1456,12 @@
 				DDDA447215B0EA4700DF407B /* XTRepository+Parsing.m in Sources */,
 				C947367E1DF08C03000E3A05 /* ContextMenuOutlineView.swift in Sources */,
 				89C9276B1D368C020074F71A /* XTSideBarDataSource.swift in Sources */,
+				89369A741EDF47FC001B69C6 /* NSTask+Throwing.m in Sources */,
 				C936AD0A1D4C0CD400C5ADC3 /* XTPushController.swift in Sources */,
 				C95355FC1D9492EA00AEEF49 /* XTDocumentController.swift in Sources */,
 				C94ECBD51E6E025B00E8B453 /* ObserverCollection.swift in Sources */,
 				C9DEA4AD1E4B82B200DF4069 /* Signature.swift in Sources */,
+				89D5FDB21EDE1DC50067E886 /* XTRepository+Git.swift in Sources */,
 				DDC75B8315D08E8F0087F2D4 /* NSDate+Extensions.m in Sources */,
 				C9F9A02A1E1C417D00261E33 /* XTDiffMaker.swift in Sources */,
 				C93799D51DDF9B28005C08B8 /* WorkspaceWatcher.swift in Sources */,
