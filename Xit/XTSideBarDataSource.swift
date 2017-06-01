@@ -24,7 +24,13 @@ class XTSideBarDataSource: NSObject
   private(set) var roots: [XTSideBarGroupItem]
   private(set) var stagingItem: XTSideBarItem!
   
-  var buildStatuses = [String: [String: Bool]]()
+  var buildStatusCache: BuildStatusCache!
+  {
+    didSet
+    {
+      buildStatusCache.add(client: self)
+    }
+  }
   
   var buildStatusTimer: Timer?
   var reloadTimer: Timer?
@@ -39,6 +45,7 @@ class XTSideBarDataSource: NSObject
       else { return }
       
       stagingItem.model = StagingChanges(repository: repo)
+      buildStatusCache = BuildStatusCache(repository: repo)
       
       observers.addObserver(
           forName: .XTRepositoryRefsChanged,
@@ -125,7 +132,7 @@ class XTSideBarDataSource: NSObject
       buildStatusTimer = Timer.scheduledTimer(
           withTimeInterval: Intervals.teamCityRefresh, repeats: true) {
         [weak self] _ in
-        self?.updateTeamCity()
+        self?.buildStatusCache.refresh()
       }
     }
     observers.addObserver(
@@ -133,7 +140,7 @@ class XTSideBarDataSource: NSObject
         object: nil,
         queue: .main) {
       [weak self] _ in
-      self?.updateTeamCity()
+      self?.buildStatusCache.refresh()
     }
   }
   
@@ -227,7 +234,7 @@ class XTSideBarDataSource: NSObject
     
     repo.rebuildRefsIndex()
     DispatchQueue.main.async {
-      self.updateTeamCity()
+      self.buildStatusCache.refresh()
     }
     return newRoots
   }
@@ -389,64 +396,20 @@ class XTSideBarDataSource: NSObject
   }
 }
 
-// MARK: TeamCity
-extension XTSideBarDataSource
+extension XTSideBarDataSource: BuildStatusClient
 {
-  func updateTeamCity()
+  func buildStatusUpdated(branch: String, buildType: String)
   {
-    guard let repo = repo
-    else { return }
-    
-    let localBranches = repo.localBranches()
-    
-    buildStatuses = [:]
-    for local in localBranches {
-      guard let fullBranchName = local.name,
-            let tracked = local.trackingBranch,
-            let (api, buildTypes) = matchTeamCity(tracked.remoteName)
-      else { continue }
-      
-      for buildType in buildTypes {
-        let vcsRoots = api.vcsRootsForBuildType(buildType)
-        guard !vcsRoots.isEmpty
-        else { continue }
-        
-        var shortestDisplayName: String? = nil
-        
-        for root in vcsRoots {
-          guard let branchSpec = api.vcsBranchSpecs[root],
-                let display = branchSpec.match(branch: fullBranchName)
-          else { continue }
-          
-          if (shortestDisplayName == nil) ||
-             (shortestDisplayName!.utf8.count > display.utf8.count) {
-            shortestDisplayName = display
-          }
-        }
-        
-        guard let branchName = shortestDisplayName
-        else { continue }
-        
-        let statusResource = api.buildStatus(branchName, buildType: buildType)
-        
-        statusResource.useData(owner: self) { (data) in
-          guard let xml = data.content as? XMLDocument,
-                let firstBuildElement =
-                    xml.rootElement()?.children?.first as? XMLElement,
-                let build = TeamCityAPI.Build(element: firstBuildElement)
-          else { return }
-          
-          NSLog("\(buildType)/\(branchName): \(build.status ?? .unknown)")
-          var buildTypeStatuses = self.buildStatuses[buildType] ??
-                                  [String: Bool]()
-          
-          buildTypeStatuses[branchName] = build.status == .succeeded
-          self.buildStatuses[buildType] = buildTypeStatuses
-          self.scheduleReload()
-        }
-      }
-    }
+    scheduleReload()
   }
+}
+
+// MARK: TeamCity
+extension XTSideBarDataSource: TeamCityAccessor
+{
+  // repo is implicitly unwrapped, so we have to have a different property
+  // for TeamCityAccessor
+  var repository: XTRepository { return repo }
   
   /// Returns the name of the remote for either a remote branch or a local
   /// tracking branch.
@@ -469,18 +432,6 @@ extension XTSideBarDataSource
       return branch.trackingBranch?.remoteName
     }
     return nil
-  }
-  
-  /// Returns the first TeamCity service that builds from the given repository,
-  /// and a list of its build types.
-  func matchTeamCity(_ remoteName: String) -> (TeamCityAPI, [String])?
-  {
-    guard let repo = repo,
-          let remote = XTRemote(name: remoteName, repository: repo),
-          let remoteURL = remote.urlString
-    else { return nil }
-    
-    return TeamCityAPI.service(for: remoteURL)
   }
   
   /// Returns true if the remote branch is tracked by a local branch.
@@ -539,21 +490,21 @@ extension XTSideBarDataSource
   
   func statusImage(for item: XTSideBarItem) -> NSImage?
   {
-    guard let remoteName = remoteName(forBranchItem: item),
-          let (_, buildTypes) = matchTeamCity(remoteName)
-    else { return nil }
-    
     if (item is XTRemoteBranchItem) &&
        !branchHasLocalTrackingBranch(item.title) {
       return nil
     }
     
+    guard let remoteName = remoteName(forBranchItem: item),
+          let (_, buildTypes) = matchTeamCity(remoteName)
+    else { return nil }
+    
     let branchName = (item.title as NSString).lastPathComponent
     var overallSuccess: Bool?
     
     for buildType in buildTypes {
-      if let status = buildStatuses[buildType],
-         let buildSuccess = status[branchName] {
+      if let status = buildStatusCache.statuses[buildType],
+         let buildSuccess = status[branchName].map({ $0.status == .succeeded }) {
         overallSuccess = (overallSuccess ?? true) && buildSuccess
       }
     }

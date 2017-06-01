@@ -8,7 +8,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
   var type: AccountType { return .teamCity }
   static let rootPath = "/httpAuth/app/rest"
   
-  struct Build
+  public struct Build
   {
     enum Status: String
     {
@@ -439,5 +439,24 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
       buildTypeURLs.append(vcsURL)
     }
     vcsBuildTypes[buildTypeID] = buildTypeURLs
+  }
+}
+
+protocol TeamCityAccessor: class
+{
+  var repository: XTRepository { get }
+}
+
+extension TeamCityAccessor
+{
+  /// Returns the first TeamCity service that builds from the given repository,
+  /// and a list of its build types.
+  func matchTeamCity(_ remoteName: String) -> (TeamCityAPI, [String])?
+  {
+    guard let remote = XTRemote(name: remoteName, repository: repository),
+          let remoteURL = remote.urlString
+    else { return nil }
+    
+    return TeamCityAPI.service(for: remoteURL)
   }
 }
