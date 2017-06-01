@@ -24,6 +24,7 @@ class XTSideBarDataSource: NSObject
   private(set) var roots: [XTSideBarGroupItem]
   private(set) var stagingItem: XTSideBarItem!
   
+  var statusPopover: NSPopover?
   var buildStatusCache: BuildStatusCache!
   {
     didSet
@@ -344,6 +345,21 @@ class XTSideBarDataSource: NSObject
     return nil
   }
   
+  @IBAction func showItemStatus(_ sender: NSButton)
+  {
+    guard let item = item(for: sender) as? XTBranchItem
+    else { return }
+    let statusController = BuildStatusViewController(branch: item.fullName,
+                                                     cache: buildStatusCache)
+    let popover = NSPopover()
+    
+    statusPopover = popover
+    popover.contentViewController = statusController
+    popover.behavior = .transient
+    popover.delegate = self
+    popover.show(relativeTo: sender.bounds, of: sender, preferredEdge: .maxY)
+  }
+  
   @IBAction func missingTrackingBranch(_ sender: NSButton)
   {
     guard let item = item(for: sender) as? XTLocalBranchItem
@@ -519,6 +535,14 @@ extension XTSideBarDataSource: TeamCityAccessor
   }
 }
 
+extension XTSideBarDataSource: NSPopoverDelegate
+{
+  func popoverDidClose(_ notification: Notification)
+  {
+    statusPopover = nil
+  }
+}
+
 // MARK: NSOutlineViewDataSource
 extension XTSideBarDataSource: NSOutlineViewDataSource
 {
@@ -623,6 +647,8 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
       dataView.statusButton.action = nil
       if let image = statusImage(for: sideBarItem) {
         dataView.statusButton.image = image
+        dataView.statusButton.target = self
+        dataView.statusButton.action = #selector(self.showItemStatus(_:))
       }
       if sideBarItem is XTLocalBranchItem {
         if let statusText = graphText(for: sideBarItem) {
