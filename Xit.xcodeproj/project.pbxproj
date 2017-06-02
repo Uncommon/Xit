@@ -64,7 +64,6 @@
 		89D8BE5F1CF8E9C900D640AA /* textTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BE571CF8E9C900D640AA /* textTemplate@2x.png */; };
 		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		89E927DF17E977340093DA6C /* expected header.html in Resources */ = {isa = PBXBuildFile; fileRef = 89E927DE17E977340093DA6C /* expected header.html */; };
-		89FE824815A716E800E2EA2A /* XTRepositoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89FE824715A716E800E2EA2A /* XTRepositoryTests.m */; };
 		C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		C3FA470B13D0F8E200AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA470913D0F8E200AC4F9B /* InfoPlist.strings */; };
 		C3FA470E13D0F8E200AC4F9B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA470D13D0F8E200AC4F9B /* main.m */; };
@@ -410,7 +409,6 @@
 		89D8BE561CF8E9C800D640AA /* textTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = textTemplate.png; sourceTree = "<group>"; };
 		89D8BE571CF8E9C900D640AA /* textTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "textTemplate@2x.png"; sourceTree = "<group>"; };
 		89E927DE17E977340093DA6C /* expected header.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "expected header.html"; sourceTree = "<group>"; };
-		89FE824715A716E800E2EA2A /* XTRepositoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTRepositoryTests.m; sourceTree = "<group>"; tabWidth = 2; };
 		C358652F14048A3F00060C53 /* XTRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTRepository.h; sourceTree = "<group>"; tabWidth = 2; };
 		C358653014048A3F00060C53 /* XTRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTRepository.m; sourceTree = "<group>"; tabWidth = 2; };
 		C3BC055613D1133000C3CF1A /* XTRepository+Commands.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "XTRepository+Commands.h"; sourceTree = "<group>"; };
@@ -857,7 +855,6 @@
 				C3FA472D13D0F8E300AC4F9B /* XTTest.m */,
 				C9DEA4EF1E53678A00DF4069 /* XTFileChangesDataSourceTest.swift */,
 				C96D24B21DFEFD9F00431317 /* XTSidebarControllerTest.swift */,
-				89FE824715A716E800E2EA2A /* XTRepositoryTests.m */,
 				C941037F1EBDFABC002C80DC /* XTSideBarDataSourceTests.swift */,
 				89CD209017089D220051C3D4 /* XTCategoryTests.h */,
 				89CD209117089D220051C3D4 /* XTCategoryTests.m */,
@@ -1524,7 +1521,6 @@
 				C96D24B31DFEFD9F00431317 /* XTSidebarControllerTest.swift in Sources */,
 				C923D6481D8CA56800C6B90B /* XTTagTest.swift in Sources */,
 				C9DEA4BB1E4FEC1600DF4069 /* FileListDataSourceTest.swift in Sources */,
-				89FE824815A716E800E2EA2A /* XTRepositoryTests.m in Sources */,
 				C98925B31DA70D3A00E5645C /* XTCommitLinesTest.swift in Sources */,
 				C94736761DEF28F8000E3A05 /* GitSwiftTests.swift in Sources */,
 				C9DAB5AF1D47C23900586854 /* XTTeamCityTest.swift in Sources */,

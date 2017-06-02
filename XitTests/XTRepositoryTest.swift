@@ -27,10 +27,156 @@ class XTEmptyRepositoryTest: XTTest
                      "\(name) should not be a text file")
     }
   }
+  
+  func testStagedContents()
+  {
+    let content = "some content"
+    
+    writeText(toFile1: content)
+    XCTAssertNil(repository.contents(ofStagedFile: file1Name))
+    try! repository.stageFile(file1Name)
+    
+    let expectedContent = content.data(using: .utf8)
+    let stagedContent = try! repository.contents(ofStagedFile: file1Name)
+    let stagedString = String(data: stagedContent, encoding: .utf8)
+    
+    XCTAssertEqual(stagedContent, expectedContent)
+    XCTAssertEqual(stagedString, content)
+    
+    // Write to the workspace file, but don't stage it. The staged content
+    // should be the same.
+    let newContent = "new stuff"
+    
+    writeText(toFile1: newContent)
+    
+    let stagedContent2 = try! repository.contents(ofStagedFile: file1Name)
+    let stagedString2 = String(data: stagedContent, encoding: .utf8)
+    
+    XCTAssertEqual(stagedContent2, expectedContent)
+    XCTAssertEqual(stagedString2, content)
+  }
 }
 
 class XTRepositoryTest: XTTest
 {
+  func assertWriteSucceeds(name: String, _ block: () throws -> Void)
+  {
+    do {
+      block()
+    }
+    catch XTRepository.Error.alreadyWriting {
+      XCTFail("\(name): write unexpectedly failed")
+    }
+    catch {
+      XCTFail("\(name): unexpected exception")
+    }
+  }
+  
+  func assertWriteFails(name: String, block: () throws -> Void)
+  {
+    do {
+      block()
+      XCTFail("\(name): write unexpectedly succeeded")
+    }
+    catch XTRepository.Error.alreadyWriting {
+    }
+    catch {
+      XCTFail("\(name): unexpected exception")
+    }
+  }
+  
+  func assertWriteException(name: String, block: () throws -> Void)
+  {
+    repository.isWriting = true
+    assertWriteFails(name: name, block: block)
+    repository.isWriting = false
+    assertWriteSucceeds(name: name, block: block)
+  }
+  
+  func assertWriteBool(name: String, block: () -> Bool)
+  {
+    repository.isWriting = true
+    XCTAssertFalse(block())
+    repository.isWriting = false
+    XCTAssertTrue(block())
+  }
+
+  func testWriteLockStage()
+  {
+    writeText(toFile1: "modification")
+    
+    assertWriteException(name: "stageFile") { try repository.stageFile(file1Name) }
+    assertWriteException(name: "unstageFile") { try repository.unstageFile(file1Name) }
+  }
+  
+  func testWriteLockStash()
+  {
+    writeText(toFile1: "modification")
+
+    assertWriteBool(name: "unstageFile") {
+      repository.saveStash("stashname", includeUntracked: false)
+    }
+    assertWriteException(name: "apply") { try repository.applyStashIndex(0) }
+    assertWriteException(name: "drop") { try repository.dropStashIndex(0) }
+    writeText(toFile1: "modification")
+    XCTAssertTrue(repository.saveStash("stashname", includeUntracked: false))
+    assertWriteException(name: "pop") { try repository.popStashIndex(0) }
+  }
+  
+  func testWriteLockCommit()
+  {
+    writeText(toFile1: "modification")
+    try! repository.stageFile(file1Name)
+    
+    assertWriteException(name: "commit") { 
+      try repository.commit(withMessage: "blah", amend: false, outputBlock: nil)
+    }
+  }
+  
+  func testWriteLockBranches()
+  {
+    let masterBranch = "master"
+    let testBranch1 = "testBranch1"
+    let testBranch2 = "testBranch2"
+    
+    assertWriteBool(name: "create") { repository.createBranch(testBranch1) }
+    assertWriteException(name: "rename") {
+      try repository.rename(branch: testBranch1, to: testBranch2)
+    }
+    assertWriteException(name: "checkout") {
+      try repository.checkout(masterBranch)
+    }
+    assertWriteException(name: "delete") {
+      try repository.deleteBranch(testBranch2)
+    }
+  }
+  
+  func testWriteLockTags()
+  {
+    assertWriteBool(name: "create") {
+      repository.createTag("tag", targetSHA: repository.headSHA!, message: "msg")
+    }
+    assertWriteBool(name: "delete") {
+      repository.deleteTag("tag")
+    }
+  }
+  
+  func testWriteRemotes()
+  {
+    let testRemoteName1 = "remote1"
+    let testRemoteName2 = "remote2"
+    
+    assertWriteBool(name: "add") {
+      repository.addRemote(testRemoteName1, withUrl: "fakeurl")
+    }
+    assertWriteBool(name: "rename") {
+      repository.renameRemote(testRemoteName1, to: testRemoteName2)
+    }
+    assertWriteException(name: "delete") {
+      try repository.deleteRemote(testRemoteName2)
+    }
+  }
+
   func testHeadRef()
   {
     XCTAssertEqual(repository.headRef, "refs/heads/master")
