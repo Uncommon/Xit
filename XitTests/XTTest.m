@@ -1,6 +1,5 @@
 #import "XTTest.h"
 #import "XTRepository.h"
-#import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
 #include "XTQueueUtils.h"
 #import "Xit-Swift.h"
@@ -81,7 +80,7 @@
   [self writeText:@"add" toFile:self.addedName];
   [self.repository stageFile:self.addedName error:&error];
   XCTAssertNil(error);
-  [self.repository saveStash:@"" includeUntracked:YES];
+  [self.repository saveStash:@"" includeUntracked:YES error:&error];
 }
 
 - (BOOL)commitNewTextFile:(NSString *)name content:(NSString *)content
@@ -108,7 +107,7 @@
   
   __block BOOL success = false;
   
-  [repo executeOffMainThread:^{
+  [repo.queue executeOffMainThread:^{
     success = [repo stageFile:name error:NULL] &&
               [repo commitWithMessage:[NSString stringWithFormat:@"new %@", name]
                                   amend:NO
@@ -143,8 +142,9 @@
   NSURL *repoURL = [NSURL fileURLWithPath:repoName];
 
   XTRepository *repo = [[XTRepository alloc] initWithURL:repoURL];
+  NSError *error = nil;
 
-  if (![repo initializeRepository]) {
+  if (![repo initializeEmptyAndReturnError:&error]) {
     XCTFail(@"initializeRepository '%@' FAIL!!", repoName);
   }
 

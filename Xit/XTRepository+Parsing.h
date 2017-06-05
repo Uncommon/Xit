@@ -1,8 +1,6 @@
 #import "XTRepository.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
 // Values used by changesForRef:
 typedef NS_ENUM(NSUInteger, XitChange) {
   XitChangeUnmodified = GIT_DELTA_UNMODIFIED,
@@ -17,27 +15,3 @@ typedef NS_ENUM(NSUInteger, XitChange) {
   XitChangeConflict = GIT_DELTA_CONFLICTED,
   XitChangeMixed,  // For folders containing a mix of changes
 };
-
-@class XTDiffDelta;
-@class XTFileChange;
-
-
-@interface XTRepository (Reading)
-
-- (BOOL)stageFile:(NSString*)file error:(NSError**)error;
-- (BOOL)stageAllFilesWithError:(NSError**)error;
-- (BOOL)unstageFile:(NSString*)file error:(NSError**)error;
-
-- (BOOL)commitWithMessage:(NSString*)message
-                    amend:(BOOL)amend
-              outputBlock:(nullable void (^)(NSString *output))outputBlock
-                    error:(NSError**)error;
-
-- (nullable XTDiffDelta*)diffForFile:(NSString*)path
-                           commitSHA:(NSString*)sha
-                           parentSHA:(nullable NSString*)parentSHA;
-
-@end
-
-
-NS_ASSUME_NONNULL_END

@@ -36,7 +36,7 @@ class BlameTest: XTTest
     
     try! text.write(toFile: blamePath, atomically: true, encoding: .ascii)
     try! repository.stageAllFiles()
-    try! repository.commit(withMessage: message, amend: false, outputBlock: nil)
+    try! repository.commit(message: message, amend: false, outputBlock: nil)
   }
   
   override func setUp()
@@ -52,9 +52,10 @@ class BlameTest: XTTest
   func testCommitBlame()
   {
     let headSHA = repository.headSHA!
+    let headCommit = XTCommit(sha: headSHA, repository: repository)!
     let headOID = GitOID(sha: headSHA)!
     let commitModel = CommitChanges(repository: repository,
-                                    oid: headOID)
+                                    commit: headCommit)
     let commitBlame = commitModel.blame(for: blameFile, staged: false)!
     let lineStarts = [1, 3, 5, 6]
     let lineCounts = [2, 2, 1, 3]

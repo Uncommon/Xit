@@ -7,7 +7,6 @@
 #import "XTRefFormatter.h"
 #import "XTRefToken.h"
 #import "XTRepository.h"
-#import "XTRepository+Commands.h"
 #import "XTRepository+Parsing.h"
 #import "XTQueueUtils.h"
 

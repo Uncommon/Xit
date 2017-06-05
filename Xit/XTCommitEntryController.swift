@@ -69,7 +69,7 @@ class XTCommitEntryController: NSViewController
       guard let message = commitField.string
       else { return }
     
-      try repo.commit(withMessage: message,
+      try repo.commit(message: message,
                       amend: false,
                       outputBlock: nil)
       resetMessage()

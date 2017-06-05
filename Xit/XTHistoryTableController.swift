@@ -92,7 +92,7 @@ public class XTHistoryTableController: NSViewController
     weak var tableView = view as? NSTableView
     
     history.reset()
-    repository.executeOffMainThread {
+    repository.queue.executeOffMainThread {
       guard let walker = try? GTEnumerator(repository: repository.gtRepo)
       else {
         NSLog("GTEnumerator failed")
@@ -205,9 +205,9 @@ extension XTHistoryTableController: NSTableViewDelegate
     
     if (selectedRow >= 0) && (selectedRow < history.entries.count),
        let controller = view.window?.windowController as? RepositoryController {
-      controller.selectedModel = CommitChanges(repository: repository,
-                                               oid: history.entries[selectedRow]
-                                                    .commit.oid)
+      controller.selectedModel =
+          CommitChanges(repository: repository,
+                        commit: history.entries[selectedRow].commit)
     }
   }
 }
@@ -222,7 +222,7 @@ extension XTHistoryTableController: XTTableViewDelegate
     else { return }
     
     let entry = history.entries[selectionIndex]
-    let newModel = CommitChanges(repository: repository, oid: entry.commit.oid)
+    let newModel = CommitChanges(repository: repository, commit: entry.commit)
     
     if (controller.selectedModel == nil) ||
        (controller.selectedModel?.shaToSelect != newModel.shaToSelect) ||

@@ -21,7 +21,7 @@ class FileListDataSourceTest: XTTest
       
       try! text.write(toFile: filePath, atomically: true, encoding: .ascii)
       try! repository.stageAllFiles()
-      try! repository.commit(withMessage: "commit", amend: false,
+      try! repository.commit(message: "commit", amend: false,
                              outputBlock: nil)
     }
   
@@ -38,7 +38,7 @@ class FileListDataSourceTest: XTTest
     
     for entry in history.entries {
       repoController.selectedModel = CommitChanges(repository: repository,
-                                                   oid: entry.commit.oid)
+                                                   commit: entry.commit)
       flds.reload()
       waitForRepoQueue()
     
@@ -71,13 +71,14 @@ class FileListDataSourceTest: XTTest
       try! text.write(toFile: file, atomically: true, encoding: .ascii)
     }
     try! repository.stageAllFiles()
-    try! repository.commit(withMessage: "commit", amend: false, outputBlock: nil)
+    _ = try! repository.commit(message: "commit", amend: false,
+                               outputBlock: nil)
     
     let repoController = FakeRepoController()
-    let oid = GitOID(sha: repository.headSHA!)!
+    let headCommit = XTCommit(sha: repository.headSHA!, repository: repository)!
     
     repoController.selectedModel = CommitChanges(repository: repository,
-                                                 oid: oid)
+                                                 commit: headCommit)
     
     let outlineView = NSOutlineView()
     let flds = FileTreeDataSource()

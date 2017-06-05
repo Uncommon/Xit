@@ -135,7 +135,7 @@ extension XTFileChangesDataSource : FileListDataSource
 
   func reload()
   {
-    repository?.executeOffMainThread {
+    repository?.queue.executeOffMainThread {
       [weak self] in
       self?.doReload()
     }

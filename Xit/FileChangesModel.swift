@@ -56,9 +56,8 @@ class CommitChanges: FileChangesModel
   typealias GitBlame = CLGitBlame
 
   unowned var repository: XTRepository
-  let sha: String
-  let oid: GitOID
-  var shaToSelect: String? { return self.sha }
+  let commit: XTCommit
+  var shaToSelect: String? { return commit.sha }
   var hasUnstaged: Bool { return false }
   var canCommit: Bool { return false }
   
@@ -74,20 +73,21 @@ class CommitChanges: FileChangesModel
   /// SHA of the parent commit to use for diffs
   var diffParent: String?
 
-  init(repository: XTRepository, oid: GitOID)
+  init(repository: XTRepository, commit: XTCommit)
   {
     self.repository = repository
-    self.oid = oid
-    self.sha = oid.sha
-    self.savedChanges = repository.changes(for: self.sha,
-                                           parent: self.diffParent)
+    self.commit = commit
+    if let sha = commit.sha {
+      self.savedChanges = repository.changes(for: sha,
+                                             parent: commit.parentSHAs.first)
+    }
+    else {
+      self.savedChanges = []
+    }
   }
   
   func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
   {
-    guard let commit = repository.commit(forSHA: sha)
-    else { return nil }
-    
     guard let diffParent = self.diffParent ?? commit.parentOIDs.first?.sha
     else {
       guard let toTree = commit.gtCommit.tree,
@@ -98,30 +98,31 @@ class CommitChanges: FileChangesModel
       return XTDiffMaker(from: .data(Data()), to: .blob(toBlob), path: path)
     }
   
-    return self.repository.diffMaker(
-        forFile: path, commitSHA: self.sha, parentSHA: diffParent)
+    return commit.sha.map {
+      self.repository.diffMaker(forFile: path, commitSHA: $0,
+                                parentSHA: diffParent)
+    } ?? nil
   }
   
   func blame(for path: String, staged: Bool) -> GitBlame?
   {
     return GitBlame(repository: repository, path: path,
-                    from: GitOID(sha: sha), to: nil)
+                    from: commit.oid, to: nil)
   }
   
   func dataForFile(_ path: String, staged: Bool) -> Data?
   {
-    return try? self.repository.contents(ofFile: path, atCommit: self.sha)
+    return self.repository.contentsOfFile(path: path, at: commit)
   }
   
   func unstagedFileURL(_ path: String) -> URL? { return nil }
 
   func makeTreeRoot(staged: Bool) -> NSTreeNode
   {
-    guard let commit = XTCommit(sha: sha, repository: repository)
+    guard let sha = commit.sha
     else { return NSTreeNode() }
-    
     var files = commit.allFiles()
-    let changeList = repository.changes(for: sha, parent:diffParent)
+    let changeList = repository.changes(for: sha, parent: diffParent)
     var changes = [String: XitChange]()
       
     for change in changeList {
@@ -167,13 +168,13 @@ class StashChanges: FileChangesModel
   
   var treeRoot: NSTreeNode {
     guard let mainModel = stash.mainCommit.map({
-        CommitChanges(repository: repository, oid: $0.oid) })
+        CommitChanges(repository: repository, commit: $0) })
     else { return NSTreeNode() }
     var mainRoot = mainModel.makeTreeRoot(staged: false)
     
     if let indexCommit = stash.indexCommit {
       let indexModel = CommitChanges(repository: repository,
-                                     oid: indexCommit.oid)
+                                     commit: indexCommit)
       let indexRoot = indexModel.treeRoot
       
       combineTrees(unstagedTree: &mainRoot,
@@ -181,7 +182,7 @@ class StashChanges: FileChangesModel
     }
     if let untrackedCommit = stash.untrackedCommit {
       let untrackedModel = CommitChanges(repository: repository,
-                                         oid: untrackedCommit.oid)
+                                         commit: untrackedCommit)
       let untrackedRoot = untrackedModel.treeRoot
     
       add(untrackedRoot, to: &mainRoot)
@@ -242,20 +243,20 @@ class StashChanges: FileChangesModel
       guard let indexCommit = self.stash.indexCommit
       else { return nil }
       
-      return try? self.repository.contents(ofFile: path,
-                                           atCommit: indexCommit.sha!)
+      return self.repository.contentsOfFile(path: path,
+                                            at: indexCommit)
     }
     else {
       if let untrackedCommit = self.stash.untrackedCommit,
-         let untrackedData = try? self.repository.contents(
-             ofFile: path, atCommit: untrackedCommit.sha!) {
+         let untrackedData = self.repository.contentsOfFile(
+              path: path, at: untrackedCommit) {
         return untrackedData
       }
       
-      guard let sha = stash.mainCommit?.sha
+      guard let commit = stash.mainCommit
       else { return nil }
       
-      return try? self.repository.contents(ofFile: path, atCommit: sha)
+      return self.repository.contentsOfFile(path: path, at: commit)
     }
   }
 
@@ -306,7 +307,7 @@ class StagingChanges: FileChangesModel
   func blame(for path: String, staged: Bool) -> GitBlame?
   {
     if staged {
-      guard let data = try? repository.contents(ofStagedFile: path)
+      guard let data = repository.contentsOfStagedFile(path: path)
       else { return nil }
       
       return GitBlame(repository: repository, path: path, data: data, to: nil)
@@ -319,7 +320,7 @@ class StagingChanges: FileChangesModel
   func dataForFile(_ path: String, staged: Bool) -> Data?
   {
     if staged {
-      return try? self.repository.contents(ofStagedFile: path)
+      return self.repository.contentsOfStagedFile(path: path)
     }
     else {
       let url = self.repository.repoURL.appendingPathComponent(path)

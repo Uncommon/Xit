@@ -96,7 +96,7 @@ extension SidebarHandler
     guard let item = targetItem ?? self.targetItem()
     else { return }
     
-    repo.executeOffMainThread {
+    repo.queue.executeOffMainThread {
       do {
         try block(item)
       }
@@ -117,7 +117,7 @@ extension SidebarHandler
       guard let index = self.stashIndex(for: item)
       else { return }
       
-      try self.repo.popStashIndex(index)
+      try self.repo.popStash(index: index)
     }
   }
   
@@ -128,7 +128,7 @@ extension SidebarHandler
       guard let index = self.stashIndex(for: item)
       else { return }
       
-      try self.repo.applyStashIndex(index)
+      try self.repo.applyStash(index: index)
     }
   }
   
@@ -139,7 +139,7 @@ extension SidebarHandler
       guard let index = self.stashIndex(for: item)
       else { return }
       
-      try self.repo.dropStashIndex(index)
+      try self.repo.dropStash(index: index)
     }
   }
 }
@@ -279,7 +279,7 @@ class XTSidebarController: NSViewController, SidebarHandler
     confirmDelete(kind: "branch", name: item.title) {
       self.callCommand(errorString: "Delete branch failed", targetItem: item) {
         (item) in
-        try self.repo.deleteBranch(item.title)
+        _ = self.repo.deleteBranch(item.title)
       }
     }
   }
@@ -317,7 +317,7 @@ class XTSidebarController: NSViewController, SidebarHandler
     else { return }
     
     if editedItem.refType == .remote {
-      repo.renameRemote(oldName, to: newName)
+      try? repo.renameRemote(old: oldName, new: newName)
     }
   }
   
@@ -325,7 +325,7 @@ class XTSidebarController: NSViewController, SidebarHandler
   {
     callCommand(errorString: "Checkout failed") {
       (item) in
-      try self.repo.checkout(item.title)
+      try self.repo.checkout(branch: item.title)
     }
   }
   
@@ -344,7 +344,7 @@ class XTSidebarController: NSViewController, SidebarHandler
           let branch = XTBranch(name: selectedItem.title, repository: repo)
     else { return }
     
-    repo.executeOffMainThread {
+    repo.queue.executeOffMainThread {
       [weak self] in
       do {
         try self?.repo.merge(branch: branch)
@@ -382,7 +382,7 @@ class XTSidebarController: NSViewController, SidebarHandler
     confirmDelete(kind: "tag", name: item.title) {
       self.callCommand(errorString: "Delete tag failed", targetItem: item) {
         (item) in
-        try self.repo.deleteTag(item.title)
+        try self.repo.deleteTag(name: item.title)
       }
     }
   }
@@ -396,7 +396,7 @@ class XTSidebarController: NSViewController, SidebarHandler
   {
     callCommand(errorString: "Delete remote failed") {
       (item) in
-      try self.repo.deleteRemote(item.title)
+      try self.repo.delete(remote: item.title)
     }
   }
   
@@ -405,7 +405,8 @@ class XTSidebarController: NSViewController, SidebarHandler
     guard let item = targetItem()
     else { return }
     let remoteName = "remote.\(item.title).url"
-    let remoteURL = repo.urlString(forRemote: remoteName)
+    guard let remoteURL = repo.config.urlString(forRemote: remoteName)
+    else { return }
     let pasteboard = NSPasteboard.general()
     
     pasteboard.declareTypes([NSStringPboardType], owner: nil)

@@ -13,6 +13,10 @@ public protocol RepositoryType: class
 /// Stores a repo reference for C callbacks
 struct CallbackPayload { let repo: XTRepository }
 
+let kEmptyTreeHash = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+let XTPathsKey = "paths"
+let XTErrorOutputKey = "output"
+let XTErrorArgsKey = "args"
 
 extension XTRepository: RepositoryType
 {
@@ -246,7 +250,7 @@ extension XTRepository
         
         if stage {
           if status.0 == .deleted {
-            try stageFile(path)
+            try self.stage(file: path)
             return
           }
         }
@@ -255,7 +259,7 @@ extension XTRepository
             case .added, .deleted:
               // If it's added/deleted in the index, and we're unstaging, then the
               // hunk must cover the whole file
-              try unstageFile(path)
+              try unstage(file: path)
               return
             default:
               break
@@ -283,11 +287,11 @@ extension XTRepository
       
       // Assuming the hunk covers the whole file
       if stage && status.0 == .untracked && hunk.newStart == 1 {
-        try stageFile(path)
+        try self.stage(file: path)
         return
       }
       else if !stage && (status.1 == .deleted) && (hunk.oldStart == 1) {
-        try unstageFile(path)
+        try unstage(file: path)
         return
       }
     }
@@ -347,6 +351,8 @@ extension XTRepository
   /// file.
   func stagedDiff(file: String) -> XTDiffMaker?
   {
+    guard let headRef = self.headRef
+    else { return nil }
     let indexBlob = stagedBlob(file: file)
     let headBlob = fileBlob(ref: headRef, path: file)
     
@@ -376,35 +382,6 @@ extension XTRepository
     }
     catch {
       return nil
-    }
-  }
-  
-  /// Returns the diff for the referenced commit, compared to its first parent
-  /// or to a specific parent.
-  func diff(forSHA sha: String, parent parentSHA: String?) -> GTDiff?
-  {
-    let parentSHA = parentSHA ?? ""
-    let key = sha.appending(parentSHA) as NSString
-    
-    if let diff = diffCache.object(forKey: key) {
-      return diff
-    }
-    else {
-      guard let commit = (try? gtRepo.lookUpObject(bySHA: sha)) as? GTCommit
-      else { return nil }
-      
-      let parents = commit.parents
-      let parent: GTCommit? = (parentSHA == "")
-                              ? parents.first
-                              : parents.first(where: { $0.sha == parentSHA })
-      
-      guard let diff = try? GTDiff(oldTree: parent?.tree,
-                                   withNewTree: commit.tree,
-                                   in: gtRepo, options: nil)
-      else { return nil }
-      
-      diffCache.setObject(diff, forKey: key)
-      return diff
     }
   }
   

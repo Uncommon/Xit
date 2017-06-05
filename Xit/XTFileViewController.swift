@@ -434,10 +434,10 @@ class XTFileViewController: NSViewController
        let path = path(from: button) {
       button.isEnabled = false
       if staging {
-        _ = try? repo?.stageFile(path)
+        _ = try? repo?.stage(file: path)
       }
       else {
-        _ = try? repo?.unstageFile(path)
+        _ = try? repo?.unstage(file: path)
       }
       selectRow(from: button, staged: staging)
       NotificationCenter.default.post(
@@ -559,7 +559,7 @@ class XTFileViewController: NSViewController
   
   @IBAction func unstageAll(_: Any?)
   {
-    repo?.unstageAllFiles()
+    try? repo?.unstageAllFiles()
     showingStaged = false
   }
 

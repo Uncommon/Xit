@@ -31,7 +31,7 @@ let XTChangedRefsKey = "changedRefs"
                       .appending(pathComponent: "objects")
     guard let stream = FileEventStream(path: repository.gitDirectoryURL.path,
                                        excludePaths: [objectsPath],
-                                       queue: repository.queue,
+                                       queue: repository.queue.queue,
                                        callback: {
        [weak self] (paths) in
        self?.observeEvents(paths)

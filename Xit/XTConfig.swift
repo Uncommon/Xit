@@ -27,6 +27,11 @@ class XTConfig: NSObject
     loadXitConfig()
   }
   
+  final func urlString(forRemote remote: String) -> String?
+  {
+    return config?.string(forKey:remote)
+  }
+  
   final func loadXitConfig()
   {
     guard let xitConfigURL = xitConfigURL

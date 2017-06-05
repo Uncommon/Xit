@@ -146,7 +146,8 @@ class XTFileDiffController: WebViewController,
       var lines: [String]?
       
       if let staged = self.staged,
-         let blob = staged ? repo.fileBlob(ref: repo.headRef,
+         let headRef = repo.headRef,
+         let blob = staged ? repo.fileBlob(ref: headRef,
                                            path: diffMaker.path)
                            : repo.stagedBlob(file: diffMaker.path),
          let data = blob.data() {

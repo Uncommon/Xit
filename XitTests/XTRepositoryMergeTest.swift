@@ -30,12 +30,12 @@ class XTRepositoryMergeTest: XTTest
   
   func add(_ file: String)
   {
-    try! repository.stageFile(file)
+    try! repository.stage(file: file)
   }
   
   func commit(_ message: String)
   {
-    try! repository.commit(withMessage: message, amend: false, outputBlock: nil)
+    try! repository.commit(message: message, amend: false, outputBlock: nil)
   }
   
   func branch(_ name: String)
@@ -67,12 +67,12 @@ class XTRepositoryMergeTest: XTTest
     writeText(text1, toFile: fileName)
     add(fileName)
     commit("commit 1")
-    try! repository.checkout("c0")
+    try! repository.checkout(branch: "c0")
     branch("c2")
     writeText(text5, toFile: fileName)
     add(fileName)
     commit("commit 2")
-    try! repository.checkout("c0")
+    try! repository.checkout(branch: "c0")
     /* From the git test, not currently used
     branch("c7")
     writeText(text9y, toFile: fileName)
@@ -84,7 +84,7 @@ class XTRepositoryMergeTest: XTTest
     writeText(text9, toFile: fileName)
     add(fileName)
     commit("commit 3")
-    try! repository.checkout("c0")
+    try! repository.checkout(branch: "c0")
   }
   
   // Fast-forward case. This could also have a ff-only variant.
@@ -102,7 +102,7 @@ class XTRepositoryMergeTest: XTTest
   {
     let c2 = XTLocalBranch(repository: repository, name: "c2")!
     
-    try! repository.checkout("c1")
+    try! repository.checkout(branch: "c1")
     try! self.repository.merge(branch: c2)
     XCTAssertEqual(try! String(contentsOf: repository.fileURL(fileName)), result15)
     XCTAssertEqual(repository.workspaceStatus.count, 0)

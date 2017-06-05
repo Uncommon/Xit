@@ -1,5 +1,4 @@
 #import "XTRefToken.h"
-#import "XTRepository+Commands.h"
 
 @implementation XTRefToken
 

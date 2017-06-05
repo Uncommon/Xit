@@ -139,7 +139,7 @@ class XTSideBarDataSource: NSObject
   
   func reload()
   {
-    repo?.executeOffMainThread {
+    repo?.queue.executeOffMainThread {
       let newRoots = self.loadRoots()
       
       DispatchQueue.main.async {
@@ -173,11 +173,11 @@ class XTSideBarDataSource: NSObject
     
     for branch in localBranches {
       guard let sha = branch.sha,
-            let oid = GitOID(sha: sha),
+            let commit = XTCommit(sha: sha, repository: repo),
             let name = branch.name?.removingPrefix("refs/heads/")
       else { continue }
       
-      let model = CommitChanges(repository: repo, oid: oid)
+      let model = CommitChanges(repository: repo, commit: commit)
       let branchItem = XTLocalBranchItem(title: name, model: model)
       let parent = self.parent(for: name, groupItem: branchesGroup)
       
@@ -195,9 +195,10 @@ class XTSideBarDataSource: NSObject
                                                     branch.remoteName }),
             let name = branch.name?
                        .removingPrefix("refs/remotes/\(remote.title)/"),
-            let oid = branch.oid
+            let oid = branch.oid,
+            let commit = XTCommit(oid: oid, repository: repo)
       else { continue }
-      let model = CommitChanges(repository: repo, oid: oid)
+      let model = CommitChanges(repository: repo, commit: commit)
       let remoteParent = parent(for: name, groupItem: remote)
       
       remoteParent.children.append(XTRemoteBranchItem(title: name,

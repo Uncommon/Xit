@@ -18,7 +18,7 @@ extension FileTreeDataSource: FileListDataSource
   
   func reload()
   {
-    repository?.executeOffMainThread {
+    repository?.queue.executeOffMainThread {
       [weak self] in
       guard let myself = self,
             let newRoot = myself.repoController?.selectedModel?.treeRoot

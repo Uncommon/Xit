@@ -41,8 +41,9 @@ class XTSidebarDataSourceTest: XTTest
   /// Add a tag and make sure it gets loaded correctly
   func testTags()
   {
-    XCTAssertTrue(repository.createTag("t1", targetSHA: repository.headSHA!,
-                                       message: "msg"))
+    try! repository.createTag(name: "t1",
+                              targetSHA: repository.headSHA!,
+                              message: "msg")
     sbds.reload()
     waitForRepoQueue()
     
@@ -102,9 +103,9 @@ class XTSidebarDataSourceTest: XTTest
   func testStashes()
   {
     XCTAssertTrue(writeText(toFile1: "second text"))
-    XCTAssertTrue(repository.saveStash("s1", includeUntracked: false))
+    try! repository.saveStash(name: "s1", includeUntracked: false)
     XCTAssertTrue(writeText(toFile1: "third text"))
-    XCTAssertTrue(repository.saveStash("s2", includeUntracked: false))
+    try! repository.saveStash(name: "s2", includeUntracked: false)
     
     sbds.reload()
     waitForRepoQueue()
@@ -122,14 +123,15 @@ class XTSidebarDataSourceTest: XTTest
     
     let remoteName = "origin"
     
-    try! repository.checkout("master")
+    try! repository.checkout(branch: "master")
     XCTAssertTrue(repository.createBranch("b1"))
-    XCTAssertTrue(repository.addRemote(remoteName, withUrl: remoteRepoPath))
+    try! repository.add(remote: remoteName,
+                        url: URL(fileURLWithPath: remoteRepoPath))
     
     let configArgs = ["config", "receive.denyCurrentBranch", "ignore"]
     
-    try! remoteRepository.executeGit(withArgs: configArgs, writes: false)
-    XCTAssertTrue(repository.push("origin"))
+    _ = try! remoteRepository.executeGit(args: configArgs, writes: false)
+    try! repository.push(remote: "origin")
     
     sbds.reload()
     waitForRepoQueue()
@@ -167,8 +169,8 @@ class XTSidebarDataSourceTest: XTTest
   
   func testSubmodules()
   {
-    try! repository.addSubmodule(atPath: "sub1", urlOrPath: "../repo1")
-    try! repository.addSubmodule(atPath: "sub2", urlOrPath: "../repo2")
+    try! repository.addSubmodule(path: "sub1", url: "../repo1")
+    try! repository.addSubmodule(path: "sub2", url: "../repo2")
     
     sbds.reload()
     waitForRepoQueue()

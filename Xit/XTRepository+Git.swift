@@ -1,16 +1,17 @@
 import Foundation
 
-class XTRepository: NSObject
+public class XTRepository: NSObject
 {
-  let gtRepo: GTRepository
+  private(set) var gtRepo: GTRepository
   let repoURL: URL
   let gitCMD: String
   let queue: TaskQueue
+  var refsIndex = [String: [String]]()
   fileprivate(set) var isWriting = false
   
   fileprivate var cachedHeadRef, cachedHeadSHA, cachedBranch: String?
   
-  fileprivate let diffCache = NSCache<NSString, GTDiff>()
+  let diffCache = NSCache<NSString, GTDiff>()
   fileprivate var repoWatcher: XTRepositoryWatcher! = nil
   fileprivate var workspaceWatcher: WorkspaceWatcher! = nil
   private(set) var config: XTConfig! = nil
@@ -27,6 +28,7 @@ class XTRepository: NSObject
     return paths.first(where: { FileManager.default.fileExists(atPath: $0) })
   }
   
+  @objc(initWithURL:)
   init?(url: URL)
   {
     self.repoURL = url
@@ -49,8 +51,8 @@ class XTRepository: NSObject
   
   func initializeEmpty() throws
   {
-    let newRepo = try GTRepository.initializeEmptyRepository(fileURL: repoURL,
-                                                             options: nil)
+    let newRepo = try GTRepository.initializeEmpty(atFileURL: repoURL,
+                                                   options: nil)
   
     gtRepo = newRepo
     self.repoWatcher = XTRepositoryWatcher(repository: self)
@@ -162,6 +164,12 @@ class XTRepository: NSObject
   }
 }
 
+// For testing
+internal func setRepoWriting(_ repo: XTRepository, _ writing: Bool)
+{
+  repo.isWriting = writing
+}
+
 // MARK: Refs
 
 extension XTRepository
@@ -226,7 +234,7 @@ extension XTRepository
 
   func hasHeadReference() -> Bool
   {
-    if let _ = try? gtRepo.headReference() {
+    if (try? gtRepo.headReference()) != nil {
       return true
     }
     else {
@@ -271,9 +279,9 @@ extension XTRepository
   func deleteBranch(_ name: String) -> Bool
   {
     return writing {
-      let fullBranch = GTBranch.localNamePrefix.appending(name)
+      let fullBranch = GTBranch.localNamePrefix().appending(name)
       guard let ref = try? gtRepo.lookUpReference(withName: fullBranch),
-            let branch = GTBranch.branch(withReference: ref, repository: gtRepo)
+            let branch = GTBranch(reference: ref, repository: gtRepo)
       else { return false }
       
       return (try? branch.delete()) != nil
@@ -284,7 +292,7 @@ extension XTRepository
 // MARK: Files
 extension XTRepository
 {
-  func contentsofFile(path: String, at commit: XTCommit) -> Data?
+  func contentsOfFile(path: String, at commit: XTCommit) -> Data?
   {
     guard let tree = commit.tree,
           let entry = try? tree.entry(withPath: path),
@@ -304,58 +312,33 @@ extension XTRepository
     
     return blob.data()
   }
-}
-
-// Inherits from NSObject for KVO
-class TaskQueue: NSObject
-{
-  let queue: DispatchQueue
-  var queueCount: UInt = 0
-  fileprivate(set) var isShutDown = false
-  fileprivate(set) var isWriting = false
   
-  var busy: Bool
+  /// Returns the diff for the referenced commit, compared to its first parent
+  /// or to a specific parent.
+  func diff(forSHA sha: String, parent parentSHA: String?) -> GTDiff?
   {
-    return queueCount > 0
-  }
-  
-  init(id: String)
-  {
-    self.queue = DispatchQueue(label: id, attributes: [.concurrent])
-  }
-  
-  private func updateQueueCount(_ delta: Int)
-  {
-    DispatchQueue.main.async {
-      self.willChangeValue(forKey: "busy")
-      self.queueCount = UInt(Int(self.queueCount) + delta)
-      self.didChangeValue(forKey: "busy")
-    }
-  }
-  
-  func executeTask(_ block: () -> Void)
-  {
-    updateQueueCount(1)
-    block()
-    updateQueueCount(-1)
-  }
-  
-  func executeOffMainThread(_ block: @escaping () -> Void)
-  {
-    if Thread.isMainThread {
-      if !isShutDown {
-        queue.async {
-          self.executeTask(block)
-        }
-      }
+    let parentSHA = parentSHA ?? ""
+    let key = sha.appending(parentSHA) as NSString
+    
+    if let diff = diffCache.object(forKey: key) {
+      return diff
     }
     else {
-      self.executeTask(block)
+      guard let commit = (try? gtRepo.lookUpObject(bySHA: sha)) as? GTCommit
+        else { return nil }
+      
+      let parents = commit.parents
+      let parent: GTCommit? = (parentSHA == "")
+        ? parents.first
+        : parents.first(where: { $0.sha == parentSHA })
+      
+      guard let diff = try? GTDiff(oldTree: parent?.tree,
+                                   withNewTree: commit.tree,
+                                   in: gtRepo, options: nil)
+        else { return nil }
+      
+      diffCache.setObject(diff, forKey: key)
+      return diff
     }
-  }
-  
-  func shutDown()
-  {
-    isShutDown = true
   }
 }

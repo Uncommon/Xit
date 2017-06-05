@@ -73,8 +73,8 @@
 
 - (void)canCloseDocumentWithDelegate:(id)delegate shouldCloseSelector:(SEL)shouldCloseSelector contextInfo:(void *)contextInfo
 {
-  [self.repository shutDown];
-  WaitForQueue(self.repository.queue);
+  [self.repository.queue shutDown];
+  WaitForQueue(self.repository.queue.queue);
   [super canCloseDocumentWithDelegate:delegate
                   shouldCloseSelector:shouldCloseSelector
                           contextInfo:contextInfo];
