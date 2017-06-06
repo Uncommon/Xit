@@ -164,7 +164,7 @@
 
 - (void)waitForRepository:(XTRepository*)repo
 {
-  WaitForQueue(repo.queue.queue);
+  [repo.queue wait];
   WaitForQueue(dispatch_get_main_queue());
 }
 

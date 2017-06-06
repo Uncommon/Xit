@@ -163,10 +163,8 @@ extension XTRepository
   
   func addSubmodule(path: String, url: String) throws
   {
-    _ = try performWriting {
-      _ = try executeGit(args: ["submodule", "add", "-f", url, path],
-                         writes: true)
-    }
+    _ = try executeGit(args: ["submodule", "add", "-f", url, path],
+                       writes: true)
     /* still needs clone
     _ = try performWriting {
      git_submodule *gitSub = NULL;

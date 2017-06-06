@@ -96,9 +96,9 @@ class XTRepositoryTest: XTTest
   func assertWriteBool(name: String, block: () -> Bool)
   {
     setRepoWriting(repository, true)
-    XCTAssertFalse(block())
+    XCTAssertFalse(block(), "\(name) writing")
     setRepoWriting(repository, false)
-    XCTAssertTrue(block())
+    XCTAssertTrue(block(), "\(name) non-writing")
   }
 
   func testWriteLockStage()

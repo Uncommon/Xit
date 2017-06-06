@@ -138,6 +138,9 @@ let XTChangedRefsKey = "changedRefs"
   
   func checkRefs()
   {
+    objc_sync_enter(self)
+    defer { objc_sync_exit(self) }
+    
     let newRefCache = index(refs: repository.allRefs())
     let newKeys = Set(newRefCache.keys)
     let oldKeys = Set(refsCache.keys)

@@ -603,7 +603,12 @@ extension XTSideBarDataSource: NSOutlineViewDataSource
     if item == nil {
       return roots[index]
     }
-    return (item as! XTSideBarItem).children[index]
+    
+    guard let sidebarItem = item as? XTSideBarItem,
+          sidebarItem.children.count > index
+    else { return XTSideBarItem(title: "") }
+    
+    return sidebarItem.children[index]
   }
 }
 

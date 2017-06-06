@@ -3,6 +3,7 @@ import Foundation
 class TaskQueue: NSObject
 {
   let queue: DispatchQueue
+  let group = DispatchGroup()
   var queueCount: UInt = 0
   fileprivate(set) var isShutDown = false
   fileprivate(set) var isWriting = false
@@ -14,7 +15,7 @@ class TaskQueue: NSObject
   
   init(id: String)
   {
-    self.queue = DispatchQueue(label: id, attributes: [.concurrent])
+    self.queue = DispatchQueue(label: id, attributes: [])
   }
   
   private func updateQueueCount(_ delta: Int)
@@ -37,7 +38,7 @@ class TaskQueue: NSObject
   {
     if Thread.isMainThread {
       if !isShutDown {
-        queue.async {
+        queue.async(group: group) {
           self.executeTask(block)
         }
       }
@@ -45,6 +46,11 @@ class TaskQueue: NSObject
     else {
       self.executeTask(block)
     }
+  }
+  
+  func wait()
+  {
+    group.wait()
   }
   
   func shutDown()

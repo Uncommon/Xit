@@ -32,8 +32,10 @@ class FileListDataSourceTest: XTTest
     let history = XTCommitHistory<XTRepository>()
     
     history.repository = repository
+    objc_sync_enter(flds)
     flds.repository = repository
     flds.repoController = repoController
+    objc_sync_exit(flds)
     waitForRepoQueue()
     
     for entry in history.entries {
@@ -83,8 +85,10 @@ class FileListDataSourceTest: XTTest
     let outlineView = NSOutlineView()
     let flds = FileTreeDataSource()
     
+    objc_sync_enter(flds)
     flds.repoController = repoController
     flds.repository = repository
+    objc_sync_exit(flds)
     waitForRepoQueue()
     
     let fileCount = flds.outlineView(outlineView, numberOfChildrenOfItem: nil)

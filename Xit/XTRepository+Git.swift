@@ -282,10 +282,8 @@ extension XTRepository
   func createBranch(_ name: String) -> Bool
   {
     cachedBranch = nil
-    return writing {
-      return (try? executeGit(args: ["checkout", "-b", name],
-                              writes: true)) != nil
-    }
+    return (try? executeGit(args: ["checkout", "-b", name],
+                            writes: true)) != nil
   }
   
   func deleteBranch(_ name: String) -> Bool

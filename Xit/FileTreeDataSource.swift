@@ -20,9 +20,15 @@ extension FileTreeDataSource: FileListDataSource
   {
     repository?.queue.executeOffMainThread {
       [weak self] in
-      guard let myself = self,
-            let newRoot = myself.repoController?.selectedModel?.treeRoot
+      guard let myself = self
       else { return }
+      
+      objc_sync_enter(myself)
+      guard let model = myself.repoController?.selectedModel
+      else { return }
+      objc_sync_exit(myself)
+      
+      let newRoot = model.treeRoot
       
       DispatchQueue.main.async {
         myself.root = newRoot
