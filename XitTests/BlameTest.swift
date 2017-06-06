@@ -35,7 +35,7 @@ class BlameTest: XTTest
     let text = lines.joined(separator: "\n")
     
     try! text.write(toFile: blamePath, atomically: true, encoding: .ascii)
-    try! repository.stageAllFiles()
+    try! repository.stage(file: blameFile)
     try! repository.commit(message: message, amend: false, outputBlock: nil)
   }
   

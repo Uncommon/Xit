@@ -12,14 +12,26 @@ let XTChangedRefsKey = "changedRefs"
   // stream must be var because we have to reference self to initialize it.
   var stream: FileEventStream! = nil
   var packedRefsWatcher: XTFileMonitor?
-  var lastIndexChange = Date()
+  
+  private var lastIndexChangeGuarded = Date()
+  var lastIndexChange: Date
   {
-    didSet
+    get
     {
+      objc_sync_enter(self)
+      defer { objc_sync_exit(self) }
+      return lastIndexChangeGuarded
+    }
+    set
+    {
+      objc_sync_enter(self)
+      lastIndexChangeGuarded = newValue
+      objc_sync_exit(self)
       NotificationCenter.default.post(
           name: NSNotification.Name.XTRepositoryIndexChanged, object: repository)
     }
   }
+  
   var refsCache = [String: GTOID]()
 
   init?(repository: XTRepository)

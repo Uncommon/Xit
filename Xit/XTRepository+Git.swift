@@ -8,6 +8,7 @@ public class XTRepository: NSObject
   let queue: TaskQueue
   var refsIndex = [String: [String]]()
   fileprivate(set) var isWriting = false
+  fileprivate var executing = false
   
   fileprivate var cachedHeadRef, cachedHeadSHA, cachedBranch: String?
   
@@ -31,12 +32,11 @@ public class XTRepository: NSObject
   @objc(initWithURL:)
   init?(url: URL)
   {
-    self.repoURL = url
-    
     guard let gitCMD = XTRepository.gitPath(),
           let gtRepo = try? GTRepository(url: url)
     else { return nil }
     
+    self.repoURL = url
     self.gitCMD = gitCMD
     self.gtRepo = gtRepo
     
@@ -44,17 +44,29 @@ public class XTRepository: NSObject
     
     super.init()
     
-    self.repoWatcher = XTRepositoryWatcher(repository: self)
-    self.workspaceWatcher = WorkspaceWatcher(repository: self)
-    self.config = XTConfig(repository: self)
+    postInit()
   }
   
-  func initializeEmpty() throws
+  @objc(initEmptyWithURL:)
+  init?(emptyURL url: URL)
   {
-    let newRepo = try GTRepository.initializeEmpty(atFileURL: repoURL,
-                                                   options: nil)
+    guard let gitCMD = XTRepository.gitPath(),
+          let gtRepo = try? GTRepository.initializeEmpty(atFileURL: url,
+                                                         options: nil)
+    else { return nil }
+    
+    self.repoURL = url
+    self.gitCMD = gitCMD
+    self.gtRepo = gtRepo
+    self.queue = TaskQueue(id: "com.uncommonplace.xit.\(url.path)")
+    
+    super.init()
+    
+    postInit()
+  }
   
-    gtRepo = newRepo
+  private func postInit()
+  {
     self.repoWatcher = XTRepositoryWatcher(repository: self)
     self.workspaceWatcher = WorkspaceWatcher(repository: self)
     self.config = XTConfig(repository: self)
@@ -72,14 +84,12 @@ public class XTRepository: NSObject
     guard writing != isWriting
     else { return }
     
-    if Thread.isMainThread {
-      isWriting = writing
+    objc_sync_enter(self)
+    defer {
+      objc_sync_exit(self)
     }
-    else {
-      DispatchQueue.main.sync {
-        isWriting = writing
-      }
-    }
+    
+    isWriting = writing
   }
   
   func writing(_ block: () -> Bool) -> Bool
@@ -120,6 +130,8 @@ public class XTRepository: NSObject
     defer {
       updateIsWriting(false)
     }
+    executing = true
+    defer { executing = false }
     NSLog("*** command = git \(args.joined(separator: " "))")
     
     let task = Process()

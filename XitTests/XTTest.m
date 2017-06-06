@@ -106,6 +106,7 @@
     return NO;
   
   __block BOOL success = false;
+  dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
   
   [repo.queue executeOffMainThread:^{
     success = [repo stageFile:name error:NULL] &&
@@ -113,8 +114,9 @@
                                   amend:NO
                             outputBlock:NULL
                                   error:NULL];
+    dispatch_semaphore_signal(semaphore);
   }];
-  [self waitForRepository:repo];
+  dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
   
   return success;
 }
@@ -141,10 +143,9 @@
 
   NSURL *repoURL = [NSURL fileURLWithPath:repoName];
 
-  XTRepository *repo = [[XTRepository alloc] initWithURL:repoURL];
-  NSError *error = nil;
+  XTRepository *repo = [[XTRepository alloc] initEmptyWithURL:repoURL];
 
-  if (![repo initializeEmptyAndReturnError:&error]) {
+  if (repo == nil) {
     XCTFail(@"initializeRepository '%@' FAIL!!", repoName);
   }
 
@@ -163,7 +164,7 @@
 
 - (void)waitForRepository:(XTRepository*)repo
 {
-  WaitForQueue(repo.queue);
+  WaitForQueue(repo.queue.queue);
   WaitForQueue(dispatch_get_main_queue());
 }
 
