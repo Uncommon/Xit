@@ -140,8 +140,6 @@ extension XTRepository
     return Stashes(repo: self)
   }
   
-  /// Like executeWritingBlock, but using Swift exceptions instead of
-  /// returning bool.
   func performWriting(_ block: (() throws -> Void)) throws
   {
     objc_sync_enter(self)

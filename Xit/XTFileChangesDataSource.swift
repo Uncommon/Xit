@@ -7,6 +7,10 @@ class XTFileChangesDataSource: FileListDataSourceBase
   
   func doReload()
   {
+    objc_sync_enter(self)
+    let repoController = self.repoController
+    objc_sync_exit(self)
+    
     var newChanges = repoController?.selectedModel?.changes ??
                      [FileChange]()
     
@@ -22,6 +26,9 @@ class XTFileChangesDataSource: FileListDataSourceBase
     let addIndexes = newSet.indexes(options: []) {
       (path, _, _) in !oldSet.contains(path) }
     var newChangeIndexes = IndexSet()
+    
+    objc_sync_enter(self)
+    defer { objc_sync_exit(self) }
     
     if changes.isEmpty {
       changes = newChanges
@@ -176,6 +183,8 @@ extension XTFileChangesDataSource: NSOutlineViewDataSource
   func outlineView(_ outlineView: NSOutlineView,
                    numberOfChildrenOfItem item: Any?) -> Int
   {
+    objc_sync_enter(self)
+    defer { objc_sync_exit(self) }
     return changes.count
   }
 

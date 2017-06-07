@@ -39,6 +39,8 @@ class XTConfig: NSObject
       NSLog("Can't make Xit config URL")
       return
     }
+    guard FileManager.default.fileExists(atPath: xitConfigURL.path)
+    else { return }
     guard let configContents = NSMutableDictionary(contentsOf: xitConfigURL)
     else {
       NSLog("Can't read xit-config")

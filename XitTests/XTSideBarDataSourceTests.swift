@@ -123,10 +123,11 @@ class XTSidebarDataSourceTest: XTTest
     
     let remoteName = "origin"
     
-    try! repository.checkout(branch: "master")
+    XCTAssertNoThrow(try repository.checkout(branch: "master"))
     XCTAssertTrue(repository.createBranch("b1"))
-    try! repository.add(remote: remoteName,
-                        url: URL(fileURLWithPath: remoteRepoPath))
+    XCTAssertNoThrow(
+        try repository.add(remote: remoteName,
+                           url: URL(fileURLWithPath: remoteRepoPath)))
     
     let configArgs = ["config", "receive.denyCurrentBranch", "ignore"]
     
@@ -169,8 +170,20 @@ class XTSidebarDataSourceTest: XTTest
   
   func testSubmodules()
   {
-    try! repository.addSubmodule(path: "sub1", url: "../repo1")
-    try! repository.addSubmodule(path: "sub2", url: "../repo2")
+    let repoParentPath = (repoPath as NSString).deletingLastPathComponent
+    let sub1Path = repoParentPath.appending(pathComponent: "repo1")
+    let sub2Path = repoParentPath.appending(pathComponent: "repo2")
+    let sub1 = createRepo(sub1Path)!
+    let sub2 = createRepo(sub2Path)!
+    
+    _ = [sub1, sub2].map {
+      self.commit(newTextFile: file1Name, content: "text", repository: $0)
+    }
+  
+    XCTAssertNoThrow(try repository.addSubmodule(path: "sub1", url: "../repo1"))
+    XCTAssertNoThrow(try repository.addSubmodule(path: "sub2", url: "../repo2"))
+    guard repository.submodules().count == 2
+    else { return }
     
     sbds.reload()
     waitForRepoQueue()

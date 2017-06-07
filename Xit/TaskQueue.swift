@@ -6,7 +6,6 @@ class TaskQueue: NSObject
   let group = DispatchGroup()
   var queueCount: UInt = 0
   fileprivate(set) var isShutDown = false
-  fileprivate(set) var isWriting = false
   
   var busy: Bool
   {
@@ -38,7 +37,7 @@ class TaskQueue: NSObject
   {
     if Thread.isMainThread {
       if !isShutDown {
-        queue.async(group: group) {
+        queue.async {
           self.executeTask(block)
         }
       }
@@ -50,7 +49,12 @@ class TaskQueue: NSObject
   
   func wait()
   {
-    group.wait()
+    let semaphore = DispatchSemaphore(value: 0)
+    
+    queue.async {
+      semaphore.signal()
+    }
+    semaphore.wait()
   }
   
   func shutDown()

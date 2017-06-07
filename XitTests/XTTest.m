@@ -25,13 +25,10 @@
   [self waitForRepoQueue];
 
   NSFileManager *defaultManager = [NSFileManager defaultManager];
-  [defaultManager removeItemAtPath:self.repoPath error:nil];
-  [defaultManager removeItemAtPath:self.remoteRepoPath error:nil];
-
-  if ([defaultManager fileExistsAtPath:self.repoPath]) {
-    XCTFail(@"tearDown %@ FAIL!!", self.repoPath);
-  }
-
+  NSError *error = nil;
+  
+  XCTAssertTrue([defaultManager removeItemAtPath:self.repoPath error:&error]);
+  [defaultManager removeItemAtPath:self.remoteRepoPath error:&error];
   if ([defaultManager fileExistsAtPath:self.remoteRepoPath]) {
     XCTFail(@"tearDown %@ FAIL!!", self.remoteRepoPath);
   }
@@ -61,8 +58,10 @@
 
 - (void)makeRemoteRepo
 {
+  NSString *parentPath = self.repoPath.stringByDeletingLastPathComponent;
+  
   self.remoteRepoPath =
-      [NSString stringWithFormat:@"%@remotetestrepo", NSTemporaryDirectory()];
+      [parentPath stringByAppendingPathComponent:@"remotetestrepo"];
   self.remoteRepository = [self createRepo:self.remoteRepoPath];
 }
 
