@@ -5,14 +5,9 @@ class XTFileChangesDataSource: FileListDataSourceBase
   var changes = [FileChange]()
   var wasInStaging: Bool = false
   
-  func doReload()
+  func doReload(_ model: FileChangesModel?)
   {
-    objc_sync_enter(self)
-    let repoController = self.repoController
-    objc_sync_exit(self)
-    
-    var newChanges = repoController?.selectedModel?.changes ??
-                     [FileChange]()
+    var newChanges = model?.changes ?? [FileChange]()
     
     newChanges.sort { $0.path < $1.path }
     
@@ -142,14 +137,19 @@ extension XTFileChangesDataSource : FileListDataSource
 
   func reload()
   {
+    let model = repoController.selectedModel
+    
     repository?.queue.executeOffMainThread {
       [weak self] in
-      self?.doReload()
+      self?.doReload(model)
     }
   }
   
   func fileChange(at row: Int) -> FileChange?
   {
+    objc_sync_enter(self)
+    defer { objc_sync_exit(self) }
+
     guard (row >= 0) && (row < changes.count)
     else { return nil }
     
