@@ -1,209 +1,77 @@
 import Foundation
 
-public class XTRepository: NSObject
-{
-  private(set) var gtRepo: GTRepository
-  let repoURL: URL
-  let gitCMD: String
-  let queue: TaskQueue
-  var refsIndex = [String: [String]]()
-  fileprivate(set) var isWriting = false
-  fileprivate var executing = false
-  
-  fileprivate var cachedHeadRef, cachedHeadSHA, cachedBranch: String?
-  
-  let diffCache = NSCache<NSString, GTDiff>()
-  fileprivate var repoWatcher: XTRepositoryWatcher! = nil
-  fileprivate var workspaceWatcher: WorkspaceWatcher! = nil
-  private(set) var config: XTConfig! = nil
-  
-  var gitDirectoryURL: URL
-  {
-    return gtRepo.gitDirectoryURL ?? URL(fileURLWithPath: "")
-  }
-  
-  static func gitPath() -> String?
-  {
-    let paths = ["/usr/bin/git", "/usr/local/git/bin/git"]
-    
-    return paths.first(where: { FileManager.default.fileExists(atPath: $0) })
-  }
-  
-  @objc(initWithURL:)
-  init?(url: URL)
-  {
-    guard let gitCMD = XTRepository.gitPath(),
-          let gtRepo = try? GTRepository(url: url)
-    else { return nil }
-    
-    self.repoURL = url
-    self.gitCMD = gitCMD
-    self.gtRepo = gtRepo
-    
-    self.queue = TaskQueue(id: "com.uncommonplace.xit.\(url.path)")
-    
-    super.init()
-    
-    postInit()
-  }
-  
-  @objc(initEmptyWithURL:)
-  init?(emptyURL url: URL)
-  {
-    guard let gitCMD = XTRepository.gitPath(),
-          let gtRepo = try? GTRepository.initializeEmpty(atFileURL: url,
-                                                         options: nil)
-    else { return nil }
-    
-    self.repoURL = url
-    self.gitCMD = gitCMD
-    self.gtRepo = gtRepo
-    self.queue = TaskQueue(id: "com.uncommonplace.xit.\(url.path)")
-    
-    super.init()
-    
-    postInit()
-  }
-  
-  private func postInit()
-  {
-    self.repoWatcher = XTRepositoryWatcher(repository: self)
-    self.workspaceWatcher = WorkspaceWatcher(repository: self)
-    self.config = XTConfig(repository: self)
-  }
-  
-  deinit
-  {
-    repoWatcher.stop()
-    workspaceWatcher.stop()
-    NotificationCenter.default.removeObserver(self)
-  }
-  
-  func updateIsWriting(_ writing: Bool)
-  {
-    guard writing != isWriting
-    else { return }
-    
-    objc_sync_enter(self)
-    defer {
-      objc_sync_exit(self)
-    }
-    
-    isWriting = writing
-  }
-  
-  func writing(_ block: () -> Bool) -> Bool
-  {
-    objc_sync_enter(self)
-    defer {
-      objc_sync_exit(self)
-    }
-    
-    guard !isWriting
-    else { return false }
-    
-    isWriting = true
-    defer {
-      isWriting = false
-    }
-    return block()
-  }
-
-  func executeGit(args: [String],
-                  stdIn: String? = nil,
-                  writes: Bool) throws -> Data
-  {
-    guard FileManager.default.fileExists(atPath: repoURL.path)
-    else {
-      throw NSError(domain: NSCocoaErrorDomain, code: NSFileNoSuchFileError,
-                    userInfo: nil)
-    }
-    
-    objc_sync_enter(self)
-    defer {
-      objc_sync_exit(self)
-    }
-    if writes && isWriting {
-      throw Error.alreadyWriting
-    }
-    updateIsWriting(writes)
-    defer {
-      updateIsWriting(false)
-    }
-    executing = true
-    defer { executing = false }
-    NSLog("*** command = git \(args.joined(separator: " "))")
-    
-    let task = Process()
-    
-    task.currentDirectoryPath = repoURL.path
-    task.launchPath = gitCMD
-    task.arguments = args
-    
-    if let stdInData = stdIn?.data(using: .utf8) {
-      let stdInPipe = Pipe()
-      
-      stdInPipe.fileHandleForWriting.write(stdInData)
-      stdInPipe.fileHandleForWriting.closeFile()
-      task.standardInput = stdInPipe
-    }
-    
-    let pipe = Pipe()
-    let errorPipe = Pipe()
-    
-    task.standardOutput = pipe
-    task.standardError = errorPipe
-    try task.throwingLaunch()
-    
-    let output = pipe.fileHandleForReading.readDataToEndOfFile()
-    
-    task.waitUntilExit()
-    
-    guard task.terminationStatus == 0
-    else {
-      let string = String(data: output, encoding: .utf8) ?? "-"
-      let errorOutput = errorPipe.fileHandleForReading.readDataToEndOfFile()
-      let errorString = String(data: errorOutput, encoding: .utf8) ?? "-"
-      
-      NSLog("**** output = \(string)")
-      NSLog("**** error = \(errorString)")
-      throw NSError(domain: XTErrorDomainGit, code: Int(task.terminationStatus),
-                    userInfo: [XTErrorOutputKey: string,
-                               XTErrorArgsKey: args.joined(separator: " ")])
-    }
-    
-    return output
-  }
-}
-
-// For testing
-internal func setRepoWriting(_ repo: XTRepository, _ writing: Bool)
-{
-  repo.isWriting = writing
-}
-
 // MARK: Refs
-
 extension XTRepository
 {
+  
+  /// Reloads the cached map of OIDs to refs.
+  func rebuildRefsIndex()
+  {
+    var payload = CallbackPayload(repo: self)
+    let callback: git_reference_foreach_cb = {
+      (reference, payload) -> Int32 in
+      let repo = payload!.bindMemory(to: XTRepository.self,
+                                     capacity: 1).pointee
+      
+      let rawName = git_reference_name(reference)
+      guard rawName != nil,
+        let name = String(validatingUTF8: rawName!)
+        else { return 0 }
+      
+      var peeled: OpaquePointer? = nil
+      guard git_reference_peel(&peeled, reference, GIT_OBJ_COMMIT) == 0
+        else { return 0 }
+      
+      let peeledOID = git_object_id(peeled)
+      guard let sha = GTOID(gitOid: peeledOID!).sha
+        else { return 0 }
+      var refs = repo.refsIndex[sha] ?? [String]()
+      
+      refs.append(name)
+      repo.refsIndex[sha] = refs
+      
+      return 0
+    }
+    
+    refsIndex.removeAll()
+    git_reference_foreach(gtRepo.git_repository(), callback, &payload)
+  }
+  
+  /// Returns a list of refs that point to the given commit.
+  func refs(at sha: String) -> [String]
+  {
+    return refsIndex[sha] ?? []
+  }
+  
+  /// Returns a list of all ref names.
+  func allRefs() -> [String]
+  {
+    var stringArray = git_strarray()
+    guard git_reference_list(&stringArray, gtRepo.git_repository()) == 0
+      else { return [] }
+    defer { git_strarray_free(&stringArray) }
+    
+    var result = [String]()
+    
+    for i in 0..<stringArray.count {
+      guard let refString =
+        String(validatingUTF8: UnsafePointer<CChar>(stringArray.strings[i]!))
+        else { continue }
+      result.append(refString)
+    }
+    return result
+  }
+
   var headRef: String?
   {
     objc_sync_enter(self)
     defer {
       objc_sync_exit(self)
     }
-    if let ref = cachedHeadRef {
-      return ref
+    if cachedHeadRef == nil {
+      recalculateHead()
     }
-    else {
-      guard let head = parseSymbolicReference("HEAD")
-      else { return nil }
-      let ref = head.hasPrefix("refs/heads/") ? head : "HEAD"
-      
-      cachedHeadRef = ref
-      cachedHeadSHA = sha(forRef: ref)
-      return ref
-    }
+    return cachedHeadRef
   }
   
   var headSHA: String?
@@ -211,26 +79,15 @@ extension XTRepository
     return headRef.map { sha(forRef: $0) } ?? nil
   }
 
-  func refsChanged()
-  {
-    guard let newBranch = calculateCurrentBranch(),
-          newBranch != cachedBranch
-    else { return }
-    
-    willChangeValue(forKey: "currentBranch")
-    cachedBranch = newBranch
-    didChangeValue(forKey: "currentBranch")
-  }
-
   var currentBranch: String?
   {
     if cachedBranch == nil {
-      cachedBranch = calculateCurrentBranch()
+      refsChanged()
     }
     return cachedBranch
   }
 
-  fileprivate func calculateCurrentBranch() -> String?
+  func calculateCurrentBranch() -> String?
   {
     guard let branch = try? gtRepo.currentBranch(),
           let shortName = branch.shortName
@@ -281,7 +138,7 @@ extension XTRepository
   
   func createBranch(_ name: String) -> Bool
   {
-    cachedBranch = nil
+    clearCachedBranch()
     return (try? executeGit(args: ["checkout", "-b", name],
                             writes: true)) != nil
   }
@@ -297,58 +154,60 @@ extension XTRepository
       return (try? branch.delete()) != nil
     }
   }
-}
-
-// MARK: Files
-extension XTRepository
-{
-  func contentsOfFile(path: String, at commit: XTCommit) -> Data?
+  
+  /// Renames the given local branch.
+  @objc(renameBranch:to:error:)
+  func rename(branch: String, to newName: String) throws
   {
-    guard let tree = commit.tree,
-          let entry = try? tree.entry(withPath: path),
-          let blob = (try? entry.gtObject()) as? GTBlob
-    else { return nil }
+    if isWriting {
+      throw Error.alreadyWriting
+    }
     
-    return blob.data()
+    let branchRef = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    var result = git_branch_lookup(branchRef, gtRepo.git_repository(),
+                                   branch, GIT_BRANCH_LOCAL)
+    
+    if result != 0 {
+      throw NSError.git_error(for: result)
+    }
+    
+    let newRef = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    
+    result = git_branch_move(newRef, branchRef.pointee, newName, 0)
+    if result != 0 {
+      throw NSError.git_error(for: result)
+    }
   }
   
-  func contentsOfStagedFile(path: String) -> Data?
+  func localBranches() -> Branches<XTLocalBranch>
   {
-    guard let index = try? gtRepo.index(),
-          (try? index.refresh()) != nil,
-          let entry = index.entry(withPath: path),
-          let blob = (try? entry.gtObject()) as? GTBlob
-    else { return nil }
-    
-    return blob.data()
+    return Branches(repo: self, type: GIT_BRANCH_LOCAL)
   }
   
-  /// Returns the diff for the referenced commit, compared to its first parent
-  /// or to a specific parent.
-  func diff(forSHA sha: String, parent parentSHA: String?) -> GTDiff?
+  func remoteBranches() -> Branches<XTRemoteBranch>
   {
-    let parentSHA = parentSHA ?? ""
-    let key = sha.appending(parentSHA) as NSString
+    return Branches(repo: self, type: GIT_BRANCH_REMOTE)
+  }
+  
+  func remoteNames() -> [String]
+  {
+    let strArray = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
+    guard git_remote_list(strArray, gtRepo.git_repository()) == 0
+      else { return [] }
     
-    if let diff = diffCache.object(forKey: key) {
-      return diff
-    }
-    else {
-      guard let commit = (try? gtRepo.lookUpObject(bySHA: sha)) as? GTCommit
-        else { return nil }
-      
-      let parents = commit.parents
-      let parent: GTCommit? = (parentSHA == "")
-        ? parents.first
-        : parents.first(where: { $0.sha == parentSHA })
-      
-      guard let diff = try? GTDiff(oldTree: parent?.tree,
-                                   withNewTree: commit.tree,
-                                   in: gtRepo, options: nil)
-        else { return nil }
-      
-      diffCache.setObject(diff, forKey: key)
-      return diff
-    }
+    return [String](gitStrArray: strArray.pointee)
+  }
+  
+  func stashes() -> Stashes
+  {
+    return Stashes(repo: self)
+  }
+  
+  /// Returns the list of tags, or throws if libgit2 hit an error.
+  func tags() throws -> [XTTag]
+  {
+    let tags = try gtRepo.allTags()
+    
+    return tags.map({ XTTag(repository: self, tag: $0) })
   }
 }

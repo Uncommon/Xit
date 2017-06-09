@@ -72,32 +72,6 @@ extension XTRepository
     return result
   }
   
-  // Returns the changes for the given commit.
-  func changes(for ref: String, parent parentSHA: String?) -> [FileChange]
-  {
-    guard ref != XTStagingSHA
-    else { return stagingChanges() }
-    
-    guard let commit = (try? gtRepo.lookUpObject(byRevParse: ref)) as? GTCommit,
-          let sha = commit.sha
-    else { return [] }
-    
-    let parentSHA = parentSHA ?? commit.parents.first?.sha
-    let diff = self.diff(forSHA: sha, parent: parentSHA)
-    var result = [FileChange]()
-    
-    diff?.enumerateDeltas {
-      (delta, _) in
-      if delta.type != .unmodified {
-        let change = FileChange(path: delta.newFile.path,
-                                change: XitChange(delta: delta.type))
-        
-        result.append(change)
-      }
-    }
-    return result
-  }
-  
   func stagingChanges() -> [FileChange]
   {
     var result = [FileStaging]()
@@ -148,7 +122,7 @@ extension XTRepository
   }
   
   // Returns a file delta from a given diff.
-  func _delta(from diff: GTDiff, path: String) -> XTDiffDelta?
+  func delta(from diff: GTDiff, path: String) -> XTDiffDelta?
   {
     var result: XTDiffDelta?
     
@@ -160,17 +134,6 @@ extension XTRepository
       }
     }
     return result
-  }
-  
-  // Returns a file diff for a given commit.
-  func diff(for path: String,
-            commitSHA sha: String,
-            parentSHA: String?) -> XTDiffDelta?
-  {
-    guard let diff = self.diff(forSHA: sha, parent: parentSHA)
-    else { return nil }
-    
-    return _delta(from: diff, path: path)
   }
   
   // Stages the given file to the index.
