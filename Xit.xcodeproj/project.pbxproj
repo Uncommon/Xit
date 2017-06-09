@@ -409,10 +409,6 @@
 		89D8BE561CF8E9C800D640AA /* textTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = textTemplate.png; sourceTree = "<group>"; };
 		89D8BE571CF8E9C900D640AA /* textTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "textTemplate@2x.png"; sourceTree = "<group>"; };
 		89E927DE17E977340093DA6C /* expected header.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "expected header.html"; sourceTree = "<group>"; };
-		C358652F14048A3F00060C53 /* XTRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTRepository.h; sourceTree = "<group>"; tabWidth = 2; };
-		C358653014048A3F00060C53 /* XTRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTRepository.m; sourceTree = "<group>"; tabWidth = 2; };
-		C3BC055613D1133000C3CF1A /* XTRepository+Commands.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "XTRepository+Commands.h"; sourceTree = "<group>"; };
-		C3BC055713D1133000C3CF1A /* XTRepository+Commands.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = "XTRepository+Commands.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		C3FA46FC13D0F8E200AC4F9B /* Xit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Xit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3FA470013D0F8E200AC4F9B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		C3FA470313D0F8E200AC4F9B /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -593,7 +589,7 @@
 		DDC75B8215D08E8F0087F2D4 /* NSDate+Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Extensions.m"; sourceTree = "<group>"; };
 		DDD4708416F96F7E00CA76FF /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
 		DDD4708616F9701600CA76FF /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
-		DDDA447015B0E97000DF407B /* XTRepository+Parsing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XTRepository+Parsing.h"; sourceTree = "<group>"; };
+		DDDA447015B0E97000DF407B /* XitChange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XitChange.h; sourceTree = "<group>"; };
 		DDDDAF1318162212009F8BA1 /* XTQueueUtils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = XTQueueUtils.c; sourceTree = "<group>"; };
 		DDDDAF2018162258009F8BA1 /* XTQueueUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTQueueUtils.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1000,34 +996,30 @@
 		C97328671D11DECD00C56B9E /* Repository */ = {
 			isa = PBXGroup;
 			children = (
+				C954ABFC1D34455000302160 /* XTBranch.swift */,
+				C92E30FA1D4FF4F0001985F7 /* XTCommit.swift */,
 				C9BAE6091D2FFA8B00A87F13 /* XTConfig.swift */,
-				C358652F14048A3F00060C53 /* XTRepository.h */,
-				C358653014048A3F00060C53 /* XTRepository.m */,
-				C3BC055613D1133000C3CF1A /* XTRepository+Commands.h */,
-				C3BC055713D1133000C3CF1A /* XTRepository+Commands.m */,
-				DDDA447015B0E97000DF407B /* XTRepository+Parsing.h */,
+				89CB61951E77B34C00D69FE4 /* XTDiffDelta.swift */,
+				C9F9A0291E1C417D00261E33 /* XTDiffMaker.swift */,
+				C9328B111D77303200EFF7F7 /* XTFileMonitor.swift */,
+				C929D03A1D400B3B00D7DC52 /* XTRemote.swift */,
 				89C927931D43B23B0074F71A /* XTRepository.swift */,
 				C94154B51EE5AC460030E481 /* XTRepository+Commands.swift */,
 				89D5FDB11EDE1DC50067E886 /* XTRepository+Git.swift */,
 				C9DB64441EA534A0003015D6 /* XTRepository+Iterators.swift */,
 				C9E8815C1E95988700BFA7E5 /* XTRepository+MergePushPull.swift */,
 				C94D7E8C1EBA66180059AC21 /* XTRepository+Parsing.swift */,
-				C954ABFC1D34455000302160 /* XTBranch.swift */,
-				C92E30FA1D4FF4F0001985F7 /* XTCommit.swift */,
-				C9F9A0291E1C417D00261E33 /* XTDiffMaker.swift */,
-				89CB61951E77B34C00D69FE4 /* XTDiffDelta.swift */,
-				C9328B111D77303200EFF7F7 /* XTFileMonitor.swift */,
-				C929D03A1D400B3B00D7DC52 /* XTRemote.swift */,
 				C9328B131D776BC700EFF7F7 /* XTRepositoryWatcher.swift */,
 				C9EB87231D01D93400C47D13 /* XTStash.swift */,
 				89C927741D36A2180074F71A /* XTSubmodule.swift */,
 				89C927771D36A5890074F71A /* XTTag.swift */,
-				C926804D1D074EC500E422FA /* FileChangesModel.swift */,
-				C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */,
-				C94736771DEF5AAE000E3A05 /* GitExtensions.swift */,
 				C9DEA4AA1E4B7A4200DF4069 /* Blame.swift */,
+				C926804D1D074EC500E422FA /* FileChangesModel.swift */,
+				C94736771DEF5AAE000E3A05 /* GitExtensions.swift */,
 				C9DEA49B1E4A900300DF4069 /* OID.swift */,
 				C9DEA4AC1E4B82B200DF4069 /* Signature.swift */,
+				C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */,
+				DDDA447015B0E97000DF407B /* XitChange.h */,
 			);
 			name = Repository;
 			sourceTree = "<group>";

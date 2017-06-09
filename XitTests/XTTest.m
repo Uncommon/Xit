@@ -1,6 +1,4 @@
 #import "XTTest.h"
-#import "XTRepository.h"
-#import "XTRepository+Parsing.h"
 #include "XTQueueUtils.h"
 #import "Xit-Swift.h"
 

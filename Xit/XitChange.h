@@ -1,7 +1,6 @@
-#import "XTRepository.h"
 #import <ObjectiveGit/ObjectiveGit.h>
 
-// Values used by changesForRef:
+// Swift requires that raw values be literals, so this needs to be a C enum.
 typedef NS_ENUM(NSUInteger, XitChange) {
   XitChangeUnmodified = GIT_DELTA_UNMODIFIED,
   XitChangeAdded = GIT_DELTA_ADDED,

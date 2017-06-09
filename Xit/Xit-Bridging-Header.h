@@ -6,9 +6,8 @@
 #import "XTDocument.h"
 #import "XTRefFormatter.h"
 #import "XTRefToken.h"
-#import "XTRepository.h"
-#import "XTRepository+Parsing.h"
 #import "XTQueueUtils.h"
+#import "XitChange.h"
 
 #import "NSAttributedString+XTExtensions.h"
 #import "NSTask+Throwing.h"
