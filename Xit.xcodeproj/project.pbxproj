@@ -39,7 +39,7 @@
 		89CB619C1E788C6000D69FE4 /* PatchTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CB619B1E788C6000D69FE4 /* PatchTest.swift */; };
 		89CD209217089D220051C3D4 /* XTCategoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89CD209117089D220051C3D4 /* XTCategoryTests.m */; };
 		89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */; };
-		89D5FDB21EDE1DC50067E886 /* XTRepository+Git.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D5FDB11EDE1DC50067E886 /* XTRepository+Git.swift */; };
+		89D5FDB21EDE1DC50067E886 /* XTRepository+Refs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D5FDB11EDE1DC50067E886 /* XTRepository+Refs.swift */; };
 		89D8BDE91CED1FE700D640AA /* add.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BDE71CED1FE700D640AA /* add.png */; };
 		89D8BDEA1CED1FE700D640AA /* add@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BDE81CED1FE700D640AA /* add@2x.png */; };
 		89D8BDF81CED200B00D640AA /* conflict.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BDF21CED200B00D640AA /* conflict.png */; };
@@ -387,7 +387,7 @@
 		89CD209117089D220051C3D4 /* XTCategoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTCategoryTests.m; sourceTree = "<group>"; tabWidth = 2; };
 		89D47941170894A200C04D89 /* NSAttributedString+XTExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+XTExtensions.h"; sourceTree = "<group>"; };
 		89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+XTExtensions.m"; sourceTree = "<group>"; };
-		89D5FDB11EDE1DC50067E886 /* XTRepository+Git.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTRepository+Git.swift"; sourceTree = "<group>"; };
+		89D5FDB11EDE1DC50067E886 /* XTRepository+Refs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTRepository+Refs.swift"; sourceTree = "<group>"; };
 		89D8BDE71CED1FE700D640AA /* add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add.png; sourceTree = "<group>"; };
 		89D8BDE81CED1FE700D640AA /* add@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add@2x.png"; sourceTree = "<group>"; };
 		89D8BDF21CED200B00D640AA /* conflict.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = conflict.png; sourceTree = "<group>"; };
@@ -1008,7 +1008,7 @@
 				89C927931D43B23B0074F71A /* XTRepository.swift */,
 				C94154B51EE5AC460030E481 /* XTRepository+Commands.swift */,
 				C9C1B7CE1EEAFD790011F343 /* XTRepository+Files.swift */,
-				89D5FDB11EDE1DC50067E886 /* XTRepository+Git.swift */,
+				89D5FDB11EDE1DC50067E886 /* XTRepository+Refs.swift */,
 				C9DB64441EA534A0003015D6 /* XTRepository+Iterators.swift */,
 				C9E8815C1E95988700BFA7E5 /* XTRepository+MergePushPull.swift */,
 				C94D7E8C1EBA66180059AC21 /* XTRepository+Parsing.swift */,
@@ -1454,7 +1454,7 @@
 				C95355FC1D9492EA00AEEF49 /* XTDocumentController.swift in Sources */,
 				C94ECBD51E6E025B00E8B453 /* ObserverCollection.swift in Sources */,
 				C9DEA4AD1E4B82B200DF4069 /* Signature.swift in Sources */,
-				89D5FDB21EDE1DC50067E886 /* XTRepository+Git.swift in Sources */,
+				89D5FDB21EDE1DC50067E886 /* XTRepository+Refs.swift in Sources */,
 				DDC75B8315D08E8F0087F2D4 /* NSDate+Extensions.m in Sources */,
 				C9F9A02A1E1C417D00261E33 /* XTDiffMaker.swift in Sources */,
 				C93799D51DDF9B28005C08B8 /* WorkspaceWatcher.swift in Sources */,

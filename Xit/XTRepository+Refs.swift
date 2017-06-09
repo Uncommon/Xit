@@ -1,9 +1,10 @@
 import Foundation
 
 // MARK: Refs
-extension XTRepository
+extension XTRepository : CommitReferencing
 {
   
+
   /// Reloads the cached map of OIDs to refs.
   func rebuildRefsIndex()
   {
@@ -62,7 +63,7 @@ extension XTRepository
     return result
   }
 
-  var headRef: String?
+  public var headRef: String?
   {
     objc_sync_enter(self)
     defer {
@@ -79,7 +80,7 @@ extension XTRepository
     return headRef.map { sha(forRef: $0) } ?? nil
   }
 
-  var currentBranch: String?
+  public var currentBranch: String?
   {
     if cachedBranch == nil {
       refsChanged()
@@ -179,17 +180,17 @@ extension XTRepository
     }
   }
   
-  func localBranches() -> Branches<XTLocalBranch>
+  public func localBranches() -> Branches<XTLocalBranch>
   {
     return Branches(repo: self, type: GIT_BRANCH_LOCAL)
   }
   
-  func remoteBranches() -> Branches<XTRemoteBranch>
+  public func remoteBranches() -> Branches<XTRemoteBranch>
   {
     return Branches(repo: self, type: GIT_BRANCH_REMOTE)
   }
   
-  func remoteNames() -> [String]
+  public func remoteNames() -> [String]
   {
     let strArray = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
     guard git_remote_list(strArray, gtRepo.git_repository()) == 0
@@ -198,13 +199,13 @@ extension XTRepository
     return [String](gitStrArray: strArray.pointee)
   }
   
-  func stashes() -> Stashes
+  public func stashes() -> Stashes
   {
     return Stashes(repo: self)
   }
   
   /// Returns the list of tags, or throws if libgit2 hit an error.
-  func tags() throws -> [XTTag]
+  public func tags() throws -> [Tag]
   {
     let tags = try gtRepo.allTags()
     

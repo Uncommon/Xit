@@ -1,6 +1,6 @@
 import Cocoa
 
-class XTSubmodule: NSObject
+public class XTSubmodule: NSObject
 {
   unowned let reepository: XTRepository
   let sub: GTSubmodule

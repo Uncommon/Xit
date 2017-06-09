@@ -160,8 +160,11 @@ extension XTRepository
       try gtRepo.dropStash(at: index)
     }
   }
-  
-  func addSubmodule(path: String, url: String) throws
+}
+
+extension XTRepository: SubmoduleManagement
+{
+  public func addSubmodule(path: String, url: String) throws
   {
     _ = try executeGit(args: ["submodule", "add", "-f", url, path],
                        writes: true)
@@ -180,5 +183,18 @@ extension XTRepository
      git_submodule_add_finalize(gitSub);
     }
     */
+  }
+  
+  public func submodules() -> [XTSubmodule]
+  {
+    var submodules = [XTSubmodule]()
+    
+    gtRepo.enumerateSubmodulesRecursively(false) {
+      (submodule, _, _) in
+      if let submodule = submodule {
+        submodules.append(XTSubmodule(repository: self, submodule: submodule))
+      }
+    }
+    return submodules
   }
 }

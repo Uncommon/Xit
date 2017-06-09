@@ -2,15 +2,21 @@ import Cocoa
 
 let tagPrefix = "refs/tags/"
 
-class XTTag
+public protocol Tag
+{
+  var name: String { get }
+  var targetSHA: String? { get }
+}
+
+public class XTTag: Tag
 {
   unowned let repository: XTRepository
   private let tag: GTTag?
   /// Tag name (without "refs/tags/")
-  let name: String
-  let targetSHA: String?
+  public let name: String
+  public let targetSHA: String?
   /// Tag message; will be nil for lightweight tags.
-  var message: String? { return tag?.message }
+  public var message: String? { return tag?.message }
   
   init(repository: XTRepository, tag: GTTag)
   {

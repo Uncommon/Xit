@@ -9,6 +9,28 @@ public protocol RepositoryType: class
   func commit(forOID oid: C.ID) -> C?
 }
 
+public protocol CommitReferencing
+{
+  associatedtype LocalBranchSequence: Sequence
+  associatedtype RemoteBranchSequence: Sequence
+
+  var headRef: String? { get }
+  var currentBranch: String? { get }
+  func remoteNames() -> [String]
+  func localBranches() -> LocalBranchSequence
+  func remoteBranches() -> RemoteBranchSequence
+  func tags() throws -> [Tag]
+  func graphBetween(localBranch: XTLocalBranch,
+                    upstreamBranch: XTRemoteBranch) ->(ahead: Int,
+                                                       behind: Int)?
+}
+
+public protocol SubmoduleManagement
+{
+  func submodules() -> [XTSubmodule]
+  func addSubmodule(path: String, url: String) throws
+}
+
 
 /// Stores a repo reference for C callbacks
 struct CallbackPayload { let repo: XTRepository }
@@ -340,19 +362,6 @@ extension XTRepository
     return (result == 0) && (ignored.pointee != 0)
   }
   
-  func submodules() -> [XTSubmodule]
-  {
-    var submodules = [XTSubmodule]()
-    
-    gtRepo.enumerateSubmodulesRecursively(false) {
-      (submodule, _, _) in
-      if let submodule = submodule {
-        submodules.append(XTSubmodule(repository: self, submodule: submodule))
-      }
-    }
-    return submodules
-  }
-  
   func commitForStash(at index: UInt) -> XTCommit?
   {
     guard let stashRef = try? gtRepo.lookUpReference(withName: "refs/stash"),
@@ -461,9 +470,9 @@ extension XTRepository
     }
   }
   
-  func graphBetween(localBranch: XTLocalBranch,
-                    upstreamBranch: XTRemoteBranch) ->(ahead: Int,
-                                                       behind: Int)?
+  public func graphBetween(localBranch: XTLocalBranch,
+                           upstreamBranch: XTRemoteBranch) ->(ahead: Int,
+                                                              behind: Int)?
   {
     if let localOID = localBranch.oid,
        let upstreamOID = upstreamBranch.oid {
