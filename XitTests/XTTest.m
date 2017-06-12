@@ -1,7 +1,4 @@
 #import "XTTest.h"
-#import "XTRepository.h"
-#import "XTRepository+Commands.h"
-#import "XTRepository+Parsing.h"
 #include "XTQueueUtils.h"
 #import "Xit-Swift.h"
 
@@ -26,13 +23,10 @@
   [self waitForRepoQueue];
 
   NSFileManager *defaultManager = [NSFileManager defaultManager];
-  [defaultManager removeItemAtPath:self.repoPath error:nil];
-  [defaultManager removeItemAtPath:self.remoteRepoPath error:nil];
-
-  if ([defaultManager fileExistsAtPath:self.repoPath]) {
-    XCTFail(@"tearDown %@ FAIL!!", self.repoPath);
-  }
-
+  NSError *error = nil;
+  
+  XCTAssertTrue([defaultManager removeItemAtPath:self.repoPath error:&error]);
+  [defaultManager removeItemAtPath:self.remoteRepoPath error:&error];
   if ([defaultManager fileExistsAtPath:self.remoteRepoPath]) {
     XCTFail(@"tearDown %@ FAIL!!", self.remoteRepoPath);
   }
@@ -62,8 +56,10 @@
 
 - (void)makeRemoteRepo
 {
+  NSString *parentPath = self.repoPath.stringByDeletingLastPathComponent;
+  
   self.remoteRepoPath =
-      [NSString stringWithFormat:@"%@remotetestrepo", NSTemporaryDirectory()];
+      [parentPath stringByAppendingPathComponent:@"remotetestrepo"];
   self.remoteRepository = [self createRepo:self.remoteRepoPath];
 }
 
@@ -81,7 +77,7 @@
   [self writeText:@"add" toFile:self.addedName];
   [self.repository stageFile:self.addedName error:&error];
   XCTAssertNil(error);
-  [self.repository saveStash:@"" includeUntracked:YES];
+  [self.repository saveStash:@"" includeUntracked:YES error:&error];
 }
 
 - (BOOL)commitNewTextFile:(NSString *)name content:(NSString *)content
@@ -107,15 +103,17 @@
     return NO;
   
   __block BOOL success = false;
+  dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
   
-  [repo executeOffMainThread:^{
+  [repo.queue executeOffMainThread:^{
     success = [repo stageFile:name error:NULL] &&
               [repo commitWithMessage:[NSString stringWithFormat:@"new %@", name]
                                   amend:NO
                             outputBlock:NULL
                                   error:NULL];
+    dispatch_semaphore_signal(semaphore);
   }];
-  [self waitForRepository:repo];
+  dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
   
   return success;
 }
@@ -142,9 +140,9 @@
 
   NSURL *repoURL = [NSURL fileURLWithPath:repoName];
 
-  XTRepository *repo = [[XTRepository alloc] initWithURL:repoURL];
+  XTRepository *repo = [[XTRepository alloc] initEmptyWithURL:repoURL];
 
-  if (![repo initializeRepository]) {
+  if (repo == nil) {
     XCTFail(@"initializeRepository '%@' FAIL!!", repoName);
   }
 
@@ -163,7 +161,7 @@
 
 - (void)waitForRepository:(XTRepository*)repo
 {
-  WaitForQueue(repo.queue);
+  [repo.queue wait];
   WaitForQueue(dispatch_get_main_queue());
 }
 

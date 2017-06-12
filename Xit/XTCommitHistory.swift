@@ -341,7 +341,7 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
     let step = entries.count / 100
     
     // TODO: Avoid the XTRepository cast
-    if value % step == 0,
+    if (step == 0) || (value % step == 0),
        let repo = repository as? XTRepository {
       let progressNote = Notification.progressNotification(
             repository: repo,

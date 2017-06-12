@@ -16,7 +16,7 @@ class WorkspaceWatcher: NSObject
     guard let stream = FileEventStream(
         path: repository.repoURL.path,
         excludePaths: [repository.gitDirectoryURL.path],
-        queue: repository.queue,
+        queue: repository.queue.queue,
         callback: { [weak self] (paths) in self?.observeEvents(paths) })
     else { return nil }
     

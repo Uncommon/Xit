@@ -72,32 +72,6 @@ extension XTRepository
     return result
   }
   
-  // Returns the changes for the given commit.
-  func changes(for ref: String, parent parentSHA: String?) -> [FileChange]
-  {
-    guard ref != XTStagingSHA
-    else { return stagingChanges() }
-    
-    guard let commit = (try? gtRepo.lookUpObject(byRevParse: ref)) as? GTCommit,
-          let sha = commit.sha
-    else { return [] }
-    
-    let parentSHA = parentSHA ?? commit.parents.first?.sha
-    let diff = self.diff(forSHA: sha, parent: parentSHA)
-    var result = [FileChange]()
-    
-    diff?.enumerateDeltas {
-      (delta, _) in
-      if delta.type != .unmodified {
-        let change = FileChange(path: delta.newFile.path,
-                                change: XitChange(delta: delta.type))
-        
-        result.append(change)
-      }
-    }
-    return result
-  }
-  
   func stagingChanges() -> [FileChange]
   {
     var result = [FileStaging]()
@@ -148,7 +122,7 @@ extension XTRepository
   }
   
   // Returns a file delta from a given diff.
-  func _delta(from diff: GTDiff, path: String) -> XTDiffDelta?
+  func delta(from diff: GTDiff, path: String) -> XTDiffDelta?
   {
     var result: XTDiffDelta?
     
@@ -162,46 +136,37 @@ extension XTRepository
     return result
   }
   
-  // Returns a file diff for a given commit.
-  func _diff(for path: String,
-             commitSHA sha: String,
-             parentSHA: String?) -> XTDiffDelta?
-  {
-    guard let diff = self.diff(forSHA: sha, parent: parentSHA)
-    else { return nil }
-    
-    return _delta(from: diff, path: path)
-  }
-  
   // Stages the given file to the index.
-  func _stage(file: String) throws
+  @objc(stageFile:error:)
+  func stage(file: String) throws
   {
     let fullPath = file.hasPrefix("/") ? file :
           repoURL.path.appending(pathComponent:file)
     let exists = FileManager.default.fileExists(atPath: fullPath)
     let args = [exists ? "add" : "rm", file]
     
-    try executeGit(withArgs: args, writes: true)
+    _ = try executeGit(args: args, writes: true)
   }
   
   // Stages all modified files.
-  func _stageAllFiles() throws
+  func stageAllFiles() throws
   {
-    try executeGit(withArgs: ["add", "--all"], writes: true)
+    _ = try executeGit(args: ["add", "--all"], writes: true)
   }
   
   // Unstages all stages files.
-  func _unstage(file: String) throws
+  func unstage(file: String) throws
   {
-    let args = hasHeadReference ? ["reset", "-q", "HEAD", file]
-                                : ["rm", "--cached", file]
+    let args = hasHeadReference() ? ["reset", "-q", "HEAD", file]
+                                  : ["rm", "--cached", file]
     
-    try executeGit(withArgs: args, writes: true)
+    _ = try executeGit(args: args, writes: true)
   }
   
   // Creates a new commit with the given message.
-  func _commit(message: String, amend: Bool,
-               outputBlock: ((String) -> Void)?) throws
+  @objc(commitWithMessage:amend:outputBlock:error:)
+  func commit(message: String, amend: Bool,
+              outputBlock: ((String) -> Void)?) throws
   {
     var args = ["commit", "-F", "-"]
     
@@ -209,8 +174,8 @@ extension XTRepository
       args.append("--amend")
     }
     
-    let output = try executeGit(withArgs: args,
-                                withStdIn: message, writes: true)
+    let output = try executeGit(args: args,
+                                stdIn: message, writes: true)
     let outputString = String(data: output, encoding: .utf8) ?? ""
     
     outputBlock.map { $0(outputString) }

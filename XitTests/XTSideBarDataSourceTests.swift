@@ -41,8 +41,9 @@ class XTSidebarDataSourceTest: XTTest
   /// Add a tag and make sure it gets loaded correctly
   func testTags()
   {
-    XCTAssertTrue(repository.createTag("t1", targetSHA: repository.headSHA!,
-                                       message: "msg"))
+    try! repository.createTag(name: "t1",
+                              targetSHA: repository.headSHA!,
+                              message: "msg")
     sbds.reload()
     waitForRepoQueue()
     
@@ -102,9 +103,9 @@ class XTSidebarDataSourceTest: XTTest
   func testStashes()
   {
     XCTAssertTrue(writeText(toFile1: "second text"))
-    XCTAssertTrue(repository.saveStash("s1", includeUntracked: false))
+    try! repository.saveStash(name: "s1", includeUntracked: false)
     XCTAssertTrue(writeText(toFile1: "third text"))
-    XCTAssertTrue(repository.saveStash("s2", includeUntracked: false))
+    try! repository.saveStash(name: "s2", includeUntracked: false)
     
     sbds.reload()
     waitForRepoQueue()
@@ -122,14 +123,16 @@ class XTSidebarDataSourceTest: XTTest
     
     let remoteName = "origin"
     
-    try! repository.checkout("master")
+    XCTAssertNoThrow(try repository.checkout(branch: "master"))
     XCTAssertTrue(repository.createBranch("b1"))
-    XCTAssertTrue(repository.addRemote(remoteName, withUrl: remoteRepoPath))
+    XCTAssertNoThrow(
+        try repository.add(remote: remoteName,
+                           url: URL(fileURLWithPath: remoteRepoPath)))
     
     let configArgs = ["config", "receive.denyCurrentBranch", "ignore"]
     
-    try! remoteRepository.executeGit(withArgs: configArgs, writes: false)
-    XCTAssertTrue(repository.push("origin"))
+    _ = try! remoteRepository.executeGit(args: configArgs, writes: false)
+    try! repository.push(remote: "origin")
     
     sbds.reload()
     waitForRepoQueue()
@@ -167,8 +170,20 @@ class XTSidebarDataSourceTest: XTTest
   
   func testSubmodules()
   {
-    try! repository.addSubmodule(atPath: "sub1", urlOrPath: "../repo1")
-    try! repository.addSubmodule(atPath: "sub2", urlOrPath: "../repo2")
+    let repoParentPath = (repoPath as NSString).deletingLastPathComponent
+    let sub1Path = repoParentPath.appending(pathComponent: "repo1")
+    let sub2Path = repoParentPath.appending(pathComponent: "repo2")
+    let sub1 = createRepo(sub1Path)!
+    let sub2 = createRepo(sub2Path)!
+    
+    _ = [sub1, sub2].map {
+      self.commit(newTextFile: file1Name, content: "text", repository: $0)
+    }
+  
+    XCTAssertNoThrow(try repository.addSubmodule(path: "sub1", url: "../repo1"))
+    XCTAssertNoThrow(try repository.addSubmodule(path: "sub2", url: "../repo2"))
+    guard repository.submodules().count == 2
+    else { return }
     
     sbds.reload()
     waitForRepoQueue()

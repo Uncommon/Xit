@@ -30,7 +30,7 @@ class XTOperationController: NSObject
                         failureStatus: String,
                         block: @escaping (() throws -> Void))
   {
-    repository?.executeOffMainThread {
+    repository?.queue.executeOffMainThread {
       do {
         try block()
       }

@@ -5,10 +5,9 @@ class XTFileChangesDataSource: FileListDataSourceBase
   var changes = [FileChange]()
   var wasInStaging: Bool = false
   
-  func doReload()
+  func doReload(_ model: FileChangesModel?)
   {
-    var newChanges = repoController?.selectedModel?.changes ??
-                     [FileChange]()
+    var newChanges = model?.changes ?? [FileChange]()
     
     newChanges.sort { $0.path < $1.path }
     
@@ -22,6 +21,9 @@ class XTFileChangesDataSource: FileListDataSourceBase
     let addIndexes = newSet.indexes(options: []) {
       (path, _, _) in !oldSet.contains(path) }
     var newChangeIndexes = IndexSet()
+    
+    objc_sync_enter(self)
+    defer { objc_sync_exit(self) }
     
     if changes.isEmpty {
       changes = newChanges
@@ -135,14 +137,19 @@ extension XTFileChangesDataSource : FileListDataSource
 
   func reload()
   {
-    repository?.executeOffMainThread {
+    let model = repoController.selectedModel
+    
+    repository?.queue.executeOffMainThread {
       [weak self] in
-      self?.doReload()
+      self?.doReload(model)
     }
   }
   
   func fileChange(at row: Int) -> FileChange?
   {
+    objc_sync_enter(self)
+    defer { objc_sync_exit(self) }
+
     guard (row >= 0) && (row < changes.count)
     else { return nil }
     
@@ -176,6 +183,8 @@ extension XTFileChangesDataSource: NSOutlineViewDataSource
   func outlineView(_ outlineView: NSOutlineView,
                    numberOfChildrenOfItem item: Any?) -> Int
   {
+    objc_sync_enter(self)
+    defer { objc_sync_exit(self) }
     return changes.count
   }
 

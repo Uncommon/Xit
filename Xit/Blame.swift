@@ -216,7 +216,7 @@ class CLGitBlame: Blame
       args.insert(contentsOf: [sha, "--"], at: 2)
     }
     
-    guard let data = try? repository.executeGit(withArgs: args, writes: false),
+    guard let data = try? repository.executeGit(args: args, writes: false),
           read(data: data, from: repository)
     else { return nil }
   }
@@ -227,8 +227,8 @@ class CLGitBlame: Blame
     let args = ["blame", "-p", "--contents", "-", path]
     
     guard let input = String(data: data, encoding: .utf8),
-          let data = try? repository.executeGit(withArgs: args,
-                                                withStdIn: input,
+          let data = try? repository.executeGit(args: args,
+                                                stdIn: input,
                                                 writes: false),
           read(data: data, from: repository)
     else { return nil }

@@ -4,20 +4,20 @@ extension XTRepository
 {
   /// Branches is a sequence, not a collection, because the API does not provide
   /// a count or indexed access.
-  struct Branches<BranchType: XTBranch>: Sequence
+  public struct Branches<BranchType: XTBranch>: Sequence
   {
     typealias Element = BranchType
     
     let repo: XTRepository
     let type: git_branch_t
     
-    func makeIterator() -> BranchIterator<BranchType>
+    public func makeIterator() -> BranchIterator<BranchType>
     {
       return BranchIterator<BranchType>(repo: repo, flags: type)
     }
   }
 
-  class BranchIterator<BranchType: XTBranch>: IteratorProtocol
+  public class BranchIterator<BranchType: XTBranch>: IteratorProtocol
   {
     let repo: XTRepository
     let iterator: OpaquePointer?
@@ -36,7 +36,7 @@ extension XTRepository
       self.repo = repo
     }
     
-    func next() -> BranchType?
+    public func next() -> BranchType?
     {
       guard let iterator = self.iterator
       else { return nil }
@@ -61,13 +61,13 @@ extension XTRepository
   }
 
   /// The indexable collection of stashes in the repository.
-  class Stashes: Collection
+  public class Stashes: Collection
   {
-    typealias Iterator = StashIterator
+    public typealias Iterator = StashIterator
     
     let repo: XTRepository
     let refLog: OpaquePointer?
-    let count: Int
+    public let count: Int
     
     static let stashRefName = "refs/stash"
     
@@ -93,12 +93,12 @@ extension XTRepository
       git_reflog_free(refLog)
     }
     
-    func makeIterator() -> StashIterator
+    public func makeIterator() -> StashIterator
     {
       return StashIterator(stashes: self)
     }
     
-    subscript(position: Int) -> XTStash
+    public subscript(position: Int) -> XTStash
     {
       let entry = git_reflog_entry_byindex(refLog, position)
       let message = String(cString: git_reflog_entry_message(entry))
@@ -106,18 +106,18 @@ extension XTRepository
       return XTStash(repo: repo, index: UInt(position), message: message)
     }
     
-    var startIndex: Int { return 0 }
-    var endIndex: Int { return count }
+    public var startIndex: Int { return 0 }
+    public var endIndex: Int { return count }
     
-    func index(after i: Int) -> Int
+    public func index(after i: Int) -> Int
     {
       return i + 1
     }
   }
   
-  class StashIterator: IteratorProtocol
+  public class StashIterator: IteratorProtocol
   {
-    typealias Element = XTStash
+    public typealias Element = XTStash
     
     let stashes: Stashes
     var index: Int
@@ -128,7 +128,7 @@ extension XTRepository
       self.index = 0
     }
     
-    func next() -> XTStash?
+    public func next() -> XTStash?
     {
       let result = stashes[index]
       

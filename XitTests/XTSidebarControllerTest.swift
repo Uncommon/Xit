@@ -54,9 +54,9 @@ class XTSidebarHandlerTest: XTTest
   func makeTwoStashes()
   {
     XCTAssertTrue(writeText(toFile1: "second text"))
-    XCTAssertTrue(repository.saveStash("s1", includeUntracked: false))
+    try! repository.saveStash(name: "s1", includeUntracked: false)
     XCTAssertTrue(writeText(toFile1: "third text"))
-    XCTAssertTrue(repository.saveStash("s2", includeUntracked: false))
+    try! repository.saveStash(name: "s2", includeUntracked: false)
   }
   
   /// Checks that the remaining stashes have the expected names
@@ -152,7 +152,7 @@ class XTSidebarHandlerTest: XTTest
     
     handler.selectedItem = XTLocalBranchItem(title: "branch")
     XCTAssertTrue(repository.createBranch("branch"))
-    XCTAssertNotNil(try? repository.checkout("master"))
+    XCTAssertNotNil(try? repository.checkout(branch: "master"))
     XCTAssertTrue(handler.validate(sidebarCommand: menuItem))
     XCTAssertEqual(menuItem.title, "Merge branch into master")
   }

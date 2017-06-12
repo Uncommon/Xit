@@ -129,15 +129,20 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func select(sha: String)
   {
-    selectedModel = GitOID(sha: sha).map {
-      CommitChanges(repository: xtDocument!.repository, oid: $0)
-    }
+    guard let commit = XTCommit(sha: sha, repository: xtDocument!.repository)
+    else { return }
+  
+    selectedModel = CommitChanges(repository: xtDocument!.repository,
+                                  commit: commit)
   }
   
   func select(oid: GitOID)
   {
+    guard let commit = XTCommit(oid: oid, repository: xtDocument!.repository)
+    else { return }
+  
     selectedModel = CommitChanges(repository: xtDocument!.repository,
-                                  oid: oid)
+                                  commit: commit)
   }
   
   func updateNavButtons()
@@ -314,7 +319,7 @@ extension XTWindowController: TitleBarDelegate
 {
   func branchSelecetd(_ branch: String)
   {
-    try? xtDocument!.repository!.checkout(branch)
+    try? xtDocument!.repository!.checkout(branch: branch)
   }
   
   var viewStates: (sidebar: Bool, history: Bool, details: Bool)
@@ -359,12 +364,12 @@ extension XTWindowController: NSToolbarDelegate
                                    withKeyPath: #keyPath(NSWindow.title),
                                    options: nil)
     viewController.proxyIcon.bind("hidden",
-                                  to: repository,
-                                  withKeyPath: #keyPath(XTRepository.busy),
+                                  to: repository.queue,
+                                  withKeyPath: #keyPath(TaskQueue.busy),
                                   options: nil)
     viewController.bind(#keyPath(TitleBarViewController.progressHidden),
-                        to: repository,
-                        withKeyPath: #keyPath(XTRepository.busy),
+                        to: repository.queue,
+                        withKeyPath: #keyPath(TaskQueue.busy),
                         options: inverseBindingOptions)
     viewController.spinner.startAnimation(nil)
     updateBranchList()

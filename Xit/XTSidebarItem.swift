@@ -147,22 +147,23 @@ class XTRemoteItem: XTSideBarItem
 
 class XTTagItem: XTSideBarItem
 {
-  let tag: XTTag
+  let tag: Tag
 
   override var displayTitle: String
   { return (title as NSString).lastPathComponent }
   override var icon: NSImage? { return NSImage(named: "tagTemplate") }
   override var refType: XTRefType { return .tag }
   
-  init(tag: XTTag)
+  init(tag: Tag)
   {
     self.tag = tag
     
     super.init(title: tag.name)
     
-    if let sha = tag.targetSHA,
-       let oid = GitOID(sha: sha) {
-      model = CommitChanges(repository: tag.repository, oid: oid)
+    if let xtTag = tag as? XTTag,
+       let sha = xtTag.targetSHA,
+       let commit = XTCommit(sha: sha, repository: xtTag.repository) {
+      self.model = CommitChanges(repository: xtTag.repository, commit: commit)
     }
   }
 }

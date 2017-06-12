@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
     *addedName, *untrackedName;
 @property XTRepository *repository, *remoteRepository;
 
-- (XTRepository*)createRepo:(NSString*)repoName;
+- (nullable XTRepository*)createRepo:(NSString*)repoName;
 - (void)makeRemoteRepo;
 - (void)waitForRepository:(XTRepository*)repo;
 - (void)waitForRepoQueue;
@@ -24,7 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)commitNewTextFile:(NSString *)name content:(NSString *)content;
 - (BOOL)commitNewTextFile:(NSString *)name
                   content:(NSString *)content
-             inRepository:(XTRepository *)repo;
+             inRepository:(XTRepository *)repo
+        NS_SWIFT_NAME(commit(newTextFile:content:repository:));
 
 @end
 

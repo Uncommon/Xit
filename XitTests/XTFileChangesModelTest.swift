@@ -16,12 +16,12 @@ class XTFileChangesModelTest: XTTest
   func testCommit()
   {
     guard let headSHA = repository.headSHA,
-          let oid = GitOID(sha: headSHA)
+          let headCommit = XTCommit(sha: headSHA, repository: repository)
     else {
       XCTFail("no head")
       return
     }
-    let model = CommitChanges(repository: repository, oid: oid)
+    let model = CommitChanges(repository: repository, commit: headCommit)
     let changes = model.changes
     
     XCTAssertEqual(changes.count, 1)
@@ -117,7 +117,7 @@ class XTFileChangesModelTest: XTTest
     XCTAssertEqual(change.path, addedName)
     XCTAssertEqual(change.unstagedChange, XitChange.untracked)
     
-    try! repository.stageFile(addedName)
+    try! repository.stage(file: addedName)
     changes = model.changes
     XCTAssertEqual(changes.count, 2)
     change = changes[0]
@@ -144,13 +144,13 @@ class XTFileChangesModelTest: XTTest
     self.commitNewTextFile(addedName, content: "new")
     
     guard let headSHA = repository.headSHA,
-          let oid = GitOID(sha: headSHA)
+          let headCommit = XTCommit(sha: headSHA, repository: repository)
       else {
         XCTFail("no head")
         return
     }
     let model = CommitChanges(repository: repository,
-                              oid: oid)
+                              commit: headCommit)
     let tree = model.treeRoot
     
     XCTAssertNotNil(tree.children)
@@ -173,7 +173,7 @@ class XTFileChangesModelTest: XTTest
   
     self.commitNewTextFile(deletedName, content: "bye!")
     try! FileManager.default.removeItem(at: deletedURL)
-    try! self.repository.stageFile(deletedName)
+    try! self.repository.stage(file: deletedName)
     
     self.makeStash()
     

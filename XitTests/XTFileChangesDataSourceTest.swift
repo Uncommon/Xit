@@ -8,12 +8,14 @@ class XTFileChangesDataSourceTest: XTTest
     let repoController = FakeRepoController()
     let dataSource = XTFileChangesDataSource()
     let outlineView = NSOutlineView()
-    let oid = GitOID(sha: repository.headSHA!)!
+    let headCommit = XTCommit(sha: repository.headSHA!, repository: repository)!
     
     repoController.selectedModel = CommitChanges(repository: repository,
-                                                 oid: oid)
+                                                 commit: headCommit)
+    objc_sync_enter(dataSource)
     dataSource.repository = repository
     dataSource.repoController = repoController
+    objc_sync_exit(dataSource)
     outlineView.dataSource = dataSource
     dataSource.reload()
     waitForRepoQueue()
