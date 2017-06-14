@@ -8,10 +8,10 @@ protocol BuildStatusClient: class
 class BuildStatusCache: TeamCityAccessor
 {
   // This typealias resolves ambiguity for the compiler
-  typealias BranchStatuses = [String: TeamCityAPI.Build]
+  typealias BranchStatuses = [String: TeamCityAPI.Build] // Branch to build
 
   let repository: XTRepository
-  var statuses = [String: BranchStatuses]()
+  var statuses = [String: BranchStatuses]() // Build type to branch builds
   private var clients = [BuildStatusClient]()
   
   init(repository: XTRepository)
@@ -39,7 +39,8 @@ class BuildStatusCache: TeamCityAccessor
     for local in localBranches {
       guard let fullBranchName = local.name,
             let tracked = local.trackingBranch,
-            let (api, buildTypes) = matchTeamCity(tracked.remoteName)
+            let remoteName = tracked.remoteName,
+            let (api, buildTypes) = matchTeamCity(remoteName)
       else { continue }
       
       for buildType in buildTypes {

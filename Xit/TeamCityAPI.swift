@@ -36,6 +36,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
       static let webURL = "webUrl"
     }
     
+    let id: String?
     let buildType: String?
     let status: Status?
     let state: State?
@@ -48,6 +49,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
       
       let attributes = buildElement.attributesDict()
       
+      self.id = attributes[Attribute.id]
       self.buildType = attributes[Attribute.buildType]
       self.status = attributes[Attribute.status].flatMap { Status(rawValue: $0) }
       self.state = attributes[Attribute.state].flatMap { State(rawValue: $0) }

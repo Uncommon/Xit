@@ -34,6 +34,7 @@ public class XTBranch
   {
     return gtBranch.reference
   }
+  var remoteName: String? { return nil }
 }
 
 public class XTLocalBranch: XTBranch
@@ -95,6 +96,11 @@ public class XTLocalBranch: XTBranch
     
     return XTRemoteBranch(gtBranch: branch)
   }
+  
+  override var remoteName: String?
+  {
+    return trackingBranch?.remoteName
+  }
 }
 
 public class XTRemoteBranch: XTBranch
@@ -114,5 +120,5 @@ public class XTRemoteBranch: XTBranch
     super.init(gtBranch: gtBranch)
   }
   
-  var remoteName: String { return gtBranch.remoteName ?? "" }
+  override var remoteName: String? { return gtBranch.remoteName }
 }

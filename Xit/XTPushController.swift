@@ -27,7 +27,8 @@ class XTPushController: XTPasswordOpController
       return
     }
     guard let remoteBranch = branch.trackingBranch,
-          let remote = XTRemote(name: remoteBranch.remoteName,
+          let remoteName = remoteBranch.remoteName,
+          let remote = XTRemote(name: remoteName,
                                 repository: repository)
     else {
       NSLog("Can't push - no tracking branch")
@@ -37,7 +38,7 @@ class XTPushController: XTPasswordOpController
     let alert = NSAlert()
     
     alert.messageText = "Push local branch \"\(branchName)\" to " +
-                        "remote \"\(remoteBranch.remoteName)\"?"
+                        "remote \"\(remoteName)\"?"
     alert.addButton(withTitle: "Push")
     alert.addButton(withTitle: "Cancel")
     

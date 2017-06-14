@@ -203,6 +203,7 @@ class XTSideBarDataSource: NSObject
                                                     branch.remoteName }),
             let name = branch.name?
                        .removingPrefix("refs/remotes/\(remote.title)/"),
+            let remoteName = branch.remoteName,
             let oid = branch.oid,
             let commit = XTCommit(oid: oid, repository: repo)
       else { continue }
@@ -210,7 +211,7 @@ class XTSideBarDataSource: NSObject
       let remoteParent = parent(for: name, groupItem: remote)
       
       remoteParent.children.append(XTRemoteBranchItem(title: name,
-                                                      remote: branch.remoteName,
+                                                      remote: remoteName,
                                                       model: model))
     }
     
@@ -347,9 +348,12 @@ class XTSideBarDataSource: NSObject
   
   @IBAction func showItemStatus(_ sender: NSButton)
   {
-    guard let item = item(for: sender) as? XTBranchItem
+    guard let item = item(for: sender) as? XTBranchItem,
+          let branch = item.branchObject()
     else { return }
-    let statusController = BuildStatusViewController(branch: item.fullName,
+    
+    let statusController = BuildStatusViewController(repository: repository,
+                                                     branch: branch,
                                                      cache: buildStatusCache)
     let popover = NSPopover()
     
