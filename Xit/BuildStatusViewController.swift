@@ -5,6 +5,7 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
   let repository: XTRepository
   let branch: XTBranch
   let buildStatusCache: BuildStatusCache
+  var api: TeamCityAPI?
   @IBOutlet weak var tableView: NSTableView!
 
   var filteredStatuses: [String: BuildStatusCache.BranchStatuses] = [:]
@@ -17,6 +18,11 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
     self.buildStatusCache = cache
   
     super.init(nibName: "BuildStatusViewController", bundle: nil)!
+    
+    if let remoteName = branch.remoteName,
+       let (api, _) = matchTeamCity(remoteName) {
+      self.api = api
+    }
     cache.add(client: self)
     filterStatuses()
   }
@@ -36,8 +42,7 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
     filteredStatuses.removeAll()
     
     guard let branchName = branch.name,
-          let remoteName = branch.remoteName,
-          let (api, _) = matchTeamCity(remoteName)
+          let api = self.api
     else { return }
     
     for (buildType, branchStatuses) in buildStatusCache.statuses {
@@ -55,22 +60,19 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
       })
       else { continue }
       
-      if branchStatuses.keys.contains(match) {
-        filteredStatuses[buildType] = branchStatuses
+      if let status = branchStatuses[match] {
+        filteredStatuses[buildType] = [match: status]
       }
     }
     
-    var buildsByID: [String: TeamCityAPI.Build] = [:]
+    var buildsByNumber: [String: TeamCityAPI.Build] = [:]
     
     for branchStatus in filteredStatuses.values {
       for status in branchStatus.values {
-        guard let id = status.id
-        else { continue }
-      
-        buildsByID[id] = status
+        buildsByNumber[status.number] = status
       }
     }
-    builds = Array(buildsByID.values)
+    builds = Array(buildsByNumber.values)
   }
 }
 
@@ -95,21 +97,26 @@ extension BuildStatusViewController: NSTableViewDelegate
                  viewFor tableColumn: NSTableColumn?,
                  row: Int) -> NSView?
   {
-    guard let column = tableColumn,
-          let cell = tableView.make(withIdentifier: column.identifier,
-                                    owner: self) as? NSTableCellView
+    guard let cell = tableView.make(withIdentifier: "BuildCell", owner: self)
+                     as? BuildStatusCellView
     else { return nil }
     let build = builds[row]
+    let buildType = build.buildType.flatMap { api?.buildType(id: $0) }
     
-    switch column.identifier {
-      case ColumnID.buildID:
-        cell.textField?.stringValue = build.id ?? ""
-      case ColumnID.status:
-        cell.textField?.stringValue =
-            "\(build.state?.rawValue ?? "-") / \(build.status?.rawValue ?? "-")"
-      default:
-        return nil
+    cell.textField?.stringValue = build.buildType ?? "-"
+    cell.projectNameField.stringValue = buildType?.projectName ?? "-"
+    cell.buildNumberField.stringValue = build.number
+    if let percentage = build.percentage {
+      cell.progressBar.isHidden = false
+      cell.progressBar.doubleValue = percentage
     }
+    else {
+      cell.progressBar.isHidden = true
+    }
+    cell.statusImage.image = NSImage(named:
+        build.status == .succeeded ? NSImageNameStatusAvailable
+                                   : NSImageNameStatusUnavailable)
+    
     return cell
   }
 }

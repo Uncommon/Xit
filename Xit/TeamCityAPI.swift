@@ -36,10 +36,13 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
       static let webURL = "webUrl"
     }
     
-    let id: String?
+    let id: Int
+    let number: String
     let buildType: String?
     let status: Status?
     let state: State?
+    let percentage: Double?
+    let running: Bool?
     let url: URL?
     
     init?(element buildElement: XMLElement)
@@ -49,10 +52,13 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
       
       let attributes = buildElement.attributesDict()
       
-      self.id = attributes[Attribute.id]
+      self.id = attributes[Attribute.id].flatMap { Int($0) } ?? 0
+      self.number = attributes[Attribute.buildNumber] ?? ""
       self.buildType = attributes[Attribute.buildType]
       self.status = attributes[Attribute.status].flatMap { Status(rawValue: $0) }
       self.state = attributes[Attribute.state].flatMap { State(rawValue: $0) }
+      self.percentage = attributes[Attribute.percentage].flatMap { Double($0) }
+      self.running = attributes[Attribute.running].map { $0 == "true" }
       self.url = attributes[Attribute.webURL].flatMap { URL(string: $0) }
     }
     
@@ -63,6 +69,13 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
       
       self.init(element: build)
     }
+  }
+  
+  public struct BuildType
+  {
+    let id: String
+    let name: String
+    let projectName: String
   }
   
   fileprivate(set) var buildTypesStatus = Services.Status.notStarted
@@ -83,7 +96,8 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
   /// Maps VCS root ID to branch specification.
   fileprivate(set) var vcsBranchSpecs = [String: BranchSpec]()
   /// Maps built type IDs to lists of repository URLs.
-  fileprivate(set) var vcsBuildTypes = [String: [String]]()
+  fileprivate(set) var buildTypeURLs = [String: [String]]()
+  fileprivate(set) var cachedBuildTypes = [BuildType]()
   
   init?(user: String, password: String, baseURL: String?)
   {
@@ -277,30 +291,26 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
   /// Returns all the build types that use the given remote.
   func buildTypesForRemote(_ remoteURL: String) -> [String]
   {
-    var result = [String]()
-    
-    for (buildType, urls) in vcsBuildTypes {
-      if !urls.filter({ $0 == remoteURL }).isEmpty {
-        result.append(buildType)
-      }
-    }
-    return result
+    return buildTypeURLs.keys.filter { buildTypeURLs[$0]?.contains(remoteURL)
+                                       ?? false }
+  }
+  
+  /// Returns a cached build type with a matching ID
+  func buildType(id: String) -> BuildType?
+  {
+    return cachedBuildTypes.first { $0.id == id }
   }
   
   /// Returns the VCS root IDs that use the given build type.
   func vcsRootsForBuildType(_ buildType: String) -> [String]
   {
-    var result = [String]()
-    guard let urls = vcsBuildTypes[buildType]
-    else { return result }
+    guard let urls = buildTypeURLs[buildType]
+    else { return [] }
     
-    for (vcsRoot, rootURL) in vcsRootMap {
-      if urls.contains(rootURL) {
-        result.append(vcsRoot)
-      }
+    return vcsRootMap.flatMap {
+      (vcsRoot, rootURL) in
+      return urls.contains(rootURL) ? vcsRoot : nil
     }
-    
-    return result
   }
   
   /// Parses the list of VCS roots, collecting their repository URLs.
@@ -389,6 +399,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
     
     var waitingTypeCount = hrefs.count
     
+    cachedBuildTypes.removeAll()
     for href in hrefs {
       let relativePath = href.removingPrefix(TeamCityAPI.rootPath)
       
@@ -428,8 +439,15 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
       return
     }
     
+    let name = buildType.attribute(forName: "name")?.stringValue
+    let projectName = buildType.attribute(forName: "projectName")?.stringValue
+    
+    cachedBuildTypes.append(BuildType(id: buildTypeID,
+                                      name: name ?? "",
+                                      projectName: projectName ?? ""))
+    
     let vcsIDs = rootEntries.childrenAttributes("id")
-    var buildTypeURLs = [String]()
+    var urls = [String]()
     
     for vcsID in vcsIDs {
       guard let vcsURL = vcsRootMap[vcsID]
@@ -438,9 +456,9 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
         continue
       }
       
-      buildTypeURLs.append(vcsURL)
+      urls.append(vcsURL)
     }
-    vcsBuildTypes[buildTypeID] = buildTypeURLs
+    buildTypeURLs[buildTypeID] = urls
   }
 }
 

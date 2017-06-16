@@ -100,7 +100,7 @@ func == (a: Services.Status, b: Services.Status) -> Bool
          (.inProgress, .inProgress),
          (.done, .done):
       return true
-    case (.failed(_), .failed(_)):
+    case (.failed, .failed):
       return true
     default:
       return false
