@@ -34,11 +34,15 @@ public class XTBranch
   {
     return gtBranch.reference
   }
+  var remoteName: String? { return nil }
+  /// The ref name without the refs/.../ prefix
+  var strippedName: String? { return nil }
 }
 
 public class XTLocalBranch: XTBranch
 {
   static let trackingPrefix = "refs/remotes/"
+  static let headsPrefix = "refs/heads/"
   
   init?(repository: XTRepository, name: String)
   {
@@ -95,6 +99,16 @@ public class XTLocalBranch: XTBranch
     
     return XTRemoteBranch(gtBranch: branch)
   }
+  
+  override var remoteName: String?
+  {
+    return trackingBranch?.remoteName
+  }
+  
+  override var strippedName: String?
+  {
+    return name?.removingPrefix(XTLocalBranch.headsPrefix)
+  }
 }
 
 public class XTRemoteBranch: XTBranch
@@ -114,5 +128,10 @@ public class XTRemoteBranch: XTBranch
     super.init(gtBranch: gtBranch)
   }
   
-  var remoteName: String { return gtBranch.remoteName ?? "" }
+  override var remoteName: String? { return gtBranch.remoteName }
+  
+  override var strippedName: String?
+  {
+    return name?.components(separatedBy: "/").dropFirst(3).joined(separator: "/")
+  }
 }

@@ -107,7 +107,7 @@ extension AppDelegate: NSApplicationDelegate
   func applicationDidFinishLaunching(_ note: Notification)
   {
     if !isTesting {
-      XTServices.services.initializeServices()
+      Services.shared.initializeServices()
     }
   }
   

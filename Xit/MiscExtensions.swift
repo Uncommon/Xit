@@ -211,18 +211,28 @@ extension NSColor
   var cssHSL: String
   {
     return "hsl(\(hueComponent*360.0), " +
-      "\(saturationComponent*100.0)%, " +
-    "\(brightnessComponent*100.0)%)"
+           "\(saturationComponent*100.0)%, " +
+           "\(brightnessComponent*100.0)%)"
   }
 }
 
 extension Array
 {
+  /// Returns the number of elements satisfying the predicate.
+  func count(where predicate: (Element) -> Bool) -> Int
+  {
+    return reduce(0) {
+      (count, element) -> Int in
+      return predicate(element) ? count + 1 : count
+    }
+  }
+
   /// Assuming the array is sorted, returns the insertion index for the given
   /// item to be inserted in order.
   func sortedInsertionIndex(of elem: Element,
                             isOrderedBefore: (Element, Element) -> Bool)
-                            -> Int {
+                            -> Int
+  {
     var lo = 0
     var hi = self.count - 1
     
@@ -245,14 +255,13 @@ extension Array
   func objects(at indexSet: IndexSet) -> [Element]
   {
     return enumerated().filter({ indexSet.contains($0.offset) })
-           .map { $0.element }
+                       .map { $0.element }
   }
   
   mutating func removeObjects(at indexSet: IndexSet)
   {
-    self = enumerated()
-           .filter({ !indexSet.contains($0.offset) })
-           .map({ $0.element })
+    self = enumerated().filter({ !indexSet.contains($0.offset) })
+                       .map({ $0.element })
   }
 }
 

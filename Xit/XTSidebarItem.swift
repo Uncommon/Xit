@@ -69,6 +69,8 @@ class XTBranchItem: XTSideBarItem
   override var icon: NSImage? { return NSImage(named: "branchTemplate") }
   
   var fullName: String { return title }
+  
+  func branchObject() -> XTBranch? { return nil }
 }
 
 
@@ -83,6 +85,11 @@ class XTLocalBranchItem: XTBranchItem
     return false
   }
   
+  override func branchObject() -> XTBranch?
+  {
+    return XTLocalBranch(repository: self.model!.repository, name: title)
+  }
+
   func hasTrackingBranch() -> Bool
   {
     return XTLocalBranch(repository: model!.repository,
@@ -104,6 +111,12 @@ class XTRemoteBranchItem: XTBranchItem
     
     super.init(title: title)
     self.model = model
+  }
+  
+  override func branchObject() -> XTBranch?
+  {
+    return XTRemoteBranch(repository: self.model!.repository,
+                          name: "\(remote)/\(title)")
   }
 }
 

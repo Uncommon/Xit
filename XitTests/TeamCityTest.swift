@@ -1,7 +1,7 @@
 import XCTest
 @testable import Xit
 
-class XTTeamCityTest: XCTestCase
+class TeamCityTest: XCTestCase
 {  
   override func setUp()
   {
@@ -14,9 +14,9 @@ class XTTeamCityTest: XCTestCase
   }
   
   func parseBuild(statusString: String,
-                  status: XTTeamCityAPI.Build.Status,
+                  status: TeamCityAPI.Build.Status,
                   stateString: String,
-                  state: XTTeamCityAPI.Build.State)
+                  state: TeamCityAPI.Build.State)
   {
     let buildType = "TestBuildType"
     let branchName = "testBranch"
@@ -28,7 +28,7 @@ class XTTeamCityTest: XCTestCase
         "webUrl=\"https://teamcity.example.com/viewLog.html?buildId=45272&amp;buildTypeId=\(buildType)\"/>"
     
     let xml = try! XMLDocument(xmlString: sourceXML, options: 0)
-    let build = XTTeamCityAPI.Build(xml: xml)!
+    let build = TeamCityAPI.Build(xml: xml)!
     
     XCTAssertEqual(build.buildType!, buildType)
     XCTAssertEqual(build.status, status)
@@ -53,7 +53,7 @@ class XTTeamCityTest: XCTestCase
   
   func testBranchSpec()
   {
-    let branchSpec = XTTeamCityAPI.BranchSpec(ruleStrings: [
+    let branchSpec = TeamCityAPI.BranchSpec(ruleStrings: [
         "+:refs/heads/feature/*",
         "+:refs/heads/fix/(target)",
         "-:refs/heads/skip/*",
@@ -64,7 +64,7 @@ class XTTeamCityTest: XCTestCase
     XCTAssertEqual(branchSpec.match(branch: "refs/heads/fix/target"), "target")
     XCTAssertNil(branchSpec.match(branch: "refs/heads/skip/rope"))
     
-    let defaultSpec = XTTeamCityAPI.BranchSpec.defaultSpec()
+    let defaultSpec = TeamCityAPI.BranchSpec.defaultSpec()
     
     XCTAssertEqual(defaultSpec.match(branch: "refs/heads/master"), "master")
   }

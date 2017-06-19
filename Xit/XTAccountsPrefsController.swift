@@ -26,7 +26,7 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
     XTAccountsManager.manager.readAccounts()
     authStatusObserver = notificationCenter.addObserver(
         forName: NSNotification.Name(rawValue:
-            XTBasicAuthService.AuthenticationStatusChangedNotification),
+            BasicAuthService.AuthenticationStatusChangedNotification),
         object: nil,
         queue: OperationQueue.main) {
       [weak self] (_) in
@@ -159,7 +159,7 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
 
 extension XTAccountsPrefsController: NSTableViewDelegate
 {
-  func statusImage(forAPI api: XTTeamCityAPI) -> NSImage?
+  func statusImage(forAPI api: TeamCityAPI) -> NSImage?
   {
     var imageName: String?
     
@@ -215,7 +215,7 @@ extension XTAccountsPrefsController: NSTableViewDelegate
     case "status":
       view.imageView?.isHidden = true
       if account.type == .teamCity {
-        guard let api = XTServices.services.teamCityAPI(account)
+        guard let api = Services.shared.teamCityAPI(account)
         else { break }
         
         if let image = statusImage(forAPI: api) {

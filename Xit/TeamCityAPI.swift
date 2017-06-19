@@ -3,48 +3,23 @@ import Siesta
 
 
 /// API for getting TeamCity build information.
-class XTTeamCityAPI: XTBasicAuthService, XTServiceAPI
+class TeamCityAPI: BasicAuthService, ServiceAPI
 {
   var type: AccountType { return .teamCity }
   static let rootPath = "/httpAuth/app/rest"
   
-  struct Build
+  public struct Build
   {
-    enum Status
+    enum Status: String
     {
-      case succeeded
-      case failed
-      case unknown
-      
-      init?(string: String)
-      {
-        switch string {
-          case "SUCCESS":
-            self = .succeeded
-          case "FAILURE":
-            self = .failed
-          default:
-            return nil
-        }
-      }
+      case succeeded = "SUCCESS"
+      case failed = "FAILURE"
     }
     
-    enum State
+    enum State: String
     {
       case running
       case finished
-      
-      init?(string: String)
-      {
-        switch string {
-          case "running":
-            self = .running
-          case "finished":
-            self = .finished
-          default:
-            return nil
-        }
-      }
     }
     
     struct Attribute
@@ -61,9 +36,13 @@ class XTTeamCityAPI: XTBasicAuthService, XTServiceAPI
       static let webURL = "webUrl"
     }
     
+    let id: Int
+    let number: String
     let buildType: String?
     let status: Status?
     let state: State?
+    let percentage: Double?
+    let running: Bool?
     let url: URL?
     
     init?(element buildElement: XMLElement)
@@ -73,9 +52,13 @@ class XTTeamCityAPI: XTBasicAuthService, XTServiceAPI
       
       let attributes = buildElement.attributesDict()
       
+      self.id = attributes[Attribute.id].flatMap { Int($0) } ?? 0
+      self.number = attributes[Attribute.buildNumber] ?? ""
       self.buildType = attributes[Attribute.buildType]
-      self.status = attributes[Attribute.status].flatMap { Status(string: $0) }
-      self.state = attributes[Attribute.state].flatMap { State(string: $0) }
+      self.status = attributes[Attribute.status].flatMap { Status(rawValue: $0) }
+      self.state = attributes[Attribute.state].flatMap { State(rawValue: $0) }
+      self.percentage = attributes[Attribute.percentage].flatMap { Double($0) }
+      self.running = attributes[Attribute.running].map { $0 == "true" }
       self.url = attributes[Attribute.webURL].flatMap { URL(string: $0) }
     }
     
@@ -88,7 +71,14 @@ class XTTeamCityAPI: XTBasicAuthService, XTServiceAPI
     }
   }
   
-  fileprivate(set) var buildTypesStatus = XTServices.Status.notStarted
+  public struct BuildType
+  {
+    let id: String
+    let name: String
+    let projectName: String
+  }
+  
+  fileprivate(set) var buildTypesStatus = Services.Status.notStarted
   {
     didSet
     {
@@ -106,7 +96,8 @@ class XTTeamCityAPI: XTBasicAuthService, XTServiceAPI
   /// Maps VCS root ID to branch specification.
   fileprivate(set) var vcsBranchSpecs = [String: BranchSpec]()
   /// Maps built type IDs to lists of repository URLs.
-  fileprivate(set) var vcsBuildTypes = [String: [String]]()
+  fileprivate(set) var buildTypeURLs = [String: [String]]()
+  fileprivate(set) var cachedBuildTypes = [BuildType]()
   
   init?(user: String, password: String, baseURL: String?)
   {
@@ -114,7 +105,7 @@ class XTTeamCityAPI: XTBasicAuthService, XTServiceAPI
           var fullBaseURL = URLComponents(string: baseURL)
     else { return nil }
     
-    fullBaseURL.path = XTTeamCityAPI.rootPath
+    fullBaseURL.path = TeamCityAPI.rootPath
     
     super.init(user: user, password: password,
                baseURL: fullBaseURL.string,
@@ -124,6 +115,21 @@ class XTTeamCityAPI: XTBasicAuthService, XTServiceAPI
       $0.pipeline[.parsing].add(XMLResponseTransformer(),
                                 contentTypes: [ "*/xml" ])
     }
+  }
+  
+  static func service(for remoteURL: String) -> (TeamCityAPI, [String])?
+  {
+    let accounts = XTAccountsManager.manager.accounts(ofType: .teamCity)
+    let services = accounts.flatMap({ Services.shared.teamCityAPI($0) })
+    
+    for service in services {
+      let buildTypes = service.buildTypesForRemote(remoteURL)
+      
+      if !buildTypes.isEmpty {
+        return (service, buildTypes)
+      }
+    }
+    return nil
   }
   
   /// Status of the most recent build of the given branch from any project
@@ -285,30 +291,26 @@ class XTTeamCityAPI: XTBasicAuthService, XTServiceAPI
   /// Returns all the build types that use the given remote.
   func buildTypesForRemote(_ remoteURL: String) -> [String]
   {
-    var result = [String]()
-    
-    for (buildType, urls) in vcsBuildTypes {
-      if !urls.filter({ $0 == remoteURL }).isEmpty {
-        result.append(buildType)
-      }
-    }
-    return result
+    return buildTypeURLs.keys.filter { buildTypeURLs[$0]?.contains(remoteURL)
+                                       ?? false }
+  }
+  
+  /// Returns a cached build type with a matching ID
+  func buildType(id: String) -> BuildType?
+  {
+    return cachedBuildTypes.first { $0.id == id }
   }
   
   /// Returns the VCS root IDs that use the given build type.
   func vcsRootsForBuildType(_ buildType: String) -> [String]
   {
-    var result = [String]()
-    guard let urls = vcsBuildTypes[buildType]
-    else { return result }
+    guard let urls = buildTypeURLs[buildType]
+    else { return [] }
     
-    for (vcsRoot, rootURL) in vcsRootMap {
-      if urls.contains(rootURL) {
-        result.append(vcsRoot)
-      }
+    return vcsRootMap.flatMap {
+      (vcsRoot, rootURL) in
+      return urls.contains(rootURL) ? vcsRoot : nil
     }
-    
-    return result
   }
   
   /// Parses the list of VCS roots, collecting their repository URLs.
@@ -397,8 +399,9 @@ class XTTeamCityAPI: XTBasicAuthService, XTServiceAPI
     
     var waitingTypeCount = hrefs.count
     
+    cachedBuildTypes.removeAll()
     for href in hrefs {
-      let relativePath = href.removingPrefix(XTTeamCityAPI.rootPath)
+      let relativePath = href.removingPrefix(TeamCityAPI.rootPath)
       
       resource(relativePath).useData(owner: self, closure: { (data) in
         waitingTypeCount -= 1
@@ -436,8 +439,15 @@ class XTTeamCityAPI: XTBasicAuthService, XTServiceAPI
       return
     }
     
+    let name = buildType.attribute(forName: "name")?.stringValue
+    let projectName = buildType.attribute(forName: "projectName")?.stringValue
+    
+    cachedBuildTypes.append(BuildType(id: buildTypeID,
+                                      name: name ?? "",
+                                      projectName: projectName ?? ""))
+    
     let vcsIDs = rootEntries.childrenAttributes("id")
-    var buildTypeURLs = [String]()
+    var urls = [String]()
     
     for vcsID in vcsIDs {
       guard let vcsURL = vcsRootMap[vcsID]
@@ -446,8 +456,27 @@ class XTTeamCityAPI: XTBasicAuthService, XTServiceAPI
         continue
       }
       
-      buildTypeURLs.append(vcsURL)
+      urls.append(vcsURL)
     }
-    vcsBuildTypes[buildTypeID] = buildTypeURLs
+    buildTypeURLs[buildTypeID] = urls
+  }
+}
+
+protocol TeamCityAccessor: class
+{
+  var repository: XTRepository { get }
+}
+
+extension TeamCityAccessor
+{
+  /// Returns the first TeamCity service that builds from the given repository,
+  /// and a list of its build types.
+  func matchTeamCity(_ remoteName: String) -> (TeamCityAPI, [String])?
+  {
+    guard let remote = XTRemote(name: remoteName, repository: repository),
+          let remoteURL = remote.urlString
+    else { return nil }
+    
+    return TeamCityAPI.service(for: remoteURL)
   }
 }

@@ -24,7 +24,14 @@ class XTSideBarDataSource: NSObject
   private(set) var roots: [XTSideBarGroupItem]
   private(set) var stagingItem: XTSideBarItem!
   
-  var buildStatuses = [String: [String: Bool]]()
+  var statusPopover: NSPopover?
+  var buildStatusCache: BuildStatusCache!
+  {
+    didSet
+    {
+      buildStatusCache.add(client: self)
+    }
+  }
   
   var buildStatusTimer: Timer?
   var reloadTimer: Timer?
@@ -39,6 +46,7 @@ class XTSideBarDataSource: NSObject
       else { return }
       
       stagingItem.model = StagingChanges(repository: repo)
+      buildStatusCache = BuildStatusCache(repository: repo)
       
       observers.addObserver(
           forName: .XTRepositoryRefsChanged,
@@ -100,7 +108,7 @@ class XTSideBarDataSource: NSObject
   {
     let rootNames = ["WORKSPACE", "BRANCHES", "REMOTES", "TAGS", "STASHES",
                      "SUBMODULES"]
-    let roots = rootNames.map({ XTSideBarGroupItem(title: $0) })
+    let roots = rootNames.map { XTSideBarGroupItem(title: $0) }
     
     roots[0].add(child: stagingItem)
     return roots
@@ -125,7 +133,7 @@ class XTSideBarDataSource: NSObject
       buildStatusTimer = Timer.scheduledTimer(
           withTimeInterval: Intervals.teamCityRefresh, repeats: true) {
         [weak self] _ in
-        self?.updateTeamCity()
+        self?.buildStatusCache.refresh()
       }
     }
     observers.addObserver(
@@ -133,7 +141,7 @@ class XTSideBarDataSource: NSObject
         object: nil,
         queue: .main) {
       [weak self] _ in
-      self?.updateTeamCity()
+      self?.buildStatusCache.refresh()
     }
   }
   
@@ -195,6 +203,7 @@ class XTSideBarDataSource: NSObject
                                                     branch.remoteName }),
             let name = branch.name?
                        .removingPrefix("refs/remotes/\(remote.title)/"),
+            let remoteName = branch.remoteName,
             let oid = branch.oid,
             let commit = XTCommit(oid: oid, repository: repo)
       else { continue }
@@ -202,7 +211,7 @@ class XTSideBarDataSource: NSObject
       let remoteParent = parent(for: name, groupItem: remote)
       
       remoteParent.children.append(XTRemoteBranchItem(title: name,
-                                                      remote: branch.remoteName,
+                                                      remote: remoteName,
                                                       model: model))
     }
     
@@ -227,7 +236,7 @@ class XTSideBarDataSource: NSObject
     
     repo.rebuildRefsIndex()
     DispatchQueue.main.async {
-      self.updateTeamCity()
+      self.buildStatusCache.refresh()
     }
     return newRoots
   }
@@ -307,6 +316,28 @@ class XTSideBarDataSource: NSObject
     }
   }
   
+  func graphText(for item: XTSideBarItem) -> String?
+  {
+    if item is XTLocalBranchItem,
+       let localBranch = XTLocalBranch(repository: repo!, name: item.title),
+       let trackingBranch = localBranch.trackingBranch,
+       let graph = repo.graphBetween(localBranch: localBranch,
+                                     upstreamBranch: trackingBranch) {
+      var numbers = [String]()
+      
+      if graph.ahead > 0 {
+        numbers.append("↑\(graph.ahead)")
+      }
+      if graph.behind > 0 {
+        numbers.append("↓\(graph.behind)")
+      }
+      return numbers.isEmpty ? nil : numbers.joined(separator: " ")
+    }
+    else {
+      return nil
+    }
+  }
+  
   func item(forBranchName branch: String) -> XTLocalBranchItem?
   {
     let branches = roots[XTGroupIndex.branches.rawValue]
@@ -335,6 +366,24 @@ class XTSideBarDataSource: NSObject
     }
     
     return nil
+  }
+  
+  @IBAction func showItemStatus(_ sender: NSButton)
+  {
+    guard let item = item(for: sender) as? XTBranchItem,
+          let branch = item.branchObject()
+    else { return }
+    
+    let statusController = BuildStatusViewController(repository: repository,
+                                                     branch: branch,
+                                                     cache: buildStatusCache)
+    let popover = NSPopover()
+    
+    statusPopover = popover
+    popover.contentViewController = statusController
+    popover.behavior = .transient
+    popover.delegate = self
+    popover.show(relativeTo: sender.bounds, of: sender, preferredEdge: .maxY)
   }
   
   @IBAction func missingTrackingBranch(_ sender: NSButton)
@@ -389,64 +438,20 @@ class XTSideBarDataSource: NSObject
   }
 }
 
-// MARK: TeamCity
-extension XTSideBarDataSource
+extension XTSideBarDataSource: BuildStatusClient
 {
-  func updateTeamCity()
+  func buildStatusUpdated(branch: String, buildType: String)
   {
-    guard let repo = repo
-    else { return }
-    
-    let localBranches = repo.localBranches()
-    
-    buildStatuses = [:]
-    for local in localBranches {
-      guard let fullBranchName = local.name,
-            let tracked = local.trackingBranch,
-            let (api, buildTypes) = matchTeamCity(tracked.remoteName)
-      else { continue }
-      
-      for buildType in buildTypes {
-        let vcsRoots = api.vcsRootsForBuildType(buildType)
-        guard !vcsRoots.isEmpty
-        else { continue }
-        
-        var shortestDisplayName: String? = nil
-        
-        for root in vcsRoots {
-          guard let branchSpec = api.vcsBranchSpecs[root],
-                let display = branchSpec.match(branch: fullBranchName)
-          else { continue }
-          
-          if (shortestDisplayName == nil) ||
-             (shortestDisplayName!.utf8.count > display.utf8.count) {
-            shortestDisplayName = display
-          }
-        }
-        
-        guard let branchName = shortestDisplayName
-        else { continue }
-        
-        let statusResource = api.buildStatus(branchName, buildType: buildType)
-        
-        statusResource.useData(owner: self) { (data) in
-          guard let xml = data.content as? XMLDocument,
-                let firstBuildElement =
-                    xml.rootElement()?.children?.first as? XMLElement,
-                let build = XTTeamCityAPI.Build(element: firstBuildElement)
-          else { return }
-          
-          NSLog("\(buildType)/\(branchName): \(build.status ?? .unknown)")
-          var buildTypeStatuses = self.buildStatuses[buildType] ??
-                                  [String: Bool]()
-          
-          buildTypeStatuses[branchName] = build.status == .succeeded
-          self.buildStatuses[buildType] = buildTypeStatuses
-          self.scheduleReload()
-        }
-      }
-    }
+    scheduleReload()
   }
+}
+
+// MARK: TeamCity
+extension XTSideBarDataSource: TeamCityAccessor
+{
+  // repo is implicitly unwrapped, so we have to have a different property
+  // for TeamCityAccessor
+  var repository: XTRepository { return repo }
   
   /// Returns the name of the remote for either a remote branch or a local
   /// tracking branch.
@@ -467,28 +472,6 @@ extension XTSideBarDataSource
       }
       
       return branch.trackingBranch?.remoteName
-    }
-    return nil
-  }
-  
-  /// Returns the first TeamCity service that builds from the given repository,
-  /// and a list of its build types.
-  func matchTeamCity(_ remoteName: String) -> (XTTeamCityAPI, [String])?
-  {
-    guard let repo = repo,
-          let remote = XTRemote(name: remoteName, repository: repo),
-          let remoteURL = remote.urlString
-    else { return nil }
-    
-    let accounts = XTAccountsManager.manager.accounts(ofType: .teamCity)
-    let services = accounts.flatMap({ XTServices.services.teamCityAPI($0) })
-    
-    for service in services {
-      let buildTypes = service.buildTypesForRemote(remoteURL as String)
-      
-      if !buildTypes.isEmpty {
-        return (service, buildTypes)
-      }
     }
     return nil
   }
@@ -525,45 +508,23 @@ extension XTSideBarDataSource
     }
   }
   
-  func graphText(for item: XTSideBarItem) -> String?
-  {
-    if item is XTLocalBranchItem,
-       let localBranch = XTLocalBranch(repository: repo!, name: item.title),
-       let trackingBranch = localBranch.trackingBranch,
-       let graph = repo.graphBetween(localBranch: localBranch,
-                                     upstreamBranch: trackingBranch) {
-      var numbers = [String]()
-      
-      if graph.ahead > 0 {
-        numbers.append("↑\(graph.ahead)")
-      }
-      if graph.behind > 0 {
-        numbers.append("↓\(graph.behind)")
-      }
-      return numbers.isEmpty ? nil : numbers.joined(separator: " ")
-    }
-    else {
-      return nil
-    }
-  }
-  
   func statusImage(for item: XTSideBarItem) -> NSImage?
   {
-    guard let remoteName = remoteName(forBranchItem: item),
-          let (_, buildTypes) = matchTeamCity(remoteName)
-    else { return nil }
-    
     if (item is XTRemoteBranchItem) &&
        !branchHasLocalTrackingBranch(item.title) {
       return nil
     }
     
+    guard let remoteName = remoteName(forBranchItem: item),
+          let (_, buildTypes) = matchTeamCity(remoteName)
+    else { return nil }
+    
     let branchName = (item.title as NSString).lastPathComponent
     var overallSuccess: Bool?
     
     for buildType in buildTypes {
-      if let status = buildStatuses[buildType],
-         let buildSuccess = status[branchName] {
+      if let status = buildStatusCache.statuses[buildType],
+         let buildSuccess = status[branchName].map({ $0.status == .succeeded }) {
         overallSuccess = (overallSuccess ?? true) && buildSuccess
       }
     }
@@ -575,6 +536,14 @@ extension XTSideBarDataSource
     else {
       return NSImage(named: NSImageNameStatusNone)
     }
+  }
+}
+
+extension XTSideBarDataSource: NSPopoverDelegate
+{
+  func popoverDidClose(_ notification: Notification)
+  {
+    statusPopover = nil
   }
 }
 
@@ -682,6 +651,8 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
       dataView.statusButton.action = nil
       if let image = statusImage(for: sideBarItem) {
         dataView.statusButton.image = image
+        dataView.statusButton.target = self
+        dataView.statusButton.action = #selector(self.showItemStatus(_:))
       }
       if sideBarItem is XTLocalBranchItem {
         if let statusText = graphText(for: sideBarItem) {
@@ -711,26 +682,19 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
         textField.action =
             #selector(XTSidebarController.sidebarItemRenamed(_:))
       }
-      if sideBarItem.current {
-        textField.font = NSFont.boldSystemFont(
-            ofSize: textField.font?.pointSize ?? 12)
-      }
-      else {
-        textField.font = NSFont.systemFont(
-            ofSize: textField.font?.pointSize ?? 12)
-      }
+      
+      let fontSize = textField.font?.pointSize ?? 12
+      
+      textField.font = sideBarItem.current
+          ? NSFont.boldSystemFont(ofSize: fontSize)
+          : NSFont.systemFont(ofSize: fontSize)
+
       if sideBarItem is XTStagingItem {
         let changes = sideBarItem.model!.changes
-        var stagedCount = 0, unstagedCount = 0
-        
-        for change in changes {
-          if change.change != .unmodified {
-            stagedCount += 1
-          }
-          if change.unstagedChange != .unmodified {
-            unstagedCount += 1
-          }
-        }
+        let stagedCount =
+              changes.count(where: { $0.change != .unmodified })
+        let unstagedCount =
+              changes.count(where: { $0.unstagedChange != .unmodified })
         
         if (stagedCount != 0) || (unstagedCount != 0) {
           dataView.statusText.title = "\(unstagedCount)▸\(stagedCount)"
