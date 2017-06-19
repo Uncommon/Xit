@@ -316,6 +316,28 @@ class XTSideBarDataSource: NSObject
     }
   }
   
+  func graphText(for item: XTSideBarItem) -> String?
+  {
+    if item is XTLocalBranchItem,
+       let localBranch = XTLocalBranch(repository: repo!, name: item.title),
+       let trackingBranch = localBranch.trackingBranch,
+       let graph = repo.graphBetween(localBranch: localBranch,
+                                     upstreamBranch: trackingBranch) {
+      var numbers = [String]()
+      
+      if graph.ahead > 0 {
+        numbers.append("↑\(graph.ahead)")
+      }
+      if graph.behind > 0 {
+        numbers.append("↓\(graph.behind)")
+      }
+      return numbers.isEmpty ? nil : numbers.joined(separator: " ")
+    }
+    else {
+      return nil
+    }
+  }
+  
   func item(forBranchName branch: String) -> XTLocalBranchItem?
   {
     let branches = roots[XTGroupIndex.branches.rawValue]
@@ -483,28 +505,6 @@ extension XTSideBarDataSource: TeamCityAccessor
     }
     else {
       return .none
-    }
-  }
-  
-  func graphText(for item: XTSideBarItem) -> String?
-  {
-    if item is XTLocalBranchItem,
-       let localBranch = XTLocalBranch(repository: repo!, name: item.title),
-       let trackingBranch = localBranch.trackingBranch,
-       let graph = repo.graphBetween(localBranch: localBranch,
-                                     upstreamBranch: trackingBranch) {
-      var numbers = [String]()
-      
-      if graph.ahead > 0 {
-        numbers.append("↑\(graph.ahead)")
-      }
-      if graph.behind > 0 {
-        numbers.append("↓\(graph.behind)")
-      }
-      return numbers.isEmpty ? nil : numbers.joined(separator: " ")
-    }
-    else {
-      return nil
     }
   }
   

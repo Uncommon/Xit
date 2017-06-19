@@ -40,21 +40,18 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
   
   override func viewDidLoad()
   {
-    var branchName = branch.name ?? "branch"
-    let dropSegmentCount = (branch is XTRemoteBranch) ? 3 : 2
-  
-    branchName = branchName.components(separatedBy: "/")
-                           .dropFirst(dropSegmentCount)
-                           .joined(separator: "/")
-  
-    headingLabel.stringValue = "Builds for \(branchName)"
+    headingLabel.stringValue = "Builds for \(branch.strippedName ?? "branch")"
   }
 
   func filterStatuses()
   {
     filteredStatuses.removeAll()
     
-    guard let branchName = branch.name,
+    // Only the local "refs/heads/..." version of the branch name works
+    // with the branchspec matching.
+    guard let branchName = (branch is XTRemoteBranch)
+               ? branch.strippedName.map({ XTLocalBranch.headsPrefix + $0 })
+               : branch.name,
           let api = self.api
     else { return }
     
