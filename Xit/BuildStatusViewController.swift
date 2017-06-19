@@ -7,6 +7,7 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
   let buildStatusCache: BuildStatusCache
   var api: TeamCityAPI?
   @IBOutlet weak var tableView: NSTableView!
+  @IBOutlet weak var headingLabel: NSTextField!
 
   var filteredStatuses: [String: BuildStatusCache.BranchStatuses] = [:]
   var builds: [TeamCityAPI.Build] = []
@@ -35,6 +36,18 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
   deinit
   {
     buildStatusCache.remove(client: self)
+  }
+  
+  override func viewDidLoad()
+  {
+    var branchName = branch.name ?? "branch"
+    let dropSegmentCount = (branch is XTRemoteBranch) ? 3 : 2
+  
+    branchName = branchName.components(separatedBy: "/")
+                           .dropFirst(dropSegmentCount)
+                           .joined(separator: "/")
+  
+    headingLabel.stringValue = "Builds for \(branchName)"
   }
 
   func filterStatuses()
@@ -74,6 +87,18 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
     }
     builds = Array(buildsByNumber.values)
   }
+  
+  @IBAction func doubleClick(_ sender: Any)
+  {
+    let clickedRow = tableView.clickedRow
+    guard 0..<builds.count ~= clickedRow
+    else { return }
+    let build = builds[tableView.clickedRow]
+    guard let url = build.url
+    else { return }
+    
+    NSWorkspace.shared().open(url)
+  }
 }
 
 extension BuildStatusViewController: BuildStatusClient
@@ -103,7 +128,7 @@ extension BuildStatusViewController: NSTableViewDelegate
     let build = builds[row]
     let buildType = build.buildType.flatMap { api?.buildType(id: $0) }
     
-    cell.textField?.stringValue = build.buildType ?? "-"
+    cell.textField?.stringValue = buildType?.name ?? "-"
     cell.projectNameField.stringValue = buildType?.projectName ?? "-"
     cell.buildNumberField.stringValue = build.number
     if let percentage = build.percentage {
