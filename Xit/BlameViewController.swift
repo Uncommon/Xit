@@ -12,6 +12,33 @@ class BlameViewController: WebViewController
     return view.window?.windowController as? RepositoryController
   }
   
+  class CommitColoring
+  {
+    var commitColors = [GitOID: NSColor]()
+    var lastHue = 120
+    
+    init(firstOID: GitOID)
+    {
+      _ = color(for: firstOID)
+    }
+    
+    func color(for oid: GitOID) -> NSColor
+    {
+      if let color = commitColors[oid] {
+        return color
+      }
+      else {
+        let hue = CGFloat(lastHue) / 360.0
+        let result = NSColor(calibratedHue: hue, saturation: 0.6,
+                             brightness: 0.85, alpha: 1.0)
+        
+        lastHue = (lastHue + 55) % 360
+        commitColors[oid] = result
+        return result
+      }
+    }
+  }
+  
   override init?(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?)
   {
     actionDelegate = BlameActionDelegate()
@@ -34,15 +61,6 @@ class BlameViewController: WebViewController
     }
   }
   
-  func nextColor(lastHue: inout Int) -> NSColor
-  {
-    let hue = CGFloat(lastHue%360)/360.0
-  
-    lastHue += 55
-    return NSColor(calibratedHue: hue, saturation: 0.6, brightness: 0.85,
-                   alpha: 1.0)
-  }
-  
   func loadBlame(text: String, path: String,
                  model: FileChangesModel, staged: Bool)
   {
@@ -62,23 +80,16 @@ class BlameViewController: WebViewController
     
     var htmlLines = [String]()
     let lines = text.lineComponents()
-    var commitColors = [GitOID: NSColor]()
-    var lastHue = 120
     let selectOID: GitOID? = model.shaToSelect.map { GitOID(sha: $0) } ?? nil
     let currentOID = selectOID ?? GitOID.zero()
     let dateFormatter = DateFormatter()
+    let coloring = CommitColoring(firstOID: currentOID)
     
     dateFormatter.timeStyle = .short
     dateFormatter.dateStyle = .short
     
-    commitColors[currentOID] = nextColor(lastHue: &lastHue)
     for hunk in blame.hunks {
-      var color: NSColor! = commitColors[hunk.finalOID]
-      
-      if color == nil {
-        color = nextColor(lastHue: &lastHue)
-        commitColors[hunk.finalOID] = color
-      }
+      var color = coloring.color(for: hunk.finalOID)
       
       htmlLines.append(contentsOf: [
           "<tr><td class='headcell'>",
@@ -109,7 +120,7 @@ class BlameViewController: WebViewController
                          "</div>")
       }
       if hunk.finalOID != currentOID {
-        color = color.blended(withFraction: 0.65, of: .white)
+        color = color.blended(withFraction: 0.65, of: .white) ?? color
       }
       htmlLines.append(contentsOf: ["</div></td>",
                                     "<td style='background-color: " +
