@@ -104,8 +104,6 @@ class BlameViewController: WebViewController
                 hunk.finalOID.sha.firstSix() + "</div>")
           }
         }
-      }
-      if hunk.lineCount > 0 {
         htmlLines.append("<div class='date'>" +
                          dateFormatter.string(from: hunk.finalSignature.when) +
                          "</div>")
