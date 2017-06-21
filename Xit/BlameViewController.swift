@@ -61,7 +61,7 @@ class BlameViewController: WebViewController
     }
     
     var htmlLines = [String]()
-    let lines = text.components(separatedBy: .newlines)
+    let lines = text.lineComponents()
     var commitColors = [GitOID: NSColor]()
     var lastHue = 120
     let selectOID: GitOID? = model.shaToSelect.map { GitOID(sha: $0) } ?? nil
@@ -118,7 +118,7 @@ class BlameViewController: WebViewController
                                     "\(color.cssHSL)'>"])
       
       let start = hunk.finalLineStart - 1
-      let end = min(start + hunk.lineCount, lines.count-1)
+      let end = min(start + hunk.lineCount, lines.count)
       let hunkLines = lines[start..<end]
       
       htmlLines.append(contentsOf: hunkLines.map({

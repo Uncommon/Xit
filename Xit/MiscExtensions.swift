@@ -155,6 +155,15 @@ extension String
     return (substring(to: slashIndex),
             substring(from: slashRange.upperBound))
   }
+  
+  /// Splits the string into an array of lines.
+  func lineComponents() -> [String]
+  {
+    var lines: [String] = []
+    
+    enumerateLines { (line, _) in lines.append(line) }
+    return lines
+  }
 }
 
 extension NSTableView
