@@ -23,6 +23,7 @@ extension HeaderGenerator
     guard let commitSHA = commit.sha
     else { return "" }
     
+    // swiftlint:disable:next force_try
     let template = try! String(contentsOf: templateURL())
     let message = commit.message?.trimmingCharacters(in: .whitespacesAndNewlines)
                   ?? ""
@@ -100,6 +101,7 @@ class CommitHeaderViewController: WebViewController, HeaderGenerator
   }
   var expanded: Bool = false
   
+  // swiftlint:disable:next weak_delegate
   let actionDelegate: CommitHeaderActionDelegate
   
   weak var repoController: RepositoryController!

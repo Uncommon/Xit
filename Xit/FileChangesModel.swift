@@ -386,10 +386,9 @@ extension FileChangesModel
     nodeItem.unstagedChange = unstagedChange ?? .unmodified
   }
 
-  func findTreeNode(
-      forPath path: String,
-      parent: NSTreeNode,
-      nodes: inout [String: NSTreeNode]) -> NSTreeNode
+  func findTreeNode(forPath path: String,
+                    parent: NSTreeNode,
+                    nodes: inout [String: NSTreeNode]) -> NSTreeNode
   {
     guard !path.isEmpty
     else { return parent }
@@ -410,9 +409,8 @@ extension FileChangesModel
   }
 
   /// Merges a tree of unstaged changes into a tree of staged changes.
-  func combineTrees(
-      unstagedTree: inout NSTreeNode,
-      stagedTree: NSTreeNode)
+  func combineTrees(unstagedTree: inout NSTreeNode,
+                    stagedTree: NSTreeNode)
   {
     // Not sure if these should be expected
     guard let unstagedNodes = unstagedTree.children
@@ -500,13 +498,5 @@ extension FileChangesModel
     }
     destTree.mutableChildren.addObjects(from: addedNodes)
     destTree.mutableChildren.sort(keyPath: "representedObject.path")
-  }
-}
-
-extension NSMutableArray
-{
-  func sort(keyPath key: String, ascending: Bool = true)
-  {
-    self.sort(using: [NSSortDescriptor(key: key, ascending: ascending)])
   }
 }

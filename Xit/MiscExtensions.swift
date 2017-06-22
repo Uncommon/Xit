@@ -284,6 +284,14 @@ extension Array where Element: Comparable
   }
 }
 
+extension NSMutableArray
+{
+  func sort(keyPath key: String, ascending: Bool = true)
+  {
+    self.sort(using: [NSSortDescriptor(key: key, ascending: ascending)])
+  }
+}
+
 // Swift 3 took away ++, but it still can be useful.
 postfix operator ++
 

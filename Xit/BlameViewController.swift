@@ -5,6 +5,7 @@ class BlameViewController: WebViewController
   @IBOutlet var spinner: NSProgressIndicator!
   var isLoaded: Bool = false
   
+  // swiftlint:disable:next weak_delegate
   let actionDelegate: BlameActionDelegate
   
   weak var repoController: RepositoryController!
