@@ -154,9 +154,11 @@ class XTHistoryCellView: NSTableCellView
         
         path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(childIndex),
                               y: bounds.size.height))
-        path.relativeLine(to: NSPoint(x: 0, y: -cornerOffset))
-        path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(parentIndex),
-                              y: cornerOffset))
+        if parentIndex != childIndex {
+          path.relativeLine(to: NSPoint(x: 0, y: -cornerOffset))
+          path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(parentIndex),
+                                y: cornerOffset))
+        }
         path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(parentIndex),
                               y: 0))
       }
@@ -166,9 +168,11 @@ class XTHistoryCellView: NSTableCellView
       let lineColor =  XTHistoryCellView.lineColors[colorIndex]
       
       path.lineJoinStyle = .roundLineJoinStyle
-      NSColor.white.setStroke()
-      path.lineWidth = XTHistoryCellView.lineWidth + 1.0
-      path.stroke()
+      if line.parentIndex != line.childIndex {
+        NSColor.white.setStroke()
+        path.lineWidth = XTHistoryCellView.lineWidth + 1.0
+        path.stroke()
+      }
       lineColor.setStroke()
       path.lineWidth = XTHistoryCellView.lineWidth
       path.stroke()
