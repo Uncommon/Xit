@@ -18,17 +18,21 @@ class XTHistoryCellView: NSTableCellView
       NSColor(calibratedHue: 0.13, saturation: 0.08, brightness: 0.8, alpha: 1.0),
       NSColor.black, NSColor.lightGray]
   
-  static let lineWidth: CGFloat = 2.0
-  static let columnWidth: CGFloat = 8.0
-  static let leftMargin: CGFloat = 4.0
-  static let rightMargin: CGFloat = 4.0
-  static let textMargin: CGFloat = 4.0
-  static let tokenMargin: CGFloat = 4.0
+  struct Widths {
+    static let line: CGFloat = 2.0
+    static let column: CGFloat = 8.0
+  }
+  struct Margins {
+    static let left: CGFloat = 4.0
+    static let right: CGFloat = 4.0
+    static let text: CGFloat = 4.0
+    static let token: CGFloat = 4.0
+  }
 
   /// Finds the center of the given column.
   static func columnCenter(_ index: UInt) -> CGFloat
   {
-    return leftMargin + columnWidth * CGFloat(index) + columnWidth / 2
+    return Margins.left + Widths.column * CGFloat(index) + Widths.column / 2
   }
   
   /// Moves the text field out of the way of the lines and refs.
@@ -41,22 +45,19 @@ class XTHistoryCellView: NSTableCellView
       max(oldMax, line.parentIndex ?? 0, line.childIndex ?? 0)
     }
     
-    linesMargin = XTHistoryCellView.leftMargin +
-                  CGFloat(totalColumns + 1) * XTHistoryCellView.columnWidth
+    linesMargin = Margins.left + CGFloat(totalColumns + 1) * Widths.column
     
     let tokenWidth: CGFloat = refs.reduce(0.0) { (width, ref) -> CGFloat in
       guard let (_, displayRef) = ref.splitRefName()
       else { return 0 }
-      return XTRefToken.rectWidth(text: displayRef) +
-             width + XTHistoryCellView.tokenMargin
+      return XTRefToken.rectWidth(text: displayRef) + width + Margins.token
     }
     
     if let textField = textField {
       var newFrame = textField.frame
       
-      newFrame.origin.x = tokenWidth + linesMargin + XTHistoryCellView.textMargin
-      newFrame.size.width = frame.size.width - newFrame.origin.x -
-                            XTHistoryCellView.rightMargin
+      newFrame.origin.x = tokenWidth + linesMargin + Margins.text
+      newFrame.size.width = frame.size.width - newFrame.origin.x - Margins.right
       textField.frame = newFrame
     }
   }
@@ -87,7 +88,7 @@ class XTHistoryCellView: NSTableCellView
   
   func drawRefs()
   {
-    var x: CGFloat = linesMargin + XTHistoryCellView.tokenMargin
+    var x: CGFloat = linesMargin + Margins.token
     
     for ref in refs {
       guard let (refTypeName, displayRef) = ref.splitRefName()
@@ -100,7 +101,7 @@ class XTHistoryCellView: NSTableCellView
       XTRefToken.drawToken(refType: XTHistoryCellView.refType(refTypeName),
                            text: displayRef,
                            rect: refRect)
-      x += refRect.size.width + XTHistoryCellView.tokenMargin
+      x += refRect.size.width + Margins.token
     }
   }
   
@@ -109,7 +110,7 @@ class XTHistoryCellView: NSTableCellView
     let pathOffset = abs(Int(offset1) - Int(offset2))
     let height = Double(pathOffset) * 0.25
     
-    return min(CGFloat(height), XTHistoryCellView.lineWidth)
+    return min(CGFloat(height), Widths.line)
   }
   
   func drawLines()
@@ -170,11 +171,11 @@ class XTHistoryCellView: NSTableCellView
       path.lineJoinStyle = .roundLineJoinStyle
       if line.parentIndex != line.childIndex {
         NSColor.white.setStroke()
-        path.lineWidth = XTHistoryCellView.lineWidth + 1.0
+        path.lineWidth = Widths.line + 1.0
         path.stroke()
       }
       lineColor.setStroke()
-      path.lineWidth = XTHistoryCellView.lineWidth
+      path.lineWidth = Widths.line
       path.stroke()
       
       let dotSize: CGFloat = 6.0
