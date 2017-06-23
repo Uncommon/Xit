@@ -10,9 +10,19 @@ class BuildStatusCache: TeamCityAccessor
   // This typealias resolves ambiguity for the compiler
   typealias BranchStatuses = [String: TeamCityAPI.Build] // Branch to build
 
-  let repository: XTRepository
+  weak var repository: XTRepository!
   var statuses = [String: BranchStatuses]() // Build type to branch builds
-  private var clients = [BuildStatusClient]()
+  private var clients = [WeakClientRef]()
+  
+  class WeakClientRef
+  {
+    weak var client: BuildStatusClient?
+    
+    init(client: BuildStatusClient)
+    {
+      self.client = client
+    }
+  }
   
   init(repository: XTRepository)
   {
@@ -21,18 +31,21 @@ class BuildStatusCache: TeamCityAccessor
   
   func add(client: BuildStatusClient)
   {
-    if !clients.contains(where: { $0 === client }) {
-      clients.append(client)
+    if !clients.contains(where: { $0.client === client }) {
+      clients.append(WeakClientRef(client: client))
     }
   }
   
   func remove(client: BuildStatusClient)
   {
-    clients.index(where: { $0 === client }).map { _ = clients.remove(at: $0) }
+    clients.index(where: { $0.client === client })
+           .map { _ = clients.remove(at: $0) }
   }
   
   func refresh()
   {
+    guard let repository = self.repository
+    else { return }
     let localBranches = repository.localBranches()
     
     statuses.removeAll()
@@ -74,8 +87,10 @@ class BuildStatusCache: TeamCityAccessor
           
           buildTypeStatuses[branchName] = build
           self.statuses[buildType] = buildTypeStatuses
-          self.clients.forEach { $0.buildStatusUpdated(branch: branchName,
-                                                       buildType: buildType) }
+          self.clients.forEach {
+            $0.client?.buildStatusUpdated( branch: branchName,
+                                           buildType: buildType)
+          }
         }
       }
     }

@@ -38,11 +38,11 @@ class XTSideBarDataSource: NSObject
   
   let observers = ObserverCollection()
   
-  var repo: XTRepository!
+  weak var repository: XTRepository!
   {
     didSet
     {
-      guard let repo = self.repo
+      guard let repo = self.repository
       else { return }
       
       stagingItem.model = StagingChanges(repository: repo)
@@ -147,7 +147,7 @@ class XTSideBarDataSource: NSObject
   
   func reload()
   {
-    repo?.queue.executeOffMainThread {
+    repository?.queue.executeOffMainThread {
       let newRoots = self.loadRoots()
       
       DispatchQueue.main.async {
@@ -163,15 +163,15 @@ class XTSideBarDataSource: NSObject
   
   func makeStashItems() -> [XTSideBarItem]
   {
-    return repo?.stashes().map {
+    return repository?.stashes().map {
       XTStashItem(title: $0.message ?? "stash",
-                  model: StashChanges(repository: repo!, stash: $0))
+                  model: StashChanges(repository: repository!, stash: $0))
     } ?? []
   }
   
   func loadRoots() -> [XTSideBarGroupItem]
   {
-    guard let repo = self.repo
+    guard let repo = self.repository
     else { return [] }
     
     let newRoots = XTSideBarDataSource.makeRoots(stagingItem)
@@ -318,24 +318,24 @@ class XTSideBarDataSource: NSObject
   
   func graphText(for item: XTSideBarItem) -> String?
   {
-    if item is XTLocalBranchItem,
-       let localBranch = XTLocalBranch(repository: repo!, name: item.title),
-       let trackingBranch = localBranch.trackingBranch,
-       let graph = repo.graphBetween(localBranch: localBranch,
-                                     upstreamBranch: trackingBranch) {
-      var numbers = [String]()
-      
-      if graph.ahead > 0 {
-        numbers.append("↑\(graph.ahead)")
-      }
-      if graph.behind > 0 {
-        numbers.append("↓\(graph.behind)")
-      }
-      return numbers.isEmpty ? nil : numbers.joined(separator: " ")
+    guard let repository = self.repository,
+          item is XTLocalBranchItem,
+          let localBranch = XTLocalBranch(repository: repository,
+                                          name: item.title),
+          let trackingBranch = localBranch.trackingBranch,
+          let graph = repository.graphBetween(localBranch: localBranch,
+                                       upstreamBranch: trackingBranch)
+    else { return nil }
+
+    var numbers = [String]()
+    
+    if graph.ahead > 0 {
+      numbers.append("↑\(graph.ahead)")
     }
-    else {
-      return nil
+    if graph.behind > 0 {
+      numbers.append("↓\(graph.behind)")
     }
+    return numbers.isEmpty ? nil : numbers.joined(separator: " ")
   }
   
   func item(forBranchName branch: String) -> XTLocalBranchItem?
@@ -407,7 +407,7 @@ class XTSideBarDataSource: NSObject
       switch response {
         
         case NSAlertFirstButtonReturn: // Clear
-          let branch = XTLocalBranch(repository: self.repo, name: item.title)
+          let branch = XTLocalBranch(repository: self.repository, name: item.title)
           
           branch?.trackingBranchName = nil
           self.outline.reloadItem(item)
@@ -426,7 +426,7 @@ class XTSideBarDataSource: NSObject
     if let outline = outline,
        let clickedItem = outline.item(atRow: outline.clickedRow)
                          as? XTSubmoduleItem,
-       let rootPath = repo?.repoURL.path,
+       let rootPath = repository?.repoURL.path,
        let subPath = clickedItem.submodule.path {
       let subURL = URL(fileURLWithPath: rootPath.appending(
             pathComponent: subPath))
@@ -449,15 +449,11 @@ extension XTSideBarDataSource: BuildStatusClient
 // MARK: TeamCity
 extension XTSideBarDataSource: TeamCityAccessor
 {
-  // repo is implicitly unwrapped, so we have to have a different property
-  // for TeamCityAccessor
-  var repository: XTRepository { return repo }
-  
   /// Returns the name of the remote for either a remote branch or a local
   /// tracking branch.
   func remoteName(forBranchItem branchItem: XTSideBarItem) -> String?
   {
-    guard let repo = repo
+    guard let repo = repository
     else { return nil }
     
     if let remoteBranchItem = branchItem as? XTRemoteBranchItem {
@@ -479,7 +475,7 @@ extension XTSideBarDataSource: TeamCityAccessor
   /// Returns true if the remote branch is tracked by a local branch.
   func branchHasLocalTrackingBranch(_ branch: String) -> Bool
   {
-    for localBranch in repo!.localBranches() {
+    for localBranch in repository.localBranches() {
       if let trackingBranch = localBranch.trackingBranch,
          trackingBranch.shortName == branch {
         return true
@@ -491,14 +487,15 @@ extension XTSideBarDataSource: TeamCityAccessor
   /// Returns true if the local branch has a remote tracking branch.
   func localBranchHasTrackingBranch(_ branch: String) -> Bool
   {
-    return XTLocalBranch(repository: repo!, name: branch)?.trackingBranch != nil
+    return XTLocalBranch(repository: repository,
+                         name: branch)?.trackingBranch != nil
   }
   
   func trackingBranchStatus(for branch: String) -> TrackingBranchStatus
   {
-    if let localBranch = XTLocalBranch(repository: repo, name: branch),
+    if let localBranch = XTLocalBranch(repository: repository, name: branch),
        let trackingBranchName = localBranch.trackingBranchName {
-      return XTRemoteBranch(repository: repo,
+      return XTRemoteBranch(repository: repository,
                             name: trackingBranchName) == nil
           ? .missing(trackingBranchName)
           : .set(trackingBranchName)
@@ -622,7 +619,8 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
                           viewFor tableColumn: NSTableColumn?,
                           item: Any) -> NSView?
   {
-    guard let sideBarItem = item as? XTSideBarItem
+    guard repository != nil,
+          let sideBarItem = item as? XTSideBarItem
     else { return nil }
     
     if item is XTSideBarGroupItem {
@@ -716,8 +714,8 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
       return SidebarCheckedRowView()
     }
     else if let remoteBranchItem = item as? XTRemoteBranchItem,
-            let branchName = repo.currentBranch,
-            let currentBranch = XTLocalBranch(repository: repo,
+            let branchName = repository.currentBranch,
+            let currentBranch = XTLocalBranch(repository: repository,
                                               name: branchName),
             currentBranch.trackingBranchName == remoteBranchItem.remote + "/" +
                                                 remoteBranchItem.title {
@@ -749,7 +747,7 @@ extension XTSideBarDataSource : XTOutlineViewDelegate
        oldModel.shaToSelect == newModel.shaToSelect &&
        type(of: oldModel) != type(of: newModel) {
       NotificationCenter.default.post(
-          name: NSNotification.Name.XTReselectModel, object: repo)
+          name: NSNotification.Name.XTReselectModel, object: repository)
     }
     selectedItem = selection
   }

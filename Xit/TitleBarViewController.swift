@@ -101,15 +101,16 @@ class TitleBarViewController: NSViewController
   {
     progressObserver = NotificationCenter.default.addObserver(
         forName: .XTProgress, object: repository, queue: .main) {
-      (notification) in
-      guard let progress = notification.progress,
+      [weak self] (notification) in
+      guard let myself = self,
+            let progress = notification.progress,
             let total = notification.total
       else { return }
       
-      self.spinner.isIndeterminate = false
-      self.spinner.maxValue = Double(total)
-      self.spinner.doubleValue = Double(progress)
-      self.spinner.needsDisplay = true
+      myself.spinner.isIndeterminate = false
+      myself.spinner.maxValue = Double(total)
+      myself.spinner.doubleValue = Double(progress)
+      myself.spinner.needsDisplay = true
     }
   }
   

@@ -2,7 +2,7 @@ import Cocoa
 
 class BuildStatusViewController: NSViewController, TeamCityAccessor
 {
-  let repository: XTRepository
+  weak var repository: XTRepository!
   let branch: XTBranch
   let buildStatusCache: BuildStatusCache
   var api: TeamCityAPI?

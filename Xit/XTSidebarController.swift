@@ -159,7 +159,7 @@ class XTSidebarController: NSViewController, SidebarHandler
   {
     didSet
     {
-      sidebarDS.repo = repo
+      sidebarDS.repository = repo
       observers.addObserver(
           forName: NSNotification.Name.XTRepositoryIndexChanged,
           object: repo, queue: .main) {

@@ -41,8 +41,8 @@ class DateCellView: NSTableCellView
     if changeObserver == nil {
       changeObserver = NotificationCenter.default.addObserver(
           forName: .NSViewFrameDidChange, object: self, queue: nil) {
-        (_) in
-        self.updateDateStyle()
+        [weak self] (_) in
+        self?.updateDateStyle()
       }
     }
   }
