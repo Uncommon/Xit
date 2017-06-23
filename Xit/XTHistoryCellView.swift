@@ -113,6 +113,53 @@ class XTHistoryCellView: NSTableCellView
     return min(CGFloat(height), Widths.line)
   }
   
+  func path(for line: HistoryLine) -> NSBezierPath?
+  {
+    guard let dotOffset = (objectValue as? GitCommitEntry)?.dotOffset
+    else { return nil }
+    let path = NSBezierPath()
+    
+    if line.parentIndex == nil {
+      guard let childIndex = line.childIndex
+      else { return nil }
+      
+      path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(childIndex),
+                            y: bounds.size.height))
+      path.relativeLine(to: NSPoint(x: 0, y: -cornerOffset(dotOffset,
+                                                           childIndex)))
+      path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(dotOffset),
+                            y: bounds.size.height/2))
+    }
+    else if line.childIndex == nil {
+      guard let parentIndex = line.parentIndex
+      else { return nil }
+      
+      path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(parentIndex),
+                            y: 0))
+      path.relativeLine(to: NSPoint(x: 0, y: cornerOffset(dotOffset,
+                                                          parentIndex)))
+      path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(dotOffset),
+                            y: bounds.size.height/2))
+    }
+    else {
+      guard let parentIndex = line.parentIndex,
+            let childIndex = line.childIndex
+      else { return nil }
+      let cornerOffset = self.cornerOffset(childIndex, parentIndex)
+      
+      path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(childIndex),
+                            y: bounds.size.height))
+      if parentIndex != childIndex {
+        path.relativeLine(to: NSPoint(x: 0, y: -cornerOffset))
+        path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(parentIndex),
+                              y: cornerOffset))
+      }
+      path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(parentIndex),
+                            y: 0))
+    }
+    return path
+  }
+  
   func drawLines()
   {
     guard let entry = objectValue as? GitCommitEntry,
@@ -120,49 +167,9 @@ class XTHistoryCellView: NSTableCellView
           let dotColorIndex = entry.dotColorIndex
     else { return }
     
-    let bounds = self.bounds
-    
     for line in entry.lines {
-      let path = NSBezierPath()
-      
-      if line.parentIndex == nil {
-        guard let childIndex = line.childIndex
-        else { continue }
-      
-        path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(childIndex),
-                              y: bounds.size.height))
-        path.relativeLine(to: NSPoint(x: 0, y: -cornerOffset(dotOffset,
-                                                             childIndex)))
-        path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(dotOffset),
-                              y: bounds.size.height/2))
-      }
-      else if line.childIndex == nil {
-        guard let parentIndex = line.parentIndex
-        else { continue }
-        
-        path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(parentIndex),
-                              y: 0))
-        path.relativeLine(to: NSPoint(x: 0, y: cornerOffset(dotOffset,
-                                                            parentIndex)))
-        path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(dotOffset),
-                              y: bounds.size.height/2))
-      }
-      else {
-        guard let parentIndex = line.parentIndex,
-              let childIndex = line.childIndex
-        else { continue }
-        let cornerOffset = self.cornerOffset(childIndex, parentIndex)
-        
-        path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(childIndex),
-                              y: bounds.size.height))
-        if parentIndex != childIndex {
-          path.relativeLine(to: NSPoint(x: 0, y: -cornerOffset))
-          path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(parentIndex),
-                                y: cornerOffset))
-        }
-        path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(parentIndex),
-                              y: 0))
-      }
+      guard let path = path(for: line)
+      else { continue }
       
       let colorIndex = Int(line.colorIndex) %
                        XTHistoryCellView.lineColors.count
