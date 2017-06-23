@@ -101,11 +101,13 @@ extension SidebarHandler
         try block(item)
       }
       catch let error as NSError {
-        guard let window = self.window
-        else { return }
-        let alert = NSAlert(error: error)
-        
-        alert.beginSheetModal(for: window, completionHandler: nil)
+        DispatchQueue.main.async {
+          guard let window = self.window
+          else { return }
+          let alert = NSAlert(error: error)
+          
+          alert.beginSheetModal(for: window, completionHandler: nil)
+        }
       }
     }
   }
