@@ -28,21 +28,6 @@ extern NSString *XTErrorDomainXit, *XTErrorDomainGit;
 /// Fake value for seleting staging view.
 extern NSString * const XTStagingSHA;
 
-/// Some change has been detected in the repository.
-extern NSString * const XTRepositoryChangedNotification;
-
-/// The repository's index has changed.
-extern NSString * const XTRepositoryIndexChangedNotification;
-
-/// The repository's refs have changed.
-extern NSString * const XTRepositoryRefsChangedNotification;
-
-/// The head reference (current branch) has changed.
-extern NSString * const XTRepositoryHeadChangedNotification;
-
-/// A file in the workspace has changed.
-extern NSString * const XTRepositoryWorkspaceChangedNotification;
-
 /// There is a new selection to be displayed.
 extern NSString * const XTSelectedModelChangedNotification;
 
