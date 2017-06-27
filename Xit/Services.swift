@@ -198,12 +198,14 @@ class BasicAuthService: Siesta.Service
           guard let error = resource.latestError
           else {
             NSLog("Error event with no error")
+            self.authenticationStatus = .failed(nil)
             return
           }
           
-          if !(error.cause is Siesta.RequestError.Cause.RequestCancelled) {
-            self.authenticationStatus = .failed(error)
-          }
+          self.authenticationStatus =
+              (error.cause is Siesta.RequestError.Cause.RequestCancelled)
+              ? .notStarted
+              : .failed(error)
 
         default:
           break
