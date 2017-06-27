@@ -14,6 +14,7 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
   // Not a weak reference because there are no other references to it.
   @IBOutlet var addController: XTAddAccountController!
   @IBOutlet weak var accountsTable: NSTableView!
+  @IBOutlet weak var refreshButton: NSButton!
   
   var authStatusObserver: NSObjectProtocol?
   
@@ -32,6 +33,7 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
       [weak self] (_) in
       self?.accountsTable.reloadData()
     }
+    updateRefreshButton()
   }
   
   deinit
@@ -44,6 +46,11 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
   func savePreferences()
   {
     XTAccountsManager.manager.saveAccounts()
+  }
+  
+  func updateRefreshButton()
+  {
+    refreshButton.isEnabled = accountsTable.selectedRow != -1
   }
   
   func showError(_ message: String)
@@ -67,6 +74,7 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
                       user: self.addController.userName,
                       password: self.addController.password,
                       location: url as URL)
+      self.updateRefreshButton()
     }
   }
   
@@ -153,6 +161,28 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
   {
     XTAccountsManager.manager.accounts.remove(at: accountsTable.selectedRow)
     accountsTable.reloadData()
+    updateRefreshButton()
+  }
+  
+  @IBAction func refreshAccount(_ sender: Any)
+  {
+    let manager = XTAccountsManager.manager
+    let selectedRow = accountsTable.selectedRow
+    guard selectedRow >= 0 && selectedRow < manager.accounts.count
+    else { return }
+    let account = manager.accounts[selectedRow]
+    
+    switch account.type {
+      
+      case .teamCity:
+        guard let api = Services.shared.teamCityAPI(account)
+        else { break }
+      
+        api.attemptAuthentication()
+      
+      default:
+        break
+    }
   }
 }
 
@@ -164,27 +194,27 @@ extension XTAccountsPrefsController: NSTableViewDelegate
     var imageName: String?
     
     switch api.authenticationStatus {
-    case .unknown, .notStarted:
-      imageName = NSImageNameStatusNone
-    case .inProgress:
-      // eventually have a spinner instead
-      imageName = NSImageNameStatusPartiallyAvailable
-    case .done:
-      break
-    case .failed:
-      imageName = NSImageNameStatusUnavailable
+      case .unknown, .notStarted:
+        imageName = NSImageNameStatusNone
+      case .inProgress:
+        // eventually have a spinner instead
+        imageName = NSImageNameStatusPartiallyAvailable
+      case .done:
+        break
+      case .failed:
+        imageName = NSImageNameStatusUnavailable
     }
     if let imageName = imageName {
       return NSImage(named: imageName)
     }
     
     switch api.buildTypesStatus {
-    case .unknown, .notStarted, .inProgress:
-      imageName = NSImageNameStatusAvailable
-    case .done:
-      imageName = NSImageNameStatusAvailable
-    case .failed:
-      imageName = NSImageNameStatusPartiallyAvailable
+      case .unknown, .notStarted, .inProgress:
+        imageName = NSImageNameStatusAvailable
+      case .done:
+        imageName = NSImageNameStatusAvailable
+      case .failed:
+        imageName = NSImageNameStatusPartiallyAvailable
     }
     if let imageName = imageName {
       return NSImage(named: imageName)
@@ -205,30 +235,34 @@ extension XTAccountsPrefsController: NSTableViewDelegate
     let account = XTAccountsManager.manager.accounts[row]
     
     switch tableColumn.identifier {
-    case "service":
-      view.textField?.stringValue = account.type.displayName
-      view.imageView?.image = NSImage(named: account.type.imageName)
-    case "userName":
-      view.textField?.stringValue = account.user
-    case "location":
-      view.textField?.stringValue = account.location.absoluteString
-    case "status":
-      view.imageView?.isHidden = true
-      if account.type == .teamCity {
-        guard let api = Services.shared.teamCityAPI(account)
-        else { break }
-        
-        if let image = statusImage(forAPI: api) {
-          view.imageView?.image = image
-          view.imageView?.isHidden = false
+      case "service":
+        view.textField?.stringValue = account.type.displayName
+        view.imageView?.image = NSImage(named: account.type.imageName)
+      case "userName":
+        view.textField?.stringValue = account.user
+      case "location":
+        view.textField?.stringValue = account.location.absoluteString
+      case "status":
+        view.imageView?.isHidden = true
+        if account.type == .teamCity {
+          guard let api = Services.shared.teamCityAPI(account)
+          else { break }
+          
+          if let image = statusImage(forAPI: api) {
+            view.imageView?.image = image
+            view.imageView?.isHidden = false
+          }
         }
-      }
-    default:
-      return nil
+      default:
+        return nil
     }
     return view
   }
-
+  
+  func tableViewSelectionDidChange(_ notification: Notification)
+  {
+    updateRefreshButton()
+  }
 }
 
 

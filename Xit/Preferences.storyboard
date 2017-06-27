@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16B2657" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="601-dV-YQ8">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="601-dV-YQ8">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12118"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12121"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -249,7 +249,7 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="location" misplaced="YES" id="r6l-yh-y16">
-                                                            <rect key="frame" x="272.5" y="1" width="163.5" height="40"/>
+                                                            <rect key="frame" x="272" y="1" width="163" height="40"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aFo-aB-g7x">
@@ -360,11 +360,23 @@
                                     <action selector="removeAccount:" target="Cci-gq-oTU" id="cuB-pA-xqT"/>
                                 </connections>
                             </button>
+                            <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VM8-Bc-uXv">
+                                <rect key="frame" x="492" y="23" width="13" height="13"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSRefreshFreestandingTemplate" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="uTy-ct-vY8">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="refreshAccount:" target="Cci-gq-oTU" id="hv4-VX-euH"/>
+                                </connections>
+                            </button>
                         </subviews>
                     </customView>
                     <connections>
                         <outlet property="accountsTable" destination="Oye-G2-o9B" id="3zf-Es-MVQ"/>
                         <outlet property="addController" destination="bFL-Vc-PZs" id="SGR-hB-phZ"/>
+                        <outlet property="refreshButton" destination="VM8-Bc-uXv" id="Br9-Ke-0WR"/>
                     </connections>
                 </viewController>
                 <customObject id="3gg-pN-ygD" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -381,7 +393,7 @@
                     <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                     <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                     <rect key="contentRect" x="2843" y="305" width="322" height="181"/>
-                    <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+                    <rect key="screenRect" x="2560" y="0.0" width="2560" height="1417"/>
                     <view key="contentView" id="GRJ-t9-jrb">
                         <rect key="frame" x="0.0" y="0.0" width="322" height="181"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -613,13 +625,13 @@ Gw
                             </textField>
                             <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4Q8-H4-uZE">
                                 <rect key="frame" x="167" y="145" width="53" height="26"/>
-                                <popUpButtonCell key="cell" type="push" title="0" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="fhQ-AO-OUQ" id="ZYw-ls-7Tt">
+                                <popUpButtonCell key="cell" type="push" title="0" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="fhQ-AO-OUQ" id="ZYw-ls-7Tt">
                                     <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="menu"/>
                                     <menu key="menu" id="0a2-1i-C6G">
                                         <items>
-                                            <menuItem title="0" id="fhQ-AO-OUQ"/>
-                                            <menuItem title="3" state="on" id="jnR-W7-SOv"/>
+                                            <menuItem title="0" state="on" id="fhQ-AO-OUQ"/>
+                                            <menuItem title="3" id="jnR-W7-SOv"/>
                                             <menuItem title="6" id="YKd-cr-74L"/>
                                             <menuItem title="12" id="cKO-Lf-zdi"/>
                                             <menuItem title="25" id="0Hp-US-aDE"/>
@@ -680,6 +692,7 @@ Gw
         <image name="NSActionTemplate" width="14" height="14"/>
         <image name="NSAddTemplate" width="11" height="11"/>
         <image name="NSFolder" width="32" height="32"/>
+        <image name="NSRefreshFreestandingTemplate" width="14" height="14"/>
         <image name="NSRemoveTemplate" width="11" height="11"/>
         <image name="NSStatusAvailable" width="16" height="16"/>
         <image name="NSUserAccounts" width="32" height="32"/>
