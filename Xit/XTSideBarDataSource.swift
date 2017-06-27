@@ -74,6 +74,12 @@ class XTSideBarDataSource: NSObject
         myself.outline.reloadItem(myself.roots[XTGroupIndex.branches.rawValue],
                                   reloadChildren: true)
       }
+      observers.addObserver(
+          forName: .XTRepositoryConfigChanged,
+          object: repo, queue: .main) {
+        [weak self] (_) in
+        self?.reload()
+      }
       reload()
     }
   }
@@ -438,6 +444,7 @@ class XTSideBarDataSource: NSObject
   }
 }
 
+// MARK: BuildStatusClient
 extension XTSideBarDataSource: BuildStatusClient
 {
   func buildStatusUpdated(branch: String, buildType: String)
@@ -536,6 +543,7 @@ extension XTSideBarDataSource: TeamCityAccessor
   }
 }
 
+// MARK: NSPopoverDelegate
 extension XTSideBarDataSource: NSPopoverDelegate
 {
   func popoverDidClose(_ notification: Notification)

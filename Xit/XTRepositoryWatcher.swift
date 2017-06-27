@@ -12,6 +12,7 @@ let XTChangedRefsKey = "changedRefs"
   // stream must be var because we have to reference self to initialize it.
   var stream: FileEventStream! = nil
   var packedRefsWatcher: XTFileMonitor?
+  var configWatcher: XTFileMonitor?
   
   private var lastIndexChangeGuarded = Date()
   var lastIndexChange: Date
@@ -52,12 +53,14 @@ let XTChangedRefsKey = "changedRefs"
   
     self.stream = stream
     makePackedRefsWatcher()
+    makeConfigWatcher()
   }
   
   func stop()
   {
     stream.stop()
     packedRefsWatcher = nil
+    configWatcher = nil
   }
   
   func makePackedRefsWatcher()
@@ -69,6 +72,17 @@ let XTChangedRefsKey = "changedRefs"
     self.packedRefsWatcher?.notifyBlock = {
       [weak self] (_, _) in
       self?.checkRefs()
+    }
+  }
+  
+  func makeConfigWatcher()
+  {
+    let path = repository.gitDirectoryURL.path
+    
+    configWatcher = XTFileMonitor(path: path.appending(pathComponent: "config"))
+    configWatcher?.notifyBlock = {
+      [weak self] (_, _) in
+      self?.checkConfig()
     }
   }
   
@@ -184,6 +198,11 @@ let XTChangedRefsKey = "changedRefs"
     }
     
     refsCache = newRefCache
+  }
+  
+  func checkConfig()
+  {
+    post(.XTRepositoryConfigChanged)
   }
   
   func checkLogs(_ changedPaths: [String])
