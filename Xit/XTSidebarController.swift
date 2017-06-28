@@ -327,7 +327,22 @@ class XTSidebarController: NSViewController, SidebarHandler
   {
     callCommand(errorString: "Checkout failed") {
       (item) in
-      try self.repo.checkout(branch: item.title)
+      do {
+        try self.repo.checkout(branch: item.title)
+      }
+      catch let error as NSError
+            where error.domain == GTGitErrorDomain &&
+                  error.gitError == GIT_ECONFLICT {
+        DispatchQueue.main.async {
+          let alert = NSAlert()
+          
+          alert.messageText =
+              "Checkout failed because of a conflict with local changes."
+          alert.informativeText =
+              "Revert or stash your changes and try again."
+          alert.beginSheetModal(for: self.view.window!, completionHandler: nil)
+        }
+      }
     }
   }
   

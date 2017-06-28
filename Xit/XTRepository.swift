@@ -163,8 +163,10 @@ public class XTRepository: NSObject
       throw Error.alreadyWriting
     }
     updateIsWriting(true)
+    defer {
+      updateIsWriting(false)
+    }
     try block()
-    updateIsWriting(false)
   }
   
   func clearCachedBranch()

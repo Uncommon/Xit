@@ -76,6 +76,14 @@ extension String
   }
 }
 
+extension NSError
+{
+  var gitError: git_error_code
+  {
+    return git_error_code(Int32(code))
+  }
+}
+
 extension XMLElement
 {
   /// Returns the element's attributes as a dictionary.
