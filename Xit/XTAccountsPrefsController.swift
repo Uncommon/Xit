@@ -98,7 +98,8 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
         alert.addButton(withTitle: "Change")
         alert.addButton(withTitle: "Use existing")
         alert.addButton(withTitle: "Cancel")
-        alert.beginSheetModal(for: view.window!) { (response) in
+        alert.beginSheetModal(for: view.window!) {
+          (response) in
           switch response {
             case NSAlertFirstButtonReturn:
               self.finishAddAccount(action: .change, type: type, user: user,
@@ -227,11 +228,11 @@ extension XTAccountsPrefsController: NSTableViewDelegate
                  row: Int) -> NSView?
   {
     guard let tableColumn = tableColumn
-      else { return nil }
+    else { return nil }
     
     let view = tableView.make(withIdentifier: tableColumn.identifier,
                               owner: self)
-      as! NSTableCellView
+               as! NSTableCellView
     let account = XTAccountsManager.manager.accounts[row]
     
     switch tableColumn.identifier {
@@ -272,5 +273,4 @@ extension XTAccountsPrefsController: NSTableViewDataSource
   {
     return XTAccountsManager.manager.accounts.count
   }
-  
 }
