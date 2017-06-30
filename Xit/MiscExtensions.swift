@@ -271,14 +271,25 @@ extension Array
   
   func objects(at indexSet: IndexSet) -> [Element]
   {
-    return enumerated().filter({ indexSet.contains($0.offset) })
-                       .map { $0.element }
+    return indexSet.flatMap { $0 < count ? self[$0] : nil }
   }
   
   mutating func removeObjects(at indexSet: IndexSet)
   {
     self = enumerated().filter({ !indexSet.contains($0.offset) })
                        .map({ $0.element })
+  }
+  
+  /// Returns the first non-nil result of calling `predicate` on the array's
+  /// elements.
+  func firstResult<T>(_ predicate: (Element) -> T?) -> T?
+  {
+    for element in self {
+      if let result = predicate(element) {
+        return result
+      }
+    }
+    return nil
   }
 }
 

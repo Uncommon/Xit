@@ -113,6 +113,8 @@ public class XTLocalBranch: XTBranch
 
 public class XTRemoteBranch: XTBranch
 {
+  static let remotesPrefix = "refs/remotes/"
+
   init?(repository: XTRepository, name: String)
   {
     guard let gtBranch = try? repository.gtRepo.lookUpBranch(withName: name,

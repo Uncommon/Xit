@@ -1,7 +1,5 @@
 import Cocoa
 
-let tagPrefix = "refs/tags/"
-
 public protocol Tag
 {
   var name: String { get }
@@ -10,6 +8,8 @@ public protocol Tag
 
 public class XTTag: Tag
 {
+  static let tagPrefix = "refs/tags/"
+
   unowned let repository: XTRepository
   private let tag: GTTag?
   /// Tag name (without "refs/tags/")
@@ -31,10 +31,10 @@ public class XTTag: Tag
   /// or just the tag name itself.
   init?(repository: XTRepository, name: String)
   {
-    let refName = name.hasPrefix(tagPrefix) ? name : tagPrefix + name
+    let refName = name.hasPrefix(XTTag.tagPrefix) ? name : XTTag.tagPrefix + name
   
     self.repository = repository
-    self.name = name.removingPrefix(tagPrefix)
+    self.name = name.removingPrefix(XTTag.tagPrefix)
     
     guard let ref = try? repository.gtRepo.lookUpReference(withName: refName)
     else { return nil }

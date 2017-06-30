@@ -32,7 +32,18 @@ class XTSideBarItem: NSObject
   @objc(addChild:)  // Override default "addWithChild:"
   func add(child: XTSideBarItem)
   {
-    self.children.append(child)
+    children.append(child)
+  }
+  
+  func child(matching title: String) -> XTSideBarItem?
+  {
+    if let child = children.first(where: { $0.title == title }) {
+      return child
+    }
+    if let child = children.firstResult({ $0.child(matching: title) }) {
+      return child
+    }
+    return nil
   }
   
   override var description: String { return self.title }

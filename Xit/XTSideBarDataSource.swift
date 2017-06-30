@@ -247,6 +247,11 @@ class XTSideBarDataSource: NSObject
     return newRoots
   }
   
+  func rootItem(_ index: XTGroupIndex) -> XTSideBarItem
+  {
+    return roots[index.rawValue]
+  }
+  
   func parent(for branchPath: [String],
               under item: XTSideBarItem) -> XTSideBarItem
   {
@@ -357,7 +362,7 @@ class XTSideBarDataSource: NSObject
   {
     let group = roots[group.rawValue]
     
-    return group.children.first(where: { $0.title == name })
+    return group.child(matching: name)
   }
   
   func item(for button: NSButton) -> XTSideBarItem?

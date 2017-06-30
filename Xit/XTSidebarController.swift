@@ -199,20 +199,37 @@ class XTSidebarController: NSViewController, SidebarHandler
     observers.addObserver(
         forName: .XTSelectedModelChanged,
         object: repoController, queue: .main) {
-      [weak self, weak repoController] (_) in
-      guard let myself = self
-      else { return }
-      if let stashChanges = repoController?.selectedModel as? StashChanges {
-        for stashItem in myself.sidebarDS.roots[XTGroupIndex.stashes.rawValue]
-                         .children {
-          if let model = stashItem.model,
-             model == stashChanges {
-            myself.sidebarOutline.selectRowIndexes(
-                IndexSet(integer: myself.sidebarOutline.row(forItem: stashItem)),
-                byExtendingSelection: false)
-          }
-        }
-      }
+      [weak self] (_) in
+      self?.selectedModelChanged()
+    }
+  }
+  
+  func selectedModelChanged()
+  {
+    let repoController = view.window!.windowController as! XTWindowController
+
+    switch repoController.selectedModel {
+    
+      case let stashChanges as StashChanges:
+        let stashRoot = sidebarDS.roots[XTGroupIndex.stashes.rawValue]
+        guard let stashItem = stashRoot.children.first(where: {
+          $0.model.map({ (model) in model == stashChanges }) ?? false
+        })
+        else { break }
+        
+        self.sidebarOutline.selectRowIndexes(
+            IndexSet(integer: sidebarOutline.row(forItem: stashItem)),
+            byExtendingSelection: false)
+      
+      case let commitChanges as CommitChanges:
+        guard let ref = commitChanges.shaToSelect.map({ repo.refs(at: $0) })?
+                                                 .first
+        else { break }
+      
+        select(ref: ref)
+      
+      default:
+        break
     }
   }
   
@@ -234,20 +251,70 @@ class XTSidebarController: NSViewController, SidebarHandler
     return selection?.title
   }
   
-  @objc(selectBranch:)
-  func select(branch: String)
+  func selectItem(_ item: XTSideBarItem, group: XTGroupIndex)
   {
-    guard let branchItem = sidebarDS.item(named: branch, inGroup: .branches)
-    else { return }
-    
     sidebarOutline.expandItem(
-        sidebarOutline.item(atRow: XTGroupIndex.branches.rawValue))
+        sidebarOutline.item(atRow: group.rawValue))
     
-    let row = sidebarOutline.row(forItem: branchItem)
+    let row = sidebarOutline.row(forItem: item)
     
     if row != -1 {
       sidebarOutline.selectRowIndexes(IndexSet(integer: row),
                                       byExtendingSelection: false)
+    }
+  }
+  
+  func selectItem(name: String, group: XTGroupIndex)
+  {
+    sidebarDS.item(named: name, inGroup: group).map {
+      selectItem($0, group: group)
+    }
+  }
+  
+  @objc(selectBranch:)
+  func select(branch: String)
+  {
+    selectItem(name: branch, group: .branches)
+  }
+  
+  func select(remoteBranch: String)
+  {
+    let slices = remoteBranch.characters.split(separator: "/", maxSplits: 1)
+                                        .map { String($0) }
+    guard slices.count == 2
+    else { return }
+    let remote = slices[0]
+    let branch = slices[1]
+    let remotesGroup = sidebarDS.rootItem(.remotes)
+    guard let remoteItem = remotesGroup.children
+                                       .first(where: { $0.title == remote }),
+          let branchItem = remoteItem.child(matching: branch)
+    else { return }
+    
+    selectItem(branchItem, group: .remotes)
+  }
+  
+  func select(tag: String)
+  {
+    selectItem(name: tag, group: .tags)
+  }
+  
+  func select(ref: String)
+  {
+    switch ref {
+      
+      case let branchRef where branchRef.hasPrefix(XTLocalBranch.headsPrefix):
+        select(branch: branchRef.removingPrefix(XTLocalBranch.headsPrefix))
+      
+      case let remoteRef where remoteRef.hasPrefix(XTRemoteBranch.remotesPrefix):
+        select(remoteBranch:
+            remoteRef.removingPrefix(XTRemoteBranch.remotesPrefix))
+      
+      case let tagRef where tagRef.hasPrefix(XTTag.tagPrefix):
+        select(tag: tagRef.removingPrefix(XTTag.tagPrefix))
+      
+      default:
+        break
     }
   }
   
