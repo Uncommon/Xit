@@ -99,7 +99,7 @@ public class XTHistoryTableController: NSViewController
         return
       }
       
-      walker.reset(options: [.topologicalSort, .timeSort])
+      walker.reset(options: [.topologicalSort])
       
       let refs = repository.allRefs()
       
