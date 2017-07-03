@@ -6,7 +6,7 @@ public class XTHistoryTableController: NSViewController
   {
     static let commit = "commit"
     static let date = "date"
-    static let email = "email"
+    static let name = "name"
   }
   
   let observers = ObserverCollection()
@@ -187,8 +187,21 @@ extension XTHistoryTableController: NSTableViewDelegate
         historyCell.objectValue = entry
       case ColumnID.date:
         (result as! DateCellView).date = entry.commit.commitDate
-      case ColumnID.email:
-        result.textField?.stringValue = entry.commit.email ?? ""
+      case ColumnID.name:
+        var text: String
+        
+        if let name = entry.commit.authorName {
+          if let email = entry.commit.authorEmail {
+            text = "\(name) <\(email)>"
+          }
+          else {
+            text = name
+          }
+        }
+        else {
+          text = entry.commit.authorEmail ?? "—"
+        }
+        result.textField?.stringValue = text
       default:
         return nil
     }
