@@ -74,6 +74,8 @@ public class XTHistoryTableController: NSViewController
         self?.selectRow(sha: selectedModel.shaToSelect)
       }
     }
+    
+    history.postProgress = self.postProgress(_:iteration:)
   }
   
   /// Reloads the commit history from scratch.
@@ -121,6 +123,23 @@ public class XTHistoryTableController: NSViewController
         tableView?.reloadData()
         self.ensureSelection()
       }
+    }
+  }
+  
+  func postProgress(_ value: Int, iteration: Int)
+  {
+    let totalIterations = 2
+    let totalCount = history.entries.count * totalIterations
+    let step = totalCount / 100
+    let totalValue = (iteration-1) * history.entries.count + value
+    
+    if (step == 0) || (totalValue % step == 0) {
+      let progressNote = Notification.progressNotification(
+        repository: repository,
+        progress: Float(totalValue),
+        total: Float(totalCount))
+      
+      NotificationCenter.default.post(progressNote)
     }
   }
   
