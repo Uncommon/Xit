@@ -138,6 +138,8 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
   var commitLookup = [ID: Entry]()
   var entries = [Entry]()
   
+  var postProgress: ((Int, Int) -> Void)?
+  
   /// Manually appends a commit.
   func appendCommit(_ commit: C)
   {
@@ -321,11 +323,12 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
       newConnectionsList.append(connections)
       connections = connections.filter { $0.parentOID != commitOID }
       
-      postProgress(index)
+      postProgress?(index, 1)
     }
     
     DispatchQueue.concurrentPerform(iterations: entries.count) {
       (index) in
+      postProgress?(index, 2)
       entries[index].connections = newConnectionsList[index]
     }
 #if DEBUGLOG
@@ -334,21 +337,5 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
       connections.forEach({ print($0.childOID.SHA.firstSix()) })
     }
 #endif
-  }
-  
-  func postProgress(_ value: Int)
-  {
-    let step = entries.count / 100
-    
-    // TODO: Avoid the XTRepository cast
-    if (step == 0) || (value % step == 0),
-       let repo = repository as? XTRepository {
-      let progressNote = Notification.progressNotification(
-            repository: repo,
-            progress: Float(value),
-            total: Float(entries.count))
-      
-      NotificationCenter.default.post(progressNote)
-    }
   }
 }
