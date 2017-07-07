@@ -108,6 +108,8 @@
 		C936AD0A1D4C0CD400C5ADC3 /* XTPushController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C936AD091D4C0CD400C5ADC3 /* XTPushController.swift */; };
 		C936AD0C1D4C0FA900C5ADC3 /* XTPasswordOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C936AD0B1D4C0FA900C5ADC3 /* XTPasswordOpController.swift */; };
 		C93799D51DDF9B28005C08B8 /* WorkspaceWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */; };
+		C93FFCAA1F0FD65100FDDD78 /* Defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = C93FFCA91F0FD65100FDDD78 /* Defaults.plist */; };
+		C93FFCB91F0FDAC700FDDD78 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93FFCB81F0FDAC700FDDD78 /* Preferences.swift */; };
 		C94103801EBDFABC002C80DC /* XTSideBarDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C941037F1EBDFABC002C80DC /* XTSideBarDataSourceTests.swift */; };
 		C94154A01ED4ECF40030E481 /* BuildStatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C941549E1ED4ECF30030E481 /* BuildStatusViewController.swift */; };
 		C94154A11ED4ECF40030E481 /* BuildStatusViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C941549F1ED4ECF30030E481 /* BuildStatusViewController.xib */; };
@@ -469,6 +471,8 @@
 		C936AD091D4C0CD400C5ADC3 /* XTPushController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPushController.swift; sourceTree = "<group>"; };
 		C936AD0B1D4C0FA900C5ADC3 /* XTPasswordOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPasswordOpController.swift; sourceTree = "<group>"; };
 		C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceWatcher.swift; sourceTree = "<group>"; };
+		C93FFCA91F0FD65100FDDD78 /* Defaults.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Defaults.plist; sourceTree = "<group>"; };
+		C93FFCB81F0FDAC700FDDD78 /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		C941037F1EBDFABC002C80DC /* XTSideBarDataSourceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSideBarDataSourceTests.swift; sourceTree = "<group>"; };
 		C941549E1ED4ECF30030E481 /* BuildStatusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuildStatusViewController.swift; sourceTree = "<group>"; };
 		C941549F1ED4ECF30030E481 /* BuildStatusViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BuildStatusViewController.xib; sourceTree = "<group>"; };
@@ -829,6 +833,7 @@
 				C9C773151D26F28900329493 /* Preferences */,
 				C929D0541D42784000D7DC52 /* Services */,
 				C90F92771E0199E400FE8589 /* AppDelegate.swift */,
+				C93FFCA91F0FD65100FDDD78 /* Defaults.plist */,
 				C95355FB1D9492EA00AEEF49 /* XTDocumentController.swift */,
 				DD07B08316B2005B0012AC19 /* XTConstants.h */,
 				C951EB081DDBB77E00B99FBE /* XTConstants.m */,
@@ -1050,6 +1055,7 @@
 				C9ABDB2E1E0AE72600CBD8D8 /* PrefsTabViewController.swift */,
 				C9ABDB1F1E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift */,
 				C9DAB5D21D4A8D2000586854 /* Preferences.storyboard */,
+				C93FFCB81F0FDAC700FDDD78 /* Preferences.swift */,
 			);
 			name = Preferences;
 			sourceTree = "<group>";
@@ -1332,6 +1338,7 @@
 				895869C11D088A46003A9AF0 /* tagTemplate@2x.png in Resources */,
 				C9D74CC11D92E62200C5626E /* viewSidebarTemplate.png in Resources */,
 				894C8D941CA44A44001A4B80 /* stagingTemplate@2x.png in Resources */,
+				C93FFCAA1F0FD65100FDDD78 /* Defaults.plist in Resources */,
 				C9DAB5D31D4A8D2000586854 /* Preferences.storyboard in Resources */,
 				895869BF1D088A46003A9AF0 /* submoduleTemplate@2x.png in Resources */,
 				DDA8A63A17F5B6CE00AD9808 /* added.png in Resources */,
@@ -1489,6 +1496,7 @@
 				C9A58EED1EE5DD4800E37A31 /* TaskQueue.swift in Sources */,
 				89C927751D36A2180074F71A /* XTSubmodule.swift in Sources */,
 				896A29F71E4C3620002C5EC8 /* PreviewItem.swift in Sources */,
+				C93FFCB91F0FDAC700FDDD78 /* Preferences.swift in Sources */,
 				C9ABDB2F1E0AE72600CBD8D8 /* PrefsTabViewController.swift in Sources */,
 				C932110C1E48E92C00232B61 /* FileTreeDataSource.swift in Sources */,
 				899DB1A21CE5022400760270 /* XTCommitEntryController.swift in Sources */,

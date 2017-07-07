@@ -102,6 +102,12 @@ extension AppDelegate: NSApplicationDelegate
   {
     // The first NSDocumentController instance becomes the shared one.
     _ = XTDocumentController()
+    
+    let defaultsURL = Bundle.main.url(forResource: "Defaults",
+                                      withExtension: "plist")!
+    let defaults = NSDictionary(contentsOf: defaultsURL)!
+    
+    UserDefaults.standard.register(defaults: defaults as! [String : Any])
   }
   
   func applicationDidFinishLaunching(_ note: Notification)

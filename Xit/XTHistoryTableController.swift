@@ -11,6 +11,8 @@ public class XTHistoryTableController: NSViewController
   
   let observers = ObserverCollection()
 
+  var tableView: NSTableView { return view as! NSTableView }
+
   weak var repository: XTRepository!
   {
     didSet
@@ -81,8 +83,6 @@ public class XTHistoryTableController: NSViewController
   /// Reloads the commit history from scratch.
   public func reload()
   {
-    let tableView = view as! NSTableView
-    
     loadHistory()
     tableView.reloadData()
   }
@@ -175,6 +175,36 @@ public class XTHistoryTableController: NSViewController
       tableView.scrollRowToCenter(row)
     }
   }
+  
+  public func refreshText()
+  {
+    for rowIndex in tableView.visibleRows() {
+      guard let rowView = tableView.rowView(atRow: rowIndex,
+                                            makeIfNecessary: false)
+      else { continue }
+      
+      for column in 0..<rowView.numberOfColumns {
+        guard let cellView = rowView.view(atColumn: column) as? NSTableCellView
+        else { continue }
+        
+        setCellTextColor(cellView, index: rowIndex)
+      }
+    }
+  }
+  
+  func setCellTextColor(_ cellView: NSTableCellView, index: Int)
+  {
+    let entry = history.entries[index]
+    
+    if let textField = cellView.textField {
+      let deemphasize = (entry.commit.parentOIDs.count > 1) &&
+          Preferences.deemphasizeMerges
+      
+      textField.textColor = deemphasize
+          ? NSColor.disabledControlTextColor
+          : NSColor.controlTextColor
+    }
+  }
 }
 
 extension XTHistoryTableController: NSTableViewDelegate
@@ -224,6 +254,9 @@ extension XTHistoryTableController: NSTableViewDelegate
       default:
         return nil
     }
+    
+    setCellTextColor(result, index: row)
+    
     return result
   }
  

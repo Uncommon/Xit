@@ -240,6 +240,17 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     }
   }
   
+  func redrawAllHistoryLists()
+  {
+    for document in NSDocumentController.shared().documents {
+      guard let windowController = document.windowControllers.first
+                                   as? XTWindowController
+      else { continue }
+      
+      windowController.historyController.tableController.refreshText()
+    }
+  }
+  
   override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
   {
     guard let action = menuItem.action
@@ -275,6 +286,11 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
         result = true
         menuItem.state = historyController.mainSplitView.isVertical
             ? NSOffState : NSOnState
+
+      case #selector(self.deemphasizeMerges(_:)):
+        result = true
+        menuItem.state = Preferences.deemphasizeMerges
+            ? NSOnState : NSOffState
 
       case #selector(self.remoteSettings(_:)):
         result = true
