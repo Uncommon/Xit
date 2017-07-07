@@ -563,7 +563,7 @@ class XTFileViewController: NSViewController
     showingStaged = false
   }
 
-  @IBAction func stageUnstageAll(_ sender: Any?)
+  @IBAction func stageSegmentClicked(_ sender: AnyObject?)
   {
     guard let segmentControl = sender as? NSSegmentedControl
     else { return }
@@ -571,6 +571,7 @@ class XTFileViewController: NSViewController
     switch segmentControl.selectedSegment {
       case 0: unstageAll(sender)
       case 1: stageAll(sender)
+      case 2: revert(sender)
       default: break
     }
   }
@@ -579,7 +580,7 @@ class XTFileViewController: NSViewController
   {
   }
 
-  @IBAction func revert(_: AnyObject)
+  @IBAction func revert(_: AnyObject?)
   {
     guard let change = selectedChange()
     else { return }
