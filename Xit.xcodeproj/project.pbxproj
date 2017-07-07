@@ -110,6 +110,7 @@
 		C93799D51DDF9B28005C08B8 /* WorkspaceWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */; };
 		C93FFCAA1F0FD65100FDDD78 /* Defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = C93FFCA91F0FD65100FDDD78 /* Defaults.plist */; };
 		C93FFCB91F0FDAC700FDDD78 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93FFCB81F0FDAC700FDDD78 /* Preferences.swift */; };
+		C93FFCBB1F104AD700FDDD78 /* FileViewController+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93FFCBA1F104AD700FDDD78 /* FileViewController+Actions.swift */; };
 		C94103801EBDFABC002C80DC /* XTSideBarDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C941037F1EBDFABC002C80DC /* XTSideBarDataSourceTests.swift */; };
 		C94154A01ED4ECF40030E481 /* BuildStatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C941549E1ED4ECF30030E481 /* BuildStatusViewController.swift */; };
 		C94154A11ED4ECF40030E481 /* BuildStatusViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C941549F1ED4ECF30030E481 /* BuildStatusViewController.xib */; };
@@ -473,6 +474,7 @@
 		C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceWatcher.swift; sourceTree = "<group>"; };
 		C93FFCA91F0FD65100FDDD78 /* Defaults.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Defaults.plist; sourceTree = "<group>"; };
 		C93FFCB81F0FDAC700FDDD78 /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
+		C93FFCBA1F104AD700FDDD78 /* FileViewController+Actions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileViewController+Actions.swift"; sourceTree = "<group>"; };
 		C941037F1EBDFABC002C80DC /* XTSideBarDataSourceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSideBarDataSourceTests.swift; sourceTree = "<group>"; };
 		C941549E1ED4ECF30030E481 /* BuildStatusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuildStatusViewController.swift; sourceTree = "<group>"; };
 		C941549F1ED4ECF30030E481 /* BuildStatusViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BuildStatusViewController.xib; sourceTree = "<group>"; };
@@ -1083,6 +1085,7 @@
 			isa = PBXGroup;
 			children = (
 				C94736791DEF5CA8000E3A05 /* FileViewController.swift */,
+				C93FFCBA1F104AD700FDDD78 /* FileViewController+Actions.swift */,
 				DD997DF71746F40D00C7DF82 /* FileViewController.xib */,
 				C935BD7C1E8AB16F00BE51F0 /* File List */,
 				C935BD6E1E8AB13400BE51F0 /* Previews */,
@@ -1523,6 +1526,7 @@
 				C954ABFD1D34455000302160 /* XTBranch.swift in Sources */,
 				C929D0601D42785B00D7DC52 /* TeamCityAPI.swift in Sources */,
 				C94736821DF097B2000E3A05 /* FileListView.swift in Sources */,
+				C93FFCBB1F104AD700FDDD78 /* FileViewController+Actions.swift in Sources */,
 				89C927781D36A5890074F71A /* XTTag.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
