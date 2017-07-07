@@ -75,8 +75,9 @@ extension XTRepository
   func stagingChanges() -> [FileChange]
   {
     var result = [FileStaging]()
-    let options = [GTRepositoryStatusOptionsFlagsKey:
-                   UInt(GTRepositoryStatusFlagsIncludeUntracked.rawValue)]
+    let flags = GTRepositoryStatusFlagsIncludeUntracked.rawValue |
+                GTRepositoryStatusFlagsRecurseUntrackedDirectories.rawValue
+    let options = [GTRepositoryStatusOptionsFlagsKey: UInt(flags)]
     
     try? gtRepo.enumerateFileStatus(options: options) {
       (headToIndex, indexToWorking, _) in
