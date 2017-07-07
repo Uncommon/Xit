@@ -62,7 +62,7 @@ extension GTDiffHunk
   /// than the raw text to more efficiently query multiple hunks on one file.
   func canApply(to lines: [String]) -> Bool
   {
-    guard Int(oldStart - 1 + oldLines) <= lines.count
+    guard (oldLines == 0) || (Int(oldStart - 1 + oldLines) <= lines.count)
     else { return false }
     
     do {
@@ -78,7 +78,8 @@ extension GTDiffHunk
         }
       }
       
-      let targetLineStart = Int(oldStart) - 1
+      // oldStart and oldLines are 0 if the old file is empty
+      let targetLineStart = max(Int(oldStart) - 1, 0)
       let targetLineCount = Int(self.oldLines)
       let replaceRange = targetLineStart..<(targetLineStart+targetLineCount)
       
@@ -102,9 +103,9 @@ extension String
     {
       switch self
       {
-      case .crlf: return "\r\n"
-      case .lf:   return "\n"
-      case .unknown: return "\n"
+        case .crlf: return "\r\n"
+        case .lf:   return "\n"
+        case .unknown: return "\n"
       }
     }
   }
