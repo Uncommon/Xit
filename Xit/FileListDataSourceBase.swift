@@ -4,7 +4,7 @@ import Foundation
 class FileListDataSourceBase: NSObject
 {
   @IBOutlet weak var outlineView: NSOutlineView!
-  @IBOutlet weak var controller: XTFileViewController!
+  @IBOutlet weak var controller: FileViewController!
   
   let observers = ObserverCollection()
   

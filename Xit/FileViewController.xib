@@ -7,7 +7,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="XTFileViewController" customModule="Xit" customModuleProvider="target">
+        <customObject id="-2" userLabel="File's Owner" customClass="FileViewController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="actionButton" destination="gNu-NG-LYe" id="8EA-bg-zQa"/>
                 <outlet property="blameController" destination="qWY-M6-3vs" id="73d-3e-UiG"/>

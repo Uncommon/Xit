@@ -31,7 +31,7 @@ protocol ContextVariable: class
 }
 
 /// View controller for the file list and detail view.
-class XTFileViewController: NSViewController
+class FileViewController: NSViewController
 {
   /// Column identifiers for the file list
   struct ColumnID
@@ -778,7 +778,7 @@ class XTFileViewController: NSViewController
 }
 
 // MARK: NSOutlineViewDelegate
-extension XTFileViewController: NSOutlineViewDelegate
+extension FileViewController: NSOutlineViewDelegate
 {
   private func image(forChange change: XitChange) -> NSImage?
   {
@@ -912,7 +912,7 @@ extension XTFileViewController: NSOutlineViewDelegate
 }
 
 // MARK: NSSplitViewDelegate
-extension XTFileViewController: NSSplitViewDelegate
+extension FileViewController: NSSplitViewDelegate
 {
   public func splitView(_ splitView: NSSplitView,
                         shouldAdjustSizeOfSubview view: NSView) -> Bool
@@ -929,7 +929,7 @@ extension XTFileViewController: NSSplitViewDelegate
 }
 
 // MARK: HunkStaging
-extension XTFileViewController: HunkStaging
+extension FileViewController: HunkStaging
 {
   func patchIndexFile(hunk: GTDiffHunk, stage: Bool)
   {
