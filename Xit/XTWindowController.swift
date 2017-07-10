@@ -469,13 +469,13 @@ extension XTWindowController: NSTouchBarDelegate
         return touchBarButton(
             identifier: identifier, title: "« Unstage All", image: nil,
             target: historyController.fileViewController,
-            action: #selector(XTFileViewController.unstageAll(_:)))
+            action: #selector(FileViewController.unstageAll(_:)))
       
       case NSTouchBarItemIdentifier.stageAll:
         return touchBarButton(
             identifier: identifier, title: "» Stage All", image: nil,
             target: historyController.fileViewController,
-            action: #selector(XTFileViewController.stageAll(_:)))
+            action: #selector(FileViewController.stageAll(_:)))
 
       default:
         return nil

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12118"/>
-        <plugIn identifier="com.apple.WebKitIBPlugin" version="12118"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12121"/>
+        <plugIn identifier="com.apple.WebKitIBPlugin" version="12121"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="XTFileViewController" customModule="Xit" customModuleProvider="target">
+        <customObject id="-2" userLabel="File's Owner" customClass="FileViewController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="actionButton" destination="gNu-NG-LYe" id="8EA-bg-zQa"/>
                 <outlet property="blameController" destination="qWY-M6-3vs" id="73d-3e-UiG"/>
@@ -377,17 +377,18 @@
                                     </buttonCell>
                                 </button>
                                 <segmentedControl hidden="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0gj-go-0vi">
-                                    <rect key="frame" x="-1" y="-2" width="67" height="23"/>
+                                    <rect key="frame" x="-1" y="-2" width="100" height="23"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="momentary" id="cKC-Gc-Or8">
                                         <font key="font" metaFont="system" size="19"/>
                                         <segments>
                                             <segment label="«" toolTip="Unstage All" width="32"/>
                                             <segment label="»" toolTip="Stage All" width="32" tag="1"/>
+                                            <segment label="⤺" toolTip="Revert" width="32"/>
                                         </segments>
                                     </segmentedCell>
                                     <connections>
-                                        <action selector="stageUnstageAll:" target="-2" id="6Ef-69-xt2"/>
+                                        <action selector="stageSegmentClicked:" target="-2" id="w7I-0L-GYr"/>
                                     </connections>
                                 </segmentedControl>
                             </subviews>

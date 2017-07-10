@@ -31,7 +31,7 @@ protocol ContextVariable: class
 }
 
 /// View controller for the file list and detail view.
-class XTFileViewController: NSViewController
+class FileViewController: NSViewController
 {
   /// Column identifiers for the file list
   struct ColumnID
@@ -60,6 +60,13 @@ class XTFileViewController: NSViewController
     static let preview = "preview"
     
     static let allIDs = [ diff, blame, text, preview ]
+  }
+  
+  enum StagingSegment: Int
+  {
+    case unstageAll
+    case stageAll
+    case revert
   }
 
   @IBOutlet weak var headerSplitView: NSSplitView!
@@ -495,98 +502,6 @@ class XTFileViewController: NSViewController
     alert.beginSheetModal(for: view.window!, completionHandler: nil)
   }
 
-  // MARK: Actions
-
-  @IBAction func changeStageView(_ sender: Any?)
-  {
-    guard let segmentedControl = sender as? NSSegmentedControl
-    else { return }
-    
-    showingStaged = segmentedControl.selectedSegment == 1
-  }
-
-  @IBAction func stageClicked(_ sender: Any?)
-  {
-    guard let button = sender as? NSButton
-    else { return }
-  
-    click(button: button, staging: true)
-  }
-  
-  @IBAction func unstageClicked(_ sender: Any?)
-  {
-    guard let button = sender as? NSButton
-    else { return }
-    
-    click(button: button, staging: false)
-  }
-
-  @IBAction func changeFileListView(_: Any?)
-  {
-    let newDS = (viewSelector.selectedSegment == 0 ? fileChangeDS : fileTreeDS)
-                as FileListDataSource & NSOutlineViewDataSource
-    let columnID = newDS.hierarchical ? ColumnID.main : ColumnID.hidden
-    
-    fileListOutline.outlineTableColumn =
-        fileListOutline.tableColumn(withIdentifier: columnID)
-    fileListOutline.delegate = self
-    fileListOutline.dataSource = newDS
-    if newDS.outlineView!(fileListOutline, numberOfChildrenOfItem: nil) == 0 {
-      newDS.reload()
-    }
-    else {
-      fileListOutline.reloadData()
-    }
-  }
-  
-  @IBAction func changeContentView(_ sender: Any?)
-  {
-    guard let segmentedControl = sender as? NSSegmentedControl
-    else { return }
-    
-    let selection = segmentedControl.selectedSegment
-    
-    previewTabView.selectTabViewItem(withIdentifier: TabID.allIDs[selection])
-    contentController = contentControllers[selection]
-    loadSelectedPreview()
-  }
-
-  @IBAction func stageAll(_: Any?)
-  {
-    try? repo?.stageAllFiles()
-    showingStaged = true
-  }
-  
-  @IBAction func unstageAll(_: Any?)
-  {
-    try? repo?.unstageAllFiles()
-    showingStaged = false
-  }
-
-  @IBAction func stageUnstageAll(_ sender: Any?)
-  {
-    guard let segmentControl = sender as? NSSegmentedControl
-    else { return }
-    
-    switch segmentControl.selectedSegment {
-      case 0: unstageAll(sender)
-      case 1: stageAll(sender)
-      default: break
-    }
-  }
-  
-  @IBAction func showIgnored(_: Any?)
-  {
-  }
-
-  @IBAction func revert(_: AnyObject)
-  {
-    guard let change = selectedChange()
-    else { return }
-    
-    revert(path: change.path)
-  }
-  
   func revertConfirmed(path: String)
   {
     do {
@@ -601,154 +516,6 @@ class XTFileViewController: NSViewController
     catch {
       NSLog("Unexpected revert error")
     }
-  }
-  
-  override open func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
-  {
-    guard let action = menuItem.action
-    else { return false }
-    
-    switch action {
-      case #selector(self.revert(_:)):
-        guard let change = selectedChange()
-        else { return false }
-        
-        switch change.unstagedChange {
-          case .unmodified: fallthrough  // No changes to revert
-          case .untracked:               // Nothing to revert to
-            return false
-          default:
-            return true
-        }
-      
-      case #selector(self.showWhitespaceChanges(_:)):
-        return valitadeWhitespaceMenuItem(menuItem, whitespace: .showAll)
-      case #selector(self.ignoreEOLWhitespace(_:)):
-        return valitadeWhitespaceMenuItem(menuItem, whitespace: .ignoreEOL)
-      case #selector(self.ignoreAllWhitespace(_:)):
-        return valitadeWhitespaceMenuItem(menuItem, whitespace: .ignoreAll)
-      
-      case #selector(self.tabWidth2(_:)):
-        return validateTabMenuItem(menuItem, width: 2)
-      case #selector(self.tabWidth4(_:)):
-        return validateTabMenuItem(menuItem, width: 4)
-      case #selector(self.tabWidth6(_:)):
-        return validateTabMenuItem(menuItem, width: 6)
-      case #selector(self.tabWidth8(_:)):
-        return validateTabMenuItem(menuItem, width: 8)
-      
-      case #selector(self.context0(_:)):
-        return validateContextLinesMenuItem(menuItem, context: 0)
-      case #selector(self.context3(_:)):
-        return validateContextLinesMenuItem(menuItem, context: 3)
-      case #selector(self.context6(_:)):
-        return validateContextLinesMenuItem(menuItem, context: 6)
-      case #selector(self.context12(_:)):
-        return validateContextLinesMenuItem(menuItem, context: 12)
-      case #selector(self.context25(_:)):
-        return validateContextLinesMenuItem(menuItem, context: 25)
-      
-      default:
-        return true
-    }
-  }
-  
-  func valitadeWhitespaceMenuItem(_ item: NSMenuItem,
-                                  whitespace: WhitespaceSetting) -> Bool
-  {
-    guard let wsController = contentController as? WhitespaceVariable
-    else {
-      item.state = NSOffState
-      return false
-    }
-    
-    item.state = (wsController.whitespace == whitespace) ? NSOnState : NSOffState
-    return true
-  }
-  
-  func validateTabMenuItem(_ item: NSMenuItem, width: UInt) -> Bool
-  {
-    guard let tabController = contentController as? TabWidthVariable
-    else {
-      item.state = NSOffState
-      return false
-    }
-    
-    item.state = (tabController.tabWidth == width) ? NSOnState : NSOffState
-    return true
-  }
-  
-  func validateContextLinesMenuItem(_ item: NSMenuItem, context: UInt) -> Bool
-  {
-    guard let contextController = contentController as? ContextVariable
-    else {
-      item.state = NSOffState
-      return false
-    }
-    
-    item.state = (contextController.contextLines == context) ? NSOnState
-                                                             : NSOffState
-    return true
-  }
-  
-  @IBAction func showWhitespaceChanges(_ sender: Any?)
-  {
-    setWhitespace(.showAll)
-  }
-  
-  @IBAction func ignoreEOLWhitespace(_ sender: Any?)
-  {
-    setWhitespace(.ignoreEOL)
-  }
-  
-  @IBAction func ignoreAllWhitespace(_ sender: Any?)
-  {
-    setWhitespace(.ignoreAll)
-  }
-  
-  @IBAction func tabWidth2(_ sender: Any?)
-  {
-    setTabWidth(2)
-  }
-  
-  @IBAction func tabWidth4(_ sender: Any?)
-  {
-    setTabWidth(4)
-  }
-  
-  @IBAction func tabWidth6(_ sender: Any?)
-  {
-    setTabWidth(6)
-  }
-  
-  @IBAction func tabWidth8(_ sender: Any?)
-  {
-    setTabWidth(8)
-  }
-  
-  @IBAction func context0(_ sender: Any?)
-  {
-    setContext(0)
-  }
-  
-  @IBAction func context3(_ sender: Any?)
-  {
-    setContext(3)
-  }
-  
-  @IBAction func context6(_ sender: Any?)
-  {
-    setContext(6)
-  }
-  
-  @IBAction func context12(_ sender: Any?)
-  {
-    setContext(12)
-  }
-  
-  @IBAction func context25(_ sender: Any?)
-  {
-    setContext(25)
   }
   
   func setWhitespace(_ setting: WhitespaceSetting)
@@ -774,10 +541,20 @@ class XTFileViewController: NSViewController
     
     contextController.contextLines = context
   }
+  
+  func updateStagingSegment()
+  {
+    let segment = ValidatedSegment(control: stageButtons,
+                                   index: StagingSegment.revert.rawValue,
+                                   action: #selector(revert(_:)))
+    let enabled = validateUserInterfaceItem(segment)
+  
+    stageButtons.setEnabled(enabled, forSegment: StagingSegment.revert.rawValue)
+  }
 }
 
 // MARK: NSOutlineViewDelegate
-extension XTFileViewController: NSOutlineViewDelegate
+extension FileViewController: NSOutlineViewDelegate
 {
   private func image(forChange change: XitChange) -> NSImage?
   {
@@ -908,10 +685,15 @@ extension XTFileViewController: NSOutlineViewDelegate
   {
     (rowView as? FileRowView)?.outlineView = fileListOutline
   }
+  
+  func outlineViewSelectionDidChange(_ notification: Notification)
+  {
+    updateStagingSegment()
+  }
 }
 
 // MARK: NSSplitViewDelegate
-extension XTFileViewController: NSSplitViewDelegate
+extension FileViewController: NSSplitViewDelegate
 {
   public func splitView(_ splitView: NSSplitView,
                         shouldAdjustSizeOfSubview view: NSView) -> Bool
@@ -928,7 +710,7 @@ extension XTFileViewController: NSSplitViewDelegate
 }
 
 // MARK: HunkStaging
-extension XTFileViewController: HunkStaging
+extension FileViewController: HunkStaging
 {
   func patchIndexFile(hunk: GTDiffHunk, stage: Bool)
   {

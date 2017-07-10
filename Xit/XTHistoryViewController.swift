@@ -8,7 +8,7 @@ class XTHistoryViewController: NSViewController
   @IBOutlet weak var mainSplitView: NSSplitView!
   @IBOutlet weak var tableController: XTHistoryTableController!
   
-  private(set) var fileViewController: XTFileViewController!
+  private(set) var fileViewController: FileViewController!
   
   private var savedHistorySize: CGFloat?
   
@@ -59,7 +59,7 @@ class XTHistoryViewController: NSViewController
   
     let lowerPane = mainSplitView.subviews[1]
     
-    fileViewController = XTFileViewController(nibName: "XTFileViewController",
+    fileViewController = FileViewController(nibName: "FileViewController",
                                               bundle: nil)!
     lowerPane.addSubview(fileViewController.view)
     fileViewController.view.setFrameSize(lowerPane.frame.size)

@@ -89,7 +89,7 @@ class XTFileChangesDataSource: FileListDataSourceBase
   {
     if wasInStaging != controller.isStaging {
       let stagedIndex = outlineView.column(withIdentifier:
-        XTFileViewController.ColumnID.staged)
+        FileViewController.ColumnID.staged)
       
       for (index, change) in changes.enumerated() {
         if let stagedCell = outlineView.view(atColumn: stagedIndex, row: index,

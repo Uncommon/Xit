@@ -18,7 +18,7 @@ class XTSidebarDataSourceTest: XTTest
     super.setUp()
     sbds.outline = outline
     outline.dataSource = sbds
-    sbds.repo = repository
+    sbds.repository = repository
   }
 
   /// Check that root items (except Staging) are groups
