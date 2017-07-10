@@ -70,14 +70,17 @@ extension FileViewController
 
   @IBAction func stageSegmentClicked(_ sender: AnyObject?)
   {
-    guard let segmentControl = sender as? NSSegmentedControl
+    guard let segmentControl = sender as? NSSegmentedControl,
+          let segment = StagingSegment(rawValue: segmentControl.selectedSegment)
     else { return }
     
-    switch segmentControl.selectedSegment {
-      case 0: unstageAll(sender)
-      case 1: stageAll(sender)
-      case 2: revert(sender)
-      default: break
+    switch segment {
+      case .unstageAll:
+        unstageAll(sender)
+      case .stageAll:
+        stageAll(sender)
+      case .revert:
+        revert(sender)
     }
   }
   
