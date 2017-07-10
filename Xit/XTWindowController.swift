@@ -18,10 +18,17 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   weak var xtDocument: XTDocument?
   var titleBarController: TitleBarViewController?
   var refsChangedObserver: NSObjectProtocol?
+  var amending = false
   var selectedModel: FileChangesModel?
   {
     didSet
     {
+      if amending && !(selectedModel is AmendingChanges),
+         let commitModel = selectedModel as? StagingChanges {
+        selectedModel = AmendingChanges(repository: commitModel.repository)
+        return
+      }
+      
       guard selectedModel.map({ (s) in oldValue.map { (o) in s != o }
           ?? true }) ?? (oldValue != nil)
       else { return }

@@ -79,7 +79,7 @@ class CommitChanges: FileChangesModel
     self.commit = commit
     if let sha = commit.sha {
       self.savedChanges = repository.changes(for: sha,
-                                             parent: commit.parentSHAs.first)
+                                   parent: commit.parentSHAs.first)
     }
     else {
       self.savedChanges = []
@@ -332,6 +332,23 @@ class StagingChanges: FileChangesModel
   func unstagedFileURL(_ path: String) -> URL?
   {
     return self.repository.repoURL.appendingPathComponent(path)
+  }
+}
+
+
+/// Changes when amending, compared to the previous commit
+class AmendingChanges: StagingChanges
+{
+  override var changes: [FileChange]
+  {
+    guard let headCommit = repository.headSHA.flatMap(
+                { repository.commit(forSHA: $0) }),
+          let previousCommit = headCommit.parentOIDs.first.flatMap(
+                { repository.commit(forOID: $0) })
+    else { return super.changes }
+    
+    return repository.changes(for: XTStagingSHA,
+                              parent: previousCommit.parentSHAs.first)
   }
 }
 
