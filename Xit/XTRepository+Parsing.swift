@@ -97,6 +97,33 @@ extension XTRepository
     return result
   }
   
+  /// Returns the workspace changes compared to the given parent of HEAD.
+  func stagingChanges(parent: XTCommit) -> [FileChange]
+  {
+    let workspaceChanges = stagingChanges()
+    guard let headSHA = self.headSHA,
+          let parentSHA = parent.sha
+    else { return workspaceChanges }
+    var result = [FileChange]()
+    
+    let parentChanges = changes(for: headSHA, parent: parentSHA)
+    var parentDict = [String: FileChange]()
+    
+    for change in parentChanges {
+      parentDict[change.path] = change
+    }
+    for change in workspaceChanges {
+      if let parentChange = parentDict[change.path] {
+        change.change = parentChange.change
+        parentDict[change.path] = nil
+      }
+      result.append(change)
+    }
+    result.append(contentsOf: parentDict.values)
+    result.sort(by: { $0.path < $1.path })
+    return result
+  }
+ 
   static let textNames = ["AUTHORS", "CONTRIBUTING", "COPYING", "LICENSE",
                           "Makefile", "README"]
   

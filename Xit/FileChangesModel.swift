@@ -348,7 +348,17 @@ class AmendingChanges: StagingChanges
     else { return super.changes }
     
     return repository.changes(for: XTStagingSHA,
-                              parent: previousCommit.parentSHAs.first)
+                              parent: previousCommit.sha)
+  }
+  
+  override func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
+  {
+    if staged {
+      return repository.stagedAmendingDiff(file: path)
+    }
+    else {
+      return repository.unstagedDiff(file: path)
+    }
   }
 }
 

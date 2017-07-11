@@ -19,6 +19,7 @@ class XTCommitEntryController: NSViewController
   }
   @IBOutlet weak var commitField: NSTextView!
   @IBOutlet weak var commitButton: NSButton!
+  @IBOutlet weak var amendChcekbox: NSButton!
   @IBOutlet weak var placeholder: NSTextField!
   
   var indexObserver: NSObjectProtocol?
@@ -81,10 +82,19 @@ class XTCommitEntryController: NSViewController
     }
   }
   
+  @IBAction func toggleAmend(_ sender: NSButton)
+  {
+    guard let controller = view.ancestorWindow?.windowController
+                           as? RepositoryController
+    else { return }
+    
+    controller.amending = sender.boolValue
+  }
+  
   func updateStagedStatus()
   {
     guard let controller = view.ancestorWindow?.windowController
-                           as? XTWindowController,
+                           as? RepositoryController,
           let changes = controller.selectedModel?.changes
     else {
       anyStaged = false

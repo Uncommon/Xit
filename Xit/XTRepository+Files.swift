@@ -56,7 +56,14 @@ extension XTRepository
   func changes(for ref: String, parent parentSHA: String?) -> [FileChange]
   {
     guard ref != XTStagingSHA
-    else { return stagingChanges() }
+    else {
+      if let parentCommit = parentSHA.flatMap({ commit(forSHA: $0) }) {
+        return stagingChanges(parent: parentCommit)
+      }
+      else {
+        return stagingChanges()
+      }
+    }
     
     guard let commit = (try? gtRepo.lookUpObject(byRevParse: ref)) as? GTCommit,
           let sha = commit.sha
@@ -191,6 +198,16 @@ extension XTRepository
     return headObject as? GTBlob
   }
   
+  func fileBlob(sha: String, path: String) -> GTBlob?
+  {
+    guard let headTree = XTCommit(sha: sha, repository: self)?.tree,
+          let headEntry = try? headTree.entry(withPath: path),
+          let headObject = try? GTObject(treeEntry: headEntry)
+    else { return nil }
+    
+    return headObject as? GTBlob
+  }
+  
   func stagedBlob(file: String) -> GTBlob?
   {
     guard let index = try? gtRepo.index(),
@@ -202,8 +219,7 @@ extension XTRepository
     return indexObject as? GTBlob
   }
   
-  /// Returns a diff maker for a file in the index, compared to the workspace
-  /// file.
+  /// Returns a diff maker for a file in the index, compared to HEAD.
   func stagedDiff(file: String) -> XTDiffMaker?
   {
     guard let headRef = self.headRef
@@ -238,5 +254,19 @@ extension XTRepository
     catch {
       return nil
     }
+  }
+  
+  /// Returns a diff maker for a file in the index, compared to HEAD-1.
+  func stagedAmendingDiff(file: String) -> XTDiffMaker?
+  {
+    guard let headCommit = headSHA.flatMap({ commit(forSHA: $0) })
+    else { return nil }
+    let blob = headCommit.parentSHAs.first
+                         .flatMap { fileBlob(sha: $0, path: file) }
+    let indexBlob = stagedBlob(file: file)
+
+    return XTDiffMaker(from: XTDiffMaker.SourceType(blob),
+                       to: XTDiffMaker.SourceType(indexBlob),
+                       path: file)
   }
 }

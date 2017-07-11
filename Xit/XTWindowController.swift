@@ -3,6 +3,7 @@ import Cocoa
 protocol RepositoryController: class
 {
   var selectedModel: FileChangesModel? { get set }
+  var amending: Bool { get set }
   
   func select(sha: String)
 }
@@ -19,14 +20,23 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   var titleBarController: TitleBarViewController?
   var refsChangedObserver: NSObjectProtocol?
   var amending = false
+  {
+    didSet
+    {
+      // Parens work around "assigning a property to itself" error
+      (selectedModel = selectedModel) // trigger didSet
+    }
+  }
   var selectedModel: FileChangesModel?
   {
     didSet
     {
-      if amending && !(selectedModel is AmendingChanges),
-         let commitModel = selectedModel as? StagingChanges {
-        selectedModel = AmendingChanges(repository: commitModel.repository)
-        return
+      if (selectedModel is StagingChanges) &&
+         (amending != (selectedModel is AmendingChanges)) {
+        selectedModel = xtDocument.map {
+          amending ? AmendingChanges(repository: $0.repository)
+                   : StagingChanges(repository: $0.repository)
+        }
       }
       
       guard selectedModel.map({ (s) in oldValue.map { (o) in s != o }
