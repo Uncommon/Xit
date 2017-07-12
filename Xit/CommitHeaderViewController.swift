@@ -25,8 +25,7 @@ extension HeaderGenerator
     
     // swiftlint:disable:next force_try
     let template = try! String(contentsOf: templateURL())
-    let message = commit.message?.trimmingCharacters(in: .whitespacesAndNewlines)
-                  ?? ""
+    let message = commit.message?.trimmingWhitespace ?? ""
     let authorName = commit.authorName ?? ""
     let authorEmail = commit.authorEmail ?? ""
     let authorDate = commit.authorDate

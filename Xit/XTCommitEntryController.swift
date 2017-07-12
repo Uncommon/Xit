@@ -24,6 +24,11 @@ class XTCommitEntryController: NSViewController
   
   var indexObserver: NSObjectProtocol?
   
+  var repoController: RepositoryController?
+  {
+    return view.ancestorWindow?.windowController as? RepositoryController
+  }
+  
   var anyStaged = false
   {
     didSet
@@ -31,6 +36,19 @@ class XTCommitEntryController: NSViewController
       if anyStaged != oldValue {
         updateCommitButton()
       }
+    }
+  }
+  
+  var commitMessage: String
+  {
+    get
+    {
+      return commitField.string ?? ""
+    }
+    set
+    {
+      commitField.string = newValue.trimmingWhitespace
+      updateCommitButton()
     }
   }
   
@@ -50,7 +68,7 @@ class XTCommitEntryController: NSViewController
   
   func resetMessage()
   {
-    commitField.string = commitMessageTemplate() ?? ""
+    commitMessage = commitMessageTemplate() ?? ""
   }
   
   override func viewDidLoad()
@@ -65,13 +83,11 @@ class XTCommitEntryController: NSViewController
     updateCommitButton()
   }
   
-  @IBAction func commit(_ sender: NSButton) {
+  @IBAction func commit(_ sender: NSButton)
+  {
     do {
-      guard let message = commitField.string
-      else { return }
-    
-      try repo.commit(message: message,
-                      amend: false,
+      try repo.commit(message: commitMessage,
+                      amend: repoController?.amending ?? false,
                       outputBlock: nil)
       resetMessage()
     }
@@ -84,18 +100,43 @@ class XTCommitEntryController: NSViewController
   
   @IBAction func toggleAmend(_ sender: NSButton)
   {
-    guard let controller = view.ancestorWindow?.windowController
-                           as? RepositoryController
-    else { return }
-    
-    controller.amending = sender.boolValue
+    let newValue = sender.boolValue
+  
+    if newValue,
+       let headCommit = repo.headSHA.flatMap({ repo.commit(forSHA: $0 ) }),
+       let headMessage = headCommit.message?.trimmingWhitespace {
+      let message = commitMessage
+      
+      if message.isEmpty || message == commitMessageTemplate() {
+        commitMessage = headMessage
+      }
+      else if message != headMessage {
+        guard let window = view.window
+        else { return }
+        let alert = NSAlert()
+        
+        alert.messageText = "Replace the commit message?"
+        alert.informativeText =
+            "Do you want to replace the commit message with the message from " +
+            "the previous commit?"
+        alert.addButton(withTitle: "Replace")
+        alert.addButton(withTitle: "Don't Replace")
+        alert.beginSheetModal(for: window) {
+          (response) in
+          if response == NSAlertFirstButtonReturn {
+            self.commitMessage = headMessage
+          }
+          self.repoController?.amending = newValue
+        }
+        return
+      }
+    }
+    repoController?.amending = newValue
   }
   
   func updateStagedStatus()
   {
-    guard let controller = view.ancestorWindow?.windowController
-                           as? RepositoryController,
-          let changes = controller.selectedModel?.changes
+    guard let changes = repoController?.selectedModel?.changes
     else {
       anyStaged = false
       return
@@ -106,21 +147,11 @@ class XTCommitEntryController: NSViewController
   
   func updateCommitButton()
   {
-    let text = commitField.string
-    let emptyText = text?.isEmpty ?? true
+    let text = commitMessage
+    let emptyText = text.isEmpty
     
     placeholder.isHidden = !emptyText
-    
-    if anyStaged {
-      let whitespace = CharacterSet.whitespacesAndNewlines
-      let onlyWhitespace = text?.trimmingCharacters(in: whitespace).isEmpty
-                           ?? true
-      
-      commitButton.isEnabled = !onlyWhitespace
-    }
-    else {
-      commitButton.isEnabled = false
-    }
+    commitButton.isEnabled = anyStaged && !text.trimmingWhitespace.isEmpty
   }
 }
 

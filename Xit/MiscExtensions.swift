@@ -74,6 +74,11 @@ extension String
   {
     return NSString.path(withComponents: Array(pathComponents.dropFirst(1)))
   }
+  
+  var trimmingWhitespace: String
+  {
+    return trimmingCharacters(in: .whitespacesAndNewlines)
+  }
 }
 
 extension NSError
