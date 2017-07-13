@@ -104,10 +104,9 @@ extension XTRepository
     guard let headSHA = self.headSHA,
           let parentSHA = parent.sha
     else { return workspaceChanges }
-    var result = [FileChange]()
-    
     let parentChanges = changes(for: headSHA, parent: parentSHA)
     var parentDict = [String: FileChange]()
+    var result = [FileChange]()
     
     for change in parentChanges {
       parentDict[change.path] = change
@@ -120,7 +119,6 @@ extension XTRepository
       result.append(change)
     }
     result.append(contentsOf: parentDict.values)
-    result.sort(by: { $0.path < $1.path })
     return result
   }
  

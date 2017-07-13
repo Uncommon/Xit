@@ -29,15 +29,14 @@ class XTFileChangesDataSource: FileListDataSourceBase
       changes = newChanges
     }
     else {
-      changes.forEach {
-        (change) in
+      for change in changes {
         guard let newIndex = newChanges.index(where: {
-          (newChange) in
-          newChange.path == change.path &&
-          ((newChange.change != change.change) ||
-           (newChange.unstagedChange != change.unstagedChange))
+            (newChange) in
+            newChange.path == change.path &&
+            ((newChange.change != change.change) ||
+             (newChange.unstagedChange != change.unstagedChange))
         })
-        else { return }
+        else { continue }
         
         let newChange = newChanges[newIndex]
         
