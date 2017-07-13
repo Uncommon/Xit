@@ -61,7 +61,7 @@ extension XTRepository
         return stagingChanges(parent: parentCommit)
       }
       else {
-        return stagingChanges()
+        return Array(stagingChanges)
       }
     }
     
@@ -268,5 +268,69 @@ extension XTRepository
     return XTDiffMaker(from: XTDiffMaker.SourceType(blob),
                        to: XTDiffMaker.SourceType(indexBlob),
                        path: file)
+  }
+  
+  class StatusCollection: BidirectionalCollection
+  {
+    let statusList: OpaquePointer?
+  
+    init(repo: XTRepository)
+    {
+      var list: OpaquePointer?
+      var options = git_status_options()
+      
+      git_status_init_options(&options, UInt32(GIT_STATUS_OPTIONS_VERSION))
+      options.flags = GIT_STATUS_OPT_INCLUDE_UNTRACKED.rawValue |
+                      GIT_STATUS_OPT_RECURSE_UNTRACKED_DIRS.rawValue
+      
+      guard git_status_list_new(&list,
+                                repo.gtRepo.git_repository(),
+                                &options) == 0
+      else {
+        self.statusList = nil
+        return
+      }
+      
+      self.statusList = list
+    }
+  
+    subscript(position: Int) -> FileStaging
+    {
+      guard let statusList = self.statusList,
+            let entry = git_status_byindex(statusList, position)?.pointee,
+            let delta = entry.head_to_index ?? entry.index_to_workdir
+      else { return FileStaging(path: "", destinationPath: "") }
+      
+      let path = String(cString: delta.pointee.old_file.path)
+      let newPath = String(cString: delta.pointee.new_file.path)
+      let stagedChange = (entry.head_to_index?.pointee.status)
+            .map { XitChange(gitDelta: $0) } ?? .unmodified
+      let unstagedChange = (entry.index_to_workdir?.pointee.status)
+            .map { XitChange(gitDelta: $0) } ?? .unmodified
+      
+      return FileStaging(
+          path: path,
+          destinationPath: newPath,
+          change: stagedChange,
+          unstagedChange: unstagedChange)
+    }
+    
+    public var startIndex: Int { return 0 }
+    public var endIndex: Int
+    {
+      return statusList.map { git_status_list_entrycount($0) } ?? 0
+    }
+    
+    func index(before i: Int) -> Int { return i - 1 }
+    func index(after i: Int) -> Int { return i + 1 }
+    
+    deinit {
+      statusList.map { git_status_list_free($0) }
+    }
+  }
+  
+  var stagingChanges: StatusCollection
+  {
+    return StatusCollection(repo: self)
   }
 }

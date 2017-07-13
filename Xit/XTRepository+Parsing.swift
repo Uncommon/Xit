@@ -4,13 +4,12 @@ extension XitChange
 {
   init(delta: GTDeltaType)
   {
-    guard let change = XitChange(rawValue: UInt(delta.rawValue))
-    else {
-      self = .unmodified
-      return
-    }
-    
-    self = change
+    self = XitChange(rawValue: UInt(delta.rawValue)) ?? .unmodified
+  }
+  
+  init(gitDelta: git_delta_t)
+  {
+    self = XitChange(rawValue: UInt(gitDelta.rawValue)) ?? .unmodified
   }
 }
 
@@ -71,39 +70,14 @@ extension XTRepository
     }
     return result
   }
-  
-  func stagingChanges() -> [FileChange]
-  {
-    var result = [FileStaging]()
-    let flags = GTRepositoryStatusFlagsIncludeUntracked.rawValue |
-                GTRepositoryStatusFlagsRecurseUntrackedDirectories.rawValue
-    let options = [GTRepositoryStatusOptionsFlagsKey: UInt(flags)]
-    
-    try? gtRepo.enumerateFileStatus(options: options) {
-      (headToIndex, indexToWorking, _) in
-      guard let delta = headToIndex ?? indexToWorking
-      else { return }
-      let stagedChange = headToIndex.map { XitChange(delta: $0.status) }
-                         ?? XitChange.unmodified
-      let unstagedChange = indexToWorking.map { XitChange(delta: $0.status) }
-                           ?? XitChange.unmodified
-      let change = FileStaging(path: delta.oldFile?.path ?? "",
-                               destinationPath: delta.newFile?.path ?? "",
-                               change: stagedChange,
-                               unstagedChange: unstagedChange)
-      
-      result.append(change)
-    }
-    return result
-  }
-  
+
   /// Returns the workspace changes compared to the given parent of HEAD.
   func stagingChanges(parent: XTCommit) -> [FileChange]
   {
-    let workspaceChanges = stagingChanges()
+    let workspaceChanges = stagingChanges
     guard let headSHA = self.headSHA,
           let parentSHA = parent.sha
-    else { return workspaceChanges }
+    else { return Array(workspaceChanges) }
     let parentChanges = changes(for: headSHA, parent: parentSHA)
     var parentDict = [String: FileChange]()
     var result = [FileChange]()
