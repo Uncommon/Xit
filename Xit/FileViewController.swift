@@ -235,13 +235,6 @@ class FileViewController: NSViewController
     contentController = diffController
     
     observers.addObserver(
-        forName: NSNotification.Name.NSOutlineViewSelectionDidChange,
-        object: fileListOutline,
-        queue: nil) {
-      [weak self] _ in
-      self?.refreshPreview()
-    }
-    observers.addObserver(
         forName: .XTHeaderResized,
         object: headerController,
         queue: nil) {
@@ -355,7 +348,10 @@ class FileViewController: NSViewController
           let selectedChange = self.selectedChange(),
           let controller = view.window?.windowController
                            as? RepositoryController
-    else { return }
+    else {
+      clearPreviews()
+      return
+    }
     
     updatePreviewPath(selectedChange.path,
                       isFolder: fileListOutline.isExpandable(selectedItem))
@@ -459,6 +455,7 @@ class FileViewController: NSViewController
   func clearPreviews()
   {
     contentControllers.forEach { $0.clear() }
+    updatePreviewPath("", isFolder: false)
   }
   
   func clear()
@@ -688,6 +685,7 @@ extension FileViewController: NSOutlineViewDelegate
   
   func outlineViewSelectionDidChange(_ notification: Notification)
   {
+    refreshPreview()
     updateStagingSegment()
   }
 }
