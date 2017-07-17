@@ -37,6 +37,14 @@ struct CommitConnection<ID: OID>: Equatable
 
 func == <ID>(left: CommitConnection<ID>, right: CommitConnection<ID>) -> Bool
 {
+  return (left.parentOID.sha == right.parentOID.sha) &&
+         (left.childOID.sha == right.childOID.sha) &&
+         (left .colorIndex == right.colorIndex)
+}
+
+// Specific version: compare the binary OIDs
+func == (left: CommitConnection<GitOID>, right: CommitConnection<GitOID>) -> Bool
+{
   return (left.parentOID == right.parentOID) &&
          (left.childOID == right.childOID) &&
          (left.colorIndex == right.colorIndex)

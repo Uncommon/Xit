@@ -1,16 +1,23 @@
 import Foundation
 
-// This protocol "can only be used as a generic constraint" because Hashable
-// inherits from Equatable which uses Self.
-public protocol OID: Hashable
+public protocol OID
 {
   var sha: String { get }
 }
 
+// Don't explicitly conform to Hashable here because that constrains how the
+// protocol can be used.
 extension OID
 {
   public var hashValue: Int { return sha.hashValue }
 }
+
+
+extension String: OID
+{
+  public var sha: String { return self }
+}
+
 
 public struct GitOID: OID, Hashable
 {

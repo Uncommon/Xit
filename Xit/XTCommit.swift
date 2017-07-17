@@ -3,7 +3,7 @@ import Cocoa
 
 public protocol CommitType: CustomStringConvertible
 {
-  associatedtype ID: OID
+  associatedtype ID: OID, Hashable
   
   var sha: String? { get }
   var oid: ID { get }
