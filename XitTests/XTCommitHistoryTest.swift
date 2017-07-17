@@ -2,7 +2,7 @@ import XCTest
 @testable import Xit
 
 
-class GenericCommit<ID: OID>: CommitType
+class GenericCommit<ID: OID & Hashable>: CommitType
 {
   let sha: String?
   let oid: ID
@@ -95,11 +95,6 @@ extension Xit.CommitConnection: CustomDebugStringConvertible
   { return "\(childOID.sha)-\(parentOID.sha) \(colorIndex)" }
 }
 
-
-extension String: OID
-{
-  public var sha: String { return self }
-}
 
 typealias TestCommitHistory = XTCommitHistory<StringRepository>
 
