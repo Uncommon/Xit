@@ -118,12 +118,12 @@ extension FileTreeDataSource: FileListDataSource
   
   func change(for item: Any) -> XitChange
   {
-    return treeItem(item)!.change
+    return treeItem(item)?.change ?? .unmodified
   }
   
   func unstagedChange(for item: Any) -> XitChange
   {
-    return treeItem(item)!.unstagedChange
+    return treeItem(item)?.unstagedChange ?? .unmodified
   }
 }
 
@@ -134,7 +134,7 @@ extension FileTreeDataSource: NSOutlineViewDataSource
   {
     let children = (item as? NSTreeNode)?.children ?? root.children
     
-    return children.map { $0.count } ?? 0
+    return children?.count ?? 0
   }
   
   func outlineView(_ outlineView: NSOutlineView,
