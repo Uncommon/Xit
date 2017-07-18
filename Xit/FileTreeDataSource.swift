@@ -24,10 +24,10 @@ extension FileTreeDataSource: FileListDataSource
       else { return }
       
       objc_sync_enter(myself)
+      defer { objc_sync_exit(myself) }
+      
       guard let model = myself.repoController?.selectedModel
       else { return }
-      objc_sync_exit(myself)
-      
       let newRoot = model.treeRoot
       
       DispatchQueue.main.async {
