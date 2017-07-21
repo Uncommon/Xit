@@ -15,9 +15,10 @@ class XTFileDiffController: WebViewController,
   // swiftlint:disable:next weak_delegate
   let actionDelegate: DiffActionDelegate = DiffActionDelegate()
   weak var stagingDelegate: HunkStaging?
-  var isLoaded: Bool = false
   var staged: Bool?
   var patch: GTDiffPatch?
+  
+  fileprivate var isLoaded_internal = false
   
   public var whitespace = PreviewsPrefsController.Default.whitespace()
   {
@@ -186,8 +187,10 @@ class XTFileDiffController: WebViewController,
     
     let html = String(format: htmlTemplate, textLines)
     
-    webView?.mainFrame.loadHTMLString(html, baseURL: WebViewController.baseURL)
-    isLoaded = true
+    load(html: html)
+    synchronized(self) {
+      isLoaded = true
+    }
   }
   
   func loadOrNotify(diffMaker: XTDiffMaker?)
@@ -250,10 +253,31 @@ extension XTFileDiffController: WebActionDelegateHost
 
 extension XTFileDiffController: XTFileContentController
 {
+  var isLoaded: Bool
+  {
+    get
+    {
+      var result = false
+      
+      synchronized(self) {
+        result = isLoaded_internal
+      }
+      return result
+    }
+    set
+    {
+      synchronized(self) {
+        isLoaded_internal = newValue
+      }
+    }
+  }
+
   public func clear()
   {
-    webView?.mainFrame.loadHTMLString("", baseURL: URL(fileURLWithPath: "/"))
-    isLoaded = false
+    load(html: "")
+    synchronized(self) {
+      isLoaded = false
+    }
   }
   
   public func load(path: String!, model: FileChangesModel!, staged: Bool)

@@ -154,7 +154,7 @@ class CommitHeaderViewController: WebViewController, HeaderGenerator
     else { return }
     let html = generateHeaderHTML(commit)
     
-    webView?.mainFrame.loadHTMLString(html, baseURL: templateURL())
+    load(html: html, baseURL: templateURL())
   }
   
   func headerHeight() -> CGFloat

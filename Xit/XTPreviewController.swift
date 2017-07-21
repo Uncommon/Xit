@@ -29,7 +29,9 @@ extension XTPreviewController: XTFileContentController
       }
       previewItem.model = model
       previewItem.path = path
-      previewView.refreshPreviewItem()
+      MainThread.async {
+        previewView.refreshPreviewItem()
+      }
       isLoaded = true
     }
     else {

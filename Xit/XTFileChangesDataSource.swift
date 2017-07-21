@@ -91,6 +91,11 @@ class XTFileChangesDataSource: FileListDataSourceBase
         FileViewController.ColumnID.staged)
       
       for (index, change) in changes.enumerated() {
+        guard index < outlineView.numberOfRows
+        else {
+          // This can happen if things are out of sync while loading.
+          break
+        }
         if let stagedCell = outlineView.view(atColumn: stagedIndex, row: index,
                                              makeIfNecessary: false)
                             as? TableButtonView {
@@ -184,6 +189,7 @@ extension XTFileChangesDataSource: NSOutlineViewDataSource
   {
     objc_sync_enter(self)
     defer { objc_sync_exit(self) }
+    
     return changes.count
   }
 
@@ -191,6 +197,9 @@ extension XTFileChangesDataSource: NSOutlineViewDataSource
                    child index: Int,
                    ofItem item: Any?) -> Any
   {
+    objc_sync_enter(self)
+    defer { objc_sync_exit(self) }
+    
     return (index < changes.count) ? changes[index] : FileChange(path: "")
   }
 

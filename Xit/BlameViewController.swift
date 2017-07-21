@@ -142,8 +142,7 @@ class BlameViewController: WebViewController
     
     DispatchQueue.main.async {
       [weak self] in
-      self?.webView?.mainFrame.loadHTMLString(
-          html, baseURL: WebViewController.baseURL)
+      self?.load(html: html)
       self?.isLoaded = true
     }
   }
@@ -161,7 +160,7 @@ extension BlameViewController: XTFileContentController
 {
   func clear()
   {
-    webView?.mainFrame.loadHTMLString("", baseURL: nil)
+    load(html: "")
     isLoaded = false
   }
   
@@ -175,13 +174,12 @@ extension BlameViewController: XTFileContentController
       return
     }
     
-    spinner.isHidden = false
-    spinner.startAnimation(nil)
-    clear()
-    DispatchQueue.global(qos: .userInitiated).async {
-      [weak self] in
-      self?.loadBlame(text: text, path: path, model: model, staged: staged)
+    MainThread.sync {
+      self.spinner.isHidden = false
+      self.spinner.startAnimation(nil)
+      self.clear()
     }
+    self.loadBlame(text: text, path: path, model: model, staged: staged)
   }
 }
 

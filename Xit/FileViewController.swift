@@ -6,7 +6,8 @@ protocol XTFileContentController
 {
   /// Clears the display for when nothing is selected.
   func clear()
-  /// Displays the content from the given file model.
+  /// Displays the content from the given file model. May be called off the
+  /// main thread.
   /// - parameter path: The repository-relative file path.
   /// - parameter model: The model to read data from.
   /// - parameter staged: Whether to show staged content.
@@ -347,7 +348,8 @@ class FileViewController: NSViewController
           let selectedItem = fileListOutline.item(atRow: index),
           let selectedChange = self.selectedChange(),
           let controller = view.window?.windowController
-                           as? RepositoryController
+                           as? RepositoryController,
+          let model = controller.selectedModel
     else {
       clearPreviews()
       return
@@ -355,9 +357,11 @@ class FileViewController: NSViewController
     
     updatePreviewPath(selectedChange.path,
                       isFolder: fileListOutline.isExpandable(selectedItem))
-    contentController.load(path: selectedChange.path,
-                           model: controller.selectedModel,
-                           staged: showingStaged)
+    repo.queue.executeOffMainThread {
+      self.contentController.load(path: selectedChange.path,
+                             model: model,
+                             staged: self.showingStaged)
+    }
     
     let fullPath = repo.repoURL.path.appending(
                       pathComponent: selectedChange.path)
