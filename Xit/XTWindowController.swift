@@ -3,7 +3,7 @@ import Cocoa
 protocol RepositoryController: class
 {
   var selectedModel: FileChangesModel? { get set }
-  var amending: Bool { get set }
+  var isAmending: Bool { get set }
   
   func select(sha: String)
 }
@@ -19,7 +19,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   weak var xtDocument: XTDocument?
   var titleBarController: TitleBarViewController?
   var refsChangedObserver: NSObjectProtocol?
-  var amending = false
+  var isAmending = false
   {
     didSet
     {
@@ -32,10 +32,10 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     didSet
     {
       if (selectedModel is StagingChanges) &&
-         (amending != (selectedModel is AmendingChanges)) {
+         (isAmending != (selectedModel is AmendingChanges)) {
         selectedModel = xtDocument.map {
-          amending ? AmendingChanges(repository: $0.repository)
-                   : StagingChanges(repository: $0.repository)
+          isAmending ? AmendingChanges(repository: $0.repository)
+                     : StagingChanges(repository: $0.repository)
         }
       }
       

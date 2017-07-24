@@ -87,7 +87,7 @@ class XTCommitEntryController: NSViewController
   {
     do {
       try repo.commit(message: commitMessage,
-                      amend: repoController?.amending ?? false,
+                      amend: repoController?.isAmending ?? false,
                       outputBlock: nil)
       resetMessage()
     }
@@ -126,12 +126,12 @@ class XTCommitEntryController: NSViewController
           if response == NSAlertFirstButtonReturn {
             self.commitMessage = headMessage
           }
-          self.repoController?.amending = newValue
+          self.repoController?.isAmending = newValue
         }
         return
       }
     }
-    repoController?.amending = newValue
+    repoController?.isAmending = newValue
   }
   
   func updateStagedStatus()
