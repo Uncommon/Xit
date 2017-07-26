@@ -1,5 +1,6 @@
 import Foundation
 
+/// A staging index for creating a commit.
 protocol StagingIndex
 {
   /* For Swift 4:
@@ -11,9 +12,19 @@ protocol StagingIndex
   
   var entries: IndexEntryCollection { get }
   
-  func refresh()
+  /// Reloads the index from the disk.
+  func refresh() throws
+  /// Saves the index to the disk.
+  func save() throws
+  /// Returns the entry matching the given file path.
+  func entry(at path: String) -> IndexEntry?
+  /// Adds a local file to the index
+  func add(path: String) throws
+  /// Removes a file from the index
+  func remove(path: String) throws
 }
 
+/// An individual file entry in an index.
 protocol IndexEntry
 {
   var oid: OID { get }
@@ -21,7 +32,8 @@ protocol IndexEntry
   var conflicted: Bool { get }
 }
 
-// Abstract class so that StagingIndex.entries doesn't have to be an Array
+// Abstract class so that StagingIndex.entries doesn't have to be an Array.
+// In Swift 4 this can go away.
 class IndexEntryCollection: RandomAccessCollection
 {
   public var startIndex: Int { return 0 }
@@ -43,6 +55,7 @@ class IndexEntryCollection: RandomAccessCollection
   }
 }
 
+/// Staging index implemented with libgit2
 class GitIndex: StagingIndex
 {
   let index: OpaquePointer
@@ -99,8 +112,33 @@ class GitIndex: StagingIndex
   
   var entries: IndexEntryCollection { return EntryCollection(index: self) }
   
-  func refresh()
+  func entry(at path: String) -> IndexEntry?
   {
-    git_index_read(index, 1)
+    let position = UnsafeMutablePointer<Int>.allocate(capacity: 1)
+    guard git_index_find(position, index, path) == 0,
+          let entry = git_index_get_byindex(index, position.pointee)
+    else { return nil }
+    
+    return Entry(gitEntry: entry.pointee)
+  }
+  
+  func refresh() throws
+  {
+    try XTRepository.Error.throwIfError(git_index_read(index, 1))
+  }
+  
+  func save() throws
+  {
+    try XTRepository.Error.throwIfError(git_index_write(index))
+  }
+  
+  func add(path: String) throws
+  {
+    try XTRepository.Error.throwIfError(git_index_add_bypath(index, path))
+  }
+  
+  func remove(path: String) throws
+  {
+    try XTRepository.Error.throwIfError(git_index_remove_bypath(index, path))
   }
 }

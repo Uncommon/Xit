@@ -17,8 +17,8 @@ class GitBlob: Blob
     let result = git_blob_lookup(&blob, repository.gtRepo.git_repository(),
                                  oid.unsafeOID())
     guard result == 0,
-      let finalBlob = blob
-      else { return nil }
+          let finalBlob = blob
+    else { return nil }
     
     self.blob = finalBlob
   }
@@ -30,14 +30,9 @@ class GitBlob: Blob
   
   private func makeData() -> Data
   {
-    // There is no Data constructor that treats the buffer as immutable
-    guard let data = CFDataCreateWithBytesNoCopy(
-      kCFAllocatorNull,
-      git_blob_rawcontent(blob).assumingMemoryBound(to: UInt8.self),
-      CFIndex(git_blob_rawsize(blob)), kCFAllocatorNull)
-      else { return Data() }
-    
-    return data as Data
+    return Data(immutableBytes: git_blob_rawcontent(blob),
+                count: Int(git_blob_rawsize(blob)))
+           ?? Data()
   }
   
   /// Calls the given callback with a Data object containing the blob's data.
@@ -52,5 +47,19 @@ class GitBlob: Blob
   deinit
   {
     git_blob_free(blob)
+  }
+}
+
+extension Data
+{
+  // There is no Data constructor that treats the buffer as immutable
+  init?(immutableBytes: UnsafeRawPointer, count: Int)
+  {
+    guard let data = CFDataCreateWithBytesNoCopy(
+        kCFAllocatorNull, immutableBytes.assumingMemoryBound(to: UInt8.self),
+        count, kCFAllocatorNull)
+    else { return nil }
+    
+    self.init(referencing: data as NSData)
   }
 }
