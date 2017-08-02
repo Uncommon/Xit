@@ -11,6 +11,42 @@ extension XitChange
   {
     self = XitChange(rawValue: UInt(gitDelta.rawValue)) ?? .unmodified
   }
+  
+  init(indexStatus: git_status_t)
+  {
+    switch indexStatus {
+      case let s where s.test(GIT_STATUS_INDEX_NEW):
+        self = .added
+      case let s where s.test(GIT_STATUS_INDEX_MODIFIED):
+        self = .modified
+      case let s where s.test(GIT_STATUS_INDEX_DELETED):
+        self = .deleted
+      case let s where s.test(GIT_STATUS_INDEX_RENAMED):
+        self = .renamed
+      default:
+        self = .unmodified
+    }
+  }
+  
+  init(worktreeStatus: git_status_t)
+  {
+    switch worktreeStatus {
+      case let s where s.test(GIT_STATUS_WT_NEW):
+        self = .added
+      case let s where s.test(GIT_STATUS_WT_MODIFIED):
+        self = .modified
+      case let s where s.test(GIT_STATUS_WT_DELETED):
+        self = .deleted
+      case let s where s.test(GIT_STATUS_WT_RENAMED):
+        self = .renamed
+      case let s where s.test(GIT_STATUS_IGNORED):
+        self = .ignored
+      case let s where s.test(GIT_STATUS_CONFLICTED):
+        self = .conflict
+      default:
+        self = .unmodified
+    }
+  }
 }
 
 struct WorkspaceFileStatus
@@ -48,7 +84,7 @@ class FileStaging: FileChange
 
 extension XTRepository
 {
-  // A path:status dictionary for locally changed files.
+  /// A path:status dictionary for locally changed files.
   var workspaceStatus: [String: WorkspaceFileStatus]
   {
     var result = [String: WorkspaceFileStatus]()
@@ -70,37 +106,12 @@ extension XTRepository
     }
     return result
   }
-
-  /// Returns the workspace changes compared to the given parent of HEAD.
-  func stagingChanges(parent: XTCommit) -> [FileChange]
-  {
-    let workspaceChanges = stagingChanges
-    guard let headSHA = self.headSHA,
-          let parentSHA = parent.sha
-    else { return Array(workspaceChanges) }
-    let parentChanges = changes(for: headSHA, parent: parentSHA)
-    var parentDict = [String: FileChange]()
-    var result = [FileChange]()
-    
-    for change in parentChanges {
-      parentDict[change.path] = change
-    }
-    for change in workspaceChanges {
-      if let parentChange = parentDict[change.path] {
-        change.change = parentChange.change
-        parentDict[change.path] = nil
-      }
-      result.append(change)
-    }
-    result.append(contentsOf: parentDict.values)
-    return result
-  }
  
   static let textNames = ["AUTHORS", "CONTRIBUTING", "COPYING", "LICENSE",
                           "Makefile", "README"]
   
-  // Returns true if the file seems to be text, based on its name.
-  func isTextFile(_ path: String, commit: String) -> Bool
+  /// Returns true if the file seems to be text, based on its name.
+  static func isTextFile(_ path: String) -> Bool
   {
     let name = (path as NSString).lastPathComponent
     guard !name.isEmpty
@@ -121,7 +132,7 @@ extension XTRepository
     return utType.map { UTTypeConformsTo($0, kUTTypeText) } ?? false
   }
   
-  // Returns a file delta from a given diff.
+  /// Returns a file delta from a given diff.
   func delta(from diff: GTDiff, path: String) -> XTDiffDelta?
   {
     var result: XTDiffDelta?
@@ -136,7 +147,43 @@ extension XTRepository
     return result
   }
   
-  // Stages the given file to the index.
+  func status(for path: String) throws -> WorkspaceFileStatus
+  {
+    let flagsInt = UnsafeMutablePointer<UInt32>.allocate(capacity: 1)
+    let result = git_status_file(flagsInt, gtRepo.git_repository(), path)
+    
+    try Error.throwIfError(result)
+    
+    let flags = git_status_t(rawValue: flagsInt.pointee)
+    
+    return WorkspaceFileStatus(
+        change: XitChange(indexStatus: flags),
+        unstagedChange: XitChange(worktreeStatus: flags))
+  }
+  
+  func amendingStatus(for path: String) throws -> WorkspaceFileStatus
+  {
+    // get the HEAD^ commit foc comparison
+    guard let headCommit = headSHA.flatMap({ self.commit(forSHA: $0) }),
+          let headTree = headCommit.tree?.git_tree()
+    else {
+      return WorkspaceFileStatus(change: .unmodified,
+                                 unstagedChange: .unmodified)
+    }
+    let flagsInt = UnsafeMutablePointer<UInt32>.allocate(capacity: 1)
+    let result = git_status_file_at(flagsInt, gtRepo.git_repository(), path,
+                                    headTree)
+    
+    try Error.throwIfError(result)
+    
+    let flags = git_status_t(rawValue: flagsInt.pointee)
+    
+    return WorkspaceFileStatus(
+        change: XitChange(indexStatus: flags),
+        unstagedChange: XitChange(worktreeStatus: flags))
+  }
+  
+  /// Stages the given file to the index.
   @objc(stageFile:error:)
   func stage(file: String) throws
   {
@@ -148,19 +195,66 @@ extension XTRepository
     _ = try executeGit(args: args, writes: true)
   }
   
-  // Stages all modified files.
+  /// Stages all modified files.
   func stageAllFiles() throws
   {
     _ = try executeGit(args: ["add", "--all"], writes: true)
   }
   
-  // Unstages all stages files.
+  /// Unstages the given file.
   func unstage(file: String) throws
   {
     let args = hasHeadReference() ? ["reset", "-q", "HEAD", file]
                                   : ["rm", "--cached", file]
     
     _ = try executeGit(args: args, writes: true)
+  }
+  
+  /// Stages the file relative to HEAD's parent
+  func amendStage(file: String) throws
+  {
+    // modify
+    // same as regular stage
+    
+    // add
+    // add the workspace content to the index
+    
+    // delete
+    // delete the file from the index
+  }
+  
+  /// Unstages the file relative to HEAD's parent
+  func amendUnstage(file: String) throws
+  {
+    let status = try self.amendingStatus(for: file)
+    let index = try gtRepo.index()
+    
+    switch status.change {
+      
+      case .added:
+        try index.removeFile(file)
+      
+      case .modified, .deleted:
+        guard let headCommit = headSHA.flatMap({ commit(forSHA: $0) }),
+              let parentCommit = headCommit.parentOIDs.first
+                                 .flatMap({ commit(forOID: $0) }),
+              let entry = try parentCommit.tree?.entry(withPath: file),
+              let oid = entry.oid.flatMap({ GitOID(oid: $0.git_oid().pointee) }),
+              let blob = GitBlob(repository: self, oid: oid)
+        else {
+          // None of the above should fail with a modified/deleted status.
+          throw Error.unexpected
+        }
+        
+        try blob.withData {
+          try index.add($0, withPath: file)
+        }
+      
+      default:
+        break
+    }
+    
+    try index.write()
   }
   
   // Creates a new commit with the given message.

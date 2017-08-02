@@ -435,6 +435,32 @@ class FileViewController: NSViewController
     }
   }
   
+  func stage(path: String) throws
+  {
+    guard let controller = view.window?.windowController as? RepositoryController
+    else { return }
+    
+    if controller.isAmending {
+      //special case if it's new or deleted
+    }
+    else {
+      try repo?.stage(file: path)
+    }
+  }
+  
+  func unstage(path: String) throws
+  {
+    guard let controller = view.window?.windowController as? RepositoryController
+    else { return }
+    
+    if controller.isAmending {
+      //special case if it's new or deleted
+    }
+    else {
+      try repo?.unstage(file: path)
+    }
+  }
+  
   func click(button: NSButton, staging: Bool)
   {
     if modelCanCommit && checkDoubleClick(button),

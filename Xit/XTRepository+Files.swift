@@ -58,7 +58,7 @@ extension XTRepository
     guard ref != XTStagingSHA
     else {
       if let parentCommit = parentSHA.flatMap({ commit(forSHA: $0) }) {
-        return stagingChanges(parent: parentCommit)
+        return Array(amendingChanges(parent: parentCommit))
       }
       else {
         return Array(stagingChanges)
@@ -208,6 +208,16 @@ extension XTRepository
     return headObject as? GTBlob
   }
   
+  func fileBlob(oid: OID, path: String) -> Blob?
+  {
+    if let gitOID = oid as? GitOID {
+      return GitBlob(repository: self, oid: gitOID)
+    }
+    else {
+      return GitOID(sha: oid.sha).flatMap { GitBlob(repository: self, oid: $0) }
+    }
+  }
+  
   func stagedBlob(file: String) -> GTBlob?
   {
     guard let index = try? gtRepo.index(),
@@ -274,14 +284,23 @@ extension XTRepository
   {
     let statusList: OpaquePointer?
   
-    init(repo: XTRepository)
+    init(repo: XTRepository, head: XTCommit? = nil)
     {
+      guard let targetCommit = head ??
+                               repo.headSHA.flatMap({ repo.commit(forSHA: $0) }),
+            let tree = targetCommit.tree?.git_tree()
+      else {
+        self.statusList = nil
+        return
+      }
+    
       var list: OpaquePointer?
       var options = git_status_options()
       
       git_status_init_options(&options, UInt32(GIT_STATUS_OPTIONS_VERSION))
       options.flags = GIT_STATUS_OPT_INCLUDE_UNTRACKED.rawValue |
                       GIT_STATUS_OPT_RECURSE_UNTRACKED_DIRS.rawValue
+      options.head_tree = tree
       
       guard git_status_list_new(&list,
                                 repo.gtRepo.git_repository(),
@@ -332,5 +351,10 @@ extension XTRepository
   var stagingChanges: StatusCollection
   {
     return StatusCollection(repo: self)
+  }
+  
+  func amendingChanges(parent: XTCommit) -> StatusCollection
+  {
+    return StatusCollection(repo: self, head: parent)
   }
 }

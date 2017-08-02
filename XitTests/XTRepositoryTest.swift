@@ -13,21 +13,6 @@ class XTEmptyRepositoryTest: XTTest
     XCTAssertEqual(repository.parentTree(), kEmptyTreeHash)
   }
   
-  func testIsTextFile()
-  {
-    let textFiles = ["COPYING", "a.txt", "a.c", "a.xml", "a.html"]
-    let nonTextFiles = ["a.jpg", "a.png", "a.ffff", "AAAAA"]
-    
-    for name in textFiles {
-      XCTAssertTrue(repository.isTextFile(name, commit: "master"),
-                    "\(name) should be a text file")
-    }
-    for name in nonTextFiles {
-      XCTAssertFalse(repository.isTextFile(name, commit: "master"),
-                     "\(name) should not be a text file")
-    }
-  }
-  
   func testStagedContents()
   {
     let content = "some content"
@@ -54,6 +39,108 @@ class XTEmptyRepositoryTest: XTTest
     
     XCTAssertEqual(stagedContent2, expectedContent)
     XCTAssertEqual(stagedString2, content)
+  }
+}
+
+class XTAmendTest: XTTest
+{
+  // TODO: Move this up to XTTest
+  struct FileNames
+  {
+    static let file1 = "file1"
+    static let file2 = "file2"
+    static let file3 = "file3"
+  }
+
+  override func addInitialRepoContent()
+  {
+    writeText("text", toFile: FileNames.file1)
+    writeText("text", toFile: FileNames.file2)
+    XCTAssertNoThrow(try repository.stageAllFiles())
+    XCTAssertNoThrow(try repository.commit(message: "commit 1", amend: false,
+                                           outputBlock: nil))
+  }
+  
+  func addSecondCommit()
+  {
+    writeText("more", toFile: FileNames.file1)
+    try! FileManager.default.removeItem(at: repository.fileURL(FileNames.file2))
+    writeText("more", toFile: FileNames.file3)
+    XCTAssertNoThrow(try repository.stageAllFiles())
+    XCTAssertNoThrow(try repository.commit(message: "commit 2", amend: false,
+                                           outputBlock: nil))
+  }
+
+  // testCleanAmendStatus1: test amending a root commit
+  
+  func testCleanAmendStatus2()
+  {
+    let headCommit = repository.commit(forSHA: repository.headSHA!)!
+    
+    addSecondCommit()
+    
+    let normalStatus = repository.stagingChanges
+    let amendStatus = repository.amendingChanges(parent: headCommit)
+    
+    XCTAssertEqual(normalStatus.count, 0)
+    XCTAssertEqual(amendStatus.count, 3)
+  }
+  
+  func testAmendAddModify()
+  {
+    let headCommit = repository.commit(forSHA: repository.headSHA!)!
+    
+    addSecondCommit()
+    writeText("third", toFile: FileNames.file3)
+    
+    let amendStatus = repository.amendingChanges(parent: headCommit)
+    guard let file3Status = amendStatus.first(
+        where: { $0.path == FileNames.file3 })
+    else {
+      XCTFail("file 3 status missig")
+      return
+    }
+
+    XCTAssertEqual(amendStatus.count, 3)
+    XCTAssertEqual(file3Status.unstagedChange, XitChange.modified)
+    XCTAssertEqual(file3Status.change, XitChange.added)
+  }
+  
+  func testUnstageAdded()
+  {
+    let headCommit = repository.commit(forSHA: repository.headSHA!)!
+    
+    addSecondCommit()
+    XCTAssertNoThrow(try repository.amendUnstage(file: FileNames.file3))
+    
+    let amendStatus = repository.amendingChanges(parent: headCommit)
+    guard let file3Status = amendStatus.first(
+      where: { $0.path == FileNames.file3 })
+      else {
+        XCTFail("file 3 status missig")
+        return
+    }
+    
+    XCTAssertEqual(file3Status.unstagedChange, XitChange.added)
+    XCTAssertEqual(file3Status.change, XitChange.untracked)
+  }
+}
+
+class XTRepositoryStaticTest: XCTest
+{
+  func testIsTextFile()
+  {
+    let textFiles = ["COPYING", "a.txt", "a.c", "a.xml", "a.html"]
+    let nonTextFiles = ["a.jpg", "a.png", "a.ffff", "AAAAA"]
+    
+    for name in textFiles {
+      XCTAssertTrue(XTRepository.isTextFile(name),
+                    "\(name) should be a text file")
+    }
+    for name in nonTextFiles {
+      XCTAssertFalse(XTRepository.isTextFile(name),
+                     "\(name) should not be a text file")
+    }
   }
 }
 

@@ -4,7 +4,7 @@ protocol Blob
 {
   var size: UInt { get }
   
-  func withData(callback: (Data) -> Void)
+  func withData(callback: (Data) throws -> Void) rethrows
 }
 
 class GitBlob: Blob
@@ -37,11 +37,11 @@ class GitBlob: Blob
   
   /// Calls the given callback with a Data object containing the blob's data.
   /// The pointer provided by libgit2 does not have a guaranteed lifetime.
-  func withData(callback: (Data) -> Void)
+  func withData(callback: (Data) throws -> Void) rethrows
   {
     let data = makeData()
     
-    callback(data)
+    try callback(data)
   }
   
   deinit

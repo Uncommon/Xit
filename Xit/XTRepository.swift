@@ -304,17 +304,17 @@ extension XTRepository
           return "A cherry-pick operation is already in progress."
         case .conflict:
           return "The operation could not be completed because there were " +
-          "conflicts."
+                 "conflicts."
         case .localConflict:
           return "There are conflicted files in the work tree or index. " +
-          "Try checking in or stashing your changes first."
+                 "Try checking in or stashing your changes first."
         case .detachedHead:
           return "This operation cannot be performed in a detached HEAD state."
         case .gitError(let code):
           return "An internal git error (\(code)) occurred."
         case .patchMismatch:
           return "The patch could not be applied because it did not match " +
-          "the file content."
+                 "the file content."
         case .unexpected:
           return "An unexpected repository error occurred."
       }
@@ -339,6 +339,14 @@ extension XTRepository
       }
       else {
         self = .unexpected
+      }
+    }
+    
+    static func throwIfError(_ code: Int32) throws
+    {
+      guard code == 0
+      else {
+        throw Error(gitCode: git_error_code(code))
       }
     }
   }

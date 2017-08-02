@@ -5,7 +5,7 @@ class FakeRepoController: RepositoryController
 {
   var selectedCommitSHA: String = ""
   var selectedModel: FileChangesModel? = nil
-  var amending = false
+  var isAmending = false
   
   func select(sha: String) {}
 }
