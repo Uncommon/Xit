@@ -163,16 +163,17 @@ extension XTRepository
   
   func amendingStatus(for path: String) throws -> WorkspaceFileStatus
   {
-    // get the HEAD^ commit foc comparison
     guard let headCommit = headSHA.flatMap({ self.commit(forSHA: $0) }),
-          let headTree = headCommit.tree?.git_tree()
+          let previousCommit = headCommit.parentOIDs.first
+                                         .flatMap({ self.commit(forOID: $0) }),
+          let tree = previousCommit.tree?.git_tree()
     else {
       return WorkspaceFileStatus(change: .unmodified,
                                  unstagedChange: .unmodified)
     }
     let flagsInt = UnsafeMutablePointer<UInt32>.allocate(capacity: 1)
     let result = git_status_file_at(flagsInt, gtRepo.git_repository(), path,
-                                    headTree)
+                                    tree)
     
     try Error.throwIfError(result)
     

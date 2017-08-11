@@ -97,7 +97,7 @@ class XTAmendTest: XTTest
     guard let file3Status = amendStatus.first(
         where: { $0.path == FileNames.file3 })
     else {
-      XCTFail("file 3 status missig")
+      XCTFail("file 3 status missing")
       return
     }
 
@@ -114,15 +114,15 @@ class XTAmendTest: XTTest
     XCTAssertNoThrow(try repository.amendUnstage(file: FileNames.file3))
     
     let amendStatus = repository.amendingChanges(parent: headCommit)
-    guard let file3Status = amendStatus.first(
-      where: { $0.path == FileNames.file3 })
-      else {
-        XCTFail("file 3 status missig")
-        return
+    guard let file3Status = amendStatus.first(where: { $0.path ==
+                                                       FileNames.file3 })
+    else {
+      XCTFail("file 3 status missing")
+      return
     }
     
-    XCTAssertEqual(file3Status.unstagedChange, XitChange.added)
-    XCTAssertEqual(file3Status.change, XitChange.untracked)
+    XCTAssertEqual(file3Status.unstagedChange, XitChange.untracked)
+    XCTAssertEqual(file3Status.change, XitChange.unmodified)
   }
 }
 
