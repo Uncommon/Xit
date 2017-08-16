@@ -56,7 +56,7 @@ extension Data
   init?(immutableBytes: UnsafeRawPointer, count: Int)
   {
     guard let data = CFDataCreateWithBytesNoCopy(
-        kCFAllocatorNull, immutableBytes.assumingMemoryBound(to: UInt8.self),
+        kCFAllocatorDefault, immutableBytes.assumingMemoryBound(to: UInt8.self),
         count, kCFAllocatorNull)
     else { return nil }
     

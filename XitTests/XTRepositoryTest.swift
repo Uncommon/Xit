@@ -124,6 +124,25 @@ class XTAmendTest: XTTest
     XCTAssertEqual(file3Status.unstagedChange, XitChange.untracked)
     XCTAssertEqual(file3Status.change, XitChange.unmodified)
   }
+  
+  func testUnstageDeleted()
+  {
+    let headCommit = repository.commit(forSHA: repository.headSHA!)!
+    
+    addSecondCommit()
+    XCTAssertNoThrow(try repository.amendUnstage(file: FileNames.file2))
+    
+    let amendStatus = repository.amendingChanges(parent: headCommit)
+    guard let file2Status = amendStatus.first(where: { $0.path ==
+                                                       FileNames.file2 })
+    else {
+      XCTFail("file 2 status missing")
+      return
+    }
+    
+    XCTAssertEqual(file2Status.unstagedChange, XitChange.deleted)
+    XCTAssertEqual(file2Status.change, XitChange.unmodified)
+  }
 }
 
 class XTRepositoryStaticTest: XCTest
