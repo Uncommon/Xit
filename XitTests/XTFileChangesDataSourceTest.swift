@@ -13,8 +13,8 @@ class XTFileChangesDataSourceTest: XTTest
     repoController.selectedModel = CommitChanges(repository: repository,
                                                  commit: headCommit)
     objc_sync_enter(dataSource)
-    dataSource.repository = repository
     dataSource.repoController = repoController
+    dataSource.repository = repository
     objc_sync_exit(dataSource)
     outlineView.dataSource = dataSource
     dataSource.reload()
