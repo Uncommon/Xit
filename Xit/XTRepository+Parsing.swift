@@ -214,14 +214,22 @@ extension XTRepository
   /// Stages the file relative to HEAD's parent
   func amendStage(file: String) throws
   {
-    // modify
-    // same as regular stage
+    let status = try self.amendingStatus(for: file)
+    let index = try gtRepo.index()
     
-    // add
-    // add the workspace content to the index
-    
-    // delete
-    // delete the file from the index
+    switch status.unstagedChange {
+      
+      case .modified, .added:
+        try index.addFile(file)
+        break
+        
+      case .deleted:
+        try index.removeFile(file)
+        break
+        
+      default:
+        throw Error.unexpected
+    }
   }
   
   /// Unstages the file relative to HEAD's parent

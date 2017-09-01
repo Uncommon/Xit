@@ -50,6 +50,7 @@ class XTAmendTest: XTTest
     static let file1 = "file1"
     static let file2 = "file2"
     static let file3 = "file3"
+    static let file4 = "file4"
   }
 
   override func addInitialRepoContent()
@@ -113,6 +114,7 @@ class XTAmendTest: XTTest
     XCTAssertEqual(file3Status.change, XitChange.added)
   }
   
+  // Test amend status for a file added in the head commit
   func testUnstageAdded()
   {
     let headCommit = repository.commit(forSHA: repository.headSHA!)!
@@ -132,6 +134,7 @@ class XTAmendTest: XTTest
     XCTAssertEqual(file3Status.change, XitChange.unmodified)
   }
   
+  // Test amend status for a file deleted in the head commit
   func testUnstageDeleted()
   {
     let headCommit = repository.commit(forSHA: repository.headSHA!)!
@@ -149,6 +152,97 @@ class XTAmendTest: XTTest
     
     XCTAssertEqual(file2Status.unstagedChange, XitChange.deleted)
     XCTAssertEqual(file2Status.change, XitChange.unmodified)
+  }
+  
+  // Stage & unstage a new file in amend mode
+  func testAddedNew()
+  {
+    let headCommit = repository.commit(forSHA: repository.headSHA!)!
+    let fileName = FileNames.file4
+    let match = { (change: FileStaging) in change.path == fileName }
+    
+    addSecondCommit()
+    writeText("text", toFile: fileName)
+    
+    var amendStatus = repository.amendingChanges(parent: headCommit)
+    guard let file4Status1 = amendStatus.first(where: match)
+    else {
+      XCTFail("file 4 status missing")
+      return
+    }
+    
+    XCTAssertEqual(file4Status1.unstagedChange, XitChange.untracked)
+    XCTAssertEqual(file4Status1.change, XitChange.unmodified)
+    
+    XCTAssertNoThrow(try repository.amendStage(file: fileName))
+    amendStatus = repository.amendingChanges(parent: headCommit)
+    
+    guard let file4Status2 = amendStatus.first(where: match)
+    else {
+      XCTFail("file 4 status missing")
+      return
+    }
+    
+    XCTAssertEqual(file4Status2.unstagedChange, XitChange.unmodified)
+    XCTAssertEqual(file4Status2.change, XitChange.added)
+    
+    XCTAssertNoThrow(try repository.amendUnstage(file: fileName))
+    amendStatus = repository.amendingChanges(parent: headCommit)
+    
+    guard let file4Status3 = amendStatus.first(where: match)
+    else {
+      XCTFail("file 4 status missing")
+      return
+    }
+    
+    XCTAssertEqual(file4Status3.unstagedChange, XitChange.untracked)
+    XCTAssertEqual(file4Status3.change, XitChange.unmodified)
+  }
+  
+  // Stage & unstage a newly deleted file in amend mode
+  func testDeletedNew()
+  {
+    let headCommit = repository.commit(forSHA: repository.headSHA!)!
+    let fileName = FileNames.file1
+    let match = { (change: FileStaging) in change.path == fileName }
+    
+    addSecondCommit()
+    try! FileManager.default.removeItem(at: repository.fileURL(fileName))
+    
+    var amendStatus = repository.amendingChanges(parent: headCommit)
+    
+    if let fileStatus = amendStatus.first(where: match) {
+      // It shows up as modified in the index because file1 was changed
+      // in the second commit.
+      XCTAssertEqual(fileStatus.unstagedChange, XitChange.deleted)
+      XCTAssertEqual(fileStatus.change, XitChange.modified)
+    }
+    else {
+      XCTFail("file status missing")
+      return
+    }
+    
+    XCTAssertNoThrow(try repository.amendStage(file: fileName))
+    amendStatus = repository.amendingChanges(parent: headCommit)
+    if let fileStatus = amendStatus.first(where: match) {
+      XCTAssertEqual(fileStatus.unstagedChange, XitChange.unmodified)
+      XCTAssertEqual(fileStatus.change, XitChange.deleted)
+    }
+    else {
+      XCTFail("file status missing")
+      return
+    }
+    
+    XCTAssertNoThrow(try repository.amendUnstage(file: fileName))
+    amendStatus = repository.amendingChanges(parent: headCommit)
+    if let fileStatus = amendStatus.first(where: match) {
+      XCTAssertEqual(fileStatus.unstagedChange, XitChange.deleted)
+      XCTAssertEqual(fileStatus.change, XitChange.unmodified)
+    }
+    else {
+      XCTFail("file status missing")
+      return
+    }
   }
 }
 
