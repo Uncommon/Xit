@@ -283,25 +283,25 @@ extension XTRepository
   class StatusCollection: BidirectionalCollection
   {
     let statusList: OpaquePointer?
+    var tree: OpaquePointer?
   
-    init(repo: XTRepository, head: XTCommit? = nil)
+    init(repo: XTRepository, head: XTCommit?)
     {
-      guard let targetCommit = head ??
-                               repo.headSHA.flatMap({ repo.commit(forSHA: $0) }),
-            let tree = targetCommit.tree?.git_tree()
-      else {
-        self.statusList = nil
-        return
-      }
-    
-      var list: OpaquePointer?
+      let headTree = head?.tree?.git_tree()
       var options = git_status_options()
       
       git_status_init_options(&options, UInt32(GIT_STATUS_OPTIONS_VERSION))
       options.flags = GIT_STATUS_OPT_INCLUDE_UNTRACKED.rawValue |
                       GIT_STATUS_OPT_RECURSE_UNTRACKED_DIRS.rawValue
-      options.head_tree = tree
+      if let tree = headTree {
+        options.head_tree = tree
+      }
+      else {
+        tree = StatusCollection.emptyTree(repo: repo)
+        options.head_tree = tree
+      }
       
+      var list: OpaquePointer?
       guard git_status_list_new(&list,
                                 repo.gtRepo.git_repository(),
                                 &options) == 0
@@ -311,6 +311,23 @@ extension XTRepository
       }
       
       self.statusList = list
+    }
+    
+    convenience init(repo: XTRepository)
+    {
+      self.init(repo: repo,
+                head: repo.headSHA.flatMap({ repo.commit(forSHA: $0) }))
+    }
+  
+    static func emptyTree(repo: XTRepository) -> OpaquePointer?
+    {
+      guard let emptyOID = GitOID(sha: kEmptyTreeHash)
+      else { return nil }
+      let tree = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+      let result = git_tree_lookup(tree, repo.gtRepo.git_repository(),
+                                   emptyOID.unsafeOID())
+      
+      return (result == GIT_OK.rawValue) ? tree.pointee : nil
     }
   
     subscript(position: Int) -> FileStaging
@@ -343,7 +360,9 @@ extension XTRepository
     func index(before i: Int) -> Int { return i - 1 }
     func index(after i: Int) -> Int { return i + 1 }
     
-    deinit {
+    deinit
+    {
+      tree.map { git_tree_free($0) }
       statusList.map { git_status_list_free($0) }
     }
   }
@@ -353,7 +372,7 @@ extension XTRepository
     return StatusCollection(repo: self)
   }
   
-  func amendingChanges(parent: XTCommit) -> StatusCollection
+  func amendingChanges(parent: XTCommit?) -> StatusCollection
   {
     return StatusCollection(repo: self, head: parent)
   }

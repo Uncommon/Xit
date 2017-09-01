@@ -71,9 +71,16 @@ class XTAmendTest: XTTest
                                            outputBlock: nil))
   }
 
-  // testCleanAmendStatus1: test amending a root commit
+  func testCleanAmendStatusRoot()
+  {
+    let normalStatus = repository.stagingChanges
+    let amendStatus = repository.amendingChanges(parent: nil)
+
+    XCTAssertEqual(normalStatus.count, 0)
+    XCTAssertEqual(amendStatus.count, 2)
+  }
   
-  func testCleanAmendStatus2()
+  func testCleanAmendStatus()
   {
     let headCommit = repository.commit(forSHA: repository.headSHA!)!
     
