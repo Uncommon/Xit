@@ -72,6 +72,7 @@ class XTAmendTest: XTTest
                                            outputBlock: nil))
   }
 
+  // Check amend status where the head commit is the first one
   func testCleanAmendStatusRoot()
   {
     let normalStatus = repository.stagingChanges
@@ -81,6 +82,7 @@ class XTAmendTest: XTTest
     XCTAssertEqual(amendStatus.count, 2)
   }
   
+  // Check amend status with no changes relative to the last commit
   func testCleanAmendStatus()
   {
     let headCommit = repository.commit(forSHA: repository.headSHA!)!
@@ -94,7 +96,8 @@ class XTAmendTest: XTTest
     XCTAssertEqual(amendStatus.count, 3)
   }
   
-  func testAmendAddModify()
+  // Modify a file added in the last commit, then check the amend status
+  func testAmendModifyAdded()
   {
     let headCommit = repository.commit(forSHA: repository.headSHA!)!
     
@@ -114,8 +117,29 @@ class XTAmendTest: XTTest
     XCTAssertEqual(file3Status.change, XitChange.added)
   }
   
+  // Delete a file added in the last commit, then check the amend status
+  func testAmendDeleteAdded()
+  {
+    let headCommit = repository.commit(forSHA: repository.headSHA!)!
+    
+    addSecondCommit()
+    try! FileManager.default.removeItem(at: repository.fileURL(FileNames.file3))
+    
+    let amendStatus = repository.amendingChanges(parent: headCommit)
+    guard let file3Status = amendStatus.first(
+      where: { $0.path == FileNames.file3 })
+      else {
+        XCTFail("file 3 status missing")
+        return
+    }
+    
+    XCTAssertEqual(amendStatus.count, 3)
+    XCTAssertEqual(file3Status.unstagedChange, XitChange.deleted)
+    XCTAssertEqual(file3Status.change, XitChange.added)
+  }
+  
   // Test amend status for a file added in the head commit
-  func testUnstageAdded()
+  func testAddedInHead()
   {
     let headCommit = repository.commit(forSHA: repository.headSHA!)!
     
