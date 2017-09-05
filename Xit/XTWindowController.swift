@@ -19,7 +19,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   weak var xtDocument: XTDocument?
   var titleBarController: TitleBarViewController?
   var refsChangedObserver: NSObjectProtocol?
-  var isAmending = false
+  dynamic var isAmending = false
   {
     didSet
     {
