@@ -24,8 +24,8 @@ extension XTRepository : CommitReferencing
         else { return 0 }
       
       let peeledOID = git_object_id(peeled)
-      guard let sha = GTOID(gitOid: peeledOID!).sha
-        else { return 0 }
+      guard let sha = peeledOID.map({ GitOID(oid: $0.pointee) })?.sha
+      else { return 0 }
       var refs = repo.refsIndex[sha] ?? [String]()
       
       refs.append(name)

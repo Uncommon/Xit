@@ -41,12 +41,6 @@ extension CommitType
 }
 
 
-public func == (a: GTOID, b: GTOID) -> Bool
-{
-  return git_oid_cmp(a.git_oid(), b.git_oid()) == 0
-}
-
-
 public class XTCommit: CommitType
 {
   let gtCommit: GTCommit
