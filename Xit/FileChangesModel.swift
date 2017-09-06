@@ -71,7 +71,7 @@ class CommitChanges: FileChangesModel
   }
   
   /// SHA of the parent commit to use for diffs
-  var diffParent: String?
+  var diffParent: GitOID?
 
   init(repository: XTRepository, commit: XTCommit)
   {
@@ -88,7 +88,7 @@ class CommitChanges: FileChangesModel
   
   func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
   {
-    guard let diffParent = self.diffParent ?? commit.parentOIDs.first?.sha
+    guard let diffParent = self.diffParent ?? commit.parentOIDs.first
     else {
       guard let toTree = commit.gtCommit.tree,
             let toEntry = try? toTree.entry(withPath: path),
@@ -98,10 +98,9 @@ class CommitChanges: FileChangesModel
       return XTDiffMaker(from: .data(Data()), to: .blob(toBlob), path: path)
     }
   
-    return commit.sha.map {
-      self.repository.diffMaker(forFile: path, commitSHA: $0,
-                                parentSHA: diffParent)
-    } ?? nil
+    return self.repository.diffMaker(forFile: path,
+                                     commitOID: commit.oid,
+                                     parentOID: diffParent)
   }
   
   func blame(for path: String, staged: Bool) -> GitBlame?
@@ -122,7 +121,7 @@ class CommitChanges: FileChangesModel
     guard let sha = commit.sha
     else { return NSTreeNode() }
     var files = commit.allFiles()
-    let changeList = repository.changes(for: sha, parent: diffParent)
+    let changeList = repository.changes(for: sha, parent: diffParent?.sha)
     var changes = [String: XitChange]()
       
     for change in changeList {

@@ -144,26 +144,26 @@ extension XTRepository
   
   /// Returns a diff maker for a file at the specified commit, compared to the
   /// parent commit.
-  func diffMaker(forFile file: String, commitSHA: String, parentSHA: String?)
+  func diffMaker(forFile file: String, commitOID: GitOID, parentOID: GitOID?)
     -> XTDiffMaker?
   {
-    guard let toCommit = commit(forSHA: commitSHA)?.gtCommit
+    guard let toCommit = commit(forOID: commitOID)?.gtCommit
     else { return nil }
     
     var fromSource = XTDiffMaker.SourceType.data(Data())
     var toSource = XTDiffMaker.SourceType.data(Data())
     
     if let toTree = toCommit.tree,
-      let toEntry = try? toTree.entry(withPath: file),
-      let toBlob = (try? GTObject(treeEntry: toEntry)) as? GTBlob {
+       let toEntry = try? toTree.entry(withPath: file),
+       let toBlob = (try? GTObject(treeEntry: toEntry)) as? GTBlob {
       toSource = .blob(toBlob)
     }
     
-    if let parentSHA = parentSHA,
-      let parentCommit = commit(forSHA: parentSHA)?.gtCommit,
-      let fromTree = parentCommit.tree,
-      let fromEntry = try? fromTree.entry(withPath: file),
-      let fromBlob = (try? GTObject(treeEntry: fromEntry)) as? GTBlob {
+    if let parentOID = parentOID,
+       let parentCommit = commit(forOID: parentOID)?.gtCommit,
+       let fromTree = parentCommit.tree,
+       let fromEntry = try? fromTree.entry(withPath: file),
+       let fromBlob = (try? GTObject(treeEntry: fromEntry)) as? GTBlob {
       fromSource = .blob(fromBlob)
     }
     
