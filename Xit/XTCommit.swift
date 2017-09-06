@@ -50,16 +50,12 @@ public func == (a: GTOID, b: GTOID) -> Bool
 public class XTCommit: CommitType
 {
   let gtCommit: GTCommit
-  
-  // These used to be lazy properties, but the Swift 3 compiler crashes on that.
-  let cachedSHA: String?
-  let cachedOID: GitOID
-  let cachedParentOIDs: [GitOID]
 
-  public var sha: String? { return cachedSHA }
-  public var oid: GitOID { return cachedOID }
-
-  public var parentOIDs: [GitOID] { return cachedParentOIDs }
+  public private(set) lazy var sha: String? = self.gtCommit.sha
+  public private(set) lazy var oid: GitOID =
+      GitOID(oid: self.gtCommit.oid!.git_oid().pointee)
+  public private(set) lazy var parentOIDs: [GitOID] =
+      XTCommit.calculateParentOIDs(self.gtCommit.git_commit())
   
   public var message: String?
   { return gtCommit.message }
@@ -110,9 +106,6 @@ public class XTCommit: CommitType
   init(commit: GTCommit)
   {
     self.gtCommit = commit
-    self.cachedSHA = commit.sha
-    self.cachedOID = GitOID(oid: commit.oid!.git_oid().pointee)
-    self.cachedParentOIDs = XTCommit.calculateParentOIDs(gtCommit.git_commit())
   }
 
   convenience init?(oid: GitOID, repository: XTRepository)
@@ -184,16 +177,6 @@ public class XTCommit: CommitType
       result.append(GitOID(oidPtr: parentID!))
     }
     return result
-  }
-  
-  private func calculateSHA() -> String?
-  {
-    return gtCommit.sha
-  }
-  
-  private func calculateOID() -> GTOID
-  {
-    return gtCommit.oid!
   }
 }
 
