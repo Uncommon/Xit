@@ -265,11 +265,12 @@ class XTRepositoryTest: XTTest
   
   func testAddedChange()
   {
-    let changes = repository.changes(for: "master", parent: nil)
+    let changes = repository.changes(for: repository.headSHA!, parent: nil)
     
     XCTAssertEqual(changes.count, 1)
     
-    let change = changes[0]
+    guard let change = changes.first
+    else { return }
     
     XCTAssertEqual(change.path, file1Name)
     XCTAssertEqual(change.change, XitChange.added)
@@ -286,11 +287,12 @@ class XTRepositoryTest: XTTest
     try! repository.stage(file: file2Name)
     try! repository.commit(message: "#2", amend: false, outputBlock: nil)
     
-    let changes2 = repository.changes(for: "master", parent: nil)
+    let changes2 = repository.changes(for: repository.headSHA!, parent: nil)
     
     XCTAssertEqual(changes2.count, 2)
     
-    let file1Change = changes2[0]
+    guard let file1Change = changes2.first
+    else { return }
     
     XCTAssertEqual(file1Change.path, file1Name)
     XCTAssertEqual(file1Change.change, .modified)
@@ -307,11 +309,12 @@ class XTRepositoryTest: XTTest
     try! repository.stage(file: file1Name)
     try! repository.commit(message: "#3", amend: false, outputBlock: nil)
     
-    let changes3 = repository.changes(for: "master", parent: nil)
+    let changes3 = repository.changes(for: repository.headSHA!, parent: nil)
     
     XCTAssertEqual(changes3.count, 1)
     
-    let file1Deleted = changes3[0]
+    guard let file1Deleted = changes3.first
+    else { return }
     
     XCTAssertEqual(file1Deleted.path, file1Name)
     XCTAssertEqual(file1Deleted.change, .deleted)
@@ -376,10 +379,10 @@ class XTRepositoryTest: XTTest
       return
     }
     
-    let parentSHA = commit.parentSHAs.first!
+    let parentOID = commit.parentOIDs.first!
     let maker = repository.diffMaker(forFile: file1Name,
-                                     commitSHA: commit.sha!,
-                                     parentSHA: parentSHA)!
+                                     commitOID: commit.oid,
+                                     parentOID: parentOID)!
     let diff = maker.makeDiff()!
     let patch = try! diff.generatePatch()
     
@@ -395,8 +398,8 @@ class XTRepositoryTest: XTTest
     }
     
     let maker = repository.diffMaker(forFile: file1Name,
-                                     commitSHA: commit.sha!,
-                                     parentSHA: nil)!
+                                     commitOID: commit.oid,
+                                     parentOID: nil)!
     let diff = maker.makeDiff()!
     let patch = try! diff.generatePatch()
     
