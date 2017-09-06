@@ -25,9 +25,9 @@ extension XTRepository
   
   /// Returns the diff for the referenced commit, compared to its first parent
   /// or to a specific parent.
-  func diff(forSHA sha: String, parent parentSHA: String?) -> GTDiff?
+  func diff(forSHA sha: String, parent parentOID: GitOID?) -> GTDiff?
   {
-    let parentSHA = parentSHA ?? ""
+    let parentSHA = parentOID?.sha ?? ""
     let key = sha.appending(parentSHA) as NSString
     
     if let diff = diffCache.object(forKey: key) {
@@ -53,17 +53,17 @@ extension XTRepository
   }
   
   // Returns the changes for the given commit.
-  func changes(for ref: String, parent parentSHA: String?) -> [FileChange]
+  func changes(for sha: String, parent parentOID: GitOID?) -> [FileChange]
   {
-    guard ref != XTStagingSHA
+    guard sha != XTStagingSHA
     else { return stagingChanges() }
     
-    guard let commit = (try? gtRepo.lookUpObject(byRevParse: ref)) as? GTCommit,
+    guard let commit = self.commit(forSHA: sha),
           let sha = commit.sha
     else { return [] }
     
-    let parentSHA = parentSHA ?? commit.parents.first?.sha
-    let diff = self.diff(forSHA: sha, parent: parentSHA)
+    let parentOID = parentOID ?? commit.parentOIDs.first
+    let diff = self.diff(forSHA: sha, parent: parentOID)
     var result = [FileChange]()
     
     diff?.enumerateDeltas {
@@ -173,9 +173,9 @@ extension XTRepository
   // Returns a file diff for a given commit.
   func diff(for path: String,
             commitSHA sha: String,
-            parentSHA: String?) -> XTDiffDelta?
+            parentOID: GitOID?) -> XTDiffDelta?
   {
-    guard let diff = self.diff(forSHA: sha, parent: parentSHA)
+    guard let diff = self.diff(forSHA: sha, parent: parentOID)
     else { return nil }
     
     return delta(from: diff, path: path)

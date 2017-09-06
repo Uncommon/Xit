@@ -79,7 +79,7 @@ class CommitChanges: FileChangesModel
     self.commit = commit
     if let sha = commit.sha {
       self.savedChanges = repository.changes(for: sha,
-                                             parent: commit.parentSHAs.first)
+                                             parent: commit.parentOIDs.first)
     }
     else {
       self.savedChanges = []
@@ -121,7 +121,7 @@ class CommitChanges: FileChangesModel
     guard let sha = commit.sha
     else { return NSTreeNode() }
     var files = commit.allFiles()
-    let changeList = repository.changes(for: sha, parent: diffParent?.sha)
+    let changeList = repository.changes(for: sha, parent: diffParent)
     var changes = [String: XitChange]()
       
     for change in changeList {

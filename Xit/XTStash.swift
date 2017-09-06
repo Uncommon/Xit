@@ -34,7 +34,7 @@ public class XTStash: NSObject
     }
     
     guard var unstagedChanges = mainCommit?.sha.map({
-        repo.changes(for: $0, parent: indexCommit?.sha) })
+        repo.changes(for: $0, parent: indexCommit?.oid) })
     else { return [] }
     let stagedChanges = indexCommit.map { repo.changes(for: $0.sha!,
                                                        parent: nil) }
