@@ -60,6 +60,33 @@ public struct GitOID: OID, Hashable
                   encoding: .ascii, freeWhenDone: true) ?? ""
   }
   
+  public var hashValue: Int
+  {
+    // Unfortunately you can't iterate through a tuple
+    var result = Int(oid.id.19)
+    
+    result = (result << 8) | Int(oid.id.18)
+    result = (result << 8) | Int(oid.id.17)
+    result = (result << 8) | Int(oid.id.16)
+    result = (result << 8) | Int(oid.id.15)
+    result = (result << 8) | Int(oid.id.14)
+    result = (result << 8) | Int(oid.id.13)
+    result = (result << 8) | Int(oid.id.12)
+    result = (result << 8) | Int(oid.id.11)
+    result = (result << 8) | Int(oid.id.10)
+    result = (result << 8) | Int(oid.id.9)
+    result = (result << 8) | Int(oid.id.8)
+    result = (result << 8) | Int(oid.id.7)
+    result = (result << 8) | Int(oid.id.6)
+    result = (result << 8) | Int(oid.id.5)
+    result = (result << 8) | Int(oid.id.4)
+    result = (result << 8) | Int(oid.id.3)
+    result = (result << 8) | Int(oid.id.2)
+    result = (result << 8) | Int(oid.id.1)
+    result = (result << 8) | Int(oid.id.0)
+    return Int(result)
+  }
+  
   public var isZero: Bool
   {
     return git_oid_iszero(unsafeOID()) == 1
