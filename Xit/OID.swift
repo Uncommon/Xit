@@ -111,5 +111,5 @@ public func == (left: GitOID, right: GitOID) -> Bool
   var l = left.oid
   var r = right.oid
   
-  return git_oid_equal(&l, &r) != 0
+  return xit_oid_equal(&l, &r)
 }

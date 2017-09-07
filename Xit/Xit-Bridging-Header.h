@@ -11,3 +11,4 @@
 
 #import "NSAttributedString+XTExtensions.h"
 #import "NSTask+Throwing.h"
+#import "LibGitExtensions.h"
