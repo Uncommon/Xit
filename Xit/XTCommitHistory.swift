@@ -69,8 +69,8 @@ public class CommitEntry<C: CommitType>: CustomStringConvertible
         }
       }
       lines.append(HistoryLine(childIndex: childIndex,
-                        parentIndex: parentIndex,
-                        colorIndex: colorIndex))
+                               parentIndex: parentIndex,
+                               colorIndex: colorIndex))
     }
   }
 }
@@ -304,9 +304,9 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
       
       if let firstParentOID = entry.commit.parentOIDs.first {
         let newConnection = Connection(parentOID: firstParentOID,
-                                        childOID: commitOID,
-                                        colorIndex: incomingColor ??
-                                                    nextColorIndex++)
+                                       childOID: commitOID,
+                                       colorIndex: incomingColor ??
+                                                   nextColorIndex++)
         let insertIndex = incomingIndex.flatMap { $0 + 1 } ??
                           connections.endIndex
         
