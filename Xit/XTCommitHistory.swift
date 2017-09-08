@@ -236,25 +236,39 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
   }
   
   /// Creates the connections to be drawn between commits.
-  func connectCommits()
+  func connectCommits(batchSize: Int = 0, batchNotify: (() -> Void)? = nil)
   {
-    let connections = generateConnections()
+    let batchSize = batchSize <= 0 ? entries.count : batchSize
+    var batchStart = 0
+    var startingConnections = [Connection]()
     
-    DispatchQueue.concurrentPerform(iterations: entries.count) {
-      (index) in
-      postProgress?(index, 2)
-      generateLines(entry: entries[index], connections: connections[index])
+    while batchStart < entries.count {
+      let batchSize = min(batchSize, entries.count - batchStart)
+      let connections = generateConnections(batchStart: batchStart,
+                                            batchSize: batchSize,
+                                            starting: startingConnections)
+      
+      DispatchQueue.concurrentPerform(iterations: batchSize) {
+        (index) in
+        generateLines(entry: entries[index + batchStart],
+                      connections: connections[index])
+      }
+      
+      startingConnections = connections.last ?? []
+      batchStart += batchSize
+      batchNotify?()
     }
   }
   
-  func generateConnections() -> [[Connection]]
+  func generateConnections(batchStart: Int, batchSize: Int,
+                           starting: [Connection]) -> [[Connection]]
   {
     var result = [[Connection]]()
-    var connections = [Connection]()
+    var connections: [Connection] = starting
     var nextColorIndex: UInt = 0
     
     result.reserveCapacity(entries.count)
-    for (index, entry) in entries.enumerated() {
+    for (index, entry) in entries[batchStart..<batchStart+batchSize].enumerated() {
       let commitOID = entry.commit.oid
       let incomingIndex = connections.index(where: { $0.parentOID == commitOID })
       let incomingColor = incomingIndex.flatMap { connections[$0].colorIndex }

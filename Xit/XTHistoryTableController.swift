@@ -118,7 +118,7 @@ public class XTHistoryTableController: NSViewController
         history.appendCommit(commit)
       }
       
-      history.connectCommits()
+      history.connectCommits(batchSize: 500) {}
       DispatchQueue.main.async {
         tableView?.reloadData()
         self.ensureSelection()
