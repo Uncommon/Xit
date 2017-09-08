@@ -6,16 +6,25 @@ class XTCommitLinesTest: XCTestCase
   // Only the SHA/OID matters
   let entry = CommitEntry(commit: StringCommit(sha: "a",
                                                parentOIDs: []))
+  let history = XTCommitHistory<StringRepository>()
+  
+  override func setUp()
+  {
+    super.setUp()
+    
+    history.entries.append(entry)
+  }
+  
   
   //  a
   //  |\
   //  b c
   func testMerge1()
   {
-    entry.connections = [
+    history.generateLines(entry: entry, connections: [
       CommitConnection(parentOID: "b", childOID: "a", colorIndex: 0),
       CommitConnection(parentOID: "c", childOID: "a", colorIndex: 1),
-    ]
+    ])
     
     XCTAssertEqual(entry.dotOffset, 0)
     XCTAssertEqual(entry.dotColorIndex, 0)
@@ -35,11 +44,11 @@ class XTCommitLinesTest: XCTestCase
   // b c
   func testMerge2()
   {
-    entry.connections = [
+    history.generateLines(entry: entry, connections: [
       CommitConnection(parentOID: "b", childOID: "0", colorIndex: 0),
       CommitConnection(parentOID: "b", childOID: "a", colorIndex: 1),
       CommitConnection(parentOID: "c", childOID: "a", colorIndex: 2)
-    ]
+    ])
     
     XCTAssertEqual(entry.dotOffset, 1)
     XCTAssertEqual(entry.dotColorIndex, 1)
@@ -61,11 +70,11 @@ class XTCommitLinesTest: XCTestCase
   // b c
   func testParallel()
   {
-    entry.connections = [
+    history.generateLines(entry: entry, connections: [
       CommitConnection(parentOID: "b", childOID: "0", colorIndex: 0),
       CommitConnection(parentOID: "a", childOID: "1", colorIndex: 1),
       CommitConnection(parentOID: "c", childOID: "a", colorIndex: 1)
-    ]
+    ])
     
     XCTAssertEqual(entry.dotOffset, 1)
     XCTAssertEqual(entry.dotColorIndex, 1)
@@ -87,11 +96,11 @@ class XTCommitLinesTest: XCTestCase
   // b
   func testSplitBelow()
   {
-    entry.connections = [
+    history.generateLines(entry: entry, connections: [
       CommitConnection(parentOID: "a", childOID: "0", colorIndex: 0),
       CommitConnection(parentOID: "b", childOID: "a", colorIndex: 0),
       CommitConnection(parentOID: "b", childOID: "1", colorIndex: 1)
-    ]
+    ])
     
     XCTAssertEqual(entry.dotOffset, 0)
     XCTAssertEqual(entry.dotColorIndex, 0)
@@ -111,10 +120,10 @@ class XTCommitLinesTest: XCTestCase
   // o
   func testSplitAbove()
   {
-    entry.connections = [
+    history.generateLines(entry: entry, connections: [
       CommitConnection(parentOID: "a", childOID: "0", colorIndex: 0),
       CommitConnection(parentOID: "a", childOID: "1", colorIndex: 1)
-    ]
+    ])
     
     XCTAssertEqual(entry.dotOffset, 0)
     XCTAssertEqual(entry.dotColorIndex, 0)
@@ -133,13 +142,13 @@ class XTCommitLinesTest: XCTestCase
   // b c d
   func testSplitBelow2()
   {
-    entry.connections = [
+    history.generateLines(entry: entry, connections: [
       CommitConnection(parentOID: "b", childOID: "0", colorIndex: 0),
       CommitConnection(parentOID: "a", childOID: "1", colorIndex: 1),
       CommitConnection(parentOID: "c", childOID: "a", colorIndex: 1),
       CommitConnection(parentOID: "c", childOID: "2", colorIndex: 2),
       CommitConnection(parentOID: "d", childOID: "3", colorIndex: 3),
-    ]
+    ])
     
     XCTAssertEqual(entry.dotOffset, 1)
     XCTAssertEqual(entry.dotColorIndex, 1)
@@ -162,12 +171,12 @@ class XTCommitLinesTest: XCTestCase
   // b c
   func testSplitBelow3()
   {
-    entry.connections = [
+    history.generateLines(entry: entry, connections: [
       CommitConnection(parentOID: "b", childOID: "0", colorIndex: 0),
       CommitConnection(parentOID: "a", childOID: "1", colorIndex: 1),
       CommitConnection(parentOID: "b", childOID: "a", colorIndex: 1),
       CommitConnection(parentOID: "c", childOID: "2", colorIndex: 2),
-    ]
+    ])
     
     XCTAssertEqual(entry.dotOffset, 1)
     XCTAssertEqual(entry.dotColorIndex, 1)
@@ -189,12 +198,12 @@ class XTCommitLinesTest: XCTestCase
   // b  c
   func testSplitAbove2()
   {
-    entry.connections = [
+    history.generateLines(entry: entry, connections: [
       CommitConnection(parentOID: "a", childOID: "0", colorIndex: 0),
       CommitConnection(parentOID: "b", childOID: "a", colorIndex: 0),
       CommitConnection(parentOID: "a", childOID: "1", colorIndex: 1),
       CommitConnection(parentOID: "c", childOID: "2", colorIndex: 2),
-    ]
+    ])
     
     XCTAssertEqual(entry.dotOffset, 0)
     XCTAssertEqual(entry.dotColorIndex, 0)
@@ -216,12 +225,12 @@ class XTCommitLinesTest: XCTestCase
   // b  c
   func testMergedParallel()
   {
-    entry.connections = [
+    history.generateLines(entry: entry, connections: [
       CommitConnection(parentOID: "b", childOID: "0", colorIndex: 0),
       CommitConnection(parentOID: "b", childOID: "1", colorIndex: 1),
       CommitConnection(parentOID: "a", childOID: "2", colorIndex: 2),
       CommitConnection(parentOID: "c", childOID: "a", colorIndex: 2),
-    ]
+    ])
 
     XCTAssertEqual(entry.dotOffset, 1)
     XCTAssertEqual(entry.dotColorIndex, 2)

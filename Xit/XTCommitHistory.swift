@@ -9,13 +9,6 @@ struct HistoryLine
 public class CommitEntry<C: CommitType>: CustomStringConvertible
 {
   let commit: C
-  var connections = [CommitConnection<C.ID>]()
-  {
-    didSet
-    {
-      generateLines()
-    }
-  }
   var lines = [HistoryLine]()
   var dotOffset: UInt?
   var dotColorIndex: UInt?
@@ -26,52 +19,6 @@ public class CommitEntry<C: CommitType>: CustomStringConvertible
   init(commit: C)
   {
     self.commit = commit
-  }
-  
-  func generateLines()
-  {
-    var nextChildIndex: UInt = 0
-    let parentOutlets = NSOrderedSet(array: connections.flatMap {
-            ($0.parentOID == commit.oid) ? nil : $0.parentOID })
-    var parentLines: [C.ID: (childIndex: UInt,
-                             colorIndex: UInt)] = [:]
-    
-    for connection in connections {
-      let commitIsParent = connection.parentOID == commit.oid
-      let commitIsChild = connection.childOID == commit.oid
-      let parentIndex: UInt? = commitIsParent
-              ? nil : UInt(parentOutlets.index(of: connection.parentOID))
-      var childIndex: UInt? = commitIsChild
-              ? nil : nextChildIndex
-      var colorIndex = connection.colorIndex
-      
-      if (dotOffset == nil) && (commitIsParent || commitIsChild) {
-        dotOffset = nextChildIndex
-        dotColorIndex = colorIndex
-      }
-      if let parentLine = parentLines[connection.parentOID] {
-        if !commitIsChild {
-          childIndex = parentLine.childIndex
-          colorIndex = parentLine.colorIndex
-        }
-        else if !commitIsParent {
-          nextChildIndex += 1
-        }
-      }
-      else {
-        if !commitIsChild {
-          parentLines[connection.parentOID] = (
-              childIndex: nextChildIndex,
-              colorIndex: colorIndex)
-        }
-        if !commitIsParent {
-          nextChildIndex += 1
-        }
-      }
-      lines.append(HistoryLine(childIndex: childIndex,
-                               parentIndex: parentIndex,
-                               colorIndex: colorIndex))
-    }
   }
 }
 
@@ -288,15 +235,25 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
     }
   }
   
-  
   /// Creates the connections to be drawn between commits.
   func connectCommits()
   {
-    var newConnectionsList = [[Connection]]()
+    let connections = generateConnections()
+    
+    DispatchQueue.concurrentPerform(iterations: entries.count) {
+      (index) in
+      postProgress?(index, 2)
+      generateLines(entry: entries[index], connections: connections[index])
+    }
+  }
+  
+  func generateConnections() -> [[Connection]]
+  {
+    var result = [[Connection]]()
     var connections = [Connection]()
     var nextColorIndex: UInt = 0
     
-    newConnectionsList.reserveCapacity(entries.count)
+    result.reserveCapacity(entries.count)
     for (index, entry) in entries.enumerated() {
       let commitOID = entry.commit.oid
       let incomingIndex = connections.index(where: { $0.parentOID == commitOID })
@@ -320,22 +277,65 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
                                       colorIndex: nextColorIndex++))
       }
       
-      newConnectionsList.append(connections)
+      result.append(connections)
       connections = connections.filter { $0.parentOID != commitOID }
       
       postProgress?(index, 1)
     }
     
-    DispatchQueue.concurrentPerform(iterations: entries.count) {
-      (index) in
-      postProgress?(index, 2)
-      entries[index].connections = newConnectionsList[index]
-    }
 #if DEBUGLOG
     if !connections.isEmpty {
       print("Unterminated parent lines:")
       connections.forEach({ print($0.childOID.SHA.firstSix()) })
     }
 #endif
+    return result
+  }
+  
+  func generateLines(entry: CommitEntry<C>,
+                     connections: [CommitConnection<C.ID>])
+  {
+    var nextChildIndex: UInt = 0
+    let parentOutlets = NSOrderedSet(array: connections.flatMap {
+            ($0.parentOID == entry.commit.oid) ? nil : $0.parentOID })
+    var parentLines: [C.ID: (childIndex: UInt,
+                             colorIndex: UInt)] = [:]
+    
+    for connection in connections {
+      let commitIsParent = connection.parentOID == entry.commit.oid
+      let commitIsChild = connection.childOID == entry.commit.oid
+      let parentIndex: UInt? = commitIsParent
+              ? nil : UInt(parentOutlets.index(of: connection.parentOID))
+      var childIndex: UInt? = commitIsChild
+              ? nil : nextChildIndex
+      var colorIndex = connection.colorIndex
+      
+      if (entry.dotOffset == nil) && (commitIsParent || commitIsChild) {
+        entry.dotOffset = nextChildIndex
+        entry.dotColorIndex = colorIndex
+      }
+      if let parentLine = parentLines[connection.parentOID] {
+        if !commitIsChild {
+          childIndex = parentLine.childIndex
+          colorIndex = parentLine.colorIndex
+        }
+        else if !commitIsParent {
+          nextChildIndex += 1
+        }
+      }
+      else {
+        if !commitIsChild {
+          parentLines[connection.parentOID] = (
+              childIndex: nextChildIndex,
+              colorIndex: colorIndex)
+        }
+        if !commitIsParent {
+          nextChildIndex += 1
+        }
+      }
+      entry.lines.append(HistoryLine(childIndex: childIndex,
+                                     parentIndex: parentIndex,
+                                     colorIndex: colorIndex))
+    }
   }
 }
