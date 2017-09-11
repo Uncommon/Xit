@@ -22,24 +22,24 @@ public class CommitEntry<C: CommitType>: CustomStringConvertible
   }
 }
 
-public func == <C: CommitType>(left: CommitEntry<C>,
-                               right: CommitEntry<C>) -> Bool
+public func == <C>(left: CommitEntry<C>, right: CommitEntry<C>) -> Bool
 {
   return left.commit.oid == right.commit.oid
 }
 
 
 /// A connection line between commits in the history list.
-struct CommitConnection<ID: OID>: Equatable {
+struct CommitConnection<ID: OID>: Equatable
+{
   let parentOID, childOID: ID
   let colorIndex: UInt
 }
 
-func == <ID: OID>(left: CommitConnection<ID>, right: CommitConnection<ID>) -> Bool
+func == <ID>(left: CommitConnection<ID>, right: CommitConnection<ID>) -> Bool
 {
   return (left.parentOID == right.parentOID) &&
          (left.childOID == right.childOID) &&
-         (left .colorIndex == right.colorIndex)
+         (left.colorIndex == right.colorIndex)
 }
 
 
@@ -74,9 +74,9 @@ public typealias GitCommitHistory = XTCommitHistory<XTRepository>
 /// Maintains the history list, allowing for dynamic adding and removing.
 public class XTCommitHistory<Repo: RepositoryType>: NSObject
 {
-  typealias C = Repo.C
-  typealias ID = Repo.C.ID
-  typealias Entry = CommitEntry<C>
+  public typealias C = Repo.C
+  public typealias ID = Repo.C.ID
+  public typealias Entry = CommitEntry<C>
   typealias Connection = CommitConnection<ID>
   typealias Result = BranchResult<C>
 
@@ -94,7 +94,7 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
   }
   
   /// Clears the history list.
-  func reset()
+  public func reset()
   {
     commitLookup.removeAll()
     entries.removeAll()
@@ -147,7 +147,7 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
   }
   
   /// Adds new commits to the list.
-  func process(_ startCommit: C, afterCommit: C? = nil)
+  public func process(_ startCommit: C, afterCommit: C? = nil)
   {
     let startOID = startCommit.oid
     guard commitLookup[startOID] == nil
@@ -236,7 +236,8 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
   }
   
   /// Creates the connections to be drawn between commits.
-  func connectCommits(batchSize: Int = 0, batchNotify: (() -> Void)? = nil)
+  public func connectCommits(batchSize: Int = 0,
+                             batchNotify: (() -> Void)? = nil)
   {
     let batchSize = batchSize <= 0 ? entries.count : batchSize
     var batchStart = 0
