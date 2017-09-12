@@ -86,7 +86,7 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
   var entries = [Entry]()
   
   // batchSize, batch, pass, value
-  // XTHistoryTableController.postProgress assumes 2 iterations.
+  // XTHistoryTableController.postProgress assumes 2 passes.
   var postProgress: ((Int, Int, Int, Int) -> Void)?
   
   /// Manually appends a commit.
@@ -320,6 +320,9 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
                              colorIndex: UInt)] = [:]
     
     for connection in connections {
+      objc_sync_enter(self)
+      defer { objc_sync_exit(self) }
+      
       let commitIsParent = connection.parentOID == entry.commit.oid
       let commitIsChild = connection.childOID == entry.commit.oid
       let parentIndex: UInt? = commitIsParent

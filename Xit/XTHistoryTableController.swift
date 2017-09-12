@@ -9,9 +9,12 @@ public class XTHistoryTableController: NSViewController
     static let name = "name"
   }
   
+  static let batchSize = 500
+  
   let observers = ObserverCollection()
 
   var tableView: NSTableView { return view as! NSTableView }
+  var lastBatch = -1
 
   weak var repository: XTRepository!
   {
@@ -118,7 +121,7 @@ public class XTHistoryTableController: NSViewController
         history.appendCommit(commit)
       }
       
-      history.connectCommits(batchSize: 500) {}
+      history.connectCommits(batchSize: XTHistoryTableController.batchSize) {}
       DispatchQueue.main.async {
         tableView?.reloadData()
         self.ensureSelection()
@@ -142,6 +145,22 @@ public class XTHistoryTableController: NSViewController
         total: Float(goal))
       
       NotificationCenter.default.post(progressNote)
+    }
+    if batch != lastBatch {
+      lastBatch = batch
+      switch batch {
+        case 0:
+          break
+        case 1:
+          tableView.reloadData()
+        default:
+          let batchStart = batch * XTHistoryTableController.batchSize
+          let range = batchStart..<(batchStart+XTHistoryTableController.batchSize)
+          let columnRange = 0..<tableView.tableColumns.count
+          
+          tableView.reloadData(forRowIndexes: IndexSet(integersIn: range),
+                               columnIndexes: IndexSet(integersIn: columnRange))
+      }
     }
   }
   
