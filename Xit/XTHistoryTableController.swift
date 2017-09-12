@@ -77,7 +77,7 @@ public class XTHistoryTableController: NSViewController
       }
     }
     
-    history.postProgress = self.postProgress(_:iteration:)
+    history.postProgress = self.postProgress(batchSize:batch:pass:value:)
   }
   
   /// Reloads the commit history from scratch.
@@ -126,18 +126,20 @@ public class XTHistoryTableController: NSViewController
     }
   }
   
-  func postProgress(_ value: Int, iteration: Int)
+  func postProgress(batchSize: Int, batch: Int, pass: Int, value: Int)
   {
-    let totalIterations = 2
-    let totalCount = history.entries.count * totalIterations
-    let step = totalCount / 100
-    let totalValue = (iteration-1) * history.entries.count + value
+    let passCount = 2
+    let goal = history.entries.count * passCount
+    let completed = batch * batchSize * passCount
+    let totalProgress = completed + pass * passCount + value
+  
+    let step = goal / 100
     
-    if (step == 0) || (totalValue % step == 0) {
+    if (step == 0) || (totalProgress % step == 0) {
       let progressNote = Notification.progressNotification(
         repository: repository,
-        progress: Float(totalValue),
-        total: Float(totalCount))
+        progress: Float(totalProgress),
+        total: Float(goal))
       
       NotificationCenter.default.post(progressNote)
     }

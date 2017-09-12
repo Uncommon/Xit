@@ -85,7 +85,9 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
   var commitLookup = [ID: Entry]()
   var entries = [Entry]()
   
-  var postProgress: ((Int, Int) -> Void)?
+  // batchSize, batch, pass, value
+  // XTHistoryTableController.postProgress assumes 2 iterations.
+  var postProgress: ((Int, Int, Int, Int) -> Void)?
   
   /// Manually appends a commit.
   func appendCommit(_ commit: C)
@@ -253,6 +255,7 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
         (index) in
         generateLines(entry: entries[index + batchStart],
                       connections: connections[index])
+        postProgress?(batchSize, batchStart/batchSize, 1, index)
       }
       
       startingConnections = connections.last ?? []
@@ -295,7 +298,7 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
       result.append(connections)
       connections = connections.filter { $0.parentOID != commitOID }
       
-      postProgress?(index, 1)
+      postProgress?(batchSize, batchStart/batchSize, 0, index)
     }
     
 #if DEBUGLOG
