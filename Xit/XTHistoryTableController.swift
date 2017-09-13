@@ -1,5 +1,7 @@
 import Cocoa
 
+fileprivate let batchSize = 500
+
 public class XTHistoryTableController: NSViewController
 {
   struct ColumnID
@@ -8,8 +10,6 @@ public class XTHistoryTableController: NSViewController
     static let date = "date"
     static let name = "name"
   }
-  
-  static let batchSize = 500
   
   let observers = ObserverCollection()
 
@@ -121,10 +121,16 @@ public class XTHistoryTableController: NSViewController
         history.appendCommit(commit)
       }
       
-      history.connectCommits(batchSize: XTHistoryTableController.batchSize) {}
-      DispatchQueue.main.async {
-        tableView?.reloadData()
-        self.ensureSelection()
+      DispatchQueue.global(qos: .utility).async {
+        // Get off the queue thread, but run this as a queue task so that
+        // progress will be displayed.
+        self.repository.queue.executeTask {
+          history.connectCommits(batchSize: batchSize) {}
+        }
+        DispatchQueue.main.async {
+          tableView?.reloadData()
+          self.ensureSelection()
+        }
       }
     }
   }
@@ -140,26 +146,34 @@ public class XTHistoryTableController: NSViewController
     
     if (step == 0) || (totalProgress % step == 0) {
       let progressNote = Notification.progressNotification(
-        repository: repository,
-        progress: Float(totalProgress),
-        total: Float(goal))
+            repository: repository,
+            progress: Float(totalProgress),
+            total: Float(goal))
       
       NotificationCenter.default.post(progressNote)
     }
+    
     if batch != lastBatch {
+      weak var tableView = self.tableView
+      
       lastBatch = batch
-      switch batch {
-        case 0:
-          break
-        case 1:
-          tableView.reloadData()
-        default:
-          let batchStart = batch * XTHistoryTableController.batchSize
-          let range = batchStart..<(batchStart+XTHistoryTableController.batchSize)
-          let columnRange = 0..<tableView.tableColumns.count
-          
-          tableView.reloadData(forRowIndexes: IndexSet(integersIn: range),
-                               columnIndexes: IndexSet(integersIn: columnRange))
+      DispatchQueue.main.async {
+        guard let tableView = tableView
+        else { return }
+        
+        switch batch {
+          case 0:
+            break
+          case 1:
+            tableView.reloadData()
+          default:
+            let batchStart = batch * batchSize
+            let range = batchStart..<(batchStart+batchSize)
+            let columnRange = 0..<tableView.tableColumns.count
+            
+            tableView.reloadData(forRowIndexes: IndexSet(integersIn: range),
+                                 columnIndexes: IndexSet(integersIn: columnRange))
+        }
       }
     }
   }
