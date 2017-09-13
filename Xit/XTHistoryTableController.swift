@@ -108,7 +108,7 @@ public class XTHistoryTableController: NSViewController
       
       let refs = repository.allRefs()
       
-      for ref in refs {
+      for ref in refs where ref != "refs/stash" {
         _ = repository.sha(forRef: ref).flatMap { try? walker.pushSHA($0) }
       }
       
