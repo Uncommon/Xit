@@ -165,12 +165,15 @@ class PreviewsPrefsController: NSViewController
     manager.target = self
   }
   
-  override func validModesForFontPanel(_ fontPanel: NSFontPanel) -> Int
+  // The return type of validModesForFontPanel changed in the 10.13 SDK,
+  // so there's pretty much no way to compile this until the deployment version
+  // is updated to 10.13.
+  /*
+  override func validModesForFontPanel(_ fontPanel: NSFontPanel) -> NSFontPanel.ModeMask
   {
-    return Int(NSFontPanelFaceModeMask |
-               NSFontPanelSizeModeMask |
-               NSFontPanelCollectionModeMask)
+    return [.face, .size, .collection]
   }
+  */
   
   override func changeFont(_ sender: Any?)
   {

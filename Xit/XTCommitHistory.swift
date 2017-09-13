@@ -47,7 +47,7 @@ extension String
 {
   func firstSix() -> String
   {
-    return utf8.prefix(6).description
+    return prefix(6).description
   }
 }
 

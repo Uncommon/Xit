@@ -6,7 +6,7 @@ extension XTRepository
   /// a count or indexed access.
   public struct Branches<BranchType: XTBranch>: Sequence
   {
-    typealias Element = BranchType
+    public typealias Element = BranchType
     
     let repo: XTRepository
     let type: git_branch_t

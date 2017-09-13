@@ -2,7 +2,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <pthread.h>
 
-bool AccessBool(pthread_mutex_t *mutex, bool (^block)())
+bool AccessBool(pthread_mutex_t *mutex, bool (^block)(void))
 {
   bool result;
   

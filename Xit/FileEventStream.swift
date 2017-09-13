@@ -42,12 +42,10 @@ public class FileEventStream
       else { return }
       let contextSelf = unsafeBitCast(userData, to: FileEventStream.self)
       
-      if let flags = flags {
-        for index in 0..<eventCount
-            where (flags[index] & FileEventStream.rescanFlags) != 0 {
-          contextSelf.eventCallback([])
-          return
-        }
+      for index in 0..<eventCount
+          where (flags[index] & FileEventStream.rescanFlags) != 0 {
+        contextSelf.eventCallback([])
+        return
       }
       
       contextSelf.eventCallback(cfPaths)
