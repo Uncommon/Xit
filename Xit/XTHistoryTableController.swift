@@ -1,5 +1,7 @@
 import Cocoa
 
+fileprivate let batchSize = 500
+
 public class XTHistoryTableController: NSViewController
 {
   struct ColumnID
@@ -12,6 +14,7 @@ public class XTHistoryTableController: NSViewController
   let observers = ObserverCollection()
 
   var tableView: NSTableView { return view as! NSTableView }
+  var lastBatch = -1
 
   weak var repository: XTRepository!
   {
@@ -77,7 +80,7 @@ public class XTHistoryTableController: NSViewController
       }
     }
     
-    history.postProgress = self.postProgress(_:iteration:)
+    history.postProgress = self.postProgress(batchSize:batch:pass:value:)
   }
   
   /// Reloads the commit history from scratch.
@@ -118,28 +121,60 @@ public class XTHistoryTableController: NSViewController
         history.appendCommit(commit)
       }
       
-      history.connectCommits()
-      DispatchQueue.main.async {
-        tableView?.reloadData()
-        self.ensureSelection()
+      DispatchQueue.global(qos: .utility).async {
+        // Get off the queue thread, but run this as a queue task so that
+        // progress will be displayed.
+        self.repository.queue.executeTask {
+          history.connectCommits(batchSize: batchSize) {}
+        }
+        DispatchQueue.main.async {
+          tableView?.reloadData()
+          self.ensureSelection()
+        }
       }
     }
   }
   
-  func postProgress(_ value: Int, iteration: Int)
+  func postProgress(batchSize: Int, batch: Int, pass: Int, value: Int)
   {
-    let totalIterations = 2
-    let totalCount = history.entries.count * totalIterations
-    let step = totalCount / 100
-    let totalValue = (iteration-1) * history.entries.count + value
+    let passCount = 2
+    let goal = history.entries.count * passCount
+    let completed = batch * batchSize * passCount
+    let totalProgress = completed + pass * passCount + value
+  
+    let step = goal / 100
     
-    if (step == 0) || (totalValue % step == 0) {
+    if (step == 0) || (totalProgress % step == 0) {
       let progressNote = Notification.progressNotification(
-        repository: repository,
-        progress: Float(totalValue),
-        total: Float(totalCount))
+            repository: repository,
+            progress: Float(totalProgress),
+            total: Float(goal))
       
       NotificationCenter.default.post(progressNote)
+    }
+    
+    if batch != lastBatch {
+      weak var tableView = self.tableView
+      
+      lastBatch = batch
+      DispatchQueue.main.async {
+        guard let tableView = tableView
+        else { return }
+        
+        switch batch {
+          case 0:
+            break
+          case 1:
+            tableView.reloadData()
+          default:
+            let batchStart = batch * batchSize
+            let range = batchStart..<(batchStart+batchSize)
+            let columnRange = 0..<tableView.tableColumns.count
+            
+            tableView.reloadData(forRowIndexes: IndexSet(integersIn: range),
+                                 columnIndexes: IndexSet(integersIn: columnRange))
+        }
+      }
     }
   }
   

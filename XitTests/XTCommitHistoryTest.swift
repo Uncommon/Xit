@@ -45,7 +45,8 @@ extension GTOID
 {
   convenience init(oid: String)
   {
-    let padded = (oid as NSString).padding(toLength: 40, withPad: "0", startingAt: 0)
+    let padded = (oid as NSString).padding(toLength: 40, withPad: "0",
+                                           startingAt: 0)
     
     self.init(sha: padded)!
   }
@@ -105,6 +106,8 @@ typealias TestCommitHistory = XTCommitHistory<StringRepository>
 
 class XTCommitHistoryTest: XCTestCase
 {
+  typealias StringConnection = CommitConnection<String>
+
   func makeHistory(_ commitData: [(String, [String])]) -> TestCommitHistory
   {
     let commits = commitData.map({ (sha, parents) in
@@ -116,6 +119,13 @@ class XTCommitHistoryTest: XCTestCase
     
     history.repository = repository
     return history
+  }
+  
+  func generateConnections(_ history: TestCommitHistory) -> [[StringConnection]]
+  {
+    return history.generateConnections(batchStart: 0,
+                                       batchSize: history.entries.count,
+                                       starting: [])
   }
   
   /// Makes sure each commit preceds its parents.
@@ -149,7 +159,7 @@ class XTCommitHistoryTest: XCTestCase
     history.process(commitA, afterCommit: nil)
     check(history, expectedLength: 3)
     
-    let connections = history.generateConnections()
+    let connections = generateConnections(history)
     
     let aToB = CommitConnection(parentOID: "b", childOID: "a", colorIndex: 0)
     let bToC = CommitConnection(parentOID: "c", childOID: "b", colorIndex: 0)
@@ -180,7 +190,7 @@ class XTCommitHistoryTest: XCTestCase
     history.process(commitB, afterCommit: nil)
     check(history, expectedLength: 4)
     
-    let connections = history.generateConnections()
+    let connections = generateConnections(history)
     
     let aToC = CommitConnection(parentOID: "c", childOID: "a", colorIndex: 0)
     let bToC = CommitConnection(parentOID: "c", childOID: "b", colorIndex: 1)
@@ -211,7 +221,7 @@ class XTCommitHistoryTest: XCTestCase
     history.process(commitA, afterCommit: nil)
     check(history, expectedLength: 4)
     
-    let connections = history.generateConnections()
+    let connections = generateConnections(history)
     
     let aToC = CommitConnection(parentOID: "c", childOID: "a", colorIndex: 0)
     let aToB = CommitConnection(parentOID: "b", childOID: "a", colorIndex: 1)
@@ -269,7 +279,7 @@ class XTCommitHistoryTest: XCTestCase
     history.process(commitA, afterCommit: nil)
     check(history, expectedLength: 7)
     
-    let connections = history.generateConnections()
+    let connections = generateConnections(history)
     
     let aToC = CommitConnection(parentOID: "c", childOID: "a", colorIndex: 0)
     let aToB = CommitConnection(parentOID: "b", childOID: "a", colorIndex: 1)
@@ -309,7 +319,7 @@ class XTCommitHistoryTest: XCTestCase
     history.process(commitA, afterCommit: nil)
     check(history, expectedLength: 7)
     
-    let connections = history.generateConnections()
+    let connections = generateConnections(history)
     
     let aToC = CommitConnection(parentOID: "c", childOID: "a", colorIndex: 0)
     let aToB = CommitConnection(parentOID: "b", childOID: "a", colorIndex: 1)
@@ -426,7 +436,7 @@ class XTCommitHistoryTest: XCTestCase
     history.process(commitB, afterCommit: nil)
     check(history, expectedLength: 7)
     
-    let connections = history.generateConnections()
+    let connections = generateConnections(history)
     
     let aToC = CommitConnection(parentOID: "c", childOID: "a", colorIndex: 0)
     let cToE = CommitConnection(parentOID: "e", childOID: "c", colorIndex: 0)
@@ -561,7 +571,7 @@ class XTCommitHistoryTest: XCTestCase
     history.process(commitC, afterCommit: nil)
     check(history, expectedLength: 4)
     
-    let connections = history.generateConnections()
+    let connections = generateConnections(history)
     
     let aToB = CommitConnection(parentOID: "b", childOID: "a", colorIndex: 0)
     let cToD = CommitConnection(parentOID: "d", childOID: "c", colorIndex: 1)
@@ -591,7 +601,7 @@ class XTCommitHistoryTest: XCTestCase
     history.process(commitA, afterCommit: nil)
     check(history, expectedLength: 4)
     
-    let connections = history.generateConnections()
+    let connections = generateConnections(history)
     
     let aToD = CommitConnection(parentOID: "d", childOID: "a", colorIndex: 0)
     let aToB = CommitConnection(parentOID: "b", childOID: "a", colorIndex: 1)
@@ -633,7 +643,7 @@ class XTCommitHistoryTest: XCTestCase
     let cToD = CommitConnection(parentOID: "d", childOID: "c", colorIndex: 2)
     let dToE = CommitConnection(parentOID: "e", childOID: "d", colorIndex: 2)
     
-    let connections = history.generateConnections()
+    let connections = generateConnections(history)
     
     // Order is ["a", "c", "d", "b", "e"]
     XCTAssertEqual(connections[0], [aToC, aToB])

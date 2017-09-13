@@ -22,24 +22,24 @@ public class CommitEntry<C: CommitType>: CustomStringConvertible
   }
 }
 
-public func == <C: CommitType>(left: CommitEntry<C>,
-                               right: CommitEntry<C>) -> Bool
+public func == <C>(left: CommitEntry<C>, right: CommitEntry<C>) -> Bool
 {
   return left.commit.oid == right.commit.oid
 }
 
 
 /// A connection line between commits in the history list.
-struct CommitConnection<ID: OID>: Equatable {
+struct CommitConnection<ID: OID>: Equatable
+{
   let parentOID, childOID: ID
   let colorIndex: UInt
 }
 
-func == <ID: OID>(left: CommitConnection<ID>, right: CommitConnection<ID>) -> Bool
+func == <ID>(left: CommitConnection<ID>, right: CommitConnection<ID>) -> Bool
 {
   return (left.parentOID == right.parentOID) &&
          (left.childOID == right.childOID) &&
-         (left .colorIndex == right.colorIndex)
+         (left.colorIndex == right.colorIndex)
 }
 
 
@@ -74,9 +74,9 @@ public typealias GitCommitHistory = XTCommitHistory<XTRepository>
 /// Maintains the history list, allowing for dynamic adding and removing.
 public class XTCommitHistory<Repo: RepositoryType>: NSObject
 {
-  typealias C = Repo.C
-  typealias ID = Repo.C.ID
-  typealias Entry = CommitEntry<C>
+  public typealias C = Repo.C
+  public typealias ID = Repo.C.ID
+  public typealias Entry = CommitEntry<C>
   typealias Connection = CommitConnection<ID>
   typealias Result = BranchResult<C>
 
@@ -85,7 +85,9 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
   var commitLookup = [ID: Entry]()
   var entries = [Entry]()
   
-  var postProgress: ((Int, Int) -> Void)?
+  // batchSize, batch, pass, value
+  // XTHistoryTableController.postProgress assumes 2 passes.
+  var postProgress: ((Int, Int, Int, Int) -> Void)?
   
   /// Manually appends a commit.
   func appendCommit(_ commit: C)
@@ -94,7 +96,7 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
   }
   
   /// Clears the history list.
-  func reset()
+  public func reset()
   {
     commitLookup.removeAll()
     entries.removeAll()
@@ -147,7 +149,7 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
   }
   
   /// Adds new commits to the list.
-  func process(_ startCommit: C, afterCommit: C? = nil)
+  public func process(_ startCommit: C, afterCommit: C? = nil)
   {
     let startOID = startCommit.oid
     guard commitLookup[startOID] == nil
@@ -236,25 +238,41 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
   }
   
   /// Creates the connections to be drawn between commits.
-  func connectCommits()
+  public func connectCommits(batchSize: Int = 0,
+                             batchNotify: (() -> Void)? = nil)
   {
-    let connections = generateConnections()
+    let batchSize = batchSize <= 0 ? entries.count : batchSize
+    var batchStart = 0
+    var startingConnections = [Connection]()
     
-    DispatchQueue.concurrentPerform(iterations: entries.count) {
-      (index) in
-      postProgress?(index, 2)
-      generateLines(entry: entries[index], connections: connections[index])
+    while batchStart < entries.count {
+      let batchSize = min(batchSize, entries.count - batchStart)
+      let connections = generateConnections(batchStart: batchStart,
+                                            batchSize: batchSize,
+                                            starting: startingConnections)
+      
+      DispatchQueue.concurrentPerform(iterations: batchSize) {
+        (index) in
+        generateLines(entry: entries[index + batchStart],
+                      connections: connections[index])
+        postProgress?(batchSize, batchStart/batchSize, 1, index)
+      }
+      
+      startingConnections = connections.last ?? []
+      batchStart += batchSize
+      batchNotify?()
     }
   }
   
-  func generateConnections() -> [[Connection]]
+  func generateConnections(batchStart: Int, batchSize: Int,
+                           starting: [Connection]) -> [[Connection]]
   {
     var result = [[Connection]]()
-    var connections = [Connection]()
+    var connections: [Connection] = starting
     var nextColorIndex: UInt = 0
     
     result.reserveCapacity(entries.count)
-    for (index, entry) in entries.enumerated() {
+    for (index, entry) in entries[batchStart..<batchStart+batchSize].enumerated() {
       let commitOID = entry.commit.oid
       let incomingIndex = connections.index(where: { $0.parentOID == commitOID })
       let incomingColor = incomingIndex.flatMap { connections[$0].colorIndex }
@@ -280,7 +298,7 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
       result.append(connections)
       connections = connections.filter { $0.parentOID != commitOID }
       
-      postProgress?(index, 1)
+      postProgress?(batchSize, batchStart/batchSize, 0, index)
     }
     
 #if DEBUGLOG
@@ -302,6 +320,9 @@ public class XTCommitHistory<Repo: RepositoryType>: NSObject
                              colorIndex: UInt)] = [:]
     
     for connection in connections {
+      objc_sync_enter(self)
+      defer { objc_sync_exit(self) }
+      
       let commitIsParent = connection.parentOID == entry.commit.oid
       let commitIsChild = connection.childOID == entry.commit.oid
       let parentIndex: UInt? = commitIsParent
