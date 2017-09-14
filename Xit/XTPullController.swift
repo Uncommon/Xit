@@ -2,7 +2,8 @@ import Cocoa
 
 class XTPullController: XTFetchController
 {
-  override func start() {
+  override func start() throws
+  {
     defer {
       windowController?.operationEnded(self)
     }
@@ -12,7 +13,7 @@ class XTPullController: XTFetchController
                                      name: branchName)
     else {
       NSLog("Can't get current branch")
-      return
+      throw XTRepository.Error.detachedHead
     }
     guard let remoteBranch = branch.trackingBranch,
           let remoteName = remoteBranch.remoteName,
@@ -20,7 +21,7 @@ class XTPullController: XTFetchController
                                 repository: repository)
     else {
       NSLog("Can't pull - no tracking branch")
-      return
+      throw XTRepository.Error.unexpected
     }
     
     tryRepoOperation(successStatus: "Pull complete",

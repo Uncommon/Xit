@@ -36,10 +36,10 @@ class XTFetchController: XTPasswordOpController
     }
   }
   
-  override func start()
+  override func start() throws
   {
     guard let repository = repository
-    else { return }
+    else { throw XTRepository.Error.unexpected }
     
     let config = XTConfig(repository: repository)
     let panel = XTFetchPanelController.controller()
@@ -50,7 +50,8 @@ class XTFetchController: XTPasswordOpController
     panel.parentController = windowController
     panel.downloadTags = config.fetchTags(panel.selectedRemote)
     panel.pruneBranches = config.fetchPrune(panel.selectedRemote)
-    self.windowController!.window!.beginSheet(panel.window!) { (response) in
+    self.windowController!.window!.beginSheet(panel.window!) {
+      (response) in
       if response == NSModalResponseOK {
         self.executeFetch(remoteName: panel.selectedRemote as String,
                           downloadTags: panel.downloadTags,

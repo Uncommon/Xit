@@ -16,7 +16,7 @@ class XTPushController: XTPasswordOpController
     return canceled
   }
 
-  override func start()
+  override func start() throws
   {
     guard let repository = repository,
           let branchName = repository.currentBranch,
@@ -24,7 +24,7 @@ class XTPushController: XTPasswordOpController
                                      name: branchName)
     else {
       NSLog("Can't get current branch")
-      return
+      throw XTRepository.Error.detachedHead
     }
     guard let remoteBranch = branch.trackingBranch,
           let remoteName = remoteBranch.remoteName,
@@ -32,7 +32,7 @@ class XTPushController: XTPasswordOpController
                                 repository: repository)
     else {
       NSLog("Can't push - no tracking branch")
-      return
+      throw XTRepository.Error.unexpected
     }
     
     let alert = NSAlert()

@@ -2,13 +2,13 @@ import Cocoa
 
 class XTNewTagController: XTOperationController
 {
-  override func start()
+  override func start() throws
   {
     let panelController = XTTagPanelController.controller()
     guard let selectedSHA = windowController?.selectedModel?.shaToSelect,
           let repository = repository,
           let commit = repository.commit(forSHA: selectedSHA)
-    else { return }
+    else { throw XTRepository.Error.unexpected }
     let config = repository.config!
     let userName = config.userName()
     let userEmail = config.userEmail()

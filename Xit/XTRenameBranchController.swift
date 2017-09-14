@@ -11,7 +11,7 @@ class XTRenameBranchController: XTOperationController
     super.init(windowController: windowController)
   }
   
-  override func start()
+  override func start() throws
   {
     let panelController = XTRenameBranchPanelController.controller()
     

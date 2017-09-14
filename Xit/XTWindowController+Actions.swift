@@ -102,7 +102,7 @@ extension XTWindowController
     let controller = XTRemoteOptionsController(windowController: self,
                                                remote: menuItem.title)
     
-    controller.start()
+    _ = try? controller.start()
   }
 }
 

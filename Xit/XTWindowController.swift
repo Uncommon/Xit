@@ -214,10 +214,30 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     else {
       let operation = factory()
       
-      operation.start()
-      currentOperation = operation
-      return operation
+      do {
+        try operation.start()
+        currentOperation = operation
+        return operation
+      }
+      catch let error as XTRepository.Error {
+        showErrorMessage(error: error)
+        return nil
+      }
+      catch {
+        showErrorMessage(error: XTRepository.Error.unexpected)
+        return nil
+      }
     }
+  }
+  
+  private func showErrorMessage(error: XTRepository.Error)
+  {
+    guard let window = self.window
+    else { return }
+    let alert = NSAlert()
+    
+    alert.messageText = error.message
+    alert.beginSheetModal(for: window, completionHandler: nil)
   }
   
   /// Called by the operation controller when it's done.

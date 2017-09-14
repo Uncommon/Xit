@@ -18,7 +18,7 @@ class XTOperationController: NSObject
   }
   
   /// Initiates the operation.
-  func start() {}
+  func start() throws {}
   
   func ended()
   {
