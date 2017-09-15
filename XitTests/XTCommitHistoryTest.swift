@@ -53,7 +53,7 @@ extension GTOID
 }
 
 
-class GenericRepository<Commit: CommitType>: RepositoryType
+class GenericRepository<Commit: CommitType>: CommitStorage
 {
   typealias C = Commit
   typealias ID = Commit.ID

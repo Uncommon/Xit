@@ -72,7 +72,7 @@ struct BranchResult<C: CommitType>: CustomStringConvertible
 public typealias GitCommitHistory = XTCommitHistory<XTRepository>
 
 /// Maintains the history list, allowing for dynamic adding and removing.
-public class XTCommitHistory<Repo: RepositoryType>: NSObject
+public class XTCommitHistory<Repo: CommitStorage>: NSObject
 {
   public typealias C = Repo.C
   public typealias ID = Repo.C.ID

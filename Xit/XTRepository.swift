@@ -1,7 +1,7 @@
 import Foundation
 
 
-public protocol RepositoryType: class
+public protocol CommitStorage: class
 {
   associatedtype C: CommitType
   
@@ -350,7 +350,7 @@ internal func setRepoWriting(_ repo: XTRepository, _ writing: Bool)
   repo.isWriting = writing
 }
 
-extension XTRepository: RepositoryType
+extension XTRepository: CommitStorage
 {
   public typealias ID = GitOID
   public typealias C = XTCommit

@@ -3,7 +3,7 @@ import WebKit
 
 protocol HeaderGenerator
 {
-  associatedtype Repo: RepositoryType
+  associatedtype Repo: CommitStorage
   associatedtype Commit: CommitType
   
   var repository: Repo! { get }
