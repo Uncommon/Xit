@@ -6,50 +6,70 @@ extension FileViewController: NSUserInterfaceValidations
   func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool
   {
     guard let action = item.action
-      else { return false }
+    else { return false }
     
     switch action {
-    case #selector(self.revert(_:)):
-      guard let change = selectedChange()
+      case #selector(self.revert(_:)):
+        guard let change = item.isContextMenuItem ? clickedChange()
+                                                  : selectedChange()
         else { return false }
       
-      switch change.unstagedChange {
-      case .unmodified,  // No changes to revert
-      .untracked:   // Nothing to revert to
+        return change.unstagedChange.isModified
+      
+      case #selector(self.stage(_:)):
+        guard let change = clickedChange()
+        else { return false }
+        
+        return change.unstagedChange.isModified
+      
+      case #selector(self.unstage(_:)):
+        guard let change = clickedChange()
+        else { return false }
+      
+        return change.change != .unmodified
+      
+      case #selector(self.showWhitespaceChanges(_:)):
+        return validateWhitespaceMenuItem(item, whitespace: .showAll)
+      case #selector(self.ignoreEOLWhitespace(_:)):
+        return validateWhitespaceMenuItem(item, whitespace: .ignoreEOL)
+      case #selector(self.ignoreAllWhitespace(_:)):
+        return validateWhitespaceMenuItem(item, whitespace: .ignoreAll)
+        
+      case #selector(self.tabWidth2(_:)):
+        return validateTabMenuItem(item, width: 2)
+      case #selector(self.tabWidth4(_:)):
+        return validateTabMenuItem(item, width: 4)
+      case #selector(self.tabWidth6(_:)):
+        return validateTabMenuItem(item, width: 6)
+      case #selector(self.tabWidth8(_:)):
+        return validateTabMenuItem(item, width: 8)
+        
+      case #selector(self.context0(_:)):
+        return validateContextLinesMenuItem(item, context: 0)
+      case #selector(self.context3(_:)):
+        return validateContextLinesMenuItem(item, context: 3)
+      case #selector(self.context6(_:)):
+        return validateContextLinesMenuItem(item, context: 6)
+      case #selector(self.context12(_:)):
+        return validateContextLinesMenuItem(item, context: 12)
+      case #selector(self.context25(_:)):
+        return validateContextLinesMenuItem(item, context: 25)
+        
+      default:
+        return true
+    }
+  }
+}
+
+extension XitChange
+{
+  var isModified: Bool
+  {
+    switch self {
+      case .unmodified, .untracked:
         return false
       default:
         return true
-      }
-      
-    case #selector(self.showWhitespaceChanges(_:)):
-      return validateWhitespaceMenuItem(item, whitespace: .showAll)
-    case #selector(self.ignoreEOLWhitespace(_:)):
-      return validateWhitespaceMenuItem(item, whitespace: .ignoreEOL)
-    case #selector(self.ignoreAllWhitespace(_:)):
-      return validateWhitespaceMenuItem(item, whitespace: .ignoreAll)
-      
-    case #selector(self.tabWidth2(_:)):
-      return validateTabMenuItem(item, width: 2)
-    case #selector(self.tabWidth4(_:)):
-      return validateTabMenuItem(item, width: 4)
-    case #selector(self.tabWidth6(_:)):
-      return validateTabMenuItem(item, width: 6)
-    case #selector(self.tabWidth8(_:)):
-      return validateTabMenuItem(item, width: 8)
-      
-    case #selector(self.context0(_:)):
-      return validateContextLinesMenuItem(item, context: 0)
-    case #selector(self.context3(_:)):
-      return validateContextLinesMenuItem(item, context: 3)
-    case #selector(self.context6(_:)):
-      return validateContextLinesMenuItem(item, context: 6)
-    case #selector(self.context12(_:)):
-      return validateContextLinesMenuItem(item, context: 12)
-    case #selector(self.context25(_:)):
-      return validateContextLinesMenuItem(item, context: 25)
-      
-    default:
-      return true
     }
   }
 }
@@ -62,9 +82,9 @@ extension FileViewController
   {
     let menuItem = item as? NSMenuItem
     guard let wsController = contentController as? WhitespaceVariable
-      else {
-        menuItem?.state = NSOffState
-        return false
+    else {
+      menuItem?.state = NSOffState
+      return false
     }
     
     menuItem?.state = (wsController.whitespace == whitespace) ? NSOnState
@@ -76,9 +96,9 @@ extension FileViewController
   {
     let menuItem = item as? NSMenuItem
     guard let tabController = contentController as? TabWidthVariable
-      else {
-        menuItem?.state = NSOffState
-        return false
+    else {
+      menuItem?.state = NSOffState
+      return false
     }
     
     menuItem?.state = (tabController.tabWidth == width) ? NSOnState : NSOffState
@@ -89,13 +109,13 @@ extension FileViewController
   {
     let menuItem = item as? NSMenuItem
     guard let contextController = contentController as? ContextVariable
-      else {
-        menuItem?.state = NSOffState
-        return false
+    else {
+      menuItem?.state = NSOffState
+      return false
     }
     
     menuItem?.state = (contextController.contextLines == context) ? NSOnState
-      : NSOffState
+                                                                  : NSOffState
     return true
   }
 }
@@ -188,10 +208,26 @@ extension FileViewController
   @IBAction func showIgnored(_: Any?)
   {
   }
-
-  @IBAction func revert(_: AnyObject?)
+  
+  @IBAction func stage(_: Any?)
   {
-    guard let change = selectedChange()
+    guard let change = clickedChange()
+    else { return }
+    
+    stageAction(path: change.path, staging: true)
+  }
+  
+  @IBAction func unstage(_: Any?)
+  {
+    guard let change = clickedChange()
+    else { return }
+    
+    stageAction(path: change.path, staging: false)
+  }
+
+  @IBAction func revert(_ sender: AnyObject?)
+  {
+    guard let change = (sender is NSControl) ? selectedChange() : clickedChange()
     else { return }
     
     revert(path: change.path)

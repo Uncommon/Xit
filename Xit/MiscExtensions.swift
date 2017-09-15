@@ -223,6 +223,17 @@ extension NSSplitView
   }
 }
 
+extension NSValidatedUserInterfaceItem
+{
+  var isContextMenuItem: Bool
+  {
+    guard let item = self as? NSMenuItem
+      else { return false }
+    
+    return item.parent == nil
+  }
+}
+
 extension NSColor
 {
   var cssHSL: String

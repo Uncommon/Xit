@@ -387,6 +387,13 @@ class FileViewController: NSViewController
     return row(for: view.superview)
   }
 
+  func clickedChange() -> FileChange?
+  {
+    return fileListOutline.clickedRow == -1
+        ? nil
+        : fileListDataSource.fileChange(at: fileListOutline.clickedRow)
+  }
+
   func selectedChange() -> FileChange?
   {
     guard let index = fileListOutline.selectedRowIndexes.first
@@ -435,25 +442,37 @@ class FileViewController: NSViewController
     }
   }
   
+  func stageUnstage(path: String, staging: Bool)
+  {
+    if staging {
+      _ = try? repo?.stage(file: path)
+    }
+    else {
+      _ = try? repo?.unstage(file: path)
+    }
+    NotificationCenter.default.post(name: .XTRepositoryIndexChanged, object: repo)
+  }
+  
+  /// Handles a click on a staging button.
   func click(button: NSButton, staging: Bool)
   {
     if modelCanCommit && checkDoubleClick(button),
        let path = path(from: button) {
       button.isEnabled = false
-      if staging {
-        _ = try? repo?.stage(file: path)
-      }
-      else {
-        _ = try? repo?.unstage(file: path)
-      }
+      stageUnstage(path: path, staging: staging)
       selectRow(from: button, staged: staging)
-      NotificationCenter.default.post(
-          name: NSNotification.Name.XTRepositoryIndexChanged,
-          object: repo)
     }
     else {
       selectRow(from: button, staged: !staging)
     }
+  }
+  
+  /// Stage/unstage from a context menu command. This differs from `click()`
+  /// in that it does not change the selection.
+  func stageAction(path: String, staging: Bool)
+  {
+    stageUnstage(path: path, staging: staging)
+    showingStaged = staging
   }
 
   func clearPreviews()
