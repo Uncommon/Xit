@@ -2,7 +2,7 @@ import Cocoa
 
 /// An object that can generate file diffs, and re-generate them with
 /// different options.
-class XTDiffMaker: NSObject
+public class XTDiffMaker: NSObject
 {
   enum SourceType
   {

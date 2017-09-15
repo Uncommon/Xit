@@ -1,6 +1,6 @@
 import Foundation
 
-typealias XTDiffDelta = GTDiffDelta
+public typealias XTDiffDelta = GTDiffDelta
 
 extension GTDiffHunk
 {
