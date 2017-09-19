@@ -34,6 +34,7 @@ public protocol FileStatusDetection: class
 public protocol FileDiffing: class
 {
   associatedtype ID: OID
+  associatedtype B: Blame
   
   func diffMaker(forFile file: String,
                  commitOID: ID,
@@ -43,6 +44,8 @@ public protocol FileDiffing: class
             parentOID: ID?) -> XTDiffDelta?
   func stagedDiff(file: String) -> XTDiffMaker?
   func unstagedDiff(file: String) -> XTDiffMaker?
+  
+  func blame(for path: String, from startOID: OID?, to endOID: OID?) -> B?
 }
 
 public protocol FileContents: class

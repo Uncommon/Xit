@@ -124,6 +124,12 @@ extension XTRepository: FileDiffing
       return nil
     }
   }
+  
+  public func blame(for path: String,
+                    from startOID: OID?, to endOID: OID?) -> GitBlame?
+  {
+    return GitBlame(repository: self, path: path, from: startOID, to: endOID)
+  }
 }
 
 extension XTRepository

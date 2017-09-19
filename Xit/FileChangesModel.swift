@@ -1,13 +1,13 @@
 import Cocoa
 
 
-typealias GitBlame = CLGitBlame
-
-
 /// Protocol for a commit or commit-like object,
 /// with metadata, files, and diffs.
 protocol FileChangesModel
 {
+  // Blame (currently) has to have an associatedtype
+  associatedtype B: Blame
+  
   var repository: XTRepository { get set }
   /// SHA for commit to be selected in the history list
   var shaToSelect: String? { get }
@@ -35,7 +35,7 @@ protocol FileChangesModel
   /// - parameter path: Repository-relative file path.
   /// - parameter staged: Whether to show the staged or unstaged file. Ignored
   /// for models that don't have unstaged files.
-  func blame(for path: String, staged: Bool) -> GitBlame?
+  func blame(for path: String, staged: Bool) -> B?
 }
 
 func == (a: FileChangesModel, b: FileChangesModel) -> Bool
