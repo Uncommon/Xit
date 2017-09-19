@@ -2,6 +2,9 @@ import Foundation
 
 protocol Blame
 {
+  // Swift 4:
+  // associatedtype HunkCollection: Collection
+  //     where HunkCollection.Element: BlameHunk
   associatedtype HunkCollection: Collection
   
   var hunks: HunkCollection! { get }
