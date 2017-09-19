@@ -311,6 +311,14 @@ extension XTRepository
         self = .unexpected
       }
     }
+    
+    static func throwIfError(_ code: Int32) throws
+    {
+      guard code == 0
+      else {
+        throw Error(gitCode: git_error_code(code))
+      }
+    }
   }
 }
 

@@ -37,7 +37,11 @@ class XTEmptyRepositoryTest: XTTest
     try! repository.stage(file: file1Name)
     
     let expectedContent = content.data(using: .utf8)
-    let stagedContent = repository.contentsOfStagedFile(path: file1Name)!
+    guard let stagedContent = repository.contentsOfStagedFile(path: file1Name)
+    else {
+      XCTFail("can't get staged content of \(file1Name)")
+      return
+    }
     let stagedString = String(data: stagedContent, encoding: .utf8)
     
     XCTAssertEqual(stagedContent, expectedContent)
@@ -426,7 +430,7 @@ class XTRepositoryHunkTest: XTTest
   func readLoremIndexText() -> String?
   {
     var encoding = String.Encoding.utf8
-    guard let indexData = repository.stagedBlob(file: loremName)?.data()
+    guard let indexData = repository.stagedBlob(file: loremName)?.makeData()
     else { return nil }
     
     return String(data: indexData, usedEncoding: &encoding)

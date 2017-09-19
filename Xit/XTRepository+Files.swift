@@ -14,34 +14,27 @@ extension XTRepository: FileContents
   
   public func contentsOfStagedFile(path: String) -> Data?
   {
-    guard let index = try? gtRepo.index(),
-          (try? index.refresh()) != nil,
-          let entry = index.entry(withPath: path),
-          let blob = (try? entry.gtObject()) as? GTBlob
-    else { return nil }
-    
-    return blob.data()
+    return stagedBlob(file: path)?.makeData()
   }
   
-  public func stagedBlob(file: String) -> GTBlob?
+  public func stagedBlob(file: String) -> GitBlob?
   {
-    guard let index = try? gtRepo.index(),
-          (try? index.refresh()) != nil,
-          let indexEntry = index.entry(withPath: file),
-          let indexObject = try? GTObject(indexEntry: indexEntry)
+    guard let index = GitIndex(repository: self),
+          let entry = index.entry(at: file),
+          let blob = GitBlob(repository: self, oid: entry.oid as! GitOID)
     else { return nil }
     
-    return indexObject as? GTBlob
+    return blob
   }
   
-  public func fileBlob(ref: String, path: String) -> GTBlob?
+  public func fileBlob(ref: String, path: String) -> GitBlob?
   {
     guard let headTree = XTCommit(ref: ref, repository: self)?.tree,
           let headEntry = try? headTree.entry(withPath: path),
-          let headObject = try? GTObject(treeEntry: headEntry)
+          let oid = headEntry.oid.map({ GitOID(oid: $0.git_oid().pointee) })
     else { return nil }
     
-    return headObject as? GTBlob
+    return GitBlob(repository: self, oid: oid)
   }
 }
 
@@ -61,7 +54,8 @@ extension XTRepository: FileDiffing
     
     if let toTree = toCommit.tree,
        let toEntry = try? toTree.entry(withPath: file),
-       let toBlob = (try? GTObject(treeEntry: toEntry)) as? GTBlob {
+       let oid = toEntry.oid.map({ GitOID(oid: $0.git_oid().pointee) }),
+       let toBlob = GitBlob(repository: self, oid: oid) {
       toSource = .blob(toBlob)
     }
     
@@ -69,7 +63,8 @@ extension XTRepository: FileDiffing
        let parentCommit = commit(forOID: parentOID)?.gtCommit,
        let fromTree = parentCommit.tree,
        let fromEntry = try? fromTree.entry(withPath: file),
-       let fromBlob = (try? GTObject(treeEntry: fromEntry)) as? GTBlob {
+       let oid = fromEntry.oid.map({ GitOID(oid: $0.git_oid().pointee) }),
+       let fromBlob = GitBlob(repository: self, oid: oid) {
       fromSource = .blob(fromBlob)
     }
     
@@ -110,9 +105,9 @@ extension XTRepository: FileDiffing
     do {
       let data = exists ? try Data(contentsOf: url) : Data()
       
-      if let index = try? gtRepo.index(),
-         let indexEntry = index.entry(withPath: file),
-         let indexBlob = try? GTObject(indexEntry: indexEntry) as? GTBlob {
+      if let index = GitIndex(repository: self),
+         let indexEntry = index.entry(at: file) as? GitIndex.Entry,
+         let indexBlob = GitBlob(repository: self, oid: indexEntry.oid) {
         return XTDiffMaker(from: XTDiffMaker.SourceType(indexBlob),
                            to: .data(data), path: file)
       }
@@ -141,7 +136,7 @@ extension XTRepository
     }
     else {
       guard let commit = (try? gtRepo.lookUpObject(bySHA: sha)) as? GTCommit
-        else { return nil }
+      else { return nil }
       
       let parents = commit.parents
       let parent: GTCommit? = (parentSHA == "")

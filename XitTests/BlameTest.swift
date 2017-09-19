@@ -91,14 +91,14 @@ class BlameTest: XTTest
     
     XCTAssertEqual(unstagedBlame.hunks.count, 6)
     XCTAssertEqual(unstagedBlame.hunks.map { $0.finalLineStart }, unstagedStarts)
-    XCTAssertTrue(unstagedBlame.hunks[0].finalOID.isZero)
-    XCTAssertTrue(unstagedBlame.hunks.last!.finalOID.isZero)
+    XCTAssertTrue(unstagedBlame.hunks.first?.finalOID.isZero ?? false)
+    XCTAssertTrue(unstagedBlame.hunks.last?.finalOID.isZero ?? false)
     
     let stagedBlame = stagingModel.blame(for: blameFile, staged: true)!
     let stagedStarts = [1, 2, 3, 5, 6]
     
     XCTAssertEqual(stagedBlame.hunks.count, 5)
     XCTAssertEqual(stagedBlame.hunks.map { $0.finalLineStart }, stagedStarts)
-    XCTAssertTrue(stagedBlame.hunks[0].finalOID.isZero)
+    XCTAssertTrue(stagedBlame.hunks.first?.finalOID.isZero ?? false)
   }
 }

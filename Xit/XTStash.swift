@@ -76,21 +76,22 @@ public class XTStash: NSObject
     return changes
   }
 
-  func headBlobForPath(_ path: String) -> GTBlob?
+  func headBlobForPath(_ path: String) -> GitBlob?
   {
     guard let headEntry = try? mainCommit?.gtCommit.parents[0].tree?
                                .entry(withPath: path),
-          let object = try? headEntry?.gtObject()
+          let oid = headEntry?.oid.map({ GitOID(oid: $0.git_oid().pointee) })
     else { return nil }
     
-    return (object as? GTBlob?)!
+    return GitBlob(repository: repo, oid: oid)
   }
 
   func stagedDiffForFile(_ path: String) -> XTDiffMaker?
   {
     guard let indexCommit = self.indexCommit,
           let indexEntry = try? indexCommit.tree?.entry(withPath: path),
-          let indexBlob = try? indexEntry!.gtObject() as? GTBlob
+          let oid = indexEntry?.oid.map({ GitOID(oid: $0.git_oid().pointee) }),
+          let indexBlob = GitBlob(repository: repo, oid: oid)
     else { return nil }
     let headBlob = self.headBlobForPath(path)
     
@@ -104,25 +105,27 @@ public class XTStash: NSObject
     guard let indexCommit = self.indexCommit
     else { return nil }
 
-    var indexBlob: GTBlob? = nil
+    var indexBlob: GitBlob? = nil
     
-    if let indexEntry = try? indexCommit.tree!.entry(withPath: path) {
-      let object = try? indexEntry.gtObject()
-      
-      indexBlob = object as? GTBlob
+    if let indexEntry = try? indexCommit.tree!.entry(withPath: path),
+       let oid = indexEntry.oid.map({ GitOID(oid: $0.git_oid().pointee) }) {
+      indexBlob = GitBlob(repository: repo, oid: oid)
     }
     
     if let untrackedCommit = self.untrackedCommit,
        let untrackedEntry = try? untrackedCommit.tree?.entry(withPath: path) {
-      guard let untrackedBlob = try? untrackedEntry!.gtObject() as? GTBlob
+      guard let oid = untrackedEntry?.oid.map({ GitOID(oid: $0.git_oid()
+                                                            .pointee) }),
+            let untrackedBlob = GitBlob(repository: repo, oid: oid)
       else { return nil }
       
       return XTDiffMaker(from: XTDiffMaker.SourceType(indexBlob),
                          to: XTDiffMaker.SourceType(untrackedBlob),
                          path: path)
     }
-    if let unstagedEntry = try? self.mainCommit?.tree?.entry(withPath: path) {
-      guard let unstagedBlob = try? unstagedEntry?.gtObject() as? GTBlob
+    if let unstagedEntry = try? self.mainCommit?.tree?.entry(withPath: path),
+       let oid = unstagedEntry?.oid.map ({ GitOID(oid: $0.git_oid().pointee) }) {
+      guard let unstagedBlob = GitBlob(repository: repo, oid: oid)
       else { return nil }
       
       return XTDiffMaker(from: XTDiffMaker.SourceType(indexBlob),
