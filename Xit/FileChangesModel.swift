@@ -92,8 +92,7 @@ class CommitChanges: FileChangesModel
     else {
       guard let toTree = commit.gtCommit.tree,
             let toEntry = try? toTree.entry(withPath: path),
-            let oid = toEntry.oid.map({ GitOID(oid: $0.git_oid().pointee) }),
-            let toBlob = GitBlob(repository: repository, oid: oid)
+            let toBlob = (try? GTObject(treeEntry: toEntry)) as? GTBlob
       else { return nil }
       
       return XTDiffMaker(from: .data(Data()), to: .blob(toBlob), path: path)

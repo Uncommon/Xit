@@ -48,10 +48,9 @@ public protocol FileDiffing: class
 public protocol FileContents: class
 {
   associatedtype C: CommitType
-  associatedtype B: Blob
 
-  func fileBlob(ref: String, path: String) -> B?
-  func stagedBlob(file: String) -> B?
+  func fileBlob(ref: String, path: String) -> Blob?
+  func stagedBlob(file: String) -> Blob?
   func contentsOfFile(path: String, at commit: C) -> Data?
   func contentsOfStagedFile(path: String) -> Data?
 }

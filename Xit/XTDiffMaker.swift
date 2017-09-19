@@ -6,10 +6,10 @@ public class XTDiffMaker: NSObject
 {
   enum SourceType
   {
-    case blob(GitBlob)
+    case blob(Blob)
     case data(Data)
     
-    init(_ blob: GitBlob?)
+    init(_ blob: Blob?)
     {
       self = blob.map { .blob($0) } ?? .data(Data())
     }
@@ -70,11 +70,15 @@ public class XTDiffMaker: NSObject
                                 to: toData, forPath: path,
                                 options: options)
       case let (.data(fromData), .blob(toBlob)):
-        let toData = toBlob.makeData()
-      
-        return try? XTDiffDelta(from: fromData, forPath: path,
-                                to: toData, forPath: path,
-                                options: options)
+        var result: XTDiffDelta?
+        
+        try? toBlob.withData {
+          (data) in
+          result = try? XTDiffDelta(from: fromData, forPath: path,
+                                    to: data, forPath: path,
+                                    options: options)
+        }
+        return result
     }
   }
 }

@@ -68,6 +68,7 @@ class GitIndex: StagingIndex
           let finalIndex = index
     else { return nil }
     
+    git_index_read(finalIndex, 1)
     self.index = finalIndex
   }
   

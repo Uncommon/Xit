@@ -236,36 +236,6 @@ class XTRepositoryTest: XTTest
     
     XCTAssertEqual(contentString, "some text")
   }
-
-  func checkDeletedDiff(_ diff: XTDiffDelta?)
-  {
-    guard let diff = diff
-      else {
-        XCTFail("diff is null")
-        return
-    }
-    guard let patch = try? diff.generatePatch()
-      else {
-        XCTFail("patch is null")
-        return
-    }
-    
-    XCTAssertEqual(patch.hunkCount, 1)
-    XCTAssertEqual(patch.addedLinesCount, 0)
-    XCTAssertEqual(patch.deletedLinesCount, 1)
-    patch.enumerateHunks {
-      (hunk, stop) in
-      try! hunk.enumerateLinesInHunk(usingBlock: {
-        (line, stop) in
-        switch line.origin {
-          case .deletion:
-            XCTAssertEqual(line.content, "some text")
-          default:
-            break
-        }
-      })
-    }
-  }
   
   func testAddedChange()
   {
@@ -361,13 +331,47 @@ class XTRepositoryTest: XTTest
     XCTAssertEqual(changes[2].change, XitChange.unmodified);
   }
 
-  func testDeleteDiff()
+  func checkDeletedDiff(_ diff: XTDiffDelta?)
   {
-    try? FileManager.default.removeItem(atPath: file1Path)
-    checkDeletedDiff(repository.unstagedDiff(file: file1Name)!.makeDiff())
+    guard let diff = diff
+    else {
+      XCTFail("diff is null")
+      return
+    }
+    guard let patch = try? diff.generatePatch()
+    else {
+      XCTFail("patch is null")
+      return
+    }
     
-    try! repository.stage(file: file1Name)
-    checkDeletedDiff(repository.stagedDiff(file: file1Name)!.makeDiff())
+    XCTAssertEqual(patch.hunkCount, 1, "hunks")
+    XCTAssertEqual(patch.addedLinesCount, 0, "added lines")
+    XCTAssertEqual(patch.deletedLinesCount, 1, "deleted lines")
+    patch.enumerateHunks {
+      (hunk, stop) in
+      try! hunk.enumerateLinesInHunk(usingBlock: {
+        (line, stop) in
+        switch line.origin {
+          case .deletion:
+            XCTAssertEqual(line.content, "some text")
+          default:
+            break
+        }
+      })
+    }
+  }
+  
+  func testUnstagedDeleteDiff()
+  {
+    XCTAssertNoThrow(try FileManager.default.removeItem(atPath: file1Path))
+    checkDeletedDiff(repository.unstagedDiff(file: file1Name)?.makeDiff())
+  }
+
+  func testStagedDeleteDiff()
+  {
+    XCTAssertNoThrow(try FileManager.default.removeItem(atPath: file1Path))
+    XCTAssertNoThrow(try repository.stage(file: file1Name))
+    checkDeletedDiff(repository.stagedDiff(file: file1Name)?.makeDiff())
   }
   
   func testDeletedDiff()

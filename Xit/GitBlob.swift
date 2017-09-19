@@ -2,10 +2,29 @@ import Foundation
 
 public protocol Blob
 {
-  var size: UInt { get }
+  var dataSize: UInt { get }
   
-  func makeData() -> Data
-  func withData(callback: (Data) -> Void)
+  /// Consumers should use `withData` instead, since the buffer may have a
+  /// limited lifespan.
+  func makeData() -> Data?
+}
+
+extension Blob
+{
+  /// Calls `callback` with a data object, or throws `BlobError.cantLoadData`
+  /// if the data can't be loaded.
+  public func withData(callback: (Data) throws -> Void) throws
+  {
+    guard let data = makeData()
+    else { throw BlobError.cantLoadData }
+    
+    try callback(data)
+  }
+}
+
+enum BlobError: Swift.Error
+{
+  case cantLoadData
 }
 
 public class GitBlob: Blob
@@ -26,25 +45,16 @@ public class GitBlob: Blob
     self.blob = finalBlob
   }
   
-  public var size: UInt
+  public var dataSize: UInt
   {
     return UInt(git_blob_rawsize(blob))
   }
   
-  public func makeData() -> Data
+  public func makeData() -> Data?
   {
-    return Data(immutableBytes: git_blob_rawcontent(blob),
+    // TODO: Fix the immutableBytes costructor to avoid unneeded copying
+    return Data(bytes: git_blob_rawcontent(blob),
                 count: Int(git_blob_rawsize(blob)))
-           ?? Data()
-  }
-  
-  /// Calls the given callback with a Data object containing the blob's data.
-  /// The pointer provided by libgit2 does not have a guaranteed lifetime.
-  public func withData(callback: (Data) -> Void)
-  {
-    let data = makeData()
-    
-    callback(data)
   }
   
   func makeGTBlob() -> GTBlob?
@@ -61,13 +71,20 @@ public class GitBlob: Blob
   }
 }
 
+extension GTBlob: Blob
+{
+  public var dataSize: UInt { return UInt(size()) }
+
+  public func makeData() -> Data? { return data() }
+}
+
 extension Data
 {
   // There is no Data constructor that treats the buffer as immutable
   init?(immutableBytes: UnsafeRawPointer, count: Int)
   {
     guard let data = CFDataCreateWithBytesNoCopy(
-        kCFAllocatorNull, immutableBytes.assumingMemoryBound(to: UInt8.self),
+        kCFAllocatorDefault, immutableBytes.assumingMemoryBound(to: UInt8.self),
         count, kCFAllocatorNull)
     else { return nil }
     

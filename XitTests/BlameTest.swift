@@ -94,7 +94,11 @@ class BlameTest: XTTest
     XCTAssertTrue(unstagedBlame.hunks.first?.finalOID.isZero ?? false)
     XCTAssertTrue(unstagedBlame.hunks.last?.finalOID.isZero ?? false)
     
-    let stagedBlame = stagingModel.blame(for: blameFile, staged: true)!
+    guard let stagedBlame = stagingModel.blame(for: blameFile, staged: true)
+    else {
+      XCTFail("can't get staged blame")
+      return
+    }
     let stagedStarts = [1, 2, 3, 5, 6]
     
     XCTAssertEqual(stagedBlame.hunks.count, 5)
