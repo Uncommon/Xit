@@ -52,7 +52,7 @@ class XTFetchController: XTPasswordOpController
     panel.pruneBranches = config.fetchPrune(panel.selectedRemote)
     self.windowController!.window!.beginSheet(panel.window!) {
       (response) in
-      if response == NSModalResponseOK {
+      if response == NSApplication.ModalResponse.OK {
         self.executeFetch(remoteName: panel.selectedRemote as String,
                           downloadTags: panel.downloadTags,
                           pruneBranches: panel.pruneBranches)

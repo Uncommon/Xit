@@ -36,19 +36,19 @@ class FileViewController: NSViewController
   /// Column identifiers for the file list
   struct ColumnID
   {
-    static let main = "main"
-    static let staged = "change"
-    static let unstaged = "unstaged"
-    static let hidden = "hidden"
+    static let main = NSUserInterfaceItemIdentifier(rawValue: "main")
+    static let staged = NSUserInterfaceItemIdentifier(rawValue: "change")
+    static let unstaged = NSUserInterfaceItemIdentifier(rawValue: "unstaged")
+    static let hidden = NSUserInterfaceItemIdentifier(rawValue: "hidden")
   }
   
   /// Table cell view identifiers for the file list
   struct CellViewID
   {
-    static let fileCell = "fileCell"
-    static let change = "change"
-    static let staged = "staged"
-    static let unstaged = "unstaged"
+    static let fileCell = NSUserInterfaceItemIdentifier(rawValue: "fileCell")
+    static let change = NSUserInterfaceItemIdentifier(rawValue: "change")
+    static let staged = NSUserInterfaceItemIdentifier(rawValue: "staged")
+    static let unstaged = NSUserInterfaceItemIdentifier(rawValue: "unstaged")
   }
   
   /// Preview tab identifiers
@@ -212,21 +212,21 @@ class FileViewController: NSViewController
     super.loadView()
     
     changeImages = [
-        .added: NSImage(named:"added")!,
-        .untracked: NSImage(named:"added")!,
-        .copied: NSImage(named:"copied")!,
-        .deleted: NSImage(named:"deleted")!,
-        .modified: NSImage(named:"modified")!,
-        .renamed: NSImage(named:"renamed")!,
-        .mixed: NSImage(named:"mixed")!,
+        .added: NSImage(named:NSImage.Name(rawValue: "added"))!,
+        .untracked: NSImage(named:NSImage.Name(rawValue: "added"))!,
+        .copied: NSImage(named:NSImage.Name(rawValue: "copied"))!,
+        .deleted: NSImage(named:NSImage.Name(rawValue: "deleted"))!,
+        .modified: NSImage(named:NSImage.Name(rawValue: "modified"))!,
+        .renamed: NSImage(named:NSImage.Name(rawValue: "renamed"))!,
+        .mixed: NSImage(named:NSImage.Name(rawValue: "mixed"))!,
         ]
     stageImages = [
-        .added: NSImage(named:"add")!,
-        .untracked: NSImage(named:"add")!,
-        .deleted: NSImage(named:"delete")!,
-        .modified: NSImage(named:"modify")!,
-        .mixed: NSImage(named:"mixed")!,
-        .conflict: NSImage(named:"conflict")!,
+        .added: NSImage(named:NSImage.Name(rawValue: "add"))!,
+        .untracked: NSImage(named:NSImage.Name(rawValue: "add"))!,
+        .deleted: NSImage(named:NSImage.Name(rawValue: "delete"))!,
+        .modified: NSImage(named:NSImage.Name(rawValue: "modify"))!,
+        .mixed: NSImage(named:NSImage.Name(rawValue: "mixed"))!,
+        .conflict: NSImage(named:NSImage.Name(rawValue: "conflict"))!,
         ]
     
     fileListOutline.highlightedTableColumn =
@@ -235,7 +235,7 @@ class FileViewController: NSViewController
     contentController = diffController
     
     observers.addObserver(
-        forName: NSNotification.Name.NSOutlineViewSelectionDidChange,
+        forName: NSOutlineView.selectionDidChangeNotification,
         object: fileListOutline,
         queue: nil) {
       [weak self] _ in
@@ -256,7 +256,7 @@ class FileViewController: NSViewController
     }
     
     commitEntryController = XTCommitEntryController(
-        nibName: "XTCommitEntryController", bundle: nil)!
+        nibName: NSNib.Name(rawValue: "XTCommitEntryController"), bundle: nil)
     if repo != nil {
       commitEntryController.repo = repo
     }
@@ -305,12 +305,12 @@ class FileViewController: NSViewController
     let cells = components.enumerated().map {
       (index, component) -> NSPathComponentCell in
       let cell = NSPathComponentCell()
-      let workspace = NSWorkspace.shared()
+      let workspace = NSWorkspace.shared
       
       cell.title = component
       cell.image = !isFolder && (index == components.count - 1)
           ? workspace.icon(forFileType: (component as NSString).pathExtension)
-          : NSImage(named: NSImageNameFolder)
+          : NSImage(named: NSImage.Name.folder)
       
       return cell
     }
@@ -500,7 +500,7 @@ class FileViewController: NSViewController
     confirmAlert.addButton(withTitle: "Cancel")
     confirmAlert.beginSheetModal(for: view.window!) {
       (response) in
-      if response == NSAlertFirstButtonReturn {
+      if response == .alertFirstButtonReturn {
         self.revertConfirmed(path: path)
       }
     }
@@ -603,11 +603,12 @@ extension FileViewController: NSOutlineViewDelegate
         : image(forChange:change)
   }
 
-  private func tableButtonView(_ identifier: String,
+  private func tableButtonView(_ identifier: NSUserInterfaceItemIdentifier,
                                change: XitChange,
                                otherChange: XitChange) -> TableButtonView
   {
-    let cellView = fileListOutline.make(withIdentifier: identifier, owner: self)
+    let cellView = fileListOutline.makeView(withIdentifier: identifier,
+                                            owner: self)
                    as! TableButtonView
     let button = cellView.button!
     let displayChange = self.displayChange(forChange:change,
@@ -631,16 +632,16 @@ extension FileViewController: NSOutlineViewDelegate
     switch columnID {
       
       case ColumnID.main:
-        guard let cell = outlineView.make(withIdentifier: CellViewID.fileCell,
-                                          owner: self) as? FileCellView
+        guard let cell = outlineView.makeView(withIdentifier: CellViewID.fileCell,
+                                              owner: self) as? FileCellView
         else { return nil }
       
         let path = dataSource.path(for: item) as NSString
       
         cell.imageView?.image = dataSource.outlineView!(outlineView,
                                                        isItemExpandable: item)
-                                ? NSImage(named: NSImageNameFolder)
-                                : NSWorkspace.shared()
+                                ? NSImage(named: NSImage.Name.folder)
+                                : NSWorkspace.shared
                                   .icon(forFileType: path.pathExtension)
         cell.textField?.stringValue = path.lastPathComponent
       
@@ -667,7 +668,7 @@ extension FileViewController: NSOutlineViewDelegate
               otherChange: dataSource.unstagedChange(for: item))
         }
         else {
-          guard let cell = outlineView.make(withIdentifier: CellViewID.change,
+          guard let cell = outlineView.makeView(withIdentifier: CellViewID.change,
                                             owner: self)
                            as? NSTableCellView
           else { return nil }

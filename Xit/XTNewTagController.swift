@@ -17,7 +17,7 @@ class XTNewTagController: XTOperationController
     panelController.signature = "\(userName ?? "") <\(userEmail ?? "")>"
     windowController?.window?.beginSheet(panelController.window!) {
       (response) in
-      if response == NSModalResponseOK {
+      if response == .OK {
         self.executeTag(name: panelController.tagName,
                         sha: selectedSHA,
                         message: panelController.lightweight ?

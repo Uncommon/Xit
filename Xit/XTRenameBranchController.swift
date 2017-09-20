@@ -18,7 +18,7 @@ class XTRenameBranchController: XTOperationController
     panelController.branchName = branchName
     windowController?.window?.beginSheet(panelController.window!) {
       (response) in
-      if response == NSModalResponseOK {
+      if response == .OK {
         self.executeRename(panelController.textField.stringValue)
       }
       else {

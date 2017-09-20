@@ -3,8 +3,6 @@ import Foundation
 // MARK: Refs
 extension XTRepository : CommitReferencing
 {
-  
-
   /// Reloads the cached map of OIDs to refs.
   func rebuildRefsIndex()
   {
@@ -80,7 +78,7 @@ extension XTRepository : CommitReferencing
     return headRef.map { sha(forRef: $0) } ?? nil
   }
 
-  public var currentBranch: String?
+  @objc public var currentBranch: String?
   {
     if cachedBranch == nil {
       refsChanged()

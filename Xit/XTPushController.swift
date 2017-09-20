@@ -44,7 +44,7 @@ class XTPushController: XTPasswordOpController
     
     alert.beginSheetModal(for: windowController!.window!) {
       (response) in
-      if response == NSAlertFirstButtonReturn {
+      if response == .alertFirstButtonReturn {
         self.push(localBranch: branch, remote: remote)
       }
       else {

@@ -8,6 +8,11 @@ class FileListDataSourceBase: NSObject
   
   let observers = ObserverCollection()
   
+  struct ColumnID
+  {
+    static let unstaged = NSUserInterfaceItemIdentifier(rawValue: "unstaged")
+  }
+  
   weak var repository: XTRepository!
   {
     didSet
@@ -60,7 +65,7 @@ class FileListDataSourceBase: NSObject
   
   func updateStagingView()
   {
-    let unstagedColumn = outlineView.tableColumn(withIdentifier: "unstaged")
+    let unstagedColumn = outlineView.tableColumn(withIdentifier: ColumnID.unstaged)
     
     unstagedColumn?.isHidden = !(repoController.selectedModel?.hasUnstaged
                                  ?? false)
@@ -87,7 +92,7 @@ class FileCellView: NSTableCellView
   /// The change is stored to improve drawing of selected deleted files.
   var change: XitChange = .unmodified
   
-  override var backgroundStyle: NSBackgroundStyle
+  override var backgroundStyle: NSView.BackgroundStyle
   {
     didSet
     {

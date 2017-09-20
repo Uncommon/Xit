@@ -26,7 +26,7 @@ class XTRemoteOptionsController: XTOperationController
     sheetController.pushURL = remote.pushURLString.flatMap({ URL(string: $0) })
     windowController!.window?.beginSheet(sheetController.window!) {
       (response) in
-      if response == NSModalResponseOK {
+      if response == .OK {
         self.acceptSheetSettings(sheetController)
       }
     }

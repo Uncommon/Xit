@@ -244,7 +244,7 @@ class XTSidebarDataSourceTest: XTTest
 
 class MockSidebarOutline: NSOutlineView
 {
-  override func make(withIdentifier identifier: String,
+  override func makeView(withIdentifier identifier: NSUserInterfaceItemIdentifier,
                      owner: Any?) -> NSView?
   {
     let result = XTSidebarTableCellView(frame: NSRect(x: 0, y: 0,

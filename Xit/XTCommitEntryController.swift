@@ -66,10 +66,7 @@ class XTCommitEntryController: NSViewController
   
   @IBAction func commit(_ sender: NSButton) {
     do {
-      guard let message = commitField.string
-      else { return }
-    
-      try repo.commit(message: message,
+      try repo.commit(message: commitField.string,
                       amend: false,
                       outputBlock: nil)
       resetMessage()
@@ -97,14 +94,13 @@ class XTCommitEntryController: NSViewController
   func updateCommitButton()
   {
     let text = commitField.string
-    let emptyText = text?.isEmpty ?? true
+    let emptyText = text.isEmpty
     
     placeholder.isHidden = !emptyText
     
     if anyStaged {
       let whitespace = CharacterSet.whitespacesAndNewlines
-      let onlyWhitespace = text?.trimmingCharacters(in: whitespace).isEmpty
-                           ?? true
+      let onlyWhitespace = text.trimmingCharacters(in: whitespace).isEmpty
       
       commitButton.isEnabled = !onlyWhitespace
     }

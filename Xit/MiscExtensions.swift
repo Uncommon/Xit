@@ -36,7 +36,7 @@ extension String
     guard hasPrefix(prefix)
     else { return self }
     
-    return self.substring(from: prefix.characters.endIndex)
+    return String(self[prefix.characters.endIndex...])
   }
   
   /// Returns the string with the given prefix, adding it only if necessary.
@@ -160,8 +160,8 @@ extension String
     else { return nil }
     let slashIndex = index(slashRange.lowerBound, offsetBy: 1)
     
-    return (substring(to: slashIndex),
-            substring(from: slashRange.upperBound))
+    return (String(self[..<slashIndex]),
+            String(self[slashRange.upperBound...]))
   }
   
   /// Splits the string into an array of lines.
@@ -179,7 +179,7 @@ extension NSTableView
   /// Returns a set of all visible row indexes
   func visibleRows() -> IndexSet
   {
-    return IndexSet(integersIn: rows(in: visibleRect).toRange() ?? 0..<0)
+    return IndexSet(integersIn: Range(rows(in: visibleRect)) ?? 0..<0)
   }
   
   func scrollRowToCenter(_ row: Int)
@@ -212,9 +212,9 @@ extension NSSplitView
       endFrame.size.height = position
     }
     
-    let windowResize: [String: Any] = [
-        NSViewAnimationTargetKey: targetView,
-        NSViewAnimationEndFrameKey: endFrame ]
+    let windowResize: [NSViewAnimation.Key: Any] = [
+          .target: targetView,
+          .endFrame: endFrame ]
     let animation = NSViewAnimation(viewAnimations: [windowResize])
     
     animation.animationBlockingMode = .blocking

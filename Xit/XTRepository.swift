@@ -9,7 +9,7 @@ public protocol RepositoryType: class
   func commit(forOID oid: C.ID) -> C?
 }
 
-public protocol CommitReferencing
+public protocol CommitReferencing: class
 {
   associatedtype LocalBranchSequence: Sequence
   associatedtype RemoteBranchSequence: Sequence
@@ -65,9 +65,9 @@ let XTErrorArgsKey = "args"
 public class XTRepository: NSObject
 {
   private(set) var gtRepo: GTRepository
-  let repoURL: URL
+  @objc let repoURL: URL
   let gitCMD: String
-  let queue: TaskQueue
+  @objc let queue: TaskQueue
   var refsIndex = [String: [String]]()
   fileprivate(set) var isWriting = false
   fileprivate var executing = false

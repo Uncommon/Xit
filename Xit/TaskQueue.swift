@@ -2,12 +2,12 @@ import Foundation
 
 class TaskQueue: NSObject
 {
-  let queue: DispatchQueue
+  @objc let queue: DispatchQueue
   let group = DispatchGroup()
   var queueCount: UInt = 0
   fileprivate(set) var isShutDown = false
   
-  var busy: Bool
+  @objc var busy: Bool
   {
     return queueCount > 0
   }
@@ -33,6 +33,7 @@ class TaskQueue: NSObject
     updateQueueCount(-1)
   }
   
+  @objc
   func executeOffMainThread(_ block: @escaping () -> Void)
   {
     if Thread.isMainThread {
@@ -47,6 +48,7 @@ class TaskQueue: NSObject
     }
   }
   
+  @objc
   func wait()
   {
     let semaphore = DispatchSemaphore(value: 0)
@@ -57,6 +59,7 @@ class TaskQueue: NSObject
     semaphore.wait()
   }
   
+  @objc
   func shutDown()
   {
     isShutDown = true

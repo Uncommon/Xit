@@ -6,9 +6,9 @@ public class XTHistoryTableController: NSViewController
 {
   struct ColumnID
   {
-    static let commit = "commit"
-    static let date = "date"
-    static let name = "name"
+    static let commit = NSUserInterfaceItemIdentifier(rawValue: "commit")
+    static let date = NSUserInterfaceItemIdentifier(rawValue: "date")
+    static let name = NSUserInterfaceItemIdentifier(rawValue: "name")
   }
   
   let observers = ObserverCollection()
@@ -254,8 +254,8 @@ extension XTHistoryTableController: NSTableViewDelegate
       return nil
     }
     guard let tableColumn = tableColumn,
-          let result = tableView.make(withIdentifier: tableColumn.identifier,
-                                      owner: self) as? NSTableCellView
+          let result = tableView.makeView(withIdentifier: tableColumn.identifier,
+                                          owner: self) as? NSTableCellView
     else { return nil }
     
     let entry = history.entries[row]

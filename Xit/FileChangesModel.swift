@@ -414,14 +414,18 @@ extension FileChangesModel
     // Not sure if these should be expected
     guard let unstagedNodes = unstagedTree.children
     else {
-      NSLog("combineTrees: no unstaged children at %@",
-            (unstagedTree.representedObject! as AnyObject).path)
+      print("""
+            combineTrees: no unstaged children at
+            \((unstagedTree.representedObject! as? FileChange)?.path ?? "?"))
+            """)
       return
     }
     guard let stagedNodes = stagedTree.children
     else {
-      NSLog("combineTrees: no staged children at %@",
-            (stagedTree.representedObject! as AnyObject).path)
+      print("""
+            combineTrees: no staged children at
+            \((stagedTree.representedObject! as? FileChange)?.path ?? "?"))
+            """)
       return
     }
     

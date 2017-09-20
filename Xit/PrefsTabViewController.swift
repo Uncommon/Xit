@@ -10,7 +10,7 @@ class PrefsTabViewController: NSTabViewController
     super.viewDidLoad()
     
     // The generic document icon isn't available in Interface Builder.
-    previewsTab.image = NSWorkspace.shared().icon(forFileType:
+    previewsTab.image = NSWorkspace.shared.icon(forFileType:
         NSFileTypeForHFSTypeCode(OSType(kGenericDocumentIcon)))
   }
   
@@ -21,7 +21,7 @@ class PrefsTabViewController: NSTabViewController
     else { return }
     
     observer = NotificationCenter.default.addObserver(
-        forName: NSNotification.Name.NSWindowDidResignKey,
+        forName: NSWindow.didResignKeyNotification,
         object: window, queue: .main) {
       [weak self] _ in
       guard let items = self?.tabViewItems

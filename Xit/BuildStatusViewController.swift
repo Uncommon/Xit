@@ -11,6 +11,16 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
 
   var filteredStatuses: [String: BuildStatusCache.BranchStatuses] = [:]
   var builds: [TeamCityAPI.Build] = []
+  
+  struct NibName
+  {
+    static let buildStatus = NSNib.Name(rawValue: "BuildStatusViewController")
+  }
+  
+  struct CellID
+  {
+    static let build = NSUserInterfaceItemIdentifier(rawValue: "BuildCell")
+  }
 
   init(repository: XTRepository, branch: XTBranch, cache: BuildStatusCache)
   {
@@ -18,7 +28,7 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
     self.branch = branch
     self.buildStatusCache = cache
   
-    super.init(nibName: "BuildStatusViewController", bundle: nil)!
+    super.init(nibName: NibName.buildStatus, bundle: nil)
     
     if let remoteName = branch.remoteName,
        let (api, _) = matchTeamCity(remoteName) {
@@ -94,7 +104,7 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
     guard let url = build.url
     else { return }
     
-    NSWorkspace.shared().open(url)
+    NSWorkspace.shared.open(url)
   }
 }
 
@@ -119,7 +129,8 @@ extension BuildStatusViewController: NSTableViewDelegate
                  viewFor tableColumn: NSTableColumn?,
                  row: Int) -> NSView?
   {
-    guard let cell = tableView.make(withIdentifier: "BuildCell", owner: self)
+    guard let cell = tableView.makeView(withIdentifier: CellID.build,
+                                        owner: self)
                      as? BuildStatusCellView
     else { return nil }
     let build = builds[row]
@@ -136,8 +147,8 @@ extension BuildStatusViewController: NSTableViewDelegate
       cell.progressBar.isHidden = true
     }
     cell.statusImage.image = NSImage(named:
-        build.status == .succeeded ? NSImageNameStatusAvailable
-                                   : NSImageNameStatusUnavailable)
+        build.status == .succeeded ? NSImage.Name.statusAvailable
+                                   : NSImage.Name.statusUnavailable)
     
     return cell
   }
