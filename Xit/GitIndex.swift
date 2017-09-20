@@ -3,14 +3,10 @@ import Foundation
 /// A staging index for creating a commit.
 protocol StagingIndex
 {
-  /* For Swift 4:
-   associatedtype Entries: RandomAccessCollection
-   where Entries.Iterator.Element: IndexEntry
+  associatedtype Entries: RandomAccessCollection
+      where Entries.Iterator.Element: IndexEntry
    
-   var entries: Entries
-   */
-  
-  var entries: IndexEntryCollection { get }
+  var entries: Entries { get }
   
   /// Reloads the index from the disk.
   func refresh() throws
@@ -32,29 +28,6 @@ protocol IndexEntry
   var conflicted: Bool { get }
 }
 
-// Abstract class so that StagingIndex.entries doesn't have to be an Array.
-// In Swift 4 this can go away.
-class IndexEntryCollection: RandomAccessCollection
-{
-  public var startIndex: Int { return 0 }
-  public var endIndex: Int { return 0 } // Override
-  func index(before i: Int) -> Int { return i - 1 }
-  func index(after i: Int) -> Int { return i + 1 }
-  
-  subscript(position: Int) -> IndexEntry
-  {
-    return DummyEntry()
-  }
-  
-  // subscript has to return something
-  struct DummyEntry: IndexEntry
-  {
-    var oid: OID { return "" }
-    var path: String { return "" }
-    var conflicted: Bool { return false }
-  }
-}
-
 /// Staging index implemented with libgit2
 class GitIndex: StagingIndex
 {
@@ -72,20 +45,22 @@ class GitIndex: StagingIndex
     self.index = finalIndex
   }
   
-  class EntryCollection: IndexEntryCollection
+  class EntryCollection: RandomAccessCollection
   {
     let index: GitIndex
     
-    public override var endIndex: Int
+    var startIndex: Int { return 0 }
+    
+    public var endIndex: Int
     {
       return git_index_entrycount(index.index)
     }
     
-    override subscript(position: Int) -> IndexEntry
+    public subscript(position: Int) -> Entry
     {
       guard let gitEntry = git_index_get_byindex(index.index, position)
-        else {
-          return Entry(gitEntry: git_index_entry())
+      else {
+        return Entry(gitEntry: git_index_entry())
       }
       
       return Entry(gitEntry: gitEntry.pointee)
@@ -111,7 +86,7 @@ class GitIndex: StagingIndex
     }
   }
   
-  var entries: IndexEntryCollection { return EntryCollection(index: self) }
+  var entries: EntryCollection { return EntryCollection(index: self) }
   
   func entry(at path: String) -> IndexEntry?
   {
