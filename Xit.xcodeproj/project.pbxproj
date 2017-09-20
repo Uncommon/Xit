@@ -293,6 +293,27 @@
 			remoteGlobalIDString = 9F2FB51D1C28645E0068DFFA;
 			remoteInfo = "Siesta macOS";
 		};
+		C92102521F730B9F0068F87C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C91F34631D30647D005F9BDF /* Siesta.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CDCCAF651E6A313800860D18;
+			remoteInfo = "Siesta watchOS";
+		};
+		C92102541F730B9F0068F87C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C91F34631D30647D005F9BDF /* Siesta.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CDCCAF721E6A31D900860D18;
+			remoteInfo = "Siesta tvOS";
+		};
+		C92102561F730B9F0068F87C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C91F34631D30647D005F9BDF /* Siesta.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CDCCAF7A1E6A31DA00860D18;
+			remoteInfo = "SiestaTests tvOS";
+		};
 		C923D6551D8CA56900C6B90B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C91F34631D30647D005F9BDF /* Siesta.xcodeproj */;
@@ -921,10 +942,13 @@
 			children = (
 				C91F346B1D30647E005F9BDF /* Siesta.framework */,
 				C91F346F1D30647E005F9BDF /* Siesta.framework */,
+				C92102531F730B9F0068F87C /* Siesta.framework */,
+				C92102551F730B9F0068F87C /* Siesta.framework */,
 				C923D6561D8CA56900C6B90B /* SiestaUI.framework */,
 				C923D6581D8CA56900C6B90B /* SiestaUI.framework */,
 				C91F346D1D30647E005F9BDF /* SiestaTests.xctest */,
 				C91F34711D30647E005F9BDF /* SiestaTests.xctest */,
+				C92102571F730B9F0068F87C /* SiestaTests tvOS.xctest */,
 				C958C5161DCBBE4F00EC49E1 /* SiestaPerformanceTests macOS.xctest */,
 			);
 			name = Products;
@@ -1242,6 +1266,27 @@
 			fileType = wrapper.cfbundle;
 			path = SiestaTests.xctest;
 			remoteRef = C91F34701D30647E005F9BDF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C92102531F730B9F0068F87C /* Siesta.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Siesta.framework;
+			remoteRef = C92102521F730B9F0068F87C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C92102551F730B9F0068F87C /* Siesta.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Siesta.framework;
+			remoteRef = C92102541F730B9F0068F87C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C92102571F730B9F0068F87C /* SiestaTests tvOS.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "SiestaTests tvOS.xctest";
+			remoteRef = C92102561F730B9F0068F87C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		C923D6561D8CA56900C6B90B /* SiestaUI.framework */ = {
