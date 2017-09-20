@@ -22,7 +22,7 @@ struct WorkspaceFileStatus
 // Has to inherit from NSObject so NSTreeNode can use it to sort
 class FileChange: NSObject
 {
-  var path: String
+  @objc var path: String
   var change, unstagedChange: XitChange
   
   init(path: String, change: XitChange = .unmodified,
