@@ -30,9 +30,9 @@ class XTRolloverButton: NSButton
   {
     let tracking = NSTrackingArea(
         rect: self.bounds,
-        options: [NSTrackingAreaOptions.mouseEnteredAndExited,
-                  NSTrackingAreaOptions.activeInActiveApp,
-                  NSTrackingAreaOptions.assumeInside],
+        options: [NSTrackingArea.Options.mouseEnteredAndExited,
+                  NSTrackingArea.Options.activeInActiveApp,
+                  NSTrackingArea.Options.assumeInside],
         owner: self, userInfo: nil)
     
     self.addTrackingArea(tracking)

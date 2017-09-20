@@ -27,7 +27,7 @@ class TeamCityTest: XCTestCase
         "href=\"/httpAuth/app/rest/builds/id:45272\" " +
         "webUrl=\"https://teamcity.example.com/viewLog.html?buildId=45272&amp;buildTypeId=\(buildType)\"/>"
     
-    let xml = try! XMLDocument(xmlString: sourceXML, options: 0)
+    let xml = try! XMLDocument(xmlString: sourceXML, options: [])
     let build = TeamCityAPI.Build(xml: xml)!
     
     XCTAssertEqual(build.buildType!, buildType)

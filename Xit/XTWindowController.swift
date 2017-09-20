@@ -151,7 +151,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
 
     if #available(OSX 10.12.2, *),
        let item = self.touchBar?.item(forIdentifier:
-                                      NSTouchBarItemIdentifier.navigation) {
+                                      NSTouchBarItem.Identifier.navigation) {
       updateNavControl(item.view as? NSSegmentedControl)
     }
   }
@@ -262,7 +262,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func redrawAllHistoryLists()
   {
-    for document in NSDocumentController.shared().documents {
+    for document in NSDocumentController.shared.documents {
       guard let windowController = document.windowControllers.first
                                    as? XTWindowController
       else { continue }
@@ -299,18 +299,15 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
 
       case #selector(self.verticalLayout(_:)):
         result = true
-        menuItem.state = historyController.mainSplitView.isVertical
-            ? NSOnState : NSOffState
+        menuItem.state = historyController.mainSplitView.isVertical ? .on : .off
 
       case #selector(self.horizontalLayout(_:)):
         result = true
-        menuItem.state = historyController.mainSplitView.isVertical
-            ? NSOffState : NSOnState
+        menuItem.state = historyController.mainSplitView.isVertical ? .off : .on
 
       case #selector(self.deemphasizeMerges(_:)):
         result = true
-        menuItem.state = Preferences.deemphasizeMerges
-            ? NSOnState : NSOffState
+        menuItem.state = Preferences.deemphasizeMerges ? .on : .off
 
       case #selector(self.remoteSettings(_:)):
         result = true
@@ -326,9 +323,9 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func windowWillClose(_ notification: Notification)
   {
-    titleBarController?.titleLabel.unbind("value")
-    titleBarController?.proxyIcon.unbind("hidden")
-    titleBarController?.spinner.unbind("hidden")
+    titleBarController?.titleLabel.unbind(NSBindingName(rawValue: "value"))
+    titleBarController?.proxyIcon.unbind(NSBindingName(rawValue: "hidden"))
+    titleBarController?.spinner.unbind(NSBindingName(rawValue: "hidden"))
     xtDocument?.repository.removeObserver(
         self, forKeyPath: #keyPath(XTRepository.currentBranch))
     // For some reason this avoids a crash
@@ -375,35 +372,46 @@ extension XTWindowController: TitleBarDelegate
   func showHideDetails() { showHideDetails(self) }
 }
 
+extension NSBindingName
+{
+  static let progressHidden =
+      NSBindingName(#keyPath(TitleBarViewController.progressHidden))
+}
+
 // MARK: NSToolbarDelegate
 extension XTWindowController: NSToolbarDelegate
 {
+  struct NibName
+  {
+    static let titleBar = NSNib.Name("TitleBar")
+  }
+  
   func toolbarWillAddItem(_ notification: Notification)
   {
     guard let item = notification.userInfo?["item"] as? NSToolbarItem,
-          item.itemIdentifier == "com.uncommonplace.xit.titlebar",
-          let viewController = TitleBarViewController(nibName: "TitleBar",
-                                                      bundle: nil)
+          item.itemIdentifier.rawValue == "com.uncommonplace.xit.titlebar"
     else { return }
     
+    let viewController = TitleBarViewController(nibName: NibName.titleBar,
+                                                bundle: nil)
     let repository = xtDocument!.repository!
     let inverseBindingOptions =
-        [NSValueTransformerNameBindingOption:
+        [NSBindingOption.valueTransformerName:
          NSValueTransformerName.negateBooleanTransformerName]
 
     titleBarController = viewController
     item.view = viewController.view
 
     viewController.delegate = self
-    viewController.titleLabel.bind("value",
+    viewController.titleLabel.bind(NSBindingName.value,
                                    to: window! as NSWindow,
                                    withKeyPath: #keyPath(NSWindow.title),
                                    options: nil)
-    viewController.proxyIcon.bind("hidden",
+    viewController.proxyIcon.bind(NSBindingName.hidden,
                                   to: repository.queue,
                                   withKeyPath: #keyPath(TaskQueue.busy),
                                   options: nil)
-    viewController.bind(#keyPath(TitleBarViewController.progressHidden),
+    viewController.bind(.progressHidden,
                         to: repository.queue,
                         withKeyPath: #keyPath(TaskQueue.busy),
                         options: inverseBindingOptions)
@@ -415,13 +423,13 @@ extension XTWindowController: NSToolbarDelegate
 }
 
 // MARK: NSTouchBar
-fileprivate extension NSTouchBarItemIdentifier
+fileprivate extension NSTouchBarItem.Identifier
 {
   static let
-      navigation = NSTouchBarItemIdentifier("com.uncommonplace.xit.nav"),
-      staging = NSTouchBarItemIdentifier("com.uncommonplace.xit.staging"),
-      unstageAll = NSTouchBarItemIdentifier("com.uncommonplace.xit.unstageall"),
-      stageAll = NSTouchBarItemIdentifier("com.uncommonplace.xit.stageall")
+      navigation = NSTouchBarItem.Identifier("com.uncommonplace.xit.nav"),
+      staging = NSTouchBarItem.Identifier("com.uncommonplace.xit.staging"),
+      unstageAll = NSTouchBarItem.Identifier("com.uncommonplace.xit.unstageall"),
+      stageAll = NSTouchBarItem.Identifier("com.uncommonplace.xit.stageall")
 }
 
 @available(OSX 10.12.2, *)
@@ -442,7 +450,7 @@ extension XTWindowController: NSTouchBarDelegate
     return bar
   }
   
-  func touchBarButton(identifier: NSTouchBarItemIdentifier,
+  func touchBarButton(identifier: NSTouchBarItem.Identifier,
                       title: String, image: NSImage?,
                       target: Any, action: Selector) -> NSCustomTouchBarItem
   {
@@ -459,15 +467,15 @@ extension XTWindowController: NSTouchBarDelegate
   }
   
   func touchBar(_ touchBar: NSTouchBar,
-                makeItemForIdentifier identifier: NSTouchBarItemIdentifier)
+                makeItemForIdentifier identifier: NSTouchBarItem.Identifier)
                 -> NSTouchBarItem?
   {
     switch identifier {
 
-      case NSTouchBarItemIdentifier.navigation:
+      case NSTouchBarItem.Identifier.navigation:
         let control = NSSegmentedControl(
-                images: [NSImage(named: NSImageNameGoBackTemplate)!,
-                         NSImage(named: NSImageNameGoForwardTemplate)!],
+                images: [NSImage(named: NSImage.Name.goBackTemplate)!,
+                         NSImage(named: NSImage.Name.goForwardTemplate)!],
                 trackingMode: .momentary,
                 target: titleBarController,
                 action: #selector(TitleBarViewController.navigate(_:)))
@@ -477,21 +485,21 @@ extension XTWindowController: NSTouchBarDelegate
         item.view = control
         return item
 
-      case NSTouchBarItemIdentifier.staging:
-        guard let stagingImage = NSImage(named: "stagingTemplate")
+      case NSTouchBarItem.Identifier.staging:
+        guard let stagingImage = NSImage(named: .xtStagingTemplate)
         else { return nil }
       
         return touchBarButton(
             identifier: identifier, title: "Staging", image: stagingImage,
             target: self, action: #selector(XTWindowController.showStaging(_:)))
 
-      case NSTouchBarItemIdentifier.unstageAll:
+      case NSTouchBarItem.Identifier.unstageAll:
         return touchBarButton(
             identifier: identifier, title: "« Unstage All", image: nil,
             target: historyController.fileViewController,
             action: #selector(FileViewController.unstageAll(_:)))
       
-      case NSTouchBarItemIdentifier.stageAll:
+      case NSTouchBarItem.Identifier.stageAll:
         return touchBarButton(
             identifier: identifier, title: "» Stage All", image: nil,
             target: historyController.fileViewController,

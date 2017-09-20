@@ -15,7 +15,7 @@ class XTPasswordOpController: XTSimpleOperationController
     
     DispatchQueue.main.async {
       window.beginSheet(panel.window!) { (response) in
-        if response == NSModalResponseOK {
+        if response == .OK {
           result = (panel.userName, panel.password)
         }
         _ = semaphore.signal()

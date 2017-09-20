@@ -110,7 +110,7 @@ class CommitHeaderViewController: WebViewController, HeaderGenerator
   }
   weak var repository: XTRepository!
   
-  override init?(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?)
+  override init(nibName nibNameOrNil: NSNib.Name?, bundle nibBundleOrNil: Bundle?)
   {
     actionDelegate = CommitHeaderActionDelegate()
     
@@ -233,7 +233,7 @@ class CommitHeaderActionDelegate: NSObject
     controller?.repoController.select(sha: sha)
   }
   
-  func headerToggled()
+  @objc func headerToggled()
   {
     let newHeight = controller.headerHeight()
     let userInfo = [CommitHeaderViewController.headerHeightKey: newHeight]

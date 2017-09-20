@@ -83,12 +83,11 @@ extension FileViewController
     let menuItem = item as? NSMenuItem
     guard let wsController = contentController as? WhitespaceVariable
     else {
-      menuItem?.state = NSOffState
+      menuItem?.state = .off
       return false
     }
     
-    menuItem?.state = (wsController.whitespace == whitespace) ? NSOnState
-      : NSOffState
+    menuItem?.state = (wsController.whitespace == whitespace) ? .on : .off
     return true
   }
   
@@ -97,11 +96,11 @@ extension FileViewController
     let menuItem = item as? NSMenuItem
     guard let tabController = contentController as? TabWidthVariable
     else {
-      menuItem?.state = NSOffState
+      menuItem?.state = .off
       return false
     }
     
-    menuItem?.state = (tabController.tabWidth == width) ? NSOnState : NSOffState
+    menuItem?.state = (tabController.tabWidth == width) ? .on : .off
     return true
   }
   
@@ -110,12 +109,11 @@ extension FileViewController
     let menuItem = item as? NSMenuItem
     guard let contextController = contentController as? ContextVariable
     else {
-      menuItem?.state = NSOffState
+      menuItem?.state = .off
       return false
     }
     
-    menuItem?.state = (contextController.contextLines == context) ? NSOnState
-                                                                  : NSOffState
+    menuItem?.state = (contextController.contextLines == context) ? .on : .off
     return true
   }
 }

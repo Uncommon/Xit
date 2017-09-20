@@ -51,12 +51,12 @@ enum AccountType: Int
     }
   }
   
-  var imageName: String
+  var imageName: NSImage.Name
   {
     switch self {
-      case .gitHub: return "githubTemplate"
-      case .bitBucket: return "bitbucketTemplate"
-      case .teamCity: return "teamcityTemplate"
+      case .gitHub: return .xtGitHubTemplate
+      case .bitBucket: return .xtBitBucketTemplate
+      case .teamCity: return .xtTeamCityTemplate
     }
   }
 }

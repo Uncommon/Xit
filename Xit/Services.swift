@@ -228,6 +228,6 @@ public func XMLResponseTransformer(
   return Siesta.ResponseContentTransformer<Data, XMLDocument>(
       transformErrors: transformErrors) {
     (entity: Siesta.Entity<Data>) throws -> XMLDocument? in
-    return try XMLDocument(data: entity.content, options: 0)
+    return try XMLDocument(data: entity.content, options: [])
   }
 }

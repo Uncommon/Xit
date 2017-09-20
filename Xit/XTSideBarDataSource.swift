@@ -417,13 +417,13 @@ class XTSideBarDataSource: NSObject
       (response) in
       switch response {
         
-        case NSAlertFirstButtonReturn: // Clear
+        case .alertFirstButtonReturn: // Clear
           let branch = XTLocalBranch(repository: self.repository, name: item.title)
           
           branch?.trackingBranchName = nil
           self.outline.reloadItem(item)
         
-        case NSAlertSecondButtonReturn: // Delete
+        case .alertSecondButtonReturn: // Delete
           self.viewController.deleteBranch(item: item)
         
         default:
@@ -432,7 +432,7 @@ class XTSideBarDataSource: NSObject
     }
   }
   
-  func doubleClick(_: Any?)
+  @objc func doubleClick(_: Any?)
   {
     if let outline = outline,
        let clickedItem = outline.item(atRow: outline.clickedRow)
@@ -442,7 +442,7 @@ class XTSideBarDataSource: NSObject
       let subURL = URL(fileURLWithPath: rootPath.appending(
             pathComponent: subPath))
       
-      NSDocumentController.shared().openDocument(
+      NSDocumentController.shared.openDocument(
           withContentsOf: subURL, display: true,
           completionHandler: { (_, _, _) in })
     }
@@ -539,11 +539,10 @@ extension XTSideBarDataSource: TeamCityAccessor
     }
     
     if let success = overallSuccess {
-      return NSImage(named: success ? NSImageNameStatusAvailable
-                                    : NSImageNameStatusUnavailable)
+      return NSImage(named: success ? .statusAvailable : .statusUnavailable)
     }
     else {
-      return NSImage(named: NSImageNameStatusNone)
+      return NSImage(named: .statusNone)
     }
   }
 }
@@ -594,6 +593,12 @@ extension XTSideBarDataSource: NSOutlineViewDataSource
 // MARK: NSOutlineViewDelegate
 extension XTSideBarDataSource: NSOutlineViewDelegate
 {
+  struct CellID
+  {
+    static let header = NSUserInterfaceItemIdentifier(rawValue: "HeaderCell")
+    static let data = NSUserInterfaceItemIdentifier(rawValue: "DataCell")
+  }
+  
   public func outlineViewSelectionDidChange(_ notification: Notification)
   {
     guard let item = outline!.item(atRow: outline!.selectedRow)
@@ -637,16 +642,16 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
     else { return nil }
     
     if item is XTSideBarGroupItem {
-      guard let headerView = outlineView.make(
-          withIdentifier: "HeaderCell", owner: nil) as? NSTableCellView
+      guard let headerView = outlineView.makeView(
+          withIdentifier: CellID.header, owner: nil) as? NSTableCellView
       else { return nil }
       
       headerView.textField?.stringValue = sideBarItem.title
       return headerView
     }
     else {
-      guard let dataView = outlineView.make(
-          withIdentifier: "DataCell", owner: nil) as? XTSidebarTableCellView
+      guard let dataView = outlineView.makeView(
+          withIdentifier: CellID.data, owner: nil) as? XTSidebarTableCellView
       else { return nil }
       
       let textField = dataView.textField!
@@ -675,13 +680,14 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
             case .none:
               break
             case .missing(let tracking):
-              dataView.statusButton.image = NSImage(named: "trackingMissing")
+              dataView.statusButton.image =
+                    NSImage(named: .xtTrackingMissing)
               dataView.statusButton.toolTip = tracking + " (missing)"
               dataView.statusButton.target = self
               dataView.statusButton.action =
                   #selector(self.missingTrackingBranch(_:))
             case .set(let tracking):
-              dataView.statusButton.image = NSImage(named: "tracking")
+              dataView.statusButton.image = NSImage(named: .xtTracking)
               dataView.statusButton.toolTip = tracking
           }
         }
@@ -733,7 +739,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
             currentBranch.trackingBranchName == remoteBranchItem.remote + "/" +
                                                 remoteBranchItem.title {
       let rowView = SidebarCheckedRowView(
-              imageName: NSImageNameRightFacingTriangleTemplate,
+              imageName: NSImage.Name.rightFacingTriangleTemplate,
               toolTip: "The active branch is tracking this remote branch")
       
       return rowView

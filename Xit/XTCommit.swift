@@ -32,7 +32,7 @@ extension CommitType
     else { return "" }
     
     return message.range(of: "\n").map {
-      message.substring(to: $0.lowerBound)
+      String(message[..<$0.lowerBound])
     } ?? message
   }
 

@@ -65,7 +65,7 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
   {
     addController.resetFields()
     view.window?.beginSheet(addController.window!) { (response) in
-      guard response == NSModalResponseOK
+      guard response == NSApplication.ModalResponse.OK
       else { return }
       guard let url = self.addController.location
       else { return }
@@ -101,10 +101,10 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
         alert.beginSheetModal(for: view.window!) {
           (response) in
           switch response {
-            case NSAlertFirstButtonReturn:
+            case NSApplication.ModalResponse.alertFirstButtonReturn:
               self.finishAddAccount(action: .change, type: type, user: user,
                                     password: password, location: location)
-            case NSAlertSecondButtonReturn:
+            case NSApplication.ModalResponse.alertSecondButtonReturn:
               self.finishAddAccount(action: .useExisting, type: type, user: user,
                                     password: "", location: location)
             default:
@@ -190,20 +190,28 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
 
 extension XTAccountsPrefsController: NSTableViewDelegate
 {
+  struct ColumnID
+  {
+    static let service = NSUserInterfaceItemIdentifier(rawValue: "service")
+    static let userName = NSUserInterfaceItemIdentifier(rawValue: "userName")
+    static let location = NSUserInterfaceItemIdentifier(rawValue: "location")
+    static let status = NSUserInterfaceItemIdentifier(rawValue: "status")
+  }
+  
   func statusImage(forAPI api: TeamCityAPI) -> NSImage?
   {
-    var imageName: String?
+    var imageName: NSImage.Name?
     
     switch api.authenticationStatus {
       case .unknown, .notStarted:
-        imageName = NSImageNameStatusNone
+        imageName = .statusNone
       case .inProgress:
         // eventually have a spinner instead
-        imageName = NSImageNameStatusPartiallyAvailable
+        imageName = .statusPartiallyAvailable
       case .done:
         break
       case .failed:
-        imageName = NSImageNameStatusUnavailable
+        imageName = .statusUnavailable
     }
     if let imageName = imageName {
       return NSImage(named: imageName)
@@ -211,11 +219,11 @@ extension XTAccountsPrefsController: NSTableViewDelegate
     
     switch api.buildTypesStatus {
       case .unknown, .notStarted, .inProgress:
-        imageName = NSImageNameStatusAvailable
+        imageName = .statusAvailable
       case .done:
-        imageName = NSImageNameStatusAvailable
+        imageName = .statusAvailable
       case .failed:
-        imageName = NSImageNameStatusPartiallyAvailable
+        imageName = .statusPartiallyAvailable
     }
     if let imageName = imageName {
       return NSImage(named: imageName)
@@ -230,20 +238,20 @@ extension XTAccountsPrefsController: NSTableViewDelegate
     guard let tableColumn = tableColumn
     else { return nil }
     
-    let view = tableView.make(withIdentifier: tableColumn.identifier,
+    let view = tableView.makeView(withIdentifier: tableColumn.identifier,
                               owner: self)
                as! NSTableCellView
     let account = XTAccountsManager.manager.accounts[row]
     
     switch tableColumn.identifier {
-      case "service":
+      case ColumnID.service:
         view.textField?.stringValue = account.type.displayName
         view.imageView?.image = NSImage(named: account.type.imageName)
-      case "userName":
+      case ColumnID.userName:
         view.textField?.stringValue = account.user
-      case "location":
+      case ColumnID.location:
         view.textField?.stringValue = account.location.absoluteString
-      case "status":
+      case ColumnID.status:
         view.imageView?.isHidden = true
         if account.type == .teamCity {
           guard let api = Services.shared.teamCityAPI(account)

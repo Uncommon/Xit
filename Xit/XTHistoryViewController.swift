@@ -12,6 +12,14 @@ class XTHistoryViewController: NSViewController
   
   private var savedHistorySize: CGFloat?
   
+  struct NibName
+  {
+    static let historyViewController =
+          NSNib.Name(rawValue: "XTHistoryViewController")
+    static let fileViewController =
+          NSNib.Name(rawValue: "FileViewController")
+  }
+  
   weak var repo: XTRepository!
   {
     didSet
@@ -31,14 +39,14 @@ class XTHistoryViewController: NSViewController
     return mainSplitView.isSubviewCollapsed(mainSplitView.subviews[1])
   }
   
-  override var nibName: String?
+  override var nibName: NSNib.Name?
   {
-    return String(describing: type(of: self))
+    return NibName.historyViewController
   }
   
   init()
   {
-    super.init(nibName: String(describing: type(of: self)), bundle: nil)!
+    super.init(nibName: NibName.historyViewController, bundle: nil)
   }
   
   // For testing
@@ -59,8 +67,8 @@ class XTHistoryViewController: NSViewController
   
     let lowerPane = mainSplitView.subviews[1]
     
-    fileViewController = FileViewController(nibName: "FileViewController",
-                                              bundle: nil)!
+    fileViewController = FileViewController(nibName: NibName.fileViewController,
+                                            bundle: nil)
     lowerPane.addSubview(fileViewController.view)
     fileViewController.view.setFrameSize(lowerPane.frame.size)
     

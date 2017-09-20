@@ -40,7 +40,7 @@ class BlameViewController: WebViewController
     }
   }
   
-  override init?(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?)
+  override init(nibName nibNameOrNil: NSNib.Name?, bundle nibBundleOrNil: Bundle?)
   {
     actionDelegate = BlameActionDelegate()
     

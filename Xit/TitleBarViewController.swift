@@ -58,7 +58,7 @@ class TitleBarViewController: NSViewController
   
   var progressObserver: NSObjectProtocol?
   
-  dynamic var progressHidden: Bool
+  @objc dynamic var progressHidden: Bool
   {
     get
     {

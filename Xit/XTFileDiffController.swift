@@ -293,17 +293,17 @@ class DiffActionDelegate: NSObject
     }
   }
   
-  func stageHunk(index: Int)
+  @objc func stageHunk(index: Int)
   {
     controller.stageHunk(index: index)
   }
   
-  func unstageHunk(index: Int)
+  @objc func unstageHunk(index: Int)
   {
     controller.unstageHunk(index: index)
   }
   
-  func discardHunk(index: Int)
+  @objc func discardHunk(index: Int)
   {
     controller.discardHunk(index: index)
   }

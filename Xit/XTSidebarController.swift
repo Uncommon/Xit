@@ -54,9 +54,9 @@ extension SidebarHandler
             return false
           }
           
-          let menuFontAttributes = [NSFontAttributeName:
+          let menuFontAttributes = [NSAttributedStringKey.font:
                                     NSFont.menuFont(ofSize: 0)]
-          let obliqueAttributes = [NSObliquenessAttributeName: 0.15]
+          let obliqueAttributes = [NSAttributedStringKey.obliqueness: 0.15]
           
           if let mergeTitle = NSAttributedString.init(
               format: "Merge @~1 into @~2",
@@ -190,7 +190,8 @@ class XTSidebarController: NSViewController, SidebarHandler
     sidebarOutline.floatsGroupRows = false
   
     if branchContextMenu == nil,
-       let menuNib = NSNib(nibNamed: "HistoryView Menus", bundle: nil) {
+       let menuNib = NSNib(nibNamed: NSNib.Name(rawValue: "HistoryView Menus"),
+                           bundle: nil) {
       menuNib.instantiate(withOwner: self, topLevelObjects: nil)
     }
     
@@ -365,7 +366,7 @@ class XTSidebarController: NSViewController, SidebarHandler
     alert.buttons[0].keyEquivalent = ""
     alert.beginSheetModal(for: view.window!) {
       (response) in
-      if response == NSAlertFirstButtonReturn {
+      if response == .alertFirstButtonReturn {
         onConfirm()
       }
     }
@@ -491,10 +492,10 @@ class XTSidebarController: NSViewController, SidebarHandler
     let remoteName = "remote.\(item.title).url"
     guard let remoteURL = repo.config.urlString(forRemote: remoteName)
     else { return }
-    let pasteboard = NSPasteboard.general()
+    let pasteboard = NSPasteboard.general
     
-    pasteboard.declareTypes([NSStringPboardType], owner: nil)
-    pasteboard.setString(remoteURL, forType: NSStringPboardType)
+    pasteboard.declareTypes([NSPasteboard.PasteboardType.string], owner: nil)
+    pasteboard.setString(remoteURL, forType: NSPasteboard.PasteboardType.string)
   }
   
   @IBAction func popStash(_ sender: Any?)

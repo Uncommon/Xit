@@ -36,9 +36,9 @@ class AppDelegate: NSObject
     
     newOpenPanel.begin {
       (result) in
-      if result == NSFileHandlingPanelOKButton {
+      if result.rawValue == NSFileHandlingPanelOKButton {
         for url in newOpenPanel.urls {
-          NSDocumentController.shared().openDocument(
+          NSDocumentController.shared.openDocument(
               withContentsOf: url,
               display: true,
               completionHandler: { (_, _, _) in })
