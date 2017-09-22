@@ -3,6 +3,7 @@ import Foundation
 public protocol OID
 {
   var sha: String { get }
+  var isZero: Bool { get }
 }
 
 // Don't explicitly conform to Hashable here because that constrains how the
@@ -10,12 +11,6 @@ public protocol OID
 extension OID
 {
   public var hashValue: Int { return sha.hashValue }
-}
-
-
-extension String: OID
-{
-  public var sha: String { return self }
 }
 
 

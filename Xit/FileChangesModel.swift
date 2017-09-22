@@ -5,9 +5,6 @@ import Cocoa
 /// with metadata, files, and diffs.
 protocol FileChangesModel
 {
-  // Blame (currently) has to have an associatedtype
-  associatedtype B: Blame
-  
   var repository: XTRepository { get set }
   /// SHA for commit to be selected in the history list
   var shaToSelect: String? { get }
@@ -35,7 +32,7 @@ protocol FileChangesModel
   /// - parameter path: Repository-relative file path.
   /// - parameter staged: Whether to show the staged or unstaged file. Ignored
   /// for models that don't have unstaged files.
-  func blame(for path: String, staged: Bool) -> B?
+  func blame(for path: String, staged: Bool) -> Blame?
 }
 
 func == (a: FileChangesModel, b: FileChangesModel) -> Bool
@@ -53,8 +50,6 @@ func != (a: FileChangesModel, b: FileChangesModel) -> Bool
 /// Changes for a selected commit in the history
 class CommitChanges: FileChangesModel
 {
-  typealias GitBlame = CLGitBlame
-
   unowned var repository: XTRepository
   let commit: XTCommit
   var shaToSelect: String? { return commit.sha }
@@ -103,7 +98,7 @@ class CommitChanges: FileChangesModel
                                      parentOID: diffParent)
   }
   
-  func blame(for path: String, staged: Bool) -> GitBlame?
+  func blame(for path: String, staged: Bool) -> Blame?
   {
     return GitBlame(repository: repository, path: path,
                     from: commit.oid, to: nil)
@@ -227,7 +222,7 @@ class StashChanges: FileChangesModel
     }
   }
   
-  func blame(for path: String, staged: Bool) -> GitBlame?
+  func blame(for path: String, staged: Bool) -> Blame?
   {
     guard let startCommit = commit(for: path, staged: staged)
     else { return nil }
@@ -303,7 +298,7 @@ class StagingChanges: FileChangesModel
     }
   }
   
-  func blame(for path: String, staged: Bool) -> GitBlame?
+  func blame(for path: String, staged: Bool) -> Blame?
   {
     if staged {
       guard let data = repository.contentsOfStagedFile(path: path)

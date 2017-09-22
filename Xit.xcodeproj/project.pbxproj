@@ -90,6 +90,7 @@
 		C91F34741D3064CC005F9BDF /* Siesta.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C91F346F1D30647E005F9BDF /* Siesta.framework */; };
 		C91F34761D306506005F9BDF /* Siesta.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C91F346F1D30647E005F9BDF /* Siesta.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C91F34781D30656B005F9BDF /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91F34771D30656B005F9BDF /* Services.swift */; };
+		C921026D1F757FEB0068F87C /* StringOID.swift in Sources */ = {isa = PBXBuildFile; fileRef = C921026C1F757FEB0068F87C /* StringOID.swift */; };
 		C923D6481D8CA56800C6B90B /* XTTagTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D6471D8CA56800C6B90B /* XTTagTest.swift */; };
 		C923D65E1D90506A00C6B90B /* TitleBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = C923D65D1D90506A00C6B90B /* TitleBar.xib */; };
 		C923D66C1D906FAA00C6B90B /* TitleBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D66B1D906FAA00C6B90B /* TitleBarViewController.swift */; };
@@ -481,6 +482,7 @@
 		C91E9A001D527A1300E128AC /* XTHistoryTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTHistoryTableController.swift; sourceTree = "<group>"; };
 		C91F34631D30647D005F9BDF /* Siesta.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Siesta.xcodeproj; path = siesta/Siesta.xcodeproj; sourceTree = "<group>"; };
 		C91F34771D30656B005F9BDF /* Services.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services.swift; sourceTree = "<group>"; };
+		C921026C1F757FEB0068F87C /* StringOID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringOID.swift; sourceTree = "<group>"; };
 		C923D6471D8CA56800C6B90B /* XTTagTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTagTest.swift; sourceTree = "<group>"; };
 		C923D65D1D90506A00C6B90B /* TitleBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TitleBar.xib; sourceTree = "<group>"; };
 		C923D66B1D906FAA00C6B90B /* TitleBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = TitleBarViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -926,6 +928,7 @@
 				C9DEA4BA1E4FEC1600DF4069 /* FileListDataSourceTest.swift */,
 				C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */,
 				89CB619B1E788C6000D69FE4 /* PatchTest.swift */,
+				C921026C1F757FEB0068F87C /* StringOID.swift */,
 			);
 			path = XitTests;
 			sourceTree = "<group>";
@@ -1614,6 +1617,7 @@
 				C9DEA4F01E53678A00DF4069 /* XTFileChangesDataSourceTest.swift in Sources */,
 				DD98CFF3181ADFC5008B79C9 /* CFRunLoop+Extensions.c in Sources */,
 				C953560A1D958E8D00AEEF49 /* StringExtensionsTest.swift in Sources */,
+				C921026D1F757FEB0068F87C /* StringOID.swift in Sources */,
 				C9DEA4FF1E54AEC400DF4069 /* BlameTest.swift in Sources */,
 				C96D24B31DFEFD9F00431317 /* XTSidebarControllerTest.swift in Sources */,
 				C923D6481D8CA56800C6B90B /* XTTagTest.swift in Sources */,

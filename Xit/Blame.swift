@@ -1,148 +1,39 @@
 import Foundation
 
-public typealias GitBlame = CLGitBlame
-
 public protocol Blame
 {
-  associatedtype HunkCollection: Collection
-      where HunkCollection.Element: BlameHunk
-
-  var hunks: HunkCollection! { get }
+  var hunks: [BlameHunk] { get }
 }
 
-public protocol BlameHunk
+public class BlameHunk
 {
-  var lineCount: Int { get }
-  var boundary: Bool { get }
-  
-  var finalOID: OID { get } // OIDs are zero for local changes
-  var finalLineStart: Int { get }
-  var finalSignature: Signature { get }
-  
-  var origOID: OID { get }
-  var origLineStart: Int { get }
-  var origSignature: Signature { get }
-}
-
-public class Git2Blame: Blame
-{
-  let blame: OpaquePointer
-  public private(set) var hunks: HunkCollection!
-  
-  var hunkCount: UInt
-  { return UInt(git_blame_get_hunk_count(blame)) }
-  
-  init?(repository: XTRepository, path: String,
-        from startOID: GitOID?, to endOID: GitOID?)
+  struct LineInfo
   {
-    let options = UnsafeMutablePointer<git_blame_options>.allocate(capacity: 1)
-    
-    git_blame_init_options(options, 1)
-    if let startOID = startOID {
-      options.pointee.newest_commit = startOID.oid
-    }
-    if let endOID = endOID {
-      options.pointee.oldest_commit = endOID.oid
-    }
-    
-    var blame: OpaquePointer?
-    let result = git_blame_file(&blame, repository.gtRepo.git_repository(),
-                                path, options)
-    
-    guard result == GIT_OK.rawValue,
-          blame != nil
-    else { return nil }
-    
-    self.blame = blame!
-    self.hunks = HunkCollection(blame: self)
+    let oid: OID // OIDs are zero for local changes
+    let start: Int
+    let signature: Signature
   }
   
-  deinit
+  fileprivate(set) var lineCount: Int
+  let boundary: Bool
+  
+  let originalLine: LineInfo
+  let finalLine: LineInfo
+  
+  init(lineCount: Int, boundary: Bool,
+       originalLine: LineInfo, finalLine: LineInfo)
   {
-    git_blame_free(blame)
+    self.lineCount = lineCount
+    self.boundary = boundary
+    self.originalLine = originalLine
+    self.finalLine = finalLine
   }
-  
-  public struct HunkCollection: Collection
-  {
-    let blame: Git2Blame
-    
-    public func makeIterator() -> HunkIterator
-    {
-      return HunkIterator(blame: blame, index: 0)
-    }
-    
-    public subscript(position: Int) -> GitBlameHunk
-    {
-      return blame.hunk(atIndex: UInt(position))!
-    }
-    
-    public var startIndex: Int { return 0 }
-    public var endIndex: Int { return Int(blame.hunkCount) }
-    
-    public func index(after i: Int) -> Int
-    {
-      return i + 1
-    }
-    func index(before i: Int) -> Int
-    {
-      return i - 1
-    }
-  }
-  
-  public struct HunkIterator: IteratorProtocol
-  {
-    let blame: Git2Blame
-    var index: UInt
-    
-    public mutating func next() -> GitBlameHunk?
-    {
-      return blame.hunk(atIndex: index++)
-    }
-  }
-  
-  func hunk(atIndex index: UInt) -> GitBlameHunk?
-  {
-    guard let result = git_blame_get_hunk_byindex(blame, UInt32(index))
-    else { return nil }
-    
-    return GitBlameHunk(
-        hunk: UnsafeMutablePointer<git_blame_hunk>(mutating: result).move())
-  }
-  
-  func hunk(atLine line: UInt) -> GitBlameHunk?
-  {
-    guard let result = git_blame_get_hunk_byline(blame, Int(line))
-    else { return nil }
-    
-    return GitBlameHunk(
-        hunk: UnsafeMutablePointer<git_blame_hunk>(mutating: result).move())
-  }
-}
-
-public struct GitBlameHunk: BlameHunk
-{
-  let hunk: git_blame_hunk
-  
-  public var lineCount: Int { return hunk.lines_in_hunk }
-  public var boundary: Bool { return hunk.boundary == 1 }
-  
-  public var finalOID: OID { return GitOID(oid: hunk.final_commit_id) }
-  public var finalLineStart: Int { return hunk.final_start_line_number }
-  public var finalSignature: Signature
-  { return Signature(gitSignature: hunk.final_signature.pointee) }
-  
-  public var origOID: OID { return GitOID(oid: hunk.orig_commit_id) }
-  public var origLineStart: Int { return hunk.orig_start_line_number }
-  public var origSignature: Signature
-  { return Signature(gitSignature: hunk.orig_signature.pointee) }
 }
 
 /// Blame data from the git command line because libgit2 is slow
-public class CLGitBlame: Blame
+public class GitBlame: Blame
 {
-  public typealias HunkCollection = [CLGitBlameHunk]
-  
-  public var hunks: [CLGitBlameHunk]! = [CLGitBlameHunk]()
+  public var hunks = [BlameHunk]()
   
   func read(data: Data, from repository: XTRepository) -> Bool
   {
@@ -160,7 +51,7 @@ public class CLGitBlame: Blame
         else { continue }
         
         if let last = hunks.last,
-           oid == (last.origOID as? GitOID) {
+           oid == (last.originalLine.oid as? GitOID) {
           last.lineCount += 1
         }
         else {
@@ -185,13 +76,13 @@ public class CLGitBlame: Blame
           
           // The output doesn't have the original commit SHA so fake it
           // by using author/committer
-          let hunk = CLGitBlameHunk(lineCount: 1, boundary: false,
-                                    finalOID: oid,
-                                    finalLineStart: finalLine,
-                                    finalSignature: committerSig,
-                                    origOID: oid,
-                                    origLineStart: originalLine,
-                                    origSignature: authorSig)
+          let hunk = BlameHunk(lineCount: 1, boundary: false,
+                               originalLine: BlameHunk.LineInfo(
+                                    oid: oid, start: originalLine,
+                                    signature: authorSig),
+                               finalLine: BlameHunk.LineInfo(
+                                    oid: oid, start: finalLine,
+                                    signature: committerSig))
           
           hunks.append(hunk)
         }
@@ -233,33 +124,5 @@ public class CLGitBlame: Blame
                                                 writes: false),
           read(data: data, from: repository)
     else { return nil }
-  }
-}
-
-public class CLGitBlameHunk: BlameHunk
-{
-  public var lineCount: Int
-  public var boundary: Bool
-  
-  public var finalOID: OID
-  public var finalLineStart: Int
-  public var finalSignature: Signature
-  
-  public var origOID: OID
-  public var origLineStart: Int
-  public var origSignature: Signature
-  
-  init(lineCount: Int, boundary: Bool, finalOID: GitOID, finalLineStart: Int,
-       finalSignature: Signature, origOID: GitOID, origLineStart: Int,
-       origSignature: Signature)
-  {
-    self.lineCount = lineCount
-    self.boundary = boundary
-    self.finalOID = finalOID
-    self.finalLineStart = finalLineStart
-    self.finalSignature = finalSignature
-    self.origOID = origOID
-    self.origLineStart = origLineStart
-    self.origSignature = origSignature
   }
 }
