@@ -106,7 +106,7 @@ public class Git2Blame: Blame
     else { return nil }
     
     return GitBlameHunk(
-      hunk: UnsafeMutablePointer<git_blame_hunk>(mutating: result).move())
+        hunk: UnsafeMutablePointer<git_blame_hunk>(mutating: result).move())
   }
   
   func hunk(atLine line: UInt) -> GitBlameHunk?
@@ -129,12 +129,12 @@ public struct GitBlameHunk: BlameHunk
   public var finalOID: OID { return GitOID(oid: hunk.final_commit_id) }
   public var finalLineStart: Int { return hunk.final_start_line_number }
   public var finalSignature: Signature
-  { return GitSignature(signature: hunk.final_signature.pointee) }
+  { return Signature(gitSignature: hunk.final_signature.pointee) }
   
   public var origOID: OID { return GitOID(oid: hunk.orig_commit_id) }
   public var origLineStart: Int { return hunk.orig_start_line_number }
   public var origSignature: Signature
-  { return GitSignature(signature: hunk.orig_signature.pointee) }
+  { return Signature(gitSignature: hunk.orig_signature.pointee) }
 }
 
 /// Blame data from the git command line because libgit2 is slow
@@ -171,7 +171,7 @@ public class CLGitBlame: Blame
           var authorSig, committerSig: Signature!
           
           if oid.isZero {
-            authorSig = GitSignature(signature:
+            authorSig = Signature(gitSignature:
                 repository.gtRepo.userSignatureForNow().git_signature().pointee)
             committerSig = authorSig
           }
