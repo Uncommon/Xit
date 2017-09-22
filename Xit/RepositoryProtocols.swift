@@ -5,23 +5,28 @@ public protocol CommitStorage: class
   associatedtype C: CommitType
   
   func commit(forSHA sha: String) -> C?
-  func commit(forOID oid: C.ID) -> C?
+  func commit(forOID oid: OID) -> C?
 }
 
 public protocol CommitReferencing: class
 {
-  associatedtype LocalBranchSequence: Sequence
-  associatedtype RemoteBranchSequence: Sequence
-  
   var headRef: String? { get }
   var currentBranch: String? { get }
   func remoteNames() -> [String]
+  func tags() throws -> [Tag]
+  func graphBetween(localBranch: LocalBranch,
+                    upstreamBranch: RemoteBranch) -> (ahead: Int, behind: Int)?
+}
+
+public protocol BranchListing
+{
+  associatedtype LocalBranchSequence: Sequence
+      where LocalBranchSequence.Iterator.Element: LocalBranch
+  associatedtype RemoteBranchSequence: Sequence
+      where RemoteBranchSequence.Iterator.Element: RemoteBranch
+
   func localBranches() -> LocalBranchSequence
   func remoteBranches() -> RemoteBranchSequence
-  func tags() throws -> [Tag]
-  func graphBetween(localBranch: XTLocalBranch,
-                    upstreamBranch: XTRemoteBranch) ->(ahead: Int,
-    behind: Int)?
 }
 
 public protocol FileStatusDetection: class
@@ -33,33 +38,38 @@ public protocol FileStatusDetection: class
 
 public protocol FileDiffing: class
 {
-  associatedtype ID: OID
-  associatedtype B: Blame
-  
   func diffMaker(forFile file: String,
-                 commitOID: ID,
-                 parentOID: ID?) -> XTDiffMaker?
+                 commitOID: OID,
+                 parentOID: OID?) -> XTDiffMaker?
   func diff(for path: String,
             commitSHA sha: String,
-            parentOID: ID?) -> XTDiffDelta?
+            parentOID: OID?) -> XTDiffDelta?
   func stagedDiff(file: String) -> XTDiffMaker?
   func unstagedDiff(file: String) -> XTDiffMaker?
   
-  func blame(for path: String, from startOID: OID?, to endOID: OID?) -> B?
+  func blame(for path: String, from startOID: OID?, to endOID: OID?) -> Blame?
+  func blame(for path: String, data fromData: Data?, to endOID: OID?) -> Blame?
 }
 
 public protocol FileContents: class
 {
-  associatedtype C: CommitType
-
   func fileBlob(ref: String, path: String) -> Blob?
   func stagedBlob(file: String) -> Blob?
-  func contentsOfFile(path: String, at commit: C) -> Data?
+  func contentsOfFile(path: String, at commit: CommitType) -> Data?
   func contentsOfStagedFile(path: String) -> Data?
+  func fileURL(_ file: String) -> URL
 }
 
 public protocol SubmoduleManagement: class
 {
   func submodules() -> [XTSubmodule]
   func addSubmodule(path: String, url: String) throws
+}
+
+public protocol Branching: class
+{
+  var currentBranch: String? { get }
+  
+  func localBranch(named name: String) -> LocalBranch
+  func remoteBranch(named name: String) -> RemoteBranch
 }

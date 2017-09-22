@@ -338,7 +338,7 @@ extension XTRepository: CommitStorage
     return XTCommit(sha: sha, repository: self)
   }
   
-  public func commit(forOID oid: GitOID) -> XTCommit?
+  public func commit(forOID oid: OID) -> XTCommit?
   {
     return XTCommit(oid: oid, repository: self)
   }
@@ -457,9 +457,12 @@ extension XTRepository
     }
   }
   
-  func graphBetween(local: GitOID, upstream: GitOID) -> (ahead: Int,
-                                                         behind: Int)?
+  func graphBetween(local: OID, upstream: OID) -> (ahead: Int,
+                                                   behind: Int)?
   {
+    guard let local = local as? GitOID,
+          let upstream = upstream as? GitOID
+    else { return nil }
     let ahead = UnsafeMutablePointer<Int>.allocate(capacity: 1)
     let behind = UnsafeMutablePointer<Int>.allocate(capacity: 1)
     
@@ -472,9 +475,9 @@ extension XTRepository
     }
   }
   
-  public func graphBetween(localBranch: XTLocalBranch,
-                           upstreamBranch: XTRemoteBranch) ->(ahead: Int,
-                                                              behind: Int)?
+  public func graphBetween(localBranch: LocalBranch,
+                           upstreamBranch: RemoteBranch) ->(ahead: Int,
+                                                            behind: Int)?
   {
     if let localOID = localBranch.oid,
        let upstreamOID = upstreamBranch.oid {

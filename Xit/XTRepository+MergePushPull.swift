@@ -128,7 +128,7 @@ extension XTRepository
     var mergeBranch = branch
     
     if let localBranch = branch as? XTLocalBranch,
-       let trackingBranch = localBranch.trackingBranch {
+       let trackingBranch = localBranch.trackingBranch as? XTRemoteBranch {
       mergeBranch = trackingBranch
     }
     
@@ -137,8 +137,7 @@ extension XTRepository
   
   private func fastForwardMerge(branch: XTBranch, remoteBranch: XTBranch) throws
   {
-    guard let remoteName = remoteBranch.name,
-          let remoteCommit = remoteBranch.targetCommit,
+    guard let remoteCommit = remoteBranch.targetCommit,
           let remoteSHA = remoteCommit.sha
     else { throw Error.unexpected }
     
@@ -146,7 +145,7 @@ extension XTRepository
       let targetReference = branch.gtBranch.reference
       let updated = try targetReference.updatingTarget(
             remoteSHA,
-            message: "merge \(remoteName): Fast-forward")
+            message: "merge \(remoteBranch.name): Fast-forward")
       let options = GTCheckoutOptions(strategy: [.force, .allowConflicts],
                                       notifyFlags: [.conflict]) {
         (_, _, _, _, _) -> Int32 in
@@ -163,9 +162,6 @@ extension XTRepository
   private func normalMerge(fromBranch: XTBranch, fromCommit: XTCommit,
                            targetName: String, targetCommit: XTCommit) throws
   {
-    guard let fromName = fromBranch.name
-    else { throw Error.unexpected }
-    
     do {
       var annotated: OpaquePointer? = try annotatedCommit(branch: fromBranch)
       
@@ -211,7 +207,7 @@ extension XTRepository
         let tree = try index.writeTree()
         
         _ = try gtRepo.createCommit(with: tree,
-                                    message: "Merge branch \(fromName)",
+                                    message: "Merge branch \(fromBranch.name)",
                                     parents: parents,
                                     updatingReferenceNamed: targetName)
       }
@@ -284,15 +280,18 @@ extension XTRepository
   // - Finalize with conflicts - write MERGE_HEAD, etc
   
   /// Merges the given branch into the current branch.
-  func merge(branch: XTBranch) throws
+  func merge(branch: Branch) throws
   {
     try performWriting {
       try self.writingMerge(branch: branch)
     }
   }
   
-  fileprivate func writingMerge(branch: XTBranch) throws
+  fileprivate func writingMerge(branch: Branch) throws
   {
+    guard let branch = branch as? XTBranch
+    else { return }
+    
     do {
       try mergePreCheck()
       
@@ -322,8 +321,7 @@ extension XTRepository
       }
       if analysis.contains(.normal) {
         try normalMerge(fromBranch: branch, fromCommit: remoteCommit,
-                        targetName: targetBranch.name ??
-                                    "refs/heads/\(currentBranchName)",
+                        targetName: targetBranch.name,
                         targetCommit: targetCommit)
         return
       }
@@ -395,10 +393,11 @@ extension XTRepository
   /// - parameter branch: Branch to merge into the current branch.
   /// - parameter fastForward: True for fast-forward only, false for
   /// fast-forward not allowed, or nil for no preference.
-  func analyzeMerge(from branch: XTBranch,
+  func analyzeMerge(from branch: Branch,
                     fastForward: Bool? = nil) throws -> MergeAnalysis
   {
-    guard let commit = branch.targetCommit
+    guard let branch = branch as? XTBranch,
+          let commit = branch.targetCommit
     else { throw Error.unexpected }
     
     let preference =

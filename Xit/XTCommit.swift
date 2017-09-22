@@ -3,11 +3,9 @@ import Cocoa
 
 public protocol CommitType: CustomStringConvertible
 {
-  associatedtype ID: OID, Hashable
-  
   var sha: String? { get }
-  var oid: ID { get }
-  var parentOIDs: [ID] { get }
+  var oid: OID { get }
+  var parentOIDs: [OID] { get }
   
   var message: String? { get }
   var authorName: String? { get }
@@ -46,9 +44,9 @@ public class XTCommit: CommitType
   let gtCommit: GTCommit
 
   public private(set) lazy var sha: String? = self.gtCommit.sha
-  public private(set) lazy var oid: GitOID =
+  public private(set) lazy var oid: OID =
       GitOID(oid: self.gtCommit.oid!.git_oid().pointee)
-  public private(set) lazy var parentOIDs: [GitOID] =
+  public private(set) lazy var parentOIDs: [OID] =
       XTCommit.calculateParentOIDs(self.gtCommit.git_commit())
   
   public var message: String?
@@ -102,8 +100,10 @@ public class XTCommit: CommitType
     self.gtCommit = commit
   }
 
-  convenience init?(oid: GitOID, repository: XTRepository)
+  convenience init?(oid: OID, repository: XTRepository)
   {
+    guard let oid = oid as? GitOID
+    else { return nil }
     var gitCommit: OpaquePointer?  // git_commit isn't imported
     let result = git_commit_lookup(&gitCommit,
                                    repository.gtRepo.git_repository(),
@@ -176,5 +176,5 @@ public class XTCommit: CommitType
 
 public func == (a: XTCommit, b: XTCommit) -> Bool
 {
-  return a.oid == b.oid
+  return (a.oid as! GitOID) == (b.oid as! GitOID)
 }

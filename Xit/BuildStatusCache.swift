@@ -50,11 +50,12 @@ class BuildStatusCache: TeamCityAccessor
     
     statuses.removeAll()
     for local in localBranches {
-      guard let fullBranchName = local.name,
-            let tracked = local.trackingBranch,
+      guard let tracked = local.trackingBranch,
             let remoteName = tracked.remoteName,
             let (api, buildTypes) = matchTeamCity(remoteName)
       else { continue }
+      
+      let fullBranchName = local.name
       
       for buildType in buildTypes {
         let vcsRoots = api.vcsRootsForBuildType(buildType)

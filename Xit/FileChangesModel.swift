@@ -1,11 +1,13 @@
 import Cocoa
 
 
+typealias FileChangesRepo = CommitReferencing & FileDiffing & FileContents
+
 /// Protocol for a commit or commit-like object,
 /// with metadata, files, and diffs.
 protocol FileChangesModel
 {
-  var repository: XTRepository { get set }
+  var repository: FileChangesRepo { get set }
   /// SHA for commit to be selected in the history list
   var shaToSelect: String? { get }
   /// Changes displayed in the file list
@@ -50,7 +52,7 @@ func != (a: FileChangesModel, b: FileChangesModel) -> Bool
 /// Changes for a selected commit in the history
 class CommitChanges: FileChangesModel
 {
-  unowned var repository: XTRepository
+  unowned var repository: FileChangesRepo
   let commit: XTCommit
   var shaToSelect: String? { return commit.sha }
   var hasUnstaged: Bool { return false }
@@ -68,7 +70,7 @@ class CommitChanges: FileChangesModel
   /// SHA of the parent commit to use for diffs
   var diffParent: GitOID?
 
-  init(repository: XTRepository, commit: XTCommit)
+  init(repository: FileChangesRepo, commit: XTCommit)
   {
     self.repository = repository
     self.commit = commit
@@ -100,8 +102,7 @@ class CommitChanges: FileChangesModel
   
   func blame(for path: String, staged: Bool) -> Blame?
   {
-    return GitBlame(repository: repository, path: path,
-                    from: commit.oid, to: nil)
+    return repository.blame(for: path, from: commit.oid, to: nil)
   }
   
   func dataForFile(_ path: String, staged: Bool) -> Data?
@@ -153,7 +154,7 @@ class CommitChanges: FileChangesModel
 /// Changes for a selected stash, merging workspace, index, and untracked
 class StashChanges: FileChangesModel
 {
-  unowned var repository: XTRepository
+  unowned var repository: FileChangesRepo
   var stash: XTStash
   var hasUnstaged: Bool { return true }
   var canCommit: Bool { return false }
@@ -227,8 +228,7 @@ class StashChanges: FileChangesModel
     guard let startCommit = commit(for: path, staged: staged)
     else { return nil }
     
-    return GitBlame(repository: repository, path: path,
-                    from: startCommit.oid, to: nil)
+    return repository.blame(for: path, from: startCommit.oid, to: nil)
   }
   
   func dataForFile(_ path: String, staged: Bool) -> Data?
@@ -260,14 +260,14 @@ class StashChanges: FileChangesModel
 
 func == (a: StashChanges, b: StashChanges) -> Bool
 {
-  return a.stash.mainCommit?.oid == b.stash.mainCommit?.oid
+  return a.stash.mainCommit?.oid.sha == b.stash.mainCommit?.oid.sha
 }
 
 
 /// Staged and unstaged workspace changes
 class StagingChanges: FileChangesModel
 {
-  unowned var repository: XTRepository
+  unowned var repository: FileChangesRepo
   var shaToSelect: String? { return XTStagingSHA }
   var hasUnstaged: Bool { return true }
   var canCommit: Bool { return true }
@@ -304,10 +304,10 @@ class StagingChanges: FileChangesModel
       guard let data = repository.contentsOfStagedFile(path: path)
       else { return nil }
       
-      return GitBlame(repository: repository, path: path, data: data, to: nil)
+      return repository.blame(for: path, data: data, to: nil)
     }
     else {
-      return GitBlame(repository: repository, path: path, from: nil, to: nil)
+      return repository.blame(for: path, from: nil, to: nil)
     }
   }
   
@@ -317,7 +317,7 @@ class StagingChanges: FileChangesModel
       return self.repository.contentsOfStagedFile(path: path)
     }
     else {
-      let url = self.repository.repoURL.appendingPathComponent(path)
+      let url = self.repository.fileURL(path)
       
       return try? Data(contentsOf: url)
     }
@@ -325,7 +325,7 @@ class StagingChanges: FileChangesModel
   
   func unstagedFileURL(_ path: String) -> URL?
   {
-    return self.repository.repoURL.appendingPathComponent(path)
+    return self.repository.fileURL(path)
   }
 }
 

@@ -50,7 +50,7 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
   
   override func viewDidLoad()
   {
-    headingLabel.stringValue = "Builds for \(branch.strippedName ?? "branch")"
+    headingLabel.stringValue = "Builds for \(branch.strippedName)"
   }
 
   func filterStatuses()
@@ -59,11 +59,12 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
     
     // Only the local "refs/heads/..." version of the branch name works
     // with the branchspec matching.
-    guard let branchName = (branch is XTRemoteBranch)
-               ? branch.strippedName.map({ XTLocalBranch.headsPrefix + $0 })
-               : branch.name,
-          let api = self.api
+    guard let api = self.api
     else { return }
+    
+    let branchName = (branch is XTRemoteBranch)
+          ? XTLocalBranch.headsPrefix + branch.strippedName
+          : branch.name
     
     for (buildType, branchStatuses) in buildStatusCache.statuses {
       let roots = api.vcsRootsForBuildType(buildType)
