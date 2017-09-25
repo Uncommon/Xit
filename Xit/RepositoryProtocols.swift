@@ -3,9 +3,10 @@ import Foundation
 public protocol CommitStorage: class
 {
   associatedtype C: CommitType
+  associatedtype ID: OID, Hashable
   
   func commit(forSHA sha: String) -> C?
-  func commit(forOID oid: OID) -> C?
+  func commit(forOID oid: ID) -> C?
 }
 
 public protocol CommitReferencing: class
@@ -16,6 +17,9 @@ public protocol CommitReferencing: class
   func tags() throws -> [Tag]
   func graphBetween(localBranch: LocalBranch,
                     upstreamBranch: RemoteBranch) -> (ahead: Int, behind: Int)?
+  
+  func localBranch(named name: String) -> LocalBranch?
+  func remoteBranch(named name: String, remote: String) -> RemoteBranch?
 }
 
 public protocol BranchListing
@@ -53,11 +57,20 @@ public protocol FileDiffing: class
 
 public protocol FileContents: class
 {
+  var repoURL: URL { get }
+  
   func fileBlob(ref: String, path: String) -> Blob?
   func stagedBlob(file: String) -> Blob?
   func contentsOfFile(path: String, at commit: CommitType) -> Data?
   func contentsOfStagedFile(path: String) -> Data?
   func fileURL(_ file: String) -> URL
+}
+
+public protocol FileStaging: class
+{
+  var workspaceStatus: [String: WorkspaceFileStatus] { get }
+  
+  func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
 }
 
 public protocol SubmoduleManagement: class

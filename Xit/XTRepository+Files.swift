@@ -2,9 +2,11 @@ import Foundation
 
 extension XTRepository: FileContents
 {
-  public func contentsOfFile(path: String, at commit: XTCommit) -> Data?
+  public func contentsOfFile(path: String, at commit: CommitType) -> Data?
   {
-    guard let tree = commit.tree,
+    // TODO: make a Tree protocol to eliminate this cast
+    guard let commit = commit as? XTCommit,
+          let tree = commit.tree,
           let entry = try? tree.entry(withPath: path),
           let blob = (try? entry.gtObject()) as? GTBlob
     else { return nil }
@@ -43,6 +45,12 @@ extension XTRepository: FileContents
     
     return headObject as? GTBlob
   }
+  
+  /// Returns a file URL for a given relative path.
+  public func fileURL(_ file: String) -> URL
+  {
+    return repoURL.appendingPathComponent(file)
+  }
 }
 
 extension XTRepository: FileDiffing
@@ -50,10 +58,10 @@ extension XTRepository: FileDiffing
   /// Returns a diff maker for a file at the specified commit, compared to the
   /// parent commit.
   public func diffMaker(forFile file: String,
-                        commitOID: GitOID,
-                        parentOID: GitOID?) -> XTDiffMaker?
+                        commitOID: OID,
+                        parentOID: OID?) -> XTDiffMaker?
   {
-    guard let toCommit = commit(forOID: commitOID)?.gtCommit
+    guard let toCommit = commit(forOID: commitOID as! GitOID)?.gtCommit
     else { return nil }
     
     var fromSource = XTDiffMaker.SourceType.data(Data())
@@ -66,7 +74,7 @@ extension XTRepository: FileDiffing
     }
     
     if let parentOID = parentOID,
-       let parentCommit = commit(forOID: parentOID)?.gtCommit,
+       let parentCommit = commit(forOID: parentOID as! GitOID)?.gtCommit,
        let fromTree = parentCommit.tree,
        let fromEntry = try? fromTree.entry(withPath: file),
        let fromBlob = (try? GTObject(treeEntry: fromEntry)) as? GTBlob {
@@ -79,7 +87,7 @@ extension XTRepository: FileDiffing
   // Returns a file diff for a given commit.
   public func diff(for path: String,
                    commitSHA sha: String,
-                   parentOID: GitOID?) -> XTDiffDelta?
+                   parentOID: OID?) -> XTDiffDelta?
   {
     guard let diff = self.diff(forSHA: sha, parent: parentOID)
     else { return nil }
@@ -126,9 +134,16 @@ extension XTRepository: FileDiffing
   }
   
   public func blame(for path: String,
-                    from startOID: OID?, to endOID: OID?) -> GitBlame?
+                    from startOID: OID?, to endOID: OID?) -> Blame?
   {
     return GitBlame(repository: self, path: path, from: startOID, to: endOID)
+  }
+  
+  public func blame(for path: String,
+                    data fromData: Data?, to endOID: OID?) -> Blame?
+  {
+    return GitBlame(repository: self, path: path,
+                    data: fromData ?? Data(), to: endOID)
   }
 }
 
@@ -137,7 +152,7 @@ extension XTRepository
   
   /// Returns the diff for the referenced commit, compared to its first parent
   /// or to a specific parent.
-  func diff(forSHA sha: String, parent parentOID: GitOID?) -> GTDiff?
+  func diff(forSHA sha: String, parent parentOID: OID?) -> GTDiff?
   {
     let parentSHA = parentOID?.sha ?? ""
     let key = sha.appending(parentSHA) as NSString
@@ -162,32 +177,6 @@ extension XTRepository
       diffCache.setObject(diff, forKey: key)
       return diff
     }
-  }
-  
-  // Returns the changes for the given commit.
-  func changes(for sha: String, parent parentOID: GitOID?) -> [FileChange]
-  {
-    guard sha != XTStagingSHA
-    else { return stagingChanges() }
-    
-    guard let commit = self.commit(forSHA: sha),
-          let sha = commit.sha
-    else { return [] }
-    
-    let parentOID = parentOID ?? commit.parentOIDs.first
-    let diff = self.diff(forSHA: sha, parent: parentOID)
-    var result = [FileChange]()
-    
-    diff?.enumerateDeltas {
-      (delta, _) in
-      if delta.type != .unmodified {
-        let change = FileChange(path: delta.newFile.path,
-                                change: XitChange(delta: delta.type))
-        
-        result.append(change)
-      }
-    }
-    return result
   }
   
   /// Applies the given patch hunk to the specified file in the index.

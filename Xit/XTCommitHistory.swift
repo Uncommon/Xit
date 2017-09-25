@@ -24,7 +24,8 @@ public class CommitEntry<C: CommitType>: CustomStringConvertible
 
 public func == <C>(left: CommitEntry<C>, right: CommitEntry<C>) -> Bool
 {
-  return left.commit.oid == right.commit.oid
+  // TODO: Make OID equatable to compare commit.oid
+  return left.commit.sha == right.commit.sha
 }
 
 
@@ -37,16 +38,16 @@ struct CommitConnection<ID: OID>: Equatable
 
 func == <ID>(left: CommitConnection<ID>, right: CommitConnection<ID>) -> Bool
 {
-  return (left.parentOID.sha == right.parentOID.sha) &&
-         (left.childOID.sha == right.childOID.sha) &&
-         (left .colorIndex == right.colorIndex)
+  return (left.parentOID.equals(right.parentOID)) &&
+         (left.childOID.equals(right.childOID)) &&
+         (left.colorIndex == right.colorIndex)
 }
 
 // Specific version: compare the binary OIDs
 func == (left: CommitConnection<GitOID>, right: CommitConnection<GitOID>) -> Bool
 {
-  return (left.parentOID == right.parentOID) &&
-         (left.childOID == right.childOID) &&
+  return (left.parentOID.equals(right.parentOID)) &&
+         (left.childOID.equals(right.childOID)) &&
          (left.colorIndex == right.colorIndex)
 }
 
@@ -83,7 +84,7 @@ public typealias GitCommitHistory = XTCommitHistory<XTRepository>
 public class XTCommitHistory<Repo: CommitStorage>: NSObject
 {
   public typealias C = Repo.C
-  public typealias ID = Repo.C.ID
+  public typealias ID = Repo.ID
   public typealias Entry = CommitEntry<C>
   typealias Connection = CommitConnection<ID>
   typealias Result = BranchResult<C>
@@ -120,9 +121,9 @@ public class XTCommitHistory<Repo: CommitStorage>: NSObject
     var result = [Entry(commit: startCommit)]
     var queue = [(commit: C, after: C)]()
     
-    while let firstParentOID = commit.parentOIDs.first {
+    while let firstParentOID = commit.parentOIDs.first as? Repo.ID {
       for parentOID in commit.parentOIDs.dropFirst() {
-        if let parentCommit = repository.commit(forOID: parentOID) {
+        if let parentCommit = repository.commit(forOID: parentOID as! Repo.ID) {
           queue.append((parentCommit, commit))
         }
       }
@@ -159,7 +160,7 @@ public class XTCommitHistory<Repo: CommitStorage>: NSObject
   /// Adds new commits to the list.
   public func process(_ startCommit: C, afterCommit: C? = nil)
   {
-    let startOID = startCommit.oid
+    let startOID = startCommit.oid as! Repo.ID
     guard commitLookup[startOID] == nil
     else { return }
     
@@ -170,7 +171,7 @@ public class XTCommitHistory<Repo: CommitStorage>: NSObject
       var result = self.branchEntries(startCommit: startCommit)
       
       defer { results.append(result) }
-      if let nextOID = result.entries.last?.commit.parentOIDs.first ,
+      if let nextOID = result.entries.last?.commit.parentOIDs.first as? Repo.ID,
          commitLookup[nextOID] == nil,
          let nextCommit = repository.commit(forOID: nextOID) {
         startCommit = nextCommit
@@ -191,17 +192,17 @@ public class XTCommitHistory<Repo: CommitStorage>: NSObject
   func processBranchResult(_ result: Result, after afterCommit: C?)
   {
     for branchEntry in result.entries {
-      commitLookup[branchEntry.commit.oid] = branchEntry
+      commitLookup[branchEntry.commit.oid as! Repo.ID] = branchEntry
     }
     
     let afterIndex = afterCommit.flatMap(
-        { commit in entries.index(where: { $0.commit.oid == commit.oid }) })
+        { commit in entries.index(where: { $0.commit.oid.equals(commit.oid) }) })
     guard let lastEntry = result.entries.last
     else { return }
     let lastParentOIDs = lastEntry.commit.parentOIDs
     
     if let insertBeforeIndex = lastParentOIDs.flatMap(
-           { oid in entries.index(where: { $0.commit.oid == oid }) })
+           { oid in entries.index(where: { $0.commit.oid.equals(oid) }) })
            .sorted().first {
       #if DEBUGLOG
       print(" ** \(insertBeforeIndex) before \(entries[insertBeforeIndex].commit)")
@@ -221,11 +222,10 @@ public class XTCommitHistory<Repo: CommitStorage>: NSObject
         entries.insert(contentsOf: result.entries, at: insertBeforeIndex)
       }
     }
-    else if
-       let lastSecondaryOID = result.queue.last?.after.oid,
-       let lastSecondaryEntry = commitLookup[lastSecondaryOID],
-       let lastSecondaryIndex = entries.index(
-          where: { return $0.commit.oid == lastSecondaryEntry.commit.oid }) {
+    else if let lastSecondaryOID = result.queue.last?.after.oid as? Repo.ID,
+            let lastSecondaryEntry = commitLookup[lastSecondaryOID],
+            let lastSecondaryIndex = entries.index(where:
+                { $0.commit.oid.equals(lastSecondaryEntry.commit.oid) }) {
       #if DEBUGLOG
       print(" ** after secondary \(lastSecondaryOID.SHA!.firstSix())")
       #endif
@@ -281,12 +281,12 @@ public class XTCommitHistory<Repo: CommitStorage>: NSObject
     
     result.reserveCapacity(entries.count)
     for (index, entry) in entries[batchStart..<batchStart+batchSize].enumerated() {
-      let commitOID = entry.commit.oid
-      let incomingIndex = connections.index(where: { $0.parentOID == commitOID })
+      let commitOID = entry.commit.oid as! Repo.ID
+      let incomingIndex = connections.index(where: { $0.parentOID.equals(commitOID) })
       let incomingColor = incomingIndex.flatMap { connections[$0].colorIndex }
       
       if let firstParentOID = entry.commit.parentOIDs.first {
-        let newConnection = Connection(parentOID: firstParentOID,
+        let newConnection = Connection(parentOID: firstParentOID as! Repo.ID,
                                        childOID: commitOID,
                                        colorIndex: incomingColor ??
                                                    nextColorIndex++)
@@ -298,7 +298,7 @@ public class XTCommitHistory<Repo: CommitStorage>: NSObject
       
       // Add new connections for the commit's parents
       for parentOID in entry.commit.parentOIDs.dropFirst() {
-        connections.append(Connection(parentOID: parentOID,
+        connections.append(Connection(parentOID: parentOID as! Repo.ID,
                                       childOID: commitOID,
                                       colorIndex: nextColorIndex++))
       }
@@ -319,20 +319,20 @@ public class XTCommitHistory<Repo: CommitStorage>: NSObject
   }
   
   func generateLines(entry: CommitEntry<C>,
-                     connections: [CommitConnection<C.ID>])
+                     connections: [CommitConnection<Repo.ID>])
   {
     var nextChildIndex: UInt = 0
     let parentOutlets = NSOrderedSet(array: connections.flatMap {
-            ($0.parentOID == entry.commit.oid) ? nil : $0.parentOID })
-    var parentLines: [C.ID: (childIndex: UInt,
-                             colorIndex: UInt)] = [:]
+            ($0.parentOID.equals(entry.commit.oid)) ? nil : $0.parentOID })
+    var parentLines: [Repo.ID: (childIndex: UInt,
+                                colorIndex: UInt)] = [:]
     
     for connection in connections {
       objc_sync_enter(self)
       defer { objc_sync_exit(self) }
       
-      let commitIsParent = connection.parentOID == entry.commit.oid
-      let commitIsChild = connection.childOID == entry.commit.oid
+      let commitIsParent = connection.parentOID.equals(entry.commit.oid)
+      let commitIsChild = connection.childOID.equals(entry.commit.oid)
       let parentIndex: UInt? = commitIsParent
               ? nil : UInt(parentOutlets.index(of: connection.parentOID))
       var childIndex: UInt? = commitIsChild

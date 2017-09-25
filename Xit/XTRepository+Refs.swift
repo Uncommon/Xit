@@ -135,6 +135,16 @@ extension XTRepository : CommitReferencing
     return (object as? GTObject)?.sha
   }
   
+  public func localBranch(named name: String) -> LocalBranch?
+  {
+    return XTLocalBranch(repository: self, name: name)
+  }
+  
+  public func remoteBranch(named name: String, remote: String) -> RemoteBranch?
+  {
+    return XTRemoteBranch(repository: self, name: "\(remote)/\(name)")
+  }
+  
   func createBranch(_ name: String) -> Bool
   {
     clearCachedBranch()

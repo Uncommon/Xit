@@ -3,7 +3,7 @@ import Cocoa
 class BuildStatusViewController: NSViewController, TeamCityAccessor
 {
   weak var repository: XTRepository!
-  let branch: XTBranch
+  let branch: Branch
   let buildStatusCache: BuildStatusCache
   var api: TeamCityAPI?
   @IBOutlet weak var tableView: NSTableView!
@@ -22,7 +22,7 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
     static let build = NSUserInterfaceItemIdentifier(rawValue: "BuildCell")
   }
 
-  init(repository: XTRepository, branch: XTBranch, cache: BuildStatusCache)
+  init(repository: XTRepository, branch: Branch, cache: BuildStatusCache)
   {
     self.repository = repository
     self.branch = branch
@@ -30,7 +30,7 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
   
     super.init(nibName: NibName.buildStatus, bundle: nil)
     
-    if let remoteName = branch.remoteName,
+    if let remoteName = (branch as? RemoteBranch)?.remoteName,
        let (api, _) = matchTeamCity(remoteName) {
       self.api = api
     }

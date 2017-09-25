@@ -5,7 +5,7 @@ import Foundation
 class TestHeaderGenerator: HeaderGenerator
 {
   typealias Repo = MockRepository
-  typealias Commit = MockCommit
+  typealias Commit = GenericCommit
   var repository: Repo!
 }
 
@@ -28,9 +28,9 @@ class CommitHeaderTest: XCTestCase
   {
     let generator = TestHeaderGenerator()
     let oids = [0, 1, 2, 3].map { GitOID(sha: self.fakeSHA($0))! }
-    let commit = MockCommit(sha: "blahblah",
-                            oid: oids[0],
-                            parentOIDs: [oids[1], oids[2], oids[3]])
+    let commit = GenericCommit(sha: "blahblah",
+                               oid: oids[0],
+                               parentOIDs: [oids[1], oids[2], oids[3]])
     
     commit.authorName = "Guy One"
     commit.authorEmail = "guy1@example.com"
@@ -42,9 +42,9 @@ class CommitHeaderTest: XCTestCase
     
     let messages = [1: "Alphabet<>", 2: "Broccoli&", 3: "Cypress"]
     let parents = [1, 2, 3].map {
-      (index) -> MockCommit in
-      let commit = MockCommit(sha: self.fakeSHA(index), oid: oids[index],
-                              parentOIDs: [])
+      (index) -> GenericCommit in
+      let commit = GenericCommit(sha: self.fakeSHA(index), oid: oids[index],
+                                 parentOIDs: [])
       commit.message = messages[index]
       return commit
     }

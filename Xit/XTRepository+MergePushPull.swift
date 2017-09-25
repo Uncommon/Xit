@@ -303,7 +303,7 @@ extension XTRepository
             let remoteCommit = branch.targetCommit
       else { throw Error.unexpected }
       
-      if targetCommit.oid == remoteCommit.oid {
+      if targetCommit.oid.equals(remoteCommit.oid) {
         return
       }
       
@@ -353,9 +353,11 @@ extension XTRepository
   /// - returns: An `OpaquePointer` wrapping a `git_annotated_commit`
   func annotatedCommit(_ commit: XTCommit) throws -> OpaquePointer
   {
+    guard let oid = commit.oid as? GitOID
+    else { throw Error.unexpected }
     let annotated = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     let result = git_annotated_commit_lookup(annotated, gtRepo.git_repository(),
-                                             commit.oid.unsafeOID())
+                                             oid.unsafeOID())
     
     if result != GIT_OK.rawValue {
       throw Error.gitError(result)

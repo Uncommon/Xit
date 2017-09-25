@@ -43,9 +43,11 @@ class WorkspaceWatcher: NSObject
       userInfo = [XTPathsKey: paths]
     }
   
-    NotificationCenter.default.post(
-        name: NSNotification.Name.XTRepositoryWorkspaceChanged,
-        object: repository,
-        userInfo: userInfo)
+    DispatchQueue.main.async {
+      NotificationCenter.default.post(
+          name: NSNotification.Name.XTRepositoryWorkspaceChanged,
+          object: self.repository,
+          userInfo: userInfo)
+    }
   }
 }

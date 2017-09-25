@@ -60,7 +60,6 @@ class XTSidebarDataSourceTest: XTTest
               as! XTSideBarItem
     let expandable = sbds.outlineView(outline, isItemExpandable: tag)
     
-    XCTAssertNotNil(tag.model)
     XCTAssertNotNil(tag.model?.shaToSelect)
     XCTAssertFalse(expandable)
     
@@ -88,7 +87,6 @@ class XTSidebarDataSourceTest: XTTest
                    as! XTSideBarItem
       let expandable = sbds.outlineView(outline, isItemExpandable: branch)
       
-      XCTAssertNotNil(branch.model)
       XCTAssertNotNil(branch.model?.shaToSelect)
       XCTAssertFalse(expandable)
       

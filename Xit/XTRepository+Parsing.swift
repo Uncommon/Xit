@@ -14,7 +14,7 @@ extension XitChange
   }
 }
 
-struct WorkspaceFileStatus
+public struct WorkspaceFileStatus
 {
   let change, unstagedChange: XitChange
 }
@@ -34,7 +34,7 @@ public class FileChange: NSObject
   }
 }
 
-class FileStaging: FileChange
+class FileStagingChange: FileChange
 {
   let destinationPath: String
   
@@ -47,10 +47,10 @@ class FileStaging: FileChange
   }
 }
 
-extension XTRepository
+extension XTRepository: FileStaging
 {
   // A path:status dictionary for locally changed files.
-  var workspaceStatus: [String: WorkspaceFileStatus]
+  public var workspaceStatus: [String: WorkspaceFileStatus]
   {
     var result = [String: WorkspaceFileStatus]()
     let options = [GTRepositoryStatusOptionsFlagsKey:
@@ -72,9 +72,35 @@ extension XTRepository
     return result
   }
   
+  // Returns the changes for the given commit.
+  public func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
+  {
+    guard sha != XTStagingSHA
+      else { return stagingChanges() }
+    
+    guard let commit = self.commit(forSHA: sha),
+      let sha = commit.sha
+      else { return [] }
+    
+    let parentOID = parentOID ?? commit.parentOIDs.first
+    let diff = self.diff(forSHA: sha, parent: parentOID)
+    var result = [FileChange]()
+    
+    diff?.enumerateDeltas {
+      (delta, _) in
+      if delta.type != .unmodified {
+        let change = FileChange(path: delta.newFile.path,
+                                change: XitChange(delta: delta.type))
+        
+        result.append(change)
+      }
+    }
+    return result
+  }
+
   func stagingChanges() -> [FileChange]
   {
-    var result = [FileStaging]()
+    var result = [FileStagingChange]()
     let flags = GTRepositoryStatusFlagsIncludeUntracked.rawValue |
                 GTRepositoryStatusFlagsRecurseUntrackedDirectories.rawValue
     let options = [GTRepositoryStatusOptionsFlagsKey: UInt(flags)]
@@ -87,7 +113,7 @@ extension XTRepository
                          ?? XitChange.unmodified
       let unstagedChange = indexToWorking.map { XitChange(delta: $0.status) }
                            ?? XitChange.unmodified
-      let change = FileStaging(path: delta.oldFile?.path ?? "",
+      let change = FileStagingChange(path: delta.oldFile?.path ?? "",
                                destinationPath: delta.newFile?.path ?? "",
                                change: stagedChange,
                                unstagedChange: unstagedChange)

@@ -35,7 +35,7 @@ let XTErrorArgsKey = "args"
 public class XTRepository: NSObject
 {
   private(set) var gtRepo: GTRepository
-  @objc let repoURL: URL
+  @objc public let repoURL: URL
   let gitCMD: String
   @objc let queue: TaskQueue
   var refsIndex = [String: [String]]()
@@ -338,7 +338,7 @@ extension XTRepository: CommitStorage
     return XTCommit(sha: sha, repository: self)
   }
   
-  public func commit(forOID oid: OID) -> XTCommit?
+  public func commit(forOID oid: ID) -> XTCommit?
   {
     return XTCommit(oid: oid, repository: self)
   }
@@ -346,12 +346,6 @@ extension XTRepository: CommitStorage
 
 extension XTRepository
 {
-  /// Returns a file URL for a given relative path.
-  func fileURL(_ file: String) -> URL
-  {
-    return repoURL.appendingPathComponent(file)
-  }
-  
   /// Returns true if the path is ignored according to the repository's
   /// ignore rules.
   func isIgnored(path: String) -> Bool

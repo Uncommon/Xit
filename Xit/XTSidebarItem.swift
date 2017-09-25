@@ -88,7 +88,7 @@ class XTBranchItem: XTSideBarItem
   
   var fullName: String { return title }
   
-  func branchObject() -> XTBranch? { return nil }
+  func branchObject() -> Branch? { return nil }
 }
 
 
@@ -103,15 +103,16 @@ class XTLocalBranchItem: XTBranchItem
     return false
   }
   
-  override func branchObject() -> XTBranch?
+  override func branchObject() -> Branch?
   {
-    return XTLocalBranch(repository: self.model!.repository, name: title)
+    return model!.repository.localBranch(named: title)
   }
 
   func hasTrackingBranch() -> Bool
   {
-    return XTLocalBranch(repository: model!.repository,
-                         name: title)?.trackingBranch != nil
+    let branch = model!.repository.localBranch(named: title)
+    
+    return branch?.trackingBranchName != nil
   }
 }
 
@@ -131,10 +132,9 @@ class XTRemoteBranchItem: XTBranchItem
     self.model = model
   }
   
-  override func branchObject() -> XTBranch?
+  override func branchObject() -> Branch?
   {
-    return XTRemoteBranch(repository: self.model!.repository,
-                          name: "\(remote)/\(title)")
+    return model!.repository.remoteBranch(named: title, remote: remote)
   }
 }
 

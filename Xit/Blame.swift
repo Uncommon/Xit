@@ -114,7 +114,7 @@ public class GitBlame: Blame
   }
   
   init?(repository: XTRepository, path: String,
-        data: Data, to endOID: GitOID?)
+        data: Data, to endOID: OID?)
   {
     let args = ["blame", "-p", "--contents", "-", path]
     

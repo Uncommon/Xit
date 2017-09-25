@@ -1,7 +1,8 @@
 import Cocoa
 
 
-typealias FileChangesRepo = CommitReferencing & FileDiffing & FileContents
+typealias FileChangesRepo =
+    CommitReferencing & FileDiffing & FileContents & FileStaging
 
 /// Protocol for a commit or commit-like object,
 /// with metadata, files, and diffs.
@@ -272,7 +273,7 @@ class StagingChanges: FileChangesModel
   var hasUnstaged: Bool { return true }
   var canCommit: Bool { return true }
   var changes: [FileChange]
-    { return repository.changes(for: XTStagingSHA, parent: nil) }
+  { return repository.changes(for: XTStagingSHA, parent: nil) }
   
   var treeRoot: NSTreeNode
   {

@@ -2,11 +2,11 @@ import XCTest
 @testable import Xit
 
 
-class GenericCommit<ID: OID & Hashable>: CommitType
+class GenericCommit: CommitType
 {
   let sha: String?
-  let oid: ID
-  let parentOIDs: [ID]
+  let oid: OID
+  let parentOIDs: [OID]
   
   var message: String? = nil
   var authorName: String? = nil
@@ -17,27 +17,24 @@ class GenericCommit<ID: OID & Hashable>: CommitType
   var commitDate = Date()
   var email: String? = nil
   
-  init(sha: String?, oid: ID, parentOIDs: [ID])
+  init(sha: String?, oid: OID, parentOIDs: [OID])
   {
     self.sha = sha
     self.oid = oid
     self.parentOIDs = parentOIDs
   }
-}
-
-typealias MockCommit = GenericCommit<GitOID>
-
-class StringCommit: GenericCommit<StringOID>
-{
-  init(sha: String, parentOIDs: [String])
+  
+  init(sha: String, parentOIDs: [OID])
   {
-    super.init(sha: sha, oid: §sha, parentOIDs: parentOIDs.map { §$0 })
+    self.sha = sha
+    self.oid = §sha
+    self.parentOIDs = parentOIDs
   }
 }
 
-func == (a: MockCommit, b: MockCommit) -> Bool
+func == (a: GenericCommit, b: GenericCommit) -> Bool
 {
-  return a.oid == b.oid
+  return a.oid.equals(b.oid)
 }
 
 
@@ -53,10 +50,9 @@ extension GTOID
 }
 
 
-class GenericRepository<Commit: CommitType>: CommitStorage
+class GenericRepository<Commit: CommitType, ID: OID & Hashable>: CommitStorage
 {
   typealias C = Commit
-  typealias ID = Commit.ID
 
   let commits: [Commit]
   
@@ -78,7 +74,7 @@ class GenericRepository<Commit: CommitType>: CommitStorage
   func commit(forOID oid: ID) -> Commit?
   {
     for commit in commits {
-      if commit.oid == oid {
+      if commit.oid.equals(oid) {
         return commit
       }
     }
@@ -86,8 +82,8 @@ class GenericRepository<Commit: CommitType>: CommitStorage
   }
 }
 
-typealias MockRepository = GenericRepository<MockCommit>
-typealias StringRepository = GenericRepository<StringCommit>
+typealias MockRepository = GenericRepository<GenericCommit, GitOID>
+typealias StringRepository = GenericRepository<GenericCommit, StringOID>
 
 
 extension Xit.CommitConnection: CustomDebugStringConvertible
@@ -105,9 +101,12 @@ class XTCommitHistoryTest: XCTestCase
 
   func makeHistory(_ commitData: [(String, [String])]) -> TestCommitHistory
   {
-    let commits = commitData.map({ (sha, parents) in
-        StringCommit(sha: sha,
-                     parentOIDs: parents) })
+    let commits = commitData.map({
+      (arg) -> GenericCommit in
+      let (sha, parents) = arg
+      return GenericCommit(sha: sha,
+                           parentOIDs: parents.map { §$0 })
+    })
     // Reverse the input to better test the ordering.
     let repository = StringRepository(commits: commits.reversed())
     let history = TestCommitHistory()
@@ -131,7 +130,7 @@ class XTCommitHistoryTest: XCTestCase
     for (index, entry) in history.entries.enumerated() {
       for parentOID in entry.commit.parentOIDs {
         let parentIndex = history.entries.index(
-            where: { $0.commit.oid == parentOID })
+            where: { $0.commit.oid.equals(parentOID) })
         
         XCTAssert(parentIndex! > index, "\(entry.commit.sha!.firstSix()) !< \(parentOID.sha.firstSix())")
       }
