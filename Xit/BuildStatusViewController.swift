@@ -2,7 +2,7 @@ import Cocoa
 
 class BuildStatusViewController: NSViewController, TeamCityAccessor
 {
-  weak var repository: XTRepository!
+  weak var remoteMgr: RemoteManagement!
   let branch: Branch
   let buildStatusCache: BuildStatusCache
   var api: TeamCityAPI?
@@ -22,9 +22,10 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
     static let build = NSUserInterfaceItemIdentifier(rawValue: "BuildCell")
   }
 
-  init(repository: XTRepository, branch: Branch, cache: BuildStatusCache)
+  init(repository: RemoteManagement, branch: Branch,
+       cache: BuildStatusCache)
   {
-    self.repository = repository
+    self.remoteMgr = repository
     self.branch = branch
     self.buildStatusCache = cache
   

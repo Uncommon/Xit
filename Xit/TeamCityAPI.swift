@@ -465,7 +465,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
 
 protocol TeamCityAccessor: class
 {
-  var repository: XTRepository! { get }
+  var remoteMgr: RemoteManagement! { get }
 }
 
 extension TeamCityAccessor
@@ -474,8 +474,8 @@ extension TeamCityAccessor
   /// and a list of its build types.
   func matchTeamCity(_ remoteName: String) -> (TeamCityAPI, [String])?
   {
-    guard let repository = self.repository,
-          let remote = XTRemote(name: remoteName, repository: repository),
+    guard let remoteMgr = self.remoteMgr,
+          let remote = remoteMgr.remote(named: remoteName),
           let remoteURL = remote.urlString
     else { return nil }
     

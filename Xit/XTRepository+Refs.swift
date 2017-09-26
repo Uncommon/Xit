@@ -188,16 +188,6 @@ extension XTRepository : CommitReferencing
     }
   }
   
-  public func localBranches() -> Branches<XTLocalBranch>
-  {
-    return Branches(repo: self, type: GIT_BRANCH_LOCAL)
-  }
-  
-  public func remoteBranches() -> Branches<XTRemoteBranch>
-  {
-    return Branches(repo: self, type: GIT_BRANCH_REMOTE)
-  }
-  
   public func remoteNames() -> [String]
   {
     let strArray = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
@@ -218,5 +208,18 @@ extension XTRepository : CommitReferencing
     let tags = try gtRepo.allTags()
     
     return tags.map({ XTTag(repository: self, tag: $0) })
+  }
+}
+
+extension XTRepository: BranchListing
+{
+  public func localBranches() -> Branches<XTLocalBranch>
+  {
+    return Branches(repo: self, type: GIT_BRANCH_LOCAL)
+  }
+  
+  public func remoteBranches() -> Branches<XTRemoteBranch>
+  {
+    return Branches(repo: self, type: GIT_BRANCH_REMOTE)
   }
 }

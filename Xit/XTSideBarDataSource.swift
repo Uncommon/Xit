@@ -46,7 +46,7 @@ class XTSideBarDataSource: NSObject
       else { return }
       
       stagingItem.model = StagingChanges(repository: repo)
-      buildStatusCache = BuildStatusCache(repository: repo)
+      buildStatusCache = BuildStatusCache(branchLister: repo, remoteMgr: repo)
       
       observers.addObserver(
           forName: .XTRepositoryRefsChanged,
@@ -458,6 +458,8 @@ extension XTSideBarDataSource: BuildStatusClient
 // MARK: TeamCity
 extension XTSideBarDataSource: TeamCityAccessor
 {
+  var remoteMgr: RemoteManagement! { return repository }
+  
   /// Returns the name of the remote for either a remote branch or a local
   /// tracking branch.
   func remoteName(forBranchItem branchItem: XTSideBarItem) -> String?

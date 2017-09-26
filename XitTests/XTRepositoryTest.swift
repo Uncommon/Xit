@@ -175,14 +175,14 @@ class XTRepositoryTest: XTTest
     let testRemoteName2 = "remote2"
     
     assertWriteException(name: "add") {
-      try repository.add(remote: testRemoteName1,
-                         url: URL(fileURLWithPath: "fakeurl"))
+      try repository.addRemote(named: testRemoteName1,
+                               url: URL(fileURLWithPath: "fakeurl"))
     }
     assertWriteException(name: "rename") {
       try repository.renameRemote(old: testRemoteName1, new: testRemoteName2)
     }
     assertWriteException(name: "delete") {
-      try repository.delete(remote: testRemoteName2)
+      try repository.deleteRemote(named: testRemoteName2)
     }
   }
 

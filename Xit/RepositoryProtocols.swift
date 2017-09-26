@@ -22,7 +22,7 @@ public protocol CommitReferencing: class
   func remoteBranch(named name: String, remote: String) -> RemoteBranch?
 }
 
-public protocol BranchListing
+public protocol BranchListing: class
 {
   associatedtype LocalBranchSequence: Sequence
       where LocalBranchSequence.Iterator.Element: LocalBranch
@@ -71,6 +71,13 @@ public protocol FileStaging: class
   var workspaceStatus: [String: WorkspaceFileStatus] { get }
   
   func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
+}
+
+public protocol RemoteManagement: class
+{
+  func remote(named name: String) -> Remote?
+  func addRemote(named name: String, url: URL) throws
+  func deleteRemote(named name: String) throws
 }
 
 public protocol SubmoduleManagement: class

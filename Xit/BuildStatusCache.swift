@@ -5,12 +5,15 @@ protocol BuildStatusClient: class
   func buildStatusUpdated(branch: String, buildType: String)
 }
 
+// Making this generic on BranchListing, instead of using XTRepository,
+// crashes the compiler
 class BuildStatusCache: TeamCityAccessor
 {
   // This typealias resolves ambiguity for the compiler
   typealias BranchStatuses = [String: TeamCityAPI.Build] // Branch to build
 
-  weak var repository: XTRepository!
+  weak var remoteMgr: RemoteManagement!
+  weak var branchLister: XTRepository?
   var statuses = [String: BranchStatuses]() // Build type to branch builds
   private var clients = [WeakClientRef]()
   
@@ -24,9 +27,10 @@ class BuildStatusCache: TeamCityAccessor
     }
   }
   
-  init(repository: XTRepository)
+  init(branchLister: XTRepository, remoteMgr: RemoteManagement)
   {
-    self.repository = repository
+    self.remoteMgr = remoteMgr
+    self.branchLister = branchLister
   }
   
   func add(client: BuildStatusClient)
@@ -44,9 +48,8 @@ class BuildStatusCache: TeamCityAccessor
   
   func refresh()
   {
-    guard let repository = self.repository
+    guard let localBranches = branchLister?.localBranches()
     else { return }
-    let localBranches = repository.localBranches()
     
     statuses.removeAll()
     for local in localBranches {
@@ -89,8 +92,8 @@ class BuildStatusCache: TeamCityAccessor
           buildTypeStatuses[branchName] = build
           self.statuses[buildType] = buildTypeStatuses
           self.clients.forEach {
-            $0.client?.buildStatusUpdated( branch: branchName,
-                                           buildType: buildType)
+            $0.client?.buildStatusUpdated(branch: branchName,
+                                          buildType: buildType)
           }
         }
       }

@@ -42,18 +42,6 @@ extension XTRepository
     }
   }
   
-  func add(remote: String, url: URL) throws
-  {
-    _ = try executeGit(args: ["remote", "add", remote, url.absoluteString],
-                       writes: true)
-  }
-  
-  func delete(remote: String) throws
-  {
-    _ = try executeGit(args: ["remote", "rm", remote],
-                       writes: true)
-  }
-  
   func push(remote: String) throws
   {
     _ = try executeGit(args: ["push", "--all", remote], writes: true)
@@ -159,6 +147,26 @@ extension XTRepository
     _ = try performWriting {
       try gtRepo.dropStash(at: index)
     }
+  }
+}
+
+extension XTRepository: RemoteManagement
+{
+  public func remote(named name: String) -> Remote?
+  {
+    return XTRemote(name: name, repository: self)
+  }
+  
+  public func addRemote(named name: String, url: URL) throws
+  {
+    _ = try executeGit(args: ["remote", "add", name, url.absoluteString],
+                       writes: true)
+  }
+  
+  public func deleteRemote(named name: String) throws
+  {
+    _ = try executeGit(args: ["remote", "rm", name],
+                       writes: true)
   }
 }
 

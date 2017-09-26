@@ -481,7 +481,7 @@ class XTSidebarController: NSViewController, SidebarHandler
   {
     callCommand(errorString: "Delete remote failed") {
       (item) in
-      try self.repo.delete(remote: item.title)
+      try self.repo.deleteRemote(named: item.title)
     }
   }
   
