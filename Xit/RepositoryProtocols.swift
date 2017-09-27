@@ -2,11 +2,10 @@ import Foundation
 
 public protocol CommitStorage: class
 {
-  associatedtype C: CommitType
   associatedtype ID: OID, Hashable
   
-  func commit(forSHA sha: String) -> C?
-  func commit(forOID oid: ID) -> C?
+  func commit(forSHA sha: String) -> CommitType?
+  func commit(forOID oid: ID) -> CommitType?
 }
 
 public protocol CommitReferencing: class

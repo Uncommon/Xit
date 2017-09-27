@@ -6,9 +6,9 @@ struct HistoryLine
   let colorIndex: UInt
 }
 
-public class CommitEntry<C: CommitType>: CustomStringConvertible
+public class CommitEntry: CustomStringConvertible
 {
-  let commit: C
+  let commit: CommitType
   var lines = [HistoryLine]()
   var dotOffset: UInt?
   var dotColorIndex: UInt?
@@ -16,13 +16,13 @@ public class CommitEntry<C: CommitType>: CustomStringConvertible
   public var description: String
   { return commit.description }
   
-  init(commit: C)
+  init(commit: CommitType)
   {
     self.commit = commit
   }
 }
 
-public func == <C>(left: CommitEntry<C>, right: CommitEntry<C>) -> Bool
+public func == (left: CommitEntry, right: CommitEntry) -> Bool
 {
   // TODO: Make OID equatable to compare commit.oid
   return left.commit.sha == right.commit.sha
@@ -62,12 +62,12 @@ extension String
 
 
 /// The result of processing a segment of a branch.
-struct BranchResult<C: CommitType>: CustomStringConvertible
+struct BranchResult: CustomStringConvertible
 {
   /// The commit entries collected for this segment.
-  var entries: [CommitEntry<C>]
+  var entries: [CommitEntry]
   /// Other branches queued for processing.
-  var queue: [(commit: C, after: C)]
+  var queue: [(commit: CommitType, after: CommitType)]
   
   var description: String
   {
@@ -83,11 +83,10 @@ public typealias GitCommitHistory = XTCommitHistory<XTRepository>
 /// Maintains the history list, allowing for dynamic adding and removing.
 public class XTCommitHistory<Repo: CommitStorage>: NSObject
 {
-  public typealias C = Repo.C
   public typealias ID = Repo.ID
-  public typealias Entry = CommitEntry<C>
+  public typealias Entry = CommitEntry
   typealias Connection = CommitConnection<ID>
-  typealias Result = BranchResult<C>
+  typealias Result = BranchResult
 
   var repository: Repo!
   
@@ -99,7 +98,7 @@ public class XTCommitHistory<Repo: CommitStorage>: NSObject
   var postProgress: ((Int, Int, Int, Int) -> Void)?
   
   /// Manually appends a commit.
-  func appendCommit(_ commit: C)
+  func appendCommit(_ commit: CommitType)
   {
     entries.append(Entry(commit: commit))
   }
@@ -115,11 +114,11 @@ public class XTCommitHistory<Repo: CommitStorage>: NSObject
   /// also a list of secondary parents that may start other branches. A branch
   /// segment ends when a commit has more than one parent, or its parent is
   /// already registered.
-  func branchEntries(startCommit: C) -> Result
+  func branchEntries(startCommit: CommitType) -> Result
   {
-    var commit: C = startCommit
+    var commit = startCommit
     var result = [Entry(commit: startCommit)]
-    var queue = [(commit: C, after: C)]()
+    var queue = [(commit: CommitType, after: CommitType)]()
     
     while let firstParentOID = commit.parentOIDs.first as? Repo.ID {
       for parentOID in commit.parentOIDs.dropFirst() {
@@ -158,7 +157,7 @@ public class XTCommitHistory<Repo: CommitStorage>: NSObject
   }
   
   /// Adds new commits to the list.
-  public func process(_ startCommit: C, afterCommit: C? = nil)
+  public func process(_ startCommit: CommitType, afterCommit: CommitType? = nil)
   {
     let startOID = startCommit.oid as! Repo.ID
     guard commitLookup[startOID] == nil
@@ -189,7 +188,7 @@ public class XTCommitHistory<Repo: CommitStorage>: NSObject
     }
   }
   
-  func processBranchResult(_ result: Result, after afterCommit: C?)
+  func processBranchResult(_ result: Result, after afterCommit: CommitType?)
   {
     for branchEntry in result.entries {
       commitLookup[branchEntry.commit.oid as! Repo.ID] = branchEntry
@@ -318,7 +317,7 @@ public class XTCommitHistory<Repo: CommitStorage>: NSObject
     return result
   }
   
-  func generateLines(entry: CommitEntry<C>,
+  func generateLines(entry: CommitEntry,
                      connections: [CommitConnection<Repo.ID>])
   {
     var nextChildIndex: UInt = 0

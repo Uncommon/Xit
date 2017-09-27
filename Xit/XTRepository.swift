@@ -333,12 +333,12 @@ extension XTRepository: CommitStorage
   public typealias ID = GitOID
   public typealias C = XTCommit
 
-  public func commit(forSHA sha: String) -> XTCommit?
+  public func commit(forSHA sha: String) -> CommitType?
   {
     return XTCommit(sha: sha, repository: self)
   }
   
-  public func commit(forOID oid: ID) -> XTCommit?
+  public func commit(forOID oid: ID) -> CommitType?
   {
     return XTCommit(oid: oid, repository: self)
   }

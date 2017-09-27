@@ -8,6 +8,10 @@ public protocol CommitType: CustomStringConvertible
   var parentOIDs: [OID] { get }
   
   var message: String? { get }
+  
+  var authorSig: Signature? { get }
+  var committerSig: Signature? { get }
+  
   var authorName: String? { get }
   var authorEmail: String? { get }
   var authorDate: Date? { get }

@@ -61,20 +61,22 @@ extension XTRepository: FileDiffing
                         commitOID: OID,
                         parentOID: OID?) -> XTDiffMaker?
   {
-    guard let toCommit = commit(forOID: commitOID as! GitOID)?.gtCommit
+    guard let toCommit = commit(forOID: commitOID as! GitOID) as? XTCommit
     else { return nil }
     
+    let toGTCommit = toCommit.gtCommit
     var fromSource = XTDiffMaker.SourceType.data(Data())
     var toSource = XTDiffMaker.SourceType.data(Data())
     
-    if let toTree = toCommit.tree,
+    if let toTree = toGTCommit.tree,
        let toEntry = try? toTree.entry(withPath: file),
        let toBlob = (try? GTObject(treeEntry: toEntry)) as? GTBlob {
       toSource = .blob(toBlob)
     }
     
     if let parentOID = parentOID,
-       let parentCommit = commit(forOID: parentOID as! GitOID)?.gtCommit,
+       let parentCommit = (commit(forOID: parentOID as! GitOID) as? XTCommit)?
+                          .gtCommit,
        let fromTree = parentCommit.tree,
        let fromEntry = try? fromTree.entry(withPath: file),
        let fromBlob = (try? GTObject(treeEntry: fromEntry)) as? GTBlob {

@@ -4,7 +4,6 @@ import WebKit
 protocol HeaderGenerator
 {
   associatedtype Repo: CommitStorage
-  associatedtype Commit: CommitType
   
   var repository: Repo! { get }
 }
@@ -18,7 +17,7 @@ extension HeaderGenerator
                            subdirectory: "html")!
   }
 
-  func generateHeaderHTML(_ commit: Commit) -> String
+  func generateHeaderHTML(_ commit: CommitType) -> String
   {
     guard let commitSHA = commit.sha
     else { return "" }
@@ -151,7 +150,7 @@ class CommitHeaderViewController: WebViewController, HeaderGenerator
     expanded = !isCollapsed()
     
     guard let commitSHA = commitSHA,
-          let commit = repository.commit(forSHA: commitSHA)
+          let commit = repository.commit(forSHA: commitSHA) as? XTCommit
     else { return }
     let html = generateHeaderHTML(commit)
     
