@@ -29,7 +29,7 @@ class FileListDataSourceTest: XTTest
     let repoController = FakeRepoController()
     let flds = FileTreeDataSource()
     var expectedCount = 11
-    let history = XTCommitHistory<XTRepository>()
+    let history = XTCommitHistory<GitOID>()
     
     history.repository = repository
     objc_sync_enter(flds)

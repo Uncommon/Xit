@@ -6,7 +6,7 @@ class XTCommitLinesTest: XCTestCase
   // Only the SHA/OID matters
   let entry = CommitEntry(commit: GenericCommit(sha: "a",
                                                 parentOIDs: []))
-  let history = XTCommitHistory<StringRepository>()
+  let history = XTCommitHistory<StringOID>()
   
   override func setUp()
   {

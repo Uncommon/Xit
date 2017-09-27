@@ -4,9 +4,7 @@ import Foundation
 
 class TestHeaderGenerator: HeaderGenerator
 {
-  typealias Repo = MockRepository
-  typealias Commit = GenericCommit
-  var repository: Repo!
+  var repository: CommitStorage!
 }
 
 class CommitHeaderTest: XCTestCase
@@ -32,12 +30,10 @@ class CommitHeaderTest: XCTestCase
                                oid: oids[0],
                                parentOIDs: [oids[1], oids[2], oids[3]])
     
-    commit.authorName = "Guy One"
-    commit.authorEmail = "guy1@example.com"
-    commit.authorDate = authorDate
-    commit.committerName = "Guy Two";
-    commit.committerEmail = "guy2@example.com";
-    commit.commitDate = commitDate
+    commit.authorSig = Signature(name: "Guy One", email: "guy1@example.com",
+                                 when: authorDate)
+    commit.committerSig = Signature(name: "Guy Two", email: "guy2@example.com",
+                                    when: commitDate)
     commit.message = "Example message";
     
     let messages = [1: "Alphabet<>", 2: "Broccoli&", 3: "Cypress"]

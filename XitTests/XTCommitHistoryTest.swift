@@ -9,12 +9,8 @@ class GenericCommit: CommitType
   let parentOIDs: [OID]
   
   var message: String? = nil
-  var authorName: String? = nil
-  var authorEmail: String? = nil
-  var authorDate: Date? = nil
-  var committerName: String? = nil
-  var committerEmail: String? = nil
-  var commitDate = Date()
+  var authorSig: Signature? = nil
+  var committerSig: Signature? = nil
   var email: String? = nil
   
   init(sha: String?, oid: OID, parentOIDs: [OID])
@@ -50,18 +46,16 @@ extension GTOID
 }
 
 
-class GenericRepository<Commit: CommitType, ID: OID & Hashable>: CommitStorage
+class GenericRepository<ID: OID & Hashable>: CommitStorage
 {
-  typealias C = Commit
-
-  let commits: [Commit]
+  let commits: [CommitType]
   
-  init(commits: [Commit])
+  init(commits: [CommitType])
   {
     self.commits = commits
   }
   
-  func commit(forSHA sha: String) -> Commit?
+  func commit(forSHA sha: String) -> CommitType?
   {
     for commit in commits {
       if commit.sha == sha {
@@ -71,7 +65,7 @@ class GenericRepository<Commit: CommitType, ID: OID & Hashable>: CommitStorage
     return nil
   }
 
-  func commit(forOID oid: ID) -> Commit?
+  func commit(forOID oid: OID) -> CommitType?
   {
     for commit in commits {
       if commit.oid.equals(oid) {
@@ -82,8 +76,8 @@ class GenericRepository<Commit: CommitType, ID: OID & Hashable>: CommitStorage
   }
 }
 
-typealias MockRepository = GenericRepository<GenericCommit, GitOID>
-typealias StringRepository = GenericRepository<GenericCommit, StringOID>
+typealias MockRepository = GenericRepository<GitOID>
+typealias StringRepository = GenericRepository<StringOID>
 
 
 extension Xit.CommitConnection: CustomDebugStringConvertible
@@ -93,7 +87,7 @@ extension Xit.CommitConnection: CustomDebugStringConvertible
 }
 
 
-typealias TestCommitHistory = XTCommitHistory<StringRepository>
+typealias TestCommitHistory = XTCommitHistory<StringOID>
 
 class XTCommitHistoryTest: XCTestCase
 {

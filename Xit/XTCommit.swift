@@ -23,6 +23,16 @@ public protocol CommitType: CustomStringConvertible
 
 extension CommitType
 {
+  var authorName: String? { return authorSig?.name }
+  var authorEmail: String? { return authorSig?.email }
+  var authorDate: Date? { return authorSig?.when }
+  var committerName: String? { return committerSig?.name }
+  var committerEmail: String? { return committerSig?.email }
+  var commitDate: Date { return committerSig?.when ?? Date() }
+}
+
+extension CommitType
+{
   public var parentSHAs: [String]
   {
     return parentOIDs.flatMap { $0.sha }
