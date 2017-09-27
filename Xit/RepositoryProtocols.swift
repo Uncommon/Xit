@@ -73,6 +73,14 @@ public protocol FileStaging: class
   func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
 }
 
+public protocol Stashing: class
+{
+  func stash(index: UInt, message: String?) -> Stash
+  func popStash(index: UInt) throws
+  func applyStash(index: UInt) throws
+  func dropStash(index: UInt) throws
+}
+
 public protocol RemoteManagement: class
 {
   func remote(named name: String) -> Remote?

@@ -71,10 +71,10 @@ class CommitChanges: FileChangesModel
   /// SHA of the parent commit to use for diffs
   var diffParent: GitOID?
 
-  init(repository: FileChangesRepo, commit: XTCommit)
+  init(repository: FileChangesRepo, commit: CommitType)
   {
     self.repository = repository
-    self.commit = commit
+    self.commit = commit as! XTCommit
     if let sha = commit.sha {
       self.savedChanges = repository.changes(for: sha,
                                              parent: commit.parentOIDs.first)
@@ -156,7 +156,7 @@ class CommitChanges: FileChangesModel
 class StashChanges: FileChangesModel
 {
   unowned var repository: FileChangesRepo
-  var stash: XTStash
+  var stash: Stash
   var hasUnstaged: Bool { return true }
   var canCommit: Bool { return false }
   var shaToSelect: String? { return stash.mainCommit?.parentSHAs[0] }
@@ -186,13 +186,13 @@ class StashChanges: FileChangesModel
     return mainRoot
   }
   
-  init(repository: XTRepository, index: UInt)
+  init(repository: FileChangesRepo & Stashing, index: UInt)
   {
     self.repository = repository
-    self.stash = XTStash(repo: repository, index: index, message: nil)
+    self.stash = repository.stash(index: index, message: nil)
   }
   
-  init(repository: XTRepository, stash: XTStash)
+  init(repository: FileChangesRepo, stash: XTStash)
   {
     self.repository = repository
     self.stash = stash
@@ -208,13 +208,13 @@ class StashChanges: FileChangesModel
     }
   }
   
-  func commit(for path: String, staged: Bool) -> XTCommit?
+  func commit(for path: String, staged: Bool) -> CommitType?
   {
     if staged {
       return stash.indexCommit
     }
     else {
-      if let untrackedCommit = self.stash.untrackedCommit,
+      if let untrackedCommit = self.stash.untrackedCommit as? XTCommit,
          (try? untrackedCommit.tree?.entry(withPath: path)) != nil {
         return untrackedCommit
       }
@@ -284,7 +284,7 @@ class StagingChanges: FileChangesModel
     return root
   }
   
-  init(repository: XTRepository)
+  init(repository: FileChangesRepo)
   {
     self.repository = repository
   }

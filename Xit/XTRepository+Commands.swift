@@ -104,6 +104,15 @@ extension XTRepository
   {
     _ = try executeGit(args: ["remote", "rename", old, new], writes: true)
   }
+}
+
+extension XTRepository: Stashing
+{
+  // TODO: Don't require the message parameter
+  public func stash(index: UInt, message: String?) -> Stash
+  {
+    return XTStash(repo: self, index: index, message: message)
+  }
   
   @objc(saveStash:includeUntracked:error:)
   func saveStash(name: String?, includeUntracked: Bool) throws
@@ -124,7 +133,7 @@ extension XTRepository
     return GTCheckoutOptions(strategy: .safe)
   }
   
-  func popStash(index: UInt) throws
+  public func popStash(index: UInt) throws
   {
     _ = try performWriting {
       try gtRepo.popStash(at: index, flags: [.reinstateIndex],
@@ -133,7 +142,7 @@ extension XTRepository
     }
   }
   
-  func applyStash(index: UInt) throws
+  public func applyStash(index: UInt) throws
   {
     _ = try performWriting {
       try gtRepo.applyStash(at: index, flags: [.reinstateIndex],
@@ -142,7 +151,7 @@ extension XTRepository
     }
   }
   
-  func dropStash(index: UInt) throws
+  public func dropStash(index: UInt) throws
   {
     _ = try performWriting {
       try gtRepo.dropStash(at: index)
