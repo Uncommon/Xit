@@ -139,7 +139,7 @@ extension XTFileChangesDataSource : FileListDataSource
   {
     let model = repoController.selectedModel
     
-    repository?.queue.executeOffMainThread {
+    taskQueue?.executeOffMainThread {
       [weak self] in
       self?.doReload(model)
     }

@@ -21,13 +21,6 @@ class XTHistoryViewController: NSViewController
   }
   
   weak var repo: XTRepository!
-  {
-    didSet
-    {
-      fileViewController.repo = repo
-      tableController.repository = repo
-    }
-  }
   
   var historyHidden: Bool
   {
@@ -78,9 +71,10 @@ class XTHistoryViewController: NSViewController
     historyTable.intercellSpacing = cellSpacing
   }
   
-  func windowDidLoad()
+  func finishLoad(repository: XTRepository)
   {
-    fileViewController.windowDidLoad()
+    fileViewController.finishLoad(repository: repository)
+    tableController.repository = repository
   }
   
   func reload()

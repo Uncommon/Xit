@@ -13,37 +13,20 @@ class FileListDataSourceBase: NSObject
     static let unstaged = NSUserInterfaceItemIdentifier(rawValue: "unstaged")
   }
   
-  weak var repository: XTRepository!
-  {
-    didSet
-    {
-      (self as! FileListDataSource).reload()
-      observers.addObserver(
-          forName: .XTRepositoryWorkspaceChanged,
-          object: repository, queue: .main) {
-        [weak self] (note) in
-        guard let myself = self
-        else { return }
-        
-        if myself.outlineView?.dataSource === myself {
-          myself.workspaceChanged(note.userInfo?[XTPathsKey] as? [String])
-        }
-      }
-    }
-  }
+  weak var taskQueue: TaskQueue?
   weak var repoController: RepositoryController!
   {
     didSet
     {
-      observers.addObserver(
-          forName: .XTSelectedModelChanged, object: repository, queue: .main) {
+      observers.addObserver(forName: .XTSelectedModelChanged,
+                            object: repoController, queue: .main) {
         [weak self]
         (_) in
         guard let myself = self,
               myself.repoController != nil // Otherwise we're on a stale timer
         else { return }
         
-        if myself.outlineView.dataSource === myself {
+        if myself.outlineView?.dataSource === myself {
           (myself as? FileListDataSource)?.reload()
           myself.updateStagingView()
         }
@@ -54,6 +37,21 @@ class FileListDataSourceBase: NSObject
   class func transformDisplayChange(_ change: XitChange) -> XitChange
   {
     return (change == .unmodified) ? .mixed : change
+  }
+  
+  func observe(repository: AnyObject)
+  {
+    (self as! FileListDataSource).reload()
+    observers.addObserver(forName: .XTRepositoryWorkspaceChanged,
+                          object: repository, queue: .main) {
+      [weak self] (note) in
+      guard let myself = self
+      else { return }
+      
+      if myself.outlineView?.dataSource === myself {
+        myself.workspaceChanged(note.userInfo?[XTPathsKey] as? [String])
+      }
+    }
   }
   
   func workspaceChanged(_ paths: [String]?)
