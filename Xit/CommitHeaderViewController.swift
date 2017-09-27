@@ -15,7 +15,7 @@ extension HeaderGenerator
                            subdirectory: "html")!
   }
 
-  func generateHeaderHTML(_ commit: CommitType) -> String
+  func generateHeaderHTML(_ commit: Commit) -> String
   {
     guard let commitSHA = commit.sha
     else { return "" }

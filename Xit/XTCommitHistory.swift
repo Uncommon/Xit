@@ -8,7 +8,7 @@ struct HistoryLine
 
 public class CommitEntry: CustomStringConvertible
 {
-  let commit: CommitType
+  let commit: Commit
   var lines = [HistoryLine]()
   var dotOffset: UInt?
   var dotColorIndex: UInt?
@@ -16,7 +16,7 @@ public class CommitEntry: CustomStringConvertible
   public var description: String
   { return commit.description }
   
-  init(commit: CommitType)
+  init(commit: Commit)
   {
     self.commit = commit
   }
@@ -67,7 +67,7 @@ struct BranchResult: CustomStringConvertible
   /// The commit entries collected for this segment.
   var entries: [CommitEntry]
   /// Other branches queued for processing.
-  var queue: [(commit: CommitType, after: CommitType)]
+  var queue: [(commit: Commit, after: Commit)]
   
   var description: String
   {
@@ -97,7 +97,7 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
   var postProgress: ((Int, Int, Int, Int) -> Void)?
   
   /// Manually appends a commit.
-  func appendCommit(_ commit: CommitType)
+  func appendCommit(_ commit: Commit)
   {
     entries.append(Entry(commit: commit))
   }
@@ -113,11 +113,11 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
   /// also a list of secondary parents that may start other branches. A branch
   /// segment ends when a commit has more than one parent, or its parent is
   /// already registered.
-  func branchEntries(startCommit: CommitType) -> Result
+  func branchEntries(startCommit: Commit) -> Result
   {
     var commit = startCommit
     var result = [Entry(commit: startCommit)]
-    var queue = [(commit: CommitType, after: CommitType)]()
+    var queue = [(commit: Commit, after: Commit)]()
     
     while let firstParentOID = commit.parentOIDs.first as? ID {
       for parentOID in commit.parentOIDs.dropFirst() {
@@ -156,7 +156,7 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
   }
   
   /// Adds new commits to the list.
-  public func process(_ startCommit: CommitType, afterCommit: CommitType? = nil)
+  public func process(_ startCommit: Commit, afterCommit: Commit? = nil)
   {
     let startOID = startCommit.oid as! ID
     guard commitLookup[startOID] == nil
@@ -187,7 +187,7 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
     }
   }
   
-  func processBranchResult(_ result: Result, after afterCommit: CommitType?)
+  func processBranchResult(_ result: Result, after afterCommit: Commit?)
   {
     for branchEntry in result.entries {
       commitLookup[branchEntry.commit.oid as! ID] = branchEntry

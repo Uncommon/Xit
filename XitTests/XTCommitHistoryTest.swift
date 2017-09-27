@@ -2,7 +2,7 @@ import XCTest
 @testable import Xit
 
 
-class GenericCommit: CommitType
+class GenericCommit: Commit
 {
   let sha: String?
   let oid: OID
@@ -48,14 +48,14 @@ extension GTOID
 
 class GenericRepository<ID: OID & Hashable>: CommitStorage
 {
-  let commits: [CommitType]
+  let commits: [Commit]
   
-  init(commits: [CommitType])
+  init(commits: [Commit])
   {
     self.commits = commits
   }
   
-  func commit(forSHA sha: String) -> CommitType?
+  func commit(forSHA sha: String) -> Commit?
   {
     for commit in commits {
       if commit.sha == sha {
@@ -65,7 +65,7 @@ class GenericRepository<ID: OID & Hashable>: CommitStorage
     return nil
   }
 
-  func commit(forOID oid: OID) -> CommitType?
+  func commit(forOID oid: OID) -> Commit?
   {
     for commit in commits {
       if commit.oid.equals(oid) {

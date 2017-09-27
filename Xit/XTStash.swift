@@ -3,9 +3,9 @@ import Cocoa
 public protocol Stash: class
 {
   var message: String? { get }
-  var mainCommit: CommitType? { get }
-  var indexCommit: CommitType? { get }
-  var untrackedCommit: CommitType? { get }
+  var mainCommit: Commit? { get }
+  var indexCommit: Commit? { get }
+  var untrackedCommit: Commit? { get }
   
   func changes() -> [FileChange]
   func stagedDiffForFile(_ path: String) -> XTDiffMaker?
@@ -17,8 +17,8 @@ public class XTStash: NSObject, Stash
 {
   unowned var repo: XTRepository
   public var message: String?
-  public var mainCommit: CommitType?
-  public var indexCommit, untrackedCommit: CommitType?
+  public var mainCommit: Commit?
+  public var indexCommit, untrackedCommit: Commit?
   private var cachedChanges: [FileChange]?
 
   init(repo: XTRepository, index: UInt, message: String?)
@@ -90,7 +90,7 @@ public class XTStash: NSObject, Stash
 
   func headBlobForPath(_ path: String) -> Blob?
   {
-    // TODO: Add tree property to CommitType
+    // TODO: Add tree property to Commit
     guard let mainCommit = self.mainCommit as? XTCommit,
           let headEntry = try? mainCommit.gtCommit.parents[0].tree?
                                .entry(withPath: path),

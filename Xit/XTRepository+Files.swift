@@ -2,7 +2,7 @@ import Foundation
 
 extension XTRepository: FileContents
 {
-  public func contentsOfFile(path: String, at commit: CommitType) -> Data?
+  public func contentsOfFile(path: String, at commit: Commit) -> Data?
   {
     // TODO: make a Tree protocol to eliminate this cast
     guard let commit = commit as? XTCommit,

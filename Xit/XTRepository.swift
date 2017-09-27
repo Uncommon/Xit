@@ -330,12 +330,12 @@ internal func setRepoWriting(_ repo: XTRepository, _ writing: Bool)
 
 extension XTRepository: CommitStorage
 {
-  public func commit(forSHA sha: String) -> CommitType?
+  public func commit(forSHA sha: String) -> Commit?
   {
     return XTCommit(sha: sha, repository: self)
   }
   
-  public func commit(forOID oid: OID) -> CommitType?
+  public func commit(forOID oid: OID) -> Commit?
   {
     return XTCommit(oid: oid, repository: self)
   }

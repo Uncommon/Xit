@@ -71,7 +71,7 @@ class CommitChanges: FileChangesModel
   /// SHA of the parent commit to use for diffs
   var diffParent: GitOID?
 
-  init(repository: FileChangesRepo, commit: CommitType)
+  init(repository: FileChangesRepo, commit: Commit)
   {
     self.repository = repository
     self.commit = commit as! XTCommit
@@ -208,7 +208,7 @@ class StashChanges: FileChangesModel
     }
   }
   
-  func commit(for path: String, staged: Bool) -> CommitType?
+  func commit(for path: String, staged: Bool) -> Commit?
   {
     if staged {
       return stash.indexCommit

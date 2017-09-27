@@ -2,8 +2,8 @@ import Foundation
 
 public protocol CommitStorage: class
 {
-  func commit(forSHA sha: String) -> CommitType?
-  func commit(forOID oid: OID) -> CommitType?
+  func commit(forSHA sha: String) -> Commit?
+  func commit(forOID oid: OID) -> Commit?
 }
 
 public protocol CommitReferencing: class
@@ -58,7 +58,7 @@ public protocol FileContents: class
   
   func fileBlob(ref: String, path: String) -> Blob?
   func stagedBlob(file: String) -> Blob?
-  func contentsOfFile(path: String, at commit: CommitType) -> Data?
+  func contentsOfFile(path: String, at commit: Commit) -> Data?
   func contentsOfStagedFile(path: String) -> Data?
   func fileURL(_ file: String) -> URL
 }

@@ -1,7 +1,7 @@
 import Cocoa
 
 
-public protocol CommitType: CustomStringConvertible
+public protocol Commit: CustomStringConvertible
 {
   var sha: String? { get }
   var oid: OID { get }
@@ -21,7 +21,7 @@ public protocol CommitType: CustomStringConvertible
   var email: String? { get }
 }
 
-extension CommitType
+extension Commit
 {
   var authorName: String? { return authorSig?.name }
   var authorEmail: String? { return authorSig?.email }
@@ -31,7 +31,7 @@ extension CommitType
   var commitDate: Date { return committerSig?.when ?? Date() }
 }
 
-extension CommitType
+extension Commit
 {
   public var parentSHAs: [String]
   {
@@ -53,7 +53,7 @@ extension CommitType
 }
 
 
-public class XTCommit: CommitType
+public class XTCommit: Commit
 {
   let gtCommit: GTCommit
 
