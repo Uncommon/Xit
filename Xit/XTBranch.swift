@@ -14,7 +14,7 @@ extension Branch
 {
   public var shortName: String
   {
-    return name
+    return strippedName
   }
   public var strippedName: String
   {
