@@ -96,9 +96,9 @@ class BlameViewController: WebViewController
       htmlLines.append(contentsOf: ["""
           <tr><td class='headcell'>
             <div class='blamehead' style='background-color: \(color.cssHSL)'>
-            <div class='jumpbutton'
-                 onclick="window.webActionDelegate.selectSHA('
-                     \(finalOID.sha)')">‣</div>
+            <div class='jumpbutton' \
+            onclick="window.webActionDelegate.selectSHA('\(finalOID.sha)')">
+            ‣</div>
             <div class='name'>\(hunk.finalLine.signature.name ?? "")</div>
           """
           ])
