@@ -30,6 +30,59 @@ protocol ContextVariable: class
   var contextLines: UInt { get set }
 }
 
+extension XitChange
+{
+  var isModified: Bool
+  {
+    switch self {
+    case .unmodified, .untracked:
+      return false
+    default:
+      return true
+    }
+  }
+  
+  var changeImage: NSImage?
+  {
+    switch self {
+      case .added, .untracked:
+        return NSImage(named:NSImage.Name(rawValue: "added"))
+      case .copied:
+        return NSImage(named:NSImage.Name(rawValue: "copied"))
+      case .deleted:
+        return NSImage(named:NSImage.Name(rawValue: "deleted"))
+      case .modified:
+        return NSImage(named:NSImage.Name(rawValue: "modified"))
+      case .renamed:
+        return NSImage(named:NSImage.Name(rawValue: "renamed"))
+      case .mixed:
+        return NSImage(named:NSImage.Name(rawValue: "mixed"))
+      default:
+        return nil
+    }
+  }
+  
+  var stageImage: NSImage?
+  {
+    switch self {
+      case .added:
+        return NSImage(named:NSImage.Name(rawValue: "add"))
+      case .untracked:
+        return NSImage(named:NSImage.Name(rawValue: "add"))
+      case .deleted:
+        return NSImage(named:NSImage.Name(rawValue: "delete"))
+      case .modified:
+        return NSImage(named:NSImage.Name(rawValue: "modify"))
+      case .mixed:
+        return NSImage(named:NSImage.Name(rawValue: "mixed"))
+      case .conflict:
+        return NSImage(named:NSImage.Name(rawValue: "conflict"))
+      default:
+        return nil
+    }
+  }
+}
+
 /// View controller for the file list and detail view.
 class FileViewController: NSViewController
 {
@@ -90,8 +143,6 @@ class FileViewController: NSViewController
   @IBOutlet var textController: XTTextPreviewController!
   var commitEntryController: XTCommitEntryController!
   
-  var changeImages = [XitChange: NSImage]()
-  var stageImages = [XitChange: NSImage]()
   var contentController: XTFileContentController!
   let observers = ObserverCollection()
   
@@ -208,24 +259,6 @@ class FileViewController: NSViewController
   override func loadView()
   {
     super.loadView()
-    
-    changeImages = [
-        .added: NSImage(named:NSImage.Name(rawValue: "added"))!,
-        .untracked: NSImage(named:NSImage.Name(rawValue: "added"))!,
-        .copied: NSImage(named:NSImage.Name(rawValue: "copied"))!,
-        .deleted: NSImage(named:NSImage.Name(rawValue: "deleted"))!,
-        .modified: NSImage(named:NSImage.Name(rawValue: "modified"))!,
-        .renamed: NSImage(named:NSImage.Name(rawValue: "renamed"))!,
-        .mixed: NSImage(named:NSImage.Name(rawValue: "mixed"))!,
-        ]
-    stageImages = [
-        .added: NSImage(named:NSImage.Name(rawValue: "add"))!,
-        .untracked: NSImage(named:NSImage.Name(rawValue: "add"))!,
-        .deleted: NSImage(named:NSImage.Name(rawValue: "delete"))!,
-        .modified: NSImage(named:NSImage.Name(rawValue: "modify"))!,
-        .mixed: NSImage(named:NSImage.Name(rawValue: "mixed"))!,
-        .conflict: NSImage(named:NSImage.Name(rawValue: "conflict"))!,
-        ]
     
     fileListOutline.highlightedTableColumn =
         fileListOutline.tableColumn(withIdentifier: ColumnID.staged)
@@ -573,11 +606,6 @@ class FileViewController: NSViewController
 // MARK: NSOutlineViewDelegate
 extension FileViewController: NSOutlineViewDelegate
 {
-  private func image(forChange change: XitChange) -> NSImage?
-  {
-    return changeImages[change]
-  }
-
   private func displayChange(forChange change: XitChange,
                              otherChange: XitChange) -> XitChange
   {
@@ -590,7 +618,7 @@ extension FileViewController: NSOutlineViewDelegate
   {
     let change = displayChange(forChange:change, otherChange:otherChange)
     
-    return stageImages[change]
+    return change.stageImage
   }
 
   func updateTableButton(_ button: NSButton,
@@ -598,7 +626,7 @@ extension FileViewController: NSOutlineViewDelegate
   {
     button.image = modelCanCommit
         ? stagingImage(forChange:change, otherChange:otherChange)
-        : image(forChange:change)
+        : change.changeImage
   }
 
   private func tableButtonView(_ identifier: NSUserInterfaceItemIdentifier,
@@ -671,7 +699,7 @@ extension FileViewController: NSOutlineViewDelegate
                            as? NSTableCellView
           else { return nil }
           
-          cell.imageView?.image = image(forChange:change)
+          cell.imageView?.image = change.changeImage
           return cell
         }
       

@@ -61,19 +61,6 @@ extension FileViewController: NSUserInterfaceValidations
   }
 }
 
-extension XitChange
-{
-  var isModified: Bool
-  {
-    switch self {
-      case .unmodified, .untracked:
-        return false
-      default:
-        return true
-    }
-  }
-}
-
 // MARK: Validation
 extension FileViewController
 {
