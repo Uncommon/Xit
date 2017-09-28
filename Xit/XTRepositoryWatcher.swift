@@ -155,6 +155,7 @@ let XTChangedRefsKey = "changedRefs"
   func checkHead(_ changedPaths: [String])
   {
     if paths(changedPaths, includeSubpaths: ["HEAD"]) {
+      repository.clearCachedBranch()
       post(.XTRepositoryHeadChanged)
     }
   }
