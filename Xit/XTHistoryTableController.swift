@@ -72,7 +72,7 @@ public class XTHistoryTableController: NSViewController
     observers.addObserver(
         forName: .XTSelectedModelChanged,
         object: controller,
-        queue: nil) {
+        queue: .main) {
       [weak self] (notification) in
       if let selectedModel = notification.userInfo?[NSKeyValueChangeKey.newKey]
                              as? FileChangesModel {

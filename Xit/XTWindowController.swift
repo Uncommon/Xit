@@ -82,7 +82,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     
     refsChangedObserver = NotificationCenter.default.addObserver(
         forName: NSNotification.Name.XTRepositoryRefsChanged,
-        object: repo, queue: nil) {
+        object: repo, queue: .main) {
       [weak self] _ in
       self?.updateBranchList()
     }

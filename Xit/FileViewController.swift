@@ -268,14 +268,12 @@ class FileViewController: NSViewController
     observers.addObserver(
         forName: NSOutlineView.selectionDidChangeNotification,
         object: fileListOutline,
-        queue: nil) {
+        queue: .main) {
       [weak self] _ in
       self?.refreshPreview()
     }
-    observers.addObserver(
-        forName: .XTHeaderResized,
-        object: headerController,
-        queue: nil) {
+    observers.addObserver(forName: .XTHeaderResized, object: headerController,
+                          queue: .main) {
       [weak self] note in
       guard let newHeight =
           (note.userInfo?[CommitHeaderViewController.headerHeightKey]
