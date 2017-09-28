@@ -1,16 +1,27 @@
 import Foundation
 
-// This protocol "can only be used as a generic constraint" because Hashable
-// inherits from Equatable which uses Self.
-public protocol OID: Hashable
+public protocol OID
 {
   var sha: String { get }
+  var isZero: Bool { get }
+  
+  // Making OID Equatable would cause cascading requirements that it, and
+  // protocols that use it, only be used as a generic constraint.
+  func equals(_ other: OID) -> Bool
 }
 
+// Don't explicitly conform to Hashable here because that constrains how the
+// protocol can be used.
 extension OID
 {
   public var hashValue: Int { return sha.hashValue }
+  
+  public func equals(_ other: OID) -> Bool
+  {
+    return sha == other.sha
+  }
 }
+
 
 public struct GitOID: OID, Hashable
 {
@@ -90,6 +101,14 @@ public struct GitOID: OID, Hashable
   public var isZero: Bool
   {
     return git_oid_iszero(unsafeOID()) == 1
+  }
+  
+  public func equals(_ other: OID) -> Bool
+  {
+    guard let otherGitOID = other as? GitOID
+    else { return false }
+    
+    return self == otherGitOID
   }
   
   func unsafeOID() -> UnsafePointer<git_oid>

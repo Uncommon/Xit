@@ -29,11 +29,11 @@ class FileListDataSourceTest: XTTest
     let repoController = FakeRepoController()
     let flds = FileTreeDataSource()
     var expectedCount = 11
-    let history = XTCommitHistory<XTRepository>()
+    let history = XTCommitHistory<GitOID>()
     
     history.repository = repository
     objc_sync_enter(flds)
-    flds.repository = repository
+    flds.taskQueue = repository.queue
     flds.repoController = repoController
     objc_sync_exit(flds)
     waitForRepoQueue()
@@ -87,7 +87,8 @@ class FileListDataSourceTest: XTTest
     
     objc_sync_enter(flds)
     flds.repoController = repoController
-    flds.repository = repository
+    flds.taskQueue = repository.queue
+    flds.observe(repository: repository)
     objc_sync_exit(flds)
     waitForRepoQueue()
     

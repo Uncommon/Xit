@@ -1,6 +1,65 @@
 import Cocoa
 
-public class XTBranch
+public protocol Branch
+{
+  var name: String { get }
+  /// Same as branch name, but without remote name for remote branches
+  var shortName: String { get }
+  /// The ref name without the refs/.../ prefix
+  var strippedName: String { get }
+  var oid: OID? { get }
+}
+
+extension Branch
+{
+  public var shortName: String
+  {
+    return strippedName
+  }
+  public var strippedName: String
+  {
+    return name.components(separatedBy: "/").dropFirst(2).joined(separator: "/")
+  }
+}
+
+
+public protocol LocalBranch: Branch
+{
+  var trackingBranchName: String? { get }
+  var trackingBranch: RemoteBranch? { get }
+}
+
+extension LocalBranch
+{
+  var strippedName: String?
+  {
+    return name.removingPrefix(XTLocalBranch.headsPrefix)
+  }
+}
+
+
+public protocol RemoteBranch: Branch
+{
+  var remoteName: String? { get }
+}
+
+extension RemoteBranch
+{
+  public var shortName: String
+  {
+    guard let slashIndex = name.index(of: "/").map({ name.index(after: $0) })
+      else { return name }
+    
+    return String(name[slashIndex...])
+  }
+  public var strippedName: String
+  {
+    return name.components(separatedBy: "/").dropFirst(3).joined(separator: "/")
+  }
+}
+
+
+public class XTBranch: Branch
 {
   let gtBranch: GTBranch
   
@@ -19,13 +78,13 @@ public class XTBranch
     }
   }
   
-  var name: String? { return gtBranch.name }
-  var shortName: String? { return gtBranch.shortName }
-  var sha: String? { return gtBranch.oid?.sha }
-  var oid: GitOID?
+  public var name: String { return gtBranch.name ?? "" }
+  public var oid: OID?
   {
     return gtBranch.oid.map { GitOID(oid: $0.git_oid().pointee) }
   }
+
+  var sha: String? { return gtBranch.oid?.sha }
   var targetCommit: XTCommit?
   {
     return (try? gtBranch.targetCommit()).map { XTCommit(commit: $0) }
@@ -35,11 +94,9 @@ public class XTBranch
     return gtBranch.reference
   }
   var remoteName: String? { return nil }
-  /// The ref name without the refs/.../ prefix
-  var strippedName: String? { return nil }
 }
 
-public class XTLocalBranch: XTBranch
+public class XTLocalBranch: XTBranch, LocalBranch
 {
   static let trackingPrefix = "refs/remotes/"
   static let headsPrefix = "refs/heads/"
@@ -61,11 +118,11 @@ public class XTLocalBranch: XTBranch
   
   /// The name of this branch's remote tracking branch, even if the
   /// referenced branch does not exist.
-  var trackingBranchName: String?
+  public var trackingBranchName: String?
   {
     get
     {
-      guard let name = self.name
+      guard !name.isEmpty
       else { return nil }
       let buf = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
     
@@ -92,7 +149,7 @@ public class XTLocalBranch: XTBranch
   /// Returns a branch object for this branch's remote tracking branch,
   /// or `nil` if no tracking branch is set or if it references a non-existent
   /// branch.
-  var trackingBranch: XTRemoteBranch?
+  public var trackingBranch: RemoteBranch?
   {
     guard let branch = gtBranch.trackingBranchWithError(nil, success: nil)
     else { return nil }
@@ -104,14 +161,9 @@ public class XTLocalBranch: XTBranch
   {
     return trackingBranch?.remoteName
   }
-  
-  override var strippedName: String?
-  {
-    return name?.removingPrefix(XTLocalBranch.headsPrefix)
-  }
 }
 
-public class XTRemoteBranch: XTBranch
+public class XTRemoteBranch: XTBranch, RemoteBranch
 {
   static let remotesPrefix = "refs/remotes/"
 
@@ -130,10 +182,5 @@ public class XTRemoteBranch: XTBranch
     super.init(gtBranch: gtBranch)
   }
   
-  override var remoteName: String? { return gtBranch.remoteName }
-  
-  override var strippedName: String?
-  {
-    return name?.components(separatedBy: "/").dropFirst(3).joined(separator: "/")
-  }
+  public override var remoteName: String? { return gtBranch.remoteName }
 }

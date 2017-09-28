@@ -149,12 +149,14 @@ class XTFileDiffController: WebViewController,
          let headRef = repo.headRef,
          let blob = staged ? repo.fileBlob(ref: headRef,
                                            path: diffMaker.path)
-                           : repo.stagedBlob(file: diffMaker.path),
-         let data = blob.data() {
-        var encoding = String.Encoding.utf8
-        let text = String(data: data, usedEncoding: &encoding)
-        
-        lines = text?.components(separatedBy: .newlines)
+                           : repo.stagedBlob(file: diffMaker.path) {
+        _ = try? blob.withData {
+          (data) in
+          var encoding = String.Encoding.utf8
+          let text = String(data: data, usedEncoding: &encoding)
+          
+          lines = text?.components(separatedBy: .newlines)
+        }
       }
       
       for index in 0..<patch.hunkCount {

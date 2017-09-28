@@ -3,10 +3,7 @@ import WebKit
 
 protocol HeaderGenerator
 {
-  associatedtype Repo: RepositoryType
-  associatedtype Commit: CommitType
-  
-  var repository: Repo! { get }
+  var repository: CommitStorage! { get }
 }
 
 extension HeaderGenerator
@@ -87,9 +84,6 @@ extension HeaderGenerator
 @objc(XTCommitHeaderViewController)
 class CommitHeaderViewController: WebViewController, HeaderGenerator
 {
-  typealias Repo = XTRepository
-  typealias Commit = XTCommit
-
   static let headerHeightKey = "height"
 
   var commitSHA: String?
@@ -108,7 +102,7 @@ class CommitHeaderViewController: WebViewController, HeaderGenerator
   {
     return view.window?.windowController as? RepositoryController
   }
-  weak var repository: XTRepository!
+  weak var repository: CommitStorage!
   
   override init(nibName nibNameOrNil: NSNib.Name?, bundle nibBundleOrNil: Bundle?)
   {
@@ -151,7 +145,7 @@ class CommitHeaderViewController: WebViewController, HeaderGenerator
     expanded = !isCollapsed()
     
     guard let commitSHA = commitSHA,
-          let commit = repository.commit(forSHA: commitSHA)
+          let commit = repository.commit(forSHA: commitSHA) as? XTCommit
     else { return }
     let html = generateHeaderHTML(commit)
     

@@ -170,41 +170,39 @@ class FileViewController: NSViewController
   }
   
   weak var repo: XTRepository?
-  {
-    didSet
-    {
-      fileChangeDS.repository = repo
-      fileTreeDS.repository = repo
-      headerController.repository = repo
-      commitEntryController.repo = repo
-      observers.addObserver(
-          forName: NSNotification.Name.XTRepositoryIndexChanged,
-          object: repo, queue: .main) {
-        [weak self] note in
-        self?.indexChanged(note)
-      }
-    }
-  }
   
   deinit
   {
     indexTimer.map { $0.invalidate() }
   }
 
-  func windowDidLoad()
+  func finishLoad(repository: XTRepository)
   {
+    repo = repository
+
+    observers.addObserver(forName: .XTRepositoryIndexChanged,
+                          object: repository, queue: .main) {
+      [weak self] note in
+      self?.indexChanged(note)
+    }
+
     guard let controller = view.window?.windowController
-                           as? XTWindowController
+          as? XTWindowController
     else { return }
     
-    fileChangeDS.repoController = controller
-    fileTreeDS.repoController = controller
-    observers.addObserver(
-        forName: NSNotification.Name.XTSelectedModelChanged,
-        object: controller, queue: .main) {
+    observers.addObserver(forName: .XTSelectedModelChanged,
+                          object: controller, queue: .main) {
       [weak self] _ in
       self?.selectedModelChanged()
     }
+    headerController.repository = repository
+    commitEntryController.repo = repository
+    fileChangeDS.repoController = controller
+    fileChangeDS.observe(repository: repository)
+    fileChangeDS.taskQueue = repository.queue
+    fileTreeDS.repoController = controller
+    fileTreeDS.observe(repository: repository)
+    fileTreeDS.taskQueue = repository.queue
   }
   
   override func loadView()

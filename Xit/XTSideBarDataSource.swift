@@ -46,7 +46,7 @@ class XTSideBarDataSource: NSObject
       else { return }
       
       stagingItem.model = StagingChanges(repository: repo)
-      buildStatusCache = BuildStatusCache(repository: repo)
+      buildStatusCache = BuildStatusCache(branchLister: repo, remoteMgr: repo)
       
       observers.addObserver(
           forName: .XTRepositoryRefsChanged,
@@ -182,15 +182,14 @@ class XTSideBarDataSource: NSObject
     
     let newRoots = XTSideBarDataSource.makeRoots(stagingItem)
     let branchesGroup = newRoots[XTGroupIndex.branches.rawValue]
-    let localBranches = repo.localBranches().sorted(by:
-          { ($0.name ?? "") < ($1.name ?? "") })
+    let localBranches = repo.localBranches().sorted(by: { $0.name < $1.name })
     
     for branch in localBranches {
       guard let sha = branch.sha,
-            let commit = XTCommit(sha: sha, repository: repo),
-            let name = branch.name?.removingPrefix("refs/heads/")
+            let commit = XTCommit(sha: sha, repository: repo)
       else { continue }
       
+      let name = branch.name.removingPrefix("refs/heads/")
       let model = CommitChanges(repository: repo, commit: commit)
       let branchItem = XTLocalBranchItem(title: name, model: model)
       let parent = self.parent(for: name, groupItem: branchesGroup)
@@ -200,19 +199,17 @@ class XTSideBarDataSource: NSObject
     
     let remoteItems = repo.remoteNames().map {
           XTRemoteItem(title: $0, repository: repo) }
-    let remoteBranches = repo.remoteBranches().sorted {
-          ($0.name ?? "") < ($1.name ?? "") }
+    let remoteBranches = repo.remoteBranches().sorted(by: { $0.name < $1.name })
 
 
     for branch in remoteBranches {
       guard let remote = remoteItems.first(where: { $0.title ==
                                                     branch.remoteName }),
-            let name = branch.name?
-                       .removingPrefix("refs/remotes/\(remote.title)/"),
             let remoteName = branch.remoteName,
             let oid = branch.oid,
             let commit = XTCommit(oid: oid, repository: repo)
       else { continue }
+      let name = branch.name.removingPrefix("refs/remotes/\(remote.title)/")
       let model = CommitChanges(repository: repo, commit: commit)
       let remoteParent = parent(for: name, groupItem: remote)
       
@@ -461,6 +458,8 @@ extension XTSideBarDataSource: BuildStatusClient
 // MARK: TeamCity
 extension XTSideBarDataSource: TeamCityAccessor
 {
+  var remoteMgr: RemoteManagement! { return repository }
+  
   /// Returns the name of the remote for either a remote branch or a local
   /// tracking branch.
   func remoteName(forBranchItem branchItem: XTSideBarItem) -> String?

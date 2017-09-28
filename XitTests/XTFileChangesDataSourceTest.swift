@@ -14,7 +14,7 @@ class XTFileChangesDataSourceTest: XTTest
                                                  commit: headCommit)
     objc_sync_enter(dataSource)
     dataSource.repoController = repoController
-    dataSource.repository = repository
+    dataSource.taskQueue = repository.queue
     objc_sync_exit(dataSource)
     outlineView.dataSource = dataSource
     dataSource.reload()

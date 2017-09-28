@@ -1,6 +1,17 @@
 import Cocoa
 
-open class XTRemote: GTRemote
+public protocol Remote: class
+{
+  var name: String? { get }
+  var urlString: String? { get }
+  var pushURLString: String? { get }
+  
+  func rename(_ name: String) throws
+  func updateURLString(_ URLString: String) throws
+  func updatePushURLString(_ URLString: String) throws
+}
+
+open class XTRemote: GTRemote, Remote
 {
   init?(name: String, repository: XTRepository)
   {

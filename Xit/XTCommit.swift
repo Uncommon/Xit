@@ -1,15 +1,17 @@
 import Cocoa
 
 
-public protocol CommitType: CustomStringConvertible
+public protocol Commit: CustomStringConvertible
 {
-  associatedtype ID: OID
-  
   var sha: String? { get }
-  var oid: ID { get }
-  var parentOIDs: [ID] { get }
+  var oid: OID { get }
+  var parentOIDs: [OID] { get }
   
   var message: String? { get }
+  
+  var authorSig: Signature? { get }
+  var committerSig: Signature? { get }
+  
   var authorName: String? { get }
   var authorEmail: String? { get }
   var authorDate: Date? { get }
@@ -19,7 +21,17 @@ public protocol CommitType: CustomStringConvertible
   var email: String? { get }
 }
 
-extension CommitType
+extension Commit
+{
+  var authorName: String? { return authorSig?.name }
+  var authorEmail: String? { return authorSig?.email }
+  var authorDate: Date? { return authorSig?.when }
+  var committerName: String? { return committerSig?.name }
+  var committerEmail: String? { return committerSig?.email }
+  var commitDate: Date { return committerSig?.when ?? Date() }
+}
+
+extension Commit
 {
   public var parentSHAs: [String]
   {
@@ -41,14 +53,14 @@ extension CommitType
 }
 
 
-public class XTCommit: CommitType
+public class XTCommit: Commit
 {
   let gtCommit: GTCommit
 
   public private(set) lazy var sha: String? = self.gtCommit.sha
-  public private(set) lazy var oid: GitOID =
+  public private(set) lazy var oid: OID =
       GitOID(oid: self.gtCommit.oid!.git_oid().pointee)
-  public private(set) lazy var parentOIDs: [GitOID] =
+  public private(set) lazy var parentOIDs: [OID] =
       XTCommit.calculateParentOIDs(self.gtCommit.git_commit())
   
   public var message: String?
@@ -57,12 +69,12 @@ public class XTCommit: CommitType
   public var messageSummary: String
   { return gtCommit.messageSummary }
   
-  public var authorSig: GitSignature?
+  public var authorSig: Signature?
   {
     guard let sig = git_commit_author(gtCommit.git_commit())
     else { return nil }
     
-    return GitSignature(signature: sig.pointee)
+    return Signature(gitSignature: sig.pointee)
   }
   
   public var authorName: String?
@@ -74,12 +86,12 @@ public class XTCommit: CommitType
   public var authorDate: Date?
   { return gtCommit.author?.time }
   
-  public var committerSig: GitSignature?
+  public var committerSig: Signature?
   {
     guard let sig = git_commit_committer(gtCommit.git_commit())
     else { return nil }
     
-    return GitSignature(signature: sig.pointee)
+    return Signature(gitSignature: sig.pointee)
   }
   
   public var committerName: String?
@@ -102,8 +114,10 @@ public class XTCommit: CommitType
     self.gtCommit = commit
   }
 
-  convenience init?(oid: GitOID, repository: XTRepository)
+  convenience init?(oid: OID, repository: XTRepository)
   {
+    guard let oid = oid as? GitOID
+    else { return nil }
     var gitCommit: OpaquePointer?  // git_commit isn't imported
     let result = git_commit_lookup(&gitCommit,
                                    repository.gtRepo.git_repository(),
@@ -176,5 +190,5 @@ public class XTCommit: CommitType
 
 public func == (a: XTCommit, b: XTCommit) -> Bool
 {
-  return a.oid == b.oid
+  return (a.oid as! GitOID) == (b.oid as! GitOID)
 }

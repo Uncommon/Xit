@@ -1,36 +1,6 @@
 import Foundation
 
 
-public protocol RepositoryType: class
-{
-  associatedtype C: CommitType
-  
-  func commit(forSHA sha: String) -> C?
-  func commit(forOID oid: C.ID) -> C?
-}
-
-public protocol CommitReferencing: class
-{
-  associatedtype LocalBranchSequence: Sequence
-  associatedtype RemoteBranchSequence: Sequence
-
-  var headRef: String? { get }
-  var currentBranch: String? { get }
-  func remoteNames() -> [String]
-  func localBranches() -> LocalBranchSequence
-  func remoteBranches() -> RemoteBranchSequence
-  func tags() throws -> [Tag]
-  func graphBetween(localBranch: XTLocalBranch,
-                    upstreamBranch: XTRemoteBranch) ->(ahead: Int,
-                                                       behind: Int)?
-}
-
-public protocol SubmoduleManagement
-{
-  func submodules() -> [XTSubmodule]
-  func addSubmodule(path: String, url: String) throws
-}
-
 extension NSNotification.Name
 {
   /// Some change has been detected in the repository.
@@ -65,7 +35,7 @@ let XTErrorArgsKey = "args"
 public class XTRepository: NSObject
 {
   private(set) var gtRepo: GTRepository
-  @objc let repoURL: URL
+  @objc public let repoURL: URL
   let gitCMD: String
   @objc let queue: TaskQueue
   var refsIndex = [String: [String]]()
@@ -341,6 +311,14 @@ extension XTRepository
         self = .unexpected
       }
     }
+    
+    static func throwIfError(_ code: Int32) throws
+    {
+      guard code == 0
+      else {
+        throw Error(gitCode: git_error_code(code))
+      }
+    }
   }
 }
 
@@ -350,17 +328,14 @@ internal func setRepoWriting(_ repo: XTRepository, _ writing: Bool)
   repo.isWriting = writing
 }
 
-extension XTRepository: RepositoryType
+extension XTRepository: CommitStorage
 {
-  public typealias ID = GitOID
-  public typealias C = XTCommit
-
-  public func commit(forSHA sha: String) -> XTCommit?
+  public func commit(forSHA sha: String) -> Commit?
   {
     return XTCommit(sha: sha, repository: self)
   }
   
-  public func commit(forOID oid: GitOID) -> XTCommit?
+  public func commit(forOID oid: OID) -> Commit?
   {
     return XTCommit(oid: oid, repository: self)
   }
@@ -368,12 +343,6 @@ extension XTRepository: RepositoryType
 
 extension XTRepository
 {
-  /// Returns a file URL for a given relative path.
-  func fileURL(_ file: String) -> URL
-  {
-    return repoURL.appendingPathComponent(file)
-  }
-  
   /// Returns true if the path is ignored according to the repository's
   /// ignore rules.
   func isIgnored(path: String) -> Bool
@@ -384,18 +353,6 @@ extension XTRepository
                                             path)
 
     return (result == 0) && (ignored.pointee != 0)
-  }
-  
-  func commitForStash(at index: UInt) -> XTCommit?
-  {
-    guard let stashRef = try? gtRepo.lookUpReference(withName: "refs/stash"),
-          let stashLog = GTReflog(reference: stashRef),
-          index < stashLog.entryCount,
-          let entry = stashLog.entry(at: index),
-          let oid = entry.updatedOID.map({ GitOID(oid: $0.git_oid().pointee) })
-    else { return nil }
-    
-    return XTCommit(oid: oid, repository: self)
   }
   
   /// Returns the unstaged and staged status of the given file.
@@ -479,9 +436,12 @@ extension XTRepository
     }
   }
   
-  func graphBetween(local: GitOID, upstream: GitOID) -> (ahead: Int,
-                                                         behind: Int)?
+  func graphBetween(local: OID, upstream: OID) -> (ahead: Int,
+                                                   behind: Int)?
   {
+    guard let local = local as? GitOID,
+          let upstream = upstream as? GitOID
+    else { return nil }
     let ahead = UnsafeMutablePointer<Int>.allocate(capacity: 1)
     let behind = UnsafeMutablePointer<Int>.allocate(capacity: 1)
     
@@ -494,9 +454,9 @@ extension XTRepository
     }
   }
   
-  public func graphBetween(localBranch: XTLocalBranch,
-                           upstreamBranch: XTRemoteBranch) ->(ahead: Int,
-                                                              behind: Int)?
+  public func graphBetween(localBranch: LocalBranch,
+                           upstreamBranch: RemoteBranch) ->(ahead: Int,
+                                                            behind: Int)?
   {
     if let localOID = localBranch.oid,
        let upstreamOID = upstreamBranch.oid {

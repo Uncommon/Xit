@@ -18,7 +18,7 @@ extension FileTreeDataSource: FileListDataSource
   
   func reload()
   {
-    repository?.queue.executeOffMainThread {
+    taskQueue?.executeOffMainThread {
       [weak self] in
       guard let myself = self
       else { return }

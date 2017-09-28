@@ -1,15 +1,29 @@
 import Cocoa
 
-/// Wraps a stash to preset a unified list of file changes.
-public class XTStash: NSObject
+public protocol Stash: class
 {
-  unowned var repo: XTRepository
-  var message: String?
-  var mainCommit: XTCommit?
-  var indexCommit, untrackedCommit: XTCommit?
+  var message: String? { get }
+  var mainCommit: Commit? { get }
+  var indexCommit: Commit? { get }
+  var untrackedCommit: Commit? { get }
+  
+  func changes() -> [FileChange]
+  func stagedDiffForFile(_ path: String) -> XTDiffMaker?
+  func unstagedDiffForFile(_ path: String) -> XTDiffMaker?
+}
+
+/// Wraps a stash to preset a unified list of file changes.
+public class XTStash: NSObject, Stash
+{
+  typealias Repo = CommitStorage & FileStaging & Stashing
+  
+  unowned var repo: Repo
+  public var message: String?
+  public var mainCommit: Commit?
+  public var indexCommit, untrackedCommit: Commit?
   private var cachedChanges: [FileChange]?
 
-  init(repo: XTRepository, index: UInt, message: String?)
+  init(repo: Repo, index: UInt, message: String?)
   {
     self.repo = repo
     self.message = message
@@ -17,17 +31,15 @@ public class XTStash: NSObject
     if let mainCommit = repo.commitForStash(at: index) {
       self.mainCommit = mainCommit
       if mainCommit.parentOIDs.count > 1 {
-        self.indexCommit = XTCommit(oid: mainCommit.parentOIDs[1],
-                                    repository: repo)
+        self.indexCommit = repo.commit(forOID: mainCommit.parentOIDs[1])
         if mainCommit.parentOIDs.count > 2 {
-          self.untrackedCommit = XTCommit(oid: mainCommit.parentOIDs[2],
-                                          repository: repo)
+          self.untrackedCommit = repo.commit(forOID: mainCommit.parentOIDs[2])
         }
       }
     }
   }
 
-  func changes() -> [FileChange]
+  public func changes() -> [FileChange]
   {
     if let changes = cachedChanges {
       return changes
@@ -76,19 +88,22 @@ public class XTStash: NSObject
     return changes
   }
 
-  func headBlobForPath(_ path: String) -> GTBlob?
+  func headBlobForPath(_ path: String) -> Blob?
   {
-    guard let headEntry = try? mainCommit?.gtCommit.parents[0].tree?
+    // TODO: Add tree property to Commit
+    guard let mainCommit = self.mainCommit as? XTCommit,
+          let headEntry = try? mainCommit.gtCommit.parents[0].tree?
                                .entry(withPath: path),
-          let object = try? headEntry?.gtObject()
+          let objectWrapped = try? headEntry?.gtObject(),
+          let object = objectWrapped
     else { return nil }
     
-    return (object as? GTBlob?)!
+    return object as? GTBlob
   }
 
-  func stagedDiffForFile(_ path: String) -> XTDiffMaker?
+  public func stagedDiffForFile(_ path: String) -> XTDiffMaker?
   {
-    guard let indexCommit = self.indexCommit,
+    guard let indexCommit = self.indexCommit as? XTCommit,
           let indexEntry = try? indexCommit.tree?.entry(withPath: path),
           let indexBlob = try? indexEntry!.gtObject() as? GTBlob
     else { return nil }
@@ -99,9 +114,9 @@ public class XTStash: NSObject
                        path: path)
   }
 
-  func unstagedDiffForFile(_ path: String) -> XTDiffMaker?
+  public func unstagedDiffForFile(_ path: String) -> XTDiffMaker?
   {
-    guard let indexCommit = self.indexCommit
+    guard let indexCommit = self.indexCommit as? XTCommit
     else { return nil }
 
     var indexBlob: GTBlob? = nil
@@ -112,7 +127,7 @@ public class XTStash: NSObject
       indexBlob = object as? GTBlob
     }
     
-    if let untrackedCommit = self.untrackedCommit,
+    if let untrackedCommit = self.untrackedCommit as? XTCommit,
        let untrackedEntry = try? untrackedCommit.tree?.entry(withPath: path) {
       guard let untrackedBlob = try? untrackedEntry!.gtObject() as? GTBlob
       else { return nil }
@@ -121,7 +136,8 @@ public class XTStash: NSObject
                          to: XTDiffMaker.SourceType(untrackedBlob),
                          path: path)
     }
-    if let unstagedEntry = try? self.mainCommit?.tree?.entry(withPath: path) {
+    if let mainCommit = self.mainCommit as? XTCommit,
+       let unstagedEntry = try? mainCommit.tree?.entry(withPath: path) {
       guard let unstagedBlob = try? unstagedEntry?.gtObject() as? GTBlob
       else { return nil }
       

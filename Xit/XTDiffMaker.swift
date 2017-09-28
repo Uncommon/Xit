@@ -2,14 +2,14 @@ import Cocoa
 
 /// An object that can generate file diffs, and re-generate them with
 /// different options.
-class XTDiffMaker: NSObject
+public class XTDiffMaker: NSObject
 {
   enum SourceType
   {
-    case blob(GTBlob)
+    case blob(Blob)
     case data(Data)
     
-    init(_ blob: GTBlob?)
+    init(_ blob: Blob?)
     {
       self = blob.map { .blob($0) } ?? .data(Data())
     }
@@ -70,12 +70,15 @@ class XTDiffMaker: NSObject
                                 to: toData, forPath: path,
                                 options: options)
       case let (.data(fromData), .blob(toBlob)):
-        guard let toData = toBlob.data()
-        else { return nil }
-      
-        return try? XTDiffDelta(from: fromData, forPath: path,
-                                to: toData, forPath: path,
-                                options: options)
+        var result: XTDiffDelta?
+        
+        try? toBlob.withData {
+          (data) in
+          result = try? XTDiffDelta(from: fromData, forPath: path,
+                                    to: data, forPath: path,
+                                    options: options)
+        }
+        return result
     }
   }
 }

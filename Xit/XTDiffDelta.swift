@@ -1,6 +1,35 @@
 import Foundation
 
-typealias XTDiffDelta = GTDiffDelta
+public typealias XTDiffDelta = GTDiffDelta
+
+extension GTDiffDelta
+{
+  public convenience init(from oldBlob: Blob?, forPath oldBlobPath: String?,
+                          to newBlob: Blob?, forPath newBlobPath: String?,
+                          options: [AnyHashable : Any]? = nil) throws
+  {
+    guard let blob1 = (oldBlob as? GTBlob) ??
+                      (oldBlob as? GitBlob)?.makeGTBlob(),
+          let blob2 = (newBlob as? GTBlob) ??
+                      (newBlob as? GitBlob)?.makeGTBlob()
+    else { throw XTRepository.Error.unexpected }
+    
+    try self.init(from: blob1, forPath: oldBlobPath,
+                  to: blob2, forPath: newBlobPath, options: options)
+  }
+
+  public convenience init(from oldBlob: Blob?, forPath oldBlobPath: String?,
+                          to newData: Data?, forPath newBlobPath: String?,
+                          options: [AnyHashable : Any]? = nil) throws
+  {
+    guard let blob1 = (oldBlob as? GTBlob) ??
+                      (oldBlob as? GitBlob)?.makeGTBlob()
+    else { throw XTRepository.Error.unexpected }
+    
+    try self.init(from: blob1, forPath: oldBlobPath,
+                  to: newData, forPath: newBlobPath, options: options)
+  }
+}
 
 extension GTDiffHunk
 {

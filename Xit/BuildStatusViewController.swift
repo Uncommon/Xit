@@ -2,8 +2,8 @@ import Cocoa
 
 class BuildStatusViewController: NSViewController, TeamCityAccessor
 {
-  weak var repository: XTRepository!
-  let branch: XTBranch
+  weak var remoteMgr: RemoteManagement!
+  let branch: Branch
   let buildStatusCache: BuildStatusCache
   var api: TeamCityAPI?
   @IBOutlet weak var tableView: NSTableView!
@@ -22,15 +22,16 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
     static let build = NSUserInterfaceItemIdentifier(rawValue: "BuildCell")
   }
 
-  init(repository: XTRepository, branch: XTBranch, cache: BuildStatusCache)
+  init(repository: RemoteManagement, branch: Branch,
+       cache: BuildStatusCache)
   {
-    self.repository = repository
+    self.remoteMgr = repository
     self.branch = branch
     self.buildStatusCache = cache
   
     super.init(nibName: NibName.buildStatus, bundle: nil)
     
-    if let remoteName = branch.remoteName,
+    if let remoteName = (branch as? RemoteBranch)?.remoteName,
        let (api, _) = matchTeamCity(remoteName) {
       self.api = api
     }
@@ -50,7 +51,7 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
   
   override func viewDidLoad()
   {
-    headingLabel.stringValue = "Builds for \(branch.strippedName ?? "branch")"
+    headingLabel.stringValue = "Builds for \(branch.strippedName)"
   }
 
   func filterStatuses()
@@ -59,11 +60,12 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
     
     // Only the local "refs/heads/..." version of the branch name works
     // with the branchspec matching.
-    guard let branchName = (branch is XTRemoteBranch)
-               ? branch.strippedName.map({ XTLocalBranch.headsPrefix + $0 })
-               : branch.name,
-          let api = self.api
+    guard let api = self.api
     else { return }
+    
+    let branchName = (branch is XTRemoteBranch)
+          ? XTLocalBranch.headsPrefix + branch.strippedName
+          : branch.name
     
     for (buildType, branchStatuses) in buildStatusCache.statuses {
       let roots = api.vcsRootsForBuildType(buildType)
