@@ -15,13 +15,15 @@ public protocol Stash: class
 /// Wraps a stash to preset a unified list of file changes.
 public class XTStash: NSObject, Stash
 {
-  unowned var repo: XTRepository
+  typealias Repo = CommitStorage & FileStaging & Stashing
+  
+  unowned var repo: Repo
   public var message: String?
   public var mainCommit: Commit?
   public var indexCommit, untrackedCommit: Commit?
   private var cachedChanges: [FileChange]?
 
-  init(repo: XTRepository, index: UInt, message: String?)
+  init(repo: Repo, index: UInt, message: String?)
   {
     self.repo = repo
     self.message = message
@@ -29,11 +31,9 @@ public class XTStash: NSObject, Stash
     if let mainCommit = repo.commitForStash(at: index) {
       self.mainCommit = mainCommit
       if mainCommit.parentOIDs.count > 1 {
-        self.indexCommit = XTCommit(oid: mainCommit.parentOIDs[1],
-                                    repository: repo)
+        self.indexCommit = repo.commit(forOID: mainCommit.parentOIDs[1])
         if mainCommit.parentOIDs.count > 2 {
-          self.untrackedCommit = XTCommit(oid: mainCommit.parentOIDs[2],
-                                          repository: repo)
+          self.untrackedCommit = repo.commit(forOID: mainCommit.parentOIDs[2])
         }
       }
     }

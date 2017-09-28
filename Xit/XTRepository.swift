@@ -355,18 +355,6 @@ extension XTRepository
     return (result == 0) && (ignored.pointee != 0)
   }
   
-  func commitForStash(at index: UInt) -> XTCommit?
-  {
-    guard let stashRef = try? gtRepo.lookUpReference(withName: "refs/stash"),
-          let stashLog = GTReflog(reference: stashRef),
-          index < stashLog.entryCount,
-          let entry = stashLog.entry(at: index),
-          let oid = entry.updatedOID.map({ GitOID(oid: $0.git_oid().pointee) })
-    else { return nil }
-    
-    return XTCommit(oid: oid, repository: self)
-  }
-  
   /// Returns the unstaged and staged status of the given file.
   func status(file: String) throws -> (XitChange, XitChange)
   {

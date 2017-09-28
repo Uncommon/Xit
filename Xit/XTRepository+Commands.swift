@@ -157,6 +157,18 @@ extension XTRepository: Stashing
       try gtRepo.dropStash(at: index)
     }
   }
+  
+  public func commitForStash(at index: UInt) -> Commit?
+  {
+    guard let stashRef = try? gtRepo.lookUpReference(withName: "refs/stash"),
+          let stashLog = GTReflog(reference: stashRef),
+          index < stashLog.entryCount,
+          let entry = stashLog.entry(at: index),
+          let oid = entry.updatedOID.map({ GitOID(oid: $0.git_oid().pointee) })
+    else { return nil }
+    
+    return XTCommit(oid: oid, repository: self)
+  }
 }
 
 extension XTRepository: RemoteManagement

@@ -76,6 +76,7 @@ public protocol Stashing: class
   func popStash(index: UInt) throws
   func applyStash(index: UInt) throws
   func dropStash(index: UInt) throws
+  func commitForStash(at index: UInt) -> Commit?
 }
 
 public protocol RemoteManagement: class
