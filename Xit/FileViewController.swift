@@ -35,10 +35,10 @@ extension XitChange
   var isModified: Bool
   {
     switch self {
-    case .unmodified, .untracked:
-      return false
-    default:
-      return true
+      case .unmodified, .untracked:
+        return false
+      default:
+        return true
     }
   }
   

@@ -4,11 +4,16 @@ class XTTextPreviewController: WebViewController
 {
   var isLoaded: Bool = false
 
+  func minString(_ string: String) -> String
+  {
+    return string.isEmpty ? "\n" : string
+  }
+  
   func load(text: String?)
   {
     let text = text ?? ""
     let lines = text.components(separatedBy: .newlines).map {
-      "<div>\(WebViewController.escape(text: $0))</div>"
+      "<div>\(minString(WebViewController.escape(text: $0)))</div>"
     }
     let textLines = lines.joined(separator:"\n")
     let htmlTemplate = WebViewController.htmlTemplate("text")
