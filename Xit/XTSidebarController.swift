@@ -162,14 +162,13 @@ class XTSidebarController: NSViewController, SidebarHandler
     didSet
     {
       sidebarDS.repository = repo
-      observers.addObserver(
-          forName: NSNotification.Name.XTRepositoryIndexChanged,
-          object: repo, queue: .main) {
+      observers.addObserver(forName: .XTRepositoryIndexChanged,
+                            object: repo, queue: .main) {
         [weak self] (_) in
         self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
       }
-      observers.addObserver(
-          forName: .XTRepositoryWorkspaceChanged, object: repo, queue: .main) {
+      observers.addObserver(forName: .XTRepositoryWorkspaceChanged,
+                            object: repo, queue: .main) {
         [weak self] (_) in
         self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
       }

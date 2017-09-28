@@ -48,15 +48,13 @@ class XTSideBarDataSource: NSObject
       stagingItem.model = StagingChanges(repository: repo)
       buildStatusCache = BuildStatusCache(branchLister: repo, remoteMgr: repo)
       
-      observers.addObserver(
-          forName: .XTRepositoryRefsChanged,
-          object: repo, queue: .main) {
+      observers.addObserver(forName: .XTRepositoryRefsChanged,
+                            object: repo, queue: .main) {
         [weak self] (_) in
         self?.reload()
       }
-      observers.addObserver(
-          forName: .XTRepositoryRefLogChanged,
-          object: repo, queue: .main) {
+      observers.addObserver(forName: .XTRepositoryRefLogChanged,
+                            object: repo, queue: .main) {
         [weak self] (_) in
         guard let myself = self
         else { return }
@@ -65,18 +63,16 @@ class XTSideBarDataSource: NSObject
         stashesGroup.children = myself.makeStashItems()
         myself.outline.reloadItem(stashesGroup, reloadChildren: true)
       }
-      observers.addObserver(
-          forName: .XTRepositoryHeadChanged,
-          object: repo, queue: .main) {
+      observers.addObserver(forName: .XTRepositoryHeadChanged,
+                            object: repo, queue: .main) {
         [weak self] (_) in
         guard let myself = self
         else { return }
         myself.outline.reloadItem(myself.roots[XTGroupIndex.branches.rawValue],
                                   reloadChildren: true)
       }
-      observers.addObserver(
-          forName: .XTRepositoryConfigChanged,
-          object: repo, queue: .main) {
+      observers.addObserver(forName: .XTRepositoryConfigChanged,
+                            object: repo, queue: .main) {
         [weak self] (_) in
         self?.reload()
       }
