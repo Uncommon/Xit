@@ -5,6 +5,26 @@ class PrefsTabViewController: NSTabViewController
   @IBOutlet weak var previewsTab: NSTabViewItem!
   var observer: NSObjectProtocol?
   
+  override var selectedTabViewItemIndex: Int
+  {
+    didSet
+    {
+      guard let view = tabViewItems[selectedTabViewItemIndex].view,
+            let window = view.window
+      else { return }
+      
+      let minSize = view.fittingSize
+      let contentRect = NSWindow.contentRect(forFrameRect: window.frame,
+                                             styleMask: window.styleMask)
+      let minRect = NSRect(origin: contentRect.origin, size: minSize)
+      let newRect = minRect.union(contentRect)
+      let newFrame = NSWindow.frameRect(forContentRect: newRect,
+                                        styleMask: window.styleMask)
+      
+      window.animator().setFrame(newFrame, display: true)
+    }
+  }
+  
   override func viewDidLoad()
   {
     super.viewDidLoad()
