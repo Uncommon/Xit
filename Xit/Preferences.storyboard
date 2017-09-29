@@ -37,8 +37,8 @@
                         <tabViewItem label="Previews" image="NSFolder" id="w44-NY-M68"/>
                     </tabViewItems>
                     <viewControllerTransitionOptions key="transitionOptions" allowUserInteraction="YES"/>
-                    <tabView key="tabView" type="noTabsNoBorder" id="bPH-i7-ChK">
-                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                    <tabView key="tabView" misplaced="YES" type="noTabsNoBorder" id="bPH-i7-ChK">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="172"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <font key="font" metaFont="message"/>
                         <tabViewItems/>

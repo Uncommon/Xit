@@ -4,6 +4,7 @@ class PrefsTabViewController: NSTabViewController
 {
   @IBOutlet weak var previewsTab: NSTabViewItem!
   var observer: NSObjectProtocol?
+  var didInitialLoad = false
   
   override var selectedTabViewItemIndex: Int
   {
@@ -21,7 +22,7 @@ class PrefsTabViewController: NSTabViewController
       let newFrame = NSWindow.frameRect(forContentRect: newRect,
                                         styleMask: window.styleMask)
       
-      window.animator().setFrame(newFrame, display: true)
+      window.setFrame(newFrame, display: true)
     }
   }
   
@@ -54,8 +55,31 @@ class PrefsTabViewController: NSTabViewController
         controller.savePreferences()
       }
     }
+    
+    // For some reason the window initially appears too big
+    if !didInitialLoad {
+      didInitialLoad = true
+      setInitialSize()
+    }
   }
   
+  func setInitialSize()
+  {
+    guard let view = tabViewItems[selectedTabViewItemIndex].view,
+          let window = view.window
+    else { return }
+    
+    var contentRect = NSWindow.contentRect(forFrameRect: window.frame,
+                                           styleMask: window.styleMask)
+    
+    contentRect.size = view.fittingSize
+    
+    let newFrame = NSWindow.frameRect(forContentRect: contentRect,
+                                      styleMask: window.styleMask)
+    
+    window.setFrame(newFrame, display: true)
+  }
+
   deinit
   {
     observer.map { NotificationCenter.default.removeObserver($0) }
