@@ -192,10 +192,17 @@ class XTFileDiffController: WebViewController,
     isLoaded = true
   }
   
-  func loadOrNotify(diffMaker: XTDiffMaker?)
+  func loadOrNotify(diffResult: XTDiffMaker.DiffResult?)
   {
-    if let diffMaker = diffMaker {
-      self.diffMaker = diffMaker
+    if let diffResult = diffResult {
+      switch diffResult {
+        case .noDifference:
+          loadNoChangesNotice()
+        case .binary:
+          loadNotice("This is a binary file")
+        case .diff(let diffMaker):
+          self.diffMaker = diffMaker
+      }
     }
     else {
       loadNoChangesNotice()
@@ -261,7 +268,7 @@ extension XTFileDiffController: XTFileContentController
   public func load(path: String!, model: FileChangesModel!, staged: Bool)
   {
     self.staged = model.hasUnstaged ? staged : nil
-    loadOrNotify(diffMaker: model.diffForFile(path, staged: staged))
+    loadOrNotify(diffResult: model.diffForFile(path, staged: staged))
   }
 }
 

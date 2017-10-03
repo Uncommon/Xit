@@ -1,6 +1,19 @@
 import XCTest
 @testable import Xit
 
+extension Xit.XTDiffMaker.DiffResult
+{
+  func extractDiff() -> XTDiffDelta?
+  {
+    switch self {
+      case .diff(let maker):
+        return maker.makeDiff()
+      default:
+        return nil
+    }
+  }
+}
+
 class XTEmptyRepositoryTest: XTTest
 {
   override func addInitialRepoContent()
@@ -331,9 +344,25 @@ class XTRepositoryTest: XTTest
     XCTAssertEqual(changes[2].change, XitChange.unmodified);
   }
 
-  func checkDeletedDiff(_ diff: XTDiffDelta?)
+  func checkDeletedDiff(_ diffResult: XTDiffMaker.DiffResult?)
   {
-    guard let diff = diff
+    guard let diffResult = diffResult
+    else {
+      XCTFail("no diff")
+      return
+    }
+    
+    var makerDiff: XTDiffDelta? = nil
+    
+    switch diffResult {
+      case .diff(let maker):
+        makerDiff = maker.makeDiff()
+      default:
+        XCTFail("wrong kind of diff")
+        return
+    }
+    
+    guard let diff = makerDiff
     else {
       XCTFail("diff is null")
       return
@@ -364,14 +393,14 @@ class XTRepositoryTest: XTTest
   func testUnstagedDeleteDiff()
   {
     XCTAssertNoThrow(try FileManager.default.removeItem(atPath: file1Path))
-    checkDeletedDiff(repository.unstagedDiff(file: file1Name)?.makeDiff())
+    checkDeletedDiff(repository.unstagedDiff(file: file1Name))
   }
 
   func testStagedDeleteDiff()
   {
     XCTAssertNoThrow(try FileManager.default.removeItem(atPath: file1Path))
     XCTAssertNoThrow(try repository.stage(file: file1Name))
-    checkDeletedDiff(repository.stagedDiff(file: file1Name)?.makeDiff())
+    checkDeletedDiff(repository.stagedDiff(file: file1Name))
   }
   
   func testDeletedDiff()
@@ -388,10 +417,10 @@ class XTRepositoryTest: XTTest
     }
     
     let parentOID = commit.parentOIDs.first!
-    let maker = repository.diffMaker(forFile: file1Name,
-                                     commitOID: commit.oid,
-                                     parentOID: parentOID)!
-    let diff = maker.makeDiff()!
+    let diffResult = repository.diffMaker(forFile: file1Name,
+                                          commitOID: commit.oid,
+                                          parentOID: parentOID)!
+    let diff = diffResult.extractDiff()!
     let patch = try! diff.generatePatch()
     
     XCTAssertEqual(patch.deletedLinesCount, 1)
@@ -405,10 +434,10 @@ class XTRepositoryTest: XTTest
       return
     }
     
-    let maker = repository.diffMaker(forFile: file1Name,
-                                     commitOID: commit.oid,
-                                     parentOID: nil)!
-    let diff = maker.makeDiff()!
+    let diffResult = repository.diffMaker(forFile: file1Name,
+                                          commitOID: commit.oid,
+                                          parentOID: nil)!
+    let diff = diffResult.extractDiff()!
     let patch = try! diff.generatePatch()
     
     XCTAssertEqual(patch.addedLinesCount, 1)
@@ -455,8 +484,12 @@ class XTRepositoryHunkTest: XTTest
     try! repository.stage(file: loremName)
     try! copyLorem2Contents()
     
-    let diffMaker = repository.unstagedDiff(file: loremName)!
-    let diff = diffMaker.makeDiff()!
+    guard let diffResult = repository.unstagedDiff(file: loremName),
+          let diff = diffResult.extractDiff()
+    else {
+      XCTFail()
+      return
+    }
     let patch = try! diff.generatePatch()
     let hunk = GTDiffHunk(patch: patch, hunkIndex: 0)!
     
@@ -464,10 +497,12 @@ class XTRepositoryHunkTest: XTTest
     
     let indexText = readLoremIndexText()!
 
-    XCTAssert(indexText.hasPrefix(
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec maximus mauris. Quisque varius nisi ac augue rutrum ullamcorper. Sed tincidunt leo in erat commodo, tempor ultricies quam sagittis.\n" +
-          "Duis risus quam, malesuada vel ante at, tincidunt sagittis erat. Phasellus a ante erat. Donec tristique lorem leo, sit amet congue est convallis vitae. Vestibulum a faucibus nisl. Pellentesque vitae sem vitae enim pharetra lacinia.\n" +
-        "Pellentesque mattis ante eget dignissim cursus. Nullam lacinia sit amet sapien ac feugiat. Aenean sagittis eros dignissim volutpat faucibus. Proin laoreet tempus nunc in suscipit.\n\n"))
+    XCTAssert(indexText.hasPrefix("""
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec maximus mauris. Quisque varius nisi ac augue rutrum ullamcorper. Sed tincidunt leo in erat commodo, tempor ultricies quam sagittis.
+        Duis risus quam, malesuada vel ante at, tincidunt sagittis erat. Phasellus a ante erat. Donec tristique lorem leo, sit amet congue est convallis vitae. Vestibulum a faucibus nisl. Pellentesque vitae sem vitae enim pharetra lacinia.
+        Pellentesque mattis ante eget dignissim cursus. Nullam lacinia sit amet sapien ac feugiat. Aenean sagittis eros dignissim volutpat faucibus. Proin laoreet tempus nunc in suscipit.
+
+        """))
   }
   
   /// Tests unstaging the first hunk of a staged file
@@ -479,20 +514,25 @@ class XTRepositoryHunkTest: XTTest
     try! copyLorem2Contents()
     try! repository.stage(file: loremName)
     
-    let diffMaker = repository.stagedDiff(file: loremName)!
-    let diff = diffMaker.makeDiff()!
-    let patch = try! diff.generatePatch()
-    let hunk = GTDiffHunk(patch: patch, hunkIndex: 0)!
+    guard let diffResult = repository.stagedDiff(file: loremName),
+          let diff = diffResult.extractDiff(),
+          let patch = try? diff.generatePatch(),
+          let hunk = GTDiffHunk(patch: patch, hunkIndex: 0)
+    else {
+      XCTFail()
+      return
+    }
     
     try! repository.patchIndexFile(path: loremName, hunk: hunk, stage: false)
     
     let indexText = readLoremIndexText()!
     
-    XCTAssert(indexText.hasPrefix(
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec maximus mauris. Quisque varius nisi ac augue rutrum ullamcorper. Sed tincidunt leo in erat commodo, tempor ultricies quam sagittis.\n" +
-        "Duis risus quam, malesuada vel ante at, tincidunt sagittis erat. Phasellus a ante erat. Donec tristique lorem leo, sit amet congue est convallis vitae. Vestibulum a faucibus nisl. Pellentesque vitae sem vitae enim pharetra lacinia.\n" +
-        "Pellentesque mattis ante eget dignissim cursus. Nullam lacinia sit amet sapien ac feugiat. Aenean sagittis eros dignissim volutpat faucibus. Proin laoreet tempus nunc in suscipit.\n" +
-        "Cras vestibulum id neque eu imperdiet. Pellentesque a lacus ipsum. Nulla ultrices consectetur congue.\n"))
+    XCTAssert(indexText.hasPrefix("""
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec maximus mauris. Quisque varius nisi ac augue rutrum ullamcorper. Sed tincidunt leo in erat commodo, tempor ultricies quam sagittis.
+        Duis risus quam, malesuada vel ante at, tincidunt sagittis erat. Phasellus a ante erat. Donec tristique lorem leo, sit amet congue est convallis vitae. Vestibulum a faucibus nisl. Pellentesque vitae sem vitae enim pharetra lacinia.
+        Pellentesque mattis ante eget dignissim cursus. Nullam lacinia sit amet sapien ac feugiat. Aenean sagittis eros dignissim volutpat faucibus. Proin laoreet tempus nunc in suscipit.
+        Cras vestibulum id neque eu imperdiet. Pellentesque a lacus ipsum. Nulla ultrices consectetur congue.
+        """))
   }
   
   /// Tests staging a new file as a hunk
@@ -500,8 +540,12 @@ class XTRepositoryHunkTest: XTTest
   {
     try! FileManager.default.copyItem(at: loremURL, to: loremRepoURL)
     
-    let diffMaker = repository.unstagedDiff(file: loremName)!
-    let diff = diffMaker.makeDiff()!
+    guard let diffResult = repository.unstagedDiff(file: loremName),
+          let diff = diffResult.extractDiff()
+    else {
+      XCTFail()
+      return
+    }
     let patch = try! diff.generatePatch()
     let hunk = GTDiffHunk(patch: patch, hunkIndex: 0)!
 
@@ -520,10 +564,14 @@ class XTRepositoryHunkTest: XTTest
   {
     try! FileManager.default.removeItem(atPath: file1Path)
 
-    let diffMaker = repository.unstagedDiff(file: file1Name)!
-    let diff = diffMaker.makeDiff()!
-    let patch = try! diff.generatePatch()
-    let hunk = GTDiffHunk(patch: patch, hunkIndex: 0)!
+    guard let diffResult = repository.unstagedDiff(file: file1Name),
+          let diff = diffResult.extractDiff(),
+          let patch = try? diff.generatePatch(),
+          let hunk = GTDiffHunk(patch: patch, hunkIndex: 0)
+    else {
+      XCTFail()
+      return
+    }
     
     try! repository.patchIndexFile(path: file1Name, hunk: hunk, stage: true)
     
@@ -539,10 +587,14 @@ class XTRepositoryHunkTest: XTTest
     try! FileManager.default.copyItem(at: loremURL, to: loremRepoURL)
     try! repository.stage(file: loremName)
     
-    let diffMaker = repository.stagedDiff(file: loremName)!
-    let diff = diffMaker.makeDiff()!
-    let patch = try! diff.generatePatch()
-    let hunk = GTDiffHunk(patch: patch, hunkIndex: 0)!
+    guard let diffResult = repository.stagedDiff(file: loremName),
+          let diff = diffResult.extractDiff(),
+          let patch = try? diff.generatePatch(),
+          let hunk = GTDiffHunk(patch: patch, hunkIndex: 0)
+    else {
+      XCTFail()
+      return
+    }
     
     try! repository.patchIndexFile(path: loremName, hunk: hunk, stage: false)
     
@@ -558,10 +610,14 @@ class XTRepositoryHunkTest: XTTest
     try! FileManager.default.removeItem(atPath: file1Path)
     try! repository.stage(file: file1Name)
     
-    let diffMaker = repository.stagedDiff(file: file1Name)!
-    let diff = diffMaker.makeDiff()!
-    let patch = try! diff.generatePatch()
-    let hunk = GTDiffHunk(patch: patch, hunkIndex: 0)!
+    guard let diffResult = repository.stagedDiff(file: file1Name),
+          let diff = diffResult.extractDiff(),
+          let patch = try? diff.generatePatch(),
+          let hunk = GTDiffHunk(patch: patch, hunkIndex: 0)
+    else {
+      XCTFail()
+      return
+    }
     
     try! repository.patchIndexFile(path: file1Name, hunk: hunk, stage: false)
     

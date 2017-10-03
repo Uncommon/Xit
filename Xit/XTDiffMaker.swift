@@ -4,7 +4,7 @@ import Cocoa
 /// different options.
 public class XTDiffMaker: NSObject
 {
-  enum SourceType
+  public enum SourceType
   {
     case blob(Blob)
     case data(Data)
@@ -13,6 +13,13 @@ public class XTDiffMaker: NSObject
     {
       self = blob.map { .blob($0) } ?? .data(Data())
     }
+  }
+  
+  public enum DiffResult
+  {
+    case noDifference
+    case binary
+    case diff(XTDiffMaker)
   }
   
   let fromSource: SourceType

@@ -2,6 +2,31 @@ import Foundation
 
 extension XTRepository: FileContents
 {
+  static let textNames = ["AUTHORS", "CONTRIBUTING", "COPYING", "LICENSE",
+                          "Makefile", "README"]
+  
+  /// Returns true if the file seems to be text, based on its name.
+  public func isTextFile(_ path: String, commit: String?) -> Bool
+  {
+    let name = (path as NSString).lastPathComponent
+    guard !name.isEmpty
+    else { return false }
+    
+    if XTRepository.textNames.contains(name) {
+      return true
+    }
+    
+    let ext = (name as NSString).pathExtension
+    guard !ext.isEmpty
+    else { return false }
+    
+    let unmanaged = UTTypeCreatePreferredIdentifierForTag(
+          kUTTagClassFilenameExtension, ext as CFString, nil)
+    let utType = unmanaged?.takeRetainedValue()
+    
+    return utType.map { UTTypeConformsTo($0, kUTTypeText) } ?? false
+  }
+  
   public func contentsOfFile(path: String, at commit: Commit) -> Data?
   {
     // TODO: make a Tree protocol to eliminate this cast
@@ -59,10 +84,13 @@ extension XTRepository: FileDiffing
   /// parent commit.
   public func diffMaker(forFile file: String,
                         commitOID: OID,
-                        parentOID: OID?) -> XTDiffMaker?
+                        parentOID: OID?) -> XTDiffMaker.DiffResult?
   {
     guard let toCommit = commit(forOID: commitOID as! GitOID) as? XTCommit
     else { return nil }
+    
+    guard isTextFile(file, commit: commitOID.sha)
+    else { return .binary }
     
     let toGTCommit = toCommit.gtCommit
     var fromSource = XTDiffMaker.SourceType.data(Data())
@@ -83,7 +111,7 @@ extension XTRepository: FileDiffing
       fromSource = .blob(fromBlob)
     }
     
-    return XTDiffMaker(from: fromSource, to: toSource, path: file)
+    return .diff(XTDiffMaker(from: fromSource, to: toSource, path: file))
   }
   
   // Returns a file diff for a given commit.
@@ -99,21 +127,27 @@ extension XTRepository: FileDiffing
   
   /// Returns a diff maker for a file in the index, compared to the workspace
   /// file.
-  public func stagedDiff(file: String) -> XTDiffMaker?
+  public func stagedDiff(file: String) -> XTDiffMaker.DiffResult?
   {
+    guard isTextFile(file, commit: XTStagingSHA)
+    else { return .binary }
+    
     guard let headRef = self.headRef
     else { return nil }
     let indexBlob = stagedBlob(file: file)
     let headBlob = fileBlob(ref: headRef, path: file)
     
-    return XTDiffMaker(from: XTDiffMaker.SourceType(headBlob),
-                       to: XTDiffMaker.SourceType(indexBlob),
-                       path: file)
+    return .diff(XTDiffMaker(from: XTDiffMaker.SourceType(headBlob),
+                             to: XTDiffMaker.SourceType(indexBlob),
+                             path: file))
   }
   
   /// Returns a diff maker for a file in the workspace, compared to the index.
-  public func unstagedDiff(file: String) -> XTDiffMaker?
+  public func unstagedDiff(file: String) -> XTDiffMaker.DiffResult?
   {
+    guard isTextFile(file, commit: nil)
+    else { return .binary }
+    
     let url = self.repoURL.appendingPathComponent(file)
     let exists = FileManager.default.fileExists(atPath: url.path)
     
@@ -123,11 +157,13 @@ extension XTRepository: FileDiffing
       if let index = try? gtRepo.index(),
          let indexEntry = index.entry(withPath: file),
          let indexBlob = try? GTObject(indexEntry: indexEntry) as? GTBlob {
-        return XTDiffMaker(from: XTDiffMaker.SourceType(indexBlob),
-                           to: .data(data), path: file)
+        return .diff(XTDiffMaker(from: XTDiffMaker.SourceType(indexBlob),
+                                 to: .data(data), path: file))
       }
       else {
-        return XTDiffMaker(from: .data(Data()), to: .data(data), path: file)
+        return .diff(XTDiffMaker(from: .data(Data()),
+                                 to: .data(data),
+                                 path: file))
       }
     }
     catch {
