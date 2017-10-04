@@ -84,4 +84,30 @@ class XTStashTest: XTTest
     XCTAssertEqual(addedPatch.deletedLinesCount, 0)
   }
   
+  func testBinaryDiff()
+  {
+    let imageName = "img.png"
+    let imagePath = repoPath.appending(pathComponent: "img.png")
+    
+    FileManager.default.createFile(atPath: imagePath, contents: nil,
+                                   attributes: nil)
+    XCTAssertNoThrow(try repository.stage(file: imageName))
+    XCTAssertNoThrow(try repository.saveStash(name: nil, includeUntracked: true))
+    
+    let stashModel = StashChanges(repository: repository, index: 0)
+    
+    if let stagedDiffResult = stashModel.diffForFile(imageName, staged: true) {
+      XCTAssertEqual(stagedDiffResult, .binary)
+    }
+    else {
+      XCTFail("no staged diff")
+    }
+    
+    if let unstagedDiffResult = stashModel.diffForFile(imageName, staged: true) {
+      XCTAssertEqual(unstagedDiffResult, .binary)
+    }
+    else {
+      XCTFail("no unstaged diff")
+    }
+  }
 }

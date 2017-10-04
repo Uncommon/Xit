@@ -442,6 +442,72 @@ class XTRepositoryTest: XTTest
     
     XCTAssertEqual(patch.addedLinesCount, 1)
   }
+  
+  func testStagedBinaryDiff()
+  {
+    let imageName = "img.png"
+    let imagePath = repoPath.appending(pathComponent: "img.png")
+    
+    FileManager.default.createFile(atPath: imagePath, contents: nil,
+                                   attributes: nil)
+    XCTAssertNoThrow(try repository.stage(file: imageName))
+    
+    if let unstagedDiffResult = repository.unstagedDiff(file: imageName) {
+      XCTAssertEqual(unstagedDiffResult, .binary)
+    }
+    else {
+      XCTFail("no unstaged diff")
+    }
+    
+    if let stagedDiffResult = repository.stagedDiff(file: imageName) {
+      XCTAssertEqual(stagedDiffResult, .binary)
+    }
+    else {
+      XCTFail("no staged diff")
+    }
+  }
+  
+  func testCommitBinaryDiff()
+  {
+    let imageName = "img.png"
+    let imagePath = repoPath.appending(pathComponent: "img.png")
+    
+    FileManager.default.createFile(atPath: imagePath, contents: nil,
+                                   attributes: nil)
+    XCTAssertNoThrow(try repository.stage(file: imageName))
+    XCTAssertNoThrow(try repository.commit(message: "image", amend: false,
+                                           outputBlock: nil))
+    
+    guard let headCommit = repository.commit(forSHA: repository.headSHA!)
+    else {
+      XCTFail("no head commit")
+      return
+    }
+    
+    let model = CommitChanges(repository: repository, commit: headCommit)
+    guard let diff = model.diffForFile(imageName, staged: false)
+    else {
+      XCTFail("no diff result")
+      return
+    }
+    
+    XCTAssertEqual(diff, .binary)
+  }
+}
+
+extension XTDiffMaker.DiffResult: Equatable
+{
+  public static func ==(lhs: XTDiffMaker.DiffResult, rhs: XTDiffMaker.DiffResult) -> Bool
+  {
+    switch (lhs, rhs) {
+      case (.noDifference, .noDifference),
+           (.binary, .binary),
+           (.diff(_), .diff(_)):
+        return true
+      default:
+        return false
+    }
+  }
 }
 
 class XTRepositoryHunkTest: XTTest
