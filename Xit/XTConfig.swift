@@ -29,7 +29,7 @@ class XTConfig: NSObject
   
   final func urlString(forRemote remote: String) -> String?
   {
-    return config?.string(forKey:remote)
+    return config?.string(forKey: remote)
   }
   
   final func loadXitConfig()
@@ -46,7 +46,7 @@ class XTConfig: NSObject
       NSLog("Can't read xit-config")
       return
     }
-    guard let configCopy = configContents.mutableCopy() as? [String : String]
+    guard let configCopy = configContents.mutableCopy() as? [String: String]
     else {
       NSLog("Can't copy config contents")
       return

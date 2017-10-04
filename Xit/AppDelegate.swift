@@ -6,7 +6,7 @@ class AppDelegate: NSObject
   
   var isTesting: Bool
   {
-    return Bundle(identifier:"com.uncommonplace.XitTests") != nil
+    return Bundle(identifier: "com.uncommonplace.XitTests") != nil
   }
   
   @IBOutlet var remoteSettingsSubmenu: NSMenu!
@@ -80,7 +80,7 @@ extension AppDelegate: NSOpenSavePanelDelegate
   {
     let repoURL = url.appendingPathComponent(".git", isDirectory: true)
     
-    if FileManager.default.fileExists(atPath:repoURL.path) {
+    if FileManager.default.fileExists(atPath: repoURL.path) {
       return
     }
     else {
@@ -107,7 +107,7 @@ extension AppDelegate: NSApplicationDelegate
                                       withExtension: "plist")!
     let defaults = NSDictionary(contentsOf: defaultsURL)!
     
-    UserDefaults.standard.register(defaults: defaults as! [String : Any])
+    UserDefaults.standard.register(defaults: defaults as! [String: Any])
   }
   
   func applicationDidFinishLaunching(_ note: Notification)

@@ -44,7 +44,7 @@ class XTAddAccountController: XTSheetController
   
   override func observeValue(
       forKeyPath keyPath: String?, of object: Any?,
-      change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?)
+      change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?)
   {
     guard (object != nil) && ((object! as! NSObject) == window) &&
           (keyPath != nil) && (keyPath == "firstResponder")

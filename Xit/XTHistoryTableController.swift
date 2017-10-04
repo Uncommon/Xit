@@ -326,7 +326,7 @@ extension XTHistoryTableController: XTTableViewDelegate
     
     if (controller.selectedModel == nil) ||
        (controller.selectedModel?.shaToSelect != newModel.shaToSelect) ||
-       (type(of:controller.selectedModel!) != type(of:newModel)) {
+       (type(of: controller.selectedModel!) != type(of: newModel)) {
       controller.selectedModel = newModel
     }
   }

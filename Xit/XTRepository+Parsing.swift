@@ -143,7 +143,7 @@ extension XTRepository: FileStaging
   func stage(file: String) throws
   {
     let fullPath = file.hasPrefix("/") ? file :
-          repoURL.path.appending(pathComponent:file)
+          repoURL.path.appending(pathComponent: file)
     let exists = FileManager.default.fileExists(atPath: fullPath)
     let args = [exists ? "add" : "rm", file]
     

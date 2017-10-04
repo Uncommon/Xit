@@ -6,7 +6,7 @@ extension GTDiffDelta
 {
   public convenience init(from oldBlob: Blob?, forPath oldBlobPath: String?,
                           to newBlob: Blob?, forPath newBlobPath: String?,
-                          options: [AnyHashable : Any]? = nil) throws
+                          options: [AnyHashable: Any]? = nil) throws
   {
     guard let blob1 = (oldBlob as? GTBlob) ??
                       (oldBlob as? GitBlob)?.makeGTBlob(),
@@ -20,7 +20,7 @@ extension GTDiffDelta
 
   public convenience init(from oldBlob: Blob?, forPath oldBlobPath: String?,
                           to newData: Data?, forPath newBlobPath: String?,
-                          options: [AnyHashable : Any]? = nil) throws
+                          options: [AnyHashable: Any]? = nil) throws
   {
     guard let blob1 = (oldBlob as? GTBlob) ??
                       (oldBlob as? GitBlob)?.makeGTBlob()

@@ -65,7 +65,7 @@ class CommitChanges: FileChangesModel
   
   var treeRoot: NSTreeNode
   {
-    return self.makeTreeRoot(staged:true)
+    return self.makeTreeRoot(staged: true)
   }
   
   /// SHA of the parent commit to use for diffs
@@ -119,7 +119,7 @@ class CommitChanges: FileChangesModel
         contentsOf: changeList.filter({ return $0.change == .deleted })
                               .map({ return $0.path }))
     
-    let newRoot = NSTreeNode(representedObject: CommitTreeItem(path:"/"))
+    let newRoot = NSTreeNode(representedObject: CommitTreeItem(path: "/"))
     var nodes = [String: NSTreeNode]()
     
     for file in files {

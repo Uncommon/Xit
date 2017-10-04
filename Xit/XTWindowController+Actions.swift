@@ -76,8 +76,6 @@ extension XTWindowController
     }
   }
 
-  // "Discardable let" is used here to specify the desired return type.
-  // swiftlint:disable redundant_discardable_let
   @IBAction func fetch(_: AnyObject)
   {
     let _: XTFetchController? = startOperation()
@@ -92,7 +90,6 @@ extension XTWindowController
   {
     let _: XTPushController? = startOperation()
   }
-  // swiftlint:enable redundant_discardable_let
   
   @IBAction func remoteSettings(_ sender: AnyObject)
   {

@@ -139,7 +139,7 @@ extension WebViewController: WebUIDelegate
       ]
   
   func webView(_ sender: WebView!,
-               contextMenuItemsForElement element: [AnyHashable : Any]!,
+               contextMenuItemsForElement element: [AnyHashable: Any]!,
                defaultMenuItems: [Any]!) -> [Any]!
   {
     return defaultMenuItems.flatMap {

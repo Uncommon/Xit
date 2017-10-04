@@ -50,7 +50,7 @@ class XTTagPanelController: XTSheetController
   }
 }
 
-extension XTTagPanelController : NSTextFieldDelegate
+extension XTTagPanelController: NSTextFieldDelegate
 {
   override func controlTextDidChange(_ obj: Notification)
   {

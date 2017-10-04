@@ -131,7 +131,7 @@ class XTFileChangesDataSource: FileListDataSourceBase
   }
 }
 
-extension XTFileChangesDataSource : FileListDataSource
+extension XTFileChangesDataSource: FileListDataSource
 {
   var hierarchical: Bool { return false }
 
@@ -166,7 +166,7 @@ extension XTFileChangesDataSource : FileListDataSource
     guard let fileChange = item as? FileChange
     else { return .unmodified }
     
-    return type(of:self).transformDisplayChange(fileChange.change)
+    return type(of: self).transformDisplayChange(fileChange.change)
   }
   
   func unstagedChange(for item: Any) -> XitChange
@@ -174,7 +174,7 @@ extension XTFileChangesDataSource : FileListDataSource
     guard let fileChange = item as? FileChange
     else { return .unmodified }
     
-    return type(of:self).transformDisplayChange(fileChange.unstagedChange)
+    return type(of: self).transformDisplayChange(fileChange.unstagedChange)
   }
 }
 

@@ -108,7 +108,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   override func observeValue(forKeyPath keyPath: String?,
                              of object: Any?,
-                             change: [NSKeyValueChangeKey : Any]?,
+                             change: [NSKeyValueChangeKey: Any]?,
                              context: UnsafeMutableRawPointer?)
   {
     switch object {

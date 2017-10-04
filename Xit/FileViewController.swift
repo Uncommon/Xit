@@ -46,17 +46,17 @@ extension XitChange
   {
     switch self {
       case .added, .untracked:
-        return NSImage(named:NSImage.Name(rawValue: "added"))
+        return NSImage(named: NSImage.Name(rawValue: "added"))
       case .copied:
-        return NSImage(named:NSImage.Name(rawValue: "copied"))
+        return NSImage(named: NSImage.Name(rawValue: "copied"))
       case .deleted:
-        return NSImage(named:NSImage.Name(rawValue: "deleted"))
+        return NSImage(named: NSImage.Name(rawValue: "deleted"))
       case .modified:
-        return NSImage(named:NSImage.Name(rawValue: "modified"))
+        return NSImage(named: NSImage.Name(rawValue: "modified"))
       case .renamed:
-        return NSImage(named:NSImage.Name(rawValue: "renamed"))
+        return NSImage(named: NSImage.Name(rawValue: "renamed"))
       case .mixed:
-        return NSImage(named:NSImage.Name(rawValue: "mixed"))
+        return NSImage(named: NSImage.Name(rawValue: "mixed"))
       default:
         return nil
     }
@@ -66,17 +66,17 @@ extension XitChange
   {
     switch self {
       case .added:
-        return NSImage(named:NSImage.Name(rawValue: "add"))
+        return NSImage(named: NSImage.Name(rawValue: "add"))
       case .untracked:
-        return NSImage(named:NSImage.Name(rawValue: "add"))
+        return NSImage(named: NSImage.Name(rawValue: "add"))
       case .deleted:
-        return NSImage(named:NSImage.Name(rawValue: "delete"))
+        return NSImage(named: NSImage.Name(rawValue: "delete"))
       case .modified:
-        return NSImage(named:NSImage.Name(rawValue: "modify"))
+        return NSImage(named: NSImage.Name(rawValue: "modify"))
       case .mixed:
-        return NSImage(named:NSImage.Name(rawValue: "mixed"))
+        return NSImage(named: NSImage.Name(rawValue: "mixed"))
       case .conflict:
-        return NSImage(named:NSImage.Name(rawValue: "conflict"))
+        return NSImage(named: NSImage.Name(rawValue: "conflict"))
       default:
         return nil
     }
@@ -280,8 +280,8 @@ class FileViewController: NSViewController
            as? NSNumber)?.floatValue
       else { return }
       
-      self?.headerSplitView.animate(position:CGFloat(newHeight),
-                                    ofDividerAtIndex:0)
+      self?.headerSplitView.animate(position: CGFloat(newHeight),
+                                    ofDividerAtIndex: 0)
     }
     
     commitEntryController = XTCommitEntryController(
@@ -614,7 +614,7 @@ extension FileViewController: NSOutlineViewDelegate
   private func stagingImage(forChange change: XitChange,
                             otherChange: XitChange) -> NSImage?
   {
-    let change = displayChange(forChange:change, otherChange:otherChange)
+    let change = displayChange(forChange: change, otherChange: otherChange)
     
     return change.stageImage
   }
@@ -623,7 +623,7 @@ extension FileViewController: NSOutlineViewDelegate
                          change: XitChange, otherChange: XitChange)
   {
     button.image = modelCanCommit
-        ? stagingImage(forChange:change, otherChange:otherChange)
+        ? stagingImage(forChange: change, otherChange: otherChange)
         : change.changeImage
   }
 
@@ -635,8 +635,8 @@ extension FileViewController: NSOutlineViewDelegate
                                             owner: self)
                    as! TableButtonView
     let button = cellView.button!
-    let displayChange = self.displayChange(forChange:change,
-                                           otherChange:otherChange)
+    let displayChange = self.displayChange(forChange: change,
+                                           otherChange: otherChange)
     
     (button.cell as! NSButtonCell).imageDimsWhenDisabled = false
     button.isEnabled = displayChange != .mixed

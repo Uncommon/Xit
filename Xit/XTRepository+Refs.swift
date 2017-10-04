@@ -1,7 +1,7 @@
 import Foundation
 
 // MARK: Refs
-extension XTRepository : CommitReferencing
+extension XTRepository: CommitReferencing
 {
   /// Reloads the cached map of OIDs to refs.
   func rebuildRefsIndex()

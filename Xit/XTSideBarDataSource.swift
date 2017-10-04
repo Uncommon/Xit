@@ -746,7 +746,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
 }
 
 // MARK: XTOutlineViewDelegate
-extension XTSideBarDataSource : XTOutlineViewDelegate
+extension XTSideBarDataSource: XTOutlineViewDelegate
 {
   func outlineViewClickedSelectedRow(_ outline: NSOutlineView)
   {
