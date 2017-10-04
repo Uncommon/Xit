@@ -8,14 +8,14 @@ public protocol Stash: class
   var untrackedCommit: Commit? { get }
   
   func changes() -> [FileChange]
-  func stagedDiffForFile(_ path: String) -> XTDiffMaker?
-  func unstagedDiffForFile(_ path: String) -> XTDiffMaker?
+  func stagedDiffForFile(_ path: String) -> XTDiffMaker.DiffResult?
+  func unstagedDiffForFile(_ path: String) -> XTDiffMaker.DiffResult?
 }
 
 /// Wraps a stash to preset a unified list of file changes.
 public class XTStash: NSObject, Stash
 {
-  typealias Repo = CommitStorage & FileStaging & Stashing
+  typealias Repo = CommitStorage & FileContents & FileStaging & Stashing
   
   unowned var repo: Repo
   public var message: String?
@@ -101,20 +101,24 @@ public class XTStash: NSObject, Stash
     return object as? GTBlob
   }
 
-  public func stagedDiffForFile(_ path: String) -> XTDiffMaker?
+  public func stagedDiffForFile(_ path: String) -> XTDiffMaker.DiffResult?
   {
-    guard let indexCommit = self.indexCommit as? XTCommit,
-          let indexEntry = try? indexCommit.tree?.entry(withPath: path),
+    guard let indexCommit = self.indexCommit as? XTCommit
+    else { return nil }
+    guard let indexSHA = indexCommit.sha,
+          repo.isTextFile(path, commit: indexSHA)
+    else { return .binary }
+    guard let indexEntry = try? indexCommit.tree?.entry(withPath: path),
           let indexBlob = try? indexEntry!.gtObject() as? GTBlob
     else { return nil }
     let headBlob = self.headBlobForPath(path)
     
-    return XTDiffMaker(from: XTDiffMaker.SourceType(headBlob),
-                       to: XTDiffMaker.SourceType(indexBlob),
-                       path: path)
+    return .diff(XTDiffMaker(from: XTDiffMaker.SourceType(headBlob),
+                             to: XTDiffMaker.SourceType(indexBlob),
+                             path: path))
   }
 
-  public func unstagedDiffForFile(_ path: String) -> XTDiffMaker?
+  public func unstagedDiffForFile(_ path: String) -> XTDiffMaker.DiffResult?
   {
     guard let indexCommit = self.indexCommit as? XTCommit
     else { return nil }
@@ -122,6 +126,10 @@ public class XTStash: NSObject, Stash
     var indexBlob: GTBlob? = nil
     
     if let indexEntry = try? indexCommit.tree!.entry(withPath: path) {
+      if let indexSHA = indexCommit.sha,
+         !repo.isTextFile(path, commit: indexSHA) {
+        return .binary
+      }
       let object = try? indexEntry.gtObject()
       
       indexBlob = object as? GTBlob
@@ -129,21 +137,25 @@ public class XTStash: NSObject, Stash
     
     if let untrackedCommit = self.untrackedCommit as? XTCommit,
        let untrackedEntry = try? untrackedCommit.tree?.entry(withPath: path) {
+      if let untrackedSHA = untrackedCommit.sha,
+         !repo.isTextFile(path, commit: untrackedSHA) {
+        return .binary
+      }
       guard let untrackedBlob = try? untrackedEntry!.gtObject() as? GTBlob
       else { return nil }
       
-      return XTDiffMaker(from: XTDiffMaker.SourceType(indexBlob),
-                         to: XTDiffMaker.SourceType(untrackedBlob),
-                         path: path)
+      return .diff(XTDiffMaker(from: XTDiffMaker.SourceType(indexBlob),
+                               to: XTDiffMaker.SourceType(untrackedBlob),
+                               path: path))
     }
     if let mainCommit = self.mainCommit as? XTCommit,
        let unstagedEntry = try? mainCommit.tree?.entry(withPath: path) {
       guard let unstagedBlob = try? unstagedEntry?.gtObject() as? GTBlob
       else { return nil }
       
-      return XTDiffMaker(from: XTDiffMaker.SourceType(indexBlob),
-                         to: XTDiffMaker.SourceType(unstagedBlob),
-                         path: path)
+      return .diff(XTDiffMaker(from: XTDiffMaker.SourceType(indexBlob),
+                               to: XTDiffMaker.SourceType(unstagedBlob),
+                               path: path))
     }
     return nil
   }

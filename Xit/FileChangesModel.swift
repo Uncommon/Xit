@@ -23,7 +23,7 @@ protocol FileChangesModel
   /// - parameter path: Repository-relative file path.
   /// - parameter staged: Whether to show the staged or unstaged diff. Ignored
   /// for models that don't have unstaged files.
-  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
+  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker.DiffResult?
   /// Get the contents of the given file.
   /// - parameter path: Repository-relative file path.
   /// - parameter staged: Whether to show the staged or unstaged diff. Ignored
@@ -84,21 +84,12 @@ class CommitChanges: FileChangesModel
     }
   }
   
-  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
+  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker.DiffResult?
   {
-    guard let diffParent = self.diffParent ?? commit.parentOIDs.first
-    else {
-      guard let toTree = commit.gtCommit.tree,
-            let toEntry = try? toTree.entry(withPath: path),
-            let toBlob = (try? GTObject(treeEntry: toEntry)) as? GTBlob
-      else { return nil }
-      
-      return XTDiffMaker(from: .data(Data()), to: .blob(toBlob), path: path)
-    }
-  
     return self.repository.diffMaker(forFile: path,
                                      commitOID: commit.oid,
-                                     parentOID: diffParent)
+                                     parentOID: diffParent ??
+                                                commit.parentOIDs.first)
   }
   
   func blame(for path: String, staged: Bool) -> Blame?
@@ -198,7 +189,7 @@ class StashChanges: FileChangesModel
     self.stash = stash
   }
   
-  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
+  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker.DiffResult?
   {
     if staged {
       return self.stash.stagedDiffForFile(path)
@@ -289,7 +280,7 @@ class StagingChanges: FileChangesModel
     self.repository = repository
   }
   
-  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
+  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker.DiffResult?
   {
     if staged {
       return self.repository.stagedDiff(file: path)

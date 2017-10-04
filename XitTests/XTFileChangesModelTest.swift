@@ -35,8 +35,13 @@ class XTFileChangesModelTest: XTTest
     
     XCTAssertEqual(data, self.data(for:"some text"))
     
-    let patch = try! model.diffForFile(file1Name, staged: false)!
-                     .makeDiff()!.generatePatch()
+    guard let diffResult = model.diffForFile(file1Name, staged: false),
+          let diff = diffResult.extractDiff()
+    else {
+      XCTFail()
+      return
+    }
+    let patch = try! diff.generatePatch()
     
     XCTAssertEqual(patch.addedLinesCount, 1)
   }
@@ -45,8 +50,13 @@ class XTFileChangesModelTest: XTTest
       _ model: FileChangesModel, path: String, staged: Bool,
       added: UInt, deleted: UInt)
   {
-    let patch = try! model.diffForFile(path, staged: staged)!
-                     .makeDiff()!.generatePatch()
+    guard let diffResult = model.diffForFile(path, staged: staged),
+          let diff = diffResult.extractDiff()
+    else {
+      XCTFail()
+      return
+    }
+    let patch = try! diff.generatePatch()
     
     XCTAssertEqual(patch.addedLinesCount, added,
         String(format: "%@%@", staged ? ">" : "<", path))

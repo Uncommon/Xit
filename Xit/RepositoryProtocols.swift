@@ -41,12 +41,12 @@ public protocol FileDiffing: class
 {
   func diffMaker(forFile file: String,
                  commitOID: OID,
-                 parentOID: OID?) -> XTDiffMaker?
+                 parentOID: OID?) -> XTDiffMaker.DiffResult?
   func diff(for path: String,
             commitSHA sha: String,
             parentOID: OID?) -> XTDiffDelta?
-  func stagedDiff(file: String) -> XTDiffMaker?
-  func unstagedDiff(file: String) -> XTDiffMaker?
+  func stagedDiff(file: String) -> XTDiffMaker.DiffResult?
+  func unstagedDiff(file: String) -> XTDiffMaker.DiffResult?
   
   func blame(for path: String, from startOID: OID?, to endOID: OID?) -> Blame?
   func blame(for path: String, data fromData: Data?, to endOID: OID?) -> Blame?
@@ -56,6 +56,7 @@ public protocol FileContents: class
 {
   var repoURL: URL { get }
   
+  func isTextFile(_ path: String, commit: String?) -> Bool
   func fileBlob(ref: String, path: String) -> Blob?
   func stagedBlob(file: String) -> Blob?
   func contentsOfFile(path: String, at commit: Commit) -> Data?

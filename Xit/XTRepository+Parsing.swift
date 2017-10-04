@@ -123,31 +123,6 @@ extension XTRepository: FileStaging
     return result
   }
   
-  static let textNames = ["AUTHORS", "CONTRIBUTING", "COPYING", "LICENSE",
-                          "Makefile", "README"]
-  
-  // Returns true if the file seems to be text, based on its name.
-  func isTextFile(_ path: String, commit: String) -> Bool
-  {
-    let name = (path as NSString).lastPathComponent
-    guard !name.isEmpty
-    else { return false }
-    
-    if XTRepository.textNames.contains(name) {
-      return true
-    }
-    
-    let ext = (name as NSString).pathExtension
-    guard !ext.isEmpty
-    else { return false }
-    
-    let unmanaged = UTTypeCreatePreferredIdentifierForTag(
-          kUTTagClassFilenameExtension, ext as CFString, nil)
-    let utType = unmanaged?.takeRetainedValue()
-    
-    return utType.map { UTTypeConformsTo($0, kUTTypeText) } ?? false
-  }
-  
   // Returns a file delta from a given diff.
   func delta(from diff: GTDiff, path: String) -> XTDiffDelta?
   {
