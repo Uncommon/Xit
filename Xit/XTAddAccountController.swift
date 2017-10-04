@@ -8,12 +8,22 @@ class XTAddAccountController: XTSheetController
   @IBOutlet private weak var passwordField: NSSecureTextField!
   @IBOutlet private weak var locationField: NSTextField!
   
+  private var responderObserver: NSKeyValueObservation?
+  
   override var window: NSWindow?
   {
     didSet
     {
-      window?.addObserver(self, forKeyPath: "firstResponder",
-                          options: .new, context: nil)
+      if let window = self.window {
+        responderObserver = window.observe(\.firstResponder, options: [.new]) {
+          (_, change) in
+          guard let newResponder = change.newValue,
+                newResponder === self.passwordField
+          else { return }
+          
+          self.passwordFocused()
+        }
+      }
     }
   }
   
@@ -35,26 +45,6 @@ class XTAddAccountController: XTSheetController
   {
     get { return URL(string: locationField.stringValue) }
     set { locationField.stringValue = (newValue?.absoluteString)! }
-  }
-  
-  deinit
-  {
-    window?.removeObserver(self, forKeyPath: "firstResponder")
-  }
-  
-  override func observeValue(
-      forKeyPath keyPath: String?, of object: Any?,
-      change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?)
-  {
-    guard (object != nil) && ((object! as! NSObject) == window) &&
-          (keyPath != nil) && (keyPath == "firstResponder")
-    else { return }
-    guard let change = change,
-          let newResponder = change[NSKeyValueChangeKey.newKey] as? NSView,
-          newResponder == passwordField
-    else { return }
-    
-    passwordFocused()
   }
   
   func showFieldAlert(_ message: String, field: NSView)

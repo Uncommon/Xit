@@ -57,6 +57,8 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   var currentOperation: XTOperationController?
   
+  private var windowObserver, repoObserver: NSKeyValueObservation?
+  
   override var document: AnyObject?
   {
     didSet
@@ -86,10 +88,15 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       [weak self] _ in
       self?.updateBranchList()
     }
-    window.addObserver(self, forKeyPath: #keyPath(NSWindow.title),
-                       options: [], context: nil)
-    repo.addObserver(self, forKeyPath: #keyPath(XTRepository.currentBranch),
-                     options: [], context: nil)
+    windowObserver = window.observe(\.title) {
+      (_, _) in
+      self.updateMiniwindowTitle()
+    }
+    repoObserver = repo.observe(\.currentBranch) {
+      (_, _) in
+      self.titleBarController?.selectedBranch = repo.currentBranch
+      self.updateMiniwindowTitle()
+    }
     sidebarController.repo = repo
     historyController.finishLoad(repository: repo)
     updateMiniwindowTitle()
@@ -103,27 +110,6 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     refsChangedObserver.map { center.removeObserver($0) }
     center.removeObserver(self)
     currentOperation?.canceled = true
-    window?.removeObserver(self, forKeyPath: #keyPath(NSWindow.title))
-  }
-  
-  override func observeValue(forKeyPath keyPath: String?,
-                             of object: Any?,
-                             change: [NSKeyValueChangeKey: Any]?,
-                             context: UnsafeMutableRawPointer?)
-  {
-    switch object {
-      case let repo as XTRepository:
-        if keyPath == #keyPath(XTRepository.currentBranch) {
-          titleBarController?.selectedBranch = repo.currentBranch
-          updateMiniwindowTitle()
-        }
-      case _ as NSWindow:
-        if keyPath == #keyPath(NSWindow.title) {
-          updateMiniwindowTitle()
-        }
-      default:
-        break
-    }
   }
   
   func select(sha: String)
@@ -169,12 +155,18 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     guard let window = self.window,
           let repo = xtDocument?.repository
     else { return }
+    
+    var newTitle: String!
   
     if let currentBranch = repo.currentBranch {
-      window.miniwindowTitle = "\(window.title) - \(currentBranch)"
+      newTitle = "\(window.title) - \(currentBranch)"
     }
     else {
-      window.miniwindowTitle = window.title
+      newTitle = window.title
+    }
+    window.miniwindowTitle = newTitle
+    if #available(OSX 10.13, *) {
+      window.tab.title = newTitle
     }
   }
   
