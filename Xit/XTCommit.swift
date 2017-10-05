@@ -1,10 +1,9 @@
 import Cocoa
 
 
-public protocol Commit: CustomStringConvertible
+public protocol Commit: OIDObject, CustomStringConvertible
 {
   var sha: String? { get }
-  var oid: OID { get }
   var parentOIDs: [OID] { get }
   
   var message: String? { get }
@@ -109,6 +108,15 @@ public class XTCommit: Commit
   public var tree: GTTree?
   { return gtCommit.tree }
 
+  init?(gitCommit: OpaquePointer, repository: OpaquePointer)
+  {
+    guard let repository = GTRepository(gitRepository: repository),
+          let commit = GTCommit(obj: gitCommit, in: repository)
+    else { return nil }
+    
+    self.gtCommit = commit
+  }
+  
   init(commit: GTCommit)
   {
     self.gtCommit = commit

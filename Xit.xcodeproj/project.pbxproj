@@ -11,6 +11,7 @@
 		31C7C12E13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */; };
 		31C7C13413ECC74C00A65FE9 /* XTHistoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31C7C13213ECC74C00A65FE9 /* XTHistoryViewController.xib */; };
 		89039F561703A9FC000949A8 /* html in Resources */ = {isa = PBXBuildFile; fileRef = 89039F551703A9FC000949A8 /* html */; };
+		891261B01F867FCC00C292B7 /* Tree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891261AF1F867FCC00C292B7 /* Tree.swift */; };
 		89369A741EDF47FC001B69C6 /* NSTask+Throwing.m in Sources */ = {isa = PBXBuildFile; fileRef = 89369A731EDF47FC001B69C6 /* NSTask+Throwing.m */; };
 		894C8D931CA44A44001A4B80 /* stagingTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 894C8D911CA44A44001A4B80 /* stagingTemplate.png */; };
 		894C8D941CA44A44001A4B80 /* stagingTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 894C8D921CA44A44001A4B80 /* stagingTemplate@2x.png */; };
@@ -394,6 +395,7 @@
 		31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary+MultiObjectForKey.m"; sourceTree = "<group>"; };
 		31C7C13213ECC74C00A65FE9 /* XTHistoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTHistoryViewController.xib; sourceTree = "<group>"; };
 		89039F551703A9FC000949A8 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
+		891261AF1F867FCC00C292B7 /* Tree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
 		89369A721EDF47FC001B69C6 /* NSTask+Throwing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTask+Throwing.h"; sourceTree = "<group>"; };
 		89369A731EDF47FC001B69C6 /* NSTask+Throwing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTask+Throwing.m"; sourceTree = "<group>"; };
 		894C8D911CA44A44001A4B80 /* stagingTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stagingTemplate.png; sourceTree = "<group>"; };
@@ -1098,6 +1100,7 @@
 				C9DEA49B1E4A900300DF4069 /* OID.swift */,
 				C959A7221F6C6974004277CD /* RepositoryProtocols.swift */,
 				C9DEA4AC1E4B82B200DF4069 /* Signature.swift */,
+				891261AF1F867FCC00C292B7 /* Tree.swift */,
 				C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */,
 				DDDA447015B0E97000DF407B /* XitChange.h */,
 			);
@@ -1610,6 +1613,7 @@
 				C98925D51DB6D3D300E5645C /* XTNewTagController.swift in Sources */,
 				C959CDEB1F859DB800C1E282 /* XTSidebarController+Actions.swift in Sources */,
 				C96F65461D53A6CE001B2557 /* XTHistoryCellView.swift in Sources */,
+				891261B01F867FCC00C292B7 /* Tree.swift in Sources */,
 				89CB61961E77B34C00D69FE4 /* XTDiffDelta.swift in Sources */,
 				C9BDF4D01D99A7660034841F /* XTRenameBranchPanelController.swift in Sources */,
 				C94154A01ED4ECF40030E481 /* BuildStatusViewController.swift in Sources */,

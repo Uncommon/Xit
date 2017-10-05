@@ -23,6 +23,12 @@ extension OID
 }
 
 
+public protocol OIDObject
+{
+  var oid: OID { get }
+}
+
+
 public struct GitOID: OID, Hashable
 {
   let oid: git_oid
