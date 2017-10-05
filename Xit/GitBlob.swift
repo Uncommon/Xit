@@ -27,17 +27,31 @@ enum BlobError: Swift.Error
   case cantLoadData
 }
 
-public class GitBlob: Blob
+public class GitBlob: Blob, OIDObject
 {
   let blob: OpaquePointer
   
-  init?(repository: XTRepository, oid: OID)
+  public var oid: OID
+  {
+    return GitOID(oidPtr: git_blob_id(blob))
+  }
+  
+  init(blob: OpaquePointer)
+  {
+    self.blob = blob
+  }
+  
+  convenience init?(repository: XTRepository, oid: OID)
+  {
+    self.init(gitRepository: repository.gtRepo.git_repository(), oid: oid)
+  }
+  
+  init?(gitRepository: OpaquePointer, oid: OID)
   {
     guard let oid = oid as? GitOID
     else { return nil }
     var blob: OpaquePointer?
-    let result = git_blob_lookup(&blob, repository.gtRepo.git_repository(),
-                                 oid.unsafeOID())
+    let result = git_blob_lookup(&blob, gitRepository, oid.unsafeOID())
     guard result == 0,
           let finalBlob = blob
     else { return nil }

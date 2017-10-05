@@ -32,11 +32,11 @@ extension XTRepository: FileContents
     // TODO: make a Tree protocol to eliminate this cast
     guard let commit = commit as? XTCommit,
           let tree = commit.tree,
-          let entry = try? tree.entry(withPath: path),
-          let blob = (try? entry.gtObject()) as? GTBlob
+          let entry = tree.entry(path: path),
+          let blob = entry.object as? Blob
     else { return nil }
     
-    return blob.data()
+    return blob.makeData()
   }
   
   public func contentsOfStagedFile(path: String) -> Data?
@@ -64,11 +64,11 @@ extension XTRepository: FileContents
   public func fileBlob(ref: String, path: String) -> Blob?
   {
     guard let headTree = XTCommit(ref: ref, repository: self)?.tree,
-          let headEntry = try? headTree.entry(withPath: path),
-          let headObject = try? GTObject(treeEntry: headEntry)
+          let headEntry = headTree.entry(path: path),
+          let headObject = headEntry.object
     else { return nil }
     
-    return headObject as? GTBlob
+    return headObject as? Blob
   }
   
   /// Returns a file URL for a given relative path.

@@ -18,6 +18,8 @@ public protocol Commit: OIDObject, CustomStringConvertible
   var committerEmail: String? { get }
   var commitDate: Date { get }
   var email: String? { get }
+  
+  var tree: Tree? { get }
 }
 
 extension Commit
@@ -105,8 +107,16 @@ public class XTCommit: Commit
   public var email: String?
   { return gtCommit.author?.email }
 
-  public var tree: GTTree?
-  { return gtCommit.tree }
+  public var tree: Tree?
+  {
+    var tree: OpaquePointer?
+    let result = git_commit_tree(&tree, gtCommit.git_commit())
+    guard result == 0,
+          let finalTree = tree
+    else { return nil }
+    
+    return GitTree(tree: finalTree)
+  }
 
   init?(gitCommit: OpaquePointer, repository: OpaquePointer)
   {
@@ -168,15 +178,14 @@ public class XTCommit: Commit
   /// to the root.
   func allFiles() -> [String]
   {
-    guard let tree = tree
+    guard let tree = tree as? GitTree
     else { return [] }
     
     var result = [String]()
     
-    _ = try? tree.enumerateEntries(with: .pre) {
-      (entry, root, _) -> Bool in
+    tree.walkEntries {
+      (entry, root) in
       result.append(root.appending(pathComponent: entry.name))
-      return true
     }
     return result
   }

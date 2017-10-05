@@ -108,8 +108,8 @@ public class XTStash: NSObject, Stash
     guard let indexSHA = indexCommit.sha,
           repo.isTextFile(path, commit: indexSHA)
     else { return .binary }
-    guard let indexEntry = try? indexCommit.tree?.entry(withPath: path),
-          let indexBlob = try? indexEntry!.gtObject() as? GTBlob
+    guard let indexEntry = indexCommit.tree?.entry(path: path),
+          let indexBlob = indexEntry.object as? Blob
     else { return nil }
     let headBlob = self.headBlobForPath(path)
     
@@ -123,25 +123,25 @@ public class XTStash: NSObject, Stash
     guard let indexCommit = self.indexCommit as? XTCommit
     else { return nil }
 
-    var indexBlob: GTBlob? = nil
+    var indexBlob: Blob? = nil
     
-    if let indexEntry = try? indexCommit.tree!.entry(withPath: path) {
+    if let indexEntry = indexCommit.tree!.entry(path: path) {
       if let indexSHA = indexCommit.sha,
          !repo.isTextFile(path, commit: indexSHA) {
         return .binary
       }
-      let object = try? indexEntry.gtObject()
+      let object = indexEntry.object
       
-      indexBlob = object as? GTBlob
+      indexBlob = object as? Blob
     }
     
     if let untrackedCommit = self.untrackedCommit as? XTCommit,
-       let untrackedEntry = try? untrackedCommit.tree?.entry(withPath: path) {
+       let untrackedEntry = untrackedCommit.tree?.entry(path: path) {
       if let untrackedSHA = untrackedCommit.sha,
          !repo.isTextFile(path, commit: untrackedSHA) {
         return .binary
       }
-      guard let untrackedBlob = try? untrackedEntry!.gtObject() as? GTBlob
+      guard let untrackedBlob = untrackedEntry.object as? Blob
       else { return nil }
       
       return .diff(XTDiffMaker(from: XTDiffMaker.SourceType(indexBlob),
@@ -149,8 +149,8 @@ public class XTStash: NSObject, Stash
                                path: path))
     }
     if let mainCommit = self.mainCommit as? XTCommit,
-       let unstagedEntry = try? mainCommit.tree?.entry(withPath: path) {
-      guard let unstagedBlob = try? unstagedEntry?.gtObject() as? GTBlob
+       let unstagedEntry = mainCommit.tree?.entry(path: path) {
+      guard let unstagedBlob = unstagedEntry.object as? Blob
       else { return nil }
       
       return .diff(XTDiffMaker(from: XTDiffMaker.SourceType(indexBlob),

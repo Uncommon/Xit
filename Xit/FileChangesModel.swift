@@ -206,7 +206,7 @@ class StashChanges: FileChangesModel
     }
     else {
       if let untrackedCommit = self.stash.untrackedCommit as? XTCommit,
-         (try? untrackedCommit.tree?.entry(withPath: path)) != nil {
+         untrackedCommit.tree?.entry(path: path) != nil {
         return untrackedCommit
       }
       else {

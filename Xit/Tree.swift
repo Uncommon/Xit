@@ -1,22 +1,67 @@
 import Foundation
 
-protocol Tree: OIDObject
+public protocol Tree: OIDObject
 {
   var count: Int { get }
   
   func entry(named: String) -> TreeEntry?
   func entry(path: String) -> TreeEntry?
+  func walkEntries(callback: (TreeEntry, String) -> Void)
 }
 
-protocol TreeEntry: OIDObject
+public protocol TreeEntry: OIDObject
 {
+  // TODO: Replace the GT enum
   var type: GTObjectType { get }
   var name: String { get }
   var object: OIDObject? { get }
 }
 
+
+/// Used as a return value when an entry can't be returned for a given subscript
+class NullEntry: TreeEntry
+{
+  var oid: OID
+  { return GitOID.zero() }
+  var type: GTObjectType
+  { return .bad }
+  var name: String
+  { return "" }
+  var object: OIDObject?
+  { return nil }
+}
+
 class GitTree: Tree
 {
+  struct EntryCollection: Collection
+  {
+    let tree: GitTree
+
+    var startIndex: Int { return 0 }
+    var endIndex: Int { return tree.count }
+    
+    func index(after i: Int) -> Int
+    {
+      return i + 1
+    }
+    
+    subscript(position: Int) -> TreeEntry
+    {
+      guard let result = git_tree_entry_byindex(tree.tree, position),
+            let owner = git_tree_owner(tree.tree)
+      else {
+        return NullEntry()
+      }
+      
+      return GitTreeEntry(entry: result, owner: owner)
+    }
+  }
+  
+  var entries: EntryCollection
+  {
+    return EntryCollection(tree: self)
+  }
+  
   let tree: OpaquePointer
   
   var oid: OID
@@ -29,7 +74,7 @@ class GitTree: Tree
   
   var count: Int
   {
-    return git_index_entrycount(tree)
+    return git_tree_entrycount(tree)
   }
   
   init(tree: OpaquePointer)
@@ -62,6 +107,22 @@ class GitTree: Tree
     else { return nil }
     
     return GitTreeEntry(entry: finalEntry, owner: owner)
+  }
+  
+  func walkEntries(callback: (TreeEntry, String) -> Void)
+  {
+    walkEntries(root: "", callback: callback)
+  }
+  
+  private func walkEntries(root: String, callback: (TreeEntry, String) -> Void)
+  {
+    for entry in entries {
+      callback(entry, root)
+      if let tree = entry.object as? GitTree {
+        tree.walkEntries(root: root.appending(pathComponent: entry.name),
+                         callback: callback)
+      }
+    }
   }
 }
 
@@ -101,8 +162,8 @@ class GitTreeEntry: TreeEntry
     else { return nil }
     
     switch type {
-      case .commit:
-        return XTCommit(gitCommit: finalObject, repository: owner)
+      case .blob:
+        return GitBlob(blob: finalObject)
       case .tree:
         return GitTree(tree: finalObject)
       default:
