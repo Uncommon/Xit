@@ -110,7 +110,7 @@ class CommitChanges: FileChangesModel
     else { return NSTreeNode() }
     var files = commit.allFiles()
     let changeList = repository.changes(for: sha, parent: diffParent)
-    var changes = [String: XitChange]()
+    var changes = [String: DeltaStatus]()
       
     for change in changeList {
       changes[change.path] = change.change
@@ -342,7 +342,7 @@ extension FileChangesModel
     guard let childNodes = node.children
     else { return }
     
-    var change: XitChange?, unstagedChange: XitChange?
+    var change: DeltaStatus?, unstagedChange: DeltaStatus?
     
     for child in childNodes {
       let childItem = child.representedObject as! CommitTreeItem
@@ -355,14 +355,14 @@ extension FileChangesModel
         change = childItem.change
       }
       else if change! != childItem.change {
-        change = XitChange.mixed
+        change = DeltaStatus.mixed
       }
       
       if unstagedChange == nil {
         unstagedChange = childItem.unstagedChange
       }
       else if unstagedChange! != childItem.unstagedChange {
-        unstagedChange = XitChange.mixed
+        unstagedChange = DeltaStatus.mixed
       }
     }
     

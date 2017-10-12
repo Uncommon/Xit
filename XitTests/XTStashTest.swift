@@ -36,14 +36,14 @@ class XTStashTest: XTTest
     
     XCTAssertEqual(changes.count, 3)
     XCTAssertEqual(addedChange.path, addedName)
-    XCTAssertEqual(addedChange.change, XitChange.added)
-    XCTAssertEqual(addedChange.unstagedChange, XitChange.unmodified)
+    XCTAssertEqual(addedChange.change, DeltaStatus.added)
+    XCTAssertEqual(addedChange.unstagedChange, DeltaStatus.unmodified)
     XCTAssertEqual(file1Change.path, self.file1Name)
-    XCTAssertEqual(file1Change.change, XitChange.unmodified)
-    XCTAssertEqual(file1Change.unstagedChange, XitChange.modified)
+    XCTAssertEqual(file1Change.change, DeltaStatus.unmodified)
+    XCTAssertEqual(file1Change.unstagedChange, DeltaStatus.modified)
     XCTAssertEqual(untrackedChange.path, untrackedName)
-    XCTAssertEqual(untrackedChange.change, XitChange.unmodified)
-    XCTAssertEqual(untrackedChange.unstagedChange, XitChange.added)
+    XCTAssertEqual(untrackedChange.change, DeltaStatus.unmodified)
+    XCTAssertEqual(untrackedChange.unstagedChange, DeltaStatus.added)
     
     XCTAssertNotNil(stash.headBlobForPath(self.file1Name))
     

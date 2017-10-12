@@ -30,18 +30,8 @@ protocol ContextVariable: class
   var contextLines: UInt { get set }
 }
 
-extension XitChange
+extension DeltaStatus
 {
-  var isModified: Bool
-  {
-    switch self {
-      case .unmodified, .untracked:
-        return false
-      default:
-        return true
-    }
-  }
-  
   var changeImage: NSImage?
   {
     switch self {

@@ -1,32 +1,18 @@
 import Foundation
 
-extension XitChange
-{
-  init(delta: GTDeltaType)
-  {
-    guard let change = XitChange(rawValue: UInt(delta.rawValue))
-    else {
-      self = .unmodified
-      return
-    }
-    
-    self = change
-  }
-}
-
 public struct WorkspaceFileStatus
 {
-  let change, unstagedChange: XitChange
+  let change, unstagedChange: DeltaStatus
 }
 
 // Has to inherit from NSObject so NSTreeNode can use it to sort
 public class FileChange: NSObject
 {
   @objc var path: String
-  var change, unstagedChange: XitChange
+  var change, unstagedChange: DeltaStatus
   
-  init(path: String, change: XitChange = .unmodified,
-       unstagedChange: XitChange = .unmodified)
+  init(path: String, change: DeltaStatus = .unmodified,
+       unstagedChange: DeltaStatus = .unmodified)
   {
     self.path = path
     self.change = change
@@ -39,8 +25,8 @@ class FileStagingChange: FileChange
   let destinationPath: String
   
   init(path: String, destinationPath: String,
-       change: XitChange = .unmodified,
-       unstagedChange: XitChange = .unmodified)
+       change: DeltaStatus = .unmodified,
+       unstagedChange: DeltaStatus = .unmodified)
   {
     self.destinationPath = destinationPath
     super.init(path: path, change: change, unstagedChange: unstagedChange)
@@ -63,9 +49,9 @@ extension XTRepository: FileStaging
       else { return }
       
       let status = WorkspaceFileStatus(
-            change: headToIndex.map { XitChange(delta: $0.status) }
+            change: headToIndex.map { DeltaStatus(delta: $0.status) }
                     ?? .unmodified,
-            unstagedChange: indexToWorking.map { XitChange(delta: $0.status) }
+            unstagedChange: indexToWorking.map { DeltaStatus(delta: $0.status) }
                             ?? .unmodified)
       result[path] = status
     }
@@ -90,7 +76,7 @@ extension XTRepository: FileStaging
       (delta, _) in
       if delta.type != .unmodified {
         let change = FileChange(path: delta.newFile.path,
-                                change: XitChange(delta: delta.type))
+                                change: DeltaStatus(delta: delta.type))
         
         result.append(change)
       }
@@ -109,10 +95,10 @@ extension XTRepository: FileStaging
       (headToIndex, indexToWorking, _) in
       guard let delta = headToIndex ?? indexToWorking
       else { return }
-      let stagedChange = headToIndex.map { XitChange(delta: $0.status) }
-                         ?? XitChange.unmodified
-      let unstagedChange = indexToWorking.map { XitChange(delta: $0.status) }
-                           ?? XitChange.unmodified
+      let stagedChange = headToIndex.map { DeltaStatus(delta: $0.status) }
+                         ?? DeltaStatus.unmodified
+      let unstagedChange = indexToWorking.map { DeltaStatus(delta: $0.status) }
+                           ?? DeltaStatus.unmodified
       let change = FileStagingChange(path: delta.oldFile?.path ?? "",
                                destinationPath: delta.newFile?.path ?? "",
                                change: stagedChange,

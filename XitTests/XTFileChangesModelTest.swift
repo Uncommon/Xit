@@ -29,7 +29,7 @@ class XTFileChangesModelTest: XTTest
     let change = changes[0]
     
     XCTAssertEqual(change.path, file1Name)
-    XCTAssertEqual(change.change, XitChange.added)
+    XCTAssertEqual(change.change, DeltaStatus.added)
     
     let data = model.dataForFile(file1Name, staged: false)
     
@@ -118,22 +118,22 @@ class XTFileChangesModelTest: XTTest
     var change = changes[0]
     
     XCTAssertEqual(change.path, file1Name)
-    XCTAssertEqual(change.unstagedChange, XitChange.modified)
+    XCTAssertEqual(change.unstagedChange, DeltaStatus.modified)
     
     self.writeText("new", toFile: addedName)
     changes = model.changes
     XCTAssertEqual(changes.count, 2)
     change = changes[0] // "added" will be sorted to the top
     XCTAssertEqual(change.path, addedName)
-    XCTAssertEqual(change.unstagedChange, XitChange.untracked)
+    XCTAssertEqual(change.unstagedChange, DeltaStatus.untracked)
     
     try! repository.stage(file: addedName)
     changes = model.changes
     XCTAssertEqual(changes.count, 2)
     change = changes[0]
     XCTAssertEqual(change.path, addedName)
-    XCTAssertEqual(change.change, XitChange.added)
-    XCTAssertEqual(change.unstagedChange, XitChange.unmodified)
+    XCTAssertEqual(change.change, DeltaStatus.added)
+    XCTAssertEqual(change.unstagedChange, DeltaStatus.unmodified)
   }
   
   func testStagingTreeSimple()
@@ -146,7 +146,7 @@ class XTFileChangesModelTest: XTTest
     
     let change = tree.children![0].representedObject as! FileChange
     
-    XCTAssertEqual(change.change, XitChange.unmodified)
+    XCTAssertEqual(change.change, DeltaStatus.unmodified)
   }
   
   func testCommitTree()
@@ -169,11 +169,11 @@ class XTFileChangesModelTest: XTTest
     var change = tree.children![0].representedObject as! FileChange
     
     XCTAssertEqual(change.path, addedName)
-    XCTAssertEqual(change.change, XitChange.added)
+    XCTAssertEqual(change.change, DeltaStatus.added)
     
     change = tree.children![1].representedObject as! FileChange
     XCTAssertEqual(change.path, file1Name)
-    XCTAssertEqual(change.change, XitChange.unmodified)
+    XCTAssertEqual(change.change, DeltaStatus.unmodified)
   }
   
   func testStashTree()
@@ -194,9 +194,9 @@ class XTFileChangesModelTest: XTTest
     
     let expectedPaths =
         [addedName,   deletedName, file1Name,   untrackedName]
-    let expectedChanges: [XitChange] =
+    let expectedChanges: [DeltaStatus] =
         [.added,      .deleted,    .unmodified, .unmodified]
-    let expectedUnstaged: [XitChange] =
+    let expectedUnstaged: [DeltaStatus] =
         [.unmodified, .unmodified, .modified,   .untracked]
     
     for i in 0...3 {

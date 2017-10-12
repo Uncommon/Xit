@@ -358,7 +358,7 @@ extension XTRepository
   }
   
   /// Returns the unstaged and staged status of the given file.
-  func status(file: String) throws -> (XitChange, XitChange)
+  func status(file: String) throws -> (DeltaStatus, DeltaStatus)
   {
     let statusFlags = UnsafeMutablePointer<UInt32>.allocate(capacity: 1)
     let result = git_status_file(statusFlags, gtRepo.git_repository(), file)
@@ -368,8 +368,8 @@ extension XTRepository
     }
     
     let flags = git_status_t(statusFlags.pointee)
-    var unstagedChange = XitChange.unmodified
-    var stagedChange = XitChange.unmodified
+    var unstagedChange = DeltaStatus.unmodified
+    var stagedChange = DeltaStatus.unmodified
     
     switch flags {
       case _ where flags.test(GIT_STATUS_WT_NEW):

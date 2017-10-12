@@ -260,7 +260,7 @@ class XTRepositoryTest: XTTest
     else { return }
     
     XCTAssertEqual(change.path, file1Name)
-    XCTAssertEqual(change.change, XitChange.added)
+    XCTAssertEqual(change.change, DeltaStatus.added)
   }
   
   func testModifiedChange()
@@ -325,23 +325,23 @@ class XTRepositoryTest: XTTest
     var changes = repository.changes(for: XTStagingSHA, parent: nil)
     
     XCTAssertEqual(changes.count, 3);
-    XCTAssertEqual(changes[0].unstagedChange, XitChange.unmodified); // file1
-    XCTAssertEqual(changes[0].change, XitChange.modified);
-    XCTAssertEqual(changes[1].unstagedChange, XitChange.unmodified); // file2
-    XCTAssertEqual(changes[1].change, XitChange.deleted);
-    XCTAssertEqual(changes[2].unstagedChange, XitChange.unmodified); // file3
-    XCTAssertEqual(changes[2].change, XitChange.added);
+    XCTAssertEqual(changes[0].unstagedChange, DeltaStatus.unmodified); // file1
+    XCTAssertEqual(changes[0].change, DeltaStatus.modified);
+    XCTAssertEqual(changes[1].unstagedChange, DeltaStatus.unmodified); // file2
+    XCTAssertEqual(changes[1].change, DeltaStatus.deleted);
+    XCTAssertEqual(changes[2].unstagedChange, DeltaStatus.unmodified); // file3
+    XCTAssertEqual(changes[2].change, DeltaStatus.added);
     
     try! repository.unstageAllFiles()
     changes = repository.changes(for: XTStagingSHA, parent: nil)
     
     XCTAssertEqual(changes.count, 3);
-    XCTAssertEqual(changes[0].unstagedChange, XitChange.modified); // file1
-    XCTAssertEqual(changes[0].change, XitChange.unmodified);
-    XCTAssertEqual(changes[1].unstagedChange, XitChange.deleted); // file2
-    XCTAssertEqual(changes[1].change, XitChange.unmodified);
-    XCTAssertEqual(changes[2].unstagedChange, XitChange.untracked); // file3
-    XCTAssertEqual(changes[2].change, XitChange.unmodified);
+    XCTAssertEqual(changes[0].unstagedChange, DeltaStatus.modified); // file1
+    XCTAssertEqual(changes[0].change, DeltaStatus.unmodified);
+    XCTAssertEqual(changes[1].unstagedChange, DeltaStatus.deleted); // file2
+    XCTAssertEqual(changes[1].change, DeltaStatus.unmodified);
+    XCTAssertEqual(changes[2].unstagedChange, DeltaStatus.untracked); // file3
+    XCTAssertEqual(changes[2].change, DeltaStatus.unmodified);
   }
 
   func checkDeletedDiff(_ diffResult: XTDiffMaker.DiffResult?)
@@ -643,8 +643,8 @@ class XTRepositoryHunkTest: XTTest
     
     let status = try! repository.status(file: file1Name)
     
-    XCTAssertEqual(status.0, XitChange.unmodified)
-    XCTAssertEqual(status.1, XitChange.deleted)
+    XCTAssertEqual(status.0, DeltaStatus.unmodified)
+    XCTAssertEqual(status.1, DeltaStatus.deleted)
   }
   
   /// Tests unstaging a new file as a hunk
@@ -666,8 +666,8 @@ class XTRepositoryHunkTest: XTTest
     
     let status = try! repository.status(file: loremName)
     
-    XCTAssertEqual(status.0, XitChange.untracked)
-    XCTAssertEqual(status.1, XitChange.unmodified) // There is no "absent"
+    XCTAssertEqual(status.0, DeltaStatus.untracked)
+    XCTAssertEqual(status.1, DeltaStatus.unmodified) // There is no "absent"
   }
   
   /// Tests unstaging a deleted file as a hunk
@@ -689,7 +689,7 @@ class XTRepositoryHunkTest: XTTest
     
     let status = try! repository.status(file: file1Name)
     
-    XCTAssertEqual(status.0, XitChange.deleted)
-    XCTAssertEqual(status.1, XitChange.unmodified)
+    XCTAssertEqual(status.0, DeltaStatus.deleted)
+    XCTAssertEqual(status.1, DeltaStatus.unmodified)
   }
 }

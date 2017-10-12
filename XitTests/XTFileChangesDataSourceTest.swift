@@ -29,6 +29,6 @@ class XTFileChangesDataSourceTest: XTTest
     
     XCTAssertEqual(dataSource.path(for: item1), "file1.txt")
     XCTAssertFalse(dataSource.outlineView(outlineView, isItemExpandable: item1))
-    XCTAssertEqual(dataSource.change(for: item1), XitChange.added)
+    XCTAssertEqual(dataSource.change(for: item1), DeltaStatus.added)
   }
 }
