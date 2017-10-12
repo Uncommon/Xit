@@ -90,15 +90,13 @@ public class XTStash: NSObject, Stash
 
   func headBlobForPath(_ path: String) -> Blob?
   {
-    // TODO: Add tree property to Commit
     guard let mainCommit = self.mainCommit as? XTCommit,
-          let headEntry = try? mainCommit.gtCommit.parents[0].tree?
-                               .entry(withPath: path),
-          let objectWrapped = try? headEntry?.gtObject(),
-          let object = objectWrapped
+          let parentOID = mainCommit.parentOIDs.first,
+          let parent = XTCommit(oid: parentOID, repository: mainCommit.repository),
+          let headEntry = parent.tree?.entry(path: path)
     else { return nil }
     
-    return object as? GTBlob
+    return headEntry.object as? Blob
   }
 
   public func stagedDiffForFile(_ path: String) -> XTDiffMaker.DiffResult?

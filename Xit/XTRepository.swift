@@ -339,7 +339,7 @@ extension XTRepository: CommitStorage
   
   public func commit(forOID oid: OID) -> Commit?
   {
-    return XTCommit(oid: oid, repository: self)
+    return XTCommit(oid: oid, repository: gtRepo.git_repository())
   }
 }
 

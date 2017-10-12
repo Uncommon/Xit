@@ -92,22 +92,20 @@ extension XTRepository: FileDiffing
     guard isTextFile(file, commit: commitOID.sha)
     else { return .binary }
     
-    let toGTCommit = toCommit.gtCommit
     var fromSource = XTDiffMaker.SourceType.data(Data())
     var toSource = XTDiffMaker.SourceType.data(Data())
     
-    if let toTree = toGTCommit.tree,
-       let toEntry = try? toTree.entry(withPath: file),
-       let toBlob = (try? GTObject(treeEntry: toEntry)) as? GTBlob {
+    if let toTree = toCommit.tree,
+       let toEntry = toTree.entry(path: file),
+       let toBlob = toEntry.object as? GitBlob {
       toSource = .blob(toBlob)
     }
     
     if let parentOID = parentOID,
-       let parentCommit = (commit(forOID: parentOID as! GitOID) as? XTCommit)?
-                          .gtCommit,
+       let parentCommit = (commit(forOID: parentOID as! GitOID) as? XTCommit),
        let fromTree = parentCommit.tree,
-       let fromEntry = try? fromTree.entry(withPath: file),
-       let fromBlob = (try? GTObject(treeEntry: fromEntry)) as? GTBlob {
+       let fromEntry = fromTree.entry(path: file),
+       let fromBlob = fromEntry.object as? GitBlob {
       fromSource = .blob(fromBlob)
     }
     

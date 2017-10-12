@@ -56,61 +56,80 @@ extension Commit
 
 public class XTCommit: Commit
 {
-  let gtCommit: GTCommit
+  let commit: OpaquePointer
 
-  public private(set) lazy var sha: String? = self.gtCommit.sha
-  public private(set) lazy var oid: OID =
-      GitOID(oid: self.gtCommit.oid!.git_oid().pointee)
+  public private(set) lazy var sha: String? = oid.sha
+  public private(set) lazy var oid: OID = GitOID(oidPtr: git_commit_id(commit))
   public private(set) lazy var parentOIDs: [OID] =
-      XTCommit.calculateParentOIDs(self.gtCommit.git_commit())
+      XTCommit.calculateParentOIDs(self.commit)
+  
+  public var repository: OpaquePointer
+  { return git_commit_owner(commit) }
   
   public var message: String?
-  { return gtCommit.message }
+  {
+    if let result = git_commit_message(commit) {
+      return String(cString: result)
+    }
+    else {
+      return nil
+    }
+  }
   
   public var messageSummary: String
-  { return gtCommit.messageSummary }
+  {
+    guard let message = self.message
+    else { return String() }
+    
+    if let lineEnd = message.rangeOfCharacter(from: .newlines) {
+      return String(message[..<lineEnd.lowerBound])
+    }
+    else {
+      return message
+    }
+  }
   
   public var authorSig: Signature?
   {
-    guard let sig = git_commit_author(gtCommit.git_commit())
+    guard let sig = git_commit_author(commit)
     else { return nil }
     
     return Signature(gitSignature: sig.pointee)
   }
   
   public var authorName: String?
-  { return gtCommit.author?.name }
+  { return authorSig?.name }
   
   public var authorEmail: String?
-  { return gtCommit.author?.email }
+  { return authorSig?.email }
   
   public var authorDate: Date?
-  { return gtCommit.author?.time }
+  { return authorSig?.when }
   
   public var committerSig: Signature?
   {
-    guard let sig = git_commit_committer(gtCommit.git_commit())
+    guard let sig = git_commit_committer(commit)
     else { return nil }
     
     return Signature(gitSignature: sig.pointee)
   }
   
   public var committerName: String?
-  { return gtCommit.committer?.name }
+  { return committerSig?.name }
   
   public var committerEmail: String?
-  { return gtCommit.committer?.email }
+  { return committerSig?.email }
   
   public var commitDate: Date
-  { return gtCommit.commitDate }
+  { return committerSig?.when ?? Date() }
   
   public var email: String?
-  { return gtCommit.author?.email }
+  { return committerEmail }
 
   public var tree: Tree?
   {
     var tree: OpaquePointer?
-    let result = git_commit_tree(&tree, gtCommit.git_commit())
+    let result = git_commit_tree(&tree, commit)
     guard result == 0,
           let finalTree = tree
     else { return nil }
@@ -118,34 +137,30 @@ public class XTCommit: Commit
     return GitTree(tree: finalTree)
   }
 
-  init?(gitCommit: OpaquePointer, repository: OpaquePointer)
+  init?(gitCommit: OpaquePointer)
   {
-    guard let repository = GTRepository(gitRepository: repository),
-          let commit = GTCommit(obj: gitCommit, in: repository)
-    else { return nil }
-    
-    self.gtCommit = commit
+    self.commit = gitCommit
   }
   
   init(commit: GTCommit)
   {
-    self.gtCommit = commit
+    self.commit = commit.git_commit()
   }
 
-  convenience init?(oid: OID, repository: XTRepository)
+  convenience init?(oid: OID, repository: OpaquePointer)
   {
     guard let oid = oid as? GitOID
     else { return nil }
     var gitCommit: OpaquePointer?  // git_commit isn't imported
     let result = git_commit_lookup(&gitCommit,
-                                   repository.gtRepo.git_repository(),
+                                   repository,
                                    oid.unsafeOID())
   
     guard result == 0,
-          let commit = GTCommit(obj: gitCommit!, in: repository.gtRepo)
+          let finalCommit = gitCommit
     else { return nil }
     
-    self.init(commit: commit)
+    self.init(gitCommit: finalCommit)
   }
   
   convenience init?(sha: String, repository: XTRepository)
@@ -153,7 +168,7 @@ public class XTCommit: Commit
     guard let oid = GitOID(sha: sha)
     else { return nil }
     
-    self.init(oid: oid, repository: repository)
+    self.init(oid: oid, repository: repository.gtRepo.git_repository())
   }
   
   convenience init?(ref: String, repository: XTRepository)
