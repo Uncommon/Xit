@@ -23,9 +23,14 @@ class WorkspaceWatcher: NSObject
     self.stream = stream
   }
   
+  deinit
+  {
+    stop()
+  }
+  
   func stop()
   {
-    self.stream.stop()
+    stream.stop()
   }
   
   func observeEvents(_ paths: [String])

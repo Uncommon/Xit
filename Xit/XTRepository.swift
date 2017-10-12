@@ -38,6 +38,7 @@ public class XTRepository: NSObject
   @objc public let repoURL: URL
   let gitCMD: String
   @objc let queue: TaskQueue
+  let mutex = Mutex()
   var refsIndex = [String: [String]]()
   fileprivate(set) var isWriting = false
   fileprivate var executing = false
@@ -116,12 +117,9 @@ public class XTRepository: NSObject
     guard writing != isWriting
     else { return }
     
-    objc_sync_enter(self)
-    defer {
-      objc_sync_exit(self)
+    mutex.withLock {
+      isWriting = writing
     }
-    
-    isWriting = writing
   }
   
   func performWriting(_ block: (() throws -> Void)) throws
@@ -141,7 +139,9 @@ public class XTRepository: NSObject
   
   func clearCachedBranch()
   {
-    cachedBranch = nil
+    mutex.withLock {
+      cachedBranch = nil
+    }
   }
   
   func refsChanged()
@@ -151,7 +151,9 @@ public class XTRepository: NSObject
     else { return }
     
     willChangeValue(forKey: "currentBranch")
-    cachedBranch = newBranch
+    mutex.withLock {
+      cachedBranch = newBranch
+    }
     didChangeValue(forKey: "currentBranch")
   }
   

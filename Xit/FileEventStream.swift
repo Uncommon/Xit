@@ -78,6 +78,9 @@ public class FileEventStream
   
   public func stop()
   {
+    guard stream != nil
+    else { return }
+    
     FSEventStreamStop(stream)
     FSEventStreamInvalidate(stream)
     FSEventStreamRelease(stream)

@@ -80,6 +80,8 @@ extension XTRepository: CommitReferencing
 
   @objc public var currentBranch: String?
   {
+    mutex.lock()
+    defer { mutex.unlock() }
     if cachedBranch == nil {
       refsChanged()
     }
