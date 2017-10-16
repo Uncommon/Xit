@@ -164,6 +164,7 @@
 		C959CDED1F859ED100C1E282 /* FileViewController+OutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C959CDEC1F859ED100C1E282 /* FileViewController+OutlineView.swift */; };
 		C95BD3EF1F8ECEC9000A2E2D /* Mutex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BD3EE1F8ECEC9000A2E2D /* Mutex.swift */; };
 		C95BD4031F8FD611000A2E2D /* GitEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BD4021F8FD611000A2E2D /* GitEnums.swift */; };
+		C95BD4051F8FF8C8000A2E2D /* GitDiff.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BD4041F8FF8C8000A2E2D /* GitDiff.swift */; };
 		C95ECD051EB11E310000DB78 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95ECD041EB11E310000DB78 /* WebViewController.swift */; };
 		C96D24B31DFEFD9F00431317 /* XTSidebarControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96D24B21DFEFD9F00431317 /* XTSidebarControllerTest.swift */; };
 		C96F65461D53A6CE001B2557 /* XTHistoryCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F65451D53A6CE001B2557 /* XTHistoryCellView.swift */; };
@@ -172,10 +173,13 @@
 		C98925C71DB693CC00E5645C /* XTTagPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C98925C51DB693CC00E5645C /* XTTagPanelController.xib */; };
 		C98925D51DB6D3D300E5645C /* XTNewTagController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925D41DB6D3D300E5645C /* XTNewTagController.swift */; };
 		C98925F91DBFCE7000E5645C /* XTSidebarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925F81DBFCE7000E5645C /* XTSidebarController.swift */; };
+		C98CAD841F9520D0005DB419 /* GitDiffHunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98CAD831F9520D0005DB419 /* GitDiffHunk.swift */; };
+		C98CAD961F952173005DB419 /* GitDiffDelta.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98CAD951F952173005DB419 /* GitDiffDelta.swift */; };
 		C98D96051E706096007C3E16 /* tracking.png in Resources */ = {isa = PBXBuildFile; fileRef = C98D96011E706096007C3E16 /* tracking.png */; };
 		C98D96061E706096007C3E16 /* tracking@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C98D96021E706096007C3E16 /* tracking@2x.png */; };
 		C98D96071E706096007C3E16 /* trackingMissing.png in Resources */ = {isa = PBXBuildFile; fileRef = C98D96031E706096007C3E16 /* trackingMissing.png */; };
 		C98D96081E706096007C3E16 /* trackingMissing@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C98D96041E706096007C3E16 /* trackingMissing@2x.png */; };
+		C991732D1F91255200054154 /* GitPatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C991732C1F91255200054154 /* GitPatch.swift */; };
 		C9999AC71E08712000DF3E11 /* HistoryTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9999AC61E08712000DF3E11 /* HistoryTableView.swift */; };
 		C99A6AEC1E48FA140030DC01 /* FileListDataSourceBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99A6AEB1E48FA140030DC01 /* FileListDataSourceBase.swift */; };
 		C99A6AFF1E4A73240030DC01 /* BlameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99A6AFE1E4A73240030DC01 /* BlameViewController.swift */; };
@@ -562,6 +566,7 @@
 		C959CDEC1F859ED100C1E282 /* FileViewController+OutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileViewController+OutlineView.swift"; sourceTree = "<group>"; };
 		C95BD3EE1F8ECEC9000A2E2D /* Mutex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mutex.swift; sourceTree = "<group>"; };
 		C95BD4021F8FD611000A2E2D /* GitEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitEnums.swift; sourceTree = "<group>"; };
+		C95BD4041F8FF8C8000A2E2D /* GitDiff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitDiff.swift; sourceTree = "<group>"; };
 		C95ECD041EB11E310000DB78 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		C96D24B21DFEFD9F00431317 /* XTSidebarControllerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSidebarControllerTest.swift; sourceTree = "<group>"; };
 		C96F65451D53A6CE001B2557 /* XTHistoryCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTHistoryCellView.swift; sourceTree = "<group>"; };
@@ -570,10 +575,13 @@
 		C98925C51DB693CC00E5645C /* XTTagPanelController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTTagPanelController.xib; sourceTree = "<group>"; };
 		C98925D41DB6D3D300E5645C /* XTNewTagController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTNewTagController.swift; sourceTree = "<group>"; };
 		C98925F81DBFCE7000E5645C /* XTSidebarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSidebarController.swift; sourceTree = "<group>"; };
+		C98CAD831F9520D0005DB419 /* GitDiffHunk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitDiffHunk.swift; sourceTree = "<group>"; };
+		C98CAD951F952173005DB419 /* GitDiffDelta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitDiffDelta.swift; sourceTree = "<group>"; };
 		C98D96011E706096007C3E16 /* tracking.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tracking.png; sourceTree = "<group>"; };
 		C98D96021E706096007C3E16 /* tracking@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tracking@2x.png"; sourceTree = "<group>"; };
 		C98D96031E706096007C3E16 /* trackingMissing.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = trackingMissing.png; sourceTree = "<group>"; };
 		C98D96041E706096007C3E16 /* trackingMissing@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trackingMissing@2x.png"; sourceTree = "<group>"; };
+		C991732C1F91255200054154 /* GitPatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitPatch.swift; sourceTree = "<group>"; };
 		C9999AC61E08712000DF3E11 /* HistoryTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryTableView.swift; sourceTree = "<group>"; };
 		C99A6AEB1E48FA140030DC01 /* FileListDataSourceBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileListDataSourceBase.swift; sourceTree = "<group>"; };
 		C99A6AFE1E4A73240030DC01 /* BlameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlameViewController.swift; sourceTree = "<group>"; };
@@ -1109,6 +1117,10 @@
 				C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */,
 				DDDA447015B0E97000DF407B /* GitEnums.h */,
 				C95BD4021F8FD611000A2E2D /* GitEnums.swift */,
+				C95BD4041F8FF8C8000A2E2D /* GitDiff.swift */,
+				C98CAD951F952173005DB419 /* GitDiffDelta.swift */,
+				C98CAD831F9520D0005DB419 /* GitDiffHunk.swift */,
+				C991732C1F91255200054154 /* GitPatch.swift */,
 			);
 			name = Repository;
 			sourceTree = "<group>";
@@ -1527,6 +1539,7 @@
 				89C927941D43B23B0074F71A /* XTRepository.swift in Sources */,
 				C9BAE60A1D2FFA8B00A87F13 /* XTConfig.swift in Sources */,
 				C9BAE6141D3039C500A87F13 /* XTOperationController.swift in Sources */,
+				C991732D1F91255200054154 /* GitPatch.swift in Sources */,
 				C9BF41181EA11AAC00028C84 /* XTWindowController+Actions.swift in Sources */,
 				C957B8541D2D533C0040F858 /* XTAddAccountController.swift in Sources */,
 				C9DB64451EA534A0003015D6 /* XTRepository+Iterators.swift in Sources */,
@@ -1559,8 +1572,10 @@
 				C951EB051DD636B900B99FBE /* SidebarCheckedRowView.swift in Sources */,
 				C94866C01D25861E000BDB0A /* XTPasswordPanelController.swift in Sources */,
 				C9BAE61E1D303A8100A87F13 /* XTRemoteOptionsController.swift in Sources */,
+				C95BD4051F8FF8C8000A2E2D /* GitDiff.swift in Sources */,
 				C9328B121D77303200EFF7F7 /* XTFileMonitor.swift in Sources */,
 				C9DEA4AB1E4B7A4200DF4069 /* Blame.swift in Sources */,
+				C98CAD841F9520D0005DB419 /* GitDiffHunk.swift in Sources */,
 				C9BC1B9B1DDF51B900C71562 /* FileEventStream.swift in Sources */,
 				C929D03B1D400B3B00D7DC52 /* XTRemote.swift in Sources */,
 				C90F92781E0199E400FE8589 /* AppDelegate.swift in Sources */,
@@ -1587,6 +1602,7 @@
 				89C927881D43B0460074F71A /* XTPullController.swift in Sources */,
 				C94866B61D256C24000BDB0A /* XTFetchController.swift in Sources */,
 				C957B87C1D2DBBC00040F858 /* XTAccountsManager.swift in Sources */,
+				C98CAD961F952173005DB419 /* GitDiffDelta.swift in Sources */,
 				DD07B08916B313A60012AC19 /* XTRefFormatter.m in Sources */,
 				C947367A1DEF5CA8000E3A05 /* FileViewController.swift in Sources */,
 				C935BD7E1E8BFA4F00BE51F0 /* DateCellView.swift in Sources */,

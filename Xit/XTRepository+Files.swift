@@ -220,7 +220,7 @@ extension XTRepository
   /// - parameter hunk: Hunk to be applied
   /// - parameter stage: True if the change is being staged, falses if unstaged
   /// (the patch should be reversed)
-  func patchIndexFile(path: String, hunk: GTDiffHunk, stage: Bool) throws
+  func patchIndexFile(path: String, hunk: DiffHunk, stage: Bool) throws
   {
     var encoding = String.Encoding.utf8
     let index = try gtRepo.index()

@@ -36,27 +36,25 @@ class XTFileChangesModelTest: XTTest
     XCTAssertEqual(data, self.data(for:"some text"))
     
     guard let diffResult = model.diffForFile(file1Name, staged: false),
-          let diff = diffResult.extractDiff()
+          let patch = diffResult.extractPatch()
     else {
       XCTFail()
       return
     }
-    let patch = try! diff.generatePatch()
     
     XCTAssertEqual(patch.addedLinesCount, 1)
   }
   
   func checkPatchLines(
       _ model: FileChangesModel, path: String, staged: Bool,
-      added: UInt, deleted: UInt)
+      added: Int, deleted: Int)
   {
     guard let diffResult = model.diffForFile(path, staged: staged),
-          let diff = diffResult.extractDiff()
+          let patch = diffResult.extractPatch()
     else {
       XCTFail()
       return
     }
-    let patch = try! diff.generatePatch()
     
     XCTAssertEqual(patch.addedLinesCount, added,
         String(format: "%@%@", staged ? ">" : "<", path))

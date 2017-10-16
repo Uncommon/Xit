@@ -13,12 +13,12 @@ extension Blob
 {
   /// Calls `callback` with a data object, or throws `BlobError.cantLoadData`
   /// if the data can't be loaded.
-  public func withData(callback: (Data) throws -> Void) throws
+  public func withData<T>(_ callback: (Data) throws -> T) throws -> T
   {
     guard let data = makeData()
     else { throw BlobError.cantLoadData }
     
-    try callback(data)
+    return try callback(data)
   }
 }
 

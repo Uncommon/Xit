@@ -4,13 +4,24 @@ extension DeltaStatus
 {
   init(delta: GTDeltaType)
   {
-    guard let change = DeltaStatus(rawValue: UInt(delta.rawValue))
+    guard let change = DeltaStatus(rawValue: UInt32(delta.rawValue))
     else {
       self = .unmodified
       return
     }
     
     self = change
+  }
+  
+  init(gitDelta: git_delta_t)
+  {
+    guard let delta = DeltaStatus(rawValue: gitDelta.rawValue)
+    else {
+      self = .unmodified
+      return
+    }
+    
+    self = delta
   }
   
   var isModified: Bool

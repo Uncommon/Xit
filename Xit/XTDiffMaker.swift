@@ -32,26 +32,29 @@ public class XTDiffMaker: NSObject
   var usePatience = false
   var minimal = false
   
-  private var options: [String: Any]
+  private var options: DiffOptions
   {
-    var whitespaceFlags: UInt32 = 0
+    var flags: DiffOptionFlags = []
     
     switch whitespace {
       case .showAll:
         break
       case .ignoreEOL:
-        whitespaceFlags = GIT_DIFF_IGNORE_WHITESPACE_EOL.rawValue
+        flags = .ignoreWhitespaceEOL
       case .ignoreAll:
-        whitespaceFlags = GIT_DIFF_IGNORE_WHITESPACE.rawValue
+        flags = .ignoreWhitespace
     }
-  
-    return [
-      GTDiffOptionsContextLinesKey: contextLines,
-      GTDiffOptionsFlagsKey:
-          (usePatience ? GIT_DIFF_PATIENCE.rawValue : 0) +
-          (minimal ? GIT_DIFF_MINIMAL.rawValue : 0) +
-          whitespaceFlags
-    ]
+    if usePatience {
+      flags.insert(.patience)
+    }
+    if minimal {
+      flags.insert(.minimal)
+    }
+    
+    var result = DiffOptions(flags: flags)
+    
+    result.contextLines = UInt32(contextLines)
+    return result
   }
 
   init(from: SourceType, to: SourceType, path: String)
@@ -61,31 +64,24 @@ public class XTDiffMaker: NSObject
     self.path = path
   }
 
-  func makeDiff() -> XTDiffDelta?
+  func makePatch() -> Patch?
   {
     switch (fromSource, toSource) {
       case let (.blob(fromBlob), .blob(toBlob)):
-        return try? XTDiffDelta(from: fromBlob, forPath: path,
-                                to: toBlob, forPath: path,
-                                options: options)
+        return GitPatch(oldBlob: fromBlob, newBlob: toBlob, options: options)
       case let (.data(fromData), .data(toData)):
-        return try? XTDiffDelta(from: fromData, forPath: path,
-                                to: toData, forPath: path,
-                                options: options)
+        return GitPatch(oldData: fromData, newData: toData, options: options)
       case let (.blob(fromBlob), .data(toData)):
-        return try? XTDiffDelta(from: fromBlob, forPath: path,
-                                to: toData, forPath: path,
-                                options: options)
+        return GitPatch(oldBlob: fromBlob, newData: toData, options: options)
       case let (.data(fromData), .blob(toBlob)):
-        var result: XTDiffDelta?
-        
-        try? toBlob.withData {
-          (data) in
-          result = try? XTDiffDelta(from: fromData, forPath: path,
-                                    to: data, forPath: path,
-                                    options: options)
+        if let result = try? toBlob.withData({
+          GitPatch(oldData: fromData, newData: $0, options: options)
+        }) {
+          return result
         }
-        return result
+        else {
+          return nil
+        }
     }
   }
 }
