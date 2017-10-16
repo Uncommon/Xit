@@ -33,7 +33,7 @@ class XTFileDiffController: WebViewController,
       configureDiffMaker()
     }
   }
-  var diffMaker: XTDiffMaker?
+  var diffMaker: PatchMaker?
   {
     didSet
     {
@@ -180,7 +180,7 @@ class XTFileDiffController: WebViewController,
     isLoaded = true
   }
   
-  func loadOrNotify(diffResult: XTDiffMaker.DiffResult?)
+  func loadOrNotify(diffResult: PatchMaker.PatchResult?)
   {
     if let diffResult = diffResult {
       switch diffResult {

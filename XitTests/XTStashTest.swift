@@ -3,7 +3,7 @@ import XCTest
 
 class XTStashTest: XTTest
 {
-  func checkDiffResult(_ result: XTDiffMaker.DiffResult?) -> XTDiffMaker?
+  func checkDiffResult(_ result: PatchMaker.PatchResult?) -> PatchMaker?
   {
     guard let result = result else { return nil }
     

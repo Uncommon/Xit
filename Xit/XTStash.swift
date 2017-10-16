@@ -8,8 +8,8 @@ public protocol Stash: class
   var untrackedCommit: Commit? { get }
   
   func changes() -> [FileChange]
-  func stagedDiffForFile(_ path: String) -> XTDiffMaker.DiffResult?
-  func unstagedDiffForFile(_ path: String) -> XTDiffMaker.DiffResult?
+  func stagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
+  func unstagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
 }
 
 /// Wraps a stash to preset a unified list of file changes.
@@ -99,7 +99,7 @@ public class XTStash: NSObject, Stash
     return headEntry.object as? Blob
   }
 
-  public func stagedDiffForFile(_ path: String) -> XTDiffMaker.DiffResult?
+  public func stagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
   {
     guard let indexCommit = self.indexCommit as? XTCommit
     else { return nil }
@@ -111,12 +111,12 @@ public class XTStash: NSObject, Stash
     else { return nil }
     let headBlob = self.headBlobForPath(path)
     
-    return .diff(XTDiffMaker(from: XTDiffMaker.SourceType(headBlob),
-                             to: XTDiffMaker.SourceType(indexBlob),
+    return .diff(PatchMaker(from: PatchMaker.SourceType(headBlob),
+                             to: PatchMaker.SourceType(indexBlob),
                              path: path))
   }
 
-  public func unstagedDiffForFile(_ path: String) -> XTDiffMaker.DiffResult?
+  public func unstagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
   {
     guard let indexCommit = self.indexCommit as? XTCommit
     else { return nil }
@@ -142,8 +142,8 @@ public class XTStash: NSObject, Stash
       guard let untrackedBlob = untrackedEntry.object as? Blob
       else { return nil }
       
-      return .diff(XTDiffMaker(from: XTDiffMaker.SourceType(indexBlob),
-                               to: XTDiffMaker.SourceType(untrackedBlob),
+      return .diff(PatchMaker(from: PatchMaker.SourceType(indexBlob),
+                               to: PatchMaker.SourceType(untrackedBlob),
                                path: path))
     }
     if let mainCommit = self.mainCommit as? XTCommit,
@@ -151,8 +151,8 @@ public class XTStash: NSObject, Stash
       guard let unstagedBlob = unstagedEntry.object as? Blob
       else { return nil }
       
-      return .diff(XTDiffMaker(from: XTDiffMaker.SourceType(indexBlob),
-                               to: XTDiffMaker.SourceType(unstagedBlob),
+      return .diff(PatchMaker(from: PatchMaker.SourceType(indexBlob),
+                               to: PatchMaker.SourceType(unstagedBlob),
                                path: path))
     }
     return nil

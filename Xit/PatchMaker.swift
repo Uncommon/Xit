@@ -1,8 +1,8 @@
 import Cocoa
 
-/// An object that can generate file diffs, and re-generate them with
+/// An object that can generate file patches, and re-generate them with
 /// different options.
-public class XTDiffMaker: NSObject
+public class PatchMaker
 {
   public enum SourceType
   {
@@ -15,11 +15,11 @@ public class XTDiffMaker: NSObject
     }
   }
   
-  public enum DiffResult
+  public enum PatchResult
   {
     case noDifference
     case binary
-    case diff(XTDiffMaker)
+    case diff(PatchMaker)
   }
   
   let fromSource: SourceType
@@ -27,7 +27,7 @@ public class XTDiffMaker: NSObject
   let path: String
   
   static let defaultContextLines: UInt = 3
-  var contextLines: UInt = XTDiffMaker.defaultContextLines
+  var contextLines: UInt = PatchMaker.defaultContextLines
   var whitespace = PreviewsPrefsController.Default.whitespace()
   var usePatience = false
   var minimal = false

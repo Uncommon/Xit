@@ -23,7 +23,7 @@ class PatchTest: XCTestCase
     delta = try! XTDiffDelta(from: loremData, forPath: nil,
                              to: lorem2Data, forPath: nil,
                              options: [GTDiffOptionsContextLinesKey:
-                              XTDiffMaker.defaultContextLines])
+                              PatchMaker.defaultContextLines])
     patch = try! delta.generatePatch()
   }
 

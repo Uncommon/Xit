@@ -1,7 +1,7 @@
 import XCTest
 @testable import Xit
 
-extension Xit.XTDiffMaker.DiffResult
+extension Xit.PatchMaker.PatchResult
 {
   func extractPatch() -> Patch?
   {
@@ -344,7 +344,7 @@ class XTRepositoryTest: XTTest
     XCTAssertEqual(changes[2].change, DeltaStatus.unmodified);
   }
 
-  func checkDeletedDiff(_ diffResult: XTDiffMaker.DiffResult?)
+  func checkDeletedDiff(_ diffResult: PatchMaker.PatchResult?)
   {
     guard let diffResult = diffResult
     else {
@@ -493,9 +493,9 @@ class XTRepositoryTest: XTTest
   }
 }
 
-extension XTDiffMaker.DiffResult: Equatable
+extension PatchMaker.PatchResult: Equatable
 {
-  public static func ==(lhs: XTDiffMaker.DiffResult, rhs: XTDiffMaker.DiffResult) -> Bool
+  public static func ==(lhs: PatchMaker.PatchResult, rhs: PatchMaker.PatchResult) -> Bool
   {
     switch (lhs, rhs) {
       case (.noDifference, .noDifference),

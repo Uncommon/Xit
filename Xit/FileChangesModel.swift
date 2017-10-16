@@ -23,7 +23,7 @@ protocol FileChangesModel
   /// - parameter path: Repository-relative file path.
   /// - parameter staged: Whether to show the staged or unstaged diff. Ignored
   /// for models that don't have unstaged files.
-  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker.DiffResult?
+  func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?
   /// Get the contents of the given file.
   /// - parameter path: Repository-relative file path.
   /// - parameter staged: Whether to show the staged or unstaged diff. Ignored
@@ -84,7 +84,7 @@ class CommitChanges: FileChangesModel
     }
   }
   
-  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker.DiffResult?
+  func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?
   {
     return self.repository.diffMaker(forFile: path,
                                      commitOID: commit.oid,
@@ -189,7 +189,7 @@ class StashChanges: FileChangesModel
     self.stash = stash
   }
   
-  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker.DiffResult?
+  func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?
   {
     if staged {
       return self.stash.stagedDiffForFile(path)
@@ -280,7 +280,7 @@ class StagingChanges: FileChangesModel
     self.repository = repository
   }
   
-  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker.DiffResult?
+  func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?
   {
     if staged {
       return self.repository.stagedDiff(file: path)
