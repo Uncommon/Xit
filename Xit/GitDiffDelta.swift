@@ -26,15 +26,15 @@ extension git_diff_delta
   
   init?(oldBlob: Blob, newBlob: Blob)
   {
-    guard let oldGitBlob = oldBlob as? GitBlob,
-          let newGitBlob = newBlob as? GitBlob
+    guard let oldGitBlob = oldBlob.blobPtr,
+          let newGitBlob = newBlob.blobPtr
     else { return nil }
     
     // Must be initialized before taking its address
     self = git_diff_delta()
     
     let result = git_diff_blobs(
-          oldGitBlob.blob, nil, newGitBlob.blob, nil, nil,
+          oldGitBlob, nil, newGitBlob, nil, nil,
           git_diff_delta.fileCallback, nil, nil, nil, &self)
     guard result == 0
     else { return nil }
@@ -42,7 +42,7 @@ extension git_diff_delta
   
   init?(oldBlob: Blob, newData: Data)
   {
-    guard let oldGitBlob = oldBlob as? GitBlob
+    guard let oldGitBlob = oldBlob.blobPtr
     else { return nil }
     
     self = git_diff_delta()
@@ -51,7 +51,7 @@ extension git_diff_delta
     
     newData.withUnsafeBytes {
       (bytes) in
-      result = git_diff_blob_to_buffer(oldGitBlob.blob, nil,
+      result = git_diff_blob_to_buffer(oldGitBlob, nil,
                                        bytes, newData.count, nil, nil,
                                        git_diff_delta.fileCallback,
                                        nil, nil, nil, &self)

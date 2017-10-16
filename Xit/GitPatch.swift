@@ -21,13 +21,13 @@ class GitPatch: Patch
   
   init?(oldBlob: Blob, newBlob: Blob, options: DiffOptions? = nil)
   {
-    guard let oldGitBlob = oldBlob as? GitBlob,
-          let newGitBlob = newBlob as? GitBlob
+    guard let oldGitBlob = oldBlob.blobPtr,
+          let newGitBlob = newBlob.blobPtr
     else { return nil }
     var patch: OpaquePointer?
     let result: Int32 = GitDiff.unwrappingOptions(options) {
-      return git_patch_from_blobs(&patch, oldGitBlob.blob, nil,
-                                  newGitBlob.blob, nil, $0)
+      return git_patch_from_blobs(&patch, oldGitBlob, nil,
+                                  newGitBlob, nil, $0)
     }
     guard result == 0,
           let finalPatch = patch
@@ -38,14 +38,14 @@ class GitPatch: Patch
   
   init?(oldBlob: Blob, newData: Data, options: DiffOptions? = nil)
   {
-    guard let oldGitBlob = oldBlob as? GitBlob
+    guard let oldGitBlob = oldBlob.blobPtr
     else { return nil }
     var patch: OpaquePointer?
     let result: Int32 = GitDiff.unwrappingOptions(options) {
       (gitOptions) in
       return newData.withUnsafeBytes {
         (bytes) in
-        return git_patch_from_blob_and_buffer(&patch, oldGitBlob.blob, nil,
+        return git_patch_from_blob_and_buffer(&patch, oldGitBlob, nil,
                                               bytes, newData.count, nil,
                                               gitOptions)
       }

@@ -556,7 +556,8 @@ class XTRepositoryHunkTest: XTTest
     }
     let hunk = patch.hunk(at: 0)!
     
-    try! repository.patchIndexFile(path: loremName, hunk: hunk, stage: true)
+    XCTAssertNoThrow(try repository.patchIndexFile(path: loremName, hunk: hunk,
+                                                   stage: true))
     
     let indexText = readLoremIndexText()!
 
@@ -585,7 +586,8 @@ class XTRepositoryHunkTest: XTTest
       return
     }
     
-    try! repository.patchIndexFile(path: loremName, hunk: hunk, stage: false)
+    XCTAssertNoThrow(try repository.patchIndexFile(path: loremName, hunk: hunk,
+                                                   stage: false))
     
     let indexText = readLoremIndexText()!
     

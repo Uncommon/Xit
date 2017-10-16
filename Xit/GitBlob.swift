@@ -3,6 +3,7 @@ import Foundation
 public protocol Blob
 {
   var dataSize: UInt { get }
+  var blobPtr: OpaquePointer? { get }
   
   /// Consumers should use `withData` instead, since the buffer may have a
   /// limited lifespan.
@@ -59,6 +60,8 @@ public class GitBlob: Blob, OIDObject
     self.blob = finalBlob
   }
   
+  public var blobPtr: OpaquePointer? { return blob }
+  
   public var dataSize: UInt
   {
     return UInt(git_blob_rawsize(blob))
@@ -88,6 +91,7 @@ public class GitBlob: Blob, OIDObject
 extension GTBlob: Blob
 {
   public var dataSize: UInt { return UInt(size()) }
+  public var blobPtr: OpaquePointer? { return git_blob() }
 
   public func makeData() -> Data? { return data() }
 }

@@ -183,7 +183,12 @@ extension git_diff_line: DiffLine
   public var offset: Int64 { return content_offset }
   public var text: String
   {
-    return NSString(bytes: content, length: content_len,
-                    encoding: String.Encoding.utf8.rawValue) as String? ?? ""
+    if let text = NSString(bytes: content, length: content_len,
+                           encoding: String.Encoding.utf8.rawValue) as String? {
+      return text.trimmingCharacters(in: .newlines)
+    }
+    else {
+      return ""
+    }
   }
 }
