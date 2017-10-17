@@ -89,16 +89,17 @@ class XTFileChangesDataSource: FileListDataSourceBase
   {
     if wasInStaging != controller.isStaging {
       let stagedIndex = outlineView.column(withIdentifier:
-        FileViewController.ColumnID.staged)
+            FileViewController.ColumnID.staged)
       
-      for (index, change) in changes.enumerated() {
-        if let stagedCell = outlineView.view(atColumn: stagedIndex, row: index,
-                                             makeIfNecessary: false)
-                            as? TableButtonView {
-          controller.updateTableButton(stagedCell.button,
-                                       change: change.change,
-                                       otherChange: change.unstagedChange)
-        }
+      for index in 0..<outlineView.numberOfRows {
+        guard let stagedCell = outlineView.view(atColumn: stagedIndex, row: index,
+                                                makeIfNecessary: false)
+                               as? TableButtonView,
+              let change = outlineView.item(atRow: index) as? FileChange
+        else { continue }
+        
+        controller.updateTableButton(stagedCell.button, change: change.change,
+                                     otherChange: change.unstagedChange)
       }
       
       wasInStaging = controller.isStaging
