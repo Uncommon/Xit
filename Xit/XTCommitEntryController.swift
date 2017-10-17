@@ -39,6 +39,11 @@ class XTCommitEntryController: NSViewController
     indexObserver.map { NotificationCenter.default.removeObserver($0) }
   }
   
+  override func awakeFromNib()
+  {
+    commitField.textContainerInset = NSSize(width: 10, height: 5)
+  }
+  
   func commitMessageTemplate() -> String?
   {
     guard let templatePath = repo.config.commitTemplate()
