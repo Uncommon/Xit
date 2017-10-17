@@ -161,7 +161,7 @@ extension XTFileChangesDataSource: FileListDataSource
     return (item as? FileChange)?.path ?? ""
   }
   
-  func change(for item: Any) -> XitChange
+  func change(for item: Any) -> DeltaStatus
   {
     guard let fileChange = item as? FileChange
     else { return .unmodified }
@@ -169,7 +169,7 @@ extension XTFileChangesDataSource: FileListDataSource
     return type(of: self).transformDisplayChange(fileChange.change)
   }
   
-  func unstagedChange(for item: Any) -> XitChange
+  func unstagedChange(for item: Any) -> DeltaStatus
   {
     guard let fileChange = item as? FileChange
     else { return .unmodified }

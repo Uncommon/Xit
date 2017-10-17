@@ -34,7 +34,7 @@ class FileListDataSourceBase: NSObject
     }
   }
   
-  class func transformDisplayChange(_ change: XitChange) -> XitChange
+  class func transformDisplayChange(_ change: DeltaStatus) -> DeltaStatus
   {
     return (change == .unmodified) ? .mixed : change
   }
@@ -79,8 +79,8 @@ protocol FileListDataSource: class
   func reload()
   func fileChange(at row: Int) -> FileChange?
   func path(for item: Any) -> String
-  func change(for item: Any) -> XitChange
-  func unstagedChange(for item: Any) -> XitChange
+  func change(for item: Any) -> DeltaStatus
+  func unstagedChange(for item: Any) -> DeltaStatus
 }
 
 
@@ -88,7 +88,7 @@ protocol FileListDataSource: class
 class FileCellView: NSTableCellView
 {
   /// The change is stored to improve drawing of selected deleted files.
-  var change: XitChange = .unmodified
+  var change: DeltaStatus = .unmodified
   
   override var backgroundStyle: NSView.BackgroundStyle
   {

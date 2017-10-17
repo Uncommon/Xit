@@ -41,12 +41,12 @@ public protocol FileDiffing: class
 {
   func diffMaker(forFile file: String,
                  commitOID: OID,
-                 parentOID: OID?) -> XTDiffMaker.DiffResult?
+                 parentOID: OID?) -> PatchMaker.PatchResult?
   func diff(for path: String,
             commitSHA sha: String,
             parentOID: OID?) -> XTDiffDelta?
-  func stagedDiff(file: String) -> XTDiffMaker.DiffResult?
-  func unstagedDiff(file: String) -> XTDiffMaker.DiffResult?
+  func stagedDiff(file: String) -> PatchMaker.PatchResult?
+  func unstagedDiff(file: String) -> PatchMaker.PatchResult?
   
   func blame(for path: String, from startOID: OID?, to endOID: OID?) -> Blame?
   func blame(for path: String, data fromData: Data?, to endOID: OID?) -> Blame?

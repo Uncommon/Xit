@@ -23,7 +23,7 @@ protocol FileChangesModel
   /// - parameter path: Repository-relative file path.
   /// - parameter staged: Whether to show the staged or unstaged diff. Ignored
   /// for models that don't have unstaged files.
-  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker.DiffResult?
+  func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?
   /// Get the contents of the given file.
   /// - parameter path: Repository-relative file path.
   /// - parameter staged: Whether to show the staged or unstaged diff. Ignored
@@ -84,7 +84,7 @@ class CommitChanges: FileChangesModel
     }
   }
   
-  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker.DiffResult?
+  func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?
   {
     return self.repository.diffMaker(forFile: path,
                                      commitOID: commit.oid,
@@ -110,7 +110,7 @@ class CommitChanges: FileChangesModel
     else { return NSTreeNode() }
     var files = commit.allFiles()
     let changeList = repository.changes(for: sha, parent: diffParent)
-    var changes = [String: XitChange]()
+    var changes = [String: DeltaStatus]()
       
     for change in changeList {
       changes[change.path] = change.change
@@ -189,7 +189,7 @@ class StashChanges: FileChangesModel
     self.stash = stash
   }
   
-  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker.DiffResult?
+  func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?
   {
     if staged {
       return self.stash.stagedDiffForFile(path)
@@ -206,7 +206,7 @@ class StashChanges: FileChangesModel
     }
     else {
       if let untrackedCommit = self.stash.untrackedCommit as? XTCommit,
-         (try? untrackedCommit.tree?.entry(withPath: path)) != nil {
+         untrackedCommit.tree?.entry(path: path) != nil {
         return untrackedCommit
       }
       else {
@@ -280,7 +280,7 @@ class StagingChanges: FileChangesModel
     self.repository = repository
   }
   
-  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker.DiffResult?
+  func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?
   {
     if staged {
       return self.repository.stagedDiff(file: path)
@@ -342,7 +342,7 @@ extension FileChangesModel
     guard let childNodes = node.children
     else { return }
     
-    var change: XitChange?, unstagedChange: XitChange?
+    var change: DeltaStatus?, unstagedChange: DeltaStatus?
     
     for child in childNodes {
       let childItem = child.representedObject as! CommitTreeItem
@@ -355,14 +355,14 @@ extension FileChangesModel
         change = childItem.change
       }
       else if change! != childItem.change {
-        change = XitChange.mixed
+        change = DeltaStatus.mixed
       }
       
       if unstagedChange == nil {
         unstagedChange = childItem.unstagedChange
       }
       else if unstagedChange! != childItem.unstagedChange {
-        unstagedChange = XitChange.mixed
+        unstagedChange = DeltaStatus.mixed
       }
     }
     

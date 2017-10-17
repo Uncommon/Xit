@@ -1,13 +1,13 @@
 import XCTest
 @testable import Xit
 
-extension Xit.XTDiffMaker.DiffResult
+extension Xit.PatchMaker.PatchResult
 {
-  func extractDiff() -> XTDiffDelta?
+  func extractPatch() -> Patch?
   {
     switch self {
       case .diff(let maker):
-        return maker.makeDiff()
+        return maker.makePatch()
       default:
         return nil
     }
@@ -260,7 +260,7 @@ class XTRepositoryTest: XTTest
     else { return }
     
     XCTAssertEqual(change.path, file1Name)
-    XCTAssertEqual(change.change, XitChange.added)
+    XCTAssertEqual(change.change, DeltaStatus.added)
   }
   
   func testModifiedChange()
@@ -325,26 +325,26 @@ class XTRepositoryTest: XTTest
     var changes = repository.changes(for: XTStagingSHA, parent: nil)
     
     XCTAssertEqual(changes.count, 3);
-    XCTAssertEqual(changes[0].unstagedChange, XitChange.unmodified); // file1
-    XCTAssertEqual(changes[0].change, XitChange.modified);
-    XCTAssertEqual(changes[1].unstagedChange, XitChange.unmodified); // file2
-    XCTAssertEqual(changes[1].change, XitChange.deleted);
-    XCTAssertEqual(changes[2].unstagedChange, XitChange.unmodified); // file3
-    XCTAssertEqual(changes[2].change, XitChange.added);
+    XCTAssertEqual(changes[0].unstagedChange, DeltaStatus.unmodified); // file1
+    XCTAssertEqual(changes[0].change, DeltaStatus.modified);
+    XCTAssertEqual(changes[1].unstagedChange, DeltaStatus.unmodified); // file2
+    XCTAssertEqual(changes[1].change, DeltaStatus.deleted);
+    XCTAssertEqual(changes[2].unstagedChange, DeltaStatus.unmodified); // file3
+    XCTAssertEqual(changes[2].change, DeltaStatus.added);
     
     try! repository.unstageAllFiles()
     changes = repository.changes(for: XTStagingSHA, parent: nil)
     
     XCTAssertEqual(changes.count, 3);
-    XCTAssertEqual(changes[0].unstagedChange, XitChange.modified); // file1
-    XCTAssertEqual(changes[0].change, XitChange.unmodified);
-    XCTAssertEqual(changes[1].unstagedChange, XitChange.deleted); // file2
-    XCTAssertEqual(changes[1].change, XitChange.unmodified);
-    XCTAssertEqual(changes[2].unstagedChange, XitChange.untracked); // file3
-    XCTAssertEqual(changes[2].change, XitChange.unmodified);
+    XCTAssertEqual(changes[0].unstagedChange, DeltaStatus.modified); // file1
+    XCTAssertEqual(changes[0].change, DeltaStatus.unmodified);
+    XCTAssertEqual(changes[1].unstagedChange, DeltaStatus.deleted); // file2
+    XCTAssertEqual(changes[1].change, DeltaStatus.unmodified);
+    XCTAssertEqual(changes[2].unstagedChange, DeltaStatus.untracked); // file3
+    XCTAssertEqual(changes[2].change, DeltaStatus.unmodified);
   }
 
-  func checkDeletedDiff(_ diffResult: XTDiffMaker.DiffResult?)
+  func checkDeletedDiff(_ diffResult: PatchMaker.PatchResult?)
   {
     guard let diffResult = diffResult
     else {
@@ -352,22 +352,17 @@ class XTRepositoryTest: XTTest
       return
     }
     
-    var makerDiff: XTDiffDelta? = nil
+    var makerPatch: Patch? = nil
     
     switch diffResult {
       case .diff(let maker):
-        makerDiff = maker.makeDiff()
+        makerPatch = maker.makePatch()
       default:
         XCTFail("wrong kind of diff")
         return
     }
     
-    guard let diff = makerDiff
-    else {
-      XCTFail("diff is null")
-      return
-    }
-    guard let patch = try? diff.generatePatch()
+    guard let patch = makerPatch
     else {
       XCTFail("patch is null")
       return
@@ -376,17 +371,22 @@ class XTRepositoryTest: XTTest
     XCTAssertEqual(patch.hunkCount, 1, "hunks")
     XCTAssertEqual(patch.addedLinesCount, 0, "added lines")
     XCTAssertEqual(patch.deletedLinesCount, 1, "deleted lines")
-    patch.enumerateHunks {
-      (hunk, stop) in
-      try! hunk.enumerateLinesInHunk(usingBlock: {
-        (line, stop) in
-        switch line.origin {
+    for hunkIndex in 0..<patch.hunkCount {
+      guard let hunk = patch.hunk(at: hunkIndex)
+      else {
+        XCTFail("can't get hunk \(hunkIndex)")
+        continue
+      }
+      
+      hunk.enumerateLines {
+        (line) in
+        switch line.type {
           case .deletion:
-            XCTAssertEqual(line.content, "some text")
+            XCTAssertEqual(line.text, "some text")
           default:
             break
         }
-      })
+      }
     }
   }
   
@@ -420,8 +420,7 @@ class XTRepositoryTest: XTTest
     let diffResult = repository.diffMaker(forFile: file1Name,
                                           commitOID: commit.oid,
                                           parentOID: parentOID)!
-    let diff = diffResult.extractDiff()!
-    let patch = try! diff.generatePatch()
+    let patch = diffResult.extractPatch()!
     
     XCTAssertEqual(patch.deletedLinesCount, 1)
   }
@@ -437,8 +436,7 @@ class XTRepositoryTest: XTTest
     let diffResult = repository.diffMaker(forFile: file1Name,
                                           commitOID: commit.oid,
                                           parentOID: nil)!
-    let diff = diffResult.extractDiff()!
-    let patch = try! diff.generatePatch()
+    let patch = diffResult.extractPatch()!
     
     XCTAssertEqual(patch.addedLinesCount, 1)
   }
@@ -495,9 +493,9 @@ class XTRepositoryTest: XTTest
   }
 }
 
-extension XTDiffMaker.DiffResult: Equatable
+extension PatchMaker.PatchResult: Equatable
 {
-  public static func ==(lhs: XTDiffMaker.DiffResult, rhs: XTDiffMaker.DiffResult) -> Bool
+  public static func ==(lhs: PatchMaker.PatchResult, rhs: PatchMaker.PatchResult) -> Bool
   {
     switch (lhs, rhs) {
       case (.noDifference, .noDifference),
@@ -551,15 +549,15 @@ class XTRepositoryHunkTest: XTTest
     try! copyLorem2Contents()
     
     guard let diffResult = repository.unstagedDiff(file: loremName),
-          let diff = diffResult.extractDiff()
+          let patch = diffResult.extractPatch()
     else {
       XCTFail()
       return
     }
-    let patch = try! diff.generatePatch()
-    let hunk = GTDiffHunk(patch: patch, hunkIndex: 0)!
+    let hunk = patch.hunk(at: 0)!
     
-    try! repository.patchIndexFile(path: loremName, hunk: hunk, stage: true)
+    XCTAssertNoThrow(try repository.patchIndexFile(path: loremName, hunk: hunk,
+                                                   stage: true))
     
     let indexText = readLoremIndexText()!
 
@@ -581,15 +579,15 @@ class XTRepositoryHunkTest: XTTest
     try! repository.stage(file: loremName)
     
     guard let diffResult = repository.stagedDiff(file: loremName),
-          let diff = diffResult.extractDiff(),
-          let patch = try? diff.generatePatch(),
-          let hunk = GTDiffHunk(patch: patch, hunkIndex: 0)
+          let patch = diffResult.extractPatch(),
+          let hunk = patch.hunk(at: 0)
     else {
       XCTFail()
       return
     }
     
-    try! repository.patchIndexFile(path: loremName, hunk: hunk, stage: false)
+    XCTAssertNoThrow(try repository.patchIndexFile(path: loremName, hunk: hunk,
+                                                   stage: false))
     
     let indexText = readLoremIndexText()!
     
@@ -607,13 +605,12 @@ class XTRepositoryHunkTest: XTTest
     try! FileManager.default.copyItem(at: loremURL, to: loremRepoURL)
     
     guard let diffResult = repository.unstagedDiff(file: loremName),
-          let diff = diffResult.extractDiff()
+          let patch = diffResult.extractPatch(),
+          let hunk = patch.hunk(at: 0)
     else {
       XCTFail()
       return
     }
-    let patch = try! diff.generatePatch()
-    let hunk = GTDiffHunk(patch: patch, hunkIndex: 0)!
 
     try! repository.patchIndexFile(path: loremName, hunk: hunk, stage: true)
     
@@ -631,9 +628,8 @@ class XTRepositoryHunkTest: XTTest
     try! FileManager.default.removeItem(atPath: file1Path)
 
     guard let diffResult = repository.unstagedDiff(file: file1Name),
-          let diff = diffResult.extractDiff(),
-          let patch = try? diff.generatePatch(),
-          let hunk = GTDiffHunk(patch: patch, hunkIndex: 0)
+          let patch = diffResult.extractPatch(),
+          let hunk = patch.hunk(at: 0)
     else {
       XCTFail()
       return
@@ -643,8 +639,8 @@ class XTRepositoryHunkTest: XTTest
     
     let status = try! repository.status(file: file1Name)
     
-    XCTAssertEqual(status.0, XitChange.unmodified)
-    XCTAssertEqual(status.1, XitChange.deleted)
+    XCTAssertEqual(status.0, DeltaStatus.unmodified)
+    XCTAssertEqual(status.1, DeltaStatus.deleted)
   }
   
   /// Tests unstaging a new file as a hunk
@@ -654,9 +650,8 @@ class XTRepositoryHunkTest: XTTest
     try! repository.stage(file: loremName)
     
     guard let diffResult = repository.stagedDiff(file: loremName),
-          let diff = diffResult.extractDiff(),
-          let patch = try? diff.generatePatch(),
-          let hunk = GTDiffHunk(patch: patch, hunkIndex: 0)
+          let patch = diffResult.extractPatch(),
+          let hunk = patch.hunk(at: 0)
     else {
       XCTFail()
       return
@@ -666,8 +661,8 @@ class XTRepositoryHunkTest: XTTest
     
     let status = try! repository.status(file: loremName)
     
-    XCTAssertEqual(status.0, XitChange.untracked)
-    XCTAssertEqual(status.1, XitChange.unmodified) // There is no "absent"
+    XCTAssertEqual(status.0, DeltaStatus.untracked)
+    XCTAssertEqual(status.1, DeltaStatus.unmodified) // There is no "absent"
   }
   
   /// Tests unstaging a deleted file as a hunk
@@ -677,9 +672,8 @@ class XTRepositoryHunkTest: XTTest
     try! repository.stage(file: file1Name)
     
     guard let diffResult = repository.stagedDiff(file: file1Name),
-          let diff = diffResult.extractDiff(),
-          let patch = try? diff.generatePatch(),
-          let hunk = GTDiffHunk(patch: patch, hunkIndex: 0)
+          let patch = diffResult.extractPatch(),
+          let hunk = patch.hunk(at: 0)
     else {
       XCTFail()
       return
@@ -689,7 +683,7 @@ class XTRepositoryHunkTest: XTTest
     
     let status = try! repository.status(file: file1Name)
     
-    XCTAssertEqual(status.0, XitChange.deleted)
-    XCTAssertEqual(status.1, XitChange.unmodified)
+    XCTAssertEqual(status.0, DeltaStatus.deleted)
+    XCTAssertEqual(status.1, DeltaStatus.unmodified)
   }
 }

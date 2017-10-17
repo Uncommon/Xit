@@ -38,6 +38,7 @@ public class XTRepository: NSObject
   @objc public let repoURL: URL
   let gitCMD: String
   @objc let queue: TaskQueue
+  let mutex = Mutex()
   var refsIndex = [String: [String]]()
   fileprivate(set) var isWriting = false
   fileprivate var executing = false
@@ -116,12 +117,9 @@ public class XTRepository: NSObject
     guard writing != isWriting
     else { return }
     
-    objc_sync_enter(self)
-    defer {
-      objc_sync_exit(self)
+    mutex.withLock {
+      isWriting = writing
     }
-    
-    isWriting = writing
   }
   
   func performWriting(_ block: (() throws -> Void)) throws
@@ -141,7 +139,9 @@ public class XTRepository: NSObject
   
   func clearCachedBranch()
   {
-    cachedBranch = nil
+    mutex.withLock {
+      cachedBranch = nil
+    }
   }
   
   func refsChanged()
@@ -151,7 +151,9 @@ public class XTRepository: NSObject
     else { return }
     
     willChangeValue(forKey: "currentBranch")
-    cachedBranch = newBranch
+    mutex.withLock {
+      cachedBranch = newBranch
+    }
     didChangeValue(forKey: "currentBranch")
   }
   
@@ -337,7 +339,7 @@ extension XTRepository: CommitStorage
   
   public func commit(forOID oid: OID) -> Commit?
   {
-    return XTCommit(oid: oid, repository: self)
+    return XTCommit(oid: oid, repository: gtRepo.git_repository())
   }
 }
 
@@ -356,7 +358,7 @@ extension XTRepository
   }
   
   /// Returns the unstaged and staged status of the given file.
-  func status(file: String) throws -> (XitChange, XitChange)
+  func status(file: String) throws -> (DeltaStatus, DeltaStatus)
   {
     let statusFlags = UnsafeMutablePointer<UInt32>.allocate(capacity: 1)
     let result = git_status_file(statusFlags, gtRepo.git_repository(), file)
@@ -366,8 +368,8 @@ extension XTRepository
     }
     
     let flags = git_status_t(statusFlags.pointee)
-    var unstagedChange = XitChange.unmodified
-    var stagedChange = XitChange.unmodified
+    var unstagedChange = DeltaStatus.unmodified
+    var stagedChange = DeltaStatus.unmodified
     
     switch flags {
       case _ where flags.test(GIT_STATUS_WT_NEW):

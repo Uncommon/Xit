@@ -167,7 +167,7 @@ extension XTRepository: Stashing
           let oid = entry.updatedOID.map({ GitOID(oid: $0.git_oid().pointee) })
     else { return nil }
     
-    return XTCommit(oid: oid, repository: self)
+    return XTCommit(oid: oid, repository: gtRepo.git_repository())
   }
 }
 

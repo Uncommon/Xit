@@ -32,11 +32,11 @@ extension XTRepository: FileContents
     // TODO: make a Tree protocol to eliminate this cast
     guard let commit = commit as? XTCommit,
           let tree = commit.tree,
-          let entry = try? tree.entry(withPath: path),
-          let blob = (try? entry.gtObject()) as? GTBlob
+          let entry = tree.entry(path: path),
+          let blob = entry.object as? Blob
     else { return nil }
     
-    return blob.data()
+    return blob.makeData()
   }
   
   public func contentsOfStagedFile(path: String) -> Data?
@@ -64,11 +64,11 @@ extension XTRepository: FileContents
   public func fileBlob(ref: String, path: String) -> Blob?
   {
     guard let headTree = XTCommit(ref: ref, repository: self)?.tree,
-          let headEntry = try? headTree.entry(withPath: path),
-          let headObject = try? GTObject(treeEntry: headEntry)
+          let headEntry = headTree.entry(path: path),
+          let headObject = headEntry.object
     else { return nil }
     
-    return headObject as? GTBlob
+    return headObject as? Blob
   }
   
   /// Returns a file URL for a given relative path.
@@ -84,7 +84,7 @@ extension XTRepository: FileDiffing
   /// parent commit.
   public func diffMaker(forFile file: String,
                         commitOID: OID,
-                        parentOID: OID?) -> XTDiffMaker.DiffResult?
+                        parentOID: OID?) -> PatchMaker.PatchResult?
   {
     guard let toCommit = commit(forOID: commitOID as! GitOID) as? XTCommit
     else { return nil }
@@ -92,26 +92,24 @@ extension XTRepository: FileDiffing
     guard isTextFile(file, commit: commitOID.sha)
     else { return .binary }
     
-    let toGTCommit = toCommit.gtCommit
-    var fromSource = XTDiffMaker.SourceType.data(Data())
-    var toSource = XTDiffMaker.SourceType.data(Data())
+    var fromSource = PatchMaker.SourceType.data(Data())
+    var toSource = PatchMaker.SourceType.data(Data())
     
-    if let toTree = toGTCommit.tree,
-       let toEntry = try? toTree.entry(withPath: file),
-       let toBlob = (try? GTObject(treeEntry: toEntry)) as? GTBlob {
+    if let toTree = toCommit.tree,
+       let toEntry = toTree.entry(path: file),
+       let toBlob = toEntry.object as? GitBlob {
       toSource = .blob(toBlob)
     }
     
     if let parentOID = parentOID,
-       let parentCommit = (commit(forOID: parentOID as! GitOID) as? XTCommit)?
-                          .gtCommit,
+       let parentCommit = (commit(forOID: parentOID as! GitOID) as? XTCommit),
        let fromTree = parentCommit.tree,
-       let fromEntry = try? fromTree.entry(withPath: file),
-       let fromBlob = (try? GTObject(treeEntry: fromEntry)) as? GTBlob {
+       let fromEntry = fromTree.entry(path: file),
+       let fromBlob = fromEntry.object as? GitBlob {
       fromSource = .blob(fromBlob)
     }
     
-    return .diff(XTDiffMaker(from: fromSource, to: toSource, path: file))
+    return .diff(PatchMaker(from: fromSource, to: toSource, path: file))
   }
   
   // Returns a file diff for a given commit.
@@ -127,7 +125,7 @@ extension XTRepository: FileDiffing
   
   /// Returns a diff maker for a file in the index, compared to the workspace
   /// file.
-  public func stagedDiff(file: String) -> XTDiffMaker.DiffResult?
+  public func stagedDiff(file: String) -> PatchMaker.PatchResult?
   {
     guard isTextFile(file, commit: XTStagingSHA)
     else { return .binary }
@@ -137,13 +135,13 @@ extension XTRepository: FileDiffing
     let indexBlob = stagedBlob(file: file)
     let headBlob = fileBlob(ref: headRef, path: file)
     
-    return .diff(XTDiffMaker(from: XTDiffMaker.SourceType(headBlob),
-                             to: XTDiffMaker.SourceType(indexBlob),
+    return .diff(PatchMaker(from: PatchMaker.SourceType(headBlob),
+                             to: PatchMaker.SourceType(indexBlob),
                              path: file))
   }
   
   /// Returns a diff maker for a file in the workspace, compared to the index.
-  public func unstagedDiff(file: String) -> XTDiffMaker.DiffResult?
+  public func unstagedDiff(file: String) -> PatchMaker.PatchResult?
   {
     guard isTextFile(file, commit: nil)
     else { return .binary }
@@ -157,11 +155,11 @@ extension XTRepository: FileDiffing
       if let index = try? gtRepo.index(),
          let indexEntry = index.entry(withPath: file),
          let indexBlob = try? GTObject(indexEntry: indexEntry) as? GTBlob {
-        return .diff(XTDiffMaker(from: XTDiffMaker.SourceType(indexBlob),
+        return .diff(PatchMaker(from: PatchMaker.SourceType(indexBlob),
                                  to: .data(data), path: file))
       }
       else {
-        return .diff(XTDiffMaker(from: .data(Data()),
+        return .diff(PatchMaker(from: .data(Data()),
                                  to: .data(data),
                                  path: file))
       }
@@ -222,7 +220,7 @@ extension XTRepository
   /// - parameter hunk: Hunk to be applied
   /// - parameter stage: True if the change is being staged, falses if unstaged
   /// (the patch should be reversed)
-  func patchIndexFile(path: String, hunk: GTDiffHunk, stage: Bool) throws
+  func patchIndexFile(path: String, hunk: DiffHunk, stage: Bool) throws
   {
     var encoding = String.Encoding.utf8
     let index = try gtRepo.index()

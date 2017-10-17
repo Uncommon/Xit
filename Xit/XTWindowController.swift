@@ -123,7 +123,9 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func select(oid: GitOID)
   {
-    guard let commit = XTCommit(oid: oid, repository: xtDocument!.repository)
+    guard let repo = xtDocument?.repository,
+          let commit = XTCommit(oid: oid,
+                                repository: repo.gtRepo.git_repository())
     else { return }
   
     selectedModel = CommitChanges(repository: xtDocument!.repository,

@@ -30,18 +30,8 @@ protocol ContextVariable: class
   var contextLines: UInt { get set }
 }
 
-extension XitChange
+extension DeltaStatus
 {
-  var isModified: Bool
-  {
-    switch self {
-      case .unmodified, .untracked:
-        return false
-      default:
-        return true
-    }
-  }
-  
   var changeImage: NSImage?
   {
     switch self {
@@ -621,7 +611,7 @@ extension FileViewController: NSSplitViewDelegate
 // MARK: HunkStaging
 extension FileViewController: HunkStaging
 {
-  func patchIndexFile(hunk: GTDiffHunk, stage: Bool)
+  func patchIndexFile(hunk: DiffHunk, stage: Bool)
   {
     guard let selectedChange = self.selectedChange()
     else { return }
@@ -638,17 +628,17 @@ extension FileViewController: HunkStaging
     }
   }
   
-  func stage(hunk: GTDiffHunk)
+  func stage(hunk: DiffHunk)
   {
     patchIndexFile(hunk: hunk, stage: true)
   }
   
-  func unstage(hunk: GTDiffHunk)
+  func unstage(hunk: DiffHunk)
   {
     patchIndexFile(hunk: hunk, stage: false)
   }
   
-  func discard(hunk: GTDiffHunk)
+  func discard(hunk: DiffHunk)
   {
     var encoding = String.Encoding.utf8
   

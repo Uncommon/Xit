@@ -62,7 +62,7 @@ class PreviewsPrefsController: NSViewController
     static let tabWidth: UInt = 4
     static var contextLines: UInt
     {
-      return XTDiffMaker.defaultContextLines
+      return PatchMaker.defaultContextLines
     }
   }
   

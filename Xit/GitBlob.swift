@@ -3,6 +3,7 @@ import Foundation
 public protocol Blob
 {
   var dataSize: UInt { get }
+  var blobPtr: OpaquePointer? { get }
   
   /// Consumers should use `withData` instead, since the buffer may have a
   /// limited lifespan.
@@ -13,12 +14,12 @@ extension Blob
 {
   /// Calls `callback` with a data object, or throws `BlobError.cantLoadData`
   /// if the data can't be loaded.
-  public func withData(callback: (Data) throws -> Void) throws
+  public func withData<T>(_ callback: (Data) throws -> T) throws -> T
   {
     guard let data = makeData()
     else { throw BlobError.cantLoadData }
     
-    try callback(data)
+    return try callback(data)
   }
 }
 
@@ -27,23 +28,39 @@ enum BlobError: Swift.Error
   case cantLoadData
 }
 
-public class GitBlob: Blob
+public class GitBlob: Blob, OIDObject
 {
   let blob: OpaquePointer
   
-  init?(repository: XTRepository, oid: OID)
+  public var oid: OID
+  {
+    return GitOID(oidPtr: git_blob_id(blob))
+  }
+  
+  init(blob: OpaquePointer)
+  {
+    self.blob = blob
+  }
+  
+  convenience init?(repository: XTRepository, oid: OID)
+  {
+    self.init(gitRepository: repository.gtRepo.git_repository(), oid: oid)
+  }
+  
+  init?(gitRepository: OpaquePointer, oid: OID)
   {
     guard let oid = oid as? GitOID
     else { return nil }
     var blob: OpaquePointer?
-    let result = git_blob_lookup(&blob, repository.gtRepo.git_repository(),
-                                 oid.unsafeOID())
+    let result = git_blob_lookup(&blob, gitRepository, oid.unsafeOID())
     guard result == 0,
           let finalBlob = blob
     else { return nil }
     
     self.blob = finalBlob
   }
+  
+  public var blobPtr: OpaquePointer? { return blob }
   
   public var dataSize: UInt
   {
@@ -74,6 +91,7 @@ public class GitBlob: Blob
 extension GTBlob: Blob
 {
   public var dataSize: UInt { return UInt(size()) }
+  public var blobPtr: OpaquePointer? { return git_blob() }
 
   public func makeData() -> Data? { return data() }
 }

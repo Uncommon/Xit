@@ -3,7 +3,7 @@ import XCTest
 
 class XTStashTest: XTTest
 {
-  func checkDiffResult(_ result: XTDiffMaker.DiffResult?) -> XTDiffMaker?
+  func checkDiffResult(_ result: PatchMaker.PatchResult?) -> PatchMaker?
   {
     guard let result = result else { return nil }
     
@@ -36,49 +36,46 @@ class XTStashTest: XTTest
     
     XCTAssertEqual(changes.count, 3)
     XCTAssertEqual(addedChange.path, addedName)
-    XCTAssertEqual(addedChange.change, XitChange.added)
-    XCTAssertEqual(addedChange.unstagedChange, XitChange.unmodified)
+    XCTAssertEqual(addedChange.change, DeltaStatus.added)
+    XCTAssertEqual(addedChange.unstagedChange, DeltaStatus.unmodified)
     XCTAssertEqual(file1Change.path, self.file1Name)
-    XCTAssertEqual(file1Change.change, XitChange.unmodified)
-    XCTAssertEqual(file1Change.unstagedChange, XitChange.modified)
+    XCTAssertEqual(file1Change.change, DeltaStatus.unmodified)
+    XCTAssertEqual(file1Change.unstagedChange, DeltaStatus.modified)
     XCTAssertEqual(untrackedChange.path, untrackedName)
-    XCTAssertEqual(untrackedChange.change, XitChange.unmodified)
-    XCTAssertEqual(untrackedChange.unstagedChange, XitChange.added)
+    XCTAssertEqual(untrackedChange.change, DeltaStatus.unmodified)
+    XCTAssertEqual(untrackedChange.unstagedChange, DeltaStatus.added)
     
     XCTAssertNotNil(stash.headBlobForPath(self.file1Name))
     
     guard let changeDiffResult = stash.unstagedDiffForFile(self.file1Name),
-          let changeDiffMaker = checkDiffResult(changeDiffResult)
+          let changeDiffMaker = checkDiffResult(changeDiffResult),
+          let changePatch = changeDiffMaker.makePatch()
     else {
       XCTFail("No change diff")
       return
     }
-    let changeDiff = changeDiffMaker.makeDiff()
-    let changePatch = try! changeDiff!.generatePatch()
     
     XCTAssertEqual(changePatch.addedLinesCount, 1)
     XCTAssertEqual(changePatch.deletedLinesCount, 1)
     
     guard let untrackedDiffResult = stash.unstagedDiffForFile(self.untrackedName),
-          let untrackedDiffMaker = checkDiffResult(untrackedDiffResult)
+          let untrackedDiffMaker = checkDiffResult(untrackedDiffResult),
+          let untrackedPatch = untrackedDiffMaker.makePatch()
     else {
       XCTFail("No untracked diff")
       return
     }
-    let untrackedDiff = untrackedDiffMaker.makeDiff()
-    let untrackedPatch = try! untrackedDiff!.generatePatch()
     
     XCTAssertEqual(untrackedPatch.addedLinesCount, 1)
     XCTAssertEqual(untrackedPatch.deletedLinesCount, 0)
     
     guard let addedDiffResult = stash.stagedDiffForFile(addedName),
-          let addedDiffMaker = checkDiffResult(addedDiffResult)
+          let addedDiffMaker = checkDiffResult(addedDiffResult),
+          let addedPatch = addedDiffMaker.makePatch()
     else {
       XCTFail("No added diff")
       return
     }
-    let addedDiff = addedDiffMaker.makeDiff()
-    let addedPatch = try! addedDiff!.generatePatch()
     
     XCTAssertEqual(addedPatch.addedLinesCount, 1)
     XCTAssertEqual(addedPatch.deletedLinesCount, 0)

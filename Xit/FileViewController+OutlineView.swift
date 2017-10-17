@@ -2,15 +2,15 @@ import Foundation
 
 extension FileViewController: NSOutlineViewDelegate
 {
-  private func displayChange(forChange change: XitChange,
-                             otherChange: XitChange) -> XitChange
+  private func displayChange(forChange change: DeltaStatus,
+                             otherChange: DeltaStatus) -> DeltaStatus
   {
     return (change == .unmodified) && (otherChange != .unmodified)
            ? .mixed : change
   }
 
-  private func stagingImage(forChange change: XitChange,
-                            otherChange: XitChange) -> NSImage?
+  private func stagingImage(forChange change: DeltaStatus,
+                            otherChange: DeltaStatus) -> NSImage?
   {
     let change = displayChange(forChange: change, otherChange: otherChange)
     
@@ -18,7 +18,7 @@ extension FileViewController: NSOutlineViewDelegate
   }
 
   func updateTableButton(_ button: NSButton,
-                         change: XitChange, otherChange: XitChange)
+                         change: DeltaStatus, otherChange: DeltaStatus)
   {
     button.image = modelCanCommit
         ? stagingImage(forChange: change, otherChange: otherChange)
@@ -26,8 +26,8 @@ extension FileViewController: NSOutlineViewDelegate
   }
 
   private func tableButtonView(_ identifier: NSUserInterfaceItemIdentifier,
-                               change: XitChange,
-                               otherChange: XitChange) -> TableButtonView
+                               change: DeltaStatus,
+                               otherChange: DeltaStatus) -> TableButtonView
   {
     let cellView = fileListOutline.makeView(withIdentifier: identifier,
                                             owner: self)

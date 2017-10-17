@@ -115,7 +115,7 @@ public class XTHistoryTableController: NSViewController
       while let gtCommit = walker.nextObject() as? GTCommit {
         let oid = GitOID(oidPtr: gtCommit.oid!.git_oid())
         guard let commit = XTCommit(oid: oid,
-                                    repository: repository)
+                                    repository: repository.gtRepo.git_repository())
         else { continue }
         
         history.appendCommit(commit)
