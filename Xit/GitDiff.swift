@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol Diff
+public protocol Diff: class
 {
   var deltaCount: Int { get }
   
@@ -65,13 +65,14 @@ class GitDiff: Diff
   }
   
   /// Tree to tree
-  init?(oldTree: GitTree, newTree: GitTree, repository: OpaquePointer,
+  init?(oldTree: Tree?, newTree: Tree?, repository: OpaquePointer,
         options: DiffOptions? = nil)
   {
     var diff: OpaquePointer?
     let result: Int32 = GitDiff.unwrappingOptions(options) {
       return git_diff_tree_to_tree(&diff, repository,
-                                     oldTree.tree, newTree.tree, $0)
+                                     (oldTree as? GitTree)?.tree,
+                                     (newTree as? GitTree)?.tree, $0)
     }
     guard result == 0,
           let finalDiff = diff
@@ -161,6 +162,30 @@ class GitDiff: Diff
   deinit
   {
     git_diff_free(diff)
+  }
+}
+
+
+extension Diff
+{
+  func delta(forNewPath path: String) -> DiffDelta?
+  {
+    for index in 0..<deltaCount {
+      if let delta = delta(at: index), delta.newFile.filePath == path {
+        return delta
+      }
+    }
+    return nil
+  }
+  
+  func delta(forOldPath path: String) -> DiffDelta?
+  {
+    for index in 0..<deltaCount {
+      if let delta = delta(at: index), delta.oldFile.filePath == path {
+        return delta
+      }
+    }
+    return nil
   }
 }
 

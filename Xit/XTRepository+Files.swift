@@ -115,12 +115,11 @@ extension XTRepository: FileDiffing
   // Returns a file diff for a given commit.
   public func diff(for path: String,
                    commitSHA sha: String,
-                   parentOID: OID?) -> XTDiffDelta?
+                   parentOID: OID?) -> DiffDelta?
   {
-    guard let diff = self.diff(forSHA: sha, parent: parentOID)
-    else { return nil }
+    let diff = self.diff(forSHA: sha, parent: parentOID)
     
-    return delta(from: diff, path: path)
+    return diff?.delta(forNewPath: path)
   }
   
   /// Returns a diff maker for a file in the index, compared to the workspace
@@ -188,29 +187,29 @@ extension XTRepository
   
   /// Returns the diff for the referenced commit, compared to its first parent
   /// or to a specific parent.
-  func diff(forSHA sha: String, parent parentOID: OID?) -> GTDiff?
+  func diff(forSHA sha: String, parent parentOID: OID?) -> Diff?
   {
     let parentSHA = parentOID?.sha ?? ""
-    let key = sha.appending(parentSHA) as NSString
+    let key = sha.appending(parentSHA)
     
-    if let diff = diffCache.object(forKey: key) {
+    if let diff = diffCache[key] {
       return diff
     }
     else {
-      guard let commit = (try? gtRepo.lookUpObject(bySHA: sha)) as? GTCommit
+      guard let commit = commit(forSHA: sha)
       else { return nil }
       
-      let parents = commit.parents
-      let parent: GTCommit? = (parentSHA == "")
-          ? parents.first
-          : parents.first(where: { $0.sha == parentSHA })
+      let parentSHAs = commit.parentSHAs
+      let parentSHA: String? = (parentSHA == "")
+            ? parentSHAs.first
+            : parentSHAs.first(where: { $0 == parentSHA })
+      let parentCommit = parentSHA.map({ self.commit(forSHA: $0) })
       
-      guard let diff = try? GTDiff(oldTree: parent?.tree,
-                                   withNewTree: commit.tree,
-                                   in: gtRepo, options: nil)
+      guard let diff = GitDiff(oldTree: parentCommit??.tree, newTree: commit.tree,
+                               repository: gtRepo.git_repository())
       else { return nil }
       
-      diffCache.setObject(diff, forKey: key)
+      diffCache[key] = diff
       return diff
     }
   }

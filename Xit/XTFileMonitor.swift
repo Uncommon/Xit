@@ -47,7 +47,9 @@ class XTFileMonitor
       if source.data.contains(.delete) {
         source.cancel()
         close(myself.fd)
-        myself.source = nil
+        myself.sourceMutex.withLock {
+          myself.source = nil
+        }
         myself.makeSource()
       }
     }

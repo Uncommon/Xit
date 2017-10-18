@@ -7,8 +7,7 @@ class PatchTest: XCTestCase
   var loremURL, lorem2URL: URL!
   var loremData, lorem2Data: Data!
   var loremText, lorem2Text: String!
-  var delta: XTDiffDelta!
-  var patch: GTDiffPatch!
+  var patch: Patch!
 
   override func setUp()
   {
@@ -20,16 +19,16 @@ class PatchTest: XCTestCase
     loremText = String(data: loremData, encoding: .utf8)!
     lorem2Data = try! Data(contentsOf: lorem2URL)
     lorem2Text = String(data: lorem2Data, encoding: .utf8)!
-    delta = try! XTDiffDelta(from: loremData, forPath: nil,
-                             to: lorem2Data, forPath: nil,
-                             options: [GTDiffOptionsContextLinesKey:
-                              PatchMaker.defaultContextLines])
-    patch = try! delta.generatePatch()
+    patch = GitPatch(oldData: loremData, newData: lorem2Data)
   }
 
   func testApplyFirst()
   {
-    let hunk1 = GTDiffHunk(patch: patch, hunkIndex: 0)!
+    guard let hunk1 = patch.hunk(at: 0)
+    else {
+      XCTFail("no hunk")
+      return
+    }
     let applied = hunk1.applied(to: loremText, reversed: false)!
     
     XCTAssert(applied.hasPrefix(
@@ -40,7 +39,11 @@ class PatchTest: XCTestCase
   
   func testDiscardFirst()
   {
-    let hunk1 = GTDiffHunk(patch: patch, hunkIndex: 0)!
+    guard let hunk1 = patch.hunk(at: 0)
+    else {
+      XCTFail("no hunk")
+      return
+    }
     let applied = hunk1.applied(to: lorem2Text, reversed: true)!
     
     XCTAssert(applied.hasPrefix(
@@ -52,7 +55,11 @@ class PatchTest: XCTestCase
   
   func testApplyLast()
   {
-    let hunk = GTDiffHunk(patch: patch, hunkIndex: patch.hunkCount-1)!
+    guard let hunk = patch.hunk(at: patch.hunkCount-1)
+    else {
+      XCTFail("no hunk")
+      return
+    }
     let applied = hunk.applied(to: loremText, reversed: false)!
     
     XCTAssert(applied.hasSuffix(
@@ -67,7 +74,11 @@ class PatchTest: XCTestCase
   
   func testDiscardLast()
   {
-    let hunk = GTDiffHunk(patch: patch, hunkIndex: patch.hunkCount-1)!
+    guard let hunk = patch.hunk(at: patch.hunkCount-1)
+    else {
+      XCTFail("no hunk")
+      return
+    }
     let applied = hunk.applied(to: lorem2Text, reversed: true)!
     
     XCTAssert(applied.hasSuffix(
@@ -82,7 +93,11 @@ class PatchTest: XCTestCase
   func testNotApplied()
   {
     let lorem2Text = String(data: lorem2Data, encoding: .utf8)!
-    let hunk1 = GTDiffHunk(patch: patch, hunkIndex: 0)!
+    guard let hunk1 = patch.hunk(at: 0)
+    else {
+      XCTFail("no hunk")
+      return
+    }
     
     XCTAssertNil(hunk1.applied(to: lorem2Text, reversed: false))
   }

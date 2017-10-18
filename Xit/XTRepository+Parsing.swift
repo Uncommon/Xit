@@ -62,21 +62,24 @@ extension XTRepository: FileStaging
   public func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
   {
     guard sha != XTStagingSHA
-      else { return stagingChanges() }
+    else { return stagingChanges() }
     
     guard let commit = self.commit(forSHA: sha),
-      let sha = commit.sha
-      else { return [] }
+          let sha = commit.sha
+    else { return [] }
     
     let parentOID = parentOID ?? commit.parentOIDs.first
-    let diff = self.diff(forSHA: sha, parent: parentOID)
+    guard let diff = self.diff(forSHA: sha, parent: parentOID)
+    else { return [] }
     var result = [FileChange]()
     
-    diff?.enumerateDeltas {
-      (delta, _) in
-      if delta.type != .unmodified {
-        let change = FileChange(path: delta.newFile.path,
-                                change: DeltaStatus(delta: delta.type))
+    for index in 0..<diff.deltaCount {
+      guard let delta = diff.delta(at: index)
+      else { continue }
+      
+      if delta.deltaStatus != .unmodified {
+        let change = FileChange(path: delta.newFile.filePath,
+                                change: delta.deltaStatus)
         
         result.append(change)
       }
@@ -105,21 +108,6 @@ extension XTRepository: FileStaging
                                unstagedChange: unstagedChange)
       
       result.append(change)
-    }
-    return result
-  }
-  
-  // Returns a file delta from a given diff.
-  func delta(from diff: GTDiff, path: String) -> XTDiffDelta?
-  {
-    var result: XTDiffDelta?
-    
-    diff.enumerateDeltas {
-      (delta, stop) in
-      if delta.newFile.path == path {
-        stop.pointee = true
-        result = delta
-      }
     }
     return result
   }

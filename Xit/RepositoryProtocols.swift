@@ -44,7 +44,7 @@ public protocol FileDiffing: class
                  parentOID: OID?) -> PatchMaker.PatchResult?
   func diff(for path: String,
             commitSHA sha: String,
-            parentOID: OID?) -> XTDiffDelta?
+            parentOID: OID?) -> DiffDelta?
   func stagedDiff(file: String) -> PatchMaker.PatchResult?
   func unstagedDiff(file: String) -> PatchMaker.PatchResult?
   

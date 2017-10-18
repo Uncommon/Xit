@@ -45,7 +45,7 @@ public class XTRepository: NSObject
   
   fileprivate(set) var cachedHeadRef, cachedHeadSHA, cachedBranch: String?
   
-  let diffCache = NSCache<NSString, GTDiff>()
+  let diffCache = Cache<String, Diff>(maxSize: 50)
   fileprivate var repoWatcher: XTRepositoryWatcher! = nil
   fileprivate var workspaceWatcher: WorkspaceWatcher! = nil
   private(set) var config: XTConfig! = nil
