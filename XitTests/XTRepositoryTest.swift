@@ -250,6 +250,21 @@ class XTRepositoryTest: XTTest
     XCTAssertEqual(contentString, "some text")
   }
   
+  func testFileBlob()
+  {
+    guard let blob = repository.fileBlob(ref: "HEAD", path: file1Name)
+    else {
+      XCTFail("no blob")
+      return
+    }
+    
+    var blobString: String? = nil
+    
+    XCTAssertNoThrow(
+        try blob.withData({ blobString = String(data: $0, encoding: .utf8) }))
+    XCTAssertEqual(blobString, "some text")
+  }
+  
   func testAddedChange()
   {
     let changes = repository.changes(for: repository.headSHA!, parent: nil)

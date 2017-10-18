@@ -183,10 +183,10 @@ public class XTCommit: Commit
     let gitObjectPtr = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     guard git_reference_peel(gitObjectPtr, gitRef, GIT_OBJ_COMMIT) == 0,
           let gitObject = gitObjectPtr.pointee,
-          let commit = GTCommit(obj: gitObject, in: repository.gtRepo)
+          git_object_type(gitObject) == GIT_OBJ_COMMIT
     else { return nil }
     
-    self.init(commit: commit)
+    self.init(gitCommit: gitObject)
   }
   
   /// Returns a list of all files in the commit's tree, with paths relative
