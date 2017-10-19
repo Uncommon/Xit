@@ -1,10 +1,8 @@
 import Foundation
 
 // MARK: Refs
-extension XTRepository : CommitReferencing
+extension XTRepository: CommitReferencing
 {
-  
-
   /// Reloads the cached map of OIDs to refs.
   func rebuildRefsIndex()
   {
@@ -24,8 +22,8 @@ extension XTRepository : CommitReferencing
         else { return 0 }
       
       let peeledOID = git_object_id(peeled)
-      guard let sha = GTOID(gitOid: peeledOID!).sha
-        else { return 0 }
+      guard let sha = peeledOID.map({ GitOID(oid: $0.pointee) })?.sha
+      else { return 0 }
       var refs = repo.refsIndex[sha] ?? [String]()
       
       refs.append(name)
@@ -80,8 +78,10 @@ extension XTRepository : CommitReferencing
     return headRef.map { sha(forRef: $0) } ?? nil
   }
 
-  public var currentBranch: String?
+  @objc public var currentBranch: String?
   {
+    mutex.lock()
+    defer { mutex.unlock() }
     if cachedBranch == nil {
       refsChanged()
     }
@@ -137,6 +137,16 @@ extension XTRepository : CommitReferencing
     return (object as? GTObject)?.sha
   }
   
+  public func localBranch(named name: String) -> LocalBranch?
+  {
+    return XTLocalBranch(repository: self, name: name)
+  }
+  
+  public func remoteBranch(named name: String, remote: String) -> RemoteBranch?
+  {
+    return XTRemoteBranch(repository: self, name: "\(remote)/\(name)")
+  }
+  
   func createBranch(_ name: String) -> Bool
   {
     clearCachedBranch()
@@ -180,16 +190,6 @@ extension XTRepository : CommitReferencing
     }
   }
   
-  public func localBranches() -> Branches<XTLocalBranch>
-  {
-    return Branches(repo: self, type: GIT_BRANCH_LOCAL)
-  }
-  
-  public func remoteBranches() -> Branches<XTRemoteBranch>
-  {
-    return Branches(repo: self, type: GIT_BRANCH_REMOTE)
-  }
-  
   public func remoteNames() -> [String]
   {
     let strArray = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
@@ -210,5 +210,18 @@ extension XTRepository : CommitReferencing
     let tags = try gtRepo.allTags()
     
     return tags.map({ XTTag(repository: self, tag: $0) })
+  }
+}
+
+extension XTRepository: BranchListing
+{
+  public func localBranches() -> Branches<XTLocalBranch>
+  {
+    return Branches(repo: self, type: GIT_BRANCH_LOCAL)
+  }
+  
+  public func remoteBranches() -> Branches<XTRemoteBranch>
+  {
+    return Branches(repo: self, type: GIT_BRANCH_REMOTE)
   }
 }

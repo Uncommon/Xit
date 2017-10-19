@@ -15,17 +15,17 @@ class BlameViewController: WebViewController
   
   class CommitColoring
   {
-    var commitColors = [GitOID: NSColor]()
+    var commitColors = [String: NSColor]()
     var lastHue = 120
     
-    init(firstOID: GitOID)
+    init(firstOID: OID)
     {
       _ = color(for: firstOID)
     }
     
-    func color(for oid: GitOID) -> NSColor
+    func color(for oid: OID) -> NSColor
     {
-      if let color = commitColors[oid] {
+      if let color = commitColors[oid.sha] {
         return color
       }
       else {
@@ -34,13 +34,13 @@ class BlameViewController: WebViewController
                              brightness: 0.85, alpha: 1.0)
         
         lastHue = (lastHue + 55) % 360
-        commitColors[oid] = result
+        commitColors[oid.sha] = result
         return result
       }
     }
   }
   
-  override init?(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?)
+  override init(nibName nibNameOrNil: NSNib.Name?, bundle nibBundleOrNil: Bundle?)
   {
     actionDelegate = BlameActionDelegate()
     
@@ -90,44 +90,46 @@ class BlameViewController: WebViewController
     dateFormatter.dateStyle = .short
     
     for hunk in blame.hunks {
-      var color = coloring.color(for: hunk.finalOID)
+      let finalOID = hunk.finalLine.oid as! GitOID
+      var color = coloring.color(for: finalOID)
       
-      htmlLines.append(contentsOf: [
-          "<tr><td class='headcell'>",
-          "<div class='blamehead' style='background-color: \(color.cssHSL)'>",
-          "<div class='jumpbutton' " +
-          "onclick=\"window.webActionDelegate.selectSHA('" +
-          hunk.finalOID.sha + "')\">‣</div>" +
-          "<div class='name'>\(hunk.finalSignature.name ?? "")</div>"
+      htmlLines.append(contentsOf: ["""
+          <tr><td class='headcell'>
+            <div class='blamehead' style='background-color: \(color.cssHSL)'>
+            <div class='jumpbutton' \
+            onclick="window.webActionDelegate.selectSHA('\(finalOID.sha)')">
+            ‣</div>
+            <div class='name'>\(hunk.finalLine.signature.name ?? "")</div>
+          """
           ])
       
       if hunk.lineCount > 0 {
-        if hunk.finalOID.isZero {
+        if hunk.finalLine.oid.isZero {
           htmlLines.append("<div class='local'>local changes</div>")
         }
         else {
-          if hunk.finalOID == currentOID {
+          if finalOID == currentOID {
             htmlLines.append("<div class='currentsha'>" +
-                             hunk.finalOID.sha.firstSix() + "</div>")
+                             hunk.finalLine.oid.sha.firstSix() + "</div>")
           }
           else {
             htmlLines.append(
-                "<div>" +
-                hunk.finalOID.sha.firstSix() + "</div>")
+                "<div>\(hunk.finalLine.oid.sha.firstSix())</div>")
           }
         }
-        htmlLines.append("<div class='date'>" +
-                         dateFormatter.string(from: hunk.finalSignature.when) +
-                         "</div>")
+        htmlLines.append("""
+            <div class='date'>\
+            \(dateFormatter.string(from: hunk.finalLine.signature.when))</div>
+            """)
       }
-      if hunk.finalOID != currentOID {
+      if finalOID != currentOID {
         color = color.blended(withFraction: 0.65, of: .white) ?? color
       }
       htmlLines.append(contentsOf: ["</div></td>",
                                     "<td style='background-color: " +
                                     "\(color.cssHSL)'>"])
       
-      let start = hunk.finalLineStart - 1
+      let start = hunk.finalLine.start - 1
       let end = min(start + hunk.lineCount, lines.count)
       let hunkLines = lines[start..<end]
       

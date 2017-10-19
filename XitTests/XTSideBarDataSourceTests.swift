@@ -60,7 +60,6 @@ class XTSidebarDataSourceTest: XTTest
               as! XTSideBarItem
     let expandable = sbds.outlineView(outline, isItemExpandable: tag)
     
-    XCTAssertNotNil(tag.model)
     XCTAssertNotNil(tag.model?.shaToSelect)
     XCTAssertFalse(expandable)
     
@@ -88,7 +87,6 @@ class XTSidebarDataSourceTest: XTTest
                    as! XTSideBarItem
       let expandable = sbds.outlineView(outline, isItemExpandable: branch)
       
-      XCTAssertNotNil(branch.model)
       XCTAssertNotNil(branch.model?.shaToSelect)
       XCTAssertFalse(expandable)
       
@@ -126,8 +124,8 @@ class XTSidebarDataSourceTest: XTTest
     XCTAssertNoThrow(try repository.checkout(branch: "master"))
     XCTAssertTrue(repository.createBranch("b1"))
     XCTAssertNoThrow(
-        try repository.add(remote: remoteName,
-                           url: URL(fileURLWithPath: remoteRepoPath)))
+        try repository.addRemote(named: remoteName,
+                                 url: URL(fileURLWithPath: remoteRepoPath)))
     
     let configArgs = ["config", "receive.denyCurrentBranch", "ignore"]
     
@@ -244,7 +242,7 @@ class XTSidebarDataSourceTest: XTTest
 
 class MockSidebarOutline: NSOutlineView
 {
-  override func make(withIdentifier identifier: String,
+  override func makeView(withIdentifier identifier: NSUserInterfaceItemIdentifier,
                      owner: Any?) -> NSView?
   {
     let result = XTSidebarTableCellView(frame: NSRect(x: 0, y: 0,

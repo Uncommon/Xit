@@ -1,88 +1,254 @@
 import Foundation
 
-extension XTRepository
+// MARK: FileContents
+extension XTRepository: FileContents
 {
-  func contentsOfFile(path: String, at commit: XTCommit) -> Data?
+  static let textNames = ["AUTHORS", "CONTRIBUTING", "COPYING", "LICENSE",
+                          "Makefile", "README"]
+  
+  /// Returns true if the file seems to be text, based on its name.
+  public func isTextFile(_ path: String, commit: String?) -> Bool
   {
-    guard let tree = commit.tree,
-          let entry = try? tree.entry(withPath: path),
-          let blob = (try? entry.gtObject()) as? GTBlob
-    else { return nil }
+    let name = (path as NSString).lastPathComponent
+    guard !name.isEmpty
+    else { return false }
     
-    return blob.data()
+    if XTRepository.textNames.contains(name) {
+      return true
+    }
+    
+    let ext = (name as NSString).pathExtension
+    guard !ext.isEmpty
+    else { return false }
+    
+    let unmanaged = UTTypeCreatePreferredIdentifierForTag(
+          kUTTagClassFilenameExtension, ext as CFString, nil)
+    let utType = unmanaged?.takeRetainedValue()
+    
+    return utType.map { UTTypeConformsTo($0, kUTTypeText) } ?? false
   }
   
-  func contentsOfStagedFile(path: String) -> Data?
+  public func contentsOfFile(path: String, at commit: Commit) -> Data?
+  {
+    // TODO: make a Tree protocol to eliminate this cast
+    guard let commit = commit as? XTCommit,
+          let tree = commit.tree,
+          let entry = tree.entry(path: path),
+          let blob = entry.object as? Blob
+    else { return nil }
+    
+    return blob.makeData()
+  }
+  
+  public func contentsOfStagedFile(path: String) -> Data?
+  {
+    var result: Data?
+    
+    _ = try? stagedBlob(file: path)?.withData {
+      (data) in
+      result = (data as NSData).copy() as? Data
+    }
+    return result
+  }
+  
+  public func stagedBlob(file: String) -> Blob?
   {
     guard let index = try? gtRepo.index(),
           (try? index.refresh()) != nil,
-          let entry = index.entry(withPath: path),
-          let blob = (try? entry.gtObject()) as? GTBlob
+          let indexEntry = index.entry(withPath: file),
+          let indexObject = try? GTObject(indexEntry: indexEntry)
     else { return nil }
     
-    return blob.data()
+    return indexObject as? GTBlob
   }
   
-  /// Returns the diff for the referenced commit, compared to its first parent
-  /// or to a specific parent.
-  func diff(forSHA sha: String, parent parentSHA: String?) -> GTDiff?
+  func commitBlob(commit: Commit?, path: String) -> Blob?
   {
-    let parentSHA = parentSHA ?? ""
-    let key = sha.appending(parentSHA) as NSString
+    return commit?.tree?.entry(path: path)?.object as? Blob
+  }
+  
+  public func fileBlob(ref: String, path: String) -> Blob?
+  {
+    return commitBlob(commit: sha(forRef: ref).flatMap({ commit(forSHA: $0) }),
+                      path: path)
+  }
+  
+  public func fileBlob(sha: String, path: String) -> Blob?
+  {
+    return commitBlob(commit: commit(forSHA: sha), path: path)
+  }
+  
+  public func fileBlob(oid: OID, path: String) -> Blob?
+  {
+    return commitBlob(commit: commit(forOID: oid), path: path)
+  }
+  
+  public func stagedBlob(path: String) -> Blob?
+  {
+    guard let index = try? gtRepo.index(),
+          (try? index.refresh()) != nil,
+          let indexEntry = index.entry(withPath: path),
+          let indexObject = try? GTObject(indexEntry: indexEntry)
+    else { return nil }
     
-    if let diff = diffCache.object(forKey: key) {
-      return diff
-    }
-    else {
-      guard let commit = (try? gtRepo.lookUpObject(bySHA: sha)) as? GTCommit
-        else { return nil }
-      
-      let parents = commit.parents
-      let parent: GTCommit? = (parentSHA == "")
-          ? parents.first
-          : parents.first(where: { $0.sha == parentSHA })
-      
-      guard let diff = try? GTDiff(oldTree: parent?.tree,
-                                   withNewTree: commit.tree,
-                                   in: gtRepo, options: nil)
-      else { return nil }
-      
-      diffCache.setObject(diff, forKey: key)
-      return diff
-    }
+    return indexObject as? GTBlob
   }
   
-  // Returns the changes for the given commit.
-  func changes(for ref: String, parent parentSHA: String?) -> [FileChange]
+  /// Returns a file URL for a given relative path.
+  public func fileURL(_ file: String) -> URL
   {
-    guard ref != XTStagingSHA
-    else {
-      if let parentCommit = parentSHA.flatMap({ commit(forSHA: $0) }) {
-        return Array(amendingChanges(parent: parentCommit))
+    return repoURL.appendingPathComponent(file)
+  }
+}
+
+// MARK: FileDiffing
+extension XTRepository: FileDiffing
+{
+  /// Returns a diff maker for a file at the specified commit, compared to the
+  /// parent commit.
+  public func diffMaker(forFile file: String,
+                        commitOID: OID,
+                        parentOID: OID?) -> PatchMaker.PatchResult?
+  {
+    guard let toCommit = commit(forOID: commitOID as! GitOID) as? XTCommit
+    else { return nil }
+    
+    guard isTextFile(file, commit: commitOID.sha)
+    else { return .binary }
+    
+    var fromSource = PatchMaker.SourceType.data(Data())
+    var toSource = PatchMaker.SourceType.data(Data())
+    
+    if let toTree = toCommit.tree,
+       let toEntry = toTree.entry(path: file),
+       let toBlob = toEntry.object as? GitBlob {
+      toSource = .blob(toBlob)
+    }
+    
+    if let parentOID = parentOID,
+       let parentCommit = (commit(forOID: parentOID as! GitOID) as? XTCommit),
+       let fromTree = parentCommit.tree,
+       let fromEntry = fromTree.entry(path: file),
+       let fromBlob = fromEntry.object as? GitBlob {
+      fromSource = .blob(fromBlob)
+    }
+    
+    return .diff(PatchMaker(from: fromSource, to: toSource, path: file))
+  }
+  
+  // Returns a file diff for a given commit.
+  public func diff(for path: String,
+                   commitSHA sha: String,
+                   parentOID: OID?) -> DiffDelta?
+  {
+    let diff = self.diff(forSHA: sha, parent: parentOID)
+    
+    return diff?.delta(forNewPath: path)
+  }
+  
+  /// Returns a diff maker for a file in the index, compared to HEAD
+  public func stagedDiff(file: String) -> PatchMaker.PatchResult?
+  {
+    guard isTextFile(file, commit: XTStagingSHA)
+    else { return .binary }
+    
+    guard let headRef = self.headRef
+    else { return nil }
+    let indexBlob = stagedBlob(file: file)
+    let headBlob = fileBlob(ref: headRef, path: file)
+    
+    return .diff(PatchMaker(from: PatchMaker.SourceType(headBlob),
+                             to: PatchMaker.SourceType(indexBlob),
+                             path: file))
+  }
+  
+  /// Returns a diff maker for a file in the index, compared to HEAD-1.
+  public func stagedAmendingDiff(file: String) -> PatchMaker.PatchResult?
+  {
+    guard isTextFile(file, commit: XTStagingSHA)
+    else { return .binary }
+    
+    guard let headCommit = headSHA.flatMap({ commit(forSHA: $0) })
+    else { return nil }
+    let blob = headCommit.parentSHAs.first
+                         .flatMap { fileBlob(sha: $0, path: file) }
+    let indexBlob = stagedBlob(file: file)
+
+    return .diff(PatchMaker(from: PatchMaker.SourceType(blob),
+                            to: PatchMaker.SourceType(indexBlob),
+                            path: file))
+  }
+  
+  /// Returns a diff maker for a file in the workspace, compared to the index.
+  public func unstagedDiff(file: String) -> PatchMaker.PatchResult?
+  {
+    guard isTextFile(file, commit: nil)
+    else { return .binary }
+    
+    let url = self.repoURL.appendingPathComponent(file)
+    let exists = FileManager.default.fileExists(atPath: url.path)
+    
+    do {
+      let data = exists ? try Data(contentsOf: url) : Data()
+      
+      if let indexBlob = stagedBlob(path: file) {
+        return .diff(PatchMaker(from: PatchMaker.SourceType(indexBlob),
+                                 to: .data(data), path: file))
       }
       else {
-        return Array(stagingChanges)
+        return .diff(PatchMaker(from: .data(Data()),
+                                 to: .data(data),
+                                 path: file))
       }
     }
-    
-    guard let commit = (try? gtRepo.lookUpObject(byRevParse: ref)) as? GTCommit,
-          let sha = commit.sha
-    else { return [] }
-    
-    let parentSHA = parentSHA ?? commit.parents.first?.sha
-    let diff = self.diff(forSHA: sha, parent: parentSHA)
-    var result = [FileChange]()
-    
-    diff?.enumerateDeltas {
-      (delta, _) in
-      if delta.type != .unmodified {
-        let change = FileChange(path: delta.newFile.path,
-                                change: XitChange(delta: delta.type))
-        
-        result.append(change)
-      }
+    catch {
+      return nil
     }
-    return result
+  }
+  
+  public func blame(for path: String,
+                    from startOID: OID?, to endOID: OID?) -> Blame?
+  {
+    return GitBlame(repository: self, path: path, from: startOID, to: endOID)
+  }
+  
+  public func blame(for path: String,
+                    data fromData: Data?, to endOID: OID?) -> Blame?
+  {
+    return GitBlame(repository: self, path: path,
+                    data: fromData ?? Data(), to: endOID)
+  }
+}
+
+extension XTRepository
+{
+  /// Returns the diff for the referenced commit, compared to its first parent
+  /// or to a specific parent.
+  func diff(forSHA sha: String, parent parentOID: OID?) -> Diff?
+  {
+    let parentSHA = parentOID?.sha ?? ""
+    let key = sha.appending(parentSHA)
+    
+    if let diff = diffCache[key] {
+      return diff
+    }
+    else {
+      guard let commit = commit(forSHA: sha)
+      else { return nil }
+      
+      let parentSHAs = commit.parentSHAs
+      let parentSHA: String? = (parentSHA == "")
+            ? parentSHAs.first
+            : parentSHAs.first(where: { $0 == parentSHA })
+      let parentCommit = parentSHA.map({ self.commit(forSHA: $0) })
+      
+      guard let diff = GitDiff(oldTree: parentCommit??.tree, newTree: commit.tree,
+                               repository: gtRepo.git_repository())
+      else { return nil }
+      
+      diffCache[key] = diff
+      return diff
+    }
   }
   
   /// Applies the given patch hunk to the specified file in the index.
@@ -90,7 +256,7 @@ extension XTRepository
   /// - parameter hunk: Hunk to be applied
   /// - parameter stage: True if the change is being staged, falses if unstaged
   /// (the patch should be reversed)
-  func patchIndexFile(path: String, hunk: GTDiffHunk, stage: Bool) throws
+  func patchIndexFile(path: String, hunk: DiffHunk, stage: Bool) throws
   {
     var encoding = String.Encoding.utf8
     let index = try gtRepo.index()
@@ -149,145 +315,14 @@ extension XTRepository
     throw Error.patchMismatch
   }
   
-  /// Returns a diff maker for a file at the specified commit, compared to the
-  /// parent commit.
-  func diffMaker(forFile file: String, commitSHA: String, parentSHA: String?)
-    -> XTDiffMaker?
-  {
-    guard let toCommit = commit(forSHA: commitSHA)?.gtCommit
-    else { return nil }
-    
-    var fromSource = XTDiffMaker.SourceType.data(Data())
-    var toSource = XTDiffMaker.SourceType.data(Data())
-    
-    if let toTree = toCommit.tree,
-      let toEntry = try? toTree.entry(withPath: file),
-      let toBlob = (try? GTObject(treeEntry: toEntry)) as? GTBlob {
-      toSource = .blob(toBlob)
-    }
-    
-    if let parentSHA = parentSHA,
-      let parentCommit = commit(forSHA: parentSHA)?.gtCommit,
-      let fromTree = parentCommit.tree,
-      let fromEntry = try? fromTree.entry(withPath: file),
-      let fromBlob = (try? GTObject(treeEntry: fromEntry)) as? GTBlob {
-      fromSource = .blob(fromBlob)
-    }
-    
-    return XTDiffMaker(from: fromSource, to: toSource, path: file)
-  }
-  
-  // Returns a file diff for a given commit.
-  func diff(for path: String,
-            commitSHA sha: String,
-            parentSHA: String?) -> XTDiffDelta?
-  {
-    guard let diff = self.diff(forSHA: sha, parent: parentSHA)
-    else { return nil }
-    
-    return delta(from: diff, path: path)
-  }
-  
-  func fileBlob(ref: String, path: String) -> GTBlob?
-  {
-    guard let headTree = XTCommit(ref: ref, repository: self)?.tree,
-          let headEntry = try? headTree.entry(withPath: path),
-          let headObject = try? GTObject(treeEntry: headEntry)
-    else { return nil }
-    
-    return headObject as? GTBlob
-  }
-  
-  func fileBlob(sha: String, path: String) -> GTBlob?
-  {
-    guard let headTree = XTCommit(sha: sha, repository: self)?.tree,
-          let headEntry = try? headTree.entry(withPath: path),
-          let headObject = try? GTObject(treeEntry: headEntry)
-    else { return nil }
-    
-    return headObject as? GTBlob
-  }
-  
-  func fileBlob(oid: OID, path: String) -> Blob?
-  {
-    if let gitOID = oid as? GitOID {
-      return GitBlob(repository: self, oid: gitOID)
-    }
-    else {
-      return GitOID(sha: oid.sha).flatMap { GitBlob(repository: self, oid: $0) }
-    }
-  }
-  
-  func stagedBlob(file: String) -> GTBlob?
-  {
-    guard let index = try? gtRepo.index(),
-          (try? index.refresh()) != nil,
-          let indexEntry = index.entry(withPath: file),
-          let indexObject = try? GTObject(indexEntry: indexEntry)
-    else { return nil }
-    
-    return indexObject as? GTBlob
-  }
-  
-  /// Returns a diff maker for a file in the index, compared to HEAD.
-  func stagedDiff(file: String) -> XTDiffMaker?
-  {
-    guard let headRef = self.headRef
-    else { return nil }
-    let indexBlob = stagedBlob(file: file)
-    let headBlob = fileBlob(ref: headRef, path: file)
-    
-    return XTDiffMaker(from: XTDiffMaker.SourceType(headBlob),
-                       to: XTDiffMaker.SourceType(indexBlob),
-                       path: file)
-  }
-  
-  /// Returns a diff maker for a file in the workspace, compared to the index.
-  func unstagedDiff(file: String) -> XTDiffMaker?
-  {
-    let url = self.repoURL.appendingPathComponent(file)
-    let exists = FileManager.default.fileExists(atPath: url.path)
-    
-    do {
-      let data = exists ? try Data(contentsOf: url) : Data()
-      
-      if let index = try? gtRepo.index(),
-         let indexEntry = index.entry(withPath: file),
-         let indexBlob = try? GTObject(indexEntry: indexEntry) as? GTBlob {
-        return XTDiffMaker(from: XTDiffMaker.SourceType(indexBlob),
-                           to: .data(data), path: file)
-      }
-      else {
-        return XTDiffMaker(from: .data(Data()), to: .data(data), path: file)
-      }
-    }
-    catch {
-      return nil
-    }
-  }
-  
-  /// Returns a diff maker for a file in the index, compared to HEAD-1.
-  func stagedAmendingDiff(file: String) -> XTDiffMaker?
-  {
-    guard let headCommit = headSHA.flatMap({ commit(forSHA: $0) })
-    else { return nil }
-    let blob = headCommit.parentSHAs.first
-                         .flatMap { fileBlob(sha: $0, path: file) }
-    let indexBlob = stagedBlob(file: file)
-
-    return XTDiffMaker(from: XTDiffMaker.SourceType(blob),
-                       to: XTDiffMaker.SourceType(indexBlob),
-                       path: file)
-  }
-  
   class StatusCollection: BidirectionalCollection
   {
     let statusList: OpaquePointer?
     var tree: OpaquePointer?
   
-    init(repo: XTRepository, head: XTCommit?)
+    init(repo: XTRepository, head: Commit?)
     {
-      let headTree = head?.tree?.git_tree()
+      let headTree = (head?.tree as? GitTree)?.tree
       var options = git_status_options()
       
       git_status_init_options(&options, UInt32(GIT_STATUS_OPTIONS_VERSION))
@@ -330,21 +365,21 @@ extension XTRepository
       return (result == GIT_OK.rawValue) ? tree.pointee : nil
     }
   
-    subscript(position: Int) -> FileStaging
+    subscript(position: Int) -> FileStagingChange
     {
       guard let statusList = self.statusList,
             let entry = git_status_byindex(statusList, position)?.pointee,
             let delta = entry.head_to_index ?? entry.index_to_workdir
-      else { return FileStaging(path: "", destinationPath: "") }
+      else { return FileStagingChange(path: "", destinationPath: "") }
       
       let path = String(cString: delta.pointee.old_file.path)
       let newPath = String(cString: delta.pointee.new_file.path)
       let stagedChange = (entry.head_to_index?.pointee.status)
-            .map { XitChange(gitDelta: $0) } ?? .unmodified
+            .map { DeltaStatus(gitDelta: $0) } ?? .unmodified
       let unstagedChange = (entry.index_to_workdir?.pointee.status)
-            .map { XitChange(gitDelta: $0) } ?? .unmodified
+            .map { DeltaStatus(gitDelta: $0) } ?? .unmodified
       
-      return FileStaging(
+      return FileStagingChange(
           path: path,
           destinationPath: newPath,
           change: stagedChange,
@@ -372,7 +407,7 @@ extension XTRepository
     return StatusCollection(repo: self)
   }
   
-  func amendingChanges(parent: XTCommit?) -> StatusCollection
+  func amendingChanges(parent: Commit?) -> StatusCollection
   {
     return StatusCollection(repo: self, head: parent)
   }

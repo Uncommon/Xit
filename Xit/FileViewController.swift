@@ -31,25 +31,68 @@ protocol ContextVariable: class
   var contextLines: UInt { get set }
 }
 
+extension DeltaStatus
+{
+  var changeImage: NSImage?
+  {
+    switch self {
+      case .added, .untracked:
+        return NSImage(named: NSImage.Name(rawValue: "added"))
+      case .copied:
+        return NSImage(named: NSImage.Name(rawValue: "copied"))
+      case .deleted:
+        return NSImage(named: NSImage.Name(rawValue: "deleted"))
+      case .modified:
+        return NSImage(named: NSImage.Name(rawValue: "modified"))
+      case .renamed:
+        return NSImage(named: NSImage.Name(rawValue: "renamed"))
+      case .mixed:
+        return NSImage(named: NSImage.Name(rawValue: "mixed"))
+      default:
+        return nil
+    }
+  }
+  
+  var stageImage: NSImage?
+  {
+    switch self {
+      case .added:
+        return NSImage(named: NSImage.Name(rawValue: "add"))
+      case .untracked:
+        return NSImage(named: NSImage.Name(rawValue: "add"))
+      case .deleted:
+        return NSImage(named: NSImage.Name(rawValue: "delete"))
+      case .modified:
+        return NSImage(named: NSImage.Name(rawValue: "modify"))
+      case .mixed:
+        return NSImage(named: NSImage.Name(rawValue: "mixed"))
+      case .conflict:
+        return NSImage(named: NSImage.Name(rawValue: "conflict"))
+      default:
+        return nil
+    }
+  }
+}
+
 /// View controller for the file list and detail view.
 class FileViewController: NSViewController
 {
   /// Column identifiers for the file list
   struct ColumnID
   {
-    static let main = "main"
-    static let staged = "change"
-    static let unstaged = "unstaged"
-    static let hidden = "hidden"
+    static let main = NSUserInterfaceItemIdentifier(rawValue: "main")
+    static let staged = NSUserInterfaceItemIdentifier(rawValue: "change")
+    static let unstaged = NSUserInterfaceItemIdentifier(rawValue: "unstaged")
+    static let hidden = NSUserInterfaceItemIdentifier(rawValue: "hidden")
   }
   
   /// Table cell view identifiers for the file list
   struct CellViewID
   {
-    static let fileCell = "fileCell"
-    static let change = "change"
-    static let staged = "staged"
-    static let unstaged = "unstaged"
+    static let fileCell = NSUserInterfaceItemIdentifier(rawValue: "fileCell")
+    static let change = NSUserInterfaceItemIdentifier(rawValue: "change")
+    static let staged = NSUserInterfaceItemIdentifier(rawValue: "staged")
+    static let unstaged = NSUserInterfaceItemIdentifier(rawValue: "unstaged")
   }
   
   /// Preview tab identifiers
@@ -91,8 +134,6 @@ class FileViewController: NSViewController
   @IBOutlet var textController: XTTextPreviewController!
   var commitEntryController: XTCommitEntryController!
   
-  var changeImages = [XitChange: NSImage]()
-  var stageImages = [XitChange: NSImage]()
   var contentController: XTFileContentController!
   let observers = ObserverCollection()
   
@@ -171,86 +212,71 @@ class FileViewController: NSViewController
   }
   
   weak var repo: XTRepository?
-  {
-    didSet
-    {
-      fileChangeDS.repository = repo
-      fileTreeDS.repository = repo
-      headerController.repository = repo
-      commitEntryController.repo = repo
-      observers.addObserver(
-          forName: NSNotification.Name.XTRepositoryIndexChanged,
-          object: repo, queue: .main) {
-        [weak self] note in
-        self?.indexChanged(note)
-      }
-    }
-  }
   
   deinit
   {
     indexTimer.map { $0.invalidate() }
   }
 
-  func windowDidLoad()
+  func finishLoad(repository: XTRepository)
   {
+    repo = repository
+
+    observers.addObserver(forName: .XTRepositoryIndexChanged,
+                          object: repository, queue: .main) {
+      [weak self] note in
+      self?.indexChanged(note)
+    }
+
     guard let controller = view.window?.windowController
-                           as? XTWindowController
+          as? XTWindowController
     else { return }
     
-    fileChangeDS.repoController = controller
-    fileTreeDS.repoController = controller
-    observers.addObserver(
-        forName: NSNotification.Name.XTSelectedModelChanged,
-        object: controller, queue: .main) {
+    observers.addObserver(forName: .XTSelectedModelChanged,
+                          object: controller, queue: .main) {
       [weak self] _ in
       self?.selectedModelChanged()
     }
+    headerController.repository = repository
+    commitEntryController.repo = repository
+    fileChangeDS.repoController = controller
+    fileChangeDS.observe(repository: repository)
+    fileChangeDS.taskQueue = repository.queue
+    fileTreeDS.repoController = controller
+    fileTreeDS.observe(repository: repository)
+    fileTreeDS.taskQueue = repository.queue
   }
   
   override func loadView()
   {
     super.loadView()
     
-    changeImages = [
-        .added: NSImage(named:"added")!,
-        .untracked: NSImage(named:"added")!,
-        .copied: NSImage(named:"copied")!,
-        .deleted: NSImage(named:"deleted")!,
-        .modified: NSImage(named:"modified")!,
-        .renamed: NSImage(named:"renamed")!,
-        .mixed: NSImage(named:"mixed")!,
-        ]
-    stageImages = [
-        .added: NSImage(named:"add")!,
-        .untracked: NSImage(named:"add")!,
-        .deleted: NSImage(named:"delete")!,
-        .modified: NSImage(named:"modify")!,
-        .mixed: NSImage(named:"mixed")!,
-        .conflict: NSImage(named:"conflict")!,
-        ]
-    
     fileListOutline.highlightedTableColumn =
         fileListOutline.tableColumn(withIdentifier: ColumnID.staged)
     fileListOutline.sizeToFit()
     contentController = diffController
     
-    observers.addObserver(
-        forName: .XTHeaderResized,
-        object: headerController,
-        queue: nil) {
+    observers.addObserver(forName: NSOutlineView.selectionDidChangeNotification,
+                          object: fileListOutline,
+                          queue: .main) {
+      [weak self] _ in
+      self?.refreshPreview()
+    }
+    observers.addObserver(forName: .XTHeaderResized,
+                          object: headerController,
+                          queue: .main) {
       [weak self] note in
       guard let newHeight =
           (note.userInfo?[CommitHeaderViewController.headerHeightKey]
            as? NSNumber)?.floatValue
       else { return }
       
-      self?.headerSplitView.animate(position:CGFloat(newHeight),
-                                    ofDividerAtIndex:0)
+      self?.headerSplitView.animate(position: CGFloat(newHeight),
+                                    ofDividerAtIndex: 0)
     }
     
     commitEntryController = XTCommitEntryController(
-        nibName: "XTCommitEntryController", bundle: nil)!
+        nibName: NSNib.Name(rawValue: "XTCommitEntryController"), bundle: nil)
     if repo != nil {
       commitEntryController.repo = repo
     }
@@ -299,12 +325,12 @@ class FileViewController: NSViewController
     let cells = components.enumerated().map {
       (index, component) -> NSPathComponentCell in
       let cell = NSPathComponentCell()
-      let workspace = NSWorkspace.shared()
+      let workspace = NSWorkspace.shared
       
       cell.title = component
       cell.image = !isFolder && (index == components.count - 1)
           ? workspace.icon(forFileType: (component as NSString).pathExtension)
-          : NSImage(named: NSImageNameFolder)
+          : NSImage(named: NSImage.Name.folder)
       
       return cell
     }
@@ -387,6 +413,13 @@ class FileViewController: NSViewController
     return row(for: view.superview)
   }
 
+  func clickedChange() -> FileChange?
+  {
+    return fileListOutline.clickedRow == -1
+        ? nil
+        : fileListDataSource.fileChange(at: fileListOutline.clickedRow)
+  }
+
   func selectedChange() -> FileChange?
   {
     guard let index = fileListOutline.selectedRowIndexes.first
@@ -441,7 +474,7 @@ class FileViewController: NSViewController
     else { return }
     
     if controller.isAmending {
-      //special case if it's new or deleted
+      //TODO: special case if it's new or deleted
     }
     else {
       try repo?.stage(file: path)
@@ -454,32 +487,56 @@ class FileViewController: NSViewController
     else { return }
     
     if controller.isAmending {
-      //special case if it's new or deleted
+      //TODO: special case if it's new or deleted
     }
     else {
       try repo?.unstage(file: path)
     }
   }
   
+  func stageUnstage(path: String, staging: Bool)
+  {
+    do {
+      if staging {
+        try stage(path: path)
+      }
+      else {
+        try unstage(path: path)
+      }
+      NotificationCenter.default.post(name: .XTRepositoryIndexChanged,
+                                      object: repo)
+    }
+    catch (let error as XTRepository.Error) {
+      if let controller = view.window?.windowController
+                          as? RepositoryController {
+        controller.showErrorMessage(error: error)
+      }
+    }
+    catch {
+      NSLog("Unknown error when staging/unstaging")
+    }
+  }
+  
+  /// Handles a click on a staging button.
   func click(button: NSButton, staging: Bool)
   {
     if modelCanCommit && checkDoubleClick(button),
        let path = path(from: button) {
       button.isEnabled = false
-      if staging {
-        _ = try? repo?.stage(file: path)
-      }
-      else {
-        _ = try? repo?.unstage(file: path)
-      }
+      stageUnstage(path: path, staging: staging)
       selectRow(from: button, staged: staging)
-      NotificationCenter.default.post(
-          name: NSNotification.Name.XTRepositoryIndexChanged,
-          object: repo)
     }
     else {
       selectRow(from: button, staged: !staging)
     }
+  }
+  
+  /// Stage/unstage from a context menu command. This differs from `click()`
+  /// in that it does not change the selection.
+  func stageAction(path: String, staging: Bool)
+  {
+    stageUnstage(path: path, staging: staging)
+    showingStaged = staging
   }
 
   func clearPreviews()
@@ -508,7 +565,7 @@ class FileViewController: NSViewController
     confirmAlert.addButton(withTitle: "Cancel")
     confirmAlert.beginSheetModal(for: view.window!) {
       (response) in
-      if response == NSAlertFirstButtonReturn {
+      if response == .alertFirstButtonReturn {
         self.revertConfirmed(path: path)
       }
     }
@@ -580,146 +637,6 @@ class FileViewController: NSViewController
   }
 }
 
-// MARK: NSOutlineViewDelegate
-extension FileViewController: NSOutlineViewDelegate
-{
-  private func image(forChange change: XitChange) -> NSImage?
-  {
-    return changeImages[change]
-  }
-
-  private func displayChange(forChange change: XitChange,
-                             otherChange: XitChange) -> XitChange
-  {
-    return (change == .unmodified) && (otherChange != .unmodified)
-           ? .mixed : change
-  }
-
-  private func stagingImage(forChange change: XitChange,
-                            otherChange: XitChange) -> NSImage?
-  {
-    let change = displayChange(forChange:change, otherChange:otherChange)
-    
-    return stageImages[change]
-  }
-
-  func updateTableButton(_ button: NSButton,
-                         change: XitChange, otherChange: XitChange)
-  {
-    button.image = modelCanCommit
-        ? stagingImage(forChange:change, otherChange:otherChange)
-        : image(forChange:change)
-  }
-
-  private func tableButtonView(_ identifier: String,
-                               change: XitChange,
-                               otherChange: XitChange) -> TableButtonView
-  {
-    let cellView = fileListOutline.make(withIdentifier: identifier, owner: self)
-                   as! TableButtonView
-    let button = cellView.button!
-    let displayChange = self.displayChange(forChange:change,
-                                           otherChange:otherChange)
-    
-    (button.cell as! NSButtonCell).imageDimsWhenDisabled = false
-    button.isEnabled = displayChange != .mixed
-    updateTableButton(button, change: change, otherChange: otherChange)
-    return cellView
-  }
-
-  func outlineView(_ outlineView: NSOutlineView,
-                   viewFor tableColumn: NSTableColumn?,
-                   item: Any) -> NSView?
-  {
-    guard let columnID = tableColumn?.identifier
-    else { return nil }
-    let dataSource = fileListDataSource
-    let change = dataSource.change(for: item)
-    
-    switch columnID {
-      
-      case ColumnID.main:
-        guard let cell = outlineView.make(withIdentifier: CellViewID.fileCell,
-                                          owner: self) as? FileCellView
-        else { return nil }
-      
-        let path = dataSource.path(for: item) as NSString
-      
-        cell.imageView?.image = dataSource.outlineView!(outlineView,
-                                                       isItemExpandable: item)
-                                ? NSImage(named: NSImageNameFolder)
-                                : NSWorkspace.shared()
-                                  .icon(forFileType: path.pathExtension)
-        cell.textField?.stringValue = path.lastPathComponent
-      
-        var textColor: NSColor!
-      
-        if change == .deleted {
-          textColor = NSColor.disabledControlTextColor
-        }
-        else if outlineView.isRowSelected(outlineView.row(forItem: item)) {
-          textColor = NSColor.selectedTextColor
-        }
-        else {
-          textColor = NSColor.textColor
-        }
-        cell.textField?.textColor = textColor
-        cell.change = change
-        return cell
-      
-      case ColumnID.staged:
-        if inStagingView {
-          return tableButtonView(
-              CellViewID.staged,
-              change: change,
-              otherChange: dataSource.unstagedChange(for: item))
-        }
-        else {
-          guard let cell = outlineView.make(withIdentifier: CellViewID.change,
-                                            owner: self)
-                           as? NSTableCellView
-          else { return nil }
-          
-          cell.imageView?.image = image(forChange:change)
-          return cell
-        }
-      
-      case ColumnID.unstaged:
-        if inStagingView {
-          return tableButtonView(
-              CellViewID.unstaged,
-              change: dataSource.unstagedChange(for: item),
-              otherChange: change)
-        }
-        else {
-          return nil
-        }
-      
-      default:
-        return nil
-    }
-  }
-  
-  func outlineView(_ outlineView: NSOutlineView,
-                   rowViewForItem item: Any) -> NSTableRowView?
-  {
-    return FileRowView()
-  }
-  
-  func outlineView(_ outlineView: NSOutlineView,
-                   didAdd rowView: NSTableRowView,
-                   forRow row: Int)
-  {
-    (rowView as? FileRowView)?.outlineView = fileListOutline
-  }
-  
-  func outlineViewSelectionDidChange(_ notification: Notification)
-  {
-    refreshPreview()
-    updateStagingSegment()
-  }
-}
-
 // MARK: NSSplitViewDelegate
 extension FileViewController: NSSplitViewDelegate
 {
@@ -740,7 +657,7 @@ extension FileViewController: NSSplitViewDelegate
 // MARK: HunkStaging
 extension FileViewController: HunkStaging
 {
-  func patchIndexFile(hunk: GTDiffHunk, stage: Bool)
+  func patchIndexFile(hunk: DiffHunk, stage: Bool)
   {
     guard let selectedChange = self.selectedChange()
     else { return }
@@ -757,17 +674,17 @@ extension FileViewController: HunkStaging
     }
   }
   
-  func stage(hunk: GTDiffHunk)
+  func stage(hunk: DiffHunk)
   {
     patchIndexFile(hunk: hunk, stage: true)
   }
   
-  func unstage(hunk: GTDiffHunk)
+  func unstage(hunk: DiffHunk)
   {
     patchIndexFile(hunk: hunk, stage: false)
   }
   
-  func discard(hunk: GTDiffHunk)
+  func discard(hunk: DiffHunk)
   {
     var encoding = String.Encoding.utf8
   

@@ -63,25 +63,32 @@ class XTRemotesItem: XTSideBarGroupItem
 
 class XTStagingItem: XTSideBarItem
 {
-  override var icon: NSImage? { return NSImage(named: "stagingTemplate") }
+  override var icon: NSImage?
+  {
+    return NSImage(named: .xtStagingTemplate)
+  }
 }
 
 
 class XTStashItem: XTSideBarItem
 {
-  override var icon: NSImage? { return NSImage(named: "stashTemplate") }
+  override var icon: NSImage?
+  {
+    return NSImage(named: .xtStashTemplate)
+  }
 }
 
 
 class XTBranchItem: XTSideBarItem
 {
   override var displayTitle: String
-      { return (title as NSString).lastPathComponent }
-  override var icon: NSImage? { return NSImage(named: "branchTemplate") }
+  { return (title as NSString).lastPathComponent }
+  override var icon: NSImage?
+  { return NSImage(named: .xtBranchTemplate) }
   
   var fullName: String { return title }
   
-  func branchObject() -> XTBranch? { return nil }
+  func branchObject() -> Branch? { return nil }
 }
 
 
@@ -96,15 +103,16 @@ class XTLocalBranchItem: XTBranchItem
     return false
   }
   
-  override func branchObject() -> XTBranch?
+  override func branchObject() -> Branch?
   {
-    return XTLocalBranch(repository: self.model!.repository, name: title)
+    return model!.repository.localBranch(named: title)
   }
 
   func hasTrackingBranch() -> Bool
   {
-    return XTLocalBranch(repository: model!.repository,
-                         name: title)?.trackingBranch != nil
+    let branch = model!.repository.localBranch(named: title)
+    
+    return branch?.trackingBranchName != nil
   }
 }
 
@@ -124,17 +132,16 @@ class XTRemoteBranchItem: XTBranchItem
     self.model = model
   }
   
-  override func branchObject() -> XTBranch?
+  override func branchObject() -> Branch?
   {
-    return XTRemoteBranch(repository: self.model!.repository,
-                          name: "\(remote)/\(title)")
+    return model!.repository.remoteBranch(named: title, remote: remote)
   }
 }
 
 
 class XTBranchFolderItem: XTSideBarItem
 {
-  override var icon: NSImage? { return NSImage(named: "folderTemplate") }
+  override var icon: NSImage? { return NSImage(named: .xtFolderTemplate) }
   override var isSelectable: Bool { return false }
   override var expandable: Bool { return true }
 }
@@ -150,10 +157,10 @@ class XTRemoteItem: XTSideBarItem
        let url = URL(string: urlString),
        let host = url.host {
       if (host == "github.com") || host.hasSuffix(".github.com") {
-        return NSImage(named: "githubTemplate")
+        return NSImage(named: .xtGitHubTemplate)
       }
     }
-    return NSImage(named: "cloudTemplate")
+    return NSImage(named: .xtCloudTemplate)
   }
   
   override var expandable: Bool { return true }
@@ -175,7 +182,8 @@ class XTTagItem: XTSideBarItem
 
   override var displayTitle: String
   { return (title as NSString).lastPathComponent }
-  override var icon: NSImage? { return NSImage(named: "tagTemplate") }
+  override var icon: NSImage?
+  { return NSImage(named: .xtTagTemplate) }
   override var refType: XTRefType { return .tag }
   
   init(tag: Tag)
@@ -196,7 +204,8 @@ class XTTagItem: XTSideBarItem
 class XTSubmoduleItem: XTSideBarItem
 {
   var submodule: XTSubmodule
-  override var icon: NSImage? { return NSImage(named: "submoduleTemplate") }
+  override var icon: NSImage?
+  { return NSImage(named: .xtSubmoduleTemplate) }
   
   init(submodule: XTSubmodule)
   {

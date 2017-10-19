@@ -33,7 +33,7 @@ let XTChangedRefsKey = "changedRefs"
     }
   }
   
-  var refsCache = [String: GTOID]()
+  var refsCache = [String: GitOID]()
 
   init?(repository: XTRepository)
   {
@@ -86,12 +86,12 @@ let XTChangedRefsKey = "changedRefs"
     }
   }
   
-  func index(refs: [String]) -> [String: GTOID]
+  func index(refs: [String]) -> [String: GitOID]
   {
-    var result = [String: GTOID]()
+    var result = [String: GitOID]()
     
     for ref in refs {
-      guard let oid = repository.sha(forRef: ref).flatMap({ GTOID(sha: $0) })
+      guard let oid = repository.sha(forRef: ref).flatMap({ GitOID(sha: $0) })
       else { continue }
       
       result[ref] = oid
@@ -155,6 +155,7 @@ let XTChangedRefsKey = "changedRefs"
   func checkHead(_ changedPaths: [String])
   {
     if paths(changedPaths, includeSubpaths: ["HEAD"]) {
+      repository.clearCachedBranch()
       post(.XTRepositoryHeadChanged)
     }
   }
@@ -173,7 +174,7 @@ let XTChangedRefsKey = "changedRefs"
       (ref) -> Bool in
       guard let oldOID = refsCache[ref],
             let newSHA = self.repository.sha(forRef: ref),
-            let newOID =  GTOID(sha: newSHA)
+            let newOID =  GitOID(sha: newSHA)
       else { return false }
       
       return oldOID != newOID

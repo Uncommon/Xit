@@ -3,10 +3,10 @@ import Cocoa
 class SidebarCheckedRowView: NSTableRowView
 {
   weak var imageView: NSImageView?
-  let imageName: String
+  let imageName: NSImage.Name
   let imageToolTip: String?
   
-  init(imageName: String = NSImageNameMenuOnStateTemplate,
+  init(imageName: NSImage.Name = .menuOnStateTemplate,
        toolTip: String? = nil)
   {
     self.imageName = imageName

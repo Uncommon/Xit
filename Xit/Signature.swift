@@ -1,28 +1,23 @@
 import Foundation
 
-/// Signature data used in commits, blame, tags
-public protocol Signature
+public struct Signature
 {
-  var name: String? { get }
-  var email: String? { get }
-  var when: Date { get }
+  let name: String?
+  let email: String?
+  let when: Date
 }
 
-public struct GitSignature: Signature
+extension Signature
 {
-  let signature: git_signature
+  init(gitSignature: git_signature)
+  {
+    name = Signature.makeString(gitSignature.name)
+    email = Signature.makeString(gitSignature.email)
+    when = Date(gitTime: gitSignature.when)
+  }
   
-  private func makeString(_ ptr: UnsafeMutablePointer<Int8>!) -> String?
+  private static func makeString(_ ptr: UnsafeMutablePointer<Int8>!) -> String?
   { return ptr == nil ? nil : String(utf8String: ptr) }
-  
-  public var name: String?
-  { return makeString(signature.name) }
-  
-  public var email: String?
-  { return makeString(signature.email) }
-  
-  public var when: Date
-  { return Date(gitTime: signature.when) }
 }
 
 extension Date

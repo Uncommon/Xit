@@ -11,14 +11,14 @@ class XTRenameBranchController: XTOperationController
     super.init(windowController: windowController)
   }
   
-  override func start()
+  override func start() throws
   {
     let panelController = XTRenameBranchPanelController.controller()
     
     panelController.branchName = branchName
     windowController?.window?.beginSheet(panelController.window!) {
       (response) in
-      if response == NSModalResponseOK {
+      if response == .OK {
         self.executeRename(panelController.textField.stringValue)
       }
       else {

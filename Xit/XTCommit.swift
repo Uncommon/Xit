@@ -1,15 +1,16 @@
 import Cocoa
 
 
-public protocol CommitType: CustomStringConvertible
+public protocol Commit: OIDObject, CustomStringConvertible
 {
-  associatedtype ID: OID, Hashable
-  
   var sha: String? { get }
-  var oid: ID { get }
-  var parentOIDs: [ID] { get }
+  var parentOIDs: [OID] { get }
   
   var message: String? { get }
+  
+  var authorSig: Signature? { get }
+  var committerSig: Signature? { get }
+  
   var authorName: String? { get }
   var authorEmail: String? { get }
   var authorDate: Date? { get }
@@ -17,9 +18,21 @@ public protocol CommitType: CustomStringConvertible
   var committerEmail: String? { get }
   var commitDate: Date { get }
   var email: String? { get }
+  
+  var tree: Tree? { get }
 }
 
-extension CommitType
+extension Commit
+{
+  var authorName: String? { return authorSig?.name }
+  var authorEmail: String? { return authorSig?.email }
+  var authorDate: Date? { return authorSig?.when }
+  var committerName: String? { return committerSig?.name }
+  var committerEmail: String? { return committerSig?.email }
+  var commitDate: Date { return committerSig?.when ?? Date() }
+}
+
+extension Commit
 {
   public var parentSHAs: [String]
   {
@@ -32,7 +45,7 @@ extension CommitType
     else { return "" }
     
     return message.range(of: "\n").map {
-      message.substring(to: $0.lowerBound)
+      String(message[..<$0.lowerBound])
     } ?? message
   }
 
@@ -41,92 +54,113 @@ extension CommitType
 }
 
 
-public func == (a: GTOID, b: GTOID) -> Bool
+public class XTCommit: Commit
 {
-  return git_oid_cmp(a.git_oid(), b.git_oid()) == 0
-}
+  let commit: OpaquePointer
 
-
-public class XTCommit: CommitType
-{
-  let gtCommit: GTCommit
+  public private(set) lazy var sha: String? = oid.sha
+  public private(set) lazy var oid: OID = GitOID(oidPtr: git_commit_id(commit))
+  public private(set) lazy var parentOIDs: [OID] =
+      XTCommit.calculateParentOIDs(self.commit)
   
-  // These used to be lazy properties, but the Swift 3 compiler crashes on that.
-  let cachedSHA: String?
-  let cachedOID: GitOID
-  let cachedParentOIDs: [GitOID]
-
-  public var sha: String? { return cachedSHA }
-  public var oid: GitOID { return cachedOID }
-
-  public var parentOIDs: [GitOID] { return cachedParentOIDs }
+  public var repository: OpaquePointer
+  { return git_commit_owner(commit) }
   
   public var message: String?
-  { return gtCommit.message }
+  {
+    if let result = git_commit_message(commit) {
+      return String(cString: result)
+    }
+    else {
+      return nil
+    }
+  }
   
   public var messageSummary: String
-  { return gtCommit.messageSummary }
-  
-  public var authorSig: GitSignature?
   {
-    guard let sig = git_commit_author(gtCommit.git_commit())
+    guard let message = self.message
+    else { return String() }
+    
+    if let lineEnd = message.rangeOfCharacter(from: .newlines) {
+      return String(message[..<lineEnd.lowerBound])
+    }
+    else {
+      return message
+    }
+  }
+  
+  public var authorSig: Signature?
+  {
+    guard let sig = git_commit_author(commit)
     else { return nil }
     
-    return GitSignature(signature: sig.pointee)
+    return Signature(gitSignature: sig.pointee)
   }
   
   public var authorName: String?
-  { return gtCommit.author?.name }
+  { return authorSig?.name }
   
   public var authorEmail: String?
-  { return gtCommit.author?.email }
+  { return authorSig?.email }
   
   public var authorDate: Date?
-  { return gtCommit.author?.time }
+  { return authorSig?.when }
   
-  public var committerSig: GitSignature?
+  public var committerSig: Signature?
   {
-    guard let sig = git_commit_committer(gtCommit.git_commit())
+    guard let sig = git_commit_committer(commit)
     else { return nil }
     
-    return GitSignature(signature: sig.pointee)
+    return Signature(gitSignature: sig.pointee)
   }
   
   public var committerName: String?
-  { return gtCommit.committer?.name }
+  { return committerSig?.name }
   
   public var committerEmail: String?
-  { return gtCommit.committer?.email }
+  { return committerSig?.email }
   
   public var commitDate: Date
-  { return gtCommit.commitDate }
+  { return committerSig?.when ?? Date() }
   
   public var email: String?
-  { return gtCommit.author?.email }
+  { return committerEmail }
 
-  public var tree: GTTree?
-  { return gtCommit.tree }
-
-  init(commit: GTCommit)
+  public var tree: Tree?
   {
-    self.gtCommit = commit
-    self.cachedSHA = commit.sha
-    self.cachedOID = GitOID(oid: commit.oid!.git_oid().pointee)
-    self.cachedParentOIDs = XTCommit.calculateParentOIDs(gtCommit.git_commit())
+    var tree: OpaquePointer?
+    let result = git_commit_tree(&tree, commit)
+    guard result == 0,
+          let finalTree = tree
+    else { return nil }
+    
+    return GitTree(tree: finalTree)
   }
 
-  convenience init?(oid: GitOID, repository: XTRepository)
+  init?(gitCommit: OpaquePointer)
   {
+    self.commit = gitCommit
+  }
+  
+  init(commit: GTCommit)
+  {
+    self.commit = commit.git_commit()
+  }
+
+  convenience init?(oid: OID, repository: OpaquePointer)
+  {
+    guard let oid = oid as? GitOID
+    else { return nil }
     var gitCommit: OpaquePointer?  // git_commit isn't imported
     let result = git_commit_lookup(&gitCommit,
-                                   repository.gtRepo.git_repository(),
+                                   repository,
                                    oid.unsafeOID())
   
     guard result == 0,
-          let commit = GTCommit(obj: gitCommit!, in: repository.gtRepo)
+          let finalCommit = gitCommit
     else { return nil }
     
-    self.init(commit: commit)
+    self.init(gitCommit: finalCommit)
   }
   
   convenience init?(sha: String, repository: XTRepository)
@@ -134,7 +168,7 @@ public class XTCommit: CommitType
     guard let oid = GitOID(sha: sha)
     else { return nil }
     
-    self.init(oid: oid, repository: repository)
+    self.init(oid: oid, repository: repository.gtRepo.git_repository())
   }
   
   convenience init?(ref: String, repository: XTRepository)
@@ -149,25 +183,24 @@ public class XTCommit: CommitType
     let gitObjectPtr = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     guard git_reference_peel(gitObjectPtr, gitRef, GIT_OBJ_COMMIT) == 0,
           let gitObject = gitObjectPtr.pointee,
-          let commit = GTCommit(obj: gitObject, in: repository.gtRepo)
+          git_object_type(gitObject) == GIT_OBJ_COMMIT
     else { return nil }
     
-    self.init(commit: commit)
+    self.init(gitCommit: gitObject)
   }
   
   /// Returns a list of all files in the commit's tree, with paths relative
   /// to the root.
   func allFiles() -> [String]
   {
-    guard let tree = tree
+    guard let tree = tree as? GitTree
     else { return [] }
     
     var result = [String]()
     
-    _ = try? tree.enumerateEntries(with: .pre) {
-      (entry, root, _) -> Bool in
+    tree.walkEntries {
+      (entry, root) in
       result.append(root.appending(pathComponent: entry.name))
-      return true
     }
     return result
   }
@@ -185,19 +218,9 @@ public class XTCommit: CommitType
     }
     return result
   }
-  
-  private func calculateSHA() -> String?
-  {
-    return gtCommit.sha
-  }
-  
-  private func calculateOID() -> GTOID
-  {
-    return gtCommit.oid!
-  }
 }
 
 public func == (a: XTCommit, b: XTCommit) -> Bool
 {
-  return a.oid == b.oid
+  return (a.oid as! GitOID) == (b.oid as! GitOID)
 }

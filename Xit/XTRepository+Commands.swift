@@ -42,18 +42,6 @@ extension XTRepository
     }
   }
   
-  func add(remote: String, url: URL) throws
-  {
-    _ = try executeGit(args: ["remote", "add", remote, url.absoluteString],
-                       writes: true)
-  }
-  
-  func delete(remote: String) throws
-  {
-    _ = try executeGit(args: ["remote", "rm", remote],
-                       writes: true)
-  }
-  
   func push(remote: String) throws
   {
     _ = try executeGit(args: ["push", "--all", remote], writes: true)
@@ -116,6 +104,15 @@ extension XTRepository
   {
     _ = try executeGit(args: ["remote", "rename", old, new], writes: true)
   }
+}
+
+extension XTRepository: Stashing
+{
+  // TODO: Don't require the message parameter
+  public func stash(index: UInt, message: String?) -> Stash
+  {
+    return XTStash(repo: self, index: index, message: message)
+  }
   
   @objc(saveStash:includeUntracked:error:)
   func saveStash(name: String?, includeUntracked: Bool) throws
@@ -136,7 +133,7 @@ extension XTRepository
     return GTCheckoutOptions(strategy: .safe)
   }
   
-  func popStash(index: UInt) throws
+  public func popStash(index: UInt) throws
   {
     _ = try performWriting {
       try gtRepo.popStash(at: index, flags: [.reinstateIndex],
@@ -145,7 +142,7 @@ extension XTRepository
     }
   }
   
-  func applyStash(index: UInt) throws
+  public func applyStash(index: UInt) throws
   {
     _ = try performWriting {
       try gtRepo.applyStash(at: index, flags: [.reinstateIndex],
@@ -154,11 +151,43 @@ extension XTRepository
     }
   }
   
-  func dropStash(index: UInt) throws
+  public func dropStash(index: UInt) throws
   {
     _ = try performWriting {
       try gtRepo.dropStash(at: index)
     }
+  }
+  
+  public func commitForStash(at index: UInt) -> Commit?
+  {
+    guard let stashRef = try? gtRepo.lookUpReference(withName: "refs/stash"),
+          let stashLog = GTReflog(reference: stashRef),
+          index < stashLog.entryCount,
+          let entry = stashLog.entry(at: index),
+          let oid = entry.updatedOID.map({ GitOID(oid: $0.git_oid().pointee) })
+    else { return nil }
+    
+    return XTCommit(oid: oid, repository: gtRepo.git_repository())
+  }
+}
+
+extension XTRepository: RemoteManagement
+{
+  public func remote(named name: String) -> Remote?
+  {
+    return XTRemote(name: name, repository: self)
+  }
+  
+  public func addRemote(named name: String, url: URL) throws
+  {
+    _ = try executeGit(args: ["remote", "add", name, url.absoluteString],
+                       writes: true)
+  }
+  
+  public func deleteRemote(named name: String) throws
+  {
+    _ = try executeGit(args: ["remote", "rm", name],
+                       writes: true)
   }
 }
 

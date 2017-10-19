@@ -58,7 +58,7 @@ class TitleBarViewController: NSViewController
   
   var progressObserver: NSObjectProtocol?
   
-  dynamic var progressHidden: Bool
+  @objc dynamic var progressHidden: Bool
   {
     get
     {
@@ -175,7 +175,12 @@ class TitleBarViewController: NSViewController
   var selectedBranch: String?
   {
     get { return branchPopup.titleOfSelectedItem }
-    set { branchPopup.selectItem(withTitle: newValue ?? "") }
+    set {
+      DispatchQueue.main.async {
+        [weak self] in
+        self?.branchPopup.selectItem(withTitle: newValue ?? "")
+      }
+    }
   }
   
   func updateBranchList(_ branches: [String], current: String?)

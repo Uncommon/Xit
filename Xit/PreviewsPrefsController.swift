@@ -2,7 +2,7 @@ import Cocoa
 
 extension NSNotification.Name
 {
-  static let XTFontChanged = NSNotification.Name(rawValue:"XTFontChanged")
+  static let XTFontChanged = NSNotification.Name(rawValue: "XTFontChanged")
 }
 
 enum WhitespaceSetting: String
@@ -62,7 +62,7 @@ class PreviewsPrefsController: NSViewController
     static let tabWidth: UInt = 4
     static var contextLines: UInt
     {
-      return XTDiffMaker.defaultContextLines
+      return PatchMaker.defaultContextLines
     }
   }
   
@@ -145,7 +145,7 @@ class PreviewsPrefsController: NSViewController
   
   override func viewDidDisappear()
   {
-    let manager = NSFontManager.shared()
+    let manager = NSFontManager.shared
     
     if manager.target === self {
       manager.target = nil
@@ -157,7 +157,7 @@ class PreviewsPrefsController: NSViewController
     guard let font = textFont
     else { return }
     
-    let manager = NSFontManager.shared()
+    let manager = NSFontManager.shared
   
     manager.fontPanel(true)?.delegate = self
     manager.setSelectedFont(font, isMultiple: false)
@@ -165,16 +165,19 @@ class PreviewsPrefsController: NSViewController
     manager.target = self
   }
   
-  override func validModesForFontPanel(_ fontPanel: NSFontPanel) -> Int
+  // The return type of validModesForFontPanel changed in the 10.13 SDK,
+  // so there's pretty much no way to compile this until the deployment version
+  // is updated to 10.13.
+  /*
+  override func validModesForFontPanel(_ fontPanel: NSFontPanel) -> NSFontPanel.ModeMask
   {
-    return Int(NSFontPanelFaceModeMask |
-               NSFontPanelSizeModeMask |
-               NSFontPanelCollectionModeMask)
+    return [.face, .size, .collection]
   }
+  */
   
   override func changeFont(_ sender: Any?)
   {
-    guard let newFont = textFont.map({ NSFontManager.shared().convert($0) })
+    guard let newFont = textFont.map({ NSFontManager.shared.convert($0) })
     else { return }
     
     textFont = newFont

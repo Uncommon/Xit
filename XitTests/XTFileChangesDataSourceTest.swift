@@ -14,7 +14,7 @@ class XTFileChangesDataSourceTest: XTTest
                                                  commit: headCommit)
     objc_sync_enter(dataSource)
     dataSource.repoController = repoController
-    dataSource.repository = repository
+    dataSource.taskQueue = repository.queue
     objc_sync_exit(dataSource)
     outlineView.dataSource = dataSource
     dataSource.reload()
@@ -29,6 +29,6 @@ class XTFileChangesDataSourceTest: XTTest
     
     XCTAssertEqual(dataSource.path(for: item1), "file1.txt")
     XCTAssertFalse(dataSource.outlineView(outlineView, isItemExpandable: item1))
-    XCTAssertEqual(dataSource.change(for: item1), XitChange.added)
+    XCTAssertEqual(dataSource.change(for: item1), DeltaStatus.added)
   }
 }

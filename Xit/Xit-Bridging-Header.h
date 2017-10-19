@@ -7,7 +7,8 @@
 #import "XTRefFormatter.h"
 #import "XTRefToken.h"
 #import "XTQueueUtils.h"
-#import "XitChange.h"
+#import "GitEnums.h"
 
 #import "NSAttributedString+XTExtensions.h"
 #import "NSTask+Throwing.h"
+#import "LibGitExtensions.h"

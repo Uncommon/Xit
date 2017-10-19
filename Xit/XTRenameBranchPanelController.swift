@@ -20,7 +20,7 @@ class XTRenameBranchPanelController: XTSheetController
   }
 }
 
-extension XTRenameBranchPanelController : NSTextFieldDelegate
+extension XTRenameBranchPanelController: NSTextFieldDelegate
 {
   override func controlTextDidChange(_ obj: Notification)
   {

@@ -1,14 +1,14 @@
 import Cocoa
 
 
-typealias GitBlame = CLGitBlame
-
+typealias FileChangesRepo =
+    CommitReferencing & CommitStorage & FileDiffing & FileContents & FileStaging
 
 /// Protocol for a commit or commit-like object,
 /// with metadata, files, and diffs.
 protocol FileChangesModel
 {
-  var repository: XTRepository { get set }
+  var repository: FileChangesRepo { get set }
   /// SHA for commit to be selected in the history list
   var shaToSelect: String? { get }
   /// Changes displayed in the file list
@@ -23,7 +23,7 @@ protocol FileChangesModel
   /// - parameter path: Repository-relative file path.
   /// - parameter staged: Whether to show the staged or unstaged diff. Ignored
   /// for models that don't have unstaged files.
-  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
+  func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?
   /// Get the contents of the given file.
   /// - parameter path: Repository-relative file path.
   /// - parameter staged: Whether to show the staged or unstaged diff. Ignored
@@ -35,7 +35,7 @@ protocol FileChangesModel
   /// - parameter path: Repository-relative file path.
   /// - parameter staged: Whether to show the staged or unstaged file. Ignored
   /// for models that don't have unstaged files.
-  func blame(for path: String, staged: Bool) -> GitBlame?
+  func blame(for path: String, staged: Bool) -> Blame?
 }
 
 func == (a: FileChangesModel, b: FileChangesModel) -> Bool
@@ -53,9 +53,7 @@ func != (a: FileChangesModel, b: FileChangesModel) -> Bool
 /// Changes for a selected commit in the history
 class CommitChanges: FileChangesModel
 {
-  typealias GitBlame = CLGitBlame
-
-  unowned var repository: XTRepository
+  unowned var repository: FileChangesRepo
   let commit: XTCommit
   var shaToSelect: String? { return commit.sha }
   var hasUnstaged: Bool { return false }
@@ -67,47 +65,36 @@ class CommitChanges: FileChangesModel
   
   var treeRoot: NSTreeNode
   {
-    return self.makeTreeRoot(staged:true)
+    return self.makeTreeRoot(staged: true)
   }
   
   /// SHA of the parent commit to use for diffs
-  var diffParent: String?
+  var diffParent: GitOID?
 
-  init(repository: XTRepository, commit: XTCommit)
+  init(repository: FileChangesRepo, commit: Commit)
   {
     self.repository = repository
-    self.commit = commit
+    self.commit = commit as! XTCommit
     if let sha = commit.sha {
       self.savedChanges = repository.changes(for: sha,
-                                   parent: commit.parentSHAs.first)
+                                             parent: commit.parentOIDs.first)
     }
     else {
       self.savedChanges = []
     }
   }
   
-  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
+  func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?
   {
-    guard let diffParent = self.diffParent ?? commit.parentOIDs.first?.sha
-    else {
-      guard let toTree = commit.gtCommit.tree,
-            let toEntry = try? toTree.entry(withPath: path),
-            let toBlob = (try? GTObject(treeEntry: toEntry)) as? GTBlob
-      else { return nil }
-      
-      return XTDiffMaker(from: .data(Data()), to: .blob(toBlob), path: path)
-    }
-  
-    return commit.sha.map {
-      self.repository.diffMaker(forFile: path, commitSHA: $0,
-                                parentSHA: diffParent)
-    } ?? nil
+    return self.repository.diffMaker(forFile: path,
+                                     commitOID: commit.oid,
+                                     parentOID: diffParent ??
+                                                commit.parentOIDs.first)
   }
   
-  func blame(for path: String, staged: Bool) -> GitBlame?
+  func blame(for path: String, staged: Bool) -> Blame?
   {
-    return GitBlame(repository: repository, path: path,
-                    from: commit.oid, to: nil)
+    return repository.blame(for: path, from: commit.oid, to: nil)
   }
   
   func dataForFile(_ path: String, staged: Bool) -> Data?
@@ -123,7 +110,7 @@ class CommitChanges: FileChangesModel
     else { return NSTreeNode() }
     var files = commit.allFiles()
     let changeList = repository.changes(for: sha, parent: diffParent)
-    var changes = [String: XitChange]()
+    var changes = [String: DeltaStatus]()
       
     for change in changeList {
       changes[change.path] = change.change
@@ -132,7 +119,7 @@ class CommitChanges: FileChangesModel
         contentsOf: changeList.filter({ return $0.change == .deleted })
                               .map({ return $0.path }))
     
-    let newRoot = NSTreeNode(representedObject: CommitTreeItem(path:"/"))
+    let newRoot = NSTreeNode(representedObject: CommitTreeItem(path: "/"))
     var nodes = [String: NSTreeNode]()
     
     for file in files {
@@ -159,8 +146,8 @@ class CommitChanges: FileChangesModel
 /// Changes for a selected stash, merging workspace, index, and untracked
 class StashChanges: FileChangesModel
 {
-  unowned var repository: XTRepository
-  var stash: XTStash
+  unowned var repository: FileChangesRepo
+  var stash: Stash
   var hasUnstaged: Bool { return true }
   var canCommit: Bool { return false }
   var shaToSelect: String? { return stash.mainCommit?.parentSHAs[0] }
@@ -190,19 +177,19 @@ class StashChanges: FileChangesModel
     return mainRoot
   }
   
-  init(repository: XTRepository, index: UInt)
+  init(repository: FileChangesRepo & Stashing, index: UInt)
   {
     self.repository = repository
-    self.stash = XTStash(repo: repository, index: index, message: nil)
+    self.stash = repository.stash(index: index, message: nil)
   }
   
-  init(repository: XTRepository, stash: XTStash)
+  init(repository: FileChangesRepo, stash: XTStash)
   {
     self.repository = repository
     self.stash = stash
   }
   
-  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
+  func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?
   {
     if staged {
       return self.stash.stagedDiffForFile(path)
@@ -212,14 +199,14 @@ class StashChanges: FileChangesModel
     }
   }
   
-  func commit(for path: String, staged: Bool) -> XTCommit?
+  func commit(for path: String, staged: Bool) -> Commit?
   {
     if staged {
       return stash.indexCommit
     }
     else {
-      if let untrackedCommit = self.stash.untrackedCommit,
-         (try? untrackedCommit.tree?.entry(withPath: path)) != nil {
+      if let untrackedCommit = self.stash.untrackedCommit as? XTCommit,
+         untrackedCommit.tree?.entry(path: path) != nil {
         return untrackedCommit
       }
       else {
@@ -228,13 +215,12 @@ class StashChanges: FileChangesModel
     }
   }
   
-  func blame(for path: String, staged: Bool) -> GitBlame?
+  func blame(for path: String, staged: Bool) -> Blame?
   {
     guard let startCommit = commit(for: path, staged: staged)
     else { return nil }
     
-    return GitBlame(repository: repository, path: path,
-                    from: startCommit.oid, to: nil)
+    return repository.blame(for: path, from: startCommit.oid, to: nil)
   }
   
   func dataForFile(_ path: String, staged: Bool) -> Data?
@@ -266,19 +252,19 @@ class StashChanges: FileChangesModel
 
 func == (a: StashChanges, b: StashChanges) -> Bool
 {
-  return a.stash.mainCommit?.oid == b.stash.mainCommit?.oid
+  return a.stash.mainCommit?.oid.sha == b.stash.mainCommit?.oid.sha
 }
 
 
 /// Staged and unstaged workspace changes
 class StagingChanges: FileChangesModel
 {
-  unowned var repository: XTRepository
+  unowned var repository: FileChangesRepo
   var shaToSelect: String? { return XTStagingSHA }
   var hasUnstaged: Bool { return true }
   var canCommit: Bool { return true }
   var changes: [FileChange]
-    { return repository.changes(for: XTStagingSHA, parent: nil) }
+  { return repository.changes(for: XTStagingSHA, parent: nil) }
   
   var treeRoot: NSTreeNode
   {
@@ -289,12 +275,12 @@ class StagingChanges: FileChangesModel
     return root
   }
   
-  init(repository: XTRepository)
+  init(repository: FileChangesRepo)
   {
     self.repository = repository
   }
   
-  func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
+  func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?
   {
     if staged {
       return self.repository.stagedDiff(file: path)
@@ -304,16 +290,16 @@ class StagingChanges: FileChangesModel
     }
   }
   
-  func blame(for path: String, staged: Bool) -> GitBlame?
+  func blame(for path: String, staged: Bool) -> Blame?
   {
     if staged {
       guard let data = repository.contentsOfStagedFile(path: path)
       else { return nil }
       
-      return GitBlame(repository: repository, path: path, data: data, to: nil)
+      return repository.blame(for: path, data: data, to: nil)
     }
     else {
-      return GitBlame(repository: repository, path: path, from: nil, to: nil)
+      return repository.blame(for: path, from: nil, to: nil)
     }
   }
   
@@ -323,7 +309,7 @@ class StagingChanges: FileChangesModel
       return self.repository.contentsOfStagedFile(path: path)
     }
     else {
-      let url = self.repository.repoURL.appendingPathComponent(path)
+      let url = self.repository.fileURL(path)
       
       return try? Data(contentsOf: url)
     }
@@ -331,7 +317,7 @@ class StagingChanges: FileChangesModel
   
   func unstagedFileURL(_ path: String) -> URL?
   {
-    return self.repository.repoURL.appendingPathComponent(path)
+    return self.repository.fileURL(path)
   }
 }
 
@@ -348,10 +334,11 @@ class AmendingChanges: StagingChanges
     else { return super.changes }
     
     return repository.changes(for: XTStagingSHA,
-                              parent: previousCommit.sha)
+                              parent: previousCommit.oid)
   }
   
-  override func diffForFile(_ path: String, staged: Bool) -> XTDiffMaker?
+  override func diffForFile(_ path: String,
+                            staged: Bool) -> PatchMaker.PatchResult?
   {
     if staged {
       return repository.stagedAmendingDiff(file: path)
@@ -383,7 +370,7 @@ extension FileChangesModel
     guard let childNodes = node.children
     else { return }
     
-    var change: XitChange?, unstagedChange: XitChange?
+    var change: DeltaStatus?, unstagedChange: DeltaStatus?
     
     for child in childNodes {
       let childItem = child.representedObject as! CommitTreeItem
@@ -396,14 +383,14 @@ extension FileChangesModel
         change = childItem.change
       }
       else if change! != childItem.change {
-        change = XitChange.mixed
+        change = DeltaStatus.mixed
       }
       
       if unstagedChange == nil {
         unstagedChange = childItem.unstagedChange
       }
       else if unstagedChange! != childItem.unstagedChange {
-        unstagedChange = XitChange.mixed
+        unstagedChange = DeltaStatus.mixed
       }
     }
     
@@ -442,14 +429,18 @@ extension FileChangesModel
     // Not sure if these should be expected
     guard let unstagedNodes = unstagedTree.children
     else {
-      NSLog("combineTrees: no unstaged children at %@",
-            (unstagedTree.representedObject! as AnyObject).path)
+      print("""
+            combineTrees: no unstaged children at
+            \((unstagedTree.representedObject! as? FileChange)?.path ?? "?"))
+            """)
       return
     }
     guard let stagedNodes = stagedTree.children
     else {
-      NSLog("combineTrees: no staged children at %@",
-            (stagedTree.representedObject! as AnyObject).path)
+      print("""
+            combineTrees: no staged children at
+            \((stagedTree.representedObject! as? FileChange)?.path ?? "?"))
+            """)
       return
     }
     

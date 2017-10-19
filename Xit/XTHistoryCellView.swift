@@ -3,7 +3,7 @@ import Cocoa
 /// Cell view that draws the graph lines next to the text.
 class XTHistoryCellView: NSTableCellView
 {
-  typealias GitCommitEntry = CommitEntry<XTCommit>
+  typealias GitCommitEntry = CommitEntry
   
   var refs = [String]()
   
@@ -18,11 +18,13 @@ class XTHistoryCellView: NSTableCellView
       NSColor(calibratedHue: 0.13, saturation: 0.08, brightness: 0.8, alpha: 1.0),
       NSColor.black, NSColor.lightGray]
   
-  struct Widths {
+  struct Widths
+  {
     static let line: CGFloat = 2.0
     static let column: CGFloat = 8.0
   }
-  struct Margins {
+  struct Margins
+  {
     static let left: CGFloat = 4.0
     static let right: CGFloat = 4.0
     static let text: CGFloat = 4.0

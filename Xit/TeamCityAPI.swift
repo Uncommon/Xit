@@ -221,8 +221,9 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
       {
         let prefixEndIndex = content.index(content.startIndex,
                                            offsetBy: 2)
+        let prefix = String(content[..<prefixEndIndex])
         
-        switch content.substring(to: prefixEndIndex) {
+        switch prefix {
           case "+:":
             self.inclusion = .include
           case "-:":
@@ -231,7 +232,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
             return nil
         }
         
-        var substring = content.substring(from: prefixEndIndex)
+        var substring = String(content[prefixEndIndex...])
         
         // Parentheses are needed to identify a range to be extracted.
         substring = substring.replacingOccurrences(of: "*", with: "(.+)")
@@ -253,7 +254,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
         else { return nil }
         
         if match.numberOfRanges >= 2 {
-          return (branch as NSString).substring(with: match.rangeAt(1))
+          return (branch as NSString).substring(with: match.range(at: 1))
         }
         return nil
       }
@@ -464,7 +465,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
 
 protocol TeamCityAccessor: class
 {
-  var repository: XTRepository! { get }
+  var remoteMgr: RemoteManagement! { get }
 }
 
 extension TeamCityAccessor
@@ -473,8 +474,8 @@ extension TeamCityAccessor
   /// and a list of its build types.
   func matchTeamCity(_ remoteName: String) -> (TeamCityAPI, [String])?
   {
-    guard let repository = self.repository,
-          let remote = XTRemote(name: remoteName, repository: repository),
+    guard let remoteMgr = self.remoteMgr,
+          let remote = remoteMgr.remote(named: remoteName),
           let remoteURL = remote.urlString
     else { return nil }
     

@@ -61,9 +61,9 @@ class BlameTest: XTTest
     let lineCounts = [2, 2, 1, 3]
     
     XCTAssertEqual(commitBlame.hunks.count, 4)
-    XCTAssertEqual(commitBlame.hunks.map { $0.finalLineStart }, lineStarts)
+    XCTAssertEqual(commitBlame.hunks.map { $0.finalLine.start }, lineStarts)
     XCTAssertEqual(commitBlame.hunks.map { $0.lineCount }, lineCounts)
-    XCTAssertEqual(commitBlame.hunks[2].finalOID, headOID)
+    XCTAssertEqual(commitBlame.hunks[2].finalLine.oid as! GitOID, headOID)
   }
   
   func testStagingBlame()
@@ -90,15 +90,19 @@ class BlameTest: XTTest
     let unstagedStarts = [1, 2, 3, 5, 6, 8]
     
     XCTAssertEqual(unstagedBlame.hunks.count, 6)
-    XCTAssertEqual(unstagedBlame.hunks.map { $0.finalLineStart }, unstagedStarts)
-    XCTAssertTrue(unstagedBlame.hunks[0].finalOID.isZero)
-    XCTAssertTrue(unstagedBlame.hunks.last!.finalOID.isZero)
+    XCTAssertEqual(unstagedBlame.hunks.map { $0.finalLine.start }, unstagedStarts)
+    XCTAssertTrue(unstagedBlame.hunks.first?.finalLine.oid.isZero ?? false)
+    XCTAssertTrue(unstagedBlame.hunks.last?.finalLine.oid.isZero ?? false)
     
-    let stagedBlame = stagingModel.blame(for: blameFile, staged: true)!
+    guard let stagedBlame = stagingModel.blame(for: blameFile, staged: true)
+    else {
+      XCTFail("can't get staged blame")
+      return
+    }
     let stagedStarts = [1, 2, 3, 5, 6]
     
     XCTAssertEqual(stagedBlame.hunks.count, 5)
-    XCTAssertEqual(stagedBlame.hunks.map { $0.finalLineStart }, stagedStarts)
-    XCTAssertTrue(stagedBlame.hunks[0].finalOID.isZero)
+    XCTAssertEqual(stagedBlame.hunks.map { $0.finalLine.start }, stagedStarts)
+    XCTAssertTrue(stagedBlame.hunks.first?.finalLine.oid.isZero ?? false)
   }
 }

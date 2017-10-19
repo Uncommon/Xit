@@ -1,67 +1,18 @@
 import Foundation
 
-extension XitChange
+public struct WorkspaceFileStatus
 {
-  init(delta: GTDeltaType)
-  {
-    self = XitChange(rawValue: UInt(delta.rawValue)) ?? .unmodified
-  }
-  
-  init(gitDelta: git_delta_t)
-  {
-    self = XitChange(rawValue: UInt(gitDelta.rawValue)) ?? .unmodified
-  }
-  
-  init(indexStatus: git_status_t)
-  {
-    switch indexStatus {
-      case let s where s.test(GIT_STATUS_INDEX_NEW):
-        self = .added
-      case let s where s.test(GIT_STATUS_INDEX_MODIFIED):
-        self = .modified
-      case let s where s.test(GIT_STATUS_INDEX_DELETED):
-        self = .deleted
-      case let s where s.test(GIT_STATUS_INDEX_RENAMED):
-        self = .renamed
-      default:
-        self = .unmodified
-    }
-  }
-  
-  init(worktreeStatus: git_status_t)
-  {
-    switch worktreeStatus {
-      case let s where s.test(GIT_STATUS_WT_NEW):
-        self = .added
-      case let s where s.test(GIT_STATUS_WT_MODIFIED):
-        self = .modified
-      case let s where s.test(GIT_STATUS_WT_DELETED):
-        self = .deleted
-      case let s where s.test(GIT_STATUS_WT_RENAMED):
-        self = .renamed
-      case let s where s.test(GIT_STATUS_IGNORED):
-        self = .ignored
-      case let s where s.test(GIT_STATUS_CONFLICTED):
-        self = .conflict
-      default:
-        self = .unmodified
-    }
-  }
-}
-
-struct WorkspaceFileStatus
-{
-  let change, unstagedChange: XitChange
+  let change, unstagedChange: DeltaStatus
 }
 
 // Has to inherit from NSObject so NSTreeNode can use it to sort
-class FileChange: NSObject
+public class FileChange: NSObject
 {
-  var path: String
-  var change, unstagedChange: XitChange
+  @objc var path: String
+  var change, unstagedChange: DeltaStatus
   
-  init(path: String, change: XitChange = .unmodified,
-       unstagedChange: XitChange = .unmodified)
+  init(path: String, change: DeltaStatus = .unmodified,
+       unstagedChange: DeltaStatus = .unmodified)
   {
     self.path = path
     self.change = change
@@ -69,23 +20,23 @@ class FileChange: NSObject
   }
 }
 
-class FileStaging: FileChange
+class FileStagingChange: FileChange
 {
   let destinationPath: String
   
   init(path: String, destinationPath: String,
-       change: XitChange = .unmodified,
-       unstagedChange: XitChange = .unmodified)
+       change: DeltaStatus = .unmodified,
+       unstagedChange: DeltaStatus = .unmodified)
   {
     self.destinationPath = destinationPath
     super.init(path: path, change: change, unstagedChange: unstagedChange)
   }
 }
 
-extension XTRepository
+extension XTRepository: FileStaging
 {
   /// A path:status dictionary for locally changed files.
-  var workspaceStatus: [String: WorkspaceFileStatus]
+  public var workspaceStatus: [String: WorkspaceFileStatus]
   {
     var result = [String: WorkspaceFileStatus]()
     let options = [GTRepositoryStatusOptionsFlagsKey:
@@ -98,50 +49,46 @@ extension XTRepository
       else { return }
       
       let status = WorkspaceFileStatus(
-            change: headToIndex.map { XitChange(delta: $0.status) }
+            change: headToIndex.map { DeltaStatus(delta: $0.status) }
                     ?? .unmodified,
-            unstagedChange: indexToWorking.map { XitChange(delta: $0.status) }
+            unstagedChange: indexToWorking.map { DeltaStatus(delta: $0.status) }
                             ?? .unmodified)
       result[path] = status
     }
     return result
   }
- 
-  static let textNames = ["AUTHORS", "CONTRIBUTING", "COPYING", "LICENSE",
-                          "Makefile", "README"]
   
-  /// Returns true if the file seems to be text, based on its name.
-  static func isTextFile(_ path: String) -> Bool
+  // Returns the changes for the given commit.
+  public func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
   {
-    let name = (path as NSString).lastPathComponent
-    guard !name.isEmpty
-    else { return false }
-    
-    if XTRepository.textNames.contains(name) {
-      return true
+    guard sha != XTStagingSHA
+    else {
+      if let parentCommit = parentOID.flatMap({ commit(forOID: $0) }) {
+        return Array(amendingChanges(parent: parentCommit))
+      }
+      else {
+        return Array(stagingChanges)
+      }
     }
     
-    let ext = (name as NSString).pathExtension
-    guard !ext.isEmpty
-    else { return false }
+    guard let commit = self.commit(forSHA: sha),
+          let sha = commit.sha
+    else { return [] }
     
-    let unmanaged = UTTypeCreatePreferredIdentifierForTag(
-          kUTTagClassFilenameExtension, ext as CFString, nil)
-    let utType = unmanaged?.takeRetainedValue()
+    let parentOID = parentOID ?? commit.parentOIDs.first
+    guard let diff = self.diff(forSHA: sha, parent: parentOID)
+    else { return [] }
+    var result = [FileChange]()
     
-    return utType.map { UTTypeConformsTo($0, kUTTypeText) } ?? false
-  }
-  
-  /// Returns a file delta from a given diff.
-  func delta(from diff: GTDiff, path: String) -> XTDiffDelta?
-  {
-    var result: XTDiffDelta?
-    
-    diff.enumerateDeltas {
-      (delta, stop) in
-      if delta.newFile.path == path {
-        stop.pointee = true
-        result = delta
+    for index in 0..<diff.deltaCount {
+      guard let delta = diff.delta(at: index)
+      else { continue }
+      
+      if delta.deltaStatus != .unmodified {
+        let change = FileChange(path: delta.newFile.filePath,
+                                change: delta.deltaStatus)
+        
+        result.append(change)
       }
     }
     return result
@@ -157,8 +104,8 @@ extension XTRepository
     let flags = git_status_t(rawValue: flagsInt.pointee)
     
     return WorkspaceFileStatus(
-        change: XitChange(indexStatus: flags),
-        unstagedChange: XitChange(worktreeStatus: flags))
+        change: DeltaStatus(indexStatus: flags),
+        unstagedChange: DeltaStatus(worktreeStatus: flags))
   }
   
   func amendingStatus(for path: String) throws -> WorkspaceFileStatus
@@ -166,30 +113,30 @@ extension XTRepository
     guard let headCommit = headSHA.flatMap({ self.commit(forSHA: $0) }),
           let previousCommit = headCommit.parentOIDs.first
                                          .flatMap({ self.commit(forOID: $0) }),
-          let tree = previousCommit.tree?.git_tree()
+          let tree = previousCommit.tree as? GitTree
     else {
       return WorkspaceFileStatus(change: .unmodified,
                                  unstagedChange: .unmodified)
     }
     let flagsInt = UnsafeMutablePointer<UInt32>.allocate(capacity: 1)
     let result = git_status_file_at(flagsInt, gtRepo.git_repository(), path,
-                                    tree)
+                                    tree.tree)
     
     try Error.throwIfError(result)
     
     let flags = git_status_t(rawValue: flagsInt.pointee)
     
     return WorkspaceFileStatus(
-        change: XitChange(indexStatus: flags),
-        unstagedChange: XitChange(worktreeStatus: flags))
+        change: DeltaStatus(indexStatus: flags),
+        unstagedChange: DeltaStatus(worktreeStatus: flags))
   }
-  
+
   /// Stages the given file to the index.
   @objc(stageFile:error:)
   func stage(file: String) throws
   {
     let fullPath = file.hasPrefix("/") ? file :
-          repoURL.path.appending(pathComponent:file)
+          repoURL.path.appending(pathComponent: file)
     let exists = FileManager.default.fileExists(atPath: fullPath)
     let args = [exists ? "add" : "rm", file]
     
@@ -247,9 +194,8 @@ extension XTRepository
         guard let headCommit = headSHA.flatMap({ commit(forSHA: $0) }),
               let parentCommit = headCommit.parentOIDs.first
                                  .flatMap({ commit(forOID: $0) }),
-              let entry = try parentCommit.tree?.entry(withPath: file),
-              let oid = entry.oid.flatMap({ GitOID(oid: $0.git_oid().pointee) }),
-              let blob = GitBlob(repository: self, oid: oid)
+              let entry = parentCommit.tree?.entry(path: file),
+              let blob = GitBlob(repository: self, oid: entry.oid)
         else {
           // None of the above should fail with a modified/deleted status.
           throw Error.unexpected

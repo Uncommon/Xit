@@ -23,9 +23,14 @@ class WorkspaceWatcher: NSObject
     self.stream = stream
   }
   
+  deinit
+  {
+    stop()
+  }
+  
   func stop()
   {
-    self.stream.stop()
+    stream.stop()
   }
   
   func observeEvents(_ paths: [String])
@@ -43,9 +48,11 @@ class WorkspaceWatcher: NSObject
       userInfo = [XTPathsKey: paths]
     }
   
-    NotificationCenter.default.post(
-        name: NSNotification.Name.XTRepositoryWorkspaceChanged,
-        object: repository,
-        userInfo: userInfo)
+    DispatchQueue.main.async {
+      NotificationCenter.default.post(
+          name: NSNotification.Name.XTRepositoryWorkspaceChanged,
+          object: self.repository,
+          userInfo: userInfo)
+    }
   }
 }

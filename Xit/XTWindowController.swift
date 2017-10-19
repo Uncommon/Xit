@@ -6,6 +6,7 @@ protocol RepositoryController: class
   var isAmending: Bool { get set }
   
   func select(sha: String)
+  func showErrorMessage(error: XTRepository.Error)
 }
 
 /// XTDocument's main window controller.
@@ -19,7 +20,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   weak var xtDocument: XTDocument?
   var titleBarController: TitleBarViewController?
   var refsChangedObserver: NSObjectProtocol?
-  dynamic var isAmending = false
+  @objc dynamic var isAmending = false
   {
     didSet
     {
@@ -74,6 +75,8 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   var currentOperation: XTOperationController?
   
+  private var windowObserver, repoObserver: NSKeyValueObservation?
+  
   override var document: AnyObject?
   {
     didSet
@@ -99,17 +102,21 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     
     refsChangedObserver = NotificationCenter.default.addObserver(
         forName: NSNotification.Name.XTRepositoryRefsChanged,
-        object: repo, queue: nil) {
+        object: repo, queue: .main) {
       [weak self] _ in
       self?.updateBranchList()
     }
-    window.addObserver(self, forKeyPath: #keyPath(NSWindow.title),
-                       options: [], context: nil)
-    repo.addObserver(self, forKeyPath: #keyPath(XTRepository.currentBranch),
-                     options: [], context: nil)
+    windowObserver = window.observe(\.title) {
+      (_, _) in
+      self.updateMiniwindowTitle()
+    }
+    repoObserver = repo.observe(\.currentBranch) {
+      (_, _) in
+      self.titleBarController?.selectedBranch = repo.currentBranch
+      self.updateMiniwindowTitle()
+    }
     sidebarController.repo = repo
-    historyController.windowDidLoad()
-    historyController.repo = repo
+    historyController.finishLoad(repository: repo)
     updateMiniwindowTitle()
     updateNavButtons()
   }
@@ -121,27 +128,6 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     refsChangedObserver.map { center.removeObserver($0) }
     center.removeObserver(self)
     currentOperation?.canceled = true
-    window?.removeObserver(self, forKeyPath: #keyPath(NSWindow.title))
-  }
-  
-  override func observeValue(forKeyPath keyPath: String?,
-                             of object: Any?,
-                             change: [NSKeyValueChangeKey : Any]?,
-                             context: UnsafeMutableRawPointer?)
-  {
-    switch object {
-      case let repo as XTRepository:
-        if keyPath == #keyPath(XTRepository.currentBranch) {
-          titleBarController?.selectedBranch = repo.currentBranch
-          updateMiniwindowTitle()
-        }
-      case _ as NSWindow:
-        if keyPath == #keyPath(NSWindow.title) {
-          updateMiniwindowTitle()
-        }
-      default:
-        break
-    }
   }
   
   func select(sha: String)
@@ -155,7 +141,9 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func select(oid: GitOID)
   {
-    guard let commit = XTCommit(oid: oid, repository: xtDocument!.repository)
+    guard let repo = xtDocument?.repository,
+          let commit = XTCommit(oid: oid,
+                                repository: repo.gtRepo.git_repository())
     else { return }
   
     selectedModel = CommitChanges(repository: xtDocument!.repository,
@@ -168,7 +156,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
 
     if #available(OSX 10.12.2, *),
        let item = self.touchBar?.item(forIdentifier:
-                                      NSTouchBarItemIdentifier.navigation) {
+                                      NSTouchBarItem.Identifier.navigation) {
       updateNavControl(item.view as? NSSegmentedControl)
     }
   }
@@ -187,12 +175,18 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     guard let window = self.window,
           let repo = xtDocument?.repository
     else { return }
+    
+    var newTitle: String!
   
     if let currentBranch = repo.currentBranch {
-      window.miniwindowTitle = "\(window.title) - \(currentBranch)"
+      newTitle = "\(window.title) - \(currentBranch)"
     }
     else {
-      window.miniwindowTitle = window.title
+      newTitle = window.title
+    }
+    window.miniwindowTitle = newTitle
+    if #available(OSX 10.13, *) {
+      window.tab.title = newTitle
     }
   }
   
@@ -231,10 +225,30 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     else {
       let operation = factory()
       
-      operation.start()
-      currentOperation = operation
-      return operation
+      do {
+        try operation.start()
+        currentOperation = operation
+        return operation
+      }
+      catch let error as XTRepository.Error {
+        showErrorMessage(error: error)
+        return nil
+      }
+      catch {
+        showErrorMessage(error: XTRepository.Error.unexpected)
+        return nil
+      }
     }
+  }
+  
+  func showErrorMessage(error: XTRepository.Error)
+  {
+    guard let window = self.window
+    else { return }
+    let alert = NSAlert()
+    
+    alert.messageText = error.message
+    alert.beginSheetModal(for: window, completionHandler: nil)
   }
   
   /// Called by the operation controller when it's done.
@@ -259,7 +273,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func redrawAllHistoryLists()
   {
-    for document in NSDocumentController.shared().documents {
+    for document in NSDocumentController.shared.documents {
       guard let windowController = document.windowControllers.first
                                    as? XTWindowController
       else { continue }
@@ -296,18 +310,15 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
 
       case #selector(self.verticalLayout(_:)):
         result = true
-        menuItem.state = historyController.mainSplitView.isVertical
-            ? NSOnState : NSOffState
+        menuItem.state = historyController.mainSplitView.isVertical ? .on : .off
 
       case #selector(self.horizontalLayout(_:)):
         result = true
-        menuItem.state = historyController.mainSplitView.isVertical
-            ? NSOffState : NSOnState
+        menuItem.state = historyController.mainSplitView.isVertical ? .off : .on
 
       case #selector(self.deemphasizeMerges(_:)):
         result = true
-        menuItem.state = Preferences.deemphasizeMerges
-            ? NSOnState : NSOffState
+        menuItem.state = Preferences.deemphasizeMerges ? .on : .off
 
       case #selector(self.remoteSettings(_:)):
         result = true
@@ -323,11 +334,9 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func windowWillClose(_ notification: Notification)
   {
-    titleBarController?.titleLabel.unbind("value")
-    titleBarController?.proxyIcon.unbind("hidden")
-    titleBarController?.spinner.unbind("hidden")
-    xtDocument?.repository.removeObserver(
-        self, forKeyPath: #keyPath(XTRepository.currentBranch))
+    titleBarController?.titleLabel.unbind(NSBindingName(rawValue: "value"))
+    titleBarController?.proxyIcon.unbind(NSBindingName(rawValue: "hidden"))
+    titleBarController?.spinner.unbind(NSBindingName(rawValue: "hidden"))
     // For some reason this avoids a crash
     window?.makeFirstResponder(nil)
   }
@@ -372,35 +381,46 @@ extension XTWindowController: TitleBarDelegate
   func showHideDetails() { showHideDetails(self) }
 }
 
+extension NSBindingName
+{
+  static let progressHidden =
+      NSBindingName(#keyPath(TitleBarViewController.progressHidden))
+}
+
 // MARK: NSToolbarDelegate
 extension XTWindowController: NSToolbarDelegate
 {
+  struct NibName
+  {
+    static let titleBar = NSNib.Name("TitleBar")
+  }
+  
   func toolbarWillAddItem(_ notification: Notification)
   {
     guard let item = notification.userInfo?["item"] as? NSToolbarItem,
-          item.itemIdentifier == "com.uncommonplace.xit.titlebar",
-          let viewController = TitleBarViewController(nibName: "TitleBar",
-                                                      bundle: nil)
+          item.itemIdentifier.rawValue == "com.uncommonplace.xit.titlebar"
     else { return }
     
+    let viewController = TitleBarViewController(nibName: NibName.titleBar,
+                                                bundle: nil)
     let repository = xtDocument!.repository!
     let inverseBindingOptions =
-        [NSValueTransformerNameBindingOption:
+        [NSBindingOption.valueTransformerName:
          NSValueTransformerName.negateBooleanTransformerName]
 
     titleBarController = viewController
     item.view = viewController.view
 
     viewController.delegate = self
-    viewController.titleLabel.bind("value",
+    viewController.titleLabel.bind(NSBindingName.value,
                                    to: window! as NSWindow,
                                    withKeyPath: #keyPath(NSWindow.title),
                                    options: nil)
-    viewController.proxyIcon.bind("hidden",
+    viewController.proxyIcon.bind(NSBindingName.hidden,
                                   to: repository.queue,
                                   withKeyPath: #keyPath(TaskQueue.busy),
                                   options: nil)
-    viewController.bind(#keyPath(TitleBarViewController.progressHidden),
+    viewController.bind(.progressHidden,
                         to: repository.queue,
                         withKeyPath: #keyPath(TaskQueue.busy),
                         options: inverseBindingOptions)
@@ -408,104 +428,5 @@ extension XTWindowController: NSToolbarDelegate
     updateBranchList()
     viewController.selectedBranch = repository.currentBranch
     viewController.observe(repository: repository)
-  }
-}
-
-// MARK: NSTouchBar
-fileprivate extension NSTouchBarItemIdentifier
-{
-  static let
-      navigation = NSTouchBarItemIdentifier("com.uncommonplace.xit.nav"),
-      staging = NSTouchBarItemIdentifier("com.uncommonplace.xit.staging"),
-      unstageAll = NSTouchBarItemIdentifier("com.uncommonplace.xit.unstageall"),
-      stageAll = NSTouchBarItemIdentifier("com.uncommonplace.xit.stageall")
-}
-
-@available(OSX 10.12.2, *)
-extension XTWindowController: NSTouchBarDelegate
-{
-  override func makeTouchBar() -> NSTouchBar?
-  {
-    let bar = NSTouchBar()
-    
-    bar.delegate = self
-    if selectedModel is StagingChanges {
-      bar.defaultItemIdentifiers = [ .navigation, .unstageAll, .stageAll ]
-    }
-    else {
-      bar.defaultItemIdentifiers = [ .navigation, .staging ]
-    }
-    
-    return bar
-  }
-  
-  func touchBarButton(identifier: NSTouchBarItemIdentifier,
-                      title: String, image: NSImage?,
-                      target: Any, action: Selector) -> NSCustomTouchBarItem
-  {
-    let item = NSCustomTouchBarItem(identifier: identifier)
-    
-    if let image = image {
-      item.view = NSButton(title: title, image: image,
-                           target: target, action: action)
-    }
-    else {
-      item.view = NSButton(title: title, target: target, action: action)
-    }
-    return item
-  }
-  
-  func touchBar(_ touchBar: NSTouchBar,
-                makeItemForIdentifier identifier: NSTouchBarItemIdentifier)
-                -> NSTouchBarItem?
-  {
-    switch identifier {
-
-      case NSTouchBarItemIdentifier.navigation:
-        let control = NSSegmentedControl(
-                images: [NSImage(named: NSImageNameGoBackTemplate)!,
-                         NSImage(named: NSImageNameGoForwardTemplate)!],
-                trackingMode: .momentary,
-                target: titleBarController,
-                action: #selector(TitleBarViewController.navigate(_:)))
-        let item = NSCustomTouchBarItem(identifier: identifier)
-      
-        control.segmentStyle = .separated
-        item.view = control
-        return item
-
-      case NSTouchBarItemIdentifier.staging:
-        guard let stagingImage = NSImage(named: "stagingTemplate")
-        else { return nil }
-      
-        return touchBarButton(
-            identifier: identifier, title: "Staging", image: stagingImage,
-            target: self, action: #selector(XTWindowController.showStaging(_:)))
-
-      case NSTouchBarItemIdentifier.unstageAll:
-        return touchBarButton(
-            identifier: identifier, title: "« Unstage All", image: nil,
-            target: historyController.fileViewController,
-            action: #selector(FileViewController.unstageAll(_:)))
-      
-      case NSTouchBarItemIdentifier.stageAll:
-        return touchBarButton(
-            identifier: identifier, title: "» Stage All", image: nil,
-            target: historyController.fileViewController,
-            action: #selector(FileViewController.stageAll(_:)))
-
-      default:
-        return nil
-    }
-  }
-  
-  @IBAction func showStaging(_ sender: Any?)
-  {
-    guard let outline = sidebarController.sidebarOutline
-    else { return }
-    let stagingRow = outline.row(forItem: sidebarController.sidebarDS.stagingItem)
-  
-    outline.selectRowIndexes(IndexSet(integer: stagingRow),
-                             byExtendingSelection: false)
   }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12121"/>
@@ -721,9 +721,15 @@
             <items>
                 <menuItem title="Stage" id="KL1-BE-xHb">
                     <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="stage:" target="-2" id="pfM-oC-OkO"/>
+                    </connections>
                 </menuItem>
                 <menuItem title="Unstage" id="56P-vr-NNv">
                     <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="unstage:" target="-2" id="oTC-Qa-hmC"/>
+                    </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="OqE-vm-D4r"/>
                 <menuItem title="Revert" id="SZG-EL-c5c">

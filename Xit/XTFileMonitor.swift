@@ -3,6 +3,7 @@ import Foundation
 class XTFileMonitor
 {
   let path: String
+  private var sourceMutex = Mutex()
   var fd: CInt = -1
   var source: DispatchSourceFileSystemObject?
   
@@ -11,6 +12,7 @@ class XTFileMonitor
   init?(path: String)
   {
     self.path = path
+    
     makeSource()
     if self.source == nil {
       return nil
@@ -30,20 +32,31 @@ class XTFileMonitor
     
     source.setEventHandler {
       [weak self] in
-      guard let myself = self,
-            let source = myself.source
+      guard let myself = self
       else { return }
       
-      myself.notifyBlock?(myself.path, source.data)
+      myself.sourceMutex.lock()
+      defer { myself.sourceMutex.unlock() }
+      
+      guard let source = myself.source
+      else { return }
+      
+      DispatchQueue.main.async {
+        myself.notifyBlock?(myself.path, source.data)
+      }
       if source.data.contains(.delete) {
         source.cancel()
         close(myself.fd)
-        myself.source = nil
+        myself.sourceMutex.withLock {
+          myself.source = nil
+        }
         myself.makeSource()
       }
     }
     source.resume()
-    self.source = source
+    sourceMutex.withLock {
+      self.source = source
+    }
   }
   
   deinit

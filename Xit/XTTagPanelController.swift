@@ -21,7 +21,7 @@ class XTTagPanelController: XTSheetController
     get { return signatureLabel.stringValue }
     set { signatureLabel.stringValue = newValue }
   }
-  var message: String { return messageField.string ?? "" }
+  var message: String { return messageField.string }
   
   var lightweight: Bool
   {
@@ -50,7 +50,7 @@ class XTTagPanelController: XTSheetController
   }
 }
 
-extension XTTagPanelController : NSTextFieldDelegate
+extension XTTagPanelController: NSTextFieldDelegate
 {
   override func controlTextDidChange(_ obj: Notification)
   {

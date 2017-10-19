@@ -7,7 +7,7 @@ class BuildStatusCellView: NSTableCellView
   @IBOutlet var progressBar: NSProgressIndicator!
   @IBOutlet var statusImage: NSImageView!
   
-  override var backgroundStyle: NSBackgroundStyle
+  override var backgroundStyle: NSView.BackgroundStyle
   {
     didSet
     {

@@ -1,17 +1,20 @@
 import Cocoa
 
+fileprivate let batchSize = 500
+
 public class XTHistoryTableController: NSViewController
 {
   struct ColumnID
   {
-    static let commit = "commit"
-    static let date = "date"
-    static let name = "name"
+    static let commit = NSUserInterfaceItemIdentifier(rawValue: "commit")
+    static let date = NSUserInterfaceItemIdentifier(rawValue: "date")
+    static let name = NSUserInterfaceItemIdentifier(rawValue: "name")
   }
   
   let observers = ObserverCollection()
 
   var tableView: NSTableView { return view as! NSTableView }
+  var lastBatch = -1
 
   weak var repository: XTRepository!
   {
@@ -69,7 +72,7 @@ public class XTHistoryTableController: NSViewController
     observers.addObserver(
         forName: .XTSelectedModelChanged,
         object: controller,
-        queue: nil) {
+        queue: .main) {
       [weak self] (notification) in
       if let selectedModel = notification.userInfo?[NSKeyValueChangeKey.newKey]
                              as? FileChangesModel {
@@ -77,7 +80,7 @@ public class XTHistoryTableController: NSViewController
       }
     }
     
-    history.postProgress = self.postProgress(_:iteration:)
+    history.postProgress = self.postProgress(batchSize:batch:pass:value:)
   }
   
   /// Reloads the commit history from scratch.
@@ -105,41 +108,73 @@ public class XTHistoryTableController: NSViewController
       
       let refs = repository.allRefs()
       
-      for ref in refs {
+      for ref in refs where ref != "refs/stash" {
         _ = repository.sha(forRef: ref).flatMap { try? walker.pushSHA($0) }
       }
       
       while let gtCommit = walker.nextObject() as? GTCommit {
         let oid = GitOID(oidPtr: gtCommit.oid!.git_oid())
         guard let commit = XTCommit(oid: oid,
-                                    repository: repository)
+                                    repository: repository.gtRepo.git_repository())
         else { continue }
         
         history.appendCommit(commit)
       }
       
-      history.connectCommits()
-      DispatchQueue.main.async {
-        tableView?.reloadData()
-        self.ensureSelection()
+      DispatchQueue.global(qos: .utility).async {
+        // Get off the queue thread, but run this as a queue task so that
+        // progress will be displayed.
+        self.repository.queue.executeTask {
+          history.connectCommits(batchSize: batchSize) {}
+        }
+        DispatchQueue.main.async {
+          tableView?.reloadData()
+          self.ensureSelection()
+        }
       }
     }
   }
   
-  func postProgress(_ value: Int, iteration: Int)
+  func postProgress(batchSize: Int, batch: Int, pass: Int, value: Int)
   {
-    let totalIterations = 2
-    let totalCount = history.entries.count * totalIterations
-    let step = totalCount / 100
-    let totalValue = (iteration-1) * history.entries.count + value
+    let passCount = 2
+    let goal = history.entries.count * passCount
+    let completed = batch * batchSize * passCount
+    let totalProgress = completed + pass * passCount + value
+  
+    let step = goal / 100
     
-    if (step == 0) || (totalValue % step == 0) {
+    if (step == 0) || (totalProgress % step == 0) {
       let progressNote = Notification.progressNotification(
-        repository: repository,
-        progress: Float(totalValue),
-        total: Float(totalCount))
+            repository: repository,
+            progress: Float(totalProgress),
+            total: Float(goal))
       
       NotificationCenter.default.post(progressNote)
+    }
+    
+    if batch != lastBatch {
+      weak var tableView = self.tableView
+      
+      lastBatch = batch
+      DispatchQueue.main.async {
+        guard let tableView = tableView
+        else { return }
+        
+        switch batch {
+          case 0:
+            break
+          case 1:
+            tableView.reloadData()
+          default:
+            let batchStart = batch * batchSize
+            let range = batchStart..<(batchStart+batchSize)
+            let columnRange = 0..<tableView.tableColumns.count
+            
+            tableView.reloadData(forRowIndexes: IndexSet(integersIn: range),
+                                 columnIndexes: IndexSet(integersIn: columnRange))
+        }
+      }
     }
   }
   
@@ -219,8 +254,8 @@ extension XTHistoryTableController: NSTableViewDelegate
       return nil
     }
     guard let tableColumn = tableColumn,
-          let result = tableView.make(withIdentifier: tableColumn.identifier,
-                                      owner: self) as? NSTableCellView
+          let result = tableView.makeView(withIdentifier: tableColumn.identifier,
+                                          owner: self) as? NSTableCellView
     else { return nil }
     
     let entry = history.entries[row]
@@ -291,7 +326,7 @@ extension XTHistoryTableController: XTTableViewDelegate
     
     if (controller.selectedModel == nil) ||
        (controller.selectedModel?.shaToSelect != newModel.shaToSelect) ||
-       (type(of:controller.selectedModel!) != type(of:newModel)) {
+       (type(of: controller.selectedModel!) != type(of: newModel)) {
       controller.selectedModel = newModel
     }
   }

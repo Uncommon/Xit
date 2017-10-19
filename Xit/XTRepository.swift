@@ -1,36 +1,6 @@
 import Foundation
 
 
-public protocol RepositoryType: class
-{
-  associatedtype C: CommitType
-  
-  func commit(forSHA sha: String) -> C?
-  func commit(forOID oid: C.ID) -> C?
-}
-
-public protocol CommitReferencing
-{
-  associatedtype LocalBranchSequence: Sequence
-  associatedtype RemoteBranchSequence: Sequence
-
-  var headRef: String? { get }
-  var currentBranch: String? { get }
-  func remoteNames() -> [String]
-  func localBranches() -> LocalBranchSequence
-  func remoteBranches() -> RemoteBranchSequence
-  func tags() throws -> [Tag]
-  func graphBetween(localBranch: XTLocalBranch,
-                    upstreamBranch: XTRemoteBranch) ->(ahead: Int,
-                                                       behind: Int)?
-}
-
-public protocol SubmoduleManagement
-{
-  func submodules() -> [XTSubmodule]
-  func addSubmodule(path: String, url: String) throws
-}
-
 extension NSNotification.Name
 {
   /// Some change has been detected in the repository.
@@ -65,16 +35,17 @@ let XTErrorArgsKey = "args"
 public class XTRepository: NSObject
 {
   private(set) var gtRepo: GTRepository
-  let repoURL: URL
+  @objc public let repoURL: URL
   let gitCMD: String
-  let queue: TaskQueue
+  @objc let queue: TaskQueue
+  let mutex = Mutex()
   var refsIndex = [String: [String]]()
   fileprivate(set) var isWriting = false
   fileprivate var executing = false
   
   fileprivate(set) var cachedHeadRef, cachedHeadSHA, cachedBranch: String?
   
-  let diffCache = NSCache<NSString, GTDiff>()
+  let diffCache = Cache<String, Diff>(maxSize: 50)
   fileprivate var repoWatcher: XTRepositoryWatcher! = nil
   fileprivate var workspaceWatcher: WorkspaceWatcher! = nil
   private(set) var config: XTConfig! = nil
@@ -146,12 +117,9 @@ public class XTRepository: NSObject
     guard writing != isWriting
     else { return }
     
-    objc_sync_enter(self)
-    defer {
-      objc_sync_exit(self)
+    mutex.withLock {
+      isWriting = writing
     }
-    
-    isWriting = writing
   }
   
   func performWriting(_ block: (() throws -> Void)) throws
@@ -171,7 +139,9 @@ public class XTRepository: NSObject
   
   func clearCachedBranch()
   {
-    cachedBranch = nil
+    mutex.withLock {
+      cachedBranch = nil
+    }
   }
   
   func refsChanged()
@@ -181,7 +151,9 @@ public class XTRepository: NSObject
     else { return }
     
     willChangeValue(forKey: "currentBranch")
-    cachedBranch = newBranch
+    mutex.withLock {
+      cachedBranch = newBranch
+    }
     didChangeValue(forKey: "currentBranch")
   }
   
@@ -358,30 +330,21 @@ internal func setRepoWriting(_ repo: XTRepository, _ writing: Bool)
   repo.isWriting = writing
 }
 
-extension XTRepository: RepositoryType
+extension XTRepository: CommitStorage
 {
-  public typealias ID = GitOID
-  public typealias C = XTCommit
-
-  public func commit(forSHA sha: String) -> XTCommit?
+  public func commit(forSHA sha: String) -> Commit?
   {
     return XTCommit(sha: sha, repository: self)
   }
   
-  public func commit(forOID oid: GitOID) -> XTCommit?
+  public func commit(forOID oid: OID) -> Commit?
   {
-    return XTCommit(oid: oid, repository: self)
+    return XTCommit(oid: oid, repository: gtRepo.git_repository())
   }
 }
 
 extension XTRepository
 {
-  /// Returns a file URL for a given relative path.
-  func fileURL(_ file: String) -> URL
-  {
-    return repoURL.appendingPathComponent(file)
-  }
-  
   /// Returns true if the path is ignored according to the repository's
   /// ignore rules.
   func isIgnored(path: String) -> Bool
@@ -394,20 +357,8 @@ extension XTRepository
     return (result == 0) && (ignored.pointee != 0)
   }
   
-  func commitForStash(at index: UInt) -> XTCommit?
-  {
-    guard let stashRef = try? gtRepo.lookUpReference(withName: "refs/stash"),
-          let stashLog = GTReflog(reference: stashRef),
-          index < stashLog.entryCount,
-          let entry = stashLog.entry(at: index),
-          let oid = entry.updatedOID.map({ GitOID(oid: $0.git_oid().pointee) })
-    else { return nil }
-    
-    return XTCommit(oid: oid, repository: self)
-  }
-  
   /// Returns the unstaged and staged status of the given file.
-  func status(file: String) throws -> (XitChange, XitChange)
+  func status(file: String) throws -> (DeltaStatus, DeltaStatus)
   {
     let statusFlags = UnsafeMutablePointer<UInt32>.allocate(capacity: 1)
     let result = git_status_file(statusFlags, gtRepo.git_repository(), file)
@@ -417,8 +368,8 @@ extension XTRepository
     }
     
     let flags = git_status_t(statusFlags.pointee)
-    var unstagedChange = XitChange.unmodified
-    var stagedChange = XitChange.unmodified
+    var unstagedChange = DeltaStatus.unmodified
+    var stagedChange = DeltaStatus.unmodified
     
     switch flags {
       case _ where flags.test(GIT_STATUS_WT_NEW):
@@ -487,9 +438,12 @@ extension XTRepository
     }
   }
   
-  func graphBetween(local: GitOID, upstream: GitOID) -> (ahead: Int,
-                                                         behind: Int)?
+  func graphBetween(local: OID, upstream: OID) -> (ahead: Int,
+                                                   behind: Int)?
   {
+    guard let local = local as? GitOID,
+          let upstream = upstream as? GitOID
+    else { return nil }
     let ahead = UnsafeMutablePointer<Int>.allocate(capacity: 1)
     let behind = UnsafeMutablePointer<Int>.allocate(capacity: 1)
     
@@ -502,9 +456,9 @@ extension XTRepository
     }
   }
   
-  public func graphBetween(localBranch: XTLocalBranch,
-                           upstreamBranch: XTRemoteBranch) ->(ahead: Int,
-                                                              behind: Int)?
+  public func graphBetween(localBranch: LocalBranch,
+                           upstreamBranch: RemoteBranch) ->(ahead: Int,
+                                                            behind: Int)?
   {
     if let localOID = localBranch.oid,
        let upstreamOID = upstreamBranch.oid {

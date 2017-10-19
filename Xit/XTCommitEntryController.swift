@@ -58,6 +58,11 @@ class XTCommitEntryController: NSViewController
     indexObserver.map { NotificationCenter.default.removeObserver($0) }
   }
   
+  override func awakeFromNib()
+  {
+    commitField.textContainerInset = NSSize(width: 10, height: 5)
+  }
+  
   func commitMessageTemplate() -> String?
   {
     guard let templatePath = repo.config.commitTemplate()
@@ -86,7 +91,7 @@ class XTCommitEntryController: NSViewController
   @IBAction func commit(_ sender: NSButton)
   {
     do {
-      try repo.commit(message: commitMessage,
+      try repo.commit(message: commitField.string,
                       amend: repoController?.isAmending ?? false,
                       outputBlock: nil)
       resetMessage()
@@ -116,14 +121,15 @@ class XTCommitEntryController: NSViewController
         let alert = NSAlert()
         
         alert.messageText = "Replace the commit message?"
-        alert.informativeText =
-            "Do you want to replace the commit message with the message from " +
-            "the previous commit?"
+        alert.informativeText = """
+            Do you want to replace the commit message with the message from
+            the previous commit?
+            """
         alert.addButton(withTitle: "Replace")
         alert.addButton(withTitle: "Don't Replace")
         alert.beginSheetModal(for: window) {
           (response) in
-          if response == NSAlertFirstButtonReturn {
+          if response == .alertFirstButtonReturn {
             self.commitMessage = headMessage
           }
           self.repoController?.isAmending = newValue
@@ -147,11 +153,20 @@ class XTCommitEntryController: NSViewController
   
   func updateCommitButton()
   {
-    let text = commitMessage
+    let text = commitField.string
     let emptyText = text.isEmpty
     
     placeholder.isHidden = !emptyText
-    commitButton.isEnabled = anyStaged && !text.trimmingWhitespace.isEmpty
+    
+    if anyStaged {
+      let whitespace = CharacterSet.whitespacesAndNewlines
+      let onlyWhitespace = text.trimmingCharacters(in: whitespace).isEmpty
+      
+      commitButton.isEnabled = !onlyWhitespace
+    }
+    else {
+      commitButton.isEnabled = false
+    }
   }
 }
 

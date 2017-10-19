@@ -54,9 +54,9 @@ extension SidebarHandler
             return false
           }
           
-          let menuFontAttributes = [NSFontAttributeName:
+          let menuFontAttributes = [NSAttributedStringKey.font:
                                     NSFont.menuFont(ofSize: 0)]
-          let obliqueAttributes = [NSObliquenessAttributeName: 0.15]
+          let obliqueAttributes = [NSAttributedStringKey.obliqueness: 0.15]
           
           if let mergeTitle = NSAttributedString.init(
               format: "Merge @~1 into @~2",
@@ -162,14 +162,13 @@ class XTSidebarController: NSViewController, SidebarHandler
     didSet
     {
       sidebarDS.repository = repo
-      observers.addObserver(
-          forName: NSNotification.Name.XTRepositoryIndexChanged,
-          object: repo, queue: .main) {
+      observers.addObserver(forName: .XTRepositoryIndexChanged,
+                            object: repo, queue: .main) {
         [weak self] (_) in
         self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
       }
-      observers.addObserver(
-          forName: .XTRepositoryWorkspaceChanged, object: repo, queue: .main) {
+      observers.addObserver(forName: .XTRepositoryWorkspaceChanged,
+                            object: repo, queue: .main) {
         [weak self] (_) in
         self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
       }
@@ -190,7 +189,8 @@ class XTSidebarController: NSViewController, SidebarHandler
     sidebarOutline.floatsGroupRows = false
   
     if branchContextMenu == nil,
-       let menuNib = NSNib(nibNamed: "HistoryView Menus", bundle: nil) {
+       let menuNib = NSNib(nibNamed: NSNib.Name(rawValue: "HistoryView Menus"),
+                           bundle: nil) {
       menuNib.instantiate(withOwner: self, topLevelObjects: nil)
     }
     
@@ -379,150 +379,9 @@ class XTSidebarController: NSViewController, SidebarHandler
     alert.buttons[0].keyEquivalent = ""
     alert.beginSheetModal(for: view.window!) {
       (response) in
-      if response == NSAlertFirstButtonReturn {
+      if response == .alertFirstButtonReturn {
         onConfirm()
       }
     }
-  }
-  
-  // MARK: Actions
-  
-  @IBAction func sidebarItemRenamed(_ sender: Any)
-  {
-    guard let textField = sender as? NSTextField,
-          let cellView = textField.superview as? XTSidebarTableCellView,
-          let editedItem = cellView.item
-    else { return }
-    
-    let newName = textField.stringValue
-    let oldName = editedItem.title
-    guard newName != oldName
-    else { return }
-    
-    if editedItem.refType == .remote {
-      try? repo.renameRemote(old: oldName, new: newName)
-    }
-  }
-  
-  @IBAction func checkOutBranch(_ sender: Any?)
-  {
-    callCommand(errorString: "Checkout failed") {
-      (item) in
-      do {
-        try self.repo.checkout(branch: item.title)
-      }
-      catch let error as NSError
-            where error.domain == GTGitErrorDomain &&
-                  error.gitError == GIT_ECONFLICT {
-        DispatchQueue.main.async {
-          let alert = NSAlert()
-          
-          alert.messageText =
-              "Checkout failed because of a conflict with local changes."
-          alert.informativeText =
-              "Revert or stash your changes and try again."
-          alert.beginSheetModal(for: self.view.window!, completionHandler: nil)
-        }
-      }
-    }
-  }
-  
-  @IBAction func renameBranch(_ sender: Any?)
-  {
-    guard let selectedItem = targetItem(),
-          let controller = view.window?.windowController as? XTWindowController
-    else { return }
-    
-    controller.startRenameBranch(selectedItem.title)
-  }
-  
-  @IBAction func mergeBranch(_ sender: Any?)
-  {
-    guard let selectedItem = targetItem() as? XTBranchItem,
-          let branch = XTBranch(name: selectedItem.title, repository: repo)
-    else { return }
-    
-    repo.queue.executeOffMainThread {
-      [weak self] in
-      do {
-        try self?.repo.merge(branch: branch)
-      }
-      catch let repoError as XTRepository.Error {
-        DispatchQueue.main.async {
-          guard let window = self?.view.window
-          else { return }
-          let alert = NSAlert()
-          
-          alert.messageText = repoError.message
-          alert.beginSheetModal(for: window, completionHandler: nil)
-        }
-      }
-      catch {
-        NSLog("Unexpected error")
-      }
-    }
-  }
-  
-  @objc(deleteBranch:)
-  @IBAction func deleteBranch(_ sender: Any?)
-  {
-    guard let item = targetItem()
-    else { return }
-    
-    deleteBranch(item: item)
-  }
-  
-  @IBAction func deleteTag(_ sender: Any?)
-  {
-    guard let item = targetItem()
-    else { return }
-    
-    confirmDelete(kind: "tag", name: item.title) {
-      self.callCommand(errorString: "Delete tag failed", targetItem: item) {
-        (item) in
-        try self.repo.deleteTag(name: item.title)
-      }
-    }
-  }
-  
-  @IBAction func renameRemote(_ sender: Any?)
-  {
-    editSelectedRow()
-  }
-  
-  @IBAction func deleteRemote(_ sender: Any?)
-  {
-    callCommand(errorString: "Delete remote failed") {
-      (item) in
-      try self.repo.delete(remote: item.title)
-    }
-  }
-  
-  @IBAction func copyRemoteURL(_ sender: Any?)
-  {
-    guard let item = targetItem()
-    else { return }
-    let remoteName = "remote.\(item.title).url"
-    guard let remoteURL = repo.config.urlString(forRemote: remoteName)
-    else { return }
-    let pasteboard = NSPasteboard.general()
-    
-    pasteboard.declareTypes([NSStringPboardType], owner: nil)
-    pasteboard.setString(remoteURL, forType: NSStringPboardType)
-  }
-  
-  @IBAction func popStash(_ sender: Any?)
-  {
-    popStash()
-  }
-  
-  @IBAction func applyStash(_ sender: Any?)
-  {
-    applyStash()
-  }
-  
-  @IBAction func dropStash(_ sender: Any?)
-  {
-    dropStash()
   }
 }

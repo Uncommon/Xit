@@ -1,15 +1,29 @@
 import Cocoa
 
-/// Wraps a stash to preset a unified list of file changes.
-public class XTStash: NSObject
+public protocol Stash: class
 {
-  unowned var repo: XTRepository
-  var message: String?
-  var mainCommit: XTCommit?
-  var indexCommit, untrackedCommit: XTCommit?
+  var message: String? { get }
+  var mainCommit: Commit? { get }
+  var indexCommit: Commit? { get }
+  var untrackedCommit: Commit? { get }
+  
+  func changes() -> [FileChange]
+  func stagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
+  func unstagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
+}
+
+/// Wraps a stash to preset a unified list of file changes.
+public class XTStash: NSObject, Stash
+{
+  typealias Repo = CommitStorage & FileContents & FileStaging & Stashing
+  
+  unowned var repo: Repo
+  public var message: String?
+  public var mainCommit: Commit?
+  public var indexCommit, untrackedCommit: Commit?
   private var cachedChanges: [FileChange]?
 
-  init(repo: XTRepository, index: UInt, message: String?)
+  init(repo: Repo, index: UInt, message: String?)
   {
     self.repo = repo
     self.message = message
@@ -17,24 +31,22 @@ public class XTStash: NSObject
     if let mainCommit = repo.commitForStash(at: index) {
       self.mainCommit = mainCommit
       if mainCommit.parentOIDs.count > 1 {
-        self.indexCommit = XTCommit(oid: mainCommit.parentOIDs[1],
-                                    repository: repo)
+        self.indexCommit = repo.commit(forOID: mainCommit.parentOIDs[1])
         if mainCommit.parentOIDs.count > 2 {
-          self.untrackedCommit = XTCommit(oid: mainCommit.parentOIDs[2],
-                                          repository: repo)
+          self.untrackedCommit = repo.commit(forOID: mainCommit.parentOIDs[2])
         }
       }
     }
   }
 
-  func changes() -> [FileChange]
+  public func changes() -> [FileChange]
   {
     if let changes = cachedChanges {
       return changes
     }
     
     guard var unstagedChanges = mainCommit?.sha.map({
-        repo.changes(for: $0, parent: indexCommit?.sha) })
+        repo.changes(for: $0, parent: indexCommit?.oid) })
     else { return [] }
     let stagedChanges = indexCommit.map { repo.changes(for: $0.sha!,
                                                        parent: nil) }
@@ -76,58 +88,72 @@ public class XTStash: NSObject
     return changes
   }
 
-  func headBlobForPath(_ path: String) -> GTBlob?
+  func headBlobForPath(_ path: String) -> Blob?
   {
-    guard let headEntry = try? mainCommit?.gtCommit.parents[0].tree?
-                               .entry(withPath: path),
-          let object = try? headEntry?.gtObject()
+    guard let mainCommit = self.mainCommit as? XTCommit,
+          let parentOID = mainCommit.parentOIDs.first,
+          let parent = XTCommit(oid: parentOID, repository: mainCommit.repository),
+          let headEntry = parent.tree?.entry(path: path)
     else { return nil }
     
-    return (object as? GTBlob?)!
+    return headEntry.object as? Blob
   }
 
-  func stagedDiffForFile(_ path: String) -> XTDiffMaker?
+  public func stagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
   {
-    guard let indexCommit = self.indexCommit,
-          let indexEntry = try? indexCommit.tree?.entry(withPath: path),
-          let indexBlob = try? indexEntry!.gtObject() as? GTBlob
+    guard let indexCommit = self.indexCommit as? XTCommit
+    else { return nil }
+    guard let indexSHA = indexCommit.sha,
+          repo.isTextFile(path, commit: indexSHA)
+    else { return .binary }
+    guard let indexEntry = indexCommit.tree?.entry(path: path),
+          let indexBlob = indexEntry.object as? Blob
     else { return nil }
     let headBlob = self.headBlobForPath(path)
     
-    return XTDiffMaker(from: XTDiffMaker.SourceType(headBlob),
-                       to: XTDiffMaker.SourceType(indexBlob),
-                       path: path)
+    return .diff(PatchMaker(from: PatchMaker.SourceType(headBlob),
+                             to: PatchMaker.SourceType(indexBlob),
+                             path: path))
   }
 
-  func unstagedDiffForFile(_ path: String) -> XTDiffMaker?
+  public func unstagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
   {
-    guard let indexCommit = self.indexCommit
+    guard let indexCommit = self.indexCommit as? XTCommit
     else { return nil }
 
-    var indexBlob: GTBlob? = nil
+    var indexBlob: Blob? = nil
     
-    if let indexEntry = try? indexCommit.tree!.entry(withPath: path) {
-      let object = try? indexEntry.gtObject()
+    if let indexEntry = indexCommit.tree!.entry(path: path) {
+      if let indexSHA = indexCommit.sha,
+         !repo.isTextFile(path, commit: indexSHA) {
+        return .binary
+      }
+      let object = indexEntry.object
       
-      indexBlob = object as? GTBlob
+      indexBlob = object as? Blob
     }
     
-    if let untrackedCommit = self.untrackedCommit,
-       let untrackedEntry = try? untrackedCommit.tree?.entry(withPath: path) {
-      guard let untrackedBlob = try? untrackedEntry!.gtObject() as? GTBlob
+    if let untrackedCommit = self.untrackedCommit as? XTCommit,
+       let untrackedEntry = untrackedCommit.tree?.entry(path: path) {
+      if let untrackedSHA = untrackedCommit.sha,
+         !repo.isTextFile(path, commit: untrackedSHA) {
+        return .binary
+      }
+      guard let untrackedBlob = untrackedEntry.object as? Blob
       else { return nil }
       
-      return XTDiffMaker(from: XTDiffMaker.SourceType(indexBlob),
-                         to: XTDiffMaker.SourceType(untrackedBlob),
-                         path: path)
+      return .diff(PatchMaker(from: PatchMaker.SourceType(indexBlob),
+                               to: PatchMaker.SourceType(untrackedBlob),
+                               path: path))
     }
-    if let unstagedEntry = try? self.mainCommit?.tree?.entry(withPath: path) {
-      guard let unstagedBlob = try? unstagedEntry?.gtObject() as? GTBlob
+    if let mainCommit = self.mainCommit as? XTCommit,
+       let unstagedEntry = mainCommit.tree?.entry(path: path) {
+      guard let unstagedBlob = unstagedEntry.object as? Blob
       else { return nil }
       
-      return XTDiffMaker(from: XTDiffMaker.SourceType(indexBlob),
-                         to: XTDiffMaker.SourceType(unstagedBlob),
-                         path: path)
+      return .diff(PatchMaker(from: PatchMaker.SourceType(indexBlob),
+                               to: PatchMaker.SourceType(unstagedBlob),
+                               path: path))
     }
     return nil
   }

@@ -46,17 +46,15 @@ class XTSideBarDataSource: NSObject
       else { return }
       
       stagingItem.model = StagingChanges(repository: repo)
-      buildStatusCache = BuildStatusCache(repository: repo)
+      buildStatusCache = BuildStatusCache(branchLister: repo, remoteMgr: repo)
       
-      observers.addObserver(
-          forName: .XTRepositoryRefsChanged,
-          object: repo, queue: .main) {
+      observers.addObserver(forName: .XTRepositoryRefsChanged,
+                            object: repo, queue: .main) {
         [weak self] (_) in
         self?.reload()
       }
-      observers.addObserver(
-          forName: .XTRepositoryRefLogChanged,
-          object: repo, queue: .main) {
+      observers.addObserver(forName: .XTRepositoryRefLogChanged,
+                            object: repo, queue: .main) {
         [weak self] (_) in
         guard let myself = self
         else { return }
@@ -65,18 +63,16 @@ class XTSideBarDataSource: NSObject
         stashesGroup.children = myself.makeStashItems()
         myself.outline.reloadItem(stashesGroup, reloadChildren: true)
       }
-      observers.addObserver(
-          forName: .XTRepositoryHeadChanged,
-          object: repo, queue: .main) {
+      observers.addObserver(forName: .XTRepositoryHeadChanged,
+                            object: repo, queue: .main) {
         [weak self] (_) in
         guard let myself = self
         else { return }
         myself.outline.reloadItem(myself.roots[XTGroupIndex.branches.rawValue],
                                   reloadChildren: true)
       }
-      observers.addObserver(
-          forName: .XTRepositoryConfigChanged,
-          object: repo, queue: .main) {
+      observers.addObserver(forName: .XTRepositoryConfigChanged,
+                            object: repo, queue: .main) {
         [weak self] (_) in
         self?.reload()
       }
@@ -189,15 +185,14 @@ class XTSideBarDataSource: NSObject
     
     let newRoots = XTSideBarDataSource.makeRoots(stagingItem)
     let branchesGroup = newRoots[XTGroupIndex.branches.rawValue]
-    let localBranches = repo.localBranches().sorted(by:
-          { ($0.name ?? "") < ($1.name ?? "") })
+    let localBranches = repo.localBranches().sorted(by: { $0.name < $1.name })
     
     for branch in localBranches {
       guard let sha = branch.sha,
-            let commit = XTCommit(sha: sha, repository: repo),
-            let name = branch.name?.removingPrefix("refs/heads/")
+            let commit = XTCommit(sha: sha, repository: repo)
       else { continue }
       
+      let name = branch.name.removingPrefix("refs/heads/")
       let model = CommitChanges(repository: repo, commit: commit)
       let branchItem = XTLocalBranchItem(title: name, model: model)
       let parent = self.parent(for: name, groupItem: branchesGroup)
@@ -207,19 +202,18 @@ class XTSideBarDataSource: NSObject
     
     let remoteItems = repo.remoteNames().map {
           XTRemoteItem(title: $0, repository: repo) }
-    let remoteBranches = repo.remoteBranches().sorted {
-          ($0.name ?? "") < ($1.name ?? "") }
+    let remoteBranches = repo.remoteBranches().sorted(by: { $0.name < $1.name })
 
 
     for branch in remoteBranches {
       guard let remote = remoteItems.first(where: { $0.title ==
                                                     branch.remoteName }),
-            let name = branch.name?
-                       .removingPrefix("refs/remotes/\(remote.title)/"),
             let remoteName = branch.remoteName,
             let oid = branch.oid,
-            let commit = XTCommit(oid: oid, repository: repo)
+            let commit = XTCommit(oid: oid,
+                                  repository: repo.gtRepo.git_repository())
       else { continue }
+      let name = branch.name.removingPrefix("refs/remotes/\(remote.title)/")
       let model = CommitChanges(repository: repo, commit: commit)
       let remoteParent = parent(for: name, groupItem: remote)
       
@@ -424,13 +418,13 @@ class XTSideBarDataSource: NSObject
       (response) in
       switch response {
         
-        case NSAlertFirstButtonReturn: // Clear
+        case .alertFirstButtonReturn: // Clear
           let branch = XTLocalBranch(repository: self.repository, name: item.title)
           
           branch?.trackingBranchName = nil
           self.outline.reloadItem(item)
         
-        case NSAlertSecondButtonReturn: // Delete
+        case .alertSecondButtonReturn: // Delete
           self.viewController.deleteBranch(item: item)
         
         default:
@@ -439,7 +433,7 @@ class XTSideBarDataSource: NSObject
     }
   }
   
-  func doubleClick(_: Any?)
+  @objc func doubleClick(_: Any?)
   {
     if let outline = outline,
        let clickedItem = outline.item(atRow: outline.clickedRow)
@@ -449,7 +443,7 @@ class XTSideBarDataSource: NSObject
       let subURL = URL(fileURLWithPath: rootPath.appending(
             pathComponent: subPath))
       
-      NSDocumentController.shared().openDocument(
+      NSDocumentController.shared.openDocument(
           withContentsOf: subURL, display: true,
           completionHandler: { (_, _, _) in })
     }
@@ -462,96 +456,6 @@ extension XTSideBarDataSource: BuildStatusClient
   func buildStatusUpdated(branch: String, buildType: String)
   {
     scheduleReload()
-  }
-}
-
-// MARK: TeamCity
-extension XTSideBarDataSource: TeamCityAccessor
-{
-  /// Returns the name of the remote for either a remote branch or a local
-  /// tracking branch.
-  func remoteName(forBranchItem branchItem: XTSideBarItem) -> String?
-  {
-    guard let repo = repository
-    else { return nil }
-    
-    if let remoteBranchItem = branchItem as? XTRemoteBranchItem {
-      return remoteBranchItem.remote
-    }
-    else if let localBranchItem = branchItem as? XTLocalBranchItem {
-      guard let branch = XTLocalBranch(repository: repo,
-                                       name: localBranchItem.title)
-      else {
-        NSLog("Can't get branch for branch item: \(branchItem.title)")
-        return nil
-      }
-      
-      return branch.trackingBranch?.remoteName
-    }
-    return nil
-  }
-  
-  /// Returns true if the remote branch is tracked by a local branch.
-  func branchHasLocalTrackingBranch(_ branch: String) -> Bool
-  {
-    for localBranch in repository.localBranches() {
-      if let trackingBranch = localBranch.trackingBranch,
-         trackingBranch.shortName == branch {
-        return true
-      }
-    }
-    return false
-  }
-  
-  /// Returns true if the local branch has a remote tracking branch.
-  func localBranchHasTrackingBranch(_ branch: String) -> Bool
-  {
-    return XTLocalBranch(repository: repository,
-                         name: branch)?.trackingBranch != nil
-  }
-  
-  func trackingBranchStatus(for branch: String) -> TrackingBranchStatus
-  {
-    if let localBranch = XTLocalBranch(repository: repository, name: branch),
-       let trackingBranchName = localBranch.trackingBranchName {
-      return XTRemoteBranch(repository: repository,
-                            name: trackingBranchName) == nil
-          ? .missing(trackingBranchName)
-          : .set(trackingBranchName)
-    }
-    else {
-      return .none
-    }
-  }
-  
-  func statusImage(for item: XTSideBarItem) -> NSImage?
-  {
-    if (item is XTRemoteBranchItem) &&
-       !branchHasLocalTrackingBranch(item.title) {
-      return nil
-    }
-    
-    guard let remoteName = remoteName(forBranchItem: item),
-          let (_, buildTypes) = matchTeamCity(remoteName)
-    else { return nil }
-    
-    let branchName = (item.title as NSString).lastPathComponent
-    var overallSuccess: Bool?
-    
-    for buildType in buildTypes {
-      if let status = buildStatusCache.statuses[buildType],
-         let buildSuccess = status[branchName].map({ $0.status == .succeeded }) {
-        overallSuccess = (overallSuccess ?? true) && buildSuccess
-      }
-    }
-    
-    if let success = overallSuccess {
-      return NSImage(named: success ? NSImageNameStatusAvailable
-                                    : NSImageNameStatusUnavailable)
-    }
-    else {
-      return NSImage(named: NSImageNameStatusNone)
-    }
   }
 }
 
@@ -601,6 +505,12 @@ extension XTSideBarDataSource: NSOutlineViewDataSource
 // MARK: NSOutlineViewDelegate
 extension XTSideBarDataSource: NSOutlineViewDelegate
 {
+  struct CellID
+  {
+    static let header = NSUserInterfaceItemIdentifier(rawValue: "HeaderCell")
+    static let data = NSUserInterfaceItemIdentifier(rawValue: "DataCell")
+  }
+  
   public func outlineViewSelectionDidChange(_ notification: Notification)
   {
     guard let item = outline!.item(atRow: outline!.selectedRow)
@@ -644,16 +554,16 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
     else { return nil }
     
     if item is XTSideBarGroupItem {
-      guard let headerView = outlineView.make(
-          withIdentifier: "HeaderCell", owner: nil) as? NSTableCellView
+      guard let headerView = outlineView.makeView(
+          withIdentifier: CellID.header, owner: nil) as? NSTableCellView
       else { return nil }
       
       headerView.textField?.stringValue = sideBarItem.title
       return headerView
     }
     else {
-      guard let dataView = outlineView.make(
-          withIdentifier: "DataCell", owner: nil) as? XTSidebarTableCellView
+      guard let dataView = outlineView.makeView(
+          withIdentifier: CellID.data, owner: nil) as? XTSidebarTableCellView
       else { return nil }
       
       let textField = dataView.textField!
@@ -682,13 +592,14 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
             case .none:
               break
             case .missing(let tracking):
-              dataView.statusButton.image = NSImage(named: "trackingMissing")
+              dataView.statusButton.image =
+                    NSImage(named: .xtTrackingMissing)
               dataView.statusButton.toolTip = tracking + " (missing)"
               dataView.statusButton.target = self
               dataView.statusButton.action =
                   #selector(self.missingTrackingBranch(_:))
             case .set(let tracking):
-              dataView.statusButton.image = NSImage(named: "tracking")
+              dataView.statusButton.image = NSImage(named: .xtTracking)
               dataView.statusButton.toolTip = tracking
           }
         }
@@ -740,7 +651,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
             currentBranch.trackingBranchName == remoteBranchItem.remote + "/" +
                                                 remoteBranchItem.title {
       let rowView = SidebarCheckedRowView(
-              imageName: NSImageNameRightFacingTriangleTemplate,
+              imageName: NSImage.Name.rightFacingTriangleTemplate,
               toolTip: "The active branch is tracking this remote branch")
       
       return rowView
@@ -752,7 +663,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
 }
 
 // MARK: XTOutlineViewDelegate
-extension XTSideBarDataSource : XTOutlineViewDelegate
+extension XTSideBarDataSource: XTOutlineViewDelegate
 {
   func outlineViewClickedSelectedRow(_ outline: NSOutlineView)
   {

@@ -9,6 +9,8 @@ disabled_rules:
     - identifier_name # Single-letter names can be OK
     - trailing_comma # Trailing commas make it easier to add entries
     - todo # TODOs are handled separately
+    - switch_case_alignment # Indent one level from switch
+    - private_over_fileprivate
 opt_in_rules:
     - closure_spacing
     - conditional_returns_on_newline

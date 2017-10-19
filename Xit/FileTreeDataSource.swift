@@ -18,7 +18,7 @@ extension FileTreeDataSource: FileListDataSource
   
   func reload()
   {
-    repository?.queue.executeOffMainThread {
+    taskQueue?.executeOffMainThread {
       [weak self] in
       guard let myself = self
       else { return }
@@ -116,12 +116,12 @@ extension FileTreeDataSource: FileListDataSource
     return treeItem(item)?.path ?? ""
   }
   
-  func change(for item: Any) -> XitChange
+  func change(for item: Any) -> DeltaStatus
   {
     return treeItem(item)?.change ?? .unmodified
   }
   
-  func unstagedChange(for item: Any) -> XitChange
+  func unstagedChange(for item: Any) -> DeltaStatus
   {
     return treeItem(item)?.unstagedChange ?? .unmodified
   }

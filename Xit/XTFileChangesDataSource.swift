@@ -88,21 +88,17 @@ class XTFileChangesDataSource: FileListDataSourceBase
   {
     if wasInStaging != controller.isStaging {
       let stagedIndex = outlineView.column(withIdentifier:
-        FileViewController.ColumnID.staged)
+            FileViewController.ColumnID.staged)
       
-      for (index, change) in changes.enumerated() {
-        guard index < outlineView.numberOfRows
-        else {
-          // This can happen if things are out of sync while loading.
-          break
-        }
-        if let stagedCell = outlineView.view(atColumn: stagedIndex, row: index,
-                                             makeIfNecessary: false)
-                            as? TableButtonView {
-          controller.updateTableButton(stagedCell.button,
-                                       change: change.change,
-                                       otherChange: change.unstagedChange)
-        }
+      for index in 0..<outlineView.numberOfRows {
+        guard let stagedCell = outlineView.view(atColumn: stagedIndex, row: index,
+                                                makeIfNecessary: false)
+                               as? TableButtonView,
+              let change = outlineView.item(atRow: index) as? FileChange
+        else { continue }
+        
+        controller.updateTableButton(stagedCell.button, change: change.change,
+                                     otherChange: change.unstagedChange)
       }
       
       wasInStaging = controller.isStaging
@@ -135,7 +131,7 @@ class XTFileChangesDataSource: FileListDataSourceBase
   }
 }
 
-extension XTFileChangesDataSource : FileListDataSource
+extension XTFileChangesDataSource: FileListDataSource
 {
   var hierarchical: Bool { return false }
 
@@ -143,7 +139,7 @@ extension XTFileChangesDataSource : FileListDataSource
   {
     let model = repoController.selectedModel
     
-    repository?.queue.executeOffMainThread {
+    taskQueue?.executeOffMainThread {
       [weak self] in
       self?.doReload(model)
     }
@@ -165,20 +161,20 @@ extension XTFileChangesDataSource : FileListDataSource
     return (item as? FileChange)?.path ?? ""
   }
   
-  func change(for item: Any) -> XitChange
+  func change(for item: Any) -> DeltaStatus
   {
     guard let fileChange = item as? FileChange
     else { return .unmodified }
     
-    return type(of:self).transformDisplayChange(fileChange.change)
+    return type(of: self).transformDisplayChange(fileChange.change)
   }
   
-  func unstagedChange(for item: Any) -> XitChange
+  func unstagedChange(for item: Any) -> DeltaStatus
   {
     guard let fileChange = item as? FileChange
     else { return .unmodified }
     
-    return type(of:self).transformDisplayChange(fileChange.unstagedChange)
+    return type(of: self).transformDisplayChange(fileChange.unstagedChange)
   }
 }
 
