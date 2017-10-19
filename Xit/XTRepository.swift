@@ -263,6 +263,8 @@ extension XTRepository
     case detachedHead
     case gitError(Int32)
     case patchMismatch
+    case commitNotFound(String?)  // SHA
+    case fileNotFound(String)  // Path
     case unexpected
     
     var message: String
@@ -275,18 +277,28 @@ extension XTRepository
         case .cherryPickInProgress:
           return "A cherry-pick operation is already in progress."
         case .conflict:
-          return "The operation could not be completed because there were " +
-                 "conflicts."
+          return """
+              The operation could not be completed because there were
+              conflicts.
+              """
         case .localConflict:
-          return "There are conflicted files in the work tree or index. " +
-                 "Try checking in or stashing your changes first."
+          return """
+              There are conflicted files in the work tree or index.
+              Try checking in or stashing your changes first.
+              """
         case .detachedHead:
           return "This operation cannot be performed in a detached HEAD state."
         case .gitError(let code):
           return "An internal git error (\(code)) occurred."
         case .patchMismatch:
-          return "The patch could not be applied because it did not match " +
-                 "the file content."
+          return """
+              The patch could not be applied because it did not match
+              the file content.
+              """
+        case .commitNotFound(let sha):
+          return "The commit \(sha ?? "-") was not found."
+        case .fileNotFound(let path):
+           return "The file \(path) was not found."
         case .unexpected:
           return "An unexpected repository error occurred."
       }

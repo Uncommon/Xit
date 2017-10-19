@@ -189,14 +189,19 @@ extension XTRepository: FileStaging
         try index.removeFile(file)
       
       case .modified, .deleted:
-        guard let headCommit = headSHA.flatMap({ commit(forSHA: $0) }),
-              let parentCommit = headCommit.parentOIDs.first
-                                 .flatMap({ commit(forOID: $0) }),
-              let entry = parentCommit.tree?.entry(path: file),
-              let blob = GitBlob(repository: self, oid: entry.oid)
+        guard let headCommit = headSHA.flatMap({ self.commit(forSHA: $0) }),
+              let parentOID = headCommit.parentOIDs.first
         else {
-          // None of the above should fail with a modified/deleted status.
-          throw Error.unexpected
+          throw Error.commitNotFound(headSHA)
+        }
+        guard let parentCommit = commit(forOID: parentOID)
+        else {
+          throw Error.commitNotFound(parentOID.sha)
+        }
+        guard let entry = parentCommit.tree?.entry(path: file),
+              let blob = entry.object as? Blob
+        else {
+          throw Error.fileNotFound(file)
         }
         
         try blob.withData {
