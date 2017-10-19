@@ -23,7 +23,7 @@ public protocol CommitReferencing: class
 
 extension CommitReferencing
 {
-  var headSHA: String? { return headRef.flatMap({ self.sha(forRef: $0) })}
+  var headSHA: String? { return headRef.flatMap({ self.sha(forRef: $0) }) }
 }
 
 public protocol BranchListing: class

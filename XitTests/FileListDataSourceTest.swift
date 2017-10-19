@@ -8,6 +8,7 @@ class FakeRepoController: RepositoryController
   var isAmending = false
   
   func select(sha: String) {}
+  func showErrorMessage(error: XTRepository.Error) {}
 }
 
 class FileListDataSourceTest: XTTest

@@ -130,8 +130,8 @@ class XTAmendTest: XTTest
     }
 
     XCTAssertEqual(amendStatus.count, 3)
-    XCTAssertEqual(file3Status.unstagedChange, XitChange.modified)
-    XCTAssertEqual(file3Status.change, XitChange.added)
+    XCTAssertEqual(file3Status.unstagedChange, DeltaStatus.modified)
+    XCTAssertEqual(file3Status.change, DeltaStatus.added)
   }
   
   // Delete a file added in the last commit, then check the amend status
@@ -151,8 +151,8 @@ class XTAmendTest: XTTest
     }
     
     XCTAssertEqual(amendStatus.count, 3)
-    XCTAssertEqual(file3Status.unstagedChange, XitChange.deleted)
-    XCTAssertEqual(file3Status.change, XitChange.added)
+    XCTAssertEqual(file3Status.unstagedChange, DeltaStatus.deleted)
+    XCTAssertEqual(file3Status.change, DeltaStatus.added)
   }
   
   // Test amend status for a file added in the head commit
@@ -171,8 +171,8 @@ class XTAmendTest: XTTest
       return
     }
     
-    XCTAssertEqual(file3Status.unstagedChange, XitChange.untracked)
-    XCTAssertEqual(file3Status.change, XitChange.unmodified)
+    XCTAssertEqual(file3Status.unstagedChange, DeltaStatus.untracked)
+    XCTAssertEqual(file3Status.change, DeltaStatus.unmodified)
   }
   
   // Test amend status for a file deleted in the head commit
@@ -191,8 +191,8 @@ class XTAmendTest: XTTest
       return
     }
     
-    XCTAssertEqual(file2Status.unstagedChange, XitChange.deleted)
-    XCTAssertEqual(file2Status.change, XitChange.unmodified)
+    XCTAssertEqual(file2Status.unstagedChange, DeltaStatus.deleted)
+    XCTAssertEqual(file2Status.change, DeltaStatus.unmodified)
   }
   
   // Stage & unstage a new file in amend mode
@@ -200,7 +200,7 @@ class XTAmendTest: XTTest
   {
     let headCommit = repository.commit(forSHA: repository.headSHA!)!
     let fileName = FileNames.file4
-    let match = { (change: FileStaging) in change.path == fileName }
+    let match = { (change: FileStagingChange) in change.path == fileName }
     
     addSecondCommit()
     writeText("text", toFile: fileName)
@@ -212,8 +212,8 @@ class XTAmendTest: XTTest
       return
     }
     
-    XCTAssertEqual(file4Status1.unstagedChange, XitChange.untracked)
-    XCTAssertEqual(file4Status1.change, XitChange.unmodified)
+    XCTAssertEqual(file4Status1.unstagedChange, DeltaStatus.untracked)
+    XCTAssertEqual(file4Status1.change, DeltaStatus.unmodified)
     
     XCTAssertNoThrow(try repository.amendStage(file: fileName))
     amendStatus = repository.amendingChanges(parent: headCommit)
@@ -224,8 +224,8 @@ class XTAmendTest: XTTest
       return
     }
     
-    XCTAssertEqual(file4Status2.unstagedChange, XitChange.unmodified)
-    XCTAssertEqual(file4Status2.change, XitChange.added)
+    XCTAssertEqual(file4Status2.unstagedChange, DeltaStatus.unmodified)
+    XCTAssertEqual(file4Status2.change, DeltaStatus.added)
     
     XCTAssertNoThrow(try repository.amendUnstage(file: fileName))
     amendStatus = repository.amendingChanges(parent: headCommit)
@@ -236,8 +236,8 @@ class XTAmendTest: XTTest
       return
     }
     
-    XCTAssertEqual(file4Status3.unstagedChange, XitChange.untracked)
-    XCTAssertEqual(file4Status3.change, XitChange.unmodified)
+    XCTAssertEqual(file4Status3.unstagedChange, DeltaStatus.untracked)
+    XCTAssertEqual(file4Status3.change, DeltaStatus.unmodified)
   }
   
   // Stage & unstage a newly deleted file in amend mode
@@ -245,7 +245,7 @@ class XTAmendTest: XTTest
   {
     let headCommit = repository.commit(forSHA: repository.headSHA!)!
     let fileName = FileNames.file1
-    let match = { (change: FileStaging) in change.path == fileName }
+    let match = { (change: FileStagingChange) in change.path == fileName }
     
     addSecondCommit()
     try! FileManager.default.removeItem(at: repository.fileURL(fileName))
@@ -255,8 +255,8 @@ class XTAmendTest: XTTest
     if let fileStatus = amendStatus.first(where: match) {
       // It shows up as modified in the index because file1 was changed
       // in the second commit.
-      XCTAssertEqual(fileStatus.unstagedChange, XitChange.deleted)
-      XCTAssertEqual(fileStatus.change, XitChange.modified)
+      XCTAssertEqual(fileStatus.unstagedChange, DeltaStatus.deleted)
+      XCTAssertEqual(fileStatus.change, DeltaStatus.modified)
     }
     else {
       XCTFail("file status missing")
@@ -266,8 +266,8 @@ class XTAmendTest: XTTest
     XCTAssertNoThrow(try repository.amendStage(file: fileName))
     amendStatus = repository.amendingChanges(parent: headCommit)
     if let fileStatus = amendStatus.first(where: match) {
-      XCTAssertEqual(fileStatus.unstagedChange, XitChange.unmodified)
-      XCTAssertEqual(fileStatus.change, XitChange.deleted)
+      XCTAssertEqual(fileStatus.unstagedChange, DeltaStatus.unmodified)
+      XCTAssertEqual(fileStatus.change, DeltaStatus.deleted)
     }
     else {
       XCTFail("file status missing")
@@ -277,8 +277,8 @@ class XTAmendTest: XTTest
     XCTAssertNoThrow(try repository.amendUnstage(file: fileName))
     amendStatus = repository.amendingChanges(parent: headCommit)
     if let fileStatus = amendStatus.first(where: match) {
-      XCTAssertEqual(fileStatus.unstagedChange, XitChange.deleted)
-      XCTAssertEqual(fileStatus.change, XitChange.unmodified)
+      XCTAssertEqual(fileStatus.unstagedChange, DeltaStatus.deleted)
+      XCTAssertEqual(fileStatus.change, DeltaStatus.unmodified)
     }
     else {
       XCTFail("file status missing")

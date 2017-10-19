@@ -94,6 +94,11 @@
 		C923D65E1D90506A00C6B90B /* TitleBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = C923D65D1D90506A00C6B90B /* TitleBar.xib */; };
 		C923D66C1D906FAA00C6B90B /* TitleBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D66B1D906FAA00C6B90B /* TitleBarViewController.swift */; };
 		C926804E1D074EC500E422FA /* FileChangesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C926804D1D074EC500E422FA /* FileChangesModel.swift */; };
+		C929611C1F99016400148563 /* XTSideBarDataSource+TeamCity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929611A1F99016400148563 /* XTSideBarDataSource+TeamCity.swift */; };
+		C929611D1F99016400148563 /* XTSidebarController+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929611B1F99016400148563 /* XTSidebarController+Actions.swift */; };
+		C929611F1F99019F00148563 /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929611E1F99019E00148563 /* Images.swift */; };
+		C92961221F99036900148563 /* StringOID.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92961201F99036800148563 /* StringOID.swift */; };
+		C92961231F99036900148563 /* CacheTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92961211F99036900148563 /* CacheTest.swift */; };
 		C929D03B1D400B3B00D7DC52 /* XTRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D03A1D400B3B00D7DC52 /* XTRemote.swift */; };
 		C929D0461D415F6F00D7DC52 /* MiscExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */; };
 		C929D0601D42785B00D7DC52 /* TeamCityAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D05F1D42785B00D7DC52 /* TeamCityAPI.swift */; };
@@ -473,6 +478,11 @@
 		C923D65D1D90506A00C6B90B /* TitleBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TitleBar.xib; sourceTree = "<group>"; };
 		C923D66B1D906FAA00C6B90B /* TitleBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = TitleBarViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C926804D1D074EC500E422FA /* FileChangesModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileChangesModel.swift; sourceTree = "<group>"; };
+		C929611A1F99016400148563 /* XTSideBarDataSource+TeamCity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTSideBarDataSource+TeamCity.swift"; sourceTree = "<group>"; };
+		C929611B1F99016400148563 /* XTSidebarController+Actions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTSidebarController+Actions.swift"; sourceTree = "<group>"; };
+		C929611E1F99019E00148563 /* Images.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Images.swift; sourceTree = "<group>"; };
+		C92961201F99036800148563 /* StringOID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringOID.swift; sourceTree = "<group>"; };
+		C92961211F99036900148563 /* CacheTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CacheTest.swift; sourceTree = "<group>"; };
 		C929D03A1D400B3B00D7DC52 /* XTRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRemote.swift; sourceTree = "<group>"; };
 		C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiscExtensions.swift; sourceTree = "<group>"; };
 		C929D05F1D42785B00D7DC52 /* TeamCityAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamCityAPI.swift; sourceTree = "<group>"; };
@@ -873,6 +883,7 @@
 				C929D0541D42784000D7DC52 /* Services */,
 				C90F92771E0199E400FE8589 /* AppDelegate.swift */,
 				C93FFCA91F0FD65100FDDD78 /* Defaults.plist */,
+				C929611E1F99019E00148563 /* Images.swift */,
 				C95355FB1D9492EA00AEEF49 /* XTDocumentController.swift */,
 				DD07B08316B2005B0012AC19 /* XTConstants.h */,
 				C951EB081DDBB77E00B99FBE /* XTConstants.m */,
@@ -902,6 +913,7 @@
 			children = (
 				C3FA472513D0F8E300AC4F9B /* Supporting Files */,
 				C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */,
+				C92961211F99036900148563 /* CacheTest.swift */,
 				DD98CFF2181ADFC5008B79C9 /* CFRunLoop+Extensions.c */,
 				DD98CFFF181AE297008B79C9 /* CFRunLoop+Extensions.h */,
 				C9AAEF8F1E41527F00A248CF /* CommitHeaderTest.swift */,
@@ -909,6 +921,7 @@
 				C94736751DEF28F8000E3A05 /* GitSwiftTests.swift */,
 				89CB619B1E788C6000D69FE4 /* PatchTest.swift */,
 				C95356091D958E8D00AEEF49 /* StringExtensionsTest.swift */,
+				C92961201F99036800148563 /* StringOID.swift */,
 				C9DAB5AE1D47C23900586854 /* TeamCityTest.swift */,
 				C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */,
 				89CD209017089D220051C3D4 /* XTCategoryTests.h */,
@@ -1023,15 +1036,17 @@
 				DD07B08716B313A60012AC19 /* XTRefFormatter.h */,
 				DD07B08816B313A60012AC19 /* XTRefFormatter.m */,
 				C98925F81DBFCE7000E5645C /* XTSidebarController.swift */,
-				C951EAE01DD11BDD00B99FBE /* XTSidebarTableCellView.swift */,
+				C929611B1F99016400148563 /* XTSidebarController+Actions.swift */,
 				89C9276A1D368C020074F71A /* XTSideBarDataSource.swift */,
+				C929611A1F99016400148563 /* XTSideBarDataSource+TeamCity.swift */,
 				C9F78B131D0896AF008490EA /* XTSidebarItem.swift */,
-				C947367B1DF079DB000E3A05 /* SideBarOutlineView.swift */,
-				C951EB041DD636B900B99FBE /* SidebarCheckedRowView.swift */,
-				DD997DD8173B409500C7DF82 /* HistoryView Menus.xib */,
+				C951EAE01DD11BDD00B99FBE /* XTSidebarTableCellView.swift */,
 				C9F461DD1EF34826007BEBC9 /* BuildStatusCellView.swift */,
 				C941549E1ED4ECF30030E481 /* BuildStatusViewController.swift */,
 				C941549F1ED4ECF30030E481 /* BuildStatusViewController.xib */,
+				DD997DD8173B409500C7DF82 /* HistoryView Menus.xib */,
+				C951EB041DD636B900B99FBE /* SidebarCheckedRowView.swift */,
+				C947367B1DF079DB000E3A05 /* SideBarOutlineView.swift */,
 			);
 			name = Sidebar;
 			sourceTree = "<group>";
@@ -1518,6 +1533,7 @@
 				C97144271F97DEE500A2E67C /* GitEnums.swift in Sources */,
 				C97144251F97DEE500A2E67C /* GitDiffDelta.swift in Sources */,
 				C97144361F97E01000A2E67C /* LibGitExtensions.m in Sources */,
+				C929611D1F99016400148563 /* XTSidebarController+Actions.swift in Sources */,
 				C94866C01D25861E000BDB0A /* XTPasswordPanelController.swift in Sources */,
 				C97144311F97DFC000A2E67C /* Cache.swift in Sources */,
 				C9BAE61E1D303A8100A87F13 /* XTRemoteOptionsController.swift in Sources */,
@@ -1529,6 +1545,7 @@
 				C91F34781D30656B005F9BDF /* Services.swift in Sources */,
 				C947367E1DF08C03000E3A05 /* ContextMenuOutlineView.swift in Sources */,
 				89C9276B1D368C020074F71A /* XTSideBarDataSource.swift in Sources */,
+				C929611F1F99019F00148563 /* Images.swift in Sources */,
 				89369A741EDF47FC001B69C6 /* NSTask+Throwing.m in Sources */,
 				C97144381F97E01D00A2E67C /* FileViewController+OutlineView.swift in Sources */,
 				C936AD0A1D4C0CD400C5ADC3 /* XTPushController.swift in Sources */,
@@ -1548,6 +1565,7 @@
 				C94A30241E311F3B00B4496B /* XTPreviewController.swift in Sources */,
 				C92E30EF1D4FF358001985F7 /* XTCommitHistory.swift in Sources */,
 				C929D0461D415F6F00D7DC52 /* MiscExtensions.swift in Sources */,
+				C929611C1F99016400148563 /* XTSideBarDataSource+TeamCity.swift in Sources */,
 				89C927881D43B0460074F71A /* XTPullController.swift in Sources */,
 				C94866B61D256C24000BDB0A /* XTFetchController.swift in Sources */,
 				C957B87C1D2DBBC00040F858 /* XTAccountsManager.swift in Sources */,
@@ -1601,10 +1619,12 @@
 				89CB619C1E788C6000D69FE4 /* PatchTest.swift in Sources */,
 				C9EB87321D05D35800C47D13 /* XTStashTest.swift in Sources */,
 				C9AAEF901E41527F00A248CF /* CommitHeaderTest.swift in Sources */,
+				C92961231F99036900148563 /* CacheTest.swift in Sources */,
 				C94103801EBDFABC002C80DC /* XTSideBarDataSourceTests.swift in Sources */,
 				C9DEA4F01E53678A00DF4069 /* XTFileChangesDataSourceTest.swift in Sources */,
 				DD98CFF3181ADFC5008B79C9 /* CFRunLoop+Extensions.c in Sources */,
 				C953560A1D958E8D00AEEF49 /* StringExtensionsTest.swift in Sources */,
+				C92961221F99036900148563 /* StringOID.swift in Sources */,
 				C9DEA4FF1E54AEC400DF4069 /* BlameTest.swift in Sources */,
 				C96D24B31DFEFD9F00431317 /* XTSidebarControllerTest.swift in Sources */,
 				C923D6481D8CA56800C6B90B /* XTTagTest.swift in Sources */,
@@ -1724,7 +1744,7 @@
 					"\"$(SRCROOT)/objective-git/External/libgit2/include\"",
 					"$(inherited)",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-lgcov";
 				SDKROOT = macosx;
@@ -1826,7 +1846,7 @@
 					"\"$(SRCROOT)/objective-git/External/libgit2/include\"",
 					"$(inherited)",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				OTHER_SWIFT_FLAGS = "-D DEBUG";
@@ -1863,7 +1883,7 @@
 					"\"$(SRCROOT)/objective-git/External/libgit2/include\"",
 					"$(inherited)",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 4.0;

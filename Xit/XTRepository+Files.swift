@@ -7,7 +7,12 @@ extension XTRepository: FileContents
                           "Makefile", "README"]
   
   /// Returns true if the file seems to be text, based on its name.
-  public func isTextFile(_ path: String, commit: String?) -> Bool
+  public func isTextFile(_ path: String, commit: String? = nil) -> Bool
+  {
+    return XTRepository.isTextFile(path)
+  }
+  
+  public static func isTextFile(_ path: String) -> Bool
   {
     let name = (path as NSString).lastPathComponent
     guard !name.isEmpty

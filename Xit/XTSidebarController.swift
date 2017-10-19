@@ -177,6 +177,7 @@ class XTSidebarController: NSViewController, SidebarHandler
   var window: NSWindow? { return view.window }
   var savedSidebarWidth: UInt = 0
   let observers = ObserverCollection()
+  var amendingObserver: NSKeyValueObservation?
   
   deinit
   {
@@ -202,20 +203,13 @@ class XTSidebarController: NSViewController, SidebarHandler
       [weak self] (_) in
       self?.selectedModelChanged()
     }
+    amendingObserver = repoController.observe(\.isAmending) {
+      (controller, _) in
+      self.sidebarDS.setAmending(controller.isAmending)
+    }
     repoController.addObserver(
         self, forKeyPath: #keyPath(XTWindowController.isAmending),
         options: [], context: nil)
-  }
-  
-  override func observeValue(forKeyPath keyPath: String?,
-                             of object: Any?,
-                             change: [NSKeyValueChangeKey : Any]?,
-                             context: UnsafeMutableRawPointer?) {
-    if keyPath == #keyPath(XTWindowController.isAmending) {
-      let repoController = view.window!.windowController as! XTWindowController
-
-      sidebarDS.setAmending(repoController.isAmending)
-    }
   }
   
   func selectedModelChanged()

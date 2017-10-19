@@ -168,11 +168,9 @@ extension XTRepository: FileStaging
       
       case .modified, .added:
         try index.addFile(file)
-        break
-        
+      
       case .deleted:
         try index.removeFile(file)
-        break
         
       default:
         throw Error.unexpected

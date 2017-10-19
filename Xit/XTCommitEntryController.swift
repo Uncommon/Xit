@@ -43,7 +43,7 @@ class XTCommitEntryController: NSViewController
   {
     get
     {
-      return commitField.string ?? ""
+      return commitField.string
     }
     set
     {

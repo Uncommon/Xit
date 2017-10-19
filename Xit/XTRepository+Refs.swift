@@ -129,7 +129,7 @@ extension XTRepository: CommitReferencing
     return hasHeadReference() ? "HEAD" : kEmptyTreeHash
   }
   
-  func sha(forRef ref: String) -> String?
+  public func sha(forRef ref: String) -> String?
   {
     guard let object = try? gtRepo.lookUpObject(byRevParse: ref)
     else { return nil }
