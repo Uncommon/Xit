@@ -108,6 +108,59 @@ extension XTRepository: FileStaging
         unstagedChange: DeltaStatus(worktreeStatus: flags))
   }
   
+  // Re-implementation of git_status_file
+  func fileStatus(_ path: String, baseCommit: Commit?) -> WorkspaceFileStatus?
+  {
+    struct CallbackData
+    {
+      let path: String
+      var status: git_status_t
+    }
+    
+    var options = git_status_options()
+    let tree = baseCommit?.tree as? GitTree
+
+    git_status_init_options(&options, UInt32(GIT_STATUS_OPTIONS_VERSION))
+    options.show = GIT_STATUS_SHOW_INDEX_AND_WORKDIR
+    options.flags = GIT_STATUS_OPT_INCLUDE_IGNORED.rawValue |
+                    GIT_STATUS_OPT_RECURSE_IGNORED_DIRS.rawValue |
+                    GIT_STATUS_OPT_INCLUDE_UNTRACKED.rawValue |
+                    GIT_STATUS_OPT_RECURSE_UNTRACKED_DIRS.rawValue |
+                    GIT_STATUS_OPT_INCLUDE_UNMODIFIED.rawValue |
+                    GIT_STATUS_OPT_DISABLE_PATHSPEC_MATCH.rawValue
+    options.head_tree = tree?.tree
+    options.pathspec.count = 1
+    
+    var data = CallbackData(path: path, status: git_status_t(rawValue: 0))
+    let callback: git_status_cb = {
+      (path, status, data) in
+      guard let callbackData = data?.assumingMemoryBound(to: CallbackData.self),
+            let pathString = path.flatMap({ String(cString: $0) })
+      else { return 0 }
+      
+      if pathString == callbackData.pointee.path {
+        callbackData.pointee.status = git_status_t(rawValue: status)
+      }
+      return 0
+    }
+    var result: Int32 = 0
+    
+    withArrayOfCStrings([path]) {
+      (paths: [UnsafeMutablePointer<CChar>?]) in
+      let array = UnsafeMutablePointer<
+                      UnsafeMutablePointer<Int8>?>(mutating: paths)
+      options.pathspec.strings = array
+      result = git_status_foreach_ext(gtRepo.git_repository(), &options,
+                                      callback, &data)
+    }
+    guard result == 0
+    else { return nil }
+    
+    return WorkspaceFileStatus(
+        change: DeltaStatus(indexStatus: data.status),
+        unstagedChange: DeltaStatus(worktreeStatus: data.status))
+  }
+  
   func amendingStatus(for path: String) throws -> WorkspaceFileStatus
   {
     guard let headCommit = headSHA.flatMap({ self.commit(forSHA: $0) }),
