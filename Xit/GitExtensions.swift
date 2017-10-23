@@ -34,6 +34,17 @@ extension git_merge_options
   }
 }
 
+extension git_status_options
+{
+  static func defaultOptions() -> git_status_options
+  {
+    var options = git_status_options()
+    
+    git_status_init_options(&options, UInt32(GIT_STATUS_OPTIONS_VERSION))
+    return options
+  }
+}
+
 extension Array where Element == String
 {
   init(gitStrArray: git_strarray)

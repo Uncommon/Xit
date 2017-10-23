@@ -58,7 +58,7 @@ extension XTRepository: FileStaging
     return result
   }
   
-  // Returns the changes for the given commit.
+  /// Returns the changes for the given commit.
   public func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
   {
     guard sha != XTStagingSHA
@@ -108,7 +108,7 @@ extension XTRepository: FileStaging
         unstagedChange: DeltaStatus(worktreeStatus: flags))
   }
   
-  // Re-implementation of git_status_file
+  // Re-implementation of git_status_file with a given head commit
   func fileStatus(_ path: String, baseCommit: Commit?) -> WorkspaceFileStatus?
   {
     struct CallbackData
@@ -117,10 +117,9 @@ extension XTRepository: FileStaging
       var status: git_status_t
     }
     
-    var options = git_status_options()
+    var options = git_status_options.defaultOptions()
     let tree = baseCommit?.tree as? GitTree
 
-    git_status_init_options(&options, UInt32(GIT_STATUS_OPTIONS_VERSION))
     options.show = GIT_STATUS_SHOW_INDEX_AND_WORKDIR
     options.flags = GIT_STATUS_OPT_INCLUDE_IGNORED.rawValue |
                     GIT_STATUS_OPT_RECURSE_IGNORED_DIRS.rawValue |
@@ -140,20 +139,21 @@ extension XTRepository: FileStaging
       
       if pathString == callbackData.pointee.path {
         callbackData.pointee.status = git_status_t(rawValue: status)
+        return GIT_EUSER.rawValue
       }
       return 0
     }
-    var result: Int32 = 0
     
-    withArrayOfCStrings([path]) {
-      (paths: [UnsafeMutablePointer<CChar>?]) in
+    let result = withArrayOfCStrings([path]) {
+      (paths: [UnsafeMutablePointer<CChar>?]) -> Int32 in
       let array = UnsafeMutablePointer<
                       UnsafeMutablePointer<Int8>?>(mutating: paths)
+      
       options.pathspec.strings = array
-      result = git_status_foreach_ext(gtRepo.git_repository(), &options,
-                                      callback, &data)
+      return git_status_foreach_ext(gtRepo.git_repository(), &options,
+                                    callback, &data)
     }
-    guard result == 0
+    guard result == 0 || result == GIT_EUSER.rawValue
     else { return nil }
     
     return WorkspaceFileStatus(
@@ -166,22 +166,13 @@ extension XTRepository: FileStaging
     guard let headCommit = headSHA.flatMap({ self.commit(forSHA: $0) }),
           let previousCommit = headCommit.parentOIDs.first
                                          .flatMap({ self.commit(forOID: $0) }),
-          let tree = previousCommit.tree as? GitTree
+          let status = fileStatus(path, baseCommit: previousCommit)
     else {
       return WorkspaceFileStatus(change: .unmodified,
                                  unstagedChange: .unmodified)
     }
-    let flagsInt = UnsafeMutablePointer<UInt32>.allocate(capacity: 1)
-    let result = git_status_file_at(flagsInt, gtRepo.git_repository(), path,
-                                    tree.tree)
     
-    try Error.throwIfError(result)
-    
-    let flags = git_status_t(rawValue: flagsInt.pointee)
-    
-    return WorkspaceFileStatus(
-        change: DeltaStatus(indexStatus: flags),
-        unstagedChange: DeltaStatus(worktreeStatus: flags))
+    return status
   }
 
   /// Stages the given file to the index.
