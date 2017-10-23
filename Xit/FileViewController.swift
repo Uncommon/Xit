@@ -30,6 +30,34 @@ protocol ContextVariable: class
   var contextLines: UInt { get set }
 }
 
+enum Wrapping
+{
+  case windowWidth
+  case columns(Int)
+  case none
+}
+
+extension Wrapping: Equatable
+{
+  public static func ==(a: Wrapping, b: Wrapping) -> Bool
+  {
+    switch (a, b) {
+      case (.windowWidth, .windowWidth),
+           (.none, .none):
+        return true
+      case (.columns(let c1), .columns(let c2)):
+        return c1 == c2
+      default:
+        return false
+    }
+  }
+}
+
+protocol WrappingVariable: class
+{
+  var wrapping: Wrapping { get set }
+}
+
 extension DeltaStatus
 {
   var changeImage: NSImage?
@@ -578,6 +606,13 @@ class FileViewController: NSViewController
     else { return }
     
     contextController.contextLines = context
+  }
+  
+  func setWrapping(_ wrapping: Wrapping)
+  {
+    if let wrappingController = contentController as? WrappingVariable {
+      wrappingController.wrapping = wrapping
+    }
   }
   
   func updateStagingSegment()
