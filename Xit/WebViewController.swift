@@ -87,10 +87,51 @@ extension WebViewController: TabWidthVariable
     set
     {
       guard let style = webView?.mainFrameDocument.body.style
-        else { return }
+      else { return }
       
       style.setProperty("tab-size", value: "\(newValue)", priority: "important")
       savedTabWidth = newValue
+    }
+  }
+}
+
+extension Wrapping
+{
+  var cssValue: String
+  {
+    switch self {
+      case .none: return "pre"
+      default: return "pre-wrap"
+    }
+  }
+}
+
+extension WebViewController: WrappingVariable
+{
+  public var wrapping: Wrapping
+  {
+    get
+    {
+      guard let style = webView?.mainFrameDocument.body.style,
+            let wrapping = style.getPropertyValue("--wrapping")
+      else { return .none }
+      
+      switch wrapping {
+        case "pre":
+          return .none
+        case "pre-wrap":
+          return .windowWidth
+        default:
+          return .windowWidth
+      }
+    }
+    set
+    {
+      guard let style = webView?.mainFrameDocument.body.style
+      else { return }
+      
+      style.setProperty("--wrapping", value: "\(newValue.cssValue)",
+                        priority: "important")
     }
   }
 }

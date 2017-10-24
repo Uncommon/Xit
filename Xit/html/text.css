@@ -3,6 +3,7 @@ body {
   margin: 0px;
   counter-reset: line;
   tab-size: 4;
+  --wrapping: pre-wrap;
 }
 div.page {
   background-color: #EEE;
@@ -73,7 +74,8 @@ span.hunkbutton:active {
 }
 span.old, span.new {
   position: relative;
-  width: 25px;
+  min-width: 25px;
+  max-width: 25px;
   font-size: 0.75em;
   text-align: right;
   padding-top: 2px;
@@ -84,12 +86,15 @@ span.old, span.new {
 }
 [line]::after {
   content: attr(line);
+  white-space: pre;
 }
 span.new {
   margin-right: 2px;
 }
 span.text {
   padding-left: 3px;
+  width: 100%;
+  white-space: var(--wrapping, pre);
 }
 div.add {
   background-color: #DFD;

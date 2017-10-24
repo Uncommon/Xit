@@ -35,11 +35,25 @@ enum Wrapping
   case windowWidth
   case columns(Int)
   case none
+  
+  init?(rawValue: Int)
+  {
+    switch rawValue {
+      case 0:
+        self = .windowWidth
+      case -1:
+        self = .none
+      case 1...:
+        self = .columns(rawValue)
+      default:
+        return nil
+    }
+  }
 }
 
 extension Wrapping: Equatable
 {
-  public static func ==(a: Wrapping, b: Wrapping) -> Bool
+  public static func == (a: Wrapping, b: Wrapping) -> Bool
   {
     switch (a, b) {
       case (.windowWidth, .windowWidth),

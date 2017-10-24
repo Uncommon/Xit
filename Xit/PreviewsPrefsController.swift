@@ -48,6 +48,7 @@ class PreviewsPrefsController: NSViewController
     static let contextLines = "contextLines"
     static let fontName = "fontName"
     static let fontSize = "fontSize"
+    static let wrapping = "wrapping"
   }
   
   struct Values
@@ -118,6 +119,15 @@ class PreviewsPrefsController: NSViewController
       else {
         return Initial.contextLines
       }
+    }
+    
+    /// Default or user-selected text wrapping option
+    static func wrapping() -> Wrapping
+    {
+      let defaults = UserDefaults.standard
+      let wrapSetting = defaults.integer(forKey: PreferenceKeys.wrapping)
+      
+      return Wrapping(rawValue: wrapSetting) ?? .windowWidth
     }
   }
 
