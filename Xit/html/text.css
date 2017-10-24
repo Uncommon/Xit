@@ -4,6 +4,7 @@ body {
   counter-reset: line;
   tab-size: 4;
   --wrapping: pre-wrap;
+  --wrapwidth: 100%;
 }
 div.page {
   background-color: #EEE;
@@ -31,7 +32,7 @@ div.page div:before {
 
 div.hunk {
   display: table;
-  width: 100%;
+  width: var(--wrapwidth, 100%);
   margin-bottom: 1em;
   background-color: white;
   box-shadow: 0 3px 5px 0 lightgray;
@@ -74,8 +75,9 @@ span.hunkbutton:active {
 }
 span.old, span.new {
   position: relative;
-  min-width: 25px;
-  max-width: 25px;
+  min-width: 6ch;
+  max-width: 6ch;
+  width: 6ch;
   font-size: 0.75em;
   text-align: right;
   padding-top: 2px;

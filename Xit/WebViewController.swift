@@ -10,6 +10,7 @@ class WebViewController: NSViewController
 {
   @IBOutlet weak var webView: WebView!
   var savedTabWidth: UInt?
+  var savedWrapping: Wrapping?
   var fontObserver: NSObjectProtocol?
   
   struct Default
@@ -69,6 +70,11 @@ class WebViewController: NSViewController
     
     tabWidth = (defaultWidth == 0) ? Default.tabWidth : defaultWidth
   }
+  
+  func setDefaultWrapping()
+  {
+    
+  }
 }
 
 extension WebViewController: TabWidthVariable
@@ -112,26 +118,24 @@ extension WebViewController: WrappingVariable
   {
     get
     {
-      guard let style = webView?.mainFrameDocument.body.style,
-            let wrapping = style.getPropertyValue("--wrapping")
-      else { return .none }
-      
-      switch wrapping {
-        case "pre":
-          return .none
-        case "pre-wrap":
-          return .windowWidth
-        default:
-          return .windowWidth
-      }
+      return savedWrapping ?? .windowWidth
     }
     set
     {
       guard let style = webView?.mainFrameDocument.body.style
       else { return }
+      var wrapWidth = "100%"
       
       style.setProperty("--wrapping", value: "\(newValue.cssValue)",
                         priority: "important")
+      switch newValue {
+        case .columns(let columns):
+          wrapWidth = "\(columns+10)ch"
+        default:
+          break
+      }
+      style.setProperty("--wrapwidth", value: wrapWidth, priority: "important")
+      savedWrapping = newValue
     }
   }
 }
@@ -158,6 +162,12 @@ extension WebViewController: WebFrameLoadDelegate
     }
     else {
       setDefaultTabWidth()
+    }
+    if let savedWrapping = self.savedWrapping {
+      wrapping = savedWrapping
+    }
+    else {
+      setDefaultWrapping()
     }
     updateFont()
   }
