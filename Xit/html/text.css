@@ -9,6 +9,7 @@ body {
 div.page {
   background-color: #EEE;
   border-bottom: #888 1px;
+  width: var(--wrapwidth, 100%);
 }
 div.page div {
   background-color: white;
@@ -16,7 +17,7 @@ div.page div {
   min-height: 1em;
   padding-left: 1ex;
   border-left: 1px gray solid;
-  white-space: pre-wrap;
+  white-space: var(--wrapping, pre);
 }
 div.page div:before {
   content: counter(line);

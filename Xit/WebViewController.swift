@@ -70,6 +70,8 @@ class WebViewController: NSViewController
     
     tabWidth = (defaultWidth == 0) ? Default.tabWidth : defaultWidth
   }
+  
+  func wrappingWidthAdjustment() -> Int { return 0 }
 }
 
 extension WebViewController: TabWidthVariable
@@ -125,7 +127,7 @@ extension WebViewController: WrappingVariable
                         priority: "important")
       switch newValue {
         case .columns(let columns):
-          wrapWidth = "\(columns+10)ch"
+          wrapWidth = "\(columns+wrappingWidthAdjustment())ch"
         default:
           break
       }
