@@ -70,11 +70,6 @@ class WebViewController: NSViewController
     
     tabWidth = (defaultWidth == 0) ? Default.tabWidth : defaultWidth
   }
-  
-  func setDefaultWrapping()
-  {
-    
-  }
 }
 
 extension WebViewController: TabWidthVariable
@@ -163,12 +158,7 @@ extension WebViewController: WebFrameLoadDelegate
     else {
       setDefaultTabWidth()
     }
-    if let savedWrapping = self.savedWrapping {
-      wrapping = savedWrapping
-    }
-    else {
-      setDefaultWrapping()
-    }
+    wrapping = savedWrapping ?? PreviewsPrefsController.Default.wrapping()
     updateFont()
   }
 }

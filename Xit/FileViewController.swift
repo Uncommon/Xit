@@ -36,6 +36,18 @@ enum Wrapping
   case columns(Int)
   case none
   
+  var rawValue: Int
+  {
+    switch self {
+      case .windowWidth:
+        return 0
+      case .columns(let count):
+        return count
+      case .none:
+        return -1
+    }
+  }
+  
   init?(rawValue: Int)
   {
     switch rawValue {
