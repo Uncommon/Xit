@@ -54,7 +54,7 @@ extension XTSidebarController
   @IBAction func mergeBranch(_ sender: Any?)
   {
     guard let selectedItem = targetItem() as? XTBranchItem,
-          let branch = XTBranch(name: selectedItem.title, repository: repo)
+          let branch = selectedItem.branchObject()
     else { return }
     
     repo.queue.executeOffMainThread {

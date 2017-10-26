@@ -68,16 +68,6 @@ public class XTBranch: Branch
     self.gtBranch = gtBranch
   }
   
-  convenience init?(name: String, repository: XTRepository)
-  {
-    do {
-      self.init(gtBranch: try repository.gtRepo.currentBranch())
-    }
-    catch {
-      return nil
-    }
-  }
-  
   public var name: String { return gtBranch.name ?? "" }
   public var oid: OID?
   {

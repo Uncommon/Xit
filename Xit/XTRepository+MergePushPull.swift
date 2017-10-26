@@ -297,8 +297,8 @@ extension XTRepository
       try mergePreCheck()
       
       guard let currentBranchName = currentBranch,
-            let targetBranch = XTLocalBranch(name: currentBranchName,
-                                             repository: self)
+            let targetBranch = XTLocalBranch(repository: self,
+                                             name: currentBranchName)
       else { throw Error.detachedHead }
       guard let targetCommit = targetBranch.targetCommit,
             let remoteCommit = branch.targetCommit
