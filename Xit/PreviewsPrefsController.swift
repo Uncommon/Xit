@@ -19,6 +19,7 @@ class PreviewsPrefsController: NSViewController
   @IBOutlet weak var whitespacePopup: NSPopUpButton!
   @IBOutlet weak var tabPopup: NSPopUpButton!
   @IBOutlet weak var contextPopup: NSPopUpButton!
+  @IBOutlet weak var wrappingPopup: NSPopUpButton!
   @IBOutlet weak var fontField: NSTextField!
   
   var textFont: NSFont?
@@ -48,6 +49,7 @@ class PreviewsPrefsController: NSViewController
     static let contextLines = "contextLines"
     static let fontName = "fontName"
     static let fontSize = "fontSize"
+    static let wrapping = "wrapping"
   }
   
   struct Values
@@ -119,6 +121,15 @@ class PreviewsPrefsController: NSViewController
         return Initial.contextLines
       }
     }
+    
+    /// Default or user-selected text wrapping option
+    static func wrapping() -> Wrapping
+    {
+      let defaults = UserDefaults.standard
+      let wrapSetting = defaults.integer(forKey: PreferenceKeys.wrapping)
+      
+      return Wrapping(rawValue: wrapSetting) ?? .windowWidth
+    }
   }
 
   override func viewDidLoad()
@@ -141,6 +152,17 @@ class PreviewsPrefsController: NSViewController
     contextPopup.selectItem(at: contextIndex)
     
     textFont = Default.font()
+    
+    let wrapping = Default.wrapping()
+    
+    switch wrapping {
+      case .windowWidth:
+        wrappingPopup.selectItem(at: 0)
+      case .columns:
+        wrappingPopup.selectItem(at: 1)
+      case .none:
+        wrappingPopup.selectItem(at: 2)
+    }
   }
   
   override func viewDidDisappear()
@@ -169,7 +191,8 @@ class PreviewsPrefsController: NSViewController
   // so there's pretty much no way to compile this until the deployment version
   // is updated to 10.13.
   /*
-  override func validModesForFontPanel(_ fontPanel: NSFontPanel) -> NSFontPanel.ModeMask
+  override func validModesForFontPanel(_ fontPanel: NSFontPanel)
+      -> NSFontPanel.ModeMask
   {
     return [.face, .size, .collection]
   }
@@ -186,11 +209,25 @@ class PreviewsPrefsController: NSViewController
 
 extension PreviewsPrefsController: NSWindowDelegate
 {
-  // Just needs the protocol to be able to set the font panel delegate.
+  // It just needs the protocol to be able to set the font panel delegate.
 }
 
 extension PreviewsPrefsController: PreferencesSaver
 {
+  func wrappingValue() -> Int
+  {
+    switch wrappingPopup.indexOfSelectedItem {
+      case 0:
+        return 0
+      case 1:
+        return 80
+      case 2:
+        return -1
+      default:
+        return 0
+    }
+  }
+  
   func savePreferences()
   {
     let defaults = UserDefaults.standard
@@ -204,6 +241,8 @@ extension PreviewsPrefsController: PreferencesSaver
                  forKey: PreferenceKeys.tabWidth)
     defaults.set(Values.context[contextIndex],
                  forKey: PreferenceKeys.contextLines)
+    defaults.set(wrappingValue(),
+                 forKey: PreferenceKeys.wrapping)
     
     saveFont()
   }

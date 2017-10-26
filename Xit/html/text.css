@@ -3,10 +3,13 @@ body {
   margin: 0px;
   counter-reset: line;
   tab-size: 4;
+  --wrapping: pre-wrap;
+  --wrapwidth: 100%;
 }
 div.page {
   background-color: #EEE;
   border-bottom: #888 1px;
+  width: var(--wrapwidth, 100%);
 }
 div.page div {
   background-color: white;
@@ -14,7 +17,7 @@ div.page div {
   min-height: 1em;
   padding-left: 1ex;
   border-left: 1px gray solid;
-  white-space: pre-wrap;
+  white-space: var(--wrapping, pre);
 }
 div.page div:before {
   content: counter(line);
@@ -30,7 +33,7 @@ div.page div:before {
 
 div.hunk {
   display: table;
-  width: 100%;
+  width: var(--wrapwidth, 100%);
   margin-bottom: 1em;
   background-color: white;
   box-shadow: 0 3px 5px 0 lightgray;
@@ -73,7 +76,9 @@ span.hunkbutton:active {
 }
 span.old, span.new {
   position: relative;
-  width: 25px;
+  min-width: 6ch;
+  max-width: 6ch;
+  width: 6ch;
   font-size: 0.75em;
   text-align: right;
   padding-top: 2px;
@@ -84,12 +89,15 @@ span.old, span.new {
 }
 [line]::after {
   content: attr(line);
+  white-space: pre;
 }
 span.new {
   margin-right: 2px;
 }
 span.text {
   padding-left: 3px;
+  width: 100%;
+  white-space: var(--wrapping, pre);
 }
 div.add {
   background-color: #DFD;

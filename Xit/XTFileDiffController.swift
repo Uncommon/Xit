@@ -45,6 +45,11 @@ class XTFileDiffController: WebViewController,
   {
     actionDelegate.controller = self
   }
+  
+  override func wrappingWidthAdjustment() -> Int
+  {
+    return 12
+  }
 
   private func configureDiffMaker()
   {

@@ -3,6 +3,11 @@ import Foundation
 class XTTextPreviewController: WebViewController
 {
   var isLoaded: Bool = false
+  
+  override func wrappingWidthAdjustment() -> Int
+  {
+    return 6
+  }
 
   func minString(_ string: String) -> String
   {

@@ -54,7 +54,14 @@ extension FileViewController: NSUserInterfaceValidations
         return validateContextLinesMenuItem(item, context: 12)
       case #selector(self.context25(_:)):
         return validateContextLinesMenuItem(item, context: 25)
-        
+      
+      case #selector(self.wrapToWidth(_:)):
+        return validateWrappingMenuItem(item, wrapping: .windowWidth)
+      case #selector(self.wrapTo80(_:)):
+        return validateWrappingMenuItem(item, wrapping: .columns(80))
+      case #selector(self.noWrapping(_:)):
+        return validateWrappingMenuItem(item, wrapping: .none)
+      
       default:
         return true
     }
@@ -101,6 +108,19 @@ extension FileViewController
     }
     
     menuItem?.state = (contextController.contextLines == context) ? .on : .off
+    return true
+  }
+  
+  func validateWrappingMenuItem(_ item: AnyObject, wrapping: Wrapping) -> Bool
+  {
+    let menuItem = item as? NSMenuItem
+    guard let wrappingController = contentController as? WrappingVariable
+    else {
+      menuItem?.state = .off
+      return false
+    }
+    
+    menuItem?.state = (wrappingController.wrapping == wrapping) ? .on : .off
     return true
   }
 }
@@ -276,5 +296,20 @@ extension FileViewController
   @IBAction func context25(_ sender: Any?)
   {
     setContext(25)
+  }
+  
+  @IBAction func wrapToWidth(_ sender: Any?)
+  {
+    setWrapping(.windowWidth)
+  }
+  
+  @IBAction func wrapTo80(_ sender: Any?)
+  {
+    setWrapping(.columns(80))
+  }
+  
+  @IBAction func noWrapping(_ sender: Any?)
+  {
+    setWrapping(.none)
   }
 }

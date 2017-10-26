@@ -33,10 +33,10 @@ class Mutex
     pthread_mutex_unlock(&mutex)
   }
   
-  func withLock(_ callback: () throws -> Void) rethrows
+  func withLock<T>(_ callback: () throws -> T) rethrows -> T
   {
     lock()
     defer { unlock() }
-    try callback()
+    return try callback()
   }
 }
