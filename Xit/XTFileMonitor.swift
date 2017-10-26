@@ -14,7 +14,7 @@ class XTFileMonitor
     self.path = path
     
     makeSource()
-    if self.source == nil {
+    if sourceMutex.withLock({ self.source }) == nil {
       return nil
     }
   }
