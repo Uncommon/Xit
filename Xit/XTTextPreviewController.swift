@@ -18,7 +18,7 @@ class XTTextPreviewController: WebViewController
   {
     let text = text ?? ""
     let lines = text.components(separatedBy: .newlines).map {
-      "<div>\(minString(WebViewController.escape(text: $0)))</div>"
+      "<div>\(minString($0.xmlEscaped))</div>"
     }
     let textLines = lines.joined(separator: "\n")
     let htmlTemplate = WebViewController.htmlTemplate("text")

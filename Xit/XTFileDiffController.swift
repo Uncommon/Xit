@@ -58,14 +58,14 @@ class XTFileDiffController: WebViewController,
     reloadDiff()
   }
 
-  static func append(diffLine text: String,
-                     to lines: inout String,
-                     oldLine: Int32,
-                     newLine: Int32)
+  static func hunkLine(diffLine text: String,
+                          oldLine: Int32,
+                          newLine: Int32) -> String
   {
     var className = "pln"
     var oldLineText = ""
     var newLineText = ""
+    let escaped = text.xmlEscaped
     
     if oldLine == -1 {
       className = "add"
@@ -79,11 +79,13 @@ class XTFileDiffController: WebViewController,
     else {
       newLineText = "\(newLine)"
     }
-    lines += "<div class=\(className)>" +
-             "<span class='old' line='\(oldLineText)'></span>" +
-             "<span class='new' line='\(newLineText)'></span>" +
-             "<span class='text'>\(WebViewController.escape(text: text))</span>" +
-             "</div>\n"
+    return """
+        <div class=\(className)>\
+        <span class='old' line='\(oldLineText)'></span>\
+        <span class='new' line='\(newLineText)'></span>\
+        <span class='text'>\(escaped)</span>\
+        </div>
+        """
   }
   
   func button(title: String, action: String, index: Int) -> String
@@ -134,7 +136,7 @@ class XTFileDiffController: WebViewController,
       return
     }
     let htmlTemplate = WebViewController.htmlTemplate("diff")
-    var textLines = ""
+    var textLines = [String]()
     
     self.patch = patch
     
@@ -167,19 +169,24 @@ class XTFileDiffController: WebViewController,
       guard let hunk = patch.hunk(at: index)
       else { continue }
       
-      textLines += hunkHeader(hunk: hunk, index: index, lines: lines)
-      textLines += "<div class='hunk'>\n"
+      textLines.append(hunkHeader(hunk: hunk, index: index, lines: lines))
+      textLines.append("<div class='hunk'>")
       hunk.enumerateLines {
         (line) in
-        XTFileDiffController.append(diffLine: line.text,
-                                    to: &textLines,
-                                    oldLine: line.oldLine,
-                                    newLine: line.newLine)
+        textLines.append(XTFileDiffController.hunkLine(diffLine: line.text,
+                                                       oldLine: line.oldLine,
+                                                       newLine: line.newLine))
       }
-      textLines += "</div>\n"
+      textLines.append("</div>")
     }
     
-    let html = String(format: htmlTemplate, textLines)
+    let joined = textLines.joined(separator: "\n")
+    let html = htmlTemplate.replacingOccurrences(of: "%@", with: joined)
+    
+    let pb = NSPasteboard.general
+    
+    pb.clearContents()
+    pb.setString(html, forType: .string)
     
     webView?.mainFrame.loadHTMLString(html, baseURL: WebViewController.baseURL)
     isLoaded = true

@@ -30,13 +30,6 @@ class WebViewController: NSViewController
     return (try? String(contentsOf: htmlURL)) ?? ""
   }
   
-  static func escape(text: String) -> String
-  {
-    return CFXMLCreateStringByEscapingEntities(kCFAllocatorDefault,
-                                               text as CFString,
-                                               [:] as CFDictionary) as String
-  }
-  
   override func awakeFromNib()
   {
     fontObserver = NotificationCenter.default.addObserver(
@@ -58,7 +51,7 @@ class WebViewController: NSViewController
   public func loadNotice(_ text: String)
   {
     let template = WebViewController.htmlTemplate("notice")
-    let escapedText = WebViewController.escape(text: text)
+    let escapedText = text.xmlEscaped
     let html = String(format: template, escapedText)
     
     webView?.mainFrame.loadHTMLString(html, baseURL: WebViewController.baseURL)

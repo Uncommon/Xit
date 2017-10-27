@@ -200,6 +200,13 @@ extension String
     }
     return .unknown
   }
+  
+  var xmlEscaped: String
+  {
+    return CFXMLCreateStringByEscapingEntities(kCFAllocatorDefault,
+                                               self as CFString,
+                                               [:] as CFDictionary) as String
+  }
 }
 
 extension NSTableView

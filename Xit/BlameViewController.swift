@@ -134,8 +134,7 @@ class BlameViewController: WebViewController
       let hunkLines = lines[start..<end]
       
       htmlLines.append(contentsOf: hunkLines.map({
-          "<div class='line'>" +
-          "\(WebViewController.escape(text: $0))</div>" }))
+          "<div class='line'>\($0.xmlEscaped)</div>" }))
       htmlLines.append("</td></tr>")
     }
     

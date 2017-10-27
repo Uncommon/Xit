@@ -14,9 +14,14 @@ class GitPatch: Patch
 {
   let patch: OpaquePointer // git_patch
   
+  // Data buffers need to be kept because the patch references them
+  let oldData, newData: Data?
+  
   init(gitPatch: OpaquePointer)
   {
     self.patch = gitPatch
+    self.oldData = nil
+    self.newData = nil
   }
   
   init?(oldBlob: Blob, newBlob: Blob, options: DiffOptions? = nil)
@@ -34,6 +39,8 @@ class GitPatch: Patch
     else { return nil }
     
     self.patch = finalPatch
+    self.oldData = nil
+    self.newData = nil
   }
   
   init?(oldBlob: Blob, newData: Data, options: DiffOptions? = nil)
@@ -55,6 +62,8 @@ class GitPatch: Patch
     else { return nil }
     
     self.patch = finalPatch
+    self.oldData = nil
+    self.newData = newData
   }
   
   init?(oldData: Data, newData: Data, options: DiffOptions? = nil)
@@ -78,6 +87,8 @@ class GitPatch: Patch
     else { return nil }
     
     self.patch = finalPatch
+    self.oldData = oldData
+    self.newData = newData
   }
   
   var hunkCount: Int { return git_patch_num_hunks(patch) }
