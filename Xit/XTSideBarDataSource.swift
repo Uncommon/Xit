@@ -150,14 +150,19 @@ class XTSideBarDataSource: NSObject
   func reload()
   {
     repository?.queue.executeOffMainThread {
-      let newRoots = self.loadRoots()
+      [weak self] in
+      guard let newRoots = self?.loadRoots()
+      else { return }
       
       DispatchQueue.main.async {
-        self.roots = newRoots
-        self.outline.reloadData()
-        self.outline.expandItem(nil, expandChildren: true)
-        if self.outline.selectedRow == -1 {
-          self.selectCurrentBranch()
+        guard let myself = self
+        else { return }
+        
+        myself.roots = newRoots
+        myself.outline.reloadData()
+        myself.outline.expandItem(nil, expandChildren: true)
+        if myself.outline.selectedRow == -1 {
+          myself.selectCurrentBranch()
         }
       }
     }
@@ -173,7 +178,7 @@ class XTSideBarDataSource: NSObject
   
   func loadRoots() -> [XTSideBarGroupItem]
   {
-    guard let repo = self.repository
+    guard let repo = repository
     else { return [] }
     
     let newRoots = XTSideBarDataSource.makeRoots(stagingItem)
@@ -236,7 +241,8 @@ class XTSideBarDataSource: NSObject
     
     repo.rebuildRefsIndex()
     DispatchQueue.main.async {
-      self.buildStatusCache.refresh()
+      [weak self] in
+      self?.buildStatusCache.refresh()
     }
     return newRoots
   }
@@ -280,7 +286,7 @@ class XTSideBarDataSource: NSObject
   {
     for item in parent.children {
       if item.current {
-        self.selectedItem = item
+        selectedItem = item
         return true
       }
       if selectCurrentBranch(in: item) {

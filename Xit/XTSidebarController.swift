@@ -1,7 +1,7 @@
 import Cocoa
 
 // Command handling extracted for testability
-protocol SidebarHandler
+protocol SidebarHandler: class
 {
   var repo: XTRepository! { get }
   var window: NSWindow? { get }
@@ -115,33 +115,33 @@ extension SidebarHandler
   func popStash()
   {
     callCommand(errorString: "Pop stash failed") {
-      (item) in
-      guard let index = self.stashIndex(for: item)
+      [weak self] (item) in
+      guard let index = self?.stashIndex(for: item)
       else { return }
       
-      try self.repo.popStash(index: index)
+      try self?.repo.popStash(index: index)
     }
   }
   
   func applyStash()
   {
     callCommand(errorString: "Apply stash failed") {
-      (item) in
-      guard let index = self.stashIndex(for: item)
+      [weak self] (item) in
+      guard let index = self?.stashIndex(for: item)
       else { return }
       
-      try self.repo.applyStash(index: index)
+      try self?.repo.applyStash(index: index)
     }
   }
   
   func dropStash()
   {
     callCommand(errorString: "Drop stash failed") {
-      (item) in
-      guard let index = self.stashIndex(for: item)
+      [weak self] (item) in
+      guard let index = self?.stashIndex(for: item)
       else { return }
       
-      try self.repo.dropStash(index: index)
+      try self?.repo.dropStash(index: index)
     }
   }
 }
@@ -347,8 +347,8 @@ class XTSidebarController: NSViewController, SidebarHandler
   {
     confirmDelete(kind: "branch", name: item.title) {
       self.callCommand(errorString: "Delete branch failed", targetItem: item) {
-        (item) in
-        _ = self.repo.deleteBranch(item.title)
+        [weak self] (item) in
+        _ = self?.repo.deleteBranch(item.title)
       }
     }
   }

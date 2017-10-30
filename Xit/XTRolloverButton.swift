@@ -29,21 +29,21 @@ class XTRolloverButton: NSButton
   override func awakeFromNib()
   {
     let tracking = NSTrackingArea(
-        rect: self.bounds,
+        rect: bounds,
         options: [NSTrackingArea.Options.mouseEnteredAndExited,
                   NSTrackingArea.Options.activeInActiveApp,
                   NSTrackingArea.Options.assumeInside],
         owner: self, userInfo: nil)
     
-    self.addTrackingArea(tracking)
+    addTrackingArea(tracking)
   }
 
   override func mouseEntered(with theEvent: NSEvent)
   {
-    if self.rolloverActive {
-      self.normalImage = self.image
-      super.image = self.rolloverImage  // Skip my override
-      self.setNeedsDisplay()
+    if rolloverActive {
+      normalImage = image
+      super.image = rolloverImage  // Skip my override
+      setNeedsDisplay()
     }
   }
   
@@ -51,7 +51,7 @@ class XTRolloverButton: NSButton
   {
     if let normalImage = self.normalImage {
       super.image = normalImage
-      self.setNeedsDisplay()
+      setNeedsDisplay()
     }
   }
 }

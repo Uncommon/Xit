@@ -97,8 +97,8 @@ class XTLocalBranchItem: XTBranchItem
   override var refType: XTRefType { return .branch }
   override var current: Bool
   {
-    if let currentBranch = self.model!.repository.currentBranch {
-      return currentBranch == self.title
+    if let currentBranch = model!.repository.currentBranch {
+      return currentBranch == title
     }
     return false
   }

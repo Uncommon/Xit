@@ -47,6 +47,6 @@ class SidebarCheckedRowView: NSTableRowView
                                       multiplier: 1.0, constant: 0)
  
     imageView.image = check
-    self.addConstraints([hSpacer, vertical])
+    addConstraints([hSpacer, vertical])
   }
 }

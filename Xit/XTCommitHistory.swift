@@ -87,7 +87,7 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
   typealias Connection = CommitConnection<ID>
   typealias Result = BranchResult
 
-  var repository: CommitStorage!
+  weak var repository: CommitStorage!
   
   var commitLookup = [ID: Entry]()
   var entries = [Entry]()
@@ -166,7 +166,7 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
     var startCommit = startCommit
     
     repeat {
-      var result = self.branchEntries(startCommit: startCommit)
+      var result = branchEntries(startCommit: startCommit)
       
       defer { results.append(result) }
       if let nextOID = result.entries.last?.commit.parentOIDs.first as? ID,

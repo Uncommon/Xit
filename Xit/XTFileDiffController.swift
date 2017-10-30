@@ -59,8 +59,8 @@ class XTFileDiffController: WebViewController,
   }
 
   static func hunkLine(diffLine text: String,
-                          oldLine: Int32,
-                          newLine: Int32) -> String
+                       oldLine: Int32,
+                       newLine: Int32) -> String
   {
     var className = "pln"
     var oldLineText = ""

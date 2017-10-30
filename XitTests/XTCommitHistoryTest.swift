@@ -93,6 +93,8 @@ typealias TestCommitHistory = XTCommitHistory<StringOID>
 class XTCommitHistoryTest: XCTestCase
 {
   typealias StringConnection = CommitConnection<StringOID>
+  
+  var repository: StringRepository? = nil
 
   func makeHistory(_ commitData: [(String, [String])]) -> TestCommitHistory
   {
@@ -102,8 +104,10 @@ class XTCommitHistoryTest: XCTestCase
       return GenericCommit(sha: sha,
                            parentOIDs: parents.map { §$0 })
     })
+    
     // Reverse the input to better test the ordering.
-    let repository = StringRepository(commits: commits.reversed())
+    repository = StringRepository(commits: commits.reversed())
+    
     let history = TestCommitHistory()
     
     history.repository = repository

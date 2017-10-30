@@ -89,13 +89,13 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       self?.updateBranchList()
     }
     windowObserver = window.observe(\.title) {
-      (_, _) in
-      self.updateMiniwindowTitle()
+      [weak self] (_, _) in
+      self?.updateMiniwindowTitle()
     }
     repoObserver = repo.observe(\.currentBranch) {
-      (_, _) in
-      self.titleBarController?.selectedBranch = repo.currentBranch
-      self.updateMiniwindowTitle()
+      [weak self] (_, _) in
+      self?.titleBarController?.selectedBranch = repo.currentBranch
+      self?.updateMiniwindowTitle()
     }
     sidebarController.repo = repo
     historyController.finishLoad(repository: repo)
@@ -137,8 +137,8 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     updateNavControl(titleBarController?.navButtons)
 
     if #available(OSX 10.12.2, *),
-       let item = self.touchBar?.item(forIdentifier:
-                                      NSTouchBarItem.Identifier.navigation) {
+       let item = touchBar?.item(forIdentifier:
+                                 NSTouchBarItem.Identifier.navigation) {
       updateNavControl(item.view as? NSSegmentedControl)
     }
   }
@@ -177,7 +177,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     guard let repo = xtDocument?.repository
     else { return }
     
-    self.titleBarController?.updateBranchList(
+    titleBarController?.updateBranchList(
         repo.localBranches().flatMap { $0.shortName },
         current: repo.currentBranch)
   }

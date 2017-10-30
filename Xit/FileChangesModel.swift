@@ -86,10 +86,10 @@ class CommitChanges: FileChangesModel
   
   func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?
   {
-    return self.repository.diffMaker(forFile: path,
-                                     commitOID: commit.oid,
-                                     parentOID: diffParent ??
-                                                commit.parentOIDs.first)
+    return repository.diffMaker(forFile: path,
+                                commitOID: commit.oid,
+                                parentOID: diffParent ??
+                                           commit.parentOIDs.first)
   }
   
   func blame(for path: String, staged: Bool) -> Blame?
@@ -99,7 +99,7 @@ class CommitChanges: FileChangesModel
   
   func dataForFile(_ path: String, staged: Bool) -> Data?
   {
-    return self.repository.contentsOfFile(path: path, at: commit)
+    return repository.contentsOfFile(path: path, at: commit)
   }
   
   func unstagedFileURL(_ path: String) -> URL? { return nil }
@@ -151,7 +151,7 @@ class StashChanges: FileChangesModel
   var hasUnstaged: Bool { return true }
   var canCommit: Bool { return false }
   var shaToSelect: String? { return stash.mainCommit?.parentSHAs[0] }
-  var changes: [FileChange] { return self.stash.changes() }
+  var changes: [FileChange] { return stash.changes() }
   
   var treeRoot: NSTreeNode {
     guard let mainModel = stash.mainCommit.map({
@@ -192,10 +192,10 @@ class StashChanges: FileChangesModel
   func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?
   {
     if staged {
-      return self.stash.stagedDiffForFile(path)
+      return stash.stagedDiffForFile(path)
     }
     else {
-      return self.stash.unstagedDiffForFile(path)
+      return stash.unstagedDiffForFile(path)
     }
   }
   
@@ -205,7 +205,7 @@ class StashChanges: FileChangesModel
       return stash.indexCommit
     }
     else {
-      if let untrackedCommit = self.stash.untrackedCommit as? XTCommit,
+      if let untrackedCommit = stash.untrackedCommit as? XTCommit,
          untrackedCommit.tree?.entry(path: path) != nil {
         return untrackedCommit
       }
@@ -226,15 +226,14 @@ class StashChanges: FileChangesModel
   func dataForFile(_ path: String, staged: Bool) -> Data?
   {
     if staged {
-      guard let indexCommit = self.stash.indexCommit
+      guard let indexCommit = stash.indexCommit
       else { return nil }
       
-      return self.repository.contentsOfFile(path: path,
-                                            at: indexCommit)
+      return repository.contentsOfFile(path: path, at: indexCommit)
     }
     else {
-      if let untrackedCommit = self.stash.untrackedCommit,
-         let untrackedData = self.repository.contentsOfFile(
+      if let untrackedCommit = stash.untrackedCommit,
+         let untrackedData = repository.contentsOfFile(
               path: path, at: untrackedCommit) {
         return untrackedData
       }
@@ -242,7 +241,7 @@ class StashChanges: FileChangesModel
       guard let commit = stash.mainCommit
       else { return nil }
       
-      return self.repository.contentsOfFile(path: path, at: commit)
+      return repository.contentsOfFile(path: path, at: commit)
     }
   }
 
@@ -283,10 +282,10 @@ class StagingChanges: FileChangesModel
   func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?
   {
     if staged {
-      return self.repository.stagedDiff(file: path)
+      return repository.stagedDiff(file: path)
     }
     else {
-      return self.repository.unstagedDiff(file: path)
+      return repository.unstagedDiff(file: path)
     }
   }
   
@@ -306,10 +305,10 @@ class StagingChanges: FileChangesModel
   func dataForFile(_ path: String, staged: Bool) -> Data?
   {
     if staged {
-      return self.repository.contentsOfStagedFile(path: path)
+      return repository.contentsOfStagedFile(path: path)
     }
     else {
-      let url = self.repository.fileURL(path)
+      let url = repository.fileURL(path)
       
       return try? Data(contentsOf: url)
     }
@@ -317,7 +316,7 @@ class StagingChanges: FileChangesModel
   
   func unstagedFileURL(_ path: String) -> URL?
   {
-    return self.repository.fileURL(path)
+    return repository.fileURL(path)
   }
 }
 

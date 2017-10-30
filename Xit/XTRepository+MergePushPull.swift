@@ -81,7 +81,7 @@ extension XTRepository
     let pruneOption: GTFetchPruneOption = pruneBranches ? .yes : .no
     let pruneValue = NSNumber(value: pruneOption.rawValue as Int)
     let tagValue = NSNumber(value: tagOption.rawValue as UInt32)
-    let provider = self.credentialProvider(passwordBlock)
+    let provider = credentialProvider(passwordBlock)
     
     return [
         GTRepositoryRemoteOptionsDownloadTags: tagValue,

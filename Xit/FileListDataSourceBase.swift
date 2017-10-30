@@ -20,16 +20,14 @@ class FileListDataSourceBase: NSObject
     {
       observers.addObserver(forName: .XTSelectedModelChanged,
                             object: repoController, queue: .main) {
-        [weak self]
-        (_) in
+        [weak self] (_) in
         guard let myself = self,
+              myself.outlineView?.dataSource === myself,
               myself.repoController != nil // Otherwise we're on a stale timer
         else { return }
         
-        if myself.outlineView?.dataSource === myself {
-          (myself as? FileListDataSource)?.reload()
-          myself.updateStagingView()
-        }
+        (myself as? FileListDataSource)?.reload()
+        myself.updateStagingView()
       }
     }
   }

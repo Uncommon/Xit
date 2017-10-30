@@ -36,14 +36,14 @@ extension XTWindowController
   
   @IBAction func verticalLayout(_ sender: AnyObject)
   {
-    self.historyController.mainSplitView.isVertical = true
-    self.historyController.mainSplitView.adjustSubviews()
+    historyController.mainSplitView.isVertical = true
+    historyController.mainSplitView.adjustSubviews()
   }
   
   @IBAction func horizontalLayout(_ sender: AnyObject)
   {
-    self.historyController.mainSplitView.isVertical = false
-    self.historyController.mainSplitView.adjustSubviews()
+    historyController.mainSplitView.isVertical = false
+    historyController.mainSplitView.adjustSubviews()
   }
   
   @IBAction func deemphasizeMerges(_ sender: AnyObject)
