@@ -7,7 +7,7 @@ let XTChangedRefsKey = "changedRefs"
 // Remove inheritance when XTRepository is converted to Swift
 @objc class XTRepositoryWatcher: NSObject
 {
-  unowned let repository: XTRepository
+  weak var repository: XTRepository?
 
   // stream must be var because we have to reference self to initialize it.
   var stream: FileEventStream! = nil
@@ -47,7 +47,12 @@ let XTChangedRefsKey = "changedRefs"
                                        queue: repository.queue.queue,
                                        callback: {
        [weak self] (paths) in
-       self?.observeEvents(paths)
+       // Capture the repository here in case it gets deleted on another thread
+       guard let myself = self,
+             let repository = myself.repository
+       else { return }
+       
+       myself.observeEvents(paths, repository)
     })
     else { return nil }
   
@@ -65,7 +70,7 @@ let XTChangedRefsKey = "changedRefs"
   
   func makePackedRefsWatcher()
   {
-    let path = repository.gitDirectoryURL.path
+    let path = repository!.gitDirectoryURL.path
     
     self.packedRefsWatcher =
         XTFileMonitor(path: path.appending(pathComponent: "packed-refs"))
@@ -77,7 +82,7 @@ let XTChangedRefsKey = "changedRefs"
   
   func makeConfigWatcher()
   {
-    let path = repository.gitDirectoryURL.path
+    let path = repository!.gitDirectoryURL.path
     
     configWatcher = XTFileMonitor(path: path.appending(pathComponent: "config"))
     configWatcher?.notifyBlock = {
@@ -91,7 +96,7 @@ let XTChangedRefsKey = "changedRefs"
     var result = [String: GitOID]()
     
     for ref in refs {
-      guard let oid = repository.sha(forRef: ref).flatMap({ GitOID(sha: $0) })
+      guard let oid = repository?.sha(forRef: ref).flatMap({ GitOID(sha: $0) })
       else { continue }
       
       result[ref] = oid
@@ -99,7 +104,7 @@ let XTChangedRefsKey = "changedRefs"
     return result
   }
   
-  func checkIndex()
+  func checkIndex(repository: XTRepository)
   {
     let gitPath = repository.gitDirectoryURL.path
     let indexPath = gitPath.appending(pathComponent: "index")
@@ -140,7 +145,7 @@ let XTChangedRefsKey = "changedRefs"
     }
   }
   
-  func checkRefs(_ changedPaths: [String])
+  func checkRefs(changedPaths: [String], repository: XTRepository)
   {
     if packedRefsWatcher == nil,
        changedPaths.index(of: repository.gitDirectoryURL.path) != nil {
@@ -152,7 +157,7 @@ let XTChangedRefsKey = "changedRefs"
     }
   }
   
-  func checkHead(_ changedPaths: [String])
+  func checkHead(changedPaths: [String], repository: XTRepository)
   {
     if paths(changedPaths, includeSubpaths: ["HEAD"]) {
       repository.clearCachedBranch()
@@ -162,6 +167,9 @@ let XTChangedRefsKey = "changedRefs"
   
   func checkRefs()
   {
+    guard let repository = self.repository
+    else { return }
+    
     objc_sync_enter(self)
     defer { objc_sync_exit(self) }
     
@@ -173,7 +181,7 @@ let XTChangedRefsKey = "changedRefs"
     let changedRefs = newKeys.subtracting(addedRefs).filter {
       (ref) -> Bool in
       guard let oldOID = refsCache[ref],
-            let newSHA = self.repository.sha(forRef: ref),
+            let newSHA = repository.sha(forRef: ref),
             let newOID =  GitOID(sha: newSHA)
       else { return false }
       
@@ -206,22 +214,22 @@ let XTChangedRefsKey = "changedRefs"
     post(.XTRepositoryConfigChanged)
   }
   
-  func checkLogs(_ changedPaths: [String])
+  func checkLogs(changedPaths: [String])
   {
     if paths(changedPaths, includeSubpaths: ["logs/refs"]) {
       post(.XTRepositoryRefLogChanged)
     }
   }
   
-  func observeEvents(_ paths: [String])
+  func observeEvents(_ paths: [String], _ repository: XTRepository)
   {
     // FSEvents includes trailing slashes, but some other APIs don't.
     let standardizedPaths = paths.map({ ($0 as NSString).standardizingPath })
   
-    checkIndex()
-    checkHead(standardizedPaths)
-    checkRefs(standardizedPaths)
-    checkLogs(standardizedPaths)
+    checkIndex(repository: repository)
+    checkHead(changedPaths: standardizedPaths, repository: repository)
+    checkRefs(changedPaths: standardizedPaths, repository: repository)
+    checkLogs(changedPaths: standardizedPaths)
     
     post(.XTRepositoryChanged)
   }
