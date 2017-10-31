@@ -80,7 +80,10 @@ public class XTHistoryTableController: NSViewController
       }
     }
     
-    history.postProgress = self.postProgress(batchSize:batch:pass:value:)
+    history.postProgress = {
+      [weak self] in
+      self?.postProgress(batchSize: $0, batch: $1, pass: $2, value: $3)
+    }
   }
   
   /// Reloads the commit history from scratch.
@@ -128,8 +131,9 @@ public class XTHistoryTableController: NSViewController
           history.connectCommits(batchSize: batchSize) {}
         }
         DispatchQueue.main.async {
+          [weak self] in
           tableView?.reloadData()
-          self.ensureSelection()
+          self?.ensureSelection()
         }
       }
     }
