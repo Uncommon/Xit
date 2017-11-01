@@ -151,9 +151,11 @@ class XTSideBarDataSource: NSObject
   {
     repository?.queue.executeOffMainThread {
       [weak self] in
+      kdebug_signpost_start(Signposts.sidebarReload, 0, 0, 0, 0)
       guard let newRoots = self?.loadRoots()
       else { return }
-      
+      kdebug_signpost_end(Signposts.sidebarReload, 0, 0, 0, 0)
+
       DispatchQueue.main.async {
         guard let myself = self
         else { return }

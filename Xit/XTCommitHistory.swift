@@ -252,6 +252,7 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
     var startingConnections = [Connection]()
     
     while batchStart < entries.count {
+      kdebug_signpost_start(Signposts.historyBatch, UInt(batchStart), 0, 0, 0)
       let batchSize = min(batchSize, entries.count - batchStart)
       let connections = generateConnections(batchStart: batchStart,
                                             batchSize: batchSize,
@@ -267,6 +268,7 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
       startingConnections = connections.last ?? []
       batchStart += batchSize
       batchNotify?()
+      kdebug_signpost_end(Signposts.historyBatch, UInt(batchStart), 0, 0, 0)
     }
   }
   
