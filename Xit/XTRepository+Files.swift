@@ -19,7 +19,9 @@ extension XTRepository: FileContents
   }
   
   /// Returns true if the file seems to be text, based on its name or its content.
-  /// A zero OID means the file in the index should be checked.
+  /// - parameter path: File path relative to the repository
+  /// - parameter commitOID: OID of the commit to check, a zero OID to check
+  /// the file in the index, or nil to check the workspace file.
   public func isTextFile(_ path: String, commitOID: OID?) -> Bool
   {
     let name = (path as NSString).lastPathComponent
@@ -46,6 +48,13 @@ extension XTRepository: FileContents
           return blob.isBinary
         }
       }
+    }
+    else {
+      let url = self.fileURL(path)
+      guard let data = try? Data(contentsOf: url)
+      else { return false }
+      
+      return !data.isBinary()
     }
     return false
   }
