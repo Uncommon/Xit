@@ -60,8 +60,9 @@ class CommitChanges: FileChangesModel
   var canCommit: Bool { return false }
   
   // Can't currently do changes as as lazy var because it crashes the compiler.
-  let savedChanges: [FileChange]
-  var changes: [FileChange] { return savedChanges }
+  lazy var changes: [FileChange] =
+      self.repository.changes(for: self.commit.oid.sha,
+                              parent: self.commit.parentOIDs.first)
   
   var treeRoot: NSTreeNode
   {
@@ -75,13 +76,6 @@ class CommitChanges: FileChangesModel
   {
     self.repository = repository
     self.commit = commit as! XTCommit
-    if let sha = commit.sha {
-      self.savedChanges = repository.changes(for: sha,
-                                             parent: commit.parentOIDs.first)
-    }
-    else {
-      self.savedChanges = []
-    }
   }
   
   func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?
