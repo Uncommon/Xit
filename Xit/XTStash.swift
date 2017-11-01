@@ -103,8 +103,7 @@ public class XTStash: NSObject, Stash
   {
     guard let indexCommit = self.indexCommit as? XTCommit
     else { return nil }
-    guard let indexSHA = indexCommit.sha,
-          repo.isTextFile(path, commit: indexSHA)
+    guard repo.isTextFile(path, commitOID: indexCommit.oid)
     else { return .binary }
     guard let indexEntry = indexCommit.tree?.entry(path: path),
           let indexBlob = indexEntry.object as? Blob
@@ -124,19 +123,15 @@ public class XTStash: NSObject, Stash
     var indexBlob: Blob? = nil
     
     if let indexEntry = indexCommit.tree!.entry(path: path) {
-      if let indexSHA = indexCommit.sha,
-         !repo.isTextFile(path, commit: indexSHA) {
+      if !repo.isTextFile(path, commitOID: indexCommit.oid) {
         return .binary
       }
-      let object = indexEntry.object
-      
-      indexBlob = object as? Blob
+      indexBlob = indexEntry.object as? Blob
     }
     
     if let untrackedCommit = self.untrackedCommit as? XTCommit,
        let untrackedEntry = untrackedCommit.tree?.entry(path: path) {
-      if let untrackedSHA = untrackedCommit.sha,
-         !repo.isTextFile(path, commit: untrackedSHA) {
+      if !repo.isTextFile(path, commitOID: untrackedCommit.oid) {
         return .binary
       }
       guard let untrackedBlob = untrackedEntry.object as? Blob

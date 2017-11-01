@@ -5,17 +5,8 @@ extension XTRepository: FileContents
   static let textNames = ["AUTHORS", "CONTRIBUTING", "COPYING", "LICENSE",
                           "Makefile", "README"]
   
-  /// Returns true if the file seems to be text, based on its name.
-  public func isTextFile(_ path: String, commit: String?) -> Bool
+  static func isTextExtension(_ name: String) -> Bool
   {
-    let name = (path as NSString).lastPathComponent
-    guard !name.isEmpty
-    else { return false }
-    
-    if XTRepository.textNames.contains(name) {
-      return true
-    }
-    
     let ext = (name as NSString).pathExtension
     guard !ext.isEmpty
     else { return false }
@@ -25,6 +16,38 @@ extension XTRepository: FileContents
     let utType = unmanaged?.takeRetainedValue()
     
     return utType.map { UTTypeConformsTo($0, kUTTypeText) } ?? false
+  }
+  
+  /// Returns true if the file seems to be text, based on its name or its content.
+  /// A zero OID means the file in the index should be checked.
+  public func isTextFile(_ path: String, commitOID: OID?) -> Bool
+  {
+    let name = (path as NSString).lastPathComponent
+    guard !name.isEmpty
+    else { return false }
+    
+    if XTRepository.textNames.contains(name) {
+      return true
+    }
+    if XTRepository.isTextExtension(name) {
+      return true
+    }
+    
+    if let oid = commitOID {
+      if oid.isZero {
+        if let oid = GitIndex(repository: self)?.entry(at: path)?.oid,
+           let blob = GitBlob(repository: self, oid: oid) {
+          return blob.isBinary
+        }
+      }
+      else {
+        if let commit = commit(forOID: oid),
+           let blob = commit.tree?.entry(path: path)?.object as? Blob {
+          return blob.isBinary
+        }
+      }
+    }
+    return false
   }
   
   public func contentsOfFile(path: String, at commit: Commit) -> Data?
@@ -89,7 +112,7 @@ extension XTRepository: FileDiffing
     guard let toCommit = commit(forOID: commitOID as! GitOID) as? XTCommit
     else { return nil }
     
-    guard isTextFile(file, commit: commitOID.sha)
+    guard isTextFile(file, commitOID: commitOID)
     else { return .binary }
     
     var fromSource = PatchMaker.SourceType.data(Data())
@@ -126,7 +149,7 @@ extension XTRepository: FileDiffing
   /// file.
   public func stagedDiff(file: String) -> PatchMaker.PatchResult?
   {
-    guard isTextFile(file, commit: XTStagingSHA)
+    guard isTextFile(file, commitOID: GitOID.zero())
     else { return .binary }
     
     guard let headRef = self.headRef
@@ -142,7 +165,7 @@ extension XTRepository: FileDiffing
   /// Returns a diff maker for a file in the workspace, compared to the index.
   public func unstagedDiff(file: String) -> PatchMaker.PatchResult?
   {
-    guard isTextFile(file, commit: nil)
+    guard isTextFile(file, commitOID: nil)
     else { return .binary }
     
     let url = self.repoURL.appendingPathComponent(file)
