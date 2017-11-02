@@ -1,21 +1,19 @@
 import Foundation
 
+public enum FileContext
+{
+  case commit(Commit)
+  case index
+  case workspace
+}
+
 extension XTRepository: FileContents
 {
   static let textNames = ["AUTHORS", "CONTRIBUTING", "COPYING", "LICENSE",
                           "Makefile", "README"]
   
-  /// Returns true if the file seems to be text, based on its name.
-  public func isTextFile(_ path: String, commit: String?) -> Bool
+  static func isTextExtension(_ name: String) -> Bool
   {
-    let name = (path as NSString).lastPathComponent
-    guard !name.isEmpty
-    else { return false }
-    
-    if XTRepository.textNames.contains(name) {
-      return true
-    }
-    
     let ext = (name as NSString).pathExtension
     guard !ext.isEmpty
     else { return false }
@@ -25,6 +23,43 @@ extension XTRepository: FileContents
     let utType = unmanaged?.takeRetainedValue()
     
     return utType.map { UTTypeConformsTo($0, kUTTypeText) } ?? false
+  }
+  
+  /// Returns true if the file seems to be text, based on its name or its content.
+  /// - parameter path: File path relative to the repository
+  /// - parameter context: Where to look for the specified file
+  public func isTextFile(_ path: String, context: FileContext) -> Bool
+  {
+    let name = (path as NSString).lastPathComponent
+    guard !name.isEmpty
+    else { return false }
+    
+    if XTRepository.textNames.contains(name) {
+      return true
+    }
+    if XTRepository.isTextExtension(name) {
+      return true
+    }
+    
+    switch context {
+      case .commit(let commit):
+        if let blob = commit.tree?.entry(path: path)?.object as? Blob {
+          return blob.isBinary
+        }
+      case .index:
+        if let oid = GitIndex(repository: self)?.entry(at: path)?.oid,
+           let blob = GitBlob(repository: self, oid: oid) {
+          return blob.isBinary
+        }
+      case .workspace:
+        let url = self.fileURL(path)
+        guard let data = try? Data(contentsOf: url)
+        else { return false }
+        
+        return !data.isBinary()
+    }
+    
+    return false
   }
   
   public func contentsOfFile(path: String, at commit: Commit) -> Data?
@@ -89,7 +124,9 @@ extension XTRepository: FileDiffing
     guard let toCommit = commit(forOID: commitOID as! GitOID) as? XTCommit
     else { return nil }
     
-    guard isTextFile(file, commit: commitOID.sha)
+    let parentCommit = parentOID.flatMap({ commit(forOID: $0) })
+    guard isTextFile(file, context: .commit(toCommit)) ||
+          parentCommit.map({ isTextFile(file, context: .commit($0)) }) ?? false
     else { return .binary }
     
     var fromSource = PatchMaker.SourceType.data(Data())
@@ -101,9 +138,7 @@ extension XTRepository: FileDiffing
       toSource = .blob(toBlob)
     }
     
-    if let parentOID = parentOID,
-       let parentCommit = (commit(forOID: parentOID as! GitOID) as? XTCommit),
-       let fromTree = parentCommit.tree,
+    if let fromTree = parentCommit?.tree,
        let fromEntry = fromTree.entry(path: file),
        let fromBlob = fromEntry.object as? GitBlob {
       fromSource = .blob(fromBlob)
@@ -126,7 +161,7 @@ extension XTRepository: FileDiffing
   /// file.
   public func stagedDiff(file: String) -> PatchMaker.PatchResult?
   {
-    guard isTextFile(file, commit: XTStagingSHA)
+    guard isTextFile(file, context: .index)
     else { return .binary }
     
     guard let headRef = self.headRef
@@ -142,7 +177,7 @@ extension XTRepository: FileDiffing
   /// Returns a diff maker for a file in the workspace, compared to the index.
   public func unstagedDiff(file: String) -> PatchMaker.PatchResult?
   {
-    guard isTextFile(file, commit: nil)
+    guard isTextFile(file, context: .workspace)
     else { return .binary }
     
     let url = self.repoURL.appendingPathComponent(file)

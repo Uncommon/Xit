@@ -101,6 +101,7 @@ public class XTHistoryTableController: NSViewController
     
     history.reset()
     repository.queue.executeOffMainThread {
+      kdebug_signpost_start(Signposts.historyWalking, 0, 0, 0, 0)
       guard let walker = try? GTEnumerator(repository: repository.gtRepo)
       else {
         NSLog("GTEnumerator failed")
@@ -123,12 +124,15 @@ public class XTHistoryTableController: NSViewController
         
         history.appendCommit(commit)
       }
+      kdebug_signpost_end(Signposts.historyWalking, 0, 0, 0, 0)
       
       DispatchQueue.global(qos: .utility).async {
         // Get off the queue thread, but run this as a queue task so that
         // progress will be displayed.
         self.repository.queue.executeTask {
+          kdebug_signpost_start(Signposts.connectCommits, 0, 0, 0, 0)
           history.connectCommits(batchSize: batchSize) {}
+          kdebug_signpost_end(Signposts.connectCommits, 0, 0, 0, 0)
         }
         DispatchQueue.main.async {
           [weak self] in

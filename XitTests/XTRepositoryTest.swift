@@ -26,19 +26,91 @@ class XTEmptyRepositoryTest: XTTest
     XCTAssertEqual(repository.parentTree(), kEmptyTreeHash)
   }
   
-  func testIsTextFile()
+  func testIsTextFileName()
   {
     let textFiles = ["COPYING", "a.txt", "a.c", "a.xml", "a.html"]
     let nonTextFiles = ["a.jpg", "a.png", "a.ffff", "AAAAA"]
     
     for name in textFiles {
-      XCTAssertTrue(repository.isTextFile(name, commit: "master"),
+      XCTAssertTrue(repository.isTextFile(name, context: .workspace),
                     "\(name) should be a text file")
     }
     for name in nonTextFiles {
-      XCTAssertFalse(repository.isTextFile(name, commit: "master"),
+      XCTAssertFalse(repository.isTextFile(name, context: .workspace),
                      "\(name) should not be a text file")
     }
+  }
+  
+  func testWorkspaceTextFile()
+  {
+    let textName = "text"
+    
+    writeText("some text", toFile: textName)
+    XCTAssertTrue(repository.isTextFile(textName, context: .workspace))
+  }
+  
+  func testWorkspaceBinaryFile()
+  {
+    let tiffName = "action"
+    
+    XCTAssertNoThrow(try makeTiffFile(tiffName))
+    XCTAssertFalse(repository.isTextFile(tiffName, context: .workspace))
+  }
+  
+  func testIndexTextFile()
+  {
+    let textName = "text"
+    
+    writeText("some text", toFile: textName)
+    XCTAssertNoThrow(try repository.stage(file: textName))
+    XCTAssertTrue(repository.isTextFile(textName, context: .index))
+  }
+  
+  func testIndexBinaryFile()
+  {
+    let tiffName = "action"
+    
+    XCTAssertNoThrow(try makeTiffFile(tiffName))
+    XCTAssertNoThrow(try repository.stage(file: tiffName))
+    XCTAssertFalse(repository.isTextFile(tiffName, context: .index))
+  }
+  
+  func testCommitTextFile()
+  {
+    let textName = "text"
+    
+    writeText("some text", toFile: textName)
+    XCTAssertNoThrow(try repository.stage(file: textName))
+    XCTAssertNoThrow(try repository.commit(message: "text", amend: false,
+                                           outputBlock: nil))
+    
+    guard let headSHA = repository.headSHA,
+          let headOID = GitOID(sha: headSHA)
+    else {
+      XCTFail("no head")
+      return
+    }
+
+    XCTAssertTrue(repository.isTextFile(textName, context: .commit(headOID)))
+  }
+  
+  func testCommitBinaryFile()
+  {
+    let tiffName = "action"
+
+    XCTAssertNoThrow(try makeTiffFile(tiffName))
+    XCTAssertNoThrow(try repository.stage(file: tiffName))
+    XCTAssertNoThrow(try repository.commit(message: "text", amend: false,
+                                           outputBlock: nil))
+    
+    guard let headSHA = repository.headSHA,
+          let headOID = GitOID(sha: headSHA)
+    else {
+      XCTFail("no head")
+      return
+    }
+
+    XCTAssertFalse(repository.isTextFile(tiffName, context: .commit(headOID)))
   }
   
   func testStagedContents()
@@ -458,11 +530,9 @@ class XTRepositoryTest: XTTest
   
   func testStagedBinaryDiff()
   {
-    let imageName = "img.png"
-    let imagePath = repoPath.appending(pathComponent: "img.png")
+    let imageName = "img.tiff"
     
-    FileManager.default.createFile(atPath: imagePath, contents: nil,
-                                   attributes: nil)
+    XCTAssertNoThrow(try makeTiffFile(imageName))
     XCTAssertNoThrow(try repository.stage(file: imageName))
     
     if let unstagedDiffResult = repository.unstagedDiff(file: imageName) {
@@ -482,11 +552,9 @@ class XTRepositoryTest: XTTest
   
   func testCommitBinaryDiff()
   {
-    let imageName = "img.png"
-    let imagePath = repoPath.appending(pathComponent: "img.png")
+    let imageName = "img.tiff"
     
-    FileManager.default.createFile(atPath: imagePath, contents: nil,
-                                   attributes: nil)
+    XCTAssertNoThrow(try makeTiffFile(imageName))
     XCTAssertNoThrow(try repository.stage(file: imageName))
     XCTAssertNoThrow(try repository.commit(message: "image", amend: false,
                                            outputBlock: nil))
