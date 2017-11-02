@@ -85,13 +85,13 @@ class XTEmptyRepositoryTest: XTTest
                                            outputBlock: nil))
     
     guard let headSHA = repository.headSHA,
-          let headOID = GitOID(sha: headSHA)
+          let headCommit = repository.commit(forSHA: headSHA)
     else {
       XCTFail("no head")
       return
     }
 
-    XCTAssertTrue(repository.isTextFile(textName, context: .commit(headOID)))
+    XCTAssertTrue(repository.isTextFile(textName, context: .commit(headCommit)))
   }
   
   func testCommitBinaryFile()
@@ -104,13 +104,13 @@ class XTEmptyRepositoryTest: XTTest
                                            outputBlock: nil))
     
     guard let headSHA = repository.headSHA,
-          let headOID = GitOID(sha: headSHA)
+          let headCommit = repository.commit(forSHA: headSHA)
     else {
       XCTFail("no head")
       return
     }
 
-    XCTAssertFalse(repository.isTextFile(tiffName, context: .commit(headOID)))
+    XCTAssertFalse(repository.isTextFile(tiffName, context: .commit(headCommit)))
   }
   
   func testStagedContents()
