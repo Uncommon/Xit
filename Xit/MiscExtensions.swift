@@ -36,7 +36,7 @@ extension String
     guard hasPrefix(prefix)
     else { return self }
     
-    return String(self[prefix.characters.endIndex...])
+    return String(self[prefix.endIndex...])
   }
   
   /// Returns the string with the given prefix, adding it only if necessary.
@@ -154,7 +154,7 @@ extension String
     guard hasPrefix("refs/")
     else { return nil }
     
-    let start = characters.index(startIndex, offsetBy: "refs/".characters.count)
+    let start = index(startIndex, offsetBy: "refs/".count)
     guard let slashRange = range(of: "/", options: [], range: start..<endIndex,
                                  locale: nil)
     else { return nil }

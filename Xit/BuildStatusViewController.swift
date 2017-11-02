@@ -76,7 +76,7 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
           { api.vcsBranchSpecs[$0]?.match(branch: branchName) }
       guard let match = matchNames.reduce(nil, {
         (shortest, name) -> String? in
-        return (shortest.map { $0.characters.count < name.characters.count }
+        return (shortest.map { $0.count < name.count }
                 ?? false)
                ? shortest : name
       })

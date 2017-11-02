@@ -279,8 +279,8 @@ class XTSidebarController: NSViewController, SidebarHandler
   
   func select(remoteBranch: String)
   {
-    let slices = remoteBranch.characters.split(separator: "/", maxSplits: 1)
-                                        .map { String($0) }
+    let slices = remoteBranch.split(separator: "/", maxSplits: 1)
+                             .map { String($0) }
     guard slices.count == 2
     else { return }
     let remote = slices[0]
