@@ -209,6 +209,7 @@
 		C9D74CC01D92E62200C5626E /* viewHistoryTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D74CBA1D92E62200C5626E /* viewHistoryTemplate@2x.png */; };
 		C9D74CC11D92E62200C5626E /* viewSidebarTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D74CBB1D92E62200C5626E /* viewSidebarTemplate.png */; };
 		C9D74CC21D92E62200C5626E /* viewSidebarTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D74CBC1D92E62200C5626E /* viewSidebarTemplate@2x.png */; };
+		C9D896961FAB6CD300E431FE /* XTTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D896951FAB6CD300E431FE /* XTTest.swift */; };
 		C9DA20CB1F6C8B7800C472CD /* GitIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DA20CA1F6C8B7800C472CD /* GitIndex.swift */; };
 		C9DAB5AF1D47C23900586854 /* TeamCityTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DAB5AE1D47C23900586854 /* TeamCityTest.swift */; };
 		C9DAB5CD1D4A4EA700586854 /* Git-Icon-1788C.png in Resources */ = {isa = PBXBuildFile; fileRef = C9DAB5CC1D4A4EA700586854 /* Git-Icon-1788C.png */; };
@@ -614,6 +615,7 @@
 		C9D74CBA1D92E62200C5626E /* viewHistoryTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "viewHistoryTemplate@2x.png"; sourceTree = "<group>"; };
 		C9D74CBB1D92E62200C5626E /* viewSidebarTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = viewSidebarTemplate.png; sourceTree = "<group>"; };
 		C9D74CBC1D92E62200C5626E /* viewSidebarTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "viewSidebarTemplate@2x.png"; sourceTree = "<group>"; };
+		C9D896951FAB6CD300E431FE /* XTTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XTTest.swift; sourceTree = "<group>"; };
 		C9DA20CA1F6C8B7800C472CD /* GitIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitIndex.swift; sourceTree = "<group>"; };
 		C9DAB5AE1D47C23900586854 /* TeamCityTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamCityTest.swift; sourceTree = "<group>"; };
 		C9DAB5CC1D4A4EA700586854 /* Git-Icon-1788C.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Git-Icon-1788C.png"; sourceTree = "<group>"; };
@@ -933,6 +935,7 @@
 			isa = PBXGroup;
 			children = (
 				C3FA472513D0F8E300AC4F9B /* Supporting Files */,
+				C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */,
 				DD98CFF2181ADFC5008B79C9 /* CFRunLoop+Extensions.c */,
 				DD98CFFF181AE297008B79C9 /* CFRunLoop+Extensions.h */,
 				C3FA472B13D0F8E300AC4F9B /* XTTest.h */,
@@ -951,7 +954,6 @@
 				C9EB87311D05D35800C47D13 /* XTStashTest.swift */,
 				C923D6471D8CA56800C6B90B /* XTTagTest.swift */,
 				C9DAB5AE1D47C23900586854 /* TeamCityTest.swift */,
-				C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */,
 				C95356091D958E8D00AEEF49 /* StringExtensionsTest.swift */,
 				C94736751DEF28F8000E3A05 /* GitSwiftTests.swift */,
 				C9DEA4BA1E4FEC1600DF4069 /* FileListDataSourceTest.swift */,
@@ -959,6 +961,7 @@
 				89CB619B1E788C6000D69FE4 /* PatchTest.swift */,
 				C921026C1F757FEB0068F87C /* StringOID.swift */,
 				C99A3C4F1F97A9E00037B431 /* CacheTest.swift */,
+				C9D896951FAB6CD300E431FE /* XTTest.swift */,
 			);
 			path = XitTests;
 			sourceTree = "<group>";
@@ -1675,6 +1678,7 @@
 				C923D6481D8CA56800C6B90B /* XTTagTest.swift in Sources */,
 				C9DEA4BB1E4FEC1600DF4069 /* FileListDataSourceTest.swift in Sources */,
 				C98925B31DA70D3A00E5645C /* XTCommitLinesTest.swift in Sources */,
+				C9D896961FAB6CD300E431FE /* XTTest.swift in Sources */,
 				C94736761DEF28F8000E3A05 /* GitSwiftTests.swift in Sources */,
 				C9DAB5AF1D47C23900586854 /* TeamCityTest.swift in Sources */,
 				C9FCC1D11D50EB1A00AC398E /* XTCommitHistoryTest.swift in Sources */,

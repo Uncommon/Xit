@@ -56,7 +56,7 @@ public protocol FileContents: class
 {
   var repoURL: URL { get }
   
-  func isTextFile(_ path: String, commitOID: OID?) -> Bool
+  func isTextFile(_ path: String, context: FileContext) -> Bool
   func fileBlob(ref: String, path: String) -> Blob?
   func stagedBlob(file: String) -> Blob?
   func contentsOfFile(path: String, at commit: Commit) -> Data?
