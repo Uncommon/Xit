@@ -146,6 +146,17 @@ extension NSButton
   }
 }
 
+extension NSTextField
+{
+  var isTruncated: Bool
+  {
+    guard let expansionRect = cell?.expansionFrame(withFrame: frame, in: self)
+    else { return false }
+    
+    return expansionRect != NSRect.zero
+  }
+}
+
 extension String
 {
   /// Splits a "refs/*/..." string into prefix and remainder.

@@ -234,6 +234,7 @@
 		C9F9A02A1E1C417D00261E33 /* PatchMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F9A0291E1C417D00261E33 /* PatchMaker.swift */; };
 		C9FCC1D11D50EB1A00AC398E /* XTCommitHistoryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FCC1D01D50EB1A00AC398E /* XTCommitHistoryTest.swift */; };
 		C9FFCC841FABB28F00FA2F21 /* XTSideBarDataSource+OutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FFCC831FABB28F00FA2F21 /* XTSideBarDataSource+OutlineView.swift */; };
+		C9FFCC861FABC24B00FA2F21 /* ExpansionTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FFCC851FABC24B00FA2F21 /* ExpansionTextField.swift */; };
 		DD00725613E76DFB003B4120 /* Xit.icns in Resources */ = {isa = PBXBuildFile; fileRef = DD00725513E76DFB003B4120 /* Xit.icns */; };
 		DD07B08916B313A60012AC19 /* XTRefFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = DD07B08816B313A60012AC19 /* XTRefFormatter.m */; };
 		DD592093156EEE64005FBB0F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
@@ -642,6 +643,7 @@
 		C9F9A0291E1C417D00261E33 /* PatchMaker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatchMaker.swift; sourceTree = "<group>"; };
 		C9FCC1D01D50EB1A00AC398E /* XTCommitHistoryTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTCommitHistoryTest.swift; sourceTree = "<group>"; };
 		C9FFCC831FABB28F00FA2F21 /* XTSideBarDataSource+OutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XTSideBarDataSource+OutlineView.swift"; sourceTree = "<group>"; };
+		C9FFCC851FABC24B00FA2F21 /* ExpansionTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpansionTextField.swift; sourceTree = "<group>"; };
 		DD00725513E76DFB003B4120 /* Xit.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Xit.icns; sourceTree = "<group>"; };
 		DD07B08316B2005B0012AC19 /* XTConstants.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = XTConstants.h; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		DD07B08716B313A60012AC19 /* XTRefFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRefFormatter.h; sourceTree = "<group>"; tabWidth = 2; };
@@ -734,6 +736,7 @@
 				C95BD3EE1F8ECEC9000A2E2D /* Mutex.swift */,
 				C967C4AE1F96BA55002166F7 /* Cache.swift */,
 				C967AAB41FAA45B3008A4DF0 /* Debug.swift */,
+				C9FFCC851FABC24B00FA2F21 /* ExpansionTextField.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -1552,6 +1555,7 @@
 				C9BAE60A1D2FFA8B00A87F13 /* XTConfig.swift in Sources */,
 				C9BAE6141D3039C500A87F13 /* XTOperationController.swift in Sources */,
 				C991732D1F91255200054154 /* GitPatch.swift in Sources */,
+				C9FFCC861FABC24B00FA2F21 /* ExpansionTextField.swift in Sources */,
 				C9BF41181EA11AAC00028C84 /* XTWindowController+Actions.swift in Sources */,
 				C957B8541D2D533C0040F858 /* XTAddAccountController.swift in Sources */,
 				C9DB64451EA534A0003015D6 /* XTRepository+Iterators.swift in Sources */,

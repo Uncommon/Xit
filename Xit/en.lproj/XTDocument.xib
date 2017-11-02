@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13529"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
         <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
@@ -42,7 +42,7 @@
                                             <color key="backgroundColor" name="_sourceListBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
-                                                <tableColumn width="232" minWidth="16" maxWidth="1000" id="gxZ-qS-2C2">
+                                                <tableColumn identifier="" width="232" minWidth="16" maxWidth="1000" id="gxZ-qS-2C2">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -59,7 +59,7 @@
                                                             <rect key="frame" x="1" y="1" width="232" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J9t-4U-9tF">
+                                                                <textField verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J9t-4U-9tF">
                                                                     <rect key="frame" x="0.0" y="1" width="232" height="14"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="HEADER CELL" id="Y14-lg-qci">
@@ -84,8 +84,8 @@
                                                                             <rect key="frame" x="0.0" y="2" width="14" height="14"/>
                                                                             <imageCell key="cell" refusesFirstResponder="YES" imageScaling="proportionallyDown" image="NSActionTemplate" id="yfB-De-qam"/>
                                                                         </imageView>
-                                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ipC-oU-fy5">
-                                                                            <rect key="frame" x="19" y="0.0" width="107" height="17"/>
+                                                                        <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ipC-oU-fy5" customClass="ExpansionTextField" customModule="Xit" customModuleProvider="target">
+                                                                            <rect key="frame" x="19" y="0.0" width="108" height="17"/>
                                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="TgA-S6-Vxp">
                                                                                 <font key="font" metaFont="system"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -93,7 +93,7 @@
                                                                             </textFieldCell>
                                                                         </textField>
                                                                         <button horizontalHuggingPriority="260" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="Gz6-jH-4NK" customClass="LabelButton" customModule="Xit" customModuleProvider="target">
-                                                                            <rect key="frame" x="131" y="0.0" width="45" height="17"/>
+                                                                            <rect key="frame" x="132" y="0.0" width="44" height="17"/>
                                                                             <buttonCell key="cell" type="inline" title="10▸10" bezelStyle="inline" alignment="center" borderStyle="border" inset="2" id="Cf5-ns-faK">
                                                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                                 <font key="font" metaFont="smallSystemBold"/>
