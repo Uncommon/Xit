@@ -10,6 +10,16 @@ protocol SidebarHandler: class
   func stashIndex(for item: XTSideBarItem) -> UInt?
 }
 
+enum XTGroupIndex: Int
+{
+  case workspace
+  case branches
+  case remotes
+  case tags
+  case stashes
+  case submodules
+}
+
 extension SidebarHandler
 {
   func validate(sidebarCommand: NSMenuItem) -> Bool

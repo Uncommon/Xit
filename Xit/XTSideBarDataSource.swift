@@ -359,7 +359,6 @@ class XTSideBarDataSource: NSObject
     return result as? XTLocalBranchItem
   }
   
-  @objc(itemNamed:inGroup:)
   func item(named name: String, inGroup group: XTGroupIndex) -> XTSideBarItem?
   {
     let group = roots[group.rawValue]
