@@ -205,6 +205,9 @@ public class XTHistoryTableController: NSViewController
   {
     let tableView = view as! NSTableView
     
+    objc_sync_enter(self)
+    defer { objc_sync_exit(self) }
+    
     guard let sha = sha,
           let row = history.entries.index(where: { $0.commit.sha == sha })
     else {
