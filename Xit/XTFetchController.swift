@@ -14,7 +14,7 @@ class XTFetchController: XTPasswordOpController
     else { return nil }
     
     if let branchName = repository.currentBranch {
-      let currentBranch = XTLocalBranch(repository: repository,
+      let currentBranch = GitLocalBranch(repository: repository,
                                         name: branchName)
       if let trackingBranch = currentBranch?.trackingBranch {
         return trackingBranch.remoteName

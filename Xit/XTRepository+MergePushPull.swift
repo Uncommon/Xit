@@ -119,7 +119,7 @@ extension XTRepository
   /// - parameter pruneBranches: True to delete obsolete branch refs
   /// - parameter passwordBlock: Callback for getting the user and password
   /// - parameter progressBlock: Return true to stop the operation
-  func pull(branch: XTBranch,
+  func pull(branch: GitBranch,
             remote: XTRemote,
             options: FetchOptions) throws
   {
@@ -127,15 +127,15 @@ extension XTRepository
     
     var mergeBranch = branch
     
-    if let localBranch = branch as? XTLocalBranch,
-       let trackingBranch = localBranch.trackingBranch as? XTRemoteBranch {
+    if let localBranch = branch as? GitLocalBranch,
+       let trackingBranch = localBranch.trackingBranch as? GitRemoteBranch {
       mergeBranch = trackingBranch
     }
     
     try merge(branch: mergeBranch)
   }
   
-  private func fastForwardMerge(branch: XTBranch, remoteBranch: XTBranch) throws
+  private func fastForwardMerge(branch: GitBranch, remoteBranch: GitBranch) throws
   {
     guard let remoteCommit = remoteBranch.targetCommit,
           let remoteSHA = remoteCommit.sha
@@ -159,7 +159,7 @@ extension XTRepository
     }
   }
   
-  private func normalMerge(fromBranch: XTBranch, fromCommit: XTCommit,
+  private func normalMerge(fromBranch: GitBranch, fromCommit: XTCommit,
                            targetName: String, targetCommit: XTCommit) throws
   {
     do {
@@ -290,15 +290,15 @@ extension XTRepository
   
   fileprivate func writingMerge(branch: Branch) throws
   {
-    guard let branch = branch as? XTBranch
+    guard let branch = branch as? GitBranch
     else { return }
     
     do {
       try mergePreCheck()
       
       guard let currentBranchName = currentBranch,
-            let targetBranch = XTLocalBranch(repository: self,
-                                             name: currentBranchName)
+            let targetBranch = GitLocalBranch(repository: self,
+                                              name: currentBranchName)
       else { throw Error.detachedHead }
       guard let targetCommit = targetBranch.targetCommit,
             let remoteCommit = branch.targetCommit
@@ -374,7 +374,7 @@ extension XTRepository
   /// Wraps `git_annotated_commit_from_ref`
   /// - parameter branch: Branch to look up the tip commit
   /// - returns: An `OpaquePointer` wrapping a `git_annotated_commit`
-  func annotatedCommit(branch: XTBranch) throws -> OpaquePointer
+  func annotatedCommit(branch: GitBranch) throws -> OpaquePointer
   {
     let annotated = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     let result = git_annotated_commit_from_ref(
@@ -399,7 +399,7 @@ extension XTRepository
   func analyzeMerge(from branch: Branch,
                     fastForward: Bool? = nil) throws -> MergeAnalysis
   {
-    guard let branch = branch as? XTBranch,
+    guard let branch = branch as? GitBranch,
           let commit = branch.targetCommit
     else { throw Error.unexpected }
     
@@ -437,7 +437,7 @@ extension XTRepository
   /// - parameter remote: The remote to pull from.
   /// - parameter passwordBlock: Callback for getting the user and password
   /// - parameter progressBlock: Return true to stop the operation
-  public func push(branch: XTBranch,
+  public func push(branch: GitBranch,
                    remote: XTRemote,
                    passwordBlock: @escaping () -> (String, String)?,
                    progressBlock: @escaping (UInt32, UInt32, size_t) -> Bool)

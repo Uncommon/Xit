@@ -15,8 +15,8 @@ extension XTSideBarDataSource: TeamCityAccessor
       return remoteBranchItem.remote
     }
     else if let localBranchItem = branchItem as? XTLocalBranchItem {
-      guard let branch = XTLocalBranch(repository: repo,
-                                       name: localBranchItem.title)
+      guard let branch = GitLocalBranch(repository: repo,
+                                        name: localBranchItem.title)
       else {
         NSLog("Can't get branch for branch item: \(branchItem.title)")
         return nil
@@ -42,16 +42,16 @@ extension XTSideBarDataSource: TeamCityAccessor
   /// Returns true if the local branch has a remote tracking branch.
   func localBranchHasTrackingBranch(_ branch: String) -> Bool
   {
-    return XTLocalBranch(repository: repository,
-                         name: branch)?.trackingBranch != nil
+    return GitLocalBranch(repository: repository,
+                          name: branch)?.trackingBranch != nil
   }
   
   func trackingBranchStatus(for branch: String) -> TrackingBranchStatus
   {
-    if let localBranch = XTLocalBranch(repository: repository, name: branch),
+    if let localBranch = GitLocalBranch(repository: repository, name: branch),
        let trackingBranchName = localBranch.trackingBranchName {
-      return XTRemoteBranch(repository: repository,
-                            name: trackingBranchName) == nil
+      return GitRemoteBranch(repository: repository,
+                             name: trackingBranchName) == nil
           ? .missing(trackingBranchName)
           : .set(trackingBranchName)
     }

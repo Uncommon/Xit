@@ -333,11 +333,11 @@ class XTSideBarDataSource: NSObject
   {
     guard let repository = self.repository,
           item is XTLocalBranchItem,
-          let localBranch = XTLocalBranch(repository: repository,
-                                          name: item.title),
+          let localBranch = GitLocalBranch(repository: repository,
+                                           name: item.title),
           let trackingBranch = localBranch.trackingBranch,
           let graph = repository.graphBetween(localBranch: localBranch,
-                                       upstreamBranch: trackingBranch)
+                                              upstreamBranch: trackingBranch)
     else { return nil }
 
     var numbers = [String]()
@@ -420,7 +420,7 @@ class XTSideBarDataSource: NSObject
       switch response {
         
         case .alertFirstButtonReturn: // Clear
-          let branch = XTLocalBranch(repository: self.repository, name: item.title)
+          let branch = GitLocalBranch(repository: self.repository, name: item.title)
           
           branch?.trackingBranchName = nil
           self.outline.reloadItem(item)

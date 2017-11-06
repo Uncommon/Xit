@@ -187,8 +187,8 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
     }
     else if let remoteBranchItem = item as? XTRemoteBranchItem,
             let branchName = repository.currentBranch,
-            let currentBranch = XTLocalBranch(repository: repository,
-                                              name: branchName),
+            let currentBranch = GitLocalBranch(repository: repository,
+                                               name: branchName),
             currentBranch.trackingBranchName == remoteBranchItem.remote + "/" +
                                                 remoteBranchItem.title {
       let rowView = SidebarCheckedRowView(

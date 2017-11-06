@@ -63,8 +63,8 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
     guard let api = self.api
     else { return }
     
-    let branchName = (branch is XTRemoteBranch)
-          ? XTLocalBranch.headsPrefix + branch.strippedName
+    let branchName = (branch is RemoteBranch)
+          ? BranchPrefixes.heads + branch.strippedName
           : branch.name
     
     for (buildType, branchStatuses) in buildStatusCache.statuses {

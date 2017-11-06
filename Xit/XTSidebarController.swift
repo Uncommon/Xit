@@ -313,12 +313,12 @@ class XTSidebarController: NSViewController, SidebarHandler
   {
     switch ref {
       
-      case let branchRef where branchRef.hasPrefix(XTLocalBranch.headsPrefix):
-        select(branch: branchRef.removingPrefix(XTLocalBranch.headsPrefix))
+      case let branchRef where branchRef.hasPrefix(BranchPrefixes.heads):
+        select(branch: branchRef.removingPrefix(BranchPrefixes.heads))
       
-      case let remoteRef where remoteRef.hasPrefix(XTRemoteBranch.remotesPrefix):
+      case let remoteRef where remoteRef.hasPrefix(BranchPrefixes.remotes):
         select(remoteBranch:
-            remoteRef.removingPrefix(XTRemoteBranch.remotesPrefix))
+            remoteRef.removingPrefix(BranchPrefixes.remotes))
       
       case let tagRef where tagRef.hasPrefix(XTTag.tagPrefix):
         select(tag: tagRef.removingPrefix(XTTag.tagPrefix))

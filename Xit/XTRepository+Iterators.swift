@@ -4,7 +4,7 @@ extension XTRepository
 {
   /// Branches is a sequence, not a collection, because the API does not provide
   /// a count or indexed access.
-  public struct Branches<BranchType: XTBranch>: Sequence
+  public struct Branches<BranchType: GitBranch>: Sequence
   {
     public typealias Element = BranchType
     
@@ -17,7 +17,7 @@ extension XTRepository
     }
   }
 
-  public class BranchIterator<BranchType: XTBranch>: IteratorProtocol
+  public class BranchIterator<BranchType: GitBranch>: IteratorProtocol
   {
     let repo: XTRepository
     let iterator: OpaquePointer?

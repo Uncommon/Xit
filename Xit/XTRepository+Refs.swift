@@ -139,12 +139,12 @@ extension XTRepository: CommitReferencing
   
   public func localBranch(named name: String) -> LocalBranch?
   {
-    return XTLocalBranch(repository: self, name: name)
+    return GitLocalBranch(repository: self, name: name)
   }
   
   public func remoteBranch(named name: String, remote: String) -> RemoteBranch?
   {
-    return XTRemoteBranch(repository: self, name: "\(remote)/\(name)")
+    return GitRemoteBranch(repository: self, name: "\(remote)/\(name)")
   }
   
   func createBranch(_ name: String) -> Bool
@@ -215,12 +215,12 @@ extension XTRepository: CommitReferencing
 
 extension XTRepository: BranchListing
 {
-  public func localBranches() -> Branches<XTLocalBranch>
+  public func localBranches() -> Branches<GitLocalBranch>
   {
     return Branches(repo: self, type: GIT_BRANCH_LOCAL)
   }
   
-  public func remoteBranches() -> Branches<XTRemoteBranch>
+  public func remoteBranches() -> Branches<GitRemoteBranch>
   {
     return Branches(repo: self, type: GIT_BRANCH_REMOTE)
   }

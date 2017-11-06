@@ -33,7 +33,7 @@ extension LocalBranch
 {
   var strippedName: String?
   {
-    return name.removingPrefix(XTLocalBranch.headsPrefix)
+    return name.removingPrefix(BranchPrefixes.heads)
   }
 }
 
@@ -59,38 +59,47 @@ extension RemoteBranch
 }
 
 
-public class XTBranch: Branch
+public struct BranchPrefixes
+{
+  static let remotes = "refs/remotes/"
+  static let heads = "refs/heads/"
+}
+
+
+public class GitBranch: Branch
 {
   let gtBranch: GTBranch
+  let branch: OpaquePointer
   
   required public init(gtBranch: GTBranch)
   {
     self.gtBranch = gtBranch
+    self.branch = gtBranch.reference.git_reference()
   }
   
   public var name: String { return gtBranch.name ?? "" }
   public var oid: OID?
   {
-    return gtBranch.oid.map { GitOID(oid: $0.git_oid().pointee) }
+    guard let oid = git_reference_target(branch)
+    else { return nil }
+    
+    return GitOID(oidPtr: oid)
   }
 
-  var sha: String? { return gtBranch.oid?.sha }
+  var sha: String? { return oid?.sha }
   var targetCommit: XTCommit?
   {
-    return (try? gtBranch.targetCommit()).map { XTCommit(commit: $0) }
-  }
-  var reference: GTReference
-  {
-    return gtBranch.reference
+    guard let oid = oid,
+          let repo = git_reference_owner(branch)
+    else { return nil }
+    
+    return XTCommit(oid: oid, repository: repo)
   }
   var remoteName: String? { return nil }
 }
 
-public class XTLocalBranch: XTBranch, LocalBranch
+public class GitLocalBranch: GitBranch, LocalBranch
 {
-  static let trackingPrefix = "refs/remotes/"
-  static let headsPrefix = "refs/heads/"
-  
   init?(repository: XTRepository, name: String)
   {
     guard let gtBranch = try? repository.gtRepo.lookUpBranch(
@@ -112,27 +121,26 @@ public class XTLocalBranch: XTBranch, LocalBranch
   {
     get
     {
-      guard !name.isEmpty
+      guard !name.isEmpty,
+            let repo = git_reference_owner(branch)
       else { return nil }
       let buf = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
     
       buf.pointee.size = 0
       buf.pointee.asize = 0
-      if git_branch_upstream_name(buf, gtBranch.repository.git_repository(),
-                                  name) != 0 {
-        return nil
-      }
+      guard git_branch_upstream_name(buf, repo, name) == 0
+      else { return nil }
       
       let data = Data(bytes: buf.pointee.ptr, count: buf.pointee.size)
       
       git_buf_free(buf)
       return String(data: data, encoding: .utf8)?
-             .removingPrefix(XTLocalBranch.trackingPrefix)
+             .removingPrefix(BranchPrefixes.remotes)
     }
     set
     {
-      git_branch_set_upstream(gtBranch.reference.git_reference(),
-                              newValue?.withPrefix(XTLocalBranch.trackingPrefix))
+      git_branch_set_upstream(branch,
+                              newValue?.withPrefix(BranchPrefixes.remotes))
     }
   }
   
@@ -144,7 +152,7 @@ public class XTLocalBranch: XTBranch, LocalBranch
     guard let branch = gtBranch.trackingBranchWithError(nil, success: nil)
     else { return nil }
     
-    return XTRemoteBranch(gtBranch: branch)
+    return GitRemoteBranch(gtBranch: branch)
   }
   
   override var remoteName: String?
@@ -153,10 +161,8 @@ public class XTLocalBranch: XTBranch, LocalBranch
   }
 }
 
-public class XTRemoteBranch: XTBranch, RemoteBranch
+public class GitRemoteBranch: GitBranch, RemoteBranch
 {
-  static let remotesPrefix = "refs/remotes/"
-
   init?(repository: XTRepository, name: String)
   {
     guard let gtBranch = try? repository.gtRepo.lookUpBranch(withName: name,
