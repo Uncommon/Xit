@@ -61,16 +61,13 @@ extension FileTreeDataSource: FileListDataSource
   
   func expandItems(_ expanded: [String])
   {
-    var rowIndex = 0
-    
-    while rowIndex < outlineView.numberOfRows {
+    for rowIndex in 0..<outlineView.numberOfRows {
       guard let change = fileChange(at: rowIndex)
       else { continue }
       
       if expanded.contains(change.path) {
         outlineView.expandItem(outlineView.item(atRow: rowIndex))
       }
-      rowIndex += 1
     }
   }
   
