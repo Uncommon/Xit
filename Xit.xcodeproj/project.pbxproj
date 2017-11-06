@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
-		31C7C12E13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */; };
 		31C7C13413ECC74C00A65FE9 /* XTHistoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31C7C13213ECC74C00A65FE9 /* XTHistoryViewController.xib */; };
 		89039F561703A9FC000949A8 /* html in Resources */ = {isa = PBXBuildFile; fileRef = 89039F551703A9FC000949A8 /* html */; };
 		891261B01F867FCC00C292B7 /* Tree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891261AF1F867FCC00C292B7 /* Tree.swift */; };
@@ -257,7 +256,6 @@
 		DDA8A64317F5B6CE00AD9808 /* renamed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A63917F5B6CE00AD9808 /* renamed@2x.png */; };
 		DDA8A65F17F9ECED00AD9808 /* mixed.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A65D17F9ECED00AD9808 /* mixed.png */; };
 		DDA8A66017F9ECED00AD9808 /* mixed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DDA8A65E17F9ECED00AD9808 /* mixed@2x.png */; };
-		DDC75B8315D08E8F0087F2D4 /* NSDate+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC75B8215D08E8F0087F2D4 /* NSDate+Extensions.m */; };
 		DDD4708516F96F7E00CA76FF /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDD4708416F96F7E00CA76FF /* QuickLook.framework */; };
 		DDD4708716F9701600CA76FF /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDD4708616F9701600CA76FF /* Quartz.framework */; };
 		DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */ = {isa = PBXBuildFile; fileRef = DDDDAF1318162212009F8BA1 /* XTQueueUtils.c */; };
@@ -402,8 +400,6 @@
 /* Begin PBXFileReference section */
 		31355B0713EA139700C33AAB /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		31A8939F13E9DA5B008BE0C2 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
-		31C7C12C13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+MultiObjectForKey.h"; sourceTree = "<group>"; };
-		31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary+MultiObjectForKey.m"; sourceTree = "<group>"; };
 		31C7C13213ECC74C00A65FE9 /* XTHistoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTHistoryViewController.xib; sourceTree = "<group>"; };
 		89039F551703A9FC000949A8 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
 		891261AF1F867FCC00C292B7 /* Tree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
@@ -648,7 +644,6 @@
 		DD07B08316B2005B0012AC19 /* XTConstants.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = XTConstants.h; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		DD07B08716B313A60012AC19 /* XTRefFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTRefFormatter.h; sourceTree = "<group>"; tabWidth = 2; };
 		DD07B08816B313A60012AC19 /* XTRefFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTRefFormatter.m; sourceTree = "<group>"; tabWidth = 2; };
-		DD579ADB15D08978007E4AFE /* NSDate+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "NSDate+Extensions.h"; sourceTree = "<group>"; };
 		DD858B2B1801325500264F7D /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		DD96C930175B76990003A30C /* splitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splitter.png; sourceTree = "<group>"; };
 		DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ObjectiveGitFramework.xcodeproj; path = "objective-git/ObjectiveGitFramework.xcodeproj"; sourceTree = "<group>"; };
@@ -670,7 +665,6 @@
 		DDA8A63917F5B6CE00AD9808 /* renamed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "renamed@2x.png"; sourceTree = "<group>"; };
 		DDA8A65D17F9ECED00AD9808 /* mixed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mixed.png; sourceTree = "<group>"; };
 		DDA8A65E17F9ECED00AD9808 /* mixed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mixed@2x.png"; sourceTree = "<group>"; };
-		DDC75B8215D08E8F0087F2D4 /* NSDate+Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Extensions.m"; sourceTree = "<group>"; };
 		DDD4708416F96F7E00CA76FF /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
 		DDD4708616F9701600CA76FF /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		DDDA447015B0E97000DF407B /* GitEnums.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GitEnums.h; sourceTree = "<group>"; };
@@ -708,10 +702,6 @@
 		31C7C12A13EC730500A65FE9 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				DD579ADB15D08978007E4AFE /* NSDate+Extensions.h */,
-				DDC75B8215D08E8F0087F2D4 /* NSDate+Extensions.m */,
-				31C7C12C13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.h */,
-				31C7C12D13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m */,
 				89D47941170894A200C04D89 /* NSAttributedString+XTExtensions.h */,
 				89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */,
 				C947367D1DF08C03000E3A05 /* ContextMenuOutlineView.swift */,
@@ -1573,7 +1563,6 @@
 				899DB1921CE109C700760270 /* WorkspaceTreeBuilder.swift in Sources */,
 				89D8BE221CF0A4ED00D640AA /* XTRolloverButton.swift in Sources */,
 				C9AA80361E2E7F370004D670 /* XTHistoryViewController.swift in Sources */,
-				31C7C12E13EC738200A65FE9 /* NSMutableDictionary+MultiObjectForKey.m in Sources */,
 				DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */,
 				C957B8661D2D8D500040F858 /* XTKeychain.swift in Sources */,
 				C94A30261E3154D400B4496B /* XTTextPreviewController.swift in Sources */,
@@ -1606,7 +1595,6 @@
 				C9DEA4AD1E4B82B200DF4069 /* Signature.swift in Sources */,
 				89D5FDB21EDE1DC50067E886 /* XTRepository+Refs.swift in Sources */,
 				C9B023531F61A06900896EA9 /* LibGitExtensions.m in Sources */,
-				DDC75B8315D08E8F0087F2D4 /* NSDate+Extensions.m in Sources */,
 				C9DA20CB1F6C8B7800C472CD /* GitIndex.swift in Sources */,
 				C9F9A02A1E1C417D00261E33 /* PatchMaker.swift in Sources */,
 				C93799D51DDF9B28005C08B8 /* WorkspaceWatcher.swift in Sources */,
