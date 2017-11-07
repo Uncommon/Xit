@@ -119,7 +119,7 @@ extension XTRepository
   /// - parameter pruneBranches: True to delete obsolete branch refs
   /// - parameter passwordBlock: Callback for getting the user and password
   /// - parameter progressBlock: Return true to stop the operation
-  func pull(branch: GitBranch,
+  func pull(branch: Branch,
             remote: XTRemote,
             options: FetchOptions) throws
   {
@@ -437,7 +437,7 @@ extension XTRepository
   /// - parameter remote: The remote to pull from.
   /// - parameter passwordBlock: Callback for getting the user and password
   /// - parameter progressBlock: Return true to stop the operation
-  public func push(branch: GitBranch,
+  public func push(branch: Branch,
                    remote: XTRemote,
                    passwordBlock: @escaping () -> (String, String)?,
                    progressBlock: @escaping (UInt32, UInt32, size_t) -> Bool)
@@ -446,8 +446,11 @@ extension XTRepository
     try performWriting {
       let provider = self.credentialProvider(passwordBlock)
       let options = [ GTRepositoryRemoteOptionsCredentialProvider: provider ]
+      guard let localBranch = branch as? GitLocalBranch
+      else { throw Error.unexpected }
       
-      try self.gtRepo.push(branch.gtBranch, to: remote, withOptions: options) {
+      try self.gtRepo.push(localBranch.gtBranch,
+                           to: remote, withOptions: options) {
         (current, total, bytes, stop) in
         stop.pointee = ObjCBool(progressBlock(current, total, bytes))
       }

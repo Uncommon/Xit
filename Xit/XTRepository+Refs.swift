@@ -147,6 +147,17 @@ extension XTRepository: CommitReferencing
     return GitRemoteBranch(repository: self, name: "\(remote)/\(name)")
   }
   
+  public func remoteBranch(named name: String) -> RemoteBranch?
+  {
+    let components = name.components(separatedBy: "/")
+    guard components[0] == "remotes",
+          components.count > 2
+    else { return nil }
+    
+    return GitRemoteBranch(repository: self,
+                           name: components.dropFirst().joined(separator: "/"))
+  }
+  
   func createBranch(_ name: String) -> Bool
   {
     clearCachedBranch()

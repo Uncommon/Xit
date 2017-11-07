@@ -333,8 +333,7 @@ class XTSideBarDataSource: NSObject
   {
     guard let repository = self.repository,
           item is XTLocalBranchItem,
-          let localBranch = GitLocalBranch(repository: repository,
-                                           name: item.title),
+          let localBranch = repository.localBranch(named: item.title),
           let trackingBranch = localBranch.trackingBranch,
           let graph = repository.graphBetween(localBranch: localBranch,
                                               upstreamBranch: trackingBranch)
@@ -420,7 +419,7 @@ class XTSideBarDataSource: NSObject
       switch response {
         
         case .alertFirstButtonReturn: // Clear
-          let branch = GitLocalBranch(repository: self.repository, name: item.title)
+          var branch = self.repository.localBranch(named: item.title)
           
           branch?.trackingBranchName = nil
           self.outline.reloadItem(item)

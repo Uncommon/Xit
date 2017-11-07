@@ -20,8 +20,7 @@ class XTPushController: XTPasswordOpController
   {
     guard let repository = repository,
           let branchName = repository.currentBranch,
-          let branch = GitLocalBranch(repository: repository,
-                                      name: branchName)
+          let branch = repository.localBranch(named: branchName)
     else {
       NSLog("Can't get current branch")
       throw XTRepository.Error.detachedHead
@@ -53,7 +52,7 @@ class XTPushController: XTPasswordOpController
     }
   }
   
-  func push(localBranch: GitLocalBranch, remote: XTRemote)
+  func push(localBranch: LocalBranch, remote: XTRemote)
   {
     tryRepoOperation(successStatus: "Push complete",
                      failureStatus: "Push failed") {

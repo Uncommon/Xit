@@ -25,7 +25,7 @@ extension Branch
 
 public protocol LocalBranch: Branch
 {
-  var trackingBranchName: String? { get }
+  var trackingBranchName: String? { get set }
   var trackingBranch: RemoteBranch? { get }
 }
 
