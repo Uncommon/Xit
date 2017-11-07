@@ -141,7 +141,7 @@
 		C95355EA1D93470400AEEF49 /* TitleStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95355E91D93470400AEEF49 /* TitleStatusView.swift */; };
 		C95355FC1D9492EA00AEEF49 /* XTDocumentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95355FB1D9492EA00AEEF49 /* XTDocumentController.swift */; };
 		C953560A1D958E8D00AEEF49 /* StringExtensionsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95356091D958E8D00AEEF49 /* StringExtensionsTest.swift */; };
-		C954ABFD1D34455000302160 /* XTBranch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C954ABFC1D34455000302160 /* XTBranch.swift */; };
+		C954ABFD1D34455000302160 /* GitBranch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C954ABFC1D34455000302160 /* GitBranch.swift */; };
 		C957B84B1D2D53040040F858 /* XTSheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B84A1D2D53040040F858 /* XTSheetController.swift */; };
 		C957B8541D2D533C0040F858 /* XTAddAccountController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B8531D2D533C0040F858 /* XTAddAccountController.swift */; };
 		C957B85B1D2D6A3C0040F858 /* bitbucketTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C957B8571D2D6A3C0040F858 /* bitbucketTemplate.png */; };
@@ -545,7 +545,7 @@
 		C95355E91D93470400AEEF49 /* TitleStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleStatusView.swift; sourceTree = "<group>"; };
 		C95355FB1D9492EA00AEEF49 /* XTDocumentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTDocumentController.swift; sourceTree = "<group>"; };
 		C95356091D958E8D00AEEF49 /* StringExtensionsTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtensionsTest.swift; sourceTree = "<group>"; };
-		C954ABFC1D34455000302160 /* XTBranch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTBranch.swift; sourceTree = "<group>"; };
+		C954ABFC1D34455000302160 /* GitBranch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitBranch.swift; sourceTree = "<group>"; };
 		C957B84A1D2D53040040F858 /* XTSheetController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSheetController.swift; sourceTree = "<group>"; };
 		C957B8531D2D533C0040F858 /* XTAddAccountController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTAddAccountController.swift; sourceTree = "<group>"; };
 		C957B8571D2D6A3C0040F858 /* bitbucketTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bitbucketTemplate.png; sourceTree = "<group>"; };
@@ -1093,39 +1093,39 @@
 		C97328671D11DECD00C56B9E /* Repository */ = {
 			isa = PBXGroup;
 			children = (
-				C954ABFC1D34455000302160 /* XTBranch.swift */,
 				C92E30FA1D4FF4F0001985F7 /* XTCommit.swift */,
 				C9BAE6091D2FFA8B00A87F13 /* XTConfig.swift */,
-				C9F9A0291E1C417D00261E33 /* PatchMaker.swift */,
 				C9328B111D77303200EFF7F7 /* XTFileMonitor.swift */,
 				C929D03A1D400B3B00D7DC52 /* XTRemote.swift */,
 				89C927931D43B23B0074F71A /* XTRepository.swift */,
 				C94154B51EE5AC460030E481 /* XTRepository+Commands.swift */,
 				C9C1B7CE1EEAFD790011F343 /* XTRepository+Files.swift */,
-				89D5FDB11EDE1DC50067E886 /* XTRepository+Refs.swift */,
 				C9DB64441EA534A0003015D6 /* XTRepository+Iterators.swift */,
 				C9E8815C1E95988700BFA7E5 /* XTRepository+MergePushPull.swift */,
 				C94D7E8C1EBA66180059AC21 /* XTRepository+Parsing.swift */,
+				89D5FDB11EDE1DC50067E886 /* XTRepository+Refs.swift */,
 				C9328B131D776BC700EFF7F7 /* XTRepositoryWatcher.swift */,
 				C9EB87231D01D93400C47D13 /* XTStash.swift */,
 				89C927741D36A2180074F71A /* XTSubmodule.swift */,
 				89C927771D36A5890074F71A /* XTTag.swift */,
 				C9DEA4AA1E4B7A4200DF4069 /* Blame.swift */,
 				C926804D1D074EC500E422FA /* FileChangesModel.swift */,
-				C94736771DEF5AAE000E3A05 /* GitExtensions.swift */,
 				C959A7261F6C8440004277CD /* GitBlob.swift */,
+				C954ABFC1D34455000302160 /* GitBranch.swift */,
+				C95BD4041F8FF8C8000A2E2D /* GitDiff.swift */,
+				C98CAD951F952173005DB419 /* GitDiffDelta.swift */,
+				C98CAD831F9520D0005DB419 /* GitDiffHunk.swift */,
+				DDDA447015B0E97000DF407B /* GitEnums.h */,
+				C95BD4021F8FD611000A2E2D /* GitEnums.swift */,
+				C94736771DEF5AAE000E3A05 /* GitExtensions.swift */,
 				C9DA20CA1F6C8B7800C472CD /* GitIndex.swift */,
+				C991732C1F91255200054154 /* GitPatch.swift */,
 				C9DEA49B1E4A900300DF4069 /* OID.swift */,
+				C9F9A0291E1C417D00261E33 /* PatchMaker.swift */,
 				C959A7221F6C6974004277CD /* RepositoryProtocols.swift */,
 				C9DEA4AC1E4B82B200DF4069 /* Signature.swift */,
 				891261AF1F867FCC00C292B7 /* Tree.swift */,
 				C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */,
-				DDDA447015B0E97000DF407B /* GitEnums.h */,
-				C95BD4021F8FD611000A2E2D /* GitEnums.swift */,
-				C95BD4041F8FF8C8000A2E2D /* GitDiff.swift */,
-				C98CAD951F952173005DB419 /* GitDiffDelta.swift */,
-				C98CAD831F9520D0005DB419 /* GitDiffHunk.swift */,
-				C991732C1F91255200054154 /* GitPatch.swift */,
 			);
 			name = Repository;
 			sourceTree = "<group>";
@@ -1647,7 +1647,7 @@
 				891261B01F867FCC00C292B7 /* Tree.swift in Sources */,
 				C9BDF4D01D99A7660034841F /* XTRenameBranchPanelController.swift in Sources */,
 				C94154A01ED4ECF40030E481 /* BuildStatusViewController.swift in Sources */,
-				C954ABFD1D34455000302160 /* XTBranch.swift in Sources */,
+				C954ABFD1D34455000302160 /* GitBranch.swift in Sources */,
 				C929D0601D42785B00D7DC52 /* TeamCityAPI.swift in Sources */,
 				C94736821DF097B2000E3A05 /* FileListView.swift in Sources */,
 				C93FFCBB1F104AD700FDDD78 /* FileViewController+Actions.swift in Sources */,
