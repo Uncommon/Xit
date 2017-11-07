@@ -14,20 +14,18 @@ let XTChangedRefsKey = "changedRefs"
   var packedRefsWatcher: XTFileMonitor?
   var configWatcher: XTFileMonitor?
   
+  let mutex = Mutex()
+  
   private var lastIndexChangeGuarded = Date()
   var lastIndexChange: Date
   {
     get
     {
-      objc_sync_enter(self)
-      defer { objc_sync_exit(self) }
-      return lastIndexChangeGuarded
+      return mutex.withLock { lastIndexChangeGuarded }
     }
     set
     {
-      objc_sync_enter(self)
-      lastIndexChangeGuarded = newValue
-      objc_sync_exit(self)
+      mutex.withLock { lastIndexChangeGuarded = newValue }
       NotificationCenter.default.post(
           name: NSNotification.Name.XTRepositoryIndexChanged, object: repository)
     }
@@ -64,17 +62,20 @@ let XTChangedRefsKey = "changedRefs"
   func stop()
   {
     stream.stop()
-    packedRefsWatcher = nil
-    configWatcher = nil
+    mutex.withLock {
+      self.packedRefsWatcher = nil
+      self.configWatcher = nil
+    }
   }
   
   func makePackedRefsWatcher()
   {
     let path = repository!.gitDirectoryURL.path
+    let watcher =
+          XTFileMonitor(path: path.appending(pathComponent: "packed-refs"))
     
-    self.packedRefsWatcher =
-        XTFileMonitor(path: path.appending(pathComponent: "packed-refs"))
-    self.packedRefsWatcher?.notifyBlock = {
+    mutex.withLock { self.packedRefsWatcher = watcher }
+    watcher?.notifyBlock = {
       [weak self] (_, _) in
       self?.checkRefs()
     }
@@ -147,9 +148,11 @@ let XTChangedRefsKey = "changedRefs"
   
   func checkRefs(changedPaths: [String], repository: XTRepository)
   {
-    if packedRefsWatcher == nil,
-       changedPaths.index(of: repository.gitDirectoryURL.path) != nil {
-      makePackedRefsWatcher()
+    mutex.withLock {
+      if self.packedRefsWatcher == nil,
+         changedPaths.index(of: repository.gitDirectoryURL.path) != nil {
+        self.makePackedRefsWatcher()
+      }
     }
     
     if paths(changedPaths, includeSubpaths: ["refs/heads", "refs/remotes"]) {
