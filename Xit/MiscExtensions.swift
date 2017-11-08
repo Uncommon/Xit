@@ -159,6 +159,11 @@ extension NSTextField
 
 extension String
 {
+  var lastPathComponent: String
+  {
+    return (self as NSString).lastPathComponent
+  }
+  
   /// Splits a "refs/*/..." string into prefix and remainder.
   func splitRefName() -> (String, String)?
   {

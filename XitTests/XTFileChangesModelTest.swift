@@ -137,7 +137,7 @@ class XTFileChangesModelTest: XTTest
   func testStagingTreeSimple()
   {
     let model = StagingChanges(repository: repository)
-    let tree = model.treeRoot
+    let tree = model.treeRoot(oldTree: nil)
     
     XCTAssertNotNil(tree.children)
     XCTAssertEqual(tree.children!.count, 1)
@@ -159,7 +159,7 @@ class XTFileChangesModelTest: XTTest
     }
     let model = CommitChanges(repository: repository,
                               commit: headCommit)
-    let tree = model.treeRoot
+    let tree = model.treeRoot(oldTree: nil)
     
     XCTAssertNotNil(tree.children)
     XCTAssertEqual(tree.children!.count, 2)
@@ -186,7 +186,7 @@ class XTFileChangesModelTest: XTTest
     self.makeStash()
     
     let model = StashChanges(repository: repository, index: 0)
-    let tree = model.treeRoot
+    let tree = model.treeRoot(oldTree: nil)
     
     XCTAssertEqual(tree.children!.count, 4)
     
@@ -197,7 +197,7 @@ class XTFileChangesModelTest: XTTest
     let expectedUnstaged: [DeltaStatus] =
         [.unmodified, .unmodified, .modified,   .untracked]
     
-    for i in 0...3 {
+    for i in 0..<min(4, tree.children!.count) {
       let item = tree.children![i].representedObject as! FileChange
       
       XCTAssertEqual(item.path, expectedPaths[i])
