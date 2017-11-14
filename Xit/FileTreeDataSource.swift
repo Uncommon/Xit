@@ -170,4 +170,11 @@ class CommitTreeItem: FileChange
     self.oid = oid
     super.init(path: path, change: change, unstagedChange: unstagedChange)
   }
+  
+  convenience init(path: String, oid: OID?, status: DeltaStatus, staged: Bool)
+  {
+    self.init(path: path, oid: oid,
+              change: staged ? status : .unmodified,
+              unstagedChange: staged ? .unmodified : status)
+  }
 }

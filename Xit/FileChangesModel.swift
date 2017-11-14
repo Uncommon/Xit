@@ -97,7 +97,104 @@ class CommitChanges: FileChangesModel
     let result = loader.treeRoot(tree: tree, oldTree: oldTree)
     
     postProcess(fileTree: result)
+    insertDeletedFiles(root: result, changes: changes, staged: staged)
     return result
+  }
+  
+  /// Inserts deleted files into a tree based on the given `changes`.
+  func insertDeletedFiles(root: NSTreeNode, changes: [String: DeltaStatus],
+                          staged: Bool)
+  {
+    for (path, status) in changes where status == .deleted {
+      switch findNodeOrParent(root: root, path: path) {
+        
+        case .found(let node):
+          if let item = node.representedObject as? CommitTreeItem {
+            if staged {
+              item.change = .deleted
+            }
+            else {
+              item.unstagedChange = .deleted
+            }
+          }
+          return
+        
+        case .parent(let parent):
+          guard let parentPath = (parent.representedObject as? CommitTreeItem)?
+                                 .path
+          else { break }
+          
+          insertDeletionNode(root: parent,
+                             subpath: path.removingPrefix(parentPath),
+                             staged: staged)
+        
+        case .notFound:
+          insertDeletionNode(root: root, subpath: path, staged: staged)
+      }
+    }
+  }
+  
+  /// Inserts a single deleted item into a tree, adding parent folders as needed
+  func insertDeletionNode(root: NSTreeNode, subpath: String, staged: Bool)
+  {
+    guard let rootPath = (root.representedObject as? CommitTreeItem)?.path
+    else { return }
+    let path = rootPath.appending(pathComponent: subpath)
+    let deletionItem = CommitTreeItem(path: path, oid: nil,
+                                      status: .deleted, staged: staged)
+    let deletionNode = NSTreeNode(representedObject: deletionItem)
+    var subsubpath = subpath
+    var subName = subsubpath.firstPathComponent ?? ""
+    var subParent = root
+    let pathKeyExtractor: (NSTreeNode) -> String? = {
+          ($0.representedObject as? CommitTreeItem)?.path }
+    
+    // Insert intervening parents if needed
+    while subsubpath != subName {
+      let subItem = CommitTreeItem(path: "")
+      let subNode = NSTreeNode(representedObject: subItem)
+      
+      subParent.insert(node: subNode, sortedBy: pathKeyExtractor)
+      subsubpath = subsubpath.deletingFirstPathComponent
+      subName = subsubpath.firstPathComponent ?? ""
+      subParent = subNode
+    }
+    
+    subParent.insert(node: deletionNode, sortedBy: pathKeyExtractor)
+  }
+  
+  enum NodeResult
+  {
+    case found(NSTreeNode)
+    case parent(NSTreeNode) // parent the node should be under
+    case notFound
+  }
+  
+  func findNodeOrParent(root: NSTreeNode, path: String) -> NodeResult
+  {
+    guard let children = root.children
+    else { return .notFound }
+    
+    for child in children {
+      guard let item = child.representedObject as? CommitTreeItem
+      else { continue }
+      
+      if item.path == path {
+        return .found(child)
+      }
+      if path.hasPrefix(item.path) {
+        let result = findNodeOrParent(root: child,
+                                      path: path.deletingFirstPathComponent)
+        
+        switch result {
+          case .found, .parent:
+            return result
+          case .notFound:
+            return .parent(child)
+        }
+      }
+    }
+    return .notFound
   }
   
   func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?

@@ -187,8 +187,13 @@ class XTFileChangesModelTest: XTTest
     
     let model = StashChanges(repository: repository, index: 0)
     let tree = model.treeRoot(oldTree: nil)
+    guard let children = tree.children
+    else {
+      XCTFail("no children")
+      return
+    }
     
-    XCTAssertEqual(tree.children!.count, 4)
+    XCTAssertEqual(children.count, 4)
     
     let expectedPaths =
         [addedName,   deletedName, file1Name,   untrackedName]
@@ -197,8 +202,8 @@ class XTFileChangesModelTest: XTTest
     let expectedUnstaged: [DeltaStatus] =
         [.unmodified, .unmodified, .modified,   .untracked]
     
-    for i in 0..<min(4, tree.children!.count) {
-      let item = tree.children![i].representedObject as! FileChange
+    for i in 0..<min(4, children.count) {
+      let item = children[i].representedObject as! FileChange
       
       XCTAssertEqual(item.path, expectedPaths[i])
       XCTAssertEqual(item.change, expectedChanges[i],
