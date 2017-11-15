@@ -64,12 +64,11 @@ extension XTRepository: FileStaging
     guard sha != XTStagingSHA
     else { return stagingChanges() }
     
-    guard let commit = self.commit(forSHA: sha),
-          let sha = commit.sha
+    guard let commit = self.commit(forSHA: sha)
     else { return [] }
     
     let parentOID = parentOID ?? commit.parentOIDs.first
-    guard let diff = self.diff(forSHA: sha, parent: parentOID)
+    guard let diff = self.diff(forSHA: commit.sha, parent: parentOID)
     else { return [] }
     var result = [FileChange]()
     

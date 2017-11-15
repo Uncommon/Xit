@@ -116,6 +116,7 @@ public class XTHistoryTableController: NSViewController
         _ = repository.sha(forRef: ref).flatMap { try? walker.pushSHA($0) }
       }
       
+      objc_sync_enter(history)
       while let gtCommit = walker.nextObject() as? GTCommit {
         let oid = GitOID(oidPtr: gtCommit.oid!.git_oid())
         guard let commit = XTCommit(oid: oid,
@@ -124,6 +125,7 @@ public class XTHistoryTableController: NSViewController
         
         history.appendCommit(commit)
       }
+      objc_sync_exit(history)
       kdebug_signpost_end(Signposts.historyWalking, 0, 0, 0, 0)
       
       DispatchQueue.global(qos: .utility).async {
@@ -206,7 +208,11 @@ public class XTHistoryTableController: NSViewController
     let tableView = view as! NSTableView
     
     objc_sync_enter(self)
-    defer { objc_sync_exit(self) }
+    objc_sync_enter(history)
+    defer {
+      objc_sync_exit(history)
+      objc_sync_exit(self)
+    }
     
     guard let sha = sha,
           let row = history.entries.index(where: { $0.commit.sha == sha })
@@ -270,14 +276,12 @@ extension XTHistoryTableController: NSTableViewDelegate
     else { return nil }
     
     let entry = history.entries[row]
-    guard let sha = entry.commit.sha
-    else { return nil }
     
     switch tableColumn.identifier {
       case ColumnID.commit:
         let historyCell = result as! XTHistoryCellView
         
-        historyCell.refs = repository.refs(at: sha)
+        historyCell.refs = repository.refs(at: entry.commit.sha)
         historyCell.textField?.stringValue = entry.commit.message ?? ""
         historyCell.objectValue = entry
       case ColumnID.date:

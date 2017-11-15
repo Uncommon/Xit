@@ -71,9 +71,10 @@ struct BranchResult: CustomStringConvertible
   
   var description: String
   {
-    guard let first = entries.first?.commit.sha?.firstSix(),
-      let last = entries.last?.commit.sha?.firstSix()
-      else { return "empty" }
+    guard let first = entries.first?.commit.sha.firstSix(),
+          let last = entries.last?.commit.sha.firstSix()
+    else { return "empty" }
+    
     return "\(first)..\(last)"
   }
 }
@@ -259,14 +260,12 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
       
       kdebug_signpost_start(Signposts.generateLines, UInt(batchStart),
                             0, 0, 0)
-      objc_sync_enter(self)
       DispatchQueue.concurrentPerform(iterations: batchSize) {
         (index) in
         generateLines(entry: entries[index + batchStart],
                       connections: connections[index])
         postProgress?(batchSize, batchStart/batchSize, 1, index)
       }
-      objc_sync_exit(self)
       kdebug_signpost_end(Signposts.generateLines, UInt(batchStart),
                           0, 0, 0)
 
@@ -369,9 +368,11 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
           nextChildIndex += 1
         }
       }
+      objc_sync_enter(self)
       entry.lines.append(HistoryLine(childIndex: childIndex,
                                      parentIndex: parentIndex,
                                      colorIndex: colorIndex))
+      objc_sync_exit(self)
     }
   }
 }

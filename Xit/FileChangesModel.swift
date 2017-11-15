@@ -83,10 +83,9 @@ class CommitChanges: FileChangesModel
   
   func treeRoot(oldTree: NSTreeNode?, staged: Bool) -> NSTreeNode
   {
-    guard let sha = commit.sha,
-          let tree = commit.tree
+    guard let tree = commit.tree
     else { return NSTreeNode() }
-    let changeList = repository.changes(for: sha, parent: diffParent)
+    let changeList = repository.changes(for: commit.sha, parent: diffParent)
     var changes = [String: DeltaStatus]()
     
     for change in changeList {
