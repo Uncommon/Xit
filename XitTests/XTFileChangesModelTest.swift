@@ -215,7 +215,7 @@ class XTFileChangesModelTest: XTTest
   
   // Checks that the results are the same whether you generate a tree from
   // scratch or use the parent as a starting point.
-  func checkCommitTrees()
+  func checkCommitTrees(deletedPath: String?)
   {
     guard let headSHA = repository.headSHA,
           let commit = repository.commit(forSHA: headSHA),
@@ -232,6 +232,36 @@ class XTFileChangesModelTest: XTTest
     let tree2 = model.treeRoot(oldTree: parentTree)
     
     XCTAssertTrue(tree1.isEqual(tree2))
+    
+    if let deletedPath = deletedPath {
+      let components = deletedPath.pathComponents
+      var node = tree2
+      
+      for component in components {
+        guard let children = node.children
+        else {
+          XCTFail("no children")
+          break
+        }
+        
+        if let child = children.first(where: { component ==
+              ($0.representedObject as? CommitTreeItem)?.path.lastPathComponent }) {
+          node = child
+        }
+        else {
+          XCTFail("unmatched parent: \(component)")
+          return
+        }
+      }
+      
+      guard let item = node.representedObject as? CommitTreeItem
+      else {
+        XCTFail("no item")
+        return
+      }
+      
+      XCTAssertEqual(item.change, DeltaStatus.deleted)
+    }
   }
   
   func testCommitRootAddFile()
@@ -266,7 +296,7 @@ class XTFileChangesModelTest: XTTest
     
     XCTAssertEqual(children1.count, 1)
     XCTAssertEqual(children2.count, 2)
-    checkCommitTrees()
+    checkCommitTrees(deletedPath: nil)
   }
   
   func testCommitRootSubFile()
@@ -277,7 +307,7 @@ class XTFileChangesModelTest: XTTest
         at: subURL, withIntermediateDirectories: false, attributes: nil))
     commitNewTextFile("sub/file2", content: "text")
     
-    checkCommitTrees()
+    checkCommitTrees(deletedPath: nil)
   }
   
   func testCommitRootDeleteSubFile()
@@ -297,7 +327,7 @@ class XTFileChangesModelTest: XTTest
     XCTAssertNoThrow(try repository.commit(message: "delete", amend: false,
                                            outputBlock: nil))
     
-    checkCommitTrees()
+    checkCommitTrees(deletedPath: subFilePath)
   }
   
   func testCommitRootDeleteSubSubFile()
@@ -319,7 +349,7 @@ class XTFileChangesModelTest: XTTest
     XCTAssertNoThrow(try repository.commit(message: "delete", amend: false,
                                            outputBlock: nil))
     
-    checkCommitTrees()
+    checkCommitTrees(deletedPath: subFilePath)
   }
   
   func testCommitRootDeleteRootFile()
@@ -339,7 +369,7 @@ class XTFileChangesModelTest: XTTest
     XCTAssertNoThrow(try repository.commit(message: "delete", amend: false,
                                            outputBlock: nil))
     
-    checkCommitTrees()
+    checkCommitTrees(deletedPath: file1Name)
   }
 }
 

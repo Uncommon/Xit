@@ -147,15 +147,17 @@ class CommitChanges: FileChangesModel
     var subParent = root
     let pathKeyExtractor: (NSTreeNode) -> String? = {
           ($0.representedObject as? CommitTreeItem)?.path }
+    var subFullPath = subName
     
     // Insert intervening parents if needed
     while subsubpath != subName {
-      let subItem = CommitTreeItem(path: "")
+      let subItem = CommitTreeItem(path: subFullPath)
       let subNode = NSTreeNode(representedObject: subItem)
       
       subParent.insert(node: subNode, sortedBy: pathKeyExtractor)
       subsubpath = subsubpath.deletingFirstPathComponent
       subName = subsubpath.firstPathComponent ?? ""
+      subFullPath = subFullPath.appending(pathComponent: subName)
       subParent = subNode
     }
     
