@@ -18,6 +18,16 @@ public class FileChange: NSObject
     self.change = change
     self.unstagedChange = unstagedChange
   }
+  
+  public override func isEqual(_ object: Any?) -> Bool
+  {
+    if let otherChange = object as? FileChange {
+      return otherChange.path == path &&
+             otherChange.change == change &&
+             otherChange.unstagedChange == unstagedChange
+    }
+    return false
+  }
 }
 
 class FileStagingChange: FileChange
