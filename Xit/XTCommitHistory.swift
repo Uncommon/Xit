@@ -38,16 +38,16 @@ struct CommitConnection<ID: OID>: Equatable
 
 func == <ID>(left: CommitConnection<ID>, right: CommitConnection<ID>) -> Bool
 {
-  return (left.parentOID.equals(right.parentOID)) &&
-         (left.childOID.equals(right.childOID)) &&
+  return left.parentOID.equals(right.parentOID) &&
+         left.childOID.equals(right.childOID) &&
          (left.colorIndex == right.colorIndex)
 }
 
 // Specific version: compare the binary OIDs
 func == (left: CommitConnection<GitOID>, right: CommitConnection<GitOID>) -> Bool
 {
-  return (left.parentOID.equals(right.parentOID)) &&
-         (left.childOID.equals(right.childOID)) &&
+  return left.parentOID.equals(right.parentOID) &&
+         left.childOID.equals(right.childOID) &&
          (left.colorIndex == right.colorIndex)
 }
 
@@ -62,13 +62,16 @@ extension String
 
 
 /// The result of processing a segment of a branch.
-struct BranchResult: CustomStringConvertible
+struct BranchResult
 {
   /// The commit entries collected for this segment.
-  var entries: [CommitEntry]
+  let entries: [CommitEntry]
   /// Other branches queued for processing.
-  var queue: [(commit: Commit, after: Commit)]
-  
+  let queue: [(commit: Commit, after: Commit)]
+}
+
+extension BranchResult: CustomStringConvertible
+{
   var description: String
   {
     guard let first = entries.first?.commit.sha.firstSix(),
