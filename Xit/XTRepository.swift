@@ -146,8 +146,12 @@ public class XTRepository: NSObject
   
   func refsChanged()
   {
+    // In theory the two separate locks could result in cachedBranch being wrong
+    // but that would only happen if this function was called on two different
+    // threads and one of them found that the branch had just changed again.
+    // Not likely.
     guard let newBranch = calculateCurrentBranch(),
-          newBranch != cachedBranch
+          mutex.withLock({ newBranch != cachedBranch })
     else { return }
     
     willChangeValue(forKey: "currentBranch")
