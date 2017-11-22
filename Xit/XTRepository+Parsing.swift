@@ -127,7 +127,7 @@ extension XTRepository: FileStaging
                     GIT_STATUS_OPT_RECURSE_UNTRACKED_DIRS.rawValue |
                     GIT_STATUS_OPT_INCLUDE_UNMODIFIED.rawValue |
                     GIT_STATUS_OPT_DISABLE_PATHSPEC_MATCH.rawValue
-    options.head_tree = tree?.tree
+    options.baseline = tree?.tree
     options.pathspec.count = 1
     
     var data = CallbackData(path: path, status: git_status_t(rawValue: 0))

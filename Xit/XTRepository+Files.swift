@@ -334,11 +334,11 @@ extension XTRepository
       options.flags = GIT_STATUS_OPT_INCLUDE_UNTRACKED.rawValue |
                       GIT_STATUS_OPT_RECURSE_UNTRACKED_DIRS.rawValue
       if let tree = headTree {
-        options.head_tree = tree
+        options.baseline = tree
       }
       else {
         tree = StatusCollection.emptyTree(repo: repo)
-        options.head_tree = tree
+        options.baseline = tree
       }
       
       var list: OpaquePointer?
