@@ -262,6 +262,18 @@ class XTFileChangesModelTest: XTTest
       
       XCTAssertEqual(item.change, DeltaStatus.deleted)
     }
+    
+    if deletedPath != file1Name {
+      guard let file1Node = tree2.children?.first(where:
+              { ($0.representedObject as? CommitTreeItem)?.path == file1Name} ),
+            let item = file1Node.representedObject as? CommitTreeItem
+      else {
+        XCTFail("file1 missing")
+        return
+      }
+      
+      XCTAssertEqual(item.change, DeltaStatus.unmodified)
+    }
   }
   
   func testCommitRootAddFile()
@@ -341,7 +353,7 @@ class XTFileChangesModelTest: XTTest
     let subFileURL = subSubURL.appendingPathComponent(subFileName)
     
     XCTAssertNoThrow(try FileManager.default.createDirectory(
-      at: subSubURL, withIntermediateDirectories: true, attributes: nil))
+        at: subSubURL, withIntermediateDirectories: true, attributes: nil))
     commitNewTextFile(subFilePath, content: "text")
     
     XCTAssertNoThrow(try FileManager.default.removeItem(at: subFileURL))
@@ -371,6 +383,111 @@ class XTFileChangesModelTest: XTTest
     
     checkCommitTrees(deletedPath: file1Name)
   }
+  
+  func makeSubFolderCommits() -> (Commit, Commit)?
+  {
+    let subDirName = "sub"
+    let subFileName = "file2"
+    let subFilePath = subDirName.appending(pathComponent: subFileName)
+    let subURL = repository.repoURL.appendingPathComponent(subDirName)
+    
+    // Add a file to a subfolder, and save the tree from that commit
+    XCTAssertNoThrow(try FileManager.default.createDirectory(
+        at: subURL, withIntermediateDirectories: false, attributes: nil))
+    commitNewTextFile(subFilePath, content: "text")
+    
+    guard let parentCommit = repository.headSHA.flatMap(
+                { repository.commit(forSHA: $0) })
+    else {
+      XCTFail("can't get parent commit")
+      return nil
+    }
+
+    // Make a new commit where that subfolder is unchanged
+    writeText(toFile1: "changes")
+    XCTAssertNoThrow(try repository.stage(file: file1Name))
+    XCTAssertNoThrow(try repository.commit(message: "commit 3", amend: false,
+                                           outputBlock: nil))
+    
+    guard let headSHA = repository.headSHA,
+          let commit = repository.commit(forSHA: headSHA)
+    else {
+      XCTFail("can't get commit")
+      return nil
+    }
+    
+    return (parentCommit, commit)
+  }
+  
+  // Make sure that when a subtree is copied from an old tree, its statuses
+  // are updated.
+  func testCommitRootUpdateUnchanged()
+  {
+    guard let (parentCommit, commit) = makeSubFolderCommits()
+    else { return }
+    
+    let subDirName = "sub"
+    let subFileName = "file2"
+    let subFilePath = subDirName.appending(pathComponent: subFileName)
+    
+    let parentModel = CommitChanges(repository: repository, commit: parentCommit)
+    let parentRoot = parentModel.treeRoot(oldTree: nil)
+    
+    // Double check that the file shows up as added
+    guard let newNode = parentRoot.commitTreeItemNode(forPath: subFilePath),
+          let newItem = newNode.representedObject as? CommitTreeItem
+    else {
+      XCTFail("can't get item")
+      return
+    }
+    
+    XCTAssertEqual(newItem.change, DeltaStatus.added)
+    
+    let model = CommitChanges(repository: repository, commit: commit)
+    let root = model.treeRoot(oldTree: parentRoot)
+    guard let fileNode = root.commitTreeItemNode(forPath: subFilePath),
+          let item = fileNode.representedObject as? CommitTreeItem
+    else {
+      XCTFail("can't get item")
+      return
+    }
+    
+    XCTAssertEqual(item.change, DeltaStatus.unmodified)
+  }
+  
+  // Like testCommitRootUpdateUnchanged but going the other way
+  func testCommitRootUpdateReversed()
+  {
+    guard let (parentCommit, commit) = makeSubFolderCommits()
+      else { return }
+    
+    let subDirName = "sub"
+    let subFileName = "file2"
+    let subFilePath = subDirName.appending(pathComponent: subFileName)
+
+    let model = CommitChanges(repository: repository, commit: commit)
+    let root = model.treeRoot(oldTree: nil)
+    guard let fileNode = root.commitTreeItemNode(forPath: subFilePath),
+          let item = fileNode.representedObject as? CommitTreeItem
+    else {
+      XCTFail("can't get item")
+      return
+    }
+    
+    XCTAssertEqual(item.change, DeltaStatus.unmodified)
+    
+    let parentModel = CommitChanges(repository: repository, commit: parentCommit)
+    let parentRoot = parentModel.treeRoot(oldTree: root)
+    
+    guard let newNode = parentRoot.commitTreeItemNode(forPath: subFilePath),
+      let newItem = newNode.representedObject as? CommitTreeItem
+      else {
+        XCTFail("can't get item")
+        return
+    }
+    
+    XCTAssertEqual(newItem.change, DeltaStatus.added)
+  }
 }
 
 extension NSTreeNode
@@ -394,5 +511,36 @@ extension NSTreeNode
       }
     }
     return true
+  }
+  
+  func commitTreeItemNode(forPath path: String, root: String = "") -> NSTreeNode?
+  {
+    let relativePath = path.removingPrefix(root + "/")
+    guard let topFolderName = relativePath.firstPathComponent
+    else { return nil }
+    let folderPath = root.appending(pathComponent: topFolderName)
+    guard let node = children?.first(where:
+                { ($0.representedObject as? CommitTreeItem)?.path == folderPath}),
+          let item = node.representedObject as? CommitTreeItem
+    else { return nil }
+    
+    if item.path == path {
+      return node
+    }
+    else {
+      return node.commitTreeItemNode(forPath: path, root: folderPath)
+    }
+  }
+  
+  func printChangeItems()
+  {
+    if let item = representedObject as? CommitTreeItem {
+      print("\(item.path) - \(item.change)/\(item.unstagedChange)")
+    }
+    if let children = self.children {
+      for child in children {
+        child.printChangeItems()
+      }
+    }
   }
 }
