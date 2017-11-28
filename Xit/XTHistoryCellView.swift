@@ -121,43 +121,39 @@ class XTHistoryCellView: NSTableCellView
     else { return nil }
     let path = NSBezierPath()
     
-    if line.parentIndex == nil {
-      guard let childIndex = line.childIndex
-      else { return nil }
+    switch (line.parentIndex, line.childIndex) {
       
-      path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(childIndex),
-                            y: bounds.size.height))
-      path.relativeLine(to: NSPoint(x: 0, y: -cornerOffset(dotOffset,
-                                                           childIndex)))
-      path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(dotOffset),
-                            y: bounds.size.height/2))
-    }
-    else if line.childIndex == nil {
-      guard let parentIndex = line.parentIndex
-      else { return nil }
+      case (nil, let childIndex?):
+        path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(childIndex),
+                              y: bounds.size.height))
+        path.relativeLine(to: NSPoint(x: 0, y: -cornerOffset(dotOffset,
+                                                             childIndex)))
+        path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(dotOffset),
+                              y: bounds.size.height/2))
       
-      path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(parentIndex),
-                            y: 0))
-      path.relativeLine(to: NSPoint(x: 0, y: cornerOffset(dotOffset,
-                                                          parentIndex)))
-      path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(dotOffset),
-                            y: bounds.size.height/2))
-    }
-    else {
-      guard let parentIndex = line.parentIndex,
-            let childIndex = line.childIndex
-      else { return nil }
-      let cornerOffset = self.cornerOffset(childIndex, parentIndex)
+      case (let parentIndex?, nil):
+        path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(parentIndex),
+                              y: 0))
+        path.relativeLine(to: NSPoint(x: 0, y: cornerOffset(dotOffset,
+                                                            parentIndex)))
+        path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(dotOffset),
+                              y: bounds.size.height/2))
       
-      path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(childIndex),
-                            y: bounds.size.height))
-      if parentIndex != childIndex {
-        path.relativeLine(to: NSPoint(x: 0, y: -cornerOffset))
+      case (let parentIndex?, let childIndex?):
+        path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(childIndex),
+                              y: bounds.size.height))
+        if parentIndex != childIndex {
+          let cornerOffset = self.cornerOffset(childIndex, parentIndex)
+          
+          path.relativeLine(to: NSPoint(x: 0, y: -cornerOffset))
+          path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(parentIndex),
+                                y: cornerOffset))
+        }
         path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(parentIndex),
-                              y: cornerOffset))
-      }
-      path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(parentIndex),
-                            y: 0))
+                              y: 0))
+      
+      case (nil, nil):
+        return nil
     }
     return path
   }
