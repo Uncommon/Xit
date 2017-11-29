@@ -137,14 +137,13 @@ extension XTRepository
   
   private func fastForwardMerge(branch: GitBranch, remoteBranch: GitBranch) throws
   {
-    guard let remoteCommit = remoteBranch.targetCommit,
-          let remoteSHA = remoteCommit.sha
+    guard let remoteCommit = remoteBranch.targetCommit
     else { throw Error.unexpected }
     
     do {
       let targetReference = branch.gtBranch.reference
       let updated = try targetReference.updatingTarget(
-            remoteSHA,
+            remoteCommit.sha,
             message: "merge \(remoteBranch.name): Fast-forward")
       let options = GTCheckoutOptions(strategy: [.force, .allowConflicts],
                                       notifyFlags: [.conflict]) {

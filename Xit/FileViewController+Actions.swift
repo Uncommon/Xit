@@ -162,12 +162,7 @@ extension FileViewController
         fileListOutline.tableColumn(withIdentifier: columnID)
     fileListOutline.delegate = self
     fileListOutline.dataSource = newDS
-    if newDS.outlineView!(fileListOutline, numberOfChildrenOfItem: nil) == 0 {
-      newDS.reload()
-    }
-    else {
-      fileListOutline.reloadData()
-    }
+    newDS.reload()
   }
   
   @IBAction func changeContentView(_ sender: Any?)

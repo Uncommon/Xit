@@ -131,7 +131,8 @@ class XTCommitHistoryTest: XCTestCase
         let parentIndex = history.entries.index(
             where: { $0.commit.oid.equals(parentOID) })
         
-        XCTAssert(parentIndex! > index, "\(entry.commit.sha!.firstSix()) !< \(parentOID.sha.firstSix())")
+        XCTAssert(parentIndex! > index,
+                  "\(entry.commit.sha.firstSix()) !< \(parentOID.sha.firstSix())")
       }
     }
   }

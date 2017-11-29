@@ -13,12 +13,15 @@ protocol FileChangesModel
   var shaToSelect: String? { get }
   /// Changes displayed in the file list
   var changes: [FileChange] { get }
-  /// Top level of the file tree
-  var treeRoot: NSTreeNode { get }
   /// Are there staged and unstaged changes?
   var hasUnstaged: Bool { get }
   /// Is this used to stage and commit files?
   var canCommit: Bool { get }
+  
+  /// Constructs the file tree
+  /// - parameter oldTree: Tree from the previously selected commit, to speed
+  /// up loading.
+  func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
   /// Get the diff for the given file.
   /// - parameter path: Repository-relative file path.
   /// - parameter staged: Whether to show the staged or unstaged diff. Ignored
@@ -64,11 +67,6 @@ class CommitChanges: FileChangesModel
       self.repository.changes(for: self.commit.oid.sha,
                               parent: self.commit.parentOIDs.first)
   
-  var treeRoot: NSTreeNode
-  {
-    return self.makeTreeRoot(staged: true)
-  }
-  
   /// SHA of the parent commit to use for diffs
   var diffParent: GitOID?
 
@@ -76,6 +74,128 @@ class CommitChanges: FileChangesModel
   {
     self.repository = repository
     self.commit = commit as! XTCommit
+  }
+  
+  func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
+  {
+    return treeRoot(oldTree: oldTree, staged: true)
+  }
+  
+  func treeRoot(oldTree: NSTreeNode?, staged: Bool) -> NSTreeNode
+  {
+    guard let tree = commit.tree
+    else { return NSTreeNode() }
+    let changeList = repository.changes(for: commit.sha, parent: diffParent)
+    var changes = [String: DeltaStatus]()
+    
+    for change in changeList {
+      changes[change.path] = change.change
+    }
+    
+    let loader = TreeLoader(changes: changes, staged: staged)
+    let result = loader.treeRoot(tree: tree, oldTree: oldTree)
+    
+    postProcess(fileTree: result)
+    insertDeletedFiles(root: result, changes: changes, staged: staged)
+    return result
+  }
+  
+  /// Inserts deleted files into a tree based on the given `changes`.
+  func insertDeletedFiles(root: NSTreeNode, changes: [String: DeltaStatus],
+                          staged: Bool)
+  {
+    for (path, status) in changes where status == .deleted {
+      switch findNodeOrParent(root: root, path: path) {
+        
+        case .found(let node):
+          if let item = node.representedObject as? CommitTreeItem {
+            if staged {
+              item.change = .deleted
+            }
+            else {
+              item.unstagedChange = .deleted
+            }
+          }
+          return
+        
+        case .parent(let parent):
+          guard let parentPath = (parent.representedObject as? CommitTreeItem)?
+                                 .path
+          else { break }
+          
+          insertDeletionNode(root: parent,
+                             subpath: path.removingPrefix(parentPath),
+                             staged: staged)
+        
+        case .notFound:
+          insertDeletionNode(root: root, subpath: path, staged: staged)
+      }
+    }
+  }
+  
+  /// Inserts a single deleted item into a tree, adding parent folders as needed
+  func insertDeletionNode(root: NSTreeNode, subpath: String, staged: Bool)
+  {
+    guard let rootPath = (root.representedObject as? CommitTreeItem)?.path
+    else { return }
+    let path = rootPath.appending(pathComponent: subpath)
+    let deletionItem = CommitTreeItem(path: path, oid: nil,
+                                      status: .deleted, staged: staged)
+    let deletionNode = NSTreeNode(representedObject: deletionItem)
+    var subsubpath = subpath
+    var subName = subsubpath.firstPathComponent ?? ""
+    var subParent = root
+    let pathKeyExtractor: (NSTreeNode) -> String? = {
+          ($0.representedObject as? CommitTreeItem)?.path }
+    var subFullPath = subName
+    
+    // Insert intervening parents if needed
+    while subsubpath != subName {
+      let subItem = CommitTreeItem(path: subFullPath)
+      let subNode = NSTreeNode(representedObject: subItem)
+      
+      subParent.insert(node: subNode, sortedBy: pathKeyExtractor)
+      subsubpath = subsubpath.deletingFirstPathComponent
+      subName = subsubpath.firstPathComponent ?? ""
+      subFullPath = subFullPath.appending(pathComponent: subName)
+      subParent = subNode
+    }
+    
+    subParent.insert(node: deletionNode, sortedBy: pathKeyExtractor)
+  }
+  
+  enum NodeResult
+  {
+    case found(NSTreeNode)
+    case parent(NSTreeNode) // parent the node should be under
+    case notFound
+  }
+  
+  func findNodeOrParent(root: NSTreeNode, path: String) -> NodeResult
+  {
+    guard let children = root.children
+    else { return .notFound }
+    
+    for child in children {
+      guard let item = child.representedObject as? CommitTreeItem
+      else { continue }
+      
+      if item.path == path {
+        return .found(child)
+      }
+      if path.hasPrefix(item.path) {
+        let result = findNodeOrParent(root: child,
+                                      path: path.deletingFirstPathComponent)
+        
+        switch result {
+          case .found, .parent:
+            return result
+          case .notFound:
+            return .parent(child)
+        }
+      }
+    }
+    return .notFound
   }
   
   func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?
@@ -97,43 +217,6 @@ class CommitChanges: FileChangesModel
   }
   
   func unstagedFileURL(_ path: String) -> URL? { return nil }
-
-  func makeTreeRoot(staged: Bool) -> NSTreeNode
-  {
-    guard let sha = commit.sha
-    else { return NSTreeNode() }
-    var files = commit.allFiles()
-    let changeList = repository.changes(for: sha, parent: diffParent)
-    var changes = [String: DeltaStatus]()
-      
-    for change in changeList {
-      changes[change.path] = change.change
-    }
-    files.append(
-        contentsOf: changeList.filter({ return $0.change == .deleted })
-                              .map({ return $0.path }))
-    
-    let newRoot = NSTreeNode(representedObject: CommitTreeItem(path: "/"))
-    var nodes = [String: NSTreeNode]()
-    
-    for file in files {
-      let changeValue = changes[file] ?? .unmodified
-      let item = staged ?
-          CommitTreeItem(path: file, change: changeValue) :
-          CommitTreeItem(path: file,
-                         change: .unmodified,
-                         unstagedChange: changeValue)
-      let parentPath = (file as NSString).deletingLastPathComponent
-      let node = NSTreeNode(representedObject: item)
-      let parentNode = findTreeNode(
-          forPath: parentPath, parent: newRoot, nodes: &nodes)
-      
-      parentNode.mutableChildren.add(node)
-      nodes[file] = node
-    }
-    postProcess(fileTree: newRoot)
-    return newRoot
-  }
 }
 
 
@@ -147,30 +230,6 @@ class StashChanges: FileChangesModel
   var shaToSelect: String? { return stash.mainCommit?.parentSHAs[0] }
   var changes: [FileChange] { return stash.changes() }
   
-  var treeRoot: NSTreeNode {
-    guard let mainModel = stash.mainCommit.map({
-        CommitChanges(repository: repository, commit: $0) })
-    else { return NSTreeNode() }
-    var mainRoot = mainModel.makeTreeRoot(staged: false)
-    
-    if let indexCommit = stash.indexCommit {
-      let indexModel = CommitChanges(repository: repository,
-                                     commit: indexCommit)
-      let indexRoot = indexModel.treeRoot
-      
-      combineTrees(unstagedTree: &mainRoot,
-                                      stagedTree: indexRoot)
-    }
-    if let untrackedCommit = stash.untrackedCommit {
-      let untrackedModel = CommitChanges(repository: repository,
-                                         commit: untrackedCommit)
-      let untrackedRoot = untrackedModel.treeRoot
-    
-      add(untrackedRoot, to: &mainRoot)
-    }
-    return mainRoot
-  }
-  
   init(repository: FileChangesRepo & Stashing, index: UInt)
   {
     self.repository = repository
@@ -181,6 +240,31 @@ class StashChanges: FileChangesModel
   {
     self.repository = repository
     self.stash = stash
+  }
+  
+  func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
+  {
+    guard let mainModel = stash.mainCommit.map({
+        CommitChanges(repository: repository, commit: $0) })
+    else { return NSTreeNode() }
+    var mainRoot = mainModel.treeRoot(oldTree: oldTree, staged: false)
+    
+    if let indexCommit = stash.indexCommit {
+      let indexModel = CommitChanges(repository: repository,
+                                     commit: indexCommit)
+      let indexRoot = indexModel.treeRoot(oldTree: oldTree)
+      
+      combineTrees(unstagedTree: &mainRoot,
+                   stagedTree: indexRoot)
+    }
+    if let untrackedCommit = stash.untrackedCommit {
+      let untrackedModel = CommitChanges(repository: repository,
+                                         commit: untrackedCommit)
+      let untrackedRoot = untrackedModel.treeRoot(oldTree: oldTree)
+    
+      add(untrackedRoot, to: &mainRoot)
+    }
+    return mainRoot
   }
   
   func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?
@@ -259,18 +343,18 @@ class StagingChanges: FileChangesModel
   var changes: [FileChange]
   { return repository.changes(for: XTStagingSHA, parent: nil) }
   
-  var treeRoot: NSTreeNode
+  init(repository: FileChangesRepo)
+  {
+    self.repository = repository
+  }
+  
+  func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
   {
     let builder = WorkspaceTreeBuilder(changes: repository.workspaceStatus)
     let root = builder.build(repository.repoURL)
     
     postProcess(fileTree: root)
     return root
-  }
-  
-  init(repository: FileChangesRepo)
-  {
-    self.repository = repository
   }
   
   func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?

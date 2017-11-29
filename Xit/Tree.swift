@@ -6,6 +6,7 @@ public protocol Tree: OIDObject
   
   func entry(named: String) -> TreeEntry?
   func entry(path: String) -> TreeEntry?
+  func entry(at index: Int) -> TreeEntry?
   func walkEntries(callback: (TreeEntry, String) -> Void)
 }
 
@@ -107,6 +108,16 @@ class GitTree: Tree
     else { return nil }
     
     return GitTreeEntry(entry: finalEntry, owner: owner)
+  }
+  
+  func entry(at index: Int) -> TreeEntry?
+  {
+    switch index {
+      case 0..<count:
+        return entries[index]
+      default:
+        return nil
+    }
   }
   
   func walkEntries(callback: (TreeEntry, String) -> Void)

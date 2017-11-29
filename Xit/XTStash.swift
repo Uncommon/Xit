@@ -45,15 +45,16 @@ public class XTStash: NSObject, Stash
       return changes
     }
     
-    guard var unstagedChanges = mainCommit?.sha.map({
-        repo.changes(for: $0, parent: indexCommit?.oid) })
+    guard let mainCommit = self.mainCommit
     else { return [] }
-    let stagedChanges = indexCommit.map { repo.changes(for: $0.sha!,
+    var unstagedChanges = repo.changes(for: mainCommit.sha,
+                                       parent: indexCommit?.oid)
+    let stagedChanges = indexCommit.map { repo.changes(for: $0.sha,
                                                        parent: nil) }
                         ?? []
     
     if let untrackedCommit = self.untrackedCommit {
-      let untrackedChanges = repo.changes(for: untrackedCommit.sha!, parent: nil)
+      let untrackedChanges = repo.changes(for: untrackedCommit.sha, parent: nil)
       
       unstagedChanges.append(contentsOf: untrackedChanges)
     }

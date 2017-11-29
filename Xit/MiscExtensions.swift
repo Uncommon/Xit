@@ -65,6 +65,7 @@ extension String
     return (self as NSString).pathComponents
   }
   
+  // TODO: this probably shouldn't be optional
   var firstPathComponent: String?
   {
     return pathComponents.first
@@ -159,6 +160,11 @@ extension NSTextField
 
 extension String
 {
+  var lastPathComponent: String
+  {
+    return (self as NSString).lastPathComponent
+  }
+  
   /// Splits a "refs/*/..." string into prefix and remainder.
   func splitRefName() -> (String, String)?
   {
@@ -241,6 +247,32 @@ extension NSTableView
     }
     scrollOrigin.y -= headerView?.bounds.size.height ?? 0
     superview?.animator().setBoundsOrigin(scrollOrigin)
+  }
+}
+
+extension NSTreeNode
+{
+  /// Inserts a child node in sorted order based on the given key extractor
+  func insert<T>(node: NSTreeNode, sortedBy extractor: (NSTreeNode) -> T?)
+    where T: Comparable
+  {
+    guard let children = self.children,
+          let key = extractor(node)
+    else {
+      mutableChildren.add(node)
+      return
+    }
+    
+    for (index, child) in children.enumerated() {
+      guard let childKey = extractor(child)
+      else { continue }
+      
+      if childKey > key {
+        mutableChildren.insert(node, at: index)
+        return
+      }
+    }
+    mutableChildren.add(node)
   }
 }
 
