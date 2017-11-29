@@ -459,7 +459,7 @@ class XTFileChangesModelTest: XTTest
   func testCommitRootUpdateReversed()
   {
     guard let (parentCommit, commit) = makeSubFolderCommits()
-      else { return }
+    else { return }
     
     let subDirName = "sub"
     let subFileName = "file2"
