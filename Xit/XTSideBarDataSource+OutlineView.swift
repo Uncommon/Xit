@@ -124,26 +124,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
         dataView.statusButton.action = #selector(self.showItemStatus(_:))
       }
       if sideBarItem is XTLocalBranchItem {
-        if let statusText = graphText(for: sideBarItem) {
-          dataView.statusText.title = statusText
-          dataView.statusText.isHidden = false
-        }
-        else if dataView.statusButton.image == nil {
-          switch trackingBranchStatus(for: sideBarItem.title) {
-            case .none:
-              break
-            case .missing(let tracking):
-              dataView.statusButton.image =
-                    NSImage(named: .xtTrackingMissing)
-              dataView.statusButton.toolTip = tracking + " (missing)"
-              dataView.statusButton.target = self
-              dataView.statusButton.action =
-                  #selector(self.missingTrackingBranch(_:))
-            case .set(let tracking):
-              dataView.statusButton.image = NSImage(named: .xtTracking)
-              dataView.statusButton.toolTip = tracking
-          }
-        }
+        configureLocalBranchItem(sideBarItem: sideBarItem, dataView: dataView)
       }
       dataView.statusButton.isHidden = dataView.statusButton.image == nil
       if sideBarItem.editable {
@@ -160,21 +141,52 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
           : NSFont.systemFont(ofSize: fontSize)
 
       if sideBarItem is XTStagingItem {
-        let changes = sideBarItem.model!.changes
-        let stagedCount =
-              changes.count(where: { $0.change != .unmodified })
-        let unstagedCount =
-              changes.count(where: { $0.unstagedChange != .unmodified })
-        
-        if (stagedCount != 0) || (unstagedCount != 0) {
-          dataView.statusText.title = "\(unstagedCount)▸\(stagedCount)"
-          dataView.statusText.isHidden = false
-        }
-        else {
-          dataView.statusText.isHidden = true
-        }
+        configureStagingItem(sideBarItem: sideBarItem, dataView: dataView)
       }
       return dataView
+    }
+  }
+  
+  fileprivate func configureLocalBranchItem(sideBarItem: XTSideBarItem,
+                                            dataView: XTSidebarTableCellView)
+  {
+    if let statusText = graphText(for: sideBarItem) {
+      dataView.statusText.title = statusText
+      dataView.statusText.isHidden = false
+    }
+    else if dataView.statusButton.image == nil {
+      switch trackingBranchStatus(for: sideBarItem.title) {
+        case .none:
+          break
+        case .missing(let tracking):
+          dataView.statusButton.image =
+                NSImage(named: .xtTrackingMissing)
+          dataView.statusButton.toolTip = tracking + " (missing)"
+          dataView.statusButton.target = self
+          dataView.statusButton.action =
+              #selector(self.missingTrackingBranch(_:))
+        case .set(let tracking):
+          dataView.statusButton.image = NSImage(named: .xtTracking)
+          dataView.statusButton.toolTip = tracking
+      }
+    }
+  }
+  
+  fileprivate func configureStagingItem(sideBarItem: XTSideBarItem,
+                                        dataView: XTSidebarTableCellView)
+  {
+    let changes = sideBarItem.model!.changes
+    let stagedCount =
+          changes.count(where: { $0.change != .unmodified })
+    let unstagedCount =
+          changes.count(where: { $0.unstagedChange != .unmodified })
+
+    if (stagedCount != 0) || (unstagedCount != 0) {
+      dataView.statusText.title = "\(unstagedCount)▸\(stagedCount)"
+      dataView.statusText.isHidden = false
+    }
+    else {
+      dataView.statusText.isHidden = true
     }
   }
   

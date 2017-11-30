@@ -45,7 +45,7 @@ extension XTRepository
       -> GTCredentialProvider
   {
     return GTCredentialProvider {
-      (type, url, user) -> GTCredential in
+      (type, urlString, user) -> GTCredential in
       if checkCredentialType(type, flag: .sshKey) {
         return sshCredential(user) ?? GTCredential()
       }
@@ -53,7 +53,8 @@ extension XTRepository
       guard checkCredentialType(type, flag: .userPassPlaintext)
       else { return GTCredential() }
       
-      if let password = keychainPassword(urlString: url, user: user) {
+      if let url = URL(string: urlString),
+         let password = XTKeychain.findItem(url: url, user: user).0 {
         do {
           return try GTCredential(userName: user, password: password)
         }
@@ -463,33 +464,6 @@ fileprivate func checkCredentialType(_ type: GTCredentialType,
                                      flag: GTCredentialType) -> Bool
 {
   return (type.rawValue & flag.rawValue) != 0
-}
-
-fileprivate func keychainPassword(urlString: String, user: String) -> String?
-{
-  guard let url = URL(string: urlString),
-        let server = url.host as NSString?
-  else { return nil }
-  
-  let user = user as NSString
-  var passwordLength: UInt32 = 0
-  var passwordData: UnsafeMutableRawPointer? = nil
-  
-  let err = SecKeychainFindInternetPassword(
-      nil,
-      UInt32(server.length), server.utf8String,
-      0, nil,
-      UInt32(user.length), user.utf8String,
-      0, nil, 0,
-      .any, .default,
-      &passwordLength, &passwordData, nil)
-  
-  if err != noErr {
-    return nil
-  }
-  return NSString(bytes: passwordData!,
-                  length: Int(passwordLength),
-                  encoding: String.Encoding.utf8.rawValue) as String?
 }
 
 fileprivate func sshCredential(_ user: String) -> GTCredential?
