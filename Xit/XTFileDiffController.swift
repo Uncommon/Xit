@@ -183,11 +183,6 @@ class XTFileDiffController: WebViewController,
     let joined = textLines.joined(separator: "\n")
     let html = htmlTemplate.replacingOccurrences(of: "%@", with: joined)
     
-    let pb = NSPasteboard.general
-    
-    pb.clearContents()
-    pb.setString(html, forType: .string)
-    
     webView?.mainFrame.loadHTMLString(html, baseURL: WebViewController.baseURL)
     isLoaded = true
   }
