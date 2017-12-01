@@ -69,18 +69,16 @@ public struct BranchPrefixes
 
 public class GitBranch: Branch
 {
-  let gtBranch: GTBranch
-  let branch: OpaquePointer
+  let branchRef: OpaquePointer
   
-  required public init(gtBranch: GTBranch)
+  required public init(branch: OpaquePointer)
   {
-    self.gtBranch = gtBranch
-    self.branch = gtBranch.reference.git_reference()
+    self.branchRef = branch
   }
   
   public var name: String
   {
-    guard let name = git_reference_name(branch)
+    guard let name = git_reference_name(branchRef)
     else { return "" }
     
     return String(cString: name)
@@ -88,7 +86,7 @@ public class GitBranch: Branch
   
   public var oid: OID?
   {
-    guard let oid = git_reference_target(branch)
+    guard let oid = git_reference_target(branchRef)
     else { return nil }
     
     return GitOID(oidPtr: oid)
@@ -98,7 +96,7 @@ public class GitBranch: Branch
   var targetCommit: XTCommit?
   {
     guard let oid = oid,
-          let repo = git_reference_owner(branch)
+          let repo = git_reference_owner(branchRef)
     else { return nil }
     
     return XTCommit(oid: oid, repository: repo)
@@ -114,13 +112,13 @@ public class GitLocalBranch: GitBranch, LocalBranch
         withName: name, type: .local, success: nil)
     else { return nil }
     
-    super.init(gtBranch: gtBranch)
+    super.init(branch: gtBranch.reference.git_reference())
   }
   
   // Apparently just needed to disambiguate the overload
-  required public init(gtBranch: GTBranch)
+  required public init(branch: OpaquePointer)
   {
-    super.init(gtBranch: gtBranch)
+    super.init(branch: branch)
   }
   
   /// The name of this branch's remote tracking branch, even if the
@@ -130,7 +128,7 @@ public class GitLocalBranch: GitBranch, LocalBranch
     get
     {
       guard !name.isEmpty,
-            let repo = git_reference_owner(branch)
+            let repo = git_reference_owner(branchRef)
       else { return nil }
       let buf = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
     
@@ -147,7 +145,7 @@ public class GitLocalBranch: GitBranch, LocalBranch
     }
     set
     {
-      git_branch_set_upstream(branch,
+      git_branch_set_upstream(branchRef,
                               newValue?.withPrefix(BranchPrefixes.remotes))
     }
   }
@@ -157,10 +155,14 @@ public class GitLocalBranch: GitBranch, LocalBranch
   /// branch.
   public var trackingBranch: RemoteBranch?
   {
-    guard let branch = gtBranch.trackingBranchWithError(nil, success: nil)
+    let upstream = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    let result = git_branch_upstream(upstream, branchRef)
+    
+    guard result == 0,
+          let branch = upstream.pointee
     else { return nil }
     
-    return GitRemoteBranch(gtBranch: branch)
+    return GitRemoteBranch(branch: branch)
   }
   
   override var remoteName: String?
@@ -178,13 +180,28 @@ public class GitRemoteBranch: GitBranch, RemoteBranch
                                                              success: nil)
     else { return nil }
     
-    super.init(gtBranch: gtBranch)
+    super.init(branch: gtBranch.reference.git_reference())
   }
   
-  required public init(gtBranch: GTBranch)
+  required public init(branch: OpaquePointer)
   {
-    super.init(gtBranch: gtBranch)
+    super.init(branch: branch)
   }
   
-  public override var remoteName: String? { return gtBranch.remoteName }
+  public override var remoteName: String?
+  {
+    let repo = git_reference_owner(branchRef)
+    let buffer = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
+    
+    buffer.pointee = git_buf(ptr: nil, asize: 0, size: 0)
+    
+    let result = git_branch_remote_name(buffer, repo, name)
+    
+    guard result == 0
+    else { return nil }
+    
+    let data = Data(bytes: buffer.pointee.ptr, count: buffer.pointee.size)
+    
+    return String(data: data, encoding: .utf8)
+  }
 }

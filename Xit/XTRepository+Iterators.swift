@@ -44,13 +44,10 @@ extension XTRepository
       var type = git_branch_t(0)
       var ref: OpaquePointer?
       guard git_branch_next(&ref, &type, iterator) == 0,
-            ref != nil,
-            let gtRef = GTReference(gitReference: ref!,
-                                    repository: repo.gtRepo),
-            let gtBranch = GTBranch(reference: gtRef)
+            let finalRef = ref
       else { return nil }
       
-      return BranchType(gtBranch: gtBranch)
+      return BranchType(branch: finalRef)
     }
     
     deinit

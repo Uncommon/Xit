@@ -52,7 +52,7 @@ extension XTRepository
     try performWriting {
       // invalidate ref caches
       
-      let branchRef = GTBranch.localNamePrefix().appending(pathComponent: branch)
+      let branchRef = BranchPrefixes.heads.appending(pathComponent: branch)
       let ref = try gtRepo.lookUpReference(withName: branchRef)
       let options = GTCheckoutOptions(strategy: [.safe])
       

@@ -142,7 +142,9 @@ extension XTRepository
     else { throw Error.unexpected }
     
     do {
-      let targetReference = branch.gtBranch.reference
+      guard let targetReference = GTReference(gitReference: branch.branchRef,
+                                              repository: gtRepo)
+      else { throw Error.unexpected }
       let updated = try targetReference.updatingTarget(
             remoteCommit.sha,
             message: "merge \(remoteBranch.name): Fast-forward")
@@ -378,7 +380,7 @@ extension XTRepository
     let annotated = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     let result = git_annotated_commit_from_ref(
           annotated, gtRepo.git_repository(),
-          branch.gtBranch.reference.git_reference())
+          branch.branchRef)
     
     if result != GIT_OK.rawValue {
       throw Error.gitError(result)
@@ -445,10 +447,13 @@ extension XTRepository
     try performWriting {
       let provider = self.credentialProvider(passwordBlock)
       let options = [ GTRepositoryRemoteOptionsCredentialProvider: provider ]
-      guard let localBranch = branch as? GitLocalBranch
+      guard let localBranch = branch as? GitLocalBranch,
+            let localGTRef = GTReference(gitReference: localBranch.branchRef,
+                                         repository: gtRepo),
+            let localGTBranch = GTBranch(reference: localGTRef)
       else { throw Error.unexpected }
       
-      try self.gtRepo.push(localBranch.gtBranch,
+      try self.gtRepo.push(localGTBranch,
                            to: remote, withOptions: options) {
         (current, total, bytes, stop) in
         stop.pointee = ObjCBool(progressBlock(current, total, bytes))
