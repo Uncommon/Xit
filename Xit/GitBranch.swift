@@ -2,6 +2,7 @@ import Cocoa
 
 public protocol Branch
 {
+  /// The full reference name
   var name: String { get }
   /// Same as branch name, but without remote name for remote branches
   var shortName: String { get }
@@ -77,7 +78,14 @@ public class GitBranch: Branch
     self.branch = gtBranch.reference.git_reference()
   }
   
-  public var name: String { return gtBranch.name ?? "" }
+  public var name: String
+  {
+    guard let name = git_reference_name(branch)
+    else { return "" }
+    
+    return String(cString: name)
+  }
+  
   public var oid: OID?
   {
     guard let oid = git_reference_target(branch)

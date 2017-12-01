@@ -170,7 +170,7 @@ extension XTRepository: CommitReferencing
     return writing {
       let fullBranch = GTBranch.localNamePrefix().appending(name)
       guard let ref = try? gtRepo.lookUpReference(withName: fullBranch),
-            let branch = GTBranch(reference: ref, repository: gtRepo)
+            let branch = GTBranch(reference: ref)
       else { return false }
       
       return (try? branch.delete()) != nil

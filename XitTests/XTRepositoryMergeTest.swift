@@ -30,12 +30,12 @@ class XTRepositoryMergeTest: XTTest
   
   func add(_ file: String)
   {
-    try! repository.stage(file: file)
+    XCTAssertNoThrow(try repository.stage(file: file))
   }
   
   func commit(_ message: String)
   {
-    try! repository.commit(message: message, amend: false, outputBlock: nil)
+    XCTAssertNoThrow(try repository.commit(message: message, amend: false, outputBlock: nil))
   }
   
   func branch(_ name: String)
@@ -67,32 +67,36 @@ class XTRepositoryMergeTest: XTTest
     writeText(text1, toFile: fileName)
     add(fileName)
     commit("commit 1")
-    try! repository.checkout(branch: "c0")
+    XCTAssertNoThrow(try repository.checkout(branch: "c0"))
     branch("c2")
     writeText(text5, toFile: fileName)
     add(fileName)
     commit("commit 2")
-    try! repository.checkout(branch: "c0")
+    XCTAssertNoThrow(try repository.checkout(branch: "c0"))
     /* From the git test, not currently used
     branch("c7")
     writeText(text9y, toFile: fileName)
     add(fileName)
     commit("commit 7")
-    try! repository.checkout("c0")
+    XCTAssertNoThrow(try repository.checkout("c0"))
     */
     branch("c3")
     writeText(text9, toFile: fileName)
     add(fileName)
     commit("commit 3")
-    try! repository.checkout(branch: "c0")
+    XCTAssertNoThrow(try repository.checkout(branch: "c0"))
   }
   
   // Fast-forward case. This could also have a ff-only variant.
   func testMergeC0C1()
   {
-    let c1 = GitLocalBranch(repository: repository, name: "c1")!
+    guard let c1 = GitLocalBranch(repository: repository, name: "c1")
+      else {
+        XCTFail("can't get branch")
+        return
+    }
 
-    try! self.repository.merge(branch: c1)
+    XCTAssertNoThrow(try self.repository.merge(branch: c1))
     XCTAssertEqual(try! String(contentsOf: repository.fileURL(fileName)), result1)
     XCTAssertEqual(repository.workspaceStatus.count, 0)
   }
@@ -100,10 +104,14 @@ class XTRepositoryMergeTest: XTTest
   // Actually merging changes.
   func testMergeC1C2()
   {
-    let c2 = GitLocalBranch(repository: repository, name: "c2")!
+    guard let c2 = GitLocalBranch(repository: repository, name: "c2")
+    else {
+      XCTFail("can't get branch")
+      return
+    }
     
-    try! repository.checkout(branch: "c1")
-    try! self.repository.merge(branch: c2)
+    XCTAssertNoThrow(try repository.checkout(branch: "c1"))
+    XCTAssertNoThrow(try self.repository.merge(branch: c2))
     XCTAssertEqual(try! String(contentsOf: repository.fileURL(fileName)), result15)
     XCTAssertEqual(repository.workspaceStatus.count, 0)
   }

@@ -160,7 +160,7 @@ extension XTRepository
   }
   
   private func normalMerge(fromBranch: GitBranch, fromCommit: XTCommit,
-                           targetName: String, targetCommit: XTCommit) throws
+                           targetBranch: GitBranch, targetCommit: XTCommit) throws
   {
     do {
       var annotated: OpaquePointer? = try annotatedCommit(branch: fromBranch)
@@ -210,7 +210,7 @@ extension XTRepository
         _ = try gtRepo.createCommit(with: tree,
                                     message: "Merge branch \(fromBranch.name)",
                                     parents: parents,
-                                    updatingReferenceNamed: targetName)
+                                    updatingReferenceNamed: targetBranch.name)
       }
     }
     catch let error as NSError where error.domain == GTGitErrorDomain {
@@ -322,8 +322,7 @@ extension XTRepository
       }
       if analysis.contains(.normal) {
         try normalMerge(fromBranch: branch, fromCommit: remoteCommit,
-                        targetName: targetBranch.name,
-                        targetCommit: targetCommit)
+                        targetBranch: targetBranch, targetCommit: targetCommit)
         return
       }
       throw Error.unexpected

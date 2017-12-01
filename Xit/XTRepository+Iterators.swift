@@ -47,8 +47,7 @@ extension XTRepository
             ref != nil,
             let gtRef = GTReference(gitReference: ref!,
                                     repository: repo.gtRepo),
-            let gtBranch = GTBranch(reference: gtRef,
-                                    repository: repo.gtRepo)
+            let gtBranch = GTBranch(reference: gtRef)
       else { return nil }
       
       return BranchType(gtBranch: gtBranch)

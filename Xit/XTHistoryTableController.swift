@@ -118,7 +118,7 @@ public class XTHistoryTableController: NSViewController
       
       objc_sync_enter(history)
       while let gtCommit = walker.nextObject() as? GTCommit {
-        let oid = GitOID(oidPtr: gtCommit.oid!.git_oid())
+        let oid = GitOID(oidPtr: gtCommit.oid.git_oid())
         guard let commit = XTCommit(oid: oid,
                                     repository: repository.gtRepo.git_repository())
         else { continue }
