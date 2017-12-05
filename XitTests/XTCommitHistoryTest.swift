@@ -96,7 +96,8 @@ class XTCommitHistoryTest: XCTestCase
   
   var repository: StringRepository? = nil
 
-  func makeHistory(_ commitData: [(String, [String])]) -> TestCommitHistory
+  func makeHistory(_ commitData: [(String, [String])],
+                   heads: [String]? = nil) -> TestCommitHistory?
   {
     let commits = commitData.map({
       (arg) -> GenericCommit in
@@ -111,6 +112,20 @@ class XTCommitHistoryTest: XCTestCase
     let history = TestCommitHistory()
     
     history.repository = repository
+    
+    if let heads = heads {
+      let headCommits = heads.flatMap { history.repository.commit(forSHA: $0) }
+      guard headCommits.count == heads.count
+      else {
+        XCTFail("can't get head commits")
+        return nil
+      }
+      
+      for commit in headCommits {
+        history.process(commit)
+      }
+      check(history, expectedLength: commitData.count)
+    }
     return history
   }
   
@@ -125,7 +140,7 @@ class XTCommitHistoryTest: XCTestCase
   func check(_ history: TestCommitHistory, expectedLength: Int)
   {
     print("\(history.entries.flatMap({ $0.commit.sha }))")
-    XCTAssert(history.entries.count == expectedLength)
+    XCTAssertEqual(history.entries.count, expectedLength)
     for (index, entry) in history.entries.enumerated() {
       for parentOID in entry.commit.parentOIDs {
         let parentIndex = history.entries.index(
@@ -142,16 +157,9 @@ class XTCommitHistoryTest: XCTestCase
   */
   func testSimple()
   {
-    let history = makeHistory([("a", ["b"]), ("b", ["c"]), ("c", [])])
-    
-    guard let commitA = history.repository.commit(forSHA: "a")
-    else {
-      XCTFail("Can't get starting commit")
-      return
-    }
-    
-    history.process(commitA, afterCommit: nil)
-    check(history, expectedLength: 3)
+    guard let history = makeHistory([("a", ["b"]), ("b", ["c"]), ("c", [])],
+                                    heads: ["a"])
+    else { return }
     
     let connections = generateConnections(history)
     
@@ -169,20 +177,11 @@ class XTCommitHistoryTest: XCTestCase
   */
   func testFork()
   {
-    let history = makeHistory([
-        ("a", ["c"]), ("d", []),
-        ("b", ["c"]), ("c", ["d"])])
-    
-    guard let commitA = history.repository.commit(forSHA: "a"),
-          let commitB = history.repository.commit(forSHA: "b")
-    else {
-      XCTFail("Can't get starting commit")
-      return
-    }
-    
-    history.process(commitA, afterCommit: nil)
-    history.process(commitB, afterCommit: nil)
-    check(history, expectedLength: 4)
+    guard let history = makeHistory(
+        [("a", ["c"]), ("d", []),
+         ("b", ["c"]), ("c", ["d"])],
+        heads: ["a", "b"])
+    else { return }
     
     let connections = generateConnections(history)
     
@@ -202,18 +201,11 @@ class XTCommitHistoryTest: XCTestCase
   */
   func testMerge()
   {
-    let history = makeHistory([
-        ("a", ["c", "b"]), ("b", ["c"]),
-        ("c", ["d"]), ("d", [])])
-    
-    guard let commitA = history.repository.commit(forSHA: "a")
-    else {
-      XCTFail("Can't get starting commit")
-      return
-    }
-    
-    history.process(commitA, afterCommit: nil)
-    check(history, expectedLength: 4)
+    guard let history = makeHistory(
+        [("a", ["c", "b"]), ("b", ["c"]),
+         ("c", ["d"]), ("d", [])],
+        heads: ["a"])
+    else { return }
     
     let connections = generateConnections(history)
     
@@ -235,9 +227,10 @@ class XTCommitHistoryTest: XCTestCase
   */
   func testMerge2()
   {
-    let history = makeHistory([
-        ("a", ["d"]), ("b", ["e", "c"]), ("c", ["d"]), ("d", ["aa", "f"]),
-        ("e", ["f"]), ("f", ["aa"]), ("aa", [])])
+    guard let history = makeHistory(
+        [("a", ["d"]), ("b", ["e", "c"]), ("c", ["d"]), ("d", ["aa", "f"]),
+         ("e", ["f"]), ("f", ["aa"]), ("aa", [])])
+    else { return }
     
     guard let commitA = history.repository.commit(forSHA: "a"),
           let commitB = history.repository.commit(forSHA: "b")
@@ -259,19 +252,11 @@ class XTCommitHistoryTest: XCTestCase
   */
   func testCrossMerge1()
   {
-    let history = makeHistory([
-        ("a", ["c", "b"]), ("b", ["d"]), ("c", ["e", "d"]),
-        ("d", ["f"]), ("e", ["f"]), ("f", ["aa"]), ("aa", [])])
-    
-    
-    guard let commitA = history.repository.commit(forSHA: "a")
-    else {
-      XCTFail("Can't get starting commit")
-      return
-    }
-    
-    history.process(commitA, afterCommit: nil)
-    check(history, expectedLength: 7)
+    guard let history = makeHistory(
+        [("a", ["c", "b"]), ("b", ["d"]), ("c", ["e", "d"]),
+         ("d", ["f"]), ("e", ["f"]), ("f", ["aa"]), ("aa", [])],
+        heads: ["a"])
+    else { return }
     
     let connections = generateConnections(history)
     
@@ -300,18 +285,11 @@ class XTCommitHistoryTest: XCTestCase
   */
   func testCrossMerge2()
   {
-    let history = makeHistory([
-        ("a", ["c", "b"]), ("b", ["d", "c"]), ("c", ["e"]),
-        ("d", ["f"]), ("e", ["f"]), ("f", ["aa"]), ("aa", [])])
-    
-    guard let commitA = history.repository.commit(forSHA: "a")
-    else {
-      XCTFail("Can't get starting commit")
-      return
-    }
-    
-    history.process(commitA, afterCommit: nil)
-    check(history, expectedLength: 7)
+    guard let history = makeHistory(
+        [("a", ["c", "b"]), ("b", ["d", "c"]), ("c", ["e"]),
+         ("d", ["f"]), ("e", ["f"]), ("f", ["aa"]), ("aa", [])],
+        heads: ["a"])
+    else { return }
     
     let connections = generateConnections(history)
     
@@ -341,18 +319,11 @@ class XTCommitHistoryTest: XCTestCase
   */
   func testCrossMerge3()
   {
-    let history = makeHistory([
-        ("a", ["c", "b"]), ("b", ["d", "e"]), ("c", ["e", "d"]),
-        ("d", ["f"]), ("e", ["f"]), ("f", [])])
-    
-    guard let commitA = history.repository.commit(forSHA: "a")
-    else {
-      XCTFail("Can't get starting commit")
-      return
-    }
-    
-    history.process(commitA, afterCommit: nil)
-    check(history, expectedLength: 6)
+    guard let _ = makeHistory(
+        [("a", ["c", "b"]), ("b", ["d", "e"]), ("c", ["e", "d"]),
+         ("d", ["f"]), ("e", ["f"]), ("f", [])],
+        heads: ["a"])
+    else { return }
   }
   
   /* Cross-merge 4:
@@ -363,18 +334,11 @@ class XTCommitHistoryTest: XCTestCase
   */
   func testCrossMerge4()
   {
-    let history = makeHistory([
-      ("a", ["e", "b"]), ("b", ["d", "c"]), ("c", ["e", "d"]),
-      ("d", ["f"]), ("e", ["f"]), ("f", [])])
-    
-    guard let commitA = history.repository.commit(forSHA: "a")
-    else {
-      XCTFail("Can't get starting commit")
-      return
-    }
-    
-    history.process(commitA, afterCommit: nil)
-    check(history, expectedLength: 6)
+    guard let _ = makeHistory(
+        [("a", ["e", "b"]), ("b", ["d", "c"]), ("c", ["e", "d"]),
+         ("d", ["f"]), ("e", ["f"]), ("f", [])],
+        heads: ["a"])
+    else { return }
   }
   
   /* Cross-merge 5:
@@ -384,10 +348,11 @@ class XTCommitHistoryTest: XCTestCase
   */
   func testCrossMerge5()
   {
-    let history = makeHistory([
-        ("a", ["b", "c"]), ("b", ["d", "e"]), ("c", ["aa"]), ("d", ["f", "aa"]),
-        ("e", ["cc", "f"]), ("f", ["bb"]), ("aa", ["bb"]), ("bb", ["ee"]),
-        ("cc", ["dd"]), ("dd", ["ee"]), ("ee", [])])
+    guard let history = makeHistory(
+        [("a", ["b", "c"]), ("b", ["d", "e"]), ("c", ["aa"]), ("d", ["f", "aa"]),
+         ("e", ["cc", "f"]), ("f", ["bb"]), ("aa", ["bb"]), ("bb", ["ee"]),
+         ("cc", ["dd"]), ("dd", ["ee"]), ("ee", [])])
+    else { return }
     
     guard let commitA = history.repository.commit(forSHA: "a"),
           let commitD = history.repository.commit(forSHA: "d"),
@@ -415,21 +380,12 @@ class XTCommitHistoryTest: XCTestCase
   */
   func testMergedFork()
   {
-    let history = makeHistory([
-        ("a", ["c"]), ("b", ["d", "c"]), ("c", ["e"]),
-        ("d", ["f"]), ("e", ["f"]), ("f", ["aa"]), ("aa", [])])
-    
-    guard let commitA = history.repository.commit(forSHA: "a"),
-          let commitB = history.repository.commit(forSHA: "b")
-    else {
-      XCTFail("Can't get starting commits")
-      return
-    }
-    
-    history.process(commitA, afterCommit: nil)
-    history.process(commitB, afterCommit: nil)
-    check(history, expectedLength: 7)
-    
+    guard let history = makeHistory(
+        [("a", ["c"]), ("b", ["d", "c"]), ("c", ["e"]),
+         ("d", ["f"]), ("e", ["f"]), ("f", ["aa"]), ("aa", [])],
+        heads: ["a", "b"])
+    else { return }
+
     let connections = generateConnections(history)
     
     let aToC = CommitConnection(parentOID: §"c", childOID: §"a", colorIndex: 0)
@@ -457,19 +413,10 @@ class XTCommitHistoryTest: XCTestCase
   */
   func testMergedFork2()
   {
-    let history = makeHistory([
-        ("a", ["d"]), ("b", ["d", "c"]), ("c", ["d"]), ("d", [])])
-    
-    guard let commitA = history.repository.commit(forSHA: "a"),
-          let commitB = history.repository.commit(forSHA: "b")
-    else {
-      XCTFail("Can't get starting commit")
-      return
-    }
-    
-    history.process(commitA, afterCommit: nil)
-    history.process(commitB, afterCommit: nil)
-    check(history, expectedLength: 4)
+    guard let _ = makeHistory(
+        [("a", ["d"]), ("b", ["d", "c"]), ("c", ["d"]), ("d", [])],
+        heads: ["a", "b"])
+    else { return }
   }
 
   /* Merged fork 3:
@@ -479,9 +426,10 @@ class XTCommitHistoryTest: XCTestCase
   */
   func testMergedFork3()
   {
-    let history = makeHistory([
-        ("a", ["d"]), ("b", ["d", "c"]), ("d", ["f", "e"]),
-        ("c", ["f"]), ("e", ["f"]), ("f", ["aa"]), ("aa", [])])
+    guard let history = makeHistory(
+        [("a", ["d"]), ("b", ["d", "c"]), ("d", ["f", "e"]),
+         ("c", ["f"]), ("e", ["f"]), ("f", ["aa"]), ("aa", [])])
+    else { return }
     
     guard let commitA = history.repository.commit(forSHA: "a"),
           let commitB = history.repository.commit(forSHA: "b"),
@@ -504,24 +452,15 @@ class XTCommitHistoryTest: XCTestCase
   /* Merged fork 4:
       aa-f----c-----a
        \-+-e-/ \
-         \---d-\b
+         \---d--\b
   */
   func testMergedFork4()
   {
-    let history = makeHistory([
-        ("a", ["c"]), ("b", ["d", "c"]), ("c", ["f", "e"]), ("d", ["f"]),
-        ("e", ["aa"]), ("f", ["aa"]), ("aa", [])])
-    
-    guard let commitA = history.repository.commit(forSHA: "a"),
-          let commitB = history.repository.commit(forSHA: "b")
-    else {
-      XCTFail("Can't get starting commit")
-      return
-    }
-    
-    history.process(commitA, afterCommit: nil)
-    history.process(commitB, afterCommit: nil)
-    check(history, expectedLength: 7)
+    guard let _ = makeHistory(
+        [("a", ["c"]), ("b", ["d", "c"]), ("c", ["f", "e"]), ("d", ["f"]),
+         ("e", ["aa"]), ("f", ["aa"]), ("aa", [])],
+        heads: ["a", "b"])
+    else { return }
   }
   
   /* Merged fork 5:
@@ -530,19 +469,10 @@ class XTCommitHistoryTest: XCTestCase
   */
   func testMergedFork5()
   {
-    let history = makeHistory([
-        ("a", ["c"]), ("b", ["d", "c"]), ("c", ["e"]), ("d", ["e"]), ("e", [])])
-    
-    guard let commitA = history.repository.commit(forSHA: "a"),
-          let commitB = history.repository.commit(forSHA: "b")
-    else {
-      XCTFail("Can't get starting commit")
-      return
-    }
-    
-    history.process(commitA, afterCommit: nil)
-    history.process(commitB, afterCommit: nil)
-    check(history, expectedLength: 5)
+    guard let _ = makeHistory(
+        [("a", ["c"]), ("b", ["d", "c"]), ("c", ["e"]), ("d", ["e"]), ("e", [])],
+        heads: ["a", "b"])
+    else { return }
   }
   
   /* Disjoint:
@@ -550,20 +480,11 @@ class XTCommitHistoryTest: XCTestCase
   */
   func testDisjoint()
   {
-    let history = makeHistory([
-        ("a", ["b"]), ("b", []),
-        ("c", ["d"]), ("d", [])])
-    
-    guard let commitA = history.repository.commit(forSHA: "a"),
-          let commitC = history.repository.commit(forSHA: "c")
-    else {
-      XCTFail("Can't get starting commit")
-      return
-    }
-    
-    history.process(commitA, afterCommit: nil)
-    history.process(commitC, afterCommit: nil)
-    check(history, expectedLength: 4)
+    guard let history = makeHistory(
+        [("a", ["b"]), ("b", []),
+         ("c", ["d"]), ("d", [])],
+        heads: ["a", "c"])
+    else { return }
     
     let connections = generateConnections(history)
     
@@ -583,17 +504,10 @@ class XTCommitHistoryTest: XCTestCase
   */
   func testMultiMerge1()
   {
-    let history = makeHistory([
-        ("a", ["d", "b", "c"]), ("b", ["d"]), ("c", ["d"]), ("d", [])])
-    
-    guard let commitA = history.repository.commit(forSHA: "a")
-    else {
-      XCTFail("Can't get starting commit")
-      return
-    }
-    
-    history.process(commitA, afterCommit: nil)
-    check(history, expectedLength: 4)
+    guard let history = makeHistory(
+        [("a", ["d", "b", "c"]), ("b", ["d"]), ("c", ["d"]), ("d", [])],
+        heads: ["a"])
+    else { return }
     
     let connections = generateConnections(history)
     
@@ -617,19 +531,12 @@ class XTCommitHistoryTest: XCTestCase
   */
   func testMultiMerge2()
   {
-    let history = makeHistory([
-        ("a", ["c", "b"]), ("b", ["e"]), ("c", ["e", "d"]), ("d", ["e"]),
-        ("e", [])])
+    guard let history = makeHistory(
+        [("a", ["c", "b"]), ("b", ["e"]), ("c", ["e", "d"]), ("d", ["e"]),
+         ("e", [])],
+        heads: ["a"])
+    else { return }
     
-    guard let commitA = history.repository.commit(forSHA: "a")
-    else {
-      XCTFail("Can't get starting commit")
-      return
-    }
-    
-    history.process(commitA, afterCommit: nil)
-    check(history, expectedLength: 5)
-
     let aToC = CommitConnection(parentOID: §"c", childOID: §"a", colorIndex: 0)
     let aToB = CommitConnection(parentOID: §"b", childOID: §"a", colorIndex: 1)
     let bToE = CommitConnection(parentOID: §"e", childOID: §"b", colorIndex: 1)
@@ -654,18 +561,11 @@ class XTCommitHistoryTest: XCTestCase
   */
   func testDoubleBranch()
   {
-    let history = makeHistory([
-        ("a", ["b", "d"]), ("b", ["e", "c"]), ("c", ["e"]), ("d", ["f", "e"]),
-        ("e", ["aa"]), ("f", ["aa"]), ("aa", [])])
-    
-    guard let commitA = history.repository.commit(forSHA: "a")
-      else {
-        XCTFail("Can't get starting commit")
-        return
-    }
-    
-    history.process(commitA, afterCommit: nil)
-    check(history, expectedLength: 7)
+    guard let _ = makeHistory(
+        [("a", ["b", "d"]), ("b", ["e", "c"]), ("c", ["e"]), ("d", ["f", "e"]),
+         ("e", ["aa"]), ("f", ["aa"]), ("aa", [])],
+        heads: ["a"])
+    else { return }
   }
   
   /* Late merge:
@@ -676,24 +576,11 @@ class XTCommitHistoryTest: XCTestCase
   */
   func testLateMerge()
   {
-    let history = makeHistory([
-        ("a", ["b", "e"]), ("b", ["d", "c"]), ("c", ["aa"]), ("d", ["aa", "f"]),
-        ("e", ["aa"]), ("f", ["aa"]), ("aa", [])])
-    
-    guard let commitA = history.repository.commit(forSHA: "a"),
-          let commitC = history.repository.commit(forSHA: "c"),
-          let commitE = history.repository.commit(forSHA: "e"),
-          let commitF = history.repository.commit(forSHA: "f")
-    else {
-      XCTFail("Can't get starting commit")
-      return
-    }
-    
-    history.process(commitC, afterCommit: nil)
-    history.process(commitE, afterCommit: nil)
-    history.process(commitF, afterCommit: nil)
-    history.process(commitA, afterCommit: nil)
-    check(history, expectedLength: 7)
+    guard let _ = makeHistory(
+        [("a", ["b", "e"]), ("b", ["d", "c"]), ("c", ["aa"]), ("d", ["aa", "f"]),
+         ("e", ["aa"]), ("f", ["aa"]), ("aa", [])],
+        heads: ["c", "e", "f", "a"]) // out of order
+    else { return }
   }
   
   /* Early start:
@@ -702,18 +589,9 @@ class XTCommitHistoryTest: XCTestCase
   */
   func testEarlyStart()
   {
-    let history = makeHistory([
-        ("a", ["b", "c"]), ("b", ["d"]), ("c", ["d"]), ("d", [])])
-    
-    guard let commitA = history.repository.commit(forSHA: "a"),
-          let commitB = history.repository.commit(forSHA: "b")
-    else {
-      XCTFail("Can't get starting commit")
-      return
-    }
-    
-    history.process(commitB, afterCommit: nil)
-    history.process(commitA, afterCommit: nil)
-    check(history, expectedLength: 4)
+    guard let _ = makeHistory(
+        [("a", ["b", "c"]), ("b", ["d"]), ("c", ["d"]), ("d", [])],
+        heads: ["b", "a"]) // out of order
+    else { return }
   }
 }
