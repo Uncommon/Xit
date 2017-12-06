@@ -80,6 +80,10 @@
             argument = "-NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints YES"
             isEnabled = "NO">
          </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-noServices YES"
+            isEnabled = "NO">
+         </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>
       </AdditionalOptions>

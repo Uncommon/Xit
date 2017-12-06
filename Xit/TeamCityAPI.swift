@@ -119,6 +119,9 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
   
   static func service(for remoteURL: String) -> (TeamCityAPI, [String])?
   {
+    guard !UserDefaults.standard.bool(forKey: "noServices")
+    else { return nil }
+    
     let accounts = XTAccountsManager.manager.accounts(ofType: .teamCity)
     let services = accounts.flatMap({ Services.shared.teamCityAPI($0) })
     

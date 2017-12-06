@@ -42,6 +42,9 @@ class Services
   /// authorization and other state info.
   func initializeServices()
   {
+    guard !UserDefaults.standard.bool(forKey: "noServices")
+    else { return }
+    
     for account in XTAccountsManager.manager.accounts(ofType: .teamCity) {
       _ = teamCityAPI(account)
     }
