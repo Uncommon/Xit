@@ -290,7 +290,7 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
     var connections: [Connection] = starting
     var nextColorIndex: UInt = 0
     
-    result.reserveCapacity(entries.count)
+    result.reserveCapacity(batchSize)
     for (index, entry) in entries[batchStart..<batchStart+batchSize].enumerated() {
       let commitOID = entry.commit.oid as! ID
       let incomingIndex = connections.index(where:
@@ -321,12 +321,6 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
       postProgress?(batchSize, batchStart/batchSize, 0, index)
     }
     
-#if DEBUGLOG
-    if !connections.isEmpty {
-      print("Unterminated parent lines:")
-      connections.forEach({ print($0.childOID.SHA.firstSix()) })
-    }
-#endif
     return result
   }
   

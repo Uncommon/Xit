@@ -136,7 +136,7 @@ class XTCommitHistoryTest: XCTestCase
                                        starting: [])
   }
   
-  /// Makes sure each commit preceds its parents.
+  /// Makes sure each commit precedes its parents.
   func check(_ history: TestCommitHistory, expectedLength: Int)
   {
     print("\(history.entries.flatMap({ $0.commit.sha }))")
@@ -593,5 +593,41 @@ class XTCommitHistoryTest: XCTestCase
         [("a", ["b", "c"]), ("b", ["d"]), ("c", ["d"]), ("d", [])],
         heads: ["b", "a"]) // out of order
     else { return }
+  }
+  
+  /* Crossover:
+     h-------e-d------a
+      \-g-f-X----c-b-/
+  */
+  func testCrossover()
+  {
+    guard let history = makeHistory(
+      [("a", ["d", "b"]), ("b", ["c"]), ("c", ["h"]), ("d", ["e"]),
+       ("e", ["h", "f"]), ("f", ["g"]), ("g", ["h"]), ("h", [])],
+      heads: ["a", "b", "f"])
+    else { return }
+    
+    history.entries.sort(by: { $0.commit.sha < $1.commit.sha })
+    
+    let connections = generateConnections(history)
+    
+    let aToD = CommitConnection(parentOID: §"d", childOID: §"a", colorIndex: 0)
+    let aToB = CommitConnection(parentOID: §"b", childOID: §"a", colorIndex: 1)
+    let bToC = CommitConnection(parentOID: §"c", childOID: §"b", colorIndex: 1)
+    let cToH = CommitConnection(parentOID: §"h", childOID: §"c", colorIndex: 1)
+    let dToE = CommitConnection(parentOID: §"e", childOID: §"d", colorIndex: 0)
+    let eToH = CommitConnection(parentOID: §"h", childOID: §"e", colorIndex: 0)
+    let eToF = CommitConnection(parentOID: §"f", childOID: §"e", colorIndex: 2)
+    let fToG = CommitConnection(parentOID: §"g", childOID: §"f", colorIndex: 2)
+    let gToH = CommitConnection(parentOID: §"h", childOID: §"g", colorIndex: 2)
+
+    XCTAssertEqual(connections[0], [aToD, aToB])
+    XCTAssertEqual(connections[1], [aToD, aToB, bToC])
+    XCTAssertEqual(connections[2], [aToD, bToC, cToH])
+    XCTAssertEqual(connections[3], [aToD, dToE, cToH])
+    XCTAssertEqual(connections[4], [dToE, eToH, cToH, eToF])
+    XCTAssertEqual(connections[5], [eToH, cToH, eToF, fToG])
+    XCTAssertEqual(connections[6], [eToH, cToH, fToG, gToH])
+    XCTAssertEqual(connections[7], [eToH, cToH, gToH])
   }
 }

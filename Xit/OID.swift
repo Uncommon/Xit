@@ -29,7 +29,7 @@ public protocol OIDObject
 }
 
 
-public struct GitOID: OID, Hashable
+public struct GitOID: OID, Hashable, Equatable
 {
   let oid: git_oid
   
