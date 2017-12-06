@@ -31,7 +31,8 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
   
     super.init(nibName: NibName.buildStatus, bundle: nil)
     
-    if let remoteName = (branch as? RemoteBranch)?.remoteName,
+    if let remoteName = (branch as? RemoteBranch)?.remoteName ??
+                        (branch as? LocalBranch)?.trackingBranch?.remoteName,
        let (api, _) = matchTeamCity(remoteName) {
       self.api = api
     }
@@ -51,6 +52,7 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
   
   override func viewDidLoad()
   {
+    super.viewDidLoad()
     headingLabel.stringValue = "Builds for \(branch.strippedName)"
   }
 
