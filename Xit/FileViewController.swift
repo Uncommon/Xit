@@ -142,7 +142,7 @@ class FileViewController: NSViewController
   
   deinit
   {
-    indexTimer.map { $0.invalidate() }
+    indexTimer?.invalidate()
   }
 
   func finishLoad(repository: XTRepository)

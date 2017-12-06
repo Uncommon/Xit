@@ -163,6 +163,6 @@ extension XTRepository: FileStaging
                                 stdIn: message, writes: true)
     let outputString = String(data: output, encoding: .utf8) ?? ""
     
-    outputBlock.map { $0(outputString) }
+    outputBlock?(outputString)
   }
 }
