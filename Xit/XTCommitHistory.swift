@@ -257,9 +257,10 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
     
     while batchStart < entries.count {
       let batchSize = min(batchSize, entries.count - batchStart)
-      let connections = generateConnections(batchStart: batchStart,
-                                            batchSize: batchSize,
-                                            starting: startingConnections)
+      let (connections, newStart) =
+            generateConnections(batchStart: batchStart,
+                                batchSize: batchSize,
+                                starting: startingConnections)
       
       kdebug_signpost_start(Signposts.generateLines, UInt(batchStart),
                             0, 0, 0)
@@ -272,14 +273,15 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
       kdebug_signpost_end(Signposts.generateLines, UInt(batchStart),
                           0, 0, 0)
 
-      startingConnections = connections.last ?? []
+      startingConnections = newStart
       batchStart += batchSize
       batchNotify?()
     }
   }
   
   func generateConnections(batchStart: Int, batchSize: Int,
-                           starting: [Connection]) -> [[Connection]]
+                           starting: [Connection])
+    -> ([[Connection]], [Connection])
   {
     kdebug_signpost_start(Signposts.generateConnections, UInt(batchStart), 0, 0, 0)
     defer {
@@ -321,7 +323,7 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
       postProgress?(batchSize, batchStart/batchSize, 0, index)
     }
     
-    return result
+    return (result, connections)
   }
   
   func generateLines(entry: CommitEntry,
