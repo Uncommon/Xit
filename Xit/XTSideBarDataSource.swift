@@ -53,7 +53,7 @@ class XTSideBarDataSource: NSObject
         [weak self] (_) in
         self?.reload()
       }
-      observers.addObserver(forName: .XTRepositoryRefLogChanged,
+      observers.addObserver(forName: .XTRepositoryStashChanged,
                             object: repo, queue: .main) {
         [weak self] (_) in
         guard let myself = self

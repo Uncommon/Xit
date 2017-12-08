@@ -13,6 +13,7 @@ let XTChangedRefsKey = "changedRefs"
   var stream: FileEventStream! = nil
   var packedRefsWatcher: XTFileMonitor?
   var configWatcher: XTFileMonitor?
+  var stashWatcher: XTFileMonitor?
   
   let mutex = Mutex()
   
@@ -57,6 +58,7 @@ let XTChangedRefsKey = "changedRefs"
     self.stream = stream
     makePackedRefsWatcher()
     makeConfigWatcher()
+    makeStashWatcher()
   }
   
   func stop()
@@ -89,6 +91,20 @@ let XTChangedRefsKey = "changedRefs"
     configWatcher?.notifyBlock = {
       [weak self] (_, _) in
       self?.checkConfig()
+    }
+  }
+  
+  func makeStashWatcher()
+  {
+    let path = repository!.gitDirectoryURL.path
+                          .appending(pathComponent: "logs/refs/stash")
+    guard let watcher = XTFileMonitor(path: path)
+    else { return }
+    
+    stashWatcher = watcher
+    watcher.notifyBlock = {
+      [weak self] (_, _) in
+      self?.post(.XTRepositoryStashChanged)
     }
   }
   

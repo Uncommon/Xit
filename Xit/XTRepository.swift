@@ -21,6 +21,9 @@ extension NSNotification.Name
   /// A file in the workspace has changed.
   static let XTRepositoryWorkspaceChanged =
       NSNotification.Name(rawValue: "XTRepositoryWorkspaceChanged")
+  /// The stash log has changed.
+  static let XTRepositoryStashChanged =
+      NSNotification.Name(rawValue: "XTRepositoryStashChanged")
 }
 
 
