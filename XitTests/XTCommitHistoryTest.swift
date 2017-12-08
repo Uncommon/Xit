@@ -133,7 +133,7 @@ class XTCommitHistoryTest: XCTestCase
   {
     return history.generateConnections(batchStart: 0,
                                        batchSize: history.entries.count,
-                                       starting: [])
+                                       starting: []).0
   }
   
   /// Makes sure each commit precedes its parents.
