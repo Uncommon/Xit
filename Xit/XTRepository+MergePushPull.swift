@@ -96,15 +96,18 @@ extension XTRepository
   /// - parameter pruneBranches: True to delete obsolete branch refs
   /// - parameter passwordBlock: Callback for getting the user and password
   /// - parameter progressBlock: Return true to stop the operation
-  public func fetch(remote: XTRemote,
+  public func fetch(remote: Remote,
                     options: FetchOptions) throws
   {
     try performWriting {
       let gtOptions = self.fetchOptions(downloadTags: options.downloadTags,
                                         pruneBranches: options.pruneBranches,
                                         passwordBlock: options.passwordBlock)
-    
-      try self.gtRepo.fetch(remote, withOptions: gtOptions) {
+      guard let gtRemote = GTRemote(gitRemote: (remote as! GitRemote).remote,
+                                    in: gtRepo)
+      else { throw Error.unexpected }
+      
+      try self.gtRepo.fetch(gtRemote, withOptions: gtOptions) {
         (progress, stop) in
         let transferProgress = GitTransferProgress(gitProgress: progress.pointee)
         
@@ -121,7 +124,7 @@ extension XTRepository
   /// - parameter passwordBlock: Callback for getting the user and password
   /// - parameter progressBlock: Return true to stop the operation
   func pull(branch: Branch,
-            remote: XTRemote,
+            remote: Remote,
             options: FetchOptions) throws
   {
     try fetch(remote: remote, options: options)
@@ -439,7 +442,7 @@ extension XTRepository
   /// - parameter passwordBlock: Callback for getting the user and password
   /// - parameter progressBlock: Return true to stop the operation
   public func push(branch: Branch,
-                   remote: XTRemote,
+                   remote: Remote,
                    passwordBlock: @escaping () -> (String, String)?,
                    progressBlock: @escaping (UInt32, UInt32, size_t) -> Bool)
                    throws
@@ -450,11 +453,12 @@ extension XTRepository
       guard let localBranch = branch as? GitLocalBranch,
             let localGTRef = GTReference(gitReference: localBranch.branchRef,
                                          repository: gtRepo),
-            let localGTBranch = GTBranch(reference: localGTRef)
+            let localGTBranch = GTBranch(reference: localGTRef),
+            let gtRemote = GTRemote(gitRemote: (remote as! GitRemote).remote,
+                                    in: gtRepo)
       else { throw Error.unexpected }
       
-      try self.gtRepo.push(localGTBranch,
-                           to: remote, withOptions: options) {
+      try self.gtRepo.push(localGTBranch, to: gtRemote, withOptions: options) {
         (current, total, bytes, stop) in
         stop.pointee = ObjCBool(progressBlock(current, total, bytes))
       }

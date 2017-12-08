@@ -175,7 +175,7 @@ extension XTRepository: RemoteManagement
 {
   public func remote(named name: String) -> Remote?
   {
-    return XTRemote(name: name, repository: self)
+    return GitRemote(name: name, repository: gtRepo.git_repository())
   }
   
   public func addRemote(named name: String, url: URL) throws

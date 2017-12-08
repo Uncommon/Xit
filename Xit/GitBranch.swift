@@ -49,7 +49,7 @@ extension RemoteBranch
   public var shortName: String
   {
     guard let slashIndex = name.index(of: "/").map({ name.index(after: $0) })
-      else { return name }
+    else { return name }
     
     return String(name[slashIndex...])
   }

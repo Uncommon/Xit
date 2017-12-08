@@ -94,7 +94,7 @@
 		C923D65E1D90506A00C6B90B /* TitleBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = C923D65D1D90506A00C6B90B /* TitleBar.xib */; };
 		C923D66C1D906FAA00C6B90B /* TitleBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D66B1D906FAA00C6B90B /* TitleBarViewController.swift */; };
 		C926804E1D074EC500E422FA /* FileChangesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C926804D1D074EC500E422FA /* FileChangesModel.swift */; };
-		C929D03B1D400B3B00D7DC52 /* XTRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D03A1D400B3B00D7DC52 /* XTRemote.swift */; };
+		C929D03B1D400B3B00D7DC52 /* GitRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D03A1D400B3B00D7DC52 /* GitRemote.swift */; };
 		C929D0461D415F6F00D7DC52 /* MiscExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */; };
 		C929D0601D42785B00D7DC52 /* TeamCityAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D05F1D42785B00D7DC52 /* TeamCityAPI.swift */; };
 		C92A7B261D1DD1CD00D2B944 /* folderTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C92A7B241D1DD1CD00D2B944 /* folderTemplate.png */; };
@@ -504,7 +504,7 @@
 		C923D65D1D90506A00C6B90B /* TitleBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TitleBar.xib; sourceTree = "<group>"; };
 		C923D66B1D906FAA00C6B90B /* TitleBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = TitleBarViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C926804D1D074EC500E422FA /* FileChangesModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileChangesModel.swift; sourceTree = "<group>"; };
-		C929D03A1D400B3B00D7DC52 /* XTRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRemote.swift; sourceTree = "<group>"; };
+		C929D03A1D400B3B00D7DC52 /* GitRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitRemote.swift; sourceTree = "<group>"; };
 		C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiscExtensions.swift; sourceTree = "<group>"; };
 		C929D05F1D42785B00D7DC52 /* TeamCityAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamCityAPI.swift; sourceTree = "<group>"; };
 		C92A7B241D1DD1CD00D2B944 /* folderTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = folderTemplate.png; sourceTree = "<group>"; };
@@ -1119,7 +1119,6 @@
 				C92E30FA1D4FF4F0001985F7 /* XTCommit.swift */,
 				C9BAE6091D2FFA8B00A87F13 /* XTConfig.swift */,
 				C9328B111D77303200EFF7F7 /* XTFileMonitor.swift */,
-				C929D03A1D400B3B00D7DC52 /* XTRemote.swift */,
 				89C927931D43B23B0074F71A /* XTRepository.swift */,
 				C94154B51EE5AC460030E481 /* XTRepository+Commands.swift */,
 				C9C1B7CE1EEAFD790011F343 /* XTRepository+Files.swift */,
@@ -1142,6 +1141,7 @@
 				C94736771DEF5AAE000E3A05 /* GitExtensions.swift */,
 				C9DA20CA1F6C8B7800C472CD /* GitIndex.swift */,
 				C991732C1F91255200054154 /* GitPatch.swift */,
+				C929D03A1D400B3B00D7DC52 /* GitRemote.swift */,
 				C9DEA49B1E4A900300DF4069 /* OID.swift */,
 				C9F9A0291E1C417D00261E33 /* PatchMaker.swift */,
 				C959A7221F6C6974004277CD /* RepositoryProtocols.swift */,
@@ -1610,7 +1610,7 @@
 				C95BF6661FCF5D7A0020C51D /* CommitChanges.swift in Sources */,
 				C98CAD841F9520D0005DB419 /* GitDiffHunk.swift in Sources */,
 				C9BC1B9B1DDF51B900C71562 /* FileEventStream.swift in Sources */,
-				C929D03B1D400B3B00D7DC52 /* XTRemote.swift in Sources */,
+				C929D03B1D400B3B00D7DC52 /* GitRemote.swift in Sources */,
 				C90F92781E0199E400FE8589 /* AppDelegate.swift in Sources */,
 				C91F34781D30656B005F9BDF /* Services.swift in Sources */,
 				C947367E1DF08C03000E3A05 /* ContextMenuOutlineView.swift in Sources */,

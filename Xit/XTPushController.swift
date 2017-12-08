@@ -27,8 +27,7 @@ class XTPushController: XTPasswordOpController
     }
     guard let remoteBranch = branch.trackingBranch,
           let remoteName = remoteBranch.remoteName,
-          let remote = XTRemote(name: remoteName,
-                                repository: repository)
+          let remote = repository.remote(named: remoteName)
     else {
       NSLog("Can't push - no tracking branch")
       throw XTRepository.Error.unexpected
@@ -52,7 +51,7 @@ class XTPushController: XTPasswordOpController
     }
   }
   
-  func push(localBranch: LocalBranch, remote: XTRemote)
+  func push(localBranch: LocalBranch, remote: Remote)
   {
     tryRepoOperation(successStatus: "Push complete",
                      failureStatus: "Push failed") {

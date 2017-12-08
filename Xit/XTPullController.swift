@@ -16,8 +16,7 @@ class XTPullController: XTFetchController
     }
     guard let remoteBranch = branch.trackingBranch,
           let remoteName = remoteBranch.remoteName,
-          let remote = XTRemote(name: remoteName,
-                                repository: repository)
+          let remote = repository.remote(named: remoteName)
     else {
       NSLog("Can't pull - no tracking branch")
       throw XTRepository.Error.unexpected
@@ -36,5 +35,4 @@ class XTPullController: XTFetchController
       self.ended()
     }
   }
-
 }

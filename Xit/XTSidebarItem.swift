@@ -149,7 +149,7 @@ class XTBranchFolderItem: XTSideBarItem
 
 class XTRemoteItem: XTSideBarItem
 {
-  let remote: XTRemote?
+  let remote: Remote?
   
   override var icon: NSImage?
   {
@@ -169,7 +169,7 @@ class XTRemoteItem: XTSideBarItem
   
   init(title: String, repository: XTRepository)
   {
-    self.remote = XTRemote(name: title, repository: repository)
+    self.remote = repository.remote(named: title)
     
     super.init(title: title)
   }
