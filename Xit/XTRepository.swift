@@ -105,7 +105,7 @@ public class XTRepository: NSObject
   {
     self.repoWatcher = XTRepositoryWatcher(repository: self)
     self.workspaceWatcher = WorkspaceWatcher(repository: self)
-    self.config = XTConfig(repository: self)
+    self.config = XTConfig(config: GitConfig(repository: gtRepo.git_repository()))
   }
   
   deinit

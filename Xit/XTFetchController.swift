@@ -41,15 +41,15 @@ class XTFetchController: XTPasswordOpController
     guard let repository = repository
     else { throw XTRepository.Error.unexpected }
     
-    let config = XTConfig(repository: repository)
+    let config = repository.config
     let panel = XTFetchPanelController.controller()
     
     if let remoteName = defaultRemoteName() {
       panel.selectedRemote = remoteName
     }
     panel.parentController = windowController
-    panel.downloadTags = config.fetchTags(panel.selectedRemote)
-    panel.pruneBranches = config.fetchPrune(panel.selectedRemote)
+    panel.downloadTags = config?.fetchTags(panel.selectedRemote) ?? false
+    panel.pruneBranches = config?.fetchPrune(panel.selectedRemote) ?? false
     windowController!.window!.beginSheet(panel.window!) {
       (response) in
       if response == NSApplication.ModalResponse.OK {
