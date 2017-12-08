@@ -73,6 +73,17 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
   }
 
   public func outlineView(_ outlineView: NSOutlineView,
+                          shouldShowOutlineCellForItem item: Any) -> Bool
+  {
+    // Don't hide the workspace group
+    if (item as? XTSideBarGroupItem) === roots[0] {
+      return false
+    }
+    
+    return true
+  }
+  
+  public func outlineView(_ outlineView: NSOutlineView,
                           shouldSelectItem item: Any) -> Bool
   {
     return (item as? XTSideBarItem)?.isSelectable ?? false

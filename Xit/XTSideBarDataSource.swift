@@ -56,12 +56,7 @@ class XTSideBarDataSource: NSObject
       observers.addObserver(forName: .XTRepositoryStashChanged,
                             object: repo, queue: .main) {
         [weak self] (_) in
-        guard let myself = self
-        else { return }
-        let stashesGroup = myself.roots[XTGroupIndex.stashes.rawValue]
-        
-        stashesGroup.children = myself.makeStashItems()
-        myself.outline.reloadItem(stashesGroup, reloadChildren: true)
+        self?.stashChanged()
       }
       observers.addObserver(forName: .XTRepositoryHeadChanged,
                             object: repo, queue: .main) {
@@ -167,6 +162,20 @@ class XTSideBarDataSource: NSObject
           myself.selectCurrentBranch()
         }
       }
+    }
+  }
+  
+  func stashChanged()
+  {
+    let stashesGroup = roots[XTGroupIndex.stashes.rawValue]
+
+    stashesGroup.children = makeStashItems()
+    outline.reloadItem(stashesGroup, reloadChildren: true)
+    if outline.selectedRow == -1 {
+      let stagingRow = outline.row(forItem: stagingItem)
+      
+      outline.selectRowIndexes(IndexSet(integer: stagingRow),
+                               byExtendingSelection: false)
     }
   }
   
