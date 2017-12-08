@@ -102,17 +102,32 @@ public class GitBranch: Branch
     return XTCommit(oid: oid, repository: repo)
   }
   var remoteName: String? { return nil }
+  
+  fileprivate static func lookUpBranch(name: String, repository: OpaquePointer,
+                                       branchType: git_branch_t)
+    -> OpaquePointer?
+  {
+    let branch = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    let result = git_branch_lookup(branch, repository,
+                                   name, branchType)
+    guard result == 0,
+          let finalBranch = branch.pointee
+    else { return nil }
+    
+    return finalBranch
+  }
 }
 
 public class GitLocalBranch: GitBranch, LocalBranch
 {
   init?(repository: XTRepository, name: String)
   {
-    guard let gtBranch = try? repository.gtRepo.lookUpBranch(
-        withName: name, type: .local, success: nil)
+    guard let branch = GitBranch.lookUpBranch(
+        name: name, repository: repository.gtRepo.git_repository(),
+        branchType: GIT_BRANCH_LOCAL)
     else { return nil }
     
-    super.init(branch: gtBranch.reference.git_reference())
+    super.init(branch: branch)
   }
   
   // Apparently just needed to disambiguate the overload
@@ -175,12 +190,12 @@ public class GitRemoteBranch: GitBranch, RemoteBranch
 {
   init?(repository: XTRepository, name: String)
   {
-    guard let gtBranch = try? repository.gtRepo.lookUpBranch(withName: name,
-                                                             type: .remote,
-                                                             success: nil)
+    guard let branch = GitBranch.lookUpBranch(
+        name: name, repository: repository.gtRepo.git_repository(),
+        branchType: GIT_BRANCH_REMOTE)
     else { return nil }
     
-    super.init(branch: gtBranch.reference.git_reference())
+    super.init(branch: branch)
   }
   
   required public init(branch: OpaquePointer)
