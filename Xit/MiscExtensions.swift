@@ -400,6 +400,21 @@ extension NSMutableArray
   }
 }
 
+extension Thread
+{
+  static func performOnMainThread(_ block: @escaping () -> Void)
+  {
+    if isMainThread {
+      block()
+    }
+    else {
+      DispatchQueue.main.async {
+        block()
+      }
+    }
+  }
+}
+
 // Swift 3 took away ++, but it still can be useful.
 postfix operator ++
 

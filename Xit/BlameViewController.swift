@@ -54,6 +54,13 @@ class BlameViewController: WebViewController
     fatalError("init(coder:) has not been implemented")
   }
   
+  override func loadNotice(_ text: String)
+  {
+    spinner.isHidden = true
+    spinner.stopAnimation(nil)
+    super.loadNotice(text)
+  }
+  
   func notAvailable()
   {
     DispatchQueue.main.async {
@@ -168,20 +175,24 @@ extension BlameViewController: XTFileContentController
   
   public func load(path: String!, model: FileChangesModel!, staged: Bool)
   {
-    guard let data = model.dataForFile(path, staged: staged),
-          let text = String(data: data, encoding: .utf8) ??
-                     String(data: data, encoding: .utf16)
-    else {
-      notAvailable()
-      return
-    }
-    
-    spinner.isHidden = false
-    spinner.startAnimation(nil)
-    clear()
-    DispatchQueue.global(qos: .userInitiated).async {
+    repoController.queue.executeOffMainThread {
       [weak self] in
-      self?.loadBlame(text: text, path: path, model: model, staged: staged)
+      guard let myself = self
+      else { return }
+      guard let data = model.dataForFile(path, staged: staged),
+            let text = String(data: data, encoding: .utf8) ??
+                       String(data: data, encoding: .utf16)
+      else {
+        myself.notAvailable()
+        return
+      }
+      
+      Thread.performOnMainThread {
+        myself.spinner.isHidden = false
+        myself.spinner.startAnimation(nil)
+        myself.clear()
+      }
+      myself.loadBlame(text: text, path: path, model: model, staged: staged)
     }
   }
 }

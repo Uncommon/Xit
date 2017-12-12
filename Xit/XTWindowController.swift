@@ -2,6 +2,7 @@ import Cocoa
 
 protocol RepositoryController: class
 {
+  var queue: TaskQueue { get }
   var selectedModel: FileChangesModel? { get set }
   
   func select(sha: String)
@@ -18,6 +19,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   weak var xtDocument: XTDocument?
   var titleBarController: TitleBarViewController?
   var refsChangedObserver: NSObjectProtocol?
+  var queue: TaskQueue { return xtDocument!.repository.queue }
   var selectedModel: FileChangesModel?
   {
     didSet
