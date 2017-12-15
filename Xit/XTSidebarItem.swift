@@ -192,10 +192,10 @@ class XTTagItem: XTSideBarItem
     
     super.init(title: tag.name)
     
-    // The cast to XTTag is unfortunate but hard to get around. It doesn't seem
+    // The cast to GitTag is unfortunate but hard to get around. It doesn't seem
     // to make sense to have a repository property in the Tag protocol.
     if let commit = tag.commit,
-       let xtTag = tag as? XTTag {
+       let xtTag = tag as? GitTag {
       self.model = CommitChanges(repository: xtTag.repository, commit: commit)
     }
   }

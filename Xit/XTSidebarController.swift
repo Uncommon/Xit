@@ -320,8 +320,8 @@ class XTSidebarController: NSViewController, SidebarHandler
         select(remoteBranch:
             remoteRef.removingPrefix(BranchPrefixes.remotes))
       
-      case let tagRef where tagRef.hasPrefix(XTTag.tagPrefix):
-        select(tag: tagRef.removingPrefix(XTTag.tagPrefix))
+      case let tagRef where tagRef.hasPrefix(GitTag.tagPrefix):
+        select(tag: tagRef.removingPrefix(GitTag.tagPrefix))
       
       default:
         break

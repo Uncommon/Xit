@@ -10,8 +10,9 @@ public protocol Tag
   var message: String? { get }
 }
 
-public class XTTag: Tag
+public class GitTag: Tag
 {
+  // TODO: Move this out because it's used by other classes
   static let tagPrefix = "refs/tags/"
 
   let repository: XTRepository
@@ -30,7 +31,7 @@ public class XTTag: Tag
   /// or just the tag name itself.
   init?(repository: XTRepository, name: String)
   {
-    let refName = name.hasPrefix(XTTag.tagPrefix) ? name : XTTag.tagPrefix + name
+    let refName = name.hasPrefix(GitTag.tagPrefix) ? name : GitTag.tagPrefix + name
     let ref = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     let result = git_reference_lookup(ref, repository.gtRepo.git_repository(),
                                       refName)
@@ -40,7 +41,7 @@ public class XTTag: Tag
     else { return nil }
     
     self.ref = finalRef
-    self.name = name.removingPrefix(XTTag.tagPrefix)
+    self.name = name.removingPrefix(GitTag.tagPrefix)
     
     let tag = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     let peelResult = git_reference_peel(tag, finalRef, GIT_OBJ_TAG)

@@ -217,7 +217,7 @@ extension XTRepository: CommitReferencing
     
     try Error.throwIfError(result)
     
-    var tags = [XTTag]()
+    var tags = [GitTag]()
     
     tags.reserveCapacity(tagNames.pointee.count)
     for index in 0..<tagNames.pointee.count {
@@ -225,7 +225,7 @@ extension XTRepository: CommitReferencing
                                   .pointee.flatMap({ String(cString: $0 )})
       else { continue }
       
-      XTTag(repository: self, name: tagName).map { tags.append($0) }
+      GitTag(repository: self, name: tagName).map { tags.append($0) }
     }
     git_strarray_free(tagNames)
     

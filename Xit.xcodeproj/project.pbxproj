@@ -30,7 +30,7 @@
 		899DB1A31CE5022400760270 /* XTCommitEntryController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 899DB1A11CE5022400760270 /* XTCommitEntryController.xib */; };
 		89C9276B1D368C020074F71A /* XTSideBarDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C9276A1D368C020074F71A /* XTSideBarDataSource.swift */; };
 		89C927751D36A2180074F71A /* XTSubmodule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927741D36A2180074F71A /* XTSubmodule.swift */; };
-		89C927781D36A5890074F71A /* XTTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927771D36A5890074F71A /* XTTag.swift */; };
+		89C927781D36A5890074F71A /* GitTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927771D36A5890074F71A /* GitTag.swift */; };
 		89C927881D43B0460074F71A /* XTPullController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927871D43B0460074F71A /* XTPullController.swift */; };
 		89C927941D43B23B0074F71A /* XTRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927931D43B23B0074F71A /* XTRepository.swift */; };
 		89CB61981E788A3900D69FE4 /* lorem.txt in Resources */ = {isa = PBXBuildFile; fileRef = 89CB61971E788A3900D69FE4 /* lorem.txt */; };
@@ -430,7 +430,7 @@
 		899DB1A11CE5022400760270 /* XTCommitEntryController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTCommitEntryController.xib; sourceTree = "<group>"; };
 		89C9276A1D368C020074F71A /* XTSideBarDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = XTSideBarDataSource.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		89C927741D36A2180074F71A /* XTSubmodule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSubmodule.swift; sourceTree = "<group>"; };
-		89C927771D36A5890074F71A /* XTTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTag.swift; sourceTree = "<group>"; };
+		89C927771D36A5890074F71A /* GitTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitTag.swift; sourceTree = "<group>"; };
 		89C927871D43B0460074F71A /* XTPullController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTPullController.swift; sourceTree = "<group>"; };
 		89C927931D43B23B0074F71A /* XTRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRepository.swift; sourceTree = "<group>"; };
 		89CB61971E788A3900D69FE4 /* lorem.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lorem.txt; sourceTree = "<group>"; };
@@ -1131,7 +1131,6 @@
 				C9328B131D776BC700EFF7F7 /* XTRepositoryWatcher.swift */,
 				C9EB87231D01D93400C47D13 /* XTStash.swift */,
 				89C927741D36A2180074F71A /* XTSubmodule.swift */,
-				89C927771D36A5890074F71A /* XTTag.swift */,
 				C959A7261F6C8440004277CD /* GitBlob.swift */,
 				C954ABFC1D34455000302160 /* GitBranch.swift */,
 				C9B6DFB51FDB4A6500B5E3AA /* GitConfig.swift */,
@@ -1144,6 +1143,7 @@
 				C9DA20CA1F6C8B7800C472CD /* GitIndex.swift */,
 				C991732C1F91255200054154 /* GitPatch.swift */,
 				C929D03A1D400B3B00D7DC52 /* GitRemote.swift */,
+				89C927771D36A5890074F71A /* GitTag.swift */,
 				C9DEA4AA1E4B7A4200DF4069 /* Blame.swift */,
 				C9DEA49B1E4A900300DF4069 /* OID.swift */,
 				C9F9A0291E1C417D00261E33 /* PatchMaker.swift */,
@@ -1683,7 +1683,7 @@
 				C929D0601D42785B00D7DC52 /* TeamCityAPI.swift in Sources */,
 				C94736821DF097B2000E3A05 /* FileListView.swift in Sources */,
 				C93FFCBB1F104AD700FDDD78 /* FileViewController+Actions.swift in Sources */,
-				89C927781D36A5890074F71A /* XTTag.swift in Sources */,
+				89C927781D36A5890074F71A /* GitTag.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
