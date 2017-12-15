@@ -214,16 +214,30 @@ extension XTRepository: SubmoduleManagement
     */
   }
   
-  public func submodules() -> [XTSubmodule]
+  public func submodules() -> [Submodule]
   {
-    var submodules = [XTSubmodule]()
-    
-    gtRepo.enumerateSubmodulesRecursively(false) {
-      (submodule, _, _) in
-      if let submodule = submodule {
-        submodules.append(XTSubmodule(repository: self, submodule: submodule))
-      }
+    class Payload { var submodules = [Submodule]() }
+    var payload = Payload()
+    let callback: git_submodule_cb = {
+      (submodule, name, payload) in
+      guard let submodule = submodule,
+            let repo = git_submodule_owner(submodule)
+      else { return 0 }
+      let payload = payload!.bindMemory(to: Payload.self, capacity: 1)
+      
+      // Look it up again to get an owned reference
+      let mySubmodule = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+      let lookup = git_submodule_lookup(mySubmodule, repo,
+                                        git_submodule_name(submodule))
+      guard lookup == 0,
+            let finalSubmodule = mySubmodule.pointee
+      else { return 0 }
+      
+      payload.pointee.submodules.append(GitSubmodule(submodule: finalSubmodule))
+      return 0
     }
-    return submodules
+    
+    git_submodule_foreach(gtRepo.git_repository(), callback, &payload)
+    return payload.submodules
   }
 }

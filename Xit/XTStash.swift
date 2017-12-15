@@ -142,7 +142,7 @@ public class XTStash: NSObject, Stash
                                to: PatchMaker.SourceType(untrackedBlob),
                                path: path))
     }
-    if let mainCommit = self.mainCommit as? XTCommit,
+    if let mainCommit = self.mainCommit,
        let unstagedEntry = mainCommit.tree?.entry(path: path) {
       guard let unstagedBlob = unstagedEntry.object as? Blob
       else { return nil }

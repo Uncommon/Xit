@@ -204,14 +204,14 @@ class XTTagItem: XTSideBarItem
 
 class XTSubmoduleItem: XTSideBarItem
 {
-  var submodule: XTSubmodule
+  let submodule: Submodule
   override var icon: NSImage?
   { return NSImage(named: .xtSubmoduleTemplate) }
   
-  init(submodule: XTSubmodule)
+  init(submodule: Submodule)
   {
     self.submodule = submodule
     
-    super.init(title: submodule.name!)
+    super.init(title: submodule.name)
   }
 }

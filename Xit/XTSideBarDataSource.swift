@@ -447,10 +447,9 @@ class XTSideBarDataSource: NSObject
     if let outline = outline,
        let clickedItem = outline.item(atRow: outline.clickedRow)
                          as? XTSubmoduleItem,
-       let rootPath = repository?.repoURL.path,
-       let subPath = clickedItem.submodule.path {
+       let rootPath = repository?.repoURL.path {
       let subURL = URL(fileURLWithPath: rootPath.appending(
-            pathComponent: subPath))
+            pathComponent: clickedItem.submodule.path))
       
       NSDocumentController.shared.openDocument(
           withContentsOf: subURL, display: true,

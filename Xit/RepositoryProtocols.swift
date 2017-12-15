@@ -89,7 +89,7 @@ public protocol RemoteManagement: class
 
 public protocol SubmoduleManagement: class
 {
-  func submodules() -> [XTSubmodule]
+  func submodules() -> [Submodule]
   func addSubmodule(path: String, url: String) throws
 }
 
