@@ -192,9 +192,10 @@ class XTTagItem: XTSideBarItem
     
     super.init(title: tag.name)
     
-    if let xtTag = tag as? XTTag,
-       let sha = xtTag.targetSHA,
-       let commit = XTCommit(sha: sha, repository: xtTag.repository) {
+    // The cast to XTTag is unfortunate but hard to get around. It doesn't seem
+    // to make sense to have a repository property in the Tag protocol.
+    if let commit = tag.commit,
+       let xtTag = tag as? XTTag {
       self.model = CommitChanges(repository: xtTag.repository, commit: commit)
     }
   }

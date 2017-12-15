@@ -117,7 +117,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func select(sha: String)
   {
-    guard let commit = XTCommit(sha: sha, repository: xtDocument!.repository)
+    guard let commit = xtDocument!.repository.commit(forSHA: sha)
     else { return }
   
     selectedModel = CommitChanges(repository: xtDocument!.repository,

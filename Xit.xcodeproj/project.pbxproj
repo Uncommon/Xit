@@ -1132,9 +1132,9 @@
 				C9EB87231D01D93400C47D13 /* XTStash.swift */,
 				89C927741D36A2180074F71A /* XTSubmodule.swift */,
 				89C927771D36A5890074F71A /* XTTag.swift */,
-				C9DEA4AA1E4B7A4200DF4069 /* Blame.swift */,
 				C959A7261F6C8440004277CD /* GitBlob.swift */,
 				C954ABFC1D34455000302160 /* GitBranch.swift */,
+				C9B6DFB51FDB4A6500B5E3AA /* GitConfig.swift */,
 				C95BD4041F8FF8C8000A2E2D /* GitDiff.swift */,
 				C98CAD951F952173005DB419 /* GitDiffDelta.swift */,
 				C98CAD831F9520D0005DB419 /* GitDiffHunk.swift */,
@@ -1144,6 +1144,7 @@
 				C9DA20CA1F6C8B7800C472CD /* GitIndex.swift */,
 				C991732C1F91255200054154 /* GitPatch.swift */,
 				C929D03A1D400B3B00D7DC52 /* GitRemote.swift */,
+				C9DEA4AA1E4B7A4200DF4069 /* Blame.swift */,
 				C9DEA49B1E4A900300DF4069 /* OID.swift */,
 				C9F9A0291E1C417D00261E33 /* PatchMaker.swift */,
 				C959A7221F6C6974004277CD /* RepositoryProtocols.swift */,
@@ -1151,7 +1152,6 @@
 				891261AF1F867FCC00C292B7 /* Tree.swift */,
 				C9FFCC871FB3B1D000FA2F21 /* TreeLoader.swift */,
 				C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */,
-				C9B6DFB51FDB4A6500B5E3AA /* GitConfig.swift */,
 			);
 			name = Repository;
 			sourceTree = "<group>";

@@ -212,9 +212,24 @@ extension XTRepository: CommitReferencing
   /// Returns the list of tags, or throws if libgit2 hit an error.
   public func tags() throws -> [Tag]
   {
-    let tags = try gtRepo.allTags()
+    let tagNames = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
+    let result = git_tag_list(tagNames, gtRepo.git_repository())
     
-    return tags.map({ XTTag(repository: self, tag: $0) })
+    try Error.throwIfError(result)
+    
+    var tags = [XTTag]()
+    
+    tags.reserveCapacity(tagNames.pointee.count)
+    for index in 0..<tagNames.pointee.count {
+      guard let tagName = tagNames.pointee.strings.advanced(by: index)
+                                  .pointee.flatMap({ String(cString: $0 )})
+      else { continue }
+      
+      XTTag(repository: self, name: tagName).map { tags.append($0) }
+    }
+    git_strarray_free(tagNames)
+    
+    return tags
   }
 }
 

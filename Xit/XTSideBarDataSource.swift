@@ -198,7 +198,7 @@ class XTSideBarDataSource: NSObject
     
     for branch in localBranches {
       guard let sha = branch.sha,
-            let commit = XTCommit(sha: sha, repository: repo)
+            let commit = repo.commit(forSHA: sha)
       else { continue }
       
       let name = branch.name.removingPrefix("refs/heads/")

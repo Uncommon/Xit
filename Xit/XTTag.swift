@@ -2,28 +2,27 @@ import Cocoa
 
 public protocol Tag
 {
+  /// Tag name (without "refs/tags/")
   var name: String { get }
-  var targetSHA: String? { get }
+  var targetOID: OID? { get }
+  var commit: Commit? { get }
+  /// Tag message; will be nil for lightweight tags.
+  var message: String? { get }
 }
 
 public class XTTag: Tag
 {
   static let tagPrefix = "refs/tags/"
 
-  unowned let repository: XTRepository
-  private let tag: GTTag?
-  /// Tag name (without "refs/tags/")
+  let repository: XTRepository
+  private let ref: OpaquePointer
+  private let tag: OpaquePointer?
   public let name: String
-  public let targetSHA: String?
-  /// Tag message; will be nil for lightweight tags.
-  public var message: String? { return tag?.message }
-  
-  init(repository: XTRepository, tag: GTTag)
+  public lazy var targetOID: OID? = self.calculateOID()
+  public lazy var message: String? = self.calculateMessage()
+  public var commit: Commit?
   {
-    self.repository = repository
-    self.tag = tag
-    self.name = tag.name
-    self.targetSHA = tag.target!.sha!
+    return targetOID.flatMap { repository.commit(forOID: $0) }
   }
   
   /// Initialize with the given tag name.
@@ -32,31 +31,54 @@ public class XTTag: Tag
   init?(repository: XTRepository, name: String)
   {
     let refName = name.hasPrefix(XTTag.tagPrefix) ? name : XTTag.tagPrefix + name
-  
-    self.repository = repository
-    self.name = name.removingPrefix(XTTag.tagPrefix)
-    
-    guard let ref = try? repository.gtRepo.lookUpReference(withName: refName)
+    let ref = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    let result = git_reference_lookup(ref, repository.gtRepo.git_repository(),
+                                      refName)
+    guard result == 0,
+          let finalRef = ref.pointee,
+          git_reference_is_tag(ref.pointee) == 1
     else { return nil }
     
-    // If it doesn't resolve as a tag, then it's a lightweight tag pointing
-    // directly at the commit.
-    switch ref.unresolvedTarget {
-      
-      case let tag as GTTag:
-        self.tag = tag
-        self.targetSHA = tag.target!.sha
-      
-      case let commit as GTCommit:
-        self.tag = nil
-        self.targetSHA = commit.sha
-      
-      default:
-        return nil
+    self.ref = finalRef
+    self.name = name.removingPrefix(XTTag.tagPrefix)
+    
+    let tag = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    let peelResult = git_reference_peel(tag, finalRef, GIT_OBJ_TAG)
+    
+    if peelResult == 0,
+       let finalTag = tag.pointee {
+      self.tag = finalTag
+    }
+    else {
+      self.tag = nil
+    }
+    self.repository = repository
+  }
+  
+  deinit
+  {
+    git_reference_free(self.ref)
+    self.tag.map { git_tag_free($0) }
+  }
+  
+  func calculateMessage() -> String?
+  {
+    return tag.flatMap { String(cString: git_tag_message($0)) }
+  }
+  
+  func calculateOID() -> OID?
+  {
+    if let tag = self.tag {
+      return GitOID(oid: git_tag_id(tag).pointee)
     }
     
-    if targetSHA == nil {
-      NSLog("Tag \(name) has no target SHA")
+    let target = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    let peelResult = git_reference_peel(target, ref, GIT_OBJ_COMMIT)
+    
+    if peelResult == 0,
+       let finalTarget = target.pointee {
+      return GitOID(oid: git_commit_id(finalTarget).pointee)
     }
+    return nil
   }
 }
