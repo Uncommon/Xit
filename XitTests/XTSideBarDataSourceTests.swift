@@ -199,7 +199,7 @@ class XTSidebarDataSourceTest: XTTest
                     as! XTSubmoduleItem
       
       XCTAssertEqual(subItem.submodule.name, data.0)
-      XCTAssertEqual(subItem.submodule.URLString, data.1)
+      XCTAssertEqual(subItem.submodule.url?.path, data.1)
     }
   }
   
