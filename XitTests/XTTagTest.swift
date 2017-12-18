@@ -34,7 +34,7 @@ class XTTagTest: XTTest
       XCTFail("tag not found")
       return
     }
-    XCTAssertNotNil(tag.targetSHA)
+    XCTAssertNotNil(tag.targetOID)
     if hasMessage {
       XCTAssertEqual(trimmedMessage(tag: tag), message)
     }
@@ -45,7 +45,7 @@ class XTTagTest: XTTest
       XCTFail("tag not found by full name")
       return
     }
-    XCTAssertNotNil(fullTag.targetSHA)
+    XCTAssertNotNil(fullTag.targetOID)
     if hasMessage {
       XCTAssertEqual(trimmedMessage(tag: fullTag), message)
     }

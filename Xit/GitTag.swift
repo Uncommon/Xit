@@ -70,7 +70,7 @@ public class GitTag: Tag
   func calculateOID() -> OID?
   {
     if let tag = self.tag {
-      return GitOID(oid: git_tag_id(tag).pointee)
+      return GitOID(oid: git_tag_target_id(tag).pointee)
     }
     
     let target = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)

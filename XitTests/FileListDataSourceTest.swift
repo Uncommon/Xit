@@ -3,6 +3,8 @@ import XCTest
 
 class FakeRepoController: RepositoryController
 {
+  var queue = TaskQueue(id: "test")
+  
   var selectedCommitSHA: String = ""
   var selectedModel: FileChangesModel? = nil
   
