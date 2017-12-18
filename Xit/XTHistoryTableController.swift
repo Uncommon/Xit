@@ -102,25 +102,23 @@ public class XTHistoryTableController: NSViewController
     history.reset()
     repository.queue.executeOffMainThread {
       kdebug_signpost_start(Signposts.historyWalking, 0, 0, 0, 0)
-      guard let walker = try? GTEnumerator(repository: repository.gtRepo)
+      guard let walker = repository.walker()
       else {
         NSLog("GTEnumerator failed")
         return
       }
       
-      walker.reset(options: [.topologicalSort])
+      walker.setSorting([.topological])
       
       let refs = repository.allRefs()
       
       for ref in refs where ref != "refs/stash" {
-        _ = repository.sha(forRef: ref).flatMap { try? walker.pushSHA($0) }
+        repository.oid(forRef: ref).map { walker.push(oid: $0) }
       }
       
       objc_sync_enter(history)
-      while let gtCommit = walker.nextObject() as? GTCommit {
-        let oid = GitOID(oidPtr: gtCommit.oid.git_oid())
-        guard let commit = XTCommit(oid: oid,
-                                    repository: repository.gtRepo.git_repository())
+      while let oid = walker.next() {
+        guard let commit = repository.commit(forOID: oid)
         else { continue }
         
         history.appendCommit(commit)

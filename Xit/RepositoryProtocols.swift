@@ -4,6 +4,8 @@ public protocol CommitStorage: class
 {
   func commit(forSHA sha: String) -> Commit?
   func commit(forOID oid: OID) -> Commit?
+  
+  func walker() -> RevWalk?
 }
 
 public protocol CommitReferencing: class

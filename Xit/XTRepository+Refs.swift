@@ -137,6 +137,14 @@ extension XTRepository: CommitReferencing
     return (object as? GTObject)?.sha
   }
   
+  func oid(forRef ref: String) -> OID?
+  {
+    guard let object = try? gtRepo.lookUpObject(byRevParse: ref)
+    else { return nil }
+    
+    return (object as? GTObject)?.oid.flatMap { GitOID(oid: $0.git_oid().pointee) }
+  }
+  
   public func localBranch(named name: String) -> LocalBranch?
   {
     return GitLocalBranch(repository: self, name: name)

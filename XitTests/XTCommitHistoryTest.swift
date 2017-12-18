@@ -75,6 +75,11 @@ class GenericRepository<ID: OID & Hashable>: CommitStorage
     }
     return nil
   }
+  
+  func walker() -> RevWalk?
+  {
+    return nil
+  }
 }
 
 typealias MockRepository = GenericRepository<GitOID>

@@ -348,6 +348,11 @@ extension XTRepository: CommitStorage
   {
     return XTCommit(oid: oid, repository: gtRepo.git_repository())
   }
+  
+  public func walker() -> RevWalk?
+  {
+    return GitRevWalk(repository: gtRepo.git_repository())
+  }
 }
 
 extension XTRepository
