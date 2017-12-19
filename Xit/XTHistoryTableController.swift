@@ -104,7 +104,7 @@ public class XTHistoryTableController: NSViewController
       kdebug_signpost_start(Signposts.historyWalking, 0, 0, 0, 0)
       guard let walker = repository.walker()
       else {
-        NSLog("GTEnumerator failed")
+        NSLog("RevWalker failed")
         return
       }
       

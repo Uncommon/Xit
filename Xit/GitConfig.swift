@@ -22,6 +22,22 @@ class GitConfig: Config
     self.config = finalConfig
   }
   
+  init(config: OpaquePointer)
+  {
+    self.config = config
+  }
+  
+  static var `default`: GitConfig?
+  {
+    let config = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    let result = git_config_open_default(config)
+    guard result == 0,
+          let finalConfig = config.pointee
+    else { return nil }
+    
+    return GitConfig(config: finalConfig)
+  }
+  
   deinit
   {
     git_config_free(config)
@@ -53,13 +69,17 @@ class GitConfig: Config
   {
     get
     {
-      let string = UnsafeMutablePointer<UnsafePointer<Int8>?>.allocate(capacity: 1)
-      let result = git_config_get_string(string, config, index)
-      guard result == 0,
-            let finalString = string.pointee
+      let buffer = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
+      
+      buffer.pointee.ptr = nil
+      buffer.pointee.asize = 0
+      buffer.pointee.size = 0
+      
+      let result = git_config_get_string_buf(buffer, config, index)
+      guard result == 0
       else { return nil }
       
-      return String(cString: finalString)
+      return String(cString: buffer.pointee.ptr)
     }
     set
     {
