@@ -66,3 +66,16 @@ typedef NS_OPTIONS(unsigned int, DiffOptionFlags)
   DiffOptionFlagsMinimal = GIT_DIFF_MINIMAL,
   DiffOptionFlagsShowBinary = GIT_DIFF_SHOW_BINARY,
 };
+
+typedef NS_ENUM(int, GitObjectType) {
+  GitObjectTypeAny = GIT_OBJ_ANY,
+  GitObjectTypeBad = GIT_OBJ_BAD,
+  GitObjectTypeExt1 = GIT_OBJ__EXT1,
+  GitObjectTypeCommit = GIT_OBJ_COMMIT,
+  GitObjectTypeTree = GIT_OBJ_TREE,
+  GitObjectTypeBlob = GIT_OBJ_BLOB,
+  GitObjectTypeTag = GIT_OBJ_TAG,
+  GitObjectTypeExt2 = GIT_OBJ__EXT2,
+  GitObjectTypeOffsetDelta = GIT_OBJ_OFS_DELTA,
+  GitObjectTypeRefDelta = GIT_OBJ_REF_DELTA,
+};
