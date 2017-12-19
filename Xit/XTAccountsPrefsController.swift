@@ -9,7 +9,7 @@ enum PasswordAction
 }
 
 
-class XTAccountsPrefsController: NSViewController, PreferencesSaver
+class XTAccountsPrefsController: NSViewController
 {
   // Not a weak reference because there are no other references to it.
   @IBOutlet var addController: XTAddAccountController!
@@ -41,11 +41,6 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
     let center = NotificationCenter.default
     
     authStatusObserver.map { center.removeObserver($0) }
-  }
-  
-  func savePreferences()
-  {
-    XTAccountsManager.manager.saveAccounts()
   }
   
   func updateRefreshButton()
@@ -184,6 +179,14 @@ class XTAccountsPrefsController: NSViewController, PreferencesSaver
       default:
         break
     }
+  }
+}
+
+extension XTAccountsPrefsController: PreferencesSaver
+{
+  func savePreferences()
+  {
+    XTAccountsManager.manager.saveAccounts()
   }
 }
 

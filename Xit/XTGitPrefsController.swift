@@ -1,6 +1,6 @@
 import Cocoa
 
-class XTGitPrefsController: NSViewController, PreferencesSaver
+class XTGitPrefsController: NSViewController
 {
   @IBOutlet weak var userNameField: NSTextField!
   @IBOutlet weak var userEmailField: NSTextField!
@@ -43,7 +43,10 @@ class XTGitPrefsController: NSViewController, PreferencesSaver
     fetchTagsCheckbox.boolValue = UserDefaults.standard
         .bool(forKey: PrefKey.fetchTags)
   }
-  
+}
+
+extension XTGitPrefsController: PreferencesSaver
+{
   func savePreferences()
   {
     if let config = config {
