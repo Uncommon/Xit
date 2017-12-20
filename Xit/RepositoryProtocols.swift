@@ -2,6 +2,7 @@ import Foundation
 
 public protocol CommitStorage: class
 {
+  func oid(forSHA sha: String) -> OID?
   func commit(forSHA sha: String) -> Commit?
   func commit(forOID oid: OID) -> Commit?
   

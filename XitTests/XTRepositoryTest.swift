@@ -246,8 +246,14 @@ class XTRepositoryTest: XTTest
   
   func testWriteLockTags()
   {
+    guard let headOID = repository.headSHA.flatMap({ repository.oid(forSHA: $0) })
+    else {
+      XCTFail("no head")
+      return
+    }
+    
     assertWriteException(name: "create") {
-      try repository.createTag(name: "tag", targetSHA: repository.headSHA!, message: "msg")
+      try repository.createTag(name: "tag", targetOID: headOID, message: "msg")
     }
     assertWriteException(name: "delete") {
       try repository.deleteTag(name: "tag")

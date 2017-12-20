@@ -2,31 +2,41 @@ import Foundation
 
 extension XTRepository
 {
-  func createTag(name: String,
-                 targetSHA: String,
-                 message: String?) throws
+  func createTag(name: String, targetOID: OID, message: String?) throws
   {
     try performWriting {
-      guard let targetCommit = try gtRepo.lookUpObject(bySHA: targetSHA,
-                                                       objectType: .commit)
-                                   as? GTCommit
-      else { return }
-      let signature = gtRepo.userSignatureForNow()
+      guard let commit = XTCommit(oid: targetOID,
+                                  repository: gtRepo.git_repository())
+      else { throw Error.notFound }
       
-      try gtRepo.createTagNamed(name, target: targetCommit, tagger: signature,
-                                message: message ?? "")
+      let oid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
+      let signature = UnsafeMutablePointer<UnsafeMutablePointer<git_signature>?>
+            .allocate(capacity: 1)
+      let sigResult = git_signature_default(signature, gtRepo.git_repository())
+      
+      try Error.throwIfError(sigResult)
+      guard let finalSig = signature.pointee
+      else { throw Error.unexpected }
+      
+      let result = git_tag_create(oid, gtRepo.git_repository(), name,
+                                  commit.commit, finalSig, message, 0)
+      
+      try Error.throwIfError(result)
     }
   }
   
-  func createLightweightTag(name: String, targetSHA: String) throws
+  func createLightweightTag(name: String, targetOID: OID) throws
   {
     try performWriting {
-      guard let targetCommit = try gtRepo.lookUpObject(bySHA: targetSHA,
-                                                       objectType: .commit)
-                                   as? GTCommit
-      else { return }
+      guard let commit = XTCommit(oid: targetOID,
+                                  repository: gtRepo.git_repository())
+      else { throw Error.notFound }
       
-      try gtRepo.createLightweightTagNamed(name, target: targetCommit)
+      let oid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
+      let result = git_tag_create_lightweight(oid, gtRepo.git_repository(), name,
+                                              commit.commit, 0)
+      
+      try Error.throwIfError(result)
     }
   }
   

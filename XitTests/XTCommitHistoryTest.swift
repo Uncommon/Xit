@@ -56,6 +56,11 @@ class GenericRepository<ID: OID & Hashable>: CommitStorage
     self.commits = commits
   }
   
+  func oid(forSHA sha: String) -> OID?
+  {
+    return StringOID(sha: sha)
+  }
+  
   func commit(forSHA sha: String) -> Commit?
   {
     for commit in commits {

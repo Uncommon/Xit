@@ -158,12 +158,6 @@ public class XTCommit: Commit
     self.oid = GitOID(oidPtr: git_commit_id(gitCommit))
     self.commit = gitCommit
   }
-  
-  init(commit: GTCommit)
-  {
-    self.oid = GitOID(oidPtr: git_commit_id(commit.git_commit()))
-    self.commit = commit.git_commit()
-  }
 
   convenience init?(oid: OID, repository: OpaquePointer)
   {
