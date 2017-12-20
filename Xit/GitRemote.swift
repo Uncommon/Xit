@@ -60,6 +60,7 @@ class GitRemote: Remote
     let result = git_remote_rename(problems, owner, oldName, name)
     
     try XTRepository.Error.throwIfError(result)
+    git_strarray_free(problems)
   }
   
   func updateURLString(_ URLString: String) throws

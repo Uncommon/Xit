@@ -47,18 +47,10 @@ extension XTRepository: CommitReferencing
   {
     var stringArray = git_strarray()
     guard git_reference_list(&stringArray, gtRepo.git_repository()) == 0
-      else { return [] }
+    else { return [] }
     defer { git_strarray_free(&stringArray) }
     
-    var result = [String]()
-    
-    for i in 0..<stringArray.count {
-      guard let refString =
-        String(validatingUTF8: UnsafePointer<CChar>(stringArray.strings[i]!))
-        else { continue }
-      result.append(refString)
-    }
-    return result
+    return stringArray.flatMap { $0 }
   }
 
   public var headRef: String?
@@ -209,9 +201,9 @@ extension XTRepository: CommitReferencing
   {
     let strArray = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
     guard git_remote_list(strArray, gtRepo.git_repository()) == 0
-      else { return [] }
+    else { return [] }
     
-    return [String](gitStrArray: strArray.pointee)
+    return strArray.pointee.flatMap { $0 }
   }
   
   public func stashes() -> Stashes
@@ -226,20 +218,11 @@ extension XTRepository: CommitReferencing
     let result = git_tag_list(tagNames, gtRepo.git_repository())
     
     try Error.throwIfError(result)
+    defer { git_strarray_free(tagNames) }
     
-    var tags = [GitTag]()
-    
-    tags.reserveCapacity(tagNames.pointee.count)
-    for index in 0..<tagNames.pointee.count {
-      guard let tagName = tagNames.pointee.strings.advanced(by: index)
-                                  .pointee.flatMap({ String(cString: $0 )})
-      else { continue }
-      
-      GitTag(repository: self, name: tagName).map { tags.append($0) }
+    return tagNames.pointee.flatMap {
+      name in name.flatMap { GitTag(repository: self, name: $0) }
     }
-    git_strarray_free(tagNames)
-    
-    return tags
   }
 }
 

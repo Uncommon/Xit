@@ -36,21 +36,6 @@ extension git_merge_options
 
 extension Array where Element == String
 {
-  init(gitStrArray: git_strarray)
-  {
-    self.init()
-  
-    var stringPtr = gitStrArray.strings
-    
-    for _ in 0..<gitStrArray.count {
-      guard let string = stringPtr?.pointee
-      else { continue }
-      
-      append(String(cString: string))
-      stringPtr = stringPtr?.advanced(by: 1)
-    }
-  }
-  
   /// Converts the given array to a `git_strarray` and calls the given block.
   /// This is patterned after `withArrayOfCStrings` except that function does
   /// not produce the necessary type.
@@ -84,6 +69,17 @@ extension Array where Element == String
         block(strarray)
       })
     }
+  }
+}
+
+extension git_strarray: RandomAccessCollection
+{
+  public var startIndex: Int { return 0 }
+  public var endIndex: Int { return count }
+  
+  public subscript(index: Int) -> String?
+  {
+    return self.strings[index].map { String(cString: $0) }
   }
 }
 
