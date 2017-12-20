@@ -129,20 +129,22 @@ extension XTRepository: CommitReferencing
     return hasHeadReference() ? "HEAD" : kEmptyTreeHash
   }
   
+  // TODO: Move this to a protocol extension
   func sha(forRef ref: String) -> String?
   {
-    guard let object = try? gtRepo.lookUpObject(byRevParse: ref)
-    else { return nil }
-    
-    return (object as? GTObject)?.sha
+    return oid(forRef: ref)?.sha
   }
   
   func oid(forRef ref: String) -> OID?
   {
-    guard let object = try? gtRepo.lookUpObject(byRevParse: ref)
+    let object = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    let result = git_revparse_single(object, gtRepo.git_repository(), ref)
+    guard result == 0,
+          let finalObject = object.pointee,
+          let oid = git_object_id(finalObject)
     else { return nil }
     
-    return (object as? GTObject)?.oid.flatMap { GitOID(oid: $0.git_oid().pointee) }
+    return GitOID(oidPtr: oid)
   }
   
   public func localBranch(named name: String) -> LocalBranch?
