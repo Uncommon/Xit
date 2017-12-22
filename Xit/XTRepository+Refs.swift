@@ -224,6 +224,11 @@ extension XTRepository: CommitReferencing
       name in name.flatMap { GitTag(repository: self, name: $0) }
     }
   }
+  
+  public func reference(named name: String) -> Reference?
+  {
+    return GitReference(name: name, repository: gtRepo.git_repository())
+  }
 }
 
 extension XTRepository: BranchListing

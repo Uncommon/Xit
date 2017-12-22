@@ -67,6 +67,13 @@ typedef NS_OPTIONS(unsigned int, DiffOptionFlags)
   DiffOptionFlagsShowBinary = GIT_DIFF_SHOW_BINARY,
 };
 
+typedef NS_ENUM(int, ReferenceType) {
+  ReferenceTypeInvalid = GIT_REF_INVALID,
+  ReferenceTypeOID = GIT_REF_OID,
+  ReferenceTypeSymbolic = GIT_REF_SYMBOLIC,
+  ReferenceTypeListAll = GIT_REF_LISTALL,
+};
+
 typedef NS_ENUM(int, GitObjectType) {
   GitObjectTypeAny = GIT_OBJ_ANY,
   GitObjectTypeBad = GIT_OBJ_BAD,

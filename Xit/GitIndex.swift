@@ -16,8 +16,12 @@ protocol StagingIndex
   func entry(at path: String) -> IndexEntry?
   /// Adds a local file to the index
   func add(path: String) throws
+  /// Reads the tree into the index
+  func read(tree: Tree) throws
   /// Removes a file from the index
   func remove(path: String) throws
+  /// Removes all files
+  func clear() throws
 }
 
 /// An individual file entry in an index.
@@ -82,7 +86,7 @@ class GitIndex: StagingIndex
     var conflicted: Bool
     {
       return (UInt32(gitEntry.flags_extended) &
-        GIT_IDXENTRY_CONFLICTED.rawValue) != 0
+              GIT_IDXENTRY_CONFLICTED.rawValue) != 0
     }
   }
   
@@ -108,6 +112,14 @@ class GitIndex: StagingIndex
     try XTRepository.Error.throwIfError(git_index_write(index))
   }
   
+  func read(tree: Tree) throws
+  {
+    guard let gitTree = tree as? GitTree
+    else { throw XTRepository.Error.unexpected }
+    
+    try XTRepository.Error.throwIfError(git_index_read_tree(index, gitTree.tree))
+  }
+  
   func add(path: String) throws
   {
     try XTRepository.Error.throwIfError(git_index_add_bypath(index, path))
@@ -116,5 +128,10 @@ class GitIndex: StagingIndex
   func remove(path: String) throws
   {
     try XTRepository.Error.throwIfError(git_index_remove_bypath(index, path))
+  }
+  
+  func clear() throws
+  {
+    try XTRepository.Error.throwIfError(git_index_clear(index))
   }
 }

@@ -20,6 +20,16 @@ public protocol CommitReferencing: class
   
   func localBranch(named name: String) -> LocalBranch?
   func remoteBranch(named name: String, remote: String) -> RemoteBranch?
+  
+  func reference(named name: String) -> Reference?
+}
+
+extension CommitReferencing
+{
+  var headReference: Reference?
+  {
+    return reference(named: "HEAD")
+  }
 }
 
 public protocol BranchListing: class

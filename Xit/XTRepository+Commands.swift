@@ -100,14 +100,22 @@ extension XTRepository
   
   func unstageAllFiles() throws
   {
-    let headRef = try gtRepo.headReference()
-    let index = try gtRepo.index()
-    guard let headCommit = headRef.resolvedTarget as? GTCommit,
-          let headTree = headCommit.tree
+    guard let index = GitIndex(repository: self)
     else { throw Error.unexpected }
     
-    try index.addContents(of: headTree)
-    try index.write()
+    if let headOID = headReference?.resolve()?.targetOID {
+      guard let headCommit = commit(forOID: headOID),
+            let headTree = headCommit.tree
+      else { throw Error.unexpected }
+      
+      try index.read(tree: headTree)
+    }
+    else {
+      // If there is no head, then this is the first commit
+      try index.clear()
+    }
+
+    try index.save()
   }
   
   func renameRemote(old: String, new: String) throws
