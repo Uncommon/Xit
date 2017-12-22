@@ -104,18 +104,6 @@ extension XTRepository: CommitReferencing
     }
   }
   
-  func parseSymbolicReference(_ reference: String) -> String?
-  {
-    guard let gtRef = try? gtRepo.lookUpReference(withName: reference)
-    else { return nil }
-    
-    if let unresolvedRef = gtRef.unresolvedTarget as? GTReference,
-       let name = unresolvedRef.name {
-      return name
-    }
-    return reference
-  }
-  
   func parentTree() -> String
   {
     return hasHeadReference() ? "HEAD" : kEmptyTreeHash
@@ -164,12 +152,10 @@ extension XTRepository: CommitReferencing
   func deleteBranch(_ name: String) -> Bool
   {
     return writing {
-      let fullBranch = GTBranch.localNamePrefix().appending(name)
-      guard let ref = try? gtRepo.lookUpReference(withName: fullBranch),
-            let branch = GTBranch(reference: ref)
+      guard let branch = localBranch(named: name) as? GitLocalBranch
       else { return false }
       
-      return (try? branch.delete()) != nil
+      return git_branch_delete(branch.branchRef) == 0
     }
   }
   

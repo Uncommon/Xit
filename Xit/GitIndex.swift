@@ -16,6 +16,8 @@ protocol StagingIndex
   func entry(at path: String) -> IndexEntry?
   /// Adds a local file to the index
   func add(path: String) throws
+  /// Adds or updates a file with the given data
+  func add(data: Data, path: String) throws
   /// Reads the tree into the index
   func read(tree: Tree) throws
   /// Removes a file from the index
@@ -123,6 +125,23 @@ class GitIndex: StagingIndex
   func add(path: String) throws
   {
     try XTRepository.Error.throwIfError(git_index_add_bypath(index, path))
+  }
+  
+  func add(data: Data, path: String) throws
+  {
+    let result = data.withUnsafeBytes {
+      (bytes: UnsafePointer<Int8>) -> Int32 in
+      var entry = git_index_entry()
+      
+      return path.withCString {
+        (path) in
+        entry.path = path
+        entry.mode = GIT_FILEMODE_BLOB.rawValue
+        return git_index_add_frombuffer(index, &entry, bytes, data.count)
+      }
+    }
+    
+    try XTRepository.Error.throwIfError(result)
   }
   
   func remove(path: String) throws

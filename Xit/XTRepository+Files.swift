@@ -87,13 +87,13 @@ extension XTRepository: FileContents
   
   public func stagedBlob(file: String) -> Blob?
   {
-    guard let index = try? gtRepo.index(),
-          (try? index.refresh()) != nil,
-          let indexEntry = index.entry(withPath: file),
-          let indexObject = try? GTObject(indexEntry: indexEntry)
+    guard let index = GitIndex(repository: self),
+          let entry = index.entry(at: file),
+          let blob = GitBlob(gitRepository: gtRepo.git_repository(),
+                             oid: entry.oid)
     else { return nil }
     
-    return indexObject as? GTBlob
+    return blob
   }
   
   public func fileBlob(ref: String, path: String) -> Blob?
@@ -186,9 +186,10 @@ extension XTRepository: FileDiffing
     do {
       let data = exists ? try Data(contentsOf: url) : Data()
       
-      if let index = try? gtRepo.index(),
-         let indexEntry = index.entry(withPath: file),
-         let indexBlob = try? GTObject(indexEntry: indexEntry) as? GTBlob {
+      if let index = GitIndex(repository: self),
+         let indexEntry = index.entry(at: file),
+         let indexBlob = GitBlob.init(gitRepository: gtRepo.git_repository(),
+                                      oid: indexEntry.oid) {
         return .diff(PatchMaker(from: PatchMaker.SourceType(indexBlob),
                                  to: .data(data), path: file))
       }
@@ -256,10 +257,10 @@ extension XTRepository
   /// (the patch should be reversed)
   func patchIndexFile(path: String, hunk: DiffHunk, stage: Bool) throws
   {
-    var encoding = String.Encoding.utf8
-    let index = try gtRepo.index()
+    guard let index = GitIndex(repository: self)
+    else { throw Error.unexpected }
     
-    if let entry = index.entry(withPath: path) {
+    if let entry = index.entry(at: path) {
       if (hunk.newStart == 1) || (hunk.oldStart == 1) {
         let status = try self.status(file: path)
         
@@ -282,19 +283,22 @@ extension XTRepository
         }
       }
       
-      guard let blob = (try entry.gtObject()) as? GTBlob,
-            let data = blob.data(),
-            let text = String(data: data, usedEncoding: &encoding)
+      guard let blob = GitBlob(gitRepository: gtRepo.git_repository(),
+                               oid: entry.oid)
       else { throw Error.unexpected }
       
-      guard let patchedText = hunk.applied(to: text, reversed: !stage)
-      else { throw Error.patchMismatch }
-      
-      guard let patchedData = patchedText.data(using: encoding)
-      else { throw Error.unexpected }
-      
-      try index.add(patchedData, withPath: path)
-      try index.write()
+      try blob.withData {
+        (data) in
+        guard let text = String(data: data, encoding: .utf8),
+              let patchedText = hunk.applied(to: text, reversed: !stage)
+        else { throw Error.patchMismatch }
+        
+        guard let patchedData = patchedText.data(using: .utf8)
+        else { throw Error.unexpected }
+        
+        try index.add(data: patchedData, path: path)
+      }
+      try index.save()
       return
     }
     else {

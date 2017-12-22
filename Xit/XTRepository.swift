@@ -166,12 +166,18 @@ public class XTRepository: NSObject
   
   func recalculateHead()
   {
-    guard let head = parseSymbolicReference("HEAD")
+    guard let headReference = self.headReference
     else { return }
-    let ref = head.hasPrefix("refs/heads/") ? head : "HEAD"
     
-    cachedHeadRef = ref
-    cachedHeadSHA = sha(forRef: ref)
+    switch headReference.type {
+      case .symbolic:
+        cachedHeadRef = headReference.symbolicTargetName
+      case .OID:
+        cachedHeadRef = headReference.name
+      default:
+        break
+    }
+    cachedHeadSHA = sha(forRef: headReference.name)
   }
   
   func writing(_ block: () -> Bool) -> Bool
