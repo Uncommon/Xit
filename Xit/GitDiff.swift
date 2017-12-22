@@ -193,7 +193,15 @@ extension Diff
 extension git_diff_file: DiffFile
 {
   public var oid: OID { return GitOID(oid: id) }
-  public var filePath: String { return String(cString: path) }
+  public var filePath: String
+  {
+    if let path = self.path {
+      return String(cString: path)
+    }
+    else {
+      return ""
+    }
+  }
   public var diffFlags: DiffFlags { return DiffFlags(rawValue: flags) }
 }
 

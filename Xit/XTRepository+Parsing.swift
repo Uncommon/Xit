@@ -49,20 +49,18 @@ extension XTRepository: FileStaging
   public var workspaceStatus: [String: WorkspaceFileStatus]
   {
     var result = [String: WorkspaceFileStatus]()
-    let options = [GTRepositoryStatusOptionsFlagsKey:
-                   GIT_STATUS_OPT_INCLUDE_UNTRACKED.rawValue]
+    guard let statusList = GitStatusList(repository: gtRepo.git_repository(),
+                                         options: [.includeUntracked])
+    else { return [:] }
     
-    try? gtRepo.enumerateFileStatus(options: options) {
-      (headToIndex, indexToWorking, _) in
-      guard let path = headToIndex?.oldFile?.path ??
-                       indexToWorking?.oldFile?.path
-      else { return }
-      
+    for entry in statusList {
+      guard let path = entry.headToIndex?.oldFile.filePath ??
+                       entry.indexToWorkdir?.oldFile.filePath
+      else { continue }
       let status = WorkspaceFileStatus(
-            change: headToIndex.map { DeltaStatus(delta: $0.status) }
-                    ?? .unmodified,
-            unstagedChange: indexToWorking.map { DeltaStatus(delta: $0.status) }
-                            ?? .unmodified)
+            change: entry.headToIndex?.deltaStatus ?? .unmodified,
+            unstagedChange: entry.indexToWorkdir?.deltaStatus ?? .unmodified)
+      
       result[path] = status
     }
     return result
@@ -99,22 +97,20 @@ extension XTRepository: FileStaging
   func stagingChanges() -> [FileChange]
   {
     var result = [FileStagingChange]()
-    let flags = GTRepositoryStatusFlagsIncludeUntracked.rawValue |
-                GTRepositoryStatusFlagsRecurseUntrackedDirectories.rawValue
-    let options = [GTRepositoryStatusOptionsFlagsKey: UInt(flags)]
+    guard let statusList = GitStatusList(repository: gtRepo.git_repository(),
+                                         options: [.includeUntracked,
+                                                   .recurseUntrackedDirs])
+    else { return [] }
     
-    try? gtRepo.enumerateFileStatus(options: options) {
-      (headToIndex, indexToWorking, _) in
-      guard let delta = headToIndex ?? indexToWorking
-      else { return }
-      let stagedChange = headToIndex.map { DeltaStatus(delta: $0.status) }
-                         ?? DeltaStatus.unmodified
-      let unstagedChange = indexToWorking.map { DeltaStatus(delta: $0.status) }
-                           ?? DeltaStatus.unmodified
-      let change = FileStagingChange(path: delta.oldFile?.path ?? "",
-                               destinationPath: delta.newFile?.path ?? "",
-                               change: stagedChange,
-                               unstagedChange: unstagedChange)
+    for entry in statusList {
+      guard let delta = entry.headToIndex ?? entry.indexToWorkdir
+      else { continue }
+      let stagedChange = entry.headToIndex?.deltaStatus ?? .unmodified
+      let unstagedChange = entry.indexToWorkdir?.deltaStatus ?? .unmodified
+      let change = FileStagingChange(path: delta.oldFile.filePath,
+                                     destinationPath: delta.newFile.filePath,
+                                     change: stagedChange,
+                                     unstagedChange: unstagedChange)
       
       result.append(change)
     }

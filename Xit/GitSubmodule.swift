@@ -23,4 +23,3 @@ public class GitSubmodule: Submodule
     return URL(string: String(cString: git_submodule_url(submodule)))
   }
 }
-

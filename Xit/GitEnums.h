@@ -86,3 +86,49 @@ typedef NS_ENUM(int, GitObjectType) {
   GitObjectTypeOffsetDelta = GIT_OBJ_OFS_DELTA,
   GitObjectTypeRefDelta = GIT_OBJ_REF_DELTA,
 };
+
+typedef NS_ENUM(int, StatusShow) {
+  StatusShowIndexAndWorkdir = GIT_STATUS_SHOW_INDEX_AND_WORKDIR,
+  StatusShowIndexOnly = GIT_STATUS_SHOW_INDEX_ONLY,
+  StatusShowWorkdirOnly = GIT_STATUS_SHOW_WORKDIR_ONLY,
+};
+
+typedef NS_OPTIONS(int, StatusFlags) {
+  //GIT_STATUS_CURRENT,
+  
+  StatusFlagsIndexNew        = GIT_STATUS_INDEX_NEW,
+  StatusFlagsIndexModified   = GIT_STATUS_INDEX_MODIFIED,
+  StatusFlagsIndexDeleted    = GIT_STATUS_INDEX_DELETED,
+  StatusFlagsIndexRenamed    = GIT_STATUS_INDEX_RENAMED,
+  StatusFlagsIndexTypeChange = GIT_STATUS_INDEX_TYPECHANGE,
+  
+  StatusFlagsWorktreeNew        = GIT_STATUS_WT_NEW,
+  StatusFlagsWorktreeModified   = GIT_STATUS_WT_MODIFIED,
+  StatusFlagsWorktreeDeleted    = GIT_STATUS_WT_DELETED,
+  StatusFlagsWorktreeRenamed    = GIT_STATUS_WT_RENAMED,
+  StatusFlagsWorktreeTypeChange = GIT_STATUS_WT_TYPECHANGE,
+  StatusFlagsWorktreeUnreadable = GIT_STATUS_WT_UNREADABLE,
+  
+  StatusFlagsIgnored = GIT_STATUS_IGNORED,
+  StatusFlagsConflicted = GIT_STATUS_CONFLICTED,
+};
+
+typedef NS_OPTIONS(int, StatusOptions) {
+  StatusOptionsIncludeUntracked = GIT_STATUS_OPT_INCLUDE_UNTRACKED,
+  StatusOptionsIncludeIgnored = GIT_STATUS_OPT_INCLUDE_IGNORED,
+  StatusOptionsIncludeUnmodified = GIT_STATUS_OPT_INCLUDE_UNMODIFIED,
+  StatusOptionsExcludeSubmodules = GIT_STATUS_OPT_EXCLUDE_SUBMODULES,
+  StatusOptionsRecurseUntrackedDirs = GIT_STATUS_OPT_RECURSE_UNTRACKED_DIRS,
+  StatusOptionsDisablePathspecMatch = GIT_STATUS_OPT_DISABLE_PATHSPEC_MATCH,
+  StatusOptionsRecurseIgnoredDirs = GIT_STATUS_OPT_RECURSE_IGNORED_DIRS,
+  StatusOptionsRenamesHeadToIndex = GIT_STATUS_OPT_RENAMES_HEAD_TO_INDEX,
+  StatusOptionsRenamesIndexToWorkdir = GIT_STATUS_OPT_RENAMES_INDEX_TO_WORKDIR,
+  StatusOptionsSortCaseSensitively = GIT_STATUS_OPT_SORT_CASE_SENSITIVELY,
+  StatusOptionsSortCaseInsensitively = GIT_STATUS_OPT_SORT_CASE_INSENSITIVELY,
+  StatusOptionsRenamesFromRewrites = GIT_STATUS_OPT_RENAMES_FROM_REWRITES,
+  StatusOptionsNoRefresh = GIT_STATUS_OPT_NO_REFRESH,
+  StatusOptionsUpdateIndex = GIT_STATUS_OPT_UPDATE_INDEX,
+  StatusOptionsIncludeUnreadable = GIT_STATUS_OPT_INCLUDE_UNREADABLE,
+  StatusOptionsIncludeUnreadableAsUntracked = GIT_STATUS_OPT_INCLUDE_UNREADABLE_AS_UNTRACKED,
+};
+
