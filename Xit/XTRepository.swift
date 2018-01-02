@@ -53,6 +53,8 @@ public class XTRepository: NSObject
   fileprivate var workspaceWatcher: WorkspaceWatcher! = nil
   private(set) var config: XTConfig! = nil
   
+  var gitRepo: OpaquePointer { return gtRepo.git_repository() }
+  
   var gitDirectoryURL: URL
   {
     return gtRepo.gitDirectoryURL ?? URL(fileURLWithPath: "")
@@ -105,7 +107,7 @@ public class XTRepository: NSObject
   {
     self.repoWatcher = XTRepositoryWatcher(repository: self)
     self.workspaceWatcher = WorkspaceWatcher(repository: self)
-    self.config = XTConfig(config: GitConfig(repository: gtRepo.git_repository()))
+    self.config = XTConfig(config: GitConfig(repository: gitRepo))
   }
   
   deinit
@@ -368,12 +370,12 @@ extension XTRepository: CommitStorage
   
   public func commit(forOID oid: OID) -> Commit?
   {
-    return XTCommit(oid: oid, repository: gtRepo.git_repository())
+    return XTCommit(oid: oid, repository: gitRepo)
   }
   
   public func walker() -> RevWalk?
   {
-    return GitRevWalk(repository: gtRepo.git_repository())
+    return GitRevWalk(repository: gitRepo)
   }
 }
 
@@ -384,9 +386,7 @@ extension XTRepository
   func isIgnored(path: String) -> Bool
   {
     let ignored = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
-    let result = git_ignore_path_is_ignored(ignored,
-                                            gtRepo.git_repository(),
-                                            path)
+    let result = git_ignore_path_is_ignored(ignored, gitRepo, path)
 
     return (result == 0) && (ignored.pointee != 0)
   }
@@ -395,7 +395,7 @@ extension XTRepository
   func status(file: String) throws -> (DeltaStatus, DeltaStatus)
   {
     let statusFlags = UnsafeMutablePointer<UInt32>.allocate(capacity: 1)
-    let result = git_status_file(statusFlags, gtRepo.git_repository(), file)
+    let result = git_status_file(statusFlags, gitRepo, file)
     
     if result != 0 {
       throw NSError.git_error(for: result)
@@ -461,7 +461,7 @@ extension XTRepository
                                     GIT_CHECKOUT_RECREATE_MISSING.rawValue
         options.paths = stringarray
         
-        let result = git_checkout_tree(self.gtRepo.git_repository(), nil, &options)
+        let result = git_checkout_tree(self.gitRepo, nil, &options)
         
         if result < 0 {
           error = Error.gitError(result)
@@ -481,7 +481,7 @@ extension XTRepository
     let ahead = UnsafeMutablePointer<Int>.allocate(capacity: 1)
     let behind = UnsafeMutablePointer<Int>.allocate(capacity: 1)
     
-    if git_graph_ahead_behind(ahead, behind, gtRepo.git_repository(),
+    if git_graph_ahead_behind(ahead, behind, gitRepo,
                               local.unsafeOID(), upstream.unsafeOID()) == 0 {
       return (ahead.pointee, behind.pointee)
     }

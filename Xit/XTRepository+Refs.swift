@@ -33,7 +33,7 @@ extension XTRepository: CommitReferencing
     }
     
     refsIndex.removeAll()
-    git_reference_foreach(gtRepo.git_repository(), callback, &payload)
+    git_reference_foreach(gitRepo, callback, &payload)
   }
   
   /// Returns a list of refs that point to the given commit.
@@ -46,7 +46,7 @@ extension XTRepository: CommitReferencing
   func allRefs() -> [String]
   {
     var stringArray = git_strarray()
-    guard git_reference_list(&stringArray, gtRepo.git_repository()) == 0
+    guard git_reference_list(&stringArray, gitRepo) == 0
     else { return [] }
     defer { git_strarray_free(&stringArray) }
     
@@ -118,7 +118,7 @@ extension XTRepository: CommitReferencing
   func oid(forRef ref: String) -> OID?
   {
     let object = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let result = git_revparse_single(object, gtRepo.git_repository(), ref)
+    let result = git_revparse_single(object, gitRepo, ref)
     guard result == 0,
           let finalObject = object.pointee,
           let oid = git_object_id(finalObject)
@@ -168,8 +168,7 @@ extension XTRepository: CommitReferencing
     }
     
     let branchRef = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    var result = git_branch_lookup(branchRef, gtRepo.git_repository(),
-                                   branch, GIT_BRANCH_LOCAL)
+    var result = git_branch_lookup(branchRef, gitRepo, branch, GIT_BRANCH_LOCAL)
     
     if result != 0 {
       throw NSError.git_error(for: result)
@@ -186,7 +185,7 @@ extension XTRepository: CommitReferencing
   public func remoteNames() -> [String]
   {
     let strArray = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
-    guard git_remote_list(strArray, gtRepo.git_repository()) == 0
+    guard git_remote_list(strArray, gitRepo) == 0
     else { return [] }
     
     return strArray.pointee.flatMap { $0 }
@@ -201,7 +200,7 @@ extension XTRepository: CommitReferencing
   public func tags() throws -> [Tag]
   {
     let tagNames = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
-    let result = git_tag_list(tagNames, gtRepo.git_repository())
+    let result = git_tag_list(tagNames, gitRepo)
     
     try Error.throwIfError(result)
     defer { git_strarray_free(tagNames) }
@@ -213,7 +212,7 @@ extension XTRepository: CommitReferencing
   
   public func reference(named name: String) -> Reference?
   {
-    return GitReference(name: name, repository: gtRepo.git_repository())
+    return GitReference(name: name, repository: gitRepo)
   }
 }
 

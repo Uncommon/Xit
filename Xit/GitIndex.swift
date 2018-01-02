@@ -42,7 +42,7 @@ class GitIndex: StagingIndex
   init?(repository: XTRepository)
   {
     var index: OpaquePointer?
-    let result = git_repository_index(&index, repository.gtRepo.git_repository())
+    let result = git_repository_index(&index, repository.gitRepo)
     guard result == 0,
           let finalIndex = index
     else { return nil }

@@ -180,14 +180,14 @@ public class XTCommit: Commit
     guard let oid = GitOID(sha: sha)
     else { return nil }
     
-    self.init(oid: oid, repository: repository.gtRepo.git_repository())
+    self.init(oid: oid, repository: repository.gitRepo)
   }
   
   convenience init?(ref: String, repository: XTRepository)
   {
     let gitRefPtr = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     guard git_reference_lookup(gitRefPtr,
-                               repository.gtRepo.git_repository(),
+                               repository.gitRepo,
                                ref) == 0,
           let gitRef = gitRefPtr.pointee
     else { return nil }

@@ -123,7 +123,7 @@ public class GitLocalBranch: GitBranch, LocalBranch
   init?(repository: XTRepository, name: String)
   {
     guard let branch = GitBranch.lookUpBranch(
-        name: name, repository: repository.gtRepo.git_repository(),
+        name: name, repository: repository.gitRepo,
         branchType: GIT_BRANCH_LOCAL)
     else { return nil }
     
@@ -191,7 +191,7 @@ public class GitRemoteBranch: GitBranch, RemoteBranch
   init?(repository: XTRepository, name: String)
   {
     guard let branch = GitBranch.lookUpBranch(
-        name: name, repository: repository.gtRepo.git_repository(),
+        name: name, repository: repository.gitRepo,
         branchType: GIT_BRANCH_REMOTE)
     else { return nil }
     

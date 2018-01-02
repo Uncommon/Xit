@@ -49,7 +49,7 @@ extension XTRepository: FileStaging
   public var workspaceStatus: [String: WorkspaceFileStatus]
   {
     var result = [String: WorkspaceFileStatus]()
-    guard let statusList = GitStatusList(repository: gtRepo.git_repository(),
+    guard let statusList = GitStatusList(repository: gitRepo,
                                          options: [.includeUntracked])
     else { return [:] }
     
@@ -97,7 +97,7 @@ extension XTRepository: FileStaging
   func stagingChanges() -> [FileChange]
   {
     var result = [FileStagingChange]()
-    guard let statusList = GitStatusList(repository: gtRepo.git_repository(),
+    guard let statusList = GitStatusList(repository: gitRepo,
                                          options: [.includeUntracked,
                                                    .recurseUntrackedDirs])
     else { return [] }

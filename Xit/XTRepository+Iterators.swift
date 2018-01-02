@@ -26,8 +26,7 @@ extension XTRepository
     {
       var result: OpaquePointer?
       
-      if git_branch_iterator_new(&result,
-                                 repo.gtRepo.git_repository(), flags) == 0 {
+      if git_branch_iterator_new(&result, repo.gitRepo, flags) == 0 {
         self.iterator = result
       }
       else {
@@ -72,8 +71,7 @@ extension XTRepository
       self.repo = repo
       
       let refLogPtr = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-      guard git_reflog_read(refLogPtr, repo.gtRepo.git_repository(),
-                            Stashes.stashRefName) == 0
+      guard git_reflog_read(refLogPtr, repo.gitRepo, Stashes.stashRefName) == 0
       else {
         self.refLog = nil
         self.count = 0

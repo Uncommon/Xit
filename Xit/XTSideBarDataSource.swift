@@ -219,8 +219,7 @@ class XTSideBarDataSource: NSObject
                                                     branch.remoteName }),
             let remoteName = branch.remoteName,
             let oid = branch.oid,
-            let commit = XTCommit(oid: oid,
-                                  repository: repo.gtRepo.git_repository())
+            let commit = repo.commit(forOID: oid)
       else { continue }
       let name = branch.name.removingPrefix("refs/remotes/\(remote.title)/")
       let model = CommitChanges(repository: repo, commit: commit)

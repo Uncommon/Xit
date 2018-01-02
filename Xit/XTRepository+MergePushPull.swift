@@ -188,7 +188,7 @@ extension XTRepository
           try withUnsafePointer(to: &checkoutOptions) {
             (checkoutOptions) in
             try gtRepo.index().refresh()
-            result = git_merge(gtRepo.git_repository(), annotated, 1,
+            result = git_merge(gitRepo, annotated, 1,
                                mergeOptions, checkoutOptions)
           }
         }
@@ -361,8 +361,7 @@ extension XTRepository
     guard let oid = commit.oid as? GitOID
     else { throw Error.unexpected }
     let annotated = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let result = git_annotated_commit_lookup(annotated, gtRepo.git_repository(),
-                                             oid.unsafeOID())
+    let result = git_annotated_commit_lookup(annotated, gitRepo, oid.unsafeOID())
     
     if result != GIT_OK.rawValue {
       throw Error.gitError(result)
@@ -382,8 +381,7 @@ extension XTRepository
   {
     let annotated = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     let result = git_annotated_commit_from_ref(
-          annotated, gtRepo.git_repository(),
-          branch.branchRef)
+          annotated, gitRepo, branch.branchRef)
     
     if result != GIT_OK.rawValue {
       throw Error.gitError(result)
@@ -427,7 +425,7 @@ extension XTRepository
     }
     
     let result = withUnsafeMutablePointer(to: &annotated) {
-      git_merge_analysis(analysis, preference, gtRepo.git_repository(), $0, 1)
+      git_merge_analysis(analysis, preference, gitRepo, $0, 1)
     }
     
     guard result == GIT_OK.rawValue

@@ -45,7 +45,7 @@ public class GitBlob: Blob, OIDObject
   
   convenience init?(repository: XTRepository, oid: OID)
   {
-    self.init(gitRepository: repository.gtRepo.git_repository(), oid: oid)
+    self.init(gitRepository: repository.gitRepo, oid: oid)
   }
   
   init?(gitRepository: OpaquePointer, oid: OID)

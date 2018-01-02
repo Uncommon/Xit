@@ -33,7 +33,7 @@ public class GitTag: Tag
   {
     let refName = name.hasPrefix(GitTag.tagPrefix) ? name : GitTag.tagPrefix + name
     let ref = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let result = git_reference_lookup(ref, repository.gtRepo.git_repository(),
+    let result = git_reference_lookup(ref, repository.gitRepo,
                                       refName)
     guard result == 0,
           let finalRef = ref.pointee,

@@ -89,7 +89,7 @@ extension XTRepository: FileContents
   {
     guard let index = GitIndex(repository: self),
           let entry = index.entry(at: file),
-          let blob = GitBlob(gitRepository: gtRepo.git_repository(),
+          let blob = GitBlob(gitRepository: gitRepo,
                              oid: entry.oid)
     else { return nil }
     
@@ -188,7 +188,7 @@ extension XTRepository: FileDiffing
       
       if let index = GitIndex(repository: self),
          let indexEntry = index.entry(at: file),
-         let indexBlob = GitBlob.init(gitRepository: gtRepo.git_repository(),
+         let indexBlob = GitBlob.init(gitRepository: gitRepo,
                                       oid: indexEntry.oid) {
         return .diff(PatchMaker(from: PatchMaker.SourceType(indexBlob),
                                  to: .data(data), path: file))
@@ -242,7 +242,7 @@ extension XTRepository
       let parentCommit = parentSHA.map({ self.commit(forSHA: $0) })
       
       guard let diff = GitDiff(oldTree: parentCommit??.tree, newTree: commit.tree,
-                               repository: gtRepo.git_repository())
+                               repository: gitRepo)
       else { return nil }
       
       diffCache[key] = diff
@@ -283,7 +283,7 @@ extension XTRepository
         }
       }
       
-      guard let blob = GitBlob(gitRepository: gtRepo.git_repository(),
+      guard let blob = GitBlob(gitRepository: gitRepo,
                                oid: entry.oid)
       else { throw Error.unexpected }
       

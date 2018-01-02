@@ -6,19 +6,19 @@ extension XTRepository
   {
     try performWriting {
       guard let commit = XTCommit(oid: targetOID,
-                                  repository: gtRepo.git_repository())
+                                  repository: gitRepo)
       else { throw Error.notFound }
       
       let oid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
       let signature = UnsafeMutablePointer<UnsafeMutablePointer<git_signature>?>
             .allocate(capacity: 1)
-      let sigResult = git_signature_default(signature, gtRepo.git_repository())
+      let sigResult = git_signature_default(signature, gitRepo)
       
       try Error.throwIfError(sigResult)
       guard let finalSig = signature.pointee
       else { throw Error.unexpected }
       
-      let result = git_tag_create(oid, gtRepo.git_repository(), name,
+      let result = git_tag_create(oid, gitRepo, name,
                                   commit.commit, finalSig, message, 0)
       
       try Error.throwIfError(result)
@@ -29,11 +29,11 @@ extension XTRepository
   {
     try performWriting {
       guard let commit = XTCommit(oid: targetOID,
-                                  repository: gtRepo.git_repository())
+                                  repository: gitRepo)
       else { throw Error.notFound }
       
       let oid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
-      let result = git_tag_create_lightweight(oid, gtRepo.git_repository(), name,
+      let result = git_tag_create_lightweight(oid, gitRepo, name,
                                               commit.commit, 0)
       
       try Error.throwIfError(result)
@@ -43,7 +43,7 @@ extension XTRepository
   func deleteTag(name: String) throws
   {
     try performWriting {
-      let result = git_tag_delete(gtRepo.git_repository(), name)
+      let result = git_tag_delete(gitRepo, name)
       
       guard result == 0
       else {
@@ -185,7 +185,7 @@ extension XTRepository: Stashing
           let oid = entry.updatedOID.map({ GitOID(oid: $0.git_oid().pointee) })
     else { return nil }
     
-    return XTCommit(oid: oid, repository: gtRepo.git_repository())
+    return XTCommit(oid: oid, repository: gitRepo)
   }
 }
 
@@ -193,7 +193,7 @@ extension XTRepository: RemoteManagement
 {
   public func remote(named name: String) -> Remote?
   {
-    return GitRemote(name: name, repository: gtRepo.git_repository())
+    return GitRemote(name: name, repository: gitRepo)
   }
   
   public func addRemote(named name: String, url: URL) throws
@@ -255,7 +255,7 @@ extension XTRepository: SubmoduleManagement
       return 0
     }
     
-    git_submodule_foreach(gtRepo.git_repository(), callback, &payload)
+    git_submodule_foreach(gitRepo, callback, &payload)
     return payload.submodules
   }
 }
