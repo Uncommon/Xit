@@ -62,8 +62,7 @@ public class GitBlame: Blame
           var authorSig, committerSig: Signature!
           
           if oid.isZero {
-            authorSig = Signature(gitSignature:
-                repository.gtRepo.userSignatureForNow().git_signature().pointee)
+            authorSig = Signature(defaultFromRepo: repository.gitRepo)
             committerSig = authorSig
           }
           else {

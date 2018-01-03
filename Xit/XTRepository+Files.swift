@@ -44,12 +44,12 @@ extension XTRepository: FileContents
     switch context {
       case .commit(let commit):
         if let blob = commit.tree?.entry(path: path)?.object as? Blob {
-          return blob.isBinary
+          return !blob.isBinary
         }
       case .index:
         if let oid = GitIndex(repository: self)?.entry(at: path)?.oid,
            let blob = GitBlob(repository: self, oid: oid) {
-          return blob.isBinary
+          return !blob.isBinary
         }
       case .workspace:
         let url = self.fileURL(path)
