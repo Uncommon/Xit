@@ -37,6 +37,17 @@ class GitReference: Reference
     self.ref = finalRef
   }
   
+  init?(headForRepo repo: OpaquePointer)
+  {
+    let ref = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    let result = git_repository_head(ref, repo)
+    guard result == 0,
+          let finalRef = ref.pointee
+    else { return nil }
+    
+    self.ref = finalRef
+  }
+  
   deinit
   {
     git_reference_free(ref)

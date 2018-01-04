@@ -3,6 +3,11 @@ import Foundation
 // MARK: Refs
 extension XTRepository: CommitReferencing
 {
+  var headReference: Reference?
+  {
+    return GitReference(headForRepo: gitRepo)
+  }
+  
   /// Reloads the cached map of OIDs to refs.
   func rebuildRefsIndex()
   {
@@ -82,26 +87,12 @@ extension XTRepository: CommitReferencing
 
   func calculateCurrentBranch() -> String?
   {
-    guard let branch = try? gtRepo.currentBranch(),
-          let shortName = branch.shortName
-    else { return nil }
-    
-    if let remoteName = branch.remoteName {
-      return "\(remoteName)/\(shortName)"
-    }
-    else {
-      return branch.shortName
-    }
+    return headReference?.resolve()?.name.removingPrefix(BranchPrefixes.heads)
   }
 
   func hasHeadReference() -> Bool
   {
-    if (try? gtRepo.headReference()) != nil {
-      return true
-    }
-    else {
-      return false
-    }
+    return headReference != nil
   }
   
   func parentTree() -> String
