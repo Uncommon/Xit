@@ -34,6 +34,17 @@ extension git_merge_options
   }
 }
 
+extension git_stash_apply_options
+{
+  static func defaultOptions() -> git_stash_apply_options
+  {
+    var options = git_stash_apply_options()
+    
+    git_stash_apply_init_options(&options, UInt32(GIT_STASH_APPLY_OPTIONS_VERSION))
+    return options
+  }
+}
+
 extension Array where Element == String
 {
   /// Converts the given array to a `git_strarray` and calls the given block.

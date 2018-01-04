@@ -146,33 +146,47 @@ extension XTRepository: Stashing
     _ = try executeGit(args: args, stdIn: nil, writes: true)
   }
   
-  func stashCheckoutOptions() -> GTCheckoutOptions
+  func stashApplyOptions() -> git_stash_apply_options
   {
-    return GTCheckoutOptions(strategy: .safe)
+    var applyOptions = git_stash_apply_options.defaultOptions()
+    
+    applyOptions.flags = GIT_STASH_APPLY_REINSTATE_INDEX
+    applyOptions.checkout_options = git_checkout_options.defaultOptions()
+    applyOptions.checkout_options.checkout_strategy = GIT_CHECKOUT_SAFE.rawValue
+    
+    // potentially add a progress callback
+
+    return applyOptions
   }
   
   public func popStash(index: UInt) throws
   {
-    _ = try performWriting {
-      try gtRepo.popStash(at: index, flags: [.reinstateIndex],
-                          checkoutOptions: stashCheckoutOptions(),
-                          progressBlock: nil)
+    var applyOptions = stashApplyOptions()
+    
+    try performWriting {
+      let result = git_stash_pop(gitRepo, Int(index), &applyOptions)
+      
+      try Error.throwIfError(result)
     }
   }
   
   public func applyStash(index: UInt) throws
   {
-    _ = try performWriting {
-      try gtRepo.applyStash(at: index, flags: [.reinstateIndex],
-                            checkoutOptions: stashCheckoutOptions(),
-                            progressBlock: nil)
+    var applyOptions = stashApplyOptions()
+    
+    try performWriting {
+      let result = git_stash_apply(gitRepo, Int(index), &applyOptions)
+      
+      try Error.throwIfError(result)
     }
   }
   
   public func dropStash(index: UInt) throws
   {
-    _ = try performWriting {
-      try gtRepo.dropStash(at: index)
+    try performWriting {
+      let result = git_stash_drop(gitRepo, Int(index))
+      
+      try Error.throwIfError(result)
     }
   }
   
@@ -219,7 +233,7 @@ extension XTRepository: SubmoduleManagement
     _ = try performWriting {
      git_submodule *gitSub = NULL;
      let result = git_submodule_add_setup(
-        &gitSub, [gtRepo git_repository],
+        &gitSub, gitRepo,
         [urlOrPath UTF8String], [path UTF8String], false);
      
      if ((result != 0) && (error != NULL)) {
