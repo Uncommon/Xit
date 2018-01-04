@@ -55,9 +55,17 @@ public class XTRepository: NSObject
   
   var gitRepo: OpaquePointer { return gtRepo.git_repository() }
   
+  var gitDirectoryPath: String
+  {
+    guard let path = git_repository_path(gitRepo)
+    else { return "" }
+    
+    return String(cString: path)
+  }
+  
   var gitDirectoryURL: URL
   {
-    return gtRepo.gitDirectoryURL ?? URL(fileURLWithPath: "")
+    return URL(fileURLWithPath: gitDirectoryPath)
   }
   
   static func gitPath() -> String?

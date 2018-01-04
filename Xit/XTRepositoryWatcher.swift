@@ -39,9 +39,9 @@ let XTChangedRefsKey = "changedRefs"
     self.repository = repository
     super.init()
     
-    let objectsPath = repository.gitDirectoryURL.path
-                      .appending(pathComponent: "objects")
-    guard let stream = FileEventStream(path: repository.gitDirectoryURL.path,
+    let gitPath = repository.gitDirectoryPath
+    let objectsPath = gitPath.appending(pathComponent: "objects")
+    guard let stream = FileEventStream(path: gitPath,
                                        excludePaths: [objectsPath],
                                        queue: repository.queue.queue,
                                        callback: {
@@ -72,7 +72,7 @@ let XTChangedRefsKey = "changedRefs"
   
   func makePackedRefsWatcher()
   {
-    let path = repository!.gitDirectoryURL.path
+    let path = repository!.gitDirectoryPath
     let watcher =
           XTFileMonitor(path: path.appending(pathComponent: "packed-refs"))
     
@@ -85,7 +85,7 @@ let XTChangedRefsKey = "changedRefs"
   
   func makeConfigWatcher()
   {
-    let path = repository!.gitDirectoryURL.path
+    let path = repository!.gitDirectoryPath
     
     configWatcher = XTFileMonitor(path: path.appending(pathComponent: "config"))
     configWatcher?.notifyBlock = {
@@ -96,7 +96,7 @@ let XTChangedRefsKey = "changedRefs"
   
   func makeStashWatcher()
   {
-    let path = repository!.gitDirectoryURL.path
+    let path = repository!.gitDirectoryPath
                           .appending(pathComponent: "logs/refs/stash")
     guard let watcher = XTFileMonitor(path: path)
     else { return }
@@ -123,7 +123,7 @@ let XTChangedRefsKey = "changedRefs"
   
   func checkIndex(repository: XTRepository)
   {
-    let gitPath = repository.gitDirectoryURL.path
+    let gitPath = repository.gitDirectoryPath
     let indexPath = gitPath.appending(pathComponent: "index")
     guard let indexAttributes = try? FileManager.default
                                      .attributesOfItem(atPath: indexPath),
@@ -166,7 +166,7 @@ let XTChangedRefsKey = "changedRefs"
   {
     mutex.withLock {
       if self.packedRefsWatcher == nil,
-         changedPaths.index(of: repository.gitDirectoryURL.path) != nil {
+         changedPaths.index(of: repository.gitDirectoryPath) != nil {
         self.makePackedRefsWatcher()
       }
     }
