@@ -208,7 +208,21 @@ public class XTRepository: NSObject
   }
   
   func executeGit(args: [String],
-                  stdIn: String? = nil,
+                  stdIn: String?,
+                  writes: Bool) throws -> Data
+  {
+    return try executeGit(args: args,
+                          stdInData: stdIn?.data(using: .utf8),
+                          writes: writes)
+  }
+  
+  func executeGit(args: [String], writes: Bool) throws -> Data
+  {
+    return try executeGit(args: args, stdInData: nil, writes: writes)
+  }
+  
+  func executeGit(args: [String],
+                  stdInData: Data?,
                   writes: Bool) throws -> Data
   {
     guard FileManager.default.fileExists(atPath: repoURL.path)
@@ -238,11 +252,16 @@ public class XTRepository: NSObject
     task.launchPath = gitCMD
     task.arguments = args
     
-    if let stdInData = stdIn?.data(using: .utf8) {
+    // Large files have to be chunked or else FileHandle.write() hangs
+    let chunkSize = 10*1024
+
+    if let data = stdInData {
       let stdInPipe = Pipe()
       
-      stdInPipe.fileHandleForWriting.write(stdInData)
-      stdInPipe.fileHandleForWriting.closeFile()
+      if data.count <= chunkSize {
+        stdInPipe.fileHandleForWriting.write(data)
+        stdInPipe.fileHandleForWriting.closeFile()
+      }
       task.standardInput = stdInPipe
     }
     
@@ -252,6 +271,19 @@ public class XTRepository: NSObject
     task.standardOutput = pipe
     task.standardError = errorPipe
     try task.throwingLaunch()
+    
+    if let data = stdInData,
+       data.count > chunkSize,
+       let handle = (task.standardInput as? Pipe)?.fileHandleForWriting {
+      for chunkIndex in 0...(data.count/chunkSize) {
+        let chunkStart = chunkIndex * chunkSize
+        let chunkEnd = min(chunkStart + chunkSize, data.count)
+        let subData = data.subdata(in: chunkStart..<chunkEnd)
+        
+        handle.write(subData)
+      }
+      handle.closeFile()
+    }
     
     let output = pipe.fileHandleForReading.readDataToEndOfFile()
     

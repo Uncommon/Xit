@@ -117,9 +117,8 @@ public class GitBlame: Blame
   {
     let args = ["blame", "-p", "--contents", "-", path]
     
-    guard let input = String(data: data, encoding: .utf8),
-          let data = try? repository.executeGit(args: args,
-                                                stdIn: input,
+    guard let data = try? repository.executeGit(args: args,
+                                                stdInData: data,
                                                 writes: false),
           read(data: data, from: repository)
     else { return nil }

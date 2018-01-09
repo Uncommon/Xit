@@ -143,7 +143,7 @@ extension XTRepository: Stashing
     if let name = name {
       args.append(name)
     }
-    _ = try executeGit(args: args, stdIn: nil, writes: true)
+    _ = try executeGit(args: args, writes: true)
   }
   
   func stashApplyOptions() -> git_stash_apply_options
