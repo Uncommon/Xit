@@ -63,20 +63,56 @@ extension XTRepository
       // invalidate ref caches
       
       let branchRef = BranchPrefixes.heads.appending(pathComponent: branch)
-      let ref = try gtRepo.lookUpReference(withName: branchRef)
-      let options = GTCheckoutOptions(strategy: [.safe])
       
-      try gtRepo.checkoutReference(ref, options: options)
+      try checkOut(refName: branchRef)
+      try moveHead(to: branchRef)
     }
+  }
+  
+  func checkOut(refName: String) throws
+  {
+    guard let ref = reference(named: refName),
+          let oid = ref.targetOID as? GitOID
+    else { throw Error.notFound }
+    
+    let target = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    let targetResult = git_object_lookup(target, gitRepo, oid.unsafeOID(),
+                                         GIT_OBJ_ANY)
+    guard targetResult == 0,
+          let finalTarget = target.pointee
+    else { throw Error.notFound }
+    
+    try checkout(object: finalTarget)
+  }
+  
+  func moveHead(to refName: String) throws
+  {
+    let result = git_repository_set_head(gitRepo, refName)
+    
+    try Error.throwIfError(result)
   }
   
   func checkout(sha: String) throws
   {
-    guard let commit = try gtRepo.lookUpObject(bySHA: sha) as? GTCommit
-    else { throw Error.unexpected }
-    let options = GTCheckoutOptions(strategy: [.safe])
+    guard let oid = GitOID(sha: sha)
+    else { throw Error.notFound }
+    let object = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    let lookupResult = git_object_lookup_prefix(object, gitRepo, oid.unsafeOID(),
+                                          Int(GIT_OID_RAWSZ), GIT_OBJ_ANY)
+    guard lookupResult == 0,
+          let finalObject = object.pointee
+    else { throw Error.notFound }
     
-    try gtRepo.checkoutCommit(commit, options: options)
+    try checkout(object: finalObject)
+  }
+  
+  private func checkout(object: OpaquePointer) throws
+  {
+    var options = git_checkout_options.defaultOptions(
+          strategy: GIT_CHECKOUT_SAFE)
+    let result = git_checkout_tree(gitRepo, object, &options)
+    
+    try Error.throwIfError(result)
   }
   
   func stagePatch(_ patch: String) throws

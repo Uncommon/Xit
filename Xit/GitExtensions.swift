@@ -21,6 +21,15 @@ extension git_checkout_options
     git_checkout_init_options(&options, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
     return options
   }
+  
+  static func defaultOptions(strategy: git_checkout_strategy_t)
+    -> git_checkout_options
+  {
+    var result = defaultOptions()
+    
+    result.checkout_strategy = strategy.rawValue
+    return result
+  }
 }
 
 extension git_merge_options
