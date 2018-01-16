@@ -14,17 +14,20 @@ extension XTRepository: CommitReferencing
     var payload = CallbackPayload(repo: self)
     let callback: git_reference_foreach_cb = {
       (reference, payload) -> Int32 in
+      defer {
+        git_reference_free(reference)
+      }
+      
       let repo = payload!.bindMemory(to: XTRepository.self,
                                      capacity: 1).pointee
       
-      let rawName = git_reference_name(reference)
-      guard rawName != nil,
-        let name = String(validatingUTF8: rawName!)
-        else { return 0 }
+      guard let rawName = git_reference_name(reference),
+            let name = String(validatingUTF8: rawName)
+      else { return 0 }
       
       var peeled: OpaquePointer? = nil
       guard git_reference_peel(&peeled, reference, GIT_OBJ_COMMIT) == 0
-        else { return 0 }
+      else { return 0 }
       
       let peeledOID = git_object_id(peeled)
       guard let sha = peeledOID.map({ GitOID(oid: $0.pointee) })?.sha
