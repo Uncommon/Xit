@@ -33,23 +33,25 @@ class FileViewController: NSViewController
     static let allIDs = [ diff, blame, text, preview ]
   }
   
-  enum StagingSegment: Int
+  struct HeaderTab
   {
-    case unstageAll
-    case stageAll
-    case revert
+    static let display = "display"
+    static let entry = "entry"
   }
-
+  
+  struct FileListTab
+  {
+    static let commit = "commit"
+    static let staging = "staging"
+  }
+  
   @IBOutlet weak var headerSplitView: NSSplitView!
   @IBOutlet weak var fileSplitView: NSSplitView!
-  @IBOutlet weak var leftPane: NSView!
-  @IBOutlet weak var fileListOutline: NSOutlineView!
+  @IBOutlet weak var fileListTabView: NSTabView!
+  @IBOutlet weak var fileListStagedView: NSView!
+  @IBOutlet weak var fileListWorkspaceView: NSView!
   @IBOutlet weak var headerTabView: NSTabView!
   @IBOutlet weak var previewTabView: NSTabView!
-  @IBOutlet weak var viewSelector: NSSegmentedControl!
-  @IBOutlet weak var stageSelector: NSSegmentedControl!
-  @IBOutlet weak var stageButtons: NSSegmentedControl!
-  @IBOutlet weak var actionButton: NSPopUpButton!
   @IBOutlet weak var previewPath: NSPathControl!
   @IBOutlet weak var filePreview: QLPreviewView!
   @IBOutlet var fileChangeDS: XTFileChangesDataSource!
@@ -74,33 +76,33 @@ class FileViewController: NSViewController
              textController, previewController]
   }
   
-  var fileListDataSource: FileListDataSource & NSOutlineViewDataSource
+  var selectedModel: FileChangesModel?
   {
-    return fileListOutline.dataSource as! FileListDataSource &
-                                          NSOutlineViewDataSource
+    return (view.window?.windowController as? RepositoryController)?.selectedModel
   }
   
   var inStagingView: Bool
   {
-    return (view.window?.windowController as? RepositoryController)?
-           .selectedModel?.hasUnstaged ?? false
+    return selectedModel?.hasUnstaged ?? false
   }
   
   var modelCanCommit: Bool
   {
-    return (view.window?.windowController as? RepositoryController)?
-           .selectedModel?.canCommit ?? false
+    return selectedModel?.canCommit ?? false
   }
   
-  var isStaging: Bool
+  var showingStaged: Bool
   {
     get
     {
-      return !stageSelector.isHidden
+      guard let id = fileListTabView.selectedTabViewItem?.identifier as? String
+      else { return false }
+      
+      return id == FileListTab.staging
     }
     set
     {
-      stageSelector.isHidden = !newValue
+      fileListTabView.selectTabViewItem(at: 1)
     }
   }
   
@@ -108,37 +110,46 @@ class FileViewController: NSViewController
   {
     get
     {
-      return !actionButton.isHidden
+      guard let id = headerTabView.selectedTabViewItem?.identifier as? String
+      else { return false }
+      
+      return id == HeaderTab.entry
     }
     set
     {
       headerTabView.selectTabViewItem(at: newValue ? 1 : 0)
-      stageButtons.isHidden = !newValue
-      actionButton.isHidden = !newValue
     }
   }
   
-  var showingStaged: Bool
+  let commitListController: CommitFileListController
+  let stagedListController: StagedFileListController
+  let workspaceListController: WorkspaceFileListController
+  
+  var activeFileList: NSOutlineView!
+  var activeFileListController: FileListController
   {
-    get
-    {
-      return fileListOutline.highlightedTableColumn?.identifier ==
-             ColumnID.staged
-    }
-    set
-    {
-      let columnID = newValue ? ColumnID.staged : ColumnID.unstaged
-      guard let column = fileListOutline.tableColumn(withIdentifier: columnID)
-      else { return }
-      
-      fileListOutline.highlightedTableColumn = column
-      fileListOutline.setNeedsDisplay()
-      stageSelector.selectedSegment = newValue ? 1 : 0
-      refreshPreview()
-    }
+    return activeFileList.delegate as! FileListController
+  }
+  var selectedChange: FileChange?
+  {
+    return activeFileListController.selectedChange
   }
   
   weak var repo: XTRepository?
+  
+  override init(nibName nibNameOrNil: NSNib.Name?, bundle nibBundleOrNil: Bundle?)
+  {
+    commitListController = FileViewController.loadFileListController()
+    stagedListController = FileViewController.loadFileListController()
+    workspaceListController = FileViewController.loadFileListController()
+
+    super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+  }
+  
+  required init?(coder: NSCoder)
+  {
+    fatalError("init(coder:) has not been implemented")
+  }
   
   deinit
   {
@@ -166,6 +177,8 @@ class FileViewController: NSViewController
     }
     headerController.repository = repository
     commitEntryController.repo = repository
+    activeFileList = fileListTabView.tabViewItem(at: 0).view!.subviews[0]
+        as! NSOutlineView
     fileChangeDS.repoController = controller
     fileChangeDS.observe(repository: repository)
     fileChangeDS.taskQueue = repository.queue
@@ -178,18 +191,12 @@ class FileViewController: NSViewController
   {
     super.loadView()
     
-    fileListOutline.highlightedTableColumn =
-        fileListOutline.tableColumn(withIdentifier: ColumnID.staged)
-    fileListOutline.sizeToFit()
     contentController = diffController
     
-    observers.addObserver(
-        forName: NSOutlineView.selectionDidChangeNotification,
-        object: fileListOutline,
-        queue: .main) {
-      [weak self] _ in
-      self?.refreshPreview()
-    }
+    // load the file lists
+    
+    // observe list view selections
+    
     observers.addObserver(forName: .XTHeaderResized, object: headerController,
                           queue: .main) {
       [weak self] note in
@@ -212,6 +219,17 @@ class FileViewController: NSViewController
     diffController.stagingDelegate = self
   }
   
+  static func loadFileListController<FLCType>() -> FLCType
+    where FLCType: FileListController
+  {
+    let controller = FLCType()
+    let nib = NSNib(nibNamed: NSNib.Name(rawValue: "FileListView"), bundle: nil)
+    var objects: NSArray?
+    
+    nib?.instantiate(withOwner: controller, topLevelObjects: &objects)
+    return controller
+  }
+  
   func indexChanged(_ note: Notification)
   {
     // Reading the index too soon can yield incorrect results.
@@ -224,7 +242,7 @@ class FileViewController: NSViewController
       indexTimer = Timer.scheduledTimer(withTimeInterval: indexDelay,
                                         repeats: false) {
         [weak self] (_) in
-        self?.fileListDataSource.reload()
+        // reload the staging lists
         self?.indexTimer = nil
       }
     }
@@ -237,7 +255,7 @@ class FileViewController: NSViewController
   
   func reload()
   {
-    fileListDataSource.reload()
+    // reload the visible list
   }
   
   func refreshPreview()
@@ -272,19 +290,11 @@ class FileViewController: NSViewController
           let newModel = controller.selectedModel
     else { return }
     
-    if isStaging != newModel.hasUnstaged {
-      isStaging = newModel.hasUnstaged
+    if showingStaged != newModel.hasUnstaged {
+      showingStaged = newModel.hasUnstaged
     }
     if isCommitting != newModel.canCommit {
       isCommitting = newModel.canCommit
-    
-      let unstagedIndex = fileListOutline.column(withIdentifier: ColumnID.unstaged)
-      let stagedIndex = fileListOutline.column(withIdentifier: ColumnID.staged)
-      let stagedRect = fileListOutline.rect(ofColumn: stagedIndex)
-      let unstagedRect = fileListOutline.rect(ofColumn: unstagedIndex)
-      let displayRect = stagedRect.union(unstagedRect)
-      
-      fileListOutline.setNeedsDisplay(displayRect)
     }
     headerController.commitSHA = newModel.shaToSelect
     clearPreviews()
@@ -297,15 +307,15 @@ class FileViewController: NSViewController
     else { return }
     
     guard let repo = repo,
-          let index = fileListOutline.selectedRowIndexes.first,
-          let selectedItem = fileListOutline.item(atRow: index),
-          let selectedChange = self.selectedChange(),
+          let index = activeFileList.selectedRowIndexes.first,
+          let selectedItem = activeFileList.item(atRow: index),
+          let selectedChange = self.selectedChange,
           let controller = view.window?.windowController
                            as? RepositoryController
     else { return }
     
     updatePreviewPath(selectedChange.path,
-                      isFolder: fileListOutline.isExpandable(selectedItem))
+                      isFolder: activeFileList.isExpandable(selectedItem))
     contentController.load(path: selectedChange.path,
                            model: controller.selectedModel,
                            staged: showingStaged)
@@ -323,105 +333,6 @@ class FileViewController: NSViewController
         : nil
   }
   
-  func row(for view: NSView?) -> Int?
-  {
-    guard let view = view
-    else { return nil }
-    
-    if let cellView  = view as? NSTableCellView {
-      return fileListOutline.row(for: cellView)
-    }
-    return row(for: view.superview)
-  }
-
-  func clickedChange() -> FileChange?
-  {
-    return fileListOutline.clickedRow == -1
-        ? nil
-        : fileListDataSource.fileChange(at: fileListOutline.clickedRow)
-  }
-
-  func selectedChange() -> FileChange?
-  {
-    guard let index = fileListOutline.selectedRowIndexes.first
-    else { return nil }
-    
-    return fileListDataSource.fileChange(at: index)
-  }
-  
-  func selectRow(from button: NSButton)
-  {
-    guard let row = row(for: button)
-    else { return }
-    let indexes = IndexSet(integer: row)
-    
-    fileListOutline.selectRowIndexes(indexes,
-                                     byExtendingSelection: false)
-    view.window?.makeFirstResponder(fileListOutline)
-  }
-  
-  func selectRow(from button: NSButton, staged: Bool)
-  {
-    selectRow(from: button)
-    showingStaged = staged
-  }
-  
-  func path(from button: NSButton) -> String?
-  {
-    guard let row = row(for: button),
-          let change = fileListDataSource.fileChange(at: row)
-    else { return nil }
-    
-    return change.path
-  }
-  
-  func checkDoubleClick(_ button: NSButton) -> Bool
-  {
-    if let last = lastClickedButton,
-       let event = NSApp.currentEvent,
-       (last == button) && (event.clickCount > 1) {
-      lastClickedButton = nil
-      return true
-    }
-    else {
-      lastClickedButton = button
-      return false
-    }
-  }
-  
-  func stageUnstage(path: String, staging: Bool)
-  {
-    if staging {
-      _ = try? repo?.stage(file: path)
-    }
-    else {
-      _ = try? repo?.unstage(file: path)
-    }
-    NotificationCenter.default.post(name: .XTRepositoryIndexChanged, object: repo)
-  }
-  
-  /// Handles a click on a staging button.
-  func click(button: NSButton, staging: Bool)
-  {
-    if modelCanCommit && checkDoubleClick(button),
-       let path = path(from: button) {
-      button.isEnabled = false
-      stageUnstage(path: path, staging: staging)
-      selectRow(from: button, staged: staging)
-    }
-    else {
-      selectRow(from: button, staged: !staging)
-    }
-  }
-  
-  /// Stage/unstage from a context menu command. This differs from `click()`
-  /// in that it does not change the selection.
-  func stageAction(path: String, staging: Bool)
-  {
-    stageUnstage(path: path, staging: staging)
-    showingStaged = staging
-  }
-
   func clearPreviews()
   {
     contentControllers.forEach { $0.clear() }
@@ -503,16 +414,6 @@ class FileViewController: NSViewController
   {
     (contentController as? WrappingVariable)?.wrapping = wrapping
   }
-  
-  func updateStagingSegment()
-  {
-    let segment = ValidatedSegment(control: stageButtons,
-                                   index: StagingSegment.revert.rawValue,
-                                   action: #selector(revert(_:)))
-    let enabled = validateUserInterfaceItem(segment)
-  
-    stageButtons.setEnabled(enabled, forSegment: StagingSegment.revert.rawValue)
-  }
 }
 
 // MARK: NSSplitViewDelegate
@@ -522,10 +423,8 @@ extension FileViewController: NSSplitViewDelegate
                         shouldAdjustSizeOfSubview view: NSView) -> Bool
   {
     switch splitView {
-      case headerSplitView:
+      case headerSplitView: // try holding priorities instead
         return view != headerController.view
-      case fileSplitView:
-        return view != leftPane
       default:
         return true
     }
@@ -537,7 +436,7 @@ extension FileViewController: HunkStaging
 {
   func patchIndexFile(hunk: DiffHunk, stage: Bool)
   {
-    guard let selectedChange = self.selectedChange()
+    guard let selectedChange = self.selectedChange
     else { return }
     
     do {
@@ -568,7 +467,7 @@ extension FileViewController: HunkStaging
   
     guard let controller = view.window?.windowController as? RepositoryController,
           let selectedModel = controller.selectedModel,
-          let selectedChange = self.selectedChange(),
+          let selectedChange = self.selectedChange,
           let fileURL = selectedModel.unstagedFileURL(selectedChange.path)
     else {
       NSLog("Setup for discard hunk failed")

@@ -52,11 +52,12 @@ class XTFileChangesDataSource: FileListDataSourceBase
     
     DispatchQueue.main.async {
       [weak self] in
-      guard let outlineView = self?.outlineView,
-            self === outlineView.dataSource
+      guard let myself = self,
+            let outlineView = myself.outlineView,
+            myself === outlineView.dataSource
       else { return }
       let selectedRow = outlineView.selectedRow
-      let selectedChange = self?.fileChange(at: selectedRow)
+      let selectedChange = myself.fileChange(at: selectedRow)
       
       outlineView.beginUpdates()
       if !deleteIndexes.isEmpty {
@@ -80,29 +81,7 @@ class XTFileChangesDataSource: FileListDataSourceBase
         outlineView.reloadData(forRowIndexes: newChangeIndexes,
                                columnIndexes: allColumnIndexes)
       }
-      self?.reselect(change: selectedChange, oldRow: selectedRow)
-      self?.updateStagingIcons()
-    }
-  }
-  
-  func updateStagingIcons()
-  {
-    if wasInStaging != controller.isStaging {
-      let stagedIndex = outlineView.column(withIdentifier:
-            FileViewController.ColumnID.staged)
-      
-      for index in 0..<outlineView.numberOfRows {
-        guard let stagedCell = outlineView.view(atColumn: stagedIndex, row: index,
-                                                makeIfNecessary: false)
-                               as? TableButtonView,
-              let change = outlineView.item(atRow: index) as? FileChange
-        else { continue }
-        
-        controller.updateTableButton(stagedCell.button, change: change.change,
-                                     otherChange: change.unstagedChange)
-      }
-      
-      wasInStaging = controller.isStaging
+      myself.reselect(change: selectedChange, oldRow: selectedRow)
     }
   }
   

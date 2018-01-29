@@ -175,6 +175,7 @@
 		C967C4AF1F96BA55002166F7 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C967C4AE1F96BA55002166F7 /* Cache.swift */; };
 		C96D24B31DFEFD9F00431317 /* XTSidebarControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96D24B21DFEFD9F00431317 /* XTSidebarControllerTest.swift */; };
 		C96F65461D53A6CE001B2557 /* XTHistoryCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F65451D53A6CE001B2557 /* XTHistoryCellView.swift */; };
+		C9800D7D2017FEB80045B05D /* FileListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9800D7C2017FEB80045B05D /* FileListController.swift */; };
 		C9800D952018FD640045B05D /* actionButtonEmpty.png in Resources */ = {isa = PBXBuildFile; fileRef = C9800D8F2018FD640045B05D /* actionButtonEmpty.png */; };
 		C9800D962018FD640045B05D /* stageButtonPressed.png in Resources */ = {isa = PBXBuildFile; fileRef = C9800D902018FD640045B05D /* stageButtonPressed.png */; };
 		C9800D972018FD640045B05D /* stageButtonPressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9800D912018FD640045B05D /* stageButtonPressed@2x.png */; };
@@ -250,6 +251,7 @@
 		C9F78B141D0896AF008490EA /* XTSidebarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F78B131D0896AF008490EA /* XTSidebarItem.swift */; };
 		C9F9A02A1E1C417D00261E33 /* PatchMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F9A0291E1C417D00261E33 /* PatchMaker.swift */; };
 		C9FCC1D11D50EB1A00AC398E /* XTCommitHistoryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FCC1D01D50EB1A00AC398E /* XTCommitHistoryTest.swift */; };
+		C9FE06C720178A8C0001EB2B /* FileListView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9FE06C620178A8C0001EB2B /* FileListView.xib */; };
 		C9FFCC841FABB28F00FA2F21 /* XTSideBarDataSource+OutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FFCC831FABB28F00FA2F21 /* XTSideBarDataSource+OutlineView.swift */; };
 		C9FFCC861FABC24B00FA2F21 /* ExpansionTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FFCC851FABC24B00FA2F21 /* ExpansionTextField.swift */; };
 		C9FFCC881FB3B1D000FA2F21 /* TreeLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FFCC871FB3B1D000FA2F21 /* TreeLoader.swift */; };
@@ -676,6 +678,7 @@
 		C9F78B131D0896AF008490EA /* XTSidebarItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSidebarItem.swift; sourceTree = "<group>"; };
 		C9F9A0291E1C417D00261E33 /* PatchMaker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatchMaker.swift; sourceTree = "<group>"; };
 		C9FCC1D01D50EB1A00AC398E /* XTCommitHistoryTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTCommitHistoryTest.swift; sourceTree = "<group>"; };
+		C9FE06C620178A8C0001EB2B /* FileListView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FileListView.xib; sourceTree = "<group>"; };
 		C9FFCC831FABB28F00FA2F21 /* XTSideBarDataSource+OutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XTSideBarDataSource+OutlineView.swift"; sourceTree = "<group>"; };
 		C9FFCC851FABC24B00FA2F21 /* ExpansionTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpansionTextField.swift; sourceTree = "<group>"; };
 		C9FFCC871FB3B1D000FA2F21 /* TreeLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeLoader.swift; sourceTree = "<group>"; };
@@ -1061,10 +1064,12 @@
 				C9AA802F1E2929810004D670 /* XTFileChangesDataSource.swift */,
 				89D8BE211CF0A4ED00D640AA /* XTRolloverButton.swift */,
 				C99A6AEB1E48FA140030DC01 /* FileListDataSourceBase.swift */,
+				C9800D7C2017FEB80045B05D /* FileListController.swift */,
 				C94736811DF097B2000E3A05 /* FileListView.swift */,
 				C947367F1DF08FFB000E3A05 /* FileRowView.swift */,
 				C932110B1E48E92C00232B61 /* FileTreeDataSource.swift */,
 				899DB18D1CE0EA3A00760270 /* WorkspaceTreeBuilder.swift */,
+				C9FE06C620178A8C0001EB2B /* FileListView.xib */,
 			);
 			name = "File List";
 			sourceTree = "<group>";
@@ -1470,6 +1475,7 @@
 				89D8BDFB1CED200B00D640AA /* delete@2x.png in Resources */,
 				89D8BE261CF35C7000D640AA /* unstage@2x.png in Resources */,
 				C98925C71DB693CC00E5645C /* XTTagPanelController.xib in Resources */,
+				C9FE06C720178A8C0001EB2B /* FileListView.xib in Resources */,
 				C9800D972018FD640045B05D /* stageButtonPressed@2x.png in Resources */,
 				C957B85D1D2D6A3C0040F858 /* githubTemplate.png in Resources */,
 				C3FA471113D0F8E200AC4F9B /* Credits.rtf in Resources */,
@@ -1627,6 +1633,7 @@
 				C947367C1DF079DB000E3A05 /* SideBarOutlineView.swift in Sources */,
 				89C927941D43B23B0074F71A /* XTRepository.swift in Sources */,
 				C9BAE60A1D2FFA8B00A87F13 /* XTConfig.swift in Sources */,
+				C9800D7D2017FEB80045B05D /* FileListController.swift in Sources */,
 				C9BAE6141D3039C500A87F13 /* XTOperationController.swift in Sources */,
 				C991732D1F91255200054154 /* GitPatch.swift in Sources */,
 				C9FFCC861FABC24B00FA2F21 /* ExpansionTextField.swift in Sources */,
