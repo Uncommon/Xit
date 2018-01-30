@@ -255,6 +255,8 @@ extension XTRepository
   /// - parameter hunk: Hunk to be applied
   /// - parameter stage: True if the change is being staged, falses if unstaged
   /// (the patch should be reversed)
+  /// - throws: `Error.patchMismatch` if the patch can't be applied, or any
+  /// errors from resultings stage/unstage actions.
   func patchIndexFile(path: String, hunk: DiffHunk, stage: Bool) throws
   {
     guard let index = GitIndex(repository: self)
@@ -272,13 +274,13 @@ extension XTRepository
         }
         else {
           switch status.1 {
-          case .added, .deleted:
-            // If it's added/deleted in the index, and we're unstaging, then the
-            // hunk must cover the whole file
-            try unstage(file: path)
-            return
-          default:
-            break
+            case .added, .deleted:
+              // If it's added/deleted in the index, and we're unstaging, then
+              // the hunk must cover the whole file
+              try unstage(file: path)
+              return
+            default:
+              break
           }
         }
       }
