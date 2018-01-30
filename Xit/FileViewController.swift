@@ -54,7 +54,7 @@ class FileViewController: NSViewController
   @IBOutlet weak var previewTabView: NSTabView!
   @IBOutlet weak var previewPath: NSPathControl!
   @IBOutlet weak var filePreview: QLPreviewView!
-  @IBOutlet var fileChangeDS: XTFileChangesDataSource!
+  @IBOutlet var fileChangeDS: FileChangesDataSource!
   @IBOutlet var fileTreeDS: FileTreeDataSource!
   @IBOutlet var headerController: CommitHeaderViewController!
   @IBOutlet var diffController: XTFileDiffController!

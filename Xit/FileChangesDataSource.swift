@@ -1,6 +1,6 @@
 import Foundation
 
-class XTFileChangesDataSource: FileListDataSourceBase
+class FileChangesDataSource: FileListDataSourceBase
 {
   var changes = [FileChange]()
   var wasInStaging: Bool = false
@@ -29,15 +29,14 @@ class XTFileChangesDataSource: FileListDataSourceBase
       changes = newChanges
     }
     else {
-      changes.forEach {
-        (change) in
+      for change in changes {
         guard let newIndex = newChanges.index(where: {
           (newChange) in
           newChange.path == change.path &&
           ((newChange.change != change.change) ||
            (newChange.unstagedChange != change.unstagedChange))
         })
-        else { return }
+        else { continue }
         
         let newChange = newChanges[newIndex]
         
@@ -111,7 +110,7 @@ class XTFileChangesDataSource: FileListDataSourceBase
   }
 }
 
-extension XTFileChangesDataSource: FileListDataSource
+extension FileChangesDataSource: FileListDataSource
 {
   var hierarchical: Bool { return false }
 
@@ -158,7 +157,7 @@ extension XTFileChangesDataSource: FileListDataSource
   }
 }
 
-extension XTFileChangesDataSource: NSOutlineViewDataSource
+extension FileChangesDataSource: NSOutlineViewDataSource
 {
   func outlineView(_ outlineView: NSOutlineView,
                    numberOfChildrenOfItem item: Any?) -> Int
