@@ -2,6 +2,7 @@ import Cocoa
 
 protocol RepositoryController: class
 {
+  var repository: Repository { get }
   var queue: TaskQueue { get }
   var selectedModel: FileChangesModel? { get set }
   
@@ -19,6 +20,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   weak var xtDocument: XTDocument?
   var titleBarController: TitleBarViewController?
   var refsChangedObserver: NSObjectProtocol?
+  var repository: Repository { return xtDocument?.repository as! Repository }
   var queue: TaskQueue { return xtDocument!.repository.queue }
   var selectedModel: FileChangesModel?
   {
@@ -117,11 +119,10 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func select(sha: String)
   {
-    guard let commit = xtDocument!.repository.commit(forSHA: sha)
+    guard let commit = repository.commit(forSHA: sha)
     else { return }
   
-    selectedModel = CommitChanges(repository: xtDocument!.repository,
-                                  commit: commit)
+    selectedModel = CommitChanges(repository: repository, commit: commit)
   }
   
   func select(oid: GitOID)
@@ -130,8 +131,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
           let commit = repo.commit(forOID: oid)
     else { return }
   
-    selectedModel = CommitChanges(repository: xtDocument!.repository,
-                                  commit: commit)
+    selectedModel = CommitChanges(repository: repo, commit: commit)
   }
   
   func updateNavButtons()
@@ -245,7 +245,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func updateRemotesMenu(_ menu: NSMenu)
   {
-    let remoteNames = xtDocument!.repository.remoteNames()
+    let remoteNames = repository.remoteNames()
     
     menu.removeAllItems()
     for name in remoteNames {

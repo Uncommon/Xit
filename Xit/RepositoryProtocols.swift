@@ -1,5 +1,12 @@
 import Foundation
 
+public protocol Repository:
+    CommitStorage, CommitReferencing, FileDiffing, FileContents, FileStaging,
+    Stashing, RemoteManagement, SubmoduleManagement, Branching
+    // BranchListing, FileStatusDetection (associated types)
+{
+}
+
 public protocol CommitStorage: class
 {
   func oid(forSHA sha: String) -> OID?
