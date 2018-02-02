@@ -118,7 +118,7 @@ extension FileChangesDataSource: FileListDataSource
   {
     let model = repoController.selectedModel
     
-    taskQueue?.executeOffMainThread {
+    repoController.queue.executeOffMainThread {
       [weak self] in
       self?.doReload(model)
     }

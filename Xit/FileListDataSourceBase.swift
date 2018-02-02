@@ -13,7 +13,6 @@ class FileListDataSourceBase: NSObject
     static let unstaged = NSUserInterfaceItemIdentifier(rawValue: "unstaged")
   }
   
-  weak var taskQueue: TaskQueue?
   weak var repoController: RepositoryController!
   {
     didSet
