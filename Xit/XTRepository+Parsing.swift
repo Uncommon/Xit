@@ -106,11 +106,9 @@ extension XTRepository: FileStaging
       guard let delta = entry.headToIndex ?? entry.indexToWorkdir
       else { continue }
       let stagedChange = entry.headToIndex?.deltaStatus ?? .unmodified
-      let unstagedChange = entry.indexToWorkdir?.deltaStatus ?? .unmodified
       let change = FileStagingChange(path: delta.oldFile.filePath,
                                      destinationPath: delta.newFile.filePath,
-                                     change: stagedChange,
-                                     unstagedChange: unstagedChange)
+                                     change: stagedChange)
       
       result.append(change)
     }

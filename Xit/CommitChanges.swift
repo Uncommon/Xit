@@ -25,11 +25,6 @@ class CommitChanges: FileChangesModel
   
   func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
   {
-    return treeRoot(oldTree: oldTree, staged: true)
-  }
-  
-  func treeRoot(oldTree: NSTreeNode?, staged: Bool) -> NSTreeNode
-  {
     guard let tree = commit.tree
     else { return NSTreeNode() }
     let changeList = repository.changes(for: commit.sha, parent: diffParent)
@@ -39,29 +34,23 @@ class CommitChanges: FileChangesModel
       changes[change.path] = change.change
     }
     
-    let loader = TreeLoader(changes: changes, staged: staged)
+    let loader = TreeLoader(changes: changes)
     let result = loader.treeRoot(tree: tree, oldTree: oldTree)
     
     postProcess(fileTree: result)
-    insertDeletedFiles(root: result, changes: changes, staged: staged)
+    insertDeletedFiles(root: result, changes: changes)
     return result
   }
   
   /// Inserts deleted files into a tree based on the given `changes`.
-  func insertDeletedFiles(root: NSTreeNode, changes: [String: DeltaStatus],
-                          staged: Bool)
+  func insertDeletedFiles(root: NSTreeNode, changes: [String: DeltaStatus])
   {
     for (path, status) in changes where status == .deleted {
       switch findNodeOrParent(root: root, path: path) {
         
         case .found(let node):
           if let item = node.representedObject as? CommitTreeItem {
-            if staged {
-              item.change = .deleted
-            }
-            else {
-              item.unstagedChange = .deleted
-            }
+            item.change = .deleted
           }
           return
         
@@ -71,23 +60,21 @@ class CommitChanges: FileChangesModel
           else { break }
           
           insertDeletionNode(root: parent,
-                             subpath: path.removingPrefix(parentPath),
-                             staged: staged)
+                             subpath: path.removingPrefix(parentPath))
         
         case .notFound:
-          insertDeletionNode(root: root, subpath: path, staged: staged)
+          insertDeletionNode(root: root, subpath: path)
       }
     }
   }
   
   /// Inserts a single deleted item into a tree, adding parent folders as needed
-  func insertDeletionNode(root: NSTreeNode, subpath: String, staged: Bool)
+  func insertDeletionNode(root: NSTreeNode, subpath: String)
   {
     guard let rootPath = (root.representedObject as? CommitTreeItem)?.path
     else { return }
     let path = rootPath.appending(pathComponent: subpath)
-    let deletionItem = CommitTreeItem(path: path, oid: nil,
-                                      status: .deleted, staged: staged)
+    let deletionItem = CommitTreeItem(path: path, oid: nil, change: .deleted)
     let deletionNode = NSTreeNode(representedObject: deletionItem)
     var subsubpath = subpath
     var subName = subsubpath.firstPathComponent ?? ""

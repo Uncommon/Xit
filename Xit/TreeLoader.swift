@@ -6,8 +6,6 @@ public struct TreeLoader
 {
   /// Map of paths to file status
   let changes: [String: DeltaStatus]
-  /// True if status should go in staged instead of unstaged field
-  let staged: Bool
   
   /// Constructs a new tree root, copying identical subtrees from an old tree
   public func treeRoot(tree: Tree, oldTree: NSTreeNode?) -> NSTreeNode
@@ -38,7 +36,7 @@ public struct TreeLoader
           let oldNode = oldTree?.children?.first {
             (node) in
             (node.representedObject as? CommitTreeItem)?
-              .path.lastPathComponent == entry.name
+                .path.lastPathComponent == entry.name
           }
           
           result.mutableChildren.add(treeNode(path: entryPath, tree: entryTree,
@@ -46,11 +44,9 @@ public struct TreeLoader
         }
         else {
           let fileStatus = changes[entryPath] ?? .unmodified
-          let stagedChange = self.staged ? fileStatus : .unmodified
-          let unstagedChange = self.staged ? .unmodified : fileStatus
+          let stagedChange = fileStatus
           let fileItem = CommitTreeItem(path: entryPath, oid: entry.oid,
-                                        change: stagedChange,
-                                        unstagedChange: unstagedChange)
+                                        change: stagedChange)
           let node = NSTreeNode(representedObject: fileItem)
           
           result.mutableChildren.add(node)
@@ -63,16 +59,9 @@ public struct TreeLoader
   func applyStatus(to node: NSTreeNode)
   {
     guard let item = node.representedObject as? CommitTreeItem
-      else { return }
+    else { return }
     
-    if let status = changes[item.path] {
-      item.change = staged ? status : .unmodified
-      item.unstagedChange = staged ? .unmodified : status
-    }
-    else {
-      item.change = .unmodified
-      item.unstagedChange = .unmodified
-    }
+    item.change = changes[item.path] ?? .unmodified
     if let children = node.children {
       for childNode in children {
         applyStatus(to: childNode)

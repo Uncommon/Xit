@@ -77,7 +77,6 @@ protocol FileListDataSource: class
   func fileChange(at row: Int) -> FileChange?
   func path(for item: Any) -> String
   func change(for item: Any) -> DeltaStatus
-  func unstagedChange(for item: Any) -> DeltaStatus
 }
 
 

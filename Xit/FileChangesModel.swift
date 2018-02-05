@@ -204,8 +204,7 @@ extension FileChangesModel
         // NSTreeNode can't be in two trees, so make a new one.
         let newNode = NSTreeNode(representedObject:
             FileChange(path: srcItem.path,
-                       change: .unmodified,
-                       unstagedChange: .untracked))
+                       change: .unmodified))
         
         newNode.mutableChildren.addObjects(from: srcNodes[srcIndex].children!)
         addedNodes.append(newNode)

@@ -27,7 +27,7 @@ class StashChanges: FileChangesModel
     guard let mainModel = stash.mainCommit.map({
         CommitChanges(repository: repository, commit: $0) })
     else { return NSTreeNode() }
-    var mainRoot = mainModel.treeRoot(oldTree: oldTree, staged: false)
+    var mainRoot = mainModel.treeRoot(oldTree: oldTree)
     
     if let indexCommit = stash.indexCommit {
       let indexModel = CommitChanges(repository: repository,

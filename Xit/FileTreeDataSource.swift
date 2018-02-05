@@ -164,17 +164,9 @@ class CommitTreeItem: FileChange
   let oid: OID?
   
   init(path: String, oid: OID? = nil,
-       change: DeltaStatus = .unmodified,
-       unstagedChange: DeltaStatus = .unmodified)
+       change: DeltaStatus = .unmodified)
   {
     self.oid = oid
-    super.init(path: path, change: change, unstagedChange: unstagedChange)
-  }
-  
-  convenience init(path: String, oid: OID?, status: DeltaStatus, staged: Bool)
-  {
-    self.init(path: path, oid: oid,
-              change: staged ? status : .unmodified,
-              unstagedChange: staged ? .unmodified : status)
+    super.init(path: path, change: change)
   }
 }
