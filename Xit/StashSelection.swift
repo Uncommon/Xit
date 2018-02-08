@@ -54,6 +54,13 @@ class StashStagedList: StashFileList, FileListModel
   let indexSelection: CommitSelection?
   let indexList: CommitFileList?
   
+  var changes: [FileChange]
+  {
+    return stash.indexCommit.map {
+      repository.changes(for: $0.sha, parent: nil)
+      } ?? []
+  }
+
   override init(selection: StashSelection)
   {
     self.indexSelection = selection.stash.indexCommit.map {
@@ -61,13 +68,6 @@ class StashStagedList: StashFileList, FileListModel
     self.indexList = indexSelection.map { CommitFileList(selection: $0) }
 
     super.init(selection: selection)
-  }
-  
-  var changes: [FileChange]
-  {
-    return stash.indexCommit.map {
-      repository.changes(for: $0.sha, parent: nil)
-    } ?? []
   }
   
   func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
