@@ -1,18 +1,15 @@
 import Foundation
 
 /// Changes for a selected commit in the history
-class CommitChanges: FileChangesModel
+class CommitSelection: RepositorySelection
 {
   unowned var repository: FileChangesRepo
   let commit: XTCommit
   var shaToSelect: String? { return commit.sha }
-  var hasUnstaged: Bool { return false }
   var canCommit: Bool { return false }
+  var fileList: FileListModel { return commitFileList }
   
-  // Can't currently do changes as as lazy var because it crashes the compiler.
-  lazy var changes: [FileChange] =
-      self.repository.changes(for: self.commit.oid.sha,
-                              parent: self.commit.parentOIDs.first)
+  let commitFileList: CommitFileList
   
   /// SHA of the parent commit to use for diffs
   var diffParent: GitOID?
@@ -21,6 +18,25 @@ class CommitChanges: FileChangesModel
   {
     self.repository = repository
     self.commit = commit as! XTCommit
+    self.commitFileList = CommitFileList(selection: self)
+  }
+}
+
+class CommitFileList: FileListModel
+{
+  lazy var changes: [FileChange] =
+      self.repository.changes(for: self.commit.oid.sha,
+                              parent: self.commit.parentOIDs.first)
+  
+  let commitSelection: CommitSelection
+  var selection: RepositorySelection { return commitSelection }
+  
+  var commit: Commit { return commitSelection.commit }
+  var diffParent: OID? { return commitSelection.diffParent }
+  
+  init(selection: CommitSelection)
+  {
+    self.commitSelection = selection
   }
   
   func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
@@ -132,7 +148,7 @@ class CommitChanges: FileChangesModel
     return .notFound
   }
   
-  func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?
+  func diffForFile(_ path: String) -> PatchMaker.PatchResult?
   {
     return repository.diffMaker(forFile: path,
                                 commitOID: commit.oid,
@@ -140,15 +156,15 @@ class CommitChanges: FileChangesModel
                                            commit.parentOIDs.first)
   }
   
-  func blame(for path: String, staged: Bool) -> Blame?
+  func blame(for path: String) -> Blame?
   {
     return repository.blame(for: path, from: commit.oid, to: nil)
   }
   
-  func dataForFile(_ path: String, staged: Bool) -> Data?
+  func dataForFile(_ path: String) -> Data?
   {
     return repository.contentsOfFile(path: path, at: commit)
   }
   
-  func unstagedFileURL(_ path: String) -> URL? { return nil }
+  func fileURL(_ path: String) -> URL? { return nil }
 }

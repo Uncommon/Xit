@@ -115,6 +115,28 @@ extension XTRepository: FileStaging
     return result
   }
   
+  func statusChanges(_ show: StatusShow) -> [FileChange]
+  {
+    guard let statusList = GitStatusList(repository: gitRepo, show: show,
+                                         options: [])
+    else { return [] }
+    
+    return statusList.flatMap {
+      entry in entry.indexToWorkdir.map { FileChange(path: $0.newFile.filePath,
+                                                     change: $0.deltaStatus) }
+    }
+  }
+  
+  func stagedChanges() -> [FileChange]
+  {
+    return statusChanges(.indexOnly)
+  }
+  
+  func unstagedChanges() -> [FileChange]
+  {
+    return statusChanges(.workdirOnly)
+  }
+  
   // Stages the given file to the index.
   @objc(stageFile:error:)
   func stage(file: String) throws

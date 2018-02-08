@@ -2,20 +2,35 @@ import Cocoa
 
 
 typealias FileChangesRepo =
-    CommitReferencing & FileDiffing & FileContents & FileStaging
+    CommitReferencing & FileDiffing & FileContents & FileStaging &
+    FileStatusDetection
 
 /// Protocol for a commit or commit-like object, with metadata, files, and diffs.
-protocol FileChangesModel
+protocol RepositorySelection: class
 {
   var repository: FileChangesRepo { get set }
   /// SHA for commit to be selected in the history list
   var shaToSelect: String? { get }
+  /// Is this used to stage and commit files? Differentiates between staging
+  /// and stash changes, which both have unstaged lists.
+  var canCommit: Bool { get }
+  /// The primary or staged file list.
+  var fileList: FileListModel { get }
+}
+
+/// A selection that also has an unstaged file list
+protocol StagedUnstagedSelection: RepositorySelection
+{
+  /// The unstaged file list
+  var unstagedFilelist: FileListModel { get }
+}
+
+protocol FileListModel: class
+{
+  var selection: RepositorySelection { get }
+  
   /// Changes displayed in the file list
   var changes: [FileChange] { get }
-  /// Are there staged and unstaged changes?
-  var hasUnstaged: Bool { get }
-  /// Is this used to stage and commit files?
-  var canCommit: Bool { get }
   
   /// Constructs the file tree
   /// - parameter oldTree: Tree from the previously selected commit, to speed
@@ -23,43 +38,42 @@ protocol FileChangesModel
   func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
   /// Get the diff for the given file.
   /// - parameter path: Repository-relative file path.
-  /// - parameter staged: Whether to show the staged or unstaged diff. Ignored
-  /// for models that don't have unstaged files.
-  func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?
+  func diffForFile(_ path: String) -> PatchMaker.PatchResult?
   /// Get the contents of the given file.
   /// - parameter path: Repository-relative file path.
-  /// - parameter staged: Whether to show the staged or unstaged diff. Ignored
-  /// for models that don't have unstaged files.
-  func dataForFile(_ path: String, staged: Bool) -> Data?
-  /// The URL of the unstaged file, if any.
-  func unstagedFileURL(_ path: String) -> URL?
+  func dataForFile(_ path: String) -> Data?
+  /// The URL of the file, if any.
+  func fileURL(_ path: String) -> URL?
   /// Generate the blame data for the given file.
   /// - parameter path: Repository-relative file path.
-  /// - parameter staged: Whether to show the staged or unstaged file. Ignored
-  /// for models that don't have unstaged files.
-  func blame(for path: String, staged: Bool) -> Blame?
+  func blame(for path: String) -> Blame?
 }
 
-func == (a: FileChangesModel, b: FileChangesModel) -> Bool
+extension FileListModel
+{
+  var repository: FileChangesRepo { return selection.repository }
+}
+
+func == (a: RepositorySelection, b: RepositorySelection) -> Bool
 {
   return type(of: a) == type(of: b) &&
          a.shaToSelect == b.shaToSelect
 }
 
-func != (a: FileChangesModel, b: FileChangesModel) -> Bool
+func != (a: RepositorySelection, b: RepositorySelection) -> Bool
 {
   return !(a == b)
 }
 
-extension FileChangesModel
+extension FileListModel
 {
   /// Sets folder change status to match children.
   func postProcess(fileTree tree: NSTreeNode)
   {
     let sortDescriptor = NSSortDescriptor(
-        key: "path.lastPathComponent",
-        ascending: true,
-        selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))
+          key: "path.lastPathComponent",
+          ascending: true,
+          selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))
     
     tree.sort(with: [sortDescriptor], recursively: true)
     updateChanges(tree)
@@ -71,7 +85,7 @@ extension FileChangesModel
     guard let childNodes = node.children
     else { return }
     
-    var change: DeltaStatus?, unstagedChange: DeltaStatus?
+    var change: DeltaStatus?
     
     for child in childNodes {
       let childItem = child.representedObject as! CommitTreeItem
@@ -80,25 +94,13 @@ extension FileChangesModel
         updateChanges(child)
       }
       
-      if change == nil {
-        change = childItem.change
-      }
-      else if change! != childItem.change {
-        change = DeltaStatus.mixed
-      }
-      
-      if unstagedChange == nil {
-        unstagedChange = childItem.unstagedChange
-      }
-      else if unstagedChange! != childItem.unstagedChange {
-        unstagedChange = DeltaStatus.mixed
-      }
+      change = change.map { $0 == childItem.change ? $0 : .mixed }
+               ?? childItem.change
     }
     
     let nodeItem = node.representedObject as! CommitTreeItem
     
     nodeItem.change = change ?? .unmodified
-    nodeItem.unstagedChange = unstagedChange ?? .unmodified
   }
 
   func findTreeNode(forPath path: String,
@@ -123,6 +125,7 @@ extension FileChangesModel
     }
   }
 
+  // looks like this will go away
   /// Merges a tree of unstaged changes into a tree of staged changes.
   func combineTrees(unstagedTree: inout NSTreeNode,
                     stagedTree: NSTreeNode)

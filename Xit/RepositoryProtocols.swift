@@ -1,9 +1,10 @@
 import Foundation
 
+//swiftlint:disable colon
 public protocol Repository:
     CommitStorage, CommitReferencing, FileDiffing, FileContents, FileStaging,
-    Stashing, RemoteManagement, SubmoduleManagement, Branching
-    // BranchListing, FileStatusDetection (associated types)
+    Stashing, RemoteManagement, SubmoduleManagement, Branching, FileStatusDetection
+    // BranchListing (associated types)
 {
 }
 
@@ -20,6 +21,7 @@ public protocol CommitReferencing: class
 {
   var headRef: String? { get }
   var currentBranch: String? { get }
+  
   func remoteNames() -> [String]
   func tags() throws -> [Tag]
   func graphBetween(localBranch: LocalBranch,
@@ -52,9 +54,10 @@ public protocol BranchListing: class
 
 public protocol FileStatusDetection: class
 {
-  associatedtype ID: OID
-
-  func changes(for sha: String, parent parentOID: ID) -> [FileChange]
+  func changes(for sha: String, parent parentOID: OID) -> [FileChange]
+  
+  func stagedChanges() -> [FileChange]
+  func unstagedChanges() -> [FileChange]
 }
 
 public protocol FileDiffing: class

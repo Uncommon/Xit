@@ -1,19 +1,24 @@
 import Foundation
 
 /// Changes for a selected stash, merging workspace, index, and untracked
-class StashChanges: FileChangesModel
+class StashSelection: StagedUnstagedSelection
 {
-  unowned var repository: FileChangesRepo
-  var stash: Stash
-  var hasUnstaged: Bool { return true }
+  internal(set) unowned var repository: FileChangesRepo
+  private(set) var stash: Stash
   var canCommit: Bool { return false }
   var shaToSelect: String? { return stash.mainCommit?.parentSHAs[0] }
-  var changes: [FileChange] { return stash.changes() }
+  var fileList: FileListModel { return stagedList }
+  var unstagedFilelist: FileListModel { return unstagedList }
+  
+  let stagedList: StashStagedList
+  let unstagedList: StashUnstagedList
   
   init(repository: FileChangesRepo & Stashing, index: UInt)
   {
     self.repository = repository
     self.stash = repository.stash(index: index, message: nil)
+    self.stagedList = StashStagedList(selection: self)
+    self.unstagedList = StashUnstagedList(selection: self)
   }
   
   init(repository: FileChangesRepo, stash: XTStash)
@@ -21,93 +26,153 @@ class StashChanges: FileChangesModel
     self.repository = repository
     self.stash = stash
   }
+}
+
+/// Base class for stash file lists
+class StashFileList
+{
+  let stashSelection: StashSelection
+  var selection: RepositorySelection { return stashSelection }
+  
+  let mainSelection: CommitSelection?
+  let mainList: CommitFileList?
+
+  var stash: Stash { return stashSelection.stash }
+  
+  init(selection: StashSelection)
+  {
+    self.stashSelection = selection
+    self.mainSelection = selection.stash.mainCommit.map {
+        CommitSelection(repository: selection.repository, commit: $0) }
+    self.mainList = mainSelection.map { CommitFileList(selection: $0) }
+  }
+}
+
+/// File list for the staged portion of a stash
+class StashStagedList: StashFileList, FileListModel
+{
+  let indexSelection: CommitSelection?
+  let indexList: CommitFileList?
+  
+  override init(selection: StashSelection)
+  {
+    self.indexSelection = selection.stash.indexCommit.map {
+        CommitSelection(repository: selection.repository, commit: $0) }
+    self.indexList = indexSelection.map { CommitFileList(selection: $0) }
+
+    super.init(selection: selection)
+  }
+  
+  var changes: [FileChange]
+  {
+    return stash.indexCommit.map {
+      repository.changes(for: $0.sha, parent: nil)
+    } ?? []
+  }
   
   func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
   {
-    guard let mainModel = stash.mainCommit.map({
-        CommitChanges(repository: repository, commit: $0) })
-    else { return NSTreeNode() }
-    var mainRoot = mainModel.treeRoot(oldTree: oldTree)
+    return indexList?.treeRoot(oldTree: oldTree) ?? NSTreeNode()
+  }
+  
+  func diffForFile(_ path: String) -> PatchMaker.PatchResult?
+  {
+    return stash.stagedDiffForFile(path)
+  }
+  
+  func dataForFile(_ path: String) -> Data?
+  {
+    guard let indexCommit = stash.indexCommit
+    else { return nil }
     
-    if let indexCommit = stash.indexCommit {
-      let indexModel = CommitChanges(repository: repository,
-                                     commit: indexCommit)
-      let indexRoot = indexModel.treeRoot(oldTree: oldTree)
-      
-      combineTrees(unstagedTree: &mainRoot,
-                   stagedTree: indexRoot)
-    }
-    if let untrackedCommit = stash.untrackedCommit {
-      let untrackedModel = CommitChanges(repository: repository,
-                                         commit: untrackedCommit)
-      let untrackedRoot = untrackedModel.treeRoot(oldTree: oldTree)
+    return repository.contentsOfFile(path: path, at: indexCommit)
+  }
+
+  func blame(for path: String) -> Blame?
+  {
+    guard let indexCommit = stash.indexCommit
+    else { return nil }
+    
+    return repository.blame(for: path, from: indexCommit.oid, to: nil)
+  }
+
+  func fileURL(_ path: String) -> URL? { return nil }
+}
+
+/// File list for the unstaged portion of a stash
+class StashUnstagedList: StashFileList, FileListModel
+{
+  var changes: [FileChange] { return stash.workspaceChanges() }
+  
+  let untrackedSelection: CommitSelection?
+  let untrackedList: CommitFileList?
+  
+  override init(selection: StashSelection)
+  {
+    self.untrackedSelection = selection.stash.untrackedCommit.map {
+        CommitSelection(repository: selection.repository, commit: $0) }
+    self.untrackedList = untrackedSelection.map { CommitFileList(selection: $0) }
+    
+    super.init(selection: selection)
+  }
+  
+  func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
+  {
+    guard let mainList = self.mainList
+    else { return NSTreeNode() }
+    var mainRoot = mainList.treeRoot(oldTree: oldTree)
+    
+    if let untrackedList = self.untrackedList {
+      let untrackedRoot = untrackedList.treeRoot(oldTree: oldTree)
     
       add(untrackedRoot, to: &mainRoot)
     }
     return mainRoot
   }
   
-  func diffForFile(_ path: String, staged: Bool) -> PatchMaker.PatchResult?
+  func diffForFile(_ path: String) -> PatchMaker.PatchResult?
   {
-    if staged {
-      return stash.stagedDiffForFile(path)
+    return stash.unstagedDiffForFile(path)
+  }
+  
+  func commit(for path: String) -> Commit?
+  {
+    if let untrackedCommit = stash.untrackedCommit,
+       untrackedCommit.tree?.entry(path: path) != nil {
+      return untrackedCommit
     }
     else {
-      return stash.unstagedDiffForFile(path)
+      return stash.mainCommit
     }
   }
   
-  func commit(for path: String, staged: Bool) -> Commit?
+  func dataForFile(_ path: String) -> Data?
   {
-    if staged {
-      return stash.indexCommit
+    if let untrackedCommit = stash.untrackedCommit,
+       let untrackedData = repository.contentsOfFile(path: path,
+                                                     at: untrackedCommit) {
+      return untrackedData
     }
     else {
-      if let untrackedCommit = stash.untrackedCommit as? XTCommit,
-         untrackedCommit.tree?.entry(path: path) != nil {
-        return untrackedCommit
-      }
-      else {
-        return stash.mainCommit
-      }
-    }
-  }
-  
-  func blame(for path: String, staged: Bool) -> Blame?
-  {
-    guard let startCommit = commit(for: path, staged: staged)
-    else { return nil }
-    
-    return repository.blame(for: path, from: startCommit.oid, to: nil)
-  }
-  
-  func dataForFile(_ path: String, staged: Bool) -> Data?
-  {
-    if staged {
-      guard let indexCommit = stash.indexCommit
-      else { return nil }
-      
-      return repository.contentsOfFile(path: path, at: indexCommit)
-    }
-    else {
-      if let untrackedCommit = stash.untrackedCommit,
-         let untrackedData = repository.contentsOfFile(
-              path: path, at: untrackedCommit) {
-        return untrackedData
-      }
-      
       guard let commit = stash.mainCommit
       else { return nil }
       
       return repository.contentsOfFile(path: path, at: commit)
     }
   }
+  
+  func blame(for path: String) -> Blame?
+  {
+    guard let startCommit = commit(for: path)
+    else { return nil }
+    
+    return repository.blame(for: path, from: startCommit.oid, to: nil)
+  }
 
-  // Unstaged files are stored in commits, so there is no URL.
-  func unstagedFileURL(_ path: String) -> URL? { return nil }
+  func fileURL(_ path: String) -> URL? { return nil }
 }
 
-func == (a: StashChanges, b: StashChanges) -> Bool
+func == (a: StashSelection, b: StashSelection) -> Bool
 {
   return a.stash.mainCommit?.oid.sha == b.stash.mainCommit?.oid.sha
 }
