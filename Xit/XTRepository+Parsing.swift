@@ -43,7 +43,7 @@ class FileStagingChange: FileChange
   }
 }
 
-extension XTRepository: FileStaging
+extension XTRepository: FileStatusDetection
 {
   // A path:status dictionary for locally changed files.
   public var workspaceStatus: [String: WorkspaceFileStatus]
@@ -127,19 +127,22 @@ extension XTRepository: FileStaging
     }
   }
   
-  func stagedChanges() -> [FileChange]
+  public func stagedChanges() -> [FileChange]
   {
     return statusChanges(.indexOnly)
   }
   
-  func unstagedChanges() -> [FileChange]
+  public func unstagedChanges() -> [FileChange]
   {
     return statusChanges(.workdirOnly)
   }
-  
+}
+
+extension XTRepository: FileStaging
+{
   // Stages the given file to the index.
   @objc(stageFile:error:)
-  func stage(file: String) throws
+  public func stage(file: String) throws
   {
     let fullPath = file.hasPrefix("/") ? file :
           repoURL.path.appending(pathComponent: file)
@@ -150,13 +153,13 @@ extension XTRepository: FileStaging
   }
   
   // Stages all modified files.
-  func stageAllFiles() throws
+  public func stageAllFiles() throws
   {
     _ = try executeGit(args: ["add", "--all"], writes: true)
   }
   
   // Unstages all stages files.
-  func unstage(file: String) throws
+  public func unstage(file: String) throws
   {
     let args = hasHeadReference() ? ["reset", "-q", "HEAD", file]
                                   : ["rm", "--cached", file]

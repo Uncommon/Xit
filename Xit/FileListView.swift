@@ -33,7 +33,7 @@ class FileListView: ContextMenuOutlineView
     let controller = window?.windowController as! XTWindowController
     guard let tableColumn = highlightedTableColumn,
           let highlightedIndex = index(of: tableColumn),
-          controller.selectedModel?.hasUnstaged ?? false
+          controller.selection is StagedUnstagedSelection
     else { return }
     
     var highlightRect = frameOfCell(atColumn: highlightedIndex, row: 0)
@@ -48,7 +48,7 @@ class FileListView: ContextMenuOutlineView
   {
     let controller = window?.windowController as! XTWindowController
     
-    if controller.selectedModel?.canCommit ?? false {
+    if controller.selection?.canCommit ?? false {
       menu = stagingMenu
     }
     else {

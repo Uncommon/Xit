@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
@@ -11,13 +11,11 @@
             <connections>
                 <outlet property="blameController" destination="qWY-M6-3vs" id="73d-3e-UiG"/>
                 <outlet property="diffController" destination="fX5-fH-Hy5" id="nP0-l5-ngF"/>
-                <outlet property="fileChangeDS" destination="QBv-mK-3e5" id="1o8-Jg-riS"/>
                 <outlet property="fileListStagedView" destination="NmS-X6-R7x" id="q2C-FH-Jrg"/>
                 <outlet property="fileListTabView" destination="mLX-BC-uMS" id="MU0-p1-o18"/>
                 <outlet property="fileListWorkspaceView" destination="1cF-PF-Imi" id="ekF-ch-q1u"/>
                 <outlet property="filePreview" destination="4" id="13f-0N-ema"/>
                 <outlet property="fileSplitView" destination="PgV-aZ-kTu" id="6W5-Vn-aRM"/>
-                <outlet property="fileTreeDS" destination="M1X-3P-vhW" id="NEO-cS-CTP"/>
                 <outlet property="headerController" destination="67" id="iWn-HL-Kjl"/>
                 <outlet property="headerSplitView" destination="68" id="7M2-oP-CZq"/>
                 <outlet property="headerTabView" destination="krT-Kf-MrD" id="t9e-WI-aqg"/>
@@ -77,7 +75,7 @@
                             <tabViewItems>
                                 <tabViewItem label="Commit" identifier="commit" id="uug-us-47g">
                                     <view key="view" id="VIN-8s-IFB">
-                                        <rect key="frame" x="0.0" y="0.0" width="225" height="210"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="163" height="210"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     </view>
                                 </tabViewItem>
@@ -410,16 +408,6 @@
             </connections>
             <point key="canvasLocation" x="140.5" y="169"/>
         </splitView>
-        <customObject id="QBv-mK-3e5" customClass="FileChangesDataSource" customModule="Xit" customModuleProvider="target">
-            <connections>
-                <outlet property="controller" destination="-2" id="Roc-D7-Ia2"/>
-            </connections>
-        </customObject>
-        <customObject id="M1X-3P-vhW" customClass="FileTreeDataSource" customModule="Xit" customModuleProvider="target">
-            <connections>
-                <outlet property="controller" destination="-2" id="Iib-rn-pVn"/>
-            </connections>
-        </customObject>
         <customObject id="67" customClass="XTCommitHeaderViewController">
             <connections>
                 <outlet property="view" destination="71" id="77"/>

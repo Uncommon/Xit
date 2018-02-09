@@ -9,14 +9,16 @@ class StagingSelection: StagedUnstagedSelection
   var fileList: FileListModel { return indexFileList }
   var unstagedFilelist: FileListModel { return workspaceFileList }
   
-  let indexFileList: IndexFileList
-  let workspaceFileList: WorkspaceFileList
+  // Initialization requires a reference to self
+  private(set) var indexFileList: IndexFileList!
+  private(set) var workspaceFileList: WorkspaceFileList!
   
   init(repository: FileChangesRepo)
   {
     self.repository = repository
-    self.indexFileList = IndexFileList(selection: self)
-    self.workspaceFileList = WorkspaceFileList(selection: self)
+    
+    indexFileList = IndexFileList(selection: self)
+    workspaceFileList = WorkspaceFileList(selection: self)
   }
 }
 

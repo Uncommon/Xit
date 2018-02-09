@@ -87,7 +87,7 @@ class XTCommitEntryController: NSViewController
   {
     guard let controller = view.ancestorWindow?.windowController
                            as? XTWindowController,
-          let changes = controller.selectedModel?.changes
+          let changes = controller.selection?.fileList.changes
     else {
       anyStaged = false
       return

@@ -1,5 +1,7 @@
 import Foundation
 
+protocol FileListSub {}
+
 class FileListController: NSViewController
 {
   struct ColumnID
@@ -14,8 +16,47 @@ class FileListController: NSViewController
   @IBOutlet weak var viewSwitch: NSSegmentedControl!
   @IBOutlet weak var toolbarStack: NSStackView!
   @IBOutlet weak var outlineView: NSOutlineView!
+  {
+    didSet
+    {
+      fileListDataSource.outlineView = outlineView
+      fileTreeDataSource.outlineView = outlineView
+    }
+  }
   
-  var fileListDataSource: FileListDataSourceBase?
+  var viewDataSource: FileListDataSourceBase!
+  
+  let fileListDataSource: FileChangesDataSource
+  let fileTreeDataSource: FileTreeDataSource
+  
+  var repoController: RepositoryController!
+  {
+    didSet
+    {
+      fileListDataSource.repoController = repoController
+      fileTreeDataSource.repoController = repoController
+    }
+  }
+  
+  required init()
+  {
+    self.fileListDataSource = FileChangesDataSource()
+    self.fileTreeDataSource = FileTreeDataSource()
+    
+    super.init(nibName: nil, bundle: nil)
+    
+    let nib = NSNib(nibNamed: NSNib.Name(rawValue: "FileListView"), bundle: nil)
+    var objects: NSArray?
+    
+    nib?.instantiate(withOwner: self, topLevelObjects: &objects)
+
+    viewDataSource = fileListDataSource
+  }
+  
+  required init?(coder: NSCoder)
+  {
+    fatalError("init(coder:) has not been implemented")
+  }
   
   @IBAction func stageAll(_ sender: Any)
   {
@@ -57,7 +98,7 @@ class FileListController: NSViewController
     guard let index = outlineView.selectedRowIndexes.first
     else { return nil }
     
-    return (fileListDataSource as? FileListDataSource)?.fileChange(at: index)
+    return (viewDataSource as? FileListDataSource)?.fileChange(at: index)
   }
 
   func addToolbarButton(name: NSImage.Name, action: Selector)
@@ -70,7 +111,7 @@ class FileListController: NSViewController
   }
 }
 
-class CommitFileListController: FileListController
+class CommitFileListController: FileListController, FileListSub
 {
   override func awakeFromNib()
   {
@@ -83,7 +124,7 @@ class CommitFileListController: FileListController
   }
 }
 
-class StagedFileListController: FileListController
+class StagedFileListController: FileListController, FileListSub
 {
   override func awakeFromNib()
   {
@@ -95,7 +136,7 @@ class StagedFileListController: FileListController
   }
 }
 
-class WorkspaceFileListController: FileListController
+class WorkspaceFileListController: FileListController, FileListSub
 {
   override func awakeFromNib()
   {

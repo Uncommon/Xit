@@ -54,8 +54,10 @@ public protocol BranchListing: class
 
 public protocol FileStatusDetection: class
 {
-  func changes(for sha: String, parent parentOID: OID) -> [FileChange]
+  var workspaceStatus: [String: WorkspaceFileStatus] { get }
   
+  func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
+
   func stagedChanges() -> [FileChange]
   func unstagedChanges() -> [FileChange]
 }
@@ -89,9 +91,9 @@ public protocol FileContents: class
 
 public protocol FileStaging: class
 {
-  var workspaceStatus: [String: WorkspaceFileStatus] { get }
-  
-  func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
+  func stage(file: String) throws
+  func unstage(file: String) throws
+  func stageAllFiles() throws
 }
 
 public protocol Stashing: class

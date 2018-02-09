@@ -5,7 +5,7 @@ class XTNewTagController: XTOperationController
   override func start() throws
   {
     let panelController = XTTagPanelController.controller()
-    guard let selectedSHA = windowController?.selectedModel?.shaToSelect,
+    guard let selectedSHA = windowController?.selection?.shaToSelect,
           let selectedOID = repository?.oid(forSHA: selectedSHA),
           let repository = repository,
           let commit = repository.commit(forSHA: selectedSHA)

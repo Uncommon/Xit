@@ -15,7 +15,7 @@ extension XTPreviewController: XTFileContentController
     isLoaded = false
   }
   
-  public func load(path: String!, model: FileChangesModel!, staged: Bool)
+  public func load(path: String!, selection: RepositorySelection!, staged: Bool)
   {
     let previewView = view as! QLPreviewView
   
@@ -27,13 +27,15 @@ extension XTPreviewController: XTFileContentController
         previewItem = PreviewItem()
         previewView.previewItem = previewItem
       }
-      previewItem.model = model
+      previewItem.selection = selection
       previewItem.path = path
       previewView.refreshPreviewItem()
       isLoaded = true
     }
     else {
-      guard let urlString = model.unstagedFileURL(path)?.absoluteString
+      guard let unstagedList = (selection as? StagedUnstagedSelection)?
+                               .unstagedFilelist,
+            let urlString = unstagedList.fileURL(path)?.absoluteString
       else {
         previewView.previewItem = nil
         isLoaded = true

@@ -54,8 +54,6 @@ class FileViewController: NSViewController
   @IBOutlet weak var previewTabView: NSTabView!
   @IBOutlet weak var previewPath: NSPathControl!
   @IBOutlet weak var filePreview: QLPreviewView!
-  @IBOutlet var fileChangeDS: FileChangesDataSource!
-  @IBOutlet var fileTreeDS: FileTreeDataSource!
   @IBOutlet var headerController: CommitHeaderViewController!
   @IBOutlet var diffController: XTFileDiffController!
   @IBOutlet var blameController: BlameViewController!
@@ -76,19 +74,19 @@ class FileViewController: NSViewController
              textController, previewController]
   }
   
-  var selectedModel: FileChangesModel?
+  var repoSelection: RepositorySelection?
   {
-    return (view.window?.windowController as? RepositoryController)?.selectedModel
+    return (view.window?.windowController as? RepositoryController)?.selection
   }
   
   var inStagingView: Bool
   {
-    return selectedModel?.hasUnstaged ?? false
+    return repoSelection is StagedUnstagedSelection
   }
   
-  var modelCanCommit: Bool
+  var selectionCanCommit: Bool
   {
-    return selectedModel?.canCommit ?? false
+    return repoSelection is StagingSelection
   }
   
   var showingStaged: Bool
@@ -121,9 +119,9 @@ class FileViewController: NSViewController
     }
   }
   
-  let commitListController: CommitFileListController
-  let stagedListController: StagedFileListController
-  let workspaceListController: WorkspaceFileListController
+  let commitListController = CommitFileListController()
+  let stagedListController = StagedFileListController()
+  let workspaceListController = WorkspaceFileListController()
   
   var activeFileList: NSOutlineView!
   var activeFileListController: FileListController
@@ -136,20 +134,6 @@ class FileViewController: NSViewController
   }
   
   weak var repo: XTRepository?
-  
-  override init(nibName nibNameOrNil: NSNib.Name?, bundle nibBundleOrNil: Bundle?)
-  {
-    commitListController = FileViewController.loadFileListController()
-    stagedListController = FileViewController.loadFileListController()
-    workspaceListController = FileViewController.loadFileListController()
-
-    super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-  }
-  
-  required init?(coder: NSCoder)
-  {
-    fatalError("init(coder:) has not been implemented")
-  }
   
   deinit
   {
@@ -167,9 +151,15 @@ class FileViewController: NSViewController
     }
 
     guard let controller = view.window?.windowController
-          as? XTWindowController
+                           as? RepositoryController
     else { return }
     
+    for listController in [commitListController,
+                           stagedListController,
+                           workspaceListController] {
+      listController.repoController = controller
+    }
+
     observers.addObserver(forName: .XTSelectedModelChanged,
                           object: controller, queue: .main) {
       [weak self] _ in
@@ -179,12 +169,6 @@ class FileViewController: NSViewController
     commitEntryController.repo = repository
     activeFileList = fileListTabView.tabViewItem(at: 0).view!.subviews[0]
         as! NSOutlineView
-    fileChangeDS.repoController = controller
-    fileChangeDS.observe(repository: repository)
-    fileChangeDS.taskQueue = repository.queue
-    fileTreeDS.repoController = controller
-    fileTreeDS.observe(repository: repository)
-    fileTreeDS.taskQueue = repository.queue
   }
   
   override func loadView()
@@ -192,9 +176,7 @@ class FileViewController: NSViewController
     super.loadView()
     
     contentController = diffController
-    
-    // load the file lists
-    
+
     // observe list view selections
     
     observers.addObserver(forName: .XTHeaderResized, object: headerController,
@@ -219,17 +201,6 @@ class FileViewController: NSViewController
     diffController.stagingDelegate = self
   }
   
-  static func loadFileListController<FLCType>() -> FLCType
-    where FLCType: FileListController
-  {
-    let controller = FLCType()
-    let nib = NSNib(nibNamed: NSNib.Name(rawValue: "FileListView"), bundle: nil)
-    var objects: NSArray?
-    
-    nib?.instantiate(withOwner: controller, topLevelObjects: &objects)
-    return controller
-  }
-  
   func indexChanged(_ note: Notification)
   {
     // Reading the index too soon can yield incorrect results.
@@ -248,7 +219,7 @@ class FileViewController: NSViewController
     }
     
     // Ideally, check to see if the selected file has changed
-    if modelCanCommit {
+    if selectionCanCommit {
       loadSelectedPreview(force: true)
     }
   }
@@ -287,14 +258,17 @@ class FileViewController: NSViewController
   {
     guard let controller = view.window?.windowController
                            as? RepositoryController,
-          let newModel = controller.selectedModel
+          let newModel = controller.selection
     else { return }
     
-    if showingStaged != newModel.hasUnstaged {
-      showingStaged = newModel.hasUnstaged
+    let newIsStaging = newModel is StagedUnstagedSelection
+    let newCanCommit = newModel is StagingSelection
+
+    if showingStaged != newIsStaging {
+      showingStaged = newIsStaging
     }
-    if isCommitting != newModel.canCommit {
-      isCommitting = newModel.canCommit
+    if isCommitting != newCanCommit {
+      isCommitting = newCanCommit
     }
     headerController.commitSHA = newModel.shaToSelect
     clearPreviews()
@@ -317,7 +291,7 @@ class FileViewController: NSViewController
     updatePreviewPath(selectedChange.path,
                       isFolder: activeFileList.isExpandable(selectedItem))
     contentController.load(path: selectedChange.path,
-                           model: controller.selectedModel,
+                           selection: controller.selection,
                            staged: showingStaged)
     
     let fullPath = repo.repoURL.path.appending(
@@ -466,9 +440,9 @@ extension FileViewController: HunkStaging
     var encoding = String.Encoding.utf8
   
     guard let controller = view.window?.windowController as? RepositoryController,
-          let selectedModel = controller.selectedModel,
+          let selection = controller.selection as? StagingSelection,
           let selectedChange = self.selectedChange,
-          let fileURL = selectedModel.unstagedFileURL(selectedChange.path)
+          let fileURL = selection.unstagedFilelist.fileURL(selectedChange.path)
     else {
       NSLog("Setup for discard hunk failed")
       return

@@ -56,13 +56,13 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
   {
     guard let item = outline!.item(atRow: outline!.selectedRow)
                      as? XTSideBarItem,
-          let model = item.model,
+          let selection = item.selection,
           let controller = outline!.window?.windowController
                            as? RepositoryController
     else { return }
     
-    if controller.selectedModel?.shaToSelect != model.shaToSelect {
-      controller.selectedModel = model
+    if controller.selection?.shaToSelect != selection.shaToSelect {
+      controller.selection = selection
     }
   }
 
@@ -186,7 +186,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
   fileprivate func configureStagingItem(sideBarItem: XTSideBarItem,
                                         dataView: XTSidebarTableCellView)
   {
-    let changes = sideBarItem.model!.changes
+    let changes = sideBarItem.selection!.fileList.changes
     let stagedCount =
           changes.count(where: { $0.change != .unmodified })
     let unstagedCount =
@@ -231,18 +231,18 @@ extension XTSideBarDataSource: XTOutlineViewDelegate
   func outlineViewClickedSelectedRow(_ outline: NSOutlineView)
   {
     guard let selectedIndex = outline.selectedRowIndexes.first,
-          let selection = outline.item(atRow: selectedIndex) as? XTSideBarItem
+          let newSelectedItem = outline.item(atRow: selectedIndex)
+                                as? XTSideBarItem
     else { return }
     
     if let controller = outline.window?.windowController
                         as? RepositoryController,
-       let oldModel = controller.selectedModel,
-       let newModel = selection.model,
-       oldModel.shaToSelect == newModel.shaToSelect &&
-       type(of: oldModel) != type(of: newModel) {
-      NotificationCenter.default.post(
-          name: NSNotification.Name.XTReselectModel, object: repository)
+       let oldSelection = controller.selection,
+       let newSelection = newSelectedItem.selection,
+       oldSelection.shaToSelect == newSelection.shaToSelect &&
+       type(of: oldSelection) != type(of: newSelection) {
+      NotificationCenter.default.post(name: .XTReselectModel, object: repository)
     }
-    selectedItem = selection
+    selectedItem = newSelectedItem
   }
 }

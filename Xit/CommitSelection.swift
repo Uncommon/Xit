@@ -9,7 +9,8 @@ class CommitSelection: RepositorySelection
   var canCommit: Bool { return false }
   var fileList: FileListModel { return commitFileList }
   
-  let commitFileList: CommitFileList
+  // Initialization requires a reference to self
+  private(set) var commitFileList: CommitFileList!
   
   /// SHA of the parent commit to use for diffs
   var diffParent: GitOID?
@@ -18,7 +19,8 @@ class CommitSelection: RepositorySelection
   {
     self.repository = repository
     self.commit = commit as! XTCommit
-    self.commitFileList = CommitFileList(selection: self)
+    
+    commitFileList = CommitFileList(selection: self)
   }
 }
 

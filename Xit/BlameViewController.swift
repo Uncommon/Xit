@@ -70,7 +70,7 @@ class BlameViewController: WebViewController
   }
   
   func loadBlame(text: String, path: String,
-                 model: FileChangesModel, staged: Bool)
+                 selection: RepositorySelection, staged: Bool)
   {
     defer {
       DispatchQueue.main.async {
@@ -80,7 +80,8 @@ class BlameViewController: WebViewController
       }
     }
     
-    guard let blame = model.blame(for: path, staged: staged)
+    let list = selection.list(staged: staged)
+    guard let blame = list.blame(for: path)
     else {
       notAvailable()
       return
@@ -88,7 +89,7 @@ class BlameViewController: WebViewController
     
     var htmlLines = [String]()
     let lines = text.lineComponents()
-    let selectOID: GitOID? = model.shaToSelect.map { GitOID(sha: $0) } ?? nil
+    let selectOID: GitOID? = selection.shaToSelect.map { GitOID(sha: $0) } ?? nil
     let currentOID = selectOID ?? GitOID.zero()
     let dateFormatter = DateFormatter()
     let coloring = CommitColoring(firstOID: currentOID)
@@ -173,13 +174,14 @@ extension BlameViewController: XTFileContentController
     isLoaded = false
   }
   
-  public func load(path: String!, model: FileChangesModel!, staged: Bool)
+  public func load(path: String!, selection: RepositorySelection!, staged: Bool)
   {
     repoController.queue.executeOffMainThread {
       [weak self] in
       guard let myself = self
       else { return }
-      guard let data = model.dataForFile(path, staged: staged),
+      let list = selection.list(staged: staged)
+      guard let data = list.dataForFile(path),
             let text = String(data: data, encoding: .utf8) ??
                        String(data: data, encoding: .utf16)
       else {
@@ -192,7 +194,8 @@ extension BlameViewController: XTFileContentController
         myself.spinner.startAnimation(nil)
         myself.clear()
       }
-      myself.loadBlame(text: text, path: path, model: model, staged: staged)
+      myself.loadBlame(text: text, path: path,
+                       selection: selection, staged: staged)
     }
   }
 }

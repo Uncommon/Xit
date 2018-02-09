@@ -1,6 +1,6 @@
 import Foundation
 
-/// Used by FileChangesModel classes for efficiently loading
+/// Used by RepositorySelection classes for efficiently loading
 /// new trees over old ones
 public struct TreeLoader
 {

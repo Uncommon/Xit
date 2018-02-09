@@ -17,7 +17,7 @@ extension XTWindowController: NSTouchBarDelegate
     let bar = NSTouchBar()
     
     bar.delegate = self
-    bar.defaultItemIdentifiers = (selectedModel is StagingChanges)
+    bar.defaultItemIdentifiers = (selection is StagingSelection)
         ? [ .navigation, .unstageAll, .stageAll ]
         : [ .navigation, .staging ]
     

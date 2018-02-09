@@ -10,21 +10,23 @@ class StashSelection: StagedUnstagedSelection
   var fileList: FileListModel { return stagedList }
   var unstagedFilelist: FileListModel { return unstagedList }
   
-  let stagedList: StashStagedList
-  let unstagedList: StashUnstagedList
+  // Initialization requires a reference to self
+  private(set) var stagedList: StashStagedList! = nil
+  private(set) var unstagedList: StashUnstagedList! = nil
   
-  init(repository: FileChangesRepo & Stashing, index: UInt)
+  convenience init(repository: FileChangesRepo & Stashing, index: UInt)
   {
-    self.repository = repository
-    self.stash = repository.stash(index: index, message: nil)
-    self.stagedList = StashStagedList(selection: self)
-    self.unstagedList = StashUnstagedList(selection: self)
+    self.init(repository: repository,
+              stash: repository.stash(index: index, message: nil))
   }
   
-  init(repository: FileChangesRepo, stash: XTStash)
+  init(repository: FileChangesRepo, stash: Stash)
   {
     self.repository = repository
     self.stash = stash
+    
+    stagedList = StashStagedList(selection: self)
+    unstagedList = StashUnstagedList(selection: self)
   }
 }
 

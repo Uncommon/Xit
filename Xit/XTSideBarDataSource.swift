@@ -45,7 +45,7 @@ class XTSideBarDataSource: NSObject
       guard let repo = self.repository
       else { return }
       
-      stagingItem.model = StagingChanges(repository: repo)
+      stagingItem.selection = StagingSelection(repository: repo)
       buildStatusCache = BuildStatusCache(branchLister: repo, remoteMgr: repo)
       
       observers.addObserver(forName: .XTRepositoryRefsChanged,
@@ -96,7 +96,7 @@ class XTSideBarDataSource: NSObject
         outline.selectRowIndexes(IndexSet(integer: row),
                                  byExtendingSelection: false)
         
-        item.model.map { controller.selectedModel = $0 }
+        item.selection.map { controller.selection = $0 }
       }
     }
   }
@@ -183,7 +183,7 @@ class XTSideBarDataSource: NSObject
   {
     return repository?.stashes().map {
       XTStashItem(title: $0.message ?? "stash",
-                  model: StashChanges(repository: repository!, stash: $0))
+                  selection: StashSelection(repository: repository!, stash: $0))
     } ?? []
   }
   
@@ -202,8 +202,8 @@ class XTSideBarDataSource: NSObject
       else { continue }
       
       let name = branch.name.removingPrefix("refs/heads/")
-      let model = CommitChanges(repository: repo, commit: commit)
-      let branchItem = XTLocalBranchItem(title: name, model: model)
+      let selection = CommitSelection(repository: repo, commit: commit)
+      let branchItem = XTLocalBranchItem(title: name, selection: selection)
       let parent = self.parent(for: name, groupItem: branchesGroup)
       
       parent.children.append(branchItem)
@@ -222,12 +222,12 @@ class XTSideBarDataSource: NSObject
             let commit = repo.commit(forOID: oid)
       else { continue }
       let name = branch.name.removingPrefix("refs/remotes/\(remote.title)/")
-      let model = CommitChanges(repository: repo, commit: commit)
+      let selection = CommitSelection(repository: repo, commit: commit)
       let remoteParent = parent(for: name, groupItem: remote)
       
       remoteParent.children.append(XTRemoteBranchItem(title: name,
                                                       remote: remoteName,
-                                                      model: model))
+                                                      selection: selection))
     }
     
     if let tags = try? repo.tags().sorted(by: { $0.name < $1.name }) {

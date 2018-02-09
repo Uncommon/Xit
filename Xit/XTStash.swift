@@ -16,7 +16,7 @@ public protocol Stash: class
 /// Wraps a stash to preset a unified list of file changes.
 public class XTStash: NSObject, Stash
 {
-  typealias Repo = CommitStorage & FileContents & FileStaging & Stashing
+  typealias Repo = CommitStorage & FileContents & FileStatusDetection & Stashing
   
   unowned var repo: Repo
   public var message: String?

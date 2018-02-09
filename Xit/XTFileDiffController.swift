@@ -260,10 +260,10 @@ extension XTFileDiffController: XTFileContentController
     isLoaded = false
   }
   
-  public func load(path: String!, model: FileChangesModel!, staged: Bool)
+  public func load(path: String!, selection: RepositorySelection!, staged: Bool)
   {
-    self.staged = model.hasUnstaged ? staged : nil
-    loadOrNotify(diffResult: model.diffForFile(path, staged: staged))
+    self.staged = (selection is StagedUnstagedSelection) ? staged : nil
+    loadOrNotify(diffResult: selection.list(staged: staged).diffForFile(path))
   }
 }
 

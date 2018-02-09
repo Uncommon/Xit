@@ -6,7 +6,7 @@ class XTSideBarItem: NSObject
   var displayTitle: String { return title }
   var icon: NSImage? { return nil }
   var children: [XTSideBarItem]
-  var model: FileChangesModel?
+  var selection: RepositorySelection?
   var refType: XTRefType { return .unknown }
   var expandable: Bool { return false }
   // NSObject.isSelectable is new in 10.12
@@ -22,10 +22,10 @@ class XTSideBarItem: NSObject
     super.init()
   }
   
-  convenience init(title: String, model: FileChangesModel)
+  convenience init(title: String, selection: RepositorySelection)
   {
     self.init(title: title)
-    self.model = model
+    self.selection = selection
   }
   
   // Because children bridges as NSArray, not NSMutableArray.
@@ -97,7 +97,7 @@ class XTLocalBranchItem: XTBranchItem
   override var refType: XTRefType { return .branch }
   override var current: Bool
   {
-    if let currentBranch = model!.repository.currentBranch {
+    if let currentBranch = selection!.repository.currentBranch {
       return currentBranch == title
     }
     return false
@@ -105,12 +105,12 @@ class XTLocalBranchItem: XTBranchItem
   
   override func branchObject() -> Branch?
   {
-    return model!.repository.localBranch(named: title)
+    return selection!.repository.localBranch(named: title)
   }
 
   func hasTrackingBranch() -> Bool
   {
-    let branch = model!.repository.localBranch(named: title)
+    let branch = selection!.repository.localBranch(named: title)
     
     return branch?.trackingBranchName != nil
   }
@@ -124,17 +124,17 @@ class XTRemoteBranchItem: XTBranchItem
   
   override var fullName: String { return "\(remote)/\(title)" }
   
-  init(title: String, remote: String, model: FileChangesModel)
+  init(title: String, remote: String, selection: RepositorySelection)
   {
     self.remote = remote
     
     super.init(title: title)
-    self.model = model
+    self.selection = selection
   }
   
   override func branchObject() -> Branch?
   {
-    return model!.repository.remoteBranch(named: title, remote: remote)
+    return selection!.repository.remoteBranch(named: title, remote: remote)
   }
 }
 
@@ -196,7 +196,7 @@ class XTTagItem: XTSideBarItem
     // to make sense to have a repository property in the Tag protocol.
     if let commit = tag.commit,
        let xtTag = tag as? GitTag {
-      self.model = CommitChanges(repository: xtTag.repository, commit: commit)
+      self.selection = CommitSelection(repository: xtTag.repository, commit: commit)
     }
   }
 }

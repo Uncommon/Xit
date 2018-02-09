@@ -17,6 +17,17 @@ class FileListDataSourceBase: NSObject
   {
     didSet
     {
+      (self as! FileListDataSource).reload()
+      observers.addObserver(forName: .XTRepositoryWorkspaceChanged,
+                            object: repoController.repository, queue: .main) {
+        [weak self] (note) in
+        guard let myself = self
+        else { return }
+        
+        if myself.outlineView?.dataSource === myself {
+          myself.workspaceChanged(note.userInfo?[XTPathsKey] as? [String])
+        }
+      }
       observers.addObserver(forName: .XTSelectedModelChanged,
                             object: repoController, queue: .main) {
         [weak self] (_) in
@@ -28,6 +39,7 @@ class FileListDataSourceBase: NSObject
         (myself as? FileListDataSource)?.reload()
         myself.updateStagingView()
       }
+      
     }
   }
   
@@ -36,24 +48,9 @@ class FileListDataSourceBase: NSObject
     return (change == .unmodified) ? .mixed : change
   }
   
-  func observe(repository: AnyObject)
-  {
-    (self as! FileListDataSource).reload()
-    observers.addObserver(forName: .XTRepositoryWorkspaceChanged,
-                          object: repository, queue: .main) {
-      [weak self] (note) in
-      guard let myself = self
-      else { return }
-      
-      if myself.outlineView?.dataSource === myself {
-        myself.workspaceChanged(note.userInfo?[XTPathsKey] as? [String])
-      }
-    }
-  }
-  
   func workspaceChanged(_ paths: [String]?)
   {
-    if repoController.selectedModel is StagingChanges {
+    if repoController.selection is StagingSelection {
       (self as! FileListDataSource).reload()
     }
   }
@@ -62,8 +59,7 @@ class FileListDataSourceBase: NSObject
   {
     let unstagedColumn = outlineView.tableColumn(withIdentifier: ColumnID.unstaged)
     
-    unstagedColumn?.isHidden = !(repoController.selectedModel?.hasUnstaged
-                                 ?? false)
+    unstagedColumn?.isHidden = !(repoController.selection is StagedUnstagedSelection)
   }
 }
 

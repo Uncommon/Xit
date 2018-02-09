@@ -11,7 +11,7 @@ class FileRowView: NSTableRowView
     
     let controller = outlineView.window!.windowController! as! XTWindowController
     
-    if (controller.selectedModel?.hasUnstaged ?? false) &&
+    if (controller.selection is StagedUnstagedSelection) &&
        (interiorBackgroundStyle != .dark) {
       guard let column = outlineView.highlightedTableColumn
       else { return }

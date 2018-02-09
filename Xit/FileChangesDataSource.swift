@@ -5,9 +5,9 @@ class FileChangesDataSource: FileListDataSourceBase
   var changes = [FileChange]()
   var wasInStaging: Bool = false
   
-  func doReload(_ model: FileChangesModel?)
+  func doReload(_ selection: RepositorySelection?)
   {
-    var newChanges = model?.changes ?? [FileChange]()
+    var newChanges = selection?.fileList.changes ?? [FileChange]()
     
     newChanges.sort { $0.path < $1.path }
     
@@ -116,11 +116,11 @@ extension FileChangesDataSource: FileListDataSource
 
   func reload()
   {
-    let model = repoController.selectedModel
+    let selection = repoController.selection
     
     repoController.queue.executeOffMainThread {
       [weak self] in
-      self?.doReload(model)
+      self?.doReload(selection)
     }
   }
   

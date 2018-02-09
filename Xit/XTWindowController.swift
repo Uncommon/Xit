@@ -4,7 +4,7 @@ protocol RepositoryController: class
 {
   var repository: Repository { get }
   var queue: TaskQueue { get }
-  var selectedModel: FileChangesModel? { get set }
+  var selection: RepositorySelection? { get set }
   
   func select(sha: String)
 }
@@ -22,16 +22,16 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   var refsChangedObserver: NSObjectProtocol?
   var repository: Repository { return xtDocument?.repository as! Repository }
   var queue: TaskQueue { return xtDocument!.repository.queue }
-  var selectedModel: FileChangesModel?
+  var selection: RepositorySelection?
   {
     didSet
     {
-      guard selectedModel.map({ (s) in oldValue.map { (o) in s != o }
+      guard selection.map({ (s) in oldValue.map { (o) in s != o }
           ?? true }) ?? (oldValue != nil)
       else { return }
       var userInfo = [AnyHashable: Any]()
       
-      userInfo[NSKeyValueChangeKey.newKey] = selectedModel
+      userInfo[NSKeyValueChangeKey.newKey] = selection
       userInfo[NSKeyValueChangeKey.oldKey] = oldValue
       
       NotificationCenter.default.post(
@@ -50,8 +50,8 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       updateNavButtons()
     }
   }
-  var navBackStack = [FileChangesModel]()
-  var navForwardStack = [FileChangesModel]()
+  var navBackStack = [RepositorySelection]()
+  var navForwardStack = [RepositorySelection]()
   var navigating = false
   var sidebarHidden: Bool
   {
@@ -122,7 +122,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     guard let commit = repository.commit(forSHA: sha)
     else { return }
   
-    selectedModel = CommitChanges(repository: repository, commit: commit)
+    selection = CommitSelection(repository: repository, commit: commit)
   }
   
   func select(oid: GitOID)
@@ -131,7 +131,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
           let commit = repo.commit(forOID: oid)
     else { return }
   
-    selectedModel = CommitChanges(repository: repo, commit: commit)
+    selection = CommitSelection(repository: repo, commit: commit)
   }
   
   func updateNavButtons()

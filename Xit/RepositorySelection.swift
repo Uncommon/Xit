@@ -25,6 +25,15 @@ protocol StagedUnstagedSelection: RepositorySelection
   var unstagedFilelist: FileListModel { get }
 }
 
+extension RepositorySelection
+{
+  func list(staged: Bool) -> FileListModel
+  {
+    return staged ? fileList :
+        (self as? StagedUnstagedSelection)?.unstagedFilelist ?? fileList
+  }
+}
+
 protocol FileListModel: class
 {
   var selection: RepositorySelection { get }
