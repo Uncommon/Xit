@@ -571,8 +571,8 @@ class XTRepositoryTest: XTTest
       return
     }
     
-    let model = CommitChanges(repository: repository, commit: headCommit)
-    guard let diff = model.diffForFile(imageName, staged: false)
+    let model = CommitSelection(repository: repository, commit: headCommit)
+    guard let diff = model.fileList.diffForFile(imageName)
     else {
       XCTFail("no diff result")
       return

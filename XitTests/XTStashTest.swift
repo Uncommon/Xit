@@ -29,7 +29,12 @@ class XTStashTest: XTTest
     XCTAssertFalse(FileManager.default.fileExists(atPath: addedPath))
     
     let stash = XTStash(repo: self.repository, index: 0, message: "stash 0")
-    let changes = stash.changes()
+    let changes = stash.workspaceChanges()
+    guard changes.count > untrackedIndex
+    else {
+      XCTFail("not enough changes")
+      return
+    }
     let addedChange: FileChange = changes[addedIndex]
     let file1Change: FileChange = changes[file1Index]
     let untrackedChange: FileChange = changes[untrackedIndex]
@@ -89,16 +94,16 @@ class XTStashTest: XTTest
     XCTAssertNoThrow(try repository.stage(file: imageName))
     XCTAssertNoThrow(try repository.saveStash(name: nil, includeUntracked: true))
     
-    let stashModel = StashChanges(repository: repository, index: 0)
+    let selection = StashSelection(repository: repository, index: 0)
     
-    if let stagedDiffResult = stashModel.diffForFile(imageName, staged: true) {
+    if let stagedDiffResult = selection.fileList.diffForFile(imageName) {
       XCTAssertEqual(stagedDiffResult, .binary)
     }
     else {
       XCTFail("no staged diff")
     }
     
-    if let unstagedDiffResult = stashModel.diffForFile(imageName, staged: true) {
+    if let unstagedDiffResult = selection.fileList.diffForFile(imageName) {
       XCTAssertEqual(unstagedDiffResult, .binary)
     }
     else {

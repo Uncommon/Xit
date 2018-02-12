@@ -54,9 +54,9 @@ class BlameTest: XTTest
     let headSHA = repository.headSHA!
     let headCommit = XTCommit(sha: headSHA, repository: repository)!
     let headOID = GitOID(sha: headSHA)!
-    let commitModel = CommitChanges(repository: repository,
+    let commitModel = CommitSelection(repository: repository,
                                     commit: headCommit)
-    let commitBlame = commitModel.blame(for: blameFile, staged: false)!
+    let commitBlame = commitModel.fileList.blame(for: blameFile)!
     let lineStarts = [1, 3, 5, 6]
     let lineCounts = [2, 2, 1, 3]
     
@@ -85,8 +85,8 @@ class BlameTest: XTTest
     
     try! fifthLines.write(toFile: blamePath, atomically: true, encoding: .ascii)
 
-    let stagingModel = StagingChanges(repository: repository)
-    let unstagedBlame = stagingModel.blame(for: blameFile, staged: false)!
+    let stagingModel = StagingSelection(repository: repository)
+    let unstagedBlame = stagingModel.unstagedFilelist.blame(for: blameFile)!
     let unstagedStarts = [1, 2, 3, 5, 6, 8]
     
     XCTAssertEqual(unstagedBlame.hunks.count, 6)
@@ -94,7 +94,7 @@ class BlameTest: XTTest
     XCTAssertTrue(unstagedBlame.hunks.first?.finalLine.oid.isZero ?? false)
     XCTAssertTrue(unstagedBlame.hunks.last?.finalLine.oid.isZero ?? false)
     
-    guard let stagedBlame = stagingModel.blame(for: blameFile, staged: true)
+    guard let stagedBlame = stagingModel.fileList.blame(for: blameFile)
     else {
       XCTFail("can't get staged blame")
       return

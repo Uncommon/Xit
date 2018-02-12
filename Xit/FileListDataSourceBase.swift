@@ -59,7 +59,8 @@ class FileListDataSourceBase: NSObject
   {
     let unstagedColumn = outlineView.tableColumn(withIdentifier: ColumnID.unstaged)
     
-    unstagedColumn?.isHidden = !(repoController.selection is StagedUnstagedSelection)
+    unstagedColumn?.isHidden = !(repoController.selection is
+                                 StagedUnstagedSelection)
   }
 }
 

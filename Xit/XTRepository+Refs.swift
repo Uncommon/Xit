@@ -78,16 +78,6 @@ extension XTRepository: CommitReferencing
     return headRef.map { sha(forRef: $0) } ?? nil
   }
 
-  @objc public var currentBranch: String?
-  {
-    mutex.lock()
-    defer { mutex.unlock() }
-    if cachedBranch == nil {
-      refsChanged()
-    }
-    return cachedBranch
-  }
-
   func calculateCurrentBranch() -> String?
   {
     return headReference?.resolve()?.name.removingPrefix(BranchPrefixes.heads)
@@ -119,21 +109,6 @@ extension XTRepository: CommitReferencing
     else { return nil }
     
     return GitOID(oidPtr: oid)
-  }
-  
-  public func localBranch(named name: String) -> LocalBranch?
-  {
-    return GitLocalBranch(repository: self, name: name)
-  }
-  
-  public func remoteBranch(named name: String, remote: String) -> RemoteBranch?
-  {
-    return GitRemoteBranch(repository: self, name: "\(remote)/\(name)")
-  }
-  
-  public func remoteBranch(named name: String) -> RemoteBranch?
-  {
-    return GitRemoteBranch(repository: self, name: name)
   }
   
   func createBranch(_ name: String) -> Bool
@@ -207,6 +182,34 @@ extension XTRepository: CommitReferencing
   public func reference(named name: String) -> Reference?
   {
     return GitReference(name: name, repository: gitRepo)
+  }
+}
+
+extension XTRepository: Branching
+{
+  @objc public var currentBranch: String?
+  {
+    mutex.lock()
+    defer { mutex.unlock() }
+    if cachedBranch == nil {
+      refsChanged()
+    }
+    return cachedBranch
+  }
+  
+  public func localBranch(named name: String) -> LocalBranch?
+  {
+    return GitLocalBranch(repository: self, name: name)
+  }
+  
+  public func remoteBranch(named name: String, remote: String) -> RemoteBranch?
+  {
+    return GitRemoteBranch(repository: self, name: "\(remote)/\(name)")
+  }
+  
+  public func remoteBranch(named name: String) -> RemoteBranch?
+  {
+    return GitRemoteBranch(repository: self, name: name)
   }
 }
 

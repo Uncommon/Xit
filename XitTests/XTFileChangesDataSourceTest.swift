@@ -5,16 +5,15 @@ class XTFileChangesDataSourceTest: XTTest
 {
   func testInitialCommit()
   {
-    let repoController = FakeRepoController()
-    let dataSource = XTFileChangesDataSource()
+    let repoController = FakeRepoController(repository: repository)
+    let dataSource = FileChangesDataSource()
     let outlineView = NSOutlineView()
     let headCommit = XTCommit(sha: repository.headSHA!, repository: repository)!
     
-    repoController.selectedModel = CommitChanges(repository: repository,
+    repoController.selection = CommitSelection(repository: repository,
                                                  commit: headCommit)
     objc_sync_enter(dataSource)
     dataSource.repoController = repoController
-    dataSource.taskQueue = repository.queue
     objc_sync_exit(dataSource)
     outlineView.dataSource = dataSource
     dataSource.reload()

@@ -1,12 +1,10 @@
 import Foundation
 
-//swiftlint:disable colon
-public protocol Repository:
-    CommitStorage, CommitReferencing, FileDiffing, FileContents, FileStaging,
-    Stashing, RemoteManagement, SubmoduleManagement, Branching, FileStatusDetection
+public typealias Repository =
+    CommitStorage & CommitReferencing & FileDiffing & FileContents & FileStaging &
+    Stashing & RemoteManagement & SubmoduleManagement & Branching &
+    FileStatusDetection
     // BranchListing (associated types)
-{
-}
 
 public protocol CommitStorage: class
 {
@@ -122,6 +120,6 @@ public protocol Branching: class
 {
   var currentBranch: String? { get }
   
-  func localBranch(named name: String) -> LocalBranch
-  func remoteBranch(named name: String) -> RemoteBranch
+  func localBranch(named name: String) -> LocalBranch?
+  func remoteBranch(named name: String) -> RemoteBranch?
 }
