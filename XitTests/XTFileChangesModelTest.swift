@@ -71,8 +71,10 @@ class XTFileChangesModelTest: XTTest
     XCTAssertEqual(model.shaToSelect, repository.headSHA)
     
     let changes = model.fileList.changes
+    let unstagedChanges = model.unstagedFilelist.changes
     
-    XCTAssertEqual(changes.count, 3)
+    XCTAssertEqual(changes.count, 1)
+    XCTAssertEqual(unstagedChanges.count, 2)
     
     let addedContent =
         self.string(from: model.fileList.dataForFile(addedName)!)
@@ -105,38 +107,48 @@ class XTFileChangesModelTest: XTTest
   func testStaging()
   {
     let model = StagingSelection(repository: repository)
-    var changes = model.fileList.changes
+    var changes = model.unstagedFilelist.changes
+    
+    XCTAssertEqual(changes.count, 0)
+    
+    self.writeText(toFile1: "change")
+    changes = model.unstagedFilelist.changes
+    XCTAssertEqual(changes.count, 1)
+    
     guard !changes.isEmpty
     else {
       XCTFail("empty changes")
       return
     }
-    
-    XCTAssertEqual(changes.count, 0)
-    
-    self.writeText(toFile1: "change")
-    changes = model.fileList.changes
-    XCTAssertEqual(changes.count, 1)
-    
     var change = changes[0]
     
     XCTAssertEqual(change.path, file1Name)
-    XCTAssertEqual(change.unstagedChange, DeltaStatus.modified)
+    XCTAssertEqual(change.change, DeltaStatus.modified)
     
     self.writeText("new", toFile: addedName)
-    changes = model.fileList.changes
+    changes = model.unstagedFilelist.changes
     XCTAssertEqual(changes.count, 2)
+    guard !changes.isEmpty
+    else {
+      XCTFail("empty changes")
+      return
+    }
     change = changes[0] // "added" will be sorted to the top
     XCTAssertEqual(change.path, addedName)
-    XCTAssertEqual(change.unstagedChange, DeltaStatus.untracked)
+    XCTAssertEqual(change.change, DeltaStatus.untracked)
     
-    try! repository.stage(file: addedName)
+    XCTAssertNoThrow(try repository.stage(file: addedName))
+    XCTAssertEqual(model.unstagedFilelist.changes.count, 1)
     changes = model.fileList.changes
-    XCTAssertEqual(changes.count, 2)
+    XCTAssertEqual(changes.count, 1)
+    guard !changes.isEmpty
+    else {
+      XCTFail("empty changes")
+      return
+    }
     change = changes[0]
     XCTAssertEqual(change.path, addedName)
     XCTAssertEqual(change.change, DeltaStatus.added)
-    XCTAssertEqual(change.unstagedChange, DeltaStatus.unmodified)
   }
   
   func testStagingTreeSimple()

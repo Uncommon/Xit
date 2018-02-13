@@ -94,6 +94,7 @@ extension XTRepository: FileStatusDetection
     return result
   }
 
+  // TODO: use statusChanges instead
   func stagingChanges() -> [FileChange]
   {
     var result = [FileStagingChange]()
@@ -118,12 +119,16 @@ extension XTRepository: FileStatusDetection
   func statusChanges(_ show: StatusShow) -> [FileChange]
   {
     guard let statusList = GitStatusList(repository: gitRepo, show: show,
-                                         options: [])
+                                         options: [.includeUntracked,
+                                                   .recurseUntrackedDirs])
     else { return [] }
     
     return statusList.flatMap {
-      entry in entry.indexToWorkdir.map { FileChange(path: $0.newFile.filePath,
-                                                     change: $0.deltaStatus) }
+      (entry) in
+      let delta = (show == .indexOnly) ? entry.headToIndex : entry.indexToWorkdir
+      
+      return delta.map { FileChange(path: $0.newFile.filePath,
+                                    change: $0.deltaStatus) }
     }
   }
   

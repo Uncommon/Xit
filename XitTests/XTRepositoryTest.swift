@@ -415,26 +415,20 @@ class XTRepositoryTest: XTTest
     try! "blah".write(toFile: file3Path, atomically: true, encoding: .utf8)
     try! repository.stageAllFiles()
     
-    var changes = repository.changes(for: XTStagingSHA, parent: nil)
+    var changes = repository.statusChanges(.indexOnly)
     
     XCTAssertEqual(changes.count, 3);
-    XCTAssertEqual(changes[0].unstagedChange, DeltaStatus.unmodified); // file1
     XCTAssertEqual(changes[0].change, DeltaStatus.modified);
-    XCTAssertEqual(changes[1].unstagedChange, DeltaStatus.unmodified); // file2
     XCTAssertEqual(changes[1].change, DeltaStatus.deleted);
-    XCTAssertEqual(changes[2].unstagedChange, DeltaStatus.unmodified); // file3
     XCTAssertEqual(changes[2].change, DeltaStatus.added);
     
     try! repository.unstageAllFiles()
-    changes = repository.changes(for: XTStagingSHA, parent: nil)
+    changes = repository.statusChanges(.workdirOnly)
     
     XCTAssertEqual(changes.count, 3);
-    XCTAssertEqual(changes[0].unstagedChange, DeltaStatus.modified); // file1
-    XCTAssertEqual(changes[0].change, DeltaStatus.unmodified);
-    XCTAssertEqual(changes[1].unstagedChange, DeltaStatus.deleted); // file2
-    XCTAssertEqual(changes[1].change, DeltaStatus.unmodified);
-    XCTAssertEqual(changes[2].unstagedChange, DeltaStatus.untracked); // file3
-    XCTAssertEqual(changes[2].change, DeltaStatus.unmodified);
+    XCTAssertEqual(changes[0].change, DeltaStatus.modified);
+    XCTAssertEqual(changes[1].change, DeltaStatus.deleted);
+    XCTAssertEqual(changes[2].change, DeltaStatus.untracked);
   }
 
   func checkDeletedDiff(_ diffResult: PatchMaker.PatchResult?)
