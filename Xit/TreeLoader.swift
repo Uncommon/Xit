@@ -33,11 +33,11 @@ public struct TreeLoader
         if entry.type == .tree {
           guard let entryTree = entry.object as? Tree
           else { continue }
-          let oldNode = oldTree?.children?.first {
+          let oldNode = oldTree?.children?.first(where: {
             (node) in
             (node.representedObject as? CommitTreeItem)?
                 .path.lastPathComponent == entry.name
-          }
+          })
           
           result.mutableChildren.add(treeNode(path: entryPath, tree: entryTree,
                                               oldTree: oldNode))
