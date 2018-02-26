@@ -198,11 +198,11 @@ extension FileListModel
   }
 
   /// Adds the contents of one tree into another
-  func add(_ srcTree: NSTreeNode, to destTree: inout NSTreeNode)
+  func add(_ srcTree: NSTreeNode, to destTree: inout NSTreeNode,
+           status: DeltaStatus)
   {
-    guard let srcNodes = srcTree.children
-    else { return }
-    guard let destNodes = destTree.children
+    guard let srcNodes = srcTree.children,
+          let destNodes = destTree.children
     else { return }
     
     var srcIndex = 0, destIndex = 0
@@ -214,9 +214,8 @@ extension FileListModel
       
       if destItem.path != srcItem.path {
         // NSTreeNode can't be in two trees, so make a new one.
-        let newNode = NSTreeNode(representedObject:
-            FileChange(path: srcItem.path,
-                       change: .unmodified))
+        let newChange = FileChange(path: srcItem.path, change: status)
+        let newNode = NSTreeNode(representedObject: newChange)
         
         newNode.mutableChildren.addObjects(from: srcNodes[srcIndex].children!)
         addedNodes.append(newNode)

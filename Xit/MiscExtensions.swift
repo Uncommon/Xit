@@ -306,7 +306,7 @@ extension NSValidatedUserInterfaceItem
   var isContextMenuItem: Bool
   {
     guard let item = self as? NSMenuItem
-      else { return false }
+    else { return false }
     
     return item.parent == nil
   }

@@ -170,9 +170,9 @@ class XTFileChangesModelTest: XTTest
     
     guard let headSHA = repository.headSHA,
           let headCommit = XTCommit(sha: headSHA, repository: repository)
-      else {
-        XCTFail("no head")
-        return
+    else {
+      XCTFail("no head")
+      return
     }
     let model = CommitSelection(repository: repository,
                               commit: headCommit)
@@ -210,24 +210,35 @@ class XTFileChangesModelTest: XTTest
       return
     }
     
-    XCTAssertEqual(children.count, 4)
+    XCTAssertEqual(children.count, 3)
     
-    let expectedPaths =
-        [addedName,   deletedName, file1Name,   untrackedName]
-    let expectedChanges: [DeltaStatus] =
-        [.added,      .deleted,    .unmodified, .unmodified]
-    let expectedUnstaged: [DeltaStatus] =
-        [.unmodified, .unmodified, .modified,   .untracked]
+    typealias ExpectedItem = (name: String, change: DeltaStatus)
+    let expectedItems: [ExpectedItem] = [(name: addedName, change: .added),
+                                         (name: deletedName, change: .deleted),
+                                         (name: file1Name, change: .unmodified)]
     
-    for i in 0..<min(4, children.count) {
-      let item = children[i].representedObject as! FileChange
+    for pair in zip(children, expectedItems) {
+      guard let item = pair.0.representedObject as? FileChange
+      else {
+        XCTFail("wrong object type")
+        continue
+      }
       
-      XCTAssertEqual(item.path, expectedPaths[i])
-      XCTAssertEqual(item.change, expectedChanges[i],
-          "\(item.path) change: \(item.change.rawValue)")
-      XCTAssertEqual(item.unstagedChange, expectedUnstaged[i],
-          "\(item.path) unstaged: \(item.unstagedChange.rawValue)")
+      XCTAssertEqual(item.path, pair.1.name)
+      XCTAssertEqual(item.change, pair.1.change)
     }
+    
+    let unstagedTree = model.unstagedFilelist.treeRoot(oldTree: nil)
+    guard let unstagedChildren = unstagedTree.children,
+          unstagedChildren.count == 4,
+          let item = unstagedChildren[3].representedObject as? FileChange
+    else {
+      XCTFail("no children or wrong count")
+      return
+    }
+
+    XCTAssertEqual(item.path, untrackedName)
+    XCTAssertEqual(item.change, .untracked)
   }
   
   // Checks that the results are the same whether you generate a tree from

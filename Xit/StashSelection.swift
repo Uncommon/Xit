@@ -127,7 +127,7 @@ class StashUnstagedList: StashFileList, FileListModel
     if let untrackedList = self.untrackedList {
       let untrackedRoot = untrackedList.treeRoot(oldTree: oldTree)
     
-      add(untrackedRoot, to: &mainRoot)
+      add(untrackedRoot, to: &mainRoot, status: .untracked)
     }
     return mainRoot
   }
