@@ -196,7 +196,8 @@ class XTTagItem: XTSideBarItem
     // to make sense to have a repository property in the Tag protocol.
     if let commit = tag.commit,
        let xtTag = tag as? GitTag {
-      self.selection = CommitSelection(repository: xtTag.repository, commit: commit)
+      self.selection = CommitSelection(repository: xtTag.repository,
+                                       commit: commit)
     }
   }
 }

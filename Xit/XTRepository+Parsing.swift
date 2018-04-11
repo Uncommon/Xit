@@ -123,7 +123,7 @@ extension XTRepository: FileStatusDetection
                                                    .recurseUntrackedDirs])
     else { return [] }
     
-    return statusList.flatMap {
+    return statusList.compactMap {
       (entry) in
       let delta = (show == .indexOnly) ? entry.headToIndex : entry.indexToWorkdir
       

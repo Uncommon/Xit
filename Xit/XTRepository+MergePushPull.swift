@@ -208,7 +208,7 @@ extension XTRepository
         throw Error.conflict
       }
       else {
-        let parents = [targetCommit, fromCommit].flatMap
+        let parents = [targetCommit, fromCommit].compactMap
           { GTCommit(obj: $0.commit, in: gtRepo) }
         let tree = try index.writeTree()
         

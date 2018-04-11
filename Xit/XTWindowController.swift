@@ -20,7 +20,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   weak var xtDocument: XTDocument?
   var titleBarController: TitleBarViewController?
   var refsChangedObserver: NSObjectProtocol?
-  var repository: Repository { return xtDocument?.repository as! Repository }
+  var repository: Repository { return (xtDocument?.repository as Repository?)! }
   var queue: TaskQueue { return xtDocument!.repository.queue }
   var selection: RepositorySelection?
   {
@@ -180,7 +180,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     else { return }
     
     titleBarController?.updateBranchList(
-        repo.localBranches().flatMap { $0.shortName },
+        repo.localBranches().compactMap { $0.shortName },
         current: repo.currentBranch)
   }
   

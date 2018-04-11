@@ -80,6 +80,7 @@ extension Date
   
   func toGitTime() -> git_time
   {
-    return git_time(time: git_time_t(timeIntervalSince1970), offset: 0)
+    return git_time(time: git_time_t(timeIntervalSince1970), offset: 0,
+                    sign: "+".utf8CString[0])
   }
 }

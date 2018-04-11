@@ -38,7 +38,7 @@ extension Commit
 {
   public var parentSHAs: [String]
   {
-    return parentOIDs.flatMap { $0.sha }
+    return parentOIDs.compactMap { $0.sha }
   }
   
   public var messageSummary: String
