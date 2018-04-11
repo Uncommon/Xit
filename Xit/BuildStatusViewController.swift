@@ -74,7 +74,7 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
       guard !roots.isEmpty
       else { continue }
       
-      let matchNames = roots.flatMap
+      let matchNames = roots.compactMap
           { api.vcsBranchSpecs[$0]?.match(branch: branchName) }
       guard let match = matchNames.reduce(nil, {
         (shortest, name) -> String? in

@@ -123,7 +123,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
     else { return nil }
     
     let accounts = XTAccountsManager.manager.accounts(ofType: .teamCity)
-    let services = accounts.flatMap({ Services.shared.teamCityAPI($0) })
+    let services = accounts.compactMap({ Services.shared.teamCityAPI($0) })
     
     for service in services {
       let buildTypes = service.buildTypesForRemote(remoteURL)
@@ -267,7 +267,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
     
     init?(ruleStrings: [String])
     {
-      self.rules = ruleStrings.flatMap { Rule(content: $0) }
+      self.rules = ruleStrings.compactMap { Rule(content: $0) }
       if self.rules.count == 0 {
         return nil
       }
@@ -311,7 +311,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
     guard let urls = buildTypeURLs[buildType]
     else { return [] }
     
-    return vcsRootMap.flatMap {
+    return vcsRootMap.compactMap {
       (vcsRoot, rootURL) in
       return urls.contains(rootURL) ? vcsRoot : nil
     }

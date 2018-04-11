@@ -178,7 +178,7 @@ extension WebViewController: WebUIDelegate
                contextMenuItemsForElement element: [AnyHashable: Any]!,
                defaultMenuItems: [Any]!) -> [Any]!
   {
-    return defaultMenuItems.flatMap {
+    return defaultMenuItems.compactMap {
       (item) in
       guard let menuItem = item as? NSMenuItem
       else { return nil }

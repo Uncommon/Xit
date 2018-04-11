@@ -58,7 +58,7 @@ extension XTRepository: CommitReferencing
     else { return [] }
     defer { git_strarray_free(&stringArray) }
     
-    return stringArray.flatMap { $0 }
+    return stringArray.compactMap { $0 }
   }
 
   public var headRef: String?
@@ -182,7 +182,7 @@ extension XTRepository: CommitReferencing
     guard git_remote_list(strArray, gitRepo) == 0
     else { return [] }
     
-    return strArray.pointee.flatMap { $0 }
+    return strArray.pointee.compactMap { $0 }
   }
   
   public func stashes() -> Stashes
@@ -199,7 +199,7 @@ extension XTRepository: CommitReferencing
     try Error.throwIfError(result)
     defer { git_strarray_free(tagNames) }
     
-    return tagNames.pointee.flatMap {
+    return tagNames.pointee.compactMap {
       name in name.flatMap { GitTag(repository: self, name: $0) }
     }
   }

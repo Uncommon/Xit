@@ -180,7 +180,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     else { return }
     
     titleBarController?.updateBranchList(
-        repo.localBranches().flatMap { $0.shortName },
+        repo.localBranches().compactMap { $0.shortName },
         current: repo.currentBranch)
   }
   

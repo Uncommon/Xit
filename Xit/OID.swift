@@ -63,7 +63,7 @@ public struct GitOID: OID, Hashable, Equatable
     
     let oidPtr = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
     defer {
-      oidPtr.deallocate(capacity: 1)
+      oidPtr.deallocate()
     }
     
     guard git_oid_fromstr(oidPtr, sha) == GIT_OK.rawValue
