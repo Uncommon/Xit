@@ -318,9 +318,9 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func windowWillClose(_ notification: Notification)
   {
-    titleBarController?.titleLabel.unbind(NSBindingName(rawValue: "value"))
-    titleBarController?.proxyIcon.unbind(NSBindingName(rawValue: "hidden"))
-    titleBarController?.spinner.unbind(NSBindingName(rawValue: "hidden"))
+    titleBarController?.titleLabel.unbind(◊"value")
+    titleBarController?.proxyIcon.unbind(◊"hidden")
+    titleBarController?.spinner.unbind(◊"hidden")
     // For some reason this avoids a crash
     window?.makeFirstResponder(nil)
   }

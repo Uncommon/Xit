@@ -48,8 +48,8 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
 {
   struct CellID
   {
-    static let header = NSUserInterfaceItemIdentifier(rawValue: "HeaderCell")
-    static let data = NSUserInterfaceItemIdentifier(rawValue: "DataCell")
+    static let header = ¶"HeaderCell"
+    static let data = ¶"DataCell"
   }
   
   public func outlineViewSelectionDidChange(_ notification: Notification)

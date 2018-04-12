@@ -195,10 +195,10 @@ extension XTAccountsPrefsController: NSTableViewDelegate
 {
   struct ColumnID
   {
-    static let service = NSUserInterfaceItemIdentifier(rawValue: "service")
-    static let userName = NSUserInterfaceItemIdentifier(rawValue: "userName")
-    static let location = NSUserInterfaceItemIdentifier(rawValue: "location")
-    static let status = NSUserInterfaceItemIdentifier(rawValue: "status")
+    static let service = ¶"service"
+    static let userName = ¶"userName"
+    static let location = ¶"location"
+    static let status = ¶"status"
   }
   
   func statusImage(forAPI api: TeamCityAPI) -> NSImage?

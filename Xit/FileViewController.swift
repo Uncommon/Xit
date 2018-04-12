@@ -7,19 +7,19 @@ class FileViewController: NSViewController
   /// Column identifiers for the file list
   struct ColumnID
   {
-    static let main = NSUserInterfaceItemIdentifier(rawValue: "main")
-    static let staged = NSUserInterfaceItemIdentifier(rawValue: "change")
-    static let unstaged = NSUserInterfaceItemIdentifier(rawValue: "unstaged")
-    static let hidden = NSUserInterfaceItemIdentifier(rawValue: "hidden")
+    static let main = ¶"main"
+    static let staged = ¶"change"
+    static let unstaged = ¶"unstaged"
+    static let hidden = ¶"hidden"
   }
   
   /// Table cell view identifiers for the file list
   struct CellViewID
   {
-    static let fileCell = NSUserInterfaceItemIdentifier(rawValue: "fileCell")
-    static let change = NSUserInterfaceItemIdentifier(rawValue: "change")
-    static let staged = NSUserInterfaceItemIdentifier(rawValue: "staged")
-    static let unstaged = NSUserInterfaceItemIdentifier(rawValue: "unstaged")
+    static let fileCell = ¶"fileCell"
+    static let change = ¶"change"
+    static let staged = ¶"staged"
+    static let unstaged = ¶"unstaged"
   }
   
   /// Preview tab identifiers
@@ -192,7 +192,7 @@ class FileViewController: NSViewController
     }
     
     commitEntryController = XTCommitEntryController(
-        nibName: NSNib.Name(rawValue: "XTCommitEntryController"), bundle: nil)
+        nibName: ◊"XTCommitEntryController", bundle: nil)
     if repo != nil {
       commitEntryController.repo = repo
     }

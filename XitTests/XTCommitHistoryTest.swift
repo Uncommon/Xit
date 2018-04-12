@@ -124,7 +124,7 @@ class XTCommitHistoryTest: XCTestCase
     history.repository = repository
     
     if let heads = heads {
-      let headCommits = heads.flatMap { history.repository.commit(forSHA: $0) }
+      let headCommits = heads.compactMap { history.repository.commit(forSHA: $0) }
       guard headCommits.count == heads.count
       else {
         XCTFail("can't get head commits")

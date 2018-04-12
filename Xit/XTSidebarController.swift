@@ -199,8 +199,7 @@ class XTSidebarController: NSViewController, SidebarHandler
     sidebarOutline.floatsGroupRows = false
   
     if branchContextMenu == nil,
-       let menuNib = NSNib(nibNamed: NSNib.Name(rawValue: "HistoryView Menus"),
-                           bundle: nil) {
+       let menuNib = NSNib(nibNamed: ◊"HistoryView Menus", bundle: nil) {
       menuNib.instantiate(withOwner: self, topLevelObjects: nil)
     }
     

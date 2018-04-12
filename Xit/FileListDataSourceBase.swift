@@ -10,7 +10,7 @@ class FileListDataSourceBase: NSObject
   
   struct ColumnID
   {
-    static let unstaged = NSUserInterfaceItemIdentifier(rawValue: "unstaged")
+    static let unstaged = ¶"unstaged"
   }
   
   weak var repoController: RepositoryController!

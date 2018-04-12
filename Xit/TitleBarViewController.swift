@@ -17,7 +17,7 @@ protocol TitleBarDelegate: class
 
 extension Notification.Name
 {
-  static let XTProgress = Notification.Name(rawValue: "XTProgress")
+  static let XTProgress: Notification.Name = ◊"XTProgress"
 }
 
 extension Notification

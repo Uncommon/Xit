@@ -14,12 +14,12 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
   
   struct NibName
   {
-    static let buildStatus = NSNib.Name(rawValue: "BuildStatusViewController")
+    static let buildStatus: NSNib.Name = ◊"BuildStatusViewController"
   }
   
   struct CellID
   {
-    static let build = NSUserInterfaceItemIdentifier(rawValue: "BuildCell")
+    static let build = ¶"BuildCell"
   }
 
   init(repository: RemoteManagement, branch: Branch,

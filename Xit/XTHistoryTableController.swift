@@ -6,9 +6,9 @@ public class XTHistoryTableController: NSViewController
 {
   struct ColumnID
   {
-    static let commit = NSUserInterfaceItemIdentifier(rawValue: "commit")
-    static let date = NSUserInterfaceItemIdentifier(rawValue: "date")
-    static let name = NSUserInterfaceItemIdentifier(rawValue: "name")
+    static let commit = ¶"commit"
+    static let date = ¶"date"
+    static let name = ¶"name"
   }
   
   let observers = ObserverCollection()

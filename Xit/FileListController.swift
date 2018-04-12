@@ -6,9 +6,9 @@ class FileListController: NSViewController
 {
   struct ColumnID
   {
-    static let action = NSUserInterfaceItemIdentifier("action")
-    static let file = NSUserInterfaceItemIdentifier("file")
-    static let status = NSUserInterfaceItemIdentifier("status")
+    static let action = ¶"action"
+    static let file = ¶"file"
+    static let status = ¶"status"
   }
   
   @IBOutlet weak var listTypeIcon: NSImageView!
@@ -45,7 +45,7 @@ class FileListController: NSViewController
     
     super.init(nibName: nil, bundle: nil)
     
-    let nib = NSNib(nibNamed: NSNib.Name(rawValue: "FileListView"), bundle: nil)
+    let nib = NSNib(nibNamed: ◊"FileListView", bundle: nil)
     var objects: NSArray?
     
     nib?.instantiate(withOwner: self, topLevelObjects: &objects)
