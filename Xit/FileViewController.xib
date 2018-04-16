@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14109" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
-        <plugIn identifier="com.apple.WebKitIBPlugin" version="13771"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14109"/>
+        <plugIn identifier="com.apple.WebKitIBPlugin" version="14109"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -11,9 +11,8 @@
             <connections>
                 <outlet property="blameController" destination="qWY-M6-3vs" id="73d-3e-UiG"/>
                 <outlet property="diffController" destination="fX5-fH-Hy5" id="nP0-l5-ngF"/>
-                <outlet property="fileListStagedView" destination="NmS-X6-R7x" id="q2C-FH-Jrg"/>
+                <outlet property="fileListSplitView" destination="sXs-6V-dre" id="Dzk-zf-LON"/>
                 <outlet property="fileListTabView" destination="mLX-BC-uMS" id="MU0-p1-o18"/>
-                <outlet property="fileListWorkspaceView" destination="1cF-PF-Imi" id="ekF-ch-q1u"/>
                 <outlet property="filePreview" destination="4" id="13f-0N-ema"/>
                 <outlet property="fileSplitView" destination="PgV-aZ-kTu" id="6W5-Vn-aRM"/>
                 <outlet property="headerController" destination="67" id="iWn-HL-Kjl"/>
@@ -87,20 +86,6 @@
                                             <splitView fixedFrame="YES" arrangesAllSubviews="NO" dividerStyle="thin" translatesAutoresizingMaskIntoConstraints="NO" id="sXs-6V-dre">
                                                 <rect key="frame" x="0.0" y="0.0" width="163" height="210"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <subviews>
-                                                    <customView fixedFrame="YES" id="NmS-X6-R7x">
-                                                        <rect key="frame" x="0.0" y="0.0" width="163" height="102"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                    </customView>
-                                                    <customView fixedFrame="YES" id="1cF-PF-Imi">
-                                                        <rect key="frame" x="0.0" y="103" width="163" height="107"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                    </customView>
-                                                </subviews>
-                                                <holdingPriorities>
-                                                    <real value="250"/>
-                                                    <real value="250"/>
-                                                </holdingPriorities>
                                             </splitView>
                                         </subviews>
                                     </view>
@@ -135,7 +120,7 @@
                                             <segment toolTip="Text view" image="textTemplate" width="37">
                                                 <nil key="label"/>
                                             </segment>
-                                            <segment toolTip="QuickLook preview" image="NSQuickLookTemplate">
+                                            <segment toolTip="QuickLook preview" image="NSQuickLookTemplate" enabled="NO">
                                                 <nil key="label"/>
                                             </segment>
                                         </segments>
@@ -150,12 +135,12 @@
                                     <font key="font" metaFont="system"/>
                                     <tabViewItems>
                                         <tabViewItem label="Diff" identifier="diff" id="A2f-Wf-RNT">
-                                            <view key="view" ambiguous="YES" id="uQh-Df-4fp">
+                                            <view key="view" id="uQh-Df-4fp">
                                                 <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <webView ambiguous="YES" maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e4U-lz-eEd">
-                                                        <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
+                                                    <webView maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e4U-lz-eEd">
+                                                        <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
                                                         <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
                                                             <nil key="identifier"/>
                                                         </webPreferences>
@@ -175,18 +160,18 @@
                                         </tabViewItem>
                                         <tabViewItem label="Blame" identifier="blame" id="JF7-NN-dRq">
                                             <view key="view" id="xj3-cf-mv8">
-                                                <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <progressIndicator hidden="YES" wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="2Oq-sY-aab">
-                                                        <rect key="frame" x="156" y="68" width="32" height="32"/>
+                                                        <rect key="frame" x="254" y="68" width="32" height="32"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="32" id="E9y-K2-scC"/>
                                                             <constraint firstAttribute="width" constant="32" id="c1v-M7-HvR"/>
                                                         </constraints>
                                                     </progressIndicator>
                                                     <webView maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jwZ-U5-r8o">
-                                                        <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
                                                         <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
                                                             <nil key="identifier"/>
                                                         </webPreferences>
@@ -208,11 +193,11 @@
                                         </tabViewItem>
                                         <tabViewItem label="Text" identifier="text" id="53">
                                             <view key="view" id="56">
-                                                <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <webView maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="57">
-                                                        <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
                                                         <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
                                                             <nil key="identifier"/>
                                                         </webPreferences>
@@ -231,19 +216,19 @@
                                             </view>
                                         </tabViewItem>
                                         <tabViewItem label="Preview" identifier="preview" id="54">
-                                            <view key="view" id="55">
-                                                <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
+                                            <view key="view" ambiguous="YES" id="55">
+                                                <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="4" customClass="QLPreviewView">
+                                                    <customView ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4" customClass="QLPreviewView">
                                                         <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
                                                     </customView>
                                                 </subviews>
                                                 <constraints>
-                                                    <constraint firstAttribute="trailing" secondItem="4" secondAttribute="trailing" id="Af5-zp-I7V"/>
-                                                    <constraint firstItem="4" firstAttribute="top" secondItem="55" secondAttribute="top" id="M1V-OM-UaW"/>
-                                                    <constraint firstItem="4" firstAttribute="leading" secondItem="55" secondAttribute="leading" id="XKp-h8-Vg3"/>
-                                                    <constraint firstAttribute="bottom" secondItem="4" secondAttribute="bottom" id="dmW-Uu-rMX"/>
+                                                    <constraint firstItem="4" firstAttribute="top" secondItem="55" secondAttribute="top" id="0Nr-Nr-jQz"/>
+                                                    <constraint firstItem="4" firstAttribute="leading" secondItem="55" secondAttribute="leading" id="8Ta-b4-nqs"/>
+                                                    <constraint firstAttribute="trailing" secondItem="4" secondAttribute="trailing" id="JYS-dN-fXb"/>
+                                                    <constraint firstAttribute="bottom" secondItem="4" secondAttribute="bottom" id="LWP-ub-1fa"/>
                                                 </constraints>
                                             </view>
                                         </tabViewItem>

@@ -11,12 +11,13 @@ extension XTPreviewController: XTFileContentController
 {
   public func clear()
   {
-    (view as! QLPreviewView).previewItem = nil
+    //(view as! QLPreviewView).previewItem = nil
     isLoaded = false
   }
   
   public func load(path: String!, selection: RepositorySelection!, staged: Bool)
   {
+    return // TODO: fix preview
     let previewView = view as! QLPreviewView
   
     if staged {

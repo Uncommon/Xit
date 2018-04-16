@@ -47,6 +47,7 @@ class FileViewController: NSViewController
   
   @IBOutlet weak var headerSplitView: NSSplitView!
   @IBOutlet weak var fileSplitView: NSSplitView!
+  @IBOutlet weak var fileListSplitView: NSSplitView!
   @IBOutlet weak var fileListTabView: NSTabView!
   @IBOutlet weak var fileListStagedView: NSView!
   @IBOutlet weak var fileListWorkspaceView: NSView!
@@ -167,8 +168,14 @@ class FileViewController: NSViewController
     }
     headerController.repository = repository
     commitEntryController.repo = repository
-    activeFileList = fileListTabView.tabViewItem(at: 0).view!.subviews[0]
-        as! NSOutlineView
+    
+    let commitTabItem = fileListTabView.tabViewItem(at: 0)
+    
+    commitListController.loadView()
+    commitTabItem.viewController = commitListController
+    fileListSplitView.addSubview(stagedListController.view)
+    fileListSplitView.addSubview(workspaceListController.view)
+    activeFileList = commitListController.outlineView
   }
   
   override func loadView()
@@ -196,6 +203,7 @@ class FileViewController: NSViewController
     if repo != nil {
       commitEntryController.repo = repo
     }
+    
     headerTabView.tabViewItems[1].view = commitEntryController.view
     previewPath.setPathComponentCells([])
     diffController.stagingDelegate = self
@@ -232,7 +240,7 @@ class FileViewController: NSViewController
   func refreshPreview()
   {
     loadSelectedPreview(force: true)
-    filePreview.refreshPreviewItem()
+    //filePreview.refreshPreviewItem()
   }
   
   func updatePreviewPath(_ path: String, isFolder: Bool)

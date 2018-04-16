@@ -43,13 +43,8 @@ class FileListController: NSViewController
     self.fileListDataSource = FileChangesDataSource()
     self.fileTreeDataSource = FileTreeDataSource()
     
-    super.init(nibName: nil, bundle: nil)
+    super.init(nibName: ◊"FileListView", bundle: nil)
     
-    let nib = NSNib(nibNamed: ◊"FileListView", bundle: nil)
-    var objects: NSArray?
-    
-    nib?.instantiate(withOwner: self, topLevelObjects: &objects)
-
     viewDataSource = fileListDataSource
   }
   
