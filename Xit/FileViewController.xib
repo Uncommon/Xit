@@ -83,8 +83,8 @@
                                         <rect key="frame" x="0.0" y="0.0" width="163" height="210"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
-                                            <splitView fixedFrame="YES" arrangesAllSubviews="NO" dividerStyle="thin" translatesAutoresizingMaskIntoConstraints="NO" id="sXs-6V-dre">
-                                                <rect key="frame" x="0.0" y="0.0" width="163" height="210"/>
+                                            <splitView fixedFrame="YES" dividerStyle="thin" translatesAutoresizingMaskIntoConstraints="NO" id="sXs-6V-dre">
+                                                <rect key="frame" x="-1" y="0.0" width="164" height="210"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             </splitView>
                                         </subviews>
