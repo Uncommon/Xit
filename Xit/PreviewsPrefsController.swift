@@ -37,8 +37,7 @@ class PreviewsPrefsController: NSViewController
         fontField.stringValue = ""
       }
       saveFont()
-      NotificationCenter.default.post(name: NSNotification.Name.XTFontChanged,
-                                      object: nil)
+      NotificationCenter.default.post(name: .XTFontChanged, object: nil)
     }
   }
 

@@ -30,8 +30,8 @@ class XTPullController: XTFetchController
                                               progressBlock: self.shouldStop)
       
       try repository.pull(branch: branch, remote: remote, options: options)
-      NotificationCenter.default.post(
-          name: NSNotification.Name.XTRepositoryRefsChanged, object: repository)
+      NotificationCenter.default.post(name: .XTRepositoryRefsChanged,
+                                      object: repository)
       self.ended()
     }
   }

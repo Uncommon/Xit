@@ -214,7 +214,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
             currentBranch.trackingBranchName == remoteBranchItem.remote + "/" +
                                                 remoteBranchItem.title {
       let rowView = SidebarCheckedRowView(
-              imageName: NSImage.Name.rightFacingTriangleTemplate,
+              imageName: .rightFacingTriangleTemplate,
               toolTip: "The active branch is tracking this remote branch")
       
       return rowView

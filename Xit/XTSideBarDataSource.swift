@@ -133,10 +133,9 @@ class XTSideBarDataSource: NSObject
         self?.buildStatusCache.refresh()
       }
     }
-    observers.addObserver(
-        forName: NSNotification.Name.XTTeamCityStatusChanged,
-        object: nil,
-        queue: .main) {
+    observers.addObserver(forName: .XTTeamCityStatusChanged,
+                          object: nil,
+                          queue: .main) {
       [weak self] _ in
       self?.buildStatusCache.refresh()
     }

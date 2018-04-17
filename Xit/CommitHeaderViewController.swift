@@ -229,7 +229,7 @@ class CommitHeaderActionDelegate: NSObject
     let newHeight = controller.headerHeight()
     let userInfo = [CommitHeaderViewController.headerHeightKey: newHeight]
     
-    NotificationCenter.default.post(name: Notification.Name.XTHeaderResized,
+    NotificationCenter.default.post(name: .XTHeaderResized,
                                     object: controller,
                                     userInfo: userInfo)
   }

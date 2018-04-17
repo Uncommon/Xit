@@ -30,9 +30,8 @@ public class XTHistoryTableController: NSViewController
       table.intercellSpacing = spacing
 
       loadHistory()
-      observers.addObserver(
-          forName: NSNotification.Name.XTRepositoryRefsChanged,
-          object: repository, queue: .main) {
+      observers.addObserver(forName: .XTRepositoryRefsChanged,
+                            object: repository, queue: .main) {
         [weak self] _ in
         // To do: dynamic updating
         // - new and changed refs: add if they're not already in the list
@@ -41,9 +40,8 @@ public class XTHistoryTableController: NSViewController
         // For now: just reload
         self?.reload()
       }
-      observers.addObserver(
-          forName: NSNotification.Name.XTReselectModel,
-          object: repository, queue: .main) {
+      observers.addObserver(forName: .XTReselectModel,
+                            object: repository, queue: .main) {
         [weak self] _ in
         guard let tableView = self?.view as? NSTableView,
               let selectedIndex = tableView.selectedRowIndexes.first

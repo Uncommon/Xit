@@ -62,8 +62,8 @@ class XTPushController: XTPasswordOpController
                           remote: remote,
                           passwordBlock: self.getPassword,
                           progressBlock: self.shouldStop)
-      NotificationCenter.default.post(
-          name: NSNotification.Name.XTRepositoryRefsChanged, object: repository)
+      NotificationCenter.default.post(name: .XTRepositoryRefsChanged,
+                                      object: repository)
       self.ended()
     }
   }

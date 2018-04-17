@@ -43,8 +43,8 @@ class XTNewTagController: XTOperationController
       else {
         try? repository.createLightweightTag(name: name, targetOID: oid)
       }
-      NotificationCenter.default.post(
-          name: NSNotification.Name.XTRepositoryRefsChanged, object: repository)
+      NotificationCenter.default.post(name: .XTRepositoryRefsChanged,
+                                      object: repository)
       self.ended()
     }
   }

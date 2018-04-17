@@ -253,7 +253,7 @@ class FileViewController: NSViewController
       cell.title = component
       cell.image = !isFolder && (index == components.count - 1)
           ? workspace.icon(forFileType: (component as NSString).pathExtension)
-          : NSImage(named: NSImage.Name.folder)
+          : NSImage(named: .folder)
       
       return cell
     }

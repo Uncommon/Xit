@@ -49,10 +49,9 @@ class WorkspaceWatcher: NSObject
     }
   
     DispatchQueue.main.async {
-      NotificationCenter.default.post(
-          name: NSNotification.Name.XTRepositoryWorkspaceChanged,
-          object: self.repository,
-          userInfo: userInfo)
+      NotificationCenter.default.post(name: .XTRepositoryWorkspaceChanged,
+                                      object: self.repository,
+                                      userInfo: userInfo)
     }
   }
 }

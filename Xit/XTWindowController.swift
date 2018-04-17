@@ -35,7 +35,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       userInfo[NSKeyValueChangeKey.oldKey] = oldValue
       
       NotificationCenter.default.post(
-          name: NSNotification.Name.XTSelectedModelChanged,
+          name: .XTSelectedModelChanged,
           object: self,
           userInfo: userInfo)
       
@@ -88,7 +88,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     let repo = xtDocument!.repository!
     
     refsChangedObserver = NotificationCenter.default.addObserver(
-        forName: NSNotification.Name.XTRepositoryRefsChanged,
+        forName: .XTRepositoryRefsChanged,
         object: repo, queue: .main) {
       [weak self] _ in
       self?.updateBranchList()

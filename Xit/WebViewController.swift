@@ -32,8 +32,9 @@ class WebViewController: NSViewController
   
   override func awakeFromNib()
   {
-    fontObserver = NotificationCenter.default.addObserver(
-        forName: NSNotification.Name.XTFontChanged, object: nil, queue: .main) {
+    fontObserver = NotificationCenter.default.addObserver(forName: .XTFontChanged,
+                                                          object: nil,
+                                                          queue: .main) {
       [weak self] (_) in
       self?.updateFont()
     }
