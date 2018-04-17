@@ -49,8 +49,6 @@ class FileViewController: NSViewController
   @IBOutlet weak var fileSplitView: NSSplitView!
   @IBOutlet weak var fileListSplitView: NSSplitView!
   @IBOutlet weak var fileListTabView: NSTabView!
-  @IBOutlet weak var fileListStagedView: NSView!
-  @IBOutlet weak var fileListWorkspaceView: NSView!
   @IBOutlet weak var headerTabView: NSTabView!
   @IBOutlet weak var previewTabView: NSTabView!
   @IBOutlet weak var previewPath: NSPathControl!
@@ -101,7 +99,8 @@ class FileViewController: NSViewController
     }
     set
     {
-      fileListTabView.selectTabViewItem(at: 1)
+      fileListTabView.selectTabViewItem(withIdentifier: newValue ?
+          FileListTab.staging : FileListTab.commit)
     }
   }
   
@@ -269,15 +268,8 @@ class FileViewController: NSViewController
           let newModel = controller.selection
     else { return }
     
-    let newIsStaging = newModel is StagedUnstagedSelection
-    let newCanCommit = newModel is StagingSelection
-
-    if showingStaged != newIsStaging {
-      showingStaged = newIsStaging
-    }
-    if isCommitting != newCanCommit {
-      isCommitting = newCanCommit
-    }
+    showingStaged = newModel is StagedUnstagedSelection
+    isCommitting = newModel is StagingSelection
     headerController.commitSHA = newModel.shaToSelect
     clearPreviews()
     refreshPreview()
