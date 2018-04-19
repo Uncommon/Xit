@@ -137,6 +137,19 @@ extension NSView
   }
 }
 
+extension NSOutlineView
+{
+  func columnObject(withIdentifier id: NSUserInterfaceItemIdentifier)
+    -> NSTableColumn?
+  {
+    let index = column(withIdentifier: id)
+    guard index >= 0
+    else { return nil }
+    
+    return tableColumns[index]
+  }
+}
+
 extension NSButton
 {
   /// The intValue property interpreted as a Bool.

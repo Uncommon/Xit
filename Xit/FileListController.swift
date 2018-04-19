@@ -1,7 +1,5 @@
 import Foundation
 
-protocol FileListSub {}
-
 class FileListController: NSViewController
 {
   struct ColumnID
@@ -9,22 +7,44 @@ class FileListController: NSViewController
     static let action = ¶"action"
     static let file = ¶"file"
     static let status = ¶"status"
+    static let hidden = ¶"hidden"
   }
   
+  /// Table cell view identifiers for the file list
+  struct CellViewID
+  {
+    static let action = ¶"action"
+    static let fileCell = ¶"fileCell"
+    static let status = ¶"status"
+  }
+
   @IBOutlet weak var listTypeIcon: NSImageView!
   @IBOutlet weak var listTypeLabel: NSTextField!
   @IBOutlet weak var viewSwitch: NSSegmentedControl!
   @IBOutlet weak var toolbarStack: NSStackView!
+  @IBOutlet weak var actionButton: NSPopUpButton!
   @IBOutlet weak var outlineView: NSOutlineView!
   {
     didSet
     {
       fileListDataSource.outlineView = outlineView
       fileTreeDataSource.outlineView = outlineView
+      outlineView.dataSource = viewDataSource
+      outlineView.delegate = self
+      outlineView.outlineTableColumn =
+          outlineView.columnObject(withIdentifier: ColumnID.hidden)
     }
   }
   
-  var viewDataSource: FileListDataSourceBase!
+  var viewDataSource: (FileListDataSourceBase &
+                       FileListDataSource &
+                       NSOutlineViewDataSource)!
+  {
+    didSet
+    {
+      outlineView?.dataSource = viewDataSource
+    }
+  }
   
   let fileListDataSource: FileChangesDataSource
   let fileTreeDataSource: FileTreeDataSource
@@ -79,6 +99,8 @@ class FileListController: NSViewController
   
   @IBAction func viewSwitched(_ sender: Any)
   {
+    // update the outline column
+    // change the data source and reload
   }
   
   var clickedChange: FileChange?
@@ -93,23 +115,92 @@ class FileListController: NSViewController
     guard let index = outlineView.selectedRowIndexes.first
     else { return nil }
     
-    return (viewDataSource as? FileListDataSource)?.fileChange(at: index)
+    return viewDataSource?.fileChange(at: index)
   }
 
-  func addToolbarButton(name: NSImage.Name, action: Selector)
+  func addToolbarButton(imageName: NSImage.Name,
+                        toolTip: String,
+                        action: Selector)
   {
-    let button = NSButton(image: NSImage(named: name)!,
+    let button = NSButton(image: NSImage(named: imageName)!,
                           target: self, action: action)
   
+    button.toolTip = toolTip
     button.setFrameSize(NSSize(width: 26, height: 18))
+    button.bezelStyle = .smallSquare
+    button.isBordered = false
     toolbarStack.insertView(button, at: 0, in: .leading)
+    button.widthAnchor.constraint(equalToConstant: 29).isActive = true
   }
 }
 
-class CommitFileListController: FileListController, FileListSub
+extension FileListController: NSOutlineViewDelegate
 {
-  override func awakeFromNib()
+  func outlineView(_ outlineView: NSOutlineView,
+                   viewFor tableColumn: NSTableColumn?, item: Any) -> NSView?
   {
+    guard let columnID = tableColumn?.identifier
+    else { return nil }
+    let change = viewDataSource.change(for: item)
+    
+    switch columnID {
+      case ColumnID.action:
+        guard let cell = outlineView.makeView(withIdentifier: CellViewID.action,
+                                              owner: self) as? NSTableCellView
+        else { break }
+      
+        cell.imageView?.image = NSImage(named: .xtActionButtonEmpty)
+        return cell
+      
+      case ColumnID.file:
+        guard let cell = outlineView.makeView(withIdentifier: CellViewID.fileCell,
+                                              owner: self) as? FileCellView
+        else { break }
+        let path = viewDataSource.path(for: item)
+      
+        cell.textField?.stringValue = path.lastPathComponent
+        cell.imageView?.image = viewDataSource.outlineView!(outlineView,
+                                                            isItemExpandable: item)
+            ? NSImage(named: .folder)
+            : NSWorkspace.shared.icon(forFileType: path.pathExtension)
+        
+        var textColor: NSColor!
+
+        if change == .deleted {
+          textColor = NSColor.disabledControlTextColor
+        }
+        else if outlineView.isRowSelected(outlineView.row(forItem: item)) {
+          textColor = NSColor.selectedTextColor
+        }
+        else {
+          textColor = NSColor.textColor
+        }
+        cell.textField?.textColor = textColor
+        cell.change = change
+        return cell
+
+      case ColumnID.status:
+        guard let cell = outlineView.makeView(withIdentifier: CellViewID.status,
+                                              owner: self)
+                         as? NSTableCellView
+        else { return nil }
+        
+        cell.imageView?.image = change.changeImage
+        return cell
+
+      default:
+          break
+    }
+    return nil
+  }
+}
+
+class CommitFileListController: FileListController
+{
+  override func loadView()
+  {
+    super.loadView()
+    
     let index = outlineView.column(withIdentifier: ColumnID.action)
     
     outlineView.tableColumns[index].isHidden = true
@@ -119,28 +210,53 @@ class CommitFileListController: FileListController, FileListSub
   }
 }
 
-class StagedFileListController: FileListController, FileListSub
+extension CommitFileListController: NSUserInterfaceValidations
 {
-  override func awakeFromNib()
+  func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool
   {
+    let menuItem = item as? NSMenuItem
+    
+    switch item.action {
+      case #selector(open(_:)):
+        return outlineView.selectedRow != -1
+      case #selector(showInFinder(_:)):
+        return outlineView.selectedRow != -1
+      default:
+        menuItem?.isHidden = true
+        return false
+    }
+  }
+}
+
+class StagedFileListController: FileListController
+{
+  override func loadView()
+  {
+    super.loadView()
+    
     listTypeIcon.image = NSImage(named: .xtStagingTemplate)
     listTypeLabel.stringValue = "Staged"
     
-    addToolbarButton(name: .xtUnstageAllTemplate,
+    addToolbarButton(imageName: .xtUnstageAllTemplate,
+                     toolTip: "Unstage All",
                      action: #selector(unstageAll(_:)))
   }
 }
 
-class WorkspaceFileListController: FileListController, FileListSub
+class WorkspaceFileListController: FileListController
 {
-  override func awakeFromNib()
+  override func loadView()
   {
+    super.loadView()
+    
     listTypeIcon.image = NSImage(named: .xtFolderTemplate)
     listTypeLabel.stringValue = "Workspace"
     
-    addToolbarButton(name: .xtStageAllTemplate,
+    addToolbarButton(imageName: .xtStageAllTemplate,
+                     toolTip: "Stage All",
                      action: #selector(stageAll(_:)))
-    addToolbarButton(name: .xtRevertTemplate,
+    addToolbarButton(imageName: .xtRevertTemplate,
+                     toolTip: "Revert",
                      action: #selector(revert(_:)))
   }
 }
