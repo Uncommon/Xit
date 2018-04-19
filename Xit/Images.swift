@@ -2,6 +2,7 @@ import Foundation
 
 extension NSImage.Name
 {
+  static let xtActionButtonEmpty: NSImage.Name = ◊"actionButtonEmpty"
   static let xtBitBucketTemplate: NSImage.Name = ◊"bitbucketTemplate"
   static let xtBranchTemplate: NSImage.Name = ◊"branchTemplate"
   static let xtCloudTemplate: NSImage.Name = ◊"cloudTemplate"
@@ -10,6 +11,8 @@ extension NSImage.Name
   static let xtGitHubTemplate: NSImage.Name = ◊"githubTemplate"
   static let xtRevertTemplate: NSImage.Name = ◊"revertTemplate"
   static let xtStageAllTemplate: NSImage.Name = ◊"stageAllTemplate"
+  static let xtStageButtonHover: NSImage.Name = ◊"stageButtonHover"
+  static let xtStageButtonPressed: NSImage.Name = ◊"stageButtonPressed"
   static let xtStagingTemplate: NSImage.Name = ◊"stagingTemplate"
   static let xtStashTemplate: NSImage.Name = ◊"stashTemplate"
   static let xtSubmoduleTemplate: NSImage.Name = ◊"submoduleTemplate"

@@ -73,7 +73,7 @@
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                         <prototypeCellViews>
-                                            <tableCellView id="RCW-kB-Ke6">
+                                            <tableCellView identifier="action" id="RCW-kB-Ke6">
                                                 <rect key="frame" x="1" y="1" width="26" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
@@ -102,7 +102,7 @@
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                         <prototypeCellViews>
-                                            <tableCellView id="Me4-S3-Xwj">
+                                            <tableCellView identifier="fileCell" id="Me4-S3-Xwj">
                                                 <rect key="frame" x="30" y="1" width="318" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
@@ -141,7 +141,7 @@
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                         <prototypeCellViews>
-                                            <tableCellView id="ccK-Hm-ANI">
+                                            <tableCellView identifier="status" id="ccK-Hm-ANI">
                                                 <rect key="frame" x="351" y="1" width="24" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
@@ -186,9 +186,8 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" fixedFrame="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oZ7-u4-Nl7">
+                <stackView distribution="fill" orientation="horizontal" alignment="top" spacing="0.0" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oZ7-u4-Nl7">
                     <rect key="frame" x="279" y="222" width="29" height="18"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
                         <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="OlX-7Q-Bzy">
                             <rect key="frame" x="0.0" y="0.0" width="29" height="18"/>
@@ -255,7 +254,9 @@
                 <constraint firstAttribute="trailing" secondItem="hup-ei-vsz" secondAttribute="trailing" id="4gl-6P-EJK"/>
                 <constraint firstItem="H5h-Tj-wed" firstAttribute="top" secondItem="QOl-HK-Eoa" secondAttribute="top" constant="1" id="BYV-MQ-Lbp"/>
                 <constraint firstItem="hup-ei-vsz" firstAttribute="leading" secondItem="QOl-HK-Eoa" secondAttribute="leading" id="I0A-KY-h8k"/>
+                <constraint firstItem="oZ7-u4-Nl7" firstAttribute="centerY" secondItem="hup-ei-vsz" secondAttribute="centerY" id="Is6-Qi-VZU"/>
                 <constraint firstItem="hup-ei-vsz" firstAttribute="top" secondItem="QOl-HK-Eoa" secondAttribute="top" id="X3b-Vv-xuF"/>
+                <constraint firstItem="eB6-ub-8f2" firstAttribute="leading" secondItem="oZ7-u4-Nl7" secondAttribute="trailing" constant="6" id="Y54-HV-9iR"/>
                 <constraint firstItem="7CW-AS-mzV" firstAttribute="top" secondItem="QOl-HK-Eoa" secondAttribute="top" constant="2" id="Yxa-OS-P8v"/>
                 <constraint firstItem="eB6-ub-8f2" firstAttribute="top" secondItem="QOl-HK-Eoa" secondAttribute="top" id="c0D-HZ-DWR"/>
                 <constraint firstItem="H5h-Tj-wed" firstAttribute="leading" secondItem="7CW-AS-mzV" secondAttribute="trailing" constant="6" id="gEi-fI-DkL"/>

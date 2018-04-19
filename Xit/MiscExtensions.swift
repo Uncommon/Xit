@@ -165,6 +165,11 @@ extension String
     return (self as NSString).lastPathComponent
   }
   
+  var pathExtension: String
+  {
+    return (self as NSString).pathExtension
+  }
+  
   /// Splits a "refs/*/..." string into prefix and remainder.
   func splitRefName() -> (String, String)?
   {

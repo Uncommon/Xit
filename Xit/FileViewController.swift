@@ -13,15 +13,6 @@ class FileViewController: NSViewController
     static let hidden = ¶"hidden"
   }
   
-  /// Table cell view identifiers for the file list
-  struct CellViewID
-  {
-    static let fileCell = ¶"fileCell"
-    static let change = ¶"change"
-    static let staged = ¶"staged"
-    static let unstaged = ¶"unstaged"
-  }
-  
   /// Preview tab identifiers
   struct TabID
   {
@@ -73,9 +64,14 @@ class FileViewController: NSViewController
              textController, previewController]
   }
   
+  var repoController: RepositoryController?
+  {
+    return view.window?.windowController as? RepositoryController
+  }
+  
   var repoSelection: RepositorySelection?
   {
-    return (view.window?.windowController as? RepositoryController)?.selection
+    return repoController?.selection
   }
   
   var inStagingView: Bool
@@ -150,8 +146,7 @@ class FileViewController: NSViewController
       self?.indexChanged(note)
     }
 
-    guard let controller = view.window?.windowController
-                           as? RepositoryController
+    guard let controller = repoController
     else { return }
     
     for listController in [commitListController,
@@ -234,6 +229,7 @@ class FileViewController: NSViewController
   func reload()
   {
     // reload the visible list
+    activeFileList.reloadData()
   }
   
   func refreshPreview()
@@ -263,8 +259,7 @@ class FileViewController: NSViewController
   
   func selectedModelChanged()
   {
-    guard let controller = view.window?.windowController
-                           as? RepositoryController,
+    guard let controller = repoController,
           let newModel = controller.selection
     else { return }
     
@@ -284,8 +279,7 @@ class FileViewController: NSViewController
           let index = activeFileList.selectedRowIndexes.first,
           let selectedItem = activeFileList.item(atRow: index),
           let selectedChange = self.selectedChange,
-          let controller = view.window?.windowController
-                           as? RepositoryController
+          let controller = repoController
     else { return }
     
     updatePreviewPath(selectedChange.path,
@@ -439,7 +433,7 @@ extension FileViewController: HunkStaging
   {
     var encoding = String.Encoding.utf8
   
-    guard let controller = view.window?.windowController as? RepositoryController,
+    guard let controller = repoController,
           let selection = controller.selection as? StagingSelection,
           let selectedChange = self.selectedChange,
           let fileURL = selection.unstagedFilelist.fileURL(selectedChange.path)
