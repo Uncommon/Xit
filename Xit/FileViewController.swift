@@ -170,6 +170,19 @@ class FileViewController: NSViewController
     fileListSplitView.addSubview(stagedListController.view)
     fileListSplitView.addSubview(workspaceListController.view)
     activeFileList = commitListController.outlineView
+    
+    let listControllers = [commitListController,
+                           stagedListController,
+                           workspaceListController]
+    
+    for controller in listControllers {
+      observers.addObserver(forName: NSOutlineView.selectionDidChangeNotification,
+                            object: controller.outlineView, queue: .main) {
+        [weak self] _ in
+        self?.activeFileList = controller.outlineView
+        self?.refreshPreview()
+      }
+    }
   }
   
   override func loadView()

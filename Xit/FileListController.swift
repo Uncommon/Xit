@@ -95,6 +95,14 @@ class FileListController: NSViewController
   
   @IBAction func showInFinder(_ sender: Any)
   {
+    guard let selectedItem = outlineView.item(atRow: outlineView.selectedRow)
+    else { return }
+    let path = viewDataSource.path(for: selectedItem)
+    let url = repoController.repository.fileURL(path)
+    guard FileManager.default.fileExists(atPath: url.path)
+    else { return }
+    
+    NSWorkspace.shared.activateFileViewerSelecting([url])
   }
   
   @IBAction func viewSwitched(_ sender: Any)
@@ -107,7 +115,7 @@ class FileListController: NSViewController
   {
     return outlineView.clickedRow == -1
         ? nil
-        : nil // file change at index
+        : viewDataSource.fileChange(at: outlineView.clickedRow)
   }
   
   var selectedChange: FileChange?
@@ -134,6 +142,7 @@ class FileListController: NSViewController
   }
 }
 
+// MARK: NSOutlineViewDelegate
 extension FileListController: NSOutlineViewDelegate
 {
   func outlineView(_ outlineView: NSOutlineView,
@@ -164,18 +173,9 @@ extension FileListController: NSOutlineViewDelegate
             ? NSImage(named: .folder)
             : NSWorkspace.shared.icon(forFileType: path.pathExtension)
         
-        var textColor: NSColor!
-
-        if change == .deleted {
-          textColor = NSColor.disabledControlTextColor
-        }
-        else if outlineView.isRowSelected(outlineView.row(forItem: item)) {
-          textColor = NSColor.selectedTextColor
-        }
-        else {
-          textColor = NSColor.textColor
-        }
-        cell.textField?.textColor = textColor
+        cell.textField?.textColor = textColor(for: change,
+                                              outlineView: outlineView,
+                                              item: item)
         cell.change = change
         return cell
 
@@ -192,6 +192,21 @@ extension FileListController: NSOutlineViewDelegate
           break
     }
     return nil
+  }
+  
+  private func textColor(for change: DeltaStatus, outlineView: NSOutlineView,
+                         item: Any)
+    -> NSColor
+  {
+    if change == .deleted {
+      return NSColor.disabledControlTextColor
+    }
+    else if outlineView.isRowSelected(outlineView.row(forItem: item)) {
+      return NSColor.selectedTextColor
+    }
+    else {
+      return NSColor.textColor
+    }
   }
 }
 
