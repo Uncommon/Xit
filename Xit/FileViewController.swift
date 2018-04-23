@@ -115,9 +115,9 @@ class FileViewController: NSViewController
     }
   }
   
-  let commitListController = CommitFileListController()
-  let stagedListController = StagedFileListController()
-  let workspaceListController = WorkspaceFileListController()
+  let commitListController = CommitFileListController(isWorkspace: false)
+  let stagedListController = StagedFileListController(isWorkspace: false)
+  let workspaceListController = WorkspaceFileListController(isWorkspace: true)
   
   var activeFileList: NSOutlineView!
   var activeFileListController: FileListController
@@ -190,8 +190,6 @@ class FileViewController: NSViewController
     super.loadView()
     
     contentController = diffController
-
-    // observe list view selections
     
     observers.addObserver(forName: .XTHeaderResized, object: headerController,
                           queue: .main) {

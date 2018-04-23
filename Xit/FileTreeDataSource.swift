@@ -4,11 +4,11 @@ class FileTreeDataSource: FileListDataSourceBase
 {
   fileprivate var root: NSTreeNode
   
-  override init()
+  override init(useWorkspaceList: Bool)
   {
     root = NSTreeNode(representedObject: CommitTreeItem(path: "root"))
     
-    super.init()
+    super.init(useWorkspaceList: useWorkspaceList)
   }
 }
 

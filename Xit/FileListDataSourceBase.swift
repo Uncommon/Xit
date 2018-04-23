@@ -5,7 +5,8 @@ class FileListDataSourceBase: NSObject
 {
   @IBOutlet weak var outlineView: NSOutlineView!
   @IBOutlet weak var controller: FileViewController!
-  
+  let useWorkspaceList: Bool
+
   let observers = ObserverCollection()
   
   struct ColumnID
@@ -46,6 +47,18 @@ class FileListDataSourceBase: NSObject
   class func transformDisplayChange(_ change: DeltaStatus) -> DeltaStatus
   {
     return (change == .unmodified) ? .mixed : change
+  }
+  
+  init(useWorkspaceList: Bool)
+  {
+    self.useWorkspaceList = useWorkspaceList
+  }
+
+  func model(for selection: RepositorySelection) -> FileListModel?
+  {
+    return useWorkspaceList
+        ? (selection as? StagedUnstagedSelection)?.unstagedFilelist
+        : selection.fileList
   }
   
   func workspaceChanged(_ paths: [String]?)

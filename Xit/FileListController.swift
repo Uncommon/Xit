@@ -58,11 +58,11 @@ class FileListController: NSViewController
     }
   }
   
-  required init()
+  required init(isWorkspace: Bool)
   {
-    self.fileListDataSource = FileChangesDataSource()
-    self.fileTreeDataSource = FileTreeDataSource()
-    
+    self.fileListDataSource = FileChangesDataSource(useWorkspaceList: isWorkspace)
+    self.fileTreeDataSource = FileTreeDataSource(useWorkspaceList: isWorkspace)
+
     super.init(nibName: ◊"FileListView", bundle: nil)
     
     viewDataSource = fileListDataSource
@@ -72,7 +72,7 @@ class FileListController: NSViewController
   {
     fatalError("init(coder:) has not been implemented")
   }
-  
+
   @IBAction func stageAll(_ sender: Any)
   {
   }
