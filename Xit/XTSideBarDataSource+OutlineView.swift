@@ -186,11 +186,12 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
   fileprivate func configureStagingItem(sideBarItem: XTSideBarItem,
                                         dataView: XTSidebarTableCellView)
   {
-    let changes = sideBarItem.selection!.fileList.changes
-    let stagedCount =
-          changes.count(where: { $0.change != .unmodified })
-    let unstagedCount =
-          changes.count(where: { $0.unstagedChange != .unmodified })
+    let selection = sideBarItem.selection as! StagedUnstagedSelection
+    let indexChanges = selection.fileList.changes
+    let workspaceChanges = selection.unstagedFilelist.changes
+    let unmodifiedCounter: (FileChange) -> Bool = { $0.change != .unmodified }
+    let stagedCount = indexChanges.count(where: unmodifiedCounter)
+    let unstagedCount = workspaceChanges.count(where: unmodifiedCounter)
 
     if (stagedCount != 0) || (unstagedCount != 0) {
       dataView.statusText.title = "\(unstagedCount)▸\(stagedCount)"

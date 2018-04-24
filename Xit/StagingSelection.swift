@@ -22,7 +22,7 @@ class StagingSelection: StagedUnstagedSelection
   }
 }
 
-/// Base class to consodidate the selection reference
+/// Base class to consodidate the selection reference for FileListModel
 class StagingListModel
 {
   unowned let selection: RepositorySelection
