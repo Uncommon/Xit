@@ -36,7 +36,7 @@ class FileListDataSourceTest: XTTest
   
     let outlineView = NSOutlineView.init()
     let repoController = FakeRepoController(repository: repository)
-    let flds = FileTreeDataSource()
+    let flds = FileTreeDataSource(useWorkspaceList: false)
     var expectedCount = 11
     let history = XTCommitHistory<GitOID>()
     
@@ -91,7 +91,7 @@ class FileListDataSourceTest: XTTest
                                                commit: headCommit)
     
     let outlineView = NSOutlineView()
-    let flds = FileTreeDataSource()
+    let flds = FileTreeDataSource(useWorkspaceList: false)
     
     objc_sync_enter(flds)
     flds.repoController = repoController
