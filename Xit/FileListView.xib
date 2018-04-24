@@ -212,19 +212,22 @@
                     </constraints>
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="fileTemplate" id="A3f-xT-8bW"/>
                 </imageView>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="H5h-Tj-wed">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="H5h-Tj-wed">
                     <rect key="frame" x="27" y="223" width="32" height="17"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Files" id="bAt-yr-gVd">
+                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Files" id="bAt-yr-gVd">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <stackView distribution="fill" orientation="horizontal" alignment="top" spacing="0.0" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oZ7-u4-Nl7">
-                    <rect key="frame" x="279" y="222" width="29" height="18"/>
+                <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="0.0" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oZ7-u4-Nl7">
+                    <rect key="frame" x="283" y="222" width="25" height="18"/>
                     <subviews>
                         <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="OlX-7Q-Bzy">
-                            <rect key="frame" x="0.0" y="0.0" width="29" height="18"/>
+                            <rect key="frame" x="0.0" y="0.0" width="25" height="18"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="25" id="qo1-zG-Axt"/>
+                            </constraints>
                             <popUpButtonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="left" lineBreakMode="truncatingTail" imageScaling="proportionallyDown" inset="2" pullsDown="YES" arrowPosition="noArrow" altersStateOfSelectedItem="NO" id="HcG-5P-T5p">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                 <font key="font" metaFont="menu"/>
@@ -294,6 +297,7 @@
                 <constraint firstItem="7CW-AS-mzV" firstAttribute="top" secondItem="QOl-HK-Eoa" secondAttribute="top" constant="2" id="Yxa-OS-P8v"/>
                 <constraint firstItem="eB6-ub-8f2" firstAttribute="top" secondItem="QOl-HK-Eoa" secondAttribute="top" id="c0D-HZ-DWR"/>
                 <constraint firstItem="H5h-Tj-wed" firstAttribute="leading" secondItem="7CW-AS-mzV" secondAttribute="trailing" constant="8" id="gEi-fI-DkL"/>
+                <constraint firstItem="oZ7-u4-Nl7" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="H5h-Tj-wed" secondAttribute="trailing" constant="4" id="sr8-rw-gw4"/>
                 <constraint firstItem="7CW-AS-mzV" firstAttribute="leading" secondItem="QOl-HK-Eoa" secondAttribute="leading" constant="5" id="y8X-cs-IdC"/>
                 <constraint firstAttribute="trailing" secondItem="eB6-ub-8f2" secondAttribute="trailing" id="zuH-QE-q3j"/>
             </constraints>

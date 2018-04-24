@@ -138,7 +138,7 @@ class FileListController: NSViewController
     button.bezelStyle = .smallSquare
     button.isBordered = false
     toolbarStack.insertView(button, at: 0, in: .leading)
-    button.widthAnchor.constraint(equalToConstant: 29).isActive = true
+    button.widthAnchor.constraint(equalToConstant: 20).isActive = true
   }
 }
 
