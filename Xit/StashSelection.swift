@@ -8,7 +8,7 @@ class StashSelection: StagedUnstagedSelection
   var canCommit: Bool { return false }
   var shaToSelect: String? { return stash.mainCommit?.parentSHAs[0] }
   var fileList: FileListModel { return stagedList }
-  var unstagedFilelist: FileListModel { return unstagedList }
+  var unstagedFileList: FileListModel { return unstagedList }
   
   // Initialization requires a reference to self
   private(set) var stagedList: StashStagedList! = nil

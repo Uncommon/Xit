@@ -7,7 +7,7 @@ class StagingSelection: StagedUnstagedSelection
   var shaToSelect: String? { return XTStagingSHA }
   var canCommit: Bool { return true }
   var fileList: FileListModel { return indexFileList }
-  var unstagedFilelist: FileListModel { return workspaceFileList }
+  var unstagedFileList: FileListModel { return workspaceFileList }
   
   // Initialization requires a reference to self
   private(set) var indexFileList: IndexFileList!

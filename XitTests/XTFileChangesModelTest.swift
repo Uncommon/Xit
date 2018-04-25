@@ -71,7 +71,7 @@ class XTFileChangesModelTest: XTTest
     XCTAssertEqual(model.shaToSelect, repository.headSHA)
     
     let changes = model.fileList.changes
-    let unstagedChanges = model.unstagedFilelist.changes
+    let unstagedChanges = model.unstagedFileList.changes
     
     XCTAssertEqual(changes.count, 1)
     XCTAssertEqual(unstagedChanges.count, 2)
@@ -79,9 +79,9 @@ class XTFileChangesModelTest: XTTest
     let addedContent =
         self.string(from: model.fileList.dataForFile(addedName)!)
     let untrackedContent =
-        self.string(from: model.unstagedFilelist.dataForFile(untrackedName)!)
+        self.string(from: model.unstagedFileList.dataForFile(untrackedName)!)
     let file1Unstaged =
-        self.string(from: model.unstagedFilelist.dataForFile(file1Name)!)
+        self.string(from: model.unstagedFileList.dataForFile(file1Name)!)
     let file1Staged =
         self.string(from: model.fileList.dataForFile(file1Name)!)
     
@@ -107,12 +107,12 @@ class XTFileChangesModelTest: XTTest
   func testStaging()
   {
     let model = StagingSelection(repository: repository)
-    var changes = model.unstagedFilelist.changes
+    var changes = model.unstagedFileList.changes
     
     XCTAssertEqual(changes.count, 0)
     
     self.writeText(toFile1: "change")
-    changes = model.unstagedFilelist.changes
+    changes = model.unstagedFileList.changes
     XCTAssertEqual(changes.count, 1)
     
     guard !changes.isEmpty
@@ -126,7 +126,7 @@ class XTFileChangesModelTest: XTTest
     XCTAssertEqual(change.change, DeltaStatus.modified)
     
     self.writeText("new", toFile: addedName)
-    changes = model.unstagedFilelist.changes
+    changes = model.unstagedFileList.changes
     XCTAssertEqual(changes.count, 2)
     guard !changes.isEmpty
     else {
@@ -138,7 +138,7 @@ class XTFileChangesModelTest: XTTest
     XCTAssertEqual(change.change, DeltaStatus.untracked)
     
     XCTAssertNoThrow(try repository.stage(file: addedName))
-    XCTAssertEqual(model.unstagedFilelist.changes.count, 1)
+    XCTAssertEqual(model.unstagedFileList.changes.count, 1)
     changes = model.fileList.changes
     XCTAssertEqual(changes.count, 1)
     guard !changes.isEmpty
@@ -228,7 +228,7 @@ class XTFileChangesModelTest: XTTest
       XCTAssertEqual(item.change, pair.1.change)
     }
     
-    let unstagedTree = model.unstagedFilelist.treeRoot(oldTree: nil)
+    let unstagedTree = model.unstagedFileList.treeRoot(oldTree: nil)
     guard let unstagedChildren = unstagedTree.children,
           unstagedChildren.count == 4,
           let item = unstagedChildren[3].representedObject as? FileChange

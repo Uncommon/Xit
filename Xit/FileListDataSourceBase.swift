@@ -57,7 +57,7 @@ class FileListDataSourceBase: NSObject
   func model(for selection: RepositorySelection) -> FileListModel?
   {
     return useWorkspaceList
-        ? (selection as? StagedUnstagedSelection)?.unstagedFilelist
+        ? (selection as? StagedUnstagedSelection)?.unstagedFileList
         : selection.fileList
   }
   

@@ -86,7 +86,7 @@ class BlameTest: XTTest
     try! fifthLines.write(toFile: blamePath, atomically: true, encoding: .ascii)
 
     let stagingModel = StagingSelection(repository: repository)
-    let unstagedBlame = stagingModel.unstagedFilelist.blame(for: blameFile)!
+    let unstagedBlame = stagingModel.unstagedFileList.blame(for: blameFile)!
     let unstagedStarts = [1, 2, 3, 5, 6, 8]
     
     XCTAssertEqual(unstagedBlame.hunks.count, 6)
