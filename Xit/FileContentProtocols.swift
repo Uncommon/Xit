@@ -7,9 +7,8 @@ protocol XTFileContentController
   func clear()
   /// Displays the content from the given selection.
   /// - parameter path: The repository-relative file path.
-  /// - parameter selection: The selection to read data from.
-  /// - parameter staged: Whether to show staged content.
-  func load(path: String!, selection: RepositorySelection!, staged: Bool)
+  /// - parameter fileList: The file list to read data from.
+  func load(path: String!, fileList: FileListModel)
   /// True if the controller has content loaded.
   var isLoaded: Bool { get }
 }

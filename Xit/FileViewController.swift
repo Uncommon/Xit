@@ -118,8 +118,9 @@ class FileViewController: NSViewController
   let commitListController = CommitFileListController(isWorkspace: false)
   let stagedListController = StagedFileListController(isWorkspace: false)
   let workspaceListController = WorkspaceFileListController(isWorkspace: true)
+  let allListControllers: [FileListController]
   
-  var activeFileList: NSOutlineView!
+  weak var activeFileList: NSOutlineView!
   var activeFileListController: FileListController
   {
     return activeFileList.delegate as! FileListController
@@ -130,6 +131,20 @@ class FileViewController: NSViewController
   }
   
   weak var repo: XTRepository?
+  
+  override init(nibName nibNameOrNil: NSNib.Name?, bundle nibBundleOrNil: Bundle?)
+  {
+    self.allListControllers = [commitListController,
+                               stagedListController,
+                               workspaceListController]
+    
+    super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+  }
+  
+  required init?(coder: NSCoder)
+  {
+    fatalError("init(coder:) has not been implemented")
+  }
   
   deinit
   {
@@ -149,9 +164,7 @@ class FileViewController: NSViewController
     guard let controller = repoController
     else { return }
     
-    for listController in [commitListController,
-                           stagedListController,
-                           workspaceListController] {
+    for listController in allListControllers {
       listController.repoController = controller
     }
 
@@ -181,6 +194,18 @@ class FileViewController: NSViewController
         [weak self] _ in
         self?.activeFileList = controller.outlineView
         self?.refreshPreview()
+      }
+    }
+    
+    observers.addObserver(forName: .xtFirstResponderChanged,
+                          object: view.window!, queue: .main) {
+      _ in
+      if let newActiveList = self.view.window?.firstResponder as? NSOutlineView,
+         newActiveList != self.activeFileList &&
+         self.allListControllers.contains(where:
+            { $0.outlineView === newActiveList }) {
+        self.activeFileList = newActiveList
+        self.refreshPreview()
       }
     }
   }
@@ -290,14 +315,15 @@ class FileViewController: NSViewController
           let index = activeFileList.selectedRowIndexes.first,
           let selectedItem = activeFileList.item(atRow: index),
           let selectedChange = self.selectedChange,
-          let controller = repoController
+          let controller = repoController,
+          let repoSelection = controller.selection
     else { return }
-    
+    let staged = activeFileList === workspaceListController
+    let list = repoSelection.list(staged: staged)
+
     updatePreviewPath(selectedChange.path,
                       isFolder: activeFileList.isExpandable(selectedItem))
-    contentController.load(path: selectedChange.path,
-                           selection: controller.selection,
-                           staged: showingStaged)
+    contentController.load(path: selectedChange.path, fileList: list)
     
     let fullPath = repo.repoURL.path.appending(
                       pathComponent: selectedChange.path)
@@ -447,7 +473,7 @@ extension FileViewController: HunkStaging
     guard let controller = repoController,
           let selection = controller.selection as? StagingSelection,
           let selectedChange = self.selectedChange,
-          let fileURL = selection.unstagedFilelist.fileURL(selectedChange.path)
+          let fileURL = selection.unstagedFileList.fileURL(selectedChange.path)
     else {
       NSLog("Setup for discard hunk failed")
       return

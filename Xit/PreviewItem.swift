@@ -5,7 +5,7 @@ import Quartz
 // from NSObject.
 class PreviewItem: NSObject, QLPreviewItem
 {
-  var selection: RepositorySelection!
+  var fileList: FileListModel!
   { didSet { remakeTempFile() } }
   var path: String?
   { didSet { remakeTempFile() } }
@@ -61,9 +61,8 @@ class PreviewItem: NSObject, QLPreviewItem
     previewItemURL = nil
     
     if let path = self.path,
-       let selection = self.selection,
        let filePath = tempFilePath(),
-       let contents = selection.fileList.dataForFile(path) {
+       let contents = fileList?.dataForFile(path) {
       do {
         let url = URL(fileURLWithPath: filePath)
         

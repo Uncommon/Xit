@@ -195,6 +195,7 @@
 		C9864474207FF9970088209B /* unstageButtonHover@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C986446C207FF9960088209B /* unstageButtonHover@2x.png */; };
 		C9864475207FF9970088209B /* stageButtonHover@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C986446D207FF9960088209B /* stageButtonHover@2x.png */; };
 		C9864476207FF9970088209B /* stageButtonHover.png in Resources */ = {isa = PBXBuildFile; fileRef = C986446E207FF9960088209B /* stageButtonHover.png */; };
+		C986447C208FBD990088209B /* ResponderNotifierWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C986447B208FBD990088209B /* ResponderNotifierWindow.swift */; };
 		C98925B31DA70D3A00E5645C /* XTCommitLinesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925B21DA70D3A00E5645C /* XTCommitLinesTest.swift */; };
 		C98925C61DB693CC00E5645C /* XTTagPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925C41DB693CC00E5645C /* XTTagPanelController.swift */; };
 		C98925C71DB693CC00E5645C /* XTTagPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C98925C51DB693CC00E5645C /* XTTagPanelController.xib */; };
@@ -629,6 +630,7 @@
 		C986446C207FF9960088209B /* unstageButtonHover@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unstageButtonHover@2x.png"; sourceTree = "<group>"; };
 		C986446D207FF9960088209B /* stageButtonHover@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stageButtonHover@2x.png"; sourceTree = "<group>"; };
 		C986446E207FF9960088209B /* stageButtonHover.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stageButtonHover.png; sourceTree = "<group>"; };
+		C986447B208FBD990088209B /* ResponderNotifierWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponderNotifierWindow.swift; sourceTree = "<group>"; };
 		C98925B21DA70D3A00E5645C /* XTCommitLinesTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTCommitLinesTest.swift; sourceTree = "<group>"; };
 		C98925C41DB693CC00E5645C /* XTTagPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTagPanelController.swift; sourceTree = "<group>"; };
 		C98925C51DB693CC00E5645C /* XTTagPanelController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTTagPanelController.xib; sourceTree = "<group>"; };
@@ -1163,6 +1165,7 @@
 				C923D66B1D906FAA00C6B90B /* TitleBarViewController.swift */,
 				C95355E91D93470400AEEF49 /* TitleStatusView.swift */,
 				C923D65D1D90506A00C6B90B /* TitleBar.xib */,
+				C986447B208FBD990088209B /* ResponderNotifierWindow.swift */,
 			);
 			name = Document;
 			sourceTree = "<group>";
@@ -1766,6 +1769,7 @@
 				C90FD5961D217D5B00A30570 /* XTFetchPanelController.swift in Sources */,
 				C9999AC71E08712000DF3E11 /* HistoryTableView.swift in Sources */,
 				C951EAE11DD11BDD00B99FBE /* XTSidebarTableCellView.swift in Sources */,
+				C986447C208FBD990088209B /* ResponderNotifierWindow.swift in Sources */,
 				C95ECD051EB11E310000DB78 /* WebViewController.swift in Sources */,
 				C92E30FB1D4FF4F0001985F7 /* XTCommit.swift in Sources */,
 				C9AA80301E2929810004D670 /* FileChangesDataSource.swift in Sources */,

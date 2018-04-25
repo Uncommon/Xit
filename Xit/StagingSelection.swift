@@ -36,6 +36,8 @@ class StagingListModel
 /// File list for staged files (the index)
 class IndexFileList: StagingListModel, FileListModel
 {
+  var stagingType: StagingType { return .index }
+  
   var changes: [FileChange] { return repository.stagedChanges() }
   
   func diffForFile(_ path: String) -> PatchMaker.PatchResult?
@@ -71,6 +73,8 @@ class IndexFileList: StagingListModel, FileListModel
 /// File list for unstaged files (the workspace)
 class WorkspaceFileList: StagingListModel, FileListModel
 {
+  var stagingType: StagingType { return .workspace }
+
   var changes: [FileChange] { return repository.unstagedChanges() }
   
   func diffForFile(_ path: String) -> PatchMaker.PatchResult?

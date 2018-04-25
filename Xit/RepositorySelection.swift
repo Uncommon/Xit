@@ -22,7 +22,7 @@ protocol RepositorySelection: class
 protocol StagedUnstagedSelection: RepositorySelection
 {
   /// The unstaged file list
-  var unstagedFilelist: FileListModel { get }
+  var unstagedFileList: FileListModel { get }
 }
 
 extension RepositorySelection
@@ -30,13 +30,25 @@ extension RepositorySelection
   func list(staged: Bool) -> FileListModel
   {
     return staged ? fileList :
-        (self as? StagedUnstagedSelection)?.unstagedFilelist ?? fileList
+        (self as? StagedUnstagedSelection)?.unstagedFileList ?? fileList
   }
+}
+
+enum StagingType
+{
+  // No staging actions
+  case none
+  // Index: can unstage
+  case index
+  // Workspace: can stage
+  case workspace
 }
 
 protocol FileListModel: class
 {
   var selection: RepositorySelection { get }
+  
+  var stagingType: StagingType { get }
   
   /// Changes displayed in the file list
   var changes: [FileChange] { get }

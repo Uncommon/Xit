@@ -15,28 +15,13 @@ extension XTPreviewController: XTFileContentController
     isLoaded = false
   }
   
-  public func load(path: String!, selection: RepositorySelection!, staged: Bool)
+  public func load(path: String!, fileList: FileListModel)
   {
     return // TODO: fix preview
     let previewView = view as! QLPreviewView
   
-    if staged {
-      var previewItem: PreviewItem! = previewView.previewItem
-                                      as? PreviewItem
-      
-      if previewItem == nil {
-        previewItem = PreviewItem()
-        previewView.previewItem = previewItem
-      }
-      previewItem.selection = selection
-      previewItem.path = path
-      previewView.refreshPreviewItem()
-      isLoaded = true
-    }
-    else {
-      guard let unstagedList = (selection as? StagedUnstagedSelection)?
-                               .unstagedFilelist,
-            let urlString = unstagedList.fileURL(path)?.absoluteString
+    if fileList is WorkspaceFileList {
+      guard let urlString = fileList.fileURL(path)?.absoluteString
       else {
         previewView.previewItem = nil
         isLoaded = true
@@ -46,6 +31,19 @@ extension XTPreviewController: XTFileContentController
       let nsurl = NSURL(string: urlString)
     
       previewView.previewItem = nsurl
+      isLoaded = true
+    }
+    else {
+      var previewItem: PreviewItem! = previewView.previewItem
+        as? PreviewItem
+      
+      if previewItem == nil {
+        previewItem = PreviewItem()
+        previewView.previewItem = previewItem
+      }
+      previewItem.fileList = fileList
+      previewItem.path = path
+      previewView.refreshPreviewItem()
       isLoaded = true
     }
   }

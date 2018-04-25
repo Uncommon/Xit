@@ -53,6 +53,8 @@ class StashFileList
 /// File list for the staged portion of a stash
 class StashStagedList: StashFileList, FileListModel
 {
+  var stagingType: StagingType { return .none }
+  
   let indexSelection: CommitSelection?
   let indexList: CommitFileList?
   
@@ -104,6 +106,8 @@ class StashStagedList: StashFileList, FileListModel
 /// File list for the unstaged portion of a stash
 class StashUnstagedList: StashFileList, FileListModel
 {
+  var stagingType: StagingType { return .none }
+
   var changes: [FileChange] { return stash.workspaceChanges() }
   
   let untrackedSelection: CommitSelection?
