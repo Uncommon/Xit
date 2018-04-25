@@ -199,14 +199,8 @@ class FileViewController: NSViewController
     
     observers.addObserver(forName: .xtFirstResponderChanged,
                           object: view.window!, queue: .main) {
-      _ in
-      if let newActiveList = self.view.window?.firstResponder as? NSOutlineView,
-         newActiveList != self.activeFileList &&
-         self.allListControllers.contains(where:
-            { $0.outlineView === newActiveList }) {
-        self.activeFileList = newActiveList
-        self.refreshPreview()
-      }
+      [weak self] _ in
+      DispatchQueue.main.async { self?.updatePreviewForActiveList() }
     }
   }
   
@@ -237,6 +231,16 @@ class FileViewController: NSViewController
     headerTabView.tabViewItems[1].view = commitEntryController.view
     previewPath.setPathComponentCells([])
     diffController.stagingDelegate = self
+  }
+  
+  func updatePreviewForActiveList()
+  {
+    if let newActive = self.view.window?.firstResponder as? NSOutlineView,
+       newActive != self.activeFileList &&
+       self.allListControllers.contains(where: { $0.outlineView === newActive }) {
+      self.activeFileList = newActive
+      self.refreshPreview()
+    }
   }
   
   func indexChanged(_ note: Notification)
@@ -318,7 +322,7 @@ class FileViewController: NSViewController
           let controller = repoController,
           let repoSelection = controller.selection
     else { return }
-    let staged = activeFileList === workspaceListController
+    let staged = activeFileList === stagedListController.outlineView
     let list = repoSelection.list(staged: staged)
 
     updatePreviewPath(selectedChange.path,
