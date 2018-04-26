@@ -21,4 +21,6 @@ extension NSImage.Name
   static let xtTracking: NSImage.Name = ◊"tracking"
   static let xtTrackingMissing: NSImage.Name = ◊"trackingMissing"
   static let xtUnstageAllTemplate: NSImage.Name = ◊"unstageAllTemplate"
+  static let xtUnstageButtonHover: NSImage.Name = ◊"unstageButtonHover"
+  static let xtUnstageButtonPressed: NSImage.Name = ◊"unstageButtonPressed"
 }

@@ -58,6 +58,10 @@ class FileListController: NSViewController
     }
   }
   
+  var actionImage: NSImage? { return nil }
+  var pressedImage: NSImage? { return nil }
+  var actionButtonSelector: Selector? { return nil }
+  
   required init(isWorkspace: Bool)
   {
     self.fileListDataSource = FileChangesDataSource(useWorkspaceList: isWorkspace)
@@ -155,10 +159,14 @@ extension FileListController: NSOutlineViewDelegate
     switch columnID {
       case ColumnID.action:
         guard let cell = outlineView.makeView(withIdentifier: CellViewID.action,
-                                              owner: self) as? NSTableCellView
+                                              owner: self) as? TableButtonView,
+              let button = cell.button as? RolloverButton
         else { break }
       
-        cell.imageView?.image = NSImage(named: .xtActionButtonEmpty)
+        button.rolloverImage = actionImage
+        button.alternateImage = pressedImage
+        button.target = self
+        button.action = actionButtonSelector
         return cell
       
       case ColumnID.file:
@@ -245,6 +253,13 @@ extension CommitFileListController: NSUserInterfaceValidations
 
 class StagedFileListController: FileListController
 {
+  override var actionImage: NSImage?
+  { return NSImage(named: .xtUnstageButtonHover)! }
+  override var pressedImage: NSImage?
+  { return NSImage(named: .xtUnstageButtonPressed)! }
+  override var actionButtonSelector: Selector?
+  { return #selector(self.unstage(_:)) }
+
   override func loadView()
   {
     super.loadView()
@@ -256,10 +271,28 @@ class StagedFileListController: FileListController
                      toolTip: "Unstage All",
                      action: #selector(unstageAll(_:)))
   }
+  
+  @objc
+  func unstage(_ sender: NSButton)
+  {
+    let row = outlineView.row(for: sender)
+    guard row != -1,
+          let change = viewDataSource.fileChange(at: row)
+    else { return }
+    
+    _ = try? repoController.repository.unstage(file: change.path)
+  }
 }
 
 class WorkspaceFileListController: FileListController
 {
+  override var actionImage: NSImage?
+  { return NSImage(named: .xtStageButtonHover)! }
+  override var pressedImage: NSImage?
+  { return NSImage(named: .xtStageButtonPressed)! }
+  override var actionButtonSelector: Selector?
+  { return #selector(self.stage(_:)) }
+
   override func loadView()
   {
     super.loadView()
@@ -273,5 +306,16 @@ class WorkspaceFileListController: FileListController
     addToolbarButton(imageName: .xtRevertTemplate,
                      toolTip: "Revert",
                      action: #selector(revert(_:)))
+  }
+  
+  @objc
+  func stage(_ sender: NSButton)
+  {
+    let row = outlineView.row(for: sender)
+    guard row != -1,
+          let change = viewDataSource.fileChange(at: row)
+    else { return }
+    
+    _ = try? repoController.repository.stage(file: change.path)
   }
 }

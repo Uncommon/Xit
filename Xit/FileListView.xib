@@ -51,18 +51,21 @@
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                         <prototypeCellViews>
-                                            <tableCellView identifier="action" id="RCW-kB-Ke6">
+                                            <tableCellView identifier="action" id="RCW-kB-Ke6" customClass="TableButtonView" customModule="Xit" customModuleProvider="target">
                                                 <rect key="frame" x="1" y="1" width="26" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IHy-er-lay">
+                                                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="svc-4R-rk4" customClass="RolloverButton" customModule="Xit" customModuleProvider="target">
                                                         <rect key="frame" x="5" y="0.0" width="17" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="actionButtonEmpty" id="3nL-eX-nlh"/>
-                                                    </imageView>
+                                                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="actionButtonEmpty" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="fnT-dA-ze0">
+                                                            <behavior key="behavior" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                    </button>
                                                 </subviews>
                                                 <connections>
-                                                    <outlet property="imageView" destination="IHy-er-lay" id="AE8-wb-zWR"/>
+                                                    <outlet property="button" destination="svc-4R-rk4" id="xsN-YG-Eg4"/>
                                                 </connections>
                                             </tableCellView>
                                         </prototypeCellViews>
