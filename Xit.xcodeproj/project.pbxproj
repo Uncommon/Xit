@@ -49,7 +49,7 @@
 		89D8BDFD1CED200B00D640AA /* modify@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BDF71CED200B00D640AA /* modify@2x.png */; };
 		89D8BE001CED203900D640AA /* stage.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BDFE1CED203900D640AA /* stage.png */; };
 		89D8BE011CED203900D640AA /* stage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BDFF1CED203900D640AA /* stage@2x.png */; };
-		89D8BE221CF0A4ED00D640AA /* XTRolloverButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8BE211CF0A4ED00D640AA /* XTRolloverButton.swift */; };
+		89D8BE221CF0A4ED00D640AA /* RolloverButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8BE211CF0A4ED00D640AA /* RolloverButton.swift */; };
 		89D8BE251CF35C7000D640AA /* unstage.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BE231CF35C7000D640AA /* unstage.png */; };
 		89D8BE261CF35C7000D640AA /* unstage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BE241CF35C7000D640AA /* unstage@2x.png */; };
 		89D8BE581CF8E9C900D640AA /* blameTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BE501CF8E9C800D640AA /* blameTemplate.png */; };
@@ -476,7 +476,7 @@
 		89D8BDF71CED200B00D640AA /* modify@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "modify@2x.png"; sourceTree = "<group>"; };
 		89D8BDFE1CED203900D640AA /* stage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stage.png; sourceTree = "<group>"; };
 		89D8BDFF1CED203900D640AA /* stage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stage@2x.png"; sourceTree = "<group>"; };
-		89D8BE211CF0A4ED00D640AA /* XTRolloverButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRolloverButton.swift; sourceTree = "<group>"; };
+		89D8BE211CF0A4ED00D640AA /* RolloverButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RolloverButton.swift; sourceTree = "<group>"; };
 		89D8BE231CF35C7000D640AA /* unstage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unstage.png; sourceTree = "<group>"; };
 		89D8BE241CF35C7000D640AA /* unstage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unstage@2x.png"; sourceTree = "<group>"; };
 		89D8BE501CF8E9C800D640AA /* blameTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blameTemplate.png; sourceTree = "<group>"; };
@@ -1083,12 +1083,12 @@
 			isa = PBXGroup;
 			children = (
 				C9AA802F1E2929810004D670 /* FileChangesDataSource.swift */,
-				89D8BE211CF0A4ED00D640AA /* XTRolloverButton.swift */,
 				C99A6AEB1E48FA140030DC01 /* FileListDataSourceBase.swift */,
 				C9800D7C2017FEB80045B05D /* FileListController.swift */,
 				C94736811DF097B2000E3A05 /* FileListView.swift */,
 				C947367F1DF08FFB000E3A05 /* FileRowView.swift */,
 				C932110B1E48E92C00232B61 /* FileTreeDataSource.swift */,
+				89D8BE211CF0A4ED00D640AA /* RolloverButton.swift */,
 				899DB18D1CE0EA3A00760270 /* WorkspaceTreeBuilder.swift */,
 				C9FE06C620178A8C0001EB2B /* FileListView.xib */,
 			);
@@ -1692,7 +1692,7 @@
 				C936AD0C1D4C0FA900C5ADC3 /* XTPasswordOpController.swift in Sources */,
 				C98925C61DB693CC00E5645C /* XTTagPanelController.swift in Sources */,
 				899DB1921CE109C700760270 /* WorkspaceTreeBuilder.swift in Sources */,
-				89D8BE221CF0A4ED00D640AA /* XTRolloverButton.swift in Sources */,
+				89D8BE221CF0A4ED00D640AA /* RolloverButton.swift in Sources */,
 				C9AA80361E2E7F370004D670 /* XTHistoryViewController.swift in Sources */,
 				DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */,
 				C957B8661D2D8D500040F858 /* XTKeychain.swift in Sources */,
