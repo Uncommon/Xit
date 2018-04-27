@@ -134,26 +134,6 @@ extension XTRepository
                        writes: true)
   }
   
-  func unstageAllFiles() throws
-  {
-    guard let index = GitIndex(repository: self)
-    else { throw Error.unexpected }
-    
-    if let headOID = headReference?.resolve()?.targetOID {
-      guard let headCommit = commit(forOID: headOID),
-            let headTree = headCommit.tree
-      else { throw Error.unexpected }
-      
-      try index.read(tree: headTree)
-    }
-    else {
-      // If there is no head, then this is the first commit
-      try index.clear()
-    }
-
-    try index.save()
-  }
-  
   func renameRemote(old: String, new: String) throws
   {
     _ = try executeGit(args: ["remote", "rename", old, new], writes: true)

@@ -92,6 +92,7 @@ public protocol FileStaging: class
   func stage(file: String) throws
   func unstage(file: String) throws
   func stageAllFiles() throws
+  func unstageAllFiles() throws
 }
 
 public protocol Stashing: class

@@ -51,11 +51,7 @@ class FileListController: NSViewController
   
   var repoController: RepositoryController!
   {
-    didSet
-    {
-      fileListDataSource.repoController = repoController
-      fileTreeDataSource.repoController = repoController
-    }
+    didSet { didSetRepoController() }
   }
   
   var actionImage: NSImage? { return nil }
@@ -76,13 +72,22 @@ class FileListController: NSViewController
   {
     fatalError("init(coder:) has not been implemented")
   }
+  
+  // didSet isn't overridable so we need a method
+  func didSetRepoController()
+  {
+    fileListDataSource.repoController = repoController
+    fileTreeDataSource.repoController = repoController
+  }
 
   @IBAction func stageAll(_ sender: Any)
   {
+    try? repoController.repository.stageAllFiles()
   }
   
   @IBAction func unstageAll(_ sender: Any)
   {
+    try? repoController.repository.unstageAllFiles()
   }
   
   @IBAction func revert(_ sender: Any)
@@ -251,7 +256,29 @@ extension CommitFileListController: NSUserInterfaceValidations
   }
 }
 
-class StagedFileListController: FileListController
+class StagingFileListController: FileListController
+{
+  var indexObserver: NSObjectProtocol?
+  
+  override func didSetRepoController()
+  {
+    super.didSetRepoController()
+    indexObserver = NotificationCenter.default.addObserver(
+        forName: .XTRepositoryIndexChanged,
+        object: repoController.repository, queue: .main) {
+      [weak self] _ in
+      self?.viewDataSource.reload()
+    }
+  }
+  
+  func postIndexNotification()
+  {
+    NotificationCenter.default.post(name: .XTRepositoryIndexChanged,
+                                    object: repoController.repository)
+  }
+}
+
+class StagedFileListController: StagingFileListController
 {
   override var actionImage: NSImage?
   { return NSImage(named: .xtUnstageButtonHover)! }
@@ -281,10 +308,11 @@ class StagedFileListController: FileListController
     else { return }
     
     _ = try? repoController.repository.unstage(file: change.path)
+    postIndexNotification()
   }
 }
 
-class WorkspaceFileListController: FileListController
+class WorkspaceFileListController: StagingFileListController
 {
   override var actionImage: NSImage?
   { return NSImage(named: .xtStageButtonHover)! }
@@ -317,5 +345,6 @@ class WorkspaceFileListController: FileListController
     else { return }
     
     _ = try? repoController.repository.stage(file: change.path)
+    postIndexNotification()
   }
 }

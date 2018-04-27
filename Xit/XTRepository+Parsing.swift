@@ -163,6 +163,26 @@ extension XTRepository: FileStaging
     _ = try executeGit(args: ["add", "--all"], writes: true)
   }
   
+  public func unstageAllFiles() throws
+  {
+    guard let index = GitIndex(repository: self)
+      else { throw Error.unexpected }
+    
+    if let headOID = headReference?.resolve()?.targetOID {
+      guard let headCommit = commit(forOID: headOID),
+        let headTree = headCommit.tree
+        else { throw Error.unexpected }
+      
+      try index.read(tree: headTree)
+    }
+    else {
+      // If there is no head, then this is the first commit
+      try index.clear()
+    }
+    
+    try index.save()
+  }
+
   // Unstages all stages files.
   public func unstage(file: String) throws
   {
