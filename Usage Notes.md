@@ -12,16 +12,6 @@ Indicators are shown for local branches that have been pushed, and again for the
 
 Branches are looked up by the suffix after the last slash, which seems to be the way TeamCity works. I may need to adjust this as I learn more about TeamCity. (see issue #189)
 
-## Staging
-
-In the staging view, you’ll see two columns of status icons, instead of the one column you see when inspecting a commit. The left column represents workspace changes, and the right column represents staged (index) changes.
-
-To select which changes are shown in the preview pane (diff, etc), click on the < or > column header, or on a file status icon in that column.
-
-To stage or unstage a file, double-click on its status icon. To stage or unstage all files, click the « or » button at the bottom.
-
-This interface design is a work in progress, and feedback is welcome.
-
 ## Push and Pull
 
 The push and pull commands currently only push or pull the current branch. Expanded options for those commands will be added in the future.
