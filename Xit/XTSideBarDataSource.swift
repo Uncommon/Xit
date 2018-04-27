@@ -153,14 +153,48 @@ class XTSideBarDataSource: NSObject
       DispatchQueue.main.async {
         guard let myself = self
         else { return }
+        let selection = myself.outline.item(atRow: myself.outline.selectedRow)
+                        as? XTSideBarItem
         
         myself.roots = newRoots
         myself.outline.reloadData()
         myself.outline.expandItem(nil, expandChildren: true)
-        if myself.outline.selectedRow == -1 {
-          myself.selectCurrentBranch()
+        if myself.outline.numberOfSelectedRows == 0 {
+          if !(selection.map({ myself.select(item: $0) }) ?? false) {
+            myself.selectCurrentBranch()
+          }
         }
       }
+    }
+  }
+  
+  func select(item: XTSideBarItem?) -> Bool
+  {
+    guard let item = item
+    else { return false }
+    let rowIndex = outline.row(forItem: item)
+    
+    if rowIndex != -1 {
+      outline.selectRowIndexes(IndexSet(integer: rowIndex),
+                               byExtendingSelection: false)
+      return true
+    }
+    switch item {
+      case is XTStagingItem:
+        outline.selectRowIndexes(
+            IndexSet(integer: outline.row(forItem: self.stagingItem)),
+            byExtendingSelection: false)
+        return true
+      case let localItem as XTLocalBranchItem:
+        if let item = self.item(forBranchName: localItem.title) {
+          outline.selectRowIndexes(
+              IndexSet(integer: outline.row(forItem: item)),
+              byExtendingSelection: false)
+          return true
+        }
+        return false
+      default:
+        return false
     }
   }
   
