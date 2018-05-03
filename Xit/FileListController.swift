@@ -73,6 +73,12 @@ class FileListController: NSViewController
     fatalError("init(coder:) has not been implemented")
   }
   
+  override func loadView()
+  {
+    super.loadView()
+    updateButtons()
+  }
+  
   // didSet isn't overridable so we need a method
   func didSetRepoController()
   {
@@ -92,6 +98,10 @@ class FileListController: NSViewController
   
   @IBAction func revert(_ sender: Any)
   {
+    guard let change = selectedChange
+    else { return }
+    
+    try? repoController.repository.revert(file: change.path)
   }
   
   @IBAction func showIgnored(_ sender: Any)
@@ -148,6 +158,28 @@ class FileListController: NSViewController
     button.isBordered = false
     toolbarStack.insertView(button, at: 0, in: .leading)
     button.widthAnchor.constraint(equalToConstant: 20).isActive = true
+  }
+  
+  func updateButtons()
+  {
+    for button in toolbarStack.subviews.compactMap({ $0 as? NSButton })
+        where button != actionButton {
+      button.isEnabled = validateUserInterfaceItem(button)
+    }
+  }
+}
+
+extension FileListController: NSUserInterfaceValidations
+{
+  func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool
+  {
+    switch item.action {
+      case #selector(showInFinder(_:)),
+           #selector(open(_:)):
+        return selectedChange != nil
+      default:
+        return false
+    }
   }
 }
 
@@ -207,6 +239,11 @@ extension FileListController: NSOutlineViewDelegate
     return nil
   }
   
+  func outlineViewSelectionDidChange(_ notification: Notification)
+  {
+    updateButtons()
+  }
+  
   private func textColor(for change: DeltaStatus, outlineView: NSOutlineView,
                          item: Any)
     -> NSColor
@@ -238,17 +275,18 @@ class CommitFileListController: FileListController
   }
 }
 
-extension CommitFileListController: NSUserInterfaceValidations
+// NSUserInterfaceValidations
+extension CommitFileListController
 {
-  func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool
+  override func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem)
+    -> Bool
   {
     let menuItem = item as? NSMenuItem
     
     switch item.action {
-      case #selector(open(_:)):
-        return outlineView.selectedRow != -1
-      case #selector(showInFinder(_:)):
-        return outlineView.selectedRow != -1
+      case #selector(open(_:)),
+           #selector(showInFinder(_:)):
+        return super.validateUserInterfaceItem(item)
       default:
         menuItem?.isHidden = true
         return false
@@ -312,6 +350,30 @@ class StagedFileListController: StagingFileListController
   }
 }
 
+// NSUserInterfaceValidations
+extension StagedFileListController
+{
+  override func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem)
+    -> Bool
+  {
+    let menuItem = item as? NSMenuItem
+    
+    switch item.action {
+      case #selector(stageAll(_:)),
+           #selector(revert(_:)),
+           #selector(showIgnored(_:)):
+        menuItem?.isHidden = true
+        return false
+      case #selector(unstage(_:)):
+        return selectedChange != nil
+      case #selector(unstageAll(_:)):
+        return outlineView.numberOfRows != 0
+      default:
+        return super.validateUserInterfaceItem(item)
+    }
+  }
+}
+
 class WorkspaceFileListController: StagingFileListController
 {
   override var actionImage: NSImage?
@@ -346,5 +408,31 @@ class WorkspaceFileListController: StagingFileListController
     
     _ = try? repoController.repository.stage(file: change.path)
     postIndexNotification()
+  }
+}
+
+// NSUserInterfaceValidations
+extension WorkspaceFileListController
+{
+  override func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem)
+    -> Bool
+  {
+    let menuItem = item as? NSMenuItem
+    
+    switch item.action {
+      case #selector(unstageAll(_:)):
+        menuItem?.isHidden = true
+        return false
+      case #selector(stage(_:)),
+           #selector(revert(_:)):
+        return selectedChange != nil
+      case #selector(stageAll(_:)):
+        return outlineView.numberOfRows != 0
+      case #selector(showIgnored(_:)):
+        // update the check mark
+        return true
+      default:
+        return super.validateUserInterfaceItem(item)
+    }
   }
 }

@@ -91,6 +91,7 @@ public protocol FileStaging: class
 {
   func stage(file: String) throws
   func unstage(file: String) throws
+  func revert(file: String) throws
   func stageAllFiles() throws
   func unstageAllFiles() throws
 }

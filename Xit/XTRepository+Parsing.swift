@@ -157,6 +157,37 @@ extension XTRepository: FileStaging
     _ = try executeGit(args: args, writes: true)
   }
   
+  /// Reverts the given workspace file to the contents at HEAD.
+  @objc(revertFile:error:)
+  public func revert(file: String) throws
+  {
+    let status = try self.status(file: file)
+    
+    if status.0 == .untracked {
+      try FileManager.default.removeItem(at: repoURL.appendingPathComponent(file))
+    }
+    else {
+      var options = git_checkout_options.defaultOptions()
+      var error: Error? = nil
+      
+      git_checkout_init_options(&options, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
+      [file].withGitStringArray {
+        (stringarray) in
+        options.checkout_strategy = GIT_CHECKOUT_FORCE.rawValue +
+          GIT_CHECKOUT_RECREATE_MISSING.rawValue
+        options.paths = stringarray
+        
+        let result = git_checkout_tree(self.gitRepo, nil, &options)
+        
+        if result < 0 {
+          error = Error.gitError(result)
+        }
+      }
+      
+      try error.map { throw $0 }
+    }
+  }
+
   // Stages all modified files.
   public func stageAllFiles() throws
   {

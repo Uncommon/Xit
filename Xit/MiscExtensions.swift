@@ -160,6 +160,8 @@ extension NSButton
   }
 }
 
+extension NSButton: NSValidatedUserInterfaceItem {}
+
 extension NSTextField
 {
   var isTruncated: Bool
@@ -388,7 +390,8 @@ extension Array
   }
   
   /// Returns the first non-nil result of calling `predicate` on the array's
-  /// elements.
+  /// elements. Effectively the same as array.compactMap(predicate).first but
+  /// more efficient.
   func firstResult<T>(_ predicate: (Element) -> T?) -> T?
   {
     for element in self {
