@@ -9,22 +9,19 @@ public struct WorkspaceFileStatus
 public class FileChange: NSObject
 {
   @objc var path: String
-  var change, unstagedChange: DeltaStatus
+  var change: DeltaStatus
   
-  init(path: String, change: DeltaStatus = .unmodified,
-       unstagedChange: DeltaStatus = .unmodified)
+  init(path: String, change: DeltaStatus = .unmodified)
   {
     self.path = path
     self.change = change
-    self.unstagedChange = unstagedChange
   }
   
   public override func isEqual(_ object: Any?) -> Bool
   {
     if let otherChange = object as? FileChange {
       return otherChange.path == path &&
-             otherChange.change == change &&
-             otherChange.unstagedChange == unstagedChange
+             otherChange.change == change
     }
     return false
   }
@@ -35,11 +32,10 @@ class FileStagingChange: FileChange
   let destinationPath: String
   
   init(path: String, destinationPath: String,
-       change: DeltaStatus = .unmodified,
-       unstagedChange: DeltaStatus = .unmodified)
+       change: DeltaStatus = .unmodified)
   {
     self.destinationPath = destinationPath
-    super.init(path: path, change: change, unstagedChange: unstagedChange)
+    super.init(path: path, change: change)
   }
 }
 

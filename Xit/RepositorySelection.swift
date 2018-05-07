@@ -146,69 +146,6 @@ extension FileListModel
     }
   }
 
-  // looks like this will go away
-  /// Merges a tree of unstaged changes into a tree of staged changes.
-  func combineTrees(unstagedTree: inout NSTreeNode,
-                    stagedTree: NSTreeNode)
-  {
-    // Not sure if these should be expected
-    guard let unstagedNodes = unstagedTree.children
-    else {
-      print("""
-            combineTrees: no unstaged children at
-            \((unstagedTree.representedObject! as? FileChange)?.path ?? "?"))
-            """)
-      return
-    }
-    guard let stagedNodes = stagedTree.children
-    else {
-      print("""
-            combineTrees: no staged children at
-            \((stagedTree.representedObject! as? FileChange)?.path ?? "?"))
-            """)
-      return
-    }
-    
-    // Do a parallel iteration to more efficiently find additions & deletions.
-    var unstagedIndex = 0, stagedIndex = 0
-    var deletedItems = [FileChange]()
-    
-    while (unstagedIndex < unstagedNodes.count) &&
-          (stagedIndex < stagedNodes.count) {
-      var unstagedNode = unstagedNodes[unstagedIndex]
-      let unstagedItem = unstagedNode.representedObject! as! FileChange
-      let stagedNode = stagedNodes[stagedIndex]
-      let stagedItem = stagedNode.representedObject! as! FileChange
-      
-      switch (unstagedItem.path as NSString).compare(stagedItem.path) {
-        case .orderedSame:
-          unstagedItem.change = stagedItem.change
-          if unstagedItem.change == unstagedItem.unstagedChange &&
-             (unstagedItem.change == .added ||
-              unstagedItem.change == .deleted) {
-            unstagedItem.unstagedChange = .unmodified
-          }
-          unstagedIndex += 1
-          stagedIndex += 1
-          if !unstagedNode.isLeaf || !stagedNode.isLeaf {
-            combineTrees(unstagedTree: &unstagedNode, stagedTree: stagedNode)
-          }
-        case .orderedAscending:
-          // Added in unstaged
-          unstagedItem.change = .deleted
-          unstagedIndex += 1
-        case .orderedDescending:
-          // Added in staged
-          deletedItems.append(FileChange(path: stagedItem.path,
-                                         change: stagedItem.change,
-                                         unstagedChange: .deleted))
-          stagedIndex += 1
-      }
-    }
-    unstagedTree.mutableChildren.addObjects(from: deletedItems)
-    unstagedTree.mutableChildren.sort(keyPath: "representedObject.path")
-  }
-
   /// Adds the contents of one tree into another
   func add(_ srcTree: NSTreeNode, to destTree: inout NSTreeNode,
            status: DeltaStatus)

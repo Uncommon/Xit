@@ -33,15 +33,13 @@ class FileChangesDataSource: FileListDataSourceBase
         guard let newIndex = newChanges.index(where: {
           (newChange) in
           newChange.path == change.path &&
-          ((newChange.change != change.change) ||
-           (newChange.unstagedChange != change.unstagedChange))
+          newChange.change != change.change
         })
         else { continue }
         
         let newChange = newChanges[newIndex]
         
         change.change = newChange.change
-        change.unstagedChange = newChange.unstagedChange
         newChangeIndexes.insert(newIndex)
       }
       changes.removeObjects(at: deleteIndexes)
@@ -146,14 +144,6 @@ extension FileChangesDataSource: FileListDataSource
     else { return .unmodified }
     
     return type(of: self).transformDisplayChange(fileChange.change)
-  }
-  
-  func unstagedChange(for item: Any) -> DeltaStatus
-  {
-    guard let fileChange = item as? FileChange
-    else { return .unmodified }
-    
-    return type(of: self).transformDisplayChange(fileChange.unstagedChange)
   }
 }
 

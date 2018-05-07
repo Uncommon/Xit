@@ -117,11 +117,6 @@ extension FileTreeDataSource: FileListDataSource
   {
     return treeItem(item)?.change ?? .unmodified
   }
-  
-  func unstagedChange(for item: Any) -> DeltaStatus
-  {
-    return treeItem(item)?.unstagedChange ?? .unmodified
-  }
 }
 
 extension FileTreeDataSource: NSOutlineViewDataSource

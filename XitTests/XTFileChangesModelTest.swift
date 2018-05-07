@@ -563,7 +563,7 @@ extension NSTreeNode
   func printChangeItems()
   {
     if let item = representedObject as? CommitTreeItem {
-      print("\(item.path) - \(item.change)/\(item.unstagedChange)")
+      print("\(item.path) - \(item.change)")
     }
     if let children = self.children {
       for child in children {
