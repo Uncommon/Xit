@@ -59,6 +59,16 @@ class FileListDataSourceTest: XTTest
     }
   }
   
+  func wait(for condition: () -> Bool, timeout: TimeInterval) -> Bool
+  {
+    let deadline = CFAbsoluteTimeGetCurrent() + timeout
+    
+    while !condition() && CFAbsoluteTimeGetCurrent() < deadline {
+      CFRunLoopRunWithTimeout(0.25)
+    }
+    return CFAbsoluteTimeGetCurrent() < deadline
+  }
+  
   func testMulipleFileList()
   {
     let text = "some text"
@@ -97,10 +107,11 @@ class FileListDataSourceTest: XTTest
     flds.repoController = repoController
     objc_sync_exit(flds)
     waitForRepoQueue()
-    
-    let fileCount = flds.outlineView(outlineView, numberOfChildrenOfItem: nil)
-    
-    XCTAssertEqual(fileCount, 3)
+
+    XCTAssertTrue(wait(for: { flds.outlineView(outlineView,
+                                               numberOfChildrenOfItem: nil) == 3 },
+                       timeout: 1.0),
+                  "reload not completed")
     
     for rootIndex in 0..<2 {
       let root = flds.outlineView(outlineView, child: rootIndex, ofItem: nil)
