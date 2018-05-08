@@ -131,17 +131,14 @@ extension FileViewController
 
   @IBAction func stage(_: Any?)
   {
-    // stage the selected file(s)
   }
 
   @IBAction func unstage(_: Any?)
   {
-    // unstage the selected file(s)
   }
 
   @IBAction func revert(_: Any?)
   {
-    // revert the selected file(s) after confirmation
   }
 
   @IBAction func stageAll(_: Any?)

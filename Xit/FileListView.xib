@@ -31,7 +31,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="379" height="220"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="sequential" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="cZW-qJ-i9c" id="aNl-iT-Tie" customClass="FileListView" customModule="Xit" customModuleProvider="target">
+                            <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="sequential" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="cZW-qJ-i9c" id="aNl-iT-Tie" customClass="FileListView" customModule="Xit" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="379" height="220"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <size key="intercellSpacing" width="3" height="2"/>
@@ -176,11 +176,11 @@
                         </subviews>
                     </clipView>
                     <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="HEG-aO-xns">
-                        <rect key="frame" x="1" y="205" width="377" height="16"/>
+                        <rect key="frame" x="0.0" y="-16" width="0.0" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                     <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="GgL-s6-ODR">
-                        <rect key="frame" x="-15" y="1" width="16" height="0.0"/>
+                        <rect key="frame" x="-16" y="0.0" width="16" height="0.0"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                 </scrollView>

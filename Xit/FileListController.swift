@@ -17,6 +17,12 @@ class FileListController: NSViewController
     static let fileCell = ¶"fileCell"
     static let status = ¶"status"
   }
+  
+  struct ViewSegment
+  {
+    static let list: Int32 = 0
+    static let outline: Int32 = 1
+  }
 
   @IBOutlet weak var listTypeIcon: NSImageView!
   @IBOutlet weak var listTypeLabel: NSTextField!
@@ -126,8 +132,13 @@ class FileListController: NSViewController
   
   @IBAction func viewSwitched(_ sender: Any)
   {
-    // update the outline column
-    // change the data source and reload
+    let listView = viewSwitch.intValue == ViewSegment.list
+    
+    viewDataSource = listView ? fileListDataSource : fileTreeDataSource
+    viewDataSource.reload()
+    outlineView.outlineTableColumn = outlineView.columnObject(withIdentifier:
+        listView ? ColumnID.hidden : ColumnID.file)
+    outlineView.reloadData()
   }
   
   var clickedChange: FileChange?
@@ -195,7 +206,8 @@ extension FileListController: NSOutlineViewDelegate
     
     switch columnID {
       case ColumnID.action:
-        guard let cell = outlineView.makeView(withIdentifier: CellViewID.action,
+        guard change != .unmodified,
+              let cell = outlineView.makeView(withIdentifier: CellViewID.action,
                                               owner: self) as? TableButtonView,
               let button = cell.button as? RolloverButton
         else { break }
@@ -234,7 +246,7 @@ extension FileListController: NSOutlineViewDelegate
         return cell
 
       default:
-          break
+        break
     }
     return nil
   }
