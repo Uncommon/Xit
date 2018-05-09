@@ -138,7 +138,10 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   /// Update for when a new object has been focused or selected
   func updateForFocus()
   {
-    touchBar = makeTouchBar()
+    if #available(OSX 10.12.2, *) {
+      touchBar = makeTouchBar()
+      validateTouchBar()
+    }
   }
   
   func updateNavButtons()

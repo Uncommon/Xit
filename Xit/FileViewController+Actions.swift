@@ -9,6 +9,18 @@ extension FileViewController: NSUserInterfaceValidations
     else { return false }
     
     switch action {
+      case #selector(self.stageAll(_:)):
+        guard let selection = repoController?.selection as? StagingSelection
+        else { return false }
+        
+        return !selection.workspaceFileList.changes.isEmpty
+      
+      case #selector(self.unstageAll(_:)):
+        guard let selection = repoController?.selection as? StagingSelection
+        else { return false }
+        
+        return !selection.indexFileList.changes.isEmpty
+      
       case #selector(self.showWhitespaceChanges(_:)):
         return validateWhitespaceMenuItem(item, whitespace: .showAll)
       case #selector(self.ignoreEOLWhitespace(_:)):
