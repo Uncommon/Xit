@@ -7,6 +7,7 @@ protocol RepositoryController: class
   var selection: RepositorySelection? { get set }
   
   func select(sha: String)
+  func updateForFocus()
 }
 
 /// XTDocument's main window controller.
@@ -132,6 +133,12 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     else { return }
   
     selection = CommitSelection(repository: repo, commit: commit)
+  }
+  
+  /// Update for when a new object has been focused or selected
+  func updateForFocus()
+  {
+    touchBar = makeTouchBar()
   }
   
   func updateNavButtons()

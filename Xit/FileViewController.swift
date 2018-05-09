@@ -121,6 +121,9 @@ class FileViewController: NSViewController
   let allListControllers: [FileListController]
   
   weak var activeFileList: NSOutlineView!
+  {
+    didSet { repoController?.updateForFocus() }
+  }
   var activeFileListController: FileListController
   {
     return activeFileList.delegate as! FileListController
