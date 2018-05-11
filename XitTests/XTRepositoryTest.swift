@@ -374,24 +374,6 @@ class XTAmendTest: XTTest
   }
 }
 
-class XTRepositoryStaticTest: XCTest
-{
-  func testIsTextFile()
-  {
-    let textFiles = ["COPYING", "a.txt", "a.c", "a.xml", "a.html"]
-    let nonTextFiles = ["a.jpg", "a.png", "a.ffff", "AAAAA"]
-    
-    for name in textFiles {
-      XCTAssertTrue(XTRepository.isTextFile(name),
-                    "\(name) should be a text file")
-    }
-    for name in nonTextFiles {
-      XCTAssertFalse(XTRepository.isTextFile(name),
-                     "\(name) should not be a text file")
-    }
-  }
-}
-
 class XTRepositoryTest: XTTest
 {
   func assertWriteSucceeds(name: String, _ block: () throws -> Void)

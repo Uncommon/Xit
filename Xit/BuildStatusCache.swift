@@ -65,7 +65,7 @@ class BuildStatusCache: TeamCityAccessor
         guard !vcsRoots.isEmpty
         else { continue }
         
-        let displayNames = vcsRoots.flatMap
+        let displayNames = vcsRoots.compactMap
               { api.vcsBranchSpecs[$0]?.match(branch: fullBranchName) }
         guard let branchName = displayNames.reduce(nil, {
           (shortest, name) -> String? in

@@ -433,7 +433,7 @@ class FileViewController: NSViewController
       NotificationCenter.default.post(name: .XTRepositoryIndexChanged,
                                       object: repo)
     }
-    catch (let error as XTRepository.Error) {
+    catch let error as XTRepository.Error {
       if let controller = view.window?.windowController
                           as? RepositoryController {
         controller.showErrorMessage(error: error)

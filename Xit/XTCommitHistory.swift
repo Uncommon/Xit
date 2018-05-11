@@ -203,7 +203,7 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
     else { return }
     let lastParentOIDs = lastEntry.commit.parentOIDs
     
-    if let insertBeforeIndex = lastParentOIDs.flatMap(
+    if let insertBeforeIndex = lastParentOIDs.compactMap(
            { oid in entries.index(where: { $0.commit.oid.equals(oid) }) })
            .sorted().first {
       #if DEBUGLOG
@@ -330,7 +330,7 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
                      connections: [CommitConnection<ID>])
   {
     var nextChildIndex: UInt = 0
-    let parentOutlets = NSOrderedSet(array: connections.flatMap {
+    let parentOutlets = NSOrderedSet(array: connections.compactMap {
             ($0.parentOID.equals(entry.commit.oid)) ? nil : $0.parentOID })
     var parentLines: [ID: (childIndex: UInt,
                            colorIndex: UInt)] = [:]

@@ -114,7 +114,7 @@ extension XMLElement
   /// attribute name.
   func childrenAttributes(_ name: String) -> [String]
   {
-    return children?.flatMap({
+    return children?.compactMap({
       ($0 as? XMLElement)?.attribute(forName: name)?.stringValue
     }) ?? []
   }
@@ -365,7 +365,7 @@ extension Array
   
   func objects(at indexSet: IndexSet) -> [Element]
   {
-    return indexSet.flatMap { $0 < count ? self[$0] : nil }
+    return indexSet.compactMap { $0 < count ? self[$0] : nil }
   }
   
   mutating func removeObjects(at indexSet: IndexSet)

@@ -37,7 +37,7 @@ extension HeaderGenerator
       
       let summary = parentCommit.messageSummary
       let encodedSummary = CFXMLCreateStringByEscapingEntities(
-        kCFAllocatorDefault, summary as CFString!, nil) as String?
+        kCFAllocatorDefault, summary as CFString, nil) as String?
       let parentText = "\(parentSHA.firstSix()) \(encodedSummary ?? "")"
       
       parents.append(

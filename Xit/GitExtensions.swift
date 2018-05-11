@@ -84,10 +84,12 @@ extension Array where Element == String
       buffer.append(0)
     }
     
+    let bufferSize = buffer.count
+    
     buffer.withUnsafeMutableBufferPointer {
       (pointer) in
       let boundPointer = UnsafeMutableRawPointer(pointer.baseAddress!)
-                         .bindMemory(to: Int8.self, capacity: buffer.count)
+                         .bindMemory(to: Int8.self, capacity: bufferSize)
       var cStrings: [UnsafeMutablePointer<Int8>?] =
             offsets.map { boundPointer + $0 }
       

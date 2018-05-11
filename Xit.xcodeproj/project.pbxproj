@@ -95,7 +95,6 @@
 		C923D65E1D90506A00C6B90B /* TitleBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = C923D65D1D90506A00C6B90B /* TitleBar.xib */; };
 		C923D66C1D906FAA00C6B90B /* TitleBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D66B1D906FAA00C6B90B /* TitleBarViewController.swift */; };
 		C926804E1D074EC500E422FA /* FileChangesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C926804D1D074EC500E422FA /* FileChangesModel.swift */; };
-		C929611C1F99016400148563 /* XTSideBarDataSource+TeamCity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929611A1F99016400148563 /* XTSideBarDataSource+TeamCity.swift */; };
 		C929611D1F99016400148563 /* XTSidebarController+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929611B1F99016400148563 /* XTSidebarController+Actions.swift */; };
 		C929611F1F99019F00148563 /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929611E1F99019E00148563 /* Images.swift */; };
 		C92961221F99036900148563 /* StringOID.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92961201F99036800148563 /* StringOID.swift */; };
@@ -160,8 +159,6 @@
 		C957B8721D2DB44E0040F858 /* XTRemoteSheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B8701D2DB44E0040F858 /* XTRemoteSheetController.swift */; };
 		C957B8731D2DB44E0040F858 /* XTRemoteSheetController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C957B8711D2DB44E0040F858 /* XTRemoteSheetController.xib */; };
 		C957B87C1D2DBBC00040F858 /* XTAccountsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B87B1D2DBBC00040F858 /* XTAccountsManager.swift */; };
-		C959CDEB1F859DB800C1E282 /* XTSidebarController+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C959CDEA1F859DB800C1E282 /* XTSidebarController+Actions.swift */; };
-		C959CDED1F859ED100C1E282 /* FileViewController+OutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C959CDEC1F859ED100C1E282 /* FileViewController+OutlineView.swift */; };
 		C95BF6541FCF5BC90020C51D /* FileContentProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BF6531FCF5BC90020C51D /* FileContentProtocols.swift */; };
 		C95BF6661FCF5D7A0020C51D /* CommitChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BF6651FCF5D7A0020C51D /* CommitChanges.swift */; };
 		C95BF6681FCF5DBD0020C51D /* StashChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BF6671FCF5DBD0020C51D /* StashChanges.swift */; };
@@ -181,6 +178,7 @@
 		C97144331F97DFF500A2E67C /* XTWindowController+TouchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97144321F97DFF500A2E67C /* XTWindowController+TouchBar.swift */; };
 		C97144361F97E01000A2E67C /* LibGitExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = C97144351F97E01000A2E67C /* LibGitExtensions.m */; };
 		C97144381F97E01D00A2E67C /* FileViewController+OutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97144371F97E01D00A2E67C /* FileViewController+OutlineView.swift */; };
+		C976587F20A6495800002DFF /* XTSideBarDataSource+TeamCity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C959CDE81F859D3D00C1E282 /* XTSideBarDataSource+TeamCity.swift */; };
 		C98925B31DA70D3A00E5645C /* XTCommitLinesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925B21DA70D3A00E5645C /* XTCommitLinesTest.swift */; };
 		C98925C61DB693CC00E5645C /* XTTagPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925C41DB693CC00E5645C /* XTTagPanelController.swift */; };
 		C98925C71DB693CC00E5645C /* XTTagPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C98925C51DB693CC00E5645C /* XTTagPanelController.xib */; };
@@ -203,7 +201,6 @@
 		C9AAEF901E41527F00A248CF /* CommitHeaderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AAEF8F1E41527F00A248CF /* CommitHeaderTest.swift */; };
 		C9ABDB201E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ABDB1F1E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift */; };
 		C9ABDB2F1E0AE72600CBD8D8 /* PrefsTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ABDB2E1E0AE72600CBD8D8 /* PrefsTabViewController.swift */; };
-		C9B023531F61A06900896EA9 /* LibGitExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B023511F61A06900896EA9 /* LibGitExtensions.m */; };
 		C9B6DFB61FDB4A6500B5E3AA /* GitConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B6DFB51FDB4A6500B5E3AA /* GitConfig.swift */; };
 		C9BAE60A1D2FFA8B00A87F13 /* XTConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE6091D2FFA8B00A87F13 /* XTConfig.swift */; };
 		C9BAE6141D3039C500A87F13 /* XTOperationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE6131D3039C500A87F13 /* XTOperationController.swift */; };
@@ -1292,7 +1289,7 @@
 			attributes = {
 				CLASSPREFIX = XT;
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					C3FA46FB13D0F8E200AC4F9B = {
@@ -1562,10 +1559,10 @@
 				C3FA470E13D0F8E200AC4F9B /* main.m in Sources */,
 				C93FFCBD1F13D3B200FDDD78 /* ValidatedSegment.swift in Sources */,
 				C926804E1D074EC500E422FA /* FileChangesModel.swift in Sources */,
+				C976587F20A6495800002DFF /* XTSideBarDataSource+TeamCity.swift in Sources */,
 				C947367C1DF079DB000E3A05 /* SideBarOutlineView.swift in Sources */,
 				C99A6AFF1E4A73240030DC01 /* BlameViewController.swift in Sources */,
 				C95BF6541FCF5BC90020C51D /* FileContentProtocols.swift in Sources */,
-				C959CDED1F859ED100C1E282 /* FileViewController+OutlineView.swift in Sources */,
 				C95BF6681FCF5DBD0020C51D /* StashChanges.swift in Sources */,
 				C99A6AEC1E48FA140030DC01 /* FileListDataSourceBase.swift in Sources */,
 				C9AAEF811E413DA100A248CF /* CommitHeaderViewController.swift in Sources */,
@@ -1592,7 +1589,6 @@
 				C94ECBD51E6E025B00E8B453 /* ObserverCollection.swift in Sources */,
 				C9DEA4AD1E4B82B200DF4069 /* Signature.swift in Sources */,
 				C971442B1F97DFA800A2E67C /* RepositoryProtocols.swift in Sources */,
-				C9B023531F61A06900896EA9 /* LibGitExtensions.m in Sources */,
 				C93799D51DDF9B28005C08B8 /* WorkspaceWatcher.swift in Sources */,
 				C97144301F97DFC000A2E67C /* Mutex.swift in Sources */,
 				C9FE00111F225799006DAD06 /* MainThread.swift in Sources */,
@@ -1639,7 +1635,6 @@
 				C936AD0A1D4C0CD400C5ADC3 /* XTPushController.swift in Sources */,
 				C95355FC1D9492EA00AEEF49 /* XTDocumentController.swift in Sources */,
 				89D5FDB21EDE1DC50067E886 /* XTRepository+Refs.swift in Sources */,
-				C929611C1F99016400148563 /* XTSideBarDataSource+TeamCity.swift in Sources */,
 				C98F05E420A63FFE00A922A9 /* GitDiffDelta.swift in Sources */,
 				89C927881D43B0460074F71A /* XTPullController.swift in Sources */,
 				C94866B61D256C24000BDB0A /* XTFetchController.swift in Sources */,
@@ -1689,7 +1684,6 @@
 				C90FCA2F1D9C776C006196DE /* XTFileDiffController.swift in Sources */,
 				C97144331F97DFF500A2E67C /* XTWindowController+TouchBar.swift in Sources */,
 				C98925D51DB6D3D300E5645C /* XTNewTagController.swift in Sources */,
-				C959CDEB1F859DB800C1E282 /* XTSidebarController+Actions.swift in Sources */,
 				C98F05E320A63F4C00A922A9 /* GitIndex.swift in Sources */,
 				C96F65461D53A6CE001B2557 /* XTHistoryCellView.swift in Sources */,
 				C9BDF4D01D99A7660034841F /* XTRenameBranchPanelController.swift in Sources */,
@@ -1801,12 +1795,20 @@
 		C3D6CF2513D4DEE300D35D4D /* coverage */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -1903,12 +1905,20 @@
 		C3FA472F13D0F8E300AC4F9B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -1944,12 +1954,20 @@
 		C3FA473013D0F8E300AC4F9B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
