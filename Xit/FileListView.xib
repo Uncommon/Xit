@@ -172,6 +172,10 @@
                                         </prototypeCellViews>
                                     </tableColumn>
                                 </tableColumns>
+                                <connections>
+                                    <outlet property="commitMenu" destination="lJK-iI-1Rn" id="POI-fS-9eE"/>
+                                    <outlet property="stagingMenu" destination="xba-e5-1Y8" id="FTy-uS-4kf"/>
+                                </connections>
                             </outlineView>
                         </subviews>
                     </clipView>
@@ -306,6 +310,61 @@
             </constraints>
             <point key="canvasLocation" x="2198" y="332"/>
         </customView>
+        <menu id="xba-e5-1Y8">
+            <items>
+                <menuItem title="Stage" id="qDf-k0-76D">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="stage:" target="-2" id="Far-CC-WSV"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Unstage" id="E1n-mV-gTs">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="unstage:" target="-2" id="eU2-sO-BQe"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="2Zd-xN-7Ao"/>
+                <menuItem title="Revert" id="7jC-IS-HXg">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="revert:" target="-2" id="uje-Oo-gmg"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="5dV-b7-Pzm"/>
+                <menuItem title="Open" id="EG1-a7-JgJ">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="open:" target="-2" id="y1m-9a-Sgt"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Show in Finder" id="ZGE-jn-s4V">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="showInFinder:" target="-2" id="jNo-Mq-rgj"/>
+                    </connections>
+                </menuItem>
+            </items>
+            <point key="canvasLocation" x="1803" y="418"/>
+        </menu>
+        <menu id="lJK-iI-1Rn">
+            <items>
+                <menuItem title="Export Revision..." id="DjF-Fe-7s2">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+                <menuItem title="Check Out Revision" id="FLM-3Z-vYt">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+                <menuItem title="Open Revision" id="xyL-Wk-Gam">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="bNX-8a-jlw"/>
+                <menuItem title="Show Current in Finder" id="95D-Gr-gp7">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+            </items>
+            <point key="canvasLocation" x="1829" y="566"/>
+        </menu>
     </objects>
     <resources>
         <image name="NSActionTemplate" width="14" height="14"/>

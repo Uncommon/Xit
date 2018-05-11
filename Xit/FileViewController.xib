@@ -135,11 +135,10 @@
                                     <font key="font" metaFont="system"/>
                                     <tabViewItems>
                                         <tabViewItem label="Diff" identifier="diff" id="A2f-Wf-RNT">
-                                            <view key="view" id="uQh-Df-4fp">
-                                                <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
+                                            <view key="view" ambiguous="YES" id="uQh-Df-4fp">
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <webView maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e4U-lz-eEd">
+                                                    <webView ambiguous="YES" maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e4U-lz-eEd">
                                                         <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
                                                         <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
                                                             <nil key="identifier"/>
@@ -216,12 +215,12 @@
                                             </view>
                                         </tabViewItem>
                                         <tabViewItem label="Preview" identifier="preview" id="54">
-                                            <view key="view" ambiguous="YES" id="55">
+                                            <view key="view" id="55">
                                                 <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <customView ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4" customClass="QLPreviewView">
-                                                        <rect key="frame" x="0.0" y="0.0" width="345" height="169"/>
+                                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="4" customClass="QLPreviewView">
+                                                        <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
                                                     </customView>
                                                 </subviews>
                                                 <constraints>
@@ -423,55 +422,6 @@
                 <outlet property="webView" destination="jwZ-U5-r8o" id="Epo-mo-RK5"/>
             </connections>
         </customObject>
-        <menu id="Ae9-1e-hjk">
-            <items>
-                <menuItem title="Stage" id="KL1-BE-xHb">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                    <connections>
-                        <action selector="stage:" target="-2" id="pfM-oC-OkO"/>
-                    </connections>
-                </menuItem>
-                <menuItem title="Unstage" id="56P-vr-NNv">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                    <connections>
-                        <action selector="unstage:" target="-2" id="oTC-Qa-hmC"/>
-                    </connections>
-                </menuItem>
-                <menuItem isSeparatorItem="YES" id="OqE-vm-D4r"/>
-                <menuItem title="Revert" id="SZG-EL-c5c">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                    <connections>
-                        <action selector="revert:" target="-2" id="bH4-kl-d1Y"/>
-                    </connections>
-                </menuItem>
-                <menuItem isSeparatorItem="YES" id="6oh-xm-7Hd"/>
-                <menuItem title="Open" id="FnF-3f-hi3">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                </menuItem>
-                <menuItem title="Show in Finder" id="VaE-p6-7i0">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                </menuItem>
-            </items>
-            <point key="canvasLocation" x="-79" y="470"/>
-        </menu>
-        <menu id="Pme-Bw-dSB">
-            <items>
-                <menuItem title="Export Revision..." id="XU4-Ya-pVw">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                </menuItem>
-                <menuItem title="Check Out Revision" id="F1G-rx-Rze">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                </menuItem>
-                <menuItem title="Open Revision" id="48r-ul-thZ">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                </menuItem>
-                <menuItem isSeparatorItem="YES" id="mvO-Pl-lTD"/>
-                <menuItem title="Show Current in Finder" id="nrL-0o-SXd">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                </menuItem>
-            </items>
-            <point key="canvasLocation" x="-87" y="622"/>
-        </menu>
     </objects>
     <resources>
         <image name="NSActionTemplate" width="14" height="14"/>

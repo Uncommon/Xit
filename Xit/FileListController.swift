@@ -29,7 +29,7 @@ class FileListController: NSViewController
   @IBOutlet weak var viewSwitch: NSSegmentedControl!
   @IBOutlet weak var toolbarStack: NSStackView!
   @IBOutlet weak var actionButton: NSPopUpButton!
-  @IBOutlet weak var outlineView: NSOutlineView!
+  @IBOutlet weak var outlineView: FileListView!
   {
     didSet
     {
@@ -92,6 +92,11 @@ class FileListController: NSViewController
     fileTreeDataSource.repoController = repoController
   }
 
+  // These are implemented in subclasses, and are here for convenience
+  // in hooking up xib items
+  @IBAction func stage(_ sender: Any) {}
+  @IBAction func unstage(_ sender: Any) {}
+  
   @IBAction func stageAll(_ sender: Any)
   {
     try? repoController.repository.stageAllFiles()
@@ -104,7 +109,7 @@ class FileListController: NSViewController
   
   @IBAction func revert(_ sender: Any)
   {
-    guard let change = selectedChange
+    guard let change = targetChange(sender: sender)
     else { return }
     
     try? repoController.repository.revert(file: change.path)
@@ -116,14 +121,18 @@ class FileListController: NSViewController
   
   @IBAction func open(_ sender: Any)
   {
+    guard let change = targetChange(sender: sender)
+    else { return }
+    let url = repoController.repository.fileURL(change.path)
+    
+    NSWorkspace.shared.open(url)
   }
   
   @IBAction func showInFinder(_ sender: Any)
   {
-    guard let selectedItem = outlineView.item(atRow: outlineView.selectedRow)
+    guard let change = targetChange(sender: sender)
     else { return }
-    let path = viewDataSource.path(for: selectedItem)
-    let url = repoController.repository.fileURL(path)
+    let url = repoController.repository.fileURL(change.path)
     guard FileManager.default.fileExists(atPath: url.path)
     else { return }
     
@@ -143,9 +152,7 @@ class FileListController: NSViewController
   
   var clickedChange: FileChange?
   {
-    return outlineView.clickedRow == -1
-        ? nil
-        : viewDataSource.fileChange(at: outlineView.clickedRow)
+    return outlineView.contextMenuRow.flatMap { viewDataSource.fileChange(at: $0) }
   }
   
   var selectedChange: FileChange?
@@ -154,6 +161,20 @@ class FileListController: NSViewController
     else { return nil }
     
     return viewDataSource?.fileChange(at: index)
+  }
+  
+  func buttonChange(sender: Any) -> FileChange?
+  {
+    guard let button = sender as? NSButton
+    else { return nil }
+    let row = outlineView.row(for: button)
+    
+    return viewDataSource.fileChange(at: row)
+  }
+  
+  func targetChange(sender: Any) -> FileChange?
+  {
+    return buttonChange(sender: sender) ?? clickedChange ?? selectedChange
   }
 
   func addToolbarButton(imageName: NSImage.Name,
@@ -350,13 +371,11 @@ class StagedFileListController: StagingFileListController
   }
   
   @objc
-  func unstage(_ sender: NSButton)
+  override func unstage(_ sender: Any)
   {
-    let row = outlineView.row(for: sender)
-    guard row != -1,
-          let change = viewDataSource.fileChange(at: row)
+    guard let change = targetChange(sender: sender)
     else { return }
-    
+
     _ = try? repoController.repository.unstage(file: change.path)
     postIndexNotification()
   }
@@ -411,13 +430,11 @@ class WorkspaceFileListController: StagingFileListController
   }
   
   @objc
-  func stage(_ sender: NSButton)
+  override func stage(_ sender: Any)
   {
-    let row = outlineView.row(for: sender)
-    guard row != -1,
-          let change = viewDataSource.fileChange(at: row)
+    guard let change = targetChange(sender: sender)
     else { return }
-    
+
     _ = try? repoController.repository.stage(file: change.path)
     postIndexNotification()
   }
