@@ -47,6 +47,7 @@ public class XTRepository: NSObject
   fileprivate var executing = false
   
   fileprivate(set) var cachedHeadRef, cachedHeadSHA, cachedBranch: String?
+  var cachedStagedChanges, cachedUnstagedChanges: [FileChange]?
   
   let diffCache = Cache<String, Diff>(maxSize: 50)
   fileprivate var repoWatcher: XTRepositoryWatcher! = nil
@@ -188,6 +189,12 @@ public class XTRepository: NSObject
         break
     }
     cachedHeadSHA = sha(forRef: headReference.name)
+  }
+  
+  func invalidateIndex()
+  {
+    cachedStagedChanges = nil
+    cachedUnstagedChanges = nil
   }
   
   func writing(_ block: () -> Bool) -> Bool

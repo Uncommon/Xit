@@ -130,12 +130,28 @@ extension XTRepository: FileStatusDetection
   
   public func stagedChanges() -> [FileChange]
   {
-    return statusChanges(.indexOnly)
+    if let result = cachedStagedChanges {
+      return result
+    }
+    else {
+      let result = statusChanges(.indexOnly)
+      
+      cachedStagedChanges = result
+      return result
+    }
   }
   
   public func unstagedChanges() -> [FileChange]
   {
-    return statusChanges(.workdirOnly)
+    if let result = cachedUnstagedChanges {
+      return result
+    }
+    else {
+      let result = statusChanges(.workdirOnly)
+      
+      cachedUnstagedChanges = result
+      return result
+    }
   }
 }
 

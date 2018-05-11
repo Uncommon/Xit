@@ -8,6 +8,7 @@ protocol RepositoryController: class
   
   func select(sha: String)
   func updateForFocus()
+  func postIndexNotification()
 }
 
 /// XTDocument's main window controller.
@@ -141,6 +142,19 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     if #available(OSX 10.12.2, *) {
       touchBar = makeTouchBar()
       validateTouchBar()
+    }
+  }
+  
+  func postIndexNotification()
+  {
+    guard let repo = xtDocument?.repository
+    else { return }
+    let deadline: DispatchTime = .now() + .milliseconds(125)
+    
+    repo.invalidateIndex()
+    DispatchQueue.main.asyncAfter(deadline: deadline) {
+      NotificationCenter.default.post(name: .XTRepositoryIndexChanged,
+                                      object: repo)
     }
   }
   

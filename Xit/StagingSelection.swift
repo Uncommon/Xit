@@ -38,7 +38,14 @@ class IndexFileList: StagingListModel, FileListModel
 {
   var stagingType: StagingType { return .index }
   
-  var changes: [FileChange] { return repository.stagedChanges() }
+  var changes: [FileChange]
+  {
+    kdebug_signpost_start(Signposts.loadIndex, 0, 0, 0, 0)
+    defer {
+      kdebug_signpost_end(Signposts.loadIndex, 0, 0, 0, 0)
+    }
+    return repository.stagedChanges()
+  }
   
   func diffForFile(_ path: String) -> PatchMaker.PatchResult?
   {
@@ -75,7 +82,14 @@ class WorkspaceFileList: StagingListModel, FileListModel
 {
   var stagingType: StagingType { return .workspace }
 
-  var changes: [FileChange] { return repository.unstagedChanges() }
+  var changes: [FileChange]
+  {
+    kdebug_signpost_start(Signposts.loadWorkspace, 0, 0, 0, 0)
+    defer {
+      kdebug_signpost_end(Signposts.loadWorkspace, 0, 0, 0, 0)
+    }
+    return repository.unstagedChanges()
+  }
   
   func diffForFile(_ path: String) -> PatchMaker.PatchResult?
   {

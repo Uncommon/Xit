@@ -341,12 +341,6 @@ class StagingFileListController: FileListController
       self?.viewDataSource.reload()
     }
   }
-  
-  func postIndexNotification()
-  {
-    NotificationCenter.default.post(name: .XTRepositoryIndexChanged,
-                                    object: repoController.repository)
-  }
 }
 
 class StagedFileListController: StagingFileListController
@@ -377,7 +371,7 @@ class StagedFileListController: StagingFileListController
     else { return }
 
     _ = try? repoController.repository.unstage(file: change.path)
-    postIndexNotification()
+    repoController.postIndexNotification()
   }
 }
 
@@ -436,7 +430,7 @@ class WorkspaceFileListController: StagingFileListController
     else { return }
 
     _ = try? repoController.repository.stage(file: change.path)
-    postIndexNotification()
+    repoController.postIndexNotification()
   }
 }
 
