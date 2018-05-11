@@ -22,28 +22,28 @@ class XTStashTest: XTTest
     let repoPath = self.repoPath as NSString
     let addedPath = repoPath.appendingPathComponent(addedName)
     let untrackedPath = repoPath.appendingPathComponent(untrackedName)
-    let addedIndex = 0, file1Index = 1, untrackedIndex = 2;
     
     // Stash should have cleaned up both new files
     XCTAssertFalse(FileManager.default.fileExists(atPath: untrackedPath))
     XCTAssertFalse(FileManager.default.fileExists(atPath: addedPath))
     
     let stash = XTStash(repo: self.repository, index: 0, message: "stash 0")
-    let changes = stash.changes()
-    let addedChange: FileChange = changes[addedIndex]
-    let file1Change: FileChange = changes[file1Index]
-    let untrackedChange: FileChange = changes[untrackedIndex]
+    let indexChanges = stash.indexChanges()
+    let workspaceChanges = stash.workspaceChanges()
     
-    XCTAssertEqual(changes.count, 3)
-    XCTAssertEqual(addedChange.path, addedName)
-    XCTAssertEqual(addedChange.change, DeltaStatus.added)
-    XCTAssertEqual(addedChange.unstagedChange, DeltaStatus.unmodified)
-    XCTAssertEqual(file1Change.path, self.file1Name)
-    XCTAssertEqual(file1Change.change, DeltaStatus.unmodified)
-    XCTAssertEqual(file1Change.unstagedChange, DeltaStatus.modified)
-    XCTAssertEqual(untrackedChange.path, untrackedName)
-    XCTAssertEqual(untrackedChange.change, DeltaStatus.unmodified)
-    XCTAssertEqual(untrackedChange.unstagedChange, DeltaStatus.added)
+    guard indexChanges.count == 1,
+          workspaceChanges.count == 2
+    else {
+      XCTFail("wrong file count")
+      return
+    }
+    
+    XCTAssertEqual(indexChanges[0].path, addedName)
+    XCTAssertEqual(indexChanges[0].change, DeltaStatus.added)
+    XCTAssertEqual(workspaceChanges[0].path, file1Name)
+    XCTAssertEqual(workspaceChanges[0].change, DeltaStatus.modified)
+    XCTAssertEqual(workspaceChanges[1].path, untrackedName)
+    XCTAssertEqual(workspaceChanges[1].change, DeltaStatus.added)
     
     XCTAssertNotNil(stash.headBlobForPath(self.file1Name))
     
@@ -89,16 +89,16 @@ class XTStashTest: XTTest
     XCTAssertNoThrow(try repository.stage(file: imageName))
     XCTAssertNoThrow(try repository.saveStash(name: nil, includeUntracked: true))
     
-    let stashModel = StashChanges(repository: repository, index: 0)
+    let selection = StashSelection(repository: repository, index: 0)
     
-    if let stagedDiffResult = stashModel.diffForFile(imageName, staged: true) {
+    if let stagedDiffResult = selection.fileList.diffForFile(imageName) {
       XCTAssertEqual(stagedDiffResult, .binary)
     }
     else {
       XCTFail("no staged diff")
     }
     
-    if let unstagedDiffResult = stashModel.diffForFile(imageName, staged: true) {
+    if let unstagedDiffResult = selection.fileList.diffForFile(imageName) {
       XCTAssertEqual(unstagedDiffResult, .binary)
     }
     else {

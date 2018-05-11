@@ -5,11 +5,10 @@ protocol XTFileContentController
 {
   /// Clears the display for when nothing is selected.
   func clear()
-  /// Displays the content from the given file model.
+  /// Displays the content from the given selection.
   /// - parameter path: The repository-relative file path.
-  /// - parameter model: The model to read data from.
-  /// - parameter staged: Whether to show staged content.
-  func load(path: String!, model: FileChangesModel!, staged: Bool)
+  /// - parameter fileList: The file list to read data from.
+  func load(path: String!, fileList: FileListModel)
   /// True if the controller has content loaded.
   var isLoaded: Bool { get }
 }

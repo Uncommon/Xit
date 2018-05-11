@@ -5,7 +5,7 @@ class XTNewTagController: XTOperationController
   override func start() throws
   {
     let panelController = XTTagPanelController.controller()
-    guard let selectedSHA = windowController?.selectedModel?.shaToSelect,
+    guard let selectedSHA = windowController?.selection?.shaToSelect,
           let selectedOID = repository?.oid(forSHA: selectedSHA),
           let repository = repository,
           let commit = repository.commit(forSHA: selectedSHA)
@@ -43,8 +43,8 @@ class XTNewTagController: XTOperationController
       else {
         try? repository.createLightweightTag(name: name, targetOID: oid)
       }
-      NotificationCenter.default.post(
-          name: NSNotification.Name.XTRepositoryRefsChanged, object: repository)
+      NotificationCenter.default.post(name: .XTRepositoryRefsChanged,
+                                      object: repository)
       self.ended()
     }
   }

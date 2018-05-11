@@ -4,7 +4,7 @@ import Cocoa
 class XTPrefsWindowController: NSWindowController
 {
   static let sharedPrefsController =
-      NSStoryboard(name: NSStoryboard.Name(rawValue: "Preferences"), bundle: nil)
+      NSStoryboard(name: ◊"Preferences", bundle: nil)
       .instantiateInitialController()!
       as! XTPrefsWindowController
 }

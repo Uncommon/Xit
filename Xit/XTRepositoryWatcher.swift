@@ -27,8 +27,9 @@ let XTChangedRefsKey = "changedRefs"
     set
     {
       mutex.withLock { lastIndexChangeGuarded = newValue }
-      NotificationCenter.default.post(
-          name: NSNotification.Name.XTRepositoryIndexChanged, object: repository)
+      repository?.invalidateIndex()
+      NotificationCenter.default.post(name: .XTRepositoryIndexChanged,
+                                      object: repository)
     }
   }
   

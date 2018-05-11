@@ -86,7 +86,7 @@ extension DiffHunk
     let targetLineCount = Int(self.oldLines)
     let replaceRange = targetLineStart..<(targetLineStart+targetLineCount)
     
-    return oldText == Array(lines[replaceRange])
+    return oldText.elementsEqual(lines[replaceRange])
   }
 }
 

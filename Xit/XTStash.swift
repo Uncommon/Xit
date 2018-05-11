@@ -7,7 +7,8 @@ public protocol Stash: class
   var indexCommit: Commit? { get }
   var untrackedCommit: Commit? { get }
   
-  func changes() -> [FileChange]
+  func indexChanges() -> [FileChange]
+  func workspaceChanges() -> [FileChange]
   func stagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
   func unstagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
 }
@@ -15,13 +16,13 @@ public protocol Stash: class
 /// Wraps a stash to preset a unified list of file changes.
 public class XTStash: NSObject, Stash
 {
-  typealias Repo = CommitStorage & FileContents & FileStaging & Stashing
+  typealias Repo = CommitStorage & FileContents & FileStatusDetection & Stashing
   
   unowned var repo: Repo
   public var message: String?
   public var mainCommit: Commit?
   public var indexCommit, untrackedCommit: Commit?
-  private var cachedChanges: [FileChange]?
+  private var cachedIndexChanges, cachedWorkspaceChanges: [FileChange]?
 
   init(repo: Repo, index: UInt, message: String?)
   {
@@ -39,53 +40,36 @@ public class XTStash: NSObject, Stash
     }
   }
 
-  public func changes() -> [FileChange]
+  public func indexChanges() -> [FileChange]
   {
-    if let changes = cachedChanges {
+    if let changes = cachedIndexChanges {
+      return changes
+    }
+    
+    let changes = indexCommit.map { repo.changes(for: $0.sha, parent: nil) } ?? []
+    
+    cachedIndexChanges = changes
+    return changes
+  }
+  
+  public func workspaceChanges() -> [FileChange]
+  {
+    if let changes = cachedWorkspaceChanges {
       return changes
     }
     
     guard let mainCommit = self.mainCommit
     else { return [] }
-    var unstagedChanges = repo.changes(for: mainCommit.sha,
-                                       parent: indexCommit?.oid)
-    let stagedChanges = indexCommit.map { repo.changes(for: $0.sha,
-                                                       parent: nil) }
-                        ?? []
+    var changes = repo.changes(for: mainCommit.sha, parent: indexCommit?.oid)
     
     if let untrackedCommit = self.untrackedCommit {
       let untrackedChanges = repo.changes(for: untrackedCommit.sha, parent: nil)
       
-      unstagedChanges.append(contentsOf: untrackedChanges)
+      changes.append(contentsOf: untrackedChanges)
     }
-    // Unstaged statuses aren't set because these are coming out of commits,
-    // so they all have to be switched.
-    for unstaged in unstagedChanges {
-      unstaged.unstagedChange = unstaged.change
-      unstaged.change = .unmodified
-    }
-    
-    let unstagedPaths = unstagedChanges.map({ $0.path })
-    var unstagedDict = [String: FileChange]()
-    
-    // Apparently the closest thing to dictionaryWithObjects:forKeys:
-    for (path, fileChange) in zip(unstagedPaths, unstagedChanges) {
-      unstagedDict[path] = fileChange
-    }
-    
-    for staged in stagedChanges {
-      if let change = unstagedDict[staged.path] {
-        change.change = staged.change
-      }
-      else {
-        unstagedDict[staged.path] = staged
-      }
-    }
-    
-    var changes = [FileChange](unstagedDict.values)
     
     changes.sort { $0.path.compare($1.path) == .orderedAscending }
-    self.cachedChanges = changes
+    self.cachedWorkspaceChanges = changes
     return changes
   }
 

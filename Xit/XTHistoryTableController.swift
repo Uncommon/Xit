@@ -6,9 +6,9 @@ public class XTHistoryTableController: NSViewController
 {
   struct ColumnID
   {
-    static let commit = NSUserInterfaceItemIdentifier(rawValue: "commit")
-    static let date = NSUserInterfaceItemIdentifier(rawValue: "date")
-    static let name = NSUserInterfaceItemIdentifier(rawValue: "name")
+    static let commit = ¶"commit"
+    static let date = ¶"date"
+    static let name = ¶"name"
   }
   
   let observers = ObserverCollection()
@@ -30,9 +30,8 @@ public class XTHistoryTableController: NSViewController
       table.intercellSpacing = spacing
 
       loadHistory()
-      observers.addObserver(
-          forName: NSNotification.Name.XTRepositoryRefsChanged,
-          object: repository, queue: .main) {
+      observers.addObserver(forName: .XTRepositoryRefsChanged,
+                            object: repository, queue: .main) {
         [weak self] _ in
         // To do: dynamic updating
         // - new and changed refs: add if they're not already in the list
@@ -41,9 +40,8 @@ public class XTHistoryTableController: NSViewController
         // For now: just reload
         self?.reload()
       }
-      observers.addObserver(
-          forName: NSNotification.Name.XTReselectModel,
-          object: repository, queue: .main) {
+      observers.addObserver(forName: .XTReselectModel,
+                            object: repository, queue: .main) {
         [weak self] _ in
         guard let tableView = self?.view as? NSTableView,
               let selectedIndex = tableView.selectedRowIndexes.first
@@ -74,9 +72,9 @@ public class XTHistoryTableController: NSViewController
         object: controller,
         queue: .main) {
       [weak self] (notification) in
-      if let selectedModel = notification.userInfo?[NSKeyValueChangeKey.newKey]
-                             as? FileChangesModel {
-        self?.selectRow(sha: selectedModel.shaToSelect)
+      if let selection = notification.userInfo?[NSKeyValueChangeKey.newKey]
+                             as? RepositorySelection {
+        self?.selectRow(sha: selection.shaToSelect)
       }
     }
     
@@ -194,10 +192,10 @@ public class XTHistoryTableController: NSViewController
     
     guard let controller = self.view.window?.windowController
                            as? RepositoryController,
-          let selectedModel = controller.selectedModel
+          let selection = controller.selection
     else { return }
     
-    selectRow(sha: selectedModel.shaToSelect, forceScroll: true)
+    selectRow(sha: selection.shaToSelect, forceScroll: true)
   }
   
   /// Selects the row for the given commit SHA.
@@ -318,9 +316,9 @@ extension XTHistoryTableController: NSTableViewDelegate
     
     if (selectedRow >= 0) && (selectedRow < history.entries.count),
        let controller = view.window?.windowController as? RepositoryController {
-      controller.selectedModel =
-          CommitChanges(repository: repository,
-                        commit: history.entries[selectedRow].commit)
+      controller.selection =
+          CommitSelection(repository: repository,
+                          commit: history.entries[selectedRow].commit)
     }
   }
 }
@@ -335,12 +333,13 @@ extension XTHistoryTableController: XTTableViewDelegate
     else { return }
     
     let entry = history.entries[selectionIndex]
-    let newModel = CommitChanges(repository: repository, commit: entry.commit)
+    let newSelection = CommitSelection(repository: repository,
+                                       commit: entry.commit)
     
-    if (controller.selectedModel == nil) ||
-       (controller.selectedModel?.shaToSelect != newModel.shaToSelect) ||
-       (type(of: controller.selectedModel!) != type(of: newModel)) {
-      controller.selectedModel = newModel
+    if (controller.selection == nil) ||
+       (controller.selection?.shaToSelect != newSelection.shaToSelect) ||
+       (type(of: controller.selection!) != type(of: newSelection)) {
+      controller.selection = newSelection
     }
   }
 }

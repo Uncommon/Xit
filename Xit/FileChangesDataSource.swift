@@ -1,13 +1,13 @@
 import Foundation
 
-class XTFileChangesDataSource: FileListDataSourceBase
+class FileChangesDataSource: FileListDataSourceBase
 {
   var changes = [FileChange]()
   var wasInStaging: Bool = false
   
-  func doReload(_ model: FileChangesModel?)
+  func doReload(_ fileList: FileListModel?)
   {
-    var newChanges = model?.changes ?? [FileChange]()
+    var newChanges = fileList?.changes ?? [FileChange]()
     
     newChanges.sort { $0.path < $1.path }
     
@@ -29,20 +29,17 @@ class XTFileChangesDataSource: FileListDataSourceBase
       changes = newChanges
     }
     else {
-      changes.forEach {
-        (change) in
+      for change in changes {
         guard let newIndex = newChanges.index(where: {
           (newChange) in
           newChange.path == change.path &&
-          ((newChange.change != change.change) ||
-           (newChange.unstagedChange != change.unstagedChange))
+          newChange.change != change.change
         })
-        else { return }
+        else { continue }
         
         let newChange = newChanges[newIndex]
         
         change.change = newChange.change
-        change.unstagedChange = newChange.unstagedChange
         newChangeIndexes.insert(newIndex)
       }
       changes.removeObjects(at: deleteIndexes)
@@ -52,11 +49,12 @@ class XTFileChangesDataSource: FileListDataSourceBase
     
     DispatchQueue.main.async {
       [weak self] in
-      guard let outlineView = self?.outlineView,
-            self === outlineView.dataSource
+      guard let myself = self,
+            let outlineView = myself.outlineView,
+            myself === outlineView.dataSource
       else { return }
       let selectedRow = outlineView.selectedRow
-      let selectedChange = self?.fileChange(at: selectedRow)
+      let selectedChange = myself.fileChange(at: selectedRow)
       
       outlineView.beginUpdates()
       if !deleteIndexes.isEmpty {
@@ -80,29 +78,7 @@ class XTFileChangesDataSource: FileListDataSourceBase
         outlineView.reloadData(forRowIndexes: newChangeIndexes,
                                columnIndexes: allColumnIndexes)
       }
-      self?.reselect(change: selectedChange, oldRow: selectedRow)
-      self?.updateStagingIcons()
-    }
-  }
-  
-  func updateStagingIcons()
-  {
-    if wasInStaging != controller.isStaging {
-      let stagedIndex = outlineView.column(withIdentifier:
-            FileViewController.ColumnID.staged)
-      
-      for index in 0..<outlineView.numberOfRows {
-        guard let stagedCell = outlineView.view(atColumn: stagedIndex, row: index,
-                                                makeIfNecessary: false)
-                               as? TableButtonView,
-              let change = outlineView.item(atRow: index) as? FileChange
-        else { continue }
-        
-        controller.updateTableButton(stagedCell.button, change: change.change,
-                                     otherChange: change.unstagedChange)
-      }
-      
-      wasInStaging = controller.isStaging
+      myself.reselect(change: selectedChange, oldRow: selectedRow)
     }
   }
   
@@ -132,15 +108,15 @@ class XTFileChangesDataSource: FileListDataSourceBase
   }
 }
 
-extension XTFileChangesDataSource: FileListDataSource
+extension FileChangesDataSource: FileListDataSource
 {
   var hierarchical: Bool { return false }
 
   func reload()
   {
-    let model = repoController.selectedModel
+    let model = repoController.selection.flatMap { self.model(for: $0) }
     
-    taskQueue?.executeOffMainThread {
+    repoController.queue.executeOffMainThread {
       [weak self] in
       self?.doReload(model)
     }
@@ -169,17 +145,9 @@ extension XTFileChangesDataSource: FileListDataSource
     
     return type(of: self).transformDisplayChange(fileChange.change)
   }
-  
-  func unstagedChange(for item: Any) -> DeltaStatus
-  {
-    guard let fileChange = item as? FileChange
-    else { return .unmodified }
-    
-    return type(of: self).transformDisplayChange(fileChange.unstagedChange)
-  }
 }
 
-extension XTFileChangesDataSource: NSOutlineViewDataSource
+extension FileChangesDataSource: NSOutlineViewDataSource
 {
   func outlineView(_ outlineView: NSOutlineView,
                    numberOfChildrenOfItem item: Any?) -> Int

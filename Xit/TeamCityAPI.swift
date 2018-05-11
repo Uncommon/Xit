@@ -84,9 +84,8 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
     {
       if buildTypesStatus != oldValue &&
          buildTypesStatus == .done {
-        NotificationCenter.default.post(
-            name: NSNotification.Name.XTTeamCityStatusChanged,
-            object: self)
+        NotificationCenter.default.post(name: .XTTeamCityStatusChanged,
+                                        object: self)
       }
     }
   }

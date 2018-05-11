@@ -199,8 +199,7 @@ class XTSidebarController: NSViewController, SidebarHandler
     sidebarOutline.floatsGroupRows = false
   
     if branchContextMenu == nil,
-       let menuNib = NSNib(nibNamed: NSNib.Name(rawValue: "HistoryView Menus"),
-                           bundle: nil) {
+       let menuNib = NSNib(nibNamed: ◊"HistoryView Menus", bundle: nil) {
       menuNib.instantiate(withOwner: self, topLevelObjects: nil)
     }
     
@@ -218,12 +217,12 @@ class XTSidebarController: NSViewController, SidebarHandler
   {
     let repoController = view.window!.windowController as! XTWindowController
 
-    switch repoController.selectedModel {
+    switch repoController.selection {
     
-      case let stashChanges as StashChanges:
+      case let stashChanges as StashSelection:
         let stashRoot = sidebarDS.roots[XTGroupIndex.stashes.rawValue]
         guard let stashItem = stashRoot.children.first(where: {
-          $0.model.map({ (model) in model == stashChanges }) ?? false
+          $0.selection.map({ (selection) in selection == stashChanges }) ?? false
         })
         else { break }
         
@@ -231,7 +230,7 @@ class XTSidebarController: NSViewController, SidebarHandler
             IndexSet(integer: sidebarOutline.row(forItem: stashItem)),
             byExtendingSelection: false)
       
-      case let commitChanges as CommitChanges:
+      case let commitChanges as CommitSelection:
         guard let ref = commitChanges.shaToSelect.map({ repo.refs(at: $0) })?
                                                  .first
         else { break }

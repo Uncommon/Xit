@@ -14,12 +14,12 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
   
   struct NibName
   {
-    static let buildStatus = NSNib.Name(rawValue: "BuildStatusViewController")
+    static let buildStatus: NSNib.Name = ◊"BuildStatusViewController"
   }
   
   struct CellID
   {
-    static let build = NSUserInterfaceItemIdentifier(rawValue: "BuildCell")
+    static let build = ¶"BuildCell"
   }
 
   init(repository: RemoteManagement, branch: Branch,
@@ -151,8 +151,7 @@ extension BuildStatusViewController: NSTableViewDelegate
       cell.progressBar.isHidden = true
     }
     cell.statusImage.image = NSImage(named:
-        build.status == .succeeded ? NSImage.Name.statusAvailable
-                                   : NSImage.Name.statusUnavailable)
+        build.status == .succeeded ? .statusAvailable : .statusUnavailable)
     
     return cell
   }

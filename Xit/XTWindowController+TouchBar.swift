@@ -5,6 +5,9 @@ extension NSTouchBarItem.Identifier
   static let
       navigation = NSTouchBarItem.Identifier("com.uncommonplace.xit.nav"),
       staging = NSTouchBarItem.Identifier("com.uncommonplace.xit.staging"),
+      stage = NSTouchBarItem.Identifier("com.uncommonplace.xit.stage"),
+      revert = NSTouchBarItem.Identifier("com.uncommonplace.xit.revert"),
+      unstage = NSTouchBarItem.Identifier("com.uncommonplace.xit.unstage"),
       unstageAll = NSTouchBarItem.Identifier("com.uncommonplace.xit.unstageall"),
       stageAll = NSTouchBarItem.Identifier("com.uncommonplace.xit.stageall")
 }
@@ -15,13 +18,48 @@ extension XTWindowController: NSTouchBarDelegate
   override func makeTouchBar() -> NSTouchBar?
   {
     let bar = NSTouchBar()
+    var ids: [NSTouchBarItem.Identifier]
     
     bar.delegate = self
-    bar.defaultItemIdentifiers = (selectedModel is StagingChanges)
-        ? [ .navigation, .unstageAll, .stageAll ]
-        : [ .navigation, .staging ]
+    if selection is StagingSelection {
+      let fileViewController = historyController.fileViewController!
+      
+      switch fileViewController.activeFileListController {
+        case fileViewController.stagedListController:
+          ids = [ .navigation, .unstage, .unstageAll, .stageAll ]
+        case fileViewController.workspaceListController:
+          ids = [ .navigation, .stage, .revert, .unstageAll, .stageAll ]
+        default:
+          ids = [ .navigation ]
+      }
+    }
+    else {
+      ids = [ .navigation, .staging ]
+    }
     
+    bar.defaultItemIdentifiers = ids
+    validate(touchBar: bar)
     return bar
+  }
+  
+  func validate(touchBar: NSTouchBar)
+  {
+    for id in touchBar.itemIdentifiers {
+      guard let item = touchBar.item(forIdentifier: id),
+            let control = item.view as? NSControl,
+            let validator = control.target as? NSUserInterfaceValidations,
+            let validatedItem = item.view as? NSValidatedUserInterfaceItem
+      else { continue }
+      
+      control.isEnabled = validator.validateUserInterfaceItem(validatedItem)
+    }
+  }
+  
+  func validateTouchBar()
+  {
+    if let touchBar = touchBar {
+      validate(touchBar: touchBar)
+    }
   }
   
   func touchBarButton(identifier: NSTouchBarItem.Identifier,
@@ -44,12 +82,15 @@ extension XTWindowController: NSTouchBarDelegate
                 makeItemForIdentifier identifier: NSTouchBarItem.Identifier)
                 -> NSTouchBarItem?
   {
+    let listController =
+          historyController.fileViewController.activeFileListController
+    
     switch identifier {
 
       case NSTouchBarItem.Identifier.navigation:
         let control = NSSegmentedControl(
-                images: [NSImage(named: NSImage.Name.goBackTemplate)!,
-                         NSImage(named: NSImage.Name.goForwardTemplate)!],
+                images: [NSImage(named: .goBackTemplate)!,
+                         NSImage(named: .goForwardTemplate)!],
                 trackingMode: .momentary,
                 target: titleBarController,
                 action: #selector(TitleBarViewController.navigate(_:)))
@@ -58,6 +99,27 @@ extension XTWindowController: NSTouchBarDelegate
         control.segmentStyle = .separated
         item.view = control
         return item
+
+      case .stage:
+        return touchBarButton(
+            identifier: identifier, title: "Stage",
+            image: NSImage(named: .xtStageButtonHover),
+            target: listController,
+            action: #selector(WorkspaceFileListController.stage(_:)))
+
+      case .revert:
+        return touchBarButton(
+            identifier: identifier, title: "Revert",
+            image: NSImage(named: .xtRevertTemplate),
+            target: listController,
+            action: #selector(WorkspaceFileListController.revert(_:)))
+      
+      case .unstage:
+        return touchBarButton(
+            identifier: identifier, title: "Unstage",
+            image: NSImage(named: .xtUnstageButtonHover),
+            target: listController,
+            action: #selector(StagedFileListController.unstage(_:)))
 
       case NSTouchBarItem.Identifier.staging:
         guard let stagingImage = NSImage(named: .xtStagingTemplate)
@@ -69,13 +131,15 @@ extension XTWindowController: NSTouchBarDelegate
 
       case NSTouchBarItem.Identifier.unstageAll:
         return touchBarButton(
-            identifier: identifier, title: "« Unstage All", image: nil,
+            identifier: identifier, title: "Unstage All",
+            image: NSImage(named: .xtUnstageAllTemplate),
             target: historyController.fileViewController,
             action: #selector(FileViewController.unstageAll(_:)))
       
       case NSTouchBarItem.Identifier.stageAll:
         return touchBarButton(
-            identifier: identifier, title: "» Stage All", image: nil,
+            identifier: identifier, title: "Stage All",
+            image: NSImage(named: .xtStageAllTemplate),
             target: historyController.fileViewController,
             action: #selector(FileViewController.stageAll(_:)))
 

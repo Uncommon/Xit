@@ -1,5 +1,11 @@
 import Foundation
 
+public typealias Repository =
+    CommitStorage & CommitReferencing & FileDiffing & FileContents & FileStaging &
+    Stashing & RemoteManagement & SubmoduleManagement & Branching &
+    FileStatusDetection
+    // BranchListing (associated types)
+
 public protocol CommitStorage: class
 {
   func oid(forSHA sha: String) -> OID?
@@ -13,6 +19,7 @@ public protocol CommitReferencing: class
 {
   var headRef: String? { get }
   var currentBranch: String? { get }
+  
   func remoteNames() -> [String]
   func tags() throws -> [Tag]
   func graphBetween(localBranch: LocalBranch,
@@ -45,9 +52,12 @@ public protocol BranchListing: class
 
 public protocol FileStatusDetection: class
 {
-  associatedtype ID: OID
+  var workspaceStatus: [String: WorkspaceFileStatus] { get }
+  
+  func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
 
-  func changes(for sha: String, parent parentOID: ID) -> [FileChange]
+  func stagedChanges() -> [FileChange]
+  func unstagedChanges() -> [FileChange]
 }
 
 public protocol FileDiffing: class
@@ -79,9 +89,11 @@ public protocol FileContents: class
 
 public protocol FileStaging: class
 {
-  var workspaceStatus: [String: WorkspaceFileStatus] { get }
-  
-  func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
+  func stage(file: String) throws
+  func unstage(file: String) throws
+  func revert(file: String) throws
+  func stageAllFiles() throws
+  func unstageAllFiles() throws
 }
 
 public protocol Stashing: class
@@ -110,6 +122,6 @@ public protocol Branching: class
 {
   var currentBranch: String? { get }
   
-  func localBranch(named name: String) -> LocalBranch
-  func remoteBranch(named name: String) -> RemoteBranch
+  func localBranch(named name: String) -> LocalBranch?
+  func remoteBranch(named name: String) -> RemoteBranch?
 }

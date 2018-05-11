@@ -2,10 +2,13 @@ import Cocoa
 
 protocol RepositoryController: class
 {
+  var repository: Repository { get }
   var queue: TaskQueue { get }
-  var selectedModel: FileChangesModel? { get set }
+  var selection: RepositorySelection? { get set }
   
   func select(sha: String)
+  func updateForFocus()
+  func postIndexNotification()
 }
 
 /// XTDocument's main window controller.
@@ -19,21 +22,22 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   weak var xtDocument: XTDocument?
   var titleBarController: TitleBarViewController?
   var refsChangedObserver: NSObjectProtocol?
+  var repository: Repository { return (xtDocument?.repository as Repository?)! }
   var queue: TaskQueue { return xtDocument!.repository.queue }
-  var selectedModel: FileChangesModel?
+  var selection: RepositorySelection?
   {
     didSet
     {
-      guard selectedModel.map({ (s) in oldValue.map { (o) in s != o }
+      guard selection.map({ (s) in oldValue.map { (o) in s != o }
           ?? true }) ?? (oldValue != nil)
       else { return }
       var userInfo = [AnyHashable: Any]()
       
-      userInfo[NSKeyValueChangeKey.newKey] = selectedModel
+      userInfo[NSKeyValueChangeKey.newKey] = selection
       userInfo[NSKeyValueChangeKey.oldKey] = oldValue
       
       NotificationCenter.default.post(
-          name: NSNotification.Name.XTSelectedModelChanged,
+          name: .XTSelectedModelChanged,
           object: self,
           userInfo: userInfo)
       
@@ -48,8 +52,8 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       updateNavButtons()
     }
   }
-  var navBackStack = [FileChangesModel]()
-  var navForwardStack = [FileChangesModel]()
+  var navBackStack = [RepositorySelection]()
+  var navForwardStack = [RepositorySelection]()
   var navigating = false
   var sidebarHidden: Bool
   {
@@ -86,7 +90,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     let repo = xtDocument!.repository!
     
     refsChangedObserver = NotificationCenter.default.addObserver(
-        forName: NSNotification.Name.XTRepositoryRefsChanged,
+        forName: .XTRepositoryRefsChanged,
         object: repo, queue: .main) {
       [weak self] _ in
       self?.updateBranchList()
@@ -117,11 +121,10 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func select(sha: String)
   {
-    guard let commit = xtDocument!.repository.commit(forSHA: sha)
+    guard let commit = repository.commit(forSHA: sha)
     else { return }
   
-    selectedModel = CommitChanges(repository: xtDocument!.repository,
-                                  commit: commit)
+    selection = CommitSelection(repository: repository, commit: commit)
   }
   
   func select(oid: GitOID)
@@ -130,8 +133,29 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
           let commit = repo.commit(forOID: oid)
     else { return }
   
-    selectedModel = CommitChanges(repository: xtDocument!.repository,
-                                  commit: commit)
+    selection = CommitSelection(repository: repo, commit: commit)
+  }
+  
+  /// Update for when a new object has been focused or selected
+  func updateForFocus()
+  {
+    if #available(OSX 10.12.2, *) {
+      touchBar = makeTouchBar()
+      validateTouchBar()
+    }
+  }
+  
+  func postIndexNotification()
+  {
+    guard let repo = xtDocument?.repository
+    else { return }
+    let deadline: DispatchTime = .now() + .milliseconds(125)
+    
+    repo.invalidateIndex()
+    DispatchQueue.main.asyncAfter(deadline: deadline) {
+      NotificationCenter.default.post(name: .XTRepositoryIndexChanged,
+                                      object: repo)
+    }
   }
   
   func updateNavButtons()
@@ -245,7 +269,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func updateRemotesMenu(_ menu: NSMenu)
   {
-    let remoteNames = xtDocument!.repository.remoteNames()
+    let remoteNames = repository.remoteNames()
     
     menu.removeAllItems()
     for name in remoteNames {
@@ -318,9 +342,9 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func windowWillClose(_ notification: Notification)
   {
-    titleBarController?.titleLabel.unbind(NSBindingName(rawValue: "value"))
-    titleBarController?.proxyIcon.unbind(NSBindingName(rawValue: "hidden"))
-    titleBarController?.spinner.unbind(NSBindingName(rawValue: "hidden"))
+    titleBarController?.titleLabel.unbind(◊"value")
+    titleBarController?.proxyIcon.unbind(◊"hidden")
+    titleBarController?.spinner.unbind(◊"hidden")
     // For some reason this avoids a crash
     window?.makeFirstResponder(nil)
   }

@@ -137,6 +137,19 @@ extension NSView
   }
 }
 
+extension NSOutlineView
+{
+  func columnObject(withIdentifier id: NSUserInterfaceItemIdentifier)
+    -> NSTableColumn?
+  {
+    let index = column(withIdentifier: id)
+    guard index >= 0
+    else { return nil }
+    
+    return tableColumns[index]
+  }
+}
+
 extension NSButton
 {
   /// The intValue property interpreted as a Bool.
@@ -146,6 +159,8 @@ extension NSButton
     set { intValue = newValue ? 1 : 0 }
   }
 }
+
+extension NSButton: NSValidatedUserInterfaceItem {}
 
 extension NSTextField
 {
@@ -163,6 +178,11 @@ extension String
   var lastPathComponent: String
   {
     return (self as NSString).lastPathComponent
+  }
+  
+  var pathExtension: String
+  {
+    return (self as NSString).pathExtension
   }
   
   /// Splits a "refs/*/..." string into prefix and remainder.
@@ -306,7 +326,7 @@ extension NSValidatedUserInterfaceItem
   var isContextMenuItem: Bool
   {
     guard let item = self as? NSMenuItem
-      else { return false }
+    else { return false }
     
     return item.parent == nil
   }
@@ -370,7 +390,8 @@ extension Array
   }
   
   /// Returns the first non-nil result of calling `predicate` on the array's
-  /// elements.
+  /// elements. Effectively the same as array.compactMap(predicate).first but
+  /// more efficient.
   func firstResult<T>(_ predicate: (Element) -> T?) -> T?
   {
     for element in self {

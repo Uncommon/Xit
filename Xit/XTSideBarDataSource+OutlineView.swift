@@ -48,21 +48,21 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
 {
   struct CellID
   {
-    static let header = NSUserInterfaceItemIdentifier(rawValue: "HeaderCell")
-    static let data = NSUserInterfaceItemIdentifier(rawValue: "DataCell")
+    static let header = ¶"HeaderCell"
+    static let data = ¶"DataCell"
   }
   
   public func outlineViewSelectionDidChange(_ notification: Notification)
   {
     guard let item = outline!.item(atRow: outline!.selectedRow)
                      as? XTSideBarItem,
-          let model = item.model,
+          let selection = item.selection,
           let controller = outline!.window?.windowController
                            as? RepositoryController
     else { return }
     
-    if controller.selectedModel?.shaToSelect != model.shaToSelect {
-      controller.selectedModel = model
+    if controller.selection?.shaToSelect != selection.shaToSelect {
+      controller.selection = selection
     }
   }
 
@@ -186,11 +186,12 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
   fileprivate func configureStagingItem(sideBarItem: XTSideBarItem,
                                         dataView: XTSidebarTableCellView)
   {
-    let changes = sideBarItem.model!.changes
-    let stagedCount =
-          changes.count(where: { $0.change != .unmodified })
-    let unstagedCount =
-          changes.count(where: { $0.unstagedChange != .unmodified })
+    let selection = sideBarItem.selection as! StagedUnstagedSelection
+    let indexChanges = selection.fileList.changes
+    let workspaceChanges = selection.unstagedFileList.changes
+    let unmodifiedCounter: (FileChange) -> Bool = { $0.change != .unmodified }
+    let stagedCount = indexChanges.count(where: unmodifiedCounter)
+    let unstagedCount = workspaceChanges.count(where: unmodifiedCounter)
 
     if (stagedCount != 0) || (unstagedCount != 0) {
       dataView.statusText.title = "\(unstagedCount)▸\(stagedCount)"
@@ -214,7 +215,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
             currentBranch.trackingBranchName == remoteBranchItem.remote + "/" +
                                                 remoteBranchItem.title {
       let rowView = SidebarCheckedRowView(
-              imageName: NSImage.Name.rightFacingTriangleTemplate,
+              imageName: .rightFacingTriangleTemplate,
               toolTip: "The active branch is tracking this remote branch")
       
       return rowView
@@ -231,18 +232,18 @@ extension XTSideBarDataSource: XTOutlineViewDelegate
   func outlineViewClickedSelectedRow(_ outline: NSOutlineView)
   {
     guard let selectedIndex = outline.selectedRowIndexes.first,
-          let selection = outline.item(atRow: selectedIndex) as? XTSideBarItem
+          let newSelectedItem = outline.item(atRow: selectedIndex)
+                                as? XTSideBarItem
     else { return }
     
     if let controller = outline.window?.windowController
                         as? RepositoryController,
-       let oldModel = controller.selectedModel,
-       let newModel = selection.model,
-       oldModel.shaToSelect == newModel.shaToSelect &&
-       type(of: oldModel) != type(of: newModel) {
-      NotificationCenter.default.post(
-          name: NSNotification.Name.XTReselectModel, object: repository)
+       let oldSelection = controller.selection,
+       let newSelection = newSelectedItem.selection,
+       oldSelection.shaToSelect == newSelection.shaToSelect &&
+       type(of: oldSelection) != type(of: newSelection) {
+      NotificationCenter.default.post(name: .XTReselectModel, object: repository)
     }
-    selectedItem = selection
+    selectedItem = newSelectedItem
   }
 }

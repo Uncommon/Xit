@@ -16,7 +16,7 @@ class XTFileDiffController: WebViewController,
   let actionDelegate: DiffActionDelegate = DiffActionDelegate()
   weak var stagingDelegate: HunkStaging?
   var isLoaded: Bool = false
-  var staged: Bool?
+  var stagingType: StagingType = .none
   var patch: Patch?
   
   public var whitespace = PreviewsPrefsController.Default.whitespace()
@@ -97,22 +97,23 @@ class XTFileDiffController: WebViewController,
   
   func hunkHeader(hunk: DiffHunk, index: Int, lines: [String]?) -> String
   {
-    guard let diffMaker = diffMaker,
-          let staged = self.staged
+    guard stagingType != .none,
+          let diffMaker = diffMaker
     else { return "" }
     
     var header = "<div class='hunkhead'>\n"
     
     if lines.map({ hunk.canApply(to: $0) }) ?? false {
-      if staged {
-        header += button(title: "Unstage", action: "unstageHunk",
-                         index: index)
-      }
-      else {
-        header += button(title: "Stage", action: "stageHunk",
-                         index: index)
-        header += button(title: "Discard", action: "discardHunk",
-                         index: index)
+      switch stagingType {
+        case .index:
+          header += button(title: "Unstage", action: "unstageHunk",
+                           index: index)
+        case .workspace:
+          header += button(title: "Stage", action: "stageHunk",
+                           index: index)
+          header += button(title: "Discard", action: "discardHunk",
+                           index: index)
+        default: break
       }
     }
     else {
@@ -125,6 +126,26 @@ class XTFileDiffController: WebViewController,
     header += "</div>\n"
     
     return header
+  }
+  
+  /// Returns the index/workspace counterpart blob
+  func diffTargetBlob() -> Blob?
+  {
+    // TODO: Give it access to the repository via the FileContents protocol
+    let repo = (view.window?.windowController as! XTWindowController)
+      .xtDocument!.repository!
+    guard let diffMaker = diffMaker,
+          let headRef = repo.headRef
+    else { return nil }
+
+    switch stagingType {
+      case .none:
+        return nil
+      case .index:
+        return repo.fileBlob(ref:headRef , path: diffMaker.path)
+      case .workspace:
+        return repo.stagedBlob(file: diffMaker.path)
+    }
   }
   
   func reloadDiff()
@@ -146,16 +167,9 @@ class XTFileDiffController: WebViewController,
       return
     }
     
-    // TODO: Give it access to the repository via the FileContents protocol
-    let repo = (view.window?.windowController as! XTWindowController)
-               .xtDocument!.repository!
     var lines: [String]?
     
-    if let staged = self.staged,
-       let headRef = repo.headRef,
-       let blob = staged ? repo.fileBlob(ref: headRef,
-                                         path: diffMaker.path)
-                         : repo.stagedBlob(file: diffMaker.path) {
+    if let blob = diffTargetBlob() {
       _ = try? blob.withData {
         (data) in
         var encoding = String.Encoding.utf8
@@ -207,14 +221,14 @@ class XTFileDiffController: WebViewController,
   func loadNoChangesNotice()
   {
     var notice: String!
-  
-    if let staged = self.staged {
-      notice = staged
-          ? "No staged changes for this selection"
-          : "No unstaged changes for this selection"
-    }
-    else {
-      notice = "No changes for this selection"
+    
+    switch stagingType {
+      case .none:
+        notice = "No changes for this selection"
+      case .index:
+        notice = "No staged changes for this selection"
+      case .workspace:
+        notice = "No unstaged changes for this selection"
     }
     loadNotice(notice)
   }
@@ -260,10 +274,10 @@ extension XTFileDiffController: XTFileContentController
     isLoaded = false
   }
   
-  public func load(path: String!, model: FileChangesModel!, staged: Bool)
+  public func load(path: String!, fileList: FileListModel)
   {
-    self.staged = model.hasUnstaged ? staged : nil
-    loadOrNotify(diffResult: model.diffForFile(path, staged: staged))
+    self.stagingType = fileList.stagingType
+    loadOrNotify(diffResult: fileList.diffForFile(path))
   }
 }
 

@@ -9,24 +9,17 @@ extension FileViewController: NSUserInterfaceValidations
     else { return false }
     
     switch action {
-      case #selector(self.revert(_:)):
-        guard let change = item.isContextMenuItem ? clickedChange()
-                                                  : selectedChange()
-        else { return false }
-      
-        return change.unstagedChange.isModified
-      
-      case #selector(self.stage(_:)):
-        guard let change = clickedChange()
+      case #selector(self.stageAll(_:)):
+        guard let selection = repoController?.selection as? StagingSelection
         else { return false }
         
-        return change.unstagedChange.isModified
+        return !selection.workspaceFileList.changes.isEmpty
       
-      case #selector(self.unstage(_:)):
-        guard let change = clickedChange()
+      case #selector(self.unstageAll(_:)):
+        guard let selection = repoController?.selection as? StagingSelection
         else { return false }
-      
-        return change.change != .unmodified
+        
+        return !selection.indexFileList.changes.isEmpty
       
       case #selector(self.showWhitespaceChanges(_:)):
         return validateWhitespaceMenuItem(item, whitespace: .showAll)
@@ -135,35 +128,6 @@ extension FileViewController
     
     showingStaged = segmentedControl.selectedSegment == 1
   }
-
-  @IBAction func stageClicked(_ sender: Any?)
-  {
-    guard let button = sender as? NSButton
-    else { return }
-  
-    click(button: button, staging: true)
-  }
-  
-  @IBAction func unstageClicked(_ sender: Any?)
-  {
-    guard let button = sender as? NSButton
-    else { return }
-    
-    click(button: button, staging: false)
-  }
-
-  @IBAction func changeFileListView(_: Any?)
-  {
-    let newDS = (viewSelector.selectedSegment == 0 ? fileChangeDS : fileTreeDS)
-                as FileListDataSource & NSOutlineViewDataSource
-    let columnID = newDS.hierarchical ? ColumnID.main : ColumnID.hidden
-    
-    fileListOutline.outlineTableColumn =
-        fileListOutline.tableColumn(withIdentifier: columnID)
-    fileListOutline.delegate = self
-    fileListOutline.dataSource = newDS
-    newDS.reload()
-  }
   
   @IBAction func changeContentView(_ sender: Any?)
   {
@@ -175,6 +139,18 @@ extension FileViewController
     previewTabView.selectTabViewItem(withIdentifier: TabID.allIDs[selection])
     contentController = contentControllers[selection]
     loadSelectedPreview()
+  }
+
+  @IBAction func stage(_: Any?)
+  {
+  }
+
+  @IBAction func unstage(_: Any?)
+  {
+  }
+
+  @IBAction func revert(_: Any?)
+  {
   }
 
   @IBAction func stageAll(_: Any?)
@@ -189,50 +165,6 @@ extension FileViewController
     showingStaged = false
   }
 
-  @IBAction func stageSegmentClicked(_ sender: AnyObject?)
-  {
-    guard let segmentControl = sender as? NSSegmentedControl,
-          let segment = StagingSegment(rawValue: segmentControl.selectedSegment)
-    else { return }
-    
-    switch segment {
-      case .unstageAll:
-        unstageAll(sender)
-      case .stageAll:
-        stageAll(sender)
-      case .revert:
-        revert(sender)
-    }
-  }
-  
-  @IBAction func showIgnored(_: Any?)
-  {
-  }
-  
-  @IBAction func stage(_: Any?)
-  {
-    guard let change = clickedChange()
-    else { return }
-    
-    stageAction(path: change.path, staging: true)
-  }
-  
-  @IBAction func unstage(_: Any?)
-  {
-    guard let change = clickedChange()
-    else { return }
-    
-    stageAction(path: change.path, staging: false)
-  }
-
-  @IBAction func revert(_ sender: AnyObject?)
-  {
-    guard let change = (sender is NSControl) ? selectedChange() : clickedChange()
-    else { return }
-    
-    revert(path: change.path)
-  }
-  
   @IBAction func showWhitespaceChanges(_ sender: Any?)
   {
     setWhitespace(.showAll)

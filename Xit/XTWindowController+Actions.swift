@@ -63,16 +63,16 @@ extension XTWindowController
   @IBAction func goBack(_: AnyObject)
   {
     withNavigating {
-      selectedModel.map { navForwardStack.append($0) }
-      selectedModel = navBackStack.popLast()
+      selection.map { navForwardStack.append($0) }
+      selection = navBackStack.popLast()
     }
   }
   
   @IBAction func goForward(_: AnyObject)
   {
     withNavigating {
-      selectedModel.map { navBackStack.append($0) }
-      selectedModel = navForwardStack.popLast()
+      selection.map { navBackStack.append($0) }
+      selection = navForwardStack.popLast()
     }
   }
 

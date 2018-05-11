@@ -21,8 +21,8 @@ class XTFileChangesModelTest: XTTest
       XCTFail("no head")
       return
     }
-    let model = CommitChanges(repository: repository, commit: headCommit)
-    let changes = model.changes
+    let model = CommitSelection(repository: repository, commit: headCommit)
+    let changes = model.fileList.changes
     
     XCTAssertEqual(changes.count, 1)
     
@@ -31,11 +31,11 @@ class XTFileChangesModelTest: XTTest
     XCTAssertEqual(change.path, file1Name)
     XCTAssertEqual(change.change, DeltaStatus.added)
     
-    let data = model.dataForFile(file1Name, staged: false)
+    let data = model.fileList.dataForFile(file1Name)
     
     XCTAssertEqual(data, self.data(for:"some text"))
     
-    guard let diffResult = model.diffForFile(file1Name, staged: false),
+    guard let diffResult = model.fileList.diffForFile(file1Name),
           let patch = diffResult.extractPatch()
     else {
       XCTFail()
@@ -46,10 +46,10 @@ class XTFileChangesModelTest: XTTest
   }
   
   func checkPatchLines(
-      _ model: FileChangesModel, path: String, staged: Bool,
+      _ model: RepositorySelection, path: String, staged: Bool,
       added: Int, deleted: Int)
   {
-    guard let diffResult = model.diffForFile(path, staged: staged),
+    guard let diffResult = model.list(staged: staged).diffForFile(path),
           let patch = diffResult.extractPatch()
     else {
       XCTFail()
@@ -66,28 +66,30 @@ class XTFileChangesModelTest: XTTest
   {
     self.makeStash()
     
-    let model = StashChanges(repository: repository, index: 0)
+    let model = StashSelection(repository: repository, index: 0)
     
     XCTAssertEqual(model.shaToSelect, repository.headSHA)
     
-    let changes = model.changes
+    let changes = model.fileList.changes
+    let unstagedChanges = model.unstagedFileList.changes
     
-    XCTAssertEqual(changes.count, 3)
+    XCTAssertEqual(changes.count, 1)
+    XCTAssertEqual(unstagedChanges.count, 2)
     
     let addedContent =
-        self.string(from: model.dataForFile(addedName, staged: true)!)
+        self.string(from: model.fileList.dataForFile(addedName)!)
     let untrackedContent =
-        self.string(from: model.dataForFile(untrackedName, staged: false)!)
+        self.string(from: model.unstagedFileList.dataForFile(untrackedName)!)
     let file1Unstaged =
-        self.string(from: model.dataForFile(file1Name, staged: false)!)
+        self.string(from: model.unstagedFileList.dataForFile(file1Name)!)
     let file1Staged =
-        self.string(from: model.dataForFile(file1Name, staged: true)!)
+        self.string(from: model.fileList.dataForFile(file1Name)!)
     
     XCTAssertEqual(addedContent, "add")
     XCTAssertEqual(untrackedContent, "new")
     XCTAssertEqual(file1Unstaged, "stashy")
     XCTAssertEqual(file1Staged, "some text")
-    XCTAssertNil(model.dataForFile(untrackedName, staged: true))
+    XCTAssertNil(model.fileList.dataForFile(untrackedName))
     
     self.checkPatchLines(
         model, path: addedName, staged: true, added: 1, deleted: 0)
@@ -99,45 +101,60 @@ class XTFileChangesModelTest: XTTest
         model, path: file1Name, staged: false, added: 1, deleted: 1)
     self.checkPatchLines(
         model, path: file1Name, staged: true, added: 0, deleted: 0)
-    XCTAssertNil(model.diffForFile(untrackedName, staged: true))
+    XCTAssertNil(model.fileList.diffForFile(untrackedName))
   }
   
   func testStaging()
   {
-    let model = StagingChanges(repository: repository)
-    var changes = model.changes
+    let model = StagingSelection(repository: repository)
+    var changes = model.unstagedFileList.changes
     
     XCTAssertEqual(changes.count, 0)
     
     self.writeText(toFile1: "change")
-    changes = model.changes
+    changes = model.unstagedFileList.changes
     XCTAssertEqual(changes.count, 1)
     
+    guard !changes.isEmpty
+    else {
+      XCTFail("empty changes")
+      return
+    }
     var change = changes[0]
     
     XCTAssertEqual(change.path, file1Name)
-    XCTAssertEqual(change.unstagedChange, DeltaStatus.modified)
+    XCTAssertEqual(change.change, DeltaStatus.modified)
     
     self.writeText("new", toFile: addedName)
-    changes = model.changes
+    changes = model.unstagedFileList.changes
     XCTAssertEqual(changes.count, 2)
+    guard !changes.isEmpty
+    else {
+      XCTFail("empty changes")
+      return
+    }
     change = changes[0] // "added" will be sorted to the top
     XCTAssertEqual(change.path, addedName)
-    XCTAssertEqual(change.unstagedChange, DeltaStatus.untracked)
+    XCTAssertEqual(change.change, DeltaStatus.untracked)
     
-    try! repository.stage(file: addedName)
-    changes = model.changes
-    XCTAssertEqual(changes.count, 2)
+    XCTAssertNoThrow(try repository.stage(file: addedName))
+    XCTAssertEqual(model.unstagedFileList.changes.count, 1)
+    changes = model.fileList.changes
+    XCTAssertEqual(changes.count, 1)
+    guard !changes.isEmpty
+    else {
+      XCTFail("empty changes")
+      return
+    }
     change = changes[0]
     XCTAssertEqual(change.path, addedName)
     XCTAssertEqual(change.change, DeltaStatus.added)
-    XCTAssertEqual(change.unstagedChange, DeltaStatus.unmodified)
   }
   
   func testStagingTreeSimple()
   {
-    let model = StagingChanges(repository: repository)
-    let tree = model.treeRoot(oldTree: nil)
+    let model = StagingSelection(repository: repository)
+    let tree = model.fileList.treeRoot(oldTree: nil)
     
     XCTAssertNotNil(tree.children)
     XCTAssertEqual(tree.children!.count, 1)
@@ -153,13 +170,13 @@ class XTFileChangesModelTest: XTTest
     
     guard let headSHA = repository.headSHA,
           let headCommit = XTCommit(sha: headSHA, repository: repository)
-      else {
-        XCTFail("no head")
-        return
+    else {
+      XCTFail("no head")
+      return
     }
-    let model = CommitChanges(repository: repository,
+    let model = CommitSelection(repository: repository,
                               commit: headCommit)
-    let tree = model.treeRoot(oldTree: nil)
+    let tree = model.fileList.treeRoot(oldTree: nil)
     
     XCTAssertNotNil(tree.children)
     XCTAssertEqual(tree.children!.count, 2)
@@ -185,32 +202,43 @@ class XTFileChangesModelTest: XTTest
     
     self.makeStash()
     
-    let model = StashChanges(repository: repository, index: 0)
-    let tree = model.treeRoot(oldTree: nil)
+    let model = StashSelection(repository: repository, index: 0)
+    let tree = model.fileList.treeRoot(oldTree: nil)
     guard let children = tree.children
     else {
       XCTFail("no children")
       return
     }
     
-    XCTAssertEqual(children.count, 4)
+    XCTAssertEqual(children.count, 3)
     
-    let expectedPaths =
-        [addedName,   deletedName, file1Name,   untrackedName]
-    let expectedChanges: [DeltaStatus] =
-        [.added,      .deleted,    .unmodified, .unmodified]
-    let expectedUnstaged: [DeltaStatus] =
-        [.unmodified, .unmodified, .modified,   .untracked]
+    typealias ExpectedItem = (name: String, change: DeltaStatus)
+    let expectedItems: [ExpectedItem] = [(name: addedName, change: .added),
+                                         (name: deletedName, change: .deleted),
+                                         (name: file1Name, change: .unmodified)]
     
-    for i in 0..<min(4, children.count) {
-      let item = children[i].representedObject as! FileChange
+    for pair in zip(children, expectedItems) {
+      guard let item = pair.0.representedObject as? FileChange
+      else {
+        XCTFail("wrong object type")
+        continue
+      }
       
-      XCTAssertEqual(item.path, expectedPaths[i])
-      XCTAssertEqual(item.change, expectedChanges[i],
-          "\(item.path) change: \(item.change.rawValue)")
-      XCTAssertEqual(item.unstagedChange, expectedUnstaged[i],
-          "\(item.path) unstaged: \(item.unstagedChange.rawValue)")
+      XCTAssertEqual(item.path, pair.1.name)
+      XCTAssertEqual(item.change, pair.1.change)
     }
+    
+    let unstagedTree = model.unstagedFileList.treeRoot(oldTree: nil)
+    guard let unstagedChildren = unstagedTree.children,
+          unstagedChildren.count == 4,
+          let item = unstagedChildren[3].representedObject as? FileChange
+    else {
+      XCTFail("no children or wrong count")
+      return
+    }
+
+    XCTAssertEqual(item.path, untrackedName)
+    XCTAssertEqual(item.change, .untracked)
   }
   
   // Checks that the results are the same whether you generate a tree from
@@ -225,11 +253,11 @@ class XTFileChangesModelTest: XTTest
       XCTFail("can't get commits")
       return
     }
-    let parentModel = CommitChanges(repository: repository, commit: parent)
-    let model = CommitChanges(repository: repository, commit: commit)
-    let parentTree = parentModel.treeRoot(oldTree: nil)
-    let tree1 = model.treeRoot(oldTree: nil)
-    let tree2 = model.treeRoot(oldTree: parentTree)
+    let parentModel = CommitSelection(repository: repository, commit: parent)
+    let model = CommitSelection(repository: repository, commit: commit)
+    let parentTree = parentModel.fileList.treeRoot(oldTree: nil)
+    let tree1 = model.fileList.treeRoot(oldTree: nil)
+    let tree2 = model.fileList.treeRoot(oldTree: parentTree)
     
     XCTAssertTrue(tree1.isEqual(tree2))
     
@@ -294,11 +322,11 @@ class XTFileChangesModelTest: XTTest
       return
     }
     
-    let model1 = CommitChanges(repository: repository, commit: commit1)
-    let model2 = CommitChanges(repository: repository, commit: commit2)
+    let model1 = CommitSelection(repository: repository, commit: commit1)
+    let model2 = CommitSelection(repository: repository, commit: commit2)
     
-    let tree1 = model1.treeRoot(oldTree: nil)
-    let tree2 = model2.treeRoot(oldTree: tree1)
+    let tree1 = model1.fileList.treeRoot(oldTree: nil)
+    let tree2 = model2.fileList.treeRoot(oldTree: tree1)
     guard let children1 = tree1.children,
           let children2 = tree2.children
     else {
@@ -430,8 +458,8 @@ class XTFileChangesModelTest: XTTest
     let subFileName = "file2"
     let subFilePath = subDirName.appending(pathComponent: subFileName)
     
-    let parentModel = CommitChanges(repository: repository, commit: parentCommit)
-    let parentRoot = parentModel.treeRoot(oldTree: nil)
+    let parentModel = CommitSelection(repository: repository, commit: parentCommit)
+    let parentRoot = parentModel.fileList.treeRoot(oldTree: nil)
     
     // Double check that the file shows up as added
     guard let newNode = parentRoot.commitTreeItemNode(forPath: subFilePath),
@@ -443,8 +471,8 @@ class XTFileChangesModelTest: XTTest
     
     XCTAssertEqual(newItem.change, DeltaStatus.added)
     
-    let model = CommitChanges(repository: repository, commit: commit)
-    let root = model.treeRoot(oldTree: parentRoot)
+    let model = CommitSelection(repository: repository, commit: commit)
+    let root = model.fileList.treeRoot(oldTree: parentRoot)
     guard let fileNode = root.commitTreeItemNode(forPath: subFilePath),
           let item = fileNode.representedObject as? CommitTreeItem
     else {
@@ -465,8 +493,8 @@ class XTFileChangesModelTest: XTTest
     let subFileName = "file2"
     let subFilePath = subDirName.appending(pathComponent: subFileName)
 
-    let model = CommitChanges(repository: repository, commit: commit)
-    let root = model.treeRoot(oldTree: nil)
+    let model = CommitSelection(repository: repository, commit: commit)
+    let root = model.fileList.treeRoot(oldTree: nil)
     guard let fileNode = root.commitTreeItemNode(forPath: subFilePath),
           let item = fileNode.representedObject as? CommitTreeItem
     else {
@@ -476,8 +504,8 @@ class XTFileChangesModelTest: XTTest
     
     XCTAssertEqual(item.change, DeltaStatus.unmodified)
     
-    let parentModel = CommitChanges(repository: repository, commit: parentCommit)
-    let parentRoot = parentModel.treeRoot(oldTree: root)
+    let parentModel = CommitSelection(repository: repository, commit: parentCommit)
+    let parentRoot = parentModel.fileList.treeRoot(oldTree: root)
     
     guard let newNode = parentRoot.commitTreeItemNode(forPath: subFilePath),
       let newItem = newNode.representedObject as? CommitTreeItem
@@ -535,7 +563,7 @@ extension NSTreeNode
   func printChangeItems()
   {
     if let item = representedObject as? CommitTreeItem {
-      print("\(item.path) - \(item.change)/\(item.unstagedChange)")
+      print("\(item.path) - \(item.change)")
     }
     if let children = self.children {
       for child in children {

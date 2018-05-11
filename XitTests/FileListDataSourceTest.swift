@@ -3,10 +3,17 @@ import XCTest
 
 class FakeRepoController: RepositoryController
 {
+  var repository: Repository
+  
   var queue = TaskQueue(id: "test")
   
   var selectedCommitSHA: String = ""
-  var selectedModel: FileChangesModel? = nil
+  var selection: RepositorySelection? = nil
+  
+  init(repository: Repository)
+  {
+    self.repository = repository
+  }
   
   func select(sha: String) {}
 }
@@ -28,21 +35,20 @@ class FileListDataSourceTest: XTTest
     }
   
     let outlineView = NSOutlineView.init()
-    let repoController = FakeRepoController()
-    let flds = FileTreeDataSource()
+    let repoController = FakeRepoController(repository: repository)
+    let flds = FileTreeDataSource(useWorkspaceList: false)
     var expectedCount = 11
     let history = XTCommitHistory<GitOID>()
     
     history.repository = repository
     objc_sync_enter(flds)
-    flds.taskQueue = repository.queue
     flds.repoController = repoController
     objc_sync_exit(flds)
     waitForRepoQueue()
     
     for entry in history.entries {
-      repoController.selectedModel = CommitChanges(repository: repository,
-                                                   commit: entry.commit)
+      repoController.selection = CommitSelection(repository: repository,
+                                                 commit: entry.commit)
       flds.reload()
       waitForRepoQueue()
     
@@ -51,6 +57,16 @@ class FileListDataSourceTest: XTTest
       XCTAssertEqual(fileCount, expectedCount, "file count")
       expectedCount -= 1
     }
+  }
+  
+  func wait(for condition: () -> Bool, timeout: TimeInterval) -> Bool
+  {
+    let deadline = CFAbsoluteTimeGetCurrent() + timeout
+    
+    while !condition() && CFAbsoluteTimeGetCurrent() < deadline {
+      CFRunLoopRunWithTimeout(0.25)
+    }
+    return CFAbsoluteTimeGetCurrent() < deadline
   }
   
   func testMulipleFileList()
@@ -78,25 +94,24 @@ class FileListDataSourceTest: XTTest
     _ = try! repository.commit(message: "commit", amend: false,
                                outputBlock: nil)
     
-    let repoController = FakeRepoController()
+    let repoController = FakeRepoController(repository: repository)
     let headCommit = XTCommit(sha: repository.headSHA!, repository: repository)!
     
-    repoController.selectedModel = CommitChanges(repository: repository,
-                                                 commit: headCommit)
+    repoController.selection = CommitSelection(repository: repository,
+                                               commit: headCommit)
     
     let outlineView = NSOutlineView()
-    let flds = FileTreeDataSource()
+    let flds = FileTreeDataSource(useWorkspaceList: false)
     
     objc_sync_enter(flds)
     flds.repoController = repoController
-    flds.taskQueue = repository.queue
-    flds.observe(repository: repository)
     objc_sync_exit(flds)
     waitForRepoQueue()
-    
-    let fileCount = flds.outlineView(outlineView, numberOfChildrenOfItem: nil)
-    
-    XCTAssertEqual(fileCount, 3)
+
+    XCTAssertTrue(wait(for: { flds.outlineView(outlineView,
+                                               numberOfChildrenOfItem: nil) == 3 },
+                       timeout: 1.0),
+                  "reload not completed")
     
     for rootIndex in 0..<2 {
       let root = flds.outlineView(outlineView, child: rootIndex, ofItem: nil)

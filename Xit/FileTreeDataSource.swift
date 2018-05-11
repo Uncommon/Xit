@@ -4,11 +4,11 @@ class FileTreeDataSource: FileListDataSourceBase
 {
   fileprivate var root: NSTreeNode
   
-  override init()
+  override init(useWorkspaceList: Bool)
   {
     root = NSTreeNode(representedObject: CommitTreeItem(path: "root"))
     
-    super.init()
+    super.init(useWorkspaceList: useWorkspaceList)
   }
 }
 
@@ -18,7 +18,7 @@ extension FileTreeDataSource: FileListDataSource
   
   func reload()
   {
-    taskQueue?.executeOffMainThread {
+    repoController.queue.executeOffMainThread {
       [weak self] in
       guard let myself = self
       else { return }
@@ -26,9 +26,9 @@ extension FileTreeDataSource: FileListDataSource
       objc_sync_enter(myself)
       defer { objc_sync_exit(myself) }
       
-      guard let model = myself.repoController?.selectedModel
+      guard let selection = myself.repoController?.selection
       else { return }
-      let newRoot = model.treeRoot(oldTree: myself.root)
+      let newRoot = selection.fileList.treeRoot(oldTree: myself.root)
       
       DispatchQueue.main.async {
         myself.root = newRoot
@@ -117,11 +117,6 @@ extension FileTreeDataSource: FileListDataSource
   {
     return treeItem(item)?.change ?? .unmodified
   }
-  
-  func unstagedChange(for item: Any) -> DeltaStatus
-  {
-    return treeItem(item)?.unstagedChange ?? .unmodified
-  }
 }
 
 extension FileTreeDataSource: NSOutlineViewDataSource
@@ -164,17 +159,9 @@ class CommitTreeItem: FileChange
   let oid: OID?
   
   init(path: String, oid: OID? = nil,
-       change: DeltaStatus = .unmodified,
-       unstagedChange: DeltaStatus = .unmodified)
+       change: DeltaStatus = .unmodified)
   {
     self.oid = oid
-    super.init(path: path, change: change, unstagedChange: unstagedChange)
-  }
-  
-  convenience init(path: String, oid: OID?, status: DeltaStatus, staged: Bool)
-  {
-    self.init(path: path, oid: oid,
-              change: staged ? status : .unmodified,
-              unstagedChange: staged ? .unmodified : status)
+    super.init(path: path, change: change)
   }
 }

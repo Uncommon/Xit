@@ -47,7 +47,6 @@ class WorkspaceTreeBuilder
           
           if let status = self.changes[path] {
             item.change = status.change
-            item.unstagedChange = status.unstagedChange
           }
           childNode = NSTreeNode(representedObject: item)
         }

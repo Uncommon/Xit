@@ -99,8 +99,8 @@ class XTFetchController: XTPasswordOpController
                                               progressBlock: self.shouldStop)
       
       try repo.fetch(remote: remote, options: options)
-      NotificationCenter.default.post(
-          name: NSNotification.Name.XTRepositoryRefsChanged, object: repository)
+      NotificationCenter.default.post(name: .XTRepositoryRefsChanged,
+                                      object: repository)
       self.ended()
     }
   }

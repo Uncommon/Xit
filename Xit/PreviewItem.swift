@@ -5,7 +5,7 @@ import Quartz
 // from NSObject.
 class PreviewItem: NSObject, QLPreviewItem
 {
-  var model: FileChangesModel!
+  var fileList: FileListModel!
   { didSet { remakeTempFile() } }
   var path: String?
   { didSet { remakeTempFile() } }
@@ -61,9 +61,8 @@ class PreviewItem: NSObject, QLPreviewItem
     previewItemURL = nil
     
     if let path = self.path,
-       let model = self.model,
        let filePath = tempFilePath(),
-       let contents = model.dataForFile(path, staged: true) {
+       let contents = fileList?.dataForFile(path) {
       do {
         let url = URL(fileURLWithPath: filePath)
         

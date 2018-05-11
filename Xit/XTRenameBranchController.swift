@@ -35,8 +35,8 @@ class XTRenameBranchController: XTOperationController
     tryRepoOperation(successStatus: "Rename successful",
                      failureStatus: "Rename failed") {
       try repository.rename(branch: self.branchName, to: newName)
-      NotificationCenter.default.post(
-          name: NSNotification.Name.XTRepositoryRefsChanged, object: repository)
+      NotificationCenter.default.post(name: .XTRepositoryRefsChanged,
+                                      object: repository)
       self.ended()
     }
   }

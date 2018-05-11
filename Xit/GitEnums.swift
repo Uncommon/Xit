@@ -38,17 +38,17 @@ extension DeltaStatus
   {
     switch self {
       case .added, .untracked:
-        return NSImage(named: NSImage.Name(rawValue: "added"))
+        return NSImage(named: ◊"added")
       case .copied:
-        return NSImage(named: NSImage.Name(rawValue: "copied"))
+        return NSImage(named: ◊"copied")
       case .deleted:
-        return NSImage(named: NSImage.Name(rawValue: "deleted"))
+        return NSImage(named: ◊"deleted")
       case .modified:
-        return NSImage(named: NSImage.Name(rawValue: "modified"))
+        return NSImage(named: ◊"modified")
       case .renamed:
-        return NSImage(named: NSImage.Name(rawValue: "renamed"))
+        return NSImage(named: ◊"renamed")
       case .mixed:
-        return NSImage(named: NSImage.Name(rawValue: "mixed"))
+        return NSImage(named: ◊"mixed")
       default:
         return nil
     }
@@ -58,17 +58,17 @@ extension DeltaStatus
   {
     switch self {
       case .added:
-        return NSImage(named: NSImage.Name(rawValue: "add"))
+        return NSImage(named: ◊"add")
       case .untracked:
-        return NSImage(named: NSImage.Name(rawValue: "add"))
+        return NSImage(named: ◊"add")
       case .deleted:
-        return NSImage(named: NSImage.Name(rawValue: "delete"))
+        return NSImage(named: ◊"delete")
       case .modified:
-        return NSImage(named: NSImage.Name(rawValue: "modify"))
+        return NSImage(named: ◊"modify")
       case .mixed:
-        return NSImage(named: NSImage.Name(rawValue: "mixed"))
+        return NSImage(named: ◊"mixed")
       case .conflict:
-        return NSImage(named: NSImage.Name(rawValue: "conflict"))
+        return NSImage(named: ◊"conflict")
       default:
         return nil
     }

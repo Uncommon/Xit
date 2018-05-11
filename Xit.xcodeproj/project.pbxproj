@@ -49,7 +49,7 @@
 		89D8BDFD1CED200B00D640AA /* modify@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BDF71CED200B00D640AA /* modify@2x.png */; };
 		89D8BE001CED203900D640AA /* stage.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BDFE1CED203900D640AA /* stage.png */; };
 		89D8BE011CED203900D640AA /* stage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BDFF1CED203900D640AA /* stage@2x.png */; };
-		89D8BE221CF0A4ED00D640AA /* XTRolloverButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8BE211CF0A4ED00D640AA /* XTRolloverButton.swift */; };
+		89D8BE221CF0A4ED00D640AA /* RolloverButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8BE211CF0A4ED00D640AA /* RolloverButton.swift */; };
 		89D8BE251CF35C7000D640AA /* unstage.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BE231CF35C7000D640AA /* unstage.png */; };
 		89D8BE261CF35C7000D640AA /* unstage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BE241CF35C7000D640AA /* unstage@2x.png */; };
 		89D8BE581CF8E9C900D640AA /* blameTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BE501CF8E9C800D640AA /* blameTemplate.png */; };
@@ -96,7 +96,7 @@
 		C923D6481D8CA56800C6B90B /* XTTagTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D6471D8CA56800C6B90B /* XTTagTest.swift */; };
 		C923D65E1D90506A00C6B90B /* TitleBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = C923D65D1D90506A00C6B90B /* TitleBar.xib */; };
 		C923D66C1D906FAA00C6B90B /* TitleBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D66B1D906FAA00C6B90B /* TitleBarViewController.swift */; };
-		C926804E1D074EC500E422FA /* FileChangesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C926804D1D074EC500E422FA /* FileChangesModel.swift */; };
+		C926804E1D074EC500E422FA /* RepositorySelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C926804D1D074EC500E422FA /* RepositorySelection.swift */; };
 		C929D03B1D400B3B00D7DC52 /* GitRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D03A1D400B3B00D7DC52 /* GitRemote.swift */; };
 		C929D0461D415F6F00D7DC52 /* MiscExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */; };
 		C929D0601D42785B00D7DC52 /* TeamCityAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D05F1D42785B00D7DC52 /* TeamCityAPI.swift */; };
@@ -126,7 +126,6 @@
 		C947367A1DEF5CA8000E3A05 /* FileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94736791DEF5CA8000E3A05 /* FileViewController.swift */; };
 		C947367C1DF079DB000E3A05 /* SideBarOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C947367B1DF079DB000E3A05 /* SideBarOutlineView.swift */; };
 		C947367E1DF08C03000E3A05 /* ContextMenuOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C947367D1DF08C03000E3A05 /* ContextMenuOutlineView.swift */; };
-		C94736801DF08FFB000E3A05 /* FileRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C947367F1DF08FFB000E3A05 /* FileRowView.swift */; };
 		C94736821DF097B2000E3A05 /* FileListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94736811DF097B2000E3A05 /* FileListView.swift */; };
 		C94736881DF1DDDE000E3A05 /* XTRepositoryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94736871DF1DDDE000E3A05 /* XTRepositoryTest.swift */; };
 		C94866B61D256C24000BDB0A /* XTFetchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94866B51D256C24000BDB0A /* XTFetchController.swift */; };
@@ -167,14 +166,35 @@
 		C95BD4031F8FD611000A2E2D /* GitEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BD4021F8FD611000A2E2D /* GitEnums.swift */; };
 		C95BD4051F8FF8C8000A2E2D /* GitDiff.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BD4041F8FF8C8000A2E2D /* GitDiff.swift */; };
 		C95BF6541FCF5BC90020C51D /* FileContentProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BF6531FCF5BC90020C51D /* FileContentProtocols.swift */; };
-		C95BF6661FCF5D7A0020C51D /* CommitChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BF6651FCF5D7A0020C51D /* CommitChanges.swift */; };
-		C95BF6681FCF5DBD0020C51D /* StashChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BF6671FCF5DBD0020C51D /* StashChanges.swift */; };
-		C95BF66A1FCF5E370020C51D /* StagingChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BF6691FCF5E370020C51D /* StagingChanges.swift */; };
+		C95BF6661FCF5D7A0020C51D /* CommitSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BF6651FCF5D7A0020C51D /* CommitSelection.swift */; };
+		C95BF6681FCF5DBD0020C51D /* StashSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BF6671FCF5DBD0020C51D /* StashSelection.swift */; };
+		C95BF66A1FCF5E370020C51D /* StagingSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BF6691FCF5E370020C51D /* StagingSelection.swift */; };
 		C95ECD051EB11E310000DB78 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95ECD041EB11E310000DB78 /* WebViewController.swift */; };
 		C967AAB51FAA45B3008A4DF0 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = C967AAB41FAA45B3008A4DF0 /* Debug.swift */; };
 		C967C4AF1F96BA55002166F7 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C967C4AE1F96BA55002166F7 /* Cache.swift */; };
 		C96D24B31DFEFD9F00431317 /* XTSidebarControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96D24B21DFEFD9F00431317 /* XTSidebarControllerTest.swift */; };
 		C96F65461D53A6CE001B2557 /* XTHistoryCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F65451D53A6CE001B2557 /* XTHistoryCellView.swift */; };
+		C9800D7D2017FEB80045B05D /* FileListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9800D7C2017FEB80045B05D /* FileListController.swift */; };
+		C9800D952018FD640045B05D /* actionButtonEmpty.png in Resources */ = {isa = PBXBuildFile; fileRef = C9800D8F2018FD640045B05D /* actionButtonEmpty.png */; };
+		C9800D962018FD640045B05D /* stageButtonPressed.png in Resources */ = {isa = PBXBuildFile; fileRef = C9800D902018FD640045B05D /* stageButtonPressed.png */; };
+		C9800D972018FD640045B05D /* stageButtonPressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9800D912018FD640045B05D /* stageButtonPressed@2x.png */; };
+		C9800D982018FD640045B05D /* actionButtonEmpty@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9800D922018FD640045B05D /* actionButtonEmpty@2x.png */; };
+		C9800D992018FD640045B05D /* unstageButtonPressed.png in Resources */ = {isa = PBXBuildFile; fileRef = C9800D932018FD640045B05D /* unstageButtonPressed.png */; };
+		C9800D9A2018FD640045B05D /* unstageButtonPressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9800D942018FD640045B05D /* unstageButtonPressed@2x.png */; };
+		C9800D9D2018FD9C0045B05D /* revertTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9800D9B2018FD9C0045B05D /* revertTemplate@2x.png */; };
+		C9800D9E2018FD9C0045B05D /* revertTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C9800D9C2018FD9C0045B05D /* revertTemplate.png */; };
+		C9800DA12018FDC00045B05D /* fileTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C9800D9F2018FDC00045B05D /* fileTemplate.png */; };
+		C9800DA22018FDC00045B05D /* fileTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9800DA02018FDC00045B05D /* fileTemplate@2x.png */; };
+		C9864466207E9CAC0088209B /* StringIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9864465207E9CAC0088209B /* StringIdentifiers.swift */; };
+		C986446F207FF9970088209B /* stageAllTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C9864467207FF9940088209B /* stageAllTemplate.png */; };
+		C9864470207FF9970088209B /* stageAllTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9864468207FF9950088209B /* stageAllTemplate@2x.png */; };
+		C9864471207FF9970088209B /* unstageAllTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = C9864469207FF9950088209B /* unstageAllTemplate.png */; };
+		C9864472207FF9970088209B /* unstageAllTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C986446A207FF9950088209B /* unstageAllTemplate@2x.png */; };
+		C9864473207FF9970088209B /* unstageButtonHover.png in Resources */ = {isa = PBXBuildFile; fileRef = C986446B207FF9960088209B /* unstageButtonHover.png */; };
+		C9864474207FF9970088209B /* unstageButtonHover@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C986446C207FF9960088209B /* unstageButtonHover@2x.png */; };
+		C9864475207FF9970088209B /* stageButtonHover@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C986446D207FF9960088209B /* stageButtonHover@2x.png */; };
+		C9864476207FF9970088209B /* stageButtonHover.png in Resources */ = {isa = PBXBuildFile; fileRef = C986446E207FF9960088209B /* stageButtonHover.png */; };
+		C986447C208FBD990088209B /* ResponderNotifierWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C986447B208FBD990088209B /* ResponderNotifierWindow.swift */; };
 		C98925B31DA70D3A00E5645C /* XTCommitLinesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925B21DA70D3A00E5645C /* XTCommitLinesTest.swift */; };
 		C98925C61DB693CC00E5645C /* XTTagPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925C41DB693CC00E5645C /* XTTagPanelController.swift */; };
 		C98925C71DB693CC00E5645C /* XTTagPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C98925C51DB693CC00E5645C /* XTTagPanelController.xib */; };
@@ -192,7 +212,7 @@
 		C99A6AEC1E48FA140030DC01 /* FileListDataSourceBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99A6AEB1E48FA140030DC01 /* FileListDataSourceBase.swift */; };
 		C99A6AFF1E4A73240030DC01 /* BlameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99A6AFE1E4A73240030DC01 /* BlameViewController.swift */; };
 		C9A58EED1EE5DD4800E37A31 /* TaskQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */; };
-		C9AA80301E2929810004D670 /* XTFileChangesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AA802F1E2929810004D670 /* XTFileChangesDataSource.swift */; };
+		C9AA80301E2929810004D670 /* FileChangesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AA802F1E2929810004D670 /* FileChangesDataSource.swift */; };
 		C9AA80361E2E7F370004D670 /* XTHistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AA80351E2E7F370004D670 /* XTHistoryViewController.swift */; };
 		C9AAEF811E413DA100A248CF /* CommitHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AAEF801E413DA100A248CF /* CommitHeaderViewController.swift */; };
 		C9AAEF901E41527F00A248CF /* CommitHeaderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AAEF8F1E41527F00A248CF /* CommitHeaderTest.swift */; };
@@ -240,6 +260,7 @@
 		C9F78B141D0896AF008490EA /* XTSidebarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F78B131D0896AF008490EA /* XTSidebarItem.swift */; };
 		C9F9A02A1E1C417D00261E33 /* PatchMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F9A0291E1C417D00261E33 /* PatchMaker.swift */; };
 		C9FCC1D11D50EB1A00AC398E /* XTCommitHistoryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FCC1D01D50EB1A00AC398E /* XTCommitHistoryTest.swift */; };
+		C9FE06C720178A8C0001EB2B /* FileListView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9FE06C620178A8C0001EB2B /* FileListView.xib */; };
 		C9FFCC841FABB28F00FA2F21 /* XTSideBarDataSource+OutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FFCC831FABB28F00FA2F21 /* XTSideBarDataSource+OutlineView.swift */; };
 		C9FFCC861FABC24B00FA2F21 /* ExpansionTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FFCC851FABC24B00FA2F21 /* ExpansionTextField.swift */; };
 		C9FFCC881FB3B1D000FA2F21 /* TreeLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FFCC871FB3B1D000FA2F21 /* TreeLoader.swift */; };
@@ -454,7 +475,7 @@
 		89D8BDF71CED200B00D640AA /* modify@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "modify@2x.png"; sourceTree = "<group>"; };
 		89D8BDFE1CED203900D640AA /* stage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stage.png; sourceTree = "<group>"; };
 		89D8BDFF1CED203900D640AA /* stage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stage@2x.png"; sourceTree = "<group>"; };
-		89D8BE211CF0A4ED00D640AA /* XTRolloverButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRolloverButton.swift; sourceTree = "<group>"; };
+		89D8BE211CF0A4ED00D640AA /* RolloverButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RolloverButton.swift; sourceTree = "<group>"; };
 		89D8BE231CF35C7000D640AA /* unstage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unstage.png; sourceTree = "<group>"; };
 		89D8BE241CF35C7000D640AA /* unstage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unstage@2x.png"; sourceTree = "<group>"; };
 		89D8BE501CF8E9C800D640AA /* blameTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blameTemplate.png; sourceTree = "<group>"; };
@@ -510,7 +531,7 @@
 		C923D6471D8CA56800C6B90B /* XTTagTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTagTest.swift; sourceTree = "<group>"; };
 		C923D65D1D90506A00C6B90B /* TitleBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TitleBar.xib; sourceTree = "<group>"; };
 		C923D66B1D906FAA00C6B90B /* TitleBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = TitleBarViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		C926804D1D074EC500E422FA /* FileChangesModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileChangesModel.swift; sourceTree = "<group>"; };
+		C926804D1D074EC500E422FA /* RepositorySelection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepositorySelection.swift; sourceTree = "<group>"; };
 		C929D03A1D400B3B00D7DC52 /* GitRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitRemote.swift; sourceTree = "<group>"; };
 		C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiscExtensions.swift; sourceTree = "<group>"; };
 		C929D05F1D42785B00D7DC52 /* TeamCityAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamCityAPI.swift; sourceTree = "<group>"; };
@@ -539,7 +560,6 @@
 		C94736791DEF5CA8000E3A05 /* FileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileViewController.swift; sourceTree = "<group>"; };
 		C947367B1DF079DB000E3A05 /* SideBarOutlineView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideBarOutlineView.swift; sourceTree = "<group>"; };
 		C947367D1DF08C03000E3A05 /* ContextMenuOutlineView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContextMenuOutlineView.swift; sourceTree = "<group>"; };
-		C947367F1DF08FFB000E3A05 /* FileRowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileRowView.swift; sourceTree = "<group>"; };
 		C94736811DF097B2000E3A05 /* FileListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileListView.swift; sourceTree = "<group>"; };
 		C94736871DF1DDDE000E3A05 /* XTRepositoryTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRepositoryTest.swift; sourceTree = "<group>"; };
 		C94866B51D256C24000BDB0A /* XTFetchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFetchController.swift; sourceTree = "<group>"; };
@@ -580,14 +600,35 @@
 		C95BD4021F8FD611000A2E2D /* GitEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitEnums.swift; sourceTree = "<group>"; };
 		C95BD4041F8FF8C8000A2E2D /* GitDiff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitDiff.swift; sourceTree = "<group>"; };
 		C95BF6531FCF5BC90020C51D /* FileContentProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileContentProtocols.swift; sourceTree = "<group>"; };
-		C95BF6651FCF5D7A0020C51D /* CommitChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommitChanges.swift; sourceTree = "<group>"; };
-		C95BF6671FCF5DBD0020C51D /* StashChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StashChanges.swift; sourceTree = "<group>"; };
-		C95BF6691FCF5E370020C51D /* StagingChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StagingChanges.swift; sourceTree = "<group>"; };
+		C95BF6651FCF5D7A0020C51D /* CommitSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommitSelection.swift; sourceTree = "<group>"; };
+		C95BF6671FCF5DBD0020C51D /* StashSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StashSelection.swift; sourceTree = "<group>"; };
+		C95BF6691FCF5E370020C51D /* StagingSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StagingSelection.swift; sourceTree = "<group>"; };
 		C95ECD041EB11E310000DB78 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		C967AAB41FAA45B3008A4DF0 /* Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
 		C967C4AE1F96BA55002166F7 /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		C96D24B21DFEFD9F00431317 /* XTSidebarControllerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSidebarControllerTest.swift; sourceTree = "<group>"; };
 		C96F65451D53A6CE001B2557 /* XTHistoryCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTHistoryCellView.swift; sourceTree = "<group>"; };
+		C9800D7C2017FEB80045B05D /* FileListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileListController.swift; sourceTree = "<group>"; };
+		C9800D8F2018FD640045B05D /* actionButtonEmpty.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = actionButtonEmpty.png; sourceTree = "<group>"; };
+		C9800D902018FD640045B05D /* stageButtonPressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stageButtonPressed.png; sourceTree = "<group>"; };
+		C9800D912018FD640045B05D /* stageButtonPressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stageButtonPressed@2x.png"; sourceTree = "<group>"; };
+		C9800D922018FD640045B05D /* actionButtonEmpty@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "actionButtonEmpty@2x.png"; sourceTree = "<group>"; };
+		C9800D932018FD640045B05D /* unstageButtonPressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unstageButtonPressed.png; sourceTree = "<group>"; };
+		C9800D942018FD640045B05D /* unstageButtonPressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unstageButtonPressed@2x.png"; sourceTree = "<group>"; };
+		C9800D9B2018FD9C0045B05D /* revertTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "revertTemplate@2x.png"; sourceTree = "<group>"; };
+		C9800D9C2018FD9C0045B05D /* revertTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = revertTemplate.png; sourceTree = "<group>"; };
+		C9800D9F2018FDC00045B05D /* fileTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fileTemplate.png; sourceTree = "<group>"; };
+		C9800DA02018FDC00045B05D /* fileTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fileTemplate@2x.png"; sourceTree = "<group>"; };
+		C9864465207E9CAC0088209B /* StringIdentifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringIdentifiers.swift; sourceTree = "<group>"; };
+		C9864467207FF9940088209B /* stageAllTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stageAllTemplate.png; sourceTree = "<group>"; };
+		C9864468207FF9950088209B /* stageAllTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stageAllTemplate@2x.png"; sourceTree = "<group>"; };
+		C9864469207FF9950088209B /* unstageAllTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unstageAllTemplate.png; sourceTree = "<group>"; };
+		C986446A207FF9950088209B /* unstageAllTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unstageAllTemplate@2x.png"; sourceTree = "<group>"; };
+		C986446B207FF9960088209B /* unstageButtonHover.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unstageButtonHover.png; sourceTree = "<group>"; };
+		C986446C207FF9960088209B /* unstageButtonHover@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unstageButtonHover@2x.png"; sourceTree = "<group>"; };
+		C986446D207FF9960088209B /* stageButtonHover@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stageButtonHover@2x.png"; sourceTree = "<group>"; };
+		C986446E207FF9960088209B /* stageButtonHover.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stageButtonHover.png; sourceTree = "<group>"; };
+		C986447B208FBD990088209B /* ResponderNotifierWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponderNotifierWindow.swift; sourceTree = "<group>"; };
 		C98925B21DA70D3A00E5645C /* XTCommitLinesTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTCommitLinesTest.swift; sourceTree = "<group>"; };
 		C98925C41DB693CC00E5645C /* XTTagPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTagPanelController.swift; sourceTree = "<group>"; };
 		C98925C51DB693CC00E5645C /* XTTagPanelController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTTagPanelController.xib; sourceTree = "<group>"; };
@@ -605,7 +646,7 @@
 		C99A6AEB1E48FA140030DC01 /* FileListDataSourceBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileListDataSourceBase.swift; sourceTree = "<group>"; };
 		C99A6AFE1E4A73240030DC01 /* BlameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlameViewController.swift; sourceTree = "<group>"; };
 		C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskQueue.swift; sourceTree = "<group>"; };
-		C9AA802F1E2929810004D670 /* XTFileChangesDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesDataSource.swift; sourceTree = "<group>"; };
+		C9AA802F1E2929810004D670 /* FileChangesDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileChangesDataSource.swift; sourceTree = "<group>"; };
 		C9AA80351E2E7F370004D670 /* XTHistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTHistoryViewController.swift; sourceTree = "<group>"; };
 		C9AAEF801E413DA100A248CF /* CommitHeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommitHeaderViewController.swift; sourceTree = "<group>"; };
 		C9AAEF8F1E41527F00A248CF /* CommitHeaderTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommitHeaderTest.swift; sourceTree = "<group>"; };
@@ -655,6 +696,7 @@
 		C9F78B131D0896AF008490EA /* XTSidebarItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSidebarItem.swift; sourceTree = "<group>"; };
 		C9F9A0291E1C417D00261E33 /* PatchMaker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatchMaker.swift; sourceTree = "<group>"; };
 		C9FCC1D01D50EB1A00AC398E /* XTCommitHistoryTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTCommitHistoryTest.swift; sourceTree = "<group>"; };
+		C9FE06C620178A8C0001EB2B /* FileListView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FileListView.xib; sourceTree = "<group>"; };
 		C9FFCC831FABB28F00FA2F21 /* XTSideBarDataSource+OutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XTSideBarDataSource+OutlineView.swift"; sourceTree = "<group>"; };
 		C9FFCC851FABC24B00FA2F21 /* ExpansionTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpansionTextField.swift; sourceTree = "<group>"; };
 		C9FFCC871FB3B1D000FA2F21 /* TreeLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeLoader.swift; sourceTree = "<group>"; };
@@ -745,6 +787,7 @@
 				C967C4AE1F96BA55002166F7 /* Cache.swift */,
 				C967AAB41FAA45B3008A4DF0 /* Debug.swift */,
 				C9FFCC851FABC24B00FA2F21 /* ExpansionTextField.swift */,
+				C9864465207E9CAC0088209B /* StringIdentifiers.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -841,6 +884,7 @@
 		899D0106142168830091DC6F /* images */ = {
 			isa = PBXGroup;
 			children = (
+				C9800D8E2018FD3C0045B05D /* File List */,
 				C9DAB5CC1D4A4EA700586854 /* Git-Icon-1788C.png */,
 				895869B51D0871A6003A9AF0 /* Sidebar */,
 				895869B31D08711E003A9AF0 /* Status */,
@@ -1036,13 +1080,14 @@
 		C935BD7C1E8AB16F00BE51F0 /* File List */ = {
 			isa = PBXGroup;
 			children = (
-				C9AA802F1E2929810004D670 /* XTFileChangesDataSource.swift */,
-				89D8BE211CF0A4ED00D640AA /* XTRolloverButton.swift */,
+				C9AA802F1E2929810004D670 /* FileChangesDataSource.swift */,
 				C99A6AEB1E48FA140030DC01 /* FileListDataSourceBase.swift */,
+				C9800D7C2017FEB80045B05D /* FileListController.swift */,
 				C94736811DF097B2000E3A05 /* FileListView.swift */,
-				C947367F1DF08FFB000E3A05 /* FileRowView.swift */,
 				C932110B1E48E92C00232B61 /* FileTreeDataSource.swift */,
+				89D8BE211CF0A4ED00D640AA /* RolloverButton.swift */,
 				899DB18D1CE0EA3A00760270 /* WorkspaceTreeBuilder.swift */,
+				C9FE06C620178A8C0001EB2B /* FileListView.xib */,
 			);
 			name = "File List";
 			sourceTree = "<group>";
@@ -1075,10 +1120,10 @@
 		C95BF66B1FCF5E600020C51D /* Changes */ = {
 			isa = PBXGroup;
 			children = (
-				C95BF6651FCF5D7A0020C51D /* CommitChanges.swift */,
-				C926804D1D074EC500E422FA /* FileChangesModel.swift */,
-				C95BF6691FCF5E370020C51D /* StagingChanges.swift */,
-				C95BF6671FCF5DBD0020C51D /* StashChanges.swift */,
+				C95BF6651FCF5D7A0020C51D /* CommitSelection.swift */,
+				C926804D1D074EC500E422FA /* RepositorySelection.swift */,
+				C95BF6691FCF5E370020C51D /* StagingSelection.swift */,
+				C95BF6671FCF5DBD0020C51D /* StashSelection.swift */,
 			);
 			name = Changes;
 			sourceTree = "<group>";
@@ -1117,6 +1162,7 @@
 				C923D66B1D906FAA00C6B90B /* TitleBarViewController.swift */,
 				C95355E91D93470400AEEF49 /* TitleStatusView.swift */,
 				C923D65D1D90506A00C6B90B /* TitleBar.xib */,
+				C986447B208FBD990088209B /* ResponderNotifierWindow.swift */,
 			);
 			name = Document;
 			sourceTree = "<group>";
@@ -1163,6 +1209,31 @@
 				C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */,
 			);
 			name = Repository;
+			sourceTree = "<group>";
+		};
+		C9800D8E2018FD3C0045B05D /* File List */ = {
+			isa = PBXGroup;
+			children = (
+				C9800D8F2018FD640045B05D /* actionButtonEmpty.png */,
+				C9800D922018FD640045B05D /* actionButtonEmpty@2x.png */,
+				C9800D9F2018FDC00045B05D /* fileTemplate.png */,
+				C9800DA02018FDC00045B05D /* fileTemplate@2x.png */,
+				C9800D9C2018FD9C0045B05D /* revertTemplate.png */,
+				C9800D9B2018FD9C0045B05D /* revertTemplate@2x.png */,
+				C9864467207FF9940088209B /* stageAllTemplate.png */,
+				C9864468207FF9950088209B /* stageAllTemplate@2x.png */,
+				C986446E207FF9960088209B /* stageButtonHover.png */,
+				C986446D207FF9960088209B /* stageButtonHover@2x.png */,
+				C9800D902018FD640045B05D /* stageButtonPressed.png */,
+				C9800D912018FD640045B05D /* stageButtonPressed@2x.png */,
+				C9864469207FF9950088209B /* unstageAllTemplate.png */,
+				C986446A207FF9950088209B /* unstageAllTemplate@2x.png */,
+				C986446B207FF9960088209B /* unstageButtonHover.png */,
+				C986446C207FF9960088209B /* unstageButtonHover@2x.png */,
+				C9800D932018FD640045B05D /* unstageButtonPressed.png */,
+				C9800D942018FD640045B05D /* unstageButtonPressed@2x.png */,
+			);
+			name = "File List";
 			sourceTree = "<group>";
 		};
 		C9C773151D26F28900329493 /* Preferences */ = {
@@ -1430,7 +1501,11 @@
 				895869C01D088A46003A9AF0 /* tagTemplate.png in Resources */,
 				89D8BDFB1CED200B00D640AA /* delete@2x.png in Resources */,
 				89D8BE261CF35C7000D640AA /* unstage@2x.png in Resources */,
+				C9864470207FF9970088209B /* stageAllTemplate@2x.png in Resources */,
 				C98925C71DB693CC00E5645C /* XTTagPanelController.xib in Resources */,
+				C9FE06C720178A8C0001EB2B /* FileListView.xib in Resources */,
+				C9800D972018FD640045B05D /* stageButtonPressed@2x.png in Resources */,
+				C9864476207FF9970088209B /* stageButtonHover.png in Resources */,
 				C957B85D1D2D6A3C0040F858 /* githubTemplate.png in Resources */,
 				C3FA471113D0F8E200AC4F9B /* Credits.rtf in Resources */,
 				C3FA471713D0F8E200AC4F9B /* XTDocument.xib in Resources */,
@@ -1457,18 +1532,25 @@
 				89D8BDFC1CED200B00D640AA /* modify.png in Resources */,
 				C92A7B271D1DD1CD00D2B944 /* folderTemplate@2x.png in Resources */,
 				89039F561703A9FC000949A8 /* html in Resources */,
+				C9800D982018FD640045B05D /* actionButtonEmpty@2x.png in Resources */,
+				C9800D9A2018FD640045B05D /* unstageButtonPressed@2x.png in Resources */,
 				C90FD5971D217D5B00A30570 /* XTFetchPanelController.xib in Resources */,
 				89D8BDFD1CED200B00D640AA /* modify@2x.png in Resources */,
+				C986446F207FF9970088209B /* stageAllTemplate.png in Resources */,
+				C9800D9D2018FD9C0045B05D /* revertTemplate@2x.png in Resources */,
 				C9D74CC21D92E62200C5626E /* viewSidebarTemplate@2x.png in Resources */,
 				DD997DDA173B409500C7DF82 /* HistoryView Menus.xib in Resources */,
 				C957B85C1D2D6A3C0040F858 /* bitbucketTemplate@2x.png in Resources */,
 				C9D74CBE1D92E62200C5626E /* viewCommitTemplate@2x.png in Resources */,
+				C9864473207FF9970088209B /* unstageButtonHover.png in Resources */,
 				C923D65E1D90506A00C6B90B /* TitleBar.xib in Resources */,
 				89D8BDF81CED200B00D640AA /* conflict.png in Resources */,
 				DD997DF81746F40D00C7DF82 /* FileViewController.xib in Resources */,
 				89D8BDF91CED200B00D640AA /* conflict@2x.png in Resources */,
+				C9864475207FF9970088209B /* stageButtonHover@2x.png in Resources */,
 				C957B85B1D2D6A3C0040F858 /* bitbucketTemplate.png in Resources */,
 				C98D96061E706096007C3E16 /* tracking@2x.png in Resources */,
+				C9800D9E2018FD9C0045B05D /* revertTemplate.png in Resources */,
 				C92A7B261D1DD1CD00D2B944 /* folderTemplate.png in Resources */,
 				89D8BE011CED203900D640AA /* stage@2x.png in Resources */,
 				C9D74CBD1D92E62200C5626E /* viewCommitTemplate.png in Resources */,
@@ -1477,8 +1559,10 @@
 				C91610271D1DE994005A3142 /* pullRequestTemplate.png in Resources */,
 				89D8BDEA1CED1FE700D640AA /* add@2x.png in Resources */,
 				DD96C931175B76990003A30C /* splitter.png in Resources */,
+				C9864472207FF9970088209B /* unstageAllTemplate@2x.png in Resources */,
 				89D8BE251CF35C7000D640AA /* unstage.png in Resources */,
 				895869A91D0869D1003A9AF0 /* branchTemplate@2x.png in Resources */,
+				C9800D952018FD640045B05D /* actionButtonEmpty.png in Resources */,
 				895869C11D088A46003A9AF0 /* tagTemplate@2x.png in Resources */,
 				C9D74CC11D92E62200C5626E /* viewSidebarTemplate.png in Resources */,
 				894C8D941CA44A44001A4B80 /* stagingTemplate@2x.png in Resources */,
@@ -1500,12 +1584,16 @@
 				DDA8A64017F5B6CE00AD9808 /* modified.png in Resources */,
 				89D8BE5A1CF8E9C900D640AA /* diffTemplate.png in Resources */,
 				89D8BE5C1CF8E9C900D640AA /* historyTemplate.png in Resources */,
+				C9800D962018FD640045B05D /* stageButtonPressed.png in Resources */,
+				C9864474207FF9970088209B /* unstageButtonHover@2x.png in Resources */,
 				C98D96081E706096007C3E16 /* trackingMissing@2x.png in Resources */,
 				C91610281D1DE994005A3142 /* pullRequestTemplate@2x.png in Resources */,
+				C9800DA12018FDC00045B05D /* fileTemplate.png in Resources */,
 				C98D96051E706096007C3E16 /* tracking.png in Resources */,
 				89D8BE591CF8E9C900D640AA /* blameTemplate@2x.png in Resources */,
 				DDA8A64117F5B6CE00AD9808 /* modified@2x.png in Resources */,
 				C957B8611D2D6D900040F858 /* teamcityTemplate.png in Resources */,
+				C9800D992018FD640045B05D /* unstageButtonPressed.png in Resources */,
 				895869AA1D0869D1003A9AF0 /* cloudTemplate.png in Resources */,
 				DDA8A64217F5B6CE00AD9808 /* renamed.png in Resources */,
 				DDA8A64317F5B6CE00AD9808 /* renamed@2x.png in Resources */,
@@ -1513,8 +1601,10 @@
 				89D8BE5D1CF8E9C900D640AA /* historyTemplate@2x.png in Resources */,
 				C9D74CC01D92E62200C5626E /* viewHistoryTemplate@2x.png in Resources */,
 				C91610261D1DE994005A3142 /* mergeTemplate@2x.png in Resources */,
+				C9800DA22018FDC00045B05D /* fileTemplate@2x.png in Resources */,
 				C916102A1D1DE994005A3142 /* pullTemplate@2x.png in Resources */,
 				DDA8A65F17F9ECED00AD9808 /* mixed.png in Resources */,
+				C9864471207FF9970088209B /* unstageAllTemplate.png in Resources */,
 				DDA8A66017F9ECED00AD9808 /* mixed@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1570,7 +1660,7 @@
 				C3FA471413D0F8E200AC4F9B /* XTDocument.m in Sources */,
 				C93FFCBD1F13D3B200FDDD78 /* ValidatedSegment.swift in Sources */,
 				C94736781DEF5AAE000E3A05 /* GitExtensions.swift in Sources */,
-				C926804E1D074EC500E422FA /* FileChangesModel.swift in Sources */,
+				C926804E1D074EC500E422FA /* RepositorySelection.swift in Sources */,
 				C9F78B141D0896AF008490EA /* XTSidebarItem.swift in Sources */,
 				C91E9A011D527A1300E128AC /* XTHistoryTableController.swift in Sources */,
 				C959CDD71F859BFE00C1E282 /* XTWindowController+TouchBar.swift in Sources */,
@@ -1578,6 +1668,7 @@
 				C947367C1DF079DB000E3A05 /* SideBarOutlineView.swift in Sources */,
 				89C927941D43B23B0074F71A /* XTRepository.swift in Sources */,
 				C9BAE60A1D2FFA8B00A87F13 /* XTConfig.swift in Sources */,
+				C9800D7D2017FEB80045B05D /* FileListController.swift in Sources */,
 				C9BAE6141D3039C500A87F13 /* XTOperationController.swift in Sources */,
 				C991732D1F91255200054154 /* GitPatch.swift in Sources */,
 				C9FFCC861FABC24B00FA2F21 /* ExpansionTextField.swift in Sources */,
@@ -1589,7 +1680,7 @@
 				C948D5B71D2C6A4800F72A27 /* XTAccountsPrefsController.swift in Sources */,
 				C95BF6541FCF5BC90020C51D /* FileContentProtocols.swift in Sources */,
 				C959CDED1F859ED100C1E282 /* FileViewController+OutlineView.swift in Sources */,
-				C95BF6681FCF5DBD0020C51D /* StashChanges.swift in Sources */,
+				C95BF6681FCF5DBD0020C51D /* StashSelection.swift in Sources */,
 				C99A6AEC1E48FA140030DC01 /* FileListDataSourceBase.swift in Sources */,
 				C9AAEF811E413DA100A248CF /* CommitHeaderViewController.swift in Sources */,
 				C957B8721D2DB44E0040F858 /* XTRemoteSheetController.swift in Sources */,
@@ -1598,7 +1689,7 @@
 				C936AD0C1D4C0FA900C5ADC3 /* XTPasswordOpController.swift in Sources */,
 				C98925C61DB693CC00E5645C /* XTTagPanelController.swift in Sources */,
 				899DB1921CE109C700760270 /* WorkspaceTreeBuilder.swift in Sources */,
-				89D8BE221CF0A4ED00D640AA /* XTRolloverButton.swift in Sources */,
+				89D8BE221CF0A4ED00D640AA /* RolloverButton.swift in Sources */,
 				C9AA80361E2E7F370004D670 /* XTHistoryViewController.swift in Sources */,
 				DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */,
 				C957B8661D2D8D500040F858 /* XTKeychain.swift in Sources */,
@@ -1616,12 +1707,13 @@
 				C95BD4031F8FD611000A2E2D /* GitEnums.swift in Sources */,
 				C951EB051DD636B900B99FBE /* SidebarCheckedRowView.swift in Sources */,
 				C94866C01D25861E000BDB0A /* XTPasswordPanelController.swift in Sources */,
+				C9864466207E9CAC0088209B /* StringIdentifiers.swift in Sources */,
 				C9BAE61E1D303A8100A87F13 /* XTRemoteOptionsController.swift in Sources */,
 				C95BD4051F8FF8C8000A2E2D /* GitDiff.swift in Sources */,
 				C9FFCC881FB3B1D000FA2F21 /* TreeLoader.swift in Sources */,
 				C9328B121D77303200EFF7F7 /* XTFileMonitor.swift in Sources */,
 				C9DEA4AB1E4B7A4200DF4069 /* Blame.swift in Sources */,
-				C95BF6661FCF5D7A0020C51D /* CommitChanges.swift in Sources */,
+				C95BF6661FCF5D7A0020C51D /* CommitSelection.swift in Sources */,
 				C98CAD841F9520D0005DB419 /* GitDiffHunk.swift in Sources */,
 				C9BC1B9B1DDF51B900C71562 /* FileEventStream.swift in Sources */,
 				C929D03B1D400B3B00D7DC52 /* GitRemote.swift in Sources */,
@@ -1640,7 +1732,6 @@
 				C9DA20CB1F6C8B7800C472CD /* GitIndex.swift in Sources */,
 				C9F9A02A1E1C417D00261E33 /* PatchMaker.swift in Sources */,
 				C93799D51DDF9B28005C08B8 /* WorkspaceWatcher.swift in Sources */,
-				C94736801DF08FFB000E3A05 /* FileRowView.swift in Sources */,
 				DD9C1B8F160239DD0001FE9B /* XTRefToken.m in Sources */,
 				C9F461DE1EF34826007BEBC9 /* BuildStatusCellView.swift in Sources */,
 				C94A30241E311F3B00B4496B /* XTPreviewController.swift in Sources */,
@@ -1674,9 +1765,10 @@
 				C90FD5961D217D5B00A30570 /* XTFetchPanelController.swift in Sources */,
 				C9999AC71E08712000DF3E11 /* HistoryTableView.swift in Sources */,
 				C951EAE11DD11BDD00B99FBE /* XTSidebarTableCellView.swift in Sources */,
+				C986447C208FBD990088209B /* ResponderNotifierWindow.swift in Sources */,
 				C95ECD051EB11E310000DB78 /* WebViewController.swift in Sources */,
 				C92E30FB1D4FF4F0001985F7 /* XTCommit.swift in Sources */,
-				C9AA80301E2929810004D670 /* XTFileChangesDataSource.swift in Sources */,
+				C9AA80301E2929810004D670 /* FileChangesDataSource.swift in Sources */,
 				C9328B141D776BC700EFF7F7 /* XTRepositoryWatcher.swift in Sources */,
 				C9EB87241D01D93400C47D13 /* XTStash.swift in Sources */,
 				C951EB091DDBB77E00B99FBE /* XTConstants.m in Sources */,
@@ -1685,7 +1777,7 @@
 				C90FCA2F1D9C776C006196DE /* XTFileDiffController.swift in Sources */,
 				C9DEA49C1E4A900300DF4069 /* OID.swift in Sources */,
 				C98925D51DB6D3D300E5645C /* XTNewTagController.swift in Sources */,
-				C95BF66A1FCF5E370020C51D /* StagingChanges.swift in Sources */,
+				C95BF66A1FCF5E370020C51D /* StagingSelection.swift in Sources */,
 				C959CDEB1F859DB800C1E282 /* XTSidebarController+Actions.swift in Sources */,
 				C96F65461D53A6CE001B2557 /* XTHistoryCellView.swift in Sources */,
 				891261B01F867FCC00C292B7 /* Tree.swift in Sources */,
