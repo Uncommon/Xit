@@ -2,8 +2,11 @@ import Foundation
 
 public protocol CommitStorage: class
 {
+  func oid(forSHA sha: String) -> OID?
   func commit(forSHA sha: String) -> Commit?
   func commit(forOID oid: OID) -> Commit?
+  
+  func walker() -> RevWalk?
 }
 
 public protocol CommitReferencing: class
@@ -19,6 +22,16 @@ public protocol CommitReferencing: class
   
   func localBranch(named name: String) -> LocalBranch?
   func remoteBranch(named name: String, remote: String) -> RemoteBranch?
+  
+  func reference(named name: String) -> Reference?
+}
+
+extension CommitReferencing
+{
+  var headReference: Reference?
+  {
+    return reference(named: "HEAD")
+  }
 }
 
 extension CommitReferencing
@@ -64,7 +77,7 @@ public protocol FileContents: class
 {
   var repoURL: URL { get }
   
-  func isTextFile(_ path: String, commit: String?) -> Bool
+  func isTextFile(_ path: String, context: FileContext) -> Bool
   func fileBlob(ref: String, path: String) -> Blob?
   func stagedBlob(file: String) -> Blob?
   func contentsOfFile(path: String, at commit: Commit) -> Data?
@@ -97,7 +110,7 @@ public protocol RemoteManagement: class
 
 public protocol SubmoduleManagement: class
 {
-  func submodules() -> [XTSubmodule]
+  func submodules() -> [Submodule]
   func addSubmodule(path: String, url: String) throws
 }
 

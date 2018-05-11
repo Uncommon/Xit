@@ -16,12 +16,12 @@ class XTAddAccountController: XTSheetController
     {
       if let window = self.window {
         responderObserver = window.observe(\.firstResponder, options: [.new]) {
-          (_, change) in
+          [weak self] (_, change) in
           guard let newResponder = change.newValue,
-                newResponder === self.passwordField
+                newResponder === self?.passwordField
           else { return }
           
-          self.passwordFocused()
+          self?.passwordFocused()
         }
       }
     }

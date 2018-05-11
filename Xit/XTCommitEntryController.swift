@@ -99,7 +99,7 @@ class XTCommitEntryController: NSViewController
     catch {
       let alert = NSAlert(error: error as NSError)
       
-      alert.beginSheetModal(for: self.view.window!, completionHandler: nil)
+      alert.beginSheetModal(for: view.window!, completionHandler: nil)
     }
   }
   

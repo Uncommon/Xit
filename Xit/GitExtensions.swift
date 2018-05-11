@@ -21,6 +21,15 @@ extension git_checkout_options
     git_checkout_init_options(&options, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
     return options
   }
+  
+  static func defaultOptions(strategy: git_checkout_strategy_t)
+    -> git_checkout_options
+  {
+    var result = defaultOptions()
+    
+    result.checkout_strategy = strategy.rawValue
+    return result
+  }
 }
 
 extension git_merge_options
@@ -45,23 +54,19 @@ extension git_status_options
   }
 }
 
+extension git_stash_apply_options
+{
+  static func defaultOptions() -> git_stash_apply_options
+  {
+    var options = git_stash_apply_options()
+    
+    git_stash_apply_init_options(&options, UInt32(GIT_STASH_APPLY_OPTIONS_VERSION))
+    return options
+  }
+}
+
 extension Array where Element == String
 {
-  init(gitStrArray: git_strarray)
-  {
-    self.init()
-  
-    var stringPtr = gitStrArray.strings
-    
-    for _ in 0..<gitStrArray.count {
-      guard let string = stringPtr?.pointee
-      else { continue }
-      
-      append(String(cString: string))
-      stringPtr = stringPtr?.advanced(by: 1)
-    }
-  }
-  
   /// Converts the given array to a `git_strarray` and calls the given block.
   /// This is patterned after `withArrayOfCStrings` except that function does
   /// not produce the necessary type.
@@ -94,6 +99,28 @@ extension Array where Element == String
         
         block(strarray)
       })
+    }
+  }
+}
+
+extension git_strarray: RandomAccessCollection
+{
+  public var startIndex: Int { return 0 }
+  public var endIndex: Int { return count }
+  
+  public subscript(index: Int) -> String?
+  {
+    return self.strings[index].map { String(cString: $0) }
+  }
+}
+
+extension Data
+{
+  func isBinary() -> Bool
+  {
+    return withUnsafeBytes {
+      (data: UnsafePointer<Int8>) -> Bool in
+      return git_buffer_is_binary(data, count)
     }
   }
 }

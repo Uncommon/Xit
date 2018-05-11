@@ -14,8 +14,8 @@ class XTFetchController: XTPasswordOpController
     else { return nil }
     
     if let branchName = repository.currentBranch {
-      let currentBranch = XTLocalBranch(repository: repository,
-                                        name: branchName)
+      let currentBranch = repository.localBranch(named: branchName)
+      
       if let trackingBranch = currentBranch?.trackingBranch {
         return trackingBranch.remoteName
       }
@@ -41,16 +41,16 @@ class XTFetchController: XTPasswordOpController
     guard let repository = repository
     else { throw XTRepository.Error.unexpected }
     
-    let config = XTConfig(repository: repository)
+    let config = repository.config
     let panel = XTFetchPanelController.controller()
     
     if let remoteName = defaultRemoteName() {
       panel.selectedRemote = remoteName
     }
     panel.parentController = windowController
-    panel.downloadTags = config.fetchTags(panel.selectedRemote)
-    panel.pruneBranches = config.fetchPrune(panel.selectedRemote)
-    self.windowController!.window!.beginSheet(panel.window!) {
+    panel.downloadTags = config?.fetchTags(panel.selectedRemote) ?? false
+    panel.pruneBranches = config?.fetchPrune(panel.selectedRemote) ?? false
+    windowController!.window!.beginSheet(panel.window!) {
       (response) in
       if response == NSApplication.ModalResponse.OK {
         self.executeFetch(remoteName: panel.selectedRemote as String,
@@ -86,7 +86,7 @@ class XTFetchController: XTPasswordOpController
                     pruneBranches: Bool)
   {
     guard let repository = repository,
-          let remote = XTRemote(name: remoteName, repository: repository)
+          let remote = repository.remote(named: remoteName)
     else { return }
     
     let repo = repository  // For use in the block without being tied to self

@@ -29,8 +29,19 @@ final class XTKeychain: NSObject
     return password
   }
   
+  class func findItem(url: URL, user: String) -> (String?, SecKeychainItem?)
+  {
+    guard let host = url.host
+    else { return (nil, nil) }
+    
+    return findItem(host: host, path: url.path, port: UInt16(url.port ?? 0),
+                    account: user)
+  }
+  
   class func findItem(host: String, path: String,
-                      port: UInt16, account: String)
+                      port: UInt16, account: String,
+                      protocol: SecProtocolType = .HTTP,
+                      authType: SecAuthenticationType = .httpBasic)
                       -> (String?, SecKeychainItem?)
   {
     var passwordLength: UInt32 = 0

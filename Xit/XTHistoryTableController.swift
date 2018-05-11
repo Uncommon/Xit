@@ -80,7 +80,10 @@ public class XTHistoryTableController: NSViewController
       }
     }
     
-    history.postProgress = self.postProgress(batchSize:batch:pass:value:)
+    history.postProgress = {
+      [weak self] in
+      self?.postProgress(batchSize: $0, batch: $1, pass: $2, value: $3)
+    }
   }
   
   /// Reloads the commit history from scratch.
@@ -98,38 +101,43 @@ public class XTHistoryTableController: NSViewController
     
     history.reset()
     repository.queue.executeOffMainThread {
-      guard let walker = try? GTEnumerator(repository: repository.gtRepo)
+      kdebug_signpost_start(Signposts.historyWalking, 0, 0, 0, 0)
+      guard let walker = repository.walker()
       else {
-        NSLog("GTEnumerator failed")
+        NSLog("RevWalker failed")
         return
       }
       
-      walker.reset(options: [.topologicalSort])
+      walker.setSorting([.topological])
       
       let refs = repository.allRefs()
       
       for ref in refs where ref != "refs/stash" {
-        _ = repository.sha(forRef: ref).flatMap { try? walker.pushSHA($0) }
+        repository.oid(forRef: ref).map { walker.push(oid: $0) }
       }
       
-      while let gtCommit = walker.nextObject() as? GTCommit {
-        let oid = GitOID(oidPtr: gtCommit.oid!.git_oid())
-        guard let commit = XTCommit(oid: oid,
-                                    repository: repository.gtRepo.git_repository())
+      objc_sync_enter(history)
+      while let oid = walker.next() {
+        guard let commit = repository.commit(forOID: oid)
         else { continue }
         
         history.appendCommit(commit)
       }
+      objc_sync_exit(history)
+      kdebug_signpost_end(Signposts.historyWalking, 0, 0, 0, 0)
       
       DispatchQueue.global(qos: .utility).async {
         // Get off the queue thread, but run this as a queue task so that
         // progress will be displayed.
         self.repository.queue.executeTask {
+          kdebug_signpost_start(Signposts.connectCommits, 0, 0, 0, 0)
           history.connectCommits(batchSize: batchSize) {}
+          kdebug_signpost_end(Signposts.connectCommits, 0, 0, 0, 0)
         }
         DispatchQueue.main.async {
+          [weak self] in
           tableView?.reloadData()
-          self.ensureSelection()
+          self?.ensureSelection()
         }
       }
     }
@@ -197,6 +205,13 @@ public class XTHistoryTableController: NSViewController
   {
     let tableView = view as! NSTableView
     
+    objc_sync_enter(self)
+    objc_sync_enter(history)
+    defer {
+      objc_sync_exit(history)
+      objc_sync_exit(self)
+    }
+    
     guard let sha = sha,
           let row = history.entries.index(where: { $0.commit.sha == sha })
     else {
@@ -259,14 +274,12 @@ extension XTHistoryTableController: NSTableViewDelegate
     else { return nil }
     
     let entry = history.entries[row]
-    guard let sha = entry.commit.sha
-    else { return nil }
     
     switch tableColumn.identifier {
       case ColumnID.commit:
         let historyCell = result as! XTHistoryCellView
         
-        historyCell.refs = repository.refs(at: sha)
+        historyCell.refs = repository.refs(at: entry.commit.sha)
         historyCell.textField?.stringValue = entry.commit.message ?? ""
         historyCell.objectValue = entry
       case ColumnID.date:

@@ -7,27 +7,26 @@ let XTChangedRefsKey = "changedRefs"
 // Remove inheritance when XTRepository is converted to Swift
 @objc class XTRepositoryWatcher: NSObject
 {
-  unowned let repository: XTRepository
+  weak var repository: XTRepository?
 
   // stream must be var because we have to reference self to initialize it.
   var stream: FileEventStream! = nil
   var packedRefsWatcher: XTFileMonitor?
   var configWatcher: XTFileMonitor?
+  var stashWatcher: XTFileMonitor?
+  
+  let mutex = Mutex()
   
   private var lastIndexChangeGuarded = Date()
   var lastIndexChange: Date
   {
     get
     {
-      objc_sync_enter(self)
-      defer { objc_sync_exit(self) }
-      return lastIndexChangeGuarded
+      return mutex.withLock { lastIndexChangeGuarded }
     }
     set
     {
-      objc_sync_enter(self)
-      lastIndexChangeGuarded = newValue
-      objc_sync_exit(self)
+      mutex.withLock { lastIndexChangeGuarded = newValue }
       NotificationCenter.default.post(
           name: NSNotification.Name.XTRepositoryIndexChanged, object: repository)
     }
@@ -40,36 +39,45 @@ let XTChangedRefsKey = "changedRefs"
     self.repository = repository
     super.init()
     
-    let objectsPath = repository.gitDirectoryURL.path
-                      .appending(pathComponent: "objects")
-    guard let stream = FileEventStream(path: repository.gitDirectoryURL.path,
+    let gitPath = repository.gitDirectoryPath
+    let objectsPath = gitPath.appending(pathComponent: "objects")
+    guard let stream = FileEventStream(path: gitPath,
                                        excludePaths: [objectsPath],
                                        queue: repository.queue.queue,
                                        callback: {
        [weak self] (paths) in
-       self?.observeEvents(paths)
+       // Capture the repository here in case it gets deleted on another thread
+       guard let myself = self,
+             let repository = myself.repository
+       else { return }
+       
+       myself.observeEvents(paths, repository)
     })
     else { return nil }
   
     self.stream = stream
     makePackedRefsWatcher()
     makeConfigWatcher()
+    makeStashWatcher()
   }
   
   func stop()
   {
     stream.stop()
-    packedRefsWatcher = nil
-    configWatcher = nil
+    mutex.withLock {
+      self.packedRefsWatcher = nil
+      self.configWatcher = nil
+    }
   }
   
   func makePackedRefsWatcher()
   {
-    let path = repository.gitDirectoryURL.path
+    let path = repository!.gitDirectoryPath
+    let watcher =
+          XTFileMonitor(path: path.appending(pathComponent: "packed-refs"))
     
-    self.packedRefsWatcher =
-        XTFileMonitor(path: path.appending(pathComponent: "packed-refs"))
-    self.packedRefsWatcher?.notifyBlock = {
+    mutex.withLock { self.packedRefsWatcher = watcher }
+    watcher?.notifyBlock = {
       [weak self] (_, _) in
       self?.checkRefs()
     }
@@ -77,7 +85,7 @@ let XTChangedRefsKey = "changedRefs"
   
   func makeConfigWatcher()
   {
-    let path = repository.gitDirectoryURL.path
+    let path = repository!.gitDirectoryPath
     
     configWatcher = XTFileMonitor(path: path.appending(pathComponent: "config"))
     configWatcher?.notifyBlock = {
@@ -86,12 +94,26 @@ let XTChangedRefsKey = "changedRefs"
     }
   }
   
+  func makeStashWatcher()
+  {
+    let path = repository!.gitDirectoryPath
+                          .appending(pathComponent: "logs/refs/stash")
+    guard let watcher = XTFileMonitor(path: path)
+    else { return }
+    
+    stashWatcher = watcher
+    watcher.notifyBlock = {
+      [weak self] (_, _) in
+      self?.post(.XTRepositoryStashChanged)
+    }
+  }
+  
   func index(refs: [String]) -> [String: GitOID]
   {
     var result = [String: GitOID]()
     
     for ref in refs {
-      guard let oid = repository.sha(forRef: ref).flatMap({ GitOID(sha: $0) })
+      guard let oid = repository?.sha(forRef: ref).flatMap({ GitOID(sha: $0) })
       else { continue }
       
       result[ref] = oid
@@ -99,9 +121,9 @@ let XTChangedRefsKey = "changedRefs"
     return result
   }
   
-  func checkIndex()
+  func checkIndex(repository: XTRepository)
   {
-    let gitPath = repository.gitDirectoryURL.path
+    let gitPath = repository.gitDirectoryPath
     let indexPath = gitPath.appending(pathComponent: "index")
     guard let indexAttributes = try? FileManager.default
                                      .attributesOfItem(atPath: indexPath),
@@ -140,11 +162,13 @@ let XTChangedRefsKey = "changedRefs"
     }
   }
   
-  func checkRefs(_ changedPaths: [String])
+  func checkRefs(changedPaths: [String], repository: XTRepository)
   {
-    if packedRefsWatcher == nil,
-       changedPaths.index(of: repository.gitDirectoryURL.path) != nil {
-      makePackedRefsWatcher()
+    mutex.withLock {
+      if self.packedRefsWatcher == nil,
+         changedPaths.index(of: repository.gitDirectoryPath) != nil {
+        self.makePackedRefsWatcher()
+      }
     }
     
     if paths(changedPaths, includeSubpaths: ["refs/heads", "refs/remotes"]) {
@@ -152,7 +176,7 @@ let XTChangedRefsKey = "changedRefs"
     }
   }
   
-  func checkHead(_ changedPaths: [String])
+  func checkHead(changedPaths: [String], repository: XTRepository)
   {
     if paths(changedPaths, includeSubpaths: ["HEAD"]) {
       repository.clearCachedBranch()
@@ -162,6 +186,9 @@ let XTChangedRefsKey = "changedRefs"
   
   func checkRefs()
   {
+    guard let repository = self.repository
+    else { return }
+    
     objc_sync_enter(self)
     defer { objc_sync_exit(self) }
     
@@ -173,7 +200,7 @@ let XTChangedRefsKey = "changedRefs"
     let changedRefs = newKeys.subtracting(addedRefs).filter {
       (ref) -> Bool in
       guard let oldOID = refsCache[ref],
-            let newSHA = self.repository.sha(forRef: ref),
+            let newSHA = repository.sha(forRef: ref),
             let newOID =  GitOID(sha: newSHA)
       else { return false }
       
@@ -206,22 +233,22 @@ let XTChangedRefsKey = "changedRefs"
     post(.XTRepositoryConfigChanged)
   }
   
-  func checkLogs(_ changedPaths: [String])
+  func checkLogs(changedPaths: [String])
   {
     if paths(changedPaths, includeSubpaths: ["logs/refs"]) {
       post(.XTRepositoryRefLogChanged)
     }
   }
   
-  func observeEvents(_ paths: [String])
+  func observeEvents(_ paths: [String], _ repository: XTRepository)
   {
     // FSEvents includes trailing slashes, but some other APIs don't.
     let standardizedPaths = paths.map({ ($0 as NSString).standardizingPath })
   
-    checkIndex()
-    checkHead(standardizedPaths)
-    checkRefs(standardizedPaths)
-    checkLogs(standardizedPaths)
+    checkIndex(repository: repository)
+    checkHead(changedPaths: standardizedPaths, repository: repository)
+    checkRefs(changedPaths: standardizedPaths, repository: repository)
+    checkLogs(changedPaths: standardizedPaths)
     
     post(.XTRepositoryChanged)
   }

@@ -20,9 +20,13 @@ class TaskQueue: NSObject
   private func updateQueueCount(_ delta: Int)
   {
     DispatchQueue.main.async {
-      self.willChangeValue(forKey: "busy")
-      self.queueCount = UInt(Int(self.queueCount) + delta)
-      self.didChangeValue(forKey: "busy")
+      [weak self] in
+      guard let myself = self
+      else { return }
+      
+      myself.willChangeValue(forKey: "busy")
+      myself.queueCount = UInt(Int(myself.queueCount) + delta)
+      myself.didChangeValue(forKey: "busy")
     }
   }
   
@@ -39,12 +43,13 @@ class TaskQueue: NSObject
     if Thread.isMainThread {
       if !isShutDown {
         queue.async {
-          self.executeTask(block)
+          [weak self] in
+          self?.executeTask(block)
         }
       }
     }
     else {
-      self.executeTask(block)
+      executeTask(block)
     }
   }
   

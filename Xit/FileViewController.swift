@@ -1,79 +1,6 @@
 import Foundation
 import Quartz
 
-/// Interface for a controller that displays file content in some form.
-protocol XTFileContentController
-{
-  /// Clears the display for when nothing is selected.
-  func clear()
-  /// Displays the content from the given file model. May be called off the
-  /// main thread.
-  /// - parameter path: The repository-relative file path.
-  /// - parameter model: The model to read data from.
-  /// - parameter staged: Whether to show staged content.
-  func load(path: String!, model: FileChangesModel!, staged: Bool)
-  /// True if the controller has content loaded.
-  var isLoaded: Bool { get }
-}
-
-protocol WhitespaceVariable: class
-{
-  var whitespace: WhitespaceSetting { get set }
-}
-
-protocol TabWidthVariable: class
-{
-  var tabWidth: UInt { get set }
-}
-
-protocol ContextVariable: class
-{
-  var contextLines: UInt { get set }
-}
-
-extension DeltaStatus
-{
-  var changeImage: NSImage?
-  {
-    switch self {
-      case .added, .untracked:
-        return NSImage(named: NSImage.Name(rawValue: "added"))
-      case .copied:
-        return NSImage(named: NSImage.Name(rawValue: "copied"))
-      case .deleted:
-        return NSImage(named: NSImage.Name(rawValue: "deleted"))
-      case .modified:
-        return NSImage(named: NSImage.Name(rawValue: "modified"))
-      case .renamed:
-        return NSImage(named: NSImage.Name(rawValue: "renamed"))
-      case .mixed:
-        return NSImage(named: NSImage.Name(rawValue: "mixed"))
-      default:
-        return nil
-    }
-  }
-  
-  var stageImage: NSImage?
-  {
-    switch self {
-      case .added:
-        return NSImage(named: NSImage.Name(rawValue: "add"))
-      case .untracked:
-        return NSImage(named: NSImage.Name(rawValue: "add"))
-      case .deleted:
-        return NSImage(named: NSImage.Name(rawValue: "delete"))
-      case .modified:
-        return NSImage(named: NSImage.Name(rawValue: "modify"))
-      case .mixed:
-        return NSImage(named: NSImage.Name(rawValue: "mixed"))
-      case .conflict:
-        return NSImage(named: NSImage.Name(rawValue: "conflict"))
-      default:
-        return nil
-    }
-  }
-}
-
 /// View controller for the file list and detail view.
 class FileViewController: NSViewController
 {
@@ -215,7 +142,7 @@ class FileViewController: NSViewController
   
   deinit
   {
-    indexTimer.map { $0.invalidate() }
+    indexTimer?.invalidate()
   }
 
   func finishLoad(repository: XTRepository)
@@ -604,26 +531,22 @@ class FileViewController: NSViewController
   
   func setWhitespace(_ setting: WhitespaceSetting)
   {
-    guard let wsController = contentController as? WhitespaceVariable
-    else { return }
-    
-    wsController.whitespace = setting
+    (contentController as? WhitespaceVariable)?.whitespace = setting
   }
   
   func setTabWidth(_ tabWidth: UInt)
   {
-    guard let tabController = contentController as? TabWidthVariable
-    else { return }
-    
-    tabController.tabWidth = tabWidth
+    (contentController as? TabWidthVariable)?.tabWidth = tabWidth
   }
   
   func setContext(_ context: UInt)
   {
-    guard let contextController = contentController as? ContextVariable
-    else { return }
-    
-    contextController.contextLines = context
+    (contentController as? ContextVariable)?.contextLines = context
+  }
+  
+  func setWrapping(_ wrapping: Wrapping)
+  {
+    (contentController as? WrappingVariable)?.wrapping = wrapping
   }
   
   func updateStagingSegment()

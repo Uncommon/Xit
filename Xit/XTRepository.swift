@@ -21,6 +21,9 @@ extension NSNotification.Name
   /// A file in the workspace has changed.
   static let XTRepositoryWorkspaceChanged =
       NSNotification.Name(rawValue: "XTRepositoryWorkspaceChanged")
+  /// The stash log has changed.
+  static let XTRepositoryStashChanged =
+      NSNotification.Name(rawValue: "XTRepositoryStashChanged")
 }
 
 
@@ -50,9 +53,19 @@ public class XTRepository: NSObject
   fileprivate var workspaceWatcher: WorkspaceWatcher! = nil
   private(set) var config: XTConfig! = nil
   
+  var gitRepo: OpaquePointer { return gtRepo.git_repository() }
+  
+  var gitDirectoryPath: String
+  {
+    guard let path = git_repository_path(gitRepo)
+    else { return "" }
+    
+    return String(cString: path)
+  }
+  
   var gitDirectoryURL: URL
   {
-    return gtRepo.gitDirectoryURL ?? URL(fileURLWithPath: "")
+    return URL(fileURLWithPath: gitDirectoryPath)
   }
   
   static func gitPath() -> String?
@@ -102,7 +115,7 @@ public class XTRepository: NSObject
   {
     self.repoWatcher = XTRepositoryWatcher(repository: self)
     self.workspaceWatcher = WorkspaceWatcher(repository: self)
-    self.config = XTConfig(repository: self)
+    self.config = XTConfig(config: GitConfig(repository: gitRepo))
   }
   
   deinit
@@ -146,8 +159,12 @@ public class XTRepository: NSObject
   
   func refsChanged()
   {
+    // In theory the two separate locks could result in cachedBranch being wrong
+    // but that would only happen if this function was called on two different
+    // threads and one of them found that the branch had just changed again.
+    // Not likely.
     guard let newBranch = calculateCurrentBranch(),
-          newBranch != cachedBranch
+          mutex.withLock({ newBranch != cachedBranch })
     else { return }
     
     willChangeValue(forKey: "currentBranch")
@@ -159,12 +176,18 @@ public class XTRepository: NSObject
   
   func recalculateHead()
   {
-    guard let head = parseSymbolicReference("HEAD")
+    guard let headReference = self.headReference
     else { return }
-    let ref = head.hasPrefix("refs/heads/") ? head : "HEAD"
     
-    cachedHeadRef = ref
-    cachedHeadSHA = sha(forRef: ref)
+    switch headReference.type {
+      case .symbolic:
+        cachedHeadRef = headReference.symbolicTargetName
+      case .OID:
+        cachedHeadRef = headReference.name
+      default:
+        break
+    }
+    cachedHeadSHA = sha(forRef: headReference.name)
   }
   
   func writing(_ block: () -> Bool) -> Bool
@@ -185,7 +208,21 @@ public class XTRepository: NSObject
   }
   
   func executeGit(args: [String],
-                  stdIn: String? = nil,
+                  stdIn: String?,
+                  writes: Bool) throws -> Data
+  {
+    return try executeGit(args: args,
+                          stdInData: stdIn?.data(using: .utf8),
+                          writes: writes)
+  }
+  
+  func executeGit(args: [String], writes: Bool) throws -> Data
+  {
+    return try executeGit(args: args, stdInData: nil, writes: writes)
+  }
+  
+  func executeGit(args: [String],
+                  stdInData: Data?,
                   writes: Bool) throws -> Data
   {
     guard FileManager.default.fileExists(atPath: repoURL.path)
@@ -215,11 +252,16 @@ public class XTRepository: NSObject
     task.launchPath = gitCMD
     task.arguments = args
     
-    if let stdInData = stdIn?.data(using: .utf8) {
+    // Large files have to be chunked or else FileHandle.write() hangs
+    let chunkSize = 10*1024
+
+    if let data = stdInData {
       let stdInPipe = Pipe()
       
-      stdInPipe.fileHandleForWriting.write(stdInData)
-      stdInPipe.fileHandleForWriting.closeFile()
+      if data.count <= chunkSize {
+        stdInPipe.fileHandleForWriting.write(data)
+        stdInPipe.fileHandleForWriting.closeFile()
+      }
       task.standardInput = stdInPipe
     }
     
@@ -229,6 +271,19 @@ public class XTRepository: NSObject
     task.standardOutput = pipe
     task.standardError = errorPipe
     try task.throwingLaunch()
+    
+    if let data = stdInData,
+       data.count > chunkSize,
+       let handle = (task.standardInput as? Pipe)?.fileHandleForWriting {
+      for chunkIndex in 0...(data.count/chunkSize) {
+        let chunkStart = chunkIndex * chunkSize
+        let chunkEnd = min(chunkStart + chunkSize, data.count)
+        let subData = data.subdata(in: chunkStart..<chunkEnd)
+        
+        handle.write(subData)
+      }
+      handle.closeFile()
+    }
     
     let output = pipe.fileHandleForReading.readDataToEndOfFile()
     
@@ -265,6 +320,7 @@ extension XTRepository
     case patchMismatch
     case commitNotFound(String?)  // SHA
     case fileNotFound(String)  // Path
+    case notFound
     case unexpected
     
     var message: String
@@ -299,6 +355,8 @@ extension XTRepository
           return "The commit \(sha ?? "-") was not found."
         case .fileNotFound(let path):
            return "The file \(path) was not found."
+        case .notFound:
+          return "The item was not found."
         case .unexpected:
           return "An unexpected repository error occurred."
       }
@@ -311,6 +369,8 @@ extension XTRepository
           self = .conflict
         case GIT_ELOCKED:
           self = .alreadyWriting
+        case GIT_ENOTFOUND:
+          self = .notFound
         default:
           self = .gitError(gitCode.rawValue)
       }
@@ -344,6 +404,11 @@ internal func setRepoWriting(_ repo: XTRepository, _ writing: Bool)
 
 extension XTRepository: CommitStorage
 {
+  public func oid(forSHA sha: String) -> OID?
+  {
+    return GitOID(sha: sha)
+  }
+  
   public func commit(forSHA sha: String) -> Commit?
   {
     return XTCommit(sha: sha, repository: self)
@@ -351,7 +416,12 @@ extension XTRepository: CommitStorage
   
   public func commit(forOID oid: OID) -> Commit?
   {
-    return XTCommit(oid: oid, repository: gtRepo.git_repository())
+    return XTCommit(oid: oid, repository: gitRepo)
+  }
+  
+  public func walker() -> RevWalk?
+  {
+    return GitRevWalk(repository: gitRepo)
   }
 }
 
@@ -362,9 +432,7 @@ extension XTRepository
   func isIgnored(path: String) -> Bool
   {
     let ignored = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
-    let result = git_ignore_path_is_ignored(ignored,
-                                            gtRepo.git_repository(),
-                                            path)
+    let result = git_ignore_path_is_ignored(ignored, gitRepo, path)
 
     return (result == 0) && (ignored.pointee != 0)
   }
@@ -373,7 +441,7 @@ extension XTRepository
   func status(file: String) throws -> (DeltaStatus, DeltaStatus)
   {
     let statusFlags = UnsafeMutablePointer<UInt32>.allocate(capacity: 1)
-    let result = git_status_file(statusFlags, gtRepo.git_repository(), file)
+    let result = git_status_file(statusFlags, gitRepo, file)
     
     if result != 0 {
       throw NSError.git_error(for: result)
@@ -439,7 +507,7 @@ extension XTRepository
                                     GIT_CHECKOUT_RECREATE_MISSING.rawValue
         options.paths = stringarray
         
-        let result = git_checkout_tree(self.gtRepo.git_repository(), nil, &options)
+        let result = git_checkout_tree(self.gitRepo, nil, &options)
         
         if result < 0 {
           error = Error.gitError(result)
@@ -459,7 +527,7 @@ extension XTRepository
     let ahead = UnsafeMutablePointer<Int>.allocate(capacity: 1)
     let behind = UnsafeMutablePointer<Int>.allocate(capacity: 1)
     
-    if git_graph_ahead_behind(ahead, behind, gtRepo.git_repository(),
+    if git_graph_ahead_behind(ahead, behind, gitRepo,
                               local.unsafeOID(), upstream.unsafeOID()) == 0 {
       return (ahead.pointee, behind.pointee)
     }

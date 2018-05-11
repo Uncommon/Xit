@@ -3,7 +3,7 @@ import Cocoa
 
 public protocol Commit: OIDObject, CustomStringConvertible
 {
-  var sha: String? { get }
+  var sha: String { get }
   var parentOIDs: [OID] { get }
   
   var message: String? { get }
@@ -24,6 +24,8 @@ public protocol Commit: OIDObject, CustomStringConvertible
 
 extension Commit
 {
+  public var sha: String { return oid.sha }
+  
   var authorName: String? { return authorSig?.name }
   var authorEmail: String? { return authorSig?.email }
   var authorDate: Date? { return authorSig?.when }
@@ -50,16 +52,30 @@ extension Commit
   }
 
   public var description: String
-  { return "\(sha?.firstSix() ?? "-")" }
+  { return sha.firstSix() }
 }
-
 
 public class XTCommit: Commit
 {
   let commit: OpaquePointer
+  let mutex = Mutex()
+  var storedSHA: String?
 
-  public private(set) lazy var sha: String? = oid.sha
-  public private(set) lazy var oid: OID = GitOID(oidPtr: git_commit_id(commit))
+  public var sha: String
+  {
+    return mutex.withLock {
+      if let sha = storedSHA {
+        return sha
+      }
+      else {
+        let result = oid.sha
+        
+        storedSHA = result
+        return result
+      }
+    }
+  }
+  public let oid: OID
   public private(set) lazy var parentOIDs: [OID] =
       XTCommit.calculateParentOIDs(self.commit)
   
@@ -139,12 +155,8 @@ public class XTCommit: Commit
 
   init?(gitCommit: OpaquePointer)
   {
+    self.oid = GitOID(oidPtr: git_commit_id(gitCommit))
     self.commit = gitCommit
-  }
-  
-  init(commit: GTCommit)
-  {
-    self.commit = commit.git_commit()
   }
 
   convenience init?(oid: OID, repository: OpaquePointer)
@@ -168,14 +180,14 @@ public class XTCommit: Commit
     guard let oid = GitOID(sha: sha)
     else { return nil }
     
-    self.init(oid: oid, repository: repository.gtRepo.git_repository())
+    self.init(oid: oid, repository: repository.gitRepo)
   }
   
   convenience init?(ref: String, repository: XTRepository)
   {
     let gitRefPtr = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     guard git_reference_lookup(gitRefPtr,
-                               repository.gtRepo.git_repository(),
+                               repository.gitRepo,
                                ref) == 0,
           let gitRef = gitRefPtr.pointee
     else { return nil }

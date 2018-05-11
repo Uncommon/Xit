@@ -22,21 +22,23 @@ extension XTSidebarController
   @IBAction func checkOutBranch(_ sender: Any?)
   {
     callCommand(errorString: "Checkout failed") {
-      (item) in
+      [weak self] (item) in
       do {
-        try self.repo.checkout(branch: item.title)
+        try self?.repo.checkout(branch: item.title)
       }
       catch let error as NSError
             where error.domain == GTGitErrorDomain &&
                   error.gitError == GIT_ECONFLICT {
         DispatchQueue.main.async {
+          guard let myself = self
+          else { return }
           let alert = NSAlert()
           
           alert.messageText =
               "Checkout failed because of a conflict with local changes."
           alert.informativeText =
               "Revert or stash your changes and try again."
-          alert.beginSheetModal(for: self.view.window!, completionHandler: nil)
+          alert.beginSheetModal(for: myself.view.window!, completionHandler: nil)
         }
       }
     }
@@ -54,7 +56,7 @@ extension XTSidebarController
   @IBAction func mergeBranch(_ sender: Any?)
   {
     guard let selectedItem = targetItem() as? XTBranchItem,
-          let branch = XTBranch(name: selectedItem.title, repository: repo)
+          let branch = selectedItem.branchObject()
     else { return }
     
     repo.queue.executeOffMainThread {
@@ -94,8 +96,8 @@ extension XTSidebarController
     
     confirmDelete(kind: "tag", name: item.title) {
       self.callCommand(errorString: "Delete tag failed", targetItem: item) {
-        (item) in
-        try self.repo.deleteTag(name: item.title)
+        [weak self] (item) in
+        try self?.repo.deleteTag(name: item.title)
       }
     }
   }
@@ -108,8 +110,8 @@ extension XTSidebarController
   @IBAction func deleteRemote(_ sender: Any?)
   {
     callCommand(errorString: "Delete remote failed") {
-      (item) in
-      try self.repo.deleteRemote(named: item.title)
+      [weak self] (item) in
+      try self?.repo.deleteRemote(named: item.title)
     }
   }
   

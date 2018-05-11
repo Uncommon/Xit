@@ -21,7 +21,7 @@ class XTTagTest: XTTest
   }
   
   // The message comes through with an extra newline at the end
-  func trimmedMessage(tag: XTTag) -> String
+  func trimmedMessage(tag: GitTag) -> String
   {
     return (tag.message! as NSString)
            .trimmingCharacters(in: CharacterSet.newlines)
@@ -29,23 +29,23 @@ class XTTagTest: XTTest
   
   func checkTag(hasMessage: Bool)
   {
-    guard let tag = XTTag(repository: repository, name:tagName)
+    guard let tag = GitTag(repository: repository, name:tagName)
     else {
       XCTFail("tag not found")
       return
     }
-    XCTAssertNotNil(tag.targetSHA)
+    XCTAssertNotNil(tag.targetOID)
     if hasMessage {
       XCTAssertEqual(trimmedMessage(tag: tag), message)
     }
     
-    guard let fullTag = XTTag(repository: repository,
+    guard let fullTag = GitTag(repository: repository,
                               name: "refs/tags/" + tagName)
     else {
       XCTFail("tag not found by full name")
       return
     }
-    XCTAssertNotNil(fullTag.targetSHA)
+    XCTAssertNotNil(fullTag.targetOID)
     if hasMessage {
       XCTAssertEqual(trimmedMessage(tag: fullTag), message)
     }

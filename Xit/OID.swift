@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol OID
+public protocol OID: CustomDebugStringConvertible
 {
   var sha: String { get }
   var isZero: Bool { get }
@@ -8,6 +8,11 @@ public protocol OID
   // Making OID Equatable would cause cascading requirements that it, and
   // protocols that use it, only be used as a generic constraint.
   func equals(_ other: OID) -> Bool
+}
+
+extension OID // CustomDebugStringConvertible
+{
+  public var debugDescription: String { return sha }
 }
 
 // Don't explicitly conform to Hashable here because that constrains how the
@@ -29,7 +34,7 @@ public protocol OIDObject
 }
 
 
-public struct GitOID: OID, Hashable
+public struct GitOID: OID, Hashable, Equatable
 {
   let oid: git_oid
   

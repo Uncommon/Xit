@@ -54,6 +54,13 @@ class BlameViewController: WebViewController
     fatalError("init(coder:) has not been implemented")
   }
   
+  override func loadNotice(_ text: String)
+  {
+    spinner.isHidden = true
+    spinner.stopAnimation(nil)
+    super.loadNotice(text)
+  }
+  
   func notAvailable()
   {
     DispatchQueue.main.async {
@@ -134,8 +141,7 @@ class BlameViewController: WebViewController
       let hunkLines = lines[start..<end]
       
       htmlLines.append(contentsOf: hunkLines.map({
-          "<div class='line'>" +
-          "\(WebViewController.escape(text: $0))</div>" }))
+          "<div class='line'>\($0.xmlEscaped)</div>" }))
       htmlLines.append("</td></tr>")
     }
     
@@ -168,20 +174,25 @@ extension BlameViewController: XTFileContentController
   
   public func load(path: String!, model: FileChangesModel!, staged: Bool)
   {
-    guard let data = model.dataForFile(path, staged: staged),
-          let text = String(data: data, encoding: .utf8) ??
-                     String(data: data, encoding: .utf16)
-    else {
-      notAvailable()
-      return
+    repoController.queue.executeOffMainThread {
+      [weak self] in
+      guard let myself = self
+      else { return }
+      guard let data = model.dataForFile(path, staged: staged),
+            let text = String(data: data, encoding: .utf8) ??
+                       String(data: data, encoding: .utf16)
+      else {
+        myself.notAvailable()
+        return
+      }
+      
+      Thread.performOnMainThread {
+        myself.spinner.isHidden = false
+        myself.spinner.startAnimation(nil)
+        myself.clear()
+      }
+      myself.loadBlame(text: text, path: path, model: model, staged: staged)
     }
-    
-    MainThread.sync {
-      self.spinner.isHidden = false
-      self.spinner.startAnimation(nil)
-      self.clear()
-    }
-    self.loadBlame(text: text, path: path, model: model, staged: staged)
   }
 }
 

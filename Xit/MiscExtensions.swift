@@ -36,7 +36,7 @@ extension String
     guard hasPrefix(prefix)
     else { return self }
     
-    return String(self[prefix.characters.endIndex...])
+    return String(self[prefix.endIndex...])
   }
   
   /// Returns the string with the given prefix, adding it only if necessary.
@@ -65,6 +65,7 @@ extension String
     return (self as NSString).pathComponents
   }
   
+  // TODO: this probably shouldn't be optional
   var firstPathComponent: String?
   {
     return pathComponents.first
@@ -151,15 +152,31 @@ extension NSButton
   }
 }
 
+extension NSTextField
+{
+  var isTruncated: Bool
+  {
+    guard let expansionRect = cell?.expansionFrame(withFrame: frame, in: self)
+    else { return false }
+    
+    return expansionRect != NSRect.zero
+  }
+}
+
 extension String
 {
+  var lastPathComponent: String
+  {
+    return (self as NSString).lastPathComponent
+  }
+  
   /// Splits a "refs/*/..." string into prefix and remainder.
   func splitRefName() -> (String, String)?
   {
     guard hasPrefix("refs/")
     else { return nil }
     
-    let start = characters.index(startIndex, offsetBy: "refs/".characters.count)
+    let start = index(startIndex, offsetBy: "refs/".count)
     guard let slashRange = range(of: "/", options: [], range: start..<endIndex,
                                  locale: nil)
     else { return nil }
@@ -205,6 +222,13 @@ extension String
     }
     return .unknown
   }
+  
+  var xmlEscaped: String
+  {
+    return CFXMLCreateStringByEscapingEntities(kCFAllocatorDefault,
+                                               self as CFString,
+                                               [:] as CFDictionary) as String
+  }
 }
 
 extension NSTableView
@@ -228,6 +252,32 @@ extension NSTableView
     }
     scrollOrigin.y -= headerView?.bounds.size.height ?? 0
     superview?.animator().setBoundsOrigin(scrollOrigin)
+  }
+}
+
+extension NSTreeNode
+{
+  /// Inserts a child node in sorted order based on the given key extractor
+  func insert<T>(node: NSTreeNode, sortedBy extractor: (NSTreeNode) -> T?)
+    where T: Comparable
+  {
+    guard let children = self.children,
+          let key = extractor(node)
+    else {
+      mutableChildren.add(node)
+      return
+    }
+    
+    for (index, child) in children.enumerated() {
+      guard let childKey = extractor(child)
+      else { continue }
+      
+      if childKey > key {
+        mutableChildren.insert(node, at: index)
+        return
+      }
+    }
+    mutableChildren.add(node)
   }
 }
 
@@ -352,6 +402,21 @@ extension NSMutableArray
   func sort(keyPath key: String, ascending: Bool = true)
   {
     self.sort(using: [NSSortDescriptor(key: key, ascending: ascending)])
+  }
+}
+
+extension Thread
+{
+  static func performOnMainThread(_ block: @escaping () -> Void)
+  {
+    if isMainThread {
+      block()
+    }
+    else {
+      DispatchQueue.main.async {
+        block()
+      }
+    }
   }
 }
 

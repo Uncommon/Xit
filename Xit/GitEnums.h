@@ -66,3 +66,98 @@ typedef NS_OPTIONS(unsigned int, DiffOptionFlags)
   DiffOptionFlagsMinimal = GIT_DIFF_MINIMAL,
   DiffOptionFlagsShowBinary = GIT_DIFF_SHOW_BINARY,
 };
+
+typedef NS_ENUM(int, ReferenceType)
+{
+  ReferenceTypeInvalid = GIT_REF_INVALID,
+  ReferenceTypeOID = GIT_REF_OID,
+  ReferenceTypeSymbolic = GIT_REF_SYMBOLIC,
+  ReferenceTypeListAll = GIT_REF_LISTALL,
+};
+
+typedef NS_ENUM(int, GitObjectType)
+{
+  GitObjectTypeAny = GIT_OBJ_ANY,
+  GitObjectTypeBad = GIT_OBJ_BAD,
+  GitObjectTypeExt1 = GIT_OBJ__EXT1,
+  GitObjectTypeCommit = GIT_OBJ_COMMIT,
+  GitObjectTypeTree = GIT_OBJ_TREE,
+  GitObjectTypeBlob = GIT_OBJ_BLOB,
+  GitObjectTypeTag = GIT_OBJ_TAG,
+  GitObjectTypeExt2 = GIT_OBJ__EXT2,
+  GitObjectTypeOffsetDelta = GIT_OBJ_OFS_DELTA,
+  GitObjectTypeRefDelta = GIT_OBJ_REF_DELTA,
+};
+
+typedef NS_ENUM(int, StatusShow)
+{
+  StatusShowIndexAndWorkdir = GIT_STATUS_SHOW_INDEX_AND_WORKDIR,
+  StatusShowIndexOnly = GIT_STATUS_SHOW_INDEX_ONLY,
+  StatusShowWorkdirOnly = GIT_STATUS_SHOW_WORKDIR_ONLY,
+};
+
+typedef NS_OPTIONS(int, StatusFlags)
+{
+  //GIT_STATUS_CURRENT,
+  
+  StatusFlagsIndexNew        = GIT_STATUS_INDEX_NEW,
+  StatusFlagsIndexModified   = GIT_STATUS_INDEX_MODIFIED,
+  StatusFlagsIndexDeleted    = GIT_STATUS_INDEX_DELETED,
+  StatusFlagsIndexRenamed    = GIT_STATUS_INDEX_RENAMED,
+  StatusFlagsIndexTypeChange = GIT_STATUS_INDEX_TYPECHANGE,
+  
+  StatusFlagsWorktreeNew        = GIT_STATUS_WT_NEW,
+  StatusFlagsWorktreeModified   = GIT_STATUS_WT_MODIFIED,
+  StatusFlagsWorktreeDeleted    = GIT_STATUS_WT_DELETED,
+  StatusFlagsWorktreeRenamed    = GIT_STATUS_WT_RENAMED,
+  StatusFlagsWorktreeTypeChange = GIT_STATUS_WT_TYPECHANGE,
+  StatusFlagsWorktreeUnreadable = GIT_STATUS_WT_UNREADABLE,
+  
+  StatusFlagsIgnored = GIT_STATUS_IGNORED,
+  StatusFlagsConflicted = GIT_STATUS_CONFLICTED,
+};
+
+typedef NS_OPTIONS(int, StatusOptions)
+{
+  StatusOptionsIncludeUntracked = GIT_STATUS_OPT_INCLUDE_UNTRACKED,
+  StatusOptionsIncludeIgnored = GIT_STATUS_OPT_INCLUDE_IGNORED,
+  StatusOptionsIncludeUnmodified = GIT_STATUS_OPT_INCLUDE_UNMODIFIED,
+  StatusOptionsExcludeSubmodules = GIT_STATUS_OPT_EXCLUDE_SUBMODULES,
+  StatusOptionsRecurseUntrackedDirs = GIT_STATUS_OPT_RECURSE_UNTRACKED_DIRS,
+  StatusOptionsDisablePathspecMatch = GIT_STATUS_OPT_DISABLE_PATHSPEC_MATCH,
+  StatusOptionsRecurseIgnoredDirs = GIT_STATUS_OPT_RECURSE_IGNORED_DIRS,
+  StatusOptionsRenamesHeadToIndex = GIT_STATUS_OPT_RENAMES_HEAD_TO_INDEX,
+  StatusOptionsRenamesIndexToWorkdir = GIT_STATUS_OPT_RENAMES_INDEX_TO_WORKDIR,
+  StatusOptionsSortCaseSensitively = GIT_STATUS_OPT_SORT_CASE_SENSITIVELY,
+  StatusOptionsSortCaseInsensitively = GIT_STATUS_OPT_SORT_CASE_INSENSITIVELY,
+  StatusOptionsRenamesFromRewrites = GIT_STATUS_OPT_RENAMES_FROM_REWRITES,
+  StatusOptionsNoRefresh = GIT_STATUS_OPT_NO_REFRESH,
+  StatusOptionsUpdateIndex = GIT_STATUS_OPT_UPDATE_INDEX,
+  StatusOptionsIncludeUnreadable = GIT_STATUS_OPT_INCLUDE_UNREADABLE,
+  StatusOptionsIncludeUnreadableAsUntracked = GIT_STATUS_OPT_INCLUDE_UNREADABLE_AS_UNTRACKED,
+};
+
+typedef NS_OPTIONS(int, CheckoutStrategy)
+{
+  CheckoutStrategySafe = GIT_CHECKOUT_SAFE,
+  CheckoutStrategyForce = GIT_CHECKOUT_FORCE,
+  CheckoutStrategyRecreateMissing = GIT_CHECKOUT_RECREATE_MISSING,
+  CheckoutStrategyAllowConflicts = GIT_CHECKOUT_ALLOW_CONFLICTS,
+  CheckoutStrategyRemoveUntracked = GIT_CHECKOUT_REMOVE_UNTRACKED,
+  CheckoutStrategyRemoveIgnored = GIT_CHECKOUT_REMOVE_IGNORED,
+  CheckoutStrategyUpdateOnly = GIT_CHECKOUT_UPDATE_ONLY,
+  CheckoutStrategyDontUpdateIndex = GIT_CHECKOUT_DONT_UPDATE_INDEX,
+  CheckoutStrategyNoRefresh = GIT_CHECKOUT_NO_REFRESH,
+  CheckoutStrategySkipUnmerged = GIT_CHECKOUT_SKIP_UNMERGED,
+  CheckoutStrategyUseOurs = GIT_CHECKOUT_USE_OURS,
+  CheckoutStrategyUseTheirs = GIT_CHECKOUT_USE_THEIRS,
+  CheckoutStrategyDisablePathspecMatch = GIT_CHECKOUT_DISABLE_PATHSPEC_MATCH,
+  CheckoutStrategySkipLockedDirectories = GIT_CHECKOUT_SKIP_LOCKED_DIRECTORIES,
+  CheckoutStrategyDontOverwriteIgnored = GIT_CHECKOUT_DONT_OVERWRITE_IGNORED,
+  CheckoutStrategyConflictStyleMerge = GIT_CHECKOUT_CONFLICT_STYLE_MERGE,
+  CheckoutStrategyConflictStyleDiff3 = GIT_CHECKOUT_CONFLICT_STYLE_DIFF3,
+  CheckoutStrategyDontRemoveExisting = GIT_CHECKOUT_DONT_REMOVE_EXISTING,
+  CheckoutStrategyDontWriteIndex = GIT_CHECKOUT_DONT_WRITE_INDEX,
+  CheckoutStrategyUpdateSubmodules = GIT_CHECKOUT_UPDATE_SUBMODULES,
+  CheckoutStrategyUpdateSubmodulesIfChanged = GIT_CHECKOUT_UPDATE_SUBMODULES_IF_CHANGED,
+};

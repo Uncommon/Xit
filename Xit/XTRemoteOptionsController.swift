@@ -14,8 +14,7 @@ class XTRemoteOptionsController: XTOperationController
   override func start() throws
   {
     guard let repository = repository,
-          let remote = try? GTRemote(name: remoteName,
-                                     in: repository.gtRepo)
+          let remote = repository.remote(named: remoteName)
     else { throw XTRepository.Error.unexpected }
     
     let sheetController = XTRemoteSheetController.controller()

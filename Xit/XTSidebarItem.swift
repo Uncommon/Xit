@@ -97,8 +97,8 @@ class XTLocalBranchItem: XTBranchItem
   override var refType: XTRefType { return .branch }
   override var current: Bool
   {
-    if let currentBranch = self.model!.repository.currentBranch {
-      return currentBranch == self.title
+    if let currentBranch = model!.repository.currentBranch {
+      return currentBranch == title
     }
     return false
   }
@@ -149,7 +149,7 @@ class XTBranchFolderItem: XTSideBarItem
 
 class XTRemoteItem: XTSideBarItem
 {
-  let remote: XTRemote?
+  let remote: Remote?
   
   override var icon: NSImage?
   {
@@ -169,7 +169,7 @@ class XTRemoteItem: XTSideBarItem
   
   init(title: String, repository: XTRepository)
   {
-    self.remote = XTRemote(name: title, repository: repository)
+    self.remote = repository.remote(named: title)
     
     super.init(title: title)
   }
@@ -192,9 +192,10 @@ class XTTagItem: XTSideBarItem
     
     super.init(title: tag.name)
     
-    if let xtTag = tag as? XTTag,
-       let sha = xtTag.targetSHA,
-       let commit = XTCommit(sha: sha, repository: xtTag.repository) {
+    // The cast to GitTag is unfortunate but hard to get around. It doesn't seem
+    // to make sense to have a repository property in the Tag protocol.
+    if let commit = tag.commit,
+       let xtTag = tag as? GitTag {
       self.model = CommitChanges(repository: xtTag.repository, commit: commit)
     }
   }
@@ -203,14 +204,14 @@ class XTTagItem: XTSideBarItem
 
 class XTSubmoduleItem: XTSideBarItem
 {
-  var submodule: XTSubmodule
+  let submodule: Submodule
   override var icon: NSImage?
   { return NSImage(named: .xtSubmoduleTemplate) }
   
-  init(submodule: XTSubmodule)
+  init(submodule: Submodule)
   {
     self.submodule = submodule
     
-    super.init(title: submodule.name!)
+    super.init(title: submodule.name)
   }
 }

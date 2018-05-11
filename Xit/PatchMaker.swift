@@ -74,14 +74,9 @@ public class PatchMaker
       case let (.blob(fromBlob), .data(toData)):
         return GitPatch(oldBlob: fromBlob, newData: toData, options: options)
       case let (.data(fromData), .blob(toBlob)):
-        if let result = try? toBlob.withData({
-          GitPatch(oldData: fromData, newData: $0, options: options)
-        }) {
-          return result
-        }
-        else {
-          return nil
-        }
+        return GitPatch(oldData: fromData,
+                        newData: toBlob.makeData() ?? Data(),
+                        options: options)
     }
   }
 }

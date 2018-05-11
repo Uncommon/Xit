@@ -6,13 +6,13 @@ public protocol Tree: OIDObject
   
   func entry(named: String) -> TreeEntry?
   func entry(path: String) -> TreeEntry?
+  func entry(at index: Int) -> TreeEntry?
   func walkEntries(callback: (TreeEntry, String) -> Void)
 }
 
 public protocol TreeEntry: OIDObject
 {
-  // TODO: Replace the GT enum
-  var type: GTObjectType { get }
+  var type: GitObjectType { get }
   var name: String { get }
   var object: OIDObject? { get }
 }
@@ -23,7 +23,7 @@ class NullEntry: TreeEntry
 {
   var oid: OID
   { return GitOID.zero() }
-  var type: GTObjectType
+  var type: GitObjectType
   { return .bad }
   var name: String
   { return "" }
@@ -109,6 +109,16 @@ class GitTree: Tree
     return GitTreeEntry(entry: finalEntry, owner: owner)
   }
   
+  func entry(at index: Int) -> TreeEntry?
+  {
+    switch index {
+      case 0..<count:
+        return entries[index]
+      default:
+        return nil
+    }
+  }
+  
   func walkEntries(callback: (TreeEntry, String) -> Void)
   {
     walkEntries(root: "", callback: callback)
@@ -139,11 +149,11 @@ class GitTreeEntry: TreeEntry
     return GitOID(oidPtr: gitOID)
   }
   
-  var type: GTObjectType
+  var type: GitObjectType
   {
     let result = git_tree_entry_type(entry)
     
-    return GTObjectType(rawValue: result.rawValue) ?? .bad
+    return GitObjectType(rawValue: result.rawValue) ?? .bad
   }
   
   var name: String

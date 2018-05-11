@@ -83,11 +83,9 @@ class XTStashTest: XTTest
   
   func testBinaryDiff()
   {
-    let imageName = "img.png"
-    let imagePath = repoPath.appending(pathComponent: "img.png")
+    let imageName = "img.tiff"
     
-    FileManager.default.createFile(atPath: imagePath, contents: nil,
-                                   attributes: nil)
+    XCTAssertNoThrow(try makeTiffFile(imageName))
     XCTAssertNoThrow(try repository.stage(file: imageName))
     XCTAssertNoThrow(try repository.saveStash(name: nil, includeUntracked: true))
     

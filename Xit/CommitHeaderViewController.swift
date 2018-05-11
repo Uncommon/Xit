@@ -17,9 +17,6 @@ extension HeaderGenerator
 
   func generateHeaderHTML(_ commit: Commit) -> String
   {
-    guard let commitSHA = commit.sha
-    else { return "" }
-    
     // swiftlint:disable:next force_try
     let template = try! String(contentsOf: templateURL())
     let message = commit.message?.trimmingWhitespace ?? ""
@@ -76,7 +73,7 @@ extension HeaderGenerator
     }
     
     return String(format: template,
-                  signature, commitSHA, parents, message)
+                  signature, commit.sha, parents, message)
   }
 }
 

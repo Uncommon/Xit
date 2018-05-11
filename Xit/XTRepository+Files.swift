@@ -1,27 +1,20 @@
 import Foundation
 
+public enum FileContext
+{
+  case commit(Commit)
+  case index
+  case workspace
+}
+
 // MARK: FileContents
 extension XTRepository: FileContents
 {
   static let textNames = ["AUTHORS", "CONTRIBUTING", "COPYING", "LICENSE",
                           "Makefile", "README"]
   
-  /// Returns true if the file seems to be text, based on its name.
-  public func isTextFile(_ path: String, commit: String? = nil) -> Bool
+  static func isTextExtension(_ name: String) -> Bool
   {
-    return XTRepository.isTextFile(path)
-  }
-  
-  public static func isTextFile(_ path: String) -> Bool
-  {
-    let name = (path as NSString).lastPathComponent
-    guard !name.isEmpty
-    else { return false }
-    
-    if XTRepository.textNames.contains(name) {
-      return true
-    }
-    
     let ext = (name as NSString).pathExtension
     guard !ext.isEmpty
     else { return false }
@@ -31,6 +24,43 @@ extension XTRepository: FileContents
     let utType = unmanaged?.takeRetainedValue()
     
     return utType.map { UTTypeConformsTo($0, kUTTypeText) } ?? false
+  }
+  
+  /// Returns true if the file seems to be text, based on its name or its content.
+  /// - parameter path: File path relative to the repository
+  /// - parameter context: Where to look for the specified file
+  public func isTextFile(_ path: String, context: FileContext) -> Bool
+  {
+    let name = (path as NSString).lastPathComponent
+    guard !name.isEmpty
+    else { return false }
+    
+    if XTRepository.textNames.contains(name) {
+      return true
+    }
+    if XTRepository.isTextExtension(name) {
+      return true
+    }
+    
+    switch context {
+      case .commit(let commit):
+        if let blob = commit.tree?.entry(path: path)?.object as? Blob {
+          return !blob.isBinary
+        }
+      case .index:
+        if let oid = GitIndex(repository: self)?.entry(at: path)?.oid,
+           let blob = GitBlob(repository: self, oid: oid) {
+          return !blob.isBinary
+        }
+      case .workspace:
+        let url = self.fileURL(path)
+        guard let data = try? Data(contentsOf: url)
+        else { return false }
+        
+        return !data.isBinary()
+    }
+    
+    return false
   }
   
   public func contentsOfFile(path: String, at commit: Commit) -> Data?
@@ -58,13 +88,13 @@ extension XTRepository: FileContents
   
   public func stagedBlob(file: String) -> Blob?
   {
-    guard let index = try? gtRepo.index(),
-          (try? index.refresh()) != nil,
-          let indexEntry = index.entry(withPath: file),
-          let indexObject = try? GTObject(indexEntry: indexEntry)
+    guard let index = GitIndex(repository: self),
+          let entry = index.entry(at: file),
+          let blob = GitBlob(gitRepository: gitRepo,
+                             oid: entry.oid)
     else { return nil }
     
-    return indexObject as? GTBlob
+    return blob
   }
   
   func commitBlob(commit: Commit?, path: String) -> Blob?
@@ -118,7 +148,9 @@ extension XTRepository: FileDiffing
     guard let toCommit = commit(forOID: commitOID as! GitOID) as? XTCommit
     else { return nil }
     
-    guard isTextFile(file, commit: commitOID.sha)
+    let parentCommit = parentOID.flatMap({ commit(forOID: $0) })
+    guard isTextFile(file, context: .commit(toCommit)) ||
+          parentCommit.map({ isTextFile(file, context: .commit($0)) }) ?? false
     else { return .binary }
     
     var fromSource = PatchMaker.SourceType.data(Data())
@@ -130,9 +162,7 @@ extension XTRepository: FileDiffing
       toSource = .blob(toBlob)
     }
     
-    if let parentOID = parentOID,
-       let parentCommit = (commit(forOID: parentOID as! GitOID) as? XTCommit),
-       let fromTree = parentCommit.tree,
+    if let fromTree = parentCommit?.tree,
        let fromEntry = fromTree.entry(path: file),
        let fromBlob = fromEntry.object as? GitBlob {
       fromSource = .blob(fromBlob)
@@ -154,7 +184,7 @@ extension XTRepository: FileDiffing
   /// Returns a diff maker for a file in the index, compared to HEAD
   public func stagedDiff(file: String) -> PatchMaker.PatchResult?
   {
-    guard isTextFile(file, commit: XTStagingSHA)
+    guard isTextFile(file, context: .index)
     else { return .binary }
     
     guard let headRef = self.headRef
@@ -170,7 +200,7 @@ extension XTRepository: FileDiffing
   /// Returns a diff maker for a file in the index, compared to HEAD-1.
   public func stagedAmendingDiff(file: String) -> PatchMaker.PatchResult?
   {
-    guard isTextFile(file, commit: XTStagingSHA)
+    guard isTextFile(file, context: .index)
     else { return .binary }
     
     guard let headCommit = headSHA.flatMap({ commit(forSHA: $0) })
@@ -187,7 +217,7 @@ extension XTRepository: FileDiffing
   /// Returns a diff maker for a file in the workspace, compared to the index.
   public func unstagedDiff(file: String) -> PatchMaker.PatchResult?
   {
-    guard isTextFile(file, commit: nil)
+    guard isTextFile(file, context: .workspace)
     else { return .binary }
     
     let url = self.repoURL.appendingPathComponent(file)
@@ -196,7 +226,10 @@ extension XTRepository: FileDiffing
     do {
       let data = exists ? try Data(contentsOf: url) : Data()
       
-      if let indexBlob = stagedBlob(path: file) {
+      if let index = GitIndex(repository: self),
+         let indexEntry = index.entry(at: file),
+         let indexBlob = GitBlob.init(gitRepository: gitRepo,
+                                      oid: indexEntry.oid) {
         return .diff(PatchMaker(from: PatchMaker.SourceType(indexBlob),
                                  to: .data(data), path: file))
       }
@@ -248,7 +281,7 @@ extension XTRepository
       let parentCommit = parentSHA.map({ self.commit(forSHA: $0) })
       
       guard let diff = GitDiff(oldTree: parentCommit??.tree, newTree: commit.tree,
-                               repository: gtRepo.git_repository())
+                               repository: gitRepo)
       else { return nil }
       
       diffCache[key] = diff
@@ -263,10 +296,10 @@ extension XTRepository
   /// (the patch should be reversed)
   func patchIndexFile(path: String, hunk: DiffHunk, stage: Bool) throws
   {
-    var encoding = String.Encoding.utf8
-    let index = try gtRepo.index()
+    guard let index = GitIndex(repository: self)
+    else { throw Error.unexpected }
     
-    if let entry = index.entry(withPath: path) {
+    if let entry = index.entry(at: path) {
       if (hunk.newStart == 1) || (hunk.oldStart == 1) {
         let status = try self.status(file: path)
         
@@ -289,19 +322,22 @@ extension XTRepository
         }
       }
       
-      guard let blob = (try entry.gtObject()) as? GTBlob,
-            let data = blob.data(),
-            let text = String(data: data, usedEncoding: &encoding)
+      guard let blob = GitBlob(gitRepository: gitRepo,
+                               oid: entry.oid)
       else { throw Error.unexpected }
       
-      guard let patchedText = hunk.applied(to: text, reversed: !stage)
-      else { throw Error.patchMismatch }
-      
-      guard let patchedData = patchedText.data(using: encoding)
-      else { throw Error.unexpected }
-      
-      try index.add(patchedData, withPath: path)
-      try index.write()
+      try blob.withData {
+        (data) in
+        guard let text = String(data: data, encoding: .utf8),
+              let patchedText = hunk.applied(to: text, reversed: !stage)
+        else { throw Error.patchMismatch }
+        
+        guard let patchedData = patchedText.data(using: .utf8)
+        else { throw Error.unexpected }
+        
+        try index.add(data: patchedData, path: path)
+      }
+      try index.save()
       return
     }
     else {

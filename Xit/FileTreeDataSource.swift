@@ -28,7 +28,7 @@ extension FileTreeDataSource: FileListDataSource
       
       guard let model = myself.repoController?.selectedModel
       else { return }
-      let newRoot = model.treeRoot
+      let newRoot = model.treeRoot(oldTree: myself.root)
       
       DispatchQueue.main.async {
         myself.root = newRoot
@@ -61,16 +61,13 @@ extension FileTreeDataSource: FileListDataSource
   
   func expandItems(_ expanded: [String])
   {
-    var rowIndex = 0
-    
-    while rowIndex < outlineView.numberOfRows {
+    for rowIndex in 0..<outlineView.numberOfRows {
       guard let change = fileChange(at: rowIndex)
       else { continue }
       
       if expanded.contains(change.path) {
         outlineView.expandItem(outlineView.item(atRow: rowIndex))
       }
-      rowIndex += 1
     }
   }
   
@@ -164,4 +161,20 @@ extension FileTreeDataSource: NSOutlineViewDataSource
 
 class CommitTreeItem: FileChange
 {
+  let oid: OID?
+  
+  init(path: String, oid: OID? = nil,
+       change: DeltaStatus = .unmodified,
+       unstagedChange: DeltaStatus = .unmodified)
+  {
+    self.oid = oid
+    super.init(path: path, change: change, unstagedChange: unstagedChange)
+  }
+  
+  convenience init(path: String, oid: OID?, status: DeltaStatus, staged: Bool)
+  {
+    self.init(path: path, oid: oid,
+              change: staged ? status : .unmodified,
+              unstagedChange: staged ? .unmodified : status)
+  }
 }

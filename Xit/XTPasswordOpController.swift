@@ -6,7 +6,7 @@ class XTPasswordOpController: XTSimpleOperationController
   /// User/password callback
   func getPassword() -> (String, String)?
   {
-    guard let window = self.windowController?.window
+    guard let window = windowController?.window
     else { return nil }
     
     let panel = XTPasswordPanelController.controller()

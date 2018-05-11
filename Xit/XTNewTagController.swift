@@ -6,6 +6,7 @@ class XTNewTagController: XTOperationController
   {
     let panelController = XTTagPanelController.controller()
     guard let selectedSHA = windowController?.selectedModel?.shaToSelect,
+          let selectedOID = repository?.oid(forSHA: selectedSHA),
           let repository = repository,
           let commit = repository.commit(forSHA: selectedSHA)
     else { throw XTRepository.Error.unexpected }
@@ -19,7 +20,7 @@ class XTNewTagController: XTOperationController
       (response) in
       if response == .OK {
         self.executeTag(name: panelController.tagName,
-                        sha: selectedSHA,
+                        oid: selectedOID,
                         message: panelController.lightweight ?
                                  nil : panelController.message)
       }
@@ -29,7 +30,7 @@ class XTNewTagController: XTOperationController
     }
   }
   
-  func executeTag(name: String, sha: String, message: String?)
+  func executeTag(name: String, oid: OID, message: String?)
   {
     guard let repository = self.repository
     else { return }
@@ -37,10 +38,10 @@ class XTNewTagController: XTOperationController
     tryRepoOperation(successStatus: "Tag created",
                      failureStatus: "Tag failed") { 
       if let message = message {
-        try? repository.createTag(name: name, targetSHA: sha, message: message)
+        try? repository.createTag(name: name, targetOID: oid, message: message)
       }
       else {
-        try? repository.createLightweightTag(name: name, targetSHA: sha)
+        try? repository.createLightweightTag(name: name, targetOID: oid)
       }
       NotificationCenter.default.post(
           name: NSNotification.Name.XTRepositoryRefsChanged, object: repository)

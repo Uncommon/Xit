@@ -18,6 +18,16 @@ public class FileChange: NSObject
     self.change = change
     self.unstagedChange = unstagedChange
   }
+  
+  public override func isEqual(_ object: Any?) -> Bool
+  {
+    if let otherChange = object as? FileChange {
+      return otherChange.path == path &&
+             otherChange.change == change &&
+             otherChange.unstagedChange == unstagedChange
+    }
+    return false
+  }
 }
 
 class FileStagingChange: FileChange
@@ -39,20 +49,18 @@ extension XTRepository: FileStaging
   public var workspaceStatus: [String: WorkspaceFileStatus]
   {
     var result = [String: WorkspaceFileStatus]()
-    let options = [GTRepositoryStatusOptionsFlagsKey:
-                   GIT_STATUS_OPT_INCLUDE_UNTRACKED.rawValue]
+    guard let statusList = GitStatusList(repository: gitRepo,
+                                         options: [.includeUntracked])
+    else { return [:] }
     
-    try? gtRepo.enumerateFileStatus(options: options) {
-      (headToIndex, indexToWorking, _) in
-      guard let path = headToIndex?.oldFile?.path ??
-                       indexToWorking?.oldFile?.path
-      else { return }
-      
+    for entry in statusList {
+      guard let path = entry.headToIndex?.oldFile.filePath ??
+                       entry.indexToWorkdir?.oldFile.filePath
+      else { continue }
       let status = WorkspaceFileStatus(
-            change: headToIndex.map { DeltaStatus(delta: $0.status) }
-                    ?? .unmodified,
-            unstagedChange: indexToWorking.map { DeltaStatus(delta: $0.status) }
-                            ?? .unmodified)
+            change: entry.headToIndex?.deltaStatus ?? .unmodified,
+            unstagedChange: entry.indexToWorkdir?.deltaStatus ?? .unmodified)
+      
       result[path] = status
     }
     return result
@@ -71,12 +79,11 @@ extension XTRepository: FileStaging
       }
     }
     
-    guard let commit = self.commit(forSHA: sha),
-          let sha = commit.sha
+    guard let commit = self.commit(forSHA: sha)
     else { return [] }
     
     let parentOID = parentOID ?? commit.parentOIDs.first
-    guard let diff = self.diff(forSHA: sha, parent: parentOID)
+    guard let diff = self.diff(forSHA: commit.sha, parent: parentOID)
     else { return [] }
     var result = [FileChange]()
     
@@ -274,6 +281,6 @@ extension XTRepository: FileStaging
                                 stdIn: message, writes: true)
     let outputString = String(data: output, encoding: .utf8) ?? ""
     
-    outputBlock.map { $0(outputString) }
+    outputBlock?(outputString)
   }
 }

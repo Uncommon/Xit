@@ -1,13 +1,23 @@
 import Cocoa
 
 // Command handling extracted for testability
-protocol SidebarHandler
+protocol SidebarHandler: class
 {
   var repo: XTRepository! { get }
   var window: NSWindow? { get }
   
   func targetItem() -> XTSideBarItem?
   func stashIndex(for item: XTSideBarItem) -> UInt?
+}
+
+enum XTGroupIndex: Int
+{
+  case workspace
+  case branches
+  case remotes
+  case tags
+  case stashes
+  case submodules
 }
 
 extension SidebarHandler
@@ -115,33 +125,33 @@ extension SidebarHandler
   func popStash()
   {
     callCommand(errorString: "Pop stash failed") {
-      (item) in
-      guard let index = self.stashIndex(for: item)
+      [weak self] (item) in
+      guard let index = self?.stashIndex(for: item)
       else { return }
       
-      try self.repo.popStash(index: index)
+      try self?.repo.popStash(index: index)
     }
   }
   
   func applyStash()
   {
     callCommand(errorString: "Apply stash failed") {
-      (item) in
-      guard let index = self.stashIndex(for: item)
+      [weak self] (item) in
+      guard let index = self?.stashIndex(for: item)
       else { return }
       
-      try self.repo.applyStash(index: index)
+      try self?.repo.applyStash(index: index)
     }
   }
   
   func dropStash()
   {
     callCommand(errorString: "Drop stash failed") {
-      (item) in
-      guard let index = self.stashIndex(for: item)
+      [weak self] (item) in
+      guard let index = self?.stashIndex(for: item)
       else { return }
       
-      try self.repo.dropStash(index: index)
+      try self?.repo.dropStash(index: index)
     }
   }
 }
@@ -287,8 +297,8 @@ class XTSidebarController: NSViewController, SidebarHandler
   
   func select(remoteBranch: String)
   {
-    let slices = remoteBranch.characters.split(separator: "/", maxSplits: 1)
-                                        .map { String($0) }
+    let slices = remoteBranch.split(separator: "/", maxSplits: 1)
+                             .map { String($0) }
     guard slices.count == 2
     else { return }
     let remote = slices[0]
@@ -311,15 +321,15 @@ class XTSidebarController: NSViewController, SidebarHandler
   {
     switch ref {
       
-      case let branchRef where branchRef.hasPrefix(XTLocalBranch.headsPrefix):
-        select(branch: branchRef.removingPrefix(XTLocalBranch.headsPrefix))
+      case let branchRef where branchRef.hasPrefix(BranchPrefixes.heads):
+        select(branch: branchRef.removingPrefix(BranchPrefixes.heads))
       
-      case let remoteRef where remoteRef.hasPrefix(XTRemoteBranch.remotesPrefix):
+      case let remoteRef where remoteRef.hasPrefix(BranchPrefixes.remotes):
         select(remoteBranch:
-            remoteRef.removingPrefix(XTRemoteBranch.remotesPrefix))
+            remoteRef.removingPrefix(BranchPrefixes.remotes))
       
-      case let tagRef where tagRef.hasPrefix(XTTag.tagPrefix):
-        select(tag: tagRef.removingPrefix(XTTag.tagPrefix))
+      case let tagRef where tagRef.hasPrefix(GitTag.tagPrefix):
+        select(tag: tagRef.removingPrefix(GitTag.tagPrefix))
       
       default:
         break
@@ -355,8 +365,8 @@ class XTSidebarController: NSViewController, SidebarHandler
   {
     confirmDelete(kind: "branch", name: item.title) {
       self.callCommand(errorString: "Delete branch failed", targetItem: item) {
-        (item) in
-        _ = self.repo.deleteBranch(item.title)
+        [weak self] (item) in
+        _ = self?.repo.deleteBranch(item.title)
       }
     }
   }

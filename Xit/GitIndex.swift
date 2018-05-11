@@ -16,8 +16,14 @@ protocol StagingIndex
   func entry(at path: String) -> IndexEntry?
   /// Adds a local file to the index
   func add(path: String) throws
+  /// Adds or updates a file with the given data
+  func add(data: Data, path: String) throws
+  /// Reads the tree into the index
+  func read(tree: Tree) throws
   /// Removes a file from the index
   func remove(path: String) throws
+  /// Removes all files
+  func clear() throws
 }
 
 /// An individual file entry in an index.
@@ -36,7 +42,7 @@ class GitIndex: StagingIndex
   init?(repository: XTRepository)
   {
     var index: OpaquePointer?
-    let result = git_repository_index(&index, repository.gtRepo.git_repository())
+    let result = git_repository_index(&index, repository.gitRepo)
     guard result == 0,
           let finalIndex = index
     else { return nil }
@@ -82,7 +88,7 @@ class GitIndex: StagingIndex
     var conflicted: Bool
     {
       return (UInt32(gitEntry.flags_extended) &
-             GIT_IDXENTRY_CONFLICTED.rawValue) != 0
+              GIT_IDXENTRY_CONFLICTED.rawValue) != 0
     }
   }
   
@@ -108,13 +114,43 @@ class GitIndex: StagingIndex
     try XTRepository.Error.throwIfError(git_index_write(index))
   }
   
+  func read(tree: Tree) throws
+  {
+    guard let gitTree = tree as? GitTree
+    else { throw XTRepository.Error.unexpected }
+    
+    try XTRepository.Error.throwIfError(git_index_read_tree(index, gitTree.tree))
+  }
+  
   func add(path: String) throws
   {
     try XTRepository.Error.throwIfError(git_index_add_bypath(index, path))
   }
   
+  func add(data: Data, path: String) throws
+  {
+    let result = data.withUnsafeBytes {
+      (bytes: UnsafePointer<Int8>) -> Int32 in
+      var entry = git_index_entry()
+      
+      return path.withCString {
+        (path) in
+        entry.path = path
+        entry.mode = GIT_FILEMODE_BLOB.rawValue
+        return git_index_add_frombuffer(index, &entry, bytes, data.count)
+      }
+    }
+    
+    try XTRepository.Error.throwIfError(result)
+  }
+  
   func remove(path: String) throws
   {
     try XTRepository.Error.throwIfError(git_index_remove_bypath(index, path))
+  }
+  
+  func clear() throws
+  {
+    try XTRepository.Error.throwIfError(git_index_clear(index))
   }
 }

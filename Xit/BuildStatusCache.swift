@@ -69,8 +69,7 @@ class BuildStatusCache: TeamCityAccessor
               { api.vcsBranchSpecs[$0]?.match(branch: fullBranchName) }
         guard let branchName = displayNames.reduce(nil, {
           (shortest, name) -> String? in
-          return (shortest.map { $0.characters.count < name.characters.count }
-                  ?? false)
+          return (shortest.map { $0.count < name.count } ?? false)
                  ? shortest : name
         })
         else { continue }

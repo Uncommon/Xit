@@ -45,15 +45,16 @@ public class XTStash: NSObject, Stash
       return changes
     }
     
-    guard var unstagedChanges = mainCommit?.sha.map({
-        repo.changes(for: $0, parent: indexCommit?.oid) })
+    guard let mainCommit = self.mainCommit
     else { return [] }
-    let stagedChanges = indexCommit.map { repo.changes(for: $0.sha!,
+    var unstagedChanges = repo.changes(for: mainCommit.sha,
+                                       parent: indexCommit?.oid)
+    let stagedChanges = indexCommit.map { repo.changes(for: $0.sha,
                                                        parent: nil) }
                         ?? []
     
     if let untrackedCommit = self.untrackedCommit {
-      let untrackedChanges = repo.changes(for: untrackedCommit.sha!, parent: nil)
+      let untrackedChanges = repo.changes(for: untrackedCommit.sha, parent: nil)
       
       unstagedChanges.append(contentsOf: untrackedChanges)
     }
@@ -103,8 +104,7 @@ public class XTStash: NSObject, Stash
   {
     guard let indexCommit = self.indexCommit as? XTCommit
     else { return nil }
-    guard let indexSHA = indexCommit.sha,
-          repo.isTextFile(path, commit: indexSHA)
+    guard repo.isTextFile(path, context: .commit(indexCommit))
     else { return .binary }
     guard let indexEntry = indexCommit.tree?.entry(path: path),
           let indexBlob = indexEntry.object as? Blob
@@ -124,19 +124,15 @@ public class XTStash: NSObject, Stash
     var indexBlob: Blob? = nil
     
     if let indexEntry = indexCommit.tree!.entry(path: path) {
-      if let indexSHA = indexCommit.sha,
-         !repo.isTextFile(path, commit: indexSHA) {
+      if !repo.isTextFile(path, context: .commit(indexCommit)) {
         return .binary
       }
-      let object = indexEntry.object
-      
-      indexBlob = object as? Blob
+      indexBlob = indexEntry.object as? Blob
     }
     
     if let untrackedCommit = self.untrackedCommit as? XTCommit,
        let untrackedEntry = untrackedCommit.tree?.entry(path: path) {
-      if let untrackedSHA = untrackedCommit.sha,
-         !repo.isTextFile(path, commit: untrackedSHA) {
+      if !repo.isTextFile(path, context: .commit(untrackedCommit)) {
         return .binary
       }
       guard let untrackedBlob = untrackedEntry.object as? Blob
@@ -146,7 +142,7 @@ public class XTStash: NSObject, Stash
                                to: PatchMaker.SourceType(untrackedBlob),
                                path: path))
     }
-    if let mainCommit = self.mainCommit as? XTCommit,
+    if let mainCommit = self.mainCommit,
        let unstagedEntry = mainCommit.tree?.entry(path: path) {
       guard let unstagedBlob = unstagedEntry.object as? Blob
       else { return nil }

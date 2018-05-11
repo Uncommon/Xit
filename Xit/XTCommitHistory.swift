@@ -38,16 +38,16 @@ struct CommitConnection<ID: OID>: Equatable
 
 func == <ID>(left: CommitConnection<ID>, right: CommitConnection<ID>) -> Bool
 {
-  return (left.parentOID.equals(right.parentOID)) &&
-         (left.childOID.equals(right.childOID)) &&
+  return left.parentOID.equals(right.parentOID) &&
+         left.childOID.equals(right.childOID) &&
          (left.colorIndex == right.colorIndex)
 }
 
 // Specific version: compare the binary OIDs
 func == (left: CommitConnection<GitOID>, right: CommitConnection<GitOID>) -> Bool
 {
-  return (left.parentOID.equals(right.parentOID)) &&
-         (left.childOID.equals(right.childOID)) &&
+  return left.parentOID.equals(right.parentOID) &&
+         left.childOID.equals(right.childOID) &&
          (left.colorIndex == right.colorIndex)
 }
 
@@ -62,18 +62,22 @@ extension String
 
 
 /// The result of processing a segment of a branch.
-struct BranchResult: CustomStringConvertible
+struct BranchResult
 {
   /// The commit entries collected for this segment.
-  var entries: [CommitEntry]
+  let entries: [CommitEntry]
   /// Other branches queued for processing.
-  var queue: [(commit: Commit, after: Commit)]
-  
+  let queue: [(commit: Commit, after: Commit)]
+}
+
+extension BranchResult: CustomStringConvertible
+{
   var description: String
   {
-    guard let first = entries.first?.commit.sha?.firstSix(),
-      let last = entries.last?.commit.sha?.firstSix()
-      else { return "empty" }
+    guard let first = entries.first?.commit.sha.firstSix(),
+          let last = entries.last?.commit.sha.firstSix()
+    else { return "empty" }
+    
     return "\(first)..\(last)"
   }
 }
@@ -87,7 +91,7 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
   typealias Connection = CommitConnection<ID>
   typealias Result = BranchResult
 
-  var repository: CommitStorage!
+  weak var repository: CommitStorage!
   
   var commitLookup = [ID: Entry]()
   var entries = [Entry]()
@@ -166,7 +170,7 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
     var startCommit = startCommit
     
     repeat {
-      var result = self.branchEntries(startCommit: startCommit)
+      var result = branchEntries(startCommit: startCommit)
       
       defer { results.append(result) }
       if let nextOID = result.entries.last?.commit.parentOIDs.first as? ID,
@@ -253,31 +257,42 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
     
     while batchStart < entries.count {
       let batchSize = min(batchSize, entries.count - batchStart)
-      let connections = generateConnections(batchStart: batchStart,
-                                            batchSize: batchSize,
-                                            starting: startingConnections)
+      let (connections, newStart) =
+            generateConnections(batchStart: batchStart,
+                                batchSize: batchSize,
+                                starting: startingConnections)
       
+      kdebug_signpost_start(Signposts.generateLines, UInt(batchStart),
+                            0, 0, 0)
       DispatchQueue.concurrentPerform(iterations: batchSize) {
         (index) in
         generateLines(entry: entries[index + batchStart],
                       connections: connections[index])
         postProgress?(batchSize, batchStart/batchSize, 1, index)
       }
-      
-      startingConnections = connections.last ?? []
+      kdebug_signpost_end(Signposts.generateLines, UInt(batchStart),
+                          0, 0, 0)
+
+      startingConnections = newStart
       batchStart += batchSize
       batchNotify?()
     }
   }
   
   func generateConnections(batchStart: Int, batchSize: Int,
-                           starting: [Connection]) -> [[Connection]]
+                           starting: [Connection])
+    -> ([[Connection]], [Connection])
   {
+    kdebug_signpost_start(Signposts.generateConnections, UInt(batchStart), 0, 0, 0)
+    defer {
+      kdebug_signpost_end(Signposts.generateConnections, UInt(batchStart), 0, 0, 0)
+    }
+    
     var result = [[Connection]]()
     var connections: [Connection] = starting
     var nextColorIndex: UInt = 0
     
-    result.reserveCapacity(entries.count)
+    result.reserveCapacity(batchSize)
     for (index, entry) in entries[batchStart..<batchStart+batchSize].enumerated() {
       let commitOID = entry.commit.oid as! ID
       let incomingIndex = connections.index(where:
@@ -308,13 +323,7 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
       postProgress?(batchSize, batchStart/batchSize, 0, index)
     }
     
-#if DEBUGLOG
-    if !connections.isEmpty {
-      print("Unterminated parent lines:")
-      connections.forEach({ print($0.childOID.SHA.firstSix()) })
-    }
-#endif
-    return result
+    return (result, connections)
   }
   
   func generateLines(entry: CommitEntry,
@@ -327,9 +336,6 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
                            colorIndex: UInt)] = [:]
     
     for connection in connections {
-      objc_sync_enter(self)
-      defer { objc_sync_exit(self) }
-      
       let commitIsParent = connection.parentOID.equals(entry.commit.oid)
       let commitIsChild = connection.childOID.equals(entry.commit.oid)
       let parentIndex: UInt? = commitIsParent
@@ -361,9 +367,11 @@ public class XTCommitHistory<ID: OID & Hashable>: NSObject
           nextChildIndex += 1
         }
       }
+      objc_sync_enter(self)
       entry.lines.append(HistoryLine(childIndex: childIndex,
                                      parentIndex: parentIndex,
                                      colorIndex: colorIndex))
+      objc_sync_exit(self)
     }
   }
 }

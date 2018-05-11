@@ -4,7 +4,7 @@ extension XTRepository
 {
   /// Branches is a sequence, not a collection, because the API does not provide
   /// a count or indexed access.
-  public struct Branches<BranchType: XTBranch>: Sequence
+  public struct Branches<BranchType: GitBranch>: Sequence
   {
     public typealias Element = BranchType
     
@@ -17,7 +17,7 @@ extension XTRepository
     }
   }
 
-  public class BranchIterator<BranchType: XTBranch>: IteratorProtocol
+  public class BranchIterator<BranchType: GitBranch>: IteratorProtocol
   {
     let repo: XTRepository
     let iterator: OpaquePointer?
@@ -26,8 +26,7 @@ extension XTRepository
     {
       var result: OpaquePointer?
       
-      if git_branch_iterator_new(&result,
-                                 repo.gtRepo.git_repository(), flags) == 0 {
+      if git_branch_iterator_new(&result, repo.gitRepo, flags) == 0 {
         self.iterator = result
       }
       else {
@@ -44,14 +43,10 @@ extension XTRepository
       var type = git_branch_t(0)
       var ref: OpaquePointer?
       guard git_branch_next(&ref, &type, iterator) == 0,
-            ref != nil,
-            let gtRef = GTReference(gitReference: ref!,
-                                    repository: repo.gtRepo),
-            let gtBranch = GTBranch(reference: gtRef,
-                                    repository: repo.gtRepo)
+            let finalRef = ref
       else { return nil }
       
-      return BranchType(gtBranch: gtBranch)
+      return BranchType(branch: finalRef)
     }
     
     deinit
@@ -76,12 +71,11 @@ extension XTRepository
       self.repo = repo
       
       let refLogPtr = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-      guard git_reflog_read(refLogPtr, repo.gtRepo.git_repository(),
-                            Stashes.stashRefName) == 0
-        else {
-          self.refLog = nil
-          self.count = 0
-          return
+      guard git_reflog_read(refLogPtr, repo.gitRepo, Stashes.stashRefName) == 0
+      else {
+        self.refLog = nil
+        self.count = 0
+        return
       }
       
       self.refLog = refLogPtr.pointee

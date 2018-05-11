@@ -4,7 +4,12 @@ public protocol Blob
 {
   var dataSize: UInt { get }
   var blobPtr: OpaquePointer? { get }
-  
+  var isBinary: Bool { get }
+
+  /// Calls `callback` with a data object, or throws `BlobError.cantLoadData`
+  /// if the data can't be loaded.
+  func withData<T>(_ callback: (Data) throws -> T) throws -> T
+
   /// Consumers should use `withData` instead, since the buffer may have a
   /// limited lifespan.
   func makeData() -> Data?
@@ -12,8 +17,6 @@ public protocol Blob
 
 extension Blob
 {
-  /// Calls `callback` with a data object, or throws `BlobError.cantLoadData`
-  /// if the data can't be loaded.
   public func withData<T>(_ callback: (Data) throws -> T) throws -> T
   {
     guard let data = makeData()
@@ -44,7 +47,7 @@ public class GitBlob: Blob, OIDObject
   
   convenience init?(repository: XTRepository, oid: OID)
   {
-    self.init(gitRepository: repository.gtRepo.git_repository(), oid: oid)
+    self.init(gitRepository: repository.gitRepo, oid: oid)
   }
   
   init?(gitRepository: OpaquePointer, oid: OID)
@@ -67,19 +70,16 @@ public class GitBlob: Blob, OIDObject
     return UInt(git_blob_rawsize(blob))
   }
   
+  public var isBinary: Bool
+  {
+    return git_blob_is_binary(blob) != 0
+  }
+  
   public func makeData() -> Data?
   {
     // TODO: Fix the immutableBytes costructor to avoid unneeded copying
     return Data(bytes: git_blob_rawcontent(blob),
                 count: Int(git_blob_rawsize(blob)))
-  }
-  
-  func makeGTBlob() -> GTBlob?
-  {
-    guard let gtRepo = GTRepository(gitRepository: git_blob_owner(blob))
-    else { return nil }
-    
-    return GTBlob(obj: blob, in: gtRepo)
   }
   
   deinit
@@ -92,6 +92,10 @@ extension GTBlob: Blob
 {
   public var dataSize: UInt { return UInt(size()) }
   public var blobPtr: OpaquePointer? { return git_blob() }
+  public var isBinary: Bool
+  {
+    return git_blob_is_binary(git_blob()) != 0
+  }
 
   public func makeData() -> Data? { return data() }
 }

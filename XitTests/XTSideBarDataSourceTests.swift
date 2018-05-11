@@ -41,8 +41,13 @@ class XTSidebarDataSourceTest: XTTest
   /// Add a tag and make sure it gets loaded correctly
   func testTags()
   {
+    guard let headOID = repository.headSHA.flatMap({ repository.oid(forSHA: $0) })
+    else {
+      XCTFail("no head")
+      return
+    }
     try! repository.createTag(name: "t1",
-                              targetSHA: repository.headSHA!,
+                              targetOID: headOID,
                               message: "msg")
     sbds.reload()
     waitForRepoQueue()
@@ -199,7 +204,7 @@ class XTSidebarDataSourceTest: XTTest
                     as! XTSubmoduleItem
       
       XCTAssertEqual(subItem.submodule.name, data.0)
-      XCTAssertEqual(subItem.submodule.URLString, data.1)
+      XCTAssertEqual(subItem.submodule.url?.path, data.1)
     }
   }
   

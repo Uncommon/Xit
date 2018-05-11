@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12121"/>
-        <plugIn identifier="com.apple.WebKitIBPlugin" version="12121"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13529"/>
+        <plugIn identifier="com.apple.WebKitIBPlugin" version="13529"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -137,7 +137,7 @@
                                                                         </constraints>
                                                                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="14"/>
                                                                     </imageView>
-                                                                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="12">
+                                                                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="12" customClass="ExpansionTextField" customModule="Xit" customModuleProvider="target">
                                                                         <rect key="frame" x="25" y="0.0" width="263" height="17"/>
                                                                         <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="13">
                                                                             <font key="font" metaFont="system"/>
@@ -408,7 +408,7 @@
                                     </buttonCell>
                                 </button>
                                 <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zOv-gm-Q8M">
-                                    <rect key="frame" x="97" y="188" width="151" height="23"/>
+                                    <rect key="frame" x="98" y="188" width="149" height="23"/>
                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="selectOne" id="fhE-uz-5iG">
                                         <font key="font" metaFont="system"/>
                                         <segments>
@@ -635,6 +635,25 @@
                                                     <modifierMask key="keyEquivalentModifierMask"/>
                                                     <connections>
                                                         <action selector="context25:" target="-2" id="LCY-DN-Wvx"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem isSeparatorItem="YES" id="SLF-eq-1Kz"/>
+                                                <menuItem title="Wrap to width" id="UOz-Ce-fiJ">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="wrapToWidth:" target="-2" id="R7A-ym-6f8"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="Wrap to 80 columns" id="gbf-cd-x1i">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="wrapTo80:" target="-2" id="KQR-Ha-5tY"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="No wrapping" id="Wh0-Bj-Hvz">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="noWrapping:" target="-2" id="yvE-GN-fGA"/>
                                                     </connections>
                                                 </menuItem>
                                             </items>

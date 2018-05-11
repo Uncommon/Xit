@@ -45,7 +45,7 @@ extension XTRepository
       -> GTCredentialProvider
   {
     return GTCredentialProvider {
-      (type, url, user) -> GTCredential in
+      (type, urlString, user) -> GTCredential in
       if checkCredentialType(type, flag: .sshKey) {
         return sshCredential(user) ?? GTCredential()
       }
@@ -53,7 +53,8 @@ extension XTRepository
       guard checkCredentialType(type, flag: .userPassPlaintext)
       else { return GTCredential() }
       
-      if let password = keychainPassword(urlString: url, user: user) {
+      if let url = URL(string: urlString),
+         let password = XTKeychain.findItem(url: url, user: user).0 {
         do {
           return try GTCredential(userName: user, password: password)
         }
@@ -81,7 +82,7 @@ extension XTRepository
     let pruneOption: GTFetchPruneOption = pruneBranches ? .yes : .no
     let pruneValue = NSNumber(value: pruneOption.rawValue as Int)
     let tagValue = NSNumber(value: tagOption.rawValue as UInt32)
-    let provider = self.credentialProvider(passwordBlock)
+    let provider = credentialProvider(passwordBlock)
     
     return [
         GTRepositoryRemoteOptionsDownloadTags: tagValue,
@@ -95,15 +96,18 @@ extension XTRepository
   /// - parameter pruneBranches: True to delete obsolete branch refs
   /// - parameter passwordBlock: Callback for getting the user and password
   /// - parameter progressBlock: Return true to stop the operation
-  public func fetch(remote: XTRemote,
+  public func fetch(remote: Remote,
                     options: FetchOptions) throws
   {
     try performWriting {
       let gtOptions = self.fetchOptions(downloadTags: options.downloadTags,
                                         pruneBranches: options.pruneBranches,
                                         passwordBlock: options.passwordBlock)
-    
-      try self.gtRepo.fetch(remote, withOptions: gtOptions) {
+      guard let gtRemote = GTRemote(gitRemote: (remote as! GitRemote).remote,
+                                    in: gtRepo)
+      else { throw Error.unexpected }
+      
+      try self.gtRepo.fetch(gtRemote, withOptions: gtOptions) {
         (progress, stop) in
         let transferProgress = GitTransferProgress(gitProgress: progress.pointee)
         
@@ -119,32 +123,33 @@ extension XTRepository
   /// - parameter pruneBranches: True to delete obsolete branch refs
   /// - parameter passwordBlock: Callback for getting the user and password
   /// - parameter progressBlock: Return true to stop the operation
-  func pull(branch: XTBranch,
-            remote: XTRemote,
+  func pull(branch: Branch,
+            remote: Remote,
             options: FetchOptions) throws
   {
     try fetch(remote: remote, options: options)
     
     var mergeBranch = branch
     
-    if let localBranch = branch as? XTLocalBranch,
-       let trackingBranch = localBranch.trackingBranch as? XTRemoteBranch {
+    if let localBranch = branch as? GitLocalBranch,
+       let trackingBranch = localBranch.trackingBranch as? GitRemoteBranch {
       mergeBranch = trackingBranch
     }
     
     try merge(branch: mergeBranch)
   }
   
-  private func fastForwardMerge(branch: XTBranch, remoteBranch: XTBranch) throws
+  private func fastForwardMerge(branch: GitBranch, remoteBranch: GitBranch) throws
   {
-    guard let remoteCommit = remoteBranch.targetCommit,
-          let remoteSHA = remoteCommit.sha
+    guard let remoteCommit = remoteBranch.targetCommit
     else { throw Error.unexpected }
     
     do {
-      let targetReference = branch.gtBranch.reference
+      guard let targetReference = GTReference(gitReference: branch.branchRef,
+                                              repository: gtRepo)
+      else { throw Error.unexpected }
       let updated = try targetReference.updatingTarget(
-            remoteSHA,
+            remoteCommit.sha,
             message: "merge \(remoteBranch.name): Fast-forward")
       let options = GTCheckoutOptions(strategy: [.force, .allowConflicts],
                                       notifyFlags: [.conflict]) {
@@ -159,8 +164,8 @@ extension XTRepository
     }
   }
   
-  private func normalMerge(fromBranch: XTBranch, fromCommit: XTCommit,
-                           targetName: String, targetCommit: XTCommit) throws
+  private func normalMerge(fromBranch: GitBranch, fromCommit: XTCommit,
+                           targetBranch: GitBranch, targetCommit: XTCommit) throws
   {
     do {
       var annotated: OpaquePointer? = try annotatedCommit(branch: fromBranch)
@@ -183,7 +188,7 @@ extension XTRepository
           try withUnsafePointer(to: &checkoutOptions) {
             (checkoutOptions) in
             try gtRepo.index().refresh()
-            result = git_merge(gtRepo.git_repository(), annotated, 1,
+            result = git_merge(gitRepo, annotated, 1,
                                mergeOptions, checkoutOptions)
           }
         }
@@ -210,7 +215,7 @@ extension XTRepository
         _ = try gtRepo.createCommit(with: tree,
                                     message: "Merge branch \(fromBranch.name)",
                                     parents: parents,
-                                    updatingReferenceNamed: targetName)
+                                    updatingReferenceNamed: targetBranch.name)
       }
     }
     catch let error as NSError where error.domain == GTGitErrorDomain {
@@ -290,15 +295,15 @@ extension XTRepository
   
   fileprivate func writingMerge(branch: Branch) throws
   {
-    guard let branch = branch as? XTBranch
+    guard let branch = branch as? GitBranch
     else { return }
     
     do {
       try mergePreCheck()
       
       guard let currentBranchName = currentBranch,
-            let targetBranch = XTLocalBranch(name: currentBranchName,
-                                             repository: self)
+            let targetBranch = GitLocalBranch(repository: self,
+                                              name: currentBranchName)
       else { throw Error.detachedHead }
       guard let targetCommit = targetBranch.targetCommit,
             let remoteCommit = branch.targetCommit
@@ -322,8 +327,7 @@ extension XTRepository
       }
       if analysis.contains(.normal) {
         try normalMerge(fromBranch: branch, fromCommit: remoteCommit,
-                        targetName: targetBranch.name,
-                        targetCommit: targetCommit)
+                        targetBranch: targetBranch, targetCommit: targetCommit)
         return
       }
       throw Error.unexpected
@@ -357,8 +361,7 @@ extension XTRepository
     guard let oid = commit.oid as? GitOID
     else { throw Error.unexpected }
     let annotated = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let result = git_annotated_commit_lookup(annotated, gtRepo.git_repository(),
-                                             oid.unsafeOID())
+    let result = git_annotated_commit_lookup(annotated, gitRepo, oid.unsafeOID())
     
     if result != GIT_OK.rawValue {
       throw Error.gitError(result)
@@ -374,12 +377,11 @@ extension XTRepository
   /// Wraps `git_annotated_commit_from_ref`
   /// - parameter branch: Branch to look up the tip commit
   /// - returns: An `OpaquePointer` wrapping a `git_annotated_commit`
-  func annotatedCommit(branch: XTBranch) throws -> OpaquePointer
+  func annotatedCommit(branch: GitBranch) throws -> OpaquePointer
   {
     let annotated = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     let result = git_annotated_commit_from_ref(
-          annotated, gtRepo.git_repository(),
-          branch.gtBranch.reference.git_reference())
+          annotated, gitRepo, branch.branchRef)
     
     if result != GIT_OK.rawValue {
       throw Error.gitError(result)
@@ -399,7 +401,7 @@ extension XTRepository
   func analyzeMerge(from branch: Branch,
                     fastForward: Bool? = nil) throws -> MergeAnalysis
   {
-    guard let branch = branch as? XTBranch,
+    guard let branch = branch as? GitBranch,
           let commit = branch.targetCommit
     else { throw Error.unexpected }
     
@@ -423,7 +425,7 @@ extension XTRepository
     }
     
     let result = withUnsafeMutablePointer(to: &annotated) {
-      git_merge_analysis(analysis, preference, gtRepo.git_repository(), $0, 1)
+      git_merge_analysis(analysis, preference, gitRepo, $0, 1)
     }
     
     guard result == GIT_OK.rawValue
@@ -437,8 +439,8 @@ extension XTRepository
   /// - parameter remote: The remote to pull from.
   /// - parameter passwordBlock: Callback for getting the user and password
   /// - parameter progressBlock: Return true to stop the operation
-  public func push(branch: XTBranch,
-                   remote: XTRemote,
+  public func push(branch: Branch,
+                   remote: Remote,
                    passwordBlock: @escaping () -> (String, String)?,
                    progressBlock: @escaping (UInt32, UInt32, size_t) -> Bool)
                    throws
@@ -446,8 +448,15 @@ extension XTRepository
     try performWriting {
       let provider = self.credentialProvider(passwordBlock)
       let options = [ GTRepositoryRemoteOptionsCredentialProvider: provider ]
+      guard let localBranch = branch as? GitLocalBranch,
+            let localGTRef = GTReference(gitReference: localBranch.branchRef,
+                                         repository: gtRepo),
+            let localGTBranch = GTBranch(reference: localGTRef),
+            let gtRemote = GTRemote(gitRemote: (remote as! GitRemote).remote,
+                                    in: gtRepo)
+      else { throw Error.unexpected }
       
-      try self.gtRepo.push(branch.gtBranch, to: remote, withOptions: options) {
+      try self.gtRepo.push(localGTBranch, to: gtRemote, withOptions: options) {
         (current, total, bytes, stop) in
         stop.pointee = ObjCBool(progressBlock(current, total, bytes))
       }
@@ -461,33 +470,6 @@ fileprivate func checkCredentialType(_ type: GTCredentialType,
                                      flag: GTCredentialType) -> Bool
 {
   return (type.rawValue & flag.rawValue) != 0
-}
-
-fileprivate func keychainPassword(urlString: String, user: String) -> String?
-{
-  guard let url = URL(string: urlString),
-        let server = url.host as NSString?
-  else { return nil }
-  
-  let user = user as NSString
-  var passwordLength: UInt32 = 0
-  var passwordData: UnsafeMutableRawPointer? = nil
-  
-  let err = SecKeychainFindInternetPassword(
-      nil,
-      UInt32(server.length), server.utf8String,
-      0, nil,
-      UInt32(user.length), user.utf8String,
-      0, nil, 0,
-      .any, .default,
-      &passwordLength, &passwordData, nil)
-  
-  if err != noErr {
-    return nil
-  }
-  return NSString(bytes: passwordData!,
-                  length: Int(passwordLength),
-                  encoding: String.Encoding.utf8.rawValue) as String?
 }
 
 fileprivate func sshCredential(_ user: String) -> GTCredential?

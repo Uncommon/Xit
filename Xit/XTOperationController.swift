@@ -22,7 +22,7 @@ class XTOperationController: NSObject
   
   func ended()
   {
-    self.windowController?.operationEnded(self)
+    windowController?.operationEnded(self)
   }
   
   /// Executes the given block, handling errors and updating status.
@@ -31,6 +31,7 @@ class XTOperationController: NSObject
                         block: @escaping (() throws -> Void))
   {
     repository?.queue.executeOffMainThread {
+      [weak self] in
       do {
         try block()
       }
@@ -39,12 +40,13 @@ class XTOperationController: NSObject
       }
       catch let error as NSError {
         DispatchQueue.main.async {
-          if let window = self.windowController?.window {
+          [weak self] in
+          if let window = self?.windowController?.window {
             let alert = NSAlert(error: error)
             
             // needs to be smarter: look at error type
             alert.beginSheetModal(for: window,
-                                  completionHandler: { _ in self.ended() })
+                                  completionHandler: { _ in self?.ended() })
           }
         }
       }

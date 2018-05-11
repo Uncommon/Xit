@@ -3,23 +3,31 @@ import Foundation
 // MARK: Refs
 extension XTRepository: CommitReferencing
 {
+  var headReference: Reference?
+  {
+    return GitReference(headForRepo: gitRepo)
+  }
+  
   /// Reloads the cached map of OIDs to refs.
   func rebuildRefsIndex()
   {
     var payload = CallbackPayload(repo: self)
     let callback: git_reference_foreach_cb = {
       (reference, payload) -> Int32 in
+      defer {
+        git_reference_free(reference)
+      }
+      
       let repo = payload!.bindMemory(to: XTRepository.self,
                                      capacity: 1).pointee
       
-      let rawName = git_reference_name(reference)
-      guard rawName != nil,
-        let name = String(validatingUTF8: rawName!)
-        else { return 0 }
+      guard let rawName = git_reference_name(reference),
+            let name = String(validatingUTF8: rawName)
+      else { return 0 }
       
       var peeled: OpaquePointer? = nil
       guard git_reference_peel(&peeled, reference, GIT_OBJ_COMMIT) == 0
-        else { return 0 }
+      else { return 0 }
       
       let peeledOID = git_object_id(peeled)
       guard let sha = peeledOID.map({ GitOID(oid: $0.pointee) })?.sha
@@ -33,7 +41,7 @@ extension XTRepository: CommitReferencing
     }
     
     refsIndex.removeAll()
-    git_reference_foreach(gtRepo.git_repository(), callback, &payload)
+    git_reference_foreach(gitRepo, callback, &payload)
   }
   
   /// Returns a list of refs that point to the given commit.
@@ -46,19 +54,11 @@ extension XTRepository: CommitReferencing
   func allRefs() -> [String]
   {
     var stringArray = git_strarray()
-    guard git_reference_list(&stringArray, gtRepo.git_repository()) == 0
-      else { return [] }
+    guard git_reference_list(&stringArray, gitRepo) == 0
+    else { return [] }
     defer { git_strarray_free(&stringArray) }
     
-    var result = [String]()
-    
-    for i in 0..<stringArray.count {
-      guard let refString =
-        String(validatingUTF8: UnsafePointer<CChar>(stringArray.strings[i]!))
-        else { continue }
-      result.append(refString)
-    }
-    return result
+    return stringArray.compactMap { $0 }
   }
 
   public var headRef: String?
@@ -90,38 +90,12 @@ extension XTRepository: CommitReferencing
 
   func calculateCurrentBranch() -> String?
   {
-    guard let branch = try? gtRepo.currentBranch(),
-          let shortName = branch.shortName
-    else { return nil }
-    
-    if let remoteName = branch.remoteName {
-      return "\(remoteName)/\(shortName)"
-    }
-    else {
-      return branch.shortName
-    }
+    return headReference?.resolve()?.name.removingPrefix(BranchPrefixes.heads)
   }
 
   func hasHeadReference() -> Bool
   {
-    if (try? gtRepo.headReference()) != nil {
-      return true
-    }
-    else {
-      return false
-    }
-  }
-  
-  func parseSymbolicReference(_ reference: String) -> String?
-  {
-    guard let gtRef = try? gtRepo.lookUpReference(withName: reference)
-    else { return nil }
-    
-    if let unresolvedRef = gtRef.unresolvedTarget as? GTReference,
-       let name = unresolvedRef.name {
-      return name
-    }
-    return reference
+    return headReference != nil
   }
   
   func parentTree() -> String
@@ -131,20 +105,34 @@ extension XTRepository: CommitReferencing
   
   public func sha(forRef ref: String) -> String?
   {
-    guard let object = try? gtRepo.lookUpObject(byRevParse: ref)
+    return oid(forRef: ref)?.sha
+  }
+  
+  func oid(forRef ref: String) -> OID?
+  {
+    let object = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    let result = git_revparse_single(object, gitRepo, ref)
+    guard result == 0,
+          let finalObject = object.pointee,
+          let oid = git_object_id(finalObject)
     else { return nil }
     
-    return (object as? GTObject)?.sha
+    return GitOID(oidPtr: oid)
   }
   
   public func localBranch(named name: String) -> LocalBranch?
   {
-    return XTLocalBranch(repository: self, name: name)
+    return GitLocalBranch(repository: self, name: name)
   }
   
   public func remoteBranch(named name: String, remote: String) -> RemoteBranch?
   {
-    return XTRemoteBranch(repository: self, name: "\(remote)/\(name)")
+    return GitRemoteBranch(repository: self, name: "\(remote)/\(name)")
+  }
+  
+  public func remoteBranch(named name: String) -> RemoteBranch?
+  {
+    return GitRemoteBranch(repository: self, name: name)
   }
   
   func createBranch(_ name: String) -> Bool
@@ -157,12 +145,10 @@ extension XTRepository: CommitReferencing
   func deleteBranch(_ name: String) -> Bool
   {
     return writing {
-      let fullBranch = GTBranch.localNamePrefix().appending(name)
-      guard let ref = try? gtRepo.lookUpReference(withName: fullBranch),
-            let branch = GTBranch(reference: ref, repository: gtRepo)
+      guard let branch = localBranch(named: name) as? GitLocalBranch
       else { return false }
       
-      return (try? branch.delete()) != nil
+      return git_branch_delete(branch.branchRef) == 0
     }
   }
   
@@ -175,8 +161,7 @@ extension XTRepository: CommitReferencing
     }
     
     let branchRef = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    var result = git_branch_lookup(branchRef, gtRepo.git_repository(),
-                                   branch, GIT_BRANCH_LOCAL)
+    var result = git_branch_lookup(branchRef, gitRepo, branch, GIT_BRANCH_LOCAL)
     
     if result != 0 {
       throw NSError.git_error(for: result)
@@ -193,10 +178,10 @@ extension XTRepository: CommitReferencing
   public func remoteNames() -> [String]
   {
     let strArray = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
-    guard git_remote_list(strArray, gtRepo.git_repository()) == 0
-      else { return [] }
+    guard git_remote_list(strArray, gitRepo) == 0
+    else { return [] }
     
-    return [String](gitStrArray: strArray.pointee)
+    return strArray.pointee.compactMap { $0 }
   }
   
   public func stashes() -> Stashes
@@ -207,20 +192,31 @@ extension XTRepository: CommitReferencing
   /// Returns the list of tags, or throws if libgit2 hit an error.
   public func tags() throws -> [Tag]
   {
-    let tags = try gtRepo.allTags()
+    let tagNames = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
+    let result = git_tag_list(tagNames, gitRepo)
     
-    return tags.map({ XTTag(repository: self, tag: $0) })
+    try Error.throwIfError(result)
+    defer { git_strarray_free(tagNames) }
+    
+    return tagNames.pointee.compactMap {
+      name in name.flatMap { GitTag(repository: self, name: $0) }
+    }
+  }
+  
+  public func reference(named name: String) -> Reference?
+  {
+    return GitReference(name: name, repository: gitRepo)
   }
 }
 
 extension XTRepository: BranchListing
 {
-  public func localBranches() -> Branches<XTLocalBranch>
+  public func localBranches() -> Branches<GitLocalBranch>
   {
     return Branches(repo: self, type: GIT_BRANCH_LOCAL)
   }
   
-  public func remoteBranches() -> Branches<XTRemoteBranch>
+  public func remoteBranches() -> Branches<GitRemoteBranch>
   {
     return Branches(repo: self, type: GIT_BRANCH_REMOTE)
   }
