@@ -7,6 +7,7 @@ public enum FileContext
   case workspace
 }
 
+// MARK: FileContents
 extension XTRepository: FileContents
 {
   static let textNames = ["AUTHORS", "CONTRIBUTING", "COPYING", "LICENSE",
@@ -96,14 +97,36 @@ extension XTRepository: FileContents
     return blob
   }
   
+  func commitBlob(commit: Commit?, path: String) -> Blob?
+  {
+    return commit?.tree?.entry(path: path)?.object as? Blob
+  }
+  
   public func fileBlob(ref: String, path: String) -> Blob?
   {
-    guard let headTree = XTCommit(ref: ref, repository: self)?.tree,
-          let headEntry = headTree.entry(path: path),
-          let headObject = headEntry.object
+    return commitBlob(commit: sha(forRef: ref).flatMap({ commit(forSHA: $0) }),
+                      path: path)
+  }
+  
+  public func fileBlob(sha: String, path: String) -> Blob?
+  {
+    return commitBlob(commit: commit(forSHA: sha), path: path)
+  }
+  
+  public func fileBlob(oid: OID, path: String) -> Blob?
+  {
+    return commitBlob(commit: commit(forOID: oid), path: path)
+  }
+  
+  public func stagedBlob(path: String) -> Blob?
+  {
+    guard let index = try? gtRepo.index(),
+          (try? index.refresh()) != nil,
+          let indexEntry = index.entry(withPath: path),
+          let indexObject = try? GTObject(indexEntry: indexEntry)
     else { return nil }
     
-    return headObject as? Blob
+    return indexObject as? GTBlob
   }
   
   /// Returns a file URL for a given relative path.
@@ -113,6 +136,7 @@ extension XTRepository: FileContents
   }
 }
 
+// MARK: FileDiffing
 extension XTRepository: FileDiffing
 {
   /// Returns a diff maker for a file at the specified commit, compared to the
@@ -157,8 +181,7 @@ extension XTRepository: FileDiffing
     return diff?.delta(forNewPath: path)
   }
   
-  /// Returns a diff maker for a file in the index, compared to the workspace
-  /// file.
+  /// Returns a diff maker for a file in the index, compared to HEAD
   public func stagedDiff(file: String) -> PatchMaker.PatchResult?
   {
     guard isTextFile(file, context: .index)
@@ -172,6 +195,23 @@ extension XTRepository: FileDiffing
     return .diff(PatchMaker(from: PatchMaker.SourceType(headBlob),
                              to: PatchMaker.SourceType(indexBlob),
                              path: file))
+  }
+  
+  /// Returns a diff maker for a file in the index, compared to HEAD-1.
+  public func stagedAmendingDiff(file: String) -> PatchMaker.PatchResult?
+  {
+    guard isTextFile(file, context: .index)
+    else { return .binary }
+    
+    guard let headCommit = headSHA.flatMap({ commit(forSHA: $0) })
+    else { return nil }
+    let blob = headCommit.parentSHAs.first
+                         .flatMap { fileBlob(sha: $0, path: file) }
+    let indexBlob = stagedBlob(file: file)
+
+    return .diff(PatchMaker(from: PatchMaker.SourceType(blob),
+                            to: PatchMaker.SourceType(indexBlob),
+                            path: file))
   }
   
   /// Returns a diff maker for a file in the workspace, compared to the index.
@@ -220,7 +260,6 @@ extension XTRepository: FileDiffing
 
 extension XTRepository
 {
-  
   /// Returns the diff for the referenced commit, compared to its first parent
   /// or to a specific parent.
   func diff(forSHA sha: String, parent parentOID: OID?) -> Diff?
@@ -317,5 +356,99 @@ extension XTRepository
       }
     }
     throw Error.patchMismatch
+  }
+  
+  class StatusCollection: BidirectionalCollection
+  {
+    let statusList: OpaquePointer?
+    var tree: OpaquePointer?
+  
+    init(repo: XTRepository, head: Commit?)
+    {
+      let headTree = (head?.tree as? GitTree)?.tree
+      var options = git_status_options()
+      
+      git_status_init_options(&options, UInt32(GIT_STATUS_OPTIONS_VERSION))
+      options.flags = GIT_STATUS_OPT_INCLUDE_UNTRACKED.rawValue |
+                      GIT_STATUS_OPT_RECURSE_UNTRACKED_DIRS.rawValue
+      if let tree = headTree {
+        options.baseline = tree
+      }
+      else {
+        tree = StatusCollection.emptyTree(repo: repo)
+        options.baseline = tree
+      }
+      
+      var list: OpaquePointer?
+      guard git_status_list_new(&list,
+                                repo.gtRepo.git_repository(),
+                                &options) == 0
+      else {
+        self.statusList = nil
+        return
+      }
+      
+      self.statusList = list
+    }
+    
+    convenience init(repo: XTRepository)
+    {
+      self.init(repo: repo,
+                head: repo.headSHA.flatMap({ repo.commit(forSHA: $0) }))
+    }
+  
+    static func emptyTree(repo: XTRepository) -> OpaquePointer?
+    {
+      guard let emptyOID = GitOID(sha: kEmptyTreeHash)
+      else { return nil }
+      let tree = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+      let result = git_tree_lookup(tree, repo.gtRepo.git_repository(),
+                                   emptyOID.unsafeOID())
+      
+      return (result == GIT_OK.rawValue) ? tree.pointee : nil
+    }
+  
+    subscript(position: Int) -> FileStagingChange
+    {
+      guard let statusList = self.statusList,
+            let entry = git_status_byindex(statusList, position)?.pointee,
+            let delta = entry.head_to_index ?? entry.index_to_workdir
+      else { return FileStagingChange(path: "", destinationPath: "") }
+      
+      let path = String(cString: delta.pointee.old_file.path)
+      let newPath = String(cString: delta.pointee.new_file.path)
+      let stagedChange = (entry.head_to_index?.pointee.status)
+            .map { DeltaStatus(gitDelta: $0) } ?? .unmodified
+      
+      return FileStagingChange(
+          path: path,
+          destinationPath: newPath,
+          change: stagedChange)
+    }
+    
+    public var startIndex: Int { return 0 }
+    public var endIndex: Int
+    {
+      return statusList.map { git_status_list_entrycount($0) } ?? 0
+    }
+    
+    func index(before i: Int) -> Int { return i - 1 }
+    func index(after i: Int) -> Int { return i + 1 }
+    
+    deinit
+    {
+      tree.map { git_tree_free($0) }
+      statusList.map { git_status_list_free($0) }
+    }
+  }
+  
+  var stagingChanges: StatusCollection
+  {
+    return StatusCollection(repo: self)
+  }
+  
+  func amendingChanges(parent: Commit?) -> StatusCollection
+  {
+    return StatusCollection(repo: self, head: parent)
   }
 }

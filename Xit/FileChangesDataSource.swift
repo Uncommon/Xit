@@ -154,6 +154,7 @@ extension FileChangesDataSource: NSOutlineViewDataSource
   {
     objc_sync_enter(self)
     defer { objc_sync_exit(self) }
+    
     return changes.count
   }
 
@@ -161,6 +162,9 @@ extension FileChangesDataSource: NSOutlineViewDataSource
                    child index: Int,
                    ofItem item: Any?) -> Any
   {
+    objc_sync_enter(self)
+    defer { objc_sync_exit(self) }
+    
     return (index < changes.count) ? changes[index] : FileChange(path: "")
   }
 

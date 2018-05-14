@@ -24,8 +24,7 @@ class XTTextPreviewController: WebViewController
     let htmlTemplate = WebViewController.htmlTemplate("text")
     let html = String(format: htmlTemplate, textLines)
     
-    webView?.mainFrame.loadHTMLString(html,
-                                      baseURL: XTTextPreviewController.baseURL)
+    load(html: html, baseURL: XTTextPreviewController.baseURL)
     isLoaded = true
   }
   
@@ -44,7 +43,7 @@ extension XTTextPreviewController: XTFileContentController
 {
   public func clear()
   {
-    webView?.mainFrame.loadHTMLString("", baseURL: nil)
+    load(html: "")
     isLoaded = false
   }
   

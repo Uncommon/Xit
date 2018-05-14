@@ -7,8 +7,9 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="XTCommitHeaderViewController">
+        <customObject id="-2" userLabel="File's Owner" customClass="XTCommitEntryController" customModule="Xit" customModuleProvider="target">
             <connections>
+                <outlet property="amendChcekbox" destination="blR-Jh-nMJ" id="vH4-xO-IvG"/>
                 <outlet property="commitButton" destination="u0x-wv-OUI" id="ldN-uV-0XE"/>
                 <outlet property="commitField" destination="kX1-Lg-TAb" id="W6k-BU-JZF"/>
                 <outlet property="placeholder" destination="aZR-Tw-uvn" id="70R-1S-POC"/>
@@ -80,6 +81,17 @@ DQ
                                 </buttonCell>
                                 <connections>
                                     <action selector="commit:" target="-2" id="3se-Gi-2nx"/>
+                                </connections>
+                            </button>
+                            <button misplaced="YES" id="blR-Jh-nMJ">
+                                <rect key="frame" x="392" y="79" width="65" height="18"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="check" title="Amend" bezelStyle="regularSquare" imagePosition="left" inset="2" id="3Jd-44-eWX">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="toggleAmend:" target="-2" id="8hD-uK-Piv"/>
                                 </connections>
                             </button>
                         </subviews>

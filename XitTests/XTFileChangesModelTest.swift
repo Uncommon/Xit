@@ -112,6 +112,7 @@ class XTFileChangesModelTest: XTTest
     XCTAssertEqual(changes.count, 0)
     
     self.writeText(toFile1: "change")
+    repository.invalidateIndex()
     changes = model.unstagedFileList.changes
     XCTAssertEqual(changes.count, 1)
     
@@ -126,6 +127,7 @@ class XTFileChangesModelTest: XTTest
     XCTAssertEqual(change.change, DeltaStatus.modified)
     
     self.writeText("new", toFile: addedName)
+    repository.invalidateIndex()
     changes = model.unstagedFileList.changes
     XCTAssertEqual(changes.count, 2)
     guard !changes.isEmpty

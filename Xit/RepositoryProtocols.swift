@@ -20,6 +20,7 @@ public protocol CommitReferencing: class
   var headRef: String? { get }
   var currentBranch: String? { get }
   
+  func sha(forRef: String) -> String?
   func remoteNames() -> [String]
   func tags() throws -> [Tag]
   func graphBetween(localBranch: LocalBranch,
@@ -37,6 +38,11 @@ extension CommitReferencing
   {
     return reference(named: "HEAD")
   }
+}
+
+extension CommitReferencing
+{
+  var headSHA: String? { return headRef.flatMap({ self.sha(forRef: $0) }) }
 }
 
 public protocol BranchListing: class
@@ -58,6 +64,7 @@ public protocol FileStatusDetection: class
 
   func stagedChanges() -> [FileChange]
   func unstagedChanges() -> [FileChange]
+  func amendingStatus(for path: String) throws -> WorkspaceFileStatus
 }
 
 public protocol FileDiffing: class
@@ -70,6 +77,7 @@ public protocol FileDiffing: class
             parentOID: OID?) -> DiffDelta?
   func stagedDiff(file: String) -> PatchMaker.PatchResult?
   func unstagedDiff(file: String) -> PatchMaker.PatchResult?
+  func stagedAmendingDiff(file: String) -> PatchMaker.PatchResult?
   
   func blame(for path: String, from startOID: OID?, to endOID: OID?) -> Blame?
   func blame(for path: String, data fromData: Data?, to endOID: OID?) -> Blame?
@@ -91,6 +99,8 @@ public protocol FileStaging: class
 {
   func stage(file: String) throws
   func unstage(file: String) throws
+  func amendStage(file: String) throws
+  func amendUnstage(file: String) throws
   func revert(file: String) throws
   func stageAllFiles() throws
   func unstageAllFiles() throws

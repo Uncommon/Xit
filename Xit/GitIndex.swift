@@ -38,7 +38,7 @@ protocol IndexEntry
 class GitIndex: StagingIndex
 {
   let index: OpaquePointer
-  
+
   init?(repository: XTRepository)
   {
     var index: OpaquePointer?

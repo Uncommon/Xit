@@ -19,9 +19,15 @@ class XTCommitEntryController: NSViewController
   }
   @IBOutlet weak var commitField: NSTextView!
   @IBOutlet weak var commitButton: NSButton!
+  @IBOutlet weak var amendChcekbox: NSButton!
   @IBOutlet weak var placeholder: NSTextField!
   
   var indexObserver: NSObjectProtocol?
+  
+  var repoController: RepositoryController?
+  {
+    return view.ancestorWindow?.windowController as? RepositoryController
+  }
   
   var anyStaged = false
   {
@@ -30,6 +36,19 @@ class XTCommitEntryController: NSViewController
       if anyStaged != oldValue {
         updateCommitButton()
       }
+    }
+  }
+  
+  var commitMessage: String
+  {
+    get
+    {
+      return commitField.string
+    }
+    set
+    {
+      commitField.string = newValue.trimmingWhitespace
+      updateCommitButton()
     }
   }
   
@@ -54,7 +73,7 @@ class XTCommitEntryController: NSViewController
   
   func resetMessage()
   {
-    commitField.string = commitMessageTemplate() ?? ""
+    commitMessage = commitMessageTemplate() ?? ""
   }
   
   override func viewDidLoad()
@@ -69,10 +88,11 @@ class XTCommitEntryController: NSViewController
     updateCommitButton()
   }
   
-  @IBAction func commit(_ sender: NSButton) {
+  @IBAction func commit(_ sender: NSButton)
+  {
     do {
       try repo.commit(message: commitField.string,
-                      amend: false,
+                      amend: repoController?.isAmending ?? false,
                       outputBlock: nil)
       resetMessage()
     }
@@ -80,6 +100,50 @@ class XTCommitEntryController: NSViewController
       let alert = NSAlert(error: error as NSError)
       
       alert.beginSheetModal(for: view.window!, completionHandler: nil)
+    }
+  }
+  
+  @IBAction func toggleAmend(_ sender: NSButton)
+  {
+    let newValue = sender.boolValue
+  
+    if newValue {
+      updateAmendingCommitMessage()
+    }
+    repoController?.isAmending = newValue
+  }
+  
+  func updateAmendingCommitMessage()
+  {
+    guard let headCommit = repo.headSHA.flatMap({ repo.commit(forSHA: $0 ) }),
+          let headMessage = headCommit.message?.trimmingWhitespace
+    else { return }
+
+    let message = commitMessage
+    
+    if message.isEmpty || message == commitMessageTemplate() {
+      commitMessage = headMessage
+    }
+    else if message != headMessage {
+      guard let window = view.window
+      else { return }
+      let alert = NSAlert()
+      
+      alert.messageText = "Replace the commit message?"
+      alert.informativeText = """
+      Do you want to replace the commit message with the message from
+      the previous commit?
+      """
+      alert.addButton(withTitle: "Replace")
+      alert.addButton(withTitle: "Don't Replace")
+      alert.beginSheetModal(for: window) {
+        (response) in
+        if response == .alertFirstButtonReturn {
+          self.commitMessage = headMessage
+        }
+        self.repoController?.isAmending = true
+      }
+      return
     }
   }
   

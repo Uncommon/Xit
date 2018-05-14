@@ -5,10 +5,12 @@ protocol RepositoryController: class
   var repository: Repository { get }
   var queue: TaskQueue { get }
   var selection: RepositorySelection? { get set }
-  
+  var isAmending: Bool { get set }
+
   func select(sha: String)
   func updateForFocus()
   func postIndexNotification()
+  func showErrorMessage(error: XTRepository.Error)
 }
 
 /// XTDocument's main window controller.
@@ -23,14 +25,30 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   var titleBarController: TitleBarViewController?
   var refsChangedObserver: NSObjectProtocol?
   var repository: Repository { return (xtDocument?.repository as Repository?)! }
+  @objc dynamic var isAmending = false
+  {
+    didSet
+    {
+      // Parens work around "assigning a property to itself" error
+      (selection = selection) // trigger didSet
+    }
+  }
   var queue: TaskQueue { return xtDocument!.repository.queue }
   var selection: RepositorySelection?
   {
     didSet
     {
       guard selection.map({ (s) in oldValue.map { (o) in s != o }
-          ?? true }) ?? (oldValue != nil)
+                          ?? true }) ?? (oldValue != nil)
       else { return }
+      if (selection is StagingSelection) &&
+         (isAmending != (selection is AmendingSelection)) {
+        selection = xtDocument.map {
+          isAmending ? AmendingSelection(repository: $0.repository)
+                     : StagingSelection(repository: $0.repository)
+        }
+      }
+      
       var userInfo = [AnyHashable: Any]()
       
       userInfo[NSKeyValueChangeKey.newKey] = selection
@@ -249,7 +267,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     }
   }
   
-  private func showErrorMessage(error: XTRepository.Error)
+  func showErrorMessage(error: XTRepository.Error)
   {
     guard let window = self.window
     else { return }

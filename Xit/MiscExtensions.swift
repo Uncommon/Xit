@@ -75,6 +75,11 @@ extension String
   {
     return NSString.path(withComponents: Array(pathComponents.dropFirst(1)))
   }
+  
+  var trimmingWhitespace: String
+  {
+    return trimmingCharacters(in: .whitespacesAndNewlines)
+  }
 }
 
 extension NSError
@@ -423,6 +428,8 @@ extension NSMutableArray
 
 extension Thread
 {
+  /// Performs the block immediately if this is the main thread, or
+  /// asynchronosly on the main thread otherwise.
   static func performOnMainThread(_ block: @escaping () -> Void)
   {
     if isMainThread {
@@ -434,6 +441,17 @@ extension Thread
       }
     }
   }
+}
+
+/// Similar to Objective-C's `@synchronized`
+/// - parameter object: Token object for the lock
+/// - parameter block: Block to execute inside the lock
+func synchronized<T>(_ object: NSObject, block: () -> T) -> T
+{
+  objc_sync_enter(object)
+  let result = block()
+  objc_sync_exit(object)
+  return result
 }
 
 // Swift 3 took away ++, but it still can be useful.

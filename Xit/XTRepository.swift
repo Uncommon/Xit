@@ -325,6 +325,8 @@ extension XTRepository
     case detachedHead
     case gitError(Int32)
     case patchMismatch
+    case commitNotFound(String?)  // SHA
+    case fileNotFound(String)  // Path
     case notFound
     case unexpected
     
@@ -353,9 +355,13 @@ extension XTRepository
           return "An internal git error (\(code)) occurred."
         case .patchMismatch:
           return """
-              The patch could not be applied because it did not match the
-              file content.
+              The patch could not be applied because it did not match
+              the file content.
               """
+        case .commitNotFound(let sha):
+          return "The commit \(sha ?? "-") was not found."
+        case .fileNotFound(let path):
+           return "The file \(path) was not found."
         case .notFound:
           return "The item was not found."
         case .unexpected:

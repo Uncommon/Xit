@@ -19,8 +19,7 @@ extension HeaderGenerator
   {
     // swiftlint:disable:next force_try
     let template = try! String(contentsOf: templateURL())
-    let message = commit.message?.trimmingCharacters(in: .whitespacesAndNewlines)
-                  ?? ""
+    let message = commit.message?.trimmingWhitespace ?? ""
     let authorName = commit.authorName ?? ""
     let authorEmail = commit.authorEmail ?? ""
     let authorDate = commit.authorDate
@@ -146,7 +145,7 @@ class CommitHeaderViewController: WebViewController, HeaderGenerator
     else { return }
     let html = generateHeaderHTML(commit)
     
-    webView?.mainFrame.loadHTMLString(html, baseURL: templateURL())
+    load(html: html, baseURL: templateURL())
   }
   
   func headerHeight() -> CGFloat
