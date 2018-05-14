@@ -132,8 +132,9 @@ class XTFileDiffController: WebViewController,
   /// Returns the index/workspace counterpart blob
   func diffTargetBlob() -> Blob?
   {
+    let window = Thread.syncOnMainThread { view.window }
     // TODO: Give it access to the repository via the FileContents protocol
-    let repo = (view.window?.windowController as! XTWindowController)
+    let repo = (window?.windowController as! XTWindowController)
       .xtDocument!.repository!
     guard let diffMaker = diffMaker,
           let headRef = repo.headRef

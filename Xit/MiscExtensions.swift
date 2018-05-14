@@ -441,6 +441,20 @@ extension Thread
       }
     }
   }
+  
+  /// Performs the block immediately if this is the main thread, or
+  /// synchronosly on the main thread otherwise.
+  static func syncOnMainThread<T>(_ block: () -> T) -> T
+  {
+    if isMainThread {
+      return block()
+    }
+    else {
+      return DispatchQueue.main.sync {
+        block()
+      }
+    }
+  }
 }
 
 /// Similar to Objective-C's `@synchronized`
