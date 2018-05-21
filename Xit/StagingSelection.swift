@@ -97,7 +97,7 @@ class AmendingIndexFileList: IndexFileList
 {
   override func diffForFile(_ path: String) -> PatchMaker.PatchResult?
   {
-    return repository.stagedAmendingDiff(file: path)
+    return repository.amendingStagedDiff(file: path)
   }
 }
 

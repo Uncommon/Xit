@@ -77,7 +77,7 @@ public protocol FileDiffing: class
             parentOID: OID?) -> DiffDelta?
   func stagedDiff(file: String) -> PatchMaker.PatchResult?
   func unstagedDiff(file: String) -> PatchMaker.PatchResult?
-  func stagedAmendingDiff(file: String) -> PatchMaker.PatchResult?
+  func amendingStagedDiff(file: String) -> PatchMaker.PatchResult?
   
   func blame(for path: String, from startOID: OID?, to endOID: OID?) -> Blame?
   func blame(for path: String, data fromData: Data?, to endOID: OID?) -> Blame?

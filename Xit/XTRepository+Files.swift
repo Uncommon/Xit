@@ -198,7 +198,7 @@ extension XTRepository: FileDiffing
   }
   
   /// Returns a diff maker for a file in the index, compared to HEAD-1.
-  public func stagedAmendingDiff(file: String) -> PatchMaker.PatchResult?
+  public func amendingStagedDiff(file: String) -> PatchMaker.PatchResult?
   {
     guard isTextFile(file, context: .index)
     else { return .binary }
