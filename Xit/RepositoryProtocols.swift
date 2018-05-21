@@ -97,6 +97,8 @@ public protocol FileContents: class
 
 public protocol FileStaging: class
 {
+  var index: StagingIndex? { get }
+  
   func stage(file: String) throws
   func unstage(file: String) throws
   func amendStage(file: String) throws

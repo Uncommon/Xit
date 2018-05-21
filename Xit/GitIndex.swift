@@ -1,19 +1,12 @@
 import Foundation
 
 /// A staging index for creating a commit.
-protocol StagingIndex
+public protocol StagingIndex
 {
-  associatedtype Entries: RandomAccessCollection
-      where Entries.Iterator.Element: IndexEntry
-   
-  var entries: Entries { get }
-  
   /// Reloads the index from the disk.
   func refresh() throws
   /// Saves the index to the disk.
   func save() throws
-  /// Returns the entry matching the given file path.
-  func entry(at path: String) -> IndexEntry?
   /// Adds a local file to the index
   func add(path: String) throws
   /// Adds or updates a file with the given data
@@ -24,10 +17,46 @@ protocol StagingIndex
   func remove(path: String) throws
   /// Removes all files
   func clear() throws
+  
+  /// Returns the total numbef of entries in the index.
+  var entryCount: Int { get }
+  /// Returns the entry at the given index in the list of entries.
+  func entry(atIndex: Int) -> IndexEntry!
+  /// Returns the entry matching the given file path.
+  func entry(at path: String) -> IndexEntry?
+}
+
+extension StagingIndex
+{
+  /// A collection for accessing or iterating through index entries.
+  var entries: EntryCollection
+  {
+    return EntryCollection(index: self)
+  }
+}
+
+class EntryCollection: RandomAccessCollection
+{
+  let index: StagingIndex
+  
+  var startIndex: Int { return 0 }
+  
+  var endIndex: Int
+  { return index.entryCount }
+  
+  init(index: StagingIndex)
+  {
+    self.index = index
+  }
+
+  subscript(position: Int) -> IndexEntry
+  {
+    return index.entry(atIndex: position)
+  }
 }
 
 /// An individual file entry in an index.
-protocol IndexEntry
+public protocol IndexEntry
 {
   var oid: OID { get }
   var path: String { get }
@@ -37,8 +66,27 @@ protocol IndexEntry
 /// Staging index implemented with libgit2
 class GitIndex: StagingIndex
 {
+  struct Entry: IndexEntry
+  {
+    let gitEntry: git_index_entry
+    
+    var oid: OID { return GitOID(oid: gitEntry.id) }
+    var path: String { return String(cString: gitEntry.path) }
+    
+    var conflicted: Bool
+    {
+      return (UInt32(gitEntry.flags_extended) &
+        GIT_IDXENTRY_CONFLICTED.rawValue) != 0
+    }
+  }
+  
   let index: OpaquePointer
 
+  var entryCount: Int
+  {
+    return git_index_entrycount(index)
+  }
+  
   init?(repository: XTRepository)
   {
     var index: OpaquePointer?
@@ -51,48 +99,18 @@ class GitIndex: StagingIndex
     self.index = finalIndex
   }
   
-  class EntryCollection: RandomAccessCollection
+  func entry(atIndex index: Int) -> IndexEntry!
   {
-    let index: GitIndex
-    
-    var startIndex: Int { return 0 }
-    
-    public var endIndex: Int
-    {
-      return git_index_entrycount(index.index)
-    }
-    
-    public subscript(position: Int) -> Entry
-    {
-      guard let gitEntry = git_index_get_byindex(index.index, position)
-      else {
-        return Entry(gitEntry: git_index_entry())
-      }
-      
-      return Entry(gitEntry: gitEntry.pointee)
-    }
-    
-    init(index: GitIndex)
-    {
-      self.index = index
+    switch index {
+      case 0..<entryCount:
+        guard let gitEntry = git_index_get_byindex(self.index, index)
+        else { return nil }
+        
+        return Entry(gitEntry: gitEntry.pointee)
+      default:
+        return nil
     }
   }
-  
-  struct Entry: IndexEntry
-  {
-    let gitEntry: git_index_entry
-    
-    var oid: OID { return GitOID(oid: gitEntry.id) }
-    var path: String { return String(cString: gitEntry.path) }
-    
-    var conflicted: Bool
-    {
-      return (UInt32(gitEntry.flags_extended) &
-              GIT_IDXENTRY_CONFLICTED.rawValue) != 0
-    }
-  }
-  
-  var entries: EntryCollection { return EntryCollection(index: self) }
   
   func entry(at path: String) -> IndexEntry?
   {

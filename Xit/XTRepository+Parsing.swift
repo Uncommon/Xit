@@ -210,6 +210,7 @@ extension XTRepository: FileStatusDetection
 
 extension XTRepository: FileStaging
 {
+  public var index: StagingIndex? { return GitIndex(repository: self) }
 
   /// Stages the given file to the index.
   @objc(stageFile:error:)
