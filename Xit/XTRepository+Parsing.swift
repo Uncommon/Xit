@@ -1,10 +1,5 @@
 import Foundation
 
-public struct WorkspaceFileStatus
-{
-  let change, unstagedChange: DeltaStatus
-}
-
 // Has to inherit from NSObject so NSTreeNode can use it to sort
 public class FileChange: NSObject
 {
@@ -41,27 +36,6 @@ class FileStagingChange: FileChange
 
 extension XTRepository: FileStatusDetection
 {
-  /// A path:status dictionary for locally changed files.
-  public var workspaceStatus: [String: WorkspaceFileStatus]
-  {
-    var result = [String: WorkspaceFileStatus]()
-    guard let statusList = GitStatusList(repository: gitRepo,
-                                         options: [.includeUntracked])
-    else { return [:] }
-    
-    for entry in statusList {
-      guard let path = entry.headToIndex?.oldFile.filePath ??
-                       entry.indexToWorkdir?.oldFile.filePath
-      else { continue }
-      let status = WorkspaceFileStatus(
-            change: entry.headToIndex?.deltaStatus ?? .unmodified,
-            unstagedChange: entry.indexToWorkdir?.deltaStatus ?? .unmodified)
-      
-      result[path] = status
-    }
-    return result
-  }
-  
   /// Returns the changes for the given commit.
   public func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
   {
@@ -99,7 +73,8 @@ extension XTRepository: FileStatusDetection
   
   
   // Re-implementation of git_status_file with a given head commit
-  func fileStatus(_ path: String, baseCommit: Commit?) -> WorkspaceFileStatus?
+  func fileStatus(_ path: String, baseCommit: Commit?)
+    -> (index: DeltaStatus, workspace: DeltaStatus)?
   {
     struct CallbackData
     {
@@ -146,9 +121,8 @@ extension XTRepository: FileStatusDetection
     guard result == 0 || result == GIT_EUSER.rawValue
     else { return nil }
     
-    return WorkspaceFileStatus(
-        change: DeltaStatus(indexStatus: data.status),
-        unstagedChange: DeltaStatus(worktreeStatus: data.status))
+    return (index: DeltaStatus(indexStatus: data.status),
+            workspace: DeltaStatus(worktreeStatus: data.status))
   }
   
   func statusChanges(_ show: StatusShow) -> [FileChange]
@@ -193,18 +167,28 @@ extension XTRepository: FileStatusDetection
     }
   }
   
-  public func amendingStatus(for path: String) throws -> WorkspaceFileStatus
+  public func amendingStatus(for path: String) throws
+    -> (index: DeltaStatus, workspace: DeltaStatus)
   {
     guard let headCommit = headSHA.flatMap({ self.commit(forSHA: $0) }),
           let previousCommit = headCommit.parentOIDs.first
                                 .flatMap({ self.commit(forOID: $0) }),
           let status = fileStatus(path, baseCommit: previousCommit)
     else {
-      return WorkspaceFileStatus(change: .unmodified,
-                                 unstagedChange: .unmodified)
+      return (index: .unmodified, workspace: .unmodified)
     }
     
     return status
+  }
+  
+  public func amendingStagedStatus(for path: String) throws -> DeltaStatus
+  {
+    return try amendingStatus(for: path).index
+  }
+  
+  public func amendingUnstagedStatus(for path: String) throws -> DeltaStatus
+  {
+    return try amendingStatus(for: path).workspace
   }
 }
 

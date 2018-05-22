@@ -2,10 +2,20 @@ import Cocoa
 
 class WorkspaceTreeBuilder
 {
-  var changes: [String: WorkspaceFileStatus]
+  var changes: [String: DeltaStatus]
   
-  init(changes: [String: WorkspaceFileStatus])
+  init(changes: [String: DeltaStatus])
   {
+    self.changes = changes
+  }
+  
+  init(fileChanges: [FileChange])
+  {
+    var changes = [String: DeltaStatus]()
+    
+    for change in fileChanges {
+      changes[change.path] = change.change
+    }
     self.changes = changes
   }
   
@@ -46,7 +56,7 @@ class WorkspaceTreeBuilder
           let item = CommitTreeItem(path: path)
           
           if let status = self.changes[path] {
-            item.change = status.change
+            item.change = status
           }
           childNode = NSTreeNode(representedObject: item)
         }

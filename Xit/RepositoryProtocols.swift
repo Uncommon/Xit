@@ -58,13 +58,11 @@ public protocol BranchListing: class
 
 public protocol FileStatusDetection: class
 {
-  var workspaceStatus: [String: WorkspaceFileStatus] { get }
-  
   func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
 
   func stagedChanges() -> [FileChange]
   func unstagedChanges() -> [FileChange]
-  func amendingStatus(for path: String) throws -> WorkspaceFileStatus
+  func amendingStagedStatus(for path: String) throws -> DeltaStatus
 }
 
 public protocol FileDiffing: class
