@@ -47,8 +47,24 @@ public class XTRepository: NSObject
   fileprivate var executing = false
   
   fileprivate(set) var cachedHeadRef, cachedHeadSHA, cachedBranch: String?
-  var cachedStagedChanges, cachedUnstagedChanges: [FileChange]?
-  
+  private var _cachedStagedChanges, _cachedAmendChanges,
+              _cachedUnstagedChanges: [FileChange]?
+  var cachedStagedChanges: [FileChange]?
+  {
+    get { return mutex.withLock { _cachedStagedChanges } }
+    set { mutex.withLock { _cachedStagedChanges = newValue } }
+  }
+  var cachedAmendChanges: [FileChange]?
+  {
+    get { return mutex.withLock { _cachedAmendChanges } }
+    set { mutex.withLock { _cachedAmendChanges = newValue } }
+  }
+  var cachedUnstagedChanges: [FileChange]?
+  {
+    get { return mutex.withLock { _cachedUnstagedChanges } }
+    set { mutex.withLock { _cachedUnstagedChanges = newValue } }
+  }
+
   let diffCache = Cache<String, Diff>(maxSize: 50)
   fileprivate var repoWatcher: XTRepositoryWatcher! = nil
   fileprivate var workspaceWatcher: WorkspaceWatcher! = nil
@@ -194,6 +210,7 @@ public class XTRepository: NSObject
   func invalidateIndex()
   {
     cachedStagedChanges = nil
+    cachedAmendChanges = nil
     cachedUnstagedChanges = nil
   }
   
