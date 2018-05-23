@@ -82,8 +82,29 @@ class IndexFileList: StagingListModel, FileListModel
   
   func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
   {
-    let builder = WorkspaceTreeBuilder(changes: repository.workspaceStatus)
+    return treeRoot(changes: repository.stagedChanges(), oldTree: oldTree)
+  }
+  
+  func treeRoot(changes: [FileChange], oldTree: NSTreeNode?) -> NSTreeNode
+  {
+    let builder = WorkspaceTreeBuilder(fileChanges: repository.stagedChanges())
     let root = builder.build(repository.repoURL)
+    
+    if let index = repository.index {
+      for entry in index.entries {
+        guard let status = try? repository.stagedStatus(for: entry.path)
+        else { continue }
+        
+        if let node = root.fileChangeNode(path: entry.path) {
+          let fileChange = node.representedObject as! FileChange
+          
+          fileChange.change = status
+        }
+        else {
+          root.add(fileChange: FileChange(path: entry.path, change: status))
+        }
+      }
+    }
     
     postProcess(fileTree: root)
     return root
@@ -95,9 +116,20 @@ class IndexFileList: StagingListModel, FileListModel
 /// Index file list with Amend turned on
 class AmendingIndexFileList: IndexFileList
 {
+  override var changes: [FileChange]
+  {
+    return repository.amendingStagedChanges()
+  }
+  
   override func diffForFile(_ path: String) -> PatchMaker.PatchResult?
   {
     return repository.amendingStagedDiff(file: path)
+  }
+  
+  override func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
+  {
+    return treeRoot(changes: repository.amendingStagedChanges(),
+                    oldTree: oldTree)
   }
 }
 

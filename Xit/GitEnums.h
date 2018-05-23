@@ -135,6 +135,8 @@ typedef NS_OPTIONS(int, StatusOptions)
   StatusOptionsUpdateIndex = GIT_STATUS_OPT_UPDATE_INDEX,
   StatusOptionsIncludeUnreadable = GIT_STATUS_OPT_INCLUDE_UNREADABLE,
   StatusOptionsIncludeUnreadableAsUntracked = GIT_STATUS_OPT_INCLUDE_UNREADABLE_AS_UNTRACKED,
+  // Custom flag. git_status_opt_t goes up to << 15.
+  StatusOptionsAmending = 1u << 20
 };
 
 typedef NS_OPTIONS(int, CheckoutStrategy)

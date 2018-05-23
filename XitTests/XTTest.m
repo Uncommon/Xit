@@ -94,10 +94,7 @@
   NSString *basePath = repo.repoURL.path;
   NSString *filePath = [basePath stringByAppendingPathComponent:name];
 
-  [content writeToFile:filePath
-            atomically:YES
-              encoding:NSASCIIStringEncoding
-                 error:nil];
+  [self writeText:content toFile:name];
 
   if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
     return NO;
@@ -167,6 +164,21 @@
 
 - (BOOL)writeText:(NSString *)text toFile:(NSString *)path
 {
+  if (path.pathComponents.count > 1) {
+    NSFileManager *manager = NSFileManager.defaultManager;
+    NSString *parentPath = path.stringByDeletingLastPathComponent;
+    NSString *fullPath = [self.repository.repoURL.path
+        stringByAppendingPathComponent:parentPath];
+    
+    if (![manager fileExistsAtPath:fullPath]) {
+      if (![manager createDirectoryAtPath:fullPath
+              withIntermediateDirectories:YES
+                               attributes:nil
+                                    error:nil])
+        return false;
+    }
+  }
+  
   return [text writeToFile:[self.repoPath stringByAppendingPathComponent:path]
                 atomically:YES
                   encoding:NSUTF8StringEncoding

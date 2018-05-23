@@ -21,7 +21,7 @@ class WorkspaceTreeBuilder
   
   func treeAtURL(_ baseURL: URL, rootPath: NSString) -> NSTreeNode
   {
-    let rootItem = CommitTreeItem(path: baseURL.path)
+    let rootItem = CommitTreeItem(path: "/")
     let node = NSTreeNode(representedObject: rootItem)
     let enumerator = FileManager.default.enumerator(
           at: baseURL,
@@ -48,8 +48,8 @@ class WorkspaceTreeBuilder
       catch {
         continue
       }
-      if let isDirValue = isDirectory {
-        if (isDirValue as! NSNumber).boolValue {
+      if let isDirValue = isDirectory as? NSNumber {
+        if isDirValue.boolValue {
           childNode = self.treeAtURL(url, rootPath: rootPath)
         }
         else {

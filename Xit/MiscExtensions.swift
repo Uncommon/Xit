@@ -301,6 +301,74 @@ extension NSTreeNode
   }
 }
 
+extension NSTreeNode
+{
+  var fileChange: FileChange { return representedObject as! FileChange }
+  
+  func fileChangeNode(path: String) -> NSTreeNode?
+  {
+    let slashPath = path.hasPrefix("/") ? path : "/\(path)"
+    
+    return fileChangeNode(recursivePath: slashPath)
+  }
+  
+  private func fileChangeNode(recursivePath path: String) -> NSTreeNode?
+  {
+    if fileChange.path == path {
+      return self
+    }
+    
+    let subpath = path.deletingFirstPathComponent
+    guard !subpath.isEmpty
+    else { return nil }
+    
+    return children?.firstResult { $0.fileChangeNode(recursivePath: subpath) }
+  }
+  
+  @discardableResult
+  func insert(fileChange: FileChange) -> NSTreeNode
+  {
+    let node = NSTreeNode(representedObject: fileChange)
+    
+    insert(node: node, sortedBy: { $0.fileChange.path })
+    return node
+  }
+  
+  func add(fileChange newChange: FileChange)
+  {
+    if !newChange.path.hasPrefix("/") {
+      newChange.path = "/" + newChange.path
+    }
+    add(recursiveFileChange: newChange)
+  }
+  
+  private func add(recursiveFileChange newChange: FileChange)
+  {
+    let path = fileChange.path
+    
+    if path == newChange.path.deletingLastPathComponent {
+      insert(fileChange: newChange)
+    }
+    else {
+      let subpath = newChange.path.removingPrefix(path)
+      guard let parentName = subpath.firstPathComponent
+      else { return }
+      
+      if let parentNode = children?.first(where: {
+            $0.fileChange.path.firstPathComponent == parentName }) {
+        parentNode.add(fileChange: newChange)
+      }
+      else {
+        let nodePath = path.appending(pathComponent: parentName)
+        let node = insert(fileChange: FileChange(path: nodePath,
+                                                 change: .unmodified))
+        
+        node.add(recursiveFileChange: newChange)
+      }
+    }
+  }
+}
+
 extension NSSplitView
 {
   func animate(position: CGFloat, ofDividerAtIndex index: Int)

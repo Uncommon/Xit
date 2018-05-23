@@ -38,9 +38,6 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   {
     didSet
     {
-      guard selection.map({ (s) in oldValue.map { (o) in s != o }
-                          ?? true }) ?? (oldValue != nil)
-      else { return }
       if (selection is StagingSelection) &&
          (isAmending != (selection is AmendingSelection)) {
         selection = xtDocument.map {
@@ -48,7 +45,12 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
                      : StagingSelection(repository: $0.repository)
         }
       }
-      
+      if let newSelection = selection,
+         let oldSelection = oldValue {
+        guard newSelection != oldSelection
+        else { return }
+      }
+
       var userInfo = [AnyHashable: Any]()
       
       userInfo[NSKeyValueChangeKey.newKey] = selection

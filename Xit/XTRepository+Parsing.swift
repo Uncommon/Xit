@@ -73,7 +73,8 @@ extension XTRepository: FileStatusDetection
   
   
   // Re-implementation of git_status_file with a given head commit
-  func fileStatus(_ path: String, baseCommit: Commit?)
+  func fileStatus(_ path: String, show: StatusShow = .indexAndWorkdir,
+                  baseCommit: Commit?)
     -> (index: DeltaStatus, workspace: DeltaStatus)?
   {
     struct CallbackData
@@ -85,7 +86,7 @@ extension XTRepository: FileStatusDetection
     var options = git_status_options.defaultOptions()
     let tree = baseCommit?.tree as? GitTree
 
-    options.show = GIT_STATUS_SHOW_INDEX_AND_WORKDIR
+    options.show = git_status_show_t(UInt32(show.rawValue))
     options.flags = GIT_STATUS_OPT_INCLUDE_IGNORED.rawValue |
                     GIT_STATUS_OPT_RECURSE_IGNORED_DIRS.rawValue |
                     GIT_STATUS_OPT_INCLUDE_UNTRACKED.rawValue |
@@ -125,9 +126,9 @@ extension XTRepository: FileStatusDetection
             workspace: DeltaStatus(worktreeStatus: data.status))
   }
   
-  func statusChanges(_ show: StatusShow) -> [FileChange]
+  func statusChanges(_ show: StatusShow, amend: Bool = false) -> [FileChange]
   {
-    guard let statusList = GitStatusList(repository: gitRepo, show: show,
+    guard let statusList = GitStatusList(repository: self, show: show,
                                          options: [.includeUntracked,
                                                    .recurseUntrackedDirs])
     else { return [] }
@@ -154,6 +155,19 @@ extension XTRepository: FileStatusDetection
     }
   }
   
+  public func amendingStagedChanges() -> [FileChange]
+  {
+    if let result = cachedAmendChanges {
+      return result
+    }
+    else {
+      let result = statusChanges(.indexOnly, amend: true)
+      
+      cachedAmendChanges = result
+      return result
+    }
+  }
+  
   public func unstagedChanges() -> [FileChange]
   {
     if let result = cachedUnstagedChanges {
@@ -167,13 +181,25 @@ extension XTRepository: FileStatusDetection
     }
   }
   
-  public func amendingStatus(for path: String) throws
+  public func stagedStatus(for path: String) throws -> DeltaStatus
+  {
+    return fileStatus(path, show: .indexOnly, baseCommit: nil)?.index ??
+           .unmodified
+  }
+  
+  public func unstagedStatus(for path: String) throws -> DeltaStatus
+  {
+    return fileStatus(path, show: .workdirOnly, baseCommit: nil)?.workspace ??
+           .unmodified
+  }
+  
+  func amendingStatus(for path: String, show: StatusShow) throws
     -> (index: DeltaStatus, workspace: DeltaStatus)
   {
     guard let headCommit = headSHA.flatMap({ self.commit(forSHA: $0) }),
           let previousCommit = headCommit.parentOIDs.first
                                 .flatMap({ self.commit(forOID: $0) }),
-          let status = fileStatus(path, baseCommit: previousCommit)
+          let status = fileStatus(path, show: show, baseCommit: previousCommit)
     else {
       return (index: .unmodified, workspace: .unmodified)
     }
@@ -183,12 +209,12 @@ extension XTRepository: FileStatusDetection
   
   public func amendingStagedStatus(for path: String) throws -> DeltaStatus
   {
-    return try amendingStatus(for: path).index
+    return try amendingStatus(for: path, show: .indexOnly).index
   }
   
   public func amendingUnstagedStatus(for path: String) throws -> DeltaStatus
   {
-    return try amendingStatus(for: path).workspace
+    return try amendingStatus(for: path, show: .workdirOnly).workspace
   }
 }
 
@@ -282,10 +308,10 @@ extension XTRepository: FileStaging
   /// Stages the file relative to HEAD's parent
   public func amendStage(file: String) throws
   {
-    let status = try self.amendingStatus(for: file)
+    let status = try self.amendingUnstagedStatus(for: file)
     let index = try gtRepo.index()
     
-    switch status.unstagedChange {
+    switch status {
       
       case .modified, .added:
         try index.addFile(file)
@@ -302,10 +328,10 @@ extension XTRepository: FileStaging
   /// Unstages the file relative to HEAD's parent
   public func amendUnstage(file: String) throws
   {
-    let status = try self.amendingStatus(for: file)
+    let status = try self.amendingStagedStatus(for: file)
     let index = try gtRepo.index()
     
-    switch status.change {
+    switch status {
       
       case .added:
         try index.removeFile(file)

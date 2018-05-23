@@ -61,8 +61,12 @@ public protocol FileStatusDetection: class
   func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
 
   func stagedChanges() -> [FileChange]
+  func amendingStagedChanges() -> [FileChange]
   func unstagedChanges() -> [FileChange]
   func amendingStagedStatus(for path: String) throws -> DeltaStatus
+  func amendingUnstagedStatus(for path: String) throws -> DeltaStatus
+  func stagedStatus(for path: String) throws -> DeltaStatus
+  func unstagedStatus(for path: String) throws -> DeltaStatus
 }
 
 public protocol FileDiffing: class
