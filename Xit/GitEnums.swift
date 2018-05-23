@@ -120,3 +120,23 @@ extension DeltaStatus
     }
   }
 }
+
+extension DeltaStatus // CustomStringConvertible
+{
+  public var description: String
+  {
+    switch self {
+    case .unmodified: return "unmodified"
+    case .added: return "added"
+    case .deleted: return "deleted"
+    case .modified: return "modified"
+    case .renamed: return "renamed"
+    case .copied: return "copied"
+    case .ignored: return "ignored"
+    case .untracked: return "untracked"
+    case .typeChange: return "type change"
+    case .conflict: return "conflict"
+    case .mixed: return "mixed"
+    }
+  }
+}

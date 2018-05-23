@@ -21,20 +21,21 @@ class WorkspaceTreeBuilder
   
   func treeAtURL(_ baseURL: URL, rootPath: NSString) -> NSTreeNode
   {
-    let rootItem = CommitTreeItem(path: "/")
+    let myPath = baseURL.path.removingPrefix(rootPath as String).nilIfEmpty ?? "/"
+    let rootItem = FileChange(path: myPath)
     let node = NSTreeNode(representedObject: rootItem)
     let enumerator = FileManager.default.enumerator(
           at: baseURL,
           includingPropertiesForKeys: [ URLResourceKey.isDirectoryKey ],
           options: .skipsSubdirectoryDescendants,
           errorHandler: nil)
-    let rootPathLength = rootPath.length + 1
+    let rootPathLength = rootPath.length
     
     while let url: URL = enumerator?.nextObject() as! URL? {
       let urlPath = url.path
       let path = (urlPath as NSString).substring(from: rootPathLength)
       
-      if path == ".git" {
+      if path == "/.git" {
         continue
       }
       
@@ -53,7 +54,7 @@ class WorkspaceTreeBuilder
           childNode = self.treeAtURL(url, rootPath: rootPath)
         }
         else {
-          let item = CommitTreeItem(path: path)
+          let item = FileChange(path: path)
           
           if let status = self.changes[path] {
             item.change = status

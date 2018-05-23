@@ -80,6 +80,11 @@ extension String
   {
     return trimmingCharacters(in: .whitespacesAndNewlines)
   }
+  
+  var nilIfEmpty: String?
+  {
+    return isEmpty ? nil : self
+  }
 }
 
 extension NSError
@@ -318,11 +323,10 @@ extension NSTreeNode
       return self
     }
     
-    let subpath = path.deletingFirstPathComponent
-    guard !subpath.isEmpty
+    guard path.hasPrefix(fileChange.path)
     else { return nil }
     
-    return children?.firstResult { $0.fileChangeNode(recursivePath: subpath) }
+    return children?.firstResult { $0.fileChangeNode(recursivePath: path) }
   }
   
   @discardableResult
@@ -365,6 +369,23 @@ extension NSTreeNode
         
         node.add(recursiveFileChange: newChange)
       }
+    }
+  }
+}
+
+extension NSTreeNode
+{
+  func dump(_ level: Int = 0)
+  {
+    if let myObject = representedObject as? CustomStringConvertible {
+      print(String(repeating: "  ", count: level) + myObject.description)
+    }
+    
+    guard let children = self.children
+    else { return }
+    
+    for child in children {
+      child.dump(level + 1)
     }
   }
 }

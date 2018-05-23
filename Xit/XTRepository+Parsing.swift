@@ -22,6 +22,14 @@ public class FileChange: NSObject
   }
 }
 
+extension FileChange // CustomStringConvertible
+{
+  public override var description: String
+  {
+    return "\(path) [\(change.description)]"
+  }
+}
+
 class FileStagingChange: FileChange
 {
   let destinationPath: String
