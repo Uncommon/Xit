@@ -5,22 +5,24 @@ class IndexTreeTest: XTTest
 {
   func indexTreeStatus(at path: String) -> DeltaStatus?
   {
+    repository.invalidateIndex()
+    
     let selection = StagingSelection(repository: repository)
     let root = selection.fileList.treeRoot(oldTree: nil)
+    root.dump()
     guard let node = root.fileChangeNode(path: path)
     else { return nil }
     
     return node.fileChange.change
   }
   
-  func addAndDelete(path: String)
+  func addAndStageDelete(path: String)
   {
     let fullPath = repoPath.appending(pathComponent: path)
     
     XCTAssertTrue(commitNewTextFile(path, content: "text"))
     XCTAssertNoThrow(try FileManager.default.removeItem(atPath: fullPath))
     XCTAssertNoThrow(try repository.stage(file: path))
-    XCTAssertNoThrow(try repository.commit(message: "delete", amend: false, outputBlock: nil))
   }
   
   func testNewFile()
@@ -65,7 +67,7 @@ class IndexTreeTest: XTTest
   {
     let file2Name = "file2.txt"
     
-    addAndDelete(path: file2Name)
+    addAndStageDelete(path: file2Name)
     XCTAssertEqual(indexTreeStatus(at: file2Name), .deleted)
   }
   
@@ -73,7 +75,7 @@ class IndexTreeTest: XTTest
   {
     let file2Name = "folder/file2.txt"
     
-    addAndDelete(path: file2Name)
+    addAndStageDelete(path: file2Name)
     XCTAssertEqual(indexTreeStatus(at: file2Name), .deleted)
   }
   
@@ -81,7 +83,7 @@ class IndexTreeTest: XTTest
   {
     let file2Name = "folder/folder2/file2.txt"
     
-    addAndDelete(path: file2Name)
+    addAndStageDelete(path: file2Name)
     XCTAssertEqual(indexTreeStatus(at: file2Name), .deleted)
   }
 }

@@ -90,19 +90,12 @@ class IndexFileList: StagingListModel, FileListModel
     let builder = WorkspaceTreeBuilder(fileChanges: repository.stagedChanges())
     let root = builder.build(repository.repoURL)
     
-    if let index = repository.index {
-      for entry in index.entries {
-        guard let status = try? repository.stagedStatus(for: entry.path)
-        else { continue }
-        
-        if let node = root.fileChangeNode(path: entry.path) {
-          let fileChange = node.representedObject as! FileChange
-          
-          fileChange.change = status
-        }
-        else {
-          root.add(fileChange: FileChange(path: entry.path, change: status))
-        }
+    for stagedChange in changes {
+      if let node = root.fileChangeNode(path: stagedChange.path) {
+        node.fileChange.change = stagedChange.change
+      }
+      else {
+        root.add(fileChange: stagedChange)
       }
     }
     

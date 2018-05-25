@@ -309,12 +309,11 @@ extension NSTreeNode
 extension NSTreeNode
 {
   var fileChange: FileChange { return representedObject as! FileChange }
+  var rootPrefix: String { return WorkspaceTreeBuilder.rootName + "/" }
   
   func fileChangeNode(path: String) -> NSTreeNode?
   {
-    let slashPath = path.hasPrefix("/") ? path : "/\(path)"
-    
-    return fileChangeNode(recursivePath: slashPath)
+    return fileChangeNode(recursivePath: path.withPrefix(rootPrefix))
   }
   
   private func fileChangeNode(recursivePath path: String) -> NSTreeNode?
@@ -340,30 +339,31 @@ extension NSTreeNode
   
   func add(fileChange newChange: FileChange)
   {
-    if !newChange.path.hasPrefix("/") {
-      newChange.path = "/" + newChange.path
-    }
+    newChange.path = newChange.path.withPrefix(rootPrefix)
     add(recursiveFileChange: newChange)
   }
   
   private func add(recursiveFileChange newChange: FileChange)
   {
-    let path = fileChange.path
+    let myPath = fileChange.path
     
-    if path == newChange.path.deletingLastPathComponent {
+    if myPath == newChange.path.deletingLastPathComponent {
       insert(fileChange: newChange)
     }
     else {
-      let subpath = newChange.path.removingPrefix(path)
+      let subpath = newChange.path.removingPrefix(myPath).removingPrefix("/")
       guard let parentName = subpath.firstPathComponent
       else { return }
       
       if let parentNode = children?.first(where: {
-            $0.fileChange.path.firstPathComponent == parentName }) {
+            $0.fileChange.path.removingPrefix(myPath)
+                              .firstPathComponent == parentName }) {
         parentNode.add(fileChange: newChange)
       }
       else {
-        let nodePath = path.appending(pathComponent: parentName)
+        let nodePath = myPath.appending(pathComponent: parentName)
+        assert(nodePath.utf8.count <= newChange.path.utf8.count,
+               "recursion error")
         let node = insert(fileChange: FileChange(path: nodePath,
                                                  change: .unmodified))
         

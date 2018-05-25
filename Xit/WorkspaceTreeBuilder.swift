@@ -2,7 +2,11 @@ import Cocoa
 
 class WorkspaceTreeBuilder
 {
-  var changes: [String: DeltaStatus]
+  // Path parsing is easier if the root name is not just "/". I'm not sure
+  // it matters what the root name is, but it's an unusual string just in case.
+  static let rootName = "𝒓𝒐𝒐𝒕"
+  
+  private var changes: [String: DeltaStatus]
   
   init(changes: [String: DeltaStatus])
   {
@@ -21,7 +25,8 @@ class WorkspaceTreeBuilder
   
   func treeAtURL(_ baseURL: URL, rootPath: NSString) -> NSTreeNode
   {
-    let myPath = baseURL.path.removingPrefix(rootPath as String).nilIfEmpty ?? "/"
+    let myPath = baseURL.path.removingPrefix(rootPath as String).nilIfEmpty ??
+                 WorkspaceTreeBuilder.rootName + "/"
     let rootItem = FileChange(path: myPath)
     let node = NSTreeNode(representedObject: rootItem)
     let enumerator = FileManager.default.enumerator(
@@ -33,12 +38,12 @@ class WorkspaceTreeBuilder
     
     while let url: URL = enumerator?.nextObject() as! URL? {
       let urlPath = url.path
-      let path = (urlPath as NSString).substring(from: rootPathLength)
-      
-      if path == "/.git" {
-        continue
-      }
-      
+      let relativePath = (urlPath as NSString).substring(from: rootPathLength)
+      guard relativePath != "/.git"
+      else { continue }
+      let path = WorkspaceTreeBuilder.rootName
+                                     .appending(pathComponent: relativePath)
+
       var childNode: NSTreeNode?
       var isDirectory: AnyObject?
       
