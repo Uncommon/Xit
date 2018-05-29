@@ -176,11 +176,16 @@ class XTSidebarDataSourceTest: XTTest
     let repoParentPath = (repoPath as NSString).deletingLastPathComponent
     let sub1Path = repoParentPath.appending(pathComponent: "repo1")
     let sub2Path = repoParentPath.appending(pathComponent: "repo2")
-    let sub1 = createRepo(sub1Path)!
-    let sub2 = createRepo(sub2Path)!
     
-    _ = [sub1, sub2].map {
-      self.commit(newTextFile: file1Name, content: "text", repository: $0)
+    for path in [sub1Path, sub2Path] {
+      guard let subRepo = createRepo(path)
+      else {
+        XCTFail("Couldn't create repository for submodule")
+        return
+      }
+      
+      self.commit(newTextFile: file1Name, content: "text", repository: subRepo)
+      wait(for: subRepo)
     }
   
     XCTAssertNoThrow(try repository.addSubmodule(path: "sub1", url: "../repo1"))

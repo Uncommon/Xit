@@ -20,6 +20,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)addInitialRepoContent;
 - (void)makeStash;
 - (BOOL)writeText:(NSString*)text toFile:(NSString*)path;
+- (BOOL)writeText:(NSString*)text
+           toFile:(NSString*)path
+       repository:(XTRepository*)repository;
 - (BOOL)writeTextToFile1:(NSString *)text;
 - (BOOL)commitNewTextFile:(NSString *)name content:(NSString *)content;
 - (BOOL)commitNewTextFile:(NSString *)name
