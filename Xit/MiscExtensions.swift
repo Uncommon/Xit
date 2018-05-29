@@ -39,6 +39,16 @@ extension String
     return String(self[prefix.endIndex...])
   }
   
+  /// Returns the string with the given suffix removed, or returns the string
+  /// unchanged if the suffix does not match.
+  func removingSuffix(_ suffix: String) -> String
+  {
+    guard hasSuffix(suffix)
+    else { return self }
+    
+    return String(dropLast(suffix.count))
+  }
+  
   /// Returns the string with the given prefix, adding it only if necessary.
   func withPrefix(_ prefix: String) -> String
   {
@@ -47,6 +57,17 @@ extension String
     }
     else {
       return prefix.appending(self)
+    }
+  }
+  
+  /// Returns the string with the given suffix, adding it only if necessary.
+  func withSuffix(_ suffix: String) -> String
+  {
+    if hasSuffix(suffix) {
+      return self
+    }
+    else {
+      return appending(suffix)
     }
   }
   
@@ -309,11 +330,11 @@ extension NSTreeNode
 extension NSTreeNode
 {
   var fileChange: FileChange { return representedObject as! FileChange }
-  var rootPrefix: String { return WorkspaceTreeBuilder.rootName + "/" }
+  static var rootPrefix: String { return WorkspaceTreeBuilder.rootName + "/" }
   
   func fileChangeNode(path: String) -> NSTreeNode?
   {
-    return fileChangeNode(recursivePath: path.withPrefix(rootPrefix))
+    return fileChangeNode(recursivePath: path.withPrefix(NSTreeNode.rootPrefix))
   }
   
   private func fileChangeNode(recursivePath path: String) -> NSTreeNode?
@@ -339,15 +360,17 @@ extension NSTreeNode
   
   func add(fileChange newChange: FileChange)
   {
-    newChange.path = newChange.path.withPrefix(rootPrefix)
+    newChange.path = newChange.path.withPrefix(NSTreeNode.rootPrefix)
     add(recursiveFileChange: newChange)
   }
   
   private func add(recursiveFileChange newChange: FileChange)
   {
     let myPath = fileChange.path
+    let newChangeParent = newChange.path.deletingLastPathComponent
+                                        .withSuffix("/")
     
-    if myPath == newChange.path.deletingLastPathComponent {
+    if myPath == newChangeParent {
       insert(fileChange: newChange)
     }
     else {
@@ -358,10 +381,11 @@ extension NSTreeNode
       if let parentNode = children?.first(where: {
             $0.fileChange.path.removingPrefix(myPath)
                               .firstPathComponent == parentName }) {
-        parentNode.add(fileChange: newChange)
+        parentNode.add(recursiveFileChange: newChange)
       }
       else {
         let nodePath = myPath.appending(pathComponent: parentName)
+                             .withSuffix("/")
         assert(nodePath.utf8.count <= newChange.path.utf8.count,
                "recursion error")
         let node = insert(fileChange: FileChange(path: nodePath,

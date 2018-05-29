@@ -91,6 +91,7 @@ class IndexFileList: StagingListModel, FileListModel
     let root = builder.build(repository.repoURL)
     
     for stagedChange in changes {
+      stagedChange.path = stagedChange.path.withPrefix(NSTreeNode.rootPrefix)
       if let node = root.fileChangeNode(path: stagedChange.path) {
         node.fileChange.change = stagedChange.change
       }
