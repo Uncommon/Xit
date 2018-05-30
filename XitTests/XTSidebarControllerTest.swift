@@ -53,9 +53,9 @@ class XTSidebarHandlerTest: XTTest
 
   func makeTwoStashes()
   {
-    XCTAssertTrue(writeText(toFile1: "second text"))
+    XCTAssertTrue(writeTextToFile1("second text"))
     try! repository.saveStash(name: "s1", includeUntracked: false)
-    XCTAssertTrue(writeText(toFile1: "third text"))
+    XCTAssertTrue(writeTextToFile1("third text"))
     try! repository.saveStash(name: "s2", includeUntracked: false)
   }
   

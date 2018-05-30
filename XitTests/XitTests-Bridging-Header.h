@@ -4,5 +4,4 @@
 
 #import "Xit-Bridging-Header.h"
 
-#import "XTTest.h"
 #include "CFRunLoop+Extensions.h"

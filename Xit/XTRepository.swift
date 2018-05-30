@@ -193,8 +193,10 @@ public class XTRepository: NSObject
   
   func invalidateIndex()
   {
-    cachedStagedChanges = nil
-    cachedUnstagedChanges = nil
+    mutex.withLock {
+      cachedStagedChanges = nil
+      cachedUnstagedChanges = nil
+    }
   }
   
   func writing(_ block: () -> Bool) -> Bool

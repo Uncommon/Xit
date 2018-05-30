@@ -17,7 +17,7 @@ class XTStashTest: XTTest
   
   func testChanges()
   {
-    self.makeStash()
+    XCTAssertNoThrow(try self.makeStash())
     
     let repoPath = self.repoPath as NSString
     let addedPath = repoPath.appendingPathComponent(addedName)

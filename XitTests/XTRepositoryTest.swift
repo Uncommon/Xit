@@ -45,7 +45,7 @@ class XTEmptyRepositoryTest: XTTest
   {
     let textName = "text"
     
-    writeText("some text", toFile: textName)
+    write(text: "some text", to: textName)
     XCTAssertTrue(repository.isTextFile(textName, context: .workspace))
   }
   
@@ -61,7 +61,7 @@ class XTEmptyRepositoryTest: XTTest
   {
     let textName = "text"
     
-    writeText("some text", toFile: textName)
+    write(text: "some text", to: textName)
     XCTAssertNoThrow(try repository.stage(file: textName))
     XCTAssertTrue(repository.isTextFile(textName, context: .index))
   }
@@ -79,7 +79,7 @@ class XTEmptyRepositoryTest: XTTest
   {
     let textName = "text"
     
-    writeText("some text", toFile: textName)
+    write(text: "some text", to: textName)
     XCTAssertNoThrow(try repository.stage(file: textName))
     XCTAssertNoThrow(try repository.commit(message: "text", amend: false,
                                            outputBlock: nil))
@@ -117,7 +117,7 @@ class XTEmptyRepositoryTest: XTTest
   {
     let content = "some content"
     
-    writeText(toFile1: content)
+    writeTextToFile1(content)
     XCTAssertNil(repository.contentsOfStagedFile(path: file1Name))
     try! repository.stage(file: file1Name)
     
@@ -136,7 +136,7 @@ class XTEmptyRepositoryTest: XTTest
     // should be the same.
     let newContent = "new stuff"
     
-    writeText(toFile1: newContent)
+    writeTextToFile1(newContent)
     
     let stagedContent2 = repository.contentsOfStagedFile(path: file1Name)!
     let stagedString2 = String(data: stagedContent, encoding: .utf8)
@@ -192,7 +192,7 @@ class XTRepositoryTest: XTTest
 
   func testWriteLockStage()
   {
-    writeText(toFile1: "modification")
+    writeTextToFile1("modification")
     
     assertWriteException(name: "stageFile") {
       try repository.stage(file: file1Name)
@@ -204,21 +204,21 @@ class XTRepositoryTest: XTTest
   
   func testWriteLockStash()
   {
-    writeText(toFile1: "modification")
+    writeTextToFile1("modification")
 
     assertWriteException(name: "unstageFile") {
       try repository.saveStash(name: "stashname", includeUntracked: false)
     }
     assertWriteException(name: "apply") { try repository.applyStash(index: 0) }
     assertWriteException(name: "drop") { try repository.dropStash(index: 0) }
-    writeText(toFile1: "modification")
+    writeTextToFile1("modification")
     try! repository.saveStash(name: "stashname", includeUntracked: false)
     assertWriteException(name: "pop") { try repository.popStash(index: 0) }
   }
   
   func testWriteLockCommit()
   {
-    writeText(toFile1: "modification")
+    writeTextToFile1("modification")
     try! repository.stage(file: file1Name)
     
     assertWriteException(name: "commit") { 
@@ -361,7 +361,7 @@ class XTRepositoryTest: XTTest
     let file2Name = "file2.txt"
     let file2Path = repoPath.appending(pathComponent: file2Name)
     
-    writeText(toFile1: "changes!")
+    writeTextToFile1("changes!")
     try! "new file 2".write(toFile: file2Path, atomically: true, encoding: .utf8)
     try! repository.stage(file: file1Name)
     try! repository.stage(file: file2Name)
@@ -405,15 +405,14 @@ class XTRepositoryTest: XTTest
     let file2Name = "file2.txt"
     let file3Name = "file3.txt"
     
-    commitNewTextFile(file2Name, content: "blah")
+    commit(newTextFile: file2Name, content: "blah")
     
     let file2Path = repoPath.appending(pathComponent: file2Name)
-    let file3Path = repoPath.appending(pathComponent: file3Name)
     
-    try! "blah".write(toFile: file1Path, atomically: true, encoding: .utf8)
-    try! FileManager.default.removeItem(atPath: file2Path)
-    try! "blah".write(toFile: file3Path, atomically: true, encoding: .utf8)
-    try! repository.stageAllFiles()
+    write(text: "blah", to: file1Name)
+    XCTAssertNoThrow(try FileManager.default.removeItem(atPath: file2Path))
+    write(text: "blah", to: file3Name)
+    XCTAssertNoThrow(try repository.stageAllFiles())
     
     var changes = repository.statusChanges(.indexOnly)
     

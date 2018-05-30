@@ -58,18 +58,18 @@ class XTRepositoryMergeTest: XTTest
                        .replacing("9 X", at: 8).toLines()
     result9z  = numbers.replacing("9 Z", at: 8).toLines()
     
-    writeText(numbers.toLines(), toFile: fileName)
+    write(text:numbers.toLines(), to:fileName)
     
     add(fileName)
     commit("commit 0")
     branch("c0")
     branch("c1")
-    writeText(text1, toFile: fileName)
+    write(text:text1, to:fileName)
     add(fileName)
     commit("commit 1")
     XCTAssertNoThrow(try repository.checkout(branch: "c0"))
     branch("c2")
-    writeText(text5, toFile: fileName)
+    write(text:text5, to:fileName)
     add(fileName)
     commit("commit 2")
     XCTAssertNoThrow(try repository.checkout(branch: "c0"))
@@ -81,7 +81,7 @@ class XTRepositoryMergeTest: XTTest
     XCTAssertNoThrow(try repository.checkout("c0"))
     */
     branch("c3")
-    writeText(text9, toFile: fileName)
+    write(text:text9, to: fileName)
     add(fileName)
     commit("commit 3")
     XCTAssertNoThrow(try repository.checkout(branch: "c0"))
@@ -119,7 +119,7 @@ class XTRepositoryMergeTest: XTTest
   // Not from the git test.
   func testConflict()
   {
-    writeText(text9y, toFile: fileName)
+    write(text: text9y, to: fileName)
     add(fileName)
     commit("commit y")
     

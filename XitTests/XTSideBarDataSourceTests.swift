@@ -1,4 +1,5 @@
 import Foundation
+import XCTest
 @testable import Xit
 
 class XTSidebarDataSourceTest: XTTest
@@ -105,9 +106,9 @@ class XTSidebarDataSourceTest: XTTest
   /// Create two stashes and check that they are listed
   func testStashes()
   {
-    XCTAssertTrue(writeText(toFile1: "second text"))
+    XCTAssertTrue(writeTextToFile1("second text"))
     try! repository.saveStash(name: "s1", includeUntracked: false)
-    XCTAssertTrue(writeText(toFile1: "third text"))
+    XCTAssertTrue(writeTextToFile1("third text"))
     try! repository.saveStash(name: "s2", includeUntracked: false)
     
     sbds.reload()
@@ -176,8 +177,8 @@ class XTSidebarDataSourceTest: XTTest
     let repoParentPath = (repoPath as NSString).deletingLastPathComponent
     let sub1Path = repoParentPath.appending(pathComponent: "repo1")
     let sub2Path = repoParentPath.appending(pathComponent: "repo2")
-    let sub1 = createRepo(sub1Path)!
-    let sub2 = createRepo(sub2Path)!
+    let sub1 = XTTest.createRepo(atPath: sub1Path)!
+    let sub2 = XTTest.createRepo(atPath: sub2Path)!
     
     _ = [sub1, sub2].map {
       self.commit(newTextFile: file1Name, content: "text", repository: $0)

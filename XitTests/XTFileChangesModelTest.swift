@@ -64,7 +64,7 @@ class XTFileChangesModelTest: XTTest
   
   func testStash()
   {
-    self.makeStash()
+    XCTAssertNoThrow(try self.makeStash())
     
     let model = StashSelection(repository: repository, index: 0)
     
@@ -111,7 +111,7 @@ class XTFileChangesModelTest: XTTest
     
     XCTAssertEqual(changes.count, 0)
     
-    self.writeText(toFile1: "change")
+    writeTextToFile1("change")
     changes = model.unstagedFileList.changes
     XCTAssertEqual(changes.count, 1)
     
@@ -125,7 +125,7 @@ class XTFileChangesModelTest: XTTest
     XCTAssertEqual(change.path, file1Name)
     XCTAssertEqual(change.change, DeltaStatus.modified)
     
-    self.writeText("new", toFile: addedName)
+    write(text: "new", to: addedName)
     changes = model.unstagedFileList.changes
     XCTAssertEqual(changes.count, 2)
     guard !changes.isEmpty
@@ -155,18 +155,22 @@ class XTFileChangesModelTest: XTTest
   {
     let model = StagingSelection(repository: repository)
     let tree = model.fileList.treeRoot(oldTree: nil)
+    guard let children = tree.children
+    else {
+      XCTFail("no children")
+      return
+    }
     
-    XCTAssertNotNil(tree.children)
-    XCTAssertEqual(tree.children!.count, 1)
+    XCTAssertEqual(children.count, 1)
     
-    let change = tree.children![0].representedObject as! FileChange
+    let change = children[0].representedObject as! FileChange
     
     XCTAssertEqual(change.change, DeltaStatus.unmodified)
   }
   
   func testCommitTree()
   {
-    self.commitNewTextFile(addedName, content: "new")
+    commit(newTextFile: addedName, content: "new")
     
     guard let headSHA = repository.headSHA,
           let headCommit = XTCommit(sha: headSHA, repository: repository)
@@ -196,11 +200,11 @@ class XTFileChangesModelTest: XTTest
     let deletedName = "deleted"
     let deletedURL = repository.repoURL.appendingPathComponent(deletedName)
   
-    self.commitNewTextFile(deletedName, content: "bye!")
+    commit(newTextFile: deletedName, content: "bye!")
     try! FileManager.default.removeItem(at: deletedURL)
     try! self.repository.stage(file: deletedName)
     
-    self.makeStash()
+    XCTAssertNoThrow(try self.makeStash())
     
     let model = StashSelection(repository: repository, index: 0)
     let tree = model.fileList.treeRoot(oldTree: nil)
@@ -313,7 +317,7 @@ class XTFileChangesModelTest: XTTest
       return
     }
     
-    commitNewTextFile("file2", content: "text")
+    commit(newTextFile: "file2", content: "text")
     
     guard let headSHA2 = repository.headSHA,
           let commit2 = repository.commit(forSHA: headSHA2)
@@ -345,7 +349,7 @@ class XTFileChangesModelTest: XTTest
     
     XCTAssertNoThrow(try FileManager.default.createDirectory(
         at: subURL, withIntermediateDirectories: false, attributes: nil))
-    commitNewTextFile("sub/file2", content: "text")
+    commit(newTextFile: "sub/file2", content: "text")
     
     checkCommitTrees(deletedPath: nil)
   }
@@ -360,7 +364,7 @@ class XTFileChangesModelTest: XTTest
     
     XCTAssertNoThrow(try FileManager.default.createDirectory(
         at: subURL, withIntermediateDirectories: false, attributes: nil))
-    commitNewTextFile(subFilePath, content: "text")
+    commit(newTextFile: subFilePath, content: "text")
     
     XCTAssertNoThrow(try FileManager.default.removeItem(at: subFileURL))
     XCTAssertNoThrow(try repository.stage(file: subFilePath))
@@ -382,7 +386,7 @@ class XTFileChangesModelTest: XTTest
     
     XCTAssertNoThrow(try FileManager.default.createDirectory(
         at: subSubURL, withIntermediateDirectories: true, attributes: nil))
-    commitNewTextFile(subFilePath, content: "text")
+    commit(newTextFile: subFilePath, content: "text")
     
     XCTAssertNoThrow(try FileManager.default.removeItem(at: subFileURL))
     XCTAssertNoThrow(try repository.stage(file: subFilePath))
@@ -401,7 +405,7 @@ class XTFileChangesModelTest: XTTest
     
     XCTAssertNoThrow(try FileManager.default.createDirectory(
       at: subURL, withIntermediateDirectories: false, attributes: nil))
-    commitNewTextFile(subFilePath, content: "text")
+    commit(newTextFile: subFilePath, content: "text")
     
     XCTAssertNoThrow(try FileManager.default.removeItem(
         at: repository.repoURL.appendingPathComponent(file1Name)))
@@ -422,7 +426,7 @@ class XTFileChangesModelTest: XTTest
     // Add a file to a subfolder, and save the tree from that commit
     XCTAssertNoThrow(try FileManager.default.createDirectory(
         at: subURL, withIntermediateDirectories: false, attributes: nil))
-    commitNewTextFile(subFilePath, content: "text")
+    commit(newTextFile: subFilePath, content: "text")
     
     guard let parentCommit = repository.headSHA.flatMap(
                 { repository.commit(forSHA: $0) })
@@ -432,7 +436,7 @@ class XTFileChangesModelTest: XTTest
     }
 
     // Make a new commit where that subfolder is unchanged
-    writeText(toFile1: "changes")
+    writeTextToFile1("changes")
     XCTAssertNoThrow(try repository.stage(file: file1Name))
     XCTAssertNoThrow(try repository.commit(message: "commit 3", amend: false,
                                            outputBlock: nil))

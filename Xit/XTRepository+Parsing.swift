@@ -167,6 +167,7 @@ extension XTRepository: FileStaging
     let args = [exists ? "add" : "rm", file]
     
     _ = try executeGit(args: args, writes: true)
+    invalidateIndex()
   }
   
   /// Reverts the given workspace file to the contents at HEAD.
