@@ -174,6 +174,8 @@
 		C967C4AF1F96BA55002166F7 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C967C4AE1F96BA55002166F7 /* Cache.swift */; };
 		C96D24B31DFEFD9F00431317 /* XTSidebarControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96D24B21DFEFD9F00431317 /* XTSidebarControllerTest.swift */; };
 		C96F65461D53A6CE001B2557 /* XTHistoryCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F65451D53A6CE001B2557 /* XTHistoryCellView.swift */; };
+		C97E319E20BF26B300E74D2F /* NSTreeNode+FileChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97E319D20BF26B300E74D2F /* NSTreeNode+FileChange.swift */; };
+		C97E31B020BF271300E74D2F /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97E31AF20BF271300E74D2F /* StringExtensions.swift */; };
 		C9800D7D2017FEB80045B05D /* FileListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9800D7C2017FEB80045B05D /* FileListController.swift */; };
 		C9800D952018FD640045B05D /* actionButtonEmpty.png in Resources */ = {isa = PBXBuildFile; fileRef = C9800D8F2018FD640045B05D /* actionButtonEmpty.png */; };
 		C9800D962018FD640045B05D /* stageButtonPressed.png in Resources */ = {isa = PBXBuildFile; fileRef = C9800D902018FD640045B05D /* stageButtonPressed.png */; };
@@ -588,6 +590,8 @@
 		C967C4AE1F96BA55002166F7 /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		C96D24B21DFEFD9F00431317 /* XTSidebarControllerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTSidebarControllerTest.swift; sourceTree = "<group>"; };
 		C96F65451D53A6CE001B2557 /* XTHistoryCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTHistoryCellView.swift; sourceTree = "<group>"; };
+		C97E319D20BF26B300E74D2F /* NSTreeNode+FileChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSTreeNode+FileChange.swift"; sourceTree = "<group>"; };
+		C97E31AF20BF271300E74D2F /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		C9800D7C2017FEB80045B05D /* FileListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileListController.swift; sourceTree = "<group>"; };
 		C9800D8F2018FD640045B05D /* actionButtonEmpty.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = actionButtonEmpty.png; sourceTree = "<group>"; };
 		C9800D902018FD640045B05D /* stageButtonPressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stageButtonPressed.png; sourceTree = "<group>"; };
@@ -743,32 +747,34 @@
 		31C7C12A13EC730500A65FE9 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				DDDDAF1318162212009F8BA1 /* XTQueueUtils.c */,
+				DDDDAF2018162258009F8BA1 /* XTQueueUtils.h */,
+				C9B023521F61A06900896EA9 /* LibGitExtensions.h */,
+				C9B023511F61A06900896EA9 /* LibGitExtensions.m */,
 				89D47941170894A200C04D89 /* NSAttributedString+XTExtensions.h */,
 				89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */,
+				89369A721EDF47FC001B69C6 /* NSTask+Throwing.h */,
+				89369A731EDF47FC001B69C6 /* NSTask+Throwing.m */,
+				894C8DE51CCD06FE001A4B80 /* Xit-Bridging-Header.h */,
+				DD9C1B8D160239DD0001FE9B /* XTRefToken.h */,
+				DD9C1B8E160239DD0001FE9B /* XTRefToken.m */,
+				C967C4AE1F96BA55002166F7 /* Cache.swift */,
 				C947367D1DF08C03000E3A05 /* ContextMenuOutlineView.swift */,
+				C967AAB41FAA45B3008A4DF0 /* Debug.swift */,
+				C9FFCC851FABC24B00FA2F21 /* ExpansionTextField.swift */,
 				C9BC1B9A1DDF51B900C71562 /* FileEventStream.swift */,
 				C951EB061DDB9BD600B99FBE /* LabelButton.swift */,
 				C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */,
+				C95BD3EE1F8ECEC9000A2E2D /* Mutex.swift */,
+				C97E319D20BF26B300E74D2F /* NSTreeNode+FileChange.swift */,
 				C94ECBD41E6E025B00E8B453 /* ObserverCollection.swift */,
+				C97E31AF20BF271300E74D2F /* StringExtensions.swift */,
+				C9864465207E9CAC0088209B /* StringIdentifiers.swift */,
 				C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */,
+				C93FFCBC1F13D3B200FDDD78 /* ValidatedSegment.swift */,
 				C95ECD041EB11E310000DB78 /* WebViewController.swift */,
 				C957B8651D2D8D500040F858 /* XTKeychain.swift */,
-				DDDDAF1318162212009F8BA1 /* XTQueueUtils.c */,
-				DDDDAF2018162258009F8BA1 /* XTQueueUtils.h */,
-				DD9C1B8D160239DD0001FE9B /* XTRefToken.h */,
-				DD9C1B8E160239DD0001FE9B /* XTRefToken.m */,
 				C957B84A1D2D53040040F858 /* XTSheetController.swift */,
-				894C8DE51CCD06FE001A4B80 /* Xit-Bridging-Header.h */,
-				89369A721EDF47FC001B69C6 /* NSTask+Throwing.h */,
-				89369A731EDF47FC001B69C6 /* NSTask+Throwing.m */,
-				C93FFCBC1F13D3B200FDDD78 /* ValidatedSegment.swift */,
-				C9B023511F61A06900896EA9 /* LibGitExtensions.m */,
-				C9B023521F61A06900896EA9 /* LibGitExtensions.h */,
-				C95BD3EE1F8ECEC9000A2E2D /* Mutex.swift */,
-				C967C4AE1F96BA55002166F7 /* Cache.swift */,
-				C967AAB41FAA45B3008A4DF0 /* Debug.swift */,
-				C9FFCC851FABC24B00FA2F21 /* ExpansionTextField.swift */,
-				C9864465207E9CAC0088209B /* StringIdentifiers.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -1643,6 +1649,7 @@
 				C9AAEF811E413DA100A248CF /* CommitHeaderViewController.swift in Sources */,
 				C957B8721D2DB44E0040F858 /* XTRemoteSheetController.swift in Sources */,
 				C9E8815D1E95988700BFA7E5 /* XTRepository+MergePushPull.swift in Sources */,
+				C97E319E20BF26B300E74D2F /* NSTreeNode+FileChange.swift in Sources */,
 				C951EB071DDB9BD600B99FBE /* LabelButton.swift in Sources */,
 				C936AD0C1D4C0FA900C5ADC3 /* XTPasswordOpController.swift in Sources */,
 				C98925C61DB693CC00E5645C /* XTTagPanelController.swift in Sources */,
@@ -1717,6 +1724,7 @@
 				C932110C1E48E92C00232B61 /* FileTreeDataSource.swift in Sources */,
 				C9F764851F72F486000A208B /* Images.swift in Sources */,
 				899DB1A21CE5022400760270 /* XTCommitEntryController.swift in Sources */,
+				C97E31B020BF271300E74D2F /* StringExtensions.swift in Sources */,
 				89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */,
 				C9E9A37D1D0B5706007BFABF /* XTWindowController.swift in Sources */,
 				C923D66C1D906FAA00C6B90B /* TitleBarViewController.swift in Sources */,

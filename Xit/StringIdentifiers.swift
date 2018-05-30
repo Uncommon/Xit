@@ -4,7 +4,7 @@ prefix operator ◊
 prefix operator ¶
 
 // This allows the ◊ operater to serve as a shortcut for creating instances of
-// NSImage.Name, Notification.Name, etc.
+// NSImage.Name, Notification.Name, etc. with ◊"identifier"
 prefix func ◊<T>(string: StringLiteralType) -> T
   where T: RawRepresentable, T.RawValue == String
 {
