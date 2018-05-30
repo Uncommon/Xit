@@ -366,6 +366,27 @@
 			remoteGlobalIDString = DA19D06E1D9ADC1800D15F3A;
 			remoteInfo = "SiestaPerformanceTests macOS";
 		};
+		C9D81E9120BF3B3E0038B25A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C91F34631D30647D005F9BDF /* Siesta.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CDCCAF651E6A313800860D18;
+			remoteInfo = "Siesta watchOS";
+		};
+		C9D81E9320BF3B3E0038B25A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C91F34631D30647D005F9BDF /* Siesta.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CDCCAF721E6A31D900860D18;
+			remoteInfo = "Siesta tvOS";
+		};
+		C9D81E9520BF3B3E0038B25A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C91F34631D30647D005F9BDF /* Siesta.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CDCCAF7A1E6A31DA00860D18;
+			remoteInfo = "SiestaTests tvOS";
+		};
 		DD96C999176976FE0003A30C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */;
@@ -981,35 +1002,35 @@
 		C3FA472413D0F8E300AC4F9B /* XitTests */ = {
 			isa = PBXGroup;
 			children = (
-				C3FA472513D0F8E300AC4F9B /* Supporting Files */,
 				C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */,
-				DD98CFF2181ADFC5008B79C9 /* CFRunLoop+Extensions.c */,
-				DD98CFFF181AE297008B79C9 /* CFRunLoop+Extensions.h */,
-				C3FA472B13D0F8E300AC4F9B /* XTTest.h */,
-				C3FA472D13D0F8E300AC4F9B /* XTTest.m */,
-				C9DEA4EF1E53678A00DF4069 /* XTFileChangesDataSourceTest.swift */,
-				C96D24B21DFEFD9F00431317 /* XTSidebarControllerTest.swift */,
-				C941037F1EBDFABC002C80DC /* XTSideBarDataSourceTests.swift */,
 				89CD209017089D220051C3D4 /* XTCategoryTests.h */,
 				89CD209117089D220051C3D4 /* XTCategoryTests.m */,
+				DD98CFF2181ADFC5008B79C9 /* CFRunLoop+Extensions.c */,
+				DD98CFFF181AE297008B79C9 /* CFRunLoop+Extensions.h */,
+				C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */,
+				C99A3C4F1F97A9E00037B431 /* CacheTest.swift */,
 				C9AAEF8F1E41527F00A248CF /* CommitHeaderTest.swift */,
+				C9DEA4BA1E4FEC1600DF4069 /* FileListDataSourceTest.swift */,
+				C94736751DEF28F8000E3A05 /* GitSwiftTests.swift */,
+				C991904D20AE32150080687F /* IndexTreeTest.swift */,
+				89CB619B1E788C6000D69FE4 /* PatchTest.swift */,
+				C95356091D958E8D00AEEF49 /* StringExtensionsTest.swift */,
+				C921026C1F757FEB0068F87C /* StringOID.swift */,
+				C3FA472513D0F8E300AC4F9B /* Supporting Files */,
+				C9DAB5AE1D47C23900586854 /* TeamCityTest.swift */,
 				C9FCC1D01D50EB1A00AC398E /* XTCommitHistoryTest.swift */,
 				C98925B21DA70D3A00E5645C /* XTCommitLinesTest.swift */,
+				C9DEA4EF1E53678A00DF4069 /* XTFileChangesDataSourceTest.swift */,
 				C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */,
-				C94736871DF1DDDE000E3A05 /* XTRepositoryTest.swift */,
 				C9E8816B1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift */,
+				C94736871DF1DDDE000E3A05 /* XTRepositoryTest.swift */,
+				C96D24B21DFEFD9F00431317 /* XTSidebarControllerTest.swift */,
+				C941037F1EBDFABC002C80DC /* XTSideBarDataSourceTests.swift */,
 				C9EB87311D05D35800C47D13 /* XTStashTest.swift */,
 				C923D6471D8CA56800C6B90B /* XTTagTest.swift */,
-				C9DAB5AE1D47C23900586854 /* TeamCityTest.swift */,
-				C95356091D958E8D00AEEF49 /* StringExtensionsTest.swift */,
-				C94736751DEF28F8000E3A05 /* GitSwiftTests.swift */,
-				C9DEA4BA1E4FEC1600DF4069 /* FileListDataSourceTest.swift */,
-				C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */,
-				89CB619B1E788C6000D69FE4 /* PatchTest.swift */,
-				C921026C1F757FEB0068F87C /* StringOID.swift */,
-				C99A3C4F1F97A9E00037B431 /* CacheTest.swift */,
+				C3FA472B13D0F8E300AC4F9B /* XTTest.h */,
+				C3FA472D13D0F8E300AC4F9B /* XTTest.m */,
 				C9D896951FAB6CD300E431FE /* XTTest.swift */,
-				C991904D20AE32150080687F /* IndexTreeTest.swift */,
 			);
 			path = XitTests;
 			sourceTree = "<group>";
@@ -1032,10 +1053,13 @@
 			children = (
 				C91F346B1D30647E005F9BDF /* Siesta.framework */,
 				C91F346F1D30647E005F9BDF /* Siesta.framework */,
+				C9D81E9220BF3B3E0038B25A /* Siesta.framework */,
+				C9D81E9420BF3B3E0038B25A /* Siesta.framework */,
 				C923D6561D8CA56900C6B90B /* SiestaUI.framework */,
 				C923D6581D8CA56900C6B90B /* SiestaUI.framework */,
 				C91F346D1D30647E005F9BDF /* SiestaTests.xctest */,
 				C91F34711D30647E005F9BDF /* SiestaTests.xctest */,
+				C9D81E9620BF3B3E0038B25A /* SiestaTests tvOS.xctest */,
 				C958C5161DCBBE4F00EC49E1 /* SiestaPerformanceTests macOS.xctest */,
 			);
 			name = Products;
@@ -1431,6 +1455,27 @@
 			fileType = wrapper.cfbundle;
 			path = "SiestaPerformanceTests macOS.xctest";
 			remoteRef = C958C5151DCBBE4F00EC49E1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C9D81E9220BF3B3E0038B25A /* Siesta.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Siesta.framework;
+			remoteRef = C9D81E9120BF3B3E0038B25A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C9D81E9420BF3B3E0038B25A /* Siesta.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Siesta.framework;
+			remoteRef = C9D81E9320BF3B3E0038B25A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C9D81E9620BF3B3E0038B25A /* SiestaTests tvOS.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "SiestaTests tvOS.xctest";
+			remoteRef = C9D81E9520BF3B3E0038B25A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		DD96C99A176976FE0003A30C /* ObjectiveGit.framework */ = {
