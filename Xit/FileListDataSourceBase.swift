@@ -81,8 +81,6 @@ class FileListDataSourceBase: NSObject
 /// Methods that a file list data source must implement.
 protocol FileListDataSource: class
 {
-  var hierarchical: Bool { get }
-  
   func reload()
   func fileChange(at row: Int) -> FileChange?
   func path(for item: Any) -> String

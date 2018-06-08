@@ -14,8 +14,6 @@ class FileTreeDataSource: FileListDataSourceBase
 
 extension FileTreeDataSource: FileListDataSource
 {
-  var hierarchical: Bool { return true }
-  
   func reload()
   {
     repoController.queue.executeOffMainThread {

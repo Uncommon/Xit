@@ -110,8 +110,6 @@ class FileChangesDataSource: FileListDataSourceBase
 
 extension FileChangesDataSource: FileListDataSource
 {
-  var hierarchical: Bool { return false }
-
   func reload()
   {
     let model = repoController.selection.flatMap { self.model(for: $0) }
