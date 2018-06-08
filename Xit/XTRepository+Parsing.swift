@@ -136,9 +136,14 @@ extension XTRepository: FileStatusDetection
   
   func statusChanges(_ show: StatusShow, amend: Bool = false) -> [FileChange]
   {
+    var options: StatusOptions = [.includeUntracked, .recurseUntrackedDirs]
+    
+    if amend {
+      options.formUnion(.amending)
+    }
+    
     guard let statusList = GitStatusList(repository: self, show: show,
-                                         options: [.includeUntracked,
-                                                   .recurseUntrackedDirs])
+                                         options: options)
     else { return [] }
     
     return statusList.compactMap {
