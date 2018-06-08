@@ -9,11 +9,6 @@ class FileListDataSourceBase: NSObject
 
   let observers = ObserverCollection()
   
-  struct ColumnID
-  {
-    static let unstaged = ¶"unstaged"
-  }
-  
   weak var repoController: RepositoryController!
   {
     didSet
@@ -38,9 +33,7 @@ class FileListDataSourceBase: NSObject
         else { return }
         
         (myself as? FileListDataSource)?.reload()
-        myself.updateStagingView()
       }
-      
     }
   }
   
@@ -66,14 +59,6 @@ class FileListDataSourceBase: NSObject
     if repoController.selection is StagingSelection {
       (self as! FileListDataSource).reload()
     }
-  }
-  
-  func updateStagingView()
-  {
-    let unstagedColumn = outlineView.tableColumn(withIdentifier: ColumnID.unstaged)
-    
-    unstagedColumn?.isHidden = !(repoController.selection is
-                                 StagedUnstagedSelection)
   }
 }
 

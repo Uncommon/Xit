@@ -30,15 +30,17 @@ extension FileTreeDataSource: FileListDataSource
       
       DispatchQueue.main.async {
         myself.root = newRoot
-        if let outlineView = myself.outlineView {
-          let selectedRow = outlineView.selectedRow
-          let selectedChange = myself.fileChange(at: selectedRow)
-          let expanded = myself.expandedItems()
-          
-          outlineView.reloadData()
-          myself.expandItems(expanded)
-          myself.reselect(item: selectedChange, oldRow: selectedRow)
-        }
+        
+        guard let outlineView = myself.outlineView
+        else { return }
+        
+        let selectedRow = outlineView.selectedRow
+        let selectedChange = myself.fileChange(at: selectedRow)
+        let expanded = myself.expandedItems()
+        
+        outlineView.reloadData()
+        myself.expandItems(expanded)
+        myself.reselect(item: selectedChange, oldRow: selectedRow)
       }
     }
   }
@@ -101,9 +103,9 @@ extension FileTreeDataSource: FileListDataSource
            as? FileChange
   }
   
-  func treeItem(_ item: Any) -> CommitTreeItem?
+  func treeItem(_ item: Any) -> FileChange?
   {
-    return (item as? NSTreeNode)?.representedObject as? CommitTreeItem
+    return (item as? NSTreeNode)?.representedObject as? FileChange
   }
   
   func path(for item: Any) -> String
