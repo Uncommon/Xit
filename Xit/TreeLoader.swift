@@ -45,7 +45,7 @@ public struct TreeLoader
           else { continue }
           let oldNode = oldTree?.children?.first(where: {
             (node) in
-            (node.representedObject as? CommitTreeItem)?
+            (node.representedObject as? FileChange)?
                 .path.lastPathComponent == entry.name
           })
           
@@ -68,7 +68,7 @@ public struct TreeLoader
   
   func applyStatus(to node: NSTreeNode)
   {
-    guard let item = node.representedObject as? CommitTreeItem
+    guard let item = node.representedObject as? FileChange
     else { return }
     
     item.change = changes[item.path] ?? .unmodified

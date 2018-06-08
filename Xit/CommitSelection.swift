@@ -63,13 +63,13 @@ class CommitFileList: FileListModel
       switch findNodeOrParent(root: root, path: change.path) {
         
         case .found(let node):
-          if let item = node.representedObject as? CommitTreeItem {
+          if let item = node.representedObject as? FileChange {
             item.change = .deleted
           }
           return
         
         case .parent(let parent):
-          guard let parentPath = (parent.representedObject as? CommitTreeItem)?
+          guard let parentPath = (parent.representedObject as? FileChange)?
                                  .path
           else { break }
           
@@ -85,7 +85,7 @@ class CommitFileList: FileListModel
   /// Inserts a single deleted item into a tree, adding parent folders as needed
   func insertDeletionNode(root: NSTreeNode, subpath: String)
   {
-    guard let rootPath = (root.representedObject as? CommitTreeItem)?.path
+    guard let rootPath = (root.representedObject as? FileChange)?.path
     else { return }
     let path = rootPath.appending(pathComponent: subpath)
     let deletionItem = CommitTreeItem(path: path, oid: nil, change: .deleted)
@@ -94,7 +94,7 @@ class CommitFileList: FileListModel
     var subName = subsubpath.firstPathComponent ?? ""
     var subParent = root
     let pathKeyExtractor: (NSTreeNode) -> String? = {
-          ($0.representedObject as? CommitTreeItem)?.path }
+          ($0.representedObject as? FileChange)?.path }
     var subFullPath = subName
     
     // Insert intervening parents if needed
@@ -125,7 +125,7 @@ class CommitFileList: FileListModel
     else { return .notFound }
     
     for child in children {
-      guard let item = child.representedObject as? CommitTreeItem
+      guard let item = child.representedObject as? FileChange
       else { continue }
       
       if item.path == path {
