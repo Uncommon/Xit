@@ -17,7 +17,7 @@ extension NSTreeNode
     }
     
     guard path.hasPrefix(fileChange.path)
-      else { return nil }
+    else { return nil }
     
     return children?.firstResult { $0.fileChangeNode(recursivePath: path) }
   }
@@ -41,7 +41,7 @@ extension NSTreeNode
   {
     let myPath = fileChange.path
     let newChangeParent = newChange.path.deletingLastPathComponent
-      .withSuffix("/")
+                                        .withSuffix("/")
     
     if myPath == newChangeParent {
       insert(fileChange: newChange)
@@ -49,16 +49,16 @@ extension NSTreeNode
     else {
       let subpath = newChange.path.removingPrefix(myPath).removingPrefix("/")
       guard let parentName = subpath.firstPathComponent
-        else { return }
+      else { return }
       
       if let parentNode = children?.first(where: {
         $0.fileChange.path.removingPrefix(myPath)
-          .firstPathComponent == parentName }) {
+                          .firstPathComponent == parentName }) {
         parentNode.add(recursiveFileChange: newChange)
       }
       else {
         let nodePath = myPath.appending(pathComponent: parentName)
-          .withSuffix("/")
+                             .withSuffix("/")
         assert(nodePath.utf8.count <= newChange.path.utf8.count,
                "recursion error")
         let node = insert(fileChange: FileChange(path: nodePath,

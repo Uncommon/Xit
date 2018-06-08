@@ -38,12 +38,13 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   {
     didSet
     {
+      guard let repo = xtDocument?.repository
+      else { return }
+      
       if (selection is StagingSelection) &&
          (isAmending != (selection is AmendingSelection)) {
-        selection = xtDocument.map {
-          isAmending ? AmendingSelection(repository: $0.repository)
-                     : StagingSelection(repository: $0.repository)
-        }
+        selection = isAmending ? AmendingSelection(repository: repo)
+                               : StagingSelection(repository: repo)
       }
       if let newSelection = selection,
          let oldSelection = oldValue {
