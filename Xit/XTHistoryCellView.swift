@@ -11,12 +11,12 @@ class XTHistoryCellView: NSTableCellView
   fileprivate var linesMargin: CGFloat = 0.0
   
   static let lineColors = [
-      NSColor.blue, NSColor.green, NSColor.red,
-      NSColor.brown, NSColor.cyan, NSColor.darkGray,
-      NSColor.magenta, NSColor.orange, NSColor.purple,
+      NSColor.systemBlue, NSColor.systemGreen, NSColor.systemRed,
+      NSColor.systemBrown, NSColor.cyan, NSColor.darkGray,
+      NSColor.magenta, NSColor.systemOrange, NSColor.systemPurple,
       // Regular yellow is too light
       NSColor(calibratedHue: 0.13, saturation: 0.08, brightness: 0.8, alpha: 1.0),
-      NSColor.black, NSColor.lightGray]
+      NSColor.textColor, NSColor.lightGray]
   
   struct Widths
   {
@@ -175,7 +175,7 @@ class XTHistoryCellView: NSTableCellView
       
       path.lineJoinStyle = .roundLineJoinStyle
       if line.parentIndex != line.childIndex {
-        NSColor.white.setStroke()
+        NSColor.textBackgroundColor.setStroke()
         path.lineWidth = Widths.line + 1.0
         path.stroke()
       }
@@ -191,9 +191,10 @@ class XTHistoryCellView: NSTableCellView
       let dotColorIndex = Int(dotColorIndex) %
                           XTHistoryCellView.lineColors.count
       let baseDotColor = XTHistoryCellView.lineColors[dotColorIndex]
-      let dotColor = baseDotColor.shadow(withLevel: 0.5) ?? baseDotColor
+      let dotColor = baseDotColor.blended(withFraction: 0.5,
+                                          of: NSColor.textColor) ?? baseDotColor
       
-      NSColor.white.setStroke()
+      NSColor.textBackgroundColor.setStroke()
       dotPath.lineWidth = 1.0
       dotPath.stroke()
       dotColor.setFill()
