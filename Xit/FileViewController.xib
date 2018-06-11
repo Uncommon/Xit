@@ -46,7 +46,7 @@
                                             <rect key="frame" x="1" y="1" width="701" height="107"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <customView translatesAutoresizingMaskIntoConstraints="NO" id="10s-dp-YzO">
+                                                <customView translatesAutoresizingMaskIntoConstraints="NO" id="10s-dp-YzO" customClass="FlippedView" customModule="Xit" customModuleProvider="target">
                                                     <rect key="frame" x="0.0" y="-58" width="701" height="165"/>
                                                     <subviews>
                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="qxA-hf-OIb">
@@ -489,7 +489,7 @@
                 <outlet property="messageField" destination="jgS-z3-Kep" id="LfI-g4-FIc"/>
                 <outlet property="nameField" destination="bSG-J5-ieb" id="Cjh-mr-iT5"/>
                 <outlet property="shaField" destination="HPM-ZG-vcg" id="728-tF-fMS"/>
-                <outlet property="view" destination="xgO-S6-hTX" id="cwD-67-Tka"/>
+                <outlet property="view" destination="10s-dp-YzO" id="xbq-bD-gkN"/>
             </connections>
         </customObject>
         <customObject id="58" customClass="XTTextPreviewController" customModule="Xit" customModuleProvider="target">

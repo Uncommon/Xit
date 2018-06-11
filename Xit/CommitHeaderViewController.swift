@@ -30,10 +30,11 @@ class CommitHeaderViewController: NSViewController
   {
     guard let commitSHA = commitSHA,
           let commit = repository.commit(forSHA: commitSHA) as? XTCommit,
-          let scrollView = view as? NSScrollView
+          let scrollView = view.enclosingScrollView
     else { return }
     
-    scrollView.scrollToBeginningOfDocument(nil)
+    view.scroll(NSPoint(x: 0,
+                        y: scrollView.bounds.size.height))
     
     nameField.stringValue =
         "\(commit.authorName ?? "") <\(commit.authorEmail ?? "")"
