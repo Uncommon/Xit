@@ -25,6 +25,8 @@
 		895869C01D088A46003A9AF0 /* tagTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 895869BA1D088A46003A9AF0 /* tagTemplate.png */; };
 		895869C11D088A46003A9AF0 /* tagTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 895869BB1D088A46003A9AF0 /* tagTemplate@2x.png */; };
 		896A29F71E4C3620002C5EC8 /* PreviewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896A29F61E4C3620002C5EC8 /* PreviewItem.swift */; };
+		89880ECF20CF2B99007042F8 /* FlippedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89880ECE20CF2B99007042F8 /* FlippedView.swift */; };
+		89880ED120D02F9B007042F8 /* ClickableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89880ED020D02F9B007042F8 /* ClickableTextField.swift */; };
 		899DB1921CE109C700760270 /* WorkspaceTreeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB18D1CE0EA3A00760270 /* WorkspaceTreeBuilder.swift */; };
 		899DB1A21CE5022400760270 /* XTCommitEntryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB1A01CE5022400760270 /* XTCommitEntryController.swift */; };
 		899DB1A31CE5022400760270 /* XTCommitEntryController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 899DB1A11CE5022400760270 /* XTCommitEntryController.xib */; };
@@ -61,7 +63,6 @@
 		89D8BE5E1CF8E9C900D640AA /* textTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BE561CF8E9C800D640AA /* textTemplate.png */; };
 		89D8BE5F1CF8E9C900D640AA /* textTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89D8BE571CF8E9C900D640AA /* textTemplate@2x.png */; };
 		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
-		89E927DF17E977340093DA6C /* expected header.html in Resources */ = {isa = PBXBuildFile; fileRef = 89E927DE17E977340093DA6C /* expected header.html */; };
 		C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		C3FA470B13D0F8E200AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA470913D0F8E200AC4F9B /* InfoPlist.strings */; };
 		C3FA470E13D0F8E200AC4F9B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA470D13D0F8E200AC4F9B /* main.m */; };
@@ -214,7 +215,6 @@
 		C9AA80301E2929810004D670 /* FileChangesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AA802F1E2929810004D670 /* FileChangesDataSource.swift */; };
 		C9AA80361E2E7F370004D670 /* XTHistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AA80351E2E7F370004D670 /* XTHistoryViewController.swift */; };
 		C9AAEF811E413DA100A248CF /* CommitHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AAEF801E413DA100A248CF /* CommitHeaderViewController.swift */; };
-		C9AAEF901E41527F00A248CF /* CommitHeaderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AAEF8F1E41527F00A248CF /* CommitHeaderTest.swift */; };
 		C9ABDB201E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ABDB1F1E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift */; };
 		C9ABDB2F1E0AE72600CBD8D8 /* PrefsTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ABDB2E1E0AE72600CBD8D8 /* PrefsTabViewController.swift */; };
 		C9B023531F61A06900896EA9 /* LibGitExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B023511F61A06900896EA9 /* LibGitExtensions.m */; };
@@ -448,6 +448,8 @@
 		895869BA1D088A46003A9AF0 /* tagTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tagTemplate.png; sourceTree = "<group>"; };
 		895869BB1D088A46003A9AF0 /* tagTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tagTemplate@2x.png"; sourceTree = "<group>"; };
 		896A29F61E4C3620002C5EC8 /* PreviewItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewItem.swift; sourceTree = "<group>"; };
+		89880ECE20CF2B99007042F8 /* FlippedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlippedView.swift; sourceTree = "<group>"; };
+		89880ED020D02F9B007042F8 /* ClickableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickableTextField.swift; sourceTree = "<group>"; };
 		899DB18D1CE0EA3A00760270 /* WorkspaceTreeBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceTreeBuilder.swift; sourceTree = "<group>"; };
 		899DB1A01CE5022400760270 /* XTCommitEntryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTCommitEntryController.swift; sourceTree = "<group>"; };
 		899DB1A11CE5022400760270 /* XTCommitEntryController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTCommitEntryController.xib; sourceTree = "<group>"; };
@@ -485,7 +487,6 @@
 		89D8BE551CF8E9C800D640AA /* historyTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "historyTemplate@2x.png"; sourceTree = "<group>"; };
 		89D8BE561CF8E9C800D640AA /* textTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = textTemplate.png; sourceTree = "<group>"; };
 		89D8BE571CF8E9C900D640AA /* textTemplate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "textTemplate@2x.png"; sourceTree = "<group>"; };
-		89E927DE17E977340093DA6C /* expected header.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "expected header.html"; sourceTree = "<group>"; };
 		C3FA46FC13D0F8E200AC4F9B /* Xit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Xit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3FA470013D0F8E200AC4F9B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		C3FA470313D0F8E200AC4F9B /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -646,7 +647,6 @@
 		C9AA802F1E2929810004D670 /* FileChangesDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileChangesDataSource.swift; sourceTree = "<group>"; };
 		C9AA80351E2E7F370004D670 /* XTHistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTHistoryViewController.swift; sourceTree = "<group>"; };
 		C9AAEF801E413DA100A248CF /* CommitHeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommitHeaderViewController.swift; sourceTree = "<group>"; };
-		C9AAEF8F1E41527F00A248CF /* CommitHeaderTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommitHeaderTest.swift; sourceTree = "<group>"; };
 		C9ABDB1F1E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewsPrefsController.swift; sourceTree = "<group>"; };
 		C9ABDB2E1E0AE72600CBD8D8 /* PrefsTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrefsTabViewController.swift; sourceTree = "<group>"; };
 		C9B023511F61A06900896EA9 /* LibGitExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibGitExtensions.m; sourceTree = "<group>"; };
@@ -761,8 +761,10 @@
 			children = (
 				89D47941170894A200C04D89 /* NSAttributedString+XTExtensions.h */,
 				89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */,
+				89880ED020D02F9B007042F8 /* ClickableTextField.swift */,
 				C947367D1DF08C03000E3A05 /* ContextMenuOutlineView.swift */,
 				C9BC1B9A1DDF51B900C71562 /* FileEventStream.swift */,
+				89880ECE20CF2B99007042F8 /* FlippedView.swift */,
 				C951EB061DDB9BD600B99FBE /* LabelButton.swift */,
 				C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */,
 				C94ECBD41E6E025B00E8B453 /* ObserverCollection.swift */,
@@ -998,7 +1000,6 @@
 				C941037F1EBDFABC002C80DC /* XTSideBarDataSourceTests.swift */,
 				89CD209017089D220051C3D4 /* XTCategoryTests.h */,
 				89CD209117089D220051C3D4 /* XTCategoryTests.m */,
-				C9AAEF8F1E41527F00A248CF /* CommitHeaderTest.swift */,
 				C9FCC1D01D50EB1A00AC398E /* XTCommitHistoryTest.swift */,
 				C98925B21DA70D3A00E5645C /* XTCommitLinesTest.swift */,
 				C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */,
@@ -1027,7 +1028,6 @@
 				C3FA472613D0F8E300AC4F9B /* XitTests-Info.plist */,
 				C3FA472713D0F8E300AC4F9B /* InfoPlist.strings */,
 				C3FA472A13D0F8E300AC4F9B /* XitTests-Prefix.pch */,
-				89E927DE17E977340093DA6C /* expected header.html */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1611,7 +1611,6 @@
 				C3FA472913D0F8E300AC4F9B /* InfoPlist.strings in Resources */,
 				89CB619A1E788B6800D69FE4 /* lorem2.txt in Resources */,
 				89CB61981E788A3900D69FE4 /* lorem.txt in Resources */,
-				89E927DF17E977340093DA6C /* expected header.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1729,6 +1728,7 @@
 				C93799D51DDF9B28005C08B8 /* WorkspaceWatcher.swift in Sources */,
 				DD9C1B8F160239DD0001FE9B /* XTRefToken.m in Sources */,
 				C9F461DE1EF34826007BEBC9 /* BuildStatusCellView.swift in Sources */,
+				89880ED120D02F9B007042F8 /* ClickableTextField.swift in Sources */,
 				C94A30241E311F3B00B4496B /* XTPreviewController.swift in Sources */,
 				C92E30EF1D4FF358001985F7 /* XTCommitHistory.swift in Sources */,
 				C929D0461D415F6F00D7DC52 /* MiscExtensions.swift in Sources */,
@@ -1753,6 +1753,7 @@
 				C9FFCC841FABB28F00FA2F21 /* XTSideBarDataSource+OutlineView.swift in Sources */,
 				C932110C1E48E92C00232B61 /* FileTreeDataSource.swift in Sources */,
 				C9F764851F72F486000A208B /* Images.swift in Sources */,
+				89880ECF20CF2B99007042F8 /* FlippedView.swift in Sources */,
 				899DB1A21CE5022400760270 /* XTCommitEntryController.swift in Sources */,
 				89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */,
 				C9E9A37D1D0B5706007BFABF /* XTWindowController.swift in Sources */,
@@ -1792,7 +1793,6 @@
 			files = (
 				89CB619C1E788C6000D69FE4 /* PatchTest.swift in Sources */,
 				C9EB87321D05D35800C47D13 /* XTStashTest.swift in Sources */,
-				C9AAEF901E41527F00A248CF /* CommitHeaderTest.swift in Sources */,
 				C99A3C501F97A9E00037B431 /* CacheTest.swift in Sources */,
 				C94103801EBDFABC002C80DC /* XTSideBarDataSourceTests.swift in Sources */,
 				C9DEA4F01E53678A00DF4069 /* XTFileChangesDataSourceTest.swift in Sources */,

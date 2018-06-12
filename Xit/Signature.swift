@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Signature
+public struct Signature: Equatable
 {
   let name: String?
   let email: String?
