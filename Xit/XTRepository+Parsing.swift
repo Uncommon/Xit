@@ -143,14 +143,16 @@ extension XTRepository: FileStatusDetection
   
   public func unstagedChanges() -> [FileChange]
   {
-    if let result = cachedUnstagedChanges {
-      return result
-    }
-    else {
-      let result = statusChanges(.workdirOnly)
-      
-      cachedUnstagedChanges = result
-      return result
+    return mutex.withLock {
+      if let result = cachedUnstagedChanges {
+        return result
+      }
+      else {
+        let result = statusChanges(.workdirOnly)
+        
+        cachedUnstagedChanges = result
+        return result
+      }
     }
   }
 }
