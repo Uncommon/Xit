@@ -40,10 +40,25 @@ class CommitHeaderViewController: NSViewController
       return
     }
     
-    nameField.stringValue =
-        "\(commit.authorName ?? "") <\(commit.authorEmail ?? "")"
-    dateField.objectValue = commit.commitDate
-    // separate name and date if author ≠ committer
+    if commit.authorSig == commit.committerSig {
+      nameField.stringValue =
+          "\(commit.authorName ?? "") <\(commit.authorEmail ?? "")>"
+      dateField.objectValue = commit.commitDate
+    }
+    else {
+      let sigs = [commit.authorSig, commit.committerSig]
+      
+      let authorName = commit.authorSig.map { "\($0.nameEmail) (author)" }
+      let committerName = commit.authorSig.map { "\($0.nameEmail) (committer)" }
+      let names = [authorName, committerName].compactMap { $0 }
+
+      nameField.stringValue = names.joined(separator: "\n")
+      
+      let dates = sigs.compactMap({ $0?.when })
+      let dateStrings = dates.compactMap { dateField.formatter?.string(for: $0) }
+      
+      dateField.stringValue = dateStrings.joined(separator: "\n")
+    }
     shaLabel.isHidden = false
     shaField.stringValue = commitSHA
     messageField.stringValue =
@@ -95,5 +110,16 @@ class CommitHeaderViewController: NSViewController
     let parentOID = commit.parentOIDs[control.tag]
     
     repoController.select(sha: parentOID.sha)
+  }
+}
+
+extension Signature
+{
+  var nameEmail: String
+  {
+    let email = self.email.map { "<\($0)>"} ?? ""
+    let name = self.name ?? ""
+    
+    return [name, email].joined(separator: " ")
   }
 }
