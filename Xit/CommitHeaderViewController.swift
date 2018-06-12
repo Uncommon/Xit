@@ -1,5 +1,4 @@
 import Foundation
-import WebKit
 
 @objc(XTCommitHeaderViewController)
 class CommitHeaderViewController: NSViewController
@@ -27,6 +26,11 @@ class CommitHeaderViewController: NSViewController
   }
   weak var repository: CommitStorage!
   
+  override func awakeFromNib()
+  {
+    loadHeader()
+  }
+  
   func loadHeader()
   {
     guard let commitSHA = commitSHA,
@@ -36,7 +40,9 @@ class CommitHeaderViewController: NSViewController
       parentsLabel.stringValue = ""
       dateField.stringValue = ""
       shaLabel.isHidden = true
+      shaField.stringValue = ""
       messageField.stringValue = ""
+      clearParents()
       return
     }
     
@@ -64,9 +70,7 @@ class CommitHeaderViewController: NSViewController
     messageField.stringValue =
           commit.message?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
     
-    while let subview = parentsStack.arrangedSubviews.first {
-      parentsStack.removeView(subview)
-    }
+    clearParents()
     switch commit.parentOIDs.count {
       case 0:
         let noneLabel = NSTextField(labelWithString: "None")
@@ -82,6 +86,13 @@ class CommitHeaderViewController: NSViewController
     
     view.needsLayout = true
     view.scroll(.zero)
+  }
+  
+  func clearParents()
+  {
+    while let subview = parentsStack.arrangedSubviews.first {
+      parentsStack.removeView(subview)
+    }
   }
   
   func addParents(_ commit: Commit)
