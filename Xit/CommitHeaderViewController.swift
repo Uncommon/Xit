@@ -46,7 +46,8 @@ class CommitHeaderViewController: NSViewController
     // separate name and date if author ≠ committer
     shaLabel.isHidden = false
     shaField.stringValue = commitSHA
-    messageField.stringValue = commit.message ?? ""
+    messageField.stringValue =
+          commit.message?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
     
     while let subview = parentsStack.arrangedSubviews.first {
       parentsStack.removeView(subview)
@@ -65,11 +66,7 @@ class CommitHeaderViewController: NSViewController
     }
     
     view.needsLayout = true
-    
-    if let scrollView = view.enclosingScrollView {
-      view.scroll(NSPoint(x: 0,
-                          y: scrollView.bounds.size.height))
-    }
+    view.scroll(.zero)
   }
   
   func addParents(_ commit: Commit)
