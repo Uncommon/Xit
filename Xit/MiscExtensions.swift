@@ -77,6 +77,17 @@ extension String
   }
 }
 
+extension NSColor
+{
+  var invertingBrightness: NSColor
+  {
+    return NSColor(deviceHue: hueComponent,
+                   saturation: saturationComponent,
+                   brightness: 1.0 - brightnessComponent,
+                   alpha: alphaComponent)
+  }
+}
+
 extension NSError
 {
   var gitError: git_error_code

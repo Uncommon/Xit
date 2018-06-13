@@ -28,6 +28,7 @@
 		89880ECF20CF2B99007042F8 /* FlippedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89880ECE20CF2B99007042F8 /* FlippedView.swift */; };
 		89880ED120D02F9B007042F8 /* ClickableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89880ED020D02F9B007042F8 /* ClickableTextField.swift */; };
 		89880EDB20D08674007042F8 /* RefToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89880EDA20D08674007042F8 /* RefToken.swift */; };
+		89880EED20D17D1E007042F8 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89880EEC20D17D1E007042F8 /* Media.xcassets */; };
 		899DB1921CE109C700760270 /* WorkspaceTreeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB18D1CE0EA3A00760270 /* WorkspaceTreeBuilder.swift */; };
 		899DB1A21CE5022400760270 /* XTCommitEntryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB1A01CE5022400760270 /* XTCommitEntryController.swift */; };
 		899DB1A31CE5022400760270 /* XTCommitEntryController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 899DB1A11CE5022400760270 /* XTCommitEntryController.xib */; };
@@ -451,6 +452,7 @@
 		89880ECE20CF2B99007042F8 /* FlippedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlippedView.swift; sourceTree = "<group>"; };
 		89880ED020D02F9B007042F8 /* ClickableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickableTextField.swift; sourceTree = "<group>"; };
 		89880EDA20D08674007042F8 /* RefToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefToken.swift; sourceTree = "<group>"; };
+		89880EEC20D17D1E007042F8 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		899DB18D1CE0EA3A00760270 /* WorkspaceTreeBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceTreeBuilder.swift; sourceTree = "<group>"; };
 		899DB1A01CE5022400760270 /* XTCommitEntryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTCommitEntryController.swift; sourceTree = "<group>"; };
 		899DB1A11CE5022400760270 /* XTCommitEntryController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTCommitEntryController.xib; sourceTree = "<group>"; };
@@ -969,6 +971,7 @@
 				89039F551703A9FC000949A8 /* html */,
 				899D0106142168830091DC6F /* images */,
 				C3FA470713D0F8E200AC4F9B /* Supporting Files */,
+				89880EEC20D17D1E007042F8 /* Media.xcassets */,
 			);
 			path = Xit;
 			sourceTree = "<group>";
@@ -1495,6 +1498,7 @@
 				89D8BDFB1CED200B00D640AA /* delete@2x.png in Resources */,
 				89D8BE261CF35C7000D640AA /* unstage@2x.png in Resources */,
 				C9864470207FF9970088209B /* stageAllTemplate@2x.png in Resources */,
+				89880EED20D17D1E007042F8 /* Media.xcassets in Resources */,
 				C98925C71DB693CC00E5645C /* XTTagPanelController.xib in Resources */,
 				C9FE06C720178A8C0001EB2B /* FileListView.xib in Resources */,
 				C9800D972018FD640045B05D /* stageButtonPressed@2x.png in Resources */,
@@ -1925,7 +1929,7 @@
 					"\"$(SRCROOT)/objective-git/External/libgit2/include\"",
 					"$(inherited)",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-lgcov";
 				SDKROOT = macosx;
@@ -1951,7 +1955,6 @@
 				);
 				INFOPLIST_FILE = "Xit/Xit-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.uncommonplace.Xit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Xit/Xit-Bridging-Header.h";
@@ -2037,7 +2040,7 @@
 					"\"$(SRCROOT)/objective-git/External/libgit2/include\"",
 					"$(inherited)",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				OTHER_SWIFT_FLAGS = "-D DEBUG";
@@ -2081,7 +2084,7 @@
 					"\"$(SRCROOT)/objective-git/External/libgit2/include\"",
 					"$(inherited)",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
 			};
@@ -2106,7 +2109,6 @@
 				);
 				INFOPLIST_FILE = "Xit/Xit-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.uncommonplace.Xit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Xit/Xit-Bridging-Header.h";
@@ -2135,7 +2137,6 @@
 				);
 				INFOPLIST_FILE = "Xit/Xit-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.uncommonplace.Xit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Xit/Xit-Bridging-Header.h";
