@@ -255,6 +255,16 @@ extension String
                                                self as CFString,
                                                [:] as CFDictionary) as String
   }
+  
+  #if !swift(>=4.2)
+  func lastIndex(of element: Character) -> String.Index?
+  {
+    for (index, char) in lazy.enumerated().reversed() where char == element {
+      return self.index(startIndex, offsetBy: index)
+    }
+    return nil
+  }
+  #endif
 }
 
 extension NSTableView

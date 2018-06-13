@@ -60,6 +60,10 @@ class ClickableTextField: NSTextField
   
   func setHilited(_ hilited: Bool)
   {
+    #if swift(>=4.2)
     textColor = hilited ? .textColor : .linkColor
+    #else
+    textColor = hilited ? .textColor : .blue
+    #endif
   }
 }

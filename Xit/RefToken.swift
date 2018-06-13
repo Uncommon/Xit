@@ -2,6 +2,12 @@ import Foundation
 
 struct RefToken
 {
+  #if swift(>=4.2)
+  typealias AttrKey = NSAttributedString.Key
+  #else
+  typealias AttrKey = NSAttributedStringKey
+  #endif
+  
   static func drawToken(refType type: XTRefType, text: String, rect: NSRect)
   {
     let path = self.path(for: type, rect: rect)
@@ -28,7 +34,7 @@ struct RefToken
                                                  : .refTextEmboss
     paragraphStyle.alignment = .center
     
-    let attributes: [NSAttributedString.Key: Any] = [
+    let attributes: [AttrKey: Any] = [
           .font: NSFont.refLabelFont,
           .paragraphStyle: paragraphStyle,
           .foregroundColor: fgColor,
@@ -50,8 +56,8 @@ struct RefToken
   
   static func rectWidth(for text: String) -> CGFloat
   {
-    let attributes: [NSAttributedString.Key: NSFont] = [.font: .refLabelFont]
-    let size = (text as NSString).size(withAttributes: attributes)
+    let size = (text as NSString).size(withAttributes:
+          [.font: NSFont.refLabelFont])
     
     return size.width + 12
   }
