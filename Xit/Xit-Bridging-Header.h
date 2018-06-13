@@ -5,7 +5,6 @@
 #import "XTConstants.h"
 #import "XTDocument.h"
 #import "XTRefFormatter.h"
-#import "XTRefToken.h"
 #import "XTQueueUtils.h"
 #import "GitEnums.h"
 

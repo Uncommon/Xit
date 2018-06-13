@@ -52,7 +52,7 @@ class XTHistoryCellView: NSTableCellView
     let tokenWidth: CGFloat = refs.reduce(0.0) { (width, ref) -> CGFloat in
       guard let (_, displayRef) = ref.splitRefName()
       else { return 0 }
-      return XTRefToken.rectWidth(text: displayRef) + width + Margins.token
+      return RefToken.rectWidth(for: displayRef) + width + Margins.token
     }
     
     if let textField = textField {
@@ -97,12 +97,12 @@ class XTHistoryCellView: NSTableCellView
       else { continue }
       
       let refRect = NSRect(x: x, y: -1,
-                           width: XTRefToken.rectWidth(text: displayRef),
+                           width: RefToken.rectWidth(for: displayRef),
                            height: frame.size.height)
       
-      XTRefToken.drawToken(refType: XTHistoryCellView.refType(refTypeName),
-                           text: displayRef,
-                           rect: refRect)
+      RefToken.drawToken(refType: XTHistoryCellView.refType(refTypeName),
+                         text: displayRef,
+                         rect: refRect)
       x += refRect.size.width + Margins.token
     }
   }
