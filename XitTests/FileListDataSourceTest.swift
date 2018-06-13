@@ -90,7 +90,7 @@ class FileListDataSourceTest: XTTest
     try! FileManager.default.removeItem(atPath: file1Path)
     
     for n in 0..<12 {
-      let file = "\(repoPath)/dir_\(n%2)/subdir_\(n%3)/file_\(n).txt"
+      let file = "\(repoPath!)/dir_\(n%2)/subdir_\(n%3)/file_\(n).txt"
       
       try! text.write(toFile: file, atomically: true, encoding: .ascii)
     }

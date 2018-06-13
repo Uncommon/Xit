@@ -213,18 +213,6 @@ class FileViewController: NSViewController
     
     contentController = diffController
     
-    observers.addObserver(forName: .XTHeaderResized, object: headerController,
-                          queue: .main) {
-      [weak self] note in
-      guard let newHeight =
-          (note.userInfo?[CommitHeaderViewController.headerHeightKey]
-           as? NSNumber)?.floatValue
-      else { return }
-      
-      self?.headerSplitView.animate(position: CGFloat(newHeight),
-                                    ofDividerAtIndex: 0)
-    }
-    
     commitEntryController = XTCommitEntryController(
         nibName: ◊"XTCommitEntryController", bundle: nil)
     if repo != nil {
@@ -271,7 +259,6 @@ class FileViewController: NSViewController
   
   func reload()
   {
-    // reload the visible list
     activeFileList.reloadData()
   }
   

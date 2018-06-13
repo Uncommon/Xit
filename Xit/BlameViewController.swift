@@ -196,7 +196,6 @@ extension BlameViewController: XTFileContentController
   }
 }
 
-// Similar to CommitHeaderActionDelegate, may need a refactor
 class BlameActionDelegate: NSObject
 {
   weak var controller: BlameViewController?
@@ -214,7 +213,7 @@ class BlameActionDelegate: NSObject
   override class func webScriptName(for selector: Selector) -> String
   {
     switch selector {
-      case #selector(CommitHeaderActionDelegate.select(sha:)):
+      case #selector(BlameActionDelegate.select(sha:)):
         return "selectSHA"
       default:
         return ""

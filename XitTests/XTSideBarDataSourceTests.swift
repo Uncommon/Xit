@@ -1,4 +1,5 @@
 import Foundation
+import XCTest
 @testable import Xit
 
 class XTSidebarDataSourceTest: XTTest
@@ -105,9 +106,9 @@ class XTSidebarDataSourceTest: XTTest
   /// Create two stashes and check that they are listed
   func testStashes()
   {
-    XCTAssertTrue(writeText(toFile1: "second text"))
+    XCTAssertTrue(writeTextToFile1("second text"))
     try! repository.saveStash(name: "s1", includeUntracked: false)
-    XCTAssertTrue(writeText(toFile1: "third text"))
+    XCTAssertTrue(writeTextToFile1("third text"))
     try! repository.saveStash(name: "s2", includeUntracked: false)
     
     sbds.reload()
@@ -178,7 +179,7 @@ class XTSidebarDataSourceTest: XTTest
     let sub2Path = repoParentPath.appending(pathComponent: "repo2")
     
     for path in [sub1Path, sub2Path] {
-      guard let subRepo = createRepo(path)
+      guard let subRepo = XTTest.createRepo(atPath: path)
       else {
         XCTFail("Couldn't create repository for submodule")
         return

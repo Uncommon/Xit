@@ -20,7 +20,7 @@ class IndexTreeTest: XTTest
   {
     let fullPath = repoPath.appending(pathComponent: path)
     
-    XCTAssertTrue(commitNewTextFile(path, content: "text"))
+    XCTAssertTrue(commit(newTextFile: path, content: "text"))
     XCTAssertNoThrow(try FileManager.default.removeItem(atPath: fullPath))
     XCTAssertNoThrow(try repository.stage(file: path))
   }
@@ -29,7 +29,7 @@ class IndexTreeTest: XTTest
   {
     let file2Name = "file2.txt"
     
-    writeText("text", toFile: file2Name)
+    write(text: "text", to: file2Name)
     XCTAssertNoThrow(try repository.stage(file: file2Name))
     
     XCTAssertEqual(indexTreeStatus(at: file2Name), .added)
@@ -37,7 +37,7 @@ class IndexTreeTest: XTTest
   
   func testModifiedFile()
   {
-    writeText("modified", toFile: file1Name)
+    write(text: "modified", to: file1Name)
     XCTAssertNoThrow(try repository.stage(file: file1Name))
     
     XCTAssertEqual(indexTreeStatus(at: file1Name), .modified)
@@ -47,7 +47,7 @@ class IndexTreeTest: XTTest
   {
     let file2Path = "folder/file2.txt"
     
-    writeText("text", toFile: file2Path)
+    XCTAssertTrue(write(text: "text", to: file2Path))
     XCTAssertNoThrow(try repository.stage(file: file2Path))
     
     XCTAssertEqual(indexTreeStatus(at: file2Path), .added)
@@ -57,7 +57,7 @@ class IndexTreeTest: XTTest
   {
     let file2Path = "folder/folder2/file2.txt"
     
-    writeText("text", toFile: file2Path)
+    write(text: "text", to: file2Path)
     XCTAssertNoThrow(try repository.stage(file: file2Path))
     
     XCTAssertEqual(indexTreeStatus(at: file2Path), .added)
