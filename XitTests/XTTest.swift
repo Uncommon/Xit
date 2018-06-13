@@ -118,6 +118,9 @@ class XTTest: XCTestCase
     let filePath = basePath.appending(pathComponent: name)
     
     do {
+      try? FileManager.default.createDirectory(
+        atPath: filePath.deletingLastPathComponent,
+        withIntermediateDirectories: true, attributes: nil)
       try content.write(toFile: filePath, atomically: true, encoding: .ascii)
     }
     catch {
@@ -131,7 +134,7 @@ class XTTest: XCTestCase
       do {
         try repository.stage(file: name)
         try repository.commit(message: "new \(name)", amend: false,
-                                   outputBlock: nil)
+                              outputBlock: nil)
         semaphore.signal()
       }
       catch {
@@ -144,9 +147,19 @@ class XTTest: XCTestCase
   @discardableResult
   func write(text: String, to path: String) -> Bool
   {
+    return write(text: text, to: path, repository: repository)
+  }
+  
+  @discardableResult
+  func write(text: String, to path: String, repository: XTRepository) -> Bool
+  {
     do {
-      try text.write(toFile: repoPath.appending(pathComponent: path),
-                     atomically: true, encoding: .utf8)
+      let fullPath = repoPath.appending(pathComponent: path)
+      
+      try? FileManager.default.createDirectory(
+        atPath: fullPath.deletingLastPathComponent,
+        withIntermediateDirectories: true, attributes: nil)
+      try text.write(toFile: fullPath, atomically: true, encoding: .utf8)
       repository.invalidateIndex()
     }
     catch {
