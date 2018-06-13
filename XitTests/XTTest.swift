@@ -131,11 +131,13 @@ class XTTest: XCTestCase
     let semaphore = DispatchSemaphore(value: 0)
     
     repository.queue.executeOffMainThread {
+      defer {
+        semaphore.signal()
+      }
       do {
         try repository.stage(file: name)
         try repository.commit(message: "new \(name)", amend: false,
                               outputBlock: nil)
-        semaphore.signal()
       }
       catch {
         result = false
