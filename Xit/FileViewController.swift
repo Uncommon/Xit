@@ -259,7 +259,6 @@ class FileViewController: NSViewController
   
   func reload()
   {
-    // reload the visible list
     activeFileList.reloadData()
   }
   

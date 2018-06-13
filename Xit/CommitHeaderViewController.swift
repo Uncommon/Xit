@@ -128,7 +128,7 @@ extension Signature
 {
   var nameEmail: String
   {
-    let email = self.email.map { "<\($0)>"} ?? ""
+    let email = self.email.map { "<\($0)>" } ?? ""
     let name = self.name ?? ""
     
     return [name, email].joined(separator: " ")

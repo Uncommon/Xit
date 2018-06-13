@@ -40,7 +40,7 @@ class ClickableTextField: NSTextField
   override func mouseUp(with event: NSEvent)
   {
     setHilited(false)
-    if NSPointInRect(convert(event.locationInWindow, from: nil), bounds),
+    if bounds.contains(convert(event.locationInWindow, from: nil)),
        let action = self.action,
        let target = self.target {
       NSApp.sendAction(action, to: target, from: self)

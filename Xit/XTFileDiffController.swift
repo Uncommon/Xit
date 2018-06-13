@@ -142,7 +142,7 @@ class XTFileDiffController: WebViewController,
       case .none:
         return nil
       case .index:
-        return repo.fileBlob(ref:headRef , path: diffMaker.path)
+        return repo.fileBlob(ref: headRef, path: diffMaker.path)
       case .workspace:
         return repo.stagedBlob(file: diffMaker.path)
     }

@@ -26,10 +26,11 @@ struct RefToken
     let fgColor: NSColor = (type == .activeBranch) ? .refActiveText
                                                    : .refText
     let shadow = NSShadow()
-    let paragraphStyle = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
+    let paragraphStyle = NSParagraphStyle.default.mutableCopy()
+                         as! NSMutableParagraphStyle
     
     shadow.shadowBlurRadius = 1.0
-    shadow.shadowOffset = NSMakeSize(0, -1)
+    shadow.shadowOffset = NSSize(width: 0, height: -1)
     shadow.shadowColor = (type == .activeBranch) ? .refActiveTextEmboss
                                                  : .refTextEmboss
     paragraphStyle.alignment = .center
@@ -78,14 +79,14 @@ struct RefToken
       
       case .tag:
         let path = NSBezierPath()
-        let cornerInset: CGFloat = 5;
+        let cornerInset: CGFloat = 5
         let top = rect.origin.y
         let left = rect.origin.x
         let bottom = top + rect.size.height
         let right = left + rect.size.width
         let leftInset = left + cornerInset
         let rightInset = right - cornerInset
-        let middle = top + rect.size.height / 2;
+        let middle = top + rect.size.height / 2
       
         path.move(to: NSPoint(x: leftInset, y: top))
         path.line(to: NSPoint(x: rightInset, y: top))
