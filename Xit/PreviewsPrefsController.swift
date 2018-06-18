@@ -122,12 +122,12 @@ class PreviewsPrefsController: NSViewController
     }
     
     /// Default or user-selected text wrapping option
-    static func wrapping() -> Wrapping
+    static func wrapping() -> TextWrapping
     {
       let defaults = UserDefaults.standard
       let wrapSetting = defaults.integer(forKey: PreferenceKeys.wrapping)
       
-      return Wrapping(rawValue: wrapSetting) ?? .windowWidth
+      return TextWrapping(rawValue: wrapSetting) ?? .windowWidth
     }
   }
 

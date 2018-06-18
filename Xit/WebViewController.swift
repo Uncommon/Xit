@@ -10,7 +10,7 @@ class WebViewController: NSViewController
 {
   @IBOutlet weak var webView: WebView!
   var savedTabWidth: UInt?
-  var savedWrapping: Wrapping?
+  var savedWrapping: TextWrapping?
   var fontObserver: NSObjectProtocol?
   
   enum Default
@@ -92,7 +92,7 @@ extension WebViewController: TabWidthVariable
   }
 }
 
-extension Wrapping
+extension TextWrapping
 {
   var cssValue: String
   {
@@ -105,7 +105,7 @@ extension Wrapping
 
 extension WebViewController: WrappingVariable
 {
-  public var wrapping: Wrapping
+  public var wrapping: TextWrapping
   {
     get
     {

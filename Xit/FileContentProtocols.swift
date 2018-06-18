@@ -28,7 +28,7 @@ protocol ContextVariable: class
   var contextLines: UInt { get set }
 }
 
-enum Wrapping
+enum TextWrapping
 {
   case windowWidth
   case columns(Int)
@@ -61,9 +61,9 @@ enum Wrapping
   }
 }
 
-extension Wrapping: Equatable
+extension TextWrapping: Equatable
 {
-  public static func == (a: Wrapping, b: Wrapping) -> Bool
+  public static func == (a: TextWrapping, b: TextWrapping) -> Bool
   {
     switch (a, b) {
     case (.windowWidth, .windowWidth),
@@ -79,5 +79,5 @@ extension Wrapping: Equatable
 
 protocol WrappingVariable: class
 {
-  var wrapping: Wrapping { get set }
+  var wrapping: TextWrapping { get set }
 }

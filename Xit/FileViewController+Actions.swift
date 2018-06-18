@@ -104,7 +104,7 @@ extension FileViewController
     return true
   }
   
-  func validateWrappingMenuItem(_ item: AnyObject, wrapping: Wrapping) -> Bool
+  func validateWrappingMenuItem(_ item: AnyObject, wrapping: TextWrapping) -> Bool
   {
     let menuItem = item as? NSMenuItem
     guard let wrappingController = contentController as? WrappingVariable

@@ -409,7 +409,7 @@ class FileViewController: NSViewController
     (contentController as? ContextVariable)?.contextLines = context
   }
   
-  func setWrapping(_ wrapping: Wrapping)
+  func setWrapping(_ wrapping: TextWrapping)
   {
     (contentController as? WrappingVariable)?.wrapping = wrapping
   }
