@@ -22,7 +22,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
       case finished
     }
     
-    struct Attribute
+    enum Attribute
     {
       static let id = "id"
       static let buildType = "buildTypeId"

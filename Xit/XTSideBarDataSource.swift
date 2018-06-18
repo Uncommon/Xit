@@ -4,7 +4,7 @@ import Cocoa
 /// and submodules.
 class XTSideBarDataSource: NSObject
 {
-  struct Intervals
+  enum Intervals
   {
     static let teamCityRefresh: TimeInterval = 60 * 5
     static let reloadDelay: TimeInterval = 1

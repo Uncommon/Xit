@@ -9,14 +9,14 @@ class XTGitPrefsController: NSViewController
   
   let config = GitConfig.default
   
-  struct Keys
+  enum Keys
   {
     static let userName = "user.name"
     static let userEmail = "user.email"
     static let fetchPrune = "fetch.prune"
   }
   
-  struct PrefKey
+  enum PrefKey
   {
     static let fetchTags = "FetchTags"
   }

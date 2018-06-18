@@ -3,7 +3,7 @@ import Foundation
 /// Table cell view that adjusts its date format according to its width.
 class DateCellView: NSTableCellView
 {
-  struct StyleThreshold
+  enum StyleThreshold
   {
     static let full: CGFloat = 280
     static let long: CGFloat = 210

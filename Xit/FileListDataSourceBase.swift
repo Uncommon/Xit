@@ -9,7 +9,7 @@ class FileListDataSourceBase: NSObject
 
   let observers = ObserverCollection()
   
-  struct ColumnID
+  enum ColumnID
   {
     static let unstaged = ¶"unstaged"
   }

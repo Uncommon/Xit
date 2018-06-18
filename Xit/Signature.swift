@@ -9,7 +9,7 @@ public struct Signature: Equatable
 
 extension Signature
 {
-  struct Default
+  enum Default
   {
     static let noName = "nobody"
     

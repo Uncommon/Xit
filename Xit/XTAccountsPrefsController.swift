@@ -193,7 +193,7 @@ extension XTAccountsPrefsController: PreferencesSaver
 
 extension XTAccountsPrefsController: NSTableViewDelegate
 {
-  struct ColumnID
+  enum ColumnID
   {
     static let service = ¶"service"
     static let userName = ¶"userName"

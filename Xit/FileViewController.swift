@@ -5,7 +5,7 @@ import Quartz
 class FileViewController: NSViewController
 {
   /// Column identifiers for the file list
-  struct ColumnID
+  enum ColumnID
   {
     static let main = ¶"main"
     static let staged = ¶"change"
@@ -14,7 +14,7 @@ class FileViewController: NSViewController
   }
   
   /// Preview tab identifiers
-  struct TabID
+  enum TabID
   {
     static let diff = "diff"
     static let blame = "blame"
@@ -24,13 +24,13 @@ class FileViewController: NSViewController
     static let allIDs = [ diff, blame, text, preview ]
   }
   
-  struct HeaderTab
+  enum HeaderTab
   {
     static let display = "display"
     static let entry = "entry"
   }
   
-  struct FileListTab
+  enum FileListTab
   {
     static let commit = "commit"
     static let staging = "staging"

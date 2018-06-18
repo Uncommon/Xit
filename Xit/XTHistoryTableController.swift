@@ -4,7 +4,7 @@ fileprivate let batchSize = 500
 
 public class XTHistoryTableController: NSViewController
 {
-  struct ColumnID
+  enum ColumnID
   {
     static let commit = ¶"commit"
     static let date = ¶"date"

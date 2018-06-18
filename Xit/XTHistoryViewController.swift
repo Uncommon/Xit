@@ -12,7 +12,7 @@ class XTHistoryViewController: NSViewController
   
   private var savedHistorySize: CGFloat?
   
-  struct NibName
+  enum NibName
   {
     static let historyViewController: NSNib.Name = ◊"XTHistoryViewController"
     static let fileViewController: NSNib.Name = ◊"FileViewController"

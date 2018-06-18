@@ -12,12 +12,12 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
   var filteredStatuses: [String: BuildStatusCache.BranchStatuses] = [:]
   var builds: [TeamCityAPI.Build] = []
   
-  struct NibName
+  enum NibName
   {
     static let buildStatus: NSNib.Name = ◊"BuildStatusViewController"
   }
   
-  struct CellID
+  enum CellID
   {
     static let build = ¶"BuildCell"
   }
@@ -123,7 +123,7 @@ extension BuildStatusViewController: BuildStatusClient
 
 extension BuildStatusViewController: NSTableViewDelegate
 {
-  struct ColumnID
+  enum ColumnID
   {
     static let buildID = "buildID"
     static let status = "status"

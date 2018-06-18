@@ -41,7 +41,7 @@ class PreviewsPrefsController: NSViewController
     }
   }
 
-  struct PreferenceKeys
+  enum PreferenceKeys
   {
     static let diffWhitespace = "diffWhitespace"
     static let tabWidth = "tabWidth"
@@ -51,13 +51,13 @@ class PreviewsPrefsController: NSViewController
     static let wrapping = "wrapping"
   }
   
-  struct Values
+  enum Values
   {
     static let tabs: [UInt] = [2, 4, 6, 8]
     static let context: [UInt] = [0, 3, 6, 12, 25]
   }
   
-  struct Initial
+  enum Initial
   {
     static let whitespace = WhitespaceSetting.showAll
     static let tabWidth: UInt = 4
@@ -67,7 +67,7 @@ class PreviewsPrefsController: NSViewController
     }
   }
   
-  struct Default
+  enum Default
   {
     /// Default or user-selected font
     static func font() -> NSFont

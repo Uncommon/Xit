@@ -13,7 +13,7 @@ class WebViewController: NSViewController
   var savedWrapping: Wrapping?
   var fontObserver: NSObjectProtocol?
   
-  struct Default
+  enum Default
   {
     static var tabWidth: UInt
     { return PreviewsPrefsController.Default.tabWidth() }

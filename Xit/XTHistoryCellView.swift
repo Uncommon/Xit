@@ -18,12 +18,12 @@ class XTHistoryCellView: NSTableCellView
       NSColor(calibratedHue: 0.13, saturation: 0.08, brightness: 0.8, alpha: 1.0),
       NSColor.textColor, NSColor.lightGray]
   
-  struct Widths
+  enum Widths
   {
     static let line: CGFloat = 2.0
     static let column: CGFloat = 8.0
   }
-  struct Margins
+  enum Margins
   {
     static let left: CGFloat = 4.0
     static let right: CGFloat = 4.0

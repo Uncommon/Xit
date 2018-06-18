@@ -46,7 +46,7 @@ extension XTSideBarDataSource: NSOutlineViewDataSource
 // MARK: NSOutlineViewDelegate
 extension XTSideBarDataSource: NSOutlineViewDelegate
 {
-  struct CellID
+  enum CellID
   {
     static let header = ¶"HeaderCell"
     static let data = ¶"DataCell"

@@ -398,7 +398,7 @@ extension NSBindingName
 // MARK: NSToolbarDelegate
 extension XTWindowController: NSToolbarDelegate
 {
-  struct NibName
+  enum NibName
   {
     static let titleBar = NSNib.Name("TitleBar")
   }

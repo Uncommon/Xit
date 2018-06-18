@@ -2,7 +2,7 @@ import Foundation
 
 class FileListController: NSViewController
 {
-  struct ColumnID
+  enum ColumnID
   {
     static let action = ¶"action"
     static let file = ¶"file"
@@ -11,14 +11,14 @@ class FileListController: NSViewController
   }
   
   /// Table cell view identifiers for the file list
-  struct CellViewID
+  enum CellViewID
   {
     static let action = ¶"action"
     static let fileCell = ¶"fileCell"
     static let status = ¶"status"
   }
   
-  struct ViewSegment
+  enum ViewSegment
   {
     static let list: Int32 = 0
     static let outline: Int32 = 1

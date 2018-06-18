@@ -22,7 +22,7 @@ extension Notification.Name
 
 extension Notification
 {
-  struct XTProgressKeys
+  enum XTProgressKeys
   {
     static let progress = "progress"
     static let total = "total"
