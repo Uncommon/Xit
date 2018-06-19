@@ -2,32 +2,48 @@ import Cocoa
 
 class WorkspaceTreeBuilder
 {
-  var changes: [String: WorkspaceFileStatus]
+  // Path parsing is easier if the root name is not just "/". I'm not sure
+  // it matters what the root name is, but it's an unusual string just in case.
+  static let rootName = "𝒓𝒐𝒐𝒕"
   
-  init(changes: [String: WorkspaceFileStatus])
+  private var changes: [String: DeltaStatus]
+  
+  init(changes: [String: DeltaStatus])
   {
+    self.changes = changes
+  }
+  
+  init(fileChanges: [FileChange])
+  {
+    var changes = [String: DeltaStatus]()
+    
+    for change in fileChanges {
+      changes[change.path] = change.change
+    }
     self.changes = changes
   }
   
   func treeAtURL(_ baseURL: URL, rootPath: NSString) -> NSTreeNode
   {
-    let rootItem = CommitTreeItem(path: baseURL.path)
+    let myPath = baseURL.path.removingPrefix(rootPath as String).nilIfEmpty ??
+                 WorkspaceTreeBuilder.rootName + "/"
+    let rootItem = FileChange(path: myPath)
     let node = NSTreeNode(representedObject: rootItem)
     let enumerator = FileManager.default.enumerator(
           at: baseURL,
           includingPropertiesForKeys: [ URLResourceKey.isDirectoryKey ],
           options: .skipsSubdirectoryDescendants,
           errorHandler: nil)
-    let rootPathLength = rootPath.length + 1
+    let rootPathLength = rootPath.length
     
     while let url: URL = enumerator?.nextObject() as! URL? {
       let urlPath = url.path
-      let path = (urlPath as NSString).substring(from: rootPathLength)
-      
-      if path == ".git" {
-        continue
-      }
-      
+      let relativePath = (urlPath as NSString).substring(from: rootPathLength)
+      guard relativePath != "/.git"
+      else { continue }
+      let path = WorkspaceTreeBuilder.rootName
+                                     .appending(pathComponent: relativePath)
+
       var childNode: NSTreeNode?
       var isDirectory: AnyObject?
       
@@ -38,15 +54,15 @@ class WorkspaceTreeBuilder
       catch {
         continue
       }
-      if let isDirValue = isDirectory {
-        if (isDirValue as! NSNumber).boolValue {
+      if let isDirValue = isDirectory as? NSNumber {
+        if isDirValue.boolValue {
           childNode = self.treeAtURL(url, rootPath: rootPath)
         }
         else {
-          let item = CommitTreeItem(path: path)
+          let item = FileChange(path: path)
           
           if let status = self.changes[path] {
-            item.change = status.change
+            item.change = status
           }
           childNode = NSTreeNode(representedObject: item)
         }

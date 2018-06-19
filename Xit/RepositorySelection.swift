@@ -109,7 +109,7 @@ extension FileListModel
     var change: DeltaStatus?
     
     for child in childNodes {
-      let childItem = child.representedObject as! CommitTreeItem
+      let childItem = child.representedObject as! FileChange
       
       if !child.isLeaf {
         updateChanges(child)
@@ -119,7 +119,7 @@ extension FileListModel
                ?? childItem.change
     }
     
-    let nodeItem = node.representedObject as! CommitTreeItem
+    let nodeItem = node.representedObject as! FileChange
     
     nodeItem.change = change ?? .unmodified
   }

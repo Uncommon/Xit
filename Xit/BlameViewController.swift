@@ -150,8 +150,7 @@ class BlameViewController: WebViewController
     
     DispatchQueue.main.async {
       [weak self] in
-      self?.webView?.mainFrame.loadHTMLString(
-          html, baseURL: WebViewController.baseURL)
+      self?.load(html: html)
       self?.isLoaded = true
     }
   }
@@ -169,7 +168,7 @@ extension BlameViewController: XTFileContentController
 {
   func clear()
   {
-    webView?.mainFrame.loadHTMLString("", baseURL: nil)
+    load(html: "")
     isLoaded = false
   }
   

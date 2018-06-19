@@ -311,14 +311,19 @@ class FileViewController: NSViewController
           let selectedChange = self.selectedChange,
           let controller = repoController,
           let repoSelection = controller.selection
-    else { return }
+    else {
+      clearPreviews()
+      return
+    }
     let staged = activeFileList === stagedListController.outlineView
     let list = repoSelection.list(staged: staged)
 
     updatePreviewPath(selectedChange.path,
                       isFolder: activeFileList.isExpandable(selectedItem))
-    contentController.load(path: selectedChange.path, fileList: list)
-    
+    repo.queue.executeOffMainThread {
+      self.contentController.load(path: selectedChange.path, fileList: list)
+    }
+
     let fullPath = repo.repoURL.path.appending(
                       pathComponent: selectedChange.path)
     
@@ -335,6 +340,7 @@ class FileViewController: NSViewController
   func clearPreviews()
   {
     contentControllers.forEach { $0.clear() }
+    updatePreviewPath("", isFolder: false)
   }
   
   func clear()

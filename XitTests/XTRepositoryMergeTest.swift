@@ -87,18 +87,26 @@ class XTRepositoryMergeTest: XTTest
     XCTAssertNoThrow(try repository.checkout(branch: "c0"))
   }
   
+  func isWorkspaceClean() -> Bool
+  {
+    let selection = StagingSelection(repository: repository)
+    
+    return selection.fileList.changes.isEmpty &&
+           selection.unstagedFileList.changes.isEmpty
+  }
+  
   // Fast-forward case. This could also have a ff-only variant.
   func testMergeC0C1()
   {
     guard let c1 = GitLocalBranch(repository: repository, name: "c1")
-      else {
-        XCTFail("can't get branch")
-        return
+    else {
+      XCTFail("can't get branch")
+      return
     }
 
     XCTAssertNoThrow(try self.repository.merge(branch: c1))
     XCTAssertEqual(try! String(contentsOf: repository.fileURL(fileName)), result1)
-    XCTAssertEqual(repository.workspaceStatus.count, 0)
+    XCTAssertTrue(isWorkspaceClean())
   }
   
   // Actually merging changes.
@@ -113,7 +121,7 @@ class XTRepositoryMergeTest: XTTest
     XCTAssertNoThrow(try repository.checkout(branch: "c1"))
     XCTAssertNoThrow(try self.repository.merge(branch: c2))
     XCTAssertEqual(try! String(contentsOf: repository.fileURL(fileName)), result15)
-    XCTAssertEqual(repository.workspaceStatus.count, 0)
+    XCTAssertTrue(isWorkspaceClean())
   }
   
   // Not from the git test.

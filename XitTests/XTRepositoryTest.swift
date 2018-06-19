@@ -146,6 +146,224 @@ class XTEmptyRepositoryTest: XTTest
   }
 }
 
+class XTAmendTest: XTTest
+{
+  // TODO: Move this up to XTTest
+  struct FileNames
+  {
+    static let file1 = "file1"
+    static let file2 = "file2"
+    static let file3 = "file3"
+    static let file4 = "file4"
+  }
+
+  override func addInitialRepoContent()
+  {
+    write(text: "text", to: FileNames.file1)
+    write(text: "text", to: FileNames.file2)
+    XCTAssertNoThrow(try repository.stageAllFiles())
+    XCTAssertNoThrow(try repository.commit(message: "commit 1", amend: false,
+                                           outputBlock: nil))
+  }
+  
+  func addSecondCommit()
+  {
+    write(text: "more", to: FileNames.file1)
+    try! FileManager.default.removeItem(at: repository.fileURL(FileNames.file2))
+    write(text: "more", to: FileNames.file3)
+    XCTAssertNoThrow(try repository.stageAllFiles())
+    XCTAssertNoThrow(try repository.commit(message: "commit 2", amend: false,
+                                           outputBlock: nil))
+  }
+
+  // Check amend status where the head commit is the first one
+  func testCleanAmendStatusRoot()
+  {
+    let normalStatus = repository.stagingChanges
+    let amendStatus = repository.amendingChanges(parent: nil)
+
+    XCTAssertEqual(normalStatus.count, 0)
+    XCTAssertEqual(amendStatus.count, 2)
+  }
+  
+  // Check amend status with no changes relative to the last commit
+  func testCleanAmendStatus()
+  {
+    let headCommit = repository.commit(forSHA: repository.headSHA!)!
+    
+    addSecondCommit()
+    
+    let normalStatus = repository.stagingChanges
+    let amendStatus = repository.amendingChanges(parent: headCommit)
+    
+    XCTAssertEqual(normalStatus.count, 0)
+    XCTAssertEqual(amendStatus.count, 3)
+  }
+  
+  // Modify a file added in the last commit, then check the amend status
+  func testAmendModifyAdded()
+  {
+    let headCommit = repository.commit(forSHA: repository.headSHA!)!
+    
+    addSecondCommit()
+    write(text: "third", to: FileNames.file3)
+    
+    let amendStatus = repository.amendingChanges(parent: headCommit)
+    guard let file3Status = amendStatus.first(
+        where: { $0.path == FileNames.file3 })
+    else {
+      XCTFail("file 3 status missing")
+      return
+    }
+
+    XCTAssertEqual(amendStatus.count, 3)
+    XCTAssertEqual(file3Status.change, DeltaStatus.added)
+  }
+  
+  // Delete a file added in the last commit, then check the amend status
+  func testAmendDeleteAdded()
+  {
+    let headCommit = repository.commit(forSHA: repository.headSHA!)!
+    
+    addSecondCommit()
+    try! FileManager.default.removeItem(at: repository.fileURL(FileNames.file3))
+    
+    let amendStatus = repository.amendingChanges(parent: headCommit)
+    guard let file3Status = amendStatus.first(
+      where: { $0.path == FileNames.file3 })
+      else {
+        XCTFail("file 3 status missing")
+        return
+    }
+    
+    XCTAssertEqual(amendStatus.count, 3)
+    XCTAssertEqual(file3Status.change, DeltaStatus.added)
+  }
+  
+  // Test amend status for a file added in the head commit
+  func testAddedInHead()
+  {
+    let headCommit = repository.commit(forSHA: repository.headSHA!)!
+    
+    addSecondCommit()
+    XCTAssertNoThrow(try repository.amendUnstage(file: FileNames.file3))
+    
+    let amendStatus = repository.amendingChanges(parent: headCommit)
+    guard let file3Status = amendStatus.first(where: { $0.path ==
+                                                       FileNames.file3 })
+    else {
+      XCTFail("file 3 status missing")
+      return
+    }
+    
+    XCTAssertEqual(file3Status.change, DeltaStatus.unmodified)
+  }
+  
+  // Test amend status for a file deleted in the head commit
+  func testUnstageDeleted()
+  {
+    let headCommit = repository.commit(forSHA: repository.headSHA!)!
+    
+    addSecondCommit()
+    XCTAssertNoThrow(try repository.amendUnstage(file: FileNames.file2))
+    
+    let amendStatus = repository.amendingChanges(parent: headCommit)
+    guard let file2Status = amendStatus.first(where: { $0.path ==
+                                                       FileNames.file2 })
+    else {
+      XCTFail("file 2 status missing")
+      return
+    }
+    
+    XCTAssertEqual(file2Status.change, DeltaStatus.unmodified)
+  }
+  
+  // Stage & unstage a new file in amend mode
+  func testAddedNew()
+  {
+    let headCommit = repository.commit(forSHA: repository.headSHA!)!
+    let fileName = FileNames.file4
+    let match = { (change: FileStagingChange) in change.path == fileName }
+    
+    addSecondCommit()
+    write(text: "text", to: fileName)
+    
+    var amendStatus = repository.amendingChanges(parent: headCommit)
+    guard let file4Status1 = amendStatus.first(where: match)
+    else {
+      XCTFail("file 4 status missing")
+      return
+    }
+    
+    XCTAssertEqual(file4Status1.change, DeltaStatus.unmodified)
+    
+    XCTAssertNoThrow(try repository.amendStage(file: fileName))
+    amendStatus = repository.amendingChanges(parent: headCommit)
+    
+    guard let file4Status2 = amendStatus.first(where: match)
+    else {
+      XCTFail("file 4 status missing")
+      return
+    }
+    
+    XCTAssertEqual(file4Status2.change, DeltaStatus.added)
+    
+    XCTAssertNoThrow(try repository.amendUnstage(file: fileName))
+    amendStatus = repository.amendingChanges(parent: headCommit)
+    
+    guard let file4Status3 = amendStatus.first(where: match)
+    else {
+      XCTFail("file 4 status missing")
+      return
+    }
+    
+    XCTAssertEqual(file4Status3.change, DeltaStatus.unmodified)
+  }
+  
+  // Stage & unstage a newly deleted file in amend mode
+  func testDeletedNew()
+  {
+    let headCommit = repository.commit(forSHA: repository.headSHA!)!
+    let fileName = FileNames.file1
+    let match = { (change: FileStagingChange) in change.path == fileName }
+    
+    addSecondCommit()
+    try! FileManager.default.removeItem(at: repository.fileURL(fileName))
+    
+    var amendStatus = repository.amendingChanges(parent: headCommit)
+    
+    if let fileStatus = amendStatus.first(where: match) {
+      // It shows up as modified in the index because file1 was changed
+      // in the second commit.
+      XCTAssertEqual(fileStatus.change, DeltaStatus.modified)
+    }
+    else {
+      XCTFail("file status missing")
+      return
+    }
+    
+    XCTAssertNoThrow(try repository.amendStage(file: fileName))
+    amendStatus = repository.amendingChanges(parent: headCommit)
+    if let fileStatus = amendStatus.first(where: match) {
+      XCTAssertEqual(fileStatus.change, DeltaStatus.deleted)
+    }
+    else {
+      XCTFail("file status missing")
+      return
+    }
+    
+    XCTAssertNoThrow(try repository.amendUnstage(file: fileName))
+    amendStatus = repository.amendingChanges(parent: headCommit)
+    if let fileStatus = amendStatus.first(where: match) {
+      XCTAssertEqual(fileStatus.change, DeltaStatus.unmodified)
+    }
+    else {
+      XCTFail("file status missing")
+      return
+    }
+  }
+}
+
 class XTRepositoryTest: XTTest
 {
   func assertWriteSucceeds(name: String, _ block: () throws -> Void)

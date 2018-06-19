@@ -7,6 +7,16 @@ public struct TreeLoader
   /// Map of paths to file status
   let changes: [String: DeltaStatus]
   
+  init(fileChanges: [FileChange])
+  {
+    var changes = [String: DeltaStatus]()
+    
+    for fileChange in fileChanges {
+      changes[fileChange.path] = fileChange.change
+    }
+    self.changes = changes
+  }
+  
   /// Constructs a new tree root, copying identical subtrees from an old tree
   public func treeRoot(tree: Tree, oldTree: NSTreeNode?) -> NSTreeNode
   {
@@ -35,7 +45,7 @@ public struct TreeLoader
           else { continue }
           let oldNode = oldTree?.children?.first(where: {
             (node) in
-            (node.representedObject as? CommitTreeItem)?
+            (node.representedObject as? FileChange)?
                 .path.lastPathComponent == entry.name
           })
           
@@ -58,7 +68,7 @@ public struct TreeLoader
   
   func applyStatus(to node: NSTreeNode)
   {
-    guard let item = node.representedObject as? CommitTreeItem
+    guard let item = node.representedObject as? FileChange
     else { return }
     
     item.change = changes[item.path] ?? .unmodified

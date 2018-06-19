@@ -11,17 +11,22 @@ class GitStatusList: RandomAccessCollection
     return git_status_list_entrycount(statusList)
   }
   
-  init?(repository: OpaquePointer, show: StatusShow = .indexAndWorkdir,
+  init?(repository repo: XTRepository, show: StatusShow = .indexAndWorkdir,
         options: StatusOptions)
   {
-    var gitOptions = git_status_options()
+    var gitOptions = git_status_options.defaultOptions()
     
-    git_status_init_options(&gitOptions, UInt32(GIT_STATUS_OPTIONS_VERSION))
     gitOptions.show = git_status_show_t(rawValue: UInt32(show.rawValue))
     gitOptions.flags = UInt32(options.rawValue)
+    if options.contains(.amending),
+       let headCommit = repo.headSHA.flatMap({ repo.commit(forSHA: $0) }),
+       let previousCommit = headCommit.parentOIDs.first
+                                      .flatMap({ repo.commit(forOID: $0) }) {
+      gitOptions.baseline = (previousCommit.tree as? GitTree)?.tree
+    }
     
     let list = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let result = git_status_list_new(list, repository, &gitOptions)
+    let result = git_status_list_new(list, repo.gitRepo, &gitOptions)
     guard result == 0,
           let finalList = list.pointee
     else { return nil }

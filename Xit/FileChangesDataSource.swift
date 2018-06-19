@@ -110,8 +110,6 @@ class FileChangesDataSource: FileListDataSourceBase
 
 extension FileChangesDataSource: FileListDataSource
 {
-  var hierarchical: Bool { return false }
-
   func reload()
   {
     let model = repoController.selection.flatMap { self.model(for: $0) }
@@ -154,6 +152,7 @@ extension FileChangesDataSource: NSOutlineViewDataSource
   {
     objc_sync_enter(self)
     defer { objc_sync_exit(self) }
+    
     return changes.count
   }
 
@@ -163,6 +162,7 @@ extension FileChangesDataSource: NSOutlineViewDataSource
   {
     objc_sync_enter(self)
     defer { objc_sync_exit(self) }
+
     return (index < changes.count) ? changes[index] : FileChange(path: "")
   }
 

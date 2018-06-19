@@ -93,8 +93,7 @@ extension XTRepository: CommitReferencing
     return hasHeadReference() ? "HEAD" : kEmptyTreeHash
   }
   
-  // TODO: Move this to a protocol extension
-  func sha(forRef ref: String) -> String?
+  public func sha(forRef ref: String) -> String?
   {
     return oid(forRef: ref)?.sha
   }

@@ -20,6 +20,7 @@ public protocol CommitReferencing: class
   var headRef: String? { get }
   var currentBranch: String? { get }
   
+  func sha(forRef: String) -> String?
   func remoteNames() -> [String]
   func tags() throws -> [Tag]
   func graphBetween(localBranch: LocalBranch,
@@ -39,6 +40,11 @@ extension CommitReferencing
   }
 }
 
+extension CommitReferencing
+{
+  var headSHA: String? { return headRef.flatMap({ self.sha(forRef: $0) }) }
+}
+
 public protocol BranchListing: class
 {
   associatedtype LocalBranchSequence: Sequence
@@ -52,12 +58,15 @@ public protocol BranchListing: class
 
 public protocol FileStatusDetection: class
 {
-  var workspaceStatus: [String: WorkspaceFileStatus] { get }
-  
   func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
 
   func stagedChanges() -> [FileChange]
+  func amendingStagedChanges() -> [FileChange]
   func unstagedChanges() -> [FileChange]
+  func amendingStagedStatus(for path: String) throws -> DeltaStatus
+  func amendingUnstagedStatus(for path: String) throws -> DeltaStatus
+  func stagedStatus(for path: String) throws -> DeltaStatus
+  func unstagedStatus(for path: String) throws -> DeltaStatus
 }
 
 public protocol FileDiffing: class
@@ -70,6 +79,7 @@ public protocol FileDiffing: class
             parentOID: OID?) -> DiffDelta?
   func stagedDiff(file: String) -> PatchMaker.PatchResult?
   func unstagedDiff(file: String) -> PatchMaker.PatchResult?
+  func amendingStagedDiff(file: String) -> PatchMaker.PatchResult?
   
   func blame(for path: String, from startOID: OID?, to endOID: OID?) -> Blame?
   func blame(for path: String, data fromData: Data?, to endOID: OID?) -> Blame?
@@ -89,8 +99,12 @@ public protocol FileContents: class
 
 public protocol FileStaging: class
 {
+  var index: StagingIndex? { get }
+  
   func stage(file: String) throws
   func unstage(file: String) throws
+  func amendStage(file: String) throws
+  func amendUnstage(file: String) throws
   func revert(file: String) throws
   func stageAllFiles() throws
   func unstageAllFiles() throws

@@ -15,9 +15,10 @@ class XTFileDiffController: WebViewController,
   // swiftlint:disable:next weak_delegate
   let actionDelegate: DiffActionDelegate = DiffActionDelegate()
   weak var stagingDelegate: HunkStaging?
-  var isLoaded: Bool = false
   var stagingType: StagingType = .none
   var patch: Patch?
+  
+  fileprivate var isLoaded_internal = false
   
   public var whitespace = PreviewsPrefsController.Default.whitespace()
   {
@@ -131,8 +132,9 @@ class XTFileDiffController: WebViewController,
   /// Returns the index/workspace counterpart blob
   func diffTargetBlob() -> Blob?
   {
+    let window = Thread.syncOnMainThread { view.window }
     // TODO: Give it access to the repository via the FileContents protocol
-    let repo = (view.window?.windowController as! XTWindowController)
+    let repo = (window?.windowController as! XTWindowController)
       .xtDocument!.repository!
     guard let diffMaker = diffMaker,
           let headRef = repo.headRef
@@ -197,8 +199,10 @@ class XTFileDiffController: WebViewController,
     let joined = textLines.joined(separator: "\n")
     let html = htmlTemplate.replacingOccurrences(of: "%@", with: joined)
     
-    webView?.mainFrame.loadHTMLString(html, baseURL: WebViewController.baseURL)
-    isLoaded = true
+    load(html: html)
+    synchronized(self) {
+      isLoaded = true
+    }
   }
   
   func loadOrNotify(diffResult: PatchMaker.PatchResult?)
@@ -268,10 +272,26 @@ extension XTFileDiffController: WebActionDelegateHost
 
 extension XTFileDiffController: XTFileContentController
 {
+  var isLoaded: Bool
+  {
+    get
+    {
+      return synchronized(self) { isLoaded_internal }
+    }
+    set
+    {
+      synchronized(self) {
+        isLoaded_internal = newValue
+      }
+    }
+  }
+
   public func clear()
   {
-    webView?.mainFrame.loadHTMLString("", baseURL: URL(fileURLWithPath: "/"))
-    isLoaded = false
+    load(html: "")
+    synchronized(self) {
+      isLoaded = false
+    }
   }
   
   public func load(path: String!, fileList: FileListModel)

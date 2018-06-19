@@ -47,8 +47,24 @@ public class XTRepository: NSObject
   fileprivate var executing = false
   
   fileprivate(set) var cachedHeadRef, cachedHeadSHA, cachedBranch: String?
-  var cachedStagedChanges, cachedUnstagedChanges: [FileChange]?
-  
+  private var _cachedStagedChanges, _cachedAmendChanges,
+              _cachedUnstagedChanges: [FileChange]?
+  var cachedStagedChanges: [FileChange]?
+  {
+    get { return mutex.withLock { _cachedStagedChanges } }
+    set { mutex.withLock { _cachedStagedChanges = newValue } }
+  }
+  var cachedAmendChanges: [FileChange]?
+  {
+    get { return mutex.withLock { _cachedAmendChanges } }
+    set { mutex.withLock { _cachedAmendChanges = newValue } }
+  }
+  var cachedUnstagedChanges: [FileChange]?
+  {
+    get { return mutex.withLock { _cachedUnstagedChanges } }
+    set { mutex.withLock { _cachedUnstagedChanges = newValue } }
+  }
+
   let diffCache = Cache<String, Diff>(maxSize: 50)
   fileprivate var repoWatcher: XTRepositoryWatcher! = nil
   fileprivate var workspaceWatcher: WorkspaceWatcher! = nil
@@ -195,6 +211,7 @@ public class XTRepository: NSObject
   {
     mutex.withLock {
       cachedStagedChanges = nil
+      cachedAmendChanges = nil
       cachedUnstagedChanges = nil
     }
   }
@@ -312,90 +329,6 @@ public class XTRepository: NSObject
     }
     
     return output
-  }
-}
-
-extension XTRepository
-{
-  enum Error: Swift.Error
-  {
-    case alreadyWriting
-    case mergeInProgress
-    case cherryPickInProgress
-    case conflict  // List of conflicted files
-    case localConflict
-    case detachedHead
-    case gitError(Int32)
-    case patchMismatch
-    case notFound
-    case unexpected
-    
-    var message: String
-    {
-      switch self {
-        case .alreadyWriting:
-          return "A writing operation is already in progress."
-        case .mergeInProgress:
-          return "A merge operation is already in progress."
-        case .cherryPickInProgress:
-          return "A cherry-pick operation is already in progress."
-        case .conflict:
-          return """
-              The operation could not be completed because there were
-              conflicts.
-              """
-        case .localConflict:
-          return """
-              There are conflicted files in the work tree or index.
-              Try checking in or stashing your changes first.
-              """
-        case .detachedHead:
-          return "This operation cannot be performed in a detached HEAD state."
-        case .gitError(let code):
-          return "An internal git error (\(code)) occurred."
-        case .patchMismatch:
-          return """
-              The patch could not be applied because it did not match the
-              file content.
-              """
-        case .notFound:
-          return "The item was not found."
-        case .unexpected:
-          return "An unexpected repository error occurred."
-      }
-    }
-    
-    init(gitCode: git_error_code)
-    {
-      switch gitCode {
-        case GIT_ECONFLICT, GIT_EMERGECONFLICT:
-          self = .conflict
-        case GIT_ELOCKED:
-          self = .alreadyWriting
-        case GIT_ENOTFOUND:
-          self = .notFound
-        default:
-          self = .gitError(gitCode.rawValue)
-      }
-    }
-    
-    init(gitNSError: NSError)
-    {
-      if gitNSError.domain == GTGitErrorDomain {
-        self = .gitError(Int32(gitNSError.code))
-      }
-      else {
-        self = .unexpected
-      }
-    }
-    
-    static func throwIfError(_ code: Int32) throws
-    {
-      guard code == 0
-      else {
-        throw Error(gitCode: git_error_code(code))
-      }
-    }
   }
 }
 

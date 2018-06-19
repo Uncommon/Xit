@@ -150,11 +150,13 @@ class FileListController: NSViewController
     outlineView.reloadData()
   }
   
+  /// The file change item for the row that is the target of a context menu click
   var clickedChange: FileChange?
   {
     return outlineView.contextMenuRow.flatMap { viewDataSource.fileChange(at: $0) }
   }
   
+  /// The file change item for the selected row in the list
   var selectedChange: FileChange?
   {
     guard let index = outlineView.selectedRowIndexes.first
@@ -163,6 +165,8 @@ class FileListController: NSViewController
     return viewDataSource?.fileChange(at: index)
   }
   
+  /// If `sender` is a button in a file list row, retuns the file change for
+  /// that row.
   func buttonChange(sender: Any) -> FileChange?
   {
     guard let button = sender as? NSButton
@@ -172,6 +176,8 @@ class FileListController: NSViewController
     return viewDataSource.fileChange(at: row)
   }
   
+  /// Returns the file change that is the target of the current action,
+  /// depending on how the command was selected
   func targetChange(sender: Any) -> FileChange?
   {
     return buttonChange(sender: sender) ?? clickedChange ?? selectedChange
@@ -364,7 +370,7 @@ class StagedFileListController: StagingFileListController
                      action: #selector(unstageAll(_:)))
   }
   
-  @objc
+  @IBAction
   override func unstage(_ sender: Any)
   {
     guard let change = targetChange(sender: sender)
@@ -423,7 +429,7 @@ class WorkspaceFileListController: StagingFileListController
                      action: #selector(revert(_:)))
   }
   
-  @objc
+  @IBAction
   override func stage(_ sender: Any)
   {
     guard let change = targetChange(sender: sender)

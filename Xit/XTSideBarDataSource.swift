@@ -122,6 +122,13 @@ class XTSideBarDataSource: NSObject
     stopTimers()
   }
   
+  func setAmending(_ amending: Bool)
+  {
+    stagingItem.selection = amending ? AmendingSelection(repository: repository)
+                                     : StagingSelection(repository: repository)
+    outline.reloadItem(stagingItem)
+  }
+  
   open override func awakeFromNib()
   {
     outline!.target = self

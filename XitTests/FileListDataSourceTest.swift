@@ -9,13 +9,15 @@ class FakeRepoController: RepositoryController
   
   var selectedCommitSHA: String = ""
   var selection: RepositorySelection? = nil
-  
+  var isAmending = false
+
   init(repository: Repository)
   {
     self.repository = repository
   }
   
   func select(sha: String) {}
+  func showErrorMessage(error: XTRepository.Error) {}
   func updateForFocus() {}
   func postIndexNotification() {}
 }

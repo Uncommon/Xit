@@ -1,5 +1,6 @@
 import Foundation
 
+// TODO: Move these out
 extension FileViewController: NSOutlineViewDelegate
 {
   private func displayChange(forChange change: DeltaStatus,

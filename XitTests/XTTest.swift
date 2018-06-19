@@ -119,8 +119,8 @@ class XTTest: XCTestCase
     
     do {
       try? FileManager.default.createDirectory(
-        atPath: filePath.deletingLastPathComponent,
-        withIntermediateDirectories: true, attributes: nil)
+            atPath: filePath.deletingLastPathComponent,
+            withIntermediateDirectories: true, attributes: nil)
       try content.write(toFile: filePath, atomically: true, encoding: .ascii)
     }
     catch {
@@ -159,8 +159,8 @@ class XTTest: XCTestCase
       let fullPath = repoPath.appending(pathComponent: path)
       
       try? FileManager.default.createDirectory(
-        atPath: fullPath.deletingLastPathComponent,
-        withIntermediateDirectories: true, attributes: nil)
+            atPath: fullPath.deletingLastPathComponent,
+            withIntermediateDirectories: true, attributes: nil)
       try text.write(toFile: fullPath, atomically: true, encoding: .utf8)
       repository.invalidateIndex()
     }

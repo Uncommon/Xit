@@ -19,7 +19,7 @@ class WebViewController: NSViewController
     { return PreviewsPrefsController.Default.tabWidth() }
   }
   
-  static let baseURL = Bundle.main.url(forResource: "html", withExtension: nil)
+  static let baseURL = Bundle.main.url(forResource: "html", withExtension: nil)!
   
   static func htmlTemplate(_ name: String) -> String
   {
@@ -49,13 +49,22 @@ class WebViewController: NSViewController
     webView?.preferences.defaultFixedFontSize = Int32(font.pointSize)
   }
   
+  public func load(html: String, baseURL: URL = WebViewController.baseURL)
+  {
+    if let webView = self.webView {
+      Thread.performOnMainThread {
+        webView.mainFrame.loadHTMLString(html, baseURL: baseURL)
+      }
+    }
+  }
+  
   public func loadNotice(_ text: String)
   {
     let template = WebViewController.htmlTemplate("notice")
     let escapedText = text.xmlEscaped
     let html = String(format: template, escapedText)
     
-    webView?.mainFrame.loadHTMLString(html, baseURL: WebViewController.baseURL)
+    load(html: html)
   }
   
   func setDefaultTabWidth()

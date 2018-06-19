@@ -13,69 +13,6 @@ protocol XTTableViewDelegate: class
   func tableViewClickedSelectedRow(_ tableView: NSTableView)
 }
 
-extension String
-{
-  init?(data: Data, usedEncoding: inout String.Encoding)
-  {
-    let encodings: [String.Encoding] = [.utf8, .utf16, .isoLatin1, .isoLatin2,
-                                        .macOSRoman, .windowsCP1252]
-    
-    for encoding in encodings {
-      if let string = String(data: data, encoding: encoding) {
-        self = string
-        return
-      }
-    }
-    return nil
-  }
-
-  /// Returns the string with the given prefix removed, or returns the string
-  /// unchanged if the prefix does not match.
-  func removingPrefix(_ prefix: String) -> String
-  {
-    guard hasPrefix(prefix)
-    else { return self }
-    
-    return String(self[prefix.endIndex...])
-  }
-  
-  /// Returns the string with the given prefix, adding it only if necessary.
-  func withPrefix(_ prefix: String) -> String
-  {
-    if hasPrefix(prefix) {
-      return self
-    }
-    else {
-      return prefix.appending(self)
-    }
-  }
-  
-  func appending(pathComponent component: String) -> String
-  {
-    return (self as NSString).appendingPathComponent(component)
-  }
-  
-  var deletingLastPathComponent: String
-  {
-    return (self as NSString).deletingLastPathComponent
-  }
-  
-  var pathComponents: [String]
-  {
-    return (self as NSString).pathComponents
-  }
-  
-  // TODO: this probably shouldn't be optional
-  var firstPathComponent: String?
-  {
-    return pathComponents.first
-  }
-  
-  var deletingFirstPathComponent: String
-  {
-    return NSString.path(withComponents: Array(pathComponents.dropFirst(1)))
-  }
-}
 
 extension NSColor
 {
@@ -184,89 +121,6 @@ extension NSTextField
   }
 }
 
-extension String
-{
-  var lastPathComponent: String
-  {
-    return (self as NSString).lastPathComponent
-  }
-  
-  var pathExtension: String
-  {
-    return (self as NSString).pathExtension
-  }
-  
-  /// Splits a "refs/*/..." string into prefix and remainder.
-  func splitRefName() -> (String, String)?
-  {
-    guard hasPrefix("refs/")
-    else { return nil }
-    
-    let start = index(startIndex, offsetBy: "refs/".count)
-    guard let slashRange = range(of: "/", options: [], range: start..<endIndex,
-                                 locale: nil)
-    else { return nil }
-    let slashIndex = index(slashRange.lowerBound, offsetBy: 1)
-    
-    return (String(self[..<slashIndex]),
-            String(self[slashRange.upperBound...]))
-  }
-  
-  /// Splits the string into an array of lines.
-  func lineComponents() -> [String]
-  {
-    var lines: [String] = []
-    
-    enumerateLines { (line, _) in lines.append(line) }
-    return lines
-  }
-
-  enum LineEndingStyle: String
-  {
-    case crlf
-    case lf
-    case unknown
-    
-    var string: String
-    {
-      switch self
-      {
-        case .crlf: return "\r\n"
-        case .lf:   return "\n"
-        case .unknown: return "\n"
-      }
-    }
-  }
-  
-  var lineEndingStyle: LineEndingStyle
-  {
-    if range(of: "\r\n") != nil {
-      return .crlf
-    }
-    if range(of: "\n") != nil {
-      return .lf
-    }
-    return .unknown
-  }
-  
-  var xmlEscaped: String
-  {
-    return CFXMLCreateStringByEscapingEntities(kCFAllocatorDefault,
-                                               self as CFString,
-                                               [:] as CFDictionary) as String
-  }
-  
-  #if !swift(>=4.2)
-  func lastIndex(of element: Character) -> String.Index?
-  {
-    for (index, char) in lazy.enumerated().reversed() where char == element {
-      return self.index(startIndex, offsetBy: index)
-    }
-    return nil
-  }
-  #endif
-}
-
 extension NSTableView
 {
   /// Returns a set of all visible row indexes
@@ -314,6 +168,23 @@ extension NSTreeNode
       }
     }
     mutableChildren.add(node)
+  }
+}
+
+extension NSTreeNode
+{
+  func dump(_ level: Int = 0)
+  {
+    if let myObject = representedObject as? CustomStringConvertible {
+      print(String(repeating: "  ", count: level) + myObject.description)
+    }
+    
+    guard let children = self.children
+    else { return }
+    
+    for child in children {
+      child.dump(level + 1)
+    }
   }
 }
 
@@ -444,6 +315,8 @@ extension NSMutableArray
 
 extension Thread
 {
+  /// Performs the block immediately if this is the main thread, or
+  /// asynchronosly on the main thread otherwise.
   static func performOnMainThread(_ block: @escaping () -> Void)
   {
     if isMainThread {
@@ -455,6 +328,31 @@ extension Thread
       }
     }
   }
+  
+  /// Performs the block immediately if this is the main thread, or
+  /// synchronosly on the main thread otherwise.
+  static func syncOnMainThread<T>(_ block: () -> T) -> T
+  {
+    if isMainThread {
+      return block()
+    }
+    else {
+      return DispatchQueue.main.sync {
+        block()
+      }
+    }
+  }
+}
+
+/// Similar to Objective-C's `@synchronized`
+/// - parameter object: Token object for the lock
+/// - parameter block: Block to execute inside the lock
+func synchronized<T>(_ object: NSObject, block: () -> T) -> T
+{
+  objc_sync_enter(object)
+  let result = block()
+  objc_sync_exit(object)
+  return result
 }
 
 // Swift 3 took away ++, but it still can be useful.

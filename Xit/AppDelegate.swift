@@ -36,7 +36,7 @@ class AppDelegate: NSObject
     
     newOpenPanel.begin {
       (result) in
-      if result.rawValue == NSFileHandlingPanelOKButton {
+      if result == NSApplication.ModalResponse.OK {
         for url in newOpenPanel.urls {
           NSDocumentController.shared.openDocument(
               withContentsOf: url,

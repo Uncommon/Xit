@@ -9,11 +9,6 @@ class FileListDataSourceBase: NSObject
 
   let observers = ObserverCollection()
   
-  enum ColumnID
-  {
-    static let unstaged = ¶"unstaged"
-  }
-  
   weak var repoController: RepositoryController!
   {
     didSet
@@ -38,9 +33,7 @@ class FileListDataSourceBase: NSObject
         else { return }
         
         (myself as? FileListDataSource)?.reload()
-        myself.updateStagingView()
       }
-      
     }
   }
   
@@ -67,22 +60,12 @@ class FileListDataSourceBase: NSObject
       (self as! FileListDataSource).reload()
     }
   }
-  
-  func updateStagingView()
-  {
-    let unstagedColumn = outlineView.tableColumn(withIdentifier: ColumnID.unstaged)
-    
-    unstagedColumn?.isHidden = !(repoController.selection is
-                                 StagedUnstagedSelection)
-  }
 }
 
 
 /// Methods that a file list data source must implement.
 protocol FileListDataSource: class
 {
-  var hierarchical: Bool { get }
-  
   func reload()
   func fileChange(at row: Int) -> FileChange?
   func path(for item: Any) -> String
