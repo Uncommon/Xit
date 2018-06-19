@@ -40,14 +40,14 @@ class XTStashTest: XTTest
     
     XCTAssertEqual(indexChanges[0].path, addedName)
     XCTAssertEqual(indexChanges[0].change, DeltaStatus.added)
-    XCTAssertEqual(workspaceChanges[0].path, file1Name)
+    XCTAssertEqual(workspaceChanges[0].path, FileName.file1)
     XCTAssertEqual(workspaceChanges[0].change, DeltaStatus.modified)
     XCTAssertEqual(workspaceChanges[1].path, untrackedName)
     XCTAssertEqual(workspaceChanges[1].change, DeltaStatus.added)
     
-    XCTAssertNotNil(stash.headBlobForPath(self.file1Name))
+    XCTAssertNotNil(stash.headBlobForPath(FileName.file1))
     
-    guard let changeDiffResult = stash.unstagedDiffForFile(self.file1Name),
+    guard let changeDiffResult = stash.unstagedDiffForFile(FileName.file1),
           let changeDiffMaker = checkDiffResult(changeDiffResult),
           let changePatch = changeDiffMaker.makePatch()
     else {

@@ -28,14 +28,14 @@ class XTFileChangesModelTest: XTTest
     
     let change = changes[0]
     
-    XCTAssertEqual(change.path, file1Name)
+    XCTAssertEqual(change.path, FileName.file1)
     XCTAssertEqual(change.change, DeltaStatus.added)
     
-    let data = model.fileList.dataForFile(file1Name)
+    let data = model.fileList.dataForFile(FileName.file1)
     
     XCTAssertEqual(data, self.data(for:"some text"))
     
-    guard let diffResult = model.fileList.diffForFile(file1Name),
+    guard let diffResult = model.fileList.diffForFile(FileName.file1),
           let patch = diffResult.extractPatch()
     else {
       XCTFail()
@@ -81,9 +81,9 @@ class XTFileChangesModelTest: XTTest
     let untrackedContent =
         self.string(from: model.unstagedFileList.dataForFile(untrackedName)!)
     let file1Unstaged =
-        self.string(from: model.unstagedFileList.dataForFile(file1Name)!)
+        self.string(from: model.unstagedFileList.dataForFile(FileName.file1)!)
     let file1Staged =
-        self.string(from: model.fileList.dataForFile(file1Name)!)
+        self.string(from: model.fileList.dataForFile(FileName.file1)!)
     
     XCTAssertEqual(addedContent, "add")
     XCTAssertEqual(untrackedContent, "new")
@@ -98,9 +98,9 @@ class XTFileChangesModelTest: XTTest
     self.checkPatchLines(
         model, path: untrackedName, staged: false, added: 1, deleted: 0)
     self.checkPatchLines(
-        model, path: file1Name, staged: false, added: 1, deleted: 1)
+        model, path: FileName.file1, staged: false, added: 1, deleted: 1)
     self.checkPatchLines(
-        model, path: file1Name, staged: true, added: 0, deleted: 0)
+        model, path: FileName.file1, staged: true, added: 0, deleted: 0)
     XCTAssertNil(model.fileList.diffForFile(untrackedName))
   }
   
@@ -123,7 +123,7 @@ class XTFileChangesModelTest: XTTest
     }
     var change = changes[0]
     
-    XCTAssertEqual(change.path, file1Name)
+    XCTAssertEqual(change.path, FileName.file1)
     XCTAssertEqual(change.change, DeltaStatus.modified)
     
     write(text: "new", to: addedName)
@@ -193,7 +193,7 @@ class XTFileChangesModelTest: XTTest
     XCTAssertEqual(change.change, DeltaStatus.added)
     
     change = tree.children![1].representedObject as! FileChange
-    XCTAssertEqual(change.path, file1Name)
+    XCTAssertEqual(change.path, FileName.file1)
     XCTAssertEqual(change.change, DeltaStatus.unmodified)
   }
   
@@ -221,7 +221,7 @@ class XTFileChangesModelTest: XTTest
     typealias ExpectedItem = (name: String, change: DeltaStatus)
     let expectedItems: [ExpectedItem] = [(name: addedName, change: .added),
                                          (name: deletedName, change: .deleted),
-                                         (name: file1Name, change: .unmodified)]
+                                         (name: FileName.file1, change: .unmodified)]
     
     for pair in zip(children, expectedItems) {
       guard let item = pair.0.representedObject as? FileChange
@@ -297,9 +297,9 @@ class XTFileChangesModelTest: XTTest
       XCTAssertEqual(item.change, DeltaStatus.deleted)
     }
     
-    if deletedPath != file1Name {
+    if deletedPath != FileName.file1 {
       guard let file1Node = tree2.children?.first(where:
-              { ($0.representedObject as? CommitTreeItem)?.path == file1Name} ),
+              { ($0.representedObject as? CommitTreeItem)?.path == FileName.file1} ),
             let item = file1Node.representedObject as? CommitTreeItem
       else {
         XCTFail("file1 missing")
@@ -410,12 +410,12 @@ class XTFileChangesModelTest: XTTest
     commit(newTextFile: subFilePath, content: "text")
     
     XCTAssertNoThrow(try FileManager.default.removeItem(
-        at: repository.repoURL.appendingPathComponent(file1Name)))
-    XCTAssertNoThrow(try repository.stage(file: file1Name))
+        at: repository.repoURL.appendingPathComponent(FileName.file1)))
+    XCTAssertNoThrow(try repository.stage(file: FileName.file1))
     XCTAssertNoThrow(try repository.commit(message: "delete", amend: false,
                                            outputBlock: nil))
     
-    checkCommitTrees(deletedPath: file1Name)
+    checkCommitTrees(deletedPath: FileName.file1)
   }
   
   func makeSubFolderCommits() -> (Commit, Commit)?
@@ -439,7 +439,7 @@ class XTFileChangesModelTest: XTTest
 
     // Make a new commit where that subfolder is unchanged
     writeTextToFile1("changes")
-    XCTAssertNoThrow(try repository.stage(file: file1Name))
+    XCTAssertNoThrow(try repository.stage(file: FileName.file1))
     XCTAssertNoThrow(try repository.commit(message: "commit 3", amend: false,
                                            outputBlock: nil))
     

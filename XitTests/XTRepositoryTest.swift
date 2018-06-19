@@ -118,13 +118,13 @@ class XTEmptyRepositoryTest: XTTest
     let content = "some content"
     
     writeTextToFile1(content)
-    XCTAssertNil(repository.contentsOfStagedFile(path: file1Name))
-    try! repository.stage(file: file1Name)
+    XCTAssertNil(repository.contentsOfStagedFile(path: FileName.file1))
+    try! repository.stage(file: FileName.file1)
     
     let expectedContent = content.data(using: .utf8)
-    guard let stagedContent = repository.contentsOfStagedFile(path: file1Name)
+    guard let stagedContent = repository.contentsOfStagedFile(path: FileName.file1)
     else {
-      XCTFail("can't get staged content of \(file1Name)")
+      XCTFail("can't get staged content of \(FileName.file1)")
       return
     }
     let stagedString = String(data: stagedContent, encoding: .utf8)
@@ -138,7 +138,7 @@ class XTEmptyRepositoryTest: XTTest
     
     writeTextToFile1(newContent)
     
-    let stagedContent2 = repository.contentsOfStagedFile(path: file1Name)!
+    let stagedContent2 = repository.contentsOfStagedFile(path: FileName.file1)!
     let stagedString2 = String(data: stagedContent, encoding: .utf8)
     
     XCTAssertEqual(stagedContent2, expectedContent)
@@ -413,10 +413,10 @@ class XTRepositoryTest: XTTest
     writeTextToFile1("modification")
     
     assertWriteException(name: "stageFile") {
-      try repository.stage(file: file1Name)
+      try repository.stage(file: FileName.file1)
     }
     assertWriteException(name: "unstageFile") {
-      try repository.unstage(file: file1Name)
+      try repository.unstage(file: FileName.file1)
     }
   }
   
@@ -437,7 +437,7 @@ class XTRepositoryTest: XTTest
   func testWriteLockCommit()
   {
     writeTextToFile1("modification")
-    try! repository.stage(file: file1Name)
+    try! repository.stage(file: FileName.file1)
     
     assertWriteException(name: "commit") { 
       try repository.commit(message: "blah", amend: false, outputBlock: nil)
@@ -519,7 +519,7 @@ class XTRepositoryTest: XTTest
     }
     
     try! "mash".write(toFile: file1Path, atomically: true, encoding: .utf8)
-    try! repository.stage(file: file1Name)
+    try! repository.stage(file: FileName.file1)
     try! repository.checkout(sha: firstSHA)
     
     guard let detachedSHA = repository.headSHA
@@ -539,7 +539,7 @@ class XTRepositoryTest: XTTest
         XCTFail("no head SHA")
         return
     }
-    let contentData = repository.contentsOfFile(path: file1Name,
+    let contentData = repository.contentsOfFile(path: FileName.file1,
                                                 at: headCommit)!
     let contentString = String(data: contentData, encoding: .utf8)
     
@@ -548,7 +548,7 @@ class XTRepositoryTest: XTTest
   
   func testFileBlob()
   {
-    guard let blob = repository.fileBlob(ref: "HEAD", path: file1Name)
+    guard let blob = repository.fileBlob(ref: "HEAD", path: FileName.file1)
     else {
       XCTFail("no blob")
       return
@@ -570,19 +570,18 @@ class XTRepositoryTest: XTTest
     guard let change = changes.first
     else { return }
     
-    XCTAssertEqual(change.path, file1Name)
+    XCTAssertEqual(change.path, FileName.file1)
     XCTAssertEqual(change.change, DeltaStatus.added)
   }
   
   func testModifiedChange()
   {
-    let file2Name = "file2.txt"
-    let file2Path = repoPath.appending(pathComponent: file2Name)
+    let file2Path = repoPath.appending(pathComponent: FileName.file2)
     
     writeTextToFile1("changes!")
     try! "new file 2".write(toFile: file2Path, atomically: true, encoding: .utf8)
-    try! repository.stage(file: file1Name)
-    try! repository.stage(file: file2Name)
+    try! repository.stage(file: FileName.file1)
+    try! repository.stage(file: FileName.file2)
     try! repository.commit(message: "#2", amend: false, outputBlock: nil)
     
     let changes2 = repository.changes(for: repository.headSHA!, parent: nil)
@@ -592,19 +591,19 @@ class XTRepositoryTest: XTTest
     guard let file1Change = changes2.first
     else { return }
     
-    XCTAssertEqual(file1Change.path, file1Name)
+    XCTAssertEqual(file1Change.path, FileName.file1)
     XCTAssertEqual(file1Change.change, .modified)
     
     let file2Change = changes2[1]
     
-    XCTAssertEqual(file2Change.path, file2Name)
+    XCTAssertEqual(file2Change.path, FileName.file2)
     XCTAssertEqual(file2Change.change, .added)
   }
   
   func testDeletedChange()
   {
     try! FileManager.default.removeItem(atPath: file1Path)
-    try! repository.stage(file: file1Name)
+    try! repository.stage(file: FileName.file1)
     try! repository.commit(message: "#3", amend: false, outputBlock: nil)
     
     let changes3 = repository.changes(for: repository.headSHA!, parent: nil)
@@ -614,22 +613,19 @@ class XTRepositoryTest: XTTest
     guard let file1Deleted = changes3.first
     else { return }
     
-    XCTAssertEqual(file1Deleted.path, file1Name)
+    XCTAssertEqual(file1Deleted.path, FileName.file1)
     XCTAssertEqual(file1Deleted.change, .deleted)
   }
   
   func testStageUnstageAllStatus()
   {
-    let file2Name = "file2.txt"
-    let file3Name = "file3.txt"
+    commit(newTextFile: FileName.file2, content: "blah")
     
-    commit(newTextFile: file2Name, content: "blah")
+    let file2Path = repoPath.appending(pathComponent: FileName.file2)
     
-    let file2Path = repoPath.appending(pathComponent: file2Name)
-    
-    write(text: "blah", to: file1Name)
+    write(text: "blah", to: FileName.file1)
     XCTAssertNoThrow(try FileManager.default.removeItem(atPath: file2Path))
-    write(text: "blah", to: file3Name)
+    write(text: "blah", to: FileName.file3)
     XCTAssertNoThrow(try repository.stageAllFiles())
     
     var changes = repository.statusChanges(.indexOnly)
@@ -697,20 +693,20 @@ class XTRepositoryTest: XTTest
   func testUnstagedDeleteDiff()
   {
     XCTAssertNoThrow(try FileManager.default.removeItem(atPath: file1Path))
-    checkDeletedDiff(repository.unstagedDiff(file: file1Name))
+    checkDeletedDiff(repository.unstagedDiff(file: FileName.file1))
   }
 
   func testStagedDeleteDiff()
   {
     XCTAssertNoThrow(try FileManager.default.removeItem(atPath: file1Path))
-    XCTAssertNoThrow(try repository.stage(file: file1Name))
-    checkDeletedDiff(repository.stagedDiff(file: file1Name))
+    XCTAssertNoThrow(try repository.stage(file: FileName.file1))
+    checkDeletedDiff(repository.stagedDiff(file: FileName.file1))
   }
   
   func testDeletedDiff()
   {
     try! FileManager.default.removeItem(atPath: file1Path)
-    try! repository.stage(file: file1Name)
+    try! repository.stage(file: FileName.file1)
     try! repository.commit(message: "deleted", amend: false,
                            outputBlock: nil)
     
@@ -721,7 +717,7 @@ class XTRepositoryTest: XTTest
     }
     
     let parentOID = commit.parentOIDs.first!
-    let diffResult = repository.diffMaker(forFile: file1Name,
+    let diffResult = repository.diffMaker(forFile: FileName.file1,
                                           commitOID: commit.oid,
                                           parentOID: parentOID)!
     let patch = diffResult.extractPatch()!
@@ -737,7 +733,7 @@ class XTRepositoryTest: XTTest
       return
     }
     
-    let diffResult = repository.diffMaker(forFile: file1Name,
+    let diffResult = repository.diffMaker(forFile: FileName.file1,
                                           commitOID: commit.oid,
                                           parentOID: nil)!
     let patch = diffResult.extractPatch()!
@@ -927,7 +923,7 @@ class XTRepositoryHunkTest: XTTest
   {
     try! FileManager.default.removeItem(atPath: file1Path)
 
-    guard let diffResult = repository.unstagedDiff(file: file1Name),
+    guard let diffResult = repository.unstagedDiff(file: FileName.file1),
           let patch = diffResult.extractPatch(),
           let hunk = patch.hunk(at: 0)
     else {
@@ -935,9 +931,9 @@ class XTRepositoryHunkTest: XTTest
       return
     }
     
-    try! repository.patchIndexFile(path: file1Name, hunk: hunk, stage: true)
+    try! repository.patchIndexFile(path: FileName.file1, hunk: hunk, stage: true)
     
-    let status = try! repository.status(file: file1Name)
+    let status = try! repository.status(file: FileName.file1)
     
     XCTAssertEqual(status.0, DeltaStatus.unmodified)
     XCTAssertEqual(status.1, DeltaStatus.deleted)
@@ -969,9 +965,9 @@ class XTRepositoryHunkTest: XTTest
   func testUnstageDeletedHunk()
   {
     try! FileManager.default.removeItem(atPath: file1Path)
-    try! repository.stage(file: file1Name)
+    try! repository.stage(file: FileName.file1)
     
-    guard let diffResult = repository.stagedDiff(file: file1Name),
+    guard let diffResult = repository.stagedDiff(file: FileName.file1),
           let patch = diffResult.extractPatch(),
           let hunk = patch.hunk(at: 0)
     else {
@@ -979,9 +975,9 @@ class XTRepositoryHunkTest: XTTest
       return
     }
     
-    try! repository.patchIndexFile(path: file1Name, hunk: hunk, stage: false)
+    try! repository.patchIndexFile(path: FileName.file1, hunk: hunk, stage: false)
     
-    let status = try! repository.status(file: file1Name)
+    let status = try! repository.status(file: FileName.file1)
     
     XCTAssertEqual(status.0, DeltaStatus.deleted)
     XCTAssertEqual(status.1, DeltaStatus.unmodified)

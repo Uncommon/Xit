@@ -185,7 +185,7 @@ class XTSidebarDataSourceTest: XTTest
         return
       }
       
-      self.commit(newTextFile: file1Name, content: "text", repository: subRepo)
+      self.commit(newTextFile: FileName.file1, content: "text", repository: subRepo)
       wait(for: subRepo)
     }
   

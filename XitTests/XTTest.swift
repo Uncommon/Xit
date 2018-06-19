@@ -9,8 +9,19 @@ class XTTest: XCTestCase
   
   var repository, remoteRepository: XTRepository!
   
-  let file1Name = "file1.txt"
-  var file1Path: String { return repoPath.appending(pathComponent: file1Name) }
+  enum FileName
+  {
+    // These are not cases because then you'd have to say .rawvalue all the time
+    static let file1 = "file1.txt"
+    static let file2 = "file2.txt"
+    static let file3 = "file3.txt"
+    static let subFile2 = "folder/file2.txt"
+    static let subSubFile2 = "folder/folder2/file2.txt"
+    static let added = "added.txt"
+    static let untracked = "untracked.txt"
+  }
+  
+  var file1Path: String { return repoPath.appending(pathComponent: FileName.file1) }
   let addedName = "added.txt"
   let untrackedName = "untracked.txt"
   
@@ -92,7 +103,7 @@ class XTTest: XCTestCase
   
   func addInitialRepoContent()
   {
-    XCTAssertTrue(commit(newTextFile: file1Name, content: "some text"))
+    XCTAssertTrue(commit(newTextFile: FileName.file1, content: "some text"))
   }
   
   func makeRemoteRepo()
@@ -174,7 +185,7 @@ class XTTest: XCTestCase
   @discardableResult
   func writeTextToFile1(_ text: String) -> Bool
   {
-    return write(text: text, to: file1Name)
+    return write(text: text, to: FileName.file1)
   }
   
   func makeStash() throws
