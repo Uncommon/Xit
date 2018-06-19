@@ -9,10 +9,10 @@ class XTTest: XCTestCase
   
   var repository, remoteRepository: XTRepository!
   
-  var file1Name: String { return "file1.txt" }
+  let file1Name = "file1.txt"
   var file1Path: String { return repoPath.appending(pathComponent: file1Name) }
-  var addedName: String { return "added.txt" }
-  var untrackedName: String { return "untracked.txt" }
+  let addedName = "added.txt"
+  let untrackedName = "untracked.txt"
   
   static func createRepo(atPath repoPath: String) -> XTRepository?
   {
