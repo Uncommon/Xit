@@ -3,11 +3,24 @@ import XCTest
 
 class IndexTreeTest: XTTest
 {
-  func indexTreeStatus(at path: String) -> DeltaStatus?
+  override func setUp()
+  {
+    super.setUp()
+    
+    // A second commit is needed for amending tests
+    writeTextToFile1("second")
+    XCTAssertNoThrow(try repository.stage(file: file1Name))
+    XCTAssertNoThrow(try repository.commit(message: "second", amend: false,
+                                           outputBlock: nil))
+  }
+  
+  func indexTreeStatus(at path: String,
+                       amending: Bool = false) -> DeltaStatus?
   {
     repository.invalidateIndex()
     
-    let selection = StagingSelection(repository: repository)
+    let selection = amending ? AmendingSelection(repository: repository)
+                             : StagingSelection(repository: repository)
     let root = selection.fileList.treeRoot(oldTree: nil)
     root.dump()
     guard let node = root.fileChangeNode(path: path)
@@ -25,6 +38,11 @@ class IndexTreeTest: XTTest
     XCTAssertNoThrow(try repository.stage(file: path))
   }
   
+  func testSimpleAmend()
+  {
+    XCTAssertEqual(indexTreeStatus(at: file1Name, amending: true), .modified)
+  }
+  
   func testNewFile()
   {
     let file2Name = "file2.txt"
@@ -32,7 +50,8 @@ class IndexTreeTest: XTTest
     write(text: "text", to: file2Name)
     XCTAssertNoThrow(try repository.stage(file: file2Name))
     
-    XCTAssertEqual(indexTreeStatus(at: file2Name), .added)
+    XCTAssertEqual(indexTreeStatus(at: file2Name, amending: false), .added)
+    XCTAssertEqual(indexTreeStatus(at: file2Name, amending: true), .added)
   }
   
   func testModifiedFile()
@@ -40,9 +59,10 @@ class IndexTreeTest: XTTest
     write(text: "modified", to: file1Name)
     XCTAssertNoThrow(try repository.stage(file: file1Name))
     
-    XCTAssertEqual(indexTreeStatus(at: file1Name), .modified)
+    XCTAssertEqual(indexTreeStatus(at: file1Name, amending: false), .modified)
+    XCTAssertEqual(indexTreeStatus(at: file1Name, amending: true), .modified)
   }
-  
+
   func testAddSubFile()
   {
     let file2Path = "folder/file2.txt"
@@ -60,7 +80,8 @@ class IndexTreeTest: XTTest
     write(text: "text", to: file2Path)
     XCTAssertNoThrow(try repository.stage(file: file2Path))
     
-    XCTAssertEqual(indexTreeStatus(at: file2Path), .added)
+    XCTAssertEqual(indexTreeStatus(at: file2Path, amending: false), .added)
+    XCTAssertEqual(indexTreeStatus(at: file2Path, amending: true), .added)
   }
   
   func testDeleteFile()
@@ -68,7 +89,9 @@ class IndexTreeTest: XTTest
     let file2Name = "file2.txt"
     
     addAndStageDelete(path: file2Name)
-    XCTAssertEqual(indexTreeStatus(at: file2Name), .deleted)
+    XCTAssertEqual(indexTreeStatus(at: file2Name, amending: false), .deleted)
+    // We're amending the add with a delete, so the file is absent from the tree
+    XCTAssertNil(indexTreeStatus(at: file2Name, amending: true))
   }
   
   func testDeleteSubFile()
@@ -76,7 +99,8 @@ class IndexTreeTest: XTTest
     let file2Name = "folder/file2.txt"
     
     addAndStageDelete(path: file2Name)
-    XCTAssertEqual(indexTreeStatus(at: file2Name), .deleted)
+    XCTAssertEqual(indexTreeStatus(at: file2Name, amending: false), .deleted)
+    XCTAssertNil(indexTreeStatus(at: file2Name, amending: true))
   }
   
   func testDeleteSubSubFile()
@@ -84,6 +108,7 @@ class IndexTreeTest: XTTest
     let file2Name = "folder/folder2/file2.txt"
     
     addAndStageDelete(path: file2Name)
-    XCTAssertEqual(indexTreeStatus(at: file2Name), .deleted)
+    XCTAssertEqual(indexTreeStatus(at: file2Name, amending: false), .deleted)
+    XCTAssertNil(indexTreeStatus(at: file2Name, amending: true))
   }
 }
