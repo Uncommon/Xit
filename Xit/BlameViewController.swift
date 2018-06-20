@@ -99,13 +99,16 @@ class BlameViewController: WebViewController
     for hunk in blame.hunks {
       let finalOID = hunk.finalLine.oid as! GitOID
       var color = coloring.color(for: finalOID)
-      
-      htmlLines.append(contentsOf: ["""
-          <tr><td class='headcell'>
-            <div class='blamehead' style='background-color: \(color.cssHSL)'>
+      let jumpButton = finalOID == currentOID ? "" : """
             <div class='jumpbutton' \
             onclick="window.webActionDelegate.selectSHA('\(finalOID.sha)')">
             ‣</div>
+            """
+
+      htmlLines.append(contentsOf: ["""
+          <tr><td class='headcell'>
+            <div class='blamehead' style='background-color: \(color.cssHSL)'>
+            \(jumpButton)
             <div class='name'>\(hunk.finalLine.signature.name ?? "")</div>
           """
           ])
