@@ -240,3 +240,72 @@ extension FileViewController
     setWrapping(.none)
   }
 }
+
+// MARK: HunkStaging
+extension FileViewController: HunkStaging
+{
+  func patchIndexFile(hunk: DiffHunk, stage: Bool)
+  {
+    guard let selectedChange = self.selectedChange
+      else { return }
+    
+    do {
+      try repo?.patchIndexFile(path: selectedChange.path, hunk: hunk,
+                               stage: stage)
+    }
+    catch let error as XTRepository.Error {
+      displayRepositoryAlert(error: error)
+    }
+    catch let error as NSError {
+      displayAlert(error: error)
+    }
+  }
+  
+  func stage(hunk: DiffHunk)
+  {
+    patchIndexFile(hunk: hunk, stage: true)
+  }
+  
+  func unstage(hunk: DiffHunk)
+  {
+    patchIndexFile(hunk: hunk, stage: false)
+  }
+  
+  func discard(hunk: DiffHunk)
+  {
+    var encoding = String.Encoding.utf8
+    
+    guard let controller = repoController,
+      let selection = controller.selection as? StagingSelection,
+      let selectedChange = self.selectedChange,
+      let fileURL = selection.unstagedFileList.fileURL(selectedChange.path)
+      else {
+        NSLog("Setup for discard hunk failed")
+        return
+    }
+    
+    do {
+      let status = try repo!.status(file: selectedChange.path)
+      
+      if ((hunk.newStart == 1) && (status.0 == .untracked)) ||
+        ((hunk.oldStart == 1) && (status.0 == .deleted)) {
+        revert(path: selectedChange.path)
+      }
+      else {
+        let fileText = try String(contentsOf: fileURL, usedEncoding: &encoding)
+        guard let result = hunk.applied(to: fileText, reversed: true)
+          else {
+            throw XTRepository.Error.patchMismatch
+        }
+        
+        try result.write(to: fileURL, atomically: true, encoding: encoding)
+      }
+    }
+    catch let error as XTRepository.Error {
+      displayRepositoryAlert(error: error)
+    }
+    catch let error as NSError {
+      displayAlert(error: error)
+    }
+  }
+}

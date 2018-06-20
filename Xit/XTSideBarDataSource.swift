@@ -496,12 +496,3 @@ class XTSideBarDataSource: NSObject
     }
   }
 }
-
-// MARK: BuildStatusClient
-extension XTSideBarDataSource: BuildStatusClient
-{
-  func buildStatusUpdated(branch: String, buildType: String)
-  {
-    scheduleReload()
-  }
-}

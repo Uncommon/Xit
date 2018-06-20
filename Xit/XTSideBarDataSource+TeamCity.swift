@@ -86,3 +86,12 @@ extension XTSideBarDataSource: TeamCityAccessor
     }
   }
 }
+
+// MARK: BuildStatusClient
+extension XTSideBarDataSource: BuildStatusClient
+{
+  func buildStatusUpdated(branch: String, buildType: String)
+  {
+    scheduleReload()
+  }
+}
