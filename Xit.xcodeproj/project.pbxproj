@@ -611,7 +611,6 @@
 				C9864465207E9CAC0088209B /* StringIdentifiers.swift */,
 				C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */,
 				C93FFCBC1F13D3B200FDDD78 /* ValidatedSegment.swift */,
-				C95ECD041EB11E310000DB78 /* WebViewController.swift */,
 				C957B8651D2D8D500040F858 /* XTKeychain.swift */,
 				C957B84A1D2D53040040F858 /* XTSheetController.swift */,
 			);
@@ -802,6 +801,7 @@
 				C99A6AFE1E4A73240030DC01 /* BlameViewController.swift */,
 				896A29F61E4C3620002C5EC8 /* PreviewItem.swift */,
 				C95BF6531FCF5BC90020C51D /* FileContentProtocols.swift */,
+				C95ECD041EB11E310000DB78 /* WebViewController.swift */,
 			);
 			name = Previews;
 			sourceTree = "<group>";

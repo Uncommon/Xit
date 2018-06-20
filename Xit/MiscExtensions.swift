@@ -23,6 +23,36 @@ extension NSColor
                    brightness: 1.0 - brightnessComponent,
                    alpha: alphaComponent)
   }
+
+  var cssHSL: String
+  {
+    let converted = usingColorSpace(.deviceRGB)!
+    let hue = converted.hueComponent
+    let sat = converted.saturationComponent
+    let brightness = converted.brightnessComponent
+    
+    return "hsl(\(hue*360.0), \(sat*100.0)%, \(brightness*100.0)%)"
+  }
+  
+  var cssRGB: String
+  {
+    let converted = usingColorSpace(.deviceRGB)!
+    let red = converted.redComponent
+    let green = converted.greenComponent
+    let blue = converted.blueComponent
+    
+    return "rgb(\(Int(red*255)), \(Int(green*255)), \(Int(blue*255)))"
+  }
+  
+  func withHue(_ hue: CGFloat) -> NSColor
+  {
+    let converted = usingColorSpace(.deviceRGB)!
+
+    return NSColor(deviceHue: hue,
+                   saturation: converted.saturationComponent,
+                   brightness: converted.brightnessComponent,
+                   alpha: converted.alphaComponent)
+  }
 }
 
 extension NSError
@@ -221,16 +251,6 @@ extension NSValidatedUserInterfaceItem
     else { return false }
     
     return item.parent == nil
-  }
-}
-
-extension NSColor
-{
-  var cssHSL: String
-  {
-    return "hsl(\(hueComponent*360.0), " +
-           "\(saturationComponent*100.0)%, " +
-           "\(brightnessComponent*100.0)%)"
   }
 }
 
