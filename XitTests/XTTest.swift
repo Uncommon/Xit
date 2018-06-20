@@ -22,8 +22,6 @@ class XTTest: XCTestCase
   }
   
   var file1Path: String { return repoPath.appending(pathComponent: FileName.file1) }
-  let addedName = "added.txt"
-  let untrackedName = "untracked.txt"
   
   static func createRepo(atPath repoPath: String) -> XTRepository?
   {
@@ -191,9 +189,9 @@ class XTTest: XCTestCase
   func makeStash() throws
   {
     writeTextToFile1("stashy")
-    write(text: "new", to: untrackedName)
-    write(text: "add", to: addedName)
-    try repository.stage(file: addedName)
+    write(text: "new", to: FileName.untracked)
+    write(text: "add", to: FileName.added)
+    try repository.stage(file: FileName.added)
     try repository.saveStash(name: "", includeUntracked: true)
   }
 

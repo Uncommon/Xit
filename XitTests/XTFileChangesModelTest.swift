@@ -77,9 +77,9 @@ class XTFileChangesModelTest: XTTest
     XCTAssertEqual(unstagedChanges.count, 2)
     
     let addedContent =
-        self.string(from: model.fileList.dataForFile(addedName)!)
+        self.string(from: model.fileList.dataForFile(FileName.added)!)
     let untrackedContent =
-        self.string(from: model.unstagedFileList.dataForFile(untrackedName)!)
+        self.string(from: model.unstagedFileList.dataForFile(FileName.untracked)!)
     let file1Unstaged =
         self.string(from: model.unstagedFileList.dataForFile(FileName.file1)!)
     let file1Staged =
@@ -89,19 +89,19 @@ class XTFileChangesModelTest: XTTest
     XCTAssertEqual(untrackedContent, "new")
     XCTAssertEqual(file1Unstaged, "stashy")
     XCTAssertEqual(file1Staged, "some text")
-    XCTAssertNil(model.fileList.dataForFile(untrackedName))
+    XCTAssertNil(model.fileList.dataForFile(FileName.untracked))
     
     self.checkPatchLines(
-        model, path: addedName, staged: true, added: 1, deleted: 0)
+        model, path: FileName.added, staged: true, added: 1, deleted: 0)
     self.checkPatchLines(
-        model, path: addedName, staged: false, added: 0, deleted: 0)
+        model, path: FileName.added, staged: false, added: 0, deleted: 0)
     self.checkPatchLines(
-        model, path: untrackedName, staged: false, added: 1, deleted: 0)
+        model, path: FileName.untracked, staged: false, added: 1, deleted: 0)
     self.checkPatchLines(
         model, path: FileName.file1, staged: false, added: 1, deleted: 1)
     self.checkPatchLines(
         model, path: FileName.file1, staged: true, added: 0, deleted: 0)
-    XCTAssertNil(model.fileList.diffForFile(untrackedName))
+    XCTAssertNil(model.fileList.diffForFile(FileName.untracked))
   }
   
   func testStaging()
@@ -126,7 +126,7 @@ class XTFileChangesModelTest: XTTest
     XCTAssertEqual(change.path, FileName.file1)
     XCTAssertEqual(change.change, DeltaStatus.modified)
     
-    write(text: "new", to: addedName)
+    write(text: "new", to: FileName.added)
     repository.invalidateIndex()
     changes = model.unstagedFileList.changes
     XCTAssertEqual(changes.count, 2)
@@ -136,10 +136,10 @@ class XTFileChangesModelTest: XTTest
       return
     }
     change = changes[0] // "added" will be sorted to the top
-    XCTAssertEqual(change.path, addedName)
+    XCTAssertEqual(change.path, FileName.added)
     XCTAssertEqual(change.change, DeltaStatus.untracked)
     
-    XCTAssertNoThrow(try repository.stage(file: addedName))
+    XCTAssertNoThrow(try repository.stage(file: FileName.added))
     XCTAssertEqual(model.unstagedFileList.changes.count, 1)
     changes = model.fileList.changes
     XCTAssertEqual(changes.count, 1)
@@ -149,7 +149,7 @@ class XTFileChangesModelTest: XTTest
       return
     }
     change = changes[0]
-    XCTAssertEqual(change.path, addedName)
+    XCTAssertEqual(change.path, FileName.added)
     XCTAssertEqual(change.change, DeltaStatus.added)
   }
   
@@ -172,7 +172,7 @@ class XTFileChangesModelTest: XTTest
   
   func testCommitTree()
   {
-    commit(newTextFile: addedName, content: "new")
+    commit(newTextFile: FileName.added, content: "new")
     
     guard let headSHA = repository.headSHA,
           let headCommit = XTCommit(sha: headSHA, repository: repository)
@@ -189,7 +189,7 @@ class XTFileChangesModelTest: XTTest
     
     var change = tree.children![0].representedObject as! FileChange
     
-    XCTAssertEqual(change.path, addedName)
+    XCTAssertEqual(change.path, FileName.added)
     XCTAssertEqual(change.change, DeltaStatus.added)
     
     change = tree.children![1].representedObject as! FileChange
@@ -219,7 +219,7 @@ class XTFileChangesModelTest: XTTest
     XCTAssertEqual(children.count, 3)
     
     typealias ExpectedItem = (name: String, change: DeltaStatus)
-    let expectedItems: [ExpectedItem] = [(name: addedName, change: .added),
+    let expectedItems: [ExpectedItem] = [(name: FileName.added, change: .added),
                                          (name: deletedName, change: .deleted),
                                          (name: FileName.file1, change: .unmodified)]
     
@@ -243,7 +243,7 @@ class XTFileChangesModelTest: XTTest
       return
     }
 
-    XCTAssertEqual(item.path, untrackedName)
+    XCTAssertEqual(item.path, FileName.untracked)
     XCTAssertEqual(item.change, .untracked)
   }
   

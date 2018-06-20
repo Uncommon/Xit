@@ -20,8 +20,8 @@ class XTStashTest: XTTest
     XCTAssertNoThrow(try self.makeStash())
     
     let repoPath = self.repoPath as NSString
-    let addedPath = repoPath.appendingPathComponent(addedName)
-    let untrackedPath = repoPath.appendingPathComponent(untrackedName)
+    let addedPath = repoPath.appendingPathComponent(FileName.added)
+    let untrackedPath = repoPath.appendingPathComponent(FileName.untracked)
     
     // Stash should have cleaned up both new files
     XCTAssertFalse(FileManager.default.fileExists(atPath: untrackedPath))
@@ -38,11 +38,11 @@ class XTStashTest: XTTest
       return
     }
     
-    XCTAssertEqual(indexChanges[0].path, addedName)
+    XCTAssertEqual(indexChanges[0].path, FileName.added)
     XCTAssertEqual(indexChanges[0].change, DeltaStatus.added)
     XCTAssertEqual(workspaceChanges[0].path, FileName.file1)
     XCTAssertEqual(workspaceChanges[0].change, DeltaStatus.modified)
-    XCTAssertEqual(workspaceChanges[1].path, untrackedName)
+    XCTAssertEqual(workspaceChanges[1].path, FileName.untracked)
     XCTAssertEqual(workspaceChanges[1].change, DeltaStatus.added)
     
     XCTAssertNotNil(stash.headBlobForPath(FileName.file1))
@@ -58,7 +58,7 @@ class XTStashTest: XTTest
     XCTAssertEqual(changePatch.addedLinesCount, 1)
     XCTAssertEqual(changePatch.deletedLinesCount, 1)
     
-    guard let untrackedDiffResult = stash.unstagedDiffForFile(self.untrackedName),
+    guard let untrackedDiffResult = stash.unstagedDiffForFile(FileName.untracked),
           let untrackedDiffMaker = checkDiffResult(untrackedDiffResult),
           let untrackedPatch = untrackedDiffMaker.makePatch()
     else {
@@ -69,7 +69,7 @@ class XTStashTest: XTTest
     XCTAssertEqual(untrackedPatch.addedLinesCount, 1)
     XCTAssertEqual(untrackedPatch.deletedLinesCount, 0)
     
-    guard let addedDiffResult = stash.stagedDiffForFile(addedName),
+    guard let addedDiffResult = stash.stagedDiffForFile(FileName.added),
           let addedDiffMaker = checkDiffResult(addedDiffResult),
           let addedPatch = addedDiffMaker.makePatch()
     else {
