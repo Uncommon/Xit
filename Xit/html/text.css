@@ -38,8 +38,8 @@ div.hunk {
   display: table;
   width: var(--wrapwidth, 100%);
   margin-bottom: 1em;
-  background-color: white;
-  box-shadow: 0 3px 5px 0 lightgray;
+  background-color: var(--textBackground);
+  box-shadow: 0 3px 5px 0 var(--shadow);
   border-bottom: 1px solid var(--hunkBottomBorder);
   border-top: 1px solid var(--hunkTopBorder);
 }
@@ -86,8 +86,8 @@ span.old, span.new {
   text-align: right;
   padding-top: 2px;
   padding-right: 4px;
-  border-right: 1px lightgray solid;
-  background-color: #EEE;
+  border-right: 1px var(--divider) solid;
+  background-color: var(--leftBackground);
   -webkit-user-select: none;
 }
 [line]::after {

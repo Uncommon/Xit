@@ -15,6 +15,7 @@
     --hunkTopBorder: #DDD;
     --jumpActive: white;
     --jumpHoverBackground: rgba(255, 255, 255, 0.5);
+    --leftBackground: #EEE;
     --shadow: lightgray;
     --textColor: black
 }

@@ -2,6 +2,7 @@
 
 body {
   background-color: var(--background);
+  color: var(--textColor);
   margin: 0px;
   counter-reset: line;
   tab-size: 4;

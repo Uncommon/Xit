@@ -96,6 +96,7 @@ class WebViewController: NSViewController
           "hunkTopBorder",
           "jumpActive",
           "jumpHoverBackground",
+          "leftBackground",
           "shadow",
           ]
     
