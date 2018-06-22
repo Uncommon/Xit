@@ -277,6 +277,7 @@ extension XTHistoryTableController: NSTableViewDelegate
       case ColumnID.commit:
         let historyCell = result as! XTHistoryCellView
         
+        historyCell.currentBranch = repository.currentBranch
         historyCell.refs = repository.refs(at: entry.commit.sha)
         historyCell.textField?.stringValue = entry.commit.message ?? ""
         historyCell.objectValue = entry

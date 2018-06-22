@@ -5,6 +5,7 @@ class XTHistoryCellView: NSTableCellView
 {
   typealias GitCommitEntry = CommitEntry
   
+  var currentBranch: String?
   var refs = [String]()
   
   /// Margin of space to leave for the lines in this cell.
@@ -74,11 +75,14 @@ class XTHistoryCellView: NSTableCellView
     drawLines()
   }
   
-  static func refType(_ typeName: String) -> XTRefType
+  func refType(_ refName: String) -> XTRefType
   {
+    guard let (typeName, displayName) = refName.splitRefName()
+    else { return .unknown }
+    
     switch typeName {
       case "refs/heads/":
-        return .branch
+        return displayName == currentBranch ? .activeBranch : .branch
       case "refs/remotes/":
         return .remoteBranch
       case "refs/tags/":
@@ -93,14 +97,14 @@ class XTHistoryCellView: NSTableCellView
     var x: CGFloat = linesMargin + Margins.token
     
     for ref in refs {
-      guard let (refTypeName, displayRef) = ref.splitRefName()
+      guard let (_, displayRef) = ref.splitRefName()
       else { continue }
       
       let refRect = NSRect(x: x, y: -1,
                            width: RefToken.rectWidth(for: displayRef),
                            height: frame.size.height)
       
-      RefToken.drawToken(refType: XTHistoryCellView.refType(refTypeName),
+      RefToken.drawToken(refType: refType(ref),
                          text: displayRef,
                          rect: refRect)
       x += refRect.size.width + Margins.token
