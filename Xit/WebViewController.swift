@@ -75,6 +75,48 @@ class WebViewController: NSViewController
   }
   
   func wrappingWidthAdjustment() -> Int { return 0 }
+  
+  func updateColors()
+  {
+    let names = [
+          "addBackground",
+          "background",
+          "blameBorder",
+          "blameStart",
+          "buttonActiveBorder",
+          "buttonActiveGrad1",
+          "buttonActiveGrad2",
+          "buttonBorder",
+          "buttonGrad1",
+          "buttonGrad2",
+          "deleteBackground",
+          "divider",
+          "heading",
+          "hunkBottomBorder",
+          "hunkTopBorder",
+          "jumpActive",
+          "jumpHoverBackground",
+          "leftBackground",
+          "shadow",
+          ]
+    
+    setColor(name: "textColor", color: NSColor.textColor)
+    setColor(name: "textBackground", color: NSColor.textBackgroundColor)
+    for name in names {
+      if let color = NSColor(named: NSColor.Name(rawValue: name)) {
+        setColor(name: name, color: color)
+      }
+    }
+  }
+  
+  func setColor(name: String, color: NSColor)
+  {
+    let cssColor = color.cssRGB
+    
+    _ = webView.stringByEvaluatingJavaScript(from: """
+          document.documentElement.style.setProperty("--\(name)", "\(cssColor)")
+          """)
+  }
 }
 
 extension WebViewController: TabWidthVariable
@@ -165,6 +207,7 @@ extension WebViewController: WebFrameLoadDelegate
     }
     wrapping = savedWrapping ?? PreviewsPrefsController.Default.wrapping()
     updateFont()
+    updateColors()
   }
 }
 

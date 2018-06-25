@@ -1,5 +1,8 @@
+@import "colors.css";
+
 body {
-  background-color: F8F8F8;
+  background-color: var(--background);
+  color: var(--textColor);
   margin: 0px;
   counter-reset: line;
   tab-size: 4;
@@ -35,10 +38,10 @@ div.hunk {
   display: table;
   width: var(--wrapwidth, 100%);
   margin-bottom: 1em;
-  background-color: white;
-  box-shadow: 0 3px 5px 0 lightgray;
-  border-bottom: 1px solid #BBB;
-  border-top: 1px solid #DDD;
+  background-color: var(--textBackground);
+  box-shadow: 0 3px 5px 0 var(--shadow);
+  border-bottom: 1px solid var(--hunkBottomBorder);
+  border-top: 1px solid var(--hunkTopBorder);
 }
 div.hunk>div {
   display: table-row;
@@ -49,24 +52,24 @@ div.hunk>div>span {
 }
 div.hunkhead {
   width: 100%;
-  background-color: #EEE;
+  background-color: var(--heading);
   height: 24px;
 }
 span.hunkbutton {
   float: right;
-  border: 1px solid #BBB;
+  border: 1px solid var(--buttonBorder);
   border-radius: 4px;
   display: inline;
   padding: 2px 6px;
   margin: 2px;
   font-family: -apple-system;
-  background: linear-gradient(#FFF, #EEE);
+  background: linear-gradient(var(--buttonGrad1), var(--buttonGrad2));
   -webkit-user-select: none;
   cursor: default;
 }
 span.hunkbutton:active {
   background: linear-gradient(#EEE, #DDD);
-  border-color: #AAA;
+  border-color: var(--buttonActiveBorder);
 }
 .hunknotice {
   font-family: -apple-system;
@@ -83,8 +86,8 @@ span.old, span.new {
   text-align: right;
   padding-top: 2px;
   padding-right: 4px;
-  border-right: 1px lightgray solid;
-  background-color: #EEE;
+  border-right: 1px var(--divider) solid;
+  background-color: var(--leftBackground);
   -webkit-user-select: none;
 }
 [line]::after {
@@ -100,22 +103,22 @@ span.text {
   white-space: var(--wrapping, pre);
 }
 div.add {
-  background-color: #DFD;
+  background-color: var(--addBackground);
 }
 div.del {
-  background-color: #FDD;
+  background-color: var(--deleteBackground);
 }
 div.add>span.old {
-  background-color: #DFD;
+  background-color: var(--addBackground);
 }
 div.add>span.new {
-  background-color: #DFD;
+  background-color: var(--addBackground);
 }
 div.del>span.old {
-  background-color: #FDD;
+  background-color: var(--deleteBackground);
 }
 div.del>span.new {
-  background-color: #FDD;
+  background-color: var(--deleteBackground);
 }
 .empty {
   -webkit-user-select: none;

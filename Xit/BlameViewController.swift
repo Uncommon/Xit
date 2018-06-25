@@ -29,9 +29,8 @@ class BlameViewController: WebViewController
         return color
       }
       else {
-        let hue = CGFloat(lastHue) / 360.0
-        let result = NSColor(calibratedHue: hue, saturation: 0.6,
-                             brightness: 0.85, alpha: 1.0)
+        let blameStart = NSColor(named: NSColor.Name(rawValue: "blameStart"))!
+        let result = blameStart.withHue(CGFloat(lastHue) / 360.0)
         
         lastHue = (lastHue + 55) % 360
         commitColors[oid.sha] = result
@@ -132,8 +131,10 @@ class BlameViewController: WebViewController
             \(dateFormatter.string(from: hunk.finalLine.signature.when))</div>
             """)
       }
-      if finalOID != currentOID {
-        color = color.blended(withFraction: 0.65, of: .white) ?? color
+      if finalOID != currentOID,
+         let blend = color.blended(withFraction: 0.65,
+                                  of: .textBackgroundColor) {
+        color = blend
       }
       htmlLines.append(contentsOf: ["</div></td>",
                                     "<td style='background-color: " +

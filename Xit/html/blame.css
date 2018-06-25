@@ -1,5 +1,8 @@
+@import "colors.css";
+
 body {
-  background-color: F8F8F8;
+  background-color: var(--background);
+  color: var(--textColor);
   margin: 0px;
   counter-reset: line;
   tab-size: 4;
@@ -15,7 +18,7 @@ table {
 td {
   vertical-align: top;
   padding: 0;
-  border-bottom: 1px solid white;
+  border-bottom: 1px solid var(--blameBorder);
 }
 div.line {
   min-height: 1em;
@@ -60,10 +63,10 @@ div.line:before {
   padding-left: 4px;
 }
 .jumpbutton:hover {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: var(--jumpHoverBackground);
 }
 .jumpbutton:active {
-  color: white;
+  color: var(--jumpActive);
 }
 
 
