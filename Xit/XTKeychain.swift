@@ -19,12 +19,30 @@ final class XTKeychain: NSObject
                         account: account)
   }
   
+  private class func passwordQuery(host: String, path: String,
+                                   port: UInt16, account: String) -> CFDictionary
+  {
+    return [kSecClass: kSecClassInternetPassword,
+            kSecAttrServer: host,
+            kSecAttrPort: port,
+            kSecAttrAccount: account,
+            kSecReturnData: kCFBooleanTrue,
+            ] as CFDictionary
+  }
+  
   /// Gets a password from the keychain.
   class func findPassword(host: String, path: String,
                           port: UInt16, account: String) -> String?
   {
-    let (password, _) = findItem(host: host, path: path,
-                                 port: port, account: account)
+    var item: CFTypeRef?
+    let err = SecItemCopyMatching(passwordQuery(host: host, path: path,
+                                                port: port, account: account),
+                                  &item)
+    
+    guard err == errSecSuccess,
+          let passwordData = item as? Data,
+          let password = String(data: passwordData, encoding: .utf8)
+    else { return nil }
     
     return password
   }
@@ -87,21 +105,13 @@ final class XTKeychain: NSObject
                           port: UInt16, account: String,
                           password: String) throws
   {
-    let nsHost: NSString = host as NSString
-    let nsPath: NSString = path as NSString
-    let nsAccount: NSString = account as NSString
-    let nsPassword: NSString = password as NSString
-
-    let err = SecKeychainAddInternetPassword(
-        nil,
-        UInt32(nsHost.length), nsHost.utf8String,
-        0, nil,
-        UInt32(nsAccount.length), nsAccount.utf8String,
-        UInt32(nsPath.length), nsPath.utf8String,
-        port,
-        .HTTP, .httpBasic,
-        UInt32(nsPassword.length), nsPassword.utf8String!,
-        nil)
+    let err = SecItemAdd([kSecClass: kSecClassInternetPassword,
+                          kSecAttrServer: host,
+                          kSecAttrPort: port,
+                          kSecAttrAccount: account,
+                          kSecValueData: password,
+                          ] as CFDictionary, nil)
+    
     
     guard err == noErr
     else {

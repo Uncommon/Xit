@@ -59,18 +59,22 @@ class XTAccountsPrefsController: NSViewController
   @IBAction func addAccount(_ sender: AnyObject)
   {
     addController.resetFields()
-    view.window?.beginSheet(addController.window!) { (response) in
-      guard response == NSApplication.ModalResponse.OK
-      else { return }
-      guard let url = self.addController.location
-      else { return }
-      
-      self.addAccount(type: self.addController.accountType,
-                      user: self.addController.userName,
-                      password: self.addController.password,
-                      location: url as URL)
-      self.updateRefreshButton()
-    }
+    view.window?.beginSheet(addController.window!,
+                            completionHandler: addAccountDone)
+  }
+  
+  func addAccountDone(response: NSApplication.ModalResponse)
+  {
+    guard response == NSApplication.ModalResponse.OK
+    else { return }
+    guard let url = self.addController.location
+    else { return }
+    
+    self.addAccount(type: self.addController.accountType,
+                    user: self.addController.userName,
+                    password: self.addController.password,
+                    location: url as URL)
+    self.updateRefreshButton()
   }
   
   func addAccount(type: AccountType,
@@ -201,8 +205,10 @@ extension XTAccountsPrefsController: NSTableViewDelegate
     static let status = ¶"status"
   }
   
-  func statusImage(forAPI api: TeamCityAPI) -> NSImage?
+  func statusImage(forAPI api: TeamCityAPI?) -> NSImage?
   {
+    guard let api = api
+    else { return NSImage(named: .statusUnavailable) }
     var imageName: NSImage.Name?
     
     switch api.authenticationStatus {
@@ -257,8 +263,7 @@ extension XTAccountsPrefsController: NSTableViewDelegate
       case ColumnID.status:
         view.imageView?.isHidden = true
         if account.type == .teamCity {
-          guard let api = Services.shared.teamCityAPI(account)
-          else { break }
+          let api = Services.shared.teamCityAPI(account)
           
           if let image = statusImage(forAPI: api) {
             view.imageView?.image = image
