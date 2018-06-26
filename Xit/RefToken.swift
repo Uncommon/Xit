@@ -45,7 +45,7 @@ struct RefToken
     
     if let slashIndex = text.lastIndex(of: "/") {
       attrText.addAttribute(.foregroundColor,
-                            value: NSColor.refText.withAlphaComponent(0.6),
+                            value: fgColor.withAlphaComponent(0.6),
                             range: NSRange(text.startIndex...slashIndex,
                                            in: text))
     }
