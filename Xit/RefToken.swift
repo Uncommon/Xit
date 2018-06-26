@@ -44,10 +44,12 @@ struct RefToken
                                              attributes: attributes)
     
     if let slashIndex = text.lastIndex(of: "/") {
+      let pathRange = NSRange(text.startIndex...slashIndex, in: text)
+      
       attrText.addAttribute(.foregroundColor,
                             value: fgColor.withAlphaComponent(0.6),
-                            range: NSRange(text.startIndex...slashIndex,
-                                           in: text))
+                            range: pathRange)
+      attrText.removeAttribute(.shadow, range: pathRange)
     }
     attrText.draw(in: rect)
     
