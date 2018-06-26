@@ -5,14 +5,14 @@ protocol BuildStatusClient: class
   func buildStatusUpdated(branch: String, buildType: String)
 }
 
-// Making this generic on BranchListing, instead of using XTRepository,
-// crashes the compiler
 class BuildStatusCache: TeamCityAccessor
 {
   // This typealias resolves ambiguity for the compiler
   typealias BranchStatuses = [String: TeamCityAPI.Build] // Branch to build
 
   weak var remoteMgr: RemoteManagement!
+  // Eventually use BranchListing instead of XTRepository once the
+  // associatedtypes are gone.
   weak var branchLister: XTRepository?
   var statuses = [String: BranchStatuses]() // Build type to branch builds
   private var clients = [WeakClientRef]()

@@ -157,7 +157,8 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
   {
     let statusResource = buildStatus(branch, buildType: builtType)
     
-    statusResource.useData(owner: self) { (data) in
+    statusResource.useData(owner: self) {
+      (data) in
       guard let xml = data.content as? XMLDocument,
             let builds = xml.children?.first?.children
       else { return }
@@ -189,7 +190,8 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
   override func didAuthenticate()
   {
     // Get VCS roots, build repo URL -> vcs-root id map.
-    vcsRoots.useData(owner: self) { (data) in
+    vcsRoots.useData(owner: self) {
+      (data) in
       guard let xml = data.content as? XMLDocument
       else {
         NSLog("Couldn't parse vcs-roots xml")
@@ -379,7 +381,8 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
   /// Initiates the request for the list of build types.
   private func getBuildTypes()
   {
-    buildTypes.useData(owner: self) { (data) in
+    buildTypes.useData(owner: self) {
+      (data) in
       guard let xml = data.content as? XMLDocument
       else {
         NSLog("Couldn't parse build types xml")
@@ -406,7 +409,8 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
     for href in hrefs {
       let relativePath = href.removingPrefix(TeamCityAPI.rootPath)
       
-      resource(relativePath).useData(owner: self, closure: { (data) in
+      resource(relativePath).useData(owner: self, closure: {
+        (data) in
         waitingTypeCount -= 1
         defer {
           if waitingTypeCount == 0 {
@@ -429,24 +433,29 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
   /// Parses an individual build type to see which VCS roots it uses.
   private func parseBuildType(_ xml: XMLDocument)
   {
-    guard let buildType = xml.children?.first as? XMLElement,
-          let rootEntries = buildType.elements(forName: "vcs-root-entries").first
+    guard let buildType = xml.children?.first as? XMLElement
     else {
-      NSLog("Couldn't find root entries: \(xml)")
+      NSLog("Can't get first buildType element: \(xml)")
+      return
+    }
+
+    let name = buildType.attribute(forName: "name")?.stringValue ?? "❎"
+
+    guard let rootEntries = buildType.elements(forName: "vcs-root-entries").first
+    else {
       self.buildTypesStatus = .failed(nil)
       return
     }
     guard let buildTypeID = buildType.attribute(forName: "id")?.stringValue
     else {
-      NSLog("No ID for build type: \(xml)")
+      NSLog("No ID for build type \(name)")
       return
     }
-    
-    let name = buildType.attribute(forName: "name")?.stringValue
+
     let projectName = buildType.attribute(forName: "projectName")?.stringValue
     
     cachedBuildTypes.append(BuildType(id: buildTypeID,
-                                      name: name ?? "",
+                                      name: name,
                                       projectName: projectName ?? ""))
     
     let vcsIDs = rootEntries.childrenAttributes("id")
@@ -454,10 +463,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
     
     for vcsID in vcsIDs {
       guard let vcsURL = vcsRootMap[vcsID]
-      else {
-        NSLog("No match for VCS ID \(vcsID)")
-        continue
-      }
+      else { continue }
       
       urls.append(vcsURL)
     }
