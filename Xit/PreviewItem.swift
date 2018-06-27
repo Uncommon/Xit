@@ -6,9 +6,7 @@ import Quartz
 class PreviewItem: NSObject
 {
   var fileList: FileListModel!
-  { didSet { remakeTempFile() } }
   var path: String?
-  { didSet { remakeTempFile() } }
   var tempFolderPath: String?
 
   let urlLock = Mutex()
@@ -37,6 +35,13 @@ class PreviewItem: NSObject
       (cPath) -> Void in
       rmdir(cPath)
     }
+  }
+  
+  func load(fileList: FileListModel, path: String)
+  {
+    self.fileList = fileList
+    self.path = path
+    remakeTempFile()
   }
   
   func tempFilePath() -> String?
@@ -70,7 +75,9 @@ class PreviewItem: NSObject
         try contents.write(to: url)
         previewItemURL = url
       }
-      catch {}
+      catch {
+        previewItemURL = URL(string: "")
+      }
     }
   }
 }

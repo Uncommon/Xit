@@ -86,6 +86,17 @@ func != (a: RepositorySelection, b: RepositorySelection) -> Bool
   return !(a == b)
 }
 
+func == (a: FileListModel, b: FileListModel) -> Bool
+{
+  return type(of: a) == type(of: b) &&
+         a.selection == b.selection
+}
+
+func != (a: FileListModel, b: FileListModel) -> Bool
+{
+  return !(a == b)
+}
+
 extension FileListModel
 {
   /// Sets folder change status to match children.

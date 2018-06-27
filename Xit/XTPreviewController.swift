@@ -31,35 +31,38 @@ extension XTPreviewController: XTFileContentController
   
   public func load(path: String!, fileList: FileListModel)
   {
-    let previewView = qlView
+    let qlView = self.qlView
   
     if fileList is WorkspaceFileList {
       guard let urlString = fileList.fileURL(path)?.absoluteString
       else {
-        previewView.previewItem = nil
+        qlView.previewItem = nil
         isLoaded = true
         return
       }
       // Swift's URL doesn't conform to QLPreviewItem because it's not a class
       let nsurl = NSURL(string: urlString)
+      guard qlView.previewItem as? NSURL != nsurl
+      else {
+        return
+      }
     
       DispatchQueue.main.async {
-        previewView.previewItem = nsurl
+        qlView.previewItem = nsurl
         self.isLoaded = true
       }
     }
     else {
-      var previewItem: PreviewItem! = previewView.previewItem
-        as? PreviewItem
+      if let oldItem = qlView.previewItem as? PreviewItem,
+         oldItem.path == path && oldItem.fileList == fileList {
+        return
+      }
       
       DispatchQueue.main.async {
-        if previewItem == nil {
-          previewItem = PreviewItem()
-          previewView.previewItem = previewItem
-        }
-        previewItem.fileList = fileList
-        previewItem.path = path
-        previewView.refreshPreviewItem()
+        let item = PreviewItem()
+        
+        item.load(fileList: fileList, path: path)
+        qlView.previewItem = item
         self.isLoaded = true
       }
     }
