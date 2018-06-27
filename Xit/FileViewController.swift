@@ -43,7 +43,6 @@ class FileViewController: NSViewController
   @IBOutlet weak var headerTabView: NSTabView!
   @IBOutlet weak var previewTabView: NSTabView!
   @IBOutlet weak var previewPath: NSPathControl!
-  @IBOutlet weak var filePreview: QLPreviewView!
   @IBOutlet var headerController: CommitHeaderViewController!
   @IBOutlet var diffController: XTFileDiffController!
   @IBOutlet var blameController: BlameViewController!
@@ -154,6 +153,13 @@ class FileViewController: NSViewController
     indexTimer?.invalidate()
   }
 
+  override func awakeFromNib()
+  {
+    let qlTab = previewTabView.tabViewItem(withIdentifier: TabID.preview)!
+    
+    qlTab.view = previewController.view
+  }
+  
   func finishLoad(repository: XTRepository)
   {
     repo = repository
@@ -264,8 +270,10 @@ class FileViewController: NSViewController
   
   func refreshPreview()
   {
-    loadSelectedPreview(force: true)
-    //filePreview.refreshPreviewItem()
+    DispatchQueue.main.async {
+      self.loadSelectedPreview(force: true)
+      self.previewController.refreshPreviewItem()
+    }
   }
   
   func updatePreviewPath(_ path: String, isFolder: Bool)
@@ -339,8 +347,10 @@ class FileViewController: NSViewController
   
   func clearPreviews()
   {
-    contentControllers.forEach { $0.clear() }
-    updatePreviewPath("", isFolder: false)
+    DispatchQueue.main.async {
+      self.contentControllers.forEach { $0.clear() }
+      self.updatePreviewPath("", isFolder: false)
+    }
   }
   
   func clear()

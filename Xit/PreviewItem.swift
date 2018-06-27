@@ -3,15 +3,14 @@ import Quartz
 
 // QLPreviewItem requires NSObjectProtocol, so it's best to just inherit
 // from NSObject.
-class PreviewItem: NSObject, QLPreviewItem
+class PreviewItem: NSObject
 {
   var fileList: FileListModel!
-  { didSet { remakeTempFile() } }
   var path: String?
-  { didSet { remakeTempFile() } }
   var tempFolderPath: String?
 
-  var previewItemURL: URL!
+  let urlLock = Mutex()
+  var url = URL(string: "")
   
   override init()
   {
@@ -36,6 +35,13 @@ class PreviewItem: NSObject, QLPreviewItem
       (cPath) -> Void in
       rmdir(cPath)
     }
+  }
+  
+  func load(fileList: FileListModel, path: String)
+  {
+    self.fileList = fileList
+    self.path = path
+    remakeTempFile()
   }
   
   func tempFilePath() -> String?
@@ -69,7 +75,18 @@ class PreviewItem: NSObject, QLPreviewItem
         try contents.write(to: url)
         previewItemURL = url
       }
-      catch {}
+      catch {
+        previewItemURL = URL(string: "")
+      }
     }
+  }
+}
+
+extension PreviewItem: QLPreviewItem
+{
+  var previewItemURL: URL!
+  {
+    get { return urlLock.withLock { return url } }
+    set { urlLock.withLock { url = newValue } }
   }
 }

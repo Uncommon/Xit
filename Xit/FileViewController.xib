@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14269.12" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14269.12"/>
-        <plugIn identifier="com.apple.WebKitIBPlugin" version="14269.12"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
+        <plugIn identifier="com.apple.WebKitIBPlugin" version="14113"/>
+        <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+        <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="FileViewController" customModule="Xit" customModuleProvider="target">
@@ -17,7 +18,7 @@
                 <outlet property="headerController" destination="67" id="iWn-HL-Kjl"/>
                 <outlet property="headerSplitView" destination="68" id="7M2-oP-CZq"/>
                 <outlet property="headerTabView" destination="krT-Kf-MrD" id="t9e-WI-aqg"/>
-                <outlet property="previewController" destination="3g8-eR-FPJ" id="dy4-6W-vsZ"/>
+                <outlet property="previewController" destination="Aqt-Qq-ti3" id="1dY-oq-X5F"/>
                 <outlet property="previewPath" destination="gna-OS-Gx2" id="RDg-dh-fJV"/>
                 <outlet property="previewTabView" destination="52" id="62"/>
                 <outlet property="textController" destination="58" id="xo6-ln-nOf"/>
@@ -100,15 +101,14 @@
                                                             </textFieldCell>
                                                         </textField>
                                                         <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="2" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" horizontalCompressionResistancePriority="250" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0MB-6B-NyF">
-                                                            <rect key="frame" x="73" y="113" width="74" height="17"/>
+                                                            <rect key="frame" x="73" y="113" width="74" height="32"/>
                                                             <subviews>
                                                                 <button horizontalHuggingPriority="255" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ZnF-v8-c9U">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="74" height="17"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="74" height="32"/>
                                                                     <buttonCell key="cell" type="bevel" title="Description" bezelStyle="rounded" alignment="left" state="on" imageScaling="proportionallyDown" inset="2" id="cJF-21-Jzw">
                                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                         <font key="font" metaFont="system"/>
                                                                     </buttonCell>
-                                                                    <color key="contentTintColor" name="linkColor" catalog="System" colorSpace="catalog"/>
                                                                 </button>
                                                             </subviews>
                                                             <visibilityPriorities>
@@ -149,11 +149,11 @@
                                         <constraints>
                                             <constraint firstItem="10s-dp-YzO" firstAttribute="width" secondItem="xgO-S6-hTX" secondAttribute="width" constant="-2" id="Dxz-KE-od8"/>
                                         </constraints>
-                                        <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="6k8-Nn-dNW">
+                                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="6k8-Nn-dNW">
                                             <rect key="frame" x="-100" y="-100" width="701" height="16"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
-                                        <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="0.96153846153846156" horizontal="NO" id="OVn-Sc-AUm">
+                                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="0.96153846153846156" horizontal="NO" id="OVn-Sc-AUm">
                                             <rect key="frame" x="686" y="1" width="16" height="107"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
@@ -195,11 +195,16 @@
                                         <rect key="frame" x="0.0" y="0.0" width="163" height="210"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
-                                            <splitView fixedFrame="YES" dividerStyle="thin" translatesAutoresizingMaskIntoConstraints="NO" id="sXs-6V-dre">
+                                            <splitView dividerStyle="thin" translatesAutoresizingMaskIntoConstraints="NO" id="sXs-6V-dre">
                                                 <rect key="frame" x="-1" y="0.0" width="164" height="210"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             </splitView>
                                         </subviews>
+                                        <constraints>
+                                            <constraint firstItem="sXs-6V-dre" firstAttribute="centerX" secondItem="fDM-wU-1de" secondAttribute="centerX" id="H1p-n5-XdR"/>
+                                            <constraint firstAttribute="bottom" secondItem="sXs-6V-dre" secondAttribute="bottom" id="Zg2-tA-gCl"/>
+                                            <constraint firstItem="sXs-6V-dre" firstAttribute="top" secondItem="fDM-wU-1de" secondAttribute="top" id="ck0-Ma-r8C"/>
+                                            <constraint firstAttribute="trailing" secondItem="sXs-6V-dre" secondAttribute="trailing" id="mgU-aH-VMO"/>
+                                        </constraints>
                                     </view>
                                 </tabViewItem>
                             </tabViewItems>
@@ -232,7 +237,7 @@
                                             <segment toolTip="Text view" image="textTemplate" width="37">
                                                 <nil key="label"/>
                                             </segment>
-                                            <segment toolTip="QuickLook preview" image="NSQuickLookTemplate" enabled="NO">
+                                            <segment toolTip="QuickLook preview" image="NSQuickLookTemplate">
                                                 <nil key="label"/>
                                             </segment>
                                         </segments>
@@ -247,11 +252,11 @@
                                     <font key="font" metaFont="system"/>
                                     <tabViewItems>
                                         <tabViewItem label="Diff" identifier="diff" id="A2f-Wf-RNT">
-                                            <view key="view" ambiguous="YES" id="uQh-Df-4fp">
+                                            <view key="view" id="uQh-Df-4fp">
                                                 <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <webView ambiguous="YES" maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e4U-lz-eEd">
+                                                    <webView maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e4U-lz-eEd">
                                                         <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
                                                         <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
                                                             <nil key="identifier"/>
@@ -328,7 +333,7 @@
                                             </view>
                                         </tabViewItem>
                                         <tabViewItem label="Preview" identifier="preview" id="54">
-                                            <view key="view" id="55">
+                                            <view key="view" ambiguous="YES" id="55">
                                                 <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             </view>
@@ -518,7 +523,7 @@
                 <outlet property="webView" destination="e4U-lz-eEd" id="hsU-jx-H3R"/>
             </connections>
         </customObject>
-        <customObject id="3g8-eR-FPJ" customClass="XTPreviewController" customModule="Xit" customModuleProvider="target"/>
+        <viewController id="Aqt-Qq-ti3" customClass="XTPreviewController" customModule="Xit" customModuleProvider="target"/>
         <customObject id="qWY-M6-3vs" customClass="BlameViewController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="spinner" destination="2Oq-sY-aab" id="syc-ah-Sk6"/>
