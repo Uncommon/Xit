@@ -266,9 +266,12 @@ class MockSidebarOutline: NSOutlineView
                                                 width: 16, height: 16))
     let statusButton = NSButton(frame: NSRect(x: 171, y: 2,
                                               width: 16, height: 16))
+    let buttonContainer = NSView(frame: NSRect(x: 0, y: 0, width: 20, height: 16))
+    let missingImage = NSImageView(frame: NSRect(x: 0, y: 0, width: 20, height: 16))
     let statusText = NSButton(title: "10", target: nil, action: nil)
     
-    for view in [textField, imageView, statusImage, statusButton, statusText] {
+    for view in [textField, imageView, statusImage, statusButton, statusText,
+                 buttonContainer, missingImage] {
       result.addSubview(view)
     }
     result.textField = textField
@@ -276,6 +279,8 @@ class MockSidebarOutline: NSOutlineView
     result.statusImage = statusImage
     result.statusButton = statusButton
     result.statusText = statusText
+    result.buttonContainer = buttonContainer
+    result.missingImage = missingImage
     
     return result
   }
