@@ -5,20 +5,33 @@ import Quartz
 class XTPreviewController: NSViewController
 {
   var isLoaded: Bool = false
+  
+  var qlView: QLPreviewView { return view as! QLPreviewView }
+  
+  override func awakeFromNib()
+  {
+    // Having the QL view in the xib was causing odd problems
+    view = QLPreviewView(frame: NSRect(x: 0, y: 0, width: 50, height: 50),
+                         style: .normal)
+  }
+  
+  func refreshPreviewItem()
+  {
+    qlView.refreshPreviewItem()
+  }
 }
 
 extension XTPreviewController: XTFileContentController
 {
   public func clear()
   {
-    //(view as! QLPreviewView).previewItem = nil
+    qlView.previewItem = nil
     isLoaded = false
   }
   
   public func load(path: String!, fileList: FileListModel)
   {
-    return // TODO: fix preview
-    let previewView = view as! QLPreviewView
+    let previewView = qlView
   
     if fileList is WorkspaceFileList {
       guard let urlString = fileList.fileURL(path)?.absoluteString
@@ -30,21 +43,25 @@ extension XTPreviewController: XTFileContentController
       // Swift's URL doesn't conform to QLPreviewItem because it's not a class
       let nsurl = NSURL(string: urlString)
     
-      previewView.previewItem = nsurl
-      isLoaded = true
+      DispatchQueue.main.async {
+        previewView.previewItem = nsurl
+        self.isLoaded = true
+      }
     }
     else {
       var previewItem: PreviewItem! = previewView.previewItem
         as? PreviewItem
       
-      if previewItem == nil {
-        previewItem = PreviewItem()
-        previewView.previewItem = previewItem
+      DispatchQueue.main.async {
+        if previewItem == nil {
+          previewItem = PreviewItem()
+          previewView.previewItem = previewItem
+        }
+        previewItem.fileList = fileList
+        previewItem.path = path
+        previewView.refreshPreviewItem()
+        self.isLoaded = true
       }
-      previewItem.fileList = fileList
-      previewItem.path = path
-      previewView.refreshPreviewItem()
-      isLoaded = true
     }
   }
 }

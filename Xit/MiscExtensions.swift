@@ -151,6 +151,18 @@ extension NSTextField
   }
 }
 
+extension NSTabView
+{
+  func tabViewItem(withIdentifier identifier: Any) -> NSTabViewItem?
+  {
+    let index = indexOfTabViewItem(withIdentifier: identifier)
+    guard index != NSNotFound
+    else { return nil }
+    
+    return tabViewItem(at: index)
+  }
+}
+
 extension NSTableView
 {
   /// Returns a set of all visible row indexes

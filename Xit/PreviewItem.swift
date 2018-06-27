@@ -3,7 +3,7 @@ import Quartz
 
 // QLPreviewItem requires NSObjectProtocol, so it's best to just inherit
 // from NSObject.
-class PreviewItem: NSObject, QLPreviewItem
+class PreviewItem: NSObject
 {
   var fileList: FileListModel!
   { didSet { remakeTempFile() } }
@@ -11,7 +11,8 @@ class PreviewItem: NSObject, QLPreviewItem
   { didSet { remakeTempFile() } }
   var tempFolderPath: String?
 
-  var previewItemURL: URL!
+  let urlLock = Mutex()
+  var url = URL(string: "")
   
   override init()
   {
@@ -71,5 +72,14 @@ class PreviewItem: NSObject, QLPreviewItem
       }
       catch {}
     }
+  }
+}
+
+extension PreviewItem: QLPreviewItem
+{
+  var previewItemURL: URL!
+  {
+    get { return urlLock.withLock { return url } }
+    set { urlLock.withLock { url = newValue } }
   }
 }
