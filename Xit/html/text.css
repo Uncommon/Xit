@@ -10,12 +10,12 @@ body {
   --wrapwidth: 100%;
 }
 div.page {
-  background-color: #EEE;
-  border-bottom: #888 1px;
+  background-color: var(--leftBackground);
+  border-bottom: var(--hunkBottomBorder) 1px;
   width: var(--wrapwidth, 100%);
 }
 div.page div {
-  background-color: white;
+  background-color: var(--textBackground);
   margin-left: 5.5ex;
   min-height: 1em;
   padding-left: 1ex;
