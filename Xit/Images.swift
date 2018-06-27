@@ -18,7 +18,7 @@ extension NSImage.Name
   static let xtSubmoduleTemplate: NSImage.Name = ◊"submoduleTemplate"
   static let xtTagTemplate: NSImage.Name = ◊"tagTemplate"
   static let xtTeamCityTemplate: NSImage.Name = ◊"teamcityTemplate"
-  static let xtTracking: NSImage.Name = ◊"tracking"
+  static let xtTracking: NSImage.Name = ◊"trackingTemplate"
   static let xtTrackingMissing: NSImage.Name = ◊"trackingMissing"
   static let xtUnstageAllTemplate: NSImage.Name = ◊"unstageAllTemplate"
   static let xtUnstageButtonHover: NSImage.Name = ◊"unstageButtonHover"

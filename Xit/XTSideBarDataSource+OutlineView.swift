@@ -137,7 +137,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
       if sideBarItem is XTLocalBranchItem {
         configureLocalBranchItem(sideBarItem: sideBarItem, dataView: dataView)
       }
-      dataView.statusButton.isHidden = dataView.statusButton.image == nil
+      dataView.buttonContainer.isHidden = dataView.statusButton.image == nil
       if sideBarItem.editable {
         textField.formatter = refFormatter
         textField.target = viewController
@@ -161,6 +161,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
   fileprivate func configureLocalBranchItem(sideBarItem: XTSideBarItem,
                                             dataView: XTSidebarTableCellView)
   {
+    dataView.missingImage.isHidden = true
     if let statusText = graphText(for: sideBarItem) {
       dataView.statusText.title = statusText
       dataView.statusText.isHidden = false
@@ -170,12 +171,12 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
         case .none:
           break
         case .missing(let tracking):
-          dataView.statusButton.image =
-                NSImage(named: .xtTrackingMissing)
+          dataView.statusButton.image = NSImage(named: .xtTracking)
           dataView.statusButton.toolTip = tracking + " (missing)"
           dataView.statusButton.target = self
           dataView.statusButton.action =
               #selector(self.missingTrackingBranch(_:))
+          dataView.missingImage.isHidden = false
         case .set(let tracking):
           dataView.statusButton.image = NSImage(named: .xtTracking)
           dataView.statusButton.toolTip = tracking
