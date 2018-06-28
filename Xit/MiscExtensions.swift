@@ -325,6 +325,11 @@ extension Array
     }
     return nil
   }
+
+  func firstOfType<T>() -> T?
+  {
+    return firstResult { $0 as? T }
+  }
 }
 
 extension Array where Element: Comparable

@@ -62,6 +62,14 @@ class AppDelegate: NSObject
 
     return controller
   }
+  
+  @objc
+  func dismissOpenPanel()
+  {
+    if let panel: NSOpenPanel = NSApp.windows.firstOfType() {
+      panel.close()
+    }
+  }
 }
 
 extension AppDelegate: NSMenuDelegate

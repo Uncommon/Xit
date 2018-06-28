@@ -29,6 +29,7 @@
     _repoURL = absoluteURL;
     _repository = [[XTRepository alloc] initWithURL:_repoURL];
   }
+  [(AppDelegate*)NSApp.delegate dismissOpenPanel];
   return self;
 }
 
