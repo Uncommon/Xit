@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14109" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14109"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -17,7 +16,7 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customObject id="165" customClass="XTRefFormatter"/>
-        <customObject id="IYz-w0-bcN" customClass="XTHistoryTableController" customModule="Xit" customModuleProvider="target">
+        <customObject id="IYz-w0-bcN" customClass="HistoryTableController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="view" destination="No3-Ik-sWu" id="rsr-3x-Jbg"/>
             </connections>
@@ -35,7 +34,7 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <clipView key="contentView" id="QCe-lk-wQ6">
                                 <rect key="frame" x="1" y="0.0" width="726" height="277"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <autoresizingMask key="autoresizingMask"/>
                                 <subviews>
                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="dEf-hx-ZjL" viewBased="YES" id="No3-Ik-sWu" customClass="HistoryTableView" customModule="Xit" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="729.5" height="254"/>
@@ -57,12 +56,12 @@
                                                 </textFieldCell>
                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                 <prototypeCellViews>
-                                                    <tableCellView identifier="commit" id="oW4-S9-MQ4" customClass="XTHistoryCellView" customModule="Xit" customModuleProvider="target">
-                                                        <rect key="frame" x="1" y="1" width="423" height="17"/>
+                                                    <tableCellView identifier="commit" id="oW4-S9-MQ4" customClass="HistoryCellView" customModule="Xit" customModuleProvider="target">
+                                                        <rect key="frame" x="1" y="1" width="422.5" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" id="oMe-ke-Jkz" customClass="ExpansionTextField" customModule="Xit" customModuleProvider="target">
-                                                                <rect key="frame" x="76" y="0.0" width="347" height="17"/>
+                                                                <rect key="frame" x="76" y="0.0" width="346.5" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="g1y-W2-Nej">
                                                                     <font key="font" metaFont="system"/>

@@ -1,12 +1,12 @@
 import XCTest
 @testable import Xit
 
-class XTCommitLinesTest: XCTestCase
+class CommitLinesTest: XCTestCase
 {
   // Only the SHA/OID matters
   let entry = CommitEntry(commit: GenericCommit(sha: "a",
                                                 parentOIDs: []))
-  let history = XTCommitHistory<StringOID>()
+  let history = CommitHistory<StringOID>()
   
   override func setUp()
   {

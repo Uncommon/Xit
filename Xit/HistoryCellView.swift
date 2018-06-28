@@ -1,7 +1,7 @@
 import Cocoa
 
 /// Cell view that draws the graph lines next to the text.
-class XTHistoryCellView: NSTableCellView
+class HistoryCellView: NSTableCellView
 {
   typealias GitCommitEntry = CommitEntry
   
@@ -24,6 +24,7 @@ class XTHistoryCellView: NSTableCellView
     static let line: CGFloat = 2.0
     static let column: CGFloat = 8.0
   }
+  
   enum Margins
   {
     static let left: CGFloat = 4.0
@@ -128,32 +129,32 @@ class XTHistoryCellView: NSTableCellView
     switch (line.parentIndex, line.childIndex) {
       
       case (nil, let childIndex?):
-        path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(childIndex),
+        path.move(to: NSPoint(x: HistoryCellView.columnCenter(childIndex),
                               y: bounds.size.height))
         path.relativeLine(to: NSPoint(x: 0, y: -cornerOffset(dotOffset,
                                                              childIndex)))
-        path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(dotOffset),
+        path.line(to: NSPoint(x: HistoryCellView.columnCenter(dotOffset),
                               y: bounds.size.height/2))
       
       case (let parentIndex?, nil):
-        path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(parentIndex),
+        path.move(to: NSPoint(x: HistoryCellView.columnCenter(parentIndex),
                               y: 0))
         path.relativeLine(to: NSPoint(x: 0, y: cornerOffset(dotOffset,
                                                             parentIndex)))
-        path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(dotOffset),
+        path.line(to: NSPoint(x: HistoryCellView.columnCenter(dotOffset),
                               y: bounds.size.height/2))
       
       case (let parentIndex?, let childIndex?):
-        path.move(to: NSPoint(x: XTHistoryCellView.columnCenter(childIndex),
+        path.move(to: NSPoint(x: HistoryCellView.columnCenter(childIndex),
                               y: bounds.size.height))
         if parentIndex != childIndex {
           let cornerOffset = self.cornerOffset(childIndex, parentIndex)
           
           path.relativeLine(to: NSPoint(x: 0, y: -cornerOffset))
-          path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(parentIndex),
+          path.line(to: NSPoint(x: HistoryCellView.columnCenter(parentIndex),
                                 y: cornerOffset))
         }
-        path.line(to: NSPoint(x: XTHistoryCellView.columnCenter(parentIndex),
+        path.line(to: NSPoint(x: HistoryCellView.columnCenter(parentIndex),
                               y: 0))
       
       case (nil, nil):
@@ -174,8 +175,8 @@ class XTHistoryCellView: NSTableCellView
       else { continue }
       
       let colorIndex = Int(line.colorIndex) %
-                       XTHistoryCellView.lineColors.count
-      let lineColor =  XTHistoryCellView.lineColors[colorIndex]
+                       HistoryCellView.lineColors.count
+      let lineColor =  HistoryCellView.lineColors[colorIndex]
       
       path.lineJoinStyle = .roundLineJoinStyle
       if line.parentIndex != line.childIndex {
@@ -189,12 +190,12 @@ class XTHistoryCellView: NSTableCellView
       
       let dotSize: CGFloat = 6.0
       let dotPath = NSBezierPath(ovalIn:
-              NSRect(x: XTHistoryCellView.columnCenter(dotOffset) - dotSize/2,
+              NSRect(x: HistoryCellView.columnCenter(dotOffset) - dotSize/2,
                      y: bounds.size.height/2 - dotSize/2,
                      width: dotSize, height: dotSize))
       let dotColorIndex = Int(dotColorIndex) %
-                          XTHistoryCellView.lineColors.count
-      let baseDotColor = XTHistoryCellView.lineColors[dotColorIndex]
+                          HistoryCellView.lineColors.count
+      let baseDotColor = HistoryCellView.lineColors[dotColorIndex]
       let dotColor = baseDotColor.blended(withFraction: 0.5,
                                           of: NSColor.textColor) ?? baseDotColor
       

@@ -6,7 +6,7 @@ class XTHistoryViewController: NSViewController
 {
   @IBOutlet weak var historyTable: NSTableView!
   @IBOutlet weak var mainSplitView: NSSplitView!
-  @IBOutlet weak var tableController: XTHistoryTableController!
+  @IBOutlet weak var tableController: HistoryTableController!
   
   private(set) var fileViewController: FileViewController!
   
@@ -77,7 +77,7 @@ class XTHistoryViewController: NSViewController
   
   func reload()
   {
-    (historyTable.dataSource as? XTHistoryTableController)?.reload()
+    (historyTable.dataSource as? HistoryTableController)?.reload()
     fileViewController.reload()
   }
   

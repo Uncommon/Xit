@@ -82,10 +82,10 @@ extension BranchResult: CustomStringConvertible
   }
 }
 
-public typealias GitCommitHistory = XTCommitHistory<GitOID>
+public typealias GitCommitHistory = CommitHistory<GitOID>
 
 /// Maintains the history list, allowing for dynamic adding and removing.
-public class XTCommitHistory<ID: OID & Hashable>: NSObject
+public class CommitHistory<ID: OID & Hashable>: NSObject
 {
   public typealias Entry = CommitEntry
   typealias Connection = CommitConnection<ID>

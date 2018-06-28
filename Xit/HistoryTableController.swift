@@ -2,7 +2,7 @@ import Cocoa
 
 fileprivate let batchSize = 500
 
-public class XTHistoryTableController: NSViewController
+public class HistoryTableController: NSViewController
 {
   enum ColumnID
   {
@@ -255,7 +255,7 @@ public class XTHistoryTableController: NSViewController
   }
 }
 
-extension XTHistoryTableController: NSTableViewDelegate
+extension HistoryTableController: NSTableViewDelegate
 {
   public func tableView(_ tableView: NSTableView,
                         viewFor tableColumn: NSTableColumn?,
@@ -275,7 +275,7 @@ extension XTHistoryTableController: NSTableViewDelegate
     
     switch tableColumn.identifier {
       case ColumnID.commit:
-        let historyCell = result as! XTHistoryCellView
+        let historyCell = result as! HistoryCellView
         
         historyCell.currentBranch = repository.currentBranch
         historyCell.refs = repository.refs(at: entry.commit.sha)
@@ -324,7 +324,7 @@ extension XTHistoryTableController: NSTableViewDelegate
   }
 }
 
-extension XTHistoryTableController: XTTableViewDelegate
+extension HistoryTableController: XTTableViewDelegate
 {
   func tableViewClickedSelectedRow(_ tableView: NSTableView)
   {
@@ -345,7 +345,7 @@ extension XTHistoryTableController: XTTableViewDelegate
   }
 }
 
-extension XTHistoryTableController: NSTableViewDataSource
+extension HistoryTableController: NSTableViewDataSource
 {
   public func numberOfRows(in tableView: NSTableView) -> Int
   {

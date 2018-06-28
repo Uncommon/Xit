@@ -98,9 +98,9 @@ extension Xit.CommitConnection: CustomDebugStringConvertible
 }
 
 
-typealias TestCommitHistory = XTCommitHistory<StringOID>
+typealias TestCommitHistory = CommitHistory<StringOID>
 
-class XTCommitHistoryTest: XCTestCase
+class CommitHistoryTest: XCTestCase
 {
   typealias StringConnection = CommitConnection<StringOID>
   
