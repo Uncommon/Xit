@@ -314,16 +314,10 @@ extension Array
   }
   
   /// Returns the first non-nil result of calling `predicate` on the array's
-  /// elements. Effectively the same as array.compactMap(predicate).first but
-  /// more efficient.
+  /// elements.
   func firstResult<T>(_ predicate: (Element) -> T?) -> T?
   {
-    for element in self {
-      if let result = predicate(element) {
-        return result
-      }
-    }
-    return nil
+    return lazy.compactMap(predicate).first
   }
 
   func firstOfType<T>() -> T?
