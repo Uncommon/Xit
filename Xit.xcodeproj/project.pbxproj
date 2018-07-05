@@ -686,7 +686,7 @@
 			isa = PBXGroup;
 			children = (
 				C97328661D11DE6C00C56B9E /* Document */,
-				C97328671D11DECD00C56B9E /* Repository */,
+				C9790D0620EED3F90024D3EA /* Repository */,
 				C95BF66B1FCF5E600020C51D /* Changes */,
 				C936AD0D1D4C156000C5ADC3 /* Operations */,
 				C973285E1D11DD4A00C56B9E /* Sidebar */,
@@ -900,7 +900,7 @@
 			name = Document;
 			sourceTree = "<group>";
 		};
-		C97328671D11DECD00C56B9E /* Repository */ = {
+		C9790D0620EED3F90024D3EA /* Repository */ = {
 			isa = PBXGroup;
 			children = (
 				C92E30FA1D4FF4F0001985F7 /* GitCommit.swift */,
@@ -942,7 +942,7 @@
 				C9FFCC871FB3B1D000FA2F21 /* TreeLoader.swift */,
 				C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */,
 			);
-			name = Repository;
+			path = Repository;
 			sourceTree = "<group>";
 		};
 		C9C773151D26F28900329493 /* Preferences */ = {
