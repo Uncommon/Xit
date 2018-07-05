@@ -59,7 +59,6 @@ public class HistoryTableController: NSViewController
     let center = NotificationCenter.default
   
     center.removeObserver(self)
-    history.abort()
   }
   
   public override func viewDidLoad()

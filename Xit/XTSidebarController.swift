@@ -213,8 +213,8 @@ class XTSidebarController: NSViewController, SidebarHandler
       self?.selectedModelChanged()
     }
     amendingObserver = repoController.observe(\.isAmending) {
-      (controller, _) in
-      self.sidebarDS.setAmending(controller.isAmending)
+      [weak self] (controller, _) in
+      self?.sidebarDS.setAmending(controller.isAmending)
     }
     repoController.addObserver(
         self, forKeyPath: #keyPath(XTWindowController.isAmending),

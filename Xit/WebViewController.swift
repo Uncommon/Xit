@@ -40,6 +40,12 @@ class WebViewController: NSViewController
     }
   }
   
+  deinit
+  {
+    webView.uiDelegate = nil
+    webView.frameLoadDelegate = nil
+  }
+  
   func updateFont()
   {
     let font = PreviewsPrefsController.Default.font()

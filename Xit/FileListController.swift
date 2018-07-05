@@ -55,7 +55,7 @@ class FileListController: NSViewController
   let fileListDataSource: FileChangesDataSource
   let fileTreeDataSource: FileTreeDataSource
   
-  var repoController: RepositoryController!
+  weak var repoController: RepositoryController!
   {
     didSet { didSetRepoController() }
   }
