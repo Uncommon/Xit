@@ -93,13 +93,13 @@ public class GitBranch: Branch
   }
 
   var sha: String? { return oid?.sha }
-  var targetCommit: XTCommit?
+  var targetCommit: GitCommit?
   {
     guard let oid = oid,
           let repo = git_reference_owner(branchRef)
     else { return nil }
     
-    return XTCommit(oid: oid, repository: repo)
+    return GitCommit(oid: oid, repository: repo)
   }
   var remoteName: String? { return nil }
   

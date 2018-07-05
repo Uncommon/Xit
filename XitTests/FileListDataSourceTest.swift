@@ -99,7 +99,7 @@ class FileListDataSourceTest: XTTest
                                outputBlock: nil)
     
     let repoController = FakeRepoController(repository: repository)
-    let headCommit = XTCommit(sha: repository.headSHA!, repository: repository)!
+    let headCommit = GitCommit(sha: repository.headSHA!, repository: repository)!
     
     repoController.selection = CommitSelection(repository: repository,
                                                commit: headCommit)

@@ -55,7 +55,7 @@ extension Commit
   { return sha.firstSix() }
 }
 
-public class XTCommit: Commit
+public class GitCommit: Commit
 {
   let commit: OpaquePointer
   let mutex = Mutex()
@@ -77,7 +77,7 @@ public class XTCommit: Commit
   }
   public let oid: OID
   public private(set) lazy var parentOIDs: [OID] =
-      XTCommit.calculateParentOIDs(self.commit)
+      GitCommit.calculateParentOIDs(self.commit)
   
   public var repository: OpaquePointer
   { return git_commit_owner(commit) }
@@ -232,7 +232,7 @@ public class XTCommit: Commit
   }
 }
 
-public func == (a: XTCommit, b: XTCommit) -> Bool
+public func == (a: GitCommit, b: GitCommit) -> Bool
 {
   return (a.oid as! GitOID) == (b.oid as! GitOID)
 }

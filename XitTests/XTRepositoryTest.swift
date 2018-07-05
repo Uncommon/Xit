@@ -534,7 +534,7 @@ class XTRepositoryTest: XTTest
   func testContents()
   {
     guard let headSHA = repository.headSHA,
-          let headCommit = XTCommit(sha: headSHA, repository: repository)
+          let headCommit = GitCommit(sha: headSHA, repository: repository)
     else {
         XCTFail("no head SHA")
         return
@@ -710,7 +710,7 @@ class XTRepositoryTest: XTTest
     try! repository.commit(message: "deleted", amend: false,
                            outputBlock: nil)
     
-    guard let commit = XTCommit(ref: "HEAD", repository: repository)
+    guard let commit = GitCommit(ref: "HEAD", repository: repository)
     else {
       XCTFail("no HEAD")
       return
@@ -727,7 +727,7 @@ class XTRepositoryTest: XTTest
   
   func testAddedDiff()
   {
-    guard let commit = XTCommit(ref: "HEAD", repository: repository)
+    guard let commit = GitCommit(ref: "HEAD", repository: repository)
     else {
       XCTFail("no HEAD")
       return

@@ -66,7 +66,7 @@ extension XTRepository: FileContents
   public func contentsOfFile(path: String, at commit: Commit) -> Data?
   {
     // TODO: make a Tree protocol to eliminate this cast
-    guard let commit = commit as? XTCommit,
+    guard let commit = commit as? GitCommit,
           let tree = commit.tree,
           let entry = tree.entry(path: path),
           let blob = entry.object as? Blob
@@ -145,7 +145,7 @@ extension XTRepository: FileDiffing
                         commitOID: OID,
                         parentOID: OID?) -> PatchMaker.PatchResult?
   {
-    guard let toCommit = commit(forOID: commitOID as! GitOID) as? XTCommit
+    guard let toCommit = commit(forOID: commitOID as! GitOID) as? GitCommit
     else { return nil }
     
     let parentCommit = parentOID.flatMap({ commit(forOID: $0) })

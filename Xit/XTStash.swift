@@ -75,9 +75,9 @@ public class XTStash: NSObject, Stash
 
   func headBlobForPath(_ path: String) -> Blob?
   {
-    guard let mainCommit = self.mainCommit as? XTCommit,
+    guard let mainCommit = self.mainCommit as? GitCommit,
           let parentOID = mainCommit.parentOIDs.first,
-          let parent = XTCommit(oid: parentOID, repository: mainCommit.repository),
+          let parent = GitCommit(oid: parentOID, repository: mainCommit.repository),
           let headEntry = parent.tree?.entry(path: path)
     else { return nil }
     
@@ -86,7 +86,7 @@ public class XTStash: NSObject, Stash
 
   public func stagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
   {
-    guard let indexCommit = self.indexCommit as? XTCommit
+    guard let indexCommit = self.indexCommit as? GitCommit
     else { return nil }
     guard repo.isTextFile(path, context: .commit(indexCommit))
     else { return .binary }
@@ -102,7 +102,7 @@ public class XTStash: NSObject, Stash
 
   public func unstagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
   {
-    guard let indexCommit = self.indexCommit as? XTCommit
+    guard let indexCommit = self.indexCommit as? GitCommit
     else { return nil }
 
     var indexBlob: Blob? = nil
@@ -114,7 +114,7 @@ public class XTStash: NSObject, Stash
       indexBlob = indexEntry.object as? Blob
     }
     
-    if let untrackedCommit = self.untrackedCommit as? XTCommit,
+    if let untrackedCommit = self.untrackedCommit as? GitCommit,
        let untrackedEntry = untrackedCommit.tree?.entry(path: path) {
       if !repo.isTextFile(path, context: .commit(untrackedCommit)) {
         return .binary

@@ -4,7 +4,7 @@ import Foundation
 class CommitSelection: RepositorySelection
 {
   unowned var repository: FileChangesRepo
-  let commit: XTCommit
+  let commit: Commit
   var shaToSelect: String? { return commit.sha }
   var canCommit: Bool { return false }
   var fileList: FileListModel { return commitFileList }
@@ -18,7 +18,7 @@ class CommitSelection: RepositorySelection
   init(repository: FileChangesRepo, commit: Commit)
   {
     self.repository = repository
-    self.commit = commit as! XTCommit
+    self.commit = commit
     
     commitFileList = CommitFileList(selection: self)
   }

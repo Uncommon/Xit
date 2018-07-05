@@ -56,7 +56,7 @@ class BlameTest: XTTest
   func testCommitBlame()
   {
     let headSHA = repository.headSHA!
-    let headCommit = XTCommit(sha: headSHA, repository: repository)!
+    let headCommit = GitCommit(sha: headSHA, repository: repository)!
     let headOID = GitOID(sha: headSHA)!
     let commitModel = CommitSelection(repository: repository,
                                     commit: headCommit)

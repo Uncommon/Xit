@@ -164,8 +164,8 @@ extension XTRepository
     }
   }
   
-  private func normalMerge(fromBranch: GitBranch, fromCommit: XTCommit,
-                           targetBranch: GitBranch, targetCommit: XTCommit) throws
+  private func normalMerge(fromBranch: GitBranch, fromCommit: GitCommit,
+                           targetBranch: GitBranch, targetCommit: GitCommit) throws
   {
     do {
       var annotated: OpaquePointer? = try annotatedCommit(branch: fromBranch)
@@ -356,7 +356,7 @@ extension XTRepository
   /// Wraps `git_annotated_commit_lookup`
   /// - parameter commit: The commit to look up.
   /// - returns: An `OpaquePointer` wrapping a `git_annotated_commit`
-  func annotatedCommit(_ commit: XTCommit) throws -> OpaquePointer
+  func annotatedCommit(_ commit: GitCommit) throws -> OpaquePointer
   {
     guard let oid = commit.oid as? GitOID
     else { throw Error.unexpected }

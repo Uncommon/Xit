@@ -5,7 +5,7 @@ extension XTRepository
   func createTag(name: String, targetOID: OID, message: String?) throws
   {
     try performWriting {
-      guard let commit = XTCommit(oid: targetOID,
+      guard let commit = GitCommit(oid: targetOID,
                                   repository: gitRepo)
       else { throw Error.notFound }
       
@@ -28,7 +28,7 @@ extension XTRepository
   func createLightweightTag(name: String, targetOID: OID) throws
   {
     try performWriting {
-      guard let commit = XTCommit(oid: targetOID,
+      guard let commit = GitCommit(oid: targetOID,
                                   repository: gitRepo)
       else { throw Error.notFound }
       
@@ -215,7 +215,7 @@ extension XTRepository: Stashing
           let oid = entry.updatedOID.map({ GitOID(oid: $0.git_oid().pointee) })
     else { return nil }
     
-    return XTCommit(oid: oid, repository: gitRepo)
+    return GitCommit(oid: oid, repository: gitRepo)
   }
 }
 

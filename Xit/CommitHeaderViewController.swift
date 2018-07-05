@@ -34,7 +34,7 @@ class CommitHeaderViewController: NSViewController
   func loadHeader()
   {
     guard let commitSHA = commitSHA,
-          let commit = repository.commit(forSHA: commitSHA) as? XTCommit
+          let commit = repository.commit(forSHA: commitSHA)
     else {
       nameField.stringValue = "No selection"
       parentsLabel.stringValue = ""
@@ -114,7 +114,7 @@ class CommitHeaderViewController: NSViewController
   func chooseParent(_ sender: Any?)
   {
     guard let commitSHA = commitSHA,
-          let commit = repository.commit(forSHA: commitSHA) as? XTCommit,
+          let commit = repository.commit(forSHA: commitSHA) as? GitCommit,
           let control = sender as? NSControl
     else { return }
     

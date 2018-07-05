@@ -347,12 +347,12 @@ extension XTRepository: CommitStorage
   
   public func commit(forSHA sha: String) -> Commit?
   {
-    return XTCommit(sha: sha, repository: self)
+    return GitCommit(sha: sha, repository: self)
   }
   
   public func commit(forOID oid: OID) -> Commit?
   {
-    return XTCommit(oid: oid, repository: gitRepo)
+    return GitCommit(oid: oid, repository: gitRepo)
   }
   
   public func walker() -> RevWalk?
