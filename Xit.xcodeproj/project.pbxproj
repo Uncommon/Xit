@@ -596,7 +596,6 @@
 				89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */,
 				89369A721EDF47FC001B69C6 /* NSTask+Throwing.h */,
 				89369A731EDF47FC001B69C6 /* NSTask+Throwing.m */,
-				894C8DE51CCD06FE001A4B80 /* Xit-Bridging-Header.h */,
 				C967C4AE1F96BA55002166F7 /* Cache.swift */,
 				89880ED020D02F9B007042F8 /* ClickableTextField.swift */,
 				C947367D1DF08C03000E3A05 /* ContextMenuOutlineView.swift */,
@@ -617,7 +616,7 @@
 				C957B84A1D2D53040040F858 /* XTSheetController.swift */,
 				897056EC20E412AC0020F5E9 /* ClickThroughImageView.swift */,
 			);
-			name = Utils;
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		31C7C12F13ECC6C700A65FE9 /* HistoryView */ = {
@@ -696,6 +695,7 @@
 				C9C773151D26F28900329493 /* Preferences */,
 				C929D0541D42784000D7DC52 /* Services */,
 				31C7C12A13EC730500A65FE9 /* Utils */,
+				894C8DE51CCD06FE001A4B80 /* Xit-Bridging-Header.h */,
 				C90F92771E0199E400FE8589 /* AppDelegate.swift */,
 				C9F764841F72F486000A208B /* Images.swift */,
 				C93FFCA91F0FD65100FDDD78 /* Defaults.plist */,
