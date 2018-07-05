@@ -59,9 +59,10 @@ public class HistoryTableController: NSViewController
     let center = NotificationCenter.default
   
     center.removeObserver(self)
+    history.abort()
   }
   
-  override public func viewDidLoad()
+  public override func viewDidLoad()
   {
     super.viewDidLoad()
   
@@ -82,6 +83,11 @@ public class HistoryTableController: NSViewController
       [weak self] in
       self?.postProgress(batchSize: $0, batch: $1, pass: $2, value: $3)
     }
+  }
+  
+  public override func viewWillDisappear()
+  {
+    history.abort()
   }
   
   /// Reloads the commit history from scratch.

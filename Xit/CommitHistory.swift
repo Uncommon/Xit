@@ -95,6 +95,8 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
   
   var commitLookup = [ID: Entry]()
   var entries = [Entry]()
+  private var abortFlag = false
+  private var mutex = Mutex()
   
   // batchSize, batch, pass, value
   // XTHistoryTableController.postProgress assumes 2 passes.
@@ -111,6 +113,27 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
   {
     commitLookup.removeAll()
     entries.removeAll()
+    resetAbort()
+  }
+  
+  /// Signals that processing should be stopped.
+  public func abort()
+  {
+    mutex.withLock {
+      abortFlag = true
+    }
+  }
+  
+  public func resetAbort()
+  {
+    mutex.withLock {
+      abortFlag = false
+    }
+  }
+  
+  func checkAbort() -> Bool
+  {
+    return mutex.withLock { abortFlag }
   }
   
   /// Creates a list of commits for the branch starting at the given commit, and
@@ -184,6 +207,9 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
     } while true
     
     for result in results.reversed() {
+      if checkAbort() {
+        break
+      }
       for (parent, after) in result.queue.reversed() {
         process(parent, afterCommit: after)
       }
@@ -256,6 +282,10 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
     var startingConnections = [Connection]()
     
     while batchStart < entries.count {
+      if checkAbort() {
+        break
+      }
+
       let batchSize = min(batchSize, entries.count - batchStart)
       let (connections, newStart) =
             generateConnections(batchStart: batchStart,
@@ -266,6 +296,7 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
                             0, 0, 0)
       DispatchQueue.concurrentPerform(iterations: batchSize) {
         (index) in
+        guard !checkAbort() else { return }
         generateLines(entry: entries[index + batchStart],
                       connections: connections[index])
         postProgress?(batchSize, batchStart/batchSize, 1, index)
