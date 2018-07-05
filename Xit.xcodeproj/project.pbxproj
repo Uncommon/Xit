@@ -631,7 +631,7 @@
 				C935BD7D1E8BFA4F00BE51F0 /* DateCellView.swift */,
 				89880EDA20D08674007042F8 /* RefToken.swift */,
 			);
-			name = HistoryView;
+			path = HistoryView;
 			sourceTree = "<group>";
 		};
 		C3FA46F113D0F8E200AC4F9B = {
@@ -689,7 +689,7 @@
 				C9790D0620EED3F90024D3EA /* Repository */,
 				C9790D0720EED46E0024D3EA /* Changes */,
 				C9790D0920EED4E10024D3EA /* Operations */,
-				C973285E1D11DD4A00C56B9E /* Sidebar */,
+				C9790D0C20EED5880024D3EA /* Sidebar */,
 				31C7C12F13ECC6C700A65FE9 /* HistoryView */,
 				DD39D1F21918306B00827532 /* FileView */,
 				C9C773151D26F28900329493 /* Preferences */,
@@ -796,7 +796,7 @@
 				C95BF6531FCF5BC90020C51D /* FileContentProtocols.swift */,
 				C95ECD041EB11E310000DB78 /* WebViewController.swift */,
 			);
-			name = Previews;
+			path = Previews;
 			sourceTree = "<group>";
 		};
 		C935BD7C1E8AB16F00BE51F0 /* File List */ = {
@@ -811,29 +811,7 @@
 				899DB18D1CE0EA3A00760270 /* WorkspaceTreeBuilder.swift */,
 				C9FE06C620178A8C0001EB2B /* FileListView.xib */,
 			);
-			name = "File List";
-			sourceTree = "<group>";
-		};
-		C973285E1D11DD4A00C56B9E /* Sidebar */ = {
-			isa = PBXGroup;
-			children = (
-				DD07B08716B313A60012AC19 /* XTRefFormatter.h */,
-				DD07B08816B313A60012AC19 /* XTRefFormatter.m */,
-				C98925F81DBFCE7000E5645C /* XTSidebarController.swift */,
-				C959CDEA1F859DB800C1E282 /* XTSidebarController+Actions.swift */,
-				C951EAE01DD11BDD00B99FBE /* XTSidebarTableCellView.swift */,
-				89C9276A1D368C020074F71A /* XTSideBarDataSource.swift */,
-				C959CDE81F859D3D00C1E282 /* XTSideBarDataSource+TeamCity.swift */,
-				C9FFCC831FABB28F00FA2F21 /* XTSideBarDataSource+OutlineView.swift */,
-				C9F78B131D0896AF008490EA /* XTSidebarItem.swift */,
-				C947367B1DF079DB000E3A05 /* SideBarOutlineView.swift */,
-				C951EB041DD636B900B99FBE /* SidebarCheckedRowView.swift */,
-				DD997DD8173B409500C7DF82 /* HistoryView Menus.xib */,
-				C9F461DD1EF34826007BEBC9 /* BuildStatusCellView.swift */,
-				C941549E1ED4ECF30030E481 /* BuildStatusViewController.swift */,
-				C941549F1ED4ECF30030E481 /* BuildStatusViewController.xib */,
-			);
-			name = Sidebar;
+			path = "File List";
 			sourceTree = "<group>";
 		};
 		C9790D0620EED3F90024D3EA /* Repository */ = {
@@ -945,6 +923,28 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		C9790D0C20EED5880024D3EA /* Sidebar */ = {
+			isa = PBXGroup;
+			children = (
+				DD07B08716B313A60012AC19 /* XTRefFormatter.h */,
+				DD07B08816B313A60012AC19 /* XTRefFormatter.m */,
+				C98925F81DBFCE7000E5645C /* XTSidebarController.swift */,
+				C959CDEA1F859DB800C1E282 /* XTSidebarController+Actions.swift */,
+				C951EAE01DD11BDD00B99FBE /* XTSidebarTableCellView.swift */,
+				89C9276A1D368C020074F71A /* XTSideBarDataSource.swift */,
+				C959CDE81F859D3D00C1E282 /* XTSideBarDataSource+TeamCity.swift */,
+				C9FFCC831FABB28F00FA2F21 /* XTSideBarDataSource+OutlineView.swift */,
+				C9F78B131D0896AF008490EA /* XTSidebarItem.swift */,
+				C947367B1DF079DB000E3A05 /* SideBarOutlineView.swift */,
+				C951EB041DD636B900B99FBE /* SidebarCheckedRowView.swift */,
+				DD997DD8173B409500C7DF82 /* HistoryView Menus.xib */,
+				C9F461DD1EF34826007BEBC9 /* BuildStatusCellView.swift */,
+				C941549E1ED4ECF30030E481 /* BuildStatusViewController.swift */,
+				C941549F1ED4ECF30030E481 /* BuildStatusViewController.xib */,
+			);
+			path = Sidebar;
+			sourceTree = "<group>";
+		};
 		C9C773151D26F28900329493 /* Preferences */ = {
 			isa = PBXGroup;
 			children = (
@@ -958,7 +958,7 @@
 				C9DAB5D21D4A8D2000586854 /* Preferences.storyboard */,
 				C93FFCB81F0FDAC700FDDD78 /* Preferences.swift */,
 			);
-			name = Preferences;
+			path = Preferences;
 			sourceTree = "<group>";
 		};
 		DD39D1F21918306B00827532 /* FileView */ = {
@@ -974,7 +974,7 @@
 				899DB1A11CE5022400760270 /* XTCommitEntryController.xib */,
 				C9AAEF801E413DA100A248CF /* CommitHeaderViewController.swift */,
 			);
-			name = FileView;
+			path = FileView;
 			sourceTree = "<group>";
 		};
 		DD96C990176976FC0003A30C /* Products */ = {
