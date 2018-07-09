@@ -114,6 +114,10 @@ extension FileChangesDataSource: FileListDataSource
   {
     let model = repoController.selection.flatMap { self.model(for: $0) }
     
+    if let delegate = self.delegate,
+       let finalModel = model {
+      delegate.configure(model: finalModel)
+    }
     repoController.queue.executeOffMainThread {
       [weak self] in
       self?.doReload(model)

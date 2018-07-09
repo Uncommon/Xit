@@ -9,6 +9,8 @@ class FileListDataSourceBase: NSObject
 
   let observers = ObserverCollection()
   
+  weak var delegate: FileListDelegate?
+
   weak var repoController: RepositoryController!
   {
     didSet
@@ -70,6 +72,11 @@ protocol FileListDataSource: class
   func fileChange(at row: Int) -> FileChange?
   func path(for item: Any) -> String
   func change(for item: Any) -> DeltaStatus
+}
+
+protocol FileListDelegate: AnyObject
+{
+  func configure(model: FileListModel)
 }
 
 

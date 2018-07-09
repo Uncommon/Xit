@@ -64,6 +64,7 @@ public class XTRepository: NSObject
     get { return mutex.withLock { _cachedUnstagedChanges } }
     set { mutex.withLock { _cachedUnstagedChanges = newValue } }
   }
+  var cachedIgnored = false
 
   let diffCache = Cache<String, Diff>(maxSize: 50)
   fileprivate var repoWatcher: XTRepositoryWatcher! = nil

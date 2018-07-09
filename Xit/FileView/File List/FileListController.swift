@@ -407,16 +407,21 @@ extension StagedFileListController
 
 class WorkspaceFileListController: StagingFileListController
 {
+  var showingIgnored = false
+
   override var actionImage: NSImage?
   { return NSImage(named: .xtStageButtonHover)! }
   override var pressedImage: NSImage?
   { return NSImage(named: .xtStageButtonPressed)! }
   override var actionButtonSelector: Selector?
   { return #selector(self.stage(_:)) }
-
+  
   override func loadView()
   {
     super.loadView()
+    
+    fileListDataSource.delegate = self
+    fileTreeDataSource.delegate = self
     
     listTypeIcon.image = NSImage(named: .xtFolderTemplate)
     listTypeLabel.stringValue = "Workspace"
@@ -438,6 +443,12 @@ class WorkspaceFileListController: StagingFileListController
     _ = try? repoController.repository.stage(file: change.path)
     repoController.postIndexNotification()
   }
+  
+  @IBAction override func showIgnored(_ sender: Any)
+  {
+    showingIgnored = !showingIgnored
+    viewDataSource.reload()
+  }
 }
 
 // NSUserInterfaceValidations
@@ -458,10 +469,18 @@ extension WorkspaceFileListController
       case #selector(stageAll(_:)):
         return outlineView.numberOfRows != 0
       case #selector(showIgnored(_:)):
-        // update the check mark
+        menuItem?.state = showingIgnored ? .on : .off
         return true
       default:
         return super.validateUserInterfaceItem(item)
     }
+  }
+}
+
+extension WorkspaceFileListController: FileListDelegate
+{
+  func configure(model: FileListModel)
+  {
+    (model as? WorkspaceFileList)?.showingIgnored = showingIgnored
   }
 }

@@ -24,9 +24,12 @@ extension FileTreeDataSource: FileListDataSource
       objc_sync_enter(myself)
       defer { objc_sync_exit(myself) }
       
-      guard let selection = myself.repoController?.selection
+      guard let fileList = myself.repoController?.selection?.fileList
       else { return }
-      let newRoot = selection.fileList.treeRoot(oldTree: myself.root)
+      
+      myself.delegate?.configure(model: fileList)
+      
+      let newRoot = fileList.treeRoot(oldTree: myself.root)
       
       DispatchQueue.main.async {
         myself.root = newRoot

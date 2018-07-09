@@ -94,6 +94,7 @@ class AmendingIndexFileList: IndexFileList
 class WorkspaceFileList: StagingListModel, FileListModel
 {
   var stagingType: StagingType { return .workspace }
+  var showingIgnored = false
   
   var changes: [FileChange]
   {
@@ -101,7 +102,7 @@ class WorkspaceFileList: StagingListModel, FileListModel
     defer {
       kdebug_signpost_end(Signposts.loadWorkspace, 0, 0, 0, 0)
     }
-    return repository.unstagedChanges()
+    return repository.unstagedChanges(showIgnored: showingIgnored)
   }
   
   func diffForFile(_ path: String) -> PatchMaker.PatchResult?
