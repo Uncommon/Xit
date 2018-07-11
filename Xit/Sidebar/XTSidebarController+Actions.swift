@@ -21,6 +21,18 @@ extension XTSidebarController
   
   @IBAction func checkOutBranch(_ sender: Any?)
   {
+    switch targetItem()?.refType {
+      case .branch?:
+        checkOutLocalBranch()
+      case .remoteBranch?:
+        checkOutRemoteBranch()
+      default:
+        break
+    }
+  }
+  
+  func checkOutLocalBranch()
+  {
     callCommand(errorString: "Checkout failed") {
       [weak self] (item) in
       do {
@@ -41,6 +53,18 @@ extension XTSidebarController
           alert.beginSheetModal(for: myself.view.window!, completionHandler: nil)
         }
       }
+    }
+  }
+  
+  func checkOutRemoteBranch()
+  {
+    guard let item = targetItem() as? XTRemoteBranchItem,
+          let windowController = view.window?.windowController as? XTWindowController
+    else { return }
+    
+    windowController.startOperation {
+      CheckOutRemoteOperationController(windowController: windowController,
+                                        branch: item.fullName)
     }
   }
   

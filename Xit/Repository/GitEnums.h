@@ -1,6 +1,8 @@
 #import <ObjectiveGit/ObjectiveGit.h>
 
-// Swift requires that raw values be literals, so this needs to be a C enum.
+// Swift requires that raw values be literals, but the values need to match
+// the values from libgit2, so using C enums is a workaround.
+
 typedef NS_ENUM(unsigned int, DeltaStatus)
 {
   DeltaStatusUnmodified = GIT_DELTA_UNMODIFIED,

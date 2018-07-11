@@ -30,8 +30,17 @@ extension SidebarHandler
     
     switch action {
       
-      case #selector(XTSidebarController.checkOutBranch(_:)),
-           #selector(XTSidebarController.renameBranch(_:)),
+      case #selector(XTSidebarController.checkOutBranch(_:)):
+        if repo.isWriting {
+          return false
+        }
+        switch item.refType {
+          case .branch, .remoteBranch:
+            return true
+          default:
+            return false
+        }
+      case #selector(XTSidebarController.renameBranch(_:)),
            #selector(XTSidebarController.mergeBranch(_:)),
            #selector(XTSidebarController.deleteBranch(_:)):
         if ((item.refType != .branch) && (item.refType != .remoteBranch)) ||
