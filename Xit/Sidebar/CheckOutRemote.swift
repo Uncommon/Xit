@@ -3,15 +3,17 @@ import Cocoa
 class CheckOutRemoteOperationController: XTOperationController
 {
   let remoteBranch: String
-  let sheetController: CheckOutRemoteWindowController
+  var sheetController: CheckOutRemoteWindowController!
   
   init(windowController: XTWindowController, branch: String)
   {
     self.remoteBranch = branch
-    self.sheetController =
-        CheckOutRemoteWindowController(repo: windowController.repository)
     
     super.init(windowController: windowController)
+
+    self.sheetController =
+        CheckOutRemoteWindowController(repo: windowController.repository,
+                                       operation: self)
   }
   
   override func start() throws
@@ -29,16 +31,19 @@ class CheckOutRemoteOperationController: XTOperationController
 class CheckOutRemoteWindowController: NSWindowController
 {
   @IBOutlet weak var promptLabel: NSTextField!
+  @IBOutlet weak var errorLabel: NSTextField!
   @IBOutlet weak var nameField: NSTextField!
   @IBOutlet weak var createButton: NSButton!
   
   let repo: Branching
+  unowned let operation: CheckOutRemoteOperationController
   
   override var windowNibName: NSNib.Name? { return ◊"CheckOutRemote" }
   
-  init(repo: Branching)
+  init(repo: Branching, operation: CheckOutRemoteOperationController)
   {
     self.repo = repo
+    self.operation = operation
     super.init(window: nil)
   }
   
@@ -52,6 +57,7 @@ class CheckOutRemoteWindowController: NSWindowController
     loadWindow()
     promptLabel.stringValue = "Create a local branch tracking \"\(remoteBranch)\""
     nameField.stringValue = remoteBranch.deletingFirstPathComponent
+    updateCreateButton()
   }
   
   func endSheet(_ result: NSApplication.ModalResponse)
@@ -61,6 +67,24 @@ class CheckOutRemoteWindowController: NSWindowController
     else { return }
     
     parent.endSheet(window, returnCode: result)
+    operation.ended()
+  }
+  
+  func updateCreateButton()
+  {
+    let branchName = nameField.stringValue
+    let refName = "refs/heads/" + branchName
+    var errorText = ""
+    
+    if !XTRefFormatter.isValidRefString(refName) {
+      errorText = "Not a valid name"
+    }
+    if repo.localBranch(named: branchName) != nil {
+      errorText = "Branch already exists"
+    }
+    
+    errorLabel.stringValue = errorText
+    createButton.isEnabled = errorText.isEmpty
   }
 
   @IBAction func cancelSheet(_ sender: Any)
@@ -76,9 +100,6 @@ class CheckOutRemoteWindowController: NSWindowController
   @objc
   override func controlTextDidChange(_ obj: Notification)
   {
-    let branchName = nameField.stringValue
-    
-    createButton.isEnabled = XTRefFormatter.isValidRefString(branchName) &&
-                             repo.localBranch(named: branchName) == nil
+    updateCreateButton()
   }
 }
