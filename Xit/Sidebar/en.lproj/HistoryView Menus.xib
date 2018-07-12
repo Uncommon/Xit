@@ -40,7 +40,7 @@
         </menu>
         <menu title="Remote Branch" id="aZF-N9-q33" userLabel="Remote Branch">
             <items>
-                <menuItem title="Create tracking branch" id="50X-YB-380">
+                <menuItem title="Create Tracking Branch..." id="50X-YB-380">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="createTrackingBranch:" target="-2" id="0Lb-Dx-s2R"/>
