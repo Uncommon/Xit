@@ -120,7 +120,6 @@ Gw
                     <constraint firstItem="Tr7-DN-grk" firstAttribute="top" secondItem="y4n-kY-1pP" secondAttribute="bottom" constant="8" symbolic="YES" id="hmQ-zp-TKp"/>
                     <constraint firstItem="y4n-kY-1pP" firstAttribute="top" secondItem="5rz-rc-8Co" secondAttribute="bottom" constant="8" symbolic="YES" id="ivH-we-XP4"/>
                     <constraint firstItem="enb-iK-sgX" firstAttribute="top" secondItem="Tr7-DN-grk" secondAttribute="bottom" constant="20" symbolic="YES" id="jSD-2Z-QJ9"/>
-                    <constraint firstItem="Iyu-qG-ZnI" firstAttribute="top" relation="greaterThanOrEqual" secondItem="Tr7-DN-grk" secondAttribute="bottom" constant="8" symbolic="YES" id="kzi-GZ-YaF"/>
                     <constraint firstItem="EFq-yg-vR5" firstAttribute="leading" secondItem="Iyu-qG-ZnI" secondAttribute="trailing" constant="8" symbolic="YES" id="mMf-is-ORy"/>
                     <constraint firstItem="Tr7-DN-grk" firstAttribute="leading" secondItem="y4n-kY-1pP" secondAttribute="leading" id="oUD-zf-L6b"/>
                     <constraint firstItem="Iyu-qG-ZnI" firstAttribute="baseline" secondItem="enb-iK-sgX" secondAttribute="baseline" id="ulX-oe-FbD"/>

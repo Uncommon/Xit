@@ -9,9 +9,9 @@ class SideBarOutlineView: ContextMenuOutlineView
   {
     switch item {
       case is XTRemoteBranchItem:
-        menu = prepBranchMenu(local: false)
+        menu = prepBranchMenu(controller.remoteBranchContextMenu, local: false)
       case is XTLocalBranchItem:
-        menu = prepBranchMenu(local: true)
+        menu = prepBranchMenu(controller.branchContextMenu, local: true)
       case is XTTagItem:
         menu = controller.tagContextMenu
       case is XTStashItem:
@@ -27,9 +27,8 @@ class SideBarOutlineView: ContextMenuOutlineView
     }
   }
   
-  func prepBranchMenu(local: Bool) -> NSMenu
+  func prepBranchMenu(_ menu: NSMenu, local: Bool) -> NSMenu
   {
-    let menu = controller.branchContextMenu!
     let renameIndex = menu.indexOfItem(
             withTarget: controller,
             andAction: #selector(XTSidebarController.renameBranch(_:)))

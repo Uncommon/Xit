@@ -31,15 +31,11 @@ extension SidebarHandler
     switch action {
       
       case #selector(XTSidebarController.checkOutBranch(_:)):
-        if repo.isWriting {
-          return false
-        }
-        switch item.refType {
-          case .branch, .remoteBranch:
-            return true
-          default:
-            return false
-        }
+        return !repo.isWriting && item.title != repo.currentBranch
+      
+      case #selector(XTSidebarController.createTrackingBranch(_:)):
+        return !repo.isWriting
+      
       case #selector(XTSidebarController.renameBranch(_:)),
            #selector(XTSidebarController.mergeBranch(_:)),
            #selector(XTSidebarController.deleteBranch(_:)):
@@ -63,11 +59,6 @@ extension SidebarHandler
             else { return false }
             
             clickedBranch = "\(remoteItem.remote)/\(clickedBranch)"
-          }
-          else if item.refType == .branch {
-            if clickedBranch == currentBranch {
-              return false
-            }
           }
           else {
             return false
@@ -172,6 +163,7 @@ class XTSidebarController: NSViewController, SidebarHandler
   @IBOutlet weak var sidebarDS: XTSideBarDataSource!
   
   @IBOutlet var branchContextMenu: NSMenu!
+  @IBOutlet var remoteBranchContextMenu: NSMenu!
   @IBOutlet var remoteContextMenu: NSMenu!
   @IBOutlet var tagContextMenu: NSMenu!
   @IBOutlet var stashContextMenu: NSMenu!
