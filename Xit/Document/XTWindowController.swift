@@ -392,7 +392,7 @@ extension XTWindowController: TitleBarDelegate
 {
   func branchSelecetd(_ branch: String)
   {
-    try? xtDocument!.repository!.checkout(branch: branch)
+    try? xtDocument!.repository!.checkOut(branch: branch)
   }
   
   var viewStates: (sidebar: Bool, history: Bool, details: Bool)

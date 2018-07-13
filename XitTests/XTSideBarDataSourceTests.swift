@@ -127,7 +127,7 @@ class XTSidebarDataSourceTest: XTTest
     
     let remoteName = "origin"
     
-    XCTAssertNoThrow(try repository.checkout(branch: "master"))
+    XCTAssertNoThrow(try repository.checkOut(branch: "master"))
     XCTAssertTrue(repository.createBranch("b1"))
     XCTAssertNoThrow(
         try repository.addRemote(named: remoteName,

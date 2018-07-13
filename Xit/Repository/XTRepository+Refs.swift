@@ -196,6 +196,23 @@ extension XTRepository: Branching
     return cachedBranch
   }
   
+  public func createBranch(named name: String,
+                           target: String) throws -> LocalBranch?
+  {
+    guard let targetRef = GitReference(name: target,
+                                       repository: gitRepo),
+          let targetOID = targetRef.targetOID,
+          let targetCommit = GitCommit(oid: targetOID, repository: gitRepo)
+    else { return nil }
+    
+    var branchRef: OpaquePointer?
+    let result = git_branch_create(&branchRef, gitRepo, name,
+                                   targetCommit.commit, 0)
+    
+    try Error.throwIfError(result)
+    return branchRef.map { GitLocalBranch(branch: $0) }
+  }
+  
   public func localBranch(named name: String) -> LocalBranch?
   {
     return GitLocalBranch(repository: self, name: name)

@@ -50,7 +50,7 @@ extension XTRepository
 
 extension XTRepository: Workspace
 {
-  public func checkout(branch: String) throws
+  public func checkOut(branch: String) throws
   {
     try performWriting {
       // invalidate ref caches
@@ -78,7 +78,7 @@ extension XTRepository: Workspace
     try checkout(object: finalTarget)
   }
   
-  public func checkout(sha: String) throws
+  public func checkOut(sha: String) throws
   {
     guard let oid = GitOID(sha: sha)
     else { throw Error.notFound }

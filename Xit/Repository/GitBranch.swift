@@ -1,6 +1,6 @@
 import Cocoa
 
-public protocol Branch
+public protocol Branch: AnyObject
 {
   /// The full reference name
   var name: String { get }
@@ -160,8 +160,7 @@ public class GitLocalBranch: GitBranch, LocalBranch
     }
     set
     {
-      git_branch_set_upstream(branchRef,
-                              newValue?.withPrefix(BranchPrefixes.remotes))
+      git_branch_set_upstream(branchRef, newValue)
     }
   }
   

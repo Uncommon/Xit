@@ -21,9 +21,34 @@ class CheckOutRemoteOperationController: XTOperationController
     sheetController.setRemoteBranchName(remoteBranch)
     windowController!.window?.beginSheet(sheetController.window!) {
       (response) in
-      guard response == .OK
-      else { return }
-      // make the local branch and fetch
+      if response == .OK {
+        self.performOperation(newBranchName: self.sheetController.branchName,
+                              shouldCheckOut: self.sheetController.checkOutBranch)
+      }
+    }
+  }
+  
+  func performOperation(newBranchName: String, shouldCheckOut: Bool)
+  {
+    guard let repository = windowController?.repository
+    else { return }
+    
+    do {
+      let fullTarget = BranchPrefixes.remotes + remoteBranch
+      
+      if let branch = try repository.createBranch(named: newBranchName,
+                                                  target: fullTarget) {
+        branch.trackingBranchName = remoteBranch
+        if shouldCheckOut {
+          try repository.checkOut(branch: newBranchName)
+        }
+      }
+    }
+    catch let error as XTRepository.Error {
+      windowController?.showErrorMessage(error: error)
+    }
+    catch {
+      windowController?.showErrorMessage(error: .unexpected)
     }
   }
 }
@@ -34,9 +59,13 @@ class CheckOutRemoteWindowController: NSWindowController
   @IBOutlet weak var errorLabel: NSTextField!
   @IBOutlet weak var nameField: NSTextField!
   @IBOutlet weak var createButton: NSButton!
+  @IBOutlet weak var checkOutCheckbox: NSButton!
   
-  let repo: Branching
-  unowned let operation: CheckOutRemoteOperationController
+  var branchName: String { return nameField.stringValue }
+  var checkOutBranch: Bool { return checkOutCheckbox.boolValue }
+  
+  private let repo: Branching
+  private unowned let operation: CheckOutRemoteOperationController
   
   override var windowNibName: NSNib.Name? { return ◊"CheckOutRemote" }
   

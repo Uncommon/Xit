@@ -145,6 +145,7 @@ public protocol Branching: class
 {
   var currentBranch: String? { get }
   
+  func createBranch(named name: String, target: String) throws -> LocalBranch?
   func localBranch(named name: String) -> LocalBranch?
   func remoteBranch(named name: String) -> RemoteBranch?
 }
@@ -158,7 +159,7 @@ public protocol Tagging: class
 
 public protocol Workspace: class
 {
-  func checkout(branch: String) throws
+  func checkOut(branch: String) throws
   func checkOut(refName: String) throws
-  func checkout(sha: String) throws
+  func checkOut(sha: String) throws
 }

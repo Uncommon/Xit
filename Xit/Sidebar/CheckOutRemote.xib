@@ -7,6 +7,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="CheckOutRemoteWindowController" customModule="Xit" customModuleProvider="target">
             <connections>
+                <outlet property="checkOutCheckbox" destination="Tr7-DN-grk" id="cZ3-CG-AH1"/>
                 <outlet property="createButton" destination="enb-iK-sgX" id="eIS-Ea-xq6"/>
                 <outlet property="errorLabel" destination="Iyu-qG-ZnI" id="rc9-nr-s26"/>
                 <outlet property="nameField" destination="y4n-kY-1pP" id="ZfL-zw-C5d"/>

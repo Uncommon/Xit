@@ -67,12 +67,12 @@ class XTRepositoryMergeTest: XTTest
     write(text:text1, to:fileName)
     add(fileName)
     commit("commit 1")
-    XCTAssertNoThrow(try repository.checkout(branch: "c0"))
+    XCTAssertNoThrow(try repository.checkOut(branch: "c0"))
     branch("c2")
     write(text:text5, to:fileName)
     add(fileName)
     commit("commit 2")
-    XCTAssertNoThrow(try repository.checkout(branch: "c0"))
+    XCTAssertNoThrow(try repository.checkOut(branch: "c0"))
     /* From the git test, not currently used
     branch("c7")
     writeText(text9y, toFile: fileName)
@@ -84,7 +84,7 @@ class XTRepositoryMergeTest: XTTest
     write(text:text9, to: fileName)
     add(fileName)
     commit("commit 3")
-    XCTAssertNoThrow(try repository.checkout(branch: "c0"))
+    XCTAssertNoThrow(try repository.checkOut(branch: "c0"))
   }
   
   func isWorkspaceClean() -> Bool
@@ -118,7 +118,7 @@ class XTRepositoryMergeTest: XTTest
       return
     }
     
-    XCTAssertNoThrow(try repository.checkout(branch: "c1"))
+    XCTAssertNoThrow(try repository.checkOut(branch: "c1"))
     XCTAssertNoThrow(try self.repository.merge(branch: c2))
     XCTAssertEqual(try! String(contentsOf: repository.fileURL(fileName)), result15)
     XCTAssertTrue(isWorkspaceClean())

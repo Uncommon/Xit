@@ -24,7 +24,7 @@ extension XTSidebarController
     callCommand(errorString: "Checkout failed") {
       [weak self] (item) in
       do {
-        try self?.repo.checkout(branch: item.title)
+        try self?.repo.checkOut(branch: item.title)
       }
       catch let error as NSError
             where error.domain == GTGitErrorDomain &&
