@@ -148,3 +148,10 @@ public protocol Branching: class
   func localBranch(named name: String) -> LocalBranch?
   func remoteBranch(named name: String) -> RemoteBranch?
 }
+
+public protocol Workspace: class
+{
+  func checkout(branch: String) throws
+  func checkOut(refName: String) throws
+  func checkout(sha: String) throws
+}

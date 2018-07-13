@@ -57,53 +57,11 @@ extension XTRepository
     _ = try executeGit(args: ["push", "--all", remote], writes: true)
   }
   
-  func checkout(branch: String) throws
-  {
-    try performWriting {
-      // invalidate ref caches
-      
-      let branchRef = BranchPrefixes.heads.appending(pathComponent: branch)
-      
-      try checkOut(refName: branchRef)
-      try moveHead(to: branchRef)
-    }
-  }
-  
-  func checkOut(refName: String) throws
-  {
-    guard let ref = reference(named: refName),
-          let oid = ref.targetOID as? GitOID
-    else { throw Error.notFound }
-    
-    let target = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let targetResult = git_object_lookup(target, gitRepo, oid.unsafeOID(),
-                                         GIT_OBJ_ANY)
-    guard targetResult == 0,
-          let finalTarget = target.pointee
-    else { throw Error.notFound }
-    
-    try checkout(object: finalTarget)
-  }
-  
   func moveHead(to refName: String) throws
   {
     let result = git_repository_set_head(gitRepo, refName)
     
     try Error.throwIfError(result)
-  }
-  
-  func checkout(sha: String) throws
-  {
-    guard let oid = GitOID(sha: sha)
-    else { throw Error.notFound }
-    let object = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let lookupResult = git_object_lookup_prefix(object, gitRepo, oid.unsafeOID(),
-                                          Int(GIT_OID_RAWSZ), GIT_OBJ_ANY)
-    guard lookupResult == 0,
-          let finalObject = object.pointee
-    else { throw Error.notFound }
-    
-    try checkout(object: finalObject)
   }
   
   private func checkout(object: OpaquePointer) throws
@@ -137,6 +95,51 @@ extension XTRepository
   func renameRemote(old: String, new: String) throws
   {
     _ = try executeGit(args: ["remote", "rename", old, new], writes: true)
+  }
+}
+
+extension XTRepository: Workspace
+{
+  public func checkout(branch: String) throws
+  {
+    try performWriting {
+      // invalidate ref caches
+      
+      let branchRef = BranchPrefixes.heads.appending(pathComponent: branch)
+      
+      try checkOut(refName: branchRef)
+      try moveHead(to: branchRef)
+    }
+  }
+  
+  public func checkOut(refName: String) throws
+  {
+    guard let ref = reference(named: refName),
+          let oid = ref.targetOID as? GitOID
+    else { throw Error.notFound }
+    
+    let target = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    let targetResult = git_object_lookup(target, gitRepo, oid.unsafeOID(),
+                                         GIT_OBJ_ANY)
+    guard targetResult == 0,
+          let finalTarget = target.pointee
+    else { throw Error.notFound }
+    
+    try checkout(object: finalTarget)
+  }
+  
+  public func checkout(sha: String) throws
+  {
+    guard let oid = GitOID(sha: sha)
+    else { throw Error.notFound }
+    let object = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    let lookupResult = git_object_lookup_prefix(object, gitRepo, oid.unsafeOID(),
+                                                Int(GIT_OID_RAWSZ), GIT_OBJ_ANY)
+    guard lookupResult == 0,
+          let finalObject = object.pointee
+    else { throw Error.notFound }
+    
+    try checkout(object: finalObject)
   }
 }
 
