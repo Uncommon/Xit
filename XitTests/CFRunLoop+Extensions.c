@@ -1,7 +1,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 
 // NSRunLoop has runUntilDate:, but there is no way to stop it early.
-// CFRunLoop can be stopped, but has no buil-in timeout.
+// CFRunLoop can be stopped, but has no built-in timeout.
 // This function returns false if the timeout was triggered.
 bool CFRunLoopRunWithTimeout(CFTimeInterval timeout)
 {
