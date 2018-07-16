@@ -30,6 +30,20 @@ class XTSidebarHandlerTest: XTTest
     handler.repo = repository
   }
   
+  func item(forBranch branch: String) -> XTSideBarItem?
+  {
+    guard let commit = GitCommit(ref: "refs/heads/\(branch)",
+                                     repository: repository)
+    else {
+      XCTFail("can't get commit for branch \(branch)")
+      return nil
+    }
+    let selection = CommitSelection(repository: repository,
+                                    commit: commit)
+    
+    return XTLocalBranchItem(title: branch, selection: selection)
+  }
+  
   func checkDeleteBranch(named branch: String) -> Bool
   {
     let menuItem = NSMenuItem(
@@ -37,7 +51,7 @@ class XTSidebarHandlerTest: XTTest
       action: #selector(XTSidebarController.deleteBranch(_:)),
       keyEquivalent: "")
     
-    handler.selectedItem = XTLocalBranchItem(title: branch)
+    handler.selectedItem = item(forBranch: branch)
     return handler.validate(sidebarCommand: menuItem)
   }
   
@@ -48,6 +62,8 @@ class XTSidebarHandlerTest: XTTest
   
   func testDeleteOtherBranch()
   {
+    XCTAssertNoThrow(_ = try repository.createBranch(named: "other",
+                                                     target: "refs/heads/master"))
     XCTAssertTrue(checkDeleteBranch(named: "other"))
   }
 
@@ -150,8 +166,8 @@ class XTSidebarHandlerTest: XTTest
         action: #selector(XTSidebarController.mergeBranch(_:)),
         keyEquivalent: "")
     
-    handler.selectedItem = XTLocalBranchItem(title: "branch")
     XCTAssertTrue(repository.createBranch("branch"))
+    handler.selectedItem = item(forBranch: "branch")
     XCTAssertNotNil(try? repository.checkOut(branch: "master"))
     XCTAssertTrue(handler.validate(sidebarCommand: menuItem))
     XCTAssertEqual(menuItem.title, "Merge branch into master")
@@ -164,7 +180,7 @@ class XTSidebarHandlerTest: XTTest
       action: #selector(XTSidebarController.mergeBranch(_:)),
       keyEquivalent: "")
     
-    handler.selectedItem = XTLocalBranchItem(title: "master")
+    handler.selectedItem = item(forBranch: "master")
     XCTAssertFalse(handler.validate(sidebarCommand: menuItem))
   }
 }

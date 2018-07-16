@@ -39,8 +39,7 @@ extension SidebarHandler
       case #selector(XTSidebarController.renameBranch(_:)),
            #selector(XTSidebarController.mergeBranch(_:)),
            #selector(XTSidebarController.deleteBranch(_:)):
-        if ((item.refType != .branch) && (item.refType != .remoteBranch)) ||
-            repo.isWriting {
+        if !item.refType.isBranch || repo.isWriting {
           return false
         }
         if action == #selector(XTSidebarController.deleteBranch(_:)) {
@@ -51,19 +50,21 @@ extension SidebarHandler
           sidebarCommand.title = "Merge"
           
           var clickedBranch = item.title
+
+          switch item.refType {
+            case .remoteBranch:
+              guard let remoteItem = item as? XTRemoteBranchItem
+              else { return false }
+              
+              clickedBranch = "\(remoteItem.remote)/\(clickedBranch)"
+            case .activeBranch:
+              return false
+            default:
+              break
+          }
+          
           guard let currentBranch = repo.currentBranch
           else { return false }
-          
-          if item.refType == .remoteBranch {
-            guard let remoteItem = item as? XTRemoteBranchItem
-            else { return false }
-            
-            clickedBranch = "\(remoteItem.remote)/\(clickedBranch)"
-          }
-          else {
-            return false
-          }
-          
           let menuFontAttributes = [NSAttributedStringKey.font:
                                     NSFont.menuFont(ofSize: 0)]
           let obliqueAttributes = [NSAttributedStringKey.obliqueness: 0.15]

@@ -94,7 +94,7 @@ class XTBranchItem: XTSideBarItem
 
 class XTLocalBranchItem: XTBranchItem
 {
-  override var refType: XTRefType { return .branch }
+  override var refType: XTRefType { return current ? .activeBranch : .branch }
   override var current: Bool
   {
     if let currentBranch = selection!.repository.currentBranch {

@@ -93,6 +93,13 @@ public class XTRepository: NSObject
     return paths.first(where: { FileManager.default.fileExists(atPath: $0) })
   }
   
+  static func taskQueueID(path: String) -> String
+  {
+    let identifier = Bundle.main.bundleIdentifier ?? "com.uncommonplace.xit"
+    
+    return "\(identifier).\(path)"
+  }
+  
   @objc(initWithURL:)
   init?(url: URL)
   {
@@ -104,7 +111,7 @@ public class XTRepository: NSObject
     self.gitCMD = gitCMD
     self.gtRepo = gtRepo
     
-    self.queue = TaskQueue(id: "com.uncommonplace.xit.\(url.path)")
+    self.queue = TaskQueue(id: XTRepository.taskQueueID(path: url.path))
     
     super.init()
     
@@ -122,7 +129,7 @@ public class XTRepository: NSObject
     self.repoURL = url
     self.gitCMD = gitCMD
     self.gtRepo = gtRepo
-    self.queue = TaskQueue(id: "com.uncommonplace.xit.\(url.path)")
+    self.queue = TaskQueue(id: XTRepository.taskQueueID(path: url.path))
     
     super.init()
     

@@ -1,14 +1,5 @@
 #import <Cocoa/Cocoa.h>
 
-typedef NS_ENUM(NSUInteger, XTRefType) {
-  XTRefTypeBranch,
-  XTRefTypeActiveBranch,
-  XTRefTypeRemoteBranch,
-  XTRefTypeTag,
-  XTRefTypeRemote,
-  XTRefTypeUnknown
-};
-
 extern NSString *XTErrorDomainXit, *XTErrorDomainGit;
 
 /// Fake value for seleting staging view.
