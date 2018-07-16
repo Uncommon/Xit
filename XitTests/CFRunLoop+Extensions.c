@@ -2,7 +2,9 @@
 
 // NSRunLoop has runUntilDate:, but there is no way to stop it early.
 // CFRunLoop can be stopped, but has no built-in timeout.
-// This function returns false if the timeout was triggered.
+/// Runs the run loop until it is stopped or the timeout is reached.
+/// @param timeout Amount of time to allow before aborting.
+/// @return True if the run loop was stopped, false if it timed out.
 bool CFRunLoopRunWithTimeout(CFTimeInterval timeout)
 {
   __block bool result = true;
