@@ -24,7 +24,7 @@ extension XTSidebarController
     callCommand(errorString: "Checkout failed") {
       [weak self] (item) in
       do {
-        try self?.repo.checkout(branch: item.title)
+        try self?.repo.checkOut(branch: item.title)
       }
       catch let error as NSError
             where error.domain == GTGitErrorDomain &&
@@ -41,6 +41,18 @@ extension XTSidebarController
           alert.beginSheetModal(for: myself.view.window!, completionHandler: nil)
         }
       }
+    }
+  }
+  
+  @IBAction func createTrackingBranch(_ sender: Any?)
+  {
+    guard let item = targetItem() as? XTRemoteBranchItem,
+          let controller = view.window?.windowController as? XTWindowController
+    else { return }
+    
+    controller.startOperation {
+      CheckOutRemoteOperationController(windowController: controller,
+                                        branch: item.fullName)
     }
   }
   

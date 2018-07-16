@@ -237,6 +237,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   /// Returns the new operation, if any, mostly because the generic type must
   /// be part of the signature.
+  @discardableResult
   func startOperation<OperationType: XTSimpleOperationController>()
       -> OperationType?
   {
@@ -244,6 +245,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
            as? OperationType
   }
   
+  @discardableResult
   func startOperation(factory: () -> XTOperationController)
       -> XTOperationController?
   {
@@ -390,7 +392,7 @@ extension XTWindowController: TitleBarDelegate
 {
   func branchSelecetd(_ branch: String)
   {
-    try? xtDocument!.repository!.checkout(branch: branch)
+    try? xtDocument!.repository!.checkOut(branch: branch)
   }
   
   var viewStates: (sidebar: Bool, history: Bool, details: Bool)

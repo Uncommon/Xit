@@ -152,7 +152,7 @@ class XTSidebarHandlerTest: XTTest
     
     handler.selectedItem = XTLocalBranchItem(title: "branch")
     XCTAssertTrue(repository.createBranch("branch"))
-    XCTAssertNotNil(try? repository.checkout(branch: "master"))
+    XCTAssertNotNil(try? repository.checkOut(branch: "master"))
     XCTAssertTrue(handler.validate(sidebarCommand: menuItem))
     XCTAssertEqual(menuItem.title, "Merge branch into master")
   }

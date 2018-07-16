@@ -2,87 +2,9 @@ import Foundation
 
 extension XTRepository
 {
-  func createTag(name: String, targetOID: OID, message: String?) throws
-  {
-    try performWriting {
-      guard let commit = GitCommit(oid: targetOID,
-                                  repository: gitRepo)
-      else { throw Error.notFound }
-      
-      let oid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
-      let signature = UnsafeMutablePointer<UnsafeMutablePointer<git_signature>?>
-            .allocate(capacity: 1)
-      let sigResult = git_signature_default(signature, gitRepo)
-      
-      try Error.throwIfError(sigResult)
-      guard let finalSig = signature.pointee
-      else { throw Error.unexpected }
-      
-      let result = git_tag_create(oid, gitRepo, name,
-                                  commit.commit, finalSig, message, 0)
-      
-      try Error.throwIfError(result)
-    }
-  }
-  
-  func createLightweightTag(name: String, targetOID: OID) throws
-  {
-    try performWriting {
-      guard let commit = GitCommit(oid: targetOID,
-                                  repository: gitRepo)
-      else { throw Error.notFound }
-      
-      let oid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
-      let result = git_tag_create_lightweight(oid, gitRepo, name,
-                                              commit.commit, 0)
-      
-      try Error.throwIfError(result)
-    }
-  }
-  
-  func deleteTag(name: String) throws
-  {
-    try performWriting {
-      let result = git_tag_delete(gitRepo, name)
-      
-      guard result == 0
-      else {
-        throw NSError.git_error(for: result)
-      }
-    }
-  }
-  
   func push(remote: String) throws
   {
     _ = try executeGit(args: ["push", "--all", remote], writes: true)
-  }
-  
-  func checkout(branch: String) throws
-  {
-    try performWriting {
-      // invalidate ref caches
-      
-      let branchRef = BranchPrefixes.heads.appending(pathComponent: branch)
-      
-      try checkOut(refName: branchRef)
-      try moveHead(to: branchRef)
-    }
-  }
-  
-  func checkOut(refName: String) throws
-  {
-    guard let ref = reference(named: refName),
-          let oid = ref.targetOID as? GitOID
-    else { throw Error.notFound }
-    
-    let target = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let targetResult = git_object_lookup(target, gitRepo, oid.unsafeOID(),
-                                         GIT_OBJ_ANY)
-    guard targetResult == 0,
-          let finalTarget = target.pointee
-    else { throw Error.notFound }
-    
-    try checkout(object: finalTarget)
   }
   
   func moveHead(to refName: String) throws
@@ -90,20 +12,6 @@ extension XTRepository
     let result = git_repository_set_head(gitRepo, refName)
     
     try Error.throwIfError(result)
-  }
-  
-  func checkout(sha: String) throws
-  {
-    guard let oid = GitOID(sha: sha)
-    else { throw Error.notFound }
-    let object = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let lookupResult = git_object_lookup_prefix(object, gitRepo, oid.unsafeOID(),
-                                          Int(GIT_OID_RAWSZ), GIT_OBJ_ANY)
-    guard lookupResult == 0,
-          let finalObject = object.pointee
-    else { throw Error.notFound }
-    
-    try checkout(object: finalObject)
   }
   
   private func checkout(object: OpaquePointer) throws
@@ -137,6 +45,104 @@ extension XTRepository
   func renameRemote(old: String, new: String) throws
   {
     _ = try executeGit(args: ["remote", "rename", old, new], writes: true)
+  }
+}
+
+extension XTRepository: Workspace
+{
+  public func checkOut(branch: String) throws
+  {
+    try performWriting {
+      // invalidate ref caches
+      
+      let branchRef = BranchPrefixes.heads.appending(pathComponent: branch)
+      
+      try checkOut(refName: branchRef)
+      try moveHead(to: branchRef)
+    }
+  }
+  
+  public func checkOut(refName: String) throws
+  {
+    guard let ref = reference(named: refName),
+          let oid = ref.targetOID as? GitOID
+    else { throw Error.notFound }
+    
+    let target = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    let targetResult = git_object_lookup(target, gitRepo, oid.unsafeOID(),
+                                         GIT_OBJ_ANY)
+    guard targetResult == 0,
+          let finalTarget = target.pointee
+    else { throw Error.notFound }
+    
+    try checkout(object: finalTarget)
+  }
+  
+  public func checkOut(sha: String) throws
+  {
+    guard let oid = GitOID(sha: sha)
+    else { throw Error.notFound }
+    let object = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    let lookupResult = git_object_lookup_prefix(object, gitRepo, oid.unsafeOID(),
+                                                Int(GIT_OID_RAWSZ), GIT_OBJ_ANY)
+    guard lookupResult == 0,
+          let finalObject = object.pointee
+    else { throw Error.notFound }
+    
+    try checkout(object: finalObject)
+  }
+}
+
+extension XTRepository: Tagging
+{
+  public func createTag(name: String, targetOID: OID, message: String?) throws
+  {
+    try performWriting {
+      guard let commit = GitCommit(oid: targetOID,
+                                  repository: gitRepo)
+      else { throw Error.notFound }
+      
+      let oid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
+      let signature = UnsafeMutablePointer<UnsafeMutablePointer<git_signature>?>
+            .allocate(capacity: 1)
+      let sigResult = git_signature_default(signature, gitRepo)
+      
+      try Error.throwIfError(sigResult)
+      guard let finalSig = signature.pointee
+      else { throw Error.unexpected }
+      
+      let result = git_tag_create(oid, gitRepo, name,
+                                  commit.commit, finalSig, message, 0)
+      
+      try Error.throwIfError(result)
+    }
+  }
+  
+  public func createLightweightTag(name: String, targetOID: OID) throws
+  {
+    try performWriting {
+      guard let commit = GitCommit(oid: targetOID,
+                                  repository: gitRepo)
+      else { throw Error.notFound }
+      
+      let oid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
+      let result = git_tag_create_lightweight(oid, gitRepo, name,
+                                              commit.commit, 0)
+      
+      try Error.throwIfError(result)
+    }
+  }
+  
+  public func deleteTag(name: String) throws
+  {
+    try performWriting {
+      let result = git_tag_delete(gitRepo, name)
+      
+      guard result == 0
+      else {
+        throw NSError.git_error(for: result)
+      }
+    }
   }
 }
 

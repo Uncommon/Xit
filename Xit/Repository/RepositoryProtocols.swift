@@ -1,9 +1,9 @@
 import Foundation
 
 public typealias Repository =
-    CommitStorage & CommitReferencing & FileDiffing & FileContents & FileStaging &
-    Stashing & RemoteManagement & SubmoduleManagement & Branching &
-    FileStatusDetection
+    Branching & CommitStorage & CommitReferencing & FileDiffing & FileContents &
+    FileStaging & FileStatusDetection & RemoteManagement & Stashing &
+    SubmoduleManagement & Tagging & Workspace
     // BranchListing (associated types)
 
 public protocol CommitStorage: class
@@ -145,6 +145,21 @@ public protocol Branching: class
 {
   var currentBranch: String? { get }
   
+  func createBranch(named name: String, target: String) throws -> LocalBranch?
   func localBranch(named name: String) -> LocalBranch?
   func remoteBranch(named name: String) -> RemoteBranch?
+}
+
+public protocol Tagging: class
+{
+  func createTag(name: String, targetOID: OID, message: String?) throws
+  func createLightweightTag(name: String, targetOID: OID) throws
+  func deleteTag(name: String) throws
+}
+
+public protocol Workspace: class
+{
+  func checkOut(branch: String) throws
+  func checkOut(refName: String) throws
+  func checkOut(sha: String) throws
 }

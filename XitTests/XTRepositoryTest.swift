@@ -455,7 +455,7 @@ class XTRepositoryTest: XTTest
       try repository.rename(branch: testBranch1, to: testBranch2)
     }
     assertWriteException(name: "checkout") {
-      try repository.checkout(branch: masterBranch)
+      try repository.checkOut(branch: masterBranch)
     }
     assertWriteBool(name: "delete") {
       repository.deleteBranch(testBranch2)
@@ -520,7 +520,7 @@ class XTRepositoryTest: XTTest
     
     try! "mash".write(toFile: file1Path, atomically: true, encoding: .utf8)
     try! repository.stage(file: FileName.file1)
-    try! repository.checkout(sha: firstSHA)
+    try! repository.checkOut(sha: firstSHA)
     
     guard let detachedSHA = repository.headSHA
     else {

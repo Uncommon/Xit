@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11201"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="XTSidebarController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="branchContextMenu" destination="3" id="vDV-up-MRE"/>
+                <outlet property="remoteBranchContextMenu" destination="aZF-N9-q33" id="g42-4P-iXy"/>
                 <outlet property="remoteContextMenu" destination="1" id="Drs-g5-xCE"/>
                 <outlet property="stashContextMenu" destination="4" id="bCj-qv-xN7"/>
                 <outlet property="tagContextMenu" destination="2" id="XfN-bu-pxH"/>
@@ -33,6 +33,36 @@
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="copyRemoteURL:" target="-2" id="35"/>
+                    </connections>
+                </menuItem>
+            </items>
+            <point key="canvasLocation" x="10" y="169"/>
+        </menu>
+        <menu title="Remote Branch" id="aZF-N9-q33" userLabel="Remote Branch">
+            <items>
+                <menuItem title="Create Tracking Branch..." id="50X-YB-380">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="createTrackingBranch:" target="-2" id="0Lb-Dx-s2R"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Rename" id="fcX-nl-lsO">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="renameBranch:" target="-2" id="zba-JD-dTK"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Merge" id="bto-NH-Bh4">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="mergeBranch:" target="-2" id="eSz-x4-4py"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="rWk-ye-V4K"/>
+                <menuItem title="Delete" id="BSc-2N-Caj">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="deleteBranch:" target="-2" id="wGL-e8-Xsf"/>
                     </connections>
                 </menuItem>
             </items>
