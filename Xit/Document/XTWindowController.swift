@@ -17,7 +17,7 @@ protocol RepositoryController: class
 class XTWindowController: NSWindowController, NSWindowDelegate,
                           RepositoryController
 {
-  @IBOutlet var sidebarController: XTSidebarController!
+  @IBOutlet var sidebarController: SidebarController!
   @IBOutlet weak var mainSplitView: NSSplitView!
   
   var historyController: XTHistoryViewController!

@@ -4,7 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="XTSidebarController" customModule="Xit" customModuleProvider="target">
+        <customObject id="-2" userLabel="File's Owner" customClass="SidebarController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="branchContextMenu" destination="3" id="vDV-up-MRE"/>
                 <outlet property="remoteBranchContextMenu" destination="aZF-N9-q33" id="g42-4P-iXy"/>

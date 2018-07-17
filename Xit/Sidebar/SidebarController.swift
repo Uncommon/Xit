@@ -30,22 +30,22 @@ extension SidebarHandler
     
     switch action {
       
-      case #selector(XTSidebarController.checkOutBranch(_:)):
+      case #selector(SidebarController.checkOutBranch(_:)):
         return !repo.isWriting && item.title != repo.currentBranch
       
-      case #selector(XTSidebarController.createTrackingBranch(_:)):
+      case #selector(SidebarController.createTrackingBranch(_:)):
         return !repo.isWriting
       
-      case #selector(XTSidebarController.renameBranch(_:)),
-           #selector(XTSidebarController.mergeBranch(_:)),
-           #selector(XTSidebarController.deleteBranch(_:)):
+      case #selector(SidebarController.renameBranch(_:)),
+           #selector(SidebarController.mergeBranch(_:)),
+           #selector(SidebarController.deleteBranch(_:)):
         if !item.refType.isBranch || repo.isWriting {
           return false
         }
-        if action == #selector(XTSidebarController.deleteBranch(_:)) {
+        if action == #selector(SidebarController.deleteBranch(_:)) {
           return repo.currentBranch != item.title
         }
-        if action == #selector(XTSidebarController.mergeBranch(_:)) {
+        if action == #selector(SidebarController.mergeBranch(_:)) {
           sidebarCommand.attributedTitle = nil
           sidebarCommand.title = "Merge"
           
@@ -80,19 +80,19 @@ extension SidebarHandler
         }
         return true
       
-      case #selector(XTSidebarController.deleteTag(_:)):
+      case #selector(SidebarController.deleteTag(_:)):
         return !repo.isWriting && (item is XTTagItem)
       
-      case #selector(XTSidebarController.renameRemote(_:)),
-           #selector(XTSidebarController.deleteRemote(_:)):
+      case #selector(SidebarController.renameRemote(_:)),
+           #selector(SidebarController.deleteRemote(_:)):
         return !repo.isWriting && (item is XTRemoteItem)
       
-      case #selector(XTSidebarController.copyRemoteURL(_:)):
+      case #selector(SidebarController.copyRemoteURL(_:)):
         return item is XTRemoteItem
       
-      case #selector(XTSidebarController.popStash(_:)),
-           #selector(XTSidebarController.applyStash(_:)),
-           #selector(XTSidebarController.dropStash(_:)):
+      case #selector(SidebarController.popStash(_:)),
+           #selector(SidebarController.applyStash(_:)),
+           #selector(SidebarController.dropStash(_:)):
         return !repo.isWriting && item is XTStashItem
       
       default:
@@ -158,7 +158,7 @@ extension SidebarHandler
 }
 
 /// Manages the main window sidebar.
-class XTSidebarController: NSViewController, SidebarHandler
+class SidebarController: NSViewController, SidebarHandler
 {
   @IBOutlet weak var sidebarOutline: SideBarOutlineView!
   @IBOutlet weak var sidebarDS: XTSideBarDataSource!

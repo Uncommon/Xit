@@ -17,7 +17,7 @@ class XTSideBarDataSource: NSObject
     case set(String)     /// References a real branch
   }
   
-  @IBOutlet weak var viewController: XTSidebarController!
+  @IBOutlet weak var viewController: SidebarController!
   @IBOutlet weak var refFormatter: XTRefFormatter!
   @IBOutlet weak var outline: NSOutlineView!
   
@@ -467,7 +467,7 @@ class XTSideBarDataSource: NSObject
       switch response {
         
         case .alertFirstButtonReturn: // Clear
-          var branch = self.repository.localBranch(named: item.title)
+          let branch = self.repository.localBranch(named: item.title)
           
           branch?.trackingBranchName = nil
           self.outline.reloadItem(item)

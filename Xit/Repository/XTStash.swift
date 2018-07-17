@@ -77,7 +77,8 @@ public class XTStash: NSObject, Stash
   {
     guard let mainCommit = self.mainCommit as? GitCommit,
           let parentOID = mainCommit.parentOIDs.first,
-          let parent = GitCommit(oid: parentOID, repository: mainCommit.repository),
+          let parent = GitCommit(oid: parentOID,
+                                 repository: mainCommit.repository),
           let headEntry = parent.tree?.entry(path: path)
     else { return nil }
     

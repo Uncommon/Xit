@@ -2,7 +2,7 @@ import XCTest
 @testable import Xit
 
 
-class XTTestingSidebarHandler : SidebarHandler
+class TestingSidebarHandler : SidebarHandler
 {
   var repo: XTRepository!
   var window: NSWindow? { return nil }
@@ -20,9 +20,9 @@ class XTTestingSidebarHandler : SidebarHandler
   }
 }
 
-class XTSidebarHandlerTest: XTTest
+class SidebarHandlerTest: XTTest
 {
-  let handler = XTTestingSidebarHandler()
+  let handler = TestingSidebarHandler()
   
   override func setUp()
   {
@@ -48,7 +48,7 @@ class XTSidebarHandlerTest: XTTest
   {
     let menuItem = NSMenuItem(
       title: "Delete",
-      action: #selector(XTSidebarController.deleteBranch(_:)),
+      action: #selector(SidebarController.deleteBranch(_:)),
       keyEquivalent: "")
     
     handler.selectedItem = item(forBranch: branch)
@@ -163,7 +163,7 @@ class XTSidebarHandlerTest: XTTest
   {
     let menuItem = NSMenuItem(
         title: "Merge",
-        action: #selector(XTSidebarController.mergeBranch(_:)),
+        action: #selector(SidebarController.mergeBranch(_:)),
         keyEquivalent: "")
     
     XCTAssertTrue(repository.createBranch("branch"))
@@ -177,7 +177,7 @@ class XTSidebarHandlerTest: XTTest
   {
     let menuItem = NSMenuItem(
       title: "Merge",
-      action: #selector(XTSidebarController.mergeBranch(_:)),
+      action: #selector(SidebarController.mergeBranch(_:)),
       keyEquivalent: "")
     
     handler.selectedItem = item(forBranch: "master")

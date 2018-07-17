@@ -296,7 +296,8 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
                             0, 0, 0)
       DispatchQueue.concurrentPerform(iterations: batchSize) {
         (index) in
-        guard !checkAbort() else { return }
+        guard !checkAbort()
+        else { return }
         generateLines(entry: entries[index + batchStart],
                       connections: connections[index])
         postProgress?(batchSize, batchStart/batchSize, 1, index)

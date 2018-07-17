@@ -3,7 +3,7 @@ import Foundation
 @objc(XTSideBarOutlineView)
 class SideBarOutlineView: ContextMenuOutlineView
 {
-  @IBOutlet public weak var controller: XTSidebarController!
+  @IBOutlet public weak var controller: SidebarController!
   
   override func updateMenu(forItem item: Any)
   {
@@ -31,7 +31,7 @@ class SideBarOutlineView: ContextMenuOutlineView
   {
     let renameIndex = menu.indexOfItem(
             withTarget: controller,
-            andAction: #selector(XTSidebarController.renameBranch(_:)))
+            andAction: #selector(SidebarController.renameBranch(_:)))
     
     if renameIndex != -1 {
       menu.items[renameIndex].isHidden = !local

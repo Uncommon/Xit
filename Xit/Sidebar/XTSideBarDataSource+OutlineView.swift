@@ -142,7 +142,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
         textField.formatter = refFormatter
         textField.target = viewController
         textField.action =
-            #selector(XTSidebarController.sidebarItemRenamed(_:))
+            #selector(SidebarController.sidebarItemRenamed(_:))
       }
       
       let fontSize = textField.font?.pointSize ?? 12

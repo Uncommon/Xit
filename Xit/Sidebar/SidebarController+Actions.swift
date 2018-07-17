@@ -1,6 +1,6 @@
 import Foundation
 
-extension XTSidebarController
+extension SidebarController
 {
   @IBAction func sidebarItemRenamed(_ sender: Any)
   {
