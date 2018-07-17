@@ -201,7 +201,7 @@
 		DD858B2C1801325500264F7D /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD858B2B1801325500264F7D /* CoreServices.framework */; };
 		DD96C9A6176977470003A30C /* ObjectiveGit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD96C99A176976FE0003A30C /* ObjectiveGit.framework */; };
 		DD98CFF3181ADFC5008B79C9 /* CFRunLoop+Extensions.c in Sources */ = {isa = PBXBuildFile; fileRef = DD98CFF2181ADFC5008B79C9 /* CFRunLoop+Extensions.c */; };
-		DD997DDA173B409500C7DF82 /* HistoryView Menus.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD997DD8173B409500C7DF82 /* HistoryView Menus.xib */; };
+		DD997DDA173B409500C7DF82 /* Sidebar Menus.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD997DD8173B409500C7DF82 /* Sidebar Menus.xib */; };
 		DD997DF81746F40D00C7DF82 /* FileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD997DF71746F40D00C7DF82 /* FileViewController.xib */; };
 		DDD4708516F96F7E00CA76FF /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDD4708416F96F7E00CA76FF /* QuickLook.framework */; };
 		DDD4708716F9701600CA76FF /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDD4708616F9701600CA76FF /* Quartz.framework */; };
@@ -555,7 +555,7 @@
 		DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ObjectiveGitFramework.xcodeproj; path = "objective-git/ObjectiveGitFramework.xcodeproj"; sourceTree = "<group>"; };
 		DD98CFF2181ADFC5008B79C9 /* CFRunLoop+Extensions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "CFRunLoop+Extensions.c"; path = "XitTests/CFRunLoop+Extensions.c"; sourceTree = SOURCE_ROOT; };
 		DD98CFFF181AE297008B79C9 /* CFRunLoop+Extensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CFRunLoop+Extensions.h"; path = "XitTests/CFRunLoop+Extensions.h"; sourceTree = SOURCE_ROOT; };
-		DD997DD9173B409500C7DF82 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = "en.lproj/HistoryView Menus.xib"; sourceTree = "<group>"; };
+		DD997DD9173B409500C7DF82 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = "en.lproj/Sidebar Menus.xib"; sourceTree = "<group>"; };
 		DD997DF71746F40D00C7DF82 /* FileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FileViewController.xib; sourceTree = "<group>"; };
 		DDD4708416F96F7E00CA76FF /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
 		DDD4708616F9701600CA76FF /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
@@ -944,7 +944,7 @@
 				C9F78B131D0896AF008490EA /* XTSidebarItem.swift */,
 				C947367B1DF079DB000E3A05 /* SideBarOutlineView.swift */,
 				C951EB041DD636B900B99FBE /* SidebarCheckedRowView.swift */,
-				DD997DD8173B409500C7DF82 /* HistoryView Menus.xib */,
+				DD997DD8173B409500C7DF82 /* Sidebar Menus.xib */,
 				C9F461DD1EF34826007BEBC9 /* BuildStatusCellView.swift */,
 				C941549E1ED4ECF30030E481 /* BuildStatusViewController.swift */,
 				C941549F1ED4ECF30030E481 /* BuildStatusViewController.xib */,
@@ -1209,7 +1209,7 @@
 				C957B8731D2DB44E0040F858 /* XTRemoteSheetController.xib in Resources */,
 				89039F561703A9FC000949A8 /* html in Resources */,
 				C90FD5971D217D5B00A30570 /* XTFetchPanelController.xib in Resources */,
-				DD997DDA173B409500C7DF82 /* HistoryView Menus.xib in Resources */,
+				DD997DDA173B409500C7DF82 /* Sidebar Menus.xib in Resources */,
 				C923D65E1D90506A00C6B90B /* TitleBar.xib in Resources */,
 				DD997DF81746F40D00C7DF82 /* FileViewController.xib in Resources */,
 				C93FFCAA1F0FD65100FDDD78 /* Defaults.plist in Resources */,
@@ -1498,12 +1498,12 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		DD997DD8173B409500C7DF82 /* HistoryView Menus.xib */ = {
+		DD997DD8173B409500C7DF82 /* Sidebar Menus.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				DD997DD9173B409500C7DF82 /* en */,
 			);
-			name = "HistoryView Menus.xib";
+			name = "Sidebar Menus.xib";
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
