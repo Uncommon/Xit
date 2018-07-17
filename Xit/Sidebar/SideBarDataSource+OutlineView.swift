@@ -1,7 +1,7 @@
 import Foundation
 
 // MARK: NSPopoverDelegate
-extension XTSideBarDataSource: NSPopoverDelegate
+extension SideBarDataSource: NSPopoverDelegate
 {
   func popoverDidClose(_ notification: Notification)
   {
@@ -10,7 +10,7 @@ extension XTSideBarDataSource: NSPopoverDelegate
 }
 
 // MARK: NSOutlineViewDataSource
-extension XTSideBarDataSource: NSOutlineViewDataSource
+extension SideBarDataSource: NSOutlineViewDataSource
 {
   public func outlineView(_ outlineView: NSOutlineView,
                           numberOfChildrenOfItem item: Any?) -> Int
@@ -18,13 +18,13 @@ extension XTSideBarDataSource: NSOutlineViewDataSource
     if item == nil {
       return roots.count
     }
-    return (item as? XTSideBarItem)?.children.count ?? 0
+    return (item as? SidebarItem)?.children.count ?? 0
   }
   
   public func outlineView(_ outlineView: NSOutlineView,
                           isItemExpandable item: Any) -> Bool
   {
-    return (item as? XTSideBarItem)?.expandable ?? false
+    return (item as? SidebarItem)?.expandable ?? false
   }
   
   public func outlineView(_ outlineView: NSOutlineView,
@@ -35,16 +35,16 @@ extension XTSideBarDataSource: NSOutlineViewDataSource
       return roots[index]
     }
     
-    guard let sidebarItem = item as? XTSideBarItem,
+    guard let sidebarItem = item as? SidebarItem,
           sidebarItem.children.count > index
-    else { return XTSideBarItem(title: "") }
+    else { return SidebarItem(title: "") }
     
     return sidebarItem.children[index]
   }
 }
 
 // MARK: NSOutlineViewDelegate
-extension XTSideBarDataSource: NSOutlineViewDelegate
+extension SideBarDataSource: NSOutlineViewDelegate
 {
   enum CellID
   {
@@ -55,7 +55,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
   public func outlineViewSelectionDidChange(_ notification: Notification)
   {
     guard let item = outline!.item(atRow: outline!.selectedRow)
-                     as? XTSideBarItem,
+                     as? SidebarItem,
           let selection = item.selection,
           let controller = outline!.window?.windowController
                            as? RepositoryController
@@ -69,14 +69,14 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
   public func outlineView(_ outlineView: NSOutlineView,
                           isGroupItem item: Any) -> Bool
   {
-    return item is XTSideBarGroupItem
+    return item is SideBarGroupItem
   }
 
   public func outlineView(_ outlineView: NSOutlineView,
                           shouldShowOutlineCellForItem item: Any) -> Bool
   {
     // Don't hide the workspace group
-    if (item as? XTSideBarGroupItem) === roots[0] {
+    if (item as? SideBarGroupItem) === roots[0] {
       return false
     }
     
@@ -86,7 +86,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
   public func outlineView(_ outlineView: NSOutlineView,
                           shouldSelectItem item: Any) -> Bool
   {
-    return (item as? XTSideBarItem)?.isSelectable ?? false
+    return (item as? SidebarItem)?.isSelectable ?? false
   }
 
   public func outlineView(_ outlineView: NSOutlineView,
@@ -102,10 +102,10 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
                           item: Any) -> NSView?
   {
     guard repository != nil,
-          let sideBarItem = item as? XTSideBarItem
+          let sideBarItem = item as? SidebarItem
     else { return nil }
     
-    if item is XTSideBarGroupItem {
+    if item is SideBarGroupItem {
       guard let headerView = outlineView.makeView(
           withIdentifier: CellID.header, owner: nil) as? NSTableCellView
       else { return nil }
@@ -115,7 +115,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
     }
     else {
       guard let dataView = outlineView.makeView(
-          withIdentifier: CellID.data, owner: nil) as? XTSidebarTableCellView
+          withIdentifier: CellID.data, owner: nil) as? SidebarTableCellView
       else { return nil }
       
       let textField = dataView.textField!
@@ -134,7 +134,7 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
         dataView.statusButton.target = self
         dataView.statusButton.action = #selector(self.showItemStatus(_:))
       }
-      if sideBarItem is XTLocalBranchItem {
+      if sideBarItem is LocalBranchSidebarItem {
         configureLocalBranchItem(sideBarItem: sideBarItem, dataView: dataView)
       }
       dataView.buttonContainer.isHidden = dataView.statusButton.image == nil
@@ -151,15 +151,15 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
           ? NSFont.boldSystemFont(ofSize: fontSize)
           : NSFont.systemFont(ofSize: fontSize)
 
-      if sideBarItem is XTStagingItem {
+      if sideBarItem is StagingSidebarItem {
         configureStagingItem(sideBarItem: sideBarItem, dataView: dataView)
       }
       return dataView
     }
   }
   
-  fileprivate func configureLocalBranchItem(sideBarItem: XTSideBarItem,
-                                            dataView: XTSidebarTableCellView)
+  fileprivate func configureLocalBranchItem(sideBarItem: SidebarItem,
+                                            dataView: SidebarTableCellView)
   {
     dataView.missingImage.isHidden = true
     if let statusText = graphText(for: sideBarItem) {
@@ -184,8 +184,8 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
     }
   }
   
-  fileprivate func configureStagingItem(sideBarItem: XTSideBarItem,
-                                        dataView: XTSidebarTableCellView)
+  fileprivate func configureStagingItem(sideBarItem: SidebarItem,
+                                        dataView: SidebarTableCellView)
   {
     let selection = sideBarItem.selection as! StagedUnstagedSelection
     let indexChanges = selection.fileList.changes
@@ -206,11 +206,11 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
   public func outlineView(_ outlineView: NSOutlineView,
                           rowViewForItem item: Any) -> NSTableRowView?
   {
-    if let branchItem = item as? XTLocalBranchItem,
+    if let branchItem = item as? LocalBranchSidebarItem,
        branchItem.current {
       return SidebarCheckedRowView()
     }
-    else if let remoteBranchItem = item as? XTRemoteBranchItem,
+    else if let remoteBranchItem = item as? RemoteBranchSidebarItem,
             let branchName = repository.currentBranch,
             let currentBranch = repository.localBranch(named: branchName),
             currentBranch.trackingBranchName == remoteBranchItem.remote + "/" +
@@ -228,13 +228,13 @@ extension XTSideBarDataSource: NSOutlineViewDelegate
 }
 
 // MARK: XTOutlineViewDelegate
-extension XTSideBarDataSource: XTOutlineViewDelegate
+extension SideBarDataSource: XTOutlineViewDelegate
 {
   func outlineViewClickedSelectedRow(_ outline: NSOutlineView)
   {
     guard let selectedIndex = outline.selectedRowIndexes.first,
           let newSelectedItem = outline.item(atRow: selectedIndex)
-                                as? XTSideBarItem
+                                as? SidebarItem
     else { return }
     
     if let controller = outline.window?.windowController

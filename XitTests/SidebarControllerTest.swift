@@ -6,15 +6,15 @@ class TestingSidebarHandler : SidebarHandler
 {
   var repo: XTRepository!
   var window: NSWindow? { return nil }
-  var selectedItem: XTSideBarItem? = nil
+  var selectedItem: SidebarItem? = nil
   var selectedStash: UInt? = nil
   
-  func targetItem() -> XTSideBarItem?
+  func targetItem() -> SidebarItem?
   {
     return selectedItem
   }
   
-  func stashIndex(for item: XTSideBarItem) -> UInt?
+  func stashIndex(for item: SidebarItem) -> UInt?
   {
     return selectedStash
   }
@@ -30,7 +30,7 @@ class SidebarHandlerTest: XTTest
     handler.repo = repository
   }
   
-  func item(forBranch branch: String) -> XTSideBarItem?
+  func item(forBranch branch: String) -> SidebarItem?
   {
     guard let commit = GitCommit(ref: "refs/heads/\(branch)",
                                      repository: repository)
@@ -41,7 +41,7 @@ class SidebarHandlerTest: XTTest
     let selection = CommitSelection(repository: repository,
                                     commit: commit)
     
-    return XTLocalBranchItem(title: branch, selection: selection)
+    return LocalBranchSidebarItem(title: branch, selection: selection)
   }
   
   func checkDeleteBranch(named branch: String) -> Bool
@@ -94,7 +94,7 @@ class SidebarHandlerTest: XTTest
     makeTwoStashes()
     XCTAssertEqual(currentStashes(), expected)
     
-    handler.selectedItem = XTStashItem(title: expected[Int(index)])
+    handler.selectedItem = StashSidebarItem(title: expected[Int(index)])
     handler.selectedStash = index
     
     action()

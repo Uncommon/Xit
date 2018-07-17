@@ -6,8 +6,8 @@ protocol SidebarHandler: class
   var repo: XTRepository! { get }
   var window: NSWindow? { get }
   
-  func targetItem() -> XTSideBarItem?
-  func stashIndex(for item: XTSideBarItem) -> UInt?
+  func targetItem() -> SidebarItem?
+  func stashIndex(for item: SidebarItem) -> UInt?
 }
 
 enum XTGroupIndex: Int
@@ -53,7 +53,7 @@ extension SidebarHandler
 
           switch item.refType {
             case .remoteBranch:
-              guard let remoteItem = item as? XTRemoteBranchItem
+              guard let remoteItem = item as? RemoteBranchSidebarItem
               else { return false }
               
               clickedBranch = "\(remoteItem.remote)/\(clickedBranch)"
@@ -81,19 +81,19 @@ extension SidebarHandler
         return true
       
       case #selector(SidebarController.deleteTag(_:)):
-        return !repo.isWriting && (item is XTTagItem)
+        return !repo.isWriting && (item is TagSidebarItem)
       
       case #selector(SidebarController.renameRemote(_:)),
            #selector(SidebarController.deleteRemote(_:)):
-        return !repo.isWriting && (item is XTRemoteItem)
+        return !repo.isWriting && (item is RemoteSidebarItem)
       
       case #selector(SidebarController.copyRemoteURL(_:)):
-        return item is XTRemoteItem
+        return item is RemoteSidebarItem
       
       case #selector(SidebarController.popStash(_:)),
            #selector(SidebarController.applyStash(_:)),
            #selector(SidebarController.dropStash(_:)):
-        return !repo.isWriting && item is XTStashItem
+        return !repo.isWriting && item is StashSidebarItem
       
       default:
         return false
@@ -101,8 +101,8 @@ extension SidebarHandler
   }
   
   func callCommand(errorString: String,
-                   targetItem: XTSideBarItem? = nil,
-                   block: @escaping (XTSideBarItem) throws -> Void)
+                   targetItem: SidebarItem? = nil,
+                   block: @escaping (SidebarItem) throws -> Void)
   {
     guard let item = targetItem ?? self.targetItem()
     else { return }
@@ -161,7 +161,7 @@ extension SidebarHandler
 class SidebarController: NSViewController, SidebarHandler
 {
   @IBOutlet weak var sidebarOutline: SideBarOutlineView!
-  @IBOutlet weak var sidebarDS: XTSideBarDataSource!
+  @IBOutlet weak var sidebarDS: SideBarDataSource!
   
   @IBOutlet var branchContextMenu: NSMenu!
   @IBOutlet var remoteBranchContextMenu: NSMenu!
@@ -265,12 +265,12 @@ class SidebarController: NSViewController, SidebarHandler
   func selectedBranch() -> String?
   {
     let selection = sidebarOutline.item(atRow: sidebarOutline.selectedRow)
-                    as? XTLocalBranchItem
+                    as? LocalBranchSidebarItem
     
     return selection?.title
   }
   
-  func selectItem(_ item: XTSideBarItem, group: XTGroupIndex)
+  func selectItem(_ item: SidebarItem, group: XTGroupIndex)
   {
     sidebarOutline.expandItem(
         sidebarOutline.item(atRow: group.rawValue))
@@ -345,12 +345,12 @@ class SidebarController: NSViewController, SidebarHandler
     return sidebarOutline.selectedRow
   }
   
-  func targetItem() -> XTSideBarItem?
+  func targetItem() -> SidebarItem?
   {
-    return sidebarOutline.item(atRow: targetRow()) as? XTSideBarItem
+    return sidebarOutline.item(atRow: targetRow()) as? SidebarItem
   }
   
-  func stashIndex(for item: XTSideBarItem) -> UInt?
+  func stashIndex(for item: SidebarItem) -> UInt?
   {
     let stashes = sidebarDS.roots[XTGroupIndex.stashes.rawValue]
     
@@ -362,7 +362,7 @@ class SidebarController: NSViewController, SidebarHandler
     sidebarOutline.editColumn(0, row: targetRow(), with: nil, select: true)
   }
   
-  func deleteBranch(item: XTSideBarItem)
+  func deleteBranch(item: SidebarItem)
   {
     confirmDelete(kind: "branch", name: item.title) {
       self.callCommand(errorString: "Delete branch failed", targetItem: item) {

@@ -5,7 +5,7 @@ extension SidebarController
   @IBAction func sidebarItemRenamed(_ sender: Any)
   {
     guard let textField = sender as? NSTextField,
-          let cellView = textField.superview as? XTSidebarTableCellView,
+          let cellView = textField.superview as? SidebarTableCellView,
           let editedItem = cellView.item
     else { return }
     
@@ -46,7 +46,7 @@ extension SidebarController
   
   @IBAction func createTrackingBranch(_ sender: Any?)
   {
-    guard let item = targetItem() as? XTRemoteBranchItem,
+    guard let item = targetItem() as? RemoteBranchSidebarItem,
           let controller = view.window?.windowController as? XTWindowController
     else { return }
     
@@ -67,7 +67,7 @@ extension SidebarController
   
   @IBAction func mergeBranch(_ sender: Any?)
   {
-    guard let selectedItem = targetItem() as? XTBranchItem,
+    guard let selectedItem = targetItem() as? BranchSidebarItem,
           let branch = selectedItem.branchObject()
     else { return }
     

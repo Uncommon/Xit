@@ -1,20 +1,20 @@
 import Foundation
 
-extension XTSideBarDataSource: TeamCityAccessor
+extension SideBarDataSource: TeamCityAccessor
 {
   var remoteMgr: RemoteManagement! { return repository }
   
   /// Returns the name of the remote for either a remote branch or a local
   /// tracking branch.
-  func remoteName(forBranchItem branchItem: XTSideBarItem) -> String?
+  func remoteName(forBranchItem branchItem: SidebarItem) -> String?
   {
     guard let repo = repository
     else { return nil }
     
-    if let remoteBranchItem = branchItem as? XTRemoteBranchItem {
+    if let remoteBranchItem = branchItem as? RemoteBranchSidebarItem {
       return remoteBranchItem.remote
     }
-    else if let localBranchItem = branchItem as? XTLocalBranchItem {
+    else if let localBranchItem = branchItem as? LocalBranchSidebarItem {
       guard let branch = repo.localBranch(named: localBranchItem.title)
       else {
         NSLog("Can't get branch for branch item: \(branchItem.title)")
@@ -57,9 +57,9 @@ extension XTSideBarDataSource: TeamCityAccessor
     }
   }
   
-  func statusImage(for item: XTSideBarItem) -> NSImage?
+  func statusImage(for item: SidebarItem) -> NSImage?
   {
-    if (item is XTRemoteBranchItem) &&
+    if (item is RemoteBranchSidebarItem) &&
        !branchHasLocalTrackingBranch(item.title) {
       return nil
     }
@@ -88,7 +88,7 @@ extension XTSideBarDataSource: TeamCityAccessor
 }
 
 // MARK: BuildStatusClient
-extension XTSideBarDataSource: BuildStatusClient
+extension SideBarDataSource: BuildStatusClient
 {
   func buildStatusUpdated(branch: String, buildType: String)
   {

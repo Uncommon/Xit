@@ -1,11 +1,11 @@
 import Cocoa
 
-class XTSideBarItem: NSObject
+class SidebarItem: NSObject
 {
   var title: String
   var displayTitle: String { return title }
   var icon: NSImage? { return nil }
-  var children: [XTSideBarItem]
+  var children: [SidebarItem]
   var selection: RepositorySelection?
   var refType: XTRefType { return .unknown }
   var expandable: Bool { return false }
@@ -30,12 +30,12 @@ class XTSideBarItem: NSObject
   
   // Because children bridges as NSArray, not NSMutableArray.
   @objc(addChild:)  // Override default "addWithChild:"
-  func add(child: XTSideBarItem)
+  func add(child: SidebarItem)
   {
     children.append(child)
   }
   
-  func child(matching title: String) -> XTSideBarItem?
+  func child(matching title: String) -> SidebarItem?
   {
     if let child = children.first(where: { $0.title == title }) {
       return child
@@ -50,18 +50,14 @@ class XTSideBarItem: NSObject
 }
 
 
-class XTSideBarGroupItem: XTSideBarItem
+class SideBarGroupItem: SidebarItem
 {
   override var isSelectable: Bool { return false }
   override var expandable: Bool { return true }
 }
 
 
-class XTRemotesItem: XTSideBarGroupItem
-{}
-
-
-class XTStagingItem: XTSideBarItem
+class StagingSidebarItem: SidebarItem
 {
   override var icon: NSImage?
   {
@@ -70,7 +66,7 @@ class XTStagingItem: XTSideBarItem
 }
 
 
-class XTStashItem: XTSideBarItem
+class StashSidebarItem: SidebarItem
 {
   override var icon: NSImage?
   {
@@ -79,7 +75,7 @@ class XTStashItem: XTSideBarItem
 }
 
 
-class XTBranchItem: XTSideBarItem
+class BranchSidebarItem: SidebarItem
 {
   override var displayTitle: String
   { return (title as NSString).lastPathComponent }
@@ -92,7 +88,7 @@ class XTBranchItem: XTSideBarItem
 }
 
 
-class XTLocalBranchItem: XTBranchItem
+class LocalBranchSidebarItem: BranchSidebarItem
 {
   override var refType: XTRefType { return current ? .activeBranch : .branch }
   override var current: Bool
@@ -117,7 +113,7 @@ class XTLocalBranchItem: XTBranchItem
 }
 
 
-class XTRemoteBranchItem: XTBranchItem
+class RemoteBranchSidebarItem: BranchSidebarItem
 {
   var remote: String
   override var refType: XTRefType { return .remoteBranch }
@@ -139,7 +135,7 @@ class XTRemoteBranchItem: XTBranchItem
 }
 
 
-class XTBranchFolderItem: XTSideBarItem
+class BranchFolderSidebarItem: SidebarItem
 {
   override var icon: NSImage? { return NSImage(named: .xtFolderTemplate) }
   override var isSelectable: Bool { return false }
@@ -147,7 +143,7 @@ class XTBranchFolderItem: XTSideBarItem
 }
 
 
-class XTRemoteItem: XTSideBarItem
+class RemoteSidebarItem: SidebarItem
 {
   let remote: Remote?
   
@@ -176,7 +172,7 @@ class XTRemoteItem: XTSideBarItem
 }
 
 
-class XTTagItem: XTSideBarItem
+class TagSidebarItem: SidebarItem
 {
   let tag: Tag
 
@@ -203,7 +199,7 @@ class XTTagItem: XTSideBarItem
 }
 
 
-class XTSubmoduleItem: XTSideBarItem
+class SubmoduleSidebarItem: SidebarItem
 {
   let submodule: Submodule
   override var icon: NSImage?

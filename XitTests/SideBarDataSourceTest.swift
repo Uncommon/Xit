@@ -2,16 +2,16 @@ import Foundation
 import XCTest
 @testable import Xit
 
-class XTSidebarDataSourceTest: XTTest
+class SidebarDataSourceTest: XTTest
 {
   var outline = MockSidebarOutline()
-  var sbds = XTSideBarDataSource()
+  var sbds = SideBarDataSource()
   var runLoop: CFRunLoop?
 
-  func groupItem(_ row: XTGroupIndex) -> XTSideBarGroupItem
+  func groupItem(_ row: XTGroupIndex) -> SideBarGroupItem
   {
     return sbds.outlineView(outline, child: row.rawValue, ofItem: nil)
-           as! XTSideBarGroupItem
+           as! SideBarGroupItem
   }
   
   override func setUp()
@@ -63,7 +63,7 @@ class XTSidebarDataSourceTest: XTTest
     XCTAssertEqual(tagCount, 1)
     
     let tag = sbds.outlineView(outline, child: 0, ofItem: tagsGroup)
-              as! XTSideBarItem
+              as! SidebarItem
     let expandable = sbds.outlineView(outline, isItemExpandable: tag)
     
     XCTAssertNotNil(tag.selection?.shaToSelect)
@@ -90,7 +90,7 @@ class XTSidebarDataSourceTest: XTTest
     XCTAssertEqual(branchCount, 2)
     for b in 0...1 {
       let branch = sbds.outlineView(outline, child: b, ofItem: branches)
-                   as! XTSideBarItem
+                   as! SidebarItem
       let expandable = sbds.outlineView(outline, isItemExpandable: branch)
       
       XCTAssertNotNil(branch.selection?.shaToSelect)
@@ -207,7 +207,7 @@ class XTSidebarDataSourceTest: XTTest
     
     for (index, data) in subData.enumerated() {
       let subItem = sbds.outlineView(outline, child: index, ofItem: subs)
-                    as! XTSubmoduleItem
+                    as! SubmoduleSidebarItem
       
       XCTAssertEqual(subItem.submodule.name, data.0)
       XCTAssertEqual(subItem.submodule.url?.path, data.1)
@@ -256,7 +256,7 @@ class MockSidebarOutline: NSOutlineView
   override func makeView(withIdentifier identifier: NSUserInterfaceItemIdentifier,
                      owner: Any?) -> NSView?
   {
-    let result = XTSidebarTableCellView(frame: NSRect(x: 0, y: 0,
+    let result = SidebarTableCellView(frame: NSRect(x: 0, y: 0,
                                                       width: 185, height: 20))
     let textField = NSTextField(frame: NSRect(x: 26, y: 3,
                                               width: 163, height: 17))

@@ -2,7 +2,7 @@ import Cocoa
 
 /// Data source for the sidebar, showing branches, remotes, tags, stashes,
 /// and submodules.
-class XTSideBarDataSource: NSObject
+class SideBarDataSource: NSObject
 {
   enum Intervals
   {
@@ -21,8 +21,8 @@ class XTSideBarDataSource: NSObject
   @IBOutlet weak var refFormatter: XTRefFormatter!
   @IBOutlet weak var outline: NSOutlineView!
   
-  private(set) var roots: [XTSideBarGroupItem]
-  private(set) var stagingItem: XTSideBarItem!
+  private(set) var roots: [SideBarGroupItem]
+  private(set) var stagingItem: SidebarItem!
   
   var statusPopover: NSPopover?
   var buildStatusCache: BuildStatusCache!
@@ -75,13 +75,13 @@ class XTSideBarDataSource: NSObject
     }
   }
 
-  var selectedItem: XTSideBarItem?
+  var selectedItem: SidebarItem?
   {
     get
     {
       let row = outline.selectedRow
       
-      return row >= 0 ? outline.item(atRow: row) as? XTSideBarItem : nil
+      return row >= 0 ? outline.item(atRow: row) as? SidebarItem : nil
     }
     set
     {
@@ -101,11 +101,11 @@ class XTSideBarDataSource: NSObject
     }
   }
   
-  static func makeRoots(_ stagingItem: XTSideBarItem) -> [XTSideBarGroupItem]
+  static func makeRoots(_ stagingItem: SidebarItem) -> [SideBarGroupItem]
   {
     let rootNames = ["WORKSPACE", "BRANCHES", "REMOTES", "TAGS", "STASHES",
                      "SUBMODULES"]
-    let roots = rootNames.map { XTSideBarGroupItem(title: $0) }
+    let roots = rootNames.map { SideBarGroupItem(title: $0) }
     
     roots[0].add(child: stagingItem)
     return roots
@@ -113,8 +113,8 @@ class XTSideBarDataSource: NSObject
   
   override init()
   {
-    self.stagingItem = XTStagingItem(title: "Staging")
-    self.roots = XTSideBarDataSource.makeRoots(stagingItem)
+    self.stagingItem = StagingSidebarItem(title: "Staging")
+    self.roots = SideBarDataSource.makeRoots(stagingItem)
   }
   
   deinit
@@ -132,7 +132,7 @@ class XTSideBarDataSource: NSObject
   open override func awakeFromNib()
   {
     outline!.target = self
-    outline!.doubleAction = #selector(XTSideBarDataSource.doubleClick(_:))
+    outline!.doubleAction = #selector(SideBarDataSource.doubleClick(_:))
     if !XTAccountsManager.manager.accounts(ofType: .teamCity).isEmpty {
       buildStatusTimer = Timer.scheduledTimer(
           withTimeInterval: Intervals.teamCityRefresh, repeats: true) {
@@ -161,7 +161,7 @@ class XTSideBarDataSource: NSObject
         guard let myself = self
         else { return }
         let selection = myself.outline.item(atRow: myself.outline.selectedRow)
-                        as? XTSideBarItem
+                        as? SidebarItem
         
         myself.roots = newRoots
         myself.outline.reloadData()
@@ -175,7 +175,7 @@ class XTSideBarDataSource: NSObject
     }
   }
   
-  func select(item: XTSideBarItem?) -> Bool
+  func select(item: SidebarItem?) -> Bool
   {
     guard let item = item
     else { return false }
@@ -187,12 +187,12 @@ class XTSideBarDataSource: NSObject
       return true
     }
     switch item {
-      case is XTStagingItem:
+      case is StagingSidebarItem:
         outline.selectRowIndexes(
             IndexSet(integer: outline.row(forItem: self.stagingItem)),
             byExtendingSelection: false)
         return true
-      case let localItem as XTLocalBranchItem:
+      case let localItem as LocalBranchSidebarItem:
         if let item = self.item(forBranchName: localItem.title) {
           outline.selectRowIndexes(
               IndexSet(integer: outline.row(forItem: item)),
@@ -219,20 +219,20 @@ class XTSideBarDataSource: NSObject
     }
   }
   
-  func makeStashItems() -> [XTSideBarItem]
+  func makeStashItems() -> [SidebarItem]
   {
     return repository?.stashes().map {
-      XTStashItem(title: $0.message ?? "stash",
+      StashSidebarItem(title: $0.message ?? "stash",
                   selection: StashSelection(repository: repository!, stash: $0))
     } ?? []
   }
   
-  func loadRoots() -> [XTSideBarGroupItem]
+  func loadRoots() -> [SideBarGroupItem]
   {
     guard let repo = repository
     else { return [] }
     
-    let newRoots = XTSideBarDataSource.makeRoots(stagingItem)
+    let newRoots = SideBarDataSource.makeRoots(stagingItem)
     let branchesGroup = newRoots[XTGroupIndex.branches.rawValue]
     let localBranches = repo.localBranches().sorted(by: { $0.name < $1.name })
     
@@ -243,14 +243,14 @@ class XTSideBarDataSource: NSObject
       
       let name = branch.name.removingPrefix("refs/heads/")
       let selection = CommitSelection(repository: repo, commit: commit)
-      let branchItem = XTLocalBranchItem(title: name, selection: selection)
+      let branchItem = LocalBranchSidebarItem(title: name, selection: selection)
       let parent = self.parent(for: name, groupItem: branchesGroup)
       
       parent.children.append(branchItem)
     }
     
     let remoteItems = repo.remoteNames().map {
-          XTRemoteItem(title: $0, repository: repo) }
+          RemoteSidebarItem(title: $0, repository: repo) }
     let remoteBranches = repo.remoteBranches().sorted(by: { $0.name < $1.name })
 
 
@@ -265,7 +265,7 @@ class XTSideBarDataSource: NSObject
       let selection = CommitSelection(repository: repo, commit: commit)
       let remoteParent = parent(for: name, groupItem: remote)
       
-      remoteParent.children.append(XTRemoteBranchItem(title: name,
+      remoteParent.children.append(RemoteBranchSidebarItem(title: name,
                                                       remote: remoteName,
                                                       selection: selection))
     }
@@ -274,7 +274,7 @@ class XTSideBarDataSource: NSObject
       let tagsGroup = newRoots[XTGroupIndex.tags.rawValue]
       
       for tag in tags {
-        let tagItem = XTTagItem(tag: tag)
+        let tagItem = TagSidebarItem(tag: tag)
         let tagParent = parent(for: tag.name, groupItem: tagsGroup)
         
         tagParent.children.append(tagItem)
@@ -283,7 +283,7 @@ class XTSideBarDataSource: NSObject
     
     let stashItems = makeStashItems()
     let submoduleItems = repo.submodules().map {
-          XTSubmoduleItem(submodule: $0) }
+          SubmoduleSidebarItem(submodule: $0) }
     
     newRoots[XTGroupIndex.remotes.rawValue].children = remoteItems
     newRoots[XTGroupIndex.stashes.rawValue].children = stashItems
@@ -297,13 +297,13 @@ class XTSideBarDataSource: NSObject
     return newRoots
   }
   
-  func rootItem(_ index: XTGroupIndex) -> XTSideBarItem
+  func rootItem(_ index: XTGroupIndex) -> SidebarItem
   {
     return roots[index.rawValue]
   }
   
   func parent(for branchPath: [String],
-              under item: XTSideBarItem) -> XTSideBarItem
+              under item: SidebarItem) -> SidebarItem
   {
     if branchPath.count == 1 {
       return item
@@ -316,13 +316,13 @@ class XTSideBarDataSource: NSObject
       return parent(for: Array(branchPath.dropFirst(1)), under: child)
     }
     
-    let newItem = XTBranchFolderItem(title: folderName)
+    let newItem = BranchFolderSidebarItem(title: folderName)
     
     item.add(child: newItem)
     return newItem
   }
   
-  func parent(for branch: String, groupItem: XTSideBarItem) -> XTSideBarItem
+  func parent(for branch: String, groupItem: SidebarItem) -> SidebarItem
   {
     return parent(for: branch.components(separatedBy: "/"), under: groupItem)
   }
@@ -332,7 +332,7 @@ class XTSideBarDataSource: NSObject
     _ = selectCurrentBranch(in: roots[XTGroupIndex.branches.rawValue])
   }
   
-  func selectCurrentBranch(in parent: XTSideBarItem) -> Bool
+  func selectCurrentBranch(in parent: SidebarItem) -> Bool
   {
     for item in parent.children {
       if item.current {
@@ -377,10 +377,10 @@ class XTSideBarDataSource: NSObject
     }
   }
   
-  func graphText(for item: XTSideBarItem) -> String?
+  func graphText(for item: SidebarItem) -> String?
   {
     guard let repository = self.repository,
-          item is XTLocalBranchItem,
+          item is LocalBranchSidebarItem,
           let localBranch = repository.localBranch(named: item.title),
           let trackingBranch = localBranch.trackingBranch,
           let graph = repository.graphBetween(localBranch: localBranch,
@@ -398,27 +398,27 @@ class XTSideBarDataSource: NSObject
     return numbers.isEmpty ? nil : numbers.joined(separator: " ")
   }
   
-  func item(forBranchName branch: String) -> XTLocalBranchItem?
+  func item(forBranchName branch: String) -> LocalBranchSidebarItem?
   {
     let branches = roots[XTGroupIndex.branches.rawValue]
     let result = branches.children.first(where: { $0.title == branch })
     
-    return result as? XTLocalBranchItem
+    return result as? LocalBranchSidebarItem
   }
   
-  func item(named name: String, inGroup group: XTGroupIndex) -> XTSideBarItem?
+  func item(named name: String, inGroup group: XTGroupIndex) -> SidebarItem?
   {
     let group = roots[group.rawValue]
     
     return group.child(matching: name)
   }
   
-  func item(for button: NSButton) -> XTSideBarItem?
+  func item(for button: NSButton) -> SidebarItem?
   {
     var superview = button.superview
     
     while superview != nil {
-      if let cellView = superview as? XTSidebarTableCellView {
+      if let cellView = superview as? SidebarTableCellView {
         return cellView.item
       }
       superview = superview?.superview
@@ -429,7 +429,7 @@ class XTSideBarDataSource: NSObject
   
   @IBAction func showItemStatus(_ sender: NSButton)
   {
-    guard let item = item(for: sender) as? XTBranchItem,
+    guard let item = item(for: sender) as? BranchSidebarItem,
           let branch = item.branchObject()
     else { return }
     
@@ -447,7 +447,7 @@ class XTSideBarDataSource: NSObject
   
   @IBAction func missingTrackingBranch(_ sender: NSButton)
   {
-    guard let item = item(for: sender) as? XTLocalBranchItem
+    guard let item = item(for: sender) as? LocalBranchSidebarItem
     else { return }
     
     let alert = NSAlert()
@@ -485,7 +485,7 @@ class XTSideBarDataSource: NSObject
   {
     if let outline = outline,
        let clickedItem = outline.item(atRow: outline.clickedRow)
-                         as? XTSubmoduleItem,
+                         as? SubmoduleSidebarItem,
        let rootPath = repository?.repoURL.path {
       let subURL = URL(fileURLWithPath: rootPath.appending(
             pathComponent: clickedItem.submodule.path))

@@ -8,16 +8,16 @@ class SideBarOutlineView: ContextMenuOutlineView
   override func updateMenu(forItem item: Any)
   {
     switch item {
-      case is XTRemoteBranchItem:
+      case is RemoteBranchSidebarItem:
         menu = prepBranchMenu(controller.remoteBranchContextMenu, local: false)
-      case is XTLocalBranchItem:
+      case is LocalBranchSidebarItem:
         menu = prepBranchMenu(controller.branchContextMenu, local: true)
-      case is XTTagItem:
+      case is TagSidebarItem:
         menu = controller.tagContextMenu
-      case is XTStashItem:
+      case is StashSidebarItem:
         menu = controller.stashContextMenu
       default:
-        guard let groupItem = parent(forItem: item) as? XTSideBarItem
+        guard let groupItem = parent(forItem: item) as? SidebarItem
         else { break }
         
         if groupItem ==
