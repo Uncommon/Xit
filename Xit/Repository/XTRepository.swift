@@ -1,31 +1,6 @@
 import Foundation
 
-
-extension NSNotification.Name
-{
-  /// Some change has been detected in the repository.
-  static let XTRepositoryChanged =
-      NSNotification.Name(rawValue: "XTRepositoryChanged")
-  /// The repository's config file has changed.
-  static let XTRepositoryConfigChanged =
-      NSNotification.Name(rawValue: "XTRepositoryConfigChanged")
-  /// The head reference (current branch) has changed.
-  static let XTRepositoryHeadChanged =
-      NSNotification.Name(rawValue: "XTRepositoryHeadChanged")
-  /// The repository's index has changed.
-  static let XTRepositoryIndexChanged =
-      NSNotification.Name(rawValue: "XTRepositoryIndexChanged")
-  /// The repository's refs have changed.
-  static let XTRepositoryRefsChanged =
-      NSNotification.Name(rawValue: "XTRepositoryRefsChanged")
-  /// A file in the workspace has changed.
-  static let XTRepositoryWorkspaceChanged =
-      NSNotification.Name(rawValue: "XTRepositoryWorkspaceChanged")
-  /// The stash log has changed.
-  static let XTRepositoryStashChanged =
-      NSNotification.Name(rawValue: "XTRepositoryStashChanged")
-}
-
+let XTErrorDomainGit = "git"
 
 /// Stores a repo reference for C callbacks
 struct CallbackPayload { let repo: XTRepository }
@@ -461,10 +436,4 @@ extension XTRepository
       return nil
     }
   }
-}
-
-extension NSNotification.Name
-{
-  static let XTRepositoryRefLogChanged =
-      NSNotification.Name("XTRepositoryRefLogChanged")
 }

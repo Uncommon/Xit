@@ -2,6 +2,7 @@ import Foundation
 
 prefix operator ◊
 prefix operator ¶
+prefix operator ‡
 
 // This allows the ◊ operater to serve as a shortcut for creating instances of
 // NSImage.Name, Notification.Name, etc. with ◊"identifier"
@@ -14,7 +15,13 @@ prefix func ◊<T>(string: StringLiteralType) -> T
 // NSUserInterfaceItemIdentifier is often used in cases where there isn't enough
 // context to use ◊ without alse specifying a type. "¶" was chosen because it
 // sort of looks like "id" and it's easy to type (option-7).
-prefix func ¶(string: String) -> NSUserInterfaceItemIdentifier
+prefix func ¶(string: StringLiteralType) -> NSUserInterfaceItemIdentifier
 {
   return NSUserInterfaceItemIdentifier(rawValue: string)
+}
+
+// As above but for notification names.
+prefix func ‡(string: StringLiteralType) -> NSNotification.Name
+{
+  return NSNotification.Name(rawValue: string)
 }

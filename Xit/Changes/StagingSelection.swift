@@ -1,5 +1,8 @@
 import Foundation
 
+/// Fake SHA value for selecting staging view.
+let XTStagingSHA = ""
+
 /// Staged and unstaged workspace changes
 class StagingSelection: StagedUnstagedSelection
 {
