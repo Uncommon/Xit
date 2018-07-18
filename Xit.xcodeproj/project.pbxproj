@@ -157,7 +157,6 @@
 		C9ABDB2F1E0AE72600CBD8D8 /* PrefsTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ABDB2E1E0AE72600CBD8D8 /* PrefsTabViewController.swift */; };
 		C9B023531F61A06900896EA9 /* LibGitExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B023511F61A06900896EA9 /* LibGitExtensions.m */; };
 		C9B6DFB61FDB4A6500B5E3AA /* GitConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B6DFB51FDB4A6500B5E3AA /* GitConfig.swift */; };
-		C9BAE60A1D2FFA8B00A87F13 /* XTConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE6091D2FFA8B00A87F13 /* XTConfig.swift */; };
 		C9BAE6141D3039C500A87F13 /* XTOperationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE6131D3039C500A87F13 /* XTOperationController.swift */; };
 		C9BAE61E1D303A8100A87F13 /* XTRemoteOptionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE61D1D303A8100A87F13 /* XTRemoteOptionsController.swift */; };
 		C9BC1B9B1DDF51B900C71562 /* FileEventStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BC1B9A1DDF51B900C71562 /* FileEventStream.swift */; };
@@ -508,7 +507,6 @@
 		C9B023511F61A06900896EA9 /* LibGitExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibGitExtensions.m; sourceTree = "<group>"; };
 		C9B023521F61A06900896EA9 /* LibGitExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibGitExtensions.h; sourceTree = "<group>"; };
 		C9B6DFB51FDB4A6500B5E3AA /* GitConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitConfig.swift; sourceTree = "<group>"; };
-		C9BAE6091D2FFA8B00A87F13 /* XTConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTConfig.swift; sourceTree = "<group>"; };
 		C9BAE6131D3039C500A87F13 /* XTOperationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTOperationController.swift; sourceTree = "<group>"; };
 		C9BAE61D1D303A8100A87F13 /* XTRemoteOptionsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRemoteOptionsController.swift; sourceTree = "<group>"; };
 		C9BC1B9A1DDF51B900C71562 /* FileEventStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileEventStream.swift; sourceTree = "<group>"; };
@@ -824,7 +822,6 @@
 			isa = PBXGroup;
 			children = (
 				C92E30FA1D4FF4F0001985F7 /* GitCommit.swift */,
-				C9BAE6091D2FFA8B00A87F13 /* XTConfig.swift */,
 				C9328B111D77303200EFF7F7 /* XTFileMonitor.swift */,
 				C9065F4D20FCFA8B00C01110 /* XTRefType.swift */,
 				89C927931D43B23B0074F71A /* XTRepository.swift */,
@@ -1275,7 +1272,6 @@
 				C957B84B1D2D53040040F858 /* XTSheetController.swift in Sources */,
 				C947367C1DF079DB000E3A05 /* SideBarOutlineView.swift in Sources */,
 				89C927941D43B23B0074F71A /* XTRepository.swift in Sources */,
-				C9BAE60A1D2FFA8B00A87F13 /* XTConfig.swift in Sources */,
 				C9800D7D2017FEB80045B05D /* FileListController.swift in Sources */,
 				C9BAE6141D3039C500A87F13 /* XTOperationController.swift in Sources */,
 				C991732D1F91255200054154 /* GitPatch.swift in Sources */,

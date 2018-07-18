@@ -69,7 +69,7 @@ public class XTRepository: NSObject
   let diffCache = Cache<String, Diff>(maxSize: 50)
   fileprivate var repoWatcher: XTRepositoryWatcher! = nil
   fileprivate var workspaceWatcher: WorkspaceWatcher! = nil
-  private(set) var config: XTConfig! = nil
+  private(set) var config: Config! = nil
   
   var gitRepo: OpaquePointer { return gtRepo.git_repository() }
   
@@ -140,7 +140,7 @@ public class XTRepository: NSObject
   {
     self.repoWatcher = XTRepositoryWatcher(repository: self)
     self.workspaceWatcher = WorkspaceWatcher(repository: self)
-    self.config = XTConfig(config: GitConfig(repository: gitRepo))
+    self.config = GitConfig(repository: gitRepo)
   }
   
   deinit

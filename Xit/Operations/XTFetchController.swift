@@ -48,8 +48,8 @@ class XTFetchController: XTPasswordOpController
       panel.selectedRemote = remoteName
     }
     panel.parentController = windowController
-    panel.downloadTags = config?.fetchTags(panel.selectedRemote) ?? false
-    panel.pruneBranches = config?.fetchPrune(panel.selectedRemote) ?? false
+    panel.downloadTags = config?.fetchTags(remote: panel.selectedRemote) ?? false
+    panel.pruneBranches = config?.fetchPrune(remote: panel.selectedRemote) ?? false
     windowController!.window!.beginSheet(panel.window!) {
       (response) in
       if response == NSApplication.ModalResponse.OK {

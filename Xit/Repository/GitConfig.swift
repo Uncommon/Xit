@@ -7,6 +7,44 @@ protocol Config
   subscript(index: String) -> Int? { get set }
 }
 
+extension Config
+{
+  func urlString(remote: String) -> String?
+  {
+    return self[remote]
+  }
+  
+  var userName: String? { return self["user.name"] }
+  var userEmail: String? { return self["user.email"] }
+  
+  var fetchPrune: Bool { return self["fetch.prune"] ?? false }
+  
+  /// Returns the prune setting for `remote`, or falls back to the general
+  /// `fetch.prune` setting.
+  func fetchPrune(remote: String) -> Bool
+  {
+    if self["remote.\(remote).prune"] ?? false {
+      return true
+    }
+    return fetchPrune
+  }
+  
+  /// Returns true if `--no-tags` is set for `remote.<remote>.tagOpt`.
+  func fetchTags(remote: String) -> Bool
+  {
+    if self["remote.\(remote).tagOpt"] == "--no-tags" {
+      return false
+    }
+    return UserDefaults.standard.bool(
+      forKey: XTGitPrefsController.PrefKey.fetchTags)
+  }
+  
+  func commitTemplate() -> String?
+  {
+    return self["commit.template"]
+  }
+}
+
 class GitConfig: Config
 {
   let config: OpaquePointer

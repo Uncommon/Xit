@@ -11,8 +11,8 @@ class XTNewTagController: XTOperationController
           let commit = repository.commit(forSHA: selectedSHA)
     else { throw XTRepository.Error.unexpected }
     let config = repository.config!
-    let userName = config.userName()
-    let userEmail = config.userEmail()
+    let userName = config.userName
+    let userEmail = config.userEmail
     
     panelController.commitMessage = commit.message ?? selectedSHA
     panelController.signature = "\(userName ?? "") <\(userEmail ?? "")>"

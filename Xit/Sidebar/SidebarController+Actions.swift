@@ -132,7 +132,7 @@ extension SidebarController
     guard let item = targetItem()
     else { return }
     let remoteName = "remote.\(item.title).url"
-    guard let remoteURL = repo.config.urlString(forRemote: remoteName)
+    guard let remoteURL = repo.config.urlString(remote: remoteName)
     else { return }
     let pasteboard = NSPasteboard.general
     
