@@ -92,12 +92,12 @@ extension XTRepository
       return StashIterator(stashes: self)
     }
     
-    public subscript(position: Int) -> XTStash
+    public subscript(position: Int) -> GitStash
     {
       let entry = git_reflog_entry_byindex(refLog, position)
       let message = String(cString: git_reflog_entry_message(entry))
       
-      return XTStash(repo: repo, index: UInt(position), message: message)
+      return GitStash(repo: repo, index: UInt(position), message: message)
     }
     
     public var startIndex: Int { return 0 }
@@ -111,7 +111,7 @@ extension XTRepository
   
   public class StashIterator: IteratorProtocol
   {
-    public typealias Element = XTStash
+    public typealias Element = GitStash
     
     let stashes: Stashes
     var index: Int
@@ -122,7 +122,7 @@ extension XTRepository
       self.index = 0
     }
     
-    public func next() -> XTStash?
+    public func next() -> GitStash?
     {
       let result = stashes[index]
       

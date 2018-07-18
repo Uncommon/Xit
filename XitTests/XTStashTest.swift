@@ -27,7 +27,7 @@ class XTStashTest: XTTest
     XCTAssertFalse(FileManager.default.fileExists(atPath: untrackedPath))
     XCTAssertFalse(FileManager.default.fileExists(atPath: addedPath))
     
-    let stash = XTStash(repo: self.repository, index: 0, message: "stash 0")
+    let stash = GitStash(repo: self.repository, index: 0, message: "stash 0")
     let indexChanges = stash.indexChanges()
     let workspaceChanges = stash.workspaceChanges()
     

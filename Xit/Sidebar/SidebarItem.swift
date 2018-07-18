@@ -7,7 +7,7 @@ class SidebarItem: NSObject
   var icon: NSImage? { return nil }
   var children: [SidebarItem]
   var selection: RepositorySelection?
-  var refType: XTRefType { return .unknown }
+  var refType: RefType { return .unknown }
   var expandable: Bool { return false }
   // NSObject.isSelectable is new in 10.12
   override var isSelectable: Bool { return true }
@@ -90,7 +90,7 @@ class BranchSidebarItem: SidebarItem
 
 class LocalBranchSidebarItem: BranchSidebarItem
 {
-  override var refType: XTRefType { return current ? .activeBranch : .branch }
+  override var refType: RefType { return current ? .activeBranch : .branch }
   override var current: Bool
   {
     if let currentBranch = selection!.repository.currentBranch {
@@ -116,7 +116,7 @@ class LocalBranchSidebarItem: BranchSidebarItem
 class RemoteBranchSidebarItem: BranchSidebarItem
 {
   var remote: String
-  override var refType: XTRefType { return .remoteBranch }
+  override var refType: RefType { return .remoteBranch }
   
   override var fullName: String { return "\(remote)/\(title)" }
   
@@ -161,7 +161,7 @@ class RemoteSidebarItem: SidebarItem
   
   override var expandable: Bool { return true }
   override var editable: Bool { return true }
-  override var refType: XTRefType { return .remote }
+  override var refType: RefType { return .remote }
   
   init(title: String, repository: XTRepository)
   {
@@ -180,7 +180,7 @@ class TagSidebarItem: SidebarItem
   { return (title as NSString).lastPathComponent }
   override var icon: NSImage?
   { return NSImage(named: .xtTagTemplate) }
-  override var refType: XTRefType { return .tag }
+  override var refType: RefType { return .tag }
   
   init(tag: Tag)
   {

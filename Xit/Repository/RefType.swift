@@ -1,6 +1,6 @@
 import Foundation
 
-enum XTRefType
+enum RefType
 {
   case branch
   case activeBranch

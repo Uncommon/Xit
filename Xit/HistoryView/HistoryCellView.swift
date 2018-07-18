@@ -76,7 +76,7 @@ class HistoryCellView: NSTableCellView
     drawLines()
   }
   
-  func refType(_ refName: String) -> XTRefType
+  func refType(_ refName: String) -> RefType
   {
     guard let (typeName, displayName) = refName.splitRefName()
     else { return .unknown }

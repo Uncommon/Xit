@@ -11,9 +11,9 @@ let XTChangedRefsKey = "changedRefs"
 
   // stream must be var because we have to reference self to initialize it.
   var stream: FileEventStream! = nil
-  var packedRefsWatcher: XTFileMonitor?
-  var configWatcher: XTFileMonitor?
-  var stashWatcher: XTFileMonitor?
+  var packedRefsWatcher: FileMonitor?
+  var configWatcher: FileMonitor?
+  var stashWatcher: FileMonitor?
   
   let mutex = Mutex()
   
@@ -75,7 +75,7 @@ let XTChangedRefsKey = "changedRefs"
   {
     let path = repository!.gitDirectoryPath
     let watcher =
-          XTFileMonitor(path: path.appending(pathComponent: "packed-refs"))
+          FileMonitor(path: path.appending(pathComponent: "packed-refs"))
     
     mutex.withLock { self.packedRefsWatcher = watcher }
     watcher?.notifyBlock = {
@@ -88,7 +88,7 @@ let XTChangedRefsKey = "changedRefs"
   {
     let path = repository!.gitDirectoryPath
     
-    configWatcher = XTFileMonitor(path: path.appending(pathComponent: "config"))
+    configWatcher = FileMonitor(path: path.appending(pathComponent: "config"))
     configWatcher?.notifyBlock = {
       [weak self] (_, _) in
       self?.checkConfig()
@@ -99,7 +99,7 @@ let XTChangedRefsKey = "changedRefs"
   {
     let path = repository!.gitDirectoryPath
                           .appending(pathComponent: "logs/refs/stash")
-    guard let watcher = XTFileMonitor(path: path)
+    guard let watcher = FileMonitor(path: path)
     else { return }
     
     stashWatcher = watcher

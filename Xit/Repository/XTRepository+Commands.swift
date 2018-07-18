@@ -151,7 +151,7 @@ extension XTRepository: Stashing
   // TODO: Don't require the message parameter
   public func stash(index: UInt, message: String?) -> Stash
   {
-    return XTStash(repo: self, index: index, message: message)
+    return GitStash(repo: self, index: index, message: message)
   }
   
   @objc(saveStash:includeUntracked:error:)

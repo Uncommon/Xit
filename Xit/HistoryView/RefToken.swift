@@ -8,7 +8,7 @@ struct RefToken
   typealias AttrKey = NSAttributedStringKey
   #endif
   
-  static func drawToken(refType type: XTRefType, text: String, rect: NSRect)
+  static func drawToken(refType type: RefType, text: String, rect: NSRect)
   {
     let path = self.path(for: type, rect: rect)
     let gradient = type.gradient
@@ -65,7 +65,7 @@ struct RefToken
     return size.width + 12
   }
   
-  private static func path(for type: XTRefType, rect: NSRect) -> NSBezierPath
+  private static func path(for type: RefType, rect: NSRect) -> NSBezierPath
   {
     // Inset because the stroke will be centered on the path border
     var rect = rect.insetBy(dx: 0.5, dy: 1.5)

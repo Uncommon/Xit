@@ -14,7 +14,7 @@ public protocol Stash: class
 }
 
 /// Wraps a stash to preset a unified list of file changes.
-public class XTStash: NSObject, Stash
+public class GitStash: NSObject, Stash
 {
   typealias Repo = CommitStorage & FileContents & FileStatusDetection & Stashing
   
