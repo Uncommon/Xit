@@ -107,7 +107,7 @@ class SideBarDataSource: NSObject
                      "SUBMODULES"]
     let roots = rootNames.map { SideBarGroupItem(title: $0) }
     
-    roots[0].add(child: stagingItem)
+    roots[0].children.append(stagingItem)
     return roots
   }
   
@@ -318,7 +318,7 @@ class SideBarDataSource: NSObject
     
     let newItem = BranchFolderSidebarItem(title: folderName)
     
-    item.add(child: newItem)
+    item.children.append(newItem)
     return newItem
   }
   

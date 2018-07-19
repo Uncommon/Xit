@@ -28,13 +28,6 @@ class SidebarItem: NSObject
     self.selection = selection
   }
   
-  // Because children bridges as NSArray, not NSMutableArray.
-  @objc(addChild:)  // Override default "addWithChild:"
-  func add(child: SidebarItem)
-  {
-    children.append(child)
-  }
-  
   func child(matching title: String) -> SidebarItem?
   {
     if let child = children.first(where: { $0.title == title }) {
