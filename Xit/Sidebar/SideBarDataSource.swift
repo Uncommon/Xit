@@ -133,7 +133,7 @@ class SideBarDataSource: NSObject
   {
     outline!.target = self
     outline!.doubleAction = #selector(SideBarDataSource.doubleClick(_:))
-    if !XTAccountsManager.manager.accounts(ofType: .teamCity).isEmpty {
+    if !AccountsManager.manager.accounts(ofType: .teamCity).isEmpty {
       buildStatusTimer = Timer.scheduledTimer(
           withTimeInterval: Intervals.teamCityRefresh, repeats: true) {
         [weak self] _ in

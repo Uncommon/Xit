@@ -89,14 +89,14 @@ func == (left: Account, right: Account) -> Bool
 }
 
 
-class XTAccountsManager: NSObject
+class AccountsManager: NSObject
 {
   /// Account types as stored in preferences
   let userKey = "user"
   let locationKey = "location"
   let typeKey = "type"
 
-  static let manager = XTAccountsManager()
+  static let manager = AccountsManager()
   
   var accounts: [Account] = []
   

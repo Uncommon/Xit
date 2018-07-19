@@ -1,12 +1,12 @@
 import Cocoa
 
 
-class XTPrefsWindowController: NSWindowController
+class PrefsWindowController: NSWindowController
 {
   static let sharedPrefsController =
       NSStoryboard(name: ◊"Preferences", bundle: nil)
       .instantiateInitialController()!
-      as! XTPrefsWindowController
+      as! PrefsWindowController
 }
 
 

@@ -1,6 +1,6 @@
 import Cocoa
 
-class XTGitPrefsController: NSViewController
+class GitPrefsController: NSViewController
 {
   @IBOutlet weak var userNameField: NSTextField!
   @IBOutlet weak var userEmailField: NSTextField!
@@ -45,7 +45,7 @@ class XTGitPrefsController: NSViewController
   }
 }
 
-extension XTGitPrefsController: PreferencesSaver
+extension GitPrefsController: PreferencesSaver
 {
   func savePreferences()
   {

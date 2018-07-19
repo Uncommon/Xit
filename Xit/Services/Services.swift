@@ -45,7 +45,7 @@ class Services
     guard !UserDefaults.standard.bool(forKey: "noServices")
     else { return }
     
-    for account in XTAccountsManager.manager.accounts(ofType: .teamCity) {
+    for account in AccountsManager.manager.accounts(ofType: .teamCity) {
       _ = teamCityAPI(account)
     }
   }

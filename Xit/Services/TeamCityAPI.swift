@@ -121,7 +121,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
     guard !UserDefaults.standard.bool(forKey: "noServices")
     else { return nil }
     
-    let accounts = XTAccountsManager.manager.accounts(ofType: .teamCity)
+    let accounts = AccountsManager.manager.accounts(ofType: .teamCity)
     let services = accounts.compactMap({ Services.shared.teamCityAPI($0) })
     
     for service in services {

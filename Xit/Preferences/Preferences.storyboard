@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="601-dV-YQ8">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="601-dV-YQ8">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Window Controller-->
         <scene sceneID="ulk-nr-VmR">
             <objects>
-                <windowController showSeguePresentationStyle="single" id="601-dV-YQ8" customClass="XTPrefsWindowController" customModule="Xit" customModuleProvider="target" sceneMemberID="viewController">
+                <windowController showSeguePresentationStyle="single" id="601-dV-YQ8" customClass="PrefsWindowController" customModule="Xit" customModuleProvider="target" sceneMemberID="viewController">
                     <window key="window" title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="preferences" animationBehavior="default" id="ju1-o1-XDS">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" topStrut="YES" bottomStrut="YES"/>
@@ -41,7 +40,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="450" height="172"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <font key="font" metaFont="message"/>
-                        <tabViewItems/>
                         <connections>
                             <outlet property="delegate" destination="Kdi-Fz-cba" id="hSn-SS-7ba"/>
                         </connections>
@@ -61,7 +59,7 @@
         <!--Git-->
         <scene sceneID="NGS-7R-3Fj">
             <objects>
-                <viewController title="Git" id="InY-W7-lvh" customClass="XTGitPrefsController" customModule="Xit" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Git" id="InY-W7-lvh" customClass="GitPrefsController" customModule="Xit" customModuleProvider="target" sceneMemberID="viewController">
                     <customView key="view" id="zLB-4a-8ao">
                         <rect key="frame" x="0.0" y="0.0" width="535" height="272"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -173,7 +171,7 @@
         <!--Accounts-->
         <scene sceneID="3fl-mf-LmW">
             <objects>
-                <viewController title="Accounts" id="Cci-gq-oTU" customClass="XTAccountsPrefsController" customModule="Xit" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Accounts" id="Cci-gq-oTU" customClass="AccountsPrefsController" customModule="Xit" customModuleProvider="target" sceneMemberID="viewController">
                     <customView key="view" id="rQg-dL-J8T">
                         <rect key="frame" x="0.0" y="0.0" width="530" height="158"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -182,7 +180,7 @@
                                 <rect key="frame" x="20" y="38" width="490" height="100"/>
                                 <clipView key="contentView" id="SeF-No-6aZ">
                                     <rect key="frame" x="1" y="0.0" width="488" height="99"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="kb4-2F-GNN" viewBased="YES" id="Oye-G2-o9B">
                                             <rect key="frame" x="0.0" y="0.0" width="488" height="76"/>
@@ -244,11 +242,11 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="userName" id="cfB-K4-Jjc">
-                                                            <rect key="frame" x="123" y="1" width="146" height="17"/>
+                                                            <rect key="frame" x="123" y="1" width="147" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Itr-C0-rHt">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="146" height="17"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="147" height="17"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="wri-yE-Zmc">
                                                                         <font key="font" metaFont="system"/>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -282,11 +280,11 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="location" id="r6l-yh-y16">
-                                                            <rect key="frame" x="272" y="1" width="163" height="17"/>
+                                                            <rect key="frame" x="272.5" y="1" width="164" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aFo-aB-g7x">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="163" height="17"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="164" height="17"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="1mm-5M-vK3">
                                                                         <font key="font" metaFont="system"/>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -441,7 +439,7 @@
                     </connections>
                 </viewController>
                 <customObject id="3gg-pN-ygD" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-                <customObject id="bFL-Vc-PZs" customClass="XTAddAccountController" customModule="Xit" customModuleProvider="target">
+                <customObject id="bFL-Vc-PZs" customClass="AddAccountController" customModule="Xit" customModuleProvider="target">
                     <connections>
                         <outlet property="locationField" destination="Cbg-Vb-UQD" id="wDZ-qH-se2"/>
                         <outlet property="passwordField" destination="uc3-zv-ZqK" id="9LV-wS-7zW"/>

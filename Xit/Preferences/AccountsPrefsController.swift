@@ -9,10 +9,10 @@ enum PasswordAction
 }
 
 
-class XTAccountsPrefsController: NSViewController
+class AccountsPrefsController: NSViewController
 {
   // Not a weak reference because there are no other references to it.
-  @IBOutlet var addController: XTAddAccountController!
+  @IBOutlet var addController: AddAccountController!
   @IBOutlet weak var accountsTable: NSTableView!
   @IBOutlet weak var refreshButton: NSButton!
   
@@ -24,7 +24,7 @@ class XTAccountsPrefsController: NSViewController
     
     let notificationCenter = NotificationCenter.default
     
-    XTAccountsManager.manager.readAccounts()
+    AccountsManager.manager.readAccounts()
     authStatusObserver = notificationCenter.addObserver(
         forName: NSNotification.Name(rawValue:
             BasicAuthService.AuthenticationStatusChangedNotification),
@@ -151,7 +151,7 @@ class XTAccountsPrefsController: NSViewController
         break
     }
     
-    XTAccountsManager.manager.add(Account(type: type,
+    AccountsManager.manager.add(Account(type: type,
                                   user: user,
                                   location: location))
     accountsTable.reloadData()
@@ -159,14 +159,14 @@ class XTAccountsPrefsController: NSViewController
   
   @IBAction func removeAccount(_ sender: AnyObject)
   {
-    XTAccountsManager.manager.accounts.remove(at: accountsTable.selectedRow)
+    AccountsManager.manager.accounts.remove(at: accountsTable.selectedRow)
     accountsTable.reloadData()
     updateRefreshButton()
   }
   
   @IBAction func refreshAccount(_ sender: Any)
   {
-    let manager = XTAccountsManager.manager
+    let manager = AccountsManager.manager
     let selectedRow = accountsTable.selectedRow
     guard selectedRow >= 0 && selectedRow < manager.accounts.count
     else { return }
@@ -186,16 +186,16 @@ class XTAccountsPrefsController: NSViewController
   }
 }
 
-extension XTAccountsPrefsController: PreferencesSaver
+extension AccountsPrefsController: PreferencesSaver
 {
   func savePreferences()
   {
-    XTAccountsManager.manager.saveAccounts()
+    AccountsManager.manager.saveAccounts()
   }
 }
 
 
-extension XTAccountsPrefsController: NSTableViewDelegate
+extension AccountsPrefsController: NSTableViewDelegate
 {
   enum ColumnID
   {
@@ -250,7 +250,7 @@ extension XTAccountsPrefsController: NSTableViewDelegate
     let view = tableView.makeView(withIdentifier: tableColumn.identifier,
                               owner: self)
                as! NSTableCellView
-    let account = XTAccountsManager.manager.accounts[row]
+    let account = AccountsManager.manager.accounts[row]
     
     switch tableColumn.identifier {
       case ColumnID.service:
@@ -283,10 +283,10 @@ extension XTAccountsPrefsController: NSTableViewDelegate
 }
 
 
-extension XTAccountsPrefsController: NSTableViewDataSource
+extension AccountsPrefsController: NSTableViewDataSource
 {
   func numberOfRows(in tableView: NSTableView) -> Int
   {
-    return XTAccountsManager.manager.accounts.count
+    return AccountsManager.manager.accounts.count
   }
 }

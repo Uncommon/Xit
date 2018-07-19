@@ -50,7 +50,7 @@ class AppDelegate: NSObject
   
   @IBAction func showPreferences(_ sender: Any?)
   {
-    XTPrefsWindowController.sharedPrefsController.window?
+    PrefsWindowController.sharedPrefsController.window?
         .makeKeyAndOrderFront(nil)
   }
   
