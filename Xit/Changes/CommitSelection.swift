@@ -32,7 +32,7 @@ class CommitFileList: FileListModel
       self.repository.changes(for: self.commit.oid.sha,
                               parent: self.commit.parentOIDs.first)
   
-  unowned let commitSelection: CommitSelection
+  weak var commitSelection: CommitSelection!
   var selection: RepositorySelection { return commitSelection }
   
   var commit: Commit { return commitSelection.commit }
