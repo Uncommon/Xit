@@ -1,6 +1,6 @@
 import Cocoa
 
-class XTTagPanelController: XTSheetController
+class TagPanelController: SheetController
 {
   @IBOutlet weak var commitMessageLabel: NSTextField!
   @IBOutlet weak var tagNameField: NSTextField!
@@ -50,7 +50,7 @@ class XTTagPanelController: XTSheetController
   }
 }
 
-extension XTTagPanelController: NSTextFieldDelegate
+extension TagPanelController: NSTextFieldDelegate
 {
   override func controlTextDidChange(_ obj: Notification)
   {

@@ -1,6 +1,6 @@
 import Cocoa
 
-class XTPullController: XTFetchController
+class PullOpController: FetchOpController
 {
   override func start() throws
   {

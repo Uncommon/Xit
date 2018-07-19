@@ -1,6 +1,6 @@
 import Cocoa
 
-public class XTFetchPanelController: XTSheetController
+public class FetchPanelController: SheetController
 {
   @IBOutlet var remotesPopup: NSPopUpButton?
   @IBOutlet var tagCheck: NSButton?
@@ -41,5 +41,4 @@ public class XTFetchPanelController: XTSheetController
       }
     }
   }
-  
 }

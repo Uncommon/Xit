@@ -1,10 +1,10 @@
 import Cocoa
 
-class XTNewTagController: XTOperationController
+class NewTagOpController: OperationController
 {
   override func start() throws
   {
-    let panelController = XTTagPanelController.controller()
+    let panelController = TagPanelController.controller()
     guard let selectedSHA = windowController?.selection?.shaToSelect,
           let selectedOID = repository?.oid(forSHA: selectedSHA),
           let repository = repository,

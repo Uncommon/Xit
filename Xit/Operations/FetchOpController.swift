@@ -2,7 +2,7 @@ import Cocoa
 
 
 /// Runs a `fetch` operation.
-class XTFetchController: XTPasswordOpController
+class FetchOpController: PasswordOpController
 {
   /// The default remote to fetch from, either:
   /// - the current branch's tracking branch
@@ -42,7 +42,7 @@ class XTFetchController: XTPasswordOpController
     else { throw XTRepository.Error.unexpected }
     
     let config = repository.config
-    let panel = XTFetchPanelController.controller()
+    let panel = FetchPanelController.controller()
     
     if let remoteName = defaultRemoteName() {
       panel.selectedRemote = remoteName

@@ -54,7 +54,7 @@ extension XTWindowController
   
   @IBAction func newTag(_: AnyObject)
   {
-    _ = startOperation { XTNewTagController(windowController: self) }
+    _ = startOperation { NewTagOpController(windowController: self) }
   }
   
   @IBAction func newBranch(_: AnyObject) {}
@@ -78,17 +78,17 @@ extension XTWindowController
 
   @IBAction func fetch(_: AnyObject)
   {
-    let _: XTFetchController? = startOperation()
+    let _: FetchOpController? = startOperation()
   }
   
   @IBAction func pull(_: AnyObject)
   {
-    let _: XTPullController? = startOperation()
+    let _: PullOpController? = startOperation()
   }
   
   @IBAction func push(_: AnyObject)
   {
-    let _: XTPushController? = startOperation()
+    let _: PushOpController? = startOperation()
   }
   
   @IBAction func remoteSettings(_ sender: AnyObject)
@@ -96,7 +96,7 @@ extension XTWindowController
     guard let menuItem = sender as? NSMenuItem
     else { return }
     
-    let controller = XTRemoteOptionsController(windowController: self,
+    let controller = RemoteOptionsOpController(windowController: self,
                                                remote: menuItem.title)
     
     _ = try? controller.start()

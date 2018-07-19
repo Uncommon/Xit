@@ -82,7 +82,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   }
   var savedSidebarWidth: CGFloat = 180
   
-  var currentOperation: XTOperationController?
+  var currentOperation: OperationController?
   
   private var windowObserver, repoObserver: NSKeyValueObservation?
   
@@ -231,14 +231,14 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   public func startRenameBranch(_ branchName: String)
   {
-    _ = startOperation { XTRenameBranchController(windowController: self,
+    _ = startOperation { RenameBranchOpController(windowController: self,
                                                     branchName: branchName) }
   }
   
   /// Returns the new operation, if any, mostly because the generic type must
   /// be part of the signature.
   @discardableResult
-  func startOperation<OperationType: XTSimpleOperationController>()
+  func startOperation<OperationType: SimpleOperationController>()
       -> OperationType?
   {
     return startOperation { return OperationType(windowController: self) }
@@ -246,8 +246,8 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   }
   
   @discardableResult
-  func startOperation(factory: () -> XTOperationController)
-      -> XTOperationController?
+  func startOperation(factory: () -> OperationController)
+      -> OperationController?
   {
     if let operation = currentOperation {
       NSLog("Can't start new operation, already have \(operation)")
@@ -283,7 +283,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   }
   
   /// Called by the operation controller when it's done.
-  func operationEnded(_ operation: XTOperationController)
+  func operationEnded(_ operation: OperationController)
   {
     if currentOperation == operation {
       currentOperation = nil

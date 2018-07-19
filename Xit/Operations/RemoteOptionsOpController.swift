@@ -1,6 +1,6 @@
 import Cocoa
 
-class XTRemoteOptionsController: XTOperationController
+class RemoteOptionsOpController: OperationController
 {
   let remoteName: String
   
@@ -17,7 +17,7 @@ class XTRemoteOptionsController: XTOperationController
           let remote = repository.remote(named: remoteName)
     else { throw XTRepository.Error.unexpected }
     
-    let sheetController = XTRemoteSheetController.controller()
+    let sheetController = RemoteSheetController.controller()
     
     sheetController.resetFields()
     sheetController.name = remoteName
@@ -31,7 +31,7 @@ class XTRemoteOptionsController: XTOperationController
     }
   }
   
-  func acceptSheetSettings(_ sheetController: XTRemoteSheetController)
+  func acceptSheetSettings(_ sheetController: RemoteSheetController)
   {
     // update name and URLs if changed
   }

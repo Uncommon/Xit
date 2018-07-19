@@ -1,7 +1,7 @@
 import Cocoa
 
 /// Takes charge of executing a command
-class XTOperationController: NSObject
+class OperationController: NSObject
 {
   /// The window controller that initiated and owns the operation. May be nil
   /// if the window is closed before the operation completes.
@@ -39,10 +39,19 @@ class XTOperationController: NSObject
         // The command shouldn't have been enabled if this was going to happen
       }
       catch let error as NSError {
+        let gitError = giterr_last()
+        
         DispatchQueue.main.async {
           [weak self] in
           if let window = self?.windowController?.window {
             let alert = NSAlert(error: error)
+            
+            if let error = gitError {
+              let errorString = String(cString: error.pointee.message)
+              let message = alert.messageText + " (\(errorString))"
+              
+              alert.messageText = message
+            }
             
             // needs to be smarter: look at error type
             alert.beginSheetModal(for: window,
@@ -56,7 +65,7 @@ class XTOperationController: NSObject
 
 
 /// For simple operations that won't need to be initialized with more parameters.
-class XTSimpleOperationController: XTOperationController
+class SimpleOperationController: OperationController
 {
   required override init(windowController: XTWindowController)
   {

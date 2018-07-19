@@ -1,6 +1,6 @@
 import Cocoa
 
-class XTPasswordPanelController: XTSheetController
+class PasswordPanelController: SheetController
 {
   var userName: String
   {
@@ -15,5 +15,4 @@ class XTPasswordPanelController: XTSheetController
   
   @IBOutlet weak var userField: NSTextField!
   @IBOutlet weak var passwordField: NSSecureTextField!
-
 }

@@ -1,6 +1,6 @@
 import Cocoa
 
-class XTPushController: XTPasswordOpController
+class PushOpController: PasswordOpController
 {
   func shouldStop(current: UInt32, total: UInt32, bytes: size_t) -> Bool
   {

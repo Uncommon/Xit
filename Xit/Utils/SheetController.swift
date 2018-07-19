@@ -1,6 +1,6 @@
 import Cocoa
 
-public class XTSheetController: NSWindowController
+public class SheetController: NSWindowController
 {
   func end(_ code: NSApplication.ModalResponse)
   {

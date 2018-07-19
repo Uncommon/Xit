@@ -1,6 +1,6 @@
 import Cocoa
 
-class XTRenameBranchController: XTOperationController
+class RenameBranchOpController: OperationController
 {
   let branchName: String
   
@@ -13,7 +13,7 @@ class XTRenameBranchController: XTOperationController
   
   override func start() throws
   {
-    let panelController = XTRenameBranchPanelController.controller()
+    let panelController = RenameBranchPanelController.controller()
     
     panelController.branchName = branchName
     windowController?.window?.beginSheet(panelController.window!) {

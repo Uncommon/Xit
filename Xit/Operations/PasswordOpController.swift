@@ -1,7 +1,7 @@
 import Cocoa
 
 /// An operation that may require a password.
-class XTPasswordOpController: XTSimpleOperationController
+class PasswordOpController: SimpleOperationController
 {
   /// User/password callback
   func getPassword() -> (String, String)?
@@ -9,7 +9,7 @@ class XTPasswordOpController: XTSimpleOperationController
     guard let window = windowController?.window
     else { return nil }
     
-    let panel = XTPasswordPanelController.controller()
+    let panel = PasswordPanelController.controller()
     let semaphore = DispatchSemaphore(value: 0)
     var result: (String, String)? = nil
     

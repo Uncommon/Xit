@@ -1,6 +1,6 @@
 import Cocoa
 
-class CheckOutRemoteOperationController: XTOperationController
+class CheckOutRemoteOperationController: OperationController
 {
   let remoteBranch: String
   var sheetController: CheckOutRemoteWindowController!

@@ -1,6 +1,6 @@
 import Cocoa
 
-class XTRenameBranchPanelController: XTSheetController
+class RenameBranchPanelController: SheetController
 {
   @IBOutlet weak var promptLabel: NSTextField!
   @IBOutlet weak var textField: NSTextField!
@@ -20,7 +20,7 @@ class XTRenameBranchPanelController: XTSheetController
   }
 }
 
-extension XTRenameBranchPanelController: NSTextFieldDelegate
+extension RenameBranchPanelController: NSTextFieldDelegate
 {
   override func controlTextDidChange(_ obj: Notification)
   {

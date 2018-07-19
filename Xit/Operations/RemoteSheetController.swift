@@ -1,7 +1,7 @@
 import Cocoa
 import Siesta
 
-class XTRemoteSheetController: XTSheetController
+class RemoteSheetController: SheetController
 {
   weak var repository: XTRepository?
   
@@ -20,7 +20,7 @@ class XTRemoteSheetController: XTSheetController
     set { fetchField.stringValue = newValue?.absoluteString ?? "" }
   }
   var pushURL: URL?
-    {
+  {
     get { return URL(string: pushField.stringValue) }
     set { pushField.stringValue = newValue?.absoluteString ?? "" }
   }
