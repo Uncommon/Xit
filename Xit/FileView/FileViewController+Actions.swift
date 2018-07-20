@@ -250,7 +250,7 @@ extension FileViewController: HunkStaging
       else { return }
     
     do {
-      try repo?.patchIndexFile(path: selectedChange.path, hunk: hunk,
+      try repo?.patchIndexFile(path: selectedChange.gitPath, hunk: hunk,
                                stage: stage)
     }
     catch let error as XTRepository.Error {
@@ -278,18 +278,18 @@ extension FileViewController: HunkStaging
     guard let controller = repoController,
       let selection = controller.selection as? StagingSelection,
       let selectedChange = self.selectedChange,
-      let fileURL = selection.unstagedFileList.fileURL(selectedChange.path)
+      let fileURL = selection.unstagedFileList.fileURL(selectedChange.gitPath)
       else {
         NSLog("Setup for discard hunk failed")
         return
     }
     
     do {
-      let status = try repo!.status(file: selectedChange.path)
+      let status = try repo!.status(file: selectedChange.gitPath)
       
       if ((hunk.newStart == 1) && (status.0 == .untracked)) ||
         ((hunk.oldStart == 1) && (status.0 == .deleted)) {
-        revert(path: selectedChange.path)
+        revert(path: selectedChange.gitPath)
       }
       else {
         let fileText = try String(contentsOf: fileURL, usedEncoding: &encoding)

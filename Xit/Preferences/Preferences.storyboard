@@ -180,7 +180,7 @@
                                 <rect key="frame" x="20" y="38" width="490" height="100"/>
                                 <clipView key="contentView" id="SeF-No-6aZ">
                                     <rect key="frame" x="1" y="0.0" width="488" height="99"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="kb4-2F-GNN" viewBased="YES" id="Oye-G2-o9B">
                                             <rect key="frame" x="0.0" y="0.0" width="488" height="76"/>
@@ -280,7 +280,7 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="location" id="r6l-yh-y16">
-                                                            <rect key="frame" x="272.5" y="1" width="164" height="17"/>
+                                                            <rect key="frame" x="272" y="1" width="164" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aFo-aB-g7x">

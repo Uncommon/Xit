@@ -112,7 +112,7 @@ class FileListController: NSViewController
     guard let change = targetChange(sender: sender)
     else { return }
     
-    try? repoController.repository.revert(file: change.path)
+    try? repoController.repository.revert(file: change.gitPath)
   }
   
   @IBAction func showIgnored(_ sender: Any)
@@ -123,7 +123,7 @@ class FileListController: NSViewController
   {
     guard let change = targetChange(sender: sender)
     else { return }
-    let url = repoController.repository.fileURL(change.path)
+    let url = repoController.repository.fileURL(change.gitPath)
     
     NSWorkspace.shared.open(url)
   }
@@ -132,7 +132,7 @@ class FileListController: NSViewController
   {
     guard let change = targetChange(sender: sender)
     else { return }
-    let url = repoController.repository.fileURL(change.path)
+    let url = repoController.repository.fileURL(change.gitPath)
     guard FileManager.default.fileExists(atPath: url.path)
     else { return }
     
@@ -376,7 +376,7 @@ class StagedFileListController: StagingFileListController
     guard let change = targetChange(sender: sender)
     else { return }
 
-    _ = try? repoController.repository.unstage(file: change.path)
+    _ = try? repoController.repository.unstage(file: change.gitPath)
     repoController.postIndexNotification()
   }
 }
@@ -440,7 +440,7 @@ class WorkspaceFileListController: StagingFileListController
     guard let change = targetChange(sender: sender)
     else { return }
 
-    _ = try? repoController.repository.stage(file: change.path)
+    _ = try? repoController.repository.stage(file: change.gitPath)
     repoController.postIndexNotification()
   }
   

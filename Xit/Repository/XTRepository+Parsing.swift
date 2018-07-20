@@ -6,6 +6,12 @@ public class FileChange: NSObject
   @objc var path: String
   var change: DeltaStatus
   
+  /// Repository-relative path to use for git operations
+  var gitPath: String
+  {
+    return path.removingPrefix("\(WorkspaceTreeBuilder.rootName)/")
+  }
+  
   init(path: String, change: DeltaStatus = .unmodified)
   {
     self.path = path

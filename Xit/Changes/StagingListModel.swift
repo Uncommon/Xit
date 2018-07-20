@@ -50,7 +50,7 @@ class IndexFileList: StagingListModel, FileListModel
   
   func treeRoot(changes: [FileChange], oldTree: NSTreeNode?) -> NSTreeNode
   {
-    let builder = WorkspaceTreeBuilder(fileChanges: repository.stagedChanges())
+    let builder = WorkspaceTreeBuilder(fileChanges: changes)
     let root = builder.build(repository.repoURL)
     
     for stagedChange in changes {

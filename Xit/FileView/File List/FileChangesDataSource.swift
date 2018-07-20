@@ -9,10 +9,10 @@ class FileChangesDataSource: FileListDataSourceBase
   {
     var newChanges = fileList?.changes ?? [FileChange]()
     
-    newChanges.sort { $0.path < $1.path }
+    newChanges.sort { $0.gitPath < $1.gitPath }
     
-    let newPaths = newChanges.map { $0.path }
-    let oldPaths = changes.map { $0.path }
+    let newPaths = newChanges.map { $0.gitPath }
+    let oldPaths = changes.map { $0.gitPath }
     let newSet = NSOrderedSet(array: newPaths)
     let oldSet = NSOrderedSet(array: oldPaths)
     
@@ -32,7 +32,7 @@ class FileChangesDataSource: FileListDataSourceBase
       for change in changes {
         guard let newIndex = newChanges.index(where: {
           (newChange) in
-          newChange.path == change.path &&
+          newChange.gitPath == change.gitPath &&
           newChange.change != change.change
         })
         else { continue }
@@ -44,7 +44,7 @@ class FileChangesDataSource: FileListDataSourceBase
       }
       changes.removeObjects(at: deleteIndexes)
       changes.append(contentsOf: newChanges.objects(at: addIndexes))
-      changes.sort { $0.path < $1.path }
+      changes.sort { $0.gitPath < $1.gitPath }
     }
     
     DispatchQueue.main.async {
@@ -95,11 +95,11 @@ class FileChangesDataSource: FileListDataSourceBase
     var newRow = 0
     
     if let oldRowChange = fileChange(at: oldRow),
-       oldRowChange.path == oldChange.path {
+       oldRowChange.gitPath == oldChange.gitPath {
       newRow = oldRow
     }
     else {
-      if let matchRow = changes.index(where: { $0.path == oldChange.path }) {
+      if let matchRow = changes.index(where: { $0.gitPath == oldChange.gitPath }) {
         newRow = matchRow
       }
     }
@@ -137,7 +137,7 @@ extension FileChangesDataSource: FileListDataSource
   
   func path(for item: Any) -> String
   {
-    return (item as? FileChange)?.path ?? ""
+    return (item as? FileChange)?.gitPath ?? ""
   }
   
   func change(for item: Any) -> DeltaStatus
@@ -180,6 +180,6 @@ extension FileChangesDataSource: NSOutlineViewDataSource
                    objectValueFor tableColumn: NSTableColumn?,
                    byItem item: Any?) -> Any?
   {
-    return (item as? FileChange)?.path
+    return (item as? FileChange)?.gitPath
   }
 }

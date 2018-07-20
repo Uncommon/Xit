@@ -24,7 +24,10 @@ extension FileTreeDataSource: FileListDataSource
       objc_sync_enter(myself)
       defer { objc_sync_exit(myself) }
       
-      guard let fileList = myself.repoController?.selection?.fileList
+      guard let selection = myself.repoController.selection,
+            let fileList = myself.useWorkspaceList ?
+              (selection as? StagingSelection)?.unstagedFileList :
+              selection.fileList
       else { return }
       
       myself.delegate?.configure(model: fileList)
@@ -57,7 +60,7 @@ extension FileTreeDataSource: FileListDataSource
       guard let change = fileChange(at: rowIndex)
       else { continue }
       
-      result.append(change.path)
+      result.append(change.gitPath)
     }
     return result
   }
@@ -68,7 +71,7 @@ extension FileTreeDataSource: FileListDataSource
       guard let change = fileChange(at: rowIndex)
       else { continue }
       
-      if expanded.contains(change.path) {
+      if expanded.contains(change.gitPath) {
         outlineView.expandItem(outlineView.item(atRow: rowIndex))
       }
     }
@@ -81,14 +84,14 @@ extension FileTreeDataSource: FileListDataSource
     else { return }
     
     if let oldRowItem = fileChange(at: oldRow),
-       oldRowItem.path == item.path {
+       oldRowItem.gitPath == item.gitPath {
       outlineView.selectRowIndexes(IndexSet(integer: oldRow),
                                    byExtendingSelection: false)
       return
     }
     
     if let newChange = fileChange(at: outlineView.selectedRow),
-       item.path != newChange.path {
+       item.gitPath != newChange.gitPath {
       // find the item, expanding as necessary, select it
     }
     if outlineView.selectedRow == -1 {
@@ -113,7 +116,7 @@ extension FileTreeDataSource: FileListDataSource
   
   func path(for item: Any) -> String
   {
-    return treeItem(item)?.path ?? ""
+    return treeItem(item)?.gitPath ?? ""
   }
   
   func change(for item: Any) -> DeltaStatus

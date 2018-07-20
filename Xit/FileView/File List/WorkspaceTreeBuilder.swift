@@ -61,7 +61,7 @@ class WorkspaceTreeBuilder
         else {
           let item = FileChange(path: path)
           
-          if let status = self.changes[path] {
+          if let status = self.changes[relativePath.removingPrefix("/")] {
             item.change = status
           }
           childNode = NSTreeNode(representedObject: item)
