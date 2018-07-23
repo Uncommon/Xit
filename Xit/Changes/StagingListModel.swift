@@ -129,7 +129,8 @@ class WorkspaceFileList: StagingListModel, FileListModel
   
   func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
   {
-    let builder = WorkspaceTreeBuilder(fileChanges: repository.unstagedChanges())
+    let builder = WorkspaceTreeBuilder(fileChanges: repository.unstagedChanges(),
+                                       repo: showingIgnored ? nil : repository)
     let root = builder.build(repository.repoURL)
     
     postProcess(fileTree: root)

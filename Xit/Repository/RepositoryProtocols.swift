@@ -67,6 +67,7 @@ public protocol FileStatusDetection: class
   func amendingUnstagedStatus(for path: String) throws -> DeltaStatus
   func stagedStatus(for path: String) throws -> DeltaStatus
   func unstagedStatus(for path: String) throws -> DeltaStatus
+  func isIgnored(path: String) -> Bool
 }
 
 extension FileStatusDetection

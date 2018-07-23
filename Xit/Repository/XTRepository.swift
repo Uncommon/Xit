@@ -346,16 +346,6 @@ extension XTRepository: CommitStorage
 
 extension XTRepository
 {
-  /// Returns true if the path is ignored according to the repository's
-  /// ignore rules.
-  func isIgnored(path: String) -> Bool
-  {
-    let ignored = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
-    let result = git_ignore_path_is_ignored(ignored, gitRepo, path)
-
-    return (result == 0) && (ignored.pointee != 0)
-  }
-  
   /// Returns the unstaged and staged status of the given file.
   func status(file: String) throws -> (DeltaStatus, DeltaStatus)
   {

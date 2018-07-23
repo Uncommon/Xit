@@ -7,13 +7,14 @@ class WorkspaceTreeBuilder
   static let rootName = "𝒓𝒐𝒐𝒕"
   
   private var changes: [String: DeltaStatus]
+  private var repo: FileStatusDetection?
   
   init(changes: [String: DeltaStatus])
   {
     self.changes = changes
   }
   
-  init(fileChanges: [FileChange])
+  init(fileChanges: [FileChange], repo: FileStatusDetection? = nil)
   {
     var changes = [String: DeltaStatus]()
     
@@ -21,6 +22,7 @@ class WorkspaceTreeBuilder
       changes[change.path] = change.change
     }
     self.changes = changes
+    self.repo = repo
   }
   
   func treeAtURL(_ baseURL: URL, rootPath: NSString) -> NSTreeNode
@@ -39,7 +41,8 @@ class WorkspaceTreeBuilder
     while let url: URL = enumerator?.nextObject() as! URL? {
       let urlPath = url.path
       let relativePath = (urlPath as NSString).substring(from: rootPathLength)
-      guard relativePath != "/.git"
+      guard relativePath != "/.git",
+            !(repo?.isIgnored(path: relativePath) ?? false)
       else { continue }
       let path = WorkspaceTreeBuilder.rootName
                                      .appending(pathComponent: relativePath)
