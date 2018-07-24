@@ -59,20 +59,21 @@ extension SideBarDataSource: TeamCityAccessor
   
   func statusImage(for item: SidebarItem) -> NSImage?
   {
-    if (item is RemoteBranchSidebarItem) &&
-       !branchHasLocalTrackingBranch(item.title) {
-      return nil
-    }
-    
-    guard let remoteName = remoteName(forBranchItem: item),
-          let (_, buildTypes) = matchTeamCity(remoteName)
+    guard let branchItem = item as? BranchSidebarItem,
+          (branchItem is LocalBranchSidebarItem ||
+           branchHasLocalTrackingBranch(item.title))
     else { return nil }
     
-    let branchName = (item.title as NSString).lastPathComponent
+    guard let remoteName = remoteName(forBranchItem: item),
+          let (api, buildTypes) = matchTeamCity(remoteName)
+    else { return nil }
+    
     var overallSuccess: Bool?
     
     for buildType in buildTypes {
-      if let status = buildStatusCache.statuses[buildType],
+      if let branchName = api.displayName(forBranch: branchItem.refName,
+                                          buildType: buildType),
+         let status = buildStatusCache.statuses[buildType],
          let buildSuccess = status[branchName].map({ $0.status == .succeeded }) {
         overallSuccess = (overallSuccess ?? true) && buildSuccess
       }

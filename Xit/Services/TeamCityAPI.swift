@@ -172,6 +172,20 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
     }
   }
   
+  /// Use the branchSpecs to determine the display name for the given build type
+  func displayName(forBranch branch: String, buildType: String) -> String?
+  {
+    let vcsRoots = vcsRootsForBuildType(buildType)
+    let displayNames = vcsRoots.compactMap
+        { vcsBranchSpecs[$0]?.match(branch: branch) }
+    
+    return displayNames.reduce(nil) {
+      (shortest, name) -> String? in
+      return (shortest.map { $0.count < name.count } ?? false)
+          ? shortest : name
+    }
+  }
+  
   var vcsRoots: Resource
   { return resource("vcs-roots") }
   

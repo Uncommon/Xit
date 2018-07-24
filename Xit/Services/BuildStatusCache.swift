@@ -61,17 +61,8 @@ class BuildStatusCache: TeamCityAccessor
       let fullBranchName = local.name
       
       for buildType in buildTypes {
-        let vcsRoots = api.vcsRootsForBuildType(buildType)
-        guard !vcsRoots.isEmpty
-        else { continue }
-        
-        let displayNames = vcsRoots.compactMap
-              { api.vcsBranchSpecs[$0]?.match(branch: fullBranchName) }
-        guard let branchName = displayNames.reduce(nil, {
-          (shortest, name) -> String? in
-          return (shortest.map { $0.count < name.count } ?? false)
-                 ? shortest : name
-        })
+        guard let branchName = api.displayName(forBranch: fullBranchName,
+                                               buildType: buildType)
         else { continue }
         
         let statusResource = api.buildStatus(branchName, buildType: buildType)

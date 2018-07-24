@@ -76,6 +76,7 @@ class BranchSidebarItem: SidebarItem
   { return NSImage(named: .xtBranchTemplate) }
   
   var fullName: String { return title }
+  var refName: String { fatalError("refName is abstract") }
   
   func branchObject() -> Branch? { return nil }
 }
@@ -91,6 +92,9 @@ class LocalBranchSidebarItem: BranchSidebarItem
     }
     return false
   }
+  
+  override var refName: String
+  { return BranchPrefixes.heads.appending(pathComponent: title) }
   
   override func branchObject() -> Branch?
   {
@@ -113,6 +117,9 @@ class RemoteBranchSidebarItem: BranchSidebarItem
   
   override var fullName: String { return "\(remote)/\(title)" }
   
+  override var refName: String
+  { return BranchPrefixes.remotes.appending(pathComponent: title) }
+
   init(title: String, remote: String, selection: RepositorySelection)
   {
     self.remote = remote
