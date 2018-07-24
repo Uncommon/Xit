@@ -230,10 +230,10 @@ class XTAmendTest: XTTest
     
     let amendStatus = repository.amendingChanges(parent: headCommit)
     guard let file3Status = amendStatus.first(
-      where: { $0.path == FileNames.file3 })
-      else {
-        XCTFail("file 3 status missing")
-        return
+        where: { $0.path == FileNames.file3 })
+    else {
+      XCTFail("file 3 status missing")
+      return
     }
     
     XCTAssertEqual(amendStatus.count, 3)

@@ -27,15 +27,15 @@ extension SideBarDataSource: TeamCityAccessor
   }
   
   /// Returns true if the remote branch is tracked by a local branch.
-  func branchHasLocalTrackingBranch(_ branch: String) -> Bool
+  func localTrackingBranch(forBranchRef branch: String) -> LocalBranch?
   {
     for localBranch in repository.localBranches() {
       if let trackingBranch = localBranch.trackingBranch,
-         trackingBranch.shortName == branch {
-        return true
+         trackingBranch.name == branch {
+        return localBranch
       }
     }
-    return false
+    return nil
   }
   
   /// Returns true if the local branch has a remote tracking branch.
@@ -60,10 +60,10 @@ extension SideBarDataSource: TeamCityAccessor
   func statusImage(for item: SidebarItem) -> NSImage?
   {
     guard let branchItem = item as? BranchSidebarItem,
-          (branchItem is LocalBranchSidebarItem ||
-           branchHasLocalTrackingBranch(item.title))
+          let localBranch = branchItem.branchObject() as? LocalBranch ??
+                            localTrackingBranch(forBranchRef: branchItem.refName)
     else { return nil }
-    
+
     guard let remoteName = remoteName(forBranchItem: item),
           let (api, buildTypes) = matchTeamCity(remoteName)
     else { return nil }
@@ -71,7 +71,7 @@ extension SideBarDataSource: TeamCityAccessor
     var overallSuccess: Bool?
     
     for buildType in buildTypes {
-      if let branchName = api.displayName(forBranch: branchItem.refName,
+      if let branchName = api.displayName(forBranch: localBranch.name,
                                           buildType: buildType),
          let status = buildStatusCache.statuses[buildType],
          let buildSuccess = status[branchName].map({ $0.status == .succeeded }) {

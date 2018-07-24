@@ -11,18 +11,6 @@ public protocol Branch: AnyObject
   var oid: OID? { get }
 }
 
-extension Branch
-{
-  public var shortName: String
-  {
-    return strippedName
-  }
-  public var strippedName: String
-  {
-    return name.components(separatedBy: "/").dropFirst(2).joined(separator: "/")
-  }
-}
-
 
 public protocol LocalBranch: Branch
 {
@@ -30,33 +18,10 @@ public protocol LocalBranch: Branch
   var trackingBranch: RemoteBranch? { get }
 }
 
-extension LocalBranch
-{
-  var strippedName: String?
-  {
-    return name.removingPrefix(BranchPrefixes.heads)
-  }
-}
-
 
 public protocol RemoteBranch: Branch
 {
   var remoteName: String? { get }
-}
-
-extension RemoteBranch
-{
-  public var shortName: String
-  {
-    guard let slashIndex = name.index(of: "/").map({ name.index(after: $0) })
-    else { return name }
-    
-    return String(name[slashIndex...])
-  }
-  public var strippedName: String
-  {
-    return name.components(separatedBy: "/").dropFirst(3).joined(separator: "/")
-  }
 }
 
 
@@ -69,6 +34,12 @@ public struct BranchPrefixes
 
 public class GitBranch: Branch
 {
+  // Originally the local & remote implementations of these were in protocol
+  // extensions, but the class and protocol hierarchies interacted badly with
+  // Swift dispatch rules and it didn't work.
+  public var shortName: String { fatalError() }
+  public var strippedName: String { fatalError() }
+  
   let branchRef: OpaquePointer
   
   required public init(branch: OpaquePointer)
@@ -120,6 +91,11 @@ public class GitBranch: Branch
 
 public class GitLocalBranch: GitBranch, LocalBranch
 {
+  public override var shortName: String
+  { return strippedName }
+  public override var strippedName: String
+  { return name.removingPrefix(BranchPrefixes.heads) }
+  
   init?(repository: XTRepository, name: String)
   {
     guard let branch = GitBranch.lookUpBranch(
@@ -187,6 +163,18 @@ public class GitLocalBranch: GitBranch, LocalBranch
 
 public class GitRemoteBranch: GitBranch, RemoteBranch
 {
+  public override var shortName: String
+  {
+    guard let slashIndex = name.index(of: "/").map({ name.index(after: $0) })
+    else { return name }
+    
+    return String(name[slashIndex...])
+  }
+  public override var strippedName: String
+  {
+    return name.components(separatedBy: "/").dropFirst(3).joined(separator: "/")
+  }
+
   init?(repository: XTRepository, name: String)
   {
     guard let branch = GitBranch.lookUpBranch(

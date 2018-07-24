@@ -118,7 +118,7 @@ class RemoteBranchSidebarItem: BranchSidebarItem
   override var fullName: String { return "\(remote)/\(title)" }
   
   override var refName: String
-  { return BranchPrefixes.remotes.appending(pathComponent: title) }
+  { return BranchPrefixes.remotes.appending(pathComponent: fullName) }
 
   init(title: String, remote: String, selection: RepositorySelection)
   {
