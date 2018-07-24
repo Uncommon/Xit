@@ -79,8 +79,8 @@ class BuildStatusCache: TeamCityAccessor
         statusResource.useData(owner: self) {
           (data) in
           guard let xml = data.content as? XMLDocument,
-                let firstBuildElement =
-                xml.rootElement()?.children?.first as? XMLElement,
+                let firstBuildElement = xml.rootElement()?.children?.first
+                                        as? XMLElement,
                 let build = TeamCityAPI.Build(element: firstBuildElement)
           else { return }
           
@@ -90,9 +90,9 @@ class BuildStatusCache: TeamCityAccessor
           
           buildTypeStatuses[branchName] = build
           self.statuses[buildType] = buildTypeStatuses
-          self.clients.forEach {
-            $0.client?.buildStatusUpdated(branch: branchName,
-                                          buildType: buildType)
+          for ref in self.clients {
+            ref.client?.buildStatusUpdated(branch: branchName,
+                                              buildType: buildType)
           }
         }
       }

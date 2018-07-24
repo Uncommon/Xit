@@ -54,11 +54,15 @@ class TeamCityTest: XCTestCase
   func testBranchSpec()
   {
     let branchSpec = TeamCityAPI.BranchSpec(ruleStrings: [
+        "+:refs/heads/develop",
         "+:refs/heads/feature/*",
         "+:refs/heads/fix/(target)",
         "-:refs/heads/skip/*",
-        "+:refs/heads/*"])!
+        "+:refs/heads/*",
+        ])!
     
+    XCTAssertEqual(branchSpec.match(branch: "refs/heads/develop"),
+                   "refs/heads/develop")
     XCTAssertEqual(branchSpec.match(branch: "refs/heads/thing"), "thing")
     XCTAssertEqual(branchSpec.match(branch: "refs/heads/feature/thing"), "thing")
     XCTAssertEqual(branchSpec.match(branch: "refs/heads/fix/target"), "target")

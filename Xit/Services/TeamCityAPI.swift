@@ -152,10 +152,10 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
   
   // Applies the given closure to the build statuses for the given branch and
   // build type, asynchronously if the data is not yet cached.
-  func enumerateBuildStatus(_ branch: String, builtType: String,
+  func enumerateBuildStatus(_ branch: String, buildType: String,
                             processor: @escaping ([String: String]) -> Void)
   {
-    let statusResource = buildStatus(branch, buildType: builtType)
+    let statusResource = buildStatus(branch, buildType: buildType)
     
     statusResource.useData(owner: self) {
       (data) in
@@ -233,6 +233,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
           case "-:":
             self.inclusion = .exclude
           default:
+            print("Unknown prefix in rule: \(content)")
             return nil
         }
         
@@ -252,6 +253,9 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
       
       func match(branch: String) -> String?
       {
+        if branch == regex.pattern.dropFirst() { // skip the "^"
+          return branch
+        }
         let stringRange = NSRange(location: 0, length: branch.utf8.count)
         guard let match = regex.firstMatch(in: branch, options: .anchored,
                                            range: stringRange)
