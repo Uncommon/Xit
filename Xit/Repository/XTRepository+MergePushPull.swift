@@ -295,7 +295,7 @@ extension XTRepository
   
   fileprivate func writingMerge(branch: Branch) throws
   {
-    guard let branch = branch as? GitBranch
+    guard let gitBranch = branch as? GitBranch
     else { return }
     
     do {
@@ -305,8 +305,8 @@ extension XTRepository
             let targetBranch = GitLocalBranch(repository: self,
                                               name: currentBranchName)
       else { throw Error.detachedHead }
-      guard let targetCommit = targetBranch.targetCommit,
-            let remoteCommit = branch.targetCommit
+      guard let targetCommit = targetBranch.targetCommit as? GitCommit,
+            let remoteCommit = branch.targetCommit as? GitCommit
       else { throw Error.unexpected }
       
       if targetCommit.oid.equals(remoteCommit.oid) {
@@ -322,11 +322,11 @@ extension XTRepository
         throw Error.unexpected
       }
       if analysis.contains(.fastForward) {
-        try fastForwardMerge(branch: targetBranch, remoteBranch: branch)
+        try fastForwardMerge(branch: targetBranch, remoteBranch: gitBranch)
         return
       }
       if analysis.contains(.normal) {
-        try normalMerge(fromBranch: branch, fromCommit: remoteCommit,
+        try normalMerge(fromBranch: gitBranch, fromCommit: remoteCommit,
                         targetBranch: targetBranch, targetCommit: targetCommit)
         return
       }

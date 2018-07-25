@@ -4,11 +4,22 @@ public protocol Branch: AnyObject
 {
   /// The full reference name
   var name: String { get }
-  /// Same as branch name, but without remote name for remote branches
+  /// Like `strippedName` but including the remote name for remote branches
   var shortName: String { get }
-  /// The ref name without the refs/.../ prefix
+  /// The name without `prefix`
   var strippedName: String { get }
+  /// Text that is not part of the specific branch name
+  var prefix: String { get }
+  /// OID of the branch's head commit
   var oid: OID? { get }
+  /// The branch's head commit
+  var targetCommit: Commit? { get }
+}
+
+extension Branch
+{
+  public var strippedName: String
+  { return name.removingPrefix(prefix) }
 }
 
 
@@ -18,10 +29,21 @@ public protocol LocalBranch: Branch
   var trackingBranch: RemoteBranch? { get }
 }
 
+extension LocalBranch
+{
+  public var prefix: String { return BranchPrefixes.heads }
+}
+
 
 public protocol RemoteBranch: Branch
 {
   var remoteName: String? { get }
+}
+
+extension RemoteBranch
+{
+  public var prefix: String
+  { return "\(BranchPrefixes.remotes)\(remoteName ?? "")/" }
 }
 
 
@@ -32,14 +54,8 @@ public struct BranchPrefixes
 }
 
 
-public class GitBranch: Branch
+public class GitBranch
 {
-  // Originally the local & remote implementations of these were in protocol
-  // extensions, but the class and protocol hierarchies interacted badly with
-  // Swift dispatch rules and it didn't work.
-  public var shortName: String { fatalError() }
-  public var strippedName: String { fatalError() }
-  
   let branchRef: OpaquePointer
   
   required public init(branch: OpaquePointer)
@@ -64,7 +80,7 @@ public class GitBranch: Branch
   }
 
   var sha: String? { return oid?.sha }
-  var targetCommit: GitCommit?
+  public var targetCommit: Commit?
   {
     guard let oid = oid,
           let repo = git_reference_owner(branchRef)
@@ -91,10 +107,7 @@ public class GitBranch: Branch
 
 public class GitLocalBranch: GitBranch, LocalBranch
 {
-  public override var shortName: String
-  { return strippedName }
-  public override var strippedName: String
-  { return name.removingPrefix(BranchPrefixes.heads) }
+  public var shortName: String { return strippedName }
   
   init?(repository: XTRepository, name: String)
   {
@@ -163,17 +176,8 @@ public class GitLocalBranch: GitBranch, LocalBranch
 
 public class GitRemoteBranch: GitBranch, RemoteBranch
 {
-  public override var shortName: String
-  {
-    guard let slashIndex = name.index(of: "/").map({ name.index(after: $0) })
-    else { return name }
-    
-    return String(name[slashIndex...])
-  }
-  public override var strippedName: String
-  {
-    return name.components(separatedBy: "/").dropFirst(3).joined(separator: "/")
-  }
+  public var shortName: String
+  { return name.removingPrefix(BranchPrefixes.remotes) }
 
   init?(repository: XTRepository, name: String)
   {

@@ -179,6 +179,7 @@
 		C9DEA4BB1E4FEC1600DF4069 /* FileListDataSourceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DEA4BA1E4FEC1600DF4069 /* FileListDataSourceTest.swift */; };
 		C9DEA4F01E53678A00DF4069 /* XTFileChangesDataSourceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DEA4EF1E53678A00DF4069 /* XTFileChangesDataSourceTest.swift */; };
 		C9DEA4FF1E54AEC400DF4069 /* BlameTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */; };
+		C9E5E26C210917FD0069FBD8 /* BranchTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5E26B210917FD0069FBD8 /* BranchTest.swift */; };
 		C9E640121D1095C700192454 /* XTFileChangesModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */; };
 		C9E8815D1E95988700BFA7E5 /* XTRepository+MergePushPull.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E8815C1E95988700BFA7E5 /* XTRepository+MergePushPull.swift */; };
 		C9E8816C1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E8816B1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift */; };
@@ -529,6 +530,7 @@
 		C9DEA4BA1E4FEC1600DF4069 /* FileListDataSourceTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileListDataSourceTest.swift; sourceTree = "<group>"; };
 		C9DEA4EF1E53678A00DF4069 /* XTFileChangesDataSourceTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesDataSourceTest.swift; sourceTree = "<group>"; };
 		C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlameTest.swift; sourceTree = "<group>"; };
+		C9E5E26B210917FD0069FBD8 /* BranchTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BranchTest.swift; sourceTree = "<group>"; };
 		C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesModelTest.swift; sourceTree = "<group>"; };
 		C9E8815C1E95988700BFA7E5 /* XTRepository+MergePushPull.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTRepository+MergePushPull.swift"; sourceTree = "<group>"; };
 		C9E8816B1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRepositoryMergeTest.swift; sourceTree = "<group>"; };
@@ -729,6 +731,7 @@
 			isa = PBXGroup;
 			children = (
 				C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */,
+				C9E5E26B210917FD0069FBD8 /* BranchTest.swift */,
 				C99A3C4F1F97A9E00037B431 /* CacheTest.swift */,
 				DD98CFF2181ADFC5008B79C9 /* CFRunLoop+Extensions.c */,
 				DD98CFFF181AE297008B79C9 /* CFRunLoop+Extensions.h */,
@@ -1410,6 +1413,7 @@
 				C9EB87321D05D35800C47D13 /* XTStashTest.swift in Sources */,
 				C99A3C501F97A9E00037B431 /* CacheTest.swift in Sources */,
 				C94103801EBDFABC002C80DC /* SideBarDataSourceTest.swift in Sources */,
+				C9E5E26C210917FD0069FBD8 /* BranchTest.swift in Sources */,
 				C9DEA4F01E53678A00DF4069 /* XTFileChangesDataSourceTest.swift in Sources */,
 				DD98CFF3181ADFC5008B79C9 /* CFRunLoop+Extensions.c in Sources */,
 				C953560A1D958E8D00AEEF49 /* StringExtensionsTest.swift in Sources */,
