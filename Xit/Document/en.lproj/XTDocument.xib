@@ -25,17 +25,17 @@
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <splitView dividerStyle="thin" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qUN-9c-eC3">
-                        <rect key="frame" x="0.0" y="0.0" width="988" height="660"/>
+                        <rect key="frame" x="-1" y="-1" width="990" height="662"/>
                         <subviews>
                             <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="Kz2-if-YBo">
-                                <rect key="frame" x="0.0" y="0.0" width="237" height="660"/>
+                                <rect key="frame" x="0.0" y="0.0" width="237" height="662"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <clipView key="contentView" drawsBackground="NO" id="6xg-0M-qoe">
-                                    <rect key="frame" x="1" y="1" width="235" height="658"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <rect key="frame" x="1" y="1" width="235" height="660"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="gxZ-qS-2C2" id="lxI-HL-izL" customClass="XTSideBarOutlineView">
-                                            <rect key="frame" x="0.0" y="0.0" width="235" height="658"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="235" height="660"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="_sourceListBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -184,7 +184,7 @@
                                 </scroller>
                             </scrollView>
                             <customView fixedFrame="YES" id="yea-SK-jkT">
-                                <rect key="frame" x="238" y="0.0" width="750" height="660"/>
+                                <rect key="frame" x="238" y="0.0" width="752" height="662"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             </customView>
                         </subviews>
@@ -198,10 +198,10 @@
                     </splitView>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailing" secondItem="qUN-9c-eC3" secondAttribute="trailing" id="4y3-Ot-4vd"/>
-                    <constraint firstItem="qUN-9c-eC3" firstAttribute="top" secondItem="6" secondAttribute="top" id="GoX-re-LqF"/>
-                    <constraint firstAttribute="bottom" secondItem="qUN-9c-eC3" secondAttribute="bottom" id="Ht7-XS-viM"/>
-                    <constraint firstItem="qUN-9c-eC3" firstAttribute="leading" secondItem="6" secondAttribute="leading" id="MJP-C2-gGZ"/>
+                    <constraint firstAttribute="trailing" secondItem="qUN-9c-eC3" secondAttribute="trailing" constant="-1" id="4y3-Ot-4vd"/>
+                    <constraint firstItem="qUN-9c-eC3" firstAttribute="top" secondItem="6" secondAttribute="top" constant="-1" id="GoX-re-LqF"/>
+                    <constraint firstAttribute="bottom" secondItem="qUN-9c-eC3" secondAttribute="bottom" constant="-1" id="Ht7-XS-viM"/>
+                    <constraint firstItem="qUN-9c-eC3" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="-1" id="MJP-C2-gGZ"/>
                 </constraints>
             </view>
             <toolbar key="toolbar" implicitIdentifier="CF3DA724-D8D3-467F-8B73-D2279CF2D1B0" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="kHt-EX-a5o">

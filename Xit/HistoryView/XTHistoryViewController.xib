@@ -34,7 +34,7 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <clipView key="contentView" id="QCe-lk-wQ6">
                                 <rect key="frame" x="1" y="0.0" width="726" height="277"/>
-                                <autoresizingMask key="autoresizingMask"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="dEf-hx-ZjL" viewBased="YES" id="No3-Ik-sWu" customClass="HistoryTableView" customModule="Xit" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="729.5" height="254"/>
@@ -57,11 +57,11 @@
                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                 <prototypeCellViews>
                                                     <tableCellView identifier="commit" id="oW4-S9-MQ4" customClass="HistoryCellView" customModule="Xit" customModuleProvider="target">
-                                                        <rect key="frame" x="1" y="1" width="422.5" height="17"/>
+                                                        <rect key="frame" x="1" y="1" width="423" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" id="oMe-ke-Jkz" customClass="ExpansionTextField" customModule="Xit" customModuleProvider="target">
-                                                                <rect key="frame" x="76" y="0.0" width="346.5" height="17"/>
+                                                                <rect key="frame" x="76" y="0.0" width="347" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="g1y-W2-Nej">
                                                                     <font key="font" metaFont="system"/>

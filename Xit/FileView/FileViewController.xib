@@ -42,16 +42,16 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" translatesAutoresizingMaskIntoConstraints="NO" id="xgO-S6-hTX">
-                                        <rect key="frame" x="0.0" y="0.0" width="703" height="109"/>
+                                        <rect key="frame" x="-1" y="-1" width="704" height="110"/>
                                         <clipView key="contentView" id="HPx-Gd-HBo">
-                                            <rect key="frame" x="1" y="1" width="701" height="107"/>
+                                            <rect key="frame" x="1" y="1" width="702" height="108"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="10s-dp-YzO" customClass="FlippedView" customModule="Xit" customModuleProvider="target">
-                                                    <rect key="frame" x="0.0" y="-52" width="701" height="159"/>
+                                                    <rect key="frame" x="0.0" y="-51" width="702" height="159"/>
                                                     <subviews>
                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="qxA-hf-OIb">
-                                                            <rect key="frame" x="660" y="132" width="33" height="17"/>
+                                                            <rect key="frame" x="661" y="132" width="33" height="17"/>
                                                             <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Date" id="DVf-Dy-3PR">
                                                                 <dateFormatter key="formatter" dateStyle="medium" timeStyle="short" id="0DX-go-pwr"/>
                                                                 <font key="font" metaFont="system"/>
@@ -60,7 +60,7 @@
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="1mb-nS-fcD">
-                                                            <rect key="frame" x="570" y="113" width="37" height="17"/>
+                                                            <rect key="frame" x="571" y="113" width="37" height="17"/>
                                                             <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="SHA:" id="nUw-zK-rws">
                                                                 <font key="font" metaFont="systemBold"/>
                                                                 <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
@@ -68,7 +68,7 @@
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="500" translatesAutoresizingMaskIntoConstraints="NO" id="HPM-ZG-vcg">
-                                                            <rect key="frame" x="611" y="113" width="82" height="17"/>
+                                                            <rect key="frame" x="612" y="113" width="82" height="17"/>
                                                             <textFieldCell key="cell" lineBreakMode="clipping" selectable="YES" alignment="right" title="1234567890" id="zPR-5a-CC9">
                                                                 <font key="font" metaFont="system"/>
                                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -92,7 +92,7 @@
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="jgS-z3-Kep">
-                                                            <rect key="frame" x="8" y="20" width="685" height="85"/>
+                                                            <rect key="frame" x="8" y="20" width="686" height="85"/>
                                                             <textFieldCell key="cell" selectable="YES" id="MdH-1X-iSW">
                                                                 <font key="font" metaFont="fixedUser" size="11"/>
                                                                 <string key="title">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
@@ -153,8 +153,8 @@
                                             <rect key="frame" x="-100" y="-100" width="701" height="16"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
-                                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="0.96153846153846156" horizontal="NO" id="OVn-Sc-AUm">
-                                            <rect key="frame" x="686" y="1" width="16" height="107"/>
+                                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="0.98039215686274506" horizontal="NO" id="OVn-Sc-AUm">
+                                            <rect key="frame" x="687" y="1" width="16" height="108"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                     </scrollView>
@@ -162,8 +162,8 @@
                                 <constraints>
                                     <constraint firstItem="xgO-S6-hTX" firstAttribute="top" secondItem="dFn-2I-XuO" secondAttribute="top" id="4vC-bV-5iJ"/>
                                     <constraint firstAttribute="trailing" secondItem="xgO-S6-hTX" secondAttribute="trailing" id="U5y-NV-EnO"/>
-                                    <constraint firstItem="xgO-S6-hTX" firstAttribute="leading" secondItem="dFn-2I-XuO" secondAttribute="leading" id="eB3-an-Ccj"/>
-                                    <constraint firstAttribute="bottom" secondItem="xgO-S6-hTX" secondAttribute="bottom" id="xFz-iG-vSd"/>
+                                    <constraint firstItem="xgO-S6-hTX" firstAttribute="leading" secondItem="dFn-2I-XuO" secondAttribute="leading" constant="-1" id="eB3-an-Ccj"/>
+                                    <constraint firstAttribute="bottom" secondItem="xgO-S6-hTX" secondAttribute="bottom" constant="-1" id="xFz-iG-vSd"/>
                                 </constraints>
                             </view>
                         </tabViewItem>
@@ -252,11 +252,10 @@
                                     <font key="font" metaFont="system"/>
                                     <tabViewItems>
                                         <tabViewItem label="Diff" identifier="diff" id="A2f-Wf-RNT">
-                                            <view key="view" id="uQh-Df-4fp">
-                                                <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
+                                            <view key="view" ambiguous="YES" id="uQh-Df-4fp">
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <webView maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e4U-lz-eEd">
+                                                    <webView ambiguous="YES" maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e4U-lz-eEd">
                                                         <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
                                                         <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
                                                             <nil key="identifier"/>
@@ -333,7 +332,7 @@
                                             </view>
                                         </tabViewItem>
                                         <tabViewItem label="Preview" identifier="preview" id="54">
-                                            <view key="view" ambiguous="YES" id="55">
+                                            <view key="view" id="55">
                                                 <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             </view>
@@ -341,7 +340,7 @@
                                     </tabViewItems>
                                 </tabView>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Pgg-q8-kWG">
-                                    <rect key="frame" x="-1" y="-2" width="541" height="23"/>
+                                    <rect key="frame" x="-1" y="-1" width="541" height="23"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="21" id="lKP-mc-zqo"/>
                                     </constraints>
@@ -351,7 +350,7 @@
                                     </buttonCell>
                                 </button>
                                 <pathControl verticalHuggingPriority="750" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gna-OS-Gx2">
-                                    <rect key="frame" x="0.0" y="-1" width="60" height="22"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="60" height="22"/>
                                     <pathCell key="cell" selectable="YES" refusesFirstResponder="YES" alignment="left" id="kf1-n1-9Vv">
                                         <font key="font" metaFont="system"/>
                                         <url key="url" string="file:///Volumes/Path"/>
@@ -467,7 +466,7 @@
                                 </popUpButton>
                             </subviews>
                             <constraints>
-                                <constraint firstAttribute="bottom" secondItem="gna-OS-Gx2" secondAttribute="bottom" constant="-1" id="0sb-Cf-3h0"/>
+                                <constraint firstAttribute="bottom" secondItem="gna-OS-Gx2" secondAttribute="bottom" id="0sb-Cf-3h0"/>
                                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="gna-OS-Gx2" secondAttribute="trailing" constant="8" id="3dF-Q6-5C7"/>
                                 <constraint firstAttribute="trailing" secondItem="e4E-MC-bxy" secondAttribute="trailing" constant="-1" id="76B-VV-hB9"/>
                                 <constraint firstItem="e4E-MC-bxy" firstAttribute="leading" secondItem="LHY-c4-rvq" secondAttribute="leading" constant="-1" id="7zn-cA-8gX"/>
@@ -475,7 +474,7 @@
                                 <constraint firstItem="zOv-gm-Q8M" firstAttribute="top" secondItem="LHY-c4-rvq" secondAttribute="top" id="F7L-hg-dTS"/>
                                 <constraint firstItem="zOv-gm-Q8M" firstAttribute="centerX" secondItem="LHY-c4-rvq" secondAttribute="centerX" id="Vvo-uo-0OK"/>
                                 <constraint firstItem="gna-OS-Gx2" firstAttribute="leading" secondItem="LHY-c4-rvq" secondAttribute="leading" id="i4W-RF-RF1"/>
-                                <constraint firstAttribute="bottom" secondItem="Pgg-q8-kWG" secondAttribute="bottom" constant="-1" id="lP9-34-dfo"/>
+                                <constraint firstAttribute="bottom" secondItem="Pgg-q8-kWG" secondAttribute="bottom" id="lP9-34-dfo"/>
                                 <constraint firstItem="e4E-MC-bxy" firstAttribute="top" secondItem="LHY-c4-rvq" secondAttribute="top" id="rJ7-wS-gfk"/>
                                 <constraint firstAttribute="trailing" secondItem="Pgg-q8-kWG" secondAttribute="trailing" constant="-1" id="xzp-ze-0Od"/>
                             </constraints>
