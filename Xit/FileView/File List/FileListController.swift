@@ -91,6 +91,23 @@ class FileListController: NSViewController
     fileListDataSource.repoController = repoController
     fileTreeDataSource.repoController = repoController
   }
+  
+  func confirm(message: String, actionName: String, action: @escaping () -> Void)
+  {
+    guard let window = view.window
+    else { return }
+    let alert = NSAlert()
+    
+    alert.messageText = message
+    alert.addButton(withTitle: actionName)
+    alert.addButton(withTitle: "Cancel")
+    alert.beginSheetModal(for: window) {
+      (response) in
+      if response == .alertFirstButtonReturn {
+        action()
+      }
+    }
+  }
 
   // These are implemented in subclasses, and are here for convenience
   // in hooking up xib items
@@ -112,7 +129,10 @@ class FileListController: NSViewController
     guard let change = targetChange(sender: sender)
     else { return }
     
-    try? repoController.repository.revert(file: change.gitPath)
+    confirm(message: "Revert changes to \(change.path.lastPathComponent)?",
+            actionName: "Revert") {
+      try? self.repoController.repository.revert(file: change.gitPath)
+    }
   }
   
   @IBAction func showIgnored(_ sender: Any)
