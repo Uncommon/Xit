@@ -7,6 +7,7 @@ class XTHistoryViewController: NSViewController
   @IBOutlet weak var historyTable: NSTableView!
   @IBOutlet weak var mainSplitView: NSSplitView!
   @IBOutlet weak var tableController: HistoryTableController!
+  @IBOutlet weak var scopeBar: NSView!
   
   private(set) var fileViewController: FileViewController!
   
@@ -145,6 +146,27 @@ class XTHistoryViewController: NSViewController
       }
       mainSplitView.subviews[1].isHidden = true
     }
+  }
+  
+  @IBAction func performFindPanelAction(_ sender: Any)
+  {
+    setScopeBarVisble(true)
+  }
+  
+  @IBAction func closeScopeBar(_ sender: Any)
+  {
+    setScopeBarVisble(false)
+  }
+  
+  func setScopeBarVisble(_ visible: Bool)
+  {
+    NSAnimationContext.runAnimationGroup({
+      (context) in
+      context.duration = 0.25
+      context.allowsImplicitAnimation = true
+      scopeBar.isHidden = !visible
+      mainSplitView.layoutSubtreeIfNeeded()
+    }, completionHandler: nil)
   }
 }
 
