@@ -12,6 +12,7 @@
                 <outlet property="mainSplitView" destination="13" id="AuV-Jw-5yM"/>
                 <outlet property="scopeBar" destination="cuk-sV-ZkE" id="cvo-wn-9Dh"/>
                 <outlet property="scopeHeightConstraint" destination="ZaV-RH-784" id="VVS-6x-c2q"/>
+                <outlet property="searchButtons" destination="YtL-T2-zWj" id="ZcR-dc-yyG"/>
                 <outlet property="searchField" destination="iui-jU-7uS" id="QjE-VK-B2V"/>
                 <outlet property="searchTypePopup" destination="UOV-6f-auP" id="dJm-T4-RxX"/>
                 <outlet property="tableController" destination="IYz-w0-bcN" id="CLT-wB-Gyk"/>
@@ -38,9 +39,9 @@
                             <rect key="frame" x="0.0" y="271" width="727" height="30"/>
                             <subviews>
                                 <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LwY-Yn-Scv">
-                                    <rect key="frame" x="339" y="4" width="378" height="22"/>
+                                    <rect key="frame" x="10" y="4" width="707" height="22"/>
                                     <subviews>
-                                        <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UOV-6f-auP">
+                                        <popUpButton horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UOV-6f-auP">
                                             <rect key="frame" x="0.0" y="-2" width="89" height="25"/>
                                             <popUpButtonCell key="cell" type="roundTextured" title="Summary" bezelStyle="texturedRounded" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" selectedItem="iGM-1D-9YK" id="Bhq-MT-ZcD">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -59,10 +60,7 @@
                                             </connections>
                                         </popUpButton>
                                         <searchField wantsLayer="YES" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iui-jU-7uS">
-                                            <rect key="frame" x="97" y="0.0" width="200" height="22"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="200" id="BBZ-po-Nlu"/>
-                                            </constraints>
+                                            <rect key="frame" x="97" y="0.0" width="529" height="22"/>
                                             <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" sendsWholeSearchString="YES" id="6cj-6w-3ay">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -74,8 +72,8 @@
                                             </connections>
                                         </searchField>
                                         <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YtL-T2-zWj">
-                                            <rect key="frame" x="305" y="-1" width="47" height="23"/>
-                                            <segmentedCell key="cell" borderStyle="border" alignment="left" style="capsule" trackingMode="momentary" id="ZSk-d5-hUC">
+                                            <rect key="frame" x="634" y="-1" width="47" height="23"/>
+                                            <segmentedCell key="cell" enabled="NO" borderStyle="border" alignment="left" style="capsule" trackingMode="momentary" id="ZSk-d5-hUC">
                                                 <font key="font" metaFont="system"/>
                                                 <segments>
                                                     <segment image="NSGoBackTemplate" width="20"/>
@@ -87,7 +85,7 @@
                                             </connections>
                                         </segmentedControl>
                                         <button horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="q3A-ms-Avj">
-                                            <rect key="frame" x="360" y="2" width="18" height="19"/>
+                                            <rect key="frame" x="689" y="2" width="18" height="19"/>
                                             <buttonCell key="cell" type="roundRect" bezelStyle="roundedRect" image="NSStopProgressFreestandingTemplate" imagePosition="only" alignment="center" state="on" imageScaling="proportionallyDown" inset="2" id="a7i-mR-Hgf">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="cellTitle"/>
@@ -113,6 +111,7 @@
                             </subviews>
                             <constraints>
                                 <constraint firstAttribute="bottom" secondItem="LwY-Yn-Scv" secondAttribute="bottom" constant="4" id="Nze-4Q-wk4"/>
+                                <constraint firstItem="LwY-Yn-Scv" firstAttribute="leading" secondItem="cuk-sV-ZkE" secondAttribute="leading" constant="10" id="RNT-2v-b0H"/>
                                 <constraint firstAttribute="height" constant="30" id="ZaV-RH-784"/>
                                 <constraint firstAttribute="trailing" secondItem="LwY-Yn-Scv" secondAttribute="trailing" constant="10" id="zUP-l2-1s5"/>
                             </constraints>

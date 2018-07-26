@@ -15,6 +15,12 @@ extension XTHistoryViewController
     case sha
   }
 
+  func setUpScopeBar()
+  {
+    scopeBar.isHidden = true
+    scopeHeightConstraint.constant = 0
+  }
+  
   public func toggleScopeBar()
   {
     setScopeBarVisble(scopeBar.isHidden)
@@ -116,5 +122,10 @@ extension XTHistoryViewController: NSSearchFieldDelegate
   
   func searchFieldDidEndSearching(_ sender: NSSearchField)
   {
+  }
+  
+  override func controlTextDidChange(_ obj: Notification)
+  {
+    searchButtons.isEnabled = !searchField.stringValue.isEmpty
   }
 }

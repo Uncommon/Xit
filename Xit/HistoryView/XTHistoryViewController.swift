@@ -11,6 +11,7 @@ class XTHistoryViewController: NSViewController
   @IBOutlet weak var scopeHeightConstraint: NSLayoutConstraint!
   @IBOutlet weak var searchTypePopup: NSPopUpButton!
   @IBOutlet weak var searchField: NSSearchField!
+  @IBOutlet weak var searchButtons: NSSegmentedControl!
   
   private(set) var fileViewController: FileViewController!
   
@@ -72,8 +73,7 @@ class XTHistoryViewController: NSViewController
     cellSpacing.height = 0
     historyTable.intercellSpacing = cellSpacing
     
-    scopeBar.isHidden = true
-    scopeHeightConstraint.constant = 0
+    setUpScopeBar()
   }
   
   func finishLoad(repository: XTRepository)
