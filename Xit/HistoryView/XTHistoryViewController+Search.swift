@@ -45,8 +45,12 @@ extension XTHistoryViewController
   func performSearch(text: String, type: SearchCategory)
   {
     let search = text.lowercased()
+    let start = historyTable.selectedRow + 1
     
-    for (index, entry) in self.tableController.history.entries.enumerated() {
+    if start >= historyTable.numberOfRows {
+      return
+    }
+    for (index, entry) in tableController.history.entries[start...].enumerated() {
       let commit = entry.commit
       var found = false
       
@@ -54,16 +58,14 @@ extension XTHistoryViewController
         case .summary:
           found = commit.message?.lowercased().contains(search) ?? false
         case .author:
-          found = (commit.authorEmail?.lowercased().contains(search) ?? false) ||
-                  (commit.authorName?.lowercased().contains(search) ?? false)
+          found = commit.authorSig?.contains(search) ?? false
         case .committer:
-          found = (commit.committerEmail?.lowercased().contains(search) ?? false) ||
-                  (commit.committerName?.lowercased().contains(search) ?? false)
+          found = commit.committerSig?.contains(search) ?? false
         case .sha:
           found = commit.oid.sha.lowercased().hasPrefix(search.lowercased())
       }
       if found {
-        historyTable.selectRowIndexes(IndexSet(integer: index),
+        historyTable.selectRowIndexes(IndexSet(integer: index + start),
                                       byExtendingSelection: false)
         return
       }
