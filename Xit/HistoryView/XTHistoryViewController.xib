@@ -11,6 +11,7 @@
                 <outlet property="historyTable" destination="No3-Ik-sWu" id="J6H-r5-bX8"/>
                 <outlet property="mainSplitView" destination="13" id="AuV-Jw-5yM"/>
                 <outlet property="scopeBar" destination="cuk-sV-ZkE" id="cvo-wn-9Dh"/>
+                <outlet property="scopeHeightConstraint" destination="ZaV-RH-784" id="VVS-6x-c2q"/>
                 <outlet property="tableController" destination="IYz-w0-bcN" id="CLT-wB-Gyk"/>
                 <outlet property="view" destination="13" id="wOS-VU-dJu"/>
             </connections>
@@ -23,7 +24,7 @@
                 <outlet property="view" destination="No3-Ik-sWu" id="rsr-3x-Jbg"/>
             </connections>
         </customObject>
-        <splitView dividerStyle="paneSplitter" id="13">
+        <splitView wantsLayer="YES" dividerStyle="paneSplitter" id="13">
             <rect key="frame" x="0.0" y="0.0" width="727" height="573"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
@@ -87,25 +88,25 @@
                                 </stackView>
                             </subviews>
                             <constraints>
-                                <constraint firstItem="LwY-Yn-Scv" firstAttribute="centerY" secondItem="cuk-sV-ZkE" secondAttribute="centerY" id="YOP-zR-bsi"/>
+                                <constraint firstAttribute="bottom" secondItem="LwY-Yn-Scv" secondAttribute="bottom" constant="4" id="Nze-4Q-wk4"/>
                                 <constraint firstAttribute="height" constant="30" id="ZaV-RH-784"/>
                                 <constraint firstAttribute="trailing" secondItem="LwY-Yn-Scv" secondAttribute="trailing" constant="10" id="zUP-l2-1s5"/>
                             </constraints>
                         </customView>
                         <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="khd-Qt-OtX">
-                            <rect key="frame" x="0.0" y="0.0" width="727" height="271"/>
+                            <rect key="frame" x="-1" y="0.0" width="728" height="271"/>
                             <clipView key="contentView" id="QCe-lk-wQ6">
-                                <rect key="frame" x="1" y="0.0" width="725" height="270"/>
+                                <rect key="frame" x="1" y="0.0" width="726" height="270"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="dEf-hx-ZjL" viewBased="YES" id="No3-Ik-sWu" customClass="HistoryTableView" customModule="Xit" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="725" height="247"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="726" height="247"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <size key="intercellSpacing" width="3" height="2"/>
                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                         <tableColumns>
-                                            <tableColumn identifier="commit" width="417.5" minWidth="40" maxWidth="5000" id="dd7-jX-0NL">
+                                            <tableColumn identifier="commit" width="418.5" minWidth="40" maxWidth="5000" id="dd7-jX-0NL">
                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Commit">
                                                     <font key="font" metaFont="smallSystem"/>
                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -119,11 +120,11 @@
                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                 <prototypeCellViews>
                                                     <tableCellView identifier="commit" id="oW4-S9-MQ4" customClass="HistoryCellView" customModule="Xit" customModuleProvider="target">
-                                                        <rect key="frame" x="1" y="1" width="418" height="17"/>
+                                                        <rect key="frame" x="1" y="1" width="419" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oMe-ke-Jkz" customClass="ExpansionTextField" customModule="Xit" customModuleProvider="target">
-                                                                <rect key="frame" x="76" y="0.0" width="342" height="17"/>
+                                                                <rect key="frame" x="76" y="0.0" width="343" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="g1y-W2-Nej">
                                                                     <font key="font" metaFont="system"/>
@@ -152,7 +153,7 @@
                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                 <prototypeCellViews>
                                                     <tableCellView identifier="name" id="YBF-IH-NHG">
-                                                        <rect key="frame" x="422" y="1" width="192" height="17"/>
+                                                        <rect key="frame" x="423" y="1" width="192" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LZ4-Sa-GPC">
@@ -185,7 +186,7 @@
                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                 <prototypeCellViews>
                                                     <tableCellView identifier="date" id="VBa-Bu-xYc" customClass="DateCellView" customModule="Xit" customModuleProvider="target">
-                                                        <rect key="frame" x="617" y="1" width="106" height="17"/>
+                                                        <rect key="frame" x="618" y="1" width="106" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QoE-3N-v6T">
@@ -222,14 +223,15 @@
                                 <autoresizingMask key="autoresizingMask"/>
                             </scroller>
                             <tableHeaderView key="headerView" id="dEf-hx-ZjL">
-                                <rect key="frame" x="0.0" y="0.0" width="725" height="23"/>
+                                <rect key="frame" x="0.0" y="0.0" width="726" height="23"/>
                                 <autoresizingMask key="autoresizingMask"/>
                             </tableHeaderView>
                         </scrollView>
                     </subviews>
                     <constraints>
                         <constraint firstItem="cuk-sV-ZkE" firstAttribute="width" secondItem="i6o-yQ-oP3" secondAttribute="width" id="9kA-wG-K3P"/>
-                        <constraint firstItem="khd-Qt-OtX" firstAttribute="width" secondItem="i6o-yQ-oP3" secondAttribute="width" id="JZL-u3-jjp"/>
+                        <constraint firstItem="khd-Qt-OtX" firstAttribute="width" secondItem="i6o-yQ-oP3" secondAttribute="width" constant="1" id="JZL-u3-jjp"/>
+                        <constraint firstItem="khd-Qt-OtX" firstAttribute="leading" secondItem="i6o-yQ-oP3" secondAttribute="leading" constant="-1" id="Jjr-cL-RgW"/>
                     </constraints>
                     <visibilityPriorities>
                         <integer value="1000"/>

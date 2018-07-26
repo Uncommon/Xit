@@ -8,6 +8,12 @@ class XTHistoryViewController: NSViewController
   @IBOutlet weak var mainSplitView: NSSplitView!
   @IBOutlet weak var tableController: HistoryTableController!
   @IBOutlet weak var scopeBar: NSView!
+  @IBOutlet weak var scopeHeightConstraint: NSLayoutConstraint!
+  
+  enum Constants
+  {
+    static let shownScopeHeight: CGFloat = 30
+  }
   
   private(set) var fileViewController: FileViewController!
   
@@ -68,6 +74,8 @@ class XTHistoryViewController: NSViewController
     
     cellSpacing.height = 0
     historyTable.intercellSpacing = cellSpacing
+    
+    scopeHeightConstraint.constant = 0
   }
   
   func finishLoad(repository: XTRepository)
@@ -165,6 +173,7 @@ class XTHistoryViewController: NSViewController
       context.duration = 0.25
       context.allowsImplicitAnimation = true
       scopeBar.isHidden = !visible
+      scopeHeightConstraint.constant = visible ? Constants.shownScopeHeight : 0
       mainSplitView.layoutSubtreeIfNeeded()
     }, completionHandler: nil)
   }
