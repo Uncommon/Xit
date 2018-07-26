@@ -410,6 +410,11 @@ extension XTWindowController: TitleBarDelegate
   func showHideSidebar() { showHideSidebar(self) }
   func showHideHistory() { showHideHistory(self) }
   func showHideDetails() { showHideDetails(self) }
+  
+  func search()
+  {
+    historyController.toggleScopeBar()
+  }
 }
 
 extension NSBindingName

@@ -12,6 +12,8 @@
                 <outlet property="mainSplitView" destination="13" id="AuV-Jw-5yM"/>
                 <outlet property="scopeBar" destination="cuk-sV-ZkE" id="cvo-wn-9Dh"/>
                 <outlet property="scopeHeightConstraint" destination="ZaV-RH-784" id="VVS-6x-c2q"/>
+                <outlet property="searchField" destination="iui-jU-7uS" id="QjE-VK-B2V"/>
+                <outlet property="searchTypePopup" destination="UOV-6f-auP" id="dJm-T4-RxX"/>
                 <outlet property="tableController" destination="IYz-w0-bcN" id="CLT-wB-Gyk"/>
                 <outlet property="view" destination="13" id="wOS-VU-dJu"/>
             </connections>
@@ -52,6 +54,9 @@
                                                     </items>
                                                 </menu>
                                             </popUpButtonCell>
+                                            <connections>
+                                                <action selector="changeSearchType:" target="-2" id="MyJ-2D-N2a"/>
+                                            </connections>
                                         </popUpButton>
                                         <searchField wantsLayer="YES" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iui-jU-7uS">
                                             <rect key="frame" x="93" y="0.0" width="200" height="22"/>
@@ -63,6 +68,10 @@
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </searchFieldCell>
+                                            <connections>
+                                                <action selector="searchAction:" target="-2" id="nvL-6D-LoT"/>
+                                                <outlet property="delegate" destination="-2" id="XPL-qa-QVQ"/>
+                                            </connections>
                                         </searchField>
                                         <button horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="q3A-ms-Avj">
                                             <rect key="frame" x="301" y="2" width="18" height="19"/>

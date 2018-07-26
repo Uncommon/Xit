@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12118"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -28,7 +27,7 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="EAc-F6-hIg">
-                    <rect key="frame" x="1" y="8" width="63" height="25"/>
+                    <rect key="frame" x="1" y="9" width="67" height="23"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="22" id="Cla-3f-tZA"/>
                     </constraints>
@@ -44,7 +43,7 @@
                     </connections>
                 </segmentedControl>
                 <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gzN-mQ-RA8">
-                    <rect key="frame" x="690" y="8" width="100" height="25"/>
+                    <rect key="frame" x="686" y="9" width="104" height="23"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="22" id="uin-v0-wHo"/>
                     </constraints>
@@ -155,7 +154,7 @@
                     </buttonCell>
                 </button>
                 <segmentedControl hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="IIb-W1-mF1">
-                    <rect key="frame" x="537" y="8" width="63" height="25"/>
+                    <rect key="frame" x="537" y="9" width="67" height="23"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="22" id="Li8-d0-CO5"/>
                     </constraints>
@@ -168,7 +167,7 @@
                     </segmentedCell>
                 </segmentedControl>
                 <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="m2X-wZ-tfZ">
-                    <rect key="frame" x="72" y="8" width="96" height="25"/>
+                    <rect key="frame" x="76" y="9" width="96" height="23"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="96" id="6Kc-qj-emE"/>
                         <constraint firstAttribute="height" constant="22" id="nVV-pR-C7Z"/>
@@ -187,8 +186,19 @@
                         <action selector="remoteAction:" target="-2" id="aru-FK-3m6"/>
                     </connections>
                 </segmentedControl>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wtJ-QB-nan">
+                    <rect key="frame" x="649" y="8" width="29" height="25"/>
+                    <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="NSTouchBarSearchTemplate" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="m60-rp-dnd">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="search:" target="-2" id="PMX-VL-6Xs"/>
+                    </connections>
+                </button>
             </subviews>
             <constraints>
+                <constraint firstItem="wtJ-QB-nan" firstAttribute="top" secondItem="gzN-mQ-RA8" secondAttribute="top" id="5js-yx-iXk"/>
                 <constraint firstItem="m2X-wZ-tfZ" firstAttribute="leading" secondItem="EAc-F6-hIg" secondAttribute="trailing" constant="8" symbolic="YES" id="5rI-6h-bqc"/>
                 <constraint firstItem="gzN-mQ-RA8" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="IIb-W1-mF1" secondAttribute="trailing" constant="8" symbolic="YES" id="Ht0-BG-KbQ"/>
                 <constraint firstItem="gzN-mQ-RA8" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="5" id="NAK-dD-Ivi"/>
@@ -199,6 +209,7 @@
                 <constraint firstItem="m2X-wZ-tfZ" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="5" id="fLV-19-nuD"/>
                 <constraint firstItem="DfW-Hf-FKe" firstAttribute="centerX" secondItem="c22-O7-iKe" secondAttribute="centerX" priority="250" id="gXn-Xl-POs"/>
                 <constraint firstItem="IIb-W1-mF1" firstAttribute="leading" secondItem="aNh-jL-whD" secondAttribute="trailing" constant="4" id="jcc-9K-9rI"/>
+                <constraint firstItem="gzN-mQ-RA8" firstAttribute="leading" secondItem="wtJ-QB-nan" secondAttribute="trailing" constant="8" symbolic="YES" id="lFK-Qu-Yxc"/>
                 <constraint firstItem="gzN-mQ-RA8" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="DfW-Hf-FKe" secondAttribute="trailing" constant="8" symbolic="YES" id="rgO-Mw-E0W"/>
                 <constraint firstItem="EAc-F6-hIg" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="5" id="t8e-TP-6Yk"/>
                 <constraint firstAttribute="trailing" secondItem="gzN-mQ-RA8" secondAttribute="trailing" constant="1" id="ykl-5G-K0b"/>
@@ -212,6 +223,7 @@
         <image name="NSFolder" width="32" height="32"/>
         <image name="NSGoLeftTemplate" width="9" height="12"/>
         <image name="NSGoRightTemplate" width="9" height="12"/>
+        <image name="NSTouchBarSearchTemplate" width="19" height="30"/>
         <image name="branchTemplate" width="14" height="16"/>
         <image name="fetchTemplate" width="8" height="8"/>
         <image name="mergeTemplate" width="7" height="8"/>

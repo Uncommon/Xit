@@ -13,6 +13,7 @@ protocol TitleBarDelegate: class
   func showHideSidebar()
   func showHideHistory()
   func showHideDetails()
+  func search()
 }
 
 extension Notification.Name
@@ -170,6 +171,11 @@ class TitleBarViewController: NSViewController
     else { return }
     
     delegate?.branchSelecetd(branch)
+  }
+  
+  @IBAction func search(_ sender: Any)
+  {
+    delegate?.search()
   }
   
   var selectedBranch: String?
