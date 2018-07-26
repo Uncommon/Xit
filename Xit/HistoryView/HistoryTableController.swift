@@ -285,7 +285,7 @@ extension HistoryTableController: NSTableViewDelegate
         historyCell.currentBranch = repository.currentBranch
         historyCell.refs = repository.refs(at: entry.commit.sha)
         historyCell.textField?.stringValue = entry.commit.message ?? ""
-        historyCell.objectValue = entry
+        historyCell.entry = entry
       case ColumnID.date:
         (result as! DateCellView).date = entry.commit.commitDate
       case ColumnID.name:

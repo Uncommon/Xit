@@ -9,7 +9,7 @@ struct HistoryLine
 public class CommitEntry: CustomStringConvertible
 {
   let commit: Commit
-  var lines = [HistoryLine]()
+  fileprivate(set) var lines = [HistoryLine]()
   var dotOffset: UInt?
   var dotColorIndex: UInt?
   

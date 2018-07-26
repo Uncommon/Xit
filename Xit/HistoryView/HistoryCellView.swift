@@ -3,13 +3,12 @@ import Cocoa
 /// Cell view that draws the graph lines next to the text.
 class HistoryCellView: NSTableCellView
 {
-  typealias GitCommitEntry = CommitEntry
-  
+  var entry: CommitEntry!
   var currentBranch: String?
   var refs = [String]()
   
   /// Margin of space to leave for the lines in this cell.
-  fileprivate var linesMargin: CGFloat = 0.0
+  private var linesMargin: CGFloat = 0.0
   
   static let lineColors = [
       NSColor.systemBlue, NSColor.systemGreen, NSColor.systemRed,
@@ -42,9 +41,6 @@ class HistoryCellView: NSTableCellView
   /// Moves the text field out of the way of the lines and refs.
   func adjustLayout()
   {
-    guard let entry = objectValue as? GitCommitEntry
-    else { return }
-    
     let totalColumns = entry.lines.reduce(0) { (oldMax, line) -> UInt in
       max(oldMax, line.parentIndex ?? 0, line.childIndex ?? 0)
     }
@@ -122,7 +118,7 @@ class HistoryCellView: NSTableCellView
   
   func path(for line: HistoryLine) -> NSBezierPath?
   {
-    guard let dotOffset = (objectValue as? GitCommitEntry)?.dotOffset
+    guard let dotOffset = entry.dotOffset
     else { return nil }
     let path = NSBezierPath()
     
@@ -165,8 +161,7 @@ class HistoryCellView: NSTableCellView
   
   func drawLines()
   {
-    guard let entry = objectValue as? GitCommitEntry,
-          let dotOffset = entry.dotOffset,
+    guard let dotOffset = entry.dotOffset,
           let dotColorIndex = entry.dotColorIndex
     else { return }
     
