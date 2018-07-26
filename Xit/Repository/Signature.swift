@@ -70,6 +70,15 @@ extension Signature
   { return ptr == nil ? nil : String(utf8String: ptr) }
 }
 
+extension Signature
+{
+  func contains(_ string: String) -> Bool
+  {
+    return (name?.lowercased().contains(string) ?? false) ||
+           (email?.lowercased().contains(string) ?? false)
+  }
+}
+
 extension Date
 {
   init(gitTime: git_time)

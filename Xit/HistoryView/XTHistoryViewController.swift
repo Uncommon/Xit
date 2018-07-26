@@ -7,6 +7,11 @@ class XTHistoryViewController: NSViewController
   @IBOutlet weak var historyTable: NSTableView!
   @IBOutlet weak var mainSplitView: NSSplitView!
   @IBOutlet weak var tableController: HistoryTableController!
+  @IBOutlet weak var scopeBar: NSView!
+  @IBOutlet weak var scopeHeightConstraint: NSLayoutConstraint!
+  @IBOutlet weak var searchTypePopup: NSPopUpButton!
+  @IBOutlet weak var searchField: NSSearchField!
+  @IBOutlet weak var searchButtons: NSSegmentedControl!
   
   private(set) var fileViewController: FileViewController!
   
@@ -67,6 +72,8 @@ class XTHistoryViewController: NSViewController
     
     cellSpacing.height = 0
     historyTable.intercellSpacing = cellSpacing
+    
+    setUpScopeBar()
   }
   
   func finishLoad(repository: XTRepository)
@@ -145,6 +152,21 @@ class XTHistoryViewController: NSViewController
       }
       mainSplitView.subviews[1].isHidden = true
     }
+  }
+  
+  @IBAction func performFindPanelAction(_ sender: Any)
+  {
+    setScopeBarVisble(true)
+  }
+  
+  @IBAction func closeScopeBar(_ sender: Any)
+  {
+    setScopeBarVisble(false)
+  }
+  
+  @IBAction func changeSearchType(_ sender: Any)
+  {
+    
   }
 }
 
