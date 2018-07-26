@@ -38,13 +38,13 @@
                             <rect key="frame" x="0.0" y="271" width="727" height="30"/>
                             <subviews>
                                 <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LwY-Yn-Scv">
-                                    <rect key="frame" x="398" y="4" width="319" height="22"/>
+                                    <rect key="frame" x="339" y="4" width="378" height="22"/>
                                     <subviews>
                                         <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UOV-6f-auP">
-                                            <rect key="frame" x="0.0" y="1" width="85" height="19"/>
-                                            <popUpButtonCell key="cell" type="roundRect" title="Summary" bezelStyle="roundedRect" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" selectedItem="iGM-1D-9YK" id="Bhq-MT-ZcD">
+                                            <rect key="frame" x="0.0" y="-2" width="89" height="25"/>
+                                            <popUpButtonCell key="cell" type="roundTextured" title="Summary" bezelStyle="texturedRounded" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" selectedItem="iGM-1D-9YK" id="Bhq-MT-ZcD">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="cellTitle"/>
+                                                <font key="font" metaFont="system"/>
                                                 <menu key="menu" id="cYJ-l8-kt4">
                                                     <items>
                                                         <menuItem title="Summary" state="on" id="iGM-1D-9YK"/>
@@ -59,7 +59,7 @@
                                             </connections>
                                         </popUpButton>
                                         <searchField wantsLayer="YES" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iui-jU-7uS">
-                                            <rect key="frame" x="93" y="0.0" width="200" height="22"/>
+                                            <rect key="frame" x="97" y="0.0" width="200" height="22"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="200" id="BBZ-po-Nlu"/>
                                             </constraints>
@@ -73,8 +73,21 @@
                                                 <outlet property="delegate" destination="-2" id="XPL-qa-QVQ"/>
                                             </connections>
                                         </searchField>
+                                        <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YtL-T2-zWj">
+                                            <rect key="frame" x="305" y="-1" width="47" height="23"/>
+                                            <segmentedCell key="cell" borderStyle="border" alignment="left" style="capsule" trackingMode="momentary" id="ZSk-d5-hUC">
+                                                <font key="font" metaFont="system"/>
+                                                <segments>
+                                                    <segment image="NSGoBackTemplate" width="20"/>
+                                                    <segment image="NSGoForwardTemplate" width="20" tag="1"/>
+                                                </segments>
+                                            </segmentedCell>
+                                            <connections>
+                                                <action selector="searchSegment:" target="-2" id="ILX-3y-Zbv"/>
+                                            </connections>
+                                        </segmentedControl>
                                         <button horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="q3A-ms-Avj">
-                                            <rect key="frame" x="301" y="2" width="18" height="19"/>
+                                            <rect key="frame" x="360" y="2" width="18" height="19"/>
                                             <buttonCell key="cell" type="roundRect" bezelStyle="roundedRect" image="NSStopProgressFreestandingTemplate" imagePosition="only" alignment="center" state="on" imageScaling="proportionallyDown" inset="2" id="a7i-mR-Hgf">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="cellTitle"/>
@@ -88,8 +101,10 @@
                                         <integer value="1000"/>
                                         <integer value="1000"/>
                                         <integer value="1000"/>
+                                        <integer value="1000"/>
                                     </visibilityPriorities>
                                     <customSpacing>
+                                        <real value="3.4028234663852886e+38"/>
                                         <real value="3.4028234663852886e+38"/>
                                         <real value="3.4028234663852886e+38"/>
                                         <real value="3.4028234663852886e+38"/>
@@ -264,6 +279,8 @@
         </splitView>
     </objects>
     <resources>
+        <image name="NSGoBackTemplate" width="9" height="12"/>
+        <image name="NSGoForwardTemplate" width="9" height="12"/>
         <image name="NSStopProgressFreestandingTemplate" width="11" height="11"/>
     </resources>
 </document>

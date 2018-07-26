@@ -23,11 +23,13 @@ extension XTHistoryViewController
   @IBAction
   func searchAction(_ sender: Any)
   {
-    guard let category =
-      SearchCategory(rawValue: searchTypePopup.indexOfSelectedItem)
-      else { return }
-    
-    performSearch(text: searchField.stringValue, type: category)
+    search(reversed: false)
+  }
+  
+  @IBAction
+  func searchSegment(_ sender: NSSegmentedControl)
+  {
+    search(reversed: sender.selectedSegment == 0)
   }
   
   func setScopeBarVisble(_ visible: Bool)
@@ -42,34 +44,66 @@ extension XTHistoryViewController
     }, completionHandler: nil)
   }
 
-  func performSearch(text: String, type: SearchCategory)
+  func search(reversed: Bool)
+  {
+    guard let category =
+        SearchCategory(rawValue: searchTypePopup.indexOfSelectedItem)
+    else { return }
+    
+    performSearch(text: searchField.stringValue, type: category,
+                  reversed: reversed)
+  }
+  
+  func performSearch(text: String, type: SearchCategory, reversed: Bool = false)
   {
     let search = text.lowercased()
-    let start = historyTable.selectedRow + 1
+    let entries = tableController.history.entries
     
-    if start >= historyTable.numberOfRows {
-      return
-    }
-    for (index, entry) in tableController.history.entries[start...].enumerated() {
-      let commit = entry.commit
-      var found = false
+    // I tried doing this with for loops and ranges, but the compiler refused.
+    if reversed {
+      var index = historyTable.selectedRow - 1
       
-      switch type {
-        case .summary:
-          found = commit.message?.lowercased().contains(search) ?? false
-        case .author:
-          found = commit.authorSig?.contains(search) ?? false
-        case .committer:
-          found = commit.committerSig?.contains(search) ?? false
-        case .sha:
-          found = commit.oid.sha.lowercased().hasPrefix(search.lowercased())
-      }
-      if found {
-        historyTable.selectRowIndexes(IndexSet(integer: index + start),
-                                      byExtendingSelection: false)
-        return
+      while index >= 0 {
+        if match(entry: entries[index], index: index, text: search, type: type) {
+          break
+        }
+        index -= 1
       }
     }
+    else {
+      var index = historyTable.selectedRow + 1
+      
+      while index < historyTable.numberOfRows {
+        if match(entry: entries[index], index: index, text: search, type: type) {
+          break
+        }
+        index += 1
+      }
+    }
+  }
+  
+  func match(entry: CommitEntry, index: Int, text: String, type: SearchCategory)
+    -> Bool
+  {
+    let commit = entry.commit
+    var found = false
+  
+    switch type {
+      case .summary:
+        found = commit.message?.lowercased().contains(text) ?? false
+      case .author:
+        found = commit.authorSig?.contains(text) ?? false
+      case .committer:
+        found = commit.committerSig?.contains(text) ?? false
+      case .sha:
+        found = commit.oid.sha.lowercased().hasPrefix(text)
+    }
+    if found {
+      historyTable.selectRowIndexes(IndexSet(integer: index),
+                                    byExtendingSelection: false)
+      historyTable.scrollRowToVisible(index)
+    }
+    return found
   }
 }
 
@@ -77,7 +111,7 @@ extension XTHistoryViewController: NSSearchFieldDelegate
 {
   func searchFieldDidStartSearching(_ sender: NSSearchField)
   {
-    searchAction(sender)
+    search(reversed: false)
   }
   
   func searchFieldDidEndSearching(_ sender: NSSearchField)
