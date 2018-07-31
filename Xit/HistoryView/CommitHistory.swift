@@ -366,6 +366,7 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
             ($0.parentOID.equals(entry.commit.oid)) ? nil : $0.parentOID })
     var parentLines: [ID: (childIndex: UInt,
                            colorIndex: UInt)] = [:]
+    var generatedLines: [HistoryLine] = []
     
     for connection in connections {
       let commitIsParent = connection.parentOID.equals(entry.commit.oid)
@@ -399,11 +400,12 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
           nextChildIndex += 1
         }
       }
-      objc_sync_enter(self)
-      entry.lines.append(HistoryLine(childIndex: childIndex,
-                                     parentIndex: parentIndex,
-                                     colorIndex: colorIndex))
-      objc_sync_exit(self)
+      generatedLines.append(HistoryLine(childIndex: childIndex,
+                                        parentIndex: parentIndex,
+                                        colorIndex: colorIndex))
     }
+    objc_sync_enter(self)
+    entry.lines.append(contentsOf: generatedLines)
+    objc_sync_exit(self)
   }
 }
