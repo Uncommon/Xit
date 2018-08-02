@@ -4,7 +4,7 @@ import Cocoa
 enum AccountType: Int
 {
   case gitHub = 0
-  case bitBucket = 1
+  case bitbucket = 1
   case teamCity = 2
   
   init?(name: String?)
@@ -16,7 +16,7 @@ enum AccountType: Int
       case "github":
         self = .gitHub
       case "bitbucket":
-        self = .bitBucket
+        self = .bitbucket
       case "teamcity":
         self = .teamCity
       default:
@@ -28,7 +28,7 @@ enum AccountType: Int
   {
     switch self {
       case .gitHub: return "github"
-      case .bitBucket: return "bitbucket"
+      case .bitbucket: return "bitbucket"
       case .teamCity: return "teamcity"
     }
   }
@@ -37,7 +37,7 @@ enum AccountType: Int
   {
     switch self {
       case .gitHub: return "GitHub"
-      case .bitBucket: return "BitBucket"
+      case .bitbucket: return "BitBucket"
       case .teamCity: return "TeamCity"
     }
   }
@@ -46,7 +46,7 @@ enum AccountType: Int
   {
     switch self {
       case .gitHub: return "https://api.github.com"
-      case .bitBucket: return "https://api.bitbucket.org"
+      case .bitbucket: return "https://api.bitbucket.org"
       case .teamCity: return ""
     }
   }
@@ -55,7 +55,7 @@ enum AccountType: Int
   {
     switch self {
       case .gitHub: return .xtGitHubTemplate
-      case .bitBucket: return .xtBitBucketTemplate
+      case .bitbucket: return .xtBitBucketTemplate
       case .teamCity: return .xtTeamCityTemplate
     }
   }

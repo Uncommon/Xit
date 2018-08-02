@@ -201,7 +201,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
     return resource("vcs-roots/id:\(id)")
   }
   
-  override func didAuthenticate()
+  override func didAuthenticate(responseResource: Resource)
   {
     // Get VCS roots, build repo URL -> vcs-root id map.
     vcsRoots.useData(owner: self) {

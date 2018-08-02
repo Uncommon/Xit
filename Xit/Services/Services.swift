@@ -37,6 +37,7 @@ class Services
   static let shared = Services()
   
   private var teamCityServices: [String: TeamCityAPI] = [:]
+  private var bitbucketServices: [String: BitbucketAPI] = [:]
   
   /// Creates an API object for each account so they can start with
   /// authorization and other state info.
@@ -47,6 +48,9 @@ class Services
     
     for account in AccountsManager.manager.accounts(ofType: .teamCity) {
       _ = teamCityAPI(account)
+    }
+    for account in AccountsManager.manager.accounts(ofType: .bitbucket) {
+      _ = bitbucketAPI(account)
     }
   }
   
@@ -84,6 +88,32 @@ class Services
       
       api.attemptAuthentication()
       teamCityServices[key] = api
+      return api
+    }
+  }
+  
+  func bitbucketAPI(_ account: Account) -> BitbucketAPI?
+  {
+    let key = Services.accountKey(account)
+    
+    if let api = bitbucketServices[key] {
+      return api
+    }
+    else {
+      guard let password = XTKeychain.findPassword(url: account.location,
+                                                   account: account.user)
+      else {
+        NSLog("No password found for \(key)")
+        return nil
+      }
+      
+      guard let api = BitbucketAPI(user: account.user,
+                                   password: password,
+                                   baseURL: account.location.absoluteString)
+      else { return nil }
+      
+      api.attemptAuthentication()
+      bitbucketServices[key] = api
       return api
     }
   }
@@ -195,7 +225,7 @@ class BasicAuthService: Siesta.Service
 
         case .newData, .notModified:
           self.authenticationStatus = .done
-          self.didAuthenticate()
+          self.didAuthenticate(responseResource: resource)
 
         case .error:
           guard let error = resource.latestError
@@ -219,7 +249,7 @@ class BasicAuthService: Siesta.Service
   }
   
   // For subclasses to override when more data needs to be downloaded.
-  func didAuthenticate()
+  func didAuthenticate(responseResource: Resource)
   {
   }
 }
