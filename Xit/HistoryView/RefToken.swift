@@ -19,20 +19,19 @@ struct RefToken
     path.addClip()
     transform.translateX(by: 0, yBy: -1)
     transform.concat()
-    NSColor.refShine.set()
+    NSColor.refTokenStroke(.shine).set()
     path.stroke()
     NSGraphicsContext.restoreGraphicsState()
     
-    let fgColor: NSColor = (type == .activeBranch) ? .refActiveText
-                                                   : .refText
+    let active = type == .activeBranch
+    let fgColor: NSColor = .refTokenText(active ? .active : .normal)
     let shadow = NSShadow()
     let paragraphStyle = NSParagraphStyle.default.mutableCopy()
                          as! NSMutableParagraphStyle
     
     shadow.shadowBlurRadius = 1.0
     shadow.shadowOffset = NSSize(width: 0, height: -1)
-    shadow.shadowColor = (type == .activeBranch) ? .refActiveTextEmboss
-                                                 : .refTextEmboss
+    shadow.shadowColor = .refTokenText(active ? .activeEmboss : .normalEmboss)
     paragraphStyle.alignment = .center
     
     let attributes: [AttrKey: Any] = [
@@ -108,51 +107,4 @@ struct RefToken
 extension NSFont
 {
   static var refLabelFont: NSFont { return labelFont(ofSize: 11) }
-}
-
-extension NSColor
-{
-  // Strokes
-  static var branchStroke: NSColor
-  { return NSColor(named: ◊"branchStroke")! }
-  static var remoteBranchStroke: NSColor
-  { return NSColor(named: ◊"remoteBranchStroke")! }
-  static var tagStroke: NSColor
-  { return NSColor(named: ◊"tagStroke")! }
-  static var refStroke: NSColor
-  { return NSColor(named: ◊"refStroke")! }
-  static var refShine: NSColor
-  { return NSColor(named: ◊"refShine")! }
-  
-  // Text
-  static var refActiveText: NSColor
-  { return NSColor(named: ◊"refActiveText")! }
-  static var refActiveTextEmboss: NSColor
-  { return NSColor(named: ◊"refActiveTextEmboss")! }
-  static var refText: NSColor
-  { return NSColor(named: ◊"refText")! }
-  static var refTextEmboss: NSColor
-  { return NSColor(named: ◊"refTextEmboss")! }
-  
-  // Gradients
-  static var branchGradientStart: NSColor
-  { return NSColor(named: ◊"branchGradientStart")! }
-  static var branchGradientEnd: NSColor
-  { return NSColor(named: ◊"branchGradientEnd")! }
-  static var activeBranchGradientStart: NSColor
-  { return NSColor(named: ◊"activeBranchGradientStart")! }
-  static var activeBranchGradientEnd: NSColor
-  { return NSColor(named: ◊"activeBranchGradientEnd")! }
-  static var remoteGradientStart: NSColor
-  { return NSColor(named: ◊"remoteGradientStart")! }
-  static var remoteGradientEnd: NSColor
-  { return NSColor(named: ◊"remoteGradientEnd")! }
-  static var tagGradientStart: NSColor
-  { return NSColor(named: ◊"tagGradientStart")! }
-  static var tagGradientEnd: NSColor
-  { return NSColor(named: ◊"tagGradientEnd")! }
-  static var refGradientStart: NSColor
-  { return NSColor(named: ◊"refGradientStart")! }
-  static var refGradientEnd: NSColor
-  { return NSColor(named: ◊"refGradientEnd")! }
 }

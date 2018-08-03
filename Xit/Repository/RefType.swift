@@ -23,37 +23,33 @@ enum RefType
   {
     switch self {
       case .branch, .activeBranch:
-        return .branchStroke
+        return .refTokenStroke(.branch)
       case .remoteBranch:
-        return .remoteBranchStroke
+        return .refTokenStroke(.remoteBranch)
       case .tag:
-        return .tagStroke
+        return .refTokenStroke(.tag)
       default:
-        return .refStroke
+        return .refTokenStroke(.generic)
     }
   }
   
   var gradient: NSGradient
   {
-    var start, end: NSColor
+    let type: NSColor.RefGradient
     
     switch self {
       case .branch:
-        start = .branchGradientStart
-        end = .branchGradientEnd
+        type = .branch
       case .activeBranch:
-        start = .activeBranchGradientStart
-        end = .activeBranchGradientEnd
+        type = .activeBranch
       case .remoteBranch:
-        start = .remoteGradientStart
-        end = .remoteGradientEnd
+        type = .remote
       case .tag:
-        start = .tagGradientStart
-        end = .tagGradientEnd
+        type = .tag
       default:
-        start = .refGradientStart
-        end = .refGradientEnd
+        type = .general
     }
-    return NSGradient(starting: start, ending: end) ?? NSGradient()
+    return NSGradient(starting: NSColor.refGradientStart(type),
+                      ending: NSColor.refGradientEnd(type)) ?? NSGradient()
   }
 }
