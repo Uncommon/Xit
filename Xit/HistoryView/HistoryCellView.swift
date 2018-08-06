@@ -3,12 +3,9 @@ import Cocoa
 /// Cell view that draws the graph lines next to the text.
 class HistoryCellView: NSTableCellView
 {
-  var entry: CommitEntry!
-  var currentBranch: String?
-  var refs = [String]()
-  
-  /// Margin of space to leave for the lines in this cell.
-  private var linesMargin: CGFloat = 0.0
+  private var entry: CommitEntry!
+  private var currentBranch: String?
+  private var refs = [String]()
   
   static let lineColors = [
       NSColor.systemBlue, NSColor.systemGreen, NSColor.systemRed,
@@ -31,7 +28,53 @@ class HistoryCellView: NSTableCellView
     static let text: CGFloat = 4.0
     static let token: CGFloat = 4.0
   }
+  
+  @IBOutlet weak var stackView: NSStackView!
+  @IBOutlet var stackViewInset: NSLayoutConstraint!
 
+  override var backgroundStyle: NSView.BackgroundStyle
+  {
+    didSet
+    {
+      let color: NSColor
+      
+      switch backgroundStyle {
+        
+        case .normal:
+          color = .textColor
+        case .emphasized:
+          color = .alternateSelectedControlTextColor
+        default:
+          color = .textColor
+      }
+      textField?.textColor = color
+    }
+  }
+  
+  func configure(entry: CommitEntry, repository: Branching & CommitReferencing)
+  {
+    currentBranch = repository.currentBranch
+    refs = repository.refs(at: entry.commit.sha)
+    textField?.stringValue = entry.commit.message ?? "(no message)"
+    self.entry = entry
+    
+    var views = refs.reversed().map {
+      (ref) -> NSView in
+      let view = RefTokenView()
+      
+      if let (_, name) = ref.splitRefName() {
+        view.text = name
+        view.type = RefType(refName: ref, currentBranch: currentBranch ?? "")
+      }
+      return view
+    }
+    
+    views.append(textField!)
+    stackView.setViews(views, in: .leading)
+    stackView.needsLayout = true
+    needsUpdateConstraints = true
+  }
+  
   /// Finds the center of the given column.
   static func columnCenter(_ index: UInt) -> CGFloat
   {
@@ -39,75 +82,26 @@ class HistoryCellView: NSTableCellView
   }
   
   /// Moves the text field out of the way of the lines and refs.
-  func adjustLayout()
+  override func updateConstraints()
   {
     let totalColumns = entry.lines.reduce(0) { (oldMax, line) -> UInt in
       max(oldMax, line.parentIndex ?? 0, line.childIndex ?? 0)
     }
+    let linesMargin = Margins.left + CGFloat(totalColumns + 1) * Widths.column
     
-    linesMargin = Margins.left + CGFloat(totalColumns + 1) * Widths.column
-    
-    let tokenWidth: CGFloat = refs.reduce(0.0) { (width, ref) -> CGFloat in
-      guard let (_, displayRef) = ref.splitRefName()
-      else { return 0 }
-      return RefToken.rectWidth(for: displayRef) + width + Margins.token
-    }
-    
-    if let textField = textField {
-      var newFrame = textField.frame
-      
-      newFrame.origin.x = tokenWidth + linesMargin + Margins.text
-      newFrame.size.width = frame.size.width - newFrame.origin.x - Margins.right
-      textField.frame = newFrame
-    }
+    stackViewInset.constant = linesMargin + Margins.text
+    super.updateConstraints()
   }
   
-  /// Draws the graph lines and refs in the view.
+  /// Draws the graph lines in the view.
   override func draw(_ dirtyRect: NSRect)
   {
     super.draw(dirtyRect)
     
-    adjustLayout()
-    drawRefs()
     drawLines()
   }
   
-  func refType(_ refName: String) -> RefType
-  {
-    guard let (typeName, displayName) = refName.splitRefName()
-    else { return .unknown }
-    
-    switch typeName {
-      case "refs/heads/":
-        return displayName == currentBranch ? .activeBranch : .branch
-      case "refs/remotes/":
-        return .remoteBranch
-      case "refs/tags/":
-        return .tag
-      default:
-        return .unknown
-    }
-  }
-  
-  func drawRefs()
-  {
-    var x: CGFloat = linesMargin + Margins.token
-    
-    for ref in refs {
-      guard let (_, displayRef) = ref.splitRefName()
-      else { continue }
-      
-      let refRect = NSRect(x: x, y: -1,
-                           width: RefToken.rectWidth(for: displayRef),
-                           height: frame.size.height)
-      
-      RefToken.drawToken(refType: refType(ref),
-                         text: displayRef,
-                         rect: refRect)
-      x += refRect.size.width + Margins.token
-    }
-  }
-  
+  /// Calculates an offset for graph line corners to avoid awkward breaks
   func cornerOffset(_ offset1: UInt, _ offset2: UInt) -> CGFloat
   {
     let pathOffset = abs(Int(offset1) - Int(offset2))
@@ -201,5 +195,4 @@ class HistoryCellView: NSTableCellView
       dotPath.fill()
     }
   }
-  
 }

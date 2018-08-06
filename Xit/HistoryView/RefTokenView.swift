@@ -1,6 +1,6 @@
 import Foundation
 
-struct RefToken
+class RefTokenView: NSView
 {
   #if swift(>=4.2)
   typealias AttrKey = NSAttributedString.Key
@@ -8,9 +8,34 @@ struct RefToken
   typealias AttrKey = NSAttributedStringKey
   #endif
   
-  static func drawToken(refType type: RefType, text: String, rect: NSRect)
+  var text: String = ""
+  var type: RefType = .unknown
+  
+  override var intrinsicContentSize: NSSize
   {
-    let path = self.path(for: type, rect: rect)
+    let size = (text as NSString).size(withAttributes:
+          [.font: NSFont.refLabelFont])
+    
+    return NSSize(width: size.width + 12, height: 17)
+  }
+  
+  override func contentHuggingPriority(
+      for orientation: NSLayoutConstraint.Orientation)
+    -> NSLayoutConstraint.Priority
+  {
+    return .required
+  }
+  
+  override func contentCompressionResistancePriority(
+      for orientation: NSLayoutConstraint.Orientation)
+    -> NSLayoutConstraint.Priority
+  {
+    return .required
+  }
+  
+  override func draw(_ dirtyRect: NSRect)
+  {
+    let path = self.makePath()
     let gradient = type.gradient
     let transform = NSAffineTransform()
     
@@ -33,6 +58,7 @@ struct RefToken
     shadow.shadowOffset = NSSize(width: 0, height: -1)
     shadow.shadowColor = .refTokenText(active ? .activeEmboss : .normalEmboss)
     paragraphStyle.alignment = .center
+    paragraphStyle.lineBreakMode = .byTruncatingMiddle
     
     let attributes: [AttrKey: Any] = [
           .font: NSFont.refLabelFont,
@@ -50,24 +76,16 @@ struct RefToken
                             range: pathRange)
       attrText.removeAttribute(.shadow, range: pathRange)
     }
-    attrText.draw(in: rect)
+    attrText.draw(in: bounds)
     
     type.strokeColor.set()
     path.stroke()
   }
   
-  static func rectWidth(for text: String) -> CGFloat
-  {
-    let size = (text as NSString).size(withAttributes:
-          [.font: NSFont.refLabelFont])
-    
-    return size.width + 12
-  }
-  
-  private static func path(for type: RefType, rect: NSRect) -> NSBezierPath
+  private func makePath() -> NSBezierPath
   {
     // Inset because the stroke will be centered on the path border
-    var rect = rect.insetBy(dx: 0.5, dy: 1.5)
+    var rect = bounds.insetBy(dx: 0.5, dy: 1.5)
     
     rect.origin.y += 1
     rect.size.height -= 1

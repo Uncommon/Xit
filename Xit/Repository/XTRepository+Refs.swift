@@ -45,7 +45,7 @@ extension XTRepository: CommitReferencing
   }
   
   /// Returns a list of refs that point to the given commit.
-  func refs(at sha: String) -> [String]
+  public func refs(at sha: String) -> [String]
   {
     return refsIndex[sha] ?? []
   }

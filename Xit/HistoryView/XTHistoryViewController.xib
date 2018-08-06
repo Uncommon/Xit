@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.3.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.3.2"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
-        <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="XTHistoryViewController" customModule="Xit" customModuleProvider="target">
@@ -146,17 +146,34 @@
                                                         <rect key="frame" x="1" y="1" width="419" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
-                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oMe-ke-Jkz" customClass="ExpansionTextField" customModule="Xit" customModuleProvider="target">
-                                                                <rect key="frame" x="76" y="0.0" width="343" height="17"/>
-                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                                                <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="g1y-W2-Nej">
-                                                                    <font key="font" metaFont="system"/>
-                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                </textFieldCell>
-                                                            </textField>
+                                                            <stackView distribution="fill" orientation="horizontal" alignment="top" spacing="4" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zOj-e6-4hz">
+                                                                <rect key="frame" x="100" y="0.0" width="92" height="17"/>
+                                                                <subviews>
+                                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oMe-ke-Jkz" customClass="ExpansionTextField" customModule="Xit" customModuleProvider="target">
+                                                                        <rect key="frame" x="-2" y="0.0" width="96" height="17"/>
+                                                                        <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="g1y-W2-Nej">
+                                                                            <font key="font" metaFont="system"/>
+                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                        </textFieldCell>
+                                                                    </textField>
+                                                                </subviews>
+                                                                <visibilityPriorities>
+                                                                    <integer value="1000"/>
+                                                                </visibilityPriorities>
+                                                                <customSpacing>
+                                                                    <real value="3.4028234663852886e+38"/>
+                                                                </customSpacing>
+                                                            </stackView>
                                                         </subviews>
+                                                        <constraints>
+                                                            <constraint firstItem="zOj-e6-4hz" firstAttribute="leading" secondItem="oW4-S9-MQ4" secondAttribute="leading" constant="100" id="NnL-cF-RDz"/>
+                                                            <constraint firstItem="zOj-e6-4hz" firstAttribute="top" secondItem="oW4-S9-MQ4" secondAttribute="top" id="fh9-Uw-DG8"/>
+                                                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="zOj-e6-4hz" secondAttribute="trailing" id="mzx-wT-HDg"/>
+                                                        </constraints>
                                                         <connections>
+                                                            <outlet property="stackView" destination="zOj-e6-4hz" id="IA2-5X-RSe"/>
+                                                            <outlet property="stackViewInset" destination="NnL-cF-RDz" id="jid-Nu-L7b"/>
                                                             <outlet property="textField" destination="oMe-ke-Jkz" id="jcc-S4-Owp"/>
                                                         </connections>
                                                     </tableCellView>

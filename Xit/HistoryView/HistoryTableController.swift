@@ -279,15 +279,15 @@ extension HistoryTableController: NSTableViewDelegate
     let entry = history.entries[row]
     
     switch tableColumn.identifier {
+      
       case ColumnID.commit:
         let historyCell = result as! HistoryCellView
         
-        historyCell.currentBranch = repository.currentBranch
-        historyCell.refs = repository.refs(at: entry.commit.sha)
-        historyCell.textField?.stringValue = entry.commit.message ?? ""
-        historyCell.entry = entry
+        historyCell.configure(entry: entry, repository: repository)
+
       case ColumnID.date:
         (result as! DateCellView).date = entry.commit.commitDate
+      
       case ColumnID.name:
         var text: String
         
@@ -303,6 +303,7 @@ extension HistoryTableController: NSTableViewDelegate
           text = entry.commit.authorEmail ?? "—"
         }
         result.textField?.stringValue = text
+      
       default:
         return nil
     }

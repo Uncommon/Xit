@@ -30,6 +30,7 @@ public protocol CommitReferencing: class
   func remoteBranch(named name: String, remote: String) -> RemoteBranch?
   
   func reference(named name: String) -> Reference?
+  func refs(at sha: String) -> [String]
 }
 
 extension CommitReferencing

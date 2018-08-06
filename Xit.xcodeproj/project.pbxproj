@@ -16,7 +16,7 @@
 		897056ED20E412AC0020F5E9 /* ClickThroughImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897056EC20E412AC0020F5E9 /* ClickThroughImageView.swift */; };
 		89880ECF20CF2B99007042F8 /* FlippedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89880ECE20CF2B99007042F8 /* FlippedView.swift */; };
 		89880ED120D02F9B007042F8 /* ClickableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89880ED020D02F9B007042F8 /* ClickableTextField.swift */; };
-		89880EDB20D08674007042F8 /* RefToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89880EDA20D08674007042F8 /* RefToken.swift */; };
+		89880EDB20D08674007042F8 /* RefTokenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89880EDA20D08674007042F8 /* RefTokenView.swift */; };
 		89880EED20D17D1E007042F8 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89880EEC20D17D1E007042F8 /* Media.xcassets */; };
 		899DB1921CE109C700760270 /* WorkspaceTreeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB18D1CE0EA3A00760270 /* WorkspaceTreeBuilder.swift */; };
 		899DB1A21CE5022400760270 /* XTCommitEntryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB1A01CE5022400760270 /* XTCommitEntryController.swift */; };
@@ -359,7 +359,7 @@
 		897056EC20E412AC0020F5E9 /* ClickThroughImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickThroughImageView.swift; sourceTree = "<group>"; };
 		89880ECE20CF2B99007042F8 /* FlippedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlippedView.swift; sourceTree = "<group>"; };
 		89880ED020D02F9B007042F8 /* ClickableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickableTextField.swift; sourceTree = "<group>"; };
-		89880EDA20D08674007042F8 /* RefToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefToken.swift; sourceTree = "<group>"; };
+		89880EDA20D08674007042F8 /* RefTokenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefTokenView.swift; sourceTree = "<group>"; };
 		89880EEC20D17D1E007042F8 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		899DB18D1CE0EA3A00760270 /* WorkspaceTreeBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceTreeBuilder.swift; sourceTree = "<group>"; };
 		899DB1A01CE5022400760270 /* XTCommitEntryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTCommitEntryController.swift; sourceTree = "<group>"; };
@@ -638,7 +638,7 @@
 				C96F65451D53A6CE001B2557 /* HistoryCellView.swift */,
 				C9999AC61E08712000DF3E11 /* HistoryTableView.swift */,
 				C935BD7D1E8BFA4F00BE51F0 /* DateCellView.swift */,
-				89880EDA20D08674007042F8 /* RefToken.swift */,
+				89880EDA20D08674007042F8 /* RefTokenView.swift */,
 			);
 			path = HistoryView;
 			sourceTree = "<group>";
@@ -1381,7 +1381,7 @@
 				89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */,
 				C9E9A37D1D0B5706007BFABF /* XTWindowController.swift in Sources */,
 				C923D66C1D906FAA00C6B90B /* TitleBarViewController.swift in Sources */,
-				89880EDB20D08674007042F8 /* RefToken.swift in Sources */,
+				89880EDB20D08674007042F8 /* RefTokenView.swift in Sources */,
 				C90FD5961D217D5B00A30570 /* FetchPanelController.swift in Sources */,
 				C9999AC71E08712000DF3E11 /* HistoryTableView.swift in Sources */,
 				C951EAE11DD11BDD00B99FBE /* SidebarTableCellView.swift in Sources */,
