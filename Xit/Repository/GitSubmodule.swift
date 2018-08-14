@@ -12,6 +12,40 @@ public protocol Submodule
   var recurse: SubmoduleRecurse { get set }
 }
 
+struct SubmoduleStatus: OptionSet
+{
+  let rawValue: git_submodule_status_t.RawValue
+  
+  init(_ status: git_submodule_status_t)
+  {
+    self.rawValue = status.rawValue
+  }
+  
+  init(rawValue: UInt32)
+  {
+    self.rawValue = rawValue
+  }
+  
+  static let inHead = SubmoduleStatus(GIT_SUBMODULE_STATUS_IN_HEAD)
+  static let inIndex = SubmoduleStatus(GIT_SUBMODULE_STATUS_IN_INDEX)
+  static let inConfig = SubmoduleStatus(GIT_SUBMODULE_STATUS_IN_CONFIG)
+  static let inWorkDir = SubmoduleStatus(GIT_SUBMODULE_STATUS_IN_WD)
+
+  static let indexAdded = SubmoduleStatus(GIT_SUBMODULE_STATUS_INDEX_ADDED)
+  static let indexDeleted = SubmoduleStatus(GIT_SUBMODULE_STATUS_INDEX_DELETED)
+  static let indexModified = SubmoduleStatus(GIT_SUBMODULE_STATUS_INDEX_MODIFIED)
+
+  static let wdUninitialized =
+      SubmoduleStatus(GIT_SUBMODULE_STATUS_WD_UNINITIALIZED)
+  static let wdAdded = SubmoduleStatus(GIT_SUBMODULE_STATUS_WD_ADDED)
+  static let wdDeleted = SubmoduleStatus(GIT_SUBMODULE_STATUS_WD_DELETED)
+  static let wdModified = SubmoduleStatus(GIT_SUBMODULE_STATUS_WD_MODIFIED)
+  static let wdIndexModified =
+      SubmoduleStatus(GIT_SUBMODULE_STATUS_WD_INDEX_MODIFIED)
+  static let wdWDModified = SubmoduleStatus(GIT_SUBMODULE_STATUS_WD_WD_MODIFIED)
+  static let wdUntracked = SubmoduleStatus(GIT_SUBMODULE_STATUS_WD_UNTRACKED)
+}
+
 extension SubmoduleIgnore
 {
   init(ignore: git_submodule_ignore_t)

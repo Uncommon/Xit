@@ -190,21 +190,3 @@ typedef NS_ENUM(unsigned int, SubmoduleUpdate)
   SubmoduleUpdateNone = GIT_SUBMODULE_UPDATE_NONE,
   SubmoduleUpdateDefault = GIT_SUBMODULE_UPDATE_DEFAULT,
 };
-
-typedef NS_OPTIONS(int, SubmoduleStatus)
-{
-  SubmoduleStatusInHead = GIT_SUBMODULE_STATUS_IN_HEAD,
-  SubmoduleStatusInIndex = GIT_SUBMODULE_STATUS_IN_INDEX,
-  SubmoduleStatusInConfig = GIT_SUBMODULE_STATUS_IN_CONFIG,
-  SubmoduleStatusInWorkDir = GIT_SUBMODULE_STATUS_IN_WD,
-  SubmoduleStatusIndexAdded = GIT_SUBMODULE_STATUS_INDEX_ADDED,
-  SubmoduleStatusIndexDeleted = GIT_SUBMODULE_STATUS_INDEX_DELETED,
-  SubmoduleStatusIndexModified = GIT_SUBMODULE_STATUS_INDEX_MODIFIED,
-  SubmoduleStatusWorkDirUninitialized = GIT_SUBMODULE_STATUS_WD_UNINITIALIZED,
-  SubmoduleStatusWorkDirAdded = GIT_SUBMODULE_STATUS_WD_ADDED,
-  SubmoduleStatusWorkDirDeleted = GIT_SUBMODULE_STATUS_WD_DELETED,
-  SubmoduleStatusWorkDirModified = GIT_SUBMODULE_STATUS_WD_MODIFIED,
-  SubmoduleStatusWorkDirIndexModified = GIT_SUBMODULE_STATUS_WD_INDEX_MODIFIED,
-  SubmoduleStatusWorkDirWdModified = GIT_SUBMODULE_STATUS_WD_WD_MODIFIED,
-  SubmoduleStatusWorkDirUntracked = GIT_SUBMODULE_STATUS_WD_UNTRACKED,
-};
