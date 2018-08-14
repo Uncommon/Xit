@@ -95,6 +95,12 @@ extension SidebarHandler
            #selector(SidebarController.dropStash(_:)):
         return !repo.isWriting && item is StashSidebarItem
       
+      case #selector(SidebarController.showSubmodule(_:)):
+        return item is SubmoduleSidebarItem
+      
+      case #selector(SidebarController.updateSubmodule(_:)):
+        return !repo.isWriting && item is SubmoduleSidebarItem
+      
       default:
         return false
     }
@@ -168,6 +174,7 @@ class SidebarController: NSViewController, SidebarHandler
   @IBOutlet var remoteContextMenu: NSMenu!
   @IBOutlet var tagContextMenu: NSMenu!
   @IBOutlet var stashContextMenu: NSMenu!
+  @IBOutlet var submoduleContextMenu: NSMenu!
   
   weak var repo: XTRepository!
   {

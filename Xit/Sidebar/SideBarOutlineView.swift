@@ -16,6 +16,8 @@ class SideBarOutlineView: ContextMenuOutlineView
         menu = controller.tagContextMenu
       case is StashSidebarItem:
         menu = controller.stashContextMenu
+      case is SubmoduleSidebarItem:
+        menu = controller.submoduleContextMenu
       default:
         guard let groupItem = parent(forItem: item) as? SidebarItem
         else { break }

@@ -1,4 +1,5 @@
 import Foundation
+import Cocoa
 
 extension SidebarController
 {
@@ -153,5 +154,19 @@ extension SidebarController
   @IBAction func dropStash(_ sender: Any?)
   {
     dropStash()
+  }
+  
+  @IBAction func showSubmodule(_ sender: Any?)
+  {
+    guard let submoduleItem = targetItem() as? SubmoduleSidebarItem
+    else { return }
+    let url = repo.fileURL(submoduleItem.submodule.path)
+    
+    NSWorkspace.shared.activateFileViewerSelecting([url])
+  }
+  
+  @IBAction func updateSubmodule(_ sender: Any?)
+  {
+    
   }
 }

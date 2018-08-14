@@ -165,3 +165,46 @@ typedef NS_OPTIONS(int, CheckoutStrategy)
   CheckoutStrategyUpdateSubmodules = GIT_CHECKOUT_UPDATE_SUBMODULES,
   CheckoutStrategyUpdateSubmodulesIfChanged = GIT_CHECKOUT_UPDATE_SUBMODULES_IF_CHANGED,
 };
+
+typedef NS_ENUM(int, SubmoduleIgnore)
+{
+  SubmoduleIgnoreNone = GIT_SUBMODULE_IGNORE_NONE,
+  SubmoduleIgnoreUntracked = GIT_SUBMODULE_IGNORE_UNTRACKED,
+  SubmoduleIgnoreDirty = GIT_SUBMODULE_IGNORE_DIRTY,
+  SubmoduleIgnoreAll = GIT_SUBMODULE_IGNORE_ALL,
+  SubmoduleIgnoreUnspecified = GIT_SUBMODULE_IGNORE_UNSPECIFIED,
+};
+
+typedef NS_ENUM(unsigned int, SubmoduleRecurse)
+{
+  SubmoduleRecurseNo = GIT_SUBMODULE_RECURSE_NO,
+  SubmoduleRecurseYes = GIT_SUBMODULE_RECURSE_YES,
+  SubmoduleRecurseOnDemand = GIT_SUBMODULE_RECURSE_ONDEMAND,
+};
+
+typedef NS_ENUM(unsigned int, SubmoduleUpdate)
+{
+  SubmoduleUpdateCheckout = GIT_SUBMODULE_UPDATE_CHECKOUT,
+  SubmoduleUpdateRebase = GIT_SUBMODULE_UPDATE_REBASE,
+  SubmoduleUpdateMerge = GIT_SUBMODULE_UPDATE_MERGE,
+  SubmoduleUpdateNone = GIT_SUBMODULE_UPDATE_NONE,
+  SubmoduleUpdateDefault = GIT_SUBMODULE_UPDATE_DEFAULT,
+};
+
+typedef NS_OPTIONS(int, SubmoduleStatus)
+{
+  SubmoduleStatusInHead = GIT_SUBMODULE_STATUS_IN_HEAD,
+  SubmoduleStatusInIndex = GIT_SUBMODULE_STATUS_IN_INDEX,
+  SubmoduleStatusInConfig = GIT_SUBMODULE_STATUS_IN_CONFIG,
+  SubmoduleStatusInWorkDir = GIT_SUBMODULE_STATUS_IN_WD,
+  SubmoduleStatusIndexAdded = GIT_SUBMODULE_STATUS_INDEX_ADDED,
+  SubmoduleStatusIndexDeleted = GIT_SUBMODULE_STATUS_INDEX_DELETED,
+  SubmoduleStatusIndexModified = GIT_SUBMODULE_STATUS_INDEX_MODIFIED,
+  SubmoduleStatusWorkDirUninitialized = GIT_SUBMODULE_STATUS_WD_UNINITIALIZED,
+  SubmoduleStatusWorkDirAdded = GIT_SUBMODULE_STATUS_WD_ADDED,
+  SubmoduleStatusWorkDirDeleted = GIT_SUBMODULE_STATUS_WD_DELETED,
+  SubmoduleStatusWorkDirModified = GIT_SUBMODULE_STATUS_WD_MODIFIED,
+  SubmoduleStatusWorkDirIndexModified = GIT_SUBMODULE_STATUS_WD_INDEX_MODIFIED,
+  SubmoduleStatusWorkDirWdModified = GIT_SUBMODULE_STATUS_WD_WD_MODIFIED,
+  SubmoduleStatusWorkDirUntracked = GIT_SUBMODULE_STATUS_WD_UNTRACKED,
+};

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.3.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.3.2"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SidebarController" customModule="Xit" customModuleProvider="target">
@@ -10,6 +11,7 @@
                 <outlet property="remoteBranchContextMenu" destination="aZF-N9-q33" id="g42-4P-iXy"/>
                 <outlet property="remoteContextMenu" destination="1" id="Drs-g5-xCE"/>
                 <outlet property="stashContextMenu" destination="4" id="bCj-qv-xN7"/>
+                <outlet property="submoduleContextMenu" destination="bPF-0J-ZHu" id="npM-NB-eIa"/>
                 <outlet property="tagContextMenu" destination="2" id="XfN-bu-pxH"/>
             </connections>
         </customObject>
@@ -127,6 +129,23 @@
                     </connections>
                 </menuItem>
             </items>
+        </menu>
+        <menu title="Submodule" id="bPF-0J-ZHu" userLabel="Submodule">
+            <items>
+                <menuItem title="Show in Finder" id="4Cd-86-KQY">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="showSubmodule:" target="-2" id="2dF-o9-pdt"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Update" id="9EO-H4-qXn">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="updateSubmodule:" target="-2" id="ud0-6U-HU2"/>
+                    </connections>
+                </menuItem>
+            </items>
+            <point key="canvasLocation" x="53" y="347"/>
         </menu>
     </objects>
 </document>
