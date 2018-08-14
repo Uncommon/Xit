@@ -129,15 +129,21 @@ class BitbucketAPI: BasicAuthService, ServiceAPI
     
     super.init(user: user, password: password, baseURL: fullBaseURL.string,
                authenticationPath: "users/\(user)")
+    
+    configureTransformer("/users/*") {
+      return try JSONDecoder().decode(Bitbucket.User.self, from: $0.content)
+    }
   }
   
   override func didAuthenticate(responseResource: Resource)
   {
     responseResource.useData(owner: self) {
       (entity: Entity<Any>) in
-      guard let data = entity.content as? Data,
-            let user = try? JSONDecoder().decode(Bitbucket.User.self, from: data)
-      else { return }
+      guard let user = entity.content as? Bitbucket.User
+      else {
+        self.authenticationStatus = .failed(nil)
+        return
+      }
       
       self.user = user
     }
