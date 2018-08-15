@@ -180,7 +180,7 @@ class AccountsPrefsController: NSViewController
       
         api.attemptAuthentication()
       
-      case .bitbucket:
+      case .bitbucketServer:
         guard let api = Services.shared.bitbucketServerAPI(account)
         else { break }
       
@@ -296,7 +296,7 @@ extension AccountsPrefsController: NSTableViewDelegate
               view.imageView?.image = image
               view.imageView?.isHidden = false
             }
-          case .bitbucket:
+          case .bitbucketServer:
             let api = Services.shared.bitbucketServerAPI(account)
             
             if let image = statusImage(forBitbucket: api) {
