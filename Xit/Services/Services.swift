@@ -37,7 +37,7 @@ class Services
   static let shared = Services()
   
   private var teamCityServices: [String: TeamCityAPI] = [:]
-  private var bitbucketServices: [String: BitbucketAPI] = [:]
+  private var bitbucketServices: [String: BitbucketServerAPI] = [:]
   
   /// Creates an API object for each account so they can start with
   /// authorization and other state info.
@@ -49,8 +49,8 @@ class Services
     for account in AccountsManager.manager.accounts(ofType: .teamCity) {
       _ = teamCityAPI(account)
     }
-    for account in AccountsManager.manager.accounts(ofType: .bitbucket) {
-      _ = bitbucketAPI(account)
+    for account in AccountsManager.manager.accounts(ofType: .bitbucketServer) {
+      _ = bitbucketServerAPI(account)
     }
   }
   
@@ -92,7 +92,7 @@ class Services
     }
   }
   
-  func bitbucketAPI(_ account: Account) -> BitbucketAPI?
+  func bitbucketServerAPI(_ account: Account) -> BitbucketServerAPI?
   {
     let key = Services.accountKey(account)
     
@@ -107,7 +107,7 @@ class Services
         return nil
       }
       
-      guard let api = BitbucketAPI(user: account.user,
+      guard let api = BitbucketServerAPI(user: account.user,
                                    password: password,
                                    baseURL: account.location.absoluteString)
       else { return nil }

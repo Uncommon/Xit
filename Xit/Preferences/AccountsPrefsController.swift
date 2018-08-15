@@ -181,7 +181,7 @@ class AccountsPrefsController: NSViewController
         api.attemptAuthentication()
       
       case .bitbucket:
-        guard let api = Services.shared.bitbucketAPI(account)
+        guard let api = Services.shared.bitbucketServerAPI(account)
         else { break }
       
         api.attemptAuthentication()
@@ -246,7 +246,7 @@ extension AccountsPrefsController: NSTableViewDelegate
     return nil
   }
   
-  func statusImage(forBitbucket api: BitbucketAPI?) -> NSImage?
+  func statusImage(forBitbucket api: BitbucketServerAPI?) -> NSImage?
   {
     guard let api = api
     else { return NSImage(named: .statusUnavailable) }
@@ -297,7 +297,7 @@ extension AccountsPrefsController: NSTableViewDelegate
               view.imageView?.isHidden = false
             }
           case .bitbucket:
-            let api = Services.shared.bitbucketAPI(account)
+            let api = Services.shared.bitbucketServerAPI(account)
             
             if let image = statusImage(forBitbucket: api) {
               view.imageView?.image = image

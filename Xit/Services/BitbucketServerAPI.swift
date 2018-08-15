@@ -1,7 +1,7 @@
 import Foundation
 import Siesta
 
-enum Bitbucket
+enum BitbucketServer
 {
   struct PagedResponse<T> : Codable where T: Codable
   {
@@ -113,10 +113,10 @@ enum Bitbucket
   }
 }
 
-class BitbucketAPI: BasicAuthService, ServiceAPI
+class BitbucketServerAPI: BasicAuthService, ServiceAPI
 {
-  var type: AccountType { return .bitbucket }
-  var user: Bitbucket.User?
+  var type: AccountType { return .bitbucketServer }
+  var user: BitbucketServer.User?
   static let rootPath = "/rest/api/1.0"
   
   init?(user: String, password: String, baseURL: String?)
@@ -125,13 +125,13 @@ class BitbucketAPI: BasicAuthService, ServiceAPI
           var fullBaseURL = URLComponents(string: baseURL)
     else { return nil }
     
-    fullBaseURL.path = BitbucketAPI.rootPath
+    fullBaseURL.path = BitbucketServerAPI.rootPath
     
     super.init(user: user, password: password, baseURL: fullBaseURL.string,
                authenticationPath: "users/\(user)")
     
     configureTransformer("/users/*") {
-      return try JSONDecoder().decode(Bitbucket.User.self, from: $0.content)
+      return try JSONDecoder().decode(BitbucketServer.User.self, from: $0.content)
     }
   }
   
@@ -139,7 +139,7 @@ class BitbucketAPI: BasicAuthService, ServiceAPI
   {
     responseResource.useData(owner: self) {
       (entity: Entity<Any>) in
-      guard let user = entity.content as? Bitbucket.User
+      guard let user = entity.content as? BitbucketServer.User
       else {
         self.authenticationStatus = .failed(nil)
         return
@@ -158,7 +158,7 @@ class BitbucketAPI: BasicAuthService, ServiceAPI
   
   func setStatus(pullRequestID id: Int, projectKey key: String,
                  repoSlug slug: String,
-                 status: Bitbucket.ReviewerStatus) -> Request
+                 status: BitbucketServer.ReviewerStatus) -> Request
   {
     let href = """
           projects/\(key)/repos/\(slug)/pull-requests/\(id)\
