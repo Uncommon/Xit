@@ -4,3 +4,6 @@
 [submodule "siesta"]
 	path = siesta
 	url = https://github.com/bustoutsolutions/siesta.git
+[submodule "apollo-ios"]
+	path = apollo-ios
+	url = https://github.com/apollographql/apollo-ios.git

@@ -15,3 +15,5 @@ build/
 
 xcuserdata
 DerivedData
+
+node_modules

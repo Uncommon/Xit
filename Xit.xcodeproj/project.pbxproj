@@ -45,6 +45,8 @@
 		C9004650211501CB00706029 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C900464F211501CB00706029 /* Colors.swift */; };
 		C9065F4E20FCFA8B00C01110 /* RefType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9065F4D20FCFA8B00C01110 /* RefType.swift */; };
 		C9065F6020FFE1D900C01110 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9065F5F20FFE1D900C01110 /* Notifications.swift */; };
+		C9091A8E2124B4CA004AD47C /* Apollo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9091A6F2124B4A2004AD47C /* Apollo.framework */; };
+		C9091AB22124C19D004AD47C /* GitHubAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9091AAF2124C19D004AD47C /* GitHubAPI.swift */; };
 		C90B4EB11FE86A9900277B13 /* GiRevWalk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90B4EB01FE86A9900277B13 /* GiRevWalk.swift */; };
 		C90B4EC31FEB2B2300277B13 /* GitReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90B4EC21FEB2B2300277B13 /* GitReference.swift */; };
 		C90B4EC51FEDB1D600277B13 /* GitStatusList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90B4EC41FEDB1D600277B13 /* GitStatusList.swift */; };
@@ -225,6 +227,62 @@
 			remoteGlobalIDString = C3FA46FB13D0F8E200AC4F9B;
 			remoteInfo = Xit;
 		};
+		C9091A6E2124B4A2004AD47C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9091A632124B4A2004AD47C /* Apollo.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9FC750441D2A532C00458D91;
+			remoteInfo = Apollo;
+		};
+		C9091A702124B4A2004AD47C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9091A632124B4A2004AD47C /* Apollo.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9FC7504E1D2A532D00458D91;
+			remoteInfo = ApolloTests;
+		};
+		C9091A722124B4A2004AD47C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9091A632124B4A2004AD47C /* Apollo.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9FA6ABBC1EC0A988000017BE;
+			remoteInfo = ApolloCacheDependentTests;
+		};
+		C9091A742124B4A2004AD47C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9091A632124B4A2004AD47C /* Apollo.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9FC631331E6AE2080062707E;
+			remoteInfo = ApolloPerformanceTests;
+		};
+		C9091A762124B4A2004AD47C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9091A632124B4A2004AD47C /* Apollo.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9FCE2CFA1E6C213D00E34457;
+			remoteInfo = StarWarsAPI;
+		};
+		C9091A782124B4A2004AD47C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9091A632124B4A2004AD47C /* Apollo.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9FACA9C61F42E67200AE2DBD;
+			remoteInfo = GitHubAPI;
+		};
+		C9091A7A2124B4A2004AD47C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9091A632124B4A2004AD47C /* Apollo.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9FD637E11E6ACF88001EDBC8;
+			remoteInfo = "TestHost iOS";
+		};
+		C9091A7C2124B4A2004AD47C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9091A632124B4A2004AD47C /* Apollo.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9F8A95781EC0FC1200304A2D;
+			remoteInfo = ApolloTestSupport;
+		};
 		C91F346A1D30647E005F9BDF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C91F34631D30647D005F9BDF /* Siesta.xcodeproj */;
@@ -399,6 +457,10 @@
 		C900464F211501CB00706029 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		C9065F4D20FCFA8B00C01110 /* RefType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefType.swift; sourceTree = "<group>"; };
 		C9065F5F20FFE1D900C01110 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
+		C9091A632124B4A2004AD47C /* Apollo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Apollo.xcodeproj; path = "apollo-ios/Apollo.xcodeproj"; sourceTree = "<group>"; };
+		C9091AAD2124C19D004AD47C /* github.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = github.graphql; sourceTree = "<group>"; };
+		C9091AAE2124C19D004AD47C /* github-schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "github-schema.json"; sourceTree = "<group>"; };
+		C9091AAF2124C19D004AD47C /* GitHubAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitHubAPI.swift; sourceTree = "<group>"; };
 		C90B4EB01FE86A9900277B13 /* GiRevWalk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiRevWalk.swift; sourceTree = "<group>"; };
 		C90B4EC21FEB2B2300277B13 /* GitReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitReference.swift; sourceTree = "<group>"; };
 		C90B4EC41FEDB1D600277B13 /* GitStatusList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitStatusList.swift; sourceTree = "<group>"; };
@@ -572,6 +634,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9091A8E2124B4CA004AD47C /* Apollo.framework in Frameworks */,
 				DD96C9A6176977470003A30C /* ObjectiveGit.framework in Frameworks */,
 				C91F34741D3064CC005F9BDF /* Siesta.framework in Frameworks */,
 				31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */,
@@ -646,6 +709,7 @@
 		C3FA46F113D0F8E200AC4F9B = {
 			isa = PBXGroup;
 			children = (
+				C9091A632124B4A2004AD47C /* Apollo.xcodeproj */,
 				DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */,
 				C91F34631D30647D005F9BDF /* Siesta.xcodeproj */,
 				C3FA470613D0F8E200AC4F9B /* Xit */,
@@ -777,6 +841,31 @@
 				C3FA472A13D0F8E300AC4F9B /* XitTests-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C9091A642124B4A2004AD47C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C9091A6F2124B4A2004AD47C /* Apollo.framework */,
+				C9091A712124B4A2004AD47C /* ApolloTests.xctest */,
+				C9091A732124B4A2004AD47C /* ApolloCacheDependentTests.xctest */,
+				C9091A752124B4A2004AD47C /* ApolloPerformanceTests.xctest */,
+				C9091A772124B4A2004AD47C /* StarWarsAPI.framework */,
+				C9091A792124B4A2004AD47C /* GitHubAPI.framework */,
+				C9091A7B2124B4A2004AD47C /* TestHost iOS.app */,
+				C9091A7D2124B4A2004AD47C /* ApolloTestSupport.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C9091AAC2124C19D004AD47C /* GraphQL */ = {
+			isa = PBXGroup;
+			children = (
+				C9091AAD2124C19D004AD47C /* github.graphql */,
+				C9091AAE2124C19D004AD47C /* github-schema.json */,
+				C9091AAF2124C19D004AD47C /* GitHubAPI.swift */,
+			);
+			path = GraphQL;
 			sourceTree = "<group>";
 		};
 		C91F34641D30647D005F9BDF /* Products */ = {
@@ -927,6 +1016,7 @@
 		C9790D0A20EED5430024D3EA /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				C9091AAC2124C19D004AD47C /* GraphQL */,
 				C91F34771D30656B005F9BDF /* Services.swift */,
 				C929D05F1D42785B00D7DC52 /* TeamCityAPI.swift */,
 				C94154A21ED778980030E481 /* BuildStatusCache.swift */,
@@ -1008,12 +1098,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C3FA473113D0F8E300AC4F9B /* Build configuration list for PBXNativeTarget "Xit" */;
 			buildPhases = (
+				C9091A922124B5CA004AD47C /* Apollo */,
 				C3FA46F813D0F8E200AC4F9B /* Sources */,
 				C3FA46F913D0F8E200AC4F9B /* Frameworks */,
 				C3FA46FA13D0F8E200AC4F9B /* Resources */,
-				317C19DE13EBD2500003E8E6 /* ShellScript */,
+				317C19DE13EBD2500003E8E6 /* TODO scan */,
 				C91F34751D3064E6005F9BDF /* CopyFiles */,
-				C9E881461E9570D400BFA7E5 /* ShellScript */,
+				C9E881461E9570D400BFA7E5 /* Swiftlint */,
 			);
 			buildRules = (
 			);
@@ -1075,6 +1166,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = C9091A642124B4A2004AD47C /* Products */;
+					ProjectRef = C9091A632124B4A2004AD47C /* Apollo.xcodeproj */;
+				},
+				{
 					ProductGroup = DD96C990176976FC0003A30C /* Products */;
 					ProjectRef = DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */;
 				},
@@ -1097,6 +1192,62 @@
 			fileType = wrapper.cfbundle;
 			path = "ObjectiveGit-iOSTests.xctest";
 			remoteRef = 89E6384C1C8651E400B7BB42 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C9091A6F2124B4A2004AD47C /* Apollo.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Apollo.framework;
+			remoteRef = C9091A6E2124B4A2004AD47C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C9091A712124B4A2004AD47C /* ApolloTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ApolloTests.xctest;
+			remoteRef = C9091A702124B4A2004AD47C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C9091A732124B4A2004AD47C /* ApolloCacheDependentTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ApolloCacheDependentTests.xctest;
+			remoteRef = C9091A722124B4A2004AD47C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C9091A752124B4A2004AD47C /* ApolloPerformanceTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ApolloPerformanceTests.xctest;
+			remoteRef = C9091A742124B4A2004AD47C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C9091A772124B4A2004AD47C /* StarWarsAPI.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = StarWarsAPI.framework;
+			remoteRef = C9091A762124B4A2004AD47C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C9091A792124B4A2004AD47C /* GitHubAPI.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = GitHubAPI.framework;
+			remoteRef = C9091A782124B4A2004AD47C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C9091A7B2124B4A2004AD47C /* TestHost iOS.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = "TestHost iOS.app";
+			remoteRef = C9091A7A2124B4A2004AD47C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C9091A7D2124B4A2004AD47C /* ApolloTestSupport.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ApolloTestSupport.framework;
+			remoteRef = C9091A7C2124B4A2004AD47C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		C91F346B1D30647E005F9BDF /* Siesta.framework */ = {
@@ -1235,26 +1386,46 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		317C19DE13EBD2500003E8E6 /* ShellScript */ = {
+		317C19DE13EBD2500003E8E6 /* TODO scan */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
+			);
+			name = "TODO scan";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "KEYWORDS=\"TODO|FIXME|\\?\\?\\?:|\\!\\!\\!:\"\nfind ${SRCROOT}/Xit ${SRCROOT}/XitTests \\( -name \"*.h\" -or -name \"*.m\" \\) -print0 | \\\nxargs -0 egrep --with-filename --line-number --only-matching \"($KEYWORDS).*\\$\" | \\\nperl -p -e \"s/($KEYWORDS)/ warning: \\$1/\"\n";
+		};
+		C9091A922124B5CA004AD47C /* Apollo */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Apollo;
+			outputFileListPaths = (
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "KEYWORDS=\"TODO|FIXME|\\?\\?\\?:|\\!\\!\\!:\"\nfind ${SRCROOT}/Xit ${SRCROOT}/XitTests \\( -name \"*.h\" -or -name \"*.m\" \\) -print0 | \\\nxargs -0 egrep --with-filename --line-number --only-matching \"($KEYWORDS).*\\$\" | \\\nperl -p -e \"s/($KEYWORDS)/ warning: \\$1/\"";
+			shellScript = "APOLLO_FRAMEWORK_PATH=\"$(eval find $FRAMEWORK_SEARCH_PATHS -name \"Apollo.framework\" -maxdepth 1)\"\n\nif [ -z \"$APOLLO_FRAMEWORK_PATH\" ]; then\necho \"error: Couldn't find Apollo.framework in FRAMEWORK_SEARCH_PATHS; make sure to add the framework to your project.\"\nexit 1\nfi\n\ncd \"${SRCROOT}/${TARGET_NAME}\"\n$APOLLO_FRAMEWORK_PATH/Versions/Current/Resources/check-and-run-apollo-cli.sh codegen:generate --queries=\"$(find . -name '*.graphql')\" --schema=Services/GraphQL/github-schema.json Services/GraphQL/GitHubAPI.swift\n";
 		};
-		C9E881461E9570D400BFA7E5 /* ShellScript */ = {
+		C9E881461E9570D400BFA7E5 /* Swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = Swiftlint;
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1376,6 +1547,7 @@
 				C932110C1E48E92C00232B61 /* FileTreeDataSource.swift in Sources */,
 				C9F764851F72F486000A208B /* Images.swift in Sources */,
 				89880ECF20CF2B99007042F8 /* FlippedView.swift in Sources */,
+				C9091AB22124C19D004AD47C /* GitHubAPI.swift in Sources */,
 				899DB1A21CE5022400760270 /* XTCommitEntryController.swift in Sources */,
 				C97E31B020BF271300E74D2F /* StringExtensions.swift in Sources */,
 				89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */,
