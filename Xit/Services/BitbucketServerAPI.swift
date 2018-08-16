@@ -55,10 +55,10 @@ enum BitbucketServer
     let repository: Repository
   }
 
-  struct User: Codable
+  struct User: Codable, Equatable
   {
     let name: String
-    let email: String
+    let emailAddress: String
     let id: Int
     let displayName: String
     let active: Bool
@@ -76,12 +76,12 @@ enum BitbucketServer
     let status: ReviewerStatus
   }
   
-  struct Link: Codable
+  struct Link: Codable, Equatable
   {
     let href: String
   }
   
-  struct Links: Codable
+  struct Links: Codable, Equatable
   {
     let `self`: [Link]
   }
@@ -130,8 +130,18 @@ class BitbucketServerAPI: BasicAuthService, ServiceAPI
     super.init(user: user, password: password, baseURL: fullBaseURL.string,
                authenticationPath: "users/\(user)")
     
+    
+    
     configureTransformer("/users/*") {
-      return try JSONDecoder().decode(BitbucketServer.User.self, from: $0.content)
+      (entity: Entity<Data>) -> BitbucketServer.User? in
+      do {
+        return try JSONDecoder().decode(BitbucketServer.User.self,
+                                        from: entity.content)
+      }
+      catch let error as DecodingError {
+        print(error.context.debugDescription)
+        throw error
+      }
     }
   }
   
@@ -170,7 +180,7 @@ class BitbucketServerAPI: BasicAuthService, ServiceAPI
     let data = ["user": ["name": user!.slug],
                 "approved": status == .approved,
                 "status": status.rawValue,
-                ] as [String : Any]
+                ] as [String: Any]
     
     return resource.request(.put, json: data)
   }

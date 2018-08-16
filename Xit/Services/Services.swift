@@ -172,7 +172,8 @@ class BasicAuthService: Siesta.Service
     self.authenticationStatus = .notStarted
     self.authenticationPath = authenticationPath
     
-    super.init(baseURL: baseURL)
+    // Exclude the JSON transformer because we'll use JSONDecoder instead
+    super.init(baseURL: baseURL, standardTransformers: [.text, .image])
   
     if !updateAuthentication(user, password: password) {
       return nil
