@@ -23,7 +23,7 @@ class PullRequestCache
   private var clients = [WeakClientRef]()
   private let repository: RemoteManagement
   
-  private(set) var requests: [PullRequest] = []
+  internal(set) var requests: [PullRequest] = []
   
   init(repository: RemoteManagement)
   {

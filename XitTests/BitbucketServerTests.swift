@@ -5,8 +5,9 @@ class BitbucketServerTests: XCTestCase
 {
   func testUserData()
   {
-    let link = BitbucketServer.Link(href: "https://stash.example.com/users/guy")
-    let links = BitbucketServer.Links(self: [link])
+    let link = BitbucketServer.Link(href: "https://stash.example.com/users/guy",
+                                    name: nil)
+    let links = BitbucketServer.Links(self: [link], clone: nil)
     let user = BitbucketServer.User(name: "Guy",
                                     emailAddress: "feeble@example.com",
                                     id: 8192, displayName: "Guy Feeble",

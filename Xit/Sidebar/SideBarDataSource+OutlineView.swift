@@ -133,15 +133,10 @@ extension SideBarDataSource: NSOutlineViewDelegate
         dataView.statusButton.target = self
         dataView.statusButton.action = #selector(self.showItemStatus(_:))
       }
-      if pullRequest(for: sideBarItem) != nil {
-        dataView.pullRequestButton.isHidden = false
-      }
-      else {
-        dataView.pullRequestButton.isHidden = true
-      }
       if sideBarItem is LocalBranchSidebarItem {
         configureLocalBranchItem(sideBarItem: sideBarItem, dataView: dataView)
       }
+      dataView.pullRequestButton.isHidden = pullRequest(for: sideBarItem) != nil
       dataView.buttonContainer.isHidden = dataView.statusButton.image == nil
       if sideBarItem.editable {
         textField.formatter = refFormatter
