@@ -84,7 +84,7 @@
                                                                             <imageCell key="cell" refusesFirstResponder="YES" imageScaling="proportionallyDown" image="NSActionTemplate" id="yfB-De-qam"/>
                                                                         </imageView>
                                                                         <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ipC-oU-fy5" customClass="ExpansionTextField" customModule="Xit" customModuleProvider="target">
-                                                                            <rect key="frame" x="19" y="0.0" width="108" height="17"/>
+                                                                            <rect key="frame" x="19" y="0.0" width="104" height="17"/>
                                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="TgA-S6-Vxp">
                                                                                 <font key="font" metaFont="system"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -92,16 +92,26 @@
                                                                             </textFieldCell>
                                                                         </textField>
                                                                         <button horizontalHuggingPriority="260" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="Gz6-jH-4NK" customClass="LabelButton" customModule="Xit" customModuleProvider="target">
-                                                                            <rect key="frame" x="132" y="0.0" width="44" height="17"/>
+                                                                            <rect key="frame" x="128" y="0.0" width="44" height="17"/>
                                                                             <buttonCell key="cell" type="inline" title="10▸10" bezelStyle="inline" alignment="center" borderStyle="border" inset="2" id="Cf5-ns-faK">
                                                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                                 <font key="font" metaFont="smallSystemBold"/>
                                                                             </buttonCell>
                                                                         </button>
-                                                                        <imageView horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="xbG-eW-IAr">
-                                                                            <rect key="frame" x="183" y="1" width="16" height="16"/>
-                                                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="NSStatusAvailable" id="urJ-Dd-CHS"/>
-                                                                        </imageView>
+                                                                        <button translatesAutoresizingMaskIntoConstraints="NO" id="TsV-Hr-s70">
+                                                                            <rect key="frame" x="179" y="1" width="20" height="16"/>
+                                                                            <constraints>
+                                                                                <constraint firstAttribute="width" constant="20" id="2Bk-Vo-3nG"/>
+                                                                                <constraint firstAttribute="height" constant="16" id="ZVt-7M-78h"/>
+                                                                            </constraints>
+                                                                            <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="pullRequestTemplate" imagePosition="left" inset="2" id="yIh-JO-UWu">
+                                                                                <behavior key="behavior" lightByContents="YES"/>
+                                                                                <font key="font" metaFont="system"/>
+                                                                            </buttonCell>
+                                                                            <connections>
+                                                                                <action selector="pullRequestClicked:" target="aFR-LL-LwM" id="Plg-dV-kpH"/>
+                                                                            </connections>
+                                                                        </button>
                                                                         <customView translatesAutoresizingMaskIntoConstraints="NO" id="zlI-5H-KrJ">
                                                                             <rect key="frame" x="206" y="1" width="20" height="16"/>
                                                                             <subviews>
@@ -156,8 +166,8 @@
                                                                 <outlet property="buttonContainer" destination="zlI-5H-KrJ" id="G7f-DP-zES"/>
                                                                 <outlet property="imageView" destination="K1A-hb-UQc" id="tbv-6C-MAV"/>
                                                                 <outlet property="missingImage" destination="pvX-qW-6kP" id="eqH-aH-WHx"/>
+                                                                <outlet property="pullRequestButton" destination="TsV-Hr-s70" id="E5r-zG-ZZ0"/>
                                                                 <outlet property="statusButton" destination="XN1-7Z-pLX" id="0ML-yF-XuQ"/>
-                                                                <outlet property="statusImage" destination="xbG-eW-IAr" id="hpg-Vn-A7g"/>
                                                                 <outlet property="statusText" destination="Gz6-jH-4NK" id="WKp-el-Lfq"/>
                                                                 <outlet property="textField" destination="ipC-oU-fy5" id="4XV-ID-ovG"/>
                                                             </connections>
@@ -241,6 +251,7 @@
     <resources>
         <image name="NSActionTemplate" width="14" height="14"/>
         <image name="NSStatusAvailable" width="16" height="16"/>
+        <image name="pullRequestTemplate" width="7" height="8"/>
         <image name="trackingMissing" width="5" height="5"/>
     </resources>
 </document>

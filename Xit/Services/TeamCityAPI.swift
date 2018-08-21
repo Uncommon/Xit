@@ -508,3 +508,14 @@ extension TeamCityAccessor
     return TeamCityAPI.service(for: remoteURL)
   }
 }
+
+extension TeamCityAPI: RemoteService
+{
+  func match(remote: Remote) -> Bool
+  {
+    guard let urlString = remote.url?.absoluteString
+    else { return false }
+    
+    return !buildTypesForRemote(urlString).isEmpty
+  }
+}

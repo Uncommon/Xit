@@ -276,7 +276,6 @@ class MockSidebarOutline: NSOutlineView
     }
     result.textField = textField
     result.imageView = imageView
-    result.statusImage = statusImage
     result.statusButton = statusButton
     result.statusText = statusText
     result.buttonContainer = buttonContainer

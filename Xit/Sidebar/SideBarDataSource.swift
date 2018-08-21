@@ -7,6 +7,7 @@ class SideBarDataSource: NSObject
   enum Intervals
   {
     static let teamCityRefresh: TimeInterval = 60 * 5
+    static let pullRequestRefresh: TimeInterval = 60 * 5
     static let reloadDelay: TimeInterval = 1
   }
   
@@ -32,8 +33,16 @@ class SideBarDataSource: NSObject
       buildStatusCache.add(client: self)
     }
   }
+  var pullRequestCache: PullRequestCache!
+  {
+    didSet
+    {
+      pullRequestCache.add(client: self)
+    }
+  }
   
   var buildStatusTimer: Timer?
+  var pullRequestTimer: Timer?
   var reloadTimer: Timer?
   
   let observers = ObserverCollection()
@@ -47,6 +56,7 @@ class SideBarDataSource: NSObject
       
       stagingItem.selection = StagingSelection(repository: repo)
       buildStatusCache = BuildStatusCache(branchLister: repo, remoteMgr: repo)
+      pullRequestCache = PullRequestCache(repository: repo)
       
       observers.addObserver(forName: .XTRepositoryRefsChanged,
                             object: repo, queue: .main) {
@@ -138,6 +148,13 @@ class SideBarDataSource: NSObject
           withTimeInterval: Intervals.teamCityRefresh, repeats: true) {
         [weak self] _ in
         self?.buildStatusCache.refresh()
+      }
+    }
+    if Services.shared.allServices.contains(where: { $0 is PullRequestService }) {
+      pullRequestTimer = Timer.scheduledTimer(
+          withTimeInterval: Intervals.pullRequestRefresh, repeats: true) {
+        [weak self] _ in
+        self?.pullRequestCache.refresh()
       }
     }
     observers.addObserver(forName: .XTTeamCityStatusChanged,
@@ -293,6 +310,7 @@ class SideBarDataSource: NSObject
     DispatchQueue.main.async {
       [weak self] in
       self?.buildStatusCache.refresh()
+      self?.pullRequestCache.refresh()
     }
     return newRoots
   }
@@ -349,6 +367,7 @@ class SideBarDataSource: NSObject
   func stopTimers()
   {
     buildStatusTimer?.invalidate()
+    pullRequestTimer?.invalidate()
     reloadTimer?.invalidate()
   }
   

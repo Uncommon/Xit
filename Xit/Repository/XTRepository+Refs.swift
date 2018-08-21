@@ -150,15 +150,6 @@ extension XTRepository: CommitReferencing
     }
   }
   
-  public func remoteNames() -> [String]
-  {
-    let strArray = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
-    guard git_remote_list(strArray, gitRepo) == 0
-    else { return [] }
-    
-    return strArray.pointee.compactMap { $0 }
-  }
-  
   public func stashes() -> Stashes
   {
     return Stashes(repo: self)

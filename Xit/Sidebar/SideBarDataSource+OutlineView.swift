@@ -126,13 +126,18 @@ extension SideBarDataSource: NSOutlineViewDelegate
       textField.isEditable = sideBarItem.editable
       textField.isSelectable = sideBarItem.isSelectable
       dataView.statusText.isHidden = true
-      dataView.statusImage.isHidden = true
       dataView.statusButton.image = nil
       dataView.statusButton.action = nil
       if let image = statusImage(for: sideBarItem) {
         dataView.statusButton.image = image
         dataView.statusButton.target = self
         dataView.statusButton.action = #selector(self.showItemStatus(_:))
+      }
+      if pullRequest(for: sideBarItem) != nil {
+        dataView.pullRequestButton.isHidden = false
+      }
+      else {
+        dataView.pullRequestButton.isHidden = true
       }
       if sideBarItem is LocalBranchSidebarItem {
         configureLocalBranchItem(sideBarItem: sideBarItem, dataView: dataView)
@@ -213,7 +218,7 @@ extension SideBarDataSource: NSOutlineViewDelegate
     else if let remoteBranchItem = item as? RemoteBranchSidebarItem,
             let branchName = repository.currentBranch,
             let currentBranch = repository.localBranch(named: branchName),
-            currentBranch.trackingBranchName == remoteBranchItem.remote + "/" +
+            currentBranch.trackingBranchName == remoteBranchItem.remoteName + "/" +
                                                 remoteBranchItem.title {
       let rowView = SidebarCheckedRowView(
               imageName: .rightFacingTriangleTemplate,

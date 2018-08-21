@@ -11,6 +11,22 @@ public protocol Remote: class
   func updatePushURLString(_ URLString: String) throws
 }
 
+extension Remote
+{
+  var url: URL? { return urlString.flatMap { URL(string: $0) } }
+  var pushURL: URL? { return pushURLString.flatMap { URL(string: $0) } }
+  
+  func updateURL(_ url: URL) throws
+  {
+    try updateURLString(url.absoluteString)
+  }
+  
+  func updatePushURL(_ url: URL) throws
+  {
+    try updatePushURLString(url.absoluteString)
+  }
+}
+
 class GitRemote: Remote
 {
   let remote: OpaquePointer

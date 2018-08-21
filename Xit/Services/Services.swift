@@ -39,6 +39,14 @@ class Services
   private var teamCityServices: [String: TeamCityAPI] = [:]
   private var bitbucketServices: [String: BitbucketServerAPI] = [:]
   
+  var allServices: [Service]
+  {
+    let tcServices: [Service] = Array(teamCityServices.values)
+    let bbServices: [Service] = Array(bitbucketServices.values)
+    
+    return tcServices + bbServices
+  }
+  
   /// Creates an API object for each account so they can start with
   /// authorization and other state info.
   func initializeServices()
@@ -116,6 +124,13 @@ class Services
       bitbucketServices[key] = api
       return api
     }
+  }
+  
+  func pullRequestService(remote: Remote) -> PullRequestService?
+  {
+    let prServices = allServices.compactMap { $0 as? PullRequestService }
+    
+    return prServices.first { $0.match(remote: remote) }
   }
 }
 
