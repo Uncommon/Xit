@@ -17,6 +17,13 @@ class SidebarDataSourceTestNoRepo: XCTestCase
     
     override init()
     {
+      self.localBranch1.trackingBranchName = remoteBranch1.name
+      self.localBranch1.trackingBranch = remoteBranch1
+      self.localBranch2.trackingBranchName = remoteBranch2.name
+      self.localBranch2.trackingBranch = remoteBranch2
+      self.remoteBranch1.remoteName = "remote1"
+      self.remoteBranch2.remoteName = "remote2"
+      
       super.init()
       
       remote1.name = "remote1"
@@ -29,12 +36,12 @@ class SidebarDataSourceTestNoRepo: XCTestCase
     override func localBranch(named name: String) -> LocalBranch?
     {
       switch name {
-      case "branch1":
-        return localBranch1
-      case "branch2":
-        return localBranch2
-      default:
-        return nil
+        case "branch1":
+          return localBranch1
+        case "branch2":
+          return localBranch2
+        default:
+          return nil
       }
     }
     
@@ -53,10 +60,11 @@ class SidebarDataSourceTestNoRepo: XCTestCase
     func deleteRemote(named name: String) throws {}
   }
   
-  func testPullRequest()
+  func testPullRequestForBranch()
   {
     let sbds = SideBarDataSource()
     let fakeRepo = FakeRepo()
+    // sbds.repository isn't used in this test
 
     let matchPR = FakePullRequest(
           sourceBranch: "branch1",
