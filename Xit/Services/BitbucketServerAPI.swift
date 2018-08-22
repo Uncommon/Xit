@@ -133,8 +133,9 @@ class BitbucketServerAPI: BasicAuthService, ServiceAPI
   struct PullRequest: Xit.PullRequest
   {
     let request: BitbucketServer.PullRequest
-    let service: BitbucketServerAPI
+    let bitbucketService: BitbucketServerAPI
     
+    var service: PullRequestService { return bitbucketService }
     var sourceBranch: String { return request.fromRef.id }
     var sourceRepo: URL?
     {
@@ -179,13 +180,14 @@ class BitbucketServerAPI: BasicAuthService, ServiceAPI
         case .declined, .merged:
           return []
         case .open:
-          guard let userID = service.user?.id
+          guard let userID = bitbucketService.user?.id
           else { return [] }
           
           if request.author.user.id == userID {
             return [.decline]
           }
-          if let reviewer = request.reviewers.first(where: { $0.user.id == userID }) {
+          if let reviewer = request.reviewers
+                            .first(where: { $0.user.id == userID }) {
             return reviewer.approved ? [.unapprove, .needsWork]
                                      : [.approve, .needsWork]
           }
@@ -296,11 +298,6 @@ extension BitbucketServerAPI: RemoteService
 
 extension BitbucketServerAPI: PullRequestService
 {
-  var availableActions: PullRequestActions
-  {
-    return [.approve, .merge, .decline]
-  }
-  
   func getPullRequests(callback: @escaping ([Xit.PullRequest]) -> Void)
   {
     pullRequests().useData(owner: self) {
@@ -311,12 +308,89 @@ extension BitbucketServerAPI: PullRequestService
         return
       }
       
-      let result = requests.values.map { PullRequest(request: $0, service: self) }
+      let result = requests.values.map { PullRequest(request: $0,
+                                                     bitbucketService: self) }
       
       for request in result {
         print("\(request.status): \(request.displayName)")
       }
       callback(result)
+    }
+  }
+  
+  func pullRequestPath(_ request: PullRequest) -> String
+  {
+    let projectKey = request.request.toRef.repository.project.key
+    let repoSlug = request.request.toRef.repository.slug
+    let requestID = request.request.id
+    
+    return "projects/\(projectKey)/repos/\(repoSlug)/pull-requests/\(requestID)/"
+  }
+  
+  func update(request: PullRequest, approved: Bool,
+              status: BitbucketServer.ReviewerStatus)
+  {
+    guard let userSlug = user?.slug
+    else {
+        // error
+        return
+    }
+
+    let resource = self.resource(pullRequestPath(request) +
+                                 "participants/\(userSlug)")
+    let data: [String: Any] = ["user": ["slug": userSlug],
+                               "approved": approved,
+                               "status": status.rawValue]
+
+    resource.request(.put, json: data).onCompletion {
+      (info) in
+      switch info.response {
+        case .success:
+          print("pr update success")
+          // update the pull request
+        case .failure(let error):
+          print("pr update failure: \(error)")
+          // display the error
+      }
+    }
+  }
+  
+  func approve(request: Xit.PullRequest)
+  {
+    guard let bbRequest = request as? PullRequest
+    else { return }
+    
+    update(request: bbRequest, approved: true, status: .approved)
+  }
+  
+  func unapprove(request: Xit.PullRequest)
+  {
+    guard let bbRequest = request as? PullRequest
+    else { return }
+    
+    update(request: bbRequest, approved: false, status: .unapproved)
+  }
+  
+  func needsWork(request: Xit.PullRequest)
+  {
+    guard let bbRequest = request as? PullRequest
+    else { return }
+    
+    update(request: bbRequest, approved: false, status: .needsWork)
+  }
+  
+  func merge(request: Xit.PullRequest)
+  {
+    guard let request = request as? PullRequest
+    else {
+      // error
+      return
+    }
+    let resource = self.resource(pullRequestPath(request) + "merge")
+    
+    resource.request(.post).onCompletion {
+      (info) in
+      
     }
   }
 }

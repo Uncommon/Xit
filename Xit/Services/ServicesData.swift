@@ -2,6 +2,7 @@ import Foundation
 
 protocol PullRequest
 {
+  var service: PullRequestService { get }
   var sourceBranch: String { get }
   var sourceRepo: URL? { get }
   var displayName: String { get }
@@ -40,6 +41,11 @@ protocol RemoteService
 protocol PullRequestService: RemoteService
 {
   func getPullRequests(callback: @escaping ([Xit.PullRequest]) -> Void)
+  
+  func approve(request: PullRequest)
+  func unapprove(request: PullRequest)
+  func needsWork(request: PullRequest)
+  func merge(request: PullRequest)
 }
 
 /// The pull request actions that a particular service implements.

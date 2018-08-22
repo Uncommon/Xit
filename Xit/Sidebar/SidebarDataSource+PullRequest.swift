@@ -71,16 +71,25 @@ extension SideBarDataSource: PullRequestClient
   
   func approvePR(item: SidebarItem)
   {
+    guard let pullRequest = pullRequest(for: item)
+    else { return }
     
+    pullRequest.service.approve(request: pullRequest)
   }
   
   func unapprovePR(item: SidebarItem)
   {
+    guard let pullRequest = pullRequest(for: item)
+    else { return }
     
+    pullRequest.service.unapprove(request: pullRequest)
   }
   
   func prNeedsWork(item: SidebarItem)
   {
+    guard let pullRequest = pullRequest(for: item)
+    else { return }
     
+    pullRequest.service.needsWork(request: pullRequest)
   }
 }
