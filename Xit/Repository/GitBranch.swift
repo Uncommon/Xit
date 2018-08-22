@@ -44,6 +44,10 @@ extension RemoteBranch
 {
   public var prefix: String
   { return "\(BranchPrefixes.remotes)\(remoteName ?? "")/" }
+  
+  /// What the branch name would look like if it were a local branch
+  public var localBranchName: String
+  { return BranchPrefixes.heads + strippedName }
 }
 
 

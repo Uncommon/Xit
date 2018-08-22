@@ -46,8 +46,7 @@ class PullRequestCache
   func refresh()
   {
     let remotes = repository.remotes()
-    var branchMap: [String: [PullRequest]] = [:]
-    
+
     requests.removeAll()
     
     for remote in remotes {
@@ -56,6 +55,8 @@ class PullRequestCache
       
       service.getPullRequests {
         (requests) in
+        var branchMap: [String: [PullRequest]] = [:]
+        
         self.requests.append(contentsOf: requests)
         
         for request in requests {
@@ -66,12 +67,12 @@ class PullRequestCache
             branchMap[request.sourceBranch] = [request]
           }
         }
-      }
-    }
-    for clientWrapper in clients {
-      for (branch, requests) in branchMap {
-        clientWrapper.client?.pullRequestUpdated(branch: branch,
-                                                 requests: requests)
+        for clientWrapper in self.clients {
+          for (branch, requests) in branchMap {
+            clientWrapper.client?.pullRequestUpdated(branch: branch,
+                                                     requests: requests)
+          }
+        }
       }
     }
   }

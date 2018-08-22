@@ -13,9 +13,21 @@ extension SideBarDataSource: PullRequestClient
           let remote = branchItem.remote,
           let remoteURL = remote.url
     else { return nil }
+    let branch = branchItem.branchObject()
+    let branchName: String
+    
+    // Make sure we have the local version of the branch name
+    switch branch {
+      case let localBranch as LocalBranch:
+        branchName = localBranch.name
+      case let remoteBranch as RemoteBranch:
+        branchName = remoteBranch.localBranchName
+      default:
+        return nil
+    }
     
     return pullRequestCache.requests.first(where: {
-      $0.sourceBranch == branchItem.title &&
+      $0.sourceBranch == branchName &&
       $0.matchRemote(url: remoteURL)
     })
   }
