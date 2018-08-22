@@ -148,7 +148,7 @@ class BitbucketServerAPI: BasicAuthService, ServiceAPI
       }
       return nil
     }
-    var dispalyName: String { return request.title }
+    var displayName: String { return request.title }
     var id: String { return String(request.id) }
     var authorName: String? { return request.author.user.displayName }
     var status: PullRequestStatus

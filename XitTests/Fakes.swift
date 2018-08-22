@@ -27,7 +27,7 @@ struct FakePullRequest: PullRequest
 {
   var sourceBranch: String
   var sourceRepo: URL?
-  var dispalyName: String
+  var displayName: String
   var id: String
   var authorName: String?
   var status: PullRequestStatus

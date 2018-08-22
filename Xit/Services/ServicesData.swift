@@ -4,7 +4,7 @@ protocol PullRequest
 {
   var sourceBranch: String { get }
   var sourceRepo: URL? { get }
-  var dispalyName: String { get }
+  var displayName: String { get }
   var id: String { get }
   var authorName: String? { get }
   var status: PullRequestStatus { get }

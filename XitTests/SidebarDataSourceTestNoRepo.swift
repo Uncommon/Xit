@@ -69,13 +69,13 @@ class SidebarDataSourceTestNoRepo: XCTestCase
     let matchPR = FakePullRequest(
           sourceBranch: "branch1",
           sourceRepo: fakeRepo.remote1.url,
-          dispalyName: "PR1", id: "1",
+          displayName: "PR1", id: "1",
           authorName: "Man1", status: .open,
           webURL: URL(string: "https://example.com/repo1"))
     let otherPR = FakePullRequest(
           sourceBranch: "branch2",
           sourceRepo: fakeRepo.remote2.url,
-          dispalyName: "PR2", id: "2",
+          displayName: "PR2", id: "2",
           authorName: "Man2", status: .open,
           webURL: URL(string: "https://example.com/repo2"))
     
