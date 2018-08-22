@@ -31,4 +31,56 @@ extension SideBarDataSource: PullRequestClient
       $0.matchRemote(url: remoteURL)
     })
   }
+  
+  func updatePullRequestButton(item: SidebarItem, view: SidebarTableCellView)
+  {
+    guard let pullRequest = pullRequest(for: item)
+    else {
+      view.pullRequestButton.isHidden = true
+      return
+    }
+    let actions = pullRequest.availableActions
+    
+    view.pullRequestButton.isHidden = false
+    view.pullRequestButton.toolTip = pullRequest.displayName
+    // change the icon/badge depending on the state
+    for item in view.pullRequestButton.itemArray {
+      switch item.action {
+        case #selector(SidebarTableCellView.viewPRWebPage(_:)):
+          item.isHidden = pullRequest.webURL == nil
+        case #selector(SidebarTableCellView.approvePR(_:)):
+          item.isHidden = !actions.contains(.approve)
+        case #selector(SidebarTableCellView.unapprovePR(_:)):
+          item.isHidden = !actions.contains(.unapprove)
+        case #selector(SidebarTableCellView.prNeedsWork(_:)):
+          item.isHidden = !actions.contains(.needsWork)
+        default:
+          break
+      }
+    }
+  }
+  
+  func viewPRWebPage(item: SidebarItem)
+  {
+    guard let pullRequest = pullRequest(for: item),
+          let url = pullRequest.webURL
+    else { return }
+    
+    NSWorkspace.shared.open(url)
+  }
+  
+  func approvePR(item: SidebarItem)
+  {
+    
+  }
+  
+  func unapprovePR(item: SidebarItem)
+  {
+    
+  }
+  
+  func prNeedsWork(item: SidebarItem)
+  {
+    
+  }
 }

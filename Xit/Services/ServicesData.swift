@@ -9,7 +9,8 @@ protocol PullRequest
   var authorName: String? { get }
   var status: PullRequestStatus { get }
   var webURL: URL? { get }
-  
+  var availableActions: PullRequestActions { get }
+
   func matchRemote(url: URL) -> Bool
   func isApproved(by userID: String) -> Bool
 }
@@ -38,8 +39,6 @@ protocol RemoteService
 
 protocol PullRequestService: RemoteService
 {
-  var availableActions: PullRequestActions { get }
-  
   func getPullRequests(callback: @escaping ([Xit.PullRequest]) -> Void)
 }
 

@@ -133,6 +133,7 @@ class BitbucketServerAPI: BasicAuthService, ServiceAPI
   struct PullRequest: Xit.PullRequest
   {
     let request: BitbucketServer.PullRequest
+    let service: BitbucketServerAPI
     
     var sourceBranch: String { return request.fromRef.id }
     var sourceRepo: URL?
@@ -166,7 +167,33 @@ class BitbucketServerAPI: BasicAuthService, ServiceAPI
     }
     var webURL: URL?
     {
-      return (request.links.`self`.first?.href).flatMap { URL(string: $0) }
+      guard let link = request.links.`self`.first,
+            let href = link.href
+      else { return nil }
+      
+      return URL(string: href)
+    }
+    var availableActions: PullRequestActions
+    {
+      switch request.state {
+        case .declined, .merged:
+          return []
+        case .open:
+          guard let userID = service.user?.id
+          else { return [] }
+          
+          if request.author.user.id == userID {
+            return [.decline]
+          }
+          if let reviewer = request.reviewers.first(where: { $0.user.id == userID }) {
+            return reviewer.approved ? [.unapprove, .needsWork]
+                                     : [.approve, .needsWork]
+          }
+          // who can merge?
+          return []
+        default:
+          return []
+      }
     }
     
     func matchRemote(url: URL) -> Bool
@@ -284,8 +311,11 @@ extension BitbucketServerAPI: PullRequestService
         return
       }
       
-      let result = requests.values.map { PullRequest(request: $0) }
+      let result = requests.values.map { PullRequest(request: $0, service: self) }
       
+      for request in result {
+        print("\(request.status): \(request.displayName)")
+      }
       callback(result)
     }
   }

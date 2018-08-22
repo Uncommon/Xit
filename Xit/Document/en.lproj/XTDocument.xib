@@ -83,35 +83,54 @@
                                                                             <rect key="frame" x="0.0" y="2" width="14" height="14"/>
                                                                             <imageCell key="cell" refusesFirstResponder="YES" imageScaling="proportionallyDown" image="NSActionTemplate" id="yfB-De-qam"/>
                                                                         </imageView>
-                                                                        <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ipC-oU-fy5" customClass="ExpansionTextField" customModule="Xit" customModuleProvider="target">
-                                                                            <rect key="frame" x="19" y="0.0" width="104" height="17"/>
+                                                                        <textField verticalHuggingPriority="750" ambiguous="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ipC-oU-fy5" customClass="ExpansionTextField" customModule="Xit" customModuleProvider="target">
+                                                                            <rect key="frame" x="19" y="0.0" width="98" height="17"/>
                                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="TgA-S6-Vxp">
                                                                                 <font key="font" metaFont="system"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                             </textFieldCell>
                                                                         </textField>
-                                                                        <button horizontalHuggingPriority="260" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="Gz6-jH-4NK" customClass="LabelButton" customModule="Xit" customModuleProvider="target">
-                                                                            <rect key="frame" x="128" y="0.0" width="44" height="17"/>
+                                                                        <button horizontalHuggingPriority="260" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Gz6-jH-4NK" customClass="LabelButton" customModule="Xit" customModuleProvider="target">
+                                                                            <rect key="frame" x="122" y="0.0" width="44" height="17"/>
                                                                             <buttonCell key="cell" type="inline" title="10▸10" bezelStyle="inline" alignment="center" borderStyle="border" inset="2" id="Cf5-ns-faK">
                                                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                                 <font key="font" metaFont="smallSystemBold"/>
                                                                             </buttonCell>
                                                                         </button>
-                                                                        <button translatesAutoresizingMaskIntoConstraints="NO" id="TsV-Hr-s70">
-                                                                            <rect key="frame" x="179" y="1" width="20" height="16"/>
-                                                                            <constraints>
-                                                                                <constraint firstAttribute="width" constant="20" id="2Bk-Vo-3nG"/>
-                                                                                <constraint firstAttribute="height" constant="16" id="ZVt-7M-78h"/>
-                                                                            </constraints>
-                                                                            <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="pullRequestTemplate" imagePosition="left" inset="2" id="yIh-JO-UWu">
-                                                                                <behavior key="behavior" lightByContents="YES"/>
-                                                                                <font key="font" metaFont="system"/>
-                                                                            </buttonCell>
-                                                                            <connections>
-                                                                                <action selector="pullRequestClicked:" target="aFR-LL-LwM" id="Plg-dV-kpH"/>
-                                                                            </connections>
-                                                                        </button>
+                                                                        <popUpButton ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5B4-Tv-imJ">
+                                                                            <rect key="frame" x="173" y="3" width="26" height="12"/>
+                                                                            <popUpButtonCell key="cell" type="bevel" bezelStyle="rounded" imagePosition="only" alignment="left" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" pullsDown="YES" arrowPosition="noArrow" id="GqV-sx-Hzo">
+                                                                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                                                <font key="font" metaFont="menu"/>
+                                                                                <menu key="menu" id="qbF-h5-Arb">
+                                                                                    <items>
+                                                                                        <menuItem state="on" image="pullRequestTemplate" hidden="YES" id="oSQ-xS-h6t"/>
+                                                                                        <menuItem title="View web page" id="lJm-jW-UlU">
+                                                                                            <connections>
+                                                                                                <action selector="viewPRWebPage:" target="BRo-bm-Y6k" id="yiY-xy-wNi"/>
+                                                                                            </connections>
+                                                                                        </menuItem>
+                                                                                        <menuItem isSeparatorItem="YES" id="ldd-xo-3Wo"/>
+                                                                                        <menuItem title="Approve" id="I6V-Oe-IuT">
+                                                                                            <connections>
+                                                                                                <action selector="approvePR:" target="BRo-bm-Y6k" id="EMn-z2-eNz"/>
+                                                                                            </connections>
+                                                                                        </menuItem>
+                                                                                        <menuItem title="Unapprove" id="8DE-fT-yiO">
+                                                                                            <connections>
+                                                                                                <action selector="unapprovePR:" target="BRo-bm-Y6k" id="nO8-Gn-77g"/>
+                                                                                            </connections>
+                                                                                        </menuItem>
+                                                                                        <menuItem title="Needs Work" id="Uen-R3-5ps">
+                                                                                            <connections>
+                                                                                                <action selector="prNeedsWork:" target="BRo-bm-Y6k" id="Vdb-iY-b1m"/>
+                                                                                            </connections>
+                                                                                        </menuItem>
+                                                                                    </items>
+                                                                                </menu>
+                                                                            </popUpButtonCell>
+                                                                        </popUpButton>
                                                                         <customView translatesAutoresizingMaskIntoConstraints="NO" id="zlI-5H-KrJ">
                                                                             <rect key="frame" x="206" y="1" width="20" height="16"/>
                                                                             <subviews>
@@ -166,7 +185,7 @@
                                                                 <outlet property="buttonContainer" destination="zlI-5H-KrJ" id="G7f-DP-zES"/>
                                                                 <outlet property="imageView" destination="K1A-hb-UQc" id="tbv-6C-MAV"/>
                                                                 <outlet property="missingImage" destination="pvX-qW-6kP" id="eqH-aH-WHx"/>
-                                                                <outlet property="pullRequestButton" destination="TsV-Hr-s70" id="E5r-zG-ZZ0"/>
+                                                                <outlet property="pullRequestButton" destination="5B4-Tv-imJ" id="f3s-T6-KRF"/>
                                                                 <outlet property="statusButton" destination="XN1-7Z-pLX" id="0ML-yF-XuQ"/>
                                                                 <outlet property="statusText" destination="Gz6-jH-4NK" id="WKp-el-Lfq"/>
                                                                 <outlet property="textField" destination="ipC-oU-fy5" id="4XV-ID-ovG"/>
