@@ -40,6 +40,10 @@ extension XTRepository: CommitReferencing
       return 0
     }
     
+    objc_sync_enter(self)
+    defer {
+      objc_sync_exit(self)
+    }
     refsIndex.removeAll()
     git_reference_foreach(gitRepo, callback, &payload)
   }
@@ -47,6 +51,10 @@ extension XTRepository: CommitReferencing
   /// Returns a list of refs that point to the given commit.
   public func refs(at sha: String) -> [String]
   {
+    objc_sync_enter(self)
+    defer {
+      objc_sync_exit(self)
+    }
     return refsIndex[sha] ?? []
   }
   
