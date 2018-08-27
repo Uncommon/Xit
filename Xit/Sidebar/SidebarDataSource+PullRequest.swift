@@ -77,7 +77,7 @@ extension SideBarDataSource: PullRequestClient
   {
     guard let pullRequest = pullRequest(for: item)
     else {
-      view.pullRequestButton.isHidden = true
+      view.prContanier.isHidden = true
       return
     }
     
