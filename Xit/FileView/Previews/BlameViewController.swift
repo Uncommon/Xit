@@ -9,9 +9,6 @@ class BlameViewController: WebViewController
   let actionDelegate: BlameActionDelegate
   
   weak var repoController: RepositoryController!
-  {
-    return view.window?.windowController as? RepositoryController
-  }
   
   class CommitColoring
   {
@@ -51,6 +48,13 @@ class BlameViewController: WebViewController
   required init?(coder: NSCoder)
   {
     fatalError("init(coder:) has not been implemented")
+  }
+  
+  override func loadView()
+  {
+    super.loadView()
+    
+    repoController = view.window?.windowController as? RepositoryController
   }
   
   override func loadNotice(_ text: String)
