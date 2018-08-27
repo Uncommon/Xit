@@ -59,16 +59,16 @@ extension SideBarDataSource: PullRequestClient
 
     for item in popup.itemArray {
       switch item.action {
-      case #selector(SidebarTableCellView.viewPRWebPage(_:)):
-        item.isHidden = pullRequest.webURL == nil
-      case #selector(SidebarTableCellView.approvePR(_:)):
-        item.isHidden = !actions.contains(.approve)
-      case #selector(SidebarTableCellView.unapprovePR(_:)):
-        item.isHidden = !actions.contains(.unapprove)
-      case #selector(SidebarTableCellView.prNeedsWork(_:)):
-        item.isHidden = !actions.contains(.needsWork)
-      default:
-        break
+        case #selector(SidebarTableCellView.viewPRWebPage(_:)):
+          item.isHidden = pullRequest.webURL == nil
+        case #selector(SidebarTableCellView.approvePR(_:)):
+          item.isHidden = !actions.contains(.approve)
+        case #selector(SidebarTableCellView.unapprovePR(_:)):
+          item.isHidden = !actions.contains(.unapprove)
+        case #selector(SidebarTableCellView.prNeedsWork(_:)):
+          item.isHidden = !actions.contains(.needsWork)
+        default:
+          break
       }
     }
   }

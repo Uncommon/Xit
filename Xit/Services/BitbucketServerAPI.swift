@@ -389,8 +389,8 @@ extension BitbucketServerAPI: PullRequestService
     let resource = self.resource(pullRequestPath(request) + "merge")
     
     resource.request(.post).onCompletion {
-      (info) in
-      
+      (_) in
+      // to be implemented
     }
   }
 }
