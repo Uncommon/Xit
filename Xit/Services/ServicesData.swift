@@ -27,6 +27,8 @@ extension PullRequest
 enum PullRequestStatus
 {
   case open
+  case approved
+  case needsWork
   case inactive
   case merged
   case other

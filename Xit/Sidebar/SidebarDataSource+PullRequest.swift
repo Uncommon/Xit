@@ -32,6 +32,47 @@ extension SideBarDataSource: PullRequestClient
     })
   }
   
+  func prStatusImage(status: PullRequestStatus) -> NSImage?
+  {
+    let statusImageName: NSImage.Name?
+    
+    switch status {
+      case .open:
+        statusImageName = nil
+      case .approved:
+        statusImageName = .prApproved
+      case .needsWork:
+        statusImageName = .prNeedsWork
+      case .merged:
+        statusImageName = .prMerged
+      case .inactive:
+        statusImageName = .prClosed
+      case .other:
+        statusImageName = nil
+    }
+    return statusImageName.flatMap { NSImage(named: $0) }
+  }
+  
+  func updatePullRequestMenu(popup: NSPopUpButton, pullRequest: PullRequest)
+  {
+    let actions = pullRequest.availableActions
+
+    for item in popup.itemArray {
+      switch item.action {
+      case #selector(SidebarTableCellView.viewPRWebPage(_:)):
+        item.isHidden = pullRequest.webURL == nil
+      case #selector(SidebarTableCellView.approvePR(_:)):
+        item.isHidden = !actions.contains(.approve)
+      case #selector(SidebarTableCellView.unapprovePR(_:)):
+        item.isHidden = !actions.contains(.unapprove)
+      case #selector(SidebarTableCellView.prNeedsWork(_:)):
+        item.isHidden = !actions.contains(.needsWork)
+      default:
+        break
+      }
+    }
+  }
+  
   func updatePullRequestButton(item: SidebarItem, view: SidebarTableCellView)
   {
     guard let pullRequest = pullRequest(for: item)
@@ -39,25 +80,12 @@ extension SideBarDataSource: PullRequestClient
       view.pullRequestButton.isHidden = true
       return
     }
-    let actions = pullRequest.availableActions
     
-    view.pullRequestButton.isHidden = false
+    view.prContanier.isHidden = false
     view.pullRequestButton.toolTip = pullRequest.displayName
-    // change the icon/badge depending on the state
-    for item in view.pullRequestButton.itemArray {
-      switch item.action {
-        case #selector(SidebarTableCellView.viewPRWebPage(_:)):
-          item.isHidden = pullRequest.webURL == nil
-        case #selector(SidebarTableCellView.approvePR(_:)):
-          item.isHidden = !actions.contains(.approve)
-        case #selector(SidebarTableCellView.unapprovePR(_:)):
-          item.isHidden = !actions.contains(.unapprove)
-        case #selector(SidebarTableCellView.prNeedsWork(_:)):
-          item.isHidden = !actions.contains(.needsWork)
-        default:
-          break
-      }
-    }
+    view.prStatusImage.image = prStatusImage(status: pullRequest.status)
+    updatePullRequestMenu(popup: view.pullRequestButton,
+                          pullRequest: pullRequest)
   }
   
   func viewPRWebPage(item: SidebarItem)
