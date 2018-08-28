@@ -1,4 +1,5 @@
 import Foundation
+import Siesta
 
 protocol PullRequest
 {
@@ -8,7 +9,7 @@ protocol PullRequest
   var displayName: String { get }
   var id: String { get }
   var authorName: String? { get }
-  var status: PullRequestStatus { get }
+  var status: PullRequestStatus { get set }
   var webURL: URL? { get }
   var availableActions: PullRequestActions { get }
 
@@ -44,9 +45,15 @@ protocol PullRequestService: RemoteService
 {
   func getPullRequests(callback: @escaping ([Xit.PullRequest]) -> Void)
   
-  func approve(request: PullRequest)
-  func unapprove(request: PullRequest)
-  func needsWork(request: PullRequest)
+  func approve(request: PullRequest,
+               onSuccess: @escaping () -> Void,
+               onFailure: @escaping (RequestError) -> Void)
+  func unapprove(request: PullRequest,
+                 onSuccess: @escaping () -> Void,
+                 onFailure: @escaping (RequestError) -> Void)
+  func needsWork(request: PullRequest,
+                 onSuccess: @escaping () -> Void,
+                 onFailure: @escaping (RequestError) -> Void)
   func merge(request: PullRequest)
 }
 

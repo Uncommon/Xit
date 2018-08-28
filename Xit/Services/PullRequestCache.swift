@@ -67,12 +67,36 @@ class PullRequestCache
             branchMap[request.sourceBranch] = [request]
           }
         }
-        for clientWrapper in self.clients {
+        self.forEachClient {
+          (client) in
           for (branch, requests) in branchMap {
-            clientWrapper.client?.pullRequestUpdated(branch: branch,
-                                                     requests: requests)
+            client.pullRequestUpdated(branch: branch, requests: requests)
           }
         }
+      }
+    }
+  }
+  
+  func update(pullRequestID: String, status: PullRequestStatus)
+  {
+    if let requestIndex = requests.index(where: { $0.id == pullRequestID }) {
+      requests[requestIndex].status = status
+      
+      let request = requests[requestIndex]
+      
+      forEachClient {
+        (client) in
+        client.pullRequestUpdated(branch: request.sourceBranch,
+                                  requests: [request])
+      }
+    }
+  }
+  
+  func forEachClient(_ action: (PullRequestClient) -> Void)
+  {
+    for clientWrapper in clients {
+      if let client = clientWrapper.client {
+        action(client)
       }
     }
   }

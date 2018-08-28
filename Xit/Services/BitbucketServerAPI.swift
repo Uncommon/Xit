@@ -108,7 +108,7 @@ enum BitbucketServer
     let version: Int
     let title: String
     let description: String?
-    let state: PullRequestState
+    var state: PullRequestState
     let open: Bool
     let closed: Bool
     let closedDate: Int?
@@ -132,7 +132,7 @@ class BitbucketServerAPI: BasicAuthService, ServiceAPI
   
   struct PullRequest: Xit.PullRequest
   {
-    let request: BitbucketServer.PullRequest
+    var request: BitbucketServer.PullRequest
     let bitbucketService: BitbucketServerAPI
     
     var service: PullRequestService { return bitbucketService }
@@ -155,15 +155,29 @@ class BitbucketServerAPI: BasicAuthService, ServiceAPI
     var authorName: String? { return request.author.user.displayName }
     var status: PullRequestStatus
     {
-      switch request.state {
-        case .open:
-          return .open
-        case .declined:
-          return .inactive
-        case .merged:
-          return .merged
-        default:
-          return .other
+      get {
+        switch request.state {
+          case .open:
+            return .open
+          case .declined:
+            return .inactive
+          case .merged:
+            return .merged
+          default:
+            return .other
+        }
+      }
+      set {
+        switch newValue {
+          case .open:
+            request.state = .open
+          case .inactive:
+            request.state = .declined
+          case .merged:
+            request.state = .merged
+          default:
+            break
+        }
       }
     }
     var webURL: URL?
@@ -328,7 +342,9 @@ extension BitbucketServerAPI: PullRequestService
   }
   
   func update(request: PullRequest, approved: Bool,
-              status: BitbucketServer.ReviewerStatus)
+              status: BitbucketServer.ReviewerStatus,
+              onSuccess: @escaping () -> Void,
+              onFailure: @escaping (RequestError) -> Void)
   {
     guard let userSlug = user?.slug
     else {
@@ -346,37 +362,44 @@ extension BitbucketServerAPI: PullRequestService
       (info) in
       switch info.response {
         case .success:
-          print("pr update success")
-          // update the pull request
+          onSuccess()
         case .failure(let error):
-          print("pr update failure: \(error)")
-          // display the error
+          onFailure(error)
       }
     }
   }
   
-  func approve(request: Xit.PullRequest)
+  func approve(request: Xit.PullRequest,
+               onSuccess: @escaping () -> Void,
+               onFailure: @escaping (RequestError) -> Void)
   {
     guard let bbRequest = request as? PullRequest
     else { return }
     
-    update(request: bbRequest, approved: true, status: .approved)
+    update(request: bbRequest, approved: true, status: .approved,
+           onSuccess: onSuccess, onFailure: onFailure)
   }
   
-  func unapprove(request: Xit.PullRequest)
+  func unapprove(request: Xit.PullRequest,
+                 onSuccess: @escaping () -> Void,
+                 onFailure: @escaping (RequestError) -> Void)
   {
     guard let bbRequest = request as? PullRequest
     else { return }
     
-    update(request: bbRequest, approved: false, status: .unapproved)
+    update(request: bbRequest, approved: false, status: .unapproved,
+           onSuccess: onSuccess, onFailure: onFailure)
   }
   
-  func needsWork(request: Xit.PullRequest)
+  func needsWork(request: Xit.PullRequest,
+                 onSuccess: @escaping () -> Void,
+                 onFailure: @escaping (RequestError) -> Void)
   {
     guard let bbRequest = request as? PullRequest
     else { return }
     
-    update(request: bbRequest, approved: false, status: .needsWork)
+    update(request: bbRequest, approved: false, status: .needsWork,
+           onSuccess: onSuccess, onFailure: onFailure)
   }
   
   func merge(request: Xit.PullRequest)

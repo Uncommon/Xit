@@ -102,7 +102,10 @@ extension SideBarDataSource: PullRequestClient
     guard let pullRequest = pullRequest(for: item)
     else { return }
     
-    pullRequest.service.approve(request: pullRequest)
+    pullRequest.service.approve(
+        request: pullRequest,
+        onSuccess: { self.prActionSucceeded(item: item, newStatus: .approved) },
+        onFailure: { error in self.prActionFailed(item: item, error: error) })
   }
   
   func unapprovePR(item: SidebarItem)
@@ -110,7 +113,10 @@ extension SideBarDataSource: PullRequestClient
     guard let pullRequest = pullRequest(for: item)
     else { return }
     
-    pullRequest.service.unapprove(request: pullRequest)
+    pullRequest.service.unapprove(
+        request: pullRequest,
+        onSuccess: { self.prActionSucceeded(item: item, newStatus: .open) },
+        onFailure: { error in self.prActionFailed(item: item, error: error) })
   }
   
   func prNeedsWork(item: SidebarItem)
@@ -118,6 +124,26 @@ extension SideBarDataSource: PullRequestClient
     guard let pullRequest = pullRequest(for: item)
     else { return }
     
-    pullRequest.service.needsWork(request: pullRequest)
+    pullRequest.service.needsWork(
+        request: pullRequest,
+        onSuccess: { self.prActionSucceeded(item: item, newStatus: .needsWork) },
+        onFailure: { error in self.prActionFailed(item: item, error: error) })
+  }
+  
+  func prActionSucceeded(item: SidebarItem, newStatus: PullRequestStatus)
+  {
+    // update the PR cache
+    // refresh the item
+  }
+  
+  func prActionFailed(item: SidebarItem, error: Error)
+  {
+    guard let window = viewController.view.window
+    else { return }
+    let alert = NSAlert()
+    
+    alert.messageText = "Pull request action failed."
+    alert.informativeText = (error as CustomStringConvertible).description
+    alert.beginSheetModal(for: window, completionHandler: nil)
   }
 }
