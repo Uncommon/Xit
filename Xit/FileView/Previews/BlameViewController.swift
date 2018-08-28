@@ -1,4 +1,5 @@
 import Foundation
+import Cocoa
 
 class BlameViewController: WebViewController
 {
@@ -8,7 +9,20 @@ class BlameViewController: WebViewController
   // swiftlint:disable:next weak_delegate
   let actionDelegate: BlameActionDelegate
   
-  weak var repoController: RepositoryController!
+  var repoController: RepositoryController?
+  {
+    let window: NSWindow?
+    
+    if Thread.isMainThread {
+      window = view.window
+    }
+    else {
+      window = DispatchQueue.main.sync {
+        return view.window
+      }
+    }
+    return window?.windowController as? RepositoryController
+  }
   
   class CommitColoring
   {
@@ -48,13 +62,6 @@ class BlameViewController: WebViewController
   required init?(coder: NSCoder)
   {
     fatalError("init(coder:) has not been implemented")
-  }
-  
-  override func loadView()
-  {
-    super.loadView()
-    
-    repoController = view.window?.windowController as? RepositoryController
   }
   
   override func loadNotice(_ text: String)
@@ -182,7 +189,7 @@ extension BlameViewController: XTFileContentController
   
   public func load(path: String!, fileList: FileListModel)
   {
-    repoController.queue.executeOffMainThread {
+    repoController?.queue.executeOffMainThread {
       [weak self] in
       guard let myself = self
       else { return }
@@ -231,6 +238,6 @@ class BlameActionDelegate: NSObject
   @objc(selectSHA:)
   func select(sha: String)
   {
-    controller?.repoController.select(sha: sha)
+    controller?.repoController?.select(sha: sha)
   }
 }
