@@ -294,7 +294,8 @@ extension XTFileDiffController: XTFileContentController
     }
   }
   
-  public func load(path: String!, fileList: FileListModel)
+  public func load(path: String!, selection: RepositorySelection,
+                   fileList: FileListModel)
   {
     self.stagingType = fileList.stagingType
     loadOrNotify(diffResult: fileList.diffForFile(path))

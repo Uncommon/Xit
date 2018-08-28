@@ -29,7 +29,8 @@ extension XTPreviewController: XTFileContentController
     isLoaded = false
   }
   
-  public func load(path: String!, fileList: FileListModel)
+  public func load(path: String!, selection: RepositorySelection,
+                   fileList: FileListModel)
   {
     let qlView = self.qlView
   

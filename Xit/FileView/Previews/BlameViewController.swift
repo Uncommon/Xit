@@ -79,7 +79,8 @@ class BlameViewController: WebViewController
     }
   }
   
-  func loadBlame(text: String, path: String, fileList: FileListModel)
+  func loadBlame(text: String, path: String,
+                 selection: RepositorySelection, fileList: FileListModel)
   {
     defer {
       DispatchQueue.main.async {
@@ -97,7 +98,7 @@ class BlameViewController: WebViewController
     
     var htmlLines = [String]()
     let lines = text.lineComponents()
-    let selectOID: GitOID? = fileList.selection.shaToSelect.map { GitOID(sha: $0) }
+    let selectOID: GitOID? = selection.shaToSelect.map { GitOID(sha: $0) }
                              ?? nil
     let currentOID = selectOID ?? GitOID.zero()
     let dateFormatter = DateFormatter()
@@ -187,7 +188,9 @@ extension BlameViewController: XTFileContentController
     isLoaded = false
   }
   
-  public func load(path: String!, fileList: FileListModel)
+  public func load(path: String!,
+                   selection: RepositorySelection,
+                   fileList: FileListModel)
   {
     repoController?.queue.executeOffMainThread {
       [weak self] in
@@ -206,7 +209,8 @@ extension BlameViewController: XTFileContentController
         myself.spinner.startAnimation(nil)
         myself.clear()
       }
-      myself.loadBlame(text: text, path: path, fileList: fileList)
+      myself.loadBlame(text: text, path: path,
+                       selection: selection, fileList: fileList)
     }
   }
 }

@@ -329,7 +329,9 @@ class FileViewController: NSViewController
     updatePreviewPath(selectedChange.gitPath,
                       isFolder: activeFileList.isExpandable(selectedItem))
     repo.queue.executeOffMainThread {
-      self.contentController.load(path: selectedChange.gitPath, fileList: list)
+      self.contentController.load(path: selectedChange.gitPath,
+                                  selection: repoSelection,
+                                  fileList: list)
     }
 
     let fullPath = repo.repoURL.path.appending(
