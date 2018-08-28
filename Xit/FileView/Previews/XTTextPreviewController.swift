@@ -47,9 +47,8 @@ extension XTTextPreviewController: XTFileContentController
     isLoaded = false
   }
   
-  public func load(path: String!, selection: RepositorySelection,
-                   fileList: FileListModel)
+  public func load(selection: FileSelection)
   {
-    load(data: fileList.dataForFile(path))
+    load(data: selection.fileList.dataForFile(selection.path))
   }
 }

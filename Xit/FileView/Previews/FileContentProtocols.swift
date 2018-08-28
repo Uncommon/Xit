@@ -6,14 +6,28 @@ protocol XTFileContentController
   /// Clears the display for when nothing is selected.
   func clear()
   /// Displays the content from the given selection.
-  /// - parameter path: The repository-relative file path.
-  /// - parameter selection: The selection context.
-  /// - parameter fileList: The file list to read data from.
-  func load(path: String!,
-            selection: RepositorySelection,
-            fileList: FileListModel)
+  func load(selection: FileSelection)
   /// True if the controller has content loaded.
   var isLoaded: Bool { get }
+}
+
+struct FileSelection: Equatable
+{
+  let repoSelection: RepositorySelection
+  let path: String
+  let staging: StagingType
+  
+  var fileList: FileListModel
+  {
+    return repoSelection.list(staged: staging == .index)
+  }
+
+  static func == (lhs: FileSelection, rhs: FileSelection) -> Bool
+  {
+    return lhs.repoSelection == rhs.repoSelection &&
+           lhs.path == rhs.path &&
+           lhs.staging == rhs.staging
+  }
 }
 
 protocol WhitespaceVariable: class

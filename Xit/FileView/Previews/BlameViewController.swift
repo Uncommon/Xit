@@ -9,6 +9,8 @@ class BlameViewController: WebViewController
   // swiftlint:disable:next weak_delegate
   let actionDelegate: BlameActionDelegate
   
+  var currentSelection: FileSelection?
+  
   var repoController: RepositoryController?
   {
     let window: NSWindow?
@@ -188,15 +190,18 @@ extension BlameViewController: XTFileContentController
     isLoaded = false
   }
   
-  public func load(path: String!,
-                   selection: RepositorySelection,
-                   fileList: FileListModel)
+  public func load(selection: FileSelection)
   {
+    guard selection != currentSelection
+    else { return }
+    
+    currentSelection = selection
     repoController?.queue.executeOffMainThread {
       [weak self] in
       guard let myself = self
       else { return }
-      guard let data = fileList.dataForFile(path),
+      let fileList = selection.fileList
+      guard let data = fileList.dataForFile(selection.path),
             let text = String(data: data, encoding: .utf8) ??
                        String(data: data, encoding: .utf16)
       else {
@@ -209,8 +214,8 @@ extension BlameViewController: XTFileContentController
         myself.spinner.startAnimation(nil)
         myself.clear()
       }
-      myself.loadBlame(text: text, path: path,
-                       selection: selection, fileList: fileList)
+      myself.loadBlame(text: text, path: selection.path,
+                       selection: selection.repoSelection, fileList: fileList)
     }
   }
 }
