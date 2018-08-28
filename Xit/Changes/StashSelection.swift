@@ -33,7 +33,7 @@ class StashSelection: StagedUnstagedSelection
 /// Base class for stash file lists
 class StashFileList
 {
-  let stashSelection: StashSelection
+  weak var stashSelection: StashSelection!
   var selection: RepositorySelection { return stashSelection }
   
   let mainSelection: CommitSelection?
