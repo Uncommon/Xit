@@ -10,15 +10,21 @@ protocol PullRequest
   var id: String { get }
   var authorName: String? { get }
   var status: PullRequestStatus { get set }
+  var userApproval: PullRequestApproval { get }
   var webURL: URL? { get }
   var availableActions: PullRequestActions { get }
 
   func matchRemote(url: URL) -> Bool
-  func isApproved(by userID: String) -> Bool
+  func reviewerStatus(userID: String) -> PullRequestApproval
 }
 
 extension PullRequest
 {
+  var userApproval: PullRequestApproval
+  {
+    return reviewerStatus(userID: service.userID)
+  }
+  
   func matchRemote(url: URL) -> Bool
   {
     return sourceRepo == url
@@ -28,20 +34,33 @@ extension PullRequest
 enum PullRequestStatus
 {
   case open
-  case approved
-  case needsWork
   case inactive
   case merged
   case other
 }
 
+enum PullRequestApproval
+{
+  case approved
+  case needsWork
+  case unreviewed
+}
+
+/// A service that is related to specific remote repositories
 protocol RemoteService
 {
   /// True if the remote URL would be hosted on this service
   func match(remote: Remote) -> Bool
 }
 
-protocol PullRequestService: RemoteService
+/// A service with an identifier for the logged-in user
+protocol UserIDService
+{
+  var userID: String { get }
+}
+
+/// A service that manages pull requests
+protocol PullRequestService: RemoteService, UserIDService
 {
   func getPullRequests(callback: @escaping ([Xit.PullRequest]) -> Void)
   

@@ -221,9 +221,20 @@ class BitbucketServerAPI: BasicAuthService, ServiceAPI
       return link.href == url.absoluteString
     }
     
-    func isApproved(by userID: String) -> Bool
+    func reviewerStatus(userID: String) -> PullRequestApproval
     {
-      return request.reviewers.contains { $0.approved && $0.user.slug == userID }
+      guard let reviewer = request.reviewers
+                                  .first(where: { $0.user.slug == userID })
+      else { return .unreviewed }
+      
+      switch reviewer.status {
+        case .approved:
+          return .approved
+        case .unapproved:
+          return .unreviewed
+        case .needsWork:
+          return .needsWork
+      }
     }
   }
   
@@ -312,6 +323,8 @@ extension BitbucketServerAPI: RemoteService
 
 extension BitbucketServerAPI: PullRequestService
 {
+  var userID: String { return user?.slug ?? "" }
+  
   func getPullRequests(callback: @escaping ([Xit.PullRequest]) -> Void)
   {
     pullRequests().useData(owner: self) {

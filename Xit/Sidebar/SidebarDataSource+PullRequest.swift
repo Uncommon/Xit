@@ -32,24 +32,29 @@ extension SideBarDataSource: PullRequestClient
     })
   }
   
-  func prStatusImage(status: PullRequestStatus) -> NSImage?
+  func prStatusImage(status: PullRequestStatus,
+                     approval: PullRequestApproval) -> NSImage?
   {
     let statusImageName: NSImage.Name?
     
-    switch status {
-      case .open:
-        statusImageName = nil
+    switch approval {
       case .approved:
         statusImageName = .prApproved
       case .needsWork:
         statusImageName = .prNeedsWork
-      case .merged:
-        statusImageName = .prMerged
-      case .inactive:
-        statusImageName = .prClosed
-      case .other:
-        statusImageName = nil
+      case .unreviewed:
+        switch status {
+          case .open:
+            statusImageName = nil
+          case .merged:
+            statusImageName = .prMerged
+          case .inactive:
+            statusImageName = .prClosed
+          case .other:
+            statusImageName = nil
+        }
     }
+    
     return statusImageName.flatMap { NSImage(named: $0) }
   }
   
@@ -83,7 +88,8 @@ extension SideBarDataSource: PullRequestClient
     
     view.prContanier.isHidden = false
     view.pullRequestButton.toolTip = pullRequest.displayName
-    view.prStatusImage.image = prStatusImage(status: pullRequest.status)
+    view.prStatusImage.image = prStatusImage(status: pullRequest.status,
+                                             approval: pullRequest.userApproval)
     updatePullRequestMenu(popup: view.pullRequestButton,
                           pullRequest: pullRequest)
   }
@@ -104,7 +110,7 @@ extension SideBarDataSource: PullRequestClient
     
     pullRequest.service.approve(
         request: pullRequest,
-        onSuccess: { self.prActionSucceeded(item: item, newStatus: .approved) },
+        onSuccess: { self.prActionSucceeded(item: item) },
         onFailure: { error in self.prActionFailed(item: item, error: error) })
   }
   
@@ -115,7 +121,7 @@ extension SideBarDataSource: PullRequestClient
     
     pullRequest.service.unapprove(
         request: pullRequest,
-        onSuccess: { self.prActionSucceeded(item: item, newStatus: .open) },
+        onSuccess: { self.prActionSucceeded(item: item) },
         onFailure: { error in self.prActionFailed(item: item, error: error) })
   }
   
@@ -126,11 +132,11 @@ extension SideBarDataSource: PullRequestClient
     
     pullRequest.service.needsWork(
         request: pullRequest,
-        onSuccess: { self.prActionSucceeded(item: item, newStatus: .needsWork) },
+        onSuccess: { self.prActionSucceeded(item: item) },
         onFailure: { error in self.prActionFailed(item: item, error: error) })
   }
   
-  func prActionSucceeded(item: SidebarItem, newStatus: PullRequestStatus)
+  func prActionSucceeded(item: SidebarItem)
   {
     // update the PR cache
     // refresh the item
