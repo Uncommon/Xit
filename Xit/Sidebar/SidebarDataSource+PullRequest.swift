@@ -37,22 +37,22 @@ extension SideBarDataSource: PullRequestClient
   {
     let statusImageName: NSImage.Name?
     
-    switch approval {
-      case .approved:
-        statusImageName = .prApproved
-      case .needsWork:
-        statusImageName = .prNeedsWork
-      case .unreviewed:
-        switch status {
-          case .open:
-            statusImageName = nil
-          case .merged:
-            statusImageName = .prMerged
-          case .inactive:
-            statusImageName = .prClosed
-          case .other:
+    switch status {
+      case .open:
+        switch approval {
+          case .approved:
+            statusImageName = .prApproved
+          case .needsWork:
+            statusImageName = .prNeedsWork
+          case .unreviewed:
             statusImageName = nil
         }
+      case .merged:
+        statusImageName = .prMerged
+      case .inactive:
+        statusImageName = .prClosed
+      case .other:
+        statusImageName = nil
     }
     
     return statusImageName.flatMap { NSImage(named: $0) }
