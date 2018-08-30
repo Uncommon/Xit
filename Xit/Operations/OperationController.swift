@@ -25,6 +25,9 @@ class OperationController: NSObject
     windowController?.operationEnded(self)
   }
   
+  /// Override to suppress errors.
+  func shoudReport(error: NSError) -> Bool { return true }
+  
   /// Executes the given block, handling errors and updating status.
   func tryRepoOperation(successStatus: String,
                         failureStatus: String,
@@ -39,6 +42,11 @@ class OperationController: NSObject
         // The command shouldn't have been enabled if this was going to happen
       }
       catch let error as NSError {
+        defer {
+          self?.ended()
+        }
+        guard self?.shoudReport(error: error) ?? false
+        else { return }
         let gitError = giterr_last()
         
         DispatchQueue.main.async {

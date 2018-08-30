@@ -45,7 +45,7 @@ extension XTRepository
       -> GTCredentialProvider
   {
     return GTCredentialProvider {
-      (type, urlString, user) -> GTCredential in
+      (type, urlString, user) -> GTCredential? in
       if checkCredentialType(type, flag: .sshKey) {
         return sshCredential(user) ?? GTCredential()
       }
@@ -63,12 +63,12 @@ extension XTRepository
         }
       }
       
-      if let (userName, password) = passwordBlock(),
-         let result = try? GTCredential(userName: userName,
-                                        password: password) {
-        return result
-      }
-      return GTCredential()
+      guard let (userName, password) = passwordBlock(),
+            let result = try? GTCredential(userName: userName,
+                                           password: password)
+      else { return nil }
+
+      return result
     }
   }
   
