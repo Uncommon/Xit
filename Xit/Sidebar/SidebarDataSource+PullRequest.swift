@@ -4,7 +4,11 @@ extension SideBarDataSource: PullRequestClient
 {
   func pullRequestUpdated(branch: String, requests: [PullRequest])
   {
-    scheduleReload()
+    DispatchQueue.main.async {
+      if let item = self.item(forBranchName: branch) {
+        self.outline.reloadItem(item)
+      }
+    }
   }
   
   func pullRequest(for item: SidebarItem?) -> PullRequest?
