@@ -177,9 +177,15 @@ extension SideBarDataSource: NSOutlineViewDelegate
           dataView.statusButton.action =
               #selector(self.missingTrackingBranch(_:))
           dataView.missingImage.isHidden = false
+          dataView.statusButton.isEnabled = true
+          (dataView.statusButton.cell as? NSButtonCell)?
+              .imageDimsWhenDisabled = true
         case .set(let tracking):
           dataView.statusButton.image = NSImage(named: .xtTracking)
           dataView.statusButton.toolTip = tracking
+          dataView.statusButton.isEnabled = false
+          (dataView.statusButton.cell as? NSButtonCell)?
+              .imageDimsWhenDisabled = false
       }
     }
   }
