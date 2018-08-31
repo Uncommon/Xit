@@ -60,6 +60,7 @@ let XTChangedRefsKey = "changedRefs"
     makePackedRefsWatcher()
     makeConfigWatcher()
     makeStashWatcher()
+    refsCache = index(refs: repository.allRefs())
   }
   
   func stop()

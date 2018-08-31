@@ -324,12 +324,14 @@ class FileViewController: NSViewController
       return
     }
     let staged = activeFileList === stagedListController.outlineView
-    let list = repoSelection.list(staged: staged)
 
     updatePreviewPath(selectedChange.gitPath,
                       isFolder: activeFileList.isExpandable(selectedItem))
     repo.queue.executeOffMainThread {
-      self.contentController.load(path: selectedChange.gitPath, fileList: list)
+      self.contentController.load(selection:
+          FileSelection(repoSelection: repoSelection,
+                        path: selectedChange.gitPath,
+                        staging: staged ? .index : .workspace))
     }
 
     let fullPath = repo.repoURL.path.appending(

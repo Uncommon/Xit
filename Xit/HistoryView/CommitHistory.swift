@@ -111,8 +111,11 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
   /// Clears the history list.
   public func reset()
   {
+    abort()
     commitLookup.removeAll()
+    objc_sync_enter(self)
     entries.removeAll()
+    objc_sync_exit(self)
     resetAbort()
   }
   
@@ -296,10 +299,14 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
                             0, 0, 0)
       DispatchQueue.concurrentPerform(iterations: batchSize) {
         (index) in
-        guard !checkAbort()
+        guard !checkAbort() && (index + batchStart < entries.count)
         else { return }
-        generateLines(entry: entries[index + batchStart],
-                      connections: connections[index])
+        
+        objc_sync_enter(self)
+        let entry = entries[index + batchStart]
+        objc_sync_exit(self)
+        
+        generateLines(entry: entry, connections: connections[index])
         postProgress?(batchSize, batchStart/batchSize, 1, index)
       }
       kdebug_signpost_end(Signposts.generateLines, UInt(batchStart),

@@ -4,7 +4,7 @@ import Foundation
 class StashSelection: StagedUnstagedSelection
 {
   internal(set) unowned var repository: FileChangesRepo
-  private(set) var stash: Stash
+  let stash: Stash
   var canCommit: Bool { return false }
   var shaToSelect: String? { return stash.mainCommit?.parentSHAs[0] }
   var fileList: FileListModel { return stagedList }
@@ -33,7 +33,7 @@ class StashSelection: StagedUnstagedSelection
 /// Base class for stash file lists
 class StashFileList
 {
-  let stashSelection: StashSelection
+  weak var stashSelection: StashSelection!
   var selection: RepositorySelection { return stashSelection }
   
   let mainSelection: CommitSelection?
@@ -62,7 +62,7 @@ class StashStagedList: StashFileList, FileListModel
   {
     return stash.indexCommit.map {
       repository.changes(for: $0.sha, parent: nil)
-      } ?? []
+    } ?? []
   }
 
   override init(selection: StashSelection)

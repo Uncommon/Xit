@@ -6,14 +6,18 @@ class PasswordOpController: SimpleOperationController
   /// User/password callback
   func getPassword() -> (String, String)?
   {
-    guard let window = windowController?.window
-    else { return nil }
-    
-    let panel = PasswordPanelController.controller()
     let semaphore = DispatchSemaphore(value: 0)
     var result: (String, String)? = nil
     
     DispatchQueue.main.async {
+      guard let window = self.windowController?.window
+      else {
+        _ = semaphore.signal()
+        return
+      }
+      
+      let panel = PasswordPanelController.controller()
+      
       window.beginSheet(panel.window!) { (response) in
         if response == .OK {
           result = (panel.userName, panel.password)

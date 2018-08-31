@@ -294,10 +294,10 @@ extension XTFileDiffController: XTFileContentController
     }
   }
   
-  public func load(path: String!, fileList: FileListModel)
+  public func load(selection: FileSelection)
   {
-    self.stagingType = fileList.stagingType
-    loadOrNotify(diffResult: fileList.diffForFile(path))
+    self.stagingType = selection.staging
+    loadOrNotify(diffResult: selection.fileList.diffForFile(selection.path))
   }
 }
 

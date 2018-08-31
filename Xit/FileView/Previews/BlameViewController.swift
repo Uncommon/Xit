@@ -1,4 +1,5 @@
 import Foundation
+import Cocoa
 
 class BlameViewController: WebViewController
 {
@@ -8,9 +9,21 @@ class BlameViewController: WebViewController
   // swiftlint:disable:next weak_delegate
   let actionDelegate: BlameActionDelegate
   
-  weak var repoController: RepositoryController!
+  var currentSelection: FileSelection?
+  
+  var repoController: RepositoryController?
   {
-    return view.window?.windowController as? RepositoryController
+    let window: NSWindow?
+    
+    if Thread.isMainThread {
+      window = view.window
+    }
+    else {
+      window = DispatchQueue.main.sync {
+        return view.window
+      }
+    }
+    return window?.windowController as? RepositoryController
   }
   
   class CommitColoring
@@ -68,7 +81,8 @@ class BlameViewController: WebViewController
     }
   }
   
-  func loadBlame(text: String, path: String, fileList: FileListModel)
+  func loadBlame(text: String, path: String,
+                 selection: RepositorySelection, fileList: FileListModel)
   {
     defer {
       DispatchQueue.main.async {
@@ -86,7 +100,7 @@ class BlameViewController: WebViewController
     
     var htmlLines = [String]()
     let lines = text.lineComponents()
-    let selectOID: GitOID? = fileList.selection.shaToSelect.map { GitOID(sha: $0) }
+    let selectOID: GitOID? = selection.shaToSelect.map { GitOID(sha: $0) }
                              ?? nil
     let currentOID = selectOID ?? GitOID.zero()
     let dateFormatter = DateFormatter()
@@ -176,13 +190,18 @@ extension BlameViewController: XTFileContentController
     isLoaded = false
   }
   
-  public func load(path: String!, fileList: FileListModel)
+  public func load(selection: FileSelection)
   {
-    repoController.queue.executeOffMainThread {
+    guard selection != currentSelection
+    else { return }
+    
+    currentSelection = selection
+    repoController?.queue.executeOffMainThread {
       [weak self] in
       guard let myself = self
       else { return }
-      guard let data = fileList.dataForFile(path),
+      let fileList = selection.fileList
+      guard let data = fileList.dataForFile(selection.path),
             let text = String(data: data, encoding: .utf8) ??
                        String(data: data, encoding: .utf16)
       else {
@@ -195,7 +214,8 @@ extension BlameViewController: XTFileContentController
         myself.spinner.startAnimation(nil)
         myself.clear()
       }
-      myself.loadBlame(text: text, path: path, fileList: fileList)
+      myself.loadBlame(text: text, path: selection.path,
+                       selection: selection.repoSelection, fileList: fileList)
     }
   }
 }
@@ -227,6 +247,6 @@ class BlameActionDelegate: NSObject
   @objc(selectSHA:)
   func select(sha: String)
   {
-    controller?.repoController.select(sha: sha)
+    controller?.repoController?.select(sha: sha)
   }
 }
