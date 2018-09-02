@@ -234,6 +234,14 @@ class SidebarController: NSViewController, SidebarHandler
   {
     let repoController = view.window!.windowController as! XTWindowController
 
+    if let selectedItem = sidebarOutline.item(atRow: sidebarOutline.selectedRow) {
+      guard (selectedItem as? SidebarItem)?.selection?.shaToSelect !=
+            repoController.selection?.shaToSelect
+      else {
+        return
+      }
+    }
+    
     switch repoController.selection {
     
       case let stashChanges as StashSelection:
