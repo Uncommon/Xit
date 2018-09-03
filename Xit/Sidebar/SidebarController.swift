@@ -31,6 +31,9 @@ extension SidebarHandler
     switch action {
       
       case #selector(SidebarController.checkOutBranch(_:)):
+        guard let branch = (item as? BranchSidebarItem)?.branchObject()
+        else { return false }
+        sidebarCommand.title = "Check out \"\(branch.strippedName)\""
         return !repo.isWriting && item.title != repo.currentBranch
       
       case #selector(SidebarController.createTrackingBranch(_:)):
@@ -49,9 +52,6 @@ extension SidebarHandler
           return repo.currentBranch != item.title
         }
         if action == #selector(SidebarController.mergeBranch(_:)) {
-          sidebarCommand.attributedTitle = nil
-          sidebarCommand.title = "Merge"
-          
           var clickedBranch = item.title
 
           switch item.refType {
@@ -68,18 +68,9 @@ extension SidebarHandler
           
           guard let currentBranch = repo.currentBranch
           else { return false }
-          let menuFontAttributes = [NSAttributedStringKey.font:
-                                    NSFont.menuFont(ofSize: 0)]
-          let obliqueAttributes = [NSAttributedStringKey.obliqueness: 0.15]
           
-          if let mergeTitle = NSAttributedString.init(
-              format: "Merge @~1 into @~2",
-              placeholders: ["@~1", "@~2"],
-              replacements: [clickedBranch, currentBranch],
-              attributes: menuFontAttributes,
-              replacementAttributes: obliqueAttributes) {
-            sidebarCommand.attributedTitle = mergeTitle
-          }
+          sidebarCommand.title =
+              "Merge \"\(clickedBranch)\" into \"\(currentBranch)\""
         }
         return true
       
