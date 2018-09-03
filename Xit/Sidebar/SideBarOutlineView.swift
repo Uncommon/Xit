@@ -9,9 +9,9 @@ class SideBarOutlineView: ContextMenuOutlineView
   {
     switch item {
       case is RemoteBranchSidebarItem:
-        menu = prepBranchMenu(controller.remoteBranchContextMenu, local: false)
+        menu = controller.remoteBranchContextMenu
       case is LocalBranchSidebarItem:
-        menu = prepBranchMenu(controller.branchContextMenu, local: true)
+        menu = controller.branchContextMenu
       case is TagSidebarItem:
         menu = controller.tagContextMenu
       case is StashSidebarItem:
@@ -22,23 +22,11 @@ class SideBarOutlineView: ContextMenuOutlineView
         guard let groupItem = parent(forItem: item) as? SidebarItem
         else { break }
         
-        if groupItem ==
-           controller.sidebarDS.roots[XTGroupIndex.remotes.rawValue] {
+        if groupItem == controller.sidebarDS
+                                  .roots[XTGroupIndex.remotes.rawValue] {
           menu = controller.remoteContextMenu
         }
     }
-  }
-  
-  func prepBranchMenu(_ menu: NSMenu, local: Bool) -> NSMenu
-  {
-    let renameIndex = menu.indexOfItem(
-            withTarget: controller,
-            andAction: #selector(SidebarController.renameBranch(_:)))
-    
-    if renameIndex != -1 {
-      menu.items[renameIndex].isHidden = !local
-    }
-    return menu
   }
   
   override func mouseDown(with event: NSEvent)

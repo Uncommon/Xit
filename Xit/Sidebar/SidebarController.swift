@@ -42,6 +42,9 @@ extension SidebarHandler
         if !item.refType.isBranch || repo.isWriting {
           return false
         }
+        if action == #selector(SidebarController.renameBranch(_:)) {
+          sidebarCommand.isHidden = item.refType == .remoteBranch
+        }
         if action == #selector(SidebarController.deleteBranch(_:)) {
           return repo.currentBranch != item.title
         }
