@@ -131,6 +131,11 @@ extension SideBarDataSource: NSOutlineViewDelegate
       dataView.statusButton.action = nil
       if let image = statusImage(for: sideBarItem) {
         dataView.statusButton.image = image
+        if let localBranchItem = item as? LocalBranchSidebarItem,
+           let localBranch = localBranchItem.branchObject() as? LocalBranch,
+           let tracked = localBranch.trackingBranchName {
+          dataView.statusButton.toolTip = tracked
+        }
         dataView.statusButton.target = self
         dataView.statusButton.action = #selector(self.showItemStatus(_:))
       }
