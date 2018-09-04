@@ -107,9 +107,15 @@ class SidebarDataSourceTest: XTTest
   func testStashes()
   {
     XCTAssertTrue(writeTextToFile1("second text"))
-    try! repository.saveStash(name: "s1", includeUntracked: false)
+    try! repository.saveStash(name: "s1",
+                              keepIndex: true,
+                              includeUntracked: true,
+                              includeIgnored: true)
     XCTAssertTrue(writeTextToFile1("third text"))
-    try! repository.saveStash(name: "s2", includeUntracked: false)
+    try! repository.saveStash(name: "s2",
+                              keepIndex: true,
+                              includeUntracked: true,
+                              includeIgnored: true)
     
     sbds.reload()
     waitForRepoQueue()

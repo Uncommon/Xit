@@ -192,7 +192,10 @@ class XTTest: XCTestCase
     write(text: "new", to: FileName.untracked)
     write(text: "add", to: FileName.added)
     try repository.stage(file: FileName.added)
-    try repository.saveStash(name: "", includeUntracked: true)
+    try repository.saveStash(name: "",
+                             keepIndex: true,
+                             includeUntracked: true,
+                             includeIgnored: true)
   }
 
   func makeTiffFile(_ name: String) throws

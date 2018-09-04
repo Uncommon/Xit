@@ -87,7 +87,10 @@ class XTStashTest: XTTest
     
     XCTAssertNoThrow(try makeTiffFile(imageName))
     XCTAssertNoThrow(try repository.stage(file: imageName))
-    XCTAssertNoThrow(try repository.saveStash(name: nil, includeUntracked: true))
+    XCTAssertNoThrow(try repository.saveStash(name: nil,
+                                              keepIndex: true,
+                                              includeUntracked: true,
+                                              includeIgnored: true))
     
     let selection = StashSelection(repository: repository, index: 0)
     

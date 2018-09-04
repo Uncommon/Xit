@@ -154,18 +154,26 @@ extension XTRepository: Stashing
     return GitStash(repo: self, index: index, message: message)
   }
   
-  @objc(saveStash:includeUntracked:error:)
-  func saveStash(name: String?, includeUntracked: Bool) throws
+  public func saveStash(name: String?,
+                 keepIndex: Bool,
+                 includeUntracked: Bool,
+                 includeIgnored: Bool) throws
   {
-    var args = ["stash", "save"]
+    guard !isWriting
+    else { throw Error.alreadyWriting }
     
-    if includeUntracked {
-      args.append("--include-untracked")
-    }
-    if let name = name {
-      args.append(name)
-    }
-    _ = try executeGit(args: args, writes: true)
+    let flags = (keepIndex ? GIT_STASH_KEEP_INDEX.rawValue : 0) +
+                (includeUntracked ? GIT_STASH_INCLUDE_UNTRACKED.rawValue : 0) +
+                (includeIgnored ? GIT_STASH_INCLUDE_IGNORED.rawValue : 0)
+    var oid = git_oid()
+    
+    guard let signature = GitSignature(defaultFromRepo: gitRepo)
+    else { throw Error.unexpected }
+    
+    let result = git_stash_save(&oid, gitRepo, signature.signature,
+                                name, flags)
+    
+    try Error.throwIfError(result)
   }
   
   func stashApplyOptions() -> git_stash_apply_options
