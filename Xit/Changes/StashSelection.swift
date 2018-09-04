@@ -3,7 +3,7 @@ import Foundation
 /// Changes for a selected stash, merging workspace, index, and untracked
 class StashSelection: StagedUnstagedSelection
 {
-  internal(set) unowned var repository: FileChangesRepo
+  unowned var repository: FileChangesRepo
   let stash: Stash
   var canCommit: Bool { return false }
   var shaToSelect: String? { return stash.mainCommit?.parentSHAs[0] }

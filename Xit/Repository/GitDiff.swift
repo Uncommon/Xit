@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol Diff: class
+public protocol Diff: AnyObject
 {
   var deltaCount: Int { get }
   

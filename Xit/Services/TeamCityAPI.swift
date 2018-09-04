@@ -122,7 +122,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
     else { return nil }
     
     let accounts = AccountsManager.manager.accounts(ofType: .teamCity)
-    let services = accounts.compactMap({ Services.shared.teamCityAPI($0) })
+    let services = accounts.compactMap { Services.shared.teamCityAPI($0) }
     
     for service in services {
       let buildTypes = service.buildTypesForRemote(remoteURL)
@@ -287,7 +287,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
     init?(ruleStrings: [String])
     {
       self.rules = ruleStrings.compactMap { Rule(content: $0) }
-      if self.rules.count == 0 {
+      if self.rules.isEmpty {
         return nil
       }
     }
@@ -427,7 +427,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
     for href in hrefs {
       let relativePath = href.removingPrefix(TeamCityAPI.rootPath)
       
-      resource(relativePath).useData(owner: self, closure: {
+      resource(relativePath).useData(owner: self) {
         (data) in
         waitingTypeCount -= 1
         defer {
@@ -444,7 +444,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
         }
         
         self.parseBuildType(xml)
-      })
+      }
     }
   }
   
@@ -489,7 +489,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
   }
 }
 
-protocol TeamCityAccessor: class
+protocol TeamCityAccessor: AnyObject
 {
   var remoteMgr: RemoteManagement! { get }
 }

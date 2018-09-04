@@ -54,8 +54,8 @@ class Cache<Key: Hashable, Value>
   func purge(space: Int)
   {
     while contents.count + space > maxSize {
-      var oldestDate: Date? = nil
-      var oldestKey: Key? = nil
+      var oldestDate: Date?
+      var oldestKey: Key?
       
       for (key, wrapper) in contents {
         if oldestDate == nil ||

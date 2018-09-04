@@ -43,11 +43,11 @@ public struct TreeLoader
         if entry.type == .tree {
           guard let entryTree = entry.object as? Tree
           else { continue }
-          let oldNode = oldTree?.children?.first(where: {
+          let oldNode = oldTree?.children?.first {
             (node) in
             (node.representedObject as? FileChange)?
                 .path.lastPathComponent == entry.name
-          })
+          }
           
           result.mutableChildren.add(treeNode(path: entryPath, tree: entryTree,
                                               oldTree: oldNode))

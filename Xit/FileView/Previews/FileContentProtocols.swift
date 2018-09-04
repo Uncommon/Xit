@@ -30,17 +30,17 @@ struct FileSelection: Equatable
   }
 }
 
-protocol WhitespaceVariable: class
+protocol WhitespaceVariable: AnyObject
 {
   var whitespace: WhitespaceSetting { get set }
 }
 
-protocol TabWidthVariable: class
+protocol TabWidthVariable: AnyObject
 {
   var tabWidth: UInt { get set }
 }
 
-protocol ContextVariable: class
+protocol ContextVariable: AnyObject
 {
   var contextLines: UInt { get set }
 }
@@ -94,7 +94,7 @@ extension TextWrapping: Equatable
   }
 }
 
-protocol WrappingVariable: class
+protocol WrappingVariable: AnyObject
 {
   var wrapping: TextWrapping { get set }
 }

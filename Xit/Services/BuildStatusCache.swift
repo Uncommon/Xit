@@ -1,6 +1,6 @@
 import Foundation
 
-protocol BuildStatusClient: class
+protocol BuildStatusClient: AnyObject
 {
   func buildStatusUpdated(branch: String, buildType: String)
 }
@@ -42,7 +42,7 @@ class BuildStatusCache: TeamCityAccessor
   
   func remove(client: BuildStatusClient)
   {
-    clients.index(where: { $0.client === client })
+    clients.index { $0.client === client }
            .map { _ = clients.remove(at: $0) }
   }
   

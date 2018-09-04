@@ -66,7 +66,7 @@ class FileListDataSourceBase: NSObject
 
 
 /// Methods that a file list data source must implement.
-protocol FileListDataSource: class
+protocol FileListDataSource: AnyObject
 {
   func reload()
   func fileChange(at row: Int) -> FileChange?

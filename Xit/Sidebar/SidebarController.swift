@@ -1,7 +1,7 @@
 import Cocoa
 
 // Command handling extracted for testability
-protocol SidebarHandler: class
+protocol SidebarHandler: AnyObject
 {
   var repo: XTRepository! { get }
   var window: NSWindow? { get }

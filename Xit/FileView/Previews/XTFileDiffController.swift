@@ -1,6 +1,6 @@
 import Cocoa
 
-protocol HunkStaging: class
+protocol HunkStaging: AnyObject
 {
   func stage(hunk: DiffHunk)
   func unstage(hunk: DiffHunk)

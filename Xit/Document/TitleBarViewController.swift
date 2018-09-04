@@ -1,6 +1,6 @@
 import Cocoa
 
-protocol TitleBarDelegate: class
+protocol TitleBarDelegate: AnyObject
 {
   var viewStates: (sidebar: Bool, history: Bool, details: Bool) { get }
 

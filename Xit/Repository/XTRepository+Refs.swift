@@ -25,7 +25,7 @@ extension XTRepository: CommitReferencing
             let name = String(validatingUTF8: rawName)
       else { return 0 }
       
-      var peeled: OpaquePointer? = nil
+      var peeled: OpaquePointer?
       guard git_reference_peel(&peeled, reference, GIT_OBJ_COMMIT) == 0
       else { return 0 }
       

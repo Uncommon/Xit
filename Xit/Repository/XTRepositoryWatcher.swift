@@ -245,7 +245,7 @@ let XTChangedRefsKey = "changedRefs"
   func observeEvents(_ paths: [String], _ repository: XTRepository)
   {
     // FSEvents includes trailing slashes, but some other APIs don't.
-    let standardizedPaths = paths.map({ ($0 as NSString).standardizingPath })
+    let standardizedPaths = paths.map { ($0 as NSString).standardizingPath }
   
     checkIndex(repository: repository)
     checkHead(changedPaths: standardizedPaths, repository: repository)

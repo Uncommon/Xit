@@ -160,7 +160,7 @@ class GitTreeEntry: TreeEntry
   {
     let name = git_tree_entry_name(entry)
     
-    return name.map({ String(cString: $0) }) ?? ""
+    return name.map { String(cString: $0) } ?? ""
   }
   
   var object: OIDObject?

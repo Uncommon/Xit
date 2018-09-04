@@ -11,11 +11,12 @@ extension Siesta.Resource
       closure(data)
     }
     else {
-      addObserver(owner: owner, closure: { (resource, _) in
+      addObserver(owner: owner) {
+        (resource, _) in
         if let data = resource.latestData {
           closure(data)
         }
-      })
+      }
       loadIfNeeded()
     }
   }

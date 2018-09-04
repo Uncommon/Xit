@@ -60,7 +60,7 @@ class CommitHeaderViewController: NSViewController
 
       nameField.stringValue = names.joined(separator: "\n")
       
-      let dates = sigs.compactMap({ $0?.when })
+      let dates = sigs.compactMap { $0?.when }
       let dateStrings = dates.compactMap { dateField.formatter?.string(for: $0) }
       
       dateField.stringValue = dateStrings.joined(separator: "\n")

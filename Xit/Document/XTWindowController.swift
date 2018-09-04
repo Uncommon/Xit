@@ -1,6 +1,6 @@
 import Cocoa
 
-protocol RepositoryController: class
+protocol RepositoryController: AnyObject
 {
   var repository: Repository { get }
   var queue: TaskQueue { get }

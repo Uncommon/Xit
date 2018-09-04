@@ -104,7 +104,7 @@ extension XTRepository: FileContents
   
   public func fileBlob(ref: String, path: String) -> Blob?
   {
-    return commitBlob(commit: sha(forRef: ref).flatMap({ commit(forSHA: $0) }),
+    return commitBlob(commit: sha(forRef: ref).flatMap { commit(forSHA: $0) },
                       path: path)
   }
   
@@ -148,7 +148,7 @@ extension XTRepository: FileDiffing
     guard let toCommit = commit(forOID: commitOID as! GitOID) as? GitCommit
     else { return nil }
     
-    let parentCommit = parentOID.flatMap({ commit(forOID: $0) })
+    let parentCommit = parentOID.flatMap { commit(forOID: $0) }
     guard isTextFile(file, context: .commit(toCommit)) ||
           parentCommit.map({ isTextFile(file, context: .commit($0)) }) ?? false
     else { return .binary }
@@ -275,10 +275,10 @@ extension XTRepository
       else { return nil }
       
       let parentSHAs = commit.parentSHAs
-      let parentSHA: String? = (parentSHA == "")
+      let parentSHA: String? = parentSHA.isEmpty
             ? parentSHAs.first
-            : parentSHAs.first(where: { $0 == parentSHA })
-      let parentCommit = parentSHA.map({ self.commit(forSHA: $0) })
+            : parentSHAs.first { $0 == parentSHA }
+      let parentCommit = parentSHA.map { self.commit(forSHA: $0) }
       
       guard let diff = GitDiff(oldTree: parentCommit??.tree, newTree: commit.tree,
                                repository: gitRepo)
@@ -394,7 +394,7 @@ extension XTRepository
     convenience init(repo: XTRepository)
     {
       self.init(repo: repo,
-                head: repo.headSHA.flatMap({ repo.commit(forSHA: $0) }))
+                head: repo.headSHA.flatMap { repo.commit(forSHA: $0) })
     }
   
     static func emptyTree(repo: XTRepository) -> OpaquePointer?

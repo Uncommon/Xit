@@ -21,8 +21,8 @@ class RemoteOptionsOpController: OperationController
     
     sheetController.resetFields()
     sheetController.name = remoteName
-    sheetController.fetchURL = remote.urlString.flatMap({ URL(string: $0) })
-    sheetController.pushURL = remote.pushURLString.flatMap({ URL(string: $0) })
+    sheetController.fetchURL = remote.urlString.flatMap { URL(string: $0) }
+    sheetController.pushURL = remote.pushURLString.flatMap { URL(string: $0) }
     windowController!.window?.beginSheet(sheetController.window!) {
       (response) in
       if response == .OK {

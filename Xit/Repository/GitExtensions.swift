@@ -80,7 +80,7 @@ extension Array where Element == String
     
     buffer.reserveCapacity(offsets.last!)
     for string in self {
-      buffer.append(contentsOf: string.utf8.map({ Int8($0) }))
+      buffer.append(contentsOf: string.utf8.map { Int8($0) })
       buffer.append(0)
     }
     
@@ -94,13 +94,13 @@ extension Array where Element == String
             offsets.map { boundPointer + $0 }
       
       cStrings[cStrings.count-1] = nil
-      cStrings.withUnsafeMutableBufferPointer({
+      cStrings.withUnsafeMutableBufferPointer {
         (arrayBuffer) in
         let strarray = git_strarray(strings: arrayBuffer.baseAddress,
                                     count: count)
         
         block(strarray)
-      })
+      }
     }
   }
 }

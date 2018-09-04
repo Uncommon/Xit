@@ -62,8 +62,9 @@ class OperationController: NSObject
             }
             
             // needs to be smarter: look at error type
-            alert.beginSheetModal(for: window,
-                                  completionHandler: { _ in self?.ended() })
+            alert.beginSheetModal(for: window) {
+              _ in self?.ended()
+            }
           }
         }
       }

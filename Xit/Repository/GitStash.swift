@@ -1,6 +1,6 @@
 import Cocoa
 
-public protocol Stash: class
+public protocol Stash: AnyObject
 {
   var message: String? { get }
   var mainCommit: Commit? { get }
@@ -106,7 +106,7 @@ public class GitStash: NSObject, Stash
     guard let indexCommit = self.indexCommit as? GitCommit
     else { return nil }
 
-    var indexBlob: Blob? = nil
+    var indexBlob: Blob?
     
     if let indexEntry = indexCommit.tree!.entry(path: path) {
       if !repo.isTextFile(path, context: .commit(indexCommit)) {

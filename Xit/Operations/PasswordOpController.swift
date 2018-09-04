@@ -7,7 +7,7 @@ class PasswordOpController: SimpleOperationController
   func getPassword() -> (String, String)?
   {
     let semaphore = DispatchSemaphore(value: 0)
-    var result: (String, String)? = nil
+    var result: (String, String)?
     
     DispatchQueue.main.async {
       guard let window = self.windowController?.window

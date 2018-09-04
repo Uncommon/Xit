@@ -1,13 +1,13 @@
 import Foundation
 
 
-struct PreferenceKeys
+enum PreferenceKeys
 {
   static let deemphasizeMerges = "deemphasizeMerges"
 }
 
 
-class Preferences
+enum Preferences
 {
   static var deemphasizeMerges: Bool
   {

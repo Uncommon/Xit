@@ -271,6 +271,7 @@ extension XTRepository: SubmoduleManagement
   public func submodules() -> [Submodule]
   {
     class Payload { var submodules = [Submodule]() }
+    
     var payload = Payload()
     let callback: git_submodule_cb = {
       (submodule, name, payload) in

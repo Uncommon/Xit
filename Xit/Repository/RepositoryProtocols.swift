@@ -6,7 +6,7 @@ public typealias Repository =
     SubmoduleManagement & Tagging & Workspace
     // BranchListing (associated types)
 
-public protocol CommitStorage: class
+public protocol CommitStorage: AnyObject
 {
   func oid(forSHA sha: String) -> OID?
   func commit(forSHA sha: String) -> Commit?
@@ -15,7 +15,7 @@ public protocol CommitStorage: class
   func walker() -> RevWalk?
 }
 
-public protocol CommitReferencing: class
+public protocol CommitReferencing: AnyObject
 {
   var headRef: String? { get }
   var currentBranch: String? { get }
@@ -43,10 +43,10 @@ extension CommitReferencing
 
 extension CommitReferencing
 {
-  var headSHA: String? { return headRef.flatMap({ self.sha(forRef: $0) }) }
+  var headSHA: String? { return headRef.flatMap { self.sha(forRef: $0) } }
 }
 
-public protocol BranchListing: class
+public protocol BranchListing: AnyObject
 {
   associatedtype LocalBranchSequence: Sequence
       where LocalBranchSequence.Iterator.Element: LocalBranch
@@ -57,7 +57,7 @@ public protocol BranchListing: class
   func remoteBranches() -> RemoteBranchSequence
 }
 
-public protocol FileStatusDetection: class
+public protocol FileStatusDetection: AnyObject
 {
   func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
 
@@ -80,7 +80,7 @@ extension FileStatusDetection
   }
 }
 
-public protocol FileDiffing: class
+public protocol FileDiffing: AnyObject
 {
   func diffMaker(forFile file: String,
                  commitOID: OID,
@@ -96,7 +96,7 @@ public protocol FileDiffing: class
   func blame(for path: String, data fromData: Data?, to endOID: OID?) -> Blame?
 }
 
-public protocol FileContents: class
+public protocol FileContents: AnyObject
 {
   var repoURL: URL { get }
   
@@ -108,7 +108,7 @@ public protocol FileContents: class
   func fileURL(_ file: String) -> URL
 }
 
-public protocol FileStaging: class
+public protocol FileStaging: AnyObject
 {
   var index: StagingIndex? { get }
   
@@ -121,7 +121,7 @@ public protocol FileStaging: class
   func unstageAllFiles() throws
 }
 
-public protocol Stashing: class
+public protocol Stashing: AnyObject
 {
   func stash(index: UInt, message: String?) -> Stash
   func popStash(index: UInt) throws
@@ -130,20 +130,20 @@ public protocol Stashing: class
   func commitForStash(at index: UInt) -> Commit?
 }
 
-public protocol RemoteManagement: class
+public protocol RemoteManagement: AnyObject
 {
   func remote(named name: String) -> Remote?
   func addRemote(named name: String, url: URL) throws
   func deleteRemote(named name: String) throws
 }
 
-public protocol SubmoduleManagement: class
+public protocol SubmoduleManagement: AnyObject
 {
   func submodules() -> [Submodule]
   func addSubmodule(path: String, url: String) throws
 }
 
-public protocol Branching: class
+public protocol Branching: AnyObject
 {
   var currentBranch: String? { get }
   
@@ -152,14 +152,14 @@ public protocol Branching: class
   func remoteBranch(named name: String) -> RemoteBranch?
 }
 
-public protocol Tagging: class
+public protocol Tagging: AnyObject
 {
   func createTag(name: String, targetOID: OID, message: String?) throws
   func createLightweightTag(name: String, targetOID: OID) throws
   func deleteTag(name: String) throws
 }
 
-public protocol Workspace: class
+public protocol Workspace: AnyObject
 {
   func checkOut(branch: String) throws
   func checkOut(refName: String) throws

@@ -47,7 +47,7 @@ extension RemoteBranch
 }
 
 
-public struct BranchPrefixes
+public enum BranchPrefixes
 {
   static let remotes = "refs/remotes/"
   static let heads = "refs/heads/"

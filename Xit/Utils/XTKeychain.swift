@@ -63,7 +63,7 @@ final class XTKeychain: NSObject
                       -> (String?, SecKeychainItem?)
   {
     var passwordLength: UInt32 = 0
-    var passwordData: UnsafeMutableRawPointer? = nil
+    var passwordData: UnsafeMutableRawPointer?
     let nsHost: NSString = host as NSString
     let nsPath: NSString = path as NSString
     let nsAccount: NSString = account as NSString

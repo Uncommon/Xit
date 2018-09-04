@@ -158,8 +158,8 @@ class BlameViewController: WebViewController
       let end = min(start + hunk.lineCount, lines.count)
       let hunkLines = lines[start..<end]
       
-      htmlLines.append(contentsOf: hunkLines.map({
-          "<div class='line'>\($0.xmlEscaped)</div>" }))
+      htmlLines.append(contentsOf: hunkLines.map {
+          "<div class='line'>\($0.xmlEscaped)</div>" })
       htmlLines.append("</td></tr>")
     }
     

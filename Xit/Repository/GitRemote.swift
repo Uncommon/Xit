@@ -1,6 +1,6 @@
 import Cocoa
 
-public protocol Remote: class
+public protocol Remote: AnyObject
 {
   var name: String? { get }
   var urlString: String? { get }

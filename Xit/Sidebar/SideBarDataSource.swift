@@ -234,7 +234,7 @@ class SideBarDataSource: NSObject
     
     let newRoots = SideBarDataSource.makeRoots(stagingItem)
     let branchesGroup = newRoots[XTGroupIndex.branches.rawValue]
-    let localBranches = repo.localBranches().sorted(by: { $0.name < $1.name })
+    let localBranches = repo.localBranches().sorted { $0.name < $1.name }
     
     for branch in localBranches {
       guard let sha = branch.sha,
@@ -251,7 +251,7 @@ class SideBarDataSource: NSObject
     
     let remoteItems = repo.remoteNames().map {
           RemoteSidebarItem(title: $0, repository: repo) }
-    let remoteBranches = repo.remoteBranches().sorted(by: { $0.name < $1.name })
+    let remoteBranches = repo.remoteBranches().sorted { $0.name < $1.name }
 
 
     for branch in remoteBranches {
@@ -401,7 +401,7 @@ class SideBarDataSource: NSObject
   func item(forBranchName branch: String) -> LocalBranchSidebarItem?
   {
     let branches = roots[XTGroupIndex.branches.rawValue]
-    let result = branches.children.first(where: { $0.title == branch })
+    let result = branches.children.first { $0.title == branch }
     
     return result as? LocalBranchSidebarItem
   }
@@ -491,8 +491,7 @@ class SideBarDataSource: NSObject
             pathComponent: clickedItem.submodule.path))
       
       NSDocumentController.shared.openDocument(
-          withContentsOf: subURL, display: true,
-          completionHandler: { (_, _, _) in })
+          withContentsOf: subURL, display: true) { (_, _, _) in }
     }
   }
 }

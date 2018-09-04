@@ -1,6 +1,6 @@
 import Foundation
 
-struct Signposts
+enum Signposts
 {
   static let historyWalking: UInt32 = 0
   static let connectCommits: UInt32 = 1

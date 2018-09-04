@@ -283,7 +283,7 @@ extension XTRepository: FileStaging
     }
     else {
       var options = git_checkout_options.defaultOptions()
-      var error: Error? = nil
+      var error: Error?
       
       git_checkout_init_options(&options, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
       [file].withGitStringArray {

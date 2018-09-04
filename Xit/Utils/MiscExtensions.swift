@@ -1,13 +1,13 @@
 import Foundation
 
 
-protocol XTOutlineViewDelegate: class
+protocol XTOutlineViewDelegate: AnyObject
 {
   /// The user has clicked on the selected row.
   func outlineViewClickedSelectedRow(_ outline: NSOutlineView)
 }
 
-protocol XTTableViewDelegate: class
+protocol XTTableViewDelegate: AnyObject
 {
   /// The user has clicked on the selected row.
   func tableViewClickedSelectedRow(_ tableView: NSTableView)
@@ -87,9 +87,9 @@ extension XMLElement
   /// attribute name.
   func childrenAttributes(_ name: String) -> [String]
   {
-    return children?.compactMap({
+    return children?.compactMap {
       ($0 as? XMLElement)?.attribute(forName: name)?.stringValue
-    }) ?? []
+    } ?? []
   }
 }
 
@@ -309,8 +309,8 @@ extension Array
   
   mutating func removeObjects(at indexSet: IndexSet)
   {
-    self = enumerated().filter({ !indexSet.contains($0.offset) })
-                       .map({ $0.element })
+    self = enumerated().filter { !indexSet.contains($0.offset) }
+                       .map { $0.element }
   }
   
   /// Returns the first non-nil result of calling `predicate` on the array's
@@ -331,8 +331,7 @@ extension Array where Element: Comparable
   mutating func insertSorted(_ newElement: Element)
   {
     insert(newElement,
-           at: sortedInsertionIndex(of: newElement,
-                                    isOrderedBefore: { $0 < $1 }))
+           at: sortedInsertionIndex(of: newElement) { $0 < $1 })
   }
 }
 

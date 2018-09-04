@@ -12,8 +12,15 @@ disabled_rules:
     - switch_case_alignment # Indent one level from switch
     - private_over_fileprivate
 opt_in_rules:
+    - anyobject_protocol
     - closure_spacing
     - conditional_returns_on_newline
+    - convenience_type
+    - empty_count
+    - empty_string
+    - let_var_whitespace
+    - trailing_closure
+    - yoda_condition
 included:
     - Xit
     

@@ -60,7 +60,7 @@ class AddAccountController: SheetController
   
   override func accept(_ sender: AnyObject)
   {
-    guard userName != ""
+    guard !userName.isEmpty
     else {
       showFieldAlert("The user field must not be empty.",
                      field: userField)
@@ -79,7 +79,7 @@ class AddAccountController: SheetController
   
   func passwordFocused()
   {
-    guard userName != "",
+    guard !userName.isEmpty,
           let location = location,
           let newPassword = XTKeychain.findPassword(url: location,
                                                     account: userName)

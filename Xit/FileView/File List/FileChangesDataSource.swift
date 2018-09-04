@@ -69,7 +69,7 @@ class FileChangesDataSource: FileListDataSourceBase
       }
       outlineView.endUpdates()
       
-      if newChangeIndexes.count > 0 {
+      if !newChangeIndexes.isEmpty {
         // Have to construct an NSIndexSet and then convert to IndexSet
         // because the compiler doesn't recognize the constructor.
         let range = NSRange(location: 0, length: outlineView.numberOfColumns)

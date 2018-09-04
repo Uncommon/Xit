@@ -65,7 +65,7 @@ public class XTRepository: NSObject
   {
     let paths = ["/usr/bin/git", "/usr/local/git/bin/git"]
     
-    return paths.first(where: { FileManager.default.fileExists(atPath: $0) })
+    return paths.first { FileManager.default.fileExists(atPath: $0) }
   }
   
   static func taskQueueID(path: String) -> String

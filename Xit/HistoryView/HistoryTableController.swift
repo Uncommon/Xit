@@ -192,7 +192,7 @@ public class HistoryTableController: NSViewController
   func ensureSelection()
   {
     guard let tableView = view as? NSTableView,
-          tableView.selectedRowIndexes.count == 0
+          tableView.selectedRowIndexes.isEmpty
     else { return }
     
     guard let controller = self.view.window?.windowController

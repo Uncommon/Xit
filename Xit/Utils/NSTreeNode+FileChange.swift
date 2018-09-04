@@ -27,7 +27,7 @@ extension NSTreeNode
   {
     let node = NSTreeNode(representedObject: fileChange)
     
-    insert(node: node, sortedBy: { $0.fileChange.path })
+    insert(node: node) { $0.fileChange.path }
     return node
   }
   

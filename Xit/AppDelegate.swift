@@ -40,8 +40,7 @@ class AppDelegate: NSObject
         for url in newOpenPanel.urls {
           NSDocumentController.shared.openDocument(
               withContentsOf: url,
-              display: true,
-              completionHandler: { (_, _, _) in })
+              display: true) { (_, _, _) in }
         }
       }
       self.openPanel = nil

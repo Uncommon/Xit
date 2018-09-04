@@ -172,8 +172,8 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
     let branchResult = Result(entries: result, queue: queue)
     
 #if DEBUGLOG
-    let before = entries.last?.commit.parentOIDs.map({ $0.SHA.firstSix() })
-                 .joinWithSeparator(" ")
+    let before = entries.last?.commit.parentOIDs.map { $0.SHA.firstSix() }
+                        .joinWithSeparator(" ")
     
     print("\(branchResult) ‹ \(before ?? "-")", terminator: "")
     for (commit, after) in queue {
@@ -226,8 +226,8 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
       commitLookup[branchEntry.commit.oid as! ID] = branchEntry
     }
     
-    let afterIndex = afterCommit.flatMap(
-        { commit in entries.index(where: { $0.commit.oid.equals(commit.oid) }) })
+    let afterIndex = afterCommit.flatMap
+        { commit in entries.index { $0.commit.oid.equals(commit.oid) } }
     guard let lastEntry = result.entries.last
     else { return }
     let lastParentOIDs = lastEntry.commit.parentOIDs
@@ -334,8 +334,7 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
     result.reserveCapacity(batchSize)
     for (index, entry) in entries[batchStart..<batchStart+batchSize].enumerated() {
       let commitOID = entry.commit.oid as! ID
-      let incomingIndex = connections.index(where:
-            { $0.parentOID.equals(commitOID) })
+      let incomingIndex = connections.index { $0.parentOID.equals(commitOID) }
       let incomingColor = incomingIndex.flatMap { connections[$0].colorIndex }
       
       if let firstParentOID = entry.commit.parentOIDs.first {
