@@ -193,7 +193,7 @@ class XTTest: XCTestCase
     write(text: "add", to: FileName.added)
     try repository.stage(file: FileName.added)
     try repository.saveStash(name: "",
-                             keepIndex: true,
+                             keepIndex: false,
                              includeUntracked: true,
                              includeIgnored: true)
   }

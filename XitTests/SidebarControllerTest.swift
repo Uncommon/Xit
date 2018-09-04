@@ -71,12 +71,12 @@ class SidebarHandlerTest: XTTest
   {
     XCTAssertTrue(writeTextToFile1("second text"))
     try! repository.saveStash(name: "s1",
-                              keepIndex: true,
+                              keepIndex: false,
                               includeUntracked: false,
                               includeIgnored: true)
     XCTAssertTrue(writeTextToFile1("third text"))
     try! repository.saveStash(name: "s2",
-                              keepIndex: true,
+                              keepIndex: false,
                               includeUntracked: false,
                               includeIgnored: true)
   }

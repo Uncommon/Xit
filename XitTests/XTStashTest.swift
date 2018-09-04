@@ -88,7 +88,7 @@ class XTStashTest: XTTest
     XCTAssertNoThrow(try makeTiffFile(imageName))
     XCTAssertNoThrow(try repository.stage(file: imageName))
     XCTAssertNoThrow(try repository.saveStash(name: nil,
-                                              keepIndex: true,
+                                              keepIndex: false,
                                               includeUntracked: true,
                                               includeIgnored: true))
     
