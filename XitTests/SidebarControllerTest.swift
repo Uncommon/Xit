@@ -170,7 +170,7 @@ class SidebarHandlerTest: XTTest
     handler.selectedItem = item(forBranch: "branch")
     XCTAssertNotNil(try? repository.checkOut(branch: "master"))
     XCTAssertTrue(handler.validate(sidebarCommand: menuItem))
-    XCTAssertEqual(menuItem.title, "Merge branch into master")
+    XCTAssertEqual(menuItem.title, "Merge \"branch\" into \"master\"")
   }
   
   func testMergeDisabled()
