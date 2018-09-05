@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.3.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.3.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -63,10 +62,10 @@
                     </connections>
                 </segmentedControl>
                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="DfW-Hf-FKe" customClass="TitleStatusView" customModule="Xit" customModuleProvider="target">
-                    <rect key="frame" x="296" y="9" width="200" height="25"/>
+                    <rect key="frame" x="296" y="9" width="199" height="25"/>
                     <subviews>
                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FL9-n6-pxD" customClass="DraggingButton" customModule="Xit" customModuleProvider="target">
-                            <rect key="frame" x="1" y="-1" width="198" height="26"/>
+                            <rect key="frame" x="1" y="-2" width="197" height="28"/>
                             <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="RfW-od-VIn">
                                 <behavior key="behavior" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
@@ -106,7 +105,7 @@
                             <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="branchTemplate" id="DxX-kV-T9C"/>
                         </imageView>
                         <popUpButton focusRingType="none" translatesAutoresizingMaskIntoConstraints="NO" id="UF4-D2-qhU">
-                            <rect key="frame" x="122" y="2" width="70" height="21"/>
+                            <rect key="frame" x="122" y="2" width="69" height="21"/>
                             <popUpButtonCell key="cell" type="bevel" title="branch" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" state="on" focusRingType="none" imageScaling="proportionallyDown" inset="2" autoenablesItems="NO" selectedItem="sSQ-02-kT9" id="QYv-hf-gtv">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                 <font key="font" metaFont="menu"/>
@@ -145,7 +144,7 @@
                     </constraints>
                 </customView>
                 <button hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="aNh-jL-whD">
-                    <rect key="frame" x="512" y="11" width="22" height="19"/>
+                    <rect key="frame" x="511" y="11" width="22" height="19"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="22" id="sCv-3O-eG1"/>
                     </constraints>
@@ -155,7 +154,7 @@
                     </buttonCell>
                 </button>
                 <segmentedControl hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="IIb-W1-mF1">
-                    <rect key="frame" x="538" y="9" width="67" height="23"/>
+                    <rect key="frame" x="537" y="9" width="67" height="23"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="22" id="Li8-d0-CO5"/>
                     </constraints>
@@ -188,7 +187,7 @@
                     </connections>
                 </segmentedControl>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wtJ-QB-nan">
-                    <rect key="frame" x="649" y="9" width="29" height="23"/>
+                    <rect key="frame" x="649" y="8" width="29" height="25"/>
                     <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="NSTouchBarSearchTemplate" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="m60-rp-dnd">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
@@ -197,21 +196,22 @@
                         <action selector="search:" target="-2" id="PMX-VL-6Xs"/>
                     </connections>
                 </button>
-                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RFr-vw-Thq">
-                    <rect key="frame" x="180" y="9" width="29" height="23"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RFr-vw-Thq">
+                    <rect key="frame" x="180" y="8" width="26" height="25"/>
                     <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="stashTemplate" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="8ab-hy-k5E">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
                     <connections>
-                        <action selector="search:" target="-2" id="9r5-XG-doL"/>
+                        <action selector="stash:" target="-2" id="1Xh-ZG-Bkv"/>
                     </connections>
                 </button>
             </subviews>
             <constraints>
                 <constraint firstItem="wtJ-QB-nan" firstAttribute="top" secondItem="gzN-mQ-RA8" secondAttribute="top" id="5js-yx-iXk"/>
                 <constraint firstItem="m2X-wZ-tfZ" firstAttribute="leading" secondItem="EAc-F6-hIg" secondAttribute="trailing" constant="8" symbolic="YES" id="5rI-6h-bqc"/>
+                <constraint firstItem="RFr-vw-Thq" firstAttribute="leading" secondItem="m2X-wZ-tfZ" secondAttribute="trailing" constant="8" symbolic="YES" id="7I8-wk-3oc"/>
+                <constraint firstItem="RFr-vw-Thq" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="5" id="DOP-u9-at2"/>
                 <constraint firstItem="gzN-mQ-RA8" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="IIb-W1-mF1" secondAttribute="trailing" constant="8" symbolic="YES" id="Ht0-BG-KbQ"/>
                 <constraint firstItem="gzN-mQ-RA8" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="5" id="NAK-dD-Ivi"/>
                 <constraint firstItem="DfW-Hf-FKe" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="m2X-wZ-tfZ" secondAttribute="trailing" constant="8" symbolic="YES" id="PyA-gP-gFU"/>
@@ -232,7 +232,7 @@
         </customView>
     </objects>
     <resources>
-        <image name="NSFolder" width="128" height="128"/>
+        <image name="NSFolder" width="32" height="32"/>
         <image name="NSGoLeftTemplate" width="9" height="12"/>
         <image name="NSGoRightTemplate" width="9" height="12"/>
         <image name="NSTouchBarSearchTemplate" width="19" height="30"/>

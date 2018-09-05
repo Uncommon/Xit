@@ -389,6 +389,12 @@
 DQ
 </string>
                             </menuItem>
+                            <menuItem title="Stash..." id="wvv-OB-wja">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="stash:" target="-1" id="Xyb-Rg-trG"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="614"/>
                             <menuItem title="Check Out Branch" id="612">
                                 <modifierMask key="keyEquivalentModifierMask"/>

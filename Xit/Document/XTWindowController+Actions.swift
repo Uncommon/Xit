@@ -91,6 +91,11 @@ extension XTWindowController
     let _: PushOpController? = startOperation()
   }
   
+  @IBAction func stash(_: AnyObject)
+  {
+    let _: StashOperationController? = startOperation()
+  }
+  
   @IBAction func remoteSettings(_ sender: AnyObject)
   {
     guard let menuItem = sender as? NSMenuItem

@@ -1,6 +1,6 @@
 import Cocoa
 
-class StashOperationController: OperationController
+class StashOperationController: SimpleOperationController
 {
   override func start() throws
   {
@@ -9,7 +9,19 @@ class StashOperationController: OperationController
     windowController!.window!.beginSheet(panelController.window!) {
       (response) in
       if response == .OK {
-        // stash
+        let keepIndex = panelController.type == .workspaceOnly
+        let includeUntracked = panelController.includeUntracked
+        let includeIgnored = panelController.includeIgnored
+        
+        guard let repo = self.repository
+        else { return }
+        
+        self.tryRepoOperation(successStatus: "Stash completed",
+                              failureStatus: "Stash failed") {
+          try repo.saveStash(name: nil, keepIndex: keepIndex,
+                             includeUntracked: includeUntracked,
+                             includeIgnored: includeIgnored)
+        }
       }
       self.ended()
     }

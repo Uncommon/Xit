@@ -10,6 +10,7 @@ protocol TitleBarDelegate: AnyObject
   func fetchSelected()
   func pushSelected()
   func pullSelected()
+  func stashSelected()
   func showHideSidebar()
   func showHideHistory()
   func showHideDetails()
@@ -141,6 +142,11 @@ class TitleBarViewController: NSViewController
       case .push:
         delegate?.pushSelected()
     }
+  }
+  
+  @IBAction func stash(_ sender: Any)
+  {
+    delegate?.stashSelected()
   }
   
   @IBAction func viewAction(_ sender: NSSegmentedControl)

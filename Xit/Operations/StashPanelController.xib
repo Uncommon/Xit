@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.3.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.3.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
+        <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -17,13 +17,13 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <window title="Stash" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="F0z-JX-Cv5">
+        <window title="Stash" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="F0z-JX-Cv5">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="196" y="240" width="325" height="165"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+            <rect key="contentRect" x="196" y="240" width="325" height="264"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
             <view key="contentView" wantsLayer="YES" id="se5-gp-TjO">
-                <rect key="frame" x="0.0" y="0.0" width="325" height="165"/>
+                <rect key="frame" x="0.0" y="0.0" width="325" height="220"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7J0-Jz-8MJ">
@@ -81,20 +81,40 @@ Gw
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Zor-dX-wsy">
                         <rect key="frame" x="18" y="59" width="145" height="18"/>
-                        <buttonCell key="cell" type="check" title="Include ignored files" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="GIq-il-6hK">
+                        <buttonCell key="cell" type="check" title="Include ignored files" bezelStyle="regularSquare" imagePosition="left" inset="2" id="GIq-il-6hK">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
+                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="li1-oR-G0E">
+                        <rect key="frame" x="20" y="153" width="285" height="22"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="0ah-De-orN">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="SRd-m9-JXr">
+                        <rect key="frame" x="18" y="183" width="162" height="17"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Stash message (optional):" id="PBY-qN-uYR">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="li1-oR-G0E" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="20" symbolic="YES" id="2cs-lE-rji"/>
+                    <constraint firstItem="SRd-m9-JXr" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="20" symbolic="YES" id="51z-kX-51o"/>
                     <constraint firstAttribute="trailing" secondItem="7J0-Jz-8MJ" secondAttribute="trailing" constant="20" symbolic="YES" id="AIJ-61-chN"/>
+                    <constraint firstItem="li1-oR-G0E" firstAttribute="top" secondItem="SRd-m9-JXr" secondAttribute="bottom" constant="8" symbolic="YES" id="E5m-wQ-Jr5"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="4H7-dS-HTv" secondAttribute="trailing" constant="20" symbolic="YES" id="HUD-Rz-Xyj"/>
+                    <constraint firstItem="SRd-m9-JXr" firstAttribute="top" secondItem="se5-gp-TjO" secondAttribute="top" constant="20" symbolic="YES" id="IPI-YA-26a"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="t2A-tS-ykZ" secondAttribute="trailing" constant="20" symbolic="YES" id="PEw-ZW-F0v"/>
                     <constraint firstItem="6Ri-hy-fkS" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="20" symbolic="YES" id="QOS-Nx-FVn"/>
+                    <constraint firstAttribute="trailing" secondItem="li1-oR-G0E" secondAttribute="trailing" constant="20" symbolic="YES" id="Rhh-J9-joo"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="6Ri-hy-fkS" secondAttribute="trailing" constant="20" symbolic="YES" id="THL-BP-Yih"/>
                     <constraint firstItem="Zor-dX-wsy" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="20" symbolic="YES" id="VZ8-vI-ARL"/>
-                    <constraint firstItem="6Ri-hy-fkS" firstAttribute="top" secondItem="se5-gp-TjO" secondAttribute="top" constant="20" symbolic="YES" id="c2q-aD-M2q"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Zor-dX-wsy" secondAttribute="trailing" constant="20" symbolic="YES" id="ebM-zW-jSb"/>
                     <constraint firstAttribute="bottom" secondItem="7J0-Jz-8MJ" secondAttribute="bottom" constant="20" symbolic="YES" id="fM6-rV-RUO"/>
                     <constraint firstItem="t2A-tS-ykZ" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="20" symbolic="YES" id="gcv-8z-I0s"/>
@@ -104,13 +124,15 @@ Gw
                     <constraint firstItem="Zor-dX-wsy" firstAttribute="top" secondItem="t2A-tS-ykZ" secondAttribute="bottom" constant="6" symbolic="YES" id="mWn-X8-By5"/>
                     <constraint firstItem="t2A-tS-ykZ" firstAttribute="top" secondItem="4H7-dS-HTv" secondAttribute="bottom" constant="12" id="nSs-dU-3iw"/>
                     <constraint firstItem="Isc-g9-ibb" firstAttribute="firstBaseline" secondItem="7J0-Jz-8MJ" secondAttribute="firstBaseline" id="re3-OT-pxa"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="SRd-m9-JXr" secondAttribute="trailing" constant="20" symbolic="YES" id="vV1-tt-cVU"/>
+                    <constraint firstItem="6Ri-hy-fkS" firstAttribute="top" secondItem="li1-oR-G0E" secondAttribute="bottom" constant="8" symbolic="YES" id="yET-3n-Ym0"/>
                     <constraint firstItem="4H7-dS-HTv" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="20" symbolic="YES" id="ysm-qu-Lzm"/>
                 </constraints>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="0bl-1N-AYu"/>
             </connections>
-            <point key="canvasLocation" x="50.5" y="106.5"/>
+            <point key="canvasLocation" x="50.5" y="156"/>
         </window>
     </objects>
 </document>
