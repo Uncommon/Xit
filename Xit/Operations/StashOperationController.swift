@@ -9,7 +9,8 @@ class StashOperationController: SimpleOperationController
     windowController!.window!.beginSheet(panelController.window!) {
       (response) in
       if response == .OK {
-        let keepIndex = panelController.type == .workspaceOnly
+        let message = panelController.message
+        let keepIndex = panelController.keepStaged
         let includeUntracked = panelController.includeUntracked
         let includeIgnored = panelController.includeIgnored
         
@@ -18,7 +19,8 @@ class StashOperationController: SimpleOperationController
         
         self.tryRepoOperation(successStatus: "Stash completed",
                               failureStatus: "Stash failed") {
-          try repo.saveStash(name: nil, keepIndex: keepIndex,
+          try repo.saveStash(name: message,
+                             keepIndex: keepIndex,
                              includeUntracked: includeUntracked,
                              includeIgnored: includeIgnored)
         }

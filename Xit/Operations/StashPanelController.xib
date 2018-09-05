@@ -9,8 +9,8 @@
         <customObject id="-2" userLabel="File's Owner" customClass="StashPanelController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="ignoredCheck" destination="Zor-dX-wsy" id="5Mj-dC-1hH"/>
-                <outlet property="stashAllRadio" destination="6Ri-hy-fkS" id="eAh-Pp-ctX"/>
-                <outlet property="stashWorkspaceRadio" destination="4H7-dS-HTv" id="PKR-7e-IZp"/>
+                <outlet property="keepStagedCheck" destination="iei-Ei-GGS" id="daZ-xb-h9R"/>
+                <outlet property="messageField" destination="li1-oR-G0E" id="Dh9-ds-jNZ"/>
                 <outlet property="untrackedCheck" destination="t2A-tS-ykZ" id="FeM-nJ-AT2"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
             </connections>
@@ -23,7 +23,7 @@
             <rect key="contentRect" x="196" y="240" width="325" height="264"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
             <view key="contentView" wantsLayer="YES" id="se5-gp-TjO">
-                <rect key="frame" x="0.0" y="0.0" width="325" height="220"/>
+                <rect key="frame" x="0.0" y="0.0" width="325" height="190"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7J0-Jz-8MJ">
@@ -52,26 +52,6 @@ Gw
                             <action selector="cancel:" target="-2" id="Hjl-zo-jCD"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6Ri-hy-fkS">
-                        <rect key="frame" x="19" y="128" width="188" height="18"/>
-                        <buttonCell key="cell" type="radio" title="Stash index and workspace" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="FdX-GV-YLr">
-                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="stashRadioClicked:" target="-2" id="W7t-yc-QOJ"/>
-                        </connections>
-                    </button>
-                    <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="4H7-dS-HTv">
-                        <rect key="frame" x="19" y="106" width="154" height="18"/>
-                        <buttonCell key="cell" type="radio" title="Stash workspace only" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="q0r-58-Ir4">
-                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="stashRadioClicked:" target="-2" id="uBC-et-fYD"/>
-                        </connections>
-                    </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="t2A-tS-ykZ">
                         <rect key="frame" x="18" y="79" width="160" height="18"/>
                         <buttonCell key="cell" type="check" title="Include untracked files" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="pex-3W-pgr">
@@ -87,7 +67,7 @@ Gw
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="li1-oR-G0E">
-                        <rect key="frame" x="20" y="153" width="285" height="22"/>
+                        <rect key="frame" x="20" y="123" width="285" height="22"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="0ah-De-orN">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -95,38 +75,42 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="SRd-m9-JXr">
-                        <rect key="frame" x="18" y="183" width="162" height="17"/>
+                        <rect key="frame" x="18" y="153" width="162" height="17"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Stash message (optional):" id="PBY-qN-uYR">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="iei-Ei-GGS">
+                        <rect key="frame" x="18" y="99" width="153" height="18"/>
+                        <buttonCell key="cell" type="check" title="Keep staged changes" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="7Kh-gz-PF5">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstItem="li1-oR-G0E" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="20" symbolic="YES" id="2cs-lE-rji"/>
                     <constraint firstItem="SRd-m9-JXr" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="20" symbolic="YES" id="51z-kX-51o"/>
                     <constraint firstAttribute="trailing" secondItem="7J0-Jz-8MJ" secondAttribute="trailing" constant="20" symbolic="YES" id="AIJ-61-chN"/>
+                    <constraint firstItem="iei-Ei-GGS" firstAttribute="top" secondItem="li1-oR-G0E" secondAttribute="bottom" constant="8" symbolic="YES" id="CZc-4V-iOs"/>
                     <constraint firstItem="li1-oR-G0E" firstAttribute="top" secondItem="SRd-m9-JXr" secondAttribute="bottom" constant="8" symbolic="YES" id="E5m-wQ-Jr5"/>
-                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="4H7-dS-HTv" secondAttribute="trailing" constant="20" symbolic="YES" id="HUD-Rz-Xyj"/>
+                    <constraint firstItem="t2A-tS-ykZ" firstAttribute="top" secondItem="iei-Ei-GGS" secondAttribute="bottom" constant="6" symbolic="YES" id="FsG-tz-dhB"/>
                     <constraint firstItem="SRd-m9-JXr" firstAttribute="top" secondItem="se5-gp-TjO" secondAttribute="top" constant="20" symbolic="YES" id="IPI-YA-26a"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="t2A-tS-ykZ" secondAttribute="trailing" constant="20" symbolic="YES" id="PEw-ZW-F0v"/>
-                    <constraint firstItem="6Ri-hy-fkS" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="20" symbolic="YES" id="QOS-Nx-FVn"/>
                     <constraint firstAttribute="trailing" secondItem="li1-oR-G0E" secondAttribute="trailing" constant="20" symbolic="YES" id="Rhh-J9-joo"/>
-                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="6Ri-hy-fkS" secondAttribute="trailing" constant="20" symbolic="YES" id="THL-BP-Yih"/>
                     <constraint firstItem="Zor-dX-wsy" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="20" symbolic="YES" id="VZ8-vI-ARL"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Zor-dX-wsy" secondAttribute="trailing" constant="20" symbolic="YES" id="ebM-zW-jSb"/>
                     <constraint firstAttribute="bottom" secondItem="7J0-Jz-8MJ" secondAttribute="bottom" constant="20" symbolic="YES" id="fM6-rV-RUO"/>
                     <constraint firstItem="t2A-tS-ykZ" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="20" symbolic="YES" id="gcv-8z-I0s"/>
                     <constraint firstItem="7J0-Jz-8MJ" firstAttribute="leading" secondItem="Isc-g9-ibb" secondAttribute="trailing" constant="12" symbolic="YES" id="h1o-Tw-APO"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="iei-Ei-GGS" secondAttribute="trailing" constant="20" symbolic="YES" id="hw8-lB-4GR"/>
+                    <constraint firstItem="iei-Ei-GGS" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="20" symbolic="YES" id="iQA-k7-epX"/>
                     <constraint firstItem="Isc-g9-ibb" firstAttribute="top" secondItem="Zor-dX-wsy" secondAttribute="bottom" constant="20" symbolic="YES" id="jFM-O5-xRu"/>
-                    <constraint firstItem="4H7-dS-HTv" firstAttribute="top" secondItem="6Ri-hy-fkS" secondAttribute="bottom" constant="6" symbolic="YES" id="mE9-pe-KXl"/>
                     <constraint firstItem="Zor-dX-wsy" firstAttribute="top" secondItem="t2A-tS-ykZ" secondAttribute="bottom" constant="6" symbolic="YES" id="mWn-X8-By5"/>
-                    <constraint firstItem="t2A-tS-ykZ" firstAttribute="top" secondItem="4H7-dS-HTv" secondAttribute="bottom" constant="12" id="nSs-dU-3iw"/>
                     <constraint firstItem="Isc-g9-ibb" firstAttribute="firstBaseline" secondItem="7J0-Jz-8MJ" secondAttribute="firstBaseline" id="re3-OT-pxa"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="SRd-m9-JXr" secondAttribute="trailing" constant="20" symbolic="YES" id="vV1-tt-cVU"/>
-                    <constraint firstItem="6Ri-hy-fkS" firstAttribute="top" secondItem="li1-oR-G0E" secondAttribute="bottom" constant="8" symbolic="YES" id="yET-3n-Ym0"/>
-                    <constraint firstItem="4H7-dS-HTv" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="20" symbolic="YES" id="ysm-qu-Lzm"/>
                 </constraints>
             </view>
             <connections>

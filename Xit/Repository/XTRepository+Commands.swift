@@ -155,9 +155,9 @@ extension XTRepository: Stashing
   }
   
   public func saveStash(name: String?,
-                 keepIndex: Bool,
-                 includeUntracked: Bool,
-                 includeIgnored: Bool) throws
+                        keepIndex: Bool,
+                        includeUntracked: Bool,
+                        includeIgnored: Bool) throws
   {
     guard !isWriting
     else { throw Error.alreadyWriting }

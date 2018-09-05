@@ -2,31 +2,23 @@ import Cocoa
 
 class StashPanelController: SheetController
 {
-  @IBOutlet weak var stashAllRadio: NSButton!
-  @IBOutlet weak var stashWorkspaceRadio: NSButton!
+  @IBOutlet weak var messageField: NSTextField!
+  @IBOutlet weak var keepStagedCheck: NSButton!
   @IBOutlet weak var untrackedCheck: NSButton!
   @IBOutlet weak var ignoredCheck: NSButton!
   
-  /// Tag values for the radio buttons
-  enum StashType: Int
+  var message: String
   {
-    case all = 0
-    case workspaceOnly = 1
+    get { return messageField.stringValue }
+    set { messageField.stringValue = newValue }
   }
   
-  var type: StashType
+  var keepStaged: Bool
   {
-    get
-    {
-      return stashAllRadio.boolValue ? .all : .workspaceOnly
-    }
-    set
-    {
-      stashAllRadio.boolValue = newValue == .all
-      stashWorkspaceRadio.boolValue = newValue == .workspaceOnly
-    }
+    get { return keepStagedCheck.boolValue }
+    set { keepStagedCheck.boolValue = newValue }
   }
-  
+
   var includeUntracked: Bool
   {
     get { return untrackedCheck.boolValue }
@@ -37,9 +29,5 @@ class StashPanelController: SheetController
   {
     get { return ignoredCheck.boolValue }
     set { ignoredCheck.boolValue = newValue }
-  }
-  
-  @IBAction func stashRadioClicked(_ sender: Any)
-  {
   }
 }
