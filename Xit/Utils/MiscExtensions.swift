@@ -115,6 +115,30 @@ extension NSView
   }
 }
 
+extension NSAlert
+{
+  static func confirm(message: String, infoText: String? = nil,
+                      actionName: String,
+                      parentWindow: NSWindow,
+                      action: @escaping () -> Void)
+  {
+    let alert = NSAlert()
+    
+    alert.messageText = message
+    if let info = infoText {
+      alert.informativeText = info
+    }
+    alert.addButton(withTitle: actionName)
+    alert.addButton(withTitle: "Cancel")
+    alert.beginSheetModal(for: parentWindow) {
+      (response) in
+      if response == .alertFirstButtonReturn {
+        action()
+      }
+    }
+  }
+}
+
 extension NSOutlineView
 {
   func columnObject(withIdentifier id: NSUserInterfaceItemIdentifier)
