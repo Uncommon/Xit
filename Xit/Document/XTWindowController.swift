@@ -411,6 +411,9 @@ extension XTWindowController: TitleBarDelegate
   func pushSelected() { push(self) }
   func pullSelected() { pull(self) }
   func stashSelected() { stash(self) }
+  func popStashSelected() { popStash(self) }
+  func applyStashSelected() { applyStash(self) }
+  func dropStashSelected() { dropStash(self) }
   func showHideSidebar() { showHideSidebar(self) }
   func showHideHistory() { showHideHistory(self) }
   func showHideDetails() { showHideDetails(self) }

@@ -96,6 +96,40 @@ extension XTWindowController
     let _: StashOperationController? = startOperation()
   }
   
+  func tryRepoOperation(_ operation: () throws -> Void)
+  {
+    do {
+      try operation()
+    }
+    catch let error as XTRepository.Error {
+      showErrorMessage(error: error)
+    }
+    catch {
+      showErrorMessage(error: .unexpected)
+    }
+  }
+  
+  @IBAction func popStash(_: AnyObject)
+  {
+    tryRepoOperation() {
+      try repository.popStash(index: 0)
+    }
+  }
+  
+  @IBAction func applyStash(_: AnyObject)
+  {
+    tryRepoOperation() {
+      try repository.applyStash(index: 0)
+    }
+  }
+  
+  @IBAction func dropStash(_: AnyObject)
+  {
+    tryRepoOperation() {
+      try repository.dropStash(index: 0)
+    }
+  }
+
   @IBAction func remoteSettings(_ sender: AnyObject)
   {
     guard let menuItem = sender as? NSMenuItem
