@@ -425,12 +425,18 @@ class XTRepositoryTest: XTTest
     writeTextToFile1("modification")
 
     assertWriteException(name: "unstageFile") {
-      try repository.saveStash(name: "stashname", includeUntracked: false)
+      try repository.saveStash(name: "stashname",
+                               keepIndex: false,
+                               includeUntracked: false,
+                               includeIgnored: true)
     }
     assertWriteException(name: "apply") { try repository.applyStash(index: 0) }
     assertWriteException(name: "drop") { try repository.dropStash(index: 0) }
     writeTextToFile1("modification")
-    try! repository.saveStash(name: "stashname", includeUntracked: false)
+    try! repository.saveStash(name: "stashname",
+                              keepIndex: false,
+                              includeUntracked: false,
+                              includeIgnored: true)
     assertWriteException(name: "pop") { try repository.popStash(index: 0) }
   }
   

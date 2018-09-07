@@ -10,6 +10,10 @@ protocol TitleBarDelegate: AnyObject
   func fetchSelected()
   func pushSelected()
   func pullSelected()
+  func stashSelected()
+  func popStashSelected()
+  func applyStashSelected()
+  func dropStashSelected()
   func showHideSidebar()
   func showHideHistory()
   func showHideDetails()
@@ -46,6 +50,7 @@ class TitleBarViewController: NSViewController
 {
   @IBOutlet weak var navButtons: NSSegmentedControl!
   @IBOutlet weak var remoteControls: NSSegmentedControl!
+  @IBOutlet weak var stashButton: NSSegmentedControl!
   @IBOutlet weak var proxyIcon: NSImageView!
   @IBOutlet weak var spinner: NSProgressIndicator!
   @IBOutlet weak var titleLabel: NSTextField!
@@ -54,6 +59,7 @@ class TitleBarViewController: NSViewController
   @IBOutlet weak var operationControls: NSSegmentedControl!
   @IBOutlet weak var viewControls: NSSegmentedControl!
   @IBOutlet weak var operationViewSpacing: NSLayoutConstraint!
+  @IBOutlet var stashMenu: NSMenu!
   
   weak var delegate: TitleBarDelegate?
   
@@ -94,6 +100,8 @@ class TitleBarViewController: NSViewController
   
   override func viewDidLoad()
   {
+    stashButton.setMenu(stashMenu, forSegment: 0)
+    
     // This constraint will be active when the operations controls are shown.
     operationViewSpacing.isActive = false
   }
@@ -141,6 +149,26 @@ class TitleBarViewController: NSViewController
       case .push:
         delegate?.pushSelected()
     }
+  }
+  
+  @IBAction func stash(_ sender: Any)
+  {
+    delegate?.stashSelected()
+  }
+  
+  @IBAction func popStash(_ sender: Any)
+  {
+    delegate?.popStashSelected()
+  }
+  
+  @IBAction func applyStash(_ sender: Any)
+  {
+    delegate?.applyStashSelected()
+  }
+  
+  @IBAction func dropStash(_ sender: Any)
+  {
+    delegate?.dropStashSelected()
   }
   
   @IBAction func viewAction(_ sender: NSSegmentedControl)

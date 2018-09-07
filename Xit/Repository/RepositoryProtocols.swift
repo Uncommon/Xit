@@ -128,6 +128,16 @@ public protocol Stashing: AnyObject
   func applyStash(index: UInt) throws
   func dropStash(index: UInt) throws
   func commitForStash(at index: UInt) -> Commit?
+  
+  /// Make a new stash entry
+  /// - parameter name: Name of the stash entry
+  /// - parameter keepIndex: Do not stash staged changes
+  /// - parameter includeUntracked: Stash untracked workspace files
+  /// - parameter includeIgnored: Stash ignored workspace files
+  func saveStash(name: String?,
+                 keepIndex: Bool,
+                 includeUntracked: Bool,
+                 includeIgnored: Bool) throws
 }
 
 public protocol RemoteManagement: AnyObject

@@ -93,3 +93,26 @@ extension Date
                     sign: "+".utf8CString[0])
   }
 }
+
+class GitSignature
+{
+  // Use a pointer, instead of the struct directly, to let libgit2 handle
+  // allocating and deallocating.
+  var signature: UnsafeMutablePointer<git_signature>
+  
+  init?(defaultFromRepo repo: OpaquePointer)
+  {
+    var signature: UnsafeMutablePointer<git_signature>? = .allocate(capacity: 1)
+    let result = git_signature_default(&signature, repo)
+    guard result == 0,
+          let finalSig = signature
+    else { return nil }
+    
+    self.signature = finalSig
+  }
+  
+  deinit
+  {
+    git_signature_free(signature)
+  }
+}

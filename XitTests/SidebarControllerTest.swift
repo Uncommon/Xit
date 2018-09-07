@@ -70,9 +70,15 @@ class SidebarHandlerTest: XTTest
   func makeTwoStashes()
   {
     XCTAssertTrue(writeTextToFile1("second text"))
-    try! repository.saveStash(name: "s1", includeUntracked: false)
+    try! repository.saveStash(name: "s1",
+                              keepIndex: false,
+                              includeUntracked: false,
+                              includeIgnored: true)
     XCTAssertTrue(writeTextToFile1("third text"))
-    try! repository.saveStash(name: "s2", includeUntracked: false)
+    try! repository.saveStash(name: "s2",
+                              keepIndex: false,
+                              includeUntracked: false,
+                              includeIgnored: true)
   }
   
   /// Checks that the remaining stashes have the expected names

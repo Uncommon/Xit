@@ -124,6 +124,8 @@ extension XTRepository
     
     public func next() -> GitStash?
     {
+      guard index < stashes.count
+      else { return nil }
       let result = stashes[index]
       
       index += 1

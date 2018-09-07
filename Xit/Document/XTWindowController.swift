@@ -354,6 +354,9 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       case #selector(self.remoteSettings(_:)):
         result = true
       
+      case #selector(self.stash(_:)):
+        result = true
+      
       case #selector(self.newTag(_:)):
         result = true
 
@@ -407,6 +410,10 @@ extension XTWindowController: TitleBarDelegate
   func fetchSelected() { fetch(self) }
   func pushSelected() { push(self) }
   func pullSelected() { pull(self) }
+  func stashSelected() { stash(self) }
+  func popStashSelected() { popStash(self) }
+  func applyStashSelected() { applyStash(self) }
+  func dropStashSelected() { dropStash(self) }
   func showHideSidebar() { showHideSidebar(self) }
   func showHideHistory() { showHideHistory(self) }
   func showHideDetails() { showHideDetails(self) }

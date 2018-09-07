@@ -91,6 +91,85 @@ extension XTWindowController
     let _: PushOpController? = startOperation()
   }
   
+  @IBAction func stash(_: AnyObject)
+  {
+    let _: StashOperationController? = startOperation()
+  }
+  
+  func tryRepoOperation(_ operation: () throws -> Void)
+  {
+    do {
+      try operation()
+    }
+    catch let error as XTRepository.Error {
+      showErrorMessage(error: error)
+    }
+    catch {
+      showErrorMessage(error: .unexpected)
+    }
+  }
+  
+  func noStashesAlert()
+  {
+    let alert = NSAlert()
+    
+    alert.messageText = "Repository has no stashes."
+    alert.beginSheetModal(for: window!, completionHandler: nil)
+  }
+  
+  @IBAction func popStash(_: AnyObject)
+  {
+    // Force cast - stashes() is not in a protocol because of limitations with
+    // associated types
+    guard let stash = (repository as! XTRepository).stashes().first
+    else {
+      noStashesAlert()
+      return
+    }
+    
+    NSAlert.confirm(message: "Apply the most recent stash, and then delete it?",
+                    infoText: stash.message ?? "",
+                    actionName: "Pop", parentWindow: window!) {
+      self.tryRepoOperation() {
+        try self.repository.popStash(index: 0)
+      }
+    }
+  }
+  
+  @IBAction func applyStash(_: AnyObject)
+  {
+    guard let stash = (repository as! XTRepository).stashes().first
+    else {
+      noStashesAlert()
+      return
+    }
+
+    NSAlert.confirm(message: "Apply the most recent stash, without deleting it?",
+                    infoText: stash.message ?? "",
+                    actionName: "Apply", parentWindow: window!) {
+      self.tryRepoOperation() {
+        try self.repository.applyStash(index: 0)
+      }
+    }
+  }
+  
+  @IBAction func dropStash(_: AnyObject)
+  {
+    guard let stash = (repository as! XTRepository).stashes().first
+    else {
+      noStashesAlert()
+      return
+    }
+
+    NSAlert.confirm(message: "Delete the most recent stash?",
+                    infoText: stash.message ?? "",
+                    actionName: "Drop", parentWindow: window!) {
+      self.tryRepoOperation() {
+        try self.repository.dropStash(index: 0)
+      }
+    }
+  }
+
   @IBAction func remoteSettings(_ sender: AnyObject)
   {
     guard let menuItem = sender as? NSMenuItem
