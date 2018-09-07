@@ -188,7 +188,7 @@
                         <action selector="remoteAction:" target="-2" id="aru-FK-3m6"/>
                     </connections>
                 </segmentedControl>
-                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wtJ-QB-nan">
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wtJ-QB-nan" userLabel="Find Button">
                     <rect key="frame" x="649" y="8" width="29" height="25"/>
                     <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="NSTouchBarSearchTemplate" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="m60-rp-dnd">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -214,9 +214,9 @@
             <constraints>
                 <constraint firstItem="wtJ-QB-nan" firstAttribute="top" secondItem="gzN-mQ-RA8" secondAttribute="top" id="5js-yx-iXk"/>
                 <constraint firstItem="m2X-wZ-tfZ" firstAttribute="leading" secondItem="EAc-F6-hIg" secondAttribute="trailing" constant="8" symbolic="YES" id="5rI-6h-bqc"/>
-                <constraint firstItem="gzN-mQ-RA8" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="IIb-W1-mF1" secondAttribute="trailing" constant="8" symbolic="YES" id="Ht0-BG-KbQ"/>
+                <constraint firstItem="wtJ-QB-nan" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="IIb-W1-mF1" secondAttribute="trailing" constant="8" symbolic="YES" id="Ht0-BG-KbQ"/>
+                <constraint firstItem="DfW-Hf-FKe" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="agd-vO-eY9" secondAttribute="trailing" constant="8" id="J25-5Y-Vah"/>
                 <constraint firstItem="gzN-mQ-RA8" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="5" id="NAK-dD-Ivi"/>
-                <constraint firstItem="DfW-Hf-FKe" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="m2X-wZ-tfZ" secondAttribute="trailing" constant="8" symbolic="YES" id="PyA-gP-gFU"/>
                 <constraint firstItem="agd-vO-eY9" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="5" id="Qic-0h-hm3"/>
                 <constraint firstItem="aNh-jL-whD" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="7" id="T5L-YN-0DZ"/>
                 <constraint firstItem="agd-vO-eY9" firstAttribute="leading" secondItem="m2X-wZ-tfZ" secondAttribute="trailing" constant="8" symbolic="YES" id="TA4-DY-b22"/>
@@ -226,7 +226,7 @@
                 <constraint firstItem="DfW-Hf-FKe" firstAttribute="centerX" secondItem="c22-O7-iKe" secondAttribute="centerX" priority="250" id="gXn-Xl-POs"/>
                 <constraint firstItem="IIb-W1-mF1" firstAttribute="leading" secondItem="aNh-jL-whD" secondAttribute="trailing" constant="4" id="jcc-9K-9rI"/>
                 <constraint firstItem="gzN-mQ-RA8" firstAttribute="leading" secondItem="wtJ-QB-nan" secondAttribute="trailing" constant="8" symbolic="YES" id="lFK-Qu-Yxc"/>
-                <constraint firstItem="gzN-mQ-RA8" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="DfW-Hf-FKe" secondAttribute="trailing" constant="8" symbolic="YES" id="rgO-Mw-E0W"/>
+                <constraint firstItem="wtJ-QB-nan" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="DfW-Hf-FKe" secondAttribute="trailing" constant="8" symbolic="YES" id="rgO-Mw-E0W"/>
                 <constraint firstItem="EAc-F6-hIg" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="5" id="t8e-TP-6Yk"/>
                 <constraint firstAttribute="trailing" secondItem="gzN-mQ-RA8" secondAttribute="trailing" constant="1" id="ykl-5G-K0b"/>
                 <constraint firstItem="EAc-F6-hIg" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="1" id="yoe-T7-8hM"/>
