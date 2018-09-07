@@ -109,12 +109,23 @@ extension XTWindowController
     }
   }
   
+  func noStashesAlert()
+  {
+    let alert = NSAlert()
+    
+    alert.messageText = "Repository has no stashes."
+    alert.beginSheetModal(for: window!, completionHandler: nil)
+  }
+  
   @IBAction func popStash(_: AnyObject)
   {
     // Force cast - stashes() is not in a protocol because of limitations with
     // associated types
     guard let stash = (repository as! XTRepository).stashes().first
-    else { return }
+    else {
+      noStashesAlert()
+      return
+    }
     
     NSAlert.confirm(message: "Apply the most recent stash, and then delete it?",
                     infoText: stash.message ?? "",
@@ -128,8 +139,11 @@ extension XTWindowController
   @IBAction func applyStash(_: AnyObject)
   {
     guard let stash = (repository as! XTRepository).stashes().first
-    else { return }
-    
+    else {
+      noStashesAlert()
+      return
+    }
+
     NSAlert.confirm(message: "Apply the most recent stash, without deleting it?",
                     infoText: stash.message ?? "",
                     actionName: "Apply", parentWindow: window!) {
@@ -142,8 +156,11 @@ extension XTWindowController
   @IBAction func dropStash(_: AnyObject)
   {
     guard let stash = (repository as! XTRepository).stashes().first
-    else { return }
-    
+    else {
+      noStashesAlert()
+      return
+    }
+
     NSAlert.confirm(message: "Delete the most recent stash?",
                     infoText: stash.message ?? "",
                     actionName: "Drop", parentWindow: window!) {
