@@ -111,22 +111,45 @@ extension XTWindowController
   
   @IBAction func popStash(_: AnyObject)
   {
-    tryRepoOperation() {
-      try repository.popStash(index: 0)
+    // Force cast - stashes() is not in a protocol because of limitations with
+    // associated types
+    guard let stash = (repository as! XTRepository).stashes().first
+    else { return }
+    
+    NSAlert.confirm(message: "Apply the most recent stash, and then delete it?",
+                    infoText: stash.message ?? "",
+                    actionName: "Pop", parentWindow: window!) {
+      self.tryRepoOperation() {
+        try self.repository.popStash(index: 0)
+      }
     }
   }
   
   @IBAction func applyStash(_: AnyObject)
   {
-    tryRepoOperation() {
-      try repository.applyStash(index: 0)
+    guard let stash = (repository as! XTRepository).stashes().first
+    else { return }
+    
+    NSAlert.confirm(message: "Apply the most recent stash, without deleting it?",
+                    infoText: stash.message ?? "",
+                    actionName: "Apply", parentWindow: window!) {
+      self.tryRepoOperation() {
+        try self.repository.applyStash(index: 0)
+      }
     }
   }
   
   @IBAction func dropStash(_: AnyObject)
   {
-    tryRepoOperation() {
-      try repository.dropStash(index: 0)
+    guard let stash = (repository as! XTRepository).stashes().first
+    else { return }
+    
+    NSAlert.confirm(message: "Delete the most recent stash?",
+                    infoText: stash.message ?? "",
+                    actionName: "Drop", parentWindow: window!) {
+      self.tryRepoOperation() {
+        try self.repository.dropStash(index: 0)
+      }
     }
   }
 

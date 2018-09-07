@@ -13,7 +13,8 @@ class HistoryCellView: NSTableCellView
       NSColor.magenta, NSColor.systemOrange, NSColor.systemPurple,
       // Regular yellow is too light
       NSColor(calibratedHue: 0.13, saturation: 0.08, brightness: 0.8, alpha: 1.0),
-      NSColor.textColor, NSColor.lightGray]
+      NSColor.textColor, NSColor.lightGray,
+      ]
   
   enum Widths
   {
