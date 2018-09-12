@@ -16,6 +16,7 @@ protocol PullRequest
 
   func matchRemote(url: URL) -> Bool
   func reviewerStatus(userID: String) -> PullRequestApproval
+  mutating func setReviewerStatus(userID: String, status: PullRequestApproval)
 }
 
 extension PullRequest

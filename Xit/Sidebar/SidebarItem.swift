@@ -39,6 +39,17 @@ class SidebarItem: NSObject
     return nil
   }
   
+  /// Returns the first match in the hierarchy of child items
+  func findChild(_ predicate: (SidebarItem) -> Bool) -> SidebarItem?
+  {
+    if predicate(self) {
+      return self
+    }
+    else {
+      return children.firstResult { $0.findChild(predicate) }
+    }
+  }
+  
   override var description: String { return self.title }
 }
 

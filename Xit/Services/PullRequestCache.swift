@@ -23,7 +23,7 @@ class PullRequestCache
   private var clients = [WeakClientRef]()
   private let repository: RemoteManagement
   
-  internal(set) var requests: [PullRequest] = []
+  var requests: [PullRequest] = []
   
   init(repository: RemoteManagement)
   {
@@ -39,7 +39,7 @@ class PullRequestCache
   
   func remove(client: PullRequestClient)
   {
-    clients.index(where: { $0.client === client })
+    clients.index { $0.client === client }
            .map { _ = clients.remove(at: $0) }
   }
   
@@ -84,15 +84,33 @@ class PullRequestCache
       
       let request = requests[requestIndex]
       
-      forEachClient {
-        (client) in
-        client.pullRequestUpdated(branch: request.sourceBranch,
-                                  requests: [request])
-      }
+      notifyChange(request: request)
     }
   }
   
-  func forEachClient(_ action: (PullRequestClient) -> Void)
+  func update(pullRequestID: String, approval: PullRequestApproval)
+  {
+    guard let requestIndex = requests.index(where: { $0.id == pullRequestID })
+    else { return }
+    let userID = requests[requestIndex].service.userID
+    
+    requests[requestIndex].setReviewerStatus(userID: userID, status: approval)
+    
+    let request = requests[requestIndex]
+
+    notifyChange(request: request)
+  }
+  
+  private func notifyChange(request: PullRequest)
+  {
+    forEachClient {
+      (client) in
+      client.pullRequestUpdated(branch: request.sourceBranch,
+                                requests: [request])
+    }
+  }
+  
+  private func forEachClient(_ action: (PullRequestClient) -> Void)
   {
     for clientWrapper in clients {
       if let client = clientWrapper.client {

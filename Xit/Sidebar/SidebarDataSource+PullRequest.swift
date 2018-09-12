@@ -5,10 +5,33 @@ extension SideBarDataSource: PullRequestClient
   func pullRequestUpdated(branch: String, requests: [PullRequest])
   {
     DispatchQueue.main.async {
-      if let item = self.item(forBranchName: branch) {
+      for request in requests {
+        guard let item = self.remoteItem(for: request)
+        else { continue }
+        
         self.outline.reloadItem(item)
       }
     }
+  }
+}
+
+extension SideBarDataSource
+{
+  func remoteItem(for pullRequest: PullRequest) -> RemoteBranchSidebarItem?
+  {
+    guard let sourceURL = pullRequest.sourceRepo,
+          let remote = roots[XTGroupIndex.remotes.rawValue].children.first(where: {
+      ($0 as? RemoteSidebarItem)?.remote?.url == sourceURL
+    })
+    else { return nil }
+    let sourceBranch = pullRequest.sourceBranch
+                                  .removingPrefix(BranchPrefixes.heads)
+    
+    return remote.findChild {
+      let name = ($0 as? RemoteBranchSidebarItem)?.branchObject()?.strippedName
+      return name == sourceBranch
+      //($0 as? RemoteBranchSidebarItem)?.branchObject()?.name == sourceBranch
+    } as? RemoteBranchSidebarItem
   }
   
   func pullRequest(for item: SidebarItem?) -> PullRequest?
@@ -114,7 +137,7 @@ extension SideBarDataSource: PullRequestClient
     
     pullRequest.service.approve(
         request: pullRequest,
-        onSuccess: { self.prActionSucceeded(item: item) },
+        onSuccess: { self.approvalSucceeded(item: item, approval: .approved) },
         onFailure: { error in self.prActionFailed(item: item, error: error) })
   }
   
@@ -125,7 +148,7 @@ extension SideBarDataSource: PullRequestClient
     
     pullRequest.service.unapprove(
         request: pullRequest,
-        onSuccess: { self.prActionSucceeded(item: item) },
+        onSuccess: { self.approvalSucceeded(item: item, approval: .unreviewed) },
         onFailure: { error in self.prActionFailed(item: item, error: error) })
   }
   
@@ -136,14 +159,16 @@ extension SideBarDataSource: PullRequestClient
     
     pullRequest.service.needsWork(
         request: pullRequest,
-        onSuccess: { self.prActionSucceeded(item: item) },
+        onSuccess: { self.approvalSucceeded(item: item, approval: .needsWork) },
         onFailure: { error in self.prActionFailed(item: item, error: error) })
   }
   
-  func prActionSucceeded(item: SidebarItem)
+  func approvalSucceeded(item: SidebarItem, approval: PullRequestApproval)
   {
-    // update the PR cache
-    // refresh the item
+    guard let request = pullRequest(for: item)
+    else { return }
+    
+    pullRequestCache.update(pullRequestID: request.id, approval: approval)
   }
   
   func prActionFailed(item: SidebarItem, error: Error)

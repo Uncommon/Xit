@@ -36,6 +36,24 @@ enum BitbucketServer
     case approved = "APPROVED"
     case unapproved = "UNAPPROVED"
     case needsWork = "NEEDS_WORK"
+    
+    var approval: PullRequestApproval
+    {
+      switch self {
+        case .approved:   return .approved
+        case .unapproved: return .unreviewed
+        case .needsWork: return .needsWork
+      }
+    }
+    
+    init(approval: PullRequestApproval)
+    {
+      switch approval {
+        case .approved: self = .approved
+        case .unreviewed: self = .unapproved
+        case .needsWork: self = .needsWork
+      }
+    }
   }
 
   struct Project: Codable
@@ -97,8 +115,8 @@ enum BitbucketServer
   {
     let user: User
     let role: ReviewerRole
-    let approved: Bool
-    let status: ReviewerStatus
+    var approved: Bool
+    var status: ReviewerStatus
     let lastReviewedCommit: String?
   }
 
@@ -116,7 +134,7 @@ enum BitbucketServer
     let fromRef, toRef: Ref
     let locked: Bool
     let author: Participant
-    let reviewers: [Participant]
+    var reviewers: [Participant]
     let participants: [Participant]?
     let links: Links
   }
@@ -214,27 +232,28 @@ class BitbucketServerAPI: BasicAuthService, ServiceAPI
     
     func matchRemote(url: URL) -> Bool
     {
-      guard let link = request.fromRef.repository
-                        .links?.clone?.first(where: { $0.name == url.scheme })
-      else { return false }
+      let link = request.fromRef.repository
+                        .links?.clone?.first { $0.name == url.scheme }
       
-      return link.href == url.absoluteString
+      return link?.href == url.absoluteString
     }
     
     func reviewerStatus(userID: String) -> PullRequestApproval
     {
-      guard let reviewer = request.reviewers
-                                  .first(where: { $0.user.slug == userID })
-      else { return .unreviewed }
+      let reviewer = request.reviewers
+                            .first { $0.user.slug == userID }
       
-      switch reviewer.status {
-        case .approved:
-          return .approved
-        case .unapproved:
-          return .unreviewed
-        case .needsWork:
-          return .needsWork
-      }
+      return reviewer?.status.approval ?? .unreviewed
+    }
+    
+    mutating func setReviewerStatus(userID: String, status: PullRequestApproval)
+    {
+      guard let index = request.reviewers
+                               .index(where: { $0.user.slug == userID })
+      else { return }
+      
+      request.reviewers[index].approved = status == .approved
+      request.reviewers[index].status = BitbucketServer.ReviewerStatus(approval: status)
     }
   }
   
