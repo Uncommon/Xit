@@ -38,6 +38,15 @@ class Services
   static let shared = Services()
   
   private var teamCityServices: [String: TeamCityAPI] = [:]
+  private var bitbucketServices: [String: BitbucketServerAPI] = [:]
+  
+  var allServices: [Service]
+  {
+    let tcServices: [Service] = Array(teamCityServices.values)
+    let bbServices: [Service] = Array(bitbucketServices.values)
+    
+    return tcServices + bbServices
+  }
   
   /// Creates an API object for each account so they can start with
   /// authorization and other state info.
@@ -48,6 +57,9 @@ class Services
     
     for account in AccountsManager.manager.accounts(ofType: .teamCity) {
       _ = teamCityAPI(account)
+    }
+    for account in AccountsManager.manager.accounts(ofType: .bitbucketServer) {
+      _ = bitbucketServerAPI(account)
     }
   }
   
@@ -88,6 +100,39 @@ class Services
       return api
     }
   }
+  
+  func bitbucketServerAPI(_ account: Account) -> BitbucketServerAPI?
+  {
+    let key = Services.accountKey(account)
+    
+    if let api = bitbucketServices[key] {
+      return api
+    }
+    else {
+      guard let password = XTKeychain.findPassword(url: account.location,
+                                                   account: account.user)
+      else {
+        NSLog("No password found for \(key)")
+        return nil
+      }
+      
+      guard let api = BitbucketServerAPI(user: account.user,
+                                   password: password,
+                                   baseURL: account.location.absoluteString)
+      else { return nil }
+      
+      api.attemptAuthentication()
+      bitbucketServices[key] = api
+      return api
+    }
+  }
+  
+  func pullRequestService(remote: Remote) -> PullRequestService?
+  {
+    let prServices = allServices.compactMap { $0 as? PullRequestService }
+    
+    return prServices.first { $0.match(remote: remote) }
+  }
 }
 
 
@@ -124,7 +169,7 @@ class BasicAuthService: Siesta.Service
 {
   static let AuthenticationStatusChangedNotification = "AuthStatusChanged"
   
-  private(set) var authenticationStatus: Services.Status
+  internal(set) var authenticationStatus: Services.Status
   {
     didSet
     {
@@ -143,7 +188,8 @@ class BasicAuthService: Siesta.Service
     self.authenticationStatus = .notStarted
     self.authenticationPath = authenticationPath
     
-    super.init(baseURL: baseURL)
+    // Exclude the JSON transformer because we'll use JSONDecoder instead
+    super.init(baseURL: baseURL, standardTransformers: [.text, .image])
   
     if !updateAuthentication(user, password: password) {
       return nil
@@ -196,7 +242,7 @@ class BasicAuthService: Siesta.Service
 
         case .newData, .notModified:
           self.authenticationStatus = .done
-          self.didAuthenticate()
+          self.didAuthenticate(responseResource: resource)
 
         case .error:
           guard let error = resource.latestError
@@ -220,7 +266,7 @@ class BasicAuthService: Siesta.Service
   }
   
   // For subclasses to override when more data needs to be downloaded.
-  func didAuthenticate()
+  func didAuthenticate(responseResource: Resource)
   {
   }
 }

@@ -169,4 +169,9 @@ extension SidebarController
   {
     
   }
+  
+  @IBAction func pullRequestClicked(_ sender: Any?)
+  {
+    
+  }
 }

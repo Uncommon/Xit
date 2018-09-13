@@ -398,6 +398,22 @@ extension Thread
   }
 }
 
+extension DecodingError {
+  var context: Context
+  {
+    switch self {
+    case .dataCorrupted(let context):
+      return context
+    case .keyNotFound(_, let context):
+      return context
+    case .typeMismatch(_, let context):
+      return context
+    case .valueNotFound(_, let context):
+      return context
+    }
+  }
+}
+
 /// Similar to Objective-C's `@synchronized`
 /// - parameter object: Token object for the lock
 /// - parameter block: Block to execute inside the lock

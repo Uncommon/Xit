@@ -2,6 +2,10 @@ import Foundation
 
 extension NSImage.Name
 {
+  static let prApproved: NSImage.Name = ◊"prApproved"
+  static let prClosed: NSImage.Name = ◊"prClosed"
+  static let prMerged: NSImage.Name = ◊"prMerged"
+  static let prNeedsWork: NSImage.Name = ◊"prNeedsWork"
   static let xtActionButtonEmpty: NSImage.Name = ◊"actionButtonEmpty"
   static let xtBitBucketTemplate: NSImage.Name = ◊"bitbucketTemplate"
   static let xtBranchTemplate: NSImage.Name = ◊"branchTemplate"

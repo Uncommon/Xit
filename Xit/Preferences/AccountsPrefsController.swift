@@ -180,6 +180,12 @@ class AccountsPrefsController: NSViewController
       
         api.attemptAuthentication()
       
+      case .bitbucketServer:
+        guard let api = Services.shared.bitbucketServerAPI(account)
+        else { break }
+      
+        api.attemptAuthentication()
+      
       default:
         break
     }
@@ -205,7 +211,7 @@ extension AccountsPrefsController: NSTableViewDelegate
     static let status = ¶"status"
   }
   
-  func statusImage(forAPI api: TeamCityAPI?) -> NSImage?
+  func statusImage(forTeamCity api: TeamCityAPI?) -> NSImage?
   {
     guard let api = api
     else { return NSImage(named: .statusUnavailable) }
@@ -240,6 +246,26 @@ extension AccountsPrefsController: NSTableViewDelegate
     return nil
   }
   
+  func statusImage(forBitbucket api: BitbucketServerAPI?) -> NSImage?
+  {
+    guard let api = api
+    else { return NSImage(named: .statusUnavailable) }
+    let imageName: NSImage.Name
+    
+    switch api.authenticationStatus {
+      case .unknown, .notStarted:
+        imageName = .statusNone
+      case .inProgress:
+        // eventually have a spinner instead
+        imageName = .statusPartiallyAvailable
+      case .done:
+        imageName = .statusAvailable
+      case .failed:
+        imageName = .statusUnavailable
+    }
+    return NSImage(named: imageName)
+  }
+  
   func tableView(_ tableView: NSTableView,
                  viewFor tableColumn: NSTableColumn?,
                  row: Int) -> NSView?
@@ -262,13 +288,23 @@ extension AccountsPrefsController: NSTableViewDelegate
         view.textField?.stringValue = account.location.absoluteString
       case ColumnID.status:
         view.imageView?.isHidden = true
-        if account.type == .teamCity {
-          let api = Services.shared.teamCityAPI(account)
-          
-          if let image = statusImage(forAPI: api) {
-            view.imageView?.image = image
-            view.imageView?.isHidden = false
-          }
+        switch account.type {
+          case .teamCity:
+            let api = Services.shared.teamCityAPI(account)
+            
+            if let image = statusImage(forTeamCity: api) {
+              view.imageView?.image = image
+              view.imageView?.isHidden = false
+            }
+          case .bitbucketServer:
+            let api = Services.shared.bitbucketServerAPI(account)
+            
+            if let image = statusImage(forBitbucket: api) {
+              view.imageView?.image = image
+              view.imageView?.isHidden = false
+            }
+          default:
+            break
         }
       default:
         return nil

@@ -275,18 +275,32 @@ class MockSidebarOutline: NSOutlineView
     let buttonContainer = NSView(frame: NSRect(x: 0, y: 0, width: 20, height: 16))
     let missingImage = NSImageView(frame: NSRect(x: 0, y: 0, width: 20, height: 16))
     let statusText = NSButton(title: "10", target: nil, action: nil)
-    
+    let prContanier = NSView(frame: NSRect(x: 0, y: 0, width: 20, height: 16))
+    let pullRequestButton = NSPopUpButton(frame: NSRect(x: 0, y: 0,
+                                                        width: 20, height: 16))
+    let prStatusImage = NSImageView(frame: NSRect(x: 0, y: 0,
+                                                  width: 20, height: 16))
+
     for view in [textField, imageView, statusImage, statusButton, statusText,
-                 buttonContainer, missingImage] {
+                 buttonContainer, missingImage, prContanier, pullRequestButton,
+                 prStatusImage] {
       result.addSubview(view)
     }
     result.textField = textField
     result.imageView = imageView
-    result.statusImage = statusImage
     result.statusButton = statusButton
     result.statusText = statusText
     result.buttonContainer = buttonContainer
     result.missingImage = missingImage
+    
+    result.prContanier = NSView(frame: NSRect(x: 0, y: 0, width: 20, height: 16))
+    result.pullRequestButton = NSPopUpButton(frame: NSRect(x: 0, y: 0,
+                                                           width: 20, height: 16))
+    result.prStatusImage = NSImageView(frame: NSRect(x: 0, y: 0,
+                                                     width: 20, height: 16))
+    result.prContanier = prContanier
+    result.pullRequestButton = pullRequestButton
+    result.prStatusImage = prStatusImage
     
     return result
   }

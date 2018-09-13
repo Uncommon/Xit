@@ -40,6 +40,10 @@ extension XTRepository: CommitReferencing
       return 0
     }
     
+    objc_sync_enter(self)
+    defer {
+      objc_sync_exit(self)
+    }
     refsIndex.removeAll()
     git_reference_foreach(gitRepo, callback, &payload)
   }
@@ -47,6 +51,10 @@ extension XTRepository: CommitReferencing
   /// Returns a list of refs that point to the given commit.
   public func refs(at sha: String) -> [String]
   {
+    objc_sync_enter(self)
+    defer {
+      objc_sync_exit(self)
+    }
     return refsIndex[sha] ?? []
   }
   
@@ -148,15 +156,6 @@ extension XTRepository: CommitReferencing
     if result != 0 {
       throw NSError.git_error(for: result)
     }
-  }
-  
-  public func remoteNames() -> [String]
-  {
-    let strArray = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
-    guard git_remote_list(strArray, gitRepo) == 0
-    else { return [] }
-    
-    return strArray.pointee.compactMap { $0 }
   }
   
   public func stashes() -> Stashes

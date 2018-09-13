@@ -39,6 +39,17 @@ class SidebarItem: NSObject
     return nil
   }
   
+  /// Returns the first match in the hierarchy of child items
+  func findChild(_ predicate: (SidebarItem) -> Bool) -> SidebarItem?
+  {
+    if predicate(self) {
+      return self
+    }
+    else {
+      return children.firstResult { $0.findChild(predicate) }
+    }
+  }
+  
   override var description: String { return self.title }
 }
 
@@ -77,6 +88,7 @@ class BranchSidebarItem: SidebarItem
   
   var fullName: String { return title }
   var refName: String { fatalError("refName is abstract") }
+  var remote: Remote? { return nil }
   
   func branchObject() -> Branch? { return nil }
 }
@@ -100,6 +112,16 @@ class LocalBranchSidebarItem: BranchSidebarItem
   {
     return selection!.repository.localBranch(named: title)
   }
+  
+  override var remote: Remote?
+  {
+    guard let localBranch = branchObject() as? LocalBranch,
+          let remoteBranch = localBranch.trackingBranch,
+          let repo = selection!.repository as? RemoteManagement
+    else { return nil }
+    
+    return remoteBranch.remoteName.flatMap { repo.remote(named: $0) }
+  }
 
   func hasTrackingBranch() -> Bool
   {
@@ -112,17 +134,21 @@ class LocalBranchSidebarItem: BranchSidebarItem
 
 class RemoteBranchSidebarItem: BranchSidebarItem
 {
-  var remote: String
+  var remoteName: String
+  override var remote: Remote?
+  {
+    return (selection!.repository as? RemoteManagement)?.remote(named: remoteName)
+  }
   override var refType: RefType { return .remoteBranch }
   
-  override var fullName: String { return "\(remote)/\(title)" }
+  override var fullName: String { return "\(remoteName)/\(title)" }
   
   override var refName: String
   { return BranchPrefixes.remotes.appending(pathComponent: fullName) }
 
   init(title: String, remote: String, selection: RepositorySelection)
   {
-    self.remote = remote
+    self.remoteName = remote
     
     super.init(title: title)
     self.selection = selection
@@ -130,7 +156,7 @@ class RemoteBranchSidebarItem: BranchSidebarItem
   
   override func branchObject() -> Branch?
   {
-    return selection!.repository.remoteBranch(named: title, remote: remote)
+    return selection!.repository.remoteBranch(named: title, remote: remoteName)
   }
 }
 

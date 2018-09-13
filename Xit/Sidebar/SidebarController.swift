@@ -59,7 +59,7 @@ extension SidebarHandler
               guard let remoteItem = item as? RemoteBranchSidebarItem
               else { return false }
               
-              clickedBranch = "\(remoteItem.remote)/\(clickedBranch)"
+              clickedBranch = "\(remoteItem.remoteName)/\(clickedBranch)"
             case .activeBranch:
               return false
             default:

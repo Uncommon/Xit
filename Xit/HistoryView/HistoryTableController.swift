@@ -355,6 +355,10 @@ extension HistoryTableController: NSTableViewDataSource
 {
   public func numberOfRows(in tableView: NSTableView) -> Int
   {
+    objc_sync_enter(history)
+    defer {
+      objc_sync_exit(history)
+    }
     return history.entries.count
   }
 }

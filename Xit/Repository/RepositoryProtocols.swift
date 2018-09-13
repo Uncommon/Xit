@@ -21,7 +21,6 @@ public protocol CommitReferencing: AnyObject
   var currentBranch: String? { get }
   
   func sha(forRef: String) -> String?
-  func remoteNames() -> [String]
   func tags() throws -> [Tag]
   func graphBetween(localBranch: LocalBranch,
                     upstreamBranch: RemoteBranch) -> (ahead: Int, behind: Int)?
@@ -142,9 +141,18 @@ public protocol Stashing: AnyObject
 
 public protocol RemoteManagement: AnyObject
 {
+  func remoteNames() -> [String]
   func remote(named name: String) -> Remote?
   func addRemote(named name: String, url: URL) throws
   func deleteRemote(named name: String) throws
+}
+
+extension RemoteManagement
+{
+  func remotes() -> [Remote]
+  {
+    return remoteNames().compactMap { remote(named: $0) }
+  }
 }
 
 public protocol SubmoduleManagement: AnyObject

@@ -5,11 +5,9 @@ class FileChangesDataSource: FileListDataSourceBase
   var changes = [FileChange]()
   var wasInStaging: Bool = false
   
-  func doReload(_ fileList: FileListModel?)
+  func doReload(_ newChanges: [FileChange])
   {
-    var newChanges = fileList?.changes ?? [FileChange]()
-    
-    newChanges.sort { $0.gitPath < $1.gitPath }
+    let newChanges = newChanges.sorted { $0.gitPath < $1.gitPath }
     
     let newPaths = newChanges.map { $0.gitPath }
     let oldPaths = changes.map { $0.gitPath }
@@ -118,9 +116,12 @@ extension FileChangesDataSource: FileListDataSource
        let finalModel = model {
       delegate.configure(model: finalModel)
     }
+    
+    let newChanges = model?.changes ?? []
+    
     repoController.queue.executeOffMainThread {
       [weak self] in
-      self?.doReload(model)
+      self?.doReload(newChanges)
     }
   }
   

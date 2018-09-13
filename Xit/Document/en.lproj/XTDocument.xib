@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.3.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.3.2"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
-        <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="XTWindowController" customModule="Xit" customModuleProvider="target">
@@ -18,7 +18,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="133" y="235" width="988" height="660"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
             <value key="minSize" type="size" width="94" height="86"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="988" height="660"/>
@@ -41,7 +41,7 @@
                                             <color key="backgroundColor" name="_sourceListBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
-                                                <tableColumn identifier="" width="232" minWidth="16" maxWidth="1000" id="gxZ-qS-2C2">
+                                                <tableColumn width="232" minWidth="16" maxWidth="1000" id="gxZ-qS-2C2">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -84,7 +84,7 @@
                                                                             <imageCell key="cell" refusesFirstResponder="YES" imageScaling="proportionallyDown" image="NSActionTemplate" id="yfB-De-qam"/>
                                                                         </imageView>
                                                                         <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ipC-oU-fy5" customClass="ExpansionTextField" customModule="Xit" customModuleProvider="target">
-                                                                            <rect key="frame" x="19" y="0.0" width="108" height="17"/>
+                                                                            <rect key="frame" x="19" y="0.0" width="98" height="17"/>
                                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="TgA-S6-Vxp">
                                                                                 <font key="font" metaFont="system"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -92,16 +92,66 @@
                                                                             </textFieldCell>
                                                                         </textField>
                                                                         <button horizontalHuggingPriority="260" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="Gz6-jH-4NK" customClass="LabelButton" customModule="Xit" customModuleProvider="target">
-                                                                            <rect key="frame" x="132" y="0.0" width="44" height="17"/>
+                                                                            <rect key="frame" x="122" y="0.0" width="44" height="17"/>
                                                                             <buttonCell key="cell" type="inline" title="10▸10" bezelStyle="inline" alignment="center" borderStyle="border" inset="2" id="Cf5-ns-faK">
                                                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                                 <font key="font" metaFont="smallSystemBold"/>
                                                                             </buttonCell>
                                                                         </button>
-                                                                        <imageView horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="xbG-eW-IAr">
-                                                                            <rect key="frame" x="183" y="1" width="16" height="16"/>
-                                                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="NSStatusAvailable" id="urJ-Dd-CHS"/>
-                                                                        </imageView>
+                                                                        <customView translatesAutoresizingMaskIntoConstraints="NO" id="bHK-hn-FNq">
+                                                                            <rect key="frame" x="173" y="1" width="26" height="16"/>
+                                                                            <subviews>
+                                                                                <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="5B4-Tv-imJ">
+                                                                                    <rect key="frame" x="0.0" y="0.0" width="26" height="16"/>
+                                                                                    <constraints>
+                                                                                        <constraint firstAttribute="height" constant="16" id="e7V-1C-Sb3"/>
+                                                                                        <constraint firstAttribute="width" constant="26" id="jHB-gj-FbL"/>
+                                                                                    </constraints>
+                                                                                    <popUpButtonCell key="cell" type="bevel" bezelStyle="rounded" imagePosition="only" alignment="left" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" pullsDown="YES" arrowPosition="noArrow" id="GqV-sx-Hzo">
+                                                                                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                                                        <font key="font" metaFont="menu"/>
+                                                                                        <menu key="menu" id="qbF-h5-Arb">
+                                                                                            <items>
+                                                                                                <menuItem state="on" image="pullRequestTemplate" hidden="YES" id="oSQ-xS-h6t"/>
+                                                                                                <menuItem title="View web page" id="lJm-jW-UlU">
+                                                                                                    <connections>
+                                                                                                        <action selector="viewPRWebPage:" target="BRo-bm-Y6k" id="yiY-xy-wNi"/>
+                                                                                                    </connections>
+                                                                                                </menuItem>
+                                                                                                <menuItem isSeparatorItem="YES" id="ldd-xo-3Wo"/>
+                                                                                                <menuItem title="Approve" id="I6V-Oe-IuT">
+                                                                                                    <connections>
+                                                                                                        <action selector="approvePR:" target="BRo-bm-Y6k" id="EMn-z2-eNz"/>
+                                                                                                    </connections>
+                                                                                                </menuItem>
+                                                                                                <menuItem title="Unapprove" id="8DE-fT-yiO">
+                                                                                                    <connections>
+                                                                                                        <action selector="unapprovePR:" target="BRo-bm-Y6k" id="nO8-Gn-77g"/>
+                                                                                                    </connections>
+                                                                                                </menuItem>
+                                                                                                <menuItem title="Needs Work" id="Uen-R3-5ps">
+                                                                                                    <connections>
+                                                                                                        <action selector="prNeedsWork:" target="BRo-bm-Y6k" id="Vdb-iY-b1m"/>
+                                                                                                    </connections>
+                                                                                                </menuItem>
+                                                                                            </items>
+                                                                                        </menu>
+                                                                                    </popUpButtonCell>
+                                                                                </popUpButton>
+                                                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Q6u-GF-jaf" customClass="ClickThroughImageView" customModule="Xit" customModuleProvider="target">
+                                                                                    <rect key="frame" x="16" y="0.0" width="10" height="10"/>
+                                                                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="prApproved" id="c0Q-Nn-d8x"/>
+                                                                                </imageView>
+                                                                            </subviews>
+                                                                            <constraints>
+                                                                                <constraint firstItem="5B4-Tv-imJ" firstAttribute="leading" secondItem="bHK-hn-FNq" secondAttribute="leading" id="5cj-iH-FGE"/>
+                                                                                <constraint firstAttribute="bottom" secondItem="5B4-Tv-imJ" secondAttribute="bottom" id="RNG-0a-Z5m"/>
+                                                                                <constraint firstItem="5B4-Tv-imJ" firstAttribute="top" secondItem="bHK-hn-FNq" secondAttribute="top" id="UFg-z5-EPi"/>
+                                                                                <constraint firstAttribute="trailing" secondItem="Q6u-GF-jaf" secondAttribute="trailing" id="YLy-lk-CwU"/>
+                                                                                <constraint firstAttribute="bottom" secondItem="Q6u-GF-jaf" secondAttribute="bottom" id="ZuU-9m-6O5"/>
+                                                                                <constraint firstAttribute="trailing" secondItem="5B4-Tv-imJ" secondAttribute="trailing" id="aHy-Hk-1pE"/>
+                                                                            </constraints>
+                                                                        </customView>
                                                                         <customView translatesAutoresizingMaskIntoConstraints="NO" id="zlI-5H-KrJ">
                                                                             <rect key="frame" x="206" y="1" width="20" height="16"/>
                                                                             <subviews>
@@ -154,10 +204,12 @@
                                                             </constraints>
                                                             <connections>
                                                                 <outlet property="buttonContainer" destination="zlI-5H-KrJ" id="G7f-DP-zES"/>
-                                                                <outlet property="imageView" destination="K1A-hb-UQc" id="tbv-6C-MAV"/>
+                                                                <outlet property="imageView" destination="K1A-hb-UQc" id="Gx1-kb-qJf"/>
                                                                 <outlet property="missingImage" destination="pvX-qW-6kP" id="eqH-aH-WHx"/>
+                                                                <outlet property="prContanier" destination="bHK-hn-FNq" id="df5-cg-Hdx"/>
+                                                                <outlet property="prStatusImage" destination="Q6u-GF-jaf" id="hi6-Dp-Lw3"/>
+                                                                <outlet property="pullRequestButton" destination="5B4-Tv-imJ" id="f3s-T6-KRF"/>
                                                                 <outlet property="statusButton" destination="XN1-7Z-pLX" id="0ML-yF-XuQ"/>
-                                                                <outlet property="statusImage" destination="xbG-eW-IAr" id="hpg-Vn-A7g"/>
                                                                 <outlet property="statusText" destination="Gz6-jH-4NK" id="WKp-el-Lfq"/>
                                                                 <outlet property="textField" destination="ipC-oU-fy5" id="4XV-ID-ovG"/>
                                                             </connections>
@@ -174,11 +226,11 @@
                                     </subviews>
                                     <nil key="backgroundColor"/>
                                 </clipView>
-                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="MjA-97-uz6">
+                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="MjA-97-uz6">
                                     <rect key="frame" x="1" y="643" width="235" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
-                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="yEF-ql-9hw">
+                                <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="yEF-ql-9hw">
                                     <rect key="frame" x="-15" y="1" width="16" height="0.0"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
@@ -241,6 +293,8 @@
     <resources>
         <image name="NSActionTemplate" width="14" height="14"/>
         <image name="NSStatusAvailable" width="16" height="16"/>
+        <image name="prApproved" width="10" height="10"/>
+        <image name="pullRequestTemplate" width="7" height="8"/>
         <image name="trackingMissing" width="5" height="5"/>
     </resources>
 </document>

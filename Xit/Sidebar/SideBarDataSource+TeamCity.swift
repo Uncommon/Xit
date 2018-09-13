@@ -12,7 +12,7 @@ extension SideBarDataSource: TeamCityAccessor
     else { return nil }
     
     if let remoteBranchItem = branchItem as? RemoteBranchSidebarItem {
-      return remoteBranchItem.remote
+      return remoteBranchItem.remoteName
     }
     else if let localBranchItem = branchItem as? LocalBranchSidebarItem {
       guard let branch = repo.localBranch(named: localBranchItem.title)

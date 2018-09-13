@@ -120,13 +120,13 @@ extension SideBarDataSource: NSOutlineViewDelegate
       
       let textField = dataView.textField!
       
+      dataView.dataSource = self
       dataView.item = sideBarItem
       dataView.imageView?.image = sideBarItem.icon
       textField.stringValue = sideBarItem.displayTitle
       textField.isEditable = sideBarItem.editable
       textField.isSelectable = sideBarItem.isSelectable
       dataView.statusText.isHidden = true
-      dataView.statusImage.isHidden = true
       dataView.statusButton.image = nil
       dataView.statusButton.action = nil
       if let image = statusImage(for: sideBarItem) {
@@ -142,6 +142,7 @@ extension SideBarDataSource: NSOutlineViewDelegate
       if sideBarItem is LocalBranchSidebarItem {
         configureLocalBranchItem(sideBarItem: sideBarItem, dataView: dataView)
       }
+      updatePullRequestButton(item: sideBarItem, view: dataView)
       dataView.buttonContainer.isHidden = dataView.statusButton.image == nil
       if sideBarItem.editable {
         textField.formatter = refFormatter
@@ -224,7 +225,7 @@ extension SideBarDataSource: NSOutlineViewDelegate
     else if let remoteBranchItem = item as? RemoteBranchSidebarItem,
             let branchName = repository.currentBranch,
             let currentBranch = repository.localBranch(named: branchName),
-            currentBranch.trackingBranchName == remoteBranchItem.remote + "/" +
+            currentBranch.trackingBranchName == remoteBranchItem.remoteName + "/" +
                                                 remoteBranchItem.title {
       let rowView = SidebarCheckedRowView(
               imageName: .rightFacingTriangleTemplate,

@@ -45,6 +45,7 @@
 		C3FA471713D0F8E200AC4F9B /* XTDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3FA471513D0F8E200AC4F9B /* XTDocument.xib */; };
 		C3FA471A13D0F8E300AC4F9B /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3FA471813D0F8E300AC4F9B /* MainMenu.xib */; };
 		C3FA472913D0F8E300AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA472713D0F8E300AC4F9B /* InfoPlist.strings */; };
+		C900463C21120F3200706029 /* BitbucketServerAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C900463B21120F3200706029 /* BitbucketServerAPI.swift */; };
 		C9004650211501CB00706029 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C900464F211501CB00706029 /* Colors.swift */; };
 		C9065F4E20FCFA8B00C01110 /* RefType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9065F4D20FCFA8B00C01110 /* RefType.swift */; };
 		C9065F6020FFE1D900C01110 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9065F5F20FFE1D900C01110 /* Notifications.swift */; };
@@ -149,6 +150,12 @@
 		C98925F91DBFCE7000E5645C /* SidebarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925F81DBFCE7000E5645C /* SidebarController.swift */; };
 		C98CAD841F9520D0005DB419 /* GitDiffHunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98CAD831F9520D0005DB419 /* GitDiffHunk.swift */; };
 		C98CAD961F952173005DB419 /* GitDiffDelta.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98CAD951F952173005DB419 /* GitDiffDelta.swift */; };
+		C98EBC032125D22D00EF739E /* BitbucketServerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98EBC022125D22D00EF739E /* BitbucketServerTests.swift */; };
+		C98EBC152126188900EF739E /* ServicesData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98EBC142126188900EF739E /* ServicesData.swift */; };
+		C98EBC17212734F900EF739E /* PullRequestCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98EBC16212734F900EF739E /* PullRequestCache.swift */; };
+		C98EBC1B212B2A7E00EF739E /* SidebarDataSource+PullRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98EBC1A212B2A7E00EF739E /* SidebarDataSource+PullRequest.swift */; };
+		C98EBC1D212CC56600EF739E /* Fakes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98EBC1C212CC56600EF739E /* Fakes.swift */; };
+		C98EBC1F212CCC6D00EF739E /* SidebarDataSourceTestNoRepo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98EBC1E212CCC6D00EF739E /* SidebarDataSourceTestNoRepo.swift */; };
 		C991732D1F91255200054154 /* GitPatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C991732C1F91255200054154 /* GitPatch.swift */; };
 		C991904E20AE32150080687F /* IndexTreeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C991904D20AE32150080687F /* IndexTreeTest.swift */; };
 		C9999AC71E08712000DF3E11 /* HistoryTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9999AC61E08712000DF3E11 /* HistoryTableView.swift */; };
@@ -404,6 +411,7 @@
 		C3FA472613D0F8E300AC4F9B /* XitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "XitTests-Info.plist"; sourceTree = "<group>"; };
 		C3FA472813D0F8E300AC4F9B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C3FA472A13D0F8E300AC4F9B /* XitTests-Prefix.pch */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = "XitTests-Prefix.pch"; sourceTree = "<group>"; tabWidth = 4; };
+		C900463B21120F3200706029 /* BitbucketServerAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitbucketServerAPI.swift; sourceTree = "<group>"; };
 		C900464F211501CB00706029 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		C9065F4D20FCFA8B00C01110 /* RefType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefType.swift; sourceTree = "<group>"; };
 		C9065F5F20FFE1D900C01110 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
@@ -506,6 +514,12 @@
 		C98925F81DBFCE7000E5645C /* SidebarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarController.swift; sourceTree = "<group>"; };
 		C98CAD831F9520D0005DB419 /* GitDiffHunk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitDiffHunk.swift; sourceTree = "<group>"; };
 		C98CAD951F952173005DB419 /* GitDiffDelta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitDiffDelta.swift; sourceTree = "<group>"; };
+		C98EBC022125D22D00EF739E /* BitbucketServerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitbucketServerTests.swift; sourceTree = "<group>"; };
+		C98EBC142126188900EF739E /* ServicesData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServicesData.swift; sourceTree = "<group>"; };
+		C98EBC16212734F900EF739E /* PullRequestCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullRequestCache.swift; sourceTree = "<group>"; };
+		C98EBC1A212B2A7E00EF739E /* SidebarDataSource+PullRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SidebarDataSource+PullRequest.swift"; sourceTree = "<group>"; };
+		C98EBC1C212CC56600EF739E /* Fakes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fakes.swift; sourceTree = "<group>"; };
+		C98EBC1E212CCC6D00EF739E /* SidebarDataSourceTestNoRepo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarDataSourceTestNoRepo.swift; sourceTree = "<group>"; };
 		C991732C1F91255200054154 /* GitPatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitPatch.swift; sourceTree = "<group>"; };
 		C991904D20AE32150080687F /* IndexTreeTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexTreeTest.swift; sourceTree = "<group>"; };
 		C9999AC61E08712000DF3E11 /* HistoryTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryTableView.swift; sourceTree = "<group>"; };
@@ -746,6 +760,7 @@
 		C3FA472413D0F8E300AC4F9B /* XitTests */ = {
 			isa = PBXGroup;
 			children = (
+				C98EBC022125D22D00EF739E /* BitbucketServerTests.swift */,
 				C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */,
 				C9E5E26B210917FD0069FBD8 /* BranchTest.swift */,
 				C99A3C4F1F97A9E00037B431 /* CacheTest.swift */,
@@ -753,12 +768,14 @@
 				DD98CFFF181AE297008B79C9 /* CFRunLoop+Extensions.h */,
 				C9FCC1D01D50EB1A00AC398E /* CommitHistoryTest.swift */,
 				C98925B21DA70D3A00E5645C /* CommitLinesTest.swift */,
+				C98EBC1C212CC56600EF739E /* Fakes.swift */,
 				C9DEA4BA1E4FEC1600DF4069 /* FileListDataSourceTest.swift */,
 				C94736751DEF28F8000E3A05 /* GitSwiftTests.swift */,
 				C991904D20AE32150080687F /* IndexTreeTest.swift */,
 				89CB619B1E788C6000D69FE4 /* PatchTest.swift */,
 				C96D24B21DFEFD9F00431317 /* SidebarControllerTest.swift */,
 				C941037F1EBDFABC002C80DC /* SideBarDataSourceTest.swift */,
+				C98EBC1E212CCC6D00EF739E /* SidebarDataSourceTestNoRepo.swift */,
 				C95356091D958E8D00AEEF49 /* StringExtensionsTest.swift */,
 				C921026C1F757FEB0068F87C /* StringOID.swift */,
 				C9DAB5AE1D47C23900586854 /* TeamCityTest.swift */,
@@ -942,9 +959,12 @@
 		C9790D0A20EED5430024D3EA /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				C91F34771D30656B005F9BDF /* Services.swift */,
-				C929D05F1D42785B00D7DC52 /* TeamCityAPI.swift */,
+				C900463B21120F3200706029 /* BitbucketServerAPI.swift */,
 				C94154A21ED778980030E481 /* BuildStatusCache.swift */,
+				C98EBC16212734F900EF739E /* PullRequestCache.swift */,
+				C91F34771D30656B005F9BDF /* Services.swift */,
+				C98EBC142126188900EF739E /* ServicesData.swift */,
+				C929D05F1D42785B00D7DC52 /* TeamCityAPI.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -957,6 +977,7 @@
 				C98925F81DBFCE7000E5645C /* SidebarController.swift */,
 				C959CDEA1F859DB800C1E282 /* SidebarController+Actions.swift */,
 				89C9276A1D368C020074F71A /* SideBarDataSource.swift */,
+				C98EBC1A212B2A7E00EF739E /* SidebarDataSource+PullRequest.swift */,
 				C959CDE81F859D3D00C1E282 /* SideBarDataSource+TeamCity.swift */,
 				C9FFCC831FABB28F00FA2F21 /* SideBarDataSource+OutlineView.swift */,
 				C947367B1DF079DB000E3A05 /* SideBarOutlineView.swift */,
@@ -1311,6 +1332,7 @@
 				C95BF6681FCF5DBD0020C51D /* StashSelection.swift in Sources */,
 				C99A6AEC1E48FA140030DC01 /* FileListDataSourceBase.swift in Sources */,
 				C9AAEF811E413DA100A248CF /* CommitHeaderViewController.swift in Sources */,
+				C98EBC1B212B2A7E00EF739E /* SidebarDataSource+PullRequest.swift in Sources */,
 				C957B8721D2DB44E0040F858 /* RemoteSheetController.swift in Sources */,
 				C9E8815D1E95988700BFA7E5 /* XTRepository+MergePushPull.swift in Sources */,
 				C97E319E20BF26B300E74D2F /* NSTreeNode+FileChange.swift in Sources */,
@@ -1328,6 +1350,7 @@
 				C90B4EC31FEB2B2300277B13 /* GitReference.swift in Sources */,
 				C94154B61EE5AC460030E481 /* XTRepository+Commands.swift in Sources */,
 				C959CDE91F859D3D00C1E282 /* SideBarDataSource+TeamCity.swift in Sources */,
+				C98EBC152126188900EF739E /* ServicesData.swift in Sources */,
 				C967C4AF1F96BA55002166F7 /* Cache.swift in Sources */,
 				C94D7E8D1EBA66180059AC21 /* XTRepository+Parsing.swift in Sources */,
 				C9E5E27E210A32780069FBD8 /* XTHistoryViewController+Search.swift in Sources */,
@@ -1341,6 +1364,7 @@
 				C94866C01D25861E000BDB0A /* PasswordPanelController.swift in Sources */,
 				C9864466207E9CAC0088209B /* StringIdentifiers.swift in Sources */,
 				C9790D2220F53A030024D3EA /* CheckOutRemote.swift in Sources */,
+				C98EBC17212734F900EF739E /* PullRequestCache.swift in Sources */,
 				C9BAE61E1D303A8100A87F13 /* RemoteOptionsOpController.swift in Sources */,
 				C95BD4051F8FF8C8000A2E2D /* GitDiff.swift in Sources */,
 				C9FFCC881FB3B1D000FA2F21 /* TreeLoader.swift in Sources */,
@@ -1348,6 +1372,7 @@
 				C9DEA4AB1E4B7A4200DF4069 /* Blame.swift in Sources */,
 				C95BF6661FCF5D7A0020C51D /* CommitSelection.swift in Sources */,
 				C98CAD841F9520D0005DB419 /* GitDiffHunk.swift in Sources */,
+				C900463C21120F3200706029 /* BitbucketServerAPI.swift in Sources */,
 				C9BC1B9B1DDF51B900C71562 /* FileEventStream.swift in Sources */,
 				C929D03B1D400B3B00D7DC52 /* GitRemote.swift in Sources */,
 				C9B6DFB61FDB4A6500B5E3AA /* GitConfig.swift in Sources */,
@@ -1437,10 +1462,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C98EBC1D212CC56600EF739E /* Fakes.swift in Sources */,
 				89CB619C1E788C6000D69FE4 /* PatchTest.swift in Sources */,
 				C9EB87321D05D35800C47D13 /* XTStashTest.swift in Sources */,
 				C99A3C501F97A9E00037B431 /* CacheTest.swift in Sources */,
 				C94103801EBDFABC002C80DC /* SideBarDataSourceTest.swift in Sources */,
+				C98EBC032125D22D00EF739E /* BitbucketServerTests.swift in Sources */,
 				C9E5E26C210917FD0069FBD8 /* BranchTest.swift in Sources */,
 				C9DEA4F01E53678A00DF4069 /* XTFileChangesDataSourceTest.swift in Sources */,
 				DD98CFF3181ADFC5008B79C9 /* CFRunLoop+Extensions.c in Sources */,
@@ -1451,6 +1478,7 @@
 				C923D6481D8CA56800C6B90B /* XTTagTest.swift in Sources */,
 				C9DEA4BB1E4FEC1600DF4069 /* FileListDataSourceTest.swift in Sources */,
 				C991904E20AE32150080687F /* IndexTreeTest.swift in Sources */,
+				C98EBC1F212CCC6D00EF739E /* SidebarDataSourceTestNoRepo.swift in Sources */,
 				C98925B31DA70D3A00E5645C /* CommitLinesTest.swift in Sources */,
 				C9D896961FAB6CD300E431FE /* XTTest.swift in Sources */,
 				C94736761DEF28F8000E3A05 /* GitSwiftTests.swift in Sources */,
