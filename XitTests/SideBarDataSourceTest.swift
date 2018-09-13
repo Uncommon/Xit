@@ -293,11 +293,6 @@ class MockSidebarOutline: NSOutlineView
     result.buttonContainer = buttonContainer
     result.missingImage = missingImage
     
-    result.prContanier = NSView(frame: NSRect(x: 0, y: 0, width: 20, height: 16))
-    result.pullRequestButton = NSPopUpButton(frame: NSRect(x: 0, y: 0,
-                                                           width: 20, height: 16))
-    result.prStatusImage = NSImageView(frame: NSRect(x: 0, y: 0,
-                                                     width: 20, height: 16))
     result.prContanier = prContanier
     result.pullRequestButton = pullRequestButton
     result.prStatusImage = prStatusImage

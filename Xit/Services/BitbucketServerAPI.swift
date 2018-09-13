@@ -253,7 +253,8 @@ class BitbucketServerAPI: BasicAuthService, ServiceAPI
       else { return }
       
       request.reviewers[index].approved = status == .approved
-      request.reviewers[index].status = BitbucketServer.ReviewerStatus(approval: status)
+      request.reviewers[index].status =
+          BitbucketServer.ReviewerStatus(approval: status)
     }
   }
   

@@ -53,10 +53,10 @@ extension SideBarDataSource
         return nil
     }
     
-    return pullRequestCache.requests.first(where: {
+    return pullRequestCache.requests.first {
       $0.sourceBranch == branchName &&
       $0.matchRemote(url: remoteURL)
-    })
+    }
   }
   
   func prStatusImage(status: PullRequestStatus,

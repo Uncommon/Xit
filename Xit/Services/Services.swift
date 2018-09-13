@@ -169,7 +169,7 @@ class BasicAuthService: Siesta.Service
 {
   static let AuthenticationStatusChangedNotification = "AuthStatusChanged"
   
-  internal(set) var authenticationStatus: Services.Status
+  var authenticationStatus: Services.Status
   {
     didSet
     {
