@@ -85,6 +85,28 @@ extension SideBarDataSource
     return statusImageName.flatMap { NSImage(named: $0) }
   }
   
+  func prStatusText(status: PullRequestStatus,
+                    approval: PullRequestApproval) -> String?
+  {
+    switch status {
+      case .open:
+        switch approval {
+          case .approved:
+            return "Approved"
+          case .needsWork:
+            return "Needs work"
+          case .unreviewed:
+            return nil
+        }
+      case .merged:
+        return "Merged"
+      case .inactive:
+        return "Closed"
+      case .other:
+        return nil
+    }
+  }
+  
   func updatePullRequestMenu(popup: NSPopUpButton, pullRequest: PullRequest)
   {
     let actions = pullRequest.availableActions
@@ -114,9 +136,15 @@ extension SideBarDataSource
     }
     
     view.prContanier.isHidden = false
-    view.pullRequestButton.toolTip = pullRequest.displayName
     view.prStatusImage.image = prStatusImage(status: pullRequest.status,
                                              approval: pullRequest.userApproval)
+    if let text = prStatusText(status: pullRequest.status,
+                               approval: pullRequest.userApproval) {
+      view.pullRequestButton.toolTip = "(\(text)) \(pullRequest.displayName)"
+    }
+    else {
+      view.pullRequestButton.toolTip = pullRequest.displayName
+    }
     updatePullRequestMenu(popup: view.pullRequestButton,
                           pullRequest: pullRequest)
   }
