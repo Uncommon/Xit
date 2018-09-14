@@ -358,9 +358,11 @@ extension BitbucketServerAPI: PullRequestService
       let result = requests.values.map { PullRequest(request: $0,
                                                      bitbucketService: self) }
       
+      #if DEBUG
       for request in result {
         print("\(request.status): \(request.displayName)")
       }
+      #endif
       callback(result)
     }
   }

@@ -75,7 +75,9 @@ class BuildStatusCache: TeamCityAccessor
                 let build = TeamCityAPI.Build(element: firstBuildElement)
           else { return }
           
+          #if DEBUG
           NSLog("\(buildType)/\(branchName): \(build.status?.rawValue ?? "?")")
+          #endif
           var buildTypeStatuses = self.statuses[buildType] ??
                                   BranchStatuses()
           
