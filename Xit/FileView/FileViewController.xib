@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
-        <plugIn identifier="com.apple.WebKitIBPlugin" version="14113"/>
-        <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.18"/>
+        <plugIn identifier="com.apple.WebKitIBPlugin" version="14313.18"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
-        <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="FileViewController" customModule="Xit" customModuleProvider="target">
@@ -153,7 +152,7 @@
                                             <rect key="frame" x="-100" y="-100" width="701" height="16"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
-                                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="0.98039215686274506" horizontal="NO" id="OVn-Sc-AUm">
+                                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="0.96078431372549022" horizontal="NO" id="OVn-Sc-AUm">
                                             <rect key="frame" x="687" y="1" width="16" height="108"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
@@ -180,13 +179,13 @@
                     <autoresizingMask key="autoresizingMask"/>
                     <subviews>
                         <tabView fixedFrame="YES" type="noTabsNoBorder" id="mLX-BC-uMS">
-                            <rect key="frame" x="0.0" y="0.0" width="163" height="210"/>
+                            <rect key="frame" x="0.0" y="0.0" width="235" height="210"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <font key="font" metaFont="system"/>
                             <tabViewItems>
                                 <tabViewItem label="Commit" identifier="commit" id="uug-us-47g">
                                     <view key="view" id="VIN-8s-IFB">
-                                        <rect key="frame" x="0.0" y="0.0" width="163" height="210"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="235" height="210"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     </view>
                                 </tabViewItem>
@@ -210,11 +209,11 @@
                             </tabViewItems>
                         </tabView>
                         <customView id="LHY-c4-rvq" userLabel="Content Pane">
-                            <rect key="frame" x="164" y="0.0" width="539" height="210"/>
+                            <rect key="frame" x="236" y="0.0" width="467" height="210"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="e4E-MC-bxy">
-                                    <rect key="frame" x="-1" y="188" width="541" height="23"/>
+                                    <rect key="frame" x="-1" y="188" width="469" height="23"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="21" id="u7f-zG-hqv"/>
                                     </constraints>
@@ -224,7 +223,7 @@
                                     </buttonCell>
                                 </button>
                                 <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zOv-gm-Q8M">
-                                    <rect key="frame" x="194" y="188" width="151" height="23"/>
+                                    <rect key="frame" x="158" y="188" width="151" height="23"/>
                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="selectOne" id="fhE-uz-5iG">
                                         <font key="font" metaFont="system"/>
                                         <segments>
@@ -247,16 +246,17 @@
                                     </connections>
                                 </segmentedControl>
                                 <tabView fixedFrame="YES" type="noTabsNoBorder" initialItem="A2f-Wf-RNT" translatesAutoresizingMaskIntoConstraints="NO" id="52">
-                                    <rect key="frame" x="0.0" y="20" width="539" height="169"/>
+                                    <rect key="frame" x="0.0" y="20" width="467" height="169"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <font key="font" metaFont="system"/>
                                     <tabViewItems>
                                         <tabViewItem label="Diff" identifier="diff" id="A2f-Wf-RNT">
                                             <view key="view" ambiguous="YES" id="uQh-Df-4fp">
+                                                <rect key="frame" x="0.0" y="0.0" width="467" height="169"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <webView ambiguous="YES" maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e4U-lz-eEd">
-                                                        <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
+                                                        <rect key="frame" x="0.0" y="169" width="539" height="169"/>
                                                         <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
                                                             <nil key="identifier"/>
                                                         </webPreferences>
@@ -340,7 +340,7 @@
                                     </tabViewItems>
                                 </tabView>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Pgg-q8-kWG">
-                                    <rect key="frame" x="-1" y="-1" width="541" height="23"/>
+                                    <rect key="frame" x="-1" y="-1" width="469" height="23"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="21" id="lKP-mc-zqo"/>
                                     </constraints>
@@ -357,7 +357,7 @@
                                     </pathCell>
                                 </pathControl>
                                 <popUpButton fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="W46-9p-Zh1" userLabel="Action Button">
-                                    <rect key="frame" x="503" y="190" width="36" height="22"/>
+                                    <rect key="frame" x="431" y="190" width="36" height="22"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                     <popUpButtonCell key="cell" type="square" bezelStyle="shadowlessSquare" alignment="left" lineBreakMode="truncatingTail" imageScaling="proportionallyDown" inset="2" pullsDown="YES" altersStateOfSelectedItem="NO" id="q3g-By-2Hk">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>

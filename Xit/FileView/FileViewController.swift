@@ -439,9 +439,13 @@ extension FileViewController: NSSplitViewDelegate
   public func splitView(_ splitView: NSSplitView,
                         shouldAdjustSizeOfSubview view: NSView) -> Bool
   {
+    // Supposedly this can be done with holding priorities
+    // but that's not working.
     switch splitView {
-      case headerSplitView: // try holding priorities instead
-        return view != headerController.view
+      case headerSplitView:
+        return view != headerTabView
+    case fileSplitView:
+        return view != fileListTabView
       default:
         return true
     }

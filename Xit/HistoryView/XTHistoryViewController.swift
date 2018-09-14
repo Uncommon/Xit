@@ -175,7 +175,7 @@ extension XTHistoryViewController: NSSplitViewDelegate
   func splitView(_ splitView: NSSplitView,
                  shouldAdjustSizeOfSubview view: NSView) -> Bool
   {
-    return view != splitView.subviews[0]
+    return view == splitView.subviews[0]
   }
 }
 
