@@ -30,37 +30,43 @@ class HistoryCellView: NSTableCellView
     static let token: CGFloat = 4.0
   }
   
+  // Don't use NSTableCellView.textField
+  // because the system messes with the colors
+  @IBOutlet weak var labelField: NSTextField!
   @IBOutlet weak var stackView: NSStackView!
   @IBOutlet var stackViewInset: NSLayoutConstraint!
 
+  var deemphasized: Bool = false
+  { didSet { updateTextColor() } }
+  
   override var backgroundStyle: NSView.BackgroundStyle
+  { didSet { updateTextColor() } }
+
+  func updateTextColor()
   {
-    didSet
-    {
-      let color: NSColor
-      
-      switch backgroundStyle {
-        case .light:
-          color = .textColor
-        case .dark:
-          color = .alternateSelectedControlTextColor
-      // TODO: these are for 10.14
-//        case .normal:
-//          color = .textColor
-//        case .emphasized:
-//          color = .alternateSelectedControlTextColor
-        default:
-          color = .textColor
-      }
-      textField?.textColor = color
+    let color: NSColor
+    
+    switch backgroundStyle {
+      case .light:
+        color = deemphasized ? .disabledControlTextColor : .textColor
+      case .dark:
+        color = .alternateSelectedControlTextColor
+    // TODO: these are for 10.14
+//      case .normal:
+//        color = .textColor
+//      case .emphasized:
+//        color = .alternateSelectedControlTextColor
+      default:
+        color = .textColor
     }
+    labelField.textColor = color
   }
   
   func configure(entry: CommitEntry, repository: Branching & CommitReferencing)
   {
     currentBranch = repository.currentBranch
     refs = repository.refs(at: entry.commit.sha)
-    textField?.stringValue = entry.commit.message ?? "(no message)"
+    labelField.stringValue = entry.commit.message ?? "(no message)"
     self.entry = entry
     
     var views = refs.reversed().map {
@@ -74,7 +80,7 @@ class HistoryCellView: NSTableCellView
       return view
     }
     
-    views.append(textField!)
+    views.append(labelField)
     stackView.setViews(views, in: .leading)
     stackView.needsLayout = true
     needsUpdateConstraints = true

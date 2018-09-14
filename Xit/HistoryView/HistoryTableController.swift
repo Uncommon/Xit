@@ -248,14 +248,17 @@ public class HistoryTableController: NSViewController
   func setCellTextColor(_ cellView: NSTableCellView, index: Int)
   {
     let entry = history.entries[index]
-    
+    let deemphasized = (entry.commit.parentOIDs.count > 1) &&
+                      Preferences.deemphasizeMerges
+
     if let textField = cellView.textField {
-      let deemphasize = (entry.commit.parentOIDs.count > 1) &&
-          Preferences.deemphasizeMerges
-      
-      textField.textColor = deemphasize
+
+      textField.textColor = deemphasized
           ? NSColor.disabledControlTextColor
           : NSColor.controlTextColor
+    }
+    else if let historyCellView = cellView as? HistoryCellView {
+      historyCellView.deemphasized = deemphasized
     }
   }
 }
