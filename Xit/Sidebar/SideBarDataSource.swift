@@ -175,19 +175,27 @@ class SideBarDataSource: NSObject
       kdebug_signpost_end(Signposts.sidebarReload, 0, 0, 0, 0)
 
       DispatchQueue.main.async {
-        guard let myself = self
-        else { return }
-        let selection = myself.outline.item(atRow: myself.outline.selectedRow)
-                        as? SidebarItem
-        
-        myself.roots = newRoots
-        myself.outline.reloadData()
-        myself.outline.expandItem(nil, expandChildren: true)
-        if myself.outline.numberOfSelectedRows == 0 {
-          if !(selection.map({ myself.select(item: $0) }) ?? false) {
-            myself.selectCurrentBranch()
-          }
-        }
+        self?.afterReload(newRoots)
+      }
+    }
+  }
+  
+  func afterReload(_ newRoots: [SideBarGroupItem])
+  {
+    let selection = outline.item(atRow: outline.selectedRow)
+                    as? SidebarItem
+    
+    roots = newRoots
+    outline.reloadData()
+    for rootItem in roots {
+      outline.expandItem(rootItem)
+    }
+    for remoteItem in roots[XTGroupIndex.remotes.rawValue].children {
+      outline.expandItem(remoteItem)
+    }
+    if outline.numberOfSelectedRows == 0 {
+      if !(selection.map({ select(item: $0) }) ?? false) {
+        selectCurrentBranch()
       }
     }
   }
