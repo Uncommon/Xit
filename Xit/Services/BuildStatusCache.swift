@@ -42,8 +42,7 @@ class BuildStatusCache: TeamCityAccessor
   
   func remove(client: BuildStatusClient)
   {
-    clients.index { $0.client === client }
-           .map { _ = clients.remove(at: $0) }
+    clients.removeAll { $0.client === client }
   }
   
   func refresh()
