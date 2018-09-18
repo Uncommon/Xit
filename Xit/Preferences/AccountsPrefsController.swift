@@ -214,19 +214,19 @@ extension AccountsPrefsController: NSTableViewDelegate
   func statusImage(forTeamCity api: TeamCityAPI?) -> NSImage?
   {
     guard let api = api
-    else { return NSImage(named: .statusUnavailable) }
+    else { return NSImage(named: NSImage.statusUnavailableName) }
     var imageName: NSImage.Name?
     
     switch api.authenticationStatus {
       case .unknown, .notStarted:
-        imageName = .statusNone
+        imageName = NSImage.statusNoneName
       case .inProgress:
         // eventually have a spinner instead
-        imageName = .statusPartiallyAvailable
+        imageName = NSImage.statusPartiallyAvailableName
       case .done:
         break
       case .failed:
-        imageName = .statusUnavailable
+        imageName = NSImage.statusUnavailableName
     }
     if let imageName = imageName {
       return NSImage(named: imageName)
@@ -234,11 +234,11 @@ extension AccountsPrefsController: NSTableViewDelegate
     
     switch api.buildTypesStatus {
       case .unknown, .notStarted, .inProgress:
-        imageName = .statusAvailable
+        imageName = NSImage.statusAvailableName
       case .done:
-        imageName = .statusAvailable
+        imageName = NSImage.statusAvailableName
       case .failed:
-        imageName = .statusPartiallyAvailable
+        imageName = NSImage.statusPartiallyAvailableName
     }
     if let imageName = imageName {
       return NSImage(named: imageName)
@@ -249,19 +249,19 @@ extension AccountsPrefsController: NSTableViewDelegate
   func statusImage(forBitbucket api: BitbucketServerAPI?) -> NSImage?
   {
     guard let api = api
-    else { return NSImage(named: .statusUnavailable) }
+    else { return NSImage(named: NSImage.statusUnavailableName) }
     let imageName: NSImage.Name
     
     switch api.authenticationStatus {
       case .unknown, .notStarted:
-        imageName = .statusNone
+        imageName = NSImage.statusNoneName
       case .inProgress:
         // eventually have a spinner instead
-        imageName = .statusPartiallyAvailable
+        imageName = NSImage.statusPartiallyAvailableName
       case .done:
-        imageName = .statusAvailable
+        imageName = NSImage.statusAvailableName
       case .failed:
-        imageName = .statusUnavailable
+        imageName = NSImage.statusUnavailableName
     }
     return NSImage(named: imageName)
   }

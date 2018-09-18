@@ -19,8 +19,8 @@ class XTHistoryViewController: NSViewController
   
   enum NibName
   {
-    static let historyViewController: NSNib.Name = ◊"XTHistoryViewController"
-    static let fileViewController: NSNib.Name = ◊"FileViewController"
+    static let historyViewController = "XTHistoryViewController"
+    static let fileViewController = "FileViewController"
   }
   
   weak var repo: XTRepository!

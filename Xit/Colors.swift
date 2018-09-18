@@ -11,15 +11,15 @@ extension NSColor
   {
     switch type {
     case .branch:
-      return NSColor(named: ◊"branchStroke")!
+      return NSColor(named: "branchStroke")!
     case .remoteBranch:
-      return NSColor(named: ◊"remoteBranchStroke")!
+      return NSColor(named: "remoteBranchStroke")!
     case .tag:
-      return NSColor(named: ◊"tagStroke")!
+      return NSColor(named: "tagStroke")!
     case .generic:
-      return NSColor(named: ◊"refStroke")!
+      return NSColor(named: "refStroke")!
     case .shine:
-      return NSColor(named: ◊"refShine")!
+      return NSColor(named: "refShine")!
     }
   }
   
@@ -32,13 +32,13 @@ extension NSColor
   {
     switch type {
     case .active:
-      return NSColor(named: ◊"refActiveText")!
+      return NSColor(named: "refActiveText")!
     case .activeEmboss:
-      return NSColor(named: ◊"refActiveTextEmboss")!
+      return NSColor(named: "refActiveTextEmboss")!
     case .normal:
-      return NSColor(named: ◊"refText")!
+      return NSColor(named: "refText")!
     case .normalEmboss:
-      return NSColor(named: ◊"refTextEmboss")!
+      return NSColor(named: "refTextEmboss")!
     }
   }
   
@@ -51,15 +51,15 @@ extension NSColor
   {
     switch type {
     case .branch:
-      return NSColor(named: ◊"branchGradientStart")!
+      return NSColor(named: "branchGradientStart")!
     case .activeBranch:
-      return NSColor(named: ◊"activeBranchGradientStart")!
+      return NSColor(named: "activeBranchGradientStart")!
     case .remote:
-      return NSColor(named: ◊"remoteGradientStart")!
+      return NSColor(named: "remoteGradientStart")!
     case .tag:
-      return NSColor(named: ◊"tagGradientStart")!
+      return NSColor(named: "tagGradientStart")!
     case .general:
-      return NSColor(named: ◊"refGradientStart")!
+      return NSColor(named: "refGradientStart")!
     }
   }
   
@@ -67,15 +67,15 @@ extension NSColor
   {
     switch type {
     case .branch:
-      return NSColor(named: ◊"branchGradientEnd")!
+      return NSColor(named: "branchGradientEnd")!
     case .activeBranch:
-      return NSColor(named: ◊"activeBranchGradientEnd")!
+      return NSColor(named: "activeBranchGradientEnd")!
     case .remote:
-      return NSColor(named: ◊"remoteGradientEnd")!
+      return NSColor(named: "remoteGradientEnd")!
     case .tag:
-      return NSColor(named: ◊"tagGradientEnd")!
+      return NSColor(named: "tagGradientEnd")!
     case .general:
-      return NSColor(named: ◊"refGradientEnd")!
+      return NSColor(named: "refGradientEnd")!
     }
   }
 }

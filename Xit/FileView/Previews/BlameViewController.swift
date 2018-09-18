@@ -42,7 +42,7 @@ class BlameViewController: WebViewController
         return color
       }
       else {
-        let blameStart = NSColor(named: NSColor.Name(rawValue: "blameStart"))!
+        let blameStart = NSColor(named: "blameStart")!
         let result = blameStart.withHue(CGFloat(lastHue) / 360.0)
         
         lastHue = (lastHue + 55) % 360

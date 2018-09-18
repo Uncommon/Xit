@@ -14,7 +14,7 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
   
   enum NibName
   {
-    static let buildStatus: NSNib.Name = ◊"BuildStatusViewController"
+    static let buildStatus = "BuildStatusViewController"
   }
   
   enum CellID
@@ -151,7 +151,8 @@ extension BuildStatusViewController: NSTableViewDelegate
       cell.progressBar.isHidden = true
     }
     cell.statusImage.image = NSImage(named:
-        build.status == .succeeded ? .statusAvailable : .statusUnavailable)
+        build.status == .succeeded ? NSImage.statusAvailableName
+                                   : NSImage.statusUnavailableName)
     
     return cell
   }

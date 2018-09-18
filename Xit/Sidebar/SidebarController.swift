@@ -203,7 +203,7 @@ class SidebarController: NSViewController, SidebarHandler
     sidebarOutline.floatsGroupRows = false
   
     if branchContextMenu == nil,
-       let menuNib = NSNib(nibNamed: ◊"Sidebar Menus", bundle: nil) {
+       let menuNib = NSNib(nibNamed: "Sidebar Menus", bundle: nil) {
       menuNib.instantiate(withOwner: self, topLevelObjects: nil)
     }
     
