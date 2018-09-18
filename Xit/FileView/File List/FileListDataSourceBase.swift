@@ -19,22 +19,22 @@ class FileListDataSourceBase: NSObject
       observers.addObserver(forName: .XTRepositoryWorkspaceChanged,
                             object: repoController.repository, queue: .main) {
         [weak self] (note) in
-        guard let myself = self
+        guard let self = self
         else { return }
         
-        if myself.outlineView?.dataSource === myself {
-          myself.workspaceChanged(note.userInfo?[XTPathsKey] as? [String])
+        if self.outlineView?.dataSource === self {
+          self.workspaceChanged(note.userInfo?[XTPathsKey] as? [String])
         }
       }
       observers.addObserver(forName: .XTSelectedModelChanged,
                             object: repoController, queue: .main) {
         [weak self] (_) in
-        guard let myself = self,
-              myself.outlineView?.dataSource === myself,
-              myself.repoController != nil // Otherwise we're on a stale timer
+        guard let self = self,
+              self.outlineView?.dataSource === self,
+              self.repoController != nil // Otherwise we're on a stale timer
         else { return }
         
-        (myself as? FileListDataSource)?.reload()
+        (self as? FileListDataSource)?.reload()
       }
     }
   }

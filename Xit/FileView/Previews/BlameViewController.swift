@@ -198,23 +198,23 @@ extension BlameViewController: XTFileContentController
     currentSelection = selection
     repoController?.queue.executeOffMainThread {
       [weak self] in
-      guard let myself = self
+      guard let self = self
       else { return }
       let fileList = selection.fileList
       guard let data = fileList.dataForFile(selection.path),
             let text = String(data: data, encoding: .utf8) ??
                        String(data: data, encoding: .utf16)
       else {
-        myself.notAvailable()
+        self.notAvailable()
         return
       }
       
       Thread.performOnMainThread {
-        myself.spinner.isHidden = false
-        myself.spinner.startAnimation(nil)
-        myself.clear()
+        self.spinner.isHidden = false
+        self.spinner.startAnimation(nil)
+        self.clear()
       }
-      myself.loadBlame(text: text, path: selection.path,
+      self.loadBlame(text: text, path: selection.path,
                        selection: selection.repoSelection, fileList: fileList)
     }
   }

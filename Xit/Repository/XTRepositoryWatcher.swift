@@ -48,11 +48,11 @@ let XTChangedRefsKey = "changedRefs"
                                        callback: {
        [weak self] (paths) in
        // Capture the repository here in case it gets deleted on another thread
-       guard let myself = self,
-             let repository = myself.repository
+       guard let self = self,
+             let repository = self.repository
        else { return }
        
-       myself.observeEvents(paths, repository)
+       self.observeEvents(paths, repository)
     })
     else { return nil }
   

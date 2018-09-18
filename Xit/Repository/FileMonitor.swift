@@ -32,25 +32,25 @@ class FileMonitor
     
     source.setEventHandler {
       [weak self] in
-      guard let myself = self
+      guard let self = self
       else { return }
       
-      myself.sourceMutex.lock()
-      defer { myself.sourceMutex.unlock() }
+      self.sourceMutex.lock()
+      defer { self.sourceMutex.unlock() }
       
-      guard let source = myself.source
+      guard let source = self.source
       else { return }
       
       DispatchQueue.main.async {
-        myself.notifyBlock?(myself.path, source.data)
+        self.notifyBlock?(self.path, source.data)
       }
       if source.data.contains(.delete) {
         source.cancel()
-        close(myself.fd)
-        myself.sourceMutex.withLock {
-          myself.source = nil
+        close(self.fd)
+        self.sourceMutex.withLock {
+          self.source = nil
         }
-        myself.makeSource()
+        self.makeSource()
       }
     }
     source.resume()

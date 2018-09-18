@@ -18,35 +18,35 @@ extension FileTreeDataSource: FileListDataSource
   {
     repoController.queue.executeOffMainThread {
       [weak self] in
-      guard let myself = self
+      guard let self = self
       else { return }
       
-      objc_sync_enter(myself)
-      defer { objc_sync_exit(myself) }
+      objc_sync_enter(self)
+      defer { objc_sync_exit(self) }
       
-      guard let selection = myself.repoController.selection,
-            let fileList = myself.useWorkspaceList ?
+      guard let selection = self.repoController.selection,
+            let fileList = self.useWorkspaceList ?
               (selection as? StagingSelection)?.unstagedFileList :
               selection.fileList
       else { return }
       
-      myself.delegate?.configure(model: fileList)
+      self.delegate?.configure(model: fileList)
       
-      let newRoot = fileList.treeRoot(oldTree: myself.root)
+      let newRoot = fileList.treeRoot(oldTree: self.root)
       
       DispatchQueue.main.async {
-        myself.root = newRoot
+        self.root = newRoot
         
-        guard let outlineView = myself.outlineView
+        guard let outlineView = self.outlineView
         else { return }
         
         let selectedRow = outlineView.selectedRow
-        let selectedChange = myself.fileChange(at: selectedRow)
-        let expanded = myself.expandedItems()
+        let selectedChange = self.fileChange(at: selectedRow)
+        let expanded = self.expandedItems()
         
         outlineView.reloadData()
-        myself.expandItems(expanded)
-        myself.reselect(item: selectedChange, oldRow: selectedRow)
+        self.expandItems(expanded)
+        self.reselect(item: selectedChange, oldRow: selectedRow)
       }
     }
   }
