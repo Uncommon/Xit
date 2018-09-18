@@ -21,12 +21,12 @@ class TaskQueue: NSObject
   {
     DispatchQueue.main.async {
       [weak self] in
-      guard let myself = self
+      guard let self = self
       else { return }
       
-      myself.willChangeValue(forKey: "busy")
-      myself.queueCount = UInt(Int(myself.queueCount) + delta)
-      myself.didChangeValue(forKey: "busy")
+      self.willChangeValue(forKey: "busy")
+      self.queueCount = UInt(Int(self.queueCount) + delta)
+      self.didChangeValue(forKey: "busy")
     }
   }
   

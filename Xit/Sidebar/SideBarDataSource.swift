@@ -71,9 +71,9 @@ class SideBarDataSource: NSObject
       observers.addObserver(forName: .XTRepositoryHeadChanged,
                             object: repo, queue: .main) {
         [weak self] (_) in
-        guard let myself = self
+        guard let self = self
         else { return }
-        myself.outline.reloadItem(myself.roots[XTGroupIndex.branches.rawValue],
+        self.outline.reloadItem(self.roots[XTGroupIndex.branches.rawValue],
                                   reloadChildren: true)
       }
       observers.addObserver(forName: .XTRepositoryConfigChanged,

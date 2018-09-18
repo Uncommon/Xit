@@ -31,7 +31,7 @@ extension SidebarController
             where error.domain == GTGitErrorDomain &&
                   error.gitError == GIT_ECONFLICT {
         DispatchQueue.main.async {
-          guard let myself = self
+          guard let self = self
           else { return }
           let alert = NSAlert()
           
@@ -39,7 +39,7 @@ extension SidebarController
               "Checkout failed because of a conflict with local changes."
           alert.informativeText =
               "Revert or stash your changes and try again."
-          alert.beginSheetModal(for: myself.view.window!, completionHandler: nil)
+          alert.beginSheetModal(for: self.view.window!, completionHandler: nil)
         }
       }
     }

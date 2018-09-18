@@ -47,12 +47,12 @@ class FileChangesDataSource: FileListDataSourceBase
     
     DispatchQueue.main.async {
       [weak self] in
-      guard let myself = self,
-            let outlineView = myself.outlineView,
-            myself === outlineView.dataSource
+      guard let self = self,
+            let outlineView = self.outlineView,
+            self === outlineView.dataSource
       else { return }
       let selectedRow = outlineView.selectedRow
-      let selectedChange = myself.fileChange(at: selectedRow)
+      let selectedChange = self.fileChange(at: selectedRow)
       
       outlineView.beginUpdates()
       if !deleteIndexes.isEmpty {
@@ -76,7 +76,7 @@ class FileChangesDataSource: FileListDataSourceBase
         outlineView.reloadData(forRowIndexes: newChangeIndexes,
                                columnIndexes: allColumnIndexes)
       }
-      myself.reselect(change: selectedChange, oldRow: selectedRow)
+      self.reselect(change: selectedChange, oldRow: selectedRow)
     }
   }
   
