@@ -2,12 +2,6 @@ import Foundation
 
 class RefTokenView: NSView
 {
-  #if swift(>=4.2)
-  typealias AttrKey = NSAttributedString.Key
-  #else
-  typealias AttrKey = NSAttributedStringKey
-  #endif
-  
   var text: String = ""
   var type: RefType = .unknown
   
@@ -60,7 +54,7 @@ class RefTokenView: NSView
     paragraphStyle.alignment = .center
     paragraphStyle.lineBreakMode = .byTruncatingMiddle
     
-    let attributes: [AttrKey: Any] = [
+    let attributes: [NSAttributedString.Key: Any] = [
           .font: NSFont.refLabelFont,
           .paragraphStyle: paragraphStyle,
           .foregroundColor: fgColor,
