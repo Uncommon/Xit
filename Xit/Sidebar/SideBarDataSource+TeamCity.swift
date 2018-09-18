@@ -80,10 +80,11 @@ extension SideBarDataSource: TeamCityAccessor
     }
     
     if let success = overallSuccess {
-      return NSImage(named: success ? .statusAvailable : .statusUnavailable)
+      return NSImage(named: success ? NSImage.statusAvailableName
+                                    : NSImage.statusUnavailableName)
     }
     else {
-      return NSImage(named: .statusNone)
+      return NSImage(named: NSImage.statusNoneName)
     }
   }
 }

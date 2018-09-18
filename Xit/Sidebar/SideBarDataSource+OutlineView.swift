@@ -228,7 +228,7 @@ extension SideBarDataSource: NSOutlineViewDelegate
             currentBranch.trackingBranchName == remoteBranchItem.remoteName + "/" +
                                                 remoteBranchItem.title {
       let rowView = SidebarCheckedRowView(
-              imageName: .rightFacingTriangleTemplate,
+              imageName: NSImage.rightFacingTriangleTemplateName,
               toolTip: "The active branch is tracking this remote branch")
       
       return rowView

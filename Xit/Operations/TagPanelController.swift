@@ -52,7 +52,7 @@ class TagPanelController: SheetController
 
 extension TagPanelController: NSTextFieldDelegate
 {
-  override func controlTextDidChange(_ obj: Notification)
+  func controlTextDidChange(_ obj: Notification)
   {
     tagButton.isEnabled = XTRefFormatter.isValidRefString(tagName)
   }

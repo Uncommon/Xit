@@ -84,17 +84,17 @@ extension DeltaStatus
   {
     switch self {
       case .added, .untracked:
-        return NSImage(named: ◊"added")
+        return NSImage(named: "added")
       case .copied:
-        return NSImage(named: ◊"copied")
+        return NSImage(named: "copied")
       case .deleted:
-        return NSImage(named: ◊"deleted")
+        return NSImage(named: "deleted")
       case .modified:
-        return NSImage(named: ◊"modified")
+        return NSImage(named: "modified")
       case .renamed:
-        return NSImage(named: ◊"renamed")
+        return NSImage(named: "renamed")
       case .mixed:
-        return NSImage(named: ◊"mixed")
+        return NSImage(named: "mixed")
       default:
         return nil
     }
@@ -104,17 +104,17 @@ extension DeltaStatus
   {
     switch self {
       case .added:
-        return NSImage(named: ◊"add")
+        return NSImage(named: "add")
       case .untracked:
-        return NSImage(named: ◊"add")
+        return NSImage(named: "add")
       case .deleted:
-        return NSImage(named: ◊"delete")
+        return NSImage(named: "delete")
       case .modified:
-        return NSImage(named: ◊"modify")
+        return NSImage(named: "modify")
       case .mixed:
-        return NSImage(named: ◊"mixed")
+        return NSImage(named: "mixed")
       case .conflict:
-        return NSImage(named: ◊"conflict")
+        return NSImage(named: "conflict")
       default:
         return nil
     }

@@ -178,7 +178,7 @@ class HistoryCellView: NSTableCellView
                        HistoryCellView.lineColors.count
       let lineColor =  HistoryCellView.lineColors[colorIndex]
       
-      path.lineJoinStyle = .roundLineJoinStyle
+      path.lineJoinStyle = .round
       if line.parentIndex != line.childIndex {
         NSColor.textBackgroundColor.setStroke()
         path.lineWidth = Widths.line + 1.0

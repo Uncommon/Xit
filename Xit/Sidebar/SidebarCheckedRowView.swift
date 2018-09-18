@@ -6,7 +6,7 @@ class SidebarCheckedRowView: NSTableRowView
   let imageName: NSImage.Name
   let imageToolTip: String?
   
-  init(imageName: NSImage.Name = .menuOnStateTemplate,
+  init(imageName: NSImage.Name = NSImage.menuOnStateTemplateName,
        toolTip: String? = nil)
   {
     self.imageName = imageName

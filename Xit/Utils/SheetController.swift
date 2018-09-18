@@ -24,8 +24,7 @@ public class SheetController: NSWindowController
   
   class func controller() -> Self
   {
-    let result = self.init(
-          windowNibName: NSNib.Name(rawValue: String(describing: self)))
+    let result = self.init(windowNibName: String(describing: self))
     
     _ = result.window  // force the nib to load
     return result

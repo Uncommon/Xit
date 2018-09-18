@@ -203,7 +203,7 @@ class SidebarController: NSViewController, SidebarHandler
     sidebarOutline.floatsGroupRows = false
   
     if branchContextMenu == nil,
-       let menuNib = NSNib(nibNamed: ◊"Sidebar Menus", bundle: nil) {
+       let menuNib = NSNib(nibNamed: "Sidebar Menus", bundle: nil) {
       menuNib.instantiate(withOwner: self, topLevelObjects: nil)
     }
     
@@ -264,11 +264,6 @@ class SidebarController: NSViewController, SidebarHandler
   func reload()
   {
     sidebarDS.reload()
-  }
-  
-  override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
-  {
-    return validate(sidebarCommand: menuItem)
   }
   
   func selectedBranch() -> String?
@@ -397,5 +392,13 @@ class SidebarController: NSViewController, SidebarHandler
         onConfirm()
       }
     }
+  }
+}
+
+extension SidebarController: NSMenuItemValidation
+{
+  func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
+  {
+    return validate(sidebarCommand: menuItem)
   }
 }

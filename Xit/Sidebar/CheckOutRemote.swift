@@ -67,7 +67,7 @@ class CheckOutRemoteWindowController: NSWindowController
   private let repo: Branching
   private unowned let operation: CheckOutRemoteOperationController
   
-  override var windowNibName: NSNib.Name? { return ◊"CheckOutRemote" }
+  override var windowNibName: NSNib.Name? { return "CheckOutRemote" }
   
   init(repo: Branching, operation: CheckOutRemoteOperationController)
   {
@@ -125,9 +125,11 @@ class CheckOutRemoteWindowController: NSWindowController
   {
     endSheet(.OK)
   }
-  
-  @objc
-  override func controlTextDidChange(_ obj: Notification)
+}
+
+extension CheckOutRemoteWindowController: NSControlTextEditingDelegate
+{
+  func controlTextDidChange(_ obj: Notification)
   {
     updateCreateButton()
   }

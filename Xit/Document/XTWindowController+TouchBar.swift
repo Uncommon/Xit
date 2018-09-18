@@ -89,8 +89,8 @@ extension XTWindowController: NSTouchBarDelegate
 
       case NSTouchBarItem.Identifier.navigation:
         let control = NSSegmentedControl(
-                images: [NSImage(named: .goBackTemplate)!,
-                         NSImage(named: .goForwardTemplate)!],
+                images: [NSImage(named: NSImage.goBackTemplateName)!,
+                         NSImage(named: NSImage.goForwardTemplateName)!],
                 trackingMode: .momentary,
                 target: titleBarController,
                 action: #selector(TitleBarViewController.navigate(_:)))

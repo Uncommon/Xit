@@ -109,7 +109,7 @@ class WebViewController: NSViewController
     setColor(name: "textColor", color: NSColor.textColor)
     setColor(name: "textBackground", color: NSColor.textBackgroundColor)
     for name in names {
-      if let color = NSColor(named: NSColor.Name(rawValue: name)) {
+      if let color = NSColor(named: name) {
         setColor(name: name, color: color)
       }
     }

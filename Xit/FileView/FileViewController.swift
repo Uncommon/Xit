@@ -220,7 +220,7 @@ class FileViewController: NSViewController
     contentController = diffController
     
     commitEntryController = XTCommitEntryController(
-        nibName: ◊"XTCommitEntryController", bundle: nil)
+        nibName: "XTCommitEntryController", bundle: nil)
     if repo != nil {
       commitEntryController.repo = repo
     }
@@ -287,7 +287,7 @@ class FileViewController: NSViewController
       cell.title = component
       cell.image = !isFolder && (index == components.count - 1)
           ? workspace.icon(forFileType: (component as NSString).pathExtension)
-          : NSImage(named: .folder)
+          : NSImage(named: NSImage.folderName)
       
       return cell
     }

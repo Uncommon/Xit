@@ -69,7 +69,7 @@ class FileListController: NSViewController
     self.fileListDataSource = FileChangesDataSource(useWorkspaceList: isWorkspace)
     self.fileTreeDataSource = FileTreeDataSource(useWorkspaceList: isWorkspace)
 
-    super.init(nibName: ◊"FileListView", bundle: nil)
+    super.init(nibName: "FileListView", bundle: nil)
     
     viewDataSource = fileListDataSource
   }
@@ -257,7 +257,7 @@ extension FileListController: NSOutlineViewDelegate
         cell.textField?.stringValue = path.lastPathComponent
         cell.imageView?.image = viewDataSource.outlineView!(outlineView,
                                                             isItemExpandable: item)
-            ? NSImage(named: .folder)
+            ? NSImage(named: NSImage.folderName)
             : NSWorkspace.shared.icon(forFileType: path.pathExtension)
         
         cell.textField?.textColor = textColor(for: change,
