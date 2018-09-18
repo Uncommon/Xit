@@ -125,9 +125,11 @@ class CheckOutRemoteWindowController: NSWindowController
   {
     endSheet(.OK)
   }
-  
-  @objc
-  override func controlTextDidChange(_ obj: Notification)
+}
+
+extension CheckOutRemoteWindowController: NSControlTextEditingDelegate
+{
+  func controlTextDidChange(_ obj: Notification)
   {
     updateCreateButton()
   }

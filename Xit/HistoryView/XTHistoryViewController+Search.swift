@@ -123,8 +123,11 @@ extension XTHistoryViewController: NSSearchFieldDelegate
   func searchFieldDidEndSearching(_ sender: NSSearchField)
   {
   }
-  
-  override func controlTextDidChange(_ obj: Notification)
+}
+
+extension XTHistoryViewController: NSControlTextEditingDelegate
+{
+  func controlTextDidChange(_ obj: Notification)
   {
     searchButtons.isEnabled = !searchField.stringValue.isEmpty
   }

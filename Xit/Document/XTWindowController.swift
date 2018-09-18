@@ -313,7 +313,19 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     }
   }
   
-  override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
+  func windowWillClose(_ notification: Notification)
+  {
+    titleBarController?.titleLabel.unbind(◊"value")
+    titleBarController?.proxyIcon.unbind(◊"hidden")
+    titleBarController?.spinner.unbind(◊"hidden")
+    // For some reason this avoids a crash
+    window?.makeFirstResponder(nil)
+  }
+}
+
+extension XTWindowController: NSMenuItemValidation
+{
+  func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
   {
     guard let action = menuItem.action
     else { return false }
@@ -364,15 +376,6 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
         result = false
     }
     return result
-  }
-  
-  func windowWillClose(_ notification: Notification)
-  {
-    titleBarController?.titleLabel.unbind(◊"value")
-    titleBarController?.proxyIcon.unbind(◊"hidden")
-    titleBarController?.spinner.unbind(◊"hidden")
-    // For some reason this avoids a crash
-    window?.makeFirstResponder(nil)
   }
 }
 

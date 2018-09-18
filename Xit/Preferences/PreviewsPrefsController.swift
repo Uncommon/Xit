@@ -196,8 +196,11 @@ class PreviewsPrefsController: NSViewController
     return [.face, .size, .collection]
   }
   */
-  
-  override func changeFont(_ sender: Any?)
+}
+
+extension PreviewsPrefsController: NSFontChanging
+{
+  func changeFont(_ sender: NSFontManager?)
   {
     guard let newFont = textFont.map({ NSFontManager.shared.convert($0) })
     else { return }

@@ -266,11 +266,6 @@ class SidebarController: NSViewController, SidebarHandler
     sidebarDS.reload()
   }
   
-  override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
-  {
-    return validate(sidebarCommand: menuItem)
-  }
-  
   func selectedBranch() -> String?
   {
     let selection = sidebarOutline.item(atRow: sidebarOutline.selectedRow)
@@ -397,5 +392,13 @@ class SidebarController: NSViewController, SidebarHandler
         onConfirm()
       }
     }
+  }
+}
+
+extension SidebarController: NSMenuItemValidation
+{
+  func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
+  {
+    return validate(sidebarCommand: menuItem)
   }
 }

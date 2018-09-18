@@ -22,7 +22,7 @@ class RenameBranchPanelController: SheetController
 
 extension RenameBranchPanelController: NSTextFieldDelegate
 {
-  override func controlTextDidChange(_ obj: Notification)
+  func controlTextDidChange(_ obj: Notification)
   {
     acceptButton.isEnabled = XTRefFormatter.isValidRefString(textField.stringValue)
   }
