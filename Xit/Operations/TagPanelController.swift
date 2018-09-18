@@ -54,6 +54,6 @@ extension TagPanelController: NSTextFieldDelegate
 {
   func controlTextDidChange(_ obj: Notification)
   {
-    tagButton.isEnabled = XTRefFormatter.isValidRefString(tagName)
+    tagButton.isEnabled = XTRefFormatter.isValidRefString("refs/tags/\(tagName)")
   }
 }
