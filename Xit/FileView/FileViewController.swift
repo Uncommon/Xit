@@ -323,7 +323,10 @@ class FileViewController: NSViewController
       clearPreviews()
       return
     }
+    let staging = repoSelection is StagingSelection
     let staged = activeFileList === stagedListController.outlineView
+    let stagingType: StagingType = staging ? (staged ? .index : .workspace)
+                                           : .none
 
     updatePreviewPath(selectedChange.gitPath,
                       isFolder: activeFileList.isExpandable(selectedItem))
@@ -331,7 +334,7 @@ class FileViewController: NSViewController
       self.contentController.load(selection:
           FileSelection(repoSelection: repoSelection,
                         path: selectedChange.gitPath,
-                        staging: staged ? .index : .workspace))
+                        staging: stagingType))
     }
 
     let fullPath = repo.repoURL.path.appending(
