@@ -8,7 +8,7 @@ protocol HunkStaging: AnyObject
 }
 
 /// Manages a WebView for displaying text file diffs.
-class XTFileDiffController: WebViewController,
+class FileDiffController: WebViewController,
                             WhitespaceVariable,
                             ContextVariable
 {
@@ -189,7 +189,7 @@ class XTFileDiffController: WebViewController,
       textLines.append("<div class='hunk'>")
       hunk.enumerateLines {
         (line) in
-        textLines.append(XTFileDiffController.hunkLine(diffLine: line.text,
+        textLines.append(FileDiffController.hunkLine(diffLine: line.text,
                                                        oldLine: line.oldLine,
                                                        newLine: line.newLine))
       }
@@ -262,7 +262,7 @@ class XTFileDiffController: WebViewController,
   }
 }
 
-extension XTFileDiffController: WebActionDelegateHost
+extension FileDiffController: WebActionDelegateHost
 {
   var webActionDelegate: Any
   {
@@ -270,7 +270,7 @@ extension XTFileDiffController: WebActionDelegateHost
   }
 }
 
-extension XTFileDiffController: XTFileContentController
+extension FileDiffController: XTFileContentController
 {
   var isLoaded: Bool
   {
@@ -303,7 +303,7 @@ extension XTFileDiffController: XTFileContentController
 
 class DiffActionDelegate: NSObject
 {
-  weak var controller: XTFileDiffController!
+  weak var controller: FileDiffController!
   
   override class func isSelectorExcluded(fromWebScript selector: Selector) -> Bool
   {

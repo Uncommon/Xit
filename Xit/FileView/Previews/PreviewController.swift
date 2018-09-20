@@ -2,7 +2,7 @@ import Foundation
 import Quartz
 
 /// Controller for the QuickLook preview tab.
-class XTPreviewController: NSViewController
+class PreviewController: NSViewController
 {
   var isLoaded: Bool = false
   
@@ -21,7 +21,7 @@ class XTPreviewController: NSViewController
   }
 }
 
-extension XTPreviewController: XTFileContentController
+extension PreviewController: XTFileContentController
 {
   public func clear()
   {

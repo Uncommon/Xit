@@ -44,10 +44,10 @@ class FileViewController: NSViewController
   @IBOutlet weak var previewTabView: NSTabView!
   @IBOutlet weak var previewPath: NSPathControl!
   @IBOutlet var headerController: CommitHeaderViewController!
-  @IBOutlet var diffController: XTFileDiffController!
+  @IBOutlet var diffController: FileDiffController!
   @IBOutlet var blameController: BlameViewController!
-  @IBOutlet var previewController: XTPreviewController!
-  @IBOutlet var textController: XTTextPreviewController!
+  @IBOutlet var previewController: PreviewController!
+  @IBOutlet var textController: TextPreviewController!
   var commitEntryController: XTCommitEntryController!
   
   var contentController: XTFileContentController!

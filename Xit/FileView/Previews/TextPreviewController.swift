@@ -1,6 +1,6 @@
 import Foundation
 
-class XTTextPreviewController: WebViewController
+class TextPreviewController: WebViewController
 {
   var isLoaded: Bool = false
   
@@ -24,7 +24,7 @@ class XTTextPreviewController: WebViewController
     let htmlTemplate = WebViewController.htmlTemplate("text")
     let html = String(format: htmlTemplate, textLines)
     
-    load(html: html, baseURL: XTTextPreviewController.baseURL)
+    load(html: html, baseURL: TextPreviewController.baseURL)
     isLoaded = true
   }
   
@@ -39,7 +39,7 @@ class XTTextPreviewController: WebViewController
   }
 }
 
-extension XTTextPreviewController: XTFileContentController
+extension TextPreviewController: XTFileContentController
 {
   public func clear()
   {

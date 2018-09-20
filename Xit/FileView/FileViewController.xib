@@ -510,19 +510,19 @@
                 <outlet property="view" destination="10s-dp-YzO" id="xbq-bD-gkN"/>
             </connections>
         </customObject>
-        <customObject id="58" customClass="XTTextPreviewController" customModule="Xit" customModuleProvider="target">
+        <customObject id="58" customClass="TextPreviewController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="view" destination="57" id="60"/>
                 <outlet property="webView" destination="57" id="BJd-vu-Ecp"/>
             </connections>
         </customObject>
-        <customObject id="fX5-fH-Hy5" customClass="XTFileDiffController" customModule="Xit" customModuleProvider="target">
+        <customObject id="fX5-fH-Hy5" customClass="FileDiffController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="view" destination="e4U-lz-eEd" id="94Q-P5-Sfh"/>
                 <outlet property="webView" destination="e4U-lz-eEd" id="hsU-jx-H3R"/>
             </connections>
         </customObject>
-        <viewController id="Aqt-Qq-ti3" customClass="XTPreviewController" customModule="Xit" customModuleProvider="target"/>
+        <viewController id="Aqt-Qq-ti3" customClass="PreviewController" customModule="Xit" customModuleProvider="target"/>
         <customObject id="qWY-M6-3vs" customClass="BlameViewController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="spinner" destination="2Oq-sY-aab" id="syc-ah-Sk6"/>
