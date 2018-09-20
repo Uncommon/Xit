@@ -2,7 +2,7 @@ import Foundation
 
 /// View controller for history view, with the history list on top and
 /// detail views below.
-class XTHistoryViewController: NSViewController
+class HistoryViewController: NSViewController
 {
   @IBOutlet weak var historyTable: NSTableView!
   @IBOutlet weak var mainSplitView: NSSplitView!
@@ -19,8 +19,10 @@ class XTHistoryViewController: NSViewController
   
   enum NibName
   {
-    static let historyViewController = "XTHistoryViewController"
-    static let fileViewController = "FileViewController"
+    static let historyViewController =
+        String(describing: HistoryViewController.self)
+    static let fileViewController =
+        String(describing: FileViewController.self)
   }
   
   weak var repo: XTRepository!
@@ -170,7 +172,7 @@ class XTHistoryViewController: NSViewController
   }
 }
 
-extension XTHistoryViewController: NSSplitViewDelegate
+extension HistoryViewController: NSSplitViewDelegate
 {
   func splitView(_ splitView: NSSplitView,
                  shouldAdjustSizeOfSubview view: NSView) -> Bool
@@ -179,7 +181,7 @@ extension XTHistoryViewController: NSSplitViewDelegate
   }
 }
 
-extension XTHistoryViewController: NSTabViewDelegate
+extension HistoryViewController: NSTabViewDelegate
 {
   func tabView(_ tabView: NSTabView, didSelect tabViewItem: NSTabViewItem?)
   {

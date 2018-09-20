@@ -99,7 +99,7 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
   private var mutex = Mutex()
   
   // batchSize, batch, pass, value
-  // XTHistoryTableController.postProgress assumes 2 passes.
+  // HistoryTableController.postProgress assumes 2 passes.
   var postProgress: ((Int, Int, Int, Int) -> Void)?
   
   /// Manually appends a commit.

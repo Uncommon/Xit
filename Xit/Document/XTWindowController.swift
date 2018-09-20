@@ -20,7 +20,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   @IBOutlet var sidebarController: SidebarController!
   @IBOutlet weak var mainSplitView: NSSplitView!
   
-  var historyController: XTHistoryViewController!
+  var historyController: HistoryViewController!
   weak var xtDocument: XTDocument?
   var titleBarController: TitleBarViewController?
   var refsChangedObserver: NSObjectProtocol?
@@ -103,7 +103,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     kdebug_signpost(Signposts.windowControllerLoad, 0, 0, 0, 0)
     window.titleVisibility = .hidden
     window.delegate = self
-    historyController = XTHistoryViewController()
+    historyController = HistoryViewController()
     mainSplitView.addArrangedSubview(historyController.view)
     mainSplitView.removeArrangedSubview(mainSplitView.arrangedSubviews[1])
     window.makeFirstResponder(historyController.historyTable)

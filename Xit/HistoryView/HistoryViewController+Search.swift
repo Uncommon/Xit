@@ -1,6 +1,6 @@
 import Foundation
 
-extension XTHistoryViewController
+extension HistoryViewController
 {
   enum Constants
   {
@@ -113,7 +113,7 @@ extension XTHistoryViewController
   }
 }
 
-extension XTHistoryViewController: NSSearchFieldDelegate
+extension HistoryViewController: NSSearchFieldDelegate
 {
   func searchFieldDidStartSearching(_ sender: NSSearchField)
   {
@@ -125,7 +125,7 @@ extension XTHistoryViewController: NSSearchFieldDelegate
   }
 }
 
-extension XTHistoryViewController: NSControlTextEditingDelegate
+extension HistoryViewController: NSControlTextEditingDelegate
 {
   func controlTextDidChange(_ obj: Notification)
   {

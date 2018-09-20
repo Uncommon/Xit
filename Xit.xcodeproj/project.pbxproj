@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
-		31C7C13413ECC74C00A65FE9 /* XTHistoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31C7C13213ECC74C00A65FE9 /* XTHistoryViewController.xib */; };
+		31C7C13413ECC74C00A65FE9 /* HistoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31C7C13213ECC74C00A65FE9 /* HistoryViewController.xib */; };
 		89039F561703A9FC000949A8 /* html in Resources */ = {isa = PBXBuildFile; fileRef = 89039F551703A9FC000949A8 /* html */; };
 		891261B01F867FCC00C292B7 /* Tree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891261AF1F867FCC00C292B7 /* Tree.swift */; };
 		89369A741EDF47FC001B69C6 /* NSTask+Throwing.m in Sources */ = {isa = PBXBuildFile; fileRef = 89369A731EDF47FC001B69C6 /* NSTask+Throwing.m */; };
@@ -164,7 +164,7 @@
 		C99A6AFF1E4A73240030DC01 /* BlameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99A6AFE1E4A73240030DC01 /* BlameViewController.swift */; };
 		C9A58EED1EE5DD4800E37A31 /* TaskQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */; };
 		C9AA80301E2929810004D670 /* FileChangesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AA802F1E2929810004D670 /* FileChangesDataSource.swift */; };
-		C9AA80361E2E7F370004D670 /* XTHistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AA80351E2E7F370004D670 /* XTHistoryViewController.swift */; };
+		C9AA80361E2E7F370004D670 /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AA80351E2E7F370004D670 /* HistoryViewController.swift */; };
 		C9AAEF811E413DA100A248CF /* CommitHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AAEF801E413DA100A248CF /* CommitHeaderViewController.swift */; };
 		C9ABDB201E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ABDB1F1E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift */; };
 		C9ABDB2F1E0AE72600CBD8D8 /* PrefsTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ABDB2E1E0AE72600CBD8D8 /* PrefsTabViewController.swift */; };
@@ -193,7 +193,7 @@
 		C9DEA4F01E53678A00DF4069 /* XTFileChangesDataSourceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DEA4EF1E53678A00DF4069 /* XTFileChangesDataSourceTest.swift */; };
 		C9DEA4FF1E54AEC400DF4069 /* BlameTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */; };
 		C9E5E26C210917FD0069FBD8 /* BranchTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5E26B210917FD0069FBD8 /* BranchTest.swift */; };
-		C9E5E27E210A32780069FBD8 /* XTHistoryViewController+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5E27D210A32780069FBD8 /* XTHistoryViewController+Search.swift */; };
+		C9E5E27E210A32780069FBD8 /* HistoryViewController+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */; };
 		C9E640121D1095C700192454 /* XTFileChangesModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */; };
 		C9E8815D1E95988700BFA7E5 /* XTRepository+MergePushPull.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E8815C1E95988700BFA7E5 /* XTRepository+MergePushPull.swift */; };
 		C9E8816C1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E8816B1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift */; };
@@ -361,7 +361,7 @@
 /* Begin PBXFileReference section */
 		31355B0713EA139700C33AAB /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		31A8939F13E9DA5B008BE0C2 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
-		31C7C13213ECC74C00A65FE9 /* XTHistoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XTHistoryViewController.xib; sourceTree = "<group>"; };
+		31C7C13213ECC74C00A65FE9 /* HistoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HistoryViewController.xib; sourceTree = "<group>"; };
 		89039F551703A9FC000949A8 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
 		891261AF1F867FCC00C292B7 /* Tree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
 		89369A721EDF47FC001B69C6 /* NSTask+Throwing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTask+Throwing.h"; sourceTree = "<group>"; };
@@ -528,7 +528,7 @@
 		C99A6AFE1E4A73240030DC01 /* BlameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlameViewController.swift; sourceTree = "<group>"; };
 		C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskQueue.swift; sourceTree = "<group>"; };
 		C9AA802F1E2929810004D670 /* FileChangesDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileChangesDataSource.swift; sourceTree = "<group>"; };
-		C9AA80351E2E7F370004D670 /* XTHistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTHistoryViewController.swift; sourceTree = "<group>"; };
+		C9AA80351E2E7F370004D670 /* HistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
 		C9AAEF801E413DA100A248CF /* CommitHeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommitHeaderViewController.swift; sourceTree = "<group>"; };
 		C9ABDB1F1E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewsPrefsController.swift; sourceTree = "<group>"; };
 		C9ABDB2E1E0AE72600CBD8D8 /* PrefsTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrefsTabViewController.swift; sourceTree = "<group>"; };
@@ -558,7 +558,7 @@
 		C9DEA4EF1E53678A00DF4069 /* XTFileChangesDataSourceTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesDataSourceTest.swift; sourceTree = "<group>"; };
 		C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlameTest.swift; sourceTree = "<group>"; };
 		C9E5E26B210917FD0069FBD8 /* BranchTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BranchTest.swift; sourceTree = "<group>"; };
-		C9E5E27D210A32780069FBD8 /* XTHistoryViewController+Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XTHistoryViewController+Search.swift"; sourceTree = "<group>"; };
+		C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HistoryViewController+Search.swift"; sourceTree = "<group>"; };
 		C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesModelTest.swift; sourceTree = "<group>"; };
 		C9E8815C1E95988700BFA7E5 /* XTRepository+MergePushPull.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTRepository+MergePushPull.swift"; sourceTree = "<group>"; };
 		C9E8816B1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRepositoryMergeTest.swift; sourceTree = "<group>"; };
@@ -654,13 +654,13 @@
 		31C7C12F13ECC6C700A65FE9 /* HistoryView */ = {
 			isa = PBXGroup;
 			children = (
-				C9AA80351E2E7F370004D670 /* XTHistoryViewController.swift */,
-				C9E5E27D210A32780069FBD8 /* XTHistoryViewController+Search.swift */,
-				31C7C13213ECC74C00A65FE9 /* XTHistoryViewController.xib */,
-				C92E30EE1D4FF358001985F7 /* CommitHistory.swift */,
+				C9AA80351E2E7F370004D670 /* HistoryViewController.swift */,
+				C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */,
+				31C7C13213ECC74C00A65FE9 /* HistoryViewController.xib */,
 				C91E9A001D527A1300E128AC /* HistoryTableController.swift */,
 				C96F65451D53A6CE001B2557 /* HistoryCellView.swift */,
 				C9999AC61E08712000DF3E11 /* HistoryTableView.swift */,
+				C92E30EE1D4FF358001985F7 /* CommitHistory.swift */,
 				C935BD7D1E8BFA4F00BE51F0 /* DateCellView.swift */,
 				89880EDA20D08674007042F8 /* RefTokenView.swift */,
 			);
@@ -1244,7 +1244,7 @@
 				C94154A11ED4ECF40030E481 /* BuildStatusViewController.xib in Resources */,
 				C3FA471A13D0F8E300AC4F9B /* MainMenu.xib in Resources */,
 				DD00725613E76DFB003B4120 /* Xit.icns in Resources */,
-				31C7C13413ECC74C00A65FE9 /* XTHistoryViewController.xib in Resources */,
+				31C7C13413ECC74C00A65FE9 /* HistoryViewController.xib in Resources */,
 				89AB21EE213DE67500EF7507 /* StashPanelController.xib in Resources */,
 				899DB1A31CE5022400760270 /* XTCommitEntryController.xib in Resources */,
 				C957B8731D2DB44E0040F858 /* RemoteSheetController.xib in Resources */,
@@ -1341,7 +1341,7 @@
 				C98925C61DB693CC00E5645C /* TagPanelController.swift in Sources */,
 				899DB1921CE109C700760270 /* WorkspaceTreeBuilder.swift in Sources */,
 				89D8BE221CF0A4ED00D640AA /* RolloverButton.swift in Sources */,
-				C9AA80361E2E7F370004D670 /* XTHistoryViewController.swift in Sources */,
+				C9AA80361E2E7F370004D670 /* HistoryViewController.swift in Sources */,
 				C9004650211501CB00706029 /* Colors.swift in Sources */,
 				DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */,
 				C957B8661D2D8D500040F858 /* XTKeychain.swift in Sources */,
@@ -1353,7 +1353,7 @@
 				C98EBC152126188900EF739E /* ServicesData.swift in Sources */,
 				C967C4AF1F96BA55002166F7 /* Cache.swift in Sources */,
 				C94D7E8D1EBA66180059AC21 /* XTRepository+Parsing.swift in Sources */,
-				C9E5E27E210A32780069FBD8 /* XTHistoryViewController+Search.swift in Sources */,
+				C9E5E27E210A32780069FBD8 /* HistoryViewController+Search.swift in Sources */,
 				C9ABDB201E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift in Sources */,
 				C9C7730C1D26EE1C00329493 /* PrefsWindowController.swift in Sources */,
 				C98925F91DBFCE7000E5645C /* SidebarController.swift in Sources */,

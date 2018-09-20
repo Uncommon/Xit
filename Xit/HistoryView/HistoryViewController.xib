@@ -6,7 +6,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="XTHistoryViewController" customModule="Xit" customModuleProvider="target">
+        <customObject id="-2" userLabel="File's Owner" customClass="HistoryViewController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="historyTable" destination="No3-Ik-sWu" id="J6H-r5-bX8"/>
                 <outlet property="mainSplitView" destination="13" id="AuV-Jw-5yM"/>
