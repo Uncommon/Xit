@@ -83,13 +83,7 @@ class FileChangesDataSource: FileListDataSourceBase
   func reselect(change: FileChange?, oldRow: Int)
   {
     guard let oldChange = change
-    else {
-      if outlineView.selectedRowIndexes.isEmpty {
-        outlineView.selectRowIndexes(IndexSet(integer: 0),
-                                     byExtendingSelection: false)
-      }
-      return
-    }
+    else { return }
     var newRow = 0
     
     if let oldRowChange = fileChange(at: oldRow),

@@ -119,6 +119,16 @@ class FileViewController: NSViewController
   let workspaceListController = WorkspaceFileListController(isWorkspace: true)
   let allListControllers: [FileListController]
   
+  var mainFileList: NSOutlineView
+  {
+    if showingStaged {
+      return activeFileList === stagedListController.outlineView ?
+          stagedListController.outlineView : workspaceListController.outlineView
+    }
+    else {
+      return commitListController.outlineView
+    }
+  }
   weak var activeFileList: NSOutlineView!
   {
     didSet { repoController?.updateForFocus() }
@@ -235,8 +245,9 @@ class FileViewController: NSViewController
     if let newActive = self.view.window?.firstResponder as? NSOutlineView,
        newActive != self.activeFileList &&
        self.allListControllers.contains(where: { $0.outlineView === newActive }) {
-      self.activeFileList = newActive
-      self.refreshPreview()
+      activeFileList.deselectAll(self)
+      activeFileList = newActive
+      refreshPreview()
     }
   }
   
@@ -306,6 +317,19 @@ class FileViewController: NSViewController
     headerController.commitSHA = newModel.shaToSelect
     clearPreviews()
     refreshPreview()
+    DispatchQueue.main.async { // wait for the file lists to refresh
+      self.ensureFileSelection()
+    }
+  }
+  
+  func ensureFileSelection()
+  {
+    let outlineViw = mainFileList
+    
+    if (outlineViw.selectedRow == -1) && (outlineViw.numberOfRows > 0) {
+      outlineViw.selectRowIndexes(IndexSet(integer: 0),
+                                  byExtendingSelection: false)
+    }
   }
   
   func loadSelectedPreview(force: Bool = false)

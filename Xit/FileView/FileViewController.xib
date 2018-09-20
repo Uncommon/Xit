@@ -152,7 +152,7 @@
                                             <rect key="frame" x="-100" y="-100" width="701" height="16"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
-                                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="0.96078431372549022" horizontal="NO" id="OVn-Sc-AUm">
+                                        <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="OVn-Sc-AUm">
                                             <rect key="frame" x="687" y="1" width="16" height="108"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
@@ -191,11 +191,11 @@
                                 </tabViewItem>
                                 <tabViewItem label="Staging" identifier="staging" id="bkM-pI-zPT">
                                     <view key="view" id="fDM-wU-1de">
-                                        <rect key="frame" x="0.0" y="0.0" width="163" height="210"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="235" height="210"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <splitView dividerStyle="thin" translatesAutoresizingMaskIntoConstraints="NO" id="sXs-6V-dre">
-                                                <rect key="frame" x="-1" y="0.0" width="164" height="210"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="235" height="210"/>
                                             </splitView>
                                         </subviews>
                                         <constraints>
