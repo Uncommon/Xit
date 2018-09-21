@@ -4,21 +4,31 @@ import Foundation
 enum PreferenceKeys
 {
   static let deemphasizeMerges = "deemphasizeMerges"
+  static let collapseHistory = "collapseHistory"
 }
 
-
-enum Preferences
+extension UserDefaults
 {
-  static var deemphasizeMerges: Bool
+  @objc dynamic var collapseHistory: Bool
   {
     get
     {
-      return UserDefaults.standard.bool(forKey: PreferenceKeys.deemphasizeMerges)
+      return bool(forKey: PreferenceKeys.collapseHistory)
     }
     set
     {
-      return UserDefaults.standard.set(newValue,
-                                       forKey: PreferenceKeys.deemphasizeMerges)
+      set(newValue, forKey: PreferenceKeys.collapseHistory)
+    }
+  }
+  @objc dynamic var deemphasizeMerges: Bool
+    {
+    get
+    {
+      return bool(forKey: PreferenceKeys.deemphasizeMerges)
+    }
+    set
+    {
+      set(newValue, forKey: PreferenceKeys.deemphasizeMerges)
     }
   }
 }

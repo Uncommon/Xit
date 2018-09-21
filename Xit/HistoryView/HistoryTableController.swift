@@ -249,7 +249,7 @@ public class HistoryTableController: NSViewController
   {
     let entry = history.entries[index]
     let deemphasized = (entry.commit.parentOIDs.count > 1) &&
-                      Preferences.deemphasizeMerges
+                       UserDefaults.standard.deemphasizeMerges
 
     if let textField = cellView.textField {
 

@@ -27,6 +27,7 @@ extension XTWindowController
   @IBAction func showHideHistory(_ sender: AnyObject)
   {
     historyController.toggleHistory(sender)
+    historyAutoCollapsed = false
   }
   
   @IBAction func showHideDetails(_ sender: AnyObject)
@@ -44,12 +45,6 @@ extension XTWindowController
   {
     historyController.mainSplitView.isVertical = false
     historyController.mainSplitView.adjustSubviews()
-  }
-  
-  @IBAction func deemphasizeMerges(_ sender: AnyObject)
-  {
-    Preferences.deemphasizeMerges = !Preferences.deemphasizeMerges
-    redrawAllHistoryLists()
   }
   
   @IBAction func newTag(_: AnyObject)

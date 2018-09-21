@@ -41,10 +41,27 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       guard let repo = xtDocument?.repository
       else { return }
       
-      if (selection is StagingSelection) &&
-         (isAmending != (selection is AmendingSelection)) {
-        selection = isAmending ? AmendingSelection(repository: repo)
-                               : StagingSelection(repository: repo)
+      if selection is StagingSelection {
+        if isAmending != (selection is AmendingSelection) {
+          selection = isAmending ? AmendingSelection(repository: repo)
+                                 : StagingSelection(repository: repo)
+        }
+        if UserDefaults.standard.collapseHistory {
+          historyAutoCollapsed = true
+          if !historyController.historyHidden {
+            historyController.toggleHistory(self)
+            titleBarController?.updateViewControls()
+          }
+        }
+      }
+      else if oldValue is StagingSelection &&
+              UserDefaults.standard.collapseHistory &&
+              historyAutoCollapsed {
+        if historyController.historyHidden {
+          historyController.toggleHistory(self)
+          titleBarController?.updateViewControls()
+        }
+        historyAutoCollapsed = false
       }
       if let newSelection = selection,
          let oldSelection = oldValue {
@@ -81,10 +98,13 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     return mainSplitView.isSubviewCollapsed(mainSplitView.subviews[0])
   }
   var savedSidebarWidth: CGFloat = 180
+  var historyAutoCollapsed = false
   
   var currentOperation: OperationController?
   
-  private var windowObserver, repoObserver: NSKeyValueObservation?
+  private var windowObserver, repoObserver,
+              deemphasizeObserver: NSKeyValueObservation?
+  private var splitObserver: NSObjectProtocol?
   
   override var document: AnyObject?
   {
@@ -124,6 +144,23 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       [weak self] (_, _) in
       self?.titleBarController?.selectedBranch = repo.currentBranch
       self?.updateMiniwindowTitle()
+    }
+    deemphasizeObserver = UserDefaults.standard.observe(\.deemphasizeMerges) {
+      [weak self] (_, _) in
+      self?.redrawAllHistoryLists()
+    }
+    splitObserver = NotificationCenter.default.addObserver(
+        forName: NSSplitView.didResizeSubviewsNotification,
+        object: historyController.mainSplitView, queue: nil) {
+      [weak self] (_) in
+      guard let self = self
+      else { return }
+      let frame = self.historyController.mainSplitView.subviews[0].frame
+      
+      // Check width and height because orientation can change
+      if frame.size.height != 0 && frame.size.width != 0 {
+        self.historyAutoCollapsed = false
+      }
     }
     sidebarController.repo = repo
     historyController.finishLoad(repository: repo)
@@ -358,10 +395,6 @@ extension XTWindowController: NSMenuItemValidation
       case #selector(self.horizontalLayout(_:)):
         result = true
         menuItem.state = historyController.mainSplitView.isVertical ? .off : .on
-
-      case #selector(self.deemphasizeMerges(_:)):
-        result = true
-        menuItem.state = Preferences.deemphasizeMerges ? .on : .off
 
       case #selector(self.remoteSettings(_:)):
         result = true

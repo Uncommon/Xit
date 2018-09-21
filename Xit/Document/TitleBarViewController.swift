@@ -186,7 +186,13 @@ class TitleBarViewController: NSViewController
         delegate.showHideDetails()
     }
     
-    let states = delegate.viewStates
+    updateViewControls()
+  }
+  
+  func updateViewControls()
+  {
+    guard let states = delegate?.viewStates
+    else { return }
     
     viewControls.setSelected(states.sidebar, forSegment: 0)
     viewControls.setSelected(states.history, forSegment: 1)
