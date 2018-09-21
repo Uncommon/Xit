@@ -27,6 +27,7 @@ extension XTWindowController
   @IBAction func showHideHistory(_ sender: AnyObject)
   {
     historyController.toggleHistory(sender)
+    historyAutoCollapsed = false
   }
   
   @IBAction func showHideDetails(_ sender: AnyObject)
