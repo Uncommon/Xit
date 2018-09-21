@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14313.3.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="601-dV-YQ8">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="601-dV-YQ8">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.3.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.18"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -32,6 +32,7 @@
             <objects>
                 <tabViewController selectedTabViewItemIndex="0" tabStyle="toolbar" id="Kdi-Fz-cba" customClass="PrefsTabViewController" customModule="Xit" customModuleProvider="target" sceneMemberID="viewController">
                     <tabViewItems>
+                        <tabViewItem label="General" image="NSPreferencesGeneral" id="9Tk-XJ-1MQ"/>
                         <tabViewItem label="Git" identifier="" image="Git-Icon-1788C" id="ZHw-iL-auQ"/>
                         <tabViewItem label="Accounts" identifier="" image="NSUserAccounts" id="ICH-ob-k9g"/>
                         <tabViewItem label="Previews" image="NSFolder" id="w44-NY-M68"/>
@@ -48,6 +49,7 @@
                     <connections>
                         <outlet property="previewsTab" destination="w44-NY-M68" id="qJk-XG-DAy"/>
                         <outlet property="tabView" destination="bPH-i7-ChK" id="lD2-LN-Tvh"/>
+                        <segue destination="5C8-XN-V90" kind="relationship" relationship="tabItems" id="Dqf-tX-UYF"/>
                         <segue destination="InY-W7-lvh" kind="relationship" relationship="tabItems" id="XFN-Fs-aSH"/>
                         <segue destination="Cci-gq-oTU" kind="relationship" relationship="tabItems" id="1MV-UZ-UeY"/>
                         <segue destination="JHS-OX-BvD" kind="relationship" relationship="tabItems" id="JkZ-U3-tB1"/>
@@ -174,17 +176,17 @@
             <objects>
                 <viewController title="Accounts" id="Cci-gq-oTU" customClass="AccountsPrefsController" customModule="Xit" customModuleProvider="target" sceneMemberID="viewController">
                     <customView key="view" id="rQg-dL-J8T">
-                        <rect key="frame" x="0.0" y="0.0" width="530" height="158"/>
+                        <rect key="frame" x="0.0" y="0.0" width="530" height="208"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <subviews>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D9i-lp-7DP">
-                                <rect key="frame" x="20" y="38" width="490" height="100"/>
+                                <rect key="frame" x="20" y="38" width="490" height="150"/>
                                 <clipView key="contentView" id="SeF-No-6aZ">
-                                    <rect key="frame" x="1" y="0.0" width="488" height="99"/>
+                                    <rect key="frame" x="1" y="0.0" width="488" height="149"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="kb4-2F-GNN" viewBased="YES" id="Oye-G2-o9B">
-                                            <rect key="frame" x="0.0" y="0.0" width="488" height="76"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="488" height="126"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -281,7 +283,7 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="location" id="r6l-yh-y16">
-                                                            <rect key="frame" x="273" y="1" width="163" height="17"/>
+                                                            <rect key="frame" x="272" y="1" width="163" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aFo-aB-g7x">
@@ -351,7 +353,7 @@
                                 </clipView>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="490" id="7P2-6p-kQ0"/>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="100" id="8Xm-IF-30O"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="150" id="8Xm-IF-30O"/>
                                 </constraints>
                                 <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="LhU-YK-jtP">
                                     <rect key="frame" x="1" y="7" width="0.0" height="16"/>
@@ -468,12 +470,12 @@
                             </textField>
                             <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rbV-1k-RLt">
                                 <rect key="frame" x="96" y="137" width="209" height="26"/>
-                                <popUpButtonCell key="cell" type="push" title="GitHub" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="Nn0-pR-p5o" id="A1G-Tc-YYM">
+                                <popUpButtonCell key="cell" type="push" title="GitHub" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="Nn0-pR-p5o" id="A1G-Tc-YYM">
                                     <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="menu"/>
                                     <menu key="menu" id="WNc-nd-pFh">
                                         <items>
-                                            <menuItem title="GitHub" image="githubTemplate" id="Nn0-pR-p5o"/>
+                                            <menuItem title="GitHub" state="on" image="githubTemplate" id="Nn0-pR-p5o"/>
                                             <menuItem title="Bitbucket Cloud" image="bitbucketTemplate" id="jVm-j9-1Ue"/>
                                             <menuItem title="Bitbucket Server" image="bitbucketTemplate" id="VgT-4S-lhl"/>
                                             <menuItem title="TeamCity" image="teamcityTemplate" id="gdq-jq-YO7"/>
@@ -791,12 +793,60 @@ Gw
             </objects>
             <point key="canvasLocation" x="647.5" y="1403"/>
         </scene>
+        <!--General-->
+        <scene sceneID="ABo-GZ-gAc">
+            <objects>
+                <viewController title="General" id="5C8-XN-V90" customClass="GeneralPrefsConroller" customModule="Xit" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="xPR-Gb-Xsz">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="184"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cUQ-la-ETk">
+                                <rect key="frame" x="18" y="148" width="236" height="18"/>
+                                <buttonCell key="cell" type="check" title="Collapse history list in Staging view" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="hgS-qN-cuk">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="collapseHistoryClicked:" target="5C8-XN-V90" id="7bw-Qg-6PR"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="tsf-Fo-tRb">
+                                <rect key="frame" x="18" y="128" width="208" height="18"/>
+                                <buttonCell key="cell" type="check" title="De-emphasize merge commits" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="fCX-Rr-hcc">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="deemphasizeClicked:" target="5C8-XN-V90" id="yo2-uG-Ju8"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="tsf-Fo-tRb" firstAttribute="leading" secondItem="xPR-Gb-Xsz" secondAttribute="leading" constant="20" symbolic="YES" id="0BK-sm-lgW"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="cUQ-la-ETk" secondAttribute="trailing" constant="20" symbolic="YES" id="0HP-cU-SQ1"/>
+                            <constraint firstItem="cUQ-la-ETk" firstAttribute="leading" secondItem="xPR-Gb-Xsz" secondAttribute="leading" constant="20" symbolic="YES" id="0oa-eO-15W"/>
+                            <constraint firstItem="cUQ-la-ETk" firstAttribute="top" secondItem="xPR-Gb-Xsz" secondAttribute="top" constant="20" symbolic="YES" id="FBQ-65-4Y6"/>
+                            <constraint firstItem="tsf-Fo-tRb" firstAttribute="top" secondItem="cUQ-la-ETk" secondAttribute="bottom" constant="6" symbolic="YES" id="Rh3-J8-mFZ"/>
+                            <constraint firstAttribute="bottom" secondItem="tsf-Fo-tRb" secondAttribute="bottom" constant="130" id="mKk-0J-arB"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="tsf-Fo-tRb" secondAttribute="trailing" constant="20" symbolic="YES" id="rae-7f-1QO"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="collapsHistoryCheck" destination="cUQ-la-ETk" id="KRc-9X-evx"/>
+                        <outlet property="deemphasizeCheck" destination="tsf-Fo-tRb" id="JHo-NE-62g"/>
+                    </connections>
+                </viewController>
+                <customObject id="MoH-Ff-k6N" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
     </scenes>
     <resources>
         <image name="Git-Icon-1788C" width="383" height="383"/>
         <image name="NSActionTemplate" width="14" height="14"/>
         <image name="NSAddTemplate" width="11" height="11"/>
         <image name="NSFolder" width="32" height="32"/>
+        <image name="NSPreferencesGeneral" width="32" height="32"/>
         <image name="NSRefreshFreestandingTemplate" width="14" height="14"/>
         <image name="NSRemoveTemplate" width="11" height="11"/>
         <image name="NSStatusAvailable" width="16" height="16"/>

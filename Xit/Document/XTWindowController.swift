@@ -84,7 +84,8 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   var currentOperation: OperationController?
   
-  private var windowObserver, repoObserver: NSKeyValueObservation?
+  private var windowObserver, repoObserver,
+              deemphasizeObserver: NSKeyValueObservation?
   
   override var document: AnyObject?
   {
@@ -124,6 +125,10 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       [weak self] (_, _) in
       self?.titleBarController?.selectedBranch = repo.currentBranch
       self?.updateMiniwindowTitle()
+    }
+    deemphasizeObserver = UserDefaults.standard.observe(\.deemphasizeMerges) {
+      [weak self] (_, _) in
+      self?.redrawAllHistoryLists()
     }
     sidebarController.repo = repo
     historyController.finishLoad(repository: repo)
