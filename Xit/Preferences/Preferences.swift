@@ -7,23 +7,6 @@ enum PreferenceKeys
   static let collapseHistory = "collapseHistory"
 }
 
-
-enum Preferences
-{
-  static var deemphasizeMerges: Bool
-  {
-    get
-    {
-      return UserDefaults.standard.bool(forKey: PreferenceKeys.deemphasizeMerges)
-    }
-    set
-    {
-      return UserDefaults.standard.set(newValue,
-                                       forKey: PreferenceKeys.deemphasizeMerges)
-    }
-  }
-}
-
 extension UserDefaults
 {
   @objc dynamic var collapseHistory: Bool

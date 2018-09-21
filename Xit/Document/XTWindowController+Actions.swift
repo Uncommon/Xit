@@ -46,12 +46,6 @@ extension XTWindowController
     historyController.mainSplitView.adjustSubviews()
   }
   
-  @IBAction func deemphasizeMerges(_ sender: AnyObject)
-  {
-    Preferences.deemphasizeMerges = !Preferences.deemphasizeMerges
-    redrawAllHistoryLists()
-  }
-  
   @IBAction func newTag(_: AnyObject)
   {
     _ = startOperation { NewTagOpController(windowController: self) }

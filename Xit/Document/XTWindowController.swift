@@ -364,10 +364,6 @@ extension XTWindowController: NSMenuItemValidation
         result = true
         menuItem.state = historyController.mainSplitView.isVertical ? .off : .on
 
-      case #selector(self.deemphasizeMerges(_:)):
-        result = true
-        menuItem.state = Preferences.deemphasizeMerges ? .on : .off
-
       case #selector(self.remoteSettings(_:)):
         result = true
       
