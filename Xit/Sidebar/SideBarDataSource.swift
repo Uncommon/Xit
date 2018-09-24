@@ -193,10 +193,28 @@ class SideBarDataSource: NSObject
     for remoteItem in roots[XTGroupIndex.remotes.rawValue].children {
       outline.expandItem(remoteItem)
     }
+    if let currentBranch = repository.currentBranch,
+       currentBranch.contains("/") {
+      showItem(branchName: currentBranch)
+    }
     if outline.numberOfSelectedRows == 0 {
       if !(selection.map({ select(item: $0) }) ?? false) {
         selectCurrentBranch()
       }
+    }
+  }
+  
+  func showItem(branchName: String)
+  {
+    let parts = branchName.components(separatedBy: "/")
+    var parent: SidebarItem = roots[XTGroupIndex.branches.rawValue]
+    
+    for part in parts {
+      guard let child = parent.child(matching: part)
+        else { break }
+      
+      outline.expandItem(child)
+      parent = child
     }
   }
   
