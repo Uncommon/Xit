@@ -12,6 +12,7 @@ class WebViewController: NSViewController
   var savedTabWidth: UInt?
   var savedWrapping: TextWrapping?
   var fontObserver: NSObjectProtocol?
+  private var appearanceObserver: NSKeyValueObservation?
   
   enum Default
   {
@@ -32,11 +33,23 @@ class WebViewController: NSViewController
   
   override func awakeFromNib()
   {
+    webView.setValue(false, forKey: "drawsBackground")
     fontObserver = NotificationCenter.default.addObserver(forName: .XTFontChanged,
                                                           object: nil,
                                                           queue: .main) {
       [weak self] (_) in
       self?.updateFont()
+    }
+  }
+  
+  override func viewWillAppear()
+  {
+    super.viewWillAppear()
+    if appearanceObserver == nil {
+      appearanceObserver = webView.window!.observe(\.effectiveAppearance) {
+        [weak self] (_, _) in
+        self?.updateColors()
+      }
     }
   }
   
