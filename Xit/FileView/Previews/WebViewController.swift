@@ -97,6 +97,14 @@ class WebViewController: NSViewController
   
   func updateColors()
   {
+    let savedAppearance = NSAppearance.current
+    
+    defer {
+      NSAppearance.current = savedAppearance
+    }
+    NSAppearance.current = view.window?.effectiveAppearance
+    print("## appearance: \(NSAppearance.current.name)")
+    
     let names = [
           "addBackground",
           "background",
@@ -130,7 +138,9 @@ class WebViewController: NSViewController
   
   func setColor(name: String, color: NSColor)
   {
-    let cssColor = color.cssRGB
+    guard let concreteColor = NSColor(cgColor: color.cgColor)
+    else { return }
+    let cssColor = concreteColor.cssRGB
     
     _ = webView.stringByEvaluatingJavaScript(from: """
           document.documentElement.style.setProperty("--\(name)", "\(cssColor)")
