@@ -9,8 +9,8 @@ protocol HunkStaging: AnyObject
 
 /// Manages a WebView for displaying text file diffs.
 class FileDiffController: WebViewController,
-                            WhitespaceVariable,
-                            ContextVariable
+                          WhitespaceVariable,
+                          ContextVariable
 {
   // swiftlint:disable:next weak_delegate
   let actionDelegate: DiffActionDelegate = DiffActionDelegate()
@@ -22,24 +22,15 @@ class FileDiffController: WebViewController,
   
   public var whitespace = PreviewsPrefsController.Default.whitespace()
   {
-    didSet
-    {
-      configureDiffMaker()
-    }
+    didSet { configureDiffMaker() }
   }
   public var contextLines = PreviewsPrefsController.Default.contextLines()
   {
-    didSet
-    {
-      configureDiffMaker()
-    }
+    didSet { configureDiffMaker() }
   }
   var diffMaker: PatchMaker?
   {
-    didSet
-    {
-      configureDiffMaker()
-    }
+    didSet { configureDiffMaker() }
   }
 
   override func viewDidLoad()
