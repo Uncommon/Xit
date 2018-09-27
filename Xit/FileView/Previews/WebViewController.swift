@@ -46,7 +46,7 @@ class WebViewController: NSViewController
   {
     super.viewWillAppear()
     if appearanceObserver == nil {
-      appearanceObserver = webView.window!.observe(\.effectiveAppearance) {
+      appearanceObserver = webView.observe(\.effectiveAppearance) {
         [weak self] (_, _) in
         self?.updateColors()
       }
@@ -102,8 +102,7 @@ class WebViewController: NSViewController
     defer {
       NSAppearance.current = savedAppearance
     }
-    NSAppearance.current = view.window?.effectiveAppearance
-    print("## appearance: \(NSAppearance.current.name)")
+    NSAppearance.current = view.effectiveAppearance
     
     let names = [
           "addBackground",
@@ -138,9 +137,7 @@ class WebViewController: NSViewController
   
   func setColor(name: String, color: NSColor)
   {
-    guard let concreteColor = NSColor(cgColor: color.cgColor)
-    else { return }
-    let cssColor = concreteColor.cssRGB
+    let cssColor = color.cssRGB
     
     _ = webView.stringByEvaluatingJavaScript(from: """
           document.documentElement.style.setProperty("--\(name)", "\(cssColor)")
