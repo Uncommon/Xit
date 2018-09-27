@@ -46,7 +46,7 @@ class WebViewController: NSViewController
   {
     super.viewDidAppear()
     if appearanceObserver == nil {
-      appearanceObserver = webView.window!.observe(\.effectiveAppearance) {
+      appearanceObserver = webView.observe(\.effectiveAppearance) {
         [weak self] (_, _) in
         self?.updateColors()
       }
@@ -97,6 +97,13 @@ class WebViewController: NSViewController
   
   func updateColors()
   {
+    let savedAppearance = NSAppearance.current
+    
+    defer {
+      NSAppearance.current = savedAppearance
+    }
+    NSAppearance.current = view.effectiveAppearance
+    
     let names = [
           "addBackground",
           "blameBorder",
