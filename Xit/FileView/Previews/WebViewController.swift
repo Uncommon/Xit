@@ -42,9 +42,9 @@ class WebViewController: NSViewController
     }
   }
   
-  override func viewWillAppear()
+  override func viewDidAppear()
   {
-    super.viewWillAppear()
+    super.viewDidAppear()
     if appearanceObserver == nil {
       appearanceObserver = webView.window!.observe(\.effectiveAppearance) {
         [weak self] (_, _) in
@@ -99,7 +99,6 @@ class WebViewController: NSViewController
   {
     let names = [
           "addBackground",
-          "background",
           "blameBorder",
           "blameStart",
           "buttonActiveBorder",
@@ -121,6 +120,8 @@ class WebViewController: NSViewController
     
     setColor(name: "textColor", color: NSColor.textColor)
     setColor(name: "textBackground", color: NSColor.textBackgroundColor)
+    setColor(name: "underPageBackgroundColor",
+             color: NSColor.underPageBackgroundColor)
     for name in names {
       if let color = NSColor(named: name) {
         setColor(name: name, color: color)

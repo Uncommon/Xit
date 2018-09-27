@@ -1,7 +1,7 @@
 @import "colors.css";
 
 body {
-  background-color: var(--background);
+  background-color: var(--underPageBackgroundColor);
   color: var(--textColor);
   margin: 0px;
   counter-reset: line;
