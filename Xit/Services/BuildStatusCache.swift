@@ -52,40 +52,52 @@ class BuildStatusCache: TeamCityAccessor
     
     statuses.removeAll()
     for local in localBranches {
-      guard let tracked = local.trackingBranch,
-            let remoteName = tracked.remoteName,
-            let (api, buildTypes) = matchTeamCity(remoteName)
+      refresh(branch: local)
+    }
+  }
+  
+  func refresh(branch: LocalBranch, onFailure: (() -> Void)? = nil)
+  {
+    guard let tracked = branch.trackingBranch,
+          let remoteName = tracked.remoteName,
+          let (api, buildTypes) = matchTeamCity(remoteName)
+    else {
+      onFailure?()
+      return
+    }
+  
+    let fullBranchName = branch.name
+  
+    for buildType in buildTypes {
+      guard let branchName = api.displayName(forBranch: fullBranchName,
+                                             buildType: buildType)
       else { continue }
       
-      let fullBranchName = local.name
+      let statusResource = api.buildStatus(branchName, buildType: buildType)
       
-      for buildType in buildTypes {
-        guard let branchName = api.displayName(forBranch: fullBranchName,
-                                               buildType: buildType)
-        else { continue }
+      statusResource.invalidate()
+      statusResource.useData(owner: self) {
+        (data) in
+        guard let xml = data.content as? XMLDocument,
+              let firstBuildElement = xml.rootElement()?.children?.first
+                                      as? XMLElement,
+              let build = TeamCityAPI.Build(element: firstBuildElement)
+        else {
+          onFailure?()
+          return
+        }
         
-        let statusResource = api.buildStatus(branchName, buildType: buildType)
+        #if DEBUG
+        NSLog("\(buildType)/\(branchName): \(build.status?.rawValue ?? "?")")
+        #endif
+        var buildTypeStatuses = self.statuses[buildType] ??
+                                BranchStatuses()
         
-        statusResource.useData(owner: self) {
-          (data) in
-          guard let xml = data.content as? XMLDocument,
-                let firstBuildElement = xml.rootElement()?.children?.first
-                                        as? XMLElement,
-                let build = TeamCityAPI.Build(element: firstBuildElement)
-          else { return }
-          
-          #if DEBUG
-          NSLog("\(buildType)/\(branchName): \(build.status?.rawValue ?? "?")")
-          #endif
-          var buildTypeStatuses = self.statuses[buildType] ??
-                                  BranchStatuses()
-          
-          buildTypeStatuses[branchName] = build
-          self.statuses[buildType] = buildTypeStatuses
-          for ref in self.clients {
-            ref.client?.buildStatusUpdated(branch: branchName,
-                                              buildType: buildType)
-          }
+        buildTypeStatuses[branchName] = build
+        self.statuses[buildType] = buildTypeStatuses
+        for ref in self.clients {
+          ref.client?.buildStatusUpdated(branch: branchName,
+                                            buildType: buildType)
         }
       }
     }

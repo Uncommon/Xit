@@ -226,6 +226,13 @@ extension XTRepository: Branching
   {
     return GitRemoteBranch(repository: self, name: name)
   }
+  
+  public func localBranch(tracking remoteBranch: RemoteBranch) -> LocalBranch?
+  {
+    return localBranches().first {
+      $0.trackingBranchName == remoteBranch.name
+    }
+  }
 }
 
 extension XTRepository: BranchListing

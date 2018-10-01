@@ -168,6 +168,7 @@ public protocol Branching: AnyObject
   func createBranch(named name: String, target: String) throws -> LocalBranch?
   func localBranch(named name: String) -> LocalBranch?
   func remoteBranch(named name: String) -> RemoteBranch?
+  func localBranch(tracking remoteBranch: RemoteBranch) -> LocalBranch?
 }
 
 public protocol Tagging: AnyObject

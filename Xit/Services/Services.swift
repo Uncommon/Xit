@@ -7,13 +7,14 @@ extension Siesta.Resource
   /// to run later when the data is available.
   func useData(owner: AnyObject, closure: @escaping (Siesta.Entity<Any>) -> Void)
   {
-    if let data = latestData {
+    if isUpToDate, let data = latestData {
       closure(data)
     }
     else {
       addObserver(owner: owner) {
-        (resource, _) in
-        if let data = resource.latestData {
+        (resource, event) in
+        if case .newData(_) = event,
+           let data = resource.latestData {
           closure(data)
         }
       }

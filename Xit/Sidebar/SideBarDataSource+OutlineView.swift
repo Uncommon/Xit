@@ -129,16 +129,7 @@ extension SideBarDataSource: NSOutlineViewDelegate
       dataView.statusText.isHidden = true
       dataView.statusButton.image = nil
       dataView.statusButton.action = nil
-      if let image = statusImage(for: sideBarItem) {
-        dataView.statusButton.image = image
-        if let localBranchItem = item as? LocalBranchSidebarItem,
-           let localBranch = localBranchItem.branchObject() as? LocalBranch,
-           let tracked = localBranch.trackingBranchName {
-          dataView.statusButton.toolTip = tracked
-        }
-        dataView.statusButton.target = self
-        dataView.statusButton.action = #selector(self.showItemStatus(_:))
-      }
+      updateStatusImage(item: sideBarItem, cell: dataView)
       if sideBarItem is LocalBranchSidebarItem {
         configureLocalBranchItem(sideBarItem: sideBarItem, dataView: dataView)
       }
@@ -162,6 +153,34 @@ extension SideBarDataSource: NSOutlineViewDelegate
       }
       return dataView
     }
+  }
+  
+  func cell(forItem item: SidebarItem) -> SidebarTableCellView?
+  {
+    let row = outline.row(forItem: item)
+    guard row != -1
+    else { return nil }
+    
+    return outline.view(atColumn: 0, row: row, makeIfNecessary: false)
+        as? SidebarTableCellView
+  }
+    
+  func updateStatusImage(item: SidebarItem, cell: SidebarTableCellView?)
+  {
+    guard let cell = cell ?? self.cell(forItem: item)
+    else { return }
+    
+    if let image = statusImage(for: item) {
+      cell.statusButton.image = image
+      if let localBranchItem = item as? LocalBranchSidebarItem,
+        let localBranch = localBranchItem.branchObject() as? LocalBranch,
+        let tracked = localBranch.trackingBranchName {
+        cell.statusButton.toolTip = tracked
+      }
+      cell.statusButton.target = self
+      cell.statusButton.action = #selector(self.showItemStatus(_:))
+    }
+    cell.buttonContainer.isHidden = cell.statusButton.image == nil
   }
   
   fileprivate func configureLocalBranchItem(sideBarItem: SidebarItem,

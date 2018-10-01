@@ -94,6 +94,23 @@ extension SideBarDataSource: BuildStatusClient
 {
   func buildStatusUpdated(branch: String, buildType: String)
   {
-    scheduleReload()
+    updateBranches(roots[XTGroupIndex.branches.rawValue].children)
+    for remoteItem in roots[XTGroupIndex.remotes.rawValue].children {
+      updateBranches(remoteItem.children)
+    }
+  }
+  
+  private func updateBranches(_ branchItems: [SidebarItem])
+  {
+    for item in branchItems {
+      switch item {
+        case is BranchSidebarItem:
+          updateStatusImage(item: item, cell: nil)
+        case is BranchFolderSidebarItem:
+          updateBranches(item.children)
+        default:
+          break
+      }
+    }
   }
 }

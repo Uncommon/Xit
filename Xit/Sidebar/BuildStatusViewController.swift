@@ -2,13 +2,17 @@ import Cocoa
 
 class BuildStatusViewController: NSViewController, TeamCityAccessor
 {
-  weak var remoteMgr: RemoteManagement!
+  weak var repository: (RemoteManagement & Branching)!
   let branch: Branch
   let buildStatusCache: BuildStatusCache
   var api: TeamCityAPI?
   @IBOutlet weak var tableView: NSTableView!
   @IBOutlet weak var headingLabel: NSTextField!
+  @IBOutlet weak var refreshButton: NSButton!
+  @IBOutlet weak var refreshSpinner: NSProgressIndicator!
 
+  var remoteMgr: RemoteManagement! { return repository }
+  
   var filteredStatuses: [String: BuildStatusCache.BranchStatuses] = [:]
   var builds: [TeamCityAPI.Build] = []
   
@@ -22,15 +26,16 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
     static let build = ¶"BuildCell"
   }
 
-  init(repository: RemoteManagement, branch: Branch,
+  init(repository: (RemoteManagement & Branching), branch: Branch,
        cache: BuildStatusCache)
   {
-    self.remoteMgr = repository
+    self.repository = repository
     self.branch = branch
     self.buildStatusCache = cache
-  
+
     super.init(nibName: NibName.buildStatus, bundle: nil)
     
+    cache.add(client: self)
     if let remoteName = (branch as? RemoteBranch)?.remoteName ??
                         (branch as? LocalBranch)?.trackingBranch?.remoteName,
        let (api, _) = matchTeamCity(remoteName) {
@@ -99,6 +104,32 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
     builds = Array(buildsByNumber.values)
   }
   
+  func setProgressVisible(_ visible: Bool)
+  {
+    if visible {
+      refreshSpinner.usesThreadedAnimation = true
+      refreshSpinner.startAnimation(nil)
+    }
+    else {
+      refreshSpinner.stopAnimation(nil)
+    }
+    refreshButton.isHidden = visible
+    refreshSpinner.isHidden = !visible
+    view.needsUpdateConstraints = true
+  }
+  
+  @IBAction func refresh(_ sender: Any)
+  {
+    if let localBranch = branch as? LocalBranch ??
+                         (branch as? RemoteBranch).flatMap({
+                            repository.localBranch(tracking: $0) }) {
+      setProgressVisible(true)
+      buildStatusCache.refresh(branch: localBranch, onFailure: {
+        self.setProgressVisible(false)
+      })
+    }
+  }
+  
   @IBAction func doubleClick(_ sender: Any)
   {
     let clickedRow = tableView.clickedRow
@@ -117,7 +148,10 @@ extension BuildStatusViewController: BuildStatusClient
   func buildStatusUpdated(branch: String, buildType: String)
   {
     filterStatuses()
-    tableView.reloadData()
+    DispatchQueue.main.async {
+      self.setProgressVisible(false)
+      self.tableView.reloadData()
+    }
   }
 }
 
