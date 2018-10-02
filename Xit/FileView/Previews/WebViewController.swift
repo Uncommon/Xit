@@ -125,10 +125,9 @@ class WebViewController: NSViewController
           "shadow",
           ]
     
-    setColor(name: "textColor", color: NSColor.textColor)
-    setColor(name: "textBackground", color: NSColor.textBackgroundColor)
-    setColor(name: "underPageBackgroundColor",
-             color: NSColor.underPageBackgroundColor)
+    setColor(name: "textColor", color: .textColor)
+    setColor(name: "textBackground", color: .textBackgroundColor)
+    setColor(name: "underPageBackgroundColor", color: .underPageBackgroundColor)
     for name in names {
       if let color = NSColor(named: name) {
         setColor(name: name, color: color)
