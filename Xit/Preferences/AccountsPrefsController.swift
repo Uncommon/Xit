@@ -159,9 +159,26 @@ class AccountsPrefsController: NSViewController
   
   @IBAction func removeAccount(_ sender: AnyObject)
   {
-    AccountsManager.manager.accounts.remove(at: accountsTable.selectedRow)
-    accountsTable.reloadData()
-    updateRefreshButton()
+    guard let window = view.window
+    else { return }
+    let alert = NSAlert()
+    
+    alert.messageText = "Are you sure you want to delete the selected account?"
+    alert.addButton(withTitle: "Delete")
+    alert.addButton(withTitle: "Cancel")
+    // Cancel should be default for destructive actions
+    alert.buttons[0].keyEquivalent = "D"
+    alert.buttons[1].keyEquivalent = "\r"
+    
+    alert.beginSheetModal(for: window) {
+      (response) in
+      guard response == NSApplication.ModalResponse.alertFirstButtonReturn
+      else { return }
+      
+      AccountsManager.manager.accounts.remove(at: self.accountsTable.selectedRow)
+      self.accountsTable.reloadData()
+      self.updateRefreshButton()
+    }
   }
   
   @IBAction func refreshAccount(_ sender: Any)
