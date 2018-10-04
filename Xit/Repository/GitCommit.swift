@@ -76,8 +76,7 @@ public class GitCommit: Commit
     }
   }
   public let oid: OID
-  public private(set) lazy var parentOIDs: [OID] =
-      GitCommit.calculateParentOIDs(self.commit)
+  public let parentOIDs: [OID]
   
   public var repository: OpaquePointer
   { return git_commit_owner(commit) }
@@ -157,6 +156,7 @@ public class GitCommit: Commit
   {
     self.oid = GitOID(oidPtr: git_commit_id(gitCommit))
     self.commit = gitCommit
+    self.parentOIDs = GitCommit.calculateParentOIDs(gitCommit)
   }
 
   convenience init?(oid: OID, repository: OpaquePointer)
