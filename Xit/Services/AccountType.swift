@@ -19,7 +19,7 @@ enum AccountType: Int
   init?(name: String?)
   {
     guard let name = name
-      else { return nil }
+    else { return nil }
     
     switch name {
       case Names.gitHub:

@@ -101,6 +101,12 @@ class AddAccountController: SheetController
     window?.makeFirstResponder(userField)
   }
   
+  func loadFields(from account: Account)
+  {
+    userField.stringValue = account.user
+    locationField.stringValue = account.location.absoluteString
+  }
+  
   func syncLocationField()
   {
     locationField.stringValue = accountType.defaultLocation

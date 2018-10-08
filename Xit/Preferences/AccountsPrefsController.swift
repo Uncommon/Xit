@@ -15,8 +15,20 @@ class AccountsPrefsController: NSViewController
   @IBOutlet var addController: AddAccountController!
   @IBOutlet weak var accountsTable: NSTableView!
   @IBOutlet weak var refreshButton: NSButton!
+  @IBOutlet weak var editButton: NSButton!
   
   var authStatusObserver: NSObjectProtocol?
+  
+  var selectedAccount: Account?
+  {
+    let manager = AccountsManager.manager
+    guard case let selectedRow = accountsTable.selectedRow,
+          selectedRow >= 0,
+          selectedRow < manager.accounts.count
+    else { return nil }
+    
+    return manager.accounts[selectedRow]
+  }
   
   override func viewDidLoad()
   {
@@ -33,7 +45,7 @@ class AccountsPrefsController: NSViewController
       [weak self] (_) in
       self?.accountsTable.reloadData()
     }
-    updateRefreshButton()
+    updateActionButtons()
   }
   
   deinit
@@ -43,9 +55,12 @@ class AccountsPrefsController: NSViewController
     authStatusObserver.map { center.removeObserver($0) }
   }
   
-  func updateRefreshButton()
+  func updateActionButtons()
   {
-    refreshButton.isEnabled = accountsTable.selectedRow != -1
+    let enabled = accountsTable.selectedRow != -1
+    
+    refreshButton.isEnabled = enabled
+    editButton.isEnabled = enabled
   }
   
   func showError(_ message: String)
@@ -63,18 +78,72 @@ class AccountsPrefsController: NSViewController
                             completionHandler: addAccountDone)
   }
   
-  func addAccountDone(response: NSApplication.ModalResponse)
+  @IBAction func editAccount(_ sender: Any)
   {
-    guard response == NSApplication.ModalResponse.OK
-    else { return }
-    guard let url = self.addController.location
+    guard let account = selectedAccount
     else { return }
     
-    self.addAccount(type: self.addController.accountType,
-                    user: self.addController.userName,
-                    password: self.addController.password,
-                    location: url as URL)
-    self.updateRefreshButton()
+    addController.loadFields(from: account)
+    view.window?.beginSheet(addController.window!,
+                            completionHandler: editAccountDone)
+  }
+
+  func addAccountDone(response: NSApplication.ModalResponse)
+  {
+    guard response == NSApplication.ModalResponse.OK,
+          let url = addController.location
+    else { return }
+    
+    addAccount(type: addController.accountType,
+               user: addController.userName,
+               password: addController.password,
+               location: url as URL)
+    updateActionButtons()
+  }
+  
+  func editAccountDone(response: NSApplication.ModalResponse)
+  {
+    guard response == NSApplication.ModalResponse.OK,
+          let url = self.addController.location,
+          let account = selectedAccount
+    else { return }
+    let user = addController.userName
+    let password = addController.password
+    
+    account.user = user
+    account.location = url
+    if let oldPassword = XTKeychain.findPassword(url: url, account: user),
+       oldPassword != password {
+      do {
+        try XTKeychain.changePassword(url: url, account: user, password: password)
+      }
+      catch let error as NSError where error.code == errSecUserCanceled {
+        return
+      }
+      catch _ as XTKeychain.Error {
+        let alert = NSAlert()
+        
+        alert.messageText = """
+            The password could not be saved to the keychain because \
+            the URL is not valid.
+            """
+        alert.beginSheetModal(for: view.window!, completionHandler: nil)
+      }
+      catch {
+        let alert = NSAlert()
+        
+        alert.messageText = """
+            The password could not be saved to the keychain because \
+            an unexpected error occurred.
+            """
+        alert.beginSheetModal(for: view.window!, completionHandler: nil)
+      }
+    }
+    
+    let columns = 0..<accountsTable.numberOfColumns
+    
+    accountsTable.reloadData(forRowIndexes: [accountsTable.selectedRow],
+                             columnIndexes: IndexSet(integersIn: columns))
   }
   
   func addAccount(type: AccountType,
@@ -91,9 +160,10 @@ class AccountsPrefsController: NSViewController
       else {
         let alert = NSAlert()
         
-        alert.messageText =
-            "There is already a password for that account in the keychain. " +
-            "Do you want to change it, or use the existing password?"
+        alert.messageText = """
+            There is already a password for that account in the keychain. \
+            Do you want to change it, or use the existing password?
+            """
         alert.addButton(withTitle: "Change")
         alert.addButton(withTitle: "Use existing")
         alert.addButton(withTitle: "Cancel")
@@ -142,8 +212,11 @@ class AccountsPrefsController: NSViewController
                                         account: user,
                                         password: password)
         }
-        catch _ as NSError {
-          showError("The password could not be saved to the Keychain.")
+        catch let error as NSError where error.code == errSecUserCanceled {
+          return
+        }
+        catch {
+          showError("The password could not be updated in the Keychain.")
           return
         }
       
@@ -152,8 +225,8 @@ class AccountsPrefsController: NSViewController
     }
     
     AccountsManager.manager.add(Account(type: type,
-                                  user: user,
-                                  location: location))
+                                        user: user,
+                                        location: location))
     accountsTable.reloadData()
   }
   
@@ -177,17 +250,14 @@ class AccountsPrefsController: NSViewController
       
       AccountsManager.manager.accounts.remove(at: self.accountsTable.selectedRow)
       self.accountsTable.reloadData()
-      self.updateRefreshButton()
+      self.updateActionButtons()
     }
   }
   
   @IBAction func refreshAccount(_ sender: Any)
   {
-    let manager = AccountsManager.manager
-    let selectedRow = accountsTable.selectedRow
-    guard selectedRow >= 0 && selectedRow < manager.accounts.count
+    guard let account = selectedAccount
     else { return }
-    let account = manager.accounts[selectedRow]
     
     switch account.type {
       
@@ -331,7 +401,7 @@ extension AccountsPrefsController: NSTableViewDelegate
   
   func tableViewSelectionDidChange(_ notification: Notification)
   {
-    updateRefreshButton()
+    updateActionButtons()
   }
 }
 
