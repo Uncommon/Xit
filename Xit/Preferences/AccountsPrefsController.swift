@@ -16,6 +16,7 @@ class AccountsPrefsController: NSViewController
   @IBOutlet weak var accountsTable: NSTableView!
   @IBOutlet weak var refreshButton: NSButton!
   @IBOutlet weak var editButton: NSButton!
+  @IBOutlet weak var deleteButton: NSButton!
   
   var authStatusObserver: NSObjectProtocol?
   
@@ -59,6 +60,7 @@ class AccountsPrefsController: NSViewController
   {
     let enabled = accountsTable.selectedRow != -1
     
+    deleteButton.isEnabled = enabled
     refreshButton.isEnabled = enabled
     editButton.isEnabled = enabled
   }
@@ -73,7 +75,7 @@ class AccountsPrefsController: NSViewController
   
   @IBAction func addAccount(_ sender: AnyObject)
   {
-    addController.resetFields()
+    addController.resetForAdd()
     view.window?.beginSheet(addController.window!,
                             completionHandler: addAccountDone)
   }

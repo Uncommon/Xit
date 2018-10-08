@@ -101,10 +101,20 @@ class AddAccountController: SheetController
     window?.makeFirstResponder(userField)
   }
   
+  func resetForAdd()
+  {
+    resetFields()
+    acceptButton!.title = "Add"
+  }
+  
   func loadFields(from account: Account)
   {
     userField.stringValue = account.user
     locationField.stringValue = account.location.absoluteString
+    passwordField.stringValue = XTKeychain.findPassword(url: account.location,
+                                                        account: account.user)
+                                ?? ""
+    acceptButton!.title = "Save"
   }
   
   func syncLocationField()

@@ -185,14 +185,14 @@
                                     <rect key="frame" x="1" y="0.0" width="488" height="149"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="kb4-2F-GNN" viewBased="YES" id="Oye-G2-o9B">
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="kb4-2F-GNN" viewBased="YES" id="Oye-G2-o9B">
                                             <rect key="frame" x="0.0" y="0.0" width="488" height="126"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
-                                                <tableColumn identifier="service" width="118.953125" minWidth="40" maxWidth="1000" id="dBg-Kv-2uA">
+                                                <tableColumn identifier="service" width="134.953125" minWidth="40" maxWidth="1000" id="dBg-Kv-2uA">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Service">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -206,7 +206,7 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="service" id="L4i-st-Mdu">
-                                                            <rect key="frame" x="1" y="1" width="119" height="17"/>
+                                                            <rect key="frame" x="1" y="1" width="135" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VkJ-2p-u9d">
@@ -231,7 +231,7 @@
                                                         </tableCellView>
                                                     </prototypeCellViews>
                                                 </tableColumn>
-                                                <tableColumn identifier="userName" width="146.2734375" minWidth="40" maxWidth="1000" id="m7k-jj-ygM">
+                                                <tableColumn identifier="userName" width="130.2734375" minWidth="40" maxWidth="1000" id="m7k-jj-ygM">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="User name">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -245,11 +245,11 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="userName" id="cfB-K4-Jjc">
-                                                            <rect key="frame" x="123" y="1" width="147" height="17"/>
+                                                            <rect key="frame" x="139" y="1" width="130" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Itr-C0-rHt">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="147" height="17"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="130" height="17"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="wri-yE-Zmc">
                                                                         <font key="font" metaFont="system"/>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -283,11 +283,11 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="location" id="r6l-yh-y16">
-                                                            <rect key="frame" x="272.5" y="1" width="163" height="17"/>
+                                                            <rect key="frame" x="272" y="1" width="164" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aFo-aB-g7x">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="163" height="17"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="164" height="17"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="1mm-5M-vK3">
                                                                         <font key="font" metaFont="system"/>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -345,6 +345,7 @@
                                                 </tableColumn>
                                             </tableColumns>
                                             <connections>
+                                                <action trigger="doubleAction" selector="editAccount:" target="Cci-gq-oTU" id="IgI-sD-nVP"/>
                                                 <outlet property="dataSource" destination="Cci-gq-oTU" id="3S4-8K-zXx"/>
                                                 <outlet property="delegate" destination="Cci-gq-oTU" id="hqD-I6-lfY"/>
                                             </connections>
@@ -356,7 +357,7 @@
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="150" id="8Xm-IF-30O"/>
                                 </constraints>
                                 <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="LhU-YK-jtP">
-                                    <rect key="frame" x="1" y="7" width="0.0" height="16"/>
+                                    <rect key="frame" x="1" y="134" width="488" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="Cl7-Ct-wsb">
@@ -454,6 +455,7 @@
                     <connections>
                         <outlet property="accountsTable" destination="Oye-G2-o9B" id="3zf-Es-MVQ"/>
                         <outlet property="addController" destination="bFL-Vc-PZs" id="SGR-hB-phZ"/>
+                        <outlet property="deleteButton" destination="Rcr-EE-AZ6" id="VDq-l9-olg"/>
                         <outlet property="editButton" destination="SWd-m5-m9Q" id="tAn-MU-iXp"/>
                         <outlet property="refreshButton" destination="VM8-Bc-uXv" id="Br9-Ke-0WR"/>
                     </connections>
@@ -461,6 +463,7 @@
                 <customObject id="3gg-pN-ygD" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <customObject id="bFL-Vc-PZs" customClass="AddAccountController" customModule="Xit" customModuleProvider="target">
                     <connections>
+                        <outlet property="acceptButton" destination="D6g-f7-WOo" id="KhW-OY-GPA"/>
                         <outlet property="locationField" destination="Cbg-Vb-UQD" id="wDZ-qH-se2"/>
                         <outlet property="passwordField" destination="uc3-zv-ZqK" id="9LV-wS-7zW"/>
                         <outlet property="servicePopup" destination="rbV-1k-RLt" id="fWi-qg-j1p"/>
