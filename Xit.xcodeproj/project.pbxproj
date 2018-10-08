@@ -206,6 +206,7 @@
 		C9F78B141D0896AF008490EA /* SidebarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F78B131D0896AF008490EA /* SidebarItem.swift */; };
 		C9F9A02A1E1C417D00261E33 /* PatchMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F9A0291E1C417D00261E33 /* PatchMaker.swift */; };
 		C9FCC1D11D50EB1A00AC398E /* CommitHistoryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FCC1D01D50EB1A00AC398E /* CommitHistoryTest.swift */; };
+		C9FD8FD9216C048400FCCE01 /* AccountType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FD8FD8216C048400FCCE01 /* AccountType.swift */; };
 		C9FE06C720178A8C0001EB2B /* FileListView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9FE06C620178A8C0001EB2B /* FileListView.xib */; };
 		C9FFCC841FABB28F00FA2F21 /* SideBarDataSource+OutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FFCC831FABB28F00FA2F21 /* SideBarDataSource+OutlineView.swift */; };
 		C9FFCC861FABC24B00FA2F21 /* ExpansionTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FFCC851FABC24B00FA2F21 /* ExpansionTextField.swift */; };
@@ -573,6 +574,7 @@
 		C9F78B131D0896AF008490EA /* SidebarItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarItem.swift; sourceTree = "<group>"; };
 		C9F9A0291E1C417D00261E33 /* PatchMaker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatchMaker.swift; sourceTree = "<group>"; };
 		C9FCC1D01D50EB1A00AC398E /* CommitHistoryTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommitHistoryTest.swift; sourceTree = "<group>"; };
+		C9FD8FD8216C048400FCCE01 /* AccountType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountType.swift; sourceTree = "<group>"; };
 		C9FE06C620178A8C0001EB2B /* FileListView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FileListView.xib; sourceTree = "<group>"; };
 		C9FFCC831FABB28F00FA2F21 /* SideBarDataSource+OutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SideBarDataSource+OutlineView.swift"; sourceTree = "<group>"; };
 		C9FFCC851FABC24B00FA2F21 /* ExpansionTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpansionTextField.swift; sourceTree = "<group>"; };
@@ -967,6 +969,7 @@
 				C91F34771D30656B005F9BDF /* Services.swift */,
 				C98EBC142126188900EF739E /* ServicesData.swift */,
 				C929D05F1D42785B00D7DC52 /* TeamCityAPI.swift */,
+				C9FD8FD8216C048400FCCE01 /* AccountType.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1351,6 +1354,7 @@
 				C90B4EC51FEDB1D600277B13 /* GitStatusList.swift in Sources */,
 				C94A30261E3154D400B4496B /* TextPreviewController.swift in Sources */,
 				C90B4EC31FEB2B2300277B13 /* GitReference.swift in Sources */,
+				C9FD8FD9216C048400FCCE01 /* AccountType.swift in Sources */,
 				C94154B61EE5AC460030E481 /* XTRepository+Commands.swift in Sources */,
 				C959CDE91F859D3D00C1E282 /* SideBarDataSource+TeamCity.swift in Sources */,
 				C98EBC152126188900EF739E /* ServicesData.swift in Sources */,
