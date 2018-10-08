@@ -10,6 +10,24 @@ class Account: NSObject
   var user: String
   var location: URL
   
+  /// Account fields as stored in preferences
+  enum Keys
+  {
+    static let user = "user"
+    static let location = "location"
+    static let type = "type"
+  }
+  
+  var plistDictionary: NSDictionary
+  {
+    let accountDict = NSMutableDictionary(capacity: 3)
+    
+    accountDict[Account.Keys.type] = type.name
+    accountDict[Account.Keys.user] = user
+    accountDict[Account.Keys.location] = location.absoluteString
+    return accountDict
+  }
+
   init(type: AccountType, user: String, location: URL)
   {
     self.type = type
@@ -17,6 +35,17 @@ class Account: NSObject
     self.location = location
     
     super.init()
+  }
+  
+  convenience init?(dict: [String: AnyObject])
+  {
+    guard let type = AccountType(name: dict[Keys.type] as? String),
+          let user = dict[Keys.user] as? String,
+          let location = dict[Keys.location] as? String,
+          let url = URL(string: location)
+    else { return nil }
+    
+    self.init(type: type, user: user, location: url)
   }
 }
 
@@ -30,11 +59,6 @@ func == (left: Account, right: Account) -> Bool
 
 class AccountsManager: NSObject
 {
-  /// Account types as stored in preferences
-  let userKey = "user"
-  let locationKey = "location"
-  let typeKey = "type"
-
   static let manager = AccountsManager()
   
   var accounts: [Account] = []
@@ -65,11 +89,8 @@ class AccountsManager: NSObject
     
     accounts.removeAll()
     for accountDict in storedAccounts {
-      if let type = AccountType(name: accountDict[typeKey] as? String),
-        let user = accountDict[userKey] as? String,
-        let locationString = accountDict[locationKey] as? String,
-        let location = URL(string: locationString) {
-        accounts.append(Account(type: type, user: user, location: location))
+      if let account = Account(dict: accountDict) {
+        accounts.append(account)
       }
       else {
         NSLog("Couldn't read account: \(accountDict.description)")
@@ -79,17 +100,9 @@ class AccountsManager: NSObject
   
   func saveAccounts()
   {
-    let accountsList = NSMutableArray(capacity: accounts.count)
+    let accountsData = accounts.map { $0.plistDictionary }
     
-    for account in accounts {
-      let accountDict = NSMutableDictionary(capacity: 3)
-      
-      accountDict[typeKey] = account.type.name
-      accountDict[userKey] = account.user
-      accountDict[locationKey] = account.location.absoluteString
-      accountsList.add(accountDict)
-    }
-    UserDefaults.standard.setValue(accountsList,
+    UserDefaults.standard.setValue(accountsData,
                                    forKey: "accounts")
   }
 }
