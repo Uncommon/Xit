@@ -377,28 +377,25 @@ extension Thread
       block()
     }
     else {
-      DispatchQueue.main.async {
-        block()
-      }
+      DispatchQueue.main.async(execute: block)
     }
   }
   
   /// Performs the block immediately if this is the main thread, or
   /// synchronosly on the main thread otherwise.
-  static func syncOnMainThread<T>(_ block: () -> T) -> T
+  static func syncOnMainThread<T>(_ block: () throws -> T) rethrows -> T
   {
     if isMainThread {
-      return block()
+      return try block()
     }
     else {
-      return DispatchQueue.main.sync {
-        block()
-      }
+      return try DispatchQueue.main.sync(execute: block)
     }
   }
 }
 
-extension DecodingError {
+extension DecodingError
+{
   var context: Context
   {
     switch self {
@@ -417,12 +414,13 @@ extension DecodingError {
 /// Similar to Objective-C's `@synchronized`
 /// - parameter object: Token object for the lock
 /// - parameter block: Block to execute inside the lock
-func synchronized<T>(_ object: NSObject, block: () -> T) -> T
+func synchronized<T>(_ object: NSObject, block: () throws -> T) rethrows -> T
 {
   objc_sync_enter(object)
-  let result = block()
-  objc_sync_exit(object)
-  return result
+  defer {
+    objc_sync_exit(object)
+  }
+  return try block()
 }
 
 // Swift 3 took away ++, but it still can be useful.
