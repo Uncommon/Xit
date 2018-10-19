@@ -85,7 +85,7 @@ class AccountsPrefsController: NSViewController
     guard let account = selectedAccount
     else { return }
     
-    addController.loadFields(from: account)
+    addController.loadFieldsForEdit(from: account)
     view.window?.beginSheet(addController.window!,
                             completionHandler: editAccountDone)
   }
@@ -101,51 +101,56 @@ class AccountsPrefsController: NSViewController
                password: addController.password,
                location: url as URL)
     updateActionButtons()
+    savePreferences()
   }
   
   func editAccountDone(response: NSApplication.ModalResponse)
   {
     guard response == NSApplication.ModalResponse.OK,
-          let url = self.addController.location,
           let account = selectedAccount
     else { return }
-    let user = addController.userName
-    let password = addController.password
-    
-    account.user = user
-    account.location = url
-    if let oldPassword = XTKeychain.findPassword(url: url, account: user),
-       oldPassword != password {
+    let oldUser = account.user
+    let newUser = addController.userName
+    let oldURL = account.location
+    let newURL = addController.location!  // addController does validation
+    let oldPassword = XTKeychain.shared.findPassword(url: oldURL, account: oldUser)
+    let newPassword = addController.password
+
+    if oldPassword != newPassword || oldUser != newUser || oldURL != newURL {
       do {
-        try XTKeychain.changePassword(url: url, account: user, password: password)
+        try XTKeychain.shared.changePassword(url: oldURL, newURL: newURL,
+                                             account: oldUser,
+                                             newAccount: newUser,
+                                             password: newPassword)
       }
       catch let error as NSError where error.code == errSecUserCanceled {
         return
       }
-      catch _ as XTKeychain.Error {
-        let alert = NSAlert()
-        
-        alert.messageText = """
+      catch PasswordError.invalidURL {
+        NSAlert.showMessage(window: view.window!, message: """
             The password could not be saved to the keychain because \
             the URL is not valid.
-            """
-        alert.beginSheetModal(for: view.window!, completionHandler: nil)
+            """)
       }
-      catch {
-        let alert = NSAlert()
-        
-        alert.messageText = """
+      catch let error {
+        print("changePassword failure: \(error)")
+        NSAlert.showMessage(window: view.window!, message: """
             The password could not be saved to the keychain because \
             an unexpected error occurred.
-            """
-        alert.beginSheetModal(for: view.window!, completionHandler: nil)
+            """)
       }
     }
+
+    account.user = newUser
+    account.location = newURL
     
+    // notify the service
+
     let columns = 0..<accountsTable.numberOfColumns
     
     accountsTable.reloadData(forRowIndexes: [accountsTable.selectedRow],
                              columnIndexes: IndexSet(integersIn: columns))
+    savePreferences()
   }
   
   func addAccount(type: AccountType,
@@ -155,7 +160,8 @@ class AccountsPrefsController: NSViewController
   {
     var passwordAction = PasswordAction.save
     
-    if let oldPassword = XTKeychain.findPassword(url: location, account: user) {
+    if let oldPassword = XTKeychain.shared.findPassword(url: location,
+                                                        account: user) {
       if oldPassword == password {
         passwordAction = .useExisting
       }
@@ -195,10 +201,10 @@ class AccountsPrefsController: NSViewController
     switch action {
       case .save:
         do {
-          try XTKeychain.savePassword(url: location, account: user,
-                                      password: password)
+          try XTKeychain.shared.savePassword(url: location, account: user,
+                                             password: password)
         }
-        catch _ as XTKeychain.Error {
+        catch _ as PasswordError {
           showError("The password could not be saved because the location " +
                     "field is incorrect.")
           return
@@ -210,9 +216,9 @@ class AccountsPrefsController: NSViewController
       
       case .change:
         do {
-          try XTKeychain.changePassword(url: location,
-                                        account: user,
-                                        password: password)
+          try XTKeychain.shared.changePassword(url: location, newURL: nil,
+                                               account: user, newAccount: nil,
+                                               password: password)
         }
         catch let error as NSError where error.code == errSecUserCanceled {
           return

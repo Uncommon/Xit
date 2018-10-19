@@ -81,8 +81,8 @@ class AddAccountController: SheetController
   {
     guard !userName.isEmpty,
           let location = location,
-          let newPassword = XTKeychain.findPassword(url: location,
-                                                    account: userName)
+          let newPassword = XTKeychain.shared.findPassword(url: location,
+                                                           account: userName)
     else { return }
     
     password = newPassword
@@ -107,11 +107,12 @@ class AddAccountController: SheetController
     acceptButton!.title = "Add"
   }
   
-  func loadFields(from account: Account)
+  func loadFieldsForEdit(from account: Account)
   {
     userField.stringValue = account.user
     locationField.stringValue = account.location.absoluteString
-    passwordField.stringValue = XTKeychain.findPassword(url: account.location,
+    passwordField.stringValue = XTKeychain.shared
+                                          .findPassword(url: account.location,
                                                         account: account.user)
                                 ?? ""
     acceptButton!.title = "Save"

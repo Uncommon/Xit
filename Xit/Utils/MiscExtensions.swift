@@ -61,6 +61,11 @@ extension NSError
   {
     return git_error_code(Int32(code))
   }
+  
+  convenience init(osStatus: OSStatus)
+  {
+    self.init(domain: NSOSStatusErrorDomain, code: Int(osStatus), userInfo: nil)
+  }
 }
 
 extension XMLElement
@@ -135,6 +140,19 @@ extension NSAlert
       if response == .alertFirstButtonReturn {
         action()
       }
+    }
+  }
+  
+  static func showMessage(window: NSWindow? = nil, message: String)
+  {
+    let alert = NSAlert()
+    
+    alert.messageText = message
+    if let window = window {
+      alert.beginSheetModal(for: window, completionHandler: nil)
+    }
+    else {
+      alert.runModal()
     }
   }
 }
