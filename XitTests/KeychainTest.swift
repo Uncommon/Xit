@@ -9,6 +9,13 @@ class KeychainTest: XCTestCase
   var keychain: Keychain!
   var passwordStorage: XTKeychain!
   var manager: AccountsManager!
+  
+  static let baseURLString = "https://api.github.com"
+  
+  let baseURL = URL(string: KeychainTest.baseURLString)!
+  let baseAccount = Account(type: .gitHub, user: "myself",
+                            location: URL(string: KeychainTest.baseURLString)!)
+  let basePassword = "string"
 
   override func setUp()
   {
@@ -75,19 +82,69 @@ class KeychainTest: XCTestCase
     }
   }
   
+  func addBaseAccount()
+  {
+    XCTAssertNoThrow(try manager.add(baseAccount, password: basePassword))
+  }
+  
   func testAddAccount()
   {
-    let url = URL(string: "https://api.github.com")!
-    let account = Account(type: .gitHub, user: "myself",
-                          location: url)
-    let password = "string"
-    
-    XCTAssertNoThrow(try manager.add(account, password: password))
-    dumpKeychain()
+    addBaseAccount()
     
     XCTAssertEqual(1, manager.accounts.count)
-    XCTAssertEqual(account, manager.accounts[0])
-    XCTAssertEqual(password, passwordStorage.find(host: url.host!, path: url.path,
-                                                  port: 80, account: account.user))
+    XCTAssertEqual(baseAccount, manager.accounts[0])
+    XCTAssertEqual(basePassword,
+                   passwordStorage.find(host: baseURL.host!, path: baseURL.path,
+                                        port: 80, account: baseAccount.user))
   }
+  
+  func assertModify(newAccount: Account, password: String?)
+  {
+    XCTAssertNoThrow(try manager.modify(oldAccount: baseAccount,
+                                        newAccount: newAccount,
+                                        newPassword: password))
+    XCTAssertEqual(password ?? basePassword,
+                   passwordStorage.find(host: newAccount.location.host!,
+                                        path: newAccount.location.path,
+                                        port: 80, account: newAccount.user))
+  }
+  
+  func testChangeAccountURL()
+  {
+    addBaseAccount()
+
+    let account2 = Account(type: baseAccount.type, user: baseAccount.user,
+                           location: URL(string: "https://other.github.com")!)
+    
+    assertModify(newAccount: account2, password: nil)
+  }
+  
+  func testChangeAccountUser()
+  {
+    addBaseAccount()
+    
+    let account2 = Account(type: baseAccount.type, user: "other",
+                           location: baseURL)
+    
+    assertModify(newAccount: account2, password: nil)
+  }
+  
+  func testChangePassword()
+  {
+    addBaseAccount()
+    
+    assertModify(newAccount: baseAccount, password: "other password")
+  }
+  
+  func testChangeUserAndPassword()
+  {
+    addBaseAccount()
+    
+    let account2 = Account(type: baseAccount.type, user: "other",
+                           location: baseURL)
+    
+    assertModify(newAccount: account2, password: "other password")
+  }
+  
+  // No delete test: deleting an account does not delete the keychain item
 }

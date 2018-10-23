@@ -105,6 +105,34 @@ class AccountsManager: NSObject
     accounts.append(account)
   }
   
+  func delete(account: Account)
+  {
+    if let index = accounts.firstIndex(where: { $0 == account }) {
+      accounts.remove(at: index)
+    }
+  }
+  
+  func modify(oldAccount: Account,
+              newAccount: Account, newPassword: String?) throws
+  {
+    guard let index = accounts.firstIndex(where: { $0 == oldAccount })
+    else { return }
+    let oldPassword = passwordStorage.find(url: oldAccount.location,
+                                           account: oldAccount.user)
+    let changePassword = newPassword != nil && newPassword != oldPassword
+    
+    if newAccount != oldAccount || changePassword {
+      if let password = newPassword ?? oldPassword {
+        try passwordStorage.change(url: oldAccount.location,
+                                   newURL: newAccount.location,
+                                   account: oldAccount.user,
+                                   newAccount: newAccount.user,
+                                   password: password)
+      }
+    }
+    accounts[index] = newAccount
+  }
+  
   func readAccounts()
   {
     accounts = defaults.accounts
