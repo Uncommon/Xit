@@ -113,12 +113,12 @@ class AccountsPrefsController: NSViewController
     let newUser = addController.userName
     let oldURL = account.location
     let newURL = addController.location!  // addController does validation
-    let oldPassword = XTKeychain.shared.findPassword(url: oldURL, account: oldUser)
+    let oldPassword = XTKeychain.shared.find(url: oldURL, account: oldUser)
     let newPassword = addController.password
 
     if oldPassword != newPassword || oldUser != newUser || oldURL != newURL {
       do {
-        try XTKeychain.shared.changePassword(url: oldURL, newURL: newURL,
+        try XTKeychain.shared.change(url: oldURL, newURL: newURL,
                                              account: oldUser,
                                              newAccount: newUser,
                                              password: newPassword)
@@ -160,7 +160,7 @@ class AccountsPrefsController: NSViewController
   {
     var passwordAction = PasswordAction.save
     
-    if let oldPassword = XTKeychain.shared.findPassword(url: location,
+    if let oldPassword = XTKeychain.shared.find(url: location,
                                                         account: user) {
       if oldPassword == password {
         passwordAction = .useExisting
@@ -201,8 +201,8 @@ class AccountsPrefsController: NSViewController
     switch action {
       case .save:
         do {
-          try XTKeychain.shared.savePassword(url: location, account: user,
-                                             password: password)
+          try XTKeychain.shared.save(url: location, account: user,
+                                     password: password)
         }
         catch _ as PasswordError {
           showError("The password could not be saved because the location " +
@@ -216,9 +216,9 @@ class AccountsPrefsController: NSViewController
       
       case .change:
         do {
-          try XTKeychain.shared.changePassword(url: location, newURL: nil,
-                                               account: user, newAccount: nil,
-                                               password: password)
+          try XTKeychain.shared.change(url: location, newURL: nil,
+                                       account: user, newAccount: nil,
+                                       password: password)
         }
         catch let error as NSError where error.code == errSecUserCanceled {
           return
@@ -232,10 +232,16 @@ class AccountsPrefsController: NSViewController
         break
     }
     
-    AccountsManager.manager.add(Account(type: type,
-                                        user: user,
-                                        location: location))
-    accountsTable.reloadData()
+    do {
+      try AccountsManager.manager.add(Account(type: type,
+                                              user: user,
+                                              location: location),
+                                      password: password)
+      accountsTable.reloadData()
+    }
+    catch {
+      // ...
+    }
   }
   
   @IBAction func removeAccount(_ sender: AnyObject)

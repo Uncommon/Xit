@@ -84,8 +84,8 @@ class Services
       return api
     }
     else {
-      guard let password = XTKeychain.shared.findPassword(url: account.location,
-                                                          account: account.user)
+      guard let password = XTKeychain.shared.find(url: account.location,
+                                                  account: account.user)
       else {
         NSLog("No password found for \(key)")
         return nil
@@ -110,8 +110,8 @@ class Services
       return api
     }
     else {
-      guard let password = XTKeychain.shared.findPassword(url: account.location,
-                                                          account: account.user)
+      guard let password = XTKeychain.shared.find(url: account.location,
+                                                  account: account.user)
       else {
         NSLog("No password found for \(key)")
         return nil
@@ -162,6 +162,8 @@ func == (a: Services.Status, b: Services.Status) -> Bool
 protocol ServiceAPI
 {
   var type: AccountType { get }
+  
+  //func accountWillUpdate(newUser: String, newLocation: URL, newPassword: String)
 }
 
 

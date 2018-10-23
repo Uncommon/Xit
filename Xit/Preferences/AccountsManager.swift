@@ -2,8 +2,8 @@ import Cocoa
 
 
 /// Stores information about an account for an online service.
-/// Passwords are stored in the keychain. This would have been a `struct` but
-/// we need it to be `NSObject` compatible.
+/// Passwords are stored in the keychain.
+/// This would have been a `struct` but we need it to be `NSObject` compatible.
 class Account: NSObject
 {
   var type: AccountType
@@ -22,9 +22,9 @@ class Account: NSObject
   {
     let accountDict = NSMutableDictionary(capacity: 3)
     
-    accountDict[Account.Keys.type] = type.name
-    accountDict[Account.Keys.user] = user
-    accountDict[Account.Keys.location] = location.absoluteString
+    accountDict[Keys.type] = type.name
+    accountDict[Keys.user] = user
+    accountDict[Keys.location] = location.absoluteString
     return accountDict
   }
 
@@ -47,6 +47,14 @@ class Account: NSObject
     
     self.init(type: type, user: user, location: url)
   }
+  
+  override func isEqual(_ object: Any?) -> Bool
+  {
+    if let other = object as? Account {
+      return self == other
+    }
+    return false
+  }
 }
 
 func == (left: Account, right: Account) -> Bool
@@ -61,10 +69,15 @@ class AccountsManager: NSObject
 {
   static let manager = AccountsManager()
   
+  let defaults: UserDefaults
+  let passwordStorage: PasswordStorage
+  
   var accounts: [Account] = []
   
-  override init()
+  init(defaults: UserDefaults? = nil, passwordStorage: PasswordStorage? = nil)
   {
+    self.defaults = defaults ?? .standard
+    self.passwordStorage = passwordStorage ?? XTKeychain.shared
     super.init()
     
     readAccounts()
@@ -75,34 +88,30 @@ class AccountsManager: NSObject
     return accounts.filter { $0.type == type }
   }
   
-  func add(_ account: Account)
+  func add(_ account: Account, password: String) throws
   {
+    if let existingPassword = passwordStorage.find(url: account.location,
+                                                   account: account.user) {
+      if existingPassword != password {
+        try passwordStorage.change(url: account.location, newURL: nil,
+                                   account: account.user, newAccount: nil,
+                                   password: password)
+      }
+    }
+    else {
+      try passwordStorage.save(url: account.location, account: account.user,
+                               password: password)
+    }
     accounts.append(account)
   }
   
   func readAccounts()
   {
-    guard let storedAccounts =
-      UserDefaults.standard.array(forKey: "accounts")
-        as? [[String: AnyObject]]
-    else { return }
-    
-    accounts.removeAll()
-    for accountDict in storedAccounts {
-      if let account = Account(dict: accountDict) {
-        accounts.append(account)
-      }
-      else {
-        NSLog("Couldn't read account: \(accountDict.description)")
-      }
-    }
+    accounts = defaults.accounts
   }
   
   func saveAccounts()
   {
-    let accountsData = accounts.map { $0.plistDictionary }
-    
-    UserDefaults.standard.setValue(accountsData,
-                                   forKey: "accounts")
+    defaults.accounts = accounts
   }
 }
