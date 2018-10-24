@@ -9,7 +9,7 @@ Note that Objective Git needs the `objective-git/script/bootstrap` script to be 
 
 ## Finding tasks
 
-If you're looking for a starter task, several issues have been marked "small". These should provide a relatively easy intro to the code base.
+If you're looking for a starter task, several issues have been marked "good first issue". These should provide a relatively easy intro to the code base.
 
 For larger tasks, there are two options:
 
