@@ -1,19 +1,6 @@
 import Foundation
 
 
-protocol XTOutlineViewDelegate: AnyObject
-{
-  /// The user has clicked on the selected row.
-  func outlineViewClickedSelectedRow(_ outline: NSOutlineView)
-}
-
-protocol XTTableViewDelegate: AnyObject
-{
-  /// The user has clicked on the selected row.
-  func tableViewClickedSelectedRow(_ tableView: NSTableView)
-}
-
-
 extension NSColor
 {
   var invertingBrightness: NSColor
@@ -46,7 +33,8 @@ extension NSColor
   
   func withHue(_ hue: CGFloat) -> NSColor
   {
-    let converted = usingColorSpace(.deviceRGB)!
+    guard let converted = usingColorSpace(.deviceRGB)
+    else { return self }
 
     return NSColor(deviceHue: hue,
                    saturation: converted.saturationComponent,
@@ -253,10 +241,7 @@ extension NSTreeNode
     }
     mutableChildren.add(node)
   }
-}
 
-extension NSTreeNode
-{
   func dump(_ level: Int = 0)
   {
     if let myObject = representedObject as? CustomStringConvertible {
@@ -403,12 +388,8 @@ extension Thread
   /// synchronosly on the main thread otherwise.
   static func syncOnMainThread<T>(_ block: () throws -> T) rethrows -> T
   {
-    if isMainThread {
-      return try block()
-    }
-    else {
-      return try DispatchQueue.main.sync(execute: block)
-    }
+    return isMainThread ? try block()
+                        : try DispatchQueue.main.sync(execute: block)
   }
 }
 
@@ -417,14 +398,14 @@ extension DecodingError
   var context: Context
   {
     switch self {
-    case .dataCorrupted(let context):
-      return context
-    case .keyNotFound(_, let context):
-      return context
-    case .typeMismatch(_, let context):
-      return context
-    case .valueNotFound(_, let context):
-      return context
+      case .dataCorrupted(let context):
+        return context
+      case .keyNotFound(_, let context):
+        return context
+      case .typeMismatch(_, let context):
+        return context
+      case .valueNotFound(_, let context):
+        return context
     }
   }
 }

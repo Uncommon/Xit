@@ -1,5 +1,11 @@
 import Foundation
 
+protocol XTOutlineViewDelegate: AnyObject
+{
+  /// The user has clicked on the selected row.
+  func outlineViewClickedSelectedRow(_ outline: NSOutlineView)
+}
+
 @objc(XTSideBarOutlineView)
 class SideBarOutlineView: ContextMenuOutlineView
 {
