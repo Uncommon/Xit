@@ -32,10 +32,13 @@ class WorkspaceFileListController: StagingFileListController
   @IBAction
   override func stage(_ sender: Any)
   {
-    guard let change = targetChange(sender: sender)
+    let changes = targetChanges(sender: sender)
+    guard !changes.isEmpty
     else { return }
     
-    _ = try? repoController.repository.stage(file: change.gitPath)
+    for change in changes {
+      _ = try? repoController.repository.stage(file: change.gitPath)
+    }
     repoController.postIndexNotification()
   }
   

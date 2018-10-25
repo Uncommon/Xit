@@ -129,7 +129,6 @@ class FileListController: NSViewController
           }
         }
     }
-    
   }
   
   @IBAction func showIgnored(_ sender: Any)
@@ -204,13 +203,8 @@ class FileListController: NSViewController
     return viewDataSource.fileChange(at: row)
   }
   
-  /// Returns the file change that is the target of the current action,
+  /// Returns the file changes that are the target of the current action,
   /// depending on how the command was selected
-  func targetChange(sender: Any) -> FileChange?
-  {
-    return buttonChange(sender: sender) ?? clickedChange ?? selectedChange
-  }
-  
   func targetChanges(sender: Any? = nil) -> [FileChange]
   {
     if let single = buttonChange(sender: sender) ?? clickedChange {

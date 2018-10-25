@@ -24,10 +24,13 @@ class StagedFileListController: StagingFileListController
   @IBAction
   override func unstage(_ sender: Any)
   {
-    guard let change = targetChange(sender: sender)
+    let changes = targetChanges(sender: sender)
+    guard !changes.isEmpty
     else { return }
     
-    _ = try? repoController.repository.unstage(file: change.gitPath)
+    for change in changes {
+      _ = try? repoController.repository.unstage(file: change.gitPath)
+    }
     repoController.postIndexNotification()
   }
 }

@@ -141,6 +141,10 @@ class FileViewController: NSViewController
   {
     return activeFileListController.selectedChange
   }
+  var selectedChanges: [FileChange]
+  {
+    return activeFileListController.selectedChanges
+  }
   
   weak var repo: XTRepository?
   
@@ -337,16 +341,30 @@ class FileViewController: NSViewController
     guard !contentController.isLoaded || force
     else { return }
     
+    let changes = selectedChanges
+    
+    switch changes.count {
+      case 0:
+        clearPreviews()
+        return
+      case 2:
+        clearPreviews()
+        // show multiple selection notice
+        return
+      default:
+        break
+    }
+    
     guard let repo = repo,
           let index = activeFileList.selectedRowIndexes.first,
           let selectedItem = activeFileList.item(atRow: index),
-          let selectedChange = self.selectedChange,
           let controller = repoController,
           let repoSelection = controller.selection
     else {
       clearPreviews()
       return
     }
+    let selectedChange = changes.first!
     let staging = repoSelection is StagingSelection
     let staged = activeFileList === stagedListController.outlineView
     let stagingType: StagingType = staging ? (staged ? .index : .workspace)
