@@ -131,11 +131,15 @@ extension NSAlert
     }
   }
   
-  static func showMessage(window: NSWindow? = nil, message: String)
+  static func showMessage(window: NSWindow? = nil, message: String,
+                          infoText: String? = nil)
   {
     let alert = NSAlert()
     
     alert.messageText = message
+    if let infoText = infoText {
+      alert.informativeText = infoText
+    }
     if let window = window {
       alert.beginSheetModal(for: window, completionHandler: nil)
     }

@@ -118,10 +118,13 @@ class AccountsPrefsController: NSViewController
 
     if oldPassword != newPassword || oldUser != newUser || oldURL != newURL {
       do {
-        try XTKeychain.shared.change(url: oldURL, newURL: newURL,
-                                             account: oldUser,
-                                             newAccount: newUser,
-                                             password: newPassword)
+        let newAccount = Account(type: account.type,
+                                 user: newUser,
+                                 location: newURL)
+        
+        try AccountsManager.manager.modify(oldAccount: account,
+                                           newAccount: newAccount,
+                                           newPassword: newPassword)
       }
       catch let error as NSError where error.code == errSecUserCanceled {
         return
@@ -158,89 +161,31 @@ class AccountsPrefsController: NSViewController
                   password: String,
                   location: URL)
   {
-    var passwordAction = PasswordAction.save
-    
-    if let oldPassword = XTKeychain.shared.find(url: location,
-                                                        account: user) {
-      if oldPassword == password {
-        passwordAction = .useExisting
-      }
-      else {
-        let alert = NSAlert()
-        
-        alert.messageText = """
-            There is already a password for that account in the keychain. \
-            Do you want to change it, or use the existing password?
-            """
-        alert.addButton(withTitle: "Change")
-        alert.addButton(withTitle: "Use existing")
-        alert.addButton(withTitle: "Cancel")
-        alert.beginSheetModal(for: view.window!) {
-          (response) in
-          switch response {
-            case NSApplication.ModalResponse.alertFirstButtonReturn:
-              self.finishAddAccount(action: .change, type: type, user: user,
-                                    password: password, location: location)
-            case NSApplication.ModalResponse.alertSecondButtonReturn:
-              self.finishAddAccount(action: .useExisting, type: type, user: user,
-                                    password: "", location: location)
-            default:
-              break
-          }
-        }
-        return
-      }
-    }
-    finishAddAccount(action: passwordAction, type: type, user: user,
-                     password: password, location: location)
-  }
-  
-  func finishAddAccount(action: PasswordAction, type: AccountType,
-                        user: String, password: String, location: URL)
-  {
-    switch action {
-      case .save:
-        do {
-          try XTKeychain.shared.save(url: location, account: user,
-                                     password: password)
-        }
-        catch _ as PasswordError {
-          showError("The password could not be saved because the location " +
-                    "field is incorrect.")
-          return
-        }
-        catch _ as NSError {
-          showError("The password could not be saved to the Keychain.")
-          return
-        }
-      
-      case .change:
-        do {
-          try XTKeychain.shared.change(url: location, newURL: nil,
-                                       account: user, newAccount: nil,
-                                       password: password)
-        }
-        catch let error as NSError where error.code == errSecUserCanceled {
-          return
-        }
-        catch {
-          showError("The password could not be updated in the Keychain.")
-          return
-        }
-      
-      default:
-        break
-    }
+    let account = Account(type: type, user: user, location: location)
     
     do {
-      try AccountsManager.manager.add(Account(type: type,
-                                              user: user,
-                                              location: location),
-                                      password: password)
+      try AccountsManager.manager.add(account, password: password)
       accountsTable.reloadData()
     }
-    catch {
-      // ...
+    catch let error as PasswordError {
+      let errorString: String
+      
+      switch error {
+        case .invalidName:
+          errorString = "The name is not valid."
+        case .invalidURL:
+          errorString = "The URL is not valid."
+        default:
+          errorString = "An unexpected error occurred."
+      }
+      NSAlert.showMessage(window: view.window!,
+                          message: "The password could not be saved.",
+                          infoText: errorString)
+    }
+    catch let error as NSError {
+      NSAlert.showMessage(window: view.window!,
+                          message: "The password could not be saved.",
+                          infoText: error.localizedDescription)
     }
   }
   
