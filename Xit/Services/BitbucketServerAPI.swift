@@ -269,16 +269,16 @@ class BitbucketServerAPI: BasicAuthService, ServiceAPI
     }
   }
   
-  init?(user: String, password: String, baseURL: String?)
+  init?(account: Account, password: String)
   {
-    guard let baseURL = baseURL,
-          var fullBaseURL = URLComponents(string: baseURL)
+    guard var fullBaseURL = URLComponents(url: account.location,
+                                          resolvingAgainstBaseURL: false)
     else { return nil }
     
     fullBaseURL.path = BitbucketServerAPI.rootPath
     
-    super.init(user: user, password: password, baseURL: fullBaseURL.string,
-               authenticationPath: "users/\(user)")
+    super.init(account: account, password: password,
+               authenticationPath: "users/\(account.user)")
     
     let userTransformer: (Entity<Data>) throws -> BitbucketServer.User =
           BitbucketServerAPI.transformer

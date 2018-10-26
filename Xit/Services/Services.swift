@@ -23,6 +23,11 @@ extension Siesta.Resource
   }
 }
 
+protocol AccountService
+{
+  func accountUpdated(oldAccount: Account, newAccount: Account)
+}
+
 /// Manages and provides access to all service API instances.
 class Services
 {
@@ -36,15 +41,17 @@ class Services
     case failed(Error?)
   }
   
+  typealias RepositoryService = Service & AccountService
+  
   static let shared = Services()
   
   private var teamCityServices: [String: TeamCityAPI] = [:]
   private var bitbucketServices: [String: BitbucketServerAPI] = [:]
   
-  var allServices: [Service]
+  var allServices: [RepositoryService]
   {
-    let tcServices: [Service] = Array(teamCityServices.values)
-    let bbServices: [Service] = Array(bitbucketServices.values)
+    let tcServices: [RepositoryService] = Array(teamCityServices.values)
+    let bbServices: [RepositoryService] = Array(bitbucketServices.values)
     
     return tcServices + bbServices
   }
@@ -74,6 +81,14 @@ class Services
     }
   }
   
+  /// Notifies all services that an account has been updated
+  func accountUpdated(oldAccount: Account, newAccount: Account)
+  {
+    for service in allServices {
+      service.accountUpdated(oldAccount: oldAccount, newAccount: newAccount)
+    }
+  }
+
   /// Returns the TeamCity service object for the given account, or nil if
   /// the password cannot be found.
   func teamCityAPI(_ account: Account) -> TeamCityAPI?
@@ -91,9 +106,7 @@ class Services
         return nil
       }
       
-      guard let api = TeamCityAPI(user: account.user,
-                                    password: password,
-                                    baseURL: account.location.absoluteString)
+      guard let api = TeamCityAPI(account: account, password: password)
       else { return nil }
       
       api.attemptAuthentication()
@@ -117,9 +130,7 @@ class Services
         return nil
       }
       
-      guard let api = BitbucketServerAPI(user: account.user,
-                                   password: password,
-                                   baseURL: account.location.absoluteString)
+      guard let api = BitbucketServerAPI(account: account, password: password)
       else { return nil }
       
       api.attemptAuthentication()
@@ -162,9 +173,8 @@ func == (a: Services.Status, b: Services.Status) -> Bool
 protocol ServiceAPI
 {
   var type: AccountType { get }
-  
-  //func accountWillUpdate(newUser: String, newLocation: URL, newPassword: String)
 }
+
 
 public func XMLResponseTransformer(
     _ transformErrors: Bool = true) -> Siesta.ResponseTransformer

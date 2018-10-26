@@ -221,16 +221,10 @@ class AccountsPrefsController: NSViewController
     switch account.type {
       
       case .teamCity:
-        guard let api = Services.shared.teamCityAPI(account)
-        else { break }
-      
-        api.attemptAuthentication()
+        Services.shared.teamCityAPI(account)?.attemptAuthentication()
       
       case .bitbucketServer:
-        guard let api = Services.shared.bitbucketServerAPI(account)
-        else { break }
-      
-        api.attemptAuthentication()
+        Services.shared.bitbucketServerAPI(account)?.attemptAuthentication()
       
       default:
         break

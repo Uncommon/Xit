@@ -27,8 +27,18 @@ extension PasswordStorage
     else { return nil }
     
     return find(host: host, path: url.path,
-                port: (url as NSURL).port?.uint16Value ?? 80,
+                port: UInt16(url.port ?? 80),
                 account: account)
+  }
+  
+  func find(account: Account) -> String?
+  {
+    guard let host = account.location.host
+    else { return nil }
+    
+    return find(host: host, path: account.location.path,
+                port: UInt16(account.location.port ?? 80),
+                account: account.user)
   }
   
   func save(url: URL, account: String, password: String) throws

@@ -6,6 +6,7 @@ class BasicAuthService: Siesta.Service
 {
   static let AuthenticationStatusChangedNotification = "AuthStatusChanged"
   
+  var account: Account
   var authenticationStatus: Services.Status
   {
     didSet
@@ -18,18 +19,27 @@ class BasicAuthService: Siesta.Service
   }
   private let authenticationPath: String
   
-  init?(user: String, password: String,
-        baseURL: String?,
-        authenticationPath: String)
+  init?(account: Account, password: String, authenticationPath: String)
   {
+    self.account = account
     self.authenticationStatus = .notStarted
     self.authenticationPath = authenticationPath
     
     // Exclude the JSON transformer because we'll use JSONDecoder instead
-    super.init(baseURL: baseURL, standardTransformers: [.text, .image])
+    super.init(baseURL: account.location, standardTransformers: [.text, .image])
     
-    if !updateAuthentication(user, password: password) {
+    if !updateAuthentication(account.user, password: password) {
       return nil
+    }
+    configure {
+      (builder) in
+      builder.decorateRequests {
+        (resource, request) in
+        request.onFailure {
+          (error) in
+          NSLog("Request error: \(error.userMessage) \(resource.url)")
+        }
+      }
     }
   }
   
@@ -37,24 +47,17 @@ class BasicAuthService: Siesta.Service
   func updateAuthentication(_ user: String, password: String) -> Bool
   {
     if let data = "\(user):\(password)"
-      .data(using: String.Encoding.utf8)?
-      .base64EncodedString(options: []) {
+                  .data(using: String.Encoding.utf8)?
+                  .base64EncodedString(options: []) {
       configure {
         (builder) in
         builder.headers["Authorization"] = "Basic \(data)"
-        builder.decorateRequests {
-          (resource, request) in
-          request.onFailure {
-            (error) in
-            NSLog("Request error: \(error.userMessage) \(resource.url)")
-          }
-        }
       }
       return true
     }
     else {
       NSLog("Couldn't construct auth header for " +
-        "\(user) @ \(String(describing: baseURL))")
+            "\(user) @ \(String(describing: baseURL))")
       return false
     }
   }
@@ -105,5 +108,22 @@ class BasicAuthService: Siesta.Service
   // For subclasses to override when more data needs to be downloaded.
   func didAuthenticate(responseResource: Resource)
   {
+  }
+}
+
+extension BasicAuthService: AccountService
+{
+  func accountUpdated(oldAccount: Account, newAccount: Account)
+  {
+    guard oldAccount == account
+    else { return }
+    guard let password = XTKeychain.shared.find(account: newAccount)
+    else {
+      authenticationStatus = .unknown
+      return
+    }
+    
+    _ = updateAuthentication(newAccount.user, password: password)
+    attemptAuthentication()
   }
 }
