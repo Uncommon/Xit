@@ -15,8 +15,21 @@ class AccountsPrefsController: NSViewController
   @IBOutlet var addController: AddAccountController!
   @IBOutlet weak var accountsTable: NSTableView!
   @IBOutlet weak var refreshButton: NSButton!
+  @IBOutlet weak var editButton: NSButton!
+  @IBOutlet weak var deleteButton: NSButton!
   
   var authStatusObserver: NSObjectProtocol?
+  
+  var selectedAccount: Account?
+  {
+    let manager = AccountsManager.manager
+    guard case let selectedRow = accountsTable.selectedRow,
+          selectedRow >= 0,
+          selectedRow < manager.accounts.count
+    else { return nil }
+    
+    return manager.accounts[selectedRow]
+  }
   
   override func viewDidLoad()
   {
@@ -33,7 +46,7 @@ class AccountsPrefsController: NSViewController
       [weak self] (_) in
       self?.accountsTable.reloadData()
     }
-    updateRefreshButton()
+    updateActionButtons()
   }
   
   deinit
@@ -43,9 +56,13 @@ class AccountsPrefsController: NSViewController
     authStatusObserver.map { center.removeObserver($0) }
   }
   
-  func updateRefreshButton()
+  func updateActionButtons()
   {
-    refreshButton.isEnabled = accountsTable.selectedRow != -1
+    let enabled = accountsTable.selectedRow != -1
+    
+    deleteButton.isEnabled = enabled
+    refreshButton.isEnabled = enabled
+    editButton.isEnabled = enabled
   }
   
   func showError(_ message: String)
@@ -58,23 +75,85 @@ class AccountsPrefsController: NSViewController
   
   @IBAction func addAccount(_ sender: AnyObject)
   {
-    addController.resetFields()
+    addController.resetForAdd()
     view.window?.beginSheet(addController.window!,
                             completionHandler: addAccountDone)
   }
   
-  func addAccountDone(response: NSApplication.ModalResponse)
+  @IBAction func editAccount(_ sender: Any)
   {
-    guard response == NSApplication.ModalResponse.OK
-    else { return }
-    guard let url = self.addController.location
+    guard let account = selectedAccount
     else { return }
     
-    self.addAccount(type: self.addController.accountType,
-                    user: self.addController.userName,
-                    password: self.addController.password,
-                    location: url as URL)
-    self.updateRefreshButton()
+    addController.loadFieldsForEdit(from: account)
+    view.window?.beginSheet(addController.window!,
+                            completionHandler: editAccountDone)
+  }
+
+  func addAccountDone(response: NSApplication.ModalResponse)
+  {
+    guard response == NSApplication.ModalResponse.OK,
+          let url = addController.location
+    else { return }
+    
+    addAccount(type: addController.accountType,
+               user: addController.userName,
+               password: addController.password,
+               location: url as URL)
+    updateActionButtons()
+    savePreferences()
+  }
+  
+  func editAccountDone(response: NSApplication.ModalResponse)
+  {
+    guard response == NSApplication.ModalResponse.OK,
+          let account = selectedAccount
+    else { return }
+    let oldUser = account.user
+    let newUser = addController.userName
+    let oldURL = account.location
+    let newURL = addController.location!  // addController does validation
+    let oldPassword = XTKeychain.shared.find(url: oldURL, account: oldUser)
+    let newPassword = addController.password
+
+    if oldPassword != newPassword || oldUser != newUser || oldURL != newURL {
+      do {
+        let newAccount = Account(type: account.type,
+                                 user: newUser,
+                                 location: newURL)
+        
+        try AccountsManager.manager.modify(oldAccount: account,
+                                           newAccount: newAccount,
+                                           newPassword: newPassword)
+      }
+      catch let error as NSError where error.code == errSecUserCanceled {
+        return
+      }
+      catch PasswordError.invalidURL {
+        NSAlert.showMessage(window: view.window!, message: """
+            The password could not be saved to the keychain because \
+            the URL is not valid.
+            """)
+      }
+      catch let error {
+        print("changePassword failure: \(error)")
+        NSAlert.showMessage(window: view.window!, message: """
+            The password could not be saved to the keychain because \
+            an unexpected error occurred.
+            """)
+      }
+    }
+
+    account.user = newUser
+    account.location = newURL
+    
+    // notify the service
+
+    let columns = 0..<accountsTable.numberOfColumns
+    
+    accountsTable.reloadData(forRowIndexes: [accountsTable.selectedRow],
+                             columnIndexes: IndexSet(integersIn: columns))
+    savePreferences()
   }
   
   func addAccount(type: AccountType,
@@ -82,79 +161,32 @@ class AccountsPrefsController: NSViewController
                   password: String,
                   location: URL)
   {
-    var passwordAction = PasswordAction.save
+    let account = Account(type: type, user: user, location: location)
     
-    if let oldPassword = XTKeychain.findPassword(url: location, account: user) {
-      if oldPassword == password {
-        passwordAction = .useExisting
-      }
-      else {
-        let alert = NSAlert()
-        
-        alert.messageText =
-            "There is already a password for that account in the keychain. " +
-            "Do you want to change it, or use the existing password?"
-        alert.addButton(withTitle: "Change")
-        alert.addButton(withTitle: "Use existing")
-        alert.addButton(withTitle: "Cancel")
-        alert.beginSheetModal(for: view.window!) {
-          (response) in
-          switch response {
-            case NSApplication.ModalResponse.alertFirstButtonReturn:
-              self.finishAddAccount(action: .change, type: type, user: user,
-                                    password: password, location: location)
-            case NSApplication.ModalResponse.alertSecondButtonReturn:
-              self.finishAddAccount(action: .useExisting, type: type, user: user,
-                                    password: "", location: location)
-            default:
-              break
-          }
-        }
-        return
-      }
+    do {
+      try AccountsManager.manager.add(account, password: password)
+      accountsTable.reloadData()
     }
-    finishAddAccount(action: passwordAction, type: type, user: user,
-                     password: password, location: location)
-  }
-  
-  func finishAddAccount(action: PasswordAction, type: AccountType,
-                        user: String, password: String, location: URL)
-  {
-    switch action {
-      case .save:
-        do {
-          try XTKeychain.savePassword(url: location, account: user,
-                                      password: password)
-        }
-        catch _ as XTKeychain.Error {
-          showError("The password could not be saved because the location " +
-                    "field is incorrect.")
-          return
-        }
-        catch _ as NSError {
-          showError("The password could not be saved to the Keychain.")
-          return
-        }
+    catch let error as PasswordError {
+      let errorString: String
       
-      case .change:
-        do {
-          try XTKeychain.changePassword(url: location,
-                                        account: user,
-                                        password: password)
-        }
-        catch _ as NSError {
-          showError("The password could not be saved to the Keychain.")
-          return
-        }
-      
-      default:
-        break
+      switch error {
+        case .invalidName:
+          errorString = "The name is not valid."
+        case .invalidURL:
+          errorString = "The URL is not valid."
+        default:
+          errorString = "An unexpected error occurred."
+      }
+      NSAlert.showMessage(window: view.window!,
+                          message: "The password could not be saved.",
+                          infoText: errorString)
     }
-    
-    AccountsManager.manager.add(Account(type: type,
-                                  user: user,
-                                  location: location))
-    accountsTable.reloadData()
+    catch let error as NSError {
+      NSAlert.showMessage(window: view.window!,
+                          message: "The password could not be saved.",
+                          infoText: error.localizedDescription)
+    }
   }
   
   @IBAction func removeAccount(_ sender: AnyObject)
@@ -177,31 +209,22 @@ class AccountsPrefsController: NSViewController
       
       AccountsManager.manager.accounts.remove(at: self.accountsTable.selectedRow)
       self.accountsTable.reloadData()
-      self.updateRefreshButton()
+      self.updateActionButtons()
     }
   }
   
   @IBAction func refreshAccount(_ sender: Any)
   {
-    let manager = AccountsManager.manager
-    let selectedRow = accountsTable.selectedRow
-    guard selectedRow >= 0 && selectedRow < manager.accounts.count
+    guard let account = selectedAccount
     else { return }
-    let account = manager.accounts[selectedRow]
     
     switch account.type {
       
       case .teamCity:
-        guard let api = Services.shared.teamCityAPI(account)
-        else { break }
-      
-        api.attemptAuthentication()
+        Services.shared.teamCityAPI(account)?.attemptAuthentication()
       
       case .bitbucketServer:
-        guard let api = Services.shared.bitbucketServerAPI(account)
-        else { break }
-      
-        api.attemptAuthentication()
+        Services.shared.bitbucketServerAPI(account)?.attemptAuthentication()
       
       default:
         break
@@ -331,7 +354,7 @@ extension AccountsPrefsController: NSTableViewDelegate
   
   func tableViewSelectionDidChange(_ notification: Notification)
   {
-    updateRefreshButton()
+    updateActionButtons()
   }
 }
 

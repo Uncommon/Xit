@@ -1,19 +1,6 @@
 import Foundation
 
 
-protocol XTOutlineViewDelegate: AnyObject
-{
-  /// The user has clicked on the selected row.
-  func outlineViewClickedSelectedRow(_ outline: NSOutlineView)
-}
-
-protocol XTTableViewDelegate: AnyObject
-{
-  /// The user has clicked on the selected row.
-  func tableViewClickedSelectedRow(_ tableView: NSTableView)
-}
-
-
 extension NSColor
 {
   var invertingBrightness: NSColor
@@ -46,7 +33,8 @@ extension NSColor
   
   func withHue(_ hue: CGFloat) -> NSColor
   {
-    let converted = usingColorSpace(.deviceRGB)!
+    guard let converted = usingColorSpace(.deviceRGB)
+    else { return self }
 
     return NSColor(deviceHue: hue,
                    saturation: converted.saturationComponent,
@@ -60,6 +48,11 @@ extension NSError
   var gitError: git_error_code
   {
     return git_error_code(Int32(code))
+  }
+  
+  convenience init(osStatus: OSStatus)
+  {
+    self.init(domain: NSOSStatusErrorDomain, code: Int(osStatus), userInfo: nil)
   }
 }
 
@@ -135,6 +128,23 @@ extension NSAlert
       if response == .alertFirstButtonReturn {
         action()
       }
+    }
+  }
+  
+  static func showMessage(window: NSWindow? = nil, message: String,
+                          infoText: String? = nil)
+  {
+    let alert = NSAlert()
+    
+    alert.messageText = message
+    if let infoText = infoText {
+      alert.informativeText = infoText
+    }
+    if let window = window {
+      alert.beginSheetModal(for: window, completionHandler: nil)
+    }
+    else {
+      alert.runModal()
     }
   }
 }
@@ -235,10 +245,7 @@ extension NSTreeNode
     }
     mutableChildren.add(node)
   }
-}
 
-extension NSTreeNode
-{
   func dump(_ level: Int = 0)
   {
     if let myObject = representedObject as? CustomStringConvertible {
@@ -377,39 +384,32 @@ extension Thread
       block()
     }
     else {
-      DispatchQueue.main.async {
-        block()
-      }
+      DispatchQueue.main.async(execute: block)
     }
   }
   
   /// Performs the block immediately if this is the main thread, or
   /// synchronosly on the main thread otherwise.
-  static func syncOnMainThread<T>(_ block: () -> T) -> T
+  static func syncOnMainThread<T>(_ block: () throws -> T) rethrows -> T
   {
-    if isMainThread {
-      return block()
-    }
-    else {
-      return DispatchQueue.main.sync {
-        block()
-      }
-    }
+    return isMainThread ? try block()
+                        : try DispatchQueue.main.sync(execute: block)
   }
 }
 
-extension DecodingError {
+extension DecodingError
+{
   var context: Context
   {
     switch self {
-    case .dataCorrupted(let context):
-      return context
-    case .keyNotFound(_, let context):
-      return context
-    case .typeMismatch(_, let context):
-      return context
-    case .valueNotFound(_, let context):
-      return context
+      case .dataCorrupted(let context):
+        return context
+      case .keyNotFound(_, let context):
+        return context
+      case .typeMismatch(_, let context):
+        return context
+      case .valueNotFound(_, let context):
+        return context
     }
   }
 }
@@ -417,12 +417,13 @@ extension DecodingError {
 /// Similar to Objective-C's `@synchronized`
 /// - parameter object: Token object for the lock
 /// - parameter block: Block to execute inside the lock
-func synchronized<T>(_ object: NSObject, block: () -> T) -> T
+func synchronized<T>(_ object: NSObject, block: () throws -> T) rethrows -> T
 {
   objc_sync_enter(object)
-  let result = block()
-  objc_sync_exit(object)
-  return result
+  defer {
+    objc_sync_exit(object)
+  }
+  return try block()
 }
 
 // Swift 3 took away ++, but it still can be useful.

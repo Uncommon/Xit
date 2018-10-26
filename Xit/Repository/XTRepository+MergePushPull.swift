@@ -54,7 +54,7 @@ extension XTRepository
       else { return GTCredential() }
       
       if let url = URL(string: urlString),
-         let password = XTKeychain.findItem(url: url, user: user).0 {
+         let password = XTKeychain.shared.find(url: url, account: user) {
         do {
           return try GTCredential(userName: user, password: password)
         }

@@ -1,5 +1,11 @@
 import Cocoa
 
+protocol XTTableViewDelegate: AnyObject
+{
+  /// The user has clicked on the selected row.
+  func tableViewClickedSelectedRow(_ tableView: NSTableView)
+}
+
 class HistoryTableView: NSTableView
 {
   override func mouseDown(with event: NSEvent)

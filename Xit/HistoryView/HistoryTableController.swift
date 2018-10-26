@@ -102,7 +102,9 @@ public class HistoryTableController: NSViewController
     let history = self.history
     weak var tableView = view as? NSTableView
     
-    history.reset()
+    synchronized(history) {
+      history.reset()
+    }
     repository.queue.executeOffMainThread {
       kdebug_signpost_start(Signposts.historyWalking, 0, 0, 0, 0)
       guard let walker = repository.walker()
@@ -119,14 +121,14 @@ public class HistoryTableController: NSViewController
         repository.oid(forRef: ref).map { walker.push(oid: $0) }
       }
       
-      objc_sync_enter(history)
-      while let oid = walker.next() {
-        guard let commit = repository.commit(forOID: oid)
-        else { continue }
-        
-        history.appendCommit(commit)
+      synchronized(history) {
+        while let oid = walker.next() {
+          guard let commit = repository.commit(forOID: oid)
+          else { continue }
+          
+          history.appendCommit(commit)
+        }
       }
-      objc_sync_exit(history)
       kdebug_signpost_end(Signposts.historyWalking, 0, 0, 0, 0)
       
       DispatchQueue.global(qos: .utility).async {
@@ -161,7 +163,9 @@ public class HistoryTableController: NSViewController
             progress: Float(totalProgress),
             total: Float(goal))
       
-      NotificationCenter.default.post(progressNote)
+      DispatchQueue.main.async {
+        NotificationCenter.default.post(progressNote)
+      }
     }
     
     if batch != lastBatch {

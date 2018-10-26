@@ -2,6 +2,8 @@ import Cocoa
 
 public class SheetController: NSWindowController
 {
+  @IBOutlet weak var acceptButton: NSButton?
+  
   func end(_ code: NSApplication.ModalResponse)
   {
     window!.sheetParent?.endSheet(window!, returnCode: code)

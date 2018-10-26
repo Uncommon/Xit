@@ -98,17 +98,15 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
   fileprivate(set) var buildTypeURLs = [String: [String]]()
   fileprivate(set) var cachedBuildTypes = [BuildType]()
   
-  init?(user: String, password: String, baseURL: String?)
+  init?(account: Account, password: String)
   {
-    guard let baseURL = baseURL,
-          var fullBaseURL = URLComponents(string: baseURL)
+    guard var fullBaseURL = URLComponents(url: account.location,
+                                          resolvingAgainstBaseURL: false)
     else { return nil }
     
     fullBaseURL.path = TeamCityAPI.rootPath
     
-    super.init(user: user, password: password,
-               baseURL: fullBaseURL.string,
-               authenticationPath: "/")
+    super.init(account: account, password: password, authenticationPath: "/")
     
     configure(description: "xml") {
       $0.pipeline[.parsing].add(XMLResponseTransformer(),
