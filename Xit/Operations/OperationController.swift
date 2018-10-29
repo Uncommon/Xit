@@ -29,9 +29,7 @@ class OperationController: NSObject
   func shoudReport(error: NSError) -> Bool { return true }
   
   /// Executes the given block, handling errors and updating status.
-  func tryRepoOperation(successStatus: String,
-                        failureStatus: String,
-                        block: @escaping (() throws -> Void))
+  func tryRepoOperation(block: @escaping (() throws -> Void))
   {
     repository?.queue.executeOffMainThread {
       [weak self] in

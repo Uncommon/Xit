@@ -17,8 +17,7 @@ class StashOperationController: SimpleOperationController
         guard let repo = self.repository
         else { return }
         
-        self.tryRepoOperation(successStatus: "Stash completed",
-                              failureStatus: "Stash failed") {
+        self.tryRepoOperation {
           try repo.saveStash(name: message,
                              keepIndex: keepIndex,
                              includeUntracked: includeUntracked,

@@ -32,8 +32,7 @@ class RenameBranchOpController: OperationController
     guard let repository = self.repository
     else { return }
     
-    tryRepoOperation(successStatus: "Rename successful",
-                     failureStatus: "Rename failed") {
+    tryRepoOperation {
       try repository.rename(branch: self.branchName, to: newName)
       NotificationCenter.default.post(name: .XTRepositoryRefsChanged,
                                       object: repository)

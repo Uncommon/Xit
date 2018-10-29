@@ -35,8 +35,7 @@ class NewTagOpController: OperationController
     guard let repository = self.repository
     else { return }
     
-    tryRepoOperation(successStatus: "Tag created",
-                     failureStatus: "Tag failed") { 
+    tryRepoOperation { 
       if let message = message {
         try? repository.createTag(name: name, targetOID: oid, message: message)
       }

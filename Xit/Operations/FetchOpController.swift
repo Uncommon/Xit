@@ -91,8 +91,7 @@ class FetchOpController: PasswordOpController
     
     let repo = repository  // For use in the block without being tied to self
     
-    tryRepoOperation(successStatus: "Fetch complete",
-                     failureStatus: "Fetch failed") {
+    tryRepoOperation {
       let options = XTRepository.FetchOptions(downloadTags: downloadTags,
                                               pruneBranches: pruneBranches,
                                               passwordBlock: self.getPassword,

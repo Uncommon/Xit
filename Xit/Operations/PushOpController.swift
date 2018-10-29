@@ -64,8 +64,7 @@ class PushOpController: PasswordOpController
   
   func push(localBranch: LocalBranch, remote: Remote)
   {
-    tryRepoOperation(successStatus: "Push complete",
-                     failureStatus: "Push failed") {
+    tryRepoOperation {
       guard let repository = self.repository
       else { return }
       

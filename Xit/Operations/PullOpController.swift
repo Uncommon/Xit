@@ -22,8 +22,7 @@ class PullOpController: FetchOpController
       throw XTRepository.Error.unexpected
     }
     
-    tryRepoOperation(successStatus: "Pull complete",
-                     failureStatus: "Pull failed") {
+    tryRepoOperation {
       let options = XTRepository.FetchOptions(downloadTags: true,
                                               pruneBranches: true,
                                               passwordBlock: self.getPassword,
