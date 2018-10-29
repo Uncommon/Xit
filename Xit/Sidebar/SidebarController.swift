@@ -100,8 +100,7 @@ extension SidebarHandler
     }
   }
   
-  func callCommand(errorString: String,
-                   targetItem: SidebarItem? = nil,
+  func callCommand(targetItem: SidebarItem? = nil,
                    block: @escaping (SidebarItem) throws -> Void)
   {
     guard let item = targetItem ?? self.targetItem()
@@ -125,7 +124,7 @@ extension SidebarHandler
 
   func popStash()
   {
-    callCommand(errorString: "Pop stash failed") {
+    callCommand {
       [weak self] (item) in
       guard let index = self?.stashIndex(for: item)
       else { return }
@@ -136,7 +135,7 @@ extension SidebarHandler
   
   func applyStash()
   {
-    callCommand(errorString: "Apply stash failed") {
+    callCommand {
       [weak self] (item) in
       guard let index = self?.stashIndex(for: item)
       else { return }
@@ -147,7 +146,7 @@ extension SidebarHandler
   
   func dropStash()
   {
-    callCommand(errorString: "Drop stash failed") {
+    callCommand {
       [weak self] (item) in
       guard let index = self?.stashIndex(for: item)
       else { return }
@@ -369,7 +368,7 @@ class SidebarController: NSViewController, SidebarHandler
   func deleteBranch(item: SidebarItem)
   {
     confirmDelete(kind: "branch", name: item.title) {
-      self.callCommand(errorString: "Delete branch failed", targetItem: item) {
+      self.callCommand(targetItem: item) {
         [weak self] (item) in
         _ = self?.repo.deleteBranch(item.title)
       }

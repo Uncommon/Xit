@@ -22,7 +22,7 @@ extension SidebarController
   
   @IBAction func checkOutBranch(_ sender: Any?)
   {
-    callCommand(errorString: "Checkout failed") {
+    callCommand {
       [weak self] (item) in
       do {
         try self?.repo.checkOut(branch: item.title)
@@ -108,7 +108,7 @@ extension SidebarController
     else { return }
     
     confirmDelete(kind: "tag", name: item.title) {
-      self.callCommand(errorString: "Delete tag failed", targetItem: item) {
+      self.callCommand(targetItem: item) {
         [weak self] (item) in
         try self?.repo.deleteTag(name: item.title)
       }
@@ -122,7 +122,7 @@ extension SidebarController
   
   @IBAction func deleteRemote(_ sender: Any?)
   {
-    callCommand(errorString: "Delete remote failed") {
+    callCommand {
       [weak self] (item) in
       try self?.repo.deleteRemote(named: item.title)
     }
