@@ -410,14 +410,14 @@ class FileViewController: NSViewController
   {
     let confirmAlert = NSAlert()
     let status = try? repo!.status(file: path)
+    let name = (path as NSString).lastPathComponent
     
-    confirmAlert.messageText = "Are you sure you want to revert changes to " +
-                               "\((path as NSString).lastPathComponent)?"
+    confirmAlert.messageString = .confirmRevert(name)
     if status?.0 == .untracked {
-      confirmAlert.informativeText = "The new file will be deleted."
+      confirmAlert.informativeString = .newFileDeleted
     }
-    confirmAlert.addButton(withTitle: "Revert")
-    confirmAlert.addButton(withTitle: "Cancel")
+    confirmAlert.addButton(withString: .revert)
+    confirmAlert.addButton(withString: .cancel)
     confirmAlert.beginSheetModal(for: view.window!) {
       (response) in
       if response == .alertFirstButtonReturn {

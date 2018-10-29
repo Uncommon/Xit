@@ -66,7 +66,7 @@ class BlameViewController: WebViewController
     fatalError("init(coder:) has not been implemented")
   }
   
-  override func loadNotice(_ text: String)
+  override func loadNotice(_ text: UIString)
   {
     spinner.isHidden = true
     spinner.stopAnimation(nil)
@@ -77,7 +77,7 @@ class BlameViewController: WebViewController
   {
     DispatchQueue.main.async {
       [weak self] in
-      self?.loadNotice(Strings.blameNotAvailable)
+      self?.loadNotice(.blameNotAvailable)
     }
   }
   
@@ -199,7 +199,7 @@ extension BlameViewController: XTFileContentController
       case 1:
         break
       default:
-        loadNotice(Strings.multipleItemsSelected)
+        loadNotice(.multipleItemsSelected)
         return
     }
     

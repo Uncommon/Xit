@@ -126,7 +126,8 @@ extension XTWindowController: NSTouchBarDelegate
         else { return nil }
       
         return touchBarButton(
-            identifier: identifier, title: "Staging", image: stagingImage,
+            identifier: identifier, title: "Staging",
+            image: stagingImage,
             target: self, action: #selector(XTWindowController.showStaging(_:)))
 
       case NSTouchBarItem.Identifier.unstageAll:

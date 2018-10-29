@@ -381,12 +381,7 @@ extension XTWindowController: NSMenuItemValidation
 
       case #selector(self.showHideSidebar(_:)):
         result = true
-        if sidebarHidden {
-          menuItem.title = NSLocalizedString("Show Sidebar", comment: "")
-        }
-        else {
-          menuItem.title = NSLocalizedString("Hide Sidebar", comment: "")
-        }
+        menuItem.titleString = sidebarHidden ? .showSidebar : .hideSidebar
 
       case #selector(self.verticalLayout(_:)):
         result = true

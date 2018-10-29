@@ -130,17 +130,11 @@ class AccountsPrefsController: NSViewController
         return
       }
       catch PasswordError.invalidURL {
-        NSAlert.showMessage(window: view.window!, message: """
-            The password could not be saved to the keychain because \
-            the URL is not valid.
-            """)
+        NSAlert.showMessage(window: view.window!, message: .keychainInvalidURL)
       }
       catch let error {
         print("changePassword failure: \(error)")
-        NSAlert.showMessage(window: view.window!, message: """
-            The password could not be saved to the keychain because \
-            an unexpected error occurred.
-            """)
+        NSAlert.showMessage(window: view.window!, message: .keychainError)
       }
     }
 
@@ -168,24 +162,24 @@ class AccountsPrefsController: NSViewController
       accountsTable.reloadData()
     }
     catch let error as PasswordError {
-      let errorString: String
+      let errorString: UIString
       
       switch error {
         case .invalidName:
-          errorString = "The name is not valid."
+          errorString = .invalidName
         case .invalidURL:
-          errorString = "The URL is not valid."
+          errorString = .invalidURL
         default:
-          errorString = "An unexpected error occurred."
+          errorString = .unexpectedError
       }
       NSAlert.showMessage(window: view.window!,
-                          message: "The password could not be saved.",
-                          infoText: errorString)
+                          message: .cantSavePassword,
+                          infoString: errorString)
     }
     catch let error as NSError {
       NSAlert.showMessage(window: view.window!,
-                          message: "The password could not be saved.",
-                          infoText: error.localizedDescription)
+                          message: .cantSavePassword,
+                          infoString: UIString(error: error))
     }
   }
   
@@ -195,9 +189,9 @@ class AccountsPrefsController: NSViewController
     else { return }
     let alert = NSAlert()
     
-    alert.messageText = "Are you sure you want to delete the selected account?"
-    alert.addButton(withTitle: "Delete")
-    alert.addButton(withTitle: "Cancel")
+    alert.messageString = .confirmDeleteAccount
+    alert.addButton(withString: .delete)
+    alert.addButton(withString: .cancel)
     // Cancel should be default for destructive actions
     alert.buttons[0].keyEquivalent = "D"
     alert.buttons[1].keyEquivalent = "\r"

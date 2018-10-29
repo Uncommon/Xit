@@ -108,7 +108,7 @@ extension XTWindowController
   {
     let alert = NSAlert()
     
-    alert.messageText = "Repository has no stashes."
+    alert.messageString = .noStashes
     alert.beginSheetModal(for: window!, completionHandler: nil)
   }
   
@@ -122,9 +122,9 @@ extension XTWindowController
       return
     }
     
-    NSAlert.confirm(message: "Apply the most recent stash, and then delete it?",
-                    infoText: stash.message ?? "",
-                    actionName: "Pop", parentWindow: window!) {
+    NSAlert.confirm(message: .confirmPop,
+                    infoString: stash.message.map { UIString(rawValue: $0) },
+                    actionName: .pop, parentWindow: window!) {
       self.tryRepoOperation() {
         try self.repository.popStash(index: 0)
       }
@@ -139,9 +139,9 @@ extension XTWindowController
       return
     }
 
-    NSAlert.confirm(message: "Apply the most recent stash, without deleting it?",
-                    infoText: stash.message ?? "",
-                    actionName: "Apply", parentWindow: window!) {
+    NSAlert.confirm(message: .confirmApply,
+                    infoString: stash.message.map { UIString(rawValue: $0) },
+                    actionName: .apply, parentWindow: window!) {
       self.tryRepoOperation() {
         try self.repository.applyStash(index: 0)
       }
@@ -156,9 +156,9 @@ extension XTWindowController
       return
     }
 
-    NSAlert.confirm(message: "Delete the most recent stash?",
-                    infoText: stash.message ?? "",
-                    actionName: "Drop", parentWindow: window!) {
+    NSAlert.confirm(message: .confirmStashDelete,
+                    infoString: stash.message.map { UIString(rawValue: $0) },
+                    actionName: .drop, parentWindow: window!) {
       self.tryRepoOperation() {
         try self.repository.dropStash(index: 0)
       }

@@ -110,19 +110,19 @@ extension NSView
 
 extension NSAlert
 {
-  static func confirm(message: String, infoText: String? = nil,
-                      actionName: String,
+  static func confirm(message: UIString, infoString: UIString? = nil,
+                      actionName: UIString,
                       parentWindow: NSWindow,
                       action: @escaping () -> Void)
   {
     let alert = NSAlert()
     
-    alert.messageText = message
-    if let info = infoText {
-      alert.informativeText = info
+    alert.messageString = message
+    if let info = infoString {
+      alert.informativeString = info
     }
-    alert.addButton(withTitle: actionName)
-    alert.addButton(withTitle: "Cancel")
+    alert.addButton(withString: actionName)
+    alert.addButton(withString: .cancel)
     alert.beginSheetModal(for: parentWindow) {
       (response) in
       if response == .alertFirstButtonReturn {
@@ -131,14 +131,14 @@ extension NSAlert
     }
   }
   
-  static func showMessage(window: NSWindow? = nil, message: String,
-                          infoText: String? = nil)
+  static func showMessage(window: NSWindow? = nil, message: UIString,
+                          infoString: UIString? = nil)
   {
     let alert = NSAlert()
     
-    alert.messageText = message
-    if let infoText = infoText {
-      alert.informativeText = infoText
+    alert.messageString = message
+    if let infoString = infoString {
+      alert.informativeString = infoString
     }
     if let window = window {
       alert.beginSheetModal(for: window, completionHandler: nil)

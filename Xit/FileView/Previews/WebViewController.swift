@@ -77,10 +77,10 @@ class WebViewController: NSViewController
     }
   }
   
-  public func loadNotice(_ text: String)
+  public func loadNotice(_ text: UIString)
   {
     let template = WebViewController.htmlTemplate("notice")
-    let escapedText = text.xmlEscaped
+    let escapedText = text.rawValue.xmlEscaped
     let html = String(format: template, escapedText)
     
     load(html: html)

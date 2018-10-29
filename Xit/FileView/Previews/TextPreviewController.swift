@@ -51,11 +51,11 @@ extension TextPreviewController: XTFileContentController
   {
     switch selection.count {
       case 0:
-        loadNotice(Strings.noSelection)
+        loadNotice(.noSelection)
       case 1:
         load(data: selection[0].fileList.dataForFile(selection[0].path))
       default:
-        loadNotice(Strings.multipleItemsSelected)
+        loadNotice(.multipleItemsSelected)
     }
   }
 }

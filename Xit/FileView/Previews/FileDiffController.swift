@@ -80,11 +80,11 @@ class FileDiffController: WebViewController,
         """
   }
   
-  func button(title: String, action: String, index: Int) -> String
+  func button(title: UIString, action: String, index: Int) -> String
   {
     return "<span class='hunkbutton' " +
            "onClick='window.webActionDelegate.\(action)(\(index))'" +
-           ">\(title)</span>"
+           ">\(title.rawValue)</span>"
   }
   
   func hunkHeader(hunk: DiffHunk, index: Int, lines: [String]?) -> String
@@ -98,22 +98,22 @@ class FileDiffController: WebViewController,
     if lines.map({ hunk.canApply(to: $0) }) ?? false {
       switch stagingType {
         case .index:
-          header += button(title: Strings.unstage, action: "unstageHunk",
+          header += button(title: .unstage, action: "unstageHunk",
                            index: index)
         case .workspace:
-          header += button(title: Strings.stage, action: "stageHunk",
+          header += button(title: .stage, action: "stageHunk",
                            index: index)
-          header += button(title: Strings.discard, action: "discardHunk",
+          header += button(title: .discard, action: "discardHunk",
                            index: index)
         default: break
       }
     }
     else {
-      let notice = (diffMaker.whitespace == .showAll)
-                   ? Strings.cantApplyHunk
-                   : Strings.whitespaceChangesHidden
+      let notice: UIString = (diffMaker.whitespace == .showAll)
+                   ? .cantApplyHunk
+                   : .whitespaceChangesHidden
       
-      header += "<span class='hunknotice'>\(notice)</span>"
+      header += "<span class='hunknotice'>\(notice.rawValue)</span>"
     }
     header += "</div>\n"
     
@@ -203,7 +203,7 @@ class FileDiffController: WebViewController,
         case .noDifference:
           loadNoChangesNotice()
         case .binary:
-          loadNotice("This is a binary file")
+          loadNotice(.binaryFile)
         case .diff(let diffMaker):
           self.diffMaker = diffMaker
       }
@@ -215,15 +215,15 @@ class FileDiffController: WebViewController,
   
   func loadNoChangesNotice()
   {
-    var notice: String!
+    var notice: UIString
     
     switch stagingType {
       case .none:
-        notice = "No changes for this selection"
+        notice = .noChanges
       case .index:
-        notice = "No staged changes for this selection"
+        notice = .noStagedChanges
       case .workspace:
-        notice = "No unstaged changes for this selection"
+        notice = .noUnstagedChanges
     }
     loadNotice(notice)
   }
@@ -293,9 +293,10 @@ extension FileDiffController: XTFileContentController
         return
       case 1:
         self.stagingType = selection[0].staging
-        loadOrNotify(diffResult: selection[0].fileList.diffForFile(selection[0].path))
+        loadOrNotify(diffResult:
+            selection[0].fileList.diffForFile(selection[0].path))
       default:
-        loadNotice(Strings.multipleItemsSelected)
+        loadNotice(.multipleItemsSelected)
     }
   }
 }

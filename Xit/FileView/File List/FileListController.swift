@@ -117,13 +117,13 @@ class FileListController: NSViewController
       case 1:
         let change = changes.first!
         
-        NSAlert.confirm(message: "Revert changes to \(change.path.lastPathComponent)?",
-        actionName: "Revert", parentWindow: view.window!) {
+        NSAlert.confirm(message: .confirmRevert(change.path.lastPathComponent),
+        actionName: .revert, parentWindow: view.window!) {
           try? self.repoController.repository.revert(file: change.gitPath)
         }
       default:
-        NSAlert.confirm(message: "Revert changes to the selected files?",
-                        actionName: "Revert", parentWindow: view.window!) {
+        NSAlert.confirm(message: .confirmRevertMultiple,
+                        actionName: .revert, parentWindow: view.window!) {
           for change in changes {
             try? self.repoController.repository.revert(file: change.gitPath)
           }
