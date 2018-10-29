@@ -109,12 +109,25 @@ class FileListController: NSViewController
   
   @IBAction func revert(_ sender: Any)
   {
-    guard let change = targetChange(sender: sender)
-    else { return }
+    let changes = targetChanges(sender: sender)
     
-    NSAlert.confirm(message: "Revert changes to \(change.path.lastPathComponent)?",
-                    actionName: "Revert", parentWindow: view.window!) {
-      try? self.repoController.repository.revert(file: change.gitPath)
+    switch changes.count {
+      case 0:
+        break
+      case 1:
+        let change = changes.first!
+        
+        NSAlert.confirm(message: "Revert changes to \(change.path.lastPathComponent)?",
+        actionName: "Revert", parentWindow: view.window!) {
+          try? self.repoController.repository.revert(file: change.gitPath)
+        }
+      default:
+        NSAlert.confirm(message: "Revert changes to the selected files?",
+                        actionName: "Revert", parentWindow: view.window!) {
+          for change in changes {
+            try? self.repoController.repository.revert(file: change.gitPath)
+          }
+        }
     }
   }
   
@@ -124,22 +137,20 @@ class FileListController: NSViewController
   
   @IBAction func open(_ sender: Any)
   {
-    guard let change = targetChange(sender: sender)
-    else { return }
-    let url = repoController.repository.fileURL(change.gitPath)
-    
-    NSWorkspace.shared.open(url)
+    for change in targetChanges(sender: sender) {
+      let url = repoController.repository.fileURL(change.gitPath)
+      
+      NSWorkspace.shared.open(url)
+    }
   }
   
   @IBAction func showInFinder(_ sender: Any)
   {
-    guard let change = targetChange(sender: sender)
-    else { return }
-    let url = repoController.repository.fileURL(change.gitPath)
-    guard FileManager.default.fileExists(atPath: url.path)
-    else { return }
+    let changes = targetChanges(sender: sender)
+    let urls = changes.map { repoController.repository.fileURL($0.gitPath) }
+                .filter { FileManager.default.fileExists(atPath: $0.path) }
     
-    NSWorkspace.shared.activateFileViewerSelecting([url])
+    NSWorkspace.shared.activateFileViewerSelecting(urls)
   }
   
   @IBAction func viewSwitched(_ sender: Any)
@@ -156,7 +167,11 @@ class FileListController: NSViewController
   /// The file change item for the row that is the target of a context menu click
   var clickedChange: FileChange?
   {
-    return outlineView.contextMenuRow.flatMap { viewDataSource.fileChange(at: $0) }
+    guard let clickedRow = outlineView.contextMenuRow,
+          !outlineView.selectedRowIndexes.contains(clickedRow)
+    else { return nil }
+    
+    return viewDataSource.fileChange(at: clickedRow)
   }
   
   /// The file change item for the selected row in the list
@@ -168,9 +183,16 @@ class FileListController: NSViewController
     return viewDataSource?.fileChange(at: index)
   }
   
+  var selectedChanges: [FileChange]
+  {
+    return outlineView.selectedRowIndexes.compactMap {
+      viewDataSource?.fileChange(at: $0)
+    }
+  }
+  
   /// If `sender` is a button in a file list row, retuns the file change for
   /// that row.
-  func buttonChange(sender: Any) -> FileChange?
+  func buttonChange(sender: Any?) -> FileChange?
   {
     guard let button = sender as? NSButton
     else { return nil }
@@ -179,11 +201,16 @@ class FileListController: NSViewController
     return viewDataSource.fileChange(at: row)
   }
   
-  /// Returns the file change that is the target of the current action,
+  /// Returns the file changes that are the target of the current action,
   /// depending on how the command was selected
-  func targetChange(sender: Any) -> FileChange?
+  func targetChanges(sender: Any? = nil) -> [FileChange]
   {
-    return buttonChange(sender: sender) ?? clickedChange ?? selectedChange
+    if let single = buttonChange(sender: sender) ?? clickedChange {
+      return [single]
+    }
+    else {
+      return selectedChanges
+    }
   }
 
   func addToolbarButton(imageName: NSImage.Name,

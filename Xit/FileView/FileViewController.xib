@@ -100,10 +100,10 @@
                                                             </textFieldCell>
                                                         </textField>
                                                         <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="2" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" horizontalCompressionResistancePriority="250" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0MB-6B-NyF">
-                                                            <rect key="frame" x="73" y="113" width="74" height="32"/>
+                                                            <rect key="frame" x="73" y="113" width="74" height="17"/>
                                                             <subviews>
                                                                 <button horizontalHuggingPriority="255" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ZnF-v8-c9U">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="74" height="32"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="74" height="17"/>
                                                                     <buttonCell key="cell" type="bevel" title="Description" bezelStyle="rounded" alignment="left" state="on" imageScaling="proportionallyDown" inset="2" id="cJF-21-Jzw">
                                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                         <font key="font" metaFont="system"/>
@@ -148,11 +148,11 @@
                                         <constraints>
                                             <constraint firstItem="10s-dp-YzO" firstAttribute="width" secondItem="xgO-S6-hTX" secondAttribute="width" constant="-2" id="Dxz-KE-od8"/>
                                         </constraints>
-                                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="6k8-Nn-dNW">
+                                        <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="6k8-Nn-dNW">
                                             <rect key="frame" x="-100" y="-100" width="701" height="16"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
-                                        <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="OVn-Sc-AUm">
+                                        <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="0.96078431372549022" horizontal="NO" id="OVn-Sc-AUm">
                                             <rect key="frame" x="687" y="1" width="16" height="108"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
@@ -350,7 +350,7 @@
                                     </buttonCell>
                                 </button>
                                 <pathControl verticalHuggingPriority="750" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gna-OS-Gx2">
-                                    <rect key="frame" x="0.0" y="0.0" width="60" height="22"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="58" height="22"/>
                                     <pathCell key="cell" selectable="YES" refusesFirstResponder="YES" alignment="left" id="kf1-n1-9Vv">
                                         <font key="font" metaFont="system"/>
                                         <url key="url" string="file:///Volumes/Path"/>

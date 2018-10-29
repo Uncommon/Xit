@@ -6,7 +6,7 @@ protocol XTFileContentController
   /// Clears the display for when nothing is selected.
   func clear()
   /// Displays the content from the given selection.
-  func load(selection: FileSelection)
+  func load(selection: [FileSelection])
   /// True if the controller has content loaded.
   var isLoaded: Bool { get }
 }

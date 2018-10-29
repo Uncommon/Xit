@@ -141,6 +141,10 @@ class FileViewController: NSViewController
   {
     return activeFileListController.selectedChange
   }
+  var selectedChanges: [FileChange]
+  {
+    return activeFileListController.selectedChanges
+  }
   
   weak var repo: XTRepository?
   
@@ -337,28 +341,42 @@ class FileViewController: NSViewController
     guard !contentController.isLoaded || force
     else { return }
     
-    guard let repo = repo,
+    let changes = selectedChanges
+    guard !changes.isEmpty,
+          let repo = repo,
           let index = activeFileList.selectedRowIndexes.first,
           let selectedItem = activeFileList.item(atRow: index),
-          let selectedChange = self.selectedChange,
           let controller = repoController,
           let repoSelection = controller.selection
     else {
       clearPreviews()
       return
     }
+    let selectedChange = changes.first!
     let staging = repoSelection is StagingSelection
     let staged = activeFileList === stagedListController.outlineView
     let stagingType: StagingType = staging ? (staged ? .index : .workspace)
                                            : .none
 
-    updatePreviewPath(selectedChange.gitPath,
-                      isFolder: activeFileList.isExpandable(selectedItem))
+    if changes.count == 1 {
+      updatePreviewPath(selectedChange.gitPath,
+                        isFolder: activeFileList.isExpandable(selectedItem))
+    }
+    else {
+      DispatchQueue.main.async {
+        let cell = NSPathComponentCell()
+        
+        cell.title = "Multiple selection"
+        self.previewPath.setPathComponentCells([cell])
+      }
+    }
     repo.queue.executeOffMainThread {
-      self.contentController.load(selection:
-          FileSelection(repoSelection: repoSelection,
-                        path: selectedChange.gitPath,
-                        staging: stagingType))
+      let selection = changes.map {
+        FileSelection(repoSelection: repoSelection, path: $0.gitPath,
+                      staging: stagingType)
+      }
+      
+      self.contentController.load(selection: selection)
     }
 
     let fullPath = repo.repoURL.path.appending(
@@ -378,7 +396,7 @@ class FileViewController: NSViewController
   {
     DispatchQueue.main.async {
       self.contentControllers.forEach { $0.clear() }
-      self.updatePreviewPath("", isFolder: false)
+      self.previewPath.setPathComponentCells([])
     }
   }
   

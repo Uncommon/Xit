@@ -98,20 +98,20 @@ class FileDiffController: WebViewController,
     if lines.map({ hunk.canApply(to: $0) }) ?? false {
       switch stagingType {
         case .index:
-          header += button(title: "Unstage", action: "unstageHunk",
+          header += button(title: Strings.unstage, action: "unstageHunk",
                            index: index)
         case .workspace:
-          header += button(title: "Stage", action: "stageHunk",
+          header += button(title: Strings.stage, action: "stageHunk",
                            index: index)
-          header += button(title: "Discard", action: "discardHunk",
+          header += button(title: Strings.discard, action: "discardHunk",
                            index: index)
         default: break
       }
     }
     else {
       let notice = (diffMaker.whitespace == .showAll)
-                   ? "This hunk cannot be applied"
-                   : "Whitespace changes are hidden"
+                   ? Strings.cantApplyHunk
+                   : Strings.whitespaceChangesHidden
       
       header += "<span class='hunknotice'>\(notice)</span>"
     }
@@ -285,10 +285,18 @@ extension FileDiffController: XTFileContentController
     }
   }
   
-  public func load(selection: FileSelection)
+  public func load(selection: [FileSelection])
   {
-    self.stagingType = selection.staging
-    loadOrNotify(diffResult: selection.fileList.diffForFile(selection.path))
+    switch selection.count {
+      case 0:
+        clear()
+        return
+      case 1:
+        self.stagingType = selection[0].staging
+        loadOrNotify(diffResult: selection[0].fileList.diffForFile(selection[0].path))
+      default:
+        loadNotice(Strings.multipleItemsSelected)
+    }
   }
 }
 

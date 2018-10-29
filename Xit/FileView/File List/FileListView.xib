@@ -30,7 +30,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="379" height="220"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="sequential" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="cZW-qJ-i9c" id="aNl-iT-Tie" customClass="FileListView" customModule="Xit" customModuleProvider="target">
+                            <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="sequential" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="cZW-qJ-i9c" id="aNl-iT-Tie" customClass="FileListView" customModule="Xit" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="379" height="220"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <size key="intercellSpacing" width="3" height="2"/>
@@ -178,11 +178,11 @@
                             </outlineView>
                         </subviews>
                     </clipView>
-                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="HEG-aO-xns">
+                    <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="HEG-aO-xns">
                         <rect key="frame" x="0.0" y="-16" width="0.0" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
-                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="GgL-s6-ODR">
+                    <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="GgL-s6-ODR">
                         <rect key="frame" x="-16" y="0.0" width="16" height="0.0"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
@@ -360,6 +360,9 @@
                 <menuItem isSeparatorItem="YES" id="bNX-8a-jlw"/>
                 <menuItem title="Show Current in Finder" id="95D-Gr-gp7">
                     <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="showInFinder:" target="-2" id="xaZ-hT-iK3"/>
+                    </connections>
                 </menuItem>
             </items>
             <point key="canvasLocation" x="1829" y="566"/>
@@ -367,7 +370,7 @@
     </objects>
     <resources>
         <image name="NSActionTemplate" width="14" height="14"/>
-        <image name="NSFolder" width="32" height="32"/>
+        <image name="NSFolder" width="128" height="128"/>
         <image name="NSListViewTemplate" width="14" height="10"/>
         <image name="NSPathTemplate" width="16" height="10"/>
         <image name="actionButtonEmpty" width="16" height="16"/>
