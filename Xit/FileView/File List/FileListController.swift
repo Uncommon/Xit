@@ -214,13 +214,13 @@ class FileListController: NSViewController
   }
 
   func addToolbarButton(imageName: NSImage.Name,
-                        toolTip: String,
+                        toolTip: UIString,
                         action: Selector)
   {
     let button = NSButton(image: NSImage(named: imageName)!,
                           target: self, action: action)
   
-    button.toolTip = toolTip
+    button.toolTip = toolTip.rawValue
     button.setFrameSize(NSSize(width: 26, height: 18))
     button.bezelStyle = .smallSquare
     button.isBordered = false

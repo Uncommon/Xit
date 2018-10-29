@@ -134,8 +134,8 @@ class XTCommitEntryController: NSViewController
           Do you want to replace the commit message with the message from
           the previous commit?
           """
-      alert.addButton(withTitle: "Replace")
-      alert.addButton(withTitle: "Don't Replace")
+      alert.addButton(withString: .replace)
+      alert.addButton(withString: .dontReplace)
       alert.beginSheetModal(for: window) {
         (response) in
         if response == .alertFirstButtonReturn {

@@ -33,7 +33,7 @@ extension SidebarHandler
       case #selector(SidebarController.checkOutBranch(_:)):
         guard let branch = (item as? BranchSidebarItem)?.branchObject()
         else { return false }
-        sidebarCommand.title = "Check out \"\(branch.strippedName)\""
+        sidebarCommand.titleString = .checkOut(branch.strippedName)
         return !repo.isWriting && item.title != repo.currentBranch
       
       case #selector(SidebarController.createTrackingBranch(_:)):
@@ -69,8 +69,7 @@ extension SidebarHandler
           guard let currentBranch = repo.currentBranch
           else { return false }
           
-          sidebarCommand.title =
-              "Merge \"\(clickedBranch)\" into \"\(currentBranch)\""
+          sidebarCommand.titleString = .merge(clickedBranch, currentBranch)
         }
         return true
       
@@ -381,8 +380,8 @@ class SidebarController: NSViewController, SidebarHandler
     let alert = NSAlert.init()
     
     alert.messageText = "Delete the \(kind) “\(name)”?"
-    alert.addButton(withTitle: "Delete")
-    alert.addButton(withTitle: "Cancel")
+    alert.addButton(withString: .delete)
+    alert.addButton(withString: .cancel)
     // Delete is destructive, so it should not be default
     alert.buttons[0].keyEquivalent = ""
     alert.beginSheetModal(for: view.window!) {

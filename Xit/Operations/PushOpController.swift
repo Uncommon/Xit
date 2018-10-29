@@ -35,10 +35,10 @@ class PushOpController: PasswordOpController
     
     let alert = NSAlert()
     
-    alert.messageText = "Push local branch \"\(branchName)\" to " +
-                        "remote \"\(remoteName)\"?"
-    alert.addButton(withTitle: "Push")
-    alert.addButton(withTitle: "Cancel")
+    alert.messageString = .confirmPush(localBranch: branchName,
+                                       remote: remoteName)
+    alert.addButton(withString: .push)
+    alert.addButton(withString: .cancel)
     
     alert.beginSheetModal(for: windowController!.window!) {
       (response) in

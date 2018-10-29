@@ -63,17 +63,17 @@ extension XTWindowController: NSTouchBarDelegate
   }
   
   func touchBarButton(identifier: NSTouchBarItem.Identifier,
-                      title: String, image: NSImage?,
+                      title: UIString, image: NSImage?,
                       target: Any, action: Selector) -> NSCustomTouchBarItem
   {
     let item = NSCustomTouchBarItem(identifier: identifier)
     
     if let image = image {
-      item.view = NSButton(title: title, image: image,
+      item.view = NSButton(title: title.rawValue, image: image,
                            target: target, action: action)
     }
     else {
-      item.view = NSButton(title: title, target: target, action: action)
+      item.view = NSButton(title: title.rawValue, target: target, action: action)
     }
     return item
   }
@@ -102,21 +102,21 @@ extension XTWindowController: NSTouchBarDelegate
 
       case .stage:
         return touchBarButton(
-            identifier: identifier, title: "Stage",
+            identifier: identifier, title: .stage,
             image: NSImage(named: .xtStageButtonHover),
             target: listController,
             action: #selector(WorkspaceFileListController.stage(_:)))
 
       case .revert:
         return touchBarButton(
-            identifier: identifier, title: "Revert",
+            identifier: identifier, title: .revert,
             image: NSImage(named: .xtRevertTemplate),
             target: listController,
             action: #selector(WorkspaceFileListController.revert(_:)))
       
       case .unstage:
         return touchBarButton(
-            identifier: identifier, title: "Unstage",
+            identifier: identifier, title: .unstage,
             image: NSImage(named: .xtUnstageButtonHover),
             target: listController,
             action: #selector(StagedFileListController.unstage(_:)))
@@ -126,20 +126,20 @@ extension XTWindowController: NSTouchBarDelegate
         else { return nil }
       
         return touchBarButton(
-            identifier: identifier, title: "Staging",
+            identifier: identifier, title: .staging,
             image: stagingImage,
             target: self, action: #selector(XTWindowController.showStaging(_:)))
 
       case NSTouchBarItem.Identifier.unstageAll:
         return touchBarButton(
-            identifier: identifier, title: "Unstage All",
+            identifier: identifier, title: .unstageAll,
             image: NSImage(named: .xtUnstageAllTemplate),
             target: historyController.fileViewController,
             action: #selector(FileViewController.unstageAll(_:)))
       
       case NSTouchBarItem.Identifier.stageAll:
         return touchBarButton(
-            identifier: identifier, title: "Stage All",
+            identifier: identifier, title: .stageAll,
             image: NSImage(named: .xtStageAllTemplate),
             target: historyController.fileViewController,
             action: #selector(FileViewController.stageAll(_:)))

@@ -13,7 +13,7 @@ class RenameBranchPanelController: SheetController
     }
     set
     {
-      promptLabel.stringValue = "Rename branch \"\(newValue)\" to:"
+      promptLabel.uiStringValue = .renamePrompt(newValue)
       textField.stringValue = newValue
     }
   }

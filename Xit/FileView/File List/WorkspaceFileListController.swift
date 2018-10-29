@@ -22,10 +22,10 @@ class WorkspaceFileListController: StagingFileListController
     listTypeLabel.stringValue = "Workspace"
     
     addToolbarButton(imageName: .xtStageAllTemplate,
-                     toolTip: "Stage All",
+                     toolTip: .stageAll,
                      action: #selector(stageAll(_:)))
     addToolbarButton(imageName: .xtRevertTemplate,
-                     toolTip: "Revert",
+                     toolTip: .revert,
                      action: #selector(revert(_:)))
   }
   

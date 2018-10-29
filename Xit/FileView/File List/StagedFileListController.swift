@@ -17,7 +17,7 @@ class StagedFileListController: StagingFileListController
     listTypeLabel.stringValue = "Staged"
     
     addToolbarButton(imageName: .xtUnstageAllTemplate,
-                     toolTip: "Unstage All",
+                     toolTip: .unstageAll,
                      action: #selector(unstageAll(_:)))
   }
   
