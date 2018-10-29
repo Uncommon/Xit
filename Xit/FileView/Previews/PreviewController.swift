@@ -29,13 +29,18 @@ extension PreviewController: XTFileContentController
     isLoaded = false
   }
   
-  public func load(selection: FileSelection)
+  public func load(selection: [FileSelection])
   {
+    if selection.count != 1 {
+      clear()
+      return
+    }
+    
     let qlView = self.qlView
-    let fileList = selection.fileList
+    let fileList = selection[0].fileList
   
     if fileList is WorkspaceFileList {
-      guard let urlString = fileList.fileURL(selection.path)?.absoluteString
+      guard let urlString = fileList.fileURL(selection[0].path)?.absoluteString
       else {
         qlView.previewItem = nil
         isLoaded = true
@@ -55,14 +60,14 @@ extension PreviewController: XTFileContentController
     }
     else {
       if let oldItem = qlView.previewItem as? PreviewItem,
-         oldItem.path == selection.path && oldItem.fileList == fileList {
+         oldItem.path == selection[0].path && oldItem.fileList == fileList {
         return
       }
       
       DispatchQueue.main.async {
         let item = PreviewItem()
         
-        item.load(fileList: fileList, path: selection.path)
+        item.load(fileList: fileList, path: selection[0].path)
         qlView.previewItem = item
         self.isLoaded = true
       }

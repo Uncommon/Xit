@@ -285,10 +285,18 @@ extension FileDiffController: XTFileContentController
     }
   }
   
-  public func load(selection: FileSelection)
+  public func load(selection: [FileSelection])
   {
-    self.stagingType = selection.staging
-    loadOrNotify(diffResult: selection.fileList.diffForFile(selection.path))
+    switch selection.count {
+      case 0:
+        clear()
+        return
+      case 1:
+        self.stagingType = selection[0].staging
+        loadOrNotify(diffResult: selection[0].fileList.diffForFile(selection[0].path))
+      default:
+        loadNotice("Multiple items selected")
+    }
   }
 }
 

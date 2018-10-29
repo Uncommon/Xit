@@ -190,18 +190,29 @@ extension BlameViewController: XTFileContentController
     isLoaded = false
   }
   
-  public func load(selection: FileSelection)
+  public func load(selection: [FileSelection])
   {
-    guard selection != currentSelection
+    switch selection.count {
+      case 0:
+        self.clear()
+        return
+      case 1:
+        break
+      default:
+        loadNotice("Multiple items selected")
+        return
+    }
+    
+    guard selection[0] != currentSelection
     else { return }
     
-    currentSelection = selection
+    currentSelection = selection[0]
     repoController?.queue.executeOffMainThread {
       [weak self] in
       guard let self = self
       else { return }
-      let fileList = selection.fileList
-      guard let data = fileList.dataForFile(selection.path),
+      let fileList = selection[0].fileList
+      guard let data = fileList.dataForFile(selection[0].path),
             let text = String(data: data, encoding: .utf8) ??
                        String(data: data, encoding: .utf16)
       else {
@@ -214,8 +225,8 @@ extension BlameViewController: XTFileContentController
         self.spinner.startAnimation(nil)
         self.clear()
       }
-      self.loadBlame(text: text, path: selection.path,
-                       selection: selection.repoSelection, fileList: fileList)
+      self.loadBlame(text: text, path: selection[0].path,
+                     selection: selection[0].repoSelection, fileList: fileList)
     }
   }
 }

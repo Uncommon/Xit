@@ -47,8 +47,15 @@ extension TextPreviewController: XTFileContentController
     isLoaded = false
   }
   
-  public func load(selection: FileSelection)
+  public func load(selection: [FileSelection])
   {
-    load(data: selection.fileList.dataForFile(selection.path))
+    switch selection.count {
+      case 0:
+        loadNotice("No selection")
+      case 1:
+        load(data: selection[0].fileList.dataForFile(selection[0].path))
+      default:
+        loadNotice("Multiple items selected")
+    }
   }
 }
