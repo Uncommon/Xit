@@ -360,6 +360,9 @@
                 <menuItem isSeparatorItem="YES" id="bNX-8a-jlw"/>
                 <menuItem title="Show Current in Finder" id="95D-Gr-gp7">
                     <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="showInFinder:" target="-2" id="xaZ-hT-iK3"/>
+                    </connections>
                 </menuItem>
             </items>
             <point key="canvasLocation" x="1829" y="566"/>

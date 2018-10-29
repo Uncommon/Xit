@@ -146,13 +146,11 @@ class FileListController: NSViewController
   
   @IBAction func showInFinder(_ sender: Any)
   {
-    for change in targetChanges(sender: sender) {
-      let url = repoController.repository.fileURL(change.gitPath)
-      guard FileManager.default.fileExists(atPath: url.path)
-      else { return }
-      
-      NSWorkspace.shared.activateFileViewerSelecting([url])
-    }
+    let changes = targetChanges(sender: sender)
+    let urls = changes.map { repoController.repository.fileURL($0.gitPath) }
+                .filter { FileManager.default.fileExists(atPath: $0.path) }
+    
+    NSWorkspace.shared.activateFileViewerSelecting(urls)
   }
   
   @IBAction func viewSwitched(_ sender: Any)
