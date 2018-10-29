@@ -77,7 +77,7 @@ class BlameViewController: WebViewController
   {
     DispatchQueue.main.async {
       [weak self] in
-      self?.loadNotice("Blame not available")
+      self?.loadNotice(Strings.blameNotAvailable)
     }
   }
   
@@ -199,7 +199,7 @@ extension BlameViewController: XTFileContentController
       case 1:
         break
       default:
-        loadNotice("Multiple items selected")
+        loadNotice(Strings.multipleItemsSelected)
         return
     }
     
