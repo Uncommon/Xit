@@ -35,10 +35,8 @@ extension SidebarController
           else { return }
           let alert = NSAlert()
           
-          alert.messageText =
-              "Checkout failed because of a conflict with local changes."
-          alert.informativeText =
-              "Revert or stash your changes and try again."
+          alert.messageString = .checkoutFailedConflict
+          alert.informativeString = .checkoutFailedConflictInfo
           alert.beginSheetModal(for: self.view.window!, completionHandler: nil)
         }
       }

@@ -340,7 +340,7 @@ class CommitFileListController: FileListController
     outlineView.tableColumns[index].isHidden = true
     
     listTypeIcon.image = NSImage(named: .xtFileTemplate)
-    listTypeLabel.stringValue = "Files"
+    listTypeLabel.uiStringValue = .files
   }
 }
 

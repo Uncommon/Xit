@@ -104,7 +104,7 @@ class AddAccountController: SheetController
   func resetForAdd()
   {
     resetFields()
-    acceptButton!.title = "Add"
+    acceptButton!.titleString = .add
   }
   
   func loadFieldsForEdit(from account: Account)
@@ -114,7 +114,7 @@ class AddAccountController: SheetController
     passwordField.stringValue = XTKeychain.shared.find(url: account.location,
                                                        account: account.user)
                                 ?? ""
-    acceptButton!.title = "Save"
+    acceptButton!.titleString = .save
   }
   
   func syncLocationField()

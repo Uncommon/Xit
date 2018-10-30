@@ -110,7 +110,7 @@ extension SideBarDataSource: NSOutlineViewDelegate
           withIdentifier: CellID.header, owner: nil) as? NSTableCellView
       else { return nil }
       
-      headerView.textField?.stringValue = sideBarItem.title
+      headerView.textField?.stringValue = sideBarItem.title.uppercased()
       return headerView
     }
     else {
@@ -123,7 +123,7 @@ extension SideBarDataSource: NSOutlineViewDelegate
       dataView.dataSource = self
       dataView.item = sideBarItem
       dataView.imageView?.image = sideBarItem.icon
-      textField.stringValue = sideBarItem.displayTitle
+      textField.uiStringValue = sideBarItem.displayTitle
       textField.isEditable = sideBarItem.editable
       textField.isSelectable = sideBarItem.isSelectable
       dataView.statusText.isHidden = true
@@ -248,7 +248,7 @@ extension SideBarDataSource: NSOutlineViewDelegate
                                                 remoteBranchItem.title {
       let rowView = SidebarCheckedRowView(
               imageName: NSImage.rightFacingTriangleTemplateName,
-              toolTip: "The active branch is tracking this remote branch")
+              toolTip: .trackingToolTip)
       
       return rowView
     }

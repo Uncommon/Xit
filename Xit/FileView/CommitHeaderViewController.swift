@@ -36,7 +36,7 @@ class CommitHeaderViewController: NSViewController
     guard let commitSHA = commitSHA,
           let commit = repository.commit(forSHA: commitSHA)
     else {
-      nameField.stringValue = "No selection"
+      nameField.uiStringValue = .noSelection
       parentsLabel.stringValue = ""
       dateField.stringValue = ""
       shaLabel.isHidden = true
@@ -77,10 +77,10 @@ class CommitHeaderViewController: NSViewController
       
         parentsStack.addArrangedSubview(noneLabel)
       case 1:
-        parentsLabel.stringValue = "Parent:"
+        parentsLabel.uiStringValue = .parent
         addParents(commit)
       default:
-        parentsLabel.stringValue = "Parents:"
+        parentsLabel.uiStringValue = .parents
         addParents(commit)
     }
     

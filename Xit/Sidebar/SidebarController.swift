@@ -379,7 +379,7 @@ class SidebarController: NSViewController, SidebarHandler
   {
     let alert = NSAlert.init()
     
-    alert.messageText = "Delete the \(kind) “\(name)”?"
+    alert.messageString = .confirmDelete(kind: kind, name: name)
     alert.addButton(withString: .delete)
     alert.addButton(withString: .cancel)
     // Delete is destructive, so it should not be default

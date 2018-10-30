@@ -3,7 +3,7 @@ import Cocoa
 class SidebarItem: NSObject
 {
   var title: String
-  var displayTitle: String { return title }
+  var displayTitle: UIString { return UIString(rawValue: title) }
   var icon: NSImage? { return nil }
   var children: [SidebarItem]
   var selection: RepositorySelection?
@@ -56,6 +56,11 @@ class SidebarItem: NSObject
 
 class SideBarGroupItem: SidebarItem
 {
+  init(titleString: UIString)
+  {
+    super.init(title: titleString.rawValue)
+  }
+  
   override var isSelectable: Bool { return false }
   override var expandable: Bool { return true }
 }
@@ -63,6 +68,11 @@ class SideBarGroupItem: SidebarItem
 
 class StagingSidebarItem: SidebarItem
 {
+  init(titleString: UIString)
+  {
+    super.init(title: titleString.rawValue)
+  }
+  
   override var icon: NSImage?
   {
     return NSImage(named: .xtStagingTemplate)
@@ -81,8 +91,8 @@ class StashSidebarItem: SidebarItem
 
 class BranchSidebarItem: SidebarItem
 {
-  override var displayTitle: String
-  { return (title as NSString).lastPathComponent }
+  override var displayTitle: UIString
+  { return UIString(rawValue: (title as NSString).lastPathComponent) }
   override var icon: NSImage?
   { return NSImage(named: .xtBranchTemplate) }
   
@@ -202,8 +212,8 @@ class TagSidebarItem: SidebarItem
 {
   let tag: Tag
 
-  override var displayTitle: String
-  { return (title as NSString).lastPathComponent }
+  override var displayTitle: UIString
+  { return UIString(rawValue: (title as NSString).lastPathComponent) }
   override var icon: NSImage?
   { return NSImage(named: .xtTagTemplate) }
   override var refType: RefType { return .tag }

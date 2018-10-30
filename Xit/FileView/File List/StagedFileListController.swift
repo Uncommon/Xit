@@ -14,7 +14,7 @@ class StagedFileListController: StagingFileListController
     super.loadView()
     
     listTypeIcon.image = NSImage(named: .xtStagingTemplate)
-    listTypeLabel.stringValue = "Staged"
+    listTypeLabel.uiStringValue = .staged
     
     addToolbarButton(imageName: .xtUnstageAllTemplate,
                      toolTip: .unstageAll,

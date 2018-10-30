@@ -19,7 +19,7 @@ class WorkspaceFileListController: StagingFileListController
     fileTreeDataSource.delegate = self
     
     listTypeIcon.image = NSImage(named: .xtFolderTemplate)
-    listTypeLabel.stringValue = "Workspace"
+    listTypeLabel.uiStringValue = .workspace
     
     addToolbarButton(imageName: .xtStageAllTemplate,
                      toolTip: .stageAll,

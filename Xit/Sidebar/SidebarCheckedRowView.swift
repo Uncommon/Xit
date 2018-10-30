@@ -4,10 +4,10 @@ class SidebarCheckedRowView: NSTableRowView
 {
   weak var imageView: NSImageView?
   let imageName: NSImage.Name
-  let imageToolTip: String?
+  let imageToolTip: UIString?
   
   init(imageName: NSImage.Name = NSImage.menuOnStateTemplateName,
-       toolTip: String? = nil)
+       toolTip: UIString? = nil)
   {
     self.imageName = imageName
     self.imageToolTip = toolTip
@@ -34,7 +34,7 @@ class SidebarCheckedRowView: NSTableRowView
     
     self.imageView = imageView
     imageView.translatesAutoresizingMaskIntoConstraints = false
-    imageView.toolTip = imageToolTip
+    imageView.toolTip = imageToolTip?.rawValue
     addSubview(imageView)
     
     let hSpacer = NSLayoutConstraint(item: imageView, attribute: .trailing,

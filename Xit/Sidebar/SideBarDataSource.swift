@@ -113,9 +113,9 @@ class SideBarDataSource: NSObject
   
   static func makeRoots(_ stagingItem: SidebarItem) -> [SideBarGroupItem]
   {
-    let rootNames = ["WORKSPACE", "BRANCHES", "REMOTES", "TAGS", "STASHES",
-                     "SUBMODULES"]
-    let roots = rootNames.map { SideBarGroupItem(title: $0) }
+    let rootNames: [UIString] =
+          [.workspace, .branches, .remotes, .tags, .stashes, .submodules]
+    let roots = rootNames.map { SideBarGroupItem(titleString: $0) }
     
     roots[0].children.append(stagingItem)
     return roots
@@ -123,7 +123,7 @@ class SideBarDataSource: NSObject
   
   override init()
   {
-    self.stagingItem = StagingSidebarItem(title: "Staging")
+    self.stagingItem = StagingSidebarItem(titleString: .staging)
     self.roots = SideBarDataSource.makeRoots(stagingItem)
   }
   
@@ -498,15 +498,11 @@ class SideBarDataSource: NSObject
     let alert = NSAlert()
     
     alert.alertStyle = .informational
-    alert.messageText = "This branch's remote tracking branch does not exist."
-    alert.informativeText = """
-        The remote branch may have been merged and deleted. Do you want to \
-        clear the tracking branch setting, or delete your local branch \
-        "\(item.title)"?
-        """
-    alert.addButton(withTitle: "Clear")
-    alert.addButton(withTitle: "Delete Branch")
-    alert.addButton(withTitle: "Cancel")
+    alert.messageString = .trackingBranchMissing
+    alert.informativeString = .trackingMissingInfo(item.title)
+    alert.addButton(withString: .clear)
+    alert.addButton(withString: .deleteBranch)
+    alert.addButton(withString: .cancel)
     alert.beginSheetModal(for: outline.window!) {
       (response) in
       switch response {
