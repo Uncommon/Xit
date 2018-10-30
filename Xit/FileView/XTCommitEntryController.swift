@@ -129,11 +129,8 @@ class XTCommitEntryController: NSViewController
       else { return }
       let alert = NSAlert()
       
-      alert.messageText = "Replace the commit message?"
-      alert.informativeText = """
-          Do you want to replace the commit message with the message from
-          the previous commit?
-          """
+      alert.messageString = .replaceMessagePrompt
+      alert.informativeString = .replaceMessageInfo
       alert.addButton(withString: .replace)
       alert.addButton(withString: .dontReplace)
       alert.beginSheetModal(for: window) {

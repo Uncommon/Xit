@@ -45,13 +45,13 @@ enum AccountType: Int
     }
   }
   
-  var displayName: String
+  var displayName: UIString
   {
     switch self {
-      case .gitHub: return "GitHub"
-      case .bitbucketCloud: return "Bitbucket Cloud"
-      case .bitbucketServer: return "Bitbucket Server"
-      case .teamCity: return "TeamCity"
+      case .gitHub: return ›"GitHub"
+      case .bitbucketCloud: return ›"Bitbucket Cloud"
+      case .bitbucketServer: return ›"Bitbucket Server"
+      case .teamCity: return ›"TeamCity"
     }
   }
   

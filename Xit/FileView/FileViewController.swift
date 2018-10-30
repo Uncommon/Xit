@@ -366,7 +366,7 @@ class FileViewController: NSViewController
       DispatchQueue.main.async {
         let cell = NSPathComponentCell()
         
-        cell.title = "Multiple selection"
+        cell.titleString = .multipleSelection
         self.previewPath.setPathComponentCells([cell])
       }
     }

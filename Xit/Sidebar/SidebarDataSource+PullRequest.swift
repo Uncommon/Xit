@@ -86,22 +86,22 @@ extension SideBarDataSource
   }
   
   func prStatusText(status: PullRequestStatus,
-                    approval: PullRequestApproval) -> String?
+                    approval: PullRequestApproval) -> UIString?
   {
     switch status {
       case .open:
         switch approval {
           case .approved:
-            return "Approved"
+            return .approved
           case .needsWork:
-            return "Needs work"
+            return .needsWork
           case .unreviewed:
             return nil
         }
       case .merged:
-        return "Merged"
+        return .merged
       case .inactive:
-        return "Closed"
+        return .closed
       case .other:
         return nil
     }
@@ -140,7 +140,8 @@ extension SideBarDataSource
                                              approval: pullRequest.userApproval)
     if let text = prStatusText(status: pullRequest.status,
                                approval: pullRequest.userApproval) {
-      view.pullRequestButton.toolTip = "(\(text)) \(pullRequest.displayName)"
+      view.pullRequestButton.toolTip =
+          "(\(text.rawValue)) \(pullRequest.displayName)"
     }
     else {
       view.pullRequestButton.toolTip = pullRequest.displayName
@@ -205,7 +206,7 @@ extension SideBarDataSource
     else { return }
     let alert = NSAlert()
     
-    alert.messageText = "Pull request action failed."
+    alert.messageString = .prActionFailed
     alert.informativeText = (error as CustomStringConvertible).description
     alert.beginSheetModal(for: window, completionHandler: nil)
   }

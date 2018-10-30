@@ -28,6 +28,10 @@ struct UIString: RawRepresentable
     rawValue = error.localizedDescription
   }
   
+  static let emptyString = ›""
+  
+  static let branchNameInvalid = ›"Not a valid name"
+  static let branchNameExists = ›"Branch already exists"
   static let trackingBranchMissing = ›"This branch's remote tracking branch does not exist."
   static let trackingToolTip = ›"The active branch is tracking this remote branch"
   
@@ -68,12 +72,19 @@ struct UIString: RawRepresentable
   static let cantApplyHunk = ›"This hunk cannot be applied"
   static let files = ›"Files"
   static let multipleItemsSelected = ›"Multiple items selected"
+  static let multipleSelection = ›"Multiple selection"
   static let noChanges = ›"No changes for this selection"
+  static let none = ›"None"
   static let noSelection = ›"No selection"
   static let noStagedChanges = ›"No staged changes for this selection"
   static let noUnstagedChanges = ›"No unstaged changes for this selection"
   static let parent = ›"Parent:"
   static let parents = ›"Parents:"
+  static let replaceMessagePrompt = ›"Replace the commit message?"
+  static let replaceMessageInfo = ›"""
+      Do you want to replace the commit message with the message from
+      the previous commit?
+      """
   static let staged = ›"Staged"
   static let whitespaceChangesHidden = ›"Whitespace changes are hidden"
 
@@ -81,10 +92,13 @@ struct UIString: RawRepresentable
   static let confirmRevertMultiple = ›"Revert changes to the selected files?"
   
   // Format strings
+  static let authorFormat = "%@ (author)"
   static let checkOutFormat = "Check out \"%@\""
+  static let committerFormat = "%@ (committer)"
   static let confirmPushFormat = "Push local branch \"%1$@\" to remote \"%2$@\"?"
   static let confirmRevertFormat = "Are you sure you want to revert changes to %@?"
   static let confirmDeleteFormat = "Delete the %1$@ %2$@?"
+  static let createTrackingFormat = "Create local branch tracking %@"
   static let mergeFormat = "Merge \"%1$@\" into \"%2$@\""
   static let renamePromptFormat = "Rename branch \"%@\" to:"
   static let trackingMissingInfoFormat = """
@@ -92,9 +106,17 @@ struct UIString: RawRepresentable
       clear the tracking branch setting, or delete your local branch "%@"?
       """
 
+  static func author(_ name: String) -> UIString
+  {
+    return UIString(format: UIString.authorFormat, name)
+  }
   static func checkOut(_ branch: String) -> UIString
   {
     return UIString(format: UIString.renamePromptFormat, branch)
+  }
+  static func committer(_ name: String) -> UIString
+  {
+    return UIString(format: UIString.committerFormat, name)
   }
   static func confirmPush(localBranch: String, remote: String) -> UIString
   {
@@ -107,6 +129,10 @@ struct UIString: RawRepresentable
   static func confirmDelete(kind: String, name: String) -> UIString
   {
     return UIString(format: UIString.confirmDeleteFormat, kind, name)
+  }
+  static func createTracking(_ remoteBranch: String) -> UIString
+  {
+    return UIString(format: UIString.createTrackingFormat, remoteBranch)
   }
   static func merge(_ source: String, _ target: String) -> UIString
   {
@@ -144,6 +170,22 @@ struct UIString: RawRepresentable
   static let invalidName = ›"The name is not valid."
   static let invalidURL = ›"The URL is not valid."
   static let unexpectedError = ›"An unexpected error occurred."
+  
+  // Services
+  static let prActionFailed = ›"Pull request action failed."
+  
+  static let buildStatusTemplate = "Builds for %@"
+  
+  static func buildStatus(_ branch: String) -> UIString
+  {
+    return UIString(format: UIString.buildStatusTemplate, branch)
+  }
+  
+  // Pull request status
+  static let approved = ›"Approved"
+  static let needsWork = ›"Needs work"
+  static let merged = ›"Merged"
+  static let closed = ›"Closed"
 }
 
 extension NSAlert
@@ -189,5 +231,22 @@ extension NSMenuItem
   {
     get { return UIString(rawValue: title) }
     set { title = newValue.rawValue }
+  }
+}
+
+extension NSPathComponentCell
+{
+  var titleString: UIString
+  {
+    get { return UIString(rawValue: title) }
+    set { title = newValue.rawValue }
+  }
+}
+
+extension NSTextField
+{
+  convenience init(labelWithUIString uiString: UIString)
+  {
+    self.init(labelWithString: uiString.rawValue)
   }
 }

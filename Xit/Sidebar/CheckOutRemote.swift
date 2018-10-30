@@ -84,7 +84,7 @@ class CheckOutRemoteWindowController: NSWindowController
   func setRemoteBranchName(_ remoteBranch: String)
   {
     loadWindow()
-    promptLabel.stringValue = "Create a local branch tracking \"\(remoteBranch)\""
+    promptLabel.uiStringValue = .createTracking(remoteBranch)
     nameField.stringValue = remoteBranch.deletingFirstPathComponent
     updateCreateButton()
   }
@@ -103,17 +103,17 @@ class CheckOutRemoteWindowController: NSWindowController
   {
     let branchName = nameField.stringValue
     let refName = "refs/heads/" + branchName
-    var errorText = ""
+    var errorText = UIString.emptyString
     
     if !XTRefFormatter.isValidRefString(refName) {
-      errorText = "Not a valid name"
+      errorText = .branchNameInvalid
     }
     if repo.localBranch(named: branchName) != nil {
-      errorText = "Branch already exists"
+      errorText = .branchNameExists
     }
     
-    errorLabel.stringValue = errorText
-    createButton.isEnabled = errorText.isEmpty
+    errorLabel.uiStringValue = errorText
+    createButton.isEnabled = errorText.rawValue.isEmpty
   }
 
   @IBAction func cancelSheet(_ sender: Any)

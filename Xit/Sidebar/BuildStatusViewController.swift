@@ -58,7 +58,7 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
   override func viewDidLoad()
   {
     super.viewDidLoad()
-    headingLabel.stringValue = "Builds for \(branch.strippedName)"
+    headingLabel.uiStringValue = .buildStatus(branch.strippedName)
   }
 
   func filterStatuses()

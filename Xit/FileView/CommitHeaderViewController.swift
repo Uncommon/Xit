@@ -54,9 +54,9 @@ class CommitHeaderViewController: NSViewController
     else {
       let sigs = [commit.authorSig, commit.committerSig]
       
-      let authorName = commit.authorSig.map { "\($0.nameEmail) (author)" }
-      let committerName = commit.authorSig.map { "\($0.nameEmail) (committer)" }
-      let names = [authorName, committerName].compactMap { $0 }
+      let author = commit.authorSig.map { UIString.author($0.nameEmail) }
+      let committer = commit.committerSig.map { UIString.committer($0.nameEmail) }
+      let names = [author, committer].compactMap { $0?.rawValue }
 
       nameField.stringValue = names.joined(separator: "\n")
       
@@ -73,7 +73,7 @@ class CommitHeaderViewController: NSViewController
     clearParents()
     switch commit.parentOIDs.count {
       case 0:
-        let noneLabel = NSTextField(labelWithString: "None")
+        let noneLabel = NSTextField(labelWithUIString: .none)
       
         parentsStack.addArrangedSubview(noneLabel)
       case 1:

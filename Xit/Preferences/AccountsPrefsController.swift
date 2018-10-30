@@ -314,7 +314,7 @@ extension AccountsPrefsController: NSTableViewDelegate
     
     switch tableColumn.identifier {
       case ColumnID.service:
-        view.textField?.stringValue = account.type.displayName
+        view.textField?.uiStringValue = account.type.displayName
         view.imageView?.image = NSImage(named: account.type.imageName)
       case ColumnID.userName:
         view.textField?.stringValue = account.user
