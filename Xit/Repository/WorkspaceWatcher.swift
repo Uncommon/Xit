@@ -4,7 +4,7 @@ import Foundation
 @objc(XTWorkspaceWatcher)
 class WorkspaceWatcher: NSObject
 {
-  unowned let repository: XTRepository
+  weak var repository: XTRepository?
   private(set) var stream: FileEventStream! = nil
   var skipIgnored = true
   
@@ -35,6 +35,8 @@ class WorkspaceWatcher: NSObject
   
   func observeEvents(_ paths: [String])
   {
+    guard let repository = self.repository
+    else { return }
     var userInfo = [String: Any]()
   
     if skipIgnored {
@@ -50,7 +52,7 @@ class WorkspaceWatcher: NSObject
   
     DispatchQueue.main.async {
       NotificationCenter.default.post(name: .XTRepositoryWorkspaceChanged,
-                                      object: self.repository,
+                                      object: repository,
                                       userInfo: userInfo)
     }
   }
