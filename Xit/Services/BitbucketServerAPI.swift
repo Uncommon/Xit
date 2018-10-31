@@ -277,6 +277,11 @@ class BitbucketServerAPI: BasicAuthService, ServiceAPI
     
     fullBaseURL.path = BitbucketServerAPI.rootPath
     
+    guard let location = fullBaseURL.url
+    else { return nil }
+    
+    account.location = location
+    
     super.init(account: account, password: password,
                authenticationPath: "users/\(account.user)")
     
