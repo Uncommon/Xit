@@ -1,20 +1,21 @@
 import Foundation
 import Siesta
 
+extension Notification.Name
+{
+  static let authenticationStatusChanged = Notification.Name("AuthStatusChanged")
+}
+
 /// Abstract service class that handles HTTP basic authentication.
 class BasicAuthService: Siesta.Service
 {
-  static let AuthenticationStatusChangedNotification = "AuthStatusChanged"
-  
   var account: Account
   var authenticationStatus: Services.Status
   {
     didSet
     {
-      NotificationCenter.default.post(
-        name: Notification.Name(rawValue:
-          BasicAuthService.AuthenticationStatusChangedNotification),
-        object: self)
+      NotificationCenter.default.post(name: .authenticationStatusChanged,
+                                      object: self)
     }
   }
   private let authenticationPath: String

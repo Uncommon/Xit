@@ -39,8 +39,7 @@ class AccountsPrefsController: NSViewController
     
     AccountsManager.manager.readAccounts()
     authStatusObserver = notificationCenter.addObserver(
-        forName: NSNotification.Name(rawValue:
-            BasicAuthService.AuthenticationStatusChangedNotification),
+        forName: .authenticationStatusChanged,
         object: nil,
         queue: OperationQueue.main) {
       [weak self] (_) in
