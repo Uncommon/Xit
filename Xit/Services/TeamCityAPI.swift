@@ -106,6 +106,11 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
     
     fullBaseURL.path = TeamCityAPI.rootPath
     
+    guard let location = fullBaseURL.url
+    else { return nil }
+    
+    account.location = location
+    
     super.init(account: account, password: password, authenticationPath: "/")
     
     configure(description: "xml") {
