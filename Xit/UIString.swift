@@ -30,6 +30,9 @@ struct UIString: RawRepresentable
   
   static let emptyString = ›""
   
+  static let openPrompt = ›"Open a directory that contains a Git repository"
+  static let notARepository = ›"That folder does not contain a Git repository."
+  
   static let branchNameInvalid = ›"Not a valid name"
   static let branchNameExists = ›"Branch already exists"
   static let trackingBranchMissing = ›"This branch's remote tracking branch does not exist."
@@ -240,6 +243,20 @@ extension NSPathComponentCell
   {
     get { return UIString(rawValue: title) }
     set { title = newValue.rawValue }
+  }
+}
+
+extension NSSavePanel
+{
+  var messageString: UIString
+  {
+    get { return UIString(rawValue: message) }
+    set { message = newValue.rawValue }
+  }
+  var promptString: UIString
+  {
+    get { return UIString(rawValue: prompt) }
+    set { prompt = newValue.rawValue }
   }
 }
 

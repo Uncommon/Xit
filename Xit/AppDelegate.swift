@@ -32,7 +32,7 @@ class AppDelegate: NSObject
     newOpenPanel.canChooseFiles = false
     newOpenPanel.canChooseDirectories = true
     newOpenPanel.delegate = self
-    newOpenPanel.message = "Open a directory that contains a Git repository"
+    newOpenPanel.messageString = .openPrompt
     
     newOpenPanel.begin {
       (result) in
@@ -94,7 +94,7 @@ extension AppDelegate: NSOpenSavePanelDelegate
       if let window = sender as? NSWindow {
         let alert = NSAlert()
         
-        alert.messageText = "That folder does not contain a Git repository."
+        alert.messageString = .notARepository
         alert.beginSheetModal(for: window, completionHandler: nil)
       }
       throw NSError(domain: NSCocoaErrorDomain,
