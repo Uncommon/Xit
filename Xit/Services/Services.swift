@@ -56,6 +56,43 @@ class Services
     return tcServices + bbServices
   }
   
+  init()
+  {
+    NotificationCenter.default.addObserver(
+        forName: .authenticationStatusChanged,
+        object: nil,
+        queue: .main)
+    {
+      (notification) in
+      guard let service = notification.object as? BasicAuthService
+      else { return }
+        
+      if case .failed(let error) = service.authenticationStatus {
+        guard !(PrefsWindowController.shared.window?.isKeyWindow ?? false)
+        else { return }
+        let alert = NSAlert()
+        
+        alert.messageString = .authFailed(
+                service: service.account.type.displayName.rawValue,
+                account: service.account.user)
+        alert.informativeText = error?.localizedDescription ?? ""
+        alert.addButton(withString: .ok)
+        alert.addButton(withString: .retry)
+        alert.addButton(withString: .openPrefs)
+        switch alert.runModal() {
+          case .alertFirstButtonReturn: // OK
+            break
+          case .alertSecondButtonReturn: // Retry
+            service.attemptAuthentication()
+          case .alertThirdButtonReturn: // Open prefs
+            PrefsWindowController.show(tab: .accounts)
+          default:
+            break
+        }
+      }
+    }
+  }
+  
   /// Creates an API object for each account so they can start with
   /// authorization and other state info.
   func initializeServices()

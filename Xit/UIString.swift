@@ -49,9 +49,12 @@ struct UIString: RawRepresentable
   static let discard = ›"Discard"
   static let drop = ›"Drop"
   static let hideSidebar = ›"Hide Sidebar"
+  static let ok = ›"OK"
+  static let openPrefs = ›"Open Preferences"
   static let pop = ›"Pop"
   static let push = ›"Push"
   static let replace = ›"Replace"
+  static let retry = ›"Retry"
   static let revert = ›"Revert"
   static let save = ›"Save"
   static let showSidebar = ›"Show Sidebar"
@@ -177,8 +180,13 @@ struct UIString: RawRepresentable
   // Services
   static let prActionFailed = ›"Pull request action failed."
   
+  static let authFailedTemplate = "Signing in to the %1$@ account %2$@ failed."
   static let buildStatusTemplate = "Builds for %@"
   
+  static func authFailed(service: String, account: String) -> UIString
+  {
+    return UIString(format: UIString.authFailedTemplate, service, account)
+  }
   static func buildStatus(_ branch: String) -> UIString
   {
     return UIString(format: UIString.buildStatusTemplate, branch)
