@@ -49,7 +49,7 @@ class AppDelegate: NSObject
   
   @IBAction func showPreferences(_ sender: Any?)
   {
-    PrefsWindowController.sharedPrefsController.window?
+    PrefsWindowController.shared.window?
         .makeKeyAndOrderFront(nil)
   }
   

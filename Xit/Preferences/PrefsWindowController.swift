@@ -3,7 +3,7 @@ import Cocoa
 
 class PrefsWindowController: NSWindowController
 {
-  static let sharedPrefsController =
+  static let shared =
       NSStoryboard(name: "Preferences", bundle: nil)
       .instantiateInitialController()!
       as! PrefsWindowController
