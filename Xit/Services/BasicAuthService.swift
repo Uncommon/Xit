@@ -81,25 +81,25 @@ class BasicAuthService: Siesta.Service
       (resource, event) in
       switch event {
         
-      case .newData, .notModified:
-        self.authenticationStatus = .done
-        self.didAuthenticate(responseResource: resource)
+        case .newData, .notModified:
+          self.authenticationStatus = .done
+          self.didAuthenticate(responseResource: resource)
         
-      case .error:
-        guard let error = resource.latestError
+        case .error:
+          guard let error = resource.latestError
           else {
             NSLog("Error event with no error")
             self.authenticationStatus = .failed(nil)
             return
-        }
+          }
+          
+          self.authenticationStatus =
+              (error.cause is Siesta.RequestError.Cause.RequestCancelled)
+              ? .notStarted
+              : .failed(error)
         
-        self.authenticationStatus =
-          (error.cause is Siesta.RequestError.Cause.RequestCancelled)
-          ? .notStarted
-          : .failed(error)
-        
-      default:
-        break
+        default:
+          break
       }
     }
     // Use a custom request to skip the XML transformer
