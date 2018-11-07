@@ -106,7 +106,11 @@ public class HistoryTableController: NSViewController
       history.reset()
     }
     repository.queue.executeOffMainThread {
-      kdebug_signpost_start(Signposts.historyWalking, 0, 0, 0, 0)
+      signpostStart(.historyWalking)
+      defer {
+        signpostEnd(.historyWalking)
+      }
+      
       guard let walker = repository.walker()
       else {
         NSLog("RevWalker failed")
@@ -129,15 +133,14 @@ public class HistoryTableController: NSViewController
           history.appendCommit(commit)
         }
       }
-      kdebug_signpost_end(Signposts.historyWalking, 0, 0, 0, 0)
       
       DispatchQueue.global(qos: .utility).async {
         // Get off the queue thread, but run this as a queue task so that
         // progress will be displayed.
         self.repository.queue.executeTask {
-          kdebug_signpost_start(Signposts.connectCommits, 0, 0, 0, 0)
-          history.connectCommits(batchSize: batchSize) {}
-          kdebug_signpost_end(Signposts.connectCommits, 0, 0, 0, 0)
+          withSignpost(.connectCommits) {
+            history.connectCommits(batchSize: batchSize) {}
+          }
         }
         DispatchQueue.main.async {
           [weak self] in

@@ -169,10 +169,9 @@ class SideBarDataSource: NSObject
   {
     repository?.queue.executeOffMainThread {
       [weak self] in
-      kdebug_signpost_start(Signposts.sidebarReload, 0, 0, 0, 0)
-      guard let newRoots = self?.loadRoots()
+      guard let newRoots = withSignpost(.sidebarReload,
+                                        call: { self?.loadRoots() })
       else { return }
-      kdebug_signpost_end(Signposts.sidebarReload, 0, 0, 0, 0)
 
       DispatchQueue.main.async {
         self?.afterReload(newRoots)

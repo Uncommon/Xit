@@ -295,8 +295,7 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
                                 batchSize: batchSize,
                                 starting: startingConnections)
       
-      kdebug_signpost_start(Signposts.generateLines, UInt(batchStart),
-                            0, 0, 0)
+      signpostStart(.generateLines, UInt(batchStart))
       DispatchQueue.concurrentPerform(iterations: batchSize) {
         (index) in
         guard !checkAbort() && (index + batchStart < entries.count)
@@ -309,8 +308,7 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
         generateLines(entry: entry, connections: connections[index])
         postProgress?(batchSize, batchStart/batchSize, 1, index)
       }
-      kdebug_signpost_end(Signposts.generateLines, UInt(batchStart),
-                          0, 0, 0)
+      signpostEnd(.generateLines, UInt(batchStart))
 
       startingConnections = newStart
       batchStart += batchSize
@@ -322,9 +320,9 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
                            starting: [Connection])
     -> ([[Connection]], [Connection])
   {
-    kdebug_signpost_start(Signposts.generateConnections, UInt(batchStart), 0, 0, 0)
+    signpostStart(.generateConnections, UInt(batchStart))
     defer {
-      kdebug_signpost_end(Signposts.generateConnections, UInt(batchStart), 0, 0, 0)
+      signpostEnd(.generateConnections, UInt(batchStart))
     }
     
     var result = [[Connection]]()

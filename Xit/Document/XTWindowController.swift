@@ -120,7 +120,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     
     let window = self.window!
     
-    kdebug_signpost(Signposts.windowControllerLoad, 0, 0, 0, 0)
+    signpost(.windowControllerLoad)
     window.titleVisibility = .hidden
     window.delegate = self
     historyController = HistoryViewController()
