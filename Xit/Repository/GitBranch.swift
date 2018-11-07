@@ -183,23 +183,10 @@ public class GitRemoteBranch: GitBranch, RemoteBranch
   public var shortName: String
   { return name.removingPrefix(BranchPrefixes.remotes) }
 
-  init?(repository: XTRepository, name: String)
-  {
-    guard let branch = GitBranch.lookUpBranch(
-        name: name, repository: repository.gitRepo,
-        branchType: GIT_BRANCH_REMOTE)
-    else { return nil }
-    
-    super.init(branch: branch)
-  }
-  
-  required public init(branch: OpaquePointer)
-  {
-    super.init(branch: branch)
-  }
-  
-  public override var remoteName: String?
-  {
+  // Getting the remote name involves looking it up in the config file
+  // which is a bit expensive
+  private lazy var cachedRemoteName: String? = {
+    () -> String? in
     let repo = git_reference_owner(branchRef)
     let buffer = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
     
@@ -213,5 +200,22 @@ public class GitRemoteBranch: GitBranch, RemoteBranch
     let data = Data(bytes: buffer.pointee.ptr, count: buffer.pointee.size)
     
     return String(data: data, encoding: .utf8)
+  }()
+  
+  public override var remoteName: String? { return cachedRemoteName }
+
+  init?(repository: XTRepository, name: String)
+  {
+    guard let branch = GitBranch.lookUpBranch(
+        name: name, repository: repository.gitRepo,
+        branchType: GIT_BRANCH_REMOTE)
+    else { return nil }
+    
+    super.init(branch: branch)
+  }
+  
+  required public init(branch: OpaquePointer)
+  {
+    super.init(branch: branch)
   }
 }
