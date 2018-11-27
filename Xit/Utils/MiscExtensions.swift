@@ -284,6 +284,18 @@ extension NSSplitView
     animation.duration = 0.2
     animation.start()
   }
+  
+  // Workaround because isSubviewCollapsed doesn't return the expected value
+  // while a splitter is being dragged
+  /// Returns the width or height, as appropriate, of the given subview.
+  func subviewLength(_ index: Int) -> CGFloat
+  {
+    guard index <= subviews.count
+    else { return 0 }
+    let size = subviews[index].frame.size
+    
+    return isVertical ? size.width : size.height
+  }
 }
 
 extension NSValidatedUserInterfaceItem

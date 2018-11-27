@@ -164,6 +164,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
         self.historyAutoCollapsed = false
       }
       self.titleBarController?.searchButton.isEnabled = !collapsed
+      self.titleBarController?.updateViewControls()
     }
     sidebarController.repo = repo
     historyController.finishLoad(repository: repo)

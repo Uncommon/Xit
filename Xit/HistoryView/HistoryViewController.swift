@@ -29,12 +29,12 @@ class HistoryViewController: NSViewController
   
   var historyHidden: Bool
   {
-    return mainSplitView.isSubviewCollapsed(mainSplitView.subviews[0])
+    return mainSplitView.subviewLength(0) == 0
   }
   
   var detailsHidden: Bool
   {
-    return mainSplitView.isSubviewCollapsed(mainSplitView.subviews[1])
+    return mainSplitView.subviewLength(1) == 0
   }
   
   override var nibName: NSNib.Name?
