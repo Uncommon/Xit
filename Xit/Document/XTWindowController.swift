@@ -127,17 +127,6 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     mainSplitView.addArrangedSubview(historyController.view)
     mainSplitView.removeArrangedSubview(mainSplitView.arrangedSubviews[1])
     window.makeFirstResponder(historyController.historyTable)
-    NotificationCenter.default.addObserver(
-        forName: NSSplitView.didResizeSubviewsNotification,
-        object: historyController.mainSplitView, queue: nil) {
-      (_) in
-      guard let split = self.historyController.mainSplitView
-      else { return }
-      let frameSize = split.subviews[0].frame.size
-      let paneSize = split.isVertical ? frameSize.width : frameSize.height
-      
-      self.titleBarController?.searchButton.isEnabled = paneSize != 0
-    }
     
     let repo = xtDocument!.repository!
     
@@ -164,14 +153,17 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
         forName: NSSplitView.didResizeSubviewsNotification,
         object: historyController.mainSplitView, queue: nil) {
       [weak self] (_) in
-      guard let self = self
+      guard let self = self,
+            let split = self.historyController.mainSplitView
       else { return }
-      let frame = self.historyController.mainSplitView.subviews[0].frame
-      
-      // Check width and height because orientation can change
-      if frame.size.height != 0 && frame.size.width != 0 {
+      let frameSize = split.subviews[0].frame.size
+      let paneSize = split.isVertical ? frameSize.width : frameSize.height
+      let collapsed = paneSize == 0
+
+      if !collapsed {
         self.historyAutoCollapsed = false
       }
+      self.titleBarController?.searchButton.isEnabled = !collapsed
     }
     sidebarController.repo = repo
     historyController.finishLoad(repository: repo)
