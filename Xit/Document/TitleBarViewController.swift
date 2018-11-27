@@ -57,6 +57,7 @@ class TitleBarViewController: NSViewController
   @IBOutlet weak var branchPopup: NSPopUpButton!
   @IBOutlet weak var operationButton: NSButton!
   @IBOutlet weak var operationControls: NSSegmentedControl!
+  @IBOutlet weak var searchButton: NSButton!
   @IBOutlet weak var viewControls: NSSegmentedControl!
   @IBOutlet weak var operationViewSpacing: NSLayoutConstraint!
   @IBOutlet var stashMenu: NSMenu!

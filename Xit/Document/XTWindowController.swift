@@ -127,6 +127,17 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     mainSplitView.addArrangedSubview(historyController.view)
     mainSplitView.removeArrangedSubview(mainSplitView.arrangedSubviews[1])
     window.makeFirstResponder(historyController.historyTable)
+    NotificationCenter.default.addObserver(
+        forName: NSSplitView.didResizeSubviewsNotification,
+        object: historyController.mainSplitView, queue: nil) {
+      (_) in
+      guard let split = self.historyController.mainSplitView
+      else { return }
+      let frameSize = split.subviews[0].frame.size
+      let paneSize = split.isVertical ? frameSize.width : frameSize.height
+      
+      self.titleBarController?.searchButton.isEnabled = paneSize != 0
+    }
     
     let repo = xtDocument!.repository!
     

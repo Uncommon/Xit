@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -14,6 +15,7 @@
                 <outlet property="operationViewSpacing" destination="Ht0-BG-KbQ" id="h8C-Sm-elL"/>
                 <outlet property="proxyIcon" destination="WKb-MR-WPP" id="3o0-jU-AzM"/>
                 <outlet property="remoteControls" destination="m2X-wZ-tfZ" id="QxK-8s-npQ"/>
+                <outlet property="searchButton" destination="wtJ-QB-nan" id="k5Z-he-ech"/>
                 <outlet property="spinner" destination="PFe-lZ-RQc" id="IoQ-0M-3Jh"/>
                 <outlet property="stashButton" destination="agd-vO-eY9" id="RGE-S2-wIq"/>
                 <outlet property="stashMenu" destination="P48-t6-mXf" id="Z9i-Re-Yws"/>
@@ -64,10 +66,10 @@
                     </connections>
                 </segmentedControl>
                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="DfW-Hf-FKe" customClass="TitleStatusView" customModule="Xit" customModuleProvider="target">
-                    <rect key="frame" x="296" y="9" width="199" height="25"/>
+                    <rect key="frame" x="296" y="9" width="200" height="25"/>
                     <subviews>
                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FL9-n6-pxD" customClass="DraggingButton" customModule="Xit" customModuleProvider="target">
-                            <rect key="frame" x="1" y="-2" width="197" height="28"/>
+                            <rect key="frame" x="1" y="-1" width="198" height="26"/>
                             <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="RfW-od-VIn">
                                 <behavior key="behavior" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
@@ -107,7 +109,7 @@
                             <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="branchTemplate" id="DxX-kV-T9C"/>
                         </imageView>
                         <popUpButton focusRingType="none" translatesAutoresizingMaskIntoConstraints="NO" id="UF4-D2-qhU">
-                            <rect key="frame" x="122" y="2" width="69" height="21"/>
+                            <rect key="frame" x="122" y="2" width="70" height="21"/>
                             <popUpButtonCell key="cell" type="bevel" title="branch" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" state="on" focusRingType="none" imageScaling="proportionallyDown" inset="2" autoenablesItems="NO" selectedItem="sSQ-02-kT9" id="QYv-hf-gtv">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                 <font key="font" metaFont="menu"/>
@@ -146,7 +148,7 @@
                     </constraints>
                 </customView>
                 <button hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="aNh-jL-whD">
-                    <rect key="frame" x="511" y="11" width="22" height="19"/>
+                    <rect key="frame" x="512" y="11" width="22" height="19"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="22" id="sCv-3O-eG1"/>
                     </constraints>
@@ -156,7 +158,7 @@
                     </buttonCell>
                 </button>
                 <segmentedControl hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="IIb-W1-mF1">
-                    <rect key="frame" x="537" y="9" width="67" height="23"/>
+                    <rect key="frame" x="538" y="9" width="67" height="23"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="22" id="Li8-d0-CO5"/>
                     </constraints>
@@ -189,7 +191,7 @@
                     </connections>
                 </segmentedControl>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wtJ-QB-nan" userLabel="Find Button">
-                    <rect key="frame" x="649" y="8" width="29" height="25"/>
+                    <rect key="frame" x="649" y="9" width="29" height="23"/>
                     <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="NSTouchBarSearchTemplate" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="m60-rp-dnd">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
@@ -266,7 +268,7 @@
         </menu>
     </objects>
     <resources>
-        <image name="NSFolder" width="32" height="32"/>
+        <image name="NSFolder" width="128" height="128"/>
         <image name="NSGoLeftTemplate" width="9" height="12"/>
         <image name="NSGoRightTemplate" width="9" height="12"/>
         <image name="NSTouchBarSearchTemplate" width="19" height="30"/>
