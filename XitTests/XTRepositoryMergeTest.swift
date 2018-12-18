@@ -95,6 +95,17 @@ class XTRepositoryMergeTest: XTTest
            selection.unstagedFileList.changes.isEmpty
   }
   
+  func assertWorkspaceContent(staged: [String], unstaged: [String],
+                              file: StaticString = #file, line: UInt = #line)
+  {
+    let selection = StagingSelection(repository: repository)
+    
+    XCTAssertEqual(selection.fileList.changes.map { $0.path }, staged,
+                   "staged", file: file, line: line)
+    XCTAssertEqual(selection.unstagedFileList.changes.map { $0.path }, unstaged,
+                   "unstaged", file: file, line: line)
+  }
+  
   // Fast-forward case. This could also have a ff-only variant.
   func testMergeC0C1()
   {
@@ -106,7 +117,7 @@ class XTRepositoryMergeTest: XTTest
 
     XCTAssertNoThrow(try self.repository.merge(branch: c1))
     XCTAssertEqual(try! String(contentsOf: repository.fileURL(fileName)), result1)
-    XCTAssertTrue(isWorkspaceClean())
+    assertWorkspaceContent(staged: [], unstaged: [])
   }
   
   // Actually merging changes.
@@ -121,7 +132,7 @@ class XTRepositoryMergeTest: XTTest
     XCTAssertNoThrow(try repository.checkOut(branch: "c1"))
     XCTAssertNoThrow(try self.repository.merge(branch: c2))
     XCTAssertEqual(try! String(contentsOf: repository.fileURL(fileName)), result15)
-    XCTAssertTrue(isWorkspaceClean())
+    assertWorkspaceContent(staged: [], unstaged: [])
   }
   
   // Not from the git test.
