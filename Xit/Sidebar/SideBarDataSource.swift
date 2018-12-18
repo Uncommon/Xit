@@ -312,14 +312,16 @@ class SideBarDataSource: NSObject
                                                       selection: selection))
     }
     
-    if let tags = try? repo.tags().sorted(by: { $0.name < $1.name }) {
-      let tagsGroup = newRoots[XTGroupIndex.tags.rawValue]
-      
-      for tag in tags {
-        let tagItem = TagSidebarItem(tag: tag)
-        let tagParent = parent(for: tag.name, groupItem: tagsGroup)
+    withSignpost(.loadTags) {
+      if let tags = try? repo.tags().sorted(by: { $0.name < $1.name }) {
+        let tagsGroup = newRoots[XTGroupIndex.tags.rawValue]
         
-        tagParent.children.append(tagItem)
+        for tag in tags {
+          let tagItem = TagSidebarItem(tag: tag)
+          let tagParent = parent(for: tag.name, groupItem: tagsGroup)
+          
+          tagParent.children.append(tagItem)
+        }
       }
     }
     

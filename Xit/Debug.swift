@@ -12,6 +12,7 @@ enum Signpost: UInt32
   case loadIndex = 7
   case loadWorkspace = 8
   case detectIndexChanged = 9
+  case loadTags = 10
 }
 
 func signpost(_ code: Signpost,
@@ -29,8 +30,8 @@ func signpostStart(_ code: Signpost,
 }
 
 func signpostEnd(_ code: Signpost,
-              _ arg1: UInt = 0, _ arg2: UInt = 0,
-              _ arg3: UInt = 0, _ arg4: UInt = 0)
+                 _ arg1: UInt = 0, _ arg2: UInt = 0,
+                 _ arg3: UInt = 0, _ arg4: UInt = 0)
 {
   kdebug_signpost_end(code.rawValue, arg1, arg2, arg3, arg4)
 }
