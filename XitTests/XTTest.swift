@@ -186,6 +186,20 @@ class XTTest: XCTestCase
     return write(text: text, to: FileName.file1)
   }
   
+  func assertContent(_ text: String, file: String, line: UInt = #line, sourceFile: StaticString = #file)
+  {
+    guard let content = try? String(contentsOfFile: repoPath.appending(pathComponent: file))
+    else {
+      XCTFail("can't load file", file: sourceFile, line: line)
+      return
+    }
+    guard content == text
+    else {
+      XCTFail("content mismatch", file: sourceFile, line: line)
+      return
+    }
+  }
+  
   func makeStash() throws
   {
     writeTextToFile1("stashy")
