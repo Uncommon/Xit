@@ -1619,7 +1619,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					RBSplitView/Source/,
 					"\"$(SRCROOT)/objective-git/External/libgit2/include\"",
 					"$(inherited)",
 				);
@@ -1730,7 +1729,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					RBSplitView/Source/,
 					"\"$(SRCROOT)/objective-git/External/libgit2/include\"",
 					"$(inherited)",
 				);
@@ -1775,7 +1773,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					RBSplitView/Source/,
 					"\"$(SRCROOT)/objective-git/External/libgit2/include\"",
 					"$(inherited)",
 				);
