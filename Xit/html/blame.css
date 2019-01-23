@@ -8,7 +8,7 @@ body {
   tab-size: 4;
 }
 table {
-  background-color: #EEE;
+  background-color: var(--leftBackground);
   border: 0;
   border-collapse: collapse;
   float: left;

@@ -106,6 +106,7 @@ class WebViewController: NSViewController
     
     let names = [
           "addBackground",
+          "background",
           "blameBorder",
           "blameStart",
           "buttonActiveBorder",
