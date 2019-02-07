@@ -5,18 +5,19 @@ extension XTRepository
   enum Error: Swift.Error
   {
     case alreadyWriting
-    case mergeInProgress
     case cherryPickInProgress
-    case conflict  // List of conflicted files
-    case localConflict
-    case detachedHead
-    case gitError(Int32)
-    case patchMismatch
     case commitNotFound(String?)  // SHA
+    case conflict  // List of conflicted files
+    case detachedHead
     case fileNotFound(String)  // Path
+    case gitError(Int32)
+    case localConflict
+    case mergeInProgress
     case notFound
+    case patchMismatch
     case unexpected
-    
+    case workspaceDirty
+
     var message: String
     {
       switch self {
@@ -53,6 +54,8 @@ extension XTRepository
           return "The item was not found."
         case .unexpected:
           return "An unexpected repository error occurred."
+        case .workspaceDirty:
+          return "There are uncommitted changes."
       }
     }
     
