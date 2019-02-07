@@ -81,7 +81,7 @@ extension SidebarController
           else { return }
           let alert = NSAlert()
           
-          alert.messageText = repoError.message
+          alert.messageString = repoError.message
           alert.beginSheetModal(for: window, completionHandler: nil)
         }
       }

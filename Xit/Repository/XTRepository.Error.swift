@@ -18,44 +18,35 @@ extension XTRepository
     case unexpected
     case workspaceDirty
 
-    var message: String
+    var message: UIString
     {
       switch self {
         case .alreadyWriting:
-          return "A writing operation is already in progress."
+          return .alreadyWriting
         case .mergeInProgress:
-          return "A merge operation is already in progress."
+          return .mergeInProgress
         case .cherryPickInProgress:
-          return "A cherry-pick operation is already in progress."
+          return .cherryPickInProgress
         case .conflict:
-          return """
-          The operation could not be completed because there were
-          conflicts.
-          """
+          return .conflict
         case .localConflict:
-          return """
-          There are conflicted files in the work tree or index.
-          Try checking in or stashing your changes first.
-          """
+          return .localConflict
         case .detachedHead:
-          return "This operation cannot be performed in a detached HEAD state."
+          return .detachedHead
         case .gitError(let code):
-          return "An internal git error (\(code)) occurred."
+          return .gitError(code)
         case .patchMismatch:
-          return """
-          The patch could not be applied because it did not match
-          the file content.
-          """
+          return .patchMismatch
         case .commitNotFound(let sha):
-          return "The commit \(sha ?? "-") was not found."
+          return .commitNotFound(sha)
         case .fileNotFound(let path):
-          return "The file \(path) was not found."
+          return .fileNotFound(path)
         case .notFound:
-          return "The item was not found."
+          return .notFound
         case .unexpected:
-          return "An unexpected repository error occurred."
+          return .unexpected
         case .workspaceDirty:
-          return "There are uncommitted changes."
+          return .workspaceDirty
       }
     }
     

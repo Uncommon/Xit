@@ -319,7 +319,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     else { return }
     let alert = NSAlert()
     
-    alert.messageText = error.message
+    alert.messageString = error.message
     alert.beginSheetModal(for: window, completionHandler: nil)
   }
   

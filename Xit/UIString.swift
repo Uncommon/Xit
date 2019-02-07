@@ -197,6 +197,44 @@ struct UIString: RawRepresentable
   static let needsWork = ›"Needs work"
   static let merged = ›"Merged"
   static let closed = ›"Closed"
+  
+  // Repository errors
+  static let gitErrorFormat = "An internal git error (%@) occurred."
+  static let commitNotFoundFormat = "The commit %@ was not found."
+  static let fileNotFoundFormat = "The file %@ was not found."
+  
+  static func gitError(_ error: Int32) -> UIString
+  {
+    return UIString(format: UIString.gitErrorFormat, error)
+  }
+  static func commitNotFound(_ sha: String?) -> UIString
+  {
+    return UIString(format: UIString.commitNotFoundFormat, sha ?? "-")
+  }
+  static func fileNotFound(_ file: String) -> UIString
+  {
+    return UIString(format: UIString.fileNotFoundFormat, file)
+  }
+  
+  static let alreadyWriting = ›"A writing operation is already in progress."
+  static let mergeInProgress = ›"A merge operation is already in progress."
+  static let cherryPickInProgress = ›"A cherry-pick operation is already in progress."
+  static let conflict = ›"""
+      The operation could not be completed because there were
+      conflicts.
+      """
+  static let localConflict = ›"""
+      There are conflicted files in the work tree or index.
+      Try checking in or stashing your changes first.
+      """
+  static let detachedHead = ›"This operation cannot be performed in a detached HEAD state."
+  static let patchMismatch = ›"""
+      The patch could not be applied because it did not match
+      the file content.
+      """
+  static let notFound = ›"The item was not found."
+  static let unexpected = ›"An unexpected repository error occurred."
+  static let workspaceDirty = ›"There are uncommitted changes."
 }
 
 extension NSAlert

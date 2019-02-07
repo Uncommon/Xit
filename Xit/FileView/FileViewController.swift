@@ -437,7 +437,7 @@ class FileViewController: NSViewController
   {
     let alert = NSAlert()
     
-    alert.messageText = error.message
+    alert.messageString = error.message
     alert.beginSheetModal(for: view.window!, completionHandler: nil)
   }
 
@@ -449,7 +449,7 @@ class FileViewController: NSViewController
     catch let error as XTRepository.Error {
       let alert = NSAlert()
       
-      alert.messageText = error.message
+      alert.messageString = error.message
       alert.beginSheetModal(for: view.window!, completionHandler: nil)
     }
     catch {
