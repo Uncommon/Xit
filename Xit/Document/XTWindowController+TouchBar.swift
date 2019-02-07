@@ -149,7 +149,8 @@ extension XTWindowController: NSTouchBarDelegate
     }
   }
   
-  @IBAction func showStaging(_ sender: Any?)
+  @IBAction
+  func showStaging(_ sender: Any?)
   {
     guard let outline = sidebarController.sidebarOutline
     else { return }

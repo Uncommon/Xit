@@ -12,22 +12,26 @@ class SidebarTableCellView: NSTableCellView
   weak var item: SidebarItem?
   weak var dataSource: SideBarDataSource?
   
-  @IBAction func viewPRWebPage(_ sender: AnyObject)
+  @IBAction
+  func viewPRWebPage(_ sender: AnyObject)
   {
     dataSource?.viewPRWebPage(item: item!)
   }
   
-  @IBAction func approvePR(_ sender: AnyObject)
+  @IBAction
+  func approvePR(_ sender: AnyObject)
   {
     dataSource?.approvePR(item: item!)
   }
   
-  @IBAction func unapprovePR(_ sender: AnyObject)
+  @IBAction
+  func unapprovePR(_ sender: AnyObject)
   {
     dataSource?.unapprovePR(item: item!)
   }
   
-  @IBAction func prNeedsWork(_ sender: AnyObject)
+  @IBAction
+  func prNeedsWork(_ sender: AnyObject)
   {
     dataSource?.prNeedsWork(item: item!)
   }

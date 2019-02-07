@@ -3,7 +3,8 @@ import Cocoa
 
 extension SidebarController
 {
-  @IBAction func sidebarItemRenamed(_ sender: Any)
+  @IBAction
+  func sidebarItemRenamed(_ sender: Any)
   {
     guard let textField = sender as? NSTextField,
           let cellView = textField.superview as? SidebarTableCellView,
@@ -20,7 +21,8 @@ extension SidebarController
     }
   }
   
-  @IBAction func checkOutBranch(_ sender: Any?)
+  @IBAction
+  func checkOutBranch(_ sender: Any?)
   {
     callCommand {
       [weak self] (item) in
@@ -43,7 +45,8 @@ extension SidebarController
     }
   }
   
-  @IBAction func createTrackingBranch(_ sender: Any?)
+  @IBAction
+  func createTrackingBranch(_ sender: Any?)
   {
     guard let item = targetItem() as? RemoteBranchSidebarItem,
           let controller = view.window?.windowController as? XTWindowController
@@ -55,7 +58,8 @@ extension SidebarController
     }
   }
   
-  @IBAction func renameBranch(_ sender: Any?)
+  @IBAction
+  func renameBranch(_ sender: Any?)
   {
     guard let selectedItem = targetItem(),
           let controller = view.window?.windowController as? XTWindowController
@@ -64,7 +68,8 @@ extension SidebarController
     controller.startRenameBranch(selectedItem.title)
   }
   
-  @IBAction func mergeBranch(_ sender: Any?)
+  @IBAction
+  func mergeBranch(_ sender: Any?)
   {
     guard let selectedItem = targetItem() as? BranchSidebarItem,
           let branch = selectedItem.branchObject()
@@ -92,7 +97,8 @@ extension SidebarController
   }
   
   @objc(deleteBranch:)
-  @IBAction func deleteBranch(_ sender: Any?)
+  @IBAction
+  func deleteBranch(_ sender: Any?)
   {
     guard let item = targetItem()
     else { return }
@@ -100,7 +106,8 @@ extension SidebarController
     deleteBranch(item: item)
   }
   
-  @IBAction func deleteTag(_ sender: Any?)
+  @IBAction
+  func deleteTag(_ sender: Any?)
   {
     guard let item = targetItem()
     else { return }
@@ -113,12 +120,14 @@ extension SidebarController
     }
   }
   
-  @IBAction func renameRemote(_ sender: Any?)
+  @IBAction
+  func renameRemote(_ sender: Any?)
   {
     editSelectedRow()
   }
   
-  @IBAction func deleteRemote(_ sender: Any?)
+  @IBAction
+  func deleteRemote(_ sender: Any?)
   {
     callCommand {
       [weak self] (item) in
@@ -126,7 +135,8 @@ extension SidebarController
     }
   }
   
-  @IBAction func copyRemoteURL(_ sender: Any?)
+  @IBAction
+  func copyRemoteURL(_ sender: Any?)
   {
     guard let item = targetItem()
     else { return }
@@ -139,22 +149,26 @@ extension SidebarController
     pasteboard.setString(remoteURL, forType: NSPasteboard.PasteboardType.string)
   }
   
-  @IBAction func popStash(_ sender: Any?)
+  @IBAction
+  func popStash(_ sender: Any?)
   {
     popStash()
   }
   
-  @IBAction func applyStash(_ sender: Any?)
+  @IBAction
+  func applyStash(_ sender: Any?)
   {
     applyStash()
   }
   
-  @IBAction func dropStash(_ sender: Any?)
+  @IBAction
+  func dropStash(_ sender: Any?)
   {
     dropStash()
   }
   
-  @IBAction func showSubmodule(_ sender: Any?)
+  @IBAction
+  func showSubmodule(_ sender: Any?)
   {
     guard let submoduleItem = targetItem() as? SubmoduleSidebarItem
     else { return }
@@ -163,12 +177,14 @@ extension SidebarController
     NSWorkspace.shared.activateFileViewerSelecting([url])
   }
   
-  @IBAction func updateSubmodule(_ sender: Any?)
+  @IBAction
+  func updateSubmodule(_ sender: Any?)
   {
     
   }
   
-  @IBAction func pullRequestClicked(_ sender: Any?)
+  @IBAction
+  func pullRequestClicked(_ sender: Any?)
   {
     
   }

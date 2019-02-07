@@ -13,12 +13,14 @@ class GeneralPrefsConroller: NSViewController
     deemphasizeCheck.boolValue = UserDefaults.standard.deemphasizeMerges
   }
   
-  @IBAction func collapseHistoryClicked(_ sender: Any)
+  @IBAction
+  func collapseHistoryClicked(_ sender: Any)
   {
     UserDefaults.standard.collapseHistory = collapsHistoryCheck.boolValue
   }
   
-  @IBAction func deemphasizeClicked(_ sender: Any)
+  @IBAction
+  func deemphasizeClicked(_ sender: Any)
   {
     UserDefaults.standard.deemphasizeMerges = deemphasizeCheck.boolValue
   }

@@ -473,7 +473,8 @@ class SideBarDataSource: NSObject
     return nil
   }
   
-  @IBAction func showItemStatus(_ sender: NSButton)
+  @IBAction
+  func showItemStatus(_ sender: NSButton)
   {
     guard let item = item(for: sender) as? BranchSidebarItem,
           let branch = item.branchObject()
@@ -491,7 +492,8 @@ class SideBarDataSource: NSObject
     popover.show(relativeTo: sender.bounds, of: sender, preferredEdge: .maxY)
   }
   
-  @IBAction func missingTrackingBranch(_ sender: NSButton)
+  @IBAction
+  func missingTrackingBranch(_ sender: NSButton)
   {
     guard let item = item(for: sender) as? LocalBranchSidebarItem
     else { return }

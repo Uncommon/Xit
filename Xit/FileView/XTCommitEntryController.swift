@@ -88,7 +88,8 @@ class XTCommitEntryController: NSViewController
     updateCommitButton()
   }
   
-  @IBAction func commit(_ sender: NSButton)
+  @IBAction
+  func commit(_ sender: NSButton)
   {
     do {
       try repo.commit(message: commitField.string,
@@ -103,7 +104,8 @@ class XTCommitEntryController: NSViewController
     }
   }
   
-  @IBAction func toggleAmend(_ sender: NSButton)
+  @IBAction
+  func toggleAmend(_ sender: NSButton)
   {
     let newValue = sender.boolValue
   

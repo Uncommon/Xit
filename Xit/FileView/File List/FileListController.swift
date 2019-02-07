@@ -97,17 +97,20 @@ class FileListController: NSViewController
   @IBAction func stage(_ sender: Any) {}
   @IBAction func unstage(_ sender: Any) {}
   
-  @IBAction func stageAll(_ sender: Any)
+  @IBAction
+  func stageAll(_ sender: Any)
   {
     try? repoController.repository.stageAllFiles()
   }
   
-  @IBAction func unstageAll(_ sender: Any)
+  @IBAction
+  func unstageAll(_ sender: Any)
   {
     try? repoController.repository.unstageAllFiles()
   }
   
-  @IBAction func revert(_ sender: Any)
+  @IBAction
+  func revert(_ sender: Any)
   {
     let changes = targetChanges(sender: sender)
     
@@ -131,11 +134,13 @@ class FileListController: NSViewController
     }
   }
   
-  @IBAction func showIgnored(_ sender: Any)
+  @IBAction
+  func showIgnored(_ sender: Any)
   {
   }
   
-  @IBAction func open(_ sender: Any)
+  @IBAction
+  func open(_ sender: Any)
   {
     for change in targetChanges(sender: sender) {
       let url = repoController.repository.fileURL(change.gitPath)
@@ -144,7 +149,8 @@ class FileListController: NSViewController
     }
   }
   
-  @IBAction func showInFinder(_ sender: Any)
+  @IBAction
+  func showInFinder(_ sender: Any)
   {
     let changes = targetChanges(sender: sender)
     let urls = changes.map { repoController.repository.fileURL($0.gitPath) }
@@ -153,7 +159,8 @@ class FileListController: NSViewController
     NSWorkspace.shared.activateFileViewerSelecting(urls)
   }
   
-  @IBAction func viewSwitched(_ sender: Any)
+  @IBAction
+  func viewSwitched(_ sender: Any)
   {
     let listView = viewSwitch.intValue == ViewSegment.list
     

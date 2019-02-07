@@ -116,12 +116,14 @@ class CheckOutRemoteWindowController: NSWindowController
     createButton.isEnabled = errorText.rawValue.isEmpty
   }
 
-  @IBAction func cancelSheet(_ sender: Any)
+  @IBAction
+  func cancelSheet(_ sender: Any)
   {
     endSheet(.cancel)
   }
   
-  @IBAction func create(_ sender: Any)
+  @IBAction
+  func create(_ sender: Any)
   {
     endSheet(.OK)
   }

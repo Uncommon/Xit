@@ -173,7 +173,8 @@ class PreviewsPrefsController: NSViewController
     }
   }
   
-  @IBAction func showFontPanel(_ sender: Any)
+  @IBAction
+  func showFontPanel(_ sender: Any)
   {
     guard let font = textFont
     else { return }

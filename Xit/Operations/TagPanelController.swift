@@ -44,7 +44,8 @@ class TagPanelController: SheetController
     }
   }
   
-  @IBAction func tagTypeChanged(_ sender: NSButton)
+  @IBAction
+  func tagTypeChanged(_ sender: NSButton)
   {
     lightweight = sender == lightweightRadio
   }

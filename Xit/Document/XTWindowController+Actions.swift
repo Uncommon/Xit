@@ -2,13 +2,15 @@ import Foundation
 
 extension XTWindowController
 {
-  @IBAction func refresh(_ sender: AnyObject)
+  @IBAction
+  func refresh(_ sender: AnyObject)
   {
     historyController.reload()
     sidebarController.reload()
   }
   
-  @IBAction func showHideSidebar(_ sender: AnyObject)
+  @IBAction
+  func showHideSidebar(_ sender: AnyObject)
   {
     let sidebarPane = mainSplitView.subviews[0]
     let isCollapsed = sidebarHidden
@@ -24,38 +26,46 @@ extension XTWindowController
     titleBarController!.viewControls.setSelected(sidebarHidden, forSegment: 0)
   }
   
-  @IBAction func showHideHistory(_ sender: AnyObject)
+  @IBAction
+  func showHideHistory(_ sender: AnyObject)
   {
     historyController.toggleHistory(sender)
     historyAutoCollapsed = false
   }
   
-  @IBAction func showHideDetails(_ sender: AnyObject)
+  @IBAction
+  func showHideDetails(_ sender: AnyObject)
   {
     historyController.toggleDetails(sender)
   }
   
-  @IBAction func verticalLayout(_ sender: AnyObject)
+  @IBAction
+  func verticalLayout(_ sender: AnyObject)
   {
     historyController.mainSplitView.isVertical = true
     historyController.mainSplitView.adjustSubviews()
   }
   
-  @IBAction func horizontalLayout(_ sender: AnyObject)
+  @IBAction
+  func horizontalLayout(_ sender: AnyObject)
   {
     historyController.mainSplitView.isVertical = false
     historyController.mainSplitView.adjustSubviews()
   }
   
-  @IBAction func newTag(_: AnyObject)
+  @IBAction
+  func newTag(_: AnyObject)
   {
     _ = startOperation { NewTagOpController(windowController: self) }
   }
   
-  @IBAction func newBranch(_: AnyObject) {}
-  @IBAction func addRemote(_: AnyObject) {}
+  @IBAction
+  func newBranch(_: AnyObject) {}
+  @IBAction
+  func addRemote(_: AnyObject) {}
 
-  @IBAction func goBack(_: AnyObject)
+  @IBAction
+  func goBack(_: AnyObject)
   {
     withNavigating {
       selection.map { navForwardStack.append($0) }
@@ -63,7 +73,8 @@ extension XTWindowController
     }
   }
   
-  @IBAction func goForward(_: AnyObject)
+  @IBAction
+  func goForward(_: AnyObject)
   {
     withNavigating {
       selection.map { navBackStack.append($0) }
@@ -71,22 +82,26 @@ extension XTWindowController
     }
   }
 
-  @IBAction func fetch(_: AnyObject)
+  @IBAction
+  func fetch(_: AnyObject)
   {
     let _: FetchOpController? = startOperation()
   }
   
-  @IBAction func pull(_: AnyObject)
+  @IBAction
+  func pull(_: AnyObject)
   {
     let _: PullOpController? = startOperation()
   }
   
-  @IBAction func push(_: AnyObject)
+  @IBAction
+  func push(_: AnyObject)
   {
     let _: PushOpController? = startOperation()
   }
   
-  @IBAction func stash(_: AnyObject)
+  @IBAction
+  func stash(_: AnyObject)
   {
     let _: StashOperationController? = startOperation()
   }
@@ -112,7 +127,8 @@ extension XTWindowController
     alert.beginSheetModal(for: window!, completionHandler: nil)
   }
   
-  @IBAction func popStash(_: AnyObject)
+  @IBAction
+  func popStash(_: AnyObject)
   {
     // Force cast - stashes() is not in a protocol because of limitations with
     // associated types
@@ -131,7 +147,8 @@ extension XTWindowController
     }
   }
   
-  @IBAction func applyStash(_: AnyObject)
+  @IBAction
+  func applyStash(_: AnyObject)
   {
     guard let stash = (repository as! XTRepository).stashes().first
     else {
@@ -148,7 +165,8 @@ extension XTWindowController
     }
   }
   
-  @IBAction func dropStash(_: AnyObject)
+  @IBAction
+  func dropStash(_: AnyObject)
   {
     guard let stash = (repository as! XTRepository).stashes().first
     else {
@@ -165,7 +183,8 @@ extension XTWindowController
     }
   }
 
-  @IBAction func remoteSettings(_ sender: AnyObject)
+  @IBAction
+  func remoteSettings(_ sender: AnyObject)
   {
     guard let menuItem = sender as? NSMenuItem
     else { return }

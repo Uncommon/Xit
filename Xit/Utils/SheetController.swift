@@ -9,12 +9,14 @@ public class SheetController: NSWindowController
     window!.sheetParent?.endSheet(window!, returnCode: code)
   }
   
-  @IBAction func accept(_ sender: AnyObject)
+  @IBAction
+  func accept(_ sender: AnyObject)
   {
     end(.OK)
   }
   
-  @IBAction func cancel(_ sender: AnyObject)
+  @IBAction
+  func cancel(_ sender: AnyObject)
   {
     end(.cancel)
   }

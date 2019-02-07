@@ -88,7 +88,8 @@ class AddAccountController: SheetController
     password = newPassword
   }
   
-  @IBAction func serviceChanged(_ sender: AnyObject)
+  @IBAction
+  func serviceChanged(_ sender: AnyObject)
   {
     syncLocationField()
   }

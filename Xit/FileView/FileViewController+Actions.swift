@@ -121,7 +121,8 @@ extension FileViewController
 // MARK: Actions
 extension FileViewController
 {
-  @IBAction func changeStageView(_ sender: Any?)
+  @IBAction
+  func changeStageView(_ sender: Any?)
   {
     guard let segmentedControl = sender as? NSSegmentedControl
     else { return }
@@ -129,7 +130,8 @@ extension FileViewController
     showingStaged = segmentedControl.selectedSegment == 1
   }
   
-  @IBAction func changeContentView(_ sender: Any?)
+  @IBAction
+  func changeContentView(_ sender: Any?)
   {
     guard let segmentedControl = sender as? NSSegmentedControl
     else { return }
@@ -141,101 +143,121 @@ extension FileViewController
     loadSelectedPreview()
   }
 
-  @IBAction func stage(_: Any?)
+  @IBAction
+  func stage(_: Any?)
   {
   }
 
-  @IBAction func unstage(_: Any?)
+  @IBAction
+  func unstage(_: Any?)
   {
   }
 
-  @IBAction func revert(_: Any?)
+  @IBAction
+  func revert(_: Any?)
   {
   }
 
-  @IBAction func stageAll(_: Any?)
+  @IBAction
+  func stageAll(_: Any?)
   {
     try? repo?.stageAllFiles()
     showingStaged = true
   }
   
-  @IBAction func unstageAll(_: Any?)
+  @IBAction
+  func unstageAll(_: Any?)
   {
     try? repo?.unstageAllFiles()
     showingStaged = false
   }
 
-  @IBAction func showWhitespaceChanges(_ sender: Any?)
+  @IBAction
+  func showWhitespaceChanges(_ sender: Any?)
   {
     setWhitespace(.showAll)
   }
   
-  @IBAction func ignoreEOLWhitespace(_ sender: Any?)
+  @IBAction
+  func ignoreEOLWhitespace(_ sender: Any?)
   {
     setWhitespace(.ignoreEOL)
   }
   
-  @IBAction func ignoreAllWhitespace(_ sender: Any?)
+  @IBAction
+  func ignoreAllWhitespace(_ sender: Any?)
   {
     setWhitespace(.ignoreAll)
   }
   
-  @IBAction func tabWidth2(_ sender: Any?)
+  @IBAction
+  func tabWidth2(_ sender: Any?)
   {
     setTabWidth(2)
   }
   
-  @IBAction func tabWidth4(_ sender: Any?)
+  @IBAction
+  func tabWidth4(_ sender: Any?)
   {
     setTabWidth(4)
   }
   
-  @IBAction func tabWidth6(_ sender: Any?)
+  @IBAction
+  func tabWidth6(_ sender: Any?)
   {
     setTabWidth(6)
   }
   
-  @IBAction func tabWidth8(_ sender: Any?)
+  @IBAction
+  func tabWidth8(_ sender: Any?)
   {
     setTabWidth(8)
   }
   
-  @IBAction func context0(_ sender: Any?)
+  @IBAction
+  func context0(_ sender: Any?)
   {
     setContext(0)
   }
   
-  @IBAction func context3(_ sender: Any?)
+  @IBAction
+  func context3(_ sender: Any?)
   {
     setContext(3)
   }
   
-  @IBAction func context6(_ sender: Any?)
+  @IBAction
+  func context6(_ sender: Any?)
   {
     setContext(6)
   }
   
-  @IBAction func context12(_ sender: Any?)
+  @IBAction
+  func context12(_ sender: Any?)
   {
     setContext(12)
   }
   
-  @IBAction func context25(_ sender: Any?)
+  @IBAction
+  func context25(_ sender: Any?)
   {
     setContext(25)
   }
   
-  @IBAction func wrapToWidth(_ sender: Any?)
+  @IBAction
+  func wrapToWidth(_ sender: Any?)
   {
     setWrapping(.windowWidth)
   }
   
-  @IBAction func wrapTo80(_ sender: Any?)
+  @IBAction
+  func wrapTo80(_ sender: Any?)
   {
     setWrapping(.columns(80))
   }
   
-  @IBAction func noWrapping(_ sender: Any?)
+  @IBAction
+  func noWrapping(_ sender: Any?)
   {
     setWrapping(.none)
   }

@@ -124,7 +124,8 @@ class TitleBarViewController: NSViewController
     }
   }
   
-  @IBAction func navigate(_ sender: NSSegmentedControl)
+  @IBAction
+  func navigate(_ sender: NSSegmentedControl)
   {
     guard let segment = NavSegment(rawValue: sender.selectedSegment)
     else { return }
@@ -137,7 +138,8 @@ class TitleBarViewController: NSViewController
     }
   }
   
-  @IBAction func remoteAction(_ sender: NSSegmentedControl)
+  @IBAction
+  func remoteAction(_ sender: NSSegmentedControl)
   {
     guard let segment = RemoteSegment(rawValue: sender.selectedSegment)
     else { return }
@@ -152,27 +154,32 @@ class TitleBarViewController: NSViewController
     }
   }
   
-  @IBAction func stash(_ sender: Any)
+  @IBAction
+  func stash(_ sender: Any)
   {
     delegate?.stashSelected()
   }
   
-  @IBAction func popStash(_ sender: Any)
+  @IBAction
+  func popStash(_ sender: Any)
   {
     delegate?.popStashSelected()
   }
   
-  @IBAction func applyStash(_ sender: Any)
+  @IBAction
+  func applyStash(_ sender: Any)
   {
     delegate?.applyStashSelected()
   }
   
-  @IBAction func dropStash(_ sender: Any)
+  @IBAction
+  func dropStash(_ sender: Any)
   {
     delegate?.dropStashSelected()
   }
   
-  @IBAction func viewAction(_ sender: NSSegmentedControl)
+  @IBAction
+  func viewAction(_ sender: NSSegmentedControl)
   {
     guard let segment = ViewSegment(rawValue: sender.selectedSegment),
           let delegate = self.delegate
@@ -200,7 +207,8 @@ class TitleBarViewController: NSViewController
     viewControls.setSelected(states.details, forSegment: 2)
   }
   
-  @IBAction func branchSelected(_ sender: NSPopUpButton)
+  @IBAction
+  func branchSelected(_ sender: NSPopUpButton)
   {
     guard let branch = branchPopup.titleOfSelectedItem
     else { return }
@@ -208,7 +216,8 @@ class TitleBarViewController: NSViewController
     delegate?.branchSelecetd(branch)
   }
   
-  @IBAction func search(_ sender: Any)
+  @IBAction
+  func search(_ sender: Any)
   {
     delegate?.search()
   }

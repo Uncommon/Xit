@@ -72,14 +72,16 @@ class AccountsPrefsController: NSViewController
     alert.beginSheetModal(for: view.window!) { (_) in }
   }
   
-  @IBAction func addAccount(_ sender: AnyObject)
+  @IBAction
+  func addAccount(_ sender: AnyObject)
   {
     addController.resetForAdd()
     view.window?.beginSheet(addController.window!,
                             completionHandler: addAccountDone)
   }
   
-  @IBAction func editAccount(_ sender: Any)
+  @IBAction
+  func editAccount(_ sender: Any)
   {
     guard let account = selectedAccount
     else { return }
@@ -182,7 +184,8 @@ class AccountsPrefsController: NSViewController
     }
   }
   
-  @IBAction func removeAccount(_ sender: AnyObject)
+  @IBAction
+  func removeAccount(_ sender: AnyObject)
   {
     guard let window = view.window
     else { return }
@@ -206,7 +209,8 @@ class AccountsPrefsController: NSViewController
     }
   }
   
-  @IBAction func refreshAccount(_ sender: Any)
+  @IBAction
+  func refreshAccount(_ sender: Any)
   {
     guard let account = selectedAccount
     else { return }

@@ -118,7 +118,8 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
     view.needsUpdateConstraints = true
   }
   
-  @IBAction func refresh(_ sender: Any)
+  @IBAction
+  func refresh(_ sender: Any)
   {
     if let localBranch = branch as? LocalBranch ??
                          (branch as? RemoteBranch).flatMap({
@@ -130,7 +131,8 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
     }
   }
   
-  @IBAction func doubleClick(_ sender: Any)
+  @IBAction
+  func doubleClick(_ sender: Any)
   {
     let clickedRow = tableView.clickedRow
     guard 0..<builds.count ~= clickedRow

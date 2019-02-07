@@ -98,7 +98,8 @@ class HistoryViewController: NSViewController
                                                 : historySize.height
   }
   
-  @IBAction func toggleHistory(_: Any?)
+  @IBAction
+  func toggleHistory(_: Any?)
   {
     if historyHidden {
       // Go back to the un-collapsed size.
@@ -126,7 +127,8 @@ class HistoryViewController: NSViewController
     }
   }
   
-  @IBAction func toggleDetails(_: Any?)
+  @IBAction
+  func toggleDetails(_: Any?)
   {
     if detailsHidden {
       // Go back to the un-collapsed size.
@@ -156,17 +158,20 @@ class HistoryViewController: NSViewController
     }
   }
   
-  @IBAction func performFindPanelAction(_ sender: Any)
+  @IBAction
+  func performFindPanelAction(_ sender: Any)
   {
     setScopeBarVisble(true)
   }
   
-  @IBAction func closeScopeBar(_ sender: Any)
+  @IBAction
+  func closeScopeBar(_ sender: Any)
   {
     setScopeBarVisble(false)
   }
   
-  @IBAction func changeSearchType(_ sender: Any)
+  @IBAction
+  func changeSearchType(_ sender: Any)
   {
     
   }

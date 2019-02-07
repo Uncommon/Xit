@@ -19,7 +19,8 @@ class AppDelegate: NSObject
 #endif
   }
   
-  @IBAction func openDocument(_ sender: Any?)
+  @IBAction
+  func openDocument(_ sender: Any?)
   {
     if let openPanel = openPanel {
       openPanel.makeKeyAndOrderFront(self)
@@ -47,7 +48,8 @@ class AppDelegate: NSObject
     }
   }
   
-  @IBAction func showPreferences(_ sender: Any?)
+  @IBAction
+  func showPreferences(_ sender: Any?)
   {
     PrefsWindowController.shared.window?
         .makeKeyAndOrderFront(nil)
