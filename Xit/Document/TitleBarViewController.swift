@@ -99,6 +99,8 @@ class TitleBarViewController: NSViewController
   deinit
   {
     progressObserver.map { NotificationCenter.default.removeObserver($0) }
+    becomeKeyObserver.map { NotificationCenter.default.removeObserver($0) }
+    resignKeyObserver.map { NotificationCenter.default.removeObserver($0) }
   }
   
   override func viewDidLoad()
