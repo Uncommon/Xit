@@ -65,6 +65,8 @@ class TitleBarViewController: NSViewController
   weak var delegate: TitleBarDelegate?
   
   var progressObserver: NSObjectProtocol?
+  var becomeKeyObserver: NSObjectProtocol?
+  var resignKeyObserver: NSObjectProtocol?
   
   @objc dynamic var progressHidden: Bool
   {
@@ -105,6 +107,30 @@ class TitleBarViewController: NSViewController
     
     // This constraint will be active when the operations controls are shown.
     operationViewSpacing.isActive = false
+  }
+  
+  override func viewDidAppear()
+  {
+    let center = NotificationCenter.default
+    
+    if becomeKeyObserver == nil {
+      becomeKeyObserver = center.addObserver(
+          forName: NSWindow.didBecomeKeyNotification,
+          object: view.window,
+          queue: .main) {
+        (_) in
+        self.titleLabel.textColor = .windowFrameTextColor
+      }
+    }
+    if resignKeyObserver == nil {
+      resignKeyObserver = center.addObserver(
+          forName: NSWindow.didResignKeyNotification,
+          object: view.window,
+          queue: .main) {
+        (_) in
+        self.titleLabel.textColor = .disabledControlTextColor
+      }
+    }
   }
   
   func observe(repository: XTRepository)
