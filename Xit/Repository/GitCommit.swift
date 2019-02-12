@@ -193,9 +193,9 @@ public class GitCommit: Commit
     else { return nil }
     
     let gitObjectPtr = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    guard git_reference_peel(gitObjectPtr, gitRef, GIT_OBJ_COMMIT) == 0,
+    guard git_reference_peel(gitObjectPtr, gitRef, GIT_OBJECT_COMMIT) == 0,
           let gitObject = gitObjectPtr.pointee,
-          git_object_type(gitObject) == GIT_OBJ_COMMIT
+      git_object_type(gitObject) == GIT_OBJECT_COMMIT
     else { return nil }
     
     self.init(gitCommit: gitObject)

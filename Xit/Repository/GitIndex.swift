@@ -75,8 +75,7 @@ class GitIndex: StagingIndex
     
     var conflicted: Bool
     {
-      return (UInt32(gitEntry.flags_extended) &
-        GIT_IDXENTRY_CONFLICTED.rawValue) != 0
+      return (Int32(gitEntry.flags_extended) & GIT_IDXENTRY_CONFLICTED) != 0
     }
   }
   

@@ -70,7 +70,7 @@ extension XTRepository: Workspace
     
     let target = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     let targetResult = git_object_lookup(target, gitRepo, oid.unsafeOID(),
-                                         GIT_OBJ_ANY)
+                                         GIT_OBJECT_ANY)
     guard targetResult == 0,
           let finalTarget = target.pointee
     else { throw Error.notFound }
@@ -84,7 +84,8 @@ extension XTRepository: Workspace
     else { throw Error.notFound }
     let object = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     let lookupResult = git_object_lookup_prefix(object, gitRepo, oid.unsafeOID(),
-                                                Int(GIT_OID_RAWSZ), GIT_OBJ_ANY)
+                                                Int(GIT_OID_RAWSZ),
+                                                GIT_OBJECT_ANY)
     guard lookupResult == 0,
           let finalObject = object.pointee
     else { throw Error.notFound }

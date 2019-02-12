@@ -26,7 +26,7 @@ extension XTRepository: CommitReferencing
       else { return 0 }
       
       var peeled: OpaquePointer?
-      guard git_reference_peel(&peeled, reference, GIT_OBJ_COMMIT) == 0
+      guard git_reference_peel(&peeled, reference, GIT_OBJECT_COMMIT) == 0
       else { return 0 }
       
       let peeledOID = git_object_id(peeled)

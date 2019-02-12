@@ -44,7 +44,7 @@ public class GitTag: Tag
     self.name = name.removingPrefix(GitTag.tagPrefix)
     
     let tag = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let peelResult = git_reference_peel(tag, finalRef, GIT_OBJ_TAG)
+    let peelResult = git_reference_peel(tag, finalRef, GIT_OBJECT_TAG)
     
     if peelResult == 0,
        let finalTag = tag.pointee {
@@ -74,7 +74,7 @@ public class GitTag: Tag
     }
     
     let target = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let peelResult = git_reference_peel(target, ref, GIT_OBJ_COMMIT)
+    let peelResult = git_reference_peel(target, ref, GIT_OBJECT_COMMIT)
     
     if peelResult == 0,
        let finalTarget = target.pointee {
