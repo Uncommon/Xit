@@ -53,6 +53,7 @@ struct UIString: RawRepresentable
   static let openPrefs = ›"Open Preferences"
   static let pop = ›"Pop"
   static let push = ›"Push"
+  static let refresh = ›"Refresh"
   static let replace = ›"Replace"
   static let retry = ›"Retry"
   static let revert = ›"Revert"

@@ -207,6 +207,12 @@ class FileViewController: NSViewController
     fileListSplitView.addSubview(workspaceListController.view)
     activeFileList = commitListController.outlineView
     
+    // Add the button at this level because the action affects both lists
+    stagedListController.addToolbarButton(imageName: NSImage.refreshTemplateName,
+                                          toolTip: .refresh,
+                                          target: self,
+                                          action: #selector(refreshStaging(_:)))
+    
     let listControllers = [commitListController,
                            stagedListController,
                            workspaceListController]

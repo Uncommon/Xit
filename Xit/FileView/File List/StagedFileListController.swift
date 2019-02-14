@@ -33,6 +33,12 @@ class StagedFileListController: StagingFileListController
     }
     repoController.postIndexNotification()
   }
+  
+  @IBAction
+  func refresh(_ sender: Any)
+  {
+    (outlineView.dataSource as? FileListDataSource)?.reload()
+  }
 }
 
 // NSUserInterfaceValidations

@@ -222,10 +222,11 @@ class FileListController: NSViewController
 
   func addToolbarButton(imageName: NSImage.Name,
                         toolTip: UIString,
+                        target: Any? = self,
                         action: Selector)
   {
     let button = NSButton(image: NSImage(named: imageName)!,
-                          target: self, action: action)
+                          target: target, action: action)
   
     button.toolTip = toolTip.rawValue
     button.setFrameSize(NSSize(width: 26, height: 18))
@@ -383,5 +384,10 @@ class StagingFileListController: FileListController
       [weak self] _ in
       self?.viewDataSource.reload()
     }
+  }
+  
+  func reload()
+  {
+    (outlineView.dataSource as? FileListDataSource)?.reload()
   }
 }

@@ -142,6 +142,14 @@ extension FileViewController
     contentController = contentControllers[selection]
     loadSelectedPreview()
   }
+  
+  @IBAction
+  func refreshStaging(_: Any?)
+  {
+    repo?.invalidateIndex()
+    stagedListController.reload()
+    workspaceListController.reload()
+  }
 
   @IBAction
   func stage(_: Any?)
