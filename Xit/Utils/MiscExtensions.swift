@@ -451,6 +451,16 @@ extension UInt
   }
 }
 
+infix operator <~
+
+extension String
+{
+  static func <~ (a: String, b: String) -> Bool
+  {
+    return a.localizedStandardCompare(b) == .orderedAscending
+  }
+}
+
 // Reportedly this is hidden in the Swift runtime
 // https://oleb.net/blog/2016/10/swift-array-of-c-strings/
 public func withArrayOfCStrings<R>(

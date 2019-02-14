@@ -276,7 +276,7 @@ class SideBarDataSource: NSObject
     
     let newRoots = SideBarDataSource.makeRoots(stagingItem)
     let branchesGroup = newRoots[XTGroupIndex.branches.rawValue]
-    let localBranches = repo.localBranches().sorted { $0.name < $1.name }
+    let localBranches = repo.localBranches().sorted { $0.name <~ $1.name }
     
     for branch in localBranches {
       guard let sha = branch.sha,
@@ -293,7 +293,7 @@ class SideBarDataSource: NSObject
     
     let remoteItems = repo.remoteNames().map {
           RemoteSidebarItem(title: $0, repository: repo) }
-    let remoteBranches = repo.remoteBranches().sorted { $0.name < $1.name }
+    let remoteBranches = repo.remoteBranches().sorted { $0.name <~ $1.name }
 
 
     for branch in remoteBranches {
@@ -313,7 +313,7 @@ class SideBarDataSource: NSObject
     }
     
     withSignpost(.loadTags) {
-      if let tags = try? repo.tags().sorted(by: { $0.name < $1.name }) {
+      if let tags = try? repo.tags().sorted(by: { $0.name <~ $1.name }) {
         let tagsGroup = newRoots[XTGroupIndex.tags.rawValue]
         
         for tag in tags {
