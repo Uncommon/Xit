@@ -51,6 +51,7 @@ class WorkspaceWatcher: NSObject
     }
   
     DispatchQueue.main.async {
+      repository.invalidateIndex()
       NotificationCenter.default.post(name: .XTRepositoryWorkspaceChanged,
                                       object: repository,
                                       userInfo: userInfo)
