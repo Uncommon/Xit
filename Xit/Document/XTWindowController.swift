@@ -364,53 +364,6 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   }
 }
 
-extension XTWindowController: NSMenuItemValidation
-{
-  func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
-  {
-    guard let action = menuItem.action
-    else { return false }
-    var result = false
-    
-    switch action {
-
-      case #selector(self.goBack(_:)):
-        result = !navBackStack.isEmpty
-      
-      case #selector(self.goForward(_:)):
-        result = !navForwardStack.isEmpty
-
-      case #selector(self.refresh(_:)):
-        result = !xtDocument!.repository.isWriting
-
-      case #selector(self.showHideSidebar(_:)):
-        result = true
-        menuItem.titleString = sidebarHidden ? .showSidebar : .hideSidebar
-
-      case #selector(self.verticalLayout(_:)):
-        result = true
-        menuItem.state = historyController.mainSplitView.isVertical ? .on : .off
-
-      case #selector(self.horizontalLayout(_:)):
-        result = true
-        menuItem.state = historyController.mainSplitView.isVertical ? .off : .on
-
-      case #selector(self.remoteSettings(_:)):
-        result = true
-      
-      case #selector(self.stash(_:)):
-        result = true
-      
-      case #selector(self.newTag(_:)):
-        result = true
-
-      default:
-        result = false
-    }
-    return result
-  }
-}
-
 // MARK: NSSplitViewDelegate
 extension XTWindowController: NSSplitViewDelegate
 {
@@ -468,18 +421,13 @@ extension NSBindingName
 // MARK: NSToolbarDelegate
 extension XTWindowController: NSToolbarDelegate
 {
-  enum NibName
-  {
-    static let titleBar = NSNib.Name("TitleBar")
-  }
-  
   func toolbarWillAddItem(_ notification: Notification)
   {
     guard let item = notification.userInfo?["item"] as? NSToolbarItem,
           item.itemIdentifier.rawValue == "com.uncommonplace.xit.titlebar"
     else { return }
     
-    let viewController = TitleBarViewController(nibName: NibName.titleBar,
+    let viewController = TitleBarViewController(nibName: .titleBarNib,
                                                 bundle: nil)
     let repository = xtDocument!.repository!
     let inverseBindingOptions =

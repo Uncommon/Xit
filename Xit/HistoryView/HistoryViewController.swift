@@ -17,14 +17,6 @@ class HistoryViewController: NSViewController
   
   private var savedHistorySize: CGFloat?
   
-  enum NibName
-  {
-    static let historyViewController =
-        String(describing: HistoryViewController.self)
-    static let fileViewController =
-        String(describing: FileViewController.self)
-  }
-  
   weak var repo: XTRepository!
   
   var historyHidden: Bool
@@ -39,12 +31,12 @@ class HistoryViewController: NSViewController
   
   override var nibName: NSNib.Name?
   {
-    return NibName.historyViewController
+    return .historyViewControllerNib
   }
   
   init()
   {
-    super.init(nibName: NibName.historyViewController, bundle: nil)
+    super.init(nibName: .historyViewControllerNib, bundle: nil)
   }
   
   // For testing
@@ -65,7 +57,7 @@ class HistoryViewController: NSViewController
   
     let lowerPane = mainSplitView.subviews[1]
     
-    fileViewController = FileViewController(nibName: NibName.fileViewController,
+    fileViewController = FileViewController(nibName: .fileViewControllerNib,
                                             bundle: nil)
     lowerPane.addSubview(fileViewController.view)
     fileViewController.view.setFrameSize(lowerPane.frame.size)

@@ -201,6 +201,10 @@
 		C9E9A37D1D0B5706007BFABF /* XTWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E9A37C1D0B5706007BFABF /* XTWindowController.swift */; };
 		C9EB87241D01D93400C47D13 /* GitStash.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EB87231D01D93400C47D13 /* GitStash.swift */; };
 		C9EB87321D05D35800C47D13 /* XTStashTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EB87311D05D35800C47D13 /* XTStashTest.swift */; };
+		C9F1B5DE2217247E00293305 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F1B5DD2217247E00293305 /* ViewExtensions.swift */; };
+		C9F1B5F02217264A00293305 /* Nibs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F1B5EF2217264A00293305 /* Nibs.swift */; };
+		C9F1B5F22217293D00293305 /* TeamCityAPI+Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F1B5F12217293D00293305 /* TeamCityAPI+Types.swift */; };
+		C9F1B5F422172AD200293305 /* SidebarDataSource+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F1B5F322172AD200293305 /* SidebarDataSource+Actions.swift */; };
 		C9F461DE1EF34826007BEBC9 /* BuildStatusCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F461DD1EF34826007BEBC9 /* BuildStatusCellView.swift */; };
 		C9F5331D217A90B800B2432C /* KeychainTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F5331C217A90B800B2432C /* KeychainTest.swift */; };
 		C9F533432183C7B100B2432C /* BasicAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F533322183C7B100B2432C /* BasicAuthService.swift */; };
@@ -572,6 +576,10 @@
 		C9EB87231D01D93400C47D13 /* GitStash.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitStash.swift; sourceTree = "<group>"; };
 		C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "XitTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		C9EB87311D05D35800C47D13 /* XTStashTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTStashTest.swift; sourceTree = "<group>"; };
+		C9F1B5DD2217247E00293305 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
+		C9F1B5EF2217264A00293305 /* Nibs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nibs.swift; sourceTree = "<group>"; };
+		C9F1B5F12217293D00293305 /* TeamCityAPI+Types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TeamCityAPI+Types.swift"; sourceTree = "<group>"; };
+		C9F1B5F322172AD200293305 /* SidebarDataSource+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SidebarDataSource+Actions.swift"; sourceTree = "<group>"; };
 		C9F461DD1EF34826007BEBC9 /* BuildStatusCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuildStatusCellView.swift; sourceTree = "<group>"; };
 		C9F5331C217A90B800B2432C /* KeychainTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainTest.swift; sourceTree = "<group>"; };
 		C9F533322183C7B100B2432C /* BasicAuthService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicAuthService.swift; sourceTree = "<group>"; };
@@ -641,6 +649,7 @@
 				89369A731EDF47FC001B69C6 /* NSTask+Throwing.m */,
 				C967C4AE1F96BA55002166F7 /* Cache.swift */,
 				89880ED020D02F9B007042F8 /* ClickableTextField.swift */,
+				897056EC20E412AC0020F5E9 /* ClickThroughImageView.swift */,
 				C947367D1DF08C03000E3A05 /* ContextMenuOutlineView.swift */,
 				C9FFCC851FABC24B00FA2F21 /* ExpansionTextField.swift */,
 				C9BC1B9A1DDF51B900C71562 /* FileEventStream.swift */,
@@ -650,13 +659,13 @@
 				C95BD3EE1F8ECEC9000A2E2D /* Mutex.swift */,
 				C97E319D20BF26B300E74D2F /* NSTreeNode+FileChange.swift */,
 				C94ECBD41E6E025B00E8B453 /* ObserverCollection.swift */,
+				C957B84A1D2D53040040F858 /* SheetController.swift */,
 				C97E31AF20BF271300E74D2F /* StringExtensions.swift */,
 				C9864465207E9CAC0088209B /* StringIdentifiers.swift */,
 				C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */,
 				C93FFCBC1F13D3B200FDDD78 /* ValidatedSegment.swift */,
+				C9F1B5DD2217247E00293305 /* ViewExtensions.swift */,
 				C957B8651D2D8D500040F858 /* XTKeychain.swift */,
-				C957B84A1D2D53040040F858 /* SheetController.swift */,
-				897056EC20E412AC0020F5E9 /* ClickThroughImageView.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -742,6 +751,7 @@
 				C90F92771E0199E400FE8589 /* AppDelegate.swift */,
 				C900464F211501CB00706029 /* Colors.swift */,
 				C967AAB41FAA45B3008A4DF0 /* Debug.swift */,
+				C9F1B5EF2217264A00293305 /* Nibs.swift */,
 				C9F764841F72F486000A208B /* Images.swift */,
 				C9065F5F20FFE1D900C01110 /* Notifications.swift */,
 				C93FFCA91F0FD65100FDDD78 /* Defaults.plist */,
@@ -978,6 +988,7 @@
 				C91F34771D30656B005F9BDF /* Services.swift */,
 				C98EBC142126188900EF739E /* ServicesData.swift */,
 				C929D05F1D42785B00D7DC52 /* TeamCityAPI.swift */,
+				C9F1B5F12217293D00293305 /* TeamCityAPI+Types.swift */,
 				C9FD8FD8216C048400FCCE01 /* AccountType.swift */,
 			);
 			path = Services;
@@ -991,6 +1002,7 @@
 				C98925F81DBFCE7000E5645C /* SidebarController.swift */,
 				C959CDEA1F859DB800C1E282 /* SidebarController+Actions.swift */,
 				89C9276A1D368C020074F71A /* SideBarDataSource.swift */,
+				C9F1B5F322172AD200293305 /* SidebarDataSource+Actions.swift */,
 				C98EBC1A212B2A7E00EF739E /* SidebarDataSource+PullRequest.swift */,
 				C959CDE81F859D3D00C1E282 /* SideBarDataSource+TeamCity.swift */,
 				C9FFCC831FABB28F00FA2F21 /* SideBarDataSource+OutlineView.swift */,
@@ -1381,6 +1393,7 @@
 				C9864466207E9CAC0088209B /* StringIdentifiers.swift in Sources */,
 				C9790D2220F53A030024D3EA /* CheckOutRemote.swift in Sources */,
 				C98EBC17212734F900EF739E /* PullRequestCache.swift in Sources */,
+				C9F1B5F422172AD200293305 /* SidebarDataSource+Actions.swift in Sources */,
 				C9BAE61E1D303A8100A87F13 /* RemoteOptionsOpController.swift in Sources */,
 				C95BD4051F8FF8C8000A2E2D /* GitDiff.swift in Sources */,
 				C9FFCC881FB3B1D000FA2F21 /* TreeLoader.swift in Sources */,
@@ -1423,6 +1436,7 @@
 				C935BD7E1E8BFA4F00BE51F0 /* DateCellView.swift in Sources */,
 				C959A7231F6C6974004277CD /* RepositoryProtocols.swift in Sources */,
 				C90B4EB11FE86A9900277B13 /* GiRevWalk.swift in Sources */,
+				C9F1B5DE2217247E00293305 /* ViewExtensions.swift in Sources */,
 				C95355EA1D93470400AEEF49 /* TitleStatusView.swift in Sources */,
 				C9DAB5D01D4A4F0300586854 /* GitPrefsController.swift in Sources */,
 				C9A58EED1EE5DD4800E37A31 /* TaskQueue.swift in Sources */,
@@ -1439,6 +1453,7 @@
 				899DB1A21CE5022400760270 /* XTCommitEntryController.swift in Sources */,
 				C97E31B020BF271300E74D2F /* StringExtensions.swift in Sources */,
 				89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */,
+				C9F1B5F22217293D00293305 /* TeamCityAPI+Types.swift in Sources */,
 				C9E9A37D1D0B5706007BFABF /* XTWindowController.swift in Sources */,
 				C923D66C1D906FAA00C6B90B /* TitleBarViewController.swift in Sources */,
 				89880EDB20D08674007042F8 /* RefTokenView.swift in Sources */,
@@ -1456,6 +1471,7 @@
 				C9EB87241D01D93400C47D13 /* GitStash.swift in Sources */,
 				C9416343213EF3E10015F1C0 /* WorkspaceFileListController.swift in Sources */,
 				C9C1B7CF1EEAFD790011F343 /* XTRepository+Files.swift in Sources */,
+				C9F1B5F02217264A00293305 /* Nibs.swift in Sources */,
 				C97E31B220BF2A2100E74D2F /* XTRepository.Error.swift in Sources */,
 				89AB21DA213DE5E300EF7507 /* StashOperationController.swift in Sources */,
 				C95BD3EF1F8ECEC9000A2E2D /* Mutex.swift in Sources */,

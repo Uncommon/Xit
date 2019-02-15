@@ -269,6 +269,26 @@ extension FileViewController
   {
     setWrapping(.none)
   }
+  
+  func setWhitespace(_ setting: WhitespaceSetting)
+  {
+    (contentController as? WhitespaceVariable)?.whitespace = setting
+  }
+  
+  func setTabWidth(_ tabWidth: UInt)
+  {
+    (contentController as? TabWidthVariable)?.tabWidth = tabWidth
+  }
+  
+  func setContext(_ context: UInt)
+  {
+    (contentController as? ContextVariable)?.contextLines = context
+  }
+  
+  func setWrapping(_ wrapping: TextWrapping)
+  {
+    (contentController as? WrappingVariable)?.wrapping = wrapping
+  }
 }
 
 // MARK: HunkStaging

@@ -16,11 +16,6 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
   var filteredStatuses: [String: BuildStatusCache.BranchStatuses] = [:]
   var builds: [TeamCityAPI.Build] = []
   
-  enum NibName
-  {
-    static let buildStatus = "BuildStatusViewController"
-  }
-  
   enum CellID
   {
     static let build = ¶"BuildCell"
@@ -33,7 +28,7 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
     self.branch = branch
     self.buildStatusCache = cache
 
-    super.init(nibName: NibName.buildStatus, bundle: nil)
+    super.init(nibName: .buildStatusNib, bundle: nil)
     
     cache.add(client: self)
     if let remoteName = (branch as? RemoteBranch)?.remoteName ??

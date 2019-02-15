@@ -207,3 +207,50 @@ extension XTWindowController
     updateNavButtons()
   }
 }
+
+extension XTWindowController: NSMenuItemValidation
+{
+  func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
+  {
+    guard let action = menuItem.action
+      else { return false }
+    var result = false
+    
+    switch action {
+      
+    case #selector(self.goBack(_:)):
+      result = !navBackStack.isEmpty
+      
+    case #selector(self.goForward(_:)):
+      result = !navForwardStack.isEmpty
+      
+    case #selector(self.refresh(_:)):
+      result = !xtDocument!.repository.isWriting
+      
+    case #selector(self.showHideSidebar(_:)):
+      result = true
+      menuItem.titleString = sidebarHidden ? .showSidebar : .hideSidebar
+      
+    case #selector(self.verticalLayout(_:)):
+      result = true
+      menuItem.state = historyController.mainSplitView.isVertical ? .on : .off
+      
+    case #selector(self.horizontalLayout(_:)):
+      result = true
+      menuItem.state = historyController.mainSplitView.isVertical ? .off : .on
+      
+    case #selector(self.remoteSettings(_:)):
+      result = true
+      
+    case #selector(self.stash(_:)):
+      result = true
+      
+    case #selector(self.newTag(_:)):
+      result = true
+      
+    default:
+      result = false
+    }
+    return result
+  }
+}
