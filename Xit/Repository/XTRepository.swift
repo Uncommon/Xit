@@ -137,13 +137,12 @@ public class XTRepository: NSObject
   
   func performWriting(_ block: (() throws -> Void)) throws
   {
-    objc_sync_enter(self)
-    defer { objc_sync_exit(self) }
-    
-    if isWriting {
-      throw Error.alreadyWriting
+    try mutex.withLock {
+      if isWriting {
+        throw Error.alreadyWriting
+      }
+      isWriting = true
     }
-    updateIsWriting(true)
     defer {
       updateIsWriting(false)
     }
