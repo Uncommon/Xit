@@ -119,10 +119,7 @@ extension XTRepository
   /// Initiates pulling the given branch.
   /// - parameter branch: Either the local branch or the remote tracking branch.
   /// - parameter remote: The remote to pull from.
-  /// - parameter downloadTags: True to also download tags
-  /// - parameter pruneBranches: True to delete obsolete branch refs
-  /// - parameter passwordBlock: Callback for getting the user and password
-  /// - parameter progressBlock: Return true to stop the operation
+  /// - parameter options: Options for the fetch operation.
   func pull(branch: Branch,
             remote: Remote,
             options: FetchOptions) throws

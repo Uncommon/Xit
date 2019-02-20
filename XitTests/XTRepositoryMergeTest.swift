@@ -167,6 +167,39 @@ class XTRepositoryMergeTest: XTTest
     }
   }
   
+  func testDirtyFFNoConflict()
+  {
+    let content = "blah"
+    guard let c3 = repository.localBranch(named: "c3")
+    else {
+      XCTFail("c3 branch missing")
+      return
+    }
+    
+    XCTAssertNoThrow(try repository.checkOut(branch: "c0"))
+    write(text: content, to: FileName.file2)
+    XCTAssertNoThrow(try repository.merge(branch: c3))
+    assertContent(content, file: FileName.file2)
+  }
+  
+  // Same as testDirtyFFNoConflict except make a commit after switching to c0
+  // so it's not a fast forward merge
+  func testDirtyNoConflict()
+  {
+    let content = "blah"
+    guard let c3 = repository.localBranch(named: "c3")
+    else {
+      XCTFail("c3 branch missing")
+      return
+    }
+    
+    XCTAssertNoThrow(try repository.checkOut(branch: "c0"))
+    commit(newTextFile: FileName.added, content: "other")
+    write(text: content, to: FileName.file2)
+    XCTAssertNoThrow(try repository.merge(branch: c3))
+    assertContent(content, file: FileName.file2)
+  }
+  
   // Further test cases:
   // - dirty worktree/index
   // - merge in progress
