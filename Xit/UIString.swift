@@ -119,7 +119,7 @@ struct UIString: RawRepresentable
   }
   static func checkOut(_ branch: String) -> UIString
   {
-    return UIString(format: UIString.renamePromptFormat, branch)
+    return UIString(format: UIString.checkOutFormat, branch)
   }
   static func committer(_ name: String) -> UIString
   {
