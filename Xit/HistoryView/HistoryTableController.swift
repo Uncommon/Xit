@@ -102,7 +102,7 @@ public class HistoryTableController: NSViewController
     let history = self.history
     weak var tableView = view as? NSTableView
     
-    synchronized(history) {
+    history.withSync {
       history.reset()
     }
     repository.queue.executeOffMainThread {
@@ -125,7 +125,7 @@ public class HistoryTableController: NSViewController
         repository.oid(forRef: ref).map { walker.push(oid: $0) }
       }
       
-      synchronized(history) {
+      history.withSync {
         while let oid = walker.next() {
           guard let commit = repository.commit(forOID: oid)
           else { continue }

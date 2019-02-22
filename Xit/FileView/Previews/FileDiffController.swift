@@ -191,9 +191,7 @@ class FileDiffController: WebViewController,
     let html = htmlTemplate.replacingOccurrences(of: "%@", with: joined)
     
     load(html: html)
-    synchronized(self) {
-      isLoaded = true
-    }
+    isLoaded = true
   }
   
   func loadOrNotify(diffResult: PatchMaker.PatchResult?)
@@ -267,11 +265,11 @@ extension FileDiffController: XTFileContentController
   {
     get
     {
-      return synchronized(self) { isLoaded_internal }
+      return withSync { isLoaded_internal }
     }
     set
     {
-      synchronized(self) {
+      withSync {
         isLoaded_internal = newValue
       }
     }
@@ -280,9 +278,7 @@ extension FileDiffController: XTFileContentController
   public func clear()
   {
     load(html: "")
-    synchronized(self) {
-      isLoaded = false
-    }
+    isLoaded = false
   }
   
   public func load(selection: [FileSelection])

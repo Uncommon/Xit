@@ -242,16 +242,16 @@ extension DecodingError
   }
 }
 
-/// Similar to Objective-C's `@synchronized`
-/// - parameter object: Token object for the lock
-/// - parameter block: Block to execute inside the lock
-func synchronized<T>(_ object: NSObject, block: () throws -> T) rethrows -> T
+extension NSObject
 {
-  objc_sync_enter(object)
-  defer {
-    objc_sync_exit(object)
+  func withSync<T>(block: () throws -> T) rethrows -> T
+  {
+    objc_sync_enter(self)
+    defer {
+      objc_sync_exit(self)
+    }
+    return try block()
   }
-  return try block()
 }
 
 // Swift 3 took away ++, but it still can be useful.
