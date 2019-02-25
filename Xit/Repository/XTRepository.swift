@@ -42,7 +42,7 @@ public class XTRepository: NSObject
   var cachedIgnored = false
 
   let diffCache = Cache<String, Diff>(maxSize: 50)
-  fileprivate var repoWatcher: XTRepositoryWatcher! = nil
+  fileprivate var repoWatcher: RepositoryWatcher! = nil
   fileprivate var workspaceWatcher: WorkspaceWatcher! = nil
   private(set) var config: Config! = nil
   
@@ -113,7 +113,7 @@ public class XTRepository: NSObject
   
   private func postInit()
   {
-    self.repoWatcher = XTRepositoryWatcher(repository: self)
+    self.repoWatcher = RepositoryWatcher(repository: self)
     self.workspaceWatcher = WorkspaceWatcher(repository: self)
     self.config = GitConfig(repository: gitRepo)
   }

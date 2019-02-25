@@ -4,8 +4,7 @@ let XTAddedRefsKey = "addedRefs"
 let XTDeletedRefsKey = "deletedRefs"
 let XTChangedRefsKey = "changedRefs"
 
-// Remove inheritance when XTRepository is converted to Swift
-@objc class XTRepositoryWatcher: NSObject
+class RepositoryWatcher
 {
   weak var repository: XTRepository?
 
@@ -38,7 +37,6 @@ let XTChangedRefsKey = "changedRefs"
   init?(repository: XTRepository)
   {
     self.repository = repository
-    super.init()
     
     let gitPath = repository.gitDirectoryPath
     let objectsPath = gitPath.appending(pathComponent: "objects")

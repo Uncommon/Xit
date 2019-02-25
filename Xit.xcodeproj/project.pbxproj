@@ -72,7 +72,7 @@
 		C92E30FB1D4FF4F0001985F7 /* GitCommit.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92E30FA1D4FF4F0001985F7 /* GitCommit.swift */; };
 		C932110C1E48E92C00232B61 /* FileTreeDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C932110B1E48E92C00232B61 /* FileTreeDataSource.swift */; };
 		C9328B121D77303200EFF7F7 /* FileMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328B111D77303200EFF7F7 /* FileMonitor.swift */; };
-		C9328B141D776BC700EFF7F7 /* XTRepositoryWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328B131D776BC700EFF7F7 /* XTRepositoryWatcher.swift */; };
+		C9328B141D776BC700EFF7F7 /* RepositoryWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328B131D776BC700EFF7F7 /* RepositoryWatcher.swift */; };
 		C935BD7E1E8BFA4F00BE51F0 /* DateCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C935BD7D1E8BFA4F00BE51F0 /* DateCellView.swift */; };
 		C936AD0A1D4C0CD400C5ADC3 /* PushOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C936AD091D4C0CD400C5ADC3 /* PushOpController.swift */; };
 		C936AD0C1D4C0FA900C5ADC3 /* PasswordOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C936AD0B1D4C0FA900C5ADC3 /* PasswordOpController.swift */; };
@@ -446,7 +446,7 @@
 		C92E30FA1D4FF4F0001985F7 /* GitCommit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitCommit.swift; sourceTree = "<group>"; };
 		C932110B1E48E92C00232B61 /* FileTreeDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileTreeDataSource.swift; sourceTree = "<group>"; };
 		C9328B111D77303200EFF7F7 /* FileMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileMonitor.swift; sourceTree = "<group>"; };
-		C9328B131D776BC700EFF7F7 /* XTRepositoryWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRepositoryWatcher.swift; sourceTree = "<group>"; };
+		C9328B131D776BC700EFF7F7 /* RepositoryWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepositoryWatcher.swift; sourceTree = "<group>"; };
 		C935BD7D1E8BFA4F00BE51F0 /* DateCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateCellView.swift; sourceTree = "<group>"; };
 		C936AD091D4C0CD400C5ADC3 /* PushOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushOpController.swift; sourceTree = "<group>"; };
 		C936AD0B1D4C0FA900C5ADC3 /* PasswordOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasswordOpController.swift; sourceTree = "<group>"; };
@@ -887,7 +887,7 @@
 				C94D7E8C1EBA66180059AC21 /* XTRepository+Parsing.swift */,
 				89D5FDB11EDE1DC50067E886 /* XTRepository+Refs.swift */,
 				C97E31B120BF2A2100E74D2F /* XTRepository.Error.swift */,
-				C9328B131D776BC700EFF7F7 /* XTRepositoryWatcher.swift */,
+				C9328B131D776BC700EFF7F7 /* RepositoryWatcher.swift */,
 				C959A7261F6C8440004277CD /* GitBlob.swift */,
 				C954ABFC1D34455000302160 /* GitBranch.swift */,
 				C92E30FA1D4FF4F0001985F7 /* GitCommit.swift */,
@@ -1467,7 +1467,7 @@
 				C93D30C321558419009BA29F /* GeneralPrefsController.swift in Sources */,
 				C9AA80301E2929810004D670 /* FileChangesDataSource.swift in Sources */,
 				C9065F6020FFE1D900C01110 /* Notifications.swift in Sources */,
-				C9328B141D776BC700EFF7F7 /* XTRepositoryWatcher.swift in Sources */,
+				C9328B141D776BC700EFF7F7 /* RepositoryWatcher.swift in Sources */,
 				C9EB87241D01D93400C47D13 /* GitStash.swift in Sources */,
 				C9416343213EF3E10015F1C0 /* WorkspaceFileListController.swift in Sources */,
 				C9C1B7CF1EEAFD790011F343 /* XTRepository+Files.swift in Sources */,
