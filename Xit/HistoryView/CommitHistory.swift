@@ -96,7 +96,7 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
   var commitLookup = [ID: Entry]()
   var entries = [Entry]()
   private var abortFlag = false
-  private var mutex = Mutex()
+  private var abortMutex = Mutex()
   
   // batchSize, batch, pass, value
   // HistoryTableController.postProgress assumes 2 passes.
@@ -122,28 +122,28 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
   /// Signals that processing should be stopped.
   public func abort()
   {
-    mutex.withLock {
+    abortMutex.withLock {
       abortFlag = true
     }
   }
   
   public func resetAbort()
   {
-    mutex.withLock {
+    abortMutex.withLock {
       abortFlag = false
     }
   }
   
   func checkAbort() -> Bool
   {
-    return mutex.withLock { abortFlag }
+    return abortMutex.withLock { abortFlag }
   }
   
   /// Creates a list of commits for the branch starting at the given commit, and
   /// also a list of secondary parents that may start other branches. A branch
   /// segment ends when a commit has more than one parent, or its parent is
   /// already registered.
-  func branchEntries(startCommit: Commit) -> Result
+  private func branchEntries(startCommit: Commit) -> Result
   {
     var commit = startCommit
     var result = [Entry(commit: startCommit)]
@@ -220,7 +220,7 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
     }
   }
   
-  func processBranchResult(_ result: Result, after afterCommit: Commit?)
+  private func processBranchResult(_ result: Result, after afterCommit: Commit?)
   {
     for branchEntry in result.entries {
       commitLookup[branchEntry.commit.oid as! ID] = branchEntry
