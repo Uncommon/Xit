@@ -21,6 +21,11 @@ class GitReference: Reference
 {
   let ref: OpaquePointer
   
+  static func isValidName(_ name: String) -> Bool
+  {
+    return git_reference_is_valid_name(name) != 0
+  }
+  
   init(reference: OpaquePointer)
   {
     self.ref = reference

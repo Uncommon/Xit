@@ -105,7 +105,7 @@ class CheckOutRemoteWindowController: NSWindowController
     let refName = "refs/heads/" + branchName
     var errorText = UIString.emptyString
     
-    if !XTRefFormatter.isValidRefString(refName) {
+    if !GitReference.isValidName(refName) {
       errorText = .branchNameInvalid
     }
     if repo.localBranch(named: branchName) != nil {

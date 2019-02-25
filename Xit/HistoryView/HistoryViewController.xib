@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.18"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -21,7 +21,6 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <customObject id="165" customClass="XTRefFormatter"/>
         <customObject id="IYz-w0-bcN" customClass="HistoryTableController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="view" destination="No3-Ik-sWu" id="rsr-3x-Jbg"/>
@@ -42,7 +41,7 @@
                                     <rect key="frame" x="10" y="4" width="711" height="22"/>
                                     <subviews>
                                         <popUpButton horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UOV-6f-auP">
-                                            <rect key="frame" x="0.0" y="-2" width="89" height="25"/>
+                                            <rect key="frame" x="0.0" y="-1" width="90" height="23"/>
                                             <popUpButtonCell key="cell" type="roundTextured" title="Summary" bezelStyle="texturedRounded" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" selectedItem="iGM-1D-9YK" id="Bhq-MT-ZcD">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="menu"/>
@@ -60,7 +59,7 @@
                                             </connections>
                                         </popUpButton>
                                         <searchField wantsLayer="YES" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iui-jU-7uS">
-                                            <rect key="frame" x="97" y="0.0" width="533" height="22"/>
+                                            <rect key="frame" x="98" y="0.0" width="536" height="22"/>
                                             <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" sendsWholeSearchString="YES" id="6cj-6w-3ay">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -72,7 +71,7 @@
                                             </connections>
                                         </searchField>
                                         <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YtL-T2-zWj">
-                                            <rect key="frame" x="638" y="-1" width="47" height="23"/>
+                                            <rect key="frame" x="642" y="-1" width="47" height="23"/>
                                             <segmentedCell key="cell" enabled="NO" borderStyle="border" alignment="left" style="capsule" trackingMode="momentary" id="ZSk-d5-hUC">
                                                 <font key="font" metaFont="system"/>
                                                 <segments>
@@ -85,7 +84,7 @@
                                             </connections>
                                         </segmentedControl>
                                         <button horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="q3A-ms-Avj">
-                                            <rect key="frame" x="693" y="2" width="18" height="19"/>
+                                            <rect key="frame" x="697" y="4" width="14" height="14"/>
                                             <buttonCell key="cell" type="roundRect" bezelStyle="roundedRect" image="NSStopProgressFreestandingTemplate" imagePosition="only" alignment="center" state="on" imageScaling="proportionallyDown" inset="2" id="a7i-mR-Hgf">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="cellTitle"/>
@@ -254,11 +253,11 @@
                                     </tableView>
                                 </subviews>
                             </clipView>
-                            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="MX2-Hl-Ekc">
+                            <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="MX2-Hl-Ekc">
                                 <rect key="frame" x="1" y="141" width="685" height="16"/>
                                 <autoresizingMask key="autoresizingMask"/>
                             </scroller>
-                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="0dy-wf-z6q">
+                            <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="0dy-wf-z6q">
                                 <rect key="frame" x="224" y="17" width="15" height="102"/>
                                 <autoresizingMask key="autoresizingMask"/>
                             </scroller>

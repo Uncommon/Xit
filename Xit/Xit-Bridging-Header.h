@@ -3,7 +3,6 @@
 //
 
 #import "XTDocument.h"
-#import "XTRefFormatter.h"
 #import "XTQueueUtils.h"
 #import "GitEnums.h"
 

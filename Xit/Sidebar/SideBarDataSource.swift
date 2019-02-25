@@ -19,7 +19,6 @@ class SideBarDataSource: NSObject
   }
   
   @IBOutlet weak var viewController: SidebarController!
-  @IBOutlet weak var refFormatter: XTRefFormatter!
   @IBOutlet weak var outline: NSOutlineView!
   
   private(set) var roots: [SideBarGroupItem]

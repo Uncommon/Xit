@@ -136,7 +136,6 @@ extension SideBarDataSource: NSOutlineViewDelegate
       updatePullRequestButton(item: sideBarItem, view: dataView)
       dataView.buttonContainer.isHidden = dataView.statusButton.image == nil
       if sideBarItem.editable {
-        textField.formatter = refFormatter
         textField.target = viewController
         textField.action =
             #selector(SidebarController.sidebarItemRenamed(_:))
