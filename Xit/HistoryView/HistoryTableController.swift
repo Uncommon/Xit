@@ -144,7 +144,7 @@ public class HistoryTableController: NSViewController
         // progress will be displayed.
         self.repository.queue.executeTask {
           Signpost.interval(.connectCommits) {
-            history.connectCommits(batchSize: batchSize) {}
+            history.processFirstBatch()
           }
         }
         DispatchQueue.main.async {
@@ -280,6 +280,15 @@ extension HistoryTableController: NSTableViewDelegate
                         viewFor tableColumn: NSTableColumn?,
                         row: Int) -> NSView?
   {
+    let visibleRowCount =
+          tableView.rows(in: tableView.enclosingScrollView!.bounds).length
+    let firstProcessRow = min(history.entries.count, row + visibleRowCount)
+    
+    if firstProcessRow > history.batchStart
+    {
+      history.processBatches(throughRow: firstProcessRow)
+    }
+    
     guard (row >= 0) && (row < history.entries.count)
     else {
       NSLog("Object value request out of bounds")

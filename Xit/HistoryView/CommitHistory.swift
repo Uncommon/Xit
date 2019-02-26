@@ -276,6 +276,69 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
     }
   }
   
+  var batchSize = 500
+  var batchStart = 0
+  var batchTargetRow = 0
+  var processingConnections = [Connection]()
+  
+  /// Processes the next batch of connections in the list. Should not be
+  /// called on the main thread.
+  public func processNextConnectionBatch()
+  {
+    let batchSize = min(self.batchSize, entries.count - batchStart)
+    let (connections, newConnections) =
+          generateConnections(batchStart: batchStart,
+                              batchSize: batchSize,
+                              starting: processingConnections)
+    
+    signpostStart(.generateLines, UInt(batchStart))
+    DispatchQueue.concurrentPerform(iterations: batchSize) {
+      (index) in
+      guard !checkAbort() && (index + batchStart < entries.count)
+      else { return }
+      
+      objc_sync_enter(self)
+      let entry = entries[index + batchStart]
+      objc_sync_exit(self)
+      
+      generateLines(entry: entry, connections: connections[index])
+      postProgress?(batchSize, batchStart/batchSize, 1, index)
+    }
+    signpostEnd(.generateLines, UInt(batchStart))
+    processingConnections = newConnections
+    batchStart += batchSize
+  }
+  
+  public func processFirstBatch()
+  {
+    processBatches(throughRow: batchSize)
+  }
+  
+  /// Starts processing rows until the given row is processed. If processing
+  /// is already happening, the target is set to at least the given row.
+  public func processBatches(throughRow row: Int)
+  {
+    var startProcessing = false
+    
+    withSync {
+      guard row > batchTargetRow
+      else { return }
+      
+      startProcessing = batchTargetRow == 0
+      batchTargetRow = row
+    }
+
+    if startProcessing {
+      DispatchQueue.global(qos: .utility).async {
+        while self.batchStart < min(self.withSync { self.batchTargetRow },
+                                    self.entries.count) {
+          self.processNextConnectionBatch()
+        }
+        self.withSync { self.batchTargetRow = 0 }
+      }
+    }
+  }
+  
   /// Creates the connections to be drawn between commits.
   public func connectCommits(batchSize: Int = 0,
                              batchNotify: (() -> Void)? = nil)
