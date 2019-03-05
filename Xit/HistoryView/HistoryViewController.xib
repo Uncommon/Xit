@@ -168,7 +168,7 @@
                                                         <constraints>
                                                             <constraint firstItem="zOj-e6-4hz" firstAttribute="leading" secondItem="oW4-S9-MQ4" secondAttribute="leading" constant="100" id="NnL-cF-RDz"/>
                                                             <constraint firstItem="zOj-e6-4hz" firstAttribute="top" secondItem="oW4-S9-MQ4" secondAttribute="top" id="fh9-Uw-DG8"/>
-                                                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="zOj-e6-4hz" secondAttribute="trailing" id="mzx-wT-HDg"/>
+                                                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="zOj-e6-4hz" secondAttribute="trailing" priority="750" id="mzx-wT-HDg"/>
                                                         </constraints>
                                                         <connections>
                                                             <outlet property="labelField" destination="oMe-ke-Jkz" id="z2G-cb-1gs"/>
