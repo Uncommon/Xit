@@ -425,6 +425,14 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
     return (result, connections)
   }
   
+  private func parentIndex(_ parentOutlets: NSOrderedSet,
+                           of id: ID) -> UInt?
+  {
+    let result = parentOutlets.index(of: id)
+    
+    return result == NSNotFound ? nil : UInt(result)
+  }
+  
   func generateLines(entry: CommitEntry,
                      connections: [CommitConnection<ID>])
   {
@@ -439,7 +447,7 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
       let commitIsParent = connection.parentOID.equals(entry.commit.oid)
       let commitIsChild = connection.childOID.equals(entry.commit.oid)
       let parentIndex: UInt? = commitIsParent
-              ? nil : UInt(parentOutlets.index(of: connection.parentOID))
+              ? nil : self.parentIndex(parentOutlets, of: connection.parentOID)
       var childIndex: UInt? = commitIsChild
               ? nil : nextChildIndex
       var colorIndex = connection.colorIndex
