@@ -247,7 +247,19 @@ class FileDiffController: WebViewController,
   
   func discardHunk(index: Int)
   {
-    hunk(at: index).map { stagingDelegate?.discard(hunk: $0) }
+    let alert = NSAlert()
+    
+    alert.messageString = .confirmDiscardHunk
+    alert.addButton(withString: .discard)
+    alert.addButton(withString: .cancel)
+    alert.beginSheetModal(for: view.window!) {
+      (response) in
+      guard response == .alertFirstButtonReturn,
+            let hunk = self.hunk(at: index)
+      else { return }
+      
+      self.stagingDelegate?.discard(hunk: hunk)
+    }
   }
 }
 

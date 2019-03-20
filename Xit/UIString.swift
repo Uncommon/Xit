@@ -77,6 +77,7 @@ struct UIString: RawRepresentable
   static let binaryFile = ›"This is a binary file"
   static let blameNotAvailable = ›"Blame not available"
   static let cantApplyHunk = ›"This hunk cannot be applied"
+  static let confirmDiscardHunk = ›"Are you sure you want to discard this hunk?"
   static let files = ›"Files"
   static let multipleItemsSelected = ›"Multiple items selected"
   static let multipleSelection = ›"Multiple selection"
