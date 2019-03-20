@@ -163,6 +163,7 @@ struct UIString: RawRepresentable
   static let confirmPop = ›"Apply the most recent stash, and then delete it?"
   static let confirmApply = ›"Apply the most recent stash, without deleting it?"
   static let confirmStashDelete = ›"Delete the most recent stash?"
+  static let confirmStashDrop = ›"Drop (delete) the selected stash?"
   
   static let keychainInvalidURL = ›"""
       The password could not be saved to the keychain because \

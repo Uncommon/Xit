@@ -247,15 +247,10 @@ class FileDiffController: WebViewController,
   
   func discardHunk(index: Int)
   {
-    let alert = NSAlert()
-    
-    alert.messageString = .confirmDiscardHunk
-    alert.addButton(withString: .discard)
-    alert.addButton(withString: .cancel)
-    alert.beginSheetModal(for: view.window!) {
-      (response) in
-      guard response == .alertFirstButtonReturn,
-            let hunk = self.hunk(at: index)
+    NSAlert.confirm(message: .confirmDiscardHunk,
+                    actionName: .discard,
+                    parentWindow: view.window!) {
+      guard let hunk = self.hunk(at: index)
       else { return }
       
       self.stagingDelegate?.discard(hunk: hunk)

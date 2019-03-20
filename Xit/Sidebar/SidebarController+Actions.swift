@@ -164,7 +164,11 @@ extension SidebarController
   @IBAction
   func dropStash(_ sender: Any?)
   {
-    dropStash()
+    NSAlert.confirm(message: .confirmStashDrop,
+                    actionName: .drop,
+                    parentWindow: view.window!) {
+      self.dropStash()
+    }
   }
   
   @IBAction
