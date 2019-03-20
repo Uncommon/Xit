@@ -82,7 +82,7 @@ class HistoryCellView: NSTableCellView
       toolTip = nil
     }
   }
-  
+
   func configure(entry: CommitEntry, repository: Branching & CommitReferencing)
   {
     currentBranch = repository.currentBranch

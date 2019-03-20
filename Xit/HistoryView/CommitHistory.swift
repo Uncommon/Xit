@@ -98,7 +98,7 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
   private var abortFlag = false
   private var abortMutex = Mutex()
   
-  // batchSize, batch, pass, value
+  // pass, start, current, end
   // HistoryTableController.postProgress assumes 2 passes.
   var postProgress: ((Int, Int, Int, Int) -> Void)?
   
@@ -113,9 +113,12 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
   {
     abort()
     commitLookup.removeAll()
-    objc_sync_enter(self)
-    entries.removeAll()
-    objc_sync_exit(self)
+    withSync {
+      entries.removeAll()
+      batchStart = 0
+      batchTargetRow = 0
+      processingConnections = [Connection]()
+    }
     resetAbort()
   }
   
@@ -279,6 +282,8 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
   var batchSize = 500
   var batchStart = 0
   var batchTargetRow = 0
+  var progressStartRow = 0
+  var progressEndRow = 0
   var processingConnections = [Connection]()
   
   /// Processes the next batch of connections in the list. Should not be
@@ -297,12 +302,10 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
       guard !checkAbort() && (index + batchStart < entries.count)
       else { return }
       
-      objc_sync_enter(self)
-      let entry = entries[index + batchStart]
-      objc_sync_exit(self)
+      let entry = withSync { entries[index + batchStart] }
       
       generateLines(entry: entry, connections: connections[index])
-      postProgress?(batchSize, batchStart/batchSize, 1, index)
+      postProgress?(1, progressStartRow, index, progressEndRow)
     }
     signpostEnd(.generateLines, UInt(batchStart))
     processingConnections = newConnections
@@ -311,12 +314,22 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
   
   public func processFirstBatch()
   {
-    processBatches(throughRow: batchSize)
+    batchStart = 0
+    processBatches(throughRow: batchSize-1)
+  }
+  
+  /// Returns the end of the batch containing the target row
+  private func batchEnd(target: Int, batchSize: Int) -> Int
+  {
+    // There must be a simpler way to calculate this but I can't quite get it
+    let mod = (target + 1) % batchSize
+    
+    return target + ((mod == 0) ? 0 : batchSize - mod)
   }
   
   /// Starts processing rows until the given row is processed. If processing
   /// is already happening, the target is set to at least the given row.
-  public func processBatches(throughRow row: Int)
+  func processBatches(throughRow row: Int, queue: TaskQueue? = nil)
   {
     var startProcessing = false
     
@@ -324,19 +337,33 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
       guard row > batchTargetRow
       else { return }
       
+      progressStartRow = batchStart
+      progressEndRow = batchEnd(target: row, batchSize: batchSize)
       startProcessing = batchTargetRow == 0
       batchTargetRow = row
     }
 
     if startProcessing {
       DispatchQueue.global(qos: .utility).async {
-        while self.batchStart < min(self.withSync { self.batchTargetRow },
-                                    self.entries.count) {
-          self.processNextConnectionBatch()
+        if let queue = queue {
+          queue.executeTask {
+            self.processBatch()
+          }
         }
-        self.withSync { self.batchTargetRow = 0 }
+        else {
+          self.processBatch()
+        }
       }
     }
+  }
+  
+  private func processBatch()
+  {
+    while self.batchStart < min(self.withSync { self.batchTargetRow },
+                                self.entries.count) {
+      self.processNextConnectionBatch()
+    }
+    self.withSync { self.batchTargetRow = 0 }
   }
   
   /// Creates the connections to be drawn between commits.
@@ -364,12 +391,10 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
         guard !checkAbort() && (index + batchStart < entries.count)
         else { return }
         
-        objc_sync_enter(self)
-        let entry = entries[index + batchStart]
-        objc_sync_exit(self)
+        let entry = withSync { entries[index + batchStart] }
         
         generateLines(entry: entry, connections: connections[index])
-        postProgress?(batchSize, batchStart/batchSize, 1, index)
+        postProgress?(1, progressStartRow, index + batchStart, progressEndRow)
       }
       Signpost.intervalEnd(.generateLines(batchStart), object: self)
 
@@ -419,7 +444,7 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
       result.append(connections)
       connections = connections.filter { $0.parentOID != commitOID }
       
-      postProgress?(batchSize, batchStart/batchSize, 0, index)
+      postProgress?(0, progressStartRow, index, progressEndRow)
     }
     
     return (result, connections)

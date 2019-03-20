@@ -85,7 +85,7 @@ public class HistoryTableController: NSViewController
     
     history.postProgress = {
       [weak self] in
-      self?.postProgress(batchSize: $0, batch: $1, pass: $2, value: $3)
+      self?.postProgress(pass: $0, start: $1, current: $2, end: $3)
     }
   }
   
@@ -156,12 +156,19 @@ public class HistoryTableController: NSViewController
     }
   }
   
-  func postProgress(batchSize: Int, batch: Int, pass: Int, value: Int)
+  /// Notifier for history processing progress
+  /// - parameter pass: Currently there are two passes
+  /// - parameter start: Row where the current task started
+  /// - parameter current: Relative progress in the current pass
+  /// - parameter end: Row where the task will end
+  func postProgress(pass: Int, start: Int, current: Int, end: Int)
   {
+    //print("\(start) - \(current) - \(end)")
     let passCount = 2
-    let goal = history.entries.count * passCount
-    let completed = batch * batchSize * passCount
-    let totalProgress = completed + pass * passCount + value
+    let batch = start / batchSize
+    let passSize = end - start
+    let goal = passSize * passCount
+    let totalProgress = pass * passSize + current
   
     let step = goal / 100
     
@@ -192,7 +199,26 @@ public class HistoryTableController: NSViewController
             let batchStart = batch * batchSize
             let range = batchStart..<(batchStart+batchSize)
             let columnRange = 0..<tableView.tableColumns.count
+            var viewRange: ClosedRange<Int>?
             
+            tableView.enumerateAvailableRowViews {
+              (rowView, row) in
+              if let oldRange = viewRange {
+                viewRange = min(row, oldRange.lowerBound)...max(row, oldRange.upperBound)
+              }
+              else {
+                viewRange = row...row
+              }
+              
+              if let cellView = rowView.view(atColumn: 0) as? HistoryCellView {
+                cellView.needsUpdateConstraints = true
+                cellView.needsDisplay = true
+              }
+              else {
+                rowView.needsDisplay = true
+              }
+            }
+            print("*** updated \(viewRange ?? 0...0)")
             tableView.reloadData(forRowIndexes: IndexSet(integersIn: range),
                                  columnIndexes: IndexSet(integersIn: columnRange))
         }
@@ -286,7 +312,8 @@ extension HistoryTableController: NSTableViewDelegate
     
     if firstProcessRow > history.batchStart
     {
-      history.processBatches(throughRow: firstProcessRow)
+      history.processBatches(throughRow: firstProcessRow,
+                             queue: repository.queue)
     }
     
     guard (row >= 0) && (row < history.entries.count)
@@ -306,7 +333,7 @@ extension HistoryTableController: NSTableViewDelegate
       case ColumnID.commit:
         let historyCell = result as! HistoryCellView
         
-        historyCell.configure(entry: entry, repository: repository)
+        historyCell.configure(row: row, entry: entry, repository: repository)
 
       case ColumnID.date:
         (result as! DateCellView).date = entry.commit.commitDate
