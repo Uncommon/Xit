@@ -249,7 +249,7 @@ class BitbucketServerAPI: BasicAuthService, ServiceAPI
     mutating func setReviewerStatus(userID: String, status: PullRequestApproval)
     {
       guard let index = request.reviewers
-                               .index(where: { $0.user.slug == userID })
+                               .firstIndex(where: { $0.user.slug == userID })
       else { return }
       
       request.reviewers[index].approved = status == .approved

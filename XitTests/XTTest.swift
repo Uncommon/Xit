@@ -216,7 +216,8 @@ class XTTest: XCTestCase
   {
     let tiffURL = repository.fileURL(name)
     
-    try NSImage(named: .actionTemplate)?.tiffRepresentation?.write(to: tiffURL)
+    try NSImage(named: NSImage.actionTemplateName)?.tiffRepresentation?
+                                                   .write(to: tiffURL)
   }
 }
 

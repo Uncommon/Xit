@@ -50,9 +50,10 @@ extension git_diff_delta
     var result: Int32 = 0
     
     newData.withUnsafeBytes {
-      (bytes) in
+      (bytes: UnsafeRawBufferPointer) in
       result = git_diff_blob_to_buffer(oldGitBlob, nil,
-                                       bytes, newData.count, nil, nil,
+                                       bytes.bindMemory(to: Int8.self).baseAddress,
+                                       newData.count, nil, nil,
                                        git_diff_delta.fileCallback,
                                        nil, nil, nil, &self)
     }
@@ -67,11 +68,11 @@ extension git_diff_delta
 
     self = git_diff_delta()
     oldData.withUnsafeBytes {
-      (oldBytes) in
+      (oldBytes: UnsafeRawBufferPointer) in
       newData.withUnsafeBytes {
-        (newBytes) in
-        result = git_diff_buffers(oldBytes, oldData.count, nil,
-                                  newBytes, newData.count, nil, nil,
+        (newBytes: UnsafeRawBufferPointer) in
+        result = git_diff_buffers(oldBytes.baseAddress, oldData.count, nil,
+                                  newBytes.baseAddress, newData.count, nil, nil,
                                   git_diff_delta.fileCallback,
                                   nil, nil, nil, &self)
       }

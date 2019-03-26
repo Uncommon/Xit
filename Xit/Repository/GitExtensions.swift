@@ -121,8 +121,9 @@ extension Data
   func isBinary() -> Bool
   {
     return withUnsafeBytes {
-      (data: UnsafePointer<Int8>) -> Bool in
-      return git_buffer_is_binary(data, count)
+      (data: UnsafeRawBufferPointer) -> Bool in
+      return git_buffer_is_binary(data.bindMemory(to: Int8.self).baseAddress,
+                                  count)
     }
   }
 }

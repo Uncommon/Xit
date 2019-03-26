@@ -356,7 +356,7 @@ class SidebarController: NSViewController, SidebarHandler
   {
     let stashes = sidebarDS.roots[XTGroupIndex.stashes.rawValue]
     
-    return stashes.children.index(of: item).map { UInt($0) }
+    return stashes.children.firstIndex(of: item).map { UInt($0) }
   }
   
   func editSelectedRow()

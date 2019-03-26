@@ -147,14 +147,15 @@ class GitIndex: StagingIndex
   func add(data: Data, path: String) throws
   {
     let result = data.withUnsafeBytes {
-      (bytes: UnsafePointer<Int8>) -> Int32 in
+      (bytes: UnsafeRawBufferPointer) -> Int32 in
       var entry = git_index_entry()
       
       return path.withCString {
         (path) in
         entry.path = path
         entry.mode = GIT_FILEMODE_BLOB.rawValue
-        return git_index_add_frombuffer(index, &entry, bytes, data.count)
+        return git_index_add_frombuffer(index, &entry,
+                                        bytes.baseAddress, data.count)
       }
     }
     

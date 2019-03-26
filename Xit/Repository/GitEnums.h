@@ -16,7 +16,7 @@ typedef NS_ENUM(unsigned int, DeltaStatus)
   DeltaStatusTypeChange = GIT_DELTA_TYPECHANGE,
   DeltaStatusConflict = GIT_DELTA_CONFLICTED,
   DeltaStatusMixed,  // For folders containing a mix of changes
-};
+} __attribute__((enum_extensibility(closed)));
 
 typedef NS_OPTIONS(unsigned int, DiffFlags)
 {

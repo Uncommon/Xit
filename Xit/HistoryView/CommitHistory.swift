@@ -227,13 +227,13 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
     }
     
     let afterIndex = afterCommit.flatMap
-        { commit in entries.index { $0.commit.oid.equals(commit.oid) } }
+        { commit in entries.firstIndex { $0.commit.oid.equals(commit.oid) } }
     guard let lastEntry = result.entries.last
     else { return }
     let lastParentOIDs = lastEntry.commit.parentOIDs
     
     if let insertBeforeIndex = lastParentOIDs.compactMap(
-           { oid in entries.index(where: { $0.commit.oid.equals(oid) }) })
+           { oid in entries.firstIndex(where: { $0.commit.oid.equals(oid) }) })
            .sorted().first {
       #if DEBUGLOG
       print(" ** \(insertBeforeIndex) before \(entries[insertBeforeIndex].commit)")
@@ -255,7 +255,7 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
     }
     else if let lastSecondaryOID = result.queue.last?.after.oid as? ID,
             let lastSecondaryEntry = commitLookup[lastSecondaryOID],
-            let lastSecondaryIndex = entries.index(where:
+            let lastSecondaryIndex = entries.firstIndex(where:
                 { $0.commit.oid.equals(lastSecondaryEntry.commit.oid) }) {
       #if DEBUGLOG
       print(" ** after secondary \(lastSecondaryOID.SHA!.firstSix())")
@@ -332,7 +332,7 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
     result.reserveCapacity(batchSize)
     for (index, entry) in entries[batchStart..<batchStart+batchSize].enumerated() {
       let commitOID = entry.commit.oid as! ID
-      let incomingIndex = connections.index { $0.parentOID.equals(commitOID) }
+      let incomingIndex = connections.firstIndex { $0.parentOID.equals(commitOID) }
       let incomingColor = incomingIndex.flatMap { connections[$0].colorIndex }
       
       if let firstParentOID = entry.commit.parentOIDs.first {

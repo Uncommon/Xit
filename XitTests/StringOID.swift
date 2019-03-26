@@ -18,7 +18,10 @@ func == (left: StringOID, right: StringOID) -> Bool
 
 extension StringOID: Hashable
 {
-  public var hashValue: Int { return sha.hashValue }
+  public func hash(into hasher: inout Hasher)
+  {
+    hasher.combine(sha)
+  }
 }
 
 prefix operator §

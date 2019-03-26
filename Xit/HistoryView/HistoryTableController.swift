@@ -223,7 +223,7 @@ public class HistoryTableController: NSViewController
     }
     
     guard let sha = sha,
-          let row = history.entries.index(where: { $0.commit.sha == sha })
+          let row = history.entries.firstIndex(where: { $0.commit.sha == sha })
     else {
       tableView.deselectAll(self)
       return

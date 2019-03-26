@@ -113,7 +113,7 @@ class PreviewsPrefsController: NSViewController
       // marker isn't useful.
       if let contextSetting = defaults.value(forKey: PreferenceKeys.contextLines)
                               as? UInt,
-         Values.context.index(of: contextSetting) != nil {
+         Values.context.firstIndex(of: contextSetting) != nil {
         return contextSetting
       }
       else {
@@ -138,15 +138,15 @@ class PreviewsPrefsController: NSViewController
     let whitespaceValue = Default.whitespace()
     
     whitespacePopup.selectItem(at:
-        WhitespaceSetting.allValues.index(of: whitespaceValue)!)
+        WhitespaceSetting.allValues.firstIndex(of: whitespaceValue)!)
     
     let tabSetting = Default.tabWidth()
-    let tabIndex = Values.tabs.index(of: tabSetting) ??
-                   Values.tabs.index(of: Initial.tabWidth)!
+    let tabIndex = Values.tabs.firstIndex(of: tabSetting) ??
+                   Values.tabs.firstIndex(of: Initial.tabWidth)!
     
     tabPopup.selectItem(at: tabIndex)
     
-    let contextIndex = Values.context.index(of: Default.contextLines()) ?? 1
+    let contextIndex = Values.context.firstIndex(of: Default.contextLines()) ?? 1
     
     contextPopup.selectItem(at: contextIndex)
     

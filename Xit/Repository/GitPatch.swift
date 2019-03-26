@@ -51,10 +51,12 @@ class GitPatch: Patch
     let result: Int32 = GitDiff.unwrappingOptions(options) {
       (gitOptions) in
       return newData.withUnsafeBytes {
-        (bytes) in
-        return git_patch_from_blob_and_buffer(&patch, oldGitBlob, nil,
-                                              bytes, newData.count, nil,
-                                              gitOptions)
+        (bytes: UnsafeRawBufferPointer) in
+        return git_patch_from_blob_and_buffer(
+            &patch, oldGitBlob, nil,
+            bytes.bindMemory(to: Int8.self).baseAddress,
+            newData.count, nil,
+            gitOptions)
       }
     }
     guard result == 0,
@@ -72,12 +74,12 @@ class GitPatch: Patch
     let result: Int32 = GitDiff.unwrappingOptions(options) {
       (gitOptions) in
       return oldData.withUnsafeBytes {
-        (oldBytes) in
+        (oldBytes: UnsafeRawBufferPointer) in
         return newData.withUnsafeBytes {
-          (newBytes) in
+          (newBytes: UnsafeRawBufferPointer) in
           return git_patch_from_buffers(&patch,
-                                        oldBytes, oldData.count, nil,
-                                        newBytes, newData.count, nil,
+                                        oldBytes.baseAddress, oldData.count, nil,
+                                        newBytes.baseAddress, newData.count, nil,
                                         gitOptions)
         }
       }

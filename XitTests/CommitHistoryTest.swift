@@ -153,7 +153,7 @@ class CommitHistoryTest: XCTestCase
     XCTAssertEqual(history.entries.count, expectedLength)
     for (index, entry) in history.entries.enumerated() {
       for parentOID in entry.commit.parentOIDs {
-        let parentIndex = history.entries.index(
+        let parentIndex = history.entries.firstIndex(
             where: { $0.commit.oid.equals(parentOID) })
         
         XCTAssert(parentIndex! > index,

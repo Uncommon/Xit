@@ -39,7 +39,7 @@ class PullRequestCache
   
   func remove(client: PullRequestClient)
   {
-    clients.index { $0.client === client }
+    clients.firstIndex { $0.client === client }
            .map { _ = clients.remove(at: $0) }
   }
   
@@ -79,7 +79,7 @@ class PullRequestCache
   
   func update(pullRequestID: String, status: PullRequestStatus)
   {
-    if let requestIndex = requests.index(where: { $0.id == pullRequestID }) {
+    if let requestIndex = requests.firstIndex(where: { $0.id == pullRequestID }) {
       requests[requestIndex].status = status
       
       let request = requests[requestIndex]
@@ -90,7 +90,7 @@ class PullRequestCache
   
   func update(pullRequestID: String, approval: PullRequestApproval)
   {
-    guard let requestIndex = requests.index(where: { $0.id == pullRequestID })
+    guard let requestIndex = requests.firstIndex(where: { $0.id == pullRequestID })
     else { return }
     let userID = requests[requestIndex].service.userID
     

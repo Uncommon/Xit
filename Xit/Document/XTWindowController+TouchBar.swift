@@ -134,14 +134,14 @@ extension XTWindowController: NSTouchBarDelegate
         return touchBarButton(
             identifier: identifier, title: .unstageAll,
             image: NSImage(named: .xtUnstageAllTemplate),
-            target: historyController.fileViewController,
+            target: historyController.fileViewController as Any,
             action: #selector(FileViewController.unstageAll(_:)))
       
       case NSTouchBarItem.Identifier.stageAll:
         return touchBarButton(
             identifier: identifier, title: .stageAll,
             image: NSImage(named: .xtStageAllTemplate),
-            target: historyController.fileViewController,
+            target: historyController.fileViewController as Any,
             action: #selector(FileViewController.stageAll(_:)))
 
       default:

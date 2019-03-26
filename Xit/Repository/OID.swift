@@ -82,31 +82,27 @@ public struct GitOID: OID, Hashable, Equatable
                   encoding: .ascii, freeWhenDone: true) ?? ""
   }
   
-  public var hashValue: Int
+  public func hash(into hasher: inout Hasher)
   {
-    // Unfortunately you can't iterate through a tuple
-    var result = Int(oid.id.19)
-    
-    result = (result << 8) | Int(oid.id.18)
-    result = (result << 8) | Int(oid.id.17)
-    result = (result << 8) | Int(oid.id.16)
-    result = (result << 8) | Int(oid.id.15)
-    result = (result << 8) | Int(oid.id.14)
-    result = (result << 8) | Int(oid.id.13)
-    result = (result << 8) | Int(oid.id.12)
-    result = (result << 8) | Int(oid.id.11)
-    result = (result << 8) | Int(oid.id.10)
-    result = (result << 8) | Int(oid.id.9)
-    result = (result << 8) | Int(oid.id.8)
-    result = (result << 8) | Int(oid.id.7)
-    result = (result << 8) | Int(oid.id.6)
-    result = (result << 8) | Int(oid.id.5)
-    result = (result << 8) | Int(oid.id.4)
-    result = (result << 8) | Int(oid.id.3)
-    result = (result << 8) | Int(oid.id.2)
-    result = (result << 8) | Int(oid.id.1)
-    result = (result << 8) | Int(oid.id.0)
-    return Int(result)
+    hasher.combine(oid.id.0)
+    hasher.combine(oid.id.1)
+    hasher.combine(oid.id.2)
+    hasher.combine(oid.id.3)
+    hasher.combine(oid.id.4)
+    hasher.combine(oid.id.5)
+    hasher.combine(oid.id.6)
+    hasher.combine(oid.id.7)
+    hasher.combine(oid.id.8)
+    hasher.combine(oid.id.9)
+    hasher.combine(oid.id.10)
+    hasher.combine(oid.id.11)
+    hasher.combine(oid.id.12)
+    hasher.combine(oid.id.13)
+    hasher.combine(oid.id.14)
+    hasher.combine(oid.id.15)
+    hasher.combine(oid.id.16)
+    hasher.combine(oid.id.17)
+    hasher.combine(oid.id.18)
   }
   
   public var isZero: Bool

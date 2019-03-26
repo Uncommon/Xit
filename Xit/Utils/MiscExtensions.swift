@@ -238,6 +238,8 @@ extension DecodingError
         return context
       case .valueNotFound(_, let context):
         return context
+      @unknown default:
+        return Context(codingPath: [], debugDescription: "")
     }
   }
 }

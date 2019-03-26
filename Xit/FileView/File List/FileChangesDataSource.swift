@@ -28,7 +28,7 @@ class FileChangesDataSource: FileListDataSourceBase
     }
     else {
       for change in changes {
-        guard let newIndex = newChanges.index(where: {
+        guard let newIndex = newChanges.firstIndex(where: {
           (newChange) in
           newChange.gitPath == change.gitPath &&
           newChange.change != change.change
@@ -91,7 +91,7 @@ class FileChangesDataSource: FileListDataSourceBase
       newRow = oldRow
     }
     else {
-      if let matchRow = changes.index(where: { $0.gitPath == oldChange.gitPath }) {
+      if let matchRow = changes.firstIndex(where: { $0.gitPath == oldChange.gitPath }) {
         newRow = matchRow
       }
     }

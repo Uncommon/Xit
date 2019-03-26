@@ -163,14 +163,9 @@ class Keychain
   
   init?(path: String, password: String, promptUser: Bool)
   {
-    guard let passwordData = password.data(using: .utf8)
-    else { return nil }
-    
     var keychain: SecKeychain?
-    let status = passwordData.withUnsafeBytes { pointer in
-      return SecKeychainCreate(path, UInt32(passwordData.count), pointer,
-                               false, nil, &keychain)
-    }
+    let status = SecKeychainCreate(path, UInt32(password.utf8.count), password,
+                                   false, nil, &keychain)
     guard status == noErr,
           let finalKeychain = keychain
     else { return nil }
