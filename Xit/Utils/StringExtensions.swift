@@ -95,7 +95,7 @@ extension String
   func removingPrefix(_ prefix: String) -> String
   {
     guard hasPrefix(prefix)
-      else { return self }
+    else { return self }
     
     return String(self[prefix.endIndex...])
   }
@@ -105,7 +105,7 @@ extension String
   func removingSuffix(_ suffix: String) -> String
   {
     guard hasSuffix(suffix)
-      else { return self }
+    else { return self }
     
     return String(dropLast(suffix.count))
   }

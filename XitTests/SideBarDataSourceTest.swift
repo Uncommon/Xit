@@ -141,8 +141,9 @@ class SidebarDataSourceTest: XTTest
     
     let configArgs = ["config", "receive.denyCurrentBranch", "ignore"]
     
-    _ = try! remoteRepository.executeGit(args: configArgs, writes: false)
-    try! repository.push(remote: "origin")
+    XCTAssertNoThrow(try remoteRepository.executeGit(args: configArgs,
+                                                     writes: false))
+    XCTAssertNoThrow(try repository.push(remote: "origin"))
     
     sbds.reload()
     waitForRepoQueue()

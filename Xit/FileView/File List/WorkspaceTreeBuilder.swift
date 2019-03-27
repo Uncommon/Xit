@@ -4,7 +4,7 @@ class WorkspaceTreeBuilder
 {
   // Path parsing is easier if the root name is not just "/". I'm not sure
   // it matters what the root name is, but it's an unusual string just in case.
-  static let rootName = "𝒓𝒐𝒐𝒕"
+  static let rootName = "#"
   
   private var changes: [String: DeltaStatus]
   private var repo: FileStatusDetection?
