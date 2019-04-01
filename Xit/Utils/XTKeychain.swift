@@ -7,10 +7,34 @@ enum PasswordError: Swift.Error
   case itemNotFound
 }
 
+public enum PasswordProtocol
+{
+  case http
+  case https
+  
+  var string: CFString
+  {
+    switch self {
+      case .http: return kSecAttrProtocolHTTP
+      case .https: return kSecAttrProtocolHTTPS
+    }
+  }
+  
+  init?(url: URL)
+  {
+    switch url.scheme {
+      case "http": self = .http
+      case "https": self = .https
+      default: return nil
+    }
+  }
+}
+
 public protocol PasswordStorage
 {
   func find(host: String, path: String,
-            port: UInt16, account: String) -> String?
+            protocol: PasswordProtocol?,
+            port: UInt16, account: String?) -> String?
   func save(host: String, path: String,
             port: UInt16, account: String,
             password: String) throws
@@ -21,14 +45,15 @@ public protocol PasswordStorage
 
 extension PasswordStorage
 {
-  func find(url: URL, account: String) -> String?
+  func find(url: URL, account: String? = nil) -> String?
   {
     guard let host = url.host
     else { return nil }
     
     return find(host: host, path: url.path,
-                port: UInt16(url.port ?? 80),
-                account: account)
+                protocol: PasswordProtocol(url: url),
+                port: UInt16(url.port ?? url.defaultPort),
+                account: account ?? url.user)
   }
   
   func find(account: Account) -> String?
@@ -37,6 +62,7 @@ extension PasswordStorage
     else { return nil }
     
     return find(host: host, path: account.location.path,
+                protocol: nil,
                 port: UInt16(account.location.port ?? 80),
                 account: account.user)
   }
@@ -60,28 +86,36 @@ final class XTKeychain: PasswordStorage
   
   private func passwordQueryBase(host: String,
                                  path: String,
+                                 protocol: PasswordProtocol?,
                                  port: UInt16,
-                                 account: String) -> [CFString: Any]
+                                 account: String?) -> [CFString: Any]
   {
     var result: [CFString: Any] = [kSecClass: kSecClassInternetPassword,
                                    kSecAttrServer: host,
-                                   kSecAttrPort: port,
-                                   kSecAttrAccount: account,
+                                   //kSecAttrPort: port,
                                    ]
     
+    if let account = account {
+      result[kSecAttrAccount] = account
+    }
     if let keychain = self.keychain {
       result[kSecUseKeychain] = keychain
       result[kSecMatchSearchList] = [keychain]
+    }
+    if let protocolString = `protocol`?.string {
+      result[kSecAttrProtocol] = protocolString
     }
     return result
   }
   
   private func passwordDataQuery(host: String,
                                  path: String,
+                                 protocol: PasswordProtocol?,
                                  port: UInt16,
-                                 account: String) -> CFDictionary
+                                 account: String?) -> CFDictionary
   {
     var base = passwordQueryBase(host: host, path: path,
+                                 protocol: `protocol`,
                                  port: port, account: account)
     
     base[kSecReturnData] = kCFBooleanTrue
@@ -90,10 +124,12 @@ final class XTKeychain: PasswordStorage
   
   /// Gets a password from the keychain.
   func find(host: String, path: String,
-            port: UInt16, account: String) -> String?
+            protocol: PasswordProtocol?,
+            port: UInt16, account: String?) -> String?
   {
     var item: CFTypeRef?
     let err = SecItemCopyMatching(passwordDataQuery(host: host, path: path,
+                                                    protocol: `protocol`,
                                                     port: port, account: account),
                                   &item)
     
@@ -110,8 +146,8 @@ final class XTKeychain: PasswordStorage
             port: UInt16, account: String,
             password: String) throws
   {
-    var attributes = passwordQueryBase(host: host, path: path, port: port,
-                                       account: account)
+    var attributes = passwordQueryBase(host: host, path: path, protocol: nil,
+                                       port: port, account: account)
     
     attributes[kSecValueData] = password
     
@@ -129,7 +165,7 @@ final class XTKeychain: PasswordStorage
   {
     guard let host = url.host
     else { throw PasswordError.invalidURL }
-    let query = passwordQueryBase(host: host, path: url.path,
+    let query = passwordQueryBase(host: host, path: url.path, protocol: nil,
                                   port: UInt16(url.port ?? 80), account: account)
     var update: [CFString: Any] = [kSecValueData: password.data(using: .utf8)!]
     
@@ -154,6 +190,15 @@ final class XTKeychain: PasswordStorage
       default:
         throw NSError(osStatus: status)
     }
+  }
+  
+  func inferUserName(host: String, path: String) -> String?
+  {
+    if host == "github.com" {
+      return path.pathComponents.first
+    }
+    
+    return nil
   }
 }
 

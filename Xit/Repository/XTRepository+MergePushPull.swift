@@ -52,9 +52,13 @@ extension XTRepository
       
       guard checkCredentialType(type, flag: .userPassPlaintext)
       else { return GTCredential() }
+      let keychain = XTKeychain.shared
       
+      let keychainUser: String? = user.isEmpty ? nil : user
       if let url = URL(string: urlString),
-         let password = XTKeychain.shared.find(url: url, account: user) {
+         let password = keychain.find(url: url, account: keychainUser) ??
+                        keychain.find(url: url.withPath(""),
+                                      account: keychainUser) {
         do {
           return try GTCredential(userName: user, password: password)
         }
