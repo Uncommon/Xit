@@ -122,15 +122,6 @@ extension FileViewController
 extension FileViewController
 {
   @IBAction
-  func changeStageView(_ sender: Any?)
-  {
-    guard let segmentedControl = sender as? NSSegmentedControl
-    else { return }
-    
-    showingStaged = segmentedControl.selectedSegment == 1
-  }
-  
-  @IBAction
   func changeContentView(_ sender: Any?)
   {
     guard let segmentedControl = sender as? NSSegmentedControl

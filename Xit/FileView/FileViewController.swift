@@ -4,15 +4,6 @@ import Quartz
 /// View controller for the file list and detail view.
 class FileViewController: NSViewController
 {
-  /// Column identifiers for the file list
-  enum ColumnID
-  {
-    static let main = ¶"main"
-    static let staged = ¶"change"
-    static let unstaged = ¶"unstaged"
-    static let hidden = ¶"hidden"
-  }
-  
   /// Preview tab identifiers
   enum TabID
   {
@@ -78,11 +69,13 @@ class FileViewController: NSViewController
     return repoSelection is StagedUnstagedSelection
   }
   
+  /// True if the repository selection supports committing (ie the Staging item)
   var selectionCanCommit: Bool
   {
     return repoSelection is StagingSelection
   }
   
+  /// True mhen the staged file list is showing (two file lists instead of one)
   var showingStaged: Bool
   {
     get
@@ -99,6 +92,7 @@ class FileViewController: NSViewController
     }
   }
   
+  /// True when the commit message entry field is showing
   var isCommitting: Bool
   {
     get
@@ -129,6 +123,7 @@ class FileViewController: NSViewController
       return commitListController.outlineView
     }
   }
+  /// The file list (eg Staged or Workspace) that last had user focus
   weak var activeFileList: NSOutlineView!
   {
     didSet { repoController?.updateForFocus() }
@@ -180,8 +175,8 @@ class FileViewController: NSViewController
 
     observers.addObserver(forName: .XTRepositoryIndexChanged,
                           object: repository, queue: .main) {
-      [weak self] note in
-      self?.indexChanged(note)
+      [weak self] _ in
+      self?.indexChanged()
     }
 
     guard let controller = repoController
@@ -261,7 +256,7 @@ class FileViewController: NSViewController
     }
   }
   
-  func indexChanged(_ note: Notification)
+  func indexChanged()
   {
     // Reading the index too soon can yield incorrect results.
     let indexDelay: TimeInterval = 0.125
@@ -388,13 +383,13 @@ class FileViewController: NSViewController
     let fullPath = repo.repoURL.path.appending(
                       pathComponent: selectedChange.gitPath)
     
-    fileWatcher = inStagingView ?
-        FileEventStream(path: fullPath,
-                        excludePaths: [],
-                        queue: .main,
-                        latency: 0.5) {
-          [weak self] (_) in self?.loadSelectedPreview(force: true)
-        }
+    fileWatcher = inStagingView
+        ? FileEventStream(path: fullPath,
+                          excludePaths: [],
+                          queue: .main,
+                          latency: 0.5) {
+            [weak self] (_) in self?.loadSelectedPreview(force: true)
+          }
         : nil
   }
   
