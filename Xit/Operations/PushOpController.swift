@@ -68,6 +68,10 @@ class PushOpController: PasswordOpController
       guard let repository = self.repository
       else { return }
       
+      if let url = remote.pushURL ?? remote.url {
+        self.setKeychainInfoURL(url)
+      }
+
       try repository.push(branch: localBranch,
                           remote: remote,
                           passwordBlock: self.getPassword,

@@ -3,6 +3,10 @@ import Cocoa
 /// An operation that may require a password.
 class PasswordOpController: SimpleOperationController
 {
+  var host = ""
+  var path = ""
+  var port = 80
+  
   /// User/password callback
   func getPassword() -> (String, String)?
   {
@@ -17,10 +21,20 @@ class PasswordOpController: SimpleOperationController
       }
       
       let panel = PasswordPanelController.controller()
+
+      if self.host.isEmpty {
+        panel.keychainCheck.isHidden = true
+      }
       
       window.beginSheet(panel.window!) { (response) in
         if response == .OK {
           result = (panel.userName, panel.password)
+          if panel.storeInKeychain {
+            self.storeKeychainPassword(host: self.host, path: self.path,
+                                       port: UInt16(self.port),
+                                       account: panel.userName,
+                                       password: panel.password)
+          }
         }
         _ = semaphore.signal()
       }
@@ -28,5 +42,28 @@ class PasswordOpController: SimpleOperationController
     _ = semaphore.wait(timeout: DispatchTime.distantFuture)
     return result
   }
-
+  
+  func storeKeychainPassword(host: String, path: String, port: UInt16,
+                             account: String, password: String)
+  {
+    self.onSuccess {
+      DispatchQueue.main.async {
+        do {
+          try XTKeychain.shared.save(host: host, path: path, port: port,
+                                     account: account, password: password)
+        }
+        catch let error as NSError {
+          NSLog("Keychain save failed: error \(error.code)")
+          NSAlert.showMessage(message: .cantSavePassword)
+        }
+      }
+    }
+  }
+  
+  func setKeychainInfoURL(_ url: URL)
+  {
+    host = url.host ?? ""
+    path = url.path
+    port = url.port ?? url.defaultPort
+  }
 }

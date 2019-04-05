@@ -146,6 +146,8 @@ extension URL
         return 443
       case "ssh":
         return 22
+      case "git":
+        return 9418
       default:
         return 80
     }

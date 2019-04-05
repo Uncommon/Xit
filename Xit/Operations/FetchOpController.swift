@@ -89,6 +89,10 @@ class FetchOpController: PasswordOpController
           let remote = repository.remote(named: remoteName)
     else { return }
     
+    if let url = remote.url {
+      setKeychainInfoURL(url)
+    }
+    
     let repo = repository  // For use in the block without being tied to self
     
     tryRepoOperation {
