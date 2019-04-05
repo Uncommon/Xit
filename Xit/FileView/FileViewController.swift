@@ -89,6 +89,12 @@ class FileViewController: NSViewController
     {
       fileListTabView.selectTabViewItem(withIdentifier: newValue ?
           FileListTab.staging : FileListTab.commit)
+      if newValue {
+        let showAction = repoController?.selection is StagingSelection
+        
+        stagedListController.setActionColumnShown(showAction)
+        workspaceListController.setActionColumnShown(showAction)
+      }
     }
   }
   

@@ -375,6 +375,11 @@ class StagingFileListController: FileListController
 {
   var indexObserver: NSObjectProtocol?
   
+  func setActionColumnShown(_ shown: Bool)
+  {
+    outlineView.columnObject(withIdentifier: ColumnID.action)?.isHidden = !shown
+  }
+  
   override func didSetRepoController()
   {
     super.didSetRepoController()

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.18"/>
-        <plugIn identifier="com.apple.WebKitIBPlugin" version="14313.18"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <plugIn identifier="com.apple.WebKitIBPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -534,8 +534,8 @@
     <resources>
         <image name="NSActionTemplate" width="14" height="14"/>
         <image name="NSQuickLookTemplate" width="19" height="12"/>
-        <image name="blameTemplate" width="8" height="8"/>
-        <image name="diffTemplate" width="8" height="8"/>
-        <image name="textTemplate" width="8" height="8"/>
+        <image name="blameTemplate" width="16" height="16"/>
+        <image name="diffTemplate" width="16" height="16"/>
+        <image name="textTemplate" width="16" height="16"/>
     </resources>
 </document>
