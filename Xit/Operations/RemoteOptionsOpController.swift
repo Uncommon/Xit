@@ -25,9 +25,15 @@ class RemoteOptionsOpController: OperationController
     sheetController.pushURL = remote.pushURLString.flatMap { URL(string: $0) }
     windowController!.window?.beginSheet(sheetController.window!) {
       (response) in
+      var result: Result
       if response == .OK {
         self.acceptSheetSettings(sheetController)
+        result = .success
       }
+      else {
+        result = .canceled
+      }
+      self.ended(result: result)
     }
   }
   

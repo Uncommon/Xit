@@ -22,7 +22,7 @@ class RenameBranchOpController: OperationController
         self.executeRename(panelController.textField.stringValue)
       }
       else {
-        self.ended()
+        self.ended(result: .canceled)
       }
     }
   }

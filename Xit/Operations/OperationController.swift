@@ -3,6 +3,13 @@ import Cocoa
 /// Takes charge of executing a command
 class OperationController: NSObject
 {
+  enum Result
+  {
+    case success
+    case failure
+    case canceled
+  }
+  
   /// The window controller that initiated and owns the operation. May be nil
   /// if the window is closed before the operation completes.
   weak var windowController: XTWindowController?
@@ -10,6 +17,8 @@ class OperationController: NSObject
   weak var repository: XTRepository?
   /// True if the operation is being canceled.
   var canceled = false
+  /// Actions to be executed after the operation succeeds.
+  var successActions: [() -> Void] = []
   
   init(windowController: XTWindowController)
   {
@@ -20,9 +29,20 @@ class OperationController: NSObject
   /// Initiates the operation.
   func start() throws {}
   
-  func ended()
+  func ended(result: Result = .success)
   {
+    if result == .success {
+      for action in successActions {
+        action()
+      }
+    }
+    successActions.removeAll()
     windowController?.operationEnded(self)
+  }
+  
+  func onSuccess(_ action: @escaping () -> Void)
+  {
+    successActions.append(action)
   }
   
   /// Override to suppress errors.
@@ -38,10 +58,11 @@ class OperationController: NSObject
       }
       catch _ as XTRepository.Error {
         // The command shouldn't have been enabled if this was going to happen
+        self?.ended(result: .failure)
       }
       catch let error as NSError {
         defer {
-          self?.ended()
+          self?.ended(result: .failure)
         }
         guard self?.shoudReport(error: error) ?? false
         else { return }
@@ -61,7 +82,7 @@ class OperationController: NSObject
             
             // needs to be smarter: look at error type
             alert.beginSheetModal(for: window) {
-              _ in self?.ended()
+              _ in self?.ended(result: .failure)
             }
           }
         }

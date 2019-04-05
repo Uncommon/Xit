@@ -58,7 +58,7 @@ class FetchOpController: PasswordOpController
                           pruneBranches: panel.pruneBranches)
       }
       else {
-        self.ended()
+        self.ended(result: .canceled)
       }
     }
   }

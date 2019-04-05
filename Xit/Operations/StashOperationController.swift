@@ -22,9 +22,12 @@ class StashOperationController: SimpleOperationController
                              keepIndex: keepIndex,
                              includeUntracked: includeUntracked,
                              includeIgnored: includeIgnored)
+          self.ended()
         }
       }
-      self.ended()
+      else {
+        self.ended(result: .canceled)
+      }
     }
   }
 }

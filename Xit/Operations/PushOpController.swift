@@ -46,7 +46,7 @@ class PushOpController: PasswordOpController
         self.push(localBranch: branch, remote: remote)
       }
       else {
-        self.ended()
+        self.ended(result: .canceled)
       }
     }
   }
