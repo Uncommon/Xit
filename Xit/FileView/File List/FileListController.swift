@@ -171,6 +171,11 @@ class FileListController: NSViewController
     outlineView.reloadData()
   }
   
+  /// Subclasses may want to do something when this happens.
+  func repoSelectionChanged()
+  {
+  }
+  
   /// The file change item for the row that is the target of a context menu click
   var clickedChange: FileChange?
   {
@@ -234,6 +239,13 @@ class FileListController: NSViewController
     button.isBordered = false
     toolbarStack.insertView(button, at: 0, in: .leading)
     button.widthAnchor.constraint(equalToConstant: 20).isActive = true
+  }
+  
+  func toolbarButton(withAction action: Selector) -> NSButton?
+  {
+    return toolbarStack.subviews.firstOfType(where: {
+      (button: NSButton) in button.action == action
+    })
   }
   
   func updateButtons()
@@ -371,10 +383,26 @@ extension CommitFileListController
   }
 }
 
+/// Controller for staged/unstaced file lists. Conceptually (but not actually
+/// because of Swift) an abstract class.
 class StagingFileListController: FileListController
 {
   var indexObserver: NSObjectProtocol?
   
+  /// Actions (used by toolbar buttons) that modify the repository or workspace,
+  /// so the buttons should be hidden if a stash is selected.
+  var modifyActions: [Selector] = []
+  
+  /// True if actions such as stage and revert are available.
+  var canModify: Bool { return !(repoController.selection is StashSelection) }
+  
+  override func repoSelectionChanged()
+  {
+    for action in modifyActions {
+      toolbarButton(withAction: action)?.isHidden = !canModify
+    }
+  }
+
   func setActionColumnShown(_ shown: Bool)
   {
     outlineView.columnObject(withIdentifier: ColumnID.action)?.isHidden = !shown
@@ -389,6 +417,16 @@ class StagingFileListController: FileListController
       [weak self] _ in
       self?.viewDataSource.reload()
     }
+  }
+  
+  func addModifyingToolbarButton(imageName: NSImage.Name,
+                                 toolTip: UIString,
+                                 target: Any? = self,
+                                 action: Selector)
+  {
+    modifyActions.append(action)
+    addToolbarButton(imageName: imageName, toolTip: toolTip,
+                     target: target, action: action)
   }
   
   func reload()

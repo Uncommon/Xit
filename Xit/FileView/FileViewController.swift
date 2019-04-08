@@ -209,10 +209,11 @@ class FileViewController: NSViewController
     activeFileList = commitListController.outlineView
     
     // Add the button at this level because the action affects both lists
-    stagedListController.addToolbarButton(imageName: NSImage.refreshTemplateName,
-                                          toolTip: .refresh,
-                                          target: self,
-                                          action: #selector(refreshStaging(_:)))
+    stagedListController.addModifyingToolbarButton(
+        imageName: NSImage.refreshTemplateName,
+        toolTip: .refresh,
+        target: self,
+        action: #selector(refreshStaging(_:)))
     
     let listControllers = [commitListController,
                            stagedListController,
@@ -323,6 +324,9 @@ class FileViewController: NSViewController
           let newModel = controller.selection
     else { return }
     
+    for controller in allListControllers {
+      controller.repoSelectionChanged()
+    }
     showingStaged = newModel is StagedUnstagedSelection
     isCommitting = newModel is StagingSelection
     headerController.commitSHA = newModel.shaToSelect

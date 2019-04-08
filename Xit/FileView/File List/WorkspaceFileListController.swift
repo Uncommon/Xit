@@ -21,12 +21,12 @@ class WorkspaceFileListController: StagingFileListController
     listTypeIcon.image = NSImage(named: .xtFolderTemplate)
     listTypeLabel.uiStringValue = .workspace
     
-    addToolbarButton(imageName: .xtStageAllTemplate,
-                     toolTip: .stageAll,
-                     action: #selector(stageAll(_:)))
-    addToolbarButton(imageName: .xtRevertTemplate,
-                     toolTip: .revert,
-                     action: #selector(revert(_:)))
+    addModifyingToolbarButton(imageName: .xtStageAllTemplate,
+                              toolTip: .stageAll,
+                              action: #selector(stageAll(_:)))
+    addModifyingToolbarButton(imageName: .xtRevertTemplate,
+                              toolTip: .revert,
+                              action: #selector(revert(_:)))
   }
   
   @IBAction
@@ -63,10 +63,13 @@ extension WorkspaceFileListController
         return false
       case #selector(stage(_:)),
            #selector(revert(_:)):
+        menuItem?.isHidden = !canModify
         return selectedChange != nil
       case #selector(stageAll(_:)):
+        menuItem?.isHidden = !canModify
         return outlineView.numberOfRows != 0
       case #selector(showIgnored(_:)):
+        menuItem?.isHidden = !canModify
         menuItem?.state = showingIgnored ? .on : .off
         return true
       default:

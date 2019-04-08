@@ -16,9 +16,9 @@ class StagedFileListController: StagingFileListController
     listTypeIcon.image = NSImage(named: .xtStagingTemplate)
     listTypeLabel.uiStringValue = .staged
     
-    addToolbarButton(imageName: .xtUnstageAllTemplate,
-                     toolTip: .unstageAll,
-                     action: #selector(unstageAll(_:)))
+    addModifyingToolbarButton(imageName: .xtUnstageAllTemplate,
+                              toolTip: .unstageAll,
+                              action: #selector(unstageAll(_:)))
   }
   
   @IBAction
@@ -56,8 +56,10 @@ extension StagedFileListController
         menuItem?.isHidden = true
         return false
       case #selector(unstage(_:)):
+        menuItem?.isHidden = !canModify
         return selectedChange != nil
       case #selector(unstageAll(_:)):
+        menuItem?.isHidden = !canModify
         return outlineView.numberOfRows != 0
       default:
         return super.validateUserInterfaceItem(item)

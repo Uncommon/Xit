@@ -212,6 +212,19 @@ extension Array
   {
     return firstResult { $0 as? T }
   }
+  
+  func firstOfType<T>(where condition: (T) -> Bool) -> T?
+  {
+    for value in self {
+      guard let t = value as? T
+      else { continue }
+      
+      if condition(t) {
+        return t
+      }
+    }
+    return nil
+  }
 }
 
 extension Array where Element: Comparable
