@@ -31,7 +31,7 @@ public protocol LocalBranch: Branch
 
 extension LocalBranch
 {
-  public var prefix: String { return BranchPrefixes.heads }
+  public var prefix: String { return RefPrefixes.heads }
 }
 
 
@@ -43,15 +43,15 @@ public protocol RemoteBranch: Branch
 extension RemoteBranch
 {
   public var prefix: String
-  { return "\(BranchPrefixes.remotes)\(remoteName ?? "")/" }
+  { return "\(RefPrefixes.remotes)\(remoteName ?? "")/" }
   
   /// What the branch name would look like if it were a local branch
   public var localBranchName: String
-  { return BranchPrefixes.heads + strippedName }
+  { return RefPrefixes.heads + strippedName }
 }
 
 
-public enum BranchPrefixes
+public enum RefPrefixes
 {
   static let remotes = "refs/remotes/"
   static let heads = "refs/heads/"
@@ -149,7 +149,7 @@ public class GitLocalBranch: GitBranch, LocalBranch
       
       git_buf_free(buf)
       return String(data: data, encoding: .utf8)?
-             .removingPrefix(BranchPrefixes.remotes)
+             .removingPrefix(RefPrefixes.remotes)
     }
     set
     {
@@ -181,7 +181,7 @@ public class GitLocalBranch: GitBranch, LocalBranch
 public class GitRemoteBranch: GitBranch, RemoteBranch
 {
   public var shortName: String
-  { return name.removingPrefix(BranchPrefixes.remotes) }
+  { return name.removingPrefix(RefPrefixes.remotes) }
 
   // Getting the remote name involves looking it up in the config file
   // which is a bit expensive

@@ -66,7 +66,7 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
     else { return }
     
     let branchName = (branch is RemoteBranch)
-          ? BranchPrefixes.heads + branch.strippedName
+          ? RefPrefixes.heads + branch.strippedName
           : branch.name
     
     for (buildType, branchStatuses) in buildStatusCache.statuses {

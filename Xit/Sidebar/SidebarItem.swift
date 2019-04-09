@@ -116,7 +116,7 @@ class LocalBranchSidebarItem: BranchSidebarItem
   }
   
   override var refName: String
-  { return BranchPrefixes.heads.appending(pathComponent: title) }
+  { return RefPrefixes.heads.appending(pathComponent: title) }
   
   override func branchObject() -> Branch?
   {
@@ -154,7 +154,7 @@ class RemoteBranchSidebarItem: BranchSidebarItem
   override var fullName: String { return "\(remoteName)/\(title)" }
   
   override var refName: String
-  { return BranchPrefixes.remotes.appending(pathComponent: fullName) }
+  { return RefPrefixes.remotes.appending(pathComponent: fullName) }
 
   init(title: String, remote: String, selection: RepositorySelection)
   {

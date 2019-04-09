@@ -55,7 +55,7 @@ extension XTRepository: Workspace
     try performWriting {
       // invalidate ref caches
       
-      let branchRef = BranchPrefixes.heads.appending(pathComponent: branch)
+      let branchRef = RefPrefixes.heads.appending(pathComponent: branch)
       
       try checkOut(refName: branchRef)
       try moveHead(to: branchRef)

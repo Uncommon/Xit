@@ -88,7 +88,7 @@ extension XTRepository: CommitReferencing
 
   func calculateCurrentBranch() -> String?
   {
-    return headReference?.resolve()?.name.removingPrefix(BranchPrefixes.heads)
+    return headReference?.resolve()?.name.removingPrefix(RefPrefixes.heads)
   }
 
   func hasHeadReference() -> Bool

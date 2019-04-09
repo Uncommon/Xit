@@ -34,7 +34,7 @@ class CheckOutRemoteOperationController: OperationController
     else { return }
     
     do {
-      let fullTarget = BranchPrefixes.remotes + remoteBranch
+      let fullTarget = RefPrefixes.remotes + remoteBranch
       
       if let branch = try repository.createBranch(named: newBranchName,
                                                   target: fullTarget) {
