@@ -37,7 +37,7 @@ extension SidebarHandler
         return !repo.isWriting && item.title != repo.currentBranch
       
       case #selector(SidebarController.createTrackingBranch(_:)):
-        return !repo.isWriting
+        return !repo.isWriting && item is RemoteBranchSidebarItem
       
       case #selector(SidebarController.renameBranch(_:)),
            #selector(SidebarController.mergeBranch(_:)),
