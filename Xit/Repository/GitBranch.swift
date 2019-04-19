@@ -55,6 +55,7 @@ public enum RefPrefixes
 {
   static let remotes = "refs/remotes/"
   static let heads = "refs/heads/"
+  static let tags = "refs/tags/"
 }
 
 

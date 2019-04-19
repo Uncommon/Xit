@@ -1,5 +1,6 @@
 import Cocoa
 
+/// Represents all items in the sidebar
 class SidebarItem: NSObject
 {
   var title: String
@@ -37,6 +38,21 @@ class SidebarItem: NSObject
       return child
     }
     return nil
+  }
+  
+  func child(atPath path: String) -> SidebarItem?
+  {
+    let components = path.components(separatedBy: "/")
+    guard let firstName = components.first,
+          let child = child(matching: firstName)
+    else { return nil }
+    
+    if components.count == 1 {
+      return child
+    }
+    else {
+      return child.child(atPath: components.dropFirst().joined(separator: "/"))
+    }
   }
   
   /// Returns the first match in the hierarchy of child items
@@ -89,6 +105,14 @@ class StashSidebarItem: SidebarItem
 }
 
 
+/// A sidebar item that has a ref name
+protocol RefSidebarItem: AnyObject
+{
+  var refName: String { get }
+}
+
+
+/// Abstract class for local and remote branch items
 class BranchSidebarItem: SidebarItem
 {
   override var displayTitle: UIString
@@ -97,7 +121,6 @@ class BranchSidebarItem: SidebarItem
   { return NSImage(named: .xtBranchTemplate) }
   
   var fullName: String { return title }
-  var refName: String { fatalError("refName is abstract") }
   var remote: Remote? { return nil }
   
   func branchObject() -> Branch? { return nil }
@@ -115,9 +138,7 @@ class LocalBranchSidebarItem: BranchSidebarItem
     return false
   }
   
-  override var refName: String
-  { return RefPrefixes.heads.appending(pathComponent: title) }
-  
+
   override func branchObject() -> Branch?
   {
     return selection!.repository.localBranch(named: title)
@@ -141,6 +162,12 @@ class LocalBranchSidebarItem: BranchSidebarItem
   }
 }
 
+extension LocalBranchSidebarItem: RefSidebarItem
+{
+  var refName: String
+  { return RefPrefixes.heads.appending(pathComponent: title) }
+}
+
 
 class RemoteBranchSidebarItem: BranchSidebarItem
 {
@@ -153,8 +180,6 @@ class RemoteBranchSidebarItem: BranchSidebarItem
   
   override var fullName: String { return "\(remoteName)/\(title)" }
   
-  override var refName: String
-  { return RefPrefixes.remotes.appending(pathComponent: fullName) }
 
   init(title: String, remote: String, selection: RepositorySelection)
   {
@@ -168,6 +193,12 @@ class RemoteBranchSidebarItem: BranchSidebarItem
   {
     return selection!.repository.remoteBranch(named: title, remote: remoteName)
   }
+}
+
+extension RemoteBranchSidebarItem: RefSidebarItem
+{
+  var refName: String
+  { return RefPrefixes.remotes.appending(pathComponent: fullName) }
 }
 
 
@@ -217,7 +248,7 @@ class TagSidebarItem: SidebarItem
   override var icon: NSImage?
   { return NSImage(named: .xtTagTemplate) }
   override var refType: RefType { return .tag }
-  
+
   init(tag: Tag)
   {
     self.tag = tag
@@ -232,6 +263,12 @@ class TagSidebarItem: SidebarItem
                                        commit: commit)
     }
   }
+}
+
+extension TagSidebarItem: RefSidebarItem
+{
+  var refName: String
+  { return RefPrefixes.tags.appending(pathComponent: title) }
 }
 
 

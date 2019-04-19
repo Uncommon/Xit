@@ -60,8 +60,9 @@ extension SideBarDataSource: TeamCityAccessor
   func statusImage(for item: SidebarItem) -> NSImage?
   {
     guard let branchItem = item as? BranchSidebarItem,
+          let refName = (branchItem as? RefSidebarItem)?.refName,
           let localBranch = branchItem.branchObject() as? LocalBranch ??
-                            localTrackingBranch(forBranchRef: branchItem.refName)
+                            localTrackingBranch(forBranchRef: refName)
     else { return nil }
 
     guard let remoteName = remoteName(forBranchItem: item),

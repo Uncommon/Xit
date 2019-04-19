@@ -18,6 +18,11 @@ class SideBarDataSource: NSObject
     case set(String)     /// References a real branch
   }
   
+  private struct ExpansionCache
+  {
+    let localBranches, remoteBranches, tags: [String]
+  }
+  
   @IBOutlet weak var viewController: SidebarController!
   @IBOutlet weak var outline: NSOutlineView!
   
@@ -164,8 +169,34 @@ class SideBarDataSource: NSObject
     }
   }
   
+  private func expandedChildNames(of item: SidebarItem) -> [String]
+  {
+    var result: [String] = []
+    
+    for childItem in item.children {
+      if outline.isItemExpanded(childItem) {
+        result.append(path(for: childItem))
+        result.append(contentsOf: expandedChildNames(of: childItem))
+      }
+    }
+    return result
+  }
+  
+  private func getExpansions() -> ExpansionCache
+  {
+    let localItem = roots[XTGroupIndex.branches.rawValue]
+    let remotesItem = roots[XTGroupIndex.remotes.rawValue]
+    let tagsItem = roots[XTGroupIndex.tags.rawValue]
+
+    return ExpansionCache(localBranches: expandedChildNames(of: localItem),
+                          remoteBranches: expandedChildNames(of: remotesItem),
+                          tags: expandedChildNames(of: tagsItem))
+  }
+  
   func reload()
   {
+    let expanded = getExpansions()
+    
     repository?.queue.executeOffMainThread {
       [weak self] in
       guard let newRoots = withSignpost(.sidebarReload,
@@ -173,12 +204,13 @@ class SideBarDataSource: NSObject
       else { return }
 
       DispatchQueue.main.async {
-        self?.afterReload(newRoots)
+        self?.afterReload(newRoots, expanded: expanded)
       }
     }
   }
   
-  func afterReload(_ newRoots: [SideBarGroupItem])
+  private func afterReload(_ newRoots: [SideBarGroupItem],
+                           expanded: ExpansionCache)
   {
     let selection = outline.item(atRow: outline.selectedRow)
                     as? SidebarItem
@@ -195,9 +227,32 @@ class SideBarDataSource: NSObject
        currentBranch.contains("/") {
       showItem(branchName: currentBranch)
     }
-    if outline.numberOfSelectedRows == 0 {
-      if !(selection.map({ select(item: $0) }) ?? false) {
-        selectCurrentBranch()
+    if outline.numberOfSelectedRows == 0  &&
+       !(selection.map({ select(item: $0) }) ?? false) {
+      selectCurrentBranch()
+    }
+    restoreExpandedItems(expanded)
+  }
+  
+  private func restoreExpandedItems(_ expanded: ExpansionCache)
+  {
+    let localItem = roots[XTGroupIndex.branches.rawValue]
+    let remotesItem = roots[XTGroupIndex.remotes.rawValue]
+    let tagsItem = roots[XTGroupIndex.tags.rawValue]
+
+    for localBranch in expanded.localBranches {
+      if let branchItem = localItem.child(atPath: localBranch) {
+        outline.expandItem(branchItem)
+      }
+    }
+    for remoteBranch in expanded.remoteBranches {
+      if let remoteItem = remotesItem.child(atPath: remoteBranch) {
+        outline.expandItem(remoteItem)
+      }
+    }
+    for tag in expanded.tags {
+      if let tagItem = tagsItem.child(atPath: tag) {
+        outline.expandItem(tagItem)
       }
     }
   }
@@ -369,6 +424,19 @@ class SideBarDataSource: NSObject
   func parent(for branch: String, groupItem: SidebarItem) -> SidebarItem
   {
     return parent(for: branch.components(separatedBy: "/"), under: groupItem)
+  }
+  
+  func path(for item: SidebarItem) -> String
+  {
+    let title = item.displayTitle.rawValue
+    
+    if let parent = outline.parent(forItem: item) as? SidebarItem,
+       !(parent is SideBarGroupItem) {
+      return path(for: parent).appending(pathComponent: title)
+    }
+    else {
+      return title
+    }
   }
   
   func selectCurrentBranch()
