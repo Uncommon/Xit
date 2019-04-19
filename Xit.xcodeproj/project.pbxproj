@@ -38,12 +38,9 @@
 		89D8BE221CF0A4ED00D640AA /* RolloverButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8BE211CF0A4ED00D640AA /* RolloverButton.swift */; };
 		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
-		C3FA470B13D0F8E200AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA470913D0F8E200AC4F9B /* InfoPlist.strings */; };
 		C3FA470E13D0F8E200AC4F9B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA470D13D0F8E200AC4F9B /* main.m */; };
-		C3FA471113D0F8E200AC4F9B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = C3FA470F13D0F8E200AC4F9B /* Credits.rtf */; };
 		C3FA471413D0F8E200AC4F9B /* XTDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA471313D0F8E200AC4F9B /* XTDocument.m */; };
 		C3FA471713D0F8E200AC4F9B /* XTDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3FA471513D0F8E200AC4F9B /* XTDocument.xib */; };
-		C3FA471A13D0F8E300AC4F9B /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3FA471813D0F8E300AC4F9B /* MainMenu.xib */; };
 		C3FA472913D0F8E300AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA472713D0F8E300AC4F9B /* InfoPlist.strings */; };
 		C900463C21120F3200706029 /* BitbucketServerAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C900463B21120F3200706029 /* BitbucketServerAPI.swift */; };
 		C9004650211501CB00706029 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C900464F211501CB00706029 /* Colors.swift */; };
@@ -174,6 +171,8 @@
 		C9BAE6141D3039C500A87F13 /* OperationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE6131D3039C500A87F13 /* OperationController.swift */; };
 		C9BAE61E1D303A8100A87F13 /* RemoteOptionsOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE61D1D303A8100A87F13 /* RemoteOptionsOpController.swift */; };
 		C9BC1B9B1DDF51B900C71562 /* FileEventStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BC1B9A1DDF51B900C71562 /* FileEventStream.swift */; };
+		C9BD02FB226A275600172C0B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = C9BD02FA226A275600172C0B /* Credits.rtf */; };
+		C9BD02FD226A278900172C0B /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9BD02FC226A278900172C0B /* MainMenu.xib */; };
 		C9BDF4C11D99A70F0034841F /* RenameBranchOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BDF4C01D99A70F0034841F /* RenameBranchOpController.swift */; };
 		C9BDF4D01D99A7660034841F /* RenameBranchPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BDF4CE1D99A7660034841F /* RenameBranchPanelController.swift */; };
 		C9BDF4D11D99A7660034841F /* RenameBranchPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9BDF4CF1D99A7660034841F /* RenameBranchPanelController.xib */; };
@@ -407,14 +406,10 @@
 		C3FA470413D0F8E200AC4F9B /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		C3FA470513D0F8E200AC4F9B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C3FA470813D0F8E200AC4F9B /* Xit-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Xit-Info.plist"; sourceTree = "<group>"; };
-		C3FA470A13D0F8E200AC4F9B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C3FA470C13D0F8E200AC4F9B /* Xit-Prefix.pch */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = "Xit-Prefix.pch"; sourceTree = "<group>"; tabWidth = 4; };
 		C3FA470D13D0F8E200AC4F9B /* main.m */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; tabWidth = 4; };
-		C3FA471013D0F8E200AC4F9B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		C3FA471213D0F8E200AC4F9B /* XTDocument.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTDocument.h; sourceTree = "<group>"; tabWidth = 2; };
 		C3FA471313D0F8E200AC4F9B /* XTDocument.m */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTDocument.m; sourceTree = "<group>"; tabWidth = 2; };
-		C3FA471613D0F8E200AC4F9B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/XTDocument.xib; sourceTree = "<group>"; };
-		C3FA471913D0F8E300AC4F9B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		C3FA472013D0F8E300AC4F9B /* XitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3FA472613D0F8E300AC4F9B /* XitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "XitTests-Info.plist"; sourceTree = "<group>"; };
 		C3FA472813D0F8E300AC4F9B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -547,6 +542,10 @@
 		C9BAE6131D3039C500A87F13 /* OperationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperationController.swift; sourceTree = "<group>"; };
 		C9BAE61D1D303A8100A87F13 /* RemoteOptionsOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteOptionsOpController.swift; sourceTree = "<group>"; };
 		C9BC1B9A1DDF51B900C71562 /* FileEventStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileEventStream.swift; sourceTree = "<group>"; };
+		C9BD02FA226A275600172C0B /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
+		C9BD02FC226A278900172C0B /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
+		C9BD02FE226A282600172C0B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/XTDocument.xib; sourceTree = "<group>"; };
+		C9BD02FF226A282700172C0B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = "Base.lproj/Sidebar Menus.xib"; sourceTree = "<group>"; };
 		C9BDF4C01D99A70F0034841F /* RenameBranchOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RenameBranchOpController.swift; sourceTree = "<group>"; };
 		C9BDF4CE1D99A7660034841F /* RenameBranchPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RenameBranchPanelController.swift; sourceTree = "<group>"; };
 		C9BDF4CF1D99A7660034841F /* RenameBranchPanelController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RenameBranchPanelController.xib; sourceTree = "<group>"; };
@@ -597,7 +596,6 @@
 		DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ObjectiveGitFramework.xcodeproj; path = "objective-git/ObjectiveGitFramework.xcodeproj"; sourceTree = "<group>"; };
 		DD98CFF2181ADFC5008B79C9 /* CFRunLoop+Extensions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "CFRunLoop+Extensions.c"; path = "XitTests/CFRunLoop+Extensions.c"; sourceTree = SOURCE_ROOT; };
 		DD98CFFF181AE297008B79C9 /* CFRunLoop+Extensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CFRunLoop+Extensions.h"; path = "XitTests/CFRunLoop+Extensions.h"; sourceTree = SOURCE_ROOT; };
-		DD997DD9173B409500C7DF82 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = "en.lproj/Sidebar Menus.xib"; sourceTree = "<group>"; };
 		DD997DF71746F40D00C7DF82 /* FileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FileViewController.xib; sourceTree = "<group>"; };
 		DDD4708416F96F7E00CA76FF /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
 		DDD4708616F9701600CA76FF /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
@@ -754,7 +752,7 @@
 				C93FFCA91F0FD65100FDDD78 /* Defaults.plist */,
 				C9F5334C2187608300B2432C /* UIString.swift */,
 				C95355FB1D9492EA00AEEF49 /* XTDocumentController.swift */,
-				C3FA471813D0F8E300AC4F9B /* MainMenu.xib */,
+				C9BD02FC226A278900172C0B /* MainMenu.xib */,
 				89039F551703A9FC000949A8 /* html */,
 				C3FA470713D0F8E200AC4F9B /* Supporting Files */,
 				89880EEC20D17D1E007042F8 /* Media.xcassets */,
@@ -766,10 +764,9 @@
 			isa = PBXGroup;
 			children = (
 				C3FA470813D0F8E200AC4F9B /* Xit-Info.plist */,
-				C3FA470913D0F8E200AC4F9B /* InfoPlist.strings */,
 				C3FA470C13D0F8E200AC4F9B /* Xit-Prefix.pch */,
 				C3FA470D13D0F8E200AC4F9B /* main.m */,
-				C3FA470F13D0F8E200AC4F9B /* Credits.rtf */,
+				C9BD02FA226A275600172C0B /* Credits.rtf */,
 				DD00725513E76DFB003B4120 /* Xit.icns */,
 			);
 			name = "Supporting Files";
@@ -1123,11 +1120,11 @@
 			};
 			buildConfigurationList = C3FA46F613D0F8E200AC4F9B /* Build configuration list for PBXProject "Xit" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
+				Base,
 			);
 			mainGroup = C3FA46F113D0F8E200AC4F9B;
 			productRefGroup = C3FA46FD13D0F8E200AC4F9B /* Products */;
@@ -1257,15 +1254,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				C9BDF4D11D99A7660034841F /* RenameBranchPanelController.xib in Resources */,
-				C3FA470B13D0F8E200AC4F9B /* InfoPlist.strings in Resources */,
 				89880EED20D17D1E007042F8 /* Media.xcassets in Resources */,
 				C98925C71DB693CC00E5645C /* TagPanelController.xib in Resources */,
+				C9BD02FD226A278900172C0B /* MainMenu.xib in Resources */,
 				C9FE06C720178A8C0001EB2B /* FileListView.xib in Resources */,
-				C3FA471113D0F8E200AC4F9B /* Credits.rtf in Resources */,
 				C3FA471713D0F8E200AC4F9B /* XTDocument.xib in Resources */,
 				C9790D1020F537E10024D3EA /* CheckOutRemote.xib in Resources */,
 				C94154A11ED4ECF40030E481 /* BuildStatusViewController.xib in Resources */,
-				C3FA471A13D0F8E300AC4F9B /* MainMenu.xib in Resources */,
 				DD00725613E76DFB003B4120 /* Xit.icns in Resources */,
 				31C7C13413ECC74C00A65FE9 /* HistoryViewController.xib in Resources */,
 				89AB21EE213DE67500EF7507 /* StashPanelController.xib in Resources */,
@@ -1277,6 +1272,7 @@
 				C923D65E1D90506A00C6B90B /* TitleBar.xib in Resources */,
 				DD997DF81746F40D00C7DF82 /* FileViewController.xib in Resources */,
 				C93FFCAA1F0FD65100FDDD78 /* Defaults.plist in Resources */,
+				C9BD02FB226A275600172C0B /* Credits.rtf in Resources */,
 				C9DAB5D31D4A8D2000586854 /* Preferences.storyboard in Resources */,
 				C94866C11D25861E000BDB0A /* PasswordPanelController.xib in Resources */,
 			);
@@ -1543,36 +1539,12 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		C3FA470913D0F8E200AC4F9B /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				C3FA470A13D0F8E200AC4F9B /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		C3FA470F13D0F8E200AC4F9B /* Credits.rtf */ = {
-			isa = PBXVariantGroup;
-			children = (
-				C3FA471013D0F8E200AC4F9B /* en */,
-			);
-			name = Credits.rtf;
-			sourceTree = "<group>";
-		};
 		C3FA471513D0F8E200AC4F9B /* XTDocument.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				C3FA471613D0F8E200AC4F9B /* en */,
+				C9BD02FE226A282600172C0B /* Base */,
 			);
 			name = XTDocument.xib;
-			sourceTree = "<group>";
-		};
-		C3FA471813D0F8E300AC4F9B /* MainMenu.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				C3FA471913D0F8E300AC4F9B /* en */,
-			);
-			name = MainMenu.xib;
 			sourceTree = "<group>";
 		};
 		C3FA472713D0F8E300AC4F9B /* InfoPlist.strings */ = {
@@ -1586,7 +1558,7 @@
 		DD997DD8173B409500C7DF82 /* Sidebar Menus.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				DD997DD9173B409500C7DF82 /* en */,
+				C9BD02FF226A282700172C0B /* Base */,
 			);
 			name = "Sidebar Menus.xib";
 			sourceTree = "<group>";
