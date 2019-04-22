@@ -106,7 +106,7 @@ class StashSidebarItem: SidebarItem
 
 
 /// A sidebar item that has a ref name
-protocol RefSidebarItem: AnyObject
+protocol RefSidebarItem: SidebarItem
 {
   var refName: String { get }
 }
