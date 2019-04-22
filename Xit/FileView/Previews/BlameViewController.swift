@@ -81,6 +81,50 @@ class BlameViewController: WebViewController
     }
   }
   
+  enum HTML
+  {
+    static func jumpButton(_ sha: String) -> String
+    {
+      return """
+          <div class='jumpbutton' \
+          onclick="window.webActionDelegate.selectSHA('\(sha)')">
+          ‣</div>
+          """
+    }
+    
+    static func headerStart(color: NSColor,
+                            button: String,
+                            name: String?) -> String
+    {
+      return """
+          <tr><td class='headcell'>
+          <div class='blamehead' style='background-color: \(color.cssHSL)'>
+          \(button)
+          <div class='name'>\(name ?? "")</div>
+          """
+    }
+    
+    static func sha(_ hunk: BlameHunk, isCurrent: Bool) -> String
+    {
+      let `class` = isCurrent ? " class = 'currentsha'" : ""
+      
+      return "<div\(`class`)>\(hunk.finalLine.oid.sha.firstSix())</div>"
+    }
+    
+    static func textLine(_ text: String) -> String
+    {
+      return "<div class='line'>\(text.xmlEscaped)</div>"
+    }
+    
+    static func startTextCell(color: NSColor) -> [String]
+    {
+      return ["</div></td>",
+              "<td style='background-color: \(color.cssHSL)'>"]
+    }
+    
+    static let localChanges = "<div class='local'>local changes</div>"
+  }
+  
   func loadBlame(text: String, path: String,
                  selection: RepositorySelection, fileList: FileListModel)
   {
@@ -111,34 +155,19 @@ class BlameViewController: WebViewController
     
     for hunk in blame.hunks {
       let finalOID = hunk.finalLine.oid as! GitOID
-      var color = coloring.color(for: finalOID)
-      let jumpButton = finalOID == currentOID ? "" : """
-            <div class='jumpbutton' \
-            onclick="window.webActionDelegate.selectSHA('\(finalOID.sha)')">
-            ‣</div>
-            """
+      var hunkColor = coloring.color(for: finalOID)
+      let jumpButton = finalOID == currentOID ? "" : HTML.jumpButton(finalOID.sha)
 
-      htmlLines.append(contentsOf: ["""
-          <tr><td class='headcell'>
-            <div class='blamehead' style='background-color: \(color.cssHSL)'>
-            \(jumpButton)
-            <div class='name'>\(hunk.finalLine.signature.name ?? "")</div>
-          """
-          ])
+      htmlLines.append(HTML.headerStart(color: hunkColor,
+                                        button: jumpButton,
+                                        name: hunk.finalLine.signature.name))
       
       if hunk.lineCount > 0 {
         if hunk.finalLine.oid.isZero {
-          htmlLines.append("<div class='local'>local changes</div>")
+          htmlLines.append(HTML.localChanges)
         }
         else {
-          if finalOID == currentOID {
-            htmlLines.append("<div class='currentsha'>" +
-                             hunk.finalLine.oid.sha.firstSix() + "</div>")
-          }
-          else {
-            htmlLines.append(
-                "<div>\(hunk.finalLine.oid.sha.firstSix())</div>")
-          }
+          htmlLines.append(HTML.sha(hunk, isCurrent: finalOID == currentOID))
         }
         htmlLines.append("""
             <div class='date'>\
@@ -146,20 +175,17 @@ class BlameViewController: WebViewController
             """)
       }
       if finalOID != currentOID,
-         let blend = color.blended(withFraction: 0.65,
-                                  of: .textBackgroundColor) {
-        color = blend
+         let blend = hunkColor.blended(withFraction: 0.65,
+                                       of: .textBackgroundColor) {
+        hunkColor = blend
       }
-      htmlLines.append(contentsOf: ["</div></td>",
-                                    "<td style='background-color: " +
-                                    "\(color.cssHSL)'>"])
+      htmlLines.append(contentsOf: HTML.startTextCell(color: hunkColor))
       
       let start = hunk.finalLine.start - 1
       let end = min(start + hunk.lineCount, lines.count)
       let hunkLines = lines[start..<end]
       
-      htmlLines.append(contentsOf: hunkLines.map {
-          "<div class='line'>\($0.xmlEscaped)</div>" })
+      htmlLines.append(contentsOf: hunkLines.map(HTML.textLine))
       htmlLines.append("</td></tr>")
     }
     

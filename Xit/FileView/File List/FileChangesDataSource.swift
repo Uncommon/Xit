@@ -91,7 +91,8 @@ class FileChangesDataSource: FileListDataSourceBase
       newRow = oldRow
     }
     else {
-      if let matchRow = changes.firstIndex(where: { $0.gitPath == oldChange.gitPath }) {
+      if let matchRow = changes.firstIndex(
+            where: { $0.gitPath == oldChange.gitPath }) {
         newRow = matchRow
       }
     }
