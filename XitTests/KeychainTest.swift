@@ -15,7 +15,7 @@ class KeychainTest: XCTestCase
   let baseURL = URL(string: KeychainTest.baseURLString)!
   let baseAccount = Account(type: .gitHub, user: "myself",
                             location: URL(string: KeychainTest.baseURLString)!)
-  let basePassword = "string"
+  let basePassword = "basePassword"
 
   override func setUp()
   {
@@ -24,6 +24,7 @@ class KeychainTest: XCTestCase
     if keychain == nil {
       continueAfterFailure = false
       XCTFail("Could not create keychain")
+      return
     }
     
     let keychainStorage = XTKeychain()
@@ -78,7 +79,7 @@ class KeychainTest: XCTestCase
     let status = SecKeychainOpen(path, &keychain)
     
     if status == noErr {
-      _ = SecKeychainDelete(keychain)
+      SecKeychainDelete(keychain)
     }
   }
   
@@ -95,17 +96,25 @@ class KeychainTest: XCTestCase
     XCTAssertEqual(baseAccount, manager.accounts[0])
     XCTAssertEqual(basePassword,
                    passwordStorage.find(host: baseURL.host!, path: baseURL.path,
+                                        protocol: nil,
                                         port: 80, account: baseAccount.user))
   }
   
   func assertModify(newAccount: Account, password: String?)
   {
+    dumpKeychain()
+    XCTAssertEqual(basePassword,
+                   passwordStorage.find(url: baseAccount.location,
+                                        account: baseAccount.user))
     XCTAssertNoThrow(try manager.modify(oldAccount: baseAccount,
                                         newAccount: newAccount,
                                         newPassword: password))
+    print("**")
+    dumpKeychain()
     XCTAssertEqual(password ?? basePassword,
                    passwordStorage.find(host: newAccount.location.host!,
                                         path: newAccount.location.path,
+                                        protocol: nil,
                                         port: 80, account: newAccount.user))
   }
   

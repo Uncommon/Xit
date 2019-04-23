@@ -49,11 +49,17 @@ extension PasswordStorage
   {
     guard let host = url.host
     else { return nil }
+    let port = UInt16(url.port ?? url.defaultPort)
+    let user = account ?? url.user
     
     return find(host: host, path: url.path,
                 protocol: PasswordProtocol(url: url),
-                port: UInt16(url.port ?? url.defaultPort),
-                account: account ?? url.user)
+                port: port,
+                account: user)
+        ?? find(host: host, path: url.path,
+                protocol: nil,
+                port: port,
+                account: user)
   }
   
   func find(account: Account) -> String?

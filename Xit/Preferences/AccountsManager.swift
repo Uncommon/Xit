@@ -116,7 +116,7 @@ class AccountsManager: NSObject
               newAccount: Account, newPassword: String?) throws
   {
     guard let index = accounts.firstIndex(where: { $0 == oldAccount })
-    else { return }
+    else { throw PasswordError.itemNotFound }
     let oldPassword = passwordStorage.find(url: oldAccount.location,
                                            account: oldAccount.user)
     let changePassword = newPassword != nil && newPassword != oldPassword
