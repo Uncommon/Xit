@@ -6,17 +6,44 @@ class PasswordOpController: SimpleOperationController
   var host = ""
   var path = ""
   var port = 80
+  let semaphore = DispatchSemaphore(value: 0)
+  var closeObserver: NSObjectProtocol?
+
+  required init(windowController: XTWindowController)
+  {
+    super.init(windowController: windowController)
+    
+    let nc = NotificationCenter.default
+    
+    closeObserver = nc.addObserver(forName: NSWindow.willCloseNotification,
+                                   object: windowController.window,
+                                   queue: .main) {
+      (_) in
+      self.semaphore.signal()
+    }
+  }
+  
+  deinit
+  {
+    if let observer = closeObserver {
+      NotificationCenter.default.removeObserver(observer)
+    }
+  }
+  
+  override func abort()
+  {
+    self.semaphore.signal()
+  }
   
   /// User/password callback
   func getPassword() -> (String, String)?
   {
-    let semaphore = DispatchSemaphore(value: 0)
     var result: (String, String)?
     
     DispatchQueue.main.async {
       guard let window = self.windowController?.window
       else {
-        _ = semaphore.signal()
+        _ = self.semaphore.signal()
         return
       }
       
@@ -36,7 +63,7 @@ class PasswordOpController: SimpleOperationController
                                        password: panel.password)
           }
         }
-        _ = semaphore.signal()
+        _ = self.semaphore.signal()
       }
     }
     _ = semaphore.wait(timeout: DispatchTime.distantFuture)

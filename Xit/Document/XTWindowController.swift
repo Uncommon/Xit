@@ -100,6 +100,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   var savedSidebarWidth: CGFloat = 180
   var historyAutoCollapsed = false
   
+  @objc
   var currentOperation: OperationController?
   
   private var windowObserver, repoObserver,

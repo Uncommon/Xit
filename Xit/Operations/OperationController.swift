@@ -29,6 +29,9 @@ class OperationController: NSObject
   /// Initiates the operation.
   func start() throws {}
   
+  @objc
+  func abort() {}
+  
   func ended(result: Result = .success)
   {
     if result == .success {
