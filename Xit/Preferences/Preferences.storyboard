@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="601-dV-YQ8">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="601-dV-YQ8">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -464,10 +464,10 @@
                 <customObject id="bFL-Vc-PZs" customClass="AddAccountController" customModule="Xit" customModuleProvider="target">
                     <connections>
                         <outlet property="acceptButton" destination="D6g-f7-WOo" id="KhW-OY-GPA"/>
-                        <outlet property="locationField" destination="Cbg-Vb-UQD" id="wDZ-qH-se2"/>
-                        <outlet property="passwordField" destination="uc3-zv-ZqK" id="9LV-wS-7zW"/>
+                        <outlet property="locationField" destination="KiZ-oI-qdl" id="JQH-EX-vz8"/>
+                        <outlet property="passwordField" destination="uc3-zv-ZqK" id="BNz-uY-tMx"/>
                         <outlet property="servicePopup" destination="rbV-1k-RLt" id="fWi-qg-j1p"/>
-                        <outlet property="userField" destination="KiZ-oI-qdl" id="xBc-bU-ggi"/>
+                        <outlet property="userField" destination="Cbg-Vb-UQD" id="oDe-jW-JIW"/>
                         <outlet property="window" destination="Q3l-go-e5f" id="p4m-c0-1Vo"/>
                     </connections>
                 </customObject>
@@ -477,11 +477,11 @@
                     <rect key="contentRect" x="2843" y="305" width="322" height="181"/>
                     <rect key="screenRect" x="2560" y="0.0" width="2560" height="1417"/>
                     <view key="contentView" id="GRJ-t9-jrb">
-                        <rect key="frame" x="0.0" y="0.0" width="322" height="181"/>
+                        <rect key="frame" x="0.0" y="0.0" width="322" height="184"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qqE-3l-Xn3">
-                                <rect key="frame" x="18" y="142" width="74" height="17"/>
+                                <rect key="frame" x="18" y="145" width="74" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Service:" id="KG4-BI-qd8">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -489,7 +489,7 @@
                                 </textFieldCell>
                             </textField>
                             <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rbV-1k-RLt">
-                                <rect key="frame" x="96" y="137" width="209" height="25"/>
+                                <rect key="frame" x="96" y="140" width="209" height="25"/>
                                 <popUpButtonCell key="cell" type="push" title="GitHub" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="Nn0-pR-p5o" id="A1G-Tc-YYM">
                                     <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="menu"/>
@@ -504,34 +504,23 @@
                                 </popUpButtonCell>
                             </popUpButton>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NBa-0f-hzt">
-                                <rect key="frame" x="18" y="113" width="74" height="17"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="User name:" id="S1C-FB-ixZ">
+                                <rect key="frame" x="18" y="116" width="74" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Location:" id="S1C-FB-ixZ">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
                             <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KiZ-oI-qdl">
-                                <rect key="frame" x="98" y="110" width="204" height="22"/>
+                                <rect key="frame" x="98" y="113" width="204" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="Rsy-b4-bSM">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <secureTextField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uc3-zv-ZqK">
-                                <rect key="frame" x="98" y="81" width="204" height="22"/>
-                                <secureTextFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="3Ef-he-qFM">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                    <allowedInputSourceLocales>
-                                        <string>NSAllRomanInputSourcesLocaleIdentifier</string>
-                                    </allowedInputSourceLocales>
-                                </secureTextFieldCell>
-                            </secureTextField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xPV-lV-7Qd">
-                                <rect key="frame" x="18" y="84" width="74" height="17"/>
+                                <rect key="frame" x="18" y="52" width="74" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Password:" id="7U7-21-cLo">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -539,8 +528,8 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ATc-iO-5Oo">
-                                <rect key="frame" x="18" y="52" width="74" height="17"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Location:" id="88S-Sp-8g0">
+                                <rect key="frame" x="18" y="84" width="74" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="User name:" id="88S-Sp-8g0">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -576,13 +565,24 @@ Gw
                                 </connections>
                             </button>
                             <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Cbg-Vb-UQD">
-                                <rect key="frame" x="98" y="49" width="204" height="22"/>
+                                <rect key="frame" x="98" y="81" width="204" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="uUs-sa-y8n">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <secureTextField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uc3-zv-ZqK">
+                                <rect key="frame" x="98" y="49" width="204" height="22"/>
+                                <secureTextFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="3Ef-he-qFM">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    <allowedInputSourceLocales>
+                                        <string>NSAllRomanInputSourcesLocaleIdentifier</string>
+                                    </allowedInputSourceLocales>
+                                </secureTextFieldCell>
+                            </secureTextField>
                         </subviews>
                         <constraints>
                             <constraint firstItem="ATc-iO-5Oo" firstAttribute="width" secondItem="qqE-3l-Xn3" secondAttribute="width" id="1Ao-Ui-ZKw"/>
@@ -599,9 +599,9 @@ Gw
                             <constraint firstAttribute="trailing" secondItem="uc3-zv-ZqK" secondAttribute="trailing" constant="20" symbolic="YES" id="QHq-5E-fSg"/>
                             <constraint firstItem="5S6-Bg-xR8" firstAttribute="baseline" secondItem="D6g-f7-WOo" secondAttribute="baseline" id="QRC-kP-9V5"/>
                             <constraint firstItem="rbV-1k-RLt" firstAttribute="leading" secondItem="qqE-3l-Xn3" secondAttribute="trailing" constant="8" symbolic="YES" id="SNY-Bk-lKn"/>
-                            <constraint firstItem="D6g-f7-WOo" firstAttribute="top" secondItem="Cbg-Vb-UQD" secondAttribute="bottom" constant="8" symbolic="YES" id="SeK-r0-N1C"/>
+                            <constraint firstItem="D6g-f7-WOo" firstAttribute="top" secondItem="uc3-zv-ZqK" secondAttribute="bottom" constant="8" symbolic="YES" id="SeK-r0-N1C"/>
                             <constraint firstItem="D6g-f7-WOo" firstAttribute="leading" secondItem="5S6-Bg-xR8" secondAttribute="trailing" constant="12" symbolic="YES" id="V89-Qg-KAm"/>
-                            <constraint firstItem="Cbg-Vb-UQD" firstAttribute="top" secondItem="uc3-zv-ZqK" secondAttribute="bottom" constant="10" symbolic="YES" id="YrK-cA-crv"/>
+                            <constraint firstItem="Cbg-Vb-UQD" firstAttribute="top" secondItem="KiZ-oI-qdl" secondAttribute="bottom" constant="10" symbolic="YES" id="YrK-cA-crv"/>
                             <constraint firstItem="Cbg-Vb-UQD" firstAttribute="leading" secondItem="ATc-iO-5Oo" secondAttribute="trailing" constant="8" symbolic="YES" id="aOc-qe-nzW"/>
                             <constraint firstItem="ATc-iO-5Oo" firstAttribute="baseline" secondItem="Cbg-Vb-UQD" secondAttribute="baseline" id="bFX-ke-qaA"/>
                             <constraint firstItem="KiZ-oI-qdl" firstAttribute="leading" secondItem="NBa-0f-hzt" secondAttribute="trailing" constant="8" symbolic="YES" id="bRm-yy-hGY"/>
@@ -609,6 +609,7 @@ Gw
                             <constraint firstItem="NBa-0f-hzt" firstAttribute="baseline" secondItem="KiZ-oI-qdl" secondAttribute="baseline" id="cZa-f1-LQ1"/>
                             <constraint firstItem="NBa-0f-hzt" firstAttribute="leading" secondItem="GRJ-t9-jrb" secondAttribute="leading" constant="20" symbolic="YES" id="d6a-KN-31T"/>
                             <constraint firstAttribute="trailing" secondItem="KiZ-oI-qdl" secondAttribute="trailing" constant="20" symbolic="YES" id="hUQ-Zg-cCZ"/>
+                            <constraint firstItem="uc3-zv-ZqK" firstAttribute="top" secondItem="Cbg-Vb-UQD" secondAttribute="bottom" constant="10" symbolic="YES" id="jVV-bg-u63"/>
                             <constraint firstItem="KiZ-oI-qdl" firstAttribute="top" secondItem="rbV-1k-RLt" secondAttribute="bottom" constant="8" symbolic="YES" id="k46-6Y-Eh9"/>
                             <constraint firstAttribute="trailing" secondItem="Cbg-Vb-UQD" secondAttribute="trailing" constant="20" symbolic="YES" id="mJR-bv-g8n"/>
                             <constraint firstItem="xPV-lV-7Qd" firstAttribute="baseline" secondItem="uc3-zv-ZqK" secondAttribute="baseline" id="reX-Rb-2aI"/>
@@ -865,12 +866,12 @@ Gw
         <image name="Git-Icon-1788C" width="383" height="383"/>
         <image name="NSActionTemplate" width="14" height="14"/>
         <image name="NSAddTemplate" width="11" height="11"/>
-        <image name="NSFolder" width="128" height="128"/>
-        <image name="NSPreferencesGeneral" width="128" height="128"/>
+        <image name="NSFolder" width="32" height="32"/>
+        <image name="NSPreferencesGeneral" width="32" height="32"/>
         <image name="NSRefreshFreestandingTemplate" width="14" height="14"/>
         <image name="NSRemoveTemplate" width="11" height="11"/>
         <image name="NSStatusAvailable" width="16" height="16"/>
-        <image name="NSUserAccounts" width="128" height="128"/>
+        <image name="NSUserAccounts" width="32" height="32"/>
         <image name="bitbucketTemplate" width="16" height="16"/>
         <image name="editTemplate" width="16" height="16"/>
         <image name="githubTemplate" width="16" height="16"/>
