@@ -96,6 +96,7 @@ class AddAccountController: SheetController
   
   override func resetFields()
   {
+    servicePopup.selectItem(at: 0)
     userField.stringValue = ""
     passwordField.stringValue = ""
     syncLocationField()
@@ -110,6 +111,9 @@ class AddAccountController: SheetController
   
   func loadFieldsForEdit(from account: Account)
   {
+    if let index = AccountType.allCases.firstIndex(of: account.type) {
+      servicePopup.selectItem(at: index)
+    }
     userField.stringValue = account.user
     locationField.stringValue = account.location.absoluteString
     passwordField.stringValue = XTKeychain.shared.find(url: account.location,

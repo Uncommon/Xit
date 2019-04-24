@@ -1,7 +1,7 @@
 import Foundation
 
 
-enum AccountType: Int
+enum AccountType: Int, CaseIterable
 {
   case gitHub = 0
   case bitbucketCloud = 1
