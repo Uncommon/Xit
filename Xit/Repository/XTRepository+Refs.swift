@@ -237,13 +237,13 @@ extension XTRepository: Branching
 
 extension XTRepository: BranchListing
 {
-  public func localBranches() -> Branches<GitLocalBranch>
+  public func localBranches() -> BranchSequence<GitLocalBranch>
   {
-    return Branches(repo: self, type: GIT_BRANCH_LOCAL)
+    return BranchSequence(repo: self, type: GIT_BRANCH_LOCAL)
   }
   
-  public func remoteBranches() -> Branches<GitRemoteBranch>
+  public func remoteBranches() -> BranchSequence<GitRemoteBranch>
   {
-    return Branches(repo: self, type: GIT_BRANCH_REMOTE)
+    return BranchSequence(repo: self, type: GIT_BRANCH_REMOTE)
   }
 }
