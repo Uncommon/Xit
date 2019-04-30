@@ -109,7 +109,7 @@ class XTRepositoryMergeTest: XTTest
   // Fast-forward case. This could also have a ff-only variant.
   func testMergeC0C1()
   {
-    guard let c1 = GitLocalBranch(repository: repository, name: "c1")
+    guard let c1 = GitLocalBranch(repository: repository.gitRepo, name: "c1")
     else {
       XCTFail("can't get branch")
       return
@@ -123,7 +123,7 @@ class XTRepositoryMergeTest: XTTest
   // Actually merging changes.
   func testMergeC1C2()
   {
-    guard let c2 = GitLocalBranch(repository: repository, name: "c2")
+    guard let c2 = GitLocalBranch(repository: repository.gitRepo, name: "c2")
     else {
       XCTFail("can't get branch")
       return
@@ -142,7 +142,7 @@ class XTRepositoryMergeTest: XTTest
     add(fileName)
     commit("commit y")
     
-    let c3 = GitLocalBranch(repository: repository, name: "c3")!
+    let c3 = GitLocalBranch(repository: repository.gitRepo, name: "c3")!
     
     do {
       try self.repository.merge(branch: c3)

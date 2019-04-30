@@ -86,10 +86,10 @@ class GitIndex: StagingIndex
     return git_index_entrycount(index)
   }
   
-  init?(repository: XTRepository)
+  init?(repository: OpaquePointer)
   {
     var index: OpaquePointer?
-    let result = git_repository_index(&index, repository.gitRepo)
+    let result = git_repository_index(&index, repository)
     guard result == 0,
           let finalIndex = index
     else { return nil }

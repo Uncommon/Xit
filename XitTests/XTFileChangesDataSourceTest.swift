@@ -9,7 +9,8 @@ class XTFileChangesDataSourceTest: XTTest
     let repoController = FakeRepoController(repository: repository)
     let dataSource = FileChangesDataSource(useWorkspaceList: false)
     let outlineView = NSOutlineView()
-    let headCommit = GitCommit(sha: repository.headSHA!, repository: repository)!
+    let headCommit = GitCommit(sha: repository.headSHA!,
+                               repository: repository.gitRepo)!
     
     repoController.selection = CommitSelection(repository: repository,
                                                  commit: headCommit)

@@ -33,7 +33,7 @@ class SidebarHandlerTest: XTTest
   func item(forBranch branch: String) -> SidebarItem?
   {
     guard let commit = GitCommit(ref: "refs/heads/\(branch)",
-                                     repository: repository)
+                                     repository: repository.gitRepo)
     else {
       XCTFail("can't get commit for branch \(branch)")
       return nil

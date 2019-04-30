@@ -175,19 +175,19 @@ public class GitCommit: Commit
     self.init(gitCommit: finalCommit)
   }
   
-  convenience init?(sha: String, repository: XTRepository)
+  convenience init?(sha: String, repository: OpaquePointer)
   {
     guard let oid = GitOID(sha: sha)
     else { return nil }
     
-    self.init(oid: oid, repository: repository.gitRepo)
+    self.init(oid: oid, repository: repository)
   }
   
-  convenience init?(ref: String, repository: XTRepository)
+  convenience init?(ref: String, repository: OpaquePointer)
   {
     let gitRefPtr = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     guard git_reference_lookup(gitRefPtr,
-                               repository.gitRepo,
+                               repository,
                                ref) == 0,
           let gitRef = gitRefPtr.pointee
     else { return nil }

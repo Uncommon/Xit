@@ -257,7 +257,7 @@ extension XTRepository: FileStatusDetection
 
 extension XTRepository: FileStaging
 {
-  public var index: StagingIndex? { return GitIndex(repository: self) }
+  public var index: StagingIndex? { return GitIndex(repository: gitRepo) }
 
   /// Stages the given file to the index.
   public func stage(file: String) throws
@@ -311,7 +311,7 @@ extension XTRepository: FileStaging
   
   public func unstageAllFiles() throws
   {
-    guard let index = GitIndex(repository: self)
+    guard let index = GitIndex(repository: gitRepo)
       else { throw Error.unexpected }
     
     if let headOID = headReference?.resolve()?.targetOID {
@@ -344,7 +344,7 @@ extension XTRepository: FileStaging
   public func amendStage(file: String) throws
   {
     let status = try self.amendingUnstagedStatus(for: file)
-    guard let index = GitIndex(repository: self)
+    guard let index = GitIndex(repository: gitRepo)
     else { throw Error.unexpected }
     
     switch status {

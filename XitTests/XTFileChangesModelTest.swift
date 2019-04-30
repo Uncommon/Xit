@@ -16,7 +16,8 @@ class XTFileChangesModelTest: XTTest
   func testCommit()
   {
     guard let headSHA = repository.headSHA,
-          let headCommit = GitCommit(sha: headSHA, repository: repository)
+          let headCommit = GitCommit(sha: headSHA,
+                                     repository: repository.gitRepo)
     else {
       XCTFail("no head")
       return
@@ -175,7 +176,7 @@ class XTFileChangesModelTest: XTTest
     commit(newTextFile: FileName.added, content: "new")
     
     guard let headSHA = repository.headSHA,
-          let headCommit = GitCommit(sha: headSHA, repository: repository)
+          let headCommit = GitCommit(sha: headSHA, repository: repository.gitRepo)
     else {
       XCTFail("no head")
       return

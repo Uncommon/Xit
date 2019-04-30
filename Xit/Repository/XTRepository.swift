@@ -329,7 +329,7 @@ extension XTRepository: CommitStorage
   
   public func commit(forSHA sha: String) -> Commit?
   {
-    return GitCommit(sha: sha, repository: self)
+    return GitCommit(sha: sha, repository: gitRepo)
   }
   
   public func commit(forOID oid: OID) -> Commit?

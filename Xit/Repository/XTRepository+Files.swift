@@ -48,8 +48,8 @@ extension XTRepository: FileContents
           return !blob.isBinary
         }
       case .index:
-        if let oid = GitIndex(repository: self)?.entry(at: path)?.oid,
-           let blob = GitBlob(repository: self, oid: oid) {
+        if let oid = GitIndex(repository: gitRepo)?.entry(at: path)?.oid,
+           let blob = GitBlob(repository: gitRepo, oid: oid) {
           return !blob.isBinary
         }
       case .workspace:
@@ -88,9 +88,9 @@ extension XTRepository: FileContents
   
   public func stagedBlob(file: String) -> Blob?
   {
-    guard let index = GitIndex(repository: self),
+    guard let index = GitIndex(repository: gitRepo),
           let entry = index.entry(at: file),
-          let blob = GitBlob(gitRepository: gitRepo,
+          let blob = GitBlob(repository: gitRepo,
                              oid: entry.oid)
     else { return nil }
     
@@ -226,9 +226,9 @@ extension XTRepository: FileDiffing
     do {
       let data = exists ? try Data(contentsOf: url) : Data()
       
-      if let index = GitIndex(repository: self),
+      if let index = GitIndex(repository: gitRepo),
          let indexEntry = index.entry(at: file),
-         let indexBlob = GitBlob.init(gitRepository: gitRepo,
+         let indexBlob = GitBlob.init(repository: gitRepo,
                                       oid: indexEntry.oid) {
         return .diff(PatchMaker(from: PatchMaker.SourceType(indexBlob),
                                  to: .data(data), path: file))
@@ -298,7 +298,7 @@ extension XTRepository
   /// errors from resultings stage/unstage actions.
   func patchIndexFile(path: String, hunk: DiffHunk, stage: Bool) throws
   {
-    guard let index = GitIndex(repository: self)
+    guard let index = GitIndex(repository: gitRepo)
     else { throw Error.unexpected }
     
     if let entry = index.entry(at: path) {
@@ -324,7 +324,7 @@ extension XTRepository
         }
       }
       
-      guard let blob = GitBlob(gitRepository: gitRepo,
+      guard let blob = GitBlob(repository: gitRepo,
                                oid: entry.oid)
       else { throw Error.unexpected }
       

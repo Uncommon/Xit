@@ -213,17 +213,17 @@ extension XTRepository: Branching
   
   public func localBranch(named name: String) -> LocalBranch?
   {
-    return GitLocalBranch(repository: self, name: name)
+    return GitLocalBranch(repository: gitRepo, name: name)
   }
   
   public func remoteBranch(named name: String, remote: String) -> RemoteBranch?
   {
-    return GitRemoteBranch(repository: self, name: "\(remote)/\(name)")
+    return GitRemoteBranch(repository: gitRepo, name: "\(remote)/\(name)")
   }
   
   public func remoteBranch(named name: String) -> RemoteBranch?
   {
-    return GitRemoteBranch(repository: self, name: name)
+    return GitRemoteBranch(repository: gitRepo, name: name)
   }
   
   public func localBranch(tracking remoteBranch: RemoteBranch) -> LocalBranch?

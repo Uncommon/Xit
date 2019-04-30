@@ -303,7 +303,7 @@ extension XTRepository
       try mergePreCheck()
       
       guard let currentBranchName = currentBranch,
-            let targetBranch = GitLocalBranch(repository: self,
+            let targetBranch = GitLocalBranch(repository: gitRepo,
                                               name: currentBranchName)
       else { throw Error.detachedHead }
       guard let targetCommit = targetBranch.targetCommit as? GitCommit,

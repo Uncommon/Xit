@@ -114,10 +114,10 @@ public class GitLocalBranch: GitBranch, LocalBranch
 {
   public var shortName: String { return strippedName }
   
-  init?(repository: XTRepository, name: String)
+  init?(repository: OpaquePointer, name: String)
   {
     guard let branch = GitBranch.lookUpBranch(
-        name: name, repository: repository.gitRepo,
+        name: name, repository: repository,
         branchType: GIT_BRANCH_LOCAL)
     else { return nil }
     
@@ -205,10 +205,10 @@ public class GitRemoteBranch: GitBranch, RemoteBranch
   
   public override var remoteName: String? { return cachedRemoteName }
 
-  init?(repository: XTRepository, name: String)
+  init?(repository: OpaquePointer, name: String)
   {
     guard let branch = GitBranch.lookUpBranch(
-        name: name, repository: repository.gitRepo,
+        name: name, repository: repository,
         branchType: GIT_BRANCH_REMOTE)
     else { return nil }
     
