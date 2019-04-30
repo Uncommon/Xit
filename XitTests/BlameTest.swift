@@ -40,7 +40,7 @@ class BlameTest: XTTest
     
     try! text.write(toFile: blamePath, atomically: true, encoding: .ascii)
     try! repository.stage(file: FileName.blame)
-    try! repository.commit(message: message, amend: false, outputBlock: nil)
+    try! repository.commit(message: message, amend: false)
   }
   
   override func setUp()

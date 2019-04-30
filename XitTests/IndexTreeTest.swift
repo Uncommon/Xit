@@ -10,8 +10,7 @@ class IndexTreeTest: XTTest
     // A second commit is needed for amending tests
     writeTextToFile1("second")
     XCTAssertNoThrow(try repository.stage(file: FileName.file1))
-    XCTAssertNoThrow(try repository.commit(message: "second", amend: false,
-                                           outputBlock: nil))
+    XCTAssertNoThrow(try repository.commit(message: "second", amend: false))
   }
   
   func indexTreeStatus(at path: String,

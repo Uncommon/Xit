@@ -93,8 +93,7 @@ class XTCommitEntryController: NSViewController
   {
     do {
       try repo.commit(message: commitField.string,
-                      amend: repoController?.isAmending ?? false,
-                      outputBlock: nil)
+                      amend: repoController?.isAmending ?? false)
       resetMessage()
     }
     catch {

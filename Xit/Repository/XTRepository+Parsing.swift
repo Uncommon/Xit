@@ -399,20 +399,12 @@ extension XTRepository: FileStaging
   }
   
   /// Creates a new commit with the given message.
-  func commit(message: String, amend: Bool,
-              outputBlock: ((String) -> Void)?) throws
+  func commit(message: String, amend: Bool) throws
   {
-    var args = ["commit", "-F", "-"]
+    let baseArgs = ["commit", "-F", "-"]
+    let args = amend ? baseArgs + ["--amend"] : baseArgs
     
-    if amend {
-      args.append("--amend")
-    }
-    
-    let output = try executeGit(args: args,
-                                stdIn: message, writes: true)
-    let outputString = String(data: output, encoding: .utf8) ?? ""
-    
-    outputBlock?(outputString)
+    _ = try executeGit(args: args, stdIn: message, writes: true)
     invalidateIndex()
   }
 }

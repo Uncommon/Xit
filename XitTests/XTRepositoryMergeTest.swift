@@ -35,7 +35,7 @@ class XTRepositoryMergeTest: XTTest
   
   func commit(_ message: String)
   {
-    XCTAssertNoThrow(try repository.commit(message: message, amend: false, outputBlock: nil))
+    XCTAssertNoThrow(try repository.commit(message: message, amend: false))
   }
   
   func branch(_ name: String)

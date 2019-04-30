@@ -371,8 +371,7 @@ class XTFileChangesModelTest: XTTest
     
     XCTAssertNoThrow(try FileManager.default.removeItem(at: subFileURL))
     XCTAssertNoThrow(try repository.stage(file: subFilePath))
-    XCTAssertNoThrow(try repository.commit(message: "delete", amend: false,
-                                           outputBlock: nil))
+    XCTAssertNoThrow(try repository.commit(message: "delete", amend: false))
     
     checkCommitTrees(deletedPath: subFilePath)
   }
@@ -393,8 +392,7 @@ class XTFileChangesModelTest: XTTest
     
     XCTAssertNoThrow(try FileManager.default.removeItem(at: subFileURL))
     XCTAssertNoThrow(try repository.stage(file: subFilePath))
-    XCTAssertNoThrow(try repository.commit(message: "delete", amend: false,
-                                           outputBlock: nil))
+    XCTAssertNoThrow(try repository.commit(message: "delete", amend: false))
     
     checkCommitTrees(deletedPath: subFilePath)
   }
@@ -413,8 +411,7 @@ class XTFileChangesModelTest: XTTest
     XCTAssertNoThrow(try FileManager.default.removeItem(
         at: repository.repoURL.appendingPathComponent(FileName.file1)))
     XCTAssertNoThrow(try repository.stage(file: FileName.file1))
-    XCTAssertNoThrow(try repository.commit(message: "delete", amend: false,
-                                           outputBlock: nil))
+    XCTAssertNoThrow(try repository.commit(message: "delete", amend: false))
     
     checkCommitTrees(deletedPath: FileName.file1)
   }
@@ -441,8 +438,7 @@ class XTFileChangesModelTest: XTTest
     // Make a new commit where that subfolder is unchanged
     writeTextToFile1("changes")
     XCTAssertNoThrow(try repository.stage(file: FileName.file1))
-    XCTAssertNoThrow(try repository.commit(message: "commit 3", amend: false,
-                                           outputBlock: nil))
+    XCTAssertNoThrow(try repository.commit(message: "commit 3", amend: false))
     
     guard let headSHA = repository.headSHA,
           let commit = repository.commit(forSHA: headSHA)

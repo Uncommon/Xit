@@ -81,8 +81,7 @@ class XTEmptyRepositoryTest: XTTest
     
     write(text: "some text", to: textName)
     XCTAssertNoThrow(try repository.stage(file: textName))
-    XCTAssertNoThrow(try repository.commit(message: "text", amend: false,
-                                           outputBlock: nil))
+    XCTAssertNoThrow(try repository.commit(message: "text", amend: false))
     
     guard let headSHA = repository.headSHA,
           let headCommit = repository.commit(forSHA: headSHA)
@@ -100,8 +99,7 @@ class XTEmptyRepositoryTest: XTTest
 
     XCTAssertNoThrow(try makeTiffFile(tiffName))
     XCTAssertNoThrow(try repository.stage(file: tiffName))
-    XCTAssertNoThrow(try repository.commit(message: "text", amend: false,
-                                           outputBlock: nil))
+    XCTAssertNoThrow(try repository.commit(message: "text", amend: false))
     
     guard let headSHA = repository.headSHA,
           let headCommit = repository.commit(forSHA: headSHA)
@@ -162,8 +160,7 @@ class XTAmendTest: XTTest
     write(text: "text", to: FileNames.file1)
     write(text: "text", to: FileNames.file2)
     XCTAssertNoThrow(try repository.stageAllFiles())
-    XCTAssertNoThrow(try repository.commit(message: "commit 1", amend: false,
-                                           outputBlock: nil))
+    XCTAssertNoThrow(try repository.commit(message: "commit 1", amend: false))
   }
   
   func addSecondCommit()
@@ -172,8 +169,7 @@ class XTAmendTest: XTTest
     try! FileManager.default.removeItem(at: repository.fileURL(FileNames.file2))
     write(text: "more", to: FileNames.file3)
     XCTAssertNoThrow(try repository.stageAllFiles())
-    XCTAssertNoThrow(try repository.commit(message: "commit 2", amend: false,
-                                           outputBlock: nil))
+    XCTAssertNoThrow(try repository.commit(message: "commit 2", amend: false))
   }
 
   // Check amend status where the head commit is the first one
@@ -446,7 +442,7 @@ class XTRepositoryTest: XTTest
     try! repository.stage(file: FileName.file1)
     
     assertWriteException(name: "commit") { 
-      try repository.commit(message: "blah", amend: false, outputBlock: nil)
+      try repository.commit(message: "blah", amend: false)
     }
   }
   
@@ -589,7 +585,7 @@ class XTRepositoryTest: XTTest
     try! "new file 2".write(toFile: file2Path, atomically: true, encoding: .utf8)
     try! repository.stage(file: FileName.file1)
     try! repository.stage(file: FileName.file2)
-    try! repository.commit(message: "#2", amend: false, outputBlock: nil)
+    try! repository.commit(message: "#2", amend: false)
     
     let changes2 = repository.changes(for: repository.headSHA!, parent: nil)
     
@@ -611,7 +607,7 @@ class XTRepositoryTest: XTTest
   {
     try! FileManager.default.removeItem(atPath: file1Path)
     try! repository.stage(file: FileName.file1)
-    try! repository.commit(message: "#3", amend: false, outputBlock: nil)
+    try! repository.commit(message: "#3", amend: false)
     
     let changes3 = repository.changes(for: repository.headSHA!, parent: nil)
     
@@ -714,8 +710,7 @@ class XTRepositoryTest: XTTest
   {
     try! FileManager.default.removeItem(atPath: file1Path)
     try! repository.stage(file: FileName.file1)
-    try! repository.commit(message: "deleted", amend: false,
-                           outputBlock: nil)
+    try! repository.commit(message: "deleted", amend: false)
     
     guard let commit = GitCommit(ref: "HEAD", repository: repository.gitRepo)
     else {
@@ -776,8 +771,7 @@ class XTRepositoryTest: XTTest
     
     XCTAssertNoThrow(try makeTiffFile(imageName))
     XCTAssertNoThrow(try repository.stage(file: imageName))
-    XCTAssertNoThrow(try repository.commit(message: "image", amend: false,
-                                           outputBlock: nil))
+    XCTAssertNoThrow(try repository.commit(message: "image", amend: false))
     
     guard let headCommit = repository.commit(forSHA: repository.headSHA!)
     else {
@@ -877,7 +871,7 @@ class XTRepositoryHunkTest: XTTest
   {
     try! FileManager.default.copyItem(at: loremURL, to: loremRepoURL)
     try! repository.stage(file: loremName)
-    try! repository.commit(message: "lorem", amend: false, outputBlock: nil)
+    try! repository.commit(message: "lorem", amend: false)
     try! copyLorem2Contents()
     try! repository.stage(file: loremName)
     

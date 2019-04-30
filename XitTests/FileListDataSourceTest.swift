@@ -34,8 +34,7 @@ class FileListDataSourceTest: XTTest
       
       try! text.write(toFile: filePath, atomically: true, encoding: .ascii)
       try! repository.stageAllFiles()
-      try! repository.commit(message: "commit", amend: false,
-                             outputBlock: nil)
+      try! repository.commit(message: "commit", amend: false)
     }
   
     let outlineView = NSOutlineView.init()
@@ -95,8 +94,7 @@ class FileListDataSourceTest: XTTest
       try! text.write(toFile: file, atomically: true, encoding: .ascii)
     }
     try! repository.stageAllFiles()
-    _ = try! repository.commit(message: "commit", amend: false,
-                               outputBlock: nil)
+    _ = try! repository.commit(message: "commit", amend: false)
     
     let repoController = FakeRepoController(repository: repository)
     let headCommit = GitCommit(sha: repository.headSHA!,

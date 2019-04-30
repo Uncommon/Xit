@@ -145,8 +145,7 @@ class XTTest: XCTestCase
       }
       do {
         try repository.stage(file: name)
-        try repository.commit(message: "new \(name)", amend: false,
-                              outputBlock: nil)
+        try repository.commit(message: "new \(name)", amend: false)
       }
       catch {
         result = false
