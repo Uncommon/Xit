@@ -344,19 +344,18 @@ extension XTRepository: FileStaging
   public func amendStage(file: String) throws
   {
     let status = try self.amendingUnstagedStatus(for: file)
-    let index = try gtRepo.index()
+    guard let index = GitIndex(repository: self)
+    else { throw Error.unexpected }
     
     switch status {
-      
       case .modified, .added:
-        try index.addFile(file)
-      
+        try index.add(path: file)
       case .deleted:
-        try index.removeFile(file)
-        
+        try index.remove(path: file)
       default:
         throw Error.unexpected
     }
+    
     invalidateIndex()
   }
   
