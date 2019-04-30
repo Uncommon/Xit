@@ -19,7 +19,7 @@ public protocol TreeEntry: OIDObject
 
 
 /// Used as a return value when an entry can't be returned for a given subscript
-class NullEntry: TreeEntry
+struct NullEntry: TreeEntry
 {
   var oid: OID
   { return GitOID.zero() }
