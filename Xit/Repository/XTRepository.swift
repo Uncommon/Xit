@@ -139,7 +139,7 @@ public class XTRepository: NSObject
   {
     try mutex.withLock {
       if isWriting {
-        throw Error.alreadyWriting
+        throw RepoError.alreadyWriting
       }
       isWriting = true
     }
@@ -244,7 +244,7 @@ public class XTRepository: NSObject
       objc_sync_exit(self)
     }
     if writes && isWriting {
-      throw Error.alreadyWriting
+      throw RepoError.alreadyWriting
     }
     updateIsWriting(writes)
     defer {

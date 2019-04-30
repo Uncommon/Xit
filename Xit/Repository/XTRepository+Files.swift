@@ -299,7 +299,7 @@ extension XTRepository
   func patchIndexFile(path: String, hunk: DiffHunk, stage: Bool) throws
   {
     guard let index = GitIndex(repository: gitRepo)
-    else { throw Error.unexpected }
+    else { throw RepoError.unexpected }
     
     if let entry = index.entry(at: path) {
       if (hunk.newStart == 1) || (hunk.oldStart == 1) {
@@ -326,16 +326,16 @@ extension XTRepository
       
       guard let blob = GitBlob(repository: gitRepo,
                                oid: entry.oid)
-      else { throw Error.unexpected }
+      else { throw RepoError.unexpected }
       
       try blob.withData {
         (data) in
         guard let text = String(data: data, encoding: .utf8),
               let patchedText = hunk.applied(to: text, reversed: !stage)
-        else { throw Error.patchMismatch }
+        else { throw RepoError.patchMismatch }
         
         guard let patchedData = patchedText.data(using: .utf8)
-        else { throw Error.unexpected }
+        else { throw RepoError.unexpected }
         
         try index.add(data: patchedData, path: path)
       }
@@ -355,7 +355,7 @@ extension XTRepository
         return
       }
     }
-    throw Error.patchMismatch
+    throw RepoError.patchMismatch
   }
   
   class StatusCollection: BidirectionalCollection

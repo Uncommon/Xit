@@ -109,7 +109,7 @@ extension XTRepository
                                         passwordBlock: options.passwordBlock)
       guard let gtRemote = GTRemote(gitRemote: (remote as! GitRemote).remote,
                                     in: gtRepo)
-      else { throw Error.unexpected }
+      else { throw RepoError.unexpected }
       
       try self.gtRepo.fetch(gtRemote, withOptions: gtOptions) {
         (progress, stop) in
@@ -143,12 +143,12 @@ extension XTRepository
   private func fastForwardMerge(branch: GitBranch, remoteBranch: GitBranch) throws
   {
     guard let remoteCommit = remoteBranch.targetCommit
-    else { throw Error.unexpected }
+    else { throw RepoError.unexpected }
     
     do {
       guard let targetReference = GTReference(gitReference: branch.branchRef,
                                               repository: gtRepo)
-      else { throw Error.unexpected }
+      else { throw RepoError.unexpected }
       let updated = try targetReference.updatingTarget(
             remoteCommit.sha,
             message: "merge \(remoteBranch.name): Fast-forward")
@@ -161,7 +161,7 @@ extension XTRepository
       try gtRepo.checkoutReference(updated, options: options)
     }
     catch let error as NSError where error.domain == GTGitErrorDomain {
-      throw Error(gitNSError: error)
+      throw RepoError(gitNSError: error)
     }
   }
   
@@ -198,15 +198,15 @@ extension XTRepository
         case GIT_OK:
           break
         case GIT_ECONFLICT:
-          throw Error.localConflict
+          throw RepoError.localConflict
         default:
-          throw Error.gitError(result)
+          throw RepoError.gitError(result)
       }
       
       let index = try gtRepo.index()
       
       if index.hasConflicts {
-        throw Error.conflict
+        throw RepoError.conflict
       }
       else {
         let parents = [targetCommit, fromCommit].compactMap
@@ -220,7 +220,7 @@ extension XTRepository
       }
     }
     catch let error as NSError where error.domain == GTGitErrorDomain {
-      throw Error(gitNSError: error)
+      throw RepoError(gitNSError: error)
     }
   }
   
@@ -241,14 +241,14 @@ extension XTRepository
     let index = try gtRepo.index()
     
     if index.hasConflicts {
-      throw Error.localConflict
+      throw RepoError.localConflict
     }
     
     if FileManager.default.fileExists(atPath: mergeHeadPath) {
-      throw Error.mergeInProgress
+      throw RepoError.mergeInProgress
     }
     if FileManager.default.fileExists(atPath: cherryPickHeadPath) {
-      throw Error.cherryPickInProgress
+      throw RepoError.cherryPickInProgress
     }
   }
   
@@ -305,10 +305,10 @@ extension XTRepository
       guard let currentBranchName = currentBranch,
             let targetBranch = GitLocalBranch(repository: gitRepo,
                                               name: currentBranchName)
-      else { throw Error.detachedHead }
+      else { throw RepoError.detachedHead }
       guard let targetCommit = targetBranch.targetCommit as? GitCommit,
             let remoteCommit = branch.targetCommit as? GitCommit
-      else { throw Error.unexpected }
+      else { throw RepoError.unexpected }
       
       if targetCommit.oid.equals(remoteCommit.oid) {
         return
@@ -320,7 +320,7 @@ extension XTRepository
         return
       }
       if analysis.contains(.unborn) {
-        throw Error.unexpected
+        throw RepoError.unexpected
       }
       if analysis.contains(.fastForward) {
         try fastForwardMerge(branch: targetBranch, remoteBranch: gitBranch)
@@ -331,10 +331,10 @@ extension XTRepository
                         targetBranch: targetBranch, targetCommit: targetCommit)
         return
       }
-      throw Error.unexpected
+      throw RepoError.unexpected
     }
     catch let error as NSError where error.domain == GTGitErrorDomain {
-      throw Error(gitNSError: error)
+      throw RepoError(gitNSError: error)
     }
   }
   
@@ -360,18 +360,18 @@ extension XTRepository
   func annotatedCommit(_ commit: GitCommit) throws -> OpaquePointer
   {
     guard let oid = commit.oid as? GitOID
-    else { throw Error.unexpected }
+    else { throw RepoError.unexpected }
     let annotated = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     let result = git_annotated_commit_lookup(annotated, gitRepo, oid.unsafeOID())
     
     if result != GIT_OK.rawValue {
-      throw Error.gitError(result)
+      throw RepoError.gitError(result)
     }
     if let annotatedCommit = annotated.pointee {
       return annotatedCommit
     }
     else {
-      throw Error.unexpected
+      throw RepoError.unexpected
     }
   }
   
@@ -385,13 +385,13 @@ extension XTRepository
           annotated, gitRepo, branch.branchRef)
     
     if result != GIT_OK.rawValue {
-      throw Error.gitError(result)
+      throw RepoError.gitError(result)
     }
     if let annotatedCommit = annotated.pointee {
       return annotatedCommit
     }
     else {
-      throw Error.unexpected
+      throw RepoError.unexpected
     }
   }
 
@@ -404,7 +404,7 @@ extension XTRepository
   {
     guard let branch = branch as? GitBranch,
           let commit = branch.targetCommit
-    else { throw Error.unexpected }
+    else { throw RepoError.unexpected }
     
     let preference =
           UnsafeMutablePointer<git_merge_preference_t>.allocate(capacity: 1)
@@ -430,7 +430,7 @@ extension XTRepository
     }
     
     guard result == GIT_OK.rawValue
-    else { throw Error.gitError(result) }
+    else { throw RepoError.gitError(result) }
     
     return MergeAnalysis(rawValue: analysis.pointee.rawValue)
   }
@@ -455,7 +455,7 @@ extension XTRepository
             let localGTBranch = GTBranch(reference: localGTRef),
             let gtRemote = GTRemote(gitRemote: (remote as! GitRemote).remote,
                                     in: gtRepo)
-      else { throw Error.unexpected }
+      else { throw RepoError.unexpected }
       
       try self.gtRepo.push(localGTBranch, to: gtRemote, withOptions: options) {
         (current, total, bytes, stop) in

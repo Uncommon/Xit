@@ -59,7 +59,7 @@ class OperationController: NSObject
       do {
         try block()
       }
-      catch _ as XTRepository.Error {
+      catch _ as RepoError {
         // The command shouldn't have been enabled if this was going to happen
         self?.ended(result: .failure)
       }

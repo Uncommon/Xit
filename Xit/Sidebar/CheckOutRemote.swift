@@ -44,7 +44,7 @@ class CheckOutRemoteOperationController: OperationController
         }
       }
     }
-    catch let error as XTRepository.Error {
+    catch let error as RepoError {
       windowController?.showErrorMessage(error: error)
     }
     catch {

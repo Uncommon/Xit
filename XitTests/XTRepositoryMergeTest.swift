@@ -148,7 +148,7 @@ class XTRepositoryMergeTest: XTTest
       try self.repository.merge(branch: c3)
       XCTFail("No conflict detected")
     }
-    catch XTRepository.Error.conflict {
+    catch RepoError.conflict {
       let index = try! repository.gtRepo.index()
       var conflicts = [String]()
       

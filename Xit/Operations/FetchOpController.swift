@@ -39,7 +39,7 @@ class FetchOpController: PasswordOpController
   override func start() throws
   {
     guard let repository = repository
-    else { throw XTRepository.Error.unexpected }
+    else { throw RepoError.unexpected }
     
     let config = repository.config
     let panel = FetchPanelController.controller()

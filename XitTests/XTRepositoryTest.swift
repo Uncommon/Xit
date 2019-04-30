@@ -371,7 +371,7 @@ class XTRepositoryTest: XTTest
     do {
       try block()
     }
-    catch XTRepository.Error.alreadyWriting {
+    catch RepoError.alreadyWriting {
       XCTFail("\(name): write unexpectedly failed")
     }
     catch {
@@ -385,7 +385,7 @@ class XTRepositoryTest: XTTest
       try block()
       XCTFail("\(name): write unexpectedly succeeded")
     }
-    catch XTRepository.Error.alreadyWriting {
+    catch RepoError.alreadyWriting {
     }
     catch {
       XCTFail("\(name): unexpected exception")

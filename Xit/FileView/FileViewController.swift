@@ -444,7 +444,7 @@ class FileViewController: NSViewController
     alert.beginSheetModal(for: view.window!, completionHandler: nil)
   }
   
-  func displayRepositoryAlert(error: XTRepository.Error)
+  func displayRepositoryAlert(error: RepoError)
   {
     let alert = NSAlert()
     
@@ -457,7 +457,7 @@ class FileViewController: NSViewController
     do {
       try repo?.revert(file: path)
     }
-    catch let error as XTRepository.Error {
+    catch let error as RepoError {
       let alert = NSAlert()
       
       alert.messageString = error.message

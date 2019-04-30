@@ -80,7 +80,7 @@ extension SidebarController
       do {
         try self?.repo.merge(branch: branch)
       }
-      catch let repoError as XTRepository.Error {
+      catch let repoError as RepoError {
         DispatchQueue.main.async {
           guard let window = self?.view.window
           else { return }

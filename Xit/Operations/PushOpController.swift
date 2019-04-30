@@ -23,14 +23,14 @@ class PushOpController: PasswordOpController
           let branch = repository.localBranch(named: branchName)
     else {
       NSLog("Can't get current branch")
-      throw XTRepository.Error.detachedHead
+      throw RepoError.detachedHead
     }
     guard let remoteBranch = branch.trackingBranch,
           let remoteName = remoteBranch.remoteName,
           let remote = repository.remote(named: remoteName)
     else {
       NSLog("Can't push - no tracking branch")
-      throw XTRepository.Error.unexpected
+      throw RepoError.unexpected
     }
     
     let alert = NSAlert()

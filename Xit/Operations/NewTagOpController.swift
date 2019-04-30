@@ -9,7 +9,7 @@ class NewTagOpController: OperationController
           let selectedOID = repository?.oid(forSHA: selectedSHA),
           let repository = repository,
           let commit = repository.commit(forSHA: selectedSHA)
-    else { throw XTRepository.Error.unexpected }
+    else { throw RepoError.unexpected }
     let config = repository.config!
     let userName = config.userName
     let userEmail = config.userEmail

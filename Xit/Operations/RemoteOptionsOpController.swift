@@ -15,7 +15,7 @@ class RemoteOptionsOpController: OperationController
   {
     guard let repository = repository,
           let remote = repository.remote(named: remoteName)
-    else { throw XTRepository.Error.unexpected }
+    else { throw RepoError.unexpected }
     
     let sheetController = RemoteSheetController.controller()
     

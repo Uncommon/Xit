@@ -294,7 +294,7 @@ extension FileViewController: HunkStaging
       try repo?.patchIndexFile(path: selectedChange.gitPath, hunk: hunk,
                                stage: stage)
     }
-    catch let error as XTRepository.Error {
+    catch let error as RepoError {
       displayRepositoryAlert(error: error)
     }
     catch let error as NSError {
@@ -336,13 +336,13 @@ extension FileViewController: HunkStaging
         let fileText = try String(contentsOf: fileURL, usedEncoding: &encoding)
         guard let result = hunk.applied(to: fileText, reversed: true)
           else {
-            throw XTRepository.Error.patchMismatch
+            throw RepoError.patchMismatch
         }
         
         try result.write(to: fileURL, atomically: true, encoding: encoding)
       }
     }
-    catch let error as XTRepository.Error {
+    catch let error as RepoError {
       displayRepositoryAlert(error: error)
     }
     catch let error as NSError {

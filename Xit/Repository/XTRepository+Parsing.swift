@@ -281,7 +281,7 @@ extension XTRepository: FileStaging
     }
     else {
       var options = git_checkout_options.defaultOptions()
-      var error: Error?
+      var error: RepoError?
       
       git_checkout_init_options(&options, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
       [file].withGitStringArray {
@@ -293,7 +293,7 @@ extension XTRepository: FileStaging
         let result = git_checkout_tree(self.gitRepo, nil, &options)
         
         if result < 0 {
-          error = Error.gitError(result)
+          error = RepoError.gitError(result)
         }
       }
       
@@ -312,12 +312,12 @@ extension XTRepository: FileStaging
   public func unstageAllFiles() throws
   {
     guard let index = GitIndex(repository: gitRepo)
-      else { throw Error.unexpected }
+      else { throw RepoError.unexpected }
     
     if let headOID = headReference?.resolve()?.targetOID {
       guard let headCommit = commit(forOID: headOID),
         let headTree = headCommit.tree
-        else { throw Error.unexpected }
+        else { throw RepoError.unexpected }
       
       try index.read(tree: headTree)
     }
@@ -345,7 +345,7 @@ extension XTRepository: FileStaging
   {
     let status = try self.amendingUnstagedStatus(for: file)
     guard let index = GitIndex(repository: gitRepo)
-    else { throw Error.unexpected }
+    else { throw RepoError.unexpected }
     
     switch status {
       case .modified, .added:
@@ -353,7 +353,7 @@ extension XTRepository: FileStaging
       case .deleted:
         try index.remove(path: file)
       default:
-        throw Error.unexpected
+        throw RepoError.unexpected
     }
     
     invalidateIndex()
@@ -374,16 +374,16 @@ extension XTRepository: FileStaging
         guard let headCommit = headSHA.flatMap({ self.commit(forSHA: $0) }),
               let parentOID = headCommit.parentOIDs.first
         else {
-          throw Error.commitNotFound(headSHA)
+          throw RepoError.commitNotFound(headSHA)
         }
         guard let parentCommit = commit(forOID: parentOID)
         else {
-          throw Error.commitNotFound(parentOID.sha)
+          throw RepoError.commitNotFound(parentOID.sha)
         }
         guard let entry = parentCommit.tree?.entry(path: file),
               let blob = entry.object as? Blob
         else {
-          throw Error.fileNotFound(file)
+          throw RepoError.fileNotFound(file)
         }
         
         try blob.withData {

@@ -17,7 +17,7 @@ class FakeRepoController: RepositoryController
   }
   
   func select(sha: String) {}
-  func showErrorMessage(error: XTRepository.Error) {}
+  func showErrorMessage(error: RepoError) {}
   func updateForFocus() {}
   func postIndexNotification() {}
 }

@@ -139,7 +139,7 @@ extension XTRepository: CommitReferencing
   func rename(branch: String, to newName: String) throws
   {
     if isWriting {
-      throw Error.alreadyWriting
+      throw RepoError.alreadyWriting
     }
     
     let branchRef = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
@@ -168,7 +168,7 @@ extension XTRepository: CommitReferencing
     let tagNames = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
     let result = git_tag_list(tagNames, gitRepo)
     
-    try Error.throwIfGitError(result)
+    try RepoError.throwIfGitError(result)
     defer { git_strarray_free(tagNames) }
     
     return tagNames.pointee.compactMap {
@@ -207,7 +207,7 @@ extension XTRepository: Branching
     let result = git_branch_create(&branchRef, gitRepo, name,
                                    targetCommit.commit, 0)
     
-    try Error.throwIfGitError(result)
+    try RepoError.throwIfGitError(result)
     return branchRef.map { GitLocalBranch(branch: $0) }
   }
   

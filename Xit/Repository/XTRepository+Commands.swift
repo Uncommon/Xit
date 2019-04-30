@@ -11,7 +11,7 @@ extension XTRepository
   {
     let result = git_repository_set_head(gitRepo, refName)
     
-    try Error.throwIfGitError(result)
+    try RepoError.throwIfGitError(result)
   }
   
   private func checkout(object: OpaquePointer) throws
@@ -20,7 +20,7 @@ extension XTRepository
           strategy: GIT_CHECKOUT_SAFE)
     let result = git_checkout_tree(gitRepo, object, &options)
     
-    try Error.throwIfGitError(result)
+    try RepoError.throwIfGitError(result)
   }
   
   func stagePatch(_ patch: String) throws
@@ -66,14 +66,14 @@ extension XTRepository: Workspace
   {
     guard let ref = reference(named: refName),
           let oid = ref.targetOID as? GitOID
-    else { throw Error.notFound }
+    else { throw RepoError.notFound }
     
     let target = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     let targetResult = git_object_lookup(target, gitRepo, oid.unsafeOID(),
                                          GIT_OBJECT_ANY)
     guard targetResult == 0,
           let finalTarget = target.pointee
-    else { throw Error.notFound }
+    else { throw RepoError.notFound }
     
     try checkout(object: finalTarget)
   }
@@ -81,14 +81,14 @@ extension XTRepository: Workspace
   public func checkOut(sha: String) throws
   {
     guard let oid = GitOID(sha: sha)
-    else { throw Error.notFound }
+    else { throw RepoError.notFound }
     let object = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     let lookupResult = git_object_lookup_prefix(object, gitRepo, oid.unsafeOID(),
                                                 Int(GIT_OID_RAWSZ),
                                                 GIT_OBJECT_ANY)
     guard lookupResult == 0,
           let finalObject = object.pointee
-    else { throw Error.notFound }
+    else { throw RepoError.notFound }
     
     try checkout(object: finalObject)
   }
@@ -101,21 +101,21 @@ extension XTRepository: Tagging
     try performWriting {
       guard let commit = GitCommit(oid: targetOID,
                                   repository: gitRepo)
-      else { throw Error.notFound }
+      else { throw RepoError.notFound }
       
       let oid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
       let signature = UnsafeMutablePointer<UnsafeMutablePointer<git_signature>?>
             .allocate(capacity: 1)
       let sigResult = git_signature_default(signature, gitRepo)
       
-      try Error.throwIfGitError(sigResult)
+      try RepoError.throwIfGitError(sigResult)
       guard let finalSig = signature.pointee
-      else { throw Error.unexpected }
+      else { throw RepoError.unexpected }
       
       let result = git_tag_create(oid, gitRepo, name,
                                   commit.commit, finalSig, message, 0)
       
-      try Error.throwIfGitError(result)
+      try RepoError.throwIfGitError(result)
     }
   }
   
@@ -124,13 +124,13 @@ extension XTRepository: Tagging
     try performWriting {
       guard let commit = GitCommit(oid: targetOID,
                                   repository: gitRepo)
-      else { throw Error.notFound }
+      else { throw RepoError.notFound }
       
       let oid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
       let result = git_tag_create_lightweight(oid, gitRepo, name,
                                               commit.commit, 0)
       
-      try Error.throwIfGitError(result)
+      try RepoError.throwIfGitError(result)
     }
   }
   
@@ -161,7 +161,7 @@ extension XTRepository: Stashing
                         includeIgnored: Bool) throws
   {
     guard !isWriting
-    else { throw Error.alreadyWriting }
+    else { throw RepoError.alreadyWriting }
     
     let flags = (keepIndex ? GIT_STASH_KEEP_INDEX.rawValue : 0) +
                 (includeUntracked ? GIT_STASH_INCLUDE_UNTRACKED.rawValue : 0) +
@@ -169,12 +169,12 @@ extension XTRepository: Stashing
     var oid = git_oid()
     
     guard let signature = GitSignature(defaultFromRepo: gitRepo)
-    else { throw Error.unexpected }
+    else { throw RepoError.unexpected }
     
     let result = git_stash_save(&oid, gitRepo, signature.signature,
                                 name, flags)
     
-    try Error.throwIfGitError(result)
+    try RepoError.throwIfGitError(result)
   }
   
   func stashApplyOptions() -> git_stash_apply_options
@@ -197,7 +197,7 @@ extension XTRepository: Stashing
     try performWriting {
       let result = git_stash_pop(gitRepo, Int(index), &applyOptions)
       
-      try Error.throwIfGitError(result)
+      try RepoError.throwIfGitError(result)
     }
   }
   
@@ -208,7 +208,7 @@ extension XTRepository: Stashing
     try performWriting {
       let result = git_stash_apply(gitRepo, Int(index), &applyOptions)
       
-      try Error.throwIfGitError(result)
+      try RepoError.throwIfGitError(result)
     }
   }
   
@@ -217,7 +217,7 @@ extension XTRepository: Stashing
     try performWriting {
       let result = git_stash_drop(gitRepo, Int(index))
       
-      try Error.throwIfGitError(result)
+      try RepoError.throwIfGitError(result)
     }
   }
   
@@ -255,14 +255,14 @@ extension XTRepository: RemoteManagement
     let remote = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     let result = git_remote_create(remote, gitRepo, name, url.absoluteString)
     
-    try Error.throwIfGitError(result)
+    try RepoError.throwIfGitError(result)
   }
   
   public func deleteRemote(named name: String) throws
   {
     let result = git_remote_delete(gitRepo, name)
     
-    try Error.throwIfGitError(result)
+    try RepoError.throwIfGitError(result)
   }
 }
 

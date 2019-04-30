@@ -10,7 +10,7 @@ protocol RepositoryController: AnyObject
   func select(sha: String)
   func updateForFocus()
   func postIndexNotification()
-  func showErrorMessage(error: XTRepository.Error)
+  func showErrorMessage(error: RepoError)
 }
 
 /// XTDocument's main window controller.
@@ -303,18 +303,18 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
         currentOperation = operation
         return operation
       }
-      catch let error as XTRepository.Error {
+      catch let error as RepoError {
         showErrorMessage(error: error)
         return nil
       }
       catch {
-        showErrorMessage(error: XTRepository.Error.unexpected)
+        showErrorMessage(error: RepoError.unexpected)
         return nil
       }
     }
   }
   
-  func showErrorMessage(error: XTRepository.Error)
+  func showErrorMessage(error: RepoError)
   {
     guard let window = self.window
     else { return }

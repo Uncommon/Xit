@@ -111,7 +111,7 @@ extension XTWindowController
     do {
       try operation()
     }
-    catch let error as XTRepository.Error {
+    catch let error as RepoError {
       showErrorMessage(error: error)
     }
     catch {
