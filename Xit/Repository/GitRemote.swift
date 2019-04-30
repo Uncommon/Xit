@@ -75,7 +75,7 @@ class GitRemote: Remote
     let problems = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
     let result = git_remote_rename(problems, owner, oldName, name)
     
-    try XTRepository.Error.throwIfError(result)
+    try XTRepository.Error.throwIfGitError(result)
     git_strarray_free(problems)
   }
   
@@ -86,7 +86,7 @@ class GitRemote: Remote
     else { throw XTRepository.Error.unexpected }
     let result = git_remote_set_url(owner, name, URLString)
     
-    try XTRepository.Error.throwIfError(result)
+    try XTRepository.Error.throwIfGitError(result)
   }
   
   func updatePushURLString(_ URLString: String) throws
@@ -96,6 +96,6 @@ class GitRemote: Remote
     else { throw XTRepository.Error.unexpected }
     let result = git_remote_set_pushurl(owner, name, URLString)
     
-    try XTRepository.Error.throwIfError(result)
+    try XTRepository.Error.throwIfGitError(result)
   }
 }

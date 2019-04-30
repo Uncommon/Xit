@@ -169,7 +169,7 @@ extension XTRepository: CommitReferencing
     let tagNames = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
     let result = git_tag_list(tagNames, gitRepo)
     
-    try Error.throwIfError(result)
+    try Error.throwIfGitError(result)
     defer { git_strarray_free(tagNames) }
     
     return tagNames.pointee.compactMap {
@@ -208,7 +208,7 @@ extension XTRepository: Branching
     let result = git_branch_create(&branchRef, gitRepo, name,
                                    targetCommit.commit, 0)
     
-    try Error.throwIfError(result)
+    try Error.throwIfGitError(result)
     return branchRef.map { GitLocalBranch(branch: $0) }
   }
   

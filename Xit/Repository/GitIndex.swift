@@ -123,12 +123,12 @@ class GitIndex: StagingIndex
   
   func refresh() throws
   {
-    try XTRepository.Error.throwIfError(git_index_read(index, 1))
+    try XTRepository.Error.throwIfGitError(git_index_read(index, 1))
   }
   
   func save() throws
   {
-    try XTRepository.Error.throwIfError(git_index_write(index))
+    try XTRepository.Error.throwIfGitError(git_index_write(index))
   }
   
   func read(tree: Tree) throws
@@ -136,12 +136,12 @@ class GitIndex: StagingIndex
     guard let gitTree = tree as? GitTree
     else { throw XTRepository.Error.unexpected }
     
-    try XTRepository.Error.throwIfError(git_index_read_tree(index, gitTree.tree))
+    try XTRepository.Error.throwIfGitError(git_index_read_tree(index, gitTree.tree))
   }
   
   func add(path: String) throws
   {
-    try XTRepository.Error.throwIfError(git_index_add_bypath(index, path))
+    try XTRepository.Error.throwIfGitError(git_index_add_bypath(index, path))
   }
   
   func add(data: Data, path: String) throws
@@ -159,16 +159,16 @@ class GitIndex: StagingIndex
       }
     }
     
-    try XTRepository.Error.throwIfError(result)
+    try XTRepository.Error.throwIfGitError(result)
   }
   
   func remove(path: String) throws
   {
-    try XTRepository.Error.throwIfError(git_index_remove_bypath(index, path))
+    try XTRepository.Error.throwIfGitError(git_index_remove_bypath(index, path))
   }
   
   func clear() throws
   {
-    try XTRepository.Error.throwIfError(git_index_clear(index))
+    try XTRepository.Error.throwIfGitError(git_index_clear(index))
   }
 }

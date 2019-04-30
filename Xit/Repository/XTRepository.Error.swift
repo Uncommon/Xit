@@ -74,7 +74,7 @@ extension XTRepository
       }
     }
     
-    static func throwIfError(_ code: Int32) throws
+    static func throwIfGitError(_ code: Int32) throws
     {
       guard code == 0
       else {

@@ -11,7 +11,7 @@ extension XTRepository
   {
     let result = git_repository_set_head(gitRepo, refName)
     
-    try Error.throwIfError(result)
+    try Error.throwIfGitError(result)
   }
   
   private func checkout(object: OpaquePointer) throws
@@ -20,7 +20,7 @@ extension XTRepository
           strategy: GIT_CHECKOUT_SAFE)
     let result = git_checkout_tree(gitRepo, object, &options)
     
-    try Error.throwIfError(result)
+    try Error.throwIfGitError(result)
   }
   
   func stagePatch(_ patch: String) throws
@@ -108,14 +108,14 @@ extension XTRepository: Tagging
             .allocate(capacity: 1)
       let sigResult = git_signature_default(signature, gitRepo)
       
-      try Error.throwIfError(sigResult)
+      try Error.throwIfGitError(sigResult)
       guard let finalSig = signature.pointee
       else { throw Error.unexpected }
       
       let result = git_tag_create(oid, gitRepo, name,
                                   commit.commit, finalSig, message, 0)
       
-      try Error.throwIfError(result)
+      try Error.throwIfGitError(result)
     }
   }
   
@@ -130,7 +130,7 @@ extension XTRepository: Tagging
       let result = git_tag_create_lightweight(oid, gitRepo, name,
                                               commit.commit, 0)
       
-      try Error.throwIfError(result)
+      try Error.throwIfGitError(result)
     }
   }
   
@@ -174,7 +174,7 @@ extension XTRepository: Stashing
     let result = git_stash_save(&oid, gitRepo, signature.signature,
                                 name, flags)
     
-    try Error.throwIfError(result)
+    try Error.throwIfGitError(result)
   }
   
   func stashApplyOptions() -> git_stash_apply_options
@@ -197,7 +197,7 @@ extension XTRepository: Stashing
     try performWriting {
       let result = git_stash_pop(gitRepo, Int(index), &applyOptions)
       
-      try Error.throwIfError(result)
+      try Error.throwIfGitError(result)
     }
   }
   
@@ -208,7 +208,7 @@ extension XTRepository: Stashing
     try performWriting {
       let result = git_stash_apply(gitRepo, Int(index), &applyOptions)
       
-      try Error.throwIfError(result)
+      try Error.throwIfGitError(result)
     }
   }
   
@@ -217,7 +217,7 @@ extension XTRepository: Stashing
     try performWriting {
       let result = git_stash_drop(gitRepo, Int(index))
       
-      try Error.throwIfError(result)
+      try Error.throwIfGitError(result)
     }
   }
   
