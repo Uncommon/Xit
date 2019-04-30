@@ -252,17 +252,21 @@ extension XTRepository: RemoteManagement
   
   public func addRemote(named name: String, url: URL) throws
   {
-    let remote = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let result = git_remote_create(remote, gitRepo, name, url.absoluteString)
-    
-    try RepoError.throwIfGitError(result)
+    try performWriting {
+      let remote = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+      let result = git_remote_create(remote, gitRepo, name, url.absoluteString)
+      
+      try RepoError.throwIfGitError(result)
+    }
   }
   
   public func deleteRemote(named name: String) throws
   {
-    let result = git_remote_delete(gitRepo, name)
-    
-    try RepoError.throwIfGitError(result)
+    try performWriting {
+      let result = git_remote_delete(gitRepo, name)
+      
+      try RepoError.throwIfGitError(result)
+    }
   }
 }
 
