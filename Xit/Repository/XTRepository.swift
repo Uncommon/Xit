@@ -166,11 +166,11 @@ public class XTRepository: NSObject
           mutex.withLock({ newBranch != cachedBranch })
     else { return }
     
-    willChangeValue(forKey: "currentBranch")
-    mutex.withLock {
-      cachedBranch = newBranch
+    changingValue(forKey: #keyPath(currentBranch)) {
+      mutex.withLock {
+        cachedBranch = newBranch
+      }
     }
-    didChangeValue(forKey: "currentBranch")
   }
   
   func recalculateHead()

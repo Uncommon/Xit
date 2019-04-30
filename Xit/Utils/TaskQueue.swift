@@ -24,9 +24,9 @@ class TaskQueue: NSObject
       guard let self = self
       else { return }
       
-      self.willChangeValue(forKey: #keyPath(busy))
-      self.queueCount = UInt(Int(self.queueCount) + delta)
-      self.didChangeValue(forKey: #keyPath(busy))
+      self.changingValue(forKey: #keyPath(busy)) {
+        self.queueCount = UInt(Int(self.queueCount) + delta)
+      }
     }
   }
   

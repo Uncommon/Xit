@@ -1,5 +1,15 @@
 import Foundation
 
+extension NSObject
+{
+  func changingValue(forKey key: String, block: () -> Void)
+  {
+    willChangeValue(forKey: key)
+    block()
+    didChangeValue(forKey: key)
+  }
+}
+
 extension NSColor
 {
   var invertingBrightness: NSColor
