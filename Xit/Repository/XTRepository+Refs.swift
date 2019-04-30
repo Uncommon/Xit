@@ -136,7 +136,6 @@ extension XTRepository: CommitReferencing
   }
   
   /// Renames the given local branch.
-  @objc(renameBranch:to:error:)
   func rename(branch: String, to newName: String) throws
   {
     if isWriting {

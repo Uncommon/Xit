@@ -260,7 +260,6 @@ extension XTRepository: FileStaging
   public var index: StagingIndex? { return GitIndex(repository: self) }
 
   /// Stages the given file to the index.
-  @objc(stageFile:error:)
   public func stage(file: String) throws
   {
     let fullPath = file.hasPrefix("/") ? file :
@@ -273,7 +272,6 @@ extension XTRepository: FileStaging
   }
   
   /// Reverts the given workspace file to the contents at HEAD.
-  @objc(revertFile:error:)
   public func revert(file: String) throws
   {
     let status = try self.status(file: file)
@@ -401,8 +399,7 @@ extension XTRepository: FileStaging
     invalidateIndex()
   }
   
-  // Creates a new commit with the given message.
-  @objc(commitWithMessage:amend:outputBlock:error:)
+  /// Creates a new commit with the given message.
   func commit(message: String, amend: Bool,
               outputBlock: ((String) -> Void)?) throws
   {
