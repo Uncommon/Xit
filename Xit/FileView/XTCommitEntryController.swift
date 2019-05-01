@@ -155,7 +155,7 @@ class XTCommitEntryController: NSViewController
       return
     }
     
-    anyStaged = changes.first { $0.change != .unmodified } != nil
+    anyStaged = changes.first { $0.status != .unmodified } != nil
   }
   
   func updateCommitButton()

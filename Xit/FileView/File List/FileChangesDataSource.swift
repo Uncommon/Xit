@@ -31,13 +31,13 @@ class FileChangesDataSource: FileListDataSourceBase
         guard let newIndex = newChanges.firstIndex(where: {
           (newChange) in
           newChange.gitPath == change.gitPath &&
-          newChange.change != change.change
+          newChange.status != change.status
         })
         else { continue }
         
         let newChange = newChanges[newIndex]
         
-        change.change = newChange.change
+        change.status = newChange.status
         newChangeIndexes.insert(newIndex)
       }
       changes.removeObjects(at: deleteIndexes)
@@ -141,7 +141,7 @@ extension FileChangesDataSource: FileListDataSource
     guard let fileChange = item as? FileChange
     else { return .unmodified }
     
-    return type(of: self).transformDisplayChange(fileChange.change)
+    return type(of: self).transformDisplayChange(fileChange.status)
   }
 }
 

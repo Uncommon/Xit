@@ -121,7 +121,7 @@ extension FileTreeDataSource: FileListDataSource
   
   func change(for item: Any) -> DeltaStatus
   {
-    return treeItem(item)?.change ?? .unmodified
+    return treeItem(item)?.status ?? .unmodified
   }
 }
 

@@ -4,7 +4,7 @@ import Foundation
 public class FileChange: NSObject
 {
   @objc var path: String
-  var change: DeltaStatus
+  var status: DeltaStatus
   
   /// Repository-relative path to use for git operations
   var gitPath: String
@@ -15,14 +15,14 @@ public class FileChange: NSObject
   init(path: String, change: DeltaStatus = .unmodified)
   {
     self.path = path
-    self.change = change
+    self.status = change
   }
   
   public override func isEqual(_ object: Any?) -> Bool
   {
     if let otherChange = object as? FileChange {
       return otherChange.path == path &&
-             otherChange.change == change
+             otherChange.status == status
     }
     return false
   }
@@ -32,7 +32,7 @@ extension FileChange // CustomStringConvertible
 {
   public override var description: String
   {
-    return "\(path) [\(change.description)]"
+    return "\(path) [\(status.description)]"
   }
 }
 

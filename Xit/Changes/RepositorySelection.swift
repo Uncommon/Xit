@@ -126,13 +126,13 @@ extension FileListModel
         updateChanges(child)
       }
       
-      change = change.map { $0 == childItem.change ? $0 : .mixed }
-               ?? childItem.change
+      change = change.map { $0 == childItem.status ? $0 : .mixed }
+               ?? childItem.status
     }
     
     let nodeItem = node.representedObject as! FileChange
     
-    nodeItem.change = change ?? .unmodified
+    nodeItem.status = change ?? .unmodified
   }
 
   func findTreeNode(forPath path: String,

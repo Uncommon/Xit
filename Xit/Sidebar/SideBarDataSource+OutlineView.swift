@@ -220,7 +220,7 @@ extension SideBarDataSource: NSOutlineViewDelegate
     let selection = sideBarItem.selection as! StagedUnstagedSelection
     let indexChanges = selection.fileList.changes
     let workspaceChanges = selection.unstagedFileList.changes
-    let unmodifiedCounter: (FileChange) -> Bool = { $0.change != .unmodified }
+    let unmodifiedCounter: (FileChange) -> Bool = { $0.status != .unmodified }
     let stagedCount = indexChanges.count(where: unmodifiedCounter)
     let unstagedCount = workspaceChanges.count(where: unmodifiedCounter)
 

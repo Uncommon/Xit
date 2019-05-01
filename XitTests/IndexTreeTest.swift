@@ -25,7 +25,7 @@ class IndexTreeTest: XTTest
     guard let node = root.fileChangeNode(path: path)
     else { return nil }
     
-    return node.fileChange.change
+    return node.fileChange.status
   }
   
   func addAndStageDelete(path: String)

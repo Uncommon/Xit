@@ -59,12 +59,12 @@ class CommitFileList: FileListModel
   /// Inserts deleted files into a tree based on the given `changes`.
   func insertDeletedFiles(root: NSTreeNode, changes: [FileChange])
   {
-    for change in changes where change.change == .deleted {
+    for change in changes where change.status == .deleted {
       switch findNodeOrParent(root: root, path: change.path) {
         
         case .found(let node):
           if let item = node.representedObject as? FileChange {
-            item.change = .deleted
+            item.status = .deleted
           }
           return
         

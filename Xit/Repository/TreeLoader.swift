@@ -12,7 +12,7 @@ public struct TreeLoader
     var changes = [String: DeltaStatus]()
     
     for fileChange in fileChanges {
-      changes[fileChange.path] = fileChange.change
+      changes[fileChange.path] = fileChange.status
     }
     self.changes = changes
   }
@@ -71,7 +71,7 @@ public struct TreeLoader
     guard let item = node.representedObject as? FileChange
     else { return }
     
-    item.change = changes[item.path] ?? .unmodified
+    item.status = changes[item.path] ?? .unmodified
     if let children = node.children {
       for childNode in children {
         applyStatus(to: childNode)

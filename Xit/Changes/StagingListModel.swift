@@ -54,7 +54,7 @@ class IndexFileList: StagingListModel, FileListModel
     for stagedChange in changes {
       stagedChange.path = stagedChange.path.withPrefix(NSTreeNode.rootPrefix)
       if let node = root.fileChangeNode(path: stagedChange.path) {
-        node.fileChange.change = stagedChange.change
+        node.fileChange.status = stagedChange.status
       }
       else {
         root.add(fileChange: stagedChange)

@@ -19,7 +19,7 @@ class WorkspaceTreeBuilder
     var changes = [String: DeltaStatus]()
     
     for change in fileChanges {
-      changes[change.path] = change.change
+      changes[change.path] = change.status
     }
     self.changes = changes
     self.repo = repo
@@ -65,7 +65,7 @@ class WorkspaceTreeBuilder
           let item = FileChange(path: path)
           
           if let status = self.changes[relativePath.removingPrefix("/")] {
-            item.change = status
+            item.status = status
           }
           childNode = NSTreeNode(representedObject: item)
         }

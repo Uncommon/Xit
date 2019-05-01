@@ -39,11 +39,11 @@ class XTStashTest: XTTest
     }
     
     XCTAssertEqual(indexChanges[0].path, FileName.added)
-    XCTAssertEqual(indexChanges[0].change, DeltaStatus.added)
+    XCTAssertEqual(indexChanges[0].status, DeltaStatus.added)
     XCTAssertEqual(workspaceChanges[0].path, FileName.file1)
-    XCTAssertEqual(workspaceChanges[0].change, DeltaStatus.modified)
+    XCTAssertEqual(workspaceChanges[0].status, DeltaStatus.modified)
     XCTAssertEqual(workspaceChanges[1].path, FileName.untracked)
-    XCTAssertEqual(workspaceChanges[1].change, DeltaStatus.added)
+    XCTAssertEqual(workspaceChanges[1].status, DeltaStatus.added)
     
     XCTAssertNotNil(stash.headBlobForPath(FileName.file1))
     

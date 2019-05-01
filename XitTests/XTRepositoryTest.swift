@@ -204,16 +204,16 @@ class XTAmendTest: XTTest
     addSecondCommit()
     write(text: "third", to: FileNames.file3)
     
-    let amendStatus = repository.amendingChanges(parent: headCommit)
-    guard let file3Status = amendStatus.first(
+    let amendChange = repository.amendingChanges(parent: headCommit)
+    guard let file3Change = amendChange.first(
         where: { $0.path == FileNames.file3 })
     else {
       XCTFail("file 3 status missing")
       return
     }
 
-    XCTAssertEqual(amendStatus.count, 3)
-    XCTAssertEqual(file3Status.change, DeltaStatus.added)
+    XCTAssertEqual(amendChange.count, 3)
+    XCTAssertEqual(file3Change.status, DeltaStatus.added)
   }
   
   // Delete a file added in the last commit, then check the amend status
@@ -225,7 +225,7 @@ class XTAmendTest: XTTest
     try! FileManager.default.removeItem(at: repository.fileURL(FileNames.file3))
     
     let amendStatus = repository.amendingChanges(parent: headCommit)
-    guard let file3Status = amendStatus.first(
+    guard let file3Change = amendStatus.first(
         where: { $0.path == FileNames.file3 })
     else {
       XCTFail("file 3 status missing")
@@ -233,7 +233,7 @@ class XTAmendTest: XTTest
     }
     
     XCTAssertEqual(amendStatus.count, 3)
-    XCTAssertEqual(file3Status.change, DeltaStatus.added)
+    XCTAssertEqual(file3Change.status, DeltaStatus.added)
   }
   
   // Test amend status for a file added in the head commit
@@ -245,14 +245,14 @@ class XTAmendTest: XTTest
     XCTAssertNoThrow(try repository.amendUnstage(file: FileNames.file3))
     
     let amendStatus = repository.amendingChanges(parent: headCommit)
-    guard let file3Status = amendStatus.first(where: { $0.path ==
+    guard let file3Change = amendStatus.first(where: { $0.path ==
                                                        FileNames.file3 })
     else {
       XCTFail("file 3 status missing")
       return
     }
     
-    XCTAssertEqual(file3Status.change, DeltaStatus.unmodified)
+    XCTAssertEqual(file3Change.status, DeltaStatus.unmodified)
   }
   
   // Test amend status for a file deleted in the head commit
@@ -263,15 +263,15 @@ class XTAmendTest: XTTest
     addSecondCommit()
     XCTAssertNoThrow(try repository.amendUnstage(file: FileNames.file2))
     
-    let amendStatus = repository.amendingChanges(parent: headCommit)
-    guard let file2Status = amendStatus.first(where: { $0.path ==
+    let amendChange = repository.amendingChanges(parent: headCommit)
+    guard let file2Change = amendChange.first(where: { $0.path ==
                                                        FileNames.file2 })
     else {
       XCTFail("file 2 status missing")
       return
     }
     
-    XCTAssertEqual(file2Status.change, DeltaStatus.unmodified)
+    XCTAssertEqual(file2Change.status, DeltaStatus.unmodified)
   }
   
   // Stage & unstage a new file in amend mode
@@ -284,36 +284,36 @@ class XTAmendTest: XTTest
     addSecondCommit()
     write(text: "text", to: fileName)
     
-    var amendStatus = repository.amendingChanges(parent: headCommit)
-    guard let file4Status1 = amendStatus.first(where: match)
+    var amendChange = repository.amendingChanges(parent: headCommit)
+    guard let file4Change1 = amendChange.first(where: match)
     else {
       XCTFail("file 4 status missing")
       return
     }
     
-    XCTAssertEqual(file4Status1.change, DeltaStatus.unmodified)
+    XCTAssertEqual(file4Change1.status, DeltaStatus.unmodified)
     
     XCTAssertNoThrow(try repository.amendStage(file: fileName))
-    amendStatus = repository.amendingChanges(parent: headCommit)
+    amendChange = repository.amendingChanges(parent: headCommit)
     
-    guard let file4Status2 = amendStatus.first(where: match)
+    guard let file4Change2 = amendChange.first(where: match)
     else {
       XCTFail("file 4 status missing")
       return
     }
     
-    XCTAssertEqual(file4Status2.change, DeltaStatus.added)
+    XCTAssertEqual(file4Change2.status, DeltaStatus.added)
     
     XCTAssertNoThrow(try repository.amendUnstage(file: fileName))
-    amendStatus = repository.amendingChanges(parent: headCommit)
+    amendChange = repository.amendingChanges(parent: headCommit)
     
-    guard let file4Status3 = amendStatus.first(where: match)
+    guard let file4Status3 = amendChange.first(where: match)
     else {
       XCTFail("file 4 status missing")
       return
     }
     
-    XCTAssertEqual(file4Status3.change, DeltaStatus.unmodified)
+    XCTAssertEqual(file4Status3.status, DeltaStatus.unmodified)
   }
   
   // Stage & unstage a newly deleted file in amend mode
@@ -326,12 +326,12 @@ class XTAmendTest: XTTest
     addSecondCommit()
     try! FileManager.default.removeItem(at: repository.fileURL(fileName))
     
-    var amendStatus = repository.amendingChanges(parent: headCommit)
+    var amendChange = repository.amendingChanges(parent: headCommit)
     
-    if let fileStatus = amendStatus.first(where: match) {
+    if let fileChange = amendChange.first(where: match) {
       // It shows up as modified in the index because file1 was changed
       // in the second commit.
-      XCTAssertEqual(fileStatus.change, DeltaStatus.modified)
+      XCTAssertEqual(fileChange.status, DeltaStatus.modified)
     }
     else {
       XCTFail("file status missing")
@@ -339,9 +339,9 @@ class XTAmendTest: XTTest
     }
     
     XCTAssertNoThrow(try repository.amendStage(file: fileName))
-    amendStatus = repository.amendingChanges(parent: headCommit)
-    if let fileStatus = amendStatus.first(where: match) {
-      XCTAssertEqual(fileStatus.change, DeltaStatus.deleted)
+    amendChange = repository.amendingChanges(parent: headCommit)
+    if let fileChange = amendChange.first(where: match) {
+      XCTAssertEqual(fileChange.status, DeltaStatus.deleted)
     }
     else {
       XCTFail("file status missing")
@@ -349,9 +349,9 @@ class XTAmendTest: XTTest
     }
     
     XCTAssertNoThrow(try repository.amendUnstage(file: fileName))
-    amendStatus = repository.amendingChanges(parent: headCommit)
-    if let fileStatus = amendStatus.first(where: match) {
-      XCTAssertEqual(fileStatus.change, DeltaStatus.unmodified)
+    amendChange = repository.amendingChanges(parent: headCommit)
+    if let fileChange = amendChange.first(where: match) {
+      XCTAssertEqual(fileChange.status, DeltaStatus.unmodified)
     }
     else {
       XCTFail("file status missing")
@@ -574,7 +574,7 @@ class XTRepositoryTest: XTTest
     else { return }
     
     XCTAssertEqual(change.path, FileName.file1)
-    XCTAssertEqual(change.change, DeltaStatus.added)
+    XCTAssertEqual(change.status, DeltaStatus.added)
   }
   
   func testModifiedChange()
@@ -595,12 +595,12 @@ class XTRepositoryTest: XTTest
     else { return }
     
     XCTAssertEqual(file1Change.path, FileName.file1)
-    XCTAssertEqual(file1Change.change, .modified)
+    XCTAssertEqual(file1Change.status, .modified)
     
     let file2Change = changes2[1]
     
     XCTAssertEqual(file2Change.path, FileName.file2)
-    XCTAssertEqual(file2Change.change, .added)
+    XCTAssertEqual(file2Change.status, .added)
   }
   
   func testDeletedChange()
@@ -617,7 +617,7 @@ class XTRepositoryTest: XTTest
     else { return }
     
     XCTAssertEqual(file1Deleted.path, FileName.file1)
-    XCTAssertEqual(file1Deleted.change, .deleted)
+    XCTAssertEqual(file1Deleted.status, .deleted)
   }
   
   func testStageUnstageAllStatus()
@@ -634,17 +634,17 @@ class XTRepositoryTest: XTTest
     var changes = repository.statusChanges(.indexOnly)
     
     XCTAssertEqual(changes.count, 3);
-    XCTAssertEqual(changes[0].change, DeltaStatus.modified);
-    XCTAssertEqual(changes[1].change, DeltaStatus.deleted);
-    XCTAssertEqual(changes[2].change, DeltaStatus.added);
+    XCTAssertEqual(changes[0].status, DeltaStatus.modified);
+    XCTAssertEqual(changes[1].status, DeltaStatus.deleted);
+    XCTAssertEqual(changes[2].status, DeltaStatus.added);
     
     try! repository.unstageAllFiles()
     changes = repository.statusChanges(.workdirOnly)
     
     XCTAssertEqual(changes.count, 3);
-    XCTAssertEqual(changes[0].change, DeltaStatus.modified);
-    XCTAssertEqual(changes[1].change, DeltaStatus.deleted);
-    XCTAssertEqual(changes[2].change, DeltaStatus.untracked);
+    XCTAssertEqual(changes[0].status, DeltaStatus.modified);
+    XCTAssertEqual(changes[1].status, DeltaStatus.deleted);
+    XCTAssertEqual(changes[2].status, DeltaStatus.untracked);
   }
 
   func checkDeletedDiff(_ diffResult: PatchMaker.PatchResult?)
