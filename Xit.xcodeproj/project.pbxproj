@@ -38,7 +38,6 @@
 		89D8BE221CF0A4ED00D640AA /* RolloverButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8BE211CF0A4ED00D640AA /* RolloverButton.swift */; };
 		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
-		C3FA470E13D0F8E200AC4F9B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA470D13D0F8E200AC4F9B /* main.m */; };
 		C3FA471413D0F8E200AC4F9B /* XTDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA471313D0F8E200AC4F9B /* XTDocument.m */; };
 		C3FA471713D0F8E200AC4F9B /* XTDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3FA471513D0F8E200AC4F9B /* XTDocument.xib */; };
 		C3FA472913D0F8E300AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA472713D0F8E300AC4F9B /* InfoPlist.strings */; };
@@ -407,7 +406,6 @@
 		C3FA470513D0F8E200AC4F9B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C3FA470813D0F8E200AC4F9B /* Xit-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Xit-Info.plist"; sourceTree = "<group>"; };
 		C3FA470C13D0F8E200AC4F9B /* Xit-Prefix.pch */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = "Xit-Prefix.pch"; sourceTree = "<group>"; tabWidth = 4; };
-		C3FA470D13D0F8E200AC4F9B /* main.m */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; tabWidth = 4; };
 		C3FA471213D0F8E200AC4F9B /* XTDocument.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTDocument.h; sourceTree = "<group>"; tabWidth = 2; };
 		C3FA471313D0F8E200AC4F9B /* XTDocument.m */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTDocument.m; sourceTree = "<group>"; tabWidth = 2; };
 		C3FA472013D0F8E300AC4F9B /* XitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -765,7 +763,6 @@
 			children = (
 				C3FA470813D0F8E200AC4F9B /* Xit-Info.plist */,
 				C3FA470C13D0F8E200AC4F9B /* Xit-Prefix.pch */,
-				C3FA470D13D0F8E200AC4F9B /* main.m */,
 				C9BD02FA226A275600172C0B /* Credits.rtf */,
 				DD00725513E76DFB003B4120 /* Xit.icns */,
 			);
@@ -1324,7 +1321,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C3FA470E13D0F8E200AC4F9B /* main.m in Sources */,
 				C9416355213EF42E0015F1C0 /* StagedFileListController.swift in Sources */,
 				C3FA471413D0F8E200AC4F9B /* XTDocument.m in Sources */,
 				C93FFCBD1F13D3B200FDDD78 /* ValidatedSegment.swift in Sources */,
