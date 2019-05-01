@@ -122,6 +122,8 @@ public protocol FileStaging: AnyObject
 
 public protocol Stashing: AnyObject
 {
+  var stashes: AnyCollection<Stash> { get }
+  
   func stash(index: UInt, message: String?) -> Stash
   func popStash(index: UInt) throws
   func applyStash(index: UInt) throws

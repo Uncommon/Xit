@@ -317,7 +317,7 @@ class SideBarDataSource: NSObject
   
   func makeStashItems() -> [SidebarItem]
   {
-    return repository?.stashes().map {
+    return repository?.stashes.map {
       StashSidebarItem(title: $0.message ?? "stash",
                   selection: StashSelection(repository: repository!, stash: $0))
     } ?? []

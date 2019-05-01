@@ -56,7 +56,7 @@ extension XTRepository
   }
 
   /// The indexable collection of stashes in the repository.
-  public class Stashes: Collection
+  public class StashCollection: Collection
   {
     public typealias Iterator = StashIterator
     
@@ -71,7 +71,7 @@ extension XTRepository
       self.repo = repo
       
       let refLogPtr = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-      guard git_reflog_read(refLogPtr, repo.gitRepo, Stashes.stashRefName) == 0
+      guard git_reflog_read(refLogPtr, repo.gitRepo, StashCollection.stashRefName) == 0
       else {
         self.refLog = nil
         self.count = 0
@@ -92,7 +92,7 @@ extension XTRepository
       return StashIterator(stashes: self)
     }
     
-    public subscript(position: Int) -> GitStash
+    public subscript(position: Int) -> Stash
     {
       let entry = git_reflog_entry_byindex(refLog, position)
       let message = String(cString: git_reflog_entry_message(entry))
@@ -111,18 +111,18 @@ extension XTRepository
   
   public class StashIterator: IteratorProtocol
   {
-    public typealias Element = GitStash
+    public typealias Element = Stash
     
-    let stashes: Stashes
+    let stashes: StashCollection
     var index: Int
     
-    init(stashes: Stashes)
+    init(stashes: StashCollection)
     {
       self.stashes = stashes
       self.index = 0
     }
     
-    public func next() -> GitStash?
+    public func next() -> Stash?
     {
       guard index < stashes.count
       else { return nil }

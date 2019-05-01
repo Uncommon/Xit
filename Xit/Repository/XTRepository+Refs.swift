@@ -157,11 +157,6 @@ extension XTRepository: CommitReferencing
     }
   }
   
-  public func stashes() -> Stashes
-  {
-    return Stashes(repo: self)
-  }
-  
   /// Returns the list of tags, or throws if libgit2 hit an error.
   public func tags() throws -> [Tag]
   {

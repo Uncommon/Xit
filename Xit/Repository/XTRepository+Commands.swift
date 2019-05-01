@@ -149,6 +149,11 @@ extension XTRepository: Tagging
 
 extension XTRepository: Stashing
 {
+  public var stashes: AnyCollection<Stash>
+  {
+    return AnyCollection(StashCollection(repo: self))
+  }
+  
   // TODO: Don't require the message parameter
   public func stash(index: UInt, message: String?) -> Stash
   {

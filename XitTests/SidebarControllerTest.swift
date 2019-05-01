@@ -84,7 +84,7 @@ class SidebarHandlerTest: XTTest
   /// Checks that the remaining stashes have the expected names
   func currentStashes() -> [String]
   {
-    return repository.stashes().map { $0.message ?? "" }
+    return repository.stashes.map { $0.message ?? "" }
   }
   
   func composeStashes(_ expectedStashes: [String]) -> [String]

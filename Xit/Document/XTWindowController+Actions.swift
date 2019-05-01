@@ -130,9 +130,7 @@ extension XTWindowController
   @IBAction
   func popStash(_: AnyObject)
   {
-    // Force cast - stashes() is not in a protocol because of limitations with
-    // associated types
-    guard let stash = (repository as! XTRepository).stashes().first
+    guard let stash = repository.stashes.first
     else {
       noStashesAlert()
       return
@@ -150,7 +148,7 @@ extension XTWindowController
   @IBAction
   func applyStash(_: AnyObject)
   {
-    guard let stash = (repository as! XTRepository).stashes().first
+    guard let stash = repository.stashes.first
     else {
       noStashesAlert()
       return
@@ -168,7 +166,7 @@ extension XTWindowController
   @IBAction
   func dropStash(_: AnyObject)
   {
-    guard let stash = (repository as! XTRepository).stashes().first
+    guard let stash = repository.stashes.first
     else {
       noStashesAlert()
       return
