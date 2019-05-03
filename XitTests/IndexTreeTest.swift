@@ -30,7 +30,7 @@ class IndexTreeTest: XTTest
   
   func addAndStageDelete(path: String)
   {
-    let fullPath = repoPath.appending(pathComponent: path)
+    let fullPath = repoPath +/ path
     
     XCTAssertTrue(commit(newTextFile: path, content: "text"))
     XCTAssertNoThrow(try FileManager.default.removeItem(atPath: fullPath))

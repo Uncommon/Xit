@@ -817,7 +817,7 @@ class XTRepositoryHunkTest: XTTest
     super.setUp()
     loremURL = testBundle.url(forResource: "lorem", withExtension: "txt")!
     lorem2URL = testBundle.url(forResource: "lorem2", withExtension: "txt")!
-    loremRepoURL = repository.repoURL.appendingPathComponent(loremName)
+    loremRepoURL = repository.repoURL +/ loremName
   }
   
   /// Returns the content of lorem.txt in the index

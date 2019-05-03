@@ -30,7 +30,7 @@ class FileListDataSourceTest: XTTest
     
     for n in 0..<10 {
       let fileName = "file_\(n).txt"
-      let filePath = repoPath.appending(pathComponent: fileName)
+      let filePath = repoPath +/ fileName
       
       try! text.write(toFile: filePath, atomically: true, encoding: .ascii)
       try! repository.stageAllFiles()
@@ -79,7 +79,7 @@ class FileListDataSourceTest: XTTest
     for i in 0..<2 {
       for j in 0..<3 {
         let path = "dir_\(i)/subdir_\(j)"
-        let fullPath = repoPath.appending(pathComponent: path)
+        let fullPath = repoPath +/ path
         
         try! FileManager.default.createDirectory(atPath: fullPath,
                                                  withIntermediateDirectories: true,

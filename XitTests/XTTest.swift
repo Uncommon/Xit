@@ -124,7 +124,7 @@ class XTTest: XCTestCase
               repository: XTRepository) -> Bool
   {
     let basePath = repository.repoURL.path
-    let filePath = basePath.appending(pathComponent: name)
+    let filePath = basePath +/ name
     
     do {
       try? FileManager.default.createDirectory(
@@ -164,7 +164,7 @@ class XTTest: XCTestCase
   func write(text: String, to path: String, repository: XTRepository) -> Bool
   {
     do {
-      let fullPath = repoPath.appending(pathComponent: path)
+      let fullPath = repoPath +/ path
       
       try? FileManager.default.createDirectory(
             atPath: fullPath.deletingLastPathComponent,
@@ -185,9 +185,10 @@ class XTTest: XCTestCase
     return write(text: text, to: FileName.file1)
   }
   
-  func assertContent(_ text: String, file: String, line: UInt = #line, sourceFile: StaticString = #file)
+  func assertContent(_ text: String, file: String,
+                     line: UInt = #line, sourceFile: StaticString = #file)
   {
-    guard let content = try? String(contentsOfFile: repoPath.appending(pathComponent: file))
+    guard let content = try? String(contentsOfFile: repoPath +/ file)
     else {
       XCTFail("can't load file", file: sourceFile, line: line)
       return

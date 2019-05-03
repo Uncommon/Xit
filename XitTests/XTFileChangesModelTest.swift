@@ -201,7 +201,7 @@ class XTFileChangesModelTest: XTTest
   func testStashTree()
   {
     let deletedName = "deleted"
-    let deletedURL = repository.repoURL.appendingPathComponent(deletedName)
+    let deletedURL = repository.repoURL +/ deletedName
   
     commit(newTextFile: deletedName, content: "bye!")
     try! FileManager.default.removeItem(at: deletedURL)
@@ -361,9 +361,9 @@ class XTFileChangesModelTest: XTTest
   {
     let subDirName = "sub"
     let subFileName = "file2"
-    let subFilePath = subDirName.appending(pathComponent: subFileName)
-    let subURL = repository.repoURL.appendingPathComponent(subDirName)
-    let subFileURL = subURL.appendingPathComponent(subFileName)
+    let subFilePath = subDirName +/ subFileName
+    let subURL = repository.repoURL +/ subDirName
+    let subFileURL = subURL +/ subFileName
     
     XCTAssertNoThrow(try FileManager.default.createDirectory(
         at: subURL, withIntermediateDirectories: false, attributes: nil))
@@ -380,11 +380,10 @@ class XTFileChangesModelTest: XTTest
   {
     let subDirName = "sub"
     let subFileName = "file2"
-    let subFilePath = subDirName.appending(pathComponent: subDirName)
-                                .appending(pathComponent: subFileName)
-    let subURL = repository.repoURL.appendingPathComponent(subDirName)
-    let subSubURL = subURL.appendingPathComponent(subDirName)
-    let subFileURL = subSubURL.appendingPathComponent(subFileName)
+    let subFilePath = subDirName +/ subDirName +/ subFileName
+    let subURL = repository.repoURL +/ subDirName
+    let subSubURL = subURL +/ subDirName
+    let subFileURL = subSubURL +/ subFileName
     
     XCTAssertNoThrow(try FileManager.default.createDirectory(
         at: subSubURL, withIntermediateDirectories: true, attributes: nil))
@@ -401,15 +400,15 @@ class XTFileChangesModelTest: XTTest
   {
     let subDirName = "sub"
     let subFileName = "file2"
-    let subFilePath = subDirName.appending(pathComponent: subFileName)
-    let subURL = repository.repoURL.appendingPathComponent(subDirName)
+    let subFilePath = subDirName +/ subFileName
+    let subURL = repository.repoURL +/ subDirName
     
     XCTAssertNoThrow(try FileManager.default.createDirectory(
       at: subURL, withIntermediateDirectories: false, attributes: nil))
     commit(newTextFile: subFilePath, content: "text")
     
     XCTAssertNoThrow(try FileManager.default.removeItem(
-        at: repository.repoURL.appendingPathComponent(FileName.file1)))
+        at: repository.repoURL +/ FileName.file1))
     XCTAssertNoThrow(try repository.stage(file: FileName.file1))
     XCTAssertNoThrow(try repository.commit(message: "delete", amend: false))
     
@@ -420,8 +419,8 @@ class XTFileChangesModelTest: XTTest
   {
     let subDirName = "sub"
     let subFileName = "file2"
-    let subFilePath = subDirName.appending(pathComponent: subFileName)
-    let subURL = repository.repoURL.appendingPathComponent(subDirName)
+    let subFilePath = subDirName +/ subFileName
+    let subURL = repository.repoURL +/ subDirName
     
     // Add a file to a subfolder, and save the tree from that commit
     XCTAssertNoThrow(try FileManager.default.createDirectory(
@@ -459,7 +458,7 @@ class XTFileChangesModelTest: XTTest
     
     let subDirName = "sub"
     let subFileName = "file2"
-    let subFilePath = subDirName.appending(pathComponent: subFileName)
+    let subFilePath = subDirName +/ subFileName
     
     let parentModel = CommitSelection(repository: repository, commit: parentCommit)
     let parentRoot = parentModel.fileList.treeRoot(oldTree: nil)
@@ -494,7 +493,7 @@ class XTFileChangesModelTest: XTTest
     
     let subDirName = "sub"
     let subFileName = "file2"
-    let subFilePath = subDirName.appending(pathComponent: subFileName)
+    let subFilePath = subDirName +/ subFileName
 
     let model = CommitSelection(repository: repository, commit: commit)
     let root = model.fileList.treeRoot(oldTree: nil)
@@ -549,7 +548,7 @@ extension NSTreeNode
     let relativePath = path.removingPrefix(root + "/")
     guard let topFolderName = relativePath.firstPathComponent
     else { return nil }
-    let folderPath = root.appending(pathComponent: topFolderName)
+    let folderPath = root +/ topFolderName
     guard let node = children?.first(where:
                 { ($0.representedObject as? CommitTreeItem)?.path == folderPath}),
           let item = node.representedObject as? CommitTreeItem

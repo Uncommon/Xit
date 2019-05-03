@@ -172,3 +172,21 @@ extension String
     return (self as NSString).deletingLastPathComponent
   }
 }
+
+infix operator +/ : AdditionPrecedence
+
+extension String
+{
+  static func +/ (left: String, right: String) -> String
+  {
+    return left.appending(pathComponent: right)
+  }
+}
+
+extension URL
+{
+  static func +/ (left: URL, right: String) -> URL
+  {
+    return left.appendingPathComponent(right)
+  }
+}
