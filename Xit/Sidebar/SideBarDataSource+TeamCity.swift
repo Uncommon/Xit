@@ -26,7 +26,7 @@ extension SideBarDataSource: TeamCityAccessor
     return nil
   }
   
-  /// Returns true if the remote branch is tracked by a local branch.
+  /// Returns the local branch that tracks the given remote branch ref.
   func localTrackingBranch(forBranchRef branch: String) -> LocalBranch?
   {
     for localBranch in repository.localBranches() {

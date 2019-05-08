@@ -149,7 +149,10 @@ extension SideBarDataSource
     updatePullRequestMenu(popup: view.pullRequestButton,
                           pullRequest: pullRequest)
   }
-  
+}
+
+extension SideBarDataSource: PullRequestActionDelegate
+{
   func viewPRWebPage(item: SidebarItem)
   {
     guard let pullRequest = pullRequest(for: item),
@@ -192,7 +195,8 @@ extension SideBarDataSource
         onFailure: { error in self.prActionFailed(item: item, error: error) })
   }
   
-  func approvalSucceeded(item: SidebarItem, approval: PullRequestApproval)
+  private func approvalSucceeded(item: SidebarItem,
+                                     approval: PullRequestApproval)
   {
     guard let request = pullRequest(for: item)
     else { return }
@@ -200,7 +204,7 @@ extension SideBarDataSource
     pullRequestCache.update(pullRequestID: request.id, approval: approval)
   }
   
-  func prActionFailed(item: SidebarItem, error: Error)
+  private func prActionFailed(item: SidebarItem, error: Error)
   {
     guard let window = viewController.view.window
     else { return }

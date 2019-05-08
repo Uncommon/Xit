@@ -120,7 +120,7 @@ extension SideBarDataSource: NSOutlineViewDelegate
       
       let textField = dataView.textField!
       
-      dataView.dataSource = self
+      dataView.prDelegate = self
       dataView.item = sideBarItem
       dataView.imageView?.image = sideBarItem.icon
       textField.uiStringValue = sideBarItem.displayTitle

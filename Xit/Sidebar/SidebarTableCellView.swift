@@ -1,5 +1,13 @@
 import Cocoa
 
+protocol PullRequestActionDelegate: AnyObject
+{
+  func viewPRWebPage(item: SidebarItem)
+  func approvePR(item: SidebarItem)
+  func unapprovePR(item: SidebarItem)
+  func prNeedsWork(item: SidebarItem)
+}
+
 class SidebarTableCellView: NSTableCellView
 {
   @IBOutlet weak var statusText: NSButton!
@@ -10,29 +18,29 @@ class SidebarTableCellView: NSTableCellView
   @IBOutlet weak var buttonContainer: NSView!
   @IBOutlet weak var missingImage: NSImageView!
   weak var item: SidebarItem?
-  weak var dataSource: SideBarDataSource?
+  weak var prDelegate: PullRequestActionDelegate?
   
   @IBAction
   func viewPRWebPage(_ sender: AnyObject)
   {
-    dataSource?.viewPRWebPage(item: item!)
+    prDelegate?.viewPRWebPage(item: item!)
   }
   
   @IBAction
   func approvePR(_ sender: AnyObject)
   {
-    dataSource?.approvePR(item: item!)
+    prDelegate?.approvePR(item: item!)
   }
   
   @IBAction
   func unapprovePR(_ sender: AnyObject)
   {
-    dataSource?.unapprovePR(item: item!)
+    prDelegate?.unapprovePR(item: item!)
   }
   
   @IBAction
   func prNeedsWork(_ sender: AnyObject)
   {
-    dataSource?.prNeedsWork(item: item!)
+    prDelegate?.prNeedsWork(item: item!)
   }
 }
