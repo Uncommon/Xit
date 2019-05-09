@@ -203,7 +203,6 @@
 		C9F1B5DE2217247E00293305 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F1B5DD2217247E00293305 /* ViewExtensions.swift */; };
 		C9F1B5F02217264A00293305 /* Nibs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F1B5EF2217264A00293305 /* Nibs.swift */; };
 		C9F1B5F22217293D00293305 /* TeamCityAPI+Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F1B5F12217293D00293305 /* TeamCityAPI+Types.swift */; };
-		C9F1B5F422172AD200293305 /* SidebarDataSource+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F1B5F322172AD200293305 /* SidebarDataSource+Actions.swift */; };
 		C9F461DE1EF34826007BEBC9 /* BuildStatusCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F461DD1EF34826007BEBC9 /* BuildStatusCellView.swift */; };
 		C9F5331D217A90B800B2432C /* KeychainTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F5331C217A90B800B2432C /* KeychainTest.swift */; };
 		C9F533432183C7B100B2432C /* BasicAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F533322183C7B100B2432C /* BasicAuthService.swift */; };
@@ -577,7 +576,6 @@
 		C9F1B5DD2217247E00293305 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		C9F1B5EF2217264A00293305 /* Nibs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nibs.swift; sourceTree = "<group>"; };
 		C9F1B5F12217293D00293305 /* TeamCityAPI+Types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TeamCityAPI+Types.swift"; sourceTree = "<group>"; };
-		C9F1B5F322172AD200293305 /* SidebarDataSource+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SidebarDataSource+Actions.swift"; sourceTree = "<group>"; };
 		C9F461DD1EF34826007BEBC9 /* BuildStatusCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuildStatusCellView.swift; sourceTree = "<group>"; };
 		C9F5331C217A90B800B2432C /* KeychainTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainTest.swift; sourceTree = "<group>"; };
 		C9F533322183C7B100B2432C /* BasicAuthService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicAuthService.swift; sourceTree = "<group>"; };
@@ -994,7 +992,6 @@
 				C98925F81DBFCE7000E5645C /* SidebarController.swift */,
 				C959CDEA1F859DB800C1E282 /* SidebarController+Actions.swift */,
 				89C9276A1D368C020074F71A /* SideBarDataSource.swift */,
-				C9F1B5F322172AD200293305 /* SidebarDataSource+Actions.swift */,
 				C98EBC1A212B2A7E00EF739E /* SidebarDataSource+PullRequest.swift */,
 				C959CDE81F859D3D00C1E282 /* SideBarDataSource+TeamCity.swift */,
 				C9FFCC831FABB28F00FA2F21 /* SideBarDataSource+OutlineView.swift */,
@@ -1384,7 +1381,6 @@
 				C9864466207E9CAC0088209B /* StringIdentifiers.swift in Sources */,
 				C9790D2220F53A030024D3EA /* CheckOutRemote.swift in Sources */,
 				C98EBC17212734F900EF739E /* PullRequestCache.swift in Sources */,
-				C9F1B5F422172AD200293305 /* SidebarDataSource+Actions.swift in Sources */,
 				C9BAE61E1D303A8100A87F13 /* RemoteOptionsOpController.swift in Sources */,
 				C95BD4051F8FF8C8000A2E2D /* GitDiff.swift in Sources */,
 				C9FFCC881FB3B1D000FA2F21 /* TreeLoader.swift in Sources */,

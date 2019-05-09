@@ -189,7 +189,8 @@ class SidebarController: NSViewController, SidebarHandler
   var savedSidebarWidth: UInt = 0
   let observers = ObserverCollection()
   var amendingObserver: NSKeyValueObservation?
-  
+  var statusPopover: NSPopover?
+
   deinit
   {
     // The timers contain references to the ds object and repository.
@@ -398,5 +399,13 @@ extension SidebarController: NSMenuItemValidation
   func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
   {
     return validate(sidebarCommand: menuItem)
+  }
+}
+
+extension SidebarController: NSPopoverDelegate
+{
+  func popoverDidClose(_ notification: Notification)
+  {
+    statusPopover = nil
   }
 }

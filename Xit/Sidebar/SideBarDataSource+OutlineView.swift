@@ -1,14 +1,5 @@
 import Foundation
 
-// MARK: NSPopoverDelegate
-extension SideBarDataSource: NSPopoverDelegate
-{
-  func popoverDidClose(_ notification: Notification)
-  {
-    statusPopover = nil
-  }
-}
-
 // MARK: NSOutlineViewDataSource
 extension SideBarDataSource: NSOutlineViewDataSource
 {
@@ -176,8 +167,8 @@ extension SideBarDataSource: NSOutlineViewDelegate
         let tracked = localBranch.trackingBranchName {
         cell.statusButton.toolTip = tracked
       }
-      cell.statusButton.target = self
-      cell.statusButton.action = #selector(self.showItemStatus(_:))
+      cell.statusButton.target = viewController
+      cell.statusButton.action = #selector(SidebarController.showItemStatus(_:))
     }
     cell.buttonContainer.isHidden = cell.statusButton.image == nil
   }
@@ -197,9 +188,9 @@ extension SideBarDataSource: NSOutlineViewDelegate
         case .missing(let tracking):
           dataView.statusButton.image = NSImage(named: .xtTracking)
           dataView.statusButton.toolTip = tracking + " (missing)"
-          dataView.statusButton.target = self
+          dataView.statusButton.target = viewController
           dataView.statusButton.action =
-              #selector(self.missingTrackingBranch(_:))
+              #selector(SidebarController.missingTrackingBranch(_:))
           dataView.missingImage.isHidden = false
           dataView.statusButton.isEnabled = true
           (dataView.statusButton.cell as? NSButtonCell)?

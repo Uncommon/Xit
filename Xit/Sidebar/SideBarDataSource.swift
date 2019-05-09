@@ -29,7 +29,6 @@ class SideBarDataSource: NSObject
   private(set) var roots: [SideBarGroupItem]
   private(set) var stagingItem: SidebarItem!
   
-  var statusPopover: NSPopover?
   var buildStatusCache: BuildStatusCache!
   {
     didSet
@@ -145,8 +144,6 @@ class SideBarDataSource: NSObject
   
   open override func awakeFromNib()
   {
-    outline!.target = self
-    outline!.doubleAction = #selector(SideBarDataSource.doubleClick(_:))
     if !AccountsManager.manager.accounts(ofType: .teamCity).isEmpty {
       buildStatusTimer = Timer.scheduledTimer(
           withTimeInterval: Intervals.teamCityRefresh, repeats: true) {
@@ -333,7 +330,7 @@ class SideBarDataSource: NSObject
     let localBranches = repo.localBranches().sorted { $0.name <~ $1.name }
     
     for branch in localBranches {
-      guard let sha = branch.sha,
+      guard let sha = branch.oid?.sha,
             let commit = repo.commit(forSHA: sha)
       else { continue }
       

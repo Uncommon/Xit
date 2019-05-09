@@ -192,4 +192,85 @@ extension SidebarController
   {
     
   }
+
+  @IBAction
+  func showItemStatus(_ sender: NSButton)
+  {
+    guard let item = item(for: sender) as? BranchSidebarItem,
+          let branch = item.branchObject()
+    else { return }
+    
+    let statusController = BuildStatusViewController(
+          repository: repo,
+          branch: branch,
+          cache: sidebarDS.buildStatusCache)
+    let popover = NSPopover()
+    
+    statusPopover = popover
+    popover.contentViewController = statusController
+    popover.behavior = .transient
+    popover.delegate = self
+    popover.show(relativeTo: sender.bounds, of: sender, preferredEdge: .maxY)
+  }
+  
+  @IBAction
+  func missingTrackingBranch(_ sender: NSButton)
+  {
+    guard let item = item(for: sender) as? LocalBranchSidebarItem
+    else { return }
+    
+    let alert = NSAlert()
+    
+    alert.alertStyle = .informational
+    alert.messageString = .trackingBranchMissing
+    alert.informativeString = .trackingMissingInfo(item.title)
+    alert.addButton(withString: .clear)
+    alert.addButton(withString: .deleteBranch)
+    alert.addButton(withString: .cancel)
+    alert.beginSheetModal(for: window!) {
+      (response) in
+      switch response {
+        
+        case .alertFirstButtonReturn: // Clear
+          let branch = self.repo.localBranch(named: item.title)
+          
+          branch?.trackingBranchName = nil
+          self.sidebarOutline.reloadItem(item)
+        
+        case .alertSecondButtonReturn: // Delete
+          self.deleteBranch(item: item)
+        
+        default:
+          break
+      }
+    }
+  }
+  
+  @IBAction
+  func doubleClick(_: Any?)
+  {
+    if let outline = sidebarOutline,
+       let clickedItem = outline.item(atRow: outline.clickedRow)
+                         as? SubmoduleSidebarItem,
+       let rootPath = repo?.repoURL.path {
+      let subURL = URL(fileURLWithPath: rootPath +/ clickedItem.submodule.path)
+      
+      NSDocumentController.shared.openDocument(
+      withContentsOf: subURL, display: true) { (_, _, _) in }
+    }
+  }
+
+  private func item(for button: NSButton) -> SidebarItem?
+  {
+    var superview = button.superview
+    
+    while superview != nil {
+      if let cellView = superview as? SidebarTableCellView {
+        return cellView.item
+      }
+      superview = superview?.superview
+    }
+    
+    return nil
+  }
 }
