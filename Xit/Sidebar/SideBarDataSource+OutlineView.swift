@@ -160,16 +160,22 @@ extension SideBarDataSource: NSOutlineViewDelegate
     guard let cell = cell ?? self.cell(forItem: item)
     else { return }
     
-    if let image = statusImage(for: item) {
-      cell.statusButton.image = image
+    if let image = statusImage(for: item),
+       let button = cell.statusButton {
+      button.image = image
       if let localBranchItem = item as? LocalBranchSidebarItem,
-        let localBranch = localBranchItem.branchObject() as? LocalBranch,
-        let tracked = localBranch.trackingBranchName {
-        cell.statusButton.toolTip = tracked
+         let localBranch = localBranchItem.branchObject() as? LocalBranch,
+         let trackedName = localBranch.trackingBranchName {
+        button.toolTip = trackedName
       }
-      cell.statusButton.target = viewController
-      cell.statusButton.action = #selector(SidebarController.showItemStatus(_:))
+      else {
+        button.toolTip = ""
+      }
+      button.target = viewController
+      button.action = #selector(SidebarController.showItemStatus(_:))
+      button.isEnabled = true
     }
+    
     cell.buttonContainer.isHidden = cell.statusButton.image == nil
   }
   

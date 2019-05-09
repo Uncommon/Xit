@@ -90,7 +90,7 @@ enum BitbucketServer
   struct User: Codable, Equatable
   {
     let name: String
-    let emailAddress: String
+    let emailAddress: String?
     let id: Int
     let displayName: String
     let active: Bool
