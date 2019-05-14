@@ -160,6 +160,7 @@
 		C99A6AEC1E48FA140030DC01 /* FileListDataSourceBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99A6AEB1E48FA140030DC01 /* FileListDataSourceBase.swift */; };
 		C99A6AFF1E4A73240030DC01 /* BlameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99A6AFE1E4A73240030DC01 /* BlameViewController.swift */; };
 		C9A05432227CF61D002BFFF5 /* CommitRootTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A05431227CF61D002BFFF5 /* CommitRootTest.swift */; };
+		C9A05460228B1A05002BFFF5 /* SidebarDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A0545F228B1A05002BFFF5 /* SidebarDataModel.swift */; };
 		C9A58EED1EE5DD4800E37A31 /* TaskQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */; };
 		C9AA80301E2929810004D670 /* FileChangesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AA802F1E2929810004D670 /* FileChangesDataSource.swift */; };
 		C9AA80361E2E7F370004D670 /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AA80351E2E7F370004D670 /* HistoryViewController.swift */; };
@@ -529,6 +530,7 @@
 		C99A6AEB1E48FA140030DC01 /* FileListDataSourceBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileListDataSourceBase.swift; sourceTree = "<group>"; };
 		C99A6AFE1E4A73240030DC01 /* BlameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlameViewController.swift; sourceTree = "<group>"; };
 		C9A05431227CF61D002BFFF5 /* CommitRootTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommitRootTest.swift; sourceTree = "<group>"; };
+		C9A0545F228B1A05002BFFF5 /* SidebarDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarDataModel.swift; sourceTree = "<group>"; };
 		C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskQueue.swift; sourceTree = "<group>"; };
 		C9AA802F1E2929810004D670 /* FileChangesDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileChangesDataSource.swift; sourceTree = "<group>"; };
 		C9AA80351E2E7F370004D670 /* HistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
@@ -991,6 +993,7 @@
 			children = (
 				C98925F81DBFCE7000E5645C /* SidebarController.swift */,
 				C959CDEA1F859DB800C1E282 /* SidebarController+Actions.swift */,
+				C9A0545F228B1A05002BFFF5 /* SidebarDataModel.swift */,
 				89C9276A1D368C020074F71A /* SideBarDataSource.swift */,
 				C98EBC1A212B2A7E00EF739E /* SidebarDataSource+PullRequest.swift */,
 				C959CDE81F859D3D00C1E282 /* SideBarDataSource+TeamCity.swift */,
@@ -1451,6 +1454,7 @@
 				C92E30FB1D4FF4F0001985F7 /* GitCommit.swift in Sources */,
 				897056ED20E412AC0020F5E9 /* ClickThroughImageView.swift in Sources */,
 				C93D30C321558419009BA29F /* GeneralPrefsController.swift in Sources */,
+				C9A05460228B1A05002BFFF5 /* SidebarDataModel.swift in Sources */,
 				C9AA80301E2929810004D670 /* FileChangesDataSource.swift in Sources */,
 				C9065F6020FFE1D900C01110 /* Notifications.swift in Sources */,
 				C9328B141D776BC700EFF7F7 /* RepositoryWatcher.swift in Sources */,

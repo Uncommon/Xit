@@ -26,8 +26,8 @@ class SideBarDataSource: NSObject
   @IBOutlet weak var viewController: SidebarController!
   @IBOutlet weak var outline: NSOutlineView!
   
-  private(set) var roots: [SideBarGroupItem]
-  private(set) var stagingItem: SidebarItem!
+  private(set) var model: SidebarDataModel! = nil
+  var stagingItem: SidebarItem { return model.stagingItem }
   
   var buildStatusCache: BuildStatusCache!
   {
@@ -52,10 +52,13 @@ class SideBarDataSource: NSObject
   
   weak var repository: XTRepository!
   {
-    didSet
+    get { return model.repository }
+    set
     {
-      guard let repo = self.repository
+      guard let repo = newValue
       else { return }
+      
+      model = SidebarDataModel(repository: repo, outlineView: outline)
       
       stagingItem.selection = StagingSelection(repository: repo)
       buildStatusCache = BuildStatusCache(branchLister: repo, remoteMgr: repo)
@@ -76,8 +79,8 @@ class SideBarDataSource: NSObject
         [weak self] (_) in
         guard let self = self
         else { return }
-        self.outline.reloadItem(self.roots[XTGroupIndex.branches.rawValue],
-                                  reloadChildren: true)
+        self.outline.reloadItem(self.model.rootItem(.branches),
+                                reloadChildren: true)
       }
       observers.addObserver(forName: .XTRepositoryConfigChanged,
                             object: repo, queue: .main) {
@@ -112,22 +115,6 @@ class SideBarDataSource: NSObject
         item.selection.map { controller.selection = $0 }
       }
     }
-  }
-  
-  static func makeRoots(_ stagingItem: SidebarItem) -> [SideBarGroupItem]
-  {
-    let rootNames: [UIString] =
-          [.workspace, .branches, .remotes, .tags, .stashes, .submodules]
-    let roots = rootNames.map { SideBarGroupItem(titleString: $0) }
-    
-    roots[0].children.append(stagingItem)
-    return roots
-  }
-  
-  override init()
-  {
-    self.stagingItem = StagingSidebarItem(titleString: .staging)
-    self.roots = SideBarDataSource.makeRoots(stagingItem)
   }
   
   deinit
@@ -181,9 +168,9 @@ class SideBarDataSource: NSObject
   
   private func getExpansions() -> ExpansionCache
   {
-    let localItem = roots[XTGroupIndex.branches.rawValue]
-    let remotesItem = roots[XTGroupIndex.remotes.rawValue]
-    let tagsItem = roots[XTGroupIndex.tags.rawValue]
+    let localItem = model.rootItem(.branches)
+    let remotesItem = model.rootItem(.remotes)
+    let tagsItem = model.rootItem(.tags)
 
     return ExpansionCache(localBranches: expandedChildNames(of: localItem),
                           remoteBranches: expandedChildNames(of: remotesItem),
@@ -212,12 +199,12 @@ class SideBarDataSource: NSObject
     let selection = outline.item(atRow: outline.selectedRow)
                     as? SidebarItem
     
-    roots = newRoots
+    model.roots = newRoots
     outline.reloadData()
-    for rootItem in roots {
+    for rootItem in model.roots {
       outline.expandItem(rootItem)
     }
-    for remoteItem in roots[XTGroupIndex.remotes.rawValue].children {
+    for remoteItem in model.rootItem(.remotes).children {
       outline.expandItem(remoteItem)
     }
     if let currentBranch = repository.currentBranch,
@@ -233,9 +220,9 @@ class SideBarDataSource: NSObject
   
   private func restoreExpandedItems(_ expanded: ExpansionCache)
   {
-    let localItem = roots[XTGroupIndex.branches.rawValue]
-    let remotesItem = roots[XTGroupIndex.remotes.rawValue]
-    let tagsItem = roots[XTGroupIndex.tags.rawValue]
+    let localItem = model.rootItem(.branches)
+    let remotesItem = model.rootItem(.remotes)
+    let tagsItem = model.rootItem(.tags)
 
     for localBranch in expanded.localBranches {
       if let branchItem = localItem.child(atPath: localBranch) {
@@ -257,7 +244,7 @@ class SideBarDataSource: NSObject
   func showItem(branchName: String)
   {
     let parts = branchName.components(separatedBy: "/")
-    var parent: SidebarItem = roots[XTGroupIndex.branches.rawValue]
+    var parent: SidebarItem = model.rootItem(.branches)
     
     for part in parts {
       guard let child = parent.child(matching: part)
@@ -286,7 +273,7 @@ class SideBarDataSource: NSObject
             byExtendingSelection: false)
         return true
       case let localItem as LocalBranchSidebarItem:
-        if let item = self.item(forBranchName: localItem.title) {
+        if let item = model.item(forBranchName: localItem.title) {
           outline.selectRowIndexes(
               IndexSet(integer: outline.row(forItem: item)),
               byExtendingSelection: false)
@@ -300,7 +287,7 @@ class SideBarDataSource: NSObject
   
   func stashChanged()
   {
-    let stashesGroup = roots[XTGroupIndex.stashes.rawValue]
+    let stashesGroup = model.rootItem(.stashes)
 
     stashesGroup.children = makeStashItems()
     outline.reloadItem(stashesGroup, reloadChildren: true)
@@ -325,7 +312,7 @@ class SideBarDataSource: NSObject
     guard let repo = repository
     else { return [] }
     
-    let newRoots = SideBarDataSource.makeRoots(stagingItem)
+    let newRoots = model.makeRoots()
     let branchesGroup = newRoots[XTGroupIndex.branches.rawValue]
     let localBranches = repo.localBranches().sorted { $0.name <~ $1.name }
     
@@ -393,11 +380,6 @@ class SideBarDataSource: NSObject
     return newRoots
   }
   
-  func rootItem(_ index: XTGroupIndex) -> SidebarItem
-  {
-    return roots[index.rawValue]
-  }
-  
   func parent(for branchPath: [String],
               under item: SidebarItem) -> SidebarItem
   {
@@ -438,7 +420,7 @@ class SideBarDataSource: NSObject
   
   func selectCurrentBranch()
   {
-    _ = selectCurrentBranch(in: roots[XTGroupIndex.branches.rawValue])
+    _ = selectCurrentBranch(in: model.rootItem(.branches))
   }
   
   func selectCurrentBranch(in parent: SidebarItem) -> Bool
@@ -506,20 +488,5 @@ class SideBarDataSource: NSObject
       numbers.append("↓\(graph.behind)")
     }
     return numbers.isEmpty ? nil : numbers.joined(separator: " ")
-  }
-  
-  func item(forBranchName branch: String) -> LocalBranchSidebarItem?
-  {
-    let branches = roots[XTGroupIndex.branches.rawValue]
-    let result = branches.children.first { $0.title == branch }
-    
-    return result as? LocalBranchSidebarItem
-  }
-  
-  func item(named name: String, inGroup group: XTGroupIndex) -> SidebarItem?
-  {
-    let group = roots[group.rawValue]
-    
-    return group.child(matching: name)
   }
 }

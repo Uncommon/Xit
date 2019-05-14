@@ -238,7 +238,7 @@ class SidebarController: NSViewController, SidebarHandler
     switch repoController.selection {
     
       case let stashChanges as StashSelection:
-        let stashRoot = sidebarDS.roots[XTGroupIndex.stashes.rawValue]
+        let stashRoot = sidebarDS.model.rootItem(.stashes)
         guard let stashItem = stashRoot.children.first(where: {
           $0.selection.map({ (selection) in selection == stashChanges }) ?? false
         })
@@ -288,8 +288,8 @@ class SidebarController: NSViewController, SidebarHandler
   
   func selectItem(name: String, group: XTGroupIndex)
   {
-    sidebarDS.item(named: name, inGroup: group).map {
-      selectItem($0, group: group)
+    if let item = sidebarDS.model.item(named: name, inGroup: group) {
+      selectItem(item, group: group)
     }
   }
   
@@ -307,7 +307,7 @@ class SidebarController: NSViewController, SidebarHandler
     else { return }
     let remote = slices[0]
     let branch = slices[1]
-    let remotesGroup = sidebarDS.rootItem(.remotes)
+    let remotesGroup = sidebarDS.model.rootItem(.remotes)
     guard let remoteItem = remotesGroup.children
                                        .first(where: { $0.title == remote }),
           let branchItem = remoteItem.child(matching: branch)
@@ -355,7 +355,7 @@ class SidebarController: NSViewController, SidebarHandler
   
   func stashIndex(for item: SidebarItem) -> UInt?
   {
-    let stashes = sidebarDS.roots[XTGroupIndex.stashes.rawValue]
+    let stashes = sidebarDS.model.rootItem(.stashes)
     
     return stashes.children.firstIndex(of: item).map { UInt($0) }
   }

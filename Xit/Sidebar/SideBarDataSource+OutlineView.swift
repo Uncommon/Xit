@@ -7,7 +7,7 @@ extension SideBarDataSource: NSOutlineViewDataSource
                           numberOfChildrenOfItem item: Any?) -> Int
   {
     if item == nil {
-      return roots.count
+      return model?.roots.count ?? 0
     }
     return (item as? SidebarItem)?.children.count ?? 0
   }
@@ -23,7 +23,7 @@ extension SideBarDataSource: NSOutlineViewDataSource
                           ofItem item: Any?) -> Any
   {
     if item == nil {
-      return roots[index]
+      return model.roots[index]
     }
     
     guard let sidebarItem = item as? SidebarItem,
@@ -66,8 +66,7 @@ extension SideBarDataSource: NSOutlineViewDelegate
   public func outlineView(_ outlineView: NSOutlineView,
                           shouldShowOutlineCellForItem item: Any) -> Bool
   {
-    // Don't hide the workspace group
-    if (item as? SideBarGroupItem) === roots[0] {
+    if (item as? SideBarGroupItem) === model.rootItem(.workspace) {
       return false
     }
     

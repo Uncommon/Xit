@@ -20,7 +20,7 @@ extension SideBarDataSource
   func remoteItem(for pullRequest: PullRequest) -> RemoteBranchSidebarItem?
   {
     guard let sourceURL = pullRequest.sourceRepo,
-          let remote = roots[XTGroupIndex.remotes.rawValue].children.first(where: {
+          let remote = model.rootItem(.remotes).children.first(where: {
       ($0 as? RemoteSidebarItem)?.remote?.url == sourceURL
     })
     else { return nil }
@@ -196,7 +196,7 @@ extension SideBarDataSource: PullRequestActionDelegate
   }
   
   private func approvalSucceeded(item: SidebarItem,
-                                     approval: PullRequestApproval)
+                                 approval: PullRequestApproval)
   {
     guard let request = pullRequest(for: item)
     else { return }

@@ -95,8 +95,8 @@ extension SideBarDataSource: BuildStatusClient
 {
   func buildStatusUpdated(branch: String, buildType: String)
   {
-    updateBranches(roots[XTGroupIndex.branches.rawValue].children)
-    for remoteItem in roots[XTGroupIndex.remotes.rawValue].children {
+    updateBranches(model.rootItem(.branches).children)
+    for remoteItem in model.rootItem(.remotes).children {
       updateBranches(remoteItem.children)
     }
   }

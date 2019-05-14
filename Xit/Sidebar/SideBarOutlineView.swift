@@ -28,8 +28,7 @@ class SideBarOutlineView: ContextMenuOutlineView
         guard let groupItem = parent(forItem: item) as? SidebarItem
         else { break }
         
-        if groupItem == controller.sidebarDS
-                                  .roots[XTGroupIndex.remotes.rawValue] {
+        if groupItem == controller.sidebarDS.model.rootItem(.remotes) {
           menu = controller.remoteContextMenu
         }
     }
