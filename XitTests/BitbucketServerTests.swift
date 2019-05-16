@@ -15,7 +15,7 @@ class BitbucketServerTests: XCTestCase
                                     type: .normal,
                                     links: links)
     let json = """
-        {"name":"\(user.name)","emailAddress":"\(user.emailAddress)",\
+        {"name":"\(user.name)","emailAddress":"\(user.emailAddress ?? "nil")",\
         "id":\(user.id),"displayName":"\(user.displayName)",\
         "active":\(user.active),"slug":"\(user.slug)",\
         "type":"\(user.type.rawValue)","links":{"self":\
