@@ -110,7 +110,7 @@ extension SideBarDataSource: NSOutlineViewDelegate
       
       let textField = dataView.textField!
       
-      dataView.prDelegate = self
+      dataView.prDelegate = pullRequestManager
       dataView.item = sideBarItem
       dataView.imageView?.image = sideBarItem.icon
       textField.uiStringValue = sideBarItem.displayTitle
@@ -123,7 +123,8 @@ extension SideBarDataSource: NSOutlineViewDelegate
       if sideBarItem is LocalBranchSidebarItem {
         configureLocalBranchItem(sideBarItem: sideBarItem, dataView: dataView)
       }
-      updatePullRequestButton(item: sideBarItem, view: dataView)
+      pullRequestManager.updatePullRequestButton(item: sideBarItem,
+                                                 view: dataView)
       dataView.buttonContainer.isHidden = dataView.statusButton.image == nil
       if sideBarItem.editable {
         textField.target = viewController

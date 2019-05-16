@@ -6,8 +6,7 @@ class SideBarDataSource: NSObject
 {
   enum Intervals
   {
-    static let teamCityRefresh: TimeInterval = 60 * 5
-    static let pullRequestRefresh: TimeInterval = 60 * 5
+    static let teamCityRefresh: TimeInterval = 5 * .minutes
     static let reloadDelay: TimeInterval = 1
   }
   
@@ -27,6 +26,7 @@ class SideBarDataSource: NSObject
   @IBOutlet weak var outline: NSOutlineView!
   
   private(set) var model: SidebarDataModel! = nil
+  private(set) var pullRequestManager: SidebarPRManager! = nil
   var stagingItem: SidebarItem { return model.stagingItem }
   
   var buildStatusCache: BuildStatusCache!
@@ -36,16 +36,8 @@ class SideBarDataSource: NSObject
       buildStatusCache.add(client: self)
     }
   }
-  var pullRequestCache: PullRequestCache!
-  {
-    didSet
-    {
-      pullRequestCache.add(client: self)
-    }
-  }
   
   var buildStatusTimer: Timer?
-  var pullRequestTimer: Timer?
   var reloadTimer: Timer?
   
   let observers = ObserverCollection()
@@ -59,10 +51,10 @@ class SideBarDataSource: NSObject
       else { return }
       
       model = SidebarDataModel(repository: repo, outlineView: outline)
+      pullRequestManager = SidebarPRManager(model: model)
       
       stagingItem.selection = StagingSelection(repository: repo)
       buildStatusCache = BuildStatusCache(branchLister: repo, remoteMgr: repo)
-      pullRequestCache = PullRequestCache(repository: repo)
       
       observers.addObserver(forName: .XTRepositoryRefsChanged,
                             object: repo, queue: .main) {
@@ -139,11 +131,7 @@ class SideBarDataSource: NSObject
       }
     }
     if Services.shared.allServices.contains(where: { $0 is PullRequestService }) {
-      pullRequestTimer = Timer.scheduledTimer(
-          withTimeInterval: Intervals.pullRequestRefresh, repeats: true) {
-        [weak self] _ in
-        self?.pullRequestCache.refresh()
-      }
+      pullRequestManager.scheduleCacheRefresh()
     }
     observers.addObserver(forName: .XTTeamCityStatusChanged,
                           object: nil,
@@ -375,7 +363,7 @@ class SideBarDataSource: NSObject
     DispatchQueue.main.async {
       [weak self] in
       self?.buildStatusCache.refresh()
-      self?.pullRequestCache.refresh()
+      self?.pullRequestManager.pullRequestCache.refresh()
     }
     return newRoots
   }
@@ -440,7 +428,7 @@ class SideBarDataSource: NSObject
   func stopTimers()
   {
     buildStatusTimer?.invalidate()
-    pullRequestTimer?.invalidate()
+    pullRequestManager.stopCacheRefresh()
     reloadTimer?.invalidate()
   }
   

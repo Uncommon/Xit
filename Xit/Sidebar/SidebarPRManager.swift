@@ -1,26 +1,39 @@
 import Foundation
 
-extension SideBarDataSource: PullRequestClient
+class SidebarPRManager
 {
-  func pullRequestUpdated(branch: String, requests: [PullRequest])
+  let refreshInterval: TimeInterval = 5 * .minutes
+  
+  let model: SidebarDataModel
+  let pullRequestCache: PullRequestCache
+  var refreshTimer: Timer?
+
+  init(model: SidebarDataModel)
   {
-    DispatchQueue.main.async {
-      for request in requests {
-        guard let item = self.remoteItem(for: request)
-        else { continue }
-        
-        self.outline.reloadItem(item)
-      }
+    self.model = model
+    self.pullRequestCache = PullRequestCache(repository: model.repository!)
+    
+    pullRequestCache.add(client: self)
+  }
+  
+  func scheduleCacheRefresh()
+  {
+    refreshTimer = Timer.scheduledTimer(withTimeInterval: refreshInterval,
+                                        repeats: true) {
+      [weak self] _ in
+      self?.pullRequestCache.refresh()
     }
   }
-}
-
-extension SideBarDataSource
-{
+  
+  func stopCacheRefresh()
+  {
+    refreshTimer?.invalidate()
+  }
+  
   func remoteItem(for pullRequest: PullRequest) -> RemoteBranchSidebarItem?
   {
     guard let sourceURL = pullRequest.sourceRepo,
-          let remote = model.rootItem(.remotes).children.first(where: {
+      let remote = model.rootItem(.remotes).children.first(where: {
       ($0 as? RemoteSidebarItem)?.remote?.url == sourceURL
     })
     else { return nil }
@@ -30,7 +43,6 @@ extension SideBarDataSource
     return remote.findChild {
       let name = ($0 as? RemoteBranchSidebarItem)?.branchObject()?.strippedName
       return name == sourceBranch
-      //($0 as? RemoteBranchSidebarItem)?.branchObject()?.name == sourceBranch
     } as? RemoteBranchSidebarItem
   }
   
@@ -151,7 +163,22 @@ extension SideBarDataSource
   }
 }
 
-extension SideBarDataSource: PullRequestActionDelegate
+extension SidebarPRManager: PullRequestClient
+{
+  func pullRequestUpdated(branch: String, requests: [PullRequest])
+  {
+    DispatchQueue.main.async {
+      for request in requests {
+        guard let item = self.remoteItem(for: request)
+        else { continue }
+        
+        self.model.outline.reloadItem(item)
+      }
+    }
+  }
+}
+
+extension SidebarPRManager: PullRequestActionDelegate
 {
   func viewPRWebPage(item: SidebarItem)
   {
@@ -206,7 +233,7 @@ extension SideBarDataSource: PullRequestActionDelegate
   
   private func prActionFailed(item: SidebarItem, error: Error)
   {
-    guard let window = viewController.view.window
+    guard let window = model.outline.window
     else { return }
     let alert = NSAlert()
     

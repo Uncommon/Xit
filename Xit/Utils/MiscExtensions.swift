@@ -308,6 +308,11 @@ extension NSObject
   }
 }
 
+extension TimeInterval
+{
+  static let minutes: TimeInterval = 60
+}
+
 // Swift 3 took away ++, but it still can be useful.
 postfix operator ++
 
