@@ -24,6 +24,21 @@ class FakeRemote: Remote
   func updatePushURLString(_ URLString: String) throws {}
 }
 
+class FakeStash: Stash
+{
+  var message: String? = nil
+  var mainCommit: Commit? = nil
+  var indexCommit: Commit? = nil
+  var untrackedCommit: Commit? = nil
+  
+  func indexChanges() -> [FileChange] { return [] }
+  func workspaceChanges() -> [FileChange] { return [] }
+  func stagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
+  { return nil }
+  func unstagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
+  { return nil }
+}
+
 struct FakePullRequest: PullRequest
 {
   var service: PullRequestService
@@ -123,7 +138,8 @@ class FakeFileChangesRepo: FileChangesRepo
   { return nil }
   func reference(named name: String) -> Reference? { return nil }
   func refs(at sha: String) -> [String] { return [] }
-  
+  func rebuildRefsIndex() {}
+
   var repoURL: URL { return URL(fileURLWithPath: "") }
   
   func isTextFile(_ path: String, context: FileContext) -> Bool{ return false }

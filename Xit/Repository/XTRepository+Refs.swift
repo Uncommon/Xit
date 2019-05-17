@@ -9,7 +9,7 @@ extension XTRepository: CommitReferencing
   }
   
   /// Reloads the cached map of OIDs to refs.
-  func rebuildRefsIndex()
+  public func rebuildRefsIndex()
   {
     var payload = CallbackPayload(repo: self)
     let callback: git_reference_foreach_cb = {
@@ -189,6 +189,16 @@ extension XTRepository: Branching
     return cachedBranch
   }
   
+  public var localBranches: AnySequence<LocalBranch>
+  {
+    return AnySequence { LocalBranchIterator(repo: self) }
+  }
+  
+  public var remoteBranches: AnySequence<RemoteBranch>
+  {
+    return AnySequence { RemoteBranchIterator(repo: self) }
+  }
+
   public func createBranch(named name: String,
                            target: String) throws -> LocalBranch?
   {
@@ -223,21 +233,13 @@ extension XTRepository: Branching
   
   public func localBranch(tracking remoteBranch: RemoteBranch) -> LocalBranch?
   {
-    return localBranches().first {
-      $0.trackingBranchName == remoteBranch.name
-    }
-  }
-}
-
-extension XTRepository: BranchListing
-{
-  public func localBranches() -> BranchSequence<GitLocalBranch>
-  {
-    return BranchSequence(repo: self, type: GIT_BRANCH_LOCAL)
+    return localTrackingBranch(forBranchRef: remoteBranch.name)
   }
   
-  public func remoteBranches() -> BranchSequence<GitRemoteBranch>
+  public func localTrackingBranch(forBranchRef branch: String) -> LocalBranch?
   {
-    return BranchSequence(repo: self, type: GIT_BRANCH_REMOTE)
+    return localBranches.first {
+      $0.trackingBranchName == branch
+    }
   }
 }

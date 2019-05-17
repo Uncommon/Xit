@@ -10,13 +10,6 @@ class SideBarDataSource: NSObject
     static let reloadDelay: TimeInterval = 1
   }
   
-  enum TrackingBranchStatus
-  {
-    case none            /// No tracking branch set
-    case missing(String) /// References a non-existent branch
-    case set(String)     /// References a real branch
-  }
-  
   private struct ExpansionCache
   {
     let localBranches, remoteBranches, tags: [String]
@@ -42,9 +35,9 @@ class SideBarDataSource: NSObject
   
   let observers = ObserverCollection()
   
-  weak var repository: XTRepository!
+  weak var repository: SidebarDataModel.Repository!
   {
-    get { return model.repository }
+    get { return model?.repository }
     set
     {
       guard let repo = newValue
@@ -302,7 +295,7 @@ class SideBarDataSource: NSObject
     
     let newRoots = model.makeRoots()
     let branchesGroup = newRoots[XTGroupIndex.branches.rawValue]
-    let localBranches = repo.localBranches().sorted { $0.name <~ $1.name }
+    let localBranches = repo.localBranches.sorted { $0.name <~ $1.name }
     
     for branch in localBranches {
       guard let sha = branch.oid?.sha,
@@ -319,7 +312,7 @@ class SideBarDataSource: NSObject
     
     let remoteItems = repo.remoteNames().map {
           RemoteSidebarItem(title: $0, repository: repo) }
-    let remoteBranches = repo.remoteBranches().sorted { $0.name <~ $1.name }
+    let remoteBranches = repo.remoteBranches.sorted { $0.name <~ $1.name }
 
 
     for branch in remoteBranches {
@@ -428,7 +421,7 @@ class SideBarDataSource: NSObject
   func stopTimers()
   {
     buildStatusTimer?.invalidate()
-    pullRequestManager.stopCacheRefresh()
+    pullRequestManager?.stopCacheRefresh()
     reloadTimer?.invalidate()
   }
   

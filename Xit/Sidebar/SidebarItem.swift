@@ -230,7 +230,7 @@ class RemoteSidebarItem: SidebarItem
   override var editable: Bool { return true }
   override var refType: RefType { return .remote }
   
-  init(title: String, repository: XTRepository)
+  init(title: String, repository: RemoteManagement)
   {
     self.remote = repository.remote(named: title)
     

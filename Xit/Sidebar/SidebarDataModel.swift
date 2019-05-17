@@ -2,8 +2,12 @@ import Foundation
 
 class SidebarDataModel
 {
-  private(set) weak var repository: XTRepository?
-  let outline: NSOutlineView
+  typealias Repository = FileChangesRepo & Branching & RemoteManagement &
+                         SubmoduleManagement & Stashing & TaskManagement &
+                         CommitStorage
+  
+  private(set) weak var repository: Repository?
+  private(set) weak var outline: NSOutlineView?
   var roots: [SideBarGroupItem] = []
 
   var stagingItem: SidebarItem { return roots[0].children[0] }
@@ -20,7 +24,7 @@ class SidebarDataModel
     return roots
   }
   
-  init(repository: XTRepository, outlineView: NSOutlineView)
+  init(repository: Repository, outlineView: NSOutlineView?)
   {
     self.repository = repository
     self.outline = outlineView
@@ -46,5 +50,27 @@ class SidebarDataModel
     let group = roots[group.rawValue]
     
     return group.child(matching: name)
+  }
+  
+  /// Returns the name of the remote for either a remote branch or a local
+  /// tracking branch.
+  func remoteName(forBranchItem branchItem: SidebarItem) -> String?
+  {
+    guard let repo = repository
+    else { return nil }
+    
+    if let remoteBranchItem = branchItem as? RemoteBranchSidebarItem {
+      return remoteBranchItem.remoteName
+    }
+    else if let localBranchItem = branchItem as? LocalBranchSidebarItem {
+      guard let branch = repo.localBranch(named: localBranchItem.title)
+      else {
+        NSLog("Can't get branch for branch item: \(branchItem.title)")
+        return nil
+      }
+      
+      return branch.trackingBranch?.remoteName
+    }
+    return nil
   }
 }

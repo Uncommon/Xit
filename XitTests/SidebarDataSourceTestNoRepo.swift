@@ -5,7 +5,7 @@ import XCTest
 
 class SidebarDataSourceTestNoRepo: XCTestCase
 {
-  class FakeRepo: FakeFileChangesRepo, RemoteManagement
+  class FakeRepo: FakeFileChangesRepo, TaskManagement
   {
     let localBranch1 = FakeLocalBranch(name: "branch1")
     let localBranch2 = FakeLocalBranch(name: "branch2")
@@ -14,6 +14,9 @@ class SidebarDataSourceTestNoRepo: XCTestCase
     
     let remote1 = FakeRemote()
     let remote2 = FakeRemote()
+    
+    let queue = TaskQueue(id: "test")
+    var isWriting: Bool { return false }
     
     override init()
     {
@@ -44,27 +47,14 @@ class SidebarDataSourceTestNoRepo: XCTestCase
           return nil
       }
     }
-    
-    func remoteNames() -> [String] { return ["origin1", "origin2" ]}
-
-    func remote(named name: String) -> Remote?
-    {
-      switch name {
-        case "remote1": return remote1
-        case "remote2": return remote2
-        default: return nil
-      }
-    }
-
-    func addRemote(named name: String, url: URL) throws {}
-    func deleteRemote(named name: String) throws {}
   }
   
   func testPullRequestForBranch()
   {
     let sbds = SideBarDataSource()
     let fakeRepo = FakeRepo()
-    // sbds.repository isn't used in this test
+    
+    sbds.repository = fakeRepo
 
     let service = FakePRService()
     let matchPR = FakePullRequest(
@@ -83,9 +73,14 @@ class SidebarDataSourceTestNoRepo: XCTestCase
           displayName: "PR2", id: "2",
           authorName: "Man2", status: .open,
           webURL: URL(string: "https://example.com/repo2"))
+    guard let prManager = sbds.pullRequestManager
+    else {
+      XCTFail("No pull request manager")
+      return
+    }
     
-    sbds.pullRequestCache = PullRequestCache(repository: fakeRepo)
-    sbds.pullRequestCache.requests = [matchPR, otherPR]
+    prManager.pullRequestCache = PullRequestCache(repository: fakeRepo)
+    prManager.pullRequestCache.requests = [matchPR, otherPR]
     
     let commit1 = FakeCommit(parentOIDs: [], message: "", authorSig: nil,
                              committerSig: nil, email: nil, tree: nil,
@@ -94,6 +89,73 @@ class SidebarDataSourceTestNoRepo: XCTestCase
     let branch1Item = LocalBranchSidebarItem(title: "branch1",
                                              selection: branch1Selection)
     
-    XCTAssertEqual(sbds.pullRequest(for: branch1Item)?.id, matchPR.id)
+    XCTAssertEqual(prManager.pullRequest(for: branch1Item)?.id, matchPR.id)
   }
+}
+
+extension SidebarDataSourceTestNoRepo.FakeRepo: Branching
+{
+  var localBranches: AnySequence<LocalBranch>
+  {
+    let array: [LocalBranch] = [localBranch1, localBranch2]
+    return AnySequence(array)
+  }
+  
+  var remoteBranches: AnySequence<RemoteBranch>
+  {
+    let array: [RemoteBranch] = [remoteBranch1, remoteBranch2]
+    return AnySequence(array)
+  }
+  
+  func createBranch(named name: String, target: String) throws -> LocalBranch?
+  { return nil }
+  func remoteBranch(named name: String) -> RemoteBranch?
+  { return nil }
+  func localBranch(tracking remoteBranch: RemoteBranch) -> LocalBranch?
+  { return nil }
+  func localTrackingBranch(forBranchRef branch: String) -> LocalBranch?
+  { return nil }
+}
+
+extension SidebarDataSourceTestNoRepo.FakeRepo: CommitStorage
+{
+  func oid(forSHA sha: String) -> OID? { return nil }
+  func commit(forSHA sha: String) -> Commit? { return nil }
+  func commit(forOID oid: OID) -> Commit? { return nil }
+  func walker() -> RevWalk? { return nil }
+}
+
+extension SidebarDataSourceTestNoRepo.FakeRepo: Stashing
+{
+  var stashes: AnyCollection<Stash> { return AnyCollection([]) }
+  func stash(index: UInt, message: String?) -> Stash { return FakeStash() }
+  func popStash(index: UInt) throws {}
+  func applyStash(index: UInt) throws {}
+  func dropStash(index: UInt) throws {}
+  func commitForStash(at index: UInt) -> Commit? { return nil }
+  func saveStash(name: String?, keepIndex: Bool,
+                 includeUntracked: Bool, includeIgnored: Bool) throws {}
+}
+
+extension SidebarDataSourceTestNoRepo.FakeRepo: SubmoduleManagement
+{
+  func submodules() -> [Submodule] { return [] }
+  func addSubmodule(path: String, url: String) throws {}
+}
+
+extension SidebarDataSourceTestNoRepo.FakeRepo: RemoteManagement
+{
+  func remoteNames() -> [String] { return ["origin1", "origin2" ]}
+  
+  func remote(named name: String) -> Remote?
+  {
+    switch name {
+    case "remote1": return remote1
+    case "remote2": return remote2
+    default: return nil
+    }
+  }
+  
+  func addRemote(named name: String, url: URL) throws {}
+  func deleteRemote(named name: String) throws {}
 }

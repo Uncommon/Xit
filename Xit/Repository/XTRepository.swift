@@ -10,17 +10,19 @@ let XTPathsKey = "paths"
 let XTErrorOutputKey = "output"
 let XTErrorArgsKey = "args"
 
-public class XTRepository: NSObject
+public class XTRepository: NSObject, TaskManagement
 {
   private(set) var gtRepo: GTRepository
   @objc public let repoURL: URL
   let gitCMD: String
-  @objc let queue: TaskQueue
   let mutex = Mutex()
   var refsIndex = [String: [String]]()
-  fileprivate(set) var isWriting = false
   fileprivate var executing = false
   
+  // TaskManagement
+  @objc public let queue: TaskQueue
+  fileprivate(set) public var isWriting = false
+
   fileprivate(set) var cachedHeadRef, cachedHeadSHA, cachedBranch: String?
   private var _cachedStagedChanges, _cachedAmendChanges,
               _cachedUnstagedChanges: [FileChange]?

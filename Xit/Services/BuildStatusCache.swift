@@ -11,9 +11,7 @@ class BuildStatusCache: TeamCityAccessor
   typealias BranchStatuses = [String: TeamCityAPI.Build] // Branch to build
 
   weak var remoteMgr: RemoteManagement!
-  // Eventually use BranchListing instead of XTRepository once the
-  // associatedtypes are gone.
-  weak var branchLister: XTRepository?
+  weak var branchLister: Branching?
   var statuses = [String: BranchStatuses]() // Build type to branch builds
   private var clients = [WeakClientRef]()
   
@@ -27,7 +25,7 @@ class BuildStatusCache: TeamCityAccessor
     }
   }
   
-  init(branchLister: XTRepository, remoteMgr: RemoteManagement)
+  init(branchLister: Branching, remoteMgr: RemoteManagement)
   {
     self.remoteMgr = remoteMgr
     self.branchLister = branchLister
@@ -47,7 +45,7 @@ class BuildStatusCache: TeamCityAccessor
   
   func refresh()
   {
-    guard let localBranches = branchLister?.localBranches()
+    guard let localBranches = branchLister?.localBranches
     else { return }
     
     statuses.removeAll()

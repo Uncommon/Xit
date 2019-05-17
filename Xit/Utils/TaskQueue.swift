@@ -1,6 +1,6 @@
 import Foundation
 
-class TaskQueue: NSObject
+public class TaskQueue: NSObject
 {
   @objc let queue: DispatchQueue
   let group = DispatchGroup()

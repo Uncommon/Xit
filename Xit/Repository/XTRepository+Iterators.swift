@@ -2,27 +2,13 @@ import Foundation
 
 extension XTRepository
 {
-  /// Branches is a sequence, not a collection, because the API does not provide
-  /// a count or indexed access.
-  public struct BranchSequence<BranchType: GitBranch>: Sequence
-  {
-    public typealias Element = BranchType
-    
-    let repo: XTRepository
-    let type: git_branch_t
-    
-    public func makeIterator() -> BranchIterator<BranchType>
-    {
-      return BranchIterator<BranchType>(repo: repo, flags: type)
-    }
-  }
-
-  public class BranchIterator<BranchType: GitBranch>: IteratorProtocol
+  /// Abstract base class for specific iterators
+  public class BranchIterator
   {
     let repo: XTRepository
     let iterator: OpaquePointer?
     
-    init(repo: XTRepository, flags: git_branch_t)
+    fileprivate init(repo: XTRepository, flags: git_branch_t)
     {
       var result: OpaquePointer?
       
@@ -35,7 +21,7 @@ extension XTRepository
       self.repo = repo
     }
     
-    public func next() -> BranchType?
+    fileprivate func nextBranch() -> OpaquePointer?
     {
       guard let iterator = self.iterator
       else { return nil }
@@ -46,15 +32,43 @@ extension XTRepository
             let finalRef = ref
       else { return nil }
       
-      return BranchType(branch: finalRef)
+      return finalRef
     }
-    
+
     deinit
     {
       git_branch_iterator_free(iterator)
     }
   }
-
+  
+  /// Iterator for all local branches.
+  public class LocalBranchIterator: BranchIterator, IteratorProtocol
+  {
+    init(repo: XTRepository)
+    {
+      super.init(repo: repo, flags: GIT_BRANCH_LOCAL)
+    }
+    
+    public func next() -> LocalBranch?
+    {
+      return nextBranch().map { GitLocalBranch(branch: $0) }
+    }
+  }
+  
+  /// Iterator for all remote branches.
+  public class RemoteBranchIterator: BranchIterator, IteratorProtocol
+  {
+    init(repo: XTRepository)
+    {
+      super.init(repo: repo, flags: GIT_BRANCH_REMOTE)
+    }
+    
+    public func next() -> RemoteBranch?
+    {
+      return nextBranch().map { GitRemoteBranch(branch: $0) }
+    }
+  }
+  
   /// The indexable collection of stashes in the repository.
   public class StashCollection: Collection
   {

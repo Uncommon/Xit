@@ -3,8 +3,13 @@ import Foundation
 public typealias Repository =
     Branching & CommitStorage & CommitReferencing & FileDiffing & FileContents &
     FileStaging & FileStatusDetection & RemoteManagement & Stashing &
-    SubmoduleManagement & Tagging & Workspace
-    // BranchListing (associated types)
+    SubmoduleManagement & Tagging & TaskManagement & Workspace
+
+public protocol TaskManagement
+{
+  var queue: TaskQueue { get }
+  var isWriting: Bool { get }
+}
 
 public protocol CommitStorage: AnyObject
 {
@@ -30,30 +35,14 @@ public protocol CommitReferencing: AnyObject
   
   func reference(named name: String) -> Reference?
   func refs(at sha: String) -> [String]
+  
+  func rebuildRefsIndex()
 }
 
 extension CommitReferencing
 {
-  var headReference: Reference?
-  {
-    return reference(named: "HEAD")
-  }
-}
-
-extension CommitReferencing
-{
+  var headReference: Reference? { return reference(named: "HEAD") }
   var headSHA: String? { return headRef.flatMap { self.sha(forRef: $0) } }
-}
-
-public protocol BranchListing: AnyObject
-{
-  associatedtype LocalBranchSequence: Sequence
-      where LocalBranchSequence.Iterator.Element: LocalBranch
-  associatedtype RemoteBranchSequence: Sequence
-      where RemoteBranchSequence.Iterator.Element: RemoteBranch
-
-  func localBranches() -> LocalBranchSequence
-  func remoteBranches() -> RemoteBranchSequence
 }
 
 public protocol FileStatusDetection: AnyObject
@@ -166,11 +155,41 @@ public protocol SubmoduleManagement: AnyObject
 public protocol Branching: AnyObject
 {
   var currentBranch: String? { get }
+  var localBranches: AnySequence<LocalBranch> { get }
+  var remoteBranches: AnySequence<RemoteBranch> { get }
+  
   
   func createBranch(named name: String, target: String) throws -> LocalBranch?
   func localBranch(named name: String) -> LocalBranch?
   func remoteBranch(named name: String) -> RemoteBranch?
   func localBranch(tracking remoteBranch: RemoteBranch) -> LocalBranch?
+  func localTrackingBranch(forBranchRef branch: String) -> LocalBranch?
+}
+
+enum TrackingBranchStatus
+{
+  /// No tracking branch set
+  case none
+  /// References a non-existent branch
+  case missing(String)
+  /// References a real branch
+  case set(String)
+}
+
+extension Branching
+{
+  func trackingBranchStatus(for branch: String) -> TrackingBranchStatus
+  {
+    if let localBranch = localBranch(named: branch),
+       let trackingBranchName = localBranch.trackingBranchName {
+      return remoteBranch(named: trackingBranchName) == nil
+          ? .missing(trackingBranchName)
+          : .set(trackingBranchName)
+    }
+    else {
+      return .none
+    }
+  }
 }
 
 public protocol Tagging: AnyObject

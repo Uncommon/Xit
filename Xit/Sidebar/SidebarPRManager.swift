@@ -5,7 +5,7 @@ class SidebarPRManager
   let refreshInterval: TimeInterval = 5 * .minutes
   
   let model: SidebarDataModel
-  let pullRequestCache: PullRequestCache
+  var pullRequestCache: PullRequestCache  // not `let` for testability
   var refreshTimer: Timer?
 
   init(model: SidebarDataModel)
@@ -172,7 +172,7 @@ extension SidebarPRManager: PullRequestClient
         guard let item = self.remoteItem(for: request)
         else { continue }
         
-        self.model.outline.reloadItem(item)
+        self.model.outline?.reloadItem(item)
       }
     }
   }
@@ -233,7 +233,7 @@ extension SidebarPRManager: PullRequestActionDelegate
   
   private func prActionFailed(item: SidebarItem, error: Error)
   {
-    guard let window = model.outline.window
+    guard let window = model.outline?.window
     else { return }
     let alert = NSAlert()
     

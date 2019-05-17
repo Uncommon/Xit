@@ -104,8 +104,9 @@ extension SideBarDataSource: NSOutlineViewDelegate
       return headerView
     }
     else {
-      guard let dataView = outlineView.makeView(
-          withIdentifier: CellID.data, owner: nil) as? SidebarTableCellView
+      guard let dataView = outlineView.makeView(withIdentifier: CellID.data,
+                                                owner: nil)
+                           as? SidebarTableCellView
       else { return nil }
       
       let textField = dataView.textField!
@@ -128,8 +129,7 @@ extension SideBarDataSource: NSOutlineViewDelegate
       dataView.buttonContainer.isHidden = dataView.statusButton.image == nil
       if sideBarItem.editable {
         textField.target = viewController
-        textField.action =
-            #selector(SidebarController.sidebarItemRenamed(_:))
+        textField.action = #selector(SidebarController.sidebarItemRenamed(_:))
       }
       
       let fontSize = textField.font?.pointSize ?? 12
@@ -152,7 +152,7 @@ extension SideBarDataSource: NSOutlineViewDelegate
     else { return nil }
     
     return outline.view(atColumn: 0, row: row, makeIfNecessary: false)
-        as? SidebarTableCellView
+           as? SidebarTableCellView
   }
     
   func updateStatusImage(item: SidebarItem, cell: SidebarTableCellView?)
@@ -188,7 +188,7 @@ extension SideBarDataSource: NSOutlineViewDelegate
       dataView.statusText.isHidden = false
     }
     else if dataView.statusButton.image == nil {
-      switch trackingBranchStatus(for: sideBarItem.title) {
+      switch repository.trackingBranchStatus(for: sideBarItem.title) {
         case .none:
           break
         case .missing(let tracking):
