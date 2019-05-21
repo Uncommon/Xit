@@ -196,14 +196,14 @@ extension SidebarController
   @IBAction
   func showItemStatus(_ sender: NSButton)
   {
-    guard let item = item(for: sender) as? BranchSidebarItem,
+    guard let item = SidebarTableCellView.item(for: sender) as? BranchSidebarItem,
           let branch = item.branchObject()
     else { return }
     
     let statusController = BuildStatusViewController(
           repository: repo,
           branch: branch,
-          cache: sidebarDS.buildStatusCache)
+          cache: sidebarDS.buildStatusController.buildStatusCache)
     let popover = NSPopover()
     
     statusPopover = popover
@@ -216,7 +216,8 @@ extension SidebarController
   @IBAction
   func missingTrackingBranch(_ sender: NSButton)
   {
-    guard let item = item(for: sender) as? LocalBranchSidebarItem
+    guard let item = SidebarTableCellView.item(for: sender)
+                     as? LocalBranchSidebarItem
     else { return }
     
     let alert = NSAlert()
@@ -258,19 +259,5 @@ extension SidebarController
       NSDocumentController.shared.openDocument(
       withContentsOf: subURL, display: true) { (_, _, _) in }
     }
-  }
-
-  private func item(for button: NSButton) -> SidebarItem?
-  {
-    var superview = button.superview
-    
-    while superview != nil {
-      if let cellView = superview as? SidebarTableCellView {
-        return cellView.item
-      }
-      superview = superview?.superview
-    }
-    
-    return nil
   }
 }

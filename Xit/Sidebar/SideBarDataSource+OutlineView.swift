@@ -160,7 +160,7 @@ extension SideBarDataSource: NSOutlineViewDelegate
     guard let cell = cell ?? self.cell(forItem: item)
     else { return }
     
-    if let image = statusImage(for: item),
+    if let image = buildStatusController.statusImage(for: item),
        let button = cell.statusButton {
       button.image = image
       if let localBranchItem = item as? LocalBranchSidebarItem,
@@ -251,6 +251,14 @@ extension SideBarDataSource: NSOutlineViewDelegate
     else {
       return nil
     }
+  }
+}
+
+extension SideBarDataSource: BuildStatusDisplay
+{
+  func updateStatusImage(item: SidebarItem)
+  {
+    updateStatusImage(item: item, cell: nil)
   }
 }
 

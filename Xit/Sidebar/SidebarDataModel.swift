@@ -2,10 +2,12 @@ import Foundation
 
 class SidebarDataModel
 {
-  typealias Repository = FileChangesRepo & Branching & RemoteManagement &
-                         SubmoduleManagement & Stashing & TaskManagement &
-                         CommitStorage
-  
+  typealias Repository = FileChangesRepo & // For creating selection objects
+                         CommitStorage & // also for selections
+                         Branching & RemoteManagement &
+                         SubmoduleManagement & Stashing &
+                         TaskManagement // For loading off the main thread
+
   private(set) weak var repository: Repository?
   private(set) weak var outline: NSOutlineView?
   var roots: [SideBarGroupItem] = []

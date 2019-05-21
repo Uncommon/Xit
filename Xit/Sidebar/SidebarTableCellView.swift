@@ -43,4 +43,18 @@ class SidebarTableCellView: NSTableCellView
   {
     prDelegate?.prNeedsWork(item: item!)
   }
+
+  static func item(for button: NSButton) -> SidebarItem?
+  {
+    var superview = button.superview
+    
+    while superview != nil {
+      if let cellView = superview as? SidebarTableCellView {
+        return cellView.item
+      }
+      superview = superview?.superview
+    }
+    
+    return nil
+  }
 }

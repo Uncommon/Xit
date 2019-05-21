@@ -20,15 +20,8 @@ class SideBarDataSource: NSObject
   
   private(set) var model: SidebarDataModel! = nil
   private(set) var pullRequestManager: SidebarPRManager! = nil
+  private(set) var buildStatusController: BuildStatusController! = nil
   var stagingItem: SidebarItem { return model.stagingItem }
-  
-  var buildStatusCache: BuildStatusCache!
-  {
-    didSet
-    {
-      buildStatusCache.add(client: self)
-    }
-  }
   
   var buildStatusTimer: Timer?
   var reloadTimer: Timer?
@@ -45,10 +38,14 @@ class SideBarDataSource: NSObject
       
       model = SidebarDataModel(repository: repo, outlineView: outline)
       pullRequestManager = SidebarPRManager(model: model)
+      buildStatusController = BuildStatusController(model: model, display: self)
       
       stagingItem.selection = StagingSelection(repository: repo)
-      buildStatusCache = BuildStatusCache(branchLister: repo, remoteMgr: repo)
       
+      if Services.shared.allServices
+                 .contains(where: { $0 is PullRequestService }) {
+        pullRequestManager.scheduleCacheRefresh()
+      }
       observers.addObserver(forName: .XTRepositoryRefsChanged,
                             object: repo, queue: .main) {
         [weak self] (_) in
@@ -112,26 +109,6 @@ class SideBarDataSource: NSObject
     stagingItem.selection = amending ? AmendingSelection(repository: repository)
                                      : StagingSelection(repository: repository)
     outline.reloadItem(stagingItem)
-  }
-  
-  open override func awakeFromNib()
-  {
-    if !AccountsManager.manager.accounts(ofType: .teamCity).isEmpty {
-      buildStatusTimer = Timer.scheduledTimer(
-          withTimeInterval: Intervals.teamCityRefresh, repeats: true) {
-        [weak self] _ in
-        self?.buildStatusCache.refresh()
-      }
-    }
-    if Services.shared.allServices.contains(where: { $0 is PullRequestService }) {
-      pullRequestManager.scheduleCacheRefresh()
-    }
-    observers.addObserver(forName: .XTTeamCityStatusChanged,
-                          object: nil,
-                          queue: .main) {
-      [weak self] _ in
-      self?.buildStatusCache.refresh()
-    }
   }
   
   private func expandedChildNames(of item: SidebarItem) -> [String]
@@ -355,7 +332,7 @@ class SideBarDataSource: NSObject
     repo.rebuildRefsIndex()
     DispatchQueue.main.async {
       [weak self] in
-      self?.buildStatusCache.refresh()
+      self?.buildStatusController.buildStatusCache.refresh()
       self?.pullRequestManager.pullRequestCache.refresh()
     }
     return newRoots
