@@ -18,34 +18,15 @@ class SideBarDataSource: NSObject
   @IBOutlet weak var viewController: SidebarController!
   @IBOutlet weak var outline: NSOutlineView!
   
-  private(set) var model: SidebarDataModel! = nil
-  private(set) var pullRequestManager: SidebarPRManager! = nil
-  private(set) var buildStatusController: BuildStatusController! = nil
-  var stagingItem: SidebarItem { return model.stagingItem }
-  
-  var buildStatusTimer: Timer?
-  var reloadTimer: Timer?
-  
-  let observers = ObserverCollection()
-  
-  weak var repository: SidebarDataModel.Repository!
+  weak var model: SidebarDataModel! = nil
   {
-    get { return model?.repository }
-    set
+    didSet
     {
-      guard let repo = newValue
+      guard let repo = model.repository
       else { return }
-      
-      model = SidebarDataModel(repository: repo, outlineView: outline)
-      pullRequestManager = SidebarPRManager(model: model)
-      buildStatusController = BuildStatusController(model: model, display: self)
       
       stagingItem.selection = StagingSelection(repository: repo)
       
-      if Services.shared.allServices
-                 .contains(where: { $0 is PullRequestService }) {
-        pullRequestManager.scheduleCacheRefresh()
-      }
       observers.addObserver(forName: .XTRepositoryRefsChanged,
                             object: repo, queue: .main) {
         [weak self] (_) in
@@ -72,32 +53,14 @@ class SideBarDataSource: NSObject
       reload()
     }
   }
-
-  var selectedItem: SidebarItem?
-  {
-    get
-    {
-      let row = outline.selectedRow
-      
-      return row >= 0 ? outline.item(atRow: row) as? SidebarItem : nil
-    }
-    set
-    {
-      guard let controller = outline!.window?.windowController
-                             as? RepositoryController,
-            let item = newValue
-      else { return }
-      
-      let row = outline.row(forItem: item)
-      
-      if row >= 0 {
-        outline.selectRowIndexes(IndexSet(integer: row),
-                                 byExtendingSelection: false)
-        
-        item.selection.map { controller.selection = $0 }
-      }
-    }
-  }
+  var stagingItem: SidebarItem { return model.stagingItem }
+  
+  var reloadTimer: Timer?
+  
+  let observers = ObserverCollection()
+  
+  var repository: SidebarDataModel.Repository!
+  { return model?.repository }
   
   deinit
   {
@@ -330,11 +293,7 @@ class SideBarDataSource: NSObject
     newRoots[XTGroupIndex.submodules.rawValue].children = submoduleItems
     
     repo.rebuildRefsIndex()
-    DispatchQueue.main.async {
-      [weak self] in
-      self?.buildStatusController.buildStatusCache.refresh()
-      self?.pullRequestManager.pullRequestCache.refresh()
-    }
+    viewController.reloadFinished()
     return newRoots
   }
   
@@ -381,11 +340,11 @@ class SideBarDataSource: NSObject
     _ = selectCurrentBranch(in: model.rootItem(.branches))
   }
   
-  func selectCurrentBranch(in parent: SidebarItem) -> Bool
+  private func selectCurrentBranch(in parent: SidebarItem) -> Bool
   {
     for item in parent.children {
       if item.current {
-        selectedItem = item
+        viewController.selectedItem = item
         return true
       }
       if selectCurrentBranch(in: item) {
@@ -397,8 +356,6 @@ class SideBarDataSource: NSObject
   
   func stopTimers()
   {
-    buildStatusTimer?.invalidate()
-    pullRequestManager?.stopCacheRefresh()
     reloadTimer?.invalidate()
   }
   
@@ -412,39 +369,51 @@ class SideBarDataSource: NSObject
                                          repeats: false) {
         [weak self] _ in
         DispatchQueue.main.async {
-          guard let sidebarDS = self,
-                let outline = sidebarDS.outline
+          guard let self = self,
+                let outline = self.outline
           else { return }
-          let savedSelection = sidebarDS.selectedItem
+          let savedSelection = self.viewController.selectedItem
           
           outline.reloadData()
           if savedSelection != nil {
-            sidebarDS.selectedItem = savedSelection
+            self.viewController.selectedItem = savedSelection
           }
         }
         self?.reloadTimer = nil
       }
     }
   }
-  
-  func graphText(for item: SidebarItem) -> String?
-  {
-    guard let repository = self.repository,
-          item is LocalBranchSidebarItem,
-          let localBranch = repository.localBranch(named: item.title),
-          let trackingBranch = localBranch.trackingBranch,
-          let graph = repository.graphBetween(localBranch: localBranch,
-                                              upstreamBranch: trackingBranch)
-    else { return nil }
+}
 
-    var numbers = [String]()
+extension SideBarDataSource: NSOutlineViewDataSource
+{
+  public func outlineView(_ outlineView: NSOutlineView,
+                          numberOfChildrenOfItem item: Any?) -> Int
+  {
+    if item == nil {
+      return model?.roots.count ?? 0
+    }
+    return (item as? SidebarItem)?.children.count ?? 0
+  }
+  
+  public func outlineView(_ outlineView: NSOutlineView,
+                          isItemExpandable item: Any) -> Bool
+  {
+    return (item as? SidebarItem)?.expandable ?? false
+  }
+  
+  public func outlineView(_ outlineView: NSOutlineView,
+                          child index: Int,
+                          ofItem item: Any?) -> Any
+  {
+    if item == nil {
+      return model.roots[index]
+    }
     
-    if graph.ahead > 0 {
-      numbers.append("↑\(graph.ahead)")
-    }
-    if graph.behind > 0 {
-      numbers.append("↓\(graph.behind)")
-    }
-    return numbers.isEmpty ? nil : numbers.joined(separator: " ")
+    guard let sidebarItem = item as? SidebarItem,
+          sidebarItem.children.count > index
+    else { return SidebarItem(title: "") }
+    
+    return sidebarItem.children[index]
   }
 }

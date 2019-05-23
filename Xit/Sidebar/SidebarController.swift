@@ -160,6 +160,7 @@ class SidebarController: NSViewController, SidebarHandler
 {
   @IBOutlet weak var sidebarOutline: SideBarOutlineView!
   @IBOutlet weak var sidebarDS: SideBarDataSource!
+  @IBOutlet weak var sidebarDelegate: SidebarDelegate!
   
   @IBOutlet var branchContextMenu: NSMenu!
   @IBOutlet var remoteBranchContextMenu: NSMenu!
@@ -168,11 +169,28 @@ class SidebarController: NSViewController, SidebarHandler
   @IBOutlet var stashContextMenu: NSMenu!
   @IBOutlet var submoduleContextMenu: NSMenu!
   
+  private(set) var model: SidebarDataModel!
+  private(set) var pullRequestManager: SidebarPRManager! = nil
+  private(set) var buildStatusController: BuildStatusController! = nil
+
   weak var repo: XTRepository!
   {
     didSet
     {
-      sidebarDS.repository = repo
+      model = SidebarDataModel(repository: repo, outlineView: sidebarOutline)
+      pullRequestManager = SidebarPRManager(model: model)
+      buildStatusController = BuildStatusController(model: model,
+                                                    display: sidebarDelegate)
+      if Services.shared.allServices
+                 .contains(where: { $0 is PullRequestService }) {
+        pullRequestManager.scheduleCacheRefresh()
+      }
+      
+      sidebarDS.model = model
+      sidebarDelegate.model = model
+      sidebarDelegate.pullRequestManager = pullRequestManager
+      sidebarDelegate.buildStatusController = buildStatusController
+
       observers.addObserver(forName: .XTRepositoryIndexChanged,
                             object: repo, queue: .main) {
         [weak self] (_) in
@@ -191,10 +209,36 @@ class SidebarController: NSViewController, SidebarHandler
   var amendingObserver: NSKeyValueObservation?
   var statusPopover: NSPopover?
 
+  var selectedItem: SidebarItem?
+  {
+    get
+    {
+      let row = sidebarOutline.selectedRow
+      
+      return row >= 0 ? sidebarOutline.item(atRow: row) as? SidebarItem : nil
+    }
+    set
+    {
+      guard let controller = window?.windowController as? RepositoryController,
+            let item = newValue
+      else { return }
+      
+      let row = sidebarOutline.row(forItem: item)
+      
+      if row >= 0 {
+        sidebarOutline.selectRowIndexes(IndexSet(integer: row),
+                                        byExtendingSelection: false)
+        
+        item.selection.map { controller.selection = $0 }
+      }
+    }
+  }
+
   deinit
   {
     // The timers contain references to the ds object and repository.
     sidebarDS?.stopTimers()
+    pullRequestManager?.stopCacheRefresh()
   }
   
   override func viewDidLoad()
@@ -225,10 +269,10 @@ class SidebarController: NSViewController, SidebarHandler
   
   func selectedModelChanged()
   {
-    let repoController = view.window!.windowController as! XTWindowController
+    let repoController = view.window!.windowController as! RepositoryController
 
-    if let selectedItem = sidebarOutline.item(atRow: sidebarOutline.selectedRow) {
-      guard (selectedItem as? SidebarItem)?.selection?.shaToSelect !=
+    if let selectedItem = self.selectedItem {
+      guard selectedItem.selection?.shaToSelect !=
             repoController.selection?.shaToSelect
       else {
         return
@@ -263,6 +307,15 @@ class SidebarController: NSViewController, SidebarHandler
   func reload()
   {
     sidebarDS.reload()
+  }
+  
+  func reloadFinished()
+  {
+    DispatchQueue.main.async {
+      [weak self] in
+      self?.buildStatusController.buildStatusCache.refresh()
+      self?.pullRequestManager.pullRequestCache.refresh()
+    }
   }
   
   func selectedBranch() -> String?

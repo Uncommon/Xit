@@ -221,7 +221,7 @@
                                                 <action trigger="doubleAction" selector="doubleClick:" target="aFR-LL-LwM" id="waa-sQ-ozB"/>
                                                 <outlet property="controller" destination="aFR-LL-LwM" id="VJl-gi-oZA"/>
                                                 <outlet property="dataSource" destination="oB7-gc-1Gq" id="x98-VY-qkx"/>
-                                                <outlet property="delegate" destination="oB7-gc-1Gq" id="RBE-h6-SZW"/>
+                                                <outlet property="delegate" destination="2sq-Kn-kRX" id="T6Y-up-vlP"/>
                                             </connections>
                                         </outlineView>
                                     </subviews>
@@ -280,8 +280,15 @@
         <customObject id="aFR-LL-LwM" customClass="SidebarController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="sidebarDS" destination="oB7-gc-1Gq" id="4eO-bD-hf3"/>
+                <outlet property="sidebarDelegate" destination="2sq-Kn-kRX" id="qNW-ba-KbA"/>
                 <outlet property="sidebarOutline" destination="lxI-HL-izL" id="D0g-cK-gKS"/>
                 <outlet property="view" destination="lxI-HL-izL" id="9JG-fo-qrR"/>
+            </connections>
+        </customObject>
+        <customObject id="2sq-Kn-kRX" customClass="SidebarDelegate" customModule="Xit" customModuleProvider="target">
+            <connections>
+                <outlet property="controller" destination="aFR-LL-LwM" id="CnT-Ns-2IO"/>
+                <outlet property="outline" destination="lxI-HL-izL" id="s2X-Qk-nHz"/>
             </connections>
         </customObject>
         <customObject id="oB7-gc-1Gq" customClass="SideBarDataSource" customModule="Xit" customModuleProvider="target">

@@ -25,6 +25,7 @@ class BuildStatusController: NSObject
     
     super.init()
     
+    buildStatusCache.add(client: self)
     statusObserver = NotificationCenter.default.addObserver(
         forName: .XTTeamCityStatusChanged, object: nil, queue: .main) {
       [weak self] _ in
@@ -62,45 +63,7 @@ class BuildStatusController: NSObject
     popover.delegate = self
     popover.show(relativeTo: sender.bounds, of: sender, preferredEdge: .maxY)
   }
-}
 
-extension BuildStatusController: BuildStatusClient
-{
-  func buildStatusUpdated(branch: String, buildType: String)
-  {
-    updateBranches(model.rootItem(.branches).children)
-    for remoteItem in model.rootItem(.remotes).children {
-      updateBranches(remoteItem.children)
-    }
-  }
-  
-  private func updateBranches(_ branchItems: [SidebarItem])
-  {
-    for item in branchItems {
-      switch item {
-      case is BranchSidebarItem:
-        display?.updateStatusImage(item: item)
-      case is BranchFolderSidebarItem:
-        updateBranches(item.children)
-      default:
-        break
-      }
-    }
-  }
-}
-
-extension BuildStatusController: NSPopoverDelegate
-{
-  func popoverDidClose(_ notification: Notification)
-  {
-    popover = nil
-  }
-}
-
-extension BuildStatusController: TeamCityAccessor
-{
-  var remoteMgr: RemoteManagement! { return model.repository }
-  
   func statusImage(for item: SidebarItem) -> NSImage?
   {
     guard let branchItem = item as? BranchSidebarItem,
@@ -125,12 +88,54 @@ extension BuildStatusController: TeamCityAccessor
       }
     }
     
-    if let success = overallSuccess {
-      return NSImage(named: success ? NSImage.statusAvailableName
-                                    : NSImage.statusUnavailableName)
+    var imageName: String
+    
+    switch overallSuccess {
+      case nil:
+        imageName = NSImage.statusNoneName
+      case true?:
+        imageName = NSImage.statusAvailableName
+      case false?:
+        imageName = NSImage.statusUnavailableName
     }
-    else {
-      return NSImage(named: NSImage.statusNoneName)
+    return NSImage(named: imageName)
+  }
+}
+
+extension BuildStatusController: BuildStatusClient
+{
+  func buildStatusUpdated(branch: String, buildType: String)
+  {
+    updateBranches(model.rootItem(.branches).children)
+    for remoteItem in model.rootItem(.remotes).children {
+      updateBranches(remoteItem.children)
     }
   }
+  
+  private func updateBranches(_ branchItems: [SidebarItem])
+  {
+    for item in branchItems {
+      switch item {
+        case is BranchSidebarItem:
+          display?.updateStatusImage(item: item)
+        case is BranchFolderSidebarItem:
+          updateBranches(item.children)
+        default:
+          break
+      }
+    }
+  }
+}
+
+extension BuildStatusController: NSPopoverDelegate
+{
+  func popoverDidClose(_ notification: Notification)
+  {
+    popover = nil
+  }
+}
+
+extension BuildStatusController: TeamCityAccessor
+{
+  var remoteMgr: RemoteManagement! { return model.repository }
 }

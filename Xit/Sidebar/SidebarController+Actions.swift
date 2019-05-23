@@ -203,7 +203,7 @@ extension SidebarController
     let statusController = BuildStatusViewController(
           repository: repo,
           branch: branch,
-          cache: sidebarDS.buildStatusController.buildStatusCache)
+          cache: buildStatusController.buildStatusCache)
     let popover = NSPopover()
     
     statusPopover = popover
