@@ -161,7 +161,7 @@
                                                                                         <constraint firstAttribute="width" constant="20" id="6za-xK-4h4"/>
                                                                                         <constraint firstAttribute="height" constant="16" id="CoX-vT-lVz"/>
                                                                                     </constraints>
-                                                                                    <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSStatusAvailable" imagePosition="left" inset="2" id="0yd-DC-2HJ">
+                                                                                    <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="buildSucceeded" imagePosition="left" inset="2" id="0yd-DC-2HJ">
                                                                                         <behavior key="behavior" lightByContents="YES"/>
                                                                                         <font key="font" metaFont="system"/>
                                                                                     </buttonCell>
@@ -300,7 +300,7 @@
     </objects>
     <resources>
         <image name="NSActionTemplate" width="14" height="14"/>
-        <image name="NSStatusAvailable" width="16" height="16"/>
+        <image name="buildSucceeded" width="14" height="14"/>
         <image name="prApproved" width="10" height="10"/>
         <image name="pullRequestTemplate" width="14" height="16"/>
         <image name="trackingMissing" width="10" height="10"/>

@@ -92,11 +92,11 @@ class BuildStatusController: NSObject
     
     switch overallSuccess {
       case nil:
-        imageName = NSImage.statusNoneName
+        imageName = NSImage.Name.xtNoBuilds
       case true?:
-        imageName = NSImage.statusAvailableName
+        imageName = NSImage.Name.xtBuildSucceeded
       case false?:
-        imageName = NSImage.statusUnavailableName
+        imageName = NSImage.Name.xtBuildFailed
     }
     return NSImage(named: imageName)
   }

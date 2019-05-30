@@ -182,8 +182,8 @@ extension BuildStatusViewController: NSTableViewDelegate
       cell.progressBar.isHidden = true
     }
     cell.statusImage.image = NSImage(named:
-        build.status == .succeeded ? NSImage.statusAvailableName
-                                   : NSImage.statusUnavailableName)
+        build.status == .succeeded ? NSImage.Name.xtBuildSucceeded
+                                   : NSImage.Name.xtBuildFailed)
     
     return cell
   }
