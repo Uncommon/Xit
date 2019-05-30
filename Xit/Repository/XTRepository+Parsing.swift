@@ -312,12 +312,12 @@ extension XTRepository: FileStaging
   public func unstageAllFiles() throws
   {
     guard let index = GitIndex(repository: gitRepo)
-      else { throw RepoError.unexpected }
+    else { throw RepoError.unexpected }
     
     if let headOID = headReference?.resolve()?.targetOID {
       guard let headCommit = commit(forOID: headOID),
-        let headTree = headCommit.tree
-        else { throw RepoError.unexpected }
+            let headTree = headCommit.tree
+      else { throw RepoError.unexpected }
       
       try index.read(tree: headTree)
     }

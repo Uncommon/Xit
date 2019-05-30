@@ -6,16 +6,13 @@ import XCTest
 class PullRequestManagerTest: XCTestCase
 {
   let fakeRepo = FakeRepo()
-  let model: SidebarDataModel
-  
-  override init()
-  {
-    self.model = SidebarDataModel(repository: fakeRepo, outlineView: nil)
-    super.init()
-  }
+  var model: SidebarDataModel!
   
   override func setUp()
   {
+    super.setUp()
+    
+    model = SidebarDataModel(repository: fakeRepo, outlineView: nil)
     model.roots = model.loadRoots()
   }
   

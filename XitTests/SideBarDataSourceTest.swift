@@ -5,6 +5,7 @@ import XCTest
 class SidebarDataSourceTest: XTTest
 {
   var outline = MockSidebarOutline()
+  var model: SidebarDataModel!
   var sbds = SideBarDataSource()
   var runLoop: CFRunLoop?
 
@@ -17,26 +18,11 @@ class SidebarDataSourceTest: XTTest
   override func setUp()
   {
     super.setUp()
+    
+    model = SidebarDataModel(repository: repository, outlineView: outline)
+    sbds.model = model
     sbds.outline = outline
-    sbds.repository = repository
     outline.dataSource = sbds
-  }
-
-  /// Check that root items (except Staging) are groups
-  func testGroupItems()
-  {
-    XCTAssertTrue(repository.createBranch("b1"))
-    
-    sbds.reload()
-    waitForRepoQueue()
-    
-    let count = sbds.outlineView(outline, numberOfChildrenOfItem: nil)
-    
-    for index in 1..<count {
-      let rootItem = sbds.outlineView(outline, child: index, ofItem: nil)
-      
-      XCTAssertTrue(sbds.outlineView(outline, isGroupItem: rootItem))
-    }
   }
 
   /// Add a tag and make sure it gets loaded correctly
@@ -68,11 +54,6 @@ class SidebarDataSourceTest: XTTest
     
     XCTAssertNotNil(tag.selection?.shaToSelect)
     XCTAssertFalse(expandable)
-    
-    let view = sbds.outlineView(outline, viewFor: nil, item: tag)
-               as! NSTableCellView
-    
-    XCTAssertEqual(view.textField?.stringValue, "t1")
   }
   
   /// Add a branch and make sure both branches are loaded correctly
@@ -85,7 +66,6 @@ class SidebarDataSourceTest: XTTest
     let branches = groupItem(.branches)
     let branchCount = sbds.outlineView(outline,
                                        numberOfChildrenOfItem: branches)
-    let branchNames = ["b1", "master"]
   
     XCTAssertEqual(branchCount, 2)
     for b in 0...1 {
@@ -95,11 +75,6 @@ class SidebarDataSourceTest: XTTest
       
       XCTAssertNotNil(branch.selection?.shaToSelect)
       XCTAssertFalse(expandable)
-      
-      let view = sbds.outlineView(outline, viewFor: nil, item: branch)
-                 as! NSTableCellView
-    
-      XCTAssertEqual(view.textField?.stringValue, branchNames[b])
     }
   }
   
@@ -154,28 +129,15 @@ class SidebarDataSourceTest: XTTest
     XCTAssertEqual(remoteCount, 1)
     
     let remote = sbds.outlineView(outline, child: 0, ofItem: remotes)
-    let remoteView = sbds.outlineView(outline, viewFor: nil, item: remote)
-                     as! NSTableCellView
-    
-    XCTAssertEqual(remoteView.textField!.stringValue, remoteName)
-    
     let branchCount = sbds.outlineView(outline, numberOfChildrenOfItem: remote)
     
     XCTAssertEqual(branchCount, 2)
     
-    let branchNames = ["b1", "master"]
-    
-    for (index, branchName) in branchNames.enumerated() {
+    for index in 0...1 {
       let branch = sbds.outlineView(outline, child: index, ofItem: remote)
       let expandable = sbds.outlineView(outline, isItemExpandable: branch)
       
       XCTAssertFalse(expandable)
-      
-      let branchView = sbds.outlineView(outline, viewFor: nil, item: branch)
-                       as! NSTableCellView
-      let itemName = branchView.textField!.stringValue
-      
-      XCTAssertEqual(itemName, branchName)
     }
   }
   

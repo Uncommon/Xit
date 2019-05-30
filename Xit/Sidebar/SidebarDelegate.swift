@@ -11,8 +11,8 @@ class SidebarDelegate: NSObject
   @IBOutlet weak var controller: SidebarController?
   @IBOutlet weak var outline: NSOutlineView!
   weak var model: SidebarDataModel?
-  var buildStatusController: BuildStatusController!
-  var pullRequestManager: SidebarPRManager!
+  var buildStatusController: BuildStatusController?
+  var pullRequestManager: SidebarPRManager?
   
   func graphText(for item: SidebarItem) -> String?
   {
@@ -50,7 +50,7 @@ class SidebarDelegate: NSObject
     guard let cell = cell ?? self.cell(forItem: item)
     else { return }
     
-    if let image = buildStatusController.statusImage(for: item) {
+    if let image = buildStatusController?.statusImage(for: item) {
       cell.statusButton.image = image
       if let localBranchItem = item as? LocalBranchSidebarItem,
          let localBranch = localBranchItem.branchObject() as? LocalBranch,
@@ -203,8 +203,8 @@ extension SidebarDelegate: NSOutlineViewDelegate
       if sideBarItem is LocalBranchSidebarItem {
         configureLocalBranchItem(sideBarItem: sideBarItem, dataView: dataView)
       }
-      pullRequestManager.updatePullRequestButton(item: sideBarItem,
-                                                 view: dataView)
+      pullRequestManager?.updatePullRequestButton(item: sideBarItem,
+                                                  view: dataView)
       dataView.buttonContainer.isHidden = dataView.statusButton.image == nil
       if sideBarItem.editable {
         textField.target = controller

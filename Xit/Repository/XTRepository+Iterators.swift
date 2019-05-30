@@ -85,7 +85,8 @@ extension XTRepository
       self.repo = repo
       
       let refLogPtr = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-      guard git_reflog_read(refLogPtr, repo.gitRepo, StashCollection.stashRefName) == 0
+      guard git_reflog_read(refLogPtr, repo.gitRepo,
+                            StashCollection.stashRefName) == 0
       else {
         self.refLog = nil
         self.count = 0
