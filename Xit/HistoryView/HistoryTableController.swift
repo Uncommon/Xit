@@ -72,10 +72,14 @@ public class HistoryTableController: NSViewController
         object: controller,
         queue: .main) {
       [weak self] (notification) in
-      if let selection = notification.userInfo?[NSKeyValueChangeKey.newKey]
-                             as? RepositorySelection {
-        self?.selectRow(sha: selection.shaToSelect)
-      }
+      guard let self = self,
+            let selection = notification.userInfo?[NSKeyValueChangeKey.newKey]
+                            as? RepositorySelection,
+            // In spite of the `object` parameter, notifications can come through
+            // for the wrong repository
+            selection.repository.repoURL == self.repository.repoURL
+      else { return }
+      self.selectRow(sha: selection.shaToSelect)
     }
     
     history.postProgress = {
