@@ -7,6 +7,57 @@ protocol BuildStatusDisplay: AnyObject
 
 class BuildStatusController: NSObject
 {
+  // The TeamCity server data has succeeded/failed and running/finished as
+  // separate states, but we combine them for display
+  enum DisplayState
+  {
+    case unknown
+    case success
+    case running
+    case failure
+    
+    var imageName: NSImage.Name
+    {
+      switch self {
+        case .unknown:
+          return .xtNoBuilds
+        case .success:
+          return .xtBuildSucceeded
+        case .running:
+          return .xtBuildInProgress
+        case .failure:
+          return .xtBuildFailed
+      }
+    }
+    
+    init(build: TeamCityAPI.Build)
+    {
+      if build.status == .failed {
+        self = .failure
+      }
+      else if build.state == .running {
+        self = .running
+      }
+      else {
+        self = .success
+      }
+    }
+    
+    static func += (left: inout DisplayState, right: DisplayState)
+    {
+      switch right {
+        case .failure:
+          left = .failure
+        case .running:
+          if left != .failure {
+            left = .running
+          }
+        case .success, .unknown:
+          left = right
+      }
+    }
+  }
+  
   let refreshInterval: TimeInterval = 5 * .minutes
   
   let model: SidebarDataModel
@@ -77,28 +128,18 @@ class BuildStatusController: NSObject
           let (api, buildTypes) = matchTeamCity(remoteName)
     else { return nil }
     
-    var overallSuccess: Bool?
+    var overallState = DisplayState.unknown
     
     for buildType in buildTypes {
       if let branchName = api.displayName(forBranch: localBranch.name,
                                           buildType: buildType),
          let status = buildStatusCache.statuses[buildType],
-         let buildSuccess = status[branchName].map({ $0.status == .succeeded }) {
-        overallSuccess = (overallSuccess ?? true) && buildSuccess
+         let branchStatus = status[branchName] {
+        overallState += DisplayState(build: branchStatus)
       }
     }
     
-    var imageName: String
-    
-    switch overallSuccess {
-      case nil:
-        imageName = NSImage.Name.xtNoBuilds
-      case true?:
-        imageName = NSImage.Name.xtBuildSucceeded
-      case false?:
-        imageName = NSImage.Name.xtBuildFailed
-    }
-    return NSImage(named: imageName)
+    return NSImage(named: overallState.imageName)
   }
 }
 

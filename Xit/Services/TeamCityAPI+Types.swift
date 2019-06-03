@@ -42,7 +42,7 @@ extension TeamCityAPI
     init?(element buildElement: XMLElement)
     {
       guard buildElement.name == "build"
-        else { return nil }
+      else { return nil }
       
       let attributes = buildElement.attributesDict()
       
@@ -59,7 +59,7 @@ extension TeamCityAPI
     init?(xml: XMLDocument)
     {
       guard let build = xml.rootElement()
-        else { return nil }
+      else { return nil }
       
       self.init(element: build)
     }
@@ -95,13 +95,13 @@ extension TeamCityAPI
         let prefix = String(content[..<prefixEndIndex])
         
         switch prefix {
-        case "+:":
-          self.inclusion = .include
-        case "-:":
-          self.inclusion = .exclude
-        default:
-          print("Unknown prefix in rule: \(content)")
-          return nil
+          case "+:":
+            self.inclusion = .include
+          case "-:":
+            self.inclusion = .exclude
+          default:
+            print("Unknown prefix in rule: \(content)")
+            return nil
         }
         
         var substring = String(content[prefixEndIndex...])
@@ -126,7 +126,7 @@ extension TeamCityAPI
         let stringRange = NSRange(location: 0, length: branch.utf8.count)
         guard let match = regex.firstMatch(in: branch, options: .anchored,
                                            range: stringRange)
-          else { return nil }
+        else { return nil }
         
         if match.numberOfRanges >= 2 {
           return (branch as NSString).substring(with: match.range(at: 1))
