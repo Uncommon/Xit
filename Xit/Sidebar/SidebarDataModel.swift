@@ -19,7 +19,7 @@ class SidebarDataModel
     let stagingItem = StagingSidebarItem(titleString: .staging)
     let rootNames: [UIString] =
           [.workspace, .branches, .remotes, .tags, .stashes, .submodules]
-    var roots = rootNames.map { SideBarGroupItem(titleString: $0) }
+    let roots = rootNames.map { SideBarGroupItem(titleString: $0) }
     
     stagingItem.selection = StagingSelection(repository: repository!)
     roots[0].children.append(stagingItem)
