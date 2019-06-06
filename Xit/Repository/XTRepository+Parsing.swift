@@ -397,14 +397,4 @@ extension XTRepository: FileStaging
     try index.write()
     invalidateIndex()
   }
-  
-  /// Creates a new commit with the given message.
-  func commit(message: String, amend: Bool) throws
-  {
-    let baseArgs = ["commit", "-F", "-"]
-    let args = amend ? baseArgs + ["--amend"] : baseArgs
-    
-    _ = try executeGit(args: args, stdIn: message, writes: true)
-    invalidateIndex()
-  }
 }

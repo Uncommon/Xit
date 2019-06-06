@@ -339,6 +339,15 @@ extension XTRepository: CommitStorage
     return GitCommit(oid: oid, repository: gitRepo)
   }
   
+  public func commit(message: String, amend: Bool) throws
+  {
+    let baseArgs = ["commit", "-F", "-"]
+    let args = amend ? baseArgs + ["--amend"] : baseArgs
+    
+    _ = try executeGit(args: args, stdIn: message, writes: true)
+    invalidateIndex()
+  }
+
   public func walker() -> RevWalk?
   {
     return GitRevWalk(repository: gitRepo)

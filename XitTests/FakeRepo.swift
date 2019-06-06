@@ -74,6 +74,9 @@ extension FakeRepo: CommitStorage
   func oid(forSHA sha: String) -> OID? { return nil }
   func commit(forSHA sha: String) -> Commit? { return nil }
   func commit(forOID oid: OID) -> Commit? { return nil }
+  
+  func commit(message: String, amend: Bool) throws {}
+  
   func walker() -> RevWalk? { return nil }
 }
 

@@ -17,6 +17,8 @@ public protocol CommitStorage: AnyObject
   func commit(forSHA sha: String) -> Commit?
   func commit(forOID oid: OID) -> Commit?
   
+  func commit(message: String, amend: Bool) throws
+  
   func walker() -> RevWalk?
 }
 

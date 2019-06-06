@@ -198,7 +198,8 @@ class FileViewController: NSViewController
       self?.selectedModelChanged()
     }
     headerController.repository = repository
-    commitEntryController.repo = repository
+    commitEntryController.configure(repository: repository,
+                                    config: repository.config)
     
     let commitTabItem = fileListTabView.tabViewItem(at: 0)
     
@@ -243,8 +244,8 @@ class FileViewController: NSViewController
     
     commitEntryController = XTCommitEntryController(
         nibName: "XTCommitEntryController", bundle: nil)
-    if repo != nil {
-      commitEntryController.repo = repo
+    if let repo = repo {
+      commitEntryController.configure(repository: repo, config: repo.config)
     }
     
     headerTabView.tabViewItems[1].view = commitEntryController.view

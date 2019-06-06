@@ -3,7 +3,9 @@ import Cocoa
 /// Handles the commit message entry area.
 class XTCommitEntryController: NSViewController
 {
-  weak var repo: XTRepository!
+  typealias Repository = CommitStorage & CommitReferencing
+  
+  private weak var repo: Repository!
   {
     didSet
     {
@@ -17,6 +19,8 @@ class XTCommitEntryController: NSViewController
       resetMessage()
     }
   }
+  private weak var config: Config!
+  
   @IBOutlet weak var commitField: NSTextView!
   @IBOutlet weak var commitButton: NSButton!
   @IBOutlet weak var amendChcekbox: NSButton!
@@ -52,6 +56,12 @@ class XTCommitEntryController: NSViewController
     }
   }
   
+  func configure(repository: Repository, config: Config)
+  {
+    self.repo = repository
+    self.config = config
+  }
+  
   deinit
   {
     NotificationCenter.default.removeObserver(self)
@@ -65,7 +75,7 @@ class XTCommitEntryController: NSViewController
   
   func commitMessageTemplate() -> String?
   {
-    guard let templatePath = repo.config.commitTemplate()
+    guard let templatePath = config.commitTemplate()
     else { return nil }
     
     return try? String(contentsOfFile: templatePath)

@@ -81,6 +81,8 @@ class GenericRepository<ID: OID & Hashable>: CommitStorage
     return nil
   }
   
+  func commit(message: String, amend: Bool) throws {}
+  
   func walker() -> RevWalk?
   {
     return nil
