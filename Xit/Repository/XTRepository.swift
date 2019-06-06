@@ -14,10 +14,9 @@ public class XTRepository: NSObject, TaskManagement
 {
   private(set) var gtRepo: GTRepository
   @objc public let repoURL: URL
-  let gitCMD: String
+  let gitRunner: GitCLIRunner
   let mutex = Mutex()
   var refsIndex = [String: [String]]()
-  fileprivate var executing = false
   
   // TaskManagement
   @objc public let queue: TaskQueue
@@ -85,7 +84,7 @@ public class XTRepository: NSObject, TaskManagement
     else { return nil }
     
     self.repoURL = url
-    self.gitCMD = gitCMD
+    self.gitRunner = GitCLIRunner(gitPath: gitCMD, repoPath: url.path)
     self.gtRepo = gtRepo
     
     self.queue = TaskQueue(id: XTRepository.taskQueueID(path: url.path))
@@ -104,7 +103,7 @@ public class XTRepository: NSObject, TaskManagement
     else { return nil }
     
     self.repoURL = url
-    self.gitCMD = gitCMD
+    self.gitRunner = GitCLIRunner(gitPath: gitCMD, repoPath: url.path)
     self.gtRepo = gtRepo
     self.queue = TaskQueue(id: XTRepository.taskQueueID(path: url.path))
     
@@ -226,13 +225,8 @@ public class XTRepository: NSObject, TaskManagement
                           writes: writes)
   }
   
-  func executeGit(args: [String], writes: Bool) throws -> Data
-  {
-    return try executeGit(args: args, stdInData: nil, writes: writes)
-  }
-  
   func executeGit(args: [String],
-                  stdInData: Data?,
+                  stdInData: Data? = nil,
                   writes: Bool) throws -> Data
   {
     guard FileManager.default.fileExists(atPath: repoURL.path)
@@ -248,71 +242,15 @@ public class XTRepository: NSObject, TaskManagement
     if writes && isWriting {
       throw RepoError.alreadyWriting
     }
+    
+    let wasWriting = isWriting
+    
     updateIsWriting(writes)
     defer {
-      updateIsWriting(false)
-    }
-    executing = true
-    defer { executing = false }
-    NSLog("*** command = git \(args.joined(separator: " "))")
-    
-    let task = Process()
-    
-    task.currentDirectoryPath = repoURL.path
-    task.launchPath = gitCMD
-    task.arguments = args
-    
-    // Large files have to be chunked or else FileHandle.write() hangs
-    let chunkSize = 10*1024
-
-    if let data = stdInData {
-      let stdInPipe = Pipe()
-      
-      if data.count <= chunkSize {
-        stdInPipe.fileHandleForWriting.write(data)
-        stdInPipe.fileHandleForWriting.closeFile()
-      }
-      task.standardInput = stdInPipe
+      updateIsWriting(wasWriting)
     }
     
-    let pipe = Pipe()
-    let errorPipe = Pipe()
-    
-    task.standardOutput = pipe
-    task.standardError = errorPipe
-    try task.throwingLaunch()
-    
-    if let data = stdInData,
-       data.count > chunkSize,
-       let handle = (task.standardInput as? Pipe)?.fileHandleForWriting {
-      for chunkIndex in 0...(data.count/chunkSize) {
-        let chunkStart = chunkIndex * chunkSize
-        let chunkEnd = min(chunkStart + chunkSize, data.count)
-        let subData = data.subdata(in: chunkStart..<chunkEnd)
-        
-        handle.write(subData)
-      }
-      handle.closeFile()
-    }
-    
-    let output = pipe.fileHandleForReading.readDataToEndOfFile()
-    
-    task.waitUntilExit()
-    
-    guard task.terminationStatus == 0
-    else {
-      let string = String(data: output, encoding: .utf8) ?? "-"
-      let errorOutput = errorPipe.fileHandleForReading.readDataToEndOfFile()
-      let errorString = String(data: errorOutput, encoding: .utf8) ?? "-"
-      
-      NSLog("**** output = \(string)")
-      NSLog("**** error = \(errorString)")
-      throw NSError(domain: XTErrorDomainGit, code: Int(task.terminationStatus),
-                    userInfo: [XTErrorOutputKey: string,
-                               XTErrorArgsKey: args.joined(separator: " ")])
-    }
-    
-    return output
+    return try gitRunner.run(inputData: stdInData, args: args)
   }
 }
 

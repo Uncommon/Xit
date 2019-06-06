@@ -102,6 +102,7 @@
 		C94D7E8D1EBA66180059AC21 /* XTRepository+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D7E8C1EBA66180059AC21 /* XTRepository+Parsing.swift */; };
 		C94D9DF0229D9D7000E46A28 /* FakeRepo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D9DEF229D9D7000E46A28 /* FakeRepo.swift */; };
 		C94D9E0222A031BE00E46A28 /* SidebarDelegateTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D9E0122A031BE00E46A28 /* SidebarDelegateTest.swift */; };
+		C94E4EDE22A989BC00D5B2B1 /* GitCLIRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94E4EDD22A989BC00D5B2B1 /* GitCLIRunner.swift */; };
 		C94ECBD51E6E025B00E8B453 /* ObserverCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94ECBD41E6E025B00E8B453 /* ObserverCollection.swift */; };
 		C951EAE11DD11BDD00B99FBE /* SidebarTableCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C951EAE01DD11BDD00B99FBE /* SidebarTableCellView.swift */; };
 		C951EB051DD636B900B99FBE /* SidebarCheckedRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C951EB041DD636B900B99FBE /* SidebarCheckedRowView.swift */; };
@@ -474,6 +475,7 @@
 		C94D7E8C1EBA66180059AC21 /* XTRepository+Parsing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTRepository+Parsing.swift"; sourceTree = "<group>"; };
 		C94D9DEF229D9D7000E46A28 /* FakeRepo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeRepo.swift; sourceTree = "<group>"; };
 		C94D9E0122A031BE00E46A28 /* SidebarDelegateTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarDelegateTest.swift; sourceTree = "<group>"; };
+		C94E4EDD22A989BC00D5B2B1 /* GitCLIRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitCLIRunner.swift; sourceTree = "<group>"; };
 		C94ECBD41E6E025B00E8B453 /* ObserverCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObserverCollection.swift; sourceTree = "<group>"; };
 		C951EAE01DD11BDD00B99FBE /* SidebarTableCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarTableCellView.swift; sourceTree = "<group>"; };
 		C951EB041DD636B900B99FBE /* SidebarCheckedRowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarCheckedRowView.swift; sourceTree = "<group>"; };
@@ -879,6 +881,7 @@
 		C9790D0620EED3F90024D3EA /* Repository */ = {
 			isa = PBXGroup;
 			children = (
+				C94E4EDD22A989BC00D5B2B1 /* GitCLIRunner.swift */,
 				89C927931D43B23B0074F71A /* XTRepository.swift */,
 				C94154B51EE5AC460030E481 /* XTRepository+Commands.swift */,
 				C9C1B7CE1EEAFD790011F343 /* XTRepository+Files.swift */,
@@ -1378,6 +1381,7 @@
 				C98EBC152126188900EF739E /* ServicesData.swift in Sources */,
 				C967C4AF1F96BA55002166F7 /* Cache.swift in Sources */,
 				C94D7E8D1EBA66180059AC21 /* XTRepository+Parsing.swift in Sources */,
+				C94E4EDE22A989BC00D5B2B1 /* GitCLIRunner.swift in Sources */,
 				C9E5E27E210A32780069FBD8 /* HistoryViewController+Search.swift in Sources */,
 				C9ABDB201E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift in Sources */,
 				C9A054612294B9DD002BFFF5 /* SidebarDelegate.swift in Sources */,
