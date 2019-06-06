@@ -58,8 +58,8 @@ class XTCommitEntryController: NSViewController
   
   func configure(repository: Repository, config: Config)
   {
-    self.repo = repository
     self.config = config
+    self.repo = repository
   }
   
   deinit
