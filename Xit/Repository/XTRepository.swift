@@ -57,11 +57,6 @@ public class XTRepository: NSObject, TaskManagement
     return String(cString: path)
   }
   
-  var gitDirectoryURL: URL
-  {
-    return URL(fileURLWithPath: gitDirectoryPath)
-  }
-  
   static func gitPath() -> String?
   {
     let paths = ["/usr/bin/git", "/usr/local/git/bin/git"]

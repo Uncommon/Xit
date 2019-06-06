@@ -227,13 +227,13 @@ extension XTRepository
   /// The full path to the MERGE_HEAD file
   var mergeHeadPath: String
   {
-    return self.gitDirectoryURL.appendingPathComponent("MERGE_HEAD").path
+    return self.gitDirectoryPath +/ "MERGE_HEAD"
   }
   
   /// The full path to the CHERRY_PICK_HEAD file
   var cherryPickHeadPath: String
   {
-    return self.gitDirectoryURL.appendingPathComponent("CHERRY_PICK_HEAD").path
+    return self.gitDirectoryPath +/ "CHERRY_PICK_HEAD"
   }
   
   private func mergePreCheck() throws
