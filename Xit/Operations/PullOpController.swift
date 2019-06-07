@@ -23,10 +23,10 @@ class PullOpController: FetchOpController
     }
     
     tryRepoOperation {
-      let options = XTRepository.FetchOptions(downloadTags: true,
-                                              pruneBranches: true,
-                                              passwordBlock: self.getPassword,
-                                              progressBlock: self.shouldStop)
+      let options = FetchOptions(downloadTags: true,
+                                 pruneBranches: true,
+                                 passwordBlock: self.getPassword,
+                                 progressBlock: self.shouldStop)
       
       try repository.pull(branch: branch, remote: remote, options: options)
       NotificationCenter.default.post(name: .XTRepositoryRefsChanged,

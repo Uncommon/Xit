@@ -2,13 +2,19 @@ import Foundation
 
 public typealias Repository =
     Branching & CommitStorage & CommitReferencing & FileDiffing & FileContents &
-    FileStaging & FileStatusDetection & RemoteManagement & Stashing &
-    SubmoduleManagement & Tagging & TaskManagement & Workspace
+    FileStaging & FileStatusDetection & RemoteCommunication & RemoteManagement &
+    RepoConfiguring & Stashing & SubmoduleManagement & Tagging & TaskManagement &
+    Workspace
 
 public protocol TaskManagement
 {
   var queue: TaskQueue { get }
   var isWriting: Bool { get }
+}
+
+public protocol RepoConfiguring
+{
+  var config: Config { get }
 }
 
 public protocol CommitStorage: AnyObject
@@ -148,6 +154,58 @@ extension RemoteManagement
   }
 }
 
+public protocol TransferProgress
+{
+  var totalObjects: UInt32 { get }
+  var indexedObjects: UInt32 { get }
+  var receivedObjects: UInt32 { get }
+  var localObjects: UInt32 { get }
+  var totalDeltas: UInt32 { get }
+  var indexedDeltas: UInt32 { get }
+  var receivedBytes: Int { get }
+}
+
+extension TransferProgress
+{
+  var progress: Float { return Float(receivedObjects) / Float(totalObjects) }
+}
+
+public struct FetchOptions
+{
+  /// True to also download tags
+  let downloadTags: Bool
+  /// True to delete obsolete branch refs
+  let pruneBranches: Bool
+  /// Callback for getting the user and password
+  let passwordBlock: () -> (String, String)?
+  /// Return true to stop the operation
+  let progressBlock: (TransferProgress) -> Bool
+}
+
+public protocol RemoteCommunication: AnyObject
+{
+  /// Pushes an update for the given branch.
+  /// - parameter branch: Local branch to push; must have a tracking branch set
+  /// - parameter remote: Target remote to push to
+  /// - parameter passwordBlock: Callback to prompt for a password if needed
+  /// - parameter progressBlock: Callbacak for reporting progress
+  func push(branch: Branch,
+            remote: Remote,
+            passwordBlock: @escaping () -> (String, String)?,
+            progressBlock: @escaping (UInt32, UInt32, size_t) -> Bool) throws
+  
+  /// Dowloads updated refs and commits from the remote.
+  func fetch(remote: Remote, options: FetchOptions) throws
+  
+  /// Initiates pulling (fetching and merging) the given branch.
+  /// - parameter branch: Either the local branch or the remote tracking branch.
+  /// - parameter remote: The remote to pull from.
+  /// - parameter options: Options for the fetch operation.
+  func pull(branch: Branch,
+            remote: Remote,
+            options: FetchOptions) throws
+}
+
 public protocol SubmoduleManagement: AnyObject
 {
   func submodules() -> [Submodule]
@@ -162,6 +220,7 @@ public protocol Branching: AnyObject
   
   
   func createBranch(named name: String, target: String) throws -> LocalBranch?
+  func rename(branch: String, to: String) throws
   func localBranch(named name: String) -> LocalBranch?
   func remoteBranch(named name: String) -> RemoteBranch?
   func localBranch(tracking remoteBranch: RemoteBranch) -> LocalBranch?

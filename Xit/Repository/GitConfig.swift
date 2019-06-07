@@ -1,6 +1,6 @@
 import Foundation
 
-protocol Config: AnyObject
+public protocol Config: AnyObject
 {
   subscript(index: String) -> Bool? { get set }
   subscript(index: String) -> String? { get set }

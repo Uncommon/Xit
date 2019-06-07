@@ -23,10 +23,10 @@ class BranchTest: XTTest
       XCTFail("can't get remote")
       return
     }
-    let options = XTRepository.FetchOptions(downloadTags: false,
-                                            pruneBranches: false,
-                                            passwordBlock: { nil },
-                                            progressBlock: { _ in true })
+    let options = FetchOptions(downloadTags: false,
+                               pruneBranches: false,
+                               passwordBlock: { nil },
+                               progressBlock: { _ in true })
     
     XCTAssertNoThrow(try repository.fetch(remote: remote, options: options))
 

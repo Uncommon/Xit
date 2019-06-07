@@ -10,7 +10,7 @@ let XTPathsKey = "paths"
 let XTErrorOutputKey = "output"
 let XTErrorArgsKey = "args"
 
-public class XTRepository: NSObject, TaskManagement
+public class XTRepository: NSObject, TaskManagement, RepoConfiguring
 {
   private(set) var gtRepo: GTRepository
   @objc public let repoURL: URL
@@ -43,10 +43,12 @@ public class XTRepository: NSObject, TaskManagement
   var cachedIgnored = false
 
   let diffCache = Cache<String, Diff>(maxSize: 50)
+  public let config: Config
+  
+  // These require `self` to initialize
   fileprivate var repoWatcher: RepositoryWatcher! = nil
   fileprivate var workspaceWatcher: WorkspaceWatcher! = nil
-  private(set) var config: Config! = nil
-  
+
   var gitRepo: OpaquePointer { return gtRepo.git_repository() }
   
   var gitDirectoryPath: String
@@ -71,47 +73,43 @@ public class XTRepository: NSObject, TaskManagement
     return "\(identifier).\(path)"
   }
   
-  @objc(initWithURL:)
-  init?(url: URL)
+  init?(gtRepo: GTRepository)
   {
-    guard let gitCMD = XTRepository.gitPath(),
-          let gtRepo = try? GTRepository(url: url)
+    guard let gitCmd = XTRepository.gitPath(),
+          let url = gtRepo.fileURL,
+          let config = GitConfig(repository: gtRepo.git_repository())
     else { return nil }
     
-    self.repoURL = url
-    self.gitRunner = GitCLIRunner(gitPath: gitCMD, repoPath: url.path)
     self.gtRepo = gtRepo
-    
+    self.repoURL = url
+    self.gitRunner = GitCLIRunner(gitPath: gitCmd,
+                                  repoPath: url.path)
     self.queue = TaskQueue(id: XTRepository.taskQueueID(path: url.path))
+    self.config = config
     
     super.init()
     
-    postInit()
+    self.repoWatcher = RepositoryWatcher(repository: self)
+    self.workspaceWatcher = WorkspaceWatcher(repository: self)
+}
+  
+  @objc(initWithURL:)
+  convenience init?(url: URL)
+  {
+    guard let gtRepo = try? GTRepository(url: url)
+    else { return nil }
+    
+    self.init(gtRepo: gtRepo)
   }
   
   @objc(initEmptyWithURL:)
-  init?(emptyURL url: URL)
+  convenience init?(emptyURL url: URL)
   {
-    guard let gitCMD = XTRepository.gitPath(),
-          let gtRepo = try? GTRepository.initializeEmpty(atFileURL: url,
+    guard let gtRepo = try? GTRepository.initializeEmpty(atFileURL: url,
                                                          options: nil)
     else { return nil }
     
-    self.repoURL = url
-    self.gitRunner = GitCLIRunner(gitPath: gitCMD, repoPath: url.path)
-    self.gtRepo = gtRepo
-    self.queue = TaskQueue(id: XTRepository.taskQueueID(path: url.path))
-    
-    super.init()
-    
-    postInit()
-  }
-  
-  private func postInit()
-  {
-    self.repoWatcher = RepositoryWatcher(repository: self)
-    self.workspaceWatcher = WorkspaceWatcher(repository: self)
-    self.config = GitConfig(repository: gitRepo)
+    self.init(gtRepo: gtRepo)
   }
   
   deinit

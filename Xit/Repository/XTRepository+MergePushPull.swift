@@ -1,21 +1,65 @@
 import Foundation
 
-public protocol TransferProgress
+extension XTRepository: RemoteCommunication
 {
-  var totalObjects: UInt32 { get }
-  var indexedObjects: UInt32 { get }
-  var receivedObjects: UInt32 { get }
-  var localObjects: UInt32 { get }
-  var totalDeltas: UInt32 { get }
-  var indexedDeltas: UInt32 { get }
-  var receivedBytes: Int { get }
-}
-
-extension TransferProgress
-{
-  var progress: Float
+  public func push(branch: Branch,
+                   remote: Remote,
+                   passwordBlock: @escaping () -> (String, String)?,
+                   progressBlock: @escaping (UInt32, UInt32, size_t) -> Bool)
+                   throws
   {
-    return Float(receivedObjects) / Float(totalObjects)
+    try performWriting {
+      let provider = self.credentialProvider(passwordBlock)
+      let options = [ GTRepositoryRemoteOptionsCredentialProvider: provider ]
+      guard let localBranch = branch as? GitLocalBranch,
+            let localGTRef = GTReference(gitReference: localBranch.branchRef,
+                                         repository: gtRepo),
+            let localGTBranch = GTBranch(reference: localGTRef),
+            let gtRemote = GTRemote(gitRemote: (remote as! GitRemote).remote,
+                                    in: gtRepo)
+      else { throw RepoError.unexpected }
+      
+      try self.gtRepo.push(localGTBranch, to: gtRemote, withOptions: options) {
+        (current, total, bytes, stop) in
+        stop.pointee = ObjCBool(progressBlock(current, total, bytes))
+      }
+    }
+  }
+  
+  public func fetch(remote: Remote,
+                    options: FetchOptions) throws
+  {
+    try performWriting {
+      let gtOptions = self.fetchOptions(downloadTags: options.downloadTags,
+                                        pruneBranches: options.pruneBranches,
+                                        passwordBlock: options.passwordBlock)
+      guard let gtRemote = GTRemote(gitRemote: (remote as! GitRemote).remote,
+                                    in: gtRepo)
+      else { throw RepoError.unexpected }
+      
+      try self.gtRepo.fetch(gtRemote, withOptions: gtOptions) {
+        (progress, stop) in
+        let transferProgress = GitTransferProgress(gitProgress: progress.pointee)
+        
+        stop.pointee = ObjCBool(options.progressBlock(transferProgress))
+      }
+    }
+  }
+  
+  public func pull(branch: Branch,
+                   remote: Remote,
+                   options: FetchOptions) throws
+  {
+    try fetch(remote: remote, options: options)
+    
+    var mergeBranch = branch
+    
+    if let localBranch = branch as? GitLocalBranch,
+       let trackingBranch = localBranch.trackingBranch as? GitRemoteBranch {
+      mergeBranch = trackingBranch
+    }
+    
+    try merge(branch: mergeBranch)
   }
 }
 
@@ -32,13 +76,6 @@ extension XTRepository
     var totalDeltas: UInt32     { return gitProgress.total_deltas }
     var indexedDeltas: UInt32   { return gitProgress.indexed_deltas }
     var receivedBytes: Int      { return gitProgress.received_bytes }
-  }
-  
-  public struct FetchOptions
-  {
-    let downloadTags, pruneBranches: Bool
-    let passwordBlock: () -> (String, String)?
-    let progressBlock: (TransferProgress) -> Bool
   }
   
   func credentialProvider(_ passwordBlock: @escaping () -> (String, String)?)
@@ -92,52 +129,6 @@ extension XTRepository
         GTRepositoryRemoteOptionsDownloadTags: tagValue,
         GTRepositoryRemoteOptionsFetchPrune: pruneValue,
         GTRepositoryRemoteOptionsCredentialProvider: provider]
-  }
-  
-  /// Initiates a fetch operation.
-  /// - parameter remote: The remote to pull from.
-  /// - parameter downloadTags: True to also download tags
-  /// - parameter pruneBranches: True to delete obsolete branch refs
-  /// - parameter passwordBlock: Callback for getting the user and password
-  /// - parameter progressBlock: Return true to stop the operation
-  public func fetch(remote: Remote,
-                    options: FetchOptions) throws
-  {
-    try performWriting {
-      let gtOptions = self.fetchOptions(downloadTags: options.downloadTags,
-                                        pruneBranches: options.pruneBranches,
-                                        passwordBlock: options.passwordBlock)
-      guard let gtRemote = GTRemote(gitRemote: (remote as! GitRemote).remote,
-                                    in: gtRepo)
-      else { throw RepoError.unexpected }
-      
-      try self.gtRepo.fetch(gtRemote, withOptions: gtOptions) {
-        (progress, stop) in
-        let transferProgress = GitTransferProgress(gitProgress: progress.pointee)
-        
-        stop.pointee = ObjCBool(options.progressBlock(transferProgress))
-      }
-    }
-  }
-  
-  /// Initiates pulling the given branch.
-  /// - parameter branch: Either the local branch or the remote tracking branch.
-  /// - parameter remote: The remote to pull from.
-  /// - parameter options: Options for the fetch operation.
-  func pull(branch: Branch,
-            remote: Remote,
-            options: FetchOptions) throws
-  {
-    try fetch(remote: remote, options: options)
-    
-    var mergeBranch = branch
-    
-    if let localBranch = branch as? GitLocalBranch,
-       let trackingBranch = localBranch.trackingBranch as? GitRemoteBranch {
-      mergeBranch = trackingBranch
-    }
-    
-    try merge(branch: mergeBranch)
   }
   
   private func fastForwardMerge(branch: GitBranch, remoteBranch: GitBranch) throws
@@ -433,35 +424,6 @@ extension XTRepository
     else { throw RepoError.gitError(result) }
     
     return MergeAnalysis(rawValue: analysis.pointee.rawValue)
-  }
-  
-  /// Initiates pushing the given branch.
-  /// - parameter branch: Either the local branch or the remote tracking branch.
-  /// - parameter remote: The remote to pull from.
-  /// - parameter passwordBlock: Callback for getting the user and password
-  /// - parameter progressBlock: Return true to stop the operation
-  public func push(branch: Branch,
-                   remote: Remote,
-                   passwordBlock: @escaping () -> (String, String)?,
-                   progressBlock: @escaping (UInt32, UInt32, size_t) -> Bool)
-                   throws
-  {
-    try performWriting {
-      let provider = self.credentialProvider(passwordBlock)
-      let options = [ GTRepositoryRemoteOptionsCredentialProvider: provider ]
-      guard let localBranch = branch as? GitLocalBranch,
-            let localGTRef = GTReference(gitReference: localBranch.branchRef,
-                                         repository: gtRepo),
-            let localGTBranch = GTBranch(reference: localGTRef),
-            let gtRemote = GTRemote(gitRemote: (remote as! GitRemote).remote,
-                                    in: gtRepo)
-      else { throw RepoError.unexpected }
-      
-      try self.gtRepo.push(localGTBranch, to: gtRemote, withOptions: options) {
-        (current, total, bytes, stop) in
-        stop.pointee = ObjCBool(progressBlock(current, total, bytes))
-      }
-    }
   }
 }
 

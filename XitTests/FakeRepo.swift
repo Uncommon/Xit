@@ -67,6 +67,7 @@ extension FakeRepo: Branching
   { return nil }
   func localTrackingBranch(forBranchRef branch: String) -> LocalBranch?
   { return nil }
+  func rename(branch: String, to: String) throws {}
 }
 
 extension FakeRepo: CommitStorage

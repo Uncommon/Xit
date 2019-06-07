@@ -33,7 +33,7 @@ extension Notification
     static let total = "total"
   }
   
-  static func progressNotification(repository: XTRepository,
+  static func progressNotification(repository: AnyObject,
                                    progress: Float, total: Float) -> Notification
   {
     return Notification(name: .XTProgress,

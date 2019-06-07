@@ -14,7 +14,7 @@ class OperationController: NSObject
   /// if the window is closed before the operation completes.
   weak var windowController: XTWindowController?
   /// Convenient reference to the repository from the window controller.
-  weak var repository: XTRepository?
+  weak var repository: Repository?
   /// True if the operation is being canceled.
   var canceled = false
   /// Actions to be executed after the operation succeeds.

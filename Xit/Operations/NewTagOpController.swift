@@ -10,7 +10,7 @@ class NewTagOpController: OperationController
           let repository = repository,
           let commit = repository.commit(forSHA: selectedSHA)
     else { throw RepoError.unexpected }
-    let config = repository.config!
+    let config = repository.config
     let userName = config.userName
     let userEmail = config.userEmail
     

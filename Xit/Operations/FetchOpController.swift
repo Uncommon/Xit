@@ -48,8 +48,8 @@ class FetchOpController: PasswordOpController
       panel.selectedRemote = remoteName
     }
     panel.parentController = windowController
-    panel.downloadTags = config?.fetchTags(remote: panel.selectedRemote) ?? false
-    panel.pruneBranches = config?.fetchPrune(remote: panel.selectedRemote) ?? false
+    panel.downloadTags = config.fetchTags(remote: panel.selectedRemote)
+    panel.pruneBranches = config.fetchPrune(remote: panel.selectedRemote)
     windowController!.window!.beginSheet(panel.window!) {
       (response) in
       if response == NSApplication.ModalResponse.OK {
@@ -96,10 +96,10 @@ class FetchOpController: PasswordOpController
     let repo = repository  // For use in the block without being tied to self
     
     tryRepoOperation {
-      let options = XTRepository.FetchOptions(downloadTags: downloadTags,
-                                              pruneBranches: pruneBranches,
-                                              passwordBlock: self.getPassword,
-                                              progressBlock: self.shouldStop)
+      let options = FetchOptions(downloadTags: downloadTags,
+                                 pruneBranches: pruneBranches,
+                                 passwordBlock: self.getPassword,
+                                 progressBlock: self.shouldStop)
       
       try repo.fetch(remote: remote, options: options)
       NotificationCenter.default.post(name: .XTRepositoryRefsChanged,
