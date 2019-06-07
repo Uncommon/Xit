@@ -3,7 +3,7 @@ import Foundation
 /// Simple pthread mutex wrapper
 class Mutex
 {
-  private var mutex: pthread_mutex_t
+  private var mutex: UnsafeMutablePointer<pthread_mutex_t>
   
   init()
   {
@@ -15,22 +15,22 @@ class Mutex
     let mutexPtr = UnsafeMutablePointer<pthread_mutex_t>.allocate(capacity: 1)
     
     pthread_mutex_init(mutexPtr, &attr)
-    self.mutex = mutexPtr.pointee
+    self.mutex = mutexPtr
   }
   
   deinit
   {
-    pthread_mutex_destroy(&mutex)
+    pthread_mutex_destroy(mutex)
   }
   
   func lock()
   {
-    pthread_mutex_lock(&mutex)
+    pthread_mutex_lock(mutex)
   }
   
   func unlock()
   {
-    pthread_mutex_unlock(&mutex)
+    pthread_mutex_unlock(mutex)
   }
   
   func withLock<T>(_ callback: () throws -> T) rethrows -> T

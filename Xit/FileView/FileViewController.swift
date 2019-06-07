@@ -75,7 +75,7 @@ class FileViewController: NSViewController
     return repoSelection is StagingSelection
   }
   
-  /// True mhen the staged file list is showing (two file lists instead of one)
+  /// True when the staged file list is showing (two file lists instead of one)
   var showingStaged: Bool
   {
     get
