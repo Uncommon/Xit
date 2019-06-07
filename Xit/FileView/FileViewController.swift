@@ -39,7 +39,7 @@ class FileViewController: NSViewController
   @IBOutlet var blameController: BlameViewController!
   @IBOutlet var previewController: PreviewController!
   @IBOutlet var textController: TextPreviewController!
-  var commitEntryController: XTCommitEntryController!
+  var commitEntryController: CommitEntryController!
   
   var contentController: XTFileContentController!
   let observers = ObserverCollection()
@@ -242,8 +242,8 @@ class FileViewController: NSViewController
     
     contentController = diffController
     
-    commitEntryController = XTCommitEntryController(
-        nibName: "XTCommitEntryController", bundle: nil)
+    commitEntryController = CommitEntryController(
+        nibName: "CommitEntryController", bundle: nil)
     if let repo = repo {
       commitEntryController.configure(repository: repo, config: repo.config)
     }

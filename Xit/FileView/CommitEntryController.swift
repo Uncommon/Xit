@@ -1,7 +1,7 @@
 import Cocoa
 
 /// Handles the commit message entry area.
-class XTCommitEntryController: NSViewController
+class CommitEntryController: NSViewController
 {
   typealias Repository = CommitStorage & CommitReferencing
   
@@ -187,7 +187,7 @@ class XTCommitEntryController: NSViewController
   }
 }
 
-extension XTCommitEntryController: NSTextDelegate
+extension CommitEntryController: NSTextDelegate
 {
   func textDidChange(_ obj: Notification)
   {
