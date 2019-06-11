@@ -18,7 +18,7 @@ class IndexFileList: StagingListModel, FileListModel
   
   var changes: [FileChange]
   {
-    return withSignpost(.loadIndex) {
+    return Signpost.interval(.loadIndex) {
       repository.stagedChanges()
     }
   }
@@ -96,7 +96,7 @@ class WorkspaceFileList: StagingListModel, FileListModel
   
   var changes: [FileChange]
   {
-    return withSignpost(.loadWorkspace) {
+    return Signpost.interval(.loadWorkspace) {
       repository.unstagedChanges(showIgnored: showingIgnored)
     }
   }

@@ -104,8 +104,8 @@ class SideBarDataSource: NSObject
     
     repository?.queue.executeOffMainThread {
       [weak self] in
-      guard let newRoots = withSignpost(.sidebarReload,
-                                        call: { self?.model.loadRoots() })
+      guard let newRoots = Signpost.interval(.sidebarReload,
+                                             call: { self?.model.loadRoots() })
       else { return }
 
       DispatchQueue.main.async {

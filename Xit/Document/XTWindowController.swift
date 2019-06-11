@@ -121,7 +121,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     
     let window = self.window!
     
-    signpost(.windowControllerLoad)
+    Signpost.event(.windowControllerLoad)
     window.titleVisibility = .hidden
     window.delegate = self
     historyController = HistoryViewController()

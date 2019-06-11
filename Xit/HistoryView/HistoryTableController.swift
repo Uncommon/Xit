@@ -110,9 +110,9 @@ public class HistoryTableController: NSViewController
       history.reset()
     }
     repository.queue.executeOffMainThread {
-      signpostStart(.historyWalking)
+      Signpost.intervalStart(.historyWalking, object: self)
       defer {
-        signpostEnd(.historyWalking)
+        Signpost.intervalEnd(.historyWalking, object: self)
       }
       
       guard let walker = repository.walker()
@@ -142,7 +142,7 @@ public class HistoryTableController: NSViewController
         // Get off the queue thread, but run this as a queue task so that
         // progress will be displayed.
         self.repository.queue.executeTask {
-          withSignpost(.connectCommits) {
+          Signpost.interval(.connectCommits) {
             history.connectCommits(batchSize: batchSize) {}
           }
         }

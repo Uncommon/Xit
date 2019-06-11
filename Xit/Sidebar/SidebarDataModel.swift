@@ -152,7 +152,7 @@ class SidebarDataModel
                                                       selection: selection))
     }
     
-    withSignpost(.loadTags) {
+    Signpost.interval(.loadTags) {
       if let tags = try? repo.tags().sorted(by: { $0.name <~ $1.name }) {
         let tagsGroup = newRoots[XTGroupIndex.tags.rawValue]
         

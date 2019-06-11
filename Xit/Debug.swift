@@ -1,49 +1,94 @@
 import Foundation
+import os
 
-enum Signpost: UInt32
+enum Signpost
 {
-  case historyWalking = 0
-  case connectCommits = 1
-  case generateConnections = 2
-  case generateLines = 3
-  case sidebarReload = 4
-  case windowControllerLoad = 5
-  case postIndexChanged = 6
-  case loadIndex = 7
-  case loadWorkspace = 8
-  case detectIndexChanged = 9
-  case loadTags = 10
-}
+  static let logger = OSLog(subsystem: "com.uncommonplace.xit",
+                              category: "Xit: loading")
 
-func signpost(_ code: Signpost,
-              _ arg1: UInt = 0, _ arg2: UInt = 0,
-              _ arg3: UInt = 0, _ arg4: UInt = 0)
-{
-  kdebug_signpost(code.rawValue, arg1, arg2, arg3, arg4)
-}
-
-func signpostStart(_ code: Signpost,
-                   _ arg1: UInt = 0, _ arg2: UInt = 0,
-                   _ arg3: UInt = 0, _ arg4: UInt = 0)
-{
-  kdebug_signpost_start(code.rawValue, arg1, arg2, arg3, arg4)
-}
-
-func signpostEnd(_ code: Signpost,
-                 _ arg1: UInt = 0, _ arg2: UInt = 0,
-                 _ arg3: UInt = 0, _ arg4: UInt = 0)
-{
-  kdebug_signpost_end(code.rawValue, arg1, arg2, arg3, arg4)
-}
-
-func withSignpost<T>(_ code: Signpost,
-                     _ arg1: UInt = 0, _ arg2: UInt = 0,
-                     _ arg3: UInt = 0, _ arg4: UInt = 0,
-                     call: () throws -> T) rethrows -> T
-{
-  kdebug_signpost_start(code.rawValue, arg1, arg2, arg3, arg4)
-  defer {
-    kdebug_signpost_end(code.rawValue, arg1, arg2, arg3, arg4)
+  enum Event
+  {
+    case windowControllerLoad
+    case postIndexChanged
+    case detectIndexChanged
+    
+    var name: StaticString
+    {
+      switch self {
+        case .windowControllerLoad: return "window controller load"
+        case .postIndexChanged: return "post index changed"
+        case .detectIndexChanged: return "detect index changed"
+      }
+    }
   }
-  return try call()
+
+  enum Interval
+  {
+    case historyWalking
+    case connectCommits
+    case generateConnections(Int)
+    case generateLines(Int)
+    case sidebarReload
+    case loadIndex
+    case loadWorkspace
+    case loadTags
+    
+    var name: StaticString
+    {
+      switch self {
+        case .historyWalking: return "history walking"
+        case .connectCommits: return "connect commits"
+        case .generateConnections: return "generate connenctions"
+        case .generateLines: return "generate lines"
+        case .sidebarReload: return "sidebar reload"
+        case .loadIndex: return "load index"
+        case .loadWorkspace: return "load workspace"
+        case .loadTags: return "load tags"
+      }
+    }
+  }
+
+  static func event(_ code: Event)
+  {
+    os_signpost(.event, log: Signpost.logger, name: code.name)
+  }
+
+  static func intervalStart(_ code: Interval, id: OSSignpostID = .exclusive)
+  {
+    switch code {
+      case .generateConnections(let batchStart),
+           .generateLines(let batchStart):
+        os_signpost(.begin, log: Signpost.logger, name: code.name,
+                    "batch start: %d", batchStart)
+      default:
+        os_signpost(.begin, log: Signpost.logger, name: code.name)
+    }
+  }
+
+  static func intervalEnd(_ code: Interval, id: OSSignpostID = .exclusive)
+  {
+    os_signpost(.end, log: Signpost.logger, name: code.name)
+  }
+
+  static func intervalStart(_ code: Interval, object: AnyObject)
+  {
+    intervalStart(code, id: OSSignpostID(log: Signpost.logger, object: object))
+  }
+
+  static func intervalEnd(_ code: Interval, object: AnyObject)
+  {
+    intervalEnd(code, id: OSSignpostID(log: Signpost.logger, object: object))
+  }
+
+  static func interval<T>(_ code: Interval,
+                          call: () throws -> T) rethrows -> T
+  {
+    let id = OSSignpostID(log: .default)
+    
+    intervalStart(code, id: id)
+    defer {
+      intervalEnd(code, id: id)
+    }
+    return try call()
+  }
 }
