@@ -1619,7 +1619,7 @@
 					"\"$(SRCROOT)/objective-git/External/libgit2/include\"",
 					"$(inherited)",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-lgcov";
 				SDKROOT = macosx;
@@ -1732,7 +1732,7 @@
 					"\"$(SRCROOT)/objective-git/External/libgit2/include\"",
 					"$(inherited)",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				OTHER_SWIFT_FLAGS = "-D DEBUG";
@@ -1777,7 +1777,7 @@
 					"\"$(SRCROOT)/objective-git/External/libgit2/include\"",
 					"$(inherited)",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 4.2;

@@ -286,7 +286,7 @@ extension NSMenuItem
   }
 }
 
-extension NSPathComponentCell
+extension NSPathControlItem
 {
   var titleString: UIString
   {

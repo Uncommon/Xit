@@ -43,7 +43,7 @@ class RolloverButton: NSButton
     if rolloverActive {
       normalImage = image
       super.image = rolloverImage  // Skip my override
-      setNeedsDisplay()
+      needsDisplay = true
     }
   }
   
@@ -51,7 +51,7 @@ class RolloverButton: NSButton
   {
     if let normalImage = self.normalImage {
       super.image = normalImage
-      setNeedsDisplay()
+      needsDisplay = true
     }
   }
 }

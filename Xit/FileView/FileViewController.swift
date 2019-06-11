@@ -249,7 +249,7 @@ class FileViewController: NSViewController
     }
     
     headerTabView.tabViewItems[1].view = commitEntryController.view
-    previewPath.setPathComponentCells([])
+    previewPath.pathItems = []
     diffController.stagingDelegate = self
   }
   
@@ -303,20 +303,20 @@ class FileViewController: NSViewController
   func updatePreviewPath(_ path: String, isFolder: Bool)
   {
     let components = (path as NSString).pathComponents
-    let cells = components.enumerated().map {
-      (index, component) -> NSPathComponentCell in
-      let cell = NSPathComponentCell()
+    let items = components.enumerated().map {
+      (index, component) -> NSPathControlItem in
       let workspace = NSWorkspace.shared
+      let item = NSPathControlItem()
       
-      cell.title = component
-      cell.image = !isFolder && (index == components.count - 1)
+      item.title = component
+      item.image = !isFolder && (index == components.count - 1)
           ? workspace.icon(forFileType: (component as NSString).pathExtension)
           : NSImage(named: NSImage.folderName)
       
-      return cell
+      return item
     }
     
-    previewPath.setPathComponentCells(cells)
+    previewPath.pathItems = items
   }
   
   func selectedModelChanged()
@@ -376,10 +376,10 @@ class FileViewController: NSViewController
     }
     else {
       DispatchQueue.main.async {
-        let cell = NSPathComponentCell()
+        let item = NSPathControlItem()
         
-        cell.titleString = .multipleSelection
-        self.previewPath.setPathComponentCells([cell])
+        item.titleString = .multipleSelection
+        self.previewPath.pathItems = [item]
       }
     }
     repo.queue.executeOffMainThread {
@@ -408,14 +408,14 @@ class FileViewController: NSViewController
   {
     DispatchQueue.main.async {
       self.contentControllers.forEach { $0.clear() }
-      self.previewPath.setPathComponentCells([])
+      self.previewPath.pathItems = []
     }
   }
   
   func clear()
   {
     contentController.clear()
-    previewPath.setPathComponentCells([])
+    previewPath.pathItems = []
   }
   
   func revert(path: String)
