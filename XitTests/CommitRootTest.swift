@@ -22,14 +22,14 @@ class CommitRootTest: XTTest
     let parentModel = CommitSelection(repository: repository, commit: parent)
     let model = CommitSelection(repository: repository, commit: commit)
     let parentTree = parentModel.fileList.treeRoot(oldTree: nil)
-    let tree1 = model.fileList.treeRoot(oldTree: nil)
-    let tree2 = model.fileList.treeRoot(oldTree: parentTree)
+    let scratchTree = model.fileList.treeRoot(oldTree: nil)
+    let relativeTree = model.fileList.treeRoot(oldTree: parentTree)
     
-    XCTAssertTrue(tree1.isEqual(tree2))
+    XCTAssertTrue(scratchTree.isEqual(relativeTree))
     
     if let deletedPath = deletedPath {
       let components = deletedPath.pathComponents
-      var node = tree2
+      var node = relativeTree
       
       for component in components {
         guard let children = node.children
@@ -58,7 +58,7 @@ class CommitRootTest: XTTest
     }
     
     if deletedPath != FileName.file1 {
-      guard let file1Node = tree2.children?.first(where:
+      guard let file1Node = relativeTree.children?.first(where:
               { ($0.representedObject as? CommitTreeItem)?.path == FileName.file1} ),
             let item = file1Node.representedObject as? CommitTreeItem
       else {
