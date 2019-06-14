@@ -19,7 +19,7 @@ public protocol Branch: AnyObject
 extension Branch
 {
   public var strippedName: String
-  { return name.removingPrefix(prefix) }
+  { return name.droppingPrefix(prefix) }
 }
 
 
@@ -150,7 +150,7 @@ public class GitLocalBranch: GitBranch, LocalBranch
       
       git_buf_free(buf)
       return String(data: data, encoding: .utf8)?
-             .removingPrefix(RefPrefixes.remotes)
+             .droppingPrefix(RefPrefixes.remotes)
     }
     set
     {
@@ -182,7 +182,7 @@ public class GitLocalBranch: GitBranch, LocalBranch
 public class GitRemoteBranch: GitBranch, RemoteBranch
 {
   public var shortName: String
-  { return name.removingPrefix(RefPrefixes.remotes) }
+  { return name.droppingPrefix(RefPrefixes.remotes) }
 
   // Getting the remote name involves looking it up in the config file
   // which is a bit expensive

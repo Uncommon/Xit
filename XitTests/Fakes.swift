@@ -112,7 +112,7 @@ class FakeRemoteBranch: RemoteBranch
   var remoteName: String?
   var name: String
   public var shortName: String
-  { return name.removingPrefix(RefPrefixes.remotes) }
+  { return name.droppingPrefix(RefPrefixes.remotes) }
   var oid: OID?
   var targetCommit: Commit?
   

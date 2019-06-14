@@ -27,7 +27,7 @@ class WorkspaceTreeBuilder
   
   func treeAtURL(_ baseURL: URL, rootPath: NSString) -> NSTreeNode
   {
-    let myPath = baseURL.path.removingPrefix(rootPath as String).nilIfEmpty ??
+    let myPath = baseURL.path.droppingPrefix(rootPath as String).nilIfEmpty ??
                  WorkspaceTreeBuilder.rootName + "/"
     let rootItem = FileChange(path: myPath)
     let node = NSTreeNode(representedObject: rootItem)
@@ -64,7 +64,7 @@ class WorkspaceTreeBuilder
         else {
           let item = FileChange(path: path)
           
-          if let status = self.changes[relativePath.removingPrefix("/")] {
+          if let status = self.changes[relativePath.droppingPrefix("/")] {
             item.status = status
           }
           childNode = NSTreeNode(representedObject: item)

@@ -266,7 +266,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
     
     cachedBuildTypes.removeAll()
     for href in hrefs {
-      let relativePath = href.removingPrefix(TeamCityAPI.rootPath)
+      let relativePath = href.droppingPrefix(TeamCityAPI.rootPath)
       
       resource(relativePath).useData(owner: self) {
         (data) in

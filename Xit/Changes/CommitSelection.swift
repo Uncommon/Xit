@@ -74,7 +74,7 @@ class CommitFileList: FileListModel
           else { break }
           
           insertDeletionNode(root: parent,
-                             subpath: change.path.removingPrefix(parentPath))
+                             subpath: change.path.droppingPrefix(parentPath))
         
         case .notFound:
           insertDeletionNode(root: root, subpath: change.path)

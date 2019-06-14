@@ -9,7 +9,7 @@ public class FileChange: NSObject
   /// Repository-relative path to use for git operations
   var gitPath: String
   {
-    return path.removingPrefix("\(WorkspaceTreeBuilder.rootName)/")
+    return path.droppingPrefix("\(WorkspaceTreeBuilder.rootName)/")
   }
   
   init(path: String, change: DeltaStatus = .unmodified)

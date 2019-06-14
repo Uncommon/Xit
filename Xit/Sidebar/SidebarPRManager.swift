@@ -38,7 +38,7 @@ class SidebarPRManager
     })
     else { return nil }
     let sourceBranch = pullRequest.sourceBranch
-                                  .removingPrefix(RefPrefixes.heads)
+                                  .droppingPrefix(RefPrefixes.heads)
     
     return remote.findChild {
       let name = ($0 as? RemoteBranchSidebarItem)?.branchObject()?.strippedName

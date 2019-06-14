@@ -41,7 +41,7 @@ public class GitTag: Tag
     else { return nil }
     
     self.ref = finalRef
-    self.name = name.removingPrefix(GitTag.tagPrefix)
+    self.name = name.droppingPrefix(GitTag.tagPrefix)
     
     let tag = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     let peelResult = git_reference_peel(tag, finalRef, GIT_OBJECT_TAG)

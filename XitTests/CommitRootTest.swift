@@ -296,7 +296,7 @@ extension NSTreeNode
   
   func commitTreeItemNode(forPath path: String, root: String = "") -> NSTreeNode?
   {
-    let relativePath = path.removingPrefix(root + "/")
+    let relativePath = path.droppingPrefix(root + "/")
     guard let topFolderName = relativePath.firstPathComponent
       else { return nil }
     let folderPath = root +/ topFolderName

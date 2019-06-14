@@ -47,12 +47,12 @@ extension NSTreeNode
       insert(fileChange: newChange)
     }
     else {
-      let subpath = newChange.path.removingPrefix(myPath).removingPrefix("/")
+      let subpath = newChange.path.droppingPrefix(myPath).droppingPrefix("/")
       guard let parentName = subpath.firstPathComponent
       else { return }
       
       if let parentNode = children?.first(where: {
-        $0.fileChange.path.removingPrefix(myPath)
+        $0.fileChange.path.droppingPrefix(myPath)
                           .firstPathComponent == parentName }) {
         parentNode.add(recursiveFileChange: newChange)
       }

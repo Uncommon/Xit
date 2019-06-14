@@ -379,14 +379,14 @@ class SidebarController: NSViewController, SidebarHandler
     switch ref {
       
       case let branchRef where branchRef.hasPrefix(RefPrefixes.heads):
-        select(branch: branchRef.removingPrefix(RefPrefixes.heads))
+        select(branch: branchRef.droppingPrefix(RefPrefixes.heads))
       
       case let remoteRef where remoteRef.hasPrefix(RefPrefixes.remotes):
         select(remoteBranch:
-            remoteRef.removingPrefix(RefPrefixes.remotes))
+            remoteRef.droppingPrefix(RefPrefixes.remotes))
       
       case let tagRef where tagRef.hasPrefix(GitTag.tagPrefix):
-        select(tag: tagRef.removingPrefix(GitTag.tagPrefix))
+        select(tag: tagRef.droppingPrefix(GitTag.tagPrefix))
       
       default:
         break

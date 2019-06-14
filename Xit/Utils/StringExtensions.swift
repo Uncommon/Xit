@@ -92,7 +92,7 @@ extension String
 {
   /// Returns the string with the given prefix removed, or returns the string
   /// unchanged if the prefix does not match.
-  func removingPrefix(_ prefix: String) -> String
+  func droppingPrefix(_ prefix: String) -> String
   {
     guard hasPrefix(prefix)
     else { return self }
@@ -102,7 +102,7 @@ extension String
   
   /// Returns the string with the given suffix removed, or returns the string
   /// unchanged if the suffix does not match.
-  func removingSuffix(_ suffix: String) -> String
+  func droppingSuffix(_ suffix: String) -> String
   {
     guard hasSuffix(suffix)
     else { return self }

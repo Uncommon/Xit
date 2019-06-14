@@ -123,7 +123,7 @@ class SidebarDataModel
             let commit = repo.commit(forSHA: sha)
       else { continue }
       
-      let name = branch.name.removingPrefix("refs/heads/")
+      let name = branch.name.droppingPrefix("refs/heads/")
       let selection = CommitSelection(repository: repo, commit: commit)
       let branchItem = LocalBranchSidebarItem(title: name, selection: selection)
       let parent = self.parent(for: name, groupItem: branchesGroup)
@@ -143,7 +143,7 @@ class SidebarDataModel
             let oid = branch.oid,
             let commit = repo.commit(forOID: oid)
       else { continue }
-      let name = branch.name.removingPrefix("refs/remotes/\(remote.title)/")
+      let name = branch.name.droppingPrefix("refs/remotes/\(remote.title)/")
       let selection = CommitSelection(repository: repo, commit: commit)
       let remoteParent = parent(for: name, groupItem: remote)
       
