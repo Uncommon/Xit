@@ -127,22 +127,21 @@ class CommitFileList: FileListModel
     guard let children = root.children
     else { return .notFound }
     
-    for child in children {
-      guard let change = child.representedObject as? FileChange
+    for node in children {
+      guard let change = node.representedObject as? FileChange
       else { continue }
       
       if change.path == path {
-        return .found(child)
+        return .found(node)
       }
       if path.hasPrefix(change.path.withSuffix("/")) {
-        let result = findNodeOrParent(root: child,
-                                      path: path.deletingFirstPathComponent)
+        let result = findNodeOrParent(root: node, path: path)
         
         switch result {
           case .found, .parent:
             return result
           case .notFound:
-            return .parent(child)
+            return .parent(node)
         }
       }
     }
