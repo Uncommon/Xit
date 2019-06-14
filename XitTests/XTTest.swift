@@ -79,13 +79,27 @@ class XTTest: XCTestCase
   {
     waitForRepoQueue()
     
-    let fileManager = FileManager.default
-    
-    XCTAssertNoThrow(try fileManager.removeItem(atPath: repoPath))
+    XCTAssertNoThrow(try retryDelete(path: repoPath))
     if let remoteRepoPath = self.remoteRepoPath {
-      XCTAssertNoThrow(try fileManager.removeItem(atPath: remoteRepoPath))
+      XCTAssertNoThrow(try retryDelete(path: remoteRepoPath))
     }
     super.tearDown()
+  }
+  
+  func retryDelete(path: String) throws
+  {
+    var error: Error? = nil
+    
+    for _ in 1...5 {
+      do {
+        try FileManager.default.removeItem(atPath: path)
+        return
+      }
+      catch let e {
+        error = e
+      }
+    }
+    try error.map { throw $0 }
   }
   
   func waitForRepoQueue()

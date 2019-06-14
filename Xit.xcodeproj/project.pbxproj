@@ -788,11 +788,13 @@
 				DD98CFFF181AE297008B79C9 /* CFRunLoop+Extensions.h */,
 				C9FCC1D01D50EB1A00AC398E /* CommitHistoryTest.swift */,
 				C98925B21DA70D3A00E5645C /* CommitLinesTest.swift */,
+				C9A05431227CF61D002BFFF5 /* CommitRootTest.swift */,
 				C94D9DEF229D9D7000E46A28 /* FakeRepo.swift */,
 				C98EBC1C212CC56600EF739E /* Fakes.swift */,
 				C9DEA4BA1E4FEC1600DF4069 /* FileListDataSourceTest.swift */,
 				C94736751DEF28F8000E3A05 /* GitSwiftTests.swift */,
 				C991904D20AE32150080687F /* IndexTreeTest.swift */,
+				C9F5331C217A90B800B2432C /* KeychainTest.swift */,
 				89CB619B1E788C6000D69FE4 /* PatchTest.swift */,
 				C98EBC1E212CCC6D00EF739E /* PullRequestManagerTest.swift */,
 				C96D24B21DFEFD9F00431317 /* SidebarControllerTest.swift */,
@@ -812,8 +814,6 @@
 				C9D896951FAB6CD300E431FE /* XTTest.swift */,
 				C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */,
 				C3FA472513D0F8E300AC4F9B /* Supporting Files */,
-				C9F5331C217A90B800B2432C /* KeychainTest.swift */,
-				C9A05431227CF61D002BFFF5 /* CommitRootTest.swift */,
 			);
 			path = XitTests;
 			sourceTree = "<group>";
