@@ -22,14 +22,14 @@ class CommitRootTest: XTTest
     let parentModel = CommitSelection(repository: repository, commit: parent)
     let model = CommitSelection(repository: repository, commit: commit)
     let parentTree = parentModel.fileList.treeRoot(oldTree: nil)
-    let tree1 = model.fileList.treeRoot(oldTree: nil)
-    let tree2 = model.fileList.treeRoot(oldTree: parentTree)
+    let scratchTree = model.fileList.treeRoot(oldTree: nil)
+    let relativeTree = model.fileList.treeRoot(oldTree: parentTree)
     
-    XCTAssertTrue(tree1.isEqual(tree2))
+    XCTAssertTrue(scratchTree.isEqual(relativeTree))
     
     if let deletedPath = deletedPath {
       let components = deletedPath.pathComponents
-      var node = tree2
+      var node = relativeTree
       
       for component in components {
         guard let children = node.children
@@ -43,7 +43,7 @@ class CommitRootTest: XTTest
           node = child
         }
         else {
-          XCTFail("unmatched parent: \(component)")
+          XCTFail("unmatched child: \(component)")
           return
         }
       }
@@ -58,7 +58,7 @@ class CommitRootTest: XTTest
     }
     
     if deletedPath != FileName.file1 {
-      guard let file1Node = tree2.children?.first(where:
+      guard let file1Node = relativeTree.children?.first(where:
               { ($0.representedObject as? CommitTreeItem)?.path == FileName.file1} ),
             let item = file1Node.representedObject as? CommitTreeItem
       else {
@@ -118,47 +118,51 @@ class CommitRootTest: XTTest
   
   func testCommitRootDeleteSubFile()
   {
-    let subFilePath = subDirName +/ subFileNameA
+    let subFilePathA = subDirName +/ subFileNameA
+    let subFilePathB = subDirName +/ subFileNameB
     let subURL = repository.repoURL +/ subDirName
     let subFileURL = subURL +/ subFileNameA
     
     XCTAssertNoThrow(try FileManager.default.createDirectory(
         at: subURL, withIntermediateDirectories: false, attributes: nil))
-    commit(newTextFile: subFilePath, content: "text")
+    commit(newTextFile: subFilePathA, content: "text")
+    commit(newTextFile: subFilePathB, content: "bbbb")
     
     XCTAssertNoThrow(try FileManager.default.removeItem(at: subFileURL))
-    XCTAssertNoThrow(try repository.stage(file: subFilePath))
+    XCTAssertNoThrow(try repository.stage(file: subFilePathA))
     XCTAssertNoThrow(try repository.commit(message: "delete", amend: false))
     
-    checkCommitTrees(deletedPath: subFilePath)
+    checkCommitTrees(deletedPath: subFilePathA)
   }
   
   func testCommitRootDeleteSubSubFile()
   {
-    let subFilePath = subDirName +/ subDirName +/ subFileNameA
+    let subFilePathA = subDirName +/ subDirName +/ subFileNameA
+    let subFilePathB = subDirName +/ subDirName +/ subFileNameB
     let subURL = repository.repoURL +/ subDirName
     let subSubURL = subURL +/ subDirName
     let subFileURL = subSubURL +/ subFileNameA
     
     XCTAssertNoThrow(try FileManager.default.createDirectory(
         at: subSubURL, withIntermediateDirectories: true, attributes: nil))
-    commit(newTextFile: subFilePath, content: "text")
-    
+    commit(newTextFile: subFilePathA, content: "text")
+    commit(newTextFile: subFilePathB, content: "bbbb")
+
     XCTAssertNoThrow(try FileManager.default.removeItem(at: subFileURL))
-    XCTAssertNoThrow(try repository.stage(file: subFilePath))
+    XCTAssertNoThrow(try repository.stage(file: subFilePathA))
     XCTAssertNoThrow(try repository.commit(message: "delete", amend: false))
     
-    checkCommitTrees(deletedPath: subFilePath)
+    checkCommitTrees(deletedPath: subFilePathA)
   }
   
   func testCommitRootDeleteRootFile()
   {
-    let subFilePath = subDirName +/ subFileNameA
+    let subFilePathA = subDirName +/ subFileNameA
     let subURL = repository.repoURL +/ subDirName
     
     XCTAssertNoThrow(try FileManager.default.createDirectory(
         at: subURL, withIntermediateDirectories: false, attributes: nil))
-    commit(newTextFile: subFilePath, content: "text")
+    commit(newTextFile: subFilePathA, content: "text")
     
     XCTAssertNoThrow(try FileManager.default.removeItem(
         at: repository.repoURL +/ FileName.file1))
