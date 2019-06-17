@@ -262,9 +262,6 @@ class SidebarController: NSViewController, SidebarHandler
       [weak self] (controller, _) in
       self?.sidebarDS.setAmending(controller.isAmending)
     }
-    repoController.addObserver(
-        self, forKeyPath: #keyPath(XTWindowController.isAmending),
-        options: [], context: nil)
   }
   
   func selectedModelChanged()

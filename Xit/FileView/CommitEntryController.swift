@@ -1,5 +1,11 @@
 import Cocoa
 
+extension NSTouchBarItem.Identifier
+{
+  static let amend = NSTouchBarItem.Identifier("com.uncommonplace.xit.amend")
+  static let commit = NSTouchBarItem.Identifier("com.uncommonplace.xit.commit")
+}
+
 /// Handles the commit message entry area.
 class CommitEntryController: NSViewController
 {
@@ -25,6 +31,8 @@ class CommitEntryController: NSViewController
   @IBOutlet weak var commitButton: NSButton!
   @IBOutlet weak var amendChcekbox: NSButton!
   @IBOutlet weak var placeholder: NSTextField!
+  
+  var touchBarAmendButton: NSSegmentedControl!
   
   var indexObserver: NSObjectProtocol?
   
@@ -70,7 +78,14 @@ class CommitEntryController: NSViewController
   
   override func awakeFromNib()
   {
+    touchBarAmendButton = NSSegmentedControl(
+        labelStrings: [.amend],
+        trackingMode: .selectAny,
+        target: self,
+        action: #selector(touchBarToggleAmend(_:)))
+    
     commitField.textContainerInset = NSSize(width: 10, height: 5)
+    commitField.touchBar = makeTouchBar()
   }
   
   func commitMessageTemplate() -> String?
@@ -118,6 +133,7 @@ class CommitEntryController: NSViewController
   {
     let newValue = sender.boolValue
   
+    touchBarAmendButton.setSelected(newValue, forSegment: 0)
     if newValue {
       updateAmendingCommitMessage()
     }
@@ -185,6 +201,19 @@ class CommitEntryController: NSViewController
       commitButton.isEnabled = false
     }
   }
+  
+  override func makeTouchBar() -> NSTouchBar?
+  {
+    let bar = NSTouchBar()
+    
+    bar.delegate = self
+    bar.defaultItemIdentifiers = [.characterPicker,
+                                  .flexibleSpace,
+                                  .candidateList,
+                                  .amend, .commit]
+    
+    return bar
+  }
 }
 
 extension CommitEntryController: NSTextDelegate
@@ -192,5 +221,45 @@ extension CommitEntryController: NSTextDelegate
   func textDidChange(_ obj: Notification)
   {
     updateCommitButton()
+  }
+}
+
+extension CommitEntryController: NSTouchBarDelegate
+{
+  func touchBar(_ touchBar: NSTouchBar,
+                makeItemForIdentifier identifier: NSTouchBarItem.Identifier)
+    -> NSTouchBarItem?
+  {
+    switch identifier {
+      
+      case .amend:
+        let item = NSCustomTouchBarItem(identifier: identifier)
+        
+        item.view = touchBarAmendButton
+        return item
+      
+      case .commit:
+        let item = NSCustomTouchBarItem(identifier: identifier)
+        let button = NSButton(titleString: .commit, target: self,
+                              action: #selector(commit(_:)))
+        
+        button.bind(.enabled, to: commitButton!,
+                    withKeyPath: #keyPath(NSButton.isEnabled), options: nil)
+        button.keyEquivalent = "\r"
+        item.view = button
+        return item
+      
+      default:
+        return nil
+    }
+  }
+  
+  @IBAction
+  func touchBarToggleAmend(_ sender: Any?)
+  {
+    let amend = touchBarAmendButton.isSelected(forSegment: 0)
+    
+    amendChcekbox.state = amend ? .on : .off
+    toggleAmend(amendChcekbox)
   }
 }

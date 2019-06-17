@@ -40,9 +40,11 @@ struct UIString: RawRepresentable
   
   // Command titles (menu, button, etc)
   static let add = ›"Add"
+  static let amend = ›"Amend"
   static let apply = ›"Apply"
   static let cancel = ›"Cancel"
   static let clear = ›"Clear"
+  static let commit = ›"Commit"
   static let delete = ›"Delete"
   static let deleteBranch = ›"Delete Branch"
   static let dontReplace = ›"Don't Replace"
@@ -266,6 +268,11 @@ extension NSButton
     get { return UIString(rawValue: title) }
     set { title = newValue.rawValue }
   }
+  
+  convenience init(titleString: UIString, target: AnyObject, action: Selector)
+  {
+    self.init(title: titleString.rawValue, target: target, action: action)
+  }
 }
 
 extension NSControl
@@ -314,5 +321,17 @@ extension NSTextField
   convenience init(labelWithUIString uiString: UIString)
   {
     self.init(labelWithString: uiString.rawValue)
+  }
+}
+
+extension NSSegmentedControl
+{
+  convenience init(labelStrings: [UIString],
+                   trackingMode: NSSegmentedControl.SwitchTracking,
+                   target: AnyObject, action: Selector)
+  {
+    self.init(labels: labelStrings.map { $0.rawValue },
+              trackingMode: trackingMode,
+              target: target, action: action)
   }
 }
