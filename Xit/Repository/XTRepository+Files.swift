@@ -118,17 +118,6 @@ extension XTRepository: FileContents
     return commitBlob(commit: commit(forOID: oid), path: path)
   }
   
-  public func stagedBlob(path: String) -> Blob?
-  {
-    guard let index = try? gtRepo.index(),
-          (try? index.refresh()) != nil,
-          let indexEntry = index.entry(withPath: path),
-          let indexObject = try? GTObject(indexEntry: indexEntry)
-    else { return nil }
-    
-    return indexObject as? GTBlob
-  }
-  
   /// Returns a file URL for a given relative path.
   public func fileURL(_ file: String) -> URL
   {
