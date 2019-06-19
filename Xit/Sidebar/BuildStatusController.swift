@@ -9,7 +9,7 @@ class BuildStatusController: NSObject
 {
   // The TeamCity server data has succeeded/failed and running/finished as
   // separate states, but we combine them for display
-  enum DisplayState
+  enum DisplayState: CaseIterable
   {
     case unknown
     case success
@@ -52,8 +52,12 @@ class BuildStatusController: NSObject
           if left != .failure {
             left = .running
           }
-        case .success, .unknown:
-          left = right
+        case .success:
+          if left == .unknown {
+            left = right
+          }
+        case .unknown:
+          break
       }
     }
   }
