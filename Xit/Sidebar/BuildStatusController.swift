@@ -32,31 +32,26 @@ class BuildStatusController: NSObject
     
     init(build: TeamCityAPI.Build)
     {
-      if build.status == .failed {
-        self = .failure
-      }
-      else if build.state == .running {
-        self = .running
-      }
-      else {
-        self = .success
+      switch build {
+        case _ where build.status == .failed:
+          self = .failure
+        case _ where build.state == .running:
+          self = .running
+        default:
+          self = .success
       }
     }
     
     static func += (left: inout DisplayState, right: DisplayState)
     {
-      switch right {
-        case .failure:
+      switch (left, right) {
+        case (_, .failure):
           left = .failure
-        case .running:
-          if left != .failure {
-            left = .running
-          }
-        case .success:
-          if left == .unknown {
-            left = right
-          }
-        case .unknown:
+        case (.unknown, .running), (.success, .running):
+          left = .running
+        case (.unknown, .success):
+          left = .success
+        default:
           break
       }
     }
