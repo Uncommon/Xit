@@ -122,12 +122,20 @@ class AccountsManager: NSObject
     let changePassword = newPassword != nil && newPassword != oldPassword
     
     if newAccount != oldAccount || changePassword {
-      if let password = newPassword ?? oldPassword {
+      if let password = oldPassword {
         try passwordStorage.change(url: oldAccount.location,
                                    newURL: newAccount.location,
                                    account: oldAccount.user,
                                    newAccount: newAccount.user,
-                                   password: password)
+                                   password: newPassword ?? password)
+      }
+      else if let password = newPassword {
+        try passwordStorage.save(url: newAccount.location,
+                                 account: newAccount.user,
+                                 password: password)
+      }
+      else {
+        throw PasswordError.passwordNotSpecified
       }
     }
     accounts[index] = newAccount

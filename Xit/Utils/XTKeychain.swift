@@ -5,6 +5,7 @@ enum PasswordError: Swift.Error
   case invalidURL
   case invalidName
   case itemNotFound
+  case passwordNotSpecified
 }
 
 public enum PasswordProtocol

@@ -126,5 +126,4 @@ class AddAccountController: SheetController
   {
     locationField.stringValue = accountType.defaultLocation
   }
-
 }
