@@ -3,7 +3,7 @@ import Foundation
 /// A simple LRU key-value cache
 class Cache<Key: Hashable, Value>
 {
-  class Wrapper
+  private class Wrapper
   {
     var accessed: Date
     let object: Value
@@ -22,6 +22,9 @@ class Cache<Key: Hashable, Value>
   
   private var contents: [Key: Wrapper] = [:]
   private let mutex = Mutex()
+  
+  /// The maximum number of entries. If the maximum is exceeded, then entries
+  /// are purged starting with the least recently accessed.
   public var maxSize: Int
   {
     didSet
@@ -37,6 +40,8 @@ class Cache<Key: Hashable, Value>
     self.maxSize = maxSize
   }
   
+  /// This is the interface for accessing, adding and deleting entries.
+  /// Accessing an entry updates its timestamp.
   subscript(key: Key) -> Value?
   {
     get
@@ -58,7 +63,7 @@ class Cache<Key: Hashable, Value>
     }
   }
   
-  func purge(forAdditionalSpace space: Int)
+  private func purge(forAdditionalSpace space: Int)
   {
     while contents.count + space > maxSize {
       if let oldest = contents.min(by: { $0.value.accessed < $1.value.accessed }) {
