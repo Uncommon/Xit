@@ -21,11 +21,14 @@ class Cache<Key: Hashable, Value>
   }
   
   private var contents: [Key: Wrapper] = [:]
+  private let mutex = Mutex()
   public var maxSize: Int
   {
     didSet
     {
-      purge(space: 0)
+      mutex.withLock {
+        purge(forAdditionalSpace: 0)
+      }
     }
   }
   
@@ -38,20 +41,24 @@ class Cache<Key: Hashable, Value>
   {
     get
     {
-      guard let result = contents[key]
-      else { return nil }
-      
-      result.touch()
-      return result.object
+      return mutex.withLock {
+        guard let result = contents[key]
+        else { return nil }
+        
+        result.touch()
+        return result.object
+      }
     }
     set
     {
-      purge(space: 1)
-      contents[key] = newValue.map { Wrapper(object: $0) }
+      mutex.withLock {
+        purge(forAdditionalSpace: 1)
+        contents[key] = newValue.map { Wrapper(object: $0) }
+      }
     }
   }
   
-  func purge(space: Int)
+  func purge(forAdditionalSpace space: Int)
   {
     while contents.count + space > maxSize {
       var oldestDate: Date?
