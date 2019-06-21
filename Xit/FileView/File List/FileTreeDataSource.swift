@@ -42,16 +42,16 @@ extension FileTreeDataSource: FileListDataSource
         
         let selectedRow = outlineView.selectedRow
         let selectedChange = self.fileChange(at: selectedRow)
-        let expanded = self.expandedItems()
+        let expanded = self.expandedPaths()
         
         outlineView.reloadData()
-        self.expandItems(expanded)
+        self.expand(paths: expanded)
         self.reselect(item: selectedChange, oldRow: selectedRow)
       }
     }
   }
   
-  func expandedItems() -> [String]
+  private func expandedPaths() -> [String]
   {
     var result = [String]()
     
@@ -65,15 +65,16 @@ extension FileTreeDataSource: FileListDataSource
     return result
   }
   
-  func expandItems(_ expanded: [String])
+  private func expand(paths: [String])
   {
-    for rowIndex in 0..<outlineView.numberOfRows {
-      guard let change = fileChange(at: rowIndex)
-      else { continue }
-      
-      if expanded.contains(change.gitPath) {
+    var rowIndex = 0
+    
+    while rowIndex < outlineView.numberOfRows {
+      if let change = fileChange(at: rowIndex),
+         paths.contains(change.gitPath) {
         outlineView.expandItem(outlineView.item(atRow: rowIndex))
       }
+      rowIndex += 1
     }
   }
   
