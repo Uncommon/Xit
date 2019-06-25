@@ -8,8 +8,8 @@ protocol WebActionDelegateHost
 
 class WebViewController: NSViewController
 {
-  @IBOutlet weak var webView: WebView!
-  var savedTabWidth: UInt?
+  @IBOutlet weak var webView: WKWebView!
+  var savedTabWidth: UInt = Default.tabWidth
   var savedWrapping: TextWrapping?
   var fontObserver: NSObjectProtocol?
   private var appearanceObserver: NSKeyValueObservation?
@@ -55,24 +55,24 @@ class WebViewController: NSViewController
   
   deinit
   {
-    webView.uiDelegate = nil
-    webView.frameLoadDelegate = nil
+    webView.navigationDelegate = nil
   }
   
   func updateFont()
   {
     let font = PreviewsPrefsController.Default.font()
-    
-    webView?.preferences.standardFontFamily = font.familyName
-    webView?.preferences.defaultFontSize = Int32(font.pointSize)
-    webView?.preferences.defaultFixedFontSize = Int32(font.pointSize)
+    guard let familyName = font.familyName
+    else { return }
+
+    setDocumentProperty("font-family", value: familyName)
+    setDocumentProperty("font-size", value: "\(font.pointSize)")
   }
   
   public func load(html: String, baseURL: URL = WebViewController.baseURL)
   {
     if let webView = self.webView {
       Thread.performOnMainThread {
-        webView.mainFrame.loadHTMLString(html, baseURL: baseURL)
+        webView.loadHTMLString(html, baseURL: baseURL)
       }
     }
   }
@@ -91,6 +91,13 @@ class WebViewController: NSViewController
     let defaultWidth = UInt(UserDefaults.standard.integer(forKey: "tabWidth"))
     
     tabWidth = (defaultWidth == 0) ? Default.tabWidth : defaultWidth
+  }
+  
+  func setDocumentProperty(_ property: String, value: String)
+  {
+    webView.evaluateJavaScript("""
+        document.documentElement.style.setProperty('\(property)', '\(value)')
+        """, completionHandler: nil)
   }
   
   func wrappingWidthAdjustment() -> Int { return 0 }
@@ -138,11 +145,7 @@ class WebViewController: NSViewController
   
   func setColor(name: String, color: NSColor)
   {
-    let cssColor = color.cssRGB
-    
-    _ = webView.stringByEvaluatingJavaScript(from: """
-          document.documentElement.style.setProperty("--\(name)", "\(cssColor)")
-          """)
+    setDocumentProperty("--\(name)", value: color.cssRGB)
   }
 }
 
@@ -152,19 +155,11 @@ extension WebViewController: TabWidthVariable
   {
     get
     {
-      guard let style = webView?.mainFrameDocument.body.style,
-            let tabSizeString = style.getPropertyValue("tab-size"),
-            let tabSize = UInt(tabSizeString)
-      else { return Default.tabWidth }
-      
-      return tabSize
+      return savedTabWidth
     }
     set
     {
-      guard let style = webView?.mainFrameDocument.body.style
-      else { return }
-      
-      style.setProperty("tab-size", value: "\(newValue)", priority: "important")
+      setDocumentProperty("tab-width", value: "\(newValue)")
       savedTabWidth = newValue
     }
   }
@@ -191,85 +186,34 @@ extension WebViewController: WrappingVariable
     }
     set
     {
-      guard let style = webView?.mainFrameDocument.body.style
-      else { return }
-      var wrapWidth = "100%"
+      let wrapWidth: String
       
-      style.setProperty("--wrapping", value: "\(newValue.cssValue)",
-                        priority: "important")
       switch newValue {
         case .columns(let columns):
           wrapWidth = "\(columns+wrappingWidthAdjustment())ch"
         default:
-          break
+          wrapWidth = "100%"
       }
-      style.setProperty("--wrapwidth", value: wrapWidth, priority: "important")
+      setDocumentProperty("--wrapping", value: "\(newValue.cssValue) !important")
+      setDocumentProperty("--wrapwidth", value: "\(wrapWidth) !important")
       savedWrapping = newValue
     }
   }
 }
 
-extension WebViewController: WebFrameLoadDelegate
+extension WebViewController: WKNavigationDelegate
 {
-  func webView(_ sender: WebView!, didFinishLoadFor frame: WebFrame!)
+  func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!)
   {
-    if let scrollView = sender.mainFrame.frameView.documentView
-                        .enclosingScrollView {
+    if let scrollView = webView.enclosingScrollView {
       scrollView.hasHorizontalScroller = false
       scrollView.horizontalScrollElasticity = .none
       scrollView.backgroundColor = NSColor(deviceWhite: 0.8, alpha: 1.0)
     }
     
-    if let webActionDelegate = (self as? WebActionDelegateHost)?
-                               .webActionDelegate {
-      sender.windowScriptObject.setValue(webActionDelegate,
-                                         forKey: "webActionDelegate")
-    }
-    
-    if let savedTabWidth = self.savedTabWidth {
-      tabWidth = savedTabWidth
-    }
-    else {
-      setDefaultTabWidth()
-    }
+    tabWidth = savedTabWidth
     wrapping = savedWrapping ?? PreviewsPrefsController.Default.wrapping()
     updateFont()
     updateColors()
-  }
-}
-
-let WebMenuItemTagInspectElement = 2024
-
-extension WebViewController: WebUIDelegate
-{
-  static let allowedCMTags = [
-      WebMenuItemTagCopy,
-      WebMenuItemTagCut,
-      WebMenuItemTagPaste,
-      WebMenuItemTagOther,
-      WebMenuItemTagSearchInSpotlight,
-      WebMenuItemTagSearchWeb,
-      WebMenuItemTagLookUpInDictionary,
-      WebMenuItemTagOpenWithDefaultApplication,
-      WebMenuItemTagInspectElement,
-      ]
-  
-  func webView(_ sender: WebView!,
-               contextMenuItemsForElement element: [AnyHashable: Any]!,
-               defaultMenuItems: [Any]!) -> [Any]!
-  {
-    return defaultMenuItems.compactMap {
-      (item) in
-      guard let menuItem = item as? NSMenuItem
-      else { return nil }
-      
-      return WebViewController.allowedCMTags.contains(menuItem.tag) ? item : nil
-    }
-  }
-  
-  func webView(_ webView: WebView!,
-               dragDestinationActionMaskFor draggingInfo: NSDraggingInfo!) -> Int
-  {
-    return 0
   }
 }

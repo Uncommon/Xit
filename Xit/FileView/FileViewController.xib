@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
-        <plugIn identifier="com.apple.WebKitIBPlugin" version="14490.70"/>
+        <plugIn identifier="com.apple.WebKit2IBPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -255,79 +254,79 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="467" height="169"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <webView ambiguous="YES" maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e4U-lz-eEd">
-                                                        <rect key="frame" x="0.0" y="169" width="539" height="169"/>
-                                                        <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
-                                                            <nil key="identifier"/>
-                                                        </webPreferences>
+                                                    <wkWebView wantsLayer="YES" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uiN-xv-wXq">
+                                                        <rect key="frame" x="0.0" y="0.0" width="467" height="169"/>
+                                                        <wkWebViewConfiguration key="configuration">
+                                                            <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
+                                                            <wkPreferences key="preferences"/>
+                                                        </wkWebViewConfiguration>
                                                         <connections>
-                                                            <outlet property="UIDelegate" destination="fX5-fH-Hy5" id="VV9-Tp-VXI"/>
-                                                            <outlet property="frameLoadDelegate" destination="fX5-fH-Hy5" id="Ncv-4m-teW"/>
+                                                            <outlet property="navigationDelegate" destination="fX5-fH-Hy5" id="MKp-FR-jzT"/>
                                                         </connections>
-                                                    </webView>
+                                                    </wkWebView>
                                                 </subviews>
                                                 <constraints>
-                                                    <constraint firstItem="e4U-lz-eEd" firstAttribute="top" secondItem="uQh-Df-4fp" secondAttribute="top" id="EmF-2L-uDk"/>
-                                                    <constraint firstAttribute="trailing" secondItem="e4U-lz-eEd" secondAttribute="trailing" id="eFx-xr-Lys"/>
-                                                    <constraint firstItem="e4U-lz-eEd" firstAttribute="leading" secondItem="uQh-Df-4fp" secondAttribute="leading" id="r0A-fa-RC1"/>
-                                                    <constraint firstAttribute="bottom" secondItem="e4U-lz-eEd" secondAttribute="bottom" id="xLd-dN-vDm"/>
+                                                    <constraint firstItem="uiN-xv-wXq" firstAttribute="leading" secondItem="uQh-Df-4fp" secondAttribute="leading" id="gd7-J9-7Vg"/>
+                                                    <constraint firstAttribute="bottom" secondItem="uiN-xv-wXq" secondAttribute="bottom" id="nbK-H2-7se"/>
+                                                    <constraint firstAttribute="trailing" secondItem="uiN-xv-wXq" secondAttribute="trailing" id="wdA-d7-a18"/>
+                                                    <constraint firstItem="uiN-xv-wXq" firstAttribute="top" secondItem="uQh-Df-4fp" secondAttribute="top" id="xuE-2H-n67"/>
                                                 </constraints>
                                             </view>
                                         </tabViewItem>
                                         <tabViewItem label="Blame" identifier="blame" id="JF7-NN-dRq">
                                             <view key="view" id="xj3-cf-mv8">
-                                                <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="467" height="169"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <progressIndicator hidden="YES" wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="2Oq-sY-aab">
-                                                        <rect key="frame" x="254" y="69" width="32" height="32"/>
+                                                        <rect key="frame" x="218" y="69" width="32" height="32"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="32" id="E9y-K2-scC"/>
                                                             <constraint firstAttribute="width" constant="32" id="c1v-M7-HvR"/>
                                                         </constraints>
                                                     </progressIndicator>
-                                                    <webView maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jwZ-U5-r8o">
-                                                        <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
-                                                        <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
-                                                            <nil key="identifier"/>
-                                                        </webPreferences>
+                                                    <wkWebView wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="euS-Up-lba">
+                                                        <rect key="frame" x="0.0" y="0.0" width="467" height="169"/>
+                                                        <wkWebViewConfiguration key="configuration">
+                                                            <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
+                                                            <wkPreferences key="preferences"/>
+                                                        </wkWebViewConfiguration>
                                                         <connections>
-                                                            <outlet property="UIDelegate" destination="qWY-M6-3vs" id="Bsy-Kb-1VR"/>
-                                                            <outlet property="frameLoadDelegate" destination="qWY-M6-3vs" id="9BX-mN-TZP"/>
+                                                            <outlet property="navigationDelegate" destination="qWY-M6-3vs" id="4k2-W8-JAe"/>
                                                         </connections>
-                                                    </webView>
+                                                    </wkWebView>
                                                 </subviews>
                                                 <constraints>
-                                                    <constraint firstAttribute="bottom" secondItem="jwZ-U5-r8o" secondAttribute="bottom" id="Mdl-i6-pie"/>
-                                                    <constraint firstItem="jwZ-U5-r8o" firstAttribute="leading" secondItem="xj3-cf-mv8" secondAttribute="leading" id="YmD-Df-AHF"/>
+                                                    <constraint firstItem="euS-Up-lba" firstAttribute="top" secondItem="xj3-cf-mv8" secondAttribute="top" id="5RS-SY-l4E"/>
+                                                    <constraint firstAttribute="bottom" secondItem="euS-Up-lba" secondAttribute="bottom" id="BhD-eh-Ao6"/>
+                                                    <constraint firstAttribute="trailing" secondItem="euS-Up-lba" secondAttribute="trailing" id="MfS-aH-ZTO"/>
+                                                    <constraint firstItem="euS-Up-lba" firstAttribute="leading" secondItem="xj3-cf-mv8" secondAttribute="leading" id="NOS-x0-jiY"/>
                                                     <constraint firstItem="2Oq-sY-aab" firstAttribute="centerX" secondItem="xj3-cf-mv8" secondAttribute="centerX" id="kIr-gm-9Hg"/>
                                                     <constraint firstItem="2Oq-sY-aab" firstAttribute="centerY" secondItem="xj3-cf-mv8" secondAttribute="centerY" id="kkt-Vn-yp7"/>
-                                                    <constraint firstAttribute="trailing" secondItem="jwZ-U5-r8o" secondAttribute="trailing" id="qGi-tl-Etd"/>
-                                                    <constraint firstItem="jwZ-U5-r8o" firstAttribute="top" secondItem="xj3-cf-mv8" secondAttribute="top" id="s3B-wN-VT2"/>
                                                 </constraints>
                                             </view>
                                         </tabViewItem>
                                         <tabViewItem label="Text" identifier="text" id="53">
                                             <view key="view" id="56">
-                                                <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="467" height="169"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <webView maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="57">
-                                                        <rect key="frame" x="0.0" y="0.0" width="539" height="169"/>
-                                                        <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
-                                                            <nil key="identifier"/>
-                                                        </webPreferences>
+                                                    <wkWebView wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AhA-R5-keX">
+                                                        <rect key="frame" x="0.0" y="0.0" width="467" height="169"/>
+                                                        <wkWebViewConfiguration key="configuration">
+                                                            <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
+                                                            <wkPreferences key="preferences"/>
+                                                        </wkWebViewConfiguration>
                                                         <connections>
-                                                            <outlet property="UIDelegate" destination="58" id="65"/>
-                                                            <outlet property="frameLoadDelegate" destination="58" id="66"/>
+                                                            <outlet property="navigationDelegate" destination="58" id="6VD-KR-FxP"/>
                                                         </connections>
-                                                    </webView>
+                                                    </wkWebView>
                                                 </subviews>
                                                 <constraints>
-                                                    <constraint firstAttribute="bottom" secondItem="57" secondAttribute="bottom" id="LVD-F8-nmQ"/>
-                                                    <constraint firstItem="57" firstAttribute="leading" secondItem="56" secondAttribute="leading" id="Rco-CE-zu9"/>
-                                                    <constraint firstItem="57" firstAttribute="top" secondItem="56" secondAttribute="top" id="Z5J-ns-lQT"/>
-                                                    <constraint firstAttribute="trailing" secondItem="57" secondAttribute="trailing" id="wA6-p5-qFW"/>
+                                                    <constraint firstAttribute="bottom" secondItem="AhA-R5-keX" secondAttribute="bottom" id="AyF-kk-vOf"/>
+                                                    <constraint firstAttribute="trailing" secondItem="AhA-R5-keX" secondAttribute="trailing" id="Grp-Fn-jsd"/>
+                                                    <constraint firstItem="AhA-R5-keX" firstAttribute="top" secondItem="56" secondAttribute="top" id="ggX-6P-gEl"/>
+                                                    <constraint firstItem="AhA-R5-keX" firstAttribute="leading" secondItem="56" secondAttribute="leading" id="tS8-NJ-Ir7"/>
                                                 </constraints>
                                             </view>
                                         </tabViewItem>
@@ -361,7 +360,7 @@
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                     <popUpButtonCell key="cell" type="square" bezelStyle="shadowlessSquare" alignment="left" lineBreakMode="truncatingTail" imageScaling="proportionallyDown" inset="2" pullsDown="YES" altersStateOfSelectedItem="NO" id="q3g-By-2Hk">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="menu"/>
+                                        <font key="font" metaFont="system"/>
                                         <menu key="menu" id="7Di-Wa-20v">
                                             <items>
                                                 <menuItem image="NSActionTemplate" hidden="YES" id="3vS-Np-NuM">
@@ -512,22 +511,22 @@
         </customObject>
         <customObject id="58" customClass="TextPreviewController" customModule="Xit" customModuleProvider="target">
             <connections>
-                <outlet property="view" destination="57" id="60"/>
-                <outlet property="webView" destination="57" id="BJd-vu-Ecp"/>
+                <outlet property="view" destination="AhA-R5-keX" id="iS1-zk-KJO"/>
+                <outlet property="webView" destination="AhA-R5-keX" id="UHS-R2-faX"/>
             </connections>
         </customObject>
         <customObject id="fX5-fH-Hy5" customClass="FileDiffController" customModule="Xit" customModuleProvider="target">
             <connections>
-                <outlet property="view" destination="e4U-lz-eEd" id="94Q-P5-Sfh"/>
-                <outlet property="webView" destination="e4U-lz-eEd" id="hsU-jx-H3R"/>
+                <outlet property="view" destination="uiN-xv-wXq" id="Xd4-wz-EA5"/>
+                <outlet property="webView" destination="uiN-xv-wXq" id="9JB-cP-txM"/>
             </connections>
         </customObject>
         <viewController id="Aqt-Qq-ti3" customClass="PreviewController" customModule="Xit" customModuleProvider="target"/>
         <customObject id="qWY-M6-3vs" customClass="BlameViewController" customModule="Xit" customModuleProvider="target">
             <connections>
                 <outlet property="spinner" destination="2Oq-sY-aab" id="syc-ah-Sk6"/>
-                <outlet property="view" destination="jwZ-U5-r8o" id="3DG-Pe-5cJ"/>
-                <outlet property="webView" destination="jwZ-U5-r8o" id="Epo-mo-RK5"/>
+                <outlet property="view" destination="euS-Up-lba" id="Fhq-Mh-cWS"/>
+                <outlet property="webView" destination="euS-Up-lba" id="ia4-7K-Czj"/>
             </connections>
         </customObject>
     </objects>
