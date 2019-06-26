@@ -12,8 +12,6 @@ class FileDiffController: WebViewController,
                           WhitespaceVariable,
                           ContextVariable
 {
-  // swiftlint:disable:next weak_delegate
-  let actionDelegate: DiffActionDelegate = DiffActionDelegate()
   weak var stagingDelegate: HunkStaging?
   var stagingType: StagingType = .none
   var patch: Patch?
@@ -33,11 +31,6 @@ class FileDiffController: WebViewController,
     didSet { configureDiffMaker() }
   }
 
-  override func viewDidLoad()
-  {
-    actionDelegate.controller = self
-  }
-  
   override func wrappingWidthAdjustment() -> Int
   {
     return 12
@@ -82,9 +75,12 @@ class FileDiffController: WebViewController,
   
   func button(title: UIString, action: String, index: Int) -> String
   {
-    return "<span class='hunkbutton' " +
-           "onClick='window.webActionDelegate.\(action)(\(index))'" +
-           ">\(title.rawValue)</span>"
+    return """
+        <span class='hunkbutton' onClick='\
+        window.webkit.messageHandlers.controller\
+        .postMessage({"action":"\(action)","index":\(index)})'>\
+        \(title.rawValue)</span>"
+        """
   }
   
   func hunkHeader(hunk: DiffHunk, index: Int, lines: [String]?) -> String
@@ -256,13 +252,23 @@ class FileDiffController: WebViewController,
       self.stagingDelegate?.discard(hunk: hunk)
     }
   }
-}
-
-extension FileDiffController: WebActionDelegateHost
-{
-  var webActionDelegate: Any
+  
+  override func webMessage(_ params: [String : Any])
   {
-    return actionDelegate
+    guard let action = params["action"] as? String,
+          let index = params["index"] as? Int
+    else { return }
+    
+    switch action {
+      case "stageHunk":
+        stageHunk(index: index)
+      case "unstageHunk":
+        unstageHunk(index: index)
+      case "discardHunk":
+        discardHunk(index: index)
+      default:
+        break
+    }
   }
 }
 
@@ -301,51 +307,5 @@ extension FileDiffController: XTFileContentController
       default:
         loadNotice(.multipleItemsSelected)
     }
-  }
-}
-
-class DiffActionDelegate: NSObject
-{
-  weak var controller: FileDiffController!
-  
-  override class func isSelectorExcluded(fromWebScript selector: Selector) -> Bool
-  {
-    switch selector {
-      case #selector(DiffActionDelegate.stageHunk(index:)),
-           #selector(DiffActionDelegate.unstageHunk(index:)),
-           #selector(DiffActionDelegate.discardHunk(index:)):
-        return false
-      default:
-        return true
-    }
-  }
-  
-  override class func webScriptName(for selector: Selector) -> String
-  {
-    switch selector {
-      case #selector(DiffActionDelegate.stageHunk(index:)):
-        return "stageHunk"
-      case #selector(DiffActionDelegate.unstageHunk(index:)):
-        return "unstageHunk"
-      case #selector(DiffActionDelegate.discardHunk(index:)):
-        return "discardHunk"
-      default:
-        return ""
-    }
-  }
-  
-  @objc func stageHunk(index: Int)
-  {
-    controller.stageHunk(index: index)
-  }
-  
-  @objc func unstageHunk(index: Int)
-  {
-    controller.unstageHunk(index: index)
-  }
-  
-  @objc func discardHunk(index: Int)
-  {
-    controller.discardHunk(index: index)
   }
 }

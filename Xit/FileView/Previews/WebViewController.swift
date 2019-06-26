@@ -1,11 +1,6 @@
 import Cocoa
 import WebKit
 
-protocol WebActionDelegateHost
-{
-  var webActionDelegate: Any { get }
-}
-
 class WebViewController: NSViewController
 {
   @IBOutlet weak var webView: WKWebView!
@@ -33,10 +28,13 @@ class WebViewController: NSViewController
   
   override func awakeFromNib()
   {
+    webView.configuration.userContentController.add(self, name: "controller")
+    
     webView.setValue(false, forKey: "drawsBackground")
-    fontObserver = NotificationCenter.default.addObserver(forName: .XTFontChanged,
-                                                          object: nil,
-                                                          queue: .main) {
+    fontObserver = NotificationCenter.default
+                                     .addObserver(forName: .XTFontChanged,
+                                                  object: nil,
+                                                  queue: .main) {
       [weak self] (_) in
       self?.updateFont()
     }
@@ -146,6 +144,23 @@ class WebViewController: NSViewController
   func setColor(name: String, color: NSColor)
   {
     setDocumentProperty("--\(name)", value: color.cssRGB)
+  }
+  
+  func webMessage(_ params: [String: Any])
+  {
+    // override
+  }
+}
+
+extension WebViewController: WKScriptMessageHandler
+{
+  func userContentController(_ userContentController: WKUserContentController,
+                             didReceive message: WKScriptMessage)
+  {
+    guard let params = message.body as? [String: Any]
+    else { return }
+    
+    webMessage(params)
   }
 }
 
