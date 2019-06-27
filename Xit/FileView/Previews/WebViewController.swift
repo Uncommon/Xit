@@ -28,7 +28,12 @@ class WebViewController: NSViewController
   
   override func awakeFromNib()
   {
-    webView.configuration.userContentController.add(self, name: "controller")
+    webView.configuration.userContentController
+           .add(self, name: "controller")
+#if DEBUG
+    webView.configuration.preferences
+           .setValue(true, forKey: "developerExtrasEnabled")
+#endif
     
     webView.setValue(false, forKey: "drawsBackground")
     fontObserver = NotificationCenter.default

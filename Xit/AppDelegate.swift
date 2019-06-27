@@ -15,9 +15,6 @@ class AppDelegate: NSObject
   override init()
   {
     super.init()
-#if DEBUG
-    UserDefaults.standard.register(defaults: ["WebKitDeveloperExtras": true])
-#endif
   }
   
   @IBAction
