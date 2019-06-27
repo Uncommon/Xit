@@ -8,6 +8,7 @@ body {
   tab-size: 4;
 }
 table {
+  font-size: inherit;
   background-color: var(--leftBackground);
   border: 0;
   border-collapse: collapse;

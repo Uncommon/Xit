@@ -19,7 +19,8 @@ class WebViewController: NSViewController
   
   static func htmlTemplate(_ name: String) -> String
   {
-    guard let htmlURL = Bundle.main.url(forResource: name, withExtension: "html",
+    guard let htmlURL = Bundle.main.url(forResource: name,
+                                        withExtension: "html",
                                         subdirectory: "html")
     else { return "" }
     
