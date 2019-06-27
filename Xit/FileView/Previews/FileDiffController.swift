@@ -79,7 +79,7 @@ class FileDiffController: WebViewController,
         <span class='hunkbutton' onClick='\
         window.webkit.messageHandlers.controller\
         .postMessage({"action":"\(action)","index":\(index)})'>\
-        \(title.rawValue)</span>"
+        \(title.rawValue)</span>
         """
   }
   
@@ -91,7 +91,7 @@ class FileDiffController: WebViewController,
     
     var header = "<div class='hunkhead'>\n"
     
-    if lines.map({ hunk.canApply(to: $0) }) ?? false {
+    if lines.map({ hunk.canApply(to: $0) }) ?? true {
       switch stagingType {
         case .index:
           header += button(title: .unstage, action: "unstageHunk",
