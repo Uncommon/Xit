@@ -11,16 +11,30 @@ extension git_status_t
   }
 }
 
-extension git_checkout_options
+protocol GitVersionedOptions
 {
-  /// Returns a `git_checkout_options` struct initialized with default values.
-  static func defaultOptions() -> git_checkout_options
+  typealias Initializer = (UnsafeMutablePointer<Self>?, UInt32) -> Int32
+  static var version: Int32 { get }
+  static var initializer: Initializer { get }
+
+  init()
+}
+
+extension GitVersionedOptions
+{
+  static func defaultOptions() -> Self
   {
-    var options = git_checkout_options()
+    var options = Self()
     
-    git_checkout_init_options(&options, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
+    _ = Self.initializer(&options, UInt32(Self.version))
     return options
   }
+}
+
+extension git_checkout_options: GitVersionedOptions
+{
+  static var version: Int32 { return GIT_CHECKOUT_OPTIONS_VERSION }
+  static var initializer: Initializer { return git_checkout_init_options }
   
   static func defaultOptions(strategy: git_checkout_strategy_t)
     -> git_checkout_options
@@ -32,37 +46,78 @@ extension git_checkout_options
   }
 }
 
-extension git_merge_options
+extension git_fetch_options: GitVersionedOptions
 {
-  static func defaultOptions() -> git_merge_options
+  static var version: Int32 { return GIT_FETCH_OPTIONS_VERSION }
+  static var initializer: Initializer { return git_fetch_init_options }
+}
+
+extension git_fetch_options
+{
+  init(fetchOptions: FetchOptions)
   {
-    var options = git_merge_options()
+    self.init()
+    _ = git_fetch_options.initializer(&self, UInt32(git_fetch_options.version))
+
+    var mutableOptions = fetchOptions
     
-    git_merge_init_options(&options, UInt32(GIT_MERGE_OPTIONS_VERSION))
-    return options
+    git_remote_init_callbacks(&callbacks, UInt32(GIT_REMOTE_CALLBACKS_VERSION))
+    callbacks.payload = UnsafeMutableRawPointer(&mutableOptions)
+    callbacks.credentials = {
+      (cred, url, user, allowed, payload) in
+      guard let opts = payload?.bindMemory(to: FetchOptions.self, capacity: 1)
+      else { return -1 }
+      
+      if let (user, password) = opts.pointee.passwordBlock() {
+        return git_cred_userpass_plaintext_new(cred, user, password)
+      }
+      else {
+        return 1
+      }
+    }
+    callbacks.transfer_progress = {
+      (stats, payload) in
+      guard let opts = payload?.bindMemory(to: FetchOptions.self, capacity: 1),
+            let progress = stats?.pointee
+      else { return -1 }
+      let transferProgress = GitTransferProgress(gitProgress: progress)
+      
+      return opts.pointee.progressBlock(transferProgress) ? 0 : -1
+    }
+    prune = fetchOptions.pruneBranches ? GIT_FETCH_PRUNE : GIT_FETCH_NO_PRUNE
+    download_tags = fetchOptions.downloadTags ? GIT_REMOTE_DOWNLOAD_TAGS_ALL
+                                              : GIT_REMOTE_DOWNLOAD_TAGS_AUTO
   }
 }
 
-extension git_status_options
+extension git_merge_options: GitVersionedOptions
 {
-  static func defaultOptions() -> git_status_options
-  {
-    var options = git_status_options()
-    
-    git_status_init_options(&options, UInt32(GIT_STATUS_OPTIONS_VERSION))
-    return options
-  }
+  static var version: Int32 { return GIT_MERGE_OPTIONS_VERSION }
+  static var initializer: Initializer { return git_merge_init_options }
 }
 
-extension git_stash_apply_options
+extension git_push_options: GitVersionedOptions
 {
-  static func defaultOptions() -> git_stash_apply_options
-  {
-    var options = git_stash_apply_options()
-    
-    git_stash_apply_init_options(&options, UInt32(GIT_STASH_APPLY_OPTIONS_VERSION))
-    return options
-  }
+  static var version: Int32 { return GIT_PUSH_OPTIONS_VERSION }
+  static var initializer: Initializer { return git_push_init_options }
+}
+
+extension git_remote_callbacks: GitVersionedOptions
+{
+  static var version: Int32 { return GIT_REMOTE_CALLBACKS_VERSION }
+  static var initializer: Initializer { return git_remote_init_callbacks }
+}
+
+extension git_status_options: GitVersionedOptions
+{
+  static var version: Int32 { return GIT_STATUS_OPTIONS_VERSION }
+  static var initializer: Initializer { return git_status_init_options }
+}
+
+extension git_stash_apply_options: GitVersionedOptions
+{
+  static var version: Int32 { return GIT_STASH_APPLY_OPTIONS_VERSION }
+  static var initializer: Initializer { return git_stash_apply_init_options }
 }
 
 extension Array where Element == String

@@ -26,23 +26,24 @@ extension XTRepository: RemoteCommunication
     }
   }
   
-  public func fetch(remote: Remote,
-                    options: FetchOptions) throws
+  public func fetch(remote: Remote, options: FetchOptions) throws
   {
     try performWriting {
-      let gtOptions = self.fetchOptions(downloadTags: options.downloadTags,
-                                        pruneBranches: options.pruneBranches,
-                                        passwordBlock: options.passwordBlock)
-      guard let gtRemote = GTRemote(gitRemote: (remote as! GitRemote).remote,
-                                    in: gtRepo)
-      else { throw RepoError.unexpected }
+      var options = git_fetch_options(fetchOptions: options)
+      let gitRemote = (remote as! GitRemote).remote
+      var refspecs = git_strarray.init()
+      var result: Int32
       
-      try self.gtRepo.fetch(gtRemote, withOptions: gtOptions) {
-        (progress, stop) in
-        let transferProgress = GitTransferProgress(gitProgress: progress.pointee)
-        
-        stop.pointee = ObjCBool(options.progressBlock(transferProgress))
+      result = git_remote_get_fetch_refspecs(&refspecs, gitRemote)
+      try RepoError.throwIfGitError(result)
+      defer {
+        git_strarray_free(&refspecs)
       }
+      
+      let message = "fetching remote \(remote.name ?? "[unknown]")"
+      
+      result = git_remote_fetch(gitRemote, &refspecs, &options, message)
+      try RepoError.throwIfGitError(result)
     }
   }
   
@@ -63,21 +64,21 @@ extension XTRepository: RemoteCommunication
   }
 }
 
+struct GitTransferProgress: TransferProgress
+{
+  let gitProgress: git_transfer_progress
+  
+  var totalObjects: UInt32    { return gitProgress.total_objects }
+  var indexedObjects: UInt32  { return gitProgress.indexed_objects }
+  var receivedObjects: UInt32 { return gitProgress.received_objects }
+  var localObjects: UInt32    { return gitProgress.local_objects }
+  var totalDeltas: UInt32     { return gitProgress.total_deltas }
+  var indexedDeltas: UInt32   { return gitProgress.indexed_deltas }
+  var receivedBytes: Int      { return gitProgress.received_bytes }
+}
+
 extension XTRepository
 {
-  struct GitTransferProgress: TransferProgress
-  {
-    let gitProgress: git_transfer_progress
-    
-    var totalObjects: UInt32    { return gitProgress.total_objects }
-    var indexedObjects: UInt32  { return gitProgress.indexed_objects }
-    var receivedObjects: UInt32 { return gitProgress.received_objects }
-    var localObjects: UInt32    { return gitProgress.local_objects }
-    var totalDeltas: UInt32     { return gitProgress.total_deltas }
-    var indexedDeltas: UInt32   { return gitProgress.indexed_deltas }
-    var receivedBytes: Int      { return gitProgress.received_bytes }
-  }
-  
   func credentialProvider(_ passwordBlock: @escaping () -> (String, String)?)
       -> GTCredentialProvider
   {
