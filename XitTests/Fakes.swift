@@ -22,6 +22,13 @@ class FakeRemote: Remote
   func rename(_ name: String) throws {}
   func updateURLString(_ URLString: String) throws {}
   func updatePushURLString(_ URLString: String) throws {}
+
+  func withConnection(direction: RemoteConnectionDirection,
+                      progress: PushProgressCallback?,
+                      callback: () throws -> Void) throws
+  {
+    try callback()
+  }
 }
 
 class FakeStash: Stash
