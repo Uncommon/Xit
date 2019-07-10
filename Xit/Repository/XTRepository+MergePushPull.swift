@@ -2,26 +2,42 @@ import Foundation
 
 extension XTRepository: RemoteCommunication
 {
-  public func push(branch: Branch,
+  public func push(branch: LocalBranch,
                    remote: Remote,
-                   passwordBlock: @escaping () -> (String, String)?,
-                   progressBlock: @escaping (UInt32, UInt32, size_t) -> Bool)
-                   throws
+                   callbacks: RemoteCallbacks) throws
   {
+    guard let gitRemote = remote as? GitRemote
+    else { throw RepoError.unexpected }
+
     try performWriting {
-      let provider = self.credentialProvider(passwordBlock)
-      let options = [ GTRepositoryRemoteOptionsCredentialProvider: provider ]
-      guard let localBranch = branch as? GitLocalBranch,
-            let localGTRef = GTReference(gitReference: localBranch.branchRef,
-                                         repository: gtRepo),
-            let localGTBranch = GTBranch(reference: localGTRef),
-            let gtRemote = GTRemote(gitRemote: (remote as! GitRemote).remote,
-                                    in: gtRepo)
-      else { throw RepoError.unexpected }
+      // If the remote tracking branch is on a different remote,
+      // we may want to update the tracking branch
       
-      try self.gtRepo.push(localGTBranch, to: gtRemote, withOptions: options) {
-        (current, total, bytes, stop) in
-        stop.pointee = ObjCBool(progressBlock(current, total, bytes))
+      let localBranchName = branch.name
+      let remoteBranchName = branch.trackingBranchName ?? branch.name
+      let refSpec = "\(localBranchName):\(remoteBranchName)"
+      var options = git_push_options.defaultOptions()
+      
+      options.callbacks = git_remote_callbacks(callbacks: callbacks)
+
+      try remote.withConnection(direction: .push,
+                                progress: callbacks.uploadProgress) {
+        var result: Int32
+          
+        result = [refSpec].withGitStringArray {
+          var strarray = $0  // we need a mutable copy
+          
+          return git_remote_upload(gitRemote.remote, &strarray, &options)
+        }
+        try RepoError.throwIfGitError(result)
+
+        var callbacks = git_remote_callbacks(callbacks: callbacks)
+        let message = "pushing remote \(remote.name ?? "[?]")"
+        
+        result = git_remote_update_tips(gitRemote.remote, &callbacks, 1,
+                                        GIT_REMOTE_DOWNLOAD_TAGS_UNSPECIFIED,
+                                        message)
+        try RepoError.throwIfGitError(result)
       }
     }
   }

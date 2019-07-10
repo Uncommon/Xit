@@ -96,10 +96,12 @@ class FetchOpController: PasswordOpController
     let repo = repository  // For use in the block without being tied to self
     
     tryRepoOperation {
+      let callbacks = RemoteCallbacks(passwordBlock: self.getPassword,
+                                      downloadProgress: self.shouldStop,
+                                      uploadProgress: nil)
       let options = FetchOptions(downloadTags: downloadTags,
                                  pruneBranches: pruneBranches,
-                                 passwordBlock: self.getPassword,
-                                 progressBlock: self.shouldStop)
+                                 callbacks: callbacks)
       
       try repo.fetch(remote: remote, options: options)
       NotificationCenter.default.post(name: .XTRepositoryRefsChanged,

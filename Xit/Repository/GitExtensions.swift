@@ -14,6 +14,7 @@ extension git_status_t
 protocol GitVersionedOptions
 {
   typealias Initializer = (UnsafeMutablePointer<Self>?, UInt32) -> Int32
+  
   static var version: Int32 { get }
   static var initializer: Initializer { get }
 
@@ -22,11 +23,16 @@ protocol GitVersionedOptions
 
 extension GitVersionedOptions
 {
+  mutating func initializeWithVersion()
+  {
+    _ = Self.initializer(&self, UInt32(Self.version))
+  }
+  
   static func defaultOptions() -> Self
   {
     var options = Self()
     
-    _ = Self.initializer(&options, UInt32(Self.version))
+    options.initializeWithVersion()
     return options
   }
 }
@@ -57,36 +63,71 @@ extension git_fetch_options
   init(fetchOptions: FetchOptions)
   {
     self.init()
-    _ = git_fetch_options.initializer(&self, UInt32(git_fetch_options.version))
-
-    var mutableOptions = fetchOptions
+    initializeWithVersion()
     
-    git_remote_init_callbacks(&callbacks, UInt32(GIT_REMOTE_CALLBACKS_VERSION))
-    callbacks.payload = UnsafeMutableRawPointer(&mutableOptions)
-    callbacks.credentials = {
-      (cred, url, user, allowed, payload) in
-      guard let opts = payload?.bindMemory(to: FetchOptions.self, capacity: 1)
-      else { return -1 }
-      
-      if let (user, password) = opts.pointee.passwordBlock() {
-        return git_cred_userpass_plaintext_new(cred, user, password)
-      }
-      else {
-        return 1
-      }
-    }
-    callbacks.transfer_progress = {
-      (stats, payload) in
-      guard let opts = payload?.bindMemory(to: FetchOptions.self, capacity: 1),
-            let progress = stats?.pointee
-      else { return -1 }
-      let transferProgress = GitTransferProgress(gitProgress: progress)
-      
-      return opts.pointee.progressBlock(transferProgress) ? 0 : -1
-    }
     prune = fetchOptions.pruneBranches ? GIT_FETCH_PRUNE : GIT_FETCH_NO_PRUNE
     download_tags = fetchOptions.downloadTags ? GIT_REMOTE_DOWNLOAD_TAGS_ALL
                                               : GIT_REMOTE_DOWNLOAD_TAGS_AUTO
+    callbacks = git_remote_callbacks(callbacks: fetchOptions.callbacks)
+  }
+}
+
+fileprivate extension RemoteCallbacks
+{
+  static func fromPayload(_ payload: UnsafeMutableRawPointer?)
+    -> UnsafeMutablePointer<RemoteCallbacks>?
+  {
+    return payload?.bindMemory(to: RemoteCallbacks.self, capacity: 1)
+  }
+}
+
+extension git_remote_callbacks
+{
+  init(callbacks: RemoteCallbacks)
+  {
+    self.init()
+    initializeWithVersion()
+
+    var mutableCallbacks = callbacks
+    
+    self.payload = UnsafeMutableRawPointer(&mutableCallbacks)
+    
+    if callbacks.passwordBlock != nil {
+      self.credentials = {
+        (cred, url, user, allowed, payload) in
+        guard let callbacks = RemoteCallbacks.fromPayload(payload)
+        else { return -1 }
+        
+        if let (user, password) = callbacks.pointee.passwordBlock!() {
+          return git_cred_userpass_plaintext_new(cred, user, password)
+        }
+        else {
+          return 1
+        }
+      }
+    }
+    if callbacks.downloadProgress != nil {
+      self.transfer_progress = {
+        (stats, payload) in
+        guard let callbacks = RemoteCallbacks.fromPayload(payload),
+              let progress = stats?.pointee
+        else { return -1 }
+        let transferProgress = GitTransferProgress(gitProgress: progress)
+        
+        return callbacks.pointee.downloadProgress!(transferProgress) ? 0 : -1
+      }
+    }
+    if callbacks.uploadProgress != nil {
+      self.push_transfer_progress = {
+        (current, total, bytes, payload) in
+        guard let callbacks = RemoteCallbacks.fromPayload(payload)
+        else { return -1 }
+        let progress = PushTransferProgress(current: current, total: total,
+                                            bytes: bytes)
+        
+        return callbacks.pointee.uploadProgress!(progress) ? 0 : -1
+      }
+    }
   }
 }
 
@@ -127,7 +168,7 @@ extension Array where Element == String
   /// not produce the necessary type.
   /// - parameter block: The block called with the resulting `git_strarray`. To
   /// use this array outside the block, use `git_strarray_copy()`.
-  func withGitStringArray(block: @escaping (git_strarray) -> Void)
+  func withGitStringArray<T>(block: (git_strarray) -> T) -> T
   {
     let lengths = map { $0.utf8.count + 1 }
     let offsets = [0] + scan(lengths, 0, +)
@@ -141,20 +182,20 @@ extension Array where Element == String
     
     let bufferSize = buffer.count
     
-    buffer.withUnsafeMutableBufferPointer {
-      (pointer) in
+    return buffer.withUnsafeMutableBufferPointer {
+      (pointer) -> T in
       let boundPointer = UnsafeMutableRawPointer(pointer.baseAddress!)
                          .bindMemory(to: Int8.self, capacity: bufferSize)
       var cStrings: [UnsafeMutablePointer<Int8>?] =
             offsets.map { boundPointer + $0 }
       
       cStrings[cStrings.count-1] = nil
-      cStrings.withUnsafeMutableBufferPointer {
-        (arrayBuffer) in
+      return cStrings.withUnsafeMutableBufferPointer {
+        (arrayBuffer) -> T in
         let strarray = git_strarray(strings: arrayBuffer.baseAddress,
                                     count: count)
         
-        block(strarray)
+        return block(strarray)
       }
     }
   }
