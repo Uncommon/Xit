@@ -1,15 +1,21 @@
 import Foundation
 
 
-// git_status_t is bridged as a struct instead of a raw UInt32.
-extension git_status_t
+protocol OptionBits
 {
-  /// Returns true if the given flag is set.
-  func test(_ flag: git_status_t) -> Bool
+  func test(_ flag: Self) -> Bool
+}
+
+extension OptionBits where Self: RawRepresentable, RawValue: BinaryInteger
+{
+  func test(_ flag: Self) -> Bool
   {
     return (rawValue & flag.rawValue) != 0
   }
 }
+
+extension git_status_t: OptionBits {}
+extension git_credtype_t: OptionBits {}
 
 protocol GitVersionedOptions
 {
@@ -83,6 +89,68 @@ fileprivate extension RemoteCallbacks
 
 extension git_remote_callbacks
 {
+  private enum Callbacks
+  {
+    static let credentials: git_cred_acquire_cb = {
+      (cred, url, user, allowed, payload) in
+      guard let callbacks = RemoteCallbacks.fromPayload(payload)
+      else { return -1 }
+      let allowed = git_credtype_t(allowed)
+      
+      if allowed.test(GIT_CREDTYPE_SSH_KEY) {
+        let names = ["id_rsa", "github_rsa"]
+        var result: Int32 = 1
+        
+        for name in names {
+          let publicPath = "~/.ssh/\(name).pub".expandingTildeInPath
+          let privatePath = "~/.ssh/\(name)".expandingTildeInPath
+          
+          result = git_cred_ssh_key_new(cred, user, publicPath, privatePath, "")
+          if result == 0 {
+            break
+          }
+        }
+        return result
+      }
+      if allowed.test(GIT_CREDTYPE_USERPASS_PLAINTEXT) {
+        let keychain = XTKeychain.shared
+        let userName = user.map { String(cString: $0) } ?? ""
+        
+        if let urlString = url.flatMap({ String(cString: $0) }),
+           let url = URL(string: urlString),
+           let password = keychain.find(url: url, account: userName) ??
+                          keychain.find(url: url.withPath(""),
+                                        account: userName) {
+          return git_cred_userpass_plaintext_new(cred, user, password)
+        }
+        if let (user, password) = callbacks.pointee.passwordBlock!() {
+          return git_cred_userpass_plaintext_new(cred, user, password)
+        }
+      }
+      return 1
+    }
+    
+    static let transferProgress: git_transfer_progress_cb = {
+      (stats, payload) in
+      guard let callbacks = RemoteCallbacks.fromPayload(payload),
+            let progress = stats?.pointee
+      else { return -1 }
+      let transferProgress = GitTransferProgress(gitProgress: progress)
+      
+      return callbacks.pointee.downloadProgress!(transferProgress) ? 0 : -1
+    }
+    
+    static let pushTransferProgress: git_push_transfer_progress = {
+      (current, total, bytes, payload) in
+      guard let callbacks = RemoteCallbacks.fromPayload(payload)
+      else { return -1 }
+      let progress = PushTransferProgress(current: current, total: total,
+                                          bytes: bytes)
+      
+      return callbacks.pointee.uploadProgress!(progress) ? 0 : -1
+    }
+  }
+  
   init(callbacks: RemoteCallbacks)
   {
     self.init()
@@ -93,40 +161,13 @@ extension git_remote_callbacks
     self.payload = UnsafeMutableRawPointer(&mutableCallbacks)
     
     if callbacks.passwordBlock != nil {
-      self.credentials = {
-        (cred, url, user, allowed, payload) in
-        guard let callbacks = RemoteCallbacks.fromPayload(payload)
-        else { return -1 }
-        
-        if let (user, password) = callbacks.pointee.passwordBlock!() {
-          return git_cred_userpass_plaintext_new(cred, user, password)
-        }
-        else {
-          return 1
-        }
-      }
+      self.credentials = Callbacks.credentials
     }
     if callbacks.downloadProgress != nil {
-      self.transfer_progress = {
-        (stats, payload) in
-        guard let callbacks = RemoteCallbacks.fromPayload(payload),
-              let progress = stats?.pointee
-        else { return -1 }
-        let transferProgress = GitTransferProgress(gitProgress: progress)
-        
-        return callbacks.pointee.downloadProgress!(transferProgress) ? 0 : -1
-      }
+      self.transfer_progress = Callbacks.transferProgress
     }
     if callbacks.uploadProgress != nil {
-      self.push_transfer_progress = {
-        (current, total, bytes, payload) in
-        guard let callbacks = RemoteCallbacks.fromPayload(payload)
-        else { return -1 }
-        let progress = PushTransferProgress(current: current, total: total,
-                                            bytes: bytes)
-        
-        return callbacks.pointee.uploadProgress!(progress) ? 0 : -1
-      }
+      self.push_transfer_progress = Callbacks.pushTransferProgress
     }
   }
 }

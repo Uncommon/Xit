@@ -95,59 +95,6 @@ struct GitTransferProgress: TransferProgress
 
 extension XTRepository
 {
-  func credentialProvider(_ passwordBlock: @escaping () -> (String, String)?)
-      -> GTCredentialProvider
-  {
-    return GTCredentialProvider {
-      (type, urlString, user) -> GTCredential? in
-      if checkCredentialType(type, flag: .sshKey) {
-        return sshCredential(user) ?? GTCredential()
-      }
-      
-      guard checkCredentialType(type, flag: .userPassPlaintext)
-      else { return GTCredential() }
-      let keychain = XTKeychain.shared
-      
-      let keychainUser: String? = user.isEmpty ? nil : user
-      if let url = URL(string: urlString),
-         let password = keychain.find(url: url, account: keychainUser) ??
-                        keychain.find(url: url.withPath(""),
-                                      account: keychainUser) {
-        do {
-          return try GTCredential(userName: user, password: password)
-        }
-        catch let error as NSError {
-          NSLog(error.description)
-        }
-      }
-      
-      guard let (userName, password) = passwordBlock(),
-            let result = try? GTCredential(userName: userName,
-                                           password: password)
-      else { return nil }
-
-      return result
-    }
-  }
-  
-  public func fetchOptions(downloadTags: Bool,
-                           pruneBranches: Bool,
-                           passwordBlock: @escaping () -> (String, String)?)
-      -> [String: AnyObject]
-  {
-    let tagOption = downloadTags ? GTRemoteDownloadTagsAuto
-                                 : GTRemoteDownloadTagsNone
-    let pruneOption: GTFetchPruneOption = pruneBranches ? .yes : .no
-    let pruneValue = NSNumber(value: pruneOption.rawValue as Int)
-    let tagValue = NSNumber(value: tagOption.rawValue as UInt32)
-    let provider = credentialProvider(passwordBlock)
-    
-    return [
-        GTRepositoryRemoteOptionsDownloadTags: tagValue,
-        GTRepositoryRemoteOptionsFetchPrune: pruneValue,
-        GTRepositoryRemoteOptionsCredentialProvider: provider]
-  }
-  
   private func fastForwardMerge(branch: GitBranch, remoteBranch: GitBranch) throws
   {
     guard let remoteCommit = remoteBranch.targetCommit
@@ -442,26 +389,4 @@ extension XTRepository
     
     return MergeAnalysis(rawValue: analysis.pointee.rawValue)
   }
-}
-
-// MARK: Credential helpers
-
-fileprivate func checkCredentialType(_ type: GTCredentialType,
-                                     flag: GTCredentialType) -> Bool
-{
-  return (type.rawValue & flag.rawValue) != 0
-}
-
-fileprivate func sshCredential(_ user: String) -> GTCredential?
-{
-  let publicPath =
-      ("~/.ssh/id_rsa.pub" as NSString).expandingTildeInPath
-  let privatePath =
-      ("~/.ssh/id_rsa" as NSString).expandingTildeInPath
-  
-  return try? GTCredential(
-      userName: user,
-      publicKeyURL: URL(fileURLWithPath: publicPath),
-      privateKeyURL: URL(fileURLWithPath: privatePath),
-      passphrase: "")
 }
