@@ -16,27 +16,31 @@ extension XTRepository: RemoteCommunication
       let localBranchName = branch.name
       let remoteBranchName = branch.trackingBranchName ?? branch.name
       let refSpec = "\(localBranchName):\(remoteBranchName)"
-      var options = git_push_options.defaultOptions()
-      
-      options.callbacks = git_remote_callbacks(callbacks: callbacks)
 
-      try remote.withConnection(direction: .push,
-                                progress: callbacks.uploadProgress) {
+      try remote.withConnection(direction: .push, callbacks: callbacks) {
         var result: Int32
           
         result = [refSpec].withGitStringArray {
-          var strarray = $0  // we need a mutable copy
-          
-          return git_remote_upload(gitRemote.remote, &strarray, &options)
+          (refSpecs) in
+          return git_remote_callbacks.withCallbacks(callbacks) {
+            (gitCallbacks) in
+            var mutableArray = refSpecs
+            var options = git_push_options.defaultOptions()
+            
+            options.callbacks = gitCallbacks
+            return git_remote_upload(gitRemote.remote, &mutableArray, &options)
+          }
         }
         try RepoError.throwIfGitError(result)
 
-        var callbacks = git_remote_callbacks(callbacks: callbacks)
-        let message = "pushing remote \(remote.name ?? "[?]")"
-        
-        result = git_remote_update_tips(gitRemote.remote, &callbacks, 1,
+        result = git_remote_callbacks.withCallbacks(callbacks) {
+          var mutableCallbacks = $0
+          let message = "pushing remote \(remote.name ?? "[?]")"
+
+          return git_remote_update_tips(gitRemote.remote, &mutableCallbacks, 1,
                                         GIT_REMOTE_DOWNLOAD_TAGS_UNSPECIFIED,
                                         message)
+        }
         try RepoError.throwIfGitError(result)
       }
     }
@@ -45,7 +49,6 @@ extension XTRepository: RemoteCommunication
   public func fetch(remote: Remote, options: FetchOptions) throws
   {
     try performWriting {
-      var options = git_fetch_options(fetchOptions: options)
       let gitRemote = (remote as! GitRemote).remote
       var refspecs = git_strarray.init()
       var result: Int32
@@ -58,7 +61,11 @@ extension XTRepository: RemoteCommunication
       
       let message = "fetching remote \(remote.name ?? "[unknown]")"
       
-      result = git_remote_fetch(gitRemote, &refspecs, &options, message)
+      result = git_fetch_options.withOptions(options) {
+        withUnsafePointer(to: $0) {
+          git_remote_fetch(gitRemote, &refspecs, $0, message)
+        }
+      }
       try RepoError.throwIfGitError(result)
     }
   }

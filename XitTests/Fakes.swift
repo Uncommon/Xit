@@ -24,7 +24,7 @@ class FakeRemote: Remote
   func updatePushURLString(_ URLString: String) throws {}
 
   func withConnection(direction: RemoteConnectionDirection,
-                      progress: PushProgressCallback?,
+                      callbacks: PushProgressCallback?,
                       callback: () throws -> Void) throws
   {
     try callback()

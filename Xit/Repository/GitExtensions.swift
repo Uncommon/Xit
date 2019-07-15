@@ -66,15 +66,21 @@ extension git_fetch_options: GitVersionedOptions
 
 extension git_fetch_options
 {
-  init(fetchOptions: FetchOptions)
+  public static func withOptions<T>(_ fetchOptions: FetchOptions,
+                                    action: (git_fetch_options) throws -> T)
+    rethrows -> T
   {
-    self.init()
-    initializeWithVersion()
+    var options = git_fetch_options.defaultOptions()
     
-    prune = fetchOptions.pruneBranches ? GIT_FETCH_PRUNE : GIT_FETCH_NO_PRUNE
-    download_tags = fetchOptions.downloadTags ? GIT_REMOTE_DOWNLOAD_TAGS_ALL
-                                              : GIT_REMOTE_DOWNLOAD_TAGS_AUTO
-    callbacks = git_remote_callbacks(callbacks: fetchOptions.callbacks)
+    options.prune = fetchOptions.pruneBranches ?
+        GIT_FETCH_PRUNE : GIT_FETCH_NO_PRUNE
+    options.download_tags = fetchOptions.downloadTags ?
+        GIT_REMOTE_DOWNLOAD_TAGS_ALL : GIT_REMOTE_DOWNLOAD_TAGS_AUTO
+    return try git_remote_callbacks.withCallbacks(fetchOptions.callbacks) {
+      (callbacks) in
+      options.callbacks = callbacks
+      return try action(options)
+    }
   }
 }
 
@@ -127,7 +133,9 @@ extension git_remote_callbacks
           return git_cred_userpass_plaintext_new(cred, user, password)
         }
       }
-      return 1
+      // The documentation says to return >0 to indicate no credentials
+      // acquired, but that leads to an assertion failure.
+      return -1
     }
     
     static let transferProgress: git_transfer_progress_cb = {
@@ -151,24 +159,29 @@ extension git_remote_callbacks
     }
   }
   
-  init(callbacks: RemoteCallbacks)
+  /// Calls the given action with a populated callbacks struct.
+  /// The "with" pattern is needed because of the need to make a mutable copy
+  /// of the given callbacks as a payload, and perform the action within the
+  /// scope of that copy.
+  public static func withCallbacks<T>(_ callbacks: RemoteCallbacks,
+                                      action: (git_remote_callbacks) throws -> T)
+    rethrows -> T
   {
-    self.init()
-    initializeWithVersion()
-
+    var gitCallbacks = git_remote_callbacks.defaultOptions()
     var mutableCallbacks = callbacks
     
-    self.payload = UnsafeMutableRawPointer(&mutableCallbacks)
+    gitCallbacks.payload = UnsafeMutableRawPointer(&mutableCallbacks)
     
     if callbacks.passwordBlock != nil {
-      self.credentials = Callbacks.credentials
+      gitCallbacks.credentials = Callbacks.credentials
     }
     if callbacks.downloadProgress != nil {
-      self.transfer_progress = Callbacks.transferProgress
+      gitCallbacks.transfer_progress = Callbacks.transferProgress
     }
     if callbacks.uploadProgress != nil {
-      self.push_transfer_progress = Callbacks.pushTransferProgress
+      gitCallbacks.push_transfer_progress = Callbacks.pushTransferProgress
     }
+    return try action(gitCallbacks)
   }
 }
 

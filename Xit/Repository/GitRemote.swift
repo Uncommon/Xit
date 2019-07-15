@@ -33,8 +33,8 @@ public protocol Remote: AnyObject
   
   /// Calls the callback between opening and closing a cennection to the remote.
   func withConnection(direction: RemoteConnectionDirection,
-                      progress: PushProgressCallback?,
-                      callback: () throws -> Void) throws
+                      callbacks: RemoteCallbacks,
+                      action: () throws -> Void) throws
 }
 
 extension Remote
@@ -151,44 +151,24 @@ class GitRemote: Remote
   }
   
   func withConnection(direction: RemoteConnectionDirection,
-                      progress: PushProgressCallback?,
-                      callback: () throws -> Void) throws
+                      callbacks: RemoteCallbacks,
+                      action: () throws -> Void) throws
   {
     var result: Int32
-    var callbacks = git_remote_callbacks.defaultOptions()
     
-    if let progress = progress {
-      // The progress callback is used as a payload, so it must be "escaping",
-      // but since git_remote_connect runs synchronously it doesn't actually
-      // escape.
-      result = withoutActuallyEscaping(progress) {
-        (escapingProgress) in
-        var payload = escapingProgress // must also be modifiable
-        
-        callbacks.payload = UnsafeMutableRawPointer(&payload)
-        callbacks.push_transfer_progress = {
-          (current, total, bytes, payload) -> Int32 in
-          guard let callback = payload?.bindMemory(to: PushProgressCallback.self,
-                                                   capacity: 1)
-          else { return 1 }
-          let progress = PushTransferProgress(current: current, total: total,
-                                              bytes: bytes)
-          
-          return callback.pointee(progress) ? 0 : -1
-        }
-        return git_remote_connect(remote, direction.gitDirection, &callbacks,
+    result = git_remote_callbacks.withCallbacks(callbacks) {
+      (gitCallbacks) in
+      return withUnsafePointer(to: gitCallbacks) {
+        (callbacksPtr) in
+        return git_remote_connect(remote, direction.gitDirection, callbacksPtr,
                                   nil, nil)
       }
     }
-    else {
-      result = git_remote_connect(remote, direction.gitDirection, &callbacks,
-                                  nil, nil)
-    }
-
+    
     try RepoError.throwIfGitError(result)
     defer {
       git_remote_disconnect(remote)
     }
-    try callback()
+    try action()
   }
 }
