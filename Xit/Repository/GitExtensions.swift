@@ -50,6 +50,30 @@ extension git_remote_callbacks
 {
   private enum Callbacks
   {
+    private static func sshKeyPaths() -> [String]
+    {
+      let manager = FileManager.default
+      let sshDirectory = manager.homeDirectoryForCurrentUser
+                                .appendingPathComponent(".ssh")
+      var result: [String] = []
+      guard let enumerator = manager.enumerator(at: sshDirectory,
+                                                includingPropertiesForKeys: nil)
+      else { return result }
+      let suffixes = ["_rsa", "_dsa", "_ecdsa", "_ed25519"]
+      
+      enumerator.skipDescendants()
+      while let url = enumerator.nextObject() as? URL {
+        let name = url.lastPathComponent
+        guard suffixes.contains(where: { name.hasSuffix($0) }),
+              manager.fileExists(atPath: url.appendingPathExtension("pub").path)
+        else { continue }
+        
+        result.append(url.path)
+      }
+      
+      return result
+    }
+    
     static let credentials: git_cred_acquire_cb = {
       (cred, url, user, allowed, payload) in
       guard let callbacks = RemoteCallbacks.fromPayload(payload)
@@ -57,19 +81,24 @@ extension git_remote_callbacks
       let allowed = git_credtype_t(allowed)
       
       if allowed.test(GIT_CREDTYPE_SSH_KEY) {
-        let names = ["id_rsa", "github_rsa"]
         var result: Int32 = 1
         
-        for name in names {
-          let publicPath = "~/.ssh/\(name).pub".expandingTildeInPath
-          let privatePath = "~/.ssh/\(name)".expandingTildeInPath
+        for path in sshKeyPaths() {
+          let publicPath = path.appending(".pub")
           
-          result = git_cred_ssh_key_new(cred, user, publicPath, privatePath, "")
+          result = git_cred_ssh_key_new(cred, user, publicPath, path, "")
           if result == 0 {
             break
           }
+          else {
+            let error = RepoError(gitCode: git_error_code(rawValue: result))
+            
+            NSLog("Could not load ssh key for \(path): \(error))")
+          }
         }
-        return result
+        if result == 0 {
+          return 0
+        }
       }
       if allowed.test(GIT_CREDTYPE_USERPASS_PLAINTEXT) {
         let keychain = XTKeychain.shared
