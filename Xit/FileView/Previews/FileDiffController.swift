@@ -13,6 +13,7 @@ class FileDiffController: WebViewController,
                           ContextVariable
 {
   weak var stagingDelegate: HunkStaging?
+  weak var repo: (FileContents & CommitReferencing)?
   var stagingType: StagingType = .none
   var patch: Patch?
   
@@ -119,21 +120,17 @@ class FileDiffController: WebViewController,
   /// Returns the index/workspace counterpart blob
   func diffTargetBlob() -> Blob?
   {
-    let window = Thread.syncOnMainThread { view.window }
-    // TODO: Give it access to the repository via the FileContents protocol
-    let repo = (window?.windowController as! XTWindowController)
-      .xtDocument!.repository!
     guard let diffMaker = diffMaker,
-          let headRef = repo.headRef
+          let headRef = repo?.headRef
     else { return nil }
 
     switch stagingType {
       case .none:
         return nil
       case .index:
-        return repo.fileBlob(ref: headRef, path: diffMaker.path)
+        return repo?.fileBlob(ref: headRef, path: diffMaker.path)
       case .workspace:
-        return repo.stagedBlob(file: diffMaker.path)
+        return repo?.stagedBlob(file: diffMaker.path)
     }
   }
   

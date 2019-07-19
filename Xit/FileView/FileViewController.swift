@@ -178,6 +178,7 @@ class FileViewController: NSViewController
   func finishLoad(repository: XTRepository)
   {
     repo = repository
+    diffController.repo = repository
 
     observers.addObserver(forName: .XTRepositoryIndexChanged,
                           object: repository, queue: .main) {

@@ -176,11 +176,10 @@ public class HistoryTableController: NSViewController
     }
     
     if batch != lastBatch {
-      weak var tableView = self.tableView
-      
       lastBatch = batch
       DispatchQueue.main.async {
-        guard let tableView = tableView
+        [weak self] in
+        guard let tableView = self?.tableView
         else { return }
         
         switch batch {
