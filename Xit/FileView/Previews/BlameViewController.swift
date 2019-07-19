@@ -183,7 +183,7 @@ class BlameViewController: WebViewController
     }
   }
   
-  override func webMessage(_ params: [String : Any])
+  override func webMessage(_ params: [String: Any])
   {
     guard params["action"] as? String == "selectSHA",
           let sha = params["sha"] as? String

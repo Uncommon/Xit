@@ -250,7 +250,7 @@ class FileDiffController: WebViewController,
     }
   }
   
-  override func webMessage(_ params: [String : Any])
+  override func webMessage(_ params: [String: Any])
   {
     guard let action = params["action"] as? String,
           let index = params["index"] as? Int
