@@ -7,8 +7,10 @@ enum RepoError: Swift.Error
   case commitNotFound(String?)  // SHA
   case conflict  // List of conflicted files
   case detachedHead
+  case duplicateName
   case fileNotFound(String)  // Path
   case gitError(Int32)
+  case invalidName(String)
   case localConflict
   case mergeInProgress
   case notFound
@@ -27,12 +29,16 @@ enum RepoError: Swift.Error
         return .cherryPickInProgress
       case .conflict:
         return .conflict
+      case .duplicateName:
+        return .duplicateName
       case .localConflict:
         return .localConflict
       case .detachedHead:
         return .detachedHead
       case .gitError(let code):
         return .gitError(code)
+      case .invalidName(let name):
+        return .invalidName(name)
       case .patchMismatch:
         return .patchMismatch
       case .commitNotFound(let sha):

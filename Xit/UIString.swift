@@ -204,9 +204,10 @@ struct UIString: RawRepresentable
   static let closed = ›"Closed"
   
   // Repository errors
-  static let gitErrorFormat = "An internal git error (%@) occurred."
+  static let gitErrorFormat = "An internal git error (%d) occurred."
   static let commitNotFoundFormat = "The commit %@ was not found."
   static let fileNotFoundFormat = "The file %@ was not found."
+  static let invalidNameFormat = "The name %@ is not valid."
   
   static func gitError(_ error: Int32) -> UIString
   {
@@ -219,6 +220,10 @@ struct UIString: RawRepresentable
   static func fileNotFound(_ file: String) -> UIString
   {
     return UIString(format: UIString.fileNotFoundFormat, file)
+  }
+  static func invalidName(_ name: String) -> UIString
+  {
+    return UIString(format: UIString.invalidNameFormat, name)
   }
   
   static let alreadyWriting = ›"A writing operation is already in progress."
@@ -233,6 +238,7 @@ struct UIString: RawRepresentable
       Try checking in or stashing your changes first.
       """
   static let detachedHead = ›"This operation cannot be performed in a detached HEAD state."
+  static let duplicateName = ›"That name is already in use."
   static let patchMismatch = ›"""
       The patch could not be applied because it did not match
       the file content.

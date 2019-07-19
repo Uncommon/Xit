@@ -7,8 +7,8 @@ public protocol Remote: AnyObject
   var pushURLString: String? { get }
   
   func rename(_ name: String) throws
-  func updateURLString(_ URLString: String) throws
-  func updatePushURLString(_ URLString: String) throws
+  func updateURLString(_ URLString: String?) throws
+  func updatePushURLString(_ URLString: String?) throws
 }
 
 extension Remote
@@ -73,29 +73,54 @@ class GitRemote: Remote
     else { throw RepoError.unexpected }
     
     let problems = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
-    let result = git_remote_rename(problems, owner, oldName, name)
     
-    try RepoError.throwIfGitError(result)
-    git_strarray_free(problems)
+    problems.pointee = git_strarray()
+    
+    let result = git_remote_rename(problems, owner, oldName, name)
+    let resultCode = git_error_code(rawValue: result)
+    
+    defer {
+      git_strarray_free(problems)
+    }
+    switch resultCode {
+      case GIT_EINVALIDSPEC:
+        throw RepoError.invalidName(name)
+      case GIT_EEXISTS:
+        throw RepoError.duplicateName
+      case GIT_OK:
+        break
+      default:
+        throw RepoError(gitCode: resultCode)
+    }
   }
   
-  func updateURLString(_ URLString: String) throws
+  func updateURLString(_ URLString: String?) throws
   {
     guard let name = git_remote_name(remote),
           let owner = git_remote_owner(remote)
     else { throw RepoError.unexpected }
     let result = git_remote_set_url(owner, name, URLString)
     
-    try RepoError.throwIfGitError(result)
+    if result == GIT_EINVALIDSPEC.rawValue {
+      throw RepoError.invalidName(URLString ?? "")
+    }
+    else {
+      try RepoError.throwIfGitError(result)
+    }
   }
   
-  func updatePushURLString(_ URLString: String) throws
+  func updatePushURLString(_ URLString: String?) throws
   {
     guard let name = git_remote_name(remote),
           let owner = git_remote_owner(remote)
     else { throw RepoError.unexpected }
     let result = git_remote_set_pushurl(owner, name, URLString)
     
-    try RepoError.throwIfGitError(result)
+    if result == GIT_EINVALIDSPEC.rawValue {
+      throw RepoError.invalidName(URLString ?? "")
+    }
+    else {
+      try RepoError.throwIfGitError(result)
+    }
   }
 }

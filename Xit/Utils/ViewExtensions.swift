@@ -55,6 +55,7 @@ extension NSAlert
       alert.informativeString = infoString
     }
     if let window = window {
+      alert.alertStyle = .critical // appear over existing sheet
       alert.beginSheetModal(for: window, completionHandler: nil)
     }
     else {

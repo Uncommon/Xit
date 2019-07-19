@@ -3,6 +3,7 @@ import Cocoa
 class RemoteOptionsOpController: OperationController
 {
   let remoteName: String
+  let sheetController = RemoteSheetController.controller()
   
   init(windowController: XTWindowController, remote: String)
   {
@@ -17,28 +18,54 @@ class RemoteOptionsOpController: OperationController
           let remote = repository.remote(named: remoteName)
     else { throw RepoError.unexpected }
     
-    let sheetController = RemoteSheetController.controller()
-    
+    sheetController.delegate = self
     sheetController.resetFields()
     sheetController.name = remoteName
-    sheetController.fetchURL = remote.urlString.flatMap { URL(string: $0) }
-    sheetController.pushURL = remote.pushURLString.flatMap { URL(string: $0) }
+    sheetController.fetchURLString = remote.urlString
+    sheetController.pushURLString = remote.pushURLString
     windowController!.window?.beginSheet(sheetController.window!) {
       (response) in
-      var result: Result
-      if response == .OK {
-        self.acceptSheetSettings(sheetController)
-        result = .success
-      }
-      else {
-        result = .canceled
-      }
-      self.ended(result: result)
+      self.ended(result: (response == .OK) ? .success : .canceled)
     }
   }
-  
-  func acceptSheetSettings(_ sheetController: RemoteSheetController)
+}
+
+extension RemoteOptionsOpController: RemoteSheetDelegate
+{
+  func acceptSettings(from sheetController: RemoteSheetController) -> Bool
   {
-    // update name and URLs if changed
+    guard let remote = windowController?.repository.remote(named: remoteName)
+    else { return false }
+    var errorMessage: UIString?
+    
+    do {
+      if remote.name != sheetController.name {
+        try remote.rename(sheetController.name)
+      }
+      
+      let newURL = sheetController.fetchURLString
+      let newPushURL = sheetController.pushURLString
+      
+      if remote.urlString != newURL {
+        try remote.updateURLString(newURL)
+      }
+      if remote.pushURLString != newPushURL {
+        try remote.updatePushURLString(newPushURL)
+      }
+    }
+    catch let error as RepoError {
+      errorMessage = error.message
+    }
+    catch {
+      errorMessage = RepoError.unexpected.message
+    }
+
+    if let message = errorMessage {
+      NSAlert.showMessage(window: windowController?.window, message: message)
+      return false
+    }
+    else {
+      return true
+    }
   }
 }

@@ -1,8 +1,14 @@
 import Cocoa
 import Siesta
 
+protocol RemoteSheetDelegate: AnyObject
+{
+  func acceptSettings(from sheetController: RemoteSheetController) -> Bool
+}
+
 class RemoteSheetController: SheetController
 {
+  weak var delegate: RemoteSheetDelegate?
   weak var repository: XTRepository?
   
   @IBOutlet weak var nameField: NSTextField!
@@ -14,28 +20,28 @@ class RemoteSheetController: SheetController
     get { return nameField.stringValue }
     set { nameField.stringValue = newValue }
   }
-  var fetchURL: URL?
+  var fetchURLString: String?
   {
-    get { return URL(string: fetchField.stringValue) }
-    set { fetchField.stringValue = newValue?.absoluteString ?? "" }
+    get { return fetchField.stringValue.nilIfEmpty }
+    set { fetchField.stringValue = newValue ?? "" }
   }
-  var pushURL: URL?
+  var pushURLString: String?
   {
-    get { return URL(string: pushField.stringValue) }
-    set { pushField.stringValue = newValue?.absoluteString ?? "" }
+    get { return pushField.stringValue.nilIfEmpty }
+    set { pushField.stringValue = newValue ?? "" }
   }
   
   override func resetFields()
   {
     name = ""
-    fetchURL = nil
-    pushURL = nil
+    fetchURLString = nil
+    pushURLString = nil
   }
   
   override func accept(_ sender: AnyObject)
   {
-    // validate the fields
-    
-    super.accept(sender)
+    if delegate?.acceptSettings(from: self) ?? false {
+      super.accept(sender)
+    }
   }
 }
