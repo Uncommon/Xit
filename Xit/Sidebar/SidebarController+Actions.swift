@@ -7,7 +7,7 @@ extension SidebarController
   func sidebarItemRenamed(_ sender: Any)
   {
     guard let textField = sender as? NSTextField,
-          let cellView = textField.superview as? SidebarTableCellView,
+          let cellView = textField.superview?.superview as? SidebarTableCellView,
           let editedItem = cellView.item
     else { return }
     
