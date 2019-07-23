@@ -6,7 +6,8 @@ extension XTRepository: RemoteCommunication
                    remote: Remote,
                    callbacks: RemoteCallbacks) throws
   {
-    guard let gitRemote = remote as? GitRemote
+    guard let gitRemote = remote as? GitRemote,
+          let remoteName = gitRemote.name
     else { throw RepoError.unexpected }
 
     try performWriting {
@@ -14,7 +15,15 @@ extension XTRepository: RemoteCommunication
       // we may want to update the tracking branch
       
       let localBranchName = branch.name
-      let remoteBranchName = branch.trackingBranchName ?? branch.name
+      let remoteBranchName: String
+      
+      if let tracking = branch.trackingBranchName {
+        remoteBranchName = RefPrefixes.remotes + tracking
+      }
+      else {
+        remoteBranchName = RefPrefixes.remotes + remoteName +/ branch.name
+      }
+      
       let refSpec = "\(localBranchName):\(remoteBranchName)"
 
       try remote.withConnection(direction: .push, callbacks: callbacks) {

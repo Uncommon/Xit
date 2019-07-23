@@ -59,36 +59,39 @@ class OperationController: NSObject
       do {
         try block()
       }
-      catch _ as RepoError {
-        // The command shouldn't have been enabled if this was going to happen
+      catch let error as RepoError {
         self?.ended(result: .failure)
+        self?.showFailureError(error.message.rawValue)
       }
       catch let error as NSError {
-        defer {
-          self?.ended(result: .failure)
-        }
-        guard self?.shoudReport(error: error) ?? false
+        guard let self = self
         else { return }
-        let gitError = giterr_last()
-        
-        DispatchQueue.main.async {
-          [weak self] in
-          if let window = self?.windowController?.window {
-            let alert = NSAlert(error: error)
-            
-            if let error = gitError {
-              let errorString = String(cString: error.pointee.message)
-              let message = alert.messageText + " (\(errorString))"
-              
-              alert.messageText = message
-            }
-            
-            // needs to be smarter: look at error type
-            alert.beginSheetModal(for: window) {
-              _ in self?.ended(result: .failure)
-            }
-          }
+        defer {
+          self.ended(result: .failure)
         }
+        
+        guard self.shoudReport(error: error)
+        else { return }
+        var message = error.localizedDescription
+        
+        if let gitError = giterr_last() {
+          let errorString = String(cString: gitError.pointee.message)
+          
+          message.append(" \(errorString)")
+        }
+        self.showFailureError(message)
+      }
+    }
+  }
+  
+  func showFailureError(_ message: String)
+  {
+    DispatchQueue.main.async {
+      if let window = self.windowController?.window {
+        let alert = NSAlert()
+        
+        alert.messageText = message
+        alert.beginSheetModal(for: window, completionHandler: nil)
       }
     }
   }

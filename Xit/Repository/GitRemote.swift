@@ -31,7 +31,7 @@ public protocol Remote: AnyObject
   func updateURLString(_ URLString: String?) throws
   func updatePushURLString(_ URLString: String?) throws
   
-  /// Calls the callback between opening and closing a cennection to the remote.
+  /// Calls the callback between opening and closing a connection to the remote.
   func withConnection(direction: RemoteConnectionDirection,
                       callbacks: RemoteCallbacks,
                       action: () throws -> Void) throws
