@@ -2,7 +2,7 @@ import Cocoa
 
 class PushOpController: PasswordOpController
 {
-  func shouldStop(progress: PushTransferProgress) -> Bool
+  func progressCallback(progress: PushTransferProgress) -> Bool
   {
     guard !canceled,
           let repository = repository
@@ -13,7 +13,7 @@ class PushOpController: PasswordOpController
                                                  total: Float(progress.total))
     
     NotificationCenter.default.post(note)
-    return canceled
+    return !canceled
   }
 
   override func start() throws
@@ -69,7 +69,7 @@ class PushOpController: PasswordOpController
       else { return }
       let callbacks = RemoteCallbacks(passwordBlock: self.getPassword,
                                       downloadProgress: nil,
-                                      uploadProgress: self.shouldStop)
+                                      uploadProgress: self.progressCallback)
       
       if let url = remote.pushURL ?? remote.url {
         self.setKeychainInfoURL(url)
