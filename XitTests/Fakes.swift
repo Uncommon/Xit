@@ -20,14 +20,14 @@ class FakeRemote: Remote
   var pushURLString: String? { return urlString }
   
   func rename(_ name: String) throws {}
-  func updateURLString(_ URLString: String) throws {}
-  func updatePushURLString(_ URLString: String) throws {}
+  func updateURLString(_ URLString: String?) throws {}
+  func updatePushURLString(_ URLString: String?) throws {}
 
   func withConnection(direction: RemoteConnectionDirection,
-                      callbacks: PushProgressCallback?,
-                      callback: () throws -> Void) throws
+                      callbacks: RemoteCallbacks,
+                      action: () throws -> Void) throws
   {
-    try callback()
+    try action()
   }
 }
 
