@@ -6,52 +6,24 @@ extension XTRepository: RemoteCommunication
                    remote: Remote,
                    callbacks: RemoteCallbacks) throws
   {
-    guard let gitRemote = remote as? GitRemote,
-          let remoteName = gitRemote.name
+    guard let gitRemote = remote as? GitRemote
     else { throw RepoError.unexpected }
 
     try performWriting {
-      // If the remote tracking branch is on a different remote,
-      // we may want to update the tracking branch
-      
-      let localBranchName = branch.name
-      let remoteBranchName: String
-      
-      if let tracking = branch.trackingBranchName {
-        remoteBranchName = RefPrefixes.remotes + tracking
-      }
-      else {
-        remoteBranchName = RefPrefixes.remotes + remoteName +/ branch.name
-      }
-      
-      let refSpec = "\(localBranchName):\(remoteBranchName)"
+      var result: Int32
 
-      try remote.withConnection(direction: .push, callbacks: callbacks) {
-        var result: Int32
-          
-        result = [refSpec].withGitStringArray {
-          (refSpecs) in
-          return git_remote_callbacks.withCallbacks(callbacks) {
-            (gitCallbacks) in
-            var mutableArray = refSpecs
-            var options = git_push_options.defaultOptions()
-            
-            options.callbacks = gitCallbacks
-            return git_remote_upload(gitRemote.remote, &mutableArray, &options)
-          }
+      result = [branch.name].withGitStringArray {
+        (refspecs) in
+        return git_remote_callbacks.withCallbacks(callbacks) {
+          (gitCallbacks) in
+          var mutableArray = refspecs
+          var options = git_push_options.defaultOptions()
+
+          options.callbacks = gitCallbacks
+          return git_remote_push(gitRemote.remote, &mutableArray, &options)
         }
-        try RepoError.throwIfGitError(result)
-
-        result = git_remote_callbacks.withCallbacks(callbacks) {
-          var mutableCallbacks = $0
-          let message = "pushing remote \(remote.name ?? "[?]")"
-
-          return git_remote_update_tips(gitRemote.remote, &mutableCallbacks, 1,
-                                        GIT_REMOTE_DOWNLOAD_TAGS_UNSPECIFIED,
-                                        message)
-        }
-        try RepoError.throwIfGitError(result)
       }
+      try RepoError.throwIfGitError(result)
     }
   }
   
