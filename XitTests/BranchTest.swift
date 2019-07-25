@@ -25,8 +25,9 @@ class BranchTest: XTTest
     }
     let options = FetchOptions(downloadTags: false,
                                pruneBranches: false,
-                               passwordBlock: { nil },
-                               progressBlock: { _ in true })
+                               callbacks: RemoteCallbacks(passwordBlock: nil,
+                                                          downloadProgress: nil,
+                                                          uploadProgress: nil))
     
     XCTAssertNoThrow(try repository.fetch(remote: remote, options: options))
 

@@ -2,47 +2,52 @@ import Foundation
 
 extension XTRepository: RemoteCommunication
 {
-  public func push(branch: Branch,
+  public func push(branch: LocalBranch,
                    remote: Remote,
-                   passwordBlock: @escaping () -> (String, String)?,
-                   progressBlock: @escaping (UInt32, UInt32, size_t) -> Bool)
-                   throws
+                   callbacks: RemoteCallbacks) throws
   {
+    guard let gitRemote = remote as? GitRemote
+    else { throw RepoError.unexpected }
+
     try performWriting {
-      let provider = self.credentialProvider(passwordBlock)
-      let options = [ GTRepositoryRemoteOptionsCredentialProvider: provider ]
-      guard let localBranch = branch as? GitLocalBranch,
-            let localGTRef = GTReference(gitReference: localBranch.branchRef,
-                                         repository: gtRepo),
-            let localGTBranch = GTBranch(reference: localGTRef),
-            let gtRemote = GTRemote(gitRemote: (remote as! GitRemote).remote,
-                                    in: gtRepo)
-      else { throw RepoError.unexpected }
-      
-      try self.gtRepo.push(localGTBranch, to: gtRemote, withOptions: options) {
-        (current, total, bytes, stop) in
-        stop.pointee = ObjCBool(progressBlock(current, total, bytes))
+      var result: Int32
+
+      result = [branch.name].withGitStringArray {
+        (refspecs) in
+        return git_remote_callbacks.withCallbacks(callbacks) {
+          (gitCallbacks) in
+          var mutableArray = refspecs
+          var options = git_push_options.defaultOptions()
+
+          options.callbacks = gitCallbacks
+          return git_remote_push(gitRemote.remote, &mutableArray, &options)
+        }
       }
+      try RepoError.throwIfGitError(result)
     }
   }
   
-  public func fetch(remote: Remote,
-                    options: FetchOptions) throws
+  public func fetch(remote: Remote, options: FetchOptions) throws
   {
     try performWriting {
-      let gtOptions = self.fetchOptions(downloadTags: options.downloadTags,
-                                        pruneBranches: options.pruneBranches,
-                                        passwordBlock: options.passwordBlock)
-      guard let gtRemote = GTRemote(gitRemote: (remote as! GitRemote).remote,
-                                    in: gtRepo)
-      else { throw RepoError.unexpected }
+      let gitRemote = (remote as! GitRemote).remote
+      var refspecs = git_strarray.init()
+      var result: Int32
       
-      try self.gtRepo.fetch(gtRemote, withOptions: gtOptions) {
-        (progress, stop) in
-        let transferProgress = GitTransferProgress(gitProgress: progress.pointee)
-        
-        stop.pointee = ObjCBool(options.progressBlock(transferProgress))
+      result = git_remote_get_fetch_refspecs(&refspecs, gitRemote)
+      try RepoError.throwIfGitError(result)
+      defer {
+        git_strarray_free(&refspecs)
       }
+      
+      let message = "fetching remote \(remote.name ?? "[unknown]")"
+      
+      result = git_fetch_options.withOptions(options) {
+        withUnsafePointer(to: $0) {
+          git_remote_fetch(gitRemote, &refspecs, $0, message)
+        }
+      }
+      try RepoError.throwIfGitError(result)
     }
   }
   
@@ -63,74 +68,21 @@ extension XTRepository: RemoteCommunication
   }
 }
 
+struct GitTransferProgress: TransferProgress
+{
+  let gitProgress: git_transfer_progress
+  
+  var totalObjects: UInt32    { return gitProgress.total_objects }
+  var indexedObjects: UInt32  { return gitProgress.indexed_objects }
+  var receivedObjects: UInt32 { return gitProgress.received_objects }
+  var localObjects: UInt32    { return gitProgress.local_objects }
+  var totalDeltas: UInt32     { return gitProgress.total_deltas }
+  var indexedDeltas: UInt32   { return gitProgress.indexed_deltas }
+  var receivedBytes: Int      { return gitProgress.received_bytes }
+}
+
 extension XTRepository
 {
-  struct GitTransferProgress: TransferProgress
-  {
-    let gitProgress: git_transfer_progress
-    
-    var totalObjects: UInt32    { return gitProgress.total_objects }
-    var indexedObjects: UInt32  { return gitProgress.indexed_objects }
-    var receivedObjects: UInt32 { return gitProgress.received_objects }
-    var localObjects: UInt32    { return gitProgress.local_objects }
-    var totalDeltas: UInt32     { return gitProgress.total_deltas }
-    var indexedDeltas: UInt32   { return gitProgress.indexed_deltas }
-    var receivedBytes: Int      { return gitProgress.received_bytes }
-  }
-  
-  func credentialProvider(_ passwordBlock: @escaping () -> (String, String)?)
-      -> GTCredentialProvider
-  {
-    return GTCredentialProvider {
-      (type, urlString, user) -> GTCredential? in
-      if checkCredentialType(type, flag: .sshKey) {
-        return sshCredential(user) ?? GTCredential()
-      }
-      
-      guard checkCredentialType(type, flag: .userPassPlaintext)
-      else { return GTCredential() }
-      let keychain = XTKeychain.shared
-      
-      let keychainUser: String? = user.isEmpty ? nil : user
-      if let url = URL(string: urlString),
-         let password = keychain.find(url: url, account: keychainUser) ??
-                        keychain.find(url: url.withPath(""),
-                                      account: keychainUser) {
-        do {
-          return try GTCredential(userName: user, password: password)
-        }
-        catch let error as NSError {
-          NSLog(error.description)
-        }
-      }
-      
-      guard let (userName, password) = passwordBlock(),
-            let result = try? GTCredential(userName: userName,
-                                           password: password)
-      else { return nil }
-
-      return result
-    }
-  }
-  
-  public func fetchOptions(downloadTags: Bool,
-                           pruneBranches: Bool,
-                           passwordBlock: @escaping () -> (String, String)?)
-      -> [String: AnyObject]
-  {
-    let tagOption = downloadTags ? GTRemoteDownloadTagsAuto
-                                 : GTRemoteDownloadTagsNone
-    let pruneOption: GTFetchPruneOption = pruneBranches ? .yes : .no
-    let pruneValue = NSNumber(value: pruneOption.rawValue as Int)
-    let tagValue = NSNumber(value: tagOption.rawValue as UInt32)
-    let provider = credentialProvider(passwordBlock)
-    
-    return [
-        GTRepositoryRemoteOptionsDownloadTags: tagValue,
-        GTRepositoryRemoteOptionsFetchPrune: pruneValue,
-        GTRepositoryRemoteOptionsCredentialProvider: provider]
-  }
-  
   private func fastForwardMerge(branch: GitBranch, remoteBranch: GitBranch) throws
   {
     guard let remoteCommit = remoteBranch.targetCommit
@@ -425,26 +377,4 @@ extension XTRepository
     
     return MergeAnalysis(rawValue: analysis.pointee.rawValue)
   }
-}
-
-// MARK: Credential helpers
-
-fileprivate func checkCredentialType(_ type: GTCredentialType,
-                                     flag: GTCredentialType) -> Bool
-{
-  return (type.rawValue & flag.rawValue) != 0
-}
-
-fileprivate func sshCredential(_ user: String) -> GTCredential?
-{
-  let publicPath =
-      ("~/.ssh/id_rsa.pub" as NSString).expandingTildeInPath
-  let privatePath =
-      ("~/.ssh/id_rsa" as NSString).expandingTildeInPath
-  
-  return try? GTCredential(
-      userName: user,
-      publicKeyURL: URL(fileURLWithPath: publicPath),
-      privateKeyURL: URL(fileURLWithPath: privatePath),
-      passphrase: "")
 }

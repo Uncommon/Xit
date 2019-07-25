@@ -64,7 +64,7 @@ class FetchOpController: PasswordOpController
   }
   
   /// Fetch progress callback
-  func shouldStop(progress: TransferProgress) -> Bool
+  func progressCallback(progress: TransferProgress) -> Bool
   {
     guard !canceled,
           let repository = repository
@@ -78,7 +78,7 @@ class FetchOpController: PasswordOpController
           total: Float(progress.totalObjects))
     
     NotificationCenter.default.post(note)
-    return false
+    return true
   }
   
   func executeFetch(remoteName: String,
@@ -96,10 +96,12 @@ class FetchOpController: PasswordOpController
     let repo = repository  // For use in the block without being tied to self
     
     tryRepoOperation {
+      let callbacks = RemoteCallbacks(passwordBlock: self.getPassword,
+                                      downloadProgress: self.progressCallback,
+                                      uploadProgress: nil)
       let options = FetchOptions(downloadTags: downloadTags,
                                  pruneBranches: pruneBranches,
-                                 passwordBlock: self.getPassword,
-                                 progressBlock: self.shouldStop)
+                                 callbacks: callbacks)
       
       try repo.fetch(remote: remote, options: options)
       NotificationCenter.default.post(name: .XTRepositoryRefsChanged,

@@ -23,10 +23,12 @@ class PullOpController: FetchOpController
     }
     
     tryRepoOperation {
+      let callbacks = RemoteCallbacks(passwordBlock: self.getPassword,
+                                      downloadProgress: self.progressCallback,
+                                      uploadProgress: nil)
       let options = FetchOptions(downloadTags: true,
                                  pruneBranches: true,
-                                 passwordBlock: self.getPassword,
-                                 progressBlock: self.shouldStop)
+                                 callbacks: callbacks)
       
       try repository.pull(branch: branch, remote: remote, options: options)
       NotificationCenter.default.post(name: .XTRepositoryRefsChanged,

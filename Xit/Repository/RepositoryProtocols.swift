@@ -170,16 +170,30 @@ extension TransferProgress
   var progress: Float { return Float(receivedObjects) / Float(totalObjects) }
 }
 
+public struct RemoteCallbacks
+{
+  /// Callback for getting the user and password
+  let passwordBlock: (() -> (String, String)?)?
+  /// Fetch progress. Return false to stop the operation
+  let downloadProgress: ((TransferProgress) -> Bool)?
+  /// Push progress. Return false to stop the operation
+  let uploadProgress: ((PushTransferProgress) -> Bool)?
+}
+
 public struct FetchOptions
 {
   /// True to also download tags
   let downloadTags: Bool
   /// True to delete obsolete branch refs
   let pruneBranches: Bool
-  /// Callback for getting the user and password
-  let passwordBlock: () -> (String, String)?
-  /// Return true to stop the operation
-  let progressBlock: (TransferProgress) -> Bool
+  
+  let callbacks: RemoteCallbacks
+}
+
+public struct PushTransferProgress
+{
+  let current, total: UInt32
+  let bytes: size_t
 }
 
 public protocol RemoteCommunication: AnyObject
@@ -187,12 +201,10 @@ public protocol RemoteCommunication: AnyObject
   /// Pushes an update for the given branch.
   /// - parameter branch: Local branch to push; must have a tracking branch set
   /// - parameter remote: Target remote to push to
-  /// - parameter passwordBlock: Callback to prompt for a password if needed
-  /// - parameter progressBlock: Callbacak for reporting progress
-  func push(branch: Branch,
+  /// - parameter callbacks: Password and progress callbacks
+  func push(branch: LocalBranch,
             remote: Remote,
-            passwordBlock: @escaping () -> (String, String)?,
-            progressBlock: @escaping (UInt32, UInt32, size_t) -> Bool) throws
+            callbacks: RemoteCallbacks) throws
   
   /// Dowloads updated refs and commits from the remote.
   func fetch(remote: Remote, options: FetchOptions) throws

@@ -42,7 +42,7 @@ enum RepoError: Swift.Error
       case .patchMismatch:
         return .patchMismatch
       case .commitNotFound(let sha):
-        return .commitNotFound(sha)
+        return .commitNotFound(sha?.firstSix())
       case .fileNotFound(let path):
         return .fileNotFound(path)
       case .notFound:
@@ -54,6 +54,8 @@ enum RepoError: Swift.Error
     }
   }
   
+  var localizedDescription: String { return message.rawValue }
+  
   init(gitCode: git_error_code)
   {
     switch gitCode {
@@ -63,6 +65,10 @@ enum RepoError: Swift.Error
         self = .alreadyWriting
       case GIT_ENOTFOUND:
         self = .notFound
+      case GIT_EUNMERGED:
+        self = .mergeInProgress
+      case GIT_EUNCOMMITTED, GIT_EINDEXDIRTY:
+        self = .workspaceDirty
       default:
         self = .gitError(gitCode.rawValue)
     }

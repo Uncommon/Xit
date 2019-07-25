@@ -1,7 +1,28 @@
 import Cocoa
 
+public enum RemoteConnectionDirection
+{
+  case push
+  case fetch
+}
+
+extension RemoteConnectionDirection
+{
+  var gitDirection: git_direction
+  {
+    switch self {
+      case .push:
+        return GIT_DIRECTION_PUSH
+      case .fetch:
+        return GIT_DIRECTION_FETCH
+    }
+  }
+}
+
 public protocol Remote: AnyObject
 {
+  typealias PushProgressCallback = (PushTransferProgress) -> Bool
+  
   var name: String? { get }
   var urlString: String? { get }
   var pushURLString: String? { get }
@@ -9,6 +30,11 @@ public protocol Remote: AnyObject
   func rename(_ name: String) throws
   func updateURLString(_ URLString: String?) throws
   func updatePushURLString(_ URLString: String?) throws
+  
+  /// Calls the callback between opening and closing a connection to the remote.
+  func withConnection(direction: RemoteConnectionDirection,
+                      callbacks: RemoteCallbacks,
+                      action: () throws -> Void) throws
 }
 
 extension Remote
@@ -122,5 +148,27 @@ class GitRemote: Remote
     else {
       try RepoError.throwIfGitError(result)
     }
+  }
+  
+  func withConnection(direction: RemoteConnectionDirection,
+                      callbacks: RemoteCallbacks,
+                      action: () throws -> Void) throws
+  {
+    var result: Int32
+    
+    result = git_remote_callbacks.withCallbacks(callbacks) {
+      (gitCallbacks) in
+      return withUnsafePointer(to: gitCallbacks) {
+        (callbacksPtr) in
+        return git_remote_connect(remote, direction.gitDirection, callbacksPtr,
+                                  nil, nil)
+      }
+    }
+    
+    try RepoError.throwIfGitError(result)
+    defer {
+      git_remote_disconnect(remote)
+    }
+    try action()
   }
 }

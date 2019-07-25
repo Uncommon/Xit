@@ -2,18 +2,18 @@ import Cocoa
 
 class PushOpController: PasswordOpController
 {
-  func shouldStop(current: UInt32, total: UInt32, bytes: size_t) -> Bool
+  func progressCallback(progress: PushTransferProgress) -> Bool
   {
     guard !canceled,
           let repository = repository
     else { return true }
     
     let note = Notification.progressNotification(repository: repository,
-                                                 progress: Float(current),
-                                                 total: Float(total))
+                                                 progress: Float(progress.current),
+                                                 total: Float(progress.total))
     
     NotificationCenter.default.post(note)
-    return canceled
+    return !canceled
   }
 
   override func start() throws
@@ -67,6 +67,9 @@ class PushOpController: PasswordOpController
     tryRepoOperation {
       guard let repository = self.repository
       else { return }
+      let callbacks = RemoteCallbacks(passwordBlock: self.getPassword,
+                                      downloadProgress: nil,
+                                      uploadProgress: self.progressCallback)
       
       if let url = remote.pushURL ?? remote.url {
         self.setKeychainInfoURL(url)
@@ -74,8 +77,7 @@ class PushOpController: PasswordOpController
 
       try repository.push(branch: localBranch,
                           remote: remote,
-                          passwordBlock: self.getPassword,
-                          progressBlock: self.shouldStop)
+                          callbacks: callbacks)
       NotificationCenter.default.post(name: .XTRepositoryRefsChanged,
                                       object: repository)
       self.ended()

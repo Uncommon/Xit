@@ -171,6 +171,11 @@ extension String
   {
     return (self as NSString).deletingLastPathComponent
   }
+  
+  var expandingTildeInPath: String
+  {
+    return (self as NSString).expandingTildeInPath
+  }
 }
 
 infix operator +/ : AdditionPrecedence

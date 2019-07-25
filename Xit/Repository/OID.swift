@@ -19,8 +19,11 @@ extension OID // CustomDebugStringConvertible
 // protocol can be used.
 extension OID
 {
-  public var hashValue: Int { return sha.hashValue }
-  
+  public func hash(into hasher: inout Hasher)
+  {
+    sha.hash(into: &hasher)
+  }
+
   public func equals(_ other: OID) -> Bool
   {
     return sha == other.sha
