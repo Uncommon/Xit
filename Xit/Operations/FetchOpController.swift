@@ -64,7 +64,7 @@ class FetchOpController: PasswordOpController
   }
   
   /// Fetch progress callback
-  func shouldStop(progress: TransferProgress) -> Bool
+  func progressCallback(progress: TransferProgress) -> Bool
   {
     guard !canceled,
           let repository = repository
@@ -78,7 +78,7 @@ class FetchOpController: PasswordOpController
           total: Float(progress.totalObjects))
     
     NotificationCenter.default.post(note)
-    return false
+    return true
   }
   
   func executeFetch(remoteName: String,
@@ -97,7 +97,7 @@ class FetchOpController: PasswordOpController
     
     tryRepoOperation {
       let callbacks = RemoteCallbacks(passwordBlock: self.getPassword,
-                                      downloadProgress: self.shouldStop,
+                                      downloadProgress: self.progressCallback,
                                       uploadProgress: nil)
       let options = FetchOptions(downloadTags: downloadTags,
                                  pruneBranches: pruneBranches,

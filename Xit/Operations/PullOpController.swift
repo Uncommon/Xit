@@ -24,7 +24,7 @@ class PullOpController: FetchOpController
     
     tryRepoOperation {
       let callbacks = RemoteCallbacks(passwordBlock: self.getPassword,
-                                      downloadProgress: self.shouldStop,
+                                      downloadProgress: self.progressCallback,
                                       uploadProgress: nil)
       let options = FetchOptions(downloadTags: true,
                                  pruneBranches: true,
