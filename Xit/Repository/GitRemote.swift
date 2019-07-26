@@ -8,6 +8,16 @@ public enum RemoteConnectionDirection
 
 extension RemoteConnectionDirection
 {
+  init(gitDirection: git_direction)
+  {
+    switch gitDirection {
+      case GIT_DIRECTION_FETCH:
+        self = .fetch
+      default:
+        self = .push
+    }
+  }
+  
   var gitDirection: git_direction
   {
     switch self {
@@ -26,6 +36,8 @@ public protocol Remote: AnyObject
   var name: String? { get }
   var urlString: String? { get }
   var pushURLString: String? { get }
+  
+  var refSpecs: AnyCollection<RefSpec> { get }
   
   func rename(_ name: String) throws
   func updateURLString(_ URLString: String?) throws
@@ -79,6 +91,11 @@ class GitRemote: Remote
     else { return nil }
     
     return String(cString: url)
+  }
+  
+  var refSpecs: AnyCollection<RefSpec>
+  {
+    return AnyCollection(RefSpecCollection(remote: self))
   }
   
   init?(name: String, repository: OpaquePointer)
@@ -170,5 +187,54 @@ class GitRemote: Remote
       git_remote_disconnect(remote)
     }
     try action()
+  }
+}
+
+extension GitRemote
+{
+  struct RefSpecCollection: Collection
+  {
+    let remote: GitRemote
+
+    var count: Int { return git_remote_refspec_count(remote.remote) }
+    
+    func makeIterator() -> RefSpecIterator
+    {
+      return RefSpecIterator(remote: remote)
+    }
+    
+    subscript(position: Int) -> RefSpec
+    {
+      return GitRefSpec(refSpec: git_remote_get_refspec(remote.remote, position))
+    }
+    
+    public var startIndex: Int { return 0 }
+    public var endIndex: Int { return count }
+    
+    public func index(after i: Int) -> Int
+    {
+      return i + 1
+    }
+  }
+  
+  struct RefSpecIterator: IteratorProtocol
+  {
+    var index: Int
+    let remote: GitRemote
+    
+    init(remote: GitRemote)
+    {
+      self.index = 0
+      self.remote = remote
+    }
+    
+    mutating func next() -> RefSpec?
+    {
+      index += 1
+      guard index < git_remote_refspec_count(remote.remote)
+      else { return nil }
+      
+      return GitRefSpec(refSpec: git_remote_get_refspec(remote.remote, index))
+    }
   }
 }

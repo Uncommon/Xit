@@ -229,3 +229,32 @@ extension Data
     }
   }
 }
+
+extension String
+{
+  /// Creates a string with a copy of the buffer's contents.
+  init?(gitBuffer: git_buf)
+  {
+    guard let target = String(bytesNoCopy: gitBuffer.ptr,
+                              length: gitBuffer.size,
+                              encoding: .utf8,
+                              freeWhenDone: false)
+    else { return nil }
+    
+    // Make a copy because target points to the buffer
+    self = String(target)
+  }
+  
+  /// Calls `action` with a string pointing to the given buffer. If the string
+  /// could not be constructed then `nil` is passed.
+  static func withGitBuffer<T>(_ buffer: git_buf,
+                               action: (String?) throws -> T) rethrows -> T
+  {
+    let string = String(bytesNoCopy: buffer.ptr,
+                        length: buffer.size,
+                        encoding: .utf8,
+                        freeWhenDone: false)
+    
+    return try action(string)
+  }
+}
