@@ -43,11 +43,52 @@ extension Config
   {
     return self["commit.template"]
   }
+  
+  func branchRemote(_ branch: String) -> String?
+  {
+    return self["branch.\(branch).remote"]
+  }
+  
+  func branchMerge(_ branch: String) -> String?
+  {
+    return self["branch.\(branch).merge"]
+  }
+  
+  func remoteURL(_ remote: String) -> String?
+  {
+    return self["remote.\(remote).url"]
+  }
+  
+  func remoteFetch(_ remote: String) -> String?
+  {
+    return self["remote.\(remote).fetch"]
+  }
+  
+  func remotePushURL(_ remote: String) -> String?
+  {
+    return self["remote.\(remote).pushurl"]
+  }
 }
 
 class GitConfig: Config
 {
   let config: OpaquePointer
+  var snapshot: OpaquePointer?
+  
+  var readConfig: OpaquePointer { return snapshot ?? config }
+  
+  func loadSnapshot()
+  {
+    var snapshot: OpaquePointer?
+    let result = git_config_snapshot(&snapshot, config)
+    guard result == 0
+    else {
+      snapshot = nil
+      return
+    }
+    
+    self.snapshot = snapshot
+  }
   
   init?(repository: OpaquePointer)
   {
@@ -58,11 +99,13 @@ class GitConfig: Config
     else { return nil }
     
     self.config = finalConfig
+    loadSnapshot()
   }
   
   init(config: OpaquePointer)
   {
     self.config = config
+    loadSnapshot()
   }
   
   static var `default`: GitConfig?
@@ -79,6 +122,9 @@ class GitConfig: Config
   deinit
   {
     git_config_free(config)
+    if let snapshot = self.snapshot {
+      git_config_free(snapshot)
+    }
   }
   
   subscript(index: String) -> Bool?
@@ -86,7 +132,7 @@ class GitConfig: Config
     get
     {
       let b = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
-      let result = git_config_get_bool(b, config, index)
+      let result = git_config_get_bool(b, readConfig, index)
       guard result == 0
       else { return nil }
       
@@ -95,11 +141,12 @@ class GitConfig: Config
     set
     {
       if let value = newValue {
-        git_config_set_bool(config, index, value ? 1 : 0)
+        git_config_set_bool(readConfig, index, value ? 1 : 0)
       }
       else {
-        git_config_delete_entry(config, index)
+        git_config_delete_entry(readConfig, index)
       }
+      loadSnapshot()
     }
   }
   
@@ -127,6 +174,7 @@ class GitConfig: Config
       else {
         git_config_delete_entry(config, index)
       }
+      loadSnapshot()
     }
   }
   
@@ -149,6 +197,7 @@ class GitConfig: Config
       else {
         git_config_delete_entry(config, index)
       }
+      loadSnapshot()
     }
   }
 }
