@@ -191,7 +191,7 @@ extension XTRepository: Branching
                                    targetCommit.commit, 0)
     
     try RepoError.throwIfGitError(result)
-    return branchRef.map { GitLocalBranch(branch: $0) }
+    return branchRef.map { GitLocalBranch(branch: $0, config: config) }
   }
   
   /// Renames the given local branch.
@@ -218,17 +218,21 @@ extension XTRepository: Branching
 
   public func localBranch(named name: String) -> LocalBranch?
   {
-    return GitLocalBranch(repository: gitRepo, name: name)
+    return GitLocalBranch(repository: gitRepo, name: name, config: config)
   }
   
   public func remoteBranch(named name: String, remote: String) -> RemoteBranch?
   {
-    return GitRemoteBranch(repository: gitRepo, name: "\(remote)/\(name)")
+    return GitRemoteBranch(repository: gitRepo,
+                           name: "\(remote)/\(name)",
+                           config: config)
   }
   
   public func remoteBranch(named name: String) -> RemoteBranch?
   {
-    return GitRemoteBranch(repository: gitRepo, name: name)
+    return GitRemoteBranch(repository: gitRepo,
+                           name: name,
+                           config: config)
   }
   
   public func localBranch(tracking remoteBranch: RemoteBranch) -> LocalBranch?

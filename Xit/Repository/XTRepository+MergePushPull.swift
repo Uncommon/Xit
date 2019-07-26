@@ -247,7 +247,8 @@ extension XTRepository
       
       guard let currentBranchName = currentBranch,
             let targetBranch = GitLocalBranch(repository: gitRepo,
-                                              name: currentBranchName)
+                                              name: currentBranchName,
+                                              config: config)
       else { throw RepoError.detachedHead }
       guard let targetCommit = targetBranch.targetCommit as? GitCommit,
             let remoteCommit = branch.targetCommit as? GitCommit

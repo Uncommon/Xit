@@ -62,12 +62,14 @@ public enum RefPrefixes
 public class GitBranch
 {
   let branchRef: OpaquePointer
+  let config: Config
   
-  required public init(branch: OpaquePointer)
+  required public init(branch: OpaquePointer, config: Config)
   {
     self.branchRef = branch
+    self.config = config
   }
-  
+
   public var name: String
   {
     guard let name = git_reference_name(branchRef)
@@ -114,20 +116,20 @@ public class GitLocalBranch: GitBranch, LocalBranch
 {
   public var shortName: String { return strippedName }
   
-  init?(repository: OpaquePointer, name: String)
+  init?(repository: OpaquePointer, name: String, config: Config)
   {
     guard let branch = GitBranch.lookUpBranch(
         name: name, repository: repository,
         branchType: GIT_BRANCH_LOCAL)
     else { return nil }
     
-    super.init(branch: branch)
+    super.init(branch: branch, config: config)
   }
   
   // Apparently just needed to disambiguate the overload
-  required public init(branch: OpaquePointer)
+  required public init(branch: OpaquePointer, config: Config)
   {
-    super.init(branch: branch)
+    super.init(branch: branch, config: config)
   }
   
   /// The name of this branch's remote tracking branch, even if the
@@ -170,7 +172,7 @@ public class GitLocalBranch: GitBranch, LocalBranch
           let branch = upstream.pointee
     else { return nil }
     
-    return GitRemoteBranch(branch: branch)
+    return GitRemoteBranch(branch: branch, config: config)
   }
   
   override var remoteName: String?
@@ -205,18 +207,18 @@ public class GitRemoteBranch: GitBranch, RemoteBranch
   
   public override var remoteName: String? { return cachedRemoteName }
 
-  init?(repository: OpaquePointer, name: String)
+  init?(repository: OpaquePointer, name: String, config: Config)
   {
     guard let branch = GitBranch.lookUpBranch(
         name: name, repository: repository,
         branchType: GIT_BRANCH_REMOTE)
     else { return nil }
     
-    super.init(branch: branch)
+    super.init(branch: branch, config: config)
   }
   
-  required public init(branch: OpaquePointer)
+  required public init(branch: OpaquePointer, config: Config)
   {
-    super.init(branch: branch)
+    super.init(branch: branch, config: config)
   }
 }

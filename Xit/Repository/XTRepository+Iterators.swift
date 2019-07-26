@@ -51,7 +51,7 @@ extension XTRepository
     
     public func next() -> LocalBranch?
     {
-      return nextBranch().map { GitLocalBranch(branch: $0) }
+      return nextBranch().map { GitLocalBranch(branch: $0, config: repo.config) }
     }
   }
   
@@ -65,7 +65,8 @@ extension XTRepository
     
     public func next() -> RemoteBranch?
     {
-      return nextBranch().map { GitRemoteBranch(branch: $0) }
+      return nextBranch().map { GitRemoteBranch(branch: $0,
+                                                config: repo.config) }
     }
   }
   
