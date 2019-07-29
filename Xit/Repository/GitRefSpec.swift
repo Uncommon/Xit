@@ -76,7 +76,7 @@ struct GitRefSpec: RefSpec
     var buffer = git_buf()
     let result = git_refspec_rtransform(&buffer, refSpec, name)
     guard result == 0
-    else { return "" }
+    else { return nil }
     let source = String(gitBuffer: buffer)
     
     git_buf_free(&buffer)

@@ -230,10 +230,12 @@ extension GitRemote
     
     mutating func next() -> RefSpec?
     {
-      index += 1
       guard index < git_remote_refspec_count(remote.remote)
       else { return nil }
       
+      defer {
+        index += 1
+      }
       return GitRefSpec(refSpec: git_remote_get_refspec(remote.remote, index))
     }
   }

@@ -118,9 +118,9 @@ public class GitLocalBranch: GitBranch, LocalBranch
   
   init?(repository: OpaquePointer, name: String, config: Config)
   {
-    guard let branch = GitBranch.lookUpBranch(
-        name: name, repository: repository,
-        branchType: GIT_BRANCH_LOCAL)
+    guard let branch = GitBranch.lookUpBranch(name: name,
+                                              repository: repository,
+                                              branchType: GIT_BRANCH_LOCAL)
     else { return nil }
     
     super.init(branch: branch, config: config)
@@ -138,25 +138,33 @@ public class GitLocalBranch: GitBranch, LocalBranch
   {
     get
     {
-      guard !name.isEmpty,
-            let repo = git_reference_owner(branchRef)
-      else { return nil }
-      let buf = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
-    
-      buf.pointee.size = 0
-      buf.pointee.asize = 0
-      guard git_branch_upstream_name(buf, repo, name) == 0
+      // Re-implement `git_branch_upstream_name` but with our cached-snapshot
+      // config optimization.
+      let name = self.shortName
+      guard let remoteName = config.branchRemote(name),
+            let mergeName = config.branchMerge(name)
       else { return nil }
       
-      let data = Data(bytes: buf.pointee.ptr, count: buf.pointee.size)
-      
-      git_buf_free(buf)
-      return String(data: data, encoding: .utf8)?
-             .droppingPrefix(RefPrefixes.remotes)
+      if remoteName == "." {
+        return mergeName
+      }
+      else {
+        guard let repo = git_reference_owner(branchRef),
+              let remote = GitRemote(name: remoteName, repository: repo),
+              let refSpec = remote.refSpecs.first(where: {
+                (spec) in
+                spec.direction == .fetch && spec.sourceMatches(refName: mergeName)
+              })
+        else { return nil }
+        
+        return refSpec.transformToTarget(name: mergeName)?
+                      .droppingPrefix(RefPrefixes.remotes)
+      }
     }
     set
     {
       git_branch_set_upstream(branchRef, newValue)
+      (config as? GitConfig)?.loadSnapshot()
     }
   }
   
