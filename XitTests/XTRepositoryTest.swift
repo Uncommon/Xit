@@ -788,6 +788,34 @@ class XTRepositoryTest: XTTest
     
     XCTAssertEqual(diff, .binary)
   }
+  
+  func testTrackingBranch()
+  {
+    let remoteName = "origin"
+    let masterBranchName = "master"
+    let remoteBranchName = remoteName +/ masterBranchName
+    
+    makeRemoteRepo()
+    commit(newTextFile: FileName.file1, content: "remote",
+           repository: remoteRepository)
+    XCTAssertNoThrow(
+        try repository.addRemote(named: remoteName,
+                                 url: URL(fileURLWithPath: remoteRepoPath)))
+    XCTAssertNoThrow(
+        try repository.executeGit(args: ["fetch", remoteName],
+                                  writes: true))
+    XCTAssertNoThrow(
+        try repository.executeGit(args: ["branch", "-u", remoteBranchName],
+                                  writes: true))
+    
+    guard let masterBranch = repository.localBranch(named: masterBranchName)
+    else {
+      XCTFail("master branch missing")
+      return
+    }
+    
+    XCTAssertEqual(masterBranch.trackingBranchName, remoteBranchName)
+  }
 }
 
 extension PatchMaker.PatchResult: Equatable
