@@ -75,7 +75,9 @@ class GitConfig: Config
   let config: OpaquePointer
   var snapshot: OpaquePointer?
   
-  var readConfig: OpaquePointer { return snapshot ?? config }
+  /// The config actually being read: the cached snapshot, if any, or the
+  /// data residing in the various config files.
+  var operativeConfig: OpaquePointer { return snapshot ?? config }
   
   func loadSnapshot()
   {
@@ -131,20 +133,20 @@ class GitConfig: Config
   {
     get
     {
-      let b = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
-      let result = git_config_get_bool(b, readConfig, index)
+      var b: Int32 = 0
+      let result = git_config_get_bool(&b, operativeConfig, index)
       guard result == 0
       else { return nil }
       
-      return b.pointee != 0
+      return b != 0
     }
     set
     {
       if let value = newValue {
-        git_config_set_bool(readConfig, index, value ? 1 : 0)
+        git_config_set_bool(config, index, value ? 1 : 0)
       }
       else {
-        git_config_delete_entry(readConfig, index)
+        git_config_delete_entry(config, index)
       }
       loadSnapshot()
     }
@@ -154,17 +156,12 @@ class GitConfig: Config
   {
     get
     {
-      let buffer = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
-      
-      buffer.pointee.ptr = nil
-      buffer.pointee.asize = 0
-      buffer.pointee.size = 0
-      
-      let result = git_config_get_string_buf(buffer, config, index)
+      var buffer = git_buf()
+      let result = git_config_get_string_buf(&buffer, operativeConfig, index)
       guard result == 0
       else { return nil }
       
-      return String(cString: buffer.pointee.ptr)
+      return String(cString: buffer.ptr)
     }
     set
     {
@@ -182,12 +179,12 @@ class GitConfig: Config
   {
     get
     {
-      let b = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
-      let result = git_config_get_int32(b, config, index)
+      var b: Int32 = 0
+      let result = git_config_get_int32(&b, operativeConfig, index)
       guard result == 0
       else { return nil }
       
-      return Int(b.pointee)
+      return Int(b)
     }
     set
     {
