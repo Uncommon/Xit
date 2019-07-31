@@ -5,6 +5,8 @@ public protocol Config: AnyObject
   subscript(index: String) -> Bool? { get set }
   subscript(index: String) -> String? { get set }
   subscript(index: String) -> Int? { get set }
+  
+  func invalidate()
 }
 
 extension Config
@@ -78,19 +80,6 @@ class GitConfig: Config
   /// The config actually being read: the cached snapshot, if any, or the
   /// data residing in the various config files.
   var operativeConfig: OpaquePointer { return snapshot ?? config }
-  
-  func loadSnapshot()
-  {
-    var snapshot: OpaquePointer?
-    let result = git_config_snapshot(&snapshot, config)
-    guard result == 0
-    else {
-      snapshot = nil
-      return
-    }
-    
-    self.snapshot = snapshot
-  }
   
   init?(repository: OpaquePointer)
   {
@@ -196,5 +185,23 @@ class GitConfig: Config
       }
       loadSnapshot()
     }
+  }
+  
+  func loadSnapshot()
+  {
+    var snapshot: OpaquePointer?
+    let result = git_config_snapshot(&snapshot, config)
+    guard result == 0
+    else {
+      snapshot = nil
+      return
+    }
+    
+    self.snapshot = snapshot
+  }
+  
+  func invalidate()
+  {
+    loadSnapshot()
   }
 }

@@ -11,7 +11,6 @@ class RepositoryWatcher
   // stream must be var because we have to reference self to initialize it.
   var stream: FileEventStream! = nil
   var packedRefsWatcher: FileMonitor?
-  var configWatcher: FileMonitor?
   var stashWatcher: FileMonitor?
   
   let mutex = Mutex()
@@ -56,7 +55,6 @@ class RepositoryWatcher
   
     self.stream = stream
     makePackedRefsWatcher()
-    makeConfigWatcher()
     makeStashWatcher()
     refsCache = index(refs: repository.allRefs())
   }
@@ -66,7 +64,6 @@ class RepositoryWatcher
     stream.stop()
     mutex.withLock {
       self.packedRefsWatcher = nil
-      self.configWatcher = nil
     }
   }
   
@@ -80,17 +77,6 @@ class RepositoryWatcher
     watcher?.notifyBlock = {
       [weak self] (_, _) in
       self?.checkRefs()
-    }
-  }
-  
-  func makeConfigWatcher()
-  {
-    let path = repository!.gitDirectoryPath
-    
-    configWatcher = FileMonitor(path: path.appending(pathComponent: "config"))
-    configWatcher?.notifyBlock = {
-      [weak self] (_, _) in
-      self?.checkConfig()
     }
   }
   
@@ -226,11 +212,6 @@ class RepositoryWatcher
     }
     
     refsCache = newRefCache
-  }
-  
-  func checkConfig()
-  {
-    post(.XTRepositoryConfigChanged)
   }
   
   func checkLogs(changedPaths: [String])

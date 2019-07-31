@@ -47,6 +47,7 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
   
   // These require `self` to initialize
   fileprivate var repoWatcher: RepositoryWatcher! = nil
+  fileprivate var configWatcher: ConfigWatcher! = nil
   fileprivate var workspaceWatcher: WorkspaceWatcher! = nil
 
   var gitRepo: OpaquePointer { return gtRepo.git_repository() }
@@ -90,6 +91,7 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
     super.init()
     
     self.repoWatcher = RepositoryWatcher(repository: self)
+    self.configWatcher = ConfigWatcher(repository: self)
     self.workspaceWatcher = WorkspaceWatcher(repository: self)
 }
   
@@ -115,6 +117,7 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
   deinit
   {
     repoWatcher.stop()
+    configWatcher.stop()
     workspaceWatcher.stop()
     NotificationCenter.default.removeObserver(self)
   }
