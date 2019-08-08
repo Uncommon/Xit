@@ -808,13 +808,23 @@ class XTRepositoryTest: XTTest
         try repository.executeGit(args: ["branch", "-u", remoteBranchName],
                                   writes: true))
     
-    guard let masterBranch = repository.localBranch(named: masterBranchName)
+    repository.config.invalidate()
+    
+    if let masterBranch = repository.localBranch(named: masterBranchName) {
+      XCTAssertEqual(masterBranch.trackingBranchName, remoteBranchName)
+    }
     else {
       XCTFail("master branch missing")
-      return
     }
     
-    XCTAssertEqual(masterBranch.trackingBranchName, remoteBranchName)
+    if let localBranch = repository.localTrackingBranch(
+        forBranchRef: RefPrefixes.remotes +/ remoteName +/ masterBranchName) {
+      XCTAssertEqual(localBranch.name,
+                     RefPrefixes.heads + "master")
+    }
+    else {
+      XCTFail("local tracking branch not found")
+    }
   }
 }
 

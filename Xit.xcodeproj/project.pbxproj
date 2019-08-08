@@ -46,6 +46,7 @@
 		C9065F4E20FCFA8B00C01110 /* RefType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9065F4D20FCFA8B00C01110 /* RefType.swift */; };
 		C9065F6020FFE1D900C01110 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9065F5F20FFE1D900C01110 /* Notifications.swift */; };
 		C9088CC722BA8BC500DB4A02 /* BuildStatusControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9088CC622BA8BC500DB4A02 /* BuildStatusControllerTest.swift */; };
+		C90A09F722F4E55100B42EFE /* RefName.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90A09F622F4E55100B42EFE /* RefName.swift */; };
 		C90B4EB11FE86A9900277B13 /* GiRevWalk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90B4EB01FE86A9900277B13 /* GiRevWalk.swift */; };
 		C90B4EC31FEB2B2300277B13 /* GitReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90B4EC21FEB2B2300277B13 /* GitReference.swift */; };
 		C90B4EC51FEDB1D600277B13 /* GitStatusList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90B4EC41FEDB1D600277B13 /* GitStatusList.swift */; };
@@ -426,6 +427,7 @@
 		C9065F4D20FCFA8B00C01110 /* RefType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefType.swift; sourceTree = "<group>"; };
 		C9065F5F20FFE1D900C01110 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		C9088CC622BA8BC500DB4A02 /* BuildStatusControllerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildStatusControllerTest.swift; sourceTree = "<group>"; };
+		C90A09F622F4E55100B42EFE /* RefName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefName.swift; sourceTree = "<group>"; };
 		C90B4EB01FE86A9900277B13 /* GiRevWalk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiRevWalk.swift; sourceTree = "<group>"; };
 		C90B4EC21FEB2B2300277B13 /* GitReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitReference.swift; sourceTree = "<group>"; };
 		C90B4EC41FEDB1D600277B13 /* GitStatusList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitStatusList.swift; sourceTree = "<group>"; };
@@ -930,6 +932,7 @@
 				C9328B111D77303200EFF7F7 /* FileMonitor.swift */,
 				C9DEA49B1E4A900300DF4069 /* OID.swift */,
 				C9F9A0291E1C417D00261E33 /* PatchMaker.swift */,
+				C90A09F622F4E55100B42EFE /* RefName.swift */,
 				C9065F4D20FCFA8B00C01110 /* RefType.swift */,
 				C959A7221F6C6974004277CD /* RepositoryProtocols.swift */,
 				C9DEA4AC1E4B82B200DF4069 /* Signature.swift */,
@@ -1419,6 +1422,7 @@
 				C95BF6661FCF5D7A0020C51D /* CommitSelection.swift in Sources */,
 				C98CAD841F9520D0005DB419 /* GitDiffHunk.swift in Sources */,
 				C96B22F022DF84C200DA219F /* GitVersionedOptions.swift in Sources */,
+				C90A09F722F4E55100B42EFE /* RefName.swift in Sources */,
 				C900463C21120F3200706029 /* BitbucketServerAPI.swift in Sources */,
 				C9BC1B9B1DDF51B900C71562 /* FileEventStream.swift in Sources */,
 				C929D03B1D400B3B00D7DC52 /* GitRemote.swift in Sources */,

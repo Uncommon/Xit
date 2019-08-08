@@ -6,7 +6,34 @@ public protocol Config: AnyObject
   subscript(index: String) -> String? { get set }
   subscript(index: String) -> Int? { get set }
   
+  var entries: AnySequence<ConfigEntry> { get }
+  
   func invalidate()
+}
+
+public protocol ConfigEntry
+{
+  var name: String { get }
+  var stringValue: String { get }
+}
+
+extension ConfigEntry
+{
+  var boolValue: Bool
+  {
+    // Replicates the logic of git_config_parse_bool
+    switch stringValue.lowercased() {
+      case "true", "yes", "on":
+        return true
+      default:
+        return intValue != 0
+    }
+  }
+  
+  var intValue: Int
+  {
+    return Int(stringValue) ?? 0
+  }
 }
 
 extension Config
@@ -203,5 +230,70 @@ class GitConfig: Config
   func invalidate()
   {
     loadSnapshot()
+  }
+  
+  class EntryIterator: IteratorProtocol
+  {
+    private var iterator: UnsafeMutablePointer<git_config_iterator>?
+    
+    init(config: OpaquePointer)
+    {
+      self.iterator = .allocate(capacity: 1)
+      
+      let result = git_config_iterator_new(&iterator, config)
+      guard result == 0
+      else {
+        self.iterator = nil
+        return
+      }
+    }
+    
+    deinit
+    {
+      if let iterator = self.iterator {
+        git_config_iterator_free(iterator)
+      }
+    }
+    
+    func next() -> ConfigEntry?
+    {
+      guard let iterator = self.iterator
+      else { return nil }
+      var entry: UnsafeMutablePointer<git_config_entry>?
+      let result = git_config_next(&entry, iterator)
+      guard result == 0,
+            let finalEntry = entry?.pointee
+      else { return nil }
+      
+      self.iterator = iterator
+      return GitConfigEntry(entry: finalEntry)
+    }
+  }
+  
+  var entries: AnySequence<ConfigEntry>
+  {
+    return AnySequence<ConfigEntry> { EntryIterator(config: self.operativeConfig) }
+  }
+}
+
+class GitConfigEntry: ConfigEntry
+{
+  let entry: git_config_entry
+  
+  var name: String { return String(cString: entry.name) }
+  var stringValue: String { return String(cString: entry.value) }
+  
+  init(entry: git_config_entry)
+  {
+    self.entry = entry
+  }
+  
+  deinit
+  {
+    if let free = entry.free {
+      var mutableEntry = entry
+      
+      free(&mutableEntry)
+    }
   }
 }

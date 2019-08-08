@@ -242,8 +242,35 @@ extension XTRepository: Branching
   
   public func localTrackingBranch(forBranchRef branch: String) -> LocalBranch?
   {
-    return localBranches.first {
-      $0.trackingBranchName == branch
+    guard let ref = RefName(rawValue: branch),
+          case let .remoteBranch(remote, branch) = ref
+    else { return nil }
+    
+    guard let remoteRegex = try?
+        NSRegularExpression(pattern: "\\Abranch\\.(.*)\\.remote",
+                            options: [])
+    else { return nil }
+    
+    // Looping through all the branches can be expensive
+    for entry in config.entries {
+      let name = entry.name
+      guard let match = remoteRegex.firstMatch(in: name, options: [],
+                                               range: name.fullNSRange),
+            match.numberOfRanges == 2,
+            let branchRange = Range(match.range(at: 1), in: name),
+            entry.stringValue == remote
+      else { continue }
+      let entryBranch = String(name[branchRange])
+      guard let mergeName = config.branchMerge(entryBranch)
+      else { continue }
+
+      let stripped = branch.droppingPrefix(RefPrefixes.remotes +/ remote)
+      let expectedMergeName = RefPrefixes.heads +/ stripped
+      
+      if mergeName == expectedMergeName {
+        return localBranch(named: entryBranch)
+      }
     }
+    return nil
   }
 }
