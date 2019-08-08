@@ -194,26 +194,10 @@ public class GitRemoteBranch: GitBranch, RemoteBranch
   public var shortName: String
   { return name.droppingPrefix(RefPrefixes.remotes) }
 
-  // Getting the remote name involves looking it up in the config file
-  // which is a bit expensive
-  private lazy var cachedRemoteName: String? = {
-    () -> String? in
-    let repo = git_reference_owner(branchRef)
-    let buffer = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
-    
-    buffer.pointee = git_buf(ptr: nil, asize: 0, size: 0)
-    
-    let result = git_branch_remote_name(buffer, repo, name)
-    
-    guard result == 0
-    else { return nil }
-    
-    let data = Data(bytes: buffer.pointee.ptr, count: buffer.pointee.size)
-    
-    return String(data: data, encoding: .utf8)
-  }()
-  
-  public override var remoteName: String? { return cachedRemoteName }
+  public override var remoteName: String?
+  {
+    return name.droppingPrefix(RefPrefixes.remotes).firstPathComponent
+  }
 
   init?(repository: OpaquePointer, name: String, config: Config)
   {
