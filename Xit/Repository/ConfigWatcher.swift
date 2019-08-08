@@ -3,7 +3,7 @@ import Foundation
 /// Watches all files used to determine repository config settings.
 class ConfigWatcher
 {
-  let repository: XTRepository
+  weak var repository: XTRepository?
   private(set) var repoConfigStream: FileEventStream! = nil
   private(set) var userConfigStream: FileEventStream! = nil
   private(set) var globalConfigStream: FileEventStream! = nil
@@ -48,14 +48,13 @@ class ConfigWatcher
   
   private func observeEvents(_ paths: [String])
   {
+    guard let repository = self.repository
+    else { return }
+    
     repository.config.invalidate()
     DispatchQueue.main.async {
-      [weak self] in
-      guard let self = self
-      else { return }
-      
       NotificationCenter.default.post(name: .XTRepositoryConfigChanged,
-                                      object: self.repository)
+                                      object: repository)
     }
   }
 }

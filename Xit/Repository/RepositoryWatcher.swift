@@ -43,13 +43,13 @@ class RepositoryWatcher
                                        excludePaths: [objectsPath],
                                        queue: repository.queue.queue,
                                        callback: {
-       [weak self] (paths) in
-       // Capture the repository here in case it gets deleted on another thread
-       guard let self = self,
-             let repository = self.repository
-       else { return }
-       
-       self.observeEvents(paths, repository)
+      [weak self] (paths) in
+      // Capture the repository here in case it gets deleted on another thread
+      guard let self = self,
+            let repository = self.repository
+      else { return }
+      
+      self.observeEvents(paths, repository)
     })
     else { return nil }
   
@@ -70,8 +70,7 @@ class RepositoryWatcher
   func makePackedRefsWatcher()
   {
     let path = repository!.gitDirectoryPath
-    let watcher =
-          FileMonitor(path: path.appending(pathComponent: "packed-refs"))
+    let watcher = FileMonitor(path: path +/ "packed-refs")
     
     mutex.withLock { self.packedRefsWatcher = watcher }
     watcher?.notifyBlock = {
@@ -82,8 +81,7 @@ class RepositoryWatcher
   
   func makeStashWatcher()
   {
-    let path = repository!.gitDirectoryPath
-                          .appending(pathComponent: "logs/refs/stash")
+    let path = repository!.gitDirectoryPath +/ "logs/refs/stash"
     guard let watcher = FileMonitor(path: path)
     else { return }
     
