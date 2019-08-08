@@ -62,12 +62,14 @@ public enum RefPrefixes
 public class GitBranch
 {
   let branchRef: OpaquePointer
+  let config: Config
   
-  required public init(branch: OpaquePointer)
+  required public init(branch: OpaquePointer, config: Config)
   {
     self.branchRef = branch
+    self.config = config
   }
-  
+
   public var name: String
   {
     guard let name = git_reference_name(branchRef)
@@ -114,20 +116,20 @@ public class GitLocalBranch: GitBranch, LocalBranch
 {
   public var shortName: String { return strippedName }
   
-  init?(repository: OpaquePointer, name: String)
+  init?(repository: OpaquePointer, name: String, config: Config)
   {
-    guard let branch = GitBranch.lookUpBranch(
-        name: name, repository: repository,
-        branchType: GIT_BRANCH_LOCAL)
+    guard let branch = GitBranch.lookUpBranch(name: name,
+                                              repository: repository,
+                                              branchType: GIT_BRANCH_LOCAL)
     else { return nil }
     
-    super.init(branch: branch)
+    super.init(branch: branch, config: config)
   }
   
   // Apparently just needed to disambiguate the overload
-  required public init(branch: OpaquePointer)
+  required public init(branch: OpaquePointer, config: Config)
   {
-    super.init(branch: branch)
+    super.init(branch: branch, config: config)
   }
   
   /// The name of this branch's remote tracking branch, even if the
@@ -136,25 +138,33 @@ public class GitLocalBranch: GitBranch, LocalBranch
   {
     get
     {
-      guard !name.isEmpty,
-            let repo = git_reference_owner(branchRef)
-      else { return nil }
-      let buf = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
-    
-      buf.pointee.size = 0
-      buf.pointee.asize = 0
-      guard git_branch_upstream_name(buf, repo, name) == 0
+      // Re-implement `git_branch_upstream_name` but with our cached-snapshot
+      // config optimization.
+      let name = self.shortName
+      guard let remoteName = config.branchRemote(name),
+            let mergeName = config.branchMerge(name)
       else { return nil }
       
-      let data = Data(bytes: buf.pointee.ptr, count: buf.pointee.size)
-      
-      git_buf_free(buf)
-      return String(data: data, encoding: .utf8)?
-             .droppingPrefix(RefPrefixes.remotes)
+      if remoteName == "." {
+        return mergeName
+      }
+      else {
+        guard let repo = git_reference_owner(branchRef),
+              let remote = GitRemote(name: remoteName, repository: repo),
+              let refSpec = remote.refSpecs.first(where: {
+                (spec) in
+                spec.direction == .fetch && spec.sourceMatches(refName: mergeName)
+              })
+        else { return nil }
+        
+        return refSpec.transformToTarget(name: mergeName)?
+                      .droppingPrefix(RefPrefixes.remotes)
+      }
     }
     set
     {
       git_branch_set_upstream(branchRef, newValue)
+      (config as? GitConfig)?.loadSnapshot()
     }
   }
   
@@ -170,7 +180,7 @@ public class GitLocalBranch: GitBranch, LocalBranch
           let branch = upstream.pointee
     else { return nil }
     
-    return GitRemoteBranch(branch: branch)
+    return GitRemoteBranch(branch: branch, config: config)
   }
   
   override var remoteName: String?
@@ -184,39 +194,23 @@ public class GitRemoteBranch: GitBranch, RemoteBranch
   public var shortName: String
   { return name.droppingPrefix(RefPrefixes.remotes) }
 
-  // Getting the remote name involves looking it up in the config file
-  // which is a bit expensive
-  private lazy var cachedRemoteName: String? = {
-    () -> String? in
-    let repo = git_reference_owner(branchRef)
-    let buffer = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
-    
-    buffer.pointee = git_buf(ptr: nil, asize: 0, size: 0)
-    
-    let result = git_branch_remote_name(buffer, repo, name)
-    
-    guard result == 0
-    else { return nil }
-    
-    let data = Data(bytes: buffer.pointee.ptr, count: buffer.pointee.size)
-    
-    return String(data: data, encoding: .utf8)
-  }()
-  
-  public override var remoteName: String? { return cachedRemoteName }
+  public override var remoteName: String?
+  {
+    return name.droppingPrefix(RefPrefixes.remotes).firstPathComponent
+  }
 
-  init?(repository: OpaquePointer, name: String)
+  init?(repository: OpaquePointer, name: String, config: Config)
   {
     guard let branch = GitBranch.lookUpBranch(
         name: name, repository: repository,
         branchType: GIT_BRANCH_REMOTE)
     else { return nil }
     
-    super.init(branch: branch)
+    super.init(branch: branch, config: config)
   }
   
-  required public init(branch: OpaquePointer)
+  required public init(branch: OpaquePointer, config: Config)
   {
-    super.init(branch: branch)
+    super.init(branch: branch, config: config)
   }
 }

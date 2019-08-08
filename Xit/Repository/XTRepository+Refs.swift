@@ -191,7 +191,7 @@ extension XTRepository: Branching
                                    targetCommit.commit, 0)
     
     try RepoError.throwIfGitError(result)
-    return branchRef.map { GitLocalBranch(branch: $0) }
+    return branchRef.map { GitLocalBranch(branch: $0, config: config) }
   }
   
   /// Renames the given local branch.
@@ -218,17 +218,21 @@ extension XTRepository: Branching
 
   public func localBranch(named name: String) -> LocalBranch?
   {
-    return GitLocalBranch(repository: gitRepo, name: name)
+    return GitLocalBranch(repository: gitRepo, name: name, config: config)
   }
   
   public func remoteBranch(named name: String, remote: String) -> RemoteBranch?
   {
-    return GitRemoteBranch(repository: gitRepo, name: "\(remote)/\(name)")
+    return GitRemoteBranch(repository: gitRepo,
+                           name: "\(remote)/\(name)",
+                           config: config)
   }
   
   public func remoteBranch(named name: String) -> RemoteBranch?
   {
-    return GitRemoteBranch(repository: gitRepo, name: name)
+    return GitRemoteBranch(repository: gitRepo,
+                           name: name,
+                           config: config)
   }
   
   public func localBranch(tracking remoteBranch: RemoteBranch) -> LocalBranch?
@@ -236,10 +240,38 @@ extension XTRepository: Branching
     return localTrackingBranch(forBranchRef: remoteBranch.name)
   }
   
+  // swiftlint:disable:next force_try
+  static let remoteRegex = try!
+      NSRegularExpression(pattern: "\\Abranch\\.(.*)\\.remote",
+                          options: [])
+
   public func localTrackingBranch(forBranchRef branch: String) -> LocalBranch?
   {
-    return localBranches.first {
-      $0.trackingBranchName == branch
+    guard let ref = RefName(rawValue: branch),
+          case let .remoteBranch(remote, branch) = ref
+    else { return nil }
+    
+    // Looping through all the branches can be expensive
+    for entry in config.entries {
+      let name = entry.name
+      guard let match = XTRepository.remoteRegex
+                                    .firstMatch(in: name, options: [],
+                                                range: name.fullNSRange),
+            match.numberOfRanges == 2,
+            let branchRange = Range(match.range(at: 1), in: name),
+            entry.stringValue == remote
+      else { continue }
+      let entryBranch = String(name[branchRange])
+      guard let mergeName = config.branchMerge(entryBranch)
+      else { continue }
+
+      let stripped = branch.droppingPrefix(RefPrefixes.remotes +/ remote)
+      let expectedMergeName = RefPrefixes.heads +/ stripped
+      
+      if mergeName == expectedMergeName {
+        return localBranch(named: entryBranch)
+      }
     }
+    return nil
   }
 }

@@ -85,6 +85,11 @@ extension String
                                                self as CFString,
                                                [:] as CFDictionary) as String
   }
+  
+  var fullNSRange: NSRange
+  {
+    return NSRange(startIndex..., in: self)
+  }
 }
 
 // MARK: Prefixes & Suffixes

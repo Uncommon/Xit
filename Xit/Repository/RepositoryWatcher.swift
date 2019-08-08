@@ -11,7 +11,6 @@ class RepositoryWatcher
   // stream must be var because we have to reference self to initialize it.
   var stream: FileEventStream! = nil
   var packedRefsWatcher: FileMonitor?
-  var configWatcher: FileMonitor?
   var stashWatcher: FileMonitor?
   
   let mutex = Mutex()
@@ -44,19 +43,18 @@ class RepositoryWatcher
                                        excludePaths: [objectsPath],
                                        queue: repository.queue.queue,
                                        callback: {
-       [weak self] (paths) in
-       // Capture the repository here in case it gets deleted on another thread
-       guard let self = self,
-             let repository = self.repository
-       else { return }
-       
-       self.observeEvents(paths, repository)
+      [weak self] (paths) in
+      // Capture the repository here in case it gets deleted on another thread
+      guard let self = self,
+            let repository = self.repository
+      else { return }
+      
+      self.observeEvents(paths, repository)
     })
     else { return nil }
   
     self.stream = stream
     makePackedRefsWatcher()
-    makeConfigWatcher()
     makeStashWatcher()
     refsCache = index(refs: repository.allRefs())
   }
@@ -66,15 +64,13 @@ class RepositoryWatcher
     stream.stop()
     mutex.withLock {
       self.packedRefsWatcher = nil
-      self.configWatcher = nil
     }
   }
   
   func makePackedRefsWatcher()
   {
     let path = repository!.gitDirectoryPath
-    let watcher =
-          FileMonitor(path: path.appending(pathComponent: "packed-refs"))
+    let watcher = FileMonitor(path: path +/ "packed-refs")
     
     mutex.withLock { self.packedRefsWatcher = watcher }
     watcher?.notifyBlock = {
@@ -83,21 +79,9 @@ class RepositoryWatcher
     }
   }
   
-  func makeConfigWatcher()
-  {
-    let path = repository!.gitDirectoryPath
-    
-    configWatcher = FileMonitor(path: path.appending(pathComponent: "config"))
-    configWatcher?.notifyBlock = {
-      [weak self] (_, _) in
-      self?.checkConfig()
-    }
-  }
-  
   func makeStashWatcher()
   {
-    let path = repository!.gitDirectoryPath
-                          .appending(pathComponent: "logs/refs/stash")
+    let path = repository!.gitDirectoryPath +/ "logs/refs/stash"
     guard let watcher = FileMonitor(path: path)
     else { return }
     
@@ -226,11 +210,6 @@ class RepositoryWatcher
     }
     
     refsCache = newRefCache
-  }
-  
-  func checkConfig()
-  {
-    post(.XTRepositoryConfigChanged)
   }
   
   func checkLogs(changedPaths: [String])

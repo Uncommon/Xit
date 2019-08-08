@@ -19,6 +19,8 @@ class FakeRemote: Remote
   var urlString: String?
   var pushURLString: String? { return urlString }
   
+  var refSpecs: AnyCollection<RefSpec> { return AnyCollection([RefSpec]()) }
+  
   func rename(_ name: String) throws {}
   func updateURLString(_ URLString: String?) throws {}
   func updatePushURLString(_ URLString: String?) throws {}
