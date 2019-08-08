@@ -240,22 +240,23 @@ extension XTRepository: Branching
     return localTrackingBranch(forBranchRef: remoteBranch.name)
   }
   
+  // swiftlint:disable:next force_try
+  static let remoteRegex = try!
+      NSRegularExpression(pattern: "\\Abranch\\.(.*)\\.remote",
+                          options: [])
+
   public func localTrackingBranch(forBranchRef branch: String) -> LocalBranch?
   {
     guard let ref = RefName(rawValue: branch),
           case let .remoteBranch(remote, branch) = ref
     else { return nil }
     
-    guard let remoteRegex = try?
-        NSRegularExpression(pattern: "\\Abranch\\.(.*)\\.remote",
-                            options: [])
-    else { return nil }
-    
     // Looping through all the branches can be expensive
     for entry in config.entries {
       let name = entry.name
-      guard let match = remoteRegex.firstMatch(in: name, options: [],
-                                               range: name.fullNSRange),
+      guard let match = XTRepository.remoteRegex
+                                    .firstMatch(in: name, options: [],
+                                                range: name.fullNSRange),
             match.numberOfRanges == 2,
             let branchRange = Range(match.range(at: 1), in: name),
             entry.stringValue == remote
