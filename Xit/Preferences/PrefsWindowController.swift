@@ -6,7 +6,6 @@ class PrefsWindowController: NSWindowController
   enum Tab: String
   {
     case general
-    case git
     case accounts
     case previews
   }

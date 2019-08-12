@@ -65,7 +65,7 @@ extension Config
       return false
     }
     return UserDefaults.standard.bool(
-      forKey: GitPrefsController.PrefKey.fetchTags)
+        forKey: GeneralPrefsConroller.PrefKey.fetchTags)
   }
   
   func commitTemplate() -> String?
