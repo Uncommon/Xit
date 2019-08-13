@@ -130,8 +130,7 @@ extension XTRepository: FileStatusDetection
                       UnsafeMutablePointer<Int8>?>(mutating: paths)
       
       options.pathspec.strings = array
-      return git_status_foreach_ext(gtRepo.git_repository(), &options,
-                                    callback, &data)
+      return git_status_foreach_ext(gitRepo, &options, callback, &data)
     }
     guard result == 0 || result == GIT_EUSER.rawValue
     else { return nil }
@@ -363,12 +362,15 @@ extension XTRepository: FileStaging
   public func amendUnstage(file: String) throws
   {
     let status = try self.amendingStagedStatus(for: file)
-    let index = try gtRepo.index()
+    guard let index = self.index
+    else {
+      throw RepoError.unexpected
+    }
     
     switch status {
       
       case .added:
-        try index.removeFile(file)
+        try index.remove(path: file)
       
       case .modified, .deleted:
         guard let headCommit = headSHA.flatMap({ self.commit(forSHA: $0) }),
@@ -387,14 +389,14 @@ extension XTRepository: FileStaging
         }
         
         try blob.withData {
-          try index.add($0, withPath: file)
+          try index.add(data: $0, path: file)
         }
       
       default:
         break
     }
     
-    try index.write()
+    try index.save()
     invalidateIndex()
   }
 }
