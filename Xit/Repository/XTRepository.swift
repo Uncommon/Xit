@@ -74,14 +74,15 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
     return "\(identifier).\(path)"
   }
   
-  init?(gtRepo: GTRepository)
+  init?(gitRepo: OpaquePointer)
   {
     guard let gitCmd = XTRepository.gitPath(),
-          let url = gtRepo.fileURL,
-          let config = GitConfig(repository: gtRepo.git_repository())
+          let workDirPath = git_repository_workdir(gitRepo),
+          let config = GitConfig(repository: gitRepo)
     else { return nil }
-    
-    self.gtRepo = gtRepo
+    let url = URL(fileURLWithPath: String(cString: workDirPath))
+
+    self.gtRepo = GTRepository(gitRepository: gitRepo)!
     self.repoURL = url
     self.gitRunner = GitCLIRunner(gitPath: gitCmd,
                                   repoPath: url.path)
@@ -98,20 +99,28 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
   @objc(initWithURL:)
   convenience init?(url: URL)
   {
-    guard let gtRepo = try? GTRepository(url: url)
+    guard url.isFileURL
+    else { return nil }
+    var repo: OpaquePointer? = nil
+    let path = (url.path as NSString).fileSystemRepresentation
+    let result = git_repository_open(&repo, path)
+    guard result == 0,
+          let finalRepo = repo
     else { return nil }
     
-    self.init(gtRepo: gtRepo)
+    self.init(gitRepo: finalRepo)
   }
   
-  @objc(initEmptyWithURL:)
   convenience init?(emptyURL url: URL)
   {
-    guard let gtRepo = try? GTRepository.initializeEmpty(atFileURL: url,
-                                                         options: nil)
+    var repo: OpaquePointer? = nil
+    let path = (url.path as NSString).fileSystemRepresentation
+    let result = git_repository_init(&repo, path, 0)
+    guard result == 0,
+          let finalRepo = repo
     else { return nil }
     
-    self.init(gtRepo: gtRepo)
+    self.init(gitRepo: finalRepo)
   }
   
   deinit
