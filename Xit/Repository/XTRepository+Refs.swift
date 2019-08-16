@@ -153,6 +153,26 @@ extension XTRepository: CommitReferencing
   {
     return GitReference(name: name, repository: gitRepo)
   }
+  
+  public func createCommit(with tree: Tree, message: String, parents: [Commit],
+                           updatingReference refName: String) throws -> OID
+  {
+    var commitPtrs: [OpaquePointer?] =
+          parents.compactMap { ($0 as? GitCommit)?.commit }
+    guard commitPtrs.count == parents.count,
+          let gitTree = tree as? GitTree
+    else { throw RepoError.unexpected }
+    
+    let signature = GitSignature(defaultFromRepo: gitRepo)
+    var newOID = git_oid()
+    let result = git_commit_create(&newOID, gitRepo, refName,
+                                   signature?.signature, signature?.signature,
+                                   "UTF-8", message, gitTree.tree,
+                                   parents.count, &commitPtrs)
+    
+    try RepoError.throwIfGitError(result)
+    return GitOID(oid: newOID)
+  }
 }
 
 extension XTRepository: Branching

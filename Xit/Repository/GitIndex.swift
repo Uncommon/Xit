@@ -24,6 +24,15 @@ public protocol StagingIndex
   func entry(atIndex: Int) -> IndexEntry!
   /// Returns the entry matching the given file path.
   func entry(at path: String) -> IndexEntry?
+  
+  /// Returns true if any entry is conflicted.
+  var hasConflicts: Bool { get }
+  /// Iterates through the conflicted entries.
+  var conflicts: AnySequence<ConflictEntry> { get }
+
+  /// Creates a tree object from the index contents, and writes it to the
+  /// repository so it can be referenced by a commit.
+  func writeTree() throws -> Tree
 }
 
 extension StagingIndex
@@ -63,22 +72,16 @@ public protocol IndexEntry
   var conflicted: Bool { get }
 }
 
+public protocol ConflictEntry
+{
+  var ancestor: IndexEntry { get }
+  var ours: IndexEntry { get }
+  var theirs: IndexEntry { get }
+}
+
 /// Staging index implemented with libgit2
 class GitIndex: StagingIndex
 {
-  struct Entry: IndexEntry
-  {
-    let gitEntry: git_index_entry
-    
-    var oid: OID { return GitOID(oid: gitEntry.id) }
-    var path: String { return String(cString: gitEntry.path) }
-    
-    var conflicted: Bool
-    {
-      return (Int32(gitEntry.flags_extended) & GIT_IDXENTRY_CONFLICTED) != 0
-    }
-  }
-  
   let index: OpaquePointer
 
   var entryCount: Int
@@ -86,6 +89,16 @@ class GitIndex: StagingIndex
     return git_index_entrycount(index)
   }
   
+  var hasConflicts: Bool
+  {
+    return git_index_has_conflicts(index) != 0
+  }
+  
+  var conflicts: AnySequence<Xit.ConflictEntry>
+  {
+    return AnySequence { ConflictIterator(index: self.index) }
+  }
+
   init?(repository: OpaquePointer)
   {
     var index: OpaquePointer?
@@ -170,5 +183,88 @@ class GitIndex: StagingIndex
   func clear() throws
   {
     try RepoError.throwIfGitError(git_index_clear(index))
+  }
+  
+  func writeTree() throws -> Tree
+  {
+    var treeOID = git_oid()
+    let result = git_index_write_tree(&treeOID, index)
+    
+    try RepoError.throwIfGitError(result)
+    
+    guard let tree = GitTree(oid: treeOID, repo: git_index_owner(index))
+    else {
+      throw RepoError.unexpected
+    }
+    
+    return tree
+  }
+}
+
+extension GitIndex
+{
+  struct Entry: IndexEntry
+  {
+    let gitEntry: git_index_entry
+    
+    var oid: OID { return GitOID(oid: gitEntry.id) }
+    var path: String { return String(cString: gitEntry.path) }
+    
+    var conflicted: Bool
+    {
+      // Even though git_index_entry_is_conflict() takes a const pointer,
+      // there's still no easy way to pass it through and make Swift happy.
+      return gitEntry.stage > 0
+    }
+  }
+  
+  struct ConflictEntry: Xit.ConflictEntry
+  {
+    let ancestor, ours, theirs: IndexEntry
+  }
+  
+  class ConflictIterator: IteratorProtocol
+  {
+    let iterator: OpaquePointer?
+    
+    init(index: OpaquePointer)
+    {
+      var iterator: OpaquePointer? = nil
+      let result = git_index_conflict_iterator_new(&iterator, index)
+      guard result == 0,
+            let finalIterator = iterator
+      else {
+        self.iterator = nil
+        return
+      }
+      
+      self.iterator = finalIterator
+    }
+    
+    deinit
+    {
+      if let iterator = self.iterator {
+        git_index_conflict_iterator_free(iterator)
+      }
+    }
+    
+    func next() -> Xit.ConflictEntry?
+    {
+      guard let iterator = self.iterator
+      else { return nil }
+      var ancestor: UnsafePointer<git_index_entry>? = nil
+      var ours: UnsafePointer<git_index_entry>? = nil
+      var theirs: UnsafePointer<git_index_entry>? = nil
+      let result = git_index_conflict_next(&ancestor, &ours, &theirs, iterator)
+      guard result == 0,
+            let finalAncestor = ancestor?.pointee,
+            let finalOurs = ours?.pointee,
+            let finalTheirs = theirs?.pointee
+      else { return nil }
+      
+      return ConflictEntry(ancestor: Entry(gitEntry: finalAncestor),
+                           ours: Entry(gitEntry: finalOurs),
+                           theirs: Entry(gitEntry: finalTheirs))
+    }
   }
 }

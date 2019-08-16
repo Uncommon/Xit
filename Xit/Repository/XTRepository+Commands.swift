@@ -228,14 +228,12 @@ extension XTRepository: Stashing
   
   public func commitForStash(at index: UInt) -> Commit?
   {
-    guard let stashRef = try? gtRepo.lookUpReference(withName: "refs/stash"),
-          let stashLog = GTReflog(reference: stashRef),
-          index < stashLog.entryCount,
-          let entry = stashLog.entry(at: index),
-          let oid = entry.updatedOID.map({ GitOID(oid: $0.git_oid().pointee) })
+    guard let stashLog = GitRefLog(repository: gitRepo, refName: "refs/stash"),
+          index < stashLog.entryCount
     else { return nil }
-    
-    return GitCommit(oid: oid, repository: gitRepo)
+    let entry = stashLog.entry(atIndex: Int(index))
+
+    return GitCommit(oid: entry.newOID, repository: gitRepo)
   }
 }
 

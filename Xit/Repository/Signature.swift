@@ -46,14 +46,15 @@ extension Signature
     self.when = Date()
   }
   
-  public func withGitSignature(_ block: (git_signature) throws -> Void) rethrows
+  public func withGitSignature<T>(_ block: (git_signature) throws -> T)
+    rethrows -> T
   {
     var utf8Name = (name ?? "").utf8CString
     var utf8Email = (email ?? "").utf8CString
     
-    try utf8Name.withUnsafeMutableBytes {
+    return try utf8Name.withUnsafeMutableBytes {
       (cName) in
-      try utf8Email.withUnsafeMutableBytes {
+      return try utf8Email.withUnsafeMutableBytes {
         (cEmail) in
         let name = cName.baseAddress!.bindMemory(to: Int8.self,
                                                  capacity: cName.count+1)
@@ -61,7 +62,7 @@ extension Signature
                                                    capacity: cName.count+1)
         let sig = git_signature(name: name, email: email, when: when.toGitTime())
         
-        try block(sig)
+        return try block(sig)
       }
     }
   }

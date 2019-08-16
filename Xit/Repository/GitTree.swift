@@ -82,6 +82,18 @@ class GitTree: Tree
     self.tree = tree
   }
   
+  init?(oid: git_oid, repo: OpaquePointer)
+  {
+    var tree: OpaquePointer? = nil
+    var oid = oid
+    let result = git_object_lookup(&tree, repo, &oid, GIT_OBJECT_TREE)
+    guard result == 0,
+          let finalTree = tree
+    else { return nil }
+    
+    self.tree = finalTree
+  }
+  
   deinit
   {
     git_tree_free(tree)

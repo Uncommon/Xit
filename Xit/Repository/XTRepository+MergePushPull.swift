@@ -131,7 +131,7 @@ extension XTRepository
           (mergeOptions) in
           try withUnsafePointer(to: &checkoutOptions) {
             (checkoutOptions) in
-            try gtRepo.index().refresh()
+            try index?.refresh()
             result = git_merge(gitRepo, annotated, 1,
                                mergeOptions, checkoutOptions)
           }
@@ -146,20 +146,21 @@ extension XTRepository
           throw RepoError.gitError(result)
       }
       
-      let index = try gtRepo.index()
+      guard let index = self.index
+      else {
+        throw RepoError.unexpected
+      }
       
       if index.hasConflicts {
         throw RepoError.conflict
       }
       else {
-        let parents = [targetCommit, fromCommit].compactMap
-          { GTCommit(obj: $0.commit, in: gtRepo) }
         let tree = try index.writeTree()
         
-        _ = try gtRepo.createCommit(with: tree,
-                                    message: "Merge branch \(fromBranch.name)",
-                                    parents: parents,
-                                    updatingReferenceNamed: targetBranch.name)
+        _ = try createCommit(with: tree,
+                             message: "Merge branch \(fromBranch.name)",
+                             parents: [targetCommit, fromCommit],
+                             updatingReference: targetBranch.name)
       }
     }
     catch let error as NSError where error.domain == GTGitErrorDomain {
@@ -181,9 +182,7 @@ extension XTRepository
   
   private func mergePreCheck() throws
   {
-    let index = try gtRepo.index()
-    
-    if index.hasConflicts {
+    if index?.hasConflicts ?? false {
       throw RepoError.localConflict
     }
     

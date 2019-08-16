@@ -133,6 +133,7 @@ class FakeRemoteBranch: RemoteBranch
 
 class FakeFileChangesRepo: FileChangesRepo
 {
+
   var headRef: String? = nil
   var currentBranch: String? = nil
   
@@ -148,6 +149,9 @@ class FakeFileChangesRepo: FileChangesRepo
   func reference(named name: String) -> Reference? { return nil }
   func refs(at sha: String) -> [String] { return [] }
   func rebuildRefsIndex() {}
+  func createCommit(with tree: Tree, message: String, parents: [Commit],
+                    updatingReference refName: String) throws -> OID
+  { return StringOID(sha: "") }
 
   var repoURL: URL { return URL(fileURLWithPath: "") }
   

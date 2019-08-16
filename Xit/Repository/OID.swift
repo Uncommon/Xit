@@ -58,6 +58,16 @@ public struct GitOID: OID, Hashable, Equatable
     self.oid = oidPtr.pointee
   }
   
+  init(oidPtr: UnsafePointer<git_oid>?)
+  {
+    if let oidPtr = oidPtr {
+      self.oid = oidPtr.pointee
+    }
+    else {
+      self.oid = git_oid()
+    }
+  }
+  
   init?(sha: String)
   {
     if sha.lengthOfBytes(using: .ascii) != GitOID.shaLength {

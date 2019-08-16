@@ -369,9 +369,7 @@ extension XTRepository
       }
       
       var list: OpaquePointer?
-      guard git_status_list_new(&list,
-                                repo.gtRepo.git_repository(),
-                                &options) == 0
+      guard git_status_list_new(&list, repo.gitRepo, &options) == 0
       else {
         self.statusList = nil
         return
@@ -391,8 +389,7 @@ extension XTRepository
       guard let emptyOID = GitOID(sha: kEmptyTreeHash)
       else { return nil }
       let tree = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-      let result = git_tree_lookup(tree, repo.gtRepo.git_repository(),
-                                   emptyOID.unsafeOID())
+      let result = git_tree_lookup(tree, repo.gitRepo, emptyOID.unsafeOID())
       
       return (result == GIT_OK.rawValue) ? tree.pointee : nil
     }

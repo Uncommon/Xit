@@ -37,6 +37,25 @@ extension git_fetch_options
   }
 }
 
+extension git_index_entry
+{
+  /// The stage value is stored in certain bits of the `flags` field.
+  var stage: UInt16
+  {
+    get
+    {
+      return (flags & UInt16(GIT_INDEX_ENTRY_STAGEMASK))
+             >> GIT_INDEX_ENTRY_STAGESHIFT
+    }
+    set
+    {
+      let cleared = flags & ~UInt16(GIT_INDEX_ENTRY_STAGEMASK)
+      
+      flags = cleared | ((newValue & 0x03) << UInt16(GIT_INDEX_ENTRY_STAGESHIFT))
+    }
+  }
+}
+
 fileprivate extension RemoteCallbacks
 {
   static func fromPayload(_ payload: UnsafeMutableRawPointer?)

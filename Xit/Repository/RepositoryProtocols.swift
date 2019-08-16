@@ -45,6 +45,11 @@ public protocol CommitReferencing: AnyObject
   func refs(at sha: String) -> [String]
   
   func rebuildRefsIndex()
+  
+  /// Creates a commit with the given content.
+  /// - returns: The OID of the new commit.
+  func createCommit(with tree: Tree, message: String, parents: [Commit],
+                    updatingReference refName: String) throws -> OID
 }
 
 extension CommitReferencing

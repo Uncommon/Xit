@@ -152,16 +152,21 @@ class XTRepositoryMergeTest: XTTest
       XCTFail("No conflict detected")
     }
     catch RepoError.conflict {
-      let index = try! repository.gtRepo.index()
-      var conflicts = [String]()
+      guard let index = repository.index
+      else {
+        XCTFail("missing index")
+        return
+      }
       
       XCTAssertTrue(index.hasConflicts)
-      try! index.enumerateConflictedFiles {
-        (_, ours, _, _) in
-        conflicts.append(ours.path)
-      }
-      XCTAssertEqual(conflicts, [fileName])
       
+      let expectedConflicts = [fileName]
+      let oursConflicts = index.conflicts.map { $0.ours.path }
+      let theirsConflicts = index.conflicts.map { $0.theirs.path }
+
+      XCTAssertEqual(oursConflicts, expectedConflicts)
+      XCTAssertEqual(theirsConflicts, expectedConflicts)
+
       XCTAssertTrue(
           FileManager.default.fileExists(atPath: repository.mergeHeadPath))
     }

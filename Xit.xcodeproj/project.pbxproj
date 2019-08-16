@@ -89,6 +89,7 @@
 		C94154B61EE5AC460030E481 /* XTRepository+Commands.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94154B51EE5AC460030E481 /* XTRepository+Commands.swift */; };
 		C9416343213EF3E10015F1C0 /* WorkspaceFileListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9416342213EF3E10015F1C0 /* WorkspaceFileListController.swift */; };
 		C9416355213EF42E0015F1C0 /* StagedFileListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9416354213EF42E0015F1C0 /* StagedFileListController.swift */; };
+		C9470B8423073A5B003895A9 /* GitRefLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9470B8323073A5B003895A9 /* GitRefLog.swift */; };
 		C94736741DEE1D7D000E3A05 /* ObjectiveGit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = DD96C99A176976FE0003A30C /* ObjectiveGit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C94736761DEF28F8000E3A05 /* GitSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94736751DEF28F8000E3A05 /* GitSwiftTests.swift */; };
 		C94736781DEF5AAE000E3A05 /* GitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94736771DEF5AAE000E3A05 /* GitExtensions.swift */; };
@@ -468,6 +469,7 @@
 		C94154B51EE5AC460030E481 /* XTRepository+Commands.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTRepository+Commands.swift"; sourceTree = "<group>"; };
 		C9416342213EF3E10015F1C0 /* WorkspaceFileListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceFileListController.swift; sourceTree = "<group>"; };
 		C9416354213EF42E0015F1C0 /* StagedFileListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StagedFileListController.swift; sourceTree = "<group>"; };
+		C9470B8323073A5B003895A9 /* GitRefLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitRefLog.swift; sourceTree = "<group>"; };
 		C94736751DEF28F8000E3A05 /* GitSwiftTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitSwiftTests.swift; sourceTree = "<group>"; };
 		C94736771DEF5AAE000E3A05 /* GitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitExtensions.swift; sourceTree = "<group>"; };
 		C94736791DEF5CA8000E3A05 /* FileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileViewController.swift; sourceTree = "<group>"; };
@@ -920,6 +922,7 @@
 				C94032F822EB5C6D001B5946 /* GitRefSpec.swift */,
 				C929D03A1D400B3B00D7DC52 /* GitRemote.swift */,
 				C90B4EB01FE86A9900277B13 /* GiRevWalk.swift */,
+				C9470B8323073A5B003895A9 /* GitRefLog.swift */,
 				C9EB87231D01D93400C47D13 /* GitStash.swift */,
 				C90B4EC41FEDB1D600277B13 /* GitStatusList.swift */,
 				89C927741D36A2180074F71A /* GitSubmodule.swift */,
@@ -1373,6 +1376,7 @@
 				C948D5B71D2C6A4800F72A27 /* AccountsPrefsController.swift in Sources */,
 				C95BF6541FCF5BC90020C51D /* FileContentProtocols.swift in Sources */,
 				C959CDED1F859ED100C1E282 /* FileViewController+OutlineView.swift in Sources */,
+				C9470B8423073A5B003895A9 /* GitRefLog.swift in Sources */,
 				C95BF6681FCF5DBD0020C51D /* StashSelection.swift in Sources */,
 				C99A6AEC1E48FA140030DC01 /* FileListDataSourceBase.swift in Sources */,
 				C9AAEF811E413DA100A248CF /* CommitHeaderViewController.swift in Sources */,
