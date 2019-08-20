@@ -1,4 +1,7 @@
-#import <ObjectiveGit/ObjectiveGit.h>
+#import <git2/checkout.h>
+#import <git2/diff.h>
+#import <git2/status.h>
+#import <git2/types.h>
 
 // Swift requires that raw values be literals, but the values need to match
 // the values from libgit2, so using C enums is a workaround.
@@ -71,24 +74,22 @@ typedef NS_OPTIONS(unsigned int, DiffOptionFlags)
 
 typedef NS_ENUM(int, ReferenceType)
 {
-  ReferenceTypeInvalid = GIT_REF_INVALID,
-  ReferenceTypeOID = GIT_REF_OID,
-  ReferenceTypeSymbolic = GIT_REF_SYMBOLIC,
-  ReferenceTypeListAll = GIT_REF_LISTALL,
+  ReferenceTypeInvalid = GIT_REFERENCE_INVALID,
+  ReferenceTypeDirect = GIT_REFERENCE_DIRECT,
+  ReferenceTypeSymbolic = GIT_REFERENCE_SYMBOLIC,
+  ReferenceTypeListAll = GIT_REFERENCE_ALL,
 };
 
 typedef NS_ENUM(int, GitObjectType)
 {
-  GitObjectTypeAny = GIT_OBJ_ANY,
-  GitObjectTypeBad = GIT_OBJ_BAD,
-  GitObjectTypeExt1 = GIT_OBJ__EXT1,
-  GitObjectTypeCommit = GIT_OBJ_COMMIT,
-  GitObjectTypeTree = GIT_OBJ_TREE,
-  GitObjectTypeBlob = GIT_OBJ_BLOB,
-  GitObjectTypeTag = GIT_OBJ_TAG,
-  GitObjectTypeExt2 = GIT_OBJ__EXT2,
-  GitObjectTypeOffsetDelta = GIT_OBJ_OFS_DELTA,
-  GitObjectTypeRefDelta = GIT_OBJ_REF_DELTA,
+  GitObjectTypeAny = GIT_OBJECT_ANY,
+  GitObjectTypeInvalid = GIT_OBJECT_INVALID,
+  GitObjectTypeCommit = GIT_OBJECT_COMMIT,
+  GitObjectTypeTree = GIT_OBJECT_TREE,
+  GitObjectTypeBlob = GIT_OBJECT_BLOB,
+  GitObjectTypeTag = GIT_OBJECT_TAG,
+  GitObjectTypeOffsetDelta = GIT_OBJECT_OFS_DELTA,
+  GitObjectTypeRefDelta = GIT_OBJECT_REF_DELTA,
 };
 
 typedef NS_ENUM(int, StatusShow)

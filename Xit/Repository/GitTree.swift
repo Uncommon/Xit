@@ -24,7 +24,7 @@ struct NullEntry: TreeEntry
   var oid: OID
   { return GitOID.zero() }
   var type: GitObjectType
-  { return .bad }
+  { return .invalid }
   var name: String
   { return "" }
   var object: OIDObject?
@@ -165,7 +165,7 @@ class GitTreeEntry: TreeEntry
   {
     let result = git_tree_entry_type(entry)
     
-    return GitObjectType(rawValue: result.rawValue) ?? .bad
+    return GitObjectType(rawValue: result.rawValue) ?? .invalid
   }
   
   var name: String

@@ -185,7 +185,7 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
     switch headReference.type {
       case .symbolic:
         cachedHeadRef = headReference.symbolicTargetName
-      case .OID:
+      case .direct:
         cachedHeadRef = headReference.name
       default:
         break
@@ -303,9 +303,7 @@ extension XTRepository
     let statusFlags = UnsafeMutablePointer<UInt32>.allocate(capacity: 1)
     let result = git_status_file(statusFlags, gitRepo, file)
     
-    if result != 0 {
-      throw NSError.git_error(for: result)
-    }
+    try RepoError.throwIfGitError(result)
     
     let flags = git_status_t(statusFlags.pointee)
     var unstagedChange = DeltaStatus.unmodified

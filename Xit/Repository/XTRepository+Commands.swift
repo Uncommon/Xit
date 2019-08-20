@@ -139,10 +139,7 @@ extension XTRepository: Tagging
     try performWriting {
       let result = git_tag_delete(gitRepo, name)
       
-      guard result == 0
-      else {
-        throw NSError.git_error(for: result)
-      }
+      try RepoError.throwIfGitError(result)
     }
   }
 }

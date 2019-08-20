@@ -1,7 +1,7 @@
 #ifndef LibGitExtensions_h
 #define LibGitExtensions_h
 
-#import <ObjectiveGit/ObjectiveGit.h>
+#import <git2/oid.h>
 
 bool xit_oid_equal(const git_oid *a, const git_oid *b);
 

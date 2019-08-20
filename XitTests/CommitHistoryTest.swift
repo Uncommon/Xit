@@ -35,18 +35,6 @@ func == (a: GenericCommit, b: GenericCommit) -> Bool
 }
 
 
-extension GTOID
-{
-  convenience init(oid: String)
-  {
-    let padded = (oid as NSString).padding(toLength: 40, withPad: "0",
-                                           startingAt: 0)
-    
-    self.init(sha: padded)!
-  }
-}
-
-
 class GenericRepository<ID: OID & Hashable>: CommitStorage
 {
   let commits: [Commit]

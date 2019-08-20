@@ -224,16 +224,12 @@ extension XTRepository: Branching
     let branchRef = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     var result = git_branch_lookup(branchRef, gitRepo, branch, GIT_BRANCH_LOCAL)
     
-    if result != 0 {
-      throw NSError.git_error(for: result)
-    }
+    try RepoError.throwIfGitError(result)
     
     let newRef = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
     
     result = git_branch_move(newRef, branchRef.pointee, newName, 0)
-    if result != 0 {
-      throw NSError.git_error(for: result)
-    }
+    try RepoError.throwIfGitError(result)
   }
 
   public func localBranch(named name: String) -> LocalBranch?

@@ -1,5 +1,4 @@
-import Cocoa
-import ObjectiveGit
+import Foundation
 
 public protocol Submodule
 {
