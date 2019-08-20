@@ -116,9 +116,6 @@ extension XTRepository
       result = git_repository_set_head(gitRepo, branch.name)
       try RepoError.throwIfGitError(result)
     }
-    catch let error as NSError where error.domain == GTGitErrorDomain {
-      throw RepoError(gitNSError: error)
-    }
   }
   
   private func normalMerge(fromBranch: GitBranch, fromCommit: GitCommit,
@@ -165,9 +162,6 @@ extension XTRepository
                              parents: [targetCommit, fromCommit],
                              updatingReference: targetBranch.name)
       }
-    }
-    catch let error as NSError where error.domain == GTGitErrorDomain {
-      throw RepoError(gitNSError: error)
     }
   }
   
@@ -278,9 +272,6 @@ extension XTRepository
         return
       }
       throw RepoError.unexpected
-    }
-    catch let error as NSError where error.domain == GTGitErrorDomain {
-      throw RepoError(gitNSError: error)
     }
   }
   

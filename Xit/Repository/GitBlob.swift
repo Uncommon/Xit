@@ -83,18 +83,6 @@ public class GitBlob: Blob, OIDObject
   }
 }
 
-extension GTBlob: Blob
-{
-  public var dataSize: UInt { return UInt(size()) }
-  public var blobPtr: OpaquePointer? { return git_blob() }
-  public var isBinary: Bool
-  {
-    return git_blob_is_binary(git_blob()) != 0
-  }
-
-  public func makeData() -> Data? { return data() }
-}
-
 extension Data
 {
   // There is no Data constructor that treats the buffer as immutable

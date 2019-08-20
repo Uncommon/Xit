@@ -53,13 +53,7 @@ class PushOpController: PasswordOpController
   
   override func shoudReport(error: NSError) -> Bool
   {
-    if error.domain == GTGitErrorDomain && error.code == GIT_ERROR.rawValue {
-      // Credentials not provided - user canceled
-      return false
-    }
-    else {
-      return true
-    }
+    return true
   }
   
   func push(localBranch: LocalBranch, remote: Remote)

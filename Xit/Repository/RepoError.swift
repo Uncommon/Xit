@@ -74,16 +74,6 @@ enum RepoError: Swift.Error
     }
   }
   
-  init(gitNSError: NSError)
-  {
-    if gitNSError.domain == GTGitErrorDomain {
-      self = .gitError(Int32(gitNSError.code))
-    }
-    else {
-      self = .unexpected
-    }
-  }
-  
   static func throwIfGitError(_ code: Int32) throws
   {
     guard code == 0

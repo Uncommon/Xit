@@ -29,17 +29,20 @@ extension SidebarController
       do {
         try self?.repo.checkOut(branch: item.title)
       }
-      catch let error as NSError
-            where error.domain == GTGitErrorDomain &&
-                  error.gitError == GIT_ECONFLICT {
-        DispatchQueue.main.async {
-          guard let self = self
-          else { return }
-          let alert = NSAlert()
-          
-          alert.messageString = .checkoutFailedConflict
-          alert.informativeString = .checkoutFailedConflictInfo
-          alert.beginSheetModal(for: self.view.window!, completionHandler: nil)
+      catch let error as RepoError {
+        switch error {
+          case .conflict, .localConflict:
+            DispatchQueue.main.async {
+              guard let self = self
+              else { return }
+              let alert = NSAlert()
+              
+              alert.messageString = .checkoutFailedConflict
+              alert.informativeString = .checkoutFailedConflictInfo
+              alert.beginSheetModal(for: self.view.window!, completionHandler: nil)
+            }
+          default:
+            break
         }
       }
     }

@@ -12,7 +12,7 @@ let XTErrorArgsKey = "args"
 
 public class XTRepository: NSObject, TaskManagement, RepoConfiguring
 {
-  private(set) var gtRepo: GTRepository
+  let gitRepo: OpaquePointer
   @objc public let repoURL: URL
   let gitRunner: GitCLIRunner
   let mutex = Mutex()
@@ -49,8 +49,6 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
   fileprivate var repoWatcher: RepositoryWatcher! = nil
   fileprivate var configWatcher: ConfigWatcher! = nil
   fileprivate var workspaceWatcher: WorkspaceWatcher! = nil
-
-  var gitRepo: OpaquePointer { return gtRepo.git_repository() }
   
   var gitDirectoryPath: String
   {
@@ -82,7 +80,7 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
     else { return nil }
     let url = URL(fileURLWithPath: String(cString: workDirPath))
 
-    self.gtRepo = GTRepository(gitRepository: gitRepo)!
+    self.gitRepo = gitRepo
     self.repoURL = url
     self.gitRunner = GitCLIRunner(gitPath: gitCmd,
                                   repoPath: url.path)
