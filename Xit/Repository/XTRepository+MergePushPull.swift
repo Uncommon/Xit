@@ -85,23 +85,36 @@ extension XTRepository
 {
   private func fastForwardMerge(branch: GitBranch, remoteBranch: GitBranch) throws
   {
-    guard let remoteCommit = remoteBranch.targetCommit
+    guard let remoteCommit = remoteBranch.targetCommit as? GitCommit
     else { throw RepoError.unexpected }
     
     do {
-      guard let targetReference = GTReference(gitReference: branch.branchRef,
-                                              repository: gtRepo)
-      else { throw RepoError.unexpected }
-      let updated = try targetReference.updatingTarget(
-            remoteCommit.sha,
-            message: "merge \(remoteBranch.name): Fast-forward")
-      let options = GTCheckoutOptions(strategy: [.force, .allowConflicts],
-                                      notifyFlags: [.conflict]) {
-        (_, _, _, _, _) -> Int32 in
+      // move the branch ref
+      guard let branchRef = GitReference(name: branch.name, repository: gitRepo)
+      else { throw RepoError.notFound }
+      
+      branchRef.setTarget(remoteCommit.oid,
+                          logMessage: "merge \(remoteBranch.name): Fast-forward")
+      
+      // check out target
+      var result: Int32
+      var checkoutOptions = git_checkout_options.defaultOptions()
+      let notifyCallback: git_checkout_notify_cb = {
+        (_, _, _, _, _, _) -> Int32 in
         return GIT_EMERGECONFLICT.rawValue
       }
+
+      checkoutOptions.checkout_strategy = GIT_CHECKOUT_FORCE.rawValue |
+                                          GIT_CHECKOUT_ALLOW_CONFLICTS.rawValue
+      checkoutOptions.notify_flags = GIT_CHECKOUT_NOTIFY_CONFLICT.rawValue
+      checkoutOptions.notify_cb = notifyCallback
       
-      try gtRepo.checkoutReference(updated, options: options)
+      result = git_checkout_tree(gitRepo, remoteCommit.commit, &checkoutOptions)
+      try RepoError.throwIfGitError(result)
+      
+      // move HEAD
+      result = git_repository_set_head(gitRepo, branch.name)
+      try RepoError.throwIfGitError(result)
     }
     catch let error as NSError where error.domain == GTGitErrorDomain {
       throw RepoError(gitNSError: error)
@@ -120,23 +133,18 @@ extension XTRepository
       
       var mergeOptions = git_merge_options.defaultOptions()
       var checkoutOptions = git_checkout_options.defaultOptions()
-      var result: Int32 = 0
-      
+      guard let index = self.index
+      else {
+        throw RepoError.unexpected
+      }
+
       checkoutOptions.checkout_strategy = GIT_CHECKOUT_SAFE.rawValue |
                                           GIT_CHECKOUT_ALLOW_CONFLICTS.rawValue
+      try index.refresh()
+      
+      let result = git_merge(gitRepo, &annotated, 1,
+                             &mergeOptions, &checkoutOptions)
 
-      try withUnsafeMutablePointer(to: &annotated) {
-        (annotated) in
-        try withUnsafePointer(to: &mergeOptions) {
-          (mergeOptions) in
-          try withUnsafePointer(to: &checkoutOptions) {
-            (checkoutOptions) in
-            try index?.refresh()
-            result = git_merge(gitRepo, annotated, 1,
-                               mergeOptions, checkoutOptions)
-          }
-        }
-      }
       switch git_error_code(rawValue: result) {
         case GIT_OK:
           break
@@ -145,12 +153,7 @@ extension XTRepository
         default:
           throw RepoError.gitError(result)
       }
-      
-      guard let index = self.index
-      else {
-        throw RepoError.unexpected
-      }
-      
+
       if index.hasConflicts {
         throw RepoError.conflict
       }

@@ -15,11 +15,13 @@ public protocol Reference
   
   /// Peels a symbolic reference until a direct reference is reached
   func resolve() -> Reference?
+  /// Changes the ref to point to a different object
+  func setTarget(_ newOID: OID, logMessage: String)
 }
 
 class GitReference: Reference
 {
-  let ref: OpaquePointer
+  private(set) var ref: OpaquePointer
   
   static func isValidName(_ name: String) -> Bool
   {
@@ -33,10 +35,10 @@ class GitReference: Reference
   
   init?(name: String, repository: OpaquePointer)
   {
-    let ref = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let result = git_reference_lookup(ref, repository, name)
+    var ref: OpaquePointer? = nil
+    let result = git_reference_lookup(&ref, repository, name)
     guard result == 0,
-          let finalRef = ref.pointee
+          let finalRef = ref
     else { return nil }
     
     self.ref = finalRef
@@ -44,10 +46,10 @@ class GitReference: Reference
   
   init?(headForRepo repo: OpaquePointer)
   {
-    let ref = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let result = git_repository_head(ref, repo)
+    var ref: OpaquePointer? = nil
+    let result = git_repository_head(&ref, repo)
     guard result == 0,
-          let finalRef = ref.pointee
+          let finalRef = ref
     else { return nil }
     
     self.ref = finalRef
@@ -118,5 +120,18 @@ class GitReference: Reference
     else { return nil }
     
     return GitReference(reference: finalRef)
+  }
+  
+  public func setTarget(_ newOID: OID, logMessage: String)
+  {
+    guard var gitOID = (newOID as? GitOID)?.oid
+    else { return }
+    var newRef: OpaquePointer? = nil
+    let result = git_reference_set_target(&newRef, ref, &gitOID, logMessage)
+    guard result == 0,
+          let finalRef = newRef
+    else { return }
+    
+    ref = finalRef
   }
 }
