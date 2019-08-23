@@ -263,38 +263,6 @@ internal func setRepoWriting(_ repo: XTRepository, _ writing: Bool)
   repo.isWriting = writing
 }
 
-extension XTRepository: CommitStorage
-{
-  public func oid(forSHA sha: String) -> OID?
-  {
-    return GitOID(sha: sha)
-  }
-  
-  public func commit(forSHA sha: String) -> Commit?
-  {
-    return GitCommit(sha: sha, repository: gitRepo)
-  }
-  
-  public func commit(forOID oid: OID) -> Commit?
-  {
-    return GitCommit(oid: oid, repository: gitRepo)
-  }
-  
-  public func commit(message: String, amend: Bool) throws
-  {
-    let baseArgs = ["commit", "-F", "-"]
-    let args = amend ? baseArgs + ["--amend"] : baseArgs
-    
-    _ = try executeGit(args: args, stdIn: message, writes: true)
-    invalidateIndex()
-  }
-
-  public func walker() -> RevWalk?
-  {
-    return GitRevWalk(repository: gitRepo)
-  }
-}
-
 extension XTRepository
 {
   /// Returns the unstaged and staged status of the given file.

@@ -94,56 +94,6 @@ extension XTRepository: Workspace
   }
 }
 
-extension XTRepository: Tagging
-{
-  public func createTag(name: String, targetOID: OID, message: String?) throws
-  {
-    try performWriting {
-      guard let commit = GitCommit(oid: targetOID,
-                                  repository: gitRepo)
-      else { throw RepoError.notFound }
-      
-      let oid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
-      let signature = UnsafeMutablePointer<UnsafeMutablePointer<git_signature>?>
-            .allocate(capacity: 1)
-      let sigResult = git_signature_default(signature, gitRepo)
-      
-      try RepoError.throwIfGitError(sigResult)
-      guard let finalSig = signature.pointee
-      else { throw RepoError.unexpected }
-      
-      let result = git_tag_create(oid, gitRepo, name,
-                                  commit.commit, finalSig, message, 0)
-      
-      try RepoError.throwIfGitError(result)
-    }
-  }
-  
-  public func createLightweightTag(name: String, targetOID: OID) throws
-  {
-    try performWriting {
-      guard let commit = GitCommit(oid: targetOID,
-                                  repository: gitRepo)
-      else { throw RepoError.notFound }
-      
-      let oid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
-      let result = git_tag_create_lightweight(oid, gitRepo, name,
-                                              commit.commit, 0)
-      
-      try RepoError.throwIfGitError(result)
-    }
-  }
-  
-  public func deleteTag(name: String) throws
-  {
-    try performWriting {
-      let result = git_tag_delete(gitRepo, name)
-      
-      try RepoError.throwIfGitError(result)
-    }
-  }
-}
-
 extension XTRepository: Stashing
 {
   public var stashes: AnyCollection<Stash>
