@@ -139,10 +139,10 @@ extension XTRepository: CommitReferencing
   
   func oid(forRef ref: String) -> OID?
   {
-    let object = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let result = git_revparse_single(object, gitRepo, ref)
+    var object: OpaquePointer? = nil
+    let result = git_revparse_single(&object, gitRepo, ref)
     guard result == 0,
-      let finalObject = object.pointee,
+      let finalObject = object,
       let oid = git_object_id(finalObject)
       else { return nil }
     
@@ -169,13 +169,13 @@ extension XTRepository: CommitReferencing
   /// Returns the list of tags, or throws if libgit2 hit an error.
   public func tags() throws -> [Tag]
   {
-    let tagNames = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
-    let result = git_tag_list(tagNames, gitRepo)
+    var tagNames = git_strarray()
+    let result = git_tag_list(&tagNames, gitRepo)
     
     try RepoError.throwIfGitError(result)
-    defer { git_strarray_free(tagNames) }
+    defer { git_strarray_free(&tagNames) }
     
-    return tagNames.pointee.compactMap {
+    return tagNames.compactMap {
       name in name.flatMap { GitTag(repository: self, name: $0) }
     }
   }

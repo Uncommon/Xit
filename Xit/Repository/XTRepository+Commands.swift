@@ -68,11 +68,11 @@ extension XTRepository: Workspace
           let oid = ref.targetOID as? GitOID
     else { throw RepoError.notFound }
     
-    let target = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let targetResult = git_object_lookup(target, gitRepo, oid.unsafeOID(),
+    var target: OpaquePointer? = nil
+    let targetResult = git_object_lookup(&target, gitRepo, oid.unsafeOID(),
                                          GIT_OBJECT_ANY)
     guard targetResult == 0,
-          let finalTarget = target.pointee
+          let finalTarget = target
     else { throw RepoError.notFound }
     
     try checkout(object: finalTarget)
@@ -82,12 +82,12 @@ extension XTRepository: Workspace
   {
     guard let oid = GitOID(sha: sha)
     else { throw RepoError.notFound }
-    let object = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let lookupResult = git_object_lookup_prefix(object, gitRepo, oid.unsafeOID(),
+    var object: OpaquePointer? = nil
+    let lookupResult = git_object_lookup_prefix(&object, gitRepo, oid.unsafeOID(),
                                                 Int(GIT_OID_RAWSZ),
                                                 GIT_OBJECT_ANY)
     guard lookupResult == 0,
-          let finalObject = object.pointee
+          let finalObject = object
     else { throw RepoError.notFound }
     
     try checkout(object: finalObject)
@@ -188,11 +188,11 @@ extension XTRepository: RemoteManagement
 {
   public func remoteNames() -> [String]
   {
-    let strArray = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
-    guard git_remote_list(strArray, gitRepo) == 0
+    var strArray = git_strarray()
+    guard git_remote_list(&strArray, gitRepo) == 0
     else { return [] }
     
-    return strArray.pointee.compactMap { $0 }
+    return strArray.compactMap { $0 }
   }
   
   public func remote(named name: String) -> Remote?
@@ -203,8 +203,8 @@ extension XTRepository: RemoteManagement
   public func addRemote(named name: String, url: URL) throws
   {
     try performWriting {
-      let remote = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-      let result = git_remote_create(remote, gitRepo, name, url.absoluteString)
+      var remote: OpaquePointer? = nil
+      let result = git_remote_create(&remote, gitRepo, name, url.absoluteString)
       
       try RepoError.throwIfGitError(result)
     }
@@ -255,12 +255,11 @@ extension XTRepository: SubmoduleManagement
       else { return 0 }
       let payload = payload!.bindMemory(to: Payload.self, capacity: 1)
       
-      // Look it up again to get an owned reference
-      let mySubmodule = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-      let lookup = git_submodule_lookup(mySubmodule, repo,
+      var ownedSubmodule: OpaquePointer? = nil
+      let lookup = git_submodule_lookup(&ownedSubmodule, repo,
                                         git_submodule_name(submodule))
       guard lookup == 0,
-            let finalSubmodule = mySubmodule.pointee
+            let finalSubmodule = ownedSubmodule
       else { return 0 }
       
       payload.pointee.submodules.append(GitSubmodule(submodule: finalSubmodule))

@@ -247,10 +247,10 @@ extension XTRepository: FileStatusDetection
   /// ignore rules.
   public func isIgnored(path: String) -> Bool
   {
-    let ignored = UnsafeMutablePointer<Int32>.allocate(capacity: 1)
-    let result = git_ignore_path_is_ignored(ignored, gitRepo, path)
+    var ignored: Int32 = 0
+    let result = git_ignore_path_is_ignored(&ignored, gitRepo, path)
     
-    return (result == 0) && (ignored.pointee != 0)
+    return (result == 0) && (ignored != 0)
   }
 }
 

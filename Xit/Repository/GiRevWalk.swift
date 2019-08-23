@@ -36,10 +36,10 @@ class GitRevWalk: RevWalk
   
   init?(repository: OpaquePointer)
   {
-    let revWalk = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let result = git_revwalk_new(revWalk, repository)
+    var revWalk: OpaquePointer? = nil
+    let result = git_revwalk_new(&revWalk, repository)
     guard result == 0,
-          let finalRevWalk = revWalk.pointee
+          let finalRevWalk = revWalk
     else { return nil }
     
     self.walker = finalRevWalk
@@ -70,11 +70,11 @@ class GitRevWalk: RevWalk
   
   public func next() -> OID?
   {
-    let oid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
-    let result = git_revwalk_next(oid, walker)
+    var oid = git_oid()
+    let result = git_revwalk_next(&oid, walker)
     guard result == 0
     else { return nil }
     
-    return GitOID(oid: oid.pointee)
+    return GitOID(oid: oid)
   }
 }

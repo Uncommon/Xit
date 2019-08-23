@@ -46,14 +46,14 @@ extension XTRepository: Branching
       throw RepoError.alreadyWriting
     }
     
-    let branchRef = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    var result = git_branch_lookup(branchRef, gitRepo, branch, GIT_BRANCH_LOCAL)
+    var branchRef: OpaquePointer? = nil
+    var result = git_branch_lookup(&branchRef, gitRepo, branch, GIT_BRANCH_LOCAL)
     
     try RepoError.throwIfGitError(result)
     
-    let newRef = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+    var newRef: OpaquePointer? = nil
     
-    result = git_branch_move(newRef, branchRef.pointee, newName, 0)
+    result = git_branch_move(&newRef, branchRef, newName, 0)
     try RepoError.throwIfGitError(result)
   }
 
@@ -126,7 +126,7 @@ extension XTRepository: Tagging
                                    repository: gitRepo)
         else { throw RepoError.notFound }
       
-      let oid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
+      var oid = git_oid()
       let signature = UnsafeMutablePointer<UnsafeMutablePointer<git_signature>?>
         .allocate(capacity: 1)
       let sigResult = git_signature_default(signature, gitRepo)
@@ -135,7 +135,7 @@ extension XTRepository: Tagging
       guard let finalSig = signature.pointee
         else { throw RepoError.unexpected }
       
-      let result = git_tag_create(oid, gitRepo, name,
+      let result = git_tag_create(&oid, gitRepo, name,
                                   commit.commit, finalSig, message, 0)
       
       try RepoError.throwIfGitError(result)
@@ -149,8 +149,8 @@ extension XTRepository: Tagging
                                    repository: gitRepo)
         else { throw RepoError.notFound }
       
-      let oid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
-      let result = git_tag_create_lightweight(oid, gitRepo, name,
+      var oid = git_oid()
+      let result = git_tag_create_lightweight(&oid, gitRepo, name,
                                               commit.commit, 0)
       
       try RepoError.throwIfGitError(result)

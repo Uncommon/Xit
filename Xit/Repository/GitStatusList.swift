@@ -25,10 +25,10 @@ class GitStatusList: RandomAccessCollection
       gitOptions.baseline = (previousCommit.tree as? GitTree)?.tree
     }
     
-    let list = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let result = git_status_list_new(list, repo.gitRepo, &gitOptions)
+    var list: OpaquePointer? = nil
+    let result = git_status_list_new(&list, repo.gitRepo, &gitOptions)
     guard result == 0,
-          let finalList = list.pointee
+          let finalList = list
     else { return nil }
     
     self.statusList = finalList

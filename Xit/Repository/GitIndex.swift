@@ -126,9 +126,9 @@ class GitIndex: StagingIndex
   
   func entry(at path: String) -> IndexEntry?
   {
-    let position = UnsafeMutablePointer<Int>.allocate(capacity: 1)
-    guard git_index_find(position, index, path) == 0,
-          let entry = git_index_get_byindex(index, position.pointee)
+    var position: Int = 0
+    guard git_index_find(&position, index, path) == 0,
+          let entry = git_index_get_byindex(index, position)
     else { return nil }
     
     return Entry(gitEntry: entry.pointee)

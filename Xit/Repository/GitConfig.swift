@@ -110,10 +110,10 @@ class GitConfig: Config
   
   init?(repository: OpaquePointer)
   {
-    let config = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let result = git_repository_config(config, repository)
+    var config: OpaquePointer? = nil
+    let result = git_repository_config(&config, repository)
     guard result == 0,
-          let finalConfig = config.pointee
+          let finalConfig = config
     else { return nil }
     
     self.config = finalConfig
@@ -128,10 +128,10 @@ class GitConfig: Config
   
   static var `default`: GitConfig?
   {
-    let config = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let result = git_config_open_default(config)
+    var config: OpaquePointer? = nil
+    let result = git_config_open_default(&config)
     guard result == 0,
-          let finalConfig = config.pointee
+          let finalConfig = config
     else { return nil }
     
     return GitConfig(config: finalConfig)

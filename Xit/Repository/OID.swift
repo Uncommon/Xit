@@ -74,15 +74,11 @@ public struct GitOID: OID, Hashable, Equatable
       return nil
     }
     
-    let oidPtr = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
-    defer {
-      oidPtr.deallocate()
-    }
-    
-    guard git_oid_fromstr(oidPtr, sha) == GIT_OK.rawValue
+    var oid = git_oid()
+    guard git_oid_fromstr(&oid, sha) == 0
     else { return nil }
     
-    oid = oidPtr.pointee
+    self.oid = oid
   }
   
   public var sha: String

@@ -185,16 +185,16 @@ public class GitCommit: Commit
   
   convenience init?(ref: String, repository: OpaquePointer)
   {
-    let gitRefPtr = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    guard git_reference_lookup(gitRefPtr,
+    var gitRefPtr: OpaquePointer? = nil
+    guard git_reference_lookup(&gitRefPtr,
                                repository,
                                ref) == 0,
-          let gitRef = gitRefPtr.pointee
+          let gitRef = gitRefPtr
     else { return nil }
     
-    let gitObjectPtr = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    guard git_reference_peel(gitObjectPtr, gitRef, GIT_OBJECT_COMMIT) == 0,
-          let gitObject = gitObjectPtr.pointee,
+    var gitObjectPtr: OpaquePointer? = nil
+    guard git_reference_peel(&gitObjectPtr, gitRef, GIT_OBJECT_COMMIT) == 0,
+          let gitObject = gitObjectPtr,
       git_object_type(gitObject) == GIT_OBJECT_COMMIT
     else { return nil }
     

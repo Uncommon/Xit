@@ -268,12 +268,12 @@ extension XTRepository
   /// Returns the unstaged and staged status of the given file.
   func status(file: String) throws -> (DeltaStatus, DeltaStatus)
   {
-    let statusFlags = UnsafeMutablePointer<UInt32>.allocate(capacity: 1)
-    let result = git_status_file(statusFlags, gitRepo, file)
+    var statusFlags: UInt32 = 0
+    let result = git_status_file(&statusFlags, gitRepo, file)
     
     try RepoError.throwIfGitError(result)
     
-    let flags = git_status_t(statusFlags.pointee)
+    let flags = git_status_t(statusFlags)
     var unstagedChange = DeltaStatus.unmodified
     var stagedChange = DeltaStatus.unmodified
     
@@ -319,12 +319,12 @@ extension XTRepository
     guard let local = local as? GitOID,
           let upstream = upstream as? GitOID
     else { return nil }
-    let ahead = UnsafeMutablePointer<Int>.allocate(capacity: 1)
-    let behind = UnsafeMutablePointer<Int>.allocate(capacity: 1)
+    var ahead = 0
+    var behind = 0
     
-    if git_graph_ahead_behind(ahead, behind, gitRepo,
+    if git_graph_ahead_behind(&ahead, &behind, gitRepo,
                               local.unsafeOID(), upstream.unsafeOID()) == 0 {
-      return (ahead.pointee, behind.pointee)
+      return (ahead, behind)
     }
     else {
       return nil

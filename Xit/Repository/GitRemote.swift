@@ -100,10 +100,10 @@ class GitRemote: Remote
   
   init?(name: String, repository: OpaquePointer)
   {
-    let remote = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let result = git_remote_lookup(remote, repository, name)
+    var remote: OpaquePointer? = nil
+    let result = git_remote_lookup(&remote, repository, name)
     guard result == 0,
-          let finalRemote = remote.pointee
+          let finalRemote = remote
     else { return nil }
     
     self.remote = finalRemote

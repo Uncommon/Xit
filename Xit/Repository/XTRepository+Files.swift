@@ -388,10 +388,10 @@ extension XTRepository
     {
       guard let emptyOID = GitOID(sha: kEmptyTreeHash)
       else { return nil }
-      let tree = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-      let result = git_tree_lookup(tree, repo.gitRepo, emptyOID.unsafeOID())
+      var tree: OpaquePointer? = nil
+      let result = git_tree_lookup(&tree, repo.gitRepo, emptyOID.unsafeOID())
       
-      return (result == GIT_OK.rawValue) ? tree.pointee : nil
+      return (result == GIT_OK.rawValue) ? tree : nil
     }
   
     subscript(position: Int) -> FileStagingChange

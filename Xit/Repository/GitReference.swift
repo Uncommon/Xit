@@ -63,11 +63,11 @@ class GitReference: Reference
   static func createSymbolic(name: String, repository: OpaquePointer,
                              target: String, log: String? = nil) -> GitReference?
   {
-    let ref = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let result = git_reference_symbolic_create(ref, repository, name, target, 0,
+    var ref: OpaquePointer? = nil
+    let result = git_reference_symbolic_create(&ref, repository, name, target, 0,
                                                log ?? "")
     guard result == 0,
-          let finalRef = ref.pointee
+          let finalRef = ref
     else { return nil }
     
     return GitReference(reference: finalRef)
@@ -113,10 +113,10 @@ class GitReference: Reference
   
   public func resolve() -> Reference?
   {
-    let ref = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let result = git_reference_resolve(ref, self.ref)
+    var ref: OpaquePointer? = nil
+    let result = git_reference_resolve(&ref, self.ref)
     guard result == 0,
-          let finalRef = ref.pointee
+          let finalRef = ref
     else { return nil }
     
     return GitReference(reference: finalRef)

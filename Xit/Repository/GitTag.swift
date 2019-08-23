@@ -32,22 +32,22 @@ public class GitTag: Tag
   init?(repository: XTRepository, name: String)
   {
     let refName = name.hasPrefix(GitTag.tagPrefix) ? name : GitTag.tagPrefix + name
-    let ref = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let result = git_reference_lookup(ref, repository.gitRepo,
+    var ref: OpaquePointer? = nil
+    let result = git_reference_lookup(&ref, repository.gitRepo,
                                       refName)
     guard result == 0,
-          let finalRef = ref.pointee,
-          git_reference_is_tag(ref.pointee) == 1
+          let finalRef = ref,
+          git_reference_is_tag(ref) == 1
     else { return nil }
     
     self.ref = finalRef
     self.name = name.droppingPrefix(GitTag.tagPrefix)
     
-    let tag = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let peelResult = git_reference_peel(tag, finalRef, GIT_OBJECT_TAG)
+    var tag: OpaquePointer? = nil
+    let peelResult = git_reference_peel(&tag, finalRef, GIT_OBJECT_TAG)
     
     if peelResult == 0,
-       let finalTag = tag.pointee {
+       let finalTag = tag {
       self.tag = finalTag
     }
     else {
@@ -73,11 +73,11 @@ public class GitTag: Tag
       return GitOID(oid: git_tag_target_id(tag).pointee)
     }
     
-    let target = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let peelResult = git_reference_peel(target, ref, GIT_OBJECT_COMMIT)
+    var target: OpaquePointer? = nil
+    let peelResult = git_reference_peel(&target, ref, GIT_OBJECT_COMMIT)
     
     if peelResult == 0,
-       let finalTarget = target.pointee {
+       let finalTarget = target {
       return GitOID(oid: git_commit_id(finalTarget).pointee)
     }
     return nil

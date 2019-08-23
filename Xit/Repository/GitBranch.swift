@@ -101,11 +101,11 @@ public class GitBranch
                                        branchType: git_branch_t)
     -> OpaquePointer?
   {
-    let branch = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let result = git_branch_lookup(branch, repository,
+    var branch: OpaquePointer? = nil
+    let result = git_branch_lookup(&branch, repository,
                                    name, branchType)
     guard result == 0,
-          let finalBranch = branch.pointee
+          let finalBranch = branch
     else { return nil }
     
     return finalBranch
@@ -173,11 +173,11 @@ public class GitLocalBranch: GitBranch, LocalBranch
   /// branch.
   public var trackingBranch: RemoteBranch?
   {
-    let upstream = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-    let result = git_branch_upstream(upstream, branchRef)
+    var upstream: OpaquePointer? = nil
+    let result = git_branch_upstream(&upstream, branchRef)
     
     guard result == 0,
-          let branch = upstream.pointee
+          let branch = upstream
     else { return nil }
     
     return GitRemoteBranch(branch: branch, config: config)
