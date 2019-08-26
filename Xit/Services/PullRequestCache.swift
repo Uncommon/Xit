@@ -49,6 +49,11 @@ class PullRequestCache
 
     requests.removeAll()
     
+    Signpost.intervalStart(.refreshPullRequests)
+    defer {
+      Signpost.intervalEnd(.refreshPullRequests)
+    }
+    
     for remote in remotes {
       guard let service = Services.shared.pullRequestService(remote: remote)
       else { continue }

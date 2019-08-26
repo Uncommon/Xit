@@ -4,7 +4,7 @@ import os
 enum Signpost
 {
   static let logger = OSLog(subsystem: "com.uncommonplace.xit",
-                              category: "Xit: loading")
+                            category: "Xit: loading")
 
   enum Event
   {
@@ -32,6 +32,8 @@ enum Signpost
     case loadIndex
     case loadWorkspace
     case loadTags
+    case refreshPullRequests
+    case refreshBuildStatus
     
     var name: StaticString
     {
@@ -44,6 +46,8 @@ enum Signpost
         case .loadIndex: return "load index"
         case .loadWorkspace: return "load workspace"
         case .loadTags: return "load tags"
+        case .refreshPullRequests: return "refresh pull requests"
+        case .refreshBuildStatus: return "refresh build status"
       }
     }
   }
@@ -83,7 +87,7 @@ enum Signpost
   static func interval<T>(_ code: Interval,
                           call: () throws -> T) rethrows -> T
   {
-    let id = OSSignpostID(log: .default)
+    let id = OSSignpostID(log: Signpost.logger)
     
     intervalStart(code, id: id)
     defer {

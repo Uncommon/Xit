@@ -6,7 +6,6 @@ class SideBarDataSource: NSObject
 {
   enum Intervals
   {
-    static let teamCityRefresh: TimeInterval = 5 * .minutes
     static let reloadDelay: TimeInterval = 1
   }
   

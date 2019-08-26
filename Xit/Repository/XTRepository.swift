@@ -25,6 +25,7 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
   fileprivate(set) var cachedHeadRef, cachedHeadSHA, cachedBranch: String?
   private var _cachedStagedChanges, _cachedAmendChanges,
               _cachedUnstagedChanges: [FileChange]?
+  private var _cachedBranches: [String: GitBranch] = [:]
   var cachedStagedChanges: [FileChange]?
   {
     get { return mutex.withLock { _cachedStagedChanges } }
@@ -39,6 +40,11 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
   {
     get { return mutex.withLock { _cachedUnstagedChanges } }
     set { mutex.withLock { _cachedUnstagedChanges = newValue } }
+  }
+  var cachedBranches: [String: GitBranch]
+  {
+    get { return mutex.withLock { _cachedBranches} }
+    set { mutex.withLock { _cachedBranches = newValue } }
   }
   var cachedIgnored = false
 
@@ -129,6 +135,13 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
     NotificationCenter.default.removeObserver(self)
   }
   
+  func addCachedBranch(_ branch: GitBranch)
+  {
+    mutex.withLock {
+      _cachedBranches[branch.name] = branch
+    }
+  }
+  
   func updateIsWriting(_ writing: Bool)
   {
     guard writing != isWriting
@@ -162,6 +175,8 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
   
   func refsChanged()
   {
+    cachedBranches = [:]
+    
     // In theory the two separate locks could result in cachedBranch being wrong
     // but that would only happen if this function was called on two different
     // threads and one of them found that the branch had just changed again.

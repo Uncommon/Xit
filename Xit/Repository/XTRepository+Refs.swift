@@ -59,21 +59,41 @@ extension XTRepository: Branching
 
   public func localBranch(named name: String) -> LocalBranch?
   {
-    return GitLocalBranch(repository: gitRepo, name: name, config: config)
+    let fullName = RefPrefixes.heads +/ name
+    
+    if let branch = cachedBranches[fullName] as? GitLocalBranch {
+      return branch
+    }
+    else {
+      guard let branch = GitLocalBranch(repository: gitRepo, name: name,
+                                        config: config)
+      else { return nil }
+      
+      addCachedBranch(branch)
+      return branch
+    }
   }
   
   public func remoteBranch(named name: String, remote: String) -> RemoteBranch?
   {
-    return GitRemoteBranch(repository: gitRepo,
-                           name: "\(remote)/\(name)",
-                           config: config)
+    return remoteBranch(named: remote +/ name)
   }
   
   public func remoteBranch(named name: String) -> RemoteBranch?
   {
-    return GitRemoteBranch(repository: gitRepo,
-                           name: name,
-                           config: config)
+    let fullName = RefPrefixes.remotes +/ name
+    
+    if let branch = cachedBranches[fullName] as? GitRemoteBranch {
+      return branch
+    }
+    else {
+      guard let branch = GitRemoteBranch(repository: gitRepo,
+                                         name: name, config: config)
+      else { return nil }
+      
+      addCachedBranch(branch)
+      return branch
+    }
   }
   
   public func localBranch(tracking remoteBranch: RemoteBranch) -> LocalBranch?

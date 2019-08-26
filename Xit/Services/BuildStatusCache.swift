@@ -49,8 +49,10 @@ class BuildStatusCache: TeamCityAccessor
     else { return }
     
     statuses.removeAll()
-    for local in localBranches {
-      refresh(branch: local)
+    Signpost.interval(.refreshBuildStatus) {
+      for local in localBranches {
+        refresh(branch: local)
+      }
     }
   }
   
