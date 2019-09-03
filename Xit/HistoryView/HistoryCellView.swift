@@ -62,11 +62,33 @@ class HistoryCellView: NSTableCellView
     labelField.textColor = color
   }
   
+  private func setLabel(_ message: String)
+  {
+    if let returnRange = message.rangeOfCharacter(from: .newlines),
+       returnRange.upperBound < message.endIndex {
+      let ellipsis = "⋯"
+      let truncated = message.prefix(upTo: returnRange.lowerBound)
+      let attributed = NSMutableAttributedString(string: truncated + " ")
+      let grayAttributes = [NSAttributedString.Key.foregroundColor:
+                            NSColor.secondaryLabelColor]
+      let ellpisisString = NSAttributedString(string: ellipsis,
+                                              attributes: grayAttributes)
+      
+      attributed.append(ellpisisString)
+      labelField.attributedStringValue = attributed
+      toolTip = message
+    }
+    else {
+      labelField.stringValue = message
+      toolTip = nil
+    }
+  }
+  
   func configure(entry: CommitEntry, repository: Branching & CommitReferencing)
   {
     currentBranch = repository.currentBranch
     refs = repository.refs(at: entry.commit.sha)
-    labelField.stringValue = entry.commit.message ?? "(no message)"
+    setLabel(entry.commit.message ?? "(no message)")
     self.entry = entry
     
     var views = refs.reversed().map {
