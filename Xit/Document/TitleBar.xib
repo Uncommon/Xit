@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -112,7 +111,7 @@
                             <rect key="frame" x="122" y="2" width="70" height="21"/>
                             <popUpButtonCell key="cell" type="bevel" title="branch" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" state="on" focusRingType="none" imageScaling="proportionallyDown" inset="2" autoenablesItems="NO" selectedItem="sSQ-02-kT9" id="QYv-hf-gtv">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                <font key="font" metaFont="menu"/>
+                                <font key="font" metaFont="system"/>
                                 <menu key="menu" autoenablesItems="NO" id="mJM-HD-d6L">
                                     <items>
                                         <menuItem title="branch" state="on" id="sSQ-02-kT9"/>
@@ -179,9 +178,9 @@
                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="dxK-Dd-Juj">
                         <font key="font" metaFont="system"/>
                         <segments>
-                            <segment toolTip="Fetch" image="fetchTemplate" width="30"/>
-                            <segment toolTip="Pull" image="pullTemplate" width="30" tag="1"/>
-                            <segment toolTip="Push" image="pushTemplate" width="30">
+                            <segment toolTip="Pull" image="pullTemplate" width="30"/>
+                            <segment toolTip="Push" image="pushTemplate" width="30" tag="1"/>
+                            <segment toolTip="Fetch" image="fetchTemplate" width="30">
                                 <nil key="label"/>
                             </segment>
                         </segments>
@@ -191,7 +190,7 @@
                     </connections>
                 </segmentedControl>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wtJ-QB-nan" userLabel="Find Button">
-                    <rect key="frame" x="649" y="9" width="29" height="23"/>
+                    <rect key="frame" x="657" y="9" width="21" height="23"/>
                     <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="NSTouchBarSearchTemplate" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="m60-rp-dnd">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
@@ -268,15 +267,15 @@
         </menu>
     </objects>
     <resources>
-        <image name="NSFolder" width="128" height="128"/>
+        <image name="NSFolder" width="32" height="32"/>
         <image name="NSGoLeftTemplate" width="9" height="12"/>
         <image name="NSGoRightTemplate" width="9" height="12"/>
         <image name="NSTouchBarSearchTemplate" width="19" height="30"/>
         <image name="branchTemplate" width="14" height="16"/>
-        <image name="fetchTemplate" width="8" height="8"/>
-        <image name="mergeTemplate" width="7" height="8"/>
-        <image name="pullTemplate" width="8" height="8"/>
-        <image name="pushTemplate" width="8" height="8"/>
+        <image name="fetchTemplate" width="12" height="12"/>
+        <image name="mergeTemplate" width="14" height="16"/>
+        <image name="pullTemplate" width="12" height="12"/>
+        <image name="pushTemplate" width="12" height="12"/>
         <image name="stashTemplate" width="16" height="16"/>
         <image name="viewCommitTemplate" width="18" height="14"/>
         <image name="viewHistoryTemplate" width="18" height="14"/>

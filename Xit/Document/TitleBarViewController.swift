@@ -88,7 +88,7 @@ class TitleBarViewController: NSViewController
   
   enum RemoteSegment: Int
   {
-    case fetch, pull, push
+    case pull, push, fetch
   }
   
   enum ViewSegment: Int
