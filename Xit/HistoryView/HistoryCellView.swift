@@ -7,13 +7,12 @@ class HistoryCellView: NSTableCellView
   private var currentBranch: String?
   private var refs = [String]()
   
-  static let lineColors = [
-      NSColor.systemBlue, NSColor.systemGreen, NSColor.systemRed,
-      NSColor.systemBrown, NSColor.cyan, NSColor.darkGray,
-      NSColor.magenta, NSColor.systemOrange, NSColor.systemPurple,
+  static let lineColors: [NSColor] = [
+      .systemBlue, .systemGreen, .systemRed, .systemBrown, .cyan,
+      .darkGray, .systemPink, .magenta, .systemOrange, .systemPurple,
       // Regular yellow is too light
       NSColor(calibratedHue: 0.13, saturation: 0.08, brightness: 0.8, alpha: 1.0),
-      NSColor.textColor, NSColor.lightGray,
+      .textColor, .lightGray,
       ]
   
   enum Widths
