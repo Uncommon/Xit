@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14854.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="601-dV-YQ8">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14865.1" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="601-dV-YQ8">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14854.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14865.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -81,7 +81,7 @@
                                             <tableColumns>
                                                 <tableColumn identifier="service" width="136.953125" minWidth="40" maxWidth="1000" id="dBg-Kv-2uA">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Service">
-                                                        <font key="font" metaFont="message" size="11"/>
+                                                        <font key="font" metaFont="menu" size="11"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                     </tableHeaderCell>
@@ -120,7 +120,7 @@
                                                 </tableColumn>
                                                 <tableColumn identifier="userName" width="130.2734375" minWidth="40" maxWidth="1000" id="m7k-jj-ygM">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="User name">
-                                                        <font key="font" metaFont="message" size="11"/>
+                                                        <font key="font" metaFont="menu" size="11"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                     </tableHeaderCell>
@@ -132,11 +132,11 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="userName" misplaced="YES" id="cfB-K4-Jjc">
-                                                            <rect key="frame" x="141" y="1" width="130" height="17"/>
+                                                            <rect key="frame" x="141" y="1" width="131" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Itr-C0-rHt">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="130" height="16"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="131" height="16"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="wri-yE-Zmc">
                                                                         <font key="font" metaFont="system"/>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -158,7 +158,7 @@
                                                 </tableColumn>
                                                 <tableColumn identifier="location" width="163.5" minWidth="10" maxWidth="3.4028234663852886e+38" id="03W-is-KTe">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Location">
-                                                        <font key="font" metaFont="message" size="11"/>
+                                                        <font key="font" metaFont="menu" size="11"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     </tableHeaderCell>
@@ -170,11 +170,11 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="location" misplaced="YES" id="r6l-yh-y16">
-                                                            <rect key="frame" x="274" y="1" width="164" height="17"/>
+                                                            <rect key="frame" x="275" y="1" width="163" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aFo-aB-g7x">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="164" height="16"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="163" height="16"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="1mm-5M-vK3">
                                                                         <font key="font" metaFont="system"/>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -196,7 +196,7 @@
                                                 </tableColumn>
                                                 <tableColumn identifier="status" width="47" minWidth="47" maxWidth="47" id="0Ob-Te-19j">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Status">
-                                                        <font key="font" metaFont="message" size="11"/>
+                                                        <font key="font" metaFont="menu" size="11"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     </tableHeaderCell>
@@ -583,7 +583,7 @@ Gw
                                         <rect key="frame" x="164" y="156" width="77" height="27"/>
                                         <buttonCell key="cell" type="push" title="Change..." bezelStyle="rounded" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="brM-JO-aQc">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="message" size="11"/>
+                                            <font key="font" metaFont="menu" size="11"/>
                                         </buttonCell>
                                         <connections>
                                             <action selector="showFontPanel:" target="JHS-OX-BvD" id="1K4-cP-tuc"/>
@@ -710,14 +710,12 @@ Gw
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <gridView xPlacement="leading" yPlacement="bottom" rowAlignment="none" translatesAutoresizingMaskIntoConstraints="NO" id="21S-Sg-ZFw">
-                                <rect key="frame" x="63" y="91" width="325" height="156"/>
+                                <rect key="frame" x="53" y="67" width="345" height="180"/>
                                 <rows>
-                                    <gridRow id="ost-9c-1gA"/>
-                                    <gridRow bottomPadding="12" id="aTL-Zi-IMJ"/>
-                                    <gridRow id="4rI-QR-5nN"/>
-                                    <gridRow bottomPadding="12" id="FMQ-eB-rMw"/>
-                                    <gridRow id="CJt-c0-f1f"/>
-                                    <gridRow id="kIY-yQ-C2Z"/>
+                                    <gridRow rowAlignment="firstBaseline" bottomPadding="12" id="ost-9c-1gA"/>
+                                    <gridRow rowAlignment="firstBaseline" id="4rI-QR-5nN"/>
+                                    <gridRow rowAlignment="firstBaseline" bottomPadding="12" id="FMQ-eB-rMw"/>
+                                    <gridRow rowAlignment="firstBaseline" id="CJt-c0-f1f"/>
                                 </rows>
                                 <columns>
                                     <gridColumn xPlacement="trailing" id="3ld-z0-S1T"/>
@@ -726,8 +724,8 @@ Gw
                                 <gridCells>
                                     <gridCell row="ost-9c-1gA" column="3ld-z0-S1T" id="mKf-Au-ber">
                                         <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2aZ-Cd-tQ5">
-                                            <rect key="frame" x="3" y="140" width="86" height="16"/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="View options:" id="kRb-Tt-FYN">
+                                            <rect key="frame" x="-2" y="164" width="111" height="16"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Interface options:" id="kRb-Tt-FYN">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -735,33 +733,55 @@ Gw
                                         </textField>
                                     </gridCell>
                                     <gridCell row="ost-9c-1gA" column="wag-Lh-N4t" id="45r-6c-Z5A">
-                                        <button key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Kbf-x2-RSo">
-                                            <rect key="frame" x="91" y="138" width="236" height="18"/>
-                                            <buttonCell key="cell" type="check" title="Collapse history list in Staging view" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="WKJ-6s-xuT">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="collapseHistoryClicked:" target="5C8-XN-V90" id="IFN-X8-3gW"/>
-                                            </connections>
-                                        </button>
-                                    </gridCell>
-                                    <gridCell row="aTL-Zi-IMJ" column="3ld-z0-S1T" id="Rln-IK-ZxY"/>
-                                    <gridCell row="aTL-Zi-IMJ" column="wag-Lh-N4t" id="VsC-k7-BAY">
-                                        <button key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="xau-2u-roe">
-                                            <rect key="frame" x="91" y="118" width="236" height="18"/>
-                                            <buttonCell key="cell" type="check" title="De-emphasize merge commits" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="EbU-9a-LAA">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="deemphasizeClicked:" target="5C8-XN-V90" id="Sdr-AE-yq2"/>
-                                            </connections>
-                                        </button>
+                                        <stackView key="contentView" distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n9O-5q-QMu">
+                                            <rect key="frame" x="113" y="121" width="232" height="58"/>
+                                            <subviews>
+                                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Kbf-x2-RSo">
+                                                    <rect key="frame" x="-2" y="42" width="236" height="18"/>
+                                                    <buttonCell key="cell" type="check" title="Collapse history list in Staging view" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="WKJ-6s-xuT">
+                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                    <connections>
+                                                        <action selector="collapseHistoryClicked:" target="5C8-XN-V90" id="IFN-X8-3gW"/>
+                                                    </connections>
+                                                </button>
+                                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="xau-2u-roe">
+                                                    <rect key="frame" x="-2" y="20" width="208" height="18"/>
+                                                    <buttonCell key="cell" type="check" title="De-emphasize merge commits" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="EbU-9a-LAA">
+                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                    <connections>
+                                                        <action selector="deemphasizeClicked:" target="5C8-XN-V90" id="Sdr-AE-yq2"/>
+                                                    </connections>
+                                                </button>
+                                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="CeU-nb-jmF">
+                                                    <rect key="frame" x="-2" y="-2" width="195" height="18"/>
+                                                    <buttonCell key="cell" type="check" title="Automatically reset &quot;Amend&quot;" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="1MZ-Xo-7YJ">
+                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                    <connections>
+                                                        <action selector="resetAmendClicked:" target="5C8-XN-V90" id="GCx-Uf-CIK"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <visibilityPriorities>
+                                                <integer value="1000"/>
+                                                <integer value="1000"/>
+                                                <integer value="1000"/>
+                                            </visibilityPriorities>
+                                            <customSpacing>
+                                                <real value="3.4028234663852886e+38"/>
+                                                <real value="3.4028234663852886e+38"/>
+                                                <real value="3.4028234663852886e+38"/>
+                                            </customSpacing>
+                                        </stackView>
                                     </gridCell>
                                     <gridCell row="4rI-QR-5nN" column="3ld-z0-S1T" id="hXT-Oj-QWT">
                                         <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dCU-mp-voF">
-                                            <rect key="frame" x="15" y="81" width="74" height="16"/>
+                                            <rect key="frame" x="35" y="85" width="74" height="16"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="User name:" id="Xko-H4-2gn">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -771,7 +791,7 @@ Gw
                                     </gridCell>
                                     <gridCell row="4rI-QR-5nN" column="wag-Lh-N4t" id="Rza-hQ-HlV">
                                         <textField key="contentView" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xgZ-wn-ewN">
-                                            <rect key="frame" x="93" y="81" width="232" height="21"/>
+                                            <rect key="frame" x="113" y="82" width="232" height="21"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="jbP-VT-yGa">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -781,7 +801,7 @@ Gw
                                     </gridCell>
                                     <gridCell row="FMQ-eB-rMw" column="3ld-z0-S1T" id="YYW-no-aZG">
                                         <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="orJ-EO-Pwc">
-                                            <rect key="frame" x="17" y="54" width="72" height="16"/>
+                                            <rect key="frame" x="37" y="58" width="72" height="16"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="User email:" id="MHz-t6-WmR">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -791,7 +811,7 @@ Gw
                                     </gridCell>
                                     <gridCell row="FMQ-eB-rMw" column="wag-Lh-N4t" id="mre-Bh-X39">
                                         <textField key="contentView" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BBy-C6-I89">
-                                            <rect key="frame" x="93" y="54" width="232" height="21"/>
+                                            <rect key="frame" x="113" y="55" width="232" height="21"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="XyF-TM-ord">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -801,7 +821,7 @@ Gw
                                     </gridCell>
                                     <gridCell row="CJt-c0-f1f" column="3ld-z0-S1T" id="uKg-pN-7vK">
                                         <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="b5x-1H-bxm">
-                                            <rect key="frame" x="-2" y="20" width="91" height="16"/>
+                                            <rect key="frame" x="18" y="21" width="91" height="16"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Fetch options:" id="B1H-V5-kVo">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -810,23 +830,33 @@ Gw
                                         </textField>
                                     </gridCell>
                                     <gridCell row="CJt-c0-f1f" column="wag-Lh-N4t" id="Kvj-qy-hWa">
-                                        <button key="contentView" translatesAutoresizingMaskIntoConstraints="NO" id="VlT-vO-oF4">
-                                            <rect key="frame" x="91" y="18" width="236" height="18"/>
-                                            <buttonCell key="cell" type="check" title="Download tags" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="2AA-KU-xWv">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                        </button>
-                                    </gridCell>
-                                    <gridCell row="kIY-yQ-C2Z" column="3ld-z0-S1T" id="eWE-w7-Ken"/>
-                                    <gridCell row="kIY-yQ-C2Z" column="wag-Lh-N4t" id="PhW-y5-ZQj">
-                                        <button key="contentView" translatesAutoresizingMaskIntoConstraints="NO" id="o7d-63-SBb">
-                                            <rect key="frame" x="91" y="-2" width="236" height="18"/>
-                                            <buttonCell key="cell" type="check" title="Prune branches" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="0sZ-Qz-W4O">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                        </button>
+                                        <stackView key="contentView" distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rnq-AS-S5R">
+                                            <rect key="frame" x="113" y="0.0" width="232" height="36"/>
+                                            <subviews>
+                                                <button translatesAutoresizingMaskIntoConstraints="NO" id="VlT-vO-oF4">
+                                                    <rect key="frame" x="-2" y="20" width="112" height="18"/>
+                                                    <buttonCell key="cell" type="check" title="Download tags" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="2AA-KU-xWv">
+                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                </button>
+                                                <button translatesAutoresizingMaskIntoConstraints="NO" id="o7d-63-SBb">
+                                                    <rect key="frame" x="-2" y="-2" width="118" height="18"/>
+                                                    <buttonCell key="cell" type="check" title="Prune branches" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="0sZ-Qz-W4O">
+                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                </button>
+                                            </subviews>
+                                            <visibilityPriorities>
+                                                <integer value="1000"/>
+                                                <integer value="1000"/>
+                                            </visibilityPriorities>
+                                            <customSpacing>
+                                                <real value="3.4028234663852886e+38"/>
+                                                <real value="3.4028234663852886e+38"/>
+                                            </customSpacing>
+                                        </stackView>
                                     </gridCell>
                                 </gridCells>
                             </gridView>
@@ -844,13 +874,14 @@ Gw
                         <outlet property="deemphasizeCheck" destination="xau-2u-roe" id="9Hm-g7-wvo"/>
                         <outlet property="fetchPruneCheckbox" destination="o7d-63-SBb" id="hPf-WR-IlT"/>
                         <outlet property="fetchTagsCheckbox" destination="VlT-vO-oF4" id="GtH-O6-koc"/>
+                        <outlet property="resetAmendCheck" destination="CeU-nb-jmF" id="JlI-oV-2of"/>
                         <outlet property="userEmailField" destination="BBy-C6-I89" id="eEp-mJ-ecP"/>
                         <outlet property="userNameField" destination="xgZ-wn-ewN" id="gKw-36-xyL"/>
                     </connections>
                 </viewController>
                 <customObject id="MoH-Ff-k6N" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="607" y="479"/>
+            <point key="canvasLocation" x="607" y="478.5"/>
         </scene>
     </scenes>
     <resources>

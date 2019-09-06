@@ -5,6 +5,7 @@ enum PreferenceKeys
 {
   static let deemphasizeMerges = "deemphasizeMerges"
   static let collapseHistory = "collapseHistory"
+  static let resetAmend = "resetAmend"
   static let accounts = "accounts"
 }
 
@@ -30,6 +31,17 @@ extension UserDefaults
     set
     {
       set(newValue, forKey: PreferenceKeys.deemphasizeMerges)
+    }
+  }
+  @objc dynamic var resetAmend: Bool
+  {
+    get
+    {
+      return bool(forKey: PreferenceKeys.resetAmend)
+    }
+    set
+    {
+      set(newValue, forKey: PreferenceKeys.resetAmend)
     }
   }
   @objc dynamic var accounts: [Account]

@@ -71,7 +71,7 @@ extension NSOutlineView
   {
     let index = column(withIdentifier: id)
     guard index >= 0
-      else { return nil }
+    else { return nil }
     
     return tableColumns[index]
   }
@@ -94,7 +94,7 @@ extension NSTextField
   var isTruncated: Bool
   {
     guard let expansionRect = cell?.expansionFrame(withFrame: frame, in: self)
-      else { return false }
+    else { return false }
     
     return expansionRect != NSRect.zero
   }
@@ -106,7 +106,7 @@ extension NSTabView
   {
     let index = indexOfTabViewItem(withIdentifier: identifier)
     guard index != NSNotFound
-      else { return nil }
+    else { return nil }
     
     return tabViewItem(at: index)
   }
@@ -123,7 +123,7 @@ extension NSTableView
   func scrollRowToCenter(_ row: Int)
   {
     guard let viewRect = superview?.frame
-      else { return }
+    else { return }
     let rowRect = rect(ofRow: row)
     var scrollOrigin = rowRect.origin
     
@@ -166,7 +166,7 @@ extension NSSplitView
   func subviewLength(_ index: Int) -> CGFloat
   {
     guard index <= subviews.count
-      else { return 0 }
+    else { return 0 }
     let size = subviews[index].frame.size
     
     return isVertical ? size.width : size.height
@@ -178,7 +178,7 @@ extension NSValidatedUserInterfaceItem
   var isContextMenuItem: Bool
   {
     guard let item = self as? NSMenuItem
-      else { return false }
+    else { return false }
     
     return item.parent == nil
   }

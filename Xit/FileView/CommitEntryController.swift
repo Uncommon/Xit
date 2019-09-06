@@ -15,12 +15,15 @@ class CommitEntryController: NSViewController
   {
     didSet
     {
-      indexObserver = NotificationCenter.default.addObserver(
-          forName: .XTRepositoryIndexChanged,
-          object: repo,
-          queue: .main) {
+      observers.addObserver(forName: .XTRepositoryIndexChanged,
+                            object: repo, queue: .main) {
         [weak self] _ in
         self?.updateStagedStatus()
+      }
+      observers.addObserver(forName: .XTRepositoryHeadChanged,
+                            object: repo, queue: .main) {
+        [weak self] _ in
+        self?.resetAmend()
       }
       resetMessage()
     }
@@ -34,7 +37,7 @@ class CommitEntryController: NSViewController
   
   var touchBarAmendButton: NSSegmentedControl!
   
-  var indexObserver: NSObjectProtocol?
+  let observers = ObserverCollection()
   
   var repoController: RepositoryController?
   {
@@ -73,7 +76,6 @@ class CommitEntryController: NSViewController
   deinit
   {
     NotificationCenter.default.removeObserver(self)
-    indexObserver.map { NotificationCenter.default.removeObserver($0) }
   }
   
   override func awakeFromNib()
@@ -101,8 +103,20 @@ class CommitEntryController: NSViewController
     commitMessage = commitMessageTemplate() ?? ""
   }
   
+  func resetAmend()
+  {
+    guard UserDefaults.standard.resetAmend
+    else { return }
+    
+    amendChcekbox.boolValue = false
+    touchBarAmendButton.setSelected(false, forSegment: 0)
+    repoController?.isAmending = false
+  }
+  
   override func viewDidLoad()
   {
+    super.viewDidLoad()
+    
     // The editor doesn't allow setting the font of an empty text view.
     commitField.font = placeholder.font
   }
@@ -111,6 +125,7 @@ class CommitEntryController: NSViewController
   {
     updateStagedStatus()
     updateCommitButton()
+    amendChcekbox.boolValue = repoController?.isAmending ?? false
   }
   
   @IBAction
@@ -120,6 +135,7 @@ class CommitEntryController: NSViewController
       try repo.commit(message: commitField.string,
                       amend: repoController?.isAmending ?? false)
       resetMessage()
+      resetAmend()
     }
     catch {
       let alert = NSAlert(error: error as NSError)
