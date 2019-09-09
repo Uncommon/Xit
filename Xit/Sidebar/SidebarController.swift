@@ -249,18 +249,22 @@ class SidebarController: NSViewController, SidebarHandler
        let menuNib = NSNib(nibNamed: "Sidebar Menus", bundle: nil) {
       menuNib.instantiate(withOwner: self, topLevelObjects: nil)
     }
-    
+  }
+  
+  override func viewWillAppear()
+  {
     let repoController = view.window!.windowController as! XTWindowController
     
-    observers.addObserver(
-        forName: .XTSelectedModelChanged,
-        object: repoController, queue: .main) {
-      [weak self] (_) in
-      self?.selectedModelChanged()
-    }
-    amendingObserver = repoController.observe(\.isAmending) {
-      [weak self] (controller, _) in
-      self?.sidebarDS.setAmending(controller.isAmending)
+    if amendingObserver == nil {
+      amendingObserver = repoController.observe(\.isAmending) {
+        [weak self] (controller, _) in
+        self?.sidebarDS.setAmending(controller.isAmending)
+      }
+      observers.addObserver(forName: .XTSelectedModelChanged,
+                            object: repoController, queue: .main) {
+        [weak self] (_) in
+        self?.selectedModelChanged()
+      }
     }
   }
   

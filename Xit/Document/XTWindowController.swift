@@ -17,8 +17,8 @@ protocol RepositoryController: AnyObject
 class XTWindowController: NSWindowController, NSWindowDelegate,
                           RepositoryController
 {
+  var splitViewController: NSSplitViewController!
   @IBOutlet var sidebarController: SidebarController!
-  @IBOutlet weak var mainSplitView: NSSplitView!
   
   var historyController: HistoryViewController!
   weak var xtDocument: XTDocument?
@@ -95,7 +95,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   var navigating = false
   var sidebarHidden: Bool
   {
-    return mainSplitView.isSubviewCollapsed(mainSplitView.subviews[0])
+    return splitViewController.splitViewItems[0].isCollapsed
   }
   var savedSidebarWidth: CGFloat = 180
   var historyAutoCollapsed = false
@@ -111,7 +111,28 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   {
     didSet
     {
+      guard document != nil
+      else { return }
+      
       xtDocument = document as! XTDocument?
+      
+      guard let repo = xtDocument?.repository
+      else { return }
+      
+      refsChangedObserver = NotificationCenter.default.addObserver(
+          forName: .XTRepositoryRefsChanged,
+          object: repo, queue: .main) {
+        [weak self] _ in
+        self?.updateBranchList()
+      }
+      repoObserver = repo.observe(\.currentBranch) {
+        [weak self] (_, _) in
+        self?.titleBarController?.selectedBranch = repo.currentBranch
+        self?.updateMiniwindowTitle()
+      }
+      sidebarController.repo = repo
+      historyController.finishLoad(repository: repo)
+      configureTitleBarController(repository: repo)
     }
   }
   
@@ -124,26 +145,17 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     Signpost.event(.windowControllerLoad)
     window.titleVisibility = .hidden
     window.delegate = self
+    splitViewController = contentViewController as? NSSplitViewController
+    sidebarController = splitViewController.splitViewItems[0].viewController
+        as? SidebarController
     historyController = HistoryViewController()
-    mainSplitView.addArrangedSubview(historyController.view)
-    mainSplitView.removeArrangedSubview(mainSplitView.arrangedSubviews[1])
+    splitViewController.removeSplitViewItem(splitViewController.splitViewItems[1])
+    splitViewController.addSplitViewItem(
+        NSSplitViewItem(viewController: historyController))
     window.makeFirstResponder(historyController.historyTable)
     
-    let repo = xtDocument!.repository!
-    
-    refsChangedObserver = NotificationCenter.default.addObserver(
-        forName: .XTRepositoryRefsChanged,
-        object: repo, queue: .main) {
-      [weak self] _ in
-      self?.updateBranchList()
-    }
     windowObserver = window.observe(\.title) {
       [weak self] (_, _) in
-      self?.updateMiniwindowTitle()
-    }
-    repoObserver = repo.observe(\.currentBranch) {
-      [weak self] (_, _) in
-      self?.titleBarController?.selectedBranch = repo.currentBranch
       self?.updateMiniwindowTitle()
     }
     deemphasizeObserver = UserDefaults.standard.observe(\.deemphasizeMerges) {
@@ -167,8 +179,6 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       self.titleBarController?.searchButton.isEnabled = !collapsed
       self.titleBarController?.updateViewControls()
     }
-    sidebarController.repo = repo
-    historyController.finishLoad(repository: repo)
     updateMiniwindowTitle()
     updateNavButtons()
   }
@@ -365,20 +375,6 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   }
 }
 
-// MARK: NSSplitViewDelegate
-extension XTWindowController: NSSplitViewDelegate
-{
-  func splitView(_ splitView: NSSplitView,
-                 shouldAdjustSizeOfSubview view: NSView) -> Bool
-  {
-    if (splitView == mainSplitView) &&
-       (view == mainSplitView.arrangedSubviews[0]) {
-      return false
-    }
-    return true
-  }
-}
-
 // MARK: XTTitleBarDelegate
 extension XTWindowController: TitleBarDelegate
 {
@@ -430,10 +426,6 @@ extension XTWindowController: NSToolbarDelegate
     
     let viewController = TitleBarViewController(nibName: .titleBarNib,
                                                 bundle: nil)
-    let repository = xtDocument!.repository!
-    let inverseBindingOptions =
-        [NSBindingOption.valueTransformerName:
-         NSValueTransformerName.negateBooleanTransformerName]
 
     titleBarController = viewController
     item.view = viewController.view
@@ -443,6 +435,16 @@ extension XTWindowController: NSToolbarDelegate
                                    to: window! as NSWindow,
                                    withKeyPath: #keyPath(NSWindow.title),
                                    options: nil)
+    viewController.spinner.startAnimation(nil)
+  }
+  
+  func configureTitleBarController(repository: XTRepository)
+  {
+    let viewController: TitleBarViewController = titleBarController!
+    let inverseBindingOptions =
+        [NSBindingOption.valueTransformerName:
+         NSValueTransformerName.negateBooleanTransformerName]
+
     viewController.proxyIcon.bind(NSBindingName.hidden,
                                   to: repository.queue,
                                   withKeyPath: #keyPath(TaskQueue.busy),
@@ -451,9 +453,8 @@ extension XTWindowController: NSToolbarDelegate
                         to: repository.queue,
                         withKeyPath: #keyPath(TaskQueue.busy),
                         options: inverseBindingOptions)
-    viewController.spinner.startAnimation(nil)
-    updateBranchList()
     viewController.selectedBranch = repository.currentBranch
     viewController.observe(repository: repository)
+    updateBranchList()
   }
 }

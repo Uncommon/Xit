@@ -45,8 +45,11 @@
 
 - (void)makeWindowControllers
 {
-  XTWindowController *controller =
-      [[XTWindowController alloc] initWithWindowNibName:@"XTDocument"];
+  NSStoryboard *storyboard = [NSStoryboard storyboardWithName:@"XTDocument"
+                                                       bundle:nil];
+  
+  XTWindowController *controller = (XTWindowController*)
+      [storyboard instantiateInitialController];
 
   [self addWindowController:controller];
 }

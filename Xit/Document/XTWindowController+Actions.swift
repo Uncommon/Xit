@@ -12,18 +12,10 @@ extension XTWindowController
   @IBAction
   func showHideSidebar(_ sender: AnyObject)
   {
-    let sidebarPane = mainSplitView.subviews[0]
-    let isCollapsed = sidebarHidden
-    let newWidth = isCollapsed
-                   ? savedSidebarWidth
-                   : mainSplitView.minPossiblePositionOfDivider(at: 0)
+    let wasCollapsed = splitViewController.splitViewItems[0].isCollapsed
     
-    if !isCollapsed {
-      savedSidebarWidth = sidebarPane.frame.size.width
-    }
-    mainSplitView.setPosition(newWidth, ofDividerAt: 0)
-    sidebarPane.isHidden = !isCollapsed
-    titleBarController!.viewControls.setSelected(sidebarHidden, forSegment: 0)
+    splitViewController.splitViewItems[0].isCollapsed = !wasCollapsed
+    titleBarController!.viewControls.setSelected(!wasCollapsed, forSegment: 0)
   }
   
   @IBAction

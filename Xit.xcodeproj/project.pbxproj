@@ -45,6 +45,7 @@
 		C9004650211501CB00706029 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C900464F211501CB00706029 /* Colors.swift */; };
 		C9065F4E20FCFA8B00C01110 /* RefType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9065F4D20FCFA8B00C01110 /* RefType.swift */; };
 		C9065F6020FFE1D900C01110 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9065F5F20FFE1D900C01110 /* Notifications.swift */; };
+		C90703752326C944002DF393 /* XTDocument.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C90703742326C944002DF393 /* XTDocument.storyboard */; };
 		C9088CC722BA8BC500DB4A02 /* BuildStatusControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9088CC622BA8BC500DB4A02 /* BuildStatusControllerTest.swift */; };
 		C90A09F722F4E55100B42EFE /* RefName.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90A09F622F4E55100B42EFE /* RefName.swift */; };
 		C90B4EB11FE86A9900277B13 /* GiRevWalk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90B4EB01FE86A9900277B13 /* GiRevWalk.swift */; };
@@ -427,6 +428,7 @@
 		C900464F211501CB00706029 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		C9065F4D20FCFA8B00C01110 /* RefType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefType.swift; sourceTree = "<group>"; };
 		C9065F5F20FFE1D900C01110 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
+		C90703742326C944002DF393 /* XTDocument.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = XTDocument.storyboard; sourceTree = "<group>"; };
 		C9088CC622BA8BC500DB4A02 /* BuildStatusControllerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildStatusControllerTest.swift; sourceTree = "<group>"; };
 		C90A09F622F4E55100B42EFE /* RefName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefName.swift; sourceTree = "<group>"; };
 		C90B4EB01FE86A9900277B13 /* GiRevWalk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiRevWalk.swift; sourceTree = "<group>"; };
@@ -964,6 +966,7 @@
 				C3FA471213D0F8E200AC4F9B /* XTDocument.h */,
 				C3FA471313D0F8E200AC4F9B /* XTDocument.m */,
 				C3FA471513D0F8E200AC4F9B /* XTDocument.xib */,
+				C90703742326C944002DF393 /* XTDocument.storyboard */,
 				C9E9A37C1D0B5706007BFABF /* XTWindowController.swift */,
 				C9BF41171EA11AAC00028C84 /* XTWindowController+Actions.swift */,
 				C959CDD61F859BFE00C1E282 /* XTWindowController+TouchBar.swift */,
@@ -1289,6 +1292,7 @@
 				C98925C71DB693CC00E5645C /* TagPanelController.xib in Resources */,
 				C9BD02FD226A278900172C0B /* MainMenu.xib in Resources */,
 				C9FE06C720178A8C0001EB2B /* FileListView.xib in Resources */,
+				C90703752326C944002DF393 /* XTDocument.storyboard in Resources */,
 				C3FA471713D0F8E200AC4F9B /* XTDocument.xib in Resources */,
 				C9790D1020F537E10024D3EA /* CheckOutRemote.xib in Resources */,
 				C94154A11ED4ECF40030E481 /* BuildStatusViewController.xib in Resources */,
