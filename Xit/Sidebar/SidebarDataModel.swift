@@ -1,5 +1,6 @@
 import Foundation
 
+/// Contains the items listed in the sidebar
 class SidebarDataModel
 {
   typealias Repository = FileChangesRepo & // For creating selection objects
@@ -11,6 +12,11 @@ class SidebarDataModel
   private(set) weak var repository: Repository?
   private(set) weak var outline: NSOutlineView?
   var roots: [SideBarGroupItem] = []
+  { didSet { applyFilter() } }
+  var filteredRoots: [SideBarGroupItem] = []
+
+  var filterString: String? = nil
+  { didSet { applyFilter() } }
 
   var stagingItem: SidebarItem { return roots[0].children[0] }
   
@@ -34,9 +40,55 @@ class SidebarDataModel
     roots = makeRoots()
   }
   
+  func applyFilter()
+  {
+    filteredRoots.removeAll()
+    for (index, root) in roots.enumerated() {
+      switch XTGroupIndex(rawValue: index) {
+        case .workspace?, .stashes?, .submodules?:
+          filteredRoots.append(root)
+        case .branches?, .tags?:
+          filteredRoots.append(filter(root: root))
+        case .remotes?:
+          let newRemotes = SideBarGroupItem(titleString: .remotes)
+        
+          for remote in root.children {
+            newRemotes.children.append(filter(root: remote))
+          }
+          filteredRoots.append(newRemotes)
+        default:
+          continue
+      }
+    }
+  }
+  
+  func filter<T>(root: T) -> T where T: SidebarItem
+  {
+    guard let filterString = self.filterString
+    else { return root }
+    let copy = root.shallowCopy()
+    
+    for child in root.children {
+      if child.children.isEmpty {
+        if child.displayTitle.rawValue.contains(filterString) {
+          copy.children.append(child)
+        }
+      }
+      else {
+        copy.children.append(filter(root: child))
+      }
+    }
+    return copy
+  }
+  
   func rootItem(_ index: XTGroupIndex) -> SideBarGroupItem
   {
     return roots[index.rawValue]
+  }
+  
+  func filteredItem(_ index: XTGroupIndex) -> SideBarGroupItem
+  {
+    return filteredRoots[index.rawValue]
   }
   
   func item(forBranchName branch: String) -> LocalBranchSidebarItem?
@@ -135,7 +187,6 @@ class SidebarDataModel
           RemoteSidebarItem(title: $0, repository: repo) }
     let remoteBranches = repo.remoteBranches.sorted { $0.name <~ $1.name }
 
-
     for branch in remoteBranches {
       guard let remote = remoteItems.first(where: { $0.title ==
                                                     branch.remoteName }),
@@ -148,8 +199,8 @@ class SidebarDataModel
       let remoteParent = parent(for: name, groupItem: remote)
       
       remoteParent.children.append(RemoteBranchSidebarItem(title: name,
-                                                      remote: remoteName,
-                                                      selection: selection))
+                                                           remote: remoteName,
+                                                           selection: selection))
     }
     
     Signpost.interval(.loadTags) {

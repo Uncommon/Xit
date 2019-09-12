@@ -15,7 +15,7 @@ class SidebarItem: NSObject
   var editable: Bool { return false }
   var current: Bool { return false }
   
-  init(title: String)
+  required init(title: String)
   {
     self.title = title
     self.children = []
@@ -27,6 +27,11 @@ class SidebarItem: NSObject
   {
     self.init(title: title)
     self.selection = selection
+  }
+  
+  func shallowCopy() -> Self
+  {
+    return type(of: self).init(title: title)
   }
   
   func child(matching title: String) -> SidebarItem?
@@ -77,6 +82,8 @@ class SideBarGroupItem: SidebarItem
     super.init(title: titleString.rawValue)
   }
   
+  required init(title: String) { super.init(title: title) }
+  
   override var isSelectable: Bool { return false }
   override var expandable: Bool { return true }
 }
@@ -89,6 +96,8 @@ class StagingSidebarItem: SidebarItem
     super.init(title: titleString.rawValue)
   }
   
+  required init(title: String) { super.init(title: title) }
+
   override var icon: NSImage?
   {
     return NSImage(named: .xtStagingTemplate)
@@ -189,6 +198,12 @@ class RemoteBranchSidebarItem: BranchSidebarItem
     self.selection = selection
   }
   
+  required init(title: String)
+  {
+    self.remoteName = ""
+    super.init(title: title)
+  }
+
   override func branchObject() -> Branch?
   {
     return selection!.repository.remoteBranch(named: title, remote: remoteName)
@@ -236,6 +251,12 @@ class RemoteSidebarItem: SidebarItem
     
     super.init(title: title)
   }
+  
+  required init(title: String)
+  {
+    self.remote = nil
+    super.init(title: title)
+  }
 }
 
 
@@ -263,6 +284,21 @@ class TagSidebarItem: SidebarItem
                                        commit: commit)
     }
   }
+  
+  // Not used, but required
+  required init(title: String)
+  {
+    self.tag = MockTag()
+    super.init(title: title)
+  }
+
+  private struct MockTag: Tag
+  {
+    let name = ""
+    let targetOID: OID? = nil
+    let commit: Commit? = nil
+    let message: String? = nil
+  }
 }
 
 extension TagSidebarItem: RefSidebarItem
@@ -283,5 +319,22 @@ class SubmoduleSidebarItem: SidebarItem
     self.submodule = submodule
     
     super.init(title: submodule.name)
+  }
+  
+  required init(title: String)
+  {
+    self.submodule = MockSubmodule()
+    super.init(title: title)
+  }
+  
+  private class MockSubmodule: Submodule
+  {
+    let name = ""
+    let path = ""
+    let url: URL? = nil
+    
+    var ignoreRule: SubmoduleIgnore = .none
+    var updateStrategy: SubmoduleUpdate = .none
+    var recurse: SubmoduleRecurse = .no
   }
 }

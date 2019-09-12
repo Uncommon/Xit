@@ -5,8 +5,8 @@ class FakeRepo: FakeFileChangesRepo, TaskManagement
 {
   let localBranch1 = FakeLocalBranch(name: "branch1")
   let localBranch2 = FakeLocalBranch(name: "branch2")
-  let remoteBranch1 = FakeRemoteBranch(name: "origin1/branch1")
-  let remoteBranch2 = FakeRemoteBranch(name: "origin2/branch2")
+  let remoteBranch1 = FakeRemoteBranch(remoteName: "origin1", name: "branch1")
+  let remoteBranch2 = FakeRemoteBranch(remoteName: "origin2", name: "branch2")
   
   let remote1 = FakeRemote()
   let remote2 = FakeRemote()
@@ -14,17 +14,31 @@ class FakeRepo: FakeFileChangesRepo, TaskManagement
   let queue = TaskQueue(id: "test")
   var isWriting: Bool { return false }
   
+  var commits: [StringOID: FakeCommit] = [:]
+  
   override init()
   {
+    self.remote1.name = "origin1"
+    self.remote2.name = "origin2"
     self.localBranch1.trackingBranchName = remoteBranch1.name
     self.localBranch1.trackingBranch = remoteBranch1
     self.localBranch2.trackingBranchName = remoteBranch2.name
     self.localBranch2.trackingBranch = remoteBranch2
-    self.remoteBranch1.remoteName = "remote1"
-    self.remoteBranch2.remoteName = "remote2"
+    self.remoteBranch1.remoteName = remote1.name
+    self.remoteBranch2.remoteName = remote2.name
     
     super.init()
     
+    let commit1 = FakeCommit(branchHead: localBranch1)
+    let commit2 = FakeCommit(branchHead: localBranch2)
+    let commitR1 = FakeCommit(branchHead: remoteBranch1)
+    let commitR2 = FakeCommit(branchHead: remoteBranch2)
+
+    commits[commit1.oid as! StringOID] = commit1
+    commits[commit2.oid as! StringOID] = commit2
+    commits[commitR1.oid as! StringOID] = commitR1
+    commits[commitR2.oid as! StringOID] = commitR2
+
     remote1.name = "remote1"
     remote1.urlString = "https://example.com/repo1.git"
     
@@ -72,9 +86,17 @@ extension FakeRepo: Branching
 
 extension FakeRepo: CommitStorage
 {
-  func oid(forSHA sha: String) -> OID? { return nil }
-  func commit(forSHA sha: String) -> Commit? { return nil }
-  func commit(forOID oid: OID) -> Commit? { return nil }
+  func oid(forSHA sha: String) -> OID? { return StringOID(sha: sha) }
+  
+  func commit(forSHA sha: String) -> Commit?
+  {
+    return commits[StringOID(sha: sha)]
+  }
+  
+  func commit(forOID oid: OID) -> Commit?
+  {
+    return (oid as? StringOID).flatMap { commits[$0] }
+  }
   
   func commit(message: String, amend: Bool) throws {}
   
