@@ -41,7 +41,7 @@ class SideBarDataSource: NSObject
         [weak self] (_) in
         guard let self = self
         else { return }
-        self.outline.reloadItem(self.model.rootItem(.branches),
+        self.outline.reloadItem(self.model.filteredItem(.branches),
                                 reloadChildren: true)
       }
       observers.addObserver(forName: .XTRepositoryConfigChanged,
@@ -88,9 +88,9 @@ class SideBarDataSource: NSObject
   
   private func getExpansions() -> ExpansionCache
   {
-    let localItem = model.rootItem(.branches)
-    let remotesItem = model.rootItem(.remotes)
-    let tagsItem = model.rootItem(.tags)
+    let localItem = model.filteredItem(.branches)
+    let remotesItem = model.filteredItem(.remotes)
+    let tagsItem = model.filteredItem(.tags)
 
     return ExpansionCache(localBranches: expandedChildNames(of: localItem),
                           remoteBranches: expandedChildNames(of: remotesItem),
@@ -140,9 +140,9 @@ class SideBarDataSource: NSObject
   
   private func restoreExpandedItems(_ expanded: ExpansionCache)
   {
-    let localItem = model.rootItem(.branches)
-    let remotesItem = model.rootItem(.remotes)
-    let tagsItem = model.rootItem(.tags)
+    let localItem = model.filteredItem(.branches)
+    let remotesItem = model.filteredItem(.remotes)
+    let tagsItem = model.filteredItem(.tags)
 
     for localBranch in expanded.localBranches {
       if let branchItem = localItem.child(atPath: localBranch) {
@@ -164,7 +164,7 @@ class SideBarDataSource: NSObject
   func showItem(branchName: String)
   {
     let parts = branchName.components(separatedBy: "/")
-    var parent: SidebarItem = model.rootItem(.branches)
+    var parent: SidebarItem = model.filteredItem(.branches)
     
     for part in parts {
       guard let child = parent.child(matching: part)
@@ -207,7 +207,7 @@ class SideBarDataSource: NSObject
   
   func stashChanged()
   {
-    let stashesGroup = model.rootItem(.stashes)
+    let stashesGroup = model.filteredItem(.stashes)
 
     stashesGroup.children = model.makeStashItems()
     outline.reloadItem(stashesGroup, reloadChildren: true)
@@ -234,7 +234,7 @@ class SideBarDataSource: NSObject
   
   func selectCurrentBranch()
   {
-    _ = selectCurrentBranch(in: model.rootItem(.branches))
+    _ = selectCurrentBranch(in: model.filteredItem(.branches))
   }
   
   private func selectCurrentBranch(in parent: SidebarItem) -> Bool
@@ -287,10 +287,14 @@ extension SideBarDataSource: NSOutlineViewDataSource
   public func outlineView(_ outlineView: NSOutlineView,
                           numberOfChildrenOfItem item: Any?) -> Int
   {
-    if item == nil {
-      return model?.roots.count ?? 0
+    switch item {
+      case nil:
+        return model?.filteredRoots.count ?? 0
+      case let sidebarItem as SidebarItem:
+        return sidebarItem.children.count
+      default:
+        return 0
     }
-    return (item as? SidebarItem)?.children.count ?? 0
   }
   
   public func outlineView(_ outlineView: NSOutlineView,
@@ -304,7 +308,7 @@ extension SideBarDataSource: NSOutlineViewDataSource
                           ofItem item: Any?) -> Any
   {
     if item == nil {
-      return model.roots[index]
+      return model.filteredRoots[index]
     }
     
     guard let sidebarItem = item as? SidebarItem,

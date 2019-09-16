@@ -42,13 +42,19 @@ class SidebarDataModel
   
   func applyFilter()
   {
+    guard filterString != nil
+    else {
+      filteredRoots = roots
+      return
+    }
+    
     filteredRoots.removeAll()
     for (index, root) in roots.enumerated() {
       switch XTGroupIndex(rawValue: index) {
         case .workspace?, .stashes?, .submodules?:
           filteredRoots.append(root)
         case .branches?, .tags?:
-          filteredRoots.append(filter(root: root))
+          filteredRoots.append(filter(root: root) as! SideBarGroupItem)
         case .remotes?:
           let newRemotes = SideBarGroupItem(titleString: .remotes)
         
@@ -62,16 +68,15 @@ class SidebarDataModel
     }
   }
   
-  func filter<T>(root: T) -> T where T: SidebarItem
+  func filter(root: SidebarItem) -> SidebarItem
   {
-    guard let filterString = self.filterString
-    else { return root }
     let copy = root.shallowCopy()
     
     for child in root.children {
       if child.children.isEmpty {
-        if child.displayTitle.rawValue.contains(filterString) {
-          copy.children.append(child)
+        if child.displayTitle.rawValue.range(of: filterString!,
+                                             options: .caseInsensitive) != nil {
+          copy.children.append(child.shallowCopy())
         }
       }
       else {
@@ -88,7 +93,9 @@ class SidebarDataModel
   
   func filteredItem(_ index: XTGroupIndex) -> SideBarGroupItem
   {
-    return filteredRoots[index.rawValue]
+    // This can get called before filteredRoots is properly set
+    return filteredRoots.isEmpty ? roots[index.rawValue]
+                                 : filteredRoots[index.rawValue]
   }
   
   func item(forBranchName branch: String) -> LocalBranchSidebarItem?

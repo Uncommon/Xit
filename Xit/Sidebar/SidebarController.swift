@@ -448,6 +448,27 @@ class SidebarController: NSViewController, SidebarHandler
   }
 }
 
+extension SidebarController: SidebarBottomDelegate
+{
+  func updateFilter(string: String?)
+  {
+    model.filterString = string
+    sidebarOutline.reloadData()
+  }
+  
+  func newBranch()
+  {
+  }
+  
+  func newRemote()
+  {
+  }
+  
+  func newTag()
+  {
+  }
+}
+
 extension SidebarController: NSMenuItemValidation
 {
   func validateMenuItem(_ menuItem: NSMenuItem) -> Bool

@@ -13,6 +13,16 @@ struct FakeCommit: Commit
   var oid: OID
 }
 
+extension FakeCommit
+{
+  init(branchHead branch: Branch)
+  {
+    self.parentOIDs = []
+    self.message = branch.shortName
+    self.oid = branch.oid!
+  }
+}
+
 class FakeRemote: Remote
 {
   var name: String?
@@ -84,7 +94,8 @@ class FakePRService : PullRequestService
   }
   
   func unapprove(request: PullRequest, onSuccess: @escaping () -> Void,
-                 onFailure: @escaping (Siesta.RequestError) -> Void) {
+                 onFailure: @escaping (Siesta.RequestError) -> Void)
+  {
     onSuccess()
   }
   
@@ -112,7 +123,8 @@ class FakeLocalBranch: LocalBranch
   
   init(name: String)
   {
-    self.name = name
+    self.name = RefPrefixes.heads +/ name
+    self.oid = StringOID(sha: UUID().uuidString)
   }
 }
 
@@ -125,9 +137,11 @@ class FakeRemoteBranch: RemoteBranch
   var oid: OID?
   var targetCommit: Commit?
   
-  init(name: String)
+  init(remoteName: String, name: String)
   {
-    self.name = name
+    self.name = RefPrefixes.remotes +/ remoteName +/ name
+    self.remoteName = remoteName
+    self.oid = StringOID(sha: UUID().uuidString)
   }
 }
 
