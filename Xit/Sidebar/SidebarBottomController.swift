@@ -15,18 +15,23 @@ class SidebarBottomController: NSViewController
   @IBOutlet weak var searchField: NSSearchField!
   
   @IBOutlet weak var delegate: SidebarBottomDelegate?
+  
+  func updateSearh()
+  {
+    delegate?.updateFilter(string: searchField.stringValue.nilIfEmpty)
+  }
 }
 
 extension SidebarBottomController: NSSearchFieldDelegate
 {
   func searchFieldDidStartSearching(_ sender: NSSearchField)
   {
-    delegate?.updateFilter(string: searchField.stringValue.nilIfEmpty)
+    updateSearh()
   }
   
   func searchFieldDidEndSearching(_ sender: NSSearchField)
   {
-    delegate?.updateFilter(string: searchField.stringValue.nilIfEmpty)
+    updateSearh()
   }
 }
 

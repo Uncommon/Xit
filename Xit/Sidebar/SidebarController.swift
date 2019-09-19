@@ -453,7 +453,7 @@ extension SidebarController: SidebarBottomDelegate
   func updateFilter(string: String?)
   {
     model.filterString = string
-    sidebarOutline.reloadData()
+    reload()
   }
   
   func newBranch()

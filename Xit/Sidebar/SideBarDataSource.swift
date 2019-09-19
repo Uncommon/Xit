@@ -52,6 +52,7 @@ class SideBarDataSource: NSObject
       reload()
     }
   }
+  var lastItemList: [SideBarGroupItem] = []
   var stagingItem: SidebarItem { return model.stagingItem }
   
   var reloadTimer: Timer?
@@ -116,26 +117,66 @@ class SideBarDataSource: NSObject
   private func afterReload(_ newRoots: [SideBarGroupItem],
                            expanded: ExpansionCache)
   {
+    if lastItemList.isEmpty {
+      lastItemList = newRoots
+      model.roots = newRoots
+      outline.reloadData()
+      for rootItem in model.roots {
+        outline.expandItem(rootItem)
+      }
+      for remoteItem in model.rootItem(.remotes).children {
+        outline.expandItem(remoteItem)
+      }
+      if let currentBranch = repository.currentBranch,
+        currentBranch.contains("/") {
+        showItem(branchName: currentBranch)
+      }
+    }
+    else {
+      applyChanges(newRoots: newRoots)
+    }
+    
     let selection = outline.item(atRow: outline.selectedRow)
                     as? SidebarItem
     
-    model.roots = newRoots
-    outline.reloadData()
-    for rootItem in model.roots {
-      outline.expandItem(rootItem)
-    }
-    for remoteItem in model.rootItem(.remotes).children {
-      outline.expandItem(remoteItem)
-    }
-    if let currentBranch = repository.currentBranch,
-       currentBranch.contains("/") {
-      showItem(branchName: currentBranch)
-    }
     if outline.numberOfSelectedRows == 0  &&
        !(selection.map({ select(item: $0) }) ?? false) {
       selectCurrentBranch()
     }
-    restoreExpandedItems(expanded)
+  }
+  
+  private func applyChanges(newRoots: [SideBarGroupItem])
+  {
+    let filteredRoots = model.filter(roots: newRoots)
+    
+    outline.beginUpdates()
+    model.roots = newRoots
+    // Skip the first items because Workspace won't change
+    for (oldGroup, newGroup) in zip(lastItemList.dropFirst(),
+                                    filteredRoots.dropFirst()) {
+      applyNewContents(oldRoot: oldGroup, newRoot: newGroup)
+    }
+    outline.endUpdates()
+    lastItemList = filteredRoots
+  }
+  
+  private func applyNewContents(oldRoot: SidebarItem, newRoot: SidebarItem)
+  {
+    let oldItems = oldRoot.children
+    let newItems = newRoot.children
+    let removedIndices = oldItems.indices { !newItems.containsEqualObject($0) }
+    let addedIndices = newItems.indices { !oldItems.containsEqualObject($0) }
+    
+    outline.removeItems(at: removedIndices, inParent: oldRoot,
+                        withAnimation: .effectFade)
+    outline.insertItems(at: addedIndices, inParent: oldRoot,
+                        withAnimation: .effectFade)
+    for oldItem in oldItems where oldItem.expandable &&
+                                  outline.isItemExpanded(oldItem) {
+      if let newItem = newItems.first(where: { $0 == oldItem }) {
+        applyNewContents(oldRoot: oldItem, newRoot: newItem)
+      }
+    }
   }
   
   private func restoreExpandedItems(_ expanded: ExpansionCache)

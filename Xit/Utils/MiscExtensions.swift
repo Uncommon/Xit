@@ -164,8 +164,15 @@ extension URL
   }
 }
 
-extension Array
+extension Sequence where Element: NSObject
 {
+  /// Returns true if the sequence contains an object where `isEqual`
+  /// returns true.
+  func containsEqualObject(_ object: NSObject) -> Bool
+  {
+    return contains { $0.isEqual(object) }
+  }
+  
   /// Returns the number of elements satisfying the predicate.
   func count(where predicate: (Element) -> Bool) -> Int
   {
@@ -174,7 +181,24 @@ extension Array
       return predicate(element) ? count + 1 : count
     }
   }
+}
 
+extension Collection
+{
+  /// Returns the index of each item satisfying the condition.
+  func indices(where condition: (Element) -> Bool) -> IndexSet
+  {
+    return enumerated().reduce(into: IndexSet()) {
+      (indices, pair) in
+      if condition(pair.element) {
+        indices.update(with: pair.offset)
+      }
+    }
+  }
+}
+
+extension Array
+{
   /// Assuming the array is sorted, returns the insertion index for the given
   /// item to be inserted in order.
   func sortedInsertionIndex(of elem: Element,

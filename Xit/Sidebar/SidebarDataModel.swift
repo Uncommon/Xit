@@ -42,30 +42,36 @@ class SidebarDataModel
   
   func applyFilter()
   {
+    filteredRoots = filter(roots: roots)
+  }
+  
+  func filter(roots: [SideBarGroupItem]) -> [SideBarGroupItem]
+  {
+    var result: [SideBarGroupItem] = []
+    
     guard filterString != nil
     else {
-      filteredRoots = roots
-      return
+      return roots
     }
     
-    filteredRoots.removeAll()
     for (index, root) in roots.enumerated() {
       switch XTGroupIndex(rawValue: index) {
         case .workspace?, .stashes?, .submodules?:
-          filteredRoots.append(root)
+          result.append(root)
         case .branches?, .tags?:
-          filteredRoots.append(filter(root: root) as! SideBarGroupItem)
+          result.append(filter(root: root) as! SideBarGroupItem)
         case .remotes?:
           let newRemotes = SideBarGroupItem(titleString: .remotes)
         
           for remote in root.children {
             newRemotes.children.append(filter(root: remote))
           }
-          filteredRoots.append(newRemotes)
+          result.append(newRemotes)
         default:
           continue
       }
     }
+    return result
   }
   
   func filter(root: SidebarItem) -> SidebarItem

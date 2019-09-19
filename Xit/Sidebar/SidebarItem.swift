@@ -86,6 +86,14 @@ class SidebarItem: NSObject
   }
   
   override var description: String { return self.title }
+  
+  override func isEqual(_ object: Any?) -> Bool
+  {
+    guard let otherItem = object as? SidebarItem
+    else { return false }
+    
+    return displayTitle == otherItem.displayTitle
+  }
 }
 
 
@@ -100,6 +108,11 @@ class SideBarGroupItem: SidebarItem
   
   override var isSelectable: Bool { return false }
   override var expandable: Bool { return true }
+  
+  override func isEqual(_ object: Any?) -> Bool
+  {
+    return object is SideBarGroupItem && super.isEqual(object)
+  }
 }
 
 

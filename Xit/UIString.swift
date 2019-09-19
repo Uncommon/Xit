@@ -248,6 +248,14 @@ struct UIString: RawRepresentable
   static let workspaceDirty = ›"There are uncommitted changes."
 }
 
+extension UIString: Comparable
+{
+  static func < (lhs: UIString, rhs: UIString) -> Bool
+  {
+    return lhs.rawValue < rhs.rawValue
+  }
+}
+
 extension NSAlert
 {
   var messageString: UIString
