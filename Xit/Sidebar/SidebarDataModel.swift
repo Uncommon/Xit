@@ -15,7 +15,7 @@ class SidebarDataModel
   { didSet { applyFilter() } }
   var filteredRoots: [SideBarGroupItem] = []
 
-  var filterString: String? = nil
+  var filters: [SidebarItemFilter] = []
   { didSet { applyFilter() } }
 
   var stagingItem: SidebarItem { return roots[0].children[0] }
@@ -47,12 +47,10 @@ class SidebarDataModel
   
   func filter(roots: [SideBarGroupItem]) -> [SideBarGroupItem]
   {
-    var result: [SideBarGroupItem] = []
+    guard !filters.isEmpty
+    else { return roots }
     
-    guard filterString != nil
-    else {
-      return roots
-    }
+    var result: [SideBarGroupItem] = []
     
     for (index, root) in roots.enumerated() {
       switch XTGroupIndex(rawValue: index) {
@@ -80,8 +78,7 @@ class SidebarDataModel
     
     for child in root.children {
       if child.children.isEmpty {
-        if child.displayTitle.rawValue.range(of: filterString!,
-                                             options: .caseInsensitive) != nil {
+        if filters.allSatisfy({ $0.check(child) }) {
           copy.children.append(child.shallowCopy())
         }
       }

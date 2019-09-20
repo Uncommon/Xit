@@ -164,15 +164,8 @@ extension URL
   }
 }
 
-extension Sequence where Element: NSObject
+extension Sequence
 {
-  /// Returns true if the sequence contains an object where `isEqual`
-  /// returns true.
-  func containsEqualObject(_ object: NSObject) -> Bool
-  {
-    return contains { $0.isEqual(object) }
-  }
-  
   /// Returns the number of elements satisfying the predicate.
   func count(where predicate: (Element) -> Bool) -> Int
   {
@@ -180,6 +173,16 @@ extension Sequence where Element: NSObject
       (count, element) -> Int in
       return predicate(element) ? count + 1 : count
     }
+  }
+}
+
+extension Sequence where Element: NSObject
+{
+  /// Returns true if the sequence contains an object where `isEqual`
+  /// returns true.
+  func containsEqualObject(_ object: NSObject) -> Bool
+  {
+    return contains { $0.isEqual(object) }
   }
 }
 

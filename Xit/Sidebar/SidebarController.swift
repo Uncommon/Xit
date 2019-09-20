@@ -452,7 +452,12 @@ extension SidebarController: SidebarBottomDelegate
 {
   func updateFilter(string: String?)
   {
-    model.filterString = string
+    if let string = string {
+      model.filters = [SidebarNameFilter(string: string)]
+    }
+    else {
+      model.filters.removeAll()
+    }
     reload()
   }
   
