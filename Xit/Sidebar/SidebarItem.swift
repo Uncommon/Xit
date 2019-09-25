@@ -96,6 +96,21 @@ class SidebarItem: NSObject
   }
 }
 
+extension SidebarItem
+{
+  override var debugDescription: String { return displayTitle.rawValue }
+
+  func printTree(_ depth: Int = 0)
+  {
+    let prefix = String(repeating: "  ", count: depth)
+    
+    print("\(prefix)\(debugDescription)")
+    for child in children {
+      child.printTree(depth + 1)
+    }
+  }
+}
+
 
 class SideBarGroupItem: SidebarItem
 {

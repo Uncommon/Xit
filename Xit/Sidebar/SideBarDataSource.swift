@@ -147,17 +147,14 @@ class SideBarDataSource: NSObject
   
   private func applyChanges(newRoots: [SideBarGroupItem])
   {
-    let filteredRoots = model.filter(roots: newRoots)
-    
     outline.beginUpdates()
     model.roots = newRoots
     // Skip the first items because Workspace won't change
     for (oldGroup, newGroup) in zip(lastItemList.dropFirst(),
-                                    filteredRoots.dropFirst()) {
+                                    model.filteredRoots.dropFirst()) {
       applyNewContents(oldRoot: oldGroup, newRoot: newGroup)
     }
     outline.endUpdates()
-    lastItemList = filteredRoots
   }
   
   private func applyNewContents(oldRoot: SidebarItem, newRoot: SidebarItem)
@@ -171,6 +168,8 @@ class SideBarDataSource: NSObject
                         withAnimation: .effectFade)
     outline.insertItems(at: addedIndices, inParent: oldRoot,
                         withAnimation: .effectFade)
+    oldRoot.children.removeObjects(at: removedIndices)
+    oldRoot.children.insert(newItems.objects(at: addedIndices), at: addedIndices)
     for oldItem in oldItems where oldItem.expandable &&
                                   outline.isItemExpanded(oldItem) {
       if let newItem = newItems.first(where: { $0 == oldItem }) {

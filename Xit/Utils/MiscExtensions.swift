@@ -238,6 +238,23 @@ extension Array
                        .map { $0.element }
   }
   
+  mutating func insert<S>(_ elements: S, at indexSet: IndexSet)
+    where S: Sequence, S.Element == Element
+  {
+    for (element, index) in zip(elements, indexSet) {
+      insert(element, at: index)
+    }
+  }
+  
+  mutating func insert<S>(from otherSequence: S, indices: IndexSet)
+    where S: Collection, S.Element == Element, S.Index == Int
+  {
+    // Regular for loop yields IndexSet.Index rather than Int
+    indices.forEach {
+      insert(otherSequence[$0], at: $0)
+    }
+  }
+  
   /// Returns the first non-nil result of calling `predicate` on the array's
   /// elements.
   func firstResult<T>(_ predicate: (Element) -> T?) -> T?
