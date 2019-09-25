@@ -9,11 +9,6 @@ class SideBarDataSource: NSObject
     static let reloadDelay: TimeInterval = 1
   }
   
-  private struct ExpansionCache
-  {
-    let localBranches, remoteBranches, tags: [String]
-  }
-  
   @IBOutlet weak var viewController: SidebarController!
   @IBOutlet weak var outline: NSOutlineView!
   
@@ -74,34 +69,8 @@ class SideBarDataSource: NSObject
     outline.reloadItem(stagingItem)
   }
   
-  private func expandedChildNames(of item: SidebarItem) -> [String]
-  {
-    var result: [String] = []
-    
-    for childItem in item.children {
-      if outline.isItemExpanded(childItem) {
-        result.append(path(for: childItem))
-        result.append(contentsOf: expandedChildNames(of: childItem))
-      }
-    }
-    return result
-  }
-  
-  private func getExpansions() -> ExpansionCache
-  {
-    let localItem = model.filteredItem(.branches)
-    let remotesItem = model.filteredItem(.remotes)
-    let tagsItem = model.filteredItem(.tags)
-
-    return ExpansionCache(localBranches: expandedChildNames(of: localItem),
-                          remoteBranches: expandedChildNames(of: remotesItem),
-                          tags: expandedChildNames(of: tagsItem))
-  }
-  
   func reload()
   {
-    let expanded = getExpansions()
-    
     repository?.queue.executeOffMainThread {
       [weak self] in
       guard let newRoots = Signpost.interval(.sidebarReload,
@@ -109,13 +78,12 @@ class SideBarDataSource: NSObject
       else { return }
 
       DispatchQueue.main.async {
-        self?.afterReload(newRoots, expanded: expanded)
+        self?.afterReload(newRoots)
       }
     }
   }
   
-  private func afterReload(_ newRoots: [SideBarGroupItem],
-                           expanded: ExpansionCache)
+  private func afterReload(_ newRoots: [SideBarGroupItem])
   {
     if lastItemList.isEmpty {
       lastItemList = newRoots
@@ -174,29 +142,6 @@ class SideBarDataSource: NSObject
                                   outline.isItemExpanded(oldItem) {
       if let newItem = newItems.first(where: { $0 == oldItem }) {
         applyNewContents(oldRoot: oldItem, newRoot: newItem)
-      }
-    }
-  }
-  
-  private func restoreExpandedItems(_ expanded: ExpansionCache)
-  {
-    let localItem = model.filteredItem(.branches)
-    let remotesItem = model.filteredItem(.remotes)
-    let tagsItem = model.filteredItem(.tags)
-
-    for localBranch in expanded.localBranches {
-      if let branchItem = localItem.child(atPath: localBranch) {
-        outline.expandItem(branchItem)
-      }
-    }
-    for remoteBranch in expanded.remoteBranches {
-      if let remoteItem = remotesItem.child(atPath: remoteBranch) {
-        outline.expandItem(remoteItem)
-      }
-    }
-    for tag in expanded.tags {
-      if let tagItem = tagsItem.child(atPath: tag) {
-        outline.expandItem(tagItem)
       }
     }
   }
