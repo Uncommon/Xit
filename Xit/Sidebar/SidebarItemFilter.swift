@@ -13,8 +13,10 @@ struct SidebarNameFilter: SidebarItemFilter
   
   func check(_ item: SidebarItem) -> Bool
   {
-    return item.displayTitle.rawValue.range(of: string,
-                                            options: .caseInsensitive) != nil
+    return item.displayTitle
+               .rawValue
+               .range(of: string,
+                      options: [.caseInsensitive, .diacriticInsensitive]) != nil
   }
 }
 
@@ -37,5 +39,54 @@ struct SidebarDateFilter: SidebarItemFilter
       default:
         return true
     }
+  }
+}
+
+struct SidebarFilterSet
+{
+  var filters: [SidebarItemFilter]
+  
+  func apply(to roots: [SideBarGroupItem]) -> [SideBarGroupItem]
+  {
+    guard !filters.isEmpty
+    else { return roots }
+    
+    var result: [SideBarGroupItem] = []
+    
+    for (index, root) in roots.enumerated() {
+      switch XTGroupIndex(rawValue: index) {
+        case .workspace?, .stashes?, .submodules?:
+          result.append(root)
+        case .branches?, .tags?:
+          result.append(filter(root: root) as! SideBarGroupItem)
+        case .remotes?:
+          let newRemotes = SideBarGroupItem(titleString: .remotes)
+        
+          for remote in root.children {
+            newRemotes.children.append(filter(root: remote))
+          }
+          result.append(newRemotes)
+        default:
+          continue
+      }
+    }
+    return result
+  }
+  
+  func filter(root: SidebarItem) -> SidebarItem
+  {
+    let copy = root.shallowCopy()
+    
+    for child in root.children {
+      if child.children.isEmpty {
+        if filters.allSatisfy({ $0.check(child) }) {
+          copy.children.append(child.shallowCopy())
+        }
+      }
+      else {
+        copy.children.append(filter(root: child))
+      }
+    }
+    return copy
   }
 }

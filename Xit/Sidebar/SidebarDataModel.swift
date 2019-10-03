@@ -12,11 +12,6 @@ class SidebarDataModel
   private(set) weak var repository: Repository?
   private(set) weak var outline: NSOutlineView?
   var roots: [SideBarGroupItem] = []
-  { didSet { applyFilter() } }
-  var filteredRoots: [SideBarGroupItem] = []
-
-  var filters: [SidebarItemFilter] = []
-  { didSet { applyFilter() } }
 
   var stagingItem: SidebarItem { return roots[0].children[0] }
   
@@ -40,65 +35,9 @@ class SidebarDataModel
     roots = makeRoots()
   }
   
-  func applyFilter()
-  {
-    filteredRoots = filter(roots: roots)
-  }
-  
-  func filter(roots: [SideBarGroupItem]) -> [SideBarGroupItem]
-  {
-    guard !filters.isEmpty
-    else { return roots }
-    
-    var result: [SideBarGroupItem] = []
-    
-    for (index, root) in roots.enumerated() {
-      switch XTGroupIndex(rawValue: index) {
-        case .workspace?, .stashes?, .submodules?:
-          result.append(root)
-        case .branches?, .tags?:
-          result.append(filter(root: root) as! SideBarGroupItem)
-        case .remotes?:
-          let newRemotes = SideBarGroupItem(titleString: .remotes)
-        
-          for remote in root.children {
-            newRemotes.children.append(filter(root: remote))
-          }
-          result.append(newRemotes)
-        default:
-          continue
-      }
-    }
-    return result
-  }
-  
-  func filter(root: SidebarItem) -> SidebarItem
-  {
-    let copy = root.shallowCopy()
-    
-    for child in root.children {
-      if child.children.isEmpty {
-        if filters.allSatisfy({ $0.check(child) }) {
-          copy.children.append(child.shallowCopy())
-        }
-      }
-      else {
-        copy.children.append(filter(root: child))
-      }
-    }
-    return copy
-  }
-  
   func rootItem(_ index: XTGroupIndex) -> SideBarGroupItem
   {
     return roots[index.rawValue]
-  }
-  
-  func filteredItem(_ index: XTGroupIndex) -> SideBarGroupItem
-  {
-    // This can get called before filteredRoots is properly set
-    return filteredRoots.isEmpty ? roots[index.rawValue]
-                                 : filteredRoots[index.rawValue]
   }
   
   func item(forBranchName branch: String) -> LocalBranchSidebarItem?

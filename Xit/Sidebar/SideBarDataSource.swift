@@ -36,7 +36,7 @@ class SideBarDataSource: NSObject
         [weak self] (_) in
         guard let self = self
         else { return }
-        self.outline.reloadItem(self.model.filteredItem(.branches),
+        self.outline.reloadItem(self.displayItem(.branches),
                                 reloadChildren: true)
       }
       observers.addObserver(forName: .XTRepositoryConfigChanged,
@@ -47,7 +47,8 @@ class SideBarDataSource: NSObject
       reload()
     }
   }
-  var lastItemList: [SideBarGroupItem] = []
+  var filterSet: SidebarFilterSet = SidebarFilterSet(filters: [])
+  var displayItemList: [SideBarGroupItem] = []
   var stagingItem: SidebarItem { return model.stagingItem }
   
   var reloadTimer: Timer?
@@ -69,25 +70,41 @@ class SideBarDataSource: NSObject
     outline.reloadItem(stagingItem)
   }
   
+  func displayItem(_ index: XTGroupIndex) -> SideBarGroupItem
+  {
+    return index.rawValue < displayItemList.count ?
+        displayItemList[index.rawValue] :
+        SideBarGroupItem(title: "") // May be needed during initial load
+  }
+  
   func reload()
   {
     repository?.queue.executeOffMainThread {
       [weak self] in
-      guard let newRoots = Signpost.interval(.sidebarReload,
-                                             call: { self?.model.loadRoots() })
-      else { return }
+      // Keep self weak for the dispatch call
+      if let self = self {
+        Signpost.interval(.sidebarReload) {
+          self.model.reload()
+        }
+      }
+      else {
+        return
+      }
 
       DispatchQueue.main.async {
-        self?.afterReload(newRoots)
+        self?.afterReload()
       }
     }
   }
   
-  private func afterReload(_ newRoots: [SideBarGroupItem])
+  private func afterReload()
   {
-    if lastItemList.isEmpty {
-      lastItemList = newRoots
-      model.roots = newRoots
+    if displayItemList.isEmpty {
+      displayItemList = filterSet.apply(to: model.roots)
+      
+      guard let outline = self.outline
+      else { return }
+      
       outline.reloadData()
       for rootItem in model.roots {
         outline.expandItem(rootItem)
@@ -101,7 +118,7 @@ class SideBarDataSource: NSObject
       }
     }
     else {
-      applyChanges(newRoots: newRoots)
+      applyChanges()
     }
     
     let selection = outline.item(atRow: outline.selectedRow)
@@ -113,13 +130,14 @@ class SideBarDataSource: NSObject
     }
   }
   
-  private func applyChanges(newRoots: [SideBarGroupItem])
+  private func applyChanges()
   {
+    let filteredRoots = filterSet.apply(to: model.roots)
+    
     outline.beginUpdates()
-    model.roots = newRoots
     // Skip the first items because Workspace won't change
-    for (oldGroup, newGroup) in zip(lastItemList.dropFirst(),
-                                    model.filteredRoots.dropFirst()) {
+    for (oldGroup, newGroup) in zip(displayItemList.dropFirst(),
+                                    filteredRoots.dropFirst()) {
       applyNewContents(oldRoot: oldGroup, newRoot: newGroup)
     }
     outline.endUpdates()
@@ -149,7 +167,7 @@ class SideBarDataSource: NSObject
   func showItem(branchName: String)
   {
     let parts = branchName.components(separatedBy: "/")
-    var parent: SidebarItem = model.filteredItem(.branches)
+    var parent: SidebarItem = displayItem(.branches)
     
     for part in parts {
       guard let child = parent.child(matching: part)
@@ -192,7 +210,7 @@ class SideBarDataSource: NSObject
   
   func stashChanged()
   {
-    let stashesGroup = model.filteredItem(.stashes)
+    let stashesGroup = displayItem(.stashes)
 
     stashesGroup.children = model.makeStashItems()
     outline.reloadItem(stashesGroup, reloadChildren: true)
@@ -219,7 +237,7 @@ class SideBarDataSource: NSObject
   
   func selectCurrentBranch()
   {
-    _ = selectCurrentBranch(in: model.filteredItem(.branches))
+    _ = selectCurrentBranch(in: displayItem(.branches))
   }
   
   private func selectCurrentBranch(in parent: SidebarItem) -> Bool
@@ -274,7 +292,7 @@ extension SideBarDataSource: NSOutlineViewDataSource
   {
     switch item {
       case nil:
-        return model?.filteredRoots.count ?? 0
+        return displayItemList.count
       case let sidebarItem as SidebarItem:
         return sidebarItem.children.count
       default:
@@ -293,7 +311,7 @@ extension SideBarDataSource: NSOutlineViewDataSource
                           ofItem item: Any?) -> Any
   {
     if item == nil {
-      return model.filteredRoots[index]
+      return displayItemList[index]
     }
     
     guard let sidebarItem = item as? SidebarItem,
