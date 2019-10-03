@@ -13,8 +13,8 @@ class SidebarDataModelTest: XCTestCase
     let repo = FakeRepo()
     let model = SidebarDataModel(repository: repo, outlineView: nil)
     
-    model.roots = model.loadRoots()
-    
+    model.reload()
+
     XCTAssertEqual(model.roots.map { $0.title },
                    ["Workspace", "Branches", "Remotes", "Tags",
                     "Stashes", "Submodules"])
@@ -34,7 +34,7 @@ class SidebarDataModelTest: XCTestCase
     let repo = FakeRepo()
     let model = SidebarDataModel(repository: repo, outlineView: nil)
     
-    model.roots = model.loadRoots()
+    model.reload()
     XCTAssertEqual(model.rootItem(.branches).children.count, 2)
     
     let branchRoot = model.filteredItem(.branches)

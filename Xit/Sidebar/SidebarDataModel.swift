@@ -171,6 +171,11 @@ class SidebarDataModel
     } ?? []
   }
   
+  func reload()
+  {
+    roots = loadRoots()
+  }
+  
   func loadRoots() -> [SideBarGroupItem]
   {
     guard let repo = repository

@@ -21,8 +21,8 @@ class SidebarDelegateTest: XTTest
   {
     XCTAssertTrue(repository.createBranch("b1"))
     
-    model.roots = model.loadRoots()
-    
+    model.reload()
+
     for item in model.roots {
       XCTAssertTrue(sbDelegate.outlineView(outline, isGroupItem: item))
     }
@@ -40,8 +40,8 @@ class SidebarDelegateTest: XTTest
                               targetOID: headOID,
                               message: "msg")
     
-    model.roots = model.loadRoots()
-    
+    model.reload()
+
     let tagItem = model.rootItem(.tags).children[0]
     guard let cell = sbDelegate.outlineView(outline, viewFor: nil, item: tagItem)
                      as? NSTableCellView
@@ -58,8 +58,8 @@ class SidebarDelegateTest: XTTest
     let branchNames = ["b1", "master"]
     
     XCTAssertTrue(repository.createBranch(branchNames[0]))
-    model.roots = model.loadRoots()
-    
+    model.reload()
+
     for (item, name) in zip(model.rootItem(.branches).children, branchNames) {
       guard let cell = sbDelegate.outlineView(outline, viewFor: nil, item: item)
                        as? NSTableCellView
@@ -90,8 +90,8 @@ class SidebarDelegateTest: XTTest
                                                      writes: false))
     XCTAssertNoThrow(try repository.push(remote: "origin"))
     
-    model.roots = model.loadRoots()
-    
+    model.reload()
+
     guard let remoteItem = model.rootItem(.remotes).children.first,
           let branchItem = remoteItem.children.first
     else {

@@ -13,7 +13,7 @@ class PullRequestManagerTest: XCTestCase
     super.setUp()
     
     model = SidebarDataModel(repository: fakeRepo, outlineView: nil)
-    model.roots = model.loadRoots()
+    model.reload()
   }
   
   func testPullRequestForBranch()
