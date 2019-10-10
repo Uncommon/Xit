@@ -220,6 +220,9 @@
 		C9F1B5DE2217247E00293305 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F1B5DD2217247E00293305 /* ViewExtensions.swift */; };
 		C9F1B5F02217264A00293305 /* Nibs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F1B5EF2217264A00293305 /* Nibs.swift */; };
 		C9F1B5F22217293D00293305 /* TeamCityAPI+Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F1B5F12217293D00293305 /* TeamCityAPI+Types.swift */; };
+		C9F20AD02347C8C7002E8603 /* NewBranchOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F20ACF2347C8C7002E8603 /* NewBranchOpController.swift */; };
+		C9F20AE32347DB6F002E8603 /* NewBranchPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F20AE12347DB6F002E8603 /* NewBranchPanelController.swift */; };
+		C9F20AE42347DB6F002E8603 /* NewBranchPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9F20AE22347DB6F002E8603 /* NewBranchPanelController.xib */; };
 		C9F461DE1EF34826007BEBC9 /* BuildStatusCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F461DD1EF34826007BEBC9 /* BuildStatusCellView.swift */; };
 		C9F5331D217A90B800B2432C /* KeychainTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F5331C217A90B800B2432C /* KeychainTest.swift */; };
 		C9F533432183C7B100B2432C /* BasicAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F533322183C7B100B2432C /* BasicAuthService.swift */; };
@@ -609,6 +612,9 @@
 		C9F1B5DD2217247E00293305 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		C9F1B5EF2217264A00293305 /* Nibs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nibs.swift; sourceTree = "<group>"; };
 		C9F1B5F12217293D00293305 /* TeamCityAPI+Types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TeamCityAPI+Types.swift"; sourceTree = "<group>"; };
+		C9F20ACF2347C8C7002E8603 /* NewBranchOpController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewBranchOpController.swift; sourceTree = "<group>"; };
+		C9F20AE12347DB6F002E8603 /* NewBranchPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewBranchPanelController.swift; sourceTree = "<group>"; };
+		C9F20AE22347DB6F002E8603 /* NewBranchPanelController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewBranchPanelController.xib; sourceTree = "<group>"; };
 		C9F461DD1EF34826007BEBC9 /* BuildStatusCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuildStatusCellView.swift; sourceTree = "<group>"; };
 		C9F5331C217A90B800B2432C /* KeychainTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainTest.swift; sourceTree = "<group>"; };
 		C9F533322183C7B100B2432C /* BasicAuthService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicAuthService.swift; sourceTree = "<group>"; };
@@ -994,6 +1000,9 @@
 				C94866B51D256C24000BDB0A /* FetchOpController.swift */,
 				C90FD5941D217D5B00A30570 /* FetchPanelController.swift */,
 				C90FD5951D217D5B00A30570 /* FetchPanelController.xib */,
+				C9F20ACF2347C8C7002E8603 /* NewBranchOpController.swift */,
+				C9F20AE12347DB6F002E8603 /* NewBranchPanelController.swift */,
+				C9F20AE22347DB6F002E8603 /* NewBranchPanelController.xib */,
 				C98925D41DB6D3D300E5645C /* NewTagOpController.swift */,
 				C9BAE6131D3039C500A87F13 /* OperationController.swift */,
 				C936AD0B1D4C0FA900C5ADC3 /* PasswordOpController.swift */,
@@ -1300,6 +1309,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C9BDF4D11D99A7660034841F /* RenameBranchPanelController.xib in Resources */,
+				C9F20AE42347DB6F002E8603 /* NewBranchPanelController.xib in Resources */,
 				89880EED20D17D1E007042F8 /* Media.xcassets in Resources */,
 				C98925C71DB693CC00E5645C /* TagPanelController.xib in Resources */,
 				C9BD02FD226A278900172C0B /* MainMenu.xib in Resources */,
@@ -1476,6 +1486,7 @@
 				C98CAD961F952173005DB419 /* GitDiffDelta.swift in Sources */,
 				C947367A1DEF5CA8000E3A05 /* FileViewController.swift in Sources */,
 				C935BD7E1E8BFA4F00BE51F0 /* DateCellView.swift in Sources */,
+				C9F20AE32347DB6F002E8603 /* NewBranchPanelController.swift in Sources */,
 				C959A7231F6C6974004277CD /* RepositoryProtocols.swift in Sources */,
 				C90B4EB11FE86A9900277B13 /* GiRevWalk.swift in Sources */,
 				C9F1B5DE2217247E00293305 /* ViewExtensions.swift in Sources */,
@@ -1501,6 +1512,7 @@
 				C90FD5961D217D5B00A30570 /* FetchPanelController.swift in Sources */,
 				C9999AC71E08712000DF3E11 /* HistoryTableView.swift in Sources */,
 				C951EAE11DD11BDD00B99FBE /* SidebarTableCellView.swift in Sources */,
+				C9F20AD02347C8C7002E8603 /* NewBranchOpController.swift in Sources */,
 				C986447C208FBD990088209B /* ResponderNotifierWindow.swift in Sources */,
 				C95ECD051EB11E310000DB78 /* WebViewController.swift in Sources */,
 				C92E30FB1D4FF4F0001985F7 /* GitCommit.swift in Sources */,

@@ -52,9 +52,16 @@ extension XTWindowController
   }
   
   @IBAction
-  func newBranch(_: AnyObject) {}
+  func newBranch(_: AnyObject)
+  {
+    _ = startOperation { NewBranchOpController(windowController: self) }
+  }
+  
   @IBAction
-  func addRemote(_: AnyObject) {}
+  func newRemote(_: AnyObject)
+  {
+    // _ = startOperation { NewRemoteOpController(windowController: self) }
+  }
 
   @IBAction
   func goBack(_: AnyObject)
@@ -233,6 +240,9 @@ extension XTWindowController: NSMenuItemValidation
       result = true
       
     case #selector(self.stash(_:)):
+      result = true
+      
+    case #selector(self.newBranch(_:)):
       result = true
       
     case #selector(self.newTag(_:)):

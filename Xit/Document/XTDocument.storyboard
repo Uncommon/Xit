@@ -91,17 +91,17 @@
                                                     <menuItem state="on" image="NSAddTemplate" hidden="YES" id="zJr-2F-jUy"/>
                                                     <menuItem title="New Branch..." id="oT1-Df-tTp">
                                                         <connections>
-                                                            <action selector="newBranch:" target="BHy-GQ-8Eg" id="HoV-zV-Lkt"/>
+                                                            <action selector="newBranch:" target="z1d-0w-duQ" id="o9r-tH-amu"/>
                                                         </connections>
                                                     </menuItem>
                                                     <menuItem title="New Remote..." id="m8I-Zf-HjE">
                                                         <connections>
-                                                            <action selector="newRemote:" target="BHy-GQ-8Eg" id="gsF-iJ-PBD"/>
+                                                            <action selector="newRemote:" target="z1d-0w-duQ" id="0kv-Og-mJu"/>
                                                         </connections>
                                                     </menuItem>
                                                     <menuItem title="New Tag..." id="8I8-cK-9pD">
                                                         <connections>
-                                                            <action selector="newTag:" target="BHy-GQ-8Eg" id="PS1-In-Ero"/>
+                                                            <action selector="newTag:" target="z1d-0w-duQ" id="vqQ-iv-sYJ"/>
                                                         </connections>
                                                     </menuItem>
                                                 </items>
@@ -111,7 +111,7 @@
                                     <searchField wantsLayer="YES" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dpy-6g-Z4Y">
                                         <rect key="frame" x="27" y="3" width="255" height="19"/>
                                         <searchFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" placeholderString="Filter" usesSingleLineMode="YES" bezelStyle="round" id="l6c-rF-HsK">
-                                            <font key="font" metaFont="menu" size="11"/>
+                                            <font key="font" metaFont="label" size="11"/>
                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </searchFieldCell>
@@ -170,7 +170,7 @@
                                             <tableColumns>
                                                 <tableColumn width="277" minWidth="16" maxWidth="1000" id="Miy-P7-Lu7">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
-                                                        <font key="font" metaFont="menu" size="11"/>
+                                                        <font key="font" metaFont="label" size="11"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                     </tableHeaderCell>
