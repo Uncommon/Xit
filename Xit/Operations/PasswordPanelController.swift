@@ -2,23 +2,20 @@ import Cocoa
 
 class PasswordPanelController: SheetController
 {
-  var userName: String
-  {
-    get { return userField.stringValue }
-    set { userField.stringValue = newValue }
-  }
-  var password: String
-  {
-    get { return passwordField.stringValue }
-    set { passwordField.stringValue = newValue }
-  }
-  var storeInKeychain: Bool
-  {
-    get { return keychainCheck.boolValue }
-    set { keychainCheck.boolValue = newValue }
-  }
+  @ControlStringValue var userName: String
+  @ControlStringValue var password: String
+  @ControlBoolValue var storeInKeychain: Bool
   
   @IBOutlet weak var userField: NSTextField!
   @IBOutlet weak var passwordField: NSSecureTextField!
   @IBOutlet weak var keychainCheck: NSButton!
+  
+  override func windowDidLoad()
+  {
+    super.windowDidLoad()
+    
+    $userName = userField
+    $password = passwordField
+    $storeInKeychain = keychainCheck
+  }
 }

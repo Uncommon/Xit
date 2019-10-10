@@ -15,11 +15,7 @@ class RemoteSheetController: SheetController
   @IBOutlet weak var fetchField: NSTextField!
   @IBOutlet weak var pushField: NSTextField!
   
-  var name: String
-  {
-    get { return nameField.stringValue }
-    set { nameField.stringValue = newValue }
-  }
+  @ControlStringValue var name: String
   var fetchURLString: String?
   {
     get { return fetchField.stringValue.nilIfEmpty }
@@ -29,6 +25,13 @@ class RemoteSheetController: SheetController
   {
     get { return pushField.stringValue.nilIfEmpty }
     set { pushField.stringValue = newValue ?? "" }
+  }
+  
+  override func windowDidLoad()
+  {
+    super.windowDidLoad()
+    
+    $name = nameField
   }
   
   override func resetFields()

@@ -61,8 +61,8 @@ class CheckOutRemoteWindowController: NSWindowController
   @IBOutlet weak var createButton: NSButton!
   @IBOutlet weak var checkOutCheckbox: NSButton!
   
-  var branchName: String { return nameField.stringValue }
-  var checkOutBranch: Bool { return checkOutCheckbox.boolValue }
+  @ControlStringValue var branchName: String
+  @ControlBoolValue var checkOutBranch: Bool
   
   private let repo: Branching
   private unowned let operation: CheckOutRemoteOperationController
@@ -79,6 +79,14 @@ class CheckOutRemoteWindowController: NSWindowController
   required init?(coder: NSCoder)
   {
     fatalError("init(coder:) has not been implemented")
+  }
+  
+  override func windowDidLoad()
+  {
+    super.windowDidLoad()
+    
+    $branchName = nameField
+    $checkOutBranch = checkOutCheckbox
   }
   
   func setRemoteBranchName(_ remoteBranch: String)

@@ -77,7 +77,7 @@ extension NSOutlineView
   }
 }
 
-extension NSButton
+extension NSControl
 {
   /// The intValue property interpreted as a Bool.
   var boolValue: Bool
