@@ -70,7 +70,7 @@ extension NewBranchPanelController: NSTextFieldDelegate
   {
     if !isCompleting && note.object as? NSTextField === startingPointField,
        let fieldEditor = note.userInfo?["NSFieldEditor"] as? NSText,
-       !eventIsDelete() {
+       !NSApp.currentEventIsDelete {
       isCompleting = true
       fieldEditor.complete(nil)
       isCompleting = false
@@ -92,18 +92,5 @@ extension NewBranchPanelController: NSTextFieldDelegate
     
     return localBranchNames.filter { $0.hasPrefix(typedText) } +
            remoteBranchNames.filter { $0.hasPrefix(typedText) }
-  }
-  
-  private func eventIsDelete() -> Bool
-  {
-    switch NSApp.currentEvent?.specialKey {
-      case NSEvent.SpecialKey.delete,
-           NSEvent.SpecialKey.backspace,
-           NSEvent.SpecialKey.deleteCharacter,
-           NSEvent.SpecialKey.deleteForward:
-        return true
-      default:
-        return false
-    }
   }
 }
