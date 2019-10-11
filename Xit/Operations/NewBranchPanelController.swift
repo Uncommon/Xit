@@ -5,6 +5,8 @@ class NewBranchPanelController: SheetController
   var repository: Branching!
   var localBranchNames: [String] = []
   var remoteBranchNames: [String] = []
+  
+  private var isCompleting = false
 
   @IBOutlet var branchNameField: NSTextField!
   @IBOutlet var startingPointField: NSTextField!
@@ -66,10 +68,12 @@ extension NewBranchPanelController: NSTextFieldDelegate
 {
   func controlTextDidChange(_ note: Notification)
   {
-    if note.object as? NSTextField === startingPointField,
+    if !isCompleting && note.object as? NSTextField === startingPointField,
        let fieldEditor = note.userInfo?["NSFieldEditor"] as? NSText,
        !eventIsDelete() {
+      isCompleting = true
       fieldEditor.complete(nil)
+      isCompleting = false
     }
     
     updateCreateButton()
@@ -101,19 +105,5 @@ extension NewBranchPanelController: NSTextFieldDelegate
       default:
         return false
     }
-  }
-  
-  private func completion(_ prefix: String) -> String?
-  {
-    return localBranchNames.first(withPrefix: prefix) ??
-           remoteBranchNames.first(withPrefix: prefix)
-  }
-}
-
-extension Array where Element == String
-{
-  func first(withPrefix prefix: String) -> String?
-  {
-    return first { $0.hasPrefix(prefix) }
   }
 }
