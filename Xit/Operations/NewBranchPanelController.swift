@@ -44,11 +44,19 @@ class NewBranchPanelController: SheetController
   
   private func validateNames() -> Bool
   {
-    if localBranchNames.contains(branchName) ||
+    let branchName = self.branchName
+
+    if branchName.isEmpty ||
+       localBranchNames.contains(branchName) ||
        !GitReference.isValidName(RefPrefixes.heads +/ branchName) {
       return false
     }
-    if !remoteBranchNames.contains(startingPoint) {
+    
+    let startingPoint = self.startingPoint
+
+    if !startingPoint.isEmpty &&
+       !(localBranchNames.contains(startingPoint) ||
+         remoteBranchNames.contains(startingPoint)) {
       return false
     }
     return true
