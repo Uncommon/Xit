@@ -5,6 +5,7 @@ class NewBranchPanelController: SheetController
   var repository: Branching!
   var localBranchNames: [String] = []
   var remoteBranchNames: [String] = []
+  var startingPointEditor = FullReplacementTextView()
   
   private var isCompleting = false
 
@@ -27,6 +28,8 @@ class NewBranchPanelController: SheetController
     $startingPoint = startingPointField
     $checkOutBranch = checkOutCheckbox
     $trackStartingPoint = trackCheckbox
+    
+    startingPointEditor.isFieldEditor = true
   }
   
   func configure(branchName: String,
@@ -96,5 +99,28 @@ extension NewBranchPanelController: NSTextFieldDelegate
     
     return localBranchNames.filter { $0.hasPrefix(typedText) } +
            remoteBranchNames.filter { $0.hasPrefix(typedText) }
+  }
+}
+
+extension NewBranchPanelController: NSWindowDelegate
+{
+  func windowWillReturnFieldEditor(_ sender: NSWindow, to client: Any?) -> Any?
+  {
+    if let clientField = client as? NSTextField,
+       clientField === startingPointField {
+      return startingPointEditor
+    }
+    else {
+      return nil
+    }
+  }
+}
+
+/// A text view that always uses the full text for typing completion
+class FullReplacementTextView: NSTextView
+{
+  override var rangeForUserCompletion: NSRange
+  {
+    return self.string.fullNSRange
   }
 }
