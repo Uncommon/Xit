@@ -17,7 +17,7 @@ class NewBranchPanelController: SheetController
   @ControlStringValue var branchName: String
   @ControlStringValue var startingPoint: String
   @ControlBoolValue var checkOutBranch: Bool
-  @ControlBoolValue var trackStaringPoint: Bool
+  @ControlBoolValue var trackStartingPoint: Bool
 
   override func windowDidLoad()
   {
@@ -26,7 +26,7 @@ class NewBranchPanelController: SheetController
     $branchName = branchNameField
     $startingPoint = startingPointField
     $checkOutBranch = checkOutCheckbox
-    $trackStaringPoint = trackCheckbox
+    $trackStartingPoint = trackCheckbox
   }
   
   func configure(branchName: String,
@@ -58,10 +58,6 @@ class NewBranchPanelController: SheetController
   {
     createButton.isEnabled = validateNames()
   }
-}
-
-extension NewBranchPanelController: NSControlTextEditingDelegate
-{
 }
 
 extension NewBranchPanelController: NSTextFieldDelegate

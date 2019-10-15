@@ -16,7 +16,9 @@ class NewBranchOpController: OperationController
       (response) in
       if response == NSApplication.ModalResponse.OK {
         self.executeBranch(name: panel.branchName,
-                           startPoint: panel.startingPoint)
+                           startPoint: panel.startingPoint,
+                           track: panel.trackStartingPoint,
+                           checkOut: panel.checkOutBranch)
       }
       else {
         self.ended(result: .canceled)
@@ -24,11 +26,20 @@ class NewBranchOpController: OperationController
     }
   }
   
-  func executeBranch(name: String, startPoint: String)
+  func executeBranch(name: String, startPoint: String,
+                     track: Bool, checkOut: Bool)
   {
     do {
-      _ = try windowController?.repository.createBranch(named: name,
-                                                        target: startPoint)
+      guard let branch = try repository?.createBranch(named: name,
+                                                      target: startPoint)
+      else { throw RepoError.unexpected }
+      
+      if track {
+        branch.trackingBranchName = startPoint
+      }
+      if checkOut {
+        try repository?.checkOut(branch: name)
+      }
     }
     catch let error as RepoError where error.isExpected {
       windowController?.showErrorMessage(error: error)
