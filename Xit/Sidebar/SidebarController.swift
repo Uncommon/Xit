@@ -77,6 +77,7 @@ extension SidebarHandler
         return !repo.isWriting && (item is TagSidebarItem)
       
       case #selector(SidebarController.renameRemote(_:)),
+           #selector(SidebarController.editRemote(_:)),
            #selector(SidebarController.deleteRemote(_:)):
         return !repo.isWriting && (item is RemoteSidebarItem)
       

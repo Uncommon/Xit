@@ -130,6 +130,16 @@ extension SidebarController
   }
   
   @IBAction
+  func editRemote(_ sender: AnyObject)
+  {
+    guard let remoteItem = targetItem() as? RemoteSidebarItem,
+          let controller = window?.windowController as? XTWindowController
+    else { return }
+    
+    controller.remoteSettings(remote: remoteItem.title)
+  }
+  
+  @IBAction
   func deleteRemote(_ sender: Any?)
   {
     callCommand {

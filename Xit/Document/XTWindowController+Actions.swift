@@ -186,8 +186,13 @@ extension XTWindowController
     guard let menuItem = sender as? NSMenuItem
     else { return }
     
+    remoteSettings(remote: menuItem.title)
+  }
+  
+  func remoteSettings(remote: String)
+  {
     let controller = RemoteOptionsOpController(windowController: self,
-                                               remote: menuItem.title)
+                                               remote: remote)
     
     _ = try? controller.start()
   }
