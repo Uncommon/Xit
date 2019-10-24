@@ -45,6 +45,8 @@ struct UIString: RawRepresentable
   static let cancel = ›"Cancel"
   static let clear = ›"Clear"
   static let commit = ›"Commit"
+  static let create = ›"Create"
+  static let createRemote = ›"Create Remote"
   static let delete = ›"Delete"
   static let deleteBranch = ›"Delete Branch"
   static let dontReplace = ›"Don't Replace"

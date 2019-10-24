@@ -60,7 +60,7 @@ extension XTWindowController
   @IBAction
   func newRemote(_: AnyObject)
   {
-    // _ = startOperation { NewRemoteOpController(windowController: self) }
+    _ = startOperation { NewRemoteOpController(windowController: self) }
   }
 
   @IBAction
@@ -246,6 +246,9 @@ extension XTWindowController: NSMenuItemValidation
       result = true
       
     case #selector(self.newTag(_:)):
+      result = true
+      
+    case #selector(self.newRemote(_:)):
       result = true
       
     default:

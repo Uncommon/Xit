@@ -138,6 +138,7 @@
 		C95BF6681FCF5DBD0020C51D /* StashSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BF6671FCF5DBD0020C51D /* StashSelection.swift */; };
 		C95BF66A1FCF5E370020C51D /* StagingSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BF6691FCF5E370020C51D /* StagingSelection.swift */; };
 		C95ECD051EB11E310000DB78 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95ECD041EB11E310000DB78 /* WebViewController.swift */; };
+		C96256B2235A402800A625DC /* NewRemoteOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96256B1235A402800A625DC /* NewRemoteOpController.swift */; };
 		C967AAB51FAA45B3008A4DF0 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = C967AAB41FAA45B3008A4DF0 /* Debug.swift */; };
 		C967C4AF1F96BA55002166F7 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C967C4AE1F96BA55002166F7 /* Cache.swift */; };
 		C96B22F022DF84C200DA219F /* GitVersionedOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96B22EF22DF84C100DA219F /* GitVersionedOptions.swift */; };
@@ -527,6 +528,7 @@
 		C95BF6671FCF5DBD0020C51D /* StashSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StashSelection.swift; sourceTree = "<group>"; };
 		C95BF6691FCF5E370020C51D /* StagingSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StagingSelection.swift; sourceTree = "<group>"; };
 		C95ECD041EB11E310000DB78 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		C96256B1235A402800A625DC /* NewRemoteOpController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewRemoteOpController.swift; sourceTree = "<group>"; };
 		C967AAB41FAA45B3008A4DF0 /* Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
 		C967C4AE1F96BA55002166F7 /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		C96B22EF22DF84C100DA219F /* GitVersionedOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitVersionedOptions.swift; sourceTree = "<group>"; };
@@ -1006,6 +1008,7 @@
 				C9F20ACF2347C8C7002E8603 /* NewBranchOpController.swift */,
 				C9F20AE12347DB6F002E8603 /* NewBranchPanelController.swift */,
 				C9F20AE22347DB6F002E8603 /* NewBranchPanelController.xib */,
+				C96256B1235A402800A625DC /* NewRemoteOpController.swift */,
 				C98925D41DB6D3D300E5645C /* NewTagOpController.swift */,
 				C9BAE6131D3039C500A87F13 /* OperationController.swift */,
 				C936AD0B1D4C0FA900C5ADC3 /* PasswordOpController.swift */,
@@ -1514,6 +1517,7 @@
 				C923D66C1D906FAA00C6B90B /* TitleBarViewController.swift in Sources */,
 				89880EDB20D08674007042F8 /* RefTokenView.swift in Sources */,
 				C90FD5961D217D5B00A30570 /* FetchPanelController.swift in Sources */,
+				C96256B2235A402800A625DC /* NewRemoteOpController.swift in Sources */,
 				C9999AC71E08712000DF3E11 /* HistoryTableView.swift in Sources */,
 				C951EAE11DD11BDD00B99FBE /* SidebarTableCellView.swift in Sources */,
 				C9F20AD02347C8C7002E8603 /* NewBranchOpController.swift in Sources */,

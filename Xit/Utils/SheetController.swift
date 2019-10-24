@@ -2,8 +2,29 @@ import Cocoa
 
 public class SheetController: NSWindowController
 {
+  enum Mode
+  {
+    case edit
+    case create(UIString?)
+    
+    var buttonTitle: UIString
+    {
+      switch self {
+        case .edit:
+          return .ok
+        case .create(let title):
+          return title ?? .create
+      }
+    }
+  }
+
   @IBOutlet weak var acceptButton: NSButton?
   
+  func setMode(_ mode: Mode)
+  {
+    acceptButton?.uiStringValue = mode.buttonTitle
+  }
+
   func end(_ code: NSApplication.ModalResponse)
   {
     window!.sheetParent?.endSheet(window!, returnCode: code)
