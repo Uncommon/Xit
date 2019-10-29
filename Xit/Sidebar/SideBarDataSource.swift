@@ -113,29 +113,25 @@ class SideBarDataSource: NSObject
         outline.expandItem(remoteItem)
       }
       if let currentBranch = repository.currentBranch,
-        currentBranch.contains("/") {
+         currentBranch.contains("/") {
         showItem(branchName: currentBranch)
       }
     }
     else {
-      applyChanges()
+      applyFilterChanges()
     }
     
-    let selection = outline.item(atRow: outline.selectedRow)
-                    as? SidebarItem
-    
-    if outline.numberOfSelectedRows == 0  &&
-       !(selection.map({ select(item: $0) }) ?? false) {
+    if outline.selectedRow == -1 {
       selectCurrentBranch()
     }
   }
   
-  private func applyChanges()
+  private func applyFilterChanges()
   {
     let filteredRoots = filterSet.apply(to: model.roots)
     
     outline.beginUpdates()
-    // Skip the first items because Workspace won't change
+    // dropFirst to skip Workspace beacuse it won't change
     for (oldGroup, newGroup) in zip(displayItemList.dropFirst(),
                                     filteredRoots.dropFirst()) {
       applyNewContents(oldRoot: oldGroup, newRoot: newGroup)
