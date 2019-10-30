@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15400" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15400"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -41,6 +42,7 @@
                             <segment toolTip="Go Forward" image="NSGoRightTemplate" width="30" tag="1"/>
                         </segments>
                     </segmentedCell>
+                    <accessibility identifier="navigation"/>
                     <connections>
                         <action selector="navigate:" target="-2" id="bWo-xW-tQk"/>
                     </connections>
@@ -60,6 +62,7 @@
                             </segment>
                         </segments>
                     </segmentedCell>
+                    <accessibility identifier="view"/>
                     <connections>
                         <action selector="viewAction:" target="-2" id="Kca-PO-31K"/>
                     </connections>
@@ -81,6 +84,7 @@
                                 <constraint firstAttribute="width" constant="16" id="nrF-Hm-NkP"/>
                             </constraints>
                             <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSFolder" id="atu-Ru-5oE"/>
+                            <accessibility identifier="proxy"/>
                         </imageView>
                         <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="PFe-lZ-RQc" customClass="DraggingProgress" customModule="Xit" customModuleProvider="target">
                             <rect key="frame" x="8" y="5" width="16" height="16"/>
@@ -88,14 +92,16 @@
                                 <constraint firstAttribute="width" constant="16" id="uh1-dB-U5t"/>
                                 <constraint firstAttribute="height" constant="16" id="zcv-Wq-7Cr"/>
                             </constraints>
+                            <accessibility identifier="spinner"/>
                         </progressIndicator>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zFv-Uo-DhN" customClass="DraggingLabel" customModule="Xit" customModuleProvider="target">
-                            <rect key="frame" x="30" y="4" width="69" height="17"/>
+                            <rect key="frame" x="30" y="5" width="69" height="16"/>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Repository" id="mT9-Xv-yPn">
                                 <font key="font" metaFont="system"/>
                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
+                            <accessibility identifier="titleLabel"/>
                         </textField>
                         <box horizontalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="N5o-xl-R2D">
                             <rect key="frame" x="103" y="4" width="5" height="16"/>
@@ -108,7 +114,7 @@
                             <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="branchTemplate" id="DxX-kV-T9C"/>
                         </imageView>
                         <popUpButton focusRingType="none" translatesAutoresizingMaskIntoConstraints="NO" id="UF4-D2-qhU">
-                            <rect key="frame" x="122" y="2" width="70" height="21"/>
+                            <rect key="frame" x="122" y="3" width="70" height="20"/>
                             <popUpButtonCell key="cell" type="bevel" title="branch" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" state="on" focusRingType="none" imageScaling="proportionallyDown" inset="2" autoenablesItems="NO" selectedItem="sSQ-02-kT9" id="QYv-hf-gtv">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                 <font key="font" metaFont="system"/>
@@ -120,6 +126,7 @@
                                     </items>
                                 </menu>
                             </popUpButtonCell>
+                            <accessibility identifier="branchPopup"/>
                             <connections>
                                 <action selector="branchSelected:" target="-2" id="LsH-oA-lgj"/>
                             </connections>
@@ -185,6 +192,7 @@
                             </segment>
                         </segments>
                     </segmentedCell>
+                    <accessibility identifier="remoteOps"/>
                     <connections>
                         <action selector="remoteAction:" target="-2" id="aru-FK-3m6"/>
                     </connections>
@@ -195,6 +203,7 @@
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
+                    <accessibility identifier="find"/>
                     <connections>
                         <action selector="search:" target="-2" id="PMX-VL-6Xs"/>
                     </connections>
@@ -207,6 +216,7 @@
                             <segment image="stashTemplate" width="30"/>
                         </segments>
                     </segmentedCell>
+                    <accessibility identifier="stash"/>
                     <connections>
                         <action selector="stash:" target="-2" id="1Xh-ZG-Bkv"/>
                     </connections>
@@ -233,6 +243,7 @@
                 <constraint firstItem="EAc-F6-hIg" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="1" id="yoe-T7-8hM"/>
                 <constraint firstItem="DfW-Hf-FKe" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="3" id="zcu-RG-TW4"/>
             </constraints>
+            <accessibility identifier="TileBarView"/>
             <point key="canvasLocation" x="484.5" y="495.5"/>
         </customView>
         <menu id="P48-t6-mXf">
