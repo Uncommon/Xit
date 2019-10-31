@@ -85,6 +85,8 @@
 		C94032F922EB5C6D001B5946 /* GitRefSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94032F822EB5C6D001B5946 /* GitRefSpec.swift */; };
 		C94103801EBDFABC002C80DC /* SideBarDataSourceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C941037F1EBDFABC002C80DC /* SideBarDataSourceTest.swift */; };
 		C94107C9236A3BD100D4B0D7 /* fixtures.zip in Resources */ = {isa = PBXBuildFile; fileRef = C94107C8236A3BD100D4B0D7 /* fixtures.zip */; };
+		C94107CB236B39C600D4B0D7 /* TemporaryDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94107CA236B39C600D4B0D7 /* TemporaryDirectory.swift */; };
+		C94107CD236B427700D4B0D7 /* TestRepo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94107CC236B427700D4B0D7 /* TestRepo.swift */; };
 		C94154A01ED4ECF40030E481 /* BuildStatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C941549E1ED4ECF30030E481 /* BuildStatusViewController.swift */; };
 		C94154A11ED4ECF40030E481 /* BuildStatusViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C941549F1ED4ECF30030E481 /* BuildStatusViewController.xib */; };
 		C94154A31ED778980030E481 /* BuildStatusCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94154A21ED778980030E481 /* BuildStatusCache.swift */; };
@@ -477,6 +479,8 @@
 		C94032F822EB5C6D001B5946 /* GitRefSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitRefSpec.swift; sourceTree = "<group>"; };
 		C941037F1EBDFABC002C80DC /* SideBarDataSourceTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideBarDataSourceTest.swift; sourceTree = "<group>"; };
 		C94107C8236A3BD100D4B0D7 /* fixtures.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = fixtures.zip; path = "objective-git/ObjectiveGitTests/fixtures/fixtures.zip"; sourceTree = SOURCE_ROOT; };
+		C94107CA236B39C600D4B0D7 /* TemporaryDirectory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporaryDirectory.swift; sourceTree = "<group>"; };
+		C94107CC236B427700D4B0D7 /* TestRepo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestRepo.swift; sourceTree = "<group>"; };
 		C941549E1ED4ECF30030E481 /* BuildStatusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuildStatusViewController.swift; sourceTree = "<group>"; };
 		C941549F1ED4ECF30030E481 /* BuildStatusViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BuildStatusViewController.xib; sourceTree = "<group>"; };
 		C94154A21ED778980030E481 /* BuildStatusCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuildStatusCache.swift; sourceTree = "<group>"; };
@@ -872,8 +876,10 @@
 			isa = PBXGroup;
 			children = (
 				C94107C8236A3BD100D4B0D7 /* fixtures.zip */,
+				C94107CA236B39C600D4B0D7 /* TemporaryDirectory.swift */,
 				C91727B523689F500023DC57 /* XitUITests.swift */,
 				C91727B723689F500023DC57 /* Info.plist */,
+				C94107CC236B427700D4B0D7 /* TestRepo.swift */,
 			);
 			path = XitUITests;
 			sourceTree = "<group>";
@@ -1627,6 +1633,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				C91727B623689F500023DC57 /* XitUITests.swift in Sources */,
+				C94107CD236B427700D4B0D7 /* TestRepo.swift in Sources */,
+				C94107CB236B39C600D4B0D7 /* TemporaryDirectory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
