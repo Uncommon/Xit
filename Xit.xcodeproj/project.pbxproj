@@ -86,7 +86,6 @@
 		C94103801EBDFABC002C80DC /* SideBarDataSourceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C941037F1EBDFABC002C80DC /* SideBarDataSourceTest.swift */; };
 		C94107C9236A3BD100D4B0D7 /* fixtures.zip in Resources */ = {isa = PBXBuildFile; fileRef = C94107C8236A3BD100D4B0D7 /* fixtures.zip */; };
 		C94107CB236B39C600D4B0D7 /* TemporaryDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94107CA236B39C600D4B0D7 /* TemporaryDirectory.swift */; };
-		C94107CD236B427700D4B0D7 /* TestRepo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94107CC236B427700D4B0D7 /* TestRepo.swift */; };
 		C94154A01ED4ECF40030E481 /* BuildStatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C941549E1ED4ECF30030E481 /* BuildStatusViewController.swift */; };
 		C94154A11ED4ECF40030E481 /* BuildStatusViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C941549F1ED4ECF30030E481 /* BuildStatusViewController.xib */; };
 		C94154A31ED778980030E481 /* BuildStatusCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94154A21ED778980030E481 /* BuildStatusCache.swift */; };
@@ -172,6 +171,7 @@
 		C99A3C501F97A9E00037B431 /* CacheTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99A3C4F1F97A9E00037B431 /* CacheTest.swift */; };
 		C99A6AEC1E48FA140030DC01 /* FileListDataSourceBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99A6AEB1E48FA140030DC01 /* FileListDataSourceBase.swift */; };
 		C99A6AFF1E4A73240030DC01 /* BlameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99A6AFE1E4A73240030DC01 /* BlameViewController.swift */; };
+		C99E38F4236B595300675F6A /* TestRepo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94107CC236B427700D4B0D7 /* TestRepo.swift */; };
 		C9A0223822EF4BE8001EFD7E /* XTRepositoryHunkTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A0223722EF4BE8001EFD7E /* XTRepositoryHunkTest.swift */; };
 		C9A05432227CF61D002BFFF5 /* CommitRootTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A05431227CF61D002BFFF5 /* CommitRootTest.swift */; };
 		C9A0544E228A03D6002BFFF5 /* SidebarPRManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A0544D228A03D6002BFFF5 /* SidebarPRManager.swift */; };
@@ -1633,7 +1633,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C91727B623689F500023DC57 /* XitUITests.swift in Sources */,
-				C94107CD236B427700D4B0D7 /* TestRepo.swift in Sources */,
+				C99E38F4236B595300675F6A /* TestRepo.swift in Sources */,
 				C94107CB236B39C600D4B0D7 /* TemporaryDirectory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

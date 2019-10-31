@@ -4,15 +4,19 @@ import XCTest
 class XitUITests: XCTestCase
 {
   let tempDir = TemporaryDirectory("XitTest")
+  var repoURL: URL!
   
   override func setUp()
   {
-    guard let tempURL = tempDir?.url,
-          TestRepo.testApp.extract(to: tempURL.path)
+    let repo = TestRepo.testApp
+    guard let repoURL = tempDir?.url,
+          repo.extract(to: repoURL.path)
     else {
       XCTFail()
       return
     }
+    
+    self.repoURL = repoURL.appendingPathComponent(repo.rawValue)
   }
   
   override func tearDown()
@@ -24,23 +28,26 @@ class XitUITests: XCTestCase
   
   func testRepoWindow()
   {
-    guard testRun?.hasSucceeded ?? false else { return }
+    guard repoURL != nil else { return }
     let app = XCUIApplication(bundleIdentifier: "com.uncommonplace.Xit")
     
     app.launchArguments = ["-noServices", "YES"]
     app.launch()
+    app.activate()
     
     let repoName = TestRepo.testApp.rawValue
-    let repoURL = tempDir!.url.appendingPathComponent(repoName)
     
-    NSDocumentController.shared.openDocument(withContentsOf: repoURL,
-                                             display: true) { _,_,_ in }
+    NSWorkspace.shared.openFile(repoURL.path, withApplication: "Xit")
     
     let window = app.windows.firstMatch
     
     XCTAssertTrue(window.waitForExistence(timeout: 1.0))
     XCTAssertEqual(window.title, repoName)
     
-    // check the window contents
+    let titleView = window.staticTexts.matching(identifier: "titleLabel").firstMatch
+    let branchPopup = window.popUpButtons.matching(identifier: "branchPopup").firstMatch
+
+    XCTAssertEqual(titleView.value as? String, repoName)
+    XCTAssertEqual(branchPopup.value as? String, "master")
   }
 }
