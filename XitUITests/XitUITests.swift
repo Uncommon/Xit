@@ -49,5 +49,31 @@ class XitUITests: XCTestCase
 
     XCTAssertEqual(titleView.value as? String, repoName)
     XCTAssertEqual(branchPopup.value as? String, "master")
+    
+    // staging has 1 > 0
+    
+    let branches = [
+      "1-and_more",
+      "and-how",
+      "andhow-ad",
+      "asdf",
+      "blah",
+      "feature",
+      "hi!",
+      "master",
+      "new",
+      "other-branch",
+      "wat",
+      "whateelse",
+      "whup",
+    ]
+    let sidebar = app.outlines["sidebar"]
+
+    for (index, branch) in branches.enumerated() {
+      let cell = sidebar.cells.element(boundBy: index + 3)
+      let label = cell.staticTexts.firstMatch.value as? String
+      
+      XCTAssertEqual(label, branch)
+    }
   }
 }
