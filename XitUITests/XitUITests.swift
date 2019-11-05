@@ -4,6 +4,7 @@ import XCTest
 class XitUITests: XCTestCase
 {
   let tempDir = TemporaryDirectory("XitTest")
+  let app = XCUIApplication(bundleIdentifier: "com.uncommonplace.Xit")
   var repoURL: URL!
   
   override func setUp()
@@ -26,11 +27,35 @@ class XitUITests: XCTestCase
                                                   contextInfo: nil)
   }
   
+  func assertBranches(_ branches: [String])
+  {
+    let sidebar = app.outlines["sidebar"]
+
+    for (index, branch) in branches.enumerated() {
+      let cell = sidebar.cells.element(boundBy: index + 3)
+      let label = cell.staticTexts.firstMatch.value as? String ?? ""
+      
+      XCTAssertEqual(label, branch,
+                     "item \(index) is '\(label)' instead of '\(branch)'")
+    }
+  }
+  
+  func assertCommitFiles(_ names: [String])
+  {
+    let rows = app.outlines["commitFiles"].outlineRows
+    
+    for (index, name) in names.enumerated() {
+      let label = rows.element(boundBy: index).staticTexts.firstMatch.value
+                  as? String ?? ""
+      
+      XCTAssertEqual(label, name)
+    }
+  }
+  
   func testRepoWindow()
   {
     guard repoURL != nil else { return }
-    let app = XCUIApplication(bundleIdentifier: "com.uncommonplace.Xit")
-    
+
     app.launchArguments = ["-noServices", "YES"]
     app.launch()
     app.activate()
@@ -52,28 +77,22 @@ class XitUITests: XCTestCase
     
     // staging has 1 > 0
     
-    let branches = [
-      "1-and_more",
-      "and-how",
-      "andhow-ad",
-      "asdf",
-      "blah",
-      "feature",
-      "hi!",
-      "master",
-      "new",
-      "other-branch",
-      "wat",
-      "whateelse",
-      "whup",
-    ]
-    let sidebar = app.outlines["sidebar"]
-
-    for (index, branch) in branches.enumerated() {
-      let cell = sidebar.cells.element(boundBy: index + 3)
-      let label = cell.staticTexts.firstMatch.value as? String
-      
-      XCTAssertEqual(label, branch)
-    }
+    assertBranches([
+        "1-and_more",
+        "and-how",
+        "andhow-ad",
+        "asdf",
+        "blah",
+        "feature",
+        "hi!",
+        "master",
+        "new",
+        "other-branch",
+        "wat",
+        "whateelse",
+        "whup",
+        ])
+    
+    assertCommitFiles(["README.md", "hero_slide1.png", "jquery-1.8.1.min.js"])
   }
 }
