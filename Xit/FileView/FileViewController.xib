@@ -121,6 +121,7 @@
                                                             <customSpacing>
                                                                 <real value="3.4028234663852886e+38"/>
                                                             </customSpacing>
+                                                            <accessibility identifier="parents"/>
                                                         </stackView>
                                                     </subviews>
                                                     <constraints>
