@@ -110,6 +110,7 @@ class SidebarDelegate: NSObject
     let stagedCount = indexChanges.count(where: unmodifiedCounter)
     let unstagedCount = workspaceChanges.count(where: unmodifiedCounter)
 
+    dataView.statusText.setAccessibilityIdentifier("status")
     if (stagedCount != 0) || (unstagedCount != 0) {
       dataView.statusText.title = "\(unstagedCount)▸\(stagedCount)"
       dataView.statusText.isHidden = false

@@ -27,6 +27,15 @@ class XitUITests: XCTestCase
                                                   contextInfo: nil)
   }
   
+  func assertStagingStatus(workspace: Int, staged: Int)
+  {
+    let expected = "\(workspace)▸\(staged)"
+    let stagingCell = app.outlines["sidebar"].cells.element(boundBy: 1)
+    let statusButton = stagingCell.buttons["status"]
+    
+    XCTAssertEqual(expected, statusButton.title)
+  }
+  
   func assertBranches(_ branches: [String])
   {
     let sidebar = app.outlines["sidebar"]
@@ -92,7 +101,7 @@ class XitUITests: XCTestCase
     XCTAssertEqual(titleView.value as? String, repoName)
     XCTAssertEqual(branchPopup.value as? String, "master")
     
-    // staging has 1 > 0
+    assertStagingStatus(workspace: 1, staged: 0)
     
     assertBranches(["1-and_more", "and-how", "andhow-ad", "asdf", "blah",
                     "feature", "hi!", "master", "new", "other-branch",
