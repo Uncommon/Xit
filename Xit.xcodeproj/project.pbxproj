@@ -119,6 +119,7 @@
 		C95355FC1D9492EA00AEEF49 /* XTDocumentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95355FB1D9492EA00AEEF49 /* XTDocumentController.swift */; };
 		C953560A1D958E8D00AEEF49 /* StringExtensionsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95356091D958E8D00AEEF49 /* StringExtensionsTest.swift */; };
 		C954ABFD1D34455000302160 /* GitBranch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C954ABFC1D34455000302160 /* GitBranch.swift */; };
+		C954C1652374BF5B000D5339 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = C954C1642374BF5B000D5339 /* Components.swift */; };
 		C957B84B1D2D53040040F858 /* SheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B84A1D2D53040040F858 /* SheetController.swift */; };
 		C957B8541D2D533C0040F858 /* AddAccountController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B8531D2D533C0040F858 /* AddAccountController.swift */; };
 		C957B8661D2D8D500040F858 /* XTKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B8651D2D8D500040F858 /* XTKeychain.swift */; };
@@ -513,6 +514,7 @@
 		C95355FB1D9492EA00AEEF49 /* XTDocumentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTDocumentController.swift; sourceTree = "<group>"; };
 		C95356091D958E8D00AEEF49 /* StringExtensionsTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtensionsTest.swift; sourceTree = "<group>"; };
 		C954ABFC1D34455000302160 /* GitBranch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitBranch.swift; sourceTree = "<group>"; };
+		C954C1642374BF5B000D5339 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
 		C957B84A1D2D53040040F858 /* SheetController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SheetController.swift; sourceTree = "<group>"; };
 		C957B8531D2D533C0040F858 /* AddAccountController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddAccountController.swift; sourceTree = "<group>"; };
 		C957B8651D2D8D500040F858 /* XTKeychain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTKeychain.swift; sourceTree = "<group>"; };
@@ -876,6 +878,7 @@
 			isa = PBXGroup;
 			children = (
 				C94107C8236A3BD100D4B0D7 /* fixtures.zip */,
+				C954C1642374BF5B000D5339 /* Components.swift */,
 				C94107CA236B39C600D4B0D7 /* TemporaryDirectory.swift */,
 				C91727B523689F500023DC57 /* XitUITests.swift */,
 				C94107CC236B427700D4B0D7 /* TestRepo.swift */,
@@ -1633,6 +1636,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C91727B623689F500023DC57 /* XitUITests.swift in Sources */,
+				C954C1652374BF5B000D5339 /* Components.swift in Sources */,
 				C99E38F4236B595300675F6A /* TestRepo.swift in Sources */,
 				C94107CB236B39C600D4B0D7 /* TemporaryDirectory.swift in Sources */,
 			);
