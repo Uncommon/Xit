@@ -3,44 +3,36 @@ import XCTest
 
 class XitUITests: XCTestCase
 {
-  let tempDir = TemporaryDirectory("XitTest")
-  let app = XCUIApplication(bundleIdentifier: "com.uncommonplace.Xit")
-  var repoURL: URL!
-  
-  override func setUp()
+  static let tempDir = TemporaryDirectory("XitTest")
+  static var repoURL: URL!
+
+  override class func setUp()
   {
     let repo = TestRepo.testApp
-    guard let repoURL = tempDir?.url,
-          repo.extract(to: repoURL.path)
+    guard let tempURL = tempDir?.url,
+          repo.extract(to: tempURL.path)
     else {
       XCTFail()
       return
     }
-    
-    self.repoURL = repoURL.appendingPathComponent(repo.rawValue)
   }
   
-  override func tearDown()
+  override func setUp()
   {
-    NSDocumentController.shared.closeAllDocuments(withDelegate: nil,
-                                                  didCloseAllSelector: nil,
-                                                  contextInfo: nil)
-  }
-
-  func testRepoWindow()
-  {
-    guard repoURL != nil else { return }
-
-    app.launchArguments = ["-noServices", "YES"]
-    app.launch()
-    app.activate()
+    XitApp.launchArguments = ["-noServices", "YES"]
+    XitApp.launch()
+    XitApp.activate()
     
-    let repoName = TestRepo.testApp.rawValue
+    let repoURL = Self.tempDir!.url.appendingPathComponent(TestRepo.testApp.rawValue)
     
     NSWorkspace.shared.openFile(repoURL.path, withApplication: "Xit")
-    
-    let window = app.windows.firstMatch
-    
+  }
+  
+  func testTitleBar()
+  {
+    let window = XitApp.windows.firstMatch
+    let repoName = TestRepo.testApp.rawValue
+
     XCTAssertTrue(window.waitForExistence(timeout: 1.0))
     XCTAssertEqual(window.title, repoName)
     
@@ -49,14 +41,20 @@ class XitUITests: XCTestCase
 
     XCTAssertEqual(titleView.value as? String, repoName)
     XCTAssertEqual(branchPopup.value as? String, "master")
+  }
     
+  func testSidebar()
+  {
     Sidebar.assertStagingStatus(workspace: 1, staged: 0)
     
     Sidebar.assertBranches([
         "1-and_more", "and-how", "andhow-ad", "asdf", "blah", "feature",
         "hi!", "master", "new", "other-branch", "wat", "whateelse", "whup",
         ])
+  }
 
+  func testCommitContent()
+  {
     CommitFileList.assertFiles(["README.md", "hero_slide1.png", "jquery-1.8.1.min.js"])
     
     CommitHeader.assertDisplay(date: "Jan 10, 2013 at 7:11 AM",
@@ -64,7 +62,10 @@ class XitUITests: XCTestCase
                                name: "Danny Greg <danny@github.com>",
                                parents: ["Rename README."],
                                message: "Add 2 text and 1 binary file for diff tests.")
-
+  }
+  
+  func testParents()
+  {
     // Select a merge commit to test multiple parents
     HistoryList.row(10).click()
     
