@@ -65,6 +65,7 @@ public class HistoryTableController: NSViewController
   {
     super.viewDidLoad()
   
+    tableView.setAccessibilityIdentifier("history")
     let controller = view.window?.windowController!
     
     observers.addObserver(

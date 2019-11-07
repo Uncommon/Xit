@@ -878,8 +878,8 @@
 				C94107C8236A3BD100D4B0D7 /* fixtures.zip */,
 				C94107CA236B39C600D4B0D7 /* TemporaryDirectory.swift */,
 				C91727B523689F500023DC57 /* XitUITests.swift */,
-				C91727B723689F500023DC57 /* Info.plist */,
 				C94107CC236B427700D4B0D7 /* TestRepo.swift */,
+				C91727B723689F500023DC57 /* Info.plist */,
 			);
 			path = XitUITests;
 			sourceTree = "<group>";

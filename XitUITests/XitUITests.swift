@@ -107,7 +107,7 @@ class XitUITests: XCTestCase
                     "feature", "hi!", "master", "new", "other-branch",
                     "wat", "whateelse", "whup",
                     ])
-    
+
     assertCommitFiles(["README.md", "hero_slide1.png", "jquery-1.8.1.min.js"])
     
     assertCommitHeader(date: "Jan 10, 2013 at 7:11 AM",
@@ -115,6 +115,25 @@ class XitUITests: XCTestCase
                        name: "Danny Greg <danny@github.com>",
                        parents: ["Rename README."],
                        message: "Add 2 text and 1 binary file for diff tests.")
+
+    // Select a merge commit to test multiple parents
+    app.tables["history"].children(matching: .tableRow).element(boundBy: 10).click()
+    
+    assertCommitHeader(date: "Feb 16, 2012 at 12:10 PM",
+                       sha: "d603d61ea756eb881ba440b3e66b561d070aec6e",
+                       name: "joshaber <joshaber@gmail.com>",
+                       parents: ["Revert ee618c62f57e7807ddee3cd33e0f176d93d015dd^..HEAD",
+                                 "evil conflicting commit"],
+                       message: "Merge branch 'master' of github.com:github/Test_App")
+    
+    // Navigate by clicking a parent title
+    let header = app.otherElements["commitInfo"].firstMatch
+
+    header.otherElements["parents"].staticTexts.element(boundBy: 0).click()
+    
+    let parentRow = app.tables["history"].children(matching: .tableRow).element(boundBy: 13)
+    
+    XCTAssertTrue(parentRow.isSelected)
   }
 }
 
