@@ -5,6 +5,7 @@ class XitUITests: XCTestCase
 {
   static let tempDir = TemporaryDirectory("XitTest")
   static var repoURL: URL!
+  static var gitRunner: GitCLIRunner!
 
   override class func setUp()
   {
@@ -15,6 +16,10 @@ class XitUITests: XCTestCase
       XCTFail()
       return
     }
+    
+    let repoURL = Self.tempDir!.url.appendingPathComponent(TestRepo.testApp.rawValue)
+
+    gitRunner = GitCLIRunner(gitPath: "/usr/bin/git", repoPath: repoURL.path)
   }
   
   override func setUp()
@@ -36,11 +41,19 @@ class XitUITests: XCTestCase
     XCTAssertTrue(window.waitForExistence(timeout: 1.0))
     XCTAssertEqual(window.title, repoName)
     
-    let titleView = window.staticTexts.matching(identifier: "titleLabel").firstMatch
-    let branchPopup = window.popUpButtons.matching(identifier: "branchPopup").firstMatch
-
-    XCTAssertEqual(titleView.value as? String, repoName)
-    XCTAssertEqual(branchPopup.value as? String, "master")
+    XCTAssertEqual(Window.titleLabel.value as? String, repoName)
+    XCTAssertEqual(Window.branchPopup.value as? String, "master")
+    
+    let otherBranch = "feature"
+    
+    Window.branchPopup.click()
+    XitApp.menuItems[otherBranch].click()
+    XCTAssertEqual(Window.branchPopup.value as? String, otherBranch)
+    
+    let data = try! Self.gitRunner.run(args: ["rev-parse", "--abbrev-ref", "HEAD"])
+    let currentBranch = String(data: data, encoding: .utf8)
+    
+    XCTAssertEqual(currentBranch, otherBranch)
   }
     
   func testSidebar()

@@ -120,6 +120,8 @@
 		C953560A1D958E8D00AEEF49 /* StringExtensionsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95356091D958E8D00AEEF49 /* StringExtensionsTest.swift */; };
 		C954ABFD1D34455000302160 /* GitBranch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C954ABFC1D34455000302160 /* GitBranch.swift */; };
 		C954C1652374BF5B000D5339 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = C954C1642374BF5B000D5339 /* Components.swift */; };
+		C954C1662374E493000D5339 /* GitCLIRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94E4EDD22A989BC00D5B2B1 /* GitCLIRunner.swift */; };
+		C954C1672374E62B000D5339 /* NSTask+Throwing.m in Sources */ = {isa = PBXBuildFile; fileRef = 89369A731EDF47FC001B69C6 /* NSTask+Throwing.m */; };
 		C957B84B1D2D53040040F858 /* SheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B84A1D2D53040040F858 /* SheetController.swift */; };
 		C957B8541D2D533C0040F858 /* AddAccountController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B8531D2D533C0040F858 /* AddAccountController.swift */; };
 		C957B8661D2D8D500040F858 /* XTKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B8651D2D8D500040F858 /* XTKeychain.swift */; };
@@ -515,6 +517,7 @@
 		C95356091D958E8D00AEEF49 /* StringExtensionsTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtensionsTest.swift; sourceTree = "<group>"; };
 		C954ABFC1D34455000302160 /* GitBranch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitBranch.swift; sourceTree = "<group>"; };
 		C954C1642374BF5B000D5339 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
+		C954C1682374E7EF000D5339 /* XitUITests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "XitUITests-Bridging-Header.h"; sourceTree = "<group>"; };
 		C957B84A1D2D53040040F858 /* SheetController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SheetController.swift; sourceTree = "<group>"; };
 		C957B8531D2D533C0040F858 /* AddAccountController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddAccountController.swift; sourceTree = "<group>"; };
 		C957B8651D2D8D500040F858 /* XTKeychain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTKeychain.swift; sourceTree = "<group>"; };
@@ -883,6 +886,7 @@
 				C91727B523689F500023DC57 /* XitUITests.swift */,
 				C94107CC236B427700D4B0D7 /* TestRepo.swift */,
 				C91727B723689F500023DC57 /* Info.plist */,
+				C954C1682374E7EF000D5339 /* XitUITests-Bridging-Header.h */,
 			);
 			path = XitUITests;
 			sourceTree = "<group>";
@@ -1638,7 +1642,9 @@
 				C91727B623689F500023DC57 /* XitUITests.swift in Sources */,
 				C954C1652374BF5B000D5339 /* Components.swift in Sources */,
 				C99E38F4236B595300675F6A /* TestRepo.swift in Sources */,
+				C954C1662374E493000D5339 /* GitCLIRunner.swift in Sources */,
 				C94107CB236B39C600D4B0D7 /* TemporaryDirectory.swift in Sources */,
+				C954C1672374E62B000D5339 /* NSTask+Throwing.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2097,6 +2103,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.uncommonplace.XitUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_BRIDGING_HEADER = "XitUITests/XitUITests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TEST_TARGET_NAME = Xit;
@@ -2140,6 +2147,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.uncommonplace.XitUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OBJC_BRIDGING_HEADER = "XitUITests/XitUITests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				TEST_TARGET_NAME = Xit;
@@ -2183,6 +2191,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.uncommonplace.XitUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OBJC_BRIDGING_HEADER = "XitUITests/XitUITests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				TEST_TARGET_NAME = Xit;

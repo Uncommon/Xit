@@ -1,14 +1,10 @@
 import Foundation
 
-let XTErrorDomainGit = "git"
-
 /// Stores a repo reference for C callbacks
 struct CallbackPayload { let repo: XTRepository }
 
 let kEmptyTreeHash = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
 let XTPathsKey = "paths"
-let XTErrorOutputKey = "output"
-let XTErrorArgsKey = "args"
 
 public class XTRepository: NSObject, TaskManagement, RepoConfiguring
 {

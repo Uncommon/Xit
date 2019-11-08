@@ -1,5 +1,9 @@
 import Foundation
 
+let XTErrorDomainGit = "git"
+let XTErrorOutputKey = "output"
+let XTErrorArgsKey = "args"
+
 /// Manages running the Git command line tool
 struct GitCLIRunner
 {
