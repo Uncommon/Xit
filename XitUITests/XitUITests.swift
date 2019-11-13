@@ -18,8 +18,10 @@ class XitUITests: XCTestCase
     }
     
     let repoURL = Self.tempDir!.url.appendingPathComponent(TestRepo.testApp.rawValue)
+    let gitURL = Bundle(identifier: "com.uncommonplace.XitUITests")!
+                 .url(forAuxiliaryExecutable: "git")!
 
-    gitRunner = GitCLIRunner(gitPath: "/usr/bin/git", repoPath: repoURL.path)
+    gitRunner = GitCLIRunner(gitPath: gitURL.path, repoPath: repoURL.path)
   }
   
   override func setUp()
@@ -64,6 +66,21 @@ class XitUITests: XCTestCase
         "1-and_more", "and-how", "andhow-ad", "asdf", "blah", "feature",
         "hi!", "master", "new", "other-branch", "wat", "whateelse", "whup",
         ])
+    
+    let newBranchName = "and-then"
+
+    Sidebar.list.staticTexts["and-how"].rightClick()
+    XitApp.menuItems["Rename"].click()
+    XitApp.typeText("\(newBranchName)\r")
+    XCTAssertTrue(Sidebar.list.staticTexts[newBranchName].exists)
+
+    /* check the actual branch
+    let data = try! Self.gitRunner.run(args: ["branch"])
+    let text = String(data: data, encoding: .utf8)!
+    let branches = text.components(separatedBy: .whitespacesAndNewlines)
+    
+    XCTAssertTrue(branches.contains(newBranchName))
+    */
   }
 
   func testCommitContent()

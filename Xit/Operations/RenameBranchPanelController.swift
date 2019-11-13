@@ -23,6 +23,7 @@ extension RenameBranchPanelController: NSTextFieldDelegate
 {
   func controlTextDidChange(_ obj: Notification)
   {
-    acceptButton!.isEnabled = GitReference.isValidName(textField.stringValue)
+    acceptButton!.isEnabled = GitReference.isValidName(
+        RefPrefixes.heads +/ textField.stringValue)
   }
 }
