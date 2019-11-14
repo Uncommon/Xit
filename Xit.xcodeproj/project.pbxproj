@@ -200,6 +200,7 @@
 		C9BF41181EA11AAC00028C84 /* XTWindowController+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BF41171EA11AAC00028C84 /* XTWindowController+Actions.swift */; };
 		C9C1B7CF1EEAFD790011F343 /* XTRepository+Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C1B7CE1EEAFD790011F343 /* XTRepository+Files.swift */; };
 		C9C7730C1D26EE1C00329493 /* PrefsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C7730A1D26EE1C00329493 /* PrefsWindowController.swift */; };
+		C9CC6D2D237E064A00424A68 /* GitCLI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CC6D2C237E064A00424A68 /* GitCLI.swift */; };
 		C9D3EA1220CB2D1B0087C958 /* StagingListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D3EA1120CB2D1B0087C958 /* StagingListModel.swift */; };
 		C9D896961FAB6CD300E431FE /* XTTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D896951FAB6CD300E431FE /* XTTest.swift */; };
 		C9DA20CB1F6C8B7800C472CD /* GitIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DA20CA1F6C8B7800C472CD /* GitIndex.swift */; };
@@ -610,6 +611,7 @@
 		C9BF41171EA11AAC00028C84 /* XTWindowController+Actions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTWindowController+Actions.swift"; sourceTree = "<group>"; };
 		C9C1B7CE1EEAFD790011F343 /* XTRepository+Files.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTRepository+Files.swift"; sourceTree = "<group>"; };
 		C9C7730A1D26EE1C00329493 /* PrefsWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrefsWindowController.swift; sourceTree = "<group>"; };
+		C9CC6D2C237E064A00424A68 /* GitCLI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitCLI.swift; sourceTree = "<group>"; };
 		C9D3EA1120CB2D1B0087C958 /* StagingListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StagingListModel.swift; sourceTree = "<group>"; };
 		C9D896951FAB6CD300E431FE /* XTTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XTTest.swift; sourceTree = "<group>"; };
 		C9DA20CA1F6C8B7800C472CD /* GitIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitIndex.swift; sourceTree = "<group>"; };
@@ -896,6 +898,7 @@
 			children = (
 				C94107C8236A3BD100D4B0D7 /* fixtures.zip */,
 				C954C1642374BF5B000D5339 /* Components.swift */,
+				C9CC6D2C237E064A00424A68 /* GitCLI.swift */,
 				C94107CA236B39C600D4B0D7 /* TemporaryDirectory.swift */,
 				C91727B523689F500023DC57 /* XitUITests.swift */,
 				C94107CC236B427700D4B0D7 /* TestRepo.swift */,
@@ -1656,6 +1659,7 @@
 			files = (
 				C91727B623689F500023DC57 /* XitUITests.swift in Sources */,
 				C954C1652374BF5B000D5339 /* Components.swift in Sources */,
+				C9CC6D2D237E064A00424A68 /* GitCLI.swift in Sources */,
 				C99E38F4236B595300675F6A /* TestRepo.swift in Sources */,
 				C954C1662374E493000D5339 /* GitCLIRunner.swift in Sources */,
 				C94107CB236B39C600D4B0D7 /* TemporaryDirectory.swift in Sources */,

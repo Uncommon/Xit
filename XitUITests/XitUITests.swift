@@ -5,7 +5,7 @@ class XitUITests: XCTestCase
 {
   static let tempDir = TemporaryDirectory("XitTest")
   static var repoURL: URL!
-  static var gitRunner: GitCLIRunner!
+  static var git: GitCLI!
 
   override class func setUp()
   {
@@ -18,10 +18,8 @@ class XitUITests: XCTestCase
     }
     
     let repoURL = Self.tempDir!.url.appendingPathComponent(TestRepo.testApp.rawValue)
-    let gitURL = Bundle(identifier: "com.uncommonplace.XitUITests")!
-                 .url(forAuxiliaryExecutable: "git")!
 
-    gitRunner = GitCLIRunner(gitPath: gitURL.path, repoPath: repoURL.path)
+    git = GitCLI(repoURL: repoURL)
   }
   
   override func setUp()
@@ -46,14 +44,14 @@ class XitUITests: XCTestCase
     XCTAssertEqual(Window.titleLabel.value as? String, repoName)
     XCTAssertEqual(Window.branchPopup.value as? String, "master")
     
+    // Try switching branches
     let otherBranch = "feature"
     
     Window.branchPopup.click()
     XitApp.menuItems[otherBranch].click()
     XCTAssertEqual(Window.branchPopup.value as? String, otherBranch)
     
-    let data = try! Self.gitRunner.run(args: ["rev-parse", "--abbrev-ref", "HEAD"])
-    let currentBranch = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
+    let currentBranch = Self.git.currentBranch()
     
     XCTAssertEqual(currentBranch, otherBranch)
   }
@@ -67,17 +65,19 @@ class XitUITests: XCTestCase
         "hi!", "master", "new", "other-branch", "wat", "whateelse", "whup",
         ])
     
+    // Rename a branch
+    let oldBranchName = "and-how"
     let newBranchName = "and-then"
 
-    Sidebar.list.staticTexts["and-how"].rightClick()
+    Sidebar.list.staticTexts[oldBranchName].rightClick()
     XitApp.menuItems["Rename"].click()
     XitApp.typeText("\(newBranchName)\r")
     XCTAssertTrue(Sidebar.list.staticTexts[newBranchName].exists)
 
-    let data = try! Self.gitRunner.run(args: ["branch"])
-    let text = String(data: data, encoding: .utf8)!
-    let branches = text.components(separatedBy: .whitespacesAndNewlines)
+    // Verify the rename
+    let branches = Self.git.branches()
     
+    XCTAssertFalse(branches.contains(oldBranchName))
     XCTAssertTrue(branches.contains(newBranchName))
   }
 
