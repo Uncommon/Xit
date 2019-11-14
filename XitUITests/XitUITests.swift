@@ -53,7 +53,7 @@ class XitUITests: XCTestCase
     XCTAssertEqual(Window.branchPopup.value as? String, otherBranch)
     
     let data = try! Self.gitRunner.run(args: ["rev-parse", "--abbrev-ref", "HEAD"])
-    let currentBranch = String(data: data, encoding: .utf8)
+    let currentBranch = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
     
     XCTAssertEqual(currentBranch, otherBranch)
   }
@@ -74,13 +74,11 @@ class XitUITests: XCTestCase
     XitApp.typeText("\(newBranchName)\r")
     XCTAssertTrue(Sidebar.list.staticTexts[newBranchName].exists)
 
-    /* check the actual branch
     let data = try! Self.gitRunner.run(args: ["branch"])
     let text = String(data: data, encoding: .utf8)!
     let branches = text.components(separatedBy: .whitespacesAndNewlines)
     
     XCTAssertTrue(branches.contains(newBranchName))
-    */
   }
 
   func testCommitContent()
