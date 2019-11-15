@@ -28,6 +28,11 @@ class CommitHeaderViewController: NSViewController
   
   override func awakeFromNib()
   {
+    // These IDs are in the xib but get lost at runtime
+    view.setAccessibilityElement(true)
+    view.setAccessibilityIdentifier("commitInfo")
+    parentsStack.setAccessibilityElement(true)
+    parentsStack.setAccessibilityIdentifier("parents")
     loadHeader()
   }
   

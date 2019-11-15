@@ -1,20 +1,16 @@
 import Foundation
 
-let XTErrorDomainGit = "git"
-
 /// Stores a repo reference for C callbacks
 struct CallbackPayload { let repo: XTRepository }
 
 let kEmptyTreeHash = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
 let XTPathsKey = "paths"
-let XTErrorOutputKey = "output"
-let XTErrorArgsKey = "args"
 
 public class XTRepository: NSObject, TaskManagement, RepoConfiguring
 {
   let gitRepo: OpaquePointer
   @objc public let repoURL: URL
-  let gitRunner: GitCLIRunner
+  let gitRunner: CLIRunner
   let mutex = Mutex()
   var refsIndex = [String: [String]]()
   
@@ -88,8 +84,8 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
 
     self.gitRepo = gitRepo
     self.repoURL = url
-    self.gitRunner = GitCLIRunner(gitPath: gitCmd,
-                                  repoPath: url.path)
+    self.gitRunner = CLIRunner(toolPath: gitCmd,
+                               workingDir: url.path)
     self.queue = TaskQueue(id: XTRepository.taskQueueID(path: url.path))
     self.config = config
     

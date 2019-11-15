@@ -15,6 +15,7 @@ class WorkspaceFileListController: StagingFileListController
   {
     super.loadView()
     
+    outlineView.setAccessibilityIdentifier("workspaceFiles")
     fileListDataSource.delegate = self
     fileTreeDataSource.delegate = self
     
