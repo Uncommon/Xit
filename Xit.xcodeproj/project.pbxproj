@@ -39,7 +39,6 @@
 		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		C3FA471413D0F8E200AC4F9B /* XTDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA471313D0F8E200AC4F9B /* XTDocument.m */; };
-		C3FA471713D0F8E200AC4F9B /* XTDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3FA471513D0F8E200AC4F9B /* XTDocument.xib */; };
 		C3FA472913D0F8E300AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA472713D0F8E300AC4F9B /* InfoPlist.strings */; };
 		C900463C21120F3200706029 /* BitbucketServerAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C900463B21120F3200706029 /* BitbucketServerAPI.swift */; };
 		C9004650211501CB00706029 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C900464F211501CB00706029 /* Colors.swift */; };
@@ -54,6 +53,7 @@
 		C90B4EC51FEDB1D600277B13 /* GitStatusList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90B4EC41FEDB1D600277B13 /* GitStatusList.swift */; };
 		C90F92781E0199E400FE8589 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90F92771E0199E400FE8589 /* AppDelegate.swift */; };
 		C90FCA2F1D9C776C006196DE /* FileDiffController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90FCA2E1D9C776C006196DE /* FileDiffController.swift */; };
+		C90FD40B237F685B006358C7 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97E31AF20BF271300E74D2F /* StringExtensions.swift */; };
 		C90FD5961D217D5B00A30570 /* FetchPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90FD5941D217D5B00A30570 /* FetchPanelController.swift */; };
 		C90FD5971D217D5B00A30570 /* FetchPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C90FD5951D217D5B00A30570 /* FetchPanelController.xib */; };
 		C91727B623689F500023DC57 /* XitUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91727B523689F500023DC57 /* XitUITests.swift */; };
@@ -617,7 +617,6 @@
 		C9BC1B9A1DDF51B900C71562 /* FileEventStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileEventStream.swift; sourceTree = "<group>"; };
 		C9BD02FA226A275600172C0B /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		C9BD02FC226A278900172C0B /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
-		C9BD02FE226A282600172C0B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/XTDocument.xib; sourceTree = "<group>"; };
 		C9BD02FF226A282700172C0B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = "Base.lproj/Sidebar Menus.xib"; sourceTree = "<group>"; };
 		C9BDF4C01D99A70F0034841F /* RenameBranchOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RenameBranchOpController.swift; sourceTree = "<group>"; };
 		C9BDF4CE1D99A7660034841F /* RenameBranchPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RenameBranchPanelController.swift; sourceTree = "<group>"; };
@@ -1048,7 +1047,6 @@
 			children = (
 				C3FA471213D0F8E200AC4F9B /* XTDocument.h */,
 				C3FA471313D0F8E200AC4F9B /* XTDocument.m */,
-				C3FA471513D0F8E200AC4F9B /* XTDocument.xib */,
 				C90703742326C944002DF393 /* XTDocument.storyboard */,
 				C9E9A37C1D0B5706007BFABF /* XTWindowController.swift */,
 				C9BF41171EA11AAC00028C84 /* XTWindowController+Actions.swift */,
@@ -1407,7 +1405,6 @@
 				C9BD02FD226A278900172C0B /* MainMenu.xib in Resources */,
 				C9FE06C720178A8C0001EB2B /* FileListView.xib in Resources */,
 				C90703752326C944002DF393 /* XTDocument.storyboard in Resources */,
-				C3FA471713D0F8E200AC4F9B /* XTDocument.xib in Resources */,
 				C9790D1020F537E10024D3EA /* CheckOutRemote.xib in Resources */,
 				C94154A11ED4ECF40030E481 /* BuildStatusViewController.xib in Resources */,
 				DD00725613E76DFB003B4120 /* Xit.icns in Resources */,
@@ -1697,6 +1694,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C90FD40B237F685B006358C7 /* StringExtensions.swift in Sources */,
 				C91727B623689F500023DC57 /* XitUITests.swift in Sources */,
 				C954C1652374BF5B000D5339 /* Components.swift in Sources */,
 				C9CC6D2D237E064A00424A68 /* GitCLI.swift in Sources */,
@@ -1733,14 +1731,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		C3FA471513D0F8E200AC4F9B /* XTDocument.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				C9BD02FE226A282600172C0B /* Base */,
-			);
-			name = XTDocument.xib;
-			sourceTree = "<group>";
-		};
 		C3FA472713D0F8E300AC4F9B /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (

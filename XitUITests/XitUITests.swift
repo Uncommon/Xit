@@ -6,6 +6,11 @@ class XitUITests: XCTestCase
   static let tempDir = TemporaryDirectory("XitTest")
   static var repoURL: URL!
   static var git: GitCLI!
+  
+  static let defaultBranches = [
+      "1-and_more", "and-how", "andhow-ad", "asdf", "blah", "feature",
+      "hi!", "master", "new", "other-branch", "wat", "whateelse", "whup",
+      ]
 
   override class func setUp()
   {
@@ -60,10 +65,7 @@ class XitUITests: XCTestCase
   {
     Sidebar.assertStagingStatus(workspace: 1, staged: 0)
     
-    Sidebar.assertBranches([
-        "1-and_more", "and-how", "andhow-ad", "asdf", "blah", "feature",
-        "hi!", "master", "new", "other-branch", "wat", "whateelse", "whup",
-        ])
+    Sidebar.assertBranches(Self.defaultBranches)
     
     // Rename a branch
     let oldBranchName = "and-how"
@@ -79,6 +81,34 @@ class XitUITests: XCTestCase
     
     XCTAssertFalse(branches.contains(oldBranchName))
     XCTAssertTrue(branches.contains(newBranchName))
+  }
+  
+  /// Tests filtering with no branch folders
+  func testSidebarFilterFlat()
+  {
+    let aBranches = Self.defaultBranches.filter { $0.contains("a") }
+    let andBranches = aBranches.filter { $0.contains("and") }
+    let masterBranchCell = Sidebar.list.cells["master"]
+    let newBranchCell = Sidebar.list.cells["new"]
+    let absent = NSPredicate(format: "exists == 0")
+    
+    Sidebar.filter.click()
+    Sidebar.filter.typeText("a")
+    wait(for: [expectation(for: absent, evaluatedWith: newBranchCell, handler: nil)],
+         timeout: 2.0)
+    
+    Sidebar.assertBranches(aBranches)
+    
+    Sidebar.filter.typeText("nd")
+    wait(for: [expectation(for: absent, evaluatedWith: masterBranchCell, handler: nil)],
+         timeout: 2.0)
+
+    Sidebar.assertBranches(andBranches)
+    
+    Sidebar.filter.buttons["cancel"].click()
+    Thread.sleep(forTimeInterval: 0.5)
+
+    Sidebar.assertBranches(Self.defaultBranches)
   }
 
   func testCommitContent()
