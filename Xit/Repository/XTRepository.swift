@@ -10,7 +10,7 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
 {
   let gitRepo: OpaquePointer
   @objc public let repoURL: URL
-  let gitRunner: GitCLIRunner
+  let gitRunner: CLIRunner
   let mutex = Mutex()
   var refsIndex = [String: [String]]()
   
@@ -84,8 +84,8 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
 
     self.gitRepo = gitRepo
     self.repoURL = url
-    self.gitRunner = GitCLIRunner(gitPath: gitCmd,
-                                  repoPath: url.path)
+    self.gitRunner = CLIRunner(toolPath: gitCmd,
+                               workingDir: url.path)
     self.queue = TaskQueue(id: XTRepository.taskQueueID(path: url.path))
     self.config = config
     

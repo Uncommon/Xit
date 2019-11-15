@@ -2,14 +2,14 @@ import Foundation
 
 class GitCLI
 {
-  let runner: GitCLIRunner
+  let runner: CLIRunner
   
   init(repoURL: URL)
   {
     let gitURL = Bundle(identifier: "com.uncommonplace.XitUITests")!
                  .url(forAuxiliaryExecutable: "git")!
     
-    self.runner = GitCLIRunner(gitPath: gitURL.path, repoPath: repoURL.path)
+    self.runner = CLIRunner(gitPath: gitURL.path, repoPath: repoURL.path)
   }
   
   func run(args: [String]) -> String

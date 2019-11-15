@@ -1,34 +1,34 @@
 import Foundation
 
-let XTErrorDomainGit = "git"
+let XTErrorDomainCLI = "cli"
 let XTErrorOutputKey = "output"
 let XTErrorArgsKey = "args"
 
-/// Manages running the Git command line tool
-struct GitCLIRunner
+/// Manages running a command line tool
+struct CLIRunner
 {
-  let gitPath: String
-  let repoPath: String
+  let toolPath: String
+  let workingDir: String
   
-  /// Executes the Git command line tool with the given command and input data
+  /// Executes the command line tool with the given command and input data
   /// - Parameter inputData: String data for input, such as file contents
-  /// - Parameter args: Command to be passed to Git
+  /// - Parameter args: Command arguments to be passed
   func run(inputString: String, args: [String]) throws -> Data
   {
     return try run(inputData: inputString.data(using: .utf8), args: args)
   }
   
-  /// Executes the Git command line tool with the given command and input data
+  /// Executes the command line tool with the given command and input data
   /// - Parameter inputData: Data for input, such as file contents
-  /// - Parameter args: Command to be passed to Git
+  /// - Parameter args: Command arguments to be passed
   func run(inputData: Data? = nil, args: [String]) throws -> Data
   {
-    NSLog("*** command = git \(args.joined(separator: " "))")
+    NSLog("*** command = \(toolPath.lastPathComponent) \(args.joined(separator: " "))")
     
     let task = Process()
     
-    task.currentDirectoryPath = repoPath
-    task.launchPath = gitPath
+    task.currentDirectoryPath = workingDir
+    task.launchPath = toolPath
     task.arguments = args
     
     // Large files have to be chunked or else FileHandle.write() hangs
@@ -76,7 +76,7 @@ struct GitCLIRunner
       
       NSLog("**** output = \(string)")
       NSLog("**** error = \(errorString)")
-      throw NSError(domain: XTErrorDomainGit, code: Int(task.terminationStatus),
+      throw NSError(domain: XTErrorDomainCLI, code: Int(task.terminationStatus),
                     userInfo: [XTErrorOutputKey: string,
                                XTErrorArgsKey: args.joined(separator: " ")])
     }
