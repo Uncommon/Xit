@@ -13,6 +13,7 @@ class StagedFileListController: StagingFileListController
   {
     super.loadView()
     
+    outlineView.setAccessibilityIdentifier("stagedFiles")
     listTypeIcon.image = NSImage(named: .xtStagingTemplate)
     listTypeLabel.uiStringValue = .staged
     

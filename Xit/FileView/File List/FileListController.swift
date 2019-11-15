@@ -358,6 +358,7 @@ class CommitFileListController: FileListController
     let index = outlineView.column(withIdentifier: ColumnID.action)
     
     outlineView.tableColumns[index].isHidden = true
+    outlineView.setAccessibilityIdentifier("commitFiles")
     
     listTypeIcon.image = NSImage(named: .xtFileTemplate)
     listTypeLabel.uiStringValue = .files
