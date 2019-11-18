@@ -84,7 +84,12 @@ struct SidebarFilterSet
         }
       }
       else {
-        copy.children.append(filter(root: child))
+        let filteredChild = filter(root: child)
+        
+        if !(filteredChild.children.isEmpty &&
+             filteredChild is BranchFolderSidebarItem) {
+          copy.children.append(filteredChild)
+        }
       }
     }
     return copy
