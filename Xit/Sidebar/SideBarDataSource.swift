@@ -152,8 +152,7 @@ class SideBarDataSource: NSObject
                         withAnimation: .effectFade)
     oldRoot.children.removeObjects(at: removedIndices)
     oldRoot.children.insert(newItems.objects(at: addedIndices), at: addedIndices)
-    for oldItem in oldItems where oldItem.expandable &&
-                                  outline.isItemExpanded(oldItem) {
+    for oldItem in oldItems where oldItem.expandable {
       if let newItem = newItems.first(where: { $0 == oldItem }) {
         applyNewContents(oldRoot: oldItem, newRoot: newItem)
       }
