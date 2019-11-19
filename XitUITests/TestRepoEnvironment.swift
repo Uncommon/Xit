@@ -3,6 +3,7 @@ import AppKit
 /// Shared code for setting up, opening, and operating on a test repository.
 class TestRepoEnvironment
 {
+  let repo: TestRepo
   let tempDir = TemporaryDirectory("XitTest")
   let git: GitCLI
   let repoURL: URL
@@ -13,6 +14,7 @@ class TestRepoEnvironment
           repo.extract(to: tempURL.path)
     else { return nil }
     
+    self.repo = repo
     self.repoURL = tempURL.appendingPathComponent(repo.rawValue)
     self.git = GitCLI(repoURL: repoURL)
   }

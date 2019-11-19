@@ -4,11 +4,6 @@ import XCTest
 class ReadOnlyUITests: XCTestCase
 {
   static var env: TestRepoEnvironment!
-  
-  static let defaultBranches = [
-      "1-and_more", "and-how", "andhow-ad", "asdf", "blah", "feature",
-      "hi!", "master", "new", "other-branch", "wat", "whateelse", "whup",
-      ]
 
   override class func setUp()
   {
@@ -36,13 +31,13 @@ class ReadOnlyUITests: XCTestCase
   {
     Sidebar.assertStagingStatus(workspace: 1, staged: 0)
     
-    Sidebar.assertBranches(Self.defaultBranches)
+    Sidebar.assertBranches(Self.env.repo.defaultBranches)
   }
   
   /// Tests filtering with no branch folders
   func testSidebarFilterFlat()
   {
-    let aBranches = Self.defaultBranches.filter { $0.contains("a") }
+    let aBranches = Self.env.repo.defaultBranches.filter { $0.contains("a") }
     let andBranches = aBranches.filter { $0.contains("and") }
     let masterBranchCell = Sidebar.list.cells["master"]
     let newBranchCell = Sidebar.list.cells["new"]
@@ -64,7 +59,7 @@ class ReadOnlyUITests: XCTestCase
     Sidebar.filter.buttons["cancel"].click()
     Thread.sleep(forTimeInterval: 0.5)
 
-    Sidebar.assertBranches(Self.defaultBranches)
+    Sidebar.assertBranches(Self.env.repo.defaultBranches)
   }
 
   func testCommitContent()
