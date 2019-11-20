@@ -56,6 +56,7 @@
 		C90FD40B237F685B006358C7 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97E31AF20BF271300E74D2F /* StringExtensions.swift */; };
 		C90FD41D23845679006358C7 /* ModifyingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90FD41C23845679006358C7 /* ModifyingUITests.swift */; };
 		C90FD41F23845FB8006358C7 /* TestRepoEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90FD41E23845FB8006358C7 /* TestRepoEnvironment.swift */; };
+		C90FD4212385A983006358C7 /* XCTestCaseExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90FD4202385A983006358C7 /* XCTestCaseExtensions.swift */; };
 		C90FD5961D217D5B00A30570 /* FetchPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90FD5941D217D5B00A30570 /* FetchPanelController.swift */; };
 		C90FD5971D217D5B00A30570 /* FetchPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C90FD5951D217D5B00A30570 /* FetchPanelController.xib */; };
 		C91727B623689F500023DC57 /* ReadOnlyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91727B523689F500023DC57 /* ReadOnlyUITests.swift */; };
@@ -477,6 +478,7 @@
 		C90FCA2E1D9C776C006196DE /* FileDiffController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileDiffController.swift; sourceTree = "<group>"; };
 		C90FD41C23845679006358C7 /* ModifyingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyingUITests.swift; sourceTree = "<group>"; };
 		C90FD41E23845FB8006358C7 /* TestRepoEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestRepoEnvironment.swift; sourceTree = "<group>"; };
+		C90FD4202385A983006358C7 /* XCTestCaseExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTestCaseExtensions.swift; sourceTree = "<group>"; };
 		C90FD5941D217D5B00A30570 /* FetchPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchPanelController.swift; sourceTree = "<group>"; };
 		C90FD5951D217D5B00A30570 /* FetchPanelController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FetchPanelController.xib; sourceTree = "<group>"; };
 		C91727B323689F500023DC57 /* XitUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XitUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -930,6 +932,7 @@
 				C91727B523689F500023DC57 /* ReadOnlyUITests.swift */,
 				C94107CC236B427700D4B0D7 /* TestRepo.swift */,
 				C90FD41E23845FB8006358C7 /* TestRepoEnvironment.swift */,
+				C90FD4202385A983006358C7 /* XCTestCaseExtensions.swift */,
 				C91727B723689F500023DC57 /* Info.plist */,
 				C954C1682374E7EF000D5339 /* XitUITests-Bridging-Header.h */,
 			);
@@ -1707,6 +1710,7 @@
 				C9CC6D2D237E064A00424A68 /* GitCLI.swift in Sources */,
 				C90FD41F23845FB8006358C7 /* TestRepoEnvironment.swift in Sources */,
 				C99E38F4236B595300675F6A /* TestRepo.swift in Sources */,
+				C90FD4212385A983006358C7 /* XCTestCaseExtensions.swift in Sources */,
 				C954C1662374E493000D5339 /* CLIRunner.swift in Sources */,
 				C94107CB236B39C600D4B0D7 /* TemporaryDirectory.swift in Sources */,
 				C954C1672374E62B000D5339 /* NSTask+Throwing.m in Sources */,

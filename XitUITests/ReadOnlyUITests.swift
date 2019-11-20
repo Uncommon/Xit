@@ -41,18 +41,15 @@ class ReadOnlyUITests: XCTestCase
     let andBranches = aBranches.filter { $0.contains("and") }
     let masterBranchCell = Sidebar.list.cells["master"]
     let newBranchCell = Sidebar.list.cells["new"]
-    let absent = NSPredicate(format: "exists == 0")
     
     Sidebar.filter.click()
     Sidebar.filter.typeText("a")
-    wait(for: [expectation(for: absent, evaluatedWith: newBranchCell, handler: nil)],
-         timeout: 2.0)
+    wait(for: [absence(of: newBranchCell)], timeout: 2.0)
     
     Sidebar.assertBranches(aBranches)
     
     Sidebar.filter.typeText("nd")
-    wait(for: [expectation(for: absent, evaluatedWith: masterBranchCell, handler: nil)],
-         timeout: 2.0)
+    wait(for: [absence(of: masterBranchCell)], timeout: 2.0)
 
     Sidebar.assertBranches(andBranches)
     
