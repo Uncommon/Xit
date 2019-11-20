@@ -33,6 +33,11 @@ extension SidebarBottomController: NSSearchFieldDelegate
   {
     updateSearh()
   }
+  
+  func controlTextDidChange(_ obj: Notification)
+  {
+    updateSearh()
+  }
 }
 
 extension SidebarBottomController

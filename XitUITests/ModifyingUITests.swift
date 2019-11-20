@@ -43,4 +43,36 @@ class ModifyingUITests: XCTestCase
     
     XCTAssertEqual(currentBranch, otherBranch)
   }
+  
+  func testFilterBranchFolder()
+  {
+    let folderName = "folder"
+    let subBranchName = "and-why"
+    
+    _ = env.git.run(args: ["branch", "\(folderName)/\(subBranchName)"])
+    env.open()
+    
+    let newBranchCell = Sidebar.cell(named: "new")
+
+    XCTAssertTrue(newBranchCell.exists)
+    
+    Sidebar.filter.click()
+    Sidebar.filter.typeText("a")
+    wait(for: [absence(of: newBranchCell)], timeout: 5.0)
+
+    // Expand the folder
+    Sidebar.list.children(matching: .outlineRow).element(boundBy: 9)
+           .disclosureTriangles.firstMatch.click()
+
+    let folderCell = Sidebar.cell(named: folderName)
+    let subBranchCell = Sidebar.cell(named: subBranchName)
+    
+    XCTAssertTrue(folderCell.exists)
+    XCTAssertTrue(subBranchCell.waitForExistence(timeout: 1.0))
+
+    Sidebar.filter.typeText("s")
+    
+    wait(for: [absence(of: folderCell)], timeout: 5.0)
+    XCTAssertFalse(subBranchCell.exists)
+  }
 }

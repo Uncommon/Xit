@@ -17,6 +17,11 @@ enum Sidebar
   static let addButton = Window.window.popUpButtons["sidebarAdd"]
   static let stagingCell = list.cells.element(boundBy: 1)
   
+  static func cell(named name: String) -> XCUIElement
+  {
+    return list.cells.containing(.staticText, identifier: name).firstMatch
+  }
+  
   static func assertStagingStatus(workspace: Int, staged: Int)
   {
     let expected = "\(workspace)▸\(staged)"
