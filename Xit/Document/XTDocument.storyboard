@@ -386,6 +386,7 @@
                 <customObject id="RgI-lO-7ZS" customClass="SideBarDataSource" customModule="Xit" customModuleProvider="target">
                     <connections>
                         <outlet property="outline" destination="8QW-fq-72y" id="4UF-Zp-VVm"/>
+                        <outlet property="viewController" destination="pEv-JE-8no" id="WkW-Ku-pB5"/>
                     </connections>
                 </customObject>
                 <customObject id="pdV-2u-hvJ" customClass="SidebarDelegate" customModule="Xit" customModuleProvider="target">
