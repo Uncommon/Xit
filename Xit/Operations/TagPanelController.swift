@@ -10,18 +10,10 @@ class TagPanelController: SheetController
   @IBOutlet weak var signatureLabel: NSTextField!
   @IBOutlet weak var tagButton: NSButton!
   
-  var commitMessage: String
-  {
-    get { return commitMessageLabel.stringValue }
-    set { commitMessageLabel.stringValue = newValue }
-  }
-  var tagName: String { return tagNameField.stringValue }
-  var signature: String
-  {
-    get { return signatureLabel.stringValue }
-    set { signatureLabel.stringValue = newValue }
-  }
-  var message: String { return messageField.string }
+  @ControlStringValue var commitMessage: String
+  @ControlStringValue var tagName: String
+  @ControlStringValue var signature: String
+  @TextViewString var message: String
   
   var lightweight: Bool
   {
@@ -42,6 +34,16 @@ class TagPanelController: SheetController
       messageField.isEditable = !newValue
       messageField.textColor = textColor
     }
+  }
+  
+  override func windowDidLoad()
+  {
+    super.windowDidLoad()
+    
+    $commitMessage = commitMessageLabel
+    $tagName = tagNameField
+    $signature = signatureLabel
+    $message = messageField
   }
   
   @IBAction

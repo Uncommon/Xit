@@ -31,20 +31,17 @@ class AddAccountController: SheetController
   {
     return AccountType(rawValue: servicePopup.indexOfSelectedItem)!
   }
-  var userName: String
+  @ControlStringValue var userName: String
+  @ControlStringValue var password: String
+  @ControlURLValue var location: URL?
+  
+  override func windowDidLoad()
   {
-    get { return userField.stringValue }
-    set { userField.stringValue = newValue }
-  }
-  var password: String
-  {
-    get { return passwordField.stringValue }
-    set { passwordField.stringValue = newValue }
-  }
-  var location: URL?
-  {
-    get { return URL(string: locationField.stringValue) }
-    set { locationField.stringValue = (newValue?.absoluteString)! }
+    super.windowDidLoad()
+    
+    $userName = userField
+    $password = passwordField
+    $location = locationField
   }
   
   func showFieldAlert(_ message: String, field: NSView)
@@ -53,7 +50,8 @@ class AddAccountController: SheetController
     
     alert.alertStyle = .critical
     alert.messageText = message
-    alert.beginSheetModal(for: (window?.sheetParent)!) { (_) in
+    alert.beginSheetModal(for: (window?.sheetParent)!) {
+      (_) in
       self.window?.makeFirstResponder(field)
     }
   }
@@ -79,6 +77,8 @@ class AddAccountController: SheetController
   
   func passwordFocused()
   {
+    // Weird type inference workaround
+    let userName: String! = self.userName
     guard !userName.isEmpty,
           let location = location,
           let newPassword = XTKeychain.shared.find(url: location,

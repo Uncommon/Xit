@@ -9,11 +9,6 @@ class SideBarDataSource: NSObject
     static let reloadDelay: TimeInterval = 1
   }
   
-  private struct ExpansionCache
-  {
-    let localBranches, remoteBranches, tags: [String]
-  }
-  
   @IBOutlet weak var viewController: SidebarController!
   @IBOutlet weak var outline: NSOutlineView!
   
@@ -41,7 +36,7 @@ class SideBarDataSource: NSObject
         [weak self] (_) in
         guard let self = self
         else { return }
-        self.outline.reloadItem(self.model.rootItem(.branches),
+        self.outline.reloadItem(self.displayItem(.branches),
                                 reloadChildren: true)
       }
       observers.addObserver(forName: .XTRepositoryConfigChanged,
@@ -52,6 +47,8 @@ class SideBarDataSource: NSObject
       reload()
     }
   }
+  var filterSet: SidebarFilterSet = SidebarFilterSet(filters: [])
+  var displayItemList: [SideBarGroupItem] = []
   var stagingItem: SidebarItem { return model.stagingItem }
   
   var reloadTimer: Timer?
@@ -73,90 +70,91 @@ class SideBarDataSource: NSObject
     outline.reloadItem(stagingItem)
   }
   
-  private func expandedChildNames(of item: SidebarItem) -> [String]
+  func displayItem(_ index: XTGroupIndex) -> SideBarGroupItem
   {
-    var result: [String] = []
-    
-    for childItem in item.children {
-      if outline.isItemExpanded(childItem) {
-        result.append(path(for: childItem))
-        result.append(contentsOf: expandedChildNames(of: childItem))
-      }
-    }
-    return result
-  }
-  
-  private func getExpansions() -> ExpansionCache
-  {
-    let localItem = model.rootItem(.branches)
-    let remotesItem = model.rootItem(.remotes)
-    let tagsItem = model.rootItem(.tags)
-
-    return ExpansionCache(localBranches: expandedChildNames(of: localItem),
-                          remoteBranches: expandedChildNames(of: remotesItem),
-                          tags: expandedChildNames(of: tagsItem))
+    return index.rawValue < displayItemList.count ?
+        displayItemList[index.rawValue] :
+        SideBarGroupItem(title: "") // May be needed during initial load
   }
   
   func reload()
   {
-    let expanded = getExpansions()
-    
     repository?.queue.executeOffMainThread {
       [weak self] in
-      guard let newRoots = Signpost.interval(.sidebarReload,
-                                             call: { self?.model.loadRoots() })
-      else { return }
+      // Keep self weak for the dispatch call
+      if let self = self {
+        Signpost.interval(.sidebarReload) {
+          self.model.reload()
+        }
+      }
+      else {
+        return
+      }
 
       DispatchQueue.main.async {
-        self?.afterReload(newRoots, expanded: expanded)
+        self?.afterReload()
       }
     }
   }
   
-  private func afterReload(_ newRoots: [SideBarGroupItem],
-                           expanded: ExpansionCache)
+  private func afterReload()
   {
-    let selection = outline.item(atRow: outline.selectedRow)
-                    as? SidebarItem
-    
-    model.roots = newRoots
-    outline.reloadData()
-    for rootItem in model.roots {
-      outline.expandItem(rootItem)
-    }
-    for remoteItem in model.rootItem(.remotes).children {
-      outline.expandItem(remoteItem)
-    }
-    if let currentBranch = repository.currentBranch,
-       currentBranch.contains("/") {
-      showItem(branchName: currentBranch)
-    }
-    if outline.numberOfSelectedRows == 0  &&
-       !(selection.map({ select(item: $0) }) ?? false) {
-      selectCurrentBranch()
-    }
-    restoreExpandedItems(expanded)
-  }
-  
-  private func restoreExpandedItems(_ expanded: ExpansionCache)
-  {
-    let localItem = model.rootItem(.branches)
-    let remotesItem = model.rootItem(.remotes)
-    let tagsItem = model.rootItem(.tags)
-
-    for localBranch in expanded.localBranches {
-      if let branchItem = localItem.child(atPath: localBranch) {
-        outline.expandItem(branchItem)
+    if displayItemList.isEmpty {
+      displayItemList = filterSet.apply(to: model.roots)
+      
+      guard let outline = self.outline
+      else { return }
+      
+      outline.reloadData()
+      for rootItem in model.roots {
+        outline.expandItem(rootItem)
       }
-    }
-    for remoteBranch in expanded.remoteBranches {
-      if let remoteItem = remotesItem.child(atPath: remoteBranch) {
+      for remoteItem in model.rootItem(.remotes).children {
         outline.expandItem(remoteItem)
       }
+      if let currentBranch = repository.currentBranch,
+         currentBranch.contains("/") {
+        showItem(branchName: currentBranch)
+      }
     }
-    for tag in expanded.tags {
-      if let tagItem = tagsItem.child(atPath: tag) {
-        outline.expandItem(tagItem)
+    else {
+      applyFilterChanges()
+    }
+    
+    if outline.selectedRow == -1 {
+      selectCurrentBranch()
+    }
+  }
+  
+  private func applyFilterChanges()
+  {
+    let filteredRoots = filterSet.apply(to: model.roots)
+    
+    outline.beginUpdates()
+    // dropFirst to skip Workspace beacuse it won't change
+    for (oldGroup, newGroup) in zip(displayItemList.dropFirst(),
+                                    filteredRoots.dropFirst()) {
+      applyNewContents(oldRoot: oldGroup, newRoot: newGroup)
+    }
+    outline.endUpdates()
+  }
+  
+  private func applyNewContents(oldRoot: SidebarItem, newRoot: SidebarItem)
+  {
+    let oldItems = oldRoot.children
+    let newItems = newRoot.children
+    let removedIndices = oldItems.indices { !newItems.containsEqualObject($0) }
+    let addedIndices = newItems.indices { !oldItems.containsEqualObject($0) }
+    
+    outline.removeItems(at: removedIndices, inParent: oldRoot,
+                        withAnimation: .effectFade)
+    outline.insertItems(at: addedIndices, inParent: oldRoot,
+                        withAnimation: .effectFade)
+    oldRoot.children.removeObjects(at: removedIndices)
+    oldRoot.children.insert(newItems.objects(at: addedIndices), at: addedIndices)
+    for oldItem in oldItems where oldItem.expandable {
+      if let newItem = newItems.first(where: { $0 == oldItem }) {
+        applyNewContents(oldRoot: oldItem, newRoot: newItem)
       }
     }
   }
@@ -164,7 +162,7 @@ class SideBarDataSource: NSObject
   func showItem(branchName: String)
   {
     let parts = branchName.components(separatedBy: "/")
-    var parent: SidebarItem = model.rootItem(.branches)
+    var parent: SidebarItem = displayItem(.branches)
     
     for part in parts {
       guard let child = parent.child(matching: part)
@@ -207,7 +205,7 @@ class SideBarDataSource: NSObject
   
   func stashChanged()
   {
-    let stashesGroup = model.rootItem(.stashes)
+    let stashesGroup = displayItem(.stashes)
 
     stashesGroup.children = model.makeStashItems()
     outline.reloadItem(stashesGroup, reloadChildren: true)
@@ -234,7 +232,7 @@ class SideBarDataSource: NSObject
   
   func selectCurrentBranch()
   {
-    _ = selectCurrentBranch(in: model.rootItem(.branches))
+    _ = selectCurrentBranch(in: displayItem(.branches))
   }
   
   private func selectCurrentBranch(in parent: SidebarItem) -> Bool
@@ -287,10 +285,14 @@ extension SideBarDataSource: NSOutlineViewDataSource
   public func outlineView(_ outlineView: NSOutlineView,
                           numberOfChildrenOfItem item: Any?) -> Int
   {
-    if item == nil {
-      return model?.roots.count ?? 0
+    switch item {
+      case nil:
+        return displayItemList.count
+      case let sidebarItem as SidebarItem:
+        return sidebarItem.children.count
+      default:
+        return 0
     }
-    return (item as? SidebarItem)?.children.count ?? 0
   }
   
   public func outlineView(_ outlineView: NSOutlineView,
@@ -304,7 +306,7 @@ extension SideBarDataSource: NSOutlineViewDataSource
                           ofItem item: Any?) -> Any
   {
     if item == nil {
-      return model.roots[index]
+      return displayItemList[index]
     }
     
     guard let sidebarItem = item as? SidebarItem,

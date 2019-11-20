@@ -220,6 +220,53 @@ class SidebarDataSourceTest: XTTest
   }
 }
 
+extension SidebarItem
+{
+  var childrenTitles: [String] { return children.map { $0.title } }
+}
+
+class SidebarDSFakeRepoTest: XCTestCase
+{
+  func testFilter()
+  {
+    let repo = FakeRepo()
+    let model = SidebarDataModel(repository: repo, outlineView: nil)
+    let sidebarDS = SideBarDataSource()
+    let outline = NSOutlineView()
+    
+    model.reload()
+    sidebarDS.model = model
+    sidebarDS.outline = outline
+    outline.dataSource = sidebarDS
+    repo.waitForQueue()
+    
+    var filteredBranches = sidebarDS.displayItem(.branches)
+                                    .children.map { $0.title }
+    
+    XCTAssertEqual(filteredBranches, ["branch1", "branch2"])
+    
+    sidebarDS.filterSet.filters = [SidebarNameFilter(string: "1")]
+    sidebarDS.reload()
+    repo.waitForQueue()
+
+    filteredBranches = sidebarDS.displayItem(.branches)
+                                .children.map { $0.title }
+    
+    XCTAssertEqual(filteredBranches, ["branch1"])
+    
+    let remotesItem = sidebarDS.displayItem(.remotes)
+    let filteredRemotes = remotesItem.children.map { $0.title }
+    
+    XCTAssertEqual(filteredRemotes, ["origin1", "origin2"])
+    
+    let remoteBranches1 = remotesItem.children[0].childrenTitles
+    let remoteBranches2 = remotesItem.children[1].childrenTitles
+    
+    XCTAssertEqual(remoteBranches1, ["branch1"])
+    XCTAssertEqual(remoteBranches2, [])
+  }
+}
+
 class MockSidebarOutline: NSOutlineView
 {
   override func makeView(withIdentifier identifier: NSUserInterfaceItemIdentifier,

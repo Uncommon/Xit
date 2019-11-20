@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.3.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15400" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.3.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15400"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SidebarController" customModule="Xit" customModuleProvider="target">
@@ -23,6 +23,12 @@
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="renameRemote:" target="-2" id="30"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Edit" id="SRR-eD-pVY">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="editRemote:" target="-2" id="OZ2-zH-SV6"/>
                     </connections>
                 </menuItem>
                 <menuItem title="Delete" id="16">

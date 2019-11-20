@@ -9,6 +9,19 @@ enum TestRepo: String
   case testAppFork = "Test_App_fork"
   case unicode = "unicode-files-repo"
   
+  var defaultBranches: [String]
+  {
+    switch self {
+      case .testApp:
+        return [
+            "1-and_more", "and-how", "andhow-ad", "asdf", "blah", "feature",
+            "hi!", "master", "new", "other-branch", "wat", "whateelse", "whup",
+            ]
+      default:
+        return []
+    }
+  }
+  
   func extract(to targetPath: String) -> Bool
   {
     let bundle = Bundle(identifier: "com.uncommonplace.XitUITests")!

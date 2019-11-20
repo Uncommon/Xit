@@ -231,11 +231,12 @@ public protocol SubmoduleManagement: AnyObject
 
 public protocol Branching: AnyObject
 {
+  /// Returns the current checked out branch, or nil if in a detached head state
   var currentBranch: String? { get }
   var localBranches: AnySequence<LocalBranch> { get }
   var remoteBranches: AnySequence<RemoteBranch> { get }
   
-  
+  /// Creates a branch at the given target ref
   func createBranch(named name: String, target: String) throws -> LocalBranch?
   func rename(branch: String, to: String) throws
   func localBranch(named name: String) -> LocalBranch?

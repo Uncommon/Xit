@@ -77,6 +77,7 @@ extension SidebarHandler
         return !repo.isWriting && (item is TagSidebarItem)
       
       case #selector(SidebarController.renameRemote(_:)),
+           #selector(SidebarController.editRemote(_:)),
            #selector(SidebarController.deleteRemote(_:)):
         return !repo.isWriting && (item is RemoteSidebarItem)
       
@@ -249,18 +250,22 @@ class SidebarController: NSViewController, SidebarHandler
        let menuNib = NSNib(nibNamed: "Sidebar Menus", bundle: nil) {
       menuNib.instantiate(withOwner: self, topLevelObjects: nil)
     }
-    
+  }
+  
+  override func viewWillAppear()
+  {
     let repoController = view.window!.windowController as! XTWindowController
     
-    observers.addObserver(
-        forName: .XTSelectedModelChanged,
-        object: repoController, queue: .main) {
-      [weak self] (_) in
-      self?.selectedModelChanged()
-    }
-    amendingObserver = repoController.observe(\.isAmending) {
-      [weak self] (controller, _) in
-      self?.sidebarDS.setAmending(controller.isAmending)
+    if amendingObserver == nil {
+      amendingObserver = repoController.observe(\.isAmending) {
+        [weak self] (controller, _) in
+        self?.sidebarDS.setAmending(controller.isAmending)
+      }
+      observers.addObserver(forName: .XTSelectedModelChanged,
+                            object: repoController, queue: .main) {
+        [weak self] (_) in
+        self?.selectedModelChanged()
+      }
     }
   }
   
@@ -441,6 +446,32 @@ class SidebarController: NSViewController, SidebarHandler
         onConfirm()
       }
     }
+  }
+}
+
+extension SidebarController: SidebarBottomDelegate
+{
+  func updateFilter(string: String?)
+  {
+    if let string = string {
+      sidebarDS.filterSet.filters = [SidebarNameFilter(string: string)]
+    }
+    else {
+      sidebarDS.filterSet.filters.removeAll()
+    }
+    reload()
+  }
+  
+  func newBranch()
+  {
+  }
+  
+  func newRemote()
+  {
+  }
+  
+  func newTag()
+  {
   }
 }
 

@@ -7,27 +7,18 @@ class StashPanelController: SheetController
   @IBOutlet weak var untrackedCheck: NSButton!
   @IBOutlet weak var ignoredCheck: NSButton!
   
-  var message: String
-  {
-    get { return messageField.stringValue }
-    set { messageField.stringValue = newValue }
-  }
+  @ControlStringValue var message: String
+  @ControlBoolValue var keepStaged: Bool
+  @ControlBoolValue var includeUntracked: Bool
+  @ControlBoolValue var includeIgnored: Bool
   
-  var keepStaged: Bool
+  override func windowDidLoad()
   {
-    get { return keepStagedCheck.boolValue }
-    set { keepStagedCheck.boolValue = newValue }
-  }
-
-  var includeUntracked: Bool
-  {
-    get { return untrackedCheck.boolValue }
-    set { untrackedCheck.boolValue = newValue }
-  }
-  
-  var includeIgnored: Bool
-  {
-    get { return ignoredCheck.boolValue }
-    set { ignoredCheck.boolValue = newValue }
+    super.windowDidLoad()
+    
+    $message = messageField
+    $keepStaged = keepStagedCheck
+    $includeUntracked = untrackedCheck
+    $includeIgnored = ignoredCheck
   }
 }

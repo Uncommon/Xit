@@ -4,10 +4,11 @@ import Cocoa
 class SidebarItem: NSObject
 {
   var title: String
-  var displayTitle: UIString { return UIString(rawValue: title) }
-  var icon: NSImage? { return nil }
   var children: [SidebarItem]
   var selection: RepositorySelection?
+  
+  var displayTitle: UIString { return UIString(rawValue: title) }
+  var icon: NSImage? { return nil }
   var refType: RefType { return .unknown }
   var expandable: Bool { return false }
   // NSObject.isSelectable is new in 10.12
@@ -15,7 +16,7 @@ class SidebarItem: NSObject
   var editable: Bool { return false }
   var current: Bool { return false }
   
-  init(title: String)
+  required init(title: String)
   {
     self.title = title
     self.children = []
@@ -27,6 +28,24 @@ class SidebarItem: NSObject
   {
     self.init(title: title)
     self.selection = selection
+  }
+  
+  /// Returns a copy of `self` with no children.
+  func shallowCopy() -> Self
+  {
+    let copy = type(of: self).init(title: title)
+    
+    copy.selection = selection
+    return copy
+  }
+  
+  /// Returns a copy of `self` with copies of all children.
+  func deepCopy() -> SidebarItem
+  {
+    let copy = shallowCopy()
+    
+    copy.children = children.map { $0.deepCopy() }
+    return copy
   }
   
   func child(matching title: String) -> SidebarItem?
@@ -67,6 +86,29 @@ class SidebarItem: NSObject
   }
   
   override var description: String { return self.title }
+  
+  override func isEqual(_ object: Any?) -> Bool
+  {
+    guard let otherItem = object as? SidebarItem
+    else { return false }
+    
+    return displayTitle == otherItem.displayTitle
+  }
+}
+
+extension SidebarItem
+{
+  override var debugDescription: String { return displayTitle.rawValue }
+
+  func printTree(_ depth: Int = 0)
+  {
+    let prefix = String(repeating: "  ", count: depth)
+    
+    print("\(prefix)\(debugDescription)")
+    for child in children {
+      child.printTree(depth + 1)
+    }
+  }
 }
 
 
@@ -77,8 +119,15 @@ class SideBarGroupItem: SidebarItem
     super.init(title: titleString.rawValue)
   }
   
+  required init(title: String) { super.init(title: title) }
+  
   override var isSelectable: Bool { return false }
   override var expandable: Bool { return true }
+  
+  override func isEqual(_ object: Any?) -> Bool
+  {
+    return object is SideBarGroupItem && super.isEqual(object)
+  }
 }
 
 
@@ -89,6 +138,8 @@ class StagingSidebarItem: SidebarItem
     super.init(title: titleString.rawValue)
   }
   
+  required init(title: String) { super.init(title: title) }
+
   override var icon: NSImage?
   {
     return NSImage(named: .xtStagingTemplate)
@@ -181,12 +232,24 @@ class RemoteBranchSidebarItem: BranchSidebarItem
   override var fullName: String { return "\(remoteName)/\(title)" }
   
 
-  init(title: String, remote: String, selection: RepositorySelection)
+  required init(title: String, remote: String, selection: RepositorySelection?)
   {
     self.remoteName = remote
     
     super.init(title: title)
     self.selection = selection
+  }
+  
+  required init(title: String)
+  {
+    self.remoteName = ""
+    super.init(title: title)
+  }
+
+  override func shallowCopy() -> Self
+  {
+    return type(of: self).init(title: title, remote: remoteName,
+                               selection: selection)
   }
   
   override func branchObject() -> Branch?
@@ -236,6 +299,24 @@ class RemoteSidebarItem: SidebarItem
     
     super.init(title: title)
   }
+  
+  required init(title: String, remote: Remote?)
+  {
+    self.remote = remote
+    
+    super.init(title: title)
+  }
+  
+  required init(title: String)
+  {
+    self.remote = nil
+    super.init(title: title)
+  }
+  
+  override func shallowCopy() -> Self
+  {
+    return type(of: self).init(title: title, remote: remote)
+  }
 }
 
 
@@ -249,7 +330,7 @@ class TagSidebarItem: SidebarItem
   { return NSImage(named: .xtTagTemplate) }
   override var refType: RefType { return .tag }
 
-  init(tag: Tag)
+  required init(tag: Tag)
   {
     self.tag = tag
     
@@ -262,6 +343,26 @@ class TagSidebarItem: SidebarItem
       self.selection = CommitSelection(repository: xtTag.repository,
                                        commit: commit)
     }
+  }
+  
+  override func shallowCopy() -> Self
+  {
+    return type(of: self).init(tag: tag)
+  }
+  
+  // Not used, but required
+  required init(title: String)
+  {
+    self.tag = MockTag()
+    super.init(title: title)
+  }
+
+  private struct MockTag: Tag
+  {
+    let name = ""
+    let targetOID: OID? = nil
+    let commit: Commit? = nil
+    let message: String? = nil
   }
 }
 
@@ -278,10 +379,32 @@ class SubmoduleSidebarItem: SidebarItem
   override var icon: NSImage?
   { return NSImage(named: .xtSubmoduleTemplate) }
   
-  init(submodule: Submodule)
+  required init(submodule: Submodule)
   {
     self.submodule = submodule
     
     super.init(title: submodule.name)
+  }
+  
+  override func shallowCopy() -> Self
+  {
+    return type(of: self).init(submodule: submodule)
+  }
+  
+  required init(title: String)
+  {
+    self.submodule = MockSubmodule()
+    super.init(title: title)
+  }
+  
+  private class MockSubmodule: Submodule
+  {
+    let name = ""
+    let path = ""
+    let url: URL? = nil
+    
+    var ignoreRule: SubmoduleIgnore = .none
+    var updateStrategy: SubmoduleUpdate = .none
+    var recurse: SubmoduleRecurse = .no
   }
 }

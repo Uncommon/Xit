@@ -45,6 +45,8 @@ struct UIString: RawRepresentable
   static let cancel = ›"Cancel"
   static let clear = ›"Clear"
   static let commit = ›"Commit"
+  static let create = ›"Create"
+  static let createRemote = ›"Create Remote"
   static let delete = ›"Delete"
   static let deleteBranch = ›"Delete Branch"
   static let dontReplace = ›"Don't Replace"
@@ -246,6 +248,14 @@ struct UIString: RawRepresentable
   static let notFound = ›"The item was not found."
   static let unexpected = ›"An unexpected repository error occurred."
   static let workspaceDirty = ›"There are uncommitted changes."
+}
+
+extension UIString: Comparable
+{
+  static func < (lhs: UIString, rhs: UIString) -> Bool
+  {
+    return lhs.rawValue < rhs.rawValue
+  }
 }
 
 extension NSAlert

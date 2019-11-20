@@ -12,18 +12,10 @@ extension XTWindowController
   @IBAction
   func showHideSidebar(_ sender: AnyObject)
   {
-    let sidebarPane = mainSplitView.subviews[0]
-    let isCollapsed = sidebarHidden
-    let newWidth = isCollapsed
-                   ? savedSidebarWidth
-                   : mainSplitView.minPossiblePositionOfDivider(at: 0)
+    let wasCollapsed = splitViewController.splitViewItems[0].isCollapsed
     
-    if !isCollapsed {
-      savedSidebarWidth = sidebarPane.frame.size.width
-    }
-    mainSplitView.setPosition(newWidth, ofDividerAt: 0)
-    sidebarPane.isHidden = !isCollapsed
-    titleBarController!.viewControls.setSelected(sidebarHidden, forSegment: 0)
+    splitViewController.splitViewItems[0].isCollapsed = !wasCollapsed
+    titleBarController!.viewControls.setSelected(!wasCollapsed, forSegment: 0)
   }
   
   @IBAction
@@ -60,9 +52,16 @@ extension XTWindowController
   }
   
   @IBAction
-  func newBranch(_: AnyObject) {}
+  func newBranch(_: AnyObject)
+  {
+    _ = startOperation { NewBranchOpController(windowController: self) }
+  }
+  
   @IBAction
-  func addRemote(_: AnyObject) {}
+  func newRemote(_: AnyObject)
+  {
+    _ = startOperation { NewRemoteOpController(windowController: self) }
+  }
 
   @IBAction
   func goBack(_: AnyObject)
@@ -187,8 +186,13 @@ extension XTWindowController
     guard let menuItem = sender as? NSMenuItem
     else { return }
     
+    remoteSettings(remote: menuItem.title)
+  }
+  
+  func remoteSettings(remote: String)
+  {
     let controller = RemoteOptionsOpController(windowController: self,
-                                               remote: menuItem.title)
+                                               remote: remote)
     
     _ = try? controller.start()
   }
@@ -243,7 +247,13 @@ extension XTWindowController: NSMenuItemValidation
     case #selector(self.stash(_:)):
       result = true
       
+    case #selector(self.newBranch(_:)):
+      result = true
+      
     case #selector(self.newTag(_:)):
+      result = true
+      
+    case #selector(self.newRemote(_:)):
       result = true
       
     default:

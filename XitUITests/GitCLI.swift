@@ -9,7 +9,7 @@ class GitCLI
     let gitURL = Bundle(identifier: "com.uncommonplace.XitUITests")!
                  .url(forAuxiliaryExecutable: "git")!
     
-    self.runner = CLIRunner(gitPath: gitURL.path, repoPath: repoURL.path)
+    self.runner = CLIRunner(toolPath: gitURL.path, workingDir: repoURL.path)
   }
   
   func run(args: [String]) -> String

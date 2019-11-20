@@ -17,6 +17,16 @@ enum RepoError: Swift.Error
   case patchMismatch
   case unexpected
   case workspaceDirty
+  
+  var isExpected: Bool
+  {
+    switch self {
+      case .unexpected:
+        return false
+      default:
+        return true
+    }
+  }
 
   var message: UIString
   {

@@ -13,7 +13,14 @@ enum Window
 enum Sidebar
 {
   static let list = Window.window.outlines["sidebar"]
+  static let filter = Window.window.searchFields["sidebarFilter"]
+  static let addButton = Window.window.popUpButtons["sidebarAdd"]
   static let stagingCell = list.cells.element(boundBy: 1)
+  
+  static func cell(named name: String) -> XCUIElement
+  {
+    return list.cells.containing(.staticText, identifier: name).firstMatch
+  }
   
   static func assertStagingStatus(workspace: Int, staged: Int)
   {

@@ -1,5 +1,6 @@
 import Foundation
 
+/// Contains the items listed in the sidebar
 class SidebarDataModel
 {
   typealias Repository = FileChangesRepo & // For creating selection objects
@@ -109,6 +110,11 @@ class SidebarDataModel
     } ?? []
   }
   
+  func reload()
+  {
+    roots = loadRoots()
+  }
+  
   func loadRoots() -> [SideBarGroupItem]
   {
     guard let repo = repository
@@ -135,7 +141,6 @@ class SidebarDataModel
           RemoteSidebarItem(title: $0, repository: repo) }
     let remoteBranches = repo.remoteBranches.sorted { $0.name <~ $1.name }
 
-
     for branch in remoteBranches {
       guard let remote = remoteItems.first(where: { $0.title ==
                                                     branch.remoteName }),
@@ -148,8 +153,8 @@ class SidebarDataModel
       let remoteParent = parent(for: name, groupItem: remote)
       
       remoteParent.children.append(RemoteBranchSidebarItem(title: name,
-                                                      remote: remoteName,
-                                                      selection: selection))
+                                                           remote: remoteName,
+                                                           selection: selection))
     }
     
     Signpost.interval(.loadTags) {

@@ -82,6 +82,8 @@ extension XTWindowController: NSTouchBarDelegate
                 makeItemForIdentifier identifier: NSTouchBarItem.Identifier)
                 -> NSTouchBarItem?
   {
+    guard historyController.fileViewController.activeFileList != nil
+    else { return nil }
     let listController =
           historyController.fileViewController.activeFileListController
     

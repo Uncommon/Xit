@@ -109,8 +109,7 @@ class XTTest: XCTestCase
   
   func wait(for repository: XTRepository)
   {
-    repository.queue.wait()
-    WaitForQueue(DispatchQueue.main)
+    repository.waitForQueue()
   }
   
   func addInitialRepoContent()
@@ -232,6 +231,15 @@ class XTTest: XCTestCase
     
     try NSImage(named: NSImage.actionTemplateName)?.tiffRepresentation?
                                                    .write(to: tiffURL)
+  }
+}
+
+extension TaskManagement
+{
+  func waitForQueue()
+  {
+    queue.wait()
+    WaitForQueue(DispatchQueue.main)
   }
 }
 

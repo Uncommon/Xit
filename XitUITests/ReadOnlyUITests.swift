@@ -1,36 +1,18 @@
 import XCTest
 
-
-class XitUITests: XCTestCase
+/// Tests that do not modify the repository, so it only needs to be set up once.
+class ReadOnlyUITests: XCTestCase
 {
-  static let tempDir = TemporaryDirectory("XitTest")
-  static var repoURL: URL!
-  static var git: GitCLI!
+  static var env: TestRepoEnvironment!
 
   override class func setUp()
   {
-    let repo = TestRepo.testApp
-    guard let tempURL = tempDir?.url,
-          repo.extract(to: tempURL.path)
-    else {
-      XCTFail()
-      return
-    }
-    
-    let repoURL = Self.tempDir!.url.appendingPathComponent(TestRepo.testApp.rawValue)
-
-    git = GitCLI(repoURL: repoURL)
+    env = TestRepoEnvironment(.testApp)!
   }
   
   override func setUp()
   {
-    XitApp.launchArguments = ["-noServices", "YES"]
-    XitApp.launch()
-    XitApp.activate()
-    
-    let repoURL = Self.tempDir!.url.appendingPathComponent(TestRepo.testApp.rawValue)
-    
-    NSWorkspace.shared.openFile(repoURL.path, withApplication: "Xit")
+    Self.env.open()
   }
   
   func testTitleBar()
@@ -43,42 +25,38 @@ class XitUITests: XCTestCase
     
     XCTAssertEqual(Window.titleLabel.value as? String, repoName)
     XCTAssertEqual(Window.branchPopup.value as? String, "master")
-    
-    // Try switching branches
-    let otherBranch = "feature"
-    
-    Window.branchPopup.click()
-    XitApp.menuItems[otherBranch].click()
-    XCTAssertEqual(Window.branchPopup.value as? String, otherBranch)
-    
-    let currentBranch = Self.git.currentBranch()
-    
-    XCTAssertEqual(currentBranch, otherBranch)
   }
     
   func testSidebar()
   {
     Sidebar.assertStagingStatus(workspace: 1, staged: 0)
     
-    Sidebar.assertBranches([
-        "1-and_more", "and-how", "andhow-ad", "asdf", "blah", "feature",
-        "hi!", "master", "new", "other-branch", "wat", "whateelse", "whup",
-        ])
+    Sidebar.assertBranches(Self.env.repo.defaultBranches)
+  }
+  
+  /// Tests filtering with no branch folders
+  func testSidebarFilterFlat()
+  {
+    let aBranches = Self.env.repo.defaultBranches.filter { $0.contains("a") }
+    let andBranches = aBranches.filter { $0.contains("and") }
+    let masterBranchCell = Sidebar.list.cells["master"]
+    let newBranchCell = Sidebar.list.cells["new"]
     
-    // Rename a branch
-    let oldBranchName = "and-how"
-    let newBranchName = "and-then"
-
-    Sidebar.list.staticTexts[oldBranchName].rightClick()
-    XitApp.menuItems["Rename"].click()
-    XitApp.typeText("\(newBranchName)\r")
-    XCTAssertTrue(Sidebar.list.staticTexts[newBranchName].exists)
-
-    // Verify the rename
-    let branches = Self.git.branches()
+    Sidebar.filter.click()
+    Sidebar.filter.typeText("a")
+    wait(for: [absence(of: newBranchCell)], timeout: 2.0)
     
-    XCTAssertFalse(branches.contains(oldBranchName))
-    XCTAssertTrue(branches.contains(newBranchName))
+    Sidebar.assertBranches(aBranches)
+    
+    Sidebar.filter.typeText("nd")
+    wait(for: [absence(of: masterBranchCell)], timeout: 2.0)
+
+    Sidebar.assertBranches(andBranches)
+    
+    Sidebar.filter.buttons["cancel"].click()
+    Thread.sleep(forTimeInterval: 0.5)
+
+    Sidebar.assertBranches(Self.env.repo.defaultBranches)
   }
 
   func testCommitContent()

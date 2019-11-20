@@ -1,67 +1,31 @@
 import Foundation
 
-extension NSObject
+extension URL
 {
-  func changingValue(forKey key: String, block: () -> Void)
+  /// Returns a copy of the URL with its path replaced
+  func withPath(_ path: String) -> URL
   {
-    willChangeValue(forKey: key)
-    block()
-    didChangeValue(forKey: key)
-  }
-}
-
-extension NSColor
-{
-  var invertingBrightness: NSColor
-  {
-    return NSColor(deviceHue: hueComponent,
-                   saturation: saturationComponent,
-                   brightness: 1.0 - brightnessComponent,
-                   alpha: alphaComponent)
-  }
-
-  var cssHSL: String
-  {
-    let converted = usingColorSpace(.deviceRGB)!
-    let hue = converted.hueComponent
-    let sat = converted.saturationComponent
-    let brightness = converted.brightnessComponent
-    
-    return "hsl(\(hue*360.0), \(sat*100.0)%, \(brightness*100.0)%)"
-  }
-  
-  var cssRGB: String
-  {
-    let converted = usingColorSpace(.deviceRGB)!
-    let red = converted.redComponent
-    let green = converted.greenComponent
-    let blue = converted.blueComponent
-    
-    return "rgb(\(Int(red*255)), \(Int(green*255)), \(Int(blue*255)))"
-  }
-  
-  func withHue(_ hue: CGFloat) -> NSColor
-  {
-    guard let converted = usingColorSpace(.deviceRGB)
+    guard var components = URLComponents(url: self,
+                                         resolvingAgainstBaseURL: false)
     else { return self }
-
-    return NSColor(deviceHue: hue,
-                   saturation: converted.saturationComponent,
-                   brightness: converted.brightnessComponent,
-                   alpha: converted.alphaComponent)
-  }
-}
-
-extension NSError
-{
-  var gitError: git_error_code
-  {
-    return git_error_code(Int32(code))
+    
+    components.path = path
+    return components.url ?? self
   }
   
-  convenience init(osStatus: OSStatus)
+  /// Returns the default port based on the URL's scheme
+  var defaultPort: Int
   {
-    self.init(domain: NSOSStatusErrorDomain, code: Int(osStatus), userInfo: nil)
+    switch scheme {
+      case "https":
+        return 443
+      case "ssh":
+        return 22
+      case "git":
+        return 9418
+      default:
+        return 80
+    }
   }
 }
 
@@ -95,76 +59,7 @@ extension XMLElement
   }
 }
 
-extension NSTreeNode
-{
-  /// Inserts a child node in sorted order based on the given key extractor
-  func insert<T>(node: NSTreeNode, sortedBy extractor: (NSTreeNode) -> T?)
-    where T: Comparable
-  {
-    guard let children = self.children,
-          let key = extractor(node)
-    else {
-      mutableChildren.add(node)
-      return
-    }
-    
-    for (index, child) in children.enumerated() {
-      guard let childKey = extractor(child)
-      else { continue }
-      
-      if childKey > key {
-        mutableChildren.insert(node, at: index)
-        return
-      }
-    }
-    mutableChildren.add(node)
-  }
-
-  func dump(_ level: Int = 0)
-  {
-    if let myObject = representedObject as? CustomStringConvertible {
-      print(String(repeating: "  ", count: level) + myObject.description)
-    }
-    
-    guard let children = self.children
-    else { return }
-    
-    for child in children {
-      child.dump(level + 1)
-    }
-  }
-}
-
-extension URL
-{
-  /// Returns a copy of the URL with its path replaced
-  func withPath(_ path: String) -> URL
-  {
-    guard var components = URLComponents(url: self,
-                                         resolvingAgainstBaseURL: false)
-    else { return self }
-    
-    components.path = path
-    return components.url ?? self
-  }
-  
-  /// Returns the default port based on the URL's scheme
-  var defaultPort: Int
-  {
-    switch scheme {
-      case "https":
-        return 443
-      case "ssh":
-        return 22
-      case "git":
-        return 9418
-      default:
-        return 80
-    }
-  }
-}
-
-extension Array
+extension Sequence
 {
   /// Returns the number of elements satisfying the predicate.
   func count(where predicate: (Element) -> Bool) -> Int
@@ -174,7 +69,34 @@ extension Array
       return predicate(element) ? count + 1 : count
     }
   }
+}
 
+extension Sequence where Element: NSObject
+{
+  /// Returns true if the sequence contains an object where `isEqual`
+  /// returns true.
+  func containsEqualObject(_ object: NSObject) -> Bool
+  {
+    return contains { $0.isEqual(object) }
+  }
+}
+
+extension Collection
+{
+  /// Returns the index of each item satisfying the condition.
+  func indices(where condition: (Element) -> Bool) -> IndexSet
+  {
+    return enumerated().reduce(into: IndexSet()) {
+      (indices, pair) in
+      if condition(pair.element) {
+        indices.update(with: pair.offset)
+      }
+    }
+  }
+}
+
+extension Array
+{
   /// Assuming the array is sorted, returns the insertion index for the given
   /// item to be inserted in order.
   func sortedInsertionIndex(of elem: Element,
@@ -209,6 +131,23 @@ extension Array
   {
     self = enumerated().filter { !indexSet.contains($0.offset) }
                        .map { $0.element }
+  }
+  
+  mutating func insert<S>(_ elements: S, at indexSet: IndexSet)
+    where S: Sequence, S.Element == Element
+  {
+    for (element, index) in zip(elements, indexSet) {
+      insert(element, at: index)
+    }
+  }
+  
+  mutating func insert<S>(from otherSequence: S, indices: IndexSet)
+    where S: Collection, S.Element == Element, S.Index == Int
+  {
+    // Regular for loop yields IndexSet.Index rather than Int
+    indices.forEach {
+      insert(otherSequence[$0], at: $0)
+    }
   }
   
   /// Returns the first non-nil result of calling `predicate` on the array's
