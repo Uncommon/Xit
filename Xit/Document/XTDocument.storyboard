@@ -391,6 +391,7 @@
                 </customObject>
                 <customObject id="pdV-2u-hvJ" customClass="SidebarDelegate" customModule="Xit" customModuleProvider="target">
                     <connections>
+                        <outlet property="controller" destination="pEv-JE-8no" id="toH-4q-xMl"/>
                         <outlet property="outline" destination="8QW-fq-72y" id="fQW-sh-c74"/>
                     </connections>
                 </customObject>

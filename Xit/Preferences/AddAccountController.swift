@@ -35,9 +35,9 @@ class AddAccountController: SheetController
   @ControlStringValue var password: String
   @ControlURLValue var location: URL?
   
-  override func windowDidLoad()
+  override func awakeFromNib()
   {
-    super.windowDidLoad()
+    super.awakeFromNib()
     
     $userName = userField
     $password = passwordField

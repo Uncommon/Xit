@@ -74,7 +74,7 @@ class SideBarDataSource: NSObject
   {
     return index.rawValue < displayItemList.count ?
         displayItemList[index.rawValue] :
-        SideBarGroupItem(title: "") // May be needed during initial load
+        SideBarGroupItem(titleString: .emptyString) // For initial load
   }
   
   func reload()
