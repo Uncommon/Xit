@@ -124,6 +124,7 @@ class SideBarDataSource: NSObject
     if outline.selectedRow == -1 {
       selectCurrentBranch()
     }
+    viewController.reloadFinished()
   }
   
   private func applyFilterChanges()
