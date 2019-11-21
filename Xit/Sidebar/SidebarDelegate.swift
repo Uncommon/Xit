@@ -45,9 +45,48 @@ class SidebarDelegate: NSObject
         as? SidebarTableCellView
   }
   
+  /// Optimized search for branch cells because `NSOutlineView.row(forItem:)`
+  /// doesn't know about different item types, and could waste a lot of time
+  /// searching through tags and such.
+  func cell(forBranchItem branchItem: BranchSidebarItem) -> SidebarTableCellView?
+  {
+    guard let model = self.model
+    else { return nil }
+    let groupItem: SideBarGroupItem
+    
+    switch branchItem {
+      case is LocalBranchSidebarItem:
+        groupItem = model.rootItem(.branches)
+      case is RemoteBranchSidebarItem:
+        groupItem = model.rootItem(.remotes)
+      default:
+        return nil
+    }
+    
+    let groupRow = outline.row(forItem: groupItem)
+    guard groupRow != -1
+    else { return nil }
+    
+    for row in (groupRow+1)..<outline.numberOfRows {
+      guard let item = outline.item(atRow: row) as? SidebarItem
+      else { continue }
+      
+      if item === branchItem {
+        return outline.view(atColumn: 0, row: row, makeIfNecessary: false)
+            as? SidebarTableCellView
+      }
+      
+      guard !(item is SideBarGroupItem)
+      else { break }
+    }
+    
+    return nil
+  }
+  
   func updateStatusImage(item: SidebarItem, cell: SidebarTableCellView?)
   {
-    guard let cell = cell ?? self.cell(forItem: item)
+    guard let branchItem = item as? BranchSidebarItem,
+          let cell = cell ?? self.cell(forBranchItem: branchItem)
     else { return }
     
     if let image = buildStatusController?.statusImage(for: item) {
