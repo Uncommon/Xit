@@ -60,6 +60,7 @@ class SidebarDelegate: NSObject
       cell.statusButton.target = controller
       cell.statusButton.action = #selector(SidebarController.showItemStatus(_:))
       cell.statusButton.isEnabled = true
+      cell.missingImage.isHidden = true
     }
     cell.buttonContainer.isHidden = cell.statusButton.image == nil
   }
