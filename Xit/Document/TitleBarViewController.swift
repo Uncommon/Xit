@@ -264,7 +264,7 @@ class TitleBarViewController: NSViewController
   func updateBranchList(_ branches: [String], current: String?)
   {
     branchPopup.removeAllItems()
-    branchPopup.addItems(withTitles: branches)
+    branchPopup.addItems(withTitles: branches.sorted())
     if let current = current {
       selectedBranch = current
     }
