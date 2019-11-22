@@ -10,17 +10,17 @@ class BlameViewController: WebViewController
   
   var repoController: RepositoryController?
   {
-    let window: NSWindow?
+    let windowController: NSWindowController?
     
     if Thread.isMainThread {
-      window = view.window
+      windowController = view.window?.windowController
     }
     else {
-      window = DispatchQueue.main.sync {
-        return view.window
+      windowController = DispatchQueue.main.sync {
+        return view.window?.windowController
       }
     }
-    return window?.windowController as? RepositoryController
+    return windowController as? RepositoryController
   }
   
   class CommitColoring
