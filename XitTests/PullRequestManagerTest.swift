@@ -23,7 +23,7 @@ class PullRequestManagerTest: XCTestCase
     let matchPR = FakePullRequest(
           service: service,
           availableActions: [],
-          sourceBranch: "branch1",
+          sourceBranch: "refs/heads/branch1",
           sourceRepo: fakeRepo.remote1.url,
           displayName: "PR1", id: "1",
           authorName: "Man1", status: .open,
@@ -31,7 +31,7 @@ class PullRequestManagerTest: XCTestCase
     let otherPR = FakePullRequest(
           service: service,
           availableActions: [],
-          sourceBranch: "branch2",
+          sourceBranch: "refs/heads/branch2",
           sourceRepo: fakeRepo.remote2.url,
           displayName: "PR2", id: "2",
           authorName: "Man2", status: .open,

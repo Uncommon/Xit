@@ -128,8 +128,8 @@ extension FakeRepo: RemoteManagement
   func remote(named name: String) -> Remote?
   {
     switch name {
-      case "remote1": return remote1
-      case "remote2": return remote2
+      case "origin1": return remote1
+      case "origin2": return remote2
       default: return nil
     }
   }
