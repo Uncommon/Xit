@@ -17,8 +17,6 @@ class HistoryViewController: NSViewController
   
   private var savedHistorySize: CGFloat?
   
-  weak var repo: XTRepository!
-  
   var historyHidden: Bool
   {
     return mainSplitView.subviewLength(0) == 0
@@ -37,13 +35,6 @@ class HistoryViewController: NSViewController
   init()
   {
     super.init(nibName: .historyViewControllerNib, bundle: nil)
-  }
-  
-  // For testing
-  private init(repository: XTRepository)
-  {
-    repo = repository
-    super.init(coder: NSCoder())!
   }
   
   required init?(coder: NSCoder)
