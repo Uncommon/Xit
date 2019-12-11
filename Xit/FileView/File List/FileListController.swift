@@ -6,7 +6,6 @@ class FileListController: NSViewController
   {
     static let action = ¶"action"
     static let file = ¶"file"
-    static let status = ¶"status"
     static let hidden = ¶"hidden"
   }
   
@@ -15,7 +14,6 @@ class FileListController: NSViewController
   {
     static let action = ¶"action"
     static let fileCell = ¶"fileCell"
-    static let status = ¶"status"
   }
   
   enum ViewSegment
@@ -311,15 +309,14 @@ extension FileListController: NSOutlineViewDelegate
                                               outlineView: outlineView,
                                               item: item)
         cell.change = change
-        return cell
-
-      case ColumnID.status:
-        guard let cell = outlineView.makeView(withIdentifier: CellViewID.status,
-                                              owner: self)
-                         as? NSTableCellView
-        else { return nil }
         
-        cell.imageView?.image = change.changeImage
+        if let image = change.changeImage {
+          cell.statusImage.image = image
+          cell.statusImage.isHidden = false
+        }
+        else {
+          cell.statusImage.isHidden = true
+        }
         return cell
 
       default:

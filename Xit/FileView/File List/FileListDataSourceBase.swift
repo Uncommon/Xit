@@ -83,6 +83,8 @@ protocol FileListDelegate: AnyObject
 /// Cell view with custom drawing for deleted files.
 class FileCellView: NSTableCellView
 {
+  @IBOutlet var statusImage: NSImageView!
+  
   /// The change is stored to improve drawing of selected deleted files.
   var change: DeltaStatus = .unmodified
   
