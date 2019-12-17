@@ -333,7 +333,7 @@ extension HistoryTableController: NSTableViewDelegate
       case ColumnID.commit:
         let historyCell = result as! HistoryCellView
         
-        historyCell.configure(row: row, entry: entry, repository: repository)
+        historyCell.configure(entry: entry, repository: repository)
 
       case ColumnID.date:
         (result as! DateCellView).date = entry.commit.commitDate

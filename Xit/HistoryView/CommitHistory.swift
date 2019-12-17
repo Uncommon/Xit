@@ -296,7 +296,7 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
                               batchSize: batchSize,
                               starting: processingConnections)
     
-    signpostStart(.generateLines, UInt(batchStart))
+    Signpost.intervalStart(.generateLines(batchStart))
     DispatchQueue.concurrentPerform(iterations: batchSize) {
       (index) in
       guard !checkAbort() && (index + batchStart < entries.count)
@@ -307,7 +307,7 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
       generateLines(entry: entry, connections: connections[index])
       postProgress?(1, progressStartRow, index, progressEndRow)
     }
-    signpostEnd(.generateLines, UInt(batchStart))
+    Signpost.intervalEnd(.generateLines(batchStart))
     processingConnections = newConnections
     batchStart += batchSize
   }

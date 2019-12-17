@@ -145,8 +145,6 @@ class TitleBarViewController: NSViewController
             let total = notification.total
       else { return }
       
-      //print("\(progress)/\(total)")
-      signpost(.historyProgress, UInt(total), UInt(progress))
       self.spinner.isIndeterminate = false
       self.spinner.maxValue = Double(total)
       self.spinner.doubleValue = Double(progress)
