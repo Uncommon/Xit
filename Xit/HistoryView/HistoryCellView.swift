@@ -82,7 +82,7 @@ class HistoryCellView: NSTableCellView
       toolTip = nil
     }
   }
-  
+
   func configure(entry: CommitEntry, repository: Branching & CommitReferencing)
   {
     currentBranch = repository.currentBranch
@@ -116,7 +116,8 @@ class HistoryCellView: NSTableCellView
   /// Moves the text field out of the way of the lines and refs.
   override func updateConstraints()
   {
-    let totalColumns = entry.lines.reduce(0) { (oldMax, line) -> UInt in
+    let totalColumns = entry.lines.reduce(0) {
+      (oldMax, line) -> UInt in
       max(oldMax, line.parentIndex ?? 0, line.childIndex ?? 0)
     }
     let linesMargin = Margins.left + CGFloat(totalColumns + 1) * Widths.column

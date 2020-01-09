@@ -42,16 +42,16 @@ enum BitbucketServer
       switch self {
         case .approved:   return .approved
         case .unapproved: return .unreviewed
-        case .needsWork: return .needsWork
+        case .needsWork:  return .needsWork
       }
     }
     
     init(approval: PullRequestApproval)
     {
       switch approval {
-        case .approved: self = .approved
+        case .approved:   self = .approved
         case .unreviewed: self = .unapproved
-        case .needsWork: self = .needsWork
+        case .needsWork:  self = .needsWork
       }
     }
   }

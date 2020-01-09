@@ -14,7 +14,6 @@ public class HistoryTableController: NSViewController
   let observers = ObserverCollection()
 
   var tableView: NSTableView { return view as! NSTableView }
-  var lastBatch = -1
 
   weak var repository: XTRepository!
   {
@@ -85,7 +84,7 @@ public class HistoryTableController: NSViewController
     
     history.postProgress = {
       [weak self] in
-      self?.postProgress(batchSize: $0, batch: $1, pass: $2, value: $3)
+      self?.batchFinished(start: $0, end: $1)
     }
   }
   
@@ -144,7 +143,7 @@ public class HistoryTableController: NSViewController
         // progress will be displayed.
         self.repository.queue.executeTask {
           Signpost.interval(.connectCommits) {
-            history.connectCommits(batchSize: batchSize) {}
+            history.processFirstBatch()
           }
         }
         DispatchQueue.main.async {
@@ -156,46 +155,46 @@ public class HistoryTableController: NSViewController
     }
   }
   
-  func postProgress(batchSize: Int, batch: Int, pass: Int, value: Int)
+  /// Notifier for history processing progress
+  /// - parameter start: Row where the batch started
+  /// - parameter end: Row where the batch ended
+  func batchFinished(start: Int, end: Int)
   {
-    let passCount = 2
-    let goal = history.entries.count * passCount
-    let completed = batch * batchSize * passCount
-    let totalProgress = completed + pass * passCount + value
-  
-    let step = goal / 100
-    
-    if (step == 0) || (totalProgress % step == 0) {
-      let progressNote = Notification.progressNotification(
-            repository: repository,
-            progress: Float(totalProgress),
-            total: Float(goal))
+    DispatchQueue.main.async {
+      [weak self] in
+      guard let tableView = self?.tableView
+      else { return }
       
-      DispatchQueue.main.async {
-        NotificationCenter.default.post(progressNote)
-      }
-    }
-    
-    if batch != lastBatch {
-      lastBatch = batch
-      DispatchQueue.main.async {
-        [weak self] in
-        guard let tableView = self?.tableView
+      let batchRange = start..<end
+      let columnRange = 0..<tableView.tableColumns.count
+      var updateRange: ClosedRange<Int>?
+      
+      tableView.enumerateAvailableRowViews {
+        (rowView, row) in
+        guard batchRange.contains(row)
         else { return }
         
-        switch batch {
-          case 0:
-            break
-          case 1:
-            tableView.reloadData()
-          default:
-            let batchStart = batch * batchSize
-            let range = batchStart..<(batchStart+batchSize)
-            let columnRange = 0..<tableView.tableColumns.count
-            
-            tableView.reloadData(forRowIndexes: IndexSet(integersIn: range),
-                                 columnIndexes: IndexSet(integersIn: columnRange))
+        if let oldRange = updateRange {
+          let start = min(row, oldRange.lowerBound)
+          let end = max(row, oldRange.upperBound)
+
+          updateRange = start...end
         }
+        else {
+          updateRange = row...row
+        }
+        
+        if let cellView = rowView.view(atColumn: 0) as? HistoryCellView {
+          cellView.needsUpdateConstraints = true
+          cellView.needsDisplay = true
+        }
+        else {
+          rowView.needsDisplay = true
+        }
+      }
+      if let range = updateRange {
+        tableView.reloadData(forRowIndexes: IndexSet(integersIn: range),
+                             columnIndexes: IndexSet(integersIn: columnRange))
       }
     }
   }
@@ -280,6 +279,16 @@ extension HistoryTableController: NSTableViewDelegate
                         viewFor tableColumn: NSTableColumn?,
                         row: Int) -> NSView?
   {
+    let visibleRowCount =
+          tableView.rows(in: tableView.enclosingScrollView!.bounds).length
+    let firstProcessRow = min(history.entries.count, row + visibleRowCount)
+    
+    if firstProcessRow > history.batchStart
+    {
+      history.processBatches(throughRow: firstProcessRow,
+                             queue: repository.queue)
+    }
+    
     guard (row >= 0) && (row < history.entries.count)
     else {
       NSLog("Object value request out of bounds")

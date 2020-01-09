@@ -98,9 +98,8 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
   private var abortFlag = false
   private var abortMutex = Mutex()
   
-  // batchSize, batch, pass, value
-  // HistoryTableController.postProgress assumes 2 passes.
-  var postProgress: ((Int, Int, Int, Int) -> Void)?
+  // start, end
+  var postProgress: ((Int, Int) -> Void)?
   
   /// Manually appends a commit.
   func appendCommit(_ commit: Commit)
@@ -113,9 +112,12 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
   {
     abort()
     commitLookup.removeAll()
-    objc_sync_enter(self)
-    entries.removeAll()
-    objc_sync_exit(self)
+    withSync {
+      entries.removeAll()
+      batchStart = 0
+      batchTargetRow = 0
+      processingConnections = [Connection]()
+    }
     resetAbort()
   }
   
@@ -276,46 +278,96 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
     }
   }
   
-  /// Creates the connections to be drawn between commits.
-  public func connectCommits(batchSize: Int = 0,
-                             batchNotify: (() -> Void)? = nil)
+  var batchSize = 500
+  var batchStart = 0
+  var batchTargetRow = 0
+  var progressStartRow = 0
+  var progressEndRow = 0
+  var processingConnections = [Connection]()
+  
+  /// Processes the next batch of connections in the list. Should not be
+  /// called on the main thread.
+  public func processNextConnectionBatch()
   {
-    let batchSize = batchSize <= 0 ? entries.count : batchSize
-    var batchStart = 0
-    var startingConnections = [Connection]()
+    let batchSize = min(self.batchSize, entries.count - batchStart)
+    let (connections, newConnections) =
+          generateConnections(batchStart: batchStart,
+                              batchSize: batchSize,
+                              starting: processingConnections)
     
-    while batchStart < entries.count {
-      if checkAbort() {
-        break
-      }
-
-      let batchSize = min(batchSize, entries.count - batchStart)
-      let (connections, newStart) =
-            generateConnections(batchStart: batchStart,
-                                batchSize: batchSize,
-                                starting: startingConnections)
+    Signpost.intervalStart(.generateLines(batchStart))
+    DispatchQueue.concurrentPerform(iterations: batchSize) {
+      (index) in
+      guard !checkAbort() && (index + batchStart < entries.count)
+      else { return }
       
-      Signpost.intervalStart(.generateLines(batchStart), object: self)
-      DispatchQueue.concurrentPerform(iterations: batchSize) {
-        (index) in
-        guard !checkAbort() && (index + batchStart < entries.count)
-        else { return }
-        
-        objc_sync_enter(self)
-        let entry = entries[index + batchStart]
-        objc_sync_exit(self)
-        
-        generateLines(entry: entry, connections: connections[index])
-        postProgress?(batchSize, batchStart/batchSize, 1, index)
-      }
-      Signpost.intervalEnd(.generateLines(batchStart), object: self)
+      let entry = withSync { entries[index + batchStart] }
+      
+      generateLines(entry: entry, connections: connections[index])
+    }
+    postProgress?(batchStart, batchStart + batchSize)
+    Signpost.intervalEnd(.generateLines(batchStart))
+    processingConnections = newConnections
+    batchStart += batchSize
+  }
+  
+  public func processFirstBatch()
+  {
+    batchStart = 0
+    processBatches(throughRow: batchSize-1)
+  }
+  
+  /// Returns the end of the batch containing the target row
+  private func batchEnd(target: Int, batchSize: Int) -> Int
+  {
+    // There must be a simpler way to calculate this but I can't quite get it
+    let mod = (target + 1) % batchSize
+    
+    return target + ((mod == 0) ? 0 : batchSize - mod)
+  }
+  
+  /// Starts processing rows until the given row is processed. If processing
+  /// is already happening, the target is set to at least the given row.
+  func processBatches(throughRow row: Int, queue: TaskQueue? = nil)
+  {
+    var startProcessing = false
+    
+    withSync {
+      guard row > batchTargetRow
+      else { return }
+      
+      progressStartRow = batchStart
+      progressEndRow = batchEnd(target: row, batchSize: batchSize)
+      startProcessing = batchTargetRow == 0
+      batchTargetRow = row
+    }
 
-      startingConnections = newStart
-      batchStart += batchSize
-      batchNotify?()
+    if startProcessing {
+      DispatchQueue.global(qos: .utility).async {
+        if let queue = queue {
+          queue.executeTask {
+            self.processBatch()
+          }
+        }
+        else {
+          self.processBatch()
+        }
+      }
     }
   }
   
+  private func processBatch()
+  {
+    while self.batchStart < min(self.withSync { self.batchTargetRow },
+                                self.entries.count) {
+      self.processNextConnectionBatch()
+    }
+    self.withSync { self.batchTargetRow = 0 }
+  }
+  
+  /// Performs one batch of connection generation.
+  /// - returns: The connections for the processed commits, and the starting
+  /// connections for the next batch.
   func generateConnections(batchStart: Int, batchSize: Int,
                            starting: [Connection])
     -> ([[Connection]], [Connection])
@@ -330,7 +382,7 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
     var nextColorIndex: UInt = 0
     
     result.reserveCapacity(batchSize)
-    for (index, entry) in entries[batchStart..<batchStart+batchSize].enumerated() {
+    for entry in entries[batchStart..<batchStart+batchSize] {
       let commitOID = entry.commit.oid as! ID
       let incomingIndex = connections.firstIndex { $0.parentOID.equals(commitOID) }
       let incomingColor = incomingIndex.flatMap { connections[$0].colorIndex }
@@ -355,11 +407,17 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
       
       result.append(connections)
       connections = connections.filter { $0.parentOID != commitOID }
-      
-      postProgress?(batchSize, batchStart/batchSize, 0, index)
     }
     
     return (result, connections)
+  }
+  
+  private func parentIndex(_ parentOutlets: NSOrderedSet,
+                           of id: ID) -> UInt?
+  {
+    let result = parentOutlets.index(of: id)
+    
+    return result == NSNotFound ? nil : UInt(result)
   }
   
   func generateLines(entry: CommitEntry,
@@ -376,7 +434,7 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
       let commitIsParent = connection.parentOID.equals(entry.commit.oid)
       let commitIsChild = connection.childOID.equals(entry.commit.oid)
       let parentIndex: UInt? = commitIsParent
-              ? nil : UInt(parentOutlets.index(of: connection.parentOID))
+              ? nil : self.parentIndex(parentOutlets, of: connection.parentOID)
       var childIndex: UInt? = commitIsChild
               ? nil : nextChildIndex
       var colorIndex = connection.colorIndex
