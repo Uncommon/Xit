@@ -98,9 +98,8 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
   private var abortFlag = false
   private var abortMutex = Mutex()
   
-  // pass, start, current, end
-  // HistoryTableController.postProgress assumes 2 passes.
-  var postProgress: ((Int, Int, Int, Int) -> Void)?
+  // start, end
+  var postProgress: ((Int, Int) -> Void)?
   
   /// Manually appends a commit.
   func appendCommit(_ commit: Commit)
@@ -305,8 +304,8 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
       let entry = withSync { entries[index + batchStart] }
       
       generateLines(entry: entry, connections: connections[index])
-      postProgress?(1, progressStartRow, index, progressEndRow)
     }
+    postProgress?(batchStart, batchStart + batchSize)
     Signpost.intervalEnd(.generateLines(batchStart))
     processingConnections = newConnections
     batchStart += batchSize
@@ -366,44 +365,9 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
     self.withSync { self.batchTargetRow = 0 }
   }
   
-  /// Creates the connections to be drawn between commits.
-  public func connectCommits(batchSize: Int = 0,
-                             batchNotify: (() -> Void)? = nil)
-  {
-    let batchSize = batchSize <= 0 ? entries.count : batchSize
-    var batchStart = 0
-    var startingConnections = [Connection]()
-    
-    while batchStart < entries.count {
-      if checkAbort() {
-        break
-      }
-
-      let batchSize = min(batchSize, entries.count - batchStart)
-      let (connections, newStart) =
-            generateConnections(batchStart: batchStart,
-                                batchSize: batchSize,
-                                starting: startingConnections)
-      
-      Signpost.intervalStart(.generateLines(batchStart), object: self)
-      DispatchQueue.concurrentPerform(iterations: batchSize) {
-        (index) in
-        guard !checkAbort() && (index + batchStart < entries.count)
-        else { return }
-        
-        let entry = withSync { entries[index + batchStart] }
-        
-        generateLines(entry: entry, connections: connections[index])
-        postProgress?(1, progressStartRow, index + batchStart, progressEndRow)
-      }
-      Signpost.intervalEnd(.generateLines(batchStart), object: self)
-
-      startingConnections = newStart
-      batchStart += batchSize
-      batchNotify?()
-    }
-  }
-  
+  /// Performs one batch of connection generation.
+  /// - returns: The connections for the processed commits, and the starting
+  /// connections for the next batch.
   func generateConnections(batchStart: Int, batchSize: Int,
                            starting: [Connection])
     -> ([[Connection]], [Connection])
@@ -418,7 +382,7 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
     var nextColorIndex: UInt = 0
     
     result.reserveCapacity(batchSize)
-    for (index, entry) in entries[batchStart..<batchStart+batchSize].enumerated() {
+    for entry in entries[batchStart..<batchStart+batchSize] {
       let commitOID = entry.commit.oid as! ID
       let incomingIndex = connections.firstIndex { $0.parentOID.equals(commitOID) }
       let incomingColor = incomingIndex.flatMap { connections[$0].colorIndex }
@@ -443,8 +407,6 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
       
       result.append(connections)
       connections = connections.filter { $0.parentOID != commitOID }
-      
-      postProgress?(0, progressStartRow, index, progressEndRow)
     }
     
     return (result, connections)

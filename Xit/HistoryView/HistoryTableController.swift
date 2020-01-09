@@ -14,7 +14,6 @@ public class HistoryTableController: NSViewController
   let observers = ObserverCollection()
 
   var tableView: NSTableView { return view as! NSTableView }
-  var lastBatch = -1
 
   weak var repository: XTRepository!
   {
@@ -85,7 +84,7 @@ public class HistoryTableController: NSViewController
     
     history.postProgress = {
       [weak self] in
-      self?.postProgress(pass: $0, start: $1, current: $2, end: $3)
+      self?.batchFinished(start: $0, end: $1)
     }
   }
   
@@ -157,71 +156,45 @@ public class HistoryTableController: NSViewController
   }
   
   /// Notifier for history processing progress
-  /// - parameter pass: Currently there are two passes
-  /// - parameter start: Row where the current task started
-  /// - parameter current: Relative progress in the current pass
-  /// - parameter end: Row where the task will end
-  func postProgress(pass: Int, start: Int, current: Int, end: Int)
+  /// - parameter start: Row where the batch started
+  /// - parameter end: Row where the batch ended
+  func batchFinished(start: Int, end: Int)
   {
-    //print("\(start) - \(current) - \(end)")
-    let passCount = 2
-    let batch = start / batchSize
-    let passSize = end - start
-    let goal = passSize * passCount
-    let totalProgress = pass * passSize + current
-  
-    let step = goal / 100
-    
-    if (step == 0) || (totalProgress % step == 0) {
-      let progressNote = Notification.progressNotification(
-            repository: repository,
-            progress: Float(totalProgress),
-            total: Float(goal))
+    DispatchQueue.main.async {
+      [weak self] in
+      guard let tableView = self?.tableView
+      else { return }
       
-      DispatchQueue.main.async {
-        NotificationCenter.default.post(progressNote)
-      }
-    }
-    
-    if batch != lastBatch {
-      lastBatch = batch
-      DispatchQueue.main.async {
-        [weak self] in
-        guard let tableView = self?.tableView
+      let batchRange = start..<end
+      let columnRange = 0..<tableView.tableColumns.count
+      var updateRange: ClosedRange<Int>?
+      
+      tableView.enumerateAvailableRowViews {
+        (rowView, row) in
+        guard batchRange.contains(row)
         else { return }
         
-        switch batch {
-          case 0:
-            break
-          case 1:
-            tableView.reloadData()
-          default:
-            let batchStart = batch * batchSize
-            let range = batchStart..<(batchStart+batchSize)
-            let columnRange = 0..<tableView.tableColumns.count
-            var viewRange: ClosedRange<Int>?
-            
-            tableView.enumerateAvailableRowViews {
-              (rowView, row) in
-              if let oldRange = viewRange {
-                viewRange = min(row, oldRange.lowerBound)...max(row, oldRange.upperBound)
-              }
-              else {
-                viewRange = row...row
-              }
-              
-              if let cellView = rowView.view(atColumn: 0) as? HistoryCellView {
-                cellView.needsUpdateConstraints = true
-                cellView.needsDisplay = true
-              }
-              else {
-                rowView.needsDisplay = true
-              }
-            }
-            print("*** updated \(viewRange ?? 0...0)")
-            tableView.reloadData(forRowIndexes: IndexSet(integersIn: range),
-                                 columnIndexes: IndexSet(integersIn: columnRange))
+        if let oldRange = updateRange {
+          let start = min(row, oldRange.lowerBound)
+          let end = max(row, oldRange.upperBound)
+
+          updateRange = start...end
         }
+        else {
+          updateRange = row...row
+        }
+        
+        if let cellView = rowView.view(atColumn: 0) as? HistoryCellView {
+          cellView.needsUpdateConstraints = true
+          cellView.needsDisplay = true
+        }
+        else {
+          rowView.needsDisplay = true
+        }
+      }
+      if let range = updateRange {
+        tableView.reloadData(forRowIndexes: IndexSet(integersIn: range),
+                             columnIndexes: IndexSet(integersIn: columnRange))
       }
     }
   }
