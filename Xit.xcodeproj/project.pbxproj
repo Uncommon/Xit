@@ -419,6 +419,8 @@
 		31355B0713EA139700C33AAB /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		31A8939F13E9DA5B008BE0C2 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		31C7C13213ECC74C00A65FE9 /* HistoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HistoryViewController.xib; sourceTree = "<group>"; };
+		3DB98C8323E0928A0039B454 /* DEVELOPMENT_TEAM.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = DEVELOPMENT_TEAM.xcconfig; sourceTree = "<group>"; };
+		3DB98C8423E0928A0039B454 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = "<group>"; };
 		89039F551703A9FC000949A8 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
 		891261AF1F867FCC00C292B7 /* GitTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitTree.swift; sourceTree = "<group>"; };
 		89369A721EDF47FC001B69C6 /* NSTask+Throwing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTask+Throwing.h"; sourceTree = "<group>"; };
@@ -772,9 +774,19 @@
 			path = HistoryView;
 			sourceTree = "<group>";
 		};
+		3DB98C8223E0928A0039B454 /* Xcode-config */ = {
+			isa = PBXGroup;
+			children = (
+				3DB98C8323E0928A0039B454 /* DEVELOPMENT_TEAM.xcconfig */,
+				3DB98C8423E0928A0039B454 /* Shared.xcconfig */,
+			);
+			path = "Xcode-config";
+			sourceTree = "<group>";
+		};
 		C3FA46F113D0F8E200AC4F9B = {
 			isa = PBXGroup;
 			children = (
+				3DB98C8223E0928A0039B454 /* Xcode-config */,
 				DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */,
 				C91F34631D30647D005F9BDF /* Siesta.xcodeproj */,
 				C954C169237C6E56000D5339 /* git */,
@@ -1764,6 +1776,7 @@
 /* Begin XCBuildConfiguration section */
 		C3D6CF2513D4DEE300D35D4D /* coverage */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3DB98C8423E0928A0039B454 /* Shared.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -1886,6 +1899,7 @@
 		};
 		C3FA472F13D0F8E300AC4F9B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3DB98C8423E0928A0039B454 /* Shared.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -1935,6 +1949,7 @@
 		};
 		C3FA473013D0F8E300AC4F9B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3DB98C8423E0928A0039B454 /* Shared.xcconfig */;
 			buildSettings = {
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
