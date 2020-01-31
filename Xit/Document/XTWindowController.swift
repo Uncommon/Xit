@@ -280,17 +280,6 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     }
   }
   
-  private func makeStatusButton() -> NSButton
-  {
-    let button = NSButton(frame: NSRect(x: 0, y: 0, width: 44, height: 17))
-    
-    button.bezelStyle = .inline
-    button.setButtonType(.momentaryPushIn)
-    button.controlSize = .small
-    button.font = NSFont.boldSystemFont(ofSize: NSFont.smallSystemFontSize)
-    return button
-  }
-  
   private func updateTabStatus()
   {
     guard let tab = window?.tab
@@ -305,17 +294,11 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       return
     }
     
-    let tabButton = tab.accessoryView as? NSButton ??
-                    makeStatusButton()
+    let tabButton = tab.accessoryView as? WorkspaceStatusIndicator ??
+                    WorkspaceStatusIndicator()
     let (stagedCount, unstagedCount) = selection.counts()
-    guard (stagedCount > 0) || (unstagedCount > 0)
-    else {
-      tab.accessoryView = nil
-      return
-    }
 
-    tabButton.title = "\(unstagedCount)▸\(stagedCount)"
-    tabButton.setFrameSize(tabButton.intrinsicContentSize)
+    tabButton.setStatus(unstaged: unstagedCount, staged: stagedCount)
     tab.accessoryView = tabButton
   }
   
@@ -332,7 +315,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   public func startRenameBranch(_ branchName: String)
   {
     _ = startOperation { RenameBranchOpController(windowController: self,
-                                                    branchName: branchName) }
+                                                  branchName: branchName) }
   }
   
   /// Returns the new operation, if any, mostly because the generic type must

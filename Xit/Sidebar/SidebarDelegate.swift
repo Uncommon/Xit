@@ -146,14 +146,7 @@ class SidebarDelegate: NSObject
     let selection = sideBarItem.selection as! StagedUnstagedSelection
     let (stagedCount, unstagedCount) = selection.counts()
 
-    dataView.statusText.setAccessibilityIdentifier("status")
-    if (stagedCount != 0) || (unstagedCount != 0) {
-      dataView.statusText.title = "\(unstagedCount)▸\(stagedCount)"
-      dataView.statusText.isHidden = false
-    }
-    else {
-      dataView.statusText.isHidden = true
-    }
+    dataView.statusText.setStatus(unstaged: unstagedCount, staged: stagedCount)
   }
 }
 
