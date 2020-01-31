@@ -25,6 +25,20 @@ protocol StagedUnstagedSelection: RepositorySelection
   var unstagedFileList: FileListModel { get }
 }
 
+extension StagedUnstagedSelection
+{
+  func counts() -> (staged: Int, unstaged: Int)
+  {
+    let indexChanges = fileList.changes
+    let workspaceChanges = unstagedFileList.changes
+    let unmodifiedCounter: (FileChange) -> Bool = { $0.status != .unmodified }
+    let stagedCount = indexChanges.count(where: unmodifiedCounter)
+    let unstagedCount = workspaceChanges.count(where: unmodifiedCounter)
+    
+    return (stagedCount, unstagedCount)
+  }
+}
+
 extension RepositorySelection
 {
   func list(staged: Bool) -> FileListModel

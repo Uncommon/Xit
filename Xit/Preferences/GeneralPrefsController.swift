@@ -5,6 +5,7 @@ class GeneralPrefsConroller: NSViewController
   @IBOutlet weak var collapsHistoryCheck: NSButton!
   @IBOutlet weak var deemphasizeCheck: NSButton!
   @IBOutlet weak var resetAmendCheck: NSButton!
+  @IBOutlet weak var tabStatusButton: NSButton!
   
   @IBOutlet weak var userNameField: NSTextField!
   @IBOutlet weak var userEmailField: NSTextField!
@@ -34,7 +35,8 @@ class GeneralPrefsConroller: NSViewController
     collapsHistoryCheck.boolValue = defaults.collapseHistory
     deemphasizeCheck.boolValue = defaults.deemphasizeMerges
     resetAmendCheck.boolValue = defaults.resetAmend
-    
+    tabStatusButton.boolValue = defaults.statusInTabs
+
     if let config = self.config {
       userNameField.stringValue = config[Keys.userName] ?? ""
       userEmailField.stringValue = config[Keys.userEmail] ?? ""
@@ -70,6 +72,11 @@ class GeneralPrefsConroller: NSViewController
   @IBAction func resetAmendClicked(_ sender: Any)
   {
     UserDefaults.standard.resetAmend = resetAmendCheck.boolValue
+  }
+  
+  @IBAction func tabStatusClicked(_ sender: NSButton)
+  {
+    UserDefaults.standard.statusInTabs = tabStatusButton.boolValue
   }
 }
 
