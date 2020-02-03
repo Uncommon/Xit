@@ -8,7 +8,13 @@ class ModifyingUITests: XCTestCase
 
   override func setUp()
   {
-    env = TestRepoEnvironment(.testApp)!
+    guard let env = TestRepoEnvironment(.testApp)
+    else {
+      XCTFail("Environment setup failed")
+      return
+    }
+    
+    self.env = env
   }
   
   func testRenameBranch()

@@ -299,6 +299,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     let (stagedCount, unstagedCount) = selection.counts()
 
     tabButton.setStatus(unstaged: unstagedCount, staged: stagedCount)
+    tabButton.setAccessibilityIdentifier("tabStatus")
     tab.accessoryView = tabButton
   }
   

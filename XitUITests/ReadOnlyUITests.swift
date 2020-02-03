@@ -87,6 +87,22 @@ class ReadOnlyUITests: XCTestCase
     
     XCTAssertTrue(HistoryList.row(13).isSelected)
   }
+  
+  func testTabWorkspaceStatus()
+  {
+    PrefsWindow.open()
+    if PrefsWindow.tabStatusCheck.value as? Int == 0 {
+      PrefsWindow.tabStatusCheck.click()
+    }
+    
+    XCTAssertTrue(Window.tabStatus.exists)
+    
+    PrefsWindow.tabStatusCheck.click()
+    XCTAssertFalse(Window.tabStatus.exists)
+    
+    PrefsWindow.tabStatusCheck.click()
+    XCTAssertTrue(Window.tabStatus.exists)
+  }
 }
 
 extension XCUIElement

@@ -16,6 +16,7 @@
                         <rect key="contentRect" x="2560" y="730" width="535" height="272"/>
                         <rect key="screenRect" x="2560" y="0.0" width="2560" height="1417"/>
                         <value key="minSize" type="size" width="100" height="100"/>
+                        <accessibility identifier="prefsWindow"/>
                         <connections>
                             <outlet property="delegate" destination="601-dV-YQ8" id="NGs-6o-1s6"/>
                         </connections>
@@ -81,7 +82,7 @@
                                             <tableColumns>
                                                 <tableColumn identifier="service" width="137.953125" minWidth="40" maxWidth="1000" id="dBg-Kv-2uA">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Service">
-                                                        <font key="font" metaFont="menu" size="11"/>
+                                                        <font key="font" metaFont="label" size="11"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                     </tableHeaderCell>
@@ -120,7 +121,7 @@
                                                 </tableColumn>
                                                 <tableColumn identifier="userName" width="130.2734375" minWidth="40" maxWidth="1000" id="m7k-jj-ygM">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="User name">
-                                                        <font key="font" metaFont="menu" size="11"/>
+                                                        <font key="font" metaFont="label" size="11"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                     </tableHeaderCell>
@@ -158,7 +159,7 @@
                                                 </tableColumn>
                                                 <tableColumn identifier="location" width="163.5" minWidth="10" maxWidth="3.4028234663852886e+38" id="03W-is-KTe">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Location">
-                                                        <font key="font" metaFont="menu" size="11"/>
+                                                        <font key="font" metaFont="label" size="11"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     </tableHeaderCell>
@@ -196,7 +197,7 @@
                                                 </tableColumn>
                                                 <tableColumn identifier="status" width="47" minWidth="47" maxWidth="47" id="0Ob-Te-19j">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Status">
-                                                        <font key="font" metaFont="menu" size="11"/>
+                                                        <font key="font" metaFont="label" size="11"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     </tableHeaderCell>
@@ -583,7 +584,7 @@ Gw
                                         <rect key="frame" x="164" y="156" width="77" height="27"/>
                                         <buttonCell key="cell" type="push" title="Change..." bezelStyle="rounded" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="brM-JO-aQc">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" metaFont="menu" size="11"/>
+                                            <font key="font" metaFont="label" size="11"/>
                                         </buttonCell>
                                         <connections>
                                             <action selector="showFontPanel:" target="JHS-OX-BvD" id="1K4-cP-tuc"/>
@@ -742,6 +743,7 @@ Gw
                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                         <font key="font" metaFont="system"/>
                                                     </buttonCell>
+                                                    <accessibility identifier="collapseHistory"/>
                                                     <connections>
                                                         <action selector="collapseHistoryClicked:" target="5C8-XN-V90" id="IFN-X8-3gW"/>
                                                     </connections>
@@ -752,6 +754,7 @@ Gw
                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                         <font key="font" metaFont="system"/>
                                                     </buttonCell>
+                                                    <accessibility identifier="deemphasizeMerges"/>
                                                     <connections>
                                                         <action selector="deemphasizeClicked:" target="5C8-XN-V90" id="Sdr-AE-yq2"/>
                                                     </connections>
@@ -762,6 +765,7 @@ Gw
                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                         <font key="font" metaFont="system"/>
                                                     </buttonCell>
+                                                    <accessibility identifier="resetAmend"/>
                                                     <connections>
                                                         <action selector="resetAmendClicked:" target="5C8-XN-V90" id="GCx-Uf-CIK"/>
                                                     </connections>
@@ -772,6 +776,7 @@ Gw
                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                         <font key="font" metaFont="system"/>
                                                     </buttonCell>
+                                                    <accessibility identifier="tabStatus"/>
                                                     <connections>
                                                         <action selector="tabStatusClicked:" target="5C8-XN-V90" id="d9c-nt-Nkt"/>
                                                     </connections>
@@ -809,6 +814,7 @@ Gw
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
+                                            <accessibility identifier="userName"/>
                                         </textField>
                                     </gridCell>
                                     <gridCell row="FMQ-eB-rMw" column="3ld-z0-S1T" id="YYW-no-aZG">
@@ -829,6 +835,7 @@ Gw
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
+                                            <accessibility identifier="userEmail"/>
                                         </textField>
                                     </gridCell>
                                     <gridCell row="CJt-c0-f1f" column="3ld-z0-S1T" id="uKg-pN-7vK">
@@ -851,6 +858,7 @@ Gw
                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                         <font key="font" metaFont="system"/>
                                                     </buttonCell>
+                                                    <accessibility identifier="fetchTags"/>
                                                 </button>
                                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="o7d-63-SBb">
                                                     <rect key="frame" x="-2" y="-2" width="118" height="18"/>
@@ -858,6 +866,7 @@ Gw
                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                         <font key="font" metaFont="system"/>
                                                     </buttonCell>
+                                                    <accessibility identifier="fetchPrune"/>
                                                 </button>
                                             </subviews>
                                             <visibilityPriorities>

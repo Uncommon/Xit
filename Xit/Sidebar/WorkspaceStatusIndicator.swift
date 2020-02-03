@@ -10,8 +10,6 @@ class WorkspaceStatusIndicator: NSButton
     setButtonType(.momentaryPushIn)
     controlSize = .small
     font = NSFont.boldSystemFont(ofSize: NSFont.smallSystemFontSize)
-    
-    setAccessibilityIdentifier("status")
   }
   
   required init?(coder: NSCoder)

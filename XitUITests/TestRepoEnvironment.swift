@@ -1,4 +1,5 @@
 import AppKit
+import XCTest
 
 /// Shared code for setting up, opening, and operating on a test repository.
 class TestRepoEnvironment
@@ -25,6 +26,13 @@ class TestRepoEnvironment
     XitApp.launch()
     XitApp.activate()
     
-    NSWorkspace.shared.openFile(repoURL.path, withApplication: "Xit")
+    // Unfortunately XCUIApplication.path is undocumented but there seems to
+    // be no other way at it. We need to make sure NSWorkspace doesn't launch
+    // a new instance.
+    let appURL = URL(fileURLWithPath: XitApp.value(forKey: "path") as! String)
+    
+    NSWorkspace.shared.open([repoURL], withApplicationAt: appURL,
+                            configuration: .init(), completionHandler: nil)
+    XCTAssertTrue(XitApp.windows[repo.rawValue].waitForExistence(timeout: 5.0))
   }
 }
