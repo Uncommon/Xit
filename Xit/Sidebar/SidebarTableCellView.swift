@@ -10,7 +10,7 @@ protocol PullRequestActionDelegate: AnyObject
 
 class SidebarTableCellView: NSTableCellView
 {
-  @IBOutlet weak var statusText: NSButton!
+  @IBOutlet weak var statusText: WorkspaceStatusIndicator!
   @IBOutlet weak var prContanier: NSView!
   @IBOutlet weak var pullRequestButton: NSPopUpButton!
   @IBOutlet weak var prStatusImage: NSImageView!

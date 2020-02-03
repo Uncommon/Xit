@@ -144,20 +144,9 @@ class SidebarDelegate: NSObject
                                         dataView: SidebarTableCellView)
   {
     let selection = sideBarItem.selection as! StagedUnstagedSelection
-    let indexChanges = selection.fileList.changes
-    let workspaceChanges = selection.unstagedFileList.changes
-    let unmodifiedCounter: (FileChange) -> Bool = { $0.status != .unmodified }
-    let stagedCount = indexChanges.count(where: unmodifiedCounter)
-    let unstagedCount = workspaceChanges.count(where: unmodifiedCounter)
+    let (stagedCount, unstagedCount) = selection.counts()
 
-    dataView.statusText.setAccessibilityIdentifier("status")
-    if (stagedCount != 0) || (unstagedCount != 0) {
-      dataView.statusText.title = "\(unstagedCount)▸\(stagedCount)"
-      dataView.statusText.isHidden = false
-    }
-    else {
-      dataView.statusText.isHidden = true
-    }
+    dataView.statusText.setStatus(unstaged: unstagedCount, staged: stagedCount)
   }
 }
 

@@ -23,7 +23,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   var historyController: HistoryViewController!
   weak var xtDocument: XTDocument?
   var titleBarController: TitleBarViewController?
-  var refsChangedObserver: NSObjectProtocol?
+  var refsChangedObserver, workspaceObserver: NSObjectProtocol?
   var repository: Repository { return (xtDocument?.repository as Repository?)! }
   @objc dynamic var isAmending = false
   {
@@ -103,8 +103,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   @objc
   var currentOperation: OperationController?
   
-  private var windowObserver, repoObserver,
-              deemphasizeObserver: NSKeyValueObservation?
+  private var kvObservers: [NSKeyValueObservation] = []
   private var splitObserver: NSObjectProtocol?
   
   override var document: AnyObject?
@@ -125,14 +124,20 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
         [weak self] _ in
         self?.updateBranchList()
       }
-      repoObserver = repo.observe(\.currentBranch) {
+      workspaceObserver = NotificationCenter.default.addObserver(
+          forName: .XTRepositoryWorkspaceChanged, object: repo, queue: .main) {
+        [weak self] (_) in
+        self?.updateTabStatus()
+      }
+      kvObservers.append(repo.observe(\.currentBranch) {
         [weak self] (_, _) in
         self?.titleBarController?.selectedBranch = repo.currentBranch
         self?.updateMiniwindowTitle()
-      }
+      })
       sidebarController.repo = repo
       historyController.finishLoad(repository: repo)
       configureTitleBarController(repository: repo)
+      updateTabStatus()
     }
   }
   
@@ -154,14 +159,18 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
         NSSplitViewItem(viewController: historyController))
     window.makeFirstResponder(historyController.historyTable)
     
-    windowObserver = window.observe(\.title) {
+    kvObservers.append(window.observe(\.title) {
       [weak self] (_, _) in
       self?.updateMiniwindowTitle()
-    }
-    deemphasizeObserver = UserDefaults.standard.observe(\.deemphasizeMerges) {
+    })
+    kvObservers.append(UserDefaults.standard.observe(\.deemphasizeMerges) {
       [weak self] (_, _) in
       self?.redrawAllHistoryLists()
-    }
+    })
+    kvObservers.append(UserDefaults.standard.observe(\.statusInTabs) {
+      [weak self] (_, _) in
+      self?.updateTabStatus()
+    })
     splitObserver = NotificationCenter.default.addObserver(
         forName: NSSplitView.didResizeSubviewsNotification,
         object: historyController.mainSplitView, queue: nil) {
@@ -271,6 +280,29 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     }
   }
   
+  private func updateTabStatus()
+  {
+    guard let tab = window?.tab
+    else { return }
+    
+    guard UserDefaults.standard.statusInTabs,
+          let stagingItem = sidebarController.model.rootItem(.workspace)
+                                             .children.first,
+          let selection = stagingItem.selection as? StagedUnstagedSelection
+    else {
+      tab.accessoryView = nil
+      return
+    }
+    
+    let tabButton = tab.accessoryView as? WorkspaceStatusIndicator ??
+                    WorkspaceStatusIndicator()
+    let (stagedCount, unstagedCount) = selection.counts()
+
+    tabButton.setStatus(unstaged: unstagedCount, staged: stagedCount)
+    tabButton.setAccessibilityIdentifier("tabStatus")
+    tab.accessoryView = tabButton
+  }
+  
   func updateBranchList()
   {
     guard let repo = xtDocument?.repository
@@ -284,7 +316,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   public func startRenameBranch(_ branchName: String)
   {
     _ = startOperation { RenameBranchOpController(windowController: self,
-                                                    branchName: branchName) }
+                                                  branchName: branchName) }
   }
   
   /// Returns the new operation, if any, mostly because the generic type must

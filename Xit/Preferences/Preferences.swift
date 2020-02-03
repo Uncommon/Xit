@@ -7,42 +7,25 @@ enum PreferenceKeys
   static let collapseHistory = "collapseHistory"
   static let resetAmend = "resetAmend"
   static let accounts = "accounts"
+  static let statusInTabs = "statusInTabs"
 }
 
 extension UserDefaults
 {
   @objc dynamic var collapseHistory: Bool
   {
-    get
-    {
-      return bool(forKey: PreferenceKeys.collapseHistory)
-    }
-    set
-    {
-      set(newValue, forKey: PreferenceKeys.collapseHistory)
-    }
+    get { return bool(forKey: PreferenceKeys.collapseHistory) }
+    set { set(newValue, forKey: PreferenceKeys.collapseHistory) }
   }
   @objc dynamic var deemphasizeMerges: Bool
   {
-    get
-    {
-      return bool(forKey: PreferenceKeys.deemphasizeMerges)
-    }
-    set
-    {
-      set(newValue, forKey: PreferenceKeys.deemphasizeMerges)
-    }
+    get { return bool(forKey: PreferenceKeys.deemphasizeMerges) }
+    set { set(newValue, forKey: PreferenceKeys.deemphasizeMerges) }
   }
   @objc dynamic var resetAmend: Bool
   {
-    get
-    {
-      return bool(forKey: PreferenceKeys.resetAmend)
-    }
-    set
-    {
-      set(newValue, forKey: PreferenceKeys.resetAmend)
-    }
+    get { return bool(forKey: PreferenceKeys.resetAmend) }
+    set { set(newValue, forKey: PreferenceKeys.resetAmend) }
   }
   @objc dynamic var accounts: [Account]
   {
@@ -69,5 +52,10 @@ extension UserDefaults
       
       setValue(accountsData, forKey: PreferenceKeys.accounts)
     }
+  }
+  @objc dynamic var statusInTabs: Bool
+  {
+    get { return bool(forKey: PreferenceKeys.statusInTabs) }
+    set { set(newValue, forKey: PreferenceKeys.statusInTabs) }
   }
 }

@@ -5,9 +5,34 @@ let XitApp = XCUIApplication(bundleIdentifier: "com.uncommonplace.Xit")
 
 enum Window
 {
-  static let window = XitApp.windows.firstMatch
+  static let window = XitApp.windows["repoWindow"].firstMatch
   static let titleLabel = window.staticTexts["titleLabel"]
   static let branchPopup = window.popUpButtons["branchPopup"]
+  static let tabStatus = window.buttons["tabStatus"]
+}
+
+enum PrefsWindow
+{
+  static let window = XitApp.windows["Preferences"]
+  static let generalTab = window.toolbars.buttons["General"]
+  
+  static let tabStatusCheck = window.checkBoxes["tabStatus"]
+  
+  static func open(file: StaticString = #file, line: UInt = #line)
+  {
+    let menuBar = XitApp.menuBars
+    
+    menuBar.menuBarItems["Xit"].click()
+    menuBar.menuItems["Preferences…"].click()
+    XCTAssertTrue(window.waitForExistence(timeout: 1.0), file: file, line: line)
+  }
+  
+  static func close()
+  {
+    if window.exists {
+      window.buttons[XCUIIdentifierCloseWindow].click()
+    }
+  }
 }
 
 enum Sidebar
@@ -25,7 +50,7 @@ enum Sidebar
   static func assertStagingStatus(workspace: Int, staged: Int)
   {
     let expected = "\(workspace)▸\(staged)"
-    let statusButton = stagingCell.buttons["status"]
+    let statusButton = stagingCell.buttons["workspaceStatus"]
     
     XCTAssertEqual(expected, statusButton.title)
   }

@@ -284,7 +284,7 @@ class MockSidebarOutline: NSOutlineView
                                               width: 16, height: 16))
     let buttonContainer = NSView(frame: NSRect(x: 0, y: 0, width: 20, height: 16))
     let missingImage = NSImageView(frame: NSRect(x: 0, y: 0, width: 20, height: 16))
-    let statusText = NSButton(title: "10", target: nil, action: nil)
+    let statusText = WorkspaceStatusIndicator()
     let prContanier = NSView(frame: NSRect(x: 0, y: 0, width: 20, height: 16))
     let pullRequestButton = NSPopUpButton(frame: NSRect(x: 0, y: 0,
                                                         width: 20, height: 16))
