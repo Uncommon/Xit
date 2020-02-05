@@ -377,7 +377,9 @@ extension HistoryTableController: XTTableViewDelegate
   
   func menu(forRow row: Int, column: Int) -> NSMenu?
   {
-    // disable Reset if commit is current branch head
+    guard row >= 0
+    else { return nil }
+    
     return contextMenu
   }
 }
@@ -391,6 +393,34 @@ extension HistoryTableController: NSTableViewDataSource
       objc_sync_exit(history)
     }
     return history.entries.count
+  }
+}
+
+extension HistoryTableController: NSUserInterfaceValidations
+{
+  public func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem)
+    -> Bool
+  {
+    switch item.action {
+      
+      case #selector(copySHA(sender:)):
+        return true
+      
+      case #selector(resetToCommit(sender:)):
+        if let (clickedRow, _) = tableView.contextMenuCell,
+           clickedRow >= 0,
+           let branchName = repository.currentBranch,
+           let branch = repository.localBranch(named: branchName),
+           let branchOID = branch.oid {
+          return !branchOID.equals(history.entries[clickedRow].commit.oid)
+        }
+        else {
+          return false
+        }
+      
+      default:
+        return false
+    }
   }
 }
 
