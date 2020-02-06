@@ -1,5 +1,18 @@
 import Foundation
 
+extension ResetMode
+{
+  var gitReset: git_reset_t?
+  {
+    switch self {
+      case .soft:  return GIT_RESET_SOFT
+      case .mixed: return GIT_RESET_MIXED
+      case .hard:  return GIT_RESET_HARD
+      default: return nil
+    }
+  }
+}
+
 extension XTRepository: Branching
 {
   @objc public var currentBranch: String?
@@ -134,6 +147,17 @@ extension XTRepository: Branching
       }
     }
     return nil
+  }
+  
+  public func reset(toCommit target: Commit, mode: ResetMode) throws
+  {
+    guard let commit = target as? GitCommit,
+          let gitReset = mode.gitReset
+    else { throw RepoError.unexpected }
+    
+    let result = git_reset(gitRepo, commit.commit, gitReset, nil)
+    
+    try RepoError.throwIfGitError(result)
   }
 }
 
