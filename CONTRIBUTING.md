@@ -7,6 +7,13 @@ The repository uses several submodules, so you will need to clone the repository
 
 Note that Objective Git needs the `objective-git/script/bootstrap` script to be run to configure everything. If Objective Git is later updated, you may need to re-run the script.
 
+**IMPORTANT:** If you do not have an Apple ID with a developer account for code signing Mac apps, the build  will fail with a code signing error. To work around this, you can delete the "Code Signing Identity" build setting of the "Application" target to work around the issue.
+
+**Alternatively**, if you do have a developer account, you can create the file "Xcode-config/DEVELOPMENT_TEAM.xcconfig" with the following build setting as its content:
+> DEVELOPMENT_TEAM = [Your TeamID]
+
+For a more detailed description of this, you can have a look at the comments within the file "Xcode-config/Shared.xcconfig". 
+
 ## Finding tasks
 
 If you're looking for a starter task, several issues have been marked "good first issue". These should provide a relatively easy intro to the code base.

@@ -1,0 +1,65 @@
+#include "DEVELOPMENT_TEAM.xcconfig"
+
+// Create the file DEVELOPMENT_TEAM.xcconfig
+// in the "Xcode-config" directory within the project directory
+// with the following build setting:
+// DEVELOPMENT_TEAM = [Your TeamID]
+
+// Hint: recent Xcode versions appear to automatically create an empty file 
+// for you on the first build. This build will fail, or course, 
+// because code-signing can’t work without the DEVELOPMENT_TEAM set. 
+// Just fill it in and everything should work. 
+
+// The following is based on https://stackoverflow.com/a/47732584:
+// Set up “Accounts” in Xcode’s preferences with the Apple ID you want to use for development.
+// On macOS, you can then find your personal team ID in the keychain.
+// Your developer and distribution certificates have your Team ID in them.
+// To access your keychain, open the “Keychain Access” app:
+// /Applications/Utilities/Keychain Access
+
+// Under the ’login’ Keychain, go into the ‘Certificates’ category.
+// Scroll or search to find your development or distribution certificate.
+// The names of the certificates follows a pattern:
+// Certificate Type Name: Team Name (certificate ID)
+// where the “Certificate Type Name” is something like:
+// Developer ID Installer
+// Developer ID Application
+// 3rd Party Mac Developer Installer
+// 3rd Party Mac Developer Application
+// iPhone Distribution
+// iPhone Developer
+
+// Double-click on the certificate, and the
+// “Organizational Unit”
+// is the “Team ID” you are looking for.
+
+// Note that this is the only way to find your
+// "Personal team" ID
+// You can’t find the "Personal team" ID aynwhere on Apple’s website.
+
+// You can also find your generic team ID by logging into your Apple Developer account
+// and going to
+// https://developer.apple.com/account/#/membership
+// It should be listed under “Team ID”.
+
+// To set this system up for your own project,
+// copy the "Xcode-config" directory there,
+// add it to your Xcode project,
+// navigate to your project settings
+// (root icon in the Xcode Project Navigator)
+// click on the project icon there,
+// click on the “Info” tab
+// under “Configurations”
+// open the “Debug”, “Release”,
+// and any other build configurations you might have.
+// There you can set the pull-down menus in the
+// “Based on Configuration File” column to “Shared”.
+// Done.
+
+// Don’t forget to add the DEVELOPMENT_TEAM.xcconfig file to your .gitignore:
+// # User-specific xcconfig files
+// Xcode-config/DEVELOPMENT_TEAM.xcconfig
+
+// You can now remove the “DevelopmentTeam = AB1234C5DE;” entries from the
+// .xcodeproj/project.pbxproj if you want to.
+
