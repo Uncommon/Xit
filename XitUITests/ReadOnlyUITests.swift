@@ -112,7 +112,7 @@ class ReadOnlyUITests: XCTestCase
   func testHistoryCopySHA()
   {
     HistoryList.row(1).rightClick()
-    XitApp.menuItems["Copy SHA"].click()
+    HistoryList.ContextMenu.copySHAItem.click()
     
     let pasteboard = NSPasteboard.general
     let copiedToxt = pasteboard.string(forType: .string)
@@ -123,7 +123,7 @@ class ReadOnlyUITests: XCTestCase
   /// Reset should be disabled for the branch head
   func testResetEnabling()
   {
-    let resetItem = XitApp.menuItems["Reset to this commit..."]
+    let resetItem = HistoryList.ContextMenu.resetItem
     
     // For some reason row 0 is not hittable, but its cell is
     HistoryList.row(0).children(matching: .cell).element(boundBy: 0).rightClick()
@@ -134,9 +134,44 @@ class ReadOnlyUITests: XCTestCase
     XCTAssertTrue(resetItem.isEnabled)
     XitApp.typeKey(.escape, modifierFlags: [])
   }
+  
+  func testResetSheet()
+  {
+    HistoryList.row(1).rightClick()
+    HistoryList.ContextMenu.resetItem.click()
+    
+    XCTAssertTrue(ResetSheet.window.waitForExistence(timeout: 0.5))
+    XCTAssertTrue(ResetSheet.mixedButton.intValue == 1)
+    XCTAssertEqual(ResetSheet.modeDescription.stringValue,
+                   """
+                   Sets the current branch to point to the selected commit, and \
+                   all staged changes are forgotten. Workspace files are not changed.
+                   """)
+    XCTAssertEqual(ResetSheet.statusText.stringValue,
+                   "There are changes, but this option will preserve them.")
+    
+    ResetSheet.softButton.click()
+    XCTAssertEqual(ResetSheet.modeDescription.stringValue,
+                   """
+                   Sets the current branch to point to the selected commit, but \
+                   staged changes are retained and workspace files are not changed.
+                   """)
+    XCTAssertEqual(ResetSheet.statusText.stringValue,
+                   "There are changes, but this option will preserve them.")
+
+    ResetSheet.hardButton.click()
+    XCTAssertEqual(ResetSheet.modeDescription.stringValue,
+                   """
+                   Clears all staged and workspace changes, and sets the current \
+                   branch to point to the selected commit.
+                   """)
+    XCTAssertEqual(ResetSheet.statusText.stringValue,
+                   "You have uncommitted changes that will be lost with this option.")
+  }
 }
 
 extension XCUIElement
 {
   var stringValue: String { value as? String ?? "" }
+  var intValue: Int? { value as? Int }
 }

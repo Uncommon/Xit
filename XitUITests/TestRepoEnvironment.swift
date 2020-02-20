@@ -22,7 +22,8 @@ class TestRepoEnvironment
   
   func open()
   {
-    XitApp.launchArguments = ["-noServices", "YES"]
+    XitApp.launchArguments = ["-noServices", "YES",
+                              "-ApplePersistenceIgnoreState", "YES"]
     XitApp.launch()
     XitApp.activate()
     

@@ -310,6 +310,7 @@
                     </connections>
                 </menuItem>
             </items>
+            <accessibility identifier="HistoryMenu"/>
             <point key="canvasLocation" x="505" y="2067"/>
         </menu>
     </objects>

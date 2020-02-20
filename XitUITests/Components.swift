@@ -113,10 +113,17 @@ enum CommitFileList
 enum HistoryList
 {
   static let list = XitApp.tables["history"]
-  
+
   static func row(_ index: Int) -> XCUIElement
   {
     return list.tableRows.element(boundBy: index)
+  }
+  
+  enum ContextMenu
+  {
+    static let menu = XitApp.menus["HistoryMenu"]
+    static let copySHAItem = menu.menuItems["Copy SHA"]
+    static let resetItem = menu.menuItems["Reset to this commit..."]
   }
 }
 
@@ -124,9 +131,14 @@ enum ResetSheet
 {
   static let window = XitApp.sheets["ResetSheet"]
   
-  static let modeControl = window.segmentedControls["Mode"]
-  static let modeDescription = window.textFields["Description"]
-  static let statusText = window.textFields["Status"]
+  // Why these are exposed as radio buttons instead of a segmented control
+  // is a mystery.
+  static let softButton = window.radioButtons["Soft"]
+  static let mixedButton = window.radioButtons["Mixed"]
+  static let hardButton = window.radioButtons["Hard"]
+  
+  static let modeDescription = window.staticTexts["Description"]
+  static let statusText = window.staticTexts["Status"]
   
   static let cancelButton = window.buttons["Cancel"]
   static let resetButton = window.buttons["Reset"]

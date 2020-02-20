@@ -127,8 +127,8 @@ struct UIString: RawRepresentable
       changes are forgotten. Workspace files are not changed.
       """
   static let resetHardDescription = ›"""
-      Sets the current branch to point to the selected commit, but does not \
-      change staged or workspace files.
+      Clears all staged and workspace changes, and sets the current branch to \
+      point to the selected commit.
       """
   
   static let resetStatusClean = ›"There are no staged or workspace changes."
