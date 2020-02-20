@@ -119,3 +119,15 @@ enum HistoryList
     return list.tableRows.element(boundBy: index)
   }
 }
+
+enum ResetSheet
+{
+  static let window = XitApp.sheets["ResetSheet"]
+  
+  static let modeControl = window.segmentedControls["Mode"]
+  static let modeDescription = window.textFields["Description"]
+  static let statusText = window.textFields["Status"]
+  
+  static let cancelButton = window.buttons["Cancel"]
+  static let resetButton = window.buttons["Reset"]
+}

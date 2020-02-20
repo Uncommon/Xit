@@ -439,6 +439,14 @@ extension HistoryTableController
   
   @IBAction func resetToCommit(sender: Any?)
   {
-    // start new reset operation
+    guard let clickedCell = tableView.contextMenuCell,
+          let windowController = view.window?.windowController
+                                 as? XTWindowController
+    else { return }
+    
+    windowController.startOperation {
+      ResetOpController(windowController: windowController,
+                        targetCommit: history.entries[clickedCell.0].commit)
+    }
   }
 }

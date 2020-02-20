@@ -21,6 +21,9 @@ void SetBool(pthread_mutex_t *mutex, bool *value, bool newValue)
 
 void WaitForQueue(dispatch_queue_t queue)
 {
+  if (queue == NULL)
+    return;
+  
   __block pthread_mutex_t mutex;
   
   pthread_mutex_init(&mutex, NULL);
