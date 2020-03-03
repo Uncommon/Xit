@@ -2,13 +2,12 @@ import Foundation
 
 extension ResetMode
 {
-  var gitReset: git_reset_t?
+  var gitReset: git_reset_t
   {
     switch self {
       case .soft:  return GIT_RESET_SOFT
       case .mixed: return GIT_RESET_MIXED
       case .hard:  return GIT_RESET_HARD
-      default: return nil
     }
   }
 }
@@ -151,10 +150,10 @@ extension XTRepository: Branching
   
   public func reset(toCommit target: Commit, mode: ResetMode) throws
   {
-    guard let commit = target as? GitCommit,
-          let gitReset = mode.gitReset
+    guard let commit = target as? GitCommit
     else { throw RepoError.unexpected }
     
+    let gitReset = mode.gitReset
     let result = git_reset(gitRepo, commit.commit, gitReset, nil)
     
     try RepoError.throwIfGitError(result)

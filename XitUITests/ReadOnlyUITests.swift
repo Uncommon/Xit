@@ -135,6 +135,7 @@ class ReadOnlyUITests: XCTestCase
     XitApp.typeKey(.escape, modifierFlags: [])
   }
   
+  /// Reset mode description and status are updated when modes are selected
   func testResetSheet()
   {
     HistoryList.row(1).rightClick()

@@ -94,20 +94,48 @@ enum CommitHeader
   }
 }
 
-enum CommitFileList
+protocol FileList
 {
-  static let list = XitApp.outlines["commitFiles"]
-  
-  static func assertFiles(_ names: [String])
+  static var list: XCUIElement { get }
+}
+
+extension FileList
+{
+  static func assertFiles(_ names: [String],
+                          file: StaticString = #file,
+                          line: UInt = #line)
   {
     let rows = list.outlineRows
-    
+    let rowCount = rows.count
+    guard names.count == rowCount
+    else {
+      XCTFail("expected \(names.count) files, found \(rowCount)",
+              file: file, line: line)
+      return
+    }
+
     for (index, name) in names.enumerated() {
       let label = rows.element(boundBy: index).staticTexts.firstMatch.stringValue
       
-      XCTAssertEqual(label, name)
+      XCTAssertEqual(label, name, "file \(index) does not match",
+                     file: file, line: line)
     }
   }
+}
+
+enum CommitFileList: FileList
+{
+  static let list = XitApp.outlines["commitFiles"]
+}
+
+enum StagedFileList: FileList
+{
+  static let list = XitApp.outlines["stagedFiles"]
+}
+
+enum WorkspaceFileList: FileList
+{
+  static let list = XitApp.outlines["workspaceFiles"]
 }
 
 enum HistoryList
