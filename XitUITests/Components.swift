@@ -131,6 +131,8 @@ enum CommitFileList: FileList
 enum StagedFileList: FileList
 {
   static let list = XitApp.outlines["stagedFiles"]
+  
+  static let refreshButton = Window.window.buttons["WorkspaceRefresh"]
 }
 
 enum WorkspaceFileList: FileList
