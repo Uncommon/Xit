@@ -262,21 +262,23 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func updateMiniwindowTitle()
   {
-    guard let window = self.window,
-          let repo = xtDocument?.repository
-    else { return }
+    DispatchQueue.main.async {
+      guard let window = self.window,
+            let repo = self.xtDocument?.repository
+      else { return }
+      
+      var newTitle: String!
     
-    var newTitle: String!
-  
-    if let currentBranch = repo.currentBranch {
-      newTitle = "\(window.title) - \(currentBranch)"
-    }
-    else {
-      newTitle = window.title
-    }
-    window.miniwindowTitle = newTitle
-    if #available(OSX 10.13, *) {
-      window.tab.title = newTitle
+      if let currentBranch = repo.currentBranch {
+        newTitle = "\(window.title) - \(currentBranch)"
+      }
+      else {
+        newTitle = window.title
+      }
+      window.miniwindowTitle = newTitle
+      if #available(OSX 10.13, *) {
+        window.tab.title = newTitle
+      }
     }
   }
   
