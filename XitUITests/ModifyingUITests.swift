@@ -84,8 +84,9 @@ class ModifyingUITests: XCTestCase
   
   func reset(modeButton: XCUIElement)
   {
-    // change a file
-    // change another file and stage it
+    env.write("some stuff", to: "README1.txt")
+    env.write("other stuff", to: "REAME_")
+    env.git.run(args: ["add", "REAME_"])
     HistoryList.row(1).rightClick()
     HistoryList.ContextMenu.resetItem.click()
     XCTAssertTrue(ResetSheet.window.waitForExistence(timeout: 0.5))
@@ -100,8 +101,17 @@ class ModifyingUITests: XCTestCase
     reset(modeButton: ResetSheet.softButton)
     Sidebar.stagingCell.click()
 
-    StagedFileList.assertFiles(["README.md", "hero_slide1.png", "jquery-1.8.1.min.js"])
-    WorkspaceFileList.assertFiles(["UntrackedImage.png"])
+    // Temporary workaround
+    StagedFileList.refreshButton.click()
+    
+    XCTAssertTrue(StagedFileList.list.outlineRows.element(boundBy: 3)
+                                .waitForExistence(timeout: 1.0),
+                  "list did not update")
+    
+    // Files added in the old HEAD are now staged, plus the file that was
+    // explicitly staged before the reset
+    StagedFileList.assertFiles(["README.md", "REAME_", "hero_slide1.png", "jquery-1.8.1.min.js"])
+    WorkspaceFileList.assertFiles(["README1.txt", "UntrackedImage.png"])
   }
   
   func testResetMixed()

@@ -36,4 +36,14 @@ class TestRepoEnvironment
                             configuration: .init(), completionHandler: nil)
     XCTAssertTrue(XitApp.windows[repo.rawValue].waitForExistence(timeout: 5.0))
   }
+  
+  func write(_ text: String, to path: String,
+             file: StaticString = #file,
+             line: UInt = #line)
+  {
+    let fileURL = repoURL.appendingPathComponent(path)
+    
+    XCTAssertNoThrow(try text.write(to: fileURL, atomically: true, encoding: .utf8),
+                     file: file, line: line)
+  }
 }
