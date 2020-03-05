@@ -119,8 +119,15 @@ class ModifyingUITests: XCTestCase
     env.open()
     
     reset(modeButton: ResetSheet.mixedButton)
+    Sidebar.stagingCell.click()
 
-    // verify the reset state: index is clean, workspace is not
+    // Temporary workaround
+    StagedFileList.refreshButton.click()
+
+    StagedFileList.assertFiles([])
+    WorkspaceFileList.assertFiles(["README.md", "README1.txt", "REAME_",
+                                   "UntrackedImage.png", "hero_slide1.png",
+                                   "jquery-1.8.1.min.js"])
   }
   
   func testResetHard()
@@ -129,6 +136,9 @@ class ModifyingUITests: XCTestCase
     
     reset(modeButton: ResetSheet.hardButton)
     Sidebar.stagingCell.click()
+    
+    // Temporary workaround
+    StagedFileList.refreshButton.click()
 
     StagedFileList.assertFiles([])
     // Untracked files survive a hard reset
