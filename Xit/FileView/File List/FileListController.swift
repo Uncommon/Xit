@@ -53,7 +53,7 @@ class FileListController: NSViewController
   let fileListDataSource: FileChangesDataSource
   let fileTreeDataSource: FileTreeDataSource
   
-  weak var repoController: RepositoryController!
+  weak var repoUIController: RepositoryUIController!
   {
     didSet { didSetRepoController() }
   }
@@ -86,8 +86,8 @@ class FileListController: NSViewController
   // didSet isn't overridable so we need a method
   func didSetRepoController()
   {
-    fileListDataSource.repoController = repoController
-    fileTreeDataSource.repoController = repoController
+    fileListDataSource.repoUIController = repoUIController
+    fileTreeDataSource.repoUIController = repoUIController
   }
   
   // These are implemented in subclasses, and are here for convenience
@@ -98,13 +98,13 @@ class FileListController: NSViewController
   @IBAction
   func stageAll(_ sender: Any)
   {
-    try? repoController.repository.stageAllFiles()
+    try? repoUIController.repository.stageAllFiles()
   }
   
   @IBAction
   func unstageAll(_ sender: Any)
   {
-    try? repoController.repository.unstageAllFiles()
+    try? repoUIController.repository.unstageAllFiles()
   }
   
   @IBAction
@@ -120,13 +120,13 @@ class FileListController: NSViewController
         
         NSAlert.confirm(message: .confirmRevert(change.path.lastPathComponent),
         actionName: .revert, parentWindow: view.window!) {
-          try? self.repoController.repository.revert(file: change.gitPath)
+          try? self.repoUIController.repository.revert(file: change.gitPath)
         }
       default:
         NSAlert.confirm(message: .confirmRevertMultiple,
                         actionName: .revert, parentWindow: view.window!) {
           for change in changes {
-            try? self.repoController.repository.revert(file: change.gitPath)
+            try? self.repoUIController.repository.revert(file: change.gitPath)
           }
         }
     }
@@ -141,7 +141,7 @@ class FileListController: NSViewController
   func open(_ sender: Any)
   {
     for change in targetChanges(sender: sender) {
-      let url = repoController.repository.fileURL(change.gitPath)
+      let url = repoUIController.repository.fileURL(change.gitPath)
       
       NSWorkspace.shared.open(url)
     }
@@ -151,7 +151,7 @@ class FileListController: NSViewController
   func showInFinder(_ sender: Any)
   {
     let changes = targetChanges(sender: sender)
-    let urls = changes.map { repoController.repository.fileURL($0.gitPath) }
+    let urls = changes.map { repoUIController.repository.fileURL($0.gitPath) }
                 .filter { FileManager.default.fileExists(atPath: $0.path) }
     
     NSWorkspace.shared.activateFileViewerSelecting(urls)
@@ -394,7 +394,7 @@ class StagingFileListController: FileListController
   var modifyActions: [Selector] = []
   
   /// True if actions such as stage and revert are available.
-  var canModify: Bool { return !(repoController.selection is StashSelection) }
+  var canModify: Bool { return !(repoUIController.selection is StashSelection) }
   
   override func repoSelectionChanged()
   {
@@ -413,7 +413,7 @@ class StagingFileListController: FileListController
     super.didSetRepoController()
     indexObserver = NotificationCenter.default.addObserver(
         forName: .XTRepositoryIndexChanged,
-        object: repoController.repository, queue: .main) {
+        object: repoUIController.repository, queue: .main) {
       [weak self] _ in
       self?.viewDataSource.reload()
     }

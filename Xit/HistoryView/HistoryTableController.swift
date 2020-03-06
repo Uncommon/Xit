@@ -208,7 +208,7 @@ public class HistoryTableController: NSViewController
     else { return }
     
     guard let controller = self.view.window?.windowController
-                           as? RepositoryController,
+                           as? RepositoryUIController,
           let selection = controller.selection
     else { return }
     
@@ -347,7 +347,7 @@ extension HistoryTableController: NSTableViewDelegate
     let selectedRow = tableView.selectedRow
     
     if (selectedRow >= 0) && (selectedRow < history.entries.count),
-       let controller = view.window?.windowController as? RepositoryController {
+       let controller = view.window?.windowController as? RepositoryUIController {
       controller.selection =
           CommitSelection(repository: repository,
                           commit: history.entries[selectedRow].commit)
@@ -361,7 +361,7 @@ extension HistoryTableController: XTTableViewDelegate
   {
     guard let selectionIndex = tableView.selectedRowIndexes.first,
           let controller = tableView.window?.windowController
-                           as? RepositoryController
+                           as? RepositoryUIController
     else { return }
     
     let entry = history.entries[selectionIndex]

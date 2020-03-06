@@ -8,7 +8,7 @@ class BlameViewController: WebViewController
   
   var currentSelection: FileSelection?
   
-  var repoController: RepositoryController?
+  var repoUIController: RepositoryUIController?
   {
     let windowController: NSWindowController?
     
@@ -20,7 +20,7 @@ class BlameViewController: WebViewController
         return view.window?.windowController
       }
     }
-    return windowController as? RepositoryController
+    return windowController as? RepositoryUIController
   }
   
   class CommitColoring
@@ -189,7 +189,7 @@ class BlameViewController: WebViewController
           let sha = params["sha"] as? String
     else { return }
     
-    repoController?.select(sha: sha)
+    repoUIController?.select(sha: sha)
   }
 }
 
@@ -218,7 +218,7 @@ extension BlameViewController: XTFileContentController
     else { return }
     
     currentSelection = selection[0]
-    repoController?.queue.executeOffMainThread {
+    repoUIController?.queue.executeOffMainThread {
       [weak self] in
       guard let self = self
       else { return }

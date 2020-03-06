@@ -220,7 +220,7 @@ class SidebarController: NSViewController, SidebarHandler
     }
     set
     {
-      guard let controller = window?.windowController as? RepositoryController,
+      guard let controller = window?.windowController as? RepositoryUIController,
             let item = newValue
       else { return }
       
@@ -254,15 +254,15 @@ class SidebarController: NSViewController, SidebarHandler
   
   override func viewWillAppear()
   {
-    let repoController = view.window!.windowController as! XTWindowController
+    let repoUIController = view.window!.windowController as! XTWindowController
     
     if amendingObserver == nil {
-      amendingObserver = repoController.observe(\.isAmending) {
+      amendingObserver = repoUIController.observe(\.isAmending) {
         [weak self] (controller, _) in
         self?.sidebarDS.setAmending(controller.isAmending)
       }
       observers.addObserver(forName: .XTSelectedModelChanged,
-                            object: repoController, queue: .main) {
+                            object: repoUIController, queue: .main) {
         [weak self] (_) in
         self?.selectedModelChanged()
       }
@@ -271,17 +271,17 @@ class SidebarController: NSViewController, SidebarHandler
   
   func selectedModelChanged()
   {
-    let repoController = view.window!.windowController as! RepositoryController
+    let repoUIController = view.window!.windowController as! RepositoryUIController
 
     if let selectedItem = self.selectedItem {
       guard selectedItem.selection?.shaToSelect !=
-            repoController.selection?.shaToSelect
+            repoUIController.selection?.shaToSelect
       else {
         return
       }
     }
     
-    switch repoController.selection {
+    switch repoUIController.selection {
     
       case let stashChanges as StashSelection:
         let stashRoot = sidebarDS.model.rootItem(.stashes)

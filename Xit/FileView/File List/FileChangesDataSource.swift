@@ -105,7 +105,7 @@ extension FileChangesDataSource: FileListDataSource
 {
   func reload()
   {
-    let model = repoController.selection.flatMap { self.model(for: $0) }
+    let model = repoUIController.selection.flatMap { self.model(for: $0) }
     
     if let delegate = self.delegate,
        let finalModel = model {
@@ -114,7 +114,7 @@ extension FileChangesDataSource: FileListDataSource
     
     let newChanges = model?.changes ?? []
     
-    repoController.queue.executeOffMainThread {
+    repoUIController.queue.executeOffMainThread {
       [weak self] in
       self?.doReload(newChanges)
     }

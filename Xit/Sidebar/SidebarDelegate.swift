@@ -159,7 +159,7 @@ extension SidebarDelegate: NSOutlineViewDelegate
                      as? SidebarItem,
           let selection = item.selection,
           let controller = outline.window?.windowController
-                           as? RepositoryController
+                           as? RepositoryUIController
     else { return }
     
     if controller.selection?.shaToSelect != selection.shaToSelect {
@@ -298,7 +298,7 @@ extension SidebarDelegate: XTOutlineViewDelegate
     else { return }
     
     if let controller = outline.window?.windowController
-                        as? RepositoryController,
+                        as? RepositoryUIController,
        let oldSelection = controller.selection,
        let newSelection = newSelectedItem.selection,
        oldSelection.shaToSelect == newSelection.shaToSelect &&

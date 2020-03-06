@@ -1,6 +1,6 @@
 import Cocoa
 
-protocol RepositoryController: AnyObject
+protocol RepositoryUIController: AnyObject
 {
   var repository: Repository { get }
   var queue: TaskQueue { get }
@@ -15,7 +15,7 @@ protocol RepositoryController: AnyObject
 
 /// XTDocument's main window controller.
 class XTWindowController: NSWindowController, NSWindowDelegate,
-                          RepositoryController
+                          RepositoryUIController
 {
   var splitViewController: NSSplitViewController!
   @IBOutlet var sidebarController: SidebarController!

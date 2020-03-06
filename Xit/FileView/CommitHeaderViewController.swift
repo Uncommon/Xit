@@ -20,9 +20,9 @@ class CommitHeaderViewController: NSViewController
   }
   var expanded: Bool = false
   
-  weak var repoController: RepositoryController!
+  weak var repoUIController: RepositoryUIController!
   {
-    return view.window?.windowController as? RepositoryController
+    return view.window?.windowController as? RepositoryUIController
   }
   weak var repository: CommitStorage!
   
@@ -125,7 +125,7 @@ class CommitHeaderViewController: NSViewController
     
     let parentOID = commit.parentOIDs[control.tag]
     
-    repoController.select(sha: parentOID.sha)
+    repoUIController.select(sha: parentOID.sha)
   }
 }
 

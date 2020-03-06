@@ -39,9 +39,9 @@ class CommitEntryController: NSViewController
   
   let observers = ObserverCollection()
   
-  var repoController: RepositoryController?
+  var repoUIController: RepositoryUIController?
   {
-    return view.ancestorWindow?.windowController as? RepositoryController
+    return view.ancestorWindow?.windowController as? RepositoryUIController
   }
   
   var anyStaged = false
@@ -110,7 +110,7 @@ class CommitEntryController: NSViewController
     
     amendChcekbox.boolValue = false
     touchBarAmendButton.setSelected(false, forSegment: 0)
-    repoController?.isAmending = false
+    repoUIController?.isAmending = false
   }
   
   override func viewDidLoad()
@@ -125,7 +125,7 @@ class CommitEntryController: NSViewController
   {
     updateStagedStatus()
     updateCommitButton()
-    amendChcekbox.boolValue = repoController?.isAmending ?? false
+    amendChcekbox.boolValue = repoUIController?.isAmending ?? false
   }
   
   @IBAction
@@ -133,7 +133,7 @@ class CommitEntryController: NSViewController
   {
     do {
       try repo.commit(message: commitField.string,
-                      amend: repoController?.isAmending ?? false)
+                      amend: repoUIController?.isAmending ?? false)
       resetMessage()
       resetAmend()
     }
@@ -153,7 +153,7 @@ class CommitEntryController: NSViewController
     if newValue {
       updateAmendingCommitMessage()
     }
-    repoController?.isAmending = newValue
+    repoUIController?.isAmending = newValue
   }
   
   func updateAmendingCommitMessage()
@@ -181,7 +181,7 @@ class CommitEntryController: NSViewController
         if response == .alertFirstButtonReturn {
           self.commitMessage = headMessage
         }
-        self.repoController?.isAmending = true
+        self.repoUIController?.isAmending = true
       }
       return
     }

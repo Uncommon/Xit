@@ -54,14 +54,14 @@ class FileViewController: NSViewController
              textController, previewController]
   }
   
-  var repoController: RepositoryController?
+  var repoUIController: RepositoryUIController?
   {
-    return view.window?.windowController as? RepositoryController
+    return view.window?.windowController as? RepositoryUIController
   }
   
   var repoSelection: RepositorySelection?
   {
-    return repoController?.selection
+    return repoUIController?.selection
   }
   
   var inStagingView: Bool
@@ -90,7 +90,7 @@ class FileViewController: NSViewController
       fileListTabView.selectTabViewItem(withIdentifier: newValue ?
           FileListTab.staging : FileListTab.commit)
       if newValue {
-        let showAction = repoController?.selection is StagingSelection
+        let showAction = repoUIController?.selection is StagingSelection
         
         stagedListController.setActionColumnShown(showAction)
         workspaceListController.setActionColumnShown(showAction)
@@ -132,7 +132,7 @@ class FileViewController: NSViewController
   /// The file list (eg Staged or Workspace) that last had user focus
   weak var activeFileList: NSOutlineView!
   {
-    didSet { repoController?.updateForFocus() }
+    didSet { repoUIController?.updateForFocus() }
   }
   var activeFileListController: FileListController
   {
@@ -186,11 +186,11 @@ class FileViewController: NSViewController
       self?.indexChanged()
     }
 
-    guard let controller = repoController
+    guard let controller = repoUIController
     else { return }
     
     for listController in allListControllers {
-      listController.repoController = controller
+      listController.repoUIController = controller
     }
 
     observers.addObserver(forName: .XTSelectedModelChanged,
@@ -323,7 +323,7 @@ class FileViewController: NSViewController
   
   func selectedModelChanged()
   {
-    guard let controller = repoController,
+    guard let controller = repoUIController,
           let newModel = controller.selection
     else { return }
     
@@ -360,7 +360,7 @@ class FileViewController: NSViewController
           let repo = repo,
           let index = activeFileList.selectedRowIndexes.first,
           let selectedItem = activeFileList.item(atRow: index),
-          let controller = repoController,
+          let controller = repoUIController,
           let repoSelection = controller.selection
     else {
       clearPreviews()
