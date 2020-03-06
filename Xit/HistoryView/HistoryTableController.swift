@@ -11,9 +11,11 @@ public class HistoryTableController: NSViewController
     static let name = ¶"name"
   }
   
+  @IBOutlet var contextMenu: NSMenu!
+  
   let observers = ObserverCollection()
 
-  var tableView: NSTableView { return view as! NSTableView }
+  var tableView: HistoryTableView { return view as! HistoryTableView }
 
   weak var repository: XTRepository!
   {
@@ -372,6 +374,14 @@ extension HistoryTableController: XTTableViewDelegate
       controller.selection = newSelection
     }
   }
+  
+  func menu(forRow row: Int, column: Int) -> NSMenu?
+  {
+    guard row >= 0
+    else { return nil }
+    
+    return contextMenu
+  }
 }
 
 extension HistoryTableController: NSTableViewDataSource
@@ -383,5 +393,60 @@ extension HistoryTableController: NSTableViewDataSource
       objc_sync_exit(history)
     }
     return history.entries.count
+  }
+}
+
+extension HistoryTableController: NSUserInterfaceValidations
+{
+  public func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem)
+    -> Bool
+  {
+    switch item.action {
+      
+      case #selector(copySHA(sender:)):
+        return true
+      
+      case #selector(resetToCommit(sender:)):
+        if let (clickedRow, _) = tableView.contextMenuCell,
+           clickedRow >= 0,
+           let branchName = repository.currentBranch,
+           let branch = repository.localBranch(named: branchName),
+           let branchOID = branch.oid {
+          return !branchOID.equals(history.entries[clickedRow].commit.oid)
+        }
+        else {
+          return false
+        }
+      
+      default:
+        return false
+    }
+  }
+}
+
+extension HistoryTableController
+{
+  @IBAction func copySHA(sender: Any?)
+  {
+    guard let clickedCell = tableView.contextMenuCell
+    else { return }
+    let pasteboard = NSPasteboard.general
+    
+    pasteboard.clearContents()
+    pasteboard.setString(history.entries[clickedCell.0].commit.sha,
+                         forType: .string)
+  }
+  
+  @IBAction func resetToCommit(sender: Any?)
+  {
+    guard let clickedCell = tableView.contextMenuCell,
+          let windowController = view.window?.windowController
+                                 as? XTWindowController
+    else { return }
+    
+    windowController.startOperation {
+      ResetOpController(windowController: windowController,
+                        targetCommit: history.entries[clickedCell.0].commit)
+    }
   }
 }

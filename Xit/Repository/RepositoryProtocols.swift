@@ -243,6 +243,29 @@ public protocol Branching: AnyObject
   func remoteBranch(named name: String) -> RemoteBranch?
   func localBranch(tracking remoteBranch: RemoteBranch) -> LocalBranch?
   func localTrackingBranch(forBranchRef branch: String) -> LocalBranch?
+  
+  /// Resets the current branch to the specified commit
+  func reset(toCommit target: Commit, mode: ResetMode) throws
+}
+
+public enum ResetMode
+{
+  /// Does not touch the index file or the working tree at all
+  case soft
+  /// Resets the index but not the working tree
+  case mixed
+  /// Resets the index and working tree
+  case hard
+  
+  /* These modes exist for command line git reset,
+     but are not yet implemented for git_reset()
+  /// Resets unchanged files, keeps changes; aborts on conflict
+  case merge
+  /// Resets index entries and updates files in the working tree that are
+  /// different between `<commit>` and `HEAD`. If a file that is different
+  /// between `<commit>` and `HEAD` has local changes, reset is aborted.
+  case keep
+  */
 }
 
 enum TrackingBranchStatus

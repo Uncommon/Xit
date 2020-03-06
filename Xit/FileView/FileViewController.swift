@@ -215,7 +215,8 @@ class FileViewController: NSViewController
         imageName: NSImage.refreshTemplateName,
         toolTip: .refresh,
         target: self,
-        action: #selector(refreshStaging(_:)))
+        action: #selector(refreshStaging(_:)),
+        accessibilityID: "WorkspaceRefresh")
     
     let listControllers = [commitListController,
                            stagedListController,

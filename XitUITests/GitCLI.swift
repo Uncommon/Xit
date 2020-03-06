@@ -12,6 +12,7 @@ class GitCLI
     self.runner = CLIRunner(toolPath: gitURL.path, workingDir: repoURL.path)
   }
   
+  @discardableResult
   func run(args: [String]) -> String
   {
     let data = try! runner.run(args: args)

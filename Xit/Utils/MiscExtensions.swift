@@ -247,6 +247,16 @@ extension NSObject
   }
 }
 
+extension NSMenu
+{
+  func item(withTarget target: Any?, andAction action: Selector?) -> NSMenuItem?
+  {
+    let index = indexOfItem(withTarget: target, andAction: action)
+    
+    return index == -1 ? nil : items[index]
+  }
+}
+
 extension TimeInterval
 {
   static let minutes: TimeInterval = 60

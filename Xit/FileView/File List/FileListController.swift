@@ -226,7 +226,8 @@ class FileListController: NSViewController
   func addToolbarButton(imageName: NSImage.Name,
                         toolTip: UIString,
                         target: Any? = self,
-                        action: Selector)
+                        action: Selector,
+                        accessibilityID: String? = nil)
   {
     let button = NSButton(image: NSImage(named: imageName)!,
                           target: target, action: action)
@@ -237,6 +238,7 @@ class FileListController: NSViewController
     button.isBordered = false
     toolbarStack.insertView(button, at: 0, in: .leading)
     button.widthAnchor.constraint(equalToConstant: 20).isActive = true
+    button.setAccessibilityIdentifier(accessibilityID)
   }
   
   func toolbarButton(withAction action: Selector) -> NSButton?
@@ -381,7 +383,7 @@ extension CommitFileListController
   }
 }
 
-/// Controller for staged/unstaced file lists. Conceptually (but not actually
+/// Controller for staged/unstaged file lists. Conceptually (but not actually
 /// because of Swift) an abstract class.
 class StagingFileListController: FileListController
 {
@@ -420,11 +422,13 @@ class StagingFileListController: FileListController
   func addModifyingToolbarButton(imageName: NSImage.Name,
                                  toolTip: UIString,
                                  target: Any? = self,
-                                 action: Selector)
+                                 action: Selector,
+                                 accessibilityID: String? = nil)
   {
     modifyActions.append(action)
     addToolbarButton(imageName: imageName, toolTip: toolTip,
-                     target: target, action: action)
+                     target: target, action: action,
+                     accessibilityID: accessibilityID)
   }
   
   func reload()

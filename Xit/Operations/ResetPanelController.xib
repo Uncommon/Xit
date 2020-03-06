@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="ResetPanelController" customModule="Xit" customModuleProvider="target">
+            <connections>
+                <outlet property="descriptionLabel" destination="G1o-x2-wHq" id="NNd-Dh-Ton"/>
+                <outlet property="modeControl" destination="sBl-eI-Kgh" id="Jl5-vk-VGT"/>
+                <outlet property="statusImage" destination="X5l-IS-zdJ" id="pAp-dN-hIl"/>
+                <outlet property="statusLabel" destination="nRk-Tg-V4Z" id="yyy-f5-NMv"/>
+                <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="Reset" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="F0z-JX-Cv5">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="196" y="240" width="578" height="270"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <view key="contentView" id="se5-gp-TjO">
+                <rect key="frame" x="0.0" y="0.0" width="465" height="158"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wMp-9V-WKN">
+                        <rect key="frame" x="376" y="13" width="75" height="32"/>
+                        <buttonCell key="cell" type="push" title="Reset" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Elg-H5-uVX">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="accept:" target="-2" id="49N-sN-SPW"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2lG-si-4AY">
+                        <rect key="frame" x="294" y="13" width="82" height="32"/>
+                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ApS-jg-Bhn">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cancel:" target="-2" id="jvI-7b-vh7"/>
+                        </connections>
+                    </button>
+                    <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sBl-eI-Kgh">
+                        <rect key="frame" x="102" y="115" width="161" height="24"/>
+                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="hJz-R1-aK7">
+                            <font key="font" metaFont="system"/>
+                            <segments>
+                                <segment label="Soft"/>
+                                <segment label="Mixed" selected="YES" tag="1"/>
+                                <segment label="Hard"/>
+                            </segments>
+                        </segmentedCell>
+                        <connections>
+                            <action selector="modeSelected:" target="-2" id="vME-Kf-QIG"/>
+                        </connections>
+                    </segmentedControl>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="G1o-x2-wHq">
+                        <rect key="frame" x="18" y="77" width="429" height="32"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="425" id="wlG-Da-JCC"/>
+                        </constraints>
+                        <textFieldCell key="cell" title="Sets the current branch to point to the selected commit, and all staged changes are forgotten. Workspace files are not changed." id="8NZ-qd-Bth">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <accessibility identifier="Description"/>
+                    </textField>
+                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="X5l-IS-zdJ">
+                        <rect key="frame" x="20" y="53" width="16" height="16"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="16" id="HzC-Vg-9uz"/>
+                            <constraint firstAttribute="width" constant="16" id="dwZ-Z9-6Ub"/>
+                        </constraints>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSStatusUnavailable" id="OdO-g6-NET"/>
+                    </imageView>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="nRk-Tg-V4Z">
+                        <rect key="frame" x="38" y="53" width="409" height="16"/>
+                        <textFieldCell key="cell" title="You have uncommitted changes that will be lost with this option." id="aNB-Iu-fVx">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <accessibility identifier="Status"/>
+                    </textField>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Nhe-OJ-ahC">
+                        <rect key="frame" x="18" y="120" width="80" height="16"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" title="Reset mode:" id="adH-ua-skc">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="nRk-Tg-V4Z" firstAttribute="top" secondItem="G1o-x2-wHq" secondAttribute="bottom" constant="8" symbolic="YES" id="08p-pR-1ya"/>
+                    <constraint firstItem="G1o-x2-wHq" firstAttribute="top" secondItem="sBl-eI-Kgh" secondAttribute="bottom" constant="8" symbolic="YES" id="1JG-3D-hmR"/>
+                    <constraint firstItem="X5l-IS-zdJ" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="20" symbolic="YES" id="8zH-jJ-rKk"/>
+                    <constraint firstItem="X5l-IS-zdJ" firstAttribute="centerY" secondItem="nRk-Tg-V4Z" secondAttribute="centerY" id="914-1l-xXk"/>
+                    <constraint firstAttribute="trailing" secondItem="G1o-x2-wHq" secondAttribute="trailing" constant="20" symbolic="YES" id="J90-9S-J3l"/>
+                    <constraint firstItem="sBl-eI-Kgh" firstAttribute="leading" secondItem="Nhe-OJ-ahC" secondAttribute="trailing" constant="8" symbolic="YES" id="L97-dw-zEg"/>
+                    <constraint firstItem="wMp-9V-WKN" firstAttribute="leading" secondItem="2lG-si-4AY" secondAttribute="trailing" constant="12" symbolic="YES" id="VDe-Aj-VTf"/>
+                    <constraint firstItem="G1o-x2-wHq" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="20" symbolic="YES" id="dYL-Wk-iGN"/>
+                    <constraint firstItem="wMp-9V-WKN" firstAttribute="top" secondItem="nRk-Tg-V4Z" secondAttribute="bottom" constant="12" id="edY-NX-An4"/>
+                    <constraint firstAttribute="bottom" secondItem="wMp-9V-WKN" secondAttribute="bottom" constant="20" symbolic="YES" id="g2w-Vp-c2a"/>
+                    <constraint firstItem="Nhe-OJ-ahC" firstAttribute="firstBaseline" secondItem="sBl-eI-Kgh" secondAttribute="firstBaseline" id="mVP-bk-kkE"/>
+                    <constraint firstItem="sBl-eI-Kgh" firstAttribute="top" secondItem="se5-gp-TjO" secondAttribute="top" constant="20" symbolic="YES" id="mqK-3b-ITV"/>
+                    <constraint firstAttribute="trailing" secondItem="wMp-9V-WKN" secondAttribute="trailing" constant="20" symbolic="YES" id="neI-5P-2SN"/>
+                    <constraint firstAttribute="trailing" secondItem="nRk-Tg-V4Z" secondAttribute="trailing" constant="20" symbolic="YES" id="pH4-px-SNO"/>
+                    <constraint firstItem="2lG-si-4AY" firstAttribute="firstBaseline" secondItem="wMp-9V-WKN" secondAttribute="firstBaseline" id="sPe-kN-JMd"/>
+                    <constraint firstItem="Nhe-OJ-ahC" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="20" symbolic="YES" id="uNc-vQ-eqp"/>
+                    <constraint firstItem="nRk-Tg-V4Z" firstAttribute="leading" secondItem="X5l-IS-zdJ" secondAttribute="trailing" constant="4" id="y4q-T9-yxe"/>
+                </constraints>
+            </view>
+            <accessibility identifier="ResetSheet"/>
+            <connections>
+                <outlet property="delegate" destination="-2" id="0bl-1N-AYu"/>
+            </connections>
+            <point key="canvasLocation" x="47" y="147"/>
+        </window>
+    </objects>
+    <resources>
+        <image name="NSStatusUnavailable" width="16" height="16"/>
+    </resources>
+</document>

@@ -94,28 +94,82 @@ enum CommitHeader
   }
 }
 
-enum CommitFileList
+protocol FileList
 {
-  static let list = XitApp.outlines["commitFiles"]
-  
-  static func assertFiles(_ names: [String])
+  static var list: XCUIElement { get }
+}
+
+extension FileList
+{
+  static func assertFiles(_ names: [String],
+                          file: StaticString = #file,
+                          line: UInt = #line)
   {
     let rows = list.outlineRows
-    
+    let rowCount = rows.count
+    guard names.count == rowCount
+    else {
+      XCTFail("expected \(names.count) files, found \(rowCount)",
+              file: file, line: line)
+      return
+    }
+
     for (index, name) in names.enumerated() {
       let label = rows.element(boundBy: index).staticTexts.firstMatch.stringValue
       
-      XCTAssertEqual(label, name)
+      XCTAssertEqual(label, name, "file \(index) does not match",
+                     file: file, line: line)
     }
   }
+}
+
+enum CommitFileList: FileList
+{
+  static let list = XitApp.outlines["commitFiles"]
+}
+
+enum StagedFileList: FileList
+{
+  static let list = XitApp.outlines["stagedFiles"]
+  
+  static let refreshButton = Window.window.buttons["WorkspaceRefresh"]
+}
+
+enum WorkspaceFileList: FileList
+{
+  static let list = XitApp.outlines["workspaceFiles"]
 }
 
 enum HistoryList
 {
   static let list = XitApp.tables["history"]
-  
+
   static func row(_ index: Int) -> XCUIElement
   {
     return list.tableRows.element(boundBy: index)
   }
+  
+  enum ContextMenu
+  {
+    static let menu = XitApp.menus["HistoryMenu"]
+    static let copySHAItem = menu.menuItems["Copy SHA"]
+    static let resetItem = menu.menuItems["Reset to this commit..."]
+  }
+}
+
+enum ResetSheet
+{
+  static let window = XitApp.sheets["ResetSheet"]
+  
+  // Why these are exposed as radio buttons instead of a segmented control
+  // is a mystery.
+  static let softButton = window.radioButtons["Soft"]
+  static let mixedButton = window.radioButtons["Mixed"]
+  static let hardButton = window.radioButtons["Hard"]
+  
+  static let modeDescription = window.staticTexts["Description"]
+  static let statusText = window.staticTexts["Status"]
+  
+  static let cancelButton = window.buttons["Cancel"]
+  static let resetButton = window.buttons["Reset"]
 }

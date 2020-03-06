@@ -118,6 +118,27 @@ struct UIString: RawRepresentable
       clear the tracking branch setting, or delete your local branch "%@"?
       """
 
+  static let resetSoftDescription = ›"""
+      Sets the current branch to point to the selected commit, but staged \
+      changes are retained and workspace files are not changed.
+      """
+  static let resetMixedDescription = ›"""
+      Sets the current branch to point to the selected commit, and all staged \
+      changes are forgotten. Workspace files are not changed.
+      """
+  static let resetHardDescription = ›"""
+      Clears all staged and workspace changes, and sets the current branch to \
+      point to the selected commit.
+      """
+  
+  static let resetStatusClean = ›"There are no staged or workspace changes."
+  static let resetStatusSafe = ›"""
+      There are changes, but this option will preserve them.
+      """
+  static let resetStatusDataLoss = ›"""
+      You have uncommitted changes that will be lost with this option.
+      """
+
   static func author(_ name: String) -> UIString
   {
     return UIString(format: UIString.authorFormat, name)

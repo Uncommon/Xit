@@ -29,3 +29,30 @@ class ContextMenuOutlineView: NSOutlineView
   {
   }
 }
+
+/// Table view with dynamic context menus.
+class ContextMenuTableView: NSTableView
+{
+  /// The row and column last clicked to select a context menu command
+  public private(set) var contextMenuCell: (Int, Int)?
+
+  override func rightMouseDown(with event: NSEvent)
+  {
+    defer {
+      super.rightMouseDown(with: event)
+      contextMenuCell = nil
+    }
+    
+    let localPoint = convert(event.locationInWindow, from: nil)
+    let clickedRow = row(at: localPoint)
+    let clickedColumn = column(at: localPoint)
+    
+    contextMenuCell = (clickedRow, clickedColumn)
+    updateMenu(forRow: clickedRow, column: clickedColumn)
+  }
+  
+  /// Updates the context menu for the given row and column.
+  func updateMenu(forRow row: Int, column: Int)
+  {
+  }
+}

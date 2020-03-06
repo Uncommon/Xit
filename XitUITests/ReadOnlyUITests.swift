@@ -59,6 +59,7 @@ class ReadOnlyUITests: XCTestCase
     Sidebar.assertBranches(Self.env.repo.defaultBranches)
   }
 
+  /// Commit header and file list are correct
   func testCommitContent()
   {
     CommitFileList.assertFiles(["README.md", "hero_slide1.png", "jquery-1.8.1.min.js"])
@@ -70,6 +71,7 @@ class ReadOnlyUITests: XCTestCase
                                message: "Add 2 text and 1 binary file for diff tests.")
   }
   
+  /// Parents list is correct and can be clicked to navigate
   func testParents()
   {
     // Select a merge commit to test multiple parents
@@ -88,6 +90,7 @@ class ReadOnlyUITests: XCTestCase
     XCTAssertTrue(HistoryList.row(13).isSelected)
   }
   
+  /// Status in window tab hides and shows in response to toggling the preference
   func testTabWorkspaceStatus()
   {
     PrefsWindow.open()
@@ -102,10 +105,74 @@ class ReadOnlyUITests: XCTestCase
     
     PrefsWindow.tabStatusCheck.click()
     XCTAssertTrue(Window.tabStatus.exists)
+    PrefsWindow.close()
+  }
+  
+  /// Copies the SHA of the clicked commit
+  func testHistoryCopySHA()
+  {
+    HistoryList.row(1).rightClick()
+    HistoryList.ContextMenu.copySHAItem.click()
+    
+    let pasteboard = NSPasteboard.general
+    let copiedToxt = pasteboard.string(forType: .string)
+    
+    XCTAssertEqual(copiedToxt, "6b0c1c8b8816416089c534e474f4c692a76ac14f")
+  }
+  
+  /// Reset should be disabled for the branch head
+  func testResetEnabling()
+  {
+    let resetItem = HistoryList.ContextMenu.resetItem
+    
+    // For some reason row 0 is not hittable, but its cell is
+    HistoryList.row(0).children(matching: .cell).element(boundBy: 0).rightClick()
+    XCTAssertFalse(resetItem.isEnabled)
+    XitApp.typeKey(.escape, modifierFlags: [])
+    
+    HistoryList.row(1).rightClick()
+    XCTAssertTrue(resetItem.isEnabled)
+    XitApp.typeKey(.escape, modifierFlags: [])
+  }
+  
+  /// Reset mode description and status are updated when modes are selected
+  func testResetSheet()
+  {
+    HistoryList.row(1).rightClick()
+    HistoryList.ContextMenu.resetItem.click()
+    
+    XCTAssertTrue(ResetSheet.window.waitForExistence(timeout: 0.5))
+    XCTAssertTrue(ResetSheet.mixedButton.intValue == 1)
+    XCTAssertEqual(ResetSheet.modeDescription.stringValue,
+                   """
+                   Sets the current branch to point to the selected commit, and \
+                   all staged changes are forgotten. Workspace files are not changed.
+                   """)
+    XCTAssertEqual(ResetSheet.statusText.stringValue,
+                   "There are changes, but this option will preserve them.")
+    
+    ResetSheet.softButton.click()
+    XCTAssertEqual(ResetSheet.modeDescription.stringValue,
+                   """
+                   Sets the current branch to point to the selected commit, but \
+                   staged changes are retained and workspace files are not changed.
+                   """)
+    XCTAssertEqual(ResetSheet.statusText.stringValue,
+                   "There are changes, but this option will preserve them.")
+
+    ResetSheet.hardButton.click()
+    XCTAssertEqual(ResetSheet.modeDescription.stringValue,
+                   """
+                   Clears all staged and workspace changes, and sets the current \
+                   branch to point to the selected commit.
+                   """)
+    XCTAssertEqual(ResetSheet.statusText.stringValue,
+                   "You have uncommitted changes that will be lost with this option.")
   }
 }
 
 extension XCUIElement
 {
   var stringValue: String { value as? String ?? "" }
+  var intValue: Int? { value as? Int }
 }

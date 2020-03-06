@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -22,6 +23,7 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customObject id="IYz-w0-bcN" customClass="HistoryTableController" customModule="Xit" customModuleProvider="target">
             <connections>
+                <outlet property="contextMenu" destination="Jgp-cg-dCj" id="EqE-ix-jnb"/>
                 <outlet property="view" destination="No3-Ik-sWu" id="rsr-3x-Jbg"/>
             </connections>
         </customObject>
@@ -129,7 +131,7 @@
                                         <tableColumns>
                                             <tableColumn identifier="commit" width="421" minWidth="40" maxWidth="5000" id="dd7-jX-0NL">
                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Commit">
-                                                    <font key="font" metaFont="controlContent" size="11"/>
+                                                    <font key="font" metaFont="label" size="11"/>
                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                 </tableHeaderCell>
@@ -145,10 +147,10 @@
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <stackView distribution="fill" orientation="horizontal" alignment="top" spacing="4" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" horizontalClippingResistancePriority="750" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zOj-e6-4hz">
-                                                                <rect key="frame" x="100" y="0.0" width="92" height="17"/>
+                                                                <rect key="frame" x="100" y="1" width="92" height="16"/>
                                                                 <subviews>
                                                                     <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oMe-ke-Jkz" customClass="ExpansionTextField" customModule="Xit" customModuleProvider="target">
-                                                                        <rect key="frame" x="-2" y="0.0" width="96" height="17"/>
+                                                                        <rect key="frame" x="-2" y="0.0" width="96" height="16"/>
                                                                         <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="g1y-W2-Nej">
                                                                             <font key="font" metaFont="system"/>
                                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -179,7 +181,7 @@
                                             </tableColumn>
                                             <tableColumn identifier="name" width="192" minWidth="40" maxWidth="1000" id="3jR-lb-G6K">
                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Name">
-                                                    <font key="font" metaFont="controlContent" size="11"/>
+                                                    <font key="font" metaFont="label" size="11"/>
                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                 </tableHeaderCell>
@@ -212,7 +214,7 @@
                                             </tableColumn>
                                             <tableColumn identifier="date" width="106" minWidth="10" maxWidth="3.4028234663852886e+38" id="1eU-Fb-iXQ">
                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Date">
-                                                    <font key="font" metaFont="controlContent" size="11"/>
+                                                    <font key="font" metaFont="label" size="11"/>
                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 </tableHeaderCell>
@@ -292,6 +294,25 @@
             </connections>
             <point key="canvasLocation" x="728.5" y="1656.5"/>
         </splitView>
+        <menu id="Jgp-cg-dCj">
+            <items>
+                <menuItem title="Copy SHA" id="AFW-ol-Kww">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="copySHAWithSender:" target="IYz-w0-bcN" id="GPp-Ph-FQj"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="z24-Kg-TGd"/>
+                <menuItem title="Reset to this commit..." id="lj8-Os-85e">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="resetToCommitWithSender:" target="IYz-w0-bcN" id="2PN-Mv-VNm"/>
+                    </connections>
+                </menuItem>
+            </items>
+            <accessibility identifier="HistoryMenu"/>
+            <point key="canvasLocation" x="505" y="2067"/>
+        </menu>
     </objects>
     <resources>
         <image name="NSGoBackTemplate" width="9" height="12"/>
