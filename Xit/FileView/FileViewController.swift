@@ -2,7 +2,7 @@ import Foundation
 import Quartz
 
 /// View controller for the file list and detail view.
-class FileViewController: NSViewController
+class FileViewController: NSViewController, RepositoryWindowViewController
 {
   /// Preview tab identifiers
   enum TabID
@@ -52,16 +52,6 @@ class FileViewController: NSViewController
   {
     return  [diffController, blameController,
              textController, previewController]
-  }
-  
-  var repoUIController: RepositoryUIController?
-  {
-    return view.window?.windowController as? RepositoryUIController
-  }
-  
-  var repoSelection: RepositorySelection?
-  {
-    return repoUIController?.selection
   }
   
   var inStagingView: Bool
@@ -190,7 +180,7 @@ class FileViewController: NSViewController
     else { return }
     
     for listController in allListControllers {
-      listController.repoUIController = controller
+      listController.finishLoad()
     }
 
     observers.addObserver(forName: .XTSelectedModelChanged,
@@ -384,7 +374,7 @@ class FileViewController: NSViewController
         self.previewPath.pathItems = [item]
       }
     }
-    repo.queue.executeOffMainThread {
+    controller.queue.executeOffMainThread {
       let selection = changes.map {
         FileSelection(repoSelection: repoSelection, path: $0.gitPath,
                       staging: stagingType)

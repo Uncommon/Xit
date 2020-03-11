@@ -74,15 +74,14 @@
   return NO;
 }
 
-- (void)canCloseDocumentWithDelegate:(id)delegate shouldCloseSelector:(SEL)shouldCloseSelector contextInfo:(void *)contextInfo
+- (void)canCloseDocumentWithDelegate:(id)delegate
+                 shouldCloseSelector:(SEL)shouldCloseSelector
+                         contextInfo:(void *)contextInfo
 {
-  [self.repository.queue shutDown];
-  
   XTWindowController *controller = self.windowControllers.firstObject;
   
-  [controller.currentOperation abort];
+  [controller shutDown];
   
-  WaitForQueue(self.repository.queue.queue);
   [super canCloseDocumentWithDelegate:delegate
                   shouldCloseSelector:shouldCloseSelector
                           contextInfo:contextInfo];

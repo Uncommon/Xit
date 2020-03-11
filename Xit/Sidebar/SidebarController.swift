@@ -1,9 +1,8 @@
 import Cocoa
 
 // Command handling extracted for testability
-protocol SidebarHandler: AnyObject
+protocol SidebarHandler: AnyObject, RepositoryUIAccessor
 {
-  var repo: XTRepository! { get }
   var window: NSWindow? { get }
   
   func targetItem() -> SidebarItem?
@@ -25,7 +24,8 @@ extension SidebarHandler
   func validate(sidebarCommand: NSMenuItem) -> Bool
   {
     guard let action = sidebarCommand.action,
-          let item = targetItem()
+          let item = targetItem(),
+          let repo = repository
     else { return false }
     
     switch action {
@@ -106,7 +106,7 @@ extension SidebarHandler
     guard let item = targetItem ?? self.targetItem()
     else { return }
     
-    repo.queue.executeOffMainThread {
+    repoUIController?.queue.executeOffMainThread {
       do {
         try block(item)
       }
@@ -129,7 +129,7 @@ extension SidebarHandler
       guard let index = self?.stashIndex(for: item)
       else { return }
       
-      try self?.repo.popStash(index: index)
+      try self?.repository?.popStash(index: index)
     }
   }
   
@@ -140,7 +140,7 @@ extension SidebarHandler
       guard let index = self?.stashIndex(for: item)
       else { return }
       
-      try self?.repo.applyStash(index: index)
+      try self?.repository?.applyStash(index: index)
     }
   }
   
@@ -151,13 +151,14 @@ extension SidebarHandler
       guard let index = self?.stashIndex(for: item)
       else { return }
       
-      try self?.repo.dropStash(index: index)
+      try self?.repository?.dropStash(index: index)
     }
   }
 }
 
 /// Manages the main window sidebar.
-class SidebarController: NSViewController, SidebarHandler
+class SidebarController: NSViewController, SidebarHandler,
+                         RepositoryWindowViewController
 {
   @IBOutlet weak var sidebarOutline: SideBarOutlineView!
   @IBOutlet weak var sidebarDS: SideBarDataSource!
@@ -220,7 +221,7 @@ class SidebarController: NSViewController, SidebarHandler
     }
     set
     {
-      guard let controller = window?.windowController as? RepositoryUIController,
+      guard let controller = repoUIController,
             let item = newValue
       else { return }
       
@@ -271,17 +272,15 @@ class SidebarController: NSViewController, SidebarHandler
   
   func selectedModelChanged()
   {
-    let repoUIController = view.window!.windowController as! RepositoryUIController
-
     if let selectedItem = self.selectedItem {
       guard selectedItem.selection?.shaToSelect !=
-            repoUIController.selection?.shaToSelect
+            repoUIController?.selection?.shaToSelect
       else {
         return
       }
     }
     
-    switch repoUIController.selection {
+    switch repoUIController?.selection {
     
       case let stashChanges as StashSelection:
         let stashRoot = sidebarDS.model.rootItem(.stashes)

@@ -7,7 +7,7 @@ extension NSTouchBarItem.Identifier
 }
 
 /// Handles the commit message entry area.
-class CommitEntryController: NSViewController
+class CommitEntryController: NSViewController, RepositoryWindowViewController
 {
   typealias Repository = CommitStorage & CommitReferencing
   
@@ -38,11 +38,6 @@ class CommitEntryController: NSViewController
   var touchBarAmendButton: NSSegmentedControl!
   
   let observers = ObserverCollection()
-  
-  var repoUIController: RepositoryUIController?
-  {
-    return view.ancestorWindow?.windowController as? RepositoryUIController
-  }
   
   var anyStaged = false
   {

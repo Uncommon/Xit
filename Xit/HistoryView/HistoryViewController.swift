@@ -64,7 +64,7 @@ class HistoryViewController: NSViewController
   func finishLoad(repository: XTRepository)
   {
     fileViewController.finishLoad(repository: repository)
-    tableController.repository = repository
+    tableController.finishLoad()
   }
   
   func reload()

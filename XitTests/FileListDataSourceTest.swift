@@ -1,8 +1,10 @@
 import XCTest
 @testable import Xit
 
-class FakeRepoController: RepositoryController
+class FakeRepoController: RepositoryUIController
 {
+  var repoController: GitRepositoryController!
+  
   var repository: Repository
   
   var queue = TaskQueue(id: "test")
@@ -45,7 +47,7 @@ class FileListDataSourceTest: XTTest
     
     history.repository = repository
     objc_sync_enter(flds)
-    flds.repoController = repoController
+    flds.repoUIController = repoController
     objc_sync_exit(flds)
     waitForRepoQueue()
     
@@ -107,7 +109,7 @@ class FileListDataSourceTest: XTTest
     let flds = FileTreeDataSource(useWorkspaceList: false)
     
     objc_sync_enter(flds)
-    flds.repoController = repoController
+    flds.repoUIController = repoController
     objc_sync_exit(flds)
     waitForRepoQueue()
 

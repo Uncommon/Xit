@@ -1,27 +1,12 @@
 import Foundation
 import Cocoa
 
-class BlameViewController: WebViewController
+class BlameViewController: WebViewController, RepositoryWindowViewController
 {
   @IBOutlet var spinner: NSProgressIndicator!
   var isLoaded: Bool = false
   
   var currentSelection: FileSelection?
-  
-  var repoUIController: RepositoryUIController?
-  {
-    let windowController: NSWindowController?
-    
-    if Thread.isMainThread {
-      windowController = view.window?.windowController
-    }
-    else {
-      windowController = DispatchQueue.main.sync {
-        return view.window?.windowController
-      }
-    }
-    return windowController as? RepositoryUIController
-  }
   
   class CommitColoring
   {

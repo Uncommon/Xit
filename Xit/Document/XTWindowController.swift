@@ -3,6 +3,7 @@ import Cocoa
 protocol RepositoryUIController: AnyObject
 {
   var repository: Repository { get }
+  var repoController: GitRepositoryController! { get }
   var queue: TaskQueue { get }
   var selection: RepositorySelection? { get set }
   var isAmending: Bool { get set }
@@ -22,6 +23,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   var historyController: HistoryViewController!
   weak var xtDocument: XTDocument?
+  var repoController: GitRepositoryController!
   var titleBarController: TitleBarViewController?
   var refsChangedObserver, workspaceObserver: NSObjectProtocol?
   var repository: Repository { return (xtDocument?.repository as Repository?)! }
@@ -33,7 +35,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       (selection = selection) // trigger didSet
     }
   }
-  var queue: TaskQueue { return xtDocument!.repository.queue }
+  var queue: TaskQueue { repoController.queue }
   var selection: RepositorySelection?
   {
     didSet
@@ -118,6 +120,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       guard let repo = xtDocument?.repository
       else { return }
       
+      repoController = GitRepositoryController(repository: repo)
       refsChangedObserver = NotificationCenter.default.addObserver(
           forName: .XTRepositoryRefsChanged,
           object: repo, queue: .main) {
@@ -190,6 +193,14 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     }
     updateMiniwindowTitle()
     updateNavButtons()
+  }
+  
+  @objc
+  func shutDown()
+  {
+    repoController.queue.shutDown()
+    currentOperation?.abort()
+    WaitForQueue(repoController.queue.queue)
   }
   
   deinit
@@ -480,11 +491,11 @@ extension XTWindowController: NSToolbarDelegate
          NSValueTransformerName.negateBooleanTransformerName]
 
     viewController.proxyIcon.bind(NSBindingName.hidden,
-                                  to: repository.queue,
+                                  to: queue,
                                   withKeyPath: #keyPath(TaskQueue.busy),
                                   options: nil)
     viewController.bind(.progressHidden,
-                        to: repository.queue,
+                        to: queue,
                         withKeyPath: #keyPath(TaskQueue.busy),
                         options: inverseBindingOptions)
     viewController.selectedBranch = repository.currentBranch

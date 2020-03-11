@@ -1,15 +1,21 @@
 import Foundation
 
 public typealias Repository =
-    Branching & CommitStorage & CommitReferencing & FileDiffing & FileContents &
-    FileStaging & FileStatusDetection & RemoteCommunication & RemoteManagement &
-    RepoConfiguring & Stashing & SubmoduleManagement & Tagging & TaskManagement &
-    Workspace
+    BasicRepository & Branching & CommitStorage & CommitReferencing & FileDiffing &
+    FileContents & FileStaging & FileStatusDetection & RemoteCommunication &
+    RemoteManagement & RepoConfiguring & Stashing & SubmoduleManagement & Tagging &
+    WritingManagement & Workspace
 
-public protocol TaskManagement
+public protocol BasicRepository
 {
-  var queue: TaskQueue { get }
+  var controller: RepositoryController! { get set }
+}
+
+public protocol WritingManagement
+{
   var isWriting: Bool { get }
+
+  func performWriting(_ block: (() throws -> Void)) throws
 }
 
 public protocol RepoConfiguring
@@ -33,6 +39,7 @@ public protocol CommitReferencing: AnyObject
   var headRef: String? { get }
   var currentBranch: String? { get }
   
+  func oid(forRef: String) -> OID?
   func sha(forRef: String) -> String?
   func tags() throws -> [Tag]
   func graphBetween(localBranch: LocalBranch,
@@ -43,6 +50,7 @@ public protocol CommitReferencing: AnyObject
   
   func reference(named name: String) -> Reference?
   func refs(at sha: String) -> [String]
+  func allRefs() -> [String]
   
   func rebuildRefsIndex()
   

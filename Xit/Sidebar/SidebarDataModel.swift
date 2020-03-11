@@ -6,8 +6,7 @@ class SidebarDataModel
   typealias Repository = FileChangesRepo & // For creating selection objects
                          CommitStorage & // also for selections
                          Branching & RemoteManagement &
-                         SubmoduleManagement & Stashing &
-                         TaskManagement // For loading off the main thread
+                         SubmoduleManagement & Stashing
 
   private(set) weak var repository: Repository?
   private(set) weak var outline: NSOutlineView?

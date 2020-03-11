@@ -78,7 +78,7 @@ extension SidebarController
           let branch = selectedItem.branchObject()
     else { return }
     
-    repo.queue.executeOffMainThread {
+    repoUIController?.queue.executeOffMainThread {
       [weak self] in
       do {
         try self?.repo.merge(branch: branch)
