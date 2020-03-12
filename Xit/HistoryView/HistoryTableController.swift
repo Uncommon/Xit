@@ -5,6 +5,9 @@ fileprivate let batchSize = 500
 public class HistoryTableController: NSViewController,
                                      RepositoryWindowViewController
 {
+  typealias Repository = BasicRepository & FileChangesRepo &
+                         CommitStorage & FileContents
+  
   enum ColumnID
   {
     static let commit = ¶"commit"
@@ -19,6 +22,8 @@ public class HistoryTableController: NSViewController,
   var tableView: HistoryTableView { return view as! HistoryTableView }
 
   let history = GitCommitHistory()
+  
+  var repository: Repository { repoController?.repository as! Repository }
   
   deinit
   {
@@ -77,7 +82,7 @@ public class HistoryTableController: NSViewController,
                             as? RepositorySelection,
             // In spite of the `object` parameter, notifications can come through
             // for the wrong repository
-            selection.repository.repoURL == self.repository?.repoURL
+            selection.repository.repoURL == self.repository.repoURL
       else { return }
       self.selectRow(sha: selection.shaToSelect)
     }
@@ -102,7 +107,6 @@ public class HistoryTableController: NSViewController,
   
   func loadHistory()
   {
-    let repository = self.repository!
     let history = self.history
     weak var tableView = view as? NSTableView
     
@@ -115,7 +119,7 @@ public class HistoryTableController: NSViewController,
         Signpost.intervalEnd(.historyWalking, object: self)
       }
       
-      guard let walker = repository.walker()
+      guard let walker = self.repository.walker()
       else {
         NSLog("RevWalker failed")
         return
@@ -123,15 +127,15 @@ public class HistoryTableController: NSViewController,
       
       walker.setSorting([.topological])
       
-      let refs = repository.allRefs()
+      let refs = self.repository.allRefs()
       
       for ref in refs where ref != "refs/stash" {
-        repository.oid(forRef: ref).map { walker.push(oid: $0) }
+        self.repository.oid(forRef: ref).map { walker.push(oid: $0) }
       }
       
       history.withSync {
         while let oid = walker.next() {
-          guard let commit = repository.commit(forOID: oid)
+          guard let commit = self.repository.commit(forOID: oid)
           else { continue }
           
           history.appendCommit(commit)
@@ -304,7 +308,9 @@ extension HistoryTableController: NSTableViewDelegate
       case ColumnID.commit:
         let historyCell = result as! HistoryCellView
         
-        historyCell.configure(entry: entry, repository: repository!)
+        historyCell.configure(
+              entry: entry,
+              repository: repository as! Branching & CommitReferencing)
 
       case ColumnID.date:
         (result as! DateCellView).date = entry.commit.commitDate
@@ -344,7 +350,7 @@ extension HistoryTableController: NSTableViewDelegate
     
     if (selectedRow >= 0) && (selectedRow < history.entries.count) {
       repoUIController?.selection =
-          CommitSelection(repository: repository!,
+          CommitSelection(repository: repository,
                           commit: history.entries[selectedRow].commit)
     }
   }
@@ -359,7 +365,7 @@ extension HistoryTableController: XTTableViewDelegate
     else { return }
     
     let entry = history.entries[selectionIndex]
-    let newSelection = CommitSelection(repository: repository!,
+    let newSelection = CommitSelection(repository: repository,
                                        commit: entry.commit)
     
     if (controller.selection == nil) ||
@@ -403,8 +409,8 @@ extension HistoryTableController: NSUserInterfaceValidations
       case #selector(resetToCommit(sender:)):
         if let (clickedRow, _) = tableView.contextMenuCell,
            clickedRow >= 0,
-           let branchName = repository?.currentBranch,
-           let branch = repository?.localBranch(named: branchName),
+           let branchName = repository.currentBranch,
+           let branch = repository.localBranch(named: branchName),
            let branchOID = branch.oid {
           return !branchOID.equals(history.entries[clickedRow].commit.oid)
         }

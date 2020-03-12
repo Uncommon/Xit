@@ -20,7 +20,7 @@ class CommitHeaderViewController: NSViewController, RepositoryWindowViewControll
   }
   var expanded: Bool = false
   
-  weak var repository: CommitStorage!
+  var repository: CommitStorage { repoController?.repository as! CommitStorage }
   
   override func awakeFromNib()
   {

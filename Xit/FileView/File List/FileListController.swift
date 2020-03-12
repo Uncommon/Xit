@@ -57,6 +57,9 @@ class FileListController: NSViewController, RepositoryWindowViewController
   var pressedImage: NSImage? { return nil }
   var actionButtonSelector: Selector? { return nil }
   
+  var repository: BasicRepository & FileStaging & FileContents
+  { repoController?.repository as! BasicRepository & FileStaging & FileContents }
+  
   required init(isWorkspace: Bool)
   {
     self.fileListDataSource = FileChangesDataSource(useWorkspaceList: isWorkspace)
@@ -114,13 +117,13 @@ class FileListController: NSViewController, RepositoryWindowViewController
         
         NSAlert.confirm(message: .confirmRevert(change.path.lastPathComponent),
         actionName: .revert, parentWindow: view.window!) {
-          try? self.repository?.revert(file: change.gitPath)
+          try? self.repository.revert(file: change.gitPath)
         }
       default:
         NSAlert.confirm(message: .confirmRevertMultiple,
                         actionName: .revert, parentWindow: view.window!) {
           for change in changes {
-            try? self.repository?.revert(file: change.gitPath)
+            try? self.repository.revert(file: change.gitPath)
           }
         }
     }
@@ -134,11 +137,8 @@ class FileListController: NSViewController, RepositoryWindowViewController
   @IBAction
   func open(_ sender: Any)
   {
-    guard let repo = repository
-    else { return }
-    
     for change in targetChanges(sender: sender) {
-      let url = repo.fileURL(change.gitPath)
+      let url = repository.fileURL(change.gitPath)
       
       NSWorkspace.shared.open(url)
     }
@@ -148,7 +148,7 @@ class FileListController: NSViewController, RepositoryWindowViewController
   func showInFinder(_ sender: Any)
   {
     let changes = targetChanges(sender: sender)
-    let urls = changes.compactMap { repository?.fileURL($0.gitPath) }
+    let urls = changes.compactMap { repository.fileURL($0.gitPath) }
                 .filter { FileManager.default.fileExists(atPath: $0.path) }
     
     NSWorkspace.shared.activateFileViewerSelecting(urls)
@@ -409,7 +409,7 @@ class StagingFileListController: FileListController
   {
     super.finishLoad()
     
-    guard let repo = repository
+    guard let repo = repoController?.repository
     else { return }
     
     indexObserver = NotificationCenter.default.addObserver(

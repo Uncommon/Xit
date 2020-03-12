@@ -188,7 +188,6 @@ class FileViewController: NSViewController, RepositoryWindowViewController
       [weak self] _ in
       self?.selectedModelChanged()
     }
-    headerController.repository = repository
     commitEntryController.configure(repository: repository,
                                     config: repository.config)
     

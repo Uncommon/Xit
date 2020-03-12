@@ -2,7 +2,7 @@ import Foundation
 
 public protocol RepositoryController: AnyObject
 {
-  var repository: Repository { get }
+  var repository: BasicRepository { get }
   var queue: TaskQueue { get }
 
   var cachedStagedChanges: [FileChange]? { get set }
@@ -18,7 +18,7 @@ public protocol RepositoryController: AnyObject
 class GitRepositoryController: NSObject, RepositoryController
 {
   let xtRepo: XTRepository
-  var repository: Repository { xtRepo }
+  var repository: BasicRepository { xtRepo }
 
   @objc public let queue: TaskQueue
   let mutex = Mutex()

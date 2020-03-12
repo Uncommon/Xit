@@ -8,8 +8,6 @@ protocol RepositoryUIAccessor
 
 extension RepositoryUIAccessor
 {
-  var repository: Repository?
-  { repoController?.repository }
   var repoController: RepositoryController?
   { repoUIController?.repoController }
   var repoSelection: RepositorySelection?

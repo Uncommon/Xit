@@ -35,12 +35,13 @@ class WorkspaceWatcher: NSObject
   
   func observeEvents(_ paths: [String])
   {
-    guard let controller = self.controller
+    guard let controller = self.controller,
+          let repository = controller.repository as? FileStatusDetection
     else { return }
     var userInfo = [String: Any]()
   
     if skipIgnored {
-      let filteredPaths = paths.filter { !controller.repository.isIgnored(path: $0) }
+      let filteredPaths = paths.filter { !repository.isIgnored(path: $0) }
       guard !filteredPaths.isEmpty
       else { return }
       
