@@ -8,7 +8,7 @@ public typealias Repository =
 
 public protocol BasicRepository
 {
-  var controller: RepositoryController! { get set }
+  var controller: RepositoryController? { get set }
 }
 
 public protocol WritingManagement

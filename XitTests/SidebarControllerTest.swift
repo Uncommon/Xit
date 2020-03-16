@@ -4,7 +4,15 @@ import XCTest
 
 class TestingSidebarHandler : SidebarHandler
 {
+  var repoUIController: RepositoryUIController?
+
   var repo: XTRepository!
+  {
+    didSet
+    {
+      repoUIController = FakeRepoUIController(repository: repo)
+    }
+  }
   var window: NSWindow? { return nil }
   var selectedItem: SidebarItem? = nil
   var selectedStash: UInt? = nil

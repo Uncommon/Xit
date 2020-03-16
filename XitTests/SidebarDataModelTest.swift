@@ -6,8 +6,10 @@ class SidebarDataModelTest: XCTestCase
   func testLoad()
   {
     let repo = FakeRepo()
+    let controller = FakeRepoController(repository: repo)
     let model = SidebarDataModel(repository: repo, outlineView: nil)
-    
+
+    _ = controller.repository // kill the warning
     model.reload()
 
     XCTAssertEqual(model.roots.map { $0.title },

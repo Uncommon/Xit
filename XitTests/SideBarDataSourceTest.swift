@@ -230,16 +230,18 @@ class SidebarDSFakeRepoTest: XCTestCase
   func testFilter()
   {
     let repo = FakeRepo()
+    let controller = FakeRepoController(repository: repo)
     let model = SidebarDataModel(repository: repo, outlineView: nil)
     let sidebarDS = SideBarDataSource()
     let outline = NSOutlineView()
-    
+
+    _ = controller.repository // kill the warning
     model.reload()
     sidebarDS.model = model
     sidebarDS.outline = outline
     outline.dataSource = sidebarDS
-    repo.waitForQueue()
-    
+    repo.controller?.waitForQueue()
+
     var filteredBranches = sidebarDS.displayItem(.branches)
                                     .children.map { $0.title }
     
@@ -247,7 +249,7 @@ class SidebarDSFakeRepoTest: XCTestCase
     
     sidebarDS.filterSet.filters = [SidebarNameFilter(string: "1")]
     sidebarDS.reload()
-    repo.waitForQueue()
+    repo.controller?.waitForQueue()
 
     filteredBranches = sidebarDS.displayItem(.branches)
                                 .children.map { $0.title }

@@ -79,7 +79,7 @@ class SideBarDataSource: NSObject
   
   func reload()
   {
-    repoUIController?.queue.executeOffMainThread {
+    repository.controller!.queue.executeOffMainThread {
       [weak self] in
       // Keep self weak for the dispatch call
       if let self = self {

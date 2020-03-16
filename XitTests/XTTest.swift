@@ -6,7 +6,8 @@ class XTTest: XCTestCase
 {
   var repoPath: String!
   var remoteRepoPath: String!
-  
+
+  var repoController: GitRepositoryController!
   var repository, remoteRepository: XTRepository!
   
   enum FileName
@@ -21,7 +22,8 @@ class XTTest: XCTestCase
     static let untracked = "untracked.txt"
   }
   
-  var file1Path: String { return repoPath.appending(pathComponent: FileName.file1) }
+  var file1Path: String
+  { return repoPath.appending(pathComponent: FileName.file1) }
   
   static func createRepo(atPath repoPath: String) -> XTRepository?
   {
@@ -72,6 +74,7 @@ class XTTest: XCTestCase
                                               NSTemporaryDirectory(),
                                               "testRepo"])
     repository = XTTest.createRepo(atPath: repoPath)
+    repoController = GitRepositoryController(repository: repository)
     addInitialRepoContent()
   }
   
@@ -109,7 +112,7 @@ class XTTest: XCTestCase
   
   func wait(for repository: XTRepository)
   {
-    repository.waitForQueue()
+    repository.controller?.waitForQueue()
   }
   
   func addInitialRepoContent()
@@ -152,7 +155,7 @@ class XTTest: XCTestCase
     var result = true
     let semaphore = DispatchSemaphore(value: 0)
     
-    repository.queue.executeOffMainThread {
+    repoController.queue.executeOffMainThread {
       defer {
         semaphore.signal()
       }
@@ -234,7 +237,7 @@ class XTTest: XCTestCase
   }
 }
 
-extension TaskManagement
+extension RepositoryController
 {
   func waitForQueue()
   {

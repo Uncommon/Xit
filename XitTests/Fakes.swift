@@ -145,8 +145,31 @@ class FakeRemoteBranch: RemoteBranch
   }
 }
 
+class FakeRepoController: RepositoryController
+{
+  var repository: BasicRepository
+
+  var queue: TaskQueue = TaskQueue(id: "testing")
+
+  var cachedStagedChanges: [FileChange]? = nil
+  var cachedAmendChanges: [FileChange]? = nil
+  var cachedUnstagedChanges: [FileChange]? = nil
+
+  func invalidateIndex() {}
+
+  init(repository: FakeRepo)
+  {
+    self.repository = repository
+    repository.controller = self
+  }
+
+  func waitForQueue() {}
+}
+
 class FakeFileChangesRepo: FileChangesRepo
 {
+  var controller: RepositoryController?
+
   var headRef: String? = nil
   var currentBranch: String? = nil
   

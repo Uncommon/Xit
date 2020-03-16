@@ -6,7 +6,7 @@ class XTFileChangesDataSourceTest: XTTest
 {
   func testInitialCommit()
   {
-    let repoUIController = FakeRepoController(repository: repository)
+    let repoUIController = FakeRepoUIController(repository: repository)
     let dataSource = FileChangesDataSource(useWorkspaceList: false)
     let outlineView = NSOutlineView()
     let headCommit = GitCommit(sha: repository.headSHA!,

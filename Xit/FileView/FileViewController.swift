@@ -178,10 +178,6 @@ class FileViewController: NSViewController, RepositoryWindowViewController
 
     guard let controller = repoUIController
     else { return }
-    
-    for listController in allListControllers {
-      listController.finishLoad()
-    }
 
     observers.addObserver(forName: .XTSelectedModelChanged,
                           object: controller, queue: .main) {
@@ -242,6 +238,14 @@ class FileViewController: NSViewController, RepositoryWindowViewController
     headerTabView.tabViewItems[1].view = commitEntryController.view
     previewPath.pathItems = []
     diffController.stagingDelegate = self
+  }
+
+  override func viewWillAppear() {
+    super.viewWillAppear()
+
+    for listController in allListControllers {
+      listController.finishLoad()
+    }
   }
   
   func updatePreviewForActiveList()

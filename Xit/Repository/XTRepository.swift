@@ -14,7 +14,7 @@ public class XTRepository: NSObject, BasicRepository, RepoConfiguring
   let mutex = Mutex()
   var refsIndex = [String: [String]]()
   
-  public var controller: RepositoryController!
+  public var controller: RepositoryController? = nil
   
   fileprivate(set) public var isWriting = false
 
@@ -22,18 +22,18 @@ public class XTRepository: NSObject, BasicRepository, RepoConfiguring
   private var _cachedBranches: [String: GitBranch] = [:]
   var cachedStagedChanges: [FileChange]?
   {
-    get { controller.cachedStagedChanges }
-    set { controller.cachedStagedChanges = newValue }
+    get { controller?.cachedStagedChanges }
+    set { controller?.cachedStagedChanges = newValue }
   }
   var cachedAmendChanges: [FileChange]?
   {
-    get { controller.cachedAmendChanges }
-    set { controller.cachedAmendChanges = newValue }
+    get { controller?.cachedAmendChanges }
+    set { controller?.cachedAmendChanges = newValue }
   }
   var cachedUnstagedChanges: [FileChange]?
   {
-    get { controller.cachedUnstagedChanges }
-    set { controller.cachedUnstagedChanges = newValue }
+    get { controller?.cachedUnstagedChanges }
+    set { controller?.cachedUnstagedChanges = newValue }
   }
   var cachedBranches: [String: GitBranch]
   {
@@ -177,7 +177,7 @@ public class XTRepository: NSObject, BasicRepository, RepoConfiguring
   
   func invalidateIndex()
   {
-    controller.invalidateIndex()
+    controller?.invalidateIndex()
   }
   
   func writing(_ block: () -> Bool) -> Bool
