@@ -80,11 +80,13 @@ class FileListController: NSViewController, RepositoryWindowViewController
     super.loadView()
     updateButtons()
   }
-  
-  func finishLoad()
+
+  // The controller must be passed in because at this point the window isn't
+  // set yet.
+  func finishLoad(controller: RepositoryUIController)
   {
-    fileListDataSource.repoUIController = repoUIController
-    fileTreeDataSource.repoUIController = repoUIController
+    fileListDataSource.repoUIController = controller
+    fileTreeDataSource.repoUIController = controller
   }
   
   // These are implemented in subclasses, and are here for convenience
@@ -405,16 +407,13 @@ class StagingFileListController: FileListController
     outlineView.columnObject(withIdentifier: ColumnID.action)?.isHidden = !shown
   }
   
-  override func finishLoad()
+  override func finishLoad(controller: RepositoryUIController)
   {
-    super.finishLoad()
-    
-    guard let repo = repoController?.repository
-    else { return }
+    super.finishLoad(controller: controller)
     
     indexObserver = NotificationCenter.default.addObserver(
         forName: .XTRepositoryIndexChanged,
-        object: repo, queue: .main) {
+        object: controller.repository, queue: .main) {
       [weak self] _ in
       self?.viewDataSource.reload()
     }

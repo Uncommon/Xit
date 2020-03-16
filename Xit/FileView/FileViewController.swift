@@ -244,7 +244,7 @@ class FileViewController: NSViewController, RepositoryWindowViewController
     super.viewWillAppear()
 
     for listController in allListControllers {
-      listController.finishLoad()
+      listController.finishLoad(controller: repoUIController!)
     }
   }
   
