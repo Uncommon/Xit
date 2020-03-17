@@ -8,9 +8,10 @@ class ModifyingUITests: XCTestCase
 
   override func setUp()
   {
-    guard let env = TestRepoEnvironment(.testApp)
+    guard let env = TestRepoEnvironment(.testApp, testName: name)
     else {
       XCTFail("Environment setup failed")
+      continueAfterFailure = false
       return
     }
     

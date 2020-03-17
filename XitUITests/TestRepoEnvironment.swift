@@ -5,25 +5,27 @@ import XCTest
 class TestRepoEnvironment
 {
   let repo: TestRepo
-  let tempDir = TemporaryDirectory("XitTest")
+  let tempDir: TemporaryDirectory
   let git: GitCLI
   let repoURL: URL
   
-  init?(_ repo: TestRepo)
+  init?(_ repo: TestRepo, testName: String)
   {
-    guard let tempURL = tempDir?.url
+    guard let tempDir = TemporaryDirectory(testName)
     else {
       XCTFail("Failed to get temp directory")
       return nil
     }
-    guard repo.extract(to: tempURL.path)
+
+    guard repo.extract(to: tempDir.url.path)
     else {
       XCTFail("Repository failed to extract")
       return nil
     }
     
+    self.tempDir = tempDir
     self.repo = repo
-    self.repoURL = tempURL.appendingPathComponent(repo.rawValue)
+    self.repoURL = tempDir.url.appendingPathComponent(repo.rawValue)
     self.git = GitCLI(repoURL: repoURL)
   }
   

@@ -7,7 +7,7 @@ class ReadOnlyUITests: XCTestCase
 
   override class func setUp()
   {
-    env = TestRepoEnvironment(.testApp)!
+    env = TestRepoEnvironment(.testApp, testName: self.description())!
   }
   
   override func setUp()
