@@ -11,9 +11,16 @@ class TestRepoEnvironment
   
   init?(_ repo: TestRepo)
   {
-    guard let tempURL = tempDir?.url,
-          repo.extract(to: tempURL.path)
-    else { return nil }
+    guard let tempURL = tempDir?.url
+    else {
+      XCTFail("Failed to get temp directory")
+      return nil
+    }
+    guard repo.extract(to: tempURL.path)
+    else {
+      XCTFail("Repository failed to extract")
+      return nil
+    }
     
     self.repo = repo
     self.repoURL = tempURL.appendingPathComponent(repo.rawValue)
