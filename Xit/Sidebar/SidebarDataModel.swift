@@ -111,7 +111,11 @@ class SidebarDataModel
   
   func reload()
   {
-    roots = loadRoots()
+    let newRoots = loadRoots()
+
+    Thread.syncOnMainThread {
+      roots = newRoots
+    }
   }
   
   func loadRoots() -> [SideBarGroupItem]

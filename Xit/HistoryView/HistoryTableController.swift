@@ -283,15 +283,18 @@ extension HistoryTableController: NSTableViewDelegate
   {
     let visibleRowCount =
           tableView.rows(in: tableView.enclosingScrollView!.bounds).length
-    let firstProcessRow = min(history.entries.count, row + visibleRowCount)
+    let (entryCount, batchStart) = history.withSync {
+      (history.entries.count, history.batchStart)
+    }
+    let firstProcessRow = min(entryCount, row + visibleRowCount)
     
-    if firstProcessRow > history.batchStart
+    if firstProcessRow > batchStart
     {
       history.processBatches(throughRow: firstProcessRow,
                              queue: repoUIController!.queue)
     }
     
-    guard (row >= 0) && (row < history.entries.count)
+    guard (row >= 0) && (row < entryCount)
     else {
       NSLog("Object value request out of bounds")
       return nil
