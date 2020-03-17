@@ -4,7 +4,6 @@ protocol RepositoryUIController: AnyObject
 {
   var repository: Repository { get }
   var repoController: GitRepositoryController! { get }
-  var queue: TaskQueue { get }
   var selection: RepositorySelection? { get set }
   var isAmending: Bool { get set }
 
@@ -12,6 +11,11 @@ protocol RepositoryUIController: AnyObject
   func updateForFocus()
   func postIndexNotification()
   func showErrorMessage(error: RepoError)
+}
+
+extension RepositoryUIController
+{
+  var queue: TaskQueue { repoController.queue }
 }
 
 /// XTDocument's main window controller.
@@ -35,7 +39,6 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       (selection = selection) // trigger didSet
     }
   }
-  var queue: TaskQueue { repoController.queue }
   var selection: RepositorySelection?
   {
     didSet

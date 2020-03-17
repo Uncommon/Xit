@@ -4,11 +4,8 @@ import XCTest
 class FakeRepoUIController: RepositoryUIController
 {
   var repoController: GitRepositoryController!
-  
   var repository: Repository
-  
-  var queue = TaskQueue(id: "test")
-  
+
   var selectedCommitSHA: String = ""
   var selection: RepositorySelection? = nil
   var isAmending = false
