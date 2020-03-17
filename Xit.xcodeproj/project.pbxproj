@@ -55,6 +55,8 @@
 		C90B4EB11FE86A9900277B13 /* GiRevWalk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90B4EB01FE86A9900277B13 /* GiRevWalk.swift */; };
 		C90B4EC31FEB2B2300277B13 /* GitReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90B4EC21FEB2B2300277B13 /* GitReference.swift */; };
 		C90B4EC51FEDB1D600277B13 /* GitStatusList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90B4EC41FEDB1D600277B13 /* GitStatusList.swift */; };
+		C90DA47924212B7400FFBC26 /* XTWindowController+Operations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90DA47824212B7400FFBC26 /* XTWindowController+Operations.swift */; };
+		C90DA48B24212F0300FFBC26 /* XTWindowController+TitleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90DA48A24212F0300FFBC26 /* XTWindowController+TitleBar.swift */; };
 		C90F92781E0199E400FE8589 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90F92771E0199E400FE8589 /* AppDelegate.swift */; };
 		C90FCA2F1D9C776C006196DE /* FileDiffController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90FCA2E1D9C776C006196DE /* FileDiffController.swift */; };
 		C90FD40B237F685B006358C7 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97E31AF20BF271300E74D2F /* StringExtensions.swift */; };
@@ -485,6 +487,8 @@
 		C90B4EB01FE86A9900277B13 /* GiRevWalk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiRevWalk.swift; sourceTree = "<group>"; };
 		C90B4EC21FEB2B2300277B13 /* GitReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitReference.swift; sourceTree = "<group>"; };
 		C90B4EC41FEDB1D600277B13 /* GitStatusList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitStatusList.swift; sourceTree = "<group>"; };
+		C90DA47824212B7400FFBC26 /* XTWindowController+Operations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XTWindowController+Operations.swift"; sourceTree = "<group>"; };
+		C90DA48A24212F0300FFBC26 /* XTWindowController+TitleBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XTWindowController+TitleBar.swift"; sourceTree = "<group>"; };
 		C90F92771E0199E400FE8589 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C90FCA2E1D9C776C006196DE /* FileDiffController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileDiffController.swift; sourceTree = "<group>"; };
 		C90FD41C23845679006358C7 /* ModifyingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyingUITests.swift; sourceTree = "<group>"; };
@@ -1081,6 +1085,8 @@
 				C90703742326C944002DF393 /* XTDocument.storyboard */,
 				C9E9A37C1D0B5706007BFABF /* XTWindowController.swift */,
 				C9BF41171EA11AAC00028C84 /* XTWindowController+Actions.swift */,
+				C90DA47824212B7400FFBC26 /* XTWindowController+Operations.swift */,
+				C90DA48A24212F0300FFBC26 /* XTWindowController+TitleBar.swift */,
 				C959CDD61F859BFE00C1E282 /* XTWindowController+TouchBar.swift */,
 				C923D66B1D906FAA00C6B90B /* TitleBarViewController.swift */,
 				C95355E91D93470400AEEF49 /* TitleStatusView.swift */,
@@ -1556,6 +1562,7 @@
 				DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */,
 				C957B8661D2D8D500040F858 /* XTKeychain.swift in Sources */,
 				C90B4EC51FEDB1D600277B13 /* GitStatusList.swift in Sources */,
+				C90DA47924212B7400FFBC26 /* XTWindowController+Operations.swift in Sources */,
 				C94A30261E3154D400B4496B /* TextPreviewController.swift in Sources */,
 				C90B4EC31FEB2B2300277B13 /* GitReference.swift in Sources */,
 				C9FD8FD9216C048400FCCE01 /* AccountType.swift in Sources */,
@@ -1626,6 +1633,7 @@
 				C9F20AE32347DB6F002E8603 /* NewBranchPanelController.swift in Sources */,
 				C959A7231F6C6974004277CD /* RepositoryProtocols.swift in Sources */,
 				C90B4EB11FE86A9900277B13 /* GiRevWalk.swift in Sources */,
+				C90DA48B24212F0300FFBC26 /* XTWindowController+TitleBar.swift in Sources */,
 				C9F1B5DE2217247E00293305 /* ViewExtensions.swift in Sources */,
 				C95355EA1D93470400AEEF49 /* TitleStatusView.swift in Sources */,
 				C9063D0A2412B29700574A93 /* RepositoryController.swift in Sources */,
