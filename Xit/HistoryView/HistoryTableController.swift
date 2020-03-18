@@ -314,6 +314,7 @@ extension HistoryTableController: NSTableViewDelegate
         historyCell.configure(
               entry: entry,
               repository: repository as! Branching & CommitReferencing)
+        historyCell.lockObject = history
 
       case ColumnID.date:
         (result as! DateCellView).date = entry.commit.commitDate
