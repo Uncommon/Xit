@@ -1,8 +1,10 @@
 import Foundation
 
 @objc(XTCommitHeaderViewController)
-class CommitHeaderViewController: NSViewController, RepositoryWindowViewController
+class CommitHeaderViewController: NSViewController, RepositoryUIAccessor
 {
+  var repoUIController: RepositoryUIController?
+
   @IBOutlet weak var nameField: NSTextField!
   @IBOutlet weak var dateField: NSTextField!
   @IBOutlet weak var parentsLabel: NSTextField!

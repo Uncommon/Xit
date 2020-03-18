@@ -245,6 +245,7 @@ class FileViewController: NSViewController, RepositoryWindowViewController
 
     for listController in allListControllers {
       listController.finishLoad(controller: repoUIController!)
+      headerController.repoUIController = repoUIController!
     }
   }
   
