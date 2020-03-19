@@ -132,10 +132,12 @@ public class HistoryTableController: NSViewController,
       for ref in refs where ref != "refs/stash" {
         self.repository.oid(forRef: ref).map { walker.push(oid: $0) }
       }
+
+      let repository = self.repository
       
       history.withSync {
         while let oid = walker.next() {
-          guard let commit = self.repository.commit(forOID: oid)
+          guard let commit = repository.commit(forOID: oid)
           else { continue }
           
           history.appendCommit(commit)
