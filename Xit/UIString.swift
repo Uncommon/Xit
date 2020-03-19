@@ -321,6 +321,17 @@ extension NSControl
   }
 }
 
+extension NSMenu
+{
+  @discardableResult
+  func addItem(withTitleString title: UIString,
+               action: Selector?, keyEquivalent: String) -> NSMenuItem
+  {
+    return addItem(withTitle: title.rawValue,
+                   action: action, keyEquivalent: keyEquivalent)
+  }
+}
+
 extension NSMenuItem
 {
   var titleString: UIString

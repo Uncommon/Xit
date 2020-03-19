@@ -17,6 +17,7 @@ extension NSImage.Name
   static let xtFileTemplate = "fileTemplate"
   static let xtFolderTemplate = "folderTemplate"
   static let xtGitHubTemplate = "githubTemplate"
+  static let xtGitLabTemplate = "gitlabTemplate"
   static let xtRevertTemplate = "revertTemplate"
   static let xtStageAllTemplate = "stageAllTemplate"
   static let xtStageButtonHover = "stageButtonHover"
