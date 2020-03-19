@@ -1,6 +1,6 @@
 [submodule "objective-git"]
 	path = objective-git
-	url = git://github.com/libgit2/objective-git.git
+        url=https://github.com/libgit2/objective-git.git
 [submodule "siesta"]
 	path = siesta
 	url = https://github.com/bustoutsolutions/siesta.git
