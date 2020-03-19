@@ -38,9 +38,9 @@ class WorkspaceFileListController: StagingFileListController
     else { return }
     
     for change in changes {
-      _ = try? repoController.repository.stage(file: change.gitPath)
+      _ = try? repository.stage(file: change.gitPath)
     }
-    repoController.postIndexNotification()
+    repoUIController?.postIndexNotification()
   }
   
   @IBAction override func showIgnored(_ sender: Any)

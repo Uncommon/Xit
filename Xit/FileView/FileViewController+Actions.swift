@@ -10,13 +10,13 @@ extension FileViewController: NSUserInterfaceValidations
     
     switch action {
       case #selector(self.stageAll(_:)):
-        guard let selection = repoController?.selection as? StagingSelection
+        guard let selection = repoUIController?.selection as? StagingSelection
         else { return false }
         
         return !selection.workspaceFileList.changes.isEmpty
       
       case #selector(self.unstageAll(_:)):
-        guard let selection = repoController?.selection as? StagingSelection
+        guard let selection = repoUIController?.selection as? StagingSelection
         else { return false }
         
         return !selection.indexFileList.changes.isEmpty
@@ -316,7 +316,7 @@ extension FileViewController: HunkStaging
   {
     var encoding = String.Encoding.utf8
     
-    guard let controller = repoController,
+    guard let controller = repoUIController,
       let selection = controller.selection as? StagingSelection,
       let selectedChange = self.selectedChange,
       let fileURL = selection.unstagedFileList.fileURL(selectedChange.gitPath)

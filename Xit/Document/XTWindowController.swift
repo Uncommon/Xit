@@ -1,9 +1,9 @@
 import Cocoa
 
-protocol RepositoryController: AnyObject
+protocol RepositoryUIController: AnyObject
 {
   var repository: Repository { get }
-  var queue: TaskQueue { get }
+  var repoController: GitRepositoryController! { get }
   var selection: RepositorySelection? { get set }
   var isAmending: Bool { get set }
 
@@ -13,90 +13,38 @@ protocol RepositoryController: AnyObject
   func showErrorMessage(error: RepoError)
 }
 
+extension RepositoryUIController
+{
+  var queue: TaskQueue { repoController.queue }
+}
+
 /// XTDocument's main window controller.
 class XTWindowController: NSWindowController, NSWindowDelegate,
-                          RepositoryController
+                          RepositoryUIController
 {
   var splitViewController: NSSplitViewController!
   @IBOutlet var sidebarController: SidebarController!
   
   var historyController: HistoryViewController!
   weak var xtDocument: XTDocument?
+  var repoController: GitRepositoryController!
   var titleBarController: TitleBarViewController?
   var refsChangedObserver, workspaceObserver: NSObjectProtocol?
   var repository: Repository { return (xtDocument?.repository as Repository?)! }
+
   @objc dynamic var isAmending = false
   {
-    didSet
-    {
-      // Parens work around "assigning a property to itself" error
-      (selection = selection) // trigger didSet
-    }
+    didSet { selectionChanged(oldValue: selection) }
   }
-  var queue: TaskQueue { return xtDocument!.repository.queue }
   var selection: RepositorySelection?
   {
-    didSet
-    {
-      guard let repo = xtDocument?.repository
-      else { return }
-      
-      if selection is StagingSelection {
-        if isAmending != (selection is AmendingSelection) {
-          selection = isAmending ? AmendingSelection(repository: repo)
-                                 : StagingSelection(repository: repo)
-        }
-        if UserDefaults.standard.collapseHistory {
-          historyAutoCollapsed = true
-          if !historyController.historyHidden {
-            historyController.toggleHistory(self)
-            titleBarController?.updateViewControls()
-          }
-        }
-      }
-      else if oldValue is StagingSelection &&
-              UserDefaults.standard.collapseHistory &&
-              historyAutoCollapsed {
-        if historyController.historyHidden {
-          historyController.toggleHistory(self)
-          titleBarController?.updateViewControls()
-        }
-        historyAutoCollapsed = false
-      }
-      if let newSelection = selection,
-         let oldSelection = oldValue {
-        guard newSelection != oldSelection
-        else { return }
-      }
-
-      var userInfo = [AnyHashable: Any]()
-      
-      userInfo[NSKeyValueChangeKey.newKey] = selection
-      userInfo[NSKeyValueChangeKey.oldKey] = oldValue
-      
-      NotificationCenter.default.post(
-          name: .XTSelectedModelChanged,
-          object: self,
-          userInfo: userInfo)
-      
-      if #available(OSX 10.12.2, *) {
-        touchBar = makeTouchBar()
-      }
-      
-      if !navigating {
-        navForwardStack.removeAll()
-        oldValue.map { navBackStack.append($0) }
-      }
-      updateNavButtons()
-    }
+    didSet { selectionChanged(oldValue: oldValue) }
   }
+
   var navBackStack = [RepositorySelection]()
   var navForwardStack = [RepositorySelection]()
   var navigating = false
-  var sidebarHidden: Bool
-  {
-    return splitViewController.splitViewItems[0].isCollapsed
-  }
+  var sidebarHidden: Bool { splitViewController.splitViewItems[0].isCollapsed }
   var savedSidebarWidth: CGFloat = 180
   var historyAutoCollapsed = false
   
@@ -118,6 +66,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       guard let repo = xtDocument?.repository
       else { return }
       
+      repoController = GitRepositoryController(repository: repo)
       refsChangedObserver = NotificationCenter.default.addObserver(
           forName: .XTRepositoryRefsChanged,
           object: repo, queue: .main) {
@@ -127,7 +76,14 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       workspaceObserver = NotificationCenter.default.addObserver(
           forName: .XTRepositoryWorkspaceChanged, object: repo, queue: .main) {
         [weak self] (_) in
-        self?.updateTabStatus()
+        guard let self = self
+        else { return }
+
+        // Even though the observer is supposed to be on the main queue,
+        // it doesn't always happen.
+        DispatchQueue.main.async {
+          self.updateTabStatus()
+        }
       }
       kvObservers.append(repo.observe(\.currentBranch) {
         [weak self] (_, _) in
@@ -192,6 +148,14 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     updateNavButtons()
   }
   
+  @objc
+  func shutDown()
+  {
+    repoController.queue.shutDown()
+    currentOperation?.abort()
+    WaitForQueue(repoController.queue.queue)
+  }
+  
   deinit
   {
     let center = NotificationCenter.default
@@ -199,6 +163,60 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     refsChangedObserver.map { center.removeObserver($0) }
     center.removeObserver(self)
     currentOperation?.canceled = true
+  }
+
+  func selectionChanged(oldValue: RepositorySelection?)
+  {
+    guard let repo = xtDocument?.repository
+    else { return }
+
+    if selection is StagingSelection {
+      if isAmending != (selection is AmendingSelection) {
+        selection = isAmending ? AmendingSelection(repository: repo)
+                               : StagingSelection(repository: repo)
+      }
+      if UserDefaults.standard.collapseHistory {
+        historyAutoCollapsed = true
+        if !historyController.historyHidden {
+          historyController.toggleHistory(self)
+          titleBarController?.updateViewControls()
+        }
+      }
+    }
+    else if oldValue is StagingSelection &&
+            UserDefaults.standard.collapseHistory &&
+            historyAutoCollapsed {
+      if historyController.historyHidden {
+        historyController.toggleHistory(self)
+        titleBarController?.updateViewControls()
+      }
+      historyAutoCollapsed = false
+    }
+    if let newSelection = selection,
+       let oldSelection = oldValue {
+      guard newSelection != oldSelection
+      else { return }
+    }
+
+    var userInfo = [AnyHashable: Any]()
+
+    userInfo[NSKeyValueChangeKey.newKey] = selection
+    userInfo[NSKeyValueChangeKey.oldKey] = oldValue
+
+    NotificationCenter.default.post(
+        name: .XTSelectedModelChanged,
+        object: self,
+        userInfo: userInfo)
+
+    if #available(OSX 10.12.2, *) {
+      touchBar = makeTouchBar()
+    }
+
+    if !navigating {
+      navForwardStack.removeAll()
+      oldValue.map { navBackStack.append($0) }
+    }
+    updateNavButtons()
   }
   
   func select(sha: String)
@@ -239,27 +257,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
                                       object: repo)
     }
   }
-  
-  func updateNavButtons()
-  {
-    updateNavControl(titleBarController?.navButtons)
 
-    if #available(OSX 10.12.2, *),
-       let item = touchBar?.item(forIdentifier:
-                                 NSTouchBarItem.Identifier.navigation) {
-      updateNavControl(item.view as? NSSegmentedControl)
-    }
-  }
-  
-  func updateNavControl(_ control: NSSegmentedControl?)
-  {
-    guard let control = control
-    else { return }
-    
-    control.setEnabled(!navBackStack.isEmpty, forSegment: 0)
-    control.setEnabled(!navForwardStack.isEmpty, forSegment: 1)
-  }
-  
   func updateMiniwindowTitle()
   {
     DispatchQueue.main.async {
@@ -304,76 +302,11 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     tabButton.setAccessibilityIdentifier("tabStatus")
     tab.accessoryView = tabButton
   }
-  
-  func updateBranchList()
-  {
-    guard let repo = xtDocument?.repository
-    else { return }
-    
-    titleBarController?.updateBranchList(
-        repo.localBranches.compactMap { $0.shortName },
-        current: repo.currentBranch)
-  }
-  
+
   public func startRenameBranch(_ branchName: String)
   {
     _ = startOperation { RenameBranchOpController(windowController: self,
                                                   branchName: branchName) }
-  }
-  
-  /// Returns the new operation, if any, mostly because the generic type must
-  /// be part of the signature.
-  @discardableResult
-  func startOperation<OperationType: SimpleOperationController>()
-      -> OperationType?
-  {
-    return startOperation { return OperationType(windowController: self) }
-           as? OperationType
-  }
-  
-  @discardableResult
-  func startOperation(factory: () -> OperationController)
-      -> OperationController?
-  {
-    if let operation = currentOperation {
-      NSLog("Can't start new operation, already have \(operation)")
-      return nil
-    }
-    else {
-      let operation = factory()
-      
-      do {
-        try operation.start()
-        currentOperation = operation
-        return operation
-      }
-      catch let error as RepoError {
-        showErrorMessage(error: error)
-        return nil
-      }
-      catch {
-        showErrorMessage(error: RepoError.unexpected)
-        return nil
-      }
-    }
-  }
-  
-  func showErrorMessage(error: RepoError)
-  {
-    guard let window = self.window
-    else { return }
-    let alert = NSAlert()
-    
-    alert.messageString = error.message
-    alert.beginSheetModal(for: window, completionHandler: nil)
-  }
-  
-  /// Called by the operation controller when it's done.
-  func operationEnded(_ operation: OperationController)
-  {
-    if currentOperation == operation {
-      currentOperation = nil
-    }
   }
   
   func updateRemotesMenu(_ menu: NSMenu)
@@ -409,86 +342,8 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   }
 }
 
-// MARK: XTTitleBarDelegate
-extension XTWindowController: TitleBarDelegate
-{
-  func branchSelecetd(_ branch: String)
-  {
-    try? xtDocument!.repository!.checkOut(branch: branch)
-  }
-  
-  var viewStates: (sidebar: Bool, history: Bool, details: Bool)
-  {
-    return (!sidebarHidden,
-            !historyController.historyHidden,
-            !historyController.detailsHidden)
-  }
-  
-  func goBack() { goBack(self) }
-  func goForward() { goForward(self) }
-  func fetchSelected() { fetch(self) }
-  func pushSelected() { push(self) }
-  func pullSelected() { pull(self) }
-  func stashSelected() { stash(self) }
-  func popStashSelected() { popStash(self) }
-  func applyStashSelected() { applyStash(self) }
-  func dropStashSelected() { dropStash(self) }
-  func showHideSidebar() { showHideSidebar(self) }
-  func showHideHistory() { showHideHistory(self) }
-  func showHideDetails() { showHideDetails(self) }
-  
-  func search()
-  {
-    historyController.toggleScopeBar()
-  }
-}
-
 extension NSBindingName
 {
   static let progressHidden =
       NSBindingName(#keyPath(TitleBarViewController.progressHidden))
-}
-
-// MARK: NSToolbarDelegate
-extension XTWindowController: NSToolbarDelegate
-{
-  func toolbarWillAddItem(_ notification: Notification)
-  {
-    guard let item = notification.userInfo?["item"] as? NSToolbarItem,
-          item.itemIdentifier.rawValue == "com.uncommonplace.xit.titlebar"
-    else { return }
-    
-    let viewController = TitleBarViewController(nibName: .titleBarNib,
-                                                bundle: nil)
-
-    titleBarController = viewController
-    item.view = viewController.view
-
-    viewController.delegate = self
-    viewController.titleLabel.bind(NSBindingName.value,
-                                   to: window! as NSWindow,
-                                   withKeyPath: #keyPath(NSWindow.title),
-                                   options: nil)
-    viewController.spinner.startAnimation(nil)
-  }
-  
-  func configureTitleBarController(repository: XTRepository)
-  {
-    let viewController: TitleBarViewController = titleBarController!
-    let inverseBindingOptions =
-        [NSBindingOption.valueTransformerName:
-         NSValueTransformerName.negateBooleanTransformerName]
-
-    viewController.proxyIcon.bind(NSBindingName.hidden,
-                                  to: repository.queue,
-                                  withKeyPath: #keyPath(TaskQueue.busy),
-                                  options: nil)
-    viewController.bind(.progressHidden,
-                        to: repository.queue,
-                        withKeyPath: #keyPath(TaskQueue.busy),
-                        options: inverseBindingOptions)
-    viewController.selectedBranch = repository.currentBranch
-    viewController.observe(repository: repository)
-    updateBranchList()
-  }
 }

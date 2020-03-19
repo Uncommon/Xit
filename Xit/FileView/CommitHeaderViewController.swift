@@ -1,8 +1,10 @@
 import Foundation
 
 @objc(XTCommitHeaderViewController)
-class CommitHeaderViewController: NSViewController
+class CommitHeaderViewController: NSViewController, RepositoryUIAccessor
 {
+  var repoUIController: RepositoryUIController?
+
   @IBOutlet weak var nameField: NSTextField!
   @IBOutlet weak var dateField: NSTextField!
   @IBOutlet weak var parentsLabel: NSTextField!
@@ -20,11 +22,7 @@ class CommitHeaderViewController: NSViewController
   }
   var expanded: Bool = false
   
-  weak var repoController: RepositoryController!
-  {
-    return view.window?.windowController as? RepositoryController
-  }
-  weak var repository: CommitStorage!
+  var repository: CommitStorage { repoController?.repository as! CommitStorage }
   
   override func awakeFromNib()
   {
@@ -125,7 +123,7 @@ class CommitHeaderViewController: NSViewController
     
     let parentOID = commit.parentOIDs[control.tag]
     
-    repoController.select(sha: parentOID.sha)
+    repoUIController?.select(sha: parentOID.sha)
   }
 }
 

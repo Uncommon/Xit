@@ -54,7 +54,7 @@ class OperationController: NSObject
   /// Executes the given block, handling errors and updating status.
   func tryRepoOperation(block: @escaping (() throws -> Void))
   {
-    repository?.queue.executeOffMainThread {
+    windowController?.repoController.queue.executeOffMainThread {
       [weak self] in
       do {
         try block()

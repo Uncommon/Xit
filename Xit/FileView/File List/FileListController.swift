@@ -1,6 +1,6 @@
 import Foundation
 
-class FileListController: NSViewController
+class FileListController: NSViewController, RepositoryWindowViewController
 {
   enum ColumnID
   {
@@ -53,14 +53,12 @@ class FileListController: NSViewController
   let fileListDataSource: FileChangesDataSource
   let fileTreeDataSource: FileTreeDataSource
   
-  weak var repoController: RepositoryController!
-  {
-    didSet { didSetRepoController() }
-  }
-  
   var actionImage: NSImage? { return nil }
   var pressedImage: NSImage? { return nil }
   var actionButtonSelector: Selector? { return nil }
+  
+  var repository: BasicRepository & FileStaging & FileContents
+  { repoController?.repository as! BasicRepository & FileStaging & FileContents }
   
   required init(isWorkspace: Bool)
   {
@@ -82,12 +80,13 @@ class FileListController: NSViewController
     super.loadView()
     updateButtons()
   }
-  
-  // didSet isn't overridable so we need a method
-  func didSetRepoController()
+
+  // The controller must be passed in because at this point the window isn't
+  // set yet.
+  func finishLoad(controller: RepositoryUIController)
   {
-    fileListDataSource.repoController = repoController
-    fileTreeDataSource.repoController = repoController
+    fileListDataSource.repoUIController = controller
+    fileTreeDataSource.repoUIController = controller
   }
   
   // These are implemented in subclasses, and are here for convenience
@@ -98,13 +97,13 @@ class FileListController: NSViewController
   @IBAction
   func stageAll(_ sender: Any)
   {
-    try? repoController.repository.stageAllFiles()
+    try? repoUIController?.repository.stageAllFiles()
   }
   
   @IBAction
   func unstageAll(_ sender: Any)
   {
-    try? repoController.repository.unstageAllFiles()
+    try? repoUIController?.repository.unstageAllFiles()
   }
   
   @IBAction
@@ -120,13 +119,13 @@ class FileListController: NSViewController
         
         NSAlert.confirm(message: .confirmRevert(change.path.lastPathComponent),
         actionName: .revert, parentWindow: view.window!) {
-          try? self.repoController.repository.revert(file: change.gitPath)
+          try? self.repository.revert(file: change.gitPath)
         }
       default:
         NSAlert.confirm(message: .confirmRevertMultiple,
                         actionName: .revert, parentWindow: view.window!) {
           for change in changes {
-            try? self.repoController.repository.revert(file: change.gitPath)
+            try? self.repository.revert(file: change.gitPath)
           }
         }
     }
@@ -141,7 +140,7 @@ class FileListController: NSViewController
   func open(_ sender: Any)
   {
     for change in targetChanges(sender: sender) {
-      let url = repoController.repository.fileURL(change.gitPath)
+      let url = repository.fileURL(change.gitPath)
       
       NSWorkspace.shared.open(url)
     }
@@ -151,7 +150,7 @@ class FileListController: NSViewController
   func showInFinder(_ sender: Any)
   {
     let changes = targetChanges(sender: sender)
-    let urls = changes.map { repoController.repository.fileURL($0.gitPath) }
+    let urls = changes.compactMap { repository.fileURL($0.gitPath) }
                 .filter { FileManager.default.fileExists(atPath: $0.path) }
     
     NSWorkspace.shared.activateFileViewerSelecting(urls)
@@ -394,7 +393,7 @@ class StagingFileListController: FileListController
   var modifyActions: [Selector] = []
   
   /// True if actions such as stage and revert are available.
-  var canModify: Bool { return !(repoController.selection is StashSelection) }
+  var canModify: Bool { return !(repoSelection is StashSelection) }
   
   override func repoSelectionChanged()
   {
@@ -408,12 +407,13 @@ class StagingFileListController: FileListController
     outlineView.columnObject(withIdentifier: ColumnID.action)?.isHidden = !shown
   }
   
-  override func didSetRepoController()
+  override func finishLoad(controller: RepositoryUIController)
   {
-    super.didSetRepoController()
+    super.finishLoad(controller: controller)
+    
     indexObserver = NotificationCenter.default.addObserver(
         forName: .XTRepositoryIndexChanged,
-        object: repoController.repository, queue: .main) {
+        object: controller.repository, queue: .main) {
       [weak self] _ in
       self?.viewDataSource.reload()
     }

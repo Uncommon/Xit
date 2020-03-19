@@ -11,13 +11,13 @@ class FileListDataSourceBase: NSObject
   
   weak var delegate: FileListDelegate?
 
-  weak var repoController: RepositoryController!
+  weak var repoUIController: RepositoryUIController!
   {
     didSet
     {
       (self as! FileListDataSource).reload()
       observers.addObserver(forName: .XTRepositoryWorkspaceChanged,
-                            object: repoController.repository, queue: .main) {
+                            object: repoUIController.repository, queue: .main) {
         [weak self] (note) in
         guard let self = self
         else { return }
@@ -27,11 +27,11 @@ class FileListDataSourceBase: NSObject
         }
       }
       observers.addObserver(forName: .XTSelectedModelChanged,
-                            object: repoController, queue: .main) {
+                            object: repoUIController, queue: .main) {
         [weak self] (_) in
         guard let self = self,
               self.outlineView?.dataSource === self,
-              self.repoController != nil // Otherwise we're on a stale timer
+              self.repoUIController != nil // Otherwise we're on a stale timer
         else { return }
         
         (self as? FileListDataSource)?.reload()
@@ -58,7 +58,7 @@ class FileListDataSourceBase: NSObject
   
   func workspaceChanged(_ paths: [String]?)
   {
-    if repoController.selection is StagingSelection {
+    if repoUIController.selection is StagingSelection {
       (self as! FileListDataSource).reload()
     }
   }

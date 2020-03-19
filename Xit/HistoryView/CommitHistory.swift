@@ -307,8 +307,10 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
     }
     postProgress?(batchStart, batchStart + batchSize)
     Signpost.intervalEnd(.generateLines(batchStart))
-    processingConnections = newConnections
-    batchStart += batchSize
+    withSync {
+      processingConnections = newConnections
+      batchStart += batchSize
+    }
   }
   
   public func processFirstBatch()

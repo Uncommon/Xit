@@ -1,22 +1,22 @@
 import Foundation
 
 
-@objc(XTWorkspaceWatcher)
 class WorkspaceWatcher: NSObject
 {
-  weak var repository: XTRepository?
+  weak var controller: RepositoryController?
   private(set) var stream: FileEventStream! = nil
   var skipIgnored = true
   
-  init?(repository: XTRepository)
+  init?(controller: RepositoryController)
   {
-    self.repository = repository
+    self.controller = controller
     super.init()
     
-    guard let stream = FileEventStream(
+    guard let repository = controller.repository as? XTRepository,
+          let stream = FileEventStream(
         path: repository.repoURL.path,
         excludePaths: [repository.gitDirectoryPath],
-        queue: repository.queue.queue,
+        queue: controller.queue.queue,
         callback: { [weak self] (paths) in self?.observeEvents(paths) })
     else { return nil }
     
@@ -35,7 +35,8 @@ class WorkspaceWatcher: NSObject
   
   func observeEvents(_ paths: [String])
   {
-    guard let repository = self.repository
+    guard let controller = self.controller,
+          let repository = controller.repository as? FileStatusDetection
     else { return }
     var userInfo = [String: Any]()
   
@@ -51,9 +52,9 @@ class WorkspaceWatcher: NSObject
     }
   
     DispatchQueue.main.async {
-      repository.invalidateIndex()
+      controller.invalidateIndex()
       NotificationCenter.default.post(name: .XTRepositoryWorkspaceChanged,
-                                      object: repository,
+                                      object: controller.repository,
                                       userInfo: userInfo)
     }
   }

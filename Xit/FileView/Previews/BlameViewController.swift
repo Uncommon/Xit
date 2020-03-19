@@ -1,27 +1,12 @@
 import Foundation
 import Cocoa
 
-class BlameViewController: WebViewController
+class BlameViewController: WebViewController, RepositoryWindowViewController
 {
   @IBOutlet var spinner: NSProgressIndicator!
   var isLoaded: Bool = false
   
   var currentSelection: FileSelection?
-  
-  var repoController: RepositoryController?
-  {
-    let windowController: NSWindowController?
-    
-    if Thread.isMainThread {
-      windowController = view.window?.windowController
-    }
-    else {
-      windowController = DispatchQueue.main.sync {
-        return view.window?.windowController
-      }
-    }
-    return windowController as? RepositoryController
-  }
   
   class CommitColoring
   {
@@ -189,7 +174,7 @@ class BlameViewController: WebViewController
           let sha = params["sha"] as? String
     else { return }
     
-    repoController?.select(sha: sha)
+    repoUIController?.select(sha: sha)
   }
 }
 
@@ -218,7 +203,7 @@ extension BlameViewController: XTFileContentController
     else { return }
     
     currentSelection = selection[0]
-    repoController?.queue.executeOffMainThread {
+    repoUIController?.queue.executeOffMainThread {
       [weak self] in
       guard let self = self
       else { return }

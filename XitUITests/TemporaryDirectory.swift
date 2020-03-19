@@ -1,4 +1,5 @@
 import Foundation
+import XCTest
 
 class TemporaryDirectory
 {
@@ -16,7 +17,11 @@ class TemporaryDirectory
       }
       try manager.createDirectory(at: url,
                                   withIntermediateDirectories: true,
-                                  attributes: nil)
+                                  attributes: [.posixPermissions:0o777])
+    }
+    catch let error as NSError {
+      XCTFail("Temp directory failed: \(error.description)")
+      return nil
     }
     catch {
       return nil
@@ -25,6 +30,11 @@ class TemporaryDirectory
   
   deinit
   {
-    try? FileManager.default.removeItem(at: url)
+    do {
+      try FileManager.default.removeItem(at: url)
+    }
+    catch let error as NSError {
+      print("failed to delete temp dir: \(error.description)")
+    }
   }
 }

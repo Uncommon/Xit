@@ -16,15 +16,17 @@ extension FileTreeDataSource: FileListDataSource
 {
   func reload()
   {
-    repoController.queue.executeOffMainThread {
+    let currentSelection = repoUIController.selection
+
+    repoUIController.queue.executeOffMainThread {
       [weak self] in
       guard let self = self
       else { return }
       
       objc_sync_enter(self)
       defer { objc_sync_exit(self) }
-      
-      guard let selection = self.repoController.selection,
+
+      guard let selection = currentSelection,
             let fileList = self.useWorkspaceList ?
               (selection as? StagingSelection)?.unstagedFileList :
               selection.fileList

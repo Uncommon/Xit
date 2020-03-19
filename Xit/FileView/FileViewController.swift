@@ -2,7 +2,7 @@ import Foundation
 import Quartz
 
 /// View controller for the file list and detail view.
-class FileViewController: NSViewController
+class FileViewController: NSViewController, RepositoryWindowViewController
 {
   /// Preview tab identifiers
   enum TabID
@@ -54,16 +54,6 @@ class FileViewController: NSViewController
              textController, previewController]
   }
   
-  var repoController: RepositoryController?
-  {
-    return view.window?.windowController as? RepositoryController
-  }
-  
-  var repoSelection: RepositorySelection?
-  {
-    return repoController?.selection
-  }
-  
   var inStagingView: Bool
   {
     return repoSelection is StagedUnstagedSelection
@@ -90,7 +80,7 @@ class FileViewController: NSViewController
       fileListTabView.selectTabViewItem(withIdentifier: newValue ?
           FileListTab.staging : FileListTab.commit)
       if newValue {
-        let showAction = repoController?.selection is StagingSelection
+        let showAction = repoUIController?.selection is StagingSelection
         
         stagedListController.setActionColumnShown(showAction)
         workspaceListController.setActionColumnShown(showAction)
@@ -132,7 +122,7 @@ class FileViewController: NSViewController
   /// The file list (eg Staged or Workspace) that last had user focus
   weak var activeFileList: NSOutlineView!
   {
-    didSet { repoController?.updateForFocus() }
+    didSet { repoUIController?.updateForFocus() }
   }
   var activeFileListController: FileListController
   {
@@ -186,19 +176,14 @@ class FileViewController: NSViewController
       self?.indexChanged()
     }
 
-    guard let controller = repoController
+    guard let controller = repoUIController
     else { return }
-    
-    for listController in allListControllers {
-      listController.repoController = controller
-    }
 
     observers.addObserver(forName: .XTSelectedModelChanged,
                           object: controller, queue: .main) {
       [weak self] _ in
       self?.selectedModelChanged()
     }
-    headerController.repository = repository
     commitEntryController.configure(repository: repository,
                                     config: repository.config)
     
@@ -253,6 +238,15 @@ class FileViewController: NSViewController
     headerTabView.tabViewItems[1].view = commitEntryController.view
     previewPath.pathItems = []
     diffController.stagingDelegate = self
+  }
+
+  override func viewWillAppear() {
+    super.viewWillAppear()
+
+    for listController in allListControllers {
+      listController.finishLoad(controller: repoUIController!)
+      headerController.repoUIController = repoUIController!
+    }
   }
   
   func updatePreviewForActiveList()
@@ -323,7 +317,7 @@ class FileViewController: NSViewController
   
   func selectedModelChanged()
   {
-    guard let controller = repoController,
+    guard let controller = repoUIController,
           let newModel = controller.selection
     else { return }
     
@@ -360,7 +354,7 @@ class FileViewController: NSViewController
           let repo = repo,
           let index = activeFileList.selectedRowIndexes.first,
           let selectedItem = activeFileList.item(atRow: index),
-          let controller = repoController,
+          let controller = repoUIController,
           let repoSelection = controller.selection
     else {
       clearPreviews()
@@ -384,7 +378,7 @@ class FileViewController: NSViewController
         self.previewPath.pathItems = [item]
       }
     }
-    repo.queue.executeOffMainThread {
+    controller.queue.executeOffMainThread {
       let selection = changes.map {
         FileSelection(repoSelection: repoSelection, path: $0.gitPath,
                       staging: stagingType)

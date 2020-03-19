@@ -1,9 +1,8 @@
 import Cocoa
 
 // Command handling extracted for testability
-protocol SidebarHandler: AnyObject
+protocol SidebarHandler: AnyObject, RepositoryUIAccessor
 {
-  var repo: XTRepository! { get }
   var window: NSWindow? { get }
   
   func targetItem() -> SidebarItem?
@@ -22,6 +21,11 @@ enum XTGroupIndex: Int
 
 extension SidebarHandler
 {
+  typealias Repository =
+      BasicRepository & WritingManagement & Branching & Stashing
+  
+  var repository: Repository { repoUIController!.repository }
+  
   func validate(sidebarCommand: NSMenuItem) -> Bool
   {
     guard let action = sidebarCommand.action,
@@ -34,22 +38,22 @@ extension SidebarHandler
         guard let branch = (item as? BranchSidebarItem)?.branchObject()
         else { return false }
         sidebarCommand.titleString = .checkOut(branch.strippedName)
-        return !repo.isWriting && item.title != repo.currentBranch
+        return !repository.isWriting && item.title != repository.currentBranch
       
       case #selector(SidebarController.createTrackingBranch(_:)):
-        return !repo.isWriting && item is RemoteBranchSidebarItem
+        return !repository.isWriting && item is RemoteBranchSidebarItem
       
       case #selector(SidebarController.renameBranch(_:)),
            #selector(SidebarController.mergeBranch(_:)),
            #selector(SidebarController.deleteBranch(_:)):
-        if !item.refType.isBranch || repo.isWriting {
+        if !item.refType.isBranch || repository.isWriting {
           return false
         }
         if action == #selector(SidebarController.renameBranch(_:)) {
           sidebarCommand.isHidden = item.refType == .remoteBranch
         }
         if action == #selector(SidebarController.deleteBranch(_:)) {
-          return repo.currentBranch != item.title
+          return repository.currentBranch != item.title
         }
         if action == #selector(SidebarController.mergeBranch(_:)) {
           var clickedBranch = item.title
@@ -66,7 +70,7 @@ extension SidebarHandler
               break
           }
           
-          guard let currentBranch = repo.currentBranch
+          guard let currentBranch = repository.currentBranch
           else { return false }
           
           sidebarCommand.titleString = .merge(clickedBranch, currentBranch)
@@ -74,12 +78,12 @@ extension SidebarHandler
         return true
       
       case #selector(SidebarController.deleteTag(_:)):
-        return !repo.isWriting && (item is TagSidebarItem)
+        return !repository.isWriting && (item is TagSidebarItem)
       
       case #selector(SidebarController.renameRemote(_:)),
            #selector(SidebarController.editRemote(_:)),
            #selector(SidebarController.deleteRemote(_:)):
-        return !repo.isWriting && (item is RemoteSidebarItem)
+        return !repository.isWriting && (item is RemoteSidebarItem)
       
       case #selector(SidebarController.copyRemoteURL(_:)):
         return item is RemoteSidebarItem
@@ -87,13 +91,13 @@ extension SidebarHandler
       case #selector(SidebarController.popStash(_:)),
            #selector(SidebarController.applyStash(_:)),
            #selector(SidebarController.dropStash(_:)):
-        return !repo.isWriting && item is StashSidebarItem
+        return !repository.isWriting && item is StashSidebarItem
       
       case #selector(SidebarController.showSubmodule(_:)):
         return item is SubmoduleSidebarItem
       
       case #selector(SidebarController.updateSubmodule(_:)):
-        return !repo.isWriting && item is SubmoduleSidebarItem
+        return !repository.isWriting && item is SubmoduleSidebarItem
       
       default:
         return false
@@ -106,7 +110,7 @@ extension SidebarHandler
     guard let item = targetItem ?? self.targetItem()
     else { return }
     
-    repo.queue.executeOffMainThread {
+    repoUIController?.queue.executeOffMainThread {
       do {
         try block(item)
       }
@@ -129,7 +133,7 @@ extension SidebarHandler
       guard let index = self?.stashIndex(for: item)
       else { return }
       
-      try self?.repo.popStash(index: index)
+      try self?.repository.popStash(index: index)
     }
   }
   
@@ -140,7 +144,7 @@ extension SidebarHandler
       guard let index = self?.stashIndex(for: item)
       else { return }
       
-      try self?.repo.applyStash(index: index)
+      try self?.repository.applyStash(index: index)
     }
   }
   
@@ -151,13 +155,14 @@ extension SidebarHandler
       guard let index = self?.stashIndex(for: item)
       else { return }
       
-      try self?.repo.dropStash(index: index)
+      try self?.repository.dropStash(index: index)
     }
   }
 }
 
 /// Manages the main window sidebar.
-class SidebarController: NSViewController, SidebarHandler
+class SidebarController: NSViewController, SidebarHandler,
+                         RepositoryWindowViewController
 {
   @IBOutlet weak var sidebarOutline: SideBarOutlineView!
   @IBOutlet weak var sidebarDS: SideBarDataSource!
@@ -220,7 +225,7 @@ class SidebarController: NSViewController, SidebarHandler
     }
     set
     {
-      guard let controller = window?.windowController as? RepositoryController,
+      guard let controller = repoUIController,
             let item = newValue
       else { return }
       
@@ -254,15 +259,15 @@ class SidebarController: NSViewController, SidebarHandler
   
   override func viewWillAppear()
   {
-    let repoController = view.window!.windowController as! XTWindowController
+    let repoUIController = view.window!.windowController as! XTWindowController
     
     if amendingObserver == nil {
-      amendingObserver = repoController.observe(\.isAmending) {
+      amendingObserver = repoUIController.observe(\.isAmending) {
         [weak self] (controller, _) in
         self?.sidebarDS.setAmending(controller.isAmending)
       }
       observers.addObserver(forName: .XTSelectedModelChanged,
-                            object: repoController, queue: .main) {
+                            object: repoUIController, queue: .main) {
         [weak self] (_) in
         self?.selectedModelChanged()
       }
@@ -271,17 +276,15 @@ class SidebarController: NSViewController, SidebarHandler
   
   func selectedModelChanged()
   {
-    let repoController = view.window!.windowController as! RepositoryController
-
     if let selectedItem = self.selectedItem {
       guard selectedItem.selection?.shaToSelect !=
-            repoController.selection?.shaToSelect
+            repoUIController?.selection?.shaToSelect
       else {
         return
       }
     }
     
-    switch repoController.selection {
+    switch repoUIController?.selection {
     
       case let stashChanges as StashSelection:
         let stashRoot = sidebarDS.model.rootItem(.stashes)

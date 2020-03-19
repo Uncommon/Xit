@@ -2,8 +2,8 @@ import Cocoa
 
 
 typealias FileChangesRepo =
-    CommitReferencing & FileDiffing & FileContents & FileStaging &
-    FileStatusDetection
+    BasicRepository & CommitReferencing & FileDiffing & FileContents &
+    FileStaging & FileStatusDetection
 
 /// Protocol for a commit or commit-like object, with metadata, files, and diffs.
 protocol RepositorySelection: AnyObject

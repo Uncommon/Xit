@@ -145,8 +145,30 @@ class FakeRemoteBranch: RemoteBranch
   }
 }
 
+class FakeRepoController: RepositoryController
+{
+  var repository: BasicRepository
+
+  var queue: TaskQueue = TaskQueue(id: "testing")
+
+  var cachedStagedChanges: [FileChange]? = nil
+  var cachedAmendChanges: [FileChange]? = nil
+  var cachedUnstagedChanges: [FileChange]? = nil
+
+  func invalidateIndex() {}
+
+  init(repository: FakeRepo)
+  {
+    self.repository = repository
+    repository.controller = self
+  }
+
+  func waitForQueue() {}
+}
+
 class FakeFileChangesRepo: FileChangesRepo
 {
+  var controller: RepositoryController?
 
   var headRef: String? = nil
   var currentBranch: String? = nil
@@ -162,10 +184,12 @@ class FakeFileChangesRepo: FileChangesRepo
   { return nil }
   func reference(named name: String) -> Reference? { return nil }
   func refs(at sha: String) -> [String] { return [] }
+  func allRefs() -> [String] { [] }
   func rebuildRefsIndex() {}
   func createCommit(with tree: Tree, message: String, parents: [Commit],
                     updatingReference refName: String) throws -> OID
   { return StringOID(sha: "") }
+  func oid(forRef: String) -> OID? { nil }
 
   var repoURL: URL { return URL(fileURLWithPath: "") }
   

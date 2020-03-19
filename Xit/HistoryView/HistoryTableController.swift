@@ -2,8 +2,12 @@ import Cocoa
 
 fileprivate let batchSize = 500
 
-public class HistoryTableController: NSViewController
+public class HistoryTableController: NSViewController,
+                                     RepositoryWindowViewController
 {
+  typealias Repository = BasicRepository & FileChangesRepo &
+                         CommitStorage & FileContents
+  
   enum ColumnID
   {
     static let commit = ¶"commit"
@@ -17,49 +21,48 @@ public class HistoryTableController: NSViewController
 
   var tableView: HistoryTableView { return view as! HistoryTableView }
 
-  weak var repository: XTRepository!
-  {
-    didSet
-    {
-      history.repository = repository
-
-      guard let table = view as? NSTableView
-      else { return }
-      var spacing = table.intercellSpacing
-      
-      spacing.height = 0
-      table.intercellSpacing = spacing
-
-      loadHistory()
-      observers.addObserver(forName: .XTRepositoryRefsChanged,
-                            object: repository, queue: .main) {
-        [weak self] _ in
-        // To do: dynamic updating
-        // - new and changed refs: add if they're not already in the list
-        // - deleted and changed refs: recursively remove unreferenced commits
-        
-        // For now: just reload
-        self?.reload()
-      }
-      observers.addObserver(forName: .XTReselectModel,
-                            object: repository, queue: .main) {
-        [weak self] _ in
-        guard let tableView = self?.view as? NSTableView,
-              let selectedIndex = tableView.selectedRowIndexes.first
-        else { return }
-        
-        tableView.scrollRowToCenter(selectedIndex)
-      }
-    }
-  }
-  
   let history = GitCommitHistory()
+  
+  var repository: Repository { repoController?.repository as! Repository }
   
   deinit
   {
     let center = NotificationCenter.default
   
     center.removeObserver(self)
+  }
+  
+  func finishLoad()
+  {
+    history.repository = repository
+    
+    guard let table = view as? NSTableView
+      else { return }
+    var spacing = table.intercellSpacing
+    
+    spacing.height = 0
+    table.intercellSpacing = spacing
+    
+    loadHistory()
+    observers.addObserver(forName: .XTRepositoryRefsChanged,
+                          object: repository, queue: .main) {
+      [weak self] _ in
+      // To do: dynamic updating
+      // - new and changed refs: add if they're not already in the list
+      // - deleted and changed refs: recursively remove unreferenced commits
+      
+      // For now: just reload
+      self?.reload()
+    }
+    observers.addObserver(forName: .XTReselectModel,
+                          object: repository, queue: .main) {
+                            [weak self] _ in
+      guard let tableView = self?.view as? NSTableView,
+            let selectedIndex = tableView.selectedRowIndexes.first
+      else { return }
+      
+      tableView.scrollRowToCenter(selectedIndex)
+    }
   }
   
   public override func viewDidLoad()
@@ -104,20 +107,19 @@ public class HistoryTableController: NSViewController
   
   func loadHistory()
   {
-    let repository = self.repository!
     let history = self.history
     weak var tableView = view as? NSTableView
     
     history.withSync {
       history.reset()
     }
-    repository.queue.executeOffMainThread {
+    repoUIController?.queue.executeOffMainThread {
       Signpost.intervalStart(.historyWalking, object: self)
       defer {
         Signpost.intervalEnd(.historyWalking, object: self)
       }
       
-      guard let walker = repository.walker()
+      guard let walker = self.repository.walker()
       else {
         NSLog("RevWalker failed")
         return
@@ -125,15 +127,15 @@ public class HistoryTableController: NSViewController
       
       walker.setSorting([.topological])
       
-      let refs = repository.allRefs()
+      let refs = self.repository.allRefs()
       
       for ref in refs where ref != "refs/stash" {
-        repository.oid(forRef: ref).map { walker.push(oid: $0) }
+        self.repository.oid(forRef: ref).map { walker.push(oid: $0) }
       }
       
       history.withSync {
         while let oid = walker.next() {
-          guard let commit = repository.commit(forOID: oid)
+          guard let commit = self.repository.commit(forOID: oid)
           else { continue }
           
           history.appendCommit(commit)
@@ -143,7 +145,7 @@ public class HistoryTableController: NSViewController
       DispatchQueue.global(qos: .utility).async {
         // Get off the queue thread, but run this as a queue task so that
         // progress will be displayed.
-        self.repository.queue.executeTask {
+        self.repoUIController?.queue.executeTask {
           Signpost.interval(.connectCommits) {
             history.processFirstBatch()
           }
@@ -207,9 +209,7 @@ public class HistoryTableController: NSViewController
           tableView.selectedRowIndexes.isEmpty
     else { return }
     
-    guard let controller = self.view.window?.windowController
-                           as? RepositoryController,
-          let selection = controller.selection
+    guard let selection = repoUIController?.selection
     else { return }
     
     selectRow(sha: selection.shaToSelect, forceScroll: true)
@@ -283,15 +283,18 @@ extension HistoryTableController: NSTableViewDelegate
   {
     let visibleRowCount =
           tableView.rows(in: tableView.enclosingScrollView!.bounds).length
-    let firstProcessRow = min(history.entries.count, row + visibleRowCount)
+    let (entryCount, batchStart) = history.withSync {
+      (history.entries.count, history.batchStart)
+    }
+    let firstProcessRow = min(entryCount, row + visibleRowCount)
     
-    if firstProcessRow > history.batchStart
+    if firstProcessRow > batchStart
     {
       history.processBatches(throughRow: firstProcessRow,
-                             queue: repository.queue)
+                             queue: repoUIController!.queue)
     }
     
-    guard (row >= 0) && (row < history.entries.count)
+    guard (row >= 0) && (row < entryCount)
     else {
       NSLog("Object value request out of bounds")
       return nil
@@ -308,7 +311,10 @@ extension HistoryTableController: NSTableViewDelegate
       case ColumnID.commit:
         let historyCell = result as! HistoryCellView
         
-        historyCell.configure(entry: entry, repository: repository)
+        historyCell.configure(
+              entry: entry,
+              repository: repository as! Branching & CommitReferencing)
+        historyCell.lockObject = history
 
       case ColumnID.date:
         (result as! DateCellView).date = entry.commit.commitDate
@@ -346,9 +352,8 @@ extension HistoryTableController: NSTableViewDelegate
     
     let selectedRow = tableView.selectedRow
     
-    if (selectedRow >= 0) && (selectedRow < history.entries.count),
-       let controller = view.window?.windowController as? RepositoryController {
-      controller.selection =
+    if (selectedRow >= 0) && (selectedRow < history.entries.count) {
+      repoUIController?.selection =
           CommitSelection(repository: repository,
                           commit: history.entries[selectedRow].commit)
     }
@@ -360,8 +365,7 @@ extension HistoryTableController: XTTableViewDelegate
   func tableViewClickedSelectedRow(_ tableView: NSTableView)
   {
     guard let selectionIndex = tableView.selectedRowIndexes.first,
-          let controller = tableView.window?.windowController
-                           as? RepositoryController
+          let controller = repoUIController
     else { return }
     
     let entry = history.entries[selectionIndex]

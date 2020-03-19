@@ -1,12 +1,11 @@
 import XCTest
 @testable import Xit
 
-class FakeRepoController: RepositoryController
+class FakeRepoUIController: RepositoryUIController
 {
+  var repoController: GitRepositoryController!
   var repository: Repository
-  
-  var queue = TaskQueue(id: "test")
-  
+
   var selectedCommitSHA: String = ""
   var selection: RepositorySelection? = nil
   var isAmending = false
@@ -38,19 +37,19 @@ class FileListDataSourceTest: XTTest
     }
   
     let outlineView = NSOutlineView.init()
-    let repoController = FakeRepoController(repository: repository)
+    let repoUIController = FakeRepoUIController(repository: repository)
     let flds = FileTreeDataSource(useWorkspaceList: false)
     var expectedCount = 11
     let history = CommitHistory<GitOID>()
     
     history.repository = repository
     objc_sync_enter(flds)
-    flds.repoController = repoController
+    flds.repoUIController = repoUIController
     objc_sync_exit(flds)
     waitForRepoQueue()
     
     for entry in history.entries {
-      repoController.selection = CommitSelection(repository: repository,
+      repoUIController.selection = CommitSelection(repository: repository,
                                                  commit: entry.commit)
       flds.reload()
       waitForRepoQueue()
@@ -96,18 +95,18 @@ class FileListDataSourceTest: XTTest
     try! repository.stageAllFiles()
     _ = try! repository.commit(message: "commit", amend: false)
     
-    let repoController = FakeRepoController(repository: repository)
+    let repoUiController = FakeRepoUIController(repository: repository)
     let headCommit = GitCommit(sha: repository.headSHA!,
                                repository: repository.gitRepo)!
     
-    repoController.selection = CommitSelection(repository: repository,
+    repoUiController.selection = CommitSelection(repository: repository,
                                                commit: headCommit)
     
     let outlineView = NSOutlineView()
     let flds = FileTreeDataSource(useWorkspaceList: false)
     
     objc_sync_enter(flds)
-    flds.repoController = repoController
+    flds.repoUIController = repoUiController
     objc_sync_exit(flds)
     waitForRepoQueue()
 

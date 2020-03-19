@@ -43,6 +43,8 @@
 		C900463C21120F3200706029 /* BitbucketServerAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C900463B21120F3200706029 /* BitbucketServerAPI.swift */; };
 		C9004650211501CB00706029 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C900464F211501CB00706029 /* Colors.swift */; };
 		C900E3D423F21B6100846FFD /* ResetOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C900E3D323F21B6100846FFD /* ResetOpController.swift */; };
+		C9063D0A2412B29700574A93 /* RepositoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9063D092412B29700574A93 /* RepositoryController.swift */; };
+		C9063D1C24169DAF00574A93 /* RepositoryUIAccessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9063D1B24169DAF00574A93 /* RepositoryUIAccessor.swift */; };
 		C9065F4E20FCFA8B00C01110 /* RefType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9065F4D20FCFA8B00C01110 /* RefType.swift */; };
 		C9065F6020FFE1D900C01110 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9065F5F20FFE1D900C01110 /* Notifications.swift */; };
 		C90703752326C944002DF393 /* XTDocument.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C90703742326C944002DF393 /* XTDocument.storyboard */; };
@@ -53,6 +55,8 @@
 		C90B4EB11FE86A9900277B13 /* GiRevWalk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90B4EB01FE86A9900277B13 /* GiRevWalk.swift */; };
 		C90B4EC31FEB2B2300277B13 /* GitReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90B4EC21FEB2B2300277B13 /* GitReference.swift */; };
 		C90B4EC51FEDB1D600277B13 /* GitStatusList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90B4EC41FEDB1D600277B13 /* GitStatusList.swift */; };
+		C90DA47924212B7400FFBC26 /* XTWindowController+Operations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90DA47824212B7400FFBC26 /* XTWindowController+Operations.swift */; };
+		C90DA48B24212F0300FFBC26 /* XTWindowController+TitleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90DA48A24212F0300FFBC26 /* XTWindowController+TitleBar.swift */; };
 		C90F92781E0199E400FE8589 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90F92771E0199E400FE8589 /* AppDelegate.swift */; };
 		C90FCA2F1D9C776C006196DE /* FileDiffController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90FCA2E1D9C776C006196DE /* FileDiffController.swift */; };
 		C90FD40B237F685B006358C7 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97E31AF20BF271300E74D2F /* StringExtensions.swift */; };
@@ -471,6 +475,8 @@
 		C900463B21120F3200706029 /* BitbucketServerAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitbucketServerAPI.swift; sourceTree = "<group>"; };
 		C900464F211501CB00706029 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		C900E3D323F21B6100846FFD /* ResetOpController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetOpController.swift; sourceTree = "<group>"; };
+		C9063D092412B29700574A93 /* RepositoryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryController.swift; sourceTree = "<group>"; };
+		C9063D1B24169DAF00574A93 /* RepositoryUIAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryUIAccessor.swift; sourceTree = "<group>"; };
 		C9065F4D20FCFA8B00C01110 /* RefType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefType.swift; sourceTree = "<group>"; };
 		C9065F5F20FFE1D900C01110 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		C90703742326C944002DF393 /* XTDocument.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = XTDocument.storyboard; sourceTree = "<group>"; };
@@ -481,6 +487,8 @@
 		C90B4EB01FE86A9900277B13 /* GiRevWalk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiRevWalk.swift; sourceTree = "<group>"; };
 		C90B4EC21FEB2B2300277B13 /* GitReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitReference.swift; sourceTree = "<group>"; };
 		C90B4EC41FEDB1D600277B13 /* GitStatusList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitStatusList.swift; sourceTree = "<group>"; };
+		C90DA47824212B7400FFBC26 /* XTWindowController+Operations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XTWindowController+Operations.swift"; sourceTree = "<group>"; };
+		C90DA48A24212F0300FFBC26 /* XTWindowController+TitleBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XTWindowController+TitleBar.swift"; sourceTree = "<group>"; };
 		C90F92771E0199E400FE8589 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C90FCA2E1D9C776C006196DE /* FileDiffController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileDiffController.swift; sourceTree = "<group>"; };
 		C90FD41C23845679006358C7 /* ModifyingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyingUITests.swift; sourceTree = "<group>"; };
@@ -1048,6 +1056,7 @@
 				C9F9A0291E1C417D00261E33 /* PatchMaker.swift */,
 				C90A09F622F4E55100B42EFE /* RefName.swift */,
 				C9065F4D20FCFA8B00C01110 /* RefType.swift */,
+				C9063D092412B29700574A93 /* RepositoryController.swift */,
 				C959A7221F6C6974004277CD /* RepositoryProtocols.swift */,
 				C9DEA4AC1E4B82B200DF4069 /* Signature.swift */,
 				C9FFCC871FB3B1D000FA2F21 /* TreeLoader.swift */,
@@ -1076,11 +1085,14 @@
 				C90703742326C944002DF393 /* XTDocument.storyboard */,
 				C9E9A37C1D0B5706007BFABF /* XTWindowController.swift */,
 				C9BF41171EA11AAC00028C84 /* XTWindowController+Actions.swift */,
+				C90DA47824212B7400FFBC26 /* XTWindowController+Operations.swift */,
+				C90DA48A24212F0300FFBC26 /* XTWindowController+TitleBar.swift */,
 				C959CDD61F859BFE00C1E282 /* XTWindowController+TouchBar.swift */,
 				C923D66B1D906FAA00C6B90B /* TitleBarViewController.swift */,
 				C95355E91D93470400AEEF49 /* TitleStatusView.swift */,
 				C923D65D1D90506A00C6B90B /* TitleBar.xib */,
 				C986447B208FBD990088209B /* ResponderNotifierWindow.swift */,
+				C9063D1B24169DAF00574A93 /* RepositoryUIAccessor.swift */,
 			);
 			path = Document;
 			sourceTree = "<group>";
@@ -1550,6 +1562,7 @@
 				DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */,
 				C957B8661D2D8D500040F858 /* XTKeychain.swift in Sources */,
 				C90B4EC51FEDB1D600277B13 /* GitStatusList.swift in Sources */,
+				C90DA47924212B7400FFBC26 /* XTWindowController+Operations.swift in Sources */,
 				C94A30261E3154D400B4496B /* TextPreviewController.swift in Sources */,
 				C90B4EC31FEB2B2300277B13 /* GitReference.swift in Sources */,
 				C9FD8FD9216C048400FCCE01 /* AccountType.swift in Sources */,
@@ -1620,8 +1633,10 @@
 				C9F20AE32347DB6F002E8603 /* NewBranchPanelController.swift in Sources */,
 				C959A7231F6C6974004277CD /* RepositoryProtocols.swift in Sources */,
 				C90B4EB11FE86A9900277B13 /* GiRevWalk.swift in Sources */,
+				C90DA48B24212F0300FFBC26 /* XTWindowController+TitleBar.swift in Sources */,
 				C9F1B5DE2217247E00293305 /* ViewExtensions.swift in Sources */,
 				C95355EA1D93470400AEEF49 /* TitleStatusView.swift in Sources */,
+				C9063D0A2412B29700574A93 /* RepositoryController.swift in Sources */,
 				C9A58EED1EE5DD4800E37A31 /* TaskQueue.swift in Sources */,
 				C967AAB51FAA45B3008A4DF0 /* Debug.swift in Sources */,
 				89C927751D36A2180074F71A /* GitSubmodule.swift in Sources */,
@@ -1676,6 +1691,7 @@
 				C9BDF4D01D99A7660034841F /* RenameBranchPanelController.swift in Sources */,
 				C94154A01ED4ECF40030E481 /* BuildStatusViewController.swift in Sources */,
 				C954ABFD1D34455000302160 /* GitBranch.swift in Sources */,
+				C9063D1C24169DAF00574A93 /* RepositoryUIAccessor.swift in Sources */,
 				C929D0601D42785B00D7DC52 /* TeamCityAPI.swift in Sources */,
 				C94736821DF097B2000E3A05 /* FileListView.swift in Sources */,
 				C93FFCBB1F104AD700FDDD78 /* FileViewController+Actions.swift in Sources */,

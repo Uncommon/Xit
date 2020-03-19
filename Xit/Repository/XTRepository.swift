@@ -6,7 +6,7 @@ struct CallbackPayload { let repo: XTRepository }
 let kEmptyTreeHash = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
 let XTPathsKey = "paths"
 
-public class XTRepository: NSObject, TaskManagement, RepoConfiguring
+public class XTRepository: NSObject, BasicRepository, RepoConfiguring
 {
   let gitRepo: OpaquePointer
   @objc public let repoURL: URL
@@ -14,28 +14,26 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
   let mutex = Mutex()
   var refsIndex = [String: [String]]()
   
-  // TaskManagement
-  @objc public let queue: TaskQueue
+  public var controller: RepositoryController? = nil
+  
   fileprivate(set) public var isWriting = false
 
   fileprivate(set) var cachedHeadRef, cachedHeadSHA, cachedBranch: String?
-  private var _cachedStagedChanges, _cachedAmendChanges,
-              _cachedUnstagedChanges: [FileChange]?
   private var _cachedBranches: [String: GitBranch] = [:]
   var cachedStagedChanges: [FileChange]?
   {
-    get { return mutex.withLock { _cachedStagedChanges } }
-    set { mutex.withLock { _cachedStagedChanges = newValue } }
+    get { controller?.cachedStagedChanges }
+    set { controller?.cachedStagedChanges = newValue }
   }
   var cachedAmendChanges: [FileChange]?
   {
-    get { return mutex.withLock { _cachedAmendChanges } }
-    set { mutex.withLock { _cachedAmendChanges = newValue } }
+    get { controller?.cachedAmendChanges }
+    set { controller?.cachedAmendChanges = newValue }
   }
   var cachedUnstagedChanges: [FileChange]?
   {
-    get { return mutex.withLock { _cachedUnstagedChanges } }
-    set { mutex.withLock { _cachedUnstagedChanges = newValue } }
+    get { controller?.cachedUnstagedChanges }
+    set { controller?.cachedUnstagedChanges = newValue }
   }
   var cachedBranches: [String: GitBranch]
   {
@@ -46,11 +44,6 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
 
   let diffCache = Cache<String, Diff>(maxSize: 50)
   public let config: Config
-  
-  // These require `self` to initialize
-  fileprivate var repoWatcher: RepositoryWatcher! = nil
-  fileprivate var configWatcher: ConfigWatcher! = nil
-  fileprivate var workspaceWatcher: WorkspaceWatcher! = nil
   
   var gitDirectoryPath: String
   {
@@ -86,14 +79,9 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
     self.repoURL = url
     self.gitRunner = CLIRunner(toolPath: gitCmd,
                                workingDir: url.path)
-    self.queue = TaskQueue(id: XTRepository.taskQueueID(path: url.path))
     self.config = config
     
     super.init()
-    
-    self.repoWatcher = RepositoryWatcher(repository: self)
-    self.configWatcher = ConfigWatcher(repository: self)
-    self.workspaceWatcher = WorkspaceWatcher(repository: self)
 }
   
   @objc(initWithURL:)
@@ -125,9 +113,6 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
   
   deinit
   {
-    repoWatcher.stop()
-    configWatcher.stop()
-    workspaceWatcher.stop()
     NotificationCenter.default.removeObserver(self)
   }
   
@@ -147,21 +132,7 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
       isWriting = writing
     }
   }
-  
-  func performWriting(_ block: (() throws -> Void)) throws
-  {
-    try mutex.withLock {
-      if isWriting {
-        throw RepoError.alreadyWriting
-      }
-      isWriting = true
-    }
-    defer {
-      updateIsWriting(false)
-    }
-    try block()
-  }
-  
+    
   func clearCachedBranch()
   {
     mutex.withLock {
@@ -206,11 +177,7 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
   
   func invalidateIndex()
   {
-    mutex.withLock {
-      cachedStagedChanges = nil
-      cachedAmendChanges = nil
-      cachedUnstagedChanges = nil
-    }
+    controller?.invalidateIndex()
   }
   
   func writing(_ block: () -> Bool) -> Bool
@@ -272,6 +239,23 @@ public class XTRepository: NSObject, TaskManagement, RepoConfiguring
 internal func setRepoWriting(_ repo: XTRepository, _ writing: Bool)
 {
   repo.isWriting = writing
+}
+
+extension XTRepository: WritingManagement
+{
+  public func performWriting(_ block: (() throws -> Void)) throws
+  {
+    try mutex.withLock {
+      if isWriting {
+        throw RepoError.alreadyWriting
+      }
+      isWriting = true
+    }
+    defer {
+      updateIsWriting(false)
+    }
+    try block()
+  }
 }
 
 extension XTRepository

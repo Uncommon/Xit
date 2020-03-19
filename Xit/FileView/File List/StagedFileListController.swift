@@ -30,9 +30,9 @@ class StagedFileListController: StagingFileListController
     else { return }
     
     for change in changes {
-      _ = try? repoController.repository.unstage(file: change.gitPath)
+      _ = try? repository.unstage(file: change.gitPath)
     }
-    repoController.postIndexNotification()
+    repoUIController?.postIndexNotification()
   }
   
   @IBAction

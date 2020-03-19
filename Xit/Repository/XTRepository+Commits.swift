@@ -90,11 +90,11 @@ extension XTRepository: CommitReferencing
   }
   
   /// Returns a list of all ref names.
-  func allRefs() -> [String]
+  public func allRefs() -> [String]
   {
     var stringArray = git_strarray()
     guard git_reference_list(&stringArray, gitRepo) == 0
-      else { return [] }
+    else { return [] }
     defer { git_strarray_free(&stringArray) }
     
     return stringArray.compactMap { $0 }
@@ -137,14 +137,14 @@ extension XTRepository: CommitReferencing
     return oid(forRef: ref)?.sha
   }
   
-  func oid(forRef ref: String) -> OID?
+  public func oid(forRef ref: String) -> OID?
   {
     var object: OpaquePointer? = nil
     let result = git_revparse_single(&object, gitRepo, ref)
     guard result == 0,
-      let finalObject = object,
-      let oid = git_object_id(finalObject)
-      else { return nil }
+          let finalObject = object,
+          let oid = git_object_id(finalObject)
+    else { return nil }
     
     return GitOID(oidPtr: oid)
   }
@@ -160,7 +160,7 @@ extension XTRepository: CommitReferencing
   {
     return writing {
       guard let branch = localBranch(named: name) as? GitLocalBranch
-        else { return false }
+      else { return false }
       
       return git_branch_delete(branch.branchRef) == 0
     }

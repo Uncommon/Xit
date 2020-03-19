@@ -1,7 +1,7 @@
 import Foundation
 @testable import Xit
 
-class FakeRepo: FakeFileChangesRepo, TaskManagement
+class FakeRepo: FakeFileChangesRepo
 {
   let localBranch1 = FakeLocalBranch(name: "branch1")
   let localBranch2 = FakeLocalBranch(name: "branch2")
@@ -11,7 +11,6 @@ class FakeRepo: FakeFileChangesRepo, TaskManagement
   let remote1 = FakeRemote()
   let remote2 = FakeRemote()
   
-  let queue = TaskQueue(id: "test")
   var isWriting: Bool { return false }
   
   var commits: [StringOID: FakeCommit] = [:]

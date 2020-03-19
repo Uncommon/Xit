@@ -6,6 +6,8 @@ class HistoryCellView: NSTableCellView
   private var entry: CommitEntry!
   private var currentBranch: String?
   private var refs = [String]()
+
+  var lockObject: NSObject!
   
   static let lineColors: [NSColor] = [
       .systemBlue, .systemGreen, .systemRed, .systemBrown, .cyan,
@@ -116,13 +118,15 @@ class HistoryCellView: NSTableCellView
   /// Moves the text field out of the way of the lines and refs.
   override func updateConstraints()
   {
-    let totalColumns = entry.lines.reduce(0) {
-      (oldMax, line) -> UInt in
-      max(oldMax, line.parentIndex ?? 0, line.childIndex ?? 0)
+    lockObject?.withSync {
+      let totalColumns = entry.lines.reduce(0) {
+        (oldMax, line) -> UInt in
+        max(oldMax, line.parentIndex ?? 0, line.childIndex ?? 0)
+      }
+      let linesMargin = Margins.left + CGFloat(totalColumns + 1) * Widths.column
+
+      stackViewInset.constant = linesMargin + Margins.text
     }
-    let linesMargin = Margins.left + CGFloat(totalColumns + 1) * Widths.column
-    
-    stackViewInset.constant = linesMargin + Margins.text
     super.updateConstraints()
   }
   

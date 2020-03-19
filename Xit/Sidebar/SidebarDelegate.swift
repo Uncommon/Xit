@@ -150,6 +150,12 @@ class SidebarDelegate: NSObject
   }
 }
 
+extension SidebarDelegate: RepositoryUIAccessor
+{
+  var repoUIController: RepositoryUIController?
+  { outline.window?.windowController as? RepositoryUIController }
+}
+
 extension SidebarDelegate: NSOutlineViewDelegate
 {
   public func outlineViewSelectionDidChange(_ notification: Notification)
@@ -158,8 +164,7 @@ extension SidebarDelegate: NSOutlineViewDelegate
           let item = outline.item(atRow: outline.selectedRow)
                      as? SidebarItem,
           let selection = item.selection,
-          let controller = outline.window?.windowController
-                           as? RepositoryController
+          let controller = repoUIController
     else { return }
     
     if controller.selection?.shaToSelect != selection.shaToSelect {
@@ -297,9 +302,7 @@ extension SidebarDelegate: XTOutlineViewDelegate
                                 as? SidebarItem
     else { return }
     
-    if let controller = outline.window?.windowController
-                        as? RepositoryController,
-       let oldSelection = controller.selection,
+    if let oldSelection = repoUIController?.selection,
        let newSelection = newSelectedItem.selection,
        oldSelection.shaToSelect == newSelection.shaToSelect &&
        type(of: oldSelection) != type(of: newSelection) {

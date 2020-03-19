@@ -6,7 +6,9 @@ let XTChangedRefsKey = "changedRefs"
 
 class RepositoryWatcher
 {
-  weak var repository: XTRepository?
+  weak var controller: RepositoryController?
+  
+  var repository: XTRepository? { controller?.repository as? XTRepository }
 
   // stream must be var because we have to reference self to initialize it.
   var stream: FileEventStream! = nil
@@ -25,28 +27,31 @@ class RepositoryWatcher
     set
     {
       mutex.withLock { lastIndexChangeGuarded = newValue }
-      repository?.invalidateIndex()
+      controller?.invalidateIndex()
       NotificationCenter.default.post(name: .XTRepositoryIndexChanged,
-                                      object: repository)
+                                      object: controller?.repository)
     }
   }
   
   var refsCache = [String: GitOID]()
 
-  init?(repository: XTRepository)
+  init?(controller: RepositoryController)
   {
-    self.repository = repository
+    guard let repository = controller.repository as? XTRepository
+    else { return nil }
+    
+    self.controller = controller
     
     let gitPath = repository.gitDirectoryPath
     let objectsPath = gitPath.appending(pathComponent: "objects")
     guard let stream = FileEventStream(path: gitPath,
                                        excludePaths: [objectsPath],
-                                       queue: repository.queue.queue,
+                                       queue: controller.queue.queue,
                                        callback: {
       [weak self] (paths) in
       // Capture the repository here in case it gets deleted on another thread
       guard let self = self,
-            let repository = self.repository
+            let repository = self.controller?.repository as? XTRepository
       else { return }
       
       self.observeEvents(paths, repository)
