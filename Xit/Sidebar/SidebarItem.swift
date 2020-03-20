@@ -281,9 +281,16 @@ class RemoteSidebarItem: SidebarItem
   {
     if let urlString = remote?.urlString,
        let url = URL(string: urlString),
-       let host = url.host {
-      if (host == "github.com") || host.hasSuffix(".github.com") {
-        return NSImage(named: .xtGitHubTemplate)
+       let host = url.host?.lowercased() {
+      let hostsWithIcons: [(String, NSImage.Name)] =
+            [("github.com", .xtGitHubTemplate),
+             ("gitlab.com", .xtGitLabTemplate),
+             ("bitbucket.com", .xtBitBucketTemplate)]
+
+      for (domain, image) in hostsWithIcons {
+        if (host == domain) || host.hasSuffix("." + domain) {
+          return NSImage(named: image)
+        }
       }
     }
     return NSImage(named: .xtCloudTemplate)

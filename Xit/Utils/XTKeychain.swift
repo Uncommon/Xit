@@ -51,7 +51,7 @@ extension PasswordStorage
     guard let host = url.host
     else { return nil }
     let port = UInt16(url.port ?? url.defaultPort)
-    let user = account ?? url.user
+    let user = account?.nilIfEmpty ?? url.user ?? url.impliedUserName
     
     return find(host: host, path: url.path,
                 protocol: PasswordProtocol(url: url),
@@ -82,6 +82,25 @@ extension PasswordStorage
     try save(host: host, path: url.path,
              port: (url as NSURL).port?.uint16Value ?? 80,
              account: account, password: password)
+  }
+}
+
+extension URL
+{
+  /// The user name that may be implied by the URL's path.
+  var impliedUserName: String?
+  {
+    guard let primary = host?.components(separatedBy: ".").suffix(2)
+                             .joined(separator: ".")
+    else { return nil }
+
+    switch primary.lowercased() {
+      case "github.com", "gitlab.com":
+        // first component is "/"
+        return path.pathComponents.dropFirst().first
+      default:
+        return nil
+    }
   }
 }
 
@@ -197,15 +216,6 @@ final class XTKeychain: PasswordStorage
       default:
         throw NSError(osStatus: status)
     }
-  }
-  
-  func inferUserName(host: String, path: String) -> String?
-  {
-    if host == "github.com" {
-      return path.pathComponents.first
-    }
-    
-    return nil
   }
 }
 

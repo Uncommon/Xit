@@ -42,6 +42,16 @@ class AddAccountController: SheetController
     $userName = userField
     $password = passwordField
     $location = locationField
+
+    let menu = servicePopup.menu!
+
+    menu.removeAllItems()
+    for accountType in AccountType.allCases {
+      let item = menu.addItem(withTitleString: accountType.displayName,
+                              action: nil, keyEquivalent: "")
+
+      item.image = NSImage(named: accountType.imageName)
+    }
   }
   
   func showFieldAlert(_ message: String, field: NSView)

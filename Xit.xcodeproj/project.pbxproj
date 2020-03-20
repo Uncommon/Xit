@@ -1135,6 +1135,7 @@
 		C9790D0A20EED5430024D3EA /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				C9FD8FD8216C048400FCCE01 /* AccountType.swift */,
 				C9F533322183C7B100B2432C /* BasicAuthService.swift */,
 				C900463B21120F3200706029 /* BitbucketServerAPI.swift */,
 				C94154A21ED778980030E481 /* BuildStatusCache.swift */,
@@ -1143,7 +1144,6 @@
 				C98EBC142126188900EF739E /* ServicesData.swift */,
 				C929D05F1D42785B00D7DC52 /* TeamCityAPI.swift */,
 				C9F1B5F12217293D00293305 /* TeamCityAPI+Types.swift */,
-				C9FD8FD8216C048400FCCE01 /* AccountType.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
