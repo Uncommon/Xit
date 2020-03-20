@@ -28,9 +28,7 @@ class AddAccountController: SheetController
   }
   
   var accountType: AccountType
-  {
-    return AccountType(rawValue: servicePopup.indexOfSelectedItem)!
-  }
+  { AccountType(rawValue: servicePopup.indexOfSelectedItem)! }
   @ControlStringValue var userName: String
   @ControlStringValue var password: String
   @ControlURLValue var location: URL?
@@ -75,7 +73,7 @@ class AddAccountController: SheetController
       return
     }
     
-    guard location != nil
+    guard !accountType.needsLocation || location != nil
     else {
       showFieldAlert("The location field must have a valid URL.",
                      field: locationField)
@@ -135,5 +133,6 @@ class AddAccountController: SheetController
   func syncLocationField()
   {
     locationField.stringValue = accountType.defaultLocation
+    locationField.isEnabled = accountType.needsLocation
   }
 }

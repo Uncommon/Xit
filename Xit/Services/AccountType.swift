@@ -64,11 +64,22 @@ enum AccountType: Int, CaseIterable
   var defaultLocation: String
   {
     switch self {
-      case .gitHub: return "https://api.github.com"
+      case .gitHub: return "" // "https://api.github.com"
       case .gitLab: return ""
-      case .bitbucketCloud: return "https://api.bitbucket.org"
+      case .bitbucketCloud: return "" // "https://api.bitbucket.org"
       case .bitbucketServer: return ""
       case .teamCity: return ""
+    }
+  }
+
+  /// True if the service uses an API and therefore needs the location to be set
+  var needsLocation: Bool
+  {
+    switch self {
+      case .gitHub, .gitLab, .bitbucketCloud:
+        return false
+      case .bitbucketServer, .teamCity:
+        return true
     }
   }
   

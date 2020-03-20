@@ -390,6 +390,9 @@
                                         </items>
                                     </menu>
                                 </popUpButtonCell>
+                                <connections>
+                                    <action selector="serviceChanged:" target="bFL-Vc-PZs" id="TaD-TS-FZk"/>
+                                </connections>
                             </popUpButton>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NBa-0f-hzt">
                                 <rect key="frame" x="18" y="114" width="74" height="16"/>
