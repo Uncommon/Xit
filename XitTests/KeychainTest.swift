@@ -156,4 +156,17 @@ class KeychainTest: XCTestCase
   }
   
   // No delete test: deleting an account does not delete the keychain item
+
+  func testImpliedUserName()
+  {
+    let data: [(URL, String?)] =
+          [(URL(string: "http://github.com/Uncommon/repo")!, "Uncommon"),
+           (URL(string: "http://that.github.com/guy/repo")!, "guy"),
+           (URL(string: "http://gitlab.com/Uncommon1/repo")!, "Uncommon1"),
+           (URL(string: "http://other.com/something/else")!, nil)]
+
+    for (url, user) in data {
+      XCTAssertEqual(url.impliedUserName, user, "for URL \(url)")
+    }
+  }
 }

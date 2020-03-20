@@ -94,7 +94,7 @@ extension git_remote_callbacks
     }
     
     static let credentials: git_cred_acquire_cb = {
-      (cred, url, user, allowed, payload) in
+      (cred, urlCString, userCString, allowed, payload) in
       guard let callbacks = RemoteCallbacks.fromPayload(payload)
       else { return -1 }
       let allowed = git_credtype_t(allowed)
@@ -105,7 +105,7 @@ extension git_remote_callbacks
         for path in sshKeyPaths() {
           let publicPath = path.appending(".pub")
           
-          result = git_cred_ssh_key_new(cred, user, publicPath, path, "")
+          result = git_cred_ssh_key_new(cred, userCString, publicPath, path, "")
           if result == 0 {
             break
           }
@@ -121,10 +121,13 @@ extension git_remote_callbacks
       }
       if allowed.test(GIT_CREDTYPE_USERPASS_PLAINTEXT) {
         let keychain = XTKeychain.shared
-        let userName = user.map { String(cString: $0) } ?? ""
+        let urlString = urlCString.flatMap { String(cString: $0) }
+        let urlObject = urlString.flatMap { URL(string: $0) }
+        let userName = userCString.map { String(cString: $0) } ??
+                       urlObject?.impliedUserName
         
-        if let urlString = url.flatMap({ String(cString: $0) }),
-           let url = URL(string: urlString),
+        if let url = urlObject,
+           let user = userName,
            let password = keychain.find(url: url, account: userName) ??
                           keychain.find(url: url.withPath(""),
                                         account: userName) {
