@@ -131,7 +131,7 @@
                                         <tableColumns>
                                             <tableColumn identifier="commit" width="421" minWidth="40" maxWidth="5000" id="dd7-jX-0NL">
                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Commit">
-                                                    <font key="font" metaFont="label" size="11"/>
+                                                    <font key="font" metaFont="controlContent" size="11"/>
                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                 </tableHeaderCell>
@@ -179,9 +179,9 @@
                                                     </tableCellView>
                                                 </prototypeCellViews>
                                             </tableColumn>
-                                            <tableColumn identifier="name" width="192" minWidth="40" maxWidth="1000" id="3jR-lb-G6K">
-                                                <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Name">
-                                                    <font key="font" metaFont="label" size="11"/>
+                                            <tableColumn identifier="author" width="192" minWidth="40" maxWidth="1000" id="3jR-lb-G6K">
+                                                <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Author">
+                                                    <font key="font" metaFont="controlContent" size="11"/>
                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                 </tableHeaderCell>
@@ -192,7 +192,7 @@
                                                 </textFieldCell>
                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                 <prototypeCellViews>
-                                                    <tableCellView identifier="name" id="YBF-IH-NHG">
+                                                    <tableCellView identifier="author" id="YBF-IH-NHG">
                                                         <rect key="frame" x="425" y="1" width="192" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
@@ -212,9 +212,9 @@
                                                     </tableCellView>
                                                 </prototypeCellViews>
                                             </tableColumn>
-                                            <tableColumn identifier="date" width="106" minWidth="10" maxWidth="3.4028234663852886e+38" id="1eU-Fb-iXQ">
-                                                <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Date">
-                                                    <font key="font" metaFont="label" size="11"/>
+                                            <tableColumn identifier="authorDate" width="106" minWidth="10" maxWidth="3.4028234663852886e+38" id="1eU-Fb-iXQ">
+                                                <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Author Date">
+                                                    <font key="font" metaFont="controlContent" size="11"/>
                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 </tableHeaderCell>
@@ -225,7 +225,7 @@
                                                 </textFieldCell>
                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                 <prototypeCellViews>
-                                                    <tableCellView identifier="date" id="VBa-Bu-xYc" customClass="DateCellView" customModule="Xit" customModuleProvider="target">
+                                                    <tableCellView identifier="authorDate" id="VBa-Bu-xYc" customClass="DateCellView" customModule="Xit" customModuleProvider="target">
                                                         <rect key="frame" x="620" y="1" width="106" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>

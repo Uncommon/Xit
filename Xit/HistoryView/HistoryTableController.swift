@@ -11,8 +11,8 @@ public class HistoryTableController: NSViewController,
   enum ColumnID
   {
     static let commit = ¶"commit"
-    static let date = ¶"date"
-    static let name = ¶"name"
+    static let authorDate = ¶"authorDate"
+    static let author = ¶"author"
   }
   
   @IBOutlet var contextMenu: NSMenu!
@@ -307,7 +307,7 @@ extension HistoryTableController: NSTableViewDelegate
     else { return nil }
     
     let entry = history.entries[row]
-    
+
     switch tableColumn.identifier {
       
       case ColumnID.commit:
@@ -318,10 +318,10 @@ extension HistoryTableController: NSTableViewDelegate
               repository: repository as! Branching & CommitReferencing)
         historyCell.lockObject = history
 
-      case ColumnID.date:
-        (result as! DateCellView).date = entry.commit.commitDate
+      case ColumnID.authorDate:
+        (result as! DateCellView).date = entry.commit.authorDate
       
-      case ColumnID.name:
+      case ColumnID.author:
         var text: String
         
         if let name = entry.commit.authorName {
