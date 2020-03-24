@@ -28,18 +28,18 @@
             </connections>
         </customObject>
         <splitView dividerStyle="paneSplitter" id="13">
-            <rect key="frame" x="0.0" y="0.0" width="731" height="573"/>
+            <rect key="frame" x="0.0" y="0.0" width="877" height="573"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="0.0" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" id="i6o-yQ-oP3">
-                    <rect key="frame" x="0.0" y="0.0" width="731" height="301"/>
+                    <rect key="frame" x="0.0" y="0.0" width="877" height="301"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
                         <customView translatesAutoresizingMaskIntoConstraints="NO" id="cuk-sV-ZkE">
-                            <rect key="frame" x="0.0" y="271" width="731" height="30"/>
+                            <rect key="frame" x="0.0" y="271" width="877" height="30"/>
                             <subviews>
                                 <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LwY-Yn-Scv">
-                                    <rect key="frame" x="10" y="4" width="711" height="22"/>
+                                    <rect key="frame" x="10" y="4" width="857" height="22"/>
                                     <subviews>
                                         <popUpButton horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UOV-6f-auP">
                                             <rect key="frame" x="0.0" y="-1" width="90" height="23"/>
@@ -60,7 +60,7 @@
                                             </connections>
                                         </popUpButton>
                                         <searchField wantsLayer="YES" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iui-jU-7uS">
-                                            <rect key="frame" x="98" y="0.0" width="536" height="22"/>
+                                            <rect key="frame" x="98" y="0.0" width="682" height="22"/>
                                             <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" sendsWholeSearchString="YES" id="6cj-6w-3ay">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -72,7 +72,7 @@
                                             </connections>
                                         </searchField>
                                         <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YtL-T2-zWj">
-                                            <rect key="frame" x="642" y="-1" width="47" height="23"/>
+                                            <rect key="frame" x="788" y="-1" width="47" height="23"/>
                                             <segmentedCell key="cell" enabled="NO" borderStyle="border" alignment="left" style="capsule" trackingMode="momentary" id="ZSk-d5-hUC">
                                                 <font key="font" metaFont="system"/>
                                                 <segments>
@@ -85,7 +85,7 @@
                                             </connections>
                                         </segmentedControl>
                                         <button horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="q3A-ms-Avj">
-                                            <rect key="frame" x="697" y="4" width="14" height="14"/>
+                                            <rect key="frame" x="843" y="4" width="14" height="14"/>
                                             <buttonCell key="cell" type="roundRect" bezelStyle="roundedRect" image="NSStopProgressFreestandingTemplate" imagePosition="only" alignment="center" state="on" imageScaling="proportionallyDown" inset="2" id="a7i-mR-Hgf">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="label" size="12"/>
@@ -117,21 +117,21 @@
                             </constraints>
                         </customView>
                         <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="khd-Qt-OtX">
-                            <rect key="frame" x="0.0" y="0.0" width="728" height="271"/>
+                            <rect key="frame" x="0.0" y="0.0" width="876" height="271"/>
                             <clipView key="contentView" id="QCe-lk-wQ6">
-                                <rect key="frame" x="0.0" y="0.0" width="728" height="271"/>
+                                <rect key="frame" x="0.0" y="0.0" width="876" height="271"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="dEf-hx-ZjL" viewBased="YES" id="No3-Ik-sWu" customClass="HistoryTableView" customModule="Xit" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="728" height="248"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="876" height="248"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <size key="intercellSpacing" width="3" height="2"/>
                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                         <tableColumns>
-                                            <tableColumn identifier="commit" width="421" minWidth="40" maxWidth="5000" id="dd7-jX-0NL">
+                                            <tableColumn identifier="commit" width="569" minWidth="40" maxWidth="5000" id="dd7-jX-0NL">
                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Commit">
-                                                    <font key="font" metaFont="controlContent" size="11"/>
+                                                    <font key="font" metaFont="label" size="11"/>
                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                 </tableHeaderCell>
@@ -143,7 +143,7 @@
                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                 <prototypeCellViews>
                                                     <tableCellView identifier="commit" id="oW4-S9-MQ4" customClass="HistoryCellView" customModule="Xit" customModuleProvider="target">
-                                                        <rect key="frame" x="1" y="1" width="421" height="17"/>
+                                                        <rect key="frame" x="1" y="1" width="569" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <stackView distribution="fill" orientation="horizontal" alignment="top" spacing="4" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" horizontalClippingResistancePriority="750" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zOj-e6-4hz">
@@ -181,7 +181,7 @@
                                             </tableColumn>
                                             <tableColumn identifier="author" width="192" minWidth="40" maxWidth="1000" id="3jR-lb-G6K">
                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Author">
-                                                    <font key="font" metaFont="controlContent" size="11"/>
+                                                    <font key="font" metaFont="label" size="11"/>
                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                 </tableHeaderCell>
@@ -193,7 +193,7 @@
                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                 <prototypeCellViews>
                                                     <tableCellView identifier="author" id="YBF-IH-NHG">
-                                                        <rect key="frame" x="425" y="1" width="192" height="17"/>
+                                                        <rect key="frame" x="573" y="1" width="192" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LZ4-Sa-GPC">
@@ -214,7 +214,7 @@
                                             </tableColumn>
                                             <tableColumn identifier="authorDate" width="106" minWidth="10" maxWidth="3.4028234663852886e+38" id="1eU-Fb-iXQ">
                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Author Date">
-                                                    <font key="font" metaFont="controlContent" size="11"/>
+                                                    <font key="font" metaFont="label" size="11"/>
                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 </tableHeaderCell>
@@ -226,7 +226,7 @@
                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                 <prototypeCellViews>
                                                     <tableCellView identifier="authorDate" id="VBa-Bu-xYc" customClass="DateCellView" customModule="Xit" customModuleProvider="target">
-                                                        <rect key="frame" x="620" y="1" width="106" height="17"/>
+                                                        <rect key="frame" x="768" y="1" width="106" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QoE-3N-v6T">
@@ -354,7 +354,7 @@
                                 </subviews>
                             </clipView>
                             <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="MX2-Hl-Ekc">
-                                <rect key="frame" x="1" y="141" width="685" height="16"/>
+                                <rect key="frame" x="0.0" y="255" width="870" height="16"/>
                                 <autoresizingMask key="autoresizingMask"/>
                             </scroller>
                             <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="0dy-wf-z6q">
@@ -383,7 +383,7 @@
                     </customSpacing>
                 </stackView>
                 <customView fixedFrame="YES" id="14">
-                    <rect key="frame" x="0.0" y="311" width="731" height="262"/>
+                    <rect key="frame" x="0.0" y="311" width="877" height="262"/>
                     <autoresizingMask key="autoresizingMask"/>
                 </customView>
             </subviews>
