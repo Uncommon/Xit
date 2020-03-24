@@ -11,8 +11,11 @@ public class HistoryTableController: NSViewController,
   enum ColumnID
   {
     static let commit = ¶"commit"
-    static let authorDate = ¶"authorDate"
     static let author = ¶"author"
+    static let authorDate = ¶"authorDate"
+    static let committer = ¶"committer"
+    static let committerDate = ¶"committerDate"
+    static let sha = ¶"sha"
   }
   
   @IBOutlet var contextMenu: NSMenu!
@@ -279,6 +282,21 @@ public class HistoryTableController: NSViewController,
 
 extension HistoryTableController: NSTableViewDelegate
 {
+  public func displayString(name: String?, email: String?) -> String
+  {
+    if let name = name {
+      if let email = email {
+        return "\(name) <\(email)>"
+      }
+      else {
+        return name
+      }
+    }
+    else {
+      return email ?? "—"
+    }
+  }
+
   public func tableView(_ tableView: NSTableView,
                         viewFor tableColumn: NSTableColumn?,
                         row: Int) -> NSView?
@@ -318,25 +336,25 @@ extension HistoryTableController: NSTableViewDelegate
               repository: repository as! Branching & CommitReferencing)
         historyCell.lockObject = history
 
+      case ColumnID.author:
+        result.textField?.stringValue =
+            displayString(name: entry.commit.authorName,
+                          email: entry.commit.authorEmail)
+
       case ColumnID.authorDate:
         (result as! DateCellView).date = entry.commit.authorDate
-      
-      case ColumnID.author:
-        var text: String
-        
-        if let name = entry.commit.authorName {
-          if let email = entry.commit.authorEmail {
-            text = "\(name) <\(email)>"
-          }
-          else {
-            text = name
-          }
-        }
-        else {
-          text = entry.commit.authorEmail ?? "—"
-        }
-        result.textField?.stringValue = text
-      
+
+      case ColumnID.committer:
+        result.textField?.stringValue =
+            displayString(name: entry.commit.committerName,
+                          email: entry.commit.committerEmail)
+
+      case ColumnID.committerDate:
+        (result as! DateCellView).date = entry.commit.commitDate
+
+      case ColumnID.sha:
+        result.textField?.stringValue = entry.commit.sha.firstSix()
+
       default:
         return nil
     }
@@ -359,6 +377,13 @@ extension HistoryTableController: NSTableViewDelegate
           CommitSelection(repository: repository,
                           commit: history.entries[selectedRow].commit)
     }
+  }
+
+  public func tableView(_ tableView: NSTableView,
+                        shouldReorderColumn columnIndex: Int,
+                        toColumn newColumnIndex: Int) -> Bool
+  {
+    return columnIndex != 0 && newColumnIndex != 0
   }
 }
 
@@ -399,60 +424,5 @@ extension HistoryTableController: NSTableViewDataSource
       objc_sync_exit(history)
     }
     return history.entries.count
-  }
-}
-
-extension HistoryTableController: NSUserInterfaceValidations
-{
-  public func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem)
-    -> Bool
-  {
-    switch item.action {
-      
-      case #selector(copySHA(sender:)):
-        return true
-      
-      case #selector(resetToCommit(sender:)):
-        if let (clickedRow, _) = tableView.contextMenuCell,
-           clickedRow >= 0,
-           let branchName = repository.currentBranch,
-           let branch = repository.localBranch(named: branchName),
-           let branchOID = branch.oid {
-          return !branchOID.equals(history.entries[clickedRow].commit.oid)
-        }
-        else {
-          return false
-        }
-      
-      default:
-        return false
-    }
-  }
-}
-
-extension HistoryTableController
-{
-  @IBAction func copySHA(sender: Any?)
-  {
-    guard let clickedCell = tableView.contextMenuCell
-    else { return }
-    let pasteboard = NSPasteboard.general
-    
-    pasteboard.clearContents()
-    pasteboard.setString(history.entries[clickedCell.0].commit.sha,
-                         forType: .string)
-  }
-  
-  @IBAction func resetToCommit(sender: Any?)
-  {
-    guard let clickedCell = tableView.contextMenuCell,
-          let windowController = view.window?.windowController
-                                 as? XTWindowController
-    else { return }
-    
-    windowController.startOperation {
-      ResetOpController(windowController: windowController,
-                        targetCommit: history.entries[clickedCell.0].commit)
-    }
   }
 }

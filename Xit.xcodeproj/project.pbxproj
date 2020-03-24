@@ -216,6 +216,7 @@
 		C9C7730C1D26EE1C00329493 /* PrefsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C7730A1D26EE1C00329493 /* PrefsWindowController.swift */; };
 		C9CB017F2329B1B6006D23B5 /* SidebarDataModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CB017E2329B1B6006D23B5 /* SidebarDataModelTest.swift */; };
 		C9CC6D2D237E064A00424A68 /* GitCLI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CC6D2C237E064A00424A68 /* GitCLI.swift */; };
+		C9CCDC79242A68EA006C8CB1 /* HistoryTableController+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCDC78242A68EA006C8CB1 /* HistoryTableController+Actions.swift */; };
 		C9D3EA1220CB2D1B0087C958 /* StagingListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D3EA1120CB2D1B0087C958 /* StagingListModel.swift */; };
 		C9D896961FAB6CD300E431FE /* XTTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D896951FAB6CD300E431FE /* XTTest.swift */; };
 		C9DA20CB1F6C8B7800C472CD /* GitIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DA20CA1F6C8B7800C472CD /* GitIndex.swift */; };
@@ -648,6 +649,7 @@
 		C9C7730A1D26EE1C00329493 /* PrefsWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrefsWindowController.swift; sourceTree = "<group>"; };
 		C9CB017E2329B1B6006D23B5 /* SidebarDataModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarDataModelTest.swift; sourceTree = "<group>"; };
 		C9CC6D2C237E064A00424A68 /* GitCLI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitCLI.swift; sourceTree = "<group>"; };
+		C9CCDC78242A68EA006C8CB1 /* HistoryTableController+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HistoryTableController+Actions.swift"; sourceTree = "<group>"; };
 		C9D3EA1120CB2D1B0087C958 /* StagingListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StagingListModel.swift; sourceTree = "<group>"; };
 		C9D896951FAB6CD300E431FE /* XTTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XTTest.swift; sourceTree = "<group>"; };
 		C9DA20CA1F6C8B7800C472CD /* GitIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitIndex.swift; sourceTree = "<group>"; };
@@ -778,6 +780,7 @@
 				C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */,
 				31C7C13213ECC74C00A65FE9 /* HistoryViewController.xib */,
 				C91E9A001D527A1300E128AC /* HistoryTableController.swift */,
+				C9CCDC78242A68EA006C8CB1 /* HistoryTableController+Actions.swift */,
 				C96F65451D53A6CE001B2557 /* HistoryCellView.swift */,
 				C9999AC61E08712000DF3E11 /* HistoryTableView.swift */,
 				C92E30EE1D4FF358001985F7 /* CommitHistory.swift */,
@@ -1546,6 +1549,7 @@
 				C948D5B71D2C6A4800F72A27 /* AccountsPrefsController.swift in Sources */,
 				C95BF6541FCF5BC90020C51D /* FileContentProtocols.swift in Sources */,
 				C959CDED1F859ED100C1E282 /* FileViewController+OutlineView.swift in Sources */,
+				C9CCDC79242A68EA006C8CB1 /* HistoryTableController+Actions.swift in Sources */,
 				C9470B8423073A5B003895A9 /* GitRefLog.swift in Sources */,
 				C95BF6681FCF5DBD0020C51D /* StashSelection.swift in Sources */,
 				C99A6AEC1E48FA140030DC01 /* FileListDataSourceBase.swift in Sources */,

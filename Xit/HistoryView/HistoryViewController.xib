@@ -246,6 +246,105 @@
                                                     </tableCellView>
                                                 </prototypeCellViews>
                                             </tableColumn>
+                                            <tableColumn identifier="committer" width="192" minWidth="10" maxWidth="3.4028234663852886e+38" hidden="YES" id="cIV-ts-AXV">
+                                                <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Committer">
+                                                    <font key="font" metaFont="label" size="11"/>
+                                                    <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </tableHeaderCell>
+                                                <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="Mim-Rh-SVD">
+                                                    <font key="font" metaFont="system"/>
+                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                                <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                <prototypeCellViews>
+                                                    <tableCellView identifier="committer" id="Udp-MN-6cR">
+                                                        <rect key="frame" x="1" y="1" width="0.0" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                        <subviews>
+                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GCU-lj-bXi">
+                                                                <rect key="frame" x="0.0" y="0.0" width="4" height="17"/>
+                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                                <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="dFw-3W-6bO">
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                        </subviews>
+                                                        <connections>
+                                                            <outlet property="textField" destination="GCU-lj-bXi" id="rxk-zE-f9X"/>
+                                                        </connections>
+                                                    </tableCellView>
+                                                </prototypeCellViews>
+                                            </tableColumn>
+                                            <tableColumn identifier="committerDate" width="106" minWidth="10" maxWidth="3.4028234663852886e+38" hidden="YES" id="Odu-fv-HEG">
+                                                <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Committer Date">
+                                                    <font key="font" metaFont="label" size="11"/>
+                                                    <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </tableHeaderCell>
+                                                <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="LKd-wm-Zsd">
+                                                    <font key="font" metaFont="system"/>
+                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                                <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                <prototypeCellViews>
+                                                    <tableCellView identifier="committerDate" id="fVK-ci-Vq8" customClass="DateCellView" customModule="Xit" customModuleProvider="target">
+                                                        <rect key="frame" x="1" y="1" width="0.0" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                        <subviews>
+                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kNL-bm-zsg">
+                                                                <rect key="frame" x="0.0" y="0.0" width="4" height="17"/>
+                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                                <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="Rnc-bP-se2">
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                        </subviews>
+                                                        <connections>
+                                                            <outlet property="textField" destination="kNL-bm-zsg" id="Fpw-3c-QmH"/>
+                                                        </connections>
+                                                    </tableCellView>
+                                                </prototypeCellViews>
+                                            </tableColumn>
+                                            <tableColumn identifier="sha" width="70" minWidth="10" maxWidth="3.4028234663852886e+38" hidden="YES" id="BDi-Zj-55u">
+                                                <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="SHA">
+                                                    <font key="font" metaFont="label" size="11"/>
+                                                    <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </tableHeaderCell>
+                                                <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="fL9-QT-92k">
+                                                    <font key="font" metaFont="system"/>
+                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                                <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                <prototypeCellViews>
+                                                    <tableCellView identifier="sha" id="9pH-k7-AeL">
+                                                        <rect key="frame" x="1" y="1" width="0.0" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                        <subviews>
+                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eNH-O1-Inw">
+                                                                <rect key="frame" x="0.0" y="0.0" width="4" height="17"/>
+                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                                <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="qkD-uA-2kA">
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                        </subviews>
+                                                        <connections>
+                                                            <outlet property="textField" destination="eNH-O1-Inw" id="7Sg-uD-Rzd"/>
+                                                        </connections>
+                                                    </tableCellView>
+                                                </prototypeCellViews>
+                                            </tableColumn>
                                         </tableColumns>
                                         <connections>
                                             <outlet property="dataSource" destination="IYz-w0-bcN" id="rcK-6b-Kjo"/>
@@ -263,8 +362,11 @@
                                 <autoresizingMask key="autoresizingMask"/>
                             </scroller>
                             <tableHeaderView key="headerView" id="dEf-hx-ZjL">
-                                <rect key="frame" x="0.0" y="0.0" width="728" height="23"/>
+                                <rect key="frame" x="0.0" y="0.0" width="876" height="23"/>
                                 <autoresizingMask key="autoresizingMask"/>
+                                <connections>
+                                    <outlet property="menu" destination="Xi9-6x-uYz" id="mNj-wH-wBd"/>
+                                </connections>
                             </tableHeaderView>
                         </scrollView>
                     </subviews>
@@ -312,6 +414,41 @@
             </items>
             <accessibility identifier="HistoryMenu"/>
             <point key="canvasLocation" x="505" y="2067"/>
+        </menu>
+        <menu id="Xi9-6x-uYz">
+            <items>
+                <menuItem title="Author" id="hAS-Gx-VsU">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="showAuthorColumn:" target="IYz-w0-bcN" id="jQf-oQ-FLC"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Author date" id="KyU-J5-6ae">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="showAuthorDateColumn:" target="IYz-w0-bcN" id="iiR-Ty-apI"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Committer" id="XMm-dY-MbS">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="showCommitterColumn:" target="IYz-w0-bcN" id="LaV-p8-1ot"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Committer date" id="67A-Mc-w2e">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="showCommitterDateColumn:" target="IYz-w0-bcN" id="Mvn-f9-cE7"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="SHA" id="70z-br-dIY">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="showSHAColumn:" target="IYz-w0-bcN" id="jae-pX-w5X"/>
+                    </connections>
+                </menuItem>
+            </items>
+            <point key="canvasLocation" x="722" y="1194"/>
         </menu>
     </objects>
     <resources>
