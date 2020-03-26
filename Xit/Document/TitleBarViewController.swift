@@ -61,7 +61,10 @@ class TitleBarViewController: NSViewController
   @IBOutlet weak var viewControls: NSSegmentedControl!
   @IBOutlet weak var operationViewSpacing: NSLayoutConstraint!
   @IBOutlet var stashMenu: NSMenu!
-  
+  @IBOutlet var fetchMenu: NSMenu!
+  @IBOutlet var pushMenu: NSMenu!
+  @IBOutlet var pullMenu: NSMenu!
+
   weak var delegate: TitleBarDelegate?
   
   var progressObserver: NSObjectProtocol?
@@ -98,13 +101,23 @@ class TitleBarViewController: NSViewController
   
   deinit
   {
-    progressObserver.map { NotificationCenter.default.removeObserver($0) }
-    becomeKeyObserver.map { NotificationCenter.default.removeObserver($0) }
-    resignKeyObserver.map { NotificationCenter.default.removeObserver($0) }
+    let center = NotificationCenter.default
+
+    _ = [progressObserver, becomeKeyObserver, resignKeyObserver].compactMap {
+      center.removeObserver($0 as Any)
+    }
   }
   
   override func viewDidLoad()
   {
+    let segmentMenus: [(NSMenu, RemoteSegment)] = [
+          (pullMenu, .pull),
+          (pushMenu, .push),
+          (fetchMenu, .fetch)]
+
+    for (menu, segment) in segmentMenus {
+      remoteControls.setMenu(menu, forSegment: segment.rawValue)
+    }
     stashButton.setMenu(stashMenu, forSegment: 0)
     
     // This constraint will be active when the operations controls are shown.
