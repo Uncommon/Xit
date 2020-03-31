@@ -293,9 +293,12 @@
                         <action selector="fetchCurrentBranch:" target="-1" id="lHx-yd-87e"/>
                     </connections>
                 </menuItem>
-                <menuItem isSeparatorItem="YES" id="eea-zN-k1G"/>
+                <menuItem isSeparatorItem="YES" identifier="fetchRemote" id="eea-zN-k1G"/>
                 <menuItem title="Fetch remote x" id="bnd-e9-zyD">
                     <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="fetchRemote:" target="-1" id="qqI-W4-RTW"/>
+                    </connections>
                 </menuItem>
             </items>
             <point key="canvasLocation" x="279" y="659"/>

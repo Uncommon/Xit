@@ -4,6 +4,27 @@ import Cocoa
 /// Runs a `fetch` operation.
 class FetchOpController: PasswordOpController
 {
+  enum RemoteOption
+  {
+    case all, currentBranch, named(String)
+  }
+
+  let remoteOption: RemoteOption?
+
+  init(remoteOption: RemoteOption, windowController: XTWindowController)
+  {
+    self.remoteOption = remoteOption
+
+    super.init(windowController: windowController)
+  }
+
+  required init(windowController: XTWindowController)
+  {
+    self.remoteOption = nil
+
+    super.init(windowController: windowController)
+  }
+
   /// The default remote to fetch from, either:
   /// - the current branch's tracking branch
   /// - if there are multiple remotes, the one named "origin"
@@ -42,23 +63,46 @@ class FetchOpController: PasswordOpController
     else { throw RepoError.unexpected }
     
     let config = repository.config
-    let panel = FetchPanelController.controller()
-    
-    if let remoteName = defaultRemoteName() {
-      panel.selectedRemote = remoteName
-    }
-    panel.parentController = windowController
-    panel.downloadTags = config.fetchTags(remote: panel.selectedRemote)
-    panel.pruneBranches = config.fetchPrune(remote: panel.selectedRemote)
-    windowController!.window!.beginSheet(panel.window!) {
-      (response) in
-      if response == NSApplication.ModalResponse.OK {
-        self.executeFetch(remoteName: panel.selectedRemote as String,
-                          downloadTags: panel.downloadTags,
-                          pruneBranches: panel.pruneBranches)
+
+    if let remoteOption = self.remoteOption {
+      switch remoteOption {
+
+        case .all:
+          for remote in repository.remoteNames() {
+            executeFetch(remoteName: remote)
+          }
+
+        case .currentBranch:
+          guard let branchName = repository.currentBranch,
+                let branch = repository.localBranch(named: branchName),
+                let remote = branch.trackingBranch?.remoteName
+          else { break }
+
+          executeFetch(remoteName: remote)
+        
+        case .named(let remote):
+          executeFetch(remoteName: remote)
       }
-      else {
-        self.ended(result: .canceled)
+    }
+    else {
+      let panel = FetchPanelController.controller()
+
+      if let remoteName = defaultRemoteName() {
+        panel.selectedRemote = remoteName
+      }
+      panel.parentController = windowController
+      panel.downloadTags = config.fetchTags(remote: panel.selectedRemote)
+      panel.pruneBranches = config.fetchPrune(remote: panel.selectedRemote)
+      windowController!.window!.beginSheet(panel.window!) {
+        (response) in
+        if response == NSApplication.ModalResponse.OK {
+          self.executeFetch(remoteName: panel.selectedRemote as String,
+                            downloadTags: panel.downloadTags,
+                            pruneBranches: panel.pruneBranches)
+        }
+        else {
+          self.ended(result: .canceled)
+        }
       }
     }
   }
@@ -80,7 +124,16 @@ class FetchOpController: PasswordOpController
     NotificationCenter.default.post(note)
     return true
   }
-  
+
+  func executeFetch(remoteName: String)
+  {
+    let config = repository!.config
+
+    executeFetch(remoteName: remoteName,
+                 downloadTags: config.fetchTags(remote: remoteName),
+                 pruneBranches: config.fetchPrune(remote: remoteName))
+  }
+
   func executeFetch(remoteName: String,
                     downloadTags: Bool,
                     pruneBranches: Bool)

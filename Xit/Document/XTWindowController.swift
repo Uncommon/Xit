@@ -52,7 +52,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   var currentOperation: OperationController?
   
   private var kvObservers: [NSKeyValueObservation] = []
-  private var splitObserver: NSObjectProtocol?
+  private var splitObserver, menuObserver: NSObjectProtocol?
   
   override var document: AnyObject?
   {
@@ -144,8 +144,34 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       self.titleBarController?.searchButton.isEnabled = !collapsed
       self.titleBarController?.updateViewControls()
     }
+    menuObserver = NotificationCenter.default.addObserver(
+        forName: NSMenu.didBeginTrackingNotification,
+        object: nil, queue: .main, using: menuDidBeginTracking)
     updateMiniwindowTitle()
     updateNavButtons()
+  }
+
+  func menuDidBeginTracking(_ note: Notification)
+  {
+    let matchAction: (NSMenuItem) -> Bool = {
+      $0.action == #selector(self.fetchRemote(_:))
+    }
+    guard self.window?.isMainWindow ?? false,
+          let menu = note.object as? NSMenu,
+          menu.items.contains(where: { $0.identifier == ¶"fetchRemote" })
+    else { return }
+
+    for item in menu.items.lazy.filter(matchAction) {
+      menu.removeItem(item)
+    }
+    for (index, remote) in self.repository.remoteNames().enumerated() {
+      let item = NSMenuItem(titleString: .fetchRemote(remote),
+                            action: #selector(self.fetchRemote(_:)),
+                            keyEquivalent: "")
+
+      item.tag = index
+      menu.addItem(item)
+    }
   }
   
   @objc

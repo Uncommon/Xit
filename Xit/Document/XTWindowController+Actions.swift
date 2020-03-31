@@ -86,7 +86,37 @@ extension XTWindowController
   {
     let _: FetchOpController? = startOperation()
   }
-  
+
+  @IBAction
+  func fetchAllRemotes(_: AnyObject)
+  {
+    startOperation {
+      FetchOpController(remoteOption: .all, windowController: self)
+    }
+  }
+
+  @IBAction
+  func fetchCurrentBranch(_: AnyObject)
+  {
+    startOperation {
+      FetchOpController(remoteOption: .currentBranch, windowController: self)
+    }
+  }
+
+  @IBAction
+  func fetchRemote(_ sender: NSMenuItem)
+  {
+    let index = sender.tag
+    let remotes = repository.remoteNames()
+    guard (0..<remotes.count).contains(index)
+    else { return }
+
+    startOperation {
+      FetchOpController(remoteOption: .named(remotes[index]),
+                        windowController: self)
+    }
+  }
+
   @IBAction
   func pull(_: AnyObject)
   {
@@ -255,7 +285,27 @@ extension XTWindowController: NSMenuItemValidation
 
       case #selector(self.newRemote(_:)):
         result = true
-      
+
+      case #selector(self.fetchAllRemotes(_:)),
+           #selector(self.pullAllRemotes(_:)):
+        result = !repository.remoteNames().isEmpty
+
+      case #selector(self.fetchCurrentBranch(_:)):
+        if let branchName = repository.currentBranch,
+           let branch = repository.localBranch(named: branchName),
+           let trackingBranch = branch.trackingBranch,
+           let remote = trackingBranch.remoteName {
+          menuItem.titleString = .fetchCurrent(branch: branch.name,
+                                               remote: remote)
+          result = true
+        }
+        else {
+          menuItem.titleString = .fetchCurrentUnavailable
+          result = false
+        }
+
+      case #selector(self.fetchRemote(_:)):
+        result = true
       default:
         result = false
     }

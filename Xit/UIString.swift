@@ -225,6 +225,17 @@ struct UIString: RawRepresentable
   static let needsWork = ›"Needs work"
   static let merged = ›"Merged"
   static let closed = ›"Closed"
+
+  // Fetch/push/pull commands
+  static let fetchCurrentUnavailable = ›"Fetch current branch"
+
+  static let fetchCurrentFormat = "Fetch \"%2$@/%1$@\""
+  static let fetchRemoteFormat = "Fetch remote \"%@\""
+
+  static func fetchCurrent(branch: String, remote: String) -> UIString
+  { .init(format: fetchCurrentFormat, branch, remote) }
+  static func fetchRemote(_ remote: String) -> UIString
+  { .init(format: fetchRemoteFormat, remote) }
   
   // Repository errors
   static let gitErrorFormat = "An internal git error (%d) occurred."
@@ -339,13 +350,22 @@ extension NSMenuItem
     get { return UIString(rawValue: title) }
     set { title = newValue.rawValue }
   }
+
+  convenience init(titleString: UIString,
+                   action: Selector?,
+                   keyEquivalent: String)
+  {
+    self.init(title: titleString.rawValue,
+              action: action,
+              keyEquivalent: keyEquivalent)
+  }
 }
 
 extension NSPathControlItem
 {
   var titleString: UIString
   {
-    get { return UIString(rawValue: title) }
+    get { UIString(rawValue: title) }
     set { title = newValue.rawValue }
   }
 }
@@ -354,12 +374,12 @@ extension NSSavePanel
 {
   var messageString: UIString
   {
-    get { return UIString(rawValue: message) }
+    get { UIString(rawValue: message) }
     set { message = newValue.rawValue }
   }
   var promptString: UIString
   {
-    get { return UIString(rawValue: prompt) }
+    get { UIString(rawValue: prompt) }
     set { prompt = newValue.rawValue }
   }
 }
