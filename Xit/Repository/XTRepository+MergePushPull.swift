@@ -280,7 +280,7 @@ extension XTRepository
     let rawValue: UInt32
     
     /// No merge possible
-    static let none = MergeAnalysis(rawValue: 0)
+    static let none: MergeAnalysis = []
     /// Normal merge
     static let normal = MergeAnalysis(rawValue: 0b0001)
     /// Already up to date, nothing to do
@@ -340,7 +340,7 @@ extension XTRepository
                     fastForward: Bool? = nil) throws -> MergeAnalysis
   {
     guard let branch = branch as? GitBranch,
-          let commit = branch.targetCommit
+          branch.targetCommit != nil
     else { throw RepoError.unexpected }
     
     let preference =

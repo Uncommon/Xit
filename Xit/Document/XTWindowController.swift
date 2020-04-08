@@ -191,7 +191,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     currentOperation?.canceled = true
   }
 
-  func selectionChanged(oldValue: RepositorySelection?)
+  func updateHistoryCollapse(wasStaging: Bool)
   {
     guard let repo = xtDocument?.repository
     else { return }
@@ -209,7 +209,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
         }
       }
     }
-    else if oldValue is StagingSelection &&
+    else if wasStaging &&
             UserDefaults.standard.collapseHistory &&
             historyAutoCollapsed {
       if historyController.historyHidden {
@@ -218,10 +218,15 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       }
       historyAutoCollapsed = false
     }
+  }
+
+  func selectionChanged(oldValue: RepositorySelection?)
+  {
+    updateHistoryCollapse(wasStaging: oldValue is StagingSelection)
     if let newSelection = selection,
-       let oldSelection = oldValue {
-      guard newSelection != oldSelection
-      else { return }
+       let oldSelection = oldValue,
+       newSelection == oldSelection {
+      return
     }
 
     var userInfo = [AnyHashable: Any]()
