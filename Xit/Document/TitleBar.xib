@@ -305,14 +305,7 @@
         </menu>
         <menu id="HaQ-6o-JUp" userLabel="Pull">
             <items>
-                <menuItem title="Pull all remotes" id="b0y-3I-BtV">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                </menuItem>
                 <menuItem title="Pull current branch" id="4qY-ca-vZJ">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                </menuItem>
-                <menuItem isSeparatorItem="YES" id="kYh-cq-mS4"/>
-                <menuItem title="Pull all branches from remote" id="Rjh-fF-MI7">
                     <modifierMask key="keyEquivalentModifierMask"/>
                 </menuItem>
             </items>

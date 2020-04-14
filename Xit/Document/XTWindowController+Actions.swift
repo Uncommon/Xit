@@ -122,7 +122,13 @@ extension XTWindowController
   {
     let _: PullOpController? = startOperation()
   }
-  
+
+  @IBAction
+  func pullCurrentBranch(_ sender: AnyObject)
+  {
+    pull(sender)
+  }
+
   @IBAction
   func push(_: AnyObject)
   {

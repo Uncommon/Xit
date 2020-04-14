@@ -4,14 +4,9 @@ import Cocoa
 /// Runs a `fetch` operation.
 class FetchOpController: PasswordOpController
 {
-  enum RemoteOption
-  {
-    case all, currentBranch, named(String)
-  }
+  let remoteOption: RemoteOperationOption?
 
-  let remoteOption: RemoteOption?
-
-  init(remoteOption: RemoteOption, windowController: XTWindowController)
+  init(remoteOption: RemoteOperationOption, windowController: XTWindowController)
   {
     self.remoteOption = remoteOption
 
