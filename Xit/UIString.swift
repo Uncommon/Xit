@@ -140,45 +140,25 @@ struct UIString: RawRepresentable
       """
 
   static func author(_ name: String) -> UIString
-  {
-    return UIString(format: UIString.authorFormat, name)
-  }
+  { UIString(format: UIString.authorFormat, name) }
   static func checkOut(_ branch: String) -> UIString
-  {
-    return UIString(format: UIString.checkOutFormat, branch)
-  }
+  { UIString(format: UIString.checkOutFormat, branch) }
   static func committer(_ name: String) -> UIString
-  {
-    return UIString(format: UIString.committerFormat, name)
-  }
+  { UIString(format: UIString.committerFormat, name) }
   static func confirmPush(localBranch: String, remote: String) -> UIString
-  {
-    return UIString(format: UIString.confirmPushFormat, localBranch, remote)
-  }
+  { UIString(format: UIString.confirmPushFormat, localBranch, remote) }
   static func confirmRevert(_ name: String) -> UIString
-  {
-    return UIString(format: UIString.confirmRevertFormat, name)
-  }
+  { UIString(format: UIString.confirmRevertFormat, name) }
   static func confirmDelete(kind: String, name: String) -> UIString
-  {
-    return UIString(format: UIString.confirmDeleteFormat, kind, name)
-  }
+  { UIString(format: UIString.confirmDeleteFormat, kind, name) }
   static func createTracking(_ remoteBranch: String) -> UIString
-  {
-    return UIString(format: UIString.createTrackingFormat, remoteBranch)
-  }
+  { UIString(format: UIString.createTrackingFormat, remoteBranch) }
   static func merge(_ source: String, _ target: String) -> UIString
-  {
-    return UIString(format: UIString.mergeFormat, source, target)
-  }
+  { UIString(format: UIString.mergeFormat, source, target) }
   static func renamePrompt(_ branch: String) -> UIString
-  {
-    return UIString(format: UIString.renamePromptFormat, branch)
-  }
+  { UIString(format: UIString.renamePromptFormat, branch) }
   static func trackingMissingInfo(_ branch: String) -> UIString
-  {
-    return UIString(format: UIString.trackingMissingInfoFormat, branch)
-  }
+  { UIString(format: UIString.trackingMissingInfoFormat, branch) }
 
   static let newFileDeleted = ›"The new file will be deleted."
   
@@ -212,13 +192,9 @@ struct UIString: RawRepresentable
   static let buildStatusTemplate = "Builds for %@"
   
   static func authFailed(service: String, account: String) -> UIString
-  {
-    return UIString(format: UIString.authFailedTemplate, service, account)
-  }
+  { UIString(format: UIString.authFailedTemplate, service, account) }
   static func buildStatus(_ branch: String) -> UIString
-  {
-    return UIString(format: UIString.buildStatusTemplate, branch)
-  }
+  { UIString(format: UIString.buildStatusTemplate, branch) }
   
   // Pull request status
   static let approved = ›"Approved"
@@ -244,21 +220,13 @@ struct UIString: RawRepresentable
   static let invalidNameFormat = "The name %@ is not valid."
   
   static func gitError(_ error: Int32) -> UIString
-  {
-    return UIString(format: UIString.gitErrorFormat, error)
-  }
+  { UIString(format: UIString.gitErrorFormat, error) }
   static func commitNotFound(_ sha: String?) -> UIString
-  {
-    return UIString(format: UIString.commitNotFoundFormat, sha ?? "-")
-  }
+  { UIString(format: UIString.commitNotFoundFormat, sha ?? "-") }
   static func fileNotFound(_ file: String) -> UIString
-  {
-    return UIString(format: UIString.fileNotFoundFormat, file)
-  }
+  { UIString(format: UIString.fileNotFoundFormat, file) }
   static func invalidName(_ name: String) -> UIString
-  {
-    return UIString(format: UIString.invalidNameFormat, name)
-  }
+  { UIString(format: UIString.invalidNameFormat, name) }
   
   static let alreadyWriting = ›"A writing operation is already in progress."
   static let mergeInProgress = ›"A merge operation is already in progress."
