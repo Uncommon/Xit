@@ -307,6 +307,9 @@
             <items>
                 <menuItem title="Pull current branch" id="4qY-ca-vZJ">
                     <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="pullCurrentBranch:" target="-1" id="I4F-6T-QCG"/>
+                    </connections>
                 </menuItem>
             </items>
             <point key="canvasLocation" x="280" y="786"/>
@@ -319,7 +322,7 @@
                         <action selector="push:" target="-1" id="Mwe-35-78m"/>
                     </connections>
                 </menuItem>
-                <menuItem isSeparatorItem="YES" id="rlf-at-7T0"/>
+                <menuItem isSeparatorItem="YES" identifier="pushRemote" id="rlf-at-7T0"/>
                 <menuItem title="Push to remote..." id="zzk-jg-bI3">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>

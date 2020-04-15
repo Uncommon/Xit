@@ -108,6 +108,7 @@ struct UIString: RawRepresentable
   static let checkOutFormat = "Check out \"%@\""
   static let committerFormat = "%@ (committer)"
   static let confirmPushFormat = "Push local branch \"%1$@\" to remote \"%2$@\"?"
+  static let confirmPushAllFormat = "Push all branches that track %@?"
   static let confirmRevertFormat = "Are you sure you want to revert changes to %@?"
   static let confirmDeleteFormat = "Delete the %1$@ %2$@?"
   static let createTrackingFormat = "Create local branch tracking %@"
@@ -147,6 +148,8 @@ struct UIString: RawRepresentable
   { UIString(format: UIString.committerFormat, name) }
   static func confirmPush(localBranch: String, remote: String) -> UIString
   { UIString(format: UIString.confirmPushFormat, localBranch, remote) }
+  static func confirmPushAll(remote: String) -> UIString
+  { UIString(format: UIString.confirmPushAllFormat, remote) }
   static func confirmRevert(_ name: String) -> UIString
   { UIString(format: UIString.confirmRevertFormat, name) }
   static func confirmDelete(kind: String, name: String) -> UIString
@@ -204,15 +207,29 @@ struct UIString: RawRepresentable
 
   // Fetch/push/pull commands
   static let fetchCurrentUnavailable = ›"Fetch current branch"
+  static let pushCurrentUnavailable = ›"No tracking branch to push"
+  static let pullCurrentUnavailable = ›"No tracking branch to pull"
 
   static let fetchCurrentFormat = "Fetch \"%2$@/%1$@\""
   static let fetchRemoteFormat = "Fetch remote \"%@\""
+  static let pushCurrentFormat = "Push to \"%2$@/%1$@\""
+  static let pushRemoteFormat = "Push to any tracking branches on \"%@\""
+  static let pullCurrentFormat = "Pull from \"%2$@/%1@\""
+  static let pullRemoteFormat = "Pull tracking branches on \"%@\""
 
   static func fetchCurrent(branch: String, remote: String) -> UIString
   { .init(format: fetchCurrentFormat, branch, remote) }
   static func fetchRemote(_ remote: String) -> UIString
   { .init(format: fetchRemoteFormat, remote) }
-  
+  static func pushCurrent(branch: String, remote: String) -> UIString
+  { .init(format: pushCurrentFormat, branch, remote) }
+  static func pushRemote(_ remote: String) -> UIString
+  { .init(format: pushRemoteFormat, remote) }
+  static func pullCurrent(branch: String, remote: String) -> UIString
+  { .init(format: pullCurrentFormat, branch, remote) }
+  static func pullRemote(_ remote: String) -> UIString
+  { .init(format: pullRemoteFormat, remote) }
+
   // Repository errors
   static let gitErrorFormat = "An internal git error (%d) occurred."
   static let commitNotFoundFormat = "The commit %@ was not found."

@@ -2,7 +2,7 @@ import Foundation
 
 extension XTRepository: RemoteCommunication
 {
-  public func push(branch: LocalBranch,
+  public func push(branches: [LocalBranch],
                    remote: Remote,
                    callbacks: RemoteCallbacks) throws
   {
@@ -11,8 +11,9 @@ extension XTRepository: RemoteCommunication
 
     try performWriting {
       var result: Int32
+      let names = branches.map { $0.name }
 
-      result = [branch.name].withGitStringArray {
+      result = names.withGitStringArray {
         (refspecs) in
         return git_remote_callbacks.withCallbacks(callbacks) {
           (gitCallbacks) in

@@ -134,7 +134,27 @@ extension XTWindowController
   {
     let _: PushOpController? = startOperation()
   }
-  
+
+  @IBAction
+  func pushToRemote(_ sender: NSMenuItem)
+  {
+    let index = sender.tag
+    let remotes = repository.remoteNames()
+    guard (0..<remotes.count).contains(index)
+    else { return }
+
+    startOperation {
+      PushOpController(remoteOption: .named(remotes[index]),
+                       windowController: self)
+    }
+  }
+
+  @IBAction
+  func pullRemote(_ sender: NSMenuItem)
+  {
+    // TBI
+  }
+
   @IBAction
   func stash(_: AnyObject)
   {
@@ -251,8 +271,8 @@ extension XTWindowController: NSMenuItemValidation
   func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
   {
     guard let action = menuItem.action
-      else { return false }
-    var result = false
+    else { return false }
+    let result: Bool
     
     switch action {
       
@@ -283,25 +303,29 @@ extension XTWindowController: NSMenuItemValidation
       case #selector(self.stash(_:)):
         result = true
 
-      case #selector(self.newBranch(_:)):
+      case #selector(self.newBranch(_:)),
+           #selector(self.newTag(_:)),
+           #selector(self.newRemote(_:)):
         result = true
 
-      case #selector(self.newTag(_:)):
-        result = true
+      case #selector(self.pull(_:)),
+           #selector(self.pullCurrentBranch(_:)):
+        if let (branchName, remote) = trackingBranchInfo() {
+          menuItem.titleString = .pullCurrent(branch: branchName,
+                                              remote: remote)
+          result = true
+        }
+        else {
+          menuItem.titleString = .pullCurrentUnavailable
+          result = false
+        }
 
-      case #selector(self.newRemote(_:)):
-        result = true
-
-      case #selector(self.fetchAllRemotes(_:)),
-           #selector(self.pullAllRemotes(_:)):
+      case #selector(self.fetchAllRemotes(_:)):
         result = !repository.remoteNames().isEmpty
 
       case #selector(self.fetchCurrentBranch(_:)):
-        if let branchName = repository.currentBranch,
-           let branch = repository.localBranch(named: branchName),
-           let trackingBranch = branch.trackingBranch,
-           let remote = trackingBranch.remoteName {
-          menuItem.titleString = .fetchCurrent(branch: branch.name,
+        if let (branchName, remote) = trackingBranchInfo() {
+          menuItem.titleString = .fetchCurrent(branch: branchName,
                                                remote: remote)
           result = true
         }
@@ -310,11 +334,37 @@ extension XTWindowController: NSMenuItemValidation
           result = false
         }
 
-      case #selector(self.fetchRemote(_:)):
+      case #selector(self.fetchRemote(_:)),
+           #selector(self.pushToRemote(_:)):
         result = true
+
+      case #selector(self.push(_:)):
+        if let (branchName, remote) = trackingBranchInfo() {
+          menuItem.titleString = .pushCurrent(branch: branchName,
+                                              remote: remote)
+          result = true
+        }
+        else {
+          menuItem.titleString = .pushCurrentUnavailable
+          result = false
+        }
+
       default:
         result = false
     }
     return result
+  }
+
+  func trackingBranchInfo() -> (String, String)?
+  {
+    if let branchName = repository.currentBranch,
+       let branch = repository.localBranch(named: branchName),
+       let trackingBranch = branch.trackingBranch,
+       let remote = trackingBranch.remoteName {
+      return (branch.shortName, remote)
+    }
+    else {
+      return nil
+    }
   }
 }

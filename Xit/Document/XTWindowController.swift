@@ -151,22 +151,62 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     updateNavButtons()
   }
 
+  enum RemoteMenuType: CaseIterable
+  {
+    case fetch, push, pull
+
+    var identifier: NSUserInterfaceItemIdentifier
+    {
+      switch self {
+        case .fetch: return ¶"fetchRemote"
+        case .push:  return ¶"pushRemote"
+        case .pull:  return ¶"pullRemote"
+      }
+    }
+    var selector: Selector
+    {
+      switch self {
+        case .fetch: return #selector(XTWindowController.fetchRemote(_:))
+        case .push:  return #selector(XTWindowController.pushToRemote(_:))
+        case .pull:  return #selector(XTWindowController.pullRemote(_:))
+      }
+    }
+
+    func command(for remote: String) -> UIString
+    {
+      switch self {
+        case .fetch: return .fetchRemote(remote)
+        case .push:  return .pushRemote(remote)
+        case .pull:  return .pullRemote(remote)
+      }
+    }
+
+    static func of(_ menu: NSMenu) -> RemoteMenuType?
+    {
+      return menu.items.firstResult {
+        item in
+        guard let id = item.identifier
+        else { return nil }
+        return allCases.first { $0.identifier == id }
+      }
+    }
+  }
+
   func menuDidBeginTracking(_ note: Notification)
   {
-    let matchAction: (NSMenuItem) -> Bool = {
-      $0.action == #selector(self.fetchRemote(_:))
-    }
     guard self.window?.isMainWindow ?? false,
           let menu = note.object as? NSMenu,
-          menu.items.contains(where: { $0.identifier == ¶"fetchRemote" })
+          let type = RemoteMenuType.of(menu)
     else { return }
+    let matchAction: (NSMenuItem) -> Bool = { $0.action == type.selector }
 
     for item in menu.items.lazy.filter(matchAction) {
       menu.removeItem(item)
     }
+
     for (index, remote) in self.repository.remoteNames().enumerated() {
-      let item = NSMenuItem(titleString: .fetchRemote(remote),
-                            action: #selector(self.fetchRemote(_:)),
+      let item = NSMenuItem(titleString: type.command(for: remote),
+                            action: type.selector,
                             keyEquivalent: "")
 
       item.tag = index

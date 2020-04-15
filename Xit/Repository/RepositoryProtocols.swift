@@ -212,10 +212,10 @@ public struct PushTransferProgress
 public protocol RemoteCommunication: AnyObject
 {
   /// Pushes an update for the given branch.
-  /// - parameter branch: Local branch to push; must have a tracking branch set
+  /// - parameter branches: Local branches to push; must have a tracking branch set
   /// - parameter remote: Target remote to push to
   /// - parameter callbacks: Password and progress callbacks
-  func push(branch: LocalBranch,
+  func push(branches: [LocalBranch],
             remote: Remote,
             callbacks: RemoteCallbacks) throws
   
