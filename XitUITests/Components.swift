@@ -6,9 +6,17 @@ let XitApp = XCUIApplication(bundleIdentifier: "com.uncommonplace.Xit")
 enum Window
 {
   static let window = XitApp.windows["repoWindow"].firstMatch
+  static let remoteOpSegControl = window.toolbars.groups["remoteOps"]
+  static let pullButton = remoteOpSegControl.buttons.element(boundBy: 0)
+  static let pushButton = remoteOpSegControl.buttons.element(boundBy: 1)
+  static let fetchButton = remoteOpSegControl.buttons.element(boundBy: 2)
   static let titleLabel = window.staticTexts["titleLabel"]
   static let branchPopup = window.popUpButtons["branchPopup"]
   static let tabStatus = window.buttons["tabStatus"]
+  
+  static let pullMenu = XitApp.menus["pullPopup"]
+  static let pushMenu = XitApp.menus["pushPopup"]
+  static let fetchMenu = XitApp.menus["fetchPopup"]
 }
 
 enum PrefsWindow

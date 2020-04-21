@@ -277,6 +277,7 @@
                     </connections>
                 </menuItem>
             </items>
+            <accessibility identifier="stashPopup"/>
             <point key="canvasLocation" x="344" y="611.5"/>
         </menu>
         <menu id="BgB-tr-m3X" userLabel="Fetch">
@@ -301,6 +302,7 @@
                     </connections>
                 </menuItem>
             </items>
+            <accessibility identifier="fetchPopup"/>
             <point key="canvasLocation" x="279" y="659"/>
         </menu>
         <menu id="HaQ-6o-JUp" userLabel="Pull">
@@ -312,6 +314,7 @@
                     </connections>
                 </menuItem>
             </items>
+            <accessibility identifier="pullPopup"/>
             <point key="canvasLocation" x="280" y="786"/>
         </menu>
         <menu id="EXb-7Q-Zkm" userLabel="Push">
@@ -330,6 +333,7 @@
                     </connections>
                 </menuItem>
             </items>
+            <accessibility identifier="pushPopup"/>
             <point key="canvasLocation" x="258" y="933"/>
         </menu>
     </objects>
