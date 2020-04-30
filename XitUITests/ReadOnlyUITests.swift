@@ -175,7 +175,7 @@ class ReadOnlyUITests: XCTestCase
   {
     button.press(forDuration: 0.5)
     
-    XCTAssertTrue(button.isHittable)
+    XCTAssertTrue(menu.isHittable)
     XCTAssertEqual(menu.menuItems.count, itemTitles.count)
     
     for (index, title) in itemTitles.enumerated() {

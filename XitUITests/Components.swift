@@ -10,6 +10,8 @@ enum Window
   static let pullButton = remoteOpSegControl.buttons.element(boundBy: 0)
   static let pushButton = remoteOpSegControl.buttons.element(boundBy: 1)
   static let fetchButton = remoteOpSegControl.buttons.element(boundBy: 2)
+  static let progressSpinner = window.progressIndicators["spinner"]
+  static let proxyIcon = window.images["proxy"]
   static let titleLabel = window.staticTexts["titleLabel"]
   static let branchPopup = window.popUpButtons["branchPopup"]
   static let tabStatus = window.buttons["tabStatus"]
