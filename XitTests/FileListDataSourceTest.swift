@@ -42,6 +42,7 @@ class FileListDataSourceTest: XTTest
     var expectedCount = 11
     let history = CommitHistory<GitOID>()
     
+    repoUIController.repoController = GitRepositoryController(repository: repository)
     history.repository = repository
     objc_sync_enter(flds)
     flds.repoUIController = repoUIController
@@ -95,18 +96,19 @@ class FileListDataSourceTest: XTTest
     try! repository.stageAllFiles()
     _ = try! repository.commit(message: "commit", amend: false)
     
-    let repoUiController = FakeRepoUIController(repository: repository)
+    let repoUIController = FakeRepoUIController(repository: repository)
     let headCommit = GitCommit(sha: repository.headSHA!,
                                repository: repository.gitRepo)!
     
-    repoUiController.selection = CommitSelection(repository: repository,
-                                               commit: headCommit)
+    repoUIController.repoController = GitRepositoryController(repository: repository)
+    repoUIController.selection = CommitSelection(repository: repository,
+                                                 commit: headCommit)
     
     let outlineView = NSOutlineView()
     let flds = FileTreeDataSource(useWorkspaceList: false)
     
     objc_sync_enter(flds)
-    flds.repoUIController = repoUiController
+    flds.repoUIController = repoUIController
     objc_sync_exit(flds)
     waitForRepoQueue()
 

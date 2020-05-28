@@ -56,12 +56,7 @@ public class TaskQueue: NSObject
   @objc
   func wait()
   {
-    let semaphore = DispatchSemaphore(value: 0)
-    
-    queue.async {
-      semaphore.signal()
-    }
-    semaphore.wait()
+    WaitForQueue(queue)
   }
   
   @objc

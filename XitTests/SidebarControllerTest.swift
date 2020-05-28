@@ -35,7 +35,12 @@ class SidebarHandlerTest: XTTest
   override func setUp()
   {
     super.setUp()
+    
+    let controller = FakeRepoUIController(repository: repository)
+    
     handler.repo = repository
+    handler.repoUIController = controller
+    controller.repoController = GitRepositoryController(repository: repository)
   }
   
   func item(forBranch branch: String) -> SidebarItem?

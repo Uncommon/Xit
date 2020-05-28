@@ -12,6 +12,7 @@ class XTFileChangesDataSourceTest: XTTest
     let headCommit = GitCommit(sha: repository.headSHA!,
                                repository: repository.gitRepo)!
     
+    repoUIController.repoController = GitRepositoryController(repository: repository)
     repoUIController.selection = CommitSelection(repository: repository,
                                                  commit: headCommit)
     objc_sync_enter(dataSource)

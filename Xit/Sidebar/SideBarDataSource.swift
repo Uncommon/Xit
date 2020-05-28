@@ -167,7 +167,7 @@ class SideBarDataSource: NSObject
     
     for part in parts {
       guard let child = parent.child(matching: part)
-        else { break }
+      else { break }
       
       outline.expandItem(child)
       parent = child
