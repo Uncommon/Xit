@@ -265,6 +265,7 @@ struct UIString: RawRepresentable
   static let notFound = ›"The item was not found."
   static let unexpected = ›"An unexpected repository error occurred."
   static let workspaceDirty = ›"There are uncommitted changes."
+  static let pushToBare = ›"Pushing to a bare local repository is currently not supported."
 }
 
 extension UIString: Comparable

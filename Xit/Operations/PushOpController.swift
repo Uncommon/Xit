@@ -104,6 +104,16 @@ class PushOpController: PasswordOpController
     return true
   }
   
+  override func repoErrorMessage(for error: RepoError) -> UIString
+  {
+    if error.isGitError(GIT_EBAREREPO) {
+      return .pushToBare
+    }
+    else {
+      return super.repoErrorMessage(for: error)
+    }
+  }
+  
   func push(branches: [LocalBranch], remote: Remote)
   {
     tryRepoOperation {
