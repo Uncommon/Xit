@@ -83,12 +83,16 @@ public struct GitOID: OID, Hashable, Equatable
   
   public var sha: String
   {
-    let storage = UnsafeMutablePointer<Int8>.allocate(capacity: GitOID.shaLength)
+    let storage = UnsafeMutablePointer<Int8>.allocate(capacity: GitOID.shaLength + 1)
     var oid = self.oid
+    defer {
+      storage.deallocate()
+    }
     
     git_oid_fmt(storage, &oid)
-    return String(bytesNoCopy: storage, length: GitOID.shaLength,
-                  encoding: .ascii, freeWhenDone: true) ?? ""
+    // `git_oid_fmt()` doesn't add the terminator
+    (storage + GitOID.shaLength).pointee = 0
+    return String(cString: storage)
   }
   
   public func hash(into hasher: inout Hasher)
@@ -116,7 +120,7 @@ public struct GitOID: OID, Hashable, Equatable
   
   public var isZero: Bool
   {
-    return git_oid_iszero(unsafeOID()) == 1
+    return withUnsafeOID { git_oid_iszero($0) } == 1
   }
   
   public func equals(_ other: OID) -> Bool
@@ -127,12 +131,10 @@ public struct GitOID: OID, Hashable, Equatable
     return self == otherGitOID
   }
   
-  func unsafeOID() -> UnsafePointer<git_oid>
+  func withUnsafeOID<T>(_ block: (UnsafePointer<git_oid>) throws -> T) rethrows
+    -> T
   {
-    let ptr = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
-    
-    ptr.pointee = oid
-    return UnsafePointer<git_oid>(ptr)
+    return try withUnsafePointer(to: oid, block)
   }
 }
 

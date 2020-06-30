@@ -173,10 +173,13 @@ extension XTRepository: Tagging
       let signature = UnsafeMutablePointer<UnsafeMutablePointer<git_signature>?>
         .allocate(capacity: 1)
       let sigResult = git_signature_default(signature, gitRepo)
+      defer {
+        signature.deallocate()
+      }
       
       try RepoError.throwIfGitError(sigResult)
       guard let finalSig = signature.pointee
-        else { throw RepoError.unexpected }
+      else { throw RepoError.unexpected }
       
       let result = git_tag_create(&oid, gitRepo, name,
                                   commit.commit, finalSig, message, 0)

@@ -116,6 +116,9 @@ class GitRemote: Remote
     else { throw RepoError.unexpected }
     
     let problems = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
+    defer {
+      problems.deallocate()
+    }
     
     problems.pointee = git_strarray()
     

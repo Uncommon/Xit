@@ -65,7 +65,7 @@ class GitRevWalk: RevWalk
     guard let gitOID = oid as? GitOID
     else { return }
     
-    git_revwalk_push(walker, gitOID.unsafeOID())
+    _ = gitOID.withUnsafeOID { git_revwalk_push(walker, $0) }
   }
   
   public func next() -> OID?

@@ -69,8 +69,9 @@ extension XTRepository: Workspace
     else { throw RepoError.notFound }
     
     var target: OpaquePointer? = nil
-    let targetResult = git_object_lookup(&target, gitRepo, oid.unsafeOID(),
-                                         GIT_OBJECT_ANY)
+    let targetResult = oid.withUnsafeOID {
+      git_object_lookup(&target, gitRepo, $0, GIT_OBJECT_ANY)
+    }
     guard targetResult == 0,
           let finalTarget = target
     else { throw RepoError.notFound }
@@ -83,9 +84,11 @@ extension XTRepository: Workspace
     guard let oid = GitOID(sha: sha)
     else { throw RepoError.notFound }
     var object: OpaquePointer? = nil
-    let lookupResult = git_object_lookup_prefix(&object, gitRepo, oid.unsafeOID(),
-                                                Int(GIT_OID_RAWSZ),
-                                                GIT_OBJECT_ANY)
+    let lookupResult = oid.withUnsafeOID {
+      git_object_lookup_prefix(&object, gitRepo, $0,
+                               Int(GIT_OID_RAWSZ),
+                               GIT_OBJECT_ANY)
+    }
     guard lookupResult == 0,
           let finalObject = object
     else { throw RepoError.notFound }

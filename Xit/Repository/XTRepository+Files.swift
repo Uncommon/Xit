@@ -389,7 +389,9 @@ extension XTRepository
       guard let emptyOID = GitOID(sha: kEmptyTreeHash)
       else { return nil }
       var tree: OpaquePointer? = nil
-      let result = git_tree_lookup(&tree, repo.gitRepo, emptyOID.unsafeOID())
+      let result = emptyOID.withUnsafeOID {
+        git_tree_lookup(&tree, repo.gitRepo, $0)
+      }
       
       return (result == GIT_OK.rawValue) ? tree : nil
     }

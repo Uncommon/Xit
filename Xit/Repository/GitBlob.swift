@@ -50,7 +50,7 @@ public class GitBlob: Blob, OIDObject
     guard let oid = oid as? GitOID
     else { return nil }
     var blob: OpaquePointer?
-    let result = git_blob_lookup(&blob, repository, oid.unsafeOID())
+    let result = oid.withUnsafeOID { git_blob_lookup(&blob, repository, $0) }
     guard result == 0,
           let finalBlob = blob
     else { return nil }

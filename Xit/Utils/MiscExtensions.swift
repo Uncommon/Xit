@@ -154,7 +154,9 @@ extension Array
   /// elements.
   func firstResult<T>(_ predicate: (Element) -> T?) -> T?
   {
-    return lazy.compactMap(predicate).first
+    // We're not "actually escaping" because we immediately use and discard
+    // the result of `compactMap`.
+    return withoutActuallyEscaping(predicate) { lazy.compactMap($0).first }
   }
 
   func firstOfType<T>() -> T?
@@ -311,6 +313,33 @@ public func withArrayOfCStrings<R>(
     return body(cStrings)
   }
 }
+
+// Same as `withArrayOfCStrings()` but the callback has an inout parameter
+public func withMutableArrayOfCStrings<R>(
+    _ args: [String],
+    _ body: (inout [UnsafeMutablePointer<CChar>?]) -> R) -> R
+{
+  let argsCounts = Array(args.map { $0.utf8.count + 1 })
+  let argsOffsets = [ 0 ] + scan(argsCounts, 0, +)
+  let argsBufferSize = argsOffsets.last!
+  
+  var argsBuffer: [UInt8] = []
+  argsBuffer.reserveCapacity(argsBufferSize)
+  for arg in args {
+    argsBuffer.append(contentsOf: arg.utf8)
+    argsBuffer.append(0)
+  }
+  
+  return argsBuffer.withUnsafeMutableBufferPointer {
+    (argsBuffer) in
+    let ptr = UnsafeMutableRawPointer(argsBuffer.baseAddress!).bindMemory(
+              to: CChar.self, capacity: argsBuffer.count)
+    var cStrings: [UnsafeMutablePointer<CChar>?] = argsOffsets.map { ptr + $0 }
+    cStrings[cStrings.count-1] = nil
+    return body(&cStrings)
+  }
+}
+
 
 // from SwiftPrivate
 public func scan<S: Sequence, U>(

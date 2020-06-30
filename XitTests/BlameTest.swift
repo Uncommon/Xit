@@ -55,12 +55,20 @@ class BlameTest: XTTest
   
   func testCommitBlame()
   {
-    let headSHA = repository.headSHA!
-    let headCommit = GitCommit(sha: headSHA, repository: repository.gitRepo)!
-    let headOID = GitOID(sha: headSHA)!
+    guard let headSHA = repository.headSHA,
+          let headCommit = GitCommit(sha: headSHA, repository: repository.gitRepo),
+          let headOID = GitOID(sha: headSHA)
+    else {
+      XCTFail("setup failed")
+      return
+    }
     let commitModel = CommitSelection(repository: repository,
                                     commit: headCommit)
-    let commitBlame = commitModel.fileList.blame(for: FileName.blame)!
+    guard let commitBlame = commitModel.fileList.blame(for: FileName.blame)
+    else {
+      XCTFail("no blame")
+      return
+    }
     let lineStarts = [1, 3, 5, 6]
     let lineCounts = [2, 2, 1, 3]
     

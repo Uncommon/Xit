@@ -300,7 +300,9 @@ extension XTRepository
     guard let oid = commit.oid as? GitOID
     else { throw RepoError.unexpected }
     var annotated: OpaquePointer? = nil
-    let result = git_annotated_commit_lookup(&annotated, gitRepo, oid.unsafeOID())
+    let result = oid.withUnsafeOID {
+      git_annotated_commit_lookup(&annotated, gitRepo, $0)
+    }
     
     if result != GIT_OK.rawValue {
       throw RepoError.gitError(result)
@@ -346,6 +348,9 @@ extension XTRepository
     
     let preference =
           UnsafeMutablePointer<git_merge_preference_t>.allocate(capacity: 1)
+    defer {
+      preference.deallocate()
+    }
     
     if let fastForward = fastForward {
       preference.pointee = fastForward ? GIT_MERGE_PREFERENCE_FASTFORWARD_ONLY
@@ -361,6 +366,7 @@ extension XTRepository
     
     defer {
       git_annotated_commit_free(annotated)
+      analysis.deallocate()
     }
     
     let result = withUnsafeMutablePointer(to: &annotated) {
