@@ -23,7 +23,7 @@ class FakeRepoUIController: RepositoryUIController
 
 class FileListDataSourceTest: XTTest
 {
-  func testHistoricFileList()
+  func testHistoricFileList() throws
   {
     let text = "some text"
     
@@ -31,9 +31,9 @@ class FileListDataSourceTest: XTTest
       let fileName = "file_\(n).txt"
       let filePath = repoPath +/ fileName
       
-      try! text.write(toFile: filePath, atomically: true, encoding: .ascii)
-      try! repository.stageAllFiles()
-      try! repository.commit(message: "commit", amend: false)
+      try text.write(toFile: filePath, atomically: true, encoding: .ascii)
+      try repository.stageAllFiles()
+      try repository.commit(message: "commit", amend: false)
     }
   
     let outlineView = NSOutlineView.init()
@@ -72,7 +72,7 @@ class FileListDataSourceTest: XTTest
     return CFAbsoluteTimeGetCurrent() < deadline
   }
   
-  func testMulipleFileList()
+  func testMulipleFileList() throws
   {
     let text = "some text"
     
@@ -81,23 +81,24 @@ class FileListDataSourceTest: XTTest
         let path = "dir_\(i)/subdir_\(j)"
         let fullPath = repoPath +/ path
         
-        try! FileManager.default.createDirectory(atPath: fullPath,
-                                                 withIntermediateDirectories: true,
-                                                 attributes: nil)
+        try FileManager.default.createDirectory(atPath: fullPath,
+                                                withIntermediateDirectories: true,
+                                                attributes: nil)
       }
     }
-    try! FileManager.default.removeItem(atPath: file1Path)
+    try FileManager.default.removeItem(atPath: file1Path)
     
     for n in 0..<12 {
       let file = "\(repoPath!)/dir_\(n%2)/subdir_\(n%3)/file_\(n).txt"
       
-      try! text.write(toFile: file, atomically: true, encoding: .ascii)
+      try text.write(toFile: file, atomically: true, encoding: .ascii)
     }
-    try! repository.stageAllFiles()
-    _ = try! repository.commit(message: "commit", amend: false)
+    try repository.stageAllFiles()
+    _ = try repository.commit(message: "commit", amend: false)
     
     let repoUIController = FakeRepoUIController(repository: repository)
-    let headCommit = GitCommit(sha: repository.headSHA!,
+    let headSHA = try XCTUnwrap(repository.headSHA)
+    let headCommit = GitCommit(sha: headSHA,
                                repository: repository.gitRepo)!
     
     repoUIController.repoController = GitRepositoryController(repository: repository)

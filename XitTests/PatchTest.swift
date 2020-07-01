@@ -9,16 +9,18 @@ class PatchTest: XCTestCase
   var loremText, lorem2Text: String!
   var patch: Patch!
 
-  override func setUp()
+  override func setUpWithError() throws
   {
+    try super.setUpWithError()
+
     loremURL = testBundle.url(forResource: "lorem",
                               withExtension: "txt")!
     lorem2URL = testBundle.url(forResource: "lorem2",
                                withExtension: "txt")!
-    loremData = try! Data(contentsOf: loremURL)
-    loremText = String(data: loremData, encoding: .utf8)!
-    lorem2Data = try! Data(contentsOf: lorem2URL)
-    lorem2Text = String(data: lorem2Data, encoding: .utf8)!
+    loremData = try Data(contentsOf: loremURL)
+    loremText = try XCTUnwrap(String(data: loremData, encoding: .utf8))
+    lorem2Data = try Data(contentsOf: lorem2URL)
+    lorem2Text = try XCTUnwrap(String(data: lorem2Data, encoding: .utf8))
     patch = GitPatch(oldData: loremData, newData: lorem2Data)
   }
 

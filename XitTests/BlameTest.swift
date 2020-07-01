@@ -53,22 +53,14 @@ class BlameTest: XTTest
     commit(lines: elements3, message: "third")
   }
   
-  func testCommitBlame()
+  func testCommitBlame() throws
   {
-    guard let headSHA = repository.headSHA,
-          let headCommit = GitCommit(sha: headSHA, repository: repository.gitRepo),
-          let headOID = GitOID(sha: headSHA)
-    else {
-      XCTFail("setup failed")
-      return
-    }
+    let headSHA = try XCTUnwrap(repository.headSHA)
+    let headCommit = try XCTUnwrap(GitCommit(sha: headSHA, repository: repository.gitRepo))
+    let headOID = try XCTUnwrap(GitOID(sha: headSHA))
     let commitModel = CommitSelection(repository: repository,
                                     commit: headCommit)
-    guard let commitBlame = commitModel.fileList.blame(for: FileName.blame)
-    else {
-      XCTFail("no blame")
-      return
-    }
+    let commitBlame = try XCTUnwrap(commitModel.fileList.blame(for: FileName.blame))
     let lineStarts = [1, 3, 5, 6]
     let lineCounts = [2, 2, 1, 3]
     
@@ -78,7 +70,7 @@ class BlameTest: XTTest
     XCTAssertEqual(commitBlame.hunks[2].finalLine.oid as! GitOID, headOID)
   }
   
-  func testStagingBlame()
+  func testStagingBlame() throws
   {
     var elements4 = elements3
     
@@ -86,8 +78,8 @@ class BlameTest: XTTest
     
     let fourthLines = elements4.joined(separator: "\n")
     
-    try! fourthLines.write(toFile: blamePath, atomically: true, encoding: .ascii)
-    try! repository.stageAllFiles()
+    try fourthLines.write(toFile: blamePath, atomically: true, encoding: .ascii)
+    try repository.stageAllFiles()
     
     var elements5 = elements4
     
@@ -95,10 +87,11 @@ class BlameTest: XTTest
     
     let fifthLines = elements5.joined(separator: "\n")
     
-    try! fifthLines.write(toFile: blamePath, atomically: true, encoding: .ascii)
+    try fifthLines.write(toFile: blamePath, atomically: true, encoding: .ascii)
 
     let stagingModel = StagingSelection(repository: repository)
-    let unstagedBlame = stagingModel.unstagedFileList.blame(for: FileName.blame)!
+    let unstagedBlame = try XCTUnwrap(stagingModel.unstagedFileList.blame(for: FileName.blame),
+                                      "can't get unstaged blame")
     let unstagedStarts = [1, 2, 3, 5, 6, 8]
     
     XCTAssertEqual(unstagedBlame.hunks.count, 6)
@@ -106,11 +99,8 @@ class BlameTest: XTTest
     XCTAssertTrue(unstagedBlame.hunks.first?.finalLine.oid.isZero ?? false)
     XCTAssertTrue(unstagedBlame.hunks.last?.finalLine.oid.isZero ?? false)
     
-    guard let stagedBlame = stagingModel.fileList.blame(for: FileName.blame)
-    else {
-      XCTFail("can't get staged blame")
-      return
-    }
+    let stagedBlame = try XCTUnwrap(stagingModel.fileList.blame(for: FileName.blame),
+                                    "can't get staged blame")
     let stagedStarts = [1, 2, 3, 5, 6]
     
     XCTAssertEqual(stagedBlame.hunks.count, 5)

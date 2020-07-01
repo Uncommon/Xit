@@ -73,25 +73,25 @@ class SidebarHandlerTest: XTTest
     XCTAssertFalse(checkDeleteBranch(named: "master"))
   }
   
-  func testDeleteOtherBranch()
+  func testDeleteOtherBranch() throws
   {
-    XCTAssertNoThrow(_ = try repository.createBranch(named: "other",
-                                                     target: "refs/heads/master"))
+    _ = try repository.createBranch(named: "other",
+                                    target: "refs/heads/master")
     XCTAssertTrue(checkDeleteBranch(named: "other"))
   }
 
-  func makeTwoStashes()
+  func makeTwoStashes() throws
   {
     XCTAssertTrue(writeTextToFile1("second text"))
-    try! repository.saveStash(name: "s1",
-                              keepIndex: false,
-                              includeUntracked: false,
-                              includeIgnored: true)
+    try repository.saveStash(name: "s1",
+                             keepIndex: false,
+                             includeUntracked: false,
+                             includeIgnored: true)
     XCTAssertTrue(writeTextToFile1("third text"))
-    try! repository.saveStash(name: "s2",
-                              keepIndex: false,
-                              includeUntracked: false,
-                              includeIgnored: true)
+    try repository.saveStash(name: "s2",
+                             keepIndex: false,
+                             includeUntracked: false,
+                             includeIgnored: true)
   }
   
   /// Checks that the remaining stashes have the expected names
@@ -106,11 +106,11 @@ class SidebarHandlerTest: XTTest
   }
   
   func doStashAction(index: UInt, expectedRemains: [String],
-                     expectedText: String, action: () -> Void)
+                     expectedText: String, action: () -> Void) throws
   {
     var expected = composeStashes([ "s2", "s1" ])
   
-    makeTwoStashes()
+    try makeTwoStashes()
     XCTAssertEqual(currentStashes(), expected)
     
     handler.selectedItem = StashSidebarItem(title: expected[Int(index)])
@@ -121,61 +121,57 @@ class SidebarHandlerTest: XTTest
     expected = composeStashes(expectedRemains)
     XCTAssertEqual(currentStashes(), expected)
     
-    guard let text = try? String(contentsOfFile: file1Path, encoding: .ascii)
-    else {
-      XCTFail()
-      return
-    }
+    let text = try String(contentsOfFile: file1Path, encoding: .ascii)
     
     XCTAssertEqual(text, expectedText)
   }
   
-  func testPopStash1()
+  func testPopStash1() throws
   {
-    doStashAction(index: 1,
-                  expectedRemains: [ "s2" ],
-                  expectedText: "second text",
-                  action: { handler.popStash() })
+    try doStashAction(index: 1,
+                      expectedRemains: [ "s2" ],
+                      expectedText: "second text",
+                      action: { handler.popStash() })
   }
   
-  func testPopStash2()
+  func testPopStash2() throws
   {
-    doStashAction(index: 0,
-                  expectedRemains: [ "s1" ],
-                  expectedText: "third text",
-                  action: { handler.popStash() })
+    try doStashAction(index: 0,
+                      expectedRemains: [ "s1" ],
+                      expectedText: "third text",
+                      action: { handler.popStash() })
   }
   
-  func testApplyStash1()
+  func testApplyStash1() throws
   {
-    doStashAction(index: 1,
-                  expectedRemains: [ "s2", "s1" ],
-                  expectedText: "second text",
-                  action: { handler.applyStash() })
+    try doStashAction(index: 1,
+                      expectedRemains: [ "s2", "s1" ],
+                      expectedText: "second text",
+                      action: { handler.applyStash() })
   }
   
-  func testApplyStash2()
+  func testApplyStash2() throws
   {
-    doStashAction(index: 0,
-                  expectedRemains: [ "s2", "s1" ],
-                  expectedText: "third text",
-                  action: { handler.applyStash() })
+    try doStashAction(index: 0,
+                      expectedRemains: [ "s2", "s1" ],
+                      expectedText: "third text",
+                      action: { handler.applyStash() })
   }
   
-  func testDropStash1()
+  func testDropStash1() throws
   {
-    doStashAction(index: 1,
-                  expectedRemains: [ "s2" ],
-                  expectedText: "some text",
-                  action: { handler.dropStash() })
+    try doStashAction(index: 1,
+                      expectedRemains: [ "s2" ],
+                      expectedText: "some text",
+                      action: { handler.dropStash() })
   }
   
-  func testDropStash2()
+  func testDropStash2() throws
   {
-    doStashAction(index: 0,
-                  expectedRemains: [ "s1" ],
-                  expectedText: "some text",
-                  action: { handler.dropStash() })
+    try doStashAction(index: 0,
+                      expectedRemains: [ "s1" ],
+                      expectedText: "some text",
+                      action: { handler.dropStash() })
   }
   
   func testMergeText()

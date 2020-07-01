@@ -6,18 +6,18 @@ let tagName = "testTag"
 
 class XTTagTest: XTTest
 {
-  func testAnnotatedTag()
+  func testAnnotatedTag() throws
   {
-    _ = try! repository.executeGit(args: ["tag", "-a", tagName, "-m", message],
-                                   writes: true)
-    checkTag(hasMessage: true)
+    _ = try repository.executeGit(args: ["tag", "-a", tagName, "-m", message],
+                                  writes: true)
+    try checkTag(hasMessage: true)
   }
   
-  func testLightweightTag()
+  func testLightweightTag() throws
   {
-    _ = try! repository.executeGit(args: ["tag", tagName],
-                                   writes: true)
-    checkTag(hasMessage: false)
+    _ = try repository.executeGit(args: ["tag", tagName],
+                                  writes: true)
+    try checkTag(hasMessage: false)
   }
   
   // The message comes through with an extra newline at the end
@@ -27,24 +27,20 @@ class XTTagTest: XTTest
            .trimmingCharacters(in: CharacterSet.newlines)
   }
   
-  func checkTag(hasMessage: Bool)
+  func checkTag(hasMessage: Bool) throws
   {
-    guard let tag = GitTag(repository: repository, name:tagName)
-    else {
-      XCTFail("tag not found")
-      return
-    }
+    let tag = try XCTUnwrap(GitTag(repository: repository, name:tagName),
+                            "tag not found")
+
     XCTAssertNotNil(tag.targetOID)
     if hasMessage {
       XCTAssertEqual(trimmedMessage(tag: tag), message)
     }
     
-    guard let fullTag = GitTag(repository: repository,
-                               name: "refs/tags/" + tagName)
-    else {
-      XCTFail("tag not found by full name")
-      return
-    }
+    let fullTag = try XCTUnwrap(GitTag(repository: repository,
+                                       name: "refs/tags/" + tagName),
+                                "tag not found by full name")
+
     XCTAssertNotNil(fullTag.targetOID)
     if hasMessage {
       XCTAssertEqual(trimmedMessage(tag: fullTag), message)

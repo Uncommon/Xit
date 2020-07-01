@@ -66,16 +66,16 @@ class XTTest: XCTestCase
     return repo
   }
   
-  override func setUp()
+  override func setUpWithError() throws
   {
-    super.setUp()
-    
+    try super.setUpWithError()
+
     repoPath = NSString.path(withComponents: ["private",
                                               NSTemporaryDirectory(),
                                               "testRepo"])
-    repository = XTTest.createRepo(atPath: repoPath)
+    repository = try XCTUnwrap(XTTest.createRepo(atPath: repoPath))
     repoController = GitRepositoryController(repository: repository)
-    addInitialRepoContent()
+    try addInitialRepoContent()
   }
   
   override func tearDown()
@@ -115,7 +115,7 @@ class XTTest: XCTestCase
     repository.controller?.waitForQueue()
   }
   
-  func addInitialRepoContent()
+  func addInitialRepoContent() throws
   {
     XCTAssertTrue(commit(newTextFile: FileName.file1, content: "some text"))
   }

@@ -3,7 +3,7 @@ import XCTest
 
 class BranchTest: XTTest
 {
-  func testBranchNames()
+  func testBranchNames() throws
   {
     let remoteName = "origin"
     
@@ -12,36 +12,22 @@ class BranchTest: XTTest
     try? FileManager.default.removeItem(atPath: remoteRepoPath)
 
     // Remote must have the same content so the fetch will succeed
-    XCTAssertNoThrow(
-      try FileManager.default.copyItem(atPath: repoPath, toPath: remoteRepoPath))
-    XCTAssertNoThrow(
-      try repository.addRemote(named: remoteName,
-                               url: URL(fileURLWithPath: remoteRepoPath)))
+    try FileManager.default.copyItem(atPath: repoPath, toPath: remoteRepoPath)
+    try repository.addRemote(named: remoteName,
+                               url: URL(fileURLWithPath: remoteRepoPath))
     
-    guard let remote = repository.remote(named: "origin")
-    else {
-      XCTFail("can't get remote")
-      return
-    }
+    let remote = try XCTUnwrap(repository.remote(named: "origin"), "can't get remote")
     let options = FetchOptions(downloadTags: false,
                                pruneBranches: false,
                                callbacks: RemoteCallbacks(passwordBlock: nil,
                                                           downloadProgress: nil,
                                                           uploadProgress: nil))
     
-    XCTAssertNoThrow(try repository.fetch(remote: remote, options: options))
+    try repository.fetch(remote: remote, options: options)
 
-    guard let localBranch = repository.localBranch(named: "master")
-    else {
-      XCTFail("can't get local branch")
-      return
-    }
-    guard let remoteBranch = repository.remoteBranch(named: "master",
-                                                     remote: "origin")
-    else {
-      XCTFail("can't get remote branch")
-      return
-    }
+    let localBranch = try XCTUnwrap(repository.localBranch(named: "master"))
+    let remoteBranch = try XCTUnwrap(repository.remoteBranch(named: "master",
+                                                             remote: "origin"))
     
     XCTAssertEqual(localBranch.name, "refs/heads/master")
     XCTAssertEqual(localBranch.shortName, "master")

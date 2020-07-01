@@ -9,11 +9,11 @@ class StringExtensionsTest: XCTestCase
     XCTAssertEqual("embiggen".droppingPrefix("em"), "biggen")
   }
   
-  func testSplitRefName()
+  func testSplitRefName() throws
   {
     XCTAssertNil("none".splitRefName())
     
-    let (prefix, name) = "refs/heads/spunk".splitRefName()!
+    let (prefix, name) = try XCTUnwrap("refs/heads/spunk".splitRefName())
     
     XCTAssertEqual(prefix, "refs/heads/")
     XCTAssertEqual(name, "spunk")

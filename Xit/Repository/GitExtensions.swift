@@ -196,7 +196,7 @@ extension Array where Element == String
   /// not produce the necessary type.
   /// - parameter block: The block called with the resulting `git_strarray`. To
   /// use this array outside the block, use `git_strarray_copy()`.
-  func withGitStringArray<T>(block: (git_strarray) -> T) -> T
+  func withGitStringArray<T>(block: (git_strarray) throws -> T) rethrows -> T
   {
     let lengths = map { $0.utf8.count + 1 }
     let offsets = [0] + scan(lengths, 0, +)
@@ -210,7 +210,7 @@ extension Array where Element == String
     
     let bufferSize = buffer.count
     
-    return buffer.withUnsafeMutableBufferPointer {
+    return try buffer.withUnsafeMutableBufferPointer {
       (pointer) -> T in
       let boundPointer = UnsafeMutableRawPointer(pointer.baseAddress!)
                          .bindMemory(to: Int8.self, capacity: bufferSize)
@@ -218,12 +218,12 @@ extension Array where Element == String
             offsets.map { boundPointer + $0 }
       
       cStrings[cStrings.count-1] = nil
-      return cStrings.withUnsafeMutableBufferPointer {
+      return try cStrings.withUnsafeMutableBufferPointer {
         (arrayBuffer) -> T in
         let strarray = git_strarray(strings: arrayBuffer.baseAddress,
                                     count: count)
         
-        return block(strarray)
+        return try block(strarray)
       }
     }
   }

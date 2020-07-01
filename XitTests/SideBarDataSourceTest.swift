@@ -26,16 +26,14 @@ class SidebarDataSourceTest: XTTest
   }
 
   /// Add a tag and make sure it gets loaded correctly
-  func testTags()
+  func testTags() throws
   {
     guard let headOID = repository.headSHA.flatMap({ repository.oid(forSHA: $0) })
     else {
       XCTFail("no head")
       return
     }
-    try! repository.createTag(name: "t1",
-                              targetOID: headOID,
-                              message: "msg")
+    try repository.createTag(name: "t1", targetOID: headOID, message: "msg")
     sbds.reload()
     waitForRepoQueue()
     
@@ -79,18 +77,18 @@ class SidebarDataSourceTest: XTTest
   }
   
   /// Create two stashes and check that they are listed
-  func testStashes()
+  func testStashes() throws
   {
     XCTAssertTrue(writeTextToFile1("second text"))
-    try! repository.saveStash(name: "s1",
-                              keepIndex: false,
-                              includeUntracked: true,
-                              includeIgnored: true)
+    try repository.saveStash(name: "s1",
+                             keepIndex: false,
+                             includeUntracked: true,
+                             includeIgnored: true)
     XCTAssertTrue(writeTextToFile1("third text"))
-    try! repository.saveStash(name: "s2",
-                              keepIndex: false,
-                              includeUntracked: true,
-                              includeIgnored: true)
+    try repository.saveStash(name: "s2",
+                             keepIndex: false,
+                             includeUntracked: true,
+                             includeIgnored: true)
     
     sbds.reload()
     waitForRepoQueue()
@@ -102,23 +100,21 @@ class SidebarDataSourceTest: XTTest
   }
   
   /// Check that a remote and its branches are displayed correctly
-  func testRemotes()
+  func testRemotes() throws
   {
     makeRemoteRepo()
     
     let remoteName = "origin"
     
-    XCTAssertNoThrow(try repository.checkOut(branch: "master"))
+    try repository.checkOut(branch: "master")
     XCTAssertTrue(repository.createBranch("b1"))
-    XCTAssertNoThrow(
-        try repository.addRemote(named: remoteName,
-                                 url: URL(fileURLWithPath: remoteRepoPath)))
+    try repository.addRemote(named: remoteName,
+                             url: URL(fileURLWithPath: remoteRepoPath))
     
     let configArgs = ["config", "receive.denyCurrentBranch", "ignore"]
     
-    XCTAssertNoThrow(try remoteRepository.executeGit(args: configArgs,
-                                                     writes: false))
-    XCTAssertNoThrow(try repository.push(remote: "origin"))
+    _ = try remoteRepository.executeGit(args: configArgs, writes: false)
+    try repository.push(remote: "origin")
     
     sbds.reload()
     waitForRepoQueue()
@@ -141,25 +137,22 @@ class SidebarDataSourceTest: XTTest
     }
   }
   
-  func testSubmodules()
+  func testSubmodules() throws
   {
     let repoParentPath = (repoPath as NSString).deletingLastPathComponent
     let sub1Path = repoParentPath.appending(pathComponent: "repo1")
     let sub2Path = repoParentPath.appending(pathComponent: "repo2")
     
     for path in [sub1Path, sub2Path] {
-      guard let subRepo = XTTest.createRepo(atPath: path)
-      else {
-        XCTFail("Couldn't create repository for submodule")
-        return
-      }
+      let subRepo = try XCTUnwrap(XTTest.createRepo(atPath: path))
       
       self.commit(newTextFile: FileName.file1, content: "text", repository: subRepo)
       wait(for: subRepo)
     }
   
-    XCTAssertNoThrow(try repository.addSubmodule(path: "sub1", url: "../repo1"))
-    XCTAssertNoThrow(try repository.addSubmodule(path: "sub2", url: "../repo2"))
+    try repository.addSubmodule(path: "sub1", url: "../repo1")
+    try repository.addSubmodule(path: "sub2", url: "../repo2")
+    XCTAssertEqual(repository.submodules().count, 2, "wrong submodule count")
     guard repository.submodules().count == 2
     else { return }
     
