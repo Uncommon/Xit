@@ -90,9 +90,25 @@ class ReadOnlyUITests: XCTestCase
     XCTAssertTrue(HistoryList.row(13).isSelected)
   }
   
+  func ensureTabBarVisible()
+  {
+    let menuBar = XitApp.menuBars
+    let menuItem = menuBar.menuItems["toggleTabBar:"]
+    
+    menuBar.menuBarItems["View"].click()
+    if (menuItem.exists) {
+      menuItem.click()
+    }
+    else {
+      XitApp.typeKey(.escape, modifierFlags: [])
+    }
+  }
+  
   /// Status in window tab hides and shows in response to toggling the preference
   func testTabWorkspaceStatus()
   {
+    ensureTabBarVisible()
+    
     PrefsWindow.open()
     if PrefsWindow.tabStatusCheck.value as? Int == 0 {
       PrefsWindow.tabStatusCheck.click()
