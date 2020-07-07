@@ -50,10 +50,40 @@ class TestRepoEnvironment
       return false
     }
     
-    git.run(args: ["remote", "add", "-f", remoteName,
-                   remotePath.appending(pathComponent: ".git")])
+    git.run(args: ["remote", "add", "-f", remoteName, remotePath])
     remoteGit = GitCLI(repoURL: remoteURL)
     
+    return true
+  }
+  
+  /// Clones the main repository as a bare repository, and adds that as a remote.
+  func makeBareRemote(named remoteName: String) -> Bool
+  {
+    let remoteParent = tempDir.url.path + ".origin"
+    
+    remotePath = remoteParent +/ repo.rawValue + ".git"
+    do {
+      if FileManager.default.fileExists(atPath: remotePath) {
+        try FileManager.default.removeItem(atPath: remotePath)
+      }
+      try FileManager.default.createDirectory(atPath: remotePath,
+                                              withIntermediateDirectories: true,
+                                              attributes: nil)
+    }
+    catch let error as NSError {
+      XCTFail("Could not create parent directory: \(error.description)")
+      return false
+    }
+    remoteURL = URL(fileURLWithPath: remotePath)
+    
+    // A special git runner is needed so it has the right working directory
+    let cloneRunner = GitCLI(repoURL: URL(fileURLWithPath: remoteParent,
+                                          isDirectory: true))
+
+    cloneRunner.run(args: ["clone", "--bare", git.runner.workingDir])
+    git.run(args: ["remote", "add", "-f", remoteName, remotePath])
+    remoteGit = GitCLI(repoURL: remoteURL)
+
     return true
   }
   
