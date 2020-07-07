@@ -235,16 +235,19 @@ struct UIString: RawRepresentable
   static let commitNotFoundFormat = "The commit %@ was not found."
   static let fileNotFoundFormat = "The file %@ was not found."
   static let invalidNameFormat = "The name %@ is not valid."
-  
+  static let noRemoteBranchesFormat = "No branches found on \"%@\" to push to."
+
   static func gitError(_ error: Int32) -> UIString
-  { UIString(format: UIString.gitErrorFormat, error) }
+  { .init(format: UIString.gitErrorFormat, error) }
   static func commitNotFound(_ sha: String?) -> UIString
-  { UIString(format: UIString.commitNotFoundFormat, sha ?? "-") }
+  { .init(format: UIString.commitNotFoundFormat, sha ?? "-") }
   static func fileNotFound(_ file: String) -> UIString
-  { UIString(format: UIString.fileNotFoundFormat, file) }
+  { .init(format: UIString.fileNotFoundFormat, file) }
   static func invalidName(_ name: String) -> UIString
-  { UIString(format: UIString.invalidNameFormat, name) }
-  
+  { .init(format: UIString.invalidNameFormat, name) }
+  static func noRemoteBranches(_ remote: String) -> UIString
+  { .init(format: UIString.noRemoteBranchesFormat, remote) }
+
   static let alreadyWriting = ›"A writing operation is already in progress."
   static let mergeInProgress = ›"A merge operation is already in progress."
   static let cherryPickInProgress = ›"A cherry-pick operation is already in progress."

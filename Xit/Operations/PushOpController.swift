@@ -70,7 +70,11 @@ class PushOpController: PasswordOpController
         }
         guard !localTrackingBranches.isEmpty
         else {
-          // alert: no branches track that remote
+          let alert = NSAlert()
+          
+          alert.messageString = .noRemoteBranches(remoteName)
+          alert.beginSheetModal(for: windowController!.window!,
+                                completionHandler: nil)
           return
         }
 
