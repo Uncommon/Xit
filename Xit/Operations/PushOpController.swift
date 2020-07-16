@@ -68,6 +68,7 @@ class PushOpController: PasswordOpController
         let localTrackingBranches = repository.localBranches.filter {
           $0.trackingBranch?.remoteName == remoteName
         }
+        
         guard !localTrackingBranches.isEmpty
         else {
           let alert = NSAlert()
