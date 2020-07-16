@@ -34,7 +34,8 @@ enum PrefsWindow
     
     menuBar.menuBarItems["Xit"].click()
     menuBar.menuItems["Preferences…"].click()
-    XCTAssertTrue(window.waitForExistence(timeout: 1.0), file: file, line: line)
+    XCTAssertTrue(window.waitForExistence(timeout: 1.0),
+                  "Preferences window did not open", file: file, line: line)
   }
   
   static func close()
@@ -74,6 +75,13 @@ enum Sidebar
       XCTAssertEqual(label, branch,
                      "item \(index) is '\(label)' instead of '\(branch)'")
     }
+  }
+  
+  static func statusIndicator(branch: String) -> XCUIElement
+  {
+    let cell = Sidebar.list.cells.containing(.staticText, identifier: branch)
+    
+    return cell.buttons["workspaceStatus"]
   }
 }
 

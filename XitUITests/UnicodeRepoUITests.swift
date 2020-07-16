@@ -53,17 +53,24 @@ class UnicodeRepoUITests: XCTestCase
     XCTAssertTrue(statusIndicator.exists)
     XCTAssertEqual(statusIndicator.title, "↓1")
   }
+}
+
+class PushTests: UnicodeRepoUITests
+{
+  let remoteName = "twin"
+  let newFileName = "newfile.txt"
+
+  var statusIndicator: XCUIElement { Sidebar.statusIndicator(branch: "master") }
   
-  func testPushRemote()
+  override func setUp()
   {
-    let remoteName = "twin"
-    let newFileName = "newfile.txt"
+    super.setUp()
     
     XCTAssert(env.makeBareRemote(named: remoteName))
     // Track the remote branch
     env.git.run(args: ["branch", "-u", "\(remoteName)/master"])
     
-    // Add a commit so the remote is ahead
+    // Add a commit so the local branch is ahead
     env.write("some content", to: newFileName)
     env.git.run(args: ["add", newFileName])
     // Use -c because for some reason it doesn't pick up the global config
@@ -73,17 +80,33 @@ class UnicodeRepoUITests: XCTestCase
     ])
     
     env.open()
+  }
+  
+  func localBranchIsAhead() -> Bool
+  {
+    return statusIndicator.exists && statusIndicator.title == "↑1"
+  }
+  
+  func testPushDefault()
+  {
+    XCTAssertTrue(localBranchIsAhead())
     
-    let masterCell = Sidebar.list.cells
-                            .containing(.staticText, identifier: "master")
-    let statusIndicator = masterCell.buttons["workspaceStatus"]
+    Window.pushButton.click()
     
-    // Local branch is ahead
-    XCTAssertTrue(statusIndicator.exists)
-    XCTAssertEqual(statusIndicator.title, "↑1")
-
+    Window.window.sheets.buttons["Push"].click()
+    // Wait for the progress spinner to go away
+    XCTAssertTrue(Window.proxyIcon.waitForExistence(timeout: 1.0))
+    
+    XCTWaiter(delegate: self).wait(for: [absence(of: statusIndicator)], timeout: 1.0)
+  }
+  
+  func testPushAnyTracking()
+  {
+    XCTAssertTrue(localBranchIsAhead())
+    
     Window.pushButton.press(forDuration: 0.5)
     Window.pushMenu.menuItems["Push to any tracking branches on \"\(remoteName)\""].click()
+    
     Window.window.sheets.buttons["Push"].click()
     // Wait for the progress spinner to go away
     XCTAssertTrue(Window.proxyIcon.waitForExistence(timeout: 1.0))
