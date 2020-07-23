@@ -21,6 +21,7 @@ class Mutex
   deinit
   {
     pthread_mutex_destroy(mutex)
+    mutex.deallocate()
   }
   
   func lock()

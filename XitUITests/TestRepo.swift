@@ -17,6 +17,8 @@ enum TestRepo: String
             "1-and_more", "and-how", "andhow-ad", "asdf", "blah", "feature",
             "hi!", "master", "new", "other-branch", "wat", "whateelse", "whup",
             ]
+      case .unicode:
+        return ["master"]
       default:
         return []
     }
@@ -29,8 +31,10 @@ enum TestRepo: String
                                  withExtension: "zip")!
     let unzipTask = Process()
     
+    try? FileManager.default.removeItem(atPath:
+        targetPath.appending(pathComponent: rawValue))
     unzipTask.launchPath = "/usr/bin/unzip"
-    unzipTask.arguments = [fixturesURL.path, rawValue + "/*"]
+    unzipTask.arguments = ["-uo", fixturesURL.path, rawValue + "/*"]
     unzipTask.currentDirectoryPath = targetPath
     
     NSLog("unzipping \(rawValue) to \(targetPath)")

@@ -52,7 +52,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   var currentOperation: OperationController?
   
   private var kvObservers: [NSKeyValueObservation] = []
-  private var splitObserver: NSObjectProtocol?
+  private var splitObserver, menuObserver: NSObjectProtocol?
   
   override var document: AnyObject?
   {
@@ -144,8 +144,74 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       self.titleBarController?.searchButton.isEnabled = !collapsed
       self.titleBarController?.updateViewControls()
     }
+    menuObserver = NotificationCenter.default.addObserver(
+        forName: NSMenu.didBeginTrackingNotification,
+        object: nil, queue: .main, using: menuDidBeginTracking)
     updateMiniwindowTitle()
     updateNavButtons()
+  }
+
+  enum RemoteMenuType: CaseIterable
+  {
+    case fetch, push, pull
+
+    var identifier: NSUserInterfaceItemIdentifier
+    {
+      switch self {
+        case .fetch: return ¶"fetchRemote"
+        case .push:  return ¶"pushRemote"
+        case .pull:  return ¶"pullRemote"
+      }
+    }
+    var selector: Selector
+    {
+      switch self {
+        case .fetch: return #selector(XTWindowController.fetchRemote(_:))
+        case .push:  return #selector(XTWindowController.pushToRemote(_:))
+        case .pull:  return #selector(XTWindowController.pullRemote(_:))
+      }
+    }
+
+    func command(for remote: String) -> UIString
+    {
+      switch self {
+        case .fetch: return .fetchRemote(remote)
+        case .push:  return .pushRemote(remote)
+        case .pull:  return .pullRemote(remote)
+      }
+    }
+
+    static func of(_ menu: NSMenu) -> RemoteMenuType?
+    {
+      return menu.items.firstResult {
+        item in
+        guard let id = item.identifier
+        else { return nil }
+        return allCases.first { $0.identifier == id }
+      }
+    }
+  }
+
+  func menuDidBeginTracking(_ note: Notification)
+  {
+    guard self.window?.isMainWindow ?? false,
+          let menu = note.object as? NSMenu,
+          let type = RemoteMenuType.of(menu)
+    else { return }
+    let matchAction: (NSMenuItem) -> Bool = { $0.action == type.selector }
+
+    for item in menu.items.lazy.filter(matchAction) {
+      menu.removeItem(item)
+    }
+
+    for (index, remote) in self.repository.remoteNames().enumerated() {
+      let item = NSMenuItem(titleString: type.command(for: remote),
+                            action: type.selector,
+                            keyEquivalent: "")
+
+      item.tag = index
+      menu.addItem(item)
+    }
   }
   
   @objc
@@ -165,7 +231,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     currentOperation?.canceled = true
   }
 
-  func selectionChanged(oldValue: RepositorySelection?)
+  func updateHistoryCollapse(wasStaging: Bool)
   {
     guard let repo = xtDocument?.repository
     else { return }
@@ -183,7 +249,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
         }
       }
     }
-    else if oldValue is StagingSelection &&
+    else if wasStaging &&
             UserDefaults.standard.collapseHistory &&
             historyAutoCollapsed {
       if historyController.historyHidden {
@@ -192,10 +258,15 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       }
       historyAutoCollapsed = false
     }
+  }
+
+  func selectionChanged(oldValue: RepositorySelection?)
+  {
+    updateHistoryCollapse(wasStaging: oldValue is StagingSelection)
     if let newSelection = selection,
-       let oldSelection = oldValue {
-      guard newSelection != oldSelection
-      else { return }
+       let oldSelection = oldValue,
+       newSelection == oldSelection {
+      return
     }
 
     var userInfo = [AnyHashable: Any]()

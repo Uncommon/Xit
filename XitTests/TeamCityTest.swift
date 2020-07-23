@@ -16,7 +16,7 @@ class TeamCityTest: XCTestCase
   func parseBuild(statusString: String,
                   status: TeamCityAPI.Build.Status,
                   stateString: String,
-                  state: TeamCityAPI.Build.State)
+                  state: TeamCityAPI.Build.State) throws
   {
     let buildType = "TestBuildType"
     let branchName = "testBranch"
@@ -27,7 +27,7 @@ class TeamCityTest: XCTestCase
         "href=\"/httpAuth/app/rest/builds/id:45272\" " +
         "webUrl=\"https://teamcity.example.com/viewLog.html?buildId=45272&amp;buildTypeId=\(buildType)\"/>"
     
-    let xml = try! XMLDocument(xmlString: sourceXML, options: [])
+    let xml = try XMLDocument(xmlString: sourceXML, options: [])
     let build = TeamCityAPI.Build(xml: xml)!
     
     XCTAssertEqual(build.buildType!, buildType)
@@ -35,20 +35,20 @@ class TeamCityTest: XCTestCase
     XCTAssertEqual(build.state, state)
   }
   
-  func testParseBuildFailure()
+  func testParseBuildFailure() throws
   {
-    parseBuild(statusString: "FAILURE",
-               status: .failed,
-               stateString: "finished",
-               state: .finished)
+    try parseBuild(statusString: "FAILURE",
+                   status: .failed,
+                   stateString: "finished",
+                   state: .finished)
   }
   
-  func testParseBuildSuccess()
+  func testParseBuildSuccess() throws
   {
-    parseBuild(statusString: "SUCCESS",
-               status: .succeeded,
-               stateString: "running",
-               state: .running)
+    try parseBuild(statusString: "SUCCESS",
+                   status: .succeeded,
+                   stateString: "running",
+                   state: .running)
   }
   
   func testBranchSpec()

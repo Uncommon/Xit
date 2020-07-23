@@ -124,13 +124,12 @@ extension XTRepository: FileStatusDetection
       return 0
     }
     
-    let result = withArrayOfCStrings([path]) {
-      (paths: [UnsafeMutablePointer<CChar>?]) -> Int32 in
-      let array = UnsafeMutablePointer<
-                      UnsafeMutablePointer<Int8>?>(mutating: paths)
-      
-      options.pathspec.strings = array
-      return git_status_foreach_ext(gitRepo, &options, callback, &data)
+    let result = withMutableArrayOfCStrings([path]) {
+      (paths: inout [UnsafeMutablePointer<CChar>?]) -> Int32 in
+      return paths.withUnsafeMutableBufferPointer {
+        options.pathspec.strings = $0.baseAddress
+        return git_status_foreach_ext(gitRepo, &options, callback, &data)
+      }
     }
     guard result == 0 || result == GIT_EUSER.rawValue
     else { return nil }

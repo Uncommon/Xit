@@ -15,9 +15,9 @@ class XTStashTest: XTTest
     }
   }
   
-  func testChanges()
+  func testChanges() throws
   {
-    XCTAssertNoThrow(try self.makeStash())
+    try makeStash()
     
     let repoPath = self.repoPath as NSString
     let addedPath = repoPath.appendingPathComponent(FileName.added)
@@ -27,7 +27,7 @@ class XTStashTest: XTTest
     XCTAssertFalse(FileManager.default.fileExists(atPath: untrackedPath))
     XCTAssertFalse(FileManager.default.fileExists(atPath: addedPath))
     
-    let stash = GitStash(repo: self.repository, index: 0, message: "stash 0")
+    let stash = GitStash(repo: repository, index: 0, message: "stash 0")
     let indexChanges = stash.indexChanges()
     let workspaceChanges = stash.workspaceChanges()
     
@@ -47,50 +47,38 @@ class XTStashTest: XTTest
     
     XCTAssertNotNil(stash.headBlobForPath(FileName.file1))
     
-    guard let changeDiffResult = stash.unstagedDiffForFile(FileName.file1),
-          let changeDiffMaker = checkDiffResult(changeDiffResult),
-          let changePatch = changeDiffMaker.makePatch()
-    else {
-      XCTFail("No change diff")
-      return
-    }
+    let changeDiffResult = try XCTUnwrap(stash.unstagedDiffForFile(FileName.file1))
+    let changeDiffMaker = try XCTUnwrap(checkDiffResult(changeDiffResult))
+    let changePatch = try XCTUnwrap(changeDiffMaker.makePatch())
     
     XCTAssertEqual(changePatch.addedLinesCount, 1)
     XCTAssertEqual(changePatch.deletedLinesCount, 1)
     
-    guard let untrackedDiffResult = stash.unstagedDiffForFile(FileName.untracked),
-          let untrackedDiffMaker = checkDiffResult(untrackedDiffResult),
-          let untrackedPatch = untrackedDiffMaker.makePatch()
-    else {
-      XCTFail("No untracked diff")
-      return
-    }
+    let untrackedDiffResult = try XCTUnwrap(stash.unstagedDiffForFile(FileName.untracked))
+    let untrackedDiffMaker = try XCTUnwrap(checkDiffResult(untrackedDiffResult))
+    let untrackedPatch = try XCTUnwrap(untrackedDiffMaker.makePatch())
     
     XCTAssertEqual(untrackedPatch.addedLinesCount, 1)
     XCTAssertEqual(untrackedPatch.deletedLinesCount, 0)
     
-    guard let addedDiffResult = stash.stagedDiffForFile(FileName.added),
-          let addedDiffMaker = checkDiffResult(addedDiffResult),
-          let addedPatch = addedDiffMaker.makePatch()
-    else {
-      XCTFail("No added diff")
-      return
-    }
+    let addedDiffResult = try XCTUnwrap(stash.stagedDiffForFile(FileName.added))
+    let addedDiffMaker = try XCTUnwrap(checkDiffResult(addedDiffResult))
+    let addedPatch = try XCTUnwrap(addedDiffMaker.makePatch())
     
     XCTAssertEqual(addedPatch.addedLinesCount, 1)
     XCTAssertEqual(addedPatch.deletedLinesCount, 0)
   }
   
-  func testBinaryDiff()
+  func testBinaryDiff() throws
   {
     let imageName = "img.tiff"
     
-    XCTAssertNoThrow(try makeTiffFile(imageName))
-    XCTAssertNoThrow(try repository.stage(file: imageName))
-    XCTAssertNoThrow(try repository.saveStash(name: nil,
-                                              keepIndex: false,
-                                              includeUntracked: true,
-                                              includeIgnored: true))
+    try makeTiffFile(imageName)
+    try repository.stage(file: imageName)
+    try repository.saveStash(name: nil,
+                             keepIndex: false,
+                             includeUntracked: true,
+                             includeIgnored: true)
     
     let selection = StashSelection(repository: repository, index: 0)
     

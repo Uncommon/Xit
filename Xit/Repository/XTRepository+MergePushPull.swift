@@ -2,7 +2,7 @@ import Foundation
 
 extension XTRepository: RemoteCommunication
 {
-  public func push(branch: LocalBranch,
+  public func push(branches: [LocalBranch],
                    remote: Remote,
                    callbacks: RemoteCallbacks) throws
   {
@@ -11,8 +11,9 @@ extension XTRepository: RemoteCommunication
 
     try performWriting {
       var result: Int32
+      let names = branches.map { $0.name }
 
-      result = [branch.name].withGitStringArray {
+      result = names.withGitStringArray {
         (refspecs) in
         return git_remote_callbacks.withCallbacks(callbacks) {
           (gitCallbacks) in
@@ -280,7 +281,7 @@ extension XTRepository
     let rawValue: UInt32
     
     /// No merge possible
-    static let none = MergeAnalysis(rawValue: 0)
+    static let none: MergeAnalysis = []
     /// Normal merge
     static let normal = MergeAnalysis(rawValue: 0b0001)
     /// Already up to date, nothing to do
@@ -299,7 +300,9 @@ extension XTRepository
     guard let oid = commit.oid as? GitOID
     else { throw RepoError.unexpected }
     var annotated: OpaquePointer? = nil
-    let result = git_annotated_commit_lookup(&annotated, gitRepo, oid.unsafeOID())
+    let result = oid.withUnsafeOID {
+      git_annotated_commit_lookup(&annotated, gitRepo, $0)
+    }
     
     if result != GIT_OK.rawValue {
       throw RepoError.gitError(result)
@@ -340,11 +343,14 @@ extension XTRepository
                     fastForward: Bool? = nil) throws -> MergeAnalysis
   {
     guard let branch = branch as? GitBranch,
-          let commit = branch.targetCommit
+          branch.targetCommit != nil
     else { throw RepoError.unexpected }
     
     let preference =
           UnsafeMutablePointer<git_merge_preference_t>.allocate(capacity: 1)
+    defer {
+      preference.deallocate()
+    }
     
     if let fastForward = fastForward {
       preference.pointee = fastForward ? GIT_MERGE_PREFERENCE_FASTFORWARD_ONLY
@@ -360,6 +366,7 @@ extension XTRepository
     
     defer {
       git_annotated_commit_free(annotated)
+      analysis.deallocate()
     }
     
     let result = withUnsafeMutablePointer(to: &annotated) {

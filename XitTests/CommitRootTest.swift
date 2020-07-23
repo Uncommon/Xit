@@ -105,37 +105,39 @@ class CommitRootTest: XTTest
     checkCommitTrees(deletedPath: nil)
   }
   
-  func testCommitRootSubFile()
+  func testCommitRootSubFile() throws
   {
     let subURL = repository.repoURL.appendingPathComponent("sub")
     
-    XCTAssertNoThrow(try FileManager.default.createDirectory(
-        at: subURL, withIntermediateDirectories: false, attributes: nil))
+    try FileManager.default.createDirectory(at: subURL,
+                                            withIntermediateDirectories: false,
+                                            attributes: nil)
     commit(newTextFile: "sub/file2", content: "text")
     
     checkCommitTrees(deletedPath: nil)
   }
   
-  func testCommitRootDeleteSubFile()
+  func testCommitRootDeleteSubFile() throws
   {
     let subFilePathA = subDirName +/ subFileNameA
     let subFilePathB = subDirName +/ subFileNameB
     let subURL = repository.repoURL +/ subDirName
     let subFileURL = subURL +/ subFileNameA
     
-    XCTAssertNoThrow(try FileManager.default.createDirectory(
-        at: subURL, withIntermediateDirectories: false, attributes: nil))
+    try FileManager.default.createDirectory(at: subURL,
+                                            withIntermediateDirectories: false,
+                                            attributes: nil)
     commit(newTextFile: subFilePathA, content: "text")
     commit(newTextFile: subFilePathB, content: "bbbb")
     
-    XCTAssertNoThrow(try FileManager.default.removeItem(at: subFileURL))
-    XCTAssertNoThrow(try repository.stage(file: subFilePathA))
-    XCTAssertNoThrow(try repository.commit(message: "delete", amend: false))
+    try FileManager.default.removeItem(at: subFileURL)
+    try repository.stage(file: subFilePathA)
+    try repository.commit(message: "delete", amend: false)
     
     checkCommitTrees(deletedPath: subFilePathA)
   }
   
-  func testCommitRootDeleteSubSubFile()
+  func testCommitRootDeleteSubSubFile() throws
   {
     let subFilePathA = subDirName +/ subDirName +/ subFileNameA
     let subFilePathB = subDirName +/ subDirName +/ subFileNameB
@@ -143,107 +145,89 @@ class CommitRootTest: XTTest
     let subSubURL = subURL +/ subDirName
     let subFileURL = subSubURL +/ subFileNameA
     
-    XCTAssertNoThrow(try FileManager.default.createDirectory(
-        at: subSubURL, withIntermediateDirectories: true, attributes: nil))
+    try FileManager.default.createDirectory(at: subSubURL,
+                                            withIntermediateDirectories: true,
+                                            attributes: nil)
     commit(newTextFile: subFilePathA, content: "text")
     commit(newTextFile: subFilePathB, content: "bbbb")
 
-    XCTAssertNoThrow(try FileManager.default.removeItem(at: subFileURL))
-    XCTAssertNoThrow(try repository.stage(file: subFilePathA))
-    XCTAssertNoThrow(try repository.commit(message: "delete", amend: false))
+    try FileManager.default.removeItem(at: subFileURL)
+    try repository.stage(file: subFilePathA)
+    try repository.commit(message: "delete", amend: false)
     
     checkCommitTrees(deletedPath: subFilePathA)
   }
   
-  func testCommitRootDeleteRootFile()
+  func testCommitRootDeleteRootFile() throws
   {
     let subFilePathA = subDirName +/ subFileNameA
     let subURL = repository.repoURL +/ subDirName
     
-    XCTAssertNoThrow(try FileManager.default.createDirectory(
-        at: subURL, withIntermediateDirectories: false, attributes: nil))
+    try FileManager.default.createDirectory(at: subURL,
+                                            withIntermediateDirectories: false,
+                                            attributes: nil)
     commit(newTextFile: subFilePathA, content: "text")
     
-    XCTAssertNoThrow(try FileManager.default.removeItem(
-        at: repository.repoURL +/ FileName.file1))
-    XCTAssertNoThrow(try repository.stage(file: FileName.file1))
-    XCTAssertNoThrow(try repository.commit(message: "delete", amend: false))
+    try FileManager.default.removeItem(at: repository.repoURL +/ FileName.file1)
+    try repository.stage(file: FileName.file1)
+    try repository.commit(message: "delete", amend: false)
     
     checkCommitTrees(deletedPath: FileName.file1)
   }
   
-  func makeSubFolderCommits() -> (Commit, Commit)?
+  func makeSubFolderCommits() throws -> (Commit, Commit)
   {
     let subFilePath = subDirName +/ subFileNameA
     let subURL = repository.repoURL +/ subDirName
     
     // Add a file to a subfolder, and save the tree from that commit
-    XCTAssertNoThrow(try FileManager.default.createDirectory(
-        at: subURL, withIntermediateDirectories: false, attributes: nil))
+    try FileManager.default.createDirectory(at: subURL,
+                                            withIntermediateDirectories: false,
+                                            attributes: nil)
     commit(newTextFile: subFilePath, content: "text")
     
-    guard let parentCommit = repository.headSHA.flatMap(
-        { repository.commit(forSHA: $0) })
-    else {
-      XCTFail("can't get parent commit")
-      return nil
-    }
+    let parentCommit = try XCTUnwrap(repository.headSHA.flatMap(
+        { repository.commit(forSHA: $0) }))
     
     // Make a new commit where that subfolder is unchanged
     writeTextToFile1("changes")
-    XCTAssertNoThrow(try repository.stage(file: FileName.file1))
-    XCTAssertNoThrow(try repository.commit(message: "commit 3", amend: false))
+    try repository.stage(file: FileName.file1)
+    try repository.commit(message: "commit 3", amend: false)
     
-    guard let headSHA = repository.headSHA,
-          let commit = repository.commit(forSHA: headSHA)
-    else {
-      XCTFail("can't get commit")
-      return nil
-    }
+    let headSHA = try XCTUnwrap(repository.headSHA)
+    let commit = try XCTUnwrap(repository.commit(forSHA: headSHA))
     
     return (parentCommit, commit)
   }
   
   // Make sure that when a subtree is copied from an old tree, its statuses
   // are updated.
-  func testCommitRootUpdateUnchanged()
+  func testCommitRootUpdateUnchanged() throws
   {
-    guard let (parentCommit, commit) = makeSubFolderCommits()
-    else { return }
-    
+    let (parentCommit, commit) = try makeSubFolderCommits()
     let subFilePath = subDirName +/ subFileNameA
     
     let parentModel = CommitSelection(repository: repository, commit: parentCommit)
     let parentRoot = parentModel.fileList.treeRoot(oldTree: nil)
     
     // Double check that the file shows up as added
-    guard let newNode = parentRoot.commitTreeItemNode(forPath: subFilePath),
-          let newItem = newNode.representedObject as? CommitTreeItem
-    else {
-      XCTFail("can't get item")
-      return
-    }
+    let newNode = try XCTUnwrap(parentRoot.commitTreeItemNode(forPath: subFilePath))
+    let newItem = try XCTUnwrap(newNode.representedObject as? CommitTreeItem)
     
     XCTAssertEqual(newItem.status, DeltaStatus.added)
     
     let model = CommitSelection(repository: repository, commit: commit)
     let root = model.fileList.treeRoot(oldTree: parentRoot)
-    guard let fileNode = root.commitTreeItemNode(forPath: subFilePath),
-          let item = fileNode.representedObject as? CommitTreeItem
-    else {
-      XCTFail("can't get item")
-      return
-    }
+    let fileNode = try XCTUnwrap(root.commitTreeItemNode(forPath: subFilePath))
+    let item = try XCTUnwrap(fileNode.representedObject as? CommitTreeItem)
     
     XCTAssertEqual(item.status, DeltaStatus.unmodified)
   }
   
   // Like testCommitRootUpdateUnchanged but going the other way
-  func testCommitRootUpdateReversed()
+  func testCommitRootUpdateReversed() throws
   {
-    guard let (parentCommit, commit) = makeSubFolderCommits()
-    else { return }
-    
+    let (parentCommit, commit) = try makeSubFolderCommits()
     let subFilePath = subDirName +/ subFileNameA
     
     let model = CommitSelection(repository: repository, commit: commit)
@@ -260,12 +244,8 @@ class CommitRootTest: XTTest
     let parentModel = CommitSelection(repository: repository, commit: parentCommit)
     let parentRoot = parentModel.fileList.treeRoot(oldTree: root)
     
-    guard let newNode = parentRoot.commitTreeItemNode(forPath: subFilePath),
-          let newItem = newNode.representedObject as? CommitTreeItem
-    else {
-      XCTFail("can't get item")
-      return
-    }
+    let newNode = try XCTUnwrap(parentRoot.commitTreeItemNode(forPath: subFilePath))
+    let newItem = try XCTUnwrap(newNode.representedObject as? CommitTreeItem)
     
     XCTAssertEqual(newItem.status, DeltaStatus.added)
   }
@@ -278,32 +258,27 @@ extension NSTreeNode
   open override func isEqual(_ object: Any?) -> Bool
   {
     guard let otherNode = object as? NSTreeNode,
-      let representedObject = self.representedObject as? NSObject,
-      let otherObject = otherNode.representedObject as? NSObject,
-      representedObject.isEqual(otherObject),
-      let children = self.children,
-      let otherChildren = otherNode.children,
-      children.count == otherChildren.count
-      else { return false }
+          let representedObject = self.representedObject as? NSObject,
+          let otherObject = otherNode.representedObject as? NSObject,
+          representedObject.isEqual(otherObject),
+          let children = self.children,
+          let otherChildren = otherNode.children,
+          children.count == otherChildren.count
+    else { return false }
     
-    for (child, otherChild) in zip(children, otherChildren) {
-      if !child.isEqual(otherChild) {
-        return false
-      }
-    }
-    return true
+    return zip(children, otherChildren).allSatisfy { $0.isEqual($1) }
   }
   
   func commitTreeItemNode(forPath path: String, root: String = "") -> NSTreeNode?
   {
     let relativePath = path.droppingPrefix(root + "/")
     guard let topFolderName = relativePath.firstPathComponent
-      else { return nil }
+    else { return nil }
     let folderPath = root +/ topFolderName
     guard let node = children?.first(where:
       { ($0.representedObject as? CommitTreeItem)?.path == folderPath}),
-      let item = node.representedObject as? CommitTreeItem
-      else { return nil }
+          let item = node.representedObject as? CommitTreeItem
+    else { return nil }
     
     if item.path == path {
       return node

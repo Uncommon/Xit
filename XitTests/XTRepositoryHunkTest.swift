@@ -29,28 +29,23 @@ class XTRepositoryHunkTest: XTTest
   /// Copies the test bundle's lorem2.txt into the repo's lorem.txt
   func copyLorem2Contents() throws
   {
-    let lorem2Data = try! Data(contentsOf: lorem2URL)
+    let lorem2Data = try Data(contentsOf: lorem2URL)
     
-    try! lorem2Data.write(to: loremRepoURL)
+    try lorem2Data.write(to: loremRepoURL)
   }
   
   /// Tests staging the first hunk of a changed file
-  func testStageHunk()
+  func testStageHunk() throws
   {
-    try! FileManager.default.copyItem(at: loremURL, to: loremRepoURL)
-    try! repository.stage(file: loremName)
-    try! copyLorem2Contents()
+    try FileManager.default.copyItem(at: loremURL, to: loremRepoURL)
+    try repository.stage(file: loremName)
+    try copyLorem2Contents()
     
-    guard let diffResult = repository.unstagedDiff(file: loremName),
-          let patch = diffResult.extractPatch()
-    else {
-      XCTFail()
-      return
-    }
+    let diffResult = try XCTUnwrap(repository.unstagedDiff(file: loremName))
+    let patch = try XCTUnwrap(diffResult.extractPatch())
     let hunk = patch.hunk(at: 0)!
     
-    XCTAssertNoThrow(try repository.patchIndexFile(path: loremName, hunk: hunk,
-                                                   stage: true))
+    try repository.patchIndexFile(path: loremName, hunk: hunk, stage: true)
     
     let indexText = readLoremIndexText()!
 
@@ -63,24 +58,19 @@ class XTRepositoryHunkTest: XTTest
   }
   
   /// Tests unstaging the first hunk of a staged file
-  func testUnstageHunk()
+  func testUnstageHunk() throws
   {
-    try! FileManager.default.copyItem(at: loremURL, to: loremRepoURL)
-    try! repository.stage(file: loremName)
-    try! repository.commit(message: "lorem", amend: false)
-    try! copyLorem2Contents()
-    try! repository.stage(file: loremName)
+    try FileManager.default.copyItem(at: loremURL, to: loremRepoURL)
+    try repository.stage(file: loremName)
+    try repository.commit(message: "lorem", amend: false)
+    try copyLorem2Contents()
+    try repository.stage(file: loremName)
     
-    guard let diffResult = repository.stagedDiff(file: loremName),
-          let patch = diffResult.extractPatch(),
-          let hunk = patch.hunk(at: 0)
-    else {
-      XCTFail()
-      return
-    }
+    let diffResult = try XCTUnwrap(repository.stagedDiff(file: loremName))
+    let patch = try XCTUnwrap(diffResult.extractPatch())
+    let hunk = try XCTUnwrap(patch.hunk(at: 0))
     
-    XCTAssertNoThrow(try repository.patchIndexFile(path: loremName, hunk: hunk,
-                                                   stage: false))
+    try repository.patchIndexFile(path: loremName, hunk: hunk, stage: false)
     
     let indexText = readLoremIndexText()!
     
@@ -93,88 +83,72 @@ class XTRepositoryHunkTest: XTTest
   }
   
   /// Tests staging a new file as a hunk
-  func testStageNewHunk()
+  func testStageNewHunk() throws
   {
-    try! FileManager.default.copyItem(at: loremURL, to: loremRepoURL)
+    try FileManager.default.copyItem(at: loremURL, to: loremRepoURL)
     
-    guard let diffResult = repository.unstagedDiff(file: loremName),
-          let patch = diffResult.extractPatch(),
-          let hunk = patch.hunk(at: 0)
-    else {
-      XCTFail()
-      return
-    }
+    let diffResult = try XCTUnwrap(repository.unstagedDiff(file: loremName))
+    let patch = try XCTUnwrap(diffResult.extractPatch())
+    let hunk = try XCTUnwrap(patch.hunk(at: 0))
 
-    try! repository.patchIndexFile(path: loremName, hunk: hunk, stage: true)
+    try repository.patchIndexFile(path: loremName, hunk: hunk, stage: true)
     
     var encoding = String.Encoding.utf8
     let stagedText = readLoremIndexText()!
-    let loremData = try! Data(contentsOf: loremURL)
+    let loremData = try Data(contentsOf: loremURL)
     let loremText = String(data: loremData, usedEncoding: &encoding)!
     
     XCTAssertEqual(stagedText, loremText)
   }
   
   /// Tests staging a deleted file as a hunk
-  func testStageDeletedHunk()
+  func testStageDeletedHunk() throws
   {
-    try! FileManager.default.removeItem(atPath: file1Path)
+    try FileManager.default.removeItem(atPath: file1Path)
 
-    guard let diffResult = repository.unstagedDiff(file: FileName.file1),
-          let patch = diffResult.extractPatch(),
-          let hunk = patch.hunk(at: 0)
-    else {
-      XCTFail()
-      return
-    }
+    let diffResult = try XCTUnwrap(repository.unstagedDiff(file: FileName.file1))
+    let patch = try XCTUnwrap(diffResult.extractPatch())
+    let hunk = try XCTUnwrap(patch.hunk(at: 0))
     
-    try! repository.patchIndexFile(path: FileName.file1, hunk: hunk, stage: true)
+    try repository.patchIndexFile(path: FileName.file1, hunk: hunk, stage: true)
     
-    let status = try! repository.status(file: FileName.file1)
+    let status = try repository.status(file: FileName.file1)
     
     XCTAssertEqual(status.0, DeltaStatus.unmodified)
     XCTAssertEqual(status.1, DeltaStatus.deleted)
   }
   
   /// Tests unstaging a new file as a hunk
-  func testUnstageNewHunk()
+  func testUnstageNewHunk() throws
   {
-    try! FileManager.default.copyItem(at: loremURL, to: loremRepoURL)
-    try! repository.stage(file: loremName)
+    try FileManager.default.copyItem(at: loremURL, to: loremRepoURL)
+    try repository.stage(file: loremName)
     
-    guard let diffResult = repository.stagedDiff(file: loremName),
-          let patch = diffResult.extractPatch(),
-          let hunk = patch.hunk(at: 0)
-    else {
-      XCTFail()
-      return
-    }
+    let diffResult = try XCTUnwrap(repository.stagedDiff(file: loremName))
+    let patch = try XCTUnwrap(diffResult.extractPatch())
+    let hunk = try XCTUnwrap(patch.hunk(at: 0))
     
-    try! repository.patchIndexFile(path: loremName, hunk: hunk, stage: false)
+    try repository.patchIndexFile(path: loremName, hunk: hunk, stage: false)
     
-    let status = try! repository.status(file: loremName)
+    let status = try repository.status(file: loremName)
     
     XCTAssertEqual(status.0, DeltaStatus.untracked)
     XCTAssertEqual(status.1, DeltaStatus.unmodified) // There is no "absent"
   }
   
   /// Tests unstaging a deleted file as a hunk
-  func testUnstageDeletedHunk()
+  func testUnstageDeletedHunk() throws
   {
-    try! FileManager.default.removeItem(atPath: file1Path)
-    try! repository.stage(file: FileName.file1)
+    try FileManager.default.removeItem(atPath: file1Path)
+    try repository.stage(file: FileName.file1)
     
-    guard let diffResult = repository.stagedDiff(file: FileName.file1),
-          let patch = diffResult.extractPatch(),
-          let hunk = patch.hunk(at: 0)
-    else {
-      XCTFail()
-      return
-    }
+    let diffResult = try XCTUnwrap(repository.stagedDiff(file: FileName.file1))
+    let patch = try XCTUnwrap(diffResult.extractPatch())
+    let hunk = try XCTUnwrap(patch.hunk(at: 0))
     
-    try! repository.patchIndexFile(path: FileName.file1, hunk: hunk, stage: false)
+    try repository.patchIndexFile(path: FileName.file1, hunk: hunk, stage: false)
     
-    let status = try! repository.status(file: FileName.file1)
+    let status = try repository.status(file: FileName.file1)
     
     XCTAssertEqual(status.0, DeltaStatus.deleted)
     XCTAssertEqual(status.1, DeltaStatus.unmodified)

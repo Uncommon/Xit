@@ -90,9 +90,25 @@ class ReadOnlyUITests: XCTestCase
     XCTAssertTrue(HistoryList.row(13).isSelected)
   }
   
+  func ensureTabBarVisible()
+  {
+    let menuBar = XitApp.menuBars
+    let menuItem = menuBar.menuItems["toggleTabBar:"]
+    
+    menuBar.menuBarItems["View"].click()
+    if (menuItem.exists) {
+      menuItem.click()
+    }
+    else {
+      XitApp.typeKey(.escape, modifierFlags: [])
+    }
+  }
+  
   /// Status in window tab hides and shows in response to toggling the preference
   func testTabWorkspaceStatus()
   {
+    ensureTabBarVisible()
+    
     PrefsWindow.open()
     if PrefsWindow.tabStatusCheck.value as? Int == 0 {
       PrefsWindow.tabStatusCheck.click()
@@ -168,6 +184,41 @@ class ReadOnlyUITests: XCTestCase
                    """)
     XCTAssertEqual(ResetSheet.statusText.stringValue,
                    "You have uncommitted changes that will be lost with this option.")
+  }
+  
+  func checkPopup(button: XCUIElement, menu: XCUIElement, itemTitles: [String],
+                  file: StaticString = #file, line: UInt = #line)
+  {
+    button.press(forDuration: 0.5)
+    
+    XCTAssertTrue(menu.isHittable)
+    XCTAssertEqual(menu.menuItems.count, itemTitles.count)
+    
+    for (index, title) in itemTitles.enumerated() {
+      XCTAssertEqual(menu.menuItems.element(boundBy: index).title, title,
+                     file: file, line: line)
+    }
+    XitApp.typeKey(.escape, modifierFlags: [])
+  }
+  
+  func testRepoOpMenus()
+  {
+    checkPopup(button: Window.fetchButton, menu: Window.fetchMenu, itemTitles: [
+      "Fetch all remotes",
+      "Fetch \"origin/master\"",
+      "",
+      "Fetch remote \"origin\"",
+    ])
+    
+    checkPopup(button: Window.pushButton, menu: Window.pushMenu, itemTitles: [
+      "Push to \"origin/master\"",
+      "",
+      "Push to any tracking branches on \"origin\"",
+    ])
+    
+    checkPopup(button: Window.pullButton, menu: Window.pullMenu, itemTitles: [
+      "Pull from \"origin/master\""
+    ])
   }
 }
 

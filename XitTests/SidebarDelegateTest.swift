@@ -28,7 +28,7 @@ class SidebarDelegateTest: XTTest
     }
   }
   
-  func testTags()
+  func testTags() throws
   {
     let tagName = "t1"
     guard let headOID = repository.headSHA.flatMap({ repository.oid(forSHA: $0) })
@@ -36,9 +36,7 @@ class SidebarDelegateTest: XTTest
       XCTFail("no head")
       return
     }
-    try! repository.createTag(name: tagName,
-                              targetOID: headOID,
-                              message: "msg")
+    try repository.createTag(name: tagName, targetOID: headOID, message: "msg")
     
     model.reload()
 
@@ -72,43 +70,33 @@ class SidebarDelegateTest: XTTest
     }
   }
   
-  func testRemotes()
+  func testRemotes() throws
   {
     makeRemoteRepo()
     
     let remoteName = "origin"
     
-    XCTAssertNoThrow(try repository.checkOut(branch: "master"))
+    try repository.checkOut(branch: "master")
     XCTAssertTrue(repository.createBranch("b1"))
-    XCTAssertNoThrow(
-        try repository.addRemote(named: remoteName,
-                                 url: URL(fileURLWithPath: remoteRepoPath)))
+    try repository.addRemote(named: remoteName,
+                             url: URL(fileURLWithPath: remoteRepoPath))
     
     let configArgs = ["config", "receive.denyCurrentBranch", "ignore"]
     
-    XCTAssertNoThrow(try remoteRepository.executeGit(args: configArgs,
-                                                     writes: false))
-    XCTAssertNoThrow(try repository.push(remote: "origin"))
+    _ = try remoteRepository.executeGit(args: configArgs, writes: false)
+    try repository.push(remote: "origin")
     
     model.reload()
 
-    guard let remoteItem = model.rootItem(.remotes).children.first,
-          let branchItem = remoteItem.children.first
-    else {
-      XCTFail("Remote/branch not loaded")
-      return
-    }
+    let remoteItem = try XCTUnwrap(model.rootItem(.remotes).children.first)
+    let branchItem = try XCTUnwrap(remoteItem.children.first)
     
-    guard let remoteCell = sbDelegate.outlineView(outline, viewFor: nil,
-                                                  item: remoteItem)
-                           as? NSTableCellView,
-          let branchCell = sbDelegate.outlineView(outline, viewFor: nil,
-                                                  item: branchItem)
-                           as? NSTableCellView
-    else {
-      XCTFail("Remote/branch cell wrong type")
-      return
-    }
+    let remoteCell = try XCTUnwrap(sbDelegate.outlineView(outline, viewFor: nil,
+                                                          item: remoteItem)
+                                   as? NSTableCellView)
+    let branchCell = try XCTUnwrap(sbDelegate.outlineView(outline, viewFor: nil,
+                                                          item: branchItem)
+                                   as? NSTableCellView)
     
     XCTAssertEqual(remoteCell.textField?.stringValue, remoteName)
     XCTAssertEqual(branchCell.textField?.stringValue, "b1")

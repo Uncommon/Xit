@@ -84,6 +84,16 @@ enum RepoError: Swift.Error
     }
   }
   
+  func isGitError(_ code: git_error_code) -> Bool
+  {
+    switch self {
+      case .gitError(let myCode):
+        return myCode == code.rawValue
+      default:
+        return false
+    }
+  }
+  
   static func throwIfGitError(_ code: Int32) throws
   {
     guard code == 0

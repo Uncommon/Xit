@@ -198,7 +198,7 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
     var startCommit = startCommit
     
     repeat {
-      var result = branchEntries(startCommit: startCommit)
+      let result = branchEntries(startCommit: startCommit)
       
       defer { results.append(result) }
       if let nextOID = result.entries.last?.commit.parentOIDs.first as? ID,

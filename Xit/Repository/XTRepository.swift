@@ -316,9 +316,14 @@ extension XTRepository
     else { return nil }
     var ahead = 0
     var behind = 0
+    let graphResult = local.withUnsafeOID { localOID in
+      upstream.withUnsafeOID { upstreamOID in
+        git_graph_ahead_behind(&ahead, &behind, gitRepo,
+                               localOID, upstreamOID)
+      }
+    }
     
-    if git_graph_ahead_behind(&ahead, &behind, gitRepo,
-                              local.unsafeOID(), upstream.unsafeOID()) == 0 {
+    if graphResult == 0 {
       return (ahead, behind)
     }
     else {

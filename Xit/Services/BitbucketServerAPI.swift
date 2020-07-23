@@ -3,7 +3,7 @@ import Siesta
 
 enum BitbucketServer
 {
-  struct PagedResponse<T> : Codable where T: Codable
+  struct PagedResponse<T>: Codable where T: Codable
   {
     let size, limit: Int
     let start: Int? // Not present for the first page

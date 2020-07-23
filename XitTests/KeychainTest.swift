@@ -17,8 +17,10 @@ class KeychainTest: XCTestCase
                             location: URL(string: KeychainTest.baseURLString)!)
   let basePassword = "basePassword"
 
-  override func setUp()
+  override func setUpWithError() throws
   {
+    try super.setUpWithError()
+    
     deleteKeychain(at: path)
     keychain = Keychain(path: path, password: "", promptUser: false)
     if keychain == nil {
@@ -32,7 +34,7 @@ class KeychainTest: XCTestCase
     keychainStorage.keychain = keychain.keychainRef
     passwordStorage = keychainStorage
     
-    let defaults = UserDefaults(suiteName: "com.uncommonplace.xit.tests")!
+    let defaults = try XCTUnwrap(UserDefaults(suiteName: "com.uncommonplace.xit.tests"))
     
     for key in defaults.dictionaryRepresentation().keys {
       defaults.removeObject(forKey: key)
@@ -42,7 +44,7 @@ class KeychainTest: XCTestCase
                               passwordStorage: passwordStorage)
   }
   
-  override func tearDown()
+  override func tearDownWithError() throws
   {
     if let storage = passwordStorage {
       _ = SecKeychainDelete(storage.keychain)
@@ -50,7 +52,7 @@ class KeychainTest: XCTestCase
     passwordStorage = nil
     keychain = nil
     if FileManager.default.fileExists(atPath: path) {
-      XCTAssertNoThrow(try FileManager.default.removeItem(atPath: path))
+      try FileManager.default.removeItem(atPath: path)
     }
   }
   
@@ -83,14 +85,14 @@ class KeychainTest: XCTestCase
     }
   }
   
-  func addBaseAccount()
+  func addBaseAccount() throws
   {
-    XCTAssertNoThrow(try manager.add(baseAccount, password: basePassword))
+    try manager.add(baseAccount, password: basePassword)
   }
   
-  func testAddAccount()
+  func testAddAccount() throws
   {
-    addBaseAccount()
+    try addBaseAccount()
     
     XCTAssertEqual(1, manager.accounts.count)
     XCTAssertEqual(baseAccount, manager.accounts[0])
@@ -100,15 +102,15 @@ class KeychainTest: XCTestCase
                                         port: 80, account: baseAccount.user))
   }
   
-  func assertModify(newAccount: Account, password: String?)
+  func assertModify(newAccount: Account, password: String?) throws
   {
     dumpKeychain()
     XCTAssertEqual(basePassword,
                    passwordStorage.find(url: baseAccount.location,
                                         account: baseAccount.user))
-    XCTAssertNoThrow(try manager.modify(oldAccount: baseAccount,
-                                        newAccount: newAccount,
-                                        newPassword: password))
+    try manager.modify(oldAccount: baseAccount,
+                       newAccount: newAccount,
+                       newPassword: password)
     print("**")
     dumpKeychain()
     XCTAssertEqual(password ?? basePassword,
@@ -118,41 +120,41 @@ class KeychainTest: XCTestCase
                                         port: 80, account: newAccount.user))
   }
   
-  func testChangeAccountURL()
+  func testChangeAccountURL() throws
   {
-    addBaseAccount()
+    try addBaseAccount()
 
     let account2 = Account(type: baseAccount.type, user: baseAccount.user,
                            location: URL(string: "https://other.github.com")!)
     
-    assertModify(newAccount: account2, password: nil)
+    try assertModify(newAccount: account2, password: nil)
   }
   
-  func testChangeAccountUser()
+  func testChangeAccountUser() throws
   {
-    addBaseAccount()
+    try addBaseAccount()
     
     let account2 = Account(type: baseAccount.type, user: "other",
                            location: baseURL)
     
-    assertModify(newAccount: account2, password: nil)
+    try assertModify(newAccount: account2, password: nil)
   }
   
-  func testChangePassword()
+  func testChangePassword() throws
   {
-    addBaseAccount()
+    try addBaseAccount()
     
-    assertModify(newAccount: baseAccount, password: "other password")
+    try assertModify(newAccount: baseAccount, password: "other password")
   }
   
-  func testChangeUserAndPassword()
+  func testChangeUserAndPassword() throws
   {
-    addBaseAccount()
+    try addBaseAccount()
     
     let account2 = Account(type: baseAccount.type, user: "other",
                            location: baseURL)
     
-    assertModify(newAccount: account2, password: "other password")
+    try assertModify(newAccount: account2, password: "other password")
   }
   
   // No delete test: deleting an account does not delete the keychain item

@@ -202,6 +202,7 @@
 		C9ABDB201E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ABDB1F1E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift */; };
 		C9ABDB2F1E0AE72600CBD8D8 /* PrefsTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ABDB2E1E0AE72600CBD8D8 /* PrefsTabViewController.swift */; };
 		C9B023531F61A06900896EA9 /* LibGitExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B023511F61A06900896EA9 /* LibGitExtensions.m */; };
+		C9B3950724C0AA8A0084EB73 /* UnicodeRepoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B3950624C0AA8A0084EB73 /* UnicodeRepoUITests.swift */; };
 		C9B6DFB61FDB4A6500B5E3AA /* GitConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B6DFB51FDB4A6500B5E3AA /* GitConfig.swift */; };
 		C9BAE6141D3039C500A87F13 /* OperationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE6131D3039C500A87F13 /* OperationController.swift */; };
 		C9BAE61E1D303A8100A87F13 /* RemoteOptionsOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE61D1D303A8100A87F13 /* RemoteOptionsOpController.swift */; };
@@ -634,6 +635,7 @@
 		C9ABDB2E1E0AE72600CBD8D8 /* PrefsTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrefsTabViewController.swift; sourceTree = "<group>"; };
 		C9B023511F61A06900896EA9 /* LibGitExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibGitExtensions.m; sourceTree = "<group>"; };
 		C9B023521F61A06900896EA9 /* LibGitExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibGitExtensions.h; sourceTree = "<group>"; };
+		C9B3950624C0AA8A0084EB73 /* UnicodeRepoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnicodeRepoUITests.swift; sourceTree = "<group>"; };
 		C9B6DFB51FDB4A6500B5E3AA /* GitConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitConfig.swift; sourceTree = "<group>"; };
 		C9BAE6131D3039C500A87F13 /* OperationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperationController.swift; sourceTree = "<group>"; };
 		C9BAE61D1D303A8100A87F13 /* RemoteOptionsOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteOptionsOpController.swift; sourceTree = "<group>"; };
@@ -960,6 +962,7 @@
 				C91727B523689F500023DC57 /* ReadOnlyUITests.swift */,
 				C94107CC236B427700D4B0D7 /* TestRepo.swift */,
 				C90FD41E23845FB8006358C7 /* TestRepoEnvironment.swift */,
+				C9B3950624C0AA8A0084EB73 /* UnicodeRepoUITests.swift */,
 				C90FD4202385A983006358C7 /* XCTestCaseExtensions.swift */,
 				C91727B723689F500023DC57 /* Info.plist */,
 				C954C1682374E7EF000D5339 /* XitUITests-Bridging-Header.h */,
@@ -1752,6 +1755,7 @@
 				C91727B623689F500023DC57 /* ReadOnlyUITests.swift in Sources */,
 				C954C1652374BF5B000D5339 /* Components.swift in Sources */,
 				C9CC6D2D237E064A00424A68 /* GitCLI.swift in Sources */,
+				C9B3950724C0AA8A0084EB73 /* UnicodeRepoUITests.swift in Sources */,
 				C90FD41F23845FB8006358C7 /* TestRepoEnvironment.swift in Sources */,
 				C99E38F4236B595300675F6A /* TestRepo.swift in Sources */,
 				C90FD4212385A983006358C7 /* XCTestCaseExtensions.swift in Sources */,

@@ -66,16 +66,16 @@ class XTTest: XCTestCase
     return repo
   }
   
-  override func setUp()
+  override func setUpWithError() throws
   {
-    super.setUp()
-    
+    try super.setUpWithError()
+
     repoPath = NSString.path(withComponents: ["private",
                                               NSTemporaryDirectory(),
                                               "testRepo"])
-    repository = XTTest.createRepo(atPath: repoPath)
+    repository = try XCTUnwrap(XTTest.createRepo(atPath: repoPath))
     repoController = GitRepositoryController(repository: repository)
-    addInitialRepoContent()
+    try addInitialRepoContent()
   }
   
   override func tearDown()
@@ -115,7 +115,7 @@ class XTTest: XCTestCase
     repository.controller?.waitForQueue()
   }
   
-  func addInitialRepoContent()
+  func addInitialRepoContent() throws
   {
     XCTAssertTrue(commit(newTextFile: FileName.file1, content: "some text"))
   }
@@ -153,12 +153,8 @@ class XTTest: XCTestCase
     }
     
     var result = true
-    let semaphore = DispatchSemaphore(value: 0)
     
     repoController.queue.executeOffMainThread {
-      defer {
-        semaphore.signal()
-      }
       do {
         try repository.stage(file: name)
         try repository.commit(message: "new \(name)", amend: false)
@@ -167,7 +163,8 @@ class XTTest: XCTestCase
         result = false
       }
     }
-    return (semaphore.wait(timeout: .distantFuture) == .success) && result
+    WaitForQueue(repoController.queue.queue)
+    return result
   }
   
   @discardableResult

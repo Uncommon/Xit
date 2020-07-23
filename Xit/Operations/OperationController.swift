@@ -51,6 +51,11 @@ class OperationController: NSObject
   /// Override to suppress errors.
   func shoudReport(error: NSError) -> Bool { return true }
   
+  func repoErrorMessage(for error: RepoError) -> UIString
+  {
+    return error.message
+  }
+  
   /// Executes the given block, handling errors and updating status.
   func tryRepoOperation(block: @escaping (() throws -> Void))
   {
@@ -59,27 +64,32 @@ class OperationController: NSObject
       do {
         try block()
       }
-      catch let error as RepoError {
-        self?.ended(result: .failure)
-        self?.showFailureError(error.message.rawValue)
-      }
-      catch let error as NSError {
+      catch let error {
         guard let self = self
         else { return }
+        
         defer {
           self.ended(result: .failure)
         }
         
-        guard self.shoudReport(error: error)
-        else { return }
-        var message = error.localizedDescription
-        
-        if let gitError = giterr_last() {
-          let errorString = String(cString: gitError.pointee.message)
+        switch error {
           
-          message.append(" \(errorString)")
+          case let repoError as RepoError:
+            self.showFailureError(self.repoErrorMessage(for: repoError).rawValue)
+          
+          case let nsError as NSError where self.shoudReport(error: nsError):
+            var message = error.localizedDescription
+            
+            if let gitError = giterr_last() {
+              let errorString = String(cString: gitError.pointee.message)
+              
+              message.append(" \(errorString)")
+            }
+            self.showFailureError(message)
+          
+          default:
+            break
         }
-        self.showFailureError(message)
       }
     }
   }

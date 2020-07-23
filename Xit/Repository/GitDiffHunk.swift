@@ -112,6 +112,9 @@ struct GitDiffHunk: DiffHunk
                  .allocate(capacity: 1)
       let result = git_patch_get_line_in_hunk(line, patch.patch, index,
                                               Int(lineIndex))
+      defer {
+        line.deallocate()
+      }
       guard result == 0,
             let finalLine = line.pointee?.pointee
       else { continue }

@@ -1,5 +1,10 @@
 import Foundation
 
+enum RemoteOperationOption
+{
+  case all, currentBranch, named(String)
+}
+
 extension XTWindowController
 {
   /// Returns the new operation, if any, mostly because the generic type must

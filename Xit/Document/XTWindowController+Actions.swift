@@ -86,19 +86,75 @@ extension XTWindowController
   {
     let _: FetchOpController? = startOperation()
   }
-  
+
+  @IBAction
+  func fetchAllRemotes(_: AnyObject)
+  {
+    startOperation {
+      FetchOpController(remoteOption: .all, windowController: self)
+    }
+  }
+
+  @IBAction
+  func fetchCurrentBranch(_: AnyObject)
+  {
+    startOperation {
+      FetchOpController(remoteOption: .currentBranch, windowController: self)
+    }
+  }
+
+  @IBAction
+  func fetchRemote(_ sender: NSMenuItem)
+  {
+    let index = sender.tag
+    let remotes = repository.remoteNames()
+    guard (0..<remotes.count).contains(index)
+    else { return }
+
+    startOperation {
+      FetchOpController(remoteOption: .named(remotes[index]),
+                        windowController: self)
+    }
+  }
+
   @IBAction
   func pull(_: AnyObject)
   {
     let _: PullOpController? = startOperation()
   }
-  
+
+  @IBAction
+  func pullCurrentBranch(_ sender: AnyObject)
+  {
+    pull(sender)
+  }
+
   @IBAction
   func push(_: AnyObject)
   {
     let _: PushOpController? = startOperation()
   }
-  
+
+  @IBAction
+  func pushToRemote(_ sender: NSMenuItem)
+  {
+    let index = sender.tag
+    let remotes = repository.remoteNames()
+    guard (0..<remotes.count).contains(index)
+    else { return }
+
+    startOperation {
+      PushOpController(remoteOption: .named(remotes[index]),
+                       windowController: self)
+    }
+  }
+
+  @IBAction
+  func pullRemote(_ sender: NSMenuItem)
+  {
+    // TBI
+  }
+
   @IBAction
   func stash(_: AnyObject)
   {
@@ -215,8 +271,8 @@ extension XTWindowController: NSMenuItemValidation
   func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
   {
     guard let action = menuItem.action
-      else { return false }
-    var result = false
+    else { return false }
+    let result: Bool
     
     switch action {
       
@@ -247,18 +303,68 @@ extension XTWindowController: NSMenuItemValidation
       case #selector(self.stash(_:)):
         result = true
 
-      case #selector(self.newBranch(_:)):
+      case #selector(self.newBranch(_:)),
+           #selector(self.newTag(_:)),
+           #selector(self.newRemote(_:)):
         result = true
 
-      case #selector(self.newTag(_:)):
+      case #selector(self.pull(_:)),
+           #selector(self.pullCurrentBranch(_:)):
+        if let (branchName, remote) = trackingBranchInfo() {
+          menuItem.titleString = .pullCurrent(branch: branchName,
+                                              remote: remote)
+          result = true
+        }
+        else {
+          menuItem.titleString = .pullCurrentUnavailable
+          result = false
+        }
+
+      case #selector(self.fetchAllRemotes(_:)):
+        result = !repository.remoteNames().isEmpty
+
+      case #selector(self.fetchCurrentBranch(_:)):
+        if let (branchName, remote) = trackingBranchInfo() {
+          menuItem.titleString = .fetchCurrent(branch: branchName,
+                                               remote: remote)
+          result = true
+        }
+        else {
+          menuItem.titleString = .fetchCurrentUnavailable
+          result = false
+        }
+
+      case #selector(self.fetchRemote(_:)),
+           #selector(self.pushToRemote(_:)):
         result = true
 
-      case #selector(self.newRemote(_:)):
-        result = true
-      
+      case #selector(self.push(_:)):
+        if let (branchName, remote) = trackingBranchInfo() {
+          menuItem.titleString = .pushCurrent(branch: branchName,
+                                              remote: remote)
+          result = true
+        }
+        else {
+          menuItem.titleString = .pushCurrentUnavailable
+          result = false
+        }
+
       default:
         result = false
     }
     return result
+  }
+
+  func trackingBranchInfo() -> (String, String)?
+  {
+    if let branchName = repository.currentBranch,
+       let branch = repository.localBranch(named: branchName),
+       let trackingBranch = branch.trackingBranch,
+       let remote = trackingBranch.remoteName {
+      return (branch.shortName, remote)
+    }
+    else {
+      return nil
+    }
   }
 }

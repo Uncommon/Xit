@@ -16,7 +16,7 @@ extension Xit.PatchMaker.PatchResult
 
 class XTEmptyRepositoryTest: XTTest
 {
-  override func addInitialRepoContent()
+  override func addInitialRepoContent() throws
   {
   }
 
@@ -49,82 +49,70 @@ class XTEmptyRepositoryTest: XTTest
     XCTAssertTrue(repository.isTextFile(textName, context: .workspace))
   }
   
-  func testWorkspaceBinaryFile()
+  func testWorkspaceBinaryFile() throws
   {
     let tiffName = "action"
     
-    XCTAssertNoThrow(try makeTiffFile(tiffName))
+    try makeTiffFile(tiffName)
     XCTAssertFalse(repository.isTextFile(tiffName, context: .workspace))
   }
   
-  func testIndexTextFile()
+  func testIndexTextFile() throws
   {
     let textName = "text"
     
     write(text: "some text", to: textName)
-    XCTAssertNoThrow(try repository.stage(file: textName))
+    try repository.stage(file: textName)
     XCTAssertTrue(repository.isTextFile(textName, context: .index))
   }
   
-  func testIndexBinaryFile()
+  func testIndexBinaryFile() throws
   {
     let tiffName = "action"
     
-    XCTAssertNoThrow(try makeTiffFile(tiffName))
-    XCTAssertNoThrow(try repository.stage(file: tiffName))
+    try makeTiffFile(tiffName)
+    try repository.stage(file: tiffName)
     XCTAssertFalse(repository.isTextFile(tiffName, context: .index))
   }
   
-  func testCommitTextFile()
+  func testCommitTextFile() throws
   {
     let textName = "text"
     
     write(text: "some text", to: textName)
-    XCTAssertNoThrow(try repository.stage(file: textName))
-    XCTAssertNoThrow(try repository.commit(message: "text", amend: false))
+    try repository.stage(file: textName)
+    try repository.commit(message: "text", amend: false)
     
-    guard let headSHA = repository.headSHA,
-          let headCommit = repository.commit(forSHA: headSHA)
-    else {
-      XCTFail("no head")
-      return
-    }
+    let headSHA = try XCTUnwrap(repository.headSHA)
+    let headCommit = try XCTUnwrap(repository.commit(forSHA: headSHA))
 
     XCTAssertTrue(repository.isTextFile(textName, context: .commit(headCommit)))
   }
   
-  func testCommitBinaryFile()
+  func testCommitBinaryFile() throws
   {
     let tiffName = "action"
 
-    XCTAssertNoThrow(try makeTiffFile(tiffName))
-    XCTAssertNoThrow(try repository.stage(file: tiffName))
-    XCTAssertNoThrow(try repository.commit(message: "text", amend: false))
+    try makeTiffFile(tiffName)
+    try repository.stage(file: tiffName)
+    try repository.commit(message: "text", amend: false)
     
-    guard let headSHA = repository.headSHA,
-          let headCommit = repository.commit(forSHA: headSHA)
-    else {
-      XCTFail("no head")
-      return
-    }
+    let headSHA = try XCTUnwrap(repository.headSHA)
+    let headCommit = try XCTUnwrap(repository.commit(forSHA: headSHA))
 
     XCTAssertFalse(repository.isTextFile(tiffName, context: .commit(headCommit)))
   }
   
-  func testStagedContents()
+  func testStagedContents() throws
   {
     let content = "some content"
     
     writeTextToFile1(content)
     XCTAssertNil(repository.contentsOfStagedFile(path: FileName.file1))
-    try! repository.stage(file: FileName.file1)
+    try repository.stage(file: FileName.file1)
     
     let expectedContent = content.data(using: .utf8)
-    guard let stagedContent = repository.contentsOfStagedFile(path: FileName.file1)
-    else {
-      XCTFail("can't get staged content of \(FileName.file1)")
-      return
-    }
+    let stagedContent = try XCTUnwrap(repository.contentsOfStagedFile(path: FileName.file1))
     let stagedString = String(data: stagedContent, encoding: .utf8)
     
     XCTAssertEqual(stagedContent, expectedContent)
@@ -136,7 +124,7 @@ class XTEmptyRepositoryTest: XTTest
     
     writeTextToFile1(newContent)
     
-    let stagedContent2 = repository.contentsOfStagedFile(path: FileName.file1)!
+    let stagedContent2 = try XCTUnwrap(repository.contentsOfStagedFile(path: FileName.file1))
     let stagedString2 = String(data: stagedContent, encoding: .utf8)
     
     XCTAssertEqual(stagedContent2, expectedContent)
@@ -155,21 +143,21 @@ class XTAmendTest: XTTest
     static let file4 = "file4"
   }
 
-  override func addInitialRepoContent()
+  override func addInitialRepoContent() throws
   {
     write(text: "text", to: FileNames.file1)
     write(text: "text", to: FileNames.file2)
-    XCTAssertNoThrow(try repository.stageAllFiles())
-    XCTAssertNoThrow(try repository.commit(message: "commit 1", amend: false))
+    try repository.stageAllFiles()
+    try repository.commit(message: "commit 1", amend: false)
   }
   
-  func addSecondCommit()
+  func addSecondCommit() throws
   {
     write(text: "more", to: FileNames.file1)
-    try! FileManager.default.removeItem(at: repository.fileURL(FileNames.file2))
+    try FileManager.default.removeItem(at: repository.fileURL(FileNames.file2))
     write(text: "more", to: FileNames.file3)
-    XCTAssertNoThrow(try repository.stageAllFiles())
-    XCTAssertNoThrow(try repository.commit(message: "commit 2", amend: false))
+    try repository.stageAllFiles()
+    try repository.commit(message: "commit 2", amend: false)
   }
 
   // Check amend status where the head commit is the first one
@@ -183,11 +171,11 @@ class XTAmendTest: XTTest
   }
   
   // Check amend status with no changes relative to the last commit
-  func testCleanAmendStatus()
+  func testCleanAmendStatus() throws
   {
-    let headCommit = repository.commit(forSHA: repository.headSHA!)!
+    let headCommit = try XCTUnwrap(repository.commit(forSHA: repository.headSHA!))
     
-    addSecondCommit()
+    try addSecondCommit()
     
     let normalStatus = repository.stagingChanges
     let amendStatus = repository.amendingChanges(parent: headCommit)
@@ -197,32 +185,27 @@ class XTAmendTest: XTTest
   }
   
   // Modify a file added in the last commit, then check the amend status
-  func testAmendModifyAdded()
+  func testAmendModifyAdded() throws
   {
-    let headCommit = repository.commit(forSHA: repository.headSHA!)!
-    
-    addSecondCommit()
+    let headCommit = try XCTUnwrap(repository.commit(forSHA: repository.headSHA!))
+
+    try addSecondCommit()
     write(text: "third", to: FileNames.file3)
     
     let amendChange = repository.amendingChanges(parent: headCommit)
-    guard let file3Change = amendChange.first(
-        where: { $0.path == FileNames.file3 })
-    else {
-      XCTFail("file 3 status missing")
-      return
-    }
+    let file3Change = try XCTUnwrap(amendChange.first { $0.path == FileNames.file3 })
 
     XCTAssertEqual(amendChange.count, 3)
     XCTAssertEqual(file3Change.status, DeltaStatus.added)
   }
   
   // Delete a file added in the last commit, then check the amend status
-  func testAmendDeleteAdded()
+  func testAmendDeleteAdded() throws
   {
-    let headCommit = repository.commit(forSHA: repository.headSHA!)!
-    
-    addSecondCommit()
-    try! FileManager.default.removeItem(at: repository.fileURL(FileNames.file3))
+    let headCommit = try XCTUnwrap(repository.commit(forSHA: repository.headSHA!))
+
+    try addSecondCommit()
+    try FileManager.default.removeItem(at: repository.fileURL(FileNames.file3))
     
     let amendStatus = repository.amendingChanges(parent: headCommit)
     guard let file3Change = amendStatus.first(
@@ -237,94 +220,74 @@ class XTAmendTest: XTTest
   }
   
   // Test amend status for a file added in the head commit
-  func testAddedInHead()
+  func testAddedInHead() throws
   {
-    let headCommit = repository.commit(forSHA: repository.headSHA!)!
-    
-    addSecondCommit()
-    XCTAssertNoThrow(try repository.amendUnstage(file: FileNames.file3))
+    let headCommit = try XCTUnwrap(repository.commit(forSHA: repository.headSHA!))
+
+    try addSecondCommit()
+    try repository.amendUnstage(file: FileNames.file3)
     
     let amendStatus = repository.amendingChanges(parent: headCommit)
-    guard let file3Change = amendStatus.first(where: { $0.path ==
-                                                       FileNames.file3 })
-    else {
-      XCTFail("file 3 status missing")
-      return
-    }
+    let file3Change = try XCTUnwrap(
+          amendStatus.first(where: { $0.path == FileNames.file3 }))
     
     XCTAssertEqual(file3Change.status, DeltaStatus.unmodified)
   }
   
   // Test amend status for a file deleted in the head commit
-  func testUnstageDeleted()
+  func testUnstageDeleted() throws
   {
-    let headCommit = repository.commit(forSHA: repository.headSHA!)!
-    
-    addSecondCommit()
-    XCTAssertNoThrow(try repository.amendUnstage(file: FileNames.file2))
+    let headCommit = try XCTUnwrap(repository.commit(forSHA: repository.headSHA!))
+
+    try addSecondCommit()
+    try repository.amendUnstage(file: FileNames.file2)
     
     let amendChange = repository.amendingChanges(parent: headCommit)
-    guard let file2Change = amendChange.first(where: { $0.path ==
-                                                       FileNames.file2 })
-    else {
-      XCTFail("file 2 status missing")
-      return
-    }
+    let file2Change = try XCTUnwrap(
+          amendChange.first(where: { $0.path == FileNames.file2 }))
     
     XCTAssertEqual(file2Change.status, DeltaStatus.unmodified)
   }
   
   // Stage & unstage a new file in amend mode
-  func testAddedNew()
+  func testAddedNew() throws
   {
-    let headCommit = repository.commit(forSHA: repository.headSHA!)!
+    let headCommit = try XCTUnwrap(repository.commit(forSHA: repository.headSHA!))
     let fileName = FileNames.file4
     let match = { (change: FileStagingChange) in change.path == fileName }
     
-    addSecondCommit()
+    try addSecondCommit()
     write(text: "text", to: fileName)
     
     var amendChange = repository.amendingChanges(parent: headCommit)
-    guard let file4Change1 = amendChange.first(where: match)
-    else {
-      XCTFail("file 4 status missing")
-      return
-    }
+    let file4Change1 = try XCTUnwrap(amendChange.first(where: match))
     
     XCTAssertEqual(file4Change1.status, DeltaStatus.unmodified)
     
-    XCTAssertNoThrow(try repository.amendStage(file: fileName))
+    try repository.amendStage(file: fileName)
     amendChange = repository.amendingChanges(parent: headCommit)
     
-    guard let file4Change2 = amendChange.first(where: match)
-    else {
-      XCTFail("file 4 status missing")
-      return
-    }
+    let file4Change2 = try XCTUnwrap(amendChange.first(where: match))
     
     XCTAssertEqual(file4Change2.status, DeltaStatus.added)
     
-    XCTAssertNoThrow(try repository.amendUnstage(file: fileName))
+    try repository.amendUnstage(file: fileName)
     amendChange = repository.amendingChanges(parent: headCommit)
     
-    guard let file4Status3 = amendChange.first(where: match)
-    else {
-      XCTFail("file 4 status missing")
-      return
-    }
+    let file4Status3 = try XCTUnwrap(amendChange.first(where: match))
     
     XCTAssertEqual(file4Status3.status, DeltaStatus.unmodified)
   }
   
   // Stage & unstage a newly deleted file in amend mode
-  func testDeletedNew()
+  func testDeletedNew() throws
   {
-    let headCommit = repository.commit(forSHA: repository.headSHA!)!
+    let headCommit = try XCTUnwrap(repository.commit(forSHA: repository.headSHA!))
     let fileName = FileNames.file1
     let match = { (change: FileStagingChange) in change.path == fileName }
     
-    addSecondCommit()
-    try! FileManager.default.removeItem(at: repository.fileURL(fileName))
+    try addSecondCommit()
+    try FileManager.default.removeItem(at: repository.fileURL(fileName))
     
     var amendChange = repository.amendingChanges(parent: headCommit)
     
@@ -338,62 +301,62 @@ class XTAmendTest: XTTest
       return
     }
     
-    XCTAssertNoThrow(try repository.amendStage(file: fileName))
+    try repository.amendStage(file: fileName)
     amendChange = repository.amendingChanges(parent: headCommit)
-    if let fileChange = amendChange.first(where: match) {
-      XCTAssertEqual(fileChange.status, DeltaStatus.deleted)
-    }
-    else {
-      XCTFail("file status missing")
-      return
-    }
     
-    XCTAssertNoThrow(try repository.amendUnstage(file: fileName))
+    let deletedChange = try XCTUnwrap(amendChange.first(where: match))
+    
+    XCTAssertEqual(deletedChange.status, DeltaStatus.deleted)
+    
+    try repository.amendUnstage(file: fileName)
     amendChange = repository.amendingChanges(parent: headCommit)
-    if let fileChange = amendChange.first(where: match) {
-      XCTAssertEqual(fileChange.status, DeltaStatus.unmodified)
-    }
-    else {
-      XCTFail("file status missing")
-      return
-    }
+    
+    let unmodifiedChange = try XCTUnwrap(amendChange.first(where: match))
+    
+    XCTAssertEqual(unmodifiedChange.status, DeltaStatus.unmodified)
   }
 }
 
 class XTRepositoryTest: XTTest
 {
-  func assertWriteSucceeds(name: String, _ block: () throws -> Void)
+  func assertWriteSucceeds(name: String,
+                           file: StaticString = #file, line: UInt = #line,
+                           _ block: () throws -> Void)
   {
     do {
       try block()
     }
     catch RepoError.alreadyWriting {
-      XCTFail("\(name): write unexpectedly failed")
+      XCTFail("\(name): write unexpectedly failed", file: file, line: line)
     }
     catch {
-      XCTFail("\(name): unexpected exception")
+      XCTFail("\(name): unexpected exception", file: file, line: line)
     }
   }
   
-  func assertWriteFails(name: String, block: () throws -> Void)
+  func assertWriteFails(name: String,
+                        file: StaticString = #file, line: UInt = #line,
+                        block: () throws -> Void)
   {
     do {
       try block()
-      XCTFail("\(name): write unexpectedly succeeded")
+      XCTFail("\(name): write unexpectedly succeeded", file: file, line: line)
     }
     catch RepoError.alreadyWriting {
     }
     catch {
-      XCTFail("\(name): unexpected exception")
+      XCTFail("\(name): unexpected exception", file: file, line: line)
     }
   }
   
-  func assertWriteException(name: String, block: () throws -> Void)
+  func assertWriteException(name: String,
+                            file: StaticString = #file, line: UInt = #line,
+                            block: () throws -> Void)
   {
     setRepoWriting(repository, true)
-    assertWriteFails(name: name, block: block)
+    assertWriteFails(name: name, file: file, line: line, block: block)
     setRepoWriting(repository, false)
-    assertWriteSucceeds(name: name, block)
+    assertWriteSucceeds(name: name, file: file, line: line, block)
   }
   
   func assertWriteBool(name: String, block: () -> Bool)
@@ -416,7 +379,7 @@ class XTRepositoryTest: XTTest
     }
   }
   
-  func testWriteLockStash()
+  func testWriteLockStash() throws
   {
     writeTextToFile1("modification")
 
@@ -429,17 +392,17 @@ class XTRepositoryTest: XTTest
     assertWriteException(name: "apply") { try repository.applyStash(index: 0) }
     assertWriteException(name: "drop") { try repository.dropStash(index: 0) }
     writeTextToFile1("modification")
-    try! repository.saveStash(name: "stashname",
-                              keepIndex: false,
-                              includeUntracked: false,
-                              includeIgnored: true)
+    try repository.saveStash(name: "stashname",
+                             keepIndex: false,
+                             includeUntracked: false,
+                             includeIgnored: true)
     assertWriteException(name: "pop") { try repository.popStash(index: 0) }
   }
   
-  func testWriteLockCommit()
+  func testWriteLockCommit() throws
   {
     writeTextToFile1("modification")
-    try! repository.stage(file: FileName.file1)
+    try repository.stage(file: FileName.file1)
     
     assertWriteException(name: "commit") { 
       try repository.commit(message: "blah", amend: false)
@@ -533,15 +496,11 @@ class XTRepositoryTest: XTTest
     XCTAssertEqual(firstSHA, detachedSHA)
   }
   
-  func testContents()
+  func testContents() throws
   {
-    guard let headSHA = repository.headSHA,
-          let headCommit = GitCommit(sha: headSHA,
-                                     repository: repository.gitRepo)
-    else {
-        XCTFail("no head SHA")
-        return
-    }
+    let headSHA = try XCTUnwrap(repository.headSHA)
+    let headCommit = try XCTUnwrap(GitCommit(sha: headSHA,
+                                             repository: repository.gitRepo))
     let contentData = repository.contentsOfFile(path: FileName.file1,
                                                 at: headCommit)!
     let contentString = String(data: contentData, encoding: .utf8)
@@ -549,50 +508,42 @@ class XTRepositoryTest: XTTest
     XCTAssertEqual(contentString, "some text")
   }
   
-  func testFileBlob()
+  func testFileBlob() throws
   {
-    guard let blob = repository.fileBlob(ref: "HEAD", path: FileName.file1)
-    else {
-      XCTFail("no blob")
-      return
-    }
-    
+    let blob = try XCTUnwrap(repository.fileBlob(ref: "HEAD", path: FileName.file1))
     var blobString: String? = nil
     
-    XCTAssertNoThrow(
-        try blob.withData({ blobString = String(data: $0, encoding: .utf8) }))
+    try blob.withData({ blobString = String(data: $0, encoding: .utf8) })
     XCTAssertEqual(blobString, "some text")
   }
   
-  func testAddedChange()
+  func testAddedChange() throws
   {
     let changes = repository.changes(for: repository.headSHA!, parent: nil)
     
     XCTAssertEqual(changes.count, 1)
     
-    guard let change = changes.first
-    else { return }
+    let change = try XCTUnwrap(changes.first)
     
     XCTAssertEqual(change.path, FileName.file1)
     XCTAssertEqual(change.status, DeltaStatus.added)
   }
   
-  func testModifiedChange()
+  func testModifiedChange() throws
   {
     let file2Path = repoPath.appending(pathComponent: FileName.file2)
     
     writeTextToFile1("changes!")
-    try! "new file 2".write(toFile: file2Path, atomically: true, encoding: .utf8)
-    try! repository.stage(file: FileName.file1)
-    try! repository.stage(file: FileName.file2)
-    try! repository.commit(message: "#2", amend: false)
+    try "new file 2".write(toFile: file2Path, atomically: true, encoding: .utf8)
+    try repository.stage(file: FileName.file1)
+    try repository.stage(file: FileName.file2)
+    try repository.commit(message: "#2", amend: false)
     
     let changes2 = repository.changes(for: repository.headSHA!, parent: nil)
     
     XCTAssertEqual(changes2.count, 2)
     
-    guard let file1Change = changes2.first
-    else { return }
+    let file1Change = try XCTUnwrap(changes2.first)
     
     XCTAssertEqual(file1Change.path, FileName.file1)
     XCTAssertEqual(file1Change.status, .modified)
@@ -603,33 +554,32 @@ class XTRepositoryTest: XTTest
     XCTAssertEqual(file2Change.status, .added)
   }
   
-  func testDeletedChange()
+  func testDeletedChange() throws
   {
-    try! FileManager.default.removeItem(atPath: file1Path)
-    try! repository.stage(file: FileName.file1)
-    try! repository.commit(message: "#3", amend: false)
+    try FileManager.default.removeItem(atPath: file1Path)
+    try repository.stage(file: FileName.file1)
+    try repository.commit(message: "#3", amend: false)
     
     let changes3 = repository.changes(for: repository.headSHA!, parent: nil)
     
     XCTAssertEqual(changes3.count, 1)
     
-    guard let file1Deleted = changes3.first
-    else { return }
+    let file1Deleted = try XCTUnwrap(changes3.first)
     
     XCTAssertEqual(file1Deleted.path, FileName.file1)
     XCTAssertEqual(file1Deleted.status, .deleted)
   }
   
-  func testStageUnstageAllStatus()
+  func testStageUnstageAllStatus() throws
   {
     commit(newTextFile: FileName.file2, content: "blah")
     
     let file2Path = repoPath.appending(pathComponent: FileName.file2)
     
     write(text: "blah", to: FileName.file1)
-    XCTAssertNoThrow(try FileManager.default.removeItem(atPath: file2Path))
+    try FileManager.default.removeItem(atPath: file2Path)
     write(text: "blah", to: FileName.file3)
-    XCTAssertNoThrow(try repository.stageAllFiles())
+    try repository.stageAllFiles()
     
     var changes = repository.statusChanges(.indexOnly)
     
@@ -638,7 +588,7 @@ class XTRepositoryTest: XTTest
     XCTAssertEqual(changes[1].status, DeltaStatus.deleted);
     XCTAssertEqual(changes[2].status, DeltaStatus.added);
     
-    try! repository.unstageAllFiles()
+    try repository.unstageAllFiles()
     changes = repository.statusChanges(.workdirOnly)
     
     XCTAssertEqual(changes.count, 3);
@@ -647,13 +597,10 @@ class XTRepositoryTest: XTTest
     XCTAssertEqual(changes[2].status, DeltaStatus.untracked);
   }
 
-  func checkDeletedDiff(_ diffResult: PatchMaker.PatchResult?)
+  func checkDeletedDiff(_ diffResult: PatchMaker.PatchResult?,
+                        file: StaticString = #file, line: UInt = #line) throws
   {
-    guard let diffResult = diffResult
-    else {
-      XCTFail("no diff")
-      return
-    }
+    let diffResult = try XCTUnwrap(diffResult, file: file, line: line)
     
     var makerPatch: Patch? = nil
     
@@ -693,103 +640,78 @@ class XTRepositoryTest: XTTest
     }
   }
   
-  func testUnstagedDeleteDiff()
+  func testUnstagedDeleteDiff() throws
   {
-    XCTAssertNoThrow(try FileManager.default.removeItem(atPath: file1Path))
-    checkDeletedDiff(repository.unstagedDiff(file: FileName.file1))
+    try FileManager.default.removeItem(atPath: file1Path)
+    try checkDeletedDiff(repository.unstagedDiff(file: FileName.file1))
   }
 
-  func testStagedDeleteDiff()
+  func testStagedDeleteDiff() throws
   {
-    XCTAssertNoThrow(try FileManager.default.removeItem(atPath: file1Path))
-    XCTAssertNoThrow(try repository.stage(file: FileName.file1))
-    checkDeletedDiff(repository.stagedDiff(file: FileName.file1))
+    try FileManager.default.removeItem(atPath: file1Path)
+    try repository.stage(file: FileName.file1)
+    try checkDeletedDiff(repository.stagedDiff(file: FileName.file1))
   }
   
-  func testDeletedDiff()
+  func testDeletedDiff() throws
   {
-    try! FileManager.default.removeItem(atPath: file1Path)
-    try! repository.stage(file: FileName.file1)
-    try! repository.commit(message: "deleted", amend: false)
+    try FileManager.default.removeItem(atPath: file1Path)
+    try repository.stage(file: FileName.file1)
+    try repository.commit(message: "deleted", amend: false)
     
-    guard let commit = GitCommit(ref: "HEAD", repository: repository.gitRepo)
-    else {
-      XCTFail("no HEAD")
-      return
-    }
-    
-    let parentOID = commit.parentOIDs.first!
+    let commit = try XCTUnwrap(GitCommit(ref: "HEAD", repository: repository.gitRepo))
+    let parentOID = try XCTUnwrap(commit.parentOIDs.first)
     let diffResult = repository.diffMaker(forFile: FileName.file1,
                                           commitOID: commit.oid,
                                           parentOID: parentOID)!
-    let patch = diffResult.extractPatch()!
+    let patch = try XCTUnwrap(diffResult.extractPatch())
     
     XCTAssertEqual(patch.deletedLinesCount, 1)
   }
   
-  func testAddedDiff()
+  func testAddedDiff() throws
   {
-    guard let commit = GitCommit(ref: "HEAD", repository: repository.gitRepo)
-    else {
-      XCTFail("no HEAD")
-      return
-    }
-    
+    let commit = try XCTUnwrap(GitCommit(ref: "HEAD", repository: repository.gitRepo))
     let diffResult = repository.diffMaker(forFile: FileName.file1,
                                           commitOID: commit.oid,
                                           parentOID: nil)!
-    let patch = diffResult.extractPatch()!
+    let patch = try XCTUnwrap(diffResult.extractPatch())
     
     XCTAssertEqual(patch.addedLinesCount, 1)
   }
   
-  func testStagedBinaryDiff()
+  func testStagedBinaryDiff() throws
   {
     let imageName = "img.tiff"
     
-    XCTAssertNoThrow(try makeTiffFile(imageName))
-    XCTAssertNoThrow(try repository.stage(file: imageName))
+    try makeTiffFile(imageName)
+    try repository.stage(file: imageName)
     
-    if let unstagedDiffResult = repository.unstagedDiff(file: imageName) {
-      XCTAssertEqual(unstagedDiffResult, .binary)
-    }
-    else {
-      XCTFail("no unstaged diff")
-    }
+    let unstagedDiffResult = try XCTUnwrap(repository.unstagedDiff(file: imageName))
     
-    if let stagedDiffResult = repository.stagedDiff(file: imageName) {
-      XCTAssertEqual(stagedDiffResult, .binary)
-    }
-    else {
-      XCTFail("no staged diff")
-    }
+    XCTAssertEqual(unstagedDiffResult, .binary)
+    
+    let stagedDiffResult = try XCTUnwrap(repository.stagedDiff(file: imageName))
+
+    XCTAssertEqual(stagedDiffResult, .binary)
   }
   
-  func testCommitBinaryDiff()
+  func testCommitBinaryDiff() throws
   {
     let imageName = "img.tiff"
     
-    XCTAssertNoThrow(try makeTiffFile(imageName))
-    XCTAssertNoThrow(try repository.stage(file: imageName))
-    XCTAssertNoThrow(try repository.commit(message: "image", amend: false))
+    try makeTiffFile(imageName)
+    try repository.stage(file: imageName)
+    try repository.commit(message: "image", amend: false)
     
-    guard let headCommit = repository.commit(forSHA: repository.headSHA!)
-    else {
-      XCTFail("no head commit")
-      return
-    }
-    
+    let headCommit = try XCTUnwrap(repository.commit(forSHA: repository.headSHA!))
     let model = CommitSelection(repository: repository, commit: headCommit)
-    guard let diff = model.fileList.diffForFile(imageName)
-    else {
-      XCTFail("no diff result")
-      return
-    }
+    let diff = try XCTUnwrap(model.fileList.diffForFile(imageName))
     
     XCTAssertEqual(diff, .binary)
   }
   
-  func testTrackingBranch()
+  func testTrackingBranch() throws
   {
     let remoteName = "origin"
     let masterBranchName = "master"
@@ -798,33 +720,22 @@ class XTRepositoryTest: XTTest
     makeRemoteRepo()
     commit(newTextFile: FileName.file1, content: "remote",
            repository: remoteRepository)
-    XCTAssertNoThrow(
-        try repository.addRemote(named: remoteName,
-                                 url: URL(fileURLWithPath: remoteRepoPath)))
-    XCTAssertNoThrow(
-        try repository.executeGit(args: ["fetch", remoteName],
-                                  writes: true))
-    XCTAssertNoThrow(
-        try repository.executeGit(args: ["branch", "-u", remoteBranchName],
-                                  writes: true))
+      try repository.addRemote(named: remoteName,
+                               url: URL(fileURLWithPath: remoteRepoPath))
+      _ = try repository.executeGit(args: ["fetch", remoteName], writes: true)
+      _ = try repository.executeGit(args: ["branch", "-u", remoteBranchName],
+                                    writes: true)
     
     repository.config.invalidate()
     
-    if let masterBranch = repository.localBranch(named: masterBranchName) {
-      XCTAssertEqual(masterBranch.trackingBranchName, remoteBranchName)
-    }
-    else {
-      XCTFail("master branch missing")
-    }
+    let masterBranch = try XCTUnwrap(repository.localBranch(named: masterBranchName))
     
-    if let localBranch = repository.localTrackingBranch(
-        forBranchRef: RefPrefixes.remotes +/ remoteName +/ masterBranchName) {
-      XCTAssertEqual(localBranch.name,
-                     RefPrefixes.heads + "master")
-    }
-    else {
-      XCTFail("local tracking branch not found")
-    }
+    XCTAssertEqual(masterBranch.trackingBranchName, remoteBranchName)
+    
+    let localBranch = try XCTUnwrap(repository.localTrackingBranch(
+          forBranchRef: RefPrefixes.remotes +/ remoteName +/ masterBranchName))
+    
+    XCTAssertEqual(localBranch.name, RefPrefixes.heads + "master")
   }
 }
 

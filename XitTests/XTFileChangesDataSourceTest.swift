@@ -4,14 +4,15 @@ import XCTest
 
 class XTFileChangesDataSourceTest: XTTest
 {
-  func testInitialCommit()
+  func testInitialCommit() throws
   {
     let repoUIController = FakeRepoUIController(repository: repository)
     let dataSource = FileChangesDataSource(useWorkspaceList: false)
     let outlineView = NSOutlineView()
-    let headCommit = GitCommit(sha: repository.headSHA!,
-                               repository: repository.gitRepo)!
+    let headSHA = try XCTUnwrap(repository.headSHA)
+    let headCommit = try XCTUnwrap(GitCommit(sha: headSHA, repository: repository.gitRepo))
     
+    repoUIController.repoController = GitRepositoryController(repository: repository)
     repoUIController.selection = CommitSelection(repository: repository,
                                                  commit: headCommit)
     objc_sync_enter(dataSource)

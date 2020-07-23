@@ -23,7 +23,7 @@ class FakeRepoUIController: RepositoryUIController
 
 class FileListDataSourceTest: XTTest
 {
-  func testHistoricFileList()
+  func testHistoricFileList() throws
   {
     let text = "some text"
     
@@ -31,9 +31,9 @@ class FileListDataSourceTest: XTTest
       let fileName = "file_\(n).txt"
       let filePath = repoPath +/ fileName
       
-      try! text.write(toFile: filePath, atomically: true, encoding: .ascii)
-      try! repository.stageAllFiles()
-      try! repository.commit(message: "commit", amend: false)
+      try text.write(toFile: filePath, atomically: true, encoding: .ascii)
+      try repository.stageAllFiles()
+      try repository.commit(message: "commit", amend: false)
     }
   
     let outlineView = NSOutlineView.init()
@@ -42,6 +42,7 @@ class FileListDataSourceTest: XTTest
     var expectedCount = 11
     let history = CommitHistory<GitOID>()
     
+    repoUIController.repoController = GitRepositoryController(repository: repository)
     history.repository = repository
     objc_sync_enter(flds)
     flds.repoUIController = repoUIController
@@ -71,7 +72,7 @@ class FileListDataSourceTest: XTTest
     return CFAbsoluteTimeGetCurrent() < deadline
   }
   
-  func testMulipleFileList()
+  func testMulipleFileList() throws
   {
     let text = "some text"
     
@@ -80,33 +81,35 @@ class FileListDataSourceTest: XTTest
         let path = "dir_\(i)/subdir_\(j)"
         let fullPath = repoPath +/ path
         
-        try! FileManager.default.createDirectory(atPath: fullPath,
-                                                 withIntermediateDirectories: true,
-                                                 attributes: nil)
+        try FileManager.default.createDirectory(atPath: fullPath,
+                                                withIntermediateDirectories: true,
+                                                attributes: nil)
       }
     }
-    try! FileManager.default.removeItem(atPath: file1Path)
+    try FileManager.default.removeItem(atPath: file1Path)
     
     for n in 0..<12 {
       let file = "\(repoPath!)/dir_\(n%2)/subdir_\(n%3)/file_\(n).txt"
       
-      try! text.write(toFile: file, atomically: true, encoding: .ascii)
+      try text.write(toFile: file, atomically: true, encoding: .ascii)
     }
-    try! repository.stageAllFiles()
-    _ = try! repository.commit(message: "commit", amend: false)
+    try repository.stageAllFiles()
+    _ = try repository.commit(message: "commit", amend: false)
     
-    let repoUiController = FakeRepoUIController(repository: repository)
-    let headCommit = GitCommit(sha: repository.headSHA!,
+    let repoUIController = FakeRepoUIController(repository: repository)
+    let headSHA = try XCTUnwrap(repository.headSHA)
+    let headCommit = GitCommit(sha: headSHA,
                                repository: repository.gitRepo)!
     
-    repoUiController.selection = CommitSelection(repository: repository,
-                                               commit: headCommit)
+    repoUIController.repoController = GitRepositoryController(repository: repository)
+    repoUIController.selection = CommitSelection(repository: repository,
+                                                 commit: headCommit)
     
     let outlineView = NSOutlineView()
     let flds = FileTreeDataSource(useWorkspaceList: false)
     
     objc_sync_enter(flds)
-    flds.repoUIController = repoUiController
+    flds.repoUIController = repoUIController
     objc_sync_exit(flds)
     waitForRepoQueue()
 

@@ -143,10 +143,14 @@ class CommitHistoryTest: XCTestCase
     XCTAssertEqual(history.entries.count, expectedLength)
     for (index, entry) in history.entries.enumerated() {
       for parentOID in entry.commit.parentOIDs {
-        let parentIndex = history.entries.firstIndex(
+        guard let parentIndex = history.entries.firstIndex(
             where: { $0.commit.oid.equals(parentOID) })
+        else {
+          XCTFail("parent entry not found: \(parentOID)")
+          continue
+        }
         
-        XCTAssert(parentIndex! > index,
+        XCTAssert(parentIndex > index,
                   "\(entry.commit.sha.firstSix()) ≮ \(parentOID.sha.firstSix())")
       }
     }

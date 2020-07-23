@@ -164,9 +164,9 @@ public class GitCommit: Commit
     guard let oid = oid as? GitOID
     else { return nil }
     var gitCommit: OpaquePointer?  // git_commit isn't imported
-    let result = git_commit_lookup(&gitCommit,
-                                   repository,
-                                   oid.unsafeOID())
+    let result = oid.withUnsafeOID {
+      git_commit_lookup(&gitCommit, repository, $0)
+    }
   
     guard result == 0,
           let finalCommit = gitCommit
@@ -195,7 +195,7 @@ public class GitCommit: Commit
     var gitObjectPtr: OpaquePointer? = nil
     guard git_reference_peel(&gitObjectPtr, gitRef, GIT_OBJECT_COMMIT) == 0,
           let gitObject = gitObjectPtr,
-      git_object_type(gitObject) == GIT_OBJECT_COMMIT
+          git_object_type(gitObject) == GIT_OBJECT_COMMIT
     else { return nil }
     
     self.init(gitCommit: gitObject)
