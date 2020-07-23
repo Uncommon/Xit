@@ -16,7 +16,10 @@ class UnicodeRepoUITests: XCTestCase
     
     self.env = env
   }
-  
+}
+
+class FetchTests: UnicodeRepoUITests
+{
   func testFetchRemote()
   {
     let remoteName = "twin"
@@ -37,9 +40,7 @@ class UnicodeRepoUITests: XCTestCase
     
     env.open()
     
-    let masterCell = Sidebar.list.cells
-                            .containing(.staticText, identifier: "master")
-    let statusIndicator = masterCell.buttons["workspaceStatus"]
+    let statusIndicator = Sidebar.statusIndicator(branch: "master")
     
     // The remote hasn't been fetched since the above commit, so this repo
     // doesn't know yet that it's behind.
@@ -66,6 +67,7 @@ class PushTests: UnicodeRepoUITests
   {
     super.setUp()
     
+    continueAfterFailure = false
     XCTAssert(env.makeBareRemote(named: remoteName))
     // Track the remote branch
     env.git.run(args: ["branch", "-u", "\(remoteName)/master"])
@@ -80,30 +82,24 @@ class PushTests: UnicodeRepoUITests
     ])
     
     env.open()
-  }
-  
-  func localBranchIsAhead() -> Bool
-  {
-    return statusIndicator.exists && statusIndicator.title == "↑1"
+    
+    XCTAssertTrue(statusIndicator.exists && statusIndicator.title == "↑1")
   }
   
   func testPushDefault()
   {
-    XCTAssertTrue(localBranchIsAhead())
-    
     Window.pushButton.click()
     
     Window.window.sheets.buttons["Push"].click()
     // Wait for the progress spinner to go away
     XCTAssertTrue(Window.proxyIcon.waitForExistence(timeout: 1.0))
     
-    XCTWaiter(delegate: self).wait(for: [absence(of: statusIndicator)], timeout: 1.0)
+    XCTWaiter(delegate: self).wait(for: [absence(of: statusIndicator)],
+                                   timeout: 1.0)
   }
   
   func testPushAnyTracking()
   {
-    XCTAssertTrue(localBranchIsAhead())
-    
     Window.pushButton.press(forDuration: 0.5)
     Window.pushMenu.menuItems["Push to any tracking branches on \"\(remoteName)\""].click()
     
@@ -111,6 +107,7 @@ class PushTests: UnicodeRepoUITests
     // Wait for the progress spinner to go away
     XCTAssertTrue(Window.proxyIcon.waitForExistence(timeout: 1.0))
     
-    XCTWaiter(delegate: self).wait(for: [absence(of: statusIndicator)], timeout: 1.0)
+    XCTWaiter(delegate: self).wait(for: [absence(of: statusIndicator)],
+                                   timeout: 1.0)
   }
 }

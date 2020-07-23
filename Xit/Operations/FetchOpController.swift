@@ -141,8 +141,6 @@ class FetchOpController: PasswordOpController
       setKeychainInfoURL(url)
     }
     
-    let repo = repository  // For use in the block without being tied to self
-    
     tryRepoOperation {
       let callbacks = RemoteCallbacks(passwordBlock: self.getPassword,
                                       downloadProgress: self.progressCallback,
@@ -151,7 +149,7 @@ class FetchOpController: PasswordOpController
                                  pruneBranches: pruneBranches,
                                  callbacks: callbacks)
       
-      try repo.fetch(remote: remote, options: options)
+      try repository.fetch(remote: remote, options: options)
       NotificationCenter.default.post(name: .XTRepositoryRefsChanged,
                                       object: repository)
       self.ended()
