@@ -1294,7 +1294,7 @@
 			attributes = {
 				CLASSPREFIX = XT;
 				LastSwiftUpdateCheck = 1110;
-				LastUpgradeCheck = 1100;
+				LastUpgradeCheck = 1150;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					C3FA46FB13D0F8E200AC4F9B = {
