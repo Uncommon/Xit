@@ -174,18 +174,21 @@ extension git_remote_callbacks
     var gitCallbacks = git_remote_callbacks.defaultOptions()
     var mutableCallbacks = callbacks
     
-    gitCallbacks.payload = UnsafeMutableRawPointer(&mutableCallbacks)
-    
-    if callbacks.passwordBlock != nil {
-      gitCallbacks.credentials = Callbacks.credentials
+    return try withUnsafeMutableBytes(of: &mutableCallbacks) {
+      (buffer) in
+      gitCallbacks.payload = buffer.baseAddress
+
+      if callbacks.passwordBlock != nil {
+        gitCallbacks.credentials = Callbacks.credentials
+      }
+      if callbacks.downloadProgress != nil {
+        gitCallbacks.transfer_progress = Callbacks.transferProgress
+      }
+      if callbacks.uploadProgress != nil {
+        gitCallbacks.push_transfer_progress = Callbacks.pushTransferProgress
+      }
+      return try action(gitCallbacks)
     }
-    if callbacks.downloadProgress != nil {
-      gitCallbacks.transfer_progress = Callbacks.transferProgress
-    }
-    if callbacks.uploadProgress != nil {
-      gitCallbacks.push_transfer_progress = Callbacks.pushTransferProgress
-    }
-    return try action(gitCallbacks)
   }
 }
 
