@@ -30,12 +30,14 @@ extension XTRepository: RemoteCommunication
   
   public func fetch(remote: Remote, options: FetchOptions) throws
   {
+    guard let gitRemote = remote as? GitRemote
+    else { throw RepoError.unexpected }
+
     try performWriting {
-      let gitRemote = (remote as! GitRemote).remote
       var refspecs = git_strarray.init()
       var result: Int32
       
-      result = git_remote_get_fetch_refspecs(&refspecs, gitRemote)
+      result = git_remote_get_fetch_refspecs(&refspecs, gitRemote.remote)
       try RepoError.throwIfGitError(result)
       defer {
         git_strarray_free(&refspecs)
@@ -45,7 +47,7 @@ extension XTRepository: RemoteCommunication
       
       result = git_fetch_options.withOptions(options) {
         withUnsafePointer(to: $0) {
-          git_remote_fetch(gitRemote, &refspecs, $0, message)
+          git_remote_fetch(gitRemote.remote, &refspecs, $0, message)
         }
       }
       try RepoError.throwIfGitError(result)
