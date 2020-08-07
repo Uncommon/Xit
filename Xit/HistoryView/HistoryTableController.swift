@@ -40,7 +40,7 @@ public class HistoryTableController: NSViewController,
     history.repository = repository
     
     guard let table = view as? NSTableView
-      else { return }
+    else { return }
     var spacing = table.intercellSpacing
     
     spacing.height = 0
@@ -83,8 +83,8 @@ public class HistoryTableController: NSViewController,
       guard let self = self,
             let selection = notification.userInfo?[NSKeyValueChangeKey.newKey]
                             as? RepositorySelection,
-            // In spite of the `object` parameter, notifications can come through
-            // for the wrong repository
+            // In spite of the `object` parameter, notifications can come
+            // through for the wrong repository
             selection.repository.repoURL == self.repository.repoURL
       else { return }
       self.selectRow(sha: selection.shaToSelect)
