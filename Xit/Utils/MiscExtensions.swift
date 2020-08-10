@@ -66,7 +66,7 @@ extension Sequence
   {
     return reduce(0) {
       (count, element) -> Int in
-      return predicate(element) ? count + 1 : count
+      predicate(element) ? count + 1 : count
     }
   }
 }

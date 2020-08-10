@@ -14,7 +14,7 @@ public class CommitEntry: CustomStringConvertible
   var dotColorIndex: UInt?
   
   public var description: String
-  { return commit.description }
+  { commit.description }
   
   init(commit: Commit)
   {

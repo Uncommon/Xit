@@ -6,9 +6,7 @@ class AppDelegate: NSObject
   var openPanel: NSOpenPanel?
   
   var isTesting: Bool
-  {
-    return Bundle(identifier: "com.uncommonplace.XitTests") != nil
-  }
+  { Bundle(identifier: "com.uncommonplace.XitTests") != nil }
   
   @IBOutlet var remoteSettingsSubmenu: NSMenu!
   

@@ -7,10 +7,10 @@ let XTStagingSHA = ""
 class StagingSelection: StagedUnstagedSelection
 {
   unowned var repository: FileChangesRepo
-  var shaToSelect: String? { return XTStagingSHA }
-  var canCommit: Bool { return true }
-  var fileList: FileListModel { return indexFileList }
-  var unstagedFileList: FileListModel { return workspaceFileList }
+  var shaToSelect: String? { XTStagingSHA }
+  var canCommit: Bool { true }
+  var fileList: FileListModel { indexFileList }
+  var unstagedFileList: FileListModel { workspaceFileList }
   
   // Initialization requires a reference to self
   fileprivate(set) var indexFileList: IndexFileList!

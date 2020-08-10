@@ -62,8 +62,8 @@ public protocol CommitReferencing: AnyObject
 
 extension CommitReferencing
 {
-  var headReference: Reference? { return reference(named: "HEAD") }
-  var headSHA: String? { return headRef.flatMap { self.sha(forRef: $0) } }
+  var headReference: Reference? { reference(named: "HEAD") }
+  var headSHA: String? { headRef.flatMap { self.sha(forRef: $0) } }
 }
 
 public protocol FileStatusDetection: AnyObject
@@ -180,7 +180,7 @@ public protocol TransferProgress
 
 extension TransferProgress
 {
-  var progress: Float { return Float(receivedObjects) / Float(totalObjects) }
+  var progress: Float { Float(receivedObjects) / Float(totalObjects) }
 }
 
 public struct RemoteCallbacks

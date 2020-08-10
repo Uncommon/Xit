@@ -21,9 +21,7 @@ class RepositoryWatcher
   var lastIndexChange: Date
   {
     get
-    {
-      return mutex.withLock { lastIndexChangeGuarded }
-    }
+    { mutex.withLock { lastIndexChangeGuarded } }
     set
     {
       mutex.withLock { lastIndexChangeGuarded = newValue }

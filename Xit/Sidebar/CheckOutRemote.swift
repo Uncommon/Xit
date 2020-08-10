@@ -67,7 +67,7 @@ class CheckOutRemoteWindowController: NSWindowController
   private let repo: Branching
   private unowned let operation: CheckOutRemoteOperationController
   
-  override var windowNibName: NSNib.Name? { return "CheckOutRemote" }
+  override var windowNibName: NSNib.Name? { "CheckOutRemote" }
   
   init(repo: Branching, operation: CheckOutRemoteOperationController)
   {

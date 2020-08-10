@@ -15,7 +15,7 @@ extension XTRepository: RemoteCommunication
 
       result = names.withGitStringArray {
         (refspecs) in
-        return git_remote_callbacks.withCallbacks(callbacks) {
+        git_remote_callbacks.withCallbacks(callbacks) {
           (gitCallbacks) in
           var mutableArray = refspecs
           var options = git_push_options.defaultOptions()
@@ -75,13 +75,13 @@ struct GitTransferProgress: TransferProgress
 {
   let gitProgress: git_transfer_progress
   
-  var totalObjects: UInt32    { return gitProgress.total_objects }
-  var indexedObjects: UInt32  { return gitProgress.indexed_objects }
-  var receivedObjects: UInt32 { return gitProgress.received_objects }
-  var localObjects: UInt32    { return gitProgress.local_objects }
-  var totalDeltas: UInt32     { return gitProgress.total_deltas }
-  var indexedDeltas: UInt32   { return gitProgress.indexed_deltas }
-  var receivedBytes: Int      { return gitProgress.received_bytes }
+  var totalObjects: UInt32    { gitProgress.total_objects }
+  var indexedObjects: UInt32  { gitProgress.indexed_objects }
+  var receivedObjects: UInt32 { gitProgress.received_objects }
+  var localObjects: UInt32    { gitProgress.local_objects }
+  var totalDeltas: UInt32     { gitProgress.total_deltas }
+  var indexedDeltas: UInt32   { gitProgress.indexed_deltas }
+  var receivedBytes: Int      { gitProgress.received_bytes }
 }
 
 extension XTRepository
@@ -104,7 +104,7 @@ extension XTRepository
       var checkoutOptions = git_checkout_options.defaultOptions()
       let notifyCallback: git_checkout_notify_cb = {
         (_, _, _, _, _, _) -> Int32 in
-        return GIT_EMERGECONFLICT.rawValue
+        GIT_EMERGECONFLICT.rawValue
       }
 
       checkoutOptions.checkout_strategy = GIT_CHECKOUT_FORCE.rawValue |
@@ -170,15 +170,11 @@ extension XTRepository
   
   /// The full path to the MERGE_HEAD file
   var mergeHeadPath: String
-  {
-    return self.gitDirectoryPath +/ "MERGE_HEAD"
-  }
+  { self.gitDirectoryPath +/ "MERGE_HEAD" }
   
   /// The full path to the CHERRY_PICK_HEAD file
   var cherryPickHeadPath: String
-  {
-    return self.gitDirectoryPath +/ "CHERRY_PICK_HEAD"
-  }
+  { self.gitDirectoryPath +/ "CHERRY_PICK_HEAD" }
   
   private func mergePreCheck() throws
   {

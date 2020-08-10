@@ -144,7 +144,7 @@ enum BitbucketServer
 
 class BitbucketServerAPI: BasicAuthService, ServiceAPI
 {
-  var type: AccountType { return .bitbucketServer }
+  var type: AccountType { .bitbucketServer }
   var user: BitbucketServer.User?
   static let rootPath = "/rest/api/1.0"
   
@@ -153,8 +153,8 @@ class BitbucketServerAPI: BasicAuthService, ServiceAPI
     var request: BitbucketServer.PullRequest
     let bitbucketService: BitbucketServerAPI
     
-    var service: PullRequestService { return bitbucketService }
-    var sourceBranch: String { return request.fromRef.id }
+    var service: PullRequestService { bitbucketService }
+    var sourceBranch: String { request.fromRef.id }
     var sourceRepo: URL?
     {
       let protocols = ["https", "ssh"]
@@ -168,9 +168,9 @@ class BitbucketServerAPI: BasicAuthService, ServiceAPI
       }
       return nil
     }
-    var displayName: String { return request.title }
-    var id: String { return String(request.id) }
-    var authorName: String? { return request.author.user.displayName }
+    var displayName: String { request.title }
+    var id: String { String(request.id) }
+    var authorName: String? { request.author.user.displayName }
     var status: PullRequestStatus
     {
       get {
@@ -348,7 +348,7 @@ extension BitbucketServerAPI: RemoteService
 
 extension BitbucketServerAPI: PullRequestService
 {
-  var userID: String { return user?.slug ?? "" }
+  var userID: String { user?.slug ?? "" }
   
   func getPullRequests(callback: @escaping ([Xit.PullRequest]) -> Void)
   {

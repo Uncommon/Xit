@@ -14,9 +14,7 @@ protocol RefLog
 extension RefLog
 {
   var entries: RefLogEntryCollection
-  {
-    return RefLogEntryCollection(refLog: self)
-  }
+  { RefLogEntryCollection(refLog: self) }
 }
 
 protocol RefLogEntry
@@ -31,8 +29,8 @@ struct RefLogEntryCollection: RandomAccessCollection
 {
   let refLog: RefLog
   
-  var startIndex: Int { return 0 }
-  var endIndex: Int { return refLog.entryCount }
+  var startIndex: Int { 0 }
+  var endIndex: Int { refLog.entryCount }
   
   subscript(position: Int) -> RefLogEntry
   {
@@ -45,8 +43,8 @@ struct GitRefLogEntry: RefLogEntry
 {
   let entry: OpaquePointer
   
-  var oldOID: OID { return GitOID(oidPtr: git_reflog_entry_id_old(entry)) }
-  var newOID: OID { return GitOID(oidPtr: git_reflog_entry_id_new(entry)) }
+  var oldOID: OID { GitOID(oidPtr: git_reflog_entry_id_old(entry)) }
+  var newOID: OID { GitOID(oidPtr: git_reflog_entry_id_new(entry)) }
   var committer: Signature
   {
     if let committer = git_reflog_entry_committer(entry) {
@@ -56,7 +54,7 @@ struct GitRefLogEntry: RefLogEntry
       return Signature(name: nil, email: nil, when: Date())
     }
   }
-  var message: String { return String(cString: git_reflog_entry_message(entry)) }
+  var message: String { .init(cString: git_reflog_entry_message(entry)) }
 }
 
 class GitRefLog
@@ -84,7 +82,7 @@ class GitRefLog
 
 extension GitRefLog: RefLog
 {
-  var entryCount: Int { return git_reflog_entrycount(refLog) }
+  var entryCount: Int { git_reflog_entrycount(refLog) }
   
   func entry(atIndex index: Int) -> RefLogEntry
   {

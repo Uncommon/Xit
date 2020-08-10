@@ -86,7 +86,7 @@ extension PreviewItem: QLPreviewItem
 {
   var previewItemURL: URL!
   {
-    get { return urlLock.withLock { return url } }
+    get { urlLock.withLock { url } }
     set { urlLock.withLock { url = newValue } }
   }
 }

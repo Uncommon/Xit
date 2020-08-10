@@ -22,13 +22,13 @@ public protocol TreeEntry: OIDObject
 struct NullEntry: TreeEntry
 {
   var oid: OID
-  { return GitOID.zero() }
+  { GitOID.zero() }
   var type: GitObjectType
-  { return .invalid }
+  { .invalid }
   var name: String
-  { return "" }
+  { "" }
   var object: OIDObject?
-  { return nil }
+  { nil }
 }
 
 class GitTree: Tree
@@ -37,8 +37,8 @@ class GitTree: Tree
   {
     let tree: GitTree
 
-    var startIndex: Int { return 0 }
-    var endIndex: Int { return tree.count }
+    var startIndex: Int { 0 }
+    var endIndex: Int { tree.count }
     
     func index(after i: Int) -> Int
     {
@@ -58,9 +58,7 @@ class GitTree: Tree
   }
   
   var entries: EntryCollection
-  {
-    return EntryCollection(tree: self)
-  }
+  { EntryCollection(tree: self) }
   
   let tree: OpaquePointer
   
@@ -73,9 +71,7 @@ class GitTree: Tree
   }
   
   var count: Int
-  {
-    return git_tree_entrycount(tree)
-  }
+  { git_tree_entrycount(tree) }
   
   init(tree: OpaquePointer)
   {

@@ -414,11 +414,9 @@ extension XTRepository
           change: stagedChange)
     }
     
-    public var startIndex: Int { return 0 }
+    public var startIndex: Int { 0 }
     public var endIndex: Int
-    {
-      return statusList.map { git_status_list_entrycount($0) } ?? 0
-    }
+    { statusList.map { git_status_list_entrycount($0) } ?? 0 }
     
     func index(before i: Int) -> Int { return i - 1 }
     func index(after i: Int) -> Int { return i + 1 }
@@ -431,9 +429,7 @@ extension XTRepository
   }
   
   var stagingChanges: StatusCollection
-  {
-    return StatusCollection(repo: self)
-  }
+  { StatusCollection(repo: self) }
   
   func amendingChanges(parent: Commit?) -> StatusCollection
   {

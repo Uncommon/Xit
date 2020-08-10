@@ -85,8 +85,8 @@ extension git_diff_delta
 
 extension git_diff_delta: DiffDelta
 {
-  public var deltaStatus: DeltaStatus { return DeltaStatus(gitDelta: status) }
-  public var diffFlags: DiffFlags { return DiffFlags(rawValue: flags) }
-  public var oldFile: DiffFile { return old_file }
-  public var newFile: DiffFile { return new_file }
+  public var deltaStatus: DeltaStatus { DeltaStatus(gitDelta: status) }
+  public var diffFlags: DiffFlags { DiffFlags(rawValue: flags) }
+  public var oldFile: DiffFile { old_file }
+  public var newFile: DiffFile { new_file }
 }

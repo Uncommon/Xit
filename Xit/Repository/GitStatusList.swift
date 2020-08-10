@@ -7,9 +7,7 @@ class GitStatusList: RandomAccessCollection
   let statusList: OpaquePointer
   
   public var count: Int
-  {
-    return git_status_list_entrycount(statusList)
-  }
+  { git_status_list_entrycount(statusList) }
   
   init?(repository repo: XTRepository, show: StatusShow = .indexAndWorkdir,
         options: StatusOptions)
@@ -39,8 +37,8 @@ class GitStatusList: RandomAccessCollection
     git_status_list_free(statusList)
   }
   
-  public var startIndex: Int { return 0 }
-  public var endIndex: Int { return count }
+  public var startIndex: Int { 0 }
+  public var endIndex: Int { count }
 
   subscript(index: Int) -> GitStatusEntry
   {
@@ -56,9 +54,8 @@ struct GitStatusEntry
   let entry: git_status_entry
   
   var status: StatusFlags
-  {
-    return StatusFlags(rawValue: Int32(entry.status.rawValue))
-  }
-  var headToIndex: DiffDelta? { return entry.head_to_index?.pointee }
-  var indexToWorkdir: DiffDelta? { return entry.index_to_workdir?.pointee }
+  { StatusFlags(rawValue: Int32(entry.status.rawValue)) }
+  
+  var headToIndex: DiffDelta? { entry.head_to_index?.pointee }
+  var indexToWorkdir: DiffDelta? { entry.index_to_workdir?.pointee }
 }

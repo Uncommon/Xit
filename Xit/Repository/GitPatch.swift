@@ -31,8 +31,8 @@ class GitPatch: Patch
     else { return nil }
     var patch: OpaquePointer?
     let result: Int32 = GitDiff.unwrappingOptions(options) {
-      return git_patch_from_blobs(&patch, oldGitBlob, nil,
-                                  newGitBlob, nil, $0)
+      git_patch_from_blobs(&patch, oldGitBlob, nil,
+                           newGitBlob, nil, $0)
     }
     guard result == 0,
           let finalPatch = patch
@@ -50,9 +50,9 @@ class GitPatch: Patch
     var patch: OpaquePointer?
     let result: Int32 = GitDiff.unwrappingOptions(options) {
       (gitOptions) in
-      return newData.withUnsafeBytes {
+      newData.withUnsafeBytes {
         (bytes: UnsafeRawBufferPointer) in
-        return git_patch_from_blob_and_buffer(
+        git_patch_from_blob_and_buffer(
             &patch, oldGitBlob, nil,
             bytes.bindMemory(to: Int8.self).baseAddress,
             newData.count, nil,
@@ -73,14 +73,14 @@ class GitPatch: Patch
     var patch: OpaquePointer?
     let result: Int32 = GitDiff.unwrappingOptions(options) {
       (gitOptions) in
-      return oldData.withUnsafeBytes {
+      oldData.withUnsafeBytes {
         (oldBytes: UnsafeRawBufferPointer) in
-        return newData.withUnsafeBytes {
+        newData.withUnsafeBytes {
           (newBytes: UnsafeRawBufferPointer) in
-          return git_patch_from_buffers(&patch,
-                                        oldBytes.baseAddress, oldData.count, nil,
-                                        newBytes.baseAddress, newData.count, nil,
-                                        gitOptions)
+          git_patch_from_buffers(&patch,
+                                 oldBytes.baseAddress, oldData.count, nil,
+                                 newBytes.baseAddress, newData.count, nil,
+                                 gitOptions)
         }
       }
     }
@@ -93,7 +93,7 @@ class GitPatch: Patch
     self.newData = newData
   }
   
-  var hunkCount: Int { return git_patch_num_hunks(patch) }
+  var hunkCount: Int { git_patch_num_hunks(patch) }
   var addedLinesCount: Int
   {
     var result: Int = 0

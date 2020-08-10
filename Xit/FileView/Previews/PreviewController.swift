@@ -6,7 +6,7 @@ class PreviewController: NSViewController
 {
   var isLoaded: Bool = false
   
-  var qlView: QLPreviewView { return view as! QLPreviewView }
+  var qlView: QLPreviewView { view as! QLPreviewView }
   
   override func awakeFromNib()
   {

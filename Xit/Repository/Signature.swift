@@ -54,7 +54,7 @@ extension Signature
     
     return try utf8Name.withUnsafeMutableBytes {
       (cName) in
-      return try utf8Email.withUnsafeMutableBytes {
+      try utf8Email.withUnsafeMutableBytes {
         (cEmail) in
         let name = cName.baseAddress!.bindMemory(to: Int8.self,
                                                  capacity: cName.count+1)
@@ -68,7 +68,7 @@ extension Signature
   }
   
   private static func makeString(_ ptr: UnsafeMutablePointer<Int8>!) -> String?
-  { return ptr == nil ? nil : String(utf8String: ptr) }
+  { ptr == nil ? nil : String(utf8String: ptr) }
 }
 
 extension Signature

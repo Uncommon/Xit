@@ -37,22 +37,22 @@ class GitRepositoryController: NSObject, RepositoryController
   
   var cachedStagedChanges: [FileChange]?
   {
-    get { return mutex.withLock { _cachedStagedChanges } }
+    get { mutex.withLock { _cachedStagedChanges } }
     set { mutex.withLock { _cachedStagedChanges = newValue } }
   }
   var cachedAmendChanges: [FileChange]?
   {
-    get { return mutex.withLock { _cachedAmendChanges } }
+    get { mutex.withLock { _cachedAmendChanges } }
     set { mutex.withLock { _cachedAmendChanges = newValue } }
   }
   var cachedUnstagedChanges: [FileChange]?
   {
-    get { return mutex.withLock { _cachedUnstagedChanges } }
+    get { mutex.withLock { _cachedUnstagedChanges } }
     set { mutex.withLock { _cachedUnstagedChanges = newValue } }
   }
   var cachedBranches: [String: GitBranch]
   {
-    get { return mutex.withLock { _cachedBranches } }
+    get { mutex.withLock { _cachedBranches } }
     set { mutex.withLock { _cachedBranches = newValue } }
   }
   var cachedIgnored = false

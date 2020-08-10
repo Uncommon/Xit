@@ -30,7 +30,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   var repoController: GitRepositoryController!
   var titleBarController: TitleBarViewController?
   var refsChangedObserver, workspaceObserver: NSObjectProtocol?
-  var repository: Repository { return (xtDocument?.repository as Repository?)! }
+  var repository: Repository { (xtDocument?.repository as Repository?)! }
 
   @objc dynamic var isAmending = false
   {

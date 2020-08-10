@@ -283,12 +283,12 @@ extension NSAlert
 {
   var messageString: UIString
   {
-    get { return UIString(rawValue: messageText) }
+    get { UIString(rawValue: messageText) }
     set { messageText = newValue.rawValue }
   }
   var informativeString: UIString
   {
-    get { return UIString(rawValue: informativeText) }
+    get { UIString(rawValue: informativeText) }
     set { informativeText = newValue.rawValue }
   }
   
@@ -302,7 +302,7 @@ extension NSButton
 {
   var titleString: UIString
   {
-    get { return UIString(rawValue: title) }
+    get { UIString(rawValue: title) }
     set { title = newValue.rawValue }
   }
   
@@ -316,7 +316,7 @@ extension NSControl
 {
   var uiStringValue: UIString
   {
-    get { return UIString(rawValue: stringValue) }
+    get { UIString(rawValue: stringValue) }
     set { stringValue = newValue.rawValue }
   }
 }
@@ -336,7 +336,7 @@ extension NSMenuItem
 {
   var titleString: UIString
   {
-    get { return UIString(rawValue: title) }
+    get { UIString(rawValue: title) }
     set { title = newValue.rawValue }
   }
 

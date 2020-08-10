@@ -86,7 +86,7 @@ protocol FileListModel: AnyObject
 
 extension FileListModel
 {
-  var repository: FileChangesRepo { return selection.repository }
+  var repository: FileChangesRepo { selection.repository }
 }
 
 func == (a: RepositorySelection, b: RepositorySelection) -> Bool

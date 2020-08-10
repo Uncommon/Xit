@@ -98,10 +98,10 @@ struct GitDiffHunk: DiffHunk
   let index: Int
   let patch: GitPatch
   
-  public var oldStart: Int32 { return hunk.old_start }
-  public var oldLines: Int32 { return hunk.old_lines }
-  public var newStart: Int32 { return hunk.new_start }
-  public var newLines: Int32 { return hunk.new_lines }
+  public var oldStart: Int32 { hunk.old_start }
+  public var oldLines: Int32 { hunk.old_lines }
+  public var newStart: Int32 { hunk.new_start }
+  public var newLines: Int32 { hunk.new_lines }
   
   public func enumerateLines(_ callback: (DiffLine) -> Void)
   {

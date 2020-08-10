@@ -21,9 +21,7 @@ class DateCellView: NSTableCellView
   var date: Date?
   {
     get
-    {
-      return textField?.objectValue as? Date
-    }
+    { textField?.objectValue as? Date }
     set
     {
       textField?.objectValue = newValue

@@ -2,8 +2,8 @@ import Foundation
 
 extension NSTreeNode
 {
-  var fileChange: FileChange { return representedObject as! FileChange }
-  static var rootPrefix: String { return WorkspaceTreeBuilder.rootName + "/" }
+  var fileChange: FileChange { representedObject as! FileChange }
+  static var rootPrefix: String { WorkspaceTreeBuilder.rootName + "/" }
   
   func fileChangeNode(path: String) -> NSTreeNode?
   {

@@ -118,5 +118,5 @@ class RefTokenView: NSView
 
 extension NSFont
 {
-  static var refLabelFont: NSFont { return labelFont(ofSize: 11) }
+  static var refLabelFont: NSFont { labelFont(ofSize: 11) }
 }

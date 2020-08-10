@@ -62,9 +62,7 @@ class PreviewsPrefsController: NSViewController
     static let whitespace = WhitespaceSetting.showAll
     static let tabWidth: UInt = 4
     static var contextLines: UInt
-    {
-      return PatchMaker.defaultContextLines
-    }
+    { PatchMaker.defaultContextLines }
   }
   
   enum Default

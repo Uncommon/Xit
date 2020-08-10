@@ -36,9 +36,7 @@ public class GitBlob: Blob, OIDObject
   let blob: OpaquePointer
   
   public var oid: OID
-  {
-    return GitOID(oidPtr: git_blob_id(blob))
-  }
+  { GitOID(oidPtr: git_blob_id(blob)) }
   
   init(blob: OpaquePointer)
   {
@@ -58,17 +56,13 @@ public class GitBlob: Blob, OIDObject
     self.blob = finalBlob
   }
   
-  public var blobPtr: OpaquePointer? { return blob }
+  public var blobPtr: OpaquePointer? { blob }
   
   public var dataSize: UInt
-  {
-    return UInt(git_blob_rawsize(blob))
-  }
+  { UInt(git_blob_rawsize(blob)) }
   
   public var isBinary: Bool
-  {
-    return git_blob_is_binary(blob) != 0
-  }
+  { git_blob_is_binary(blob) != 0 }
   
   public func makeData() -> Data?
   {

@@ -18,12 +18,12 @@ class RemoteSheetController: SheetController
   @ControlStringValue var name: String
   var fetchURLString: String?
   {
-    get { return fetchField.stringValue.nilIfEmpty }
+    get { fetchField.stringValue.nilIfEmpty }
     set { fetchField.stringValue = newValue ?? "" }
   }
   var pushURLString: String?
   {
-    get { return pushField.stringValue.nilIfEmpty }
+    get { pushField.stringValue.nilIfEmpty }
     set { pushField.stringValue = newValue ?? "" }
   }
   

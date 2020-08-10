@@ -23,15 +23,13 @@ struct GitRefSpec: RefSpec
 {
   let refSpec: OpaquePointer
   
-  var source: String { return String(cString: git_refspec_src(refSpec)) }
-  var destination: String { return String(cString: git_refspec_dst(refSpec)) }
-  var stringValue: String { return String(cString: git_refspec_string(refSpec)) }
-  var force: Bool { return git_refspec_force(refSpec) != 0 }
+  var source: String { String(cString: git_refspec_src(refSpec)) }
+  var destination: String { String(cString: git_refspec_dst(refSpec)) }
+  var stringValue: String { String(cString: git_refspec_string(refSpec)) }
+  var force: Bool { git_refspec_force(refSpec) != 0 }
 
   var direction: RemoteConnectionDirection
-  {
-    return .init(gitDirection: git_refspec_direction(refSpec))
-  }
+  { .init(gitDirection: git_refspec_direction(refSpec)) }
 
   init(refSpec: OpaquePointer)
   {

@@ -19,7 +19,7 @@ public protocol Branch: AnyObject
 extension Branch
 {
   public var strippedName: String
-  { return name.droppingPrefix(prefix) }
+  { name.droppingPrefix(prefix) }
 }
 
 
@@ -31,7 +31,7 @@ public protocol LocalBranch: Branch
 
 extension LocalBranch
 {
-  public var prefix: String { return RefPrefixes.heads }
+  public var prefix: String { RefPrefixes.heads }
 }
 
 
@@ -43,11 +43,11 @@ public protocol RemoteBranch: Branch
 extension RemoteBranch
 {
   public var prefix: String
-  { return "\(RefPrefixes.remotes)\(remoteName ?? "")/" }
+  { "\(RefPrefixes.remotes)\(remoteName ?? "")/" }
   
   /// What the branch name would look like if it were a local branch
   public var localBranchName: String
-  { return RefPrefixes.heads + strippedName }
+  { RefPrefixes.heads + strippedName }
 }
 
 
@@ -86,7 +86,7 @@ public class GitBranch
     return GitOID(oidPtr: oid)
   }
 
-  var sha: String? { return oid?.sha }
+  var sha: String? { oid?.sha }
   public var targetCommit: Commit?
   {
     guard let oid = oid,
@@ -95,7 +95,7 @@ public class GitBranch
     
     return GitCommit(oid: oid, repository: repo)
   }
-  var remoteName: String? { return nil }
+  var remoteName: String? { nil }
   
   fileprivate static func lookUpBranch(name: String, repository: OpaquePointer,
                                        branchType: git_branch_t)
@@ -114,7 +114,7 @@ public class GitBranch
 
 public class GitLocalBranch: GitBranch, LocalBranch
 {
-  public var shortName: String { return strippedName }
+  public var shortName: String { strippedName }
   
   init?(repository: OpaquePointer, name: String, config: Config)
   {
@@ -184,20 +184,16 @@ public class GitLocalBranch: GitBranch, LocalBranch
   }
   
   override var remoteName: String?
-  {
-    return trackingBranch?.remoteName
-  }
+  { trackingBranch?.remoteName }
 }
 
 public class GitRemoteBranch: GitBranch, RemoteBranch
 {
   public var shortName: String
-  { return name.droppingPrefix(RefPrefixes.remotes) }
+  { name.droppingPrefix(RefPrefixes.remotes) }
 
   public override var remoteName: String?
-  {
-    return name.droppingPrefix(RefPrefixes.remotes).firstPathComponent
-  }
+  { name.droppingPrefix(RefPrefixes.remotes).firstPathComponent }
 
   init?(repository: OpaquePointer, name: String, config: Config)
   {

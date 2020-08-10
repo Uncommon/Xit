@@ -120,7 +120,5 @@ extension NewBranchPanelController: NSWindowDelegate
 class FullReplacementTextView: NSTextView
 {
   override var rangeForUserCompletion: NSRange
-  {
-    return self.string.fullNSRange
-  }
+  { self.string.fullNSRange }
 }

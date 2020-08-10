@@ -5,9 +5,9 @@ class CommitSelection: RepositorySelection
 {
   unowned var repository: FileChangesRepo
   let commit: Commit
-  var shaToSelect: String? { return commit.sha }
-  var canCommit: Bool { return false }
-  var fileList: FileListModel { return commitFileList }
+  var shaToSelect: String? { commit.sha }
+  var canCommit: Bool { false }
+  var fileList: FileListModel { commitFileList }
   
   // Initialization requires a reference to self
   private(set) var commitFileList: CommitFileList!
@@ -26,17 +26,17 @@ class CommitSelection: RepositorySelection
 
 class CommitFileList: FileListModel
 {
-  var stagingType: StagingType { return .none }
+  var stagingType: StagingType { .none }
   
   lazy var changes: [FileChange] =
       self.repository.changes(for: self.commit.oid.sha,
                               parent: self.commit.parentOIDs.first)
   
   weak var commitSelection: CommitSelection!
-  var selection: RepositorySelection { return commitSelection }
+  var selection: RepositorySelection { commitSelection }
   
-  var commit: Commit { return commitSelection.commit }
-  var diffParent: OID? { return commitSelection.diffParent }
+  var commit: Commit { commitSelection.commit }
+  var diffParent: OID? { commitSelection.diffParent }
   
   init(selection: CommitSelection)
   {
@@ -166,5 +166,8 @@ class CommitFileList: FileListModel
     return repository.contentsOfFile(path: path, at: commit)
   }
   
-  func fileURL(_ path: String) -> URL? { return nil }
+  func fileURL(_ path: String) -> URL?
+  {
+    return nil
+  }
 }

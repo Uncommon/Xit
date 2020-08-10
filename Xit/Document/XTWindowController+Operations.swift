@@ -13,7 +13,7 @@ extension XTWindowController
   func startOperation<OperationType: SimpleOperationController>()
       -> OperationType?
   {
-    return startOperation { return OperationType(windowController: self) }
+    return startOperation { OperationType(windowController: self) }
            as? OperationType
   }
 

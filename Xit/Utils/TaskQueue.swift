@@ -8,9 +8,7 @@ public class TaskQueue: NSObject
   fileprivate(set) var isShutDown = false
   
   @objc var busy: Bool
-  {
-    return queueCount > 0
-  }
+  { queueCount > 0 }
   
   init(id: String)
   {

@@ -13,7 +13,7 @@ extension Siesta.Resource
     else {
       addObserver(owner: owner) {
         (resource, event) in
-        if case .newData(_) = event,
+        if case .newData = event,
            let data = resource.latestData {
           closure(data)
         }
@@ -219,6 +219,6 @@ public func XMLResponseTransformer(
   return Siesta.ResponseContentTransformer<Data, XMLDocument>(
       transformErrors: transformErrors) {
     (entity: Siesta.Entity<Data>) throws -> XMLDocument? in
-    return try XMLDocument(data: entity.content, options: [])
+    try XMLDocument(data: entity.content, options: [])
   }
 }

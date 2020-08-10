@@ -8,9 +8,7 @@ class RenameBranchPanelController: SheetController
   var branchName: String
   {
     get
-    {
-      return textField.stringValue
-    }
+    { textField.stringValue }
     set
     {
       promptLabel.uiStringValue = .renamePrompt(newValue)

@@ -64,7 +64,7 @@ enum RepoError: Swift.Error
     }
   }
   
-  var localizedDescription: String { return message.rawValue }
+  var localizedDescription: String { message.rawValue }
   
   init(gitCode: git_error_code)
   {

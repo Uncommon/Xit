@@ -22,7 +22,7 @@ public class HistoryTableController: NSViewController,
   
   let observers = ObserverCollection()
 
-  var tableView: HistoryTableView { return view as! HistoryTableView }
+  var tableView: HistoryTableView { view as! HistoryTableView }
 
   let history = GitCommitHistory()
   

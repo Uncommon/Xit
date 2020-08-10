@@ -18,9 +18,7 @@ class TagPanelController: SheetController
   var lightweight: Bool
   {
     get
-    {
-      return lightweightRadio.boolValue
-    }
+    { lightweightRadio.boolValue }
     set
     {
       let textColor = newValue ? NSColor.disabledControlTextColor

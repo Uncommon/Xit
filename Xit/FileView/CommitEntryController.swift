@@ -52,9 +52,7 @@ class CommitEntryController: NSViewController, RepositoryWindowViewController
   var commitMessage: String
   {
     get
-    {
-      return commitField.string
-    }
+    { commitField.string }
     set
     {
       commitField.string = newValue.trimmingWhitespace

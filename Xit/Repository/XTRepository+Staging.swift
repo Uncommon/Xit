@@ -8,9 +8,7 @@ public class FileChange: NSObject
   
   /// Repository-relative path to use for git operations
   var gitPath: String
-  {
-    return path.droppingPrefix("\(WorkspaceTreeBuilder.rootName)/")
-  }
+  { path.droppingPrefix("\(WorkspaceTreeBuilder.rootName)/") }
   
   init(path: String, change: DeltaStatus = .unmodified)
   {
@@ -31,9 +29,7 @@ public class FileChange: NSObject
 extension FileChange // CustomStringConvertible
 {
   public override var description: String
-  {
-    return "\(path) [\(status.description)]"
-  }
+  { "\(path) [\(status.description)]" }
 }
 
 class FileStagingChange: FileChange
@@ -126,7 +122,7 @@ extension XTRepository: FileStatusDetection
     
     let result = withMutableArrayOfCStrings([path]) {
       (paths: inout [UnsafeMutablePointer<CChar>?]) -> Int32 in
-      return paths.withUnsafeMutableBufferPointer {
+      paths.withUnsafeMutableBufferPointer {
         options.pathspec.strings = $0.baseAddress
         return git_status_foreach_ext(gitRepo, &options, callback, &data)
       }
@@ -255,7 +251,7 @@ extension XTRepository: FileStatusDetection
 
 extension XTRepository: FileStaging
 {
-  public var index: StagingIndex? { return GitIndex(repository: gitRepo) }
+  public var index: StagingIndex? { GitIndex(repository: gitRepo) }
 
   /// Stages the given file to the index.
   public func stage(file: String) throws

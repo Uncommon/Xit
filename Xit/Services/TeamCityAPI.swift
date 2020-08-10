@@ -5,7 +5,7 @@ import Siesta
 /// API for getting TeamCity build information.
 class TeamCityAPI: BasicAuthService, ServiceAPI
 {
-  var type: AccountType { return .teamCity }
+  var type: AccountType { .teamCity }
   static let rootPath = "/httpAuth/app/rest"
   
   fileprivate(set) var buildTypesStatus = Services.Status.notStarted
@@ -114,19 +114,19 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
     
     return displayNames.reduce(nil) {
       (shortest, name) -> String? in
-      return (shortest.map { $0.count < name.count } ?? false)
+      (shortest.map { $0.count < name.count } ?? false)
           ? shortest : name
     }
   }
   
   var vcsRoots: Resource
-  { return resource("vcs-roots") }
+  { resource("vcs-roots") }
   
   var projects: Resource
-  { return resource("projects") }
+  { resource("projects") }
   
   var buildTypes: Resource
-  { return resource("buildTypes") }
+  { resource("buildTypes") }
   
   /// A resource for the VCS root with the given ID.
   func vcsRoot(id: String) -> Resource
@@ -173,7 +173,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
     
     return vcsRootMap.compactMap {
       (vcsRoot, rootURL) in
-      return urls.contains(rootURL) ? vcsRoot : nil
+      urls.contains(rootURL) ? vcsRoot : nil
     }
   }
   

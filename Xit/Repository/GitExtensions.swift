@@ -44,8 +44,7 @@ extension git_index_entry
   {
     get
     {
-      return (flags & UInt16(GIT_INDEX_ENTRY_STAGEMASK))
-             >> GIT_INDEX_ENTRY_STAGESHIFT
+      (flags & UInt16(GIT_INDEX_ENTRY_STAGEMASK)) >> GIT_INDEX_ENTRY_STAGESHIFT
     }
     set
     {
@@ -234,8 +233,8 @@ extension Array where Element == String
 
 extension git_strarray: RandomAccessCollection
 {
-  public var startIndex: Int { return 0 }
-  public var endIndex: Int { return count }
+  public var startIndex: Int { 0 }
+  public var endIndex: Int { count }
   
   public subscript(index: Int) -> String?
   {
@@ -249,8 +248,7 @@ extension Data
   {
     return withUnsafeBytes {
       (data: UnsafeRawBufferPointer) -> Bool in
-      return git_buffer_is_binary(data.bindMemory(to: Int8.self).baseAddress,
-                                  count)
+      git_buffer_is_binary(data.bindMemory(to: Int8.self).baseAddress, count)
     }
   }
 }

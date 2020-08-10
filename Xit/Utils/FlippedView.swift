@@ -5,5 +5,5 @@ import Cocoa
 /// top instead of the bottom.
 class FlippedView: NSView
 {
-  override var isFlipped: Bool { return true }
+  override var isFlipped: Bool { true }
 }

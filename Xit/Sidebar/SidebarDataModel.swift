@@ -12,7 +12,7 @@ class SidebarDataModel
   private(set) weak var outline: NSOutlineView?
   var roots: [SideBarGroupItem] = []
 
-  var stagingItem: SidebarItem { return roots[0].children[0] }
+  var stagingItem: SidebarItem { roots[0].children[0] }
   
   func makeRoots() -> [SideBarGroupItem]
   {

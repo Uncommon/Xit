@@ -7,14 +7,14 @@ class SidebarItem: NSObject
   var children: [SidebarItem]
   var selection: RepositorySelection?
   
-  var displayTitle: UIString { return UIString(rawValue: title) }
-  var icon: NSImage? { return nil }
-  var refType: RefType { return .unknown }
-  var expandable: Bool { return false }
+  var displayTitle: UIString { UIString(rawValue: title) }
+  var icon: NSImage? { nil }
+  var refType: RefType { .unknown }
+  var expandable: Bool { false }
   // NSObject.isSelectable is new in 10.12
-  override var isSelectable: Bool { return true }
-  var editable: Bool { return false }
-  var current: Bool { return false }
+  override var isSelectable: Bool { true }
+  var editable: Bool { false }
+  var current: Bool { false }
   
   required init(title: String)
   {
@@ -85,7 +85,7 @@ class SidebarItem: NSObject
     }
   }
   
-  override var description: String { return self.title }
+  override var description: String { self.title }
   
   override func isEqual(_ object: Any?) -> Bool
   {
@@ -98,7 +98,7 @@ class SidebarItem: NSObject
 
 extension SidebarItem
 {
-  override var debugDescription: String { return displayTitle.rawValue }
+  override var debugDescription: String { displayTitle.rawValue }
 
   func printTree(_ depth: Int = 0)
   {
@@ -121,8 +121,8 @@ class SideBarGroupItem: SidebarItem
   
   required init(title: String) { super.init(title: title) }
   
-  override var isSelectable: Bool { return false }
-  override var expandable: Bool { return true }
+  override var isSelectable: Bool { false }
+  override var expandable: Bool { true }
   
   override func isEqual(_ object: Any?) -> Bool
   {
@@ -141,18 +141,14 @@ class StagingSidebarItem: SidebarItem
   required init(title: String) { super.init(title: title) }
 
   override var icon: NSImage?
-  {
-    return NSImage(named: .xtStagingTemplate)
-  }
+  { NSImage(named: .xtStagingTemplate) }
 }
 
 
 class StashSidebarItem: SidebarItem
 {
   override var icon: NSImage?
-  {
-    return NSImage(named: .xtStashTemplate)
-  }
+  { NSImage(named: .xtStashTemplate) }
 }
 
 
@@ -167,20 +163,23 @@ protocol RefSidebarItem: SidebarItem
 class BranchSidebarItem: SidebarItem
 {
   override var displayTitle: UIString
-  { return UIString(rawValue: (title as NSString).lastPathComponent) }
+  { UIString(rawValue: (title as NSString).lastPathComponent) }
   override var icon: NSImage?
-  { return NSImage(named: .xtBranchTemplate) }
+  { NSImage(named: .xtBranchTemplate) }
   
-  var fullName: String { return title }
-  var remote: Remote? { return nil }
+  var fullName: String { title }
+  var remote: Remote? { nil }
   
-  func branchObject() -> Branch? { return nil }
+  func branchObject() -> Branch?
+  {
+    return nil
+  }
 }
 
 
 class LocalBranchSidebarItem: BranchSidebarItem
 {
-  override var refType: RefType { return current ? .activeBranch : .branch }
+  override var refType: RefType { current ? .activeBranch : .branch }
   override var current: Bool
   {
     if let currentBranch = selection!.repository.currentBranch {
@@ -216,7 +215,7 @@ class LocalBranchSidebarItem: BranchSidebarItem
 extension LocalBranchSidebarItem: RefSidebarItem
 {
   var refName: String
-  { return RefPrefixes.heads.appending(pathComponent: title) }
+  { RefPrefixes.heads.appending(pathComponent: title) }
 }
 
 
@@ -224,12 +223,10 @@ class RemoteBranchSidebarItem: BranchSidebarItem
 {
   var remoteName: String
   override var remote: Remote?
-  {
-    return (selection!.repository as? RemoteManagement)?.remote(named: remoteName)
-  }
-  override var refType: RefType { return .remoteBranch }
+  { (selection!.repository as? RemoteManagement)?.remote(named: remoteName) }
+  override var refType: RefType { .remoteBranch }
   
-  override var fullName: String { return "\(remoteName)/\(title)" }
+  override var fullName: String { "\(remoteName)/\(title)" }
   
 
   required init(title: String, remote: String, selection: RepositorySelection?)
@@ -261,15 +258,15 @@ class RemoteBranchSidebarItem: BranchSidebarItem
 extension RemoteBranchSidebarItem: RefSidebarItem
 {
   var refName: String
-  { return RefPrefixes.remotes.appending(pathComponent: fullName) }
+  { RefPrefixes.remotes.appending(pathComponent: fullName) }
 }
 
 
 class BranchFolderSidebarItem: SidebarItem
 {
-  override var icon: NSImage? { return NSImage(named: .xtFolderTemplate) }
-  override var isSelectable: Bool { return false }
-  override var expandable: Bool { return true }
+  override var icon: NSImage? { NSImage(named: .xtFolderTemplate) }
+  override var isSelectable: Bool { false }
+  override var expandable: Bool { true }
 }
 
 
@@ -296,9 +293,9 @@ class RemoteSidebarItem: SidebarItem
     return NSImage(named: .xtCloudTemplate)
   }
   
-  override var expandable: Bool { return true }
-  override var editable: Bool { return true }
-  override var refType: RefType { return .remote }
+  override var expandable: Bool { true }
+  override var editable: Bool { true }
+  override var refType: RefType { .remote }
   
   init(title: String, repository: RemoteManagement)
   {
@@ -332,10 +329,10 @@ class TagSidebarItem: SidebarItem
   let tag: Tag
 
   override var displayTitle: UIString
-  { return UIString(rawValue: (title as NSString).lastPathComponent) }
+  { UIString(rawValue: (title as NSString).lastPathComponent) }
   override var icon: NSImage?
-  { return NSImage(named: .xtTagTemplate) }
-  override var refType: RefType { return .tag }
+  { NSImage(named: .xtTagTemplate) }
+  override var refType: RefType { .tag }
 
   required init(tag: Tag)
   {
@@ -376,7 +373,7 @@ class TagSidebarItem: SidebarItem
 extension TagSidebarItem: RefSidebarItem
 {
   var refName: String
-  { return RefPrefixes.tags.appending(pathComponent: title) }
+  { RefPrefixes.tags.appending(pathComponent: title) }
 }
 
 
@@ -384,7 +381,7 @@ class SubmoduleSidebarItem: SidebarItem
 {
   let submodule: Submodule
   override var icon: NSImage?
-  { return NSImage(named: .xtSubmoduleTemplate) }
+  { NSImage(named: .xtSubmoduleTemplate) }
   
   required init(submodule: Submodule)
   {

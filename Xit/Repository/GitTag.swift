@@ -22,9 +22,7 @@ public class GitTag: Tag
   public lazy var targetOID: OID? = self.calculateOID()
   public lazy var message: String? = self.calculateMessage()
   public var commit: Commit?
-  {
-    return targetOID.flatMap { repository.commit(forOID: $0) }
-  }
+  { targetOID.flatMap { repository.commit(forOID: $0) } }
   
   /// Initialize with the given tag name.
   /// - parameter name: Can be either fully qualified with `refs/tags/`

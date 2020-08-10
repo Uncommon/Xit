@@ -20,6 +20,7 @@ opt_in_rules:
     - convenience_type
     - empty_count
     - empty_string
+    - implicit_return
     - let_var_whitespace
     - yoda_condition
 included:
@@ -29,6 +30,8 @@ force_try:
     severity: warning # Fine for cases like loading resources
 file_length:
     warning: 500
+implicit_return:
+    included: [closure, getter]
 line_length: 83 # Preferably 80, with some flexibility
 type_body_length: 500
 nesting:

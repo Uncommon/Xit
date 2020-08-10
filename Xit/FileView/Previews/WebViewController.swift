@@ -12,7 +12,7 @@ class WebViewController: NSViewController
   enum Default
   {
     static var tabWidth: UInt
-    { return PreviewsPrefsController.Default.tabWidth() }
+    { PreviewsPrefsController.Default.tabWidth() }
   }
   
   static let baseURL = Bundle.main.url(forResource: "html", withExtension: nil)!
@@ -104,7 +104,10 @@ class WebViewController: NSViewController
         """, completionHandler: nil)
   }
   
-  func wrappingWidthAdjustment() -> Int { return 0 }
+  func wrappingWidthAdjustment() -> Int
+  {
+    return 0
+  }
   
   func updateColors()
   {
@@ -175,9 +178,7 @@ extension WebViewController: TabWidthVariable
   var tabWidth: UInt
   {
     get
-    {
-      return savedTabWidth
-    }
+    { savedTabWidth }
     set
     {
       setDocumentProperty("tab-width", value: "\(newValue)")
@@ -202,9 +203,7 @@ extension WebViewController: WrappingVariable
   public var wrapping: TextWrapping
   {
     get
-    {
-      return savedWrapping ?? .windowWidth
-    }
+    { savedWrapping ?? .windowWidth }
     set
     {
       let wrapWidth: String

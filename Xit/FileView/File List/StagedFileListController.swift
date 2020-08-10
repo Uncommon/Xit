@@ -3,11 +3,11 @@ import Foundation
 class StagedFileListController: StagingFileListController
 {
   override var actionImage: NSImage?
-  { return NSImage(named: .xtUnstageButtonHover)! }
+  { NSImage(named: .xtUnstageButtonHover)! }
   override var pressedImage: NSImage?
-  { return NSImage(named: .xtUnstageButtonPressed)! }
+  { NSImage(named: .xtUnstageButtonPressed)! }
   override var actionButtonSelector: Selector?
-  { return #selector(self.unstage(_:)) }
+  { #selector(self.unstage(_:)) }
   
   override func loadView()
   {

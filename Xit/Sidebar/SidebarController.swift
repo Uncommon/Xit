@@ -209,7 +209,7 @@ class SidebarController: NSViewController, SidebarHandler,
       }
     }
   }
-  var window: NSWindow? { return view.window }
+  var window: NSWindow? { view.window }
   var savedSidebarWidth: UInt = 0
   let observers = ObserverCollection()
   var amendingObserver: NSKeyValueObservation?

@@ -49,14 +49,14 @@ class SideBarDataSource: NSObject
   }
   var filterSet: SidebarFilterSet = SidebarFilterSet(filters: [])
   var displayItemList: [SideBarGroupItem] = []
-  var stagingItem: SidebarItem { return model.stagingItem }
+  var stagingItem: SidebarItem { model.stagingItem }
   
   var reloadTimer: Timer?
   
   let observers = ObserverCollection()
   
   var repository: SidebarDataModel.Repository!
-  { return model?.repository }
+  { model?.repository }
   
   deinit
   {

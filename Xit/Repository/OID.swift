@@ -12,7 +12,7 @@ public protocol OID: CustomDebugStringConvertible
 
 extension OID // CustomDebugStringConvertible
 {
-  public var debugDescription: String { return sha }
+  public var debugDescription: String { sha }
 }
 
 // Don't explicitly conform to Hashable here because that constrains how the
@@ -83,7 +83,8 @@ public struct GitOID: OID, Hashable, Equatable
   
   public var sha: String
   {
-    let storage = UnsafeMutablePointer<Int8>.allocate(capacity: GitOID.shaLength + 1)
+    let length = GitOID.shaLength + 1
+    let storage = UnsafeMutablePointer<Int8>.allocate(capacity: length)
     var oid = self.oid
     defer {
       storage.deallocate()
@@ -119,9 +120,7 @@ public struct GitOID: OID, Hashable, Equatable
   }
   
   public var isZero: Bool
-  {
-    return withUnsafeOID { git_oid_iszero($0) } == 1
-  }
+  { withUnsafeOID { git_oid_iszero($0) } == 1 }
   
   public func equals(_ other: OID) -> Bool
   {
@@ -140,7 +139,7 @@ public struct GitOID: OID, Hashable, Equatable
 
 extension GitOID: CustomStringConvertible
 {
-  public var description: String { return sha }
+  public var description: String { sha }
 }
 
 public func == (left: GitOID, right: GitOID) -> Bool

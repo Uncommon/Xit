@@ -11,7 +11,7 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
   @IBOutlet weak var refreshButton: NSButton!
   @IBOutlet weak var refreshSpinner: NSProgressIndicator!
 
-  var remoteMgr: RemoteManagement! { return repository }
+  var remoteMgr: RemoteManagement! { repository }
   
   var filteredStatuses: [String: BuildStatusCache.BranchStatuses] = [:]
   var builds: [TeamCityAPI.Build] = []
@@ -78,9 +78,7 @@ class BuildStatusViewController: NSViewController, TeamCityAccessor
           { api.vcsBranchSpecs[$0]?.match(branch: branchName) }
       guard let match = matchNames.reduce(nil, {
         (shortest, name) -> String? in
-        return (shortest.map { $0.count < name.count }
-                ?? false)
-               ? shortest : name
+        (shortest.map { $0.count < name.count } ?? false) ? shortest : name
       })
       else { continue }
       

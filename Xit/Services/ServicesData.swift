@@ -22,9 +22,7 @@ protocol PullRequest
 extension PullRequest
 {
   var userApproval: PullRequestApproval
-  {
-    return reviewerStatus(userID: service.userID)
-  }
+  { reviewerStatus(userID: service.userID) }
   
   func matchRemote(url: URL) -> Bool
   {

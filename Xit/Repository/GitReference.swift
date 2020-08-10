@@ -99,8 +99,7 @@ class GitReference: Reference
 
   public var type: ReferenceType
   {
-    return ReferenceType(rawValue: Int32(git_reference_type(ref).rawValue)) ??
-           .invalid
+    ReferenceType(rawValue: Int32(git_reference_type(ref).rawValue)) ?? .invalid
   }
   
   public var name: String

@@ -25,14 +25,10 @@ extension XTRepository: Branching
   }
   
   public var localBranches: AnySequence<LocalBranch>
-  {
-    return AnySequence { LocalBranchIterator(repo: self) }
-  }
+  { AnySequence { LocalBranchIterator(repo: self) } }
   
   public var remoteBranches: AnySequence<RemoteBranch>
-  {
-    return AnySequence { RemoteBranchIterator(repo: self) }
-  }
+  { AnySequence { RemoteBranchIterator(repo: self) } }
 
   public func createBranch(named name: String,
                            target: String) throws -> LocalBranch?

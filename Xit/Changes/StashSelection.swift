@@ -5,10 +5,10 @@ class StashSelection: StagedUnstagedSelection
 {
   unowned var repository: FileChangesRepo
   let stash: Stash
-  var canCommit: Bool { return false }
-  var shaToSelect: String? { return stash.mainCommit?.parentSHAs[0] }
-  var fileList: FileListModel { return stagedList }
-  var unstagedFileList: FileListModel { return unstagedList }
+  var canCommit: Bool { false }
+  var shaToSelect: String? { stash.mainCommit?.parentSHAs[0] }
+  var fileList: FileListModel { stagedList }
+  var unstagedFileList: FileListModel { unstagedList }
   
   // Initialization requires a reference to self
   private(set) var stagedList: StashStagedList! = nil
@@ -34,12 +34,12 @@ class StashSelection: StagedUnstagedSelection
 class StashFileList
 {
   weak var stashSelection: StashSelection!
-  var selection: RepositorySelection { return stashSelection }
+  var selection: RepositorySelection { stashSelection }
   
   let mainSelection: CommitSelection?
   let mainList: CommitFileList?
 
-  var stash: Stash { return stashSelection.stash }
+  var stash: Stash { stashSelection.stash }
   
   init(selection: StashSelection)
   {
@@ -53,14 +53,14 @@ class StashFileList
 /// File list for the staged portion of a stash
 class StashStagedList: StashFileList, FileListModel
 {
-  var stagingType: StagingType { return .none }
+  var stagingType: StagingType { .none }
   
   let indexSelection: CommitSelection?
   let indexList: CommitFileList?
   
   var changes: [FileChange]
   {
-    return stash.indexCommit.map {
+    stash.indexCommit.map {
       repository.changes(for: $0.sha, parent: nil)
     } ?? []
   }
@@ -100,15 +100,18 @@ class StashStagedList: StashFileList, FileListModel
     return repository.blame(for: path, from: indexCommit.oid, to: nil)
   }
 
-  func fileURL(_ path: String) -> URL? { return nil }
+  func fileURL(_ path: String) -> URL?
+  {
+    return nil
+  }
 }
 
 /// File list for the unstaged portion of a stash
 class StashUnstagedList: StashFileList, FileListModel
 {
-  var stagingType: StagingType { return .none }
+  var stagingType: StagingType { .none }
 
-  var changes: [FileChange] { return stash.workspaceChanges() }
+  var changes: [FileChange] { stash.workspaceChanges() }
   
   let untrackedSelection: CommitSelection?
   let untrackedList: CommitFileList?

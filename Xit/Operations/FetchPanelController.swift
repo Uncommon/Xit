@@ -8,19 +8,19 @@ public class FetchPanelController: SheetController
   
   var selectedRemote: String
   {
-    get { return remotesPopup!.titleOfSelectedItem ?? "" }
+    get { remotesPopup!.titleOfSelectedItem ?? "" }
     set { remotesPopup?.selectItem(withTitle: newValue) }
   }
   
   var downloadTags: Bool
   {
-    get { return tagCheck?.intValue != 0 }
+    get { tagCheck?.intValue != 0 }
     set { tagCheck?.intValue = newValue ? 1 : 0 }
   }
   
   var pruneBranches: Bool
   {
-    get { return pruneCheck?.intValue != 0 }
+    get { pruneCheck?.intValue != 0 }
     set { pruneCheck?.intValue = newValue ? 1 : 0 }
   }
   

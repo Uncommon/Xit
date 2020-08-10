@@ -49,21 +49,14 @@ class FileViewController: NSViewController, RepositoryWindowViewController
   var indexTimer: Timer?
   
   var contentControllers: [XTFileContentController]
-  {
-    return  [diffController, blameController,
-             textController, previewController]
-  }
+  { [diffController, blameController, textController, previewController] }
   
   var inStagingView: Bool
-  {
-    return repoSelection is StagedUnstagedSelection
-  }
+  { repoSelection is StagedUnstagedSelection }
   
   /// True if the repository selection supports committing (ie the Staging item)
   var selectionCanCommit: Bool
-  {
-    return repoSelection is StagingSelection
-  }
+  { repoSelection is StagingSelection }
   
   /// True when the staged file list is showing (two file lists instead of one)
   var showingStaged: Bool
@@ -125,17 +118,11 @@ class FileViewController: NSViewController, RepositoryWindowViewController
     didSet { repoUIController?.updateForFocus() }
   }
   var activeFileListController: FileListController
-  {
-    return activeFileList.delegate as! FileListController
-  }
+  { activeFileList.delegate as! FileListController }
   var selectedChange: FileChange?
-  {
-    return activeFileListController.selectedChange
-  }
+  { activeFileListController.selectedChange }
   var selectedChanges: [FileChange]
-  {
-    return activeFileListController.selectedChanges
-  }
+  { activeFileListController.selectedChanges }
   
   weak var repo: XTRepository?
   

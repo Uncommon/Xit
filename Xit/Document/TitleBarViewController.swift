@@ -42,8 +42,8 @@ extension Notification
                                    XTProgressKeys.total: total])
   }
   
-  var progress: Float? { return userInfo?[XTProgressKeys.progress] as? Float }
-  var total: Float? { return userInfo?[XTProgressKeys.total] as? Float }
+  var progress: Float? { userInfo?[XTProgressKeys.progress] as? Float }
+  var total: Float? { userInfo?[XTProgressKeys.total] as? Float }
 }
 
 class TitleBarViewController: NSViewController
@@ -74,9 +74,7 @@ class TitleBarViewController: NSViewController
   @objc dynamic var progressHidden: Bool
   {
     get
-    {
-      return spinner.isHidden
-    }
+    { spinner.isHidden }
     set
     {
       spinner.isIndeterminate = true
@@ -265,7 +263,7 @@ class TitleBarViewController: NSViewController
   
   var selectedBranch: String?
   {
-    get { return branchPopup.titleOfSelectedItem }
+    get { branchPopup.titleOfSelectedItem }
     set {
       DispatchQueue.main.async {
         [weak self] in

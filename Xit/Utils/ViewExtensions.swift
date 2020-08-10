@@ -17,9 +17,7 @@ extension NSView
   /// is in a hidden tab, its own `window` will be `null`, but this will still
   /// return the real window.
   var ancestorWindow: NSWindow?
-  {
-    return firstAncestor?.window
-  }
+  { firstAncestor?.window }
 }
 
 extension NSAlert
@@ -82,7 +80,7 @@ extension NSControl
   /// The intValue property interpreted as a Bool.
   var boolValue: Bool
   {
-    get { return intValue != 0 }
+    get { intValue != 0 }
     set { intValue = newValue ? 1 : 0 }
   }
 }

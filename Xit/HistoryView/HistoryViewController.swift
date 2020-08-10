@@ -18,19 +18,13 @@ class HistoryViewController: NSViewController
   private var savedHistorySize: CGFloat?
   
   var historyHidden: Bool
-  {
-    return mainSplitView.subviewLength(0) == 0
-  }
+  { mainSplitView.subviewLength(0) == 0 }
   
   var detailsHidden: Bool
-  {
-    return mainSplitView.subviewLength(1) == 0
-  }
+  { mainSplitView.subviewLength(1) == 0 }
   
   override var nibName: NSNib.Name?
-  {
-    return .historyViewControllerNib
-  }
+  { .historyViewControllerNib }
   
   init()
   {

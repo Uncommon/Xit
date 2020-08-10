@@ -12,7 +12,7 @@ public class FileEventStream
       UInt32(kFSEventStreamEventFlagKernelDropped)
   
   public var latestEventID: FSEventStreamEventId
-  { return FSEventStreamGetLatestEventId(stream) }
+  { FSEventStreamGetLatestEventId(stream) }
   
   /// Constructor
   /// - parameter path: The root path to watch.

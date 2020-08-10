@@ -14,17 +14,17 @@ extension UserDefaults
 {
   @objc dynamic var collapseHistory: Bool
   {
-    get { return bool(forKey: PreferenceKeys.collapseHistory) }
+    get { bool(forKey: PreferenceKeys.collapseHistory) }
     set { set(newValue, forKey: PreferenceKeys.collapseHistory) }
   }
   @objc dynamic var deemphasizeMerges: Bool
   {
-    get { return bool(forKey: PreferenceKeys.deemphasizeMerges) }
+    get { bool(forKey: PreferenceKeys.deemphasizeMerges) }
     set { set(newValue, forKey: PreferenceKeys.deemphasizeMerges) }
   }
   @objc dynamic var resetAmend: Bool
   {
-    get { return bool(forKey: PreferenceKeys.resetAmend) }
+    get { bool(forKey: PreferenceKeys.resetAmend) }
     set { set(newValue, forKey: PreferenceKeys.resetAmend) }
   }
   @objc dynamic var accounts: [Account]
@@ -55,7 +55,7 @@ extension UserDefaults
   }
   @objc dynamic var statusInTabs: Bool
   {
-    get { return bool(forKey: PreferenceKeys.statusInTabs) }
+    get { bool(forKey: PreferenceKeys.statusInTabs) }
     set { set(newValue, forKey: PreferenceKeys.statusInTabs) }
   }
 }

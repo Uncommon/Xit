@@ -17,14 +17,10 @@ extension String
   }
 
   var trimmingWhitespace: String
-  {
-    return trimmingCharacters(in: .whitespacesAndNewlines)
-  }
+  { trimmingCharacters(in: .whitespacesAndNewlines) }
   
   var nilIfEmpty: String?
-  {
-    return isEmpty ? nil : self
-  }
+  { isEmpty ? nil : self }
   
   /// Splits a "refs/*/..." string into prefix and remainder.
   func splitRefName() -> (String, String)?
@@ -81,15 +77,13 @@ extension String
   
   var xmlEscaped: String
   {
-    return CFXMLCreateStringByEscapingEntities(kCFAllocatorDefault,
-                                               self as CFString,
-                                               [:] as CFDictionary) as String
+    CFXMLCreateStringByEscapingEntities(kCFAllocatorDefault,
+                                        self as CFString,
+                                        [:] as CFDictionary) as String
   }
   
   var fullNSRange: NSRange
-  {
-    return NSRange(startIndex..., in: self)
-  }
+  { NSRange(startIndex..., in: self) }
 }
 
 // MARK: Prefixes & Suffixes
@@ -147,40 +141,26 @@ extension String
   }
   
   var pathExtension: String
-  {
-    return (self as NSString).pathExtension
-  }
+  { (self as NSString).pathExtension }
 
   var pathComponents: [String]
-  {
-    return (self as NSString).pathComponents
-  }
+  { (self as NSString).pathComponents }
   
   // TODO: this probably shouldn't be optional
   var firstPathComponent: String?
-  {
-    return pathComponents.first
-  }
+  { pathComponents.first }
   
   var deletingFirstPathComponent: String
-  {
-    return NSString.path(withComponents: Array(pathComponents.dropFirst(1)))
-  }
+  { NSString.path(withComponents: Array(pathComponents.dropFirst(1))) }
   
   var lastPathComponent: String
-  {
-    return (self as NSString).lastPathComponent
-  }
+  { (self as NSString).lastPathComponent }
   
   var deletingLastPathComponent: String
-  {
-    return (self as NSString).deletingLastPathComponent
-  }
+  { (self as NSString).deletingLastPathComponent }
   
   var expandingTildeInPath: String
-  {
-    return (self as NSString).expandingTildeInPath
-  }
+  { (self as NSString).expandingTildeInPath }
 }
 
 infix operator +/ : AdditionPrecedence

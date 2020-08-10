@@ -40,7 +40,7 @@ extension git_diff_options
   
   var contextLines: UInt32
   {
-    get { return context_lines }
+    get { context_lines }
     set { context_lines = newValue }
   }
 }
@@ -56,7 +56,7 @@ class GitDiff: Diff
   {
     if var options = options {
       return withUnsafePointer(to: &options) {
-        return callback($0)
+        callback($0)
       }
     }
     else {
@@ -70,9 +70,9 @@ class GitDiff: Diff
   {
     var diff: OpaquePointer?
     let result: Int32 = GitDiff.unwrappingOptions(options) {
-      return git_diff_tree_to_tree(&diff, repository,
-                                     (oldTree as? GitTree)?.tree,
-                                     (newTree as? GitTree)?.tree, $0)
+      git_diff_tree_to_tree(&diff, repository,
+                            (oldTree as? GitTree)?.tree,
+                            (newTree as? GitTree)?.tree, $0)
     }
     guard result == 0,
           let finalDiff = diff
@@ -87,7 +87,7 @@ class GitDiff: Diff
   {
     var diff: OpaquePointer?
     let result = GitDiff.unwrappingOptions(options) {
-      return git_diff_index_to_workdir(&diff, repository, index.index, $0)
+      git_diff_index_to_workdir(&diff, repository, index.index, $0)
     }
     guard result == 0,
           let finalDiff = diff
@@ -102,7 +102,7 @@ class GitDiff: Diff
   {
     var diff: OpaquePointer?
     let result = GitDiff.unwrappingOptions(options) {
-      return git_diff_tree_to_workdir(&diff, repository, tree.tree, $0)
+      git_diff_tree_to_workdir(&diff, repository, tree.tree, $0)
     }
     guard result == 0,
           let finalDiff = diff
@@ -111,7 +111,7 @@ class GitDiff: Diff
     self.diff = finalDiff
   }
   
-  var deltaCount: Int { return git_diff_num_deltas(diff) }
+  var deltaCount: Int { git_diff_num_deltas(diff) }
   
   func delta(at index: Int) -> DiffDelta?
   {
@@ -138,26 +138,26 @@ class GitDiff: Diff
   {
     let diff: GitDiff
     
-    var startIndex: Int { return 0 }
-    var endIndex: Int { return diff.deltaCount }
+    var startIndex: Int { 0 }
+    var endIndex: Int { diff.deltaCount }
     
-    subscript(position: Int) -> DiffDelta { return diff.delta(at: position)! }
-    func index(after i: Int) -> Int { return i + 1 }
+    subscript(position: Int) -> DiffDelta { diff.delta(at: position)! }
+    func index(after i: Int) -> Int { i + 1 }
   }
   
   struct Patches: Collection
   {
     let diff: GitDiff
     
-    var startIndex: Int { return 0 }
-    var endIndex: Int { return diff.deltaCount }
+    var startIndex: Int { 0 }
+    var endIndex: Int { diff.deltaCount }
     
-    subscript(position: Int) -> Patch { return diff.patch(at: position)! }
-    func index(after i: Int) -> Int { return i + 1 }
+    subscript(position: Int) -> Patch { diff.patch(at: position)! }
+    func index(after i: Int) -> Int { i + 1 }
   }
   
-  var deltas: Deltas { return Deltas(diff: self) }
-  var patches: Patches { return Patches(diff: self) }
+  var deltas: Deltas { Deltas(diff: self) }
+  var patches: Patches { Patches(diff: self) }
   
   deinit
   {
@@ -192,7 +192,7 @@ extension Diff
 
 extension git_diff_file: DiffFile
 {
-  public var oid: OID { return GitOID(oid: id) }
+  public var oid: OID { GitOID(oid: id) }
   public var filePath: String
   {
     if let path = self.path {
@@ -202,18 +202,18 @@ extension git_diff_file: DiffFile
       return ""
     }
   }
-  public var diffFlags: DiffFlags { return DiffFlags(rawValue: flags) }
+  public var diffFlags: DiffFlags { DiffFlags(rawValue: flags) }
 }
 
 extension git_diff_line: DiffLine
 {
-  public var type: DiffLineType { return DiffLineType(rawValue: UInt32(origin))
+  public var type: DiffLineType { DiffLineType(rawValue: UInt32(origin))
                                          ?? .context }
-  public var oldLine: Int32 { return old_lineno }
-  public var newLine: Int32 { return new_lineno }
-  public var lineCount: Int32 { return num_lines }
-  public var byteCount: Int { return content_len }
-  public var offset: Int64 { return content_offset }
+  public var oldLine: Int32 { old_lineno }
+  public var newLine: Int32 { new_lineno }
+  public var lineCount: Int32 { num_lines }
+  public var byteCount: Int { content_len }
+  public var offset: Int64 { content_offset }
   public var text: String
   {
     if let text = NSString(bytes: content, length: content_len,

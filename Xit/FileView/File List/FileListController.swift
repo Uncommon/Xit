@@ -53,9 +53,9 @@ class FileListController: NSViewController, RepositoryWindowViewController
   let fileListDataSource: FileChangesDataSource
   let fileTreeDataSource: FileTreeDataSource
   
-  var actionImage: NSImage? { return nil }
-  var pressedImage: NSImage? { return nil }
-  var actionButtonSelector: Selector? { return nil }
+  var actionImage: NSImage? { nil }
+  var pressedImage: NSImage? { nil }
+  var actionButtonSelector: Selector? { nil }
   
   var repository: BasicRepository & FileStaging & FileContents
   { repoController?.repository as! BasicRepository & FileStaging & FileContents }
@@ -194,7 +194,7 @@ class FileListController: NSViewController, RepositoryWindowViewController
   
   var selectedChanges: [FileChange]
   {
-    return outlineView.selectedRowIndexes.compactMap {
+    outlineView.selectedRowIndexes.compactMap {
       viewDataSource?.fileChange(at: $0)
     }
   }
@@ -393,7 +393,7 @@ class StagingFileListController: FileListController
   var modifyActions: [Selector] = []
   
   /// True if actions such as stage and revert are available.
-  var canModify: Bool { return !(repoSelection is StashSelection) }
+  var canModify: Bool { !(repoSelection is StashSelection) }
   
   override func repoSelectionChanged()
   {

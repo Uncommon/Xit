@@ -37,7 +37,7 @@ public class XTRepository: NSObject, BasicRepository, RepoConfiguring
   }
   var cachedBranches: [String: GitBranch]
   {
-    get { return mutex.withLock { _cachedBranches } }
+    get { mutex.withLock { _cachedBranches } }
     set { mutex.withLock { _cachedBranches = newValue } }
   }
   var cachedIgnored = false

@@ -5,11 +5,11 @@ class WorkspaceFileListController: StagingFileListController
   var showingIgnored = false
   
   override var actionImage: NSImage?
-  { return NSImage(named: .xtStageButtonHover)! }
+  { NSImage(named: .xtStageButtonHover)! }
   override var pressedImage: NSImage?
-  { return NSImage(named: .xtStageButtonPressed)! }
+  { NSImage(named: .xtStageButtonPressed)! }
   override var actionButtonSelector: Selector?
-  { return #selector(self.stage(_:)) }
+  { #selector(self.stage(_:)) }
   
   override func loadView()
   {

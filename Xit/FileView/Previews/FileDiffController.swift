@@ -274,15 +274,9 @@ extension FileDiffController: XTFileContentController
   var isLoaded: Bool
   {
     get
-    {
-      return withSync { isLoaded_internal }
-    }
+    { withSync { isLoaded_internal } }
     set
-    {
-      withSync {
-        isLoaded_internal = newValue
-      }
-    }
+    { withSync { isLoaded_internal = newValue } }
   }
 
   public func clear()

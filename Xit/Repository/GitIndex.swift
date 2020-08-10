@@ -39,19 +39,17 @@ extension StagingIndex
 {
   /// A collection for accessing or iterating through index entries.
   var entries: EntryCollection
-  {
-    return EntryCollection(index: self)
-  }
+  { EntryCollection(index: self) }
 }
 
 class EntryCollection: RandomAccessCollection
 {
   let index: StagingIndex
   
-  var startIndex: Int { return 0 }
+  var startIndex: Int { 0 }
   
   var endIndex: Int
-  { return index.entryCount }
+  { index.entryCount }
   
   init(index: StagingIndex)
   {
@@ -85,19 +83,13 @@ class GitIndex: StagingIndex
   let index: OpaquePointer
 
   var entryCount: Int
-  {
-    return git_index_entrycount(index)
-  }
+  { git_index_entrycount(index) }
   
   var hasConflicts: Bool
-  {
-    return git_index_has_conflicts(index) != 0
-  }
+  { git_index_has_conflicts(index) != 0 }
   
   var conflicts: AnySequence<Xit.ConflictEntry>
-  {
-    return AnySequence { ConflictIterator(index: self.index) }
-  }
+  { AnySequence { ConflictIterator(index: self.index) } }
 
   init?(repository: OpaquePointer)
   {
@@ -207,8 +199,8 @@ extension GitIndex
   {
     let gitEntry: git_index_entry
     
-    var oid: OID { return GitOID(oid: gitEntry.id) }
-    var path: String { return String(cString: gitEntry.path) }
+    var oid: OID { GitOID(oid: gitEntry.id) }
+    var path: String { String(cString: gitEntry.path) }
     
     var conflicted: Bool
     {

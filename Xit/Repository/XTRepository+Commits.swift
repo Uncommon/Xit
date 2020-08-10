@@ -35,9 +35,7 @@ extension XTRepository: CommitStorage
 extension XTRepository: CommitReferencing
 {
   var headReference: Reference?
-  {
-    return GitReference(headForRepo: gitRepo)
-  }
+  { GitReference(headForRepo: gitRepo) }
   
   /// Reloads the cached map of OIDs to refs.
   public func rebuildRefsIndex()
@@ -113,9 +111,7 @@ extension XTRepository: CommitReferencing
   }
   
   var headSHA: String?
-  {
-    return headRef.map { sha(forRef: $0) } ?? nil
-  }
+  { headRef.map { sha(forRef: $0) } ?? nil }
   
   func calculateCurrentBranch() -> String?
   {

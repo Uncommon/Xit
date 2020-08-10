@@ -177,5 +177,5 @@ extension BuildStatusController: NSPopoverDelegate
 
 extension BuildStatusController: TeamCityAccessor
 {
-  var remoteMgr: RemoteManagement! { return model.repository }
+  var remoteMgr: RemoteManagement! { model.repository }
 }

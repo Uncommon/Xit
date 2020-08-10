@@ -30,10 +30,10 @@ extension NSColor
 {
   var invertingBrightness: NSColor
   {
-    return NSColor(deviceHue: hueComponent,
-                   saturation: saturationComponent,
-                   brightness: 1.0 - brightnessComponent,
-                   alpha: alphaComponent)
+    NSColor(deviceHue: hueComponent,
+            saturation: saturationComponent,
+            brightness: 1.0 - brightnessComponent,
+            alpha: alphaComponent)
   }
 
   var cssHSL: String
@@ -71,9 +71,7 @@ extension NSColor
 extension NSError
 {
   var gitError: git_error_code
-  {
-    return git_error_code(Int32(code))
-  }
+  { git_error_code(Int32(code)) }
   
   convenience init(osStatus: OSStatus)
   {

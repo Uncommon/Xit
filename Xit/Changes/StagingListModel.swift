@@ -14,11 +14,11 @@ class StagingListModel
 /// File list for staged files (the index)
 class IndexFileList: StagingListModel, FileListModel
 {
-  var stagingType: StagingType { return .index }
+  var stagingType: StagingType { .index }
   
   var changes: [FileChange]
   {
-    return Signpost.interval(.loadIndex) {
+    Signpost.interval(.loadIndex) {
       repository.stagedChanges()
     }
   }
@@ -72,9 +72,7 @@ class IndexFileList: StagingListModel, FileListModel
 class AmendingIndexFileList: IndexFileList
 {
   override var changes: [FileChange]
-  {
-    return repository.amendingStagedChanges()
-  }
+  { repository.amendingStagedChanges() }
   
   override func diffForFile(_ path: String) -> PatchMaker.PatchResult?
   {
@@ -91,12 +89,12 @@ class AmendingIndexFileList: IndexFileList
 /// File list for unstaged files (the workspace)
 class WorkspaceFileList: StagingListModel, FileListModel
 {
-  var stagingType: StagingType { return .workspace }
+  var stagingType: StagingType { .workspace }
   var showingIgnored = false
   
   var changes: [FileChange]
   {
-    return Signpost.interval(.loadWorkspace) {
+    Signpost.interval(.loadWorkspace) {
       repository.unstagedChanges(showIgnored: showingIgnored)
     }
   }

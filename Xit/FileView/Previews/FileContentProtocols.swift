@@ -18,9 +18,7 @@ struct FileSelection: Equatable
   let staging: StagingType
   
   var fileList: FileListModel
-  {
-    return repoSelection.list(staged: staging == .index)
-  }
+  { repoSelection.list(staged: staging == .index) }
 
   static func == (lhs: FileSelection, rhs: FileSelection) -> Bool
   {

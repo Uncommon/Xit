@@ -50,21 +50,15 @@ class ResetPanelController: SheetController
   let observers = ObserverCollection()
   
   private var isWorkspaceClean: Bool
-  {
-    return repository.unstagedChanges(showIgnored: false).isEmpty
-  }
+  { repository.unstagedChanges(showIgnored: false).isEmpty }
   
   private var isStageClean: Bool
-  {
-    return repository.stagedChanges().isEmpty
-  }
+  { repository.stagedChanges().isEmpty }
   
   public var mode: ResetMode
   {
     get
-    {
-      return mode(forSegment: modeControl.selectedSegment)
-    }
+    { mode(forSegment: modeControl.selectedSegment) }
     set
     {
       let segment: Int

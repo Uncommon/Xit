@@ -31,9 +31,7 @@ extension ConfigEntry
   }
   
   var intValue: Int
-  {
-    return Int(stringValue) ?? 0
-  }
+  { Int(stringValue) ?? 0 }
 }
 
 extension Config
@@ -43,10 +41,10 @@ extension Config
     return self[remote]
   }
   
-  var userName: String? { return self["user.name"] }
-  var userEmail: String? { return self["user.email"] }
+  var userName: String? { self["user.name"] }
+  var userEmail: String? { self["user.email"] }
   
-  var fetchPrune: Bool { return self["fetch.prune"] ?? false }
+  var fetchPrune: Bool { self["fetch.prune"] ?? false }
   
   /// Returns the prune setting for `remote`, or falls back to the general
   /// `fetch.prune` setting.
@@ -106,7 +104,7 @@ class GitConfig: Config
   
   /// The config actually being read: the cached snapshot, if any, or the
   /// data residing in the various config files.
-  var operativeConfig: OpaquePointer { return snapshot ?? config }
+  var operativeConfig: OpaquePointer { snapshot ?? config }
   
   init?(repository: OpaquePointer)
   {
@@ -271,17 +269,15 @@ class GitConfig: Config
   }
   
   var entries: AnySequence<ConfigEntry>
-  {
-    return AnySequence<ConfigEntry> { EntryIterator(config: self.operativeConfig) }
-  }
+  { AnySequence<ConfigEntry> { EntryIterator(config: self.operativeConfig) } }
 }
 
 class GitConfigEntry: ConfigEntry
 {
   let entry: git_config_entry
   
-  var name: String { return String(cString: entry.name) }
-  var stringValue: String { return String(cString: entry.value) }
+  var name: String { String(cString: entry.name) }
+  var stringValue: String { String(cString: entry.value) }
   
   init(entry: git_config_entry)
   {

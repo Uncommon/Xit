@@ -24,22 +24,20 @@ public protocol Commit: OIDObject, CustomStringConvertible
 
 extension Commit
 {
-  public var sha: String { return oid.sha }
+  public var sha: String { oid.sha }
   
-  var authorName: String? { return authorSig?.name }
-  var authorEmail: String? { return authorSig?.email }
-  var authorDate: Date? { return authorSig?.when }
-  var committerName: String? { return committerSig?.name }
-  var committerEmail: String? { return committerSig?.email }
-  var commitDate: Date { return committerSig?.when ?? Date() }
+  var authorName: String? { authorSig?.name }
+  var authorEmail: String? { authorSig?.email }
+  var authorDate: Date? { authorSig?.when }
+  var committerName: String? { committerSig?.name }
+  var committerEmail: String? { committerSig?.email }
+  var commitDate: Date { committerSig?.when ?? Date() }
 }
 
 extension Commit
 {
   public var parentSHAs: [String]
-  {
-    return parentOIDs.compactMap { $0.sha }
-  }
+  { parentOIDs.compactMap { $0.sha } }
   
   public var messageSummary: String
   {
@@ -52,7 +50,7 @@ extension Commit
   }
 
   public var description: String
-  { return sha.firstSix() }
+  { sha.firstSix() }
 }
 
 public class GitCommit: Commit
@@ -63,7 +61,7 @@ public class GitCommit: Commit
 
   public var sha: String
   {
-    return mutex.withLock {
+    mutex.withLock {
       if let sha = storedSHA {
         return sha
       }
@@ -79,7 +77,7 @@ public class GitCommit: Commit
   public let parentOIDs: [OID]
   
   public var repository: OpaquePointer
-  { return git_commit_owner(commit) }
+  { git_commit_owner(commit) }
   
   public var message: String?
   {
@@ -113,13 +111,13 @@ public class GitCommit: Commit
   }
   
   public var authorName: String?
-  { return authorSig?.name }
+  { authorSig?.name }
   
   public var authorEmail: String?
-  { return authorSig?.email }
+  { authorSig?.email }
   
   public var authorDate: Date?
-  { return authorSig?.when }
+  { authorSig?.when }
   
   public var committerSig: Signature?
   {
@@ -130,16 +128,16 @@ public class GitCommit: Commit
   }
   
   public var committerName: String?
-  { return committerSig?.name }
+  { committerSig?.name }
   
   public var committerEmail: String?
-  { return committerSig?.email }
+  { committerSig?.email }
   
   public var commitDate: Date
-  { return committerSig?.when ?? Date() }
+  { committerSig?.when ?? Date() }
   
   public var email: String?
-  { return committerEmail }
+  { committerEmail }
 
   public var tree: Tree?
   {

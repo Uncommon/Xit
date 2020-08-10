@@ -116,8 +116,8 @@ extension XTRepository
       return GitStash(repo: repo, index: UInt(position), message: message)
     }
     
-    public var startIndex: Int { return 0 }
-    public var endIndex: Int { return count }
+    public var startIndex: Int { 0 }
+    public var endIndex: Int { count }
     
     public func index(after i: Int) -> Int
     {

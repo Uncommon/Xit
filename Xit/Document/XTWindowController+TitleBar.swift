@@ -62,9 +62,9 @@ extension XTWindowController: TitleBarDelegate
 
   var viewStates: (sidebar: Bool, history: Bool, details: Bool)
   {
-    return (!sidebarHidden,
-            !historyController.historyHidden,
-            !historyController.detailsHidden)
+    (!sidebarHidden,
+     !historyController.historyHidden,
+     !historyController.detailsHidden)
   }
 
   func goBack() { goBack(self) }

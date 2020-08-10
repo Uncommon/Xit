@@ -78,19 +78,15 @@ public class GitSubmodule: Submodule
     self.submodule = submodule
   }
   
-  public var name: String { return String(cString: git_submodule_name(submodule)) }
-  public var path: String { return String(cString: git_submodule_path(submodule)) }
+  public var name: String { .init(cString: git_submodule_name(submodule)) }
+  public var path: String { .init(cString: git_submodule_path(submodule)) }
   public var url: URL?
-  {
-    return URL(string: String(cString: git_submodule_url(submodule)))
-  }
+  { URL(string: String(cString: git_submodule_url(submodule))) }
   
   public var ignoreRule: SubmoduleIgnore
   {
     get
-    {
-      return SubmoduleIgnore(ignore: git_submodule_ignore(submodule))
-    }
+    { SubmoduleIgnore(ignore: git_submodule_ignore(submodule)) }
     set
     {
       git_submodule_set_ignore(git_submodule_owner(submodule), name,
@@ -101,9 +97,7 @@ public class GitSubmodule: Submodule
   public var updateStrategy: SubmoduleUpdate
   {
     get
-    {
-      return SubmoduleUpdate(update: git_submodule_update_strategy(submodule))
-    }
+    { SubmoduleUpdate(update: git_submodule_update_strategy(submodule)) }
     set
     {
       git_submodule_set_update(git_submodule_owner(submodule), name,
@@ -115,7 +109,7 @@ public class GitSubmodule: Submodule
   {
     get
     {
-      return SubmoduleRecurse(recurse:
+      SubmoduleRecurse(recurse:
           git_submodule_fetch_recurse_submodules(submodule))
     }
     set

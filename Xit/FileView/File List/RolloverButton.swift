@@ -16,9 +16,7 @@ class RolloverButton: NSButton
   override var image: NSImage?
   {
     get
-    {
-      return super.image
-    }
+    { super.image }
     set(image)
     {
       self.normalImage = nil

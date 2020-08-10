@@ -18,8 +18,5 @@ class ValidatedSegment
 extension ValidatedSegment: NSValidatedUserInterfaceItem
 {
   var tag: Int
-  {
-    return (segmentedControl.cell as? NSSegmentedCell)?.tag(forSegment: index)
-           ?? 0
-  }
+  { (segmentedControl.cell as? NSSegmentedCell)?.tag(forSegment: index) ?? 0 }
 }

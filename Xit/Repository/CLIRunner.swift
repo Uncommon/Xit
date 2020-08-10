@@ -23,7 +23,9 @@ struct CLIRunner
   /// - Parameter args: Command arguments to be passed
   func run(inputData: Data? = nil, args: [String]) throws -> Data
   {
-    NSLog("*** command = \(toolPath.lastPathComponent) \(args.joined(separator: " "))")
+    NSLog("""
+        *** command = \(toolPath.lastPathComponent) \(args.joined(separator: " "))
+        """)
     
     let task = Process()
     

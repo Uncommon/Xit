@@ -51,8 +51,8 @@ public protocol Remote: AnyObject
 
 extension Remote
 {
-  var url: URL? { return urlString.flatMap { URL(string: $0) } }
-  var pushURL: URL? { return pushURLString.flatMap { URL(string: $0) } }
+  var url: URL? { urlString.flatMap { URL(string: $0) } }
+  var pushURL: URL? { pushURLString.flatMap { URL(string: $0) } }
   
   func updateURL(_ url: URL) throws
   {
@@ -94,9 +94,7 @@ class GitRemote: Remote
   }
   
   var refSpecs: AnyCollection<RefSpec>
-  {
-    return AnyCollection(RefSpecCollection(remote: self))
-  }
+  { AnyCollection(RefSpecCollection(remote: self)) }
   
   init?(name: String, repository: OpaquePointer)
   {
@@ -178,10 +176,9 @@ class GitRemote: Remote
     
     result = git_remote_callbacks.withCallbacks(callbacks) {
       (gitCallbacks) in
-      return withUnsafePointer(to: gitCallbacks) {
+      withUnsafePointer(to: gitCallbacks) {
         (callbacksPtr) in
-        return git_remote_connect(remote, direction.gitDirection, callbacksPtr,
-                                  nil, nil)
+        git_remote_connect(remote, direction.gitDirection, callbacksPtr, nil, nil)
       }
     }
     
@@ -199,7 +196,7 @@ extension GitRemote
   {
     let remote: GitRemote
 
-    var count: Int { return git_remote_refspec_count(remote.remote) }
+    var count: Int { git_remote_refspec_count(remote.remote) }
     
     func makeIterator() -> RefSpecIterator
     {
@@ -211,8 +208,8 @@ extension GitRemote
       return GitRefSpec(refSpec: git_remote_get_refspec(remote.remote, position))
     }
     
-    public var startIndex: Int { return 0 }
-    public var endIndex: Int { return count }
+    public var startIndex: Int { 0 }
+    public var endIndex: Int { count }
     
     public func index(after i: Int) -> Int
     {
