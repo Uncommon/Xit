@@ -10,16 +10,16 @@ extension NSColor
   static func refTokenStroke(_ type: RefTokenStroke) -> NSColor
   {
     switch type {
-    case .branch:
-      return NSColor(named: "branchStroke")!
-    case .remoteBranch:
-      return NSColor(named: "remoteBranchStroke")!
-    case .tag:
-      return NSColor(named: "tagStroke")!
-    case .generic:
-      return NSColor(named: "refStroke")!
-    case .shine:
-      return NSColor(named: "refShine")!
+      case .branch:
+        return NSColor(named: "branchStroke")!
+      case .remoteBranch:
+        return NSColor(named: "remoteBranchStroke")!
+      case .tag:
+        return NSColor(named: "tagStroke")!
+      case .generic:
+        return NSColor(named: "refStroke")!
+      case .shine:
+        return NSColor(named: "refShine")!
     }
   }
   
@@ -31,14 +31,14 @@ extension NSColor
   static func refTokenText(_ type: RefTokenText) -> NSColor
   {
     switch type {
-    case .active:
-      return NSColor(named: "refActiveText")!
-    case .activeEmboss:
-      return NSColor(named: "refActiveTextEmboss")!
-    case .normal:
-      return NSColor(named: "refText")!
-    case .normalEmboss:
-      return NSColor(named: "refTextEmboss")!
+      case .active:
+        return NSColor(named: "refActiveText")!
+      case .activeEmboss:
+        return NSColor(named: "refActiveTextEmboss")!
+      case .normal:
+        return NSColor(named: "refText")!
+      case .normalEmboss:
+        return NSColor(named: "refTextEmboss")!
     }
   }
   

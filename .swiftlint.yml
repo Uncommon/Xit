@@ -9,7 +9,6 @@ disabled_rules:
     - identifier_name # Single-letter names can be OK
     - trailing_comma # Trailing commas make it easier to add entries
     - todo # TODOs are handled separately
-    - switch_case_alignment # Indent one level from switch
     - private_over_fileprivate
     - empty_parentheses_with_trailing_closure
     - redundant_optional_initialization # Why are only `var` optionals implicitly initialized?
@@ -45,3 +44,6 @@ statement_position:
     statement_mode: uncuddled_else
 cyclomatic_complexity:
     ignores_case_statements: true
+switch_case_alignment:
+    indented_cases: true
+

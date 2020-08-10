@@ -57,9 +57,9 @@ extension String
     {
       switch self
       {
-      case .crlf: return "\r\n"
-      case .lf:   return "\n"
-      case .unknown: return "\n"
+        case .crlf: return "\r\n"
+        case .lf:   return "\n"
+        case .unknown: return "\n"
       }
     }
   }

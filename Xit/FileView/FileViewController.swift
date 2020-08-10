@@ -464,7 +464,7 @@ extension FileViewController: NSSplitViewDelegate
     switch splitView {
       case headerSplitView:
         return view != headerTabView
-    case fileSplitView:
+      case fileSplitView:
         return view != fileListTabView
       default:
         return true

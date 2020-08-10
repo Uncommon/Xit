@@ -52,26 +52,26 @@ enum TextWrapping
   var rawValue: Int
   {
     switch self {
-    case .windowWidth:
-      return 0
-    case .columns(let count):
-      return count
-    case .none:
-      return -1
+      case .windowWidth:
+        return 0
+      case .columns(let count):
+        return count
+      case .none:
+        return -1
     }
   }
   
   init?(rawValue: Int)
   {
     switch rawValue {
-    case 0:
-      self = .windowWidth
-    case -1:
-      self = .none
-    case 1...:
-      self = .columns(rawValue)
-    default:
-      return nil
+      case 0:
+        self = .windowWidth
+      case -1:
+        self = .none
+      case 1...:
+        self = .columns(rawValue)
+      default:
+        return nil
     }
   }
 }
@@ -81,13 +81,13 @@ extension TextWrapping: Equatable
   public static func == (a: TextWrapping, b: TextWrapping) -> Bool
   {
     switch (a, b) {
-    case (.windowWidth, .windowWidth),
-         (.none, .none):
-      return true
-    case (.columns(let c1), .columns(let c2)):
-      return c1 == c2
-    default:
-      return false
+      case (.windowWidth, .windowWidth),
+           (.none, .none):
+        return true
+      case (.columns(let c1), .columns(let c2)):
+        return c1 == c2
+      default:
+        return false
     }
   }
 }
