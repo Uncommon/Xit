@@ -111,7 +111,7 @@ class PreviewsPrefsController: NSViewController
       // marker isn't useful.
       if let contextSetting = defaults.value(forKey: PreferenceKeys.contextLines)
                               as? UInt,
-         Values.context.firstIndex(of: contextSetting) != nil {
+         Values.context.contains(contextSetting) {
         return contextSetting
       }
       else {

@@ -16,9 +16,13 @@ opt_in_rules:
     - anyobject_protocol
     - closure_spacing
     - conditional_returns_on_newline
+    - contains_over_filter_count
+    - contains_over_filter_is_empty
+    - contains_over_first_not_nil
     - convenience_type
     - empty_count
     - empty_string
+    - empty_parameters
     - implicit_return
     - let_var_whitespace
     - unneeded_notification_center_removal

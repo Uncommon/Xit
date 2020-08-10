@@ -153,7 +153,7 @@ class RepositoryWatcher
   {
     mutex.withLock {
       if self.packedRefsWatcher == nil,
-         changedPaths.firstIndex(of: repository.gitDirectoryPath) != nil {
+         changedPaths.contains(repository.gitDirectoryPath) {
         self.makePackedRefsWatcher()
       }
     }

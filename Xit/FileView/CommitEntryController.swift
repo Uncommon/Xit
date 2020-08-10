@@ -185,7 +185,7 @@ class CommitEntryController: NSViewController, RepositoryWindowViewController
       return
     }
     
-    anyStaged = changes.first { $0.status != .unmodified } != nil
+    anyStaged = changes.contains { $0.status != .unmodified }
   }
   
   func updateCommitButton()
