@@ -111,11 +111,6 @@ public class XTRepository: NSObject, BasicRepository, RepoConfiguring
     self.init(gitRepo: finalRepo)
   }
   
-  deinit
-  {
-    NotificationCenter.default.removeObserver(self)
-  }
-  
   func addCachedBranch(_ branch: GitBranch)
   {
     mutex.withLock {

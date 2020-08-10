@@ -7,16 +7,16 @@ class FileListDataSourceBase: NSObject
   @IBOutlet weak var controller: FileViewController!
   let useWorkspaceList: Bool
 
-  let observers = ObserverCollection()
-  
   weak var delegate: FileListDelegate?
 
   weak var repoUIController: RepositoryUIController!
   {
     didSet
     {
+      let center = NotificationCenter.default
+
       (self as! FileListDataSource).reload()
-      observers.addObserver(forName: .XTRepositoryWorkspaceChanged,
+      center.addObserver(forName: .XTRepositoryWorkspaceChanged,
                             object: repoUIController.repository, queue: .main) {
         [weak self] (note) in
         guard let self = self
@@ -26,7 +26,7 @@ class FileListDataSourceBase: NSObject
           self.workspaceChanged(note.userInfo?[XTPathsKey] as? [String])
         }
       }
-      observers.addObserver(forName: .XTSelectedModelChanged,
+      center.addObserver(forName: .XTSelectedModelChanged,
                             object: repoUIController, queue: .main) {
         [weak self] (_) in
         guard let self = self,

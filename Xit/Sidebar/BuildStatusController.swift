@@ -91,7 +91,6 @@ class BuildStatusController: NSObject
   deinit
   {
     refreshTimer?.invalidate()
-    statusObserver.map { NotificationCenter.default.removeObserver($0) }
   }
   
   @IBAction

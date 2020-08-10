@@ -48,13 +48,6 @@ class AccountsPrefsController: NSViewController
     updateActionButtons()
   }
   
-  deinit
-  {
-    let center = NotificationCenter.default
-    
-    authStatusObserver.map { center.removeObserver($0) }
-  }
-  
   func updateActionButtons()
   {
     let enabled = accountsTable.selectedRow != -1

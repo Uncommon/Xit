@@ -135,7 +135,6 @@ class SidebarDelegate: NSObject
           dataView.statusButton.isEnabled = false
           (dataView.statusButton.cell as? NSButtonCell)?
               .imageDimsWhenDisabled = false
-    
       }
     }
   }

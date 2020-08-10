@@ -15,12 +15,14 @@ class CommitEntryController: NSViewController, RepositoryWindowViewController
   {
     didSet
     {
-      observers.addObserver(forName: .XTRepositoryIndexChanged,
+      let center = NotificationCenter.default
+      
+      center.addObserver(forName: .XTRepositoryIndexChanged,
                             object: repo, queue: .main) {
         [weak self] _ in
         self?.updateStagedStatus()
       }
-      observers.addObserver(forName: .XTRepositoryHeadChanged,
+      center.addObserver(forName: .XTRepositoryHeadChanged,
                             object: repo, queue: .main) {
         [weak self] _ in
         self?.resetAmend()
@@ -36,8 +38,6 @@ class CommitEntryController: NSViewController, RepositoryWindowViewController
   @IBOutlet weak var placeholder: NSTextField!
   
   var touchBarAmendButton: NSSegmentedControl!
-  
-  let observers = ObserverCollection()
   
   var anyStaged = false
   {
@@ -64,11 +64,6 @@ class CommitEntryController: NSViewController, RepositoryWindowViewController
   {
     self.config = config
     self.repo = repository
-  }
-  
-  deinit
-  {
-    NotificationCenter.default.removeObserver(self)
   }
   
   override func awakeFromNib()

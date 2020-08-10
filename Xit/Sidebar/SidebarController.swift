@@ -197,12 +197,14 @@ class SidebarController: NSViewController, SidebarHandler,
       sidebarDelegate.pullRequestManager = pullRequestManager
       sidebarDelegate.buildStatusController = buildStatusController
 
-      observers.addObserver(forName: .XTRepositoryIndexChanged,
+      let center = NotificationCenter.default
+
+      center.addObserver(forName: .XTRepositoryIndexChanged,
                             object: repo, queue: .main) {
         [weak self] (_) in
         self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
       }
-      observers.addObserver(forName: .XTRepositoryWorkspaceChanged,
+      center.addObserver(forName: .XTRepositoryWorkspaceChanged,
                             object: repo, queue: .main) {
         [weak self] (_) in
         self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
@@ -211,7 +213,6 @@ class SidebarController: NSViewController, SidebarHandler,
   }
   var window: NSWindow? { view.window }
   var savedSidebarWidth: UInt = 0
-  let observers = ObserverCollection()
   var amendingObserver: NSKeyValueObservation?
   var statusPopover: NSPopover?
 
@@ -266,8 +267,9 @@ class SidebarController: NSViewController, SidebarHandler,
         [weak self] (controller, _) in
         self?.sidebarDS.setAmending(controller.isAmending)
       }
-      observers.addObserver(forName: .XTSelectedModelChanged,
-                            object: repoUIController, queue: .main) {
+      NotificationCenter.default.addObserver(
+          forName: .XTSelectedModelChanged,
+          object: repoUIController, queue: .main) {
         [weak self] (_) in
         self?.selectedModelChanged()
       }

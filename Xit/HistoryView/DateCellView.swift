@@ -13,11 +13,6 @@ class DateCellView: NSTableCellView
 
   var changeObserver: NSObjectProtocol?
   
-  deinit
-  {
-    changeObserver.map { NotificationCenter.default.removeObserver($0) }
-  }
-  
   var date: Date?
   {
     get

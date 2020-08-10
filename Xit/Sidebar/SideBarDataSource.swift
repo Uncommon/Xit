@@ -21,26 +21,28 @@ class SideBarDataSource: NSObject
       
       stagingItem.selection = StagingSelection(repository: repo)
       
-      observers.addObserver(forName: .XTRepositoryRefsChanged,
-                            object: repo, queue: .main) {
+      let center = NotificationCenter.default
+
+      center.addObserver(forName: .XTRepositoryRefsChanged,
+                         object: repo, queue: .main) {
         [weak self] (_) in
         self?.reload()
       }
-      observers.addObserver(forName: .XTRepositoryStashChanged,
-                            object: repo, queue: .main) {
+      center.addObserver(forName: .XTRepositoryStashChanged,
+                         object: repo, queue: .main) {
         [weak self] (_) in
         self?.stashChanged()
       }
-      observers.addObserver(forName: .XTRepositoryHeadChanged,
-                            object: repo, queue: .main) {
+      center.addObserver(forName: .XTRepositoryHeadChanged,
+                         object: repo, queue: .main) {
         [weak self] (_) in
         guard let self = self
         else { return }
         self.outline.reloadItem(self.displayItem(.branches),
                                 reloadChildren: true)
       }
-      observers.addObserver(forName: .XTRepositoryConfigChanged,
-                            object: repo, queue: .main) {
+      center.addObserver(forName: .XTRepositoryConfigChanged,
+                         object: repo, queue: .main) {
         [weak self] (_) in
         self?.reload()
       }
@@ -52,8 +54,6 @@ class SideBarDataSource: NSObject
   var stagingItem: SidebarItem { model.stagingItem }
   
   var reloadTimer: Timer?
-  
-  let observers = ObserverCollection()
   
   var repository: SidebarDataModel.Repository!
   { model?.repository }

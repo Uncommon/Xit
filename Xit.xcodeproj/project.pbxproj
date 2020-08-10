@@ -124,7 +124,6 @@
 		C94D9DF0229D9D7000E46A28 /* FakeRepo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D9DEF229D9D7000E46A28 /* FakeRepo.swift */; };
 		C94D9E0222A031BE00E46A28 /* SidebarDelegateTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D9E0122A031BE00E46A28 /* SidebarDelegateTest.swift */; };
 		C94E4EDE22A989BC00D5B2B1 /* CLIRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94E4EDD22A989BC00D5B2B1 /* CLIRunner.swift */; };
-		C94ECBD51E6E025B00E8B453 /* ObserverCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94ECBD41E6E025B00E8B453 /* ObserverCollection.swift */; };
 		C951EAE11DD11BDD00B99FBE /* SidebarTableCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C951EAE01DD11BDD00B99FBE /* SidebarTableCellView.swift */; };
 		C951EB051DD636B900B99FBE /* SidebarCheckedRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C951EB041DD636B900B99FBE /* SidebarCheckedRowView.swift */; };
 		C95355EA1D93470400AEEF49 /* TitleStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95355E91D93470400AEEF49 /* TitleStatusView.swift */; };
@@ -340,6 +339,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = DAC0B3D61D651CC700D25C44;
 			remoteInfo = "SiestaUI macOS";
+		};
+		C94BBBDD24E1B9F9002C8C6B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C91F34631D30647D005F9BDF /* Siesta.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DA5E4B4B22DCE9670059ED10;
+			remoteInfo = "SiestaUI tvOS";
 		};
 		C958C5151DCBBE4F00EC49E1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -558,7 +564,6 @@
 		C94D9DEF229D9D7000E46A28 /* FakeRepo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeRepo.swift; sourceTree = "<group>"; };
 		C94D9E0122A031BE00E46A28 /* SidebarDelegateTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarDelegateTest.swift; sourceTree = "<group>"; };
 		C94E4EDD22A989BC00D5B2B1 /* CLIRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLIRunner.swift; sourceTree = "<group>"; };
-		C94ECBD41E6E025B00E8B453 /* ObserverCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObserverCollection.swift; sourceTree = "<group>"; };
 		C951EAE01DD11BDD00B99FBE /* SidebarTableCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarTableCellView.swift; sourceTree = "<group>"; };
 		C951EB041DD636B900B99FBE /* SidebarCheckedRowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarCheckedRowView.swift; sourceTree = "<group>"; };
 		C95355E91D93470400AEEF49 /* TitleStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleStatusView.swift; sourceTree = "<group>"; };
@@ -763,7 +768,6 @@
 				C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */,
 				C95BD3EE1F8ECEC9000A2E2D /* Mutex.swift */,
 				C97E319D20BF26B300E74D2F /* NSTreeNode+FileChange.swift */,
-				C94ECBD41E6E025B00E8B453 /* ObserverCollection.swift */,
 				C957B84A1D2D53040040F858 /* SheetController.swift */,
 				C97E31AF20BF271300E74D2F /* StringExtensions.swift */,
 				C9864465207E9CAC0088209B /* StringIdentifiers.swift */,
@@ -979,6 +983,7 @@
 				C9D81E9420BF3B3E0038B25A /* Siesta.framework */,
 				C923D6561D8CA56900C6B90B /* SiestaUI.framework */,
 				C923D6581D8CA56900C6B90B /* SiestaUI.framework */,
+				C94BBBDE24E1B9F9002C8C6B /* SiestaUI.framework */,
 				C91F346D1D30647E005F9BDF /* SiestaTests.xctest */,
 				C91F34711D30647E005F9BDF /* SiestaTests.xctest */,
 				C9D81E9620BF3B3E0038B25A /* SiestaTests tvOS.xctest */,
@@ -1390,6 +1395,13 @@
 			remoteRef = C923D6571D8CA56900C6B90B /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		C94BBBDE24E1B9F9002C8C6B /* SiestaUI.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SiestaUI.framework;
+			remoteRef = C94BBBDD24E1B9F9002C8C6B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		C958C5161DCBBE4F00EC49E1 /* SiestaPerformanceTests macOS.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
@@ -1414,7 +1426,7 @@
 		C9D81E9620BF3B3E0038B25A /* SiestaTests tvOS.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = "SiestaTests tvOS.xctest";
+			path = SiestaTests.xctest;
 			remoteRef = C9D81E9520BF3B3E0038B25A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -1614,7 +1626,6 @@
 				89369A741EDF47FC001B69C6 /* NSTask+Throwing.m in Sources */,
 				C936AD0A1D4C0CD400C5ADC3 /* PushOpController.swift in Sources */,
 				C95355FC1D9492EA00AEEF49 /* XTDocumentController.swift in Sources */,
-				C94ECBD51E6E025B00E8B453 /* ObserverCollection.swift in Sources */,
 				C9DEA4AD1E4B82B200DF4069 /* Signature.swift in Sources */,
 				C9EA19092350E5DE00DDAA25 /* CocoaExtensions.swift in Sources */,
 				C9065F4E20FCFA8B00C01110 /* RefType.swift in Sources */,

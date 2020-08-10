@@ -97,15 +97,6 @@ class TitleBarViewController: NSViewController
     case sidebar, history, details
   }
   
-  deinit
-  {
-    let center = NotificationCenter.default
-
-    _ = [progressObserver, becomeKeyObserver, resignKeyObserver].compactMap {
-      center.removeObserver($0 as Any)
-    }
-  }
-  
   override func viewDidLoad()
   {
     let segmentMenus: [(NSMenu, RemoteSegment)] = [

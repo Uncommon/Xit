@@ -20,20 +20,11 @@ public class HistoryTableController: NSViewController,
   
   @IBOutlet var contextMenu: NSMenu!
   
-  let observers = ObserverCollection()
-
   var tableView: HistoryTableView { view as! HistoryTableView }
 
   let history = GitCommitHistory()
   
   var repository: Repository { repoController?.repository as! Repository }
-  
-  deinit
-  {
-    let center = NotificationCenter.default
-  
-    center.removeObserver(self)
-  }
   
   func finishLoad()
   {
@@ -47,7 +38,10 @@ public class HistoryTableController: NSViewController,
     table.intercellSpacing = spacing
     
     loadHistory()
-    observers.addObserver(forName: .XTRepositoryRefsChanged,
+    
+    let center = NotificationCenter.default
+    
+    center.addObserver(forName: .XTRepositoryRefsChanged,
                           object: repository, queue: .main) {
       [weak self] _ in
       // To do: dynamic updating
@@ -57,7 +51,7 @@ public class HistoryTableController: NSViewController,
       // For now: just reload
       self?.reload()
     }
-    observers.addObserver(forName: .XTReselectModel,
+    center.addObserver(forName: .XTReselectModel,
                           object: repository, queue: .main) {
                             [weak self] _ in
       guard let tableView = self?.view as? NSTableView,
@@ -75,7 +69,7 @@ public class HistoryTableController: NSViewController,
     tableView.setAccessibilityIdentifier("history")
     let controller = view.window?.windowController!
     
-    observers.addObserver(
+    NotificationCenter.default.addObserver(
         forName: .XTSelectedModelChanged,
         object: controller,
         queue: .main) {

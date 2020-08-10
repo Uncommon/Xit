@@ -21,6 +21,7 @@ opt_in_rules:
     - empty_string
     - implicit_return
     - let_var_whitespace
+    - unneeded_notification_center_removal
     - yoda_condition
 included:
     - Xit

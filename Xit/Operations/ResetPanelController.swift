@@ -47,7 +47,6 @@ class ResetPanelController: SheetController
   @IBOutlet var statusImage: NSImageView!
   
   var repository: FileStatusDetection!
-  let observers = ObserverCollection()
   
   private var isWorkspaceClean: Bool
   { repository.unstagedChanges(showIgnored: false).isEmpty }
@@ -85,10 +84,12 @@ class ResetPanelController: SheetController
     
     self.repository = repository
     
-    observers.addObserver(forName: .XTRepositoryIndexChanged,
-                          object: repository, queue: nil, using: updateBlock)
-    observers.addObserver(forName: .XTRepositoryWorkspaceChanged,
-                          object: repository, queue: nil, using: updateBlock)
+    let center = NotificationCenter.default
+
+    center.addObserver(forName: .XTRepositoryIndexChanged,
+                       object: repository, queue: nil, using: updateBlock)
+    center.addObserver(forName: .XTRepositoryWorkspaceChanged,
+                       object: repository, queue: nil, using: updateBlock)
     updateStatusText()
   }
 

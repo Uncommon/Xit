@@ -79,9 +79,4 @@ class PrefsTabViewController: NSTabViewController
     
     window.setFrame(newFrame, display: true)
   }
-
-  deinit
-  {
-    observer.map { NotificationCenter.default.removeObserver($0) }
-  }
 }

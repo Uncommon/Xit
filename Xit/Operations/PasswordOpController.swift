@@ -23,13 +23,6 @@ class PasswordOpController: SimpleOperationController
     }
   }
   
-  deinit
-  {
-    if let observer = closeObserver {
-      NotificationCenter.default.removeObserver(observer)
-    }
-  }
-  
   override func abort()
   {
     self.semaphore.signal()

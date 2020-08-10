@@ -42,7 +42,6 @@ class FileViewController: NSViewController, RepositoryWindowViewController
   var commitEntryController: CommitEntryController!
   
   var contentController: XTFileContentController!
-  let observers = ObserverCollection()
   
   var fileWatcher: FileEventStream?
   weak var lastClickedButton: NSButton?
@@ -157,7 +156,9 @@ class FileViewController: NSViewController, RepositoryWindowViewController
     repo = repository
     diffController.repo = repository
 
-    observers.addObserver(forName: .XTRepositoryIndexChanged,
+    let center = NotificationCenter.default
+
+    center.addObserver(forName: .XTRepositoryIndexChanged,
                           object: repository, queue: .main) {
       [weak self] _ in
       self?.indexChanged()
@@ -166,7 +167,7 @@ class FileViewController: NSViewController, RepositoryWindowViewController
     guard let controller = repoUIController
     else { return }
 
-    observers.addObserver(forName: .XTSelectedModelChanged,
+    center.addObserver(forName: .XTSelectedModelChanged,
                           object: controller, queue: .main) {
       [weak self] _ in
       self?.selectedModelChanged()
@@ -195,7 +196,7 @@ class FileViewController: NSViewController, RepositoryWindowViewController
                            workspaceListController]
     
     for controller in listControllers {
-      observers.addObserver(forName: NSOutlineView.selectionDidChangeNotification,
+      center.addObserver(forName: NSOutlineView.selectionDidChangeNotification,
                             object: controller.outlineView, queue: .main) {
         [weak self] _ in
         self?.activeFileList = controller.outlineView
@@ -203,7 +204,7 @@ class FileViewController: NSViewController, RepositoryWindowViewController
       }
     }
     
-    observers.addObserver(forName: .xtFirstResponderChanged,
+    center.addObserver(forName: .xtFirstResponderChanged,
                           object: view.window!, queue: .main) {
       [weak self] _ in
       DispatchQueue.main.async { self?.updatePreviewForActiveList() }
