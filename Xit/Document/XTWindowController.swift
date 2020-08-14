@@ -158,9 +158,9 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     var identifier: NSUserInterfaceItemIdentifier
     {
       switch self {
-        case .fetch: return ¶"fetchRemote"
-        case .push:  return ¶"pushRemote"
-        case .pull:  return ¶"pullRemote"
+        case .fetch: return ◊"fetchRemote"
+        case .push:  return ◊"pushRemote"
+        case .pull:  return ◊"pullRemote"
       }
     }
     var selector: Selector
@@ -184,7 +184,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     static func of(_ menu: NSMenu) -> RemoteMenuType?
     {
       return menu.items.firstResult {
-        item in
+        (item) in
         guard let id = item.identifier
         else { return nil }
         return allCases.first { $0.identifier == id }

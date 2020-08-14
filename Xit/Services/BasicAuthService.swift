@@ -3,7 +3,7 @@ import Siesta
 
 extension Notification.Name
 {
-  static let authenticationStatusChanged = Notification.Name("AuthStatusChanged")
+  static let authenticationStatusChanged = Self("AuthStatusChanged")
 }
 
 /// Abstract service class that handles HTTP basic authentication.

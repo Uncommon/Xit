@@ -2,7 +2,7 @@ import Cocoa
 
 extension NSNotification.Name
 {
-  static let XTFontChanged: NSNotification.Name = ◊"XTFontChanged"
+  static let XTFontChanged = Self("XTFontChanged")
 }
 
 enum WhitespaceSetting: String

@@ -16,5 +16,5 @@ class ResponderNotifierWindow: NSWindow
 
 extension Notification.Name
 {
-  static let xtFirstResponderChanged: Notification.Name = ◊"firstResponderChanged"
+  static let xtFirstResponderChanged = Self("firstResponderChanged")
 }

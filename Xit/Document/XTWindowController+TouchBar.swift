@@ -3,13 +3,13 @@ import Foundation
 extension NSTouchBarItem.Identifier
 {
   static let
-      navigation = NSTouchBarItem.Identifier("com.uncommonplace.xit.nav"),
-      staging = NSTouchBarItem.Identifier("com.uncommonplace.xit.staging"),
-      stage = NSTouchBarItem.Identifier("com.uncommonplace.xit.stage"),
-      revert = NSTouchBarItem.Identifier("com.uncommonplace.xit.revert"),
-      unstage = NSTouchBarItem.Identifier("com.uncommonplace.xit.unstage"),
-      unstageAll = NSTouchBarItem.Identifier("com.uncommonplace.xit.unstageall"),
-      stageAll = NSTouchBarItem.Identifier("com.uncommonplace.xit.stageall")
+      navigation = Self("com.uncommonplace.xit.nav"),
+      staging = Self("com.uncommonplace.xit.staging"),
+      stage = Self("com.uncommonplace.xit.stage"),
+      revert = Self("com.uncommonplace.xit.revert"),
+      unstage = Self("com.uncommonplace.xit.unstage"),
+      unstageAll = Self("com.uncommonplace.xit.unstageall"),
+      stageAll = Self("com.uncommonplace.xit.stageall")
 }
 
 @available(OSX 10.12.2, *)
@@ -89,7 +89,7 @@ extension XTWindowController: NSTouchBarDelegate
     
     switch identifier {
 
-      case NSTouchBarItem.Identifier.navigation:
+      case .navigation:
         let control = NSSegmentedControl(
                 images: [NSImage(named: NSImage.goBackTemplateName)!,
                          NSImage(named: NSImage.goForwardTemplateName)!],
@@ -123,7 +123,7 @@ extension XTWindowController: NSTouchBarDelegate
             target: listController,
             action: #selector(StagedFileListController.unstage(_:)))
 
-      case NSTouchBarItem.Identifier.staging:
+      case .staging:
         guard let stagingImage = NSImage(named: .xtStagingTemplate)
         else { return nil }
       
@@ -132,14 +132,14 @@ extension XTWindowController: NSTouchBarDelegate
             image: stagingImage,
             target: self, action: #selector(XTWindowController.showStaging(_:)))
 
-      case NSTouchBarItem.Identifier.unstageAll:
+      case .unstageAll:
         return touchBarButton(
             identifier: identifier, title: .unstageAll,
             image: NSImage(named: .xtUnstageAllTemplate),
             target: historyController.fileViewController as Any,
             action: #selector(FileViewController.unstageAll(_:)))
       
-      case NSTouchBarItem.Identifier.stageAll:
+      case .stageAll:
         return touchBarButton(
             identifier: identifier, title: .stageAll,
             image: NSImage(named: .xtStageAllTemplate),

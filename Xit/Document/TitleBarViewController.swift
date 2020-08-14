@@ -22,7 +22,7 @@ protocol TitleBarDelegate: AnyObject
 
 extension Notification.Name
 {
-  static let XTProgress: Notification.Name = ◊"XTProgress"
+  static let XTProgress = Self("XTProgress")
 }
 
 extension Notification

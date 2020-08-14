@@ -1,27 +1,22 @@
 import Foundation
 
-prefix operator ◊
-prefix operator ¶
-prefix operator ‡
+// The choice of these convenience operators is somewhat arbitrary, and is
+// restricted to symbols that are a) legal operators in Swift and
+// b) easy to type.
+prefix operator ◊ // shift-opt-v
+prefix operator ¶ // opt-7
 
-// This allows the ◊ operater to serve as a shortcut for creating instances of
-// NSImage.Name, Notification.Name, etc. with ◊"identifier"
+/// Creats an instance of a `RawRepresentable` string type, such as
+/// `NSBindingName`, from a string literal.
 prefix func ◊<T>(string: StringLiteralType) -> T
   where T: RawRepresentable, T.RawValue == String
 {
   return T(rawValue: string)!
 }
 
-// NSUserInterfaceItemIdentifier is often used in cases where there isn't enough
-// context to use ◊ without alse specifying a type. "¶" was chosen because it
-// sort of looks like "id" and it's easy to type (option-7).
+/// Creates an `NSUserInterfaceItemIdentifier` from a string literal. Useful in
+/// cases where ◊ would still require specifying the type.
 prefix func ¶(string: StringLiteralType) -> NSUserInterfaceItemIdentifier
 {
   return NSUserInterfaceItemIdentifier(rawValue: string)
-}
-
-// As above but for notification names.
-prefix func ‡(string: StringLiteralType) -> NSNotification.Name
-{
-  return NSNotification.Name(rawValue: string)
 }
