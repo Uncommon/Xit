@@ -1,3 +1,4 @@
+#import <Cocoa/Cocoa.h>
 #import <git2/checkout.h>
 #import <git2/diff.h>
 #import <git2/status.h>

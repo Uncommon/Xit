@@ -38,7 +38,6 @@
 		89D8BE221CF0A4ED00D640AA /* RolloverButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8BE211CF0A4ED00D640AA /* RolloverButton.swift */; };
 		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
-		C3FA471413D0F8E200AC4F9B /* XTDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA471313D0F8E200AC4F9B /* XTDocument.m */; };
 		C3FA472913D0F8E300AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA472713D0F8E300AC4F9B /* InfoPlist.strings */; };
 		C900463C21120F3200706029 /* BitbucketServerAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C900463B21120F3200706029 /* BitbucketServerAPI.swift */; };
 		C9004650211501CB00706029 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C900464F211501CB00706029 /* Colors.swift */; };
@@ -120,6 +119,7 @@
 		C948D5B71D2C6A4800F72A27 /* AccountsPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C948D5B61D2C6A4800F72A27 /* AccountsPrefsController.swift */; };
 		C94A30241E311F3B00B4496B /* PreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A30231E311F3B00B4496B /* PreviewController.swift */; };
 		C94A30261E3154D400B4496B /* TextPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A30251E3154D400B4496B /* TextPreviewController.swift */; };
+		C94BBBE024EC2B76002C8C6B /* XTDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94BBBDF24EC2B76002C8C6B /* XTDocument.swift */; };
 		C94D7E8D1EBA66180059AC21 /* XTRepository+Staging.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D7E8C1EBA66180059AC21 /* XTRepository+Staging.swift */; };
 		C94D9DF0229D9D7000E46A28 /* FakeRepo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D9DEF229D9D7000E46A28 /* FakeRepo.swift */; };
 		C94D9E0222A031BE00E46A28 /* SidebarDelegateTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D9E0122A031BE00E46A28 /* SidebarDelegateTest.swift */; };
@@ -474,8 +474,6 @@
 		C3FA470513D0F8E200AC4F9B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C3FA470813D0F8E200AC4F9B /* Xit-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Xit-Info.plist"; sourceTree = "<group>"; };
 		C3FA470C13D0F8E200AC4F9B /* Xit-Prefix.pch */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = "Xit-Prefix.pch"; sourceTree = "<group>"; tabWidth = 4; };
-		C3FA471213D0F8E200AC4F9B /* XTDocument.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTDocument.h; sourceTree = "<group>"; tabWidth = 2; };
-		C3FA471313D0F8E200AC4F9B /* XTDocument.m */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTDocument.m; sourceTree = "<group>"; tabWidth = 2; };
 		C3FA472013D0F8E300AC4F9B /* XitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3FA472613D0F8E300AC4F9B /* XitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "XitTests-Info.plist"; sourceTree = "<group>"; };
 		C3FA472813D0F8E300AC4F9B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -560,6 +558,7 @@
 		C948D5B61D2C6A4800F72A27 /* AccountsPrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountsPrefsController.swift; sourceTree = "<group>"; };
 		C94A30231E311F3B00B4496B /* PreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewController.swift; sourceTree = "<group>"; };
 		C94A30251E3154D400B4496B /* TextPreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextPreviewController.swift; sourceTree = "<group>"; };
+		C94BBBDF24EC2B76002C8C6B /* XTDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XTDocument.swift; sourceTree = "<group>"; };
 		C94D7E8C1EBA66180059AC21 /* XTRepository+Staging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTRepository+Staging.swift"; sourceTree = "<group>"; };
 		C94D9DEF229D9D7000E46A28 /* FakeRepo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeRepo.swift; sourceTree = "<group>"; };
 		C94D9E0122A031BE00E46A28 /* SidebarDelegateTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarDelegateTest.swift; sourceTree = "<group>"; };
@@ -986,7 +985,7 @@
 				C94BBBDE24E1B9F9002C8C6B /* SiestaUI.framework */,
 				C91F346D1D30647E005F9BDF /* SiestaTests.xctest */,
 				C91F34711D30647E005F9BDF /* SiestaTests.xctest */,
-				C9D81E9620BF3B3E0038B25A /* SiestaTests tvOS.xctest */,
+				C9D81E9620BF3B3E0038B25A /* SiestaTests.xctest */,
 				C958C5161DCBBE4F00EC49E1 /* SiestaPerformanceTests macOS.xctest */,
 			);
 			name = Products;
@@ -1091,8 +1090,7 @@
 		C9790D0820EED4B10024D3EA /* Document */ = {
 			isa = PBXGroup;
 			children = (
-				C3FA471213D0F8E200AC4F9B /* XTDocument.h */,
-				C3FA471313D0F8E200AC4F9B /* XTDocument.m */,
+				C94BBBDF24EC2B76002C8C6B /* XTDocument.swift */,
 				C90703742326C944002DF393 /* XTDocument.storyboard */,
 				C9E9A37C1D0B5706007BFABF /* XTWindowController.swift */,
 				C9BF41171EA11AAC00028C84 /* XTWindowController+Actions.swift */,
@@ -1423,7 +1421,7 @@
 			remoteRef = C9D81E9320BF3B3E0038B25A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C9D81E9620BF3B3E0038B25A /* SiestaTests tvOS.xctest */ = {
+		C9D81E9620BF3B3E0038B25A /* SiestaTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = SiestaTests.xctest;
@@ -1540,7 +1538,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C9416355213EF42E0015F1C0 /* StagedFileListController.swift in Sources */,
-				C3FA471413D0F8E200AC4F9B /* XTDocument.m in Sources */,
 				C93FFCBD1F13D3B200FDDD78 /* ValidatedSegment.swift in Sources */,
 				C90839A623E4C646008C2787 /* WorkspaceStatusIndicator.swift in Sources */,
 				C94736781DEF5AAE000E3A05 /* GitExtensions.swift in Sources */,
@@ -1689,6 +1686,7 @@
 				C9AA80301E2929810004D670 /* FileChangesDataSource.swift in Sources */,
 				C9065F6020FFE1D900C01110 /* Notifications.swift in Sources */,
 				C9328B141D776BC700EFF7F7 /* RepositoryWatcher.swift in Sources */,
+				C94BBBE024EC2B76002C8C6B /* XTDocument.swift in Sources */,
 				C9EB87241D01D93400C47D13 /* GitStash.swift in Sources */,
 				C9416343213EF3E10015F1C0 /* WorkspaceFileListController.swift in Sources */,
 				C9C1B7CF1EEAFD790011F343 /* XTRepository+Files.swift in Sources */,
