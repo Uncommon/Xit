@@ -7,7 +7,6 @@
 #import "GitEnums.h"
 
 #import "NSAttributedString+XTExtensions.h"
-#import "NSTask+Throwing.h"
 #import "LibGitExtensions.h"
 
 #import <git2.h>

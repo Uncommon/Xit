@@ -51,7 +51,7 @@ struct CLIRunner
     
     task.standardOutput = pipe
     task.standardError = errorPipe
-    try task.throwingLaunch()
+    try task.run()
     
     if let data = inputData,
        data.count > chunkSize,
