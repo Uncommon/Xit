@@ -952,16 +952,12 @@
 		C91727B423689F500023DC57 /* XitUITests */ = {
 			isa = PBXGroup;
 			children = (
+				C9AEE3FB24F8536900BDD4C1 /* Utils */,
 				C94107C8236A3BD100D4B0D7 /* fixtures.zip */,
 				C954C1642374BF5B000D5339 /* Components.swift */,
-				C9CC6D2C237E064A00424A68 /* GitCLI.swift */,
-				C94107CA236B39C600D4B0D7 /* TemporaryDirectory.swift */,
 				C90FD41C23845679006358C7 /* ModifyingUITests.swift */,
 				C91727B523689F500023DC57 /* ReadOnlyUITests.swift */,
-				C94107CC236B427700D4B0D7 /* TestRepo.swift */,
-				C90FD41E23845FB8006358C7 /* TestRepoEnvironment.swift */,
 				C9B3950624C0AA8A0084EB73 /* UnicodeRepoUITests.swift */,
-				C90FD4202385A983006358C7 /* XCTestCaseExtensions.swift */,
 				C91727B723689F500023DC57 /* Info.plist */,
 				C954C1682374E7EF000D5339 /* XitUITests-Bridging-Header.h */,
 			);
@@ -1178,6 +1174,18 @@
 				C908399523E4C645008C2787 /* WorkspaceStatusIndicator.swift */,
 			);
 			path = Sidebar;
+			sourceTree = "<group>";
+		};
+		C9AEE3FB24F8536900BDD4C1 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				C9CC6D2C237E064A00424A68 /* GitCLI.swift */,
+				C94107CA236B39C600D4B0D7 /* TemporaryDirectory.swift */,
+				C90FD4202385A983006358C7 /* XCTestCaseExtensions.swift */,
+				C94107CC236B427700D4B0D7 /* TestRepo.swift */,
+				C90FD41E23845FB8006358C7 /* TestRepoEnvironment.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		C9C773151D26F28900329493 /* Preferences */ = {
