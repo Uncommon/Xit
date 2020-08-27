@@ -93,9 +93,10 @@ class ReadOnlyUITests: XCTestCase
   func ensureTabBarVisible()
   {
     let menuBar = XitApp.menuBars
-    let menuItem = menuBar.menuItems["toggleTabBar:"]
+    let viewMenu = menuBar.menuBarItems["View"]
+    let menuItem = viewMenu.menuItems["Show Tab Bar"]
     
-    menuBar.menuBarItems["View"].click()
+    viewMenu.click()
     if (menuItem.exists) {
       menuItem.click()
     }
