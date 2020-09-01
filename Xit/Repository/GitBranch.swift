@@ -101,14 +101,9 @@ public class GitBranch
                                        branchType: git_branch_t)
     -> OpaquePointer?
   {
-    var branch: OpaquePointer? = nil
-    let result = git_branch_lookup(&branch, repository,
-                                   name, branchType)
-    guard result == 0,
-          let finalBranch = branch
-    else { return nil }
-    
-    return finalBranch
+    return try? OpaquePointer.gitInitialize {
+      git_branch_lookup(&$0, repository, name, branchType)
+    }
   }
 }
 
@@ -173,14 +168,12 @@ public class GitLocalBranch: GitBranch, LocalBranch
   /// branch.
   public var trackingBranch: RemoteBranch?
   {
-    var upstream: OpaquePointer? = nil
-    let result = git_branch_upstream(&upstream, branchRef)
-    
-    guard result == 0,
-          let branch = upstream
+    guard let upstream = try? OpaquePointer.gitInitialize({
+      git_branch_upstream(&$0, branchRef)
+    })
     else { return nil }
     
-    return GitRemoteBranch(branch: branch, config: config)
+    return GitRemoteBranch(branch: upstream, config: config)
   }
   
   override var remoteName: String?

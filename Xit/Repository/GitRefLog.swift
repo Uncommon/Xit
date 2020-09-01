@@ -63,15 +63,12 @@ class GitRefLog
   
   init?(repository: OpaquePointer, refName: String)
   {
-    var refLog: OpaquePointer? = nil
-    let result = git_reflog_read(&refLog, repository, refName)
-    guard result == 0,
-          let finalLog = refLog
-    else {
-      return nil
-    }
+    guard let refLog = try? OpaquePointer.gitInitialize({
+      git_reflog_read(&$0, repository, refName)
+    })
+    else { return nil }
     
-    self.refLog = finalLog
+    self.refLog = refLog
   }
   
   deinit

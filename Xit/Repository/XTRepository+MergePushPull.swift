@@ -297,19 +297,12 @@ extension XTRepository
   {
     guard let oid = commit.oid as? GitOID
     else { throw RepoError.unexpected }
-    var annotated: OpaquePointer? = nil
-    let result = oid.withUnsafeOID {
-      git_annotated_commit_lookup(&annotated, gitRepo, $0)
-    }
     
-    if result != GIT_OK.rawValue {
-      throw RepoError.gitError(result)
-    }
-    if let annotatedCommit = annotated {
-      return annotatedCommit
-    }
-    else {
-      throw RepoError.unexpected
+    return try OpaquePointer.gitInitialize {
+      (annotated) in
+      oid.withUnsafeOID {
+        git_annotated_commit_lookup(&annotated, gitRepo, $0)
+      }
     }
   }
   
@@ -318,18 +311,8 @@ extension XTRepository
   /// - returns: An `OpaquePointer` wrapping a `git_annotated_commit`
   func annotatedCommit(branch: GitBranch) throws -> OpaquePointer
   {
-    var annotated: OpaquePointer? = nil
-    let result = git_annotated_commit_from_ref(
-          &annotated, gitRepo, branch.branchRef)
-    
-    if result != GIT_OK.rawValue {
-      throw RepoError.gitError(result)
-    }
-    if let annotatedCommit = annotated {
-      return annotatedCommit
-    }
-    else {
-      throw RepoError.unexpected
+    return try OpaquePointer.gitInitialize {
+      git_annotated_commit_from_ref(&$0, gitRepo, branch.branchRef)
     }
   }
 

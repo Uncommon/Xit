@@ -80,7 +80,7 @@ class OperationController: NSObject
           case let nsError as NSError where self.shoudReport(error: nsError):
             var message = error.localizedDescription
             
-            if let gitError = giterr_last() {
+            if let gitError = git_error_last() {
               let errorString = String(cString: gitError.pointee.message)
               
               message.append(" \(errorString)")

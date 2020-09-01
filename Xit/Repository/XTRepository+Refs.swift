@@ -39,12 +39,11 @@ extension XTRepository: Branching
           let targetCommit = GitCommit(oid: targetOID, repository: gitRepo)
     else { return nil }
     
-    var branchRef: OpaquePointer?
-    let result = git_branch_create(&branchRef, gitRepo, name,
-                                   targetCommit.commit, 0)
+    let branchRef = try OpaquePointer.gitInitialize {
+      git_branch_create(&$0, gitRepo, name, targetCommit.commit, 0)
+    }
     
-    try RepoError.throwIfGitError(result)
-    return branchRef.map { GitLocalBranch(branch: $0, config: config) }
+    return GitLocalBranch(branch: branchRef, config: config)
   }
   
   /// Renames the given local branch.
@@ -54,14 +53,12 @@ extension XTRepository: Branching
       throw RepoError.alreadyWriting
     }
     
-    var branchRef: OpaquePointer? = nil
-    var result = git_branch_lookup(&branchRef, gitRepo, branch, GIT_BRANCH_LOCAL)
-    
-    try RepoError.throwIfGitError(result)
-    
+    let branchRef = try OpaquePointer.gitInitialize {
+      git_branch_lookup(&$0, gitRepo, branch, GIT_BRANCH_LOCAL)
+    }
     var newRef: OpaquePointer? = nil
+    let result = git_branch_move(&newRef, branchRef, newName, 0)
     
-    result = git_branch_move(&newRef, branchRef, newName, 0)
     try RepoError.throwIfGitError(result)
   }
 

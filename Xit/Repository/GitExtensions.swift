@@ -281,3 +281,24 @@ extension String
     return try action(string)
   }
 }
+
+extension OpaquePointer
+{
+  /// Initializes an `OpaquePointer` with a callback that may instead return
+  /// an error code.
+  /// - parameter callback: Either initializes the given pointer or returns
+  /// an error code.
+  static func gitInitialize(_ callback: (inout OpaquePointer?) -> Int32) throws
+    -> OpaquePointer
+  {
+    var ptr: OpaquePointer?
+    let result = callback(&ptr)
+    guard result >= 0,
+          let finalPtr = ptr
+    else {
+      throw RepoError(gitCode: git_error_code(result))
+    }
+    
+    return finalPtr
+  }
+}

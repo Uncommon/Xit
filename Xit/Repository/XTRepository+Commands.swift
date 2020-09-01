@@ -68,32 +68,29 @@ extension XTRepository: Workspace
           let oid = ref.targetOID as? GitOID
     else { throw RepoError.notFound }
     
-    var target: OpaquePointer? = nil
-    let targetResult = oid.withUnsafeOID {
-      git_object_lookup(&target, gitRepo, $0, GIT_OBJECT_ANY)
+    let target = try OpaquePointer.gitInitialize {
+      (target) in
+      oid.withUnsafeOID {
+        git_object_lookup(&target, gitRepo, $0, GIT_OBJECT_ANY)
+      }
     }
-    guard targetResult == 0,
-          let finalTarget = target
-    else { throw RepoError.notFound }
     
-    try checkout(object: finalTarget)
+    try checkout(object: target)
   }
   
   public func checkOut(sha: String) throws
   {
     guard let oid = GitOID(sha: sha)
     else { throw RepoError.notFound }
-    var object: OpaquePointer? = nil
-    let lookupResult = oid.withUnsafeOID {
-      git_object_lookup_prefix(&object, gitRepo, $0,
-                               Int(GIT_OID_RAWSZ),
-                               GIT_OBJECT_ANY)
+    let object = try OpaquePointer.gitInitialize {
+      (object) in
+      oid.withUnsafeOID {
+        git_object_lookup_prefix(&object, gitRepo, $0,
+                                 Int(GIT_OID_RAWSZ), GIT_OBJECT_ANY)
+      }
     }
-    guard lookupResult == 0,
-          let finalObject = object
-    else { throw RepoError.notFound }
     
-    try checkout(object: finalObject)
+    try checkout(object: object)
   }
 }
 
@@ -256,14 +253,12 @@ extension XTRepository: SubmoduleManagement
       else { return 0 }
       let payload = payload!.bindMemory(to: Payload.self, capacity: 1)
       
-      var ownedSubmodule: OpaquePointer? = nil
-      let lookup = git_submodule_lookup(&ownedSubmodule, repo,
-                                        git_submodule_name(submodule))
-      guard lookup == 0,
-            let finalSubmodule = ownedSubmodule
+      guard let ownedSubmodule = try? OpaquePointer.gitInitialize({
+        git_submodule_lookup(&$0, repo, git_submodule_name(submodule))
+      })
       else { return 0 }
       
-      payload.pointee.submodules.append(GitSubmodule(submodule: finalSubmodule))
+      payload.pointee.submodules.append(GitSubmodule(submodule: ownedSubmodule))
       return 0
     }
     

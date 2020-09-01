@@ -35,24 +35,22 @@ class GitReference: Reference
   
   init?(name: String, repository: OpaquePointer)
   {
-    var ref: OpaquePointer? = nil
-    let result = git_reference_lookup(&ref, repository, name)
-    guard result == 0,
-          let finalRef = ref
+    guard let ref = try? OpaquePointer.gitInitialize({
+      git_reference_lookup(&$0, repository, name)
+    })
     else { return nil }
     
-    self.ref = finalRef
+    self.ref = ref
   }
   
   init?(headForRepo repo: OpaquePointer)
   {
-    var ref: OpaquePointer? = nil
-    let result = git_repository_head(&ref, repo)
-    guard result == 0,
-          let finalRef = ref
+    guard let ref = try? OpaquePointer.gitInitialize({
+      git_repository_head(&$0, repo)
+    })
     else { return nil }
     
-    self.ref = finalRef
+    self.ref = ref
   }
   
   deinit
@@ -63,14 +61,12 @@ class GitReference: Reference
   static func createSymbolic(name: String, repository: OpaquePointer,
                              target: String, log: String? = nil) -> GitReference?
   {
-    var ref: OpaquePointer? = nil
-    let result = git_reference_symbolic_create(&ref, repository, name, target, 0,
-                                               log ?? "")
-    guard result == 0,
-          let finalRef = ref
+    guard let ref = try? OpaquePointer.gitInitialize({
+      git_reference_symbolic_create(&$0, repository, name, target, 0, log ?? "")
+    })
     else { return nil }
     
-    return GitReference(reference: finalRef)
+    return GitReference(reference: ref)
   }
   
   public var targetOID: OID?
@@ -112,25 +108,22 @@ class GitReference: Reference
   
   public func resolve() -> Reference?
   {
-    var ref: OpaquePointer? = nil
-    let result = git_reference_resolve(&ref, self.ref)
-    guard result == 0,
-          let finalRef = ref
+    guard let ref = try? OpaquePointer.gitInitialize({
+      git_reference_resolve(&$0, self.ref)
+    })
     else { return nil }
     
-    return GitReference(reference: finalRef)
+    return GitReference(reference: ref)
   }
   
   public func setTarget(_ newOID: OID, logMessage: String)
   {
-    guard var gitOID = (newOID as? GitOID)?.oid
-    else { return }
-    var newRef: OpaquePointer? = nil
-    let result = git_reference_set_target(&newRef, ref, &gitOID, logMessage)
-    guard result == 0,
-          let finalRef = newRef
+    guard var gitOID = (newOID as? GitOID)?.oid,
+          let newRef = try? OpaquePointer.gitInitialize({
+            git_reference_set_target(&$0, ref, &gitOID, logMessage)
+          })
     else { return }
     
-    ref = finalRef
+    ref = newRef
   }
 }

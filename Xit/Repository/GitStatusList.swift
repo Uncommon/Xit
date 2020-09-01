@@ -23,13 +23,12 @@ class GitStatusList: RandomAccessCollection
       gitOptions.baseline = (previousCommit.tree as? GitTree)?.tree
     }
     
-    var list: OpaquePointer? = nil
-    let result = git_status_list_new(&list, repo.gitRepo, &gitOptions)
-    guard result == 0,
-          let finalList = list
+    guard let list = try? OpaquePointer.gitInitialize({
+      git_status_list_new(&$0, repo.gitRepo, &gitOptions)
+    })
     else { return nil }
     
-    self.statusList = finalList
+    self.statusList = list
   }
   
   deinit

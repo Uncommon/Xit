@@ -93,14 +93,13 @@ class GitIndex: StagingIndex
 
   init?(repository: OpaquePointer)
   {
-    var index: OpaquePointer?
-    let result = git_repository_index(&index, repository)
-    guard result == 0,
-          let finalIndex = index
+    guard let index = try? OpaquePointer.gitInitialize({
+      git_repository_index(&$0, repository)
+    })
     else { return nil }
     
-    git_index_read(finalIndex, 1)
-    self.index = finalIndex
+    git_index_read(index, 1)
+    self.index = index
   }
   
   func entry(atIndex index: Int) -> IndexEntry!
@@ -221,16 +220,15 @@ extension GitIndex
     
     init(index: OpaquePointer)
     {
-      var iterator: OpaquePointer? = nil
-      let result = git_index_conflict_iterator_new(&iterator, index)
-      guard result == 0,
-            let finalIterator = iterator
+      guard let iterator = try? OpaquePointer.gitInitialize({
+        git_index_conflict_iterator_new(&$0, index)
+      })
       else {
         self.iterator = nil
         return
       }
       
-      self.iterator = finalIterator
+      self.iterator = iterator
     }
     
     deinit

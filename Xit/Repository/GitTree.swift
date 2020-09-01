@@ -80,14 +80,13 @@ class GitTree: Tree
   
   init?(oid: git_oid, repo: OpaquePointer)
   {
-    var tree: OpaquePointer? = nil
-    var oid = oid
-    let result = git_object_lookup(&tree, repo, &oid, GIT_OBJECT_TREE)
-    guard result == 0,
-          let finalTree = tree
+    var oid = oid // needs to be mutable
+    guard let tree = try? OpaquePointer.gitInitialize({
+      git_object_lookup(&$0, repo, &oid, GIT_OBJECT_TREE)
+    })
     else { return nil }
     
-    self.tree = finalTree
+    self.tree = tree
   }
   
   deinit
@@ -106,15 +105,13 @@ class GitTree: Tree
   
   func entry(path: String) -> TreeEntry?
   {
-    guard let owner = git_tree_owner(tree)
-    else { return nil }
-    var entry: OpaquePointer?
-    let result = git_tree_entry_bypath(&entry, tree, path)
-    guard result == 0,
-          let finalEntry = entry
+    guard let owner = git_tree_owner(tree),
+          let entry = try? OpaquePointer.gitInitialize({
+            git_tree_entry_bypath(&$0, tree, path)
+          })
     else { return nil }
     
-    return GitTreeEntry(entry: finalEntry, owner: owner)
+    return GitTreeEntry(entry: entry, owner: owner)
   }
   
   func entry(at index: Int) -> TreeEntry?
@@ -173,17 +170,16 @@ class GitTreeEntry: TreeEntry
   
   var object: OIDObject?
   {
-    var gitObject: OpaquePointer?
-    let result = git_tree_entry_to_object(&gitObject, owner, entry)
-    guard result == 0,
-          let finalObject = gitObject
+    guard let gitObject = try? OpaquePointer.gitInitialize({
+      git_tree_entry_to_object(&$0, owner, entry)
+    })
     else { return nil }
     
     switch type {
       case .blob:
-        return GitBlob(blob: finalObject)
+        return GitBlob(blob: gitObject)
       case .tree:
-        return GitTree(tree: finalObject)
+        return GitTree(tree: gitObject)
       default:
         return nil
     }

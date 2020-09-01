@@ -68,47 +68,47 @@ class GitDiff: Diff
   init?(oldTree: Tree?, newTree: Tree?, repository: OpaquePointer,
         options: DiffOptions? = nil)
   {
-    var diff: OpaquePointer?
-    let result: Int32 = GitDiff.unwrappingOptions(options) {
-      git_diff_tree_to_tree(&diff, repository,
-                            (oldTree as? GitTree)?.tree,
-                            (newTree as? GitTree)?.tree, $0)
-    }
-    guard result == 0,
-          let finalDiff = diff
+    guard let diff = try? OpaquePointer.gitInitialize({
+      (diff) in
+      GitDiff.unwrappingOptions(options) {
+        git_diff_tree_to_tree(&diff, repository,
+                              (oldTree as? GitTree)?.tree,
+                              (newTree as? GitTree)?.tree, $0)
+      }
+    })
     else { return nil }
     
-    self.diff = finalDiff
+    self.diff = diff
   }
   
   /// Index to working directory
   init?(repository: OpaquePointer, index: GitIndex,
         options: DiffOptions? = nil)
   {
-    var diff: OpaquePointer?
-    let result = GitDiff.unwrappingOptions(options) {
-      git_diff_index_to_workdir(&diff, repository, index.index, $0)
-    }
-    guard result == 0,
-          let finalDiff = diff
+    guard let diff = try? OpaquePointer.gitInitialize({
+      (diff) in
+      GitDiff.unwrappingOptions(options) {
+        git_diff_index_to_workdir(&diff, repository, index.index, $0)
+      }
+    })
     else { return nil }
     
-    self.diff = finalDiff
+    self.diff = diff
   }
   
   /// Tree to working directory
   init?(repository: OpaquePointer, tree: GitTree,
         options: DiffOptions? = nil)
   {
-    var diff: OpaquePointer?
-    let result = GitDiff.unwrappingOptions(options) {
-      git_diff_tree_to_workdir(&diff, repository, tree.tree, $0)
-    }
-    guard result == 0,
-          let finalDiff = diff
+    guard let diff = try? OpaquePointer.gitInitialize({
+      (diff) in
+      GitDiff.unwrappingOptions(options) {
+        git_diff_tree_to_workdir(&diff, repository, tree.tree, $0)
+      }
+    })
     else { return nil }
     
-    self.diff = finalDiff
+    self.diff = diff
   }
   
   var deltaCount: Int { git_diff_num_deltas(diff) }
@@ -125,13 +125,12 @@ class GitDiff: Diff
   
   func patch(at index: Int) -> Patch?
   {
-    var patch: OpaquePointer?
-    let result = git_patch_from_diff(&patch, diff, index)
-    guard result == 0,
-          let finalPatch = patch
+    guard let patch = try? OpaquePointer.gitInitialize({
+      git_patch_from_diff(&$0, diff, index)
+    })
     else { return nil }
     
-    return GitPatch(gitPatch: finalPatch)
+    return GitPatch(gitPatch: patch)
   }
   
   struct Deltas: Collection

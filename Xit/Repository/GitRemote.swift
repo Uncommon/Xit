@@ -98,13 +98,11 @@ class GitRemote: Remote
   
   init?(name: String, repository: OpaquePointer)
   {
-    var remote: OpaquePointer? = nil
-    let result = git_remote_lookup(&remote, repository, name)
-    guard result == 0,
-          let finalRemote = remote
+    guard let remote = try? OpaquePointer.gitInitialize({
+      git_remote_lookup(&$0, repository, name) } )
     else { return nil }
     
-    self.remote = finalRemote
+    self.remote = remote
   }
 
   func rename(_ name: String) throws

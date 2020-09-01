@@ -27,68 +27,66 @@ class GitPatch: Patch
   init?(oldBlob: Blob, newBlob: Blob, options: DiffOptions? = nil)
   {
     guard let oldGitBlob = oldBlob.blobPtr,
-          let newGitBlob = newBlob.blobPtr
-    else { return nil }
-    var patch: OpaquePointer?
-    let result: Int32 = GitDiff.unwrappingOptions(options) {
-      git_patch_from_blobs(&patch, oldGitBlob, nil,
-                           newGitBlob, nil, $0)
-    }
-    guard result == 0,
-          let finalPatch = patch
+          let newGitBlob = newBlob.blobPtr,
+          let patch = try? OpaquePointer.gitInitialize({
+            (patch) in
+            GitDiff.unwrappingOptions(options) {
+              git_patch_from_blobs(&patch, oldGitBlob, nil,
+                                   newGitBlob, nil, $0)
+            }
+          })
     else { return nil }
     
-    self.patch = finalPatch
+    self.patch = patch
     self.oldData = nil
     self.newData = nil
   }
   
   init?(oldBlob: Blob, newData: Data, options: DiffOptions? = nil)
   {
-    guard let oldGitBlob = oldBlob.blobPtr
-    else { return nil }
-    var patch: OpaquePointer?
-    let result: Int32 = GitDiff.unwrappingOptions(options) {
-      (gitOptions) in
-      newData.withUnsafeBytes {
-        (bytes: UnsafeRawBufferPointer) in
-        git_patch_from_blob_and_buffer(
-            &patch, oldGitBlob, nil,
-            bytes.bindMemory(to: Int8.self).baseAddress,
-            newData.count, nil,
-            gitOptions)
-      }
-    }
-    guard result == 0,
-          let finalPatch = patch
+    guard let oldGitBlob = oldBlob.blobPtr,
+          let patch = try? OpaquePointer.gitInitialize({
+            (patch) in
+            GitDiff.unwrappingOptions(options) {
+              (gitOptions) in
+              newData.withUnsafeBytes {
+                (bytes: UnsafeRawBufferPointer) in
+                git_patch_from_blob_and_buffer(
+                    &patch, oldGitBlob, nil,
+                    bytes.bindMemory(to: Int8.self).baseAddress,
+                    newData.count, nil,
+                    gitOptions)
+              }
+            }
+          })
     else { return nil }
     
-    self.patch = finalPatch
+    self.patch = patch
     self.oldData = nil
     self.newData = newData
   }
   
   init?(oldData: Data, newData: Data, options: DiffOptions? = nil)
   {
-    var patch: OpaquePointer?
-    let result: Int32 = GitDiff.unwrappingOptions(options) {
-      (gitOptions) in
-      oldData.withUnsafeBytes {
-        (oldBytes: UnsafeRawBufferPointer) in
-        newData.withUnsafeBytes {
-          (newBytes: UnsafeRawBufferPointer) in
-          git_patch_from_buffers(&patch,
-                                 oldBytes.baseAddress, oldData.count, nil,
-                                 newBytes.baseAddress, newData.count, nil,
-                                 gitOptions)
+    guard let patch = try? OpaquePointer.gitInitialize({
+      (patch) in
+      GitDiff.unwrappingOptions(options) {
+        (gitOptions) in
+        oldData.withUnsafeBytes {
+          (oldBytes: UnsafeRawBufferPointer) in
+          newData.withUnsafeBytes {
+            (newBytes: UnsafeRawBufferPointer) in
+            git_patch_from_buffers(&patch,
+                                   oldBytes.baseAddress, oldData.count, nil,
+                                   newBytes.baseAddress, newData.count, nil,
+                                   gitOptions)
+          }
         }
       }
-    }
-    guard result == 0,
-          let finalPatch = patch
+    })
     else { return nil }
     
-    self.patch = finalPatch
+    self.patch = patch
     self.oldData = oldData
     self.newData = newData
   }

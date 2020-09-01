@@ -108,13 +108,12 @@ class GitConfig: Config
   
   init?(repository: OpaquePointer)
   {
-    var config: OpaquePointer? = nil
-    let result = git_repository_config(&config, repository)
-    guard result == 0,
-          let finalConfig = config
+    guard let config = try? OpaquePointer.gitInitialize({
+      git_repository_config(&$0, repository)
+    })
     else { return nil }
     
-    self.config = finalConfig
+    self.config = config
     loadSnapshot()
   }
   
@@ -126,13 +125,12 @@ class GitConfig: Config
   
   static var `default`: GitConfig?
   {
-    var config: OpaquePointer? = nil
-    let result = git_config_open_default(&config)
-    guard result == 0,
-          let finalConfig = config
+    guard let config = try? OpaquePointer.gitInitialize({
+      git_config_open_default(&$0)
+    })
     else { return nil }
     
-    return GitConfig(config: finalConfig)
+    return GitConfig(config: config)
   }
   
   deinit

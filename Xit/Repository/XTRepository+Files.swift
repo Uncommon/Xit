@@ -368,14 +368,9 @@ extension XTRepository
         options.baseline = tree
       }
       
-      var list: OpaquePointer?
-      guard git_status_list_new(&list, repo.gitRepo, &options) == 0
-      else {
-        self.statusList = nil
-        return
+      self.statusList = try? OpaquePointer.gitInitialize {
+        git_status_list_new(&$0, repo.gitRepo, &options)
       }
-      
-      self.statusList = list
     }
     
     convenience init(repo: XTRepository)
@@ -388,12 +383,11 @@ extension XTRepository
     {
       guard let emptyOID = GitOID(sha: kEmptyTreeHash)
       else { return nil }
-      var tree: OpaquePointer? = nil
-      let result = emptyOID.withUnsafeOID {
-        git_tree_lookup(&tree, repo.gitRepo, $0)
-      }
       
-      return (result == GIT_OK.rawValue) ? tree : nil
+      return try? OpaquePointer.gitInitialize {
+        (tree) in
+        emptyOID.withUnsafeOID { git_tree_lookup(&tree, repo.gitRepo, $0) }
+      }
     }
   
     subscript(position: Int) -> FileStagingChange

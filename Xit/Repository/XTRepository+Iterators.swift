@@ -10,13 +10,8 @@ extension XTRepository
     
     fileprivate init(repo: XTRepository, flags: git_branch_t)
     {
-      var result: OpaquePointer?
-      
-      if git_branch_iterator_new(&result, repo.gitRepo, flags) == 0 {
-        self.iterator = result
-      }
-      else {
-        self.iterator = nil
+      self.iterator = try? OpaquePointer.gitInitialize {
+        git_branch_iterator_new(&$0, repo.gitRepo, flags)
       }
       self.repo = repo
     }

@@ -141,13 +141,12 @@ public class GitCommit: Commit
 
   public var tree: Tree?
   {
-    var tree: OpaquePointer?
-    let result = git_commit_tree(&tree, commit)
-    guard result == 0,
-          let finalTree = tree
+    guard let tree = try? OpaquePointer.gitInitialize({
+      git_commit_tree(&$0, commit)
+    })
     else { return nil }
     
-    return GitTree(tree: finalTree)
+    return GitTree(tree: tree)
   }
 
   init?(gitCommit: OpaquePointer)
@@ -159,18 +158,14 @@ public class GitCommit: Commit
 
   convenience init?(oid: OID, repository: OpaquePointer)
   {
-    guard let oid = oid as? GitOID
-    else { return nil }
-    var gitCommit: OpaquePointer?  // git_commit isn't imported
-    let result = oid.withUnsafeOID {
-      git_commit_lookup(&gitCommit, repository, $0)
-    }
-  
-    guard result == 0,
-          let finalCommit = gitCommit
+    guard let oid = oid as? GitOID,
+          let commit = try? OpaquePointer.gitInitialize({
+            (commit) in
+            oid.withUnsafeOID { git_commit_lookup(&commit, repository, $0) }
+          })
     else { return nil }
     
-    self.init(gitCommit: finalCommit)
+    self.init(gitCommit: commit)
   }
   
   convenience init?(sha: String, repository: OpaquePointer)
@@ -183,16 +178,12 @@ public class GitCommit: Commit
   
   convenience init?(ref: String, repository: OpaquePointer)
   {
-    var gitRefPtr: OpaquePointer? = nil
-    guard git_reference_lookup(&gitRefPtr,
-                               repository,
-                               ref) == 0,
-          let gitRef = gitRefPtr
-    else { return nil }
-    
-    var gitObjectPtr: OpaquePointer? = nil
-    guard git_reference_peel(&gitObjectPtr, gitRef, GIT_OBJECT_COMMIT) == 0,
-          let gitObject = gitObjectPtr,
+    guard let gitRef = try? OpaquePointer.gitInitialize({
+            git_reference_lookup(&$0, repository, ref)
+          }),
+          let gitObject = try? OpaquePointer.gitInitialize({
+            git_reference_peel(&$0, gitRef, GIT_OBJECT_COMMIT)
+          }),
           git_object_type(gitObject) == GIT_OBJECT_COMMIT
     else { return nil }
     

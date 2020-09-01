@@ -89,26 +89,22 @@ public class XTRepository: NSObject, BasicRepository, RepoConfiguring
   {
     guard url.isFileURL
     else { return nil }
-    var repo: OpaquePointer? = nil
     let path = (url.path as NSString).fileSystemRepresentation
-    let result = git_repository_open(&repo, path)
-    guard result == 0,
-          let finalRepo = repo
+    guard let repo = try? OpaquePointer.gitInitialize({
+      git_repository_open(&$0, path) })
     else { return nil }
     
-    self.init(gitRepo: finalRepo)
+    self.init(gitRepo: repo)
   }
   
   convenience init?(emptyURL url: URL)
   {
-    var repo: OpaquePointer? = nil
     let path = (url.path as NSString).fileSystemRepresentation
-    let result = git_repository_init(&repo, path, 0)
-    guard result == 0,
-          let finalRepo = repo
+    guard let repo = try? OpaquePointer.gitInitialize({
+      git_repository_init(&$0, path, 0) })
     else { return nil }
     
-    self.init(gitRepo: finalRepo)
+    self.init(gitRepo: repo)
   }
   
   func addCachedBranch(_ branch: GitBranch)

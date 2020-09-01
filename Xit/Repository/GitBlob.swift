@@ -45,15 +45,14 @@ public class GitBlob: Blob, OIDObject
   
   init?(repository: OpaquePointer, oid: OID)
   {
-    guard let oid = oid as? GitOID
-    else { return nil }
-    var blob: OpaquePointer?
-    let result = oid.withUnsafeOID { git_blob_lookup(&blob, repository, $0) }
-    guard result == 0,
-          let finalBlob = blob
+    guard let oid = oid as? GitOID,
+          let blob = try? OpaquePointer.gitInitialize({
+      (blob) in
+      oid.withUnsafeOID { git_blob_lookup(&blob, repository, $0) }
+    })
     else { return nil }
     
-    self.blob = finalBlob
+    self.blob = blob
   }
   
   public var blobPtr: OpaquePointer? { blob }

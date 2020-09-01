@@ -38,13 +38,12 @@ struct GitRefSpec: RefSpec
   
   init?(string: String, isFetch: Bool)
   {
-    var refSpec: OpaquePointer?
-    let result = git_refspec_parse(&refSpec, string, isFetch ? 1 : 0)
-    guard result == 0,
-          let finalRefSpec = refSpec
+    guard let refSpec = try? OpaquePointer.gitInitialize({
+      git_refspec_parse(&$0, string, isFetch ? 1 : 0)
+    })
     else { return nil }
     
-    self.refSpec = finalRefSpec
+    self.refSpec = refSpec
   }
 
   func sourceMatches(refName: String) -> Bool

@@ -51,16 +51,16 @@ extension XTRepository: CommitReferencing
                                      capacity: 1).pointee
       
       guard let rawName = git_reference_name(reference),
-        let name = String(validatingUTF8: rawName)
-        else { return 0 }
+            let name = String(validatingUTF8: rawName)
+      else { return 0 }
       
       var peeled: OpaquePointer?
       guard git_reference_peel(&peeled, reference, GIT_OBJECT_COMMIT) == 0
-        else { return 0 }
+      else { return 0 }
       
       let peeledOID = git_object_id(peeled)
       guard let sha = peeledOID.map({ GitOID(oid: $0.pointee) })?.sha
-        else { return 0 }
+      else { return 0 }
       var refs = repo.refsIndex[sha] ?? [String]()
       
       refs.append(name)
@@ -135,11 +135,10 @@ extension XTRepository: CommitReferencing
   
   public func oid(forRef ref: String) -> OID?
   {
-    var object: OpaquePointer? = nil
-    let result = git_revparse_single(&object, gitRepo, ref)
-    guard result == 0,
-          let finalObject = object,
-          let oid = git_object_id(finalObject)
+    guard let object = try? OpaquePointer.gitInitialize({
+            git_revparse_single(&$0, gitRepo, ref)
+          }),
+          let oid = git_object_id(object)
     else { return nil }
     
     return GitOID(oidPtr: oid)
