@@ -720,11 +720,11 @@ class XTRepositoryTest: XTTest
     makeRemoteRepo()
     commit(newTextFile: FileName.file1, content: "remote",
            repository: remoteRepository)
-      try repository.addRemote(named: remoteName,
-                               url: URL(fileURLWithPath: remoteRepoPath))
-      _ = try repository.executeGit(args: ["fetch", remoteName], writes: true)
-      _ = try repository.executeGit(args: ["branch", "-u", remoteBranchName],
-                                    writes: true)
+    try repository.addRemote(named: remoteName,
+                             url: URL(fileURLWithPath: remoteRepoPath))
+    _ = try repository.executeGit(args: ["fetch", remoteName], writes: true)
+    _ = try repository.executeGit(args: ["branch", "-u", remoteBranchName],
+                                  writes: true)
     
     repository.config.invalidate()
     

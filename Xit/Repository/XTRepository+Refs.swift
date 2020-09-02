@@ -160,22 +160,15 @@ extension XTRepository: Tagging
     try performWriting {
       guard let commit = GitCommit(oid: targetOID,
                                    repository: gitRepo)
-        else { throw RepoError.notFound }
+      else { throw RepoError.notFound }
       
       var oid = git_oid()
-      let signature = UnsafeMutablePointer<UnsafeMutablePointer<git_signature>?>
-        .allocate(capacity: 1)
-      let sigResult = git_signature_default(signature, gitRepo)
-      defer {
-        signature.deallocate()
-      }
-      
-      try RepoError.throwIfGitError(sigResult)
-      guard let finalSig = signature.pointee
+      guard let defaultSig = GitSignature(defaultFromRepo: gitRepo)
       else { throw RepoError.unexpected }
       
       let result = git_tag_create(&oid, gitRepo, name,
-                                  commit.commit, finalSig, message, 0)
+                                  commit.commit, defaultSig.signature,
+                                  message, 0)
       
       try RepoError.throwIfGitError(result)
     }

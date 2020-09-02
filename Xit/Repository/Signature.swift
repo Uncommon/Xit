@@ -103,7 +103,7 @@ class GitSignature
   
   init?(defaultFromRepo repo: OpaquePointer)
   {
-    var signature: UnsafeMutablePointer<git_signature>? = .allocate(capacity: 1)
+    var signature: UnsafeMutablePointer<git_signature>?
     let result = git_signature_default(&signature, repo)
     guard result == 0,
           let finalSig = signature

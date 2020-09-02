@@ -234,8 +234,6 @@ class GitConfig: Config
     
     init(config: OpaquePointer)
     {
-      self.iterator = .allocate(capacity: 1)
-      
       let result = git_config_iterator_new(&iterator, config)
       guard result == 0
       else {

@@ -109,14 +109,10 @@ class GitPatch: Patch
 
   func hunk(at index: Int) -> DiffHunk?
   {
-    let hunk = UnsafeMutablePointer<UnsafePointer<git_diff_hunk>?>
-               .allocate(capacity: 1)
-    let result = git_patch_get_hunk(hunk, nil, patch, index)
-    defer {
-      hunk.deallocate()
-    }
+    var hunk: UnsafePointer<git_diff_hunk>?
+    let result = git_patch_get_hunk(&hunk, nil, patch, index)
     guard result == 0,
-          let finalHunk = hunk.pointee?.pointee
+          let finalHunk = hunk?.pointee
     else { return nil }
     
     return GitDiffHunk(hunk: finalHunk, index: index, patch: self)
