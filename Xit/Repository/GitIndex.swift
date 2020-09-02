@@ -93,7 +93,7 @@ class GitIndex: StagingIndex
 
   init?(repository: OpaquePointer)
   {
-    guard let index = try? OpaquePointer.gitInitialize({
+    guard let index = try? OpaquePointer.from({
       git_repository_index(&$0, repository)
     })
     else { return nil }
@@ -220,7 +220,7 @@ extension GitIndex
     
     init(index: OpaquePointer)
     {
-      guard let iterator = try? OpaquePointer.gitInitialize({
+      guard let iterator = try? OpaquePointer.from({
         git_index_conflict_iterator_new(&$0, index)
       })
       else {

@@ -101,7 +101,7 @@ public class GitBranch
                                        branchType: git_branch_t)
     -> OpaquePointer?
   {
-    return try? OpaquePointer.gitInitialize {
+    return try? OpaquePointer.from {
       git_branch_lookup(&$0, repository, name, branchType)
     }
   }
@@ -168,7 +168,7 @@ public class GitLocalBranch: GitBranch, LocalBranch
   /// branch.
   public var trackingBranch: RemoteBranch?
   {
-    guard let upstream = try? OpaquePointer.gitInitialize({
+    guard let upstream = try? OpaquePointer.from({
       git_branch_upstream(&$0, branchRef)
     })
     else { return nil }

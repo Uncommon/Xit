@@ -108,7 +108,7 @@ class GitConfig: Config
   
   init?(repository: OpaquePointer)
   {
-    guard let config = try? OpaquePointer.gitInitialize({
+    guard let config = try? OpaquePointer.from({
       git_repository_config(&$0, repository)
     })
     else { return nil }
@@ -125,7 +125,7 @@ class GitConfig: Config
   
   static var `default`: GitConfig?
   {
-    guard let config = try? OpaquePointer.gitInitialize({
+    guard let config = try? OpaquePointer.from({
       git_config_open_default(&$0)
     })
     else { return nil }
@@ -251,16 +251,14 @@ class GitConfig: Config
     
     func next() -> ConfigEntry?
     {
-      guard let iterator = self.iterator
-      else { return nil }
-      var entry: UnsafeMutablePointer<git_config_entry>?
-      let result = git_config_next(&entry, iterator)
-      guard result == 0,
-            let finalEntry = entry?.pointee
+      guard let iterator = self.iterator,
+            let entry: UnsafeMutablePointer<git_config_entry> = try? .from({
+              git_config_next(&$0, iterator)
+            })
       else { return nil }
       
       self.iterator = iterator
-      return GitConfigEntry(entry: finalEntry)
+      return GitConfigEntry(entry: entry.pointee)
     }
   }
   

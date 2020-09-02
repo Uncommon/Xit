@@ -62,7 +62,7 @@ class GitWorkTree: WorkTree
   
   init?(name: String, repository: OpaquePointer)
   {
-    guard let workTree = try? OpaquePointer.gitInitialize({
+    guard let workTree = try? OpaquePointer.from({
       git_worktree_lookup(&$0, repository, name) })
     else { return nil }
     
@@ -71,7 +71,7 @@ class GitWorkTree: WorkTree
   
   init?(repository: OpaquePointer)
   {
-    guard let workTree = try? OpaquePointer.gitInitialize({
+    guard let workTree = try? OpaquePointer.from({
       git_worktree_open_from_repository(&$0, repository) })
     else { return nil }
     

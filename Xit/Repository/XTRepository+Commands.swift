@@ -68,7 +68,7 @@ extension XTRepository: Workspace
           let oid = ref.targetOID as? GitOID
     else { throw RepoError.notFound }
     
-    let target = try OpaquePointer.gitInitialize {
+    let target = try OpaquePointer.from {
       (target) in
       oid.withUnsafeOID {
         git_object_lookup(&target, gitRepo, $0, GIT_OBJECT_ANY)
@@ -82,7 +82,7 @@ extension XTRepository: Workspace
   {
     guard let oid = GitOID(sha: sha)
     else { throw RepoError.notFound }
-    let object = try OpaquePointer.gitInitialize {
+    let object = try OpaquePointer.from {
       (object) in
       oid.withUnsafeOID {
         git_object_lookup_prefix(&object, gitRepo, $0,
@@ -253,7 +253,7 @@ extension XTRepository: SubmoduleManagement
       else { return 0 }
       let payload = payload!.bindMemory(to: Payload.self, capacity: 1)
       
-      guard let ownedSubmodule = try? OpaquePointer.gitInitialize({
+      guard let ownedSubmodule = try? OpaquePointer.from({
         git_submodule_lookup(&$0, repo, git_submodule_name(submodule))
       })
       else { return 0 }

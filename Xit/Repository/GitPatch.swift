@@ -28,7 +28,7 @@ class GitPatch: Patch
   {
     guard let oldGitBlob = oldBlob.blobPtr,
           let newGitBlob = newBlob.blobPtr,
-          let patch = try? OpaquePointer.gitInitialize({
+          let patch = try? OpaquePointer.from({
             (patch) in
             GitDiff.unwrappingOptions(options) {
               git_patch_from_blobs(&patch, oldGitBlob, nil,
@@ -45,7 +45,7 @@ class GitPatch: Patch
   init?(oldBlob: Blob, newData: Data, options: DiffOptions? = nil)
   {
     guard let oldGitBlob = oldBlob.blobPtr,
-          let patch = try? OpaquePointer.gitInitialize({
+          let patch = try? OpaquePointer.from({
             (patch) in
             GitDiff.unwrappingOptions(options) {
               (gitOptions) in
@@ -68,7 +68,7 @@ class GitPatch: Patch
   
   init?(oldData: Data, newData: Data, options: DiffOptions? = nil)
   {
-    guard let patch = try? OpaquePointer.gitInitialize({
+    guard let patch = try? OpaquePointer.from({
       (patch) in
       GitDiff.unwrappingOptions(options) {
         (gitOptions) in
@@ -109,12 +109,11 @@ class GitPatch: Patch
 
   func hunk(at index: Int) -> DiffHunk?
   {
-    var hunk: UnsafePointer<git_diff_hunk>?
-    let result = git_patch_get_hunk(&hunk, nil, patch, index)
-    guard result == 0,
-          let finalHunk = hunk?.pointee
+    guard let hunk: UnsafePointer<git_diff_hunk> = try? .from({
+      git_patch_get_hunk(&$0, nil, patch, index)
+    })
     else { return nil }
     
-    return GitDiffHunk(hunk: finalHunk, index: index, patch: self)
+    return GitDiffHunk(hunk: hunk.pointee, index: index, patch: self)
   }
 }

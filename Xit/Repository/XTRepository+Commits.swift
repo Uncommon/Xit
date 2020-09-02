@@ -135,7 +135,7 @@ extension XTRepository: CommitReferencing
   
   public func oid(forRef ref: String) -> OID?
   {
-    guard let object = try? OpaquePointer.gitInitialize({
+    guard let object = try? OpaquePointer.from({
             git_revparse_single(&$0, gitRepo, ref)
           }),
           let oid = git_object_id(object)

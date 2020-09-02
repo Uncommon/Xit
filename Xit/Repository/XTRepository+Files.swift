@@ -368,7 +368,7 @@ extension XTRepository
         options.baseline = tree
       }
       
-      self.statusList = try? OpaquePointer.gitInitialize {
+      self.statusList = try? OpaquePointer.from {
         git_status_list_new(&$0, repo.gitRepo, &options)
       }
     }
@@ -384,7 +384,7 @@ extension XTRepository
       guard let emptyOID = GitOID(sha: kEmptyTreeHash)
       else { return nil }
       
-      return try? OpaquePointer.gitInitialize {
+      return try? OpaquePointer.from {
         (tree) in
         emptyOID.withUnsafeOID { git_tree_lookup(&tree, repo.gitRepo, $0) }
       }

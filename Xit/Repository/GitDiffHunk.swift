@@ -108,14 +108,12 @@ struct GitDiffHunk: DiffHunk
     let lineCount = git_patch_num_lines_in_hunk(patch.patch, index)
     
     for lineIndex in 0..<lineCount {
-      var line: UnsafePointer<git_diff_line>?
-      let result = git_patch_get_line_in_hunk(&line, patch.patch, index,
-                                              Int(lineIndex))
-      guard result == 0,
-            let finalLine = line?.pointee
+      guard let line: UnsafePointer<git_diff_line> = try? .from({
+        git_patch_get_line_in_hunk(&$0, patch.patch, index, Int(lineIndex))
+      })
       else { continue }
       
-      callback(finalLine)
+      callback(line.pointee)
     }
   }
 }

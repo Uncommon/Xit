@@ -68,7 +68,7 @@ class GitDiff: Diff
   init?(oldTree: Tree?, newTree: Tree?, repository: OpaquePointer,
         options: DiffOptions? = nil)
   {
-    guard let diff = try? OpaquePointer.gitInitialize({
+    guard let diff = try? OpaquePointer.from({
       (diff) in
       GitDiff.unwrappingOptions(options) {
         git_diff_tree_to_tree(&diff, repository,
@@ -85,7 +85,7 @@ class GitDiff: Diff
   init?(repository: OpaquePointer, index: GitIndex,
         options: DiffOptions? = nil)
   {
-    guard let diff = try? OpaquePointer.gitInitialize({
+    guard let diff = try? OpaquePointer.from({
       (diff) in
       GitDiff.unwrappingOptions(options) {
         git_diff_index_to_workdir(&diff, repository, index.index, $0)
@@ -100,7 +100,7 @@ class GitDiff: Diff
   init?(repository: OpaquePointer, tree: GitTree,
         options: DiffOptions? = nil)
   {
-    guard let diff = try? OpaquePointer.gitInitialize({
+    guard let diff = try? OpaquePointer.from({
       (diff) in
       GitDiff.unwrappingOptions(options) {
         git_diff_tree_to_workdir(&diff, repository, tree.tree, $0)
@@ -125,7 +125,7 @@ class GitDiff: Diff
   
   func patch(at index: Int) -> Patch?
   {
-    guard let patch = try? OpaquePointer.gitInitialize({
+    guard let patch = try? OpaquePointer.from({
       git_patch_from_diff(&$0, diff, index)
     })
     else { return nil }

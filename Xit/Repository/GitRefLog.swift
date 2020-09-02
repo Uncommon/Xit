@@ -63,7 +63,7 @@ class GitRefLog
   
   init?(repository: OpaquePointer, refName: String)
   {
-    guard let refLog = try? OpaquePointer.gitInitialize({
+    guard let refLog = try? OpaquePointer.from({
       git_reflog_read(&$0, repository, refName)
     })
     else { return nil }

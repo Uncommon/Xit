@@ -141,7 +141,7 @@ public class GitCommit: Commit
 
   public var tree: Tree?
   {
-    guard let tree = try? OpaquePointer.gitInitialize({
+    guard let tree = try? OpaquePointer.from({
       git_commit_tree(&$0, commit)
     })
     else { return nil }
@@ -159,7 +159,7 @@ public class GitCommit: Commit
   convenience init?(oid: OID, repository: OpaquePointer)
   {
     guard let oid = oid as? GitOID,
-          let commit = try? OpaquePointer.gitInitialize({
+          let commit = try? OpaquePointer.from({
             (commit) in
             oid.withUnsafeOID { git_commit_lookup(&commit, repository, $0) }
           })
@@ -178,10 +178,10 @@ public class GitCommit: Commit
   
   convenience init?(ref: String, repository: OpaquePointer)
   {
-    guard let gitRef = try? OpaquePointer.gitInitialize({
+    guard let gitRef = try? OpaquePointer.from({
             git_reference_lookup(&$0, repository, ref)
           }),
-          let gitObject = try? OpaquePointer.gitInitialize({
+          let gitObject = try? OpaquePointer.from({
             git_reference_peel(&$0, gitRef, GIT_OBJECT_COMMIT)
           }),
           git_object_type(gitObject) == GIT_OBJECT_COMMIT

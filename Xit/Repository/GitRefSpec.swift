@@ -38,7 +38,7 @@ struct GitRefSpec: RefSpec
   
   init?(string: String, isFetch: Bool)
   {
-    guard let refSpec = try? OpaquePointer.gitInitialize({
+    guard let refSpec = try? OpaquePointer.from({
       git_refspec_parse(&$0, string, isFetch ? 1 : 0)
     })
     else { return nil }

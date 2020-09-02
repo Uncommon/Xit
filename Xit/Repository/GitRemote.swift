@@ -98,7 +98,7 @@ class GitRemote: Remote
   
   init?(name: String, repository: OpaquePointer)
   {
-    guard let remote = try? OpaquePointer.gitInitialize({
+    guard let remote = try? OpaquePointer.from({
       git_remote_lookup(&$0, repository, name) } )
     else { return nil }
     

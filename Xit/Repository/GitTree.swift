@@ -81,7 +81,7 @@ class GitTree: Tree
   init?(oid: git_oid, repo: OpaquePointer)
   {
     var oid = oid // needs to be mutable
-    guard let tree = try? OpaquePointer.gitInitialize({
+    guard let tree = try? OpaquePointer.from({
       git_object_lookup(&$0, repo, &oid, GIT_OBJECT_TREE)
     })
     else { return nil }
@@ -106,7 +106,7 @@ class GitTree: Tree
   func entry(path: String) -> TreeEntry?
   {
     guard let owner = git_tree_owner(tree),
-          let entry = try? OpaquePointer.gitInitialize({
+          let entry = try? OpaquePointer.from({
             git_tree_entry_bypath(&$0, tree, path)
           })
     else { return nil }
@@ -170,7 +170,7 @@ class GitTreeEntry: TreeEntry
   
   var object: OIDObject?
   {
-    guard let gitObject = try? OpaquePointer.gitInitialize({
+    guard let gitObject = try? OpaquePointer.from({
       git_tree_entry_to_object(&$0, owner, entry)
     })
     else { return nil }

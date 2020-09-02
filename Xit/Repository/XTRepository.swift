@@ -90,7 +90,7 @@ public class XTRepository: NSObject, BasicRepository, RepoConfiguring
     guard url.isFileURL
     else { return nil }
     let path = (url.path as NSString).fileSystemRepresentation
-    guard let repo = try? OpaquePointer.gitInitialize({
+    guard let repo = try? OpaquePointer.from({
       git_repository_open(&$0, path) })
     else { return nil }
     
@@ -100,7 +100,7 @@ public class XTRepository: NSObject, BasicRepository, RepoConfiguring
   convenience init?(emptyURL url: URL)
   {
     let path = (url.path as NSString).fileSystemRepresentation
-    guard let repo = try? OpaquePointer.gitInitialize({
+    guard let repo = try? OpaquePointer.from({
       git_repository_init(&$0, path, 0) })
     else { return nil }
     

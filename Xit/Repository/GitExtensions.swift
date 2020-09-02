@@ -282,23 +282,31 @@ extension String
   }
 }
 
-extension OpaquePointer
+protocol CallbackInitializable
 {
-  /// Initializes an `OpaquePointer` with a callback that may instead return
+  /// Initializes an instance with a callback that may instead return
   /// an error code.
   /// - parameter callback: Either initializes the given pointer or returns
-  /// an error code.
-  static func gitInitialize(_ callback: (inout OpaquePointer?) -> Int32) throws
-    -> OpaquePointer
+  /// a libgit2 error code.
+  static func from(_ callback: (inout Self?) -> Int32) throws -> Self
+}
+
+extension CallbackInitializable
+{
+  static func from(_ callback: (inout Self?) -> Int32) throws -> Self
   {
-    var ptr: OpaquePointer?
-    let result = callback(&ptr)
+    var pointer: Self?
+    let result = callback(&pointer)
     guard result >= 0,
-          let finalPtr = ptr
+          let finalPointer = pointer
     else {
       throw RepoError(gitCode: git_error_code(result))
     }
     
-    return finalPtr
+    return finalPointer
   }
 }
+
+extension UnsafePointer: CallbackInitializable {}
+extension UnsafeMutablePointer: CallbackInitializable {}
+extension OpaquePointer: CallbackInitializable {}

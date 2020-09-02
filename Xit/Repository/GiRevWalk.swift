@@ -36,7 +36,7 @@ class GitRevWalk: RevWalk
   
   init?(repository: OpaquePointer)
   {
-    guard let revWalk = try? OpaquePointer.gitInitialize({
+    guard let revWalk = try? OpaquePointer.from({
       git_revwalk_new(&$0, repository)
     })
     else { return nil }

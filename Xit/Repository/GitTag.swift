@@ -30,7 +30,7 @@ public class GitTag: Tag
   init?(repository: XTRepository, name: String)
   {
     let refName = name.hasPrefix(GitTag.tagPrefix) ? name : GitTag.tagPrefix + name
-    guard let ref = try? OpaquePointer.gitInitialize({
+    guard let ref = try? OpaquePointer.from({
             git_reference_lookup(&$0, repository.gitRepo, refName)
           }),
           git_reference_is_tag(ref) == 1
@@ -39,7 +39,7 @@ public class GitTag: Tag
     self.ref = ref
     self.name = name.droppingPrefix(GitTag.tagPrefix)
     
-    self.tag = try? OpaquePointer.gitInitialize({
+    self.tag = try? OpaquePointer.from({
         git_reference_peel(&$0, ref, GIT_OBJECT_TAG) })
     self.repository = repository
   }
@@ -61,7 +61,7 @@ public class GitTag: Tag
       return GitOID(oid: git_tag_target_id(tag).pointee)
     }
     
-    guard let target = try? OpaquePointer.gitInitialize({
+    guard let target = try? OpaquePointer.from({
       git_reference_peel(&$0, ref, GIT_OBJECT_COMMIT)
     })
     else { return nil }

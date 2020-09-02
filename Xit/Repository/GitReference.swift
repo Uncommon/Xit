@@ -35,7 +35,7 @@ class GitReference: Reference
   
   init?(name: String, repository: OpaquePointer)
   {
-    guard let ref = try? OpaquePointer.gitInitialize({
+    guard let ref = try? OpaquePointer.from({
       git_reference_lookup(&$0, repository, name)
     })
     else { return nil }
@@ -45,7 +45,7 @@ class GitReference: Reference
   
   init?(headForRepo repo: OpaquePointer)
   {
-    guard let ref = try? OpaquePointer.gitInitialize({
+    guard let ref = try? OpaquePointer.from({
       git_repository_head(&$0, repo)
     })
     else { return nil }
@@ -61,7 +61,7 @@ class GitReference: Reference
   static func createSymbolic(name: String, repository: OpaquePointer,
                              target: String, log: String? = nil) -> GitReference?
   {
-    guard let ref = try? OpaquePointer.gitInitialize({
+    guard let ref = try? OpaquePointer.from({
       git_reference_symbolic_create(&$0, repository, name, target, 0, log ?? "")
     })
     else { return nil }
@@ -108,7 +108,7 @@ class GitReference: Reference
   
   public func resolve() -> Reference?
   {
-    guard let ref = try? OpaquePointer.gitInitialize({
+    guard let ref = try? OpaquePointer.from({
       git_reference_resolve(&$0, self.ref)
     })
     else { return nil }
@@ -119,7 +119,7 @@ class GitReference: Reference
   public func setTarget(_ newOID: OID, logMessage: String)
   {
     guard var gitOID = (newOID as? GitOID)?.oid,
-          let newRef = try? OpaquePointer.gitInitialize({
+          let newRef = try? OpaquePointer.from({
             git_reference_set_target(&$0, ref, &gitOID, logMessage)
           })
     else { return }

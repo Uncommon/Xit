@@ -39,7 +39,7 @@ extension XTRepository: Branching
           let targetCommit = GitCommit(oid: targetOID, repository: gitRepo)
     else { return nil }
     
-    let branchRef = try OpaquePointer.gitInitialize {
+    let branchRef = try OpaquePointer.from {
       git_branch_create(&$0, gitRepo, name, targetCommit.commit, 0)
     }
     
@@ -53,7 +53,7 @@ extension XTRepository: Branching
       throw RepoError.alreadyWriting
     }
     
-    let branchRef = try OpaquePointer.gitInitialize {
+    let branchRef = try OpaquePointer.from {
       git_branch_lookup(&$0, gitRepo, branch, GIT_BRANCH_LOCAL)
     }
     var newRef: OpaquePointer? = nil
