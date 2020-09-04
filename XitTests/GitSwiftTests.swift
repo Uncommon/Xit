@@ -24,4 +24,45 @@ class GitSwiftTests: XCTestCase
     try check(strings: single)
     try check(strings: double)
   }
+  
+  func testPrettifySimple()
+  {
+    let message = "simple"
+    
+    XCTAssertEqual(message, message.prettifiedMessage(stripComments: false))
+    XCTAssertEqual(message, message.prettifiedMessage(stripComments: true))
+  }
+  
+  func testPrettifyWhitespace()
+  {
+    let message = "\nmessage "
+    // If there are any newlines, prettify ensures a newline at the end
+    let expected = "message\n"
+    
+    XCTAssertEqual(expected, message.prettifiedMessage(stripComments: false))
+    XCTAssertEqual(expected, message.prettifiedMessage(stripComments: true))
+  }
+  
+  func testPrettifyComment()
+  {
+    let message = """
+      first line
+      # comment
+      second line
+      """
+    let stripped = """
+      first line
+      second line
+
+      """
+    let notStripped = """
+      first line
+      # comment
+      second line
+
+      """
+
+    XCTAssertEqual(stripped, message.prettifiedMessage(stripComments: true))
+    XCTAssertEqual(notStripped, message.prettifiedMessage(stripComments: false))
+  }
 }

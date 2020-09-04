@@ -173,6 +173,7 @@
 		C98925D51DB6D3D300E5645C /* NewTagOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925D41DB6D3D300E5645C /* NewTagOpController.swift */; };
 		C98925F91DBFCE7000E5645C /* SidebarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925F81DBFCE7000E5645C /* SidebarController.swift */; };
 		C98AFF9D24FEA63900AD20EC /* GitWorkTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98AFF9C24FEA63900AD20EC /* GitWorkTree.swift */; };
+		C98AFFB22502CF6700AD20EC /* GitBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98AFFB12502CF6700AD20EC /* GitBuffer.swift */; };
 		C98CAD841F9520D0005DB419 /* GitDiffHunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98CAD831F9520D0005DB419 /* GitDiffHunk.swift */; };
 		C98CAD961F952173005DB419 /* GitDiffDelta.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98CAD951F952173005DB419 /* GitDiffDelta.swift */; };
 		C98EBC032125D22D00EF739E /* BitbucketServerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98EBC022125D22D00EF739E /* BitbucketServerTests.swift */; };
@@ -611,6 +612,7 @@
 		C98925D41DB6D3D300E5645C /* NewTagOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewTagOpController.swift; sourceTree = "<group>"; };
 		C98925F81DBFCE7000E5645C /* SidebarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarController.swift; sourceTree = "<group>"; };
 		C98AFF9C24FEA63900AD20EC /* GitWorkTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitWorkTree.swift; sourceTree = "<group>"; };
+		C98AFFB12502CF6700AD20EC /* GitBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitBuffer.swift; sourceTree = "<group>"; };
 		C98CAD831F9520D0005DB419 /* GitDiffHunk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitDiffHunk.swift; sourceTree = "<group>"; };
 		C98CAD951F952173005DB419 /* GitDiffDelta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitDiffDelta.swift; sourceTree = "<group>"; };
 		C98EBC022125D22D00EF739E /* BitbucketServerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitbucketServerTests.swift; sourceTree = "<group>"; };
@@ -1065,6 +1067,7 @@
 				C9DEA4AC1E4B82B200DF4069 /* Signature.swift */,
 				C9FFCC871FB3B1D000FA2F21 /* TreeLoader.swift */,
 				C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */,
+				C98AFFB12502CF6700AD20EC /* GitBuffer.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -1712,6 +1715,7 @@
 				C96F65461D53A6CE001B2557 /* HistoryCellView.swift in Sources */,
 				891261B01F867FCC00C292B7 /* GitTree.swift in Sources */,
 				C9BDF4D01D99A7660034841F /* RenameBranchPanelController.swift in Sources */,
+				C98AFFB22502CF6700AD20EC /* GitBuffer.swift in Sources */,
 				C94154A01ED4ECF40030E481 /* BuildStatusViewController.swift in Sources */,
 				C954ABFD1D34455000302160 /* GitBranch.swift in Sources */,
 				C9063D1C24169DAF00574A93 /* RepositoryUIAccessor.swift in Sources */,

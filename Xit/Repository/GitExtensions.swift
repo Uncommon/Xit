@@ -255,13 +255,22 @@ extension Data
 
 extension String
 {
+  init?(gitBufferNoCopy: git_buf)
+  {
+    guard let result = String(
+        bytesNoCopy: gitBufferNoCopy.ptr,
+        length: strnlen(gitBufferNoCopy.ptr, gitBufferNoCopy.size),
+        encoding: .utf8,
+        freeWhenDone: false)
+    else { return nil }
+    
+    self = result
+  }
+  
   /// Creates a string with a copy of the buffer's contents.
   init?(gitBuffer: git_buf)
   {
-    guard let target = String(bytesNoCopy: gitBuffer.ptr,
-                              length: gitBuffer.size,
-                              encoding: .utf8,
-                              freeWhenDone: false)
+    guard let target = String(gitBufferNoCopy: gitBuffer)
     else { return nil }
     
     // Make a copy because target points to the buffer
@@ -273,12 +282,22 @@ extension String
   static func withGitBuffer<T>(_ buffer: git_buf,
                                action: (String?) throws -> T) rethrows -> T
   {
-    let string = String(bytesNoCopy: buffer.ptr,
-                        length: buffer.size,
-                        encoding: .utf8,
-                        freeWhenDone: false)
+    let string = String(gitBufferNoCopy: buffer)
     
     return try action(string)
+  }
+  
+  /// Normalizes whitespace and optionally strips comment lines.
+  func prettifiedMessage(stripComments: Bool) -> String
+  {
+    let commentCharASCII: Int8 = 35 // '#'
+    let gitBuffer = GitBuffer(size: 0)
+    let result = git_message_prettify(&gitBuffer.buffer, self,
+                                      stripComments ? 1 : 0, commentCharASCII)
+    guard result == 0
+    else { return self }
+    
+    return String(gitBuffer: gitBuffer.buffer) ?? self
   }
 }
 
