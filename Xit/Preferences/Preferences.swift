@@ -8,6 +8,7 @@ enum PreferenceKeys
   static let resetAmend = "resetAmend"
   static let accounts = "accounts"
   static let statusInTabs = "statusInTabs"
+  static let stripComments = "stripComments"
 }
 
 extension UserDefaults
@@ -57,5 +58,10 @@ extension UserDefaults
   {
     get { bool(forKey: PreferenceKeys.statusInTabs) }
     set { set(newValue, forKey: PreferenceKeys.statusInTabs) }
+  }
+  @objc dynamic var stripComments: Bool
+  {
+    get { bool(forKey: PreferenceKeys.stripComments) }
+    set { set(newValue, forKey: PreferenceKeys.stripComments) }
   }
 }

@@ -6,5 +6,7 @@
 	<true/>
 	<key>resetAmend</key>
 	<true/>
+	<key>stripComments</key>
+	<true/>
 </dict>
 </plist>
