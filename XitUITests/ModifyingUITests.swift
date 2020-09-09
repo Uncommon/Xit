@@ -145,4 +145,60 @@ class ModifyingUITests: XCTestCase
     // Untracked files survive a hard reset
     WorkspaceFileList.assertFiles(["UntrackedImage.png"])
   }
+  
+  func modifyAndStage(file: String, text: String)
+  {
+    env.write(text, to: file)
+    env.git.run(args: ["add", file])
+  }
+  
+  func testFilterComments()
+  {
+    let enteredText = """
+          First line
+          # comment line
+          Second line
+          """
+    let expectedText = """
+          First line
+          Second line
+          """
+    
+    modifyAndStage(file: "README1.txt", text: "some stuff")
+
+    env.open()
+    
+    Sidebar.stagingCell.click()
+    if (CommitEntry.stripCheck.value as? Int) == 0 {
+      CommitEntry.stripCheck.click()
+    }
+    CommitEntry.messageField.click()
+    CommitEntry.messageField.typeText(enteredText)
+    CommitEntry.commitButton.click()
+    HistoryList.row(0).click()
+    XCTAssertEqual(CommitHeader.messageField.stringValue, expectedText)
+  }
+  
+  func testDontFilterComments()
+  {
+    let enteredText = """
+          First line
+          # comment line
+          Second line
+          """
+
+    modifyAndStage(file: "README1.txt", text: "some stuff")
+
+    env.open()
+    
+    Sidebar.stagingCell.click()
+    if (CommitEntry.stripCheck.value as? Int) != 0 {
+      CommitEntry.stripCheck.click()
+    }
+    CommitEntry.messageField.click()
+    CommitEntry.messageField.typeText(enteredText)
+    CommitEntry.commitButton.click()
+    HistoryList.row(0).click()
+    XCTAssertEqual(CommitHeader.messageField.stringValue, enteredText)
+  }
 }

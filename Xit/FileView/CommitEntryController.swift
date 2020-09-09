@@ -134,6 +134,8 @@ class CommitEntryController: NSViewController, RepositoryWindowViewController
       
       try repo.commit(message: message,
                       amend: repoUIController?.isAmending ?? false)
+      NotificationCenter.default.post(name: .XTRepositoryChanged,
+                                      object: repoController?.repository)
       resetMessage()
       resetAmend()
     }

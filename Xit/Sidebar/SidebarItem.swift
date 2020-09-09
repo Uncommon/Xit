@@ -92,7 +92,8 @@ class SidebarItem: NSObject
     guard let otherItem = object as? SidebarItem
     else { return false }
     
-    return displayTitle == otherItem.displayTitle
+    return displayTitle == otherItem.displayTitle &&
+           selection?.shaToSelect == otherItem.selection?.shaToSelect
   }
 }
 

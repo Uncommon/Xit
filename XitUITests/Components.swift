@@ -112,6 +112,14 @@ enum CommitHeader
   }
 }
 
+enum CommitEntry
+{
+  static let messageField = XitApp.textViews["messageField"].firstMatch
+  static let commitButton = XitApp.buttons["commitButton"].firstMatch
+  static let amendCheck = XitApp.checkBoxes["amendCheck"].firstMatch
+  static let stripCheck = XitApp.checkBoxes["stripCheck"].firstMatch
+}
+
 protocol FileList
 {
   static var list: XCUIElement { get }

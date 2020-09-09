@@ -73,14 +73,14 @@ public class HistoryTableController: NSViewController,
         forName: .XTSelectedModelChanged,
         object: controller,
         queue: .main) {
-      [weak self] (notification) in
+      [weak self] (_) in
       guard let self = self,
-            let selection = notification.userInfo?[NSKeyValueChangeKey.newKey]
-                            as? RepositorySelection,
+            let selection = self.repoUIController?.selection,
             // In spite of the `object` parameter, notifications can come
             // through for the wrong repository
             selection.repository.repoURL == self.repository.repoURL
       else { return }
+      
       self.selectRow(sha: selection.shaToSelect)
     }
     
@@ -232,6 +232,8 @@ public class HistoryTableController: NSViewController,
       tableView.deselectAll(self)
       return
     }
+    guard tableView.selectedRow != row || tableView.numberOfSelectedRows != 1
+    else { return }
     
     tableView.selectRowIndexes(IndexSet(integer: row),
                                byExtendingSelection: false)
