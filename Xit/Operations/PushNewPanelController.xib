@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.2"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="PushNewPanelController" customModule="Xit" customModuleProvider="target">
+            <connections>
+                <outlet property="alreadyTrackingWarning" destination="jQQ-MX-V9P" id="23y-Cn-YPk"/>
+                <outlet property="remotePopup" destination="E1H-Bw-38w" id="6Ul-Bf-OxA"/>
+                <outlet property="setTrackingCheck" destination="jkR-Ig-U2E" id="mMy-rS-Ebm"/>
+                <outlet property="window" destination="QvC-M9-y7g" id="e05-TH-9wf"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="196" y="240" width="359" height="207"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+            <view key="contentView" wantsLayer="YES" id="EiT-Mj-1SZ">
+                <rect key="frame" x="0.0" y="0.0" width="378" height="165"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                <subviews>
+                    <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E1H-Bw-38w">
+                        <rect key="frame" x="122" y="121" width="73" height="25"/>
+                        <popUpButtonCell key="cell" type="push" title="origin" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="dKy-No-Pxu" id="tUF-pl-4Xs">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <menu key="menu" id="gox-kh-pX9">
+                                <items>
+                                    <menuItem title="origin" state="on" id="dKy-No-Pxu"/>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                    </popUpButton>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="XiM-oE-g55">
+                        <rect key="frame" x="18" y="127" width="100" height="16"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" title="Push to remote:" id="6vb-Qa-g9p">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ojB-Aw-8NT">
+                        <rect key="frame" x="293" y="13" width="71" height="32"/>
+                        <buttonCell key="cell" type="push" title="Push" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="yM9-AC-Iq7">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="accept:" target="-2" id="RjB-Uv-Zjj"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4cK-rX-wXC">
+                        <rect key="frame" x="211" y="13" width="82" height="32"/>
+                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Pot-K2-iHY">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cancel:" target="-2" id="MFx-60-JJ6"/>
+                        </connections>
+                    </button>
+                    <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="9" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" verticalHuggingPriority="750" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="871-VY-aym">
+                        <rect key="frame" x="20" y="61" width="338" height="55"/>
+                        <subviews>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jkR-Ig-U2E">
+                                <rect key="frame" x="-2" y="39" width="159" height="18"/>
+                                <buttonCell key="cell" type="check" title="Set as tracking branch" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="zd0-pP-jlH">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
+                            <stackView distribution="fill" orientation="horizontal" alignment="top" spacing="6" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="750" verticalHuggingPriority="750" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jQQ-MX-V9P">
+                                <rect key="frame" x="0.0" y="0.0" width="338" height="32"/>
+                                <subviews>
+                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="kzZ-4Y-glT">
+                                        <rect key="frame" x="0.0" y="0.0" width="32" height="32"/>
+                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSCaution" id="Jsh-xU-m62"/>
+                                    </imageView>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="tcy-8z-IhE">
+                                        <rect key="frame" x="36" y="16" width="304" height="16"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="300" id="521-Cg-i1d"/>
+                                        </constraints>
+                                        <textFieldCell key="cell" title="This branch is already tracking a remote branch." id="Jx9-4P-jUt">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                </subviews>
+                                <visibilityPriorities>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                </visibilityPriorities>
+                                <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                </customSpacing>
+                            </stackView>
+                        </subviews>
+                        <visibilityPriorities>
+                            <integer value="1000"/>
+                            <integer value="1000"/>
+                        </visibilityPriorities>
+                        <customSpacing>
+                            <real value="3.4028234663852886e+38"/>
+                            <real value="3.4028234663852886e+38"/>
+                        </customSpacing>
+                    </stackView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="4cK-rX-wXC" firstAttribute="top" secondItem="ojB-Aw-8NT" secondAttribute="top" id="4oe-eE-pyE"/>
+                    <constraint firstItem="ojB-Aw-8NT" firstAttribute="leading" secondItem="4cK-rX-wXC" secondAttribute="trailing" constant="12" symbolic="YES" id="Bec-0e-Qot"/>
+                    <constraint firstItem="871-VY-aym" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="F7R-4K-fg2"/>
+                    <constraint firstItem="ojB-Aw-8NT" firstAttribute="top" secondItem="871-VY-aym" secondAttribute="bottom" constant="20" symbolic="YES" id="PMp-Ig-PBX"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="E1H-Bw-38w" secondAttribute="trailing" constant="20" symbolic="YES" id="TNt-7v-U1D"/>
+                    <constraint firstItem="871-VY-aym" firstAttribute="top" secondItem="E1H-Bw-38w" secondAttribute="bottom" constant="8" symbolic="YES" id="UgK-HW-Akj"/>
+                    <constraint firstAttribute="trailing" secondItem="871-VY-aym" secondAttribute="trailing" constant="20" symbolic="YES" id="XEM-KG-z8h"/>
+                    <constraint firstAttribute="trailing" secondItem="ojB-Aw-8NT" secondAttribute="trailing" constant="20" symbolic="YES" id="e3x-8c-yFh"/>
+                    <constraint firstItem="XiM-oE-g55" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="nma-id-roj"/>
+                    <constraint firstItem="E1H-Bw-38w" firstAttribute="leading" secondItem="XiM-oE-g55" secondAttribute="trailing" constant="8" symbolic="YES" id="tl0-0S-h3f"/>
+                    <constraint firstItem="XiM-oE-g55" firstAttribute="firstBaseline" secondItem="E1H-Bw-38w" secondAttribute="firstBaseline" id="uAK-Je-sgj"/>
+                    <constraint firstItem="E1H-Bw-38w" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" constant="20" symbolic="YES" id="ute-jf-S0Q"/>
+                    <constraint firstAttribute="bottom" secondItem="ojB-Aw-8NT" secondAttribute="bottom" constant="20" symbolic="YES" id="wpK-3N-RNZ"/>
+                </constraints>
+            </view>
+            <point key="canvasLocation" x="78.5" y="115.5"/>
+        </window>
+    </objects>
+    <resources>
+        <image name="NSCaution" width="32" height="32"/>
+    </resources>
+</document>

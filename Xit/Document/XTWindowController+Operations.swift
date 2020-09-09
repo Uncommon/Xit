@@ -2,7 +2,7 @@ import Foundation
 
 enum RemoteOperationOption
 {
-  case all, currentBranch, named(String)
+  case all, new, currentBranch, named(String)
 }
 
 extension XTWindowController

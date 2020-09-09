@@ -44,6 +44,10 @@ class PushOpController: PasswordOpController
       case .all:
         throw RepoError.unexpected
 
+      case .new:
+        try pushNewBranch()
+        return
+      
       case .currentBranch, nil:
         guard let branchName = repository.currentBranch,
               let currentBranch = repository.localBranch(named: branchName)
@@ -101,6 +105,39 @@ class PushOpController: PasswordOpController
       else {
         self.ended(result: .canceled)
       }
+    }
+  }
+  
+  func pushNewBranch() throws
+  {
+    guard let repository = self.repository,
+          let window = windowController?.window,
+          let branchName = repository.currentBranch,
+          let currentBranch = repository.localBranch(named: branchName)
+    else {
+      throw RepoError.unexpected
+    }
+    let sheetController = PushNewPanelController.controller()
+  
+    sheetController.alreadyTracking = currentBranch.trackingBranchName != nil
+    sheetController.setRemotes(repository.remoteNames())
+    // tag and tracking defaults
+    
+    window.beginSheet(sheetController.window!) {
+      (response) in
+      guard response == .OK
+      else {
+        self.ended(result: .canceled)
+        return
+      }
+      guard let remote = repository.remote(named: sheetController.selectedRemote)
+      else {
+        self.ended(result: .failure)
+        return
+      }
+      
+      // include tag and tracking options
+      self.push(branches: [currentBranch], remote: remote)
     }
   }
   

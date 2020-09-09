@@ -77,6 +77,9 @@ class FetchOpController: PasswordOpController
         
         case .named(let remote):
           executeFetch(remoteName: remote)
+          
+        case .new:
+          throw RepoError.unexpected
       }
     }
     else {
