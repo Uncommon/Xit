@@ -61,19 +61,20 @@ class SidebarDataModel
     guard let repo = repository
     else { return nil }
     
-    if let remoteBranchItem = branchItem as? RemoteBranchSidebarItem {
-      return remoteBranchItem.remoteName
-    }
-    else if let localBranchItem = branchItem as? LocalBranchSidebarItem {
-      guard let branch = repo.localBranch(named: localBranchItem.title)
-      else {
-        NSLog("Can't get branch for branch item: \(branchItem.title)")
+    switch branchItem {
+      case let remoteBranchItem as RemoteBranchSidebarItem:
+        return remoteBranchItem.remoteName
+      case let localBranchItem as LocalBranchSidebarItem:
+        guard let branch = repo.localBranch(named: localBranchItem.title)
+        else {
+          NSLog("Can't get branch for branch item: \(branchItem.title)")
+          return nil
+        }
+        
+        return branch.trackingBranch?.remoteName
+      default:
         return nil
-      }
-      
-      return branch.trackingBranch?.remoteName
     }
-    return nil
   }
   
   func parent(for branchPath: [String],

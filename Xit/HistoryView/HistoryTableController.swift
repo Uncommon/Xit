@@ -265,7 +265,6 @@ public class HistoryTableController: NSViewController,
                        UserDefaults.standard.deemphasizeMerges
 
     if let textField = cellView.textField {
-
       textField.textColor = deemphasized
           ? NSColor.disabledControlTextColor
           : NSColor.controlTextColor

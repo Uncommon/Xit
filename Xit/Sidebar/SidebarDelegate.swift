@@ -206,80 +206,83 @@ extension SidebarDelegate: NSOutlineViewDelegate
                           viewFor tableColumn: NSTableColumn?,
                           item: Any) -> NSView?
   {
-    guard let sideBarItem = item as? SidebarItem
-    else { return nil }
+    switch item {
+      case let groupItem as SideBarGroupItem:
+        guard let headerView = outlineView.makeView(
+            withIdentifier: CellID.header, owner: nil) as? NSTableCellView
+        else { return nil }
+        
+        headerView.textField?.stringValue = groupItem.title.uppercased()
+        return headerView
     
-    if sideBarItem is SideBarGroupItem {
-      guard let headerView = outlineView.makeView(withIdentifier: CellID.header,
-                                                  owner: nil) as? NSTableCellView
-      else { return nil }
+      case let sidebarItem as SidebarItem:
+        guard let dataView = outlineView.makeView(withIdentifier: CellID.data,
+                                                  owner: nil)
+                             as? SidebarTableCellView
+        else { return nil }
+        
+        let textField = dataView.textField!
+        
+        dataView.prDelegate = pullRequestManager
+        dataView.item = sidebarItem
+        dataView.imageView?.image = sidebarItem.icon
+        textField.uiStringValue = sidebarItem.displayTitle
+        textField.isEditable = sidebarItem.editable
+        textField.isSelectable = sidebarItem.isSelectable
+        dataView.statusText.isHidden = true
+        dataView.statusButton.image = nil
+        dataView.statusButton.action = nil
+        updateStatusImage(item: sidebarItem, cell: dataView)
+        if sidebarItem is LocalBranchSidebarItem {
+          configureLocalBranchItem(sideBarItem: sidebarItem, dataView: dataView)
+        }
+        pullRequestManager?.updatePullRequestButton(item: sidebarItem,
+                                                    view: dataView)
+        dataView.buttonContainer.isHidden = dataView.statusButton.image == nil
+        if sidebarItem.editable {
+          textField.target = controller
+          textField.action =
+              #selector(SidebarController.sidebarItemRenamed(_:))
+        }
+        
+        let fontSize = textField.font?.pointSize ?? 12
+        
+        textField.font = sidebarItem.current
+            ? .boldSystemFont(ofSize: fontSize)
+            : .systemFont(ofSize: fontSize)
+        
+        if sidebarItem is StagingSidebarItem {
+          configureStagingItem(sideBarItem: sidebarItem, dataView: dataView)
+        }
+        return dataView
       
-      headerView.textField?.stringValue = sideBarItem.title.uppercased()
-      return headerView
-    }
-    else {
-      guard let dataView = outlineView.makeView(withIdentifier: CellID.data,
-                                                owner: nil)
-                           as? SidebarTableCellView
-      else { return nil }
-      
-      let textField = dataView.textField!
-      
-      dataView.prDelegate = pullRequestManager
-      dataView.item = sideBarItem
-      dataView.imageView?.image = sideBarItem.icon
-      textField.uiStringValue = sideBarItem.displayTitle
-      textField.isEditable = sideBarItem.editable
-      textField.isSelectable = sideBarItem.isSelectable
-      dataView.statusText.isHidden = true
-      dataView.statusButton.image = nil
-      dataView.statusButton.action = nil
-      updateStatusImage(item: sideBarItem, cell: dataView)
-      if sideBarItem is LocalBranchSidebarItem {
-        configureLocalBranchItem(sideBarItem: sideBarItem, dataView: dataView)
-      }
-      pullRequestManager?.updatePullRequestButton(item: sideBarItem,
-                                                  view: dataView)
-      dataView.buttonContainer.isHidden = dataView.statusButton.image == nil
-      if sideBarItem.editable {
-        textField.target = controller
-        textField.action =
-            #selector(SidebarController.sidebarItemRenamed(_:))
-      }
-      
-      let fontSize = textField.font?.pointSize ?? 12
-      
-      textField.font = sideBarItem.current
-          ? NSFont.boldSystemFont(ofSize: fontSize)
-          : NSFont.systemFont(ofSize: fontSize)
-      
-      if sideBarItem is StagingSidebarItem {
-        configureStagingItem(sideBarItem: sideBarItem, dataView: dataView)
-      }
-      return dataView
+      default:
+        return nil
     }
   }
   
   public func outlineView(_ outlineView: NSOutlineView,
                           rowViewForItem item: Any) -> NSTableRowView?
   {
-    if let branchItem = item as? LocalBranchSidebarItem,
-       branchItem.current {
-      return SidebarCheckedRowView()
-    }
-    else if let remoteBranchItem = item as? RemoteBranchSidebarItem,
-            let branchName = model!.repository?.currentBranch,
-            let currentBranch = model!.repository?.localBranch(named: branchName),
-            currentBranch.trackingBranchName == remoteBranchItem.remoteName + "/" +
-                                                remoteBranchItem.title {
-      let rowView = SidebarCheckedRowView(
-              imageName: NSImage.rightFacingTriangleTemplateName,
-              toolTip: .trackingToolTip)
-      
-      return rowView
-    }
-    else {
-      return nil
+    switch item {
+      case let branchItem as LocalBranchSidebarItem where branchItem.current:
+        return SidebarCheckedRowView()
+
+      case let remoteBranchItem as RemoteBranchSidebarItem:
+        guard let repository = model?.repository,
+              let branchName = repository.currentBranch,
+              let currentBranch = repository.localBranch(named: branchName),
+              currentBranch.trackingBranchName == remoteBranchItem.remoteName + "/" +
+                                                  remoteBranchItem.title
+        else { return nil }
+        let rowView = SidebarCheckedRowView(
+                imageName: NSImage.rightFacingTriangleTemplateName,
+                toolTip: .trackingToolTip)
+        
+        return rowView
+
+      default:
+        return nil
     }
   }
 }
