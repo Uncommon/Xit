@@ -28,6 +28,13 @@
   if (self) {
     _repoURL = absoluteURL;
     _repository = [[XTRepository alloc] initWithURL:_repoURL];
+    
+    if (_repository == nil) {
+      *outError = [NSError errorWithDomain:NSCocoaErrorDomain
+                                      code:NSFileReadNoSuchFileError
+                                  userInfo:nil];
+      return nil;
+    }
   }
   [(AppDelegate*)NSApp.delegate dismissOpenPanel];
   return self;
