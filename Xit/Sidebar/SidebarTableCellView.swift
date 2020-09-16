@@ -18,6 +18,19 @@ class SidebarTableCellView: NSTableCellView
   @IBOutlet weak var buttonContainer: NSView!
   @IBOutlet weak var missingImage: NSImageView!
   weak var item: SidebarItem?
+  {
+    didSet
+    {
+      guard let item = self.item,
+            let textField = textField
+      else { return }
+      
+      imageView?.image = item.icon
+      textField.uiStringValue = item.displayTitle
+      textField.isEditable = item.editable
+      textField.isSelectable = item.isSelectable
+    }
+  }
   weak var prDelegate: PullRequestActionDelegate?
   
   @IBAction

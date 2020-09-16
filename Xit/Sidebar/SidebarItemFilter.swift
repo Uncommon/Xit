@@ -55,11 +55,11 @@ struct SidebarFilterSet
     
     for (index, root) in roots.enumerated() {
       switch SidebarGroupIndex(rawValue: index) {
-        case .workspace?, .stashes?, .submodules?:
+        case .workspace, .stashes, .submodules:
           result.append(root)
-        case .branches?, .tags?:
+        case .branches, .tags:
           result.append(filter(root: root) as! SideBarGroupItem)
-        case .remotes?:
+        case .remotes:
           let newRemotes = SideBarGroupItem(titleString: .remotes)
         
           for remote in root.children {

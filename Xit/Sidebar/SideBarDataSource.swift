@@ -23,11 +23,6 @@ class SideBarDataSource: NSObject
       
       let center = NotificationCenter.default
 
-      center.addObserver(forName: .XTRepositoryRefsChanged,
-                         object: repo, queue: .main) {
-        [weak self] (_) in
-        self?.reload()
-      }
       center.addObserver(forName: .XTRepositoryStashChanged,
                          object: repo, queue: .main) {
         [weak self] (_) in

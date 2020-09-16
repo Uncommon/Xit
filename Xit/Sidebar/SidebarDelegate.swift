@@ -147,6 +147,43 @@ class SidebarDelegate: NSObject
 
     dataView.statusText.setStatus(unstaged: unstagedCount, staged: stagedCount)
   }
+  
+  func updateVisibleCells()
+  {
+    outline.enumerateAvailableRowViews {
+      (rowView, row) in
+      guard let cellView = rowView.view(atColumn: 0) as? SidebarTableCellView,
+            let item = outline.item(atRow: row) as? SidebarItem
+      else { return }
+      
+      update(cell: cellView, item: item)
+    }
+  }
+  
+  func update(cell: SidebarTableCellView, item: SidebarItem)
+  {
+    cell.statusText.isHidden = true
+    cell.statusButton.image = nil
+    cell.statusButton.action = nil
+    
+    updateStatusImage(item: item, cell: cell)
+    if item is LocalBranchSidebarItem {
+      configureLocalBranchItem(sideBarItem: item, dataView: cell)
+    }
+    pullRequestManager?.updatePullRequestButton(item: item, view: cell)
+    cell.buttonContainer.isHidden = cell.statusButton.image == nil
+    
+    let textField = cell.textField!
+    let fontSize = textField.font?.pointSize ?? 12
+    
+    textField.font = item.current
+        ? .boldSystemFont(ofSize: fontSize)
+        : .systemFont(ofSize: fontSize)
+    
+    if item is StagingSidebarItem {
+      configureStagingItem(sideBarItem: item, dataView: cell)
+    }
+  }
 }
 
 extension SidebarDelegate: RepositoryUIAccessor
@@ -225,35 +262,12 @@ extension SidebarDelegate: NSOutlineViewDelegate
         
         dataView.prDelegate = pullRequestManager
         dataView.item = sidebarItem
-        dataView.imageView?.image = sidebarItem.icon
-        textField.uiStringValue = sidebarItem.displayTitle
-        textField.isEditable = sidebarItem.editable
-        textField.isSelectable = sidebarItem.isSelectable
-        dataView.statusText.isHidden = true
-        dataView.statusButton.image = nil
-        dataView.statusButton.action = nil
-        updateStatusImage(item: sidebarItem, cell: dataView)
-        if sidebarItem is LocalBranchSidebarItem {
-          configureLocalBranchItem(sideBarItem: sidebarItem, dataView: dataView)
-        }
-        pullRequestManager?.updatePullRequestButton(item: sidebarItem,
-                                                    view: dataView)
-        dataView.buttonContainer.isHidden = dataView.statusButton.image == nil
         if sidebarItem.editable {
           textField.target = controller
           textField.action =
-              #selector(SidebarController.sidebarItemRenamed(_:))
+            #selector(SidebarController.sidebarItemRenamed(_:))
         }
-        
-        let fontSize = textField.font?.pointSize ?? 12
-        
-        textField.font = sidebarItem.current
-            ? .boldSystemFont(ofSize: fontSize)
-            : .systemFont(ofSize: fontSize)
-        
-        if sidebarItem is StagingSidebarItem {
-          configureStagingItem(sideBarItem: sidebarItem, dataView: dataView)
-        }
+        update(cell: dataView, item: sidebarItem)
         return dataView
       
       default:

@@ -49,6 +49,11 @@ class SidebarController: NSViewController, SidebarCommandHandler,
         [weak self] (_) in
         self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
       }
+      center.addObserver(forName: .XTRepositoryRefsChanged,
+                         object: repo, queue: .main) {
+        [weak self] (_) in
+        self?.reload()
+      }
     }
   }
   var window: NSWindow? { view.window }
@@ -154,6 +159,7 @@ class SidebarController: NSViewController, SidebarCommandHandler,
   func reload()
   {
     sidebarDS.reload()
+    sidebarDelegate.updateVisibleCells()
   }
   
   func reloadFinished()
