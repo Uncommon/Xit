@@ -9,7 +9,7 @@ class SidebarDataSourceTest: XTTest
   var sbds = SideBarDataSource()
   var runLoop: CFRunLoop?
 
-  func groupItem(_ row: XTGroupIndex) -> SideBarGroupItem
+  func groupItem(_ row: SidebarGroupIndex) -> SideBarGroupItem
   {
     return sbds.outlineView(outline, child: row.rawValue, ofItem: nil)
            as! SideBarGroupItem

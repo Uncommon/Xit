@@ -54,7 +54,7 @@ struct SidebarFilterSet
     var result: [SideBarGroupItem] = []
     
     for (index, root) in roots.enumerated() {
-      switch XTGroupIndex(rawValue: index) {
+      switch SidebarGroupIndex(rawValue: index) {
         case .workspace?, .stashes?, .submodules?:
           result.append(root)
         case .branches?, .tags?:

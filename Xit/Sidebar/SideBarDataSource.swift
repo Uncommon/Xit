@@ -70,7 +70,7 @@ class SideBarDataSource: NSObject
     outline.reloadItem(stagingItem)
   }
   
-  func displayItem(_ index: XTGroupIndex) -> SideBarGroupItem
+  func displayItem(_ index: SidebarGroupIndex) -> SideBarGroupItem
   {
     return index.rawValue < displayItemList.count ?
         displayItemList[index.rawValue] :

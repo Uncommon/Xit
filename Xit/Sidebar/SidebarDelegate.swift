@@ -272,7 +272,7 @@ extension SidebarDelegate: NSOutlineViewDelegate
         guard let repository = model?.repository,
               let branchName = repository.currentBranch,
               let currentBranch = repository.localBranch(named: branchName),
-              currentBranch.trackingBranchName == remoteBranchItem.remoteName + "/" +
+              currentBranch.trackingBranchName == remoteBranchItem.remoteName +/
                                                   remoteBranchItem.title
         else { return nil }
         let rowView = SidebarCheckedRowView(

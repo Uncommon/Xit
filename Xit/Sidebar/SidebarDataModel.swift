@@ -34,20 +34,20 @@ class SidebarDataModel
     roots = makeRoots()
   }
   
-  func rootItem(_ index: XTGroupIndex) -> SideBarGroupItem
+  func rootItem(_ index: SidebarGroupIndex) -> SideBarGroupItem
   {
     return roots[index.rawValue]
   }
   
   func item(forBranchName branch: String) -> LocalBranchSidebarItem?
   {
-    let branches = roots[XTGroupIndex.branches.rawValue]
+    let branches = roots[SidebarGroupIndex.branches.rawValue]
     let result = branches.children.first { $0.title == branch }
     
     return result as? LocalBranchSidebarItem
   }
   
-  func item(named name: String, inGroup group: XTGroupIndex) -> SidebarItem?
+  func item(named name: String, inGroup group: SidebarGroupIndex) -> SidebarItem?
   {
     let group = roots[group.rawValue]
     
@@ -125,7 +125,7 @@ class SidebarDataModel
     else { return [] }
     
     let newRoots = makeRoots()
-    let branchesGroup = newRoots[XTGroupIndex.branches.rawValue]
+    let branchesGroup = newRoots[SidebarGroupIndex.branches.rawValue]
     let localBranches = repo.localBranches.sorted { $0.name <~ $1.name }
     
     for branch in localBranches {
@@ -163,7 +163,7 @@ class SidebarDataModel
     
     Signpost.interval(.loadTags) {
       if let tags = try? repo.tags().sorted(by: { $0.name <~ $1.name }) {
-        let tagsGroup = newRoots[XTGroupIndex.tags.rawValue]
+        let tagsGroup = newRoots[SidebarGroupIndex.tags.rawValue]
         
         for tag in tags {
           let tagItem = TagSidebarItem(tag: tag)
@@ -178,9 +178,9 @@ class SidebarDataModel
     let submoduleItems = repo.submodules().map {
           SubmoduleSidebarItem(submodule: $0) }
     
-    newRoots[XTGroupIndex.remotes.rawValue].children = remoteItems
-    newRoots[XTGroupIndex.stashes.rawValue].children = stashItems
-    newRoots[XTGroupIndex.submodules.rawValue].children = submoduleItems
+    newRoots[SidebarGroupIndex.remotes.rawValue].children = remoteItems
+    newRoots[SidebarGroupIndex.stashes.rawValue].children = stashItems
+    newRoots[SidebarGroupIndex.submodules.rawValue].children = submoduleItems
     
     repo.rebuildRefsIndex()
     //viewController.reloadFinished()

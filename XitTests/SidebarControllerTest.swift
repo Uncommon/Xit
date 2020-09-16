@@ -2,7 +2,7 @@ import XCTest
 @testable import Xit
 
 
-class TestingSidebarHandler : SidebarHandler
+class TestingSidebarHandler : SidebarCommandHandler
 {
   var repoUIController: RepositoryUIController?
 
