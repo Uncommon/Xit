@@ -105,15 +105,15 @@ struct UIString: RawRepresentable
   
   // Format strings
   static let authorFormat = "%@ (author)"
-  static let checkOutFormat = "Check out \"%@\""
+  static let checkOutFormat = #"Check out "%@""#
   static let committerFormat = "%@ (committer)"
-  static let confirmPushFormat = "Push local branch \"%1$@\" to remote \"%2$@\"?"
+  static let confirmPushFormat = #"Push local branch "%1$@" to remote "%2$@"?"#
   static let confirmPushAllFormat = "Push all branches that track %@?"
   static let confirmRevertFormat = "Are you sure you want to revert changes to %@?"
   static let confirmDeleteFormat = "Delete the %1$@ %2$@?"
   static let createTrackingFormat = "Create local branch tracking %@"
-  static let mergeFormat = "Merge \"%1$@\" into \"%2$@\""
-  static let renamePromptFormat = "Rename branch \"%@\" to:"
+  static let mergeFormat = #"Merge "%1$@" into "%2$@""#
+  static let renamePromptFormat = #"Rename branch "%@" to:"#
   static let trackingMissingInfoFormat = """
       The remote branch may have been merged and deleted. Do you want to \
       clear the tracking branch setting, or delete your local branch "%@"?
@@ -210,12 +210,12 @@ struct UIString: RawRepresentable
   static let pushCurrentUnavailable = ›"No tracking branch to push"
   static let pullCurrentUnavailable = ›"No tracking branch to pull"
 
-  static let fetchCurrentFormat = "Fetch \"%2$@/%1$@\""
-  static let fetchRemoteFormat = "Fetch remote \"%@\""
-  static let pushCurrentFormat = "Push to \"%2$@/%1$@\""
-  static let pushRemoteFormat = "Push to any tracking branches on \"%@\""
-  static let pullCurrentFormat = "Pull from \"%2$@/%1@\""
-  static let pullRemoteFormat = "Pull tracking branches on \"%@\""
+  static let fetchCurrentFormat = #"Fetch "%2$@/%1$@""#
+  static let fetchRemoteFormat = #"Fetch remote "%@""#
+  static let pushCurrentFormat = #"Push to "%2$@/%1$@""#
+  static let pushRemoteFormat = #"Push to any tracking branches on "%@""#
+  static let pullCurrentFormat = #"Pull from "%2$@/%1@""#
+  static let pullRemoteFormat = #"Pull tracking branches on "%@""#
 
   static func fetchCurrent(branch: String, remote: String) -> UIString
   { .init(format: fetchCurrentFormat, branch, remote) }
@@ -235,7 +235,7 @@ struct UIString: RawRepresentable
   static let commitNotFoundFormat = "The commit %@ was not found."
   static let fileNotFoundFormat = "The file %@ was not found."
   static let invalidNameFormat = "The name %@ is not valid."
-  static let noRemoteBranchesFormat = "No branches found on \"%@\" to push to."
+  static let noRemoteBranchesFormat = #"No branches found on "%@" to push to."#
 
   static func gitError(_ error: Int32) -> UIString
   { .init(format: UIString.gitErrorFormat, error) }

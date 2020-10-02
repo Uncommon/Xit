@@ -3,7 +3,7 @@ import Cocoa
 /// Takes charge of executing a command
 class OperationController: NSObject
 {
-  enum Result
+  enum OperationResult
   {
     case success
     case failure
@@ -32,7 +32,7 @@ class OperationController: NSObject
   @objc
   func abort() {}
   
-  func ended(result: Result = .success)
+  func ended(result: OperationResult = .success)
   {
     if result == .success {
       for action in successActions {

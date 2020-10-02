@@ -342,8 +342,6 @@ extension BranchResult: CustomStringConvertible
 /// (not currently used in the application)
 extension CommitHistory
 {
-  typealias Result = BranchResult
-
   /// Adds new commits to the list.
   public func process(_ startCommit: Commit, afterCommit: Commit? = nil)
   {
@@ -351,7 +349,7 @@ extension CommitHistory
     guard commitLookup[startOID] == nil
     else { return }
     
-    var results = [Result]()
+    var results = [BranchResult]()
     var startCommit = startCommit
     
     repeat {
@@ -379,7 +377,8 @@ extension CommitHistory
     }
   }
   
-  private func processBranchResult(_ result: Result, after afterCommit: Commit?)
+  private func processBranchResult(_ result: BranchResult,
+                                   after afterCommit: Commit?)
   {
     for branchEntry in result.entries {
       commitLookup[branchEntry.commit.oid as! ID] = branchEntry
@@ -439,7 +438,7 @@ extension CommitHistory
   /// also a list of secondary parents that may start other branches. A branch
   /// segment ends when a commit has more than one parent, or its parent is
   /// already registered.
-  private func branchEntries(startCommit: Commit) -> Result
+  private func branchEntries(startCommit: Commit) -> BranchResult
   {
     var commit = startCommit
     var result = [Entry(commit: startCommit)]
@@ -465,7 +464,7 @@ extension CommitHistory
       commit = parentCommit
     }
     
-    let branchResult = Result(entries: result, queue: queue)
+    let branchResult = BranchResult(entries: result, queue: queue)
     
 #if DEBUGLOG
     let before = entries.last?.commit.parentOIDs.map { $0.SHA.firstSix() }
