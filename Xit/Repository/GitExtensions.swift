@@ -290,7 +290,7 @@ extension String
   /// Normalizes whitespace and optionally strips comment lines.
   func prettifiedMessage(stripComments: Bool) -> String
   {
-    let commentCharASCII: Int8 = 35 // '#'
+    let commentCharASCII = Int8(Character("#").asciiValue!)
     let gitBuffer = GitBuffer(size: 0)
     let result = git_message_prettify(&gitBuffer.buffer, self,
                                       stripComments ? 1 : 0, commentCharASCII)

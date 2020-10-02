@@ -28,9 +28,10 @@ class GitSwiftTests: XCTestCase
   func testPrettifySimple()
   {
     let message = "simple"
-    
-    XCTAssertEqual(message, message.prettifiedMessage(stripComments: false))
-    XCTAssertEqual(message, message.prettifiedMessage(stripComments: true))
+    let expected = "simple\n"
+
+    XCTAssertEqual(expected, message.prettifiedMessage(stripComments: false))
+    XCTAssertEqual(expected, message.prettifiedMessage(stripComments: true))
   }
   
   func testPrettifyWhitespace()
