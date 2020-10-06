@@ -231,7 +231,5 @@ class RepositoryWatcher
     checkHead(changedPaths: standardizedPaths, repository: repository)
     checkRefs(changedPaths: standardizedPaths, repository: repository)
     checkLogs(changedPaths: standardizedPaths)
-    
-    post(.XTRepositoryChanged)
   }
 }

@@ -2,8 +2,6 @@ import Foundation
 
 extension NSNotification.Name
 {
-  /// Some change has been detected in the repository.
-  static let XTRepositoryChanged = Self("XTRepositoryChanged")
   /// The repository's config file has changed.
   static let XTRepositoryConfigChanged = Self("XTRepositoryConfigChanged")
   /// The head reference (current branch) has changed.
