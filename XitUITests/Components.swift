@@ -77,11 +77,18 @@ enum Sidebar
     }
   }
   
-  static func statusIndicator(branch: String) -> XCUIElement
+  static func workspaceStatusIndicator(branch: String) -> XCUIElement
   {
     let cell = Sidebar.list.cells.containing(.staticText, identifier: branch)
     
     return cell.buttons["workspaceStatus"]
+  }
+  
+  static func trackingStatusIndicator(branch: String) -> XCUIElement
+  {
+    let cell = Sidebar.list.cells.containing(.staticText, identifier: branch)
+    
+    return cell.buttons["trackingStatus"]
   }
 }
 
@@ -198,4 +205,12 @@ enum ResetSheet
   
   static let cancelButton = window.buttons["Cancel"]
   static let resetButton = window.buttons["Reset"]
+}
+
+enum PushNewSheet
+{
+  static let window = XitApp.sheets["PushNewSheet"]
+  
+  static let setTrackingCheck = window.checkBoxes["Set as tracking branch"]
+  static let pushButton = window.buttons["Push"]
 }

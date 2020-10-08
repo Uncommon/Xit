@@ -44,6 +44,10 @@ class PushOpController: PasswordOpController
       case .all:
         throw RepoError.unexpected
 
+      case .new:
+        try pushNewBranch()
+        return
+      
       case .currentBranch, nil:
         guard let branchName = repository.currentBranch,
               let currentBranch = repository.localBranch(named: branchName)
@@ -55,8 +59,8 @@ class PushOpController: PasswordOpController
               let remoteName = remoteBranch.remoteName,
               let trackedRemote = repository.remote(named: remoteName)
         else {
-          NSLog("Can't push - no tracking branch")
-          throw RepoError.unexpected
+          try pushNewBranch()
+          return
         }
 
         remote = trackedRemote
@@ -104,6 +108,43 @@ class PushOpController: PasswordOpController
     }
   }
   
+  func pushNewBranch() throws
+  {
+    guard let repository = self.repository,
+          let window = windowController?.window,
+          let branchName = repository.currentBranch,
+          let currentBranch = repository.localBranch(named: branchName)
+    else {
+      throw RepoError.unexpected
+    }
+    let sheetController = PushNewPanelController.controller()
+  
+    sheetController.alreadyTracking = currentBranch.trackingBranchName != nil
+    sheetController.setRemotes(repository.remoteNames())
+    
+    window.beginSheet(sheetController.window!) {
+      (response) in
+      guard response == .OK
+      else {
+        self.ended(result: .canceled)
+        return
+      }
+      guard let remote = repository.remote(named: sheetController.selectedRemote)
+      else {
+        self.ended(result: .failure)
+        return
+      }
+      
+      self.push(branches: [currentBranch], remote: remote, then: {
+        if sheetController.setTrackingBranch,
+           let remoteName = remote.name {
+          currentBranch.trackingBranchName = remoteName +/
+                                             currentBranch.strippedName
+        }
+      })
+    }
+  }
+  
   override func shoudReport(error: NSError) -> Bool
   {
     return true
@@ -119,7 +160,8 @@ class PushOpController: PasswordOpController
     }
   }
   
-  func push(branches: [LocalBranch], remote: Remote)
+  func push(branches: [LocalBranch], remote: Remote,
+            then callback: (() -> Void)? = nil)
   {
     tryRepoOperation {
       guard let repository = self.repository
@@ -135,6 +177,7 @@ class PushOpController: PasswordOpController
       try repository.push(branches: branches,
                           remote: remote,
                           callbacks: callbacks)
+      callback?()
       NotificationCenter.default.post(name: .XTRepositoryRefsChanged,
                                       object: repository)
       self.ended()

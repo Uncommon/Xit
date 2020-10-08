@@ -209,6 +209,8 @@ struct UIString: RawRepresentable
   static let fetchCurrentUnavailable = ›"Fetch current branch"
   static let pushCurrentUnavailable = ›"No tracking branch to push"
   static let pullCurrentUnavailable = ›"No tracking branch to pull"
+  
+  static let pushNew = ›"Push to new remote branch..."
 
   static let fetchCurrentFormat = #"Fetch "%2$@/%1$@""#
   static let fetchRemoteFormat = #"Fetch remote "%@""#

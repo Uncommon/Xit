@@ -344,9 +344,13 @@ extension XTWindowController: NSMenuItemValidation
                                               remote: remote)
           result = true
         }
-        else {
+        else if repository.remotes().isEmpty {
           menuItem.titleString = .pushCurrentUnavailable
           result = false
+        }
+        else {
+          menuItem.titleString = .pushNew
+          result = true
         }
 
       default:

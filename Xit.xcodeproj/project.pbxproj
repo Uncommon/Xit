@@ -10,6 +10,8 @@
 		31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		31C7C13413ECC74C00A65FE9 /* HistoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31C7C13213ECC74C00A65FE9 /* HistoryViewController.xib */; };
 		89039F561703A9FC000949A8 /* html in Resources */ = {isa = PBXBuildFile; fileRef = 89039F551703A9FC000949A8 /* html */; };
+		891052D82523F3D30095E299 /* TestErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891052D72523F3D30095E299 /* TestErrors.swift */; };
+		891052D92523F3D30095E299 /* TestErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891052D72523F3D30095E299 /* TestErrors.swift */; };
 		891261B01F867FCC00C292B7 /* GitTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891261AF1F867FCC00C292B7 /* GitTree.swift */; };
 		896A29F71E4C3620002C5EC8 /* PreviewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896A29F61E4C3620002C5EC8 /* PreviewItem.swift */; };
 		897056ED20E412AC0020F5E9 /* ClickThroughImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897056EC20E412AC0020F5E9 /* ClickThroughImageView.swift */; };
@@ -23,6 +25,8 @@
 		89AB21DA213DE5E300EF7507 /* StashOperationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AB21D9213DE5E300EF7507 /* StashOperationController.swift */; };
 		89AB21ED213DE67500EF7507 /* StashPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AB21EB213DE67500EF7507 /* StashPanelController.swift */; };
 		89AB21EE213DE67500EF7507 /* StashPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89AB21EC213DE67500EF7507 /* StashPanelController.xib */; };
+		89AB952224DDE63E0029CECC /* PushNewPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89AB952124DDE63E0029CECC /* PushNewPanelController.xib */; };
+		89AB953724DE064B0029CECC /* PushNewPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AB953624DE064B0029CECC /* PushNewPanelController.swift */; };
 		89C9276B1D368C020074F71A /* SideBarDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C9276A1D368C020074F71A /* SideBarDataSource.swift */; };
 		89C927751D36A2180074F71A /* GitSubmodule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927741D36A2180074F71A /* GitSubmodule.swift */; };
 		89C927781D36A5890074F71A /* GitTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927771D36A5890074F71A /* GitTag.swift */; };
@@ -438,6 +442,7 @@
 		3DB98C8323E0928A0039B454 /* DEVELOPMENT_TEAM.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = DEVELOPMENT_TEAM.xcconfig; sourceTree = "<group>"; };
 		3DB98C8423E0928A0039B454 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = "<group>"; };
 		89039F551703A9FC000949A8 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
+		891052D72523F3D30095E299 /* TestErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestErrors.swift; sourceTree = "<group>"; };
 		891261AF1F867FCC00C292B7 /* GitTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitTree.swift; sourceTree = "<group>"; };
 		894C8DE51CCD06FE001A4B80 /* Xit-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Xit-Bridging-Header.h"; sourceTree = "<group>"; };
 		896A29F61E4C3620002C5EC8 /* PreviewItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewItem.swift; sourceTree = "<group>"; };
@@ -452,6 +457,8 @@
 		89AB21D9213DE5E300EF7507 /* StashOperationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StashOperationController.swift; sourceTree = "<group>"; };
 		89AB21EB213DE67500EF7507 /* StashPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StashPanelController.swift; sourceTree = "<group>"; };
 		89AB21EC213DE67500EF7507 /* StashPanelController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StashPanelController.xib; sourceTree = "<group>"; };
+		89AB952124DDE63E0029CECC /* PushNewPanelController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PushNewPanelController.xib; sourceTree = "<group>"; };
+		89AB953624DE064B0029CECC /* PushNewPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNewPanelController.swift; sourceTree = "<group>"; };
 		89C9276A1D368C020074F71A /* SideBarDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SideBarDataSource.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		89C927741D36A2180074F71A /* GitSubmodule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitSubmodule.swift; sourceTree = "<group>"; };
 		89C927771D36A5890074F71A /* GitTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitTag.swift; sourceTree = "<group>"; };
@@ -939,6 +946,7 @@
 				C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */,
 				C3FA472513D0F8E300AC4F9B /* Supporting Files */,
 				C9088CC622BA8BC500DB4A02 /* BuildStatusControllerTest.swift */,
+				891052D72523F3D30095E299 /* TestErrors.swift */,
 			);
 			path = XitTests;
 			sourceTree = "<group>";
@@ -1122,6 +1130,8 @@
 				C94866BE1D25861E000BDB0A /* PasswordPanelController.swift */,
 				C94866BF1D25861E000BDB0A /* PasswordPanelController.xib */,
 				89C927871D43B0460074F71A /* PullOpController.swift */,
+				89AB953624DE064B0029CECC /* PushNewPanelController.swift */,
+				89AB952124DDE63E0029CECC /* PushNewPanelController.xib */,
 				C936AD091D4C0CD400C5ADC3 /* PushOpController.swift */,
 				C9BAE61D1D303A8100A87F13 /* RemoteOptionsOpController.swift */,
 				C957B8701D2DB44E0040F858 /* RemoteSheetController.swift */,
@@ -1129,8 +1139,8 @@
 				C9BDF4C01D99A70F0034841F /* RenameBranchOpController.swift */,
 				C9BDF4CE1D99A7660034841F /* RenameBranchPanelController.swift */,
 				C9BDF4CF1D99A7660034841F /* RenameBranchPanelController.xib */,
-				C9120EDE23EE04C00052387E /* ResetPanelController.swift */,
 				C900E3D323F21B6100846FFD /* ResetOpController.swift */,
+				C9120EDE23EE04C00052387E /* ResetPanelController.swift */,
 				C9120EDF23EE04C00052387E /* ResetPanelController.xib */,
 				89AB21D9213DE5E300EF7507 /* StashOperationController.swift */,
 				89AB21EB213DE67500EF7507 /* StashPanelController.swift */,
@@ -1488,6 +1498,7 @@
 				C90FD5971D217D5B00A30570 /* FetchPanelController.xib in Resources */,
 				DD997DDA173B409500C7DF82 /* Sidebar Menus.xib in Resources */,
 				C923D65E1D90506A00C6B90B /* TitleBar.xib in Resources */,
+				89AB952224DDE63E0029CECC /* PushNewPanelController.xib in Resources */,
 				DD997DF81746F40D00C7DF82 /* FileViewController.xib in Resources */,
 				C93FFCAA1F0FD65100FDDD78 /* Defaults.plist in Resources */,
 				C9BD02FB226A275600172C0B /* Credits.rtf in Resources */,
@@ -1691,6 +1702,7 @@
 				C951EAE11DD11BDD00B99FBE /* SidebarTableCellView.swift in Sources */,
 				C9F20AD02347C8C7002E8603 /* NewBranchOpController.swift in Sources */,
 				C986447C208FBD990088209B /* ResponderNotifierWindow.swift in Sources */,
+				89AB953724DE064B0029CECC /* PushNewPanelController.swift in Sources */,
 				C95ECD051EB11E310000DB78 /* WebViewController.swift in Sources */,
 				C92E30FB1D4FF4F0001985F7 /* GitCommit.swift in Sources */,
 				C98684702334389A0026E70B /* SidebarItemFilter.swift in Sources */,
@@ -1746,6 +1758,7 @@
 				DD98CFF3181ADFC5008B79C9 /* CFRunLoop+Extensions.c in Sources */,
 				C953560A1D958E8D00AEEF49 /* StringExtensionsTest.swift in Sources */,
 				C921026D1F757FEB0068F87C /* StringOID.swift in Sources */,
+				891052D82523F3D30095E299 /* TestErrors.swift in Sources */,
 				C9DEA4FF1E54AEC400DF4069 /* BlameTest.swift in Sources */,
 				C96D24B31DFEFD9F00431317 /* SidebarControllerTest.swift in Sources */,
 				C923D6481D8CA56800C6B90B /* XTTagTest.swift in Sources */,
@@ -1782,6 +1795,7 @@
 				C9B3950724C0AA8A0084EB73 /* UnicodeRepoUITests.swift in Sources */,
 				C90FD41F23845FB8006358C7 /* TestRepoEnvironment.swift in Sources */,
 				C99E38F4236B595300675F6A /* TestRepo.swift in Sources */,
+				891052D92523F3D30095E299 /* TestErrors.swift in Sources */,
 				C90FD4212385A983006358C7 /* XCTestCaseExtensions.swift in Sources */,
 				C954C1662374E493000D5339 /* CLIRunner.swift in Sources */,
 				C94107CB236B39C600D4B0D7 /* TemporaryDirectory.swift in Sources */,
