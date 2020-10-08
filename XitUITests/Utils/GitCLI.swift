@@ -30,4 +30,9 @@ class GitCLI
   {
     return run(args: ["branch"]).components(separatedBy: .whitespacesAndNewlines)
   }
+  
+  func checkOut(newBranch: String)
+  {
+    run(args: ["checkout", "-b", newBranch])
+  }
 }

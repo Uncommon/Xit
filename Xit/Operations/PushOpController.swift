@@ -59,8 +59,8 @@ class PushOpController: PasswordOpController
               let remoteName = remoteBranch.remoteName,
               let trackedRemote = repository.remote(named: remoteName)
         else {
-          NSLog("Can't push - no tracking branch")
-          throw RepoError.unexpected
+          try pushNewBranch()
+          return
         }
 
         remote = trackedRemote
@@ -121,7 +121,6 @@ class PushOpController: PasswordOpController
   
     sheetController.alreadyTracking = currentBranch.trackingBranchName != nil
     sheetController.setRemotes(repository.remoteNames())
-    // tag and tracking defaults
     
     window.beginSheet(sheetController.window!) {
       (response) in
@@ -136,8 +135,13 @@ class PushOpController: PasswordOpController
         return
       }
       
-      // include tag and tracking options
-      self.push(branches: [currentBranch], remote: remote)
+      self.push(branches: [currentBranch], remote: remote, then: {
+        if sheetController.setTrackingBranch,
+           let remoteName = remote.name {
+          currentBranch.trackingBranchName = remoteName +/
+                                             currentBranch.strippedName
+        }
+      })
     }
   }
   
@@ -156,7 +160,8 @@ class PushOpController: PasswordOpController
     }
   }
   
-  func push(branches: [LocalBranch], remote: Remote)
+  func push(branches: [LocalBranch], remote: Remote,
+            then callback: (() -> Void)? = nil)
   {
     tryRepoOperation {
       guard let repository = self.repository
@@ -172,6 +177,7 @@ class PushOpController: PasswordOpController
       try repository.push(branches: branches,
                           remote: remote,
                           callbacks: callbacks)
+      callback?()
       NotificationCenter.default.post(name: .XTRepositoryRefsChanged,
                                       object: repository)
       self.ended()
