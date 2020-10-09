@@ -371,16 +371,16 @@ extension XTRepository: FileStaging
         guard let headCommit = headSHA.flatMap({ self.commit(forSHA: $0) }),
               let parentOID = headCommit.parentOIDs.first
         else {
-          throw RepoError.commitNotFound(headSHA)
+          throw RepoError.commitNotFound(sha: headSHA)
         }
         guard let parentCommit = commit(forOID: parentOID)
         else {
-          throw RepoError.commitNotFound(parentOID.sha)
+          throw RepoError.commitNotFound(sha: parentOID.sha)
         }
         guard let entry = parentCommit.tree?.entry(path: file),
               let blob = entry.object as? Blob
         else {
-          throw RepoError.fileNotFound(file)
+          throw RepoError.fileNotFound(path: file)
         }
         
         try blob.withData {

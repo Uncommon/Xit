@@ -4,11 +4,11 @@ enum RepoError: Swift.Error
 {
   case alreadyWriting
   case cherryPickInProgress
-  case commitNotFound(String?)  // SHA
-  case conflict  // List of conflicted files
+  case commitNotFound(sha: String?)
+  case conflict  // List of conflicted files?
   case detachedHead
   case duplicateName
-  case fileNotFound(String)  // Path
+  case fileNotFound(path: String)
   case gitError(Int32)
   case invalidName(String)
   case localConflict

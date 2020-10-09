@@ -5,7 +5,7 @@ public class SheetController: NSWindowController
   enum Mode
   {
     case edit
-    case create(UIString?)
+    case create(actionString: UIString?)
     
     var buttonTitle: UIString
     {

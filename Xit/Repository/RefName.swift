@@ -4,7 +4,7 @@ enum RefName: RawRepresentable
 {
   case tag(String)
   case branch(String)
-  case remoteBranch(String, String)
+  case remoteBranch(remote: String, branch: String)
   case unknown
 
   var rawValue: String
@@ -39,8 +39,9 @@ enum RefName: RawRepresentable
           self = .unknown
           break
         }
-        self = .remoteBranch(components[2],
-                             components.dropFirst(3).joined(separator: "/"))
+        self = .remoteBranch(remote: components[2],
+                             branch: components.dropFirst(3)
+                                               .joined(separator: "/"))
       default:
         self = .unknown
     }

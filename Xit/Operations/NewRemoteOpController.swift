@@ -9,7 +9,7 @@ class NewRemoteOpController: OperationController
   {
     super.init(windowController: windowController)
     
-    sheetController.setMode(.create(.createRemote))
+    sheetController.setMode(.create(actionString: .createRemote))
     sheetController.delegate = self
   }
   

@@ -3,7 +3,7 @@ import Foundation
 public enum WorkTreeLockStatus
 {
   case unlocked
-  case locked(String)
+  case locked(reason: String)
   case error(Int32)
 }
 
@@ -54,7 +54,7 @@ class GitWorkTree: WorkTree
       case let error where error < 0:
         return .error(error)
       case 1...:
-        return .locked(String(gitBuffer: reasonBuffer.pointee) ?? "")
+        return .locked(reason: String(gitBuffer: reasonBuffer.pointee) ?? "")
       default:
         fatalError("this should be unreachable")
     }
