@@ -267,6 +267,11 @@ extension SidebarDelegate: NSOutlineViewDelegate
           textField.action =
             #selector(SidebarController.sidebarItemRenamed(_:))
         }
+        else {
+          textField.target = nil
+          textField.action = nil
+          textField.isSelectable = false
+        }
         update(cell: dataView, item: sidebarItem)
         return dataView
       
