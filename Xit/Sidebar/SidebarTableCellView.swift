@@ -27,7 +27,7 @@ class SidebarTableCellView: NSTableCellView
       
       imageView?.image = item.icon
       textField.uiStringValue = item.displayTitle
-      textField.isEditable = item.editable
+      textField.isEditable = item.isEditable
       textField.isSelectable = item.isSelectable
     }
   }

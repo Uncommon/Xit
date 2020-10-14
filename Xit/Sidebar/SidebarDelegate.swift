@@ -176,7 +176,7 @@ class SidebarDelegate: NSObject
     let textField = cell.textField!
     let fontSize = textField.font?.pointSize ?? 12
     
-    textField.font = item.current
+    textField.font = item.isCurrent
         ? .boldSystemFont(ofSize: fontSize)
         : .systemFont(ofSize: fontSize)
     
@@ -262,7 +262,7 @@ extension SidebarDelegate: NSOutlineViewDelegate
         
         dataView.prDelegate = pullRequestManager
         dataView.item = sidebarItem
-        if sidebarItem.editable {
+        if sidebarItem.isEditable {
           textField.target = controller
           textField.action =
             #selector(SidebarController.sidebarItemRenamed(_:))
@@ -284,7 +284,7 @@ extension SidebarDelegate: NSOutlineViewDelegate
                           rowViewForItem item: Any) -> NSTableRowView?
   {
     switch item {
-      case let branchItem as LocalBranchSidebarItem where branchItem.current:
+      case let branchItem as LocalBranchSidebarItem where branchItem.isCurrent:
         return SidebarCheckedRowView()
 
       case let remoteBranchItem as RemoteBranchSidebarItem:

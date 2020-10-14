@@ -148,7 +148,7 @@ class SideBarDataSource: NSObject
                         withAnimation: .effectFade)
     oldRoot.children.removeObjects(at: removedIndices)
     oldRoot.children.insert(newItems.objects(at: addedIndices), at: addedIndices)
-    for oldItem in oldItems where oldItem.expandable {
+    for oldItem in oldItems where oldItem.isExpandable {
       if let newItem = newItems.first(where: { $0 == oldItem }) {
         applyNewContents(oldRoot: oldItem, newRoot: newItem)
       }
@@ -234,7 +234,7 @@ class SideBarDataSource: NSObject
   private func selectCurrentBranch(in parent: SidebarItem) -> Bool
   {
     for item in parent.children {
-      if item.current {
+      if item.isCurrent {
         viewController?.selectedItem = item
         return true
       }
@@ -304,7 +304,7 @@ extension SideBarDataSource: NSOutlineViewDataSource
   public func outlineView(_ outlineView: NSOutlineView,
                           isItemExpandable item: Any) -> Bool
   {
-    return (item as? SidebarItem)?.expandable ?? false
+    return (item as? SidebarItem)?.isExpandable ?? false
   }
   
   public func outlineView(_ outlineView: NSOutlineView,

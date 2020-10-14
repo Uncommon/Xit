@@ -10,11 +10,11 @@ class SidebarItem: NSObject
   var displayTitle: UIString { UIString(rawValue: title) }
   var icon: NSImage? { nil }
   var refType: RefType { .unknown }
-  var expandable: Bool { false }
+  var isExpandable: Bool { false }
   // NSObject.isSelectable is new in 10.12
   override var isSelectable: Bool { true }
-  var editable: Bool { false }
-  var current: Bool { false }
+  var isEditable: Bool { false }
+  var isCurrent: Bool { false }
   
   required init(title: String)
   {
@@ -123,7 +123,7 @@ class SideBarGroupItem: SidebarItem
   required init(title: String) { super.init(title: title) }
   
   override var isSelectable: Bool { false }
-  override var expandable: Bool { true }
+  override var isExpandable: Bool { true }
   
   override func isEqual(_ object: Any?) -> Bool
   {
@@ -180,8 +180,8 @@ class BranchSidebarItem: SidebarItem
 
 class LocalBranchSidebarItem: BranchSidebarItem
 {
-  override var refType: RefType { current ? .activeBranch : .branch }
-  override var current: Bool
+  override var refType: RefType { isCurrent ? .activeBranch : .branch }
+  override var isCurrent: Bool
   {
     if let currentBranch = selection!.repository.currentBranch {
       return currentBranch == title
@@ -267,7 +267,7 @@ class BranchFolderSidebarItem: SidebarItem
 {
   override var icon: NSImage? { NSImage(named: .xtFolderTemplate) }
   override var isSelectable: Bool { false }
-  override var expandable: Bool { true }
+  override var isExpandable: Bool { true }
 }
 
 
@@ -294,8 +294,8 @@ class RemoteSidebarItem: SidebarItem
     return NSImage(named: .xtCloudTemplate)
   }
   
-  override var expandable: Bool { true }
-  override var editable: Bool { true }
+  override var isExpandable: Bool { true }
+  override var isEditable: Bool { true }
   override var refType: RefType { .remote }
   
   init(title: String, repository: RemoteManagement)

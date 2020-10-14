@@ -20,7 +20,6 @@ class CommitHeaderViewController: NSViewController, RepositoryUIAccessor
       loadHeader()
     }
   }
-  var expanded: Bool = false
   
   var repository: CommitStorage { repoController?.repository as! CommitStorage }
   

@@ -86,7 +86,7 @@ class SidebarDataModel
     
     let folderName = branchPath[0]
     
-    if let child = item.children.first(where: { $0.expandable &&
+    if let child = item.children.first(where: { $0.isExpandable &&
                                                 $0.title == folderName }) {
       return parent(for: Array(branchPath.dropFirst(1)), under: child)
     }
