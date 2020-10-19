@@ -192,8 +192,11 @@ class HistoryCellView: NSTableCellView
   
   func drawLines()
   {
-    guard let dotOffset = entry.dotOffset,
-          let dotColorIndex = entry.dotColorIndex
+    let dotValues = lockObject.withSync(block: {
+      (entry.dotOffset, entry.dotColorIndex)
+    })
+    guard let dotOffset = dotValues.0,
+          let dotColorIndex = dotValues.1
     else { return }
     
     for line in entry.lines {

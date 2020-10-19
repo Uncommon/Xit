@@ -89,8 +89,8 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
   public func reset()
   {
     abort()
-    commitLookup.removeAll()
     withSync {
+      commitLookup.removeAll()
       entries.removeAll()
       batchStart = 0
       batchTargetRow = 0
@@ -270,8 +270,10 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
       var colorIndex = connection.colorIndex
       
       if (entry.dotOffset == nil) && (commitIsParent || commitIsChild) {
-        entry.dotOffset = nextChildIndex
-        entry.dotColorIndex = colorIndex
+        withSync {
+          entry.dotOffset = nextChildIndex
+          entry.dotColorIndex = colorIndex
+        }
       }
       if let parentLine = parentLines[connection.parentOID] {
         if !commitIsChild {
