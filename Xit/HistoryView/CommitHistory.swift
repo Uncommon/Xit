@@ -122,8 +122,6 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
   var batchSize = 500
   var batchStart = 0
   var batchTargetRow = 0
-  var progressStartRow = 0
-  var progressEndRow = 0
   var processingConnections = [Connection]()
   
   /// Processes the next batch of connections in the list. Should not be
@@ -160,15 +158,6 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
     processBatches(throughRow: batchSize-1)
   }
   
-  /// Returns the end of the batch containing the target row
-  private func batchEnd(target: Int, batchSize: Int) -> Int
-  {
-    // There must be a simpler way to calculate this but I can't quite get it
-    let mod = (target + 1) % batchSize
-    
-    return target + ((mod == 0) ? 0 : batchSize - mod)
-  }
-  
   /// Starts processing rows until the given row is processed. If processing
   /// is already happening, the target is set to at least the given row.
   func processBatches(throughRow row: Int, queue: TaskQueue? = nil)
@@ -179,8 +168,6 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
       guard row > batchTargetRow
       else { return }
       
-      progressStartRow = batchStart
-      progressEndRow = batchEnd(target: row, batchSize: batchSize)
       startProcessing = batchTargetRow == 0
       batchTargetRow = row
     }
