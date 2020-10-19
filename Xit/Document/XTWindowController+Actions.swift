@@ -268,6 +268,7 @@ extension XTWindowController
 
 extension XTWindowController: NSMenuItemValidation
 {
+  // swiftlint:disable:next function_body_length
   func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
   {
     guard let action = menuItem.action

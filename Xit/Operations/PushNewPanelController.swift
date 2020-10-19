@@ -11,8 +11,8 @@ class PushNewPanelController: SheetController
   
   var alreadyTracking: Bool
   {
-    set { alreadyTrackingWarning.isHidden = !newValue }
     get { !alreadyTrackingWarning.isHidden }
+    set { alreadyTrackingWarning.isHidden = !newValue }
   }
   
   var selectedRemote: String
