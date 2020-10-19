@@ -216,23 +216,22 @@ class HistoryCellView: NSTableCellView
       lineColor.setStroke()
       path.lineWidth = Widths.line
       path.stroke()
-      
-      let dotSize: CGFloat = 6.0
-      let dotPath = NSBezierPath(ovalIn:
-              NSRect(x: HistoryCellView.columnCenter(dotOffset) - dotSize/2,
-                     y: bounds.size.height/2 - dotSize/2,
-                     width: dotSize, height: dotSize))
-      let dotColorIndex = Int(dotColorIndex) %
-                          HistoryCellView.lineColors.count
-      let baseDotColor = HistoryCellView.lineColors[dotColorIndex]
-      let dotColor = baseDotColor.blended(withFraction: 0.5,
-                                          of: NSColor.textColor) ?? baseDotColor
-      
-      NSColor.textBackgroundColor.setStroke()
-      dotPath.lineWidth = 1.0
-      dotPath.stroke()
-      dotColor.setFill()
-      dotPath.fill()
     }
+
+    let dotSize: CGFloat = 6.0
+    let dotPath = NSBezierPath(ovalIn:
+            NSRect(x: HistoryCellView.columnCenter(dotOffset) - dotSize/2,
+                   y: bounds.size.height/2 - dotSize/2,
+                   width: dotSize, height: dotSize))
+    let colorIndex = Int(dotColorIndex) % HistoryCellView.lineColors.count
+    let baseDotColor = HistoryCellView.lineColors[colorIndex]
+    let dotColor = baseDotColor.blended(withFraction: 0.5,
+                                        of: NSColor.textColor) ?? baseDotColor
+    
+    NSColor.textBackgroundColor.setStroke()
+    dotPath.lineWidth = 1.0
+    dotPath.stroke()
+    dotColor.setFill()
+    dotPath.fill()
   }
 }
