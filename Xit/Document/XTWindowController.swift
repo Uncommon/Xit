@@ -1,5 +1,11 @@
 import Cocoa
 
+extension NSToolbarItem.Identifier
+{
+  static let navigation: Self = ◊"xit.nav"
+  static let title: Self = ◊"xit.title"
+}
+
 protocol RepositoryUIController: AnyObject
 {
   var repository: Repository { get }
@@ -92,7 +98,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       })
       sidebarController.repo = repo
       historyController.finishLoad(repository: repo)
-      configureTitleBarController(repository: repo)
+      //configureTitleBarController(repository: repo)
       updateTabStatus()
     }
   }
@@ -149,6 +155,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
         object: nil, queue: .main, using: menuDidBeginTracking)
     updateMiniwindowTitle()
     updateNavButtons()
+    window.toolbar?.centeredItemIdentifier = .title
   }
 
   enum RemoteMenuType: CaseIterable
