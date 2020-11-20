@@ -78,7 +78,7 @@
 		C921026D1F757FEB0068F87C /* StringOID.swift in Sources */ = {isa = PBXBuildFile; fileRef = C921026C1F757FEB0068F87C /* StringOID.swift */; };
 		C923D6481D8CA56800C6B90B /* XTTagTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D6471D8CA56800C6B90B /* XTTagTest.swift */; };
 		C923D65E1D90506A00C6B90B /* TitleBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = C923D65D1D90506A00C6B90B /* TitleBar.xib */; };
-		C923D66C1D906FAA00C6B90B /* TitleBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D66B1D906FAA00C6B90B /* TitleBarViewController.swift */; };
+		C923D66C1D906FAA00C6B90B /* TitleBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D66B1D906FAA00C6B90B /* TitleBarController.swift */; };
 		C926804E1D074EC500E422FA /* RepositorySelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C926804D1D074EC500E422FA /* RepositorySelection.swift */; };
 		C929D03B1D400B3B00D7DC52 /* GitRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D03A1D400B3B00D7DC52 /* GitRemote.swift */; };
 		C929D0461D415F6F00D7DC52 /* MiscExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */; };
@@ -521,7 +521,7 @@
 		C921026C1F757FEB0068F87C /* StringOID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringOID.swift; sourceTree = "<group>"; };
 		C923D6471D8CA56800C6B90B /* XTTagTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTagTest.swift; sourceTree = "<group>"; };
 		C923D65D1D90506A00C6B90B /* TitleBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TitleBar.xib; sourceTree = "<group>"; };
-		C923D66B1D906FAA00C6B90B /* TitleBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = TitleBarViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		C923D66B1D906FAA00C6B90B /* TitleBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = TitleBarController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C926804D1D074EC500E422FA /* RepositorySelection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepositorySelection.swift; sourceTree = "<group>"; };
 		C929D03A1D400B3B00D7DC52 /* GitRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitRemote.swift; sourceTree = "<group>"; };
 		C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiscExtensions.swift; sourceTree = "<group>"; };
@@ -1105,7 +1105,7 @@
 				C90DA47824212B7400FFBC26 /* XTWindowController+Operations.swift */,
 				C90DA48A24212F0300FFBC26 /* XTWindowController+TitleBar.swift */,
 				C959CDD61F859BFE00C1E282 /* XTWindowController+TouchBar.swift */,
-				C923D66B1D906FAA00C6B90B /* TitleBarViewController.swift */,
+				C923D66B1D906FAA00C6B90B /* TitleBarController.swift */,
 				C95355E91D93470400AEEF49 /* TitleStatusView.swift */,
 				C923D65D1D90506A00C6B90B /* TitleBar.xib */,
 				C986447B208FBD990088209B /* ResponderNotifierWindow.swift */,
@@ -1694,7 +1694,7 @@
 				89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */,
 				C9F1B5F22217293D00293305 /* TeamCityAPI+Types.swift in Sources */,
 				C9E9A37D1D0B5706007BFABF /* XTWindowController.swift in Sources */,
-				C923D66C1D906FAA00C6B90B /* TitleBarViewController.swift in Sources */,
+				C923D66C1D906FAA00C6B90B /* TitleBarController.swift in Sources */,
 				89880EDB20D08674007042F8 /* RefTokenView.swift in Sources */,
 				C90FD5961D217D5B00A30570 /* FetchPanelController.swift in Sources */,
 				C96256B2235A402800A625DC /* NewRemoteOpController.swift in Sources */,

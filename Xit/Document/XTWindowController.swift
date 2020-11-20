@@ -1,11 +1,5 @@
 import Cocoa
 
-extension NSToolbarItem.Identifier
-{
-  static let navigation: Self = ◊"xit.nav"
-  static let title: Self = ◊"xit.title"
-}
-
 protocol RepositoryUIController: AnyObject
 {
   var repository: Repository { get }
@@ -30,11 +24,11 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
 {
   var splitViewController: NSSplitViewController!
   @IBOutlet var sidebarController: SidebarController!
+  @IBOutlet var titleBarController: TitleBarController!
   
   var historyController: HistoryViewController!
   weak var xtDocument: XTDocument?
   var repoController: GitRepositoryController!
-  var titleBarController: TitleBarViewController?
   var refsChangedObserver, workspaceObserver: NSObjectProtocol?
   var repository: Repository { (xtDocument?.repository as Repository?)! }
 
@@ -98,7 +92,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       })
       sidebarController.repo = repo
       historyController.finishLoad(repository: repo)
-      //configureTitleBarController(repository: repo)
+      configureTitleBarController(repository: repo)
       updateTabStatus()
     }
   }
@@ -408,9 +402,9 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func windowWillClose(_ notification: Notification)
   {
-    titleBarController?.titleLabel.unbind(◊"value")
-    titleBarController?.proxyIcon.unbind(◊"hidden")
-    titleBarController?.spinner.unbind(◊"hidden")
+    titleBarController.titleLabel.unbind(◊"value")
+    titleBarController.proxyIcon.unbind(◊"hidden")
+    titleBarController.spinner.unbind(◊"hidden")
     // For some reason this avoids a crash
     window?.makeFirstResponder(nil)
   }
@@ -419,5 +413,5 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
 extension NSBindingName
 {
   static let progressHidden =
-      NSBindingName(#keyPath(TitleBarViewController.progressHidden))
+      NSBindingName(#keyPath(TitleBarController.progressHidden))
 }

@@ -10,7 +10,7 @@
         <scene sceneID="QSP-Vw-kJW">
             <objects>
                 <windowController id="l6G-3P-2hY" customClass="XTWindowController" customModule="Xit" customModuleProvider="target" sceneMemberID="viewController">
-                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="czE-Rb-YiB">
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" titleVisibility="hidden" id="czE-Rb-YiB">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="355" y="728" width="724" height="451"/>
@@ -29,6 +29,9 @@
                                                 <segment image="NSGoRightTemplate" width="32" tag="1"/>
                                             </segments>
                                         </segmentedCell>
+                                        <connections>
+                                            <action selector="navigate:" target="uko-xc-GwC" id="L5d-sP-TBY"/>
+                                        </connections>
                                     </segmentedControl>
                                 </toolbarItem>
                                 <toolbarItem implicitItemIdentifier="937E3C05-73FC-476A-9185-2B0916201849" explicitItemIdentifier="xit.remote" label="Remote Ops" paletteLabel="Remote Ops" sizingBehavior="auto" id="HjO-mu-IiC">
@@ -46,6 +49,9 @@
                                                 </segment>
                                             </segments>
                                         </segmentedCell>
+                                        <connections>
+                                            <action selector="remoteAction:" target="uko-xc-GwC" id="AWX-Wo-BYQ"/>
+                                        </connections>
                                     </segmentedControl>
                                 </toolbarItem>
                                 <toolbarItem implicitItemIdentifier="82AFBB3C-699E-41C0-BCAC-9AAA96D61D40" explicitItemIdentifier="xit.view" label="Panels" paletteLabel="Panels" visibilityPriority="1" sizingBehavior="auto" id="EmV-8X-pjB">
@@ -63,6 +69,9 @@
                                                 </segment>
                                             </segments>
                                         </segmentedCell>
+                                        <connections>
+                                            <action selector="viewAction:" target="uko-xc-GwC" id="fll-bf-mch"/>
+                                        </connections>
                                     </segmentedControl>
                                 </toolbarItem>
                                 <toolbarItem implicitItemIdentifier="A9A90CF1-BC19-45AA-9D55-91919296D09F" explicitItemIdentifier="xit.search" label="Search" paletteLabel="Search" image="NSTouchBarSearchTemplate" sizingBehavior="auto" id="gxy-S3-Tn6">
@@ -74,6 +83,9 @@
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
+                                        <connections>
+                                            <action selector="search:" target="uko-xc-GwC" id="r71-KI-ocq"/>
+                                        </connections>
                                     </button>
                                 </toolbarItem>
                                 <toolbarItem implicitItemIdentifier="4798E31C-C1B2-4D7F-AE28-6D09132E2284" explicitItemIdentifier="xit.stash" label="Stash" paletteLabel="Stash" sizingBehavior="auto" id="BqU-7i-BMT">
@@ -87,17 +99,20 @@
                                                 <segment image="stashTemplate" width="32"/>
                                             </segments>
                                         </segmentedCell>
+                                        <connections>
+                                            <action selector="stash:" target="uko-xc-GwC" id="5nA-Fh-COj"/>
+                                        </connections>
                                     </segmentedControl>
                                 </toolbarItem>
                                 <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="oLO-yb-35r"/>
                                 <toolbarItem implicitItemIdentifier="971C5D51-7BF7-42A9-A85A-72D2B76431F5" explicitItemIdentifier="xit.title" label="Title" paletteLabel="Title" tag="-1" visibilityPriority="2" sizingBehavior="auto" id="UxK-o7-3aL">
                                     <nil key="toolTip"/>
                                     <customView key="view" id="SWa-Az-MwP">
-                                        <rect key="frame" x="0.0" y="14" width="189" height="25"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <rect key="frame" x="0.0" y="14" width="189" height="0.0"/>
+                                        <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
-                                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="VJm-7u-35O" customClass="DraggingImage" customModule="Xit" customModuleProvider="target">
-                                                <rect key="frame" x="8" y="5" width="16" height="16"/>
+                                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="VJm-7u-35O" customClass="DraggingImage" customModule="Xit" customModuleProvider="target">
+                                                <rect key="frame" x="8" y="-20" width="16" height="16"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="16" id="a8J-3r-PtW"/>
                                                     <constraint firstAttribute="height" constant="16" id="ut0-y7-aJb"/>
@@ -105,8 +120,8 @@
                                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSFolder" id="aJr-Ch-3Lo"/>
                                                 <accessibility identifier="proxy"/>
                                             </imageView>
-                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="b5x-UK-ZUa" customClass="DraggingLabel" customModule="Xit" customModuleProvider="target">
-                                                <rect key="frame" x="30" y="5" width="69" height="16"/>
+                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" tag="3" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="b5x-UK-ZUa" customClass="DraggingLabel" customModule="Xit" customModuleProvider="target">
+                                                <rect key="frame" x="30" y="-20" width="69" height="16"/>
                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Repository" id="DKc-fE-Gdq">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -114,8 +129,8 @@
                                                 </textFieldCell>
                                                 <accessibility identifier="titleLabel"/>
                                             </textField>
-                                            <popUpButton focusRingType="none" translatesAutoresizingMaskIntoConstraints="NO" id="PaF-HD-fOy">
-                                                <rect key="frame" x="123" y="5" width="64" height="16"/>
+                                            <popUpButton focusRingType="none" tag="4" translatesAutoresizingMaskIntoConstraints="NO" id="PaF-HD-fOy">
+                                                <rect key="frame" x="123" y="-20" width="64" height="16"/>
                                                 <popUpButtonCell key="cell" type="bevel" title="branch" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" state="on" focusRingType="none" imageScaling="proportionallyDown" inset="2" autoenablesItems="NO" selectedItem="vXj-nU-ED0" id="hG2-VN-ZGZ">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="menu"/>
@@ -128,13 +143,16 @@
                                                     </menu>
                                                 </popUpButtonCell>
                                                 <accessibility identifier="branchPopup"/>
+                                                <connections>
+                                                    <action selector="branchSelected:" target="uko-xc-GwC" id="l86-52-vTE"/>
+                                                </connections>
                                             </popUpButton>
                                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="vLQ-9R-Z0E" customClass="DraggingImage" customModule="Xit" customModuleProvider="target">
-                                                <rect key="frame" x="114" y="5" width="14" height="16"/>
+                                                <rect key="frame" x="114" y="-20" width="14" height="16"/>
                                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="branchTemplate" id="1RE-xy-bWh"/>
                                             </imageView>
                                             <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="GKW-4J-3KT" customClass="DraggingProgress" customModule="Xit" customModuleProvider="target">
-                                                <rect key="frame" x="8" y="5" width="16" height="16"/>
+                                                <rect key="frame" x="8" y="-20" width="16" height="16"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="16" id="9Pv-LM-s5j"/>
                                                     <constraint firstAttribute="width" constant="16" id="s8R-0y-Jei"/>
@@ -142,7 +160,7 @@
                                                 <accessibility identifier="spinner"/>
                                             </progressIndicator>
                                             <box horizontalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="tQh-wo-TTy">
-                                                <rect key="frame" x="103" y="5" width="5" height="16"/>
+                                                <rect key="frame" x="103" y="-20" width="5" height="16"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="16" id="bzi-i4-iRN"/>
                                                 </constraints>
@@ -176,7 +194,7 @@
                                 <toolbarItem reference="EmV-8X-pjB"/>
                             </defaultToolbarItems>
                             <connections>
-                                <outlet property="delegate" destination="l6G-3P-2hY" id="d2v-cc-NsH"/>
+                                <outlet property="delegate" destination="uko-xc-GwC" id="lGv-3Z-22m"/>
                             </connections>
                         </toolbar>
                         <accessibility identifier="repoWindow"/>
@@ -185,10 +203,82 @@
                         </connections>
                     </window>
                     <connections>
+                        <outlet property="titleBarController" destination="uko-xc-GwC" id="NPG-OP-818"/>
                         <segue destination="lX6-3b-XD9" kind="relationship" relationship="window.shadowedContentViewController" id="0lp-Ba-bvA"/>
                     </connections>
                 </windowController>
                 <customObject id="2em-8b-shT" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <customObject id="uko-xc-GwC" customClass="TitleBarController" customModule="Xit" customModuleProvider="target">
+                    <connections>
+                        <outlet property="fetchMenu" destination="5np-7R-fbC" id="w7X-oo-HMk"/>
+                        <outlet property="pullMenu" destination="x4n-CH-bN6" id="WkA-2r-C1Z"/>
+                        <outlet property="pushMenu" destination="Chk-z8-G67" id="OLO-Ry-ggH"/>
+                        <outlet property="stashMenu" destination="7yp-7v-W3Z" id="seh-aS-fzh"/>
+                        <outlet property="window" destination="czE-Rb-YiB" id="bTP-lf-Tjb"/>
+                    </connections>
+                </customObject>
+                <menu title="Stash" id="7yp-7v-W3Z" userLabel="Stash">
+                    <items>
+                        <menuItem title="Save Stash..." id="q9W-AO-IGH">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                        </menuItem>
+                        <menuItem isSeparatorItem="YES" id="h6b-JU-1wz"/>
+                        <menuItem title="Pop" id="aq6-FW-b5p">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="popStash:" target="uko-xc-GwC" id="5CF-bA-0mh"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Apply" id="LTZ-dr-t1y">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="applyStash:" target="uko-xc-GwC" id="Zwd-z8-HMk"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Drop" id="7Rg-0K-tDL">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="dropStash:" target="uko-xc-GwC" id="MCx-LN-aA5"/>
+                            </connections>
+                        </menuItem>
+                    </items>
+                    <accessibility identifier="stashPopup"/>
+                </menu>
+                <menu id="5np-7R-fbC" userLabel="Fetch">
+                    <items>
+                        <menuItem title="Fetch all remotes" id="LoQ-UF-Mph">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                        </menuItem>
+                        <menuItem title="Fetch current branch" id="iHo-tH-OZY">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                        </menuItem>
+                        <menuItem isSeparatorItem="YES" identifier="fetchRemote" id="eux-3Z-YmU"/>
+                        <menuItem title="Fetch remote x" id="HAe-Av-Yaj">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                        </menuItem>
+                    </items>
+                    <accessibility identifier="fetchPopup"/>
+                </menu>
+                <menu id="x4n-CH-bN6" userLabel="Pull">
+                    <items>
+                        <menuItem title="Pull current branch" id="ALb-5l-jCE">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                        </menuItem>
+                    </items>
+                    <accessibility identifier="pullPopup"/>
+                </menu>
+                <menu id="Chk-z8-G67" userLabel="Push">
+                    <items>
+                        <menuItem title="No tracking branch" id="9W0-QC-ldj">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                        </menuItem>
+                        <menuItem isSeparatorItem="YES" identifier="pushRemote" id="2pV-28-Uff"/>
+                        <menuItem title="Push to remote..." id="n3H-V0-Ner">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                        </menuItem>
+                    </items>
+                    <accessibility identifier="pushPopup"/>
+                </menu>
             </objects>
             <point key="canvasLocation" x="115" y="-170.5"/>
         </scene>
@@ -309,13 +399,13 @@
                                 </customSpacing>
                             </stackView>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V3P-kt-fG5">
-                                <rect key="frame" x="0.0" y="23" width="302" height="580"/>
+                                <rect key="frame" x="0.0" y="23" width="302" height="584"/>
                                 <clipView key="contentView" drawsBackground="NO" id="CgF-So-1Oa">
-                                    <rect key="frame" x="1" y="1" width="300" height="578"/>
+                                    <rect key="frame" x="1" y="1" width="300" height="582"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="Miy-P7-Lu7" id="8QW-fq-72y" customClass="XTSideBarOutlineView">
-                                            <rect key="frame" x="0.0" y="0.0" width="300" height="578"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="300" height="582"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="_sourceListBackgroundColor" catalog="System" colorSpace="catalog"/>
