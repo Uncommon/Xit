@@ -77,7 +77,6 @@
 		C91F34781D30656B005F9BDF /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91F34771D30656B005F9BDF /* Services.swift */; };
 		C921026D1F757FEB0068F87C /* StringOID.swift in Sources */ = {isa = PBXBuildFile; fileRef = C921026C1F757FEB0068F87C /* StringOID.swift */; };
 		C923D6481D8CA56800C6B90B /* XTTagTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D6471D8CA56800C6B90B /* XTTagTest.swift */; };
-		C923D65E1D90506A00C6B90B /* TitleBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = C923D65D1D90506A00C6B90B /* TitleBar.xib */; };
 		C923D66C1D906FAA00C6B90B /* TitleBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D66B1D906FAA00C6B90B /* TitleBarController.swift */; };
 		C926804E1D074EC500E422FA /* RepositorySelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C926804D1D074EC500E422FA /* RepositorySelection.swift */; };
 		C929D03B1D400B3B00D7DC52 /* GitRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = C929D03A1D400B3B00D7DC52 /* GitRemote.swift */; };
@@ -520,7 +519,6 @@
 		C91F34771D30656B005F9BDF /* Services.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services.swift; sourceTree = "<group>"; };
 		C921026C1F757FEB0068F87C /* StringOID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringOID.swift; sourceTree = "<group>"; };
 		C923D6471D8CA56800C6B90B /* XTTagTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTagTest.swift; sourceTree = "<group>"; };
-		C923D65D1D90506A00C6B90B /* TitleBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TitleBar.xib; sourceTree = "<group>"; };
 		C923D66B1D906FAA00C6B90B /* TitleBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = TitleBarController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C926804D1D074EC500E422FA /* RepositorySelection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepositorySelection.swift; sourceTree = "<group>"; };
 		C929D03A1D400B3B00D7DC52 /* GitRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitRemote.swift; sourceTree = "<group>"; };
@@ -1107,7 +1105,6 @@
 				C959CDD61F859BFE00C1E282 /* XTWindowController+TouchBar.swift */,
 				C923D66B1D906FAA00C6B90B /* TitleBarController.swift */,
 				C95355E91D93470400AEEF49 /* TitleStatusView.swift */,
-				C923D65D1D90506A00C6B90B /* TitleBar.xib */,
 				C986447B208FBD990088209B /* ResponderNotifierWindow.swift */,
 				C9063D1B24169DAF00574A93 /* RepositoryUIAccessor.swift */,
 			);
@@ -1320,7 +1317,7 @@
 			attributes = {
 				CLASSPREFIX = XT;
 				LastSwiftUpdateCheck = 1110;
-				LastUpgradeCheck = 1200;
+				LastUpgradeCheck = 1220;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					C3FA46FB13D0F8E200AC4F9B = {
@@ -1497,7 +1494,6 @@
 				89039F561703A9FC000949A8 /* html in Resources */,
 				C90FD5971D217D5B00A30570 /* FetchPanelController.xib in Resources */,
 				DD997DDA173B409500C7DF82 /* Sidebar Menus.xib in Resources */,
-				C923D65E1D90506A00C6B90B /* TitleBar.xib in Resources */,
 				89AB952224DDE63E0029CECC /* PushNewPanelController.xib in Resources */,
 				DD997DF81746F40D00C7DF82 /* FileViewController.xib in Resources */,
 				C93FFCAA1F0FD65100FDDD78 /* Defaults.plist in Resources */,

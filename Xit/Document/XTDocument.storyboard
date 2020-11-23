@@ -151,7 +151,7 @@
                                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="branchTemplate" id="1RE-xy-bWh"/>
                                             </imageView>
                                             <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="GKW-4J-3KT" customClass="DraggingProgress" customModule="Xit" customModuleProvider="target">
-                                                <rect key="frame" x="8" y="20" width="16" height="16"/>
+                                                <rect key="frame" x="8" y="12" width="16" height="16"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="16" id="9Pv-LM-s5j"/>
                                                     <constraint firstAttribute="width" constant="16" id="s8R-0y-Jei"/>
@@ -169,14 +169,14 @@
                                             <constraint firstItem="b5x-UK-ZUa" firstAttribute="leading" secondItem="VJm-7u-35O" secondAttribute="trailing" constant="8" symbolic="YES" id="Cvx-xh-XOR"/>
                                             <constraint firstItem="vLQ-9R-Z0E" firstAttribute="centerY" secondItem="SWa-Az-MwP" secondAttribute="centerY" id="GUs-g1-qrJ"/>
                                             <constraint firstItem="b5x-UK-ZUa" firstAttribute="centerY" secondItem="SWa-Az-MwP" secondAttribute="centerY" id="LRB-wZ-56I"/>
-                                            <constraint firstItem="GKW-4J-3KT" firstAttribute="top" secondItem="SWa-Az-MwP" secondAttribute="top" constant="4" id="N7E-Ub-ROq"/>
-                                            <constraint firstItem="GKW-4J-3KT" firstAttribute="leading" secondItem="SWa-Az-MwP" secondAttribute="leading" constant="8" id="QU2-Rk-doz"/>
                                             <constraint firstItem="PaF-HD-fOy" firstAttribute="leading" secondItem="vLQ-9R-Z0E" secondAttribute="trailing" id="UnF-XL-FBR"/>
                                             <constraint firstItem="tQh-wo-TTy" firstAttribute="centerY" secondItem="SWa-Az-MwP" secondAttribute="centerY" id="YrU-9W-aY6"/>
                                             <constraint firstAttribute="trailing" secondItem="PaF-HD-fOy" secondAttribute="trailing" constant="2" id="Z6p-PZ-czN"/>
                                             <constraint firstAttribute="height" constant="40" id="bkl-17-uyT"/>
                                             <constraint firstItem="tQh-wo-TTy" firstAttribute="leading" secondItem="b5x-UK-ZUa" secondAttribute="trailing" constant="8" symbolic="YES" id="gFS-V3-j4b"/>
                                             <constraint firstItem="VJm-7u-35O" firstAttribute="leading" secondItem="SWa-Az-MwP" secondAttribute="leading" constant="8" id="hAF-B9-kE7"/>
+                                            <constraint firstItem="GKW-4J-3KT" firstAttribute="centerX" secondItem="VJm-7u-35O" secondAttribute="centerX" id="iOI-ij-ujU"/>
+                                            <constraint firstItem="GKW-4J-3KT" firstAttribute="centerY" secondItem="SWa-Az-MwP" secondAttribute="centerY" id="ngf-8V-kkF"/>
                                             <constraint firstItem="PaF-HD-fOy" firstAttribute="baseline" secondItem="b5x-UK-ZUa" secondAttribute="baseline" id="xAr-0p-5Pm"/>
                                             <constraint firstItem="VJm-7u-35O" firstAttribute="centerY" secondItem="SWa-Az-MwP" secondAttribute="centerY" id="xOS-A6-mdI"/>
                                             <constraint firstItem="vLQ-9R-Z0E" firstAttribute="leading" secondItem="tQh-wo-TTy" secondAttribute="trailing" constant="8" symbolic="YES" id="zgs-0h-yjY"/>
@@ -312,8 +312,8 @@
         <scene sceneID="Yce-1f-lrO">
             <objects>
                 <viewController title="Sidebar" id="pEv-JE-8no" userLabel="Sidebar Controller" customClass="SidebarController" customModule="Xit" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" misplaced="YES" id="WdE-eB-CPt">
-                        <rect key="frame" x="0.0" y="0.0" width="302" height="600"/>
+                    <view key="view" id="WdE-eB-CPt">
+                        <rect key="frame" x="0.0" y="0.0" width="302" height="609"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="3" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Z9x-1p-ZQB">
@@ -399,13 +399,13 @@
                                     <real value="3.4028234663852886e+38"/>
                                 </customSpacing>
                             </stackView>
-                            <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V3P-kt-fG5">
+                            <scrollView autohidesScrollers="YES" horizontalLineScroll="20" horizontalPageScroll="10" verticalLineScroll="20" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V3P-kt-fG5">
                                 <rect key="frame" x="0.0" y="23" width="302" height="586"/>
                                 <clipView key="contentView" drawsBackground="NO" id="CgF-So-1Oa">
                                     <rect key="frame" x="1" y="1" width="300" height="584"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="Miy-P7-Lu7" id="8QW-fq-72y" customClass="XTSideBarOutlineView">
+                                        <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" autosaveColumns="NO" rowHeight="18" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="Miy-P7-Lu7" id="8QW-fq-72y" customClass="XTSideBarOutlineView">
                                             <rect key="frame" x="0.0" y="0.0" width="300" height="584"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -442,8 +442,8 @@
                                                                 <outlet property="textField" destination="7ie-hM-WFj" id="uSl-85-NMK"/>
                                                             </connections>
                                                         </tableCellView>
-                                                        <tableCellView identifier="DataCell" misplaced="YES" id="IdM-wt-WZf" customClass="SidebarTableCellView" customModule="Xit" customModuleProvider="target">
-                                                            <rect key="frame" x="11" y="20" width="277" height="17"/>
+                                                        <tableCellView identifier="DataCell" id="IdM-wt-WZf" customClass="SidebarTableCellView" customModule="Xit" customModuleProvider="target">
+                                                            <rect key="frame" x="11" y="20" width="277" height="18"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="7" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CCK-Vq-Aha">
