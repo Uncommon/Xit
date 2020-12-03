@@ -107,6 +107,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     window.titleVisibility = .hidden
     window.delegate = self
     splitViewController = contentViewController as? NSSplitViewController
+    titleBarController.splitView = splitViewController.splitView
     sidebarController = splitViewController.splitViewItems[0].viewController
         as? SidebarController
     historyController = HistoryViewController()
@@ -141,12 +142,13 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       if !collapsed {
         self.historyAutoCollapsed = false
       }
-      self.titleBarController?.searchButton.isEnabled = !collapsed
+      self.titleBarController?.searchButton?.isEnabled = !collapsed
       self.titleBarController?.updateViewControls()
     }
     menuObserver = NotificationCenter.default.addObserver(
         forName: NSMenu.didBeginTrackingNotification,
         object: nil, queue: .main, using: menuDidBeginTracking)
+    
     updateMiniwindowTitle()
     updateNavButtons()
     window.toolbar?.centeredItemIdentifier = .title
@@ -402,9 +404,9 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   
   func windowWillClose(_ notification: Notification)
   {
-    titleBarController.titleLabel.unbind(◊"value")
-    titleBarController.proxyIcon.unbind(◊"hidden")
-    titleBarController.spinner.unbind(◊"hidden")
+    titleBarController.titleLabel?.unbind(◊"value")
+    titleBarController.proxyIcon?.unbind(◊"hidden")
+    titleBarController.spinner?.unbind(◊"hidden")
     // For some reason this avoids a crash
     window?.makeFirstResponder(nil)
   }

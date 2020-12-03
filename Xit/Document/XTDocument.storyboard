@@ -17,7 +17,7 @@
                         <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1175"/>
                         <toolbar key="toolbar" implicitIdentifier="8384A139-F455-42BA-8746-9551A7ED1534" centeredItem="UxK-o7-3aL" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="NlX-Va-CMz">
                             <allowedToolbarItems>
-                                <toolbarItem implicitItemIdentifier="22A022DE-8725-401D-8643-56B32D05A6D8" explicitItemIdentifier="xit.nav" label="Navigation" paletteLabel="Navigation" visibilityPriority="1" sizingBehavior="auto" navigational="YES" id="AIh-IS-Ifn">
+                                <toolbarItem implicitItemIdentifier="22A022DE-8725-401D-8643-56B32D05A6D8" explicitItemIdentifier="xit.nav" label="Navigation" paletteLabel="Navigation" visibilityPriority="1" sizingBehavior="auto" id="AIh-IS-Ifn">
                                     <nil key="toolTip"/>
                                     <segmentedControl key="view" verticalHuggingPriority="750" id="nQU-i2-YYo">
                                         <rect key="frame" x="0.0" y="14" width="75" height="23"/>
@@ -34,7 +34,7 @@
                                         </connections>
                                     </segmentedControl>
                                 </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="937E3C05-73FC-476A-9185-2B0916201849" explicitItemIdentifier="xit.remote" label="Remote Ops" paletteLabel="Remote Ops" sizingBehavior="auto" id="HjO-mu-IiC">
+                                <toolbarItem implicitItemIdentifier="937E3C05-73FC-476A-9185-2B0916201849" explicitItemIdentifier="xit.remote" label="Remote Operations" paletteLabel="Remote Operations" sizingBehavior="auto" id="HjO-mu-IiC">
                                     <nil key="toolTip"/>
                                     <segmentedControl key="view" verticalHuggingPriority="750" id="tJj-QJ-vNA">
                                         <rect key="frame" x="0.0" y="14" width="112" height="23"/>
@@ -54,7 +54,7 @@
                                         </connections>
                                     </segmentedControl>
                                 </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="82AFBB3C-699E-41C0-BCAC-9AAA96D61D40" explicitItemIdentifier="xit.view" label="Panels" paletteLabel="Panels" visibilityPriority="1" sizingBehavior="auto" id="EmV-8X-pjB">
+                                <toolbarItem implicitItemIdentifier="82AFBB3C-699E-41C0-BCAC-9AAA96D61D40" explicitItemIdentifier="xit.view" label="View" paletteLabel="View" visibilityPriority="1" sizingBehavior="auto" id="EmV-8X-pjB">
                                     <nil key="toolTip"/>
                                     <segmentedControl key="view" verticalHuggingPriority="750" id="zEr-s8-lmY">
                                         <rect key="frame" x="0.0" y="14" width="112" height="23"/>
@@ -214,10 +214,58 @@
                         <outlet property="fetchMenu" destination="5np-7R-fbC" id="w7X-oo-HMk"/>
                         <outlet property="pullMenu" destination="x4n-CH-bN6" id="WkA-2r-C1Z"/>
                         <outlet property="pushMenu" destination="Chk-z8-G67" id="OLO-Ry-ggH"/>
+                        <outlet property="remoteOpsMenu" destination="1gA-08-EwL" id="FjH-h0-6vz"/>
                         <outlet property="stashMenu" destination="7yp-7v-W3Z" id="seh-aS-fzh"/>
+                        <outlet property="viewMenu" destination="PF3-z3-2pC" id="7t1-Mj-ADl"/>
                         <outlet property="window" destination="czE-Rb-YiB" id="bTP-lf-Tjb"/>
                     </connections>
                 </customObject>
+                <menu title="Remote Operations" id="1gA-08-EwL" userLabel="Remote Operations">
+                    <items>
+                        <menuItem title="Pull" id="Xqm-ub-GX0">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="pull:" target="2em-8b-shT" id="W9W-cm-COX"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Push" id="LZf-pS-j3S">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="push:" target="2em-8b-shT" id="2NH-Ti-1Ku"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Fetch" id="wle-0v-0XG">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="fetch:" target="2em-8b-shT" id="Xst-T9-XQf"/>
+                            </connections>
+                        </menuItem>
+                    </items>
+                    <accessibility identifier="stashPopup"/>
+                </menu>
+                <menu title="View" id="PF3-z3-2pC" userLabel="View">
+                    <items>
+                        <menuItem title="Sidebar" id="aKK-dl-tR9" userLabel="Sidebar">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="viewSidebar:" target="uko-xc-GwC" id="OgD-yJ-Fsn"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="History" id="pX0-kT-sh2">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="viewHistory:" target="uko-xc-GwC" id="IOM-yr-zdw"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Files" id="IqY-ka-a8M">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="viewFiles:" target="uko-xc-GwC" id="5Ss-D6-bJh"/>
+                            </connections>
+                        </menuItem>
+                    </items>
+                    <accessibility identifier="stashPopup"/>
+                </menu>
                 <menu title="Stash" id="7yp-7v-W3Z" userLabel="Stash">
                     <items>
                         <menuItem title="Save Stash..." id="q9W-AO-IGH">
@@ -312,12 +360,12 @@
         <scene sceneID="Yce-1f-lrO">
             <objects>
                 <viewController title="Sidebar" id="pEv-JE-8no" userLabel="Sidebar Controller" customClass="SidebarController" customModule="Xit" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="WdE-eB-CPt">
-                        <rect key="frame" x="0.0" y="0.0" width="302" height="609"/>
+                    <view key="view" misplaced="YES" id="WdE-eB-CPt">
+                        <rect key="frame" x="0.0" y="0.0" width="301" height="608"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="3" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Z9x-1p-ZQB">
-                                <rect key="frame" x="-1" y="-1" width="304" height="24"/>
+                                <rect key="frame" x="-1" y="-1" width="303" height="24"/>
                                 <subviews>
                                     <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="rov-AO-kJh">
                                         <rect key="frame" x="-5" y="0.0" width="29" height="24"/>
@@ -352,7 +400,7 @@
                                         <accessibility identifier="sidebarAdd"/>
                                     </popUpButton>
                                     <searchField wantsLayer="YES" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dpy-6g-Z4Y">
-                                        <rect key="frame" x="27" y="3" width="275" height="19"/>
+                                        <rect key="frame" x="27" y="3" width="274" height="19"/>
                                         <searchFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" placeholderString="Filter" usesSingleLineMode="YES" bezelStyle="round" id="l6c-rF-HsK">
                                             <font key="font" metaFont="label" size="11"/>
                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -611,10 +659,10 @@
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="Z9x-1p-ZQB" secondAttribute="bottom" constant="-1" id="6tM-dU-upC"/>
-                            <constraint firstAttribute="trailing" secondItem="V3P-kt-fG5" secondAttribute="trailing" id="85D-WY-0eE"/>
+                            <constraint firstAttribute="trailing" secondItem="V3P-kt-fG5" secondAttribute="trailing" constant="-1" id="85D-WY-0eE"/>
                             <constraint firstItem="Z9x-1p-ZQB" firstAttribute="leading" secondItem="WdE-eB-CPt" secondAttribute="leading" constant="-1" id="ALb-kS-4m8"/>
                             <constraint firstItem="V3P-kt-fG5" firstAttribute="leading" secondItem="WdE-eB-CPt" secondAttribute="leading" id="GY7-dc-CF4"/>
-                            <constraint firstItem="V3P-kt-fG5" firstAttribute="top" secondItem="WdE-eB-CPt" secondAttribute="top" id="WN6-IV-2Z1"/>
+                            <constraint firstItem="V3P-kt-fG5" firstAttribute="top" secondItem="WdE-eB-CPt" secondAttribute="top" constant="-1" id="WN6-IV-2Z1"/>
                             <constraint firstItem="Z9x-1p-ZQB" firstAttribute="top" secondItem="V3P-kt-fG5" secondAttribute="bottom" id="XBr-95-MAs"/>
                             <constraint firstAttribute="trailing" secondItem="Z9x-1p-ZQB" secondAttribute="trailing" constant="-1" id="teg-tC-Nfp"/>
                         </constraints>

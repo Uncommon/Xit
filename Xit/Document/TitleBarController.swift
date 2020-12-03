@@ -56,15 +56,15 @@ class TitleBarController: NSObject
   @IBOutlet weak var spinner: NSProgressIndicator!
   @IBOutlet weak var titleLabel: NSTextField!
   @IBOutlet weak var branchPopup: NSPopUpButton!
-  @IBOutlet weak var operationButton: NSButton!
-  @IBOutlet weak var operationControls: NSSegmentedControl!
   @IBOutlet weak var searchButton: NSButton!
   @IBOutlet weak var viewControls: NSSegmentedControl!
-  @IBOutlet weak var operationViewSpacing: NSLayoutConstraint!
   @IBOutlet var stashMenu: NSMenu!
   @IBOutlet var fetchMenu: NSMenu!
   @IBOutlet var pushMenu: NSMenu!
   @IBOutlet var pullMenu: NSMenu!
+  @IBOutlet var remoteOpsMenu: NSMenu!
+  @IBOutlet var viewMenu: NSMenu!
+  @IBOutlet var splitView: NSSplitView!
 
   weak var delegate: TitleBarDelegate?
   
@@ -120,6 +120,10 @@ class TitleBarController: NSObject
         self.titleLabel.textColor = .disabledControlTextColor
       }
     }
+    
+    remoteOpsMenu.items[0].submenu = pullMenu
+    remoteOpsMenu.items[1].submenu = pushMenu
+    remoteOpsMenu.items[2].submenu = fetchMenu
   }
   
   func observe(repository: XTRepository)
@@ -212,6 +216,21 @@ class TitleBarController: NSObject
     updateViewControls()
   }
   
+  @IBAction func viewSidebar(_ sender: NSMenuItem)
+  {
+    delegate?.showHideSidebar()
+  }
+  
+  @IBAction func viewHistory(_ sender: NSMenuItem)
+  {
+    delegate?.showHideHistory()
+  }
+  
+  @IBAction func viewFiles(_ sender: NSMenuItem)
+  {
+    delegate?.showHideDetails()
+  }
+
   func updateViewControls()
   {
     guard let states = delegate?.viewStates
@@ -295,6 +314,11 @@ extension TitleBarController: NSToolbarDelegate
       case .remoteOps:
         remoteControls = item.view as? NSSegmentedControl
         
+        let menuItem = NSMenuItem(title: item.label, action: nil, keyEquivalent: "")
+        
+        menuItem.submenu = remoteOpsMenu
+        item.menuFormRepresentation = menuItem
+        
       case .stash:
         let segmentMenus: [(NSMenu, TitleBarController.RemoteSegment)] = [
               (pullMenu, .pull),
@@ -325,9 +349,37 @@ extension TitleBarController: NSToolbarDelegate
     
       case .view:
         viewControls = item.view as? NSSegmentedControl
+        
+        let menuItem = NSMenuItem(title: item.label, action: nil, keyEquivalent: "")
+        
+        menuItem.submenu = viewMenu
+        item.menuFormRepresentation = menuItem
       
       default:
         return
+    }
+  }
+}
+
+extension TitleBarController: NSMenuItemValidation
+{
+  func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
+  {
+    guard let states = delegate?.viewStates
+    else { return false }
+    
+    switch menuItem.action {
+      case #selector(viewSidebar(_:)):
+        menuItem.state = states.sidebar ? .on : .off
+        return true
+      case #selector(viewHistory(_:)):
+        menuItem.state = states.history ? .on : .off
+        return true
+      case #selector(viewFiles(_:)):
+        menuItem.state = states.details ? .on : .off
+        return true
+      default:
+        return false
     }
   }
 }
