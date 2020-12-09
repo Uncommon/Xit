@@ -15,6 +15,7 @@
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="355" y="728" width="724" height="451"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1175"/>
+                        <value key="minSize" type="size" width="500" height="200"/>
                         <toolbar key="toolbar" implicitIdentifier="8384A139-F455-42BA-8746-9551A7ED1534" centeredItem="UxK-o7-3aL" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="NlX-Va-CMz">
                             <allowedToolbarItems>
                                 <toolbarItem implicitItemIdentifier="22A022DE-8725-401D-8643-56B32D05A6D8" explicitItemIdentifier="xit.nav" label="Navigation" paletteLabel="Navigation" visibilityPriority="1" sizingBehavior="auto" id="AIh-IS-Ifn">
@@ -26,7 +27,7 @@
                                             <font key="font" metaFont="system"/>
                                             <segments>
                                                 <segment image="NSLeftFacingTriangleTemplate" width="32"/>
-                                                <segment image="NSGoRightTemplate" width="32" tag="1"/>
+                                                <segment toolTip="Forward" image="NSGoRightTemplate" width="32" tag="1"/>
                                             </segments>
                                         </segmentedCell>
                                         <connections>
@@ -42,9 +43,9 @@
                                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="kkS-1W-s9h">
                                             <font key="font" metaFont="system"/>
                                             <segments>
-                                                <segment image="pullTemplate" width="32"/>
-                                                <segment image="pushTemplate" width="32" tag="1"/>
-                                                <segment image="fetchTemplate" width="32">
+                                                <segment toolTip="Pull" image="pullTemplate" width="32"/>
+                                                <segment toolTip="Push" image="pushTemplate" width="32" tag="1"/>
+                                                <segment toolTip="Fetch" image="fetchTemplate" width="32">
                                                     <nil key="label"/>
                                                 </segment>
                                             </segments>
@@ -62,9 +63,9 @@
                                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="selectAny" id="m64-hM-ec1">
                                             <font key="font" metaFont="system"/>
                                             <segments>
-                                                <segment image="viewSidebarTemplate" width="32" selected="YES"/>
-                                                <segment image="viewHistoryTemplate" width="32" selected="YES" tag="1"/>
-                                                <segment image="viewCommitTemplate" width="32" selected="YES">
+                                                <segment toolTip="Sidebar" image="viewSidebarTemplate" width="32" selected="YES"/>
+                                                <segment toolTip="History" image="viewHistoryTemplate" width="32" selected="YES" tag="1"/>
+                                                <segment toolTip="Details" image="viewCommitTemplate" width="32" selected="YES">
                                                     <nil key="label"/>
                                                 </segment>
                                             </segments>
@@ -76,7 +77,7 @@
                                 </toolbarItem>
                                 <toolbarItem implicitItemIdentifier="A9A90CF1-BC19-45AA-9D55-91919296D09F" explicitItemIdentifier="xit.search" label="Search" paletteLabel="Search" image="NSTouchBarSearchTemplate" sizingBehavior="auto" id="gxy-S3-Tn6">
                                     <nil key="toolTip"/>
-                                    <button key="view" verticalHuggingPriority="750" id="IAU-CO-X1z">
+                                    <button key="view" toolTip="Search" verticalHuggingPriority="750" id="IAU-CO-X1z">
                                         <rect key="frame" x="9" y="14" width="27" height="23"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="NSTouchBarSearchTemplate" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="wiN-5E-HDy">
@@ -96,7 +97,7 @@
                                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="pPh-La-Jyh">
                                             <font key="font" metaFont="system"/>
                                             <segments>
-                                                <segment image="stashTemplate" width="32"/>
+                                                <segment toolTip="Stash" image="stashTemplate" width="32"/>
                                             </segments>
                                         </segmentedCell>
                                         <connections>
@@ -111,7 +112,7 @@
                                         <rect key="frame" x="0.0" y="14" width="189" height="0.0"/>
                                         <subviews>
                                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="VJm-7u-35O" customClass="DraggingImage" customModule="Xit" customModuleProvider="target">
-                                                <rect key="frame" x="8" y="12" width="16" height="16"/>
+                                                <rect key="frame" x="8" y="-28" width="16" height="16"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="16" id="a8J-3r-PtW"/>
                                                     <constraint firstAttribute="height" constant="16" id="ut0-y7-aJb"/>
@@ -129,7 +130,7 @@
                                                 <accessibility identifier="titleLabel"/>
                                             </textField>
                                             <popUpButton focusRingType="none" tag="4" translatesAutoresizingMaskIntoConstraints="NO" id="PaF-HD-fOy">
-                                                <rect key="frame" x="123" y="12" width="64" height="16"/>
+                                                <rect key="frame" x="123" y="-28" width="64" height="16"/>
                                                 <popUpButtonCell key="cell" type="bevel" title="branch" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" state="on" focusRingType="none" imageScaling="proportionallyDown" inset="2" autoenablesItems="NO" selectedItem="vXj-nU-ED0" id="hG2-VN-ZGZ">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="menu"/>
@@ -147,11 +148,11 @@
                                                 </connections>
                                             </popUpButton>
                                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="vLQ-9R-Z0E" customClass="DraggingImage" customModule="Xit" customModuleProvider="target">
-                                                <rect key="frame" x="114" y="-28" width="14" height="16"/>
+                                                <rect key="frame" x="114" y="12" width="14" height="16"/>
                                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="branchTemplate" id="1RE-xy-bWh"/>
                                             </imageView>
                                             <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="GKW-4J-3KT" customClass="DraggingProgress" customModule="Xit" customModuleProvider="target">
-                                                <rect key="frame" x="8" y="12" width="16" height="16"/>
+                                                <rect key="frame" x="8" y="-28" width="16" height="16"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="16" id="9Pv-LM-s5j"/>
                                                     <constraint firstAttribute="width" constant="16" id="s8R-0y-Jei"/>
@@ -360,7 +361,7 @@
         <scene sceneID="Yce-1f-lrO">
             <objects>
                 <viewController title="Sidebar" id="pEv-JE-8no" userLabel="Sidebar Controller" customClass="SidebarController" customModule="Xit" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" misplaced="YES" id="WdE-eB-CPt">
+                    <view key="view" id="WdE-eB-CPt">
                         <rect key="frame" x="0.0" y="0.0" width="301" height="608"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>

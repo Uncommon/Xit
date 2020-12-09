@@ -19,7 +19,7 @@ extension RepositoryUIController
 }
 
 /// XTDocument's main window controller.
-class XTWindowController: NSWindowController, NSWindowDelegate,
+class XTWindowController: NSWindowController,
                           RepositoryUIController
 {
   var splitViewController: NSSplitViewController!
@@ -95,63 +95,6 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       configureTitleBarController(repository: repo)
       updateTabStatus()
     }
-  }
-  
-  override func windowDidLoad()
-  {
-    super.windowDidLoad()
-    
-    let window = self.window!
-    
-    Signpost.event(.windowControllerLoad)
-    window.titleVisibility = .hidden
-    window.delegate = self
-    splitViewController = contentViewController as? NSSplitViewController
-    titleBarController.splitView = splitViewController.splitView
-    sidebarController = splitViewController.splitViewItems[0].viewController
-        as? SidebarController
-    historyController = HistoryViewController()
-    splitViewController.removeSplitViewItem(splitViewController.splitViewItems[1])
-    splitViewController.addSplitViewItem(
-        NSSplitViewItem(viewController: historyController))
-    window.makeFirstResponder(historyController.historyTable)
-    
-    kvObservers.append(window.observe(\.title) {
-      [weak self] (_, _) in
-      self?.updateMiniwindowTitle()
-    })
-    kvObservers.append(UserDefaults.standard.observe(\.deemphasizeMerges) {
-      [weak self] (_, _) in
-      self?.redrawAllHistoryLists()
-    })
-    kvObservers.append(UserDefaults.standard.observe(\.statusInTabs) {
-      [weak self] (_, _) in
-      self?.updateTabStatus()
-    })
-    splitObserver = NotificationCenter.default.addObserver(
-        forName: NSSplitView.didResizeSubviewsNotification,
-        object: historyController.mainSplitView, queue: nil) {
-      [weak self] (_) in
-      guard let self = self,
-            let split = self.historyController.mainSplitView
-      else { return }
-      let frameSize = split.subviews[0].frame.size
-      let paneSize = split.isVertical ? frameSize.width : frameSize.height
-      let collapsed = paneSize == 0
-
-      if !collapsed {
-        self.historyAutoCollapsed = false
-      }
-      self.titleBarController?.searchButton?.isEnabled = !collapsed
-      self.titleBarController?.updateViewControls()
-    }
-    menuObserver = NotificationCenter.default.addObserver(
-        forName: NSMenu.didBeginTrackingNotification,
-        object: nil, queue: .main, using: menuDidBeginTracking)
-    
-    updateMiniwindowTitle()
-    updateNavButtons()
-    window.toolbar?.centeredItemIdentifier = .title
   }
 
   enum RemoteMenuType: CaseIterable
@@ -402,6 +345,67 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     }
   }
   
+}
+
+extension XTWindowController: NSWindowDelegate
+{
+  override func windowDidLoad()
+  {
+    super.windowDidLoad()
+    
+    let window = self.window!
+    
+    Signpost.event(.windowControllerLoad)
+    window.titleVisibility = .hidden
+    window.delegate = self
+    splitViewController = contentViewController as? NSSplitViewController
+    titleBarController.splitView = splitViewController.splitView
+    sidebarController = splitViewController.splitViewItems[0].viewController
+        as? SidebarController
+    historyController = HistoryViewController()
+    splitViewController.removeSplitViewItem(splitViewController.splitViewItems[1])
+    splitViewController.addSplitViewItem(
+        NSSplitViewItem(viewController: historyController))
+    window.makeFirstResponder(historyController.historyTable)
+    
+    kvObservers.append(window.observe(\.title) {
+      [weak self] (_, _) in
+      self?.updateMiniwindowTitle()
+    })
+    kvObservers.append(UserDefaults.standard.observe(\.deemphasizeMerges) {
+      [weak self] (_, _) in
+      self?.redrawAllHistoryLists()
+    })
+    kvObservers.append(UserDefaults.standard.observe(\.statusInTabs) {
+      [weak self] (_, _) in
+      self?.updateTabStatus()
+    })
+    splitObserver = NotificationCenter.default.addObserver(
+        forName: NSSplitView.didResizeSubviewsNotification,
+        object: historyController.mainSplitView, queue: nil) {
+      [weak self] (_) in
+      guard let self = self,
+            let split = self.historyController.mainSplitView
+      else { return }
+      let frameSize = split.subviews[0].frame.size
+      let paneSize = split.isVertical ? frameSize.width : frameSize.height
+      let collapsed = paneSize == 0
+
+      if !collapsed {
+        self.historyAutoCollapsed = false
+      }
+      self.titleBarController?.searchButton?.isEnabled = !collapsed
+      self.titleBarController?.updateViewControls()
+    }
+    menuObserver = NotificationCenter.default.addObserver(
+        forName: NSMenu.didBeginTrackingNotification,
+        object: nil, queue: .main, using: menuDidBeginTracking)
+    
+    updateMiniwindowTitle()
+    updateNavButtons()
+    window.toolbar?.centeredItemIdentifier = .title
+  }
+
   func windowWillClose(_ notification: Notification)
   {
     titleBarController.titleLabel?.unbind(◊"value")

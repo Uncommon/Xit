@@ -144,9 +144,10 @@ class TitleBarController: NSObject
   }
   
   @IBAction
-  func navigate(_ sender: NSSegmentedControl)
+  func navigate(_ sender: Any?)
   {
-    guard let segment = NavSegment(rawValue: sender.selectedSegment)
+    guard let control = sender as? NSSegmentedControl,
+          let segment = NavSegment(rawValue: control.selectedSegment)
     else { return }
     
     switch segment {
@@ -158,9 +159,10 @@ class TitleBarController: NSObject
   }
   
   @IBAction
-  func remoteAction(_ sender: NSSegmentedControl)
+  func remoteAction(_ sender: Any?)
   {
-    guard let segment = RemoteSegment(rawValue: sender.selectedSegment)
+    guard let control = sender as? NSSegmentedControl,
+          let segment = RemoteSegment(rawValue: control.selectedSegment)
     else { return }
     
     switch segment {
@@ -343,6 +345,7 @@ extension TitleBarController: NSToolbarDelegate
                                        to: window! as NSWindow,
                                        withKeyPath: #keyPath(NSWindow.title),
                                        options: nil)
+        item.menuFormRepresentation = nil
 
       case .search:
         searchButton = item.view as? NSButton
@@ -367,19 +370,19 @@ extension TitleBarController: NSMenuItemValidation
   {
     guard let states = delegate?.viewStates
     else { return false }
+    let state: Bool
     
     switch menuItem.action {
       case #selector(viewSidebar(_:)):
-        menuItem.state = states.sidebar ? .on : .off
-        return true
+        state = states.sidebar
       case #selector(viewHistory(_:)):
-        menuItem.state = states.history ? .on : .off
-        return true
+        state = states.history
       case #selector(viewFiles(_:)):
-        menuItem.state = states.details ? .on : .off
-        return true
+        state = states.details
       default:
         return false
     }
+    menuItem.state = state ? .on : .off
+    return true
   }
 }
