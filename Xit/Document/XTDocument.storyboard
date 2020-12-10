@@ -10,7 +10,7 @@
         <scene sceneID="QSP-Vw-kJW">
             <objects>
                 <windowController id="l6G-3P-2hY" customClass="XTWindowController" customModule="Xit" customModuleProvider="target" sceneMemberID="viewController">
-                    <window key="window" title="Window" subtitle="subtitle" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" titleVisibility="hidden" id="czE-Rb-YiB">
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" titleVisibility="hidden" id="czE-Rb-YiB">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="355" y="728" width="724" height="451"/>
@@ -50,6 +50,7 @@
                                                 </segment>
                                             </segments>
                                         </segmentedCell>
+                                        <accessibility identifier="remoteOps"/>
                                         <connections>
                                             <action selector="remoteAction:" target="uko-xc-GwC" id="AWX-Wo-BYQ"/>
                                         </connections>
@@ -121,7 +122,7 @@
                                                 <accessibility identifier="proxy"/>
                                             </imageView>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" tag="3" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="b5x-UK-ZUa" customClass="DraggingLabel" customModule="Xit" customModuleProvider="target">
-                                                <rect key="frame" x="30" y="12" width="69" height="16"/>
+                                                <rect key="frame" x="30" y="-28" width="69" height="16"/>
                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Repository" id="DKc-fE-Gdq">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="windowFrameTextColor" catalog="System" colorSpace="catalog"/>
@@ -298,36 +299,63 @@
                     <items>
                         <menuItem title="Fetch all remotes" id="LoQ-UF-Mph">
                             <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="fetchAllRemotes:" target="l6G-3P-2hY" id="jX4-SH-fYO"/>
+                            </connections>
                         </menuItem>
                         <menuItem title="Fetch current branch" id="iHo-tH-OZY">
                             <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="fetchCurrentBranch:" target="l6G-3P-2hY" id="cxC-EO-bg3"/>
+                            </connections>
                         </menuItem>
                         <menuItem isSeparatorItem="YES" identifier="fetchRemote" id="eux-3Z-YmU"/>
                         <menuItem title="Fetch remote x" id="HAe-Av-Yaj">
                             <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="fetchRemote:" target="l6G-3P-2hY" id="gtX-Zk-hJE"/>
+                            </connections>
                         </menuItem>
                     </items>
                     <accessibility identifier="fetchPopup"/>
+                    <connections>
+                        <outlet property="delegate" destination="l6G-3P-2hY" id="8eE-Nw-2yU"/>
+                    </connections>
                 </menu>
                 <menu id="x4n-CH-bN6" userLabel="Pull">
                     <items>
                         <menuItem title="Pull current branch" id="ALb-5l-jCE">
                             <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="pullCurrentBranch:" target="l6G-3P-2hY" id="Xxs-ym-x6e"/>
+                            </connections>
                         </menuItem>
                     </items>
                     <accessibility identifier="pullPopup"/>
+                    <connections>
+                        <outlet property="delegate" destination="l6G-3P-2hY" id="309-l7-ecC"/>
+                    </connections>
                 </menu>
                 <menu id="Chk-z8-G67" userLabel="Push">
                     <items>
-                        <menuItem title="No tracking branch" id="9W0-QC-ldj">
+                        <menuItem title="No tracking branch" identifier="pushRemote" id="9W0-QC-ldj">
                             <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="push:" target="l6G-3P-2hY" id="KSD-pE-TlS"/>
+                            </connections>
                         </menuItem>
                         <menuItem isSeparatorItem="YES" identifier="pushRemote" id="2pV-28-Uff"/>
                         <menuItem title="Push to remote..." id="n3H-V0-Ner">
                             <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="pushToRemote:" target="l6G-3P-2hY" id="dfv-jH-jiD"/>
+                            </connections>
                         </menuItem>
                     </items>
                     <accessibility identifier="pushPopup"/>
+                    <connections>
+                        <outlet property="delegate" destination="l6G-3P-2hY" id="6Fk-ZX-1CX"/>
+                    </connections>
                 </menu>
             </objects>
             <point key="canvasLocation" x="115" y="-170.5"/>
