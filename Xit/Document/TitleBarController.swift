@@ -46,8 +46,9 @@ extension Notification
   var total: Float? { userInfo?[XTProgressKeys.total] as? Float }
 }
 
-class TitleBarViewController: NSViewController
+class TitleBarController: NSObject
 {
+  @IBOutlet weak var window: NSWindow!
   @IBOutlet weak var navButtons: NSSegmentedControl!
   @IBOutlet weak var remoteControls: NSSegmentedControl!
   @IBOutlet weak var stashButton: NSSegmentedControl!
@@ -55,15 +56,15 @@ class TitleBarViewController: NSViewController
   @IBOutlet weak var spinner: NSProgressIndicator!
   @IBOutlet weak var titleLabel: NSTextField!
   @IBOutlet weak var branchPopup: NSPopUpButton!
-  @IBOutlet weak var operationButton: NSButton!
-  @IBOutlet weak var operationControls: NSSegmentedControl!
   @IBOutlet weak var searchButton: NSButton!
   @IBOutlet weak var viewControls: NSSegmentedControl!
-  @IBOutlet weak var operationViewSpacing: NSLayoutConstraint!
   @IBOutlet var stashMenu: NSMenu!
   @IBOutlet var fetchMenu: NSMenu!
   @IBOutlet var pushMenu: NSMenu!
   @IBOutlet var pullMenu: NSMenu!
+  @IBOutlet var remoteOpsMenu: NSMenu!
+  @IBOutlet var viewMenu: NSMenu!
+  @IBOutlet var splitView: NSSplitView!
 
   weak var delegate: TitleBarDelegate?
   
@@ -97,30 +98,14 @@ class TitleBarViewController: NSViewController
     case sidebar, history, details
   }
   
-  override func viewDidLoad()
-  {
-    let segmentMenus: [(NSMenu, RemoteSegment)] = [
-          (pullMenu, .pull),
-          (pushMenu, .push),
-          (fetchMenu, .fetch)]
-
-    for (menu, segment) in segmentMenus {
-      remoteControls.setMenu(menu, forSegment: segment.rawValue)
-    }
-    stashButton.setMenu(stashMenu, forSegment: 0)
-    
-    // This constraint will be active when the operations controls are shown.
-    operationViewSpacing.isActive = false
-  }
-  
-  override func viewDidAppear()
+  func finishSetup()
   {
     let center = NotificationCenter.default
     
     if becomeKeyObserver == nil {
       becomeKeyObserver = center.addObserver(
           forName: NSWindow.didBecomeKeyNotification,
-          object: view.window,
+          object: window,
           queue: .main) {
         (_) in
         self.titleLabel.textColor = .windowFrameTextColor
@@ -129,12 +114,16 @@ class TitleBarViewController: NSViewController
     if resignKeyObserver == nil {
       resignKeyObserver = center.addObserver(
           forName: NSWindow.didResignKeyNotification,
-          object: view.window,
+          object: window,
           queue: .main) {
         (_) in
         self.titleLabel.textColor = .disabledControlTextColor
       }
     }
+    
+    remoteOpsMenu.items[0].submenu = pullMenu
+    remoteOpsMenu.items[1].submenu = pushMenu
+    remoteOpsMenu.items[2].submenu = fetchMenu
   }
   
   func observe(repository: XTRepository)
@@ -155,9 +144,10 @@ class TitleBarViewController: NSViewController
   }
   
   @IBAction
-  func navigate(_ sender: NSSegmentedControl)
+  func navigate(_ sender: Any?)
   {
-    guard let segment = NavSegment(rawValue: sender.selectedSegment)
+    guard let control = sender as? NSSegmentedControl,
+          let segment = NavSegment(rawValue: control.selectedSegment)
     else { return }
     
     switch segment {
@@ -169,9 +159,10 @@ class TitleBarViewController: NSViewController
   }
   
   @IBAction
-  func remoteAction(_ sender: NSSegmentedControl)
+  func remoteAction(_ sender: Any?)
   {
-    guard let segment = RemoteSegment(rawValue: sender.selectedSegment)
+    guard let control = sender as? NSSegmentedControl,
+          let segment = RemoteSegment(rawValue: control.selectedSegment)
     else { return }
     
     switch segment {
@@ -227,6 +218,21 @@ class TitleBarViewController: NSViewController
     updateViewControls()
   }
   
+  @IBAction func viewSidebar(_ sender: NSMenuItem)
+  {
+    delegate?.showHideSidebar()
+  }
+  
+  @IBAction func viewHistory(_ sender: NSMenuItem)
+  {
+    delegate?.showHideHistory()
+  }
+  
+  @IBAction func viewFiles(_ sender: NSMenuItem)
+  {
+    delegate?.showHideDetails()
+  }
+
   func updateViewControls()
   {
     guard let states = delegate?.viewStates
@@ -270,5 +276,113 @@ class TitleBarViewController: NSViewController
     if let current = current {
       selectedBranch = current
     }
+  }
+}
+
+extension NSToolbarItem.Identifier
+{
+  static let navigation: Self = ◊"xit.nav"
+  static let remoteOps: Self = ◊"xit.remote"
+  static let stash: Self = ◊"xit.stash"
+  static let title: Self = ◊"xit.title"
+  static let search: Self = ◊"xit.search"
+  static let view: Self = ◊"xit.view"
+}
+
+extension TitleBarController: NSToolbarDelegate
+{
+  enum TitleTag: Int
+  {
+    case proxy = 1
+    case spinner = 2
+    case title = 3
+    case branchPopup = 4
+  }
+  
+  func toolbarWillAddItem(_ notification: Notification)
+  {
+    guard let item = notification.userInfo?["item"] as? NSToolbarItem
+    else { return }
+    
+    func titleControl<T>(_ tag: TitleTag) -> T? where T: NSView
+    {
+      item.view?.viewWithTag(tag.rawValue) as? T
+    }
+
+    switch item.itemIdentifier {
+      case .navigation:
+        navButtons = item.view as? NSSegmentedControl
+
+      case .remoteOps:
+        remoteControls = item.view as? NSSegmentedControl
+        
+        let menuItem = NSMenuItem(title: item.label, action: nil, keyEquivalent: "")
+        
+        menuItem.submenu = remoteOpsMenu
+        item.menuFormRepresentation = menuItem
+        
+      case .stash:
+        let segmentMenus: [(NSMenu, TitleBarController.RemoteSegment)] = [
+              (pullMenu, .pull),
+              (pushMenu, .push),
+              (fetchMenu, .fetch)]
+
+        stashButton = item.view as? NSSegmentedControl
+        for (menu, segment) in segmentMenus {
+          remoteControls.setMenu(menu, forSegment: segment.rawValue)
+        }
+        stashButton.setMenu(stashMenu, forSegment: 0)
+
+      case .title:
+        proxyIcon = titleControl(.proxy)
+        // Can't use the tag for this one. Xcode insists that the tag must
+        // be -1, but finding by that tag doesn't work.
+        spinner = item.view?.subviews.firstOfType()
+        titleLabel = titleControl(.title)
+        branchPopup = titleControl(.branchPopup)
+        spinner.startAnimation(nil)
+        titleLabel.bind(NSBindingName.value,
+                                       to: window! as NSWindow,
+                                       withKeyPath: #keyPath(NSWindow.title),
+                                       options: nil)
+        item.menuFormRepresentation = nil
+
+      case .search:
+        searchButton = item.view as? NSButton
+    
+      case .view:
+        viewControls = item.view as? NSSegmentedControl
+        
+        let menuItem = NSMenuItem(title: item.label, action: nil, keyEquivalent: "")
+        
+        menuItem.submenu = viewMenu
+        item.menuFormRepresentation = menuItem
+      
+      default:
+        return
+    }
+  }
+}
+
+extension TitleBarController: NSMenuItemValidation
+{
+  func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
+  {
+    guard let states = delegate?.viewStates
+    else { return false }
+    let state: Bool
+    
+    switch menuItem.action {
+      case #selector(viewSidebar(_:)):
+        state = states.sidebar
+      case #selector(viewHistory(_:)):
+        state = states.history
+      case #selector(viewFiles(_:)):
+        state = states.details
+      default:
+        return false
+    }
+    menuItem.state = state ? .on : .off
+    return true
   }
 }

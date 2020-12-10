@@ -6,7 +6,7 @@ let XitApp = XCUIApplication(bundleIdentifier: "com.uncommonplace.Xit")
 enum Window
 {
   static let window = XitApp.windows["repoWindow"].firstMatch
-  static let remoteOpSegControl = window.toolbars.groups["remoteOps"]
+  static let remoteOpSegControl = window.toolbars.groups["Remote Operations"]
   static let pullButton = remoteOpSegControl.buttons.element(boundBy: 0)
   static let pushButton = remoteOpSegControl.buttons.element(boundBy: 1)
   static let fetchButton = remoteOpSegControl.buttons.element(boundBy: 2)

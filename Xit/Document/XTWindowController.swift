@@ -19,16 +19,16 @@ extension RepositoryUIController
 }
 
 /// XTDocument's main window controller.
-class XTWindowController: NSWindowController, NSWindowDelegate,
+class XTWindowController: NSWindowController,
                           RepositoryUIController
 {
   var splitViewController: NSSplitViewController!
   @IBOutlet var sidebarController: SidebarController!
+  @IBOutlet var titleBarController: TitleBarController!
   
   var historyController: HistoryViewController!
   weak var xtDocument: XTDocument?
   var repoController: GitRepositoryController!
-  var titleBarController: TitleBarViewController?
   var refsChangedObserver, workspaceObserver: NSObjectProtocol?
   var repository: Repository { (xtDocument?.repository as Repository?)! }
 
@@ -52,7 +52,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
   var currentOperation: OperationController?
   
   private var kvObservers: [NSKeyValueObservation] = []
-  private var splitObserver, menuObserver: NSObjectProtocol?
+  private var splitObserver: NSObjectProtocol?
   
   override var document: AnyObject?
   {
@@ -96,124 +96,7 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
       updateTabStatus()
     }
   }
-  
-  override func windowDidLoad()
-  {
-    super.windowDidLoad()
-    
-    let window = self.window!
-    
-    Signpost.event(.windowControllerLoad)
-    window.titleVisibility = .hidden
-    window.delegate = self
-    splitViewController = contentViewController as? NSSplitViewController
-    sidebarController = splitViewController.splitViewItems[0].viewController
-        as? SidebarController
-    historyController = HistoryViewController()
-    splitViewController.removeSplitViewItem(splitViewController.splitViewItems[1])
-    splitViewController.addSplitViewItem(
-        NSSplitViewItem(viewController: historyController))
-    window.makeFirstResponder(historyController.historyTable)
-    
-    kvObservers.append(window.observe(\.title) {
-      [weak self] (_, _) in
-      self?.updateMiniwindowTitle()
-    })
-    kvObservers.append(UserDefaults.standard.observe(\.deemphasizeMerges) {
-      [weak self] (_, _) in
-      self?.redrawAllHistoryLists()
-    })
-    kvObservers.append(UserDefaults.standard.observe(\.statusInTabs) {
-      [weak self] (_, _) in
-      self?.updateTabStatus()
-    })
-    splitObserver = NotificationCenter.default.addObserver(
-        forName: NSSplitView.didResizeSubviewsNotification,
-        object: historyController.mainSplitView, queue: nil) {
-      [weak self] (_) in
-      guard let self = self,
-            let split = self.historyController.mainSplitView
-      else { return }
-      let frameSize = split.subviews[0].frame.size
-      let paneSize = split.isVertical ? frameSize.width : frameSize.height
-      let collapsed = paneSize == 0
 
-      if !collapsed {
-        self.historyAutoCollapsed = false
-      }
-      self.titleBarController?.searchButton.isEnabled = !collapsed
-      self.titleBarController?.updateViewControls()
-    }
-    menuObserver = NotificationCenter.default.addObserver(
-        forName: NSMenu.didBeginTrackingNotification,
-        object: nil, queue: .main, using: menuDidBeginTracking)
-    updateMiniwindowTitle()
-    updateNavButtons()
-  }
-
-  enum RemoteMenuType: CaseIterable
-  {
-    case fetch, push, pull
-
-    var identifier: NSUserInterfaceItemIdentifier
-    {
-      switch self {
-        case .fetch: return ◊"fetchRemote"
-        case .push:  return ◊"pushRemote"
-        case .pull:  return ◊"pullRemote"
-      }
-    }
-    var selector: Selector
-    {
-      switch self {
-        case .fetch: return #selector(XTWindowController.fetchRemote(_:))
-        case .push:  return #selector(XTWindowController.pushToRemote(_:))
-        case .pull:  return #selector(XTWindowController.pullRemote(_:))
-      }
-    }
-
-    func command(for remote: String) -> UIString
-    {
-      switch self {
-        case .fetch: return .fetchRemote(remote)
-        case .push:  return .pushRemote(remote)
-        case .pull:  return .pullRemote(remote)
-      }
-    }
-
-    static func of(_ menu: NSMenu) -> RemoteMenuType?
-    {
-      return menu.items.firstResult {
-        (item) in
-        guard let id = item.identifier
-        else { return nil }
-        return allCases.first { $0.identifier == id }
-      }
-    }
-  }
-
-  func menuDidBeginTracking(_ note: Notification)
-  {
-    guard self.window?.isMainWindow ?? false,
-          let menu = note.object as? NSMenu,
-          let type = RemoteMenuType.of(menu)
-    else { return }
-    let matchAction: (NSMenuItem) -> Bool = { $0.action == type.selector }
-
-    for item in menu.items.lazy.filter(matchAction) {
-      menu.removeItem(item)
-    }
-
-    for (index, remote) in self.repository.remoteNames().enumerated() {
-      let item = NSMenuItem(titleString: type.command(for: remote),
-                            action: type.selector,
-                            keyEquivalent: "")
-
-      item.tag = index
-      menu.addItem(item)
-    }
-  }
-  
   @objc
   func shutDown()
   {
@@ -399,18 +282,140 @@ class XTWindowController: NSWindowController, NSWindowDelegate,
     }
   }
   
+}
+
+extension XTWindowController: NSWindowDelegate
+{
+  override func windowDidLoad()
+  {
+    super.windowDidLoad()
+    
+    let window = self.window!
+    
+    Signpost.event(.windowControllerLoad)
+    window.titleVisibility = .hidden
+    window.delegate = self
+    splitViewController = contentViewController as? NSSplitViewController
+    titleBarController.splitView = splitViewController.splitView
+    sidebarController = splitViewController.splitViewItems[0].viewController
+        as? SidebarController
+    historyController = HistoryViewController()
+    splitViewController.removeSplitViewItem(splitViewController.splitViewItems[1])
+    splitViewController.addSplitViewItem(
+        NSSplitViewItem(viewController: historyController))
+    window.makeFirstResponder(historyController.historyTable)
+    
+    kvObservers.append(window.observe(\.title) {
+      [weak self] (_, _) in
+      self?.updateMiniwindowTitle()
+    })
+    kvObservers.append(UserDefaults.standard.observe(\.deemphasizeMerges) {
+      [weak self] (_, _) in
+      self?.redrawAllHistoryLists()
+    })
+    kvObservers.append(UserDefaults.standard.observe(\.statusInTabs) {
+      [weak self] (_, _) in
+      self?.updateTabStatus()
+    })
+    splitObserver = NotificationCenter.default.addObserver(
+        forName: NSSplitView.didResizeSubviewsNotification,
+        object: historyController.mainSplitView, queue: nil) {
+      [weak self] (_) in
+      guard let self = self,
+            let split = self.historyController.mainSplitView
+      else { return }
+      let frameSize = split.subviews[0].frame.size
+      let paneSize = split.isVertical ? frameSize.width : frameSize.height
+      let collapsed = paneSize == 0
+
+      if !collapsed {
+        self.historyAutoCollapsed = false
+      }
+      self.titleBarController?.searchButton?.isEnabled = !collapsed
+      self.titleBarController?.updateViewControls()
+    }
+    
+    updateMiniwindowTitle()
+    updateNavButtons()
+    window.toolbar?.centeredItemIdentifier = .title
+  }
+
   func windowWillClose(_ notification: Notification)
   {
-    titleBarController?.titleLabel.unbind(◊"value")
-    titleBarController?.proxyIcon.unbind(◊"hidden")
-    titleBarController?.spinner.unbind(◊"hidden")
+    titleBarController.titleLabel?.unbind(◊"value")
+    titleBarController.proxyIcon?.unbind(◊"hidden")
+    titleBarController.spinner?.unbind(◊"hidden")
     // For some reason this avoids a crash
     window?.makeFirstResponder(nil)
+  }
+}
+
+extension XTWindowController: NSMenuDelegate
+{
+  enum RemoteMenuType: CaseIterable
+  {
+    case fetch, push, pull
+
+    var identifier: NSUserInterfaceItemIdentifier
+    {
+      switch self {
+        case .fetch: return ◊"fetchRemote"
+        case .push:  return ◊"pushRemote"
+        case .pull:  return ◊"pullRemote"
+      }
+    }
+    var selector: Selector
+    {
+      switch self {
+        case .fetch: return #selector(XTWindowController.fetchRemote(_:))
+        case .push:  return #selector(XTWindowController.pushToRemote(_:))
+        case .pull:  return #selector(XTWindowController.pullRemote(_:))
+      }
+    }
+
+    func command(for remote: String) -> UIString
+    {
+      switch self {
+        case .fetch: return .fetchRemote(remote)
+        case .push:  return .pushRemote(remote)
+        case .pull:  return .pullRemote(remote)
+      }
+    }
+
+    static func of(_ menu: NSMenu) -> RemoteMenuType?
+    {
+      return menu.items.firstResult {
+        (item) in
+        guard let id = item.identifier
+        else { return nil }
+        return allCases.first { $0.identifier == id }
+      }
+    }
+  }
+  
+  func menuWillOpen(_ menu: NSMenu)
+  {
+    guard let type = RemoteMenuType.of(menu)
+    else { return }
+    let matchAction: (NSMenuItem) -> Bool = { $0.action == type.selector }
+
+    for item in menu.items.lazy.filter(matchAction) {
+      menu.removeItem(item)
+    }
+
+    for (index, remote) in self.repository.remoteNames().enumerated() {
+      let item = NSMenuItem(titleString: type.command(for: remote),
+                            action: type.selector,
+                            keyEquivalent: "")
+
+      item.tag = index
+      menu.addItem(item)
+    }
   }
 }
 
 extension NSBindingName
 {
   static let progressHidden =
-      NSBindingName(#keyPath(TitleBarViewController.progressHidden))
+      NSBindingName(#keyPath(TitleBarController.progressHidden))
 }

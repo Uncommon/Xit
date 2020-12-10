@@ -34,11 +34,15 @@ extension XTWindowController
 
   func configureTitleBarController(repository: XTRepository)
   {
-    let viewController: TitleBarViewController = titleBarController!
+    let viewController: TitleBarController = titleBarController!
     let inverseBindingOptions =
       [NSBindingOption.valueTransformerName:
         NSValueTransformerName.negateBooleanTransformerName]
 
+    // This can't be connected in the storyboard because TitleBarDelegate is
+    // not objc compatible.
+    viewController.delegate = self
+    viewController.finishSetup()
     viewController.proxyIcon.bind(NSBindingName.hidden,
                                   to: queue,
                                   withKeyPath: #keyPath(TaskQueue.busy),
@@ -83,28 +87,5 @@ extension XTWindowController: TitleBarDelegate
   func search()
   {
     historyController.toggleScopeBar()
-  }
-}
-
-extension XTWindowController: NSToolbarDelegate
-{
-  func toolbarWillAddItem(_ notification: Notification)
-  {
-    guard let item = notification.userInfo?["item"] as? NSToolbarItem,
-          item.itemIdentifier.rawValue == "com.uncommonplace.xit.titlebar"
-    else { return }
-
-    let viewController = TitleBarViewController(nibName: .titleBarNib,
-                                                bundle: nil)
-
-    titleBarController = viewController
-    item.view = viewController.view
-
-    viewController.delegate = self
-    viewController.titleLabel.bind(NSBindingName.value,
-                                   to: window! as NSWindow,
-                                   withKeyPath: #keyPath(NSWindow.title),
-                                   options: nil)
-    viewController.spinner.startAnimation(nil)
   }
 }

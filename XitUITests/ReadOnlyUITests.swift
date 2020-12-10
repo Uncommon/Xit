@@ -62,6 +62,8 @@ class ReadOnlyUITests: XCTestCase
   /// Commit header and file list are correct
   func testCommitContent()
   {
+    XCTWaiter(delegate: self).wait(for: [presence(of: CommitFileList.list.outlineRows.firstMatch)],
+                                   timeout: 5)
     CommitFileList.assertFiles(["README.md", "hero_slide1.png", "jquery-1.8.1.min.js"])
     
     CommitHeader.assertDisplay(date: "Jan 10, 2013 at 7:11 AM",
@@ -193,7 +195,8 @@ class ReadOnlyUITests: XCTestCase
     button.press(forDuration: 0.5)
     
     XCTAssertTrue(menu.isHittable)
-    XCTAssertEqual(menu.menuItems.count, itemTitles.count)
+    XCTAssertEqual(menu.menuItems.count, itemTitles.count,
+                   "wrong number of items", file: file, line: line)
     
     for (index, title) in itemTitles.enumerated() {
       XCTAssertEqual(menu.menuItems.element(boundBy: index).title, title,
