@@ -62,8 +62,8 @@ class ReadOnlyUITests: XCTestCase
   /// Commit header and file list are correct
   func testCommitContent()
   {
-    XCTAssertTrue(CommitFileList.list.outlineRows.firstMatch.waitForExistence(timeout: 5),
-                  "Commit list did not appear")
+    XCTWaiter(delegate: self).wait(for: [presence(of: CommitFileList.list.outlineRows.firstMatch)],
+                                   timeout: 5)
     CommitFileList.assertFiles(["README.md", "hero_slide1.png", "jquery-1.8.1.min.js"])
     
     CommitHeader.assertDisplay(date: "Jan 10, 2013 at 7:11 AM",
