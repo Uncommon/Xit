@@ -229,8 +229,11 @@ class SidebarDSFakeRepoTest: XCTestCase
 class MockSidebarOutline: NSOutlineView
 {
   override func makeView(withIdentifier identifier: NSUserInterfaceItemIdentifier,
-                     owner: Any?) -> NSView?
+                         owner: Any?) -> NSView?
   {
+    guard identifier == ◊"DataCell"
+    else { return nil }
+    
     let result = SidebarTableCellView(frame: NSRect(x: 0, y: 0,
                                                       width: 185, height: 20))
     let textField = NSTextField(frame: NSRect(x: 26, y: 3,
