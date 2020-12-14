@@ -254,8 +254,8 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
                      connections: [CommitConnection<ID>])
   {
     var nextChildIndex: UInt = 0
-    let parentOutlets = NSOrderedSet(array: connections.compactMap {
-            ($0.parentOID.equals(entry.commit.oid)) ? nil : $0.parentOID })
+    let parentOutlets = connections.compactMap {
+        ($0.parentOID.equals(entry.commit.oid)) ? nil : $0.parentOID }.unique()
     var parentLines: [ID: (childIndex: UInt,
                            colorIndex: UInt)] = [:]
     var generatedLines: [HistoryLine] = []
@@ -263,8 +263,9 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
     for connection in connections {
       let commitIsParent = connection.parentOID.equals(entry.commit.oid)
       let commitIsChild = connection.childOID.equals(entry.commit.oid)
-      let parentIndex: UInt? = commitIsParent
-              ? nil : self.parentIndex(parentOutlets, of: connection.parentOID)
+      let parentIndexInt = commitIsParent
+              ? nil : parentOutlets.firstIndex(of: connection.parentOID)
+      let parentIndex = parentIndexInt.map { UInt($0) }
       var childIndex: UInt? = commitIsChild
               ? nil : nextChildIndex
       var colorIndex = connection.colorIndex
@@ -298,9 +299,9 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
                                         parentIndex: parentIndex,
                                         colorIndex: colorIndex))
     }
-    objc_sync_enter(self)
-    entry.lines.append(contentsOf: generatedLines)
-    objc_sync_exit(self)
+    withSync {
+      entry.lines.append(contentsOf: generatedLines)
+    }
   }
 }
 
