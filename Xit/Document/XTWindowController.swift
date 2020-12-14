@@ -158,9 +158,7 @@ class XTWindowController: NSWindowController,
         object: self,
         userInfo: userInfo)
 
-    if #available(OSX 10.12.2, *) {
-      touchBar = makeTouchBar()
-    }
+    touchBar = makeTouchBar()
 
     if !navigating {
       navForwardStack.removeAll()
@@ -189,10 +187,8 @@ class XTWindowController: NSWindowController,
   /// Update for when a new object has been focused or selected
   func updateForFocus()
   {
-    if #available(OSX 10.12.2, *) {
-      touchBar = makeTouchBar()
-      validateTouchBar()
-    }
+    touchBar = makeTouchBar()
+    validateTouchBar()
   }
   
   func postIndexNotification()
@@ -224,9 +220,7 @@ class XTWindowController: NSWindowController,
         newTitle = window.title
       }
       window.miniwindowTitle = newTitle
-      if #available(OSX 10.13, *) {
-        window.tab.title = newTitle
-      }
+      window.tab.title = newTitle
     }
   }
   
