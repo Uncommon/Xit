@@ -316,7 +316,8 @@ extension TitleBarController: NSToolbarDelegate
       case .remoteOps:
         remoteControls = item.view as? NSSegmentedControl
         
-        let menuItem = NSMenuItem(title: item.label, action: nil, keyEquivalent: "")
+        let menuItem = NSMenuItem(title: item.label, action: nil,
+                                  keyEquivalent: "")
         
         menuItem.submenu = remoteOpsMenu
         item.menuFormRepresentation = menuItem
@@ -353,7 +354,8 @@ extension TitleBarController: NSToolbarDelegate
       case .view:
         viewControls = item.view as? NSSegmentedControl
         
-        let menuItem = NSMenuItem(title: item.label, action: nil, keyEquivalent: "")
+        let menuItem = NSMenuItem(title: item.label, action: nil,
+                                  keyEquivalent: "")
         
         menuItem.submenu = viewMenu
         item.menuFormRepresentation = menuItem
