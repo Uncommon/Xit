@@ -366,7 +366,7 @@
                 <splitViewController id="lX6-3b-XD9" sceneMemberID="viewController">
                     <splitViewItems>
                         <splitViewItem canCollapse="YES" holdingPriority="260" behavior="sidebar" id="CAg-9a-zJe"/>
-                        <splitViewItem id="dZr-zy-6rp"/>
+                        <splitViewItem id="9QK-ax-W8S"/>
                     </splitViewItems>
                     <splitView key="splitView" dividerStyle="thin" vertical="YES" id="wnX-w3-odJ">
                         <rect key="frame" x="-142" y="0.0" width="800" height="300"/>
@@ -378,7 +378,7 @@
                     <connections>
                         <outlet property="splitView" destination="wnX-w3-odJ" id="kdQ-PR-jca"/>
                         <segue destination="pEv-JE-8no" kind="relationship" relationship="splitItems" id="f6T-MZ-p3K"/>
-                        <segue destination="QDK-hq-LfZ" kind="relationship" relationship="splitItems" id="scp-XX-hs6"/>
+                        <segue destination="h8Z-Mh-o6G" kind="relationship" relationship="splitItems" id="scp-XX-hs6"/>
                     </connections>
                 </splitViewController>
                 <customObject id="uAr-iq-Dp7" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -727,18 +727,13 @@
             </objects>
             <point key="canvasLocation" x="-85" y="1090"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="xlC-0J-VAW">
+        <!--HistoryViewController-->
+        <scene sceneID="fYx-sq-TEa">
             <objects>
-                <viewController id="QDK-hq-LfZ" sceneMemberID="viewController">
-                    <view key="view" id="WN7-x3-Kfh">
-                        <rect key="frame" x="0.0" y="0.0" width="775" height="600"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </view>
-                </viewController>
-                <customObject id="eKa-br-BfK" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <controllerPlaceholder storyboardName="HistoryViewController" id="h8Z-Mh-o6G" sceneMemberID="viewController"/>
+                <customObject id="XZd-0o-KM8" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="544.5" y="1090"/>
+            <point key="canvasLocation" x="471" y="800"/>
         </scene>
     </scenes>
     <resources>

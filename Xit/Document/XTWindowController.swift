@@ -27,6 +27,7 @@ class XTWindowController: NSWindowController,
   @IBOutlet var titleBarController: TitleBarController!
   
   var historyController: HistoryViewController!
+  var historySplitController: HistorySplitController!
   weak var xtDocument: XTDocument?
   var repoController: GitRepositoryController!
   var refsChangedObserver, workspaceObserver: NSObjectProtocol?
@@ -123,7 +124,7 @@ class XTWindowController: NSWindowController,
       if UserDefaults.standard.collapseHistory {
         historyAutoCollapsed = true
         if !historyController.historyHidden {
-          historyController.toggleHistory(self)
+          historySplitController.toggleHistory(self)
           titleBarController?.updateViewControls()
         }
       }
@@ -132,7 +133,7 @@ class XTWindowController: NSWindowController,
             UserDefaults.standard.collapseHistory &&
             historyAutoCollapsed {
       if historyController.historyHidden {
-        historyController.toggleHistory(self)
+        historySplitController.toggleHistory(self)
         titleBarController?.updateViewControls()
       }
       historyAutoCollapsed = false
@@ -293,10 +294,12 @@ extension XTWindowController: NSWindowDelegate
     titleBarController.splitView = splitViewController.splitView
     sidebarController = splitViewController.splitViewItems[0].viewController
         as? SidebarController
-    historyController = HistoryViewController()
-    splitViewController.removeSplitViewItem(splitViewController.splitViewItems[1])
-    splitViewController.addSplitViewItem(
-        NSSplitViewItem(viewController: historyController))
+
+    historySplitController = splitViewController.splitViewItems[1].viewController
+                             as? HistorySplitController
+    historyController = historySplitController.historyController
+    historyController.loadView()
+
     window.makeFirstResponder(historyController.historyTable)
     
     kvObservers.append(window.observe(\.title) {
@@ -313,11 +316,11 @@ extension XTWindowController: NSWindowDelegate
     })
     splitObserver = NotificationCenter.default.addObserver(
         forName: NSSplitView.didResizeSubviewsNotification,
-        object: historyController.mainSplitView, queue: nil) {
+        object: historySplitController.splitView, queue: nil) {
       [weak self] (_) in
-      guard let self = self,
-            let split = self.historyController.mainSplitView
+      guard let self = self
       else { return }
+      let split = self.historySplitController.splitView
       let frameSize = split.subviews[0].frame.size
       let paneSize = split.isVertical ? frameSize.width : frameSize.height
       let collapsed = paneSize == 0

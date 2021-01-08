@@ -26,7 +26,7 @@ public class HistoryTableController: NSViewController,
   
   var repository: Repository { repoController?.repository as! Repository }
   
-  func finishLoad()
+  func finishLoad(repository: Repository)
   {
     history.repository = repository
     
@@ -111,12 +111,14 @@ public class HistoryTableController: NSViewController,
       history.reset()
     }
     repoUIController?.queue.executeOffMainThread {
+      let repository = self.repository
+
       Signpost.intervalStart(.historyWalking, object: self)
       defer {
         Signpost.intervalEnd(.historyWalking, object: self)
       }
       
-      guard let walker = self.repository.walker()
+      guard let walker = repository.walker()
       else {
         NSLog("RevWalker failed")
         return
@@ -124,14 +126,12 @@ public class HistoryTableController: NSViewController,
       
       walker.setSorting([.topological])
       
-      let refs = self.repository.allRefs()
+      let refs = repository.allRefs()
       
       for ref in refs where ref != "refs/stash" {
-        self.repository.oid(forRef: ref).map { walker.push(oid: $0) }
+        repository.oid(forRef: ref).map { walker.push(oid: $0) }
       }
 
-      let repository = self.repository
-      
       history.withSync {
         while let oid = walker.next() {
           guard let commit = repository.commit(forOID: oid)
