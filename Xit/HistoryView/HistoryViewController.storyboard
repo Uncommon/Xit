@@ -12,7 +12,6 @@
                 <splitViewController id="WO3-rk-i7b" customClass="HistorySplitController" customModule="Xit" customModuleProvider="target" sceneMemberID="viewController">
                     <splitViewItems>
                         <splitViewItem canCollapse="YES" id="WoV-eg-mjZ"/>
-                        <splitViewItem canCollapse="YES" holdingPriority="750" id="H55-nG-Yrs"/>
                     </splitViewItems>
                     <splitView key="splitView" dividerStyle="thin" id="1gf-f8-xfq">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
@@ -24,7 +23,6 @@
                     <connections>
                         <outlet property="splitView" destination="1gf-f8-xfq" id="iPe-k0-6ud"/>
                         <segue destination="cJn-a9-5zt" kind="relationship" relationship="splitItems" id="3zQ-Qr-7ny"/>
-                        <segue destination="S7h-L5-bI3" kind="relationship" relationship="splitItems" id="Wkl-gl-Utr"/>
                     </connections>
                 </splitViewController>
                 <customObject id="7t0-ay-3cj" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -452,19 +450,6 @@
                 </menu>
             </objects>
             <point key="canvasLocation" x="590.5" y="-28.5"/>
-        </scene>
-        <!--View Controller-->
-        <scene sceneID="8h7-IP-Fdq">
-            <objects>
-                <viewController id="S7h-L5-bI3" sceneMemberID="viewController">
-                    <view key="view" id="5KM-vn-40e">
-                        <rect key="frame" x="0.0" y="0.0" width="450" height="180"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </view>
-                </viewController>
-                <customObject id="Of8-7b-nc4" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="488" y="307"/>
         </scene>
     </scenes>
     <resources>

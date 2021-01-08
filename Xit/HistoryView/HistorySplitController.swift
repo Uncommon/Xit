@@ -8,17 +8,20 @@ class HistorySplitController: NSSplitViewController
 
   override func awakeFromNib()
   {
-    let fileController = FileViewController(nibName: .fileViewControllerNib,
-                                            bundle: nil)
-
     historyController = splitViewItems[0].viewController as? HistoryViewController
     historyController.splitController = self
-    historyController.fileViewController = fileController
 
     // TODO: Convert FileViewController.xib to a storyboard that can be loaded
     // by reference.
-    removeSplitViewItem(splitViewItems[1])
-    addSplitViewItem(NSSplitViewItem(viewController: fileController))
+    if historyController.fileViewController == nil {
+      let fileController = FileViewController(nibName: .fileViewControllerNib,
+                                              bundle: nil)
+      let detailItem = NSSplitViewItem(viewController: fileController)
+
+      historyController.fileViewController = fileController
+      detailItem.holdingPriority = .defaultHigh
+      insertSplitViewItem(detailItem, at: 1)
+    }
   }
 
   @IBAction
