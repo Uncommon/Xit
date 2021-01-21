@@ -54,48 +54,46 @@ class XTWindowController: NSWindowController,
   
   private var kvObservers: [NSKeyValueObservation] = []
   private var splitObserver: NSObjectProtocol?
-  
-  override var document: AnyObject?
-  {
-    didSet
-    {
-      guard document != nil
-      else { return }
-      
-      xtDocument = document as! XTDocument?
-      
-      guard let repo = xtDocument?.repository
-      else { return }
-      
-      repoController = GitRepositoryController(repository: repo)
-      refsChangedObserver = NotificationCenter.default.addObserver(
-          forName: .XTRepositoryRefsChanged,
-          object: repo, queue: .main) {
-        [weak self] _ in
-        self?.updateBranchList()
-      }
-      workspaceObserver = NotificationCenter.default.addObserver(
-          forName: .XTRepositoryWorkspaceChanged, object: repo, queue: .main) {
-        [weak self] (_) in
-        guard let self = self
-        else { return }
 
-        // Even though the observer is supposed to be on the main queue,
-        // it doesn't always happen.
-        DispatchQueue.main.async {
-          self.updateTabStatus()
-        }
-      }
-      kvObservers.append(repo.observe(\.currentBranch) {
-        [weak self] (_, _) in
-        self?.titleBarController?.selectedBranch = repo.currentBranch
-        self?.updateMiniwindowTitle()
-      })
-      sidebarController.repo = repo
-      historyController.finishLoad(repository: repo)
-      configureTitleBarController(repository: repo)
-      updateTabStatus()
+  @objc
+  func finalizeSetup()
+  {
+    guard document != nil
+    else { return }
+    
+    xtDocument = document as! XTDocument?
+    
+    guard let repo = xtDocument?.repository
+    else { return }
+    
+    repoController = GitRepositoryController(repository: repo)
+    refsChangedObserver = NotificationCenter.default.addObserver(
+        forName: .XTRepositoryRefsChanged,
+        object: repo, queue: .main) {
+      [weak self] _ in
+      self?.updateBranchList()
     }
+    workspaceObserver = NotificationCenter.default.addObserver(
+        forName: .XTRepositoryWorkspaceChanged, object: repo, queue: .main) {
+      [weak self] (_) in
+      guard let self = self
+      else { return }
+
+      // Even though the observer is supposed to be on the main queue,
+      // it doesn't always happen.
+      DispatchQueue.main.async {
+        self.updateTabStatus()
+      }
+    }
+    kvObservers.append(repo.observe(\.currentBranch) {
+      [weak self] (_, _) in
+      self?.titleBarController?.selectedBranch = repo.currentBranch
+      self?.updateMiniwindowTitle()
+    })
+    sidebarController.repo = repo
+    historyController.finishLoad(repository: repo)
+    configureTitleBarController(repository: repo)
+    updateTabStatus()
   }
 
   @objc
@@ -301,7 +299,7 @@ extension XTWindowController: NSWindowDelegate
     historyController.loadView()
 
     window.makeFirstResponder(historyController.historyTable)
-    
+
     kvObservers.append(window.observe(\.title) {
       [weak self] (_, _) in
       self?.updateMiniwindowTitle()
