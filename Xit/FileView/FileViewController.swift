@@ -177,7 +177,7 @@ class FileViewController: NSViewController, RepositoryWindowViewController
     
     let commitTabItem = fileListTabView.tabViewItem(at: 0)
     
-    commitListController.loadView()
+    _ = commitListController.view
     commitTabItem.viewController = commitListController
     fileListSplitView.addSubview(stagedListController.view)
     fileListSplitView.addSubview(workspaceListController.view)

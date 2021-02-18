@@ -12,7 +12,6 @@ extension NSTouchBarItem.Identifier
       stageAll = Self("com.uncommonplace.xit.stageall")
 }
 
-@available(OSX 10.12.2, *)
 extension XTWindowController: NSTouchBarDelegate
 {
   override func makeTouchBar() -> NSTouchBar?

@@ -296,7 +296,7 @@ extension XTWindowController: NSWindowDelegate
     historySplitController = splitViewController.splitViewItems[1].viewController
                              as? HistorySplitController
     historyController = historySplitController.historyController
-    historyController.loadView()
+    _ = historyController.view // force load
 
     window.makeFirstResponder(historyController.historyTable)
 
