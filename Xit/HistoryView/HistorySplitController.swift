@@ -20,8 +20,12 @@ class HistorySplitController: NSSplitViewController
     let fileViewItem = NSSplitViewItem(viewController: fileController)
 
     historyController.fileViewController = fileController
-    fileViewItem.holdingPriority = .defaultHigh
+    fileViewItem.holdingPriority = .init(NSLayoutConstraint.Priority
+                                         .dragThatCannotResizeWindow.rawValue - 1)
     insertSplitViewItem(fileViewItem, at: 1)
+
+    // Thick divider crashes if there is only one split item
+    splitView.dividerStyle = .thick
   }
 
   @IBAction
