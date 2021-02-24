@@ -20,9 +20,13 @@ class HistorySplitController: NSSplitViewController
     let fileViewItem = NSSplitViewItem(viewController: fileController)
 
     historyController.fileViewController = fileController
+    fileViewItem.canCollapse = true
+    fileViewItem.minimumThickness = FileViewController.minDetailHeight +
+                                    FileViewController.minHeaderHeight
     fileViewItem.holdingPriority = .init(NSLayoutConstraint.Priority
                                          .dragThatCannotResizeWindow.rawValue - 1)
     insertSplitViewItem(fileViewItem, at: 1)
+    splitViewItems[0].minimumThickness = 60
 
     // Thick divider crashes if there is only one split item
     splitView.dividerStyle = .thick
@@ -101,5 +105,4 @@ class HistorySplitController: NSSplitViewController
     savedHistorySize = splitView.isVertical ? historySize.width
                                             : historySize.height
   }
-
 }
