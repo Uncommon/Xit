@@ -42,6 +42,7 @@ class FileViewController: NSViewController, RepositoryWindowViewController
   var commitEntryController: CommitEntryController!
 
   var resizeRecursing: Bool = false
+  var savedSplit: CGFloat = 0
 
   var contentController: XTFileContentController!
   
@@ -238,6 +239,18 @@ class FileViewController: NSViewController, RepositoryWindowViewController
       listController.finishLoad(controller: repoUIController!)
       headerController.repoUIController = repoUIController!
     }
+  }
+  
+  func restoreSplit()
+  {
+    if savedSplit != 0 {
+      headerSplitView.setPosition(savedSplit, ofDividerAt: 0)
+    }
+  }
+  
+  func saveSplit()
+  {
+    savedSplit = headerSplitView.arrangedSubviews[0].bounds.height
   }
   
   func updatePreviewForActiveList()
