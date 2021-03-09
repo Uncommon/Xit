@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
-		31C7C13413ECC74C00A65FE9 /* HistoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31C7C13213ECC74C00A65FE9 /* HistoryViewController.xib */; };
 		89039F561703A9FC000949A8 /* html in Resources */ = {isa = PBXBuildFile; fileRef = 89039F551703A9FC000949A8 /* html */; };
 		891052D82523F3D30095E299 /* TestErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891052D72523F3D30095E299 /* TestErrors.swift */; };
 		891052D92523F3D30095E299 /* TestErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891052D72523F3D30095E299 /* TestErrors.swift */; };
@@ -88,6 +87,7 @@
 		C932110C1E48E92C00232B61 /* FileTreeDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C932110B1E48E92C00232B61 /* FileTreeDataSource.swift */; };
 		C9328B121D77303200EFF7F7 /* FileMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328B111D77303200EFF7F7 /* FileMonitor.swift */; };
 		C9328B141D776BC700EFF7F7 /* RepositoryWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328B131D776BC700EFF7F7 /* RepositoryWatcher.swift */; };
+		C934C23A258ADBA2004197EB /* HistoryViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C934C239258ADBA2004197EB /* HistoryViewController.storyboard */; };
 		C935BD7E1E8BFA4F00BE51F0 /* DateCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C935BD7D1E8BFA4F00BE51F0 /* DateCellView.swift */; };
 		C936AD0A1D4C0CD400C5ADC3 /* PushOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C936AD091D4C0CD400C5ADC3 /* PushOpController.swift */; };
 		C936AD0C1D4C0FA900C5ADC3 /* PasswordOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C936AD0B1D4C0FA900C5ADC3 /* PasswordOpController.swift */; };
@@ -116,6 +116,7 @@
 		C947367E1DF08C03000E3A05 /* ContextMenuOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C947367D1DF08C03000E3A05 /* ContextMenuOutlineView.swift */; };
 		C94736821DF097B2000E3A05 /* FileListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94736811DF097B2000E3A05 /* FileListView.swift */; };
 		C94736881DF1DDDE000E3A05 /* XTRepositoryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94736871DF1DDDE000E3A05 /* XTRepositoryTest.swift */; };
+		C9473B9125A64D3000DA95BF /* HistorySplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9473B9025A64D3000DA95BF /* HistorySplitController.swift */; };
 		C94866B61D256C24000BDB0A /* FetchOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94866B51D256C24000BDB0A /* FetchOpController.swift */; };
 		C94866C01D25861E000BDB0A /* PasswordPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94866BE1D25861E000BDB0A /* PasswordPanelController.swift */; };
 		C94866C11D25861E000BDB0A /* PasswordPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C94866BF1D25861E000BDB0A /* PasswordPanelController.xib */; };
@@ -156,6 +157,7 @@
 		C95BF66A1FCF5E370020C51D /* StagingSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BF6691FCF5E370020C51D /* StagingSelection.swift */; };
 		C95ECD051EB11E310000DB78 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95ECD041EB11E310000DB78 /* WebViewController.swift */; };
 		C96256B2235A402800A625DC /* NewRemoteOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96256B1235A402800A625DC /* NewRemoteOpController.swift */; };
+		C966676625E6D3DF00E6B38C /* FileViewController+Split.swift in Sources */ = {isa = PBXBuildFile; fileRef = C966676525E6D3DF00E6B38C /* FileViewController+Split.swift */; };
 		C967AAB51FAA45B3008A4DF0 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = C967AAB41FAA45B3008A4DF0 /* Debug.swift */; };
 		C967C4AF1F96BA55002166F7 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C967C4AE1F96BA55002166F7 /* Cache.swift */; };
 		C96B22F022DF84C200DA219F /* GitVersionedOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96B22EF22DF84C100DA219F /* GitVersionedOptions.swift */; };
@@ -437,7 +439,6 @@
 /* Begin PBXFileReference section */
 		31355B0713EA139700C33AAB /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		31A8939F13E9DA5B008BE0C2 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
-		31C7C13213ECC74C00A65FE9 /* HistoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HistoryViewController.xib; sourceTree = "<group>"; };
 		3DB98C8323E0928A0039B454 /* DEVELOPMENT_TEAM.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = DEVELOPMENT_TEAM.xcconfig; sourceTree = "<group>"; };
 		3DB98C8423E0928A0039B454 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = "<group>"; };
 		89039F551703A9FC000949A8 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
@@ -530,6 +531,7 @@
 		C932110B1E48E92C00232B61 /* FileTreeDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileTreeDataSource.swift; sourceTree = "<group>"; };
 		C9328B111D77303200EFF7F7 /* FileMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileMonitor.swift; sourceTree = "<group>"; };
 		C9328B131D776BC700EFF7F7 /* RepositoryWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepositoryWatcher.swift; sourceTree = "<group>"; };
+		C934C239258ADBA2004197EB /* HistoryViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = HistoryViewController.storyboard; sourceTree = "<group>"; };
 		C935BD7D1E8BFA4F00BE51F0 /* DateCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateCellView.swift; sourceTree = "<group>"; };
 		C936AD091D4C0CD400C5ADC3 /* PushOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushOpController.swift; sourceTree = "<group>"; };
 		C936AD0B1D4C0FA900C5ADC3 /* PasswordOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasswordOpController.swift; sourceTree = "<group>"; };
@@ -558,6 +560,7 @@
 		C947367D1DF08C03000E3A05 /* ContextMenuOutlineView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContextMenuOutlineView.swift; sourceTree = "<group>"; };
 		C94736811DF097B2000E3A05 /* FileListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileListView.swift; sourceTree = "<group>"; };
 		C94736871DF1DDDE000E3A05 /* XTRepositoryTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRepositoryTest.swift; sourceTree = "<group>"; };
+		C9473B9025A64D3000DA95BF /* HistorySplitController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySplitController.swift; sourceTree = "<group>"; };
 		C94866B51D256C24000BDB0A /* FetchOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchOpController.swift; sourceTree = "<group>"; };
 		C94866BE1D25861E000BDB0A /* PasswordPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasswordPanelController.swift; sourceTree = "<group>"; };
 		C94866BF1D25861E000BDB0A /* PasswordPanelController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PasswordPanelController.xib; sourceTree = "<group>"; };
@@ -598,6 +601,7 @@
 		C95BF6691FCF5E370020C51D /* StagingSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StagingSelection.swift; sourceTree = "<group>"; };
 		C95ECD041EB11E310000DB78 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		C96256B1235A402800A625DC /* NewRemoteOpController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewRemoteOpController.swift; sourceTree = "<group>"; };
+		C966676525E6D3DF00E6B38C /* FileViewController+Split.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileViewController+Split.swift"; sourceTree = "<group>"; };
 		C967AAB41FAA45B3008A4DF0 /* Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
 		C967C4AE1F96BA55002166F7 /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		C96B22EF22DF84C100DA219F /* GitVersionedOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitVersionedOptions.swift; sourceTree = "<group>"; };
@@ -789,7 +793,8 @@
 			children = (
 				C9AA80351E2E7F370004D670 /* HistoryViewController.swift */,
 				C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */,
-				31C7C13213ECC74C00A65FE9 /* HistoryViewController.xib */,
+				C934C239258ADBA2004197EB /* HistoryViewController.storyboard */,
+				C9473B9025A64D3000DA95BF /* HistorySplitController.swift */,
 				C91E9A001D527A1300E128AC /* HistoryTableController.swift */,
 				C9CCDC78242A68EA006C8CB1 /* HistoryTableController+Actions.swift */,
 				C96F65451D53A6CE001B2557 /* HistoryCellView.swift */,
@@ -1226,6 +1231,7 @@
 				C94736791DEF5CA8000E3A05 /* FileViewController.swift */,
 				C93FFCBA1F104AD700FDDD78 /* FileViewController+Actions.swift */,
 				C959CDEC1F859ED100C1E282 /* FileViewController+OutlineView.swift */,
+				C966676525E6D3DF00E6B38C /* FileViewController+Split.swift */,
 				DD997DF71746F40D00C7DF82 /* FileViewController.xib */,
 				C935BD7C1E8AB16F00BE51F0 /* File List */,
 				C935BD6E1E8AB13400BE51F0 /* Previews */,
@@ -1487,7 +1493,7 @@
 				C9120EE123EE04C00052387E /* ResetPanelController.xib in Resources */,
 				C94154A11ED4ECF40030E481 /* BuildStatusViewController.xib in Resources */,
 				DD00725613E76DFB003B4120 /* Xit.icns in Resources */,
-				31C7C13413ECC74C00A65FE9 /* HistoryViewController.xib in Resources */,
+				C934C23A258ADBA2004197EB /* HistoryViewController.storyboard in Resources */,
 				89AB21EE213DE67500EF7507 /* StashPanelController.xib in Resources */,
 				899DB1A31CE5022400760270 /* CommitEntryController.xib in Resources */,
 				C957B8731D2DB44E0040F858 /* RemoteSheetController.xib in Resources */,
@@ -1646,6 +1652,7 @@
 				C936AD0A1D4C0CD400C5ADC3 /* PushOpController.swift in Sources */,
 				C95355FC1D9492EA00AEEF49 /* XTDocumentController.swift in Sources */,
 				C9DEA4AD1E4B82B200DF4069 /* Signature.swift in Sources */,
+				C9473B9125A64D3000DA95BF /* HistorySplitController.swift in Sources */,
 				C9EA19092350E5DE00DDAA25 /* CocoaExtensions.swift in Sources */,
 				C9065F4E20FCFA8B00C01110 /* RefType.swift in Sources */,
 				C994977D23107618004F06A5 /* XTRepository+Commits.swift in Sources */,
@@ -1719,6 +1726,7 @@
 				89AB21DA213DE5E300EF7507 /* StashOperationController.swift in Sources */,
 				C95BD3EF1F8ECEC9000A2E2D /* Mutex.swift in Sources */,
 				C90FCA2F1D9C776C006196DE /* FileDiffController.swift in Sources */,
+				C966676625E6D3DF00E6B38C /* FileViewController+Split.swift in Sources */,
 				C9F5334D2187608300B2432C /* UIString.swift in Sources */,
 				C9DEA49C1E4A900300DF4069 /* OID.swift in Sources */,
 				C98925D51DB6D3D300E5645C /* NewTagOpController.swift in Sources */,

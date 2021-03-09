@@ -59,6 +59,7 @@
       [storyboard instantiateInitialController];
 
   [self addWindowController:controller];
+  [controller finalizeSetup];
 }
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL

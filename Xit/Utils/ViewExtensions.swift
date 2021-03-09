@@ -171,6 +171,14 @@ extension NSSplitView
   }
 }
 
+extension NSSplitViewItem
+{
+  func toggleCollapsed()
+  {
+    isCollapsed = !isCollapsed
+  }
+}
+
 extension NSValidatedUserInterfaceItem
 {
   var isContextMenuItem: Bool

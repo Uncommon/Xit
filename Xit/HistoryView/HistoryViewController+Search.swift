@@ -46,7 +46,7 @@ extension HistoryViewController
       context.allowsImplicitAnimation = true
       scopeBar.isHidden = !visible
       scopeHeightConstraint.constant = visible ? Constants.shownScopeHeight : 0
-      mainSplitView.layoutSubtreeIfNeeded()
+      // TODO: layout split view?
     }, completionHandler: nil)
   }
 

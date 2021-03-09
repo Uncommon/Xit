@@ -40,7 +40,10 @@ class FileViewController: NSViewController, RepositoryWindowViewController
   @IBOutlet var previewController: PreviewController!
   @IBOutlet var textController: TextPreviewController!
   var commitEntryController: CommitEntryController!
-  
+
+  var resizeRecursing: Bool = false
+  var savedSplit: CGFloat = 0
+
   var contentController: XTFileContentController!
   
   var fileWatcher: FileEventStream?
@@ -177,7 +180,7 @@ class FileViewController: NSViewController, RepositoryWindowViewController
     
     let commitTabItem = fileListTabView.tabViewItem(at: 0)
     
-    commitListController.loadView()
+    _ = commitListController.view
     commitTabItem.viewController = commitListController
     fileListSplitView.addSubview(stagedListController.view)
     fileListSplitView.addSubview(workspaceListController.view)
@@ -228,13 +231,26 @@ class FileViewController: NSViewController, RepositoryWindowViewController
     diffController.stagingDelegate = self
   }
 
-  override func viewWillAppear() {
+  override func viewWillAppear()
+  {
     super.viewWillAppear()
 
     for listController in allListControllers {
       listController.finishLoad(controller: repoUIController!)
       headerController.repoUIController = repoUIController!
     }
+  }
+  
+  func restoreSplit()
+  {
+    if savedSplit != 0 {
+      headerSplitView.setPosition(savedSplit, ofDividerAt: 0)
+    }
+  }
+  
+  func saveSplit()
+  {
+    savedSplit = headerSplitView.arrangedSubviews[0].bounds.height
   }
   
   func updatePreviewForActiveList()
@@ -450,25 +466,6 @@ class FileViewController: NSViewController, RepositoryWindowViewController
     }
     catch {
       NSLog("Unexpected revert error")
-    }
-  }
-}
-
-// MARK: NSSplitViewDelegate
-extension FileViewController: NSSplitViewDelegate
-{
-  public func splitView(_ splitView: NSSplitView,
-                        shouldAdjustSizeOfSubview view: NSView) -> Bool
-  {
-    // Supposedly this can be done with holding priorities
-    // but that's not working.
-    switch splitView {
-      case headerSplitView:
-        return view != headerTabView
-      case fileSplitView:
-        return view != fileListTabView
-      default:
-        return true
     }
   }
 }

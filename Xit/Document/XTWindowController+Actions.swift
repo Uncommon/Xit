@@ -21,28 +21,14 @@ extension XTWindowController
   @IBAction
   func showHideHistory(_ sender: AnyObject)
   {
-    historyController.toggleHistory(sender)
+    historySplitController.toggleHistory(sender)
     historyAutoCollapsed = false
   }
   
   @IBAction
   func showHideDetails(_ sender: AnyObject)
   {
-    historyController.toggleDetails(sender)
-  }
-  
-  @IBAction
-  func verticalLayout(_ sender: AnyObject)
-  {
-    historyController.mainSplitView.isVertical = true
-    historyController.mainSplitView.adjustSubviews()
-  }
-  
-  @IBAction
-  func horizontalLayout(_ sender: AnyObject)
-  {
-    historyController.mainSplitView.isVertical = false
-    historyController.mainSplitView.adjustSubviews()
+    historySplitController.toggleDetails(sender)
   }
   
   @IBAction
@@ -289,14 +275,6 @@ extension XTWindowController: NSMenuItemValidation
       case #selector(self.showHideSidebar(_:)):
         result = true
         menuItem.titleString = sidebarHidden ? .showSidebar : .hideSidebar
-
-      case #selector(self.verticalLayout(_:)):
-        result = true
-        menuItem.state = historyController.mainSplitView.isVertical ? .on : .off
-
-      case #selector(self.horizontalLayout(_:)):
-        result = true
-        menuItem.state = historyController.mainSplitView.isVertical ? .off : .on
 
       case #selector(self.remoteSettings(_:)):
         result = true

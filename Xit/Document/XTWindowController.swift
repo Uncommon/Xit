@@ -27,6 +27,7 @@ class XTWindowController: NSWindowController,
   @IBOutlet var titleBarController: TitleBarController!
   
   var historyController: HistoryViewController!
+  var historySplitController: HistorySplitController!
   weak var xtDocument: XTDocument?
   var repoController: GitRepositoryController!
   var refsChangedObserver, workspaceObserver: NSObjectProtocol?
@@ -53,48 +54,46 @@ class XTWindowController: NSWindowController,
   
   private var kvObservers: [NSKeyValueObservation] = []
   private var splitObserver: NSObjectProtocol?
-  
-  override var document: AnyObject?
-  {
-    didSet
-    {
-      guard document != nil
-      else { return }
-      
-      xtDocument = document as! XTDocument?
-      
-      guard let repo = xtDocument?.repository
-      else { return }
-      
-      repoController = GitRepositoryController(repository: repo)
-      refsChangedObserver = NotificationCenter.default.addObserver(
-          forName: .XTRepositoryRefsChanged,
-          object: repo, queue: .main) {
-        [weak self] _ in
-        self?.updateBranchList()
-      }
-      workspaceObserver = NotificationCenter.default.addObserver(
-          forName: .XTRepositoryWorkspaceChanged, object: repo, queue: .main) {
-        [weak self] (_) in
-        guard let self = self
-        else { return }
 
-        // Even though the observer is supposed to be on the main queue,
-        // it doesn't always happen.
-        DispatchQueue.main.async {
-          self.updateTabStatus()
-        }
-      }
-      kvObservers.append(repo.observe(\.currentBranch) {
-        [weak self] (_, _) in
-        self?.titleBarController?.selectedBranch = repo.currentBranch
-        self?.updateMiniwindowTitle()
-      })
-      sidebarController.repo = repo
-      historyController.finishLoad(repository: repo)
-      configureTitleBarController(repository: repo)
-      updateTabStatus()
+  @objc
+  func finalizeSetup()
+  {
+    guard document != nil
+    else { return }
+    
+    xtDocument = document as! XTDocument?
+    
+    guard let repo = xtDocument?.repository
+    else { return }
+    
+    repoController = GitRepositoryController(repository: repo)
+    refsChangedObserver = NotificationCenter.default.addObserver(
+        forName: .XTRepositoryRefsChanged,
+        object: repo, queue: .main) {
+      [weak self] _ in
+      self?.updateBranchList()
     }
+    workspaceObserver = NotificationCenter.default.addObserver(
+        forName: .XTRepositoryWorkspaceChanged, object: repo, queue: .main) {
+      [weak self] (_) in
+      guard let self = self
+      else { return }
+
+      // Even though the observer is supposed to be on the main queue,
+      // it doesn't always happen.
+      DispatchQueue.main.async {
+        self.updateTabStatus()
+      }
+    }
+    kvObservers.append(repo.observe(\.currentBranch) {
+      [weak self] (_, _) in
+      self?.titleBarController?.selectedBranch = repo.currentBranch
+      self?.updateMiniwindowTitle()
+    })
+    sidebarController.repo = repo
+    historyController.finishLoad(repository: repo)
+    configureTitleBarController(repository: repo)
+    updateTabStatus()
   }
 
   @objc
@@ -123,7 +122,7 @@ class XTWindowController: NSWindowController,
       if UserDefaults.standard.collapseHistory {
         historyAutoCollapsed = true
         if !historyController.historyHidden {
-          historyController.toggleHistory(self)
+          historySplitController.toggleHistory(self)
           titleBarController?.updateViewControls()
         }
       }
@@ -132,7 +131,7 @@ class XTWindowController: NSWindowController,
             UserDefaults.standard.collapseHistory &&
             historyAutoCollapsed {
       if historyController.historyHidden {
-        historyController.toggleHistory(self)
+        historySplitController.toggleHistory(self)
         titleBarController?.updateViewControls()
       }
       historyAutoCollapsed = false
@@ -293,12 +292,14 @@ extension XTWindowController: NSWindowDelegate
     titleBarController.splitView = splitViewController.splitView
     sidebarController = splitViewController.splitViewItems[0].viewController
         as? SidebarController
-    historyController = HistoryViewController()
-    splitViewController.removeSplitViewItem(splitViewController.splitViewItems[1])
-    splitViewController.addSplitViewItem(
-        NSSplitViewItem(viewController: historyController))
+
+    historySplitController = splitViewController.splitViewItems[1].viewController
+                             as? HistorySplitController
+    historyController = historySplitController.historyController
+    _ = historyController.view // force load
+
     window.makeFirstResponder(historyController.historyTable)
-    
+
     kvObservers.append(window.observe(\.title) {
       [weak self] (_, _) in
       self?.updateMiniwindowTitle()
@@ -313,11 +314,11 @@ extension XTWindowController: NSWindowDelegate
     })
     splitObserver = NotificationCenter.default.addObserver(
         forName: NSSplitView.didResizeSubviewsNotification,
-        object: historyController.mainSplitView, queue: nil) {
+        object: historySplitController.splitView, queue: nil) {
       [weak self] (_) in
-      guard let self = self,
-            let split = self.historyController.mainSplitView
+      guard let self = self
       else { return }
+      let split = self.historySplitController.splitView
       let frameSize = split.subviews[0].frame.size
       let paneSize = split.isVertical ? frameSize.width : frameSize.height
       let collapsed = paneSize == 0
