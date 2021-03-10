@@ -22,6 +22,7 @@ enum BitbucketServer
   enum UserType: String, Codable
   {
     case normal = "NORMAL"
+    case service = "SERVICE"
   }
   
   enum ReviewerRole: String, Codable
@@ -232,8 +233,10 @@ class BitbucketServerAPI: BasicAuthService, ServiceAPI
     
     func matchRemote(url: URL) -> Bool
     {
+      guard let scheme = url.scheme
+      else { return false }
       let link = request.fromRef.repository
-                        .links?.clone?.first { $0.name == url.scheme }
+        .links?.clone?.first { $0.href?.hasPrefix(scheme) ?? false }
       
       return link?.href == url.absoluteString
     }
@@ -365,7 +368,7 @@ extension BitbucketServerAPI: PullRequestService
       
       #if DEBUG
       for request in result {
-        print("\(request.status): \(request.displayName)")
+        print("\(request.status): \(request.sourceBranch)")
       }
       #endif
       callback(result)
