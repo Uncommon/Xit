@@ -95,10 +95,9 @@ class XTRepositoryMergeTest: XTTest
   // Fast-forward case. This could also have a ff-only variant.
   func testMergeC0C1() throws
   {
-    let c1 = try XCTUnwrap(GitLocalBranch(repository: repository.gitRepo, name: "c1",
-                                          config: repository.config))
-
-    try self.repository.merge(branch: c1)
+    try execute(in: repository) {
+      Merge(branch: "c1")
+    }
     XCTAssertEqual(try String(contentsOf: repository.fileURL(fileName)), result1)
     assertWorkspaceContent(staged: [], unstaged: [])
   }
@@ -106,12 +105,11 @@ class XTRepositoryMergeTest: XTTest
   // Actually merging changes.
   func testMergeC1C2() throws
   {
-    let c2 = try XCTUnwrap(GitLocalBranch(repository: repository.gitRepo, name: "c2",
-                                          config: repository.config))
-    
-    try repository.checkOut(branch: "c1")
-    try self.repository.merge(branch: c2)
-    
+    try execute(in: repository) {
+      CheckOut(branch: "c1")
+      Merge(branch: "c2")
+    }
+
     let contents = try XCTUnwrap(String(contentsOf: repository.fileURL(fileName)))
     
     XCTAssertEqual(contents, result15)
@@ -127,11 +125,10 @@ class XTRepositoryMergeTest: XTTest
       }
     }
 
-    let c3 = GitLocalBranch(repository: repository.gitRepo, name: "c3",
-                            config: repository.config)!
-    
     do {
-      try self.repository.merge(branch: c3)
+      try execute(in: repository) {
+        Merge(branch: "c3")
+      }
       XCTFail("No conflict detected")
     }
     catch RepoError.conflict {
@@ -154,13 +151,12 @@ class XTRepositoryMergeTest: XTTest
   func testDirtyFFNoConflict() throws
   {
     let content = "blah"
-    let c3 = try XCTUnwrap(repository.localBranch(named: "c3"), "c3 branch missing")
 
     try execute(in: repository, actions: { () -> [RepoAction] in
       CheckOut(branch: "c0")
       Write(content, to: .file2)
+      Merge(branch: "c3")
     })
-    try repository.merge(branch: c3)
     assertContent(content, file: FileName.file2)
   }
 
@@ -169,7 +165,6 @@ class XTRepositoryMergeTest: XTTest
   func testDirtyNoConflict() throws
   {
     let content = "blah"
-    let c3 = try XCTUnwrap(repository.localBranch(named: "c3"), "c3 branch missing")
 
     try execute(in: repository) {
       CheckOut(branch: "c0")
@@ -177,9 +172,9 @@ class XTRepositoryMergeTest: XTTest
         Write("other", to: .added)
       }
       Write(content, to: .file2)
+      Merge(branch: "c3")
     }
 
-    try repository.merge(branch: c3)
     assertContent(content, file: FileName.file2)
   }
   

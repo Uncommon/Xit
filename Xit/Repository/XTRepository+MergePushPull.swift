@@ -84,7 +84,7 @@ struct GitTransferProgress: TransferProgress
   var receivedBytes: Int      { gitProgress.received_bytes }
 }
 
-extension XTRepository
+extension XTRepository: Merging
 {
   private func fastForwardMerge(branch: GitBranch, remoteBranch: GitBranch) throws
   {
@@ -225,7 +225,7 @@ extension XTRepository
   // - Finalize with conflicts - write MERGE_HEAD, etc
   
   /// Merges the given branch into the current branch.
-  func merge(branch: Branch) throws
+  public func merge(branch: Branch) throws
   {
     try performWriting {
       try self.writingMerge(branch: branch)

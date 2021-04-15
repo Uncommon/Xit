@@ -124,6 +124,7 @@ struct CommitFiles: RepoAction
   let amend: Bool
   let actions: [RepoAction]
 
+  /// Commits any files already staged.
   init(_ message: String = "commit", amend: Bool = false)
   {
     self.message = message
@@ -131,6 +132,8 @@ struct CommitFiles: RepoAction
     self.actions = []
   }
 
+  /// Executes the given actions, stages any files that were written or deleted,
+  /// and then commits.
   init(_ message: String = "commit", amend: Bool = false,
        @RepoActionBuilder actions: () -> [RepoAction])
   {
@@ -215,6 +218,33 @@ struct CreateBranch: RepoAction
     if checkOut {
       try repository.checkOut(branch: branch)
     }
+  }
+}
+
+struct Merge: RepoAction
+{
+  let sourceBranch: Branch?
+  let branchName: String?
+
+  init(branch: Branch)
+  {
+    self.sourceBranch = branch
+    self.branchName = nil
+  }
+
+  init(branch: String)
+  {
+    self.sourceBranch = nil
+    self.branchName = branch
+  }
+
+  func execute(in repository: Repository) throws
+  {
+    guard let branch = sourceBranch ??
+                       branchName.flatMap({ repository.localBranch(named: $0) })
+    else { throw RepoError.unexpected }
+
+    try repository.merge(branch: branch)
   }
 }
 
