@@ -106,8 +106,10 @@ class XTFileChangesModelTest: XTTest
     var changes = model.unstagedFileList.changes
     
     XCTAssertEqual(changes.count, 0)
-    
-    writeTextToFile1("change")
+
+    try execute(in: repository) {
+      Write("change", to: .file1)
+    }
     repository.invalidateIndex()
     changes = model.unstagedFileList.changes
     XCTAssertEqual(changes.count, 1)
@@ -121,8 +123,10 @@ class XTFileChangesModelTest: XTTest
     
     XCTAssertEqual(change.path, FileName.file1)
     XCTAssertEqual(change.status, DeltaStatus.modified)
-    
-    write(text: "new", to: FileName.added)
+
+    try execute(in: repository) {
+      Write("new", to: .added)
+    }
     repository.invalidateIndex()
     changes = model.unstagedFileList.changes
     XCTAssertEqual(changes.count, 2)
@@ -168,8 +172,12 @@ class XTFileChangesModelTest: XTTest
   
   func testCommitTree() throws
   {
-    commit(newTextFile: FileName.added, content: "new")
-    
+    try execute(in: repository) {
+      CommitFiles {
+        Write("new", to: .added)
+      }
+    }
+
     guard let headSHA = repository.headSHA,
           let headCommit = GitCommit(sha: headSHA, repository: repository.gitRepo)
     else {
@@ -196,12 +204,15 @@ class XTFileChangesModelTest: XTTest
   func testStashTree() throws
   {
     let deletedName = "deleted"
-    let deletedURL = repository.repoURL +/ deletedName
-  
-    commit(newTextFile: deletedName, content: "bye!")
-    try FileManager.default.removeItem(at: deletedURL)
-    try repository.stage(file: deletedName)
-    
+
+    try execute(in: repository, actions: { () -> [RepoAction] in
+      CommitFiles {
+        Write("bye!", to: deletedName)
+      }
+      Delete(deletedName)
+      Stage(deletedName)
+    })
+
     try makeStash()
     
     let model = StashSelection(repository: repository, index: 0)

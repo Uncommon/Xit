@@ -79,16 +79,12 @@ class SidebarDataSourceTest: XTTest
   /// Create two stashes and check that they are listed
   func testStashes() throws
   {
-    XCTAssertTrue(writeTextToFile1("second text"))
-    try repository.saveStash(name: "s1",
-                             keepIndex: false,
-                             includeUntracked: true,
-                             includeIgnored: true)
-    XCTAssertTrue(writeTextToFile1("third text"))
-    try repository.saveStash(name: "s2",
-                             keepIndex: false,
-                             includeUntracked: true,
-                             includeIgnored: true)
+    try execute(in: repository) {
+      Write("second text", to: .file1)
+      SaveStash("s1")
+      Write("third text", to: .file1)
+      SaveStash("s2")
+    }
     
     sbds.reload()
     waitForRepoQueue()
@@ -145,9 +141,12 @@ class SidebarDataSourceTest: XTTest
     
     for path in [sub1Path, sub2Path] {
       let subRepo = try XCTUnwrap(XTTest.createRepo(atPath: path))
-      
-      self.commit(newTextFile: FileName.file1, content: "text", repository: subRepo)
-      wait(for: subRepo)
+
+      try execute(in: subRepo) {
+        CommitFiles {
+          Write("text", to: .file1)
+        }
+      }
     }
   
     try repository.addSubmodule(path: "sub1", url: "../repo1")

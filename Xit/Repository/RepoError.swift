@@ -1,6 +1,6 @@
 import Foundation
 
-enum RepoError: Swift.Error
+public enum RepoError: Swift.Error
 {
   case alreadyWriting
   case cherryPickInProgress

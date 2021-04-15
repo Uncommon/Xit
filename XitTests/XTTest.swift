@@ -117,7 +117,11 @@ class XTTest: XCTestCase
   
   func addInitialRepoContent() throws
   {
-    XCTAssertTrue(commit(newTextFile: FileName.file1, content: "some text"))
+    try execute(in: repository) {
+      CommitFiles {
+        Write("some text", to: .file1)
+      }
+    }
   }
   
   func makeRemoteRepo()
@@ -128,76 +132,7 @@ class XTTest: XCTestCase
     remoteRepository = XTTest.createRepo(atPath: remoteRepoPath)
     XCTAssertNotNil(remoteRepository)
   }
-  
-  @discardableResult
-  func commit(newTextFile name: String, content: String) -> Bool
-  {
-    return commit(newTextFile: name, content: content, repository: repository)
-  }
 
-  @discardableResult
-  func commit(newTextFile name: String, content: String,
-              repository: XTRepository) -> Bool
-  {
-    let basePath = repository.repoURL.path
-    let filePath = basePath +/ name
-    
-    do {
-      try? FileManager.default.createDirectory(
-            atPath: filePath.deletingLastPathComponent,
-            withIntermediateDirectories: true, attributes: nil)
-      try content.write(toFile: filePath, atomically: true, encoding: .ascii)
-    }
-    catch {
-      return false
-    }
-    
-    var result = true
-    
-    repoController.queue.executeOffMainThread {
-      do {
-        try repository.stage(file: name)
-        try repository.commit(message: "new \(name)", amend: false)
-      }
-      catch {
-        result = false
-      }
-    }
-    WaitForQueue(repoController.queue.queue)
-    return result
-  }
-  
-  @discardableResult
-  func write(text: String, to path: String) -> Bool
-  {
-    return write(text: text, to: path, repository: repository)
-  }
-  
-  @discardableResult
-  func write(text: String, to path: String, repository: XTRepository) -> Bool
-  {
-    do {
-      let fullPath = repoPath +/ path
-      
-      try? FileManager.default.createDirectory(
-            atPath: fullPath.deletingLastPathComponent,
-            withIntermediateDirectories: true, attributes: nil)
-      try text.write(toFile: fullPath, atomically: true, encoding: .utf8)
-      repository.invalidateIndex()
-    }
-    catch {
-      XCTFail("write to \(path) failed")
-      return false
-    }
-    return true
-  }
-  
-  @discardableResult
-  func writeTextToFile1(_ text: String) -> Bool
-  {
-    return write(text: text, to: FileName.file1)
-  }
-  
   func assertContent(_ text: String, file: String,
                      line: UInt = #line, sourceFile: StaticString = #file)
   {
@@ -215,14 +150,13 @@ class XTTest: XCTestCase
   
   func makeStash() throws
   {
-    writeTextToFile1("stashy")
-    write(text: "new", to: FileName.untracked)
-    write(text: "add", to: FileName.added)
-    try repository.stage(file: FileName.added)
-    try repository.saveStash(name: "",
-                             keepIndex: false,
-                             includeUntracked: true,
-                             includeIgnored: true)
+    try execute(in: repository) {
+      Write("stashy", to: .file1)
+      Write("new", to: .untracked)
+      Write("add", to: .added)
+      Stage(.added)
+      SaveStash()
+    }
   }
 
   func makeTiffFile(_ name: String) throws

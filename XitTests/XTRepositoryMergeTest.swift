@@ -27,22 +27,7 @@ class XTRepositoryMergeTest: XTTest
   let numbers: [String] = Array(1...9).map { "\($0)" }
   var text1, text5, text9, text9y: String!
   var result1, result15, result159, result9z: String!
-  
-  func add(_ file: String) throws
-  {
-    try repository.stage(file: file)
-  }
-  
-  func commit(_ message: String) throws
-  {
-    try repository.commit(message: message, amend: false)
-  }
-  
-  func branch(_ name: String)
-  {
-    XCTAssertTrue(repository.createBranch(name))
-  }
-  
+
   override func addInitialRepoContent() throws
   {
     text1 = numbers.replacing("1 X", at: 0).toLines()
@@ -57,34 +42,35 @@ class XTRepositoryMergeTest: XTTest
                        .replacing("5 X", at: 4)
                        .replacing("9 X", at: 8).toLines()
     result9z  = numbers.replacing("9 Z", at: 8).toLines()
-    
-    write(text:numbers.toLines(), to:fileName)
-    
-    try add(fileName)
-    try commit("commit 0")
-    branch("c0")
-    branch("c1")
-    write(text:text1, to:fileName)
-    try add(fileName)
-    try commit("commit 1")
-    try repository.checkOut(branch: "c0")
-    branch("c2")
-    write(text:text5, to:fileName)
-    try add(fileName)
-    try commit("commit 2")
-    try repository.checkOut(branch: "c0")
-    /* From the git test, not currently used
-    branch("c7")
-    writeText(text9y, toFile: fileName)
-    try add(fileName)
-    try commit("commit 7")
-    try repository.checkout("c0")
-    */
-    branch("c3")
-    write(text:text9, to: fileName)
-    try add(fileName)
-    try commit("commit 3")
-    try repository.checkOut(branch: "c0")
+
+    try execute(in: repository) {
+      CommitFiles("commit 0") {
+        Write(numbers.toLines(), to: fileName)
+      }
+      CreateBranch("c0")
+      CreateBranch("c1", checkOut: true)
+      CommitFiles("commit 1") {
+        Write(text1, to: fileName)
+      }
+      CheckOut(branch: "c0")
+      CreateBranch("c2", checkOut: true)
+      CommitFiles("commit 2") {
+        Write(text5, to: fileName)
+      }
+      CheckOut(branch: "c0")
+      /* From the git test, not currently used
+      CreateBranch("c7")
+      CommitFiles("commit 7") {
+        Write(text9y, to: fileName)
+      }
+      CheckOut(branch: "c0")
+      */
+      CreateBranch("c3", checkOut: true)
+      CommitFiles("commit 3") {
+        Write(text9, to: fileName)
+      }
+      CheckOut(branch: "c0")
+    }
   }
   
   func isWorkspaceClean() -> Bool
@@ -135,10 +121,12 @@ class XTRepositoryMergeTest: XTTest
   // Not from the git test.
   func testConflict() throws
   {
-    write(text: text9y, to: fileName)
-    try add(fileName)
-    try commit("commit y")
-    
+    try execute(in: repository) {
+      CommitFiles("commit y") {
+        Write(text9y, to: fileName)
+      }
+    }
+
     let c3 = GitLocalBranch(repository: repository.gitRepo, name: "c3",
                             config: repository.config)!
     
@@ -167,23 +155,30 @@ class XTRepositoryMergeTest: XTTest
   {
     let content = "blah"
     let c3 = try XCTUnwrap(repository.localBranch(named: "c3"), "c3 branch missing")
-    
-    try repository.checkOut(branch: "c0")
-    write(text: content, to: FileName.file2)
+
+    try execute(in: repository, actions: { () -> [RepoAction] in
+      CheckOut(branch: "c0")
+      Write(content, to: .file2)
+    })
     try repository.merge(branch: c3)
     assertContent(content, file: FileName.file2)
   }
-  
+
   // Same as testDirtyFFNoConflict except make a commit after switching to c0
   // so it's not a fast forward merge
   func testDirtyNoConflict() throws
   {
     let content = "blah"
     let c3 = try XCTUnwrap(repository.localBranch(named: "c3"), "c3 branch missing")
-    
-    try repository.checkOut(branch: "c0")
-    commit(newTextFile: FileName.added, content: "other")
-    write(text: content, to: FileName.file2)
+
+    try execute(in: repository) {
+      CheckOut(branch: "c0")
+      CommitFiles {
+        Write("other", to: .added)
+      }
+      Write(content, to: .file2)
+    }
+
     try repository.merge(branch: c3)
     assertContent(content, file: FileName.file2)
   }

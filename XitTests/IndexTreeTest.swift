@@ -6,11 +6,13 @@ class IndexTreeTest: XTTest
   override func setUpWithError() throws
   {
     try super.setUpWithError()
-    
+
     // A second commit is needed for amending tests
-    writeTextToFile1("second")
-    try repository.stage(file: FileName.file1)
-    try repository.commit(message: "second", amend: false)
+    try execute(in: repository) {
+      CommitFiles("second") {
+        Write("second", to: .file1)
+      }
+    }
   }
   
   func indexTreeStatus(at path: String,
@@ -30,11 +32,13 @@ class IndexTreeTest: XTTest
   
   func addAndStageDelete(path: String) throws
   {
-    let fullPath = repoPath +/ path
-    
-    XCTAssertTrue(commit(newTextFile: path, content: "text"))
-    try FileManager.default.removeItem(atPath: fullPath)
-    try repository.stage(file: path)
+    try execute(in: repository) {
+      CommitFiles {
+        Write("text", to: path)
+      }
+      Delete(path)
+      Stage(path)
+    }
   }
   
   func testSimpleAmend()
@@ -44,35 +48,43 @@ class IndexTreeTest: XTTest
   
   func testNewFile() throws
   {
-    write(text: "text", to: FileName.file2)
-    try repository.stage(file: FileName.file2)
-    
+    try execute(in: repository) {
+      Write("text", to: .file2)
+      Stage(.file2)
+    }
+
     XCTAssertEqual(indexTreeStatus(at: FileName.file2, amending: false), .added)
     XCTAssertEqual(indexTreeStatus(at: FileName.file2, amending: true), .added)
   }
   
   func testModifiedFile() throws
   {
-    write(text: "modified", to: FileName.file1)
-    try repository.stage(file: FileName.file1)
-    
+    try execute(in: repository) {
+      Write("modified", to: .file1)
+      Stage(.file1)
+    }
+
     XCTAssertEqual(indexTreeStatus(at: FileName.file1, amending: false), .modified)
     XCTAssertEqual(indexTreeStatus(at: FileName.file1, amending: true), .modified)
   }
 
   func testAddSubFile() throws
   {
-    XCTAssertTrue(write(text: "text", to: FileName.subFile2))
-    try repository.stage(file: FileName.subFile2)
-    
+    try execute(in: repository) {
+      Write("text", to: .subFile2)
+      Stage(.subFile2)
+    }
+
     XCTAssertEqual(indexTreeStatus(at: FileName.subFile2), .added)
   }
   
   func testAddSubSubFile() throws
   {
-    write(text: "text", to: FileName.subSubFile2)
-    try repository.stage(file: FileName.subSubFile2)
-    
+    try execute(in: repository) {
+      Write("text", to: .subSubFile2)
+      Stage(.subSubFile2)
+    }
+
     XCTAssertEqual(indexTreeStatus(at: FileName.subSubFile2, amending: false), .added)
     XCTAssertEqual(indexTreeStatus(at: FileName.subSubFile2, amending: true), .added)
   }
