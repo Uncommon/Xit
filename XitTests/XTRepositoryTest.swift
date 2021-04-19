@@ -53,10 +53,12 @@ class XTEmptyRepositoryTest: XTTest
   
   func testWorkspaceBinaryFile() throws
   {
-    let tiffName = "action"
-    
-    try makeTiffFile(tiffName)
-    XCTAssertFalse(repository.isTextFile(tiffName, context: .workspace))
+    let tiffName = TestFileName.binary
+
+    try execute(in: repository) {
+      MakeTiffFile(tiffName)
+    }
+    XCTAssertFalse(repository.isTextFile(tiffName.rawValue, context: .workspace))
   }
   
   func testIndexTextFile() throws
@@ -72,11 +74,13 @@ class XTEmptyRepositoryTest: XTTest
   
   func testIndexBinaryFile() throws
   {
-    let tiffName = "action"
+    let tiffName = TestFileName.binary
     
-    try makeTiffFile(tiffName)
-    try repository.stage(file: tiffName)
-    XCTAssertFalse(repository.isTextFile(tiffName, context: .index))
+    try execute(in: repository) {
+      MakeTiffFile(tiffName)
+      Stage(tiffName)
+    }
+    XCTAssertFalse(repository.isTextFile(tiffName.rawValue, context: .index))
   }
   
   func testCommitTextFile() throws
@@ -97,18 +101,19 @@ class XTEmptyRepositoryTest: XTTest
   
   func testCommitBinaryFile() throws
   {
-    let tiffName = "action"
+    let tiffName = TestFileName.binary
 
-    try makeTiffFile(tiffName)
     try execute(in: repository) {
-      Stage(tiffName)
-      CommitFiles()
+      CommitFiles() {
+        MakeTiffFile(tiffName)
+      }
     }
 
     let headSHA = try XCTUnwrap(repository.headSHA)
     let headCommit = try XCTUnwrap(repository.commit(forSHA: headSHA))
 
-    XCTAssertFalse(repository.isTextFile(tiffName, context: .commit(headCommit)))
+    XCTAssertFalse(repository.isTextFile(tiffName.rawValue,
+                                         context: .commit(headCommit)))
   }
   
   func testStagedContents() throws
@@ -380,17 +385,31 @@ class XTRepositoryTest: XTTest
     XCTAssertTrue(block(), "\(name) non-writing")
   }
 
+  func assertWriteAction(name: String,
+                         file: StaticString = #file, line: UInt = #line,
+                         @RepoActionBuilder actions: () -> [RepoAction])
+  {
+    func executeActions() throws {
+      try execute(in: repository, actions: actions)
+    }
+
+    setRepoWriting(repository, true)
+    assertWriteFails(name: name, block: executeActions)
+    setRepoWriting(repository, false)
+    assertWriteSucceeds(name: name, executeActions)
+  }
+
   func testWriteLockStage() throws
   {
     try execute(in: repository) {
       Write("modification", to: .file1)
     }
 
-    assertWriteException(name: "stageFile") {
-      try repository.stage(file: FileName.file1)
+    assertWriteAction(name: "stageFile") {
+      Stage(.file1)
     }
-    assertWriteException(name: "unstageFile") {
-      try repository.unstage(file: FileName.file1)
+    assertWriteAction(name: "unstageFile") {
+      Unstage(.file1)
     }
   }
   
@@ -400,22 +419,22 @@ class XTRepositoryTest: XTTest
       Write("modification", to: .file1)
     }
 
-    assertWriteException(name: "unstageFile") {
-      try repository.saveStash(name: "stashname",
-                               keepIndex: false,
-                               includeUntracked: false,
-                               includeIgnored: true)
+    assertWriteAction(name: "unstageFile") {
+      SaveStash("stashname")
     }
-    assertWriteException(name: "apply") { try repository.applyStash(index: 0) }
-    assertWriteException(name: "drop") { try repository.dropStash(index: 0) }
+    assertWriteAction(name: "apply") {
+      ApplyStash()
+    }
+    assertWriteAction(name: "drop") {
+      DropStash()
+    }
     try execute(in: repository) {
       Write("modification", to: .file1)
+      SaveStash("stashname")
     }
-    try repository.saveStash(name: "stashname",
-                             keepIndex: false,
-                             includeUntracked: false,
-                             includeIgnored: true)
-    assertWriteException(name: "pop") { try repository.popStash(index: 0) }
+    assertWriteAction(name: "pop") {
+      PopStash()
+    }
   }
   
   func testWriteLockCommit() throws
@@ -425,8 +444,8 @@ class XTRepositoryTest: XTTest
       Stage(.file1)
     }
 
-    assertWriteException(name: "commit") { 
-      try repository.commit(message: "blah", amend: false)
+    assertWriteAction(name: "commit") {
+      CommitFiles("blah")
     }
   }
   
@@ -436,12 +455,14 @@ class XTRepositoryTest: XTTest
     let testBranch1 = "testBranch1"
     let testBranch2 = "testBranch2"
     
-    assertWriteBool(name: "create") { repository.createBranch(testBranch1) }
+    assertWriteAction(name: "create") {
+      CreateBranch(testBranch1)
+    }
     assertWriteException(name: "rename") {
       try repository.rename(branch: testBranch1, to: testBranch2)
     }
-    assertWriteException(name: "checkout") {
-      try repository.checkOut(branch: masterBranch)
+    assertWriteAction(name: "checkout") {
+      CheckOut(branch: masterBranch)
     }
     assertWriteBool(name: "delete") {
       repository.deleteBranch(testBranch2)
@@ -496,18 +517,20 @@ class XTRepositoryTest: XTTest
     XCTAssertTrue(headSHA.trimmingCharacters(in: hexChars).isEmpty)
   }
   
-  func testDetachedCheckout()
+  func testDetachedCheckout() throws
   {
     guard let firstSHA = repository.headSHA
     else {
       XCTFail("no head SHA")
       return
     }
-    
-    try! "mash".write(toFile: file1Path, atomically: true, encoding: .utf8)
-    try! repository.stage(file: FileName.file1)
-    try! repository.checkOut(sha: firstSHA)
-    
+
+    try execute(in: repository) {
+      Write("mash", to: .file1)
+      Stage(.file1)
+      CheckOut(sha: firstSHA)
+    }
+
     guard let detachedSHA = repository.headSHA
     else {
       XCTFail("no detached head SHA")
@@ -576,10 +599,12 @@ class XTRepositoryTest: XTTest
   
   func testDeletedChange() throws
   {
-    try FileManager.default.removeItem(atPath: file1Path)
-    try repository.stage(file: FileName.file1)
-    try repository.commit(message: "#3", amend: false)
-    
+    try execute(in: repository) {
+      CommitFiles("#3") {
+        Delete(.file1)
+      }
+    }
+
     let changes3 = repository.changes(for: repository.headSHA!, parent: nil)
     
     XCTAssertEqual(changes3.count, 1)
@@ -592,14 +617,14 @@ class XTRepositoryTest: XTTest
   
   func testStageUnstageAllStatus() throws
   {
-    try execute(in: repository, actions: { () -> [RepoAction] in
+    try execute(in: repository) {
       CommitFiles {
         Write("blah", to: .file2)
       }
       Write("blah", to: .file1)
       Delete(.file2)
       Write("blah", to: .file3)
-    })
+    }
     try repository.stageAllFiles()
     
     var changes = repository.statusChanges(.indexOnly)
@@ -663,22 +688,28 @@ class XTRepositoryTest: XTTest
   
   func testUnstagedDeleteDiff() throws
   {
-    try FileManager.default.removeItem(atPath: file1Path)
+    try execute(in: repository) {
+      Delete(.file1)
+    }
     try checkDeletedDiff(repository.unstagedDiff(file: FileName.file1))
   }
 
   func testStagedDeleteDiff() throws
   {
-    try FileManager.default.removeItem(atPath: file1Path)
-    try repository.stage(file: FileName.file1)
+    try execute(in: repository) {
+      Delete(.file1)
+      Stage(.file1)
+    }
     try checkDeletedDiff(repository.stagedDiff(file: FileName.file1))
   }
   
   func testDeletedDiff() throws
   {
-    try FileManager.default.removeItem(atPath: file1Path)
-    try repository.stage(file: FileName.file1)
-    try repository.commit(message: "deleted", amend: false)
+    try execute(in: repository) {
+      CommitFiles("deleted") {
+        Delete(.file1)
+      }
+    }
     
     let commit = try XCTUnwrap(GitCommit(ref: "HEAD", repository: repository.gitRepo))
     let parentOID = try XCTUnwrap(commit.parentOIDs.first)
@@ -703,31 +734,35 @@ class XTRepositoryTest: XTTest
   
   func testStagedBinaryDiff() throws
   {
-    let imageName = "img.tiff"
-    
-    try makeTiffFile(imageName)
-    try repository.stage(file: imageName)
-    
-    let unstagedDiffResult = try XCTUnwrap(repository.unstagedDiff(file: imageName))
+    let imageName = TestFileName.tiff
+
+    try execute(in: repository) {
+      MakeTiffFile(imageName)
+      Stage(imageName)
+    }
+
+    let unstagedDiffResult = try XCTUnwrap(repository.unstagedDiff(file: imageName.rawValue))
     
     XCTAssertEqual(unstagedDiffResult, .binary)
     
-    let stagedDiffResult = try XCTUnwrap(repository.stagedDiff(file: imageName))
+    let stagedDiffResult = try XCTUnwrap(repository.stagedDiff(file: imageName.rawValue))
 
     XCTAssertEqual(stagedDiffResult, .binary)
   }
   
   func testCommitBinaryDiff() throws
   {
-    let imageName = "img.tiff"
-    
-    try makeTiffFile(imageName)
-    try repository.stage(file: imageName)
-    try repository.commit(message: "image", amend: false)
-    
+    let imageName = TestFileName.tiff
+
+    try execute(in: repository) {
+      CommitFiles("image") {
+        MakeTiffFile(imageName)
+      }
+    }
+
     let headCommit = try XCTUnwrap(repository.commit(forSHA: repository.headSHA!))
     let model = CommitSelection(repository: repository, commit: headCommit)
-    let diff = try XCTUnwrap(model.fileList.diffForFile(imageName))
+    let diff = try XCTUnwrap(model.fileList.diffForFile(imageName.rawValue))
     
     XCTAssertEqual(diff, .binary)
   }

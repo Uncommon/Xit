@@ -26,6 +26,8 @@ enum TestFileName: String
   case subSubFile2 = "folder/folder2/file2.txt"
   case added = "added.txt"
   case untracked = "untracked.txt"
+  case tiff = "img.tiff"
+  case binary = "binary" // no suffix
 }
 
 struct Write: StageableAction
@@ -56,19 +58,28 @@ struct Write: StageableAction
   }
 }
 
+struct MakeTiffFile: StageableAction
+{
+  let file: String
+
+  init(_ file: String) { self.file = file }
+  init(_ name: TestFileName) { self.file = name.rawValue }
+
+  func execute(in repository: Repository) throws
+  {
+    let tiffURL = repository.fileURL(file)
+
+    try NSImage(named: NSImage.actionTemplateName)?.tiffRepresentation?
+                                                   .write(to: tiffURL)
+  }
+}
+
 struct Delete: StageableAction
 {
   let file: String
 
-  init(_ file: String)
-  {
-    self.file = file
-  }
-
-  init(_ name: TestFileName)
-  {
-    self.file = name.rawValue
-  }
+  init(_ file: String) { self.file = file }
+  init(_ name: TestFileName) { self.file = name.rawValue }
 
   func execute(in repository: Repository) throws
   {
@@ -82,15 +93,8 @@ struct Stage: RepoAction
 {
   let file: String
 
-  init(_ file: String)
-  {
-    self.file = file
-  }
-
-  init(_ name: TestFileName)
-  {
-    self.file = name.rawValue
-  }
+  init(_ file: String) { self.file = file }
+  init(_ name: TestFileName) { self.file = name.rawValue }
 
   func execute(in repository: Repository) throws
   {
@@ -102,15 +106,8 @@ struct Unstage: RepoAction
 {
   let file: String
 
-  init(_ file: String)
-  {
-    self.file = file
-  }
-
-  init(_ name: TestFileName)
-  {
-    self.file = name.rawValue
-  }
+  init(_ file: String) { self.file = file }
+  init(_ name: TestFileName) { self.file = name.rawValue }
 
   func execute(in repository: Repository) throws
   {
@@ -158,10 +155,7 @@ struct SaveStash: RepoAction
 {
   let message: String
 
-  init(_ message: String = "")
-  {
-    self.message = message
-  }
+  init(_ message: String = "") { self.message = message }
 
   func execute(in repository: Repository) throws
   {
@@ -170,14 +164,23 @@ struct SaveStash: RepoAction
   }
 }
 
+struct ApplyStash: RepoAction
+{
+  let index: UInt
+
+  init(index: UInt = 0) { self.index = index }
+
+  func execute(in repository: Repository) throws
+  {
+    try repository.applyStash(index: index)
+  }
+}
+
 struct PopStash: RepoAction
 {
   let index: UInt
 
-  init(index: UInt = 0)
-  {
-    self.index = index
-  }
+  init(index: UInt = 0) { self.index = index }
 
   func execute(in repository: Repository) throws
   {
@@ -185,13 +188,43 @@ struct PopStash: RepoAction
   }
 }
 
-struct CheckOut: RepoAction
+struct DropStash: RepoAction
 {
-  let branch: String
+  let index: UInt
+
+  init(index: UInt = 0) { self.index = index }
 
   func execute(in repository: Repository) throws
   {
-    try repository.checkOut(branch: branch)
+    try repository.dropStash(index: index)
+  }
+}
+
+struct CheckOut: RepoAction
+{
+  let branch: String
+  let sha: String
+
+  init(branch: String)
+  {
+    self.branch = branch
+    self.sha = ""
+  }
+
+  init(sha: String)
+  {
+    self.branch = ""
+    self.sha = sha
+  }
+
+  func execute(in repository: Repository) throws
+  {
+    if sha.isEmpty {
+      try repository.checkOut(branch: branch)
+    }
+    else {
+      try repository.checkOut(sha: sha)
+    }
   }
 }
 
