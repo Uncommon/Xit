@@ -144,13 +144,6 @@ extension XTRepository: CommitReferencing
     return GitOID(oidPtr: oid)
   }
   
-  func createBranch(_ name: String) -> Bool
-  {
-    clearCachedBranch()
-    return (try? executeGit(args: ["checkout", "-b", name],
-                            writes: true)) != nil
-  }
-  
   func deleteBranch(_ name: String) -> Bool
   {
     return writing {

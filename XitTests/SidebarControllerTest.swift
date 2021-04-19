@@ -170,14 +170,16 @@ class SidebarHandlerTest: XTTest
                       action: { handler.dropStash() })
   }
   
-  func testMergeText()
+  func testMergeText() throws
   {
     let menuItem = NSMenuItem(
         title: "Merge",
         action: #selector(SidebarController.mergeBranch(_:)),
         keyEquivalent: "")
-    
-    XCTAssertTrue(repository.createBranch("branch"))
+
+    try execute(in: repository) {
+      CreateBranch("branch")
+    }
     handler.selectedItem = item(forBranch: "branch")
     XCTAssertNotNil(try? repository.checkOut(branch: "master"))
     XCTAssertTrue(handler.validate(sidebarCommand: menuItem))

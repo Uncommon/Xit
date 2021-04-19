@@ -55,9 +55,11 @@ class SidebarDataSourceTest: XTTest
   }
   
   /// Add a branch and make sure both branches are loaded correctly
-  func testBranches()
+  func testBranches() throws
   {
-    XCTAssertTrue(repository.createBranch("b1"))
+    try execute(in: repository) {
+      CreateBranch("b1")
+    }
     sbds.reload()
     waitForRepoQueue()
     
@@ -101,9 +103,11 @@ class SidebarDataSourceTest: XTTest
     makeRemoteRepo()
     
     let remoteName = "origin"
-    
-    try repository.checkOut(branch: "master")
-    XCTAssertTrue(repository.createBranch("b1"))
+
+    try execute(in: repository) {
+      CheckOut(branch: "master")
+      CreateBranch("b1")
+    }
     try repository.addRemote(named: remoteName,
                              url: URL(fileURLWithPath: remoteRepoPath))
     
