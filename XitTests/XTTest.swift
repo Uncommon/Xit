@@ -9,7 +9,8 @@ class XTTest: XCTestCase
 
   var repoController: GitRepositoryController!
   var repository, remoteRepository: XTRepository!
-  
+
+  // TODO: delete these in favor of TestFileName
   enum FileName
   {
     // These are not cases because then you'd have to say .rawvalue all the time
@@ -157,14 +158,6 @@ class XTTest: XCTestCase
       Stage(.added)
       SaveStash()
     }
-  }
-
-  func makeTiffFile(_ name: String) throws
-  {
-    let tiffURL = repository.fileURL(name)
-    
-    try NSImage(named: NSImage.actionTemplateName)?.tiffRepresentation?
-                                                   .write(to: tiffURL)
   }
 }
 

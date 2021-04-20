@@ -71,25 +71,24 @@ class XTStashTest: XTTest
   
   func testBinaryDiff() throws
   {
-    let imageName = "img.tiff"
-    
-    try makeTiffFile(imageName)
-    try repository.stage(file: imageName)
-    try repository.saveStash(name: nil,
-                             keepIndex: false,
-                             includeUntracked: true,
-                             includeIgnored: true)
-    
+    let imageName = TestFileName.tiff
+
+    try execute(in: repository) {
+      MakeTiffFile(imageName)
+      Stage(imageName)
+      SaveStash()
+    }
+
     let selection = StashSelection(repository: repository, index: 0)
     
-    if let stagedDiffResult = selection.fileList.diffForFile(imageName) {
+    if let stagedDiffResult = selection.fileList.diffForFile(imageName.rawValue) {
       XCTAssertEqual(stagedDiffResult, .binary)
     }
     else {
       XCTFail("no staged diff")
     }
     
-    if let unstagedDiffResult = selection.fileList.diffForFile(imageName) {
+    if let unstagedDiffResult = selection.fileList.diffForFile(imageName.rawValue) {
       XCTAssertEqual(unstagedDiffResult, .binary)
     }
     else {

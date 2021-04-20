@@ -11,6 +11,18 @@ fileprivate struct EmptyAction: RepoAction
   func execute(in repository: Repository) throws {}
 }
 
+fileprivate struct ActionList: RepoAction
+{
+  let actions: [RepoAction]
+
+  func execute(in repository: Repository) throws
+  {
+    for action in actions {
+      try action.execute(in: repository)
+    }
+  }
+}
+
 protocol StageableAction : RepoAction
 {
   var file: String { get }
@@ -28,6 +40,7 @@ enum TestFileName: String
   case untracked = "untracked.txt"
   case tiff = "img.tiff"
   case binary = "binary" // no suffix
+  case blame = "elements.txt"
 }
 
 struct Write: StageableAction
@@ -55,6 +68,53 @@ struct Write: StageableAction
                                              withIntermediateDirectories: true,
                                              attributes: nil)
     try content.write(toFile: url.path, atomically: true, encoding: .utf8)
+  }
+}
+
+struct CopyFile: StageableAction
+{
+  let source: String?
+  let sourceURL: URL?
+  let file: String
+
+  init(from source: String, to destination: String)
+  {
+    self.source = source
+    self.sourceURL = nil
+    self.file = destination
+  }
+
+  init(from source: URL, to destination: String)
+  {
+    self.source = nil
+    self.sourceURL = source
+    self.file = destination
+  }
+
+  func execute(in repository: Repository) throws
+  {
+    guard let sourceURL = sourceURL ?? source.map({ repository.fileURL($0) })
+    else { throw UnreachableError() }
+    let destURL = repository.fileURL(file)
+
+    try FileManager.default.copyItem(at: sourceURL, to: destURL)
+  }
+}
+
+struct WriteData: StageableAction
+{
+  let data: Data
+  let file: String
+
+  init(_ data: Data, to file: String)
+  {
+    self.data = data
+    self.file = file
+  }
+
+  func execute(in repository: Repository) throws
+  {
+    try data.write(to: repository.fileURL(file))
   }
 }
 
@@ -142,12 +202,25 @@ struct CommitFiles: RepoAction
   func execute(in repository: Repository) throws
   {
     for action in actions {
+      try executeAndStage(action, in: repository)
+    }
+    try repository.commit(message: message, amend: amend)
+  }
+
+  private func executeAndStage(_ action: RepoAction,
+                               in repository: Repository) throws
+  {
+    if let list = action as? ActionList {
+      for action in list.actions {
+        try executeAndStage(action, in: repository)
+      }
+    }
+    else {
       try action.execute(in: repository)
       if let stageable = action as? StageableAction {
         try repository.stage(file: stageable.file)
       }
     }
-    try repository.commit(message: message, amend: amend)
   }
 }
 
@@ -242,9 +315,7 @@ struct CreateBranch: RepoAction
   func execute(in repository: Repository) throws
   {
     guard let currentBranch = repository.currentBranch
-    else {
-      throw RepoError.unexpected
-    }
+    else { throw UnreachableError() }
 
     _ = try repository.createBranch(named: branch,
                                     target: RefPrefixes.heads + currentBranch)
@@ -296,6 +367,9 @@ struct RepoActionBuilder
 
   static func buildEither(first: RepoAction) -> RepoAction { first }
   static func buildEither(second: RepoAction) -> RepoAction { second }
+
+  static func buildArray(_ actions: [RepoAction]) -> RepoAction
+  { ActionList(actions: actions) }
 }
 
 func execute(in repository: Repository, @RepoActionBuilder actions: () -> [RepoAction]) throws

@@ -124,7 +124,9 @@ class XTEmptyRepositoryTest: XTTest
       Write(content, to: .file1)
     }
     XCTAssertNil(repository.contentsOfStagedFile(path: FileName.file1))
-    try repository.stage(file: FileName.file1)
+    try execute(in: repository) {
+      Stage(.file1)
+    }
     
     let expectedContent = content.data(using: .utf8)
     let stagedContent = try XCTUnwrap(repository.contentsOfStagedFile(path: FileName.file1))

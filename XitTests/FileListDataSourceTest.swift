@@ -29,11 +29,12 @@ class FileListDataSourceTest: XTTest
     
     for n in 0..<10 {
       let fileName = "file_\(n).txt"
-      let filePath = repoPath +/ fileName
-      
-      try text.write(toFile: filePath, atomically: true, encoding: .ascii)
-      try repository.stageAllFiles()
-      try repository.commit(message: "commit", amend: false)
+
+      try execute(in: repository) {
+        CommitFiles("commit") {
+          Write(text, to: fileName)
+        }
+      }
     }
   
     let outlineView = NSOutlineView.init()
@@ -76,18 +77,28 @@ class FileListDataSourceTest: XTTest
   {
     let text = "some text"
     
+    #if swift(>=5.4) // needs for loop support
+    try execute(in: repository) {
+      CommitFiles {
+        Delete(.file1)
+        for n in 0..<12 {
+          Write(text, to: "dir_\(n%2)/subdir_\(n%3)/file_\(n).txt")
+        }
+      }
+    }
+    #else
     for i in 0..<2 {
       for j in 0..<3 {
         let path = "dir_\(i)/subdir_\(j)"
         let fullPath = repoPath +/ path
-        
+
         try FileManager.default.createDirectory(atPath: fullPath,
                                                 withIntermediateDirectories: true,
                                                 attributes: nil)
       }
     }
     try FileManager.default.removeItem(atPath: file1Path)
-    
+
     for n in 0..<12 {
       let file = "\(repoPath!)/dir_\(n%2)/subdir_\(n%3)/file_\(n).txt"
       
@@ -95,6 +106,7 @@ class FileListDataSourceTest: XTTest
     }
     try repository.stageAllFiles()
     _ = try repository.commit(message: "commit", amend: false)
+    #endif
     
     let repoUIController = FakeRepoUIController(repository: repository)
     let headSHA = try XCTUnwrap(repository.headSHA)

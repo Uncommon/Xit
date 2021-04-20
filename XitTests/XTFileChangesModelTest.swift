@@ -138,8 +138,10 @@ class XTFileChangesModelTest: XTTest
     change = changes[0] // "added" will be sorted to the top
     XCTAssertEqual(change.path, FileName.added)
     XCTAssertEqual(change.status, DeltaStatus.untracked)
-    
-    try repository.stage(file: FileName.added)
+
+    try execute(in: repository) {
+      Stage(.added)
+    }
     XCTAssertEqual(model.unstagedFileList.changes.count, 1)
     changes = model.fileList.changes
     XCTAssertEqual(changes.count, 1)
