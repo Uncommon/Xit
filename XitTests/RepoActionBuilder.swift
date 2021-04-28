@@ -1,11 +1,11 @@
 import Foundation
 import Xit
 
-/// A repository action unit used in test setup
+/// A repository action unit used in test setup.
 protocol RepoAction
 {
   /// Executes the action in the context of the given repository. It may be an
-  /// action git operation, or a file operation within the repository.
+  /// actual git operation, or a file operation within the repository.
   func execute(in repository: Repository) throws
 }
 
@@ -19,24 +19,25 @@ func execute(in repository: Repository,
   }
 }
 
-@_functionBuilder
+@resultBuilder
 struct RepoActionBuilder
 {
-  static func buildBlock(_ items: RepoAction...) -> [RepoAction]
-  {
-    return items
-  }
+  static func buildExpression(_ expression: RepoAction) -> [RepoAction]
+  { [expression] }
+  
+  static func buildBlock(_ items: [RepoAction]...) -> [RepoAction]
+  { return items.flatMap { $0 } }
 
-  static func buildOptional(_ item: RepoAction?) -> RepoAction
-  {
-    item ?? EmptyAction()
-  }
+  static func buildOptional(_ component: [RepoAction]?) -> [RepoAction]
+  { component ?? [] }
 
-  static func buildEither(first: RepoAction) -> RepoAction { first }
-  static func buildEither(second: RepoAction) -> RepoAction { second }
+  static func buildEither(first: [RepoAction]) -> [RepoAction]
+  { first }
+  static func buildEither(second: [RepoAction]) -> [RepoAction]
+  { second }
 
-  static func buildArray(_ actions: [RepoAction]) -> RepoAction
-  { ActionList(actions: actions) }
+  static func buildArray(_ actions: [[RepoAction]]) -> [RepoAction]
+  { actions.map { ActionList(actions: $0) } }
 }
 
 /// An action that affects a specific file which can then be staged.
@@ -45,11 +46,7 @@ protocol StageableAction : RepoAction
   var file: String { get }
 }
 
-struct EmptyAction: RepoAction
-{
-  func execute(in repository: Repository) throws {}
-}
-
+/// An action that is simply a list of actions, to facilitate for loop support.
 struct ActionList: RepoAction
 {
   let actions: [RepoAction]

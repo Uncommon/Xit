@@ -25,38 +25,34 @@ class FileListDataSourceTest: XTTest
 {
   func testHistoricFileList() throws
   {
-    let text = "some text"
-    
-    for n in 0..<10 {
-      let fileName = "file_\(n).txt"
-
-      try execute(in: repository) {
-        CommitFiles("commit") {
-          Write(text, to: fileName)
+    try execute(in: repository) {
+      for n in 0..<10 {
+        CommitFiles {
+          Write("some text", to: "file_\(n).txt")
         }
       }
     }
   
     let outlineView = NSOutlineView.init()
     let repoUIController = FakeRepoUIController(repository: repository)
-    let flds = FileTreeDataSource(useWorkspaceList: false)
+    let ftds = FileTreeDataSource(useWorkspaceList: false)
     var expectedCount = 11
     let history = CommitHistory<GitOID>()
     
     repoUIController.repoController = GitRepositoryController(repository: repository)
     history.repository = repository
-    objc_sync_enter(flds)
-    flds.repoUIController = repoUIController
-    objc_sync_exit(flds)
+    objc_sync_enter(ftds)
+    ftds.repoUIController = repoUIController
+    objc_sync_exit(ftds)
     waitForRepoQueue()
     
     for entry in history.entries {
       repoUIController.selection = CommitSelection(repository: repository,
                                                  commit: entry.commit)
-      flds.reload()
+      ftds.reload()
       waitForRepoQueue()
     
-      let fileCount = flds.outlineView(outlineView, numberOfChildrenOfItem: nil)
+      let fileCount = ftds.outlineView(outlineView, numberOfChildrenOfItem: nil)
     
       XCTAssertEqual(fileCount, expectedCount, "file count")
       expectedCount -= 1
@@ -77,7 +73,6 @@ class FileListDataSourceTest: XTTest
   {
     let text = "some text"
     
-    #if swift(>=5.4) // needs for loop support
     try execute(in: repository) {
       CommitFiles {
         Delete(.file1)
@@ -86,27 +81,6 @@ class FileListDataSourceTest: XTTest
         }
       }
     }
-    #else
-    for i in 0..<2 {
-      for j in 0..<3 {
-        let path = "dir_\(i)/subdir_\(j)"
-        let fullPath = repoPath +/ path
-
-        try FileManager.default.createDirectory(atPath: fullPath,
-                                                withIntermediateDirectories: true,
-                                                attributes: nil)
-      }
-    }
-    try FileManager.default.removeItem(atPath: file1Path)
-
-    for n in 0..<12 {
-      let file = "\(repoPath!)/dir_\(n%2)/subdir_\(n%3)/file_\(n).txt"
-      
-      try text.write(toFile: file, atomically: true, encoding: .ascii)
-    }
-    try repository.stageAllFiles()
-    _ = try repository.commit(message: "commit", amend: false)
-    #endif
     
     let repoUIController = FakeRepoUIController(repository: repository)
     let headSHA = try XCTUnwrap(repository.headSHA)
