@@ -11,9 +11,27 @@ enum TestFileName: String
   case subSubFile2 = "folder/folder2/file2.txt"
   case added = "added.txt"
   case untracked = "untracked.txt"
+  case deleted = "deleted"
   case tiff = "img.tiff"
   case binary = "binary" // no suffix
   case blame = "elements.txt"
+  
+  static func ==(lhs: String, rhs: TestFileName) -> Bool
+  { lhs == rhs.rawValue }
+  static func !=(lhs: String, rhs: TestFileName) -> Bool
+  { lhs != rhs.rawValue }
+  static func ==(lhs: String?, rhs: TestFileName) -> Bool
+  { lhs.map { $0 == rhs.rawValue } ?? false }
+  static func !=(lhs: String?, rhs: TestFileName) -> Bool
+  { lhs.map { $0 != rhs.rawValue } ?? false }
+  static func ==(lhs: TestFileName, rhs: String) -> Bool
+  { lhs.rawValue == rhs }
+  static func !=(lhs: TestFileName, rhs: String) -> Bool
+  { lhs.rawValue != rhs }
+  static func ==(lhs: TestFileName, rhs: String?) -> Bool
+  { rhs.map { lhs.rawValue == $0 } ?? false }
+  static func !=(lhs: TestFileName, rhs: String?) -> Bool
+  { rhs.map { lhs.rawValue != $0 } ?? false }
 }
 
 /// Writes a given string to a file

@@ -10,21 +10,8 @@ class XTTest: XCTestCase
   var repoController: GitRepositoryController!
   var repository, remoteRepository: XTRepository!
 
-  // TODO: delete these in favor of TestFileName
-  enum FileName
-  {
-    // These are not cases because then you'd have to say .rawvalue all the time
-    static let file1 = "file1.txt"
-    static let file2 = "file2.txt"
-    static let file3 = "file3.txt"
-    static let subFile2 = "folder/file2.txt"
-    static let subSubFile2 = "folder/folder2/file2.txt"
-    static let added = "added.txt"
-    static let untracked = "untracked.txt"
-  }
-  
   var file1Path: String
-  { return repoPath.appending(pathComponent: FileName.file1) }
+  { return repoPath.appending(pathComponent: TestFileName.file1.rawValue) }
   
   static func createRepo(atPath repoPath: String) -> XTRepository?
   {
@@ -149,6 +136,12 @@ class XTTest: XCTestCase
     }
   }
   
+  func assertContent(_ text: String, file: TestFileName,
+                      line: UInt = #line, sourceFile: StaticString = #file)
+  {
+    assertContent(text, file: file.rawValue, line: line, sourceFile: sourceFile)
+  }
+
   func makeStash() throws
   {
     try execute(in: repository) {

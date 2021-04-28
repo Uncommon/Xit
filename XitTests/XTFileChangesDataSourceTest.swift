@@ -29,7 +29,7 @@ class XTFileChangesDataSourceTest: XTTest
     
     let item1 = dataSource.outlineView(outlineView, child: 0, ofItem: nil)
     
-    XCTAssertEqual(dataSource.path(for: item1), FileName.file1)
+    XCTAssertEqual(dataSource.path(for: item1), TestFileName.file1.rawValue)
     XCTAssertFalse(dataSource.outlineView(outlineView, isItemExpandable: item1))
     XCTAssertEqual(dataSource.change(for: item1), DeltaStatus.added)
   }

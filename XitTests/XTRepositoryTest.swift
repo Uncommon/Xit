@@ -123,13 +123,13 @@ class XTEmptyRepositoryTest: XTTest
     try execute(in: repository) {
       Write(content, to: .file1)
     }
-    XCTAssertNil(repository.contentsOfStagedFile(path: FileName.file1))
+    XCTAssertNil(repository.contentsOfStagedFile(path: TestFileName.file1.rawValue))
     try execute(in: repository) {
       Stage(.file1)
     }
     
     let expectedContent = content.data(using: .utf8)
-    let stagedContent = try XCTUnwrap(repository.contentsOfStagedFile(path: FileName.file1))
+    let stagedContent = try XCTUnwrap(repository.contentsOfStagedFile(path: TestFileName.file1.rawValue))
     let stagedString = String(data: stagedContent, encoding: .utf8)
     
     XCTAssertEqual(stagedContent, expectedContent)
@@ -143,7 +143,7 @@ class XTEmptyRepositoryTest: XTTest
       Write(newContent, to: .file1)
     }
 
-    let stagedContent2 = try XCTUnwrap(repository.contentsOfStagedFile(path: FileName.file1))
+    let stagedContent2 = try XCTUnwrap(repository.contentsOfStagedFile(path: TestFileName.file1.rawValue))
     let stagedString2 = String(data: stagedContent, encoding: .utf8)
     
     XCTAssertEqual(stagedContent2, expectedContent)
@@ -547,7 +547,7 @@ class XTRepositoryTest: XTTest
     let headSHA = try XCTUnwrap(repository.headSHA)
     let headCommit = try XCTUnwrap(GitCommit(sha: headSHA,
                                              repository: repository.gitRepo))
-    let contentData = repository.contentsOfFile(path: FileName.file1,
+    let contentData = repository.contentsOfFile(path: TestFileName.file1.rawValue,
                                                 at: headCommit)!
     let contentString = String(data: contentData, encoding: .utf8)
     
@@ -556,7 +556,7 @@ class XTRepositoryTest: XTTest
   
   func testFileBlob() throws
   {
-    let blob = try XCTUnwrap(repository.fileBlob(ref: "HEAD", path: FileName.file1))
+    let blob = try XCTUnwrap(repository.fileBlob(ref: "HEAD", path: TestFileName.file1.rawValue))
     var blobString: String? = nil
     
     try blob.withData({ blobString = String(data: $0, encoding: .utf8) })
@@ -571,7 +571,7 @@ class XTRepositoryTest: XTTest
     
     let change = try XCTUnwrap(changes.first)
     
-    XCTAssertEqual(change.path, FileName.file1)
+    XCTAssertEqual(change.path, TestFileName.file1.rawValue)
     XCTAssertEqual(change.status, DeltaStatus.added)
   }
   
@@ -590,12 +590,12 @@ class XTRepositoryTest: XTTest
     
     let file1Change = try XCTUnwrap(changes2.first)
     
-    XCTAssertEqual(file1Change.path, FileName.file1)
+    XCTAssertEqual(file1Change.path, TestFileName.file1.rawValue)
     XCTAssertEqual(file1Change.status, .modified)
     
     let file2Change = changes2[1]
     
-    XCTAssertEqual(file2Change.path, FileName.file2)
+    XCTAssertEqual(file2Change.path, TestFileName.file2.rawValue)
     XCTAssertEqual(file2Change.status, .added)
   }
   
@@ -613,7 +613,7 @@ class XTRepositoryTest: XTTest
     
     let file1Deleted = try XCTUnwrap(changes3.first)
     
-    XCTAssertEqual(file1Deleted.path, FileName.file1)
+    XCTAssertEqual(file1Deleted.path, TestFileName.file1.rawValue)
     XCTAssertEqual(file1Deleted.status, .deleted)
   }
   
@@ -693,7 +693,7 @@ class XTRepositoryTest: XTTest
     try execute(in: repository) {
       Delete(.file1)
     }
-    try checkDeletedDiff(repository.unstagedDiff(file: FileName.file1))
+    try checkDeletedDiff(repository.unstagedDiff(file: TestFileName.file1.rawValue))
   }
 
   func testStagedDeleteDiff() throws
@@ -702,7 +702,7 @@ class XTRepositoryTest: XTTest
       Delete(.file1)
       Stage(.file1)
     }
-    try checkDeletedDiff(repository.stagedDiff(file: FileName.file1))
+    try checkDeletedDiff(repository.stagedDiff(file: TestFileName.file1.rawValue))
   }
   
   func testDeletedDiff() throws
@@ -715,7 +715,7 @@ class XTRepositoryTest: XTTest
     
     let commit = try XCTUnwrap(GitCommit(ref: "HEAD", repository: repository.gitRepo))
     let parentOID = try XCTUnwrap(commit.parentOIDs.first)
-    let diffResult = repository.diffMaker(forFile: FileName.file1,
+    let diffResult = repository.diffMaker(forFile: TestFileName.file1.rawValue,
                                           commitOID: commit.oid,
                                           parentOID: parentOID)!
     let patch = try XCTUnwrap(diffResult.extractPatch())
@@ -726,7 +726,7 @@ class XTRepositoryTest: XTTest
   func testAddedDiff() throws
   {
     let commit = try XCTUnwrap(GitCommit(ref: "HEAD", repository: repository.gitRepo))
-    let diffResult = repository.diffMaker(forFile: FileName.file1,
+    let diffResult = repository.diffMaker(forFile: TestFileName.file1.rawValue,
                                           commitOID: commit.oid,
                                           parentOID: nil)!
     let patch = try XCTUnwrap(diffResult.extractPatch())

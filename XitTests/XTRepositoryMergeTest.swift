@@ -157,7 +157,7 @@ class XTRepositoryMergeTest: XTTest
       Write(content, to: .file2)
       Merge(branch: "c3")
     })
-    assertContent(content, file: FileName.file2)
+    assertContent(content, file: .file2)
   }
 
   // Same as testDirtyFFNoConflict except make a commit after switching to c0
@@ -175,7 +175,7 @@ class XTRepositoryMergeTest: XTTest
       Merge(branch: "c3")
     }
 
-    assertContent(content, file: FileName.file2)
+    assertContent(content, file: .file2)
   }
   
   // Further test cases:

@@ -57,9 +57,9 @@ class CommitRootTest: XTTest
       XCTAssertEqual(item.status, DeltaStatus.deleted)
     }
     
-    if deletedPath != FileName.file1 {
+    if deletedPath != TestFileName.file1 {
       guard let file1Node = relativeTree.children?.first(where:
-              { ($0.representedObject as? CommitTreeItem)?.path == FileName.file1} ),
+              { ($0.representedObject as? CommitTreeItem)?.path == TestFileName.file1} ),
             let item = file1Node.representedObject as? CommitTreeItem
       else {
         XCTFail("file1 missing")
@@ -173,7 +173,7 @@ class CommitRootTest: XTTest
       }
     }
 
-    checkCommitTrees(deletedPath: FileName.file1)
+    checkCommitTrees(deletedPath: TestFileName.file1.rawValue)
   }
   
   func makeSubFolderCommits() throws -> (Commit, Commit)

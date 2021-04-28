@@ -110,13 +110,13 @@ class XTRepositoryHunkTest: XTTest
       Delete(.file1)
     }
 
-    let diffResult = try XCTUnwrap(repository.unstagedDiff(file: FileName.file1))
+    let diffResult = try XCTUnwrap(repository.unstagedDiff(file: TestFileName.file1.rawValue))
     let patch = try XCTUnwrap(diffResult.extractPatch())
     let hunk = try XCTUnwrap(patch.hunk(at: 0))
     
-    try repository.patchIndexFile(path: FileName.file1, hunk: hunk, stage: true)
+    try repository.patchIndexFile(path: TestFileName.file1.rawValue, hunk: hunk, stage: true)
     
-    let status = try repository.status(file: FileName.file1)
+    let status = try repository.status(file: TestFileName.file1.rawValue)
     
     XCTAssertEqual(status.0, DeltaStatus.unmodified)
     XCTAssertEqual(status.1, DeltaStatus.deleted)
@@ -150,13 +150,13 @@ class XTRepositoryHunkTest: XTTest
       Stage(.file1)
     }
 
-    let diffResult = try XCTUnwrap(repository.stagedDiff(file: FileName.file1))
+    let diffResult = try XCTUnwrap(repository.stagedDiff(file: TestFileName.file1.rawValue))
     let patch = try XCTUnwrap(diffResult.extractPatch())
     let hunk = try XCTUnwrap(patch.hunk(at: 0))
     
-    try repository.patchIndexFile(path: FileName.file1, hunk: hunk, stage: false)
+    try repository.patchIndexFile(path: TestFileName.file1.rawValue, hunk: hunk, stage: false)
     
-    let status = try repository.status(file: FileName.file1)
+    let status = try repository.status(file: TestFileName.file1.rawValue)
     
     XCTAssertEqual(status.0, DeltaStatus.deleted)
     XCTAssertEqual(status.1, DeltaStatus.unmodified)
