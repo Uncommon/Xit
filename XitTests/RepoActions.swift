@@ -209,16 +209,9 @@ struct CommitFiles: RepoAction
   private func executeAndStage(_ action: RepoAction,
                                in repository: Repository) throws
   {
-    if let list = action as? ActionList {
-      for action in list.actions {
-        try executeAndStage(action, in: repository)
-      }
-    }
-    else {
-      try action.execute(in: repository)
-      if let stageable = action as? StageableAction {
-        try repository.stage(file: stageable.file)
-      }
+    try action.execute(in: repository)
+    if let stageable = action as? StageableAction {
+      try repository.stage(file: stageable.file)
     }
   }
 }

@@ -26,7 +26,7 @@ struct RepoActionBuilder
   { [expression] }
   
   static func buildBlock(_ items: [RepoAction]...) -> [RepoAction]
-  { return items.flatMap { $0 } }
+  { items.flatMap { $0 } }
 
   static func buildOptional(_ component: [RepoAction]?) -> [RepoAction]
   { component ?? [] }
@@ -37,24 +37,11 @@ struct RepoActionBuilder
   { second }
 
   static func buildArray(_ actions: [[RepoAction]]) -> [RepoAction]
-  { actions.map { ActionList(actions: $0) } }
+  { actions.flatMap { $0 } }
 }
 
 /// An action that affects a specific file which can then be staged.
 protocol StageableAction : RepoAction
 {
   var file: String { get }
-}
-
-/// An action that is simply a list of actions, to facilitate for loop support.
-struct ActionList: RepoAction
-{
-  let actions: [RepoAction]
-
-  func execute(in repository: Repository) throws
-  {
-    for action in actions {
-      try action.execute(in: repository)
-    }
-  }
 }
