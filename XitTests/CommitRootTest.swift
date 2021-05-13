@@ -57,9 +57,9 @@ class CommitRootTest: XTTest
       XCTAssertEqual(item.status, DeltaStatus.deleted)
     }
     
-    if deletedPath != FileName.file1 {
+    if deletedPath != TestFileName.file1 {
       guard let file1Node = relativeTree.children?.first(where:
-              { ($0.representedObject as? CommitTreeItem)?.path == FileName.file1} ),
+              { ($0.representedObject as? CommitTreeItem)?.path == TestFileName.file1} ),
             let item = file1Node.representedObject as? CommitTreeItem
       else {
         XCTFail("file1 missing")
@@ -70,7 +70,7 @@ class CommitRootTest: XTTest
     }
   }
   
-  func testCommitRootAddFile()
+  func testCommitRootAddFile() throws
   {
     guard let headSHA1 = repository.headSHA,
           let commit1 = repository.commit(forSHA: headSHA1)
@@ -78,9 +78,13 @@ class CommitRootTest: XTTest
       XCTFail("no head commit")
       return
     }
-    
-    commit(newTextFile: "file2", content: "text")
-    
+
+    try execute(in: repository) {
+      CommitFiles {
+        Write("text", to: .file2)
+      }
+    }
+
     guard let headSHA2 = repository.headSHA,
           let commit2 = repository.commit(forSHA: headSHA2)
     else {
@@ -107,13 +111,12 @@ class CommitRootTest: XTTest
   
   func testCommitRootSubFile() throws
   {
-    let subURL = repository.repoURL.appendingPathComponent("sub")
-    
-    try FileManager.default.createDirectory(at: subURL,
-                                            withIntermediateDirectories: false,
-                                            attributes: nil)
-    commit(newTextFile: "sub/file2", content: "text")
-    
+    try execute(in: repository) {
+      CommitFiles {
+        Write("text", to: .subFile2)
+      }
+    }
+
     checkCommitTrees(deletedPath: nil)
   }
   
@@ -121,19 +124,19 @@ class CommitRootTest: XTTest
   {
     let subFilePathA = subDirName +/ subFileNameA
     let subFilePathB = subDirName +/ subFileNameB
-    let subURL = repository.repoURL +/ subDirName
-    let subFileURL = subURL +/ subFileNameA
-    
-    try FileManager.default.createDirectory(at: subURL,
-                                            withIntermediateDirectories: false,
-                                            attributes: nil)
-    commit(newTextFile: subFilePathA, content: "text")
-    commit(newTextFile: subFilePathB, content: "bbbb")
-    
-    try FileManager.default.removeItem(at: subFileURL)
-    try repository.stage(file: subFilePathA)
-    try repository.commit(message: "delete", amend: false)
-    
+
+    try execute(in: repository) {
+      CommitFiles {
+        Write("text", to: subFilePathA)
+      }
+      CommitFiles {
+        Write("bbbb", to: subFilePathB)
+      }
+      CommitFiles {
+        Delete(subFilePathA)
+      }
+    }
+
     checkCommitTrees(deletedPath: subFilePathA)
   }
   
@@ -141,59 +144,59 @@ class CommitRootTest: XTTest
   {
     let subFilePathA = subDirName +/ subDirName +/ subFileNameA
     let subFilePathB = subDirName +/ subDirName +/ subFileNameB
-    let subURL = repository.repoURL +/ subDirName
-    let subSubURL = subURL +/ subDirName
-    let subFileURL = subSubURL +/ subFileNameA
-    
-    try FileManager.default.createDirectory(at: subSubURL,
-                                            withIntermediateDirectories: true,
-                                            attributes: nil)
-    commit(newTextFile: subFilePathA, content: "text")
-    commit(newTextFile: subFilePathB, content: "bbbb")
 
-    try FileManager.default.removeItem(at: subFileURL)
-    try repository.stage(file: subFilePathA)
-    try repository.commit(message: "delete", amend: false)
-    
+    try execute(in: repository) {
+      CommitFiles {
+        Write("text", to: subFilePathA)
+      }
+      CommitFiles {
+        Write("bbb", to: subFilePathB)
+      }
+      CommitFiles("delete") {
+        Delete(subFilePathA)
+      }
+    }
+
     checkCommitTrees(deletedPath: subFilePathA)
   }
   
   func testCommitRootDeleteRootFile() throws
   {
     let subFilePathA = subDirName +/ subFileNameA
-    let subURL = repository.repoURL +/ subDirName
-    
-    try FileManager.default.createDirectory(at: subURL,
-                                            withIntermediateDirectories: false,
-                                            attributes: nil)
-    commit(newTextFile: subFilePathA, content: "text")
-    
-    try FileManager.default.removeItem(at: repository.repoURL +/ FileName.file1)
-    try repository.stage(file: FileName.file1)
-    try repository.commit(message: "delete", amend: false)
-    
-    checkCommitTrees(deletedPath: FileName.file1)
+
+    try execute(in: repository) {
+      CommitFiles() {
+        Write("text", to: subFilePathA)
+      }
+      CommitFiles("delete") {
+        Delete(.file1)
+      }
+    }
+
+    checkCommitTrees(deletedPath: TestFileName.file1.rawValue)
   }
   
   func makeSubFolderCommits() throws -> (Commit, Commit)
   {
     let subFilePath = subDirName +/ subFileNameA
-    let subURL = repository.repoURL +/ subDirName
-    
+
     // Add a file to a subfolder, and save the tree from that commit
-    try FileManager.default.createDirectory(at: subURL,
-                                            withIntermediateDirectories: false,
-                                            attributes: nil)
-    commit(newTextFile: subFilePath, content: "text")
-    
+    try execute(in: repository) {
+      CommitFiles {
+        Write("text", to: subFilePath)
+      }
+    }
+
     let parentCommit = try XCTUnwrap(repository.headSHA.flatMap(
         { repository.commit(forSHA: $0) }))
     
     // Make a new commit where that subfolder is unchanged
-    writeTextToFile1("changes")
-    try repository.stage(file: FileName.file1)
-    try repository.commit(message: "commit 3", amend: false)
-    
+    try execute(in: repository) {
+      CommitFiles("commit 3") {
+        Write("changes", to: .file1)
+      }
+    }
+
     let headSHA = try XCTUnwrap(repository.headSHA)
     let commit = try XCTUnwrap(repository.commit(forSHA: headSHA))
     

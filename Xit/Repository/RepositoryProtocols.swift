@@ -2,9 +2,9 @@ import Foundation
 
 public typealias Repository =
     BasicRepository & Branching & CommitStorage & CommitReferencing & FileDiffing &
-    FileContents & FileStaging & FileStatusDetection & RemoteCommunication &
-    RemoteManagement & RepoConfiguring & Stashing & SubmoduleManagement & Tagging &
-    WritingManagement & Workspace
+    FileContents & FileStaging & FileStatusDetection & Merging &
+    RemoteCommunication & RemoteManagement & RepoConfiguring & Stashing &
+    SubmoduleManagement & Tagging & WritingManagement & Workspace
 
 public protocol BasicRepository
 {
@@ -254,6 +254,12 @@ public protocol Branching: AnyObject
   
   /// Resets the current branch to the specified commit
   func reset(toCommit target: Commit, mode: ResetMode) throws
+}
+
+public protocol Merging: AnyObject
+{
+  func merge(branch: Branch) throws
+  // In the future, expose more merge analysis and options
 }
 
 public enum ResetMode

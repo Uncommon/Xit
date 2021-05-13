@@ -27,22 +27,7 @@ class XTRepositoryMergeTest: XTTest
   let numbers: [String] = Array(1...9).map { "\($0)" }
   var text1, text5, text9, text9y: String!
   var result1, result15, result159, result9z: String!
-  
-  func add(_ file: String) throws
-  {
-    try repository.stage(file: file)
-  }
-  
-  func commit(_ message: String) throws
-  {
-    try repository.commit(message: message, amend: false)
-  }
-  
-  func branch(_ name: String)
-  {
-    XCTAssertTrue(repository.createBranch(name))
-  }
-  
+
   override func addInitialRepoContent() throws
   {
     text1 = numbers.replacing("1 X", at: 0).toLines()
@@ -57,34 +42,35 @@ class XTRepositoryMergeTest: XTTest
                        .replacing("5 X", at: 4)
                        .replacing("9 X", at: 8).toLines()
     result9z  = numbers.replacing("9 Z", at: 8).toLines()
-    
-    write(text:numbers.toLines(), to:fileName)
-    
-    try add(fileName)
-    try commit("commit 0")
-    branch("c0")
-    branch("c1")
-    write(text:text1, to:fileName)
-    try add(fileName)
-    try commit("commit 1")
-    try repository.checkOut(branch: "c0")
-    branch("c2")
-    write(text:text5, to:fileName)
-    try add(fileName)
-    try commit("commit 2")
-    try repository.checkOut(branch: "c0")
-    /* From the git test, not currently used
-    branch("c7")
-    writeText(text9y, toFile: fileName)
-    try add(fileName)
-    try commit("commit 7")
-    try repository.checkout("c0")
-    */
-    branch("c3")
-    write(text:text9, to: fileName)
-    try add(fileName)
-    try commit("commit 3")
-    try repository.checkOut(branch: "c0")
+
+    try execute(in: repository) {
+      CommitFiles("commit 0") {
+        Write(numbers.toLines(), to: fileName)
+      }
+      CreateBranch("c0")
+      CreateBranch("c1", checkOut: true)
+      CommitFiles("commit 1") {
+        Write(text1, to: fileName)
+      }
+      CheckOut(branch: "c0")
+      CreateBranch("c2", checkOut: true)
+      CommitFiles("commit 2") {
+        Write(text5, to: fileName)
+      }
+      CheckOut(branch: "c0")
+      /* From the git test, not currently used
+      CreateBranch("c7")
+      CommitFiles("commit 7") {
+        Write(text9y, to: fileName)
+      }
+      CheckOut(branch: "c0")
+      */
+      CreateBranch("c3", checkOut: true)
+      CommitFiles("commit 3") {
+        Write(text9, to: fileName)
+      }
+      CheckOut(branch: "c0")
+    }
   }
   
   func isWorkspaceClean() -> Bool
@@ -109,10 +95,9 @@ class XTRepositoryMergeTest: XTTest
   // Fast-forward case. This could also have a ff-only variant.
   func testMergeC0C1() throws
   {
-    let c1 = try XCTUnwrap(GitLocalBranch(repository: repository.gitRepo, name: "c1",
-                                          config: repository.config))
-
-    try self.repository.merge(branch: c1)
+    try execute(in: repository) {
+      Merge(branch: "c1")
+    }
     XCTAssertEqual(try String(contentsOf: repository.fileURL(fileName)), result1)
     assertWorkspaceContent(staged: [], unstaged: [])
   }
@@ -120,12 +105,11 @@ class XTRepositoryMergeTest: XTTest
   // Actually merging changes.
   func testMergeC1C2() throws
   {
-    let c2 = try XCTUnwrap(GitLocalBranch(repository: repository.gitRepo, name: "c2",
-                                          config: repository.config))
-    
-    try repository.checkOut(branch: "c1")
-    try self.repository.merge(branch: c2)
-    
+    try execute(in: repository) {
+      CheckOut(branch: "c1")
+      Merge(branch: "c2")
+    }
+
     let contents = try XCTUnwrap(String(contentsOf: repository.fileURL(fileName)))
     
     XCTAssertEqual(contents, result15)
@@ -135,15 +119,16 @@ class XTRepositoryMergeTest: XTTest
   // Not from the git test.
   func testConflict() throws
   {
-    write(text: text9y, to: fileName)
-    try add(fileName)
-    try commit("commit y")
-    
-    let c3 = GitLocalBranch(repository: repository.gitRepo, name: "c3",
-                            config: repository.config)!
-    
+    try execute(in: repository) {
+      CommitFiles("commit y") {
+        Write(text9y, to: fileName)
+      }
+    }
+
     do {
-      try self.repository.merge(branch: c3)
+      try execute(in: repository) {
+        Merge(branch: "c3")
+      }
       XCTFail("No conflict detected")
     }
     catch RepoError.conflict {
@@ -166,26 +151,31 @@ class XTRepositoryMergeTest: XTTest
   func testDirtyFFNoConflict() throws
   {
     let content = "blah"
-    let c3 = try XCTUnwrap(repository.localBranch(named: "c3"), "c3 branch missing")
-    
-    try repository.checkOut(branch: "c0")
-    write(text: content, to: FileName.file2)
-    try repository.merge(branch: c3)
-    assertContent(content, file: FileName.file2)
+
+    try execute(in: repository, actions: { () -> [RepoAction] in
+      CheckOut(branch: "c0")
+      Write(content, to: .file2)
+      Merge(branch: "c3")
+    })
+    assertContent(content, file: .file2)
   }
-  
+
   // Same as testDirtyFFNoConflict except make a commit after switching to c0
   // so it's not a fast forward merge
   func testDirtyNoConflict() throws
   {
     let content = "blah"
-    let c3 = try XCTUnwrap(repository.localBranch(named: "c3"), "c3 branch missing")
-    
-    try repository.checkOut(branch: "c0")
-    commit(newTextFile: FileName.added, content: "other")
-    write(text: content, to: FileName.file2)
-    try repository.merge(branch: c3)
-    assertContent(content, file: FileName.file2)
+
+    try execute(in: repository) {
+      CheckOut(branch: "c0")
+      CommitFiles {
+        Write("other", to: .added)
+      }
+      Write(content, to: .file2)
+      Merge(branch: "c3")
+    }
+
+    assertContent(content, file: .file2)
   }
   
   // Further test cases:

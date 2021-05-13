@@ -82,16 +82,12 @@ class SidebarHandlerTest: XTTest
 
   func makeTwoStashes() throws
   {
-    XCTAssertTrue(writeTextToFile1("second text"))
-    try repository.saveStash(name: "s1",
-                             keepIndex: false,
-                             includeUntracked: false,
-                             includeIgnored: true)
-    XCTAssertTrue(writeTextToFile1("third text"))
-    try repository.saveStash(name: "s2",
-                             keepIndex: false,
-                             includeUntracked: false,
-                             includeIgnored: true)
+    try execute(in: repository) {
+      Write("second text", to: .file1)
+      SaveStash("s1")
+      Write("third text", to: .file1)
+      SaveStash("s2")
+    }
   }
   
   /// Checks that the remaining stashes have the expected names
@@ -174,14 +170,16 @@ class SidebarHandlerTest: XTTest
                       action: { handler.dropStash() })
   }
   
-  func testMergeText()
+  func testMergeText() throws
   {
     let menuItem = NSMenuItem(
         title: "Merge",
         action: #selector(SidebarController.mergeBranch(_:)),
         keyEquivalent: "")
-    
-    XCTAssertTrue(repository.createBranch("branch"))
+
+    try execute(in: repository) {
+      CreateBranch("branch")
+    }
     handler.selectedItem = item(forBranch: "branch")
     XCTAssertNotNil(try? repository.checkOut(branch: "master"))
     XCTAssertTrue(handler.validate(sidebarCommand: menuItem))

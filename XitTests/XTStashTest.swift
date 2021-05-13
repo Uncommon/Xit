@@ -20,8 +20,8 @@ class XTStashTest: XTTest
     try makeStash()
     
     let repoPath = self.repoPath as NSString
-    let addedPath = repoPath.appendingPathComponent(FileName.added)
-    let untrackedPath = repoPath.appendingPathComponent(FileName.untracked)
+    let addedPath = repoPath.appendingPathComponent(TestFileName.added.rawValue)
+    let untrackedPath = repoPath.appendingPathComponent(TestFileName.untracked.rawValue)
     
     // Stash should have cleaned up both new files
     XCTAssertFalse(FileManager.default.fileExists(atPath: untrackedPath))
@@ -38,30 +38,30 @@ class XTStashTest: XTTest
       return
     }
     
-    XCTAssertEqual(indexChanges[0].path, FileName.added)
+    XCTAssertEqual(indexChanges[0].path, TestFileName.added.rawValue)
     XCTAssertEqual(indexChanges[0].status, DeltaStatus.added)
-    XCTAssertEqual(workspaceChanges[0].path, FileName.file1)
+    XCTAssertEqual(workspaceChanges[0].path, TestFileName.file1.rawValue)
     XCTAssertEqual(workspaceChanges[0].status, DeltaStatus.modified)
-    XCTAssertEqual(workspaceChanges[1].path, FileName.untracked)
+    XCTAssertEqual(workspaceChanges[1].path, TestFileName.untracked.rawValue)
     XCTAssertEqual(workspaceChanges[1].status, DeltaStatus.added)
     
-    XCTAssertNotNil(stash.headBlobForPath(FileName.file1))
+    XCTAssertNotNil(stash.headBlobForPath(TestFileName.file1.rawValue))
     
-    let changeDiffResult = try XCTUnwrap(stash.unstagedDiffForFile(FileName.file1))
+    let changeDiffResult = try XCTUnwrap(stash.unstagedDiffForFile(TestFileName.file1.rawValue))
     let changeDiffMaker = try XCTUnwrap(checkDiffResult(changeDiffResult))
     let changePatch = try XCTUnwrap(changeDiffMaker.makePatch())
     
     XCTAssertEqual(changePatch.addedLinesCount, 1)
     XCTAssertEqual(changePatch.deletedLinesCount, 1)
     
-    let untrackedDiffResult = try XCTUnwrap(stash.unstagedDiffForFile(FileName.untracked))
+    let untrackedDiffResult = try XCTUnwrap(stash.unstagedDiffForFile(TestFileName.untracked.rawValue))
     let untrackedDiffMaker = try XCTUnwrap(checkDiffResult(untrackedDiffResult))
     let untrackedPatch = try XCTUnwrap(untrackedDiffMaker.makePatch())
     
     XCTAssertEqual(untrackedPatch.addedLinesCount, 1)
     XCTAssertEqual(untrackedPatch.deletedLinesCount, 0)
     
-    let addedDiffResult = try XCTUnwrap(stash.stagedDiffForFile(FileName.added))
+    let addedDiffResult = try XCTUnwrap(stash.stagedDiffForFile(TestFileName.added.rawValue))
     let addedDiffMaker = try XCTUnwrap(checkDiffResult(addedDiffResult))
     let addedPatch = try XCTUnwrap(addedDiffMaker.makePatch())
     
@@ -71,25 +71,24 @@ class XTStashTest: XTTest
   
   func testBinaryDiff() throws
   {
-    let imageName = "img.tiff"
-    
-    try makeTiffFile(imageName)
-    try repository.stage(file: imageName)
-    try repository.saveStash(name: nil,
-                             keepIndex: false,
-                             includeUntracked: true,
-                             includeIgnored: true)
-    
+    let imageName = TestFileName.tiff
+
+    try execute(in: repository) {
+      MakeTiffFile(imageName)
+      Stage(imageName)
+      SaveStash()
+    }
+
     let selection = StashSelection(repository: repository, index: 0)
     
-    if let stagedDiffResult = selection.fileList.diffForFile(imageName) {
+    if let stagedDiffResult = selection.fileList.diffForFile(imageName.rawValue) {
       XCTAssertEqual(stagedDiffResult, .binary)
     }
     else {
       XCTFail("no staged diff")
     }
     
-    if let unstagedDiffResult = selection.fileList.diffForFile(imageName) {
+    if let unstagedDiffResult = selection.fileList.diffForFile(imageName.rawValue) {
       XCTAssertEqual(unstagedDiffResult, .binary)
     }
     else {

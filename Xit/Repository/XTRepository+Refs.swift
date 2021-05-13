@@ -33,6 +33,10 @@ extension XTRepository: Branching
   public func createBranch(named name: String,
                            target: String) throws -> LocalBranch?
   {
+    if isWriting {
+      throw RepoError.alreadyWriting
+    }
+
     guard let targetRef = GitReference(name: target,
                                        repository: gitRepo),
           let targetOID = targetRef.targetOID,

@@ -53,9 +53,9 @@ extension RemoteBranch
 
 public enum RefPrefixes
 {
-  static let remotes = "refs/remotes/"
-  static let heads = "refs/heads/"
-  static let tags = "refs/tags/"
+  public static let remotes = "refs/remotes/"
+  public static let heads = "refs/heads/"
+  public static let tags = "refs/tags/"
 }
 
 

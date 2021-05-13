@@ -17,10 +17,12 @@ class SidebarDelegateTest: XTTest
   }
   
   /// Check that root items (except Staging) are groups
-  func testGroupItems()
+  func testGroupItems() throws
   {
-    XCTAssertTrue(repository.createBranch("b1"))
-    
+    try execute(in: repository) {
+      CreateBranch("b1")
+    }
+
     model.reload()
 
     for item in model.roots {
@@ -51,11 +53,13 @@ class SidebarDelegateTest: XTTest
     XCTAssertEqual(cell.textField?.stringValue, tagName)
   }
   
-  func testBranches()
+  func testBranches() throws
   {
     let branchNames = ["b1", "master"]
     
-    XCTAssertTrue(repository.createBranch(branchNames[0]))
+    try execute(in: repository) {
+      CreateBranch("b1")
+    }
     model.reload()
 
     for (item, name) in zip(model.rootItem(.branches).children, branchNames) {
@@ -75,9 +79,11 @@ class SidebarDelegateTest: XTTest
     makeRemoteRepo()
     
     let remoteName = "origin"
-    
-    try repository.checkOut(branch: "master")
-    XCTAssertTrue(repository.createBranch("b1"))
+
+    try execute(in: repository) {
+      CheckOut(branch: "master")
+      CreateBranch("b1")
+    }
     try repository.addRemote(named: remoteName,
                              url: URL(fileURLWithPath: remoteRepoPath))
     

@@ -76,6 +76,7 @@ extension XTRepository: Workspace
     }
     
     try checkout(object: target)
+    clearCachedBranch()
   }
   
   public func checkOut(sha: String) throws

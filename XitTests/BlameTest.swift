@@ -1,11 +1,6 @@
 import XCTest
 @testable import Xit
 
-extension XTTest.FileName
-{
-  static let blame = "elements.txt"
-}
-
 class BlameTest: XTTest
 {
   let elements1 = ["Antimony",
@@ -34,23 +29,22 @@ class BlameTest: XTTest
                    "Rhenium"]
   var blamePath: String!
 
-  func commit(lines: [String], message: String)
+  override func setUpWithError() throws
   {
-    let text = lines.joined(separator: "\n")
+    try super.setUpWithError()
     
-    try! text.write(toFile: blamePath, atomically: true, encoding: .ascii)
-    try! repository.stage(file: FileName.blame)
-    try! repository.commit(message: message, amend: false)
-  }
-  
-  override func setUp()
-  {
-    super.setUp()
-    
-    blamePath = repository.repoURL.path.appending(pathComponent: FileName.blame)
-    commit(lines: elements1, message: "first")
-    commit(lines: elements2, message: "second")
-    commit(lines: elements3, message: "third")
+    blamePath = repository.repoURL.path.appending(pathComponent: TestFileName.blame.rawValue)
+    try execute(in: repository) {
+      CommitFiles("first") {
+        Write(elements1.joined(separator: "\n"), to: .blame)
+      }
+      CommitFiles("second") {
+        Write(elements2.joined(separator: "\n"), to: .blame)
+      }
+      CommitFiles("third") {
+        Write(elements3.joined(separator: "\n"), to: .blame)
+      }
+    }
   }
   
   func testCommitBlame() throws
@@ -60,7 +54,7 @@ class BlameTest: XTTest
     let headOID = try XCTUnwrap(GitOID(sha: headSHA))
     let commitModel = CommitSelection(repository: repository,
                                     commit: headCommit)
-    let commitBlame = try XCTUnwrap(commitModel.fileList.blame(for: FileName.blame))
+    let commitBlame = try XCTUnwrap(commitModel.fileList.blame(for: TestFileName.blame.rawValue))
     let lineStarts = [1, 3, 5, 6]
     let lineCounts = [2, 2, 1, 3]
     
@@ -75,22 +69,20 @@ class BlameTest: XTTest
     var elements4 = elements3
     
     elements4[0].append("!!")
-    
-    let fourthLines = elements4.joined(separator: "\n")
-    
-    try fourthLines.write(toFile: blamePath, atomically: true, encoding: .ascii)
-    try repository.stageAllFiles()
-    
+    try execute(in: repository) {
+      Write(elements4.joined(separator: "\n"), to: .blame)
+      Stage(.blame)
+    }
+
     var elements5 = elements4
     
     elements5[7].append("##")
-    
-    let fifthLines = elements5.joined(separator: "\n")
-    
-    try fifthLines.write(toFile: blamePath, atomically: true, encoding: .ascii)
+    try execute(in: repository) {
+      Write(elements5.joined(separator: "\n"), to: .blame)
+    }
 
     let stagingModel = StagingSelection(repository: repository)
-    let unstagedBlame = try XCTUnwrap(stagingModel.unstagedFileList.blame(for: FileName.blame),
+    let unstagedBlame = try XCTUnwrap(stagingModel.unstagedFileList.blame(for: TestFileName.blame.rawValue),
                                       "can't get unstaged blame")
     let unstagedStarts = [1, 2, 3, 5, 6, 8]
     
@@ -99,7 +91,7 @@ class BlameTest: XTTest
     XCTAssertTrue(unstagedBlame.hunks.first?.finalLine.oid.isZero ?? false)
     XCTAssertTrue(unstagedBlame.hunks.last?.finalLine.oid.isZero ?? false)
     
-    let stagedBlame = try XCTUnwrap(stagingModel.fileList.blame(for: FileName.blame),
+    let stagedBlame = try XCTUnwrap(stagingModel.fileList.blame(for: TestFileName.blame.rawValue),
                                     "can't get staged blame")
     let stagedStarts = [1, 2, 3, 5, 6]
     
