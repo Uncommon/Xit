@@ -114,7 +114,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="200" height="40"/>
                                         <subviews>
                                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="VJm-7u-35O" customClass="DraggingImage" customModule="Xit" customModuleProvider="target">
-                                                <rect key="frame" x="8" y="52" width="16" height="16"/>
+                                                <rect key="frame" x="8" y="12" width="16" height="16"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="16" id="a8J-3r-PtW"/>
                                                     <constraint firstAttribute="height" constant="16" id="ut0-y7-aJb"/>
@@ -150,11 +150,11 @@
                                                 </connections>
                                             </popUpButton>
                                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="vLQ-9R-Z0E" customClass="DraggingImage" customModule="Xit" customModuleProvider="target">
-                                                <rect key="frame" x="114" y="52" width="14" height="16"/>
+                                                <rect key="frame" x="114" y="12" width="14" height="16"/>
                                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="branchTemplate" id="1RE-xy-bWh"/>
                                             </imageView>
                                             <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="GKW-4J-3KT" customClass="DraggingProgress" customModule="Xit" customModuleProvider="target">
-                                                <rect key="frame" x="8" y="52" width="16" height="16"/>
+                                                <rect key="frame" x="8" y="12" width="16" height="16"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="16" id="9Pv-LM-s5j"/>
                                                     <constraint firstAttribute="width" constant="16" id="s8R-0y-Jei"/>
@@ -588,7 +588,11 @@
                                                                                     </popUpButtonCell>
                                                                                 </popUpButton>
                                                                                 <imageView wantsLayer="YES" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="z9i-pY-egu" customClass="ClickThroughImageView" customModule="Xit" customModuleProvider="target">
-                                                                                    <rect key="frame" x="16" y="0.0" width="10" height="10"/>
+                                                                                    <rect key="frame" x="14" y="0.0" width="12" height="12"/>
+                                                                                    <constraints>
+                                                                                        <constraint firstAttribute="width" constant="12" id="3HL-Zp-gQt"/>
+                                                                                        <constraint firstAttribute="height" constant="12" id="Lmj-CZ-0JU"/>
+                                                                                    </constraints>
                                                                                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="prApproved" id="g2X-vF-3IQ"/>
                                                                                 </imageView>
                                                                             </subviews>

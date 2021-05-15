@@ -2,10 +2,6 @@ import Foundation
 
 extension NSImage.Name
 {
-  static let prApproved = "prApproved"
-  static let prClosed = "prClosed"
-  static let prMerged = "prMerged"
-  static let prNeedsWork = "prNeedsWork"
   static let xtBitBucketTemplate = "bitbucketTemplate"
   static let xtBranchTemplate = "branchTemplate"
   static let xtBuildFailed = "buildFailed"
@@ -22,7 +18,8 @@ extension NSImage.Name
 
 extension NSImage
 {
-  convenience init?(systemSymbolName: String) {
+  convenience init?(systemSymbolName: String)
+  {
     self.init(systemSymbolName: systemSymbolName, accessibilityDescription: nil)
   }
   
