@@ -92,7 +92,7 @@ class FileCellView: NSTableCellView
   {
     didSet
     {
-      if backgroundStyle == .dark {
+      if backgroundStyle == .emphasized {
         textField?.textColor = .textColor
       }
       else if change == .deleted {

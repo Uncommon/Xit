@@ -3,13 +3,13 @@ import Cocoa
 class SidebarCheckedRowView: NSTableRowView
 {
   weak var imageView: NSImageView?
-  let imageName: NSImage.Name
+  let image: NSImage
   let imageToolTip: UIString?
   
-  init(imageName: NSImage.Name = NSImage.menuOnStateTemplateName,
+  init(image: NSImage = .xtCurrentBranch,
        toolTip: UIString? = nil)
   {
-    self.imageName = imageName
+    self.image = image
     self.imageToolTip = toolTip
     
     super.init(frame: NSRect.zero)
@@ -28,9 +28,8 @@ class SidebarCheckedRowView: NSTableRowView
           let columnView = view(atColumn: 0)
     else { return }
     
-    let check = NSImage(named: imageName)!
     let imageView = NSImageView(frame: NSRect(origin: NSPoint.zero,
-                                              size: check.size))
+                                              size: image.size))
     
     self.imageView = imageView
     imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -46,7 +45,7 @@ class SidebarCheckedRowView: NSTableRowView
                                       toItem: columnView, attribute: .centerY,
                                       multiplier: 1.0, constant: 0)
  
-    imageView.image = check
+    imageView.image = image
     addConstraints([hSpacer, vertical])
   }
 }

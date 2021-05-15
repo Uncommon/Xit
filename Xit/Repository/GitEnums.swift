@@ -71,42 +71,27 @@ extension DeltaStatus
 
   var changeImage: NSImage?
   {
+    let info: (String, NSColor)
+    
     switch self {
       case .added, .untracked:
-        return NSImage(named: "added")
+        info = ("plus.circle", .systemGreen)
       case .copied:
-        return NSImage(named: "copied")
+        info = ("circlebadge.2.fill", .systemGreen)
       case .deleted:
-        return NSImage(named: "deleted")
+        info = ("minus.circle", .systemRed)
       case .modified:
-        return NSImage(named: "modified")
+        info = ("pencil.circle", .systemBlue)
       case .renamed:
-        return NSImage(named: "renamed")
+        info = ("a.circle.fill", .systemTeal)
       case .mixed:
-        return NSImage(named: "mixed")
+        info = ("ellipsis.circle.fill", .systemGray)
       default:
         return nil
     }
-  }
-  
-  var stageImage: NSImage?
-  {
-    switch self {
-      case .added:
-        return NSImage(named: "add")
-      case .untracked:
-        return NSImage(named: "add")
-      case .deleted:
-        return NSImage(named: "delete")
-      case .modified:
-        return NSImage(named: "modify")
-      case .mixed:
-        return NSImage(named: "mixed")
-      case .conflict:
-        return NSImage(named: "conflict")
-      default:
-        return nil
-    }
+    return NSImage(systemSymbolName: info.0)!
+      .withSymbolConfiguration(.init(pointSize: 11, weight: .bold))!
+      .image(coloredWith: info.1)
   }
 }
 

@@ -14,9 +14,9 @@ class BuildStatusCellView: NSTableCellView
       // The other fields get their color adjusted automatically. Maybe the
       // stack view gets in the way for this case.
       switch backgroundStyle {
-        case .dark:
+        case .emphasized:
           projectNameField.textColor = NSColor.alternateSelectedControlTextColor
-        case .light:
+        case .normal:
           projectNameField.textColor = NSColor.controlTextColor
         default:
           break

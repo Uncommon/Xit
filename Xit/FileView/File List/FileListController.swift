@@ -222,14 +222,13 @@ class FileListController: NSViewController, RepositoryWindowViewController
     }
   }
 
-  func addToolbarButton(imageName: NSImage.Name,
+  func addToolbarButton(image: NSImage,
                         toolTip: UIString,
                         target: Any? = self,
                         action: Selector,
                         accessibilityID: String? = nil)
   {
-    let button = NSButton(image: NSImage(named: imageName)!,
-                          target: target, action: action)
+    let button = NSButton(image: image, target: target, action: action)
   
     button.toolTip = toolTip.rawValue
     button.setFrameSize(NSSize(width: 26, height: 18))
@@ -358,7 +357,7 @@ class CommitFileListController: FileListController
     outlineView.tableColumns[index].isHidden = true
     outlineView.setAccessibilityIdentifier("commitFiles")
     
-    listTypeIcon.image = NSImage(named: .xtFileTemplate)
+    listTypeIcon.image = .xtFile
     listTypeLabel.uiStringValue = .files
   }
 }
@@ -419,14 +418,14 @@ class StagingFileListController: FileListController
     }
   }
   
-  func addModifyingToolbarButton(imageName: NSImage.Name,
+  func addModifyingToolbarButton(image: NSImage,
                                  toolTip: UIString,
                                  target: Any? = self,
                                  action: Selector,
                                  accessibilityID: String? = nil)
   {
     modifyActions.append(action)
-    addToolbarButton(imageName: imageName, toolTip: toolTip,
+    addToolbarButton(image: image, toolTip: toolTip,
                      target: target, action: action,
                      accessibilityID: accessibilityID)
   }

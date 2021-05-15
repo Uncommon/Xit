@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="18122" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
-        <plugIn identifier="com.apple.WebKit2IBPlugin" version="17701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
+        <plugIn identifier="com.apple.WebKit2IBPlugin" version="18122"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -77,7 +77,7 @@
                                                             <accessibility identifier="sha"/>
                                                         </textField>
                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bSG-J5-ieb">
-                                                            <rect key="frame" x="8" y="111" width="98" height="16"/>
+                                                            <rect key="frame" x="8" y="111" width="97" height="16"/>
                                                             <textFieldCell key="cell" lineBreakMode="clipping" selectable="YES" title="Name &lt;email&gt;" id="TpX-Vr-EKG">
                                                                 <font key="font" metaFont="systemBold"/>
                                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -229,17 +229,17 @@
                                     </buttonCell>
                                 </button>
                                 <segmentedControl identifier="previewSegments" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zOv-gm-Q8M">
-                                    <rect key="frame" x="158" y="188" width="151" height="23"/>
+                                    <rect key="frame" x="155" y="188" width="157" height="23"/>
                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="selectOne" id="fhE-uz-5iG">
                                         <font key="font" metaFont="system"/>
                                         <segments>
-                                            <segment toolTip="Diff view" image="diffTemplate" imageScaling="none" width="37" selected="YES">
+                                            <segment toolTip="Diff view" image="plus.slash.minus" catalog="system" imageScaling="none" width="37" selected="YES">
                                                 <nil key="label"/>
                                             </segment>
-                                            <segment toolTip="Blame view" image="blameTemplate" imageScaling="none" width="37" tag="1">
+                                            <segment toolTip="Blame view" image="person.fill.questionmark" catalog="system" imageScaling="none" width="37" tag="1">
                                                 <nil key="label"/>
                                             </segment>
-                                            <segment toolTip="Text view" image="textTemplate" width="37">
+                                            <segment toolTip="Text view" image="doc.plaintext" catalog="system" width="37">
                                                 <nil key="label"/>
                                             </segment>
                                             <segment toolTip="QuickLook preview" image="NSQuickLookTemplate">
@@ -541,10 +541,10 @@
         </customObject>
     </objects>
     <resources>
-        <image name="NSActionTemplate" width="14" height="14"/>
-        <image name="NSQuickLookTemplate" width="19" height="12"/>
-        <image name="blameTemplate" width="16" height="16"/>
-        <image name="diffTemplate" width="16" height="16"/>
-        <image name="textTemplate" width="16" height="16"/>
+        <image name="NSActionTemplate" width="15" height="15"/>
+        <image name="NSQuickLookTemplate" width="21" height="13"/>
+        <image name="doc.plaintext" catalog="system" width="14" height="16"/>
+        <image name="person.fill.questionmark" catalog="system" width="17" height="14"/>
+        <image name="plus.slash.minus" catalog="system" width="16" height="14"/>
     </resources>
 </document>

@@ -104,31 +104,28 @@ extension XTWindowController: NSTouchBarDelegate
       case .stage:
         return touchBarButton(
             identifier: identifier, title: .stage,
-            image: NSImage(named: .xtStageButtonHover),
+            image: .xtStageButtonHover,
             target: listController,
             action: #selector(WorkspaceFileListController.stage(_:)))
 
       case .revert:
         return touchBarButton(
             identifier: identifier, title: .revert,
-            image: NSImage(named: .xtRevertTemplate),
+            image: .xtUndo,
             target: listController,
             action: #selector(WorkspaceFileListController.revert(_:)))
       
       case .unstage:
         return touchBarButton(
             identifier: identifier, title: .unstage,
-            image: NSImage(named: .xtUnstageButtonHover),
+            image: .xtUnstageButtonHover,
             target: listController,
             action: #selector(StagedFileListController.unstage(_:)))
 
       case .staging:
-        guard let stagingImage = NSImage(named: .xtStagingTemplate)
-        else { return nil }
-      
         return touchBarButton(
             identifier: identifier, title: .staging,
-            image: stagingImage,
+            image: .xtStaging,
             target: self, action: #selector(XTWindowController.showStaging(_:)))
 
       case .unstageAll:

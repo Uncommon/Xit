@@ -5,9 +5,9 @@ class WorkspaceFileListController: StagingFileListController
   var showingIgnored = false
   
   override var actionImage: NSImage?
-  { NSImage(named: .xtStageButtonHover)! }
+  { .xtStageButtonHover }
   override var pressedImage: NSImage?
-  { NSImage(named: .xtStageButtonPressed)! }
+  { .xtStageButtonPressed }
   override var actionButtonSelector: Selector?
   { #selector(self.stage(_:)) }
   
@@ -19,13 +19,14 @@ class WorkspaceFileListController: StagingFileListController
     fileListDataSource.delegate = self
     fileTreeDataSource.delegate = self
     
-    listTypeIcon.image = NSImage(named: .xtFolderTemplate)
+    listTypeIcon.image = NSImage(systemSymbolName: "folder",
+                                 accessibilityDescription: nil)
     listTypeLabel.uiStringValue = .workspace
     
-    addModifyingToolbarButton(imageName: .xtStageAllTemplate,
+    addModifyingToolbarButton(image: .xtStageAll,
                               toolTip: .stageAll,
                               action: #selector(stageAll(_:)))
-    addModifyingToolbarButton(imageName: .xtRevertTemplate,
+    addModifyingToolbarButton(image: .xtUndo,
                               toolTip: .revert,
                               action: #selector(revert(_:)))
   }
