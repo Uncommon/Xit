@@ -92,11 +92,15 @@ class FileCellView: NSTableCellView
   {
     didSet
     {
-      if backgroundStyle == .dark {
+      if backgroundStyle == .emphasized {
         textField?.textColor = .textColor
+        statusImage.image?.isTemplate = true
       }
-      else if change == .deleted {
-        textField?.textColor = .disabledControlTextColor
+      else {
+        if change == .deleted {
+          textField?.textColor = .disabledControlTextColor
+        }
+        statusImage.image?.isTemplate = false
       }
     }
   }

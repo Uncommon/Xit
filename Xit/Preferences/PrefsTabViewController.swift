@@ -26,15 +26,6 @@ class PrefsTabViewController: NSTabViewController
     }
   }
   
-  override func viewDidLoad()
-  {
-    super.viewDidLoad()
-    
-    // The generic document icon isn't available in Interface Builder.
-    previewsTab.image = NSWorkspace.shared.icon(forFileType:
-        NSFileTypeForHFSTypeCode(OSType(kGenericDocumentIcon)))
-  }
-  
   override func viewWillAppear()
   {
     guard let window = tabView.window,

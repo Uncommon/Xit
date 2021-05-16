@@ -188,7 +188,7 @@ class FileViewController: NSViewController, RepositoryWindowViewController
     
     // Add the button at this level because the action affects both lists
     stagedListController.addModifyingToolbarButton(
-        imageName: NSImage.refreshTemplateName,
+        image: .xtRefresh,
         toolTip: .refresh,
         target: self,
         action: #selector(refreshStaging(_:)),

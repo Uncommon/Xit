@@ -3,9 +3,9 @@ import Foundation
 class StagedFileListController: StagingFileListController
 {
   override var actionImage: NSImage?
-  { NSImage(named: .xtUnstageButtonHover)! }
+  { .xtUnstageButtonHover }
   override var pressedImage: NSImage?
-  { NSImage(named: .xtUnstageButtonPressed)! }
+  { .xtUnstageButtonPressed }
   override var actionButtonSelector: Selector?
   { #selector(self.unstage(_:)) }
   
@@ -14,10 +14,10 @@ class StagedFileListController: StagingFileListController
     super.loadView()
     
     outlineView.setAccessibilityIdentifier("stagedFiles")
-    listTypeIcon.image = NSImage(named: .xtStagingTemplate)
+    listTypeIcon.image = .xtStaged
     listTypeLabel.uiStringValue = .staged
     
-    addModifyingToolbarButton(imageName: .xtUnstageAllTemplate,
+    addModifyingToolbarButton(image: .xtUnstageAll,
                               toolTip: .unstageAll,
                               action: #selector(unstageAll(_:)))
   }

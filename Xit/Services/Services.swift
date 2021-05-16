@@ -52,8 +52,11 @@ class Services
   {
     let tcServices: [RepositoryService] = Array(teamCityServices.values)
     let bbServices: [RepositoryService] = Array(bitbucketServices.values)
+    let result: [RepositoryService] = tcServices + bbServices
+    // for testing
+    //  + [FakePRService()]
     
-    return tcServices + bbServices
+    return result
   }
   
   init()

@@ -142,14 +142,14 @@ class StagingSidebarItem: SidebarItem
   required init(title: String) { super.init(title: title) }
 
   override var icon: NSImage?
-  { NSImage(named: .xtStagingTemplate) }
+  { .xtStaging }
 }
 
 
 class StashSidebarItem: SidebarItem
 {
   override var icon: NSImage?
-  { NSImage(named: .xtStashTemplate) }
+  { .xtStash }
 }
 
 
@@ -265,7 +265,7 @@ extension RemoteBranchSidebarItem: RefSidebarItem
 
 class BranchFolderSidebarItem: SidebarItem
 {
-  override var icon: NSImage? { NSImage(named: .xtFolderTemplate) }
+  override var icon: NSImage? { .xtBranchFolder }
   override var isSelectable: Bool { false }
   override var isExpandable: Bool { true }
 }
@@ -291,7 +291,7 @@ class RemoteSidebarItem: SidebarItem
         }
       }
     }
-    return NSImage(named: .xtCloudTemplate)
+    return .xtRemote
   }
   
   override var isExpandable: Bool { true }
@@ -331,8 +331,7 @@ class TagSidebarItem: SidebarItem
 
   override var displayTitle: UIString
   { UIString(rawValue: (title as NSString).lastPathComponent) }
-  override var icon: NSImage?
-  { NSImage(named: .xtTagTemplate) }
+  override var icon: NSImage? { .xtTag }
   override var refType: RefType { .tag }
 
   required init(tag: Tag)
@@ -382,7 +381,7 @@ class SubmoduleSidebarItem: SidebarItem
 {
   let submodule: Submodule
   override var icon: NSImage?
-  { NSImage(named: .xtSubmoduleTemplate) }
+  { .xtSubmodule }
   
   required init(submodule: Submodule)
   {

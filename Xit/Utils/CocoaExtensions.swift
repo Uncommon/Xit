@@ -79,6 +79,35 @@ extension NSError
   }
 }
 
+extension NSImage
+{
+  func image(coloredWith color: NSColor) -> NSImage
+  {
+    guard isTemplate,
+          let copiedImage = self.copy() as? NSImage
+    else { return self }
+    
+    copiedImage.withFocus {
+      let imageBounds = NSRect(origin: .zero, size: copiedImage.size)
+
+      color.set()
+      imageBounds.fill(using: .sourceAtop)
+    }
+    copiedImage.isTemplate = false
+    return copiedImage
+  }
+  
+  func withFocus<T>(callback: () throws -> T) rethrows -> T
+  {
+    lockFocus()
+    defer {
+      unlockFocus()
+    }
+    
+    return try callback()
+  }
+}
+
 extension NSTreeNode
 {
   /// Inserts a child node in sorted order based on the given key extractor

@@ -74,27 +74,31 @@ class SidebarPRManager
   func prStatusImage(status: PullRequestStatus,
                      approval: PullRequestApproval) -> NSImage?
   {
-    let statusImageName: NSImage.Name?
+    let info: (String, NSColor)?
     
     switch status {
       case .open:
         switch approval {
           case .approved:
-            statusImageName = .prApproved
+            info = ("checkmark.circle.fill", .systemGreen)
           case .needsWork:
-            statusImageName = .prNeedsWork
+            info = ("slash.circle.fill", .systemYellow)
           case .unreviewed:
-            statusImageName = nil
+            info = nil
         }
       case .merged:
-        statusImageName = .prMerged
+        info = ("smallcircle.fill.circle.fill", .systemPurple)
       case .inactive:
-        statusImageName = .prClosed
+        info = ("xmark.circle.fill", .systemRed)
       case .other:
-        statusImageName = nil
+        info = nil
     }
     
-    return statusImageName.flatMap { NSImage(named: $0) }
+    return info.flatMap {
+      NSImage(systemSymbolName: $0)?
+        .withSymbolConfiguration(.init(pointSize: 10, weight: .regular))?
+        .image(coloredWith: $1)
+    }
   }
   
   func prStatusText(status: PullRequestStatus,

@@ -48,15 +48,10 @@ class HistoryCellView: NSTableCellView
     let color: NSColor
     
     switch backgroundStyle {
-      case .light:
+      case .normal:
         color = deemphasized ? .disabledControlTextColor : .textColor
-      case .dark:
+      case .emphasized:
         color = .alternateSelectedControlTextColor
-    // TODO: these are for 10.14
-//      case .normal:
-//        color = .textColor
-//      case .emphasized:
-//        color = .alternateSelectedControlTextColor
       default:
         color = .textColor
     }

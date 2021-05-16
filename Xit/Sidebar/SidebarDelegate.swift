@@ -120,7 +120,7 @@ class SidebarDelegate: NSObject
         case .none:
           break
         case .missing(let tracking):
-          dataView.statusButton.image = NSImage(named: .xtTracking)
+          dataView.statusButton.image = .xtCloud
           dataView.statusButton.toolTip = tracking + " (missing)"
           dataView.statusButton.target = controller
           dataView.statusButton.action =
@@ -130,7 +130,7 @@ class SidebarDelegate: NSObject
           (dataView.statusButton.cell as? NSButtonCell)?
               .imageDimsWhenDisabled = true
         case .set(let tracking):
-          dataView.statusButton.image = NSImage(named: .xtTracking)
+          dataView.statusButton.image = .xtCloud
           dataView.statusButton.toolTip = tracking
           dataView.statusButton.isEnabled = false
           (dataView.statusButton.cell as? NSButtonCell)?
@@ -294,9 +294,8 @@ extension SidebarDelegate: NSOutlineViewDelegate
               currentBranch.trackingBranchName == remoteBranchItem.remoteName +/
                                                   remoteBranchItem.title
         else { return nil }
-        let rowView = SidebarCheckedRowView(
-                imageName: NSImage.rightFacingTriangleTemplateName,
-                toolTip: .trackingToolTip)
+        let rowView = SidebarCheckedRowView(image: .xtCurrentRemoteBranch,
+                                            toolTip: .trackingToolTip)
         
         return rowView
 
