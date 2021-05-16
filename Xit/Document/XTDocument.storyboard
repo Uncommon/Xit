@@ -588,12 +588,12 @@
                                                                                     </popUpButtonCell>
                                                                                 </popUpButton>
                                                                                 <imageView wantsLayer="YES" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="z9i-pY-egu" customClass="ClickThroughImageView" customModule="Xit" customModuleProvider="target">
-                                                                                    <rect key="frame" x="14" y="0.0" width="12" height="12"/>
+                                                                                    <rect key="frame" x="14" y="-3" width="12" height="18"/>
                                                                                     <constraints>
                                                                                         <constraint firstAttribute="width" constant="12" id="3HL-Zp-gQt"/>
                                                                                         <constraint firstAttribute="height" constant="12" id="Lmj-CZ-0JU"/>
                                                                                     </constraints>
-                                                                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="prApproved" id="g2X-vF-3IQ"/>
+                                                                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="checkmark.circle.fill" catalog="system" id="g2X-vF-3IQ"/>
                                                                                 </imageView>
                                                                             </subviews>
                                                                             <constraints>
@@ -752,8 +752,8 @@
         <image name="NSTouchBarSearchTemplate" width="15" height="15"/>
         <image name="branchTemplate" width="14" height="16"/>
         <image name="buildSucceeded" width="14" height="14"/>
+        <image name="checkmark.circle.fill" catalog="system" width="15" height="15"/>
         <image name="exclamationmark.triangle.fill" catalog="system" width="17" height="15"/>
-        <image name="prApproved" width="10" height="10"/>
         <image name="pullRequestTemplate" width="14" height="16"/>
         <image name="rectangle.bottomthird.inset.fill" catalog="system" width="18" height="14"/>
         <image name="rectangle.leftthird.inset.fill" catalog="system" width="18" height="14"/>
