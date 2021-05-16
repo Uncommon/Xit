@@ -45,6 +45,9 @@ class AccountsPrefsController: NSViewController
       [weak self] (_) in
       self?.accountsTable.reloadData()
     }
+    editButton.image = NSImage(systemSymbolName: "pencil")!
+      // the regular pencil icon is very thin
+      .withSymbolConfiguration(.init(pointSize: 9, weight: .black))
     updateActionButtons()
   }
   
