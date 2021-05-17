@@ -179,6 +179,7 @@ extension SidebarController
   {
     NSAlert.confirm(message: .confirmStashDrop,
                     actionName: .drop,
+                    isDestructive: true,
                     parentWindow: view.window!) {
       self.dropStash()
     }

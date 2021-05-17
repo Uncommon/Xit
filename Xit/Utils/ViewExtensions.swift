@@ -24,6 +24,7 @@ extension NSAlert
 {
   static func confirm(message: UIString, infoString: UIString? = nil,
                       actionName: UIString,
+                      isDestructive: Bool = false,
                       parentWindow: NSWindow,
                       action: @escaping () -> Void)
   {
@@ -35,6 +36,7 @@ extension NSAlert
     }
     alert.addButton(withString: actionName)
     alert.addButton(withString: .cancel)
+    alert.buttons[0].hasDestructiveAction = isDestructive
     alert.beginSheetModal(for: parentWindow) {
       (response) in
       if response == .alertFirstButtonReturn {

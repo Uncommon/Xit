@@ -190,6 +190,7 @@ class AccountsPrefsController: NSViewController
     alert.messageString = .confirmDeleteAccount
     alert.addButton(withString: .delete)
     alert.addButton(withString: .cancel)
+    alert.buttons[0].hasDestructiveAction = true
     // Cancel should be default for destructive actions
     alert.buttons[0].keyEquivalent = "D"
     alert.buttons[1].keyEquivalent = "\r"

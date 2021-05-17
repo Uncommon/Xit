@@ -215,7 +215,8 @@ extension XTWindowController
 
     NSAlert.confirm(message: .confirmStashDelete,
                     infoString: stash.message.map { UIString(rawValue: $0) },
-                    actionName: .drop, parentWindow: window!) {
+                    actionName: .drop, isDestructive: true,
+                    parentWindow: window!) {
       self.tryRepoOperation() {
         try self.repository.dropStash(index: 0)
       }

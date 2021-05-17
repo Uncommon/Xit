@@ -289,6 +289,7 @@ class SidebarController: NSViewController, SidebarCommandHandler,
     alert.messageString = .confirmDelete(kind: kind, name: name)
     alert.addButton(withString: .delete)
     alert.addButton(withString: .cancel)
+    alert.buttons[0].hasDestructiveAction = true
     // Delete is destructive, so it should not be default
     alert.buttons[0].keyEquivalent = ""
     alert.beginSheetModal(for: view.window!) {

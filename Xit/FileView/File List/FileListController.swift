@@ -118,12 +118,14 @@ class FileListController: NSViewController, RepositoryWindowViewController
         let change = changes.first!
         
         NSAlert.confirm(message: .confirmRevert(change.path.lastPathComponent),
-        actionName: .revert, parentWindow: view.window!) {
+                        actionName: .revert, isDestructive: true,
+                        parentWindow: view.window!) {
           try? self.repository.revert(file: change.gitPath)
         }
       default:
         NSAlert.confirm(message: .confirmRevertMultiple,
-                        actionName: .revert, parentWindow: view.window!) {
+                        actionName: .revert, isDestructive: true,
+                        parentWindow: view.window!) {
           for change in changes {
             try? self.repository.revert(file: change.gitPath)
           }

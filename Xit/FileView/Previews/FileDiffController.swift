@@ -241,7 +241,7 @@ class FileDiffController: WebViewController,
   func discardHunk(index: Int)
   {
     NSAlert.confirm(message: .confirmDiscardHunk,
-                    actionName: .discard,
+                    actionName: .discard, isDestructive: true,
                     parentWindow: view.window!) {
       guard let hunk = self.hunk(at: index)
       else { return }

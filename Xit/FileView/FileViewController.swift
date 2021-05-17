@@ -430,6 +430,7 @@ class FileViewController: NSViewController, RepositoryWindowViewController
     }
     confirmAlert.addButton(withString: .revert)
     confirmAlert.addButton(withString: .cancel)
+    confirmAlert.buttons[0].hasDestructiveAction = true
     confirmAlert.beginSheetModal(for: view.window!) {
       (response) in
       if response == .alertFirstButtonReturn {
