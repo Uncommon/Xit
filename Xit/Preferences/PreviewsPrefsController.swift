@@ -77,8 +77,7 @@ class PreviewsPrefsController: NSViewController
       let fontSize = CGFloat((storedSize == 0) ? 11 : storedSize)
       
       return NSFont(name: fontName, size: fontSize)
-             ?? NSFont(name: "Monaco", size: fontSize)
-             ?? NSFont.systemFont(ofSize: fontSize)
+          ?? .monospacedSystemFont(ofSize: fontSize, weight: .regular)
     }
     
     /// Default or user-selected whitespace setting

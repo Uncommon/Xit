@@ -17,7 +17,7 @@ struct CommitPanel: View
             .padding(.leading, 5)
             .opacity(message.isEmpty ? 1 : 0)
             .allowsHitTesting(false)
-        }.font(.commitBody)
+        }.font(.code)
         Divider()
         VStack(alignment: .leading) {
           Toggle(isOn: $amend, label: {

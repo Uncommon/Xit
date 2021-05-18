@@ -2,7 +2,7 @@ import SwiftUI
 
 extension Font
 {
-  static let commitBody = Font.system(.body, design: .monospaced)
+  static var code: Font { .init(PreviewsPrefsController.Default.font()) }
 }
 
 class CommitHeaderHostingView: NSHostingView<CommitHeader>
@@ -42,6 +42,7 @@ struct CommitHeader: View
   
   var body: some View {
     if let commit = commit {
+      ScrollView {
       VStack(alignment: .leading, spacing: 4) {
         VStack(spacing: 6) {
           if let author = commit.authorSig {
@@ -93,8 +94,9 @@ struct CommitHeader: View
           .background(Color(.windowBackgroundColor))
         Text(commit.message ?? "")
           .fixedSize(horizontal: false, vertical: true)
-          .font(.commitBody)
+          .font(.code)
           .padding([.bottom, .horizontal])
+      }
       }
       .background(Color(.textBackgroundColor))
     }
@@ -138,9 +140,10 @@ struct CommitHeader_Previews: PreviewProvider
   struct PreviewCommit: Commit
   {
     let parentOIDs: [OID] = ["A", "B"]
-    
     let message: String? = "Single line"
-    
+    let tree: Tree? = nil
+    let oid: OID = "45a608978"
+
     let authorSig: Signature? = Signature(name: "Author Person",
                                           email: "author@example.com",
                                           when: Date())
@@ -148,21 +151,19 @@ struct CommitHeader_Previews: PreviewProvider
     let committerSig: Signature? = Signature(name: "Committer Person",
                                              email: "commit@example.com",
                                              when: Date())
-    
-    let tree: Tree? = nil
-    
-    let oid: OID = "45a608978"
   }
   
   static var parents: [String: String] = ["A": "First parent",
                                           "B": "Second parent"]
   
   static var previews: some View {
-    ScrollView {
-      CommitHeader(commit: PreviewCommit(),
-                   messageLookup: { parents[$0.sha]! },
-                   selectParent: { _ in })
-    }
+    CommitHeader(commit: PreviewCommit(),
+                 messageLookup: { parents[$0.sha]! },
+                 selectParent: { _ in })
+    CommitHeader(commit: nil,
+                 messageLookup: { _ in "" },
+                 selectParent: { _ in })
+      .frame(width: 300, height: 200)
   }
 }
 
