@@ -1,63 +1,129 @@
 import SwiftUI
 
-@available(OSX 10.15, *)
 extension Font
 {
   static let commitBody = Font.system(.body, design: .monospaced)
 }
 
-@available(OSX 10.15.0, *)
-struct CommitHeader: View
+class CommitHeaderHostingView: NSHostingView<CommitHeader>
 {
-  let name, email: String
-  let parentDescriptions: [String]
-  let date: Date
-  let sha: String
-  let message: String
+  var repository: CommitStorage?
+  var selectParent: ((OID) -> Void)?
   
-  var body: some View {
-    VStack(spacing: 8) {
-      VStack {
-        HStack {
-          Text("\(name) <\(email)>").bold()
-          Spacer()
-          CommitHeaderLabel(text: "Date:")
-          Text("\(date)")
-        }
-        HStack(alignment: .firstTextBaseline) {
-          VStack(alignment: .leading) {
-            ForEach(0..<parentDescriptions.count) { index in
-              HStack {
-                CommitHeaderLabel(text: "Parent:")
-                Text(parentDescriptions[index])
-                  .foregroundColor(.blue)
-                  .onHover { isInside in
-                    if isInside {
-                      NSCursor.pointingHand.push()
-                    }
-                    else {
-                      NSCursor.pop()
-                    }
-                  }
-                  .onTapGesture {
-                    print("tap")
-                  }
-              }
-            }
-          }
-          Spacer()
-          CommitHeaderLabel(text: "SHA:")
-          Text(sha)
-        }
-      }
-      Text(message)
-        .lineLimit(nil)
-        .font(.commitBody)
+  var commit: Commit?
+  {
+    get { rootView.commit }
+    set {
+      guard let select = selectParent
+      else { return }
+      
+      rootView = CommitHeader(
+          commit: newValue,
+          messageLookup: {
+            self.repository?.commit(forOID: $0)?.messageSummary ?? ""
+          },
+          selectParent: select)
     }
   }
 }
 
-@available(OSX 10.15.0, *)
+struct CommitHeader: View
+{
+  let commit: Commit?
+  let messageLookup: (OID) -> String
+  let selectParent: (OID) -> Void
+  
+  static let dateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateStyle = .medium
+    formatter.timeStyle = .short
+    return formatter
+  }()
+  
+  var body: some View {
+    if let commit = commit {
+      VStack(alignment: .leading, spacing: 4) {
+        VStack(spacing: 6) {
+          if let author = commit.authorSig {
+            SignatureRow(icon: Image(systemName: "pencil.circle.fill"),
+                         signature: author)
+          }
+          if let committer = commit.committerSig,
+             committer != commit.authorSig {
+            SignatureRow(icon: Image(systemName: "smallcircle.fill.circle.fill"),
+                         signature: committer)
+          }
+          HStack(alignment: .firstTextBaseline) {
+            VStack(alignment: .leading) {
+              ForEach(0..<commit.parentOIDs.count) { index in
+                HStack {
+                  CommitHeaderLabel(text: "Parent:")
+                  Text(messageLookup(commit.parentOIDs[index]))
+                    .foregroundColor(.blue)
+                    .onHover { isInside in
+                      if isInside {
+                        NSCursor.pointingHand.push()
+                      }
+                      else {
+                        NSCursor.pop()
+                      }
+                    }
+                    .onTapGesture {
+                      selectParent(commit.parentOIDs[index])
+                    }
+                }
+              }
+            }
+            Spacer()
+            CommitHeaderLabel(text: "SHA:")
+            Button {
+              let pasteboard = NSPasteboard.general
+              pasteboard.clearContents()
+              pasteboard.setString(commit.sha, forType: .string)
+            } label: {
+              Text(commit.sha.firstSix())
+              Image(systemName: "doc.on.clipboard")
+                .imageScale(.small)
+                .foregroundColor(.secondary)
+            }.buttonStyle(LinkButtonStyle())
+          }
+        }
+          .padding([.top, .horizontal])
+          .padding([.bottom], 8)
+          .background(Color(.windowBackgroundColor))
+        Text(commit.message ?? "")
+          .fixedSize(horizontal: false, vertical: true)
+          .font(.commitBody)
+          .padding([.bottom, .horizontal])
+      }
+      .background(Color(.textBackgroundColor))
+    }
+    else {
+      Text("No selection").foregroundColor(.secondary).bold()
+    }
+  }
+}
+
+struct SignatureRow: View
+{
+  let icon: Image
+  let signature: Signature
+  
+  var body: some View {
+    HStack {
+      icon.foregroundColor(.secondary)
+      if let name = signature.name {
+        Text(name).bold()
+      }
+      if let email = signature.email {
+        Text("<\(email)>").bold().foregroundColor(.secondary)
+      }
+      Spacer()
+      Text(signature.when, formatter: CommitHeader.dateFormatter)
+    }
+  }
+}
+
 struct CommitHeaderLabel: View
 {
   let text: String
@@ -67,15 +133,41 @@ struct CommitHeaderLabel: View
   }
 }
 
-@available(OSX 10.15.0, *)
-struct CommitHeader_Previews: PreviewProvider {
-    static var previews: some View {
-      CommitHeader(name: "Myself",
-                   email: "me@myself.com",
-                   parentDescriptions: ["The before", "Previous"],
-                   date: Date(),
-                   sha: "457608978",
-                   message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
-        
+struct CommitHeader_Previews: PreviewProvider
+{
+  struct PreviewCommit: Commit
+  {
+    let parentOIDs: [OID] = ["A", "B"]
+    
+    let message: String? = "Single line"
+    
+    let authorSig: Signature? = Signature(name: "Author Person",
+                                          email: "author@example.com",
+                                          when: Date())
+    
+    let committerSig: Signature? = Signature(name: "Committer Person",
+                                             email: "commit@example.com",
+                                             when: Date())
+    
+    let tree: Tree? = nil
+    
+    let oid: OID = "45a608978"
+  }
+  
+  static var parents: [String: String] = ["A": "First parent",
+                                          "B": "Second parent"]
+  
+  static var previews: some View {
+    ScrollView {
+      CommitHeader(commit: PreviewCommit(),
+                   messageLookup: { parents[$0.sha]! },
+                   selectParent: { _ in })
     }
+  }
+}
+
+extension String: OID
+{
+  public var sha: String { self }
+  public var isZero: Bool { self == "00000000000000000000" }
 }

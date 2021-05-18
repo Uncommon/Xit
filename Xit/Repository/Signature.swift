@@ -32,8 +32,11 @@ extension Signature
   
   init(gitSignature: git_signature)
   {
-    name = Signature.makeString(gitSignature.name)
-    email = Signature.makeString(gitSignature.email)
+    func makeString(_ ptr: UnsafeMutablePointer<Int8>!) -> String?
+    { ptr.flatMap { String(utf8String: $0) } }
+    
+    name = makeString(gitSignature.name)
+    email = makeString(gitSignature.email)
     when = Date(gitTime: gitSignature.when)
   }
   
@@ -66,9 +69,6 @@ extension Signature
       }
     }
   }
-  
-  private static func makeString(_ ptr: UnsafeMutablePointer<Int8>!) -> String?
-  { ptr == nil ? nil : String(utf8String: ptr) }
 }
 
 extension Signature
