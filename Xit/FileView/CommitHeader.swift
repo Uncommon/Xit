@@ -33,6 +33,12 @@ struct CommitHeader: View
   let messageLookup: (OID) -> String
   let selectParent: (OID) -> Void
   
+  enum Measurement
+  {
+    static let margin: CGFloat = 12
+    static let divider: CGFloat = 8
+  }
+  
   static let dateFormatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateStyle = .medium
@@ -43,60 +49,60 @@ struct CommitHeader: View
   var body: some View {
     if let commit = commit {
       ScrollView {
-      VStack(alignment: .leading, spacing: 4) {
-        VStack(spacing: 6) {
-          if let author = commit.authorSig {
-            SignatureRow(icon: Image(systemName: "pencil.circle.fill"),
-                         signature: author)
-          }
-          if let committer = commit.committerSig,
-             committer != commit.authorSig {
-            SignatureRow(icon: Image(systemName: "smallcircle.fill.circle.fill"),
-                         signature: committer)
-          }
-          HStack(alignment: .firstTextBaseline) {
-            VStack(alignment: .leading) {
-              ForEach(0..<commit.parentOIDs.count) { index in
-                HStack {
-                  CommitHeaderLabel(text: "Parent:")
-                  Text(messageLookup(commit.parentOIDs[index]))
-                    .foregroundColor(.blue)
-                    .onHover { isInside in
-                      if isInside {
-                        NSCursor.pointingHand.push()
+        VStack(alignment: .leading, spacing: Measurement.divider) {
+          VStack(spacing: 6) {
+            if let author = commit.authorSig {
+              SignatureRow(icon: Image(systemName: "pencil.circle.fill"),
+                           signature: author)
+            }
+            if let committer = commit.committerSig,
+               committer != commit.authorSig {
+              SignatureRow(icon: Image(systemName: "smallcircle.fill.circle.fill"),
+                           signature: committer)
+            }
+            HStack(alignment: .firstTextBaseline) {
+              VStack(alignment: .leading) {
+                ForEach(commit.parentOIDs, id: \.sha) { oid in
+                  HStack {
+                    CommitHeaderLabel(text: "Parent:")
+                    Text(messageLookup(oid))
+                      .foregroundColor(.blue)
+                      .onHover { isInside in
+                        if isInside {
+                          NSCursor.pointingHand.push()
+                        }
+                        else {
+                          NSCursor.pop()
+                        }
                       }
-                      else {
-                        NSCursor.pop()
+                      .onTapGesture {
+                        selectParent(oid)
                       }
-                    }
-                    .onTapGesture {
-                      selectParent(commit.parentOIDs[index])
-                    }
+                  }
                 }
               }
+              Spacer()
+              CommitHeaderLabel(text: "SHA:")
+              Button {
+                let pasteboard = NSPasteboard.general
+                pasteboard.clearContents()
+                pasteboard.setString(commit.sha, forType: .string)
+              } label: {
+                Text(commit.sha.firstSix())
+                Image(systemName: "doc.on.clipboard")
+                  .imageScale(.small)
+                  .foregroundColor(.secondary)
+              }.buttonStyle(LinkButtonStyle())
             }
-            Spacer()
-            CommitHeaderLabel(text: "SHA:")
-            Button {
-              let pasteboard = NSPasteboard.general
-              pasteboard.clearContents()
-              pasteboard.setString(commit.sha, forType: .string)
-            } label: {
-              Text(commit.sha.firstSix())
-              Image(systemName: "doc.on.clipboard")
-                .imageScale(.small)
-                .foregroundColor(.secondary)
-            }.buttonStyle(LinkButtonStyle())
           }
+            .padding([.top, .horizontal], Measurement.margin)
+            .padding([.bottom], Measurement.divider)
+            .background(Color(.windowBackgroundColor))
+          Text(commit.message ?? "")
+            .fixedSize(horizontal: false, vertical: true)
+            .font(.code)
+            .padding([.bottom, .horizontal], Measurement.margin)
         }
-          .padding([.top, .horizontal])
-          .padding([.bottom], 8)
-          .background(Color(.windowBackgroundColor))
-        Text(commit.message ?? "")
-          .fixedSize(horizontal: false, vertical: true)
-          .font(.code)
-          .padding([.bottom, .horizontal])
-      }
       }
       .background(Color(.textBackgroundColor))
     }
