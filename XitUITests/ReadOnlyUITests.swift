@@ -44,7 +44,7 @@ class ReadOnlyUITests: XCTestCase
     
     Sidebar.filter.click()
     Sidebar.filter.typeText("a")
-    wait(for: [absence(of: newBranchCell)], timeout: 2.0)
+    wait(for: [absence(of: newBranchCell)], timeout: 3.0)
     
     Sidebar.assertBranches(aBranches)
     

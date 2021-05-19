@@ -96,7 +96,7 @@ class PushTests: UnicodeRepoUITests
     XCTAssertTrue(Window.proxyIcon.waitForExistence(timeout: 1.0))
     
     XCTWaiter(delegate: self).wait(for: [absence(of: statusIndicator)],
-                                   timeout: 1.0)
+                                   timeout: 2.0)
   }
   
   func testPushAnyTracking()
