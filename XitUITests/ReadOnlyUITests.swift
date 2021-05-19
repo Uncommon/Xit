@@ -66,9 +66,13 @@ class ReadOnlyUITests: XCTestCase
                                    timeout: 5)
     CommitFileList.assertFiles(["README.md", "hero_slide1.png", "jquery-1.8.1.min.js"])
     
+    let sha = "a4bca6b67a5483169963572ee3da563da33712f7"
+    let shaPrefix = String(sha.prefix(6))
+    
     CommitHeader.assertDisplay(date: "Jan 10, 2013 at 7:11 AM",
-                               sha: "a4bca6b67a5483169963572ee3da563da33712f7",
-                               name: "Danny Greg <danny@github.com>",
+                               sha: shaPrefix,
+                               name: "Danny Greg",
+                               email: "<danny@github.com>",
                                parents: ["Rename README."],
                                message: "Add 2 text and 1 binary file for diff tests.")
   }
@@ -79,9 +83,13 @@ class ReadOnlyUITests: XCTestCase
     // Select a merge commit to test multiple parents
     HistoryList.row(10).click()
     
+    let sha = "d603d61ea756eb881ba440b3e66b561d070aec6e"
+    let shaPrefix = String(sha.prefix(6))
+    
     CommitHeader.assertDisplay(date: "Feb 16, 2012 at 12:10 PM",
-                               sha: "d603d61ea756eb881ba440b3e66b561d070aec6e",
-                               name: "joshaber <joshaber@gmail.com>",
+                               sha: shaPrefix,
+                               name: "joshaber",
+                               email: "<joshaber@gmail.com>",
                                parents: ["Revert ee618c62f57e7807ddee3cd33e0f176d93d015dd^..HEAD",
                                          "evil conflicting commit"],
                                message: "Merge branch 'master' of github.com:github/Test_App")

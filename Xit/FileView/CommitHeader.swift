@@ -53,11 +53,13 @@ struct CommitHeader: View
           VStack(spacing: 6) {
             if let author = commit.authorSig {
               SignatureRow(icon: Image(systemName: "pencil.circle.fill"),
+                           help: "Author",
                            signature: author)
             }
             if let committer = commit.committerSig,
                committer != commit.authorSig {
               SignatureRow(icon: Image(systemName: "smallcircle.fill.circle.fill"),
+                           help: "Committer",
                            signature: committer)
             }
             HStack(alignment: .firstTextBaseline) {
@@ -78,9 +80,12 @@ struct CommitHeader: View
                       .onTapGesture {
                         selectParent(oid)
                       }
+                      .accessibility(identifier: "parent")
                   }
                 }
               }
+                .accessibilityElement(children: .contain)
+                .accessibility(identifier: "parents")
               Spacer()
               CommitHeaderLabel(text: "SHA:")
               Button {
@@ -92,19 +97,24 @@ struct CommitHeader: View
                 Image(systemName: "doc.on.clipboard")
                   .imageScale(.small)
                   .foregroundColor(.secondary)
-              }.buttonStyle(LinkButtonStyle())
+              }
+                .buttonStyle(LinkButtonStyle())
+                .accessibility(identifier: "sha")
             }
           }
             .padding([.top, .horizontal], Measurement.margin)
             .padding([.bottom], Measurement.divider)
             .background(Color(.windowBackgroundColor))
-          Text(commit.message ?? "")
+          Text(commit.message?.trimmingWhitespace ?? "")
+            .accessibility(identifier: "message")
             .fixedSize(horizontal: false, vertical: true)
             .font(.code)
             .padding([.bottom, .horizontal], Measurement.margin)
         }
       }
-      .background(Color(.textBackgroundColor))
+        .background(Color(.textBackgroundColor))
+        .accessibilityElement(children: .contain)
+        .accessibility(identifier: "commitInfo")
     }
     else {
       Text("No selection").foregroundColor(.secondary).bold()
@@ -115,19 +125,23 @@ struct CommitHeader: View
 struct SignatureRow: View
 {
   let icon: Image
+  let help: String
   let signature: Signature
   
   var body: some View {
     HStack {
-      icon.foregroundColor(.secondary)
+      icon.foregroundColor(.secondary).help(help)
       if let name = signature.name {
         Text(name).bold()
+          .accessibility(identifier: "name")
       }
       if let email = signature.email {
         Text("<\(email)>").bold().foregroundColor(.secondary)
+          .accessibility(identifier: "email")
       }
       Spacer()
       Text(signature.when, formatter: CommitHeader.dateFormatter)
+        .accessibility(identifier: "date")
     }
   }
 }

@@ -94,26 +94,34 @@ enum Sidebar
 
 enum CommitHeader
 {
-  static let header = XitApp.otherElements["commitInfo"].firstMatch
+  static let header = XitApp.groups["commitInfo"].firstMatch
   static let dateField = header.staticTexts["date"].firstMatch
-  static let shaField = header.staticTexts["sha"].firstMatch
+  static let shaField = header.links["sha"].firstMatch
   static let nameField = header.staticTexts["name"].firstMatch
+  static let emailField = header.staticTexts["email"].firstMatch
   static let messageField = header.staticTexts["message"].firstMatch
   static var parentFields: [XCUIElement]
-  { header.otherElements["parents"]
-          .staticTexts.allElementsBoundByAccessibilityElement }
+  {
+    header.groups["parents"]
+          .staticTexts.matching(identifier: "parent")
+          .allElementsBoundByAccessibilityElement
+  }
   
   static func parentField(_ index: Int) -> XCUIElement
   {
-    return header.otherElements["parents"].staticTexts.element(boundBy: index)
+    header.groups["parents"]
+          .staticTexts.matching(identifier: "parent")
+          .element(boundBy: index)
   }
   
-  static func assertDisplay(date: String, sha: String, name: String,
+  static func assertDisplay(date: String, sha: String,
+                            name: String, email: String,
                             parents: [String], message: String)
   {
     XCTAssertEqual(dateField.stringValue, date)
-    XCTAssertEqual(shaField.stringValue, sha)
+    XCTAssertEqual(shaField.label, sha)
     XCTAssertEqual(nameField.stringValue, name)
+    XCTAssertEqual(emailField.stringValue, email)
     XCTAssertEqual(parentFields.map { $0.stringValue }, parents)
     XCTAssertEqual(messageField.stringValue, message)
   }
