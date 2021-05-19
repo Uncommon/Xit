@@ -34,11 +34,11 @@ class FileViewController: NSViewController, RepositoryWindowViewController
   @IBOutlet weak var headerTabView: NSTabView!
   @IBOutlet weak var previewTabView: NSTabView!
   @IBOutlet weak var previewPath: NSPathControl!
-  @IBOutlet var headerController: CommitHeaderViewController!
   @IBOutlet var diffController: FileDiffController!
   @IBOutlet var blameController: BlameViewController!
   @IBOutlet var previewController: PreviewController!
   @IBOutlet var textController: TextPreviewController!
+  var commitHeader: CommitHeaderHostingView!
   var commitEntryController: CommitEntryController!
 
   var resizeRecursing: Bool = false
@@ -127,6 +127,12 @@ class FileViewController: NSViewController, RepositoryWindowViewController
   { activeFileListController.selectedChanges }
   
   weak var repo: XTRepository?
+  {
+    didSet
+    {
+      commitHeader.repository = repo
+    }
+  }
   
   override init(nibName nibNameOrNil: NSNib.Name?, bundle nibBundleOrNil: Bundle?)
   {
@@ -152,6 +158,20 @@ class FileViewController: NSViewController, RepositoryWindowViewController
     let qlTab = previewTabView.tabViewItem(withIdentifier: TabID.preview)!
     
     qlTab.view = previewController.view
+
+    commitHeader = .init(rootView: CommitHeader(
+        commit: nil,
+        messageLookup: { _ in "" },
+        selectParent: { _ in }))
+    commitHeader.selectParent = { oid in
+      self.repoUIController?.select(sha: oid.sha)
+    }
+    
+    let scrollView = NSScrollView()
+
+    scrollView.documentView = commitHeader
+    scrollView.hasVerticalScroller = true
+    headerTabView.tabViewItem(at: 0).view = commitHeader
   }
   
   func finishLoad(repository: XTRepository)
@@ -237,7 +257,6 @@ class FileViewController: NSViewController, RepositoryWindowViewController
 
     for listController in allListControllers {
       listController.finishLoad(controller: repoUIController!)
-      headerController.repoUIController = repoUIController!
     }
   }
   
@@ -330,7 +349,9 @@ class FileViewController: NSViewController, RepositoryWindowViewController
     }
     showingStaged = newModel is StagedUnstagedSelection
     isCommitting = newModel is StagingSelection
-    headerController.commitSHA = newModel.shaToSelect
+    if let commit = newModel.shaToSelect.flatMap({ repo?.commit(forSHA: $0) }) {
+      commitHeader.commit = commit
+    }
     clearPreviews()
     refreshPreview()
     DispatchQueue.main.async { // wait for the file lists to refresh

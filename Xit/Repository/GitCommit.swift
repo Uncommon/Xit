@@ -17,7 +17,6 @@ public protocol Commit: OIDObject, CustomStringConvertible
   var committerName: String? { get }
   var committerEmail: String? { get }
   var commitDate: Date { get }
-  var email: String? { get }
   
   var tree: Tree? { get }
 }
@@ -32,6 +31,8 @@ extension Commit
   var committerName: String? { committerSig?.name }
   var committerEmail: String? { committerSig?.email }
   var commitDate: Date { committerSig?.when ?? Date() }
+  
+  var email: String? { committerEmail }
 }
 
 extension Commit
@@ -135,9 +136,6 @@ public class GitCommit: Commit
   
   public var commitDate: Date
   { committerSig?.when ?? Date() }
-  
-  public var email: String?
-  { committerEmail }
 
   public var tree: Tree?
   {
