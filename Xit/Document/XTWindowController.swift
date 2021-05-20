@@ -90,10 +90,32 @@ class XTWindowController: NSWindowController,
       self?.titleBarController?.selectedBranch = repo.currentBranch
       self?.updateMiniwindowTitle()
     })
+    kvObservers.append(window!.observe(\.tabbedWindows) {
+      [weak self] (window, _) in
+      self?.updateWindowStyle(window)
+    })
     sidebarController.repo = repo
     historyController.finishLoad(repository: repo)
     configureTitleBarController(repository: repo)
     updateTabStatus()
+    updateWindowStyle(window!)
+  }
+  
+  func updateWindowStyle(_ window: NSWindow)
+  {
+    var style = window.styleMask
+    let separatorIndex = 3
+    
+    if window.tabbedWindows == nil {
+      style.formUnion([.fullSizeContentView])
+      window.toolbar?.insertItem(withItemIdentifier: .sidebarTrackingSeparator,
+                                 at: separatorIndex)
+    }
+    else {
+      style.remove(.fullSizeContentView)
+      window.toolbar?.removeItem(at: separatorIndex)
+    }
+    window.styleMask = style
   }
 
   @objc
