@@ -52,9 +52,7 @@ class TitleBarController: NSObject
   @IBOutlet weak var navButtons: NSSegmentedControl!
   @IBOutlet weak var remoteControls: NSSegmentedControl!
   @IBOutlet weak var stashButton: NSSegmentedControl!
-  @IBOutlet weak var proxyIcon: NSImageView!
   @IBOutlet weak var spinner: NSProgressIndicator!
-  @IBOutlet weak var titleLabel: NSTextField!
   @IBOutlet weak var branchPopup: NSPopUpButton!
   @IBOutlet weak var searchButton: NSButton!
   @IBOutlet weak var viewControls: NSSegmentedControl!
@@ -108,7 +106,6 @@ class TitleBarController: NSObject
           object: window,
           queue: .main) {
         (_) in
-        self.titleLabel.textColor = .windowFrameTextColor
       }
     }
     if resignKeyObserver == nil {
@@ -117,7 +114,6 @@ class TitleBarController: NSObject
           object: window,
           queue: .main) {
         (_) in
-        self.titleLabel.textColor = .disabledControlTextColor
       }
     }
     
@@ -272,9 +268,21 @@ class TitleBarController: NSObject
   func updateBranchList(_ branches: [String], current: String?)
   {
     branchPopup.removeAllItems()
-    branchPopup.addItems(withTitles: branches.sorted())
-    if let current = current {
+    for branch in branches {
+      let item = NSMenuItem(title: branch, action: nil, keyEquivalent: "")
+      
+      item.image = .xtBranchTemplate
+      branchPopup.menu?.addItem(item)
+    }
+    if let current = current, branches.contains(current) {
       selectedBranch = current
+    }
+    else {
+      let detachedItem = NSMenuItem(title: current ?? "Detached", action: nil, keyEquivalent: "")
+      
+      detachedItem.isEnabled = false
+      branchPopup.menu?.insertItem(detachedItem, at: 0)
+      branchPopup.selectItem(at: 0)
     }
   }
 }
@@ -282,36 +290,30 @@ class TitleBarController: NSObject
 extension NSToolbarItem.Identifier
 {
   static let navigation: Self = ◊"xit.nav"
+  static let spinner: Self = ◊"xit.spinner"
+  static let branches: Self = ◊"xit.branches"
   static let remoteOps: Self = ◊"xit.remote"
   static let stash: Self = ◊"xit.stash"
-  static let title: Self = ◊"xit.title"
   static let search: Self = ◊"xit.search"
   static let view: Self = ◊"xit.view"
 }
 
 extension TitleBarController: NSToolbarDelegate
 {
-  enum TitleTag: Int
-  {
-    case proxy = 1
-    case spinner = 2
-    case title = 3
-    case branchPopup = 4
-  }
-  
   func toolbarWillAddItem(_ notification: Notification)
   {
     guard let item = notification.userInfo?["item"] as? NSToolbarItem
     else { return }
     
-    func titleControl<T>(_ tag: TitleTag) -> T? where T: NSView
-    {
-      item.view?.viewWithTag(tag.rawValue) as? T
-    }
-
     switch item.itemIdentifier {
       case .navigation:
         navButtons = item.view as? NSSegmentedControl
+        
+      case .spinner:
+        spinner = item.view as? NSProgressIndicator
+        
+      case .branches:
+        branchPopup = item.view as? NSPopUpButton
 
       case .remoteOps:
         remoteControls = item.view as? NSSegmentedControl
@@ -333,20 +335,6 @@ extension TitleBarController: NSToolbarDelegate
           remoteControls.setMenu(menu, forSegment: segment.rawValue)
         }
         stashButton.setMenu(stashMenu, forSegment: 0)
-
-      case .title:
-        proxyIcon = titleControl(.proxy)
-        // Can't use the tag for this one. Xcode insists that the tag must
-        // be -1, but finding by that tag doesn't work.
-        spinner = item.view?.subviews.firstOfType()
-        titleLabel = titleControl(.title)
-        branchPopup = titleControl(.branchPopup)
-        spinner.startAnimation(nil)
-        titleLabel.bind(NSBindingName.value,
-                                       to: window! as NSWindow,
-                                       withKeyPath: #keyPath(NSWindow.title),
-                                       options: nil)
-        item.menuFormRepresentation = nil
 
       case .search:
         searchButton = item.view as? NSButton

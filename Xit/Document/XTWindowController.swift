@@ -286,7 +286,6 @@ extension XTWindowController: NSWindowDelegate
     let window = self.window!
     
     Signpost.event(.windowControllerLoad)
-    window.titleVisibility = .hidden
     window.delegate = self
     splitViewController = contentViewController as? NSSplitViewController
     titleBarController.splitView = splitViewController.splitView
@@ -332,13 +331,10 @@ extension XTWindowController: NSWindowDelegate
     
     updateMiniwindowTitle()
     updateNavButtons()
-    window.toolbar?.centeredItemIdentifier = .title
   }
 
   func windowWillClose(_ notification: Notification)
   {
-    titleBarController.titleLabel?.unbind(◊"value")
-    titleBarController.proxyIcon?.unbind(◊"hidden")
     titleBarController.spinner?.unbind(◊"hidden")
     // For some reason this avoids a crash
     window?.makeFirstResponder(nil)
