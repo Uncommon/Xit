@@ -70,6 +70,8 @@ class TitleBarController: NSObject
   var becomeKeyObserver: NSObjectProtocol?
   var resignKeyObserver: NSObjectProtocol?
   
+  var separatorItem: NSToolbarItem?
+  
   @objc dynamic var progressHidden: Bool
   {
     get
@@ -300,6 +302,18 @@ extension NSToolbarItem.Identifier
 
 extension TitleBarController: NSToolbarDelegate
 {
+  func toolbar(_ toolbar: NSToolbar,
+               itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier,
+               willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem?
+  {
+    if itemIdentifier == .sidebarTrackingSeparator {
+      // Return the saved item to avoid Cocoa throwing exceptions about only
+      // one tracking item being allowed.
+      return separatorItem
+    }
+    return nil
+  }
+  
   func toolbarWillAddItem(_ notification: Notification)
   {
     guard let item = notification.userInfo?["item"] as? NSToolbarItem
@@ -348,6 +362,9 @@ extension TitleBarController: NSToolbarDelegate
         menuItem.submenu = viewMenu
         item.menuFormRepresentation = menuItem
       
+      case .sidebarTrackingSeparator:
+        separatorItem = item
+        
       default:
         return
     }

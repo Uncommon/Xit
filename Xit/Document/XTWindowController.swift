@@ -103,17 +103,24 @@ class XTWindowController: NSWindowController,
   
   func updateWindowStyle(_ window: NSWindow)
   {
+    guard let toolbar = window.toolbar
+    else { return }
     var style = window.styleMask
-    let separatorIndex = 3
+    let findSeparator: (NSToolbarItem) -> Bool = {
+      $0.itemIdentifier == .sidebarTrackingSeparator
+    }
     
     if window.tabbedWindows == nil {
       style.formUnion([.fullSizeContentView])
-      window.toolbar?.insertItem(withItemIdentifier: .sidebarTrackingSeparator,
-                                 at: separatorIndex)
+      if (!toolbar.items.contains(where: findSeparator)) {
+        toolbar.insertItem(withItemIdentifier: .sidebarTrackingSeparator, at: 3)
+      }
     }
     else {
       style.remove(.fullSizeContentView)
-      window.toolbar?.removeItem(at: separatorIndex)
+      if let separatorIndex = toolbar.items.firstIndex(where: findSeparator) {
+        toolbar.removeItem(at: separatorIndex)
+      }
     }
     window.styleMask = style
   }
