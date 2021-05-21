@@ -81,6 +81,6 @@ extension XTWindowController: TitleBarDelegate
 
   func search()
   {
-    historyController.toggleScopeBar()
+    historyController.toggleSearchBar()
   }
 }

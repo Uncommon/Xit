@@ -1,94 +1,44 @@
 import Foundation
 
-extension HistoryViewController
+extension HistoryViewController: HistorySearchDelegate
 {
-  enum Constants
+  func toggleSearchBar()
   {
-    static let shownScopeHeight: CGFloat = 30
+    searchController.isHidden.toggle()
   }
   
-  enum SearchCategory: Int
-  {
-    case summary
-    case author
-    case committer
-    case sha
-  }
-
-  func setUpScopeBar()
-  {
-    scopeBar.isHidden = true
-    scopeHeightConstraint.constant = 0
-  }
-  
-  public func toggleScopeBar()
-  {
-    setScopeBarVisble(scopeBar.isHidden)
-  }
-  
-  @IBAction
-  func searchAction(_ sender: Any)
-  {
-    search(reversed: false)
-  }
-  
-  @IBAction
-  func searchSegment(_ sender: NSSegmentedControl)
-  {
-    search(reversed: sender.selectedSegment == 0)
-  }
-  
-  func setScopeBarVisble(_ visible: Bool)
-  {
-    NSAnimationContext.runAnimationGroup({
-      (context) in
-      context.duration = 0.25
-      context.allowsImplicitAnimation = true
-      scopeBar.isHidden = !visible
-      scopeHeightConstraint.constant = visible ? Constants.shownScopeHeight : 0
-      // TODO: layout split view?
-    }, completionHandler: nil)
-  }
-
-  func search(reversed: Bool)
-  {
-    guard let category =
-        SearchCategory(rawValue: searchTypePopup.indexOfSelectedItem)
-    else { return }
-    
-    performSearch(text: searchField.stringValue, type: category,
-                  reversed: reversed)
-  }
-  
-  func performSearch(text: String, type: SearchCategory, reversed: Bool = false)
+  func search(for text: String,
+              type: SearchAccessoryController.SearchType,
+              direction: SearchAccessoryController.SearchDirection)
   {
     let search = text.lowercased()
     let entries = tableController.history.entries
     
     // I tried doing this with for loops and ranges, but the compiler refused.
-    if reversed {
-      var index = historyTable.selectedRow - 1
-      
-      while index >= 0 {
-        if match(entry: entries[index], index: index, text: search, type: type) {
-          break
+    switch direction {
+      case .up:
+        var index = historyTable.selectedRow - 1
+        
+        while index >= 0 {
+          if match(entry: entries[index], index: index, text: search, type: type) {
+            break
+          }
+          index -= 1
         }
-        index -= 1
-      }
-    }
-    else {
-      var index = historyTable.selectedRow + 1
+      case .down:
+        var index = historyTable.selectedRow + 1
       
-      while index < historyTable.numberOfRows {
-        if match(entry: entries[index], index: index, text: search, type: type) {
-          break
+        while index < historyTable.numberOfRows {
+          if match(entry: entries[index], index: index, text: search, type: type) {
+            break
+          }
+          index += 1
         }
-        index += 1
-      }
     }
   }
   
-  func match(entry: CommitEntry, index: Int, text: String, type: SearchCategory)
+  func match(entry: CommitEntry, index: Int, text: String,
+             type: SearchAccessoryController.SearchType)
     -> Bool
   {
     let commit = entry.commit
@@ -110,25 +60,5 @@ extension HistoryViewController
       historyTable.scrollRowToVisible(index)
     }
     return found
-  }
-}
-
-extension HistoryViewController: NSSearchFieldDelegate
-{
-  func searchFieldDidStartSearching(_ sender: NSSearchField)
-  {
-    search(reversed: false)
-  }
-  
-  func searchFieldDidEndSearching(_ sender: NSSearchField)
-  {
-  }
-}
-
-extension HistoryViewController: NSControlTextEditingDelegate
-{
-  func controlTextDidChange(_ obj: Notification)
-  {
-    searchButtons.isEnabled = !searchField.stringValue.isEmpty
   }
 }

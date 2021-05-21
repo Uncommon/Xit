@@ -3,7 +3,6 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
         <capability name="Image references" minToolsVersion="12.0"/>
-        <capability name="Search Toolbar Item" minToolsVersion="12.0" minSystemVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -118,8 +117,8 @@
                                 <toolbarItem implicitItemIdentifier="57B6D0DE-D2B5-44C1-938C-77D30E8DA6A3" explicitItemIdentifier="xit.branches" label="Branches" paletteLabel="Branches" image="branchTemplate" title="main" sizingBehavior="auto" id="9Jc-2J-e8T">
                                     <nil key="toolTip"/>
                                     <popUpButton key="view" verticalHuggingPriority="750" id="Fas-Ux-hUh">
-                                        <rect key="frame" x="0.0" y="14" width="107" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <rect key="frame" x="0.0" y="14" width="82" height="25"/>
+                                        <autoresizingMask key="autoresizingMask"/>
                                         <popUpButtonCell key="cell" type="roundTextured" title="main" bezelStyle="texturedRounded" image="branchTemplate" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" selectedItem="1dQ-rj-Pwc" id="Qdf-wK-6Ub">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="menu"/>
@@ -137,23 +136,12 @@
                                     <size key="minSize" width="12" height="25"/>
                                     <size key="maxSize" width="12" height="25"/>
                                 </toolbarItem>
-                                <searchToolbarItem implicitItemIdentifier="70F344C5-9B10-442D-B286-FB34DC970568" label="Search" paletteLabel="Search" visibilityPriority="1001" id="yTq-Fd-5si">
-                                    <nil key="toolTip"/>
-                                    <searchField key="view" verticalHuggingPriority="750" textCompletion="NO" id="7n2-4v-rdk">
-                                        <rect key="frame" x="0.0" y="0.0" width="100" height="21"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" sendsSearchStringImmediately="YES" id="hVm-pb-GZh">
-                                            <font key="font" usesAppearanceFont="YES"/>
-                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                        </searchFieldCell>
-                                    </searchField>
-                                </searchToolbarItem>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
                                 <toolbarItem reference="HjO-mu-IiC"/>
                                 <toolbarItem reference="oLO-yb-35r"/>
                                 <toolbarItem reference="BqU-7i-BMT"/>
+                                <toolbarItem reference="f20-3I-3ft"/>
                                 <toolbarItem reference="AIh-IS-Ifn"/>
                                 <toolbarItem reference="oLO-yb-35r"/>
                                 <toolbarItem reference="AXd-Bz-cV9"/>
