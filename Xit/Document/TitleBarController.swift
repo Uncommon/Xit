@@ -280,7 +280,8 @@ class TitleBarController: NSObject
       selectedBranch = current
     }
     else {
-      let detachedItem = NSMenuItem(title: current ?? "Detached", action: nil, keyEquivalent: "")
+      let detachedItem = NSMenuItem(title: current ?? UIString.detached.rawValue,
+                                    action: nil, keyEquivalent: "")
       
       detachedItem.isEnabled = false
       branchPopup.menu?.insertItem(detachedItem, at: 0)
