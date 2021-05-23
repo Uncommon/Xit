@@ -702,7 +702,7 @@ DQ
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="OWv-Fq-1dD"/>
-                            <menuItem title="Show Window Tab Bar" id="Yq8-1k-Jqn">
+                            <menuItem title="Show Tab Bar" id="Yq8-1k-Jqn">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="toggleTabBar:" target="-1" id="oOG-7a-dqd"/>
