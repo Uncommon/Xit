@@ -136,10 +136,13 @@ class PushOpController: PasswordOpController
       }
       
       self.push(branches: [currentBranch], remote: remote, then: {
-        if sheetController.setTrackingBranch,
-           let remoteName = remote.name {
-          currentBranch.trackingBranchName = remoteName +/
-                                             currentBranch.strippedName
+        // This is now on the repo queue
+        DispatchQueue.main.async {
+          if sheetController.setTrackingBranch,
+             let remoteName = remote.name {
+            currentBranch.trackingBranchName = remoteName +/
+                                               currentBranch.strippedName
+          }
         }
       })
     }
