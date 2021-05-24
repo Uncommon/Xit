@@ -6,13 +6,9 @@ class HistoryViewController: NSViewController
 {
   @IBOutlet var tableController: HistoryTableController!
   @IBOutlet weak var historyTable: NSTableView!
-  @IBOutlet weak var scopeBar: NSView!
-  @IBOutlet weak var scopeHeightConstraint: NSLayoutConstraint!
-  @IBOutlet weak var searchTypePopup: NSPopUpButton!
-  @IBOutlet weak var searchField: NSSearchField!
-  @IBOutlet weak var searchButtons: NSSegmentedControl!
   @IBOutlet var columnsMenu: NSMenu!
 
+  var searchController: SearchAccessoryController!
   weak var splitController: NSSplitViewController!
   var fileViewController: FileViewController!
 
@@ -30,8 +26,15 @@ class HistoryViewController: NSViewController
     
     cellSpacing.height = 0
     historyTable.intercellSpacing = cellSpacing
-    
-    setUpScopeBar()
+  }
+  
+  override func viewDidAppear()
+  {
+    searchController =
+      SearchAccessoryController(nibName: "SearchAccessoryController", bundle: nil)
+    searchController.isHidden = true
+    searchController.delegate = self
+    view.window?.addTitlebarAccessoryViewController(searchController)
   }
   
   func finishLoad(repository: XTRepository)
@@ -44,24 +47,6 @@ class HistoryViewController: NSViewController
   {
     (historyTable.dataSource as? HistoryTableController)?.reload()
     fileViewController.reload()
-  }
-
-  @IBAction
-  func performFindPanelAction(_ sender: Any)
-  {
-    setScopeBarVisble(true)
-  }
-  
-  @IBAction
-  func closeScopeBar(_ sender: Any)
-  {
-    setScopeBarVisble(false)
-  }
-  
-  @IBAction
-  func changeSearchType(_ sender: Any)
-  {
-    
   }
 }
 

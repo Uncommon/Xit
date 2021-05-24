@@ -42,10 +42,6 @@ extension XTWindowController
     // not objc compatible.
     viewController.delegate = self
     viewController.finishSetup()
-    viewController.proxyIcon.bind(NSBindingName.hidden,
-                                  to: queue,
-                                  withKeyPath: #keyPath(TaskQueue.busy),
-                                  options: nil)
     viewController.bind(.progressHidden,
                         to: queue,
                         withKeyPath: #keyPath(TaskQueue.busy),
@@ -85,6 +81,6 @@ extension XTWindowController: TitleBarDelegate
 
   func search()
   {
-    historyController.toggleScopeBar()
+    historyController.toggleSearchBar()
   }
 }

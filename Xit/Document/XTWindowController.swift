@@ -90,10 +90,39 @@ class XTWindowController: NSWindowController,
       self?.titleBarController?.selectedBranch = repo.currentBranch
       self?.updateMiniwindowTitle()
     })
+    kvObservers.append(window!.observe(\.tabbedWindows) {
+      [weak self] (window, _) in
+      self?.updateWindowStyle(window)
+    })
     sidebarController.repo = repo
     historyController.finishLoad(repository: repo)
     configureTitleBarController(repository: repo)
     updateTabStatus()
+    updateWindowStyle(window!)
+  }
+  
+  func updateWindowStyle(_ window: NSWindow)
+  {
+    guard let toolbar = window.toolbar
+    else { return }
+    var style = window.styleMask
+    let findSeparator: (NSToolbarItem) -> Bool = {
+      $0.itemIdentifier == .sidebarTrackingSeparator
+    }
+    
+    if window.tabbedWindows == nil {
+      style.formUnion([.fullSizeContentView])
+      if (!toolbar.items.contains(where: findSeparator)) {
+        toolbar.insertItem(withItemIdentifier: .sidebarTrackingSeparator, at: 3)
+      }
+    }
+    else {
+      style.remove(.fullSizeContentView)
+      if let separatorIndex = toolbar.items.firstIndex(where: findSeparator) {
+        toolbar.removeItem(at: separatorIndex)
+      }
+    }
+    window.styleMask = style
   }
 
   @objc
@@ -286,7 +315,6 @@ extension XTWindowController: NSWindowDelegate
     let window = self.window!
     
     Signpost.event(.windowControllerLoad)
-    window.titleVisibility = .hidden
     window.delegate = self
     splitViewController = contentViewController as? NSSplitViewController
     titleBarController.splitView = splitViewController.splitView
@@ -332,13 +360,10 @@ extension XTWindowController: NSWindowDelegate
     
     updateMiniwindowTitle()
     updateNavButtons()
-    window.toolbar?.centeredItemIdentifier = .title
   }
 
   func windowWillClose(_ notification: Notification)
   {
-    titleBarController.titleLabel?.unbind(◊"value")
-    titleBarController.proxyIcon?.unbind(◊"hidden")
     titleBarController.spinner?.unbind(◊"hidden")
     // For some reason this avoids a crash
     window?.makeFirstResponder(nil)

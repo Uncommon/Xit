@@ -122,17 +122,16 @@ extension NSTableView
   
   func scrollRowToCenter(_ row: Int)
   {
-    guard let viewRect = superview?.frame
+    guard let clipView = superview as? NSClipView
     else { return }
     let rowRect = rect(ofRow: row)
     var scrollOrigin = rowRect.origin
-    
-    scrollOrigin.y += (rowRect.size.height - viewRect.size.height)/2
-    if scrollOrigin.y < 0 {
-      scrollOrigin.y = 0
-    }
-    scrollOrigin.y -= headerView?.bounds.size.height ?? 0
-    superview?.animator().setBoundsOrigin(scrollOrigin)
+
+    let tableHalfHeight = clipView.frame.height * 0.5
+    let rowRectHalfHeight = rowRect.height * 0.5
+
+    scrollOrigin.y = (scrollOrigin.y - tableHalfHeight) + rowRectHalfHeight
+    clipView.animator().setBoundsOrigin(scrollOrigin)
   }
 }
 

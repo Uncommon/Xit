@@ -49,6 +49,7 @@ struct UIString: RawRepresentable
   static let createRemote = ›"Create Remote"
   static let delete = ›"Delete"
   static let deleteBranch = ›"Delete Branch"
+  static let detached = ›"Detached"
   static let dontReplace = ›"Don't Replace"
   static let discard = ›"Discard"
   static let drop = ›"Drop"

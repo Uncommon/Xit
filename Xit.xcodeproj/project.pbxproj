@@ -16,6 +16,8 @@
 		895CD52E265379450073F15A /* CommitPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895CD52D265379450073F15A /* CommitPanel.swift */; };
 		896A29F71E4C3620002C5EC8 /* PreviewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896A29F61E4C3620002C5EC8 /* PreviewItem.swift */; };
 		897056ED20E412AC0020F5E9 /* ClickThroughImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897056EC20E412AC0020F5E9 /* ClickThroughImageView.swift */; };
+		8987EF30265840C5004FA509 /* SearchAccessoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8987EF2F265840C5004FA509 /* SearchAccessoryController.swift */; };
+		8987EF432658558A004FA509 /* SearchAccessoryController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8987EF422658558A004FA509 /* SearchAccessoryController.xib */; };
 		89880ECF20CF2B99007042F8 /* FlippedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89880ECE20CF2B99007042F8 /* FlippedView.swift */; };
 		89880ED120D02F9B007042F8 /* ClickableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89880ED020D02F9B007042F8 /* ClickableTextField.swift */; };
 		89880EDB20D08674007042F8 /* RefTokenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89880EDA20D08674007042F8 /* RefTokenView.swift */; };
@@ -452,6 +454,8 @@
 		895CD52D265379450073F15A /* CommitPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommitPanel.swift; sourceTree = "<group>"; };
 		896A29F61E4C3620002C5EC8 /* PreviewItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewItem.swift; sourceTree = "<group>"; };
 		897056EC20E412AC0020F5E9 /* ClickThroughImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickThroughImageView.swift; sourceTree = "<group>"; };
+		8987EF2F265840C5004FA509 /* SearchAccessoryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAccessoryController.swift; sourceTree = "<group>"; };
+		8987EF422658558A004FA509 /* SearchAccessoryController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchAccessoryController.xib; sourceTree = "<group>"; };
 		89880ECE20CF2B99007042F8 /* FlippedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlippedView.swift; sourceTree = "<group>"; };
 		89880ED020D02F9B007042F8 /* ClickableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickableTextField.swift; sourceTree = "<group>"; };
 		89880EDA20D08674007042F8 /* RefTokenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefTokenView.swift; sourceTree = "<group>"; };
@@ -808,6 +812,8 @@
 				C92E30EE1D4FF358001985F7 /* CommitHistory.swift */,
 				C935BD7D1E8BFA4F00BE51F0 /* DateCellView.swift */,
 				89880EDA20D08674007042F8 /* RefTokenView.swift */,
+				8987EF2F265840C5004FA509 /* SearchAccessoryController.swift */,
+				8987EF422658558A004FA509 /* SearchAccessoryController.xib */,
 			);
 			path = HistoryView;
 			sourceTree = "<group>";
@@ -1506,6 +1512,7 @@
 				89AB21EE213DE67500EF7507 /* StashPanelController.xib in Resources */,
 				899DB1A31CE5022400760270 /* CommitEntryController.xib in Resources */,
 				C957B8731D2DB44E0040F858 /* RemoteSheetController.xib in Resources */,
+				8987EF432658558A004FA509 /* SearchAccessoryController.xib in Resources */,
 				89039F561703A9FC000949A8 /* html in Resources */,
 				C90FD5971D217D5B00A30570 /* FetchPanelController.xib in Resources */,
 				DD997DDA173B409500C7DF82 /* Sidebar Menus.xib in Resources */,
@@ -1632,6 +1639,7 @@
 				C9C7730C1D26EE1C00329493 /* PrefsWindowController.swift in Sources */,
 				C9120EE023EE04C00052387E /* ResetPanelController.swift in Sources */,
 				C98925F91DBFCE7000E5645C /* SidebarController.swift in Sources */,
+				8987EF30265840C5004FA509 /* SearchAccessoryController.swift in Sources */,
 				C94154A31ED778980030E481 /* BuildStatusCache.swift in Sources */,
 				C95BD4031F8FD611000A2E2D /* GitEnums.swift in Sources */,
 				C951EB051DD636B900B99FBE /* SidebarCheckedRowView.swift in Sources */,

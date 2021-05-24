@@ -49,8 +49,7 @@ class FetchTests: UnicodeRepoUITests
     
     Window.fetchButton.press(forDuration: 0.5)
     Window.fetchMenu.menuItems["Fetch remote \"\(remoteName)\""].click()
-    // Wait for the progress spinner to go away
-    XCTAssertTrue(Window.proxyIcon.waitForExistence(timeout: 1.0))
+    wait(for: [hiding(of: Window.progressSpinner)], timeout: 1.0)
     
     XCTAssertTrue(statusIndicator.exists)
     XCTAssertEqual(statusIndicator.title, "↓1")
@@ -92,10 +91,9 @@ class PushTests: UnicodeRepoUITests
     Window.pushButton.click()
     
     Window.window.sheets.buttons["Push"].click()
-    // Wait for the progress spinner to go away
-    XCTAssertTrue(Window.proxyIcon.waitForExistence(timeout: 1.0))
-    
-    XCTWaiter(delegate: self).wait(for: [absence(of: statusIndicator)],
+    wait(for: [hiding(of: Window.progressSpinner)], timeout: 1.0)
+
+    XCTWaiter(delegate: self).wait(for: [hiding(of: statusIndicator)],
                                    timeout: 2.0)
   }
   
@@ -105,9 +103,8 @@ class PushTests: UnicodeRepoUITests
     Window.pushMenu.menuItems["Push to any tracking branches on \"\(remoteName)\""].click()
     
     Window.window.sheets.buttons["Push"].click()
-    // Wait for the progress spinner to go away
-    XCTAssertTrue(Window.proxyIcon.waitForExistence(timeout: 1.0))
-    
+    wait(for: [hiding(of: Window.progressSpinner)], timeout: 1.0)
+
     XCTWaiter(delegate: self).wait(for: [absence(of: statusIndicator)],
                                    timeout: 2.0)
   }
@@ -150,9 +147,8 @@ class PushNewTests: UnicodeRepoUITests
     }
     
     PushNewSheet.pushButton.click()
-    // Wait for the progress spinner to go away
-    XCTAssertTrue(Window.proxyIcon.waitForExistence(timeout: 1.0))
-    
+    wait(for: [hiding(of: Window.progressSpinner)], timeout: 2.0)
+
     // check in git whether the tracking branch is set
     let result = env.git.run(args: ["branch", "-lvv", branchName])
     let trackingFound = result.contains("[\(remoteName)/\(branchName)]")

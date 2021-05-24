@@ -24,6 +24,7 @@ extension NSImage
   }
   
   static var xtBranchFolder: NSImage { .init(systemSymbolName: "folder.fill")! }
+  static var xtBranchTemplate: NSImage { .init(named: .xtBranchTemplate)! }
   static var xtCloud: NSImage { .init(systemSymbolName: "cloud")! }
   static var xtCurrentBranch: NSImage { .init(named: NSImage.menuOnStateTemplateName)! }
   static var xtCurrentRemoteBranch: NSImage { .init(systemSymbolName: "checkmark.circle")! }
