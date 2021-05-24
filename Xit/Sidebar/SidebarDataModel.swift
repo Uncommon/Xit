@@ -114,7 +114,7 @@ class SidebarDataModel
   {
     let newRoots = loadRoots()
 
-    Thread.syncOnMainThread {
+    Thread.syncOnMain {
       roots = newRoots
     }
   }

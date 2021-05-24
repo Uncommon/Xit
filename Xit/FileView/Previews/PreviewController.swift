@@ -36,7 +36,7 @@ extension PreviewController: XTFileContentController
       return
     }
     
-    let qlView = Thread.syncOnMainThread { self.qlView }
+    let qlView = Thread.syncOnMain { self.qlView }
     let fileList = selection[0].fileList
   
     if fileList is WorkspaceFileList {

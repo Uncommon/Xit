@@ -21,7 +21,7 @@ extension RepositoryWindowView
 {
   var repoUIController: RepositoryUIController?
   {
-    Thread.syncOnMainThread {
+    Thread.syncOnMain {
       window?.windowController as? RepositoryUIController
     }
   }
@@ -35,7 +35,7 @@ extension RepositoryWindowViewController
   // Use ancestorWindow because window may be nil for hidden views
   var repoUIController: RepositoryUIController?
   {
-    Thread.syncOnMainThread {
+    Thread.syncOnMain {
       view.ancestorWindow?.windowController as? RepositoryUIController
     }
   }

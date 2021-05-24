@@ -280,7 +280,7 @@ extension SideBarDataSource: RepositoryUIAccessor
 {
   var repoUIController: RepositoryUIController?
   {
-    Thread.syncOnMainThread {
+    Thread.syncOnMain {
       outline.window?.windowController as? RepositoryUIController
     }
   }
