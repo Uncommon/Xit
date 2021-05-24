@@ -376,6 +376,10 @@ extension TitleBarController: NSMenuItemValidation
 {
   func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
   {
+    if menuItem.menu?.identifier == ◊"branchMenu" {
+      return true
+    }
+    
     guard let states = delegate?.viewStates
     else { return false }
     let state: Bool

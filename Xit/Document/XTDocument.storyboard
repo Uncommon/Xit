@@ -112,6 +112,7 @@
                                     <progressIndicator key="view" maxValue="100" indeterminate="YES" controlSize="small" style="spinning" id="crc-3R-3u9">
                                         <rect key="frame" x="16" y="14" width="16" height="16"/>
                                         <autoresizingMask key="autoresizingMask"/>
+                                        <accessibility identifier="progress"/>
                                     </progressIndicator>
                                 </toolbarItem>
                                 <toolbarItem implicitItemIdentifier="57B6D0DE-D2B5-44C1-938C-77D30E8DA6A3" explicitItemIdentifier="xit.branches" label="Branches" paletteLabel="Branches" image="branchTemplate" title="main" sizingBehavior="auto" id="9Jc-2J-e8T">
@@ -122,7 +123,7 @@
                                         <popUpButtonCell key="cell" type="roundTextured" title="main" bezelStyle="texturedRounded" image="branchTemplate" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" selectedItem="1dQ-rj-Pwc" id="Qdf-wK-6Ub">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="menu"/>
-                                            <menu key="menu" id="6I7-ip-dfh">
+                                            <menu key="menu" identifier="branchMenu" id="6I7-ip-dfh">
                                                 <items>
                                                     <menuItem title="main" state="on" image="branchTemplate" id="1dQ-rj-Pwc"/>
                                                     <menuItem title="Item 2" id="CF4-O6-nON"/>
@@ -130,6 +131,10 @@
                                                 </items>
                                             </menu>
                                         </popUpButtonCell>
+                                        <accessibility identifier="branchPopup"/>
+                                        <connections>
+                                            <action selector="branchSelected:" target="uko-xc-GwC" id="dT4-W8-yxq"/>
+                                        </connections>
                                     </popUpButton>
                                 </toolbarItem>
                                 <toolbarItem implicitItemIdentifier="293D5F15-AAC0-4597-80FB-FF420A1A59DB" explicitItemIdentifier="NSToolbarSidebarTrackingSeparatorItemIdentifier" label="SBSplit" paletteLabel="SBSplit" tag="-1" bordered="YES" id="f20-3I-3ft">
