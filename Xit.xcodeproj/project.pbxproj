@@ -17,6 +17,7 @@
 		896A29F71E4C3620002C5EC8 /* PreviewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896A29F61E4C3620002C5EC8 /* PreviewItem.swift */; };
 		897056ED20E412AC0020F5E9 /* ClickThroughImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897056EC20E412AC0020F5E9 /* ClickThroughImageView.swift */; };
 		8983E19126641BC20075370C /* ClonePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8983E19026641BC20075370C /* ClonePanel.swift */; };
+		8983E1A4266519020075370C /* LabeledField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8983E1A3266519020075370C /* LabeledField.swift */; };
 		8987EF30265840C5004FA509 /* SearchAccessoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8987EF2F265840C5004FA509 /* SearchAccessoryController.swift */; };
 		8987EF432658558A004FA509 /* SearchAccessoryController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8987EF422658558A004FA509 /* SearchAccessoryController.xib */; };
 		89880ECF20CF2B99007042F8 /* FlippedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89880ECE20CF2B99007042F8 /* FlippedView.swift */; };
@@ -456,6 +457,7 @@
 		896A29F61E4C3620002C5EC8 /* PreviewItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewItem.swift; sourceTree = "<group>"; };
 		897056EC20E412AC0020F5E9 /* ClickThroughImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickThroughImageView.swift; sourceTree = "<group>"; };
 		8983E19026641BC20075370C /* ClonePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClonePanel.swift; sourceTree = "<group>"; };
+		8983E1A3266519020075370C /* LabeledField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledField.swift; sourceTree = "<group>"; };
 		8987EF2F265840C5004FA509 /* SearchAccessoryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAccessoryController.swift; sourceTree = "<group>"; };
 		8987EF422658558A004FA509 /* SearchAccessoryController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchAccessoryController.xib; sourceTree = "<group>"; };
 		89880ECE20CF2B99007042F8 /* FlippedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlippedView.swift; sourceTree = "<group>"; };
@@ -796,6 +798,7 @@
 				C93FFCBC1F13D3B200FDDD78 /* ValidatedSegment.swift */,
 				C9F1B5DD2217247E00293305 /* ViewExtensions.swift */,
 				C957B8651D2D8D500040F858 /* XTKeychain.swift */,
+				8983E1A3266519020075370C /* LabeledField.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1135,6 +1138,7 @@
 		C9790D0920EED4E10024D3EA /* Operations */ = {
 			isa = PBXGroup;
 			children = (
+				8983E19026641BC20075370C /* ClonePanel.swift */,
 				C94866B51D256C24000BDB0A /* FetchOpController.swift */,
 				C90FD5941D217D5B00A30570 /* FetchPanelController.swift */,
 				C90FD5951D217D5B00A30570 /* FetchPanelController.xib */,
@@ -1165,7 +1169,6 @@
 				89AB21EC213DE67500EF7507 /* StashPanelController.xib */,
 				C98925C41DB693CC00E5645C /* TagPanelController.swift */,
 				C98925C51DB693CC00E5645C /* TagPanelController.xib */,
-				8983E19026641BC20075370C /* ClonePanel.swift */,
 			);
 			path = Operations;
 			sourceTree = "<group>";
@@ -1624,6 +1627,7 @@
 				DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */,
 				C957B8661D2D8D500040F858 /* XTKeychain.swift in Sources */,
 				C98AFF9D24FEA63900AD20EC /* GitWorkTree.swift in Sources */,
+				8983E1A4266519020075370C /* LabeledField.swift in Sources */,
 				C90B4EC51FEDB1D600277B13 /* GitStatusList.swift in Sources */,
 				C90DA47924212B7400FFBC26 /* XTWindowController+Operations.swift in Sources */,
 				C94A30261E3154D400B4496B /* TextPreviewController.swift in Sources */,

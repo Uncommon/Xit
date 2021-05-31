@@ -5,6 +5,7 @@ struct ClonePanel: View
   @Binding var url: String
   @Binding var destination: String
   @Binding var name: String
+  @Binding var branches: [String]
   
   typealias CloneField = LabeledField<Text, TextField<Text>, CloneLabelWidth>
   
@@ -13,14 +14,32 @@ struct ClonePanel: View
     VStack {
       Form {
         CloneField("URL:", TextField("", text: $url))
-        CloneField("Destination:", TextField("", text: $destination))
+        HStack {
+          CloneField("Destination:", TextField("", text: $destination))
+          Button {
+            // select a folder
+          } label: {
+            Image(systemName: "folder")
+          }.buttonStyle(BorderlessButtonStyle())
+        }
         CloneField("Name:", TextField("", text: $name))
+        LabeledField(label: Text("Check out branch:"),
+                     content: Picker(selection: .constant(1), label: Text("")) {
+                       ForEach(0..<branches.count) { index in
+                         Text(branches[index])
+                       }
+                     }.labelsHidden(),
+                     key: CloneLabelWidth.self)
       }
         .labelWidth(CloneLabelWidth.self)
       HStack {
         Spacer()
-        Button("Cancel") {}
-        Button("Clone") {}
+        Button("Cancel") {
+          // close the sheet
+        }
+        Button("Clone") {
+          // execute the action
+        }
       }
     }.padding()
   }
@@ -31,91 +50,6 @@ struct CloneLabelWidth: MaxDimensionKey
   static var defaultValue: CGFloat = 0
 }
 
-// MARK: -
-
-struct LabeledField<Label, Content, Key>: View
-  where Label: View, Content: View, Key: MaxDimensionKey
-{
-  let label: Label
-  let content: Content
-  
-  @Environment(\.labelWidth) var labelWidth: CGFloat
-  
-  var body: some View
-  {
-    HStack(alignment: .firstTextBaseline) {
-      label
-        .layoutPriority(1)
-        .fixedSize()
-        .overlay(GeometryReader(content: { geometry in
-          Spacer().preference(key: Key.self, value: geometry.size.width)
-        }))
-        .frame(width: labelWidth, alignment: .trailing)
-      content
-    }
-  }
-}
-
-extension LabeledField where Label == Text
-{
-  init(_ labelText: String, _ content: Content)
-  {
-    self.init(label: Text(labelText), content: content)
-  }
-}
-
-// MARK: -
-
-protocol MaxDimensionKey: PreferenceKey where Value == CGFloat {}
-
-extension MaxDimensionKey
-{
-  static func reduce(value: inout Value, nextValue: () -> Value)
-  {
-    value = max(value, nextValue())
-  }
-}
-
-// MARK: -
-
-struct LabelWidthKey: EnvironmentKey
-{
-  static let defaultValue: CGFloat = 0
-}
-
-extension EnvironmentValues
-{
-  var labelWidth: CGFloat
-  {
-    get { self[LabelWidthKey.self] }
-    set { self[LabelWidthKey.self] = newValue }
-  }
-}
-
-// MARK: -
-
-struct LabelWidthModifier<Key>: ViewModifier where Key: MaxDimensionKey
-{
-  @State var labelWidth: CGFloat = 0
-  
-  func body(content: Content) -> some View
-  {
-    content
-      .onPreferenceChange(Key.self) { labelWidth = $0 }
-      .environment(\.labelWidth, labelWidth)
-  }
-}
-
-extension View
-{
-  func labelWidth<K>(_ key: K.Type) -> some View where K: MaxDimensionKey
-  {
-    modifier(LabelWidthModifier<K>())
-  }
-}
-
-// MARK: -
-
 struct ClonePanel_Previews: PreviewProvider
 {
   struct Preview: View
@@ -123,10 +57,12 @@ struct ClonePanel_Previews: PreviewProvider
     @State var url: String = ""
     @State var destination: String = ""
     @State var name: String = ""
+    @State var branches: [String] = ["default", "main"]
     
     var body: some View
     {
-      ClonePanel(url: $url, destination: $destination, name: $name)
+      ClonePanel(url: $url, destination: $destination,
+                 name: $name, branches: $branches)
     }
   }
   static var previews: some View
