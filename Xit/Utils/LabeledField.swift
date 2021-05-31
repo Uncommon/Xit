@@ -1,10 +1,9 @@
 import SwiftUI
 
-/// A field with a text label and content. Fields using the same `Key` will
-/// have their labels set to the same width as long as a parent view uses the
-/// `.labelWidth()` modifier.
-struct LabeledField<Label, Content, Key>: View
-  where Label: View, Content: View, Key: MaxDimensionKey
+/// A field with a label and content. Inside a parent view that uses the
+/// `labelWidthGroup()` modifier, all field labels have the same width.
+struct LabeledField<Label, Content>: View
+  where Label: View, Content: View
 {
   let label: Label
   let content: Content
@@ -18,14 +17,15 @@ struct LabeledField<Label, Content, Key>: View
         .layoutPriority(1)
         .fixedSize()
         .overlay(GeometryReader(content: { geometry in
-          Spacer().preference(key: Key.self, value: geometry.size.width)
+          Spacer().preference(key: LabelWidthPreferenceKey.self,
+                              value: geometry.size.width)
         }))
         .frame(width: labelWidth, alignment: .trailing)
       content
     }
   }
   
-  init(label: Label, content: Content, key: Key.Type = Key.self)
+  init(label: Label, content: Content)
   {
     self.label = label
     self.content = content
@@ -34,10 +34,16 @@ struct LabeledField<Label, Content, Key>: View
 
 extension LabeledField where Label == Text
 {
+  /// Convenience initializer for a field with a simple text label.
   init(_ labelText: String, _ content: Content)
   {
     self.init(label: Text(labelText), content: content)
   }
+}
+
+private struct LabelWidthPreferenceKey: MaxDimensionKey
+{
+  static var defaultValue: CGFloat = 0
 }
 
 // MARK: -
@@ -62,9 +68,7 @@ struct LabelWidthKey: EnvironmentKey
 
 extension EnvironmentValues
 {
-  /// Communicates the largest label width to subviews. The value is not
-  /// differentiated by preference key, so only one label width can be used
-  /// inside a given parent view.
+  /// Communicates the largest label width to subviews.
   var labelWidth: CGFloat
   {
     get { self[LabelWidthKey.self] }
@@ -74,23 +78,23 @@ extension EnvironmentValues
 
 // MARK: -
 
-struct LabelWidthModifier<Key>: ViewModifier where Key: MaxDimensionKey
+struct LabelWidthModifier: ViewModifier
 {
   @State var labelWidth: CGFloat = 0
   
   func body(content: Content) -> some View
   {
     content
-      .onPreferenceChange(Key.self) { labelWidth = $0 }
+      .onPreferenceChange(LabelWidthPreferenceKey.self) { labelWidth = $0 }
       .environment(\.labelWidth, labelWidth)
   }
 }
 
 extension View
 {
-  /// Sets the preference key used for label width among subviews.
-  func labelWidth<K>(_ key: K.Type) -> some View where K: MaxDimensionKey
+  /// Identifies a group within which all field labels have the same width.
+  func labelWidthGroup() -> some View
   {
-    modifier(LabelWidthModifier<K>())
+    modifier(LabelWidthModifier())
   }
 }
