@@ -773,32 +773,27 @@
 		31C7C12A13EC730500A65FE9 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				8983E1A5266596160075370C /* Extensions */,
 				DDDDAF1318162212009F8BA1 /* XTQueueUtils.c */,
 				DDDDAF2018162258009F8BA1 /* XTQueueUtils.h */,
 				C9B023521F61A06900896EA9 /* LibGitExtensions.h */,
 				C9B023511F61A06900896EA9 /* LibGitExtensions.m */,
-				89D47941170894A200C04D89 /* NSAttributedString+XTExtensions.h */,
-				89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */,
 				C967C4AE1F96BA55002166F7 /* Cache.swift */,
 				89880ED020D02F9B007042F8 /* ClickableTextField.swift */,
 				897056EC20E412AC0020F5E9 /* ClickThroughImageView.swift */,
-				C9EA19082350E5DE00DDAA25 /* CocoaExtensions.swift */,
 				C947367D1DF08C03000E3A05 /* ContextMenuOutlineView.swift */,
 				C9EA18F6234F8DB000DDAA25 /* ControlValueWrappers.swift */,
 				C9FFCC851FABC24B00FA2F21 /* ExpansionTextField.swift */,
 				C9BC1B9A1DDF51B900C71562 /* FileEventStream.swift */,
 				89880ECE20CF2B99007042F8 /* FlippedView.swift */,
-				C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */,
+				8983E1A3266519020075370C /* LabeledField.swift */,
 				C95BD3EE1F8ECEC9000A2E2D /* Mutex.swift */,
 				C97E319D20BF26B300E74D2F /* NSTreeNode+FileChange.swift */,
 				C957B84A1D2D53040040F858 /* SheetController.swift */,
-				C97E31AF20BF271300E74D2F /* StringExtensions.swift */,
 				C9864465207E9CAC0088209B /* StringIdentifiers.swift */,
 				C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */,
 				C93FFCBC1F13D3B200FDDD78 /* ValidatedSegment.swift */,
-				C9F1B5DD2217247E00293305 /* ViewExtensions.swift */,
 				C957B8651D2D8D500040F858 /* XTKeychain.swift */,
-				8983E1A3266519020075370C /* LabeledField.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -830,6 +825,19 @@
 				3DB98C8423E0928A0039B454 /* Shared.xcconfig */,
 			);
 			path = "Xcode-config";
+			sourceTree = "<group>";
+		};
+		8983E1A5266596160075370C /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				89D47941170894A200C04D89 /* NSAttributedString+XTExtensions.h */,
+				89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */,
+				C9EA19082350E5DE00DDAA25 /* CocoaExtensions.swift */,
+				C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */,
+				C97E31AF20BF271300E74D2F /* StringExtensions.swift */,
+				C9F1B5DD2217247E00293305 /* ViewExtensions.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		C3FA46F113D0F8E200AC4F9B = {
