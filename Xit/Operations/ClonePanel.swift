@@ -12,14 +12,7 @@ struct ClonePanel: View
     VStack {
       Form {
         LabeledField("URL:", TextField("", text: $url))
-        HStack {
-          LabeledField("Destination:", TextField("", text: $destination))
-          Button {
-            // select a folder
-          } label: {
-            Image(systemName: "folder")
-          }.buttonStyle(BorderlessButtonStyle())
-        }
+        LabeledField("Destination:", PathField(path: $destination))
         LabeledField("Name:", TextField("", text: $name))
         LabeledField(label: Text("Check out branch:"),
                      content: Picker(selection: .constant(1), label: Text("")) {
