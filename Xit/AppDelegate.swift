@@ -18,12 +18,19 @@ class AppDelegate: NSObject
   @IBAction
   func cloneRepository(_ sender: Any?)
   {
-    ClonePanelController.panel.makeKeyAndOrderFront(sender)
+    if let openPanel = openPanel {
+      openPanel.close()
+      self.openPanel = nil
+    }
+    ClonePanelController.instance.showWindow(sender)
   }
   
   @IBAction
   func openDocument(_ sender: Any?)
   {
+    if ClonePanelController.isShowingPanel {
+      ClonePanelController.instance.close()
+    }
     if let openPanel = openPanel {
       openPanel.makeKeyAndOrderFront(self)
       return

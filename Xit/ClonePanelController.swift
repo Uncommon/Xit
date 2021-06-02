@@ -10,7 +10,7 @@ class CloneData: ObservableObject
   @Published var recurse: Bool = true
 }
 
-class ClonePanelController: NSHostingController<ClonePanel>
+class ClonePanelController: NSWindowController
 {
   let data = CloneData()
   
@@ -20,25 +20,22 @@ class ClonePanelController: NSHostingController<ClonePanel>
   var branches: [String] = []
   var recurse: Bool = true
   
-  private static weak var currentPanel: NSWindow?
+  private static var currentController: ClonePanelController?
   
-  static var panel: NSWindow
+  static var isShowingPanel: Bool { currentController != nil }
+  
+  static var instance: ClonePanelController
   {
-    if let panel = currentPanel {
+    if let panel = currentController {
       return panel
     }
     else {
-      let panel = createPanel()
+      let controller = ClonePanelController.init()
       
-      currentPanel = panel
-      panel.center()
-      return panel
+      currentController = controller
+      controller.window?.center()
+      return controller
     }
-  }
-  
-  init()
-  {
-    super.init(rootView: ClonePanel(data: data))
   }
   
   @objc required dynamic init?(coder: NSCoder)
@@ -71,21 +68,35 @@ class ClonePanelController: NSHostingController<ClonePanel>
     catch {}
   }
   
-  static func createPanel() -> NSWindow
+  init()
   {
     let window = NSWindow(contentRect: .init(origin: .zero,
                                              size: .init(width: 300,
                                                          height: 100)),
                           styleMask: [.closable, .resizable, .titled],
                           backing: .buffered, defer: false)
-    let controller = ClonePanelController()
+    let viewController = NSHostingController(rootView: ClonePanel(data: data))
 
+    super.init(window: window)
     window.title = "Clone"
-    window.contentViewController = controller
+    window.contentViewController = viewController
     window.collectionBehavior = [.transient, .participatesInCycle,
                                  .fullScreenAuxiliary]
     window.standardWindowButton(.zoomButton)?.isEnabled = false
     window.center()
-    return window
+    window.delegate = self
+  }
+}
+
+extension ClonePanelController: NSWindowDelegate
+{
+  func windowWillClose(_ notification: Notification)
+  {
+    guard let window = notification.object as? NSWindow
+    else { return }
+    
+    if window == Self.currentController?.window {
+      Self.currentController = nil
+    }
   }
 }
