@@ -11,6 +11,7 @@ public enum RepoError: Swift.Error
   case fileNotFound(path: String)
   case gitError(Int32)
   case invalidName(String)
+  case invalidNameGiven
   case localConflict
   case mergeInProgress
   case notFound
@@ -49,6 +50,8 @@ public enum RepoError: Swift.Error
         return .gitError(code)
       case .invalidName(let name):
         return .invalidName(name)
+      case .invalidNameGiven:
+        return .invalidNameGiven
       case .patchMismatch:
         return .patchMismatch
       case .commitNotFound(let sha):
@@ -79,6 +82,8 @@ public enum RepoError: Swift.Error
         self = .mergeInProgress
       case GIT_EUNCOMMITTED, GIT_EINDEXDIRTY:
         self = .workspaceDirty
+      case GIT_EINVALIDSPEC:
+        self = .invalidNameGiven
       default:
         self = .gitError(gitCode.rawValue)
     }

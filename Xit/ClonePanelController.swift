@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import Combine
 
 class CloneData: ObservableObject
 {
@@ -8,11 +9,16 @@ class CloneData: ObservableObject
   @Published var name: String = ""
   @Published var branches: [String] = []
   @Published var recurse: Bool = true
+  
+  @Published var inProgress: Bool = false
+  @Published var urlValid: Bool = false
+  @Published var error: String?
 }
 
 class ClonePanelController: NSWindowController
 {
   let data = CloneData()
+  var urlObserver: AnyCancellable?
   
   var url: String = ""
   var destination: String = ""
@@ -45,27 +51,27 @@ class ClonePanelController: NSWindowController
   
   func clone()
   {
-    do {
-      var options = git_clone_options.defaultOptions()
-      let checkoutBranch = "main" // get the selected branch
-      
-      try checkoutBranch.withCString { branchPtr in
-        options.bare = 0
-        options.checkout_branch = branchPtr
-        // fetch progress callbacks
-
-        let repo = try OpaquePointer.from {
-          git_clone(&$0, url, destination +/ name, &options)
-        }
-        
-        // open the repo
-      }
-      
-    }
-    catch let error as RepoError {
-      // error alert
-    }
-    catch {}
+//    do {
+//      var options = git_clone_options.defaultOptions()
+//      let checkoutBranch = "main" // get the selected branch
+//      
+//      try checkoutBranch.withCString { branchPtr in
+//        options.bare = 0
+//        options.checkout_branch = branchPtr
+//        // fetch progress callbacks
+//
+//        let repo = try OpaquePointer.from {
+//          git_clone(&$0, url, destination +/ name, &options)
+//        }
+//        
+//        // open the repo
+//      }
+//      
+//    }
+//    catch _ as RepoError {
+//      // error alert
+//    }
+//    catch {}
   }
   
   init()
@@ -85,6 +91,51 @@ class ClonePanelController: NSWindowController
     window.standardWindowButton(.zoomButton)?.isEnabled = false
     window.center()
     window.delegate = self
+    
+    self.urlObserver = data.$url.debounce(for: 0.5, scheduler: DispatchQueue.main)
+                                .sink {
+      self.readURL($0)
+    }
+  }
+  
+  func readURL(_ newURL: String)
+  {
+    data.inProgress = true
+    defer { data.inProgress = false }
+    data.urlValid = false
+    data.branches = []
+    
+    guard let url = URL(string: newURL),
+          url.scheme != nil && url.host != nil,
+          let remote = GitRemote(url: url)
+    else {
+      data.error = newURL.isEmpty ? nil : "Invalid URL"
+      return
+    }
+
+    do {
+      // May need a password callback depending on the host
+      let heads = try remote.withConnection(direction: .fetch,
+                                            callbacks: .init(),
+                                            action: {
+        try $0.referenceAdvertisements()
+      })
+
+      data.branches = heads.compactMap { head in
+        head.symrefTarget.hasPrefix(RefPrefixes.heads)
+          ? head.symrefTarget.droppingPrefix(RefPrefixes.heads)
+          : nil
+      }
+    }
+    catch let error as RepoError {
+      data.error = error.localizedDescription
+      return
+    }
+    catch {
+      return
+    }
+
+    data.urlValid = true
   }
 }
 

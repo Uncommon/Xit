@@ -4,9 +4,6 @@ struct ClonePanel: View
 {
   @ObservedObject var data: CloneData
   
-  @State var inProgress: Bool = false
-  @State var urlValid: Bool = false
-  
   var body: some View
   {
     VStack {
@@ -14,9 +11,9 @@ struct ClonePanel: View
         LabeledField("URL:", TextField("", text: $data.url)
           { _ in }
           onCommit: {
-            inProgress = true
-            defer { inProgress = false }
-            urlValid = false
+            data.inProgress = true
+            defer { data.inProgress = false }
+            data.urlValid = false
             data.branches = []
             
             guard let url = URL(string: self.data.url),
@@ -36,7 +33,7 @@ struct ClonePanel: View
                 ? head.symrefTarget.droppingPrefix(RefPrefixes.heads)
                 : nil
             }
-            urlValid = true
+            data.urlValid = true
           })
         LabeledField("Destination:", PathField(path: $data.destination))
         LabeledField("Name:", TextField("", text: $data.name))
@@ -45,13 +42,18 @@ struct ClonePanel: View
                       ForEach(0..<data.branches.count) { index in
                         Text(data.branches[index])
                        }
-                     }.labelsHidden())
+                     }.labelsHidden().disabled(data.branches.isEmpty))
         LabeledField("", Toggle("Recurse submodules", isOn: $data.recurse))
       }.labelWidthGroup()
       Spacer(minLength: 12)
       HStack {
-        if inProgress {
+        if data.inProgress {
           ProgressView()
+        }
+        if let error = data.error {
+          Image(systemName: "exclamationmark.triangle.fill")
+            .renderingMode(.original)
+          Text(error)
         }
         Spacer()
         Button("Cancel") {
@@ -60,7 +62,7 @@ struct ClonePanel: View
         Button("Clone") {
           // execute the action
         }.keyboardShortcut(.defaultAction)
-          .disabled(!urlValid)
+          .disabled(!data.urlValid)
       }
     }
       .padding()
@@ -73,7 +75,7 @@ struct ClonePanel_Previews: PreviewProvider
 {
   struct Preview: View
   {
-    @StateObject var data: CloneData = .init()
+    @StateObject var data: CloneData
     
     var body: some View
     {
@@ -82,6 +84,24 @@ struct ClonePanel_Previews: PreviewProvider
   }
   static var previews: some View
   {
-    Preview()
+    Group {
+      Preview(data: .init())
+      Preview(data: .init().error("Oops!").branches(["main", "master"]))
+    }
+  }
+}
+
+extension CloneData
+{
+  func error(_ e: String) -> CloneData
+  {
+    error = e
+    return self
+  }
+  
+  func branches(_ b: [String]) -> CloneData
+  {
+    branches = b
+    return self
   }
 }
