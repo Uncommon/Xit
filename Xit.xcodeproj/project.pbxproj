@@ -12,6 +12,7 @@
 		891052D82523F3D30095E299 /* TestErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891052D72523F3D30095E299 /* TestErrors.swift */; };
 		891052D92523F3D30095E299 /* TestErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891052D72523F3D30095E299 /* TestErrors.swift */; };
 		891261B01F867FCC00C292B7 /* GitTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891261AF1F867FCC00C292B7 /* GitTree.swift */; };
+		891B02142666C36400E20F2B /* ClonePanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891B02132666C36400E20F2B /* ClonePanelController.swift */; };
 		895CD52226507E3E0073F15A /* FakePullRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895CD52126507E3E0073F15A /* FakePullRequest.swift */; };
 		895CD52E265379450073F15A /* CommitPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895CD52D265379450073F15A /* CommitPanel.swift */; };
 		896A29F71E4C3620002C5EC8 /* PreviewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896A29F61E4C3620002C5EC8 /* PreviewItem.swift */; };
@@ -452,6 +453,7 @@
 		89039F551703A9FC000949A8 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
 		891052D72523F3D30095E299 /* TestErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestErrors.swift; sourceTree = "<group>"; };
 		891261AF1F867FCC00C292B7 /* GitTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitTree.swift; sourceTree = "<group>"; };
+		891B02132666C36400E20F2B /* ClonePanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClonePanelController.swift; sourceTree = "<group>"; };
 		894C8DE51CCD06FE001A4B80 /* Xit-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Xit-Bridging-Header.h"; sourceTree = "<group>"; };
 		895CD52126507E3E0073F15A /* FakePullRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakePullRequest.swift; sourceTree = "<group>"; };
 		895CD52D265379450073F15A /* CommitPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommitPanel.swift; sourceTree = "<group>"; };
@@ -922,6 +924,7 @@
 				89039F551703A9FC000949A8 /* html */,
 				C3FA470713D0F8E200AC4F9B /* Supporting Files */,
 				89880EEC20D17D1E007042F8 /* Media.xcassets */,
+				891B02132666C36400E20F2B /* ClonePanelController.swift */,
 			);
 			path = Xit;
 			sourceTree = "<group>";
@@ -1600,6 +1603,7 @@
 				C3FA471413D0F8E200AC4F9B /* XTDocument.m in Sources */,
 				C93FFCBD1F13D3B200FDDD78 /* ValidatedSegment.swift in Sources */,
 				C90839A623E4C646008C2787 /* WorkspaceStatusIndicator.swift in Sources */,
+				891B02142666C36400E20F2B /* ClonePanelController.swift in Sources */,
 				C94736781DEF5AAE000E3A05 /* GitExtensions.swift in Sources */,
 				C926804E1D074EC500E422FA /* RepositorySelection.swift in Sources */,
 				C9F78B141D0896AF008490EA /* SidebarItem.swift in Sources */,

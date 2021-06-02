@@ -43,6 +43,12 @@ extension git_checkout_options: GitVersionedOptions
   }
 }
 
+extension git_clone_options: GitVersionedOptions
+{
+  static var version: Int32 { GIT_CLONE_OPTIONS_VERSION }
+  static var initializer: Initializer { git_clone_init_options }
+}
+
 extension git_fetch_options: GitVersionedOptions
 {
   static var version: Int32 { GIT_FETCH_OPTIONS_VERSION }

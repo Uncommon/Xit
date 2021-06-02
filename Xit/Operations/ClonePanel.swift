@@ -2,11 +2,7 @@ import SwiftUI
 
 struct ClonePanel: View
 {
-  @Binding var url: String
-  @Binding var destination: String
-  @Binding var name: String
-  @Binding var branches: [String]
-  @Binding var recurse: Bool
+  @ObservedObject var data: CloneData
   
   @State var inProgress: Bool = false
   @State var urlValid: Bool = false
@@ -15,15 +11,15 @@ struct ClonePanel: View
   {
     VStack {
       Form {
-        LabeledField("URL:", TextField("", text: $url)
+        LabeledField("URL:", TextField("", text: $data.url)
           { _ in }
           onCommit: {
             inProgress = true
             defer { inProgress = false }
             urlValid = false
-            branches = []
+            data.branches = []
             
-            guard let url = URL(string: self.url),
+            guard let url = URL(string: self.data.url),
                   let remote = GitRemote(url: url)
             else { return }
 
@@ -35,22 +31,22 @@ struct ClonePanel: View
             })
             else { return }
 
-            branches = heads.compactMap { head in
+            data.branches = heads.compactMap { head in
               head.symrefTarget.hasPrefix(RefPrefixes.heads)
                 ? head.symrefTarget.droppingPrefix(RefPrefixes.heads)
                 : nil
             }
             urlValid = true
           })
-        LabeledField("Destination:", PathField(path: $destination))
-        LabeledField("Name:", TextField("", text: $name))
+        LabeledField("Destination:", PathField(path: $data.destination))
+        LabeledField("Name:", TextField("", text: $data.name))
         LabeledField(label: Text("Check out branch:"),
                      content: Picker(selection: .constant(1), label: Text("")) {
-                       ForEach(0..<branches.count) { index in
-                         Text(branches[index])
+                      ForEach(0..<data.branches.count) { index in
+                        Text(data.branches[index])
                        }
                      }.labelsHidden())
-        LabeledField("", Toggle("Recurse submodules", isOn: $recurse))
+        LabeledField("", Toggle("Recurse submodules", isOn: $data.recurse))
       }.labelWidthGroup()
       HStack {
         if inProgress {
@@ -65,7 +61,10 @@ struct ClonePanel: View
         }.keyboardShortcut(.defaultAction)
           .disabled(!urlValid)
       }
-    }.padding()
+    }
+      .padding()
+      .fixedSize(horizontal: false, vertical: true)
+      .frame(minWidth: 500)
   }
 }
 
@@ -73,16 +72,11 @@ struct ClonePanel_Previews: PreviewProvider
 {
   struct Preview: View
   {
-    @State var url: String = ""
-    @State var destination: String = ""
-    @State var name: String = ""
-    @State var branches: [String] = ["default", "main"]
-    @State var recurse: Bool = false
+    @StateObject var data: CloneData = .init()
     
     var body: some View
     {
-      ClonePanel(url: $url, destination: $destination,
-                 name: $name, branches: $branches, recurse: $recurse)
+      ClonePanel(data: data)
     }
   }
   static var previews: some View

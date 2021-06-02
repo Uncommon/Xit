@@ -16,6 +16,12 @@ class AppDelegate: NSObject
   }
   
   @IBAction
+  func cloneRepository(_ sender: Any?)
+  {
+    ClonePanelController.panel.makeKeyAndOrderFront(sender)
+  }
+  
+  @IBAction
   func openDocument(_ sender: Any?)
   {
     if let openPanel = openPanel {
