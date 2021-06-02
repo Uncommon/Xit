@@ -48,6 +48,7 @@ struct ClonePanel: View
                      }.labelsHidden())
         LabeledField("", Toggle("Recurse submodules", isOn: $data.recurse))
       }.labelWidthGroup()
+      Spacer(minLength: 12)
       HStack {
         if inProgress {
           ProgressView()

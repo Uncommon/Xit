@@ -82,6 +82,9 @@ class ClonePanelController: NSHostingController<ClonePanel>
 
     window.title = "Clone"
     window.contentViewController = controller
+    window.collectionBehavior = [.transient, .participatesInCycle,
+                                 .fullScreenAuxiliary]
+    window.standardWindowButton(.zoomButton)?.isEnabled = false
     window.center()
     return window
   }
