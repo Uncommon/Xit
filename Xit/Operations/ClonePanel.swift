@@ -4,52 +4,37 @@ struct ClonePanel: View
 {
   @ObservedObject var data: CloneData
   
+  var popupSelection: Binding<String>
+  {
+    data.branches.isEmpty ? .constant("Unavailable") : $data.selectedBranch
+  }
+  
+  var popupBranches: [String]
+  {
+    data.branches.isEmpty ? ["Unavailable"] : data.branches
+  }
+  
   var body: some View
   {
     VStack {
       Form {
-        LabeledField("URL:", TextField("", text: $data.url)
-          { _ in }
-          onCommit: {
-            data.inProgress = true
-            defer { data.inProgress = false }
-            data.urlValid = false
-            data.branches = []
-            
-            guard let url = URL(string: self.data.url),
-                  let remote = GitRemote(url: url)
-            else { return }
-
-            // May need a password callback depending on the host
-            guard let heads = try? remote.withConnection(direction: .fetch,
-                                                         callbacks: .init(),
-                                                         action: {
-              try $0.referenceAdvertisements()
-            })
-            else { return }
-
-            data.branches = heads.compactMap { head in
-              head.symrefTarget.hasPrefix(RefPrefixes.heads)
-                ? head.symrefTarget.droppingPrefix(RefPrefixes.heads)
-                : nil
-            }
-            data.urlValid = true
-          })
+        LabeledField("URL:", TextField("", text: $data.url))
         LabeledField("Destination:", PathField(path: $data.destination))
         LabeledField("Name:", TextField("", text: $data.name))
         LabeledField(label: Text("Check out branch:"),
-                     content: Picker(selection: $data.selectedBranch,
-                                     label: Text("")) {
-                      ForEach(data.branches, id: \.self) { branch in
-                        Text(branch)
+                     content: Picker(selection: popupSelection, label: Text("")) {
+                       ForEach(popupBranches, id: \.self) {
+                         Text($0)
                        }
-                     }.labelsHidden().disabled(data.branches.isEmpty))
+                     }.labelsHidden()
+                      .disabled(data.branches.isEmpty)
+                      .fixedSize(horizontal: true, vertical: true))
         LabeledField("", Toggle("Recurse submodules", isOn: $data.recurse))
       }.labelWidthGroup()
       Spacer(minLength: 12)
       HStack {
         if data.inProgress {
-          ProgressView()
+          ProgressView().controlSize(.small).padding(.trailing, 8)
         }
         if let error = data.error {
           Image(systemName: "exclamationmark.triangle.fill")
@@ -63,12 +48,11 @@ struct ClonePanel: View
         Button("Clone") {
           // execute the action
         }.keyboardShortcut(.defaultAction)
-          .disabled(!data.urlValid)
+         .disabled(!data.urlValid)
       }
-    }
-      .padding()
-      .fixedSize(horizontal: false, vertical: true)
-      .frame(minWidth: 500)
+    }.padding()
+     .fixedSize(horizontal: false, vertical: true)
+     .frame(minWidth: 500)
   }
 }
 
@@ -87,7 +71,10 @@ struct ClonePanel_Previews: PreviewProvider
   {
     Group {
       Preview(data: .init())
-      Preview(data: .init().error("Oops!").branches(["main", "master"]))
+      Preview(data: .init()
+                .error("Oops!")
+                .branches(["main", "master"], "main")
+                .inProgress())
     }
   }
 }
@@ -100,9 +87,16 @@ extension CloneData
     return self
   }
   
-  func branches(_ b: [String]) -> CloneData
+  func branches(_ b: [String], _ s: String) -> CloneData
   {
     branches = b
+    selectedBranch = s
+    return self
+  }
+  
+  func inProgress(_ p: Bool = true) -> CloneData
+  {
+    inProgress = p
     return self
   }
 }
