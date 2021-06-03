@@ -3,6 +3,8 @@ import SwiftUI
 struct ClonePanel: View
 {
   @ObservedObject var data: CloneData
+  let close: () -> Void
+  let clone: () -> Void
   
   var popupSelection: Binding<String>
   {
@@ -43,10 +45,10 @@ struct ClonePanel: View
         }
         Spacer()
         Button("Cancel") {
-          // close the sheet
+          close()
         }.keyboardShortcut(.cancelAction)
         Button("Clone") {
-          // execute the action
+          clone()
         }.keyboardShortcut(.defaultAction)
          .disabled(!data.urlValid)
       }
@@ -64,7 +66,7 @@ struct ClonePanel_Previews: PreviewProvider
     
     var body: some View
     {
-      ClonePanel(data: data)
+      ClonePanel(data: data, close: {}, clone: {})
     }
   }
   static var previews: some View

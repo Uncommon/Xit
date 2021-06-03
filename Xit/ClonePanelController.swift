@@ -44,7 +44,8 @@ class ClonePanelController: NSWindowController
     fatalError("init(coder:) has not been implemented")
   }
   
-  func clone()
+  @IBAction
+  func clone(_ sender: Any?)
   {
 //    do {
 //      var options = git_clone_options.defaultOptions()
@@ -67,6 +68,7 @@ class ClonePanelController: NSWindowController
 //      // error alert
 //    }
 //    catch {}
+    close()
   }
   
   init()
@@ -76,7 +78,12 @@ class ClonePanelController: NSWindowController
                                                          height: 100)),
                           styleMask: [.closable, .resizable, .titled],
                           backing: .buffered, defer: false)
-    let viewController = NSHostingController(rootView: ClonePanel(data: data))
+    let panel = ClonePanel(data: data,
+                           close: { window.close() },
+                           // Avoid capturing self yet
+                           clone: { window.tryToPerform(#selector(Self.clone(_:)),
+                                                        with: nil) })
+    let viewController = NSHostingController(rootView: panel)
 
     super.init(window: window)
     window.title = "Clone"
