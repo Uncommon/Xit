@@ -280,10 +280,13 @@ class GitConnectedRemote: ConnectedRemote
 
   var defaultBranch: String?
   {
-    guard let buf = try? UnsafeMutablePointer<git_buf>.from({
-      git_remote_default_branch($0, remote)
-    }).pointee
+    var buf = git_buf()
+    let result = git_remote_default_branch(&buf, remote)
+    guard result == GIT_OK.rawValue
     else { return nil }
+    defer {
+      git_buf_free(&buf)
+    }
     
     return String(gitBuffer: buf)
   }

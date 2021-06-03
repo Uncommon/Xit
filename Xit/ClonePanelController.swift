@@ -8,6 +8,7 @@ class CloneData: ObservableObject
   @Published var destination: String = ""
   @Published var name: String = ""
   @Published var branches: [String] = []
+  @Published var selectedBranch: String = ""
   @Published var recurse: Bool = true
   
   @Published var inProgress: Bool = false
@@ -19,12 +20,6 @@ class ClonePanelController: NSWindowController
 {
   let data = CloneData()
   var urlObserver: AnyCancellable?
-  
-  var url: String = ""
-  var destination: String = ""
-  var name: String = ""
-  var branches: [String] = []
-  var recurse: Bool = true
   
   private static var currentController: ClonePanelController?
   
@@ -106,7 +101,7 @@ class ClonePanelController: NSWindowController
     data.branches = []
     
     guard let url = URL(string: newURL),
-          url.scheme != nil && url.host != nil,
+          url.scheme != nil && url.host != nil && !url.path.isEmpty,
           let remote = GitRemote(url: url)
     else {
       data.error = newURL.isEmpty ? nil : "Invalid URL"
@@ -115,16 +110,27 @@ class ClonePanelController: NSWindowController
 
     do {
       // May need a password callback depending on the host
-      let heads = try remote.withConnection(direction: .fetch,
-                                            callbacks: .init(),
-                                            action: {
-        try $0.referenceAdvertisements()
+      let (heads, defaultBranchRef) = try
+        remote.withConnection(direction: .fetch,
+                              callbacks: .init(),
+                              action: {
+        (try $0.referenceAdvertisements(), $0.defaultBranch)
       })
+      let defaultBranch = defaultBranchRef.map {
+        $0.droppingPrefix(RefPrefixes.heads)
+      }
 
       data.branches = heads.compactMap { head in
-        head.symrefTarget.hasPrefix(RefPrefixes.heads)
-          ? head.symrefTarget.droppingPrefix(RefPrefixes.heads)
-          : nil
+        head.name.hasPrefix(RefPrefixes.heads) ?
+            head.name.droppingPrefix(RefPrefixes.heads) : nil
+      }
+      if let branch = [defaultBranch, "main", "master"]
+          .compactMap({ $0 })
+          .first(where: { data.branches.contains($0) }) {
+        data.selectedBranch = branch
+      }
+      else {
+        data.selectedBranch = ""
       }
     }
     catch let error as RepoError {

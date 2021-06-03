@@ -38,9 +38,10 @@ struct ClonePanel: View
         LabeledField("Destination:", PathField(path: $data.destination))
         LabeledField("Name:", TextField("", text: $data.name))
         LabeledField(label: Text("Check out branch:"),
-                     content: Picker(selection: .constant(1), label: Text("")) {
-                      ForEach(0..<data.branches.count) { index in
-                        Text(data.branches[index])
+                     content: Picker(selection: $data.selectedBranch,
+                                     label: Text("")) {
+                      ForEach(data.branches, id: \.self) { branch in
+                        Text(branch)
                        }
                      }.labelsHidden().disabled(data.branches.isEmpty))
         LabeledField("", Toggle("Recurse submodules", isOn: $data.recurse))
