@@ -77,6 +77,7 @@ struct PathField: View
     else { return }
     let panel = NSOpenPanel()
     
+    panel.prompt = "Choose"
     panel.canChooseFiles = false
     panel.canChooseDirectories = true
     panel.beginSheetModal(for: window) { response in

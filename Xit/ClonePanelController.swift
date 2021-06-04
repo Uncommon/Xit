@@ -100,20 +100,33 @@ class ClonePanelController: NSWindowController
     }
   }
   
+  func validate(url: URL) -> Bool
+  {
+    guard let scheme = url.scheme,
+          scheme == "file" || url.host != nil,
+          !url.path.isEmpty
+    else { return false }
+    
+    return true
+  }
+  
   func readURL(_ newURL: String)
   {
     data.inProgress = true
     defer { data.inProgress = false }
     data.urlValid = false
     data.branches = []
+    data.error = nil
     
     guard let url = URL(string: newURL),
-          url.scheme != nil && url.host != nil && !url.path.isEmpty,
+          validate(url: url),
           let remote = GitRemote(url: url)
     else {
       data.error = newURL.isEmpty ? nil : "Invalid URL"
       return
     }
+    
+    data.name = url.path.lastPathComponent.deletingPathExtension
 
     do {
       // May need a password callback depending on the host
@@ -141,7 +154,12 @@ class ClonePanelController: NSWindowController
       }
     }
     catch let error as RepoError {
-      data.error = error.localizedDescription
+      switch error {
+        case .gitError(let code) where code == GIT_ERROR.rawValue:
+          data.error = "Unable to access repository"
+        default:
+          data.error = error.localizedDescription
+      }
       return
     }
     catch {

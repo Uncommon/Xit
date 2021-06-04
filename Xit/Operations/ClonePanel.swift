@@ -20,9 +20,11 @@ struct ClonePanel: View
   {
     VStack {
       Form {
-        LabeledField("URL:", TextField("", text: $data.url))
-        LabeledField("Destination:", PathField(path: $data.destination))
+        LabeledField("Source URL:", TextField("",text: $data.url))
+        LabeledField("Clone to:", PathField(path: $data.destination))
         LabeledField("Name:", TextField("", text: $data.name))
+        LabeledField("Full path:", Text(data.destination +/ data.name))
+        Divider()
         LabeledField(label: Text("Check out branch:"),
                      content: Picker(selection: popupSelection, label: Text("")) {
                        ForEach(popupBranches, id: \.self) {
@@ -74,6 +76,8 @@ struct ClonePanel_Previews: PreviewProvider
     Group {
       Preview(data: .init())
       Preview(data: .init()
+                .path("/Users/Uncommon/Developer")
+                .name("Repo")
                 .error("Oops!")
                 .branches(["main", "master"], "main")
                 .inProgress())
@@ -84,21 +88,17 @@ struct ClonePanel_Previews: PreviewProvider
 extension CloneData
 {
   func error(_ e: String) -> CloneData
-  {
-    error = e
-    return self
-  }
+  { error = e; return self }
   
   func branches(_ b: [String], _ s: String) -> CloneData
-  {
-    branches = b
-    selectedBranch = s
-    return self
-  }
+  { branches = b; selectedBranch = s; return self }
+  
+  func path(_ p: String) -> CloneData
+  { destination = p; return self }
+  
+  func name(_ n: String) -> CloneData
+  { name = n; return self }
   
   func inProgress(_ p: Bool = true) -> CloneData
-  {
-    inProgress = p
-    return self
-  }
+  { inProgress = p; return self }
 }
