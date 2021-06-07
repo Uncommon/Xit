@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 extension URL
 {
@@ -56,6 +57,24 @@ extension XMLElement
     return children?.compactMap {
       ($0 as? XMLElement)?.attribute(forName: name)?.stringValue
     } ?? []
+  }
+}
+
+extension Publisher
+{
+  /// For each published element, `object`'s `keyPath` is set to false, and then
+  /// a `debounce` is applied on the main queue.
+  public func debounce<T>(
+      afterInvalidating object: T,
+      keyPath: ReferenceWritableKeyPath<T, Bool>,
+      delay: DispatchQueue.SchedulerTimeType.Stride = 0.25)
+    -> Publishers.Debounce<Publishers.Filter<Self>, DispatchQueue>
+    where T: AnyObject
+  {
+    return filter { _ in
+      object[keyPath: keyPath] = false
+      return true
+    }.debounce(for: delay, scheduler: DispatchQueue.main)
   }
 }
 

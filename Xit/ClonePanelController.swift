@@ -13,6 +13,7 @@ class CloneData: ObservableObject
   
   @Published var inProgress: Bool = false
   @Published var urlValid: Bool = false
+  @Published var destinationValid: Bool = false
   @Published var error: String?
 }
 
@@ -20,6 +21,7 @@ class ClonePanelController: NSWindowController
 {
   let data = CloneData()
   var urlObserver: AnyCancellable?
+  var destObserver: AnyCancellable?
   
   private static var currentController: ClonePanelController?
   
@@ -94,10 +96,100 @@ class ClonePanelController: NSWindowController
     window.center()
     window.delegate = self
     
-    self.urlObserver = data.$url.debounce(for: 0.5, scheduler: DispatchQueue.main)
-                                .sink {
-      self.readURL($0)
+    self.urlObserver = data.$url
+      .debounce(afterInvalidating: data, keyPath: \.urlValid)
+      .sink {
+        self.readURL($0)
+      }
+    self.destObserver = data.$destination
+      .debounce(afterInvalidating: data, keyPath: \.destinationValid)
+      .sink { [self] _ in
+        switch validatePath() {
+          case .success(_):
+            data.destinationValid = true
+          case .failure(let error):
+            data.destinationValid = false
+            if error == .noName {
+              data.error = nil
+            }
+            else {
+              data.error = error.localizedDescription.nilIfEmpty
+            }
+        }
+      }
+    
+    data.destination = defaultDestination()
+    DispatchQueue.main.async {
+      // Setting destination can trigger an error when nothing else is filled in
+      self.data.error = nil
     }
+  }
+  
+  func defaultDestination() -> String
+  {
+    let manager = FileManager.default
+    let types: [FileManager.SearchPathDirectory] =
+      [.developerDirectory, .documentDirectory, .userDirectory]
+    
+    return types.firstResult {
+      manager.urls(for: $0, in: .userDomainMask).first
+    }?.path ?? "/"
+  }
+  
+  enum PathValidationError: Error
+  {
+    case noName
+    case alreadyExists
+    case notWritable
+    case unwindFailure
+    
+    var localizedDescription: String
+    {
+      switch self {
+        case .noName:
+          return "Folder name needed"
+        case .alreadyExists:
+          return "Directory already exists"
+        case .notWritable:
+          return "Directory not writable"
+        case .unwindFailure:
+          return "Can't access directory"
+      }
+    }
+  }
+  
+  func validatePath() -> Result<Void, PathValidationError>
+  {
+    guard !data.name.isEmpty
+    else {
+      return .failure(.noName)
+    }
+    
+    let manager = FileManager.default
+    let fullPath = data.destination +/ data.name
+    
+    guard !manager.fileExists(atPath: fullPath)
+    else {
+      return .failure(.alreadyExists)
+    }
+    
+    var path = data.destination
+    
+    repeat {
+      var isDirectory: ObjCBool = false
+      
+      if manager.fileExists(atPath: path,
+                            isDirectory: &isDirectory) &&
+          isDirectory.boolValue {
+        if !manager.isWritableFile(atPath: path.withSuffix("/")) {
+          return .failure(.notWritable)
+        }
+        return .success(())
+      }
+      path = path.deletingLastPathComponent
+    } while !path.isEmpty && path != "/"
+    
+    return .failure(.unwindFailure)
   }
   
   func validate(url: URL) -> Bool

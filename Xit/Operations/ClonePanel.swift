@@ -52,7 +52,7 @@ struct ClonePanel: View
         Button("Clone") {
           clone()
         }.keyboardShortcut(.defaultAction)
-         .disabled(!data.urlValid)
+         .disabled(!data.urlValid || !data.destinationValid)
       }
     }.padding()
      .fixedSize(horizontal: false, vertical: true)
