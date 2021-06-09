@@ -40,7 +40,7 @@ struct ClonePanel: View
         if data.inProgress {
           ProgressView().controlSize(.small).padding(.trailing, 8)
         }
-        if let error = data.error {
+        if let error = data.errorString {
           Image(systemName: "exclamationmark.triangle.fill")
             .renderingMode(.original)
           Text(error)
@@ -52,7 +52,7 @@ struct ClonePanel: View
         Button("Clone") {
           clone()
         }.keyboardShortcut(.defaultAction)
-         .disabled(!data.urlValid || !data.destinationValid)
+         .disabled(!data.ready)
       }
     }.padding()
      .fixedSize(horizontal: false, vertical: true)
@@ -78,7 +78,7 @@ struct ClonePanel_Previews: PreviewProvider
       Preview(data: .init()
                 .path("/Users/Uncommon/Developer")
                 .name("Repo")
-                .error("Oops!")
+                .urlResult(.failure(.invalid))
                 .branches(["main", "master"], "main")
                 .inProgress())
     }
@@ -87,8 +87,8 @@ struct ClonePanel_Previews: PreviewProvider
 
 extension CloneData
 {
-  func error(_ e: String) -> CloneData
-  { error = e; return self }
+  func urlResult(_ r: Result<Void, URLValidationError>) -> CloneData
+  { results.url = r; return self }
   
   func branches(_ b: [String], _ s: String) -> CloneData
   { branches = b; selectedBranch = s; return self }

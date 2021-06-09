@@ -62,17 +62,17 @@ extension XMLElement
 
 extension Publisher
 {
-  /// For each published element, `object`'s `keyPath` is set to false, and then
+  /// For each published element, `object`'s `keyPath` is set to `nil`, and then
   /// a `debounce` is applied on the main queue.
-  public func debounce<T>(
+  public func debounce<T, O>(
       afterInvalidating object: T,
-      keyPath: ReferenceWritableKeyPath<T, Bool>,
+      keyPath: ReferenceWritableKeyPath<T, O?>,
       delay: DispatchQueue.SchedulerTimeType.Stride = 0.25)
     -> Publishers.Debounce<Publishers.Filter<Self>, DispatchQueue>
     where T: AnyObject
   {
     return filter { _ in
-      object[keyPath: keyPath] = false
+      object[keyPath: keyPath] = nil
       return true
     }.debounce(for: delay, scheduler: DispatchQueue.main)
   }

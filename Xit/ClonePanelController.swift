@@ -12,16 +12,156 @@ class CloneData: ObservableObject
   @Published var recurse: Bool = true
   
   @Published var inProgress: Bool = false
-  @Published var urlValid: Bool = false
-  @Published var destinationValid: Bool = false
-  @Published var error: String?
+
+  enum CheckedValues: String, CaseIterable
+  {
+    case url, path
+  }
+  
+  var results = ProritizedResults<CheckedValues>()
+  var errorString: String?
+  { results.firstError?.localizedDescription }
+  var ready: Bool
+  { results.allSucceeded }
+}
+
+/// A collection of results evaluated in prority order, as defined by the order
+/// of cases in `E`.
+@dynamicMemberLookup
+class ProritizedResults<E>
+  where E: CaseIterable & RawRepresentable & Hashable, E.RawValue == String
+{
+  var results: [E: AbstractResult] = [:]
+  
+  /// Evaluates the results in order, and returns the first error found provided
+  /// all previous results were successful.
+  var firstError: Error?
+  {
+    for item in E.allCases {
+      if let result = results[item] {
+        if let error = result.error {
+          return error
+        }
+      }
+      else {
+        return nil
+      }
+    }
+    return nil
+  }
+  
+  var allSucceeded: Bool
+  { E.allCases.allSatisfy { results[$0]?.succeeded ?? false } }
+  
+  /// Enables getting and setting results via `myResults.enumCase`. This is the
+  /// reason for requiring `E.RawValue == String`.
+  subscript(dynamicMember name: String) -> AbstractResult?
+  {
+    get { E(rawValue: name).flatMap { results[$0] } }
+    set { E(rawValue: name).map { results[$0] = newValue } }
+  }
+}
+
+/// Since `Result` is generic, a base type is needed to aggregate results.
+protocol AbstractResult
+{
+  var succeeded: Bool { get }
+  var error: Error? { get }
+}
+
+extension Result: AbstractResult
+{
+  var succeeded: Bool
+  {
+    switch self {
+      case .success(_): return true
+      case .failure(_): return false
+    }
+  }
+  
+  var error: Error?
+  {
+    switch self {
+      case .success(_): return nil
+      case .failure(let error): return error
+    }
+  }
+}
+
+enum PathValidationError: Error
+{
+  case noName
+  case alreadyExists
+  case notWritable
+  case unwindFailure
+}
+
+extension PathValidationError: LocalizedError
+{
+  var errorDescription: String?
+  {
+    switch self {
+      case .noName:
+        return "Folder name needed"
+      case .alreadyExists:
+        return "Directory already exists"
+      case .notWritable:
+        return "Directory not writable"
+      case .unwindFailure:
+        return "Can't access directory"
+    }
+  }
+}
+
+enum URLValidationError: Error
+{
+  case invalid
+  case empty
+  case cantAccess
+  case gitError(RepoError)
+  case unexpected
+}
+
+extension URLValidationError: LocalizedError
+{
+  var errorDescription: String?
+  {
+    switch self {
+      case .invalid:
+        return "Invalid URL"
+      case .empty:
+        return ""
+      case .cantAccess:
+        return "Unable to access repository"
+      case .gitError(let error):
+        return error.localizedDescription
+      case .unexpected:
+        return "Unexpected"
+    }
+  }
+}
+
+enum Validation
+{
+  case success, pending, failure(Error)
+  
+  var ready: Bool
+  {
+    if case .success = self { return true }
+    else { return false }
+  }
+  var error: Error?
+  {
+    if case .failure(let error) = self { return error }
+    else { return nil }
+  }
 }
 
 class ClonePanelController: NSWindowController
 {
   let data = CloneData()
   var urlObserver: AnyCancellable?
-  var destObserver: AnyCancellable?
+  var pathObserver: AnyCancellable?
   
   private static var currentController: ClonePanelController?
   
@@ -88,7 +228,7 @@ class ClonePanelController: NSWindowController
     let viewController = NSHostingController(rootView: panel)
 
     super.init(window: window)
-    window.title = "Clone"
+    window.title = "Clone a Repository"
     window.contentViewController = viewController
     window.collectionBehavior = [.transient, .participatesInCycle,
                                  .fullScreenAuxiliary]
@@ -97,32 +237,44 @@ class ClonePanelController: NSWindowController
     window.delegate = self
     
     self.urlObserver = data.$url
-      .debounce(afterInvalidating: data, keyPath: \.urlValid)
-      .sink {
-        self.readURL($0)
-      }
-    self.destObserver = data.$destination
-      .debounce(afterInvalidating: data, keyPath: \.destinationValid)
-      .sink { [self] _ in
-        switch validatePath() {
-          case .success(_):
-            data.destinationValid = true
-          case .failure(let error):
-            data.destinationValid = false
-            if error == .noName {
-              data.error = nil
+      .debounce(afterInvalidating: data.results, keyPath: \.url)
+      .sink { [self] (url) in
+        data.inProgress = true
+        data.results.url = nil
+        data.branches = []
+        DispatchQueue.global(qos: .userInitiated).async {
+          let result = readURL(url)
+          
+          DispatchQueue.main.async {
+            data.inProgress = false
+            switch result {
+              case .success((let name, let branches, let selectedBranch)):
+                data.name = name
+                data.results.name = nil
+                data.branches = branches
+                data.selectedBranch = selectedBranch
+                data.results.url = result
+              case .failure(.empty):
+                data.results.url = nil
+              default:
+                data.results.url = result
+            }
+            if case .failure(.empty) = result {
+              data.results.url = nil
             }
             else {
-              data.error = error.localizedDescription.nilIfEmpty
+              data.results.url = result
             }
+          }
         }
       }
-    
+    self.pathObserver = data.$destination.combineLatest(data.$name)
+      .debounce(afterInvalidating: data.results, keyPath: \.path)
+      .sink { [self] _ in
+        data.results.path = validatePath()
+      }
+
     data.destination = defaultDestination()
-    DispatchQueue.main.async {
-      // Setting destination can trigger an error when nothing else is filled in
-      self.data.error = nil
-    }
   }
   
   func defaultDestination() -> String
@@ -136,28 +288,7 @@ class ClonePanelController: NSWindowController
     }?.path ?? "/"
   }
   
-  enum PathValidationError: Error
-  {
-    case noName
-    case alreadyExists
-    case notWritable
-    case unwindFailure
-    
-    var localizedDescription: String
-    {
-      switch self {
-        case .noName:
-          return "Folder name needed"
-        case .alreadyExists:
-          return "Directory already exists"
-        case .notWritable:
-          return "Directory not writable"
-        case .unwindFailure:
-          return "Can't access directory"
-      }
-    }
-  }
-  
+  // The advantage of Result<> over throws is you can specify the error type.
   func validatePath() -> Result<Void, PathValidationError>
   {
     guard !data.name.isEmpty
@@ -203,22 +334,19 @@ class ClonePanelController: NSWindowController
   }
   
   func readURL(_ newURL: String)
+    -> Result<(name: String, branches: [String], selectedBranch: String),
+              URLValidationError>
   {
-    data.inProgress = true
-    defer { data.inProgress = false }
-    data.urlValid = false
-    data.branches = []
-    data.error = nil
-    
-    guard let url = URL(string: newURL),
-          validate(url: url),
+    guard let url = URL(string: newURL)
+    else { return .failure(.empty) }
+    guard validate(url: url),
           let remote = GitRemote(url: url)
-    else {
-      data.error = newURL.isEmpty ? nil : "Invalid URL"
-      return
-    }
+    else { return .failure(.invalid) }
+    let name: String
+    let branches: [String]
+    let selectedBranch: String
     
-    data.name = url.path.lastPathComponent.deletingPathExtension
+    name = url.path.lastPathComponent.deletingPathExtension
 
     do {
       // May need a password callback depending on the host
@@ -232,33 +360,34 @@ class ClonePanelController: NSWindowController
         $0.droppingPrefix(RefPrefixes.heads)
       }
 
-      data.branches = heads.compactMap { head in
+      branches = heads.compactMap { head in
         head.name.hasPrefix(RefPrefixes.heads) ?
             head.name.droppingPrefix(RefPrefixes.heads) : nil
       }
       if let branch = [defaultBranch, "main", "master"]
           .compactMap({ $0 })
-          .first(where: { data.branches.contains($0) }) {
-        data.selectedBranch = branch
+          .first(where: { branches.contains($0) }) {
+        selectedBranch = branch
       }
       else {
-        data.selectedBranch = ""
+        selectedBranch = branches.first ?? ""
       }
     }
     catch let error as RepoError {
       switch error {
         case .gitError(let code) where code == GIT_ERROR.rawValue:
-          data.error = "Unable to access repository"
+          return .failure(.cantAccess)
         default:
-          data.error = error.localizedDescription
+          return .failure(.gitError(error))
       }
-      return
     }
     catch {
-      return
+      return .failure(.unexpected)
     }
 
-    data.urlValid = true
+    return .success((name: name,
+                     branches: branches,
+                     selectedBranch: selectedBranch))
   }
 }
 
