@@ -3,7 +3,7 @@ import Foundation
 /// A collection of results evaluated in prority order, as defined by the order
 /// of cases in `E`.
 @dynamicMemberLookup
-class ProritizedResults<E>
+struct ProritizedResults<E>
   where E: CaseIterable & RawRepresentable & Hashable, E.RawValue == String
 {
   var results: [E: AbstractResult] = [:]
@@ -17,6 +17,7 @@ class ProritizedResults<E>
         if let error = result.error {
           return error
         }
+        // otherwise it was a success, so continue with the next result
       }
       else {
         return nil

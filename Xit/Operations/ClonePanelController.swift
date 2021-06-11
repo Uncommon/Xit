@@ -18,11 +18,10 @@ class CloneData: ObservableObject
     case url, path
   }
   
-  var results = ProritizedResults<CheckedValues>()
+  @Published var results: ProritizedResults<CheckedValues> = .init()
+  
   var errorString: String?
   { results.firstError?.localizedDescription }
-  var ready: Bool
-  { results.allSucceeded }
 }
 
 enum PathValidationError: Error
@@ -78,23 +77,7 @@ extension URLValidationError: LocalizedError
   }
 }
 
-enum Validation
-{
-  case success, pending, failure(Error)
-  
-  var ready: Bool
-  {
-    if case .success = self { return true }
-    else { return false }
-  }
-  var error: Error?
-  {
-    if case .failure(let error) = self { return error }
-    else { return nil }
-  }
-}
-
-class ClonePanelController: NSWindowController
+final class ClonePanelController: NSWindowController
 {
   let data = CloneData()
   var urlObserver: AnyCancellable?
@@ -174,13 +157,13 @@ class ClonePanelController: NSWindowController
     window.delegate = self
     
     self.urlObserver = data.$url
-      .debounce(afterInvalidating: data.results, keyPath: \.url)
+      .debounce(afterInvalidating: data, keyPath: \.results.url)
       .sink { [self] (url) in
         data.inProgress = true
         data.results.url = nil
         data.branches = []
         DispatchQueue.global(qos: .userInitiated).async {
-          let result = readURL(url)
+          let result = Self.readURL(url)
           
           DispatchQueue.main.async {
             data.inProgress = false
@@ -206,7 +189,7 @@ class ClonePanelController: NSWindowController
         }
       }
     self.pathObserver = data.$destination.combineLatest(data.$name)
-      .debounce(afterInvalidating: data.results, keyPath: \.path)
+      .debounce(afterInvalidating: data, keyPath: \.results.path)
       .sink { [self] _ in
         data.results.path = validatePath()
       }
@@ -260,7 +243,7 @@ class ClonePanelController: NSWindowController
     return .failure(.unwindFailure)
   }
   
-  func validate(url: URL) -> Bool
+  static func validate(url: URL) -> Bool
   {
     guard let scheme = url.scheme,
           scheme == "file" || url.host != nil,
@@ -270,7 +253,7 @@ class ClonePanelController: NSWindowController
     return true
   }
   
-  func readURL(_ newURL: String)
+  static func readURL(_ newURL: String)
     -> Result<(name: String, branches: [String], selectedBranch: String),
               URLValidationError>
   {

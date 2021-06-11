@@ -927,7 +927,6 @@
 				89039F551703A9FC000949A8 /* html */,
 				C3FA470713D0F8E200AC4F9B /* Supporting Files */,
 				89880EEC20D17D1E007042F8 /* Media.xcassets */,
-				891B02132666C36400E20F2B /* ClonePanelController.swift */,
 			);
 			path = Xit;
 			sourceTree = "<group>";
@@ -1156,6 +1155,7 @@
 			isa = PBXGroup;
 			children = (
 				8983E19026641BC20075370C /* ClonePanel.swift */,
+				891B02132666C36400E20F2B /* ClonePanelController.swift */,
 				C94866B51D256C24000BDB0A /* FetchOpController.swift */,
 				C90FD5941D217D5B00A30570 /* FetchPanelController.swift */,
 				C90FD5951D217D5B00A30570 /* FetchPanelController.xib */,
