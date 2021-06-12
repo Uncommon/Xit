@@ -109,27 +109,32 @@ final class ClonePanelController: NSWindowController
   @IBAction
   func clone(_ sender: Any?)
   {
-//    do {
-//      var options = git_clone_options.defaultOptions()
-//      let checkoutBranch = "main" // get the selected branch
-//      
-//      try checkoutBranch.withCString { branchPtr in
-//        options.bare = 0
-//        options.checkout_branch = branchPtr
-//        // fetch progress callbacks
-//
-//        let repo = try OpaquePointer.from {
-//          git_clone(&$0, url, destination +/ name, &options)
-//        }
-//        
-//        // open the repo
-//      }
-//      
-//    }
-//    catch _ as RepoError {
-//      // error alert
-//    }
-//    catch {}
+    guard let sourceURL = URL(string: data.url)
+    else {
+      return
+    }
+    let destURL = URL(fileURLWithPath: data.destination +/ data.name,
+                      isDirectory: true)
+    
+    // set up the progress panel
+    
+    do {
+      try XTRepository.clone(from: sourceURL,
+                             to: destURL,
+                             branch: data.selectedBranch,
+                             recurseSubmodules: data.recurse)
+        
+      XTDocumentController.shared
+          .openDocument(withContentsOf: destURL, display: true,
+                        completionHandler: { (_, _, _) in })
+    }
+    catch let error as RepoError {
+      let alert = NSAlert()
+      
+      alert.messageText = error.localizedDescription
+      alert.beginSheetModal(for: window!, completionHandler: nil)
+    }
+    catch {}
     close()
   }
   

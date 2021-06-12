@@ -31,6 +31,8 @@ struct ProritizedResults<E>
   
   /// Enables getting and setting results via `myResults.enumCase`. This is the
   /// reason for requiring `E.RawValue == String`.
+  /// - Note: Ideally, this would take a keypath for the enum, but that would
+  /// require static keypaths which are not currently supported in Swift.
   subscript(dynamicMember name: String) -> AbstractResult?
   {
     get { E(rawValue: name).flatMap { results[$0] } }

@@ -334,4 +334,33 @@ extension XTRepository
       return nil
     }
   }
+  
+  @discardableResult
+  public static func clone(from source: URL, to destination: URL,
+                           branch: String,
+                           recurseSubmodules: Bool) throws -> XTRepository?
+  {
+    var options = git_clone_options.defaultOptions()
+    
+    return try branch.withCString { cBranch in
+      options.bare = 0
+      options.checkout_branch = cBranch
+      
+      // progress callbacks
+      
+      let gitRepo = try OpaquePointer.from {
+        git_clone(&$0, source.absoluteString, destination.path, &options)
+      }
+      guard let repo = XTRepository(gitRepo: gitRepo)
+      else { return nil}
+
+      if recurseSubmodules {
+        for sub in repo.submodules() {
+          
+        }
+      }
+      
+      return repo
+    }
+  }
 }
