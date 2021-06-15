@@ -84,3 +84,9 @@ extension git_status_options: GitVersionedOptions
   static var version: Int32 { GIT_STATUS_OPTIONS_VERSION }
   static var initializer: Initializer { git_status_init_options }
 }
+
+extension git_submodule_update_options: GitVersionedOptions
+{
+  static var version: Int32 { GIT_SUBMODULE_UPDATE_OPTIONS_VERSION }
+  static var initializer: Initializer { git_submodule_update_init_options }
+}

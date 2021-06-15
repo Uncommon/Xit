@@ -9,6 +9,16 @@ public protocol Submodule
   var ignoreRule: SubmoduleIgnore { get set }
   var updateStrategy: SubmoduleUpdate { get set }
   var recurse: SubmoduleRecurse { get set }
+  
+  func update(initialize: Bool, callbacks: RemoteCallbacks) throws
+}
+
+extension Submodule
+{
+  public func update(callbacks: RemoteCallbacks) throws
+  {
+    try update(initialize: true, callbacks: callbacks)
+  }
 }
 
 struct SubmoduleStatus: OptionSet
@@ -25,24 +35,22 @@ struct SubmoduleStatus: OptionSet
     self.rawValue = rawValue
   }
   
-  static let inHead = SubmoduleStatus(GIT_SUBMODULE_STATUS_IN_HEAD)
-  static let inIndex = SubmoduleStatus(GIT_SUBMODULE_STATUS_IN_INDEX)
-  static let inConfig = SubmoduleStatus(GIT_SUBMODULE_STATUS_IN_CONFIG)
-  static let inWorkDir = SubmoduleStatus(GIT_SUBMODULE_STATUS_IN_WD)
+  static let inHead = Self(GIT_SUBMODULE_STATUS_IN_HEAD)
+  static let inIndex = Self(GIT_SUBMODULE_STATUS_IN_INDEX)
+  static let inConfig = Self(GIT_SUBMODULE_STATUS_IN_CONFIG)
+  static let inWorkDir = Self(GIT_SUBMODULE_STATUS_IN_WD)
 
-  static let indexAdded = SubmoduleStatus(GIT_SUBMODULE_STATUS_INDEX_ADDED)
-  static let indexDeleted = SubmoduleStatus(GIT_SUBMODULE_STATUS_INDEX_DELETED)
-  static let indexModified = SubmoduleStatus(GIT_SUBMODULE_STATUS_INDEX_MODIFIED)
+  static let indexAdded = Self(GIT_SUBMODULE_STATUS_INDEX_ADDED)
+  static let indexDeleted = Self(GIT_SUBMODULE_STATUS_INDEX_DELETED)
+  static let indexModified = Self(GIT_SUBMODULE_STATUS_INDEX_MODIFIED)
 
-  static let wdUninitialized =
-      SubmoduleStatus(GIT_SUBMODULE_STATUS_WD_UNINITIALIZED)
-  static let wdAdded = SubmoduleStatus(GIT_SUBMODULE_STATUS_WD_ADDED)
-  static let wdDeleted = SubmoduleStatus(GIT_SUBMODULE_STATUS_WD_DELETED)
-  static let wdModified = SubmoduleStatus(GIT_SUBMODULE_STATUS_WD_MODIFIED)
-  static let wdIndexModified =
-      SubmoduleStatus(GIT_SUBMODULE_STATUS_WD_INDEX_MODIFIED)
-  static let wdWDModified = SubmoduleStatus(GIT_SUBMODULE_STATUS_WD_WD_MODIFIED)
-  static let wdUntracked = SubmoduleStatus(GIT_SUBMODULE_STATUS_WD_UNTRACKED)
+  static let wdUninitialized = Self(GIT_SUBMODULE_STATUS_WD_UNINITIALIZED)
+  static let wdAdded = Self(GIT_SUBMODULE_STATUS_WD_ADDED)
+  static let wdDeleted = Self(GIT_SUBMODULE_STATUS_WD_DELETED)
+  static let wdModified = Self(GIT_SUBMODULE_STATUS_WD_MODIFIED)
+  static let wdIndexModified = Self(GIT_SUBMODULE_STATUS_WD_INDEX_MODIFIED)
+  static let wdWDModified = Self(GIT_SUBMODULE_STATUS_WD_WD_MODIFIED)
+  static let wdUntracked = Self(GIT_SUBMODULE_STATUS_WD_UNTRACKED)
 }
 
 extension SubmoduleIgnore
@@ -117,6 +125,18 @@ public class GitSubmodule: Submodule
       git_submodule_set_fetch_recurse_submodules(
             git_submodule_owner(submodule), name,
             git_submodule_recurse_t(newValue.rawValue))
+    }
+  }
+  
+  public func update(initialize: Bool, callbacks: RemoteCallbacks) throws
+  {
+    var options = git_submodule_update_options.defaultOptions()
+    
+    try git_remote_callbacks.withCallbacks(callbacks) {
+      (gitCallbacks) in
+      let result = git_submodule_update(submodule, initialize ? 1 : 0, &options)
+      
+      try RepoError.throwIfGitError(result)
     }
   }
 }

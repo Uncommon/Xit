@@ -191,14 +191,18 @@ public struct RemoteCallbacks
   let downloadProgress: ((TransferProgress) -> Bool)?
   /// Push progress. Return false to stop the operation
   let uploadProgress: ((PushTransferProgress) -> Bool)?
+  /// Message from the server
+  let sidebandMessage: ((String) -> Bool)?
   
   init(passwordBlock: (() -> (String, String)?)? = nil,
        downloadProgress: ((TransferProgress) -> Bool)? = nil,
-       uploadProgress: ((PushTransferProgress) -> Bool)? = nil)
+       uploadProgress: ((PushTransferProgress) -> Bool)? = nil,
+       sidebandMessage: ((String) -> Bool)? = nil)
   {
     self.passwordBlock = passwordBlock
     self.downloadProgress = downloadProgress
     self.uploadProgress = uploadProgress
+    self.sidebandMessage = sidebandMessage
   }
 }
 

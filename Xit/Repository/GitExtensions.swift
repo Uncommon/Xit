@@ -160,6 +160,19 @@ extension git_remote_callbacks
       
       return callbacks.pointee.uploadProgress!(progress) ? 0 : -1
     }
+    
+    static let sidebandMessage: git_transport_message_cb = {
+      (cString, length, payload) in
+      guard let callbacks = RemoteCallbacks.fromPayload(payload)
+      else { return -1 }
+      guard let cString = cString
+      else { return 0 }
+      let stringData = Data(bytes: cString, count: Int(length))
+      guard let message = String(data: stringData, encoding: .utf8)
+      else { return 0 }
+      
+      return callbacks.pointee.sidebandMessage!(message) ? 0 : -1
+    }
   }
   
   /// Calls the given action with a populated callbacks struct.

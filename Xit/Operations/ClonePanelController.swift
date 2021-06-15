@@ -117,25 +117,39 @@ final class ClonePanelController: NSWindowController
                       isDirectory: true)
     
     // set up the progress panel
+    let progress = ObservableProgress()
+    let callbacks = RemoteCallbacks(
+          passwordBlock: nil, // use from PasswordOpController
+          downloadProgress:  progress.progressCallback(_:),
+          sidebandMessage: progress.messageCallback(_:))
     
-    do {
-      try XTRepository.clone(from: sourceURL,
-                             to: destURL,
-                             branch: data.selectedBranch,
-                             recurseSubmodules: data.recurse)
-        
-      XTDocumentController.shared
-          .openDocument(withContentsOf: destURL, display: true,
-                        completionHandler: { (_, _, _) in })
-    }
-    catch let error as RepoError {
-      let alert = NSAlert()
+    DispatchQueue.global(qos: .userInitiated).async {
+      [self] in
+      let result = Result(catching: {
+        try XTRepository.clone(from: sourceURL,
+                               to: destURL,
+                               branch: data.selectedBranch,
+                               recurseSubmodules: data.recurse,
+                               callbacks: callbacks)
+      })
       
-      alert.messageText = error.localizedDescription
-      alert.beginSheetModal(for: window!, completionHandler: nil)
+      DispatchQueue.main.async {
+        switch result {
+          case .success(_):
+            XTDocumentController.shared
+                .openDocument(withContentsOf: destURL, display: true,
+                              completionHandler: { (_, _, _) in })
+            close()
+          case .failure(let error):
+            let alert = NSAlert()
+            
+            alert.messageText = error.localizedDescription
+            alert.beginSheetModal(for: window!, completionHandler: {
+              _ in close()
+            })
+        }
+      }
     }
-    catch {}
-    close()
   }
   
   init()
