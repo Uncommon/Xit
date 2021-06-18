@@ -79,6 +79,7 @@ extension URLValidationError: LocalizedError
 
 final class ClonePanelController: NSWindowController
 {
+  let cloner: Cloning
   let data = CloneData()
   var urlObserver: AnyCancellable?
   var pathObserver: AnyCancellable?
@@ -93,7 +94,7 @@ final class ClonePanelController: NSWindowController
       return panel
     }
     else {
-      let controller = ClonePanelController.init()
+      let controller = Self.init(cloner: GitCloner())
       
       currentController = controller
       controller.window?.center()
@@ -126,16 +127,18 @@ final class ClonePanelController: NSWindowController
     DispatchQueue.global(qos: .userInitiated).async {
       [self] in
       let result = Result(catching: {
-        try XTRepository.clone(from: sourceURL,
-                               to: destURL,
-                               branch: data.selectedBranch,
-                               recurseSubmodules: data.recurse,
-                               callbacks: callbacks)
+        try cloner.clone(from: sourceURL,
+                         to: destURL,
+                         branch: data.selectedBranch,
+                         recurseSubmodules: data.recurse,
+                         callbacks: callbacks)
       })
       
       DispatchQueue.main.async {
         switch result {
-          case .success(_):
+          case .success(let repository):
+            guard repository != nil
+            else { break }
             XTDocumentController.shared
                 .openDocument(withContentsOf: destURL, display: true,
                               completionHandler: { (_, _, _) in })
@@ -152,7 +155,7 @@ final class ClonePanelController: NSWindowController
     }
   }
   
-  init()
+  init(cloner: Cloning)
   {
     let window = NSWindow(contentRect: .init(origin: .zero,
                                              size: .init(width: 300,
@@ -166,6 +169,8 @@ final class ClonePanelController: NSWindowController
                                                         with: nil) })
     let viewController = NSHostingController(rootView: panel)
 
+    self.cloner = cloner
+    
     super.init(window: window)
     window.title = "Clone a Repository"
     window.contentViewController = viewController

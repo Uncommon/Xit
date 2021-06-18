@@ -23,6 +23,14 @@ public protocol RepoConfiguring
   var config: Config { get }
 }
 
+public protocol Cloning
+{
+  func clone(from source: URL, to destination: URL,
+             branch: String,
+             recurseSubmodules: Bool,
+             callbacks: RemoteCallbacks) throws -> Repository?
+}
+
 public protocol CommitStorage: AnyObject
 {
   func oid(forSHA sha: String) -> OID?
