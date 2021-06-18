@@ -60,13 +60,6 @@ public class XTRepository: NSObject, BasicRepository, RepoConfiguring
     return paths.first { FileManager.default.fileExists(atPath: $0) }
   }
   
-  static func taskQueueID(path: String) -> String
-  {
-    let identifier = Bundle.main.bundleIdentifier ?? "com.uncommonplace.xit"
-    
-    return "\(identifier).\(path)"
-  }
-  
   init?(gitRepo: OpaquePointer)
   {
     guard let gitCmd = XTRepository.gitPath(),

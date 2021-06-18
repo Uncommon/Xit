@@ -459,6 +459,8 @@
 		891261AF1F867FCC00C292B7 /* GitTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitTree.swift; sourceTree = "<group>"; };
 		891B02132666C36400E20F2B /* ClonePanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClonePanelController.swift; sourceTree = "<group>"; };
 		891C5F7226715C8A0099695D /* PrioritizedResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrioritizedResults.swift; sourceTree = "<group>"; };
+		891C5F8526739AF80099695D /* ProgressPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPanel.swift; sourceTree = "<group>"; };
+		891C5F872678E9F90099695D /* ProgressPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPanelController.swift; sourceTree = "<group>"; };
 		891C5F8F267C2A830099695D /* GitCloner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitCloner.swift; sourceTree = "<group>"; };
 		894C8DE51CCD06FE001A4B80 /* Xit-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Xit-Bridging-Header.h"; sourceTree = "<group>"; };
 		895CD52126507E3E0073F15A /* FakePullRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakePullRequest.swift; sourceTree = "<group>"; };
@@ -1173,6 +1175,7 @@
 				C936AD0B1D4C0FA900C5ADC3 /* PasswordOpController.swift */,
 				C94866BE1D25861E000BDB0A /* PasswordPanelController.swift */,
 				C94866BF1D25861E000BDB0A /* PasswordPanelController.xib */,
+				891C5F8526739AF80099695D /* ProgressPanel.swift */,
 				89C927871D43B0460074F71A /* PullOpController.swift */,
 				89AB953624DE064B0029CECC /* PushNewPanelController.swift */,
 				89AB952124DDE63E0029CECC /* PushNewPanelController.xib */,
@@ -1191,6 +1194,7 @@
 				89AB21EC213DE67500EF7507 /* StashPanelController.xib */,
 				C98925C41DB693CC00E5645C /* TagPanelController.swift */,
 				C98925C51DB693CC00E5645C /* TagPanelController.xib */,
+				891C5F872678E9F90099695D /* ProgressPanelController.swift */,
 			);
 			path = Operations;
 			sourceTree = "<group>";
@@ -1652,6 +1656,7 @@
 				C957B8661D2D8D500040F858 /* XTKeychain.swift in Sources */,
 				C98AFF9D24FEA63900AD20EC /* GitWorkTree.swift in Sources */,
 				8983E1A4266519020075370C /* LabeledField.swift in Sources */,
+				891C5F882678E9FA0099695D /* ProgressPanelController.swift in Sources */,
 				C90B4EC51FEDB1D600277B13 /* GitStatusList.swift in Sources */,
 				C90DA47924212B7400FFBC26 /* XTWindowController+Operations.swift in Sources */,
 				C94A30261E3154D400B4496B /* TextPreviewController.swift in Sources */,
@@ -1783,6 +1788,7 @@
 				C98925D51DB6D3D300E5645C /* NewTagOpController.swift in Sources */,
 				C95BF66A1FCF5E370020C51D /* StagingSelection.swift in Sources */,
 				C959CDEB1F859DB800C1E282 /* SidebarController+Actions.swift in Sources */,
+				891C5F8626739AF80099695D /* ProgressPanel.swift in Sources */,
 				C96F65461D53A6CE001B2557 /* HistoryCellView.swift in Sources */,
 				891261B01F867FCC00C292B7 /* GitTree.swift in Sources */,
 				C9BDF4D01D99A7660034841F /* RenameBranchPanelController.swift in Sources */,

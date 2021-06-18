@@ -191,6 +191,17 @@ extension TransferProgress
   var progress: Float { Float(receivedObjects) / Float(totalObjects) }
 }
 
+struct MockTransferProgress: TransferProgress
+{
+  var totalObjects: UInt32
+  var indexedObjects: UInt32
+  var receivedObjects: UInt32
+  var localObjects: UInt32
+  var totalDeltas: UInt32
+  var indexedDeltas: UInt32
+  var receivedBytes: Int
+}
+
 public struct RemoteCallbacks
 {
   /// Callback for getting the user and password
