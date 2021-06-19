@@ -74,8 +74,10 @@ struct ClonePanel_Previews: PreviewProvider
   static var previews: some View
   {
     Group {
-      Preview(data: .init())
-      Preview(data: .init()
+      Preview(data: .init(readURL: {
+        _ in .success(("Repo", ["main", "master"], "main"))
+      }))
+      Preview(data: .init(readURL: { _ in .failure(.unexpected) })
                 .path("/Users/Uncommon/Developer")
                 .name("Repo")
                 .urlResult(.failure(.invalid))

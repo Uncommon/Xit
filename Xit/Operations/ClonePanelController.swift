@@ -4,14 +4,22 @@ import Combine
 
 class CloneData: ObservableObject
 {
-  @Published var url: String = ""
-  @Published var destination: String = ""
-  @Published var name: String = ""
-  @Published var branches: [String] = []
-  @Published var selectedBranch: String = ""
-  @Published var recurse: Bool = true
+  @Published public var url: String = ""
+  @Published public var destination: String = ""
+  @Published public var name: String = ""
+  @Published public var branches: [String] = []
+  @Published public var selectedBranch: String = ""
+  @Published public var recurse: Bool = true
   
-  @Published var inProgress: Bool = false
+  @Published public var inProgress: Bool = false
+  
+  typealias URLResult = Result<(name: String, branches: [String],
+                                selectedBranch: String),
+                               URLValidationError>
+  typealias URLReader = (String) -> URLResult
+  
+  let readURL: URLReader
+  private var urlObserver: AnyCancellable?
 
   enum CheckedValues: String, CaseIterable
   {
@@ -22,6 +30,47 @@ class CloneData: ObservableObject
   
   var errorString: String?
   { results.firstError?.localizedDescription }
+  
+  init(readURL: @escaping URLReader)
+  {
+    self.readURL = readURL
+
+    self.urlObserver = $url
+      .debounce(afterInvalidating: self, keyPath: \.results.url)
+      .handleEvents(receiveOutput: {
+        [self] _ in
+        inProgress = true
+        results.url = nil
+        branches = []
+      })
+      .receive(on: DispatchQueue.global(qos: .userInitiated))
+      .map {
+        readURL($0)
+      }
+      .receive(on: DispatchQueue.main)
+      .sink {
+        [self] result in
+        inProgress = false
+        switch result {
+          case .success((let name, let branches, let selectedBranch)):
+            self.name = name
+            results.name = nil
+            self.branches = branches
+            self.selectedBranch = selectedBranch
+            results.url = result
+          case .failure(.empty):
+            results.url = nil
+          default:
+            results.url = result
+        }
+        if case .failure(.empty) = result {
+          results.url = nil
+        }
+        else {
+          results.url = result
+        }
+      }
+  }
 }
 
 enum PathValidationError: Error
@@ -72,7 +121,7 @@ extension URLValidationError: LocalizedError
       case .gitError(let error):
         return error.localizedDescription
       case .unexpected:
-        return "Unexpected"
+        return "Unexpected error"
     }
   }
 }
@@ -80,7 +129,7 @@ extension URLValidationError: LocalizedError
 final class ClonePanelController: NSWindowController
 {
   let cloner: Cloning
-  let data = CloneData()
+  let data = CloneData(readURL: ClonePanelController.readURL(_:))
   var urlObserver: AnyCancellable?
   var pathObserver: AnyCancellable?
   
@@ -203,41 +252,6 @@ final class ClonePanelController: NSWindowController
     window.center()
     window.delegate = self
     
-    self.urlObserver = data.$url
-      .debounce(afterInvalidating: data, keyPath: \.results.url)
-      .handleEvents(receiveOutput: {
-        [self] _ in
-        data.inProgress = true
-        data.results.url = nil
-        data.branches = []
-      })
-      .receive(on: DispatchQueue.global(qos: .userInitiated))
-      .map {
-        Self.readURL($0)
-      }
-      .receive(on: DispatchQueue.main)
-      .sink {
-        [self] result in
-        data.inProgress = false
-        switch result {
-          case .success((let name, let branches, let selectedBranch)):
-            data.name = name
-            data.results.name = nil
-            data.branches = branches
-            data.selectedBranch = selectedBranch
-            data.results.url = result
-          case .failure(.empty):
-            data.results.url = nil
-          default:
-            data.results.url = result
-        }
-        if case .failure(.empty) = result {
-          data.results.url = nil
-        }
-        else {
-          data.results.url = result
-        }
-      }
     self.pathObserver = data.$destination.combineLatest(data.$name)
       .debounce(afterInvalidating: data, keyPath: \.results.path)
       .sink { [self] _ in
@@ -303,9 +317,7 @@ final class ClonePanelController: NSWindowController
     return true
   }
   
-  static func readURL(_ newURL: String)
-    -> Result<(name: String, branches: [String], selectedBranch: String),
-              URLValidationError>
+  static func readURL(_ newURL: String) -> CloneData.URLResult
   {
     guard let url = URL(string: newURL)
     else { return .failure(.empty) }
