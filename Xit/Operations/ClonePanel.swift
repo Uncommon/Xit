@@ -54,7 +54,7 @@ struct ClonePanel: View
         }.keyboardShortcut(.defaultAction)
          .disabled(!data.results.allSucceeded)
       }
-    }.padding()
+    }.padding(20)
      .fixedSize(horizontal: false, vertical: true)
      .frame(minWidth: 500)
   }

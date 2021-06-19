@@ -205,34 +205,38 @@ final class ClonePanelController: NSWindowController
     
     self.urlObserver = data.$url
       .debounce(afterInvalidating: data, keyPath: \.results.url)
-      .sink { [self] (url) in
+      .filter {
+        [self] _ in
         data.inProgress = true
         data.results.url = nil
         data.branches = []
-        DispatchQueue.global(qos: .userInitiated).async {
-          let result = Self.readURL(url)
-          
-          DispatchQueue.main.async {
-            data.inProgress = false
-            switch result {
-              case .success((let name, let branches, let selectedBranch)):
-                data.name = name
-                data.results.name = nil
-                data.branches = branches
-                data.selectedBranch = selectedBranch
-                data.results.url = result
-              case .failure(.empty):
-                data.results.url = nil
-              default:
-                data.results.url = result
-            }
-            if case .failure(.empty) = result {
-              data.results.url = nil
-            }
-            else {
-              data.results.url = result
-            }
-          }
+        return true
+      }
+      .receive(on: DispatchQueue.global(qos: .userInitiated))
+      .map {
+        Self.readURL($0)
+      }
+      .receive(on: DispatchQueue.main)
+      .sink {
+        [self] result in
+        data.inProgress = false
+        switch result {
+          case .success((let name, let branches, let selectedBranch)):
+            data.name = name
+            data.results.name = nil
+            data.branches = branches
+            data.selectedBranch = selectedBranch
+            data.results.url = result
+          case .failure(.empty):
+            data.results.url = nil
+          default:
+            data.results.url = result
+        }
+        if case .failure(.empty) = result {
+          data.results.url = nil
+        }
+        else {
+          data.results.url = result
         }
       }
     self.pathObserver = data.$destination.combineLatest(data.$name)
