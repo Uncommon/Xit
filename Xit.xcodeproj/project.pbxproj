@@ -1176,6 +1176,7 @@
 				C94866BE1D25861E000BDB0A /* PasswordPanelController.swift */,
 				C94866BF1D25861E000BDB0A /* PasswordPanelController.xib */,
 				891C5F8526739AF80099695D /* ProgressPanel.swift */,
+				891C5F872678E9F90099695D /* ProgressPanelController.swift */,
 				89C927871D43B0460074F71A /* PullOpController.swift */,
 				89AB953624DE064B0029CECC /* PushNewPanelController.swift */,
 				89AB952124DDE63E0029CECC /* PushNewPanelController.xib */,
@@ -1194,7 +1195,6 @@
 				89AB21EC213DE67500EF7507 /* StashPanelController.xib */,
 				C98925C41DB693CC00E5645C /* TagPanelController.swift */,
 				C98925C51DB693CC00E5645C /* TagPanelController.xib */,
-				891C5F872678E9F90099695D /* ProgressPanelController.swift */,
 			);
 			path = Operations;
 			sourceTree = "<group>";

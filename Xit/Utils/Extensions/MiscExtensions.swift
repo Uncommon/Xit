@@ -68,13 +68,12 @@ extension Publisher
       afterInvalidating object: T,
       keyPath: ReferenceWritableKeyPath<T, O?>,
       delay: DispatchQueue.SchedulerTimeType.Stride = 0.25)
-    -> Publishers.Debounce<Publishers.Filter<Self>, DispatchQueue>
+    -> Publishers.Debounce<Publishers.HandleEvents<Self>, DispatchQueue>
     where T: AnyObject
   {
-    return filter { _ in
+    return handleEvents(receiveOutput: { _ in
       object[keyPath: keyPath] = nil
-      return true
-    }.debounce(for: delay, scheduler: DispatchQueue.main)
+    }).debounce(for: delay, scheduler: DispatchQueue.main)
   }
 }
 

@@ -205,13 +205,12 @@ final class ClonePanelController: NSWindowController
     
     self.urlObserver = data.$url
       .debounce(afterInvalidating: data, keyPath: \.results.url)
-      .filter {
+      .handleEvents(receiveOutput: {
         [self] _ in
         data.inProgress = true
         data.results.url = nil
         data.branches = []
-        return true
-      }
+      })
       .receive(on: DispatchQueue.global(qos: .userInitiated))
       .map {
         Self.readURL($0)
