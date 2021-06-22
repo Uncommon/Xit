@@ -27,6 +27,20 @@ extension PathValidationError: LocalizedError
   }
 }
 
+struct WindowEnvironmentKey: EnvironmentKey
+{
+  static let defaultValue: NSWindow = NSApp.mainWindow ?? NSWindow()
+}
+
+extension EnvironmentValues
+{
+  var window: NSWindow
+  {
+    get { self[WindowEnvironmentKey.self] }
+    set { self[WindowEnvironmentKey.self] = newValue }
+  }
+}
+
 final class ClonePanelController: NSWindowController
 {
   let cloner: Cloning
@@ -140,6 +154,7 @@ final class ClonePanelController: NSWindowController
                            // Avoid capturing self yet
                            clone: { window.tryToPerform(#selector(Self.clone(_:)),
                                                         with: nil) })
+                .environment(\.window, window)
     let viewController = NSHostingController(rootView: panel)
 
     self.cloner = cloner
